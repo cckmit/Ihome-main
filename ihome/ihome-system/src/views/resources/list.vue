@@ -4,7 +4,7 @@
  * @Author: zyc
  * @Date: 2020-07-06 09:41:43
  * @LastEditors: zyc
- * @LastEditTime: 2020-07-06 17:25:25
+ * @LastEditTime: 2020-07-07 17:18:44
 --> 
 <template>
   <div>
@@ -110,16 +110,16 @@
 
             <el-table-column fixed="right" label="操作" width="120">
               <template slot-scope="scope">
-                <el-link type="primary">详情</el-link>
+                <el-link type="primary" @click.native.prevent="info(scope)">详情</el-link>
                 <el-dropdown trigger="click" style="margin-left:15px;">
                   <span class="el-dropdown-link" style>
                     更多
                     <i class="el-icon-arrow-down el-icon--right"></i>
                   </span>
                   <el-dropdown-menu slot="dropdown">
-                    <el-dropdown-item>编辑{{scope.row.id}}</el-dropdown-item>
-                    <el-dropdown-item>删除</el-dropdown-item>
-                    <el-dropdown-item>批量分配角色</el-dropdown-item>
+                    <el-dropdown-item @click.native.prevent="edit(scope)">编辑</el-dropdown-item>
+                    <el-dropdown-item @click.native.prevent="deleteItem(scope)">删除</el-dropdown-item>
+                    <el-dropdown-item @click.native.prevent="batchOperationRole(scope)">批量分配角色</el-dropdown-item>
                   </el-dropdown-menu>
                 </el-dropdown>
               </template>
@@ -146,26 +146,47 @@
         @finish="(data)=>{dialogVisible=false;finish(data)}"
       />
     </ih-dialog>
+    <ih-dialog :show="dialogEdit">
+      <ResourcesEdit
+        :data="editData"
+        @cancel="()=>dialogEdit=false"
+        @finish="(data)=>{dialogEdit=false;finishEdit(data)}"
+      />
+    </ih-dialog>
+    <ih-dialog :show="dialogBatchOperationRole">
+      <BatchOperationRole
+        :data="batchOperationRoleData"
+        @cancel="()=>dialogBatchOperationRole=false"
+        @finish="(data)=>{dialogBatchOperationRole=false;finishBatchOperationRole(data)}"
+      />
+    </ih-dialog>
   </div>
 </template>
 <script lang="ts">
 import ResourcesAdd from "./add.vue";
+import ResourcesEdit from "./edit.vue";
+
 import { Component, Vue, Watch } from "vue-property-decorator";
 import {
   getResourceList,
   getResourceCategory
 } from "../../api/system/resource";
+import BatchOperationRole from "./batch-operation-role.vue";
 @Component({
-  components: {ResourcesAdd}
+  components: { ResourcesAdd, ResourcesEdit, BatchOperationRole }
 })
 export default class ResourcesList extends Vue {
   checked1 = false;
-  resourceList: any = [];
+  resourceList: any[] = [];
   total: any = null;
   input3: any = "";
   filterText: any = "";
   currentPage: any = 1;
   dialogVisible = false;
+  dialogEdit = false;
+  editData: any = null;
+  batchOperationRoleData: any = null;
+  dialogBatchOperationRole = false;
   options: any = [
     {
       value: "1",
@@ -237,12 +258,49 @@ export default class ResourcesList extends Vue {
     this.resourceList = list;
     this.total = total;
   }
-  
+
   add() {
     this.dialogVisible = true;
   }
+  edit(scope: any) {
+    console.log(scope);
+    this.editData = scope.row;
+    this.dialogEdit = true;
+  }
   finish(data: any) {
     console.log(data);
+  }
+  finishEdit(data: any) {
+    console.log(data);
+  }
+  finishBatchOperationRole(data: any) {
+    console.log(data);
+  }
+  info(scope: any) {
+    console.log(scope);
+    this.$router.push({
+      path: "/resources/info",
+      query: { id: scope.row.id }
+    });
+  }
+  batchOperationRole(scope: any) {
+    this.batchOperationRoleData = scope.row;
+    this.dialogBatchOperationRole = true;
+  }
+  async deleteItem(scope: any) {
+    console.log(scope);
+
+    try {
+      await this.$confirm("是否确定删除?", "提示");
+      this.resourceList.splice(scope.$index, 1);
+      this.$message({
+        type: "success",
+        message: "删除成功!"
+      });
+    } catch (error) {
+      console.log(error);
+    }
+ 
   }
 }
 </script>

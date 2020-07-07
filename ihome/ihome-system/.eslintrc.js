@@ -4,7 +4,7 @@
  * @Author: zyc
  * @Date: 2020-06-22 11:10:43
  * @LastEditors: zyc
- * @LastEditTime: 2020-07-02 09:52:19
+ * @LastEditTime: 2020-07-07 11:28:49
  */
 module.exports = {
   root: true,
@@ -30,7 +30,8 @@ module.exports = {
     '@typescript-eslint/no-this-alias': 'off',
     '@typescript-eslint/interface-name-prefix': 'off',
     '@typescript-eslint/member-delimiter-style': 'off',
-    'prefer-const':'off'
+    'prefer-const': 'off',
+    'no-useless-escape': 'off'
   },
   overrides: [
     {

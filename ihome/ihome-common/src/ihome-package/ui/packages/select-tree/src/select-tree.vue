@@ -92,10 +92,10 @@ export default {
     deepQuery(tree, id) {
       const that = this;
       //this.props.children
-      var isGet = false;
-      var retNode = null;
+      let isGet = false;
+      let retNode = null;
       function deepSearch(tree, id) {
-        for (var i = 0; i < tree.length; i++) {
+        for (let i = 0; i < tree.length; i++) {
           if (
             tree[i][that.props.children] &&
             tree[i][that.props.children].length > 0

@@ -4,12 +4,12 @@
  * @Author: zyc
  * @Date: 2020-07-02 09:47:51
  * @LastEditors: zyc
- * @LastEditTime: 2020-07-02 14:31:06
+ * @LastEditTime: 2020-07-07 15:53:19
  */
 const Mock = require('mockjs');
 import { treeList } from './tree'
 export const organization = treeList;
-export const userList = Mock.mock({
+export const usersList = Mock.mock({
     "total": 105,
     "list|10": [
         {

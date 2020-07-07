@@ -4,7 +4,7 @@
  * @Author: zyc
  * @Date: 2020-06-22 11:10:43
  * @LastEditors: zyc
- * @LastEditTime: 2020-06-29 18:29:08
+ * @LastEditTime: 2020-07-07 09:46:51
  */
 module.exports = {
   root: true,
@@ -14,7 +14,8 @@ module.exports = {
   'extends': [
     'plugin:vue/essential',
     'eslint:recommended',
-    '@vue/typescript/recommended'
+    '@vue/typescript/recommended',
+
   ],
   parserOptions: {
     ecmaVersion: 2020
@@ -28,7 +29,10 @@ module.exports = {
     '@typescript-eslint/camelcase': 'off',
     '@typescript-eslint/no-var-requires': 'off',
     '@typescript-eslint/no-this-alias': 'off',
-    '@typescript-eslint/interface-name-prefix': 'off'
+    '@typescript-eslint/interface-name-prefix': 'off',
+    '@typescript-eslint/member-delimiter-style': 'off',
+    'prefer-const': 'off',
+    'vue/require-prop-type-constructor': 'off'
   },
   overrides: [
     {

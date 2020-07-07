@@ -4,7 +4,7 @@
  * @Author: zyc
  * @Date: 2020-06-22 11:46:23
  * @LastEditors: zyc
- * @LastEditTime: 2020-06-24 10:27:58
+ * @LastEditTime: 2020-07-07 09:45:00
  */
 module.exports = {
   root: true,
@@ -23,7 +23,7 @@ module.exports = {
     'no-console': process.env.NODE_ENV === 'production' ? 'warn' : 'off',
     'no-debugger': process.env.NODE_ENV === 'production' ? 'warn' : 'off',
     '@typescript-eslint/consistent-type-assertions': 'off',
-    ' @typescript-eslint/camelcase': 'off',
+    '@typescript-eslint/camelcase': 'off',
     '@typescript-eslint/no-explicit-any': 'off',
     '@typescript-eslint/no-inferrable-types': 'off',
     '@typescript-eslint/no-this-alias': 'off',

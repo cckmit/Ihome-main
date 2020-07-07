@@ -4,7 +4,7 @@
  * @Author: zyc
  * @Date: 2020-06-22 11:46:23
  * @LastEditors: zyc
- * @LastEditTime: 2020-07-06 17:00:07
+ * @LastEditTime: 2020-07-07 09:41:11
 --> 
 <template>
   <div>
@@ -39,7 +39,7 @@
             <el-menu-item @click="goto('/cli/')" index="4-1">cli-home</el-menu-item>
             <el-menu-item @click="goto('/cli/about')" index="4-2">cli-about</el-menu-item>
             <el-menu-item @click="goto('/system/')" index="4-3">系统管理模块</el-menu-item>
-            <el-menu-item @click="goto('/system/user/list')" index="4-3">用户列表</el-menu-item>
+            <el-menu-item @click="goto('/system/user/list')" index="4-4">用户列表</el-menu-item>
             <!-- 
             <el-menu-item @click="changeState('1')" index="4-17">修改state = 1</el-menu-item>
             <el-menu-item @click="changeState('2')" index="4-18">修改state = 2</el-menu-item>-->

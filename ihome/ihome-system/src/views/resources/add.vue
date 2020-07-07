@@ -8,7 +8,7 @@
 --> 
 <template>
   <el-dialog
-    title="资源"
+    title="资源新增"
     :visible.sync="dialogVisible"
     :close-on-click-modal="false"
     :close-on-press-escape="false"

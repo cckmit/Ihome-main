@@ -4,7 +4,7 @@
  * @Author: zyc
  * @Date: 2020-07-06 16:08:05
  * @LastEditors: zyc
- * @LastEditTime: 2020-07-06 16:56:55
+ * @LastEditTime: 2020-07-07 16:05:13
  */
 
 const Mock = require('mockjs');
@@ -54,3 +54,52 @@ export const resourceList = Mock.mock({
         }
     ]
 })
+
+export const roleList = Mock.mock({
+    "total": 80,
+    "list|10": [
+        {
+            "code": /[a-z]{8}/,
+            "id": '@increment(1)',
+            "name": "@ctitle",
+            "createUser|1": ['张三', '李四', '王五'],
+            "createTime": '@DATETIME("yyyy-MM-dd HH:mm:ss")',
+            "updateUser|1": ['张三', '李四', '王五'],
+            "updateTime": '@DATETIME("yyyy-MM-dd HH:mm:ss")',
+        }
+    ]
+})
+export const jobList = Mock.mock({
+    "total": 68,
+    "list|10": [
+        {
+            "code": /[a-z]{8}/,
+            "id": '@increment(1)',
+            "name": "@ctitle",
+            "describe": "@ctitle",
+            "createUser|1": ['张三', '李四', '王五'],
+            "createTime": '@DATETIME("yyyy-MM-dd HH:mm:ss")',
+            "updateUser|1": ['张三', '李四', '王五'],
+            "updateTime": '@DATETIME("yyyy-MM-dd HH:mm:ss")',
+        }
+    ]
+})
+export const userList = Mock.mock({
+    "total": 75,
+    "list|10": [
+        {
+            "code": /[a-z]{8}/,
+            "id": '@increment(1)',
+            "name": "@cname",
+            "account": /[a-z]{12}/,
+            "phone":  /^135[0-9]{8}|188[0-9]{8}$/,
+            "userType|1": ['爱家员工', '保顾兼职', '居恒员工', '个人客户', '渠道用户'],
+            "organization|1": ['爱家广州存量事业部', '居恒广州产成品及联动事业部', '爱家广州产成品及联动事业部'],
+            "createUser|1": ['张三', '李四', '王五'],
+            "createTime": '@DATETIME("yyyy-MM-dd HH:mm:ss")',
+            "updateUser|1": ['张三', '李四', '王五'],
+            "updateTime": '@DATETIME("yyyy-MM-dd HH:mm:ss")',
+        }
+    ]
+})
+
