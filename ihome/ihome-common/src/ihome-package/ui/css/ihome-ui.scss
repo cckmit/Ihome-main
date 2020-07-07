@@ -1,0 +1,53 @@
+/*ihome-ui全局样式文件*/
+
+.ih-has-hide{
+    display: none;
+    pointer-events:none;
+    cursor: default;
+}
+.ih-has-show{
+    display: block;
+}
+
+.ih-el-tree-radio .el-checkbox__inner{
+    border-radius: 100%;
+}
+.ih-el-tree-checkbox .el-checkbox__inner{
+    border-radius: 0;
+}
+
+.el-card.ih-card-form {
+    background: #fff;
+    // padding: 20px;
+    .el-form-item {
+      margin-right: 40px;
+    }
+    
+  }
+  .el-card.ih-card-form.is-always-shadow{
+    box-shadow: none !important;
+  }
+   
+
+  .el-select-dropdown__wrap{
+      max-height: 400px !important;
+  }
+
+.el-table__header th{
+    background: #f1f1f1 !important;
+    color: #7b7b7b;
+}
+.el-table__row:hover td{
+    background-color: #f6faec !important;
+}
+.el-tree--highlight-current .el-tree-node.is-current > .el-tree-node__content {
+    background-color: #fff7eb!important;
+    color: #f90 !important;
+  }
+  .ih-table{
+      .el-dropdown-link{
+        color:#409eff !important;
+        width:100%;
+      }
+  }
+ 
