@@ -4,7 +4,7 @@
  * @Author: zyc
  * @Date: 2020-06-22 11:10:43
  * @LastEditors: zyc
- * @LastEditTime: 2020-07-07 11:50:25
+ * @LastEditTime: 2020-07-08 14:29:55
  */
 import Vue from 'vue'
 import VueRouter, { RouteConfig } from 'vue-router'
@@ -41,6 +41,12 @@ const routes: Array<RouteConfig> = [
         name: 'UserList',
         component: () => import('../views/user/list.vue'),
         meta: { title: '用户列表', icon: 'form' }
+      },
+      {
+        path: 'info',
+        name: 'UserInfo',
+        component: () => import('../views/user/info.vue'),
+        meta: { title: '用户详情', icon: 'form' }
       },
     ]
   },

@@ -4,7 +4,7 @@
  * @Author: zyc
  * @Date: 2020-07-07 15:36:27
  * @LastEditors: zyc
- * @LastEditTime: 2020-07-07 16:00:31
+ * @LastEditTime: 2020-07-08 11:28:24
 --> 
 <template>
   <div>
@@ -18,10 +18,9 @@
       <el-table-column type="index" label="序号" width="50"></el-table-column>
       <el-table-column prop="name" label="姓名" width="180"></el-table-column>
       <el-table-column prop="account" label="登录账号" width="180"></el-table-column>
-        <el-table-column prop="phone" label="手机号码" width="180"></el-table-column>
+      <el-table-column prop="phone" label="手机号码" width="180"></el-table-column>
       <el-table-column prop="userType" label="用户类型"></el-table-column>
       <el-table-column prop="organization" label="归属组织"></el-table-column>
-    
     </el-table>
     <el-pagination
       style="text-align: right;margin-top:20px;"
@@ -37,7 +36,7 @@
 </template>
 <script lang="ts">
 import { Component, Vue } from "vue-property-decorator";
-import { getUserList } from "../../../api/system/resource";
+import { getUserList } from "../../../api/system";
 @Component({
   components: {}
 })
@@ -52,8 +51,7 @@ export default class InfoUser extends Vue {
     console.log(a);
   }
   async search() {
-    const { result } = await getUserList();
-    const { total, list } = result;
+    const { total, list } = await getUserList();
     this.total = total;
     this.list = list;
   }

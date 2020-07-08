@@ -4,7 +4,7 @@
  * @Author: zyc
  * @Date: 2020-07-06 17:16:31
  * @LastEditors: zyc
- * @LastEditTime: 2020-07-06 18:29:11
+ * @LastEditTime: 2020-07-08 10:11:20
 --> 
 <template>
   <el-dialog
@@ -13,7 +13,7 @@
     :close-on-click-modal="false"
     :close-on-press-escape="false"
     :before-close="cancel"
-    width="50%"
+    width="1000px"
     style="text-align: left;"
     class="dialog"
   >
@@ -21,6 +21,18 @@
       <el-table-column prop="add" label="操作" width="60">
         <template slot-scope="scope">
           <i style=" cursor: pointer;" @click="reduceLine(scope)" class="el-icon-minus"></i>
+        </template>
+      </el-table-column>
+       <el-table-column label="类型" width="100">
+        <template>
+           <el-select v-model="value"  placeholder="类型" style="width:100%;">
+                    <el-option
+                      v-for="item in options"
+                      :key="item.value"
+                      :label="item.label"
+                      :value="item.value"
+                    ></el-option>
+                  </el-select>
         </template>
       </el-table-column>
       <el-table-column label="名称" width="180">
@@ -39,7 +51,7 @@
           <el-input placeholder="编码"></el-input>
         </template>
       </el-table-column>
-      <el-table-column prop="name" label="URL">
+      <el-table-column prop="name" label="URL" width="300">
         <template>
           <el-input placeholder="URL"></el-input>
         </template>
@@ -57,6 +69,7 @@
 </template>
 <script lang="ts">
 import { Component, Vue, Prop } from "vue-property-decorator";
+import { DictionariesModule } from "../../store/modules/dictionaries";
 @Component({
   components: {}
 })
@@ -66,6 +79,12 @@ export default class ResourcesAdd extends Vue {
   }
   @Prop({ default: null }) data: any;
   dialogVisible = true;
+
+  get options() {
+    DictionariesModule.getModular();
+    return DictionariesModule.modular;
+  }
+  value: any = "";
 
   tableData: any = [
     {

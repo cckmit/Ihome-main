@@ -4,7 +4,7 @@
  * @Author: zyc
  * @Date: 2020-07-06 09:41:43
  * @LastEditors: zyc
- * @LastEditTime: 2020-07-07 17:18:44
+ * @LastEditTime: 2020-07-08 11:16:47
 --> 
 <template>
   <div>
@@ -165,12 +165,10 @@
 <script lang="ts">
 import ResourcesAdd from "./add.vue";
 import ResourcesEdit from "./edit.vue";
+import { DictionariesModule } from "../../store/modules/dictionaries";
 
 import { Component, Vue, Watch } from "vue-property-decorator";
-import {
-  getResourceList,
-  getResourceCategory
-} from "../../api/system/resource";
+import { getResourceList, getResourceCategory } from "../../api/system";
 import BatchOperationRole from "./batch-operation-role.vue";
 @Component({
   components: { ResourcesAdd, ResourcesEdit, BatchOperationRole }
@@ -187,33 +185,11 @@ export default class ResourcesList extends Vue {
   editData: any = null;
   batchOperationRoleData: any = null;
   dialogBatchOperationRole = false;
-  options: any = [
-    {
-      value: "1",
-      label: "所有资源"
-    },
-    {
-      value: "2",
-      label: "菜单"
-    },
-    {
-      value: "3",
-      label: "按钮"
-    },
-    {
-      value: "4",
-      label: "接口"
-    },
-    {
-      value: "5",
-      label: "系统"
-    },
-    {
-      value: "6",
-      label: "模块"
-    }
-  ];
-  value: any = "1";
+  get options() {
+    DictionariesModule.getModular();
+    return DictionariesModule.modularAll;
+  }
+  value: any = null;
   dataTree: any = [];
 
   defaultProps: any = {
@@ -236,7 +212,7 @@ export default class ResourcesList extends Vue {
   async created() {
     const res: any = await getResourceCategory();
     console.log(res);
-    this.dataTree = this.$tool.listToGruop(res.result, { rootId: 0 });
+    this.dataTree = this.$tool.listToGruop(res, { rootId: 0 });
     this.getList();
   }
   currentChange(item: any) {
@@ -252,11 +228,12 @@ export default class ResourcesList extends Vue {
     this.getList();
   }
   async getList() {
-    const { result } = await getResourceList();
-    const { total, list } = result;
-    console.log(list, total);
-    this.resourceList = list;
-    this.total = total;
+    const res = await getResourceList();
+    // res.list[0].code
+    // const { total, list }  = await getResourceList();
+
+    this.resourceList = res.list;
+    this.total = res.total;
   }
 
   add() {
@@ -300,7 +277,6 @@ export default class ResourcesList extends Vue {
     } catch (error) {
       console.log(error);
     }
- 
   }
 }
 </script>

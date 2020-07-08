@@ -4,7 +4,7 @@
  * @Author: zyc
  * @Date: 2020-06-29 16:35:01
  * @LastEditors: zyc
- * @LastEditTime: 2020-06-29 17:29:25
+ * @LastEditTime: 2020-07-08 11:18:03
  */
 import axios from 'axios'
 import { Message } from 'element-ui'
@@ -51,7 +51,7 @@ service.interceptors.response.use(
             if (res.code !== 0) {
                 return Promise.reject(new Error(res.msg || 'Error'))
             } else {
-                return response.data
+                return response.data.result;
             }
         }
 

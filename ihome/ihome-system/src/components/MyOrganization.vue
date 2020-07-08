@@ -4,7 +4,7 @@
  * @Author: zyc
  * @Date: 2020-07-03 09:00:13
  * @LastEditors: zyc
- * @LastEditTime: 2020-07-06 10:52:25
+ * @LastEditTime: 2020-07-08 10:44:01
 --> 
 
 <template>
@@ -46,7 +46,7 @@
   </el-dialog>
 </template>
 <script  >
-import { organization } from "../api/users";
+import { organization } from "../api/system";
 export default {
   name: "MyOrganization",
   props: {

@@ -4,7 +4,7 @@
  * @Author: zyc
  * @Date: 2020-06-23 17:07:08
  * @LastEditors: zyc
- * @LastEditTime: 2020-07-07 15:53:33
+ * @LastEditTime: 2020-07-08 11:50:55
  */
 const Mock = require('mockjs');
 Mock.setup({
@@ -24,25 +24,21 @@ function responseSuccess(result: any) {
 //         result: result
 //     }
 // }
-// 创建模拟数据
-const testData = {
-    testData: '测试mock'
-}
-const testDataPost = {
-    testData: '测试postmock'
-}
 
-Mock.mock('/getMockData', 'get', responseSuccess(testData))
-Mock.mock('/getMockDataPost', 'post', responseSuccess(testDataPost))
-/**用户详情*/
-Mock.mock('/users/info', 'post', responseSuccess(testDataPost))
+import { dictionariesList, organization, usersList } from './data/common'
 
-import { organization, usersList } from './data/user'
 /**归属组织列表*/
-Mock.mock('/users/organization', 'get', responseSuccess(organization))
+Mock.mock('/user/organization', 'get', responseSuccess(organization))
 /**用户列表*/
-Mock.mock('/users/list', 'get', responseSuccess(usersList))
-import { resourceList, resourceCategory, roleList, jobList, userList } from './data/resources'
+Mock.mock('/user/list', 'get', responseSuccess(usersList))
+/**字典数据列表*/
+Mock.mock('/system/dictionaries/list', 'get', responseSuccess(dictionariesList))
+
+
+
+
+
+import { resourceList, resourceCategory, roleList, jobList, userList } from './data/system'
 /**资源列表*/
 Mock.mock('/system/resource/list', 'get', responseSuccess(resourceList))
 /**资源类别*/
@@ -53,6 +49,10 @@ Mock.mock('/system/role/list', 'get', responseSuccess(roleList))
 Mock.mock('/system/job/list', 'get', responseSuccess(jobList))
 /**用户列表*/
 Mock.mock('/system/user/list', 'get', responseSuccess(userList))
+
+
+
+
 
 
 

@@ -4,7 +4,7 @@
  * @Author: zyc
  * @Date: 2020-07-07 15:36:27
  * @LastEditors: zyc
- * @LastEditTime: 2020-07-07 15:49:17
+ * @LastEditTime: 2020-07-08 11:28:05
 --> 
 <template>
   <div>
@@ -34,7 +34,7 @@
 </template>
 <script lang="ts">
 import { Component, Vue } from "vue-property-decorator";
-import { getJobList } from "../../../api/system/resource";
+import { getJobList } from "../../../api/system";
 @Component({
   components: {}
 })
@@ -49,8 +49,7 @@ export default class InfoJob extends Vue {
     console.log(a);
   }
   async search() {
-    const { result } = await getJobList();
-    const { total, list } = result;
+    const { total, list } = await getJobList();
     this.total = total;
     this.list = list;
   }

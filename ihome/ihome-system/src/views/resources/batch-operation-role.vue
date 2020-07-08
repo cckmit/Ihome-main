@@ -4,7 +4,7 @@
  * @Author: zyc
  * @Date: 2020-07-07 16:13:53
  * @LastEditors: zyc
- * @LastEditTime: 2020-07-07 16:51:31
+ * @LastEditTime: 2020-07-08 11:29:36
 --> 
 <template>
   <el-dialog
@@ -53,7 +53,7 @@
 </template>
 <script lang="ts">
 import { Component, Vue, Prop } from "vue-property-decorator";
-import { getRoleList } from "../../api/system/resource";
+import { getRoleList } from "../../api/system";
 // import { Form as ElForm } from "element-ui";
 @Component({
   components: {}
@@ -88,8 +88,7 @@ export default class BatchOperationRole extends Vue {
     console.log(a);
   }
   async search() {
-    const { result } = await getRoleList();
-    const { total, list } = result;
+    const { total, list } = await getRoleList();
     this.total = total;
     this.list = list;
   }

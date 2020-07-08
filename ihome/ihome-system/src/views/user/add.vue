@@ -123,7 +123,7 @@
 </template>
 <script lang="ts">
 import { Component, Vue, Prop } from "vue-property-decorator";
-// import { userInfo } from "../../api/users";
+// import { userInfo } from "../../api/system";
 @Component({
   components: {}
 })

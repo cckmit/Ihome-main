@@ -4,7 +4,7 @@
  * @Author: zyc
  * @Date: 2020-06-30 09:21:17
  * @LastEditors: zyc
- * @LastEditTime: 2020-07-06 17:20:13
+ * @LastEditTime: 2020-07-08 16:31:18
 --> 
 <template>
   <div>
@@ -167,29 +167,37 @@
       </el-form>
       <br />
       <el-table
+        class="ih-table"
         :data="tableData"
-        style="width: 100%"
-        :default-sort="{prop: 'date', order: 'descending'}"
+        :default-sort="{prop: 'id', order: 'descending'}"
       >
-        <el-table-column type="selection" width="50"></el-table-column>
-        <el-table-column type="index" label="序号" width="50"></el-table-column>
-        <el-table-column prop="name" label="姓名" sortable width="180"></el-table-column>
-        <el-table-column prop="name" label="登录账号" sortable width="180"></el-table-column>
-        <el-table-column prop="name" label="手机号码" :formatter="formatter"></el-table-column>
-        <el-table-column prop="name" label="用户类型" sortable width="180"></el-table-column>
-        <el-table-column prop="name" label="归属组织" sortable width="180"></el-table-column>
-        <el-table-column prop="name" label="员工工号" :formatter="formatter"></el-table-column>
+        <el-table-column fixed type="selection" width="50"></el-table-column>
+        <el-table-column fixed type="index" label="序号" width="50"></el-table-column>
+        <el-table-column fixed prop="name" label="姓名" sortable width="90"></el-table-column>
+        <el-table-column prop="account" label="登录账号" sortable width="150"></el-table-column>
+        <el-table-column prop="phone" label="手机号码" width="120"></el-table-column>
+        <el-table-column prop="accountType" label="用户类型" sortable width="120"></el-table-column>
+        <el-table-column prop="orgName" label="归属组织" sortable width="300"></el-table-column>
+        <el-table-column prop="employeeCode" label="员工工号" width="150"></el-table-column>
+        <el-table-column prop="status" label="状态" sortable width="90"></el-table-column>
+        <el-table-column prop="xxx" label="雇员状态"></el-table-column>
+        <el-table-column prop="employmentDate" label="入职日期" width="120"></el-table-column>
+        <el-table-column prop="leaveDate" label="离职日期" width="120"></el-table-column>
+        <el-table-column prop="xxxx" label="人员类型"></el-table-column>
+        <el-table-column prop="workType" label="职能类别"></el-table-column>
+        <el-table-column prop="updateUser" label="修改人"></el-table-column>
+        <el-table-column prop="updateTime" label="修改时间" width="150"></el-table-column>
 
-        <el-table-column label="操作" width="120">
+        <el-table-column fixed="right" label="操作" width="120">
           <template slot-scope="scope">
-            <el-link type="primary">详情</el-link>
+            <el-link type="primary" @click.native.prevent="info(scope)">详情</el-link>
             <el-dropdown trigger="click" style="margin-left:15px;">
               <span class="el-dropdown-link">
                 更多
                 <i class="el-icon-arrow-down el-icon--right"></i>
               </span>
               <el-dropdown-menu slot="dropdown">
-                <el-dropdown-item>编辑{{scope.row.id}}</el-dropdown-item>
+                <el-dropdown-item @click.native.prevent="edit(scope)">编辑</el-dropdown-item>
                 <el-dropdown-item>删除用户</el-dropdown-item>
                 <el-dropdown-item>锁定用户</el-dropdown-item>
                 <el-dropdown-item>激活用户</el-dropdown-item>
@@ -201,12 +209,6 @@
             </el-dropdown>
           </template>
         </el-table-column>
-
-        <!-- <el-table-column prop="date" label="入职日期" sortable width="180"></el-table-column>
-        <el-table-column prop="name" label="状态" sortable width="180"></el-table-column>
-        <el-table-column prop="name" label="删除标识" :formatter="formatter"></el-table-column>
-        <el-table-column prop="name" label="修改人" :formatter="formatter"></el-table-column>
-        <el-table-column prop="date" label="修改时间" :formatter="formatter"></el-table-column>-->
       </el-table>
 
       <el-pagination
@@ -228,7 +230,7 @@
 
     <ih-dialog :show="dialogVisible">
       <UserAdd
-        data="xxx"
+        :data="addData"
         @cancel="()=>dialogVisible=false"
         @finish="(data)=>{dialogVisible=false;finish(data)}"
       />
@@ -250,8 +252,8 @@ import UserAdd from "./add.vue";
 // import IhDialog from "@/components/IhDialog.vue";
 import MyOrganization from "@/components/MyOrganization.vue";
 import MyPagination from "@/components/my-pagination.vue";
-import { organization, userList } from "../../api/users";
-// import { getResourceByIdUsingGET } from "../../api/system/index";
+import { organization, userList } from "../../api/system";
+// import { getResourceByIdUsingGET } from "../../api/system";
 @Component({
   components: { UserAdd, MyPagination, MyOrganization }
 })
@@ -266,6 +268,7 @@ export default class UserList extends Vue {
       label: "下拉数据2"
     }
   ];
+  addData: any = null;
   value: any = "";
   searchOpen = true;
   myOrganizationVisible = false;
@@ -284,7 +287,8 @@ export default class UserList extends Vue {
   }
   dialogVisible = false;
 
-  add() {
+  add(data: any) {
+    this.addData = data;
     this.dialogVisible = true;
   }
 
@@ -316,7 +320,7 @@ export default class UserList extends Vue {
     this.getUserList();
   }
   async getUserList() {
-    const { list, total }: any = await userList();
+    const { list, total } = await userList();
     console.log(list, total);
     this.tableData = list;
     this.total = total;
@@ -354,6 +358,15 @@ export default class UserList extends Vue {
     this.valueVal = null;
     this.valueZZ = null;
   }
+  info(scope: any) {
+    this.$router.push({
+      path: "/user/info",
+      query: { id: scope.row.id }
+    });
+  }
+  edit(scope: any) {
+    this.add(scope.row);
+  }
 }
 </script>
 <style lang="scss" scoped>
@@ -367,7 +380,7 @@ export default class UserList extends Vue {
 }
 </style>
 <style >
-.el-dropdown-link {
+/* .el-dropdown-link {
   cursor: pointer;
   color: #409eff;
 }
@@ -379,5 +392,5 @@ export default class UserList extends Vue {
   color: #8492a6;
   font-size: 14px;
   margin-bottom: 20px;
-}
+} */
 </style>

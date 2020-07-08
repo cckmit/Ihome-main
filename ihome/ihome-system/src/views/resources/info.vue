@@ -24,7 +24,7 @@
 </template>
 <script lang="ts">
 import { Component, Vue } from "vue-property-decorator";
-// import { getRoleList } from "../../api/system/resource";
+// import { getRoleList } from "../../api/system";
 import InfoRole from "./info-tabs/role.vue";
 import InfoDetails from "./info-tabs/details.vue";
 import InfoJob from "./info-tabs/job.vue";

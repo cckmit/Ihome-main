@@ -4,7 +4,7 @@
  * @Author: zyc
  * @Date: 2020-07-07 15:36:27
  * @LastEditors: zyc
- * @LastEditTime: 2020-07-07 15:41:16
+ * @LastEditTime: 2020-07-08 11:28:14
 --> 
 <template>
   <div>
@@ -37,7 +37,7 @@
 </template>
 <script lang="ts">
 import { Component, Vue } from "vue-property-decorator";
-import { getRoleList } from "../../../api/system/resource";
+import { getRoleList } from "../../../api/system";
 @Component({
   components: {}
 })
@@ -52,8 +52,7 @@ export default class InfoRole extends Vue {
     console.log(a);
   }
   async search() {
-    const { result } = await getRoleList();
-    const { total, list } = result;
+    const { total, list } = await getRoleList();
     this.total = total;
     this.list = list;
   }

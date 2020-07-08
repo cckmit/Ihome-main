@@ -2,11 +2,10 @@
  * @Descripttion: 
  * @version: 
  * @Author: zyc
- * @Date: 2020-07-06 16:08:05
+ * @Date: 2020-07-08 11:47:42
  * @LastEditors: zyc
- * @LastEditTime: 2020-07-07 16:05:13
- */
-
+ * @LastEditTime: 2020-07-08 11:51:11
+ */ 
 const Mock = require('mockjs');
 export const resourceCategory: any = [
     { id: 1, name: '资源管理', parentId: 0 },
