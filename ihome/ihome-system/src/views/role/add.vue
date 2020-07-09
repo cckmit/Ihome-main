@@ -2,14 +2,13 @@
  * @Descripttion: 
  * @version: 
  * @Author: zyc
- * @Date: 2020-07-07 10:29:16
+ * @Date: 2020-07-09 14:08:24
  * @LastEditors: zyc
- * @LastEditTime: 2020-07-09 10:13:30
+ * @LastEditTime: 2020-07-09 14:16:24
 --> 
- 
 <template>
   <el-dialog
-    title="资源编辑"
+    title="角色"
     :visible.sync="dialogVisible"
     :close-on-click-modal="false"
     :close-on-press-escape="false"
@@ -25,31 +24,12 @@
       label-width="100px"
       class="demo-ruleForm"
     >
-      <el-form-item label="资源名称">
-        <div>{{data.name}}</div>
-      </el-form-item>
-      <el-form-item label="父编码" prop="parentCode">
-        <div>{{ruleForm.parentCode}}</div>
-      </el-form-item>
-      <el-form-item label="类型" prop="type">
-        <el-select v-model="ruleForm.type" placeholder="请选择类型">
-          <el-option
-            v-for="(item,index) in typeList"
-            :key="index"
-            :label="item.label"
-            :value="item.value"
-          ></el-option>
-        </el-select>
-      </el-form-item>
       <el-form-item label="名称" prop="name">
         <el-input v-model="ruleForm.name"></el-input>
       </el-form-item>
 
       <el-form-item label="编码" prop="code">
         <el-input v-model="ruleForm.code"></el-input>
-      </el-form-item>
-      <el-form-item label="URL" :prop="ruleForm.type=='1'||ruleForm.type=='3'?'url':null">
-        <el-input type="url" v-model="ruleForm.url"></el-input>
       </el-form-item>
     </el-form>
 
@@ -66,7 +46,7 @@ import { DictionariesModule } from "../../store/modules/dictionaries";
 @Component({
   components: {}
 })
-export default class ResourcesEdit extends Vue {
+export default class RoleAdd extends Vue {
   constructor() {
     super();
   }
@@ -77,16 +57,12 @@ export default class ResourcesEdit extends Vue {
     DictionariesModule.getModular();
     return DictionariesModule.modular;
   }
-
   ruleForm: any = {
-    type: DictionariesModule.defaultModular,
+    id: null,
     name: "",
-    parentCode: "M.NEWSALES.SYSTEM.USER",
-    code: "",
-    url: ""
+    code: ""
   };
   rules: any = {
-    type: [{ required: true, message: "请选择类型", trigger: "change" }],
     name: [
       { required: true, message: "请输入名称", trigger: "change" },
       { min: 1, max: 16, message: "长度在 1 到 16 个字符", trigger: "change" }
@@ -94,10 +70,6 @@ export default class ResourcesEdit extends Vue {
     code: [
       { required: true, message: "请输入编码", trigger: "change" },
       { min: 1, max: 16, message: "长度在 1 到 16 个字符", trigger: "change" }
-    ],
-    url: [
-      { required: true, message: "请输入URL", trigger: "change" },
-      { validator: this.validateUrl, trigger: "change" }
     ]
   };
   validateUrl(rule: any, value: any, callback: any) {
@@ -121,7 +93,7 @@ export default class ResourcesEdit extends Vue {
       if (valid) {
         alert("submit!");
         console.log(this.ruleForm);
-        this.$emit("finish", {});
+        this.$emit("finish", this.ruleForm);
       } else {
         console.log("error submit!!");
         return false;
@@ -132,6 +104,7 @@ export default class ResourcesEdit extends Vue {
     (this.$refs[formName] as ElForm).resetFields();
   }
   created() {
+    this.ruleForm = this.data;
     console.log(this.data);
   }
 }

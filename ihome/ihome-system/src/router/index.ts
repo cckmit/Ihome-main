@@ -4,7 +4,7 @@
  * @Author: zyc
  * @Date: 2020-06-22 11:10:43
  * @LastEditors: zyc
- * @LastEditTime: 2020-07-08 14:29:55
+ * @LastEditTime: 2020-07-09 14:29:36
  */
 import Vue from 'vue'
 import VueRouter, { RouteConfig } from 'vue-router'
@@ -67,6 +67,26 @@ const routes: Array<RouteConfig> = [
         name: 'ResourcesInfo',
         component: () => import('../views/resources/info.vue'),
         meta: { title: '资源详情', icon: 'form' }
+      },
+    ]
+  },
+  {
+    path: '/role',
+    meta: { title: '资源', icon: 'form' },
+    redirect: '/role/list',
+    component: Layout,
+    children: [
+      {
+        path: 'list',
+        name: 'RoleList',
+        component: () => import('../views/role/list.vue'),
+        meta: { title: '角色列表', icon: 'form' }
+      },
+      {
+        path: 'info',
+        name: 'RoleInfo',
+        component: () => import('../views/role/info.vue'),
+        meta: { title: '角色详情', icon: 'form' }
       },
     ]
   },

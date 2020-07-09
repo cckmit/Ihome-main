@@ -4,7 +4,7 @@
  * @Author: zyc
  * @Date: 2020-06-30 09:21:17
  * @LastEditors: zyc
- * @LastEditTime: 2020-07-08 16:31:18
+ * @LastEditTime: 2020-07-09 17:28:29
 --> 
 <template>
   <div>
@@ -125,7 +125,7 @@
               </el-col>
             </el-row>
 
-            <el-row>
+            <!-- <el-row>
               <el-col :span="8">
                 <el-form-item label="删除标识">
                   <el-input></el-input>
@@ -146,7 +146,7 @@
                   </el-input>
                 </el-form-item>
               </el-col>
-            </el-row>
+            </el-row>-->
           </div>
         </el-collapse-transition>
 
@@ -198,11 +198,10 @@
               </span>
               <el-dropdown-menu slot="dropdown">
                 <el-dropdown-item @click.native.prevent="edit(scope)">编辑</el-dropdown-item>
-                <el-dropdown-item>删除用户</el-dropdown-item>
-                <el-dropdown-item>锁定用户</el-dropdown-item>
-                <el-dropdown-item>激活用户</el-dropdown-item>
-                <el-dropdown-item>重置密码</el-dropdown-item>
-                <el-dropdown-item>用户详情</el-dropdown-item>
+                <el-dropdown-item @click.native.prevent="remove(scope)">删除用户</el-dropdown-item>
+                <el-dropdown-item @click.native.prevent="locking(scope)">锁定用户</el-dropdown-item>
+                <el-dropdown-item @click.native.prevent="activation(scope)">激活用户</el-dropdown-item>
+                <el-dropdown-item @click.native.prevent="resetPassword(scope)">重置密码</el-dropdown-item>
                 <el-dropdown-item>分配岗位角色</el-dropdown-item>
                 <el-dropdown-item>分配组织权限</el-dropdown-item>
               </el-dropdown-menu>
@@ -366,6 +365,59 @@ export default class UserList extends Vue {
   }
   edit(scope: any) {
     this.add(scope.row);
+  }
+  async remove(scope: any) {
+    try {
+      await this.$confirm("是否确定删除?", "提示");
+      this.tableData.splice(scope.$index, 1);
+      this.$message({
+        type: "success",
+        message: "删除成功!"
+      });
+    } catch (error) {
+      console.log(error);
+    }
+  }
+  async locking(scope: any) {
+    console.log(scope);
+    try {
+      await this.$confirm("是否确定锁定用户?", "提示");
+
+      this.$message({
+        type: "success",
+        message: "锁定成功!"
+      });
+      this.search();
+    } catch (error) {
+      console.log(error);
+    }
+  }
+  async activation(scope: any) {
+    console.log(scope);
+    try {
+      await this.$confirm("是否确定激活用户?", "提示");
+
+      this.$message({
+        type: "success",
+        message: "激活成功!"
+      });
+      this.search();
+    } catch (error) {
+      console.log(error);
+    }
+  }
+  async resetPassword(scope: any) {
+    console.log(scope);
+    try {
+      await this.$confirm("是否确定重置密码?", "提示");
+
+      this.$message({
+        type: "success",
+        message: "密码重置成功!"
+      });
+    } catch (error) {
+      console.log(error);
+    }
   }
 }
 </script>

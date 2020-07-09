@@ -4,7 +4,7 @@
  * @Author: zyc
  * @Date: 2020-06-28 15:13:07
  * @LastEditors: zyc
- * @LastEditTime: 2020-07-08 11:44:14
+ * @LastEditTime: 2020-07-09 16:08:09
  */
 
 import { VuexModule, Module, Action, Mutation, getModule } from 'vuex-module-decorators'
@@ -27,12 +27,14 @@ export interface IDictionaries {
 class Dictionaries extends VuexModule implements IDictionaries {
     public list: Dic[] = [];
     public modular: Dic[] | null = null;
-    public modularAll: Dic[] = [{
+    public defaultModular = '1';
+    public defaultOption = [{
         code: "0",
         name: "所有资源",
         value: "0",
         label: "所有资源"
-    }];
+    }]
+    public modularAll: Dic[] = [];
 
     @Mutation
     private setModular(modular: Dic[]) {
@@ -43,7 +45,7 @@ class Dictionaries extends VuexModule implements IDictionaries {
             return item;
         })
         this.modular = modular;
-        this.modularAll = this.modularAll.concat(modular)
+        this.modularAll = this.defaultOption.concat(modular)
         console.log(this.modularAll)
     }
     @Action
@@ -51,8 +53,8 @@ class Dictionaries extends VuexModule implements IDictionaries {
         if (this.modular) {
             return this.modular;
         } else {
-            const  list  = await getDictionaries();
-        
+            const list = await getDictionaries();
+
             this.setModular(list)
         }
     }

@@ -4,47 +4,14 @@
  * @Author: zyc
  * @Date: 2020-07-06 09:41:43
  * @LastEditors: zyc
- * @LastEditTime: 2020-07-08 11:16:47
+ * @LastEditTime: 2020-07-09 17:58:49
 --> 
 <template>
   <div>
     <el-card class="ih-card-form">
       <el-row>
         <el-col :span="6" style="border-right: 1px solid #e6e6e6;padding-right: 20px">
-          <div>
-            <el-select style="width:100%;" v-model="value" placeholder="请选择">
-              <el-option
-                v-for="item in options"
-                :key="item.value"
-                :label="item.label"
-                :value="item.value"
-              ></el-option>
-            </el-select>
-          </div>
-          <br />
-          <div>
-            <el-input clearable placeholder="输入关键字进行过滤" v-model="filterText"></el-input>
-          </div>
-          <br />
-          <!-- <div>
-            <div style="text-align: left;">
-              <el-checkbox v-model="checked1" label="全部展开" border></el-checkbox>
-            </div>
-          </div>-->
-          <br />
-          <div>
-            <el-tree
-              class="filter-tree"
-              :data="dataTree"
-              :props="defaultProps"
-              :default-expand-all="true"
-              :filter-node-method="filterNode"
-              :highlight-current="true"
-              node-key="id"
-              @current-change="currentChange"
-              ref="tree"
-            ></el-tree>
-          </div>
+          <resourcesRadio />
         </el-col>
         <el-col :span="18">
           <el-form ref="form" label-width="80px">
@@ -118,7 +85,7 @@
                   </span>
                   <el-dropdown-menu slot="dropdown">
                     <el-dropdown-item @click.native.prevent="edit(scope)">编辑</el-dropdown-item>
-                    <el-dropdown-item @click.native.prevent="deleteItem(scope)">删除</el-dropdown-item>
+                    <el-dropdown-item @click.native.prevent="remove(scope)">删除</el-dropdown-item>
                     <el-dropdown-item @click.native.prevent="batchOperationRole(scope)">批量分配角色</el-dropdown-item>
                   </el-dropdown-menu>
                 </el-dropdown>
@@ -165,54 +132,35 @@
 <script lang="ts">
 import ResourcesAdd from "./add.vue";
 import ResourcesEdit from "./edit.vue";
+import resourcesRadio from "@/components/resourcesRadio.vue";
 import { DictionariesModule } from "../../store/modules/dictionaries";
-
-import { Component, Vue, Watch } from "vue-property-decorator";
+import { Component, Vue } from "vue-property-decorator";
 import { getResourceList, getResourceCategory } from "../../api/system";
 import BatchOperationRole from "./batch-operation-role.vue";
 @Component({
-  components: { ResourcesAdd, ResourcesEdit, BatchOperationRole }
+  components: {
+    ResourcesAdd,
+    ResourcesEdit,
+    BatchOperationRole,
+    resourcesRadio
+  }
 })
 export default class ResourcesList extends Vue {
-  checked1 = false;
   resourceList: any[] = [];
   total: any = null;
   input3: any = "";
-  filterText: any = "";
+
   currentPage: any = 1;
   dialogVisible = false;
   dialogEdit = false;
   editData: any = null;
   batchOperationRoleData: any = null;
   dialogBatchOperationRole = false;
-  get options() {
-    DictionariesModule.getModular();
-    return DictionariesModule.modularAll;
-  }
-  value: any = null;
-  dataTree: any = [];
 
-  defaultProps: any = {
-    children: "children",
-    label: "name"
-  };
-
-  @Watch("filterText")
-  filterTextWatch(val: any) {
-    console.log(val);
-    (this.$refs.tree as any).filter(val);
-  }
-  filterNode(value: any, data: any) {
-    if (!value) return true;
-    return data[this.defaultProps.label].indexOf(value) !== -1;
-  }
-  search() {
-    this.checked1 = !this.checked1;
-  }
   async created() {
     const res: any = await getResourceCategory();
     console.log(res);
-    this.dataTree = this.$tool.listToGruop(res, { rootId: 0 });
+
     this.getList();
   }
   currentChange(item: any) {
@@ -226,6 +174,11 @@ export default class ResourcesList extends Vue {
   handleCurrentChange(a: any) {
     console.log(a);
     this.getList();
+  }
+  value: any = null;
+  get options() {
+    DictionariesModule.getModular();
+    return DictionariesModule.modularAll;
   }
   async getList() {
     const res = await getResourceList();
@@ -253,6 +206,7 @@ export default class ResourcesList extends Vue {
   finishBatchOperationRole(data: any) {
     console.log(data);
   }
+
   info(scope: any) {
     console.log(scope);
     this.$router.push({
@@ -264,7 +218,7 @@ export default class ResourcesList extends Vue {
     this.batchOperationRoleData = scope.row;
     this.dialogBatchOperationRole = true;
   }
-  async deleteItem(scope: any) {
+  async remove(scope: any) {
     console.log(scope);
 
     try {

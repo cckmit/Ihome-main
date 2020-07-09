@@ -4,7 +4,7 @@
  * @Author: zyc
  * @Date: 2020-06-22 11:46:23
  * @LastEditors: zyc
- * @LastEditTime: 2020-07-08 16:36:01
+ * @LastEditTime: 2020-07-09 17:56:24
 --> 
 <template>
   <div>
@@ -41,6 +41,7 @@
             <el-menu-item @click="goto('/system/')" index="4-3">系统管理模块导航</el-menu-item>
             <el-menu-item @click="goto('/system/user/list')" index="4-4">用户列表</el-menu-item>
             <el-menu-item @click="goto('/system/resources/list')" index="4-5">资源列表</el-menu-item>
+            <el-menu-item @click="goto('/system/role/list')" index="4-6">角色列表</el-menu-item>
             <!-- 
             <el-menu-item @click="changeState('1')" index="4-17">修改state = 1</el-menu-item>
             <el-menu-item @click="changeState('2')" index="4-18">修改state = 2</el-menu-item>-->
@@ -196,6 +197,7 @@ body {
 }
 
 .el-menu .el-submenu div,
+.el-submenu i,
 .el-menu-item {
   color: #fff !important;
 }
@@ -205,6 +207,7 @@ body {
 .el-submenu :hover {
   color: #fff !important;
   background: #516f94 !important;
+  
 }
 .el-menu-item.is-active {
   color: $asideFontColor !important;
@@ -252,9 +255,13 @@ $asideActive: #e29334;
 .el-container {
   background: #f5f6f8;
 }
-.ih-aside,
-.ih-aside i {
+.ih-aside{
   background-color: #ef9d39;
+  z-index: 101;
+  color: $asideFontColor !important;
+}
+.ih-aside i {
+  // background-color: #ef9d39;
   z-index: 101;
   color: $asideFontColor !important;
 }

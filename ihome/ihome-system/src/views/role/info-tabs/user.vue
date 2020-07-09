@@ -2,9 +2,9 @@
  * @Descripttion: 
  * @version: 
  * @Author: zyc
- * @Date: 2020-07-07 15:36:27
+ * @Date: 2020-07-09 14:30:56
  * @LastEditors: zyc
- * @LastEditTime: 2020-07-09 14:46:11
+ * @LastEditTime: 2020-07-09 14:45:55
 --> 
 <template>
   <div>
@@ -40,7 +40,7 @@ import { getUserList } from "../../../api/system";
 @Component({
   components: {}
 })
-export default class InfoUser extends Vue {
+export default class RoleInfoUser extends Vue {
   list: any = [];
   total: any = null;
   currentPage = 1;
