@@ -1,5 +1,21 @@
 @import './base-class.scss';
 
+/*nprogress样式*/
+#nprogress .bar {
+  background: #F90 !important;
+}
+#nprogress .spinner-icon {
+  width: 18px;
+  height: 18px;
+  box-sizing: border-box;
+  border: solid 2px transparent;
+  border-top-color: #F90 !important;
+  border-left-color: #F90 !important;
+  border-radius: 50%;
+  -webkit-animation: nprogress-spinner 400ms linear infinite;
+  animation: nprogress-spinner 400ms linear infinite;
+}
+
 /*ihome-ui全局样式文件*/
 
 .ih-has-hide{

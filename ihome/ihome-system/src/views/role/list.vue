@@ -4,7 +4,7 @@
  * @Author: zyc
  * @Date: 2020-07-09 10:21:50
  * @LastEditors: zyc
- * @LastEditTime: 2020-07-09 17:10:07
+ * @LastEditTime: 2020-07-10 10:36:34
 --> 
 <template>
   <div>
@@ -12,7 +12,7 @@
       <el-form ref="form" label-width="80px">
         <el-row>
           <el-col :span="8" class="b-text-left">
-            <el-button @click="add()" type="success">添加</el-button>
+            <el-button @click="add({})" type="success">添加</el-button>
           </el-col>
           <el-col :span="16" class="b-text-right">
             <el-input style="width:300px;" placeholder="名称 编码" class="input-with-select">

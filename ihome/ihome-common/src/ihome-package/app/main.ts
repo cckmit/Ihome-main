@@ -4,7 +4,7 @@
  * @Author: zyc
  * @Date: 2020-06-29 16:35:15
  * @LastEditors: zyc
- * @LastEditTime: 2020-07-06 14:44:32
+ * @LastEditTime: 2020-07-10 09:52:56
  */
 /*
  * @Descripttion: 
@@ -23,6 +23,7 @@ if ((<any>window).__POWERED_BY_QIANKUN__) {
   // eslint-disable-next-line no-undef
   __webpack_public_path__ = (<any>window).__INJECTED_PUBLIC_PATH_BY_QIANKUN__
 }
+
 
 import ElementUI from 'element-ui';
 // import 'element-ui/lib/theme-chalk/index.css';

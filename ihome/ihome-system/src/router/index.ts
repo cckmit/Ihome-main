@@ -4,12 +4,18 @@
  * @Author: zyc
  * @Date: 2020-06-22 11:10:43
  * @LastEditors: zyc
- * @LastEditTime: 2020-07-09 14:29:36
+ * @LastEditTime: 2020-07-10 09:49:33
  */
 import Vue from 'vue'
-import VueRouter, { RouteConfig } from 'vue-router'
+import VueRouter, { RouteConfig, Route } from 'vue-router'
 import Home from '../views/Home.vue'
 import Layout from '../components/Layout.vue'
+
+import NProgress from 'nprogress'
+import 'nprogress/nprogress.css'
+
+NProgress.configure({ showSpinner: false })
+
 
 Vue.use(VueRouter)
 
@@ -95,6 +101,26 @@ const router = new VueRouter({
   mode: 'history',
   base: process.env.BASE_URL,
   routes
+})
+
+
+
+
+router.beforeEach(async (to: Route, _: Route, next: any) => {
+  console.log(to, _, next)
+  // Start progress bar
+  NProgress.start()
+  next();
+
+})
+
+router.afterEach((to: Route) => {
+  console.log(to)
+  // Finish progress bar
+  NProgress.done()
+
+  // set page title
+  // document.title = to.meta && to.meta.title
 })
 
 export { router, routes }

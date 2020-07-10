@@ -4,7 +4,7 @@
  * @Author: zyc
  * @Date: 2020-06-22 11:10:43
  * @LastEditors: zyc
- * @LastEditTime: 2020-07-07 09:46:51
+ * @LastEditTime: 2020-07-10 09:28:11
  */
 module.exports = {
   root: true,
@@ -32,7 +32,8 @@ module.exports = {
     '@typescript-eslint/interface-name-prefix': 'off',
     '@typescript-eslint/member-delimiter-style': 'off',
     'prefer-const': 'off',
-    'vue/require-prop-type-constructor': 'off'
+    'vue/require-prop-type-constructor': 'off',
+    'no-prototype-builtins': 'off'
   },
   overrides: [
     {

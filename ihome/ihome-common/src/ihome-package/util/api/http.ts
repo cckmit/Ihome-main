@@ -4,12 +4,14 @@
  * @Author: zyc
  * @Date: 2020-06-29 16:35:01
  * @LastEditors: zyc
- * @LastEditTime: 2020-07-08 11:18:03
+ * @LastEditTime: 2020-07-10 10:30:08
  */
 import axios from 'axios'
 import { Message } from 'element-ui'
 import { UserModule } from '@/store/modules/user'
-
+import NProgress from 'nprogress'
+import 'nprogress/nprogress.css'
+NProgress.configure({ showSpinner: true, minimum: 0.2 })
 const service = axios.create({
     // baseURL: process.env.VUE_APP_BASE_API,
     timeout: 50000
@@ -34,6 +36,7 @@ service.interceptors.request.use(
         if (UserModule.token) {
             config.headers['X-Access-Token'] = UserModule.token
         }
+        NProgress.start()
         return config
     },
     (error) => {
@@ -44,6 +47,7 @@ service.interceptors.request.use(
 // Response interceptors
 service.interceptors.response.use(
     (response) => {
+        NProgress.done()
         if (response.config.url == '/sales-oauth2/token') {
             return response.data
         } else {
@@ -58,6 +62,7 @@ service.interceptors.response.use(
 
     },
     (error) => {
+        NProgress.done()
         Message({
             message: error.msg,
             type: 'error',

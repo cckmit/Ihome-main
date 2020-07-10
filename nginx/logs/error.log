@@ -1,0 +1,144 @@
+2020/06/24 14:25:47 [error] 11072#12356: *10 rewrite or internal redirection cycle while internally redirecting to "/index.html", client: 10.188.0.139, server: localhost, request: "GET /login HTTP/1.1", host: "10.188.0.139:2000"
+2020/06/24 14:25:47 [error] 11072#12356: *11 rewrite or internal redirection cycle while internally redirecting to "/index.html", client: 10.188.0.139, server: localhost, request: "GET /favicon.ico HTTP/1.1", host: "10.188.0.139:2000", referrer: "http://10.188.0.139:2000/login"
+2020/06/24 14:40:03 [notice] 1532#7340: signal process started
+2020/06/24 14:40:29 [notice] 11868#12168: signal process started
+2020/06/24 14:40:42 [notice] 7296#11080: signal process started
+2020/06/24 14:40:42 [error] 7296#11080: CreateFile() "D:\work\code\nginx/logs/nginx.pid" failed (2: The system cannot find the file specified)
+2020/06/24 14:49:17 [notice] 5876#11664: signal process started
+2020/06/24 15:02:16 [error] 12824#11376: *14 rewrite or internal redirection cycle while internally redirecting to "/index.html", client: 10.188.0.139, server: localhost, request: "GET /ihome-app/ HTTP/1.1", host: "10.188.0.139:2000", referrer: "http://10.188.0.139:2000/app/"
+2020/06/24 15:02:48 [emerg] 3196#11724: bind() to 0.0.0.0:2001 failed (10013: An attempt was made to access a socket in a way forbidden by its access permissions)
+2020/06/24 15:03:50 [error] 1304#1640: *5 CreateFile() "D:\work\code\nginx/html/favicon.ico" failed (2: The system cannot find the file specified), client: 10.188.0.139, server: localhost, request: "GET /favicon.ico HTTP/1.1", host: "10.188.0.139:2002", referrer: "http://10.188.0.139:2002/app/"
+2020/06/24 15:05:13 [error] 1304#1640: *7 CreateFile() "D:\work\code\nginx/html/favicon.ico" failed (2: The system cannot find the file specified), client: 10.188.0.139, server: localhost, request: "GET /favicon.ico HTTP/1.1", host: "10.188.0.139:2003", referrer: "http://10.188.0.139:2003/ts"
+2020/06/24 15:07:01 [notice] 12128#10460: signal process started
+2020/06/24 15:11:10 [error] 5472#7556: *14 rewrite or internal redirection cycle while internally redirecting to "/index.html", client: 10.188.0.139, server: localhost, request: "GET /app HTTP/1.1", host: "10.188.0.139:2002"
+2020/06/24 15:11:12 [error] 5472#7556: *13 rewrite or internal redirection cycle while internally redirecting to "/index.html", client: 10.188.0.139, server: localhost, request: "GET /app HTTP/1.1", host: "10.188.0.139:2002"
+2020/06/24 15:11:12 [error] 5472#7556: *15 rewrite or internal redirection cycle while internally redirecting to "/index.html", client: 10.188.0.139, server: localhost, request: "GET /app HTTP/1.1", host: "10.188.0.139:2002"
+2020/06/24 15:11:12 [error] 5472#7556: *16 rewrite or internal redirection cycle while internally redirecting to "/index.html", client: 10.188.0.139, server: localhost, request: "GET /app HTTP/1.1", host: "10.188.0.139:2002"
+2020/06/24 15:11:13 [error] 5472#7556: *17 rewrite or internal redirection cycle while internally redirecting to "/index.html", client: 10.188.0.139, server: localhost, request: "GET /app HTTP/1.1", host: "10.188.0.139:2002"
+2020/06/24 15:11:13 [error] 5472#7556: *18 rewrite or internal redirection cycle while internally redirecting to "/index.html", client: 10.188.0.139, server: localhost, request: "GET /app HTTP/1.1", host: "10.188.0.139:2002"
+2020/06/24 15:13:41 [notice] 10704#14008: signal process started
+2020/06/24 15:13:44 [error] 13332#5876: *22 directory index of "D:\work\code\nginx/html/ihome-app/app/" is forbidden, client: 10.188.0.139, server: localhost, request: "GET /app/ HTTP/1.1", host: "10.188.0.139:2002"
+2020/06/24 15:13:54 [error] 13332#5876: *23 directory index of "D:\work\code\nginx/html/ihome-app/app/" is forbidden, client: 10.188.0.139, server: localhost, request: "GET /app/ HTTP/1.1", host: "10.188.0.139:2002"
+2020/06/24 15:53:01 [emerg] 6364#7648: unexpected "}" in D:\work\code\nginx/conf/nginx.conf:58
+2020/06/24 15:54:19 [notice] 2056#12848: signal process started
+2020/06/24 16:05:14 [notice] 10272#12936: signal process started
+2020/06/24 16:05:23 [notice] 11280#13764: signal process started
+2020/06/24 16:07:32 [notice] 5452#2916: signal process started
+2020/06/24 16:07:41 [notice] 1324#10548: signal process started
+2020/06/24 16:07:41 [error] 1324#10548: CreateFile() "D:\work\code\nginx/logs/nginx.pid" failed (2: The system cannot find the file specified)
+2020/06/24 16:08:23 [error] 4368#1164: *1 rewrite or internal redirection cycle while internally redirecting to "/ts/", client: 10.188.0.139, server: localhost, request: "GET /ts HTTP/1.1", host: "10.188.0.139:2003"
+2020/06/24 16:08:46 [error] 4368#1164: *3 rewrite or internal redirection cycle while internally redirecting to "/ts/", client: 10.188.0.139, server: localhost, request: "GET /ts/about HTTP/1.1", host: "10.188.0.139:2003"
+2020/06/24 16:08:48 [error] 4368#1164: *4 rewrite or internal redirection cycle while internally redirecting to "/ts/", client: 10.188.0.139, server: localhost, request: "GET /ts/about HTTP/1.1", host: "10.188.0.139:2003"
+2020/06/24 16:08:48 [error] 4368#1164: *5 rewrite or internal redirection cycle while internally redirecting to "/ts/", client: 10.188.0.139, server: localhost, request: "GET /ts/about HTTP/1.1", host: "10.188.0.139:2003"
+2020/06/24 16:09:06 [error] 4368#1164: *8 rewrite or internal redirection cycle while internally redirecting to "/ts/", client: 10.188.0.139, server: localhost, request: "GET /ts/ HTTP/1.1", host: "10.188.0.139:2003"
+2020/06/24 16:09:07 [error] 4368#1164: *7 rewrite or internal redirection cycle while internally redirecting to "/ts/", client: 10.188.0.139, server: localhost, request: "GET /ts/ HTTP/1.1", host: "10.188.0.139:2003"
+2020/06/24 16:11:10 [error] 4368#1164: *9 rewrite or internal redirection cycle while internally redirecting to "/ts/", client: 10.188.0.139, server: localhost, request: "GET /ts/indx.html HTTP/1.1", host: "10.188.0.139:2003"
+2020/06/24 16:11:24 [error] 4368#1164: *13 rewrite or internal redirection cycle while internally redirecting to "/ts/", client: 10.188.0.139, server: localhost, request: "GET /ts/index.html/about HTTP/1.1", host: "10.188.0.139:2003"
+2020/06/24 16:11:29 [crit] 4368#1164: *11 GetFileAttributesEx() "D:\work\code\nginx/html/ts/index.html/" failed (123: The filename, directory name, or volume label syntax is incorrect), client: 10.188.0.139, server: localhost, request: "GET /ts/index.html/ HTTP/1.1", host: "10.188.0.139:2003"
+2020/06/24 16:11:29 [crit] 4368#1164: *11 GetFileAttributesEx() "D:\work\code\nginx/html/ts/index.html/" failed (123: The filename, directory name, or volume label syntax is incorrect), client: 10.188.0.139, server: localhost, request: "GET /ts/index.html/ HTTP/1.1", host: "10.188.0.139:2003"
+2020/06/24 16:11:29 [error] 4368#1164: *11 rewrite or internal redirection cycle while internally redirecting to "/ts/", client: 10.188.0.139, server: localhost, request: "GET /ts/index.html/ HTTP/1.1", host: "10.188.0.139:2003"
+2020/06/24 16:11:39 [error] 4368#1164: *16 rewrite or internal redirection cycle while internally redirecting to "/ts/", client: 10.188.0.139, server: localhost, request: "GET /ts/ HTTP/1.1", host: "10.188.0.139:2003"
+2020/06/24 16:12:40 [notice] 4704#8572: signal process started
+2020/06/24 16:12:43 [error] 9328#12112: *18 rewrite or internal redirection cycle while internally redirecting to "/ts", client: 10.188.0.139, server: localhost, request: "GET /ts/about HTTP/1.1", host: "10.188.0.139:2003"
+2020/06/24 16:12:47 [error] 9328#12112: *19 rewrite or internal redirection cycle while internally redirecting to "/ts", client: 10.188.0.139, server: localhost, request: "GET /ts/ HTTP/1.1", host: "10.188.0.139:2003"
+2020/06/24 16:13:12 [notice] 1788#6452: signal process started
+2020/06/24 16:13:21 [notice] 12152#11800: signal process started
+2020/06/24 16:14:51 [notice] 13720#10140: signal process started
+2020/06/24 16:15:43 [notice] 8368#9932: signal process started
+2020/06/24 16:15:54 [error] 11984#10420: *33 rewrite or internal redirection cycle while internally redirecting to "/app/index.html", client: 10.188.0.139, server: localhost, request: "GET /app/ HTTP/1.1", host: "10.188.0.139:2002"
+2020/06/24 16:15:56 [error] 11984#10420: *34 rewrite or internal redirection cycle while internally redirecting to "/app/index.html", client: 10.188.0.139, server: localhost, request: "GET /app/ HTTP/1.1", host: "10.188.0.139:2002"
+2020/06/24 16:18:00 [notice] 13644#3636: signal process started
+2020/06/24 16:35:55 [notice] 10800#12488: signal process started
+2020/06/24 16:38:58 [notice] 4064#9980: signal process started
+2020/06/24 16:41:40 [notice] 13060#3280: signal process started
+2020/06/24 16:48:25 [notice] 4416#7584: signal process started
+2020/06/24 16:48:29 [error] 12248#7280: *88 rewrite or internal redirection cycle while internally redirecting to "/index.html", client: 10.188.0.139, server: localhost, request: "GET /ts/about HTTP/1.1", host: "10.188.0.139:2001"
+2020/06/24 16:48:29 [error] 12248#7280: *89 rewrite or internal redirection cycle while internally redirecting to "/index.html", client: 10.188.0.139, server: localhost, request: "GET /favicon.ico HTTP/1.1", host: "10.188.0.139:2001", referrer: "http://10.188.0.139:2001/ts/about"
+2020/06/24 16:48:30 [error] 12248#7280: *90 rewrite or internal redirection cycle while internally redirecting to "/index.html", client: 10.188.0.139, server: localhost, request: "GET /ts/about HTTP/1.1", host: "10.188.0.139:2001"
+2020/06/24 16:48:30 [error] 12248#7280: *91 rewrite or internal redirection cycle while internally redirecting to "/index.html", client: 10.188.0.139, server: localhost, request: "GET /favicon.ico HTTP/1.1", host: "10.188.0.139:2001", referrer: "http://10.188.0.139:2001/ts/about"
+2020/06/24 16:48:36 [error] 12248#7280: *92 rewrite or internal redirection cycle while internally redirecting to "/index.html", client: 10.188.0.139, server: localhost, request: "GET / HTTP/1.1", host: "10.188.0.139:2001"
+2020/06/24 16:48:37 [error] 12248#7280: *93 rewrite or internal redirection cycle while internally redirecting to "/index.html", client: 10.188.0.139, server: localhost, request: "GET /favicon.ico HTTP/1.1", host: "10.188.0.139:2001", referrer: "http://10.188.0.139:2001/"
+2020/06/24 16:48:38 [error] 12248#7280: *94 rewrite or internal redirection cycle while internally redirecting to "/index.html", client: 10.188.0.139, server: localhost, request: "GET / HTTP/1.1", host: "10.188.0.139:2001"
+2020/06/24 16:48:38 [error] 12248#7280: *95 rewrite or internal redirection cycle while internally redirecting to "/index.html", client: 10.188.0.139, server: localhost, request: "GET /favicon.ico HTTP/1.1", host: "10.188.0.139:2001", referrer: "http://10.188.0.139:2001/"
+2020/06/24 16:48:39 [error] 12248#7280: *96 rewrite or internal redirection cycle while internally redirecting to "/index.html", client: 10.188.0.139, server: localhost, request: "GET / HTTP/1.1", host: "10.188.0.139:2001"
+2020/06/24 16:48:39 [error] 12248#7280: *97 rewrite or internal redirection cycle while internally redirecting to "/index.html", client: 10.188.0.139, server: localhost, request: "GET /favicon.ico HTTP/1.1", host: "10.188.0.139:2001", referrer: "http://10.188.0.139:2001/"
+2020/06/24 16:48:39 [error] 12248#7280: *98 rewrite or internal redirection cycle while internally redirecting to "/index.html", client: 10.188.0.139, server: localhost, request: "GET / HTTP/1.1", host: "10.188.0.139:2001"
+2020/06/24 16:48:39 [error] 12248#7280: *99 rewrite or internal redirection cycle while internally redirecting to "/index.html", client: 10.188.0.139, server: localhost, request: "GET /favicon.ico HTTP/1.1", host: "10.188.0.139:2001", referrer: "http://10.188.0.139:2001/"
+2020/06/24 16:48:39 [error] 12248#7280: *100 rewrite or internal redirection cycle while internally redirecting to "/index.html", client: 10.188.0.139, server: localhost, request: "GET / HTTP/1.1", host: "10.188.0.139:2001"
+2020/06/24 16:48:40 [error] 12248#7280: *101 rewrite or internal redirection cycle while internally redirecting to "/index.html", client: 10.188.0.139, server: localhost, request: "GET /favicon.ico HTTP/1.1", host: "10.188.0.139:2001", referrer: "http://10.188.0.139:2001/"
+2020/06/24 16:48:40 [error] 12248#7280: *102 rewrite or internal redirection cycle while internally redirecting to "/index.html", client: 10.188.0.139, server: localhost, request: "GET / HTTP/1.1", host: "10.188.0.139:2001"
+2020/06/24 16:48:40 [error] 12248#7280: *103 rewrite or internal redirection cycle while internally redirecting to "/index.html", client: 10.188.0.139, server: localhost, request: "GET /favicon.ico HTTP/1.1", host: "10.188.0.139:2001", referrer: "http://10.188.0.139:2001/"
+2020/06/24 16:48:40 [error] 12248#7280: *104 rewrite or internal redirection cycle while internally redirecting to "/index.html", client: 10.188.0.139, server: localhost, request: "GET / HTTP/1.1", host: "10.188.0.139:2001"
+2020/06/24 16:48:40 [error] 12248#7280: *105 rewrite or internal redirection cycle while internally redirecting to "/index.html", client: 10.188.0.139, server: localhost, request: "GET /favicon.ico HTTP/1.1", host: "10.188.0.139:2001", referrer: "http://10.188.0.139:2001/"
+2020/06/24 16:48:40 [error] 12248#7280: *106 rewrite or internal redirection cycle while internally redirecting to "/index.html", client: 10.188.0.139, server: localhost, request: "GET / HTTP/1.1", host: "10.188.0.139:2001"
+2020/06/24 16:48:40 [error] 12248#7280: *107 rewrite or internal redirection cycle while internally redirecting to "/index.html", client: 10.188.0.139, server: localhost, request: "GET /favicon.ico HTTP/1.1", host: "10.188.0.139:2001", referrer: "http://10.188.0.139:2001/"
+2020/06/24 16:48:41 [error] 12248#7280: *108 rewrite or internal redirection cycle while internally redirecting to "/index.html", client: 10.188.0.139, server: localhost, request: "GET / HTTP/1.1", host: "10.188.0.139:2001"
+2020/06/24 16:48:41 [error] 12248#7280: *109 rewrite or internal redirection cycle while internally redirecting to "/index.html", client: 10.188.0.139, server: localhost, request: "GET /favicon.ico HTTP/1.1", host: "10.188.0.139:2001", referrer: "http://10.188.0.139:2001/"
+2020/06/24 16:48:41 [error] 12248#7280: *110 rewrite or internal redirection cycle while internally redirecting to "/index.html", client: 10.188.0.139, server: localhost, request: "GET / HTTP/1.1", host: "10.188.0.139:2001"
+2020/06/24 16:48:41 [error] 12248#7280: *111 rewrite or internal redirection cycle while internally redirecting to "/index.html", client: 10.188.0.139, server: localhost, request: "GET /favicon.ico HTTP/1.1", host: "10.188.0.139:2001", referrer: "http://10.188.0.139:2001/"
+2020/06/24 16:49:10 [notice] 9388#8088: signal process started
+2020/06/24 16:49:18 [error] 10916#8572: *116 rewrite or internal redirection cycle while internally redirecting to "/app/index.html", client: 10.188.0.139, server: localhost, request: "GET /app/ HTTP/1.1", host: "10.188.0.139:2002", referrer: "http://10.188.0.139:2001/app/about"
+2020/06/24 16:49:25 [error] 10916#8572: *118 rewrite or internal redirection cycle while internally redirecting to "/app/index.html", client: 10.188.0.139, server: localhost, request: "GET /app/ HTTP/1.1", host: "10.188.0.139:2002", referrer: "http://10.188.0.139:2001/app/"
+2020/06/24 16:49:38 [error] 10916#8572: *119 rewrite or internal redirection cycle while internally redirecting to "/ts/index.html", client: 10.188.0.139, server: localhost, request: "GET /ts/ HTTP/1.1", host: "10.188.0.139:2002", referrer: "http://10.188.0.139:2001/ts/"
+2020/06/24 16:50:11 [error] 10916#8572: *120 rewrite or internal redirection cycle while internally redirecting to "/app/index.html", client: 10.188.0.139, server: localhost, request: "GET /app/ HTTP/1.1", host: "10.188.0.139:2002", referrer: "http://10.188.0.139:2001/app/"
+2020/06/24 16:55:46 [notice] 12088#7560: signal process started
+2020/06/24 16:58:29 [error] 5236#13644: *126 rewrite or internal redirection cycle while internally redirecting to "/index.html", client: 10.188.0.139, server: localhost, request: "GET /ts/ HTTP/1.1", host: "10.188.0.139:2001"
+2020/06/24 16:58:29 [error] 5236#13644: *127 rewrite or internal redirection cycle while internally redirecting to "/index.html", client: 10.188.0.139, server: localhost, request: "GET /favicon.ico HTTP/1.1", host: "10.188.0.139:2001", referrer: "http://10.188.0.139:2001/ts/"
+2020/06/24 16:58:34 [error] 5236#13644: *128 rewrite or internal redirection cycle while internally redirecting to "/index.html", client: 10.188.0.139, server: localhost, request: "GET /favicon.ico HTTP/1.1", host: "10.188.0.139:2001", referrer: "http://10.188.0.139:2001/app/"
+2020/06/24 16:58:36 [error] 5236#13644: *129 rewrite or internal redirection cycle while internally redirecting to "/index.html", client: 10.188.0.139, server: localhost, request: "GET /app/ HTTP/1.1", host: "10.188.0.139:2001"
+2020/06/24 16:58:36 [error] 5236#13644: *130 rewrite or internal redirection cycle while internally redirecting to "/index.html", client: 10.188.0.139, server: localhost, request: "GET /favicon.ico HTTP/1.1", host: "10.188.0.139:2001", referrer: "http://10.188.0.139:2001/app/"
+2020/06/24 16:58:39 [error] 5236#13644: *131 rewrite or internal redirection cycle while internally redirecting to "/index.html", client: 10.188.0.139, server: localhost, request: "GET / HTTP/1.1", host: "10.188.0.139:2001"
+2020/06/24 16:58:39 [error] 5236#13644: *132 rewrite or internal redirection cycle while internally redirecting to "/index.html", client: 10.188.0.139, server: localhost, request: "GET /favicon.ico HTTP/1.1", host: "10.188.0.139:2001", referrer: "http://10.188.0.139:2001/"
+2020/06/24 16:58:40 [error] 5236#13644: *133 rewrite or internal redirection cycle while internally redirecting to "/index.html", client: 10.188.0.139, server: localhost, request: "GET / HTTP/1.1", host: "10.188.0.139:2001"
+2020/06/24 16:58:40 [error] 5236#13644: *134 rewrite or internal redirection cycle while internally redirecting to "/index.html", client: 10.188.0.139, server: localhost, request: "GET /favicon.ico HTTP/1.1", host: "10.188.0.139:2001", referrer: "http://10.188.0.139:2001/"
+2020/06/24 16:58:41 [error] 5236#13644: *135 rewrite or internal redirection cycle while internally redirecting to "/index.html", client: 10.188.0.139, server: localhost, request: "GET / HTTP/1.1", host: "10.188.0.139:2001"
+2020/06/24 16:58:41 [error] 5236#13644: *136 rewrite or internal redirection cycle while internally redirecting to "/index.html", client: 10.188.0.139, server: localhost, request: "GET /favicon.ico HTTP/1.1", host: "10.188.0.139:2001", referrer: "http://10.188.0.139:2001/"
+2020/06/24 16:58:41 [error] 5236#13644: *137 rewrite or internal redirection cycle while internally redirecting to "/index.html", client: 10.188.0.139, server: localhost, request: "GET / HTTP/1.1", host: "10.188.0.139:2001"
+2020/06/24 16:58:41 [error] 5236#13644: *138 rewrite or internal redirection cycle while internally redirecting to "/index.html", client: 10.188.0.139, server: localhost, request: "GET /favicon.ico HTTP/1.1", host: "10.188.0.139:2001", referrer: "http://10.188.0.139:2001/"
+2020/06/24 16:58:41 [error] 5236#13644: *139 rewrite or internal redirection cycle while internally redirecting to "/index.html", client: 10.188.0.139, server: localhost, request: "GET / HTTP/1.1", host: "10.188.0.139:2001"
+2020/06/24 16:58:41 [error] 5236#13644: *140 rewrite or internal redirection cycle while internally redirecting to "/index.html", client: 10.188.0.139, server: localhost, request: "GET /favicon.ico HTTP/1.1", host: "10.188.0.139:2001", referrer: "http://10.188.0.139:2001/"
+2020/06/24 16:58:56 [notice] 15176#15180: signal process started
+2020/06/29 08:57:48 [notice] 9140#1612: signal process started
+2020/06/29 08:58:50 [notice] 3368#10912: signal process started
+2020/06/29 08:59:16 [error] 7132#4664: *27 CreateFile() "D:\work\code\nginx/html/static/fonts/element-icons.535877f5.woff" failed (3: The system cannot find the path specified), client: 10.188.0.139, server: localhost, request: "GET /static/fonts/element-icons.535877f5.woff HTTP/1.1", host: "10.188.0.139:2001", referrer: "http://10.188.0.139:2001/static/css/chunk-vendors.5a799807.css"
+2020/06/29 14:09:01 [error] 7132#4664: *31 CreateFile() "D:\work\code\nginx/html/static/fonts/element-icons.535877f5.woff" failed (3: The system cannot find the path specified), client: 10.188.0.139, server: localhost, request: "GET /static/fonts/element-icons.535877f5.woff HTTP/1.1", host: "10.188.0.139:2001", referrer: "http://10.188.0.139:2001/static/css/chunk-vendors.5a799807.css"
+2020/06/29 14:09:01 [error] 7132#4664: *31 CreateFile() "D:\work\code\nginx/html/static/fonts/element-icons.732389de.ttf" failed (3: The system cannot find the path specified), client: 10.188.0.139, server: localhost, request: "GET /static/fonts/element-icons.732389de.ttf HTTP/1.1", host: "10.188.0.139:2001", referrer: "http://10.188.0.139:2001/static/css/chunk-vendors.5a799807.css"
+2020/06/29 14:09:06 [error] 7132#4664: *31 CreateFile() "D:\work\code\nginx/html/static/fonts/element-icons.535877f5.woff" failed (3: The system cannot find the path specified), client: 10.188.0.139, server: localhost, request: "GET /static/fonts/element-icons.535877f5.woff HTTP/1.1", host: "10.188.0.139:2001", referrer: "http://10.188.0.139:2001/ts/"
+2020/06/29 14:09:06 [error] 7132#4664: *31 CreateFile() "D:\work\code\nginx/html/static/fonts/element-icons.732389de.ttf" failed (3: The system cannot find the path specified), client: 10.188.0.139, server: localhost, request: "GET /static/fonts/element-icons.732389de.ttf HTTP/1.1", host: "10.188.0.139:2001", referrer: "http://10.188.0.139:2001/ts/"
+2020/06/29 14:09:10 [error] 7132#4664: *29 CreateFile() "D:\work\code\nginx/html/static/fonts/element-icons.535877f5.woff" failed (3: The system cannot find the path specified), client: 10.188.0.139, server: localhost, request: "GET /static/fonts/element-icons.535877f5.woff HTTP/1.1", host: "10.188.0.139:2001", referrer: "http://10.188.0.139:2001/static/css/chunk-vendors.5a799807.css"
+2020/06/29 14:09:10 [error] 7132#4664: *29 CreateFile() "D:\work\code\nginx/html/static/fonts/element-icons.732389de.ttf" failed (3: The system cannot find the path specified), client: 10.188.0.139, server: localhost, request: "GET /static/fonts/element-icons.732389de.ttf HTTP/1.1", host: "10.188.0.139:2001", referrer: "http://10.188.0.139:2001/static/css/chunk-vendors.5a799807.css"
+2020/06/29 14:09:10 [error] 7132#4664: *28 CreateFile() "D:\work\code\nginx/html/static/fonts/element-icons.535877f5.woff" failed (3: The system cannot find the path specified), client: 10.188.0.139, server: localhost, request: "GET /static/fonts/element-icons.535877f5.woff HTTP/1.1", host: "10.188.0.139:2001", referrer: "http://10.188.0.139:2001/ts/about"
+2020/06/29 14:09:10 [error] 7132#4664: *28 CreateFile() "D:\work\code\nginx/html/static/fonts/element-icons.732389de.ttf" failed (3: The system cannot find the path specified), client: 10.188.0.139, server: localhost, request: "GET /static/fonts/element-icons.732389de.ttf HTTP/1.1", host: "10.188.0.139:2001", referrer: "http://10.188.0.139:2001/ts/about"
+2020/06/29 14:12:24 [emerg] 6024#8744: unknown directive "application/x-font-truetype" in D:\work\code\nginx/conf/nginx.conf:21
+2020/06/29 14:13:43 [warn] 9840#11064: duplicate extension "woff", content type: "application/x-font-woff", previous content type: "font/woff" in D:\work\code\nginx/conf/mime.types:99
+2020/06/29 14:13:43 [warn] 9840#11064: duplicate extension "woff2", content type: "application/x-font-woff", previous content type: "font/woff2" in D:\work\code\nginx/conf/mime.types:99
+2020/06/29 14:13:43 [notice] 9840#11064: signal process started
+2020/06/29 14:13:43 [warn] 8812#4628: duplicate extension "woff", content type: "application/x-font-woff", previous content type: "font/woff" in D:\work\code\nginx/conf/mime.types:99
+2020/06/29 14:13:43 [warn] 8812#4628: duplicate extension "woff2", content type: "application/x-font-woff", previous content type: "font/woff2" in D:\work\code\nginx/conf/mime.types:99
+2020/06/29 14:18:26 [notice] 3052#11136: signal process started
+2020/06/30 17:07:10 [notice] 7940#5996: signal process started
+2020/06/30 17:12:37 [notice] 6376#7208: signal process started
+2020/06/30 17:12:51 [notice] 1664#1132: signal process started
+2020/06/30 17:12:51 [error] 1664#1132: CreateFile() "D:\work\code\nginx/logs/nginx.pid" failed (2: The system cannot find the file specified)
+2020/06/30 17:14:03 [notice] 6020#844: signal process started
+2020/06/30 17:14:03 [error] 6020#844: CreateFile() "D:\work\code\nginx/logs/nginx.pid" failed (2: The system cannot find the file specified)
+2020/06/30 17:14:42 [error] 1580#4812: *23 "D:\work\code\nginx/html/cli/index.html" is not found (3: The system cannot find the path specified), client: 10.188.0.139, server: localhost, request: "GET /cli/ HTTP/1.1", host: "10.188.0.139:2002", referrer: "http://10.188.0.139:2001/system/user/list"
+2020/06/30 17:14:44 [error] 1580#4812: *23 "D:\work\code\nginx/html/cli/index.html" is not found (3: The system cannot find the path specified), client: 10.188.0.139, server: localhost, request: "GET /cli/ HTTP/1.1", host: "10.188.0.139:2002", referrer: "http://10.188.0.139:2001/system/user/list"
+2020/06/30 17:14:51 [notice] 6572#3824: signal process started
+2020/06/30 17:14:56 [error] 1580#4812: *23 "D:\work\code\nginx/html/cli/index.html" is not found (3: The system cannot find the path specified), client: 10.188.0.139, server: localhost, request: "GET /cli/ HTTP/1.1", host: "10.188.0.139:2002", referrer: "http://10.188.0.139:2001/system/user/list"
+2020/06/30 17:15:09 [notice] 9228#4276: signal process started
+2020/06/30 17:15:09 [error] 9228#4276: CreateFile() "D:\work\code\nginx/logs/nginx.pid" failed (2: The system cannot find the file specified)
+2020/06/30 17:16:01 [error] 8776#8772: *4 "D:\work\code\nginx/html/cli/index.html" is not found (3: The system cannot find the path specified), client: 10.188.0.139, server: localhost, request: "GET /cli/ HTTP/1.1", host: "10.188.0.139:2002", referrer: "http://10.188.0.139:2001/system/user/list"
+2020/06/30 17:16:06 [notice] 9516#4932: signal process started
+2020/06/30 17:16:15 [error] 7580#10020: *4 "D:\work\code\nginx/html/cli/index.html" is not found (3: The system cannot find the path specified), client: 10.188.0.139, server: localhost, request: "GET /cli/ HTTP/1.1", host: "10.188.0.139:2002", referrer: "http://10.188.0.139:2001/system/user/list"
+2020/06/30 17:16:44 [error] 7580#10020: *4 "D:\work\code\nginx/html/cli/index.html" is not found (3: The system cannot find the path specified), client: 10.188.0.139, server: localhost, request: "GET /cli/ HTTP/1.1", host: "10.188.0.139:2002", referrer: "http://10.188.0.139:2001/system/user/list"
+2020/06/30 17:16:51 [error] 7580#10020: *4 "D:\work\code\nginx/html/cli/index.html" is not found (3: The system cannot find the path specified), client: 10.188.0.139, server: localhost, request: "GET /cli/ HTTP/1.1", host: "10.188.0.139:2002", referrer: "http://10.188.0.139:2001/system/user/list"
+2020/06/30 17:16:59 [error] 7580#10020: *4 "D:\work\code\nginx/html/cli/index.html" is not found (3: The system cannot find the path specified), client: 10.188.0.139, server: localhost, request: "GET /cli/ HTTP/1.1", host: "10.188.0.139:2002", referrer: "http://10.188.0.139:2001/system/user/list"
+2020/06/30 17:17:42 [error] 7580#10020: *4 "D:\work\code\nginx/html/cli/index.html" is not found (3: The system cannot find the path specified), client: 10.188.0.139, server: localhost, request: "GET /cli/ HTTP/1.1", host: "10.188.0.139:2002", referrer: "http://10.188.0.139:2001/system/user/list"
+2020/06/30 17:21:03 [error] 7580#10020: *12 "D:\work\code\nginx/html/cli/index.html" is not found (3: The system cannot find the path specified), client: 10.188.0.139, server: localhost, request: "GET /cli/ HTTP/1.1", host: "10.188.0.139:2002", referrer: "http://10.188.0.139:2001/system/user/list"
+2020/06/30 17:21:17 [error] 7580#10020: *12 "D:\work\code\nginx/html/cli/index.html" is not found (3: The system cannot find the path specified), client: 10.188.0.139, server: localhost, request: "GET /cli/ HTTP/1.1", host: "10.188.0.139:2002", referrer: "http://10.188.0.139:2001/system/user/list"
+2020/06/30 17:27:52 [notice] 10544#11192: signal process started
+2020/07/10 11:08:10 [notice] 8956#9492: signal process started
+2020/07/10 11:08:10 [error] 8956#9492: OpenEvent("Global\ngx_stop_9512") failed (2: The system cannot find the file specified)
+2020/07/10 11:08:26 [notice] 9096#5972: signal process started
+2020/07/10 11:09:10 [notice] 13108#5828: signal process started
