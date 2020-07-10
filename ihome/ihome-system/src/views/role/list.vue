@@ -4,17 +4,17 @@
  * @Author: zyc
  * @Date: 2020-07-09 10:21:50
  * @LastEditors: zyc
- * @LastEditTime: 2020-07-10 10:36:34
+ * @LastEditTime: 2020-07-10 14:38:58
 --> 
 <template>
   <div>
     <el-card class="ih-card-form">
       <el-form ref="form" label-width="80px">
         <el-row>
-          <el-col :span="8" class="b-text-left">
+          <el-col :span="2" class="b-text-left">
             <el-button @click="add({})" type="success">添加</el-button>
           </el-col>
-          <el-col :span="16" class="b-text-right">
+          <el-col :span="22" class="b-text-right">
             <el-input style="width:300px;" placeholder="名称 编码" class="input-with-select">
               <el-button slot="append" icon="el-icon-search" @click="search()"></el-button>
             </el-input>
@@ -112,11 +112,17 @@ export default class RoleList extends Vue {
   dialogBatchOperationJob = false;
   dialogBatchOperationUser = false;
   itemData: any = null;
+  keyword: any = null;
+  value: any = null;
   handleSizeChange(a: any) {
     console.log(a);
   }
   handleCurrentChange(a: any) {
     console.log(a);
+  }
+  selectChange() {
+    console.log(this.keyword);
+    // this.search();
   }
   async search() {
     const { total, list } = await getRoleList();

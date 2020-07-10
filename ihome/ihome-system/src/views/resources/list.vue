@@ -4,7 +4,7 @@
  * @Author: zyc
  * @Date: 2020-07-06 09:41:43
  * @LastEditors: zyc
- * @LastEditTime: 2020-07-09 17:58:49
+ * @LastEditTime: 2020-07-10 14:29:25
 --> 
 <template>
   <div>
@@ -13,8 +13,8 @@
         <el-col :span="6" style="border-right: 1px solid #e6e6e6;padding-right: 20px">
           <resourcesRadio />
         </el-col>
-        <el-col :span="18">
-          <el-form ref="form" label-width="80px">
+        <el-col :span="18" style="padding-left:20px;">
+          <!-- <el-form ref="form" label-width="80px">
             <el-row>
               <el-col :span="8">
                 <el-form-item label="名称">
@@ -49,12 +49,33 @@
             <el-row class="btn-list">
               <el-button type="primary">查询</el-button>
               <el-button @click="add()" type="success">添加</el-button>
-              <el-button type="info">重置</el-button>
+               
+            </el-row>
+          </el-form>-->
+          <el-form ref="form" label-width="80px">
+            <el-row>
+              <el-col :span="2" class="b-text-left">
+                <el-button @click="add({})" type="success">添加</el-button>
+              </el-col>
+              <el-col :span="22" class="b-text-right">
+                <el-select style="width:120px;margin-right:20px;" v-model="value" clearable placeholder="请选择类型" @change="search()">
+                  <el-option
+                    v-for="item in options"
+                    :key="item.value"
+                    :label="item.label"
+                    :value="item.value"
+                  ></el-option>
+                </el-select>
+                <el-input style="width:300px;" placeholder="名称 编码 URL" class="input-with-select"  @keyup.enter.native="search">
+                  <el-button slot="append" icon="el-icon-search" @click="search()"></el-button>
+                </el-input>
+              </el-col>
             </el-row>
           </el-form>
+          <br />
           <el-table
             :data="resourceList"
-            style="margin:20px;"
+            width="100%"
             class="ih-table"
             :default-sort="{prop: 'date', order: 'descending'}"
           >
@@ -187,6 +208,9 @@ export default class ResourcesList extends Vue {
 
     this.resourceList = res.list;
     this.total = res.total;
+  }
+  search(){
+     this.getList();
   }
 
   add() {
