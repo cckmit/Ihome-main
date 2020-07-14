@@ -2,9 +2,9 @@
  * @Descripttion: 
  * @version: 
  * @Author: zyc
- * @Date: 2020-07-06 09:41:43
+ * @Date: 2020-07-14 11:26:26
  * @LastEditors: zyc
- * @LastEditTime: 2020-07-14 11:35:11
+ * @LastEditTime: 2020-07-14 14:10:48
 --> 
 <template>
   <div>
@@ -14,7 +14,7 @@
           <resourcesRadio />
         </el-col>
         <el-col :span="18" class="padding-left-20">
-          <!-- <el-form ref="form" label-width="80px">
+          <el-form ref="form" label-width="80px">
             <el-row>
               <el-col :span="8">
                 <el-form-item label="名称">
@@ -22,13 +22,20 @@
                 </el-form-item>
               </el-col>
               <el-col :span="8">
-                <el-form-item label="编码">
-                  <el-input placeholder="编码"></el-input>
+                <el-form-item label="组织层级">
+                  <el-select v-model="value" clearable placeholder="请选择组组织层级" class="width--100">
+                    <el-option
+                      v-for="item in options"
+                      :key="item.value"
+                      :label="item.label"
+                      :value="item.value"
+                    ></el-option>
+                  </el-select>
                 </el-form-item>
               </el-col>
               <el-col :span="8">
-                <el-form-item label="类型">
-                  <el-select v-model="value" clearable placeholder="请选择类型" style="width:100%;">
+                <el-form-item label="部门分类">
+                  <el-select v-model="value" clearable placeholder="请选择部门分类" class="width--100">
                     <el-option
                       v-for="item in options"
                       :key="item.value"
@@ -41,35 +48,22 @@
             </el-row>
             <el-row>
               <el-col :span="8">
-                <el-form-item label="url">
-                  <el-input placeholder="url"></el-input>
+                <el-form-item label="组织类型">
+                  <el-select v-model="value" clearable placeholder="请选择组织类型" class="width--100">
+                    <el-option
+                      v-for="item in options"
+                      :key="item.value"
+                      :label="item.label"
+                      :value="item.value"
+                    ></el-option>
+                  </el-select>
                 </el-form-item>
               </el-col>
             </el-row>
+
             <el-row class="btn-list">
-              <el-button type="primary">查询</el-button>
-              <el-button @click="add()" type="success">添加</el-button>
-               
-            </el-row>
-          </el-form>-->
-          <el-form ref="form" label-width="80px">
-            <el-row>
-              <el-col :span="2" class="text-left">
-                <el-button @click="add({})" type="success">添加</el-button>
-              </el-col>
-              <el-col :span="22" class="text-right">
-                <el-select style="width:120px;margin-right:20px;" v-model="value" clearable placeholder="请选择类型" @change="search()">
-                  <el-option
-                    v-for="item in options"
-                    :key="item.value"
-                    :label="item.label"
-                    :value="item.value"
-                  ></el-option>
-                </el-select>
-                <el-input style="width:300px;" placeholder="名称 编码 URL" class="input-with-select"  @keyup.enter.native="search">
-                  <el-button slot="append" icon="el-icon-search" @click="search()"></el-button>
-                </el-input>
-              </el-col>
+              <el-button type="primary" @click="search()">查询</el-button>
+              <el-button type="success" @click="add({})">添加</el-button>
             </el-row>
           </el-form>
           <br />
@@ -80,13 +74,13 @@
             :default-sort="{prop: 'date', order: 'descending'}"
           >
             <!-- <el-table-column type="selection" width="50"></el-table-column> -->
+            <!-- 名称 简称 层级 组织类型 -->
             <el-table-column fixed type="index" label="序号" width="50"></el-table-column>
-            <el-table-column fixed prop="name" label="名称" sortable width="180"></el-table-column>
-            <el-table-column prop="code" label="编码" sortable width="90"></el-table-column>
+            <el-table-column fixed prop="name" label="名称" sortable></el-table-column>
+            <el-table-column prop="code" label="简称" sortable width="90"></el-table-column>
 
-            <el-table-column prop="type" label="类型" sortable width="90"></el-table-column>
-            <el-table-column prop="url" label="URL" sortable></el-table-column>
-            <el-table-column prop="parentName" label="父资源" sortable width="180"></el-table-column>
+            <el-table-column prop="type" label="层级" sortable width="90"></el-table-column>
+            <el-table-column prop="url" label="组织类型" width="120" sortable></el-table-column>
 
             <el-table-column prop="createUser" label="创建人" sortable width="90"></el-table-column>
 
@@ -98,18 +92,13 @@
 
             <el-table-column fixed="right" label="操作" width="120">
               <template slot-scope="scope">
-                <el-link type="primary" @click.native.prevent="info(scope)">详情</el-link>
-                <el-dropdown trigger="click" style="margin-left:15px;">
-                  <span class="el-dropdown-link" style>
-                    更多
-                    <i class="el-icon-arrow-down el-icon--right"></i>
-                  </span>
-                  <el-dropdown-menu slot="dropdown">
-                    <el-dropdown-item @click.native.prevent="edit(scope)">编辑</el-dropdown-item>
-                    <el-dropdown-item @click.native.prevent="remove(scope)">删除</el-dropdown-item>
-                    <el-dropdown-item @click.native.prevent="batchOperationRole(scope)">批量分配角色</el-dropdown-item>
-                  </el-dropdown-menu>
-                </el-dropdown>
+                <el-link
+                  style="color:#409eff;"
+                  class="margin-right-10"
+                  type="primary"
+                  @click.native.prevent="edit(scope)"
+                >编辑</el-link>
+                <el-link style="color:#f66;" type="primary" @click.native.prevent="remove(scope)">删除</el-link>
               </template>
             </el-table-column>
           </el-table>
@@ -128,45 +117,28 @@
       </el-row>
     </el-card>
     <ih-dialog :show="dialogVisible">
-      <ResourcesAdd
-        data="xxx"
+      <OrganizationAdd
+        :data="organizationItem"
         @cancel="()=>dialogVisible=false"
         @finish="(data)=>{dialogVisible=false;finish(data)}"
-      />
-    </ih-dialog>
-    <ih-dialog :show="dialogEdit">
-      <ResourcesEdit
-        :data="editData"
-        @cancel="()=>dialogEdit=false"
-        @finish="(data)=>{dialogEdit=false;finishEdit(data)}"
-      />
-    </ih-dialog>
-    <ih-dialog :show="dialogBatchOperationRole">
-      <BatchOperationRole
-        :data="batchOperationRoleData"
-        @cancel="()=>dialogBatchOperationRole=false"
-        @finish="(data)=>{dialogBatchOperationRole=false;finishBatchOperationRole(data)}"
       />
     </ih-dialog>
   </div>
 </template>
 <script lang="ts">
-import ResourcesAdd from "./add.vue";
-import ResourcesEdit from "./edit.vue";
+import OrganizationAdd from "./add.vue";
 import resourcesRadio from "@/components/resourcesRadio.vue";
 import { DictionariesModule } from "../../store/modules/dictionaries";
 import { Component, Vue } from "vue-property-decorator";
 import { getResourceList, getResourceCategory } from "../../api/system";
-import BatchOperationRole from "./batch-operation-role.vue";
+
 @Component({
   components: {
-    ResourcesAdd,
-    ResourcesEdit,
-    BatchOperationRole,
+    OrganizationAdd,
     resourcesRadio
   }
 })
-export default class ResourcesList extends Vue {
+export default class OrganizationList extends Vue {
   resourceList: any[] = [];
   total: any = null;
   input3: any = "";
@@ -174,9 +146,8 @@ export default class ResourcesList extends Vue {
   currentPage: any = 1;
   dialogVisible = false;
   dialogEdit = false;
+  organizationItem: any = null;
   editData: any = null;
-  batchOperationRoleData: any = null;
-  dialogBatchOperationRole = false;
 
   async created() {
     const res: any = await getResourceCategory();
@@ -209,25 +180,23 @@ export default class ResourcesList extends Vue {
     this.resourceList = res.list;
     this.total = res.total;
   }
-  search(){
-     this.getList();
+  search() {
+    this.getList();
   }
 
-  add() {
+  add(data: any) {
+    this.organizationItem = data;
     this.dialogVisible = true;
   }
+
   edit(scope: any) {
     console.log(scope);
-    this.editData = scope.row;
-    this.dialogEdit = true;
+    this.add(scope.row);
   }
   finish(data: any) {
     console.log(data);
   }
   finishEdit(data: any) {
-    console.log(data);
-  }
-  finishBatchOperationRole(data: any) {
     console.log(data);
   }
 
@@ -238,10 +207,7 @@ export default class ResourcesList extends Vue {
       query: { id: scope.row.id }
     });
   }
-  batchOperationRole(scope: any) {
-    this.batchOperationRoleData = scope.row;
-    this.dialogBatchOperationRole = true;
-  }
+
   async remove(scope: any) {
     console.log(scope);
 

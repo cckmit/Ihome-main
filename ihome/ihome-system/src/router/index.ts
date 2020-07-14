@@ -4,7 +4,7 @@
  * @Author: zyc
  * @Date: 2020-06-22 11:10:43
  * @LastEditors: zyc
- * @LastEditTime: 2020-07-10 09:49:33
+ * @LastEditTime: 2020-07-14 11:31:25
  */
 import Vue from 'vue'
 import VueRouter, { RouteConfig, Route } from 'vue-router'
@@ -94,6 +94,41 @@ const routes: Array<RouteConfig> = [
         component: () => import('../views/role/info.vue'),
         meta: { title: '角色详情', icon: 'form' }
       },
+    ]
+  },
+  {
+    path: '/job',
+    meta: { title: '岗位', icon: 'form' },
+    redirect: '/job/list',
+    component: Layout,
+    children: [
+      {
+        path: 'list',
+        name: 'JobList',
+        component: () => import('../views/job/list.vue'),
+        meta: { title: '岗位列表', icon: 'form' }
+      },
+      {
+        path: 'info',
+        name: 'JobInfo',
+        component: () => import('../views/job/info.vue'),
+        meta: { title: '岗位详情', icon: 'form' }
+      },
+    ]
+  },
+  {
+    path: '/organization',
+    meta: { title: '组织架构', icon: 'form' },
+    redirect: '/organization/list',
+    component: Layout,
+    children: [
+      {
+        path: 'list',
+        name: 'OrganizationList',
+        component: () => import('../views/organization/list.vue'),
+        meta: { title: '组织架构列表', icon: 'form' }
+      },
+
     ]
   },
 ]

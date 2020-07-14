@@ -4,17 +4,17 @@
  * @Author: zyc
  * @Date: 2020-07-09 10:21:50
  * @LastEditors: zyc
- * @LastEditTime: 2020-07-10 14:38:58
+ * @LastEditTime: 2020-07-14 15:38:08
 --> 
 <template>
   <div>
     <el-card class="ih-card-form">
       <el-form ref="form" label-width="80px">
         <el-row>
-          <el-col :span="2" class="b-text-left">
+          <el-col :span="2" class="text-left">
             <el-button @click="add({})" type="success">添加</el-button>
           </el-col>
-          <el-col :span="22" class="b-text-right">
+          <el-col :span="22" class="text-right">
             <el-input style="width:300px;" placeholder="名称 编码" class="input-with-select">
               <el-button slot="append" icon="el-icon-search" @click="search()"></el-button>
             </el-input>
@@ -34,7 +34,7 @@
         <el-table-column fixed="right" label="操作" width="120">
           <template slot-scope="scope">
             <el-link type="primary" @click.native.prevent="info(scope)">详情</el-link>
-            <el-dropdown trigger="click" class="b-margin-left-15">
+            <el-dropdown trigger="click" class="margin-left-15">
               <span class="el-dropdown-link">
                 更多
                 <i class="el-icon-arrow-down el-icon--right"></i>

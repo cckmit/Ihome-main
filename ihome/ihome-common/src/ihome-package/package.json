@@ -1,6 +1,6 @@
 {
   "name": "ihome-common",
-  "version": "1.0.62",
+  "version": "1.0.69",
   "description": "爱家公共组件库",
   "main": "index.ts",
   "scripts": {

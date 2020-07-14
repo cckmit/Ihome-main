@@ -4,7 +4,7 @@
  * @Author: zyc
  * @Date: 2020-07-01 10:32:40
  * @LastEditors: zyc
- * @LastEditTime: 2020-07-02 09:34:17
+ * @LastEditTime: 2020-07-14 09:19:02
 --> 
 
 <template>
@@ -15,8 +15,7 @@
     :close-on-press-escape="false"
     :before-close="cancel"
     width="50%"
-    style="text-align: left;"
-    class="dialog"
+    class="dialog text-left"
   >
     <el-form ref="form" :model="form" label-width="80px">
       <p>

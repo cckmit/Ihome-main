@@ -4,7 +4,7 @@
  * @Author: zyc
  * @Date: 2020-06-30 09:21:17
  * @LastEditors: zyc
- * @LastEditTime: 2020-07-09 17:28:29
+ * @LastEditTime: 2020-07-14 16:05:55
 --> 
 <template>
   <div>
@@ -23,7 +23,7 @@
           </el-col>
           <el-col :span="8">
             <el-form-item label="用户类型">
-              <el-select v-model="value" clearable placeholder="请选择用户类型" style="width:100%;">
+              <el-select v-model="value" clearable placeholder="请选择用户类型" class="width--100">
                 <el-option
                   v-for="item in options"
                   :key="item.value"
@@ -49,7 +49,7 @@
               </el-col>
               <el-col :span="8">
                 <el-form-item label="状态">
-                  <el-select v-model="value" clearable placeholder="请选择状态" style="width:100%;">
+                  <el-select v-model="value" clearable placeholder="请选择状态" class="width--100">
                     <el-option
                       v-for="item in options"
                       :key="item.value"
@@ -79,7 +79,7 @@
               </el-col>
               <el-col :span="8">
                 <el-form-item label="雇员状态">
-                  <el-select v-model="value" clearable placeholder="请选择雇员状态" style="width:100%;">
+                  <el-select v-model="value" clearable placeholder="请选择雇员状态" class="width--100">
                     <el-option
                       v-for="item in options"
                       :key="item.value"
@@ -96,7 +96,7 @@
                 <el-form-item label="归属组织">
                   <IhSelectTree
                     min-height="400px"
-                    style="width:100%;"
+                    class="width--100"
                     :props="props"
                     :options="list"
                     :value="valueId"
@@ -113,7 +113,7 @@
               </el-col>
               <el-col :span="8">
                 <el-form-item label="职能类别">
-                  <el-select v-model="value" clearable placeholder="请选择职能类别" style="width:100%;">
+                  <el-select v-model="value" clearable placeholder="请选择职能类别" class="width--100">
                     <el-option
                       v-for="item in options"
                       :key="item.value"
@@ -154,13 +154,13 @@
           <el-button type="primary" @click="search()">查询</el-button>
           <el-button type="success" @click="add()">添加</el-button>
           <el-button type="info">重置</el-button>
-          <el-button>复制用户岗位角色</el-button>
-          <el-button>复制用户组织权限</el-button>
+          <el-button @click="copyUser()">复制用户岗位角色组织权限</el-button>
+
           <!-- <el-button type="success" @click="set()">设置</el-button> -->
 
           <el-link
             type="primary"
-            style="float:right;margin-right:40px;"
+            class="float-right margin-right-40"
             @click="openToggle()"
           >{{searchOpen?'收起':'展开'}}</el-link>
         </el-row>
@@ -202,8 +202,8 @@
                 <el-dropdown-item @click.native.prevent="locking(scope)">锁定用户</el-dropdown-item>
                 <el-dropdown-item @click.native.prevent="activation(scope)">激活用户</el-dropdown-item>
                 <el-dropdown-item @click.native.prevent="resetPassword(scope)">重置密码</el-dropdown-item>
-                <el-dropdown-item>分配岗位角色</el-dropdown-item>
-                <el-dropdown-item>分配组织权限</el-dropdown-item>
+                <el-dropdown-item @click.native.prevent="jobRole(scope)">分配岗位角色</el-dropdown-item>
+                <el-dropdown-item @click.native.prevent="pOrganization(scope)">分配组织权限</el-dropdown-item>
               </el-dropdown-menu>
             </el-dropdown>
           </template>
@@ -242,19 +242,51 @@
         @finish="(data)=>{myOrganizationVisible=false;finish(data)}"
       />
     </ih-dialog>
+
+    <ih-dialog :show="jobVisible">
+      <UserJobRole
+        :data="addData"
+        @cancel="()=>jobVisible=false"
+        @finish="(data)=>{jobVisible=false;finishJob(data)}"
+      />
+    </ih-dialog>
+    <ih-dialog :show="organizationJurisdictionVisible">
+      <OrganizationJurisdiction
+        :data="addData"
+        @cancel="()=>organizationJurisdictionVisible=false"
+        @finish="(data)=>{organizationJurisdictionVisible=false;finishJob(data)}"
+      />
+    </ih-dialog>
+    <ih-dialog :show="copyUserVisible">
+      <CopyUsers
+        :data="addData"
+        @cancel="()=>copyUserVisible=false"
+        @finish="(data)=>{copyUserVisible=false;finishCopyUser(data)}"
+      />
+    </ih-dialog>
   </div>
 </template>
 <script lang="ts">
 import { Component, Vue } from "vue-property-decorator";
 import UserAdd from "./add.vue";
+import UserJobRole from "./dialog/job.vue";
+import CopyUsers from "./dialog/copy-users.vue";
 
 // import IhDialog from "@/components/IhDialog.vue";
 import MyOrganization from "@/components/MyOrganization.vue";
+import OrganizationJurisdiction from "@/components/OrganizationJurisdiction.vue";
 import MyPagination from "@/components/my-pagination.vue";
 import { organization, userList } from "../../api/system";
 // import { getResourceByIdUsingGET } from "../../api/system";
 @Component({
-  components: { UserAdd, MyPagination, MyOrganization }
+  components: {
+    UserAdd,
+    MyPagination,
+    MyOrganization,
+    UserJobRole,
+    OrganizationJurisdiction,
+    CopyUsers
+  }
 })
 export default class UserList extends Vue {
   options: any = [
@@ -271,6 +303,9 @@ export default class UserList extends Vue {
   value: any = "";
   searchOpen = true;
   myOrganizationVisible = false;
+  organizationJurisdictionVisible = false;
+  jobVisible = false;
+  copyUserVisible = false;
 
   currentPage: any = 1;
   valuedate: any = new Date().getTime();
@@ -295,6 +330,9 @@ export default class UserList extends Vue {
     console.log(data);
     this.valueVal = data?.id;
     this.valueZZ = data?.name;
+  }
+  finishJob(data: any) {
+    console.log(data);
   }
 
   valueId: any = "1D29BB468F504774ACE653B946A393EE"; // 初始ID（可选）
@@ -366,6 +404,15 @@ export default class UserList extends Vue {
   edit(scope: any) {
     this.add(scope.row);
   }
+  jobRole(scope: any) {
+    console.log(scope);
+    this.jobVisible = true;
+  }
+  pOrganization(scope: any) {
+    console.log(scope);
+    this.organizationJurisdictionVisible = true;
+  }
+
   async remove(scope: any) {
     try {
       await this.$confirm("是否确定删除?", "提示");
@@ -418,6 +465,12 @@ export default class UserList extends Vue {
     } catch (error) {
       console.log(error);
     }
+  }
+  copyUser() {
+    this.copyUserVisible = true;
+  }
+  finishCopyUser(data: any) {
+    console.log(data);
   }
 }
 </script>
