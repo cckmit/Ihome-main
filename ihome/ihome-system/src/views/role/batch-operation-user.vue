@@ -8,6 +8,7 @@
 --> 
 <template>
   <el-dialog
+  v-dialogDrag
     title="批量分配用户"
     :visible.sync="dialogVisible"
     :close-on-click-modal="false"

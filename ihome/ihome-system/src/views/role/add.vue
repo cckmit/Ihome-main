@@ -4,10 +4,11 @@
  * @Author: zyc
  * @Date: 2020-07-09 14:08:24
  * @LastEditors: zyc
- * @LastEditTime: 2020-07-09 14:16:24
+ * @LastEditTime: 2020-07-15 11:25:26
 --> 
 <template>
   <el-dialog
+    v-dialogDrag
     title="角色"
     :visible.sync="dialogVisible"
     :close-on-click-modal="false"
@@ -43,6 +44,7 @@
 import { Component, Vue, Prop } from "vue-property-decorator";
 import { Form as ElForm } from "element-ui";
 import { DictionariesModule } from "../../store/modules/dictionaries";
+import { noTrim } from "ihome-common/util/base/form-ui";
 @Component({
   components: {}
 })
@@ -69,20 +71,10 @@ export default class RoleAdd extends Vue {
     ],
     code: [
       { required: true, message: "请输入编码", trigger: "change" },
-      { min: 1, max: 16, message: "长度在 1 到 16 个字符", trigger: "change" }
+      { min: 1, max: 16, message: "长度在 1 到 16 个字符", trigger: "change" },
+      { validator: noTrim, trigger: "change" }
     ]
   };
-  validateUrl(rule: any, value: any, callback: any) {
-    //const reg = /[-A-Za-z0-9]/;
-    // if (!reg.test(value)) {
-    //   callback(new Error("url只能包含【字母,数字,/,-,_】"));
-    // } else
-    if (value.length > 64) {
-      callback(new Error("url不能超过64字符"));
-    } else {
-      callback();
-    }
-  }
 
   cancel() {
     this.$emit("cancel", false);

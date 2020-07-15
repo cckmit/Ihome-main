@@ -8,6 +8,7 @@
 --> 
 <template>
   <el-dialog
+  v-dialogDrag
     title="分配组织权限"
     :visible.sync="dialogVisible"
     :close-on-click-modal="false"

@@ -8,6 +8,7 @@
 --> 
 <template>
   <el-dialog
+    v-dialogDrag
     title="复制用户岗位角色组织权限"
     :visible.sync="dialogVisible"
     :close-on-click-modal="false"

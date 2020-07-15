@@ -4,11 +4,12 @@
  * @Author: zyc
  * @Date: 2020-07-01 10:32:40
  * @LastEditors: zyc
- * @LastEditTime: 2020-07-14 09:19:02
+ * @LastEditTime: 2020-07-15 09:35:08
 --> 
 
 <template>
   <el-dialog
+    v-dialogDrag
     title="用户"
     :visible.sync="dialogVisible"
     :close-on-click-modal="false"

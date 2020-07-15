@@ -4,10 +4,11 @@
  * @Author: zyc
  * @Date: 2020-07-09 15:03:17
  * @LastEditors: zyc
- * @LastEditTime: 2020-07-09 16:39:01
+ * @LastEditTime: 2020-07-15 09:33:14
 --> 
 <template>
   <el-dialog
+  v-dialogDrag
     title="分配权限"
     :visible.sync="dialogVisible"
     :close-on-click-modal="false"

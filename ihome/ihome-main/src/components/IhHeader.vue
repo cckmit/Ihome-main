@@ -4,7 +4,7 @@
  * @Author: zyc
  * @Date: 2020-06-23 10:42:04
  * @LastEditors: zyc
- * @LastEditTime: 2020-06-28 11:26:40
+ * @LastEditTime: 2020-07-15 11:47:38
 --> 
 <template>
   <div class="header-container">
@@ -21,9 +21,10 @@
       </div>
     </div>
     <div class="right-item">
-      <el-popover placement="top-start" width="120" trigger="hover">
-        <ul>
+      <el-popover placement="top-start" width="120" trigger="hover" style="text-align: left;">
+        <ul class="head-ul">
           <li>个人中心</li>
+          <li @click="doc()">开发规范文档</li>
           <li @click="loginOut()">退出</li>
         </ul>
         <el-avatar slot="reference" class="avatar" size="medium" :src="circleUrl"></el-avatar>
@@ -34,7 +35,7 @@
 <script lang="ts">
 import { Component, Vue, Watch } from "vue-property-decorator";
 import { UserModule } from "../store/modules/user";
-import {headImg} from '../utils/base64-img'
+import { headImg } from "../utils/base64-img";
 @Component({
   components: {}
 })
@@ -65,6 +66,9 @@ export default class IhHeader extends Vue {
         path: item.path
       });
     });
+  }
+  doc() {
+    console.log("开发规范文档");
   }
   created() {
     this.breadcrumbList = [];
@@ -110,5 +114,18 @@ export default class IhHeader extends Vue {
 }
 .avatar {
   margin: 7px 0px 0 10px;
+}
+.head-ul {
+  text-align: left;
+  margin: 0;
+  padding: 0;
+  li {
+    line-height: 30px;
+    cursor: pointer;
+    list-style-type: none;
+  }
+  li:hover {
+    color: #f90;
+  }
 }
 </style>

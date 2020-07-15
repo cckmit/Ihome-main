@@ -4,10 +4,11 @@
  * @Author: zyc
  * @Date: 2020-07-06 17:16:31
  * @LastEditors: zyc
- * @LastEditTime: 2020-07-08 10:11:20
+ * @LastEditTime: 2020-07-15 09:33:45
 --> 
 <template>
   <el-dialog
+  v-dialogDrag
     title="资源新增"
     :visible.sync="dialogVisible"
     :close-on-click-modal="false"

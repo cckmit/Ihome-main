@@ -8,6 +8,7 @@
 --> 
 <template>
   <el-dialog
+  v-dialogDrag
     title="组织架构"
     :visible.sync="dialogVisible"
     :close-on-click-modal="false"

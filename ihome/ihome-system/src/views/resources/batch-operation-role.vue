@@ -4,10 +4,11 @@
  * @Author: zyc
  * @Date: 2020-07-07 16:13:53
  * @LastEditors: zyc
- * @LastEditTime: 2020-07-08 11:29:36
+ * @LastEditTime: 2020-07-15 09:34:02
 --> 
 <template>
   <el-dialog
+  v-dialogDrag
     title="批量分配角色"
     :visible.sync="dialogVisible"
     :close-on-click-modal="false"

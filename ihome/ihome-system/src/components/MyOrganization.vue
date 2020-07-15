@@ -4,11 +4,12 @@
  * @Author: zyc
  * @Date: 2020-07-03 09:00:13
  * @LastEditors: zyc
- * @LastEditTime: 2020-07-08 10:44:01
+ * @LastEditTime: 2020-07-15 09:33:00
 --> 
 
 <template>
   <el-dialog
+    v-dialogDrag
     title="归属组织"
     :visible.sync="dialogVisible"
     :close-on-click-modal="false"
@@ -105,6 +106,5 @@ export default {
 };
 </script>
 <style  >
-
 </style>
  

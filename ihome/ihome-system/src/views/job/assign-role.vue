@@ -4,10 +4,11 @@
  * @Author: zyc
  * @Date: 2020-07-14 10:03:09
  * @LastEditors: zyc
- * @LastEditTime: 2020-07-14 10:38:29
+ * @LastEditTime: 2020-07-15 09:33:29
 --> 
 <template>
   <el-dialog
+    v-dialogDrag
     title="分配角色"
     :visible.sync="dialogVisible"
     :close-on-click-modal="false"
@@ -17,9 +18,9 @@
     style="text-align: left;"
     class="dialog"
   >
-    <div class="text-left dialog-transfer" >
+    <div class="text-left dialog-transfer">
       <el-transfer
-      style="height:500px;"
+        style="height:500px;"
         class="width--100"
         :titles="['可选数据', '选中数据']"
         filterable
@@ -109,8 +110,10 @@ export default class JobAddEdit extends Vue {
   .el-transfer-panel__filter {
     text-align: left;
   }
-  .el-transfer-panel,.el-transfer-panel__list ,.is-filterable{
-      min-height: 500px;
+  .el-transfer-panel,
+  .el-transfer-panel__list,
+  .is-filterable {
+    min-height: 500px;
   }
 }
 </style>

@@ -4,7 +4,7 @@
  * @Author: zyc
  * @Date: 2020-06-29 16:35:15
  * @LastEditors: zyc
- * @LastEditTime: 2020-07-10 09:52:56
+ * @LastEditTime: 2020-07-15 09:05:47
  */
 /*
  * @Descripttion: 
@@ -40,6 +40,9 @@ Vue.use(ElementUI);
 Vue.config.productionTip = false;
 Vue.prototype.$tool = new Tool();
 
+import directives from '../util/vue/directive'
+
+
 let instance: any = null;
 require('@/mock/index')
 // if (process.env.NODE_ENV !== 'production') {
@@ -54,10 +57,13 @@ function render() {
     router,
     render: h => h(App),
   }).$mount('#app');
+  directives(Vue,instance)
 }
 
 if (!(<any>window).__POWERED_BY_QIANKUN__) {
   render();
+}else{
+  directives(Vue,instance)
 }
 
 // export { bootstrap,mount, unmount } from './qiankun/index'
