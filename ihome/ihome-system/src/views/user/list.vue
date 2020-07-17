@@ -4,11 +4,11 @@
  * @Author: zyc
  * @Date: 2020-06-30 09:21:17
  * @LastEditors: zyc
- * @LastEditTime: 2020-07-14 16:05:55
+ * @LastEditTime: 2020-07-17 11:30:42
 --> 
 <template>
-  <div>
-    <el-card class="ih-card-form">
+  <ih-page>
+    <template v-slot:form>
       <el-form ref="form" label-width="80px">
         <el-row>
           <el-col :span="8">
@@ -126,11 +126,7 @@
             </el-row>
 
             <!-- <el-row>
-              <el-col :span="8">
-                <el-form-item label="删除标识">
-                  <el-input></el-input>
-                </el-form-item>
-              </el-col>
+             
               <el-col :span="8">
                 <el-form-item label="归属组织">
                   <el-input
@@ -149,23 +145,25 @@
             </el-row>-->
           </div>
         </el-collapse-transition>
-
-        <el-row class="btn-list">
-          <el-button type="primary" @click="search()">查询</el-button>
-          <el-button type="success" @click="add()">添加</el-button>
-          <el-button type="info">重置</el-button>
-          <el-button @click="copyUser()">复制用户岗位角色组织权限</el-button>
-
-          <!-- <el-button type="success" @click="set()">设置</el-button> -->
-
-          <el-link
-            type="primary"
-            class="float-right margin-right-40"
-            @click="openToggle()"
-          >{{searchOpen?'收起':'展开'}}</el-link>
-        </el-row>
       </el-form>
-      <br />
+    </template>
+
+    <template v-slot:btn>
+      <el-row>
+        <el-button type="primary" @click="search()">查询</el-button>
+        <el-button type="success" @click="add()">添加</el-button>
+        <el-button type="info">重置</el-button>
+        <el-button @click="copyUser()">复制用户岗位角色组织权限</el-button>
+        <el-link
+          type="primary"
+          class="float-right margin-right-40"
+          @click="openToggle()"
+        >{{searchOpen?'收起':'展开'}}</el-link>
+      </el-row>
+    </template>
+
+    <template v-slot:table>
+      <br>
       <el-table
         class="ih-table"
         :data="tableData"
@@ -209,23 +207,19 @@
           </template>
         </el-table-column>
       </el-table>
-
+    </template>
+    <template v-slot:pagination>
+      <br>
       <el-pagination
-        style="text-align: right;margin-top:20px;"
         @size-change="handleSizeChange"
         @current-change="handleCurrentChange"
         :current-page.sync="currentPage"
-        :page-sizes="[10, 20, 50]"
-        :page-size="10"
-        layout="total, sizes, prev, pager, next, jumper"
+        :page-sizes="$root.pageSizes"
+        :page-size="$root.pageSize"
+        :layout="$root.paginationLayout"
         :total="total"
       ></el-pagination>
-      <!-- <my-pagination
-        layout="total, sizes, prev, pager, next, jumper"
-        :page-sizes="[10, 20, 50]"
-        :total="50"
-      ></my-pagination>-->
-    </el-card>
+    </template>
 
     <ih-dialog :show="dialogVisible">
       <UserAdd
@@ -264,7 +258,7 @@
         @finish="(data)=>{copyUserVisible=false;finishCopyUser(data)}"
       />
     </ih-dialog>
-  </div>
+  </ih-page>
 </template>
 <script lang="ts">
 import { Component, Vue } from "vue-property-decorator";
@@ -353,7 +347,6 @@ export default class UserList extends Vue {
   async created() {
     let organizationDTree = await organization();
     this.list = organizationDTree;
-
     this.getUserList();
   }
   async getUserList() {
@@ -479,23 +472,5 @@ export default class UserList extends Vue {
   text-align: left;
   margin-left: 80px;
 }
-.ih-card {
-  background: #fff;
-  padding: 20px;
-}
 </style>
-<style >
-/* .el-dropdown-link {
-  cursor: pointer;
-  color: #409eff;
-}
-.el-icon-arrow-down {
-  font-size: 12px;
-}
-.demonstration {
-  display: block;
-  color: #8492a6;
-  font-size: 14px;
-  margin-bottom: 20px;
-} */
-</style>
+ 

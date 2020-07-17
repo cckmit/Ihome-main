@@ -4,12 +4,12 @@
  * @Author: zyc
  * @Date: 2020-07-14 09:23:40
  * @LastEditors: zyc
- * @LastEditTime: 2020-07-14 10:48:35
+ * @LastEditTime: 2020-07-17 14:16:22
 --> 
 --> 
 <template>
-  <div>
-    <el-card class="ih-card-form">
+  <ih-page>
+    <template v-slot:form>
       <el-form ref="form" label-width="80px">
         <el-row>
           <el-col :span="2" class="text-left">
@@ -22,7 +22,8 @@
           </el-col>
         </el-row>
       </el-form>
-      <br />
+    </template>
+    <template v-slot:table>
       <br />
       <el-table class="ih-table" :data="list">
         <el-table-column type="index" label="序号" width="50"></el-table-column>
@@ -50,17 +51,19 @@
           </template>
         </el-table-column>
       </el-table>
+    </template>
+    <template v-slot:pagination>
+      <br />
       <el-pagination
-        style="text-align: right;margin-top:20px;"
         @size-change="handleSizeChange"
         @current-change="handleCurrentChange"
         :current-page.sync="currentPage"
-        :page-sizes="[10, 20, 50]"
-        :page-size="10"
-        layout="total, sizes, prev, pager, next, jumper"
+        :page-sizes="$root.pageSizes"
+        :page-size="$root.pageSize"
+        :layout="$root.paginationLayout"
         :total="total"
       ></el-pagination>
-    </el-card>
+    </template>
 
     <ih-dialog :show="dialogAddEdit">
       <JobAddEdit
@@ -76,7 +79,7 @@
         @finish="(data)=>{dialogAssignRole=false;finishAssignRole(data)}"
       />
     </ih-dialog>
-  </div>
+  </ih-page>
 </template>
 <script lang="ts">
 import { Component, Vue } from "vue-property-decorator";

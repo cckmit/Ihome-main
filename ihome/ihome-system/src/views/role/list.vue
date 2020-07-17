@@ -4,23 +4,31 @@
  * @Author: zyc
  * @Date: 2020-07-09 10:21:50
  * @LastEditors: zyc
- * @LastEditTime: 2020-07-14 15:38:08
+ * @LastEditTime: 2020-07-17 14:21:18
 --> 
 <template>
-  <div>
-    <el-card class="ih-card-form">
-      <el-form ref="form" label-width="80px">
+  <ih-page>
+    <template v-slot:form>
+      <el-form ref="form" label-width="80px" @submit.native.prevent>
         <el-row>
           <el-col :span="2" class="text-left">
             <el-button @click="add({})" type="success">添加</el-button>
           </el-col>
           <el-col :span="22" class="text-right">
-            <el-input style="width:300px;" placeholder="名称 编码" class="input-with-select">
+            <el-input
+              style="width:300px;"
+              placeholder="名称 编码"
+              class="input-with-select"
+              v-model="keyword"
+              @keyup.enter.native="search"
+            >
               <el-button slot="append" icon="el-icon-search" @click="search()"></el-button>
             </el-input>
           </el-col>
         </el-row>
       </el-form>
+    </template>
+    <template v-slot:table>
       <br />
       <el-table class="ih-table" :data="list" style="width: 100%">
         <el-table-column type="index" label="序号" width="50"></el-table-column>
@@ -50,17 +58,20 @@
           </template>
         </el-table-column>
       </el-table>
+    </template>
+    <template v-slot:pagination>
+      <br />
       <el-pagination
-        class="b-text-right b-margin-top-20"
         @size-change="handleSizeChange"
         @current-change="handleCurrentChange"
         :current-page.sync="currentPage"
-        :page-sizes="[10, 20, 50]"
-        :page-size="10"
-        layout="total, sizes, prev, pager, next, jumper"
+        :page-sizes="$root.pageSizes"
+        :page-size="$root.pageSize"
+        :layout="$root.paginationLayout"
         :total="total"
       ></el-pagination>
-    </el-card>
+    </template>
+
     <ih-dialog :show="dialogAdd">
       <RoleAdd
         :data="itemData"
@@ -89,7 +100,7 @@
         @finish="(data)=>{dialogBatchOperationUser=false;finishBatchOperationUser(data)}"
       />
     </ih-dialog>
-  </div>
+  </ih-page>
 </template>
 <script lang="ts">
 import { Component, Vue } from "vue-property-decorator";

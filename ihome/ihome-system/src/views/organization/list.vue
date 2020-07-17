@@ -4,11 +4,11 @@
  * @Author: zyc
  * @Date: 2020-07-14 11:26:26
  * @LastEditors: zyc
- * @LastEditTime: 2020-07-14 14:10:48
+ * @LastEditTime: 2020-07-17 14:37:35
 --> 
 <template>
-  <div>
-    <el-card class="ih-card-form">
+  <ih-page>
+    <template v-slot:container>
       <el-row>
         <el-col :span="6" style="border-right: 1px solid #e6e6e6;padding-right: 20px">
           <resourcesRadio />
@@ -108,14 +108,14 @@
             @size-change="handleSizeChange"
             @current-change="handleCurrentChange"
             :current-page.sync="currentPage"
-            :page-sizes="[10, 20, 50]"
-            :page-size="10"
-            layout="total, sizes, prev, pager, next, jumper"
+            :page-sizes="$root.pageSizes"
+            :page-size="$root.pageSize"
+            :layout="$root.paginationLayout"
             :total="total"
           ></el-pagination>
         </el-col>
       </el-row>
-    </el-card>
+    </template>
     <ih-dialog :show="dialogVisible">
       <OrganizationAdd
         :data="organizationItem"
@@ -123,7 +123,7 @@
         @finish="(data)=>{dialogVisible=false;finish(data)}"
       />
     </ih-dialog>
-  </div>
+  </ih-page>
 </template>
 <script lang="ts">
 import OrganizationAdd from "./add.vue";

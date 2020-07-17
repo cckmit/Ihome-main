@@ -4,17 +4,21 @@
  * @Author: zyc
  * @Date: 2020-07-08 14:22:25
  * @LastEditors: zyc
- * @LastEditTime: 2020-07-08 14:48:58
+ * @LastEditTime: 2020-07-17 14:18:15
 --> 
 <template>
-  <el-tabs type="border-card" style="min-height:800px;" v-model="tabActive">
-    <el-tab-pane label="用户详情" name="1">
-      <UserInfoDetails />
-    </el-tab-pane>
-    <el-tab-pane label="资源权限" name="2">
-      <UserResources />
-    </el-tab-pane>
-  </el-tabs>
+  <ih-page>
+    <template v-slot:info>
+      <el-tabs type="border-card"  v-model="tabActive">
+        <el-tab-pane label="用户详情" name="1">
+          <UserInfoDetails />
+        </el-tab-pane>
+        <el-tab-pane label="资源权限" name="2">
+          <UserResources />
+        </el-tab-pane>
+      </el-tabs>
+    </template>
+  </ih-page>
 </template>
 <script lang="ts">
 import { Component, Vue } from "vue-property-decorator";

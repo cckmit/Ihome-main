@@ -4,61 +4,29 @@
  * @Author: zyc
  * @Date: 2020-07-06 09:41:43
  * @LastEditors: zyc
- * @LastEditTime: 2020-07-14 11:35:11
+ * @LastEditTime: 2020-07-17 15:05:05
 --> 
 <template>
-  <div>
-    <el-card class="ih-card-form">
+  <ih-page>
+    <template v-slot:container  >
       <el-row>
         <el-col :span="6" style="border-right: 1px solid #e6e6e6;padding-right: 20px">
           <resourcesRadio />
         </el-col>
         <el-col :span="18" class="padding-left-20">
-          <!-- <el-form ref="form" label-width="80px">
-            <el-row>
-              <el-col :span="8">
-                <el-form-item label="名称">
-                  <el-input placeholder="名称"></el-input>
-                </el-form-item>
-              </el-col>
-              <el-col :span="8">
-                <el-form-item label="编码">
-                  <el-input placeholder="编码"></el-input>
-                </el-form-item>
-              </el-col>
-              <el-col :span="8">
-                <el-form-item label="类型">
-                  <el-select v-model="value" clearable placeholder="请选择类型" style="width:100%;">
-                    <el-option
-                      v-for="item in options"
-                      :key="item.value"
-                      :label="item.label"
-                      :value="item.value"
-                    ></el-option>
-                  </el-select>
-                </el-form-item>
-              </el-col>
-            </el-row>
-            <el-row>
-              <el-col :span="8">
-                <el-form-item label="url">
-                  <el-input placeholder="url"></el-input>
-                </el-form-item>
-              </el-col>
-            </el-row>
-            <el-row class="btn-list">
-              <el-button type="primary">查询</el-button>
-              <el-button @click="add()" type="success">添加</el-button>
-               
-            </el-row>
-          </el-form>-->
           <el-form ref="form" label-width="80px">
             <el-row>
               <el-col :span="2" class="text-left">
                 <el-button @click="add({})" type="success">添加</el-button>
               </el-col>
               <el-col :span="22" class="text-right">
-                <el-select style="width:120px;margin-right:20px;" v-model="value" clearable placeholder="请选择类型" @change="search()">
+                <el-select
+                  style="width:120px;margin-right:20px;"
+                  v-model="value"
+                  clearable
+                  placeholder="请选择类型"
+                  @change="search()"
+                >
                   <el-option
                     v-for="item in options"
                     :key="item.value"
@@ -66,7 +34,12 @@
                     :value="item.value"
                   ></el-option>
                 </el-select>
-                <el-input style="width:300px;" placeholder="名称 编码 URL" class="input-with-select"  @keyup.enter.native="search">
+                <el-input
+                  style="width:300px;"
+                  placeholder="名称 编码 URL"
+                  class="input-with-select"
+                  @keyup.enter.native="search"
+                >
                   <el-button slot="append" icon="el-icon-search" @click="search()"></el-button>
                 </el-input>
               </el-col>
@@ -126,7 +99,7 @@
           ></el-pagination>
         </el-col>
       </el-row>
-    </el-card>
+    </template>
     <ih-dialog :show="dialogVisible">
       <ResourcesAdd
         data="xxx"
@@ -148,7 +121,7 @@
         @finish="(data)=>{dialogBatchOperationRole=false;finishBatchOperationRole(data)}"
       />
     </ih-dialog>
-  </div>
+  </ih-page>
 </template>
 <script lang="ts">
 import ResourcesAdd from "./add.vue";
@@ -209,8 +182,8 @@ export default class ResourcesList extends Vue {
     this.resourceList = res.list;
     this.total = res.total;
   }
-  search(){
-     this.getList();
+  search() {
+    this.getList();
   }
 
   add() {

@@ -4,17 +4,21 @@
  * @Author: zyc
  * @Date: 2020-07-14 09:23:40
  * @LastEditors: zyc
- * @LastEditTime: 2020-07-14 10:52:14
+ * @LastEditTime: 2020-07-17 14:18:02
 --> 
 <template>
-  <el-tabs type="border-card" style="min-height:800px;" v-model="tabActive">
-    <el-tab-pane label="岗位详情" name="1">
-      <JobInfoDetails />
-    </el-tab-pane>
-    <el-tab-pane label="用户列表" name="2">
-      <JobInfoUser />
-    </el-tab-pane>
-  </el-tabs>
+  <ih-page>
+    <template v-slot:info>
+      <el-tabs type="border-card"   v-model="tabActive">
+        <el-tab-pane label="岗位详情" name="1">
+          <JobInfoDetails />
+        </el-tab-pane>
+        <el-tab-pane label="用户列表" name="2">
+          <JobInfoUser />
+        </el-tab-pane>
+      </el-tabs>
+    </template>
+  </ih-page>
 </template>
 <script lang="ts">
 import { Component, Vue } from "vue-property-decorator";

@@ -4,7 +4,7 @@
  * @Author: zyc
  * @Date: 2020-06-29 16:35:15
  * @LastEditors: zyc
- * @LastEditTime: 2020-07-15 09:05:47
+ * @LastEditTime: 2020-07-17 11:02:01
  */
 /*
  * @Descripttion: 
@@ -40,7 +40,8 @@ Vue.use(ElementUI);
 Vue.config.productionTip = false;
 Vue.prototype.$tool = new Tool();
 
-import directives from '../util/vue/directive'
+import directives from '../util/vue/directives'
+import filters from '../util/vue/filters'
 
 
 let instance: any = null;
@@ -55,15 +56,22 @@ function render() {
   instance = new Vue({
     store,
     router,
+    data: {
+      paginationLayout: "total, sizes, prev, pager, next, jumper",
+      pageSizes: [10, 20, 50],
+      pageSize: 10
+    },
     render: h => h(App),
   }).$mount('#app');
-  directives(Vue,instance)
+  directives(Vue, instance)
+  filters(Vue, instance)
 }
 
 if (!(<any>window).__POWERED_BY_QIANKUN__) {
   render();
-}else{
-  directives(Vue,instance)
+} else {
+  directives(Vue, instance)
+  filters(Vue, instance)
 }
 
 // export { bootstrap,mount, unmount } from './qiankun/index'
