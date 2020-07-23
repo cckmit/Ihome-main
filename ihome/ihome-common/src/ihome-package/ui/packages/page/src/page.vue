@@ -4,11 +4,10 @@
  * @Author: zyc
  * @Date: 2020-07-17 09:47:28
  * @LastEditors: zyc
- * @LastEditTime: 2020-07-17 15:06:28
+ * @LastEditTime: 2020-07-23 14:54:52
 --> 
 <template>
   <div :style="{'min-height':minHeight}" class="ih-page">
-     
     <div class="ih-page-container">
       <slot name="container"></slot>
     </div>
@@ -30,11 +29,11 @@
     <slot />
   </div>
 </template>
-<script lang="ts">
+<script >
 export default {
   name: "IhPage",
-  data: {
-    minHeight: 0
+  data() {
+    return {}
   },
   computed: {
     minHeight() {
@@ -46,10 +45,9 @@ export default {
     }
   },
 
-  mounted() {
-    const that = this;
-    window.addEventListener("resize", () => {});
-  }
+  // mounted() {
+  //   window.addEventListener("resize", () => {});
+  // }
 };
 </script>
 <style  lang="scss">
@@ -73,7 +71,6 @@ export default {
 }
 .ih-page-info {
 }
-.ih-page-container{
-  
+.ih-page-container {
 }
 </style>

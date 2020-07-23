@@ -4,7 +4,7 @@
  * @Author: zyc
  * @Date: 2020-07-01 10:32:40
  * @LastEditors: zyc
- * @LastEditTime: 2020-07-15 09:35:08
+ * @LastEditTime: 2020-07-23 14:25:45
 --> 
 
 <template>
@@ -20,7 +20,7 @@
   >
     <el-form ref="form" :model="form" label-width="80px">
       <p>
-        <b>账号信息</b>
+        <b>账号信息 </b>
       </p>
       <el-row>
         <el-col :span="12">

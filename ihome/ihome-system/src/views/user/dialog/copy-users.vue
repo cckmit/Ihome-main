@@ -4,7 +4,7 @@
  * @Author: zyc
  * @Date: 2020-07-14 16:00:28
  * @LastEditors: zyc
- * @LastEditTime: 2020-07-14 17:30:54
+ * @LastEditTime: 2020-07-23 15:15:51
 --> 
 <template>
   <el-dialog
@@ -21,24 +21,22 @@
   >
     <el-row>
       <el-col :span="6">
-        <el-card class="box-card">
+        <el-card class="box-card" style="height:500px;">
           <div slot="header" class="clearfix">
             <span>选中用户</span>
           </div>
-          <div class="text item">张三</div>
-          <div class="text item">李四</div>
-          <div class="text item">王五</div>
-          <div class="text item">张三</div>
-          <div class="text item">李四</div>
-          <div class="text item">王五</div>
-          <div class="text item">张三</div>
-          <div class="text item">李四</div>
-          <div class="text item">王五</div>
+          <div style="height:400px;overflow: auto;">
+            <div class="text item">张三</div>
+            <div class="text item">李四</div>
+            <div class="text item">王五</div>
+            <div class="text item">张三</div>
+            <div class="text item">李四</div>
+          </div>
         </el-card>
       </el-col>
 
       <el-col :span="16" class="margin-left-20">
-        <el-card class="box-card">
+        <el-card class="box-card" style="height:500px;width:695px;">
           <div slot="header" class="clearfix" style="height:20px;">
             <div class="float-left">
               <span>复制选项</span>

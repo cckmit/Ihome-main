@@ -4,7 +4,7 @@
  * @Author: zyc
  * @Date: 2020-06-28 11:42:52
  * @LastEditors: zyc
- * @LastEditTime: 2020-06-30 09:12:31
+ * @LastEditTime: 2020-07-23 14:25:01
  */
 import { RegistrableApp, LoadableApp, FrameworkLifeCycles } from "qiankun"
 import { IRegisterApp, IProps, IPropsData } from './qiankun.d'
@@ -52,29 +52,29 @@ const baseProps: IProps<IPropsData> = {
 let props = Object.assign(baseProps)
 
 const devArray: Array<IRegisterApp<IProps<IPropsData>>> = [{
-    routerPrefix: 'cli',
-    publicPath: '/cli/',
+    routerPrefix: 'web/cli',
+    publicPath: '/web/cli/',
     port: 8082,
     ip: 'localhost',
     props: props
 },
 {
-    routerPrefix: 'system',
-    publicPath: '/system/',
+    routerPrefix: 'web/system',
+    publicPath: '/web/system/',
     port: 8085,
     ip: 'localhost',
     props: props
 }];
 const proArray: Array<IRegisterApp<IProps<IPropsData>>> = [{
-    routerPrefix: 'cli',
-    publicPath: '/cli/',
+    routerPrefix: 'web/cli',
+    publicPath: '/web/cli/',
     port: 2002,
     ip: '10.188.0.139',
     props: props
 },
 {
-    routerPrefix: 'system',
-    publicPath: '/system/',
+    routerPrefix: 'web/system',
+    publicPath: '/web/system/',
     port: 2002,
     ip: '10.188.0.139',
     props: props
@@ -82,9 +82,9 @@ const proArray: Array<IRegisterApp<IProps<IPropsData>>> = [{
 
 const apps: Array<RegistrableApp<any>> = (process.env.NODE_ENV === 'production' ? proArray : devArray).map((item) => {
     let r: RegistrableApp<any> = {
-        name: `ihome-${item.routerPrefix}`,
+        name: `ihome-${item.routerPrefix.replace('/','-')}`,
         entry: `//${item.ip}:${item.port}${item.publicPath}`,
-        container: `#root-ihome-${item.routerPrefix}`,
+        container: `#root-ihome-${item.routerPrefix.replace('/','-')}`,
         activeRule: genActiveRule(`/${item.routerPrefix}`),
         props: item.props
     }

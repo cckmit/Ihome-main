@@ -2,18 +2,11 @@
  * @Descripttion: 
  * @version: 
  * @Author: zyc
- * @Date: 2020-06-29 16:35:15
+ * @Date: 2020-07-07 09:25:17
  * @LastEditors: zyc
- * @LastEditTime: 2020-07-17 11:02:01
- */
-/*
- * @Descripttion: 
- * @version: 
- * @Author: zyc
- * @Date: 2020-06-28 17:38:36
- * @LastEditors: zyc
- * @LastEditTime: 2020-06-28 17:38:49
- */
+ * @LastEditTime: 2020-07-20 11:19:57
+ */ 
+import '../util/base/extend'
 import Vue from 'vue'
 import App from './App.vue'
 import { router } from '@/router'

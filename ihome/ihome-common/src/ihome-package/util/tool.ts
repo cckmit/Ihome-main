@@ -4,7 +4,7 @@
  * @Author: zyc
  * @Date: 2020-06-09 16:38:00
  * @LastEditors: zyc
- * @LastEditTime: 2020-07-06 15:19:16
+ * @LastEditTime: 2020-07-23 14:50:44
  */
 export interface ToolInterface {
     /**深度拷贝
@@ -16,10 +16,30 @@ export interface ToolInterface {
     * @param {type} list：config={},config.id=列表中的id，config.children=分组的key，rootId=根节点的父级id值
     * @return: 分组数据
     */
-    listToGruop(list: any[], config: any): any
+    listToGruop(list: any[], config: any): any;
+
+
+
+    /**判断两个值是否相等
+     * @param {type} 
+     * @return: 
+     */
+    eq(val1: number, val2: number, decimal?: number): boolean;
 
 }
 export class Tool implements ToolInterface {
+    /**判断两个值是否相等,误差
+    * @param {type} 
+    * @return: 
+    */
+    eq(val1: number, val2: number, decimal = 0.0000001): boolean {
+
+        if (Math.abs(val1 - val2) < decimal) {
+            return true;
+        } else {
+            return false;
+        }
+    }
     /**深度拷贝
      * @param {type} 
      * @return: 

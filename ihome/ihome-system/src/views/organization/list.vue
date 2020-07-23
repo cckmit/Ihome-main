@@ -4,17 +4,17 @@
  * @Author: zyc
  * @Date: 2020-07-14 11:26:26
  * @LastEditors: zyc
- * @LastEditTime: 2020-07-17 14:37:35
+ * @LastEditTime: 2020-07-20 09:16:24
 --> 
 <template>
-  <ih-page>
+  <ih-page class="organization-list">
     <template v-slot:container>
       <el-row>
         <el-col :span="6" style="border-right: 1px solid #e6e6e6;padding-right: 20px">
           <resourcesRadio />
         </el-col>
         <el-col :span="18" class="padding-left-20">
-          <el-form ref="form" label-width="80px">
+          <el-form ref="form" label-width="80px" class="ih-form">
             <el-row>
               <el-col :span="8">
                 <el-form-item label="名称">
@@ -230,3 +230,4 @@ export default class OrganizationList extends Vue {
   margin-left: 80px;
 }
 </style>
+ 

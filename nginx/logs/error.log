@@ -142,3 +142,7 @@
 2020/07/10 11:08:10 [error] 8956#9492: OpenEvent("Global\ngx_stop_9512") failed (2: The system cannot find the file specified)
 2020/07/10 11:08:26 [notice] 9096#5972: signal process started
 2020/07/10 11:09:10 [notice] 13108#5828: signal process started
+2020/07/23 14:36:16 [notice] 11964#11800: signal process started
+2020/07/23 14:39:15 [error] 2444#7576: *6 "D:\work\git\newsales\sales-front\nginx/html/web/cli/index.html" is not found (3: The system cannot find the path specified), client: 10.188.0.139, server: localhost, request: "GET /web/cli/ HTTP/1.1", host: "10.188.0.139:2002", referrer: "http://10.188.0.139:2001/web/system/user/list"
+2020/07/23 14:39:27 [error] 2444#7576: *5 "D:\work\git\newsales\sales-front\nginx/html/web/cli/index.html" is not found (3: The system cannot find the path specified), client: 10.188.0.139, server: localhost, request: "GET /web/cli/ HTTP/1.1", host: "10.188.0.139:2002", referrer: "http://10.188.0.139:2001/web/system/user/list"
+2020/07/23 15:00:16 [error] 2444#7576: *17 "D:\work\git\newsales\sales-front\nginx/html/web/cli/index.html" is not found (3: The system cannot find the path specified), client: 10.188.0.139, server: localhost, request: "GET /web/cli/ HTTP/1.1", host: "10.188.0.139:2002", referrer: "http://10.188.0.139:2001/web/system/organization/list"

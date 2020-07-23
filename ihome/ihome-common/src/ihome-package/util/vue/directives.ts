@@ -4,11 +4,11 @@
  * @Author: zyc
  * @Date: 2020-05-26 17:02:03
  * @LastEditors: zyc
- * @LastEditTime: 2020-07-15 09:00:37
+ * @LastEditTime: 2020-07-23 14:48:50
  */
 export default (Vue: any, vm: any) => {
     function has(el: any, binding: any) {
-        let list = vm?vm.$root.permissionsList:[];//权限列表
+        let list = vm ? vm.$root.permissionsList : [];//权限列表
         let result = false;//是否有权限
         if (binding.value instanceof Array) {
             //数组类型
@@ -45,17 +45,12 @@ export default (Vue: any, vm: any) => {
         update(el: any, binding: any) {
             has(el, binding)
         },
-        // componentUpdated(el: any, binding: any, vnode: any, oldVnode: any) {
-        //     console.log('componentUpdated');
-        // },
-        // bind(el: any, binding: any, vnode: any) {
-        //     console.log('bind');
-        // }
+
     });
 
     // v-dialogDrag: 弹窗拖拽
     Vue.directive('dialogDrag', {
-        bind(el: any, binding: any, vnode: any, oldVnode: any) {
+        bind(el: any) {
             const dialogHeaderEl = el.querySelector('.el-dialog__header')
             const dragDom = el.querySelector('.el-dialog')
             dialogHeaderEl.style.cursor = 'move'
@@ -73,8 +68,8 @@ export default (Vue: any, vm: any) => {
 
                 // 注意在ie中 第一次获取到的值为组件自带50% 移动之后赋值为px
                 if (sty.left.includes('%')) {
-                    styL = +document.body.clientWidth * (+sty.left.replace(/\%/g, '') / 100)
-                    styT = +document.body.clientHeight * (+sty.top.replace(/\%/g, '') / 100)
+                    styL = +document.body.clientWidth * (+sty.left.replace(/%/g, '') / 100)
+                    styT = +document.body.clientHeight * (+sty.top.replace(/%/g, '') / 100)
                 } else {
                     styL = +sty.left.replace(/\px/g, '')
                     styT = +sty.top.replace(/\px/g, '')
@@ -93,7 +88,7 @@ export default (Vue: any, vm: any) => {
                     // binding.value({x:e.pageX,y:e.pageY})
                 }
 
-                document.onmouseup = function (e) {
+                document.onmouseup = function () {
                     document.onmousemove = null
                     document.onmouseup = null
                 }

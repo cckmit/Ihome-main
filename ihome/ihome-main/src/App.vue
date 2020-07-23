@@ -4,7 +4,7 @@
  * @Author: zyc
  * @Date: 2020-06-22 11:46:23
  * @LastEditors: zyc
- * @LastEditTime: 2020-07-14 14:22:48
+ * @LastEditTime: 2020-07-23 14:27:16
 --> 
 <template>
   <div>
@@ -38,12 +38,12 @@
             </template>
             <!-- <el-menu-item @click="goto('/cli/')" index="4-1">cli-home</el-menu-item>
             <el-menu-item @click="goto('/cli/about')" index="4-2">cli-about</el-menu-item>-->
-            <el-menu-item @click="goto('/system/')" index="4-3">系统管理模块导航</el-menu-item>
-            <el-menu-item @click="goto('/system/user/list')" index="4-4">用户列表</el-menu-item>
-            <el-menu-item @click="goto('/system/resources/list')" index="4-5">资源列表</el-menu-item>
-            <el-menu-item @click="goto('/system/role/list')" index="4-6">角色列表</el-menu-item>
-            <el-menu-item @click="goto('/system/job/list')" index="4-7">岗位列表</el-menu-item>
-            <el-menu-item @click="goto('/system/organization/list')" index="4-8">组织架构</el-menu-item>
+            <el-menu-item @click="goto('/web/system/')" index="4-3">系统管理模块导航</el-menu-item>
+            <el-menu-item @click="goto('/web/system/user/list')" index="4-4">用户列表</el-menu-item>
+            <el-menu-item @click="goto('/web/system/resources/list')" index="4-5">资源列表</el-menu-item>
+            <el-menu-item @click="goto('/web/system/role/list')" index="4-6">角色列表</el-menu-item>
+            <el-menu-item @click="goto('/web/system/job/list')" index="4-7">岗位列表</el-menu-item>
+            <el-menu-item @click="goto('/web/system/organization/list')" index="4-8">组织架构</el-menu-item>
             <!-- 
             <el-menu-item @click="changeState('1')" index="4-17">修改state = 1</el-menu-item>
             <el-menu-item @click="changeState('2')" index="4-18">修改state = 2</el-menu-item>-->
@@ -57,8 +57,8 @@
           <!-- v-loading="loading" -->
           <el-main class="right-container-body" :style="{'min-height':screenHeight-50+'px'}">
             <!-- <div  id="root-view" class="app-view-box" v-html="content"></div> -->
-            <div id="root-ihome-cli" class="app-view-box" v-html="content"></div>
-            <div id="root-ihome-system" class="app-view-box" v-html="content"></div>
+            <div id="root-ihome-web-cli" class="app-view-box" v-html="content"></div>
+            <div id="root-ihome-web-system" class="app-view-box" v-html="content"></div>
           </el-main>
         </div>
       </el-container>

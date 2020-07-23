@@ -4,7 +4,7 @@
  * @Author: zyc
  * @Date: 2020-06-30 09:21:17
  * @LastEditors: zyc
- * @LastEditTime: 2020-07-17 11:30:42
+ * @LastEditTime: 2020-07-20 11:49:16
 --> 
 <template>
   <ih-page>
@@ -163,7 +163,7 @@
     </template>
 
     <template v-slot:table>
-      <br>
+      <br />
       <el-table
         class="ih-table"
         :data="tableData"
@@ -209,7 +209,7 @@
       </el-table>
     </template>
     <template v-slot:pagination>
-      <br>
+      <br />
       <el-pagination
         @size-change="handleSizeChange"
         @current-change="handleCurrentChange"
