@@ -1,7 +1,8 @@
 .DS_Store
 node_modules
 /dist
-/nginx/html/
+/nginx/html/main/
+/nginx/html/web/*/
 /nginx/logs/
 
 /tests/e2e/reports/

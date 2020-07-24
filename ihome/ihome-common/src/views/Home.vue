@@ -4,7 +4,7 @@
  * @Author: zyc
  * @Date: 2020-06-22 11:10:43
  * @LastEditors: zyc
- * @LastEditTime: 2020-07-01 15:52:17
+ * @LastEditTime: 2020-07-24 09:54:40
 --> 
 <template>
   <div>
@@ -12,7 +12,7 @@
   </div>
 </template>
 <script lang="ts">
-import { testApi, testPostApi } from "../api/test";
+// import { testApi, testPostApi } from "../api/test";
 import { Component, Vue } from "vue-property-decorator";
 @Component({
   components: {}

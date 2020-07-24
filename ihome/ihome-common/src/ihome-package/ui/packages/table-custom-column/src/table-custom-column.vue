@@ -4,7 +4,7 @@
  * @Author: zyc
  * @Date: 2020-06-09 16:22:31
  * @LastEditors: zyc
- * @LastEditTime: 2020-06-30 15:43:55
+ * @LastEditTime: 2020-07-24 09:54:27
 --> 
 <template>
   <el-popover placement="top-start" width="200" trigger="hover">
@@ -30,7 +30,7 @@
   </el-popover>
 </template>
 <script lang="ts">
-import { Component, Vue, Prop, Watch } from "vue-property-decorator";
+import { Component, Vue, Prop } from "vue-property-decorator";
 @Component({
   components: {}
 })

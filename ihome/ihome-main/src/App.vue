@@ -4,7 +4,7 @@
  * @Author: zyc
  * @Date: 2020-06-22 11:46:23
  * @LastEditors: zyc
- * @LastEditTime: 2020-07-23 14:27:16
+ * @LastEditTime: 2020-07-24 10:01:31
 --> 
 <template>
   <div>
@@ -57,8 +57,9 @@
           <!-- v-loading="loading" -->
           <el-main class="right-container-body" :style="{'min-height':screenHeight-50+'px'}">
             <!-- <div  id="root-view" class="app-view-box" v-html="content"></div> -->
-            <div id="root-ihome-web-cli" class="app-view-box" v-html="content"></div>
+            <!-- <div id="root-ihome-web-cli" class="app-view-box" v-html="content"></div> -->
             <div id="root-ihome-web-system" class="app-view-box" v-html="content"></div>
+            <div id="root-ihome-web-common" class="app-view-box" v-html="content"></div>
           </el-main>
         </div>
       </el-container>

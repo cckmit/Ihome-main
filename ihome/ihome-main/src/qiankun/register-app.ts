@@ -4,7 +4,7 @@
  * @Author: zyc
  * @Date: 2020-06-28 11:42:52
  * @LastEditors: zyc
- * @LastEditTime: 2020-07-23 14:25:01
+ * @LastEditTime: 2020-07-24 10:00:13
  */
 import { RegistrableApp, LoadableApp, FrameworkLifeCycles } from "qiankun"
 import { IRegisterApp, IProps, IPropsData } from './qiankun.d'
@@ -52,9 +52,9 @@ const baseProps: IProps<IPropsData> = {
 let props = Object.assign(baseProps)
 
 const devArray: Array<IRegisterApp<IProps<IPropsData>>> = [{
-    routerPrefix: 'web/cli',
-    publicPath: '/web/cli/',
-    port: 8082,
+    routerPrefix: 'web/common',
+    publicPath: '/web/common/',
+    port: 8084,
     ip: 'localhost',
     props: props
 },
@@ -66,8 +66,8 @@ const devArray: Array<IRegisterApp<IProps<IPropsData>>> = [{
     props: props
 }];
 const proArray: Array<IRegisterApp<IProps<IPropsData>>> = [{
-    routerPrefix: 'web/cli',
-    publicPath: '/web/cli/',
+    routerPrefix: 'web/common',
+    publicPath: '/web/common/',
     port: 2002,
     ip: '10.188.0.139',
     props: props
