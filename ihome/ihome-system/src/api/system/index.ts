@@ -4,20 +4,20 @@
  * @Author: zyc
  * @Date: 2020-07-08 10:38:09
  * @LastEditors: zyc
- * @LastEditTime: 2020-07-15 10:12:39
+ * @LastEditTime: 2020-07-24 18:26:49
  */
-import { IPageList } from "./base.d";
+import { IPageInfo } from "./base.d";
 
 import { request } from './base'
 // import {Http} from '../../util/aop/http'
 
 /**归属组织*/
 export async function organization(d?: any) {
-    return await request.get<IPageList<any>, IPageList<any>>('/user/organization', d)
+    return await request.get<IPageInfo<any>, IPageInfo<any>>('/user/organization', d)
 }
 /**用户列表*/
 export async function userList(d?: any) {
-    return await request.get<IPageList<any>, IPageList<any>>('/user/list', d)
+    return await request.get<IPageInfo<any>, IPageInfo<any>>('/user/list', d)
 }
 
 
@@ -39,7 +39,7 @@ export interface IResource {
 
 /**获取资源列表*/
 export async function getResourceList(d?: any) {
-    return await request.get<IPageList<IResource>, IPageList<IResource>>('/system/resource/list', { params: d })
+    return await request.get<IPageInfo<IResource>, IPageInfo<IResource>>('/system/resource/list', { params: d })
 }
 
 /**获取资源类别*/
@@ -48,16 +48,16 @@ export async function getResourceCategory(d?: any) {
 }
 /**获取角色列表*/
 export async function getRoleList(d?: any) {
-    return await request.get<IPageList<IResource>, IPageList<IResource>>('/system/role/list', { params: d })
+    return await request.get<IPageInfo<IResource>, IPageInfo<IResource>>('/system/role/list', { params: d })
 }
 /**获取岗位列表*/
 export async function getJobList(d?: any) {
-    return await request.get<IPageList<IResource>, IPageList<IResource>>('/system/job/list', { params: d })
+    return await request.get<IPageInfo<IResource>, IPageInfo<IResource>>('/system/job/list', { params: d })
 }
 /**获取用户列表*/
 
 export   async  function getUserList(d?: any) {
-    return await request.get<IPageList<IResource>, IPageList<IResource>>('/system/user/list', { params: d })
+    return await request.get<IPageInfo<IResource>, IPageInfo<IResource>>('/system/user/list', { params: d })
 }
 
 

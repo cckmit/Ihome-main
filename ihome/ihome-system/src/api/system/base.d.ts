@@ -4,7 +4,7 @@
  * @Author: zyc
  * @Date: 2020-07-08 10:41:39
  * @LastEditors: zyc
- * @LastEditTime: 2020-07-08 11:29:21
+ * @LastEditTime: 2020-07-24 18:26:38
  */
 
 /**返回结果定义 */
@@ -20,7 +20,7 @@ export interface IRes<T> {
 }
 
 /**列表返回数据模型*/
-export interface IPageList<T> {
+export interface IPageInfo<T> {
   /**总数 */
   total: number;
   /**列表数据 */

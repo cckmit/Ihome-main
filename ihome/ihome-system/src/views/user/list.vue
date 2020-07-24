@@ -4,7 +4,7 @@
  * @Author: zyc
  * @Date: 2020-06-30 09:21:17
  * @LastEditors: zyc
- * @LastEditTime: 2020-07-20 11:49:16
+ * @LastEditTime: 2020-07-24 18:28:59
 --> 
 <template>
   <ih-page>
@@ -211,13 +211,13 @@
     <template v-slot:pagination>
       <br />
       <el-pagination
-        @size-change="handleSizeChange"
-        @current-change="handleCurrentChange"
-        :current-page.sync="currentPage"
+        @size-change="handleSizeChangeMixin"
+        @current-change="handleCurrentChangeMixin"
+        :current-page.sync="queryPageParameters.pageNum"
         :page-sizes="$root.pageSizes"
-        :page-size="$root.pageSize"
+        :page-size="queryPageParameters.pageSize"
         :layout="$root.paginationLayout"
-        :total="total"
+        :total="resPageInfo.total"
       ></el-pagination>
     </template>
 
@@ -271,6 +271,7 @@ import MyOrganization from "@/components/MyOrganization.vue";
 import OrganizationJurisdiction from "@/components/OrganizationJurisdiction.vue";
 import MyPagination from "@/components/my-pagination.vue";
 import { organization, userList } from "../../api/system";
+import PaginationMixin from "../../mixins/pagination";
 // import { getResourceByIdUsingGET } from "../../api/system";
 @Component({
   components: {
@@ -279,19 +280,23 @@ import { organization, userList } from "../../api/system";
     MyOrganization,
     UserJobRole,
     OrganizationJurisdiction,
-    CopyUsers
-  }
+    CopyUsers,
+  },
+  mixins: [PaginationMixin],
 })
 export default class UserList extends Vue {
+  queryParameters: any = {
+    keyword: "",
+  };
   options: any = [
     {
       value: "1",
-      label: "下拉数据1"
+      label: "下拉数据1",
     },
     {
       value: "2",
-      label: "下拉数据2"
-    }
+      label: "下拉数据2",
+    },
   ];
   addData: any = null;
   value: any = "";
@@ -306,6 +311,7 @@ export default class UserList extends Vue {
   // valuedate: any ='2020-07-01';
   tableData: any = [];
   total: any = null;
+  resPageInfo: any = {};
   formatter(row: any) {
     return row.name;
   }
@@ -338,8 +344,8 @@ export default class UserList extends Vue {
     children: "subs",
     defaultExpandedKeys: [
       "10B1F16BDC5E7F33E0532429030A8871",
-      "105DB2C289397D50E0532429030A3DE0"
-    ]
+      "105DB2C289397D50E0532429030A3DE0",
+    ],
     // defaultCheckedKeys: ["1D29BB468F504774ACE653B946A393EE"]
   };
   // 选项列表（必选）
@@ -347,13 +353,18 @@ export default class UserList extends Vue {
   async created() {
     let organizationDTree = await organization();
     this.list = organizationDTree;
-    this.getUserList();
+    this.getListMixin();
   }
-  async getUserList() {
-    const { list, total } = await userList();
+  async getListMixin(queryP?: any) {
+    console.log("页面中调用getListMixin", queryP);
+    const d = await userList();
+    const { list, total } = d;
     console.log(list, total);
     this.tableData = list;
     this.total = total;
+    this.resPageInfo = d;
+    console.log(this.resPageInfo);
+    
   }
 
   getValue(value: any) {
@@ -362,18 +373,11 @@ export default class UserList extends Vue {
   }
 
   search() {
+    console.log(this.queryParameters);
     console.log(this.valuedate);
-    this.currentPage = 1;
-    this.getUserList();
+    this.getListMixin();
   }
-  handleSizeChange(a: any) {
-    console.log(a);
-    this.getUserList();
-  }
-  handleCurrentChange(a: any) {
-    console.log(a);
-    this.getUserList();
-  }
+
   set() {
     this.valueId = "2c92808270b81f9d0170bee437800015";
   }
@@ -391,7 +395,7 @@ export default class UserList extends Vue {
   info(scope: any) {
     this.$router.push({
       path: "/user/info",
-      query: { id: scope.row.id }
+      query: { id: scope.row.id },
     });
   }
   edit(scope: any) {
@@ -412,7 +416,7 @@ export default class UserList extends Vue {
       this.tableData.splice(scope.$index, 1);
       this.$message({
         type: "success",
-        message: "删除成功!"
+        message: "删除成功!",
       });
     } catch (error) {
       console.log(error);
@@ -425,7 +429,7 @@ export default class UserList extends Vue {
 
       this.$message({
         type: "success",
-        message: "锁定成功!"
+        message: "锁定成功!",
       });
       this.search();
     } catch (error) {
@@ -439,7 +443,7 @@ export default class UserList extends Vue {
 
       this.$message({
         type: "success",
-        message: "激活成功!"
+        message: "激活成功!",
       });
       this.search();
     } catch (error) {
@@ -453,7 +457,7 @@ export default class UserList extends Vue {
 
       this.$message({
         type: "success",
-        message: "密码重置成功!"
+        message: "密码重置成功!",
       });
     } catch (error) {
       console.log(error);
