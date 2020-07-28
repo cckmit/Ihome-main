@@ -4,7 +4,7 @@
  * @Author: zyc
  * @Date: 2020-06-23 10:42:04
  * @LastEditors: zyc
- * @LastEditTime: 2020-07-15 11:47:38
+ * @LastEditTime: 2020-07-28 16:17:41
 --> 
 <template>
   <div class="header-container">
@@ -37,7 +37,7 @@ import { Component, Vue, Watch } from "vue-property-decorator";
 import { UserModule } from "../store/modules/user";
 import { headImg } from "../utils/base64-img";
 @Component({
-  components: {}
+  components: {},
 })
 export default class IhHeader extends Vue {
   breadcrumbList: any = [];
@@ -63,19 +63,22 @@ export default class IhHeader extends Vue {
     newVal.matched.forEach((item: any) => {
       this.breadcrumbList.push({
         title: item.meta?.title,
-        path: item.path
+        path: item.path,
       });
     });
   }
   doc() {
     console.log("开发规范文档");
+    window.open(
+      "http://10.188.0.139:1999/%E6%96%B0%E6%88%BF%E5%89%8D%E7%AB%AF.pdf"
+    );
   }
   created() {
     this.breadcrumbList = [];
     this.$route.matched.forEach((item: any) => {
       this.breadcrumbList.push({
         title: item.meta?.title,
-        path: item.path
+        path: item.path,
       });
     });
   }
