@@ -4,7 +4,7 @@
  * @Author: zyc
  * @Date: 2020-06-30 09:21:17
  * @LastEditors: zyc
- * @LastEditTime: 2020-07-24 18:28:59
+ * @LastEditTime: 2020-07-28 09:10:00
 --> 
 <template>
   <ih-page>
@@ -355,8 +355,8 @@ export default class UserList extends Vue {
     this.list = organizationDTree;
     this.getListMixin();
   }
-  async getListMixin(queryP?: any) {
-    console.log("页面中调用getListMixin", queryP);
+  async getListMixin( ) {
+    console.log("页面中调用getListMixin");
     const d = await userList();
     const { list, total } = d;
     console.log(list, total);

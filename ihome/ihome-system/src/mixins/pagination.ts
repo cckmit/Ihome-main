@@ -4,7 +4,7 @@
  * @Author: zyc
  * @Date: 2020-07-24 17:08:03
  * @LastEditors: zyc
- * @LastEditTime: 2020-07-24 18:28:20
+ * @LastEditTime: 2020-07-28 09:10:32
  */
 interface IPageBase {
     pageNum: number,
@@ -32,9 +32,9 @@ declare module 'vue/types/vue' {
 */
 @Component
 export default class PaginationMixin extends Vue {
-    getListMixin(queryP?: IPageBase) {
+    getListMixin() {
         console.error('请在页面中实现getListMixin方法')
-        console.log(queryP)
+        console.log(this.queryPageParameters)
     }
     queryPageParameters: IPageBase = {
         "pageNum": 1,
@@ -47,10 +47,10 @@ export default class PaginationMixin extends Vue {
     handleSizeChangeMixin(pageNum: number) {
         console.log('handleSizeChange', pageNum);
         this.queryPageParameters.pageNum = 1;
-        this.getListMixin(this.queryPageParameters);
+        this.getListMixin();
     }
     handleCurrentChangeMixin(pageSize: number) {
         console.log('handleCurrentChange', pageSize);
-        this.getListMixin(this.queryPageParameters);
+        this.getListMixin();
     }
 }
