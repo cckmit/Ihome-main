@@ -4,7 +4,7 @@
  * @Author: zyc
  * @Date: 2020-06-22 11:10:43
  * @LastEditors: zyc
- * @LastEditTime: 2020-07-01 15:51:35
+ * @LastEditTime: 2020-07-30 08:56:21
  */
 import Vue from 'vue'
 import VueRouter, { RouteConfig } from 'vue-router'
@@ -19,6 +19,14 @@ const routes: Array<RouteConfig> = [
     component: Home,
     meta: {
       title: 'ts主页'
+    }
+  },
+  {
+    path: '/pre',
+    name: 'Pre',
+    component:  () => import('../views/pre.vue'),
+    meta: {
+      title: '图片pdf预览'
     }
   }
 ]
