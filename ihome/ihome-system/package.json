@@ -3,6 +3,7 @@
   "version": "0.1.0",
   "private": true,
   "scripts": {
+    "api":"node ./api",
     "serve": "vue-cli-service serve --mode mock",
     "serve:dev": "vue-cli-service serve --mode dev",
     "serve:mock": "vue-cli-service serve --mode mock",
