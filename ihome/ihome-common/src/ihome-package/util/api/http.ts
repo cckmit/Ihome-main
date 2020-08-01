@@ -4,7 +4,7 @@
  * @Author: zyc
  * @Date: 2020-06-29 16:35:01
  * @LastEditors: zyc
- * @LastEditTime: 2020-07-10 10:30:08
+ * @LastEditTime: 2020-08-01 16:43:44
  */
 import axios from 'axios'
 import { Message } from 'element-ui'
@@ -21,16 +21,28 @@ const service = axios.create({
 service.interceptors.request.use(
     (config) => {
         console.log(config)
+
         // let a = config.url?.includes;
         let url: string = config.url || '';
         if (url.includes('}')) {
-            //对{id}等参数进行替换
-            Object.keys(config.params || {}).forEach(k => {
-                let oldStr = '{' + k + '}'
-                let newStr = config.params[k]
-                config.url = url.replace(oldStr, newStr);
-                delete config.params[k];
-            })
+            if (config.method == 'get') {
+                //对{id}等参数进行替换
+                Object.keys(config.params || {}).forEach(k => {
+                    let oldStr = '{' + k + '}'
+                    let newStr = config.params[k]
+                    config.url = url.replace(oldStr, newStr);
+                    delete config.params[k];
+                })
+            } else {
+                Object.keys(config.data || {}).forEach(k => {
+                    let oldStr = '{' + k + '}'
+                    let newStr = config.data[k]
+                    config.url = url.replace(oldStr, newStr);
+                    delete config.data[k];
+                })
+
+            }
+
         }
         // Add X-Access-Token header to every request, you can add other custom headers here
         if (UserModule.token) {
@@ -52,10 +64,15 @@ service.interceptors.response.use(
             return response.data
         } else {
             const res = response.data
-            if (res.code !== 0) {
-                return Promise.reject(new Error(res.msg || 'Error'))
+            if (res.code !== 'Success') {
+                Message({
+                    message: res.msg,
+                    type: 'warning',
+                    duration: 5 * 1000
+                })
+                return Promise.reject(res)
             } else {
-                return response.data.result;
+                return response.data.data;
             }
         }
 
@@ -63,11 +80,39 @@ service.interceptors.response.use(
     },
     (error) => {
         NProgress.done()
-        Message({
-            message: error.msg,
-            type: 'error',
-            duration: 5 * 1000
-        })
+
+
+        if (error.response.status == 401 || error.response.status == 403) {
+            Message({
+                message: '请重新登录',
+                type: 'error',
+                duration: 5 * 1000
+            })
+
+        } else {
+            var originalRequest = error.config;
+            if (error.code == 'ECONNABORTED' && error.message.indexOf('timeout') != -1 && !originalRequest._retry) {
+                originalRequest._retry = true;
+                console.error('请求超时:' + originalRequest.timeout + ';url=' + originalRequest.url)
+                return axios.request(originalRequest);
+            }
+            let message = '系统异常';
+            if (error && error.response) {
+                message += error.response.status;
+            }
+            Message({
+                message: message,
+                type: 'error',
+                duration: 5 * 1000
+            })
+
+            return Promise.reject({
+                err: -1,
+                error: error
+            });
+
+        }
+
         return Promise.reject(error)
     }
 )

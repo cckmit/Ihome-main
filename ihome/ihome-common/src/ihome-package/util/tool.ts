@@ -4,7 +4,7 @@
  * @Author: zyc
  * @Date: 2020-06-09 16:38:00
  * @LastEditors: zyc
- * @LastEditTime: 2020-07-23 14:50:44
+ * @LastEditTime: 2020-08-01 16:54:38
  */
 export interface ToolInterface {
     /**深度拷贝

@@ -40,7 +40,7 @@
 <script lang="ts">
 import { Component, Vue, Prop } from "vue-property-decorator";
 // import { Form as ElForm } from "element-ui";
-import { getRoleList } from "../../api/system";
+import { getRoleList } from "../../api/system/index2";
 // import { DictionariesModule } from "../../store/modules/dictionaries";
 @Component({
   components: {}

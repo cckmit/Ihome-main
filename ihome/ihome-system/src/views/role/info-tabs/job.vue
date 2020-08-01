@@ -34,7 +34,7 @@
 </template>
 <script lang="ts">
 import { Component, Vue } from "vue-property-decorator";
-import { getJobList } from "../../../api/system";
+import { getJobList } from "../../../api/system/index2";
 @Component({
   components: {}
 })

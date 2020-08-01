@@ -4,7 +4,7 @@
  * @Author: zyc
  * @Date: 2020-07-09 15:03:17
  * @LastEditors: zyc
- * @LastEditTime: 2020-07-17 16:28:18
+ * @LastEditTime: 2020-08-01 09:38:49
 --> 
 <template>
   <el-dialog
@@ -78,7 +78,7 @@
 </template>
 <script lang="ts">
 import { Component, Vue, Prop, Watch } from "vue-property-decorator";
-import { getResourceCategory } from "../api/system";
+import { getResourceCategory } from "../api/system/index2";
 import { DictionariesModule } from "../store/modules/dictionaries";
 @Component({
   components: {}

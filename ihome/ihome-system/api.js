@@ -4,7 +4,7 @@
  * @Author: zyc
  * @Date: 2020-07-31 15:21:06
  * @LastEditors: zyc
- * @LastEditTime: 2020-07-31 18:05:50
+ * @LastEditTime: 2020-08-01 16:06:56
  */
 let http = require('http');
 let fs = require("fs");
@@ -43,7 +43,7 @@ function handleBody(body) {
     writeLine('/* eslint-disable */');
     writeLine('//' + new Date().toString())
 
-    writeLine("import { request } from './base'")
+    writeLine("import { request } from '../base'")
     const { paths, definitions } = body;
 
     Object.keys(paths).forEach(k => {
@@ -90,10 +90,13 @@ function handleBody(body) {
             }
             writeLine(`/**${paths[k]["get"].summary}*/`)
             // writeLine(`export async function ${paths[k]["get"].operationId} (d?: ${res}) {`)
-            let className = replaceAll('get' + body.basePath + k, '/', '_')
+            let className = replaceAll('get' + k, '/', '_')
             className = className.replace('{id}', 'ID')
+            if (!res) {
+                res = 'any'
+            }
             writeLine(`export async function ${className} (d?: ${res}) {`)
-            writeLine(`return await request.get< ${res},${originalRef}>('${body.basePath}${k}', { params: d })`)
+            writeLine(`return await request.get<${originalRef},${originalRef}>('${body.basePath}${k}', { params: d })`)
             writeLine(`}`)
 
         } else {
@@ -136,11 +139,14 @@ function handleBody(body) {
 
             writeLine(`/**${paths[k]["post"].summary}*/`)
             // writeLine(`export async function ${paths[k]["post"].operationId} (d?: ${res}) {`)
-            let className = replaceAll('post' + body.basePath + k, '/', '_')
+            let className = replaceAll('post' + k, '/', '_')
             className = className.replace('{id}', 'ID')
+            if (!res) {
+                res = 'any'
+            }
             writeLine(`export async function ${className} (d?: ${res}) {`)
 
-            writeLine(`return await request.post< ${res},${originalRef}> ('${body.basePath}${k}', d)`)
+            writeLine(`return await request.post< ${originalRef},${originalRef}> ('${body.basePath}${k}', d)`)
             writeLine(`}`)
 
         }
@@ -161,7 +167,7 @@ function handleBody(body) {
     writeLine(`/**PageModel模型*/`)
     writeLine(`export interface PageModel<T> {`)
     writeLine(`/**结果集*/`)
-    writeLine(`list:T;`)
+    writeLine(`list:T[];`)
     writeLine(`/**总记录数*/`)
     writeLine(`total: number;`)
     writeLine(`}`)
@@ -207,7 +213,7 @@ function handleBody(body) {
 
 
 
-    fs.writeFile('./src/api/system/test.ts', text, function (err) {
+    fs.writeFile('./src/api/system/index.ts', text, function (err) {
         if (err) {
             return console.error(err);
         }

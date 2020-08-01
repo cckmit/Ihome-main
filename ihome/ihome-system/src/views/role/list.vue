@@ -104,7 +104,7 @@
 </template>
 <script lang="ts">
 import { Component, Vue } from "vue-property-decorator";
-import { getRoleList } from "../../api/system";
+import { getRoleList } from "../../api/system/index2";
 import RoleAdd from "./add.vue";
 import ResourcesCheck from "@/components/resourcesCheck.vue";
 import BatchOperationJob from "./batch-operation-job.vue";

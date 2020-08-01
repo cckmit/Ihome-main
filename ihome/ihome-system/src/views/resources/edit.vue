@@ -4,12 +4,12 @@
  * @Author: zyc
  * @Date: 2020-07-07 10:29:16
  * @LastEditors: zyc
- * @LastEditTime: 2020-07-15 09:34:10
+ * @LastEditTime: 2020-08-01 16:01:11
 --> 
  
 <template>
   <el-dialog
-  v-dialogDrag
+    v-dialogDrag
     title="资源编辑"
     :visible.sync="dialogVisible"
     :close-on-click-modal="false"
@@ -64,8 +64,9 @@
 import { Component, Vue, Prop } from "vue-property-decorator";
 import { Form as ElForm } from "element-ui";
 import { DictionariesModule } from "../../store/modules/dictionaries";
+import { post_resource_update } from "../../api/system/index";
 @Component({
-  components: {}
+  components: {},
 })
 export default class ResourcesEdit extends Vue {
   constructor() {
@@ -79,27 +80,36 @@ export default class ResourcesEdit extends Vue {
     return DictionariesModule.modular;
   }
 
+  // ruleForm: any = {
+  //   type: DictionariesModule.defaultModular,
+  //   name: "",
+  //   parentCode: "M.NEWSALES.SYSTEM.USER",
+  //   code: "",
+  //   url: "",
+  // };
   ruleForm: any = {
-    type: DictionariesModule.defaultModular,
-    name: "",
-    parentCode: "M.NEWSALES.SYSTEM.USER",
     code: "",
-    url: ""
+    id: 0,
+    name: "",
+    parentId: 0,
+    parentCode: null,
+    type: "",
+    url: "",
   };
   rules: any = {
     type: [{ required: true, message: "请选择类型", trigger: "change" }],
     name: [
       { required: true, message: "请输入名称", trigger: "change" },
-      { min: 1, max: 16, message: "长度在 1 到 16 个字符", trigger: "change" }
+      { min: 1, max: 16, message: "长度在 1 到 16 个字符", trigger: "change" },
     ],
     code: [
       { required: true, message: "请输入编码", trigger: "change" },
-      { min: 1, max: 16, message: "长度在 1 到 16 个字符", trigger: "change" }
+      { min: 1, max: 16, message: "长度在 1 到 16 个字符", trigger: "change" },
     ],
     url: [
       { required: true, message: "请输入URL", trigger: "change" },
-      { validator: this.validateUrl, trigger: "change" }
-    ]
+      { validator: this.validateUrl, trigger: "change" },
+    ],
   };
   validateUrl(rule: any, value: any, callback: any) {
     //const reg = /[-A-Za-z0-9]/;
@@ -117,11 +127,23 @@ export default class ResourcesEdit extends Vue {
     this.$emit("cancel", false);
   }
 
-  finish(formName: any) {
-    (this.$refs[formName] as ElForm).validate(valid => {
+  async finish(formName: any) {
+    (this.$refs[formName] as ElForm).validate(async (valid) => {
       if (valid) {
-        alert("submit!");
         console.log(this.ruleForm);
+        let p = {
+          code: this.ruleForm.code,
+          id: this.ruleForm.id,
+          name: this.ruleForm.name,
+          parentId: this.ruleForm.parentId,
+          type: this.ruleForm.type,
+          url: this.ruleForm.url,
+        };
+        await post_resource_update(p);
+        this.$message({
+          type: "success",
+          message: "修改成功!",
+        });
         this.$emit("finish", {});
       } else {
         console.log("error submit!!");
@@ -134,6 +156,7 @@ export default class ResourcesEdit extends Vue {
   }
   created() {
     console.log(this.data);
+    this.ruleForm = this.data;
   }
 }
 </script>

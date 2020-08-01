@@ -4,7 +4,7 @@
  * @Author: zyc
  * @Date: 2020-06-22 11:11:41
  * @LastEditors: zyc
- * @LastEditTime: 2020-07-31 11:14:31
+ * @LastEditTime: 2020-08-01 09:48:00
  */
 const path = require('path');
 const webpack = require('webpack')
@@ -34,7 +34,10 @@ module.exports = {
 			'Access-Control-Allow-Origin': '*',
 		},
 		proxy: {
-			'/system/v2/api-docs': { //正式
+			'/system/v2/api-docs': { 
+				target: 'http://10.188.0.109:8610'
+			},
+			'/system/': { 
 				target: 'http://10.188.0.109:8610'
 			}
 		}

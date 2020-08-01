@@ -4,7 +4,7 @@
  * @Author: zyc
  * @Date: 2020-06-23 17:07:08
  * @LastEditors: zyc
- * @LastEditTime: 2020-07-10 10:27:07
+ * @LastEditTime: 2020-08-01 09:55:18
  */
 const Mock = require('mockjs');
 Mock.setup({
@@ -12,9 +12,9 @@ Mock.setup({
 })
 function responseSuccess(result: any) {
     return {
-        code: 0,
+        code: 'Success',
         msg: '成功',
-        result: result
+        data: result
     }
 }
 // function responseError(result: any) {

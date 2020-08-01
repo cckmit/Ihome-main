@@ -4,7 +4,7 @@
  * @Author: zyc
  * @Date: 2020-07-07 15:36:27
  * @LastEditors: zyc
- * @LastEditTime: 2020-07-08 11:28:14
+ * @LastEditTime: 2020-08-01 16:39:46
 --> 
 <template>
   <div>
@@ -14,7 +14,7 @@
       </el-input>
     </div>
     <br />
-    <el-table :data="list" style="width: 100%">
+    <el-table :data="resPageInfo.list" style="width: 100%">
       <el-table-column type="index" label="序号" width="50"></el-table-column>
       <el-table-column prop="name" label="名称" width="180"></el-table-column>
       <el-table-column prop="code" label="编码" width="180"></el-table-column>
@@ -31,19 +31,29 @@
       :page-sizes="[10, 20, 50]"
       :page-size="10"
       layout="total, sizes, prev, pager, next, jumper"
-      :total="total"
+      :total="resPageInfo.total"
     ></el-pagination>
   </div>
 </template>
 <script lang="ts">
 import { Component, Vue } from "vue-property-decorator";
-import { getRoleList } from "../../../api/system";
+import { getRoleList } from "../../../api/system/index2";
+import { post_role_getListByResourceId } from "../../../api/system/index";
+import PaginationMixin from "../../../mixins/pagination";
 @Component({
-  components: {}
+  components: {},
+  mixins: [PaginationMixin],
 })
 export default class InfoRole extends Vue {
-  list: any = [];
-  total: any = null;
+  queryPageParameters: any = {
+    key: null,
+    resourceId: 0,
+  };
+  resPageInfo: any = {
+    list: [],
+    total: 0,
+  };
+
   currentPage = 1;
   handleSizeChange(a: any) {
     console.log(a);
@@ -52,11 +62,13 @@ export default class InfoRole extends Vue {
     console.log(a);
   }
   async search() {
-    const { total, list } = await getRoleList();
-    this.total = total;
-    this.list = list;
+    this.resPageInfo = await post_role_getListByResourceId(
+      this.queryPageParameters
+    );
   }
   async created() {
+    let id = this.$route.query.id;
+    this.queryPageParameters.resourceId = id;
     this.search();
   }
 }

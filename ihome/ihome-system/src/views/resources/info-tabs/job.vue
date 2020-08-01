@@ -4,43 +4,55 @@
  * @Author: zyc
  * @Date: 2020-07-07 15:36:27
  * @LastEditors: zyc
- * @LastEditTime: 2020-07-14 09:22:14
+ * @LastEditTime: 2020-08-01 16:50:28
 --> 
 <template>
   <div>
     <div style="text-align:right;">
-      <el-input style="width:300px;" placeholder="名称 编码" class="input-with-select">
+      <el-input
+        style="width:300px;"
+        placeholder="名称 编码"
+        class="input-with-select"
+        v-model="queryPageParameters.key"
+      >
         <el-button slot="append" icon="el-icon-search" @click="search()"></el-button>
       </el-input>
     </div>
     <br />
-    <el-table :data="list" style="width: 100%">
+    <el-table :data="resPageInfo.list" style="width: 100%">
       <el-table-column type="index" label="序号" width="50"></el-table-column>
       <el-table-column prop="name" label="名称" width="180"></el-table-column>
       <el-table-column prop="code" label="编码" width="180"></el-table-column>
       <el-table-column prop="describe" label="描述"></el-table-column>
     </el-table>
     <el-pagination
-      class="text-right margin-top-20"
-      @size-change="handleSizeChange"
-      @current-change="handleCurrentChange"
-      :current-page.sync="currentPage"
-      :page-sizes="[10, 20, 50]"
-      :page-size="10"
-      layout="total, sizes, prev, pager, next, jumper"
-      :total="total"
+      @size-change="handleSizeChangeMixin"
+      @current-change="handleCurrentChangeMixin"
+      :current-page.sync="queryPageParameters.pageNum"
+      :page-sizes="$root.pageSizes"
+      :page-size="queryPageParameters.pageSize"
+      :layout="$root.paginationLayout"
+      :total="resPageInfo.total"
     ></el-pagination>
   </div>
 </template>
 <script lang="ts">
 import { Component, Vue } from "vue-property-decorator";
-import { getJobList } from "../../../api/system";
+import PaginationMixin from "../../../mixins/pagination";
+import { post_job_getListByResourceId } from "../../../api/system/index";
 @Component({
-  components: {}
+  components: {},
+  mixins: [PaginationMixin],
 })
 export default class InfoJob extends Vue {
-  list: any = [];
-  total: any = null;
+  queryPageParameters: any = {
+    key: null,
+    resourceId: 0,
+  };
+  resPageInfo: any = {
+    list: [],
+    total: 0,
+  };
   currentPage = 1;
   handleSizeChange(a: any) {
     console.log(a);
@@ -49,11 +61,13 @@ export default class InfoJob extends Vue {
     console.log(a);
   }
   async search() {
-    const { total, list } = await getJobList();
-    this.total = total;
-    this.list = list;
+    this.resPageInfo = await post_job_getListByResourceId(
+      this.queryPageParameters
+    );
   }
   async created() {
+    let id = this.$route.query.id;
+    this.queryPageParameters.resourceId = id;
     this.search();
   }
 }

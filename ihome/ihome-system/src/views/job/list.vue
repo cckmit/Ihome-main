@@ -83,7 +83,7 @@
 </template>
 <script lang="ts">
 import { Component, Vue } from "vue-property-decorator";
-import { getJobList } from "../../api/system";
+import { getJobList } from "../../api/system/index2";
 import JobAddEdit from "./add-edit.vue";
 import AssignRole from "./assign-role.vue";
 @Component({

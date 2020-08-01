@@ -130,7 +130,7 @@ import OrganizationAdd from "./add.vue";
 import resourcesRadio from "@/components/resourcesRadio.vue";
 import { DictionariesModule } from "../../store/modules/dictionaries";
 import { Component, Vue } from "vue-property-decorator";
-import { getResourceList, getResourceCategory } from "../../api/system";
+import { getResourceList, getResourceCategory } from "../../api/system/index2";
 
 @Component({
   components: {

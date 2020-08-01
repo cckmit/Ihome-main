@@ -57,7 +57,7 @@
 </template>
 <script lang="ts">
 import { Component, Vue, Prop, Watch } from "vue-property-decorator";
-import { getResourceCategory } from "../api/system";
+import { getResourceCategory } from "../api/system/index2";
 import { DictionariesModule } from "../store/modules/dictionaries";
 @Component({
   components: {}

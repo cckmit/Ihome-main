@@ -4,7 +4,7 @@
  * @Author: zyc
  * @Date: 2020-06-30 09:21:17
  * @LastEditors: zyc
- * @LastEditTime: 2020-07-30 15:57:54
+ * @LastEditTime: 2020-08-01 09:36:37
 --> 
 <template>
   <ih-page>
@@ -270,7 +270,7 @@ import CopyUsers from "./dialog/copy-users.vue";
 import MyOrganization from "@/components/MyOrganization.vue";
 import OrganizationJurisdiction from "@/components/OrganizationJurisdiction.vue";
 import MyPagination from "@/components/my-pagination.vue";
-import { organization, userList } from "../../api/system";
+import { organization, userList } from "../../api/system/index2";
 import PaginationMixin from "../../mixins/pagination";
 // import { getResourceByIdUsingGET } from "../../api/system";
 @Component({

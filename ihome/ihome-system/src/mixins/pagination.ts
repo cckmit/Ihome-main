@@ -4,13 +4,13 @@
  * @Author: zyc
  * @Date: 2020-07-24 17:08:03
  * @LastEditors: zyc
- * @LastEditTime: 2020-07-28 09:10:32
+ * @LastEditTime: 2020-08-01 17:08:04
  */
 interface IPageBase {
     pageNum: number,
     pageSize: number,
 }
-import { IPageInfo } from "../api/system/base.d";
+import { IPageInfo } from "../api/base.d";
 import { Vue, Component } from 'vue-property-decorator'
 declare module 'vue/types/vue' {
     interface Vue {
@@ -44,9 +44,10 @@ export default class PaginationMixin extends Vue {
         total: 0,
         list: []
     }
-    handleSizeChangeMixin(pageNum: number) {
-        console.log('handleSizeChange', pageNum);
+    handleSizeChangeMixin(size: number) {
+        console.log('handleSizeChange', size);
         this.queryPageParameters.pageNum = 1;
+        this.queryPageParameters.pageSize = size;
         this.getListMixin();
     }
     handleCurrentChangeMixin(pageSize: number) {

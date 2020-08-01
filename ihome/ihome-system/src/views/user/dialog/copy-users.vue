@@ -96,7 +96,7 @@
 </template>
 <script lang="ts">
 import { Component, Vue, Prop } from "vue-property-decorator";
-import { getRoleList } from "../../../api/system";
+import { getRoleList } from "../../../api/system/index2";
 // import { Form as ElForm } from "element-ui";
 
 @Component({

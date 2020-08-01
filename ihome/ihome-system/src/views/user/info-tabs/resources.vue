@@ -4,7 +4,7 @@
  * @Author: zyc
  * @Date: 2020-07-08 14:23:49
  * @LastEditors: zyc
- * @LastEditTime: 2020-07-08 14:48:13
+ * @LastEditTime: 2020-08-01 09:39:10
 --> 
 <template>
   <div>
@@ -30,16 +30,16 @@
 </template>
 <script lang="ts">
 import { Component, Vue, Watch } from "vue-property-decorator";
-import { getResourceCategory } from "../../../api/system";
+import { getResourceCategory } from "../../../api/system/index2";
 @Component({
-  components: {}
+  components: {},
 })
 export default class UserResources extends Vue {
   filterText: any = "";
   dataTree: any = [];
   defaultProps: any = {
     children: "children",
-    label: "name"
+    label: "name",
   };
   @Watch("filterText")
   filterTextWatch(val: any) {

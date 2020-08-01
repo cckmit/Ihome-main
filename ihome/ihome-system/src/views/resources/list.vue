@@ -4,14 +4,14 @@
  * @Author: zyc
  * @Date: 2020-07-06 09:41:43
  * @LastEditors: zyc
- * @LastEditTime: 2020-07-17 15:05:05
+ * @LastEditTime: 2020-08-01 17:23:50
 --> 
 <template>
   <ih-page>
-    <template v-slot:container  >
+    <template v-slot:container>
       <el-row>
         <el-col :span="6" style="border-right: 1px solid #e6e6e6;padding-right: 20px">
-          <resourcesRadio />
+          <resourcesRadio @select="selectResources" />
         </el-col>
         <el-col :span="18" class="padding-left-20">
           <el-form ref="form" label-width="80px">
@@ -22,7 +22,7 @@
               <el-col :span="22" class="text-right">
                 <el-select
                   style="width:120px;margin-right:20px;"
-                  v-model="value"
+                  v-model="queryPageParameters.type"
                   clearable
                   placeholder="请选择类型"
                   @change="search()"
@@ -39,6 +39,7 @@
                   placeholder="名称 编码 URL"
                   class="input-with-select"
                   @keyup.enter.native="search"
+                  v-model="queryPageParameters.key"
                 >
                   <el-button slot="append" icon="el-icon-search" @click="search()"></el-button>
                 </el-input>
@@ -47,7 +48,7 @@
           </el-form>
           <br />
           <el-table
-            :data="resourceList"
+            :data="resPageInfo.list"
             width="100%"
             class="ih-table"
             :default-sort="{prop: 'date', order: 'descending'}"
@@ -55,17 +56,21 @@
             <!-- <el-table-column type="selection" width="50"></el-table-column> -->
             <el-table-column fixed type="index" label="序号" width="50"></el-table-column>
             <el-table-column fixed prop="name" label="名称" sortable width="180"></el-table-column>
-            <el-table-column prop="code" label="编码" sortable width="90"></el-table-column>
+            <el-table-column prop="code" label="编码" sortable width="180"></el-table-column>
 
-            <el-table-column prop="type" label="类型" sortable width="90"></el-table-column>
+            <el-table-column prop="type" label="类型" sortable width="90">
+              <template slot-scope="scope">
+                <span>{{scope.row.type|resourceType}}</span>
+              </template>
+            </el-table-column>
             <el-table-column prop="url" label="URL" sortable></el-table-column>
             <el-table-column prop="parentName" label="父资源" sortable width="180"></el-table-column>
 
-            <el-table-column prop="createUser" label="创建人" sortable width="90"></el-table-column>
+            <el-table-column prop="createUserName" label="创建人" sortable width="90"></el-table-column>
 
             <el-table-column prop="createTime" label="创建时间" sortable width="180"></el-table-column>
 
-            <el-table-column prop="updateUser" label="修改人" sortable width="90"></el-table-column>
+            <el-table-column prop="updateUserName" label="修改人" sortable width="90"></el-table-column>
 
             <el-table-column prop="updateTime" label="修改人时间" sortable width="180"></el-table-column>
 
@@ -88,21 +93,20 @@
           </el-table>
 
           <el-pagination
-            style="text-align: right;margin-top:20px;"
-            @size-change="handleSizeChange"
-            @current-change="handleCurrentChange"
-            :current-page.sync="currentPage"
-            :page-sizes="[10, 20, 50]"
-            :page-size="10"
-            layout="total, sizes, prev, pager, next, jumper"
-            :total="total"
+            @size-change="handleSizeChangeMixin"
+            @current-change="handleCurrentChangeMixin"
+            :current-page.sync="queryPageParameters.pageNum"
+            :page-sizes="$root.pageSizes"
+            :page-size="queryPageParameters.pageSize"
+            :layout="$root.paginationLayout"
+            :total="resPageInfo.total"
           ></el-pagination>
         </el-col>
       </el-row>
     </template>
     <ih-dialog :show="dialogVisible">
       <ResourcesAdd
-        data="xxx"
+        :data="resourcesAddData"
         @cancel="()=>dialogVisible=false"
         @finish="(data)=>{dialogVisible=false;finish(data)}"
       />
@@ -129,22 +133,37 @@ import ResourcesEdit from "./edit.vue";
 import resourcesRadio from "@/components/resourcesRadio.vue";
 import { DictionariesModule } from "../../store/modules/dictionaries";
 import { Component, Vue } from "vue-property-decorator";
-import { getResourceList, getResourceCategory } from "../../api/system";
+import PaginationMixin from "../../mixins/pagination";
+import {
+  post_resource_getList,
+  post_resource_delete_ID,
+} from "../../api/system/index";
 import BatchOperationRole from "./batch-operation-role.vue";
 @Component({
   components: {
     ResourcesAdd,
     ResourcesEdit,
     BatchOperationRole,
-    resourcesRadio
-  }
+    resourcesRadio,
+  },
+  mixins: [PaginationMixin],
 })
 export default class ResourcesList extends Vue {
-  resourceList: any[] = [];
-  total: any = null;
-  input3: any = "";
+  queryPageParameters: any = {
+    key: "",
+    parentId: 0,
+    type: "",
+  };
+  resourcesAddData: any = {
+    parentId: null,
+    parentName: null,
+    parentCode: null,
+  };
+  resPageInfo: any = {
+    total: 0,
+    list: [],
+  };
 
-  currentPage: any = 1;
   dialogVisible = false;
   dialogEdit = false;
   editData: any = null;
@@ -152,41 +171,27 @@ export default class ResourcesList extends Vue {
   dialogBatchOperationRole = false;
 
   async created() {
-    const res: any = await getResourceCategory();
-    console.log(res);
-
-    this.getList();
-  }
-  currentChange(item: any) {
-    console.log(item);
+    // this.getList();
   }
 
-  handleSizeChange(a: any) {
-    console.log(a);
-    this.getList();
-  }
-  handleCurrentChange(a: any) {
-    console.log(a);
-    this.getList();
-  }
-  value: any = null;
   get options() {
-    DictionariesModule.getModular();
-    return DictionariesModule.modularAll;
+    return DictionariesModule.modular;
   }
-  async getList() {
-    const res = await getResourceList();
-    // res.list[0].code
-    // const { total, list }  = await getResourceList();
-
-    this.resourceList = res.list;
-    this.total = res.total;
+  async getListMixin() {
+    this.resPageInfo = await post_resource_getList(this.queryPageParameters);
   }
   search() {
-    this.getList();
+    this.getListMixin();
   }
 
   add() {
+    if (this.queryPageParameters.parentId === 0) {
+      this.$message({
+        message: "请先选择左边列表",
+        type: "warning",
+      });
+      return;
+    }
     this.dialogVisible = true;
   }
   edit(scope: any) {
@@ -199,6 +204,7 @@ export default class ResourcesList extends Vue {
   }
   finishEdit(data: any) {
     console.log(data);
+    this.getListMixin();
   }
   finishBatchOperationRole(data: any) {
     console.log(data);
@@ -208,7 +214,7 @@ export default class ResourcesList extends Vue {
     console.log(scope);
     this.$router.push({
       path: "/resources/info",
-      query: { id: scope.row.id }
+      query: { id: scope.row.id },
     });
   }
   batchOperationRole(scope: any) {
@@ -220,14 +226,24 @@ export default class ResourcesList extends Vue {
 
     try {
       await this.$confirm("是否确定删除?", "提示");
-      this.resourceList.splice(scope.$index, 1);
+      await post_resource_delete_ID({ id: scope.row.id });
+
+      this.resPageInfo.list.splice(scope.$index, 1);
       this.$message({
         type: "success",
-        message: "删除成功!"
+        message: "删除成功!",
       });
     } catch (error) {
       console.log(error);
     }
+  }
+  selectResources(item: any) {
+    console.log("selectResources", item);
+    this.queryPageParameters.parentId = item.id;
+    this.resourcesAddData.parentId = item.id;
+    this.resourcesAddData.parentName = item.name;
+    this.resourcesAddData.parentCode = item.code;
+    this.getListMixin();
   }
 }
 </script>

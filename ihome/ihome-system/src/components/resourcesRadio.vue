@@ -4,12 +4,18 @@
  * @Author: zyc
  * @Date: 2020-07-09 15:03:17
  * @LastEditors: zyc
- * @LastEditTime: 2020-07-09 16:39:24
+ * @LastEditTime: 2020-08-01 17:22:43
 --> 
 <template>
   <div>
     <div>
-      <el-select style="width:100%;" v-model="value" placeholder="请选择">
+      <el-select
+        style="width:100%;"
+        @change="selectChange()"
+        v-model="selectType"
+        clearable
+        placeholder="请选择"
+      >
         <el-option
           v-for="(item,index) in options"
           :key="index"
@@ -40,41 +46,59 @@
 </template>
 <script lang="ts">
 import { Component, Vue, Watch } from "vue-property-decorator";
-import { getResourceCategory } from "../api/system";
+import { get_resource_getAll } from "../api/system/index";
 import { DictionariesModule } from "../store/modules/dictionaries";
 @Component({
-  components: {}
+  components: {},
 })
 export default class ResourcesRadio extends Vue {
   constructor() {
     super();
   }
-  value: any = null;
+  selectType: any = null;
   filterText: any = "";
   @Watch("filterText")
   filterTextWatch(val: any) {
     console.log(val);
-    (this.$refs.tree as any).filter(val);
+    (this.$refs.tree as any).filter(val, this.selectType);
   }
   dataTree: any = [];
   defaultProps: any = {
     children: "children",
-    label: "name"
+    label: "name",
   };
+  selectChange() {
+    (this.$refs.tree as any).filter(this.filterText, this.selectType);
+  }
   filterNode(value: any, data: any) {
-    if (!value) return true;
-    return data[this.defaultProps.label].indexOf(value) !== -1;
+    if (!value && !this.selectType) {
+      return true;
+    } else {
+      if (value && this.selectType) {
+        return (
+          data[this.defaultProps.label].indexOf(value) !== -1 &&
+          data.type.indexOf(this.selectType)
+        );
+      } else {
+        if (value) {
+          return data[this.defaultProps.label].indexOf(value) !== -1;
+        } else {
+          return data.type.indexOf(this.selectType);
+        }
+      }
+    }
   }
   currentChange(item: any) {
     console.log(item);
+    this.$emit("select", item);
   }
   get options() {
-    DictionariesModule.getModular();
-    return DictionariesModule.modularAll;
+    return DictionariesModule.modular;
   }
   async created() {
-    const res: any = await getResourceCategory();
+    const res = await get_resource_getAll();
     console.log(res);
+    res[0].parentId = 0;
     this.dataTree = this.$tool.listToGruop(res, { rootId: 0 });
   }
 }

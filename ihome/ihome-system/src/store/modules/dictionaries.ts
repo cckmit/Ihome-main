@@ -4,7 +4,7 @@
  * @Author: zyc
  * @Date: 2020-06-28 15:13:07
  * @LastEditors: zyc
- * @LastEditTime: 2020-07-09 16:08:09
+ * @LastEditTime: 2020-08-01 15:20:43
  */
 
 import { VuexModule, Module, Action, Mutation, getModule } from 'vuex-module-decorators'
@@ -13,8 +13,7 @@ import store from '@/store'
 import { getDictionaries } from '../../api/common'
 
 interface Dic {
-    code: string,
-    name: string,
+
     label: string,
     value: string,
 }
@@ -26,25 +25,41 @@ export interface IDictionaries {
 @Module({ dynamic: true, store, name: 'dictionaries', namespaced: true, })
 class Dictionaries extends VuexModule implements IDictionaries {
     public list: Dic[] = [];
-    public modular: Dic[] | null = null;
-    public defaultModular = '1';
+    public modular: Dic[] = [
+        { value: 'Root', label: '资源根节点' },
+        { value: 'System', label: '系统' },
+        { value: 'Service', label: '服务模块' },
+        { value: 'Menu', label: '功能菜单' },
+        { value: 'Api', label: 'API' },
+        { value: 'Button', label: '按钮' },
+        { value: 'Element', label: '元素' },
+    ];
+    public defaultModular = '';
     public defaultOption = [{
-        code: "0",
-        name: "所有资源",
-        value: "0",
-        label: "所有资源"
+
+        value: "",
+        label: "请选择"
     }]
-    public modularAll: Dic[] = [];
+    public modularAll: Dic[] = [
+        { value: '', label: '请选择' },
+        { value: 'Root', label: '资源根节点' },
+        { value: 'System', label: '系统' },
+        { value: 'Service', label: '服务模块' },
+        { value: 'Menu', label: '功能菜单' },
+        { value: 'Api', label: 'API' },
+        { value: 'Button', label: '按钮' },
+        { value: 'Element', label: '元素' },
+    ];;
 
     @Mutation
     private setModular(modular: Dic[]) {
 
-        modular.map((item: Dic) => {
-            item.value = item.code;
-            item.label = item.name;
-            return item;
-        })
-        this.modular = modular;
+        // modular.map((item: Dic) => {
+        //     item.value = item.code;
+        //     item.label = item.name;
+        //     return item;
+        // })
+        // this.modular = modular;
         this.modularAll = this.defaultOption.concat(modular)
         console.log(this.modularAll)
     }
@@ -53,9 +68,9 @@ class Dictionaries extends VuexModule implements IDictionaries {
         if (this.modular) {
             return this.modular;
         } else {
-            const list = await getDictionaries();
-
-            this.setModular(list)
+            // const list = await getDictionaries();
+            //Root-资源根节点、System-系统、Service-服务模块、Menu-功能菜单、Api-API、Button-按钮、Element-元素
+           
         }
     }
 }
