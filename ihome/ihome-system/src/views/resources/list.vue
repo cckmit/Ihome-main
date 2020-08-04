@@ -4,7 +4,7 @@
  * @Author: zyc
  * @Date: 2020-07-06 09:41:43
  * @LastEditors: zyc
- * @LastEditTime: 2020-08-01 17:23:50
+ * @LastEditTime: 2020-08-04 09:31:54
 --> 
 <template>
   <ih-page>
@@ -150,7 +150,7 @@ import BatchOperationRole from "./batch-operation-role.vue";
 })
 export default class ResourcesList extends Vue {
   queryPageParameters: any = {
-    key: "",
+    key: null,
     parentId: 0,
     type: "",
   };

@@ -4,11 +4,11 @@
  * @Author: zyc
  * @Date: 2020-07-14 09:48:18
  * @LastEditors: zyc
- * @LastEditTime: 2020-07-15 09:33:22
+ * @LastEditTime: 2020-08-04 15:02:29
 --> 
 <template>
   <el-dialog
-  v-dialogDrag
+    v-dialogDrag
     title="岗位"
     :visible.sync="dialogVisible"
     :close-on-click-modal="false"
@@ -32,8 +32,8 @@
       <el-form-item label="编码" prop="code">
         <el-input v-model="ruleForm.code"></el-input>
       </el-form-item>
-      <el-form-item label="描述" prop="describe">
-        <el-input type="textarea" show-word-limit maxlength="64" v-model="ruleForm.describe"></el-input>
+      <el-form-item label="描述" prop="remark">
+        <el-input type="textarea" show-word-limit maxlength="64" v-model="ruleForm.remark"></el-input>
       </el-form-item>
     </el-form>
 
@@ -47,8 +47,9 @@
 import { Component, Vue, Prop } from "vue-property-decorator";
 import { Form as ElForm } from "element-ui";
 import { DictionariesModule } from "../../store/modules/dictionaries";
+import { post_job_add, post_job_update } from "../../api/system/index";
 @Component({
-  components: {}
+  components: {},
 })
 export default class JobAddEdit extends Vue {
   constructor() {
@@ -63,34 +64,43 @@ export default class JobAddEdit extends Vue {
   }
 
   ruleForm: any = {
-    code: "",
-    name: "",
-    describe: null
+    id: 0,
+    code: null,
+    name: null,
+    remark: null,
   };
   rules: any = {
     type: [{ required: true, message: "请选择类型", trigger: "change" }],
     name: [
       { required: true, message: "请输入名称", trigger: "change" },
-      { min: 1, max: 16, message: "长度在 1 到 16 个字符", trigger: "change" }
+      { min: 1, max: 16, message: "长度在 1 到 16 个字符", trigger: "change" },
     ],
     code: [
       { required: true, message: "请输入编码", trigger: "change" },
-      { min: 1, max: 16, message: "长度在 1 到 16 个字符", trigger: "change" }
-    ]
+      { min: 1, max: 16, message: "长度在 1 到 16 个字符", trigger: "change" },
+    ],
   };
 
   cancel() {
     this.$emit("cancel", false);
   }
 
-  finish(formName: any) {
-    (this.$refs[formName] as ElForm).validate(valid => {
+  async finish(formName: any) {
+    (this.$refs[formName] as ElForm).validate(async (valid) => {
       if (valid) {
-        alert("submit!");
         console.log(this.ruleForm);
-        this.$emit("finish", {});
+        if (this.ruleForm.id > 0) {
+          const res = await post_job_update(this.ruleForm);
+          this.$message.success("操作成功");
+          this.$emit("finish", res);
+        } else {
+          const res = await post_job_add(this.ruleForm);
+          this.$message.success("操作成功.");
+
+          this.$emit("finish", res);
+        }
       } else {
-        console.log("error submit!!");
+        this.$message.warning("请先填好数据");
         return false;
       }
     });

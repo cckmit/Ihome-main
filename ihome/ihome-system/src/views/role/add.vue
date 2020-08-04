@@ -4,7 +4,7 @@
  * @Author: zyc
  * @Date: 2020-07-09 14:08:24
  * @LastEditors: zyc
- * @LastEditTime: 2020-07-15 11:25:26
+ * @LastEditTime: 2020-08-04 10:33:54
 --> 
 <template>
   <el-dialog
@@ -45,8 +45,9 @@ import { Component, Vue, Prop } from "vue-property-decorator";
 import { Form as ElForm } from "element-ui";
 import { DictionariesModule } from "../../store/modules/dictionaries";
 import { noTrim } from "ihome-common/util/base/form-ui";
+import { post_role_add, post_role_update } from "../../api/system/index";
 @Component({
-  components: {}
+  components: {},
 })
 export default class RoleAdd extends Vue {
   constructor() {
@@ -62,30 +63,37 @@ export default class RoleAdd extends Vue {
   ruleForm: any = {
     id: null,
     name: "",
-    code: ""
+    code: "",
   };
   rules: any = {
     name: [
       { required: true, message: "请输入名称", trigger: "change" },
-      { min: 1, max: 16, message: "长度在 1 到 16 个字符", trigger: "change" }
+      { min: 1, max: 16, message: "长度在 1 到 16 个字符", trigger: "change" },
     ],
     code: [
       { required: true, message: "请输入编码", trigger: "change" },
       { min: 1, max: 16, message: "长度在 1 到 16 个字符", trigger: "change" },
-      { validator: noTrim, trigger: "change" }
-    ]
+      { validator: noTrim, trigger: "change" },
+    ],
   };
 
   cancel() {
     this.$emit("cancel", false);
   }
 
-  finish(formName: any) {
-    (this.$refs[formName] as ElForm).validate(valid => {
+  async finish(formName: any) {
+    (this.$refs[formName] as ElForm).validate(async (valid) => {
       if (valid) {
-        alert("submit!");
         console.log(this.ruleForm);
-        this.$emit("finish", this.ruleForm);
+        if (this.ruleForm.id > 0) {
+          const res = await post_role_update(this.ruleForm);
+          this.$message.success("修改成功");
+          this.$emit("finish", res);
+        } else {
+          const res = await post_role_add(this.ruleForm);
+          this.$message.success("添加成功");
+          this.$emit("finish", res);
+        }
       } else {
         console.log("error submit!!");
         return false;

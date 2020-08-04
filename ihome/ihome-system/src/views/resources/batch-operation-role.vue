@@ -4,11 +4,11 @@
  * @Author: zyc
  * @Date: 2020-07-07 16:13:53
  * @LastEditors: zyc
- * @LastEditTime: 2020-07-15 09:34:02
+ * @LastEditTime: 2020-08-04 09:31:45
 --> 
 <template>
   <el-dialog
-  v-dialogDrag
+    v-dialogDrag
     title="批量分配角色"
     :visible.sync="dialogVisible"
     :close-on-click-modal="false"
@@ -21,12 +21,16 @@
   >
     <div>
       <div style="text-align:right;">
-        <el-input style="width:300px;" placeholder="名称 编码" class="input-with-select">
-          <el-button slot="append" icon="el-icon-search" @click="search()"></el-button>
+        <el-input style="width:300px;" placeholder="名称 编码" class="input-with-select" v-model="queryPageParameters.key">
+          <el-button slot="append" icon="el-icon-search" @click="getListMixin()"></el-button>
         </el-input>
       </div>
       <br />
-      <el-table :data="list" style="width: 100%" @selection-change="handleSelectionChange">
+      <el-table
+        :data="resPageInfo.list"
+        style="width: 100%"
+        @selection-change="handleSelectionChange"
+      >
         <el-table-column type="selection" width="55"></el-table-column>
         <el-table-column type="index" label="序号" width="50"></el-table-column>
         <el-table-column prop="name" label="名称"></el-table-column>
@@ -34,14 +38,13 @@
       </el-table>
       <div>
         <el-pagination
-          style="text-align: right;margin:20px 40px 0 0;"
-          @size-change="handleSizeChange"
-          @current-change="handleCurrentChange"
-          :current-page.sync="currentPage"
-          :page-sizes="[10, 20, 50]"
-          :page-size="10"
-          layout="total, sizes, prev, pager, next, jumper"
-          :total="total"
+          @size-change="handleSizeChangeMixin"
+          @current-change="handleCurrentChangeMixin"
+          :current-page.sync="queryPageParameters.pageNum"
+          :page-sizes="$root.pageSizes"
+          :page-size="queryPageParameters.pageSize"
+          :layout="$root.paginationLayout"
+          :total="resPageInfo.total"
         ></el-pagination>
       </div>
     </div>
@@ -54,10 +57,16 @@
 </template>
 <script lang="ts">
 import { Component, Vue, Prop } from "vue-property-decorator";
-import { getRoleList } from "../../api/system/index2";
+// import { getRoleList } from "../../api/system/index2";
+import {
+  post_role_getListByResourceId,
+  post_resource_addResourceToRoleBatch,
+} from "../../api/system/index";
+import PaginationMixin from "../../mixins/pagination";
 // import { Form as ElForm } from "element-ui";
 @Component({
-  components: {}
+  components: {},
+  mixins: [PaginationMixin],
 })
 export default class BatchOperationRole extends Vue {
   constructor() {
@@ -66,39 +75,49 @@ export default class BatchOperationRole extends Vue {
   @Prop({ default: null }) data: any;
   dialogVisible = true;
 
+  queryPageParameters: any = {
+    key: null,
+    resourceId: 0,
+  };
+  resPageInfo: any = {
+    total: 0,
+    list: [],
+  };
+  handleSelectionChange(val: any) {
+    this.selectList = val;
+  }
+
   selectList: any = [];
 
   cancel() {
     this.$emit("cancel", false);
   }
 
-  finish() {
+  async finish() {
     if (this.selectList.length > 0) {
-      this.$emit("finish", {});
+      let p = {
+        resourceId: this.data.id,
+        roleIds: this.selectList,
+      };
+      const res = await post_resource_addResourceToRoleBatch(p);
+      this.$emit("finish", res);
     } else {
-      alert(`未选择数据`);
+      this.$message({
+        message: "请先勾选数据",
+        type: "warning",
+      });
     }
   }
-  list: any = [];
-  total: any = null;
-  currentPage = 1;
-  handleSizeChange(a: any) {
-    console.log(a);
-  }
-  handleCurrentChange(a: any) {
-    console.log(a);
-  }
-  async search() {
-    const { total, list } = await getRoleList();
-    this.total = total;
-    this.list = list;
+
+  async getListMixin() {
+    this.resPageInfo = await post_role_getListByResourceId(
+      this.queryPageParameters
+    );
   }
   async created() {
-    this.search();
-  }
-  handleSelectionChange(val: any) {
-    console.log(val);
-    this.selectList = val;
+    console.log(this.data);
+    this.queryPageParameters.resourceId = this.data.id;
+    this.getListMixin();
   }
 }
 </script>

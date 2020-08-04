@@ -4,7 +4,7 @@
  * @Author: zyc
  * @Date: 2020-07-09 10:21:50
  * @LastEditors: zyc
- * @LastEditTime: 2020-07-17 14:21:18
+ * @LastEditTime: 2020-08-04 14:26:04
 --> 
 <template>
   <ih-page>
@@ -19,10 +19,10 @@
               style="width:300px;"
               placeholder="名称 编码"
               class="input-with-select"
-              v-model="keyword"
-              @keyup.enter.native="search"
+              v-model="queryPageParameters.key"
+              @keyup.enter.native="getListMixin"
             >
-              <el-button slot="append" icon="el-icon-search" @click="search()"></el-button>
+              <el-button slot="append" icon="el-icon-search" @click="getListMixin()"></el-button>
             </el-input>
           </el-col>
         </el-row>
@@ -30,7 +30,7 @@
     </template>
     <template v-slot:table>
       <br />
-      <el-table class="ih-table" :data="list" style="width: 100%">
+      <el-table class="ih-table" :data="resPageInfo.list" style="width: 100%">
         <el-table-column type="index" label="序号" width="50"></el-table-column>
         <el-table-column prop="name" label="名称" width="180"></el-table-column>
         <el-table-column prop="code" label="编码" width="180"></el-table-column>
@@ -62,13 +62,13 @@
     <template v-slot:pagination>
       <br />
       <el-pagination
-        @size-change="handleSizeChange"
-        @current-change="handleCurrentChange"
-        :current-page.sync="currentPage"
+        @size-change="handleSizeChangeMixin"
+        @current-change="handleCurrentChangeMixin"
+        :current-page.sync="queryPageParameters.pageNum"
         :page-sizes="$root.pageSizes"
-        :page-size="$root.pageSize"
+        :page-size="queryPageParameters.pageSize"
         :layout="$root.paginationLayout"
-        :total="total"
+        :total="resPageInfo.total"
       ></el-pagination>
     </template>
 
@@ -81,7 +81,7 @@
     </ih-dialog>
     <ih-dialog :show="dialogResourcesCheck">
       <ResourcesCheck
-        :data="dialogResourcesCheck"
+        :data="resourcesCheckData"
         @cancel="()=>dialogResourcesCheck=false"
         @finish="(data)=>{dialogResourcesCheck=false;finishdialogResourcesCheck(data)}"
       />
@@ -104,18 +104,34 @@
 </template>
 <script lang="ts">
 import { Component, Vue } from "vue-property-decorator";
-import { getRoleList } from "../../api/system/index2";
 import RoleAdd from "./add.vue";
 import ResourcesCheck from "@/components/resourcesCheck.vue";
 import BatchOperationJob from "./batch-operation-job.vue";
 import BatchOperationUser from "./batch-operation-user.vue";
+import PaginationMixin from "../../mixins/pagination";
+
+import { post_role_getList, post_role_delete_ID } from "../../api/system/index";
+
 @Component({
-  components: { RoleAdd, ResourcesCheck, BatchOperationJob, BatchOperationUser }
+  components: {
+    RoleAdd,
+    ResourcesCheck,
+    BatchOperationJob,
+    BatchOperationUser,
+  },
+  mixins: [PaginationMixin],
 })
 export default class RoleList extends Vue {
   dialogResourcesCheck = false;
-  list: any[] = [];
-  total: any = null;
+  resourcesCheckData: any = null;
+  queryPageParameters: any = {
+    key: null,
+  };
+
+  resPageInfo: any = {
+    total: 0,
+    list: [],
+  };
   currentPage = 1;
   dialogAdd = false;
   batchOperationJobData: any = null;
@@ -125,20 +141,13 @@ export default class RoleList extends Vue {
   itemData: any = null;
   keyword: any = null;
   value: any = null;
-  handleSizeChange(a: any) {
-    console.log(a);
-  }
-  handleCurrentChange(a: any) {
-    console.log(a);
-  }
+
   selectChange() {
     console.log(this.keyword);
     // this.search();
   }
-  async search() {
-    const { total, list } = await getRoleList();
-    this.total = total;
-    this.list = list;
+  async getListMixin() {
+    this.resPageInfo = await post_role_getList(this.queryPageParameters);
   }
   add(data: any) {
     this.itemData = data;
@@ -148,30 +157,31 @@ export default class RoleList extends Vue {
   info(scope: any) {
     this.$router.push({
       path: "/role/info",
-      query: { id: scope.row.id }
+      query: { id: scope.row.id },
     });
+    this.$tool.deepClone;
   }
   edit(scope: any) {
     this.add(scope.row);
   }
   setJurisdiction(scope: any) {
     console.log(scope);
+    this.resourcesCheckData = scope.row;
     this.dialogResourcesCheck = true;
   }
   async remove(scope: any) {
     try {
       await this.$confirm("是否确定删除?", "提示");
-      this.list.splice(scope.$index, 1);
-      this.$message({
-        type: "success",
-        message: "删除成功!"
-      });
+      await post_role_delete_ID({ id: scope.row.id });
+      this.resPageInfo.list.splice(scope.$index, 1);
+      this.$message.success("删除成功!");
     } catch (error) {
       console.log(error);
     }
   }
   finish(data: any) {
     console.log(data);
+    this.getListMixin();
   }
   batchOperationJob(scope: any) {
     this.batchOperationJobData = scope.row;
@@ -191,7 +201,7 @@ export default class RoleList extends Vue {
     console.log(data);
   }
   async created() {
-    this.search();
+    this.getListMixin();
   }
 }
 </script>

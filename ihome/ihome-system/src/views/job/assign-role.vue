@@ -4,7 +4,7 @@
  * @Author: zyc
  * @Date: 2020-07-14 10:03:09
  * @LastEditors: zyc
- * @LastEditTime: 2020-07-15 09:33:29
+ * @LastEditTime: 2020-08-04 15:09:53
 --> 
 <template>
   <el-dialog
@@ -43,13 +43,13 @@ import { Component, Vue, Prop } from "vue-property-decorator";
 import { getRoleList } from "../../api/system/index2";
 // import { DictionariesModule } from "../../store/modules/dictionaries";
 @Component({
-  components: {}
+  components: {},
 })
 export default class JobAddEdit extends Vue {
   constructor() {
     super();
   }
-  @Prop({ default: null }) datax: any;
+  @Prop({ default: null }) data: any;
   dialogVisible = true;
 
   generateData() {
@@ -62,13 +62,13 @@ export default class JobAddEdit extends Vue {
       "shenzhen",
       "nanjing",
       "xian",
-      "chengdu"
+      "chengdu",
     ];
     cities.forEach((city, index) => {
       dataList.push({
         label: city,
         key: index,
-        pinyin: pinyin[index]
+        pinyin: pinyin[index],
       });
     });
     return dataList;
@@ -89,6 +89,7 @@ export default class JobAddEdit extends Vue {
   }
 
   async created() {
+    console.log(this.data);
     const { total, list } = await getRoleList();
     list.forEach((item: any) => {
       item.key = item.id;
