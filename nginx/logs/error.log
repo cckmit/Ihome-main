@@ -33,3 +33,5 @@
 2020/08/05 16:54:15 [notice] 12744#11200: signal process started
 2020/08/05 16:58:20 [notice] 16832#16168: signal process started
 2020/08/05 17:00:46 [error] 8904#10604: *11 directory index of "D:\work\git\newsales\nginx/html/web-common/" is forbidden, client: 10.188.0.139, server: localhost, request: "GET /web-common/ HTTP/1.1", host: "10.188.0.139:2002", referrer: "http://10.188.0.139:2001/web-system/"
+2020/08/05 17:17:52 [notice] 10136#3984: signal process started
+2020/08/05 17:18:43 [notice] 7344#9108: signal process started

@@ -4,7 +4,7 @@
  * @Author: zyc
  * @Date: 2020-06-29 16:35:01
  * @LastEditors: zyc
- * @LastEditTime: 2020-08-01 16:43:44
+ * @LastEditTime: 2020-08-05 17:15:12
  */
 import axios from 'axios'
 import { Message } from 'element-ui'
@@ -79,16 +79,14 @@ service.interceptors.response.use(
 
     },
     (error) => {
+        console.log(error)
         NProgress.done()
-
-
         if (error.response.status == 401 || error.response.status == 403) {
             Message({
                 message: '请重新登录',
                 type: 'error',
                 duration: 5 * 1000
             })
-
         } else {
             var originalRequest = error.config;
             if (error.code == 'ECONNABORTED' && error.message.indexOf('timeout') != -1 && !originalRequest._retry) {
@@ -110,9 +108,7 @@ service.interceptors.response.use(
                 err: -1,
                 error: error
             });
-
         }
-
         return Promise.reject(error)
     }
 )
