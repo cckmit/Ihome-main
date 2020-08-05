@@ -4,7 +4,7 @@
  * @Author: zyc
  * @Date: 2020-07-15 10:31:43
  * @LastEditors: zyc
- * @LastEditTime: 2020-07-15 11:18:44
+ * @LastEditTime: 2020-08-05 10:42:58
  */
 
 /**大陆手机号码校验*/
@@ -28,6 +28,27 @@ export function isLetterValidato(rule: any, value: any, callback: any) {
         callback();
     }
 }
+/**大写字母*/
+export function isUpperLetterValidato(rule: any, value: any, callback: any) {
+    let zmReg = /^[A-Z]*$/;
+    if (value != "" && !zmReg.test(value)) {
+        callback(new Error('请输入大写英文字母'))
+        return;
+    } else {
+        callback();
+    }
+}
+/**小写字母*/
+export function isLowerLetterValidato(rule: any, value: any, callback: any) {
+    let zmReg = /^[a-z]*$/;
+    if (value != "" && !zmReg.test(value)) {
+        callback(new Error('请输入小写英文字母'))
+        return;
+    } else {
+        callback();
+    }
+}
+
 
 /**中文*/
 export function isChineseValidato(rule: any, value: any, callback: any) {

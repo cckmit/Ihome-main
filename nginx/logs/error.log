@@ -30,3 +30,6 @@
 2020/07/28 15:54:35 [error] 4560#5608: *7 CreateFile() "D:\work\git\newsales\nginx/html/zhangdada/vue-ts-qiankun/1818513" failed (3: The system cannot find the path specified), client: 10.188.0.139, server: localhost, request: "GET /zhangdada/vue-ts-qiankun/1818513 HTTP/1.1", host: "10.188.0.139:1999"
 2020/07/28 15:55:18 [notice] 7980#5816: signal process started
 2020/07/28 15:56:28 [notice] 17536#9580: signal process started
+2020/08/05 16:54:15 [notice] 12744#11200: signal process started
+2020/08/05 16:58:20 [notice] 16832#16168: signal process started
+2020/08/05 17:00:46 [error] 8904#10604: *11 directory index of "D:\work\git\newsales\nginx/html/web-common/" is forbidden, client: 10.188.0.139, server: localhost, request: "GET /web-common/ HTTP/1.1", host: "10.188.0.139:2002", referrer: "http://10.188.0.139:2001/web-system/"

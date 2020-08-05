@@ -4,7 +4,7 @@
  * @Author: zyc
  * @Date: 2020-07-14 11:26:26
  * @LastEditors: zyc
- * @LastEditTime: 2020-08-04 17:17:35
+ * @LastEditTime: 2020-08-05 15:24:24
 --> 
 <template>
   <ih-page class="organization-list">
@@ -109,19 +109,15 @@
             <!-- 名称 简称 层级 组织类型 -->
             <el-table-column fixed type="index" label="序号" width="50"></el-table-column>
             <el-table-column fixed prop="name" label="名称" sortable></el-table-column>
-            <el-table-column prop="code" label="简称" sortable width="90"></el-table-column>
-
-            <el-table-column prop="type" label="层级" sortable width="90"></el-table-column>
-            <el-table-column prop="url" label="组织类型" width="120" sortable></el-table-column>
-
+            <el-table-column prop="shortName" label="简称" sortable width="90"></el-table-column>
+            <el-table-column prop="level" label="层级" sortable width="90"></el-table-column>
+            <el-table-column label="组织类型" width="120" sortable>
+              <template slot-scope="scope">{{getOrgTypeName(scope.row.orgType)}}</template>
+            </el-table-column>
             <el-table-column prop="createUserName" label="创建人" sortable width="90"></el-table-column>
-
             <el-table-column prop="createTime" label="创建时间" sortable width="180"></el-table-column>
-
             <el-table-column prop="updateUserName" label="修改人" sortable width="90"></el-table-column>
-
             <el-table-column prop="updateTime" label="修改人时间" sortable width="180"></el-table-column>
-
             <el-table-column fixed="right" label="操作" width="120">
               <template slot-scope="scope">
                 <el-link
@@ -164,14 +160,25 @@ import { Component, Vue } from "vue-property-decorator";
 // import { getResourceList, getResourceCategory } from "../../api/system/index2";
 import { post_org_getList } from "../../api/system/index";
 import PaginationMixin from "../../mixins/pagination";
+import { orgType } from "../../util/enums/dic";
+
 @Component({
   components: {
     OrganizationAdd,
     OrganizationTree,
   },
   mixins: [PaginationMixin],
+  // filters: {
+  //   filterName(value: string) {
+  //     return orgType[value];
+
+  //   },
+  // },
 })
 export default class OrganizationList extends Vue {
+  constructor() {
+    super();
+  }
   queryPageParameters: any = {
     departmentType: null,
     level: 0,
@@ -185,44 +192,28 @@ export default class OrganizationList extends Vue {
     total: 0,
     list: [],
   };
+  leftItem: any = null;
 
-  input3: any = "";
-
-  currentPage: any = 1;
   dialogVisible = false;
   dialogEdit = false;
   organizationItem: any = null;
   editData: any = null;
-
+  getOrgTypeName(key: string) {
+    return orgType[key];
+  }
   async created() {
     console.log("created");
   }
 
-  value: any = null;
-  get options() {
-    DictionariesModule.getModular();
-    return DictionariesModule.modularAll;
-  }
   get departmentTypeOptions() {
-    const list = [
-      { value: "Business", label: "营业线" },
-      { value: "Function", label: "职能线" },
-    ];
-    return list;
+    return DictionariesModule.departmentType;
   }
   get orgTypeOptions() {
-    const list = [
-      { value: "Company", label: "公司" },
-      { value: "Department", label: "部门" },
-    ];
-    return list;
+    return DictionariesModule.orgType;
   }
+
   get statusOptions() {
-    const list = [
-      { value: "Valid", label: "有效" },
-      { value: "Invalid", label: "无效" },
-    ];
-    return list;
+    return DictionariesModule.orgStatus;
   }
   get levelOptions() {
     const list = [0, 1, 2, 3, 4, 5, 6, 7];
@@ -235,14 +226,25 @@ export default class OrganizationList extends Vue {
     // const { total, list }  = await getResourceList();
   }
 
-  add(data: any) {
+  add(data: any, isedit: boolean) {
+    if (!isedit) {
+      if (this.queryPageParameters.parentId === 0) {
+        this.$message.warning("请先选择组织");
+        return;
+      } else {
+        data.id = 0;
+        data.parentId = this.leftItem.id;
+        data.parentName = this.leftItem.name;
+        data.level = this.leftItem.level + 1;
+      }
+    }
     this.organizationItem = data;
     this.dialogVisible = true;
   }
 
   edit(scope: any) {
     console.log(scope);
-    this.add(scope.row);
+    this.add(scope.row, true);
   }
   finish(data: any) {
     console.log(data);
@@ -277,6 +279,7 @@ export default class OrganizationList extends Vue {
     console.log("selectOrganizationTree");
     console.log(item);
     this.queryPageParameters.parentId = item.id;
+    this.leftItem = item;
     this.getListMixin();
   }
   async search() {

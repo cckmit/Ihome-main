@@ -4,7 +4,7 @@
  * @Author: zyc
  * @Date: 2020-06-09 16:38:00
  * @LastEditors: zyc
- * @LastEditTime: 2020-08-04 10:17:03
+ * @LastEditTime: 2020-08-05 11:20:12
  */
 export interface ToolInterface {
     /**深度拷贝
@@ -18,16 +18,69 @@ export interface ToolInterface {
     */
     listToGruop(list: any[], config: any): any;
 
-
-
     /**判断两个值是否相等
      * @param {type} 
      * @return: 
      */
     eq(val1: number, val2: number, decimal?: number): boolean;
 
+    /**今天的字符串格式年月日
+     * @param {type} 
+     * @return {type} 
+     */
+    todayStr(format?: string): string;
+    /**今天的字符串格式年月日时分秒
+     * @param {type} 
+     * @return {type} 
+     */
+    todayLongStr(format?: string): string;
+
 }
 export class Tool implements ToolInterface {
+    /**今天的字符串格式年月日时分秒
+     * @param {type} 
+     * @return {type} 
+     */
+    todayLongStr(format = 'yyyy-MM-dd HH:mm:ss'): string {
+        if (format == 'yyyy-MM-dd HH:mm:ss') {
+            let today = new Date();
+            let year = today.getFullYear();
+            let month: any = today.getMonth() + 1;
+            month = month < 10 ? '0' + month : month;
+            let day = today.getDate() < 10 ? '0' + today.getDate() : today.getDate();
+            let hours = today.getHours() < 10 ? '0' + today.getHours() : today.getHours();
+            let mins = today.getMinutes() < 10 ? '0' + today.getMinutes() : today.getMinutes();
+            let secs = today.getSeconds() < 10 ? '0' + today.getSeconds() : today.getSeconds();
+            let result = `${year}-${month}-${day} ${hours}:${mins}:${secs}`
+            return result;
+
+        } else {
+            throw new Error("暂时只支持yyyy-MM-ddd,yyyy-MM-dd HH:mm:ss格式");
+        }
+    }
+    /**今天的字符串格式年月日
+     * @param {type} 
+     * @return {type} 
+     */
+    todayStr(format = 'yyyy-MM-dd'): string {
+        if (format == 'yyyy-MM-dd') {
+            let today = new Date();
+            let year = today.getFullYear();
+            let month: any = today.getMonth() + 1;
+            month = month < 10 ? '0' + month : month;
+            let day = today.getDate() < 10 ? '0' + today.getDate() : today.getDate();
+            let hours = today.getHours() < 10 ? '0' + today.getHours() : today.getHours();
+            let mins = today.getMinutes() < 10 ? '0' + today.getMinutes() : today.getMinutes();
+            let secs = today.getSeconds() < 10 ? '0' + today.getSeconds() : today.getSeconds();
+            let result = `${year}-${month}-${day}`
+            return result;
+
+        } else {
+            throw new Error("暂时只支持yyyy-MM-ddd格式");
+        }
+
+
+    }
     /**判断两个值是否相等,误差
     * @param {type} 
     * @return: 

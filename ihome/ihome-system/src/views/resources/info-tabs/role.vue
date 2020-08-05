@@ -4,7 +4,7 @@
  * @Author: zyc
  * @Date: 2020-07-07 15:36:27
  * @LastEditors: zyc
- * @LastEditTime: 2020-08-01 16:39:46
+ * @LastEditTime: 2020-08-05 10:46:08
 --> 
 <template>
   <div>
@@ -37,7 +37,7 @@
 </template>
 <script lang="ts">
 import { Component, Vue } from "vue-property-decorator";
-import { getRoleList } from "../../../api/system/index2";
+// import { getRoleList } from "../../../api/system/index2";
 import { post_role_getListByResourceId } from "../../../api/system/index";
 import PaginationMixin from "../../../mixins/pagination";
 @Component({

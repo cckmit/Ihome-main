@@ -4,7 +4,7 @@
  * @Author: zyc
  * @Date: 2020-07-06 09:41:43
  * @LastEditors: zyc
- * @LastEditTime: 2020-08-04 09:31:54
+ * @LastEditTime: 2020-08-05 16:44:20
 --> 
 <template>
   <ih-page>
@@ -104,21 +104,21 @@
         </el-col>
       </el-row>
     </template>
-    <ih-dialog :show="dialogVisible">
+    <ih-dialog :show="dialogVisible" title="新增资源">
       <ResourcesAdd
         :data="resourcesAddData"
         @cancel="()=>dialogVisible=false"
         @finish="(data)=>{dialogVisible=false;finish(data)}"
       />
     </ih-dialog>
-    <ih-dialog :show="dialogEdit">
+    <ih-dialog :show="dialogEdit" title="编辑资源">
       <ResourcesEdit
         :data="editData"
         @cancel="()=>dialogEdit=false"
         @finish="(data)=>{dialogEdit=false;finishEdit(data)}"
       />
     </ih-dialog>
-    <ih-dialog :show="dialogBatchOperationRole">
+    <ih-dialog :show="dialogBatchOperationRole" title="批量分配角色">
       <BatchOperationRole
         :data="batchOperationRoleData"
         @cancel="()=>dialogBatchOperationRole=false"
@@ -131,7 +131,7 @@
 import ResourcesAdd from "./add.vue";
 import ResourcesEdit from "./edit.vue";
 import resourcesRadio from "@/components/resourcesRadio.vue";
-import { DictionariesModule } from "../../store/modules/dictionaries";
+// import { DictionariesModule } from "../../store/modules/dictionaries";
 import { Component, Vue } from "vue-property-decorator";
 import PaginationMixin from "../../mixins/pagination";
 import {
@@ -139,6 +139,7 @@ import {
   post_resource_delete_ID,
 } from "../../api/system/index";
 import BatchOperationRole from "./batch-operation-role.vue";
+import { getListTool, modular } from "../../util/enums/dic";
 @Component({
   components: {
     ResourcesAdd,
@@ -149,6 +150,9 @@ import BatchOperationRole from "./batch-operation-role.vue";
   mixins: [PaginationMixin],
 })
 export default class ResourcesList extends Vue {
+  constructor() {
+    super();
+  }
   queryPageParameters: any = {
     key: null,
     parentId: 0,
@@ -175,7 +179,8 @@ export default class ResourcesList extends Vue {
   }
 
   get options() {
-    return DictionariesModule.modular;
+    let list = getListTool(modular);
+    return list;
   }
   async getListMixin() {
     this.resPageInfo = await post_resource_getList(this.queryPageParameters);

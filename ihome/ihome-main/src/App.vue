@@ -4,7 +4,7 @@
  * @Author: zyc
  * @Date: 2020-06-22 11:46:23
  * @LastEditors: zyc
- * @LastEditTime: 2020-07-24 10:01:31
+ * @LastEditTime: 2020-08-05 17:03:20
 --> 
 <template>
   <div>
@@ -15,7 +15,7 @@
         </div>
 
         <el-menu :default-openeds="['4']" class="el-menu-vertical-demo" :collapse="isCollapse">
-          <el-submenu index="1">
+          <!-- <el-submenu index="1">
             <template slot="title">
               <i class="el-icon-location"></i>
               <span slot="title">导航一</span>
@@ -31,22 +31,18 @@
           <el-menu-item index="2">
             <i class="el-icon-menu"></i>
             <span slot="title">导航二</span>
-          </el-menu-item>
+          </el-menu-item>-->
           <el-submenu index="4">
             <template slot="title">
               <i class="el-icon-setting"></i>系统管理模块
             </template>
-            <!-- <el-menu-item @click="goto('/cli/')" index="4-1">cli-home</el-menu-item>
-            <el-menu-item @click="goto('/cli/about')" index="4-2">cli-about</el-menu-item>-->
-            <el-menu-item @click="goto('/web/system/')" index="4-3">系统管理模块导航</el-menu-item>
-            <el-menu-item @click="goto('/web/system/user/list')" index="4-4">用户列表</el-menu-item>
-            <el-menu-item @click="goto('/web/system/resources/list')" index="4-5">资源列表</el-menu-item>
-            <el-menu-item @click="goto('/web/system/role/list')" index="4-6">角色列表</el-menu-item>
-            <el-menu-item @click="goto('/web/system/job/list')" index="4-7">岗位列表</el-menu-item>
-            <el-menu-item @click="goto('/web/system/organization/list')" index="4-8">组织架构</el-menu-item>
-            <!-- 
-            <el-menu-item @click="changeState('1')" index="4-17">修改state = 1</el-menu-item>
-            <el-menu-item @click="changeState('2')" index="4-18">修改state = 2</el-menu-item>-->
+
+            <el-menu-item @click="goto('/web-system/')" index="4-3">系统管理模块导航</el-menu-item>
+            <el-menu-item @click="goto('/web-system/user/list')" index="4-4">用户列表</el-menu-item>
+            <el-menu-item @click="goto('/web-system/resources/list')" index="4-5">资源列表</el-menu-item>
+            <el-menu-item @click="goto('/web-system/role/list')" index="4-6">角色列表</el-menu-item>
+            <el-menu-item @click="goto('/web-system/job/list')" index="4-7">岗位列表</el-menu-item>
+            <el-menu-item @click="goto('/web-system/organization/list')" index="4-8">组织架构</el-menu-item>
           </el-submenu>
         </el-menu>
       </el-aside>
@@ -74,7 +70,7 @@ import IhHeader from "@/components/IhHeader.vue";
 import { Component, Vue, Prop, Watch } from "vue-property-decorator";
 import { UserModule } from "./store/modules/user";
 @Component({
-  components: { IhHeader }
+  components: { IhHeader },
 })
 export default class App extends Vue {
   @Prop({ required: true }) private loading!: boolean;
@@ -96,7 +92,7 @@ export default class App extends Vue {
       UserModule.token;
     } else {
       this.$router.push({
-        path: "/login"
+        path: "/login",
       });
     }
   }
@@ -141,14 +137,14 @@ export default class App extends Vue {
   goto(path: string) {
     if (window.location.pathname != path) {
       this.$router.push({
-        path: path
+        path: path,
       });
     }
   }
   changeState(value: any) {
     const that: any = this;
     that.$actions.setGlobalState({
-      mt: value
+      mt: value,
     });
   }
 }
