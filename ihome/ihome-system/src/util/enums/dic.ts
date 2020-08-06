@@ -4,7 +4,7 @@
  * @Author: zyc
  * @Date: 2020-08-05 11:51:43
  * @LastEditors: zyc
- * @LastEditTime: 2020-08-05 16:34:51
+ * @LastEditTime: 2020-08-06 08:57:02
  */
 /**组织类型
  * @param {type} 
@@ -38,7 +38,7 @@ export const modular: any = {
     // Root: '资源根节点',
     System: '系统',
     Service: '服务模块',
-    Menu: '资源根节点',
+    Menu: '功能菜单',
     Api: 'API',
     Button: '按钮',
     Element: '元素'

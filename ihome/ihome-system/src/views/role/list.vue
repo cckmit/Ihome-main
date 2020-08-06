@@ -4,7 +4,7 @@
  * @Author: zyc
  * @Date: 2020-07-09 10:21:50
  * @LastEditors: zyc
- * @LastEditTime: 2020-08-04 14:26:04
+ * @LastEditTime: 2020-08-06 14:41:08
 --> 
 <template>
   <ih-page>
@@ -16,14 +16,13 @@
           </el-col>
           <el-col :span="22" class="text-right">
             <el-input
-              style="width:300px;"
+              style="width:200px;"
               placeholder="名称 编码"
               class="input-with-select"
               v-model="queryPageParameters.key"
               @keyup.enter.native="getListMixin"
-            >
-              <el-button slot="append" icon="el-icon-search" @click="getListMixin()"></el-button>
-            </el-input>
+            ></el-input>
+            <el-button type="primary" class="margin-left-20" @click="getListMixin()">查询</el-button>
           </el-col>
         </el-row>
       </el-form>
@@ -34,9 +33,9 @@
         <el-table-column type="index" label="序号" width="50"></el-table-column>
         <el-table-column prop="name" label="名称" width="180"></el-table-column>
         <el-table-column prop="code" label="编码" width="180"></el-table-column>
-        <el-table-column prop="createUser" label="创建人"></el-table-column>
+        <el-table-column prop="createUserName" label="创建人"></el-table-column>
         <el-table-column prop="createTime" label="创建时间"></el-table-column>
-        <el-table-column prop="updateUser" label="修改人"></el-table-column>
+        <el-table-column prop="updateUserName" label="修改人"></el-table-column>
         <el-table-column prop="updateTime" label="修改时间"></el-table-column>
 
         <el-table-column fixed="right" label="操作" width="120">
@@ -72,21 +71,21 @@
       ></el-pagination>
     </template>
 
-    <ih-dialog :show="dialogAdd">
+    <ih-dialog :show="dialogAdd" desc="角色新增编辑">
       <RoleAdd
         :data="itemData"
         @cancel="()=>dialogAdd=false"
         @finish="(data)=>{dialogAdd=false;finish(data)}"
       />
     </ih-dialog>
-    <ih-dialog :show="dialogResourcesCheck">
+    <ih-dialog :show="dialogResourcesCheck" desc="分配权限，资源多选">
       <ResourcesCheck
         :data="resourcesCheckData"
         @cancel="()=>dialogResourcesCheck=false"
         @finish="(data)=>{dialogResourcesCheck=false;finishdialogResourcesCheck(data)}"
       />
     </ih-dialog>
-    <ih-dialog :show="dialogBatchOperationJob">
+    <ih-dialog :show="dialogBatchOperationJob" desc="分配岗位">
       <BatchOperationJob
         :data="batchOperationJobData"
         @cancel="()=>dialogBatchOperationJob=false"

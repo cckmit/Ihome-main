@@ -4,7 +4,7 @@
  * @Author: zyc
  * @Date: 2020-07-09 15:03:17
  * @LastEditors: zyc
- * @LastEditTime: 2020-08-01 17:22:43
+ * @LastEditTime: 2020-08-06 14:27:49
 --> 
 <template>
   <div>
@@ -47,7 +47,8 @@
 <script lang="ts">
 import { Component, Vue, Watch } from "vue-property-decorator";
 import { get_resource_getAll } from "../api/system/index";
-import { DictionariesModule } from "../store/modules/dictionaries";
+// import { DictionariesModule } from "../store/modules/dictionaries";
+import { getListTool, modular } from "../util/enums/dic";
 @Component({
   components: {},
 })
@@ -93,9 +94,13 @@ export default class ResourcesRadio extends Vue {
     this.$emit("select", item);
   }
   get options() {
-    return DictionariesModule.modular;
+    let list = getListTool(modular);
+    return list;
   }
   async created() {
+    this.init();
+  }
+  async init() {
     const res = await get_resource_getAll();
     console.log(res);
     res[0].parentId = 0;

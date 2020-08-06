@@ -4,7 +4,7 @@
  * @Author: zyc
  * @Date: 2020-06-22 14:34:07
  * @LastEditors: zyc
- * @LastEditTime: 2020-06-23 15:20:00
+ * @LastEditTime: 2020-08-06 15:49:57
  */
 
 console.log('\033[42;30m 这是main ts主应用')
@@ -44,6 +44,14 @@ module.exports = {
         headers: {
             'Access-Control-Allow-Origin': '*',
         },
+		proxy: {
+			'/system/v2/api-docs': { 
+				target: 'http://10.188.0.109:8610'
+			},
+			'/system/': { 
+				target: 'http://10.188.0.109:8610'
+			}
+		}
     },
     // 自定义webpack配置
     configureWebpack: {

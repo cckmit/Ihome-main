@@ -4,7 +4,7 @@
  * @Author: zyc
  * @Date: 2020-07-07 15:36:27
  * @LastEditors: zyc
- * @LastEditTime: 2020-08-01 16:50:28
+ * @LastEditTime: 2020-08-06 09:21:28
 --> 
 <template>
   <div>
@@ -26,6 +26,7 @@
       <el-table-column prop="describe" label="描述"></el-table-column>
     </el-table>
     <el-pagination
+      class="text-right margin-top-20"
       @size-change="handleSizeChangeMixin"
       @current-change="handleCurrentChangeMixin"
       :current-page.sync="queryPageParameters.pageNum"

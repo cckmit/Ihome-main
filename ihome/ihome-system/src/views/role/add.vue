@@ -4,7 +4,7 @@
  * @Author: zyc
  * @Date: 2020-07-09 14:08:24
  * @LastEditors: zyc
- * @LastEditTime: 2020-08-04 18:08:46
+ * @LastEditTime: 2020-08-06 14:34:57
 --> 
 <template>
   <el-dialog
@@ -104,7 +104,7 @@ export default class RoleAdd extends Vue {
     (this.$refs[formName] as ElForm).resetFields();
   }
   created() {
-    this.ruleForm = this.data;
+    this.ruleForm = this.$tool.deepClone(this.data);
     console.log(this.data);
   }
 }

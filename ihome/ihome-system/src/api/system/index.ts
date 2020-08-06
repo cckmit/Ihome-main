@@ -1,5 +1,5 @@
 /* eslint-disable */
-//Wed Aug 05 2020 09:12:09 GMT+0800 (GMT+08:00)
+//Thu Aug 06 2020 15:03:09 GMT+0800 (GMT+08:00)
 import { request } from '../base'
 /**添加岗位*/
 export async function post_job_add (d?: JobBaseVO) {
@@ -77,17 +77,17 @@ return await request.get<ResourceVO,ResourceVO>('/system/resource/get/{id}', { p
 export async function get_resource_getAll (d?: any) {
 return await request.get<ResourceMinVO[],ResourceMinVO[]>('/system/resource/getAll', { params: d })
 }
+/**查询角色拥有的资源*/
+export async function post_resource_getAllByRoleId (d?: ResourceRoleQueryVO) {
+return await request.post< ResourceMinVO[],ResourceMinVO[]> ('/system/resource/getAllByRoleId', d)
+}
+/**查询用户拥有的资源*/
+export async function post_resource_getAllByUserId (d?: ResourceUserQueryVO) {
+return await request.post< ResourceMinVO[],ResourceMinVO[]> ('/system/resource/getAllByUserId', d)
+}
 /**查询资源列表*/
 export async function post_resource_getList (d?: ResourceQueryVO) {
 return await request.post< PageModel<ResourceVO>,PageModel<ResourceVO>> ('/system/resource/getList', d)
-}
-/**查询角色拥有的资源*/
-export async function post_resource_getListByRoleId (d?: ResourceRoleQueryVO) {
-return await request.post< PageModel<ResourceMinVO>,PageModel<ResourceMinVO>> ('/system/resource/getListByRoleId', d)
-}
-/**查询用户拥有的资源*/
-export async function post_resource_getListByUserId (d?: ResourceUserQueryVO) {
-return await request.post< PageModel<ResourceMinVO>,PageModel<ResourceMinVO>> ('/system/resource/getListByUserId', d)
 }
 /**修改资源*/
 export async function post_resource_update (d?: ResourceUpdateVO) {
@@ -101,7 +101,7 @@ return await request.post< number,number> ('/system/role/add', d)
 export async function post_role_addRoleResourceBatch (d?: RoleResourceVO) {
 return await request.post< boolean,boolean> ('/system/role/addRoleResourceBatch', d)
 }
-/**将角色批量分���给岗位*/
+/**将角色批量分配给岗位*/
 export async function post_role_addRoleToJobBatch (d?: RoleJobVO) {
 return await request.post< boolean,boolean> ('/system/role/addRoleToJobBatch', d)
 }
@@ -190,8 +190,8 @@ export async function post_user_lock_ID (d?: any) {
 return await request.post< boolean,boolean> ('/system/user/lock/{id}', d)
 }
 /**通过手机号码重置密码*/
-export async function post_user_resetPasswordByPhone (d?: any) {
-return await request.post< boolean,boolean> ('/system/user/resetPasswordByPhone', d)
+export async function post_user_resetPassword (d?: any) {
+return await request.post< boolean,boolean> ('/system/user/resetPassword', d)
 }
 /**修改用户*/
 export async function post_user_update (d?: UserUpdateVO) {
@@ -450,10 +450,6 @@ type: string;
 export interface ResourceRoleQueryVO {
 /**关键字*/
 key: string;
-/**当前页*/
-pageNum: number;
-/**��页条数*/
-pageSize: number;
 /**角色id*/
 roleId: number;
 }
@@ -483,10 +479,6 @@ url: string;
 export interface ResourceUserQueryVO {
 /**关键字*/
 key: string;
-/**当前页*/
-pageNum: number;
-/**每页条数*/
-pageSize: number;
 /**用户id*/
 userId: number;
 }
@@ -498,7 +490,7 @@ code: string;
 codeSuffix: string;
 /**创建时间(yyyy-MM-dd HH:mm:ss)*/
 createTime: string;
-/**创建用户*/
+/**��建用户*/
 createUser: number;
 /**创建用户姓名*/
 createUserName: string;
@@ -571,7 +563,7 @@ roleId: number;
 }
 /**undefined*/
 export interface RoleQueryVO {
-/**关��字*/
+/**关键字*/
 key: string;
 /**当前页*/
 pageNum: number;
@@ -650,7 +642,7 @@ updateUserName: string;
 export interface UserBaseVO {
 /**登录账号*/
 account: string;
-/**用户类型(Ihome-爱家员工、Juheng-居恒员工、Poly-保顾兼职、Channel-渠道用户、Customer-个人��户、Outsourcing-劳务派遣)*/
+/**用户类型(Ihome-爱家员工、Juheng-居恒员工、Poly-保顾兼职、Channel-渠道用户、Customer-个人客户、Outsourcing-劳务派遣)*/
 accountType: string;
 /**email*/
 email: string;
@@ -676,11 +668,11 @@ workType: string;
 /**undefined*/
 export interface UserCopyVO {
 /**是否复制岗位角色*/
-copyJobAndRole: number;
-/**是否复制组织权���*/
-copyOrg: number;
+copyJobAndRole: boolean;
+/**是否复制组织权限*/
+copyOrg: boolean;
 /**目标用户id*/
-id: number;
+targetUserId: number;
 /**要复制的用户id列表*/
 userIds: undefined[];
 }
@@ -774,7 +766,7 @@ roleId: number;
 export interface UserUpdateVO {
 /**登录账号*/
 account: string;
-/**用户类型(Ihome-爱家员工、Juheng-居恒员工、Poly-保顾兼职、Channel-渠道用户、Customer-个人客户、Outsourcing-���务派遣)*/
+/**用户类型(Ihome-爱家员工、Juheng-居恒员工、Poly-保顾兼职、Channel-渠道用户、Customer-个人客户、Outsourcing-劳务派遣)*/
 accountType: string;
 /**email*/
 email: string;
@@ -803,7 +795,7 @@ workType: string;
 export interface UserVO {
 /**登录账号*/
 account: string;
-/**用户类型(Ihome-爱家员工、Juheng-居恒员工、Poly-保顾兼职、Channel-��道用户、Customer-个人客户、Outsourcing-劳务派遣)*/
+/**用户类型(Ihome-爱家员工、Juheng-居恒员工、Poly-保顾兼职、Channel-渠道用户、Customer-个人客户、Outsourcing-劳务派遣)*/
 accountType: string;
 /**创建时间(yyyy-MM-dd HH:mm:ss)*/
 createTime: string;

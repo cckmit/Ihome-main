@@ -4,11 +4,11 @@
  * @Author: zyc
  * @Date: 2020-06-24 09:30:41
  * @LastEditors: zyc
- * @LastEditTime: 2020-07-08 11:23:13
+ * @LastEditTime: 2020-08-06 17:01:38
  */
 
 import { VuexModule, Module, Action, Mutation, getModule } from 'vuex-module-decorators'
-import { login, logout, getUserInfo } from '../../api/users'
+import { logout, getUserInfo } from '../../api/users'
 import { getToken, setToken, removeToken } from '../../utils/cookies'
 
 import store from '@/store'
@@ -37,8 +37,12 @@ class User extends VuexModule implements IUserState {
 
     @Action
     public async Login(username: string, password: string) {
-        username = username.trim()
-        const res: any = await login({ username, password, "grant": "password", "client_id": "test-client", "client_secret": "test_secret" })
+        console.log(username, password)
+        // username = username.trim()
+        // const res: any = await login({ username, password, "grant": "password", "client_id": "test-client", "client_secret": "test_secret" })
+        const res = {
+            assess_token: 'xxxxxxxxxx'
+        }
         setToken(res.assess_token)
         this.SET_TOKEN(res.assess_token)
         this.SET_USERINFO({ id: 1, name: 'zyc' })
@@ -61,7 +65,7 @@ class User extends VuexModule implements IUserState {
         if (!data) {
             throw Error('Verification failed, please Login again.')
         }
-         
+
 
     }
 

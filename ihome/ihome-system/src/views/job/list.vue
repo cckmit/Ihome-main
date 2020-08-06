@@ -4,7 +4,7 @@
  * @Author: zyc
  * @Date: 2020-07-14 09:23:40
  * @LastEditors: zyc
- * @LastEditTime: 2020-08-04 15:06:46
+ * @LastEditTime: 2020-08-06 16:45:14
 --> 
 --> 
 <template>
@@ -22,9 +22,8 @@
               class="input-with-select"
               v-model="queryPageParameters.key"
               @keyup.enter.native="getListMixin"
-            >
-              <el-button slot="append" icon="el-icon-search" @click="getListMixin()"></el-button>
-            </el-input>
+            ></el-input>
+            <el-button class="margin-left-20" type="primary" @click="getListMixin()">查询</el-button>
           </el-col>
         </el-row>
       </el-form>
@@ -71,14 +70,14 @@
       ></el-pagination>
     </template>
 
-    <ih-dialog :show="dialogAddEdit">
+    <ih-dialog :show="dialogAddEdit" desc="岗位新增编辑">
       <JobAddEdit
         :data="editData"
         @cancel="()=>dialogAddEdit=false"
         @finish="(data)=>{dialogAddEdit=false;finishAddEdit(data)}"
       />
     </ih-dialog>
-    <ih-dialog :show="dialogAssignRole">
+    <ih-dialog :show="dialogAssignRole" desc="分配角色">
       <AssignRole
         :data="dialogAssignRole"
         @cancel="()=>dialogAssignRole=false"

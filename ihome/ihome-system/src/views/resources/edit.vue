@@ -4,7 +4,7 @@
  * @Author: zyc
  * @Date: 2020-07-07 10:29:16
  * @LastEditors: zyc
- * @LastEditTime: 2020-08-01 16:01:11
+ * @LastEditTime: 2020-08-06 11:24:40
 --> 
  
 <template>
@@ -49,7 +49,7 @@
       <el-form-item label="编码" prop="code">
         <el-input v-model="ruleForm.code"></el-input>
       </el-form-item>
-      <el-form-item label="URL" :prop="ruleForm.type=='1'||ruleForm.type=='3'?'url':null">
+      <el-form-item label="URL" :prop="ruleForm.type=='Menu'||ruleForm.type=='Api'?'url':null">
         <el-input type="url" v-model="ruleForm.url"></el-input>
       </el-form-item>
     </el-form>
@@ -63,8 +63,9 @@
 <script lang="ts">
 import { Component, Vue, Prop } from "vue-property-decorator";
 import { Form as ElForm } from "element-ui";
-import { DictionariesModule } from "../../store/modules/dictionaries";
+import { getListTool, modular } from "../../util/enums/dic";
 import { post_resource_update } from "../../api/system/index";
+import { isUpperLetterValidato } from "ihome-common/util/base/form-ui";
 @Component({
   components: {},
 })
@@ -76,8 +77,8 @@ export default class ResourcesEdit extends Vue {
   dialogVisible = true;
 
   get typeList() {
-    DictionariesModule.getModular();
-    return DictionariesModule.modular;
+    let list = getListTool(modular);
+    return list;
   }
 
   // ruleForm: any = {
@@ -105,6 +106,7 @@ export default class ResourcesEdit extends Vue {
     code: [
       { required: true, message: "请输入编码", trigger: "change" },
       { min: 1, max: 16, message: "长度在 1 到 16 个字符", trigger: "change" },
+      { validator: isUpperLetterValidato, trigger: "change" },
     ],
     url: [
       { required: true, message: "请输入URL", trigger: "change" },
@@ -156,7 +158,8 @@ export default class ResourcesEdit extends Vue {
   }
   created() {
     console.log(this.data);
-    this.ruleForm = this.data;
+    this.ruleForm = this.$tool.deepClone(this.data);
+    this.ruleForm.code = this.ruleForm.codeSuffix; //codeSuffix和code做转换
   }
 }
 </script>

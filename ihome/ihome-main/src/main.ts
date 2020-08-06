@@ -4,7 +4,7 @@
  * @Author: zyc
  * @Date: 2020-06-22 11:46:23
  * @LastEditors: zyc
- * @LastEditTime: 2020-06-30 16:58:47
+ * @LastEditTime: 2020-08-06 15:50:53
  */
 import Vue from 'vue'
 import App from './App.vue'
@@ -20,12 +20,12 @@ import { defaultMountApp } from './setting'
 
 Vue.config.productionTip = false
 if (process.env.NODE_ENV == 'development') {
-  require('./mock/index')
+  // require('./mock/index')
   // if (process.env.VUE_APP_FLAG === 'mock') {
   //   require('./mock/index')
   // }
 } else {
-  require('./mock/index')
+  // require('./mock/index')
 }
 Vue.use(ElementUI);
 

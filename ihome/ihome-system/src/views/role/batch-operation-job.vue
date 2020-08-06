@@ -4,7 +4,7 @@
  * @Author: zyc
  * @Date: 2020-07-09 16:53:27
  * @LastEditors: zyc
- * @LastEditTime: 2020-08-04 11:38:41
+ * @LastEditTime: 2020-08-06 15:20:26
 --> 
 <template>
   <el-dialog
@@ -31,7 +31,11 @@
         </el-input>
       </div>
       <br />
-      <el-table :data="queryPageParameters.list" style="width: 100%" @selection-change="handleSelectionChange">
+      <el-table
+        :data="resPageInfo.list"
+        style="width: 100%"
+        @selection-change="handleSelectionChange"
+      >
         <el-table-column type="selection" width="55"></el-table-column>
         <el-table-column type="index" label="序号" width="50"></el-table-column>
         <el-table-column prop="name" label="名称"></el-table-column>
@@ -61,8 +65,7 @@ import { Component, Vue, Prop } from "vue-property-decorator";
 // import { getRoleList } from "../../api/system/index2";
 import {
   post_role_addRoleToJobBatch,
-  post_job_getList
-  
+  post_job_getList,
 } from "../../api/system/index";
 // import { Form as ElForm } from "element-ui";
 import PaginationMixin from "../../mixins/pagination";
@@ -94,10 +97,11 @@ export default class BatchOperationJob extends Vue {
     if (this.selectList.length > 0) {
       let p = {
         jobIds: this.selectList.map((item: any) => {
-          item.id;
+          return item.id;
         }),
         roleId: this.data.id,
       };
+      debugger
       console.log(p);
       const res = await post_role_addRoleToJobBatch(p);
       this.$message.success("操作成功");

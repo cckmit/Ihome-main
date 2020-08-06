@@ -2,7 +2,7 @@
 node_modules
 /dist
 /nginx/html/main/
-/nginx/html/web/*/
+/nginx/html/web*
 /nginx/logs/
 
 /tests/e2e/reports/

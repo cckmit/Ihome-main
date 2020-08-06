@@ -4,12 +4,12 @@
  * @Author: zyc
  * @Date: 2020-07-09 15:03:17
  * @LastEditors: zyc
- * @LastEditTime: 2020-08-04 11:31:39
+ * @LastEditTime: 2020-08-06 15:15:39
 --> 
 <template>
   <el-dialog
     v-dialogDrag
-    title="分配权限"
+    :title="'分配权限('+data.name+')'"
     :visible.sync="dialogVisible"
     :close-on-click-modal="false"
     :close-on-press-escape="false"
@@ -47,6 +47,7 @@
           :props="defaultProps"
           :default-expand-all="true"
           :filter-node-method="filterNode"
+          :default-checked-keys="defaultCheckedKeys"
           :highlight-current="true"
           node-key="id"
           show-checkbox
@@ -67,8 +68,9 @@ import { Component, Vue, Prop, Watch } from "vue-property-decorator";
 import {
   post_role_addRoleResourceBatch,
   get_resource_getAll,
+  post_resource_getAllByRoleId,
 } from "../api/system/index";
-import { DictionariesModule } from "../store/modules/dictionaries";
+import { getListTool, modular } from "../util/enums/dic";
 @Component({
   components: {},
 })
@@ -76,6 +78,7 @@ export default class ResourcesCheck extends Vue {
   constructor() {
     super();
   }
+  defaultCheckedKeys: any = [];
   @Prop({ default: null }) data: any;
   dialogVisible = true;
   value: any = null;
@@ -117,14 +120,24 @@ export default class ResourcesCheck extends Vue {
     console.log(item);
   }
   get options() {
-    return DictionariesModule.modular;
+    return getListTool(modular);
   }
   async created() {
     console.log(this.data);
-    const res: any = await get_resource_getAll();
-    console.log(res);
+    let p: any = {
+      key: null,
+      roleId: this.data.id,
+    };
+
+    let [res, list] = await Promise.all([
+      await get_resource_getAll(),
+      await post_resource_getAllByRoleId(p),
+    ]);
+
     res[0].parentId = 0;
     this.dataTree = this.$tool.listToGruop(res, { rootId: 0 });
+
+    this.defaultCheckedKeys = list.map((item: any) => item.id);
   }
   cancel() {
     this.$emit("cancel", false);

@@ -23,6 +23,7 @@
       <el-table-column prop="orgId" label="归属组织"></el-table-column>
     </el-table>
     <el-pagination
+      class="text-right margin-top-20"
       @size-change="handleSizeChangeMixin"
       @current-change="handleCurrentChangeMixin"
       :current-page.sync="queryPageParameters.pageNum"

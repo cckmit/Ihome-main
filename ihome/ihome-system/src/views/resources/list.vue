@@ -4,14 +4,14 @@
  * @Author: zyc
  * @Date: 2020-07-06 09:41:43
  * @LastEditors: zyc
- * @LastEditTime: 2020-08-05 16:44:20
+ * @LastEditTime: 2020-08-06 14:24:47
 --> 
 <template>
   <ih-page>
     <template v-slot:container>
       <el-row>
         <el-col :span="6" style="border-right: 1px solid #e6e6e6;padding-right: 20px">
-          <resourcesRadio @select="selectResources" />
+          <resourcesRadio ref="resourcesRadio" @select="selectResources" />
         </el-col>
         <el-col :span="18" class="padding-left-20">
           <el-form ref="form" label-width="80px">
@@ -35,14 +35,13 @@
                   ></el-option>
                 </el-select>
                 <el-input
-                  style="width:300px;"
+                  style="width:200px;"
                   placeholder="名称 编码 URL"
                   class="input-with-select"
                   @keyup.enter.native="search"
                   v-model="queryPageParameters.key"
-                >
-                  <el-button slot="append" icon="el-icon-search" @click="search()"></el-button>
-                </el-input>
+                ></el-input>
+                <el-button class="margin-left-20" type="primary" @click="search()">查询</el-button>
               </el-col>
             </el-row>
           </el-form>
@@ -92,33 +91,35 @@
             </el-table-column>
           </el-table>
 
-          <el-pagination
-            @size-change="handleSizeChangeMixin"
-            @current-change="handleCurrentChangeMixin"
-            :current-page.sync="queryPageParameters.pageNum"
-            :page-sizes="$root.pageSizes"
-            :page-size="queryPageParameters.pageSize"
-            :layout="$root.paginationLayout"
-            :total="resPageInfo.total"
-          ></el-pagination>
+          <div class="text-right margin-top-20">
+            <el-pagination
+              @size-change="handleSizeChangeMixin"
+              @current-change="handleCurrentChangeMixin"
+              :current-page.sync="queryPageParameters.pageNum"
+              :page-sizes="$root.pageSizes"
+              :page-size="queryPageParameters.pageSize"
+              :layout="$root.paginationLayout"
+              :total="resPageInfo.total"
+            ></el-pagination>
+          </div>
         </el-col>
       </el-row>
     </template>
-    <ih-dialog :show="dialogVisible" title="新增资源">
+    <ih-dialog :show="dialogVisible" desc="新增资源">
       <ResourcesAdd
         :data="resourcesAddData"
         @cancel="()=>dialogVisible=false"
         @finish="(data)=>{dialogVisible=false;finish(data)}"
       />
     </ih-dialog>
-    <ih-dialog :show="dialogEdit" title="编辑资源">
+    <ih-dialog :show="dialogEdit" desc="编辑资源">
       <ResourcesEdit
         :data="editData"
         @cancel="()=>dialogEdit=false"
         @finish="(data)=>{dialogEdit=false;finishEdit(data)}"
       />
     </ih-dialog>
-    <ih-dialog :show="dialogBatchOperationRole" title="批量分配角色">
+    <ih-dialog :show="dialogBatchOperationRole" desc="批量分配角色">
       <BatchOperationRole
         :data="batchOperationRoleData"
         @cancel="()=>dialogBatchOperationRole=false"
@@ -206,9 +207,11 @@ export default class ResourcesList extends Vue {
   }
   finish(data: any) {
     console.log(data);
+    (this.$refs as any).resourcesRadio.init();
   }
   finishEdit(data: any) {
     console.log(data);
+    (this.$refs as any).resourcesRadio.init();
     this.getListMixin();
   }
   finishBatchOperationRole(data: any) {

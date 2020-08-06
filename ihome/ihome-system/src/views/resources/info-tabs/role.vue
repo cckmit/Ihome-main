@@ -4,7 +4,7 @@
  * @Author: zyc
  * @Date: 2020-07-07 15:36:27
  * @LastEditors: zyc
- * @LastEditTime: 2020-08-05 10:46:08
+ * @LastEditTime: 2020-08-06 09:21:02
 --> 
 <template>
   <div>
@@ -24,7 +24,7 @@
       <el-table-column prop="updateTime" label="修改时间"></el-table-column>
     </el-table>
     <el-pagination
-      style="text-align: right;margin-top:20px;"
+      class="text-right margin-top-20"
       @size-change="handleSizeChange"
       @current-change="handleCurrentChange"
       :current-page.sync="currentPage"
