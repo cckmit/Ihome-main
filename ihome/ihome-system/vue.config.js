@@ -4,16 +4,22 @@
  * @Author: zyc
  * @Date: 2020-06-22 11:11:41
  * @LastEditors: zyc
- * @LastEditTime: 2020-08-01 09:48:00
+ * @LastEditTime: 2020-08-07 16:39:13
  */
 const path = require('path');
-const webpack = require('webpack')
 const { name } = require('./package');
-console.log('\033[42;30m 这是' + name + '子应用')
+const port = 8085; // 端口
+
+const childProcess = require('child_process')
+const branch = childProcess.execSync('git rev-parse --abbrev-ref HEAD').toString().replace(/\s+/, '')
+let git_email = childProcess.execSync('git show -s --format=%ce').toString().trim(); //邮箱
+console.log('\033[42;30m ' + name + '子应用 git信息 \033[40;32m 邮箱:' + git_email + ' 分支:' + branch + '\033[0m');
+
+
 function resolve(dir) {
 	return path.join(__dirname, dir);
 }
-const port = 8085; // 端口
+
 module.exports = {
 	outputDir: 'dist',
 	assetsDir: 'static',
@@ -34,10 +40,10 @@ module.exports = {
 			'Access-Control-Allow-Origin': '*',
 		},
 		proxy: {
-			'/system/v2/api-docs': { 
+			'/system/v2/api-docs': {
 				target: 'http://10.188.0.109:8610'
 			},
-			'/system/': { 
+			'/system/': {
 				target: 'http://10.188.0.109:8610'
 			}
 		}

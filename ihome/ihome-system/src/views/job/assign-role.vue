@@ -4,7 +4,7 @@
  * @Author: zyc
  * @Date: 2020-07-14 10:03:09
  * @LastEditors: zyc
- * @LastEditTime: 2020-08-04 15:09:53
+ * @LastEditTime: 2020-08-07 15:40:59
 --> 
 <template>
   <el-dialog
@@ -40,7 +40,11 @@
 <script lang="ts">
 import { Component, Vue, Prop } from "vue-property-decorator";
 // import { Form as ElForm } from "element-ui";
-import { getRoleList } from "../../api/system/index2";
+// import { getRoleList } from "../../api/system/index2";
+import {
+  get_role_getAll,
+  post_job_addJobRoleBatch,
+} from "../../api/system/index";
 // import { DictionariesModule } from "../../store/modules/dictionaries";
 @Component({
   components: {},
@@ -51,31 +55,8 @@ export default class JobAddEdit extends Vue {
   }
   @Prop({ default: null }) data: any;
   dialogVisible = true;
-
-  generateData() {
-    const dataList: any = [];
-    const cities = ["上海", "北京", "广州", "深圳", "南京", "西安", "成都"];
-    const pinyin = [
-      "shanghai",
-      "beijing",
-      "guangzhou",
-      "shenzhen",
-      "nanjing",
-      "xian",
-      "chengdu",
-    ];
-    cities.forEach((city, index) => {
-      dataList.push({
-        label: city,
-        key: index,
-        pinyin: pinyin[index],
-      });
-    });
-    return dataList;
-  }
   leftData: any = [];
   rightData: any = [];
-
   filterMethod(query: any, item: any) {
     return item.code.indexOf(query) > -1 || item.name.indexOf(query) > -1;
   }
@@ -84,18 +65,33 @@ export default class JobAddEdit extends Vue {
     this.$emit("cancel", false);
   }
 
-  finish() {
-    this.$emit("finish", {});
+  async finish() {
+    console.log(this.rightData);
+    if (this.rightData.length == 0) {
+      this.$message.warning("右边列表有数据才能提交");
+      return;
+    }
+    let p = {
+      jobId: this.data.id,
+      roleIds: this.rightData,
+    };
+    const res = await post_job_addJobRoleBatch(p);
+
+    console.log(res);
+    this.$message.success("操作成功");
+
+    this.$emit("finish", res);
   }
 
   async created() {
     console.log(this.data);
-    const { total, list } = await getRoleList();
+
+    const list = await get_role_getAll();
     list.forEach((item: any) => {
       item.key = item.id;
       item.label = item.name;
     });
-    console.log(total, list);
+
     this.leftData = list;
   }
 }

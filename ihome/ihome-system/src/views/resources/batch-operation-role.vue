@@ -4,7 +4,7 @@
  * @Author: zyc
  * @Date: 2020-07-07 16:13:53
  * @LastEditors: zyc
- * @LastEditTime: 2020-08-04 09:31:45
+ * @LastEditTime: 2020-08-07 14:41:24
 --> 
 <template>
   <el-dialog
@@ -21,7 +21,12 @@
   >
     <div>
       <div style="text-align:right;">
-        <el-input style="width:300px;" placeholder="名称 编码" class="input-with-select" v-model="queryPageParameters.key">
+        <el-input
+          style="width:300px;"
+          placeholder="名称 编码"
+          class="input-with-select"
+          v-model="queryPageParameters.key"
+        >
           <el-button slot="append" icon="el-icon-search" @click="getListMixin()"></el-button>
         </el-input>
       </div>
@@ -97,9 +102,11 @@ export default class BatchOperationRole extends Vue {
     if (this.selectList.length > 0) {
       let p = {
         resourceId: this.data.id,
-        roleIds: this.selectList,
+        roleIds: this.selectList.map((item: any) => item.id),
       };
+      console.log(p);
       const res = await post_resource_addResourceToRoleBatch(p);
+      this.$message.success("操作成功");
       this.$emit("finish", res);
     } else {
       this.$message({

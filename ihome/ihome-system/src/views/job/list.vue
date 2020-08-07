@@ -4,7 +4,7 @@
  * @Author: zyc
  * @Date: 2020-07-14 09:23:40
  * @LastEditors: zyc
- * @LastEditTime: 2020-08-06 16:45:14
+ * @LastEditTime: 2020-08-07 14:27:45
 --> 
 --> 
 <template>
@@ -79,7 +79,7 @@
     </ih-dialog>
     <ih-dialog :show="dialogAssignRole" desc="分配角色">
       <AssignRole
-        :data="dialogAssignRole"
+        :data="dialogAssignRoleData"
         @cancel="()=>dialogAssignRole=false"
         @finish="(data)=>{dialogAssignRole=false;finishAssignRole(data)}"
       />
@@ -109,6 +109,7 @@ export default class JobInfo extends Vue {
   editData: any = null;
   dialogAddEdit = false;
   dialogAssignRole = false;
+  dialogAssignRoleData: any = null;
   async getListMixin() {
     this.resPageInfo = await post_job_getList(this.queryPageParameters);
   }
@@ -148,6 +149,7 @@ export default class JobInfo extends Vue {
   }
   async assignRole(scope: any) {
     console.log(scope);
+    this.dialogAssignRoleData = scope.row;
     this.dialogAssignRole = true;
   }
   async finishAddEdit(data: any) {

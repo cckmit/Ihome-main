@@ -4,7 +4,7 @@
  * @Author: zyc
  * @Date: 2020-07-14 09:48:18
  * @LastEditors: zyc
- * @LastEditTime: 2020-08-04 15:02:29
+ * @LastEditTime: 2020-08-07 14:35:21
 --> 
 <template>
   <el-dialog
@@ -33,7 +33,7 @@
         <el-input v-model="ruleForm.code"></el-input>
       </el-form-item>
       <el-form-item label="描述" prop="remark">
-        <el-input type="textarea" show-word-limit maxlength="64" v-model="ruleForm.remark"></el-input>
+        <el-input type="textarea" show-word-limit maxlength="128" v-model="ruleForm.remark"></el-input>
       </el-form-item>
     </el-form>
 
@@ -77,7 +77,7 @@ export default class JobAddEdit extends Vue {
     ],
     code: [
       { required: true, message: "请输入编码", trigger: "change" },
-      { min: 1, max: 16, message: "长度在 1 到 16 个字符", trigger: "change" },
+      { min: 1, max: 32, message: "长度在 1 到 32 个字符", trigger: "change" },
     ],
   };
 

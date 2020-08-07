@@ -4,12 +4,14 @@
  * @Author: zyc
  * @Date: 2020-07-31 15:21:06
  * @LastEditors: zyc
- * @LastEditTime: 2020-08-05 09:11:52
+ * @LastEditTime: 2020-08-07 15:38:04
  */
 let http = require('http');
 let fs = require("fs");
-
+let path = require("path");
+let name;
 let outSrc;
+let backupsSrc;
 
 function replaceAll(str, FindText, RepText) {
     let regExp = new RegExp(FindText, "g");
@@ -19,9 +21,9 @@ let text = ''
 function handleBody(body) {
 
     writeLine('/* eslint-disable */');
-    writeLine('//' + new Date().toString())
+    writeLine('//' + new Date().toLocaleString())
 
-    writeLine("import { request } from '../base'")
+    writeLine("import { request } from '@/api/base'")
     const { paths, definitions } = body;
 
 
@@ -159,23 +161,36 @@ function handleBody(body) {
             if (k.startsWith('PageModel«') || k.startsWith('ResModel«')) {
 
             } else {
+
                 const objs = definitions[k]["properties"];
-                writeLine(`/**${definitions[k].description}*/`)
+                writeLine(`/**${definitions[k].description || k}*/`)
                 writeLine(`export interface ${k} {`)
 
-
+                let requiredList = definitions[k].required || [];
                 Object.keys(objs).forEach(key => {
-                    writeLine(`/**${objs[key].description}*/`)
+                    let required = requiredList.includes(key);
+                    writeLine(`/**${required ? '(必填)' : ''}${objs[key].description}*/`)
                     let _type = objs[key].type;
-                    if (_type === "integer" || _type === "number" || _type === "int" || _type == "bigdecimal") {
+                    if (_type === "integer" || _type === "number" || _type === "int" || _type == "bigdecimal" || _type == "float" || _type == "double") {
                         _type = "number";
-                    } else if (_type === "string") {
+                    } else if (_type === "string" || _type === "String") {
                         _type = "string";
                     } else if (_type === "array") {
-                        _type = `${objs[key].items.originalRef}[]`;
+                        let _arrType = objs[key].items.originalRef ? objs[key].items.originalRef : objs[key].items.type;
+                        if (_arrType === "integer" || _arrType === "number" || _arrType === "int" || _arrType == "bigdecimal" || _arrType == "float" || _arrType == "double") {
+                            _arrType = "number";
+                        }
+                        if (!_arrType) {
+                            _arrType = 'any'
+                        }
+
+                        _type = `${_arrType}[]`;
                     } else if (_type === undefined) {
                         _type = `${objs[key].originalRef}`;
-                    } else {
+                    } else if (_type === 'boolean') {
+                        _type = "boolean";
+                    }
+                    else {
                         console.log(_type);
                     }
                     writeLine(`${key}: ${_type};`)
@@ -187,11 +202,19 @@ function handleBody(body) {
 
         }
     });
+
+
+    fs.renameSync(outSrc, backupsSrc);
+    console.log(`脚本备份成功：路径${backupsSrc}`);
+
     fs.writeFile(outSrc, text, function (err) {
         if (err) {
             return console.error(err);
         }
-        console.log(`api脚本写入成功！路径${outSrc}`);
+        console.log(`${name}-api脚本写入成功！路径${outSrc}`);
+        console.log('\033[42;30m ' + name + '成功 \033[40;32m ' + name + '接口脚本生成成功\033[0m')
+
+
     });
 }
 function writeLine(line) {
@@ -199,6 +222,7 @@ function writeLine(line) {
 }
 
 function handleSwagger(prefix) {
+    name = prefix;
 
     //swagger配置数据
     let options = {
@@ -208,6 +232,10 @@ function handleSwagger(prefix) {
     };
     //生成文件路径
     outSrc = `./src/api/${prefix}/index.ts`;
+    backupsSrc = `./src/api/${prefix}/backups/${new Date().toLocaleString()}.ts`;
+    backupsSrc = backupsSrc.replace(' ', 'T')
+    backupsSrc = backupsSrc.replace(':', '-')
+    backupsSrc = backupsSrc.replace(':', '-')
     // 处理响应的回调函数
     let callback = function (response) {
         // 不断更新数据

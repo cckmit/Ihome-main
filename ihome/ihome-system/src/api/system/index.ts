@@ -1,6 +1,6 @@
 /* eslint-disable */
-//Thu Aug 06 2020 15:03:09 GMT+0800 (GMT+08:00)
-import { request } from '../base'
+//2020-8-7 15:39:42
+import { request } from '@/api/base'
 /**添加岗位*/
 export async function post_job_add (d?: JobBaseVO) {
 return await request.post< number,number> ('/system/job/add', d)
@@ -214,65 +214,65 @@ list:T[];
 /**总记录数*/
 total: number;
 }
-/**undefined*/
+/**JobBaseVO*/
 export interface JobBaseVO {
-/**编码*/
+/**(必填)编码*/
 code: string;
-/**名称*/
+/**(必填)名称*/
 name: string;
-/**备注*/
+/**(必填)备注*/
 remark: string;
 }
-/**undefined*/
+/**JobQueryVO*/
 export interface JobQueryVO {
 /**key*/
 key: string;
-/**当前页*/
+/**(必填)当前页*/
 pageNum: number;
-/**每页条数*/
+/**(必填)每页条数*/
 pageSize: number;
 }
-/**undefined*/
+/**JobResourceQueryVO*/
 export interface JobResourceQueryVO {
 /**关键字*/
 key: string;
-/**当前页*/
+/**(必填)当前页*/
 pageNum: number;
-/**每页条数*/
+/**(必填)每页条数*/
 pageSize: number;
-/**资源id*/
+/**(必填)资源id*/
 resourceId: number;
 }
-/**undefined*/
+/**JobRoleQueryVO*/
 export interface JobRoleQueryVO {
 /**关键字*/
 key: string;
-/**当前页*/
+/**(必填)当前页*/
 pageNum: number;
-/**每页条数*/
+/**(必填)每页条数*/
 pageSize: number;
-/**角色id*/
+/**(必填)角色id*/
 roleId: number;
 }
-/**undefined*/
+/**JobRoleVO*/
 export interface JobRoleVO {
 /**undefined*/
 jobId: number;
 /**角色id数组*/
-roleIds: undefined[];
+roleIds: number[];
 }
-/**undefined*/
+/**JobUpdateVO*/
 export interface JobUpdateVO {
-/**编码*/
+/**(必填)编码*/
 code: string;
-/**id*/
+/**(必填)id*/
 id: number;
-/**名称*/
+/**(必填)名称*/
 name: string;
-/**备注*/
+/**(必填)备注*/
 remark: string;
 }
-/**undefined*/
+/**JobVO*/
 export interface JobVO {
 /**编码*/
 code: string;
@@ -287,9 +287,9 @@ deleted: number;
 /**id*/
 id: number;
 /**intArray*/
-intArray: undefined[];
+intArray: number[];
 /**intList*/
-intList: undefined[];
+intList: number[];
 /**jobRole*/
 jobRole: JobRoleVO;
 /**jobRoleList*/
@@ -305,7 +305,7 @@ updateUser: number;
 /**更新用户姓名*/
 updateUserName: string;
 }
-/**undefined*/
+/**OrgBaseVO*/
 export interface OrgBaseVO {
 /**关闭日期(yyyy-MM-dd)*/
 closeDate: string;
@@ -326,7 +326,7 @@ shortName: string;
 /**状态(Valid-有效、Invalid-无效)*/
 status: string;
 }
-/**undefined*/
+/**OrgQueryVO*/
 export interface OrgQueryVO {
 /**部门分类(Business-营业线、Function-职能线)*/
 departmentType: string;
@@ -336,22 +336,22 @@ level: number;
 name: string;
 /**组织类型(Company-公司、Department-部门)*/
 orgType: string;
-/**当前页*/
+/**(必填)当前页*/
 pageNum: number;
-/**每页条数*/
+/**(必填)每页条数*/
 pageSize: number;
 /**父组织id*/
 parentId: number;
 /**状态(Valid-有效、Invalid-无效)*/
 status: string;
 }
-/**undefined*/
+/**OrgUpdateVO*/
 export interface OrgUpdateVO {
 /**关闭日期(yyyy-MM-dd)*/
 closeDate: string;
 /**部门分类(Business-营业线、Function-职能线)*/
 departmentType: string;
-/**id*/
+/**(必填)id*/
 id: number;
 /**名称*/
 name: string;
@@ -368,7 +368,7 @@ shortName: string;
 /**状态(Valid-有效、Invalid-无效)*/
 status: string;
 }
-/**undefined*/
+/**OrgVO*/
 export interface OrgVO {
 /**关闭日期(yyyy-MM-dd)*/
 closeDate: string;
@@ -407,20 +407,20 @@ updateUser: number;
 /**更新用户姓名*/
 updateUserName: string;
 }
-/**undefined*/
+/**ResourceBaseVO*/
 export interface ResourceBaseVO {
-/**编码*/
+/**(必填)编码*/
 code: string;
-/**名称*/
+/**(必填)名称*/
 name: string;
-/**父资源id*/
+/**(必填)父资源id*/
 parentId: number;
-/**类型(Root-资源根节点、System-系统、Service-服务模块、Menu-功能菜单、Api-API、Button-按钮、Element-元素)*/
+/**(必填)类型(Root-资源根节点、System-系统、Service-服务模块、Menu-功能菜单、Api-API、Button-按钮、Element-元素)*/
 type: string;
 /**url*/
 url: string;
 }
-/**undefined*/
+/**ResourceMinVO*/
 export interface ResourceMinVO {
 /**编码*/
 code: string;
@@ -433,56 +433,56 @@ parentId: number;
 /**类型(Root-资源根节点、System-系统、Service-服务模块、Menu-功能菜单、Api-API、Button-按钮、Element-元素)*/
 type: string;
 }
-/**undefined*/
+/**ResourceQueryVO*/
 export interface ResourceQueryVO {
 /**关键字*/
 key: string;
-/**当前页*/
+/**(必填)当前页*/
 pageNum: number;
-/**每页条数*/
+/**(必填)每页条数*/
 pageSize: number;
 /**父资源id*/
 parentId: number;
 /**类型(Root-资源根节点、System-系统、Service-服务模块、Menu-功能菜单、Api-API、Button-按钮、Element-元素)*/
 type: string;
 }
-/**undefined*/
+/**ResourceRoleQueryVO*/
 export interface ResourceRoleQueryVO {
 /**关键字*/
 key: string;
-/**角色id*/
+/**(必填)角色id*/
 roleId: number;
 }
-/**undefined*/
+/**ResourceRoleVO*/
 export interface ResourceRoleVO {
-/**资源id*/
+/**(必填)资源id*/
 resourceId: number;
-/**角色id数组*/
-roleIds: undefined[];
+/**(必填)角色id数组*/
+roleIds: number[];
 }
-/**undefined*/
+/**ResourceUpdateVO*/
 export interface ResourceUpdateVO {
-/**编码*/
+/**(必填)编码*/
 code: string;
-/**id*/
+/**(必填)id*/
 id: number;
-/**名称*/
+/**(必填)名称*/
 name: string;
-/**父资源id*/
+/**(必填)父资源id*/
 parentId: number;
-/**类型(Root-资源根节点、System-系统、Service-服务模块、Menu-功能菜单、Api-API、Button-按钮、Element-元素)*/
+/**(必填)类型(Root-资源根节点、System-系统、Service-服务模块、Menu-功能菜单、Api-API、Button-按钮、Element-元素)*/
 type: string;
 /**url*/
 url: string;
 }
-/**undefined*/
+/**ResourceUserQueryVO*/
 export interface ResourceUserQueryVO {
 /**关键字*/
 key: string;
-/**用户id*/
+/**(必填)用户id*/
 userId: number;
 }
-/**undefined*/
+/**ResourceVO*/
 export interface ResourceVO {
 /**编码*/
 code: string;
@@ -490,7 +490,7 @@ code: string;
 codeSuffix: string;
 /**创建时间(yyyy-MM-dd HH:mm:ss)*/
 createTime: string;
-/**��建用户*/
+/**创建用户*/
 createUser: number;
 /**创建用户姓名*/
 createUserName: string;
@@ -517,7 +517,7 @@ updateUserName: string;
 /**url*/
 url: string;
 }
-/**undefined*/
+/**Role*/
 export interface Role {
 /**编码*/
 code: string;
@@ -536,86 +536,86 @@ updateTime: string;
 /**更新用户*/
 updateUser: number;
 }
-/**undefined*/
+/**RoleBaseVO*/
 export interface RoleBaseVO {
-/**编码*/
+/**(必填)编码*/
 code: string;
-/**名称*/
+/**(必填)名称*/
 name: string;
 }
-/**undefined*/
+/**RoleJobQueryVO*/
 export interface RoleJobQueryVO {
-/**岗位id*/
+/**(必填)岗位id*/
 jobId: number;
 /**关键字*/
 key: string;
-/**当前页*/
+/**(必填)当前页*/
 pageNum: number;
-/**每页条数*/
+/**(必填)每页条数*/
 pageSize: number;
 }
-/**undefined*/
+/**RoleJobVO*/
 export interface RoleJobVO {
-/**岗位id数组*/
-jobIds: undefined[];
-/**角色id*/
+/**(必填)岗位id数组*/
+jobIds: number[];
+/**(必填)角色id*/
 roleId: number;
 }
-/**undefined*/
+/**RoleQueryVO*/
 export interface RoleQueryVO {
 /**关键字*/
 key: string;
-/**当前页*/
+/**(必填)当前页*/
 pageNum: number;
-/**每页条数*/
+/**(必填)每页条数*/
 pageSize: number;
 }
-/**undefined*/
+/**RoleResourceQueryVO*/
 export interface RoleResourceQueryVO {
 /**关键字*/
 key: string;
-/**当前页*/
+/**(必填)当前页*/
 pageNum: number;
-/**每页条数*/
+/**(必填)每页条数*/
 pageSize: number;
-/**资源id*/
+/**(必填)资源id*/
 resourceId: number;
 }
-/**undefined*/
+/**RoleResourceVO*/
 export interface RoleResourceVO {
-/**资源id数组*/
-resourceIds: undefined[];
-/**角色id*/
+/**(必填)资源id数组*/
+resourceIds: number[];
+/**(必填)角色id*/
 roleId: number;
 }
-/**undefined*/
+/**RoleUpdateVO*/
 export interface RoleUpdateVO {
-/**编码*/
+/**(必填)编码*/
 code: string;
-/**id*/
+/**(必填)id*/
 id: number;
-/**名称*/
+/**(必填)名称*/
 name: string;
 }
-/**undefined*/
+/**RoleUserQueryVO*/
 export interface RoleUserQueryVO {
 /**关键字*/
 key: string;
-/**当前页*/
+/**(必填)当前页*/
 pageNum: number;
-/**每页条数*/
+/**(必填)每页条数*/
 pageSize: number;
-/**用户id*/
+/**(必填)用户id*/
 userId: number;
 }
-/**undefined*/
+/**RoleUserVO*/
 export interface RoleUserVO {
-/**角色id*/
+/**(必填)角色id*/
 roleId: number;
-/**用户id数组*/
-userIds: undefined[];
+/**(必填)用户id数组*/
+userIds: number[];
 }
-/**undefined*/
+/**RoleVO*/
 export interface RoleVO {
 /**编码*/
 code: string;
@@ -638,7 +638,7 @@ updateUser: number;
 /**更新用户姓名*/
 updateUserName: string;
 }
-/**undefined*/
+/**UserBaseVO*/
 export interface UserBaseVO {
 /**登录账号*/
 account: string;
@@ -665,45 +665,45 @@ orgId: number;
 /**职能类别(FrontLine-一线、NotFrontLine-非一线)*/
 workType: string;
 }
-/**undefined*/
+/**UserCopyVO*/
 export interface UserCopyVO {
-/**是否复制岗位角色*/
+/**(必填)是否复制岗位角色*/
 copyJobAndRole: boolean;
-/**是否复制组织权限*/
+/**(必填)是否复制组织权限*/
 copyOrg: boolean;
-/**目标用户id*/
+/**(必填)目标用户id*/
 targetUserId: number;
-/**要复制的用户id列表*/
-userIds: undefined[];
+/**(必填)要复制的用户id列表*/
+userIds: number[];
 }
-/**undefined*/
+/**UserJobQueryVO*/
 export interface UserJobQueryVO {
-/**岗位id*/
+/**(必填)岗位id*/
 jobId: number;
 /**关键字*/
 key: string;
-/**当前页*/
+/**(必填)当前页*/
 pageNum: number;
-/**每页条数*/
+/**(必填)每页条数*/
 pageSize: number;
 }
-/**undefined*/
+/**UserJobRoleVO*/
 export interface UserJobRoleVO {
-/**用户id*/
+/**(必填)用户id*/
 id: number;
-/**岗位id*/
+/**(必填)岗位id*/
 jobId: number;
-/**角色id数组*/
-roleIds: undefined[];
+/**(必填)角色id数组*/
+roleIds: number[];
 }
-/**undefined*/
+/**UserOrgVO*/
 export interface UserOrgVO {
-/**用户id*/
+/**(必填)用户id*/
 id: number;
-/**组织id数组*/
-orgIds: undefined[];
+/**(必填)组织id数组*/
+orgIds: number[];
 }
-/**undefined*/
+/**UserQueryVO*/
 export interface UserQueryVO {
 /**登录账号*/
 account: string;
@@ -729,9 +729,9 @@ mobilePhone: string;
 name: string;
 /**归属组织id*/
 orgId: number;
-/**当前页*/
+/**(必填)当前页*/
 pageNum: number;
-/**每页条数*/
+/**(必填)每页条数*/
 pageSize: number;
 /**权限组织id*/
 permissionOrgId: number;
@@ -740,29 +740,29 @@ status: string;
 /**职能类别(FrontLine-一线、NotFrontLine-非一线)*/
 workType: string;
 }
-/**undefined*/
+/**UserResourceQueryVO*/
 export interface UserResourceQueryVO {
 /**关键字*/
 key: string;
-/**当前页*/
+/**(必填)当前页*/
 pageNum: number;
-/**每页条数*/
+/**(必填)每页条数*/
 pageSize: number;
-/**资源id*/
+/**(必填)资源id*/
 resourceId: number;
 }
-/**undefined*/
+/**UserRoleQueryVO*/
 export interface UserRoleQueryVO {
 /**关键字*/
 key: string;
-/**当前页*/
+/**(必填)当前页*/
 pageNum: number;
-/**每页条数*/
+/**(必填)每页条数*/
 pageSize: number;
-/**角色id*/
+/**(必填)角色id*/
 roleId: number;
 }
-/**undefined*/
+/**UserUpdateVO*/
 export interface UserUpdateVO {
 /**登录账号*/
 account: string;
@@ -778,7 +778,7 @@ employeeStatus: string;
 employeeType: string;
 /**入职日期(yyyy-MM-dd)*/
 employmentDate: string;
-/**id*/
+/**(必填)id*/
 id: number;
 /**离职日期(yyyy-MM-dd)*/
 leaveDate: string;
@@ -791,7 +791,7 @@ orgId: number;
 /**职能类别(FrontLine-一线、NotFrontLine-非一线)*/
 workType: string;
 }
-/**undefined*/
+/**UserVO*/
 export interface UserVO {
 /**登录账号*/
 account: string;
