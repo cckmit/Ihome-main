@@ -4,7 +4,7 @@
  * @Author: zyc
  * @Date: 2020-07-07 15:36:27
  * @LastEditors: zyc
- * @LastEditTime: 2020-08-06 09:21:02
+ * @LastEditTime: 2020-08-06 17:35:39
 --> 
 <template>
   <div>
@@ -18,9 +18,9 @@
       <el-table-column type="index" label="序号" width="50"></el-table-column>
       <el-table-column prop="name" label="名称" width="180"></el-table-column>
       <el-table-column prop="code" label="编码" width="180"></el-table-column>
-      <el-table-column prop="createUser" label="创建人"></el-table-column>
+      <el-table-column prop="createUserName" label="创建人"></el-table-column>
       <el-table-column prop="createTime" label="创建时间"></el-table-column>
-      <el-table-column prop="updateUser" label="修改人"></el-table-column>
+      <el-table-column prop="updateUserName" label="修改人"></el-table-column>
       <el-table-column prop="updateTime" label="修改时间"></el-table-column>
     </el-table>
     <el-pagination

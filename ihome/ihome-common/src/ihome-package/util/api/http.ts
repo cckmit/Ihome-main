@@ -88,7 +88,7 @@ service.interceptors.response.use(
                 duration: 5 * 1000
             })
         } else {
-            var originalRequest = error.config;
+            let originalRequest = error.config;
             if (error.code == 'ECONNABORTED' && error.message.indexOf('timeout') != -1 && !originalRequest._retry) {
                 originalRequest._retry = true;
                 console.error('请求超时:' + originalRequest.timeout + ';url=' + originalRequest.url)

@@ -15,7 +15,7 @@ import { Component,   Vue } from 'vue-property-decorator';
 @Component
 export default class IhInput extends Vue {
  
- msg:string="xxx";
+ msg="xxx";
 }
 </script>
 <style scoped lang="scss">

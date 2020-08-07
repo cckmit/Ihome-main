@@ -4,7 +4,7 @@
  * @Author: zyc
  * @Date: 2020-07-09 15:03:17
  * @LastEditors: zyc
- * @LastEditTime: 2020-08-06 14:27:49
+ * @LastEditTime: 2020-08-06 17:31:50
 --> 
 <template>
   <div>
@@ -39,6 +39,7 @@
         :highlight-current="true"
         node-key="id"
         @current-change="currentChange"
+        :expand-on-click-node="false"
         ref="tree"
       ></el-tree>
     </div>

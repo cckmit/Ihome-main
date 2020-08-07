@@ -8,7 +8,7 @@
  */
 declare global {
     interface Number {
-        thousandsSeperator(): String;
+        thousandsSeperator(): string;
     }
 }
 export { }; 
