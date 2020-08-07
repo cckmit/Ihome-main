@@ -4,7 +4,7 @@
  * @Author: zyc
  * @Date: 2020-06-22 11:11:41
  * @LastEditors: zyc
- * @LastEditTime: 2020-08-07 16:39:13
+ * @LastEditTime: 2020-08-07 17:29:35
  */
 const path = require('path');
 const { name } = require('./package');
@@ -14,8 +14,6 @@ const childProcess = require('child_process')
 const branch = childProcess.execSync('git rev-parse --abbrev-ref HEAD').toString().replace(/\s+/, '')
 let git_email = childProcess.execSync('git show -s --format=%ce').toString().trim(); //邮箱
 console.log('\033[42;30m ' + name + '子应用 git信息 \033[40;32m 邮箱:' + git_email + ' 分支:' + branch + '\033[0m');
-
-
 function resolve(dir) {
 	return path.join(__dirname, dir);
 }

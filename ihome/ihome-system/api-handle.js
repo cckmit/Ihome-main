@@ -4,7 +4,7 @@
  * @Author: zyc
  * @Date: 2020-07-31 15:21:06
  * @LastEditors: zyc
- * @LastEditTime: 2020-08-07 15:38:04
+ * @LastEditTime: 2020-08-07 17:30:04
  */
 let http = require('http');
 let fs = require("fs");
@@ -32,8 +32,6 @@ function handleBody(body) {
     let countPost = 0;
     Object.keys(paths).forEach(k => {
         count += 1;
-        //   let t = paths[k];
-        //   let method = paths[k]["get"];
         let v = paths[k];
         if (paths[k]["get"]) {
             countGet += 1;
@@ -95,7 +93,6 @@ function handleBody(body) {
             originalRef = replaceAll(originalRef, '«', '<')
             originalRef = replaceAll(originalRef, '»', '>')
 
-
             if (originalRef && originalRef.length > 0) {
 
             } else {
@@ -116,7 +113,6 @@ function handleBody(body) {
                 }
             }
 
-
             writeLine(`/**${paths[k]["post"].summary}*/`)
             // writeLine(`export async function ${paths[k]["post"].operationId} (d?: ${res}) {`)
             let className = replaceAll('post' + k, '/', '_')
@@ -132,7 +128,6 @@ function handleBody(body) {
         }
     });
     console.log(`一共有${count}个接口;get=${countGet};post=${countPost};其他=${count - countGet - countPost}`)
-
 
     writeLine('//===============================================================================================')
     writeLine(`/**ResModel模型*/`)
@@ -152,7 +147,6 @@ function handleBody(body) {
     writeLine(`/**总记录数*/`)
     writeLine(`total: number;`)
     writeLine(`}`)
-
 
     Object.keys(definitions).forEach(k => {
         if (k.includes("ApiResult") || k.includes("PageInfo")) {
@@ -213,8 +207,6 @@ function handleBody(body) {
         }
         console.log(`${name}-api脚本写入成功！路径${outSrc}`);
         console.log('\033[42;30m ' + name + '成功 \033[40;32m ' + name + '接口脚本生成成功\033[0m')
-
-
     });
 }
 function writeLine(line) {
