@@ -4,7 +4,7 @@
  * @Author: zyc
  * @Date: 2020-07-14 16:00:28
  * @LastEditors: zyc
- * @LastEditTime: 2020-07-23 15:15:51
+ * @LastEditTime: 2020-08-10 16:00:44
 --> 
 <template>
   <el-dialog
@@ -64,7 +64,7 @@
             >
               <el-table-column property="selected" label width="30">
                 <template slot-scope="scope">
-                  <ih-table-radio :radio="scope.row.id==currentItem.id"></ih-table-radio>
+                  <ih-table-radio :radio="scope.row.id===currentItem.id"></ih-table-radio>
                 </template>
               </el-table-column>
               <el-table-column prop="name" label="姓名" width="120"></el-table-column>
@@ -124,7 +124,7 @@ export default class CopyUsers extends Vue {
       alert(`未选择数据`);
     }
   }
-  currentItem: any = { id: null };
+  currentItem: any = { id: 0 };
   list: any = [];
   total: any = null;
   currentPage = 1;

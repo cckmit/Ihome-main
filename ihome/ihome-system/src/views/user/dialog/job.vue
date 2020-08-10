@@ -4,7 +4,7 @@
  * @Author: zyc
  * @Date: 2020-07-14 14:34:44
  * @LastEditors: zyc
- * @LastEditTime: 2020-07-15 09:34:53
+ * @LastEditTime: 2020-08-10 18:01:45
 --> 
 <template>
   <el-dialog
@@ -32,10 +32,22 @@
         </el-input>
       </div>
       <br />
-      <el-table :data="filterTable" height="250" border style="width: 100%">
+      <el-table
+        :data="filterTable"
+        height="250"
+        border
+        highlight-current-row
+        style="width: 100%"
+        @current-change="currentChange"
+      >
+        <el-table-column property="selected" label width="30">
+          <template slot-scope="scope">
+            <ih-table-radio :radio="scope.row.id==currentItem.id"></ih-table-radio>
+          </template>
+        </el-table-column>
         <el-table-column prop="name" label="名称" width="180"></el-table-column>
         <el-table-column prop="code" label="编号" width="180"></el-table-column>
-        <el-table-column prop="roleList" label="岗位权限"></el-table-column>
+        <el-table-column prop="jobRoles" label="岗位权限"></el-table-column>
       </el-table>
     </div>
 
@@ -62,15 +74,20 @@
 import { Component, Vue, Prop } from "vue-property-decorator";
 // import { Form as ElForm } from "element-ui";
 import { getRoleList } from "../../../api/system/index2";
+import {
+  post_job_getAll,
+  post_role_getAllByJobId__jobId,
+} from "../../../api/system/index";
+
 // import { DictionariesModule } from "../../store/modules/dictionaries";
 @Component({
-  components: {}
+  components: {},
 })
 export default class UserJobRole extends Vue {
   constructor() {
     super();
   }
-  @Prop({ default: null }) datax: any;
+  @Prop({ default: null }) data: any;
   dialogVisible = true;
   keyword = "";
 
@@ -84,17 +101,18 @@ export default class UserJobRole extends Vue {
       "shenzhen",
       "nanjing",
       "xian",
-      "chengdu"
+      "chengdu",
     ];
     cities.forEach((city, index) => {
       dataList.push({
         label: city,
         key: index,
-        pinyin: pinyin[index]
+        pinyin: pinyin[index],
       });
     });
     return dataList;
   }
+  currentItem: any = { id: null };
   leftData: any = [];
   rightData: any = [];
 
@@ -133,13 +151,8 @@ export default class UserJobRole extends Vue {
   }
 
   async created() {
-    for (let index = 0; index < 10; index++) {
-      this.tableData.push({
-        name: "文员岗" + index,
-        code: "abcd",
-        roleList: "ROfficeClerk、RAgent"
-      });
-    }
+    this.tableData = await post_job_getAll();
+    console.log(this.tableData);
 
     const { total, list } = await getRoleList();
     list.forEach((item: any) => {
@@ -148,6 +161,15 @@ export default class UserJobRole extends Vue {
     });
     console.log(total, list);
     this.leftData = list;
+  }
+
+  async currentChange(val: any) {
+    console.log(val);
+    this.currentItem = val;
+    const res = await post_role_getAllByJobId__jobId({
+      jobId: this.currentItem.id,
+    });
+    console.log(res);
   }
 }
 </script>

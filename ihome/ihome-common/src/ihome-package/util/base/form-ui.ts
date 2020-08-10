@@ -4,9 +4,8 @@
  * @Author: zyc
  * @Date: 2020-07-15 10:31:43
  * @LastEditors: zyc
- * @LastEditTime: 2020-08-05 10:42:58
+ * @LastEditTime: 2020-08-10 16:40:49
  */
-
 /**大陆手机号码校验*/
 export function phoneValidator(rule: any, value: any, callback: any) {
     let reg = /^1[3456789]\d{9}$/
@@ -77,6 +76,17 @@ export function noTrim(rule: any, value: any, callback: any) {
     let reg = /(^\s+)|(\s+$)|\s+/g;
     if (reg.test(value)) {
         callback(new Error('请勿输入空格'))
+        return;
+    } else {
+        callback();
+    }
+}
+
+/**邮箱*/
+export function emailValidato(rule: any, value: any, callback: any) {
+    let reg = /^[A-Za-zd0-9]+([-_.][A-Za-zd]+)*@([A-Za-zd]+[-.])+[A-Za-zd]{2,5}$/;
+    if (!reg.test(value)) {
+        callback(new Error('邮箱格式有误'))
         return;
     } else {
         callback();

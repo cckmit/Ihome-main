@@ -4,7 +4,7 @@
  * @Author: zyc
  * @Date: 2020-08-04 15:23:09
  * @LastEditors: zyc
- * @LastEditTime: 2020-08-06 17:39:33
+ * @LastEditTime: 2020-08-10 15:20:21
 --> 
 <template>
   <div>
@@ -19,6 +19,7 @@
     <div>
       <el-tree
         class="filter-tree"
+        :expand-on-click-node="false"
         :data="dataTree"
         :props="defaultProps"
         :default-expand-all="true"

@@ -4,7 +4,7 @@
  * @Author: zyc
  * @Date: 2020-07-09 14:31:23
  * @LastEditors: zyc
- * @LastEditTime: 2020-08-04 14:07:17
+ * @LastEditTime: 2020-08-10 17:38:05
 --> 
 <template>
   <div>
@@ -52,7 +52,7 @@
 </template>
 <script lang="ts">
 import { Component, Vue } from "vue-property-decorator";
-import { get_role_get_ID } from "../../../api/system/index";
+import { get_role_get__id} from "../../../api/system/index";
 @Component({
   components: {},
 })
@@ -60,7 +60,7 @@ export default class RoleInfoDetails extends Vue {
   info: any = {};
   async created() {
     let id = this.$route.query.id;
-    this.info = await get_role_get_ID({ id: id });
+    this.info = await get_role_get__id({ id: id });
   }
 }
 </script>

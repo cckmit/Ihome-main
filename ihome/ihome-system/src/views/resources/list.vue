@@ -4,7 +4,7 @@
  * @Author: zyc
  * @Date: 2020-07-06 09:41:43
  * @LastEditors: zyc
- * @LastEditTime: 2020-08-06 14:24:47
+ * @LastEditTime: 2020-08-10 17:41:42
 --> 
 <template>
   <ih-page>
@@ -137,7 +137,7 @@ import { Component, Vue } from "vue-property-decorator";
 import PaginationMixin from "../../mixins/pagination";
 import {
   post_resource_getList,
-  post_resource_delete_ID,
+  post_resource_delete__id,
 } from "../../api/system/index";
 import BatchOperationRole from "./batch-operation-role.vue";
 import { getListTool, modular } from "../../util/enums/dic";
@@ -234,7 +234,7 @@ export default class ResourcesList extends Vue {
 
     try {
       await this.$confirm("是否确定删除?", "提示");
-      await post_resource_delete_ID({ id: scope.row.id });
+      await post_resource_delete__id({ id: scope.row.id });
 
       this.resPageInfo.list.splice(scope.$index, 1);
       this.$message({

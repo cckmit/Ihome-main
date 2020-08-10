@@ -4,7 +4,7 @@
  * @Author: zyc
  * @Date: 2020-07-07 15:42:42
  * @LastEditors: zyc
- * @LastEditTime: 2020-08-01 16:13:40
+ * @LastEditTime: 2020-08-10 17:37:40
 --> 
 <template>
   <div>
@@ -71,7 +71,7 @@
   </div>
 </template>
 <script lang="ts">
-import { get_resource_get_ID } from "../../../api/system/index";
+import { get_resource_get__id } from "../../../api/system/index";
 import { Component, Vue } from "vue-property-decorator";
 @Component({
   components: {},
@@ -80,7 +80,7 @@ export default class InfoDetails extends Vue {
   info: any = {};
   async created() {
     let id = this.$route.query.id;
-    this.info = await get_resource_get_ID({ id: id });
+    this.info = await get_resource_get__id({ id: id });
     console.log(this.info);
   }
 }

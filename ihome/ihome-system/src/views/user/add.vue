@@ -4,7 +4,7 @@
  * @Author: zyc
  * @Date: 2020-07-01 10:32:40
  * @LastEditors: zyc
- * @LastEditTime: 2020-07-23 14:25:45
+ * @LastEditTime: 2020-08-10 17:38:20
 --> 
 
 <template>
@@ -15,37 +15,41 @@
     :close-on-click-modal="false"
     :close-on-press-escape="false"
     :before-close="cancel"
-    width="50%"
+    width="800px"
     class="dialog text-left"
   >
-    <el-form ref="form" :model="form" label-width="80px">
+    <el-form ref="form" :model="form" :rules="rules" label-width="80px">
       <p>
-        <b>账号信息 </b>
+        <b>账号信息</b>
       </p>
       <el-row>
         <el-col :span="12">
-          <el-form-item label="用户类型">
-            <el-select v-model="form.region" placeholder="请选择用户类型">
-              <el-option label="区域一" value="shanghai"></el-option>
-              <el-option label="区域二" value="beijing"></el-option>
+          <el-form-item label="用户类型" prop="accountType">
+            <el-select v-model="form.accountType" placeholder="请选择用户类型">
+              <el-option
+                v-for="item in accountTypeOptions"
+                :key="item.value"
+                :label="item.label"
+                :value="item.value"
+              ></el-option>
             </el-select>
           </el-form-item>
         </el-col>
         <el-col :span="12">
-          <el-form-item label="姓名">
-            <el-input v-model="form.name"></el-input>
+          <el-form-item label="姓名" prop="name">
+            <el-input v-model="form.name" placeholder="姓名"></el-input>
           </el-form-item>
         </el-col>
       </el-row>
       <el-row>
         <el-col :span="12">
-          <el-form-item label="登录账号">
-            <el-input v-model="form.name"></el-input>
+          <el-form-item label="登录账号" prop="account">
+            <el-input v-model="form.account" placeholder="登录账号"></el-input>
           </el-form-item>
         </el-col>
         <el-col :span="12">
-          <el-form-item label="手机号码">
-            <el-input v-model="form.name"></el-input>
+          <el-form-item label="手机号码" prop="mobilePhone">
+            <el-input v-model="form.mobilePhone" placeholder="手机号码"></el-input>
           </el-form-item>
         </el-col>
       </el-row>
@@ -55,14 +59,18 @@
       <el-row>
         <el-col :span="12">
           <el-form-item label="员工工号">
-            <el-input v-model="form.name"></el-input>
+            <el-input v-model="form.employeeCode" placeholder="员工工号"></el-input>
           </el-form-item>
         </el-col>
         <el-col :span="12">
           <el-form-item label="雇员状态">
-            <el-select v-model="form.region" placeholder="请选择雇员状态">
-              <el-option label="区域一" value="shanghai"></el-option>
-              <el-option label="区域二" value="beijing"></el-option>
+            <el-select v-model="form.employeeStatus" clearable placeholder="请选择雇员状态">
+              <el-option
+                v-for="item in employeeStatusOptions"
+                :key="item.value"
+                :label="item.label"
+                :value="item.value"
+              ></el-option>
             </el-select>
           </el-form-item>
         </el-col>
@@ -70,13 +78,23 @@
 
       <el-row>
         <el-col :span="12">
-          <el-form-item label="入职日期">
-            <el-date-picker v-model="valuedate" type="date" placeholder="选择日期"></el-date-picker>
+          <el-form-item label="入职日期" prop="employmentDate">
+            <el-date-picker
+              v-model="form.employmentDate"
+              type="date"
+              placeholder="入职日期"
+              value-format="yyyy-MM-dd"
+            ></el-date-picker>
           </el-form-item>
         </el-col>
         <el-col :span="12">
-          <el-form-item label="离职日期">
-            <el-date-picker v-model="valuedate" type="date" placeholder="选择日期"></el-date-picker>
+          <el-form-item label="离职日期" prop="leaveDate">
+            <el-date-picker
+              v-model="form.leaveDate"
+              type="date"
+              placeholder="离职日期"
+              value-format="yyyy-MM-dd"
+            ></el-date-picker>
           </el-form-item>
         </el-col>
       </el-row>
@@ -84,18 +102,26 @@
       <el-row>
         <el-col :span="12">
           <el-form-item label="职能类别">
-            <el-select v-model="form.region" placeholder="请选择职能类别">
-              <el-option label="区域一" value="shanghai"></el-option>
-              <el-option label="区域二" value="beijing"></el-option>
+            <el-select v-model="form.workType" clearable placeholder="请选择职能类别">
+              <el-option
+                v-for="item in workTypeOptions"
+                :key="item.value"
+                :label="item.label"
+                :value="item.value"
+              ></el-option>
             </el-select>
           </el-form-item>
         </el-col>
 
         <el-col :span="12">
           <el-form-item label="人员类型">
-            <el-select v-model="form.region" placeholder="请选择人员类型">
-              <el-option label="区域一" value="shanghai"></el-option>
-              <el-option label="区域二" value="beijing"></el-option>
+            <el-select v-model="form.employeeType" clearable placeholder="请选择人员类型">
+              <el-option
+                v-for="item in employeeTypeOptions"
+                :key="item.value"
+                :label="item.label"
+                :value="item.value"
+              ></el-option>
             </el-select>
           </el-form-item>
         </el-col>
@@ -103,13 +129,21 @@
 
       <el-row>
         <el-col :span="12">
-          <el-form-item label="email">
-            <el-input v-model="form.name"></el-input>
+          <el-form-item label="email" prop="email">
+            <el-input v-model="form.email" placeholder="电子邮箱"></el-input>
           </el-form-item>
         </el-col>
         <el-col :span="12">
           <el-form-item label="归属组织">
-            <el-input v-model="form.name"></el-input>
+            <IhSelectTree
+              min-height="400px"
+              :props="props"
+              :options="orgList"
+              :value="form.orgId"
+              :clearable="true"
+              :accordion="true"
+              @getValue="getValue($event)"
+            />
           </el-form-item>
         </el-col>
       </el-row>
@@ -123,9 +157,27 @@
 </template>
 <script lang="ts">
 import { Component, Vue, Prop } from "vue-property-decorator";
-// import { userInfo } from "../../api/system";
+import { Form as ElForm } from "element-ui";
+import {
+  getListTool,
+  accountType,
+  accountStatus,
+  employeeStatus,
+  employeeType,
+  workType,
+} from "../../util/enums/dic";
+import {
+  post_user_add,
+  post_user_update,
+  get_org_getAll,
+  get_user_get__id,
+} from "../../api/system";
+import {
+  isNumberValidato,
+  emailValidato,
+} from "ihome-common/util/base/form-ui";
 @Component({
-  components: {}
+  components: {},
 })
 export default class UserAdd extends Vue {
   constructor() {
@@ -135,25 +187,119 @@ export default class UserAdd extends Vue {
   dialogVisible = true;
 
   form: any = {
-    name: "",
-    region: "",
-    date1: "",
-    date2: "",
-    delivery: false,
-    type: [],
-    resource: "",
-    desc: ""
+    id: null,
+    account: null,
+    accountType: "Ihome",
+    email: null,
+    employeeCode: null,
+    employeeStatus: "On",
+    employeeType: "Formal",
+    employmentDate: this.$tool.todayStr(),
+    leaveDate: "2099-12-31",
+    mobilePhone: null,
+    name: null,
+    orgId: null,
+    workType: "FrontLine",
   };
+  rules: any = {
+    accountType: [
+      { required: true, message: "请选择用户类型", trigger: "change" },
+    ],
+    name: [
+      { required: true, message: "请输入名称", trigger: "change" },
+      { min: 1, max: 32, message: "长度在 1 到 32 个字符", trigger: "change" },
+    ],
+    account: [
+      { required: true, message: "请输入登录账号", trigger: "change" },
+      { min: 1, max: 32, message: "长度在 1 到 32 个字符", trigger: "change" },
+    ],
+    mobilePhone: [
+      { required: true, message: "请输入手机号码", trigger: "change" },
+      { min: 1, max: 16, message: "长度在 1 到 16 个字符", trigger: "change" },
+      { validator: isNumberValidato, trigger: "change" },
+    ],
+    employmentDate: [
+      { required: true, message: "请选择入职日期", trigger: "change" },
+    ],
+    leaveDate: [
+      { required: true, message: "请选择离职日期", trigger: "change" },
+    ],
+    email: [{ validator: emailValidato, trigger: "change" }],
+  };
+  get accountTypeOptions() {
+    let list = getListTool(accountType);
+    return list;
+  }
+  get accountStatusOptions() {
+    let list = getListTool(accountStatus);
+    return list;
+  }
+  get employeeStatusOptions() {
+    let list = getListTool(employeeStatus);
+    return list;
+  }
+  get employeeTypeOptions() {
+    let list = getListTool(employeeType);
+    return list;
+  }
+  get workTypeOptions() {
+    let list = getListTool(workType);
+    return list;
+  }
+  orgList: any = [];
+  props = {
+    // 配置项（必选）
+    value: "id",
+    label: "name",
+    children: "children",
+    defaultExpandedKeys: [1],
+    // defaultCheckedKeys: ["1D29BB468F504774ACE653B946A393EE"]
+  };
+  getValue(value: any) {
+    this.form.orgId = value;
+    console.log(this.form.orgId);
+  }
   valuedate = new Date().getTime();
 
   cancel() {
     this.$emit("cancel", false);
   }
   finish() {
-    this.$emit("finish", {});
+    (this.$refs["form"] as ElForm).validate(async (valid) => {
+      if (valid) {
+        console.log(this.form);
+        if (this.form.id > 0) {
+          const res = await post_user_update(this.form);
+          this.$message.success("修改成功");
+          this.$emit("finish", res);
+        } else {
+          const res = await post_user_add(this.form);
+          this.$message.success("添加成功");
+          this.$emit("finish", res);
+        }
+      } else {
+        console.log("error submit!!");
+        return false;
+      }
+    });
   }
-  created() {
+  async created() {
     console.log(this.data);
+    if (this.data && this.data.id > 0) {
+      const res = await get_user_get__id({ id: this.data.id });
+      this.form = res;
+    }
+    let listOrg = await get_org_getAll({ onlyValid: true });
+    if (listOrg && listOrg.length > 0) {
+      listOrg[0].parentId = 0;
+    }
+    console.log(listOrg);
+    this.orgList = this.$tool.listToGruop(listOrg, {
+      id: "id",
+      children: "children",
+      parentId: "parentId",
+      rootId: 0,
+    });
   }
 }
 </script>

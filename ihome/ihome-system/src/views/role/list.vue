@@ -109,7 +109,7 @@ import BatchOperationJob from "./batch-operation-job.vue";
 import BatchOperationUser from "./batch-operation-user.vue";
 import PaginationMixin from "../../mixins/pagination";
 
-import { post_role_getList, post_role_delete_ID } from "../../api/system/index";
+import { post_role_getList, post_role_delete__id } from "../../api/system/index";
 
 @Component({
   components: {
@@ -171,7 +171,7 @@ export default class RoleList extends Vue {
   async remove(scope: any) {
     try {
       await this.$confirm("是否确定删除?", "提示");
-      await post_role_delete_ID({ id: scope.row.id });
+      await post_role_delete__id({ id: scope.row.id });
       this.resPageInfo.list.splice(scope.$index, 1);
       this.$message.success("删除成功!");
     } catch (error) {

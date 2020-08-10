@@ -1,5 +1,5 @@
 /* eslint-disable */
-//2020-8-10 17:56:02
+//2020-8-10 17:55:50
 import { request } from '@/api/base'
 /**添加岗位*/
 export async function post_job_add (d?: JobBaseVO) {

@@ -1,5 +1,5 @@
 /* eslint-disable */
-//2020-8-10 17:56:02
+//2020-8-10 17:50:29
 import { request } from '@/api/base'
 /**添加岗位*/
 export async function post_job_add (d?: JobBaseVO) {
@@ -177,7 +177,7 @@ return await request.get<UserVO,UserVO>('/system/user/get/{id}', { params: d })
 export async function post_user_getList (d?: UserQueryVO) {
 return await request.post< PageModel<UserVO>,PageModel<UserVO>> ('/system/user/getList', d)
 }
-/**查询拥有指定岗��的用户列表*/
+/**查询拥有指��岗位的用户列表*/
 export async function post_user_getListByJobId (d?: UserJobQueryVO) {
 return await request.post< PageModel<UserVO>,PageModel<UserVO>> ('/system/user/getListByJobId', d)
 }

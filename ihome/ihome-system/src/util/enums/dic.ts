@@ -4,7 +4,7 @@
  * @Author: zyc
  * @Date: 2020-08-05 11:51:43
  * @LastEditors: zyc
- * @LastEditTime: 2020-08-06 08:57:02
+ * @LastEditTime: 2020-08-10 09:59:34
  */
 /**组织类型
  * @param {type} 
@@ -43,17 +43,62 @@ export const modular: any = {
     Button: '按钮',
     Element: '元素'
 }
+/**用户类型   Ihome-爱家员工、Juheng-居恒员工、Poly-保顾兼职、Channel-渠道用户、Customer-个人客户、Outsourcing-劳务派遣
+ * @param {type} 
+ * @return {type} 
+ */
+export const accountType: any = {
+    Ihome: '爱家员工',
+    Juheng: '居恒员工',
+    Poly: '保顾兼职',
+    Channel: '渠道用户',
+    Customer: '个人客户',
+    Outsourcing: '劳务派遣'
+}
+/**状态(Valid-有效、Invalid-无效)
+ * @param {type} 
+ * @return {type} 
+ */
+export const accountStatus: any = {
+    Valid: '有效',
+    Invalid: '无效',
+
+}
+/**雇员状态(On-在职、Leave-离职)
+ * @param {type} 
+ * @return {type} 
+ */
+export const employeeStatus: any = {
+    On: '在职',
+    Leave: '离职',
+}
+
+/**人员类型(Formal-正式工、Probation-试用、Practice-实习、Vacation-暑期工、Rehire-离职返聘)
+ * @param {type} 
+ * @return {type} 
+ */
+export const employeeType: any = {
+    Formal: '正式工',
+    Probation: '试用',
+    Practice: '实习',
+    Vacation: '暑期工',
+    Rehire: '离职返聘',
+}
+/**职能类别(FrontLine-一线、NotFrontLine-非一线)
+ * @param {type} 
+ * @return {type} 
+ */
+export const workType: any = {
+    FrontLine: '一线',
+    NotFrontLine: '非一线',
+
+}
 
 
-// public modular: Dic[] = [
-//     { value: 'Root', label: '资源根节点' },
-//     { value: 'System', label: '系统' },
-//     { value: 'Service', label: '服务模块' },
-//     { value: 'Menu', label: '功能菜单' },
-//     { value: 'Api', label: 'API' },
-//     { value: 'Button', label: '按钮' },
-//     { value: 'Element', label: '元素' },
-// ];
+
+
+
+
 
 /**获取列表工具类*/
 export function getListTool(dic: any, config = { value: 'value', label: 'label' }) {
@@ -67,4 +112,6 @@ export function getListTool(dic: any, config = { value: 'value', label: 'label' 
     })
     return list;
 }
+
+
 

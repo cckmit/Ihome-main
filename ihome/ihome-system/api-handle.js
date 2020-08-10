@@ -4,7 +4,7 @@
  * @Author: zyc
  * @Date: 2020-07-31 15:21:06
  * @LastEditors: zyc
- * @LastEditTime: 2020-08-07 17:30:04
+ * @LastEditTime: 2020-08-10 17:52:59
  */
 let http = require('http');
 let fs = require("fs");
@@ -69,12 +69,14 @@ function handleBody(body) {
                 }
             }
             writeLine(`/**${paths[k]["get"].summary}*/`)
+
             // writeLine(`export async function ${paths[k]["get"].operationId} (d?: ${res}) {`)
             let className = replaceAll('get' + k, '/', '_')
-            className = className.replace('{id}', 'ID')
+            className = replaceUrlParameter(className)
             if (!res) {
                 res = 'any'
             }
+
             writeLine(`export async function ${className} (d?: ${res}) {`)
             writeLine(`return await request.get<${originalRef},${originalRef}>('${body.basePath}${k}', { params: d })`)
             writeLine(`}`)
@@ -114,12 +116,14 @@ function handleBody(body) {
             }
 
             writeLine(`/**${paths[k]["post"].summary}*/`)
+
             // writeLine(`export async function ${paths[k]["post"].operationId} (d?: ${res}) {`)
             let className = replaceAll('post' + k, '/', '_')
-            className = className.replace('{id}', 'ID')
+            className = replaceUrlParameter(className)
             if (!res) {
                 res = 'any'
             }
+
             writeLine(`export async function ${className} (d?: ${res}) {`)
 
             writeLine(`return await request.post< ${originalRef},${originalRef}> ('${body.basePath}${k}', d)`)
@@ -245,6 +249,17 @@ function handleSwagger(prefix) {
     // 向服务端发送请求
     let req = http.request(options, callback);
     req.end();
+}
+
+function replaceUrlParameter(str) {
+    // var str = '/{id}/{name}';
+    // var data = { id: "id1", name: "张大大" }
+
+    let rstr = str.replace(/{[^}]*}/g, function (me) {
+        // console.log(arguments);
+        return "_" + me.replace("{", "").replace("}", "")
+    });
+    return rstr;
 }
 
 module.exports = handleSwagger;

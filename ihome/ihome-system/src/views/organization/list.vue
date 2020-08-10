@@ -4,7 +4,7 @@
  * @Author: zyc
  * @Date: 2020-07-14 11:26:26
  * @LastEditors: zyc
- * @LastEditTime: 2020-08-07 15:08:44
+ * @LastEditTime: 2020-08-10 17:42:01
 --> 
 <template>
   <ih-page class="organization-list">
@@ -158,7 +158,7 @@ import OrganizationTree from "@/components/OrganizationTree.vue";
 import { DictionariesModule } from "../../store/modules/dictionaries";
 import { Component, Vue } from "vue-property-decorator";
 // import { getResourceList, getResourceCategory } from "../../api/system/index2";
-import { post_org_getList, post_org_delete_ID } from "../../api/system/index";
+import { post_org_getList, post_org_delete__id } from "../../api/system/index";
 import PaginationMixin from "../../mixins/pagination";
 import { orgType } from "../../util/enums/dic";
 
@@ -266,7 +266,7 @@ export default class OrganizationList extends Vue {
 
     try {
       await this.$confirm("是否确定删除?", "提示");
-      await post_org_delete_ID({ id: scope.row.id });
+      await post_org_delete__id({ id: scope.row.id });
       this.resPageInfo.list.splice(scope.$index, 1);
       this.$message({
         type: "success",

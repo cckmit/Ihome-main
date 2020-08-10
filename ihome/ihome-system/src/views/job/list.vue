@@ -4,7 +4,7 @@
  * @Author: zyc
  * @Date: 2020-07-14 09:23:40
  * @LastEditors: zyc
- * @LastEditTime: 2020-08-07 14:27:45
+ * @LastEditTime: 2020-08-10 17:35:36
 --> 
 --> 
 <template>
@@ -89,7 +89,7 @@
 <script lang="ts">
 import { Component, Vue } from "vue-property-decorator";
 // import { getJobList } from "../../api/system/index2";
-import { post_job_getList, post_job_delete_ID } from "../../api/system/index";
+import { post_job_getList, post_job_delete__id } from "../../api/system/index";
 import JobAddEdit from "./add-edit.vue";
 import AssignRole from "./assign-role.vue";
 import PaginationMixin from "../../mixins/pagination";
@@ -129,7 +129,7 @@ export default class JobInfo extends Vue {
 
     try {
       await this.$confirm("是否确定删除?", "提示");
-      const res = await post_job_delete_ID({ id: scope.row.id });
+      const res = await post_job_delete__id({ id: scope.row.id });
       console.log(res);
       this.resPageInfo.list.splice(scope.$index, 1);
       this.$message({
