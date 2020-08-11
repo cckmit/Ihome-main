@@ -4,12 +4,12 @@
  * @Author: zyc
  * @Date: 2020-07-14 14:34:44
  * @LastEditors: zyc
- * @LastEditTime: 2020-08-10 18:01:45
+ * @LastEditTime: 2020-08-11 15:16:42
 --> 
 <template>
   <el-dialog
     v-dialogDrag
-    title="分配角色"
+    :title="'分配角色('+data.name+data.account+')'"
     :visible.sync="dialogVisible"
     :close-on-click-modal="false"
     :close-on-press-escape="false"
@@ -73,10 +73,13 @@
 <script lang="ts">
 import { Component, Vue, Prop } from "vue-property-decorator";
 // import { Form as ElForm } from "element-ui";
-import { getRoleList } from "../../../api/system/index2";
+// import { getRoleList } from "../../../api/system/index2";
 import {
   post_job_getAll,
   post_role_getAllByJobId__jobId,
+  get_role_getAll,
+  post_user_addJobAndRoleBatch,
+  post_role_getAllByUserId__userId,
 } from "../../../api/system/index";
 
 // import { DictionariesModule } from "../../store/modules/dictionaries";
@@ -91,27 +94,6 @@ export default class UserJobRole extends Vue {
   dialogVisible = true;
   keyword = "";
 
-  generateData() {
-    const dataList: any = [];
-    const cities = ["上海", "北京", "广州", "深圳", "南京", "西安", "成都"];
-    const pinyin = [
-      "shanghai",
-      "beijing",
-      "guangzhou",
-      "shenzhen",
-      "nanjing",
-      "xian",
-      "chengdu",
-    ];
-    cities.forEach((city, index) => {
-      dataList.push({
-        label: city,
-        key: index,
-        pinyin: pinyin[index],
-      });
-    });
-    return dataList;
-  }
   currentItem: any = { id: null };
   leftData: any = [];
   rightData: any = [];
@@ -124,8 +106,24 @@ export default class UserJobRole extends Vue {
     this.$emit("cancel", false);
   }
 
-  finish() {
-    this.$emit("finish", {});
+  async finish() {
+    if (this.currentItem && this.currentItem.id > 0) {
+      if (this.rightData && this.rightData.length > 0) {
+        let p: any = {
+          id: this.data.id,
+          jobId: this.currentItem.id,
+          roleIds: this.rightData,
+        };
+        console.log(p);
+        const res = await post_user_addJobAndRoleBatch(p);
+        this.$message.success("操作成功");
+        this.$emit("finish", res);
+      } else {
+        this.$message.warning("选中的角色数据不能为空");
+      }
+    } else {
+      this.$message.warning("请先选择岗位");
+    }
   }
   tableData: any = [];
   includesJs(name: any, keyword: any) {
@@ -151,16 +149,23 @@ export default class UserJobRole extends Vue {
   }
 
   async created() {
-    this.tableData = await post_job_getAll();
-    console.log(this.tableData);
-
-    const { total, list } = await getRoleList();
+    this.currentItem.id = this.data.jobId;
+    let [tableData, list, roleList] = await Promise.all([
+      post_job_getAll(),
+      get_role_getAll(),
+      post_role_getAllByUserId__userId({
+        userId: this.data.id,
+      }),
+    ]);
+    this.tableData = tableData;
     list.forEach((item: any) => {
       item.key = item.id;
       item.label = item.name + `（${item.code}）`;
     });
-    console.log(total, list);
     this.leftData = list;
+    this.rightData = roleList.map((item: any) => {
+      return item.id;
+    });
   }
 
   async currentChange(val: any) {
@@ -169,7 +174,14 @@ export default class UserJobRole extends Vue {
     const res = await post_role_getAllByJobId__jobId({
       jobId: this.currentItem.id,
     });
-    console.log(res);
+    res.forEach((item: any) => {
+      item.key = item.id;
+      item.label = item.name + `（${item.code}）`;
+    });
+    this.rightData = res.map((item: any) => {
+      return item.id;
+    });
+    console.log(this.rightData);
   }
 }
 </script>

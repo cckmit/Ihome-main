@@ -4,7 +4,7 @@
  * @Author: zyc
  * @Date: 2020-07-14 16:00:28
  * @LastEditors: zyc
- * @LastEditTime: 2020-08-10 16:00:44
+ * @LastEditTime: 2020-08-11 15:24:50
 --> 
 <template>
   <el-dialog
@@ -26,11 +26,11 @@
             <span>选中用户</span>
           </div>
           <div style="height:400px;overflow: auto;">
-            <div class="text item">张三</div>
-            <div class="text item">李四</div>
-            <div class="text item">王五</div>
-            <div class="text item">张三</div>
-            <div class="text item">李四</div>
+            <div
+              class="text item"
+              v-for="(item,index) in data"
+              :key="index"
+            >{{item.name}} ({{item.account}})</div>
           </div>
         </el-card>
       </el-col>
@@ -41,20 +41,32 @@
             <div class="float-left">
               <span>复制选项</span>
               <span class="margin-left-20">
-                <el-checkbox v-model="checked1" size="small" label="岗位角色" border></el-checkbox>
-                <el-checkbox v-model="checked2" size="small" label="组织权限" border></el-checkbox>
+                <el-checkbox v-model="copyJobAndRole" size="small" label="岗位角色" border></el-checkbox>
+                <el-checkbox v-model="copyOrg" size="small" label="组织权限" border></el-checkbox>
               </span>
             </div>
           </div>
           <div>
             <div style="text-align:right;">
-              <el-input style="width:200px;" placeholder="姓名 登录账号" class="input-with-select">
-                <el-button slot="append" icon="el-icon-search" @click="search()"></el-button>
-              </el-input>
+              <el-input
+                v-model="queryPageParameters.name"
+                style="width:150px;margin-right:20px;"
+                placeholder="姓名"
+                class="input-with-select"
+                clearable
+              ></el-input>
+              <el-input
+                v-model="queryPageParameters.account"
+                style="width:150px;margin-right:20px;"
+                placeholder="登录账号"
+                class="input-with-select"
+                clearable
+              ></el-input>
+              <el-button type="primary" @click="search()">查询</el-button>
             </div>
             <br />
             <el-table
-              :data="list"
+              :data="resPageInfo.list"
               height="300"
               border
               style="width: 100%"
@@ -68,19 +80,20 @@
                 </template>
               </el-table-column>
               <el-table-column prop="name" label="姓名" width="120"></el-table-column>
-              <el-table-column prop="code" label="登录账号"></el-table-column>
-              <el-table-column prop="code" label="用户类型" width="120"></el-table-column>
+              <el-table-column prop="account" label="登录账号"></el-table-column>
+              <el-table-column prop="accountType" label="用户类型" width="120">
+                <template slot-scope="scope">{{getAccountTypeName(scope.row.accountType)}}</template>
+              </el-table-column>
             </el-table>
             <div>
               <el-pagination
-                style="text-align: right;margin:20px 40px 0 0;"
-                @size-change="handleSizeChange"
-                @current-change="handleCurrentChange"
-                :current-page.sync="currentPage"
-                :page-sizes="[10, 20, 50]"
-                :page-size="10"
+                @size-change="handleSizeChangeMixin"
+                @current-change="handleCurrentChangeMixin"
+                :current-page.sync="queryPageParameters.pageNum"
+                :page-sizes="$root.pageSizes"
+                :page-size="queryPageParameters.pageSize"
                 layout="total, prev, pager, next"
-                :total="total"
+                :total="resPageInfo.total"
               ></el-pagination>
             </div>
           </div>
@@ -96,11 +109,17 @@
 </template>
 <script lang="ts">
 import { Component, Vue, Prop } from "vue-property-decorator";
-import { getRoleList } from "../../../api/system/index2";
+// import { getRoleList } from "../../../api/system/index2";
+import {
+  post_user_getList,
+  post_user_copyJobAndRole,
+} from "../../../api/system/index";
 // import { Form as ElForm } from "element-ui";
-
+import PaginationMixin from "../../../mixins/pagination";
+import { accountType } from "../../../util/enums/dic";
 @Component({
-  components: {}
+  components: {},
+  mixins: [PaginationMixin],
 })
 export default class CopyUsers extends Vue {
   constructor() {
@@ -108,38 +127,83 @@ export default class CopyUsers extends Vue {
   }
   @Prop({ default: null }) data: any;
   dialogVisible = true;
-  checked1 = false;
-  checked2 = false;
+  copyJobAndRole = false;
+  copyOrg = false;
+
+  queryPageParameters: any = {
+    account: null,
+    accountType: null,
+    employeeCode: null,
+    employeeStatus: null,
+    employeeType: null,
+    employmentDateEnd: null,
+    employmentDateStart: null,
+    employmentDate: null,
+    leaveDateEnd: null,
+    leaveDateStart: null,
+    leaveDate: null,
+    mobilePhone: null,
+    name: null,
+    orgId: null,
+    permissionOrgId: null,
+    status: null,
+    workType: null,
+  };
+
+  resPageInfo: any = {
+    total: 0,
+    list: [],
+  };
+
+  getAccountTypeName(key: string) {
+    return accountType[key];
+  }
 
   selectList: any = [];
+
+  async getListMixin() {
+    this.resPageInfo = await post_user_getList(this.queryPageParameters);
+  }
 
   cancel() {
     this.$emit("cancel", false);
   }
 
-  finish() {
+  async finish() {
     if (this.currentItem.id) {
-      this.$emit("finish", this.currentItem);
+      if (this.copyJobAndRole === false && this.copyOrg === false) {
+        this.$message.warning("请先勾选复制选项");
+      } else {
+        let userListId = (this.data || []).map((item: any) => {
+          return item.id;
+        });
+        if (userListId.includes(this.currentItem.id)) {
+          this.$message.warning("请勿勾选与左边列表相同的用户");
+        } else {
+          let p: any = {
+            copyJobAndRole: this.copyJobAndRole,
+            copyOrg: this.copyOrg,
+            targetUserId: this.currentItem.id,
+            userIds: userListId,
+          };
+          const res = await post_user_copyJobAndRole(p);
+          this.$message.success("操作成功");
+
+          this.$emit("finish", res);
+        }
+      }
     } else {
-      alert(`未选择数据`);
+      this.$message.warning("请先选择数据");
     }
   }
   currentItem: any = { id: 0 };
-  list: any = [];
-  total: any = null;
-  currentPage = 1;
-  handleSizeChange(a: any) {
-    console.log(a);
-  }
-  handleCurrentChange(a: any) {
-    console.log(a);
-  }
-  async search() {
-    const { total, list } = await getRoleList();
-    this.total = total;
-    this.list = list;
+
+  search() {
+    this.currentItem = { id: 0 };
+    this.getListMixin();
   }
   async created() {
+    console.log(this.data);
     this.search();
   }
   handleSelectionChange(val: any) {
@@ -148,7 +212,7 @@ export default class CopyUsers extends Vue {
   }
   currentChange(val: any) {
     console.log(val);
-    this.currentItem = val;
+    this.currentItem = val || { id: 0 };
   }
 }
 </script>

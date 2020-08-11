@@ -9,7 +9,7 @@
 <template>
   <ih-page>
     <template v-slot:info>
-      <el-tabs type="border-card"  v-model="tabActive">
+      <el-tabs type="border-card" v-model="tabActive">
         <el-tab-pane label="用户详情" name="1">
           <UserInfoDetails />
         </el-tab-pane>
@@ -27,11 +27,11 @@ import { Component, Vue } from "vue-property-decorator";
 import UserInfoDetails from "./info-tabs/details.vue";
 import UserResources from "./info-tabs/resources.vue";
 @Component({
-  components: { UserResources, UserInfoDetails }
+  components: { UserResources, UserInfoDetails },
 })
 export default class UserInfo extends Vue {
   tabActive: any = null;
-  created() {
+  async created() {
     console.log(this.$route.query.id, this.$route.query.tab);
     this.tabActive = this.$route.query.tab || "1";
   }

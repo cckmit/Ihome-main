@@ -1,5 +1,5 @@
 /* eslint-disable */
-//2020-8-11 14:05:48
+//2020-8-10 17:56:02
 import { request } from '@/api/base'
 /**添加岗位*/
 export async function post_job_add (d?: JobBaseVO) {
@@ -109,7 +109,7 @@ return await request.post< boolean,boolean> ('/system/role/addRoleResourceBatch'
 export async function post_role_addRoleToJobBatch (d?: RoleJobVO) {
 return await request.post< boolean,boolean> ('/system/role/addRoleToJobBatch', d)
 }
-/**将角色批量��配给用户*/
+/**将角色批量分配给用户*/
 export async function post_role_addRoleToUserBatch (d?: RoleUserVO) {
 return await request.post< boolean,boolean> ('/system/role/addRoleToUserBatch', d)
 }
@@ -173,15 +173,11 @@ return await request.post< number,number> ('/system/user/delete/{id}', d)
 export async function get_user_get__id (d?: any) {
 return await request.get<UserVO,UserVO>('/system/user/get/{id}', { params: d })
 }
-/**查询指定用户拥有的所有组织权限*/
-export async function post_user_getAllUserOrgByUserId__userId (d?: any) {
-return await request.post< OrgMinVO[],OrgMinVO[]> ('/system/user/getAllUserOrgByUserId/{userId}', d)
-}
 /**查询用户列表*/
 export async function post_user_getList (d?: UserQueryVO) {
 return await request.post< PageModel<UserVO>,PageModel<UserVO>> ('/system/user/getList', d)
 }
-/**查询拥有指定岗位的用户列表*/
+/**查询拥有指定岗��的用户列表*/
 export async function post_user_getListByJobId (d?: UserJobQueryVO) {
 return await request.post< PageModel<UserVO>,PageModel<UserVO>> ('/system/user/getListByJobId', d)
 }
@@ -328,17 +324,6 @@ shortName: string;
 /**状态(Valid-有效、Invalid-无效)*/
 status: string;
 }
-/**OrgMinVO*/
-export interface OrgMinVO {
-/**id*/
-id: number;
-/**组织层级*/
-level: number;
-/**名称*/
-name: string;
-/**父组织id*/
-parentId: number;
-}
 /**OrgQueryVO*/
 export interface OrgQueryVO {
 /**部门分类(Business-营业线、Function-职能线)*/
@@ -426,7 +411,7 @@ export interface ResourceBaseVO {
 code: string;
 /**(必填)名称*/
 name: string;
-/**(必填)父��源id*/
+/**(必填)父资源id*/
 parentId: number;
 /**(必填)类型(Root-资源根节点、System-系统、Service-服务模块、Menu-功能菜单、Api-API、Button-按钮、Element-元素)*/
 type: string;
@@ -454,7 +439,7 @@ key: string;
 pageNum: number;
 /**(必填)每页条数*/
 pageSize: number;
-/**父资源id*/
+/**���资源id*/
 parentId: number;
 /**类型(Root-资源根节点、System-系统、Service-服务模块、Menu-功能菜单、Api-API、Button-按钮、Element-元素)*/
 type: string;
@@ -798,7 +783,7 @@ createUserName: string;
 deleted: number;
 /**email*/
 email: string;
-/**员工工���*/
+/**员工工号*/
 employeeCode: string;
 /**雇员状态(On-在职、Leave-离职)*/
 employeeStatus: string;

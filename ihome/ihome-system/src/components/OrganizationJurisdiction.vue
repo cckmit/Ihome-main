@@ -4,7 +4,7 @@
  * @Author: zyc
  * @Date: 2020-07-09 15:03:17
  * @LastEditors: zyc
- * @LastEditTime: 2020-08-01 09:38:49
+ * @LastEditTime: 2020-08-11 15:16:51
 --> 
 <template>
   <el-dialog
@@ -21,17 +21,7 @@
     <el-row>
       <el-col :span="12">
         <el-row>
-          <el-col :span="12">
-            <el-select style="width:90%;" v-model="value" placeholder="请选择">
-              <el-option
-                v-for="(item,index) in options"
-                :key="index"
-                :label="item.label"
-                :value="item.value"
-              ></el-option>
-            </el-select>
-          </el-col>
-          <el-col :span="12">
+          <el-col :span="24">
             <el-input clearable placeholder="输入关键字进行过滤" v-model="filterText"></el-input>
           </el-col>
         </el-row>
@@ -45,6 +35,7 @@
               :default-expand-all="true"
               :filter-node-method="filterNode"
               :highlight-current="true"
+              :default-checked-keys="defaultCheckedKeys"
               node-key="id"
               show-checkbox
               @current-change="currentChange"
@@ -78,10 +69,16 @@
 </template>
 <script lang="ts">
 import { Component, Vue, Prop, Watch } from "vue-property-decorator";
-import { getResourceCategory } from "../api/system/index2";
-import { DictionariesModule } from "../store/modules/dictionaries";
+// import { getResourceCategory } from "../api/system/index2";
+// import { DictionariesModule } from "../store/modules/dictionaries";
+import {
+  get_org_getAll,
+  post_user_addUserOrgBatch,
+  post_user_getAllUserOrgByUserId__userId,
+} from "../api/system/index";
+import { getListTool, modular } from "../util/enums/dic";
 @Component({
-  components: {}
+  components: {},
 })
 export default class OrganizationJurisdiction extends Vue {
   constructor() {
@@ -90,6 +87,7 @@ export default class OrganizationJurisdiction extends Vue {
   @Prop({ default: null }) data: any;
   dialogVisible = true;
   value: any = null;
+
   filterText: any = "";
   @Watch("filterText")
   filterTextWatch(val: any) {
@@ -99,16 +97,20 @@ export default class OrganizationJurisdiction extends Vue {
   dataTree: any = [];
   defaultProps: any = {
     children: "children",
-    label: "name"
+    label: "name",
   };
+  defaultCheckedKeys: any = [];
   resList: any = [];
   preData: any = [];
+  selectChange() {
+    (this.$refs.tree as any).filter(this.filterText);
+  }
   filterNode(value: any, data: any) {
-    if (!value) return true;
     return data[this.defaultProps.label].indexOf(value) !== -1;
   }
   currentChange(item: any) {
     console.log(item);
+    this.$emit("select", item);
   }
   check() {
     const tree: any = this.$refs.tree;
@@ -126,21 +128,44 @@ export default class OrganizationJurisdiction extends Vue {
     this.preData = this.$tool.listToGruop(all, { rootId: 0 });
   }
   get options() {
-    DictionariesModule.getModular();
-    return DictionariesModule.modularAll;
+    let list = getListTool(modular);
+    return list;
   }
   async created() {
-    const res: any = await getResourceCategory();
+    const selectData = await post_user_getAllUserOrgByUserId__userId({
+      userId: this.data.id,
+    });
+    this.defaultCheckedKeys = selectData.map((item: any) => {
+      return item.id;
+    });
+
+    const res: any = await get_org_getAll({ onlyValid: false });
+    if (res && res.length > 0) {
+      res[0].parentId = 0;
+    }
     this.resList = this.$tool.deepClone(res);
-    console.log(res);
+
     this.dataTree = this.$tool.listToGruop(res, { rootId: 0 });
+    this.$nextTick(() => {
+      this.check();
+    });
+
+    console.log(this.dataTree);
   }
   cancel() {
     this.$emit("cancel", false);
   }
 
-  finish() {
-    this.$emit("finish", {});
+  async finish() {
+    let list = (this.$refs as any).tree.getCheckedKeys();
+    console.log(list);
+    let p: any = {
+      id: this.data.id,
+      orgIds: list,
+    };
+    const res = await post_user_addUserOrgBatch(p);
+    this.$message.success("操作成功");
+    this.$emit("finish", res);
   }
 }
 </script>

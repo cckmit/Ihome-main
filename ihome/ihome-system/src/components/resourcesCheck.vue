@@ -4,7 +4,7 @@
  * @Author: zyc
  * @Date: 2020-07-09 15:03:17
  * @LastEditors: zyc
- * @LastEditTime: 2020-08-06 15:15:39
+ * @LastEditTime: 2020-08-11 09:44:11
 --> 
 <template>
   <el-dialog
@@ -130,8 +130,8 @@ export default class ResourcesCheck extends Vue {
     };
 
     let [res, list] = await Promise.all([
-      await get_resource_getAll(),
-      await post_resource_getAllByRoleId(p),
+      get_resource_getAll(),
+      post_resource_getAllByRoleId(p),
     ]);
 
     res[0].parentId = 0;

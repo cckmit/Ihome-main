@@ -4,7 +4,7 @@
  * @Author: zyc
  * @Date: 2020-07-07 15:36:27
  * @LastEditors: zyc
- * @LastEditTime: 2020-08-01 16:50:41
+ * @LastEditTime: 2020-08-11 16:09:49
 --> 
 <template>
   <div>
@@ -19,8 +19,10 @@
       <el-table-column prop="name" label="姓名" width="180"></el-table-column>
       <el-table-column prop="account" label="登录账号" width="180"></el-table-column>
       <el-table-column prop="mobilePhone" label="手机号码" width="180"></el-table-column>
-      <el-table-column prop="employeeType" label="用户类型"></el-table-column>
-      <el-table-column prop="orgId" label="归属组织"></el-table-column>
+      <el-table-column prop="userType" label="用户类型">
+        <template slot-scope="scope">{{getAccountTypeName(scope.row.accountType)}}</template>
+      </el-table-column>
+      <el-table-column prop="orgName" label="归属组织"></el-table-column>
     </el-table>
     <el-pagination
       class="text-right margin-top-20"
@@ -38,6 +40,7 @@
 import { Component, Vue } from "vue-property-decorator";
 import PaginationMixin from "../../../mixins/pagination";
 import { post_user_getListByResourceId } from "../../../api/system/index";
+import { accountType } from "../../../util/enums/dic";
 @Component({
   components: {},
   mixins: [PaginationMixin],
@@ -51,6 +54,9 @@ export default class InfoUser extends Vue {
     list: [],
     total: 0,
   };
+  getAccountTypeName(key: string) {
+    return accountType[key];
+  }
 
   async search() {
     this.resPageInfo = await post_user_getListByResourceId(

@@ -4,7 +4,7 @@
  * @Author: zyc
  * @Date: 2020-07-08 14:23:49
  * @LastEditors: zyc
- * @LastEditTime: 2020-08-01 09:39:10
+ * @LastEditTime: 2020-08-11 16:47:29
 --> 
 <template>
   <div>
@@ -30,7 +30,8 @@
 </template>
 <script lang="ts">
 import { Component, Vue, Watch } from "vue-property-decorator";
-import { getResourceCategory } from "../../../api/system/index2";
+// import { getResourceCategory } from "../../../api/system/index2";
+import { get_resource_getAll } from "../../../api/system/index";
 @Component({
   components: {},
 })
@@ -55,8 +56,11 @@ export default class UserResources extends Vue {
     console.log(item);
   }
   async created() {
-    const res: any = await getResourceCategory();
+    const res: any = await get_resource_getAll();
     console.log(res);
+    if (res && res.length > 0) {
+      res[0].parentId = 0;
+    }
     this.dataTree = this.$tool.listToGruop(res, { rootId: 0 });
   }
 }

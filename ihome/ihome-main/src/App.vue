@@ -4,7 +4,7 @@
  * @Author: zyc
  * @Date: 2020-06-22 11:46:23
  * @LastEditors: zyc
- * @LastEditTime: 2020-08-05 17:03:20
+ * @LastEditTime: 2020-08-11 16:55:22
 --> 
 <template>
   <div>
@@ -37,7 +37,7 @@
               <i class="el-icon-setting"></i>系统管理模块
             </template>
 
-            <el-menu-item @click="goto('/web-system/')" index="4-3">系统管理模块导航</el-menu-item>
+            <!-- <el-menu-item @click="goto('/web-system/')" index="4-3">系统管理模块导航</el-menu-item> -->
             <el-menu-item @click="goto('/web-system/user/list')" index="4-4">用户列表</el-menu-item>
             <el-menu-item @click="goto('/web-system/resources/list')" index="4-5">资源列表</el-menu-item>
             <el-menu-item @click="goto('/web-system/role/list')" index="4-6">角色列表</el-menu-item>

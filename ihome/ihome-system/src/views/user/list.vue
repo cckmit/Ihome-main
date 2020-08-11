@@ -4,7 +4,7 @@
  * @Author: zyc
  * @Date: 2020-06-30 09:21:17
  * @LastEditors: zyc
- * @LastEditTime: 2020-08-10 17:38:35
+ * @LastEditTime: 2020-08-11 15:24:27
 --> 
 <template>
   <ih-page>
@@ -200,6 +200,7 @@
         class="ih-table"
         :data="resPageInfo.list"
         :default-sort="{prop: 'id', order: 'descending'}"
+        @selection-change="handleSelectionChange"
       >
         <el-table-column fixed type="selection" width="50"></el-table-column>
         <el-table-column fixed type="index" label="序号" width="50"></el-table-column>
@@ -271,7 +272,7 @@
       />
     </ih-dialog>
 
-    <ih-dialog :show="myOrganizationVisible">
+    <ih-dialog :show="myOrganizationVisible" desc="组织">
       <MyOrganization
         :currentId="valueVal"
         @cancel="()=>myOrganizationVisible=false"
@@ -279,7 +280,7 @@
       />
     </ih-dialog>
 
-    <ih-dialog :show="jobVisible">
+    <ih-dialog :show="jobVisible" desc="分配岗位角色">
       <UserJobRole
         :data="jobVisibleData"
         @cancel="()=>jobVisible=false"
@@ -288,14 +289,14 @@
     </ih-dialog>
     <ih-dialog :show="organizationJurisdictionVisible">
       <OrganizationJurisdiction
-        :data="addData"
+        :data="OrganizationJurisdictionData"
         @cancel="()=>organizationJurisdictionVisible=false"
         @finish="(data)=>{organizationJurisdictionVisible=false;finishJob(data)}"
       />
     </ih-dialog>
     <ih-dialog :show="copyUserVisible">
       <CopyUsers
-        :data="addData"
+        :data="copyUserData"
         @cancel="()=>copyUserVisible=false"
         @finish="(data)=>{copyUserVisible=false;finishCopyUser(data)}"
       />
@@ -364,6 +365,8 @@ export default class UserList extends Vue {
     workType: null,
   };
   jobVisibleData: any = null;
+  OrganizationJurisdictionData: any = null;
+  copyUserData: any = null;
   resPageInfo: any = {
     total: 0,
     list: [],
@@ -438,6 +441,7 @@ export default class UserList extends Vue {
   getEmployeeStatusName(key: string) {
     return employeeStatus[key];
   }
+  
   getEmployeeTypeName(key: string) {
     return employeeType[key];
   }
@@ -502,6 +506,7 @@ export default class UserList extends Vue {
   }
   finishJob(data: any) {
     console.log(data);
+    this.search();
   }
 
   // valueId: any = null; // 初始ID（可选）
@@ -575,6 +580,7 @@ export default class UserList extends Vue {
   }
   pOrganization(scope: any) {
     console.log(scope);
+    this.OrganizationJurisdictionData = scope.row;
     this.organizationJurisdictionVisible = true;
   }
 
@@ -632,10 +638,20 @@ export default class UserList extends Vue {
     }
   }
   copyUser() {
-    this.copyUserVisible = true;
+    if (this.copyUserData && this.copyUserData.length > 0) {
+      this.copyUserVisible = true;
+    } else {
+      this.$message.warning("请先选择数据");
+    }
   }
   finishCopyUser(data: any) {
     console.log(data);
+    this.search();
+  }
+  handleSelectionChange(val: any) {
+    console.log(val);
+
+    this.copyUserData = val;
   }
 }
 </script>

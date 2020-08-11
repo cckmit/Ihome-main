@@ -4,10 +4,10 @@
  * @Author: zyc
  * @Date: 2020-08-04 15:23:09
  * @LastEditors: zyc
- * @LastEditTime: 2020-08-10 15:20:21
+ * @LastEditTime: 2020-08-11 18:02:23
 --> 
 <template>
-  <div>
+  <div class="OrganizationTree">
     <div class="text-left">
       <el-checkbox @change="selectChange" v-model="selectType" label="仅查询有效的组织" border></el-checkbox>
     </div>
@@ -30,7 +30,12 @@
         @current-change="currentChange"
         ref="tree"
       >
-        <span class="el-tree-node__label" slot-scope="{ node }" v-html="renderItem(node)"></span>
+        <span :class="getInvalid(node)" slot-scope="{ node  }">
+          <span class="left">{{ node.label }}</span>
+          <span class="right">
+            <el-button style="float:right;" type="text" size="mini" @click="edit(node)">编辑</el-button>
+          </span>
+        </span>
       </el-tree>
     </div>
   </div>
@@ -56,7 +61,26 @@ export default class OrganizationTree extends Vue {
     (this.$refs.tree as any).filter(val, this.selectType);
   }
   list: any = [];
+  getInvalid(node: any) {
+    let item = null;
+    for (let index = 0; index < this.list.length; index++) {
+      const element = this.list[index];
+      if (node.key == element.id) {
+        item = element;
+        break;
+      }
+    }
+    if (item && item.status == "Valid") {
+      return `el-tree-node__label`;
+    } else {
+      return "el-tree-node__label invalid";
+    }
+  }
 
+  edit(node: any) {
+    console.log("edit");
+    this.$emit("edit", node);
+  }
   dataTree: any = [];
   defaultProps: any = {
     children: "children",
@@ -93,30 +117,43 @@ export default class OrganizationTree extends Vue {
   async created() {
     const res: any = await get_org_getAll({ onlyValid: false });
     this.list = res;
+    if (res && res.length > 0) {
+      res[0].parentId = 0;
+    }
 
-    res[0].parentId = 0;
     this.dataTree = this.$tool.listToGruop(res, { rootId: 0 });
-  }
-  renderItem(node: any) {
-    let item = null;
-    for (let index = 0; index < this.list.length; index++) {
-      const element = this.list[index];
-      if (node.key == element.id) {
-        item = element;
-        break;
-      }
-    }
-    if (item) {
-      if (item.status == "Valid") {
-        return `<span  >${node.label}</span>`;
-      } else {
-        return `<span style="color:red;text-decoration:line-through;">${node.label}</span>`;
-      }
-    } else {
-      return `<span >${node.label}</span>`;
-    }
   }
 }
 </script>
-<style lang="scss" scoped>
+<style lang="scss" >
+.OrganizationTree {
+  .right {
+    display: none;
+  }
+  .is-current > * > * > .right {
+    // display: block;
+    display: none;
+  }
+  .invalid {
+    color: red;
+    text-decoration: line-through;
+  }
+  .el-tree-node__label {
+    width: 100%;
+    display: flex;
+    line-height: 30px;
+  }
+  .el-tree-node__label > .left {
+    flex: 1;
+    text-align: left;
+    line-height: 30px;
+  }
+  .el-tree-node__label > .right {
+    width: 40px;
+    text-align: right;
+    margin-right: 5px;
+
+    line-height: 30px;
+  }
+}
 </style>

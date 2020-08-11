@@ -4,14 +4,14 @@
  * @Author: zyc
  * @Date: 2020-07-14 11:26:26
  * @LastEditors: zyc
- * @LastEditTime: 2020-08-10 17:42:01
+ * @LastEditTime: 2020-08-11 17:58:42
 --> 
 <template>
   <ih-page class="organization-list">
     <template v-slot:container>
       <el-row>
         <el-col :span="6" style="border-right: 1px solid #e6e6e6;padding-right: 20px">
-          <OrganizationTree @select="selectOrganizationTree" />
+          <OrganizationTree @select="selectOrganizationTree" @edit="editTree" />
         </el-col>
         <el-col :span="18" class="padding-left-20">
           <el-form ref="form" label-width="80px" class="ih-form">
@@ -281,6 +281,7 @@ export default class OrganizationList extends Vue {
     console.log(item);
     this.queryPageParameters.parentId = item.id;
     this.leftItem = item;
+    this.queryPageParameters.level = item.level + 1;
     this.getListMixin();
   }
   async search() {
@@ -289,6 +290,10 @@ export default class OrganizationList extends Vue {
     } else {
       this.$message.warning("请先选择左边组织");
     }
+  }
+  editTree(node: any) {
+    console.log('editTree')
+    console.log(node);
   }
 }
 </script>

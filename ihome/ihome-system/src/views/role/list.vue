@@ -4,7 +4,7 @@
  * @Author: zyc
  * @Date: 2020-07-09 10:21:50
  * @LastEditors: zyc
- * @LastEditTime: 2020-08-06 14:41:08
+ * @LastEditTime: 2020-08-11 15:47:47
 --> 
 <template>
   <ih-page>
@@ -92,7 +92,7 @@
         @finish="(data)=>{dialogBatchOperationJob=false;finishBatchOperationJob(data)}"
       />
     </ih-dialog>
-    <ih-dialog :show="dialogBatchOperationUser">
+    <ih-dialog :show="dialogBatchOperationUser" desc="批量分配用户">
       <BatchOperationUser
         :data="batchOperationUserData"
         @cancel="()=>dialogBatchOperationUser=false"
@@ -109,7 +109,10 @@ import BatchOperationJob from "./batch-operation-job.vue";
 import BatchOperationUser from "./batch-operation-user.vue";
 import PaginationMixin from "../../mixins/pagination";
 
-import { post_role_getList, post_role_delete__id } from "../../api/system/index";
+import {
+  post_role_getList,
+  post_role_delete__id,
+} from "../../api/system/index";
 
 @Component({
   components: {
@@ -192,12 +195,15 @@ export default class RoleList extends Vue {
   }
   finishBatchOperationJob(data: any) {
     console.log(data);
+    this.getListMixin();
   }
   finishBatchOperationUser(data: any) {
     console.log(data);
+    this.getListMixin();
   }
   finishdialogResourcesCheck(data: any) {
     console.log(data);
+    this.getListMixin();
   }
   async created() {
     this.getListMixin();
