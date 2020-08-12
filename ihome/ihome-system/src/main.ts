@@ -1,14 +1,13 @@
 /*
- * @Descripttion: 启动文件，统一管理
+ * @Descripttion: 
  * @version: 
  * @Author: zyc
- * @Date: 2020-06-22 10:26:26
+ * @Date: 2020-07-24 08:45:34
  * @LastEditors: zyc
- * @LastEditTime: 2020-07-31 11:14:40
+ * @LastEditTime: 2020-08-12 17:41:52
  */
-// import './style/g.scss'
+
+import { ip, userInfo } from '@/window-jsonp'
+console.log(ip, userInfo)
 import 'ihome-common/app/main'
-// import {$g} from '$g';
-// console.log($g)
-// console.log(window['ip'])
 export { bootstrap, mount, unmount } from 'ihome-common/app/main'

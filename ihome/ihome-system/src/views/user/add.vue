@@ -4,7 +4,7 @@
  * @Author: zyc
  * @Date: 2020-07-01 10:32:40
  * @LastEditors: zyc
- * @LastEditTime: 2020-08-12 11:34:58
+ * @LastEditTime: 2020-08-12 16:46:54
 --> 
 
 <template>
@@ -58,29 +58,20 @@
       </p>
       <el-row>
         <el-col :span="12">
-          <el-form-item label="员工工号">
+          <el-form-item label="员工工号" :prop="getProp('employeeCode')">
             <el-input v-model="form.employeeCode" placeholder="员工工号"></el-input>
           </el-form-item>
         </el-col>
         <el-col :span="12">
-          <el-form-item label="归属组织">
+          <el-form-item label="归属组织" :prop="getProp('orgId')">
             <SelectOrganizationTree :orgId="form.orgId" @callback="(id)=>form.orgId=id" />
-            <!-- <IhSelectTree
-              min-height="400px"
-              :props="props"
-              :options="orgList"
-              :value="form.orgId"
-              :clearable="true"
-              :accordion="true"
-              @getValue="getValue($event)"
-            />-->
           </el-form-item>
         </el-col>
       </el-row>
 
       <el-row>
         <el-col :span="12">
-          <el-form-item label="入职日期" prop="employmentDate">
+          <el-form-item label="入职日期" :prop="getProp('employmentDate')">
             <el-date-picker
               v-model="form.employmentDate"
               type="date"
@@ -90,7 +81,7 @@
           </el-form-item>
         </el-col>
         <el-col :span="12">
-          <el-form-item label="离职日期" prop="leaveDate">
+          <el-form-item label="离职日期" :prop="getProp('leaveDate')">
             <el-date-picker
               v-model="form.leaveDate"
               type="date"
@@ -103,7 +94,7 @@
 
       <el-row>
         <el-col :span="12">
-          <el-form-item label="职能类别">
+          <el-form-item label="职能类别" :prop="getProp('workType')">
             <el-select v-model="form.workType" clearable placeholder="请选择职能类别">
               <el-option
                 v-for="item in workTypeOptions"
@@ -116,7 +107,7 @@
         </el-col>
 
         <el-col :span="12">
-          <el-form-item label="人员类型">
+          <el-form-item label="人员类型" :prop="getProp('employeeType')">
             <el-select v-model="form.employeeType" clearable placeholder="请选择人员类型">
               <el-option
                 v-for="item in employeeTypeOptions"
@@ -131,12 +122,12 @@
 
       <el-row>
         <el-col :span="12">
-          <el-form-item label="email" prop="email">
+          <el-form-item label="邮箱" :prop="getProp('email')">
             <el-input v-model="form.email" placeholder="电子邮箱"></el-input>
           </el-form-item>
         </el-col>
         <el-col :span="12">
-          <el-form-item label="雇员状态">
+          <el-form-item label="雇员状态" :prop="getProp('employeeStatus')">
             <el-select v-model="form.employeeStatus" clearable placeholder="请选择雇员状态">
               <el-option
                 v-for="item in employeeStatusOptions"
@@ -174,8 +165,8 @@ import {
   get_user_get__id,
 } from "../../api/system";
 import {
-  isNumberValidato,
   emailOrNullValidato,
+  phoneValidator,
 } from "ihome-common/util/base/form-ui";
 @Component({
   components: { SelectOrganizationTree },
@@ -216,17 +207,44 @@ export default class UserAdd extends Vue {
     ],
     mobilePhone: [
       { required: true, message: "请输入手机号码", trigger: "change" },
-      { min: 1, max: 16, message: "长度在 1 到 16 个字符", trigger: "change" },
-      { validator: isNumberValidato, trigger: "change" },
+
+      { validator: phoneValidator, trigger: "change" },
     ],
+
+    employeeCode: [
+      { required: true, message: "请选择员工工号", trigger: "change" },
+    ],
+    orgId: [{ required: true, message: "请选择归属组织", trigger: "change" }],
+
     employmentDate: [
       { required: true, message: "请选择入职日期", trigger: "change" },
     ],
     leaveDate: [
       { required: true, message: "请选择离职日期", trigger: "change" },
     ],
-    email: [{ validator: emailOrNullValidato, trigger: "change" }],
+    workType: [
+      { required: true, message: "请选择职能类别", trigger: "change" },
+    ],
+    employeeType: [
+      { required: true, message: "请选择人员类型", trigger: "change" },
+    ],
+    email: [
+      { required: true, message: "邮箱必填", trigger: "change" },
+      { validator: emailOrNullValidato, trigger: "change" },
+    ],
+    employeeStatus: [
+      { required: true, message: "请选择雇员状态", trigger: "change" },
+    ],
   };
+  getProp(type: any) {
+    let list: string[] = ["Ihome", "Juheng", "Poly"];
+    let required = list.includes(this.form.accountType);
+    if (required) {
+      return type;
+    } else {
+      return null;
+    }
+  }
   get accountTypeOptions() {
     let list = getListTool(accountType);
     return list;

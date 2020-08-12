@@ -4,7 +4,7 @@
  * @Author: zyc
  * @Date: 2020-06-22 11:11:41
  * @LastEditors: zyc
- * @LastEditTime: 2020-08-07 17:29:35
+ * @LastEditTime: 2020-08-12 17:22:00
  */
 const path = require('path');
 const { name } = require('./package');
@@ -74,9 +74,7 @@ module.exports = {
 	// 自定义webpack配置
 
 	configureWebpack: {
-		externals: {
-			'$g': 'window["ip"]',
-		},
+
 		resolve: {
 			alias: {
 				'@': resolve('src'),
