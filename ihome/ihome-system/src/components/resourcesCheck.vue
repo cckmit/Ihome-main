@@ -4,7 +4,7 @@
  * @Author: zyc
  * @Date: 2020-07-09 15:03:17
  * @LastEditors: zyc
- * @LastEditTime: 2020-08-11 09:44:11
+ * @LastEditTime: 2020-08-12 14:11:20
 --> 
 <template>
   <el-dialog
@@ -86,11 +86,9 @@ export default class ResourcesCheck extends Vue {
   filterText: any = "";
   @Watch("filterText")
   filterTextWatch(val: any) {
-    console.log(val);
     (this.$refs.tree as any).filter(val, this.selectType);
   }
   selectChange() {
-    console.log("selectChange");
     (this.$refs.tree as any).filter(this.filterText, this.selectType);
   }
   dataTree: any = [];
@@ -145,7 +143,6 @@ export default class ResourcesCheck extends Vue {
 
   async finish() {
     let list = (this.$refs.tree as any).getCheckedNodes() || [];
-    console.log(list);
     let p = {
       resourceIds: list.map((item: any) => item.id),
       roleId: this.data.id,

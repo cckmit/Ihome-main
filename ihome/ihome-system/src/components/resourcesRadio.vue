@@ -4,7 +4,7 @@
  * @Author: zyc
  * @Date: 2020-07-09 15:03:17
  * @LastEditors: zyc
- * @LastEditTime: 2020-08-06 17:31:50
+ * @LastEditTime: 2020-08-12 14:10:47
 --> 
 <template>
   <div>
@@ -61,7 +61,6 @@ export default class ResourcesRadio extends Vue {
   filterText: any = "";
   @Watch("filterText")
   filterTextWatch(val: any) {
-    console.log(val);
     (this.$refs.tree as any).filter(val, this.selectType);
   }
   dataTree: any = [];
@@ -91,7 +90,6 @@ export default class ResourcesRadio extends Vue {
     }
   }
   currentChange(item: any) {
-    console.log(item);
     this.$emit("select", item);
   }
   get options() {
@@ -103,7 +101,6 @@ export default class ResourcesRadio extends Vue {
   }
   async init() {
     const res = await get_resource_getAll();
-    console.log(res);
     res[0].parentId = 0;
     this.dataTree = this.$tool.listToGruop(res, { rootId: 0 });
   }

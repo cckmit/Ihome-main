@@ -4,7 +4,7 @@
  * @Author: zyc
  * @Date: 2020-06-29 16:35:01
  * @LastEditors: zyc
- * @LastEditTime: 2020-08-05 17:15:12
+ * @LastEditTime: 2020-08-12 14:06:58
  */
 import axios from 'axios'
 import { Message } from 'element-ui'
@@ -20,8 +20,6 @@ const service = axios.create({
 // Request interceptors
 service.interceptors.request.use(
     (config) => {
-        console.log(config)
-
         // let a = config.url?.includes;
         let url: string = config.url || '';
         if (url.includes('}')) {

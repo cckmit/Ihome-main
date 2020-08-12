@@ -4,7 +4,7 @@
  * @Author: zyc
  * @Date: 2020-07-06 09:41:43
  * @LastEditors: zyc
- * @LastEditTime: 2020-08-10 17:41:42
+ * @LastEditTime: 2020-08-12 14:38:24
 --> 
 <template>
   <ih-page>
@@ -54,24 +54,24 @@
           >
             <!-- <el-table-column type="selection" width="50"></el-table-column> -->
             <el-table-column fixed type="index" label="序号" width="50"></el-table-column>
-            <el-table-column fixed prop="name" label="名称" sortable width="180"></el-table-column>
-            <el-table-column prop="code" label="编码" sortable width="180"></el-table-column>
+            <el-table-column fixed prop="name" label="名称" width="180"></el-table-column>
+            <el-table-column prop="code" label="编码" width="180"></el-table-column>
 
-            <el-table-column prop="type" label="类型" sortable width="90">
+            <el-table-column prop="type" label="类型" width="90">
               <template slot-scope="scope">
                 <span>{{scope.row.type|resourceType}}</span>
               </template>
             </el-table-column>
-            <el-table-column prop="url" label="URL" sortable></el-table-column>
-            <el-table-column prop="parentName" label="父资源" sortable width="180"></el-table-column>
+            <el-table-column prop="url" label="URL"></el-table-column>
+            <el-table-column prop="parentName" label="父资源" width="180"></el-table-column>
 
-            <el-table-column prop="createUserName" label="创建人" sortable width="90"></el-table-column>
+            <el-table-column prop="createUserName" label="创建人" width="90"></el-table-column>
 
-            <el-table-column prop="createTime" label="创建时间" sortable width="180"></el-table-column>
+            <el-table-column prop="createTime" label="创建时间" width="180"></el-table-column>
 
-            <el-table-column prop="updateUserName" label="修改人" sortable width="90"></el-table-column>
+            <el-table-column prop="updateUserName" label="修改人" width="90"></el-table-column>
 
-            <el-table-column prop="updateTime" label="修改人时间" sortable width="180"></el-table-column>
+            <el-table-column prop="updateTime" label="修改人时间" width="180"></el-table-column>
 
             <el-table-column fixed="right" label="操作" width="120">
               <template slot-scope="scope">
@@ -131,7 +131,7 @@
 <script lang="ts">
 import ResourcesAdd from "./add.vue";
 import ResourcesEdit from "./edit.vue";
-import resourcesRadio from "@/components/resourcesRadio.vue";
+import ResourcesRadio from "@/components/ResourcesRadio.vue";
 // import { DictionariesModule } from "../../store/modules/dictionaries";
 import { Component, Vue } from "vue-property-decorator";
 import PaginationMixin from "../../mixins/pagination";
@@ -146,7 +146,7 @@ import { getListTool, modular } from "../../util/enums/dic";
     ResourcesAdd,
     ResourcesEdit,
     BatchOperationRole,
-    resourcesRadio,
+    ResourcesRadio,
   },
   mixins: [PaginationMixin],
 })
@@ -187,6 +187,13 @@ export default class ResourcesList extends Vue {
     this.resPageInfo = await post_resource_getList(this.queryPageParameters);
   }
   search() {
+    if (this.queryPageParameters.parentId === 0) {
+      this.$message({
+        message: "请先选择左边列表",
+        type: "warning",
+      });
+      return;
+    }
     this.getListMixin();
   }
 

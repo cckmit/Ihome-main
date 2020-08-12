@@ -4,7 +4,7 @@
  * @Author: zyc
  * @Date: 2020-07-15 10:31:43
  * @LastEditors: zyc
- * @LastEditTime: 2020-08-10 16:40:49
+ * @LastEditTime: 2020-08-12 10:45:28
  */
 /**大陆手机号码校验*/
 export function phoneValidator(rule: any, value: any, callback: any) {
@@ -82,12 +82,20 @@ export function noTrim(rule: any, value: any, callback: any) {
     }
 }
 
-/**邮箱*/
+/**邮箱（必填）*/
 export function emailValidato(rule: any, value: any, callback: any) {
     let reg = /^[A-Za-zd0-9]+([-_.][A-Za-zd]+)*@([A-Za-zd]+[-.])+[A-Za-zd]{2,5}$/;
     if (!reg.test(value)) {
         callback(new Error('邮箱格式有误'))
         return;
+    } else {
+        callback();
+    }
+}
+/**邮箱（可空）*/
+export function emailOrNullValidato(rule: any, value: any, callback: any) {
+    if (value) {
+        emailValidato(rule, value, callback);
     } else {
         callback();
     }

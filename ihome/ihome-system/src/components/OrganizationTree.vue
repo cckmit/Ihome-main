@@ -4,7 +4,7 @@
  * @Author: zyc
  * @Date: 2020-08-04 15:23:09
  * @LastEditors: zyc
- * @LastEditTime: 2020-08-11 18:02:23
+ * @LastEditTime: 2020-08-12 14:11:59
 --> 
 <template>
   <div class="OrganizationTree">
@@ -18,6 +18,7 @@
     <br />
     <div>
       <el-tree
+        style="width:100%;"
         class="filter-tree"
         :expand-on-click-node="false"
         :data="dataTree"
@@ -31,7 +32,7 @@
         ref="tree"
       >
         <span :class="getInvalid(node)" slot-scope="{ node  }">
-          <span class="left">{{ node.label }}</span>
+          <span class="left" :title="node.label">{{ node.label }}</span>
           <span class="right">
             <el-button style="float:right;" type="text" size="mini" @click="edit(node)">编辑</el-button>
           </span>
@@ -78,7 +79,6 @@ export default class OrganizationTree extends Vue {
   }
 
   edit(node: any) {
-    console.log("edit");
     this.$emit("edit", node);
   }
   dataTree: any = [];
@@ -122,11 +122,17 @@ export default class OrganizationTree extends Vue {
     }
 
     this.dataTree = this.$tool.listToGruop(res, { rootId: 0 });
+    this.$nextTick(() => {
+      this.selectType = true;
+      this.selectChange();
+    });
   }
 }
 </script>
 <style lang="scss" >
 .OrganizationTree {
+  width: 100%;
+  min-width: 350px;
   .right {
     display: none;
   }

@@ -4,7 +4,7 @@
  * @Author: zyc
  * @Date: 2020-06-30 09:21:17
  * @LastEditors: zyc
- * @LastEditTime: 2020-08-11 15:24:27
+ * @LastEditTime: 2020-08-12 14:32:19
 --> 
 <template>
   <ih-page>
@@ -40,11 +40,11 @@
           </el-col>
         </el-row>
         <el-collapse-transition>
-          <div v-if="searchOpen">
+          <div v-show="searchOpen">
             <el-row>
               <el-col :span="8">
                 <el-form-item label="手机号码">
-                  <el-input v-model="queryPageParameters.phone" placeholder="手机号码"></el-input>
+                  <el-input v-model="queryPageParameters.mobilePhone" placeholder="手机号码"></el-input>
                 </el-form-item>
               </el-col>
               <el-col :span="8">
@@ -78,12 +78,12 @@
                     style="width:100%;"
                     v-model="queryPageParameters.employmentDate"
                     type="daterange"
-                    align="right"
+                    align="left"
                     unlink-panels
                     range-separator="至"
                     start-placeholder="开始日期"
                     end-placeholder="结束日期"
-                    :picker-options="pickerOptions"
+                    :picker-options="$root.pickerOptions"
                     value-format="yyyy-MM-dd"
                     @change="employmentDateChange"
                   ></el-date-picker>
@@ -95,12 +95,12 @@
                     style="width:100%;"
                     v-model="queryPageParameters.leaveDate"
                     type="daterange"
-                    align="right"
+                    align="left"
                     unlink-panels
                     range-separator="至"
                     start-placeholder="开始日期"
                     end-placeholder="结束日期"
-                    :picker-options="pickerOptions"
+                    :picker-options="$root.pickerOptions"
                     value-format="yyyy-MM-dd"
                     @change="leaveDateChange"
                   ></el-date-picker>
@@ -128,7 +128,11 @@
             <el-row>
               <el-col :span="8">
                 <el-form-item label="归属组织">
-                  <IhSelectTree
+                  <SelectOrganizationTree
+                    :orgId="queryPageParameters.orgId"
+                    @callback="(id)=>queryPageParameters.orgId=id"
+                  />
+                  <!-- <IhSelectTree
                     min-height="400px"
                     class="width--100"
                     :props="props"
@@ -137,7 +141,7 @@
                     :clearable="true"
                     :accordion="true"
                     @getValue="getValue($event)"
-                  />
+                  />-->
                 </el-form-item>
               </el-col>
               <el-col :span="8">
@@ -204,15 +208,15 @@
       >
         <el-table-column fixed type="selection" width="50"></el-table-column>
         <el-table-column fixed type="index" label="序号" width="50"></el-table-column>
-        <el-table-column fixed prop="name" label="姓名" sortable width="90"></el-table-column>
-        <el-table-column fixed prop="account" label="登录账号" sortable width="150"></el-table-column>
+        <el-table-column fixed prop="name" label="姓名" width="90"></el-table-column>
+        <el-table-column fixed prop="account" label="登录账号" width="150"></el-table-column>
         <el-table-column prop="mobilePhone" label="手机号码" width="120"></el-table-column>
-        <el-table-column prop="accountType" label="用户类型" sortable width="120">
+        <el-table-column prop="accountType" label="用户类型" width="120">
           <template slot-scope="scope">{{getAccountTypeName(scope.row.accountType)}}</template>
         </el-table-column>
-        <el-table-column prop="orgName" label="归属组织" sortable width="300"></el-table-column>
+        <el-table-column prop="orgName" label="归属组织" width="300"></el-table-column>
         <el-table-column prop="employeeCode" label="员工工号" width="150"></el-table-column>
-        <el-table-column prop="status" label="账号状态" sortable width="120">
+        <el-table-column prop="status" label="账号状态" width="120">
           <template slot-scope="scope">{{getAccountStatusName(scope.row.status)}}</template>
         </el-table-column>
         <el-table-column prop="employeeStatus" label="雇员状态">
@@ -272,14 +276,6 @@
       />
     </ih-dialog>
 
-    <ih-dialog :show="myOrganizationVisible" desc="组织">
-      <MyOrganization
-        :currentId="valueVal"
-        @cancel="()=>myOrganizationVisible=false"
-        @finish="(data)=>{myOrganizationVisible=false;finish(data)}"
-      />
-    </ih-dialog>
-
     <ih-dialog :show="jobVisible" desc="分配岗位角色">
       <UserJobRole
         :data="jobVisibleData"
@@ -287,14 +283,14 @@
         @finish="(data)=>{jobVisible=false;finishJob(data)}"
       />
     </ih-dialog>
-    <ih-dialog :show="organizationJurisdictionVisible">
+    <ih-dialog :show="organizationJurisdictionVisible" desc="分配组织权限">
       <OrganizationJurisdiction
         :data="OrganizationJurisdictionData"
         @cancel="()=>organizationJurisdictionVisible=false"
         @finish="(data)=>{organizationJurisdictionVisible=false;finishJob(data)}"
       />
     </ih-dialog>
-    <ih-dialog :show="copyUserVisible">
+    <ih-dialog :show="copyUserVisible" desc="复制用户岗位角色组织权限">
       <CopyUsers
         :data="copyUserData"
         @cancel="()=>copyUserVisible=false"
@@ -308,14 +304,9 @@ import { Component, Vue } from "vue-property-decorator";
 import UserAdd from "./add.vue";
 import UserJobRole from "./dialog/job.vue";
 import CopyUsers from "./dialog/copy-users.vue";
-
-// import IhDialog from "@/components/IhDialog.vue";
-import MyOrganization from "@/components/MyOrganization.vue";
 import OrganizationJurisdiction from "@/components/OrganizationJurisdiction.vue";
-import MyPagination from "@/components/my-pagination.vue";
-// import { organization, userList } from "../../api/system/index2";
+import SelectOrganizationTree from "@/components/SelectOrganizationTree.vue";
 import {
-  get_org_getAll,
   post_user_getList,
   post_user_delete__id,
   post_user_lock__id,
@@ -324,7 +315,6 @@ import {
 } from "../../api/system/index";
 import PaginationMixin from "../../mixins/pagination";
 
-// import { getResourceByIdUsingGET } from "../../api/system";
 import {
   getListTool,
   accountType,
@@ -336,11 +326,10 @@ import {
 @Component({
   components: {
     UserAdd,
-    MyPagination,
-    MyOrganization,
     UserJobRole,
     OrganizationJurisdiction,
     CopyUsers,
+    SelectOrganizationTree,
   },
   mixins: [PaginationMixin],
 })
@@ -401,37 +390,7 @@ export default class UserList extends Vue {
     this.queryPageParameters.leaveDateStart = dateArray[0];
     this.queryPageParameters.leaveDateEnd = dateArray[1];
   }
-  pickerOptions: any = {
-    shortcuts: [
-      {
-        text: "最近一周",
-        onClick(picker: any) {
-          const end = new Date();
-          const start = new Date();
-          start.setTime(start.getTime() - 3600 * 1000 * 24 * 7);
-          picker.$emit("pick", [start, end]);
-        },
-      },
-      {
-        text: "最近一个月",
-        onClick(picker: any) {
-          const end = new Date();
-          const start = new Date();
-          start.setTime(start.getTime() - 3600 * 1000 * 24 * 30);
-          picker.$emit("pick", [start, end]);
-        },
-      },
-      {
-        text: "最近三个月",
-        onClick(picker: any) {
-          const end = new Date();
-          const start = new Date();
-          start.setTime(start.getTime() - 3600 * 1000 * 24 * 90);
-          picker.$emit("pick", [start, end]);
-        },
-      },
-    ],
-  };
+
   getAccountTypeName(key: string) {
     return accountType[key];
   }
@@ -441,7 +400,7 @@ export default class UserList extends Vue {
   getEmployeeStatusName(key: string) {
     return employeeStatus[key];
   }
-  
+
   getEmployeeTypeName(key: string) {
     return employeeType[key];
   }
@@ -473,7 +432,7 @@ export default class UserList extends Vue {
   addData: any = null;
   value: any = "";
   searchOpen = true;
-  myOrganizationVisible = false;
+
   organizationJurisdictionVisible = false;
   jobVisible = false;
   copyUserVisible = false;
@@ -498,49 +457,16 @@ export default class UserList extends Vue {
     this.dialogVisible = true;
   }
 
-  finish(data: any) {
-    console.log(data);
-    this.valueVal = data?.id;
-    this.valueZZ = data?.name;
-    this.search();
-  }
   finishJob(data: any) {
     console.log(data);
     this.search();
   }
 
-  // valueId: any = null; // 初始ID（可选）
-  props = {
-    // 配置项（必选）
-    value: "id",
-    label: "name",
-    children: "children",
-    defaultExpandedKeys: [1],
-    // defaultCheckedKeys: ["1D29BB468F504774ACE653B946A393EE"]
-  };
-  // 选项列表（必选）
-  list: any = [];
   async created() {
-    let listOrg = await get_org_getAll({ onlyValid: true });
-    if (listOrg && listOrg.length > 0) {
-      listOrg[0].parentId = 0;
-    }
-    console.log(listOrg);
-    this.list = this.$tool.listToGruop(listOrg, {
-      id: "id",
-      children: "children",
-      parentId: "parentId",
-      rootId: 0,
-    });
-    console.log(this.list);
-
     this.getListMixin();
   }
   async getListMixin() {
-    console.log("页面中调用getListMixin");
     this.resPageInfo = await post_user_getList(this.queryPageParameters);
-
-    console.log(this.resPageInfo);
   }
 
   getValue(value: any) {
@@ -553,17 +479,6 @@ export default class UserList extends Vue {
     this.getListMixin();
   }
 
-  valueZZ: any = null;
-  valueVal: any = null;
-  selectZZ() {
-    console.log("选择归属组织");
-    this.myOrganizationVisible = true;
-  }
-  clear() {
-    console.log("clear");
-    this.valueVal = null;
-    this.valueZZ = null;
-  }
   info(scope: any) {
     this.$router.push({
       path: "/user/info",
@@ -650,15 +565,10 @@ export default class UserList extends Vue {
   }
   handleSelectionChange(val: any) {
     console.log(val);
-
     this.copyUserData = val;
   }
 }
 </script>
 <style lang="scss" scoped>
-.btn-list {
-  text-align: left;
-  margin-left: 80px;
-}
 </style>
  

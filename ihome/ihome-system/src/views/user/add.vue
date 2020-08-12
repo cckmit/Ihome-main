@@ -4,7 +4,7 @@
  * @Author: zyc
  * @Date: 2020-07-01 10:32:40
  * @LastEditors: zyc
- * @LastEditTime: 2020-08-10 17:38:20
+ * @LastEditTime: 2020-08-12 11:34:58
 --> 
 
 <template>
@@ -63,15 +63,17 @@
           </el-form-item>
         </el-col>
         <el-col :span="12">
-          <el-form-item label="雇员状态">
-            <el-select v-model="form.employeeStatus" clearable placeholder="请选择雇员状态">
-              <el-option
-                v-for="item in employeeStatusOptions"
-                :key="item.value"
-                :label="item.label"
-                :value="item.value"
-              ></el-option>
-            </el-select>
+          <el-form-item label="归属组织">
+            <SelectOrganizationTree :orgId="form.orgId" @callback="(id)=>form.orgId=id" />
+            <!-- <IhSelectTree
+              min-height="400px"
+              :props="props"
+              :options="orgList"
+              :value="form.orgId"
+              :clearable="true"
+              :accordion="true"
+              @getValue="getValue($event)"
+            />-->
           </el-form-item>
         </el-col>
       </el-row>
@@ -134,16 +136,15 @@
           </el-form-item>
         </el-col>
         <el-col :span="12">
-          <el-form-item label="归属组织">
-            <IhSelectTree
-              min-height="400px"
-              :props="props"
-              :options="orgList"
-              :value="form.orgId"
-              :clearable="true"
-              :accordion="true"
-              @getValue="getValue($event)"
-            />
+          <el-form-item label="雇员状态">
+            <el-select v-model="form.employeeStatus" clearable placeholder="请选择雇员状态">
+              <el-option
+                v-for="item in employeeStatusOptions"
+                :key="item.value"
+                :label="item.label"
+                :value="item.value"
+              ></el-option>
+            </el-select>
           </el-form-item>
         </el-col>
       </el-row>
@@ -166,18 +167,18 @@ import {
   employeeType,
   workType,
 } from "../../util/enums/dic";
+import SelectOrganizationTree from "@/components/SelectOrganizationTree.vue";
 import {
   post_user_add,
   post_user_update,
-  get_org_getAll,
   get_user_get__id,
 } from "../../api/system";
 import {
   isNumberValidato,
-  emailValidato,
+  emailOrNullValidato,
 } from "ihome-common/util/base/form-ui";
 @Component({
-  components: {},
+  components: { SelectOrganizationTree },
 })
 export default class UserAdd extends Vue {
   constructor() {
@@ -224,7 +225,7 @@ export default class UserAdd extends Vue {
     leaveDate: [
       { required: true, message: "请选择离职日期", trigger: "change" },
     ],
-    email: [{ validator: emailValidato, trigger: "change" }],
+    email: [{ validator: emailOrNullValidato, trigger: "change" }],
   };
   get accountTypeOptions() {
     let list = getListTool(accountType);
@@ -246,19 +247,7 @@ export default class UserAdd extends Vue {
     let list = getListTool(workType);
     return list;
   }
-  orgList: any = [];
-  props = {
-    // 配置项（必选）
-    value: "id",
-    label: "name",
-    children: "children",
-    defaultExpandedKeys: [1],
-    // defaultCheckedKeys: ["1D29BB468F504774ACE653B946A393EE"]
-  };
-  getValue(value: any) {
-    this.form.orgId = value;
-    console.log(this.form.orgId);
-  }
+
   valuedate = new Date().getTime();
 
   cancel() {
@@ -274,7 +263,8 @@ export default class UserAdd extends Vue {
           this.$emit("finish", res);
         } else {
           const res = await post_user_add(this.form);
-          this.$message.success("添加成功");
+
+          this.$alert(res, "用户新增成功，密码是：");
           this.$emit("finish", res);
         }
       } else {
@@ -289,17 +279,6 @@ export default class UserAdd extends Vue {
       const res = await get_user_get__id({ id: this.data.id });
       this.form = res;
     }
-    let listOrg = await get_org_getAll({ onlyValid: true });
-    if (listOrg && listOrg.length > 0) {
-      listOrg[0].parentId = 0;
-    }
-    console.log(listOrg);
-    this.orgList = this.$tool.listToGruop(listOrg, {
-      id: "id",
-      children: "children",
-      parentId: "parentId",
-      rootId: 0,
-    });
   }
 }
 </script>

@@ -185,7 +185,6 @@ export default {
     },
     options: {
       handler(newVal) {
-        console.log("options", newVal);
         this.options = newVal;
         this.initHandle();
       },

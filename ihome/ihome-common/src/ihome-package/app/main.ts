@@ -4,7 +4,7 @@
  * @Author: zyc
  * @Date: 2020-07-07 09:25:17
  * @LastEditors: zyc
- * @LastEditTime: 2020-08-05 17:37:36
+ * @LastEditTime: 2020-08-12 14:07:48
  */
 import '../util/base/extend'
 import Vue from 'vue'
@@ -53,7 +53,38 @@ function render() {
     data: {
       paginationLayout: "total, sizes, prev, pager, next, jumper",
       pageSizes: [10, 20, 50],
-      pageSize: 10
+      pageSize: 10,
+      pickerOptions: {
+        shortcuts: [
+          {
+            text: "最近一周",
+            onClick(picker: any) {
+              const end = new Date();
+              const start = new Date();
+              start.setTime(start.getTime() - 3600 * 1000 * 24 * 7);
+              picker.$emit("pick", [start, end]);
+            },
+          },
+          {
+            text: "最近一个月",
+            onClick(picker: any) {
+              const end = new Date();
+              const start = new Date();
+              start.setTime(start.getTime() - 3600 * 1000 * 24 * 30);
+              picker.$emit("pick", [start, end]);
+            },
+          },
+          {
+            text: "最近三个月",
+            onClick(picker: any) {
+              const end = new Date();
+              const start = new Date();
+              start.setTime(start.getTime() - 3600 * 1000 * 24 * 90);
+              picker.$emit("pick", [start, end]);
+            },
+          },
+        ],
+      }
     },
     render: h => h(App),
   }).$mount('#app');
@@ -75,12 +106,12 @@ if (!(<any>window).__POWERED_BY_QIANKUN__) {
 // };
 
 export async function bootstrap(data: any) {
-  console.log('vue app bootstraped', data);
+  // console.log('vue app bootstraped', data);
 }
 
 
 export async function mount(props: any) {
-  console.log('props from main app', props);
+  // console.log('props from main app', props);
   UserModule.SetToken(props.data.token)
   UserModule.SetUserInfo(props.data.userInfo)
 
@@ -92,7 +123,7 @@ export async function mount(props: any) {
 
   props.onGlobalStateChange((state: any, prev: any) => {
     // state: 变更后的状态; prev 变更前的状态
-    console.log(state, prev);
+    // console.log(state, prev);
   });
 
   Vue.prototype.$onGlobalStateChange = props.onGlobalStateChange
@@ -104,4 +135,5 @@ export async function unmount() {
   instance.$destroy();
   instance = null;
 }
+
 

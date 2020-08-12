@@ -4,7 +4,7 @@
  * @Author: zyc
  * @Date: 2020-07-09 15:03:17
  * @LastEditors: zyc
- * @LastEditTime: 2020-08-11 15:16:51
+ * @LastEditTime: 2020-08-12 14:12:18
 --> 
 <template>
   <el-dialog
@@ -91,7 +91,6 @@ export default class OrganizationJurisdiction extends Vue {
   filterText: any = "";
   @Watch("filterText")
   filterTextWatch(val: any) {
-    console.log(val);
     (this.$refs.tree as any).filter(val);
   }
   dataTree: any = [];
@@ -109,13 +108,11 @@ export default class OrganizationJurisdiction extends Vue {
     return data[this.defaultProps.label].indexOf(value) !== -1;
   }
   currentChange(item: any) {
-    console.log(item);
     this.$emit("select", item);
   }
   check() {
     const tree: any = this.$refs.tree;
     let list = tree.getCheckedKeys().concat(tree.getHalfCheckedKeys());
-    console.log(list);
     let all: any = [];
     this.resList.forEach((item: any) => {
       list.forEach((element: any) => {
@@ -124,7 +121,6 @@ export default class OrganizationJurisdiction extends Vue {
         }
       });
     });
-    console.log(all);
     this.preData = this.$tool.listToGruop(all, { rootId: 0 });
   }
   get options() {
@@ -150,7 +146,6 @@ export default class OrganizationJurisdiction extends Vue {
       this.check();
     });
 
-    console.log(this.dataTree);
   }
   cancel() {
     this.$emit("cancel", false);
@@ -158,7 +153,6 @@ export default class OrganizationJurisdiction extends Vue {
 
   async finish() {
     let list = (this.$refs as any).tree.getCheckedKeys();
-    console.log(list);
     let p: any = {
       id: this.data.id,
       orgIds: list,

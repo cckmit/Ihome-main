@@ -4,7 +4,7 @@
  * @Author: zyc
  * @Date: 2020-06-22 11:10:43
  * @LastEditors: zyc
- * @LastEditTime: 2020-07-14 11:31:25
+ * @LastEditTime: 2020-08-12 11:52:56
  */
 import Vue from 'vue'
 import VueRouter, { RouteConfig, Route } from 'vue-router'
@@ -142,15 +142,13 @@ const router = new VueRouter({
 
 
 router.beforeEach(async (to: Route, _: Route, next: any) => {
-  console.log(to, _, next)
   // Start progress bar
   NProgress.start()
   next();
 
 })
 
-router.afterEach((to: Route) => {
-  console.log(to)
+router.afterEach(() => {
   // Finish progress bar
   NProgress.done()
 

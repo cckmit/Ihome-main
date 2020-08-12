@@ -4,7 +4,7 @@
  * @Author: zyc
  * @Date: 2020-07-09 10:21:50
  * @LastEditors: zyc
- * @LastEditTime: 2020-08-11 15:47:47
+ * @LastEditTime: 2020-08-12 14:37:05
 --> 
 <template>
   <ih-page>
@@ -104,7 +104,7 @@
 <script lang="ts">
 import { Component, Vue } from "vue-property-decorator";
 import RoleAdd from "./add.vue";
-import ResourcesCheck from "@/components/resourcesCheck.vue";
+import ResourcesCheck from "@/components/ResourcesCheck.vue";
 import BatchOperationJob from "./batch-operation-job.vue";
 import BatchOperationUser from "./batch-operation-user.vue";
 import PaginationMixin from "../../mixins/pagination";
