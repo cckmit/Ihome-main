@@ -4,7 +4,7 @@
  * @Author: zyc
  * @Date: 2020-06-30 09:21:17
  * @LastEditors: zyc
- * @LastEditTime: 2020-08-13 09:41:09
+ * @LastEditTime: 2020-08-13 16:18:01
 --> 
 <template>
   <ih-page>
@@ -316,7 +316,7 @@ import {
   post_user_resetPassword__id,
 } from "../../api/system/index";
 import PaginationMixin from "../../mixins/pagination";
- 
+
 @Component({
   components: {
     UserAdd,
@@ -385,6 +385,8 @@ export default class UserList extends Vue {
       permissionOrgId: null,
       status: "Valid",
       workType: null,
+      pageNum: this.queryPageParameters.pageNum,
+      pageSize: this.queryPageParameters.pageSize,
     };
   }
 
