@@ -4,7 +4,7 @@
  * @Author: zyc
  * @Date: 2020-07-09 16:53:27
  * @LastEditors: zyc
- * @LastEditTime: 2020-08-11 15:45:21
+ * @LastEditTime: 2020-08-13 11:03:41
 --> 
 <template>
   <el-dialog
@@ -41,7 +41,7 @@
                 class="width--100"
               >
                 <el-option
-                  v-for="item in accountTypeOptions"
+                  v-for="item in  $root.displayList('accountType')"
                   :key="item.value"
                   :label="item.label"
                   :value="item.value"
@@ -67,7 +67,7 @@
                 range-separator="至"
                 start-placeholder="开始日期"
                 end-placeholder="结束日期"
-                :picker-options="pickerOptions"
+                :picker-options="$root.pickerOptions"
                 value-format="yyyy-MM-dd"
                 @change="employmentDateChange"
               ></el-date-picker>
@@ -82,7 +82,7 @@
                 class="width--100"
               >
                 <el-option
-                  v-for="item in accountStatusOptions"
+                  v-for="item in  $root.displayList('accountStatus')"
                   :key="item.value"
                   :label="item.label"
                   :value="item.value"
@@ -102,7 +102,7 @@
                 class="width--100"
               >
                 <el-option
-                  v-for="item in employeeStatusOptions"
+                  v-for="item in $root.displayList('employeeStatus')"
                   :key="item.value"
                   :label="item.label"
                   :value="item.value"
@@ -146,10 +146,12 @@
         <el-table-column prop="account" label="登录账号"></el-table-column>
         <el-table-column prop="employmentDate" label="入职日期"></el-table-column>
         <el-table-column prop="employeeStatus" label="雇员状态">
-          <template slot-scope="scope">{{getEmployeeStatusName(scope.row.employeeStatus)}}</template>
+          <template
+            slot-scope="scope"
+          >{{$root.displayName('employeeStatus',scope.row.employeeStatus)}}</template>
         </el-table-column>
         <el-table-column prop="status" label="账号状态">
-          <template slot-scope="scope">{{getAccountStatusName(scope.row.status)}}</template>
+          <template slot-scope="scope">{{$root.displayName('accountStatus',scope.row.status)}}</template>
         </el-table-column>
         <el-table-column prop="orgName" label="归属组织"></el-table-column>
       </el-table>
@@ -181,12 +183,7 @@ import {
 } from "../../api/system/index";
 // import { Form as ElForm } from "element-ui";
 import PaginationMixin from "../../mixins/pagination";
-import {
-  getListTool,
-  accountType,
-  accountStatus,
-  employeeStatus,
-} from "../../util/enums/dic";
+
 @Component({
   components: {},
   mixins: [PaginationMixin],
@@ -225,55 +222,7 @@ export default class BatchOperationUser extends Vue {
     total: 0,
     list: [],
   };
-  pickerOptions: any = {
-    shortcuts: [
-      {
-        text: "最近一周",
-        onClick(picker: any) {
-          const end = new Date();
-          const start = new Date();
-          start.setTime(start.getTime() - 3600 * 1000 * 24 * 7);
-          picker.$emit("pick", [start, end]);
-        },
-      },
-      {
-        text: "最近一个月",
-        onClick(picker: any) {
-          const end = new Date();
-          const start = new Date();
-          start.setTime(start.getTime() - 3600 * 1000 * 24 * 30);
-          picker.$emit("pick", [start, end]);
-        },
-      },
-      {
-        text: "最近三个月",
-        onClick(picker: any) {
-          const end = new Date();
-          const start = new Date();
-          start.setTime(start.getTime() - 3600 * 1000 * 24 * 90);
-          picker.$emit("pick", [start, end]);
-        },
-      },
-    ],
-  };
-  get accountTypeOptions() {
-    let list = getListTool(accountType);
-    return list;
-  }
-  get accountStatusOptions() {
-    let list = getListTool(accountStatus);
-    return list;
-  }
-  get employeeStatusOptions() {
-    let list = getListTool(employeeStatus);
-    return list;
-  }
-  getEmployeeStatusName(key: string) {
-    return employeeStatus[key];
-  }
-  getAccountStatusName(key: string) {
-    return accountStatus[key];
-  }
+  
   props = {
     // 配置项（必选）
     value: "id",

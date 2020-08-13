@@ -4,7 +4,7 @@
  * @Author: zyc
  * @Date: 2020-06-24 10:03:21
  * @LastEditors: zyc
- * @LastEditTime: 2020-06-24 10:29:27
+ * @LastEditTime: 2020-08-13 15:45:51
  */
 const Mock = require('mockjs')
 Mock.setup({

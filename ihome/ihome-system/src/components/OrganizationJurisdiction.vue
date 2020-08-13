@@ -4,7 +4,7 @@
  * @Author: zyc
  * @Date: 2020-07-09 15:03:17
  * @LastEditors: zyc
- * @LastEditTime: 2020-08-12 14:12:18
+ * @LastEditTime: 2020-08-13 11:04:14
 --> 
 <template>
   <el-dialog
@@ -69,14 +69,12 @@
 </template>
 <script lang="ts">
 import { Component, Vue, Prop, Watch } from "vue-property-decorator";
-// import { getResourceCategory } from "../api/system/index2";
-// import { DictionariesModule } from "../store/modules/dictionaries";
+ 
 import {
   get_org_getAll,
   post_user_addUserOrgBatch,
   post_user_getAllUserOrgByUserId__userId,
 } from "../api/system/index";
-import { getListTool, modular } from "../util/enums/dic";
 @Component({
   components: {},
 })
@@ -123,10 +121,7 @@ export default class OrganizationJurisdiction extends Vue {
     });
     this.preData = this.$tool.listToGruop(all, { rootId: 0 });
   }
-  get options() {
-    let list = getListTool(modular);
-    return list;
-  }
+  
   async created() {
     const selectData = await post_user_getAllUserOrgByUserId__userId({
       userId: this.data.id,

@@ -4,7 +4,7 @@
  * @Author: zyc
  * @Date: 2020-07-09 15:03:17
  * @LastEditors: zyc
- * @LastEditTime: 2020-08-12 14:11:20
+ * @LastEditTime: 2020-08-13 11:05:51
 --> 
 <template>
   <el-dialog
@@ -28,7 +28,7 @@
           placeholder="请选择"
         >
           <el-option
-            v-for="(item,index) in options"
+            v-for="(item,index) in $root.displayList('modular')"
             :key="index"
             :label="item.label"
             :value="item.value"
@@ -64,13 +64,11 @@
 </template>
 <script lang="ts">
 import { Component, Vue, Prop, Watch } from "vue-property-decorator";
-// import { getResourceCategory } from "../api/system/index2";
 import {
   post_role_addRoleResourceBatch,
   get_resource_getAll,
   post_resource_getAllByRoleId,
 } from "../api/system/index";
-import { getListTool, modular } from "../util/enums/dic";
 @Component({
   components: {},
 })
@@ -117,9 +115,7 @@ export default class ResourcesCheck extends Vue {
   currentChange(item: any) {
     console.log(item);
   }
-  get options() {
-    return getListTool(modular);
-  }
+  
   async created() {
     console.log(this.data);
     let p: any = {

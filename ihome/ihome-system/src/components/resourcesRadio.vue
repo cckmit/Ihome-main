@@ -4,7 +4,7 @@
  * @Author: zyc
  * @Date: 2020-07-09 15:03:17
  * @LastEditors: zyc
- * @LastEditTime: 2020-08-12 14:10:47
+ * @LastEditTime: 2020-08-13 11:06:32
 --> 
 <template>
   <div>
@@ -17,7 +17,7 @@
         placeholder="请选择"
       >
         <el-option
-          v-for="(item,index) in options"
+          v-for="(item,index) in $root.displayList('modular')"
           :key="index"
           :label="item.label"
           :value="item.value"
@@ -48,8 +48,6 @@
 <script lang="ts">
 import { Component, Vue, Watch } from "vue-property-decorator";
 import { get_resource_getAll } from "../api/system/index";
-// import { DictionariesModule } from "../store/modules/dictionaries";
-import { getListTool, modular } from "../util/enums/dic";
 @Component({
   components: {},
 })
@@ -92,10 +90,7 @@ export default class ResourcesRadio extends Vue {
   currentChange(item: any) {
     this.$emit("select", item);
   }
-  get options() {
-    let list = getListTool(modular);
-    return list;
-  }
+   
   async created() {
     this.init();
   }

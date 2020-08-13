@@ -62,7 +62,6 @@
 </template>
 <script lang="ts">
 import { Component, Vue, Prop } from "vue-property-decorator";
-// import { getRoleList } from "../../api/system/index2";
 import {
   post_role_getListByResourceId,
   post_resource_addResourceToRoleBatch,

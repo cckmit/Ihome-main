@@ -4,7 +4,7 @@
  * @Author: zyc
  * @Date: 2020-07-14 16:00:28
  * @LastEditors: zyc
- * @LastEditTime: 2020-08-11 15:24:50
+ * @LastEditTime: 2020-08-13 11:09:26
 --> 
 <template>
   <el-dialog
@@ -82,7 +82,9 @@
               <el-table-column prop="name" label="姓名" width="120"></el-table-column>
               <el-table-column prop="account" label="登录账号"></el-table-column>
               <el-table-column prop="accountType" label="用户类型" width="120">
-                <template slot-scope="scope">{{getAccountTypeName(scope.row.accountType)}}</template>
+                <template
+                  slot-scope="scope"
+                >{{$root.displayName('accountType',scope.row.accountType)}}</template>
               </el-table-column>
             </el-table>
             <div>
@@ -109,14 +111,11 @@
 </template>
 <script lang="ts">
 import { Component, Vue, Prop } from "vue-property-decorator";
-// import { getRoleList } from "../../../api/system/index2";
 import {
   post_user_getList,
   post_user_copyJobAndRole,
 } from "../../../api/system/index";
-// import { Form as ElForm } from "element-ui";
 import PaginationMixin from "../../../mixins/pagination";
-import { accountType } from "../../../util/enums/dic";
 @Component({
   components: {},
   mixins: [PaginationMixin],
@@ -154,10 +153,6 @@ export default class CopyUsers extends Vue {
     total: 0,
     list: [],
   };
-
-  getAccountTypeName(key: string) {
-    return accountType[key];
-  }
 
   selectList: any = [];
 

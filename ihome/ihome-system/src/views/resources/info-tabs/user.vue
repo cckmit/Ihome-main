@@ -4,7 +4,7 @@
  * @Author: zyc
  * @Date: 2020-07-07 15:36:27
  * @LastEditors: zyc
- * @LastEditTime: 2020-08-13 10:16:54
+ * @LastEditTime: 2020-08-13 11:08:05
 --> 
 <template>
   <div>
@@ -40,7 +40,6 @@
 import { Component, Vue } from "vue-property-decorator";
 import PaginationMixin from "../../../mixins/pagination";
 import { post_user_getListByResourceId } from "../../../api/system/index";
-import { accountType } from "../../../util/enums/dic";
 @Component({
   components: {},
   mixins: [PaginationMixin],
@@ -54,10 +53,7 @@ export default class InfoUser extends Vue {
     list: [],
     total: 0,
   };
-  getAccountTypeName(key: string) {
-    return accountType[key];
-  }
-
+ 
   async search() {
     this.resPageInfo = await post_user_getListByResourceId(
       this.queryPageParameters

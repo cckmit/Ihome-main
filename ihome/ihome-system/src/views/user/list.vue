@@ -212,7 +212,6 @@
         <el-table-column fixed prop="account" label="登录账号" width="150"></el-table-column>
         <el-table-column prop="mobilePhone" label="手机号码" width="120"></el-table-column>
         <el-table-column prop="accountType" label="用户类型" width="120">
-          <!-- <template slot-scope="scope">{{getAccountTypeName(scope.row.accountType)}}</template> -->
           <template slot-scope="scope">{{$root.displayName('accountType',scope.row.accountType)}}</template>
         </el-table-column>
         <el-table-column prop="orgName" label="归属组织" width="300"></el-table-column>

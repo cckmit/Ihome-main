@@ -4,7 +4,7 @@
  * @Author: zyc
  * @Date: 2020-06-22 11:10:43
  * @LastEditors: zyc
- * @LastEditTime: 2020-08-12 11:52:56
+ * @LastEditTime: 2020-08-13 11:39:42
  */
 import Vue from 'vue'
 import VueRouter, { RouteConfig, Route } from 'vue-router'
@@ -28,14 +28,7 @@ const routes: Array<RouteConfig> = [
       title: '主页'
     }
   },
-  {
-    path: '/api',
-    name: 'api',
-    component: () => import('../views/api.vue'),
-    meta: {
-      title: 'api'
-    }
-  },
+
   {
     path: '/user',
     meta: { title: '用户', icon: 'form' },

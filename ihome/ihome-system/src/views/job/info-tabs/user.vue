@@ -4,7 +4,7 @@
  * @Author: zyc
  * @Date: 2020-07-14 10:51:31
  * @LastEditors: zyc
- * @LastEditTime: 2020-08-11 15:57:41
+ * @LastEditTime: 2020-08-13 11:07:32
 --> 
 <template>
   <div>
@@ -25,7 +25,7 @@
       <el-table-column prop="account" label="登录账号" width="180"></el-table-column>
       <el-table-column prop="mobilePhone" label="手机号码" width="180"></el-table-column>
       <el-table-column prop="userType" label="用户类型">
-        <template slot-scope="scope">{{getAccountTypeName(scope.row.accountType)}}</template>
+         <template slot-scope="scope">{{$root.displayName('accountType',scope.row.accountType)}}</template>
       </el-table-column>
       <el-table-column prop="orgName" label="归属组织"></el-table-column>
     </el-table>
@@ -44,10 +44,8 @@
 </template>
 <script lang="ts">
 import { Component, Vue } from "vue-property-decorator";
-// import { getUserList } from "../../../api/system/index2";
 import { post_user_getListByJobId } from "../../../api/system/index";
 import PaginationMixin from "../../../mixins/pagination";
-import { accountType } from "../../../util/enums/dic";
 @Component({
   components: {},
   mixins: [PaginationMixin],
@@ -61,10 +59,7 @@ export default class JobInfoUser extends Vue {
     jobId: 0,
     key: null,
   };
-  getAccountTypeName(key: string) {
-    return accountType[key];
-  }
-
+  
   async search() {
     this.getListMixin();
   }

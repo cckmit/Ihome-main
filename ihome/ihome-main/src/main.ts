@@ -4,7 +4,7 @@
  * @Author: zyc
  * @Date: 2020-06-22 11:46:23
  * @LastEditors: zyc
- * @LastEditTime: 2020-08-06 15:50:53
+ * @LastEditTime: 2020-08-13 15:47:11
  */
 import Vue from 'vue'
 import App from './App.vue'
@@ -27,6 +27,7 @@ if (process.env.NODE_ENV == 'development') {
 } else {
   // require('./mock/index')
 }
+// require('./mock/index')
 Vue.use(ElementUI);
 
 

@@ -88,7 +88,6 @@
 </template>
 <script lang="ts">
 import { Component, Vue } from "vue-property-decorator";
-// import { getJobList } from "../../api/system/index2";
 import { post_job_getList, post_job_delete__id } from "../../api/system/index";
 import JobAddEdit from "./add-edit.vue";
 import AssignRole from "./assign-role.vue";

@@ -4,7 +4,7 @@
  * @Author: zyc
  * @Date: 2020-07-14 11:26:26
  * @LastEditors: zyc
- * @LastEditTime: 2020-08-13 10:28:16
+ * @LastEditTime: 2020-08-13 11:07:52
 --> 
 <template>
   <ih-page class="organization-list">
@@ -160,7 +160,6 @@ import OrganizationTree from "@/components/OrganizationTree.vue";
 import { Component, Vue } from "vue-property-decorator";
 import { post_org_getList, post_org_delete__id } from "../../api/system/index";
 import PaginationMixin from "../../mixins/pagination";
-import { orgType } from "../../util/enums/dic";
 
 @Component({
   components: {
@@ -198,9 +197,7 @@ export default class OrganizationList extends Vue {
   dialogEdit = false;
   organizationItem: any = null;
   editData: any = null;
-  getOrgTypeName(key: string) {
-    return orgType[key];
-  }
+   
   async created() {
     console.log("created");
   }

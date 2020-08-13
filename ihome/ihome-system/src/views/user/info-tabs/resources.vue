@@ -4,7 +4,7 @@
  * @Author: zyc
  * @Date: 2020-07-08 14:23:49
  * @LastEditors: zyc
- * @LastEditTime: 2020-08-11 16:47:29
+ * @LastEditTime: 2020-08-13 11:12:58
 --> 
 <template>
   <div>
@@ -30,7 +30,6 @@
 </template>
 <script lang="ts">
 import { Component, Vue, Watch } from "vue-property-decorator";
-// import { getResourceCategory } from "../../../api/system/index2";
 import { get_resource_getAll } from "../../../api/system/index";
 @Component({
   components: {},

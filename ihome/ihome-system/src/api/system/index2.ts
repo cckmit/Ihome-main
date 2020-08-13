@@ -4,7 +4,7 @@
  * @Author: zyc
  * @Date: 2020-07-08 10:38:09
  * @LastEditors: zyc
- * @LastEditTime: 2020-08-01 09:36:00
+ * @LastEditTime: 2020-08-13 11:14:05
  */
 import { IPageInfo } from "../base.d";
 
@@ -56,7 +56,7 @@ export async function getJobList(d?: any) {
 }
 /**获取用户列表*/
 
-export   async  function getUserList(d?: any) {
+export async function getUserList(d?: any) {
     return await request.get<IPageInfo<IResource>, IPageInfo<IResource>>('/system/user/list', { params: d })
 }
 

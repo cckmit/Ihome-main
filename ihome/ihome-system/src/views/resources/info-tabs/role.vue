@@ -37,7 +37,6 @@
 </template>
 <script lang="ts">
 import { Component, Vue } from "vue-property-decorator";
-// import { getRoleList } from "../../../api/system/index2";
 import { post_role_getListByResourceId } from "../../../api/system/index";
 import PaginationMixin from "../../../mixins/pagination";
 @Component({

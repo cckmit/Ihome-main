@@ -4,7 +4,7 @@
  * @Author: zyc
  * @Date: 2020-06-24 09:49:42
  * @LastEditors: zyc
- * @LastEditTime: 2020-06-24 10:32:05
+ * @LastEditTime: 2020-08-13 15:40:56
  */
 import axios from 'axios'
 import { Message, MessageBox } from 'element-ui'
@@ -48,7 +48,7 @@ service.interceptors.response.use(
       return response.data
     } else {
       const res = response.data
-      if (res.code !== 20000) {
+      if (res.code !== 'Success') {
         Message({
           message: res.msg || 'Error',
           type: 'error',

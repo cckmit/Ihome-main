@@ -4,10 +4,11 @@
  * @Author: zyc
  * @Date: 2020-06-24 09:47:33
  * @LastEditors: zyc
- * @LastEditTime: 2020-06-24 14:32:08
+ * @LastEditTime: 2020-08-13 15:49:51
  */
 import { IRes } from "./users.d";
 import request from '@/utils/http';
+
 
 /**响应数据结果处理
  * @param {type}
@@ -41,6 +42,71 @@ export function userInfoRes<T>(d?: any) {
  */
 export function userList<T>(d?: any) {
     return resHandle<T>(request.post<T, IRes<T>>('/users/list', d))
+}
+/**用户菜单
+ * @param {type}
+ * @return:
+ */
+export function userMenu<T>(d?: any) {
+    return resHandle<T>(request.post<T, IRes<T>>('/system/users/menuList', d))
+}
+/**全部菜单
+ * @param {type}
+ * @return:
+ */
+export function allMenu<T>() {
+    const menuList: any[] = [
+        {
+            id: 7,
+            parentId: 0,
+            title: "系统管理首页",
+            icon: "el-icon-menu",
+            path: "/web-system/",
+        },
+        {
+            id: 1,
+            parentId: 0,
+            title: "系统管理模块",
+            icon: "el-icon-setting",
+            path: null,
+        },
+        {
+            id: 2,
+            parentId: 1,
+            title: "用户列表",
+            icon: null,
+            path: "/web-system/user/list",
+        },
+        {
+            id: 3,
+            parentId: 1,
+            title: "资源列表",
+            icon: null,
+            path: "/web-system/resources/list",
+        },
+        {
+            id: 4,
+            parentId: 1,
+            title: "角色列表",
+            icon: null,
+            path: "/web-system/role/list",
+        },
+        {
+            id: 5,
+            parentId: 1,
+            title: "岗位列表",
+            icon: null,
+            path: "/web-system/job/list",
+        },
+        {
+            id: 6,
+            parentId: 1,
+            title: "组织架构",
+            icon: null,
+            path: "/web-system/organization/list",
+        },
+    ];
+    return menuList;
 }
 export const login = (data: any) => {
     const tokenRes = {

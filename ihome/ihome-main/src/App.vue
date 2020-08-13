@@ -4,7 +4,7 @@
  * @Author: zyc
  * @Date: 2020-06-22 11:46:23
  * @LastEditors: zyc
- * @LastEditTime: 2020-08-11 16:55:22
+ * @LastEditTime: 2020-08-13 15:49:11
 --> 
 <template>
   <div>
@@ -14,7 +14,12 @@
           <img src="./assets/img/logo/logo.png" style="width:100%;" alt srcset />
         </div>
 
-        <el-menu :default-openeds="['4']" class="el-menu-vertical-demo" :collapse="isCollapse">
+        <el-menu
+          :default-openeds="defaultOpeneds"
+          :default-active="defaultActive"
+          class="el-menu-vertical-demo"
+          :collapse="isCollapse"
+        >
           <!-- <el-submenu index="1">
             <template slot="title">
               <i class="el-icon-location"></i>
@@ -32,18 +37,29 @@
             <i class="el-icon-menu"></i>
             <span slot="title">导航二</span>
           </el-menu-item>-->
-          <el-submenu index="4">
-            <template slot="title">
-              <i class="el-icon-setting"></i>系统管理模块
-            </template>
+          <div :index="item.id" v-for="(item) in groupMenuList" :key="item.id">
+            <el-menu-item :index="item.id" v-if="!item.children" @click="goto(item.path)">
+              <template slot="title">
+                <i :class="item.icon"></i>
+                <span>{{item.title}}</span>
+              </template>
+            </el-menu-item>
 
-            <!-- <el-menu-item @click="goto('/web-system/')" index="4-3">系统管理模块导航</el-menu-item> -->
-            <el-menu-item @click="goto('/web-system/user/list')" index="4-4">用户列表</el-menu-item>
-            <el-menu-item @click="goto('/web-system/resources/list')" index="4-5">资源列表</el-menu-item>
-            <el-menu-item @click="goto('/web-system/role/list')" index="4-6">角色列表</el-menu-item>
-            <el-menu-item @click="goto('/web-system/job/list')" index="4-7">岗位列表</el-menu-item>
-            <el-menu-item @click="goto('/web-system/organization/list')" index="4-8">组织架构</el-menu-item>
-          </el-submenu>
+            <el-submenu :index="item.id" v-if="item.children">
+              <template slot="title">
+                <i :class="item.icon"></i>
+                <span>{{item.title}}</span>
+              </template>
+              <template>
+                <el-menu-item
+                  v-for="(childrenItem,childrenIndex) in item.children"
+                  :key="childrenIndex"
+                  @click="goto(childrenItem.path)"
+                  :index="childrenItem.id"
+                >{{childrenItem.title}}</el-menu-item>
+              </template>
+            </el-submenu>
+          </div>
         </el-menu>
       </el-aside>
 
@@ -69,6 +85,7 @@
 import IhHeader from "@/components/IhHeader.vue";
 import { Component, Vue, Prop, Watch } from "vue-property-decorator";
 import { UserModule } from "./store/modules/user";
+import { allMenu } from "./api/users";
 @Component({
   components: { IhHeader },
 })
@@ -81,8 +98,30 @@ export default class App extends Vue {
   private screenHeight: any = document.body.clientHeight;
   private timer: any = null;
   private isCollapse: boolean = false;
+  defaultOpeneds: any[] = []; //展开的菜单
+  defaultActive: any = ""; //选中的菜单
 
-  created() {
+  groupMenuList: any[] = [];
+
+  async created() {
+    let menuList: any = await allMenu();
+
+    menuList.map((item: any) => {
+      item.id = item.id.toString();
+      item.parentId = item.parentId.toString();
+      return item;
+    });
+
+    this.groupMenuList = this.listToGruop(menuList, { rootId: "0" });
+    for (let index = 0; index < menuList.length; index++) {
+      const element = menuList[index];
+      if (element.path == this.$route.path) {
+        this.defaultActive = element.id.toString(); //设置菜单选中
+        this.defaultOpeneds = [element.parentId.toString()]; //设置当前菜单展开
+        break;
+      }
+    }
+
     this.resize();
     this.loginPage = this.$route.path == "/login";
     this.login();
@@ -91,13 +130,16 @@ export default class App extends Vue {
     if (UserModule.token.length > 0) {
       UserModule.token;
     } else {
-      this.$router.push({
-        path: "/login",
-      });
+      if (!this.loginPage) {
+        this.$router.push({
+          path: "/login",
+        });
+      }
     }
   }
   @Watch("$route")
   getWatch(newVal: any) {
+    console.log(newVal);
     this.loginPage = newVal.path == "/login";
     this.login();
   }
@@ -146,6 +188,33 @@ export default class App extends Vue {
     that.$actions.setGlobalState({
       mt: value,
     });
+  }
+  listToGruop(list: any[], config: any) {
+    const defaultConfig = {
+      id: "id",
+      children: "children",
+      parentId: "parentId",
+      rootId: null,
+    };
+    Object.assign(defaultConfig, config);
+    let tree = [];
+    let temp;
+    for (let i = 0; i < list.length; i++) {
+      if (list[i][defaultConfig.parentId] == defaultConfig.rootId) {
+        let obj = list[i];
+        temp = this.listToGruop(list, {
+          id: defaultConfig.id,
+          children: defaultConfig.children,
+          parentId: defaultConfig.parentId,
+          rootId: obj[defaultConfig.id],
+        });
+        if (temp.length > 0) {
+          obj[defaultConfig.children] = temp;
+        }
+        tree.push(obj);
+      }
+    }
+    return tree;
   }
 }
 </script>
