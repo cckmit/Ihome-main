@@ -4,7 +4,7 @@
  * @Author: zyc
  * @Date: 2020-07-06 17:16:31
  * @LastEditors: zyc
- * @LastEditTime: 2020-08-06 11:43:45
+ * @LastEditTime: 2020-08-13 10:12:38
 --> 
 <template>
   <el-dialog
@@ -33,7 +33,7 @@
               <el-form-item :prop="'tableData.' + scope.$index + '.type'" :rules="model.rules.type">
                 <el-select v-model="scope.row.type" placeholder="类型">
                   <el-option
-                    v-for="(item,index) in options"
+                    v-for="(item,index) in $root.displayList('modular')"
                     :key="index"
                     :label="item.label"
                     :value="item.value"
@@ -86,7 +86,6 @@
 import { Component, Vue, Prop } from "vue-property-decorator";
 // import { DictionariesModule } from "../../store/modules/dictionaries";
 import { post_resource_addBatch } from "../../api/system/index";
-import { getListTool, modular } from "../../util/enums/dic";
 import { isUpperLetterValidato } from "ihome-common/util/base/form-ui";
 @Component({
   components: {},
@@ -97,11 +96,6 @@ export default class ResourcesAdd extends Vue {
   }
   @Prop({ default: null }) data: any;
   dialogVisible = true;
-
-  get options() {
-    let list = getListTool(modular);
-    return list;
-  }
 
   model: any = {
     rules: {

@@ -4,13 +4,15 @@
  * @Author: zyc
  * @Date: 2020-07-07 09:25:17
  * @LastEditors: zyc
- * @LastEditTime: 2020-08-12 14:07:48
+ * @LastEditTime: 2020-08-13 09:37:43
  */
 import '../util/base/extend'
 import Vue from 'vue'
 import App from './App.vue'
 import { router } from '@/router'
 import store from '@/store'
+import * as dic from '@/util/enums/dic'
+let $dic: any = dic;
 // import '@/public-path'
 if ((<any>window).__POWERED_BY_QIANKUN__) {
   // eslint-disable-next-line no-undef
@@ -50,6 +52,27 @@ function render() {
   instance = new Vue({
     store,
     router,
+    methods: {
+      displayName(source: any, key: any) {
+        let item: any = $dic[source];
+        if (item) {
+          return item[key];
+        } else {
+          console.error(source, key, '枚举类型无法匹配')
+          return null;
+        }
+      },
+      displayList(source: any, key: any) {
+        let item: any = $dic[source];
+        if (item) {
+          let list = $dic.getListTool(item);
+          return list;
+        } else {
+          console.error(source, key, '枚举类型无法匹配.')
+          return [];
+        }
+      },
+    },
     data: {
       paginationLayout: "total, sizes, prev, pager, next, jumper",
       pageSizes: [10, 20, 50],
@@ -135,5 +158,4 @@ export async function unmount() {
   instance.$destroy();
   instance = null;
 }
-
 

@@ -4,7 +4,7 @@
  * @Author: zyc
  * @Date: 2020-07-07 15:36:27
  * @LastEditors: zyc
- * @LastEditTime: 2020-08-11 16:09:49
+ * @LastEditTime: 2020-08-13 10:16:54
 --> 
 <template>
   <div>
@@ -20,7 +20,7 @@
       <el-table-column prop="account" label="登录账号" width="180"></el-table-column>
       <el-table-column prop="mobilePhone" label="手机号码" width="180"></el-table-column>
       <el-table-column prop="userType" label="用户类型">
-        <template slot-scope="scope">{{getAccountTypeName(scope.row.accountType)}}</template>
+        <template slot-scope="scope">{{$root.displayName('accountType',scope.row.accountType)}}</template>
       </el-table-column>
       <el-table-column prop="orgName" label="归属组织"></el-table-column>
     </el-table>

@@ -4,7 +4,7 @@
  * @Author: zyc
  * @Date: 2020-07-14 09:48:18
  * @LastEditors: zyc
- * @LastEditTime: 2020-08-07 14:35:21
+ * @LastEditTime: 2020-08-13 10:27:20
 --> 
 <template>
   <el-dialog
@@ -46,7 +46,6 @@
 <script lang="ts">
 import { Component, Vue, Prop } from "vue-property-decorator";
 import { Form as ElForm } from "element-ui";
-import { DictionariesModule } from "../../store/modules/dictionaries";
 import { post_job_add, post_job_update } from "../../api/system/index";
 @Component({
   components: {},
@@ -58,11 +57,7 @@ export default class JobAddEdit extends Vue {
   @Prop({ default: null }) data: any;
   dialogVisible = true;
 
-  get typeList() {
-    DictionariesModule.getModular();
-    return DictionariesModule.modular;
-  }
-
+ 
   ruleForm: any = {
     id: 0,
     code: null,

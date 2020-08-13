@@ -4,7 +4,7 @@
  * @Author: zyc
  * @Date: 2020-06-30 09:21:17
  * @LastEditors: zyc
- * @LastEditTime: 2020-08-12 14:32:19
+ * @LastEditTime: 2020-08-13 09:41:09
 --> 
 <template>
   <ih-page>
@@ -30,7 +30,7 @@
                 class="width--100"
               >
                 <el-option
-                  v-for="item in accountTypeOptions"
+                  v-for="item in $root.displayList('accountType')"
                   :key="item.value"
                   :label="item.label"
                   :value="item.value"
@@ -61,7 +61,7 @@
                     class="width--100"
                   >
                     <el-option
-                      v-for="item in accountStatusOptions"
+                      v-for="item in  $root.displayList('accountStatus')"
                       :key="item.value"
                       :label="item.label"
                       :value="item.value"
@@ -115,7 +115,7 @@
                     class="width--100"
                   >
                     <el-option
-                      v-for="item in employeeStatusOptions"
+                      v-for="item in $root.displayList('employeeStatus')"
                       :key="item.value"
                       :label="item.label"
                       :value="item.value"
@@ -153,7 +153,7 @@
                     class="width--100"
                   >
                     <el-option
-                      v-for="item in employeeTypeOptions"
+                      v-for="item in $root.displayList('employeeType')"
                       :key="item.value"
                       :label="item.label"
                       :value="item.value"
@@ -170,7 +170,7 @@
                     class="width--100"
                   >
                     <el-option
-                      v-for="item in workTypeOptions"
+                      v-for="item in $root.displayList('workType')"
                       :key="item.value"
                       :label="item.label"
                       :value="item.value"
@@ -212,23 +212,26 @@
         <el-table-column fixed prop="account" label="登录账号" width="150"></el-table-column>
         <el-table-column prop="mobilePhone" label="手机号码" width="120"></el-table-column>
         <el-table-column prop="accountType" label="用户类型" width="120">
-          <template slot-scope="scope">{{getAccountTypeName(scope.row.accountType)}}</template>
+          <!-- <template slot-scope="scope">{{getAccountTypeName(scope.row.accountType)}}</template> -->
+          <template slot-scope="scope">{{$root.displayName('accountType',scope.row.accountType)}}</template>
         </el-table-column>
         <el-table-column prop="orgName" label="归属组织" width="300"></el-table-column>
         <el-table-column prop="employeeCode" label="员工工号" width="150"></el-table-column>
         <el-table-column prop="status" label="账号状态" width="120">
-          <template slot-scope="scope">{{getAccountStatusName(scope.row.status)}}</template>
+          <template slot-scope="scope">{{$root.displayName('accountStatus',scope.row.status)}}</template>
         </el-table-column>
         <el-table-column prop="employeeStatus" label="雇员状态">
-          <template slot-scope="scope">{{getEmployeeStatusName(scope.row.employeeStatus)}}</template>
+          <template
+            slot-scope="scope"
+          >{{$root.displayName('employeeStatus',scope.row.employeeStatus)}}</template>
         </el-table-column>
         <el-table-column prop="employmentDate" label="入职日期" width="120"></el-table-column>
         <el-table-column prop="leaveDate" label="离职日期" width="120"></el-table-column>
         <el-table-column prop="employeeType" label="人员类型">
-          <template slot-scope="scope">{{getEmployeeTypeName(scope.row.employeeType)}}</template>
+          <template slot-scope="scope">{{$root.displayName('employeeType',scope.row.employeeType)}}</template>
         </el-table-column>
         <el-table-column prop="workType" label="职能类别">
-          <template slot-scope="scope">{{getWorkTypeName(scope.row.workType)}}</template>
+          <template slot-scope="scope">{{$root.displayName('workType',scope.row.workType)}}</template>
         </el-table-column>
         <el-table-column prop="updateUserName" label="修改人"></el-table-column>
         <el-table-column prop="updateTime" label="修改时间" width="150"></el-table-column>
@@ -314,15 +317,7 @@ import {
   post_user_resetPassword__id,
 } from "../../api/system/index";
 import PaginationMixin from "../../mixins/pagination";
-
-import {
-  getListTool,
-  accountType,
-  accountStatus,
-  employeeStatus,
-  employeeType,
-  workType,
-} from "../../util/enums/dic";
+ 
 @Component({
   components: {
     UserAdd,
@@ -360,26 +355,7 @@ export default class UserList extends Vue {
     total: 0,
     list: [],
   };
-  get accountTypeOptions() {
-    let list = getListTool(accountType);
-    return list;
-  }
-  get accountStatusOptions() {
-    let list = getListTool(accountStatus);
-    return list;
-  }
-  get employeeStatusOptions() {
-    let list = getListTool(employeeStatus);
-    return list;
-  }
-  get employeeTypeOptions() {
-    let list = getListTool(employeeType);
-    return list;
-  }
-  get workTypeOptions() {
-    let list = getListTool(workType);
-    return list;
-  }
+
   employmentDateChange(dateArray: any) {
     console.log(dateArray);
     this.queryPageParameters.employmentDateStart = dateArray[0];
@@ -391,22 +367,6 @@ export default class UserList extends Vue {
     this.queryPageParameters.leaveDateEnd = dateArray[1];
   }
 
-  getAccountTypeName(key: string) {
-    return accountType[key];
-  }
-  getAccountStatusName(key: string) {
-    return accountStatus[key];
-  }
-  getEmployeeStatusName(key: string) {
-    return employeeStatus[key];
-  }
-
-  getEmployeeTypeName(key: string) {
-    return employeeType[key];
-  }
-  getWorkTypeName(key: string) {
-    return workType[key];
-  }
   reset() {
     this.queryPageParameters = {
       account: null,

@@ -4,7 +4,7 @@
  * @Author: zyc
  * @Date: 2020-07-09 14:08:24
  * @LastEditors: zyc
- * @LastEditTime: 2020-08-06 14:34:57
+ * @LastEditTime: 2020-08-13 10:28:39
 --> 
 <template>
   <el-dialog
@@ -43,7 +43,6 @@
 <script lang="ts">
 import { Component, Vue, Prop } from "vue-property-decorator";
 import { Form as ElForm } from "element-ui";
-import { DictionariesModule } from "../../store/modules/dictionaries";
 import { noTrim } from "ihome-common/util/base/form-ui";
 import { post_role_add, post_role_update } from "../../api/system/index";
 @Component({
@@ -56,10 +55,7 @@ export default class RoleAdd extends Vue {
   @Prop({ default: null }) data: any;
   dialogVisible = true;
 
-  get typeList() {
-    DictionariesModule.getModular();
-    return DictionariesModule.modular;
-  }
+   
   ruleForm: any = {
     id: null,
     name: "",

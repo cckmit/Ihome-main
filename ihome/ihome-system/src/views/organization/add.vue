@@ -4,7 +4,7 @@
  * @Author: zyc
  * @Date: 2020-07-14 11:30:07
  * @LastEditors: zyc
- * @LastEditTime: 2020-08-05 11:21:37
+ * @LastEditTime: 2020-08-13 10:27:40
 --> 
 <template>
   <el-dialog
@@ -40,7 +40,7 @@
               class="width--100"
             >
               <el-option
-                v-for="item in orgTypeOptions"
+                v-for="item in $root.displayList('orgType')"
                 :key="item.value"
                 :label="item.label"
                 :value="item.value"
@@ -73,7 +73,7 @@
               class="width--100"
             >
               <el-option
-                v-for="item in departmentTypeOptions"
+                v-for="item in $root.displayList('departmentType')"
                 :key="item.value"
                 :label="item.label"
                 :value="item.value"
@@ -91,7 +91,7 @@
           <el-form-item label="状态" prop="status">
             <el-select v-model="ruleForm.status" clearable placeholder="请选择" class="width--100">
               <el-option
-                v-for="item in statusOptions"
+                v-for="item in $root.displayList('orgStatus')"
                 :key="item.value"
                 :label="item.label"
                 :value="item.value"
@@ -111,7 +111,6 @@
 <script lang="ts">
 import { Component, Vue, Prop } from "vue-property-decorator";
 import { Form as ElForm } from "element-ui";
-import { DictionariesModule } from "../../store/modules/dictionaries";
 import { isUpperLetterValidato } from "ihome-common/util/base/form-ui";
 import { post_org_add, post_org_update } from "../../api/system/index";
 @Component({
@@ -124,15 +123,7 @@ export default class OrganizationAdd extends Vue {
   @Prop({ default: null }) data: any;
   dialogVisible = true;
 
-  get departmentTypeOptions() {
-    return DictionariesModule.departmentType;
-  }
-  get orgTypeOptions() {
-    return DictionariesModule.orgType;
-  }
-  get statusOptions() {
-    return DictionariesModule.orgStatus;
-  }
+ 
 
   ruleForm: any = {
     closeDate: "2099-12-31",
@@ -200,7 +191,7 @@ export default class OrganizationAdd extends Vue {
 
   created() {
     Object.assign(this.ruleForm, this.data);
-    console.log(this.ruleForm)
+    console.log(this.ruleForm);
   }
 }
 </script>

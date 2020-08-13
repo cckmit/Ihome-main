@@ -4,7 +4,7 @@
  * @Author: zyc
  * @Date: 2020-07-14 11:26:26
  * @LastEditors: zyc
- * @LastEditTime: 2020-08-12 14:22:45
+ * @LastEditTime: 2020-08-13 10:28:16
 --> 
 <template>
   <ih-page class="organization-list">
@@ -47,7 +47,7 @@
                     class="width--100"
                   >
                     <el-option
-                      v-for="item in departmentTypeOptions"
+                      v-for="item in $root.displayList('departmentType')"
                       :key="item.value"
                       :label="item.label"
                       :value="item.value"
@@ -66,7 +66,7 @@
                     class="width--100"
                   >
                     <el-option
-                      v-for="item in orgTypeOptions"
+                      v-for="item in $root.displayList('orgType')"
                       :key="item.value"
                       :label="item.label"
                       :value="item.value"
@@ -83,7 +83,7 @@
                     class="width--100"
                   >
                     <el-option
-                      v-for="item in statusOptions"
+                      v-for="item in $root.displayList('orgStatus')"
                       :key="item.value"
                       :label="item.label"
                       :value="item.value"
@@ -112,7 +112,7 @@
             <el-table-column prop="shortName" label="简称" width="90"></el-table-column>
             <el-table-column prop="level" label="层级" width="90"></el-table-column>
             <el-table-column label="组织类型" width="120">
-              <template slot-scope="scope">{{getOrgTypeName(scope.row.orgType)}}</template>
+              <template slot-scope="scope">{{$root.displayName('orgType',scope.row.orgType)}}</template>
             </el-table-column>
             <el-table-column prop="createUserName" label="创建人" width="90"></el-table-column>
             <el-table-column prop="createTime" label="创建时间" width="180"></el-table-column>
@@ -157,7 +157,6 @@
 <script lang="ts">
 import OrganizationAdd from "./add.vue";
 import OrganizationTree from "@/components/OrganizationTree.vue";
-import { DictionariesModule } from "../../store/modules/dictionaries";
 import { Component, Vue } from "vue-property-decorator";
 import { post_org_getList, post_org_delete__id } from "../../api/system/index";
 import PaginationMixin from "../../mixins/pagination";
@@ -206,16 +205,7 @@ export default class OrganizationList extends Vue {
     console.log("created");
   }
 
-  get departmentTypeOptions() {
-    return DictionariesModule.departmentType;
-  }
-  get orgTypeOptions() {
-    return DictionariesModule.orgType;
-  }
-
-  get statusOptions() {
-    return DictionariesModule.orgStatus;
-  }
+  
   get levelOptions() {
     const list = [0, 1, 2, 3, 4, 5, 6, 7];
     return list;
@@ -223,7 +213,6 @@ export default class OrganizationList extends Vue {
   async getListMixin() {
     console.log(this.queryPageParameters);
     this.resPageInfo = await post_org_getList(this.queryPageParameters);
-    
   }
 
   add(data: any, isedit: boolean) {
@@ -277,7 +266,6 @@ export default class OrganizationList extends Vue {
     }
   }
   selectOrganizationTree(item: any) {
-    
     this.queryPageParameters.parentId = item.id;
     this.leftItem = item;
     this.queryPageParameters.level = item.level + 1;
@@ -291,7 +279,6 @@ export default class OrganizationList extends Vue {
     }
   }
   editTree(node: any) {
-     
     console.log(node);
   }
 }

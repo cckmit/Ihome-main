@@ -4,7 +4,7 @@
  * @Author: zyc
  * @Date: 2020-07-01 10:32:40
  * @LastEditors: zyc
- * @LastEditTime: 2020-08-12 16:46:54
+ * @LastEditTime: 2020-08-13 10:05:54
 --> 
 
 <template>
@@ -27,7 +27,7 @@
           <el-form-item label="用户类型" prop="accountType">
             <el-select v-model="form.accountType" placeholder="请选择用户类型">
               <el-option
-                v-for="item in accountTypeOptions"
+                v-for="item in $root.displayList('accountType')"
                 :key="item.value"
                 :label="item.label"
                 :value="item.value"
@@ -97,7 +97,7 @@
           <el-form-item label="职能类别" :prop="getProp('workType')">
             <el-select v-model="form.workType" clearable placeholder="请选择职能类别">
               <el-option
-                v-for="item in workTypeOptions"
+                v-for="item in  $root.displayList('workType')"
                 :key="item.value"
                 :label="item.label"
                 :value="item.value"
@@ -110,7 +110,7 @@
           <el-form-item label="人员类型" :prop="getProp('employeeType')">
             <el-select v-model="form.employeeType" clearable placeholder="请选择人员类型">
               <el-option
-                v-for="item in employeeTypeOptions"
+                v-for="item in $root.displayList('employeeType')"
                 :key="item.value"
                 :label="item.label"
                 :value="item.value"
@@ -130,7 +130,7 @@
           <el-form-item label="雇员状态" :prop="getProp('employeeStatus')">
             <el-select v-model="form.employeeStatus" clearable placeholder="请选择雇员状态">
               <el-option
-                v-for="item in employeeStatusOptions"
+                v-for="item in $root.displayList('employeeStatus')"
                 :key="item.value"
                 :label="item.label"
                 :value="item.value"
@@ -150,14 +150,7 @@
 <script lang="ts">
 import { Component, Vue, Prop } from "vue-property-decorator";
 import { Form as ElForm } from "element-ui";
-import {
-  getListTool,
-  accountType,
-  accountStatus,
-  employeeStatus,
-  employeeType,
-  workType,
-} from "../../util/enums/dic";
+
 import SelectOrganizationTree from "@/components/SelectOrganizationTree.vue";
 import {
   post_user_add,
@@ -245,28 +238,6 @@ export default class UserAdd extends Vue {
       return null;
     }
   }
-  get accountTypeOptions() {
-    let list = getListTool(accountType);
-    return list;
-  }
-  get accountStatusOptions() {
-    let list = getListTool(accountStatus);
-    return list;
-  }
-  get employeeStatusOptions() {
-    let list = getListTool(employeeStatus);
-    return list;
-  }
-  get employeeTypeOptions() {
-    let list = getListTool(employeeType);
-    return list;
-  }
-  get workTypeOptions() {
-    let list = getListTool(workType);
-    return list;
-  }
-
-  valuedate = new Date().getTime();
 
   cancel() {
     this.$emit("cancel", false);

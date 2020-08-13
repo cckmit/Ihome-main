@@ -4,7 +4,7 @@
  * @Author: zyc
  * @Date: 2020-07-06 09:41:43
  * @LastEditors: zyc
- * @LastEditTime: 2020-08-12 14:38:24
+ * @LastEditTime: 2020-08-13 10:11:50
 --> 
 <template>
   <ih-page>
@@ -28,7 +28,7 @@
                   @change="search()"
                 >
                   <el-option
-                    v-for="item in options"
+                    v-for="item in $root.displayList('modular')"
                     :key="item.value"
                     :label="item.label"
                     :value="item.value"
@@ -59,7 +59,7 @@
 
             <el-table-column prop="type" label="类型" width="90">
               <template slot-scope="scope">
-                <span>{{scope.row.type|resourceType}}</span>
+                <span>{{$root.displayName('modular',scope.row.type)}}</span>
               </template>
             </el-table-column>
             <el-table-column prop="url" label="URL"></el-table-column>
@@ -140,7 +140,7 @@ import {
   post_resource_delete__id,
 } from "../../api/system/index";
 import BatchOperationRole from "./batch-operation-role.vue";
-import { getListTool, modular } from "../../util/enums/dic";
+ 
 @Component({
   components: {
     ResourcesAdd,
@@ -179,10 +179,6 @@ export default class ResourcesList extends Vue {
     // this.getList();
   }
 
-  get options() {
-    let list = getListTool(modular);
-    return list;
-  }
   async getListMixin() {
     this.resPageInfo = await post_resource_getList(this.queryPageParameters);
   }

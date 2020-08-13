@@ -4,7 +4,7 @@
  * @Author: zyc
  * @Date: 2020-07-08 14:23:16
  * @LastEditors: zyc
- * @LastEditTime: 2020-08-11 16:45:19
+ * @LastEditTime: 2020-08-13 09:55:08
 --> 
 <template>
   <div>
@@ -13,7 +13,10 @@
       <el-col :span="8">
         <el-row>
           <el-col :span="6" class="ih-info-item-left">用户类型</el-col>
-          <el-col :span="18" class="ih-info-item-right">{{getAccountTypeName(info.accountType)}}</el-col>
+          <el-col
+            :span="18"
+            class="ih-info-item-right"
+          >{{$root.displayName('accountType',info.accountType)}}</el-col>
         </el-row>
       </el-col>
       <el-col :span="8">
@@ -55,7 +58,10 @@
       <el-col :span="8">
         <el-row>
           <el-col :span="6" class="ih-info-item-left">雇员状态</el-col>
-          <el-col :span="18" class="ih-info-item-right">{{getAccountTypeName(info.employeeStatus)}}</el-col>
+          <el-col
+            :span="18"
+            class="ih-info-item-right"
+          >{{$root.displayName('employeeStatus',info.employeeStatus)}}</el-col>
         </el-row>
       </el-col>
       <el-col :span="8">
@@ -75,13 +81,19 @@
       <el-col :span="8">
         <el-row>
           <el-col :span="6" class="ih-info-item-left">职能类别</el-col>
-          <el-col :span="18" class="ih-info-item-right">{{getWorkTypeName(info.workType)}}</el-col>
+          <el-col
+            :span="18"
+            class="ih-info-item-right"
+          >{{$root.displayName('workType',info.workType)}}</el-col>
         </el-row>
       </el-col>
       <el-col :span="8">
         <el-row>
           <el-col :span="6" class="ih-info-item-left">人员类型</el-col>
-          <el-col :span="18" class="ih-info-item-right">{{getEmployeeTypeName(info.employeeType)}}</el-col>
+          <el-col
+            :span="18"
+            class="ih-info-item-right"
+          >{{$root.displayName('employeeType',info.employeeType)}}</el-col>
         </el-row>
       </el-col>
     </el-row>
@@ -105,7 +117,10 @@
       <el-col :span="8">
         <el-row>
           <el-col :span="6" class="ih-info-item-left">账号状态</el-col>
-          <el-col :span="18" class="ih-info-item-right">{{getAccountStatusName(info.status)}}</el-col>
+          <el-col
+            :span="18"
+            class="ih-info-item-right"
+          >{{ $root.displayName('accountStatus',info.status)}}</el-col>
         </el-row>
       </el-col>
       <el-col :span="8">
@@ -140,13 +155,6 @@
 <script lang="ts">
 import { Component, Vue } from "vue-property-decorator";
 import { get_user_get__id } from "../../../api/system/index";
-import {
-  accountType,
-  accountStatus,
-  employeeStatus,
-  employeeType,
-  workType,
-} from "../../../util/enums/dic";
 
 @Component({
   components: {},
@@ -158,22 +166,6 @@ export default class UserInfoDetails extends Vue {
     let id = this.$route.query.id;
     this.info = await get_user_get__id({ id: id });
     console.log(this.info);
-  }
-  getAccountTypeName(key: string) {
-    return accountType[key];
-  }
-  getAccountStatusName(key: string) {
-    return accountStatus[key];
-  }
-  getEmployeeStatusName(key: string) {
-    return employeeStatus[key];
-  }
-
-  getEmployeeTypeName(key: string) {
-    return employeeType[key];
-  }
-  getWorkTypeName(key: string) {
-    return workType[key];
   }
 }
 </script>

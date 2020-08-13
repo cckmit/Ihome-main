@@ -4,7 +4,7 @@
  * @Author: zyc
  * @Date: 2020-08-04 15:23:09
  * @LastEditors: zyc
- * @LastEditTime: 2020-08-12 14:11:59
+ * @LastEditTime: 2020-08-13 10:26:47
 --> 
 <template>
   <div class="OrganizationTree">
@@ -44,7 +44,6 @@
 <script lang="ts">
 import { Component, Vue, Prop, Watch } from "vue-property-decorator";
 import { get_org_getAll } from "../api/system/index";
-import { DictionariesModule } from "../store/modules/dictionaries";
 @Component({
   components: {},
 })
@@ -111,9 +110,7 @@ export default class OrganizationTree extends Vue {
   currentChange(item: any) {
     this.$emit("select", item);
   }
-  get options() {
-    return DictionariesModule.modular;
-  }
+  
   async created() {
     const res: any = await get_org_getAll({ onlyValid: false });
     this.list = res;

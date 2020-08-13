@@ -4,7 +4,7 @@
  * @Author: zyc
  * @Date: 2020-07-07 10:29:16
  * @LastEditors: zyc
- * @LastEditTime: 2020-08-06 11:24:40
+ * @LastEditTime: 2020-08-13 10:14:23
 --> 
  
 <template>
@@ -35,7 +35,7 @@
       <el-form-item label="类型" prop="type">
         <el-select v-model="ruleForm.type" placeholder="请选择类型">
           <el-option
-            v-for="(item,index) in typeList"
+            v-for="(item,index) in  $root.displayList('modular')"
             :key="index"
             :label="item.label"
             :value="item.value"
@@ -63,7 +63,6 @@
 <script lang="ts">
 import { Component, Vue, Prop } from "vue-property-decorator";
 import { Form as ElForm } from "element-ui";
-import { getListTool, modular } from "../../util/enums/dic";
 import { post_resource_update } from "../../api/system/index";
 import { isUpperLetterValidato } from "ihome-common/util/base/form-ui";
 @Component({
@@ -75,19 +74,6 @@ export default class ResourcesEdit extends Vue {
   }
   @Prop({ default: null }) data: any;
   dialogVisible = true;
-
-  get typeList() {
-    let list = getListTool(modular);
-    return list;
-  }
-
-  // ruleForm: any = {
-  //   type: DictionariesModule.defaultModular,
-  //   name: "",
-  //   parentCode: "M.NEWSALES.SYSTEM.USER",
-  //   code: "",
-  //   url: "",
-  // };
   ruleForm: any = {
     code: "",
     id: 0,

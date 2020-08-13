@@ -49,6 +49,7 @@ class Dictionaries extends VuexModule implements IDictionaries {
         { value: 'Button', label: '按钮' },
         { value: 'Element', label: '元素' },
     ];
+    
     public departmentType: Dic[] = [
         { value: "Business", label: "营业线" },
         { value: "Function", label: "职能线" },
