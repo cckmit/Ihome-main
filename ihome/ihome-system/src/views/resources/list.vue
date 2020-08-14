@@ -4,7 +4,7 @@
  * @Author: zyc
  * @Date: 2020-07-06 09:41:43
  * @LastEditors: zyc
- * @LastEditTime: 2020-08-13 10:11:50
+ * @LastEditTime: 2020-08-14 09:29:21
 --> 
 <template>
   <ih-page>
@@ -55,9 +55,26 @@
             <!-- <el-table-column type="selection" width="50"></el-table-column> -->
             <el-table-column fixed type="index" label="序号" width="50"></el-table-column>
             <el-table-column fixed prop="name" label="名称" width="180"></el-table-column>
-            <el-table-column prop="code" label="编码" width="180"></el-table-column>
+            <el-table-column prop="code" label="编码" width="180">
+              <!-- <template slot="header">
+                <span>编码</span>
+                <el-tooltip class="item" effect="light" content="编码" placement="top">
+                  <i class="el-icon-question"></i>
+                </el-tooltip>
+              </template> -->
+            </el-table-column>
 
             <el-table-column prop="type" label="类型" width="90">
+              <!-- <template slot="header">
+                <span>类型</span>
+                <el-tooltip class="item" effect="light" placement="top">
+                  <div slot="content">
+                    <p>第一行内容</p>
+                    <p>第二行内容</p>
+                  </div>
+                  <i class="el-icon-info"></i>
+                </el-tooltip>
+              </template> -->
               <template slot-scope="scope">
                 <span>{{$root.displayName('modular',scope.row.type)}}</span>
               </template>
@@ -140,7 +157,7 @@ import {
   post_resource_delete__id,
 } from "../../api/system/index";
 import BatchOperationRole from "./batch-operation-role.vue";
- 
+
 @Component({
   components: {
     ResourcesAdd,
