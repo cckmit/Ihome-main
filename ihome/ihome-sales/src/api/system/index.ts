@@ -1,12 +1,13 @@
 /* eslint-disable */
-//2020-8-11 14:05:48
+/* 此脚本是自动生成，请勿修改 */
+//2020-8-26 17:23:46
 import { request } from '@/api/base'
 /**添加岗位*/
-export async function post_job_add (d?: JobBaseVO) {
+export async function post_job_add (d?: any) {
 return await request.post< number,number> ('/system/job/add', d)
 }
 /**批量添加岗位角色权限*/
-export async function post_job_addJobRoleBatch (d?: JobRoleVO) {
+export async function post_job_addJobRoleBatch (d?: any) {
 return await request.post< boolean,boolean> ('/system/job/addJobRoleBatch', d)
 }
 /**删除岗位*/
@@ -22,23 +23,23 @@ export async function post_job_getAll (d?: any) {
 return await request.post< JobVO[],JobVO[]> ('/system/job/getAll', d)
 }
 /**查询岗位列表*/
-export async function post_job_getList (d?: JobQueryVO) {
+export async function post_job_getList (d?: any) {
 return await request.post< PageModel<JobVO>,PageModel<JobVO>> ('/system/job/getList', d)
 }
 /**查询拥有指定资源的岗位列表*/
-export async function post_job_getListByResourceId (d?: JobResourceQueryVO) {
+export async function post_job_getListByResourceId (d?: any) {
 return await request.post< PageModel<JobVO>,PageModel<JobVO>> ('/system/job/getListByResourceId', d)
 }
 /**查询拥有指定角色的岗位列表*/
-export async function post_job_getListByRoleId (d?: JobRoleQueryVO) {
+export async function post_job_getListByRoleId (d?: any) {
 return await request.post< PageModel<JobVO>,PageModel<JobVO>> ('/system/job/getListByRoleId', d)
 }
 /**修改岗位*/
-export async function post_job_update (d?: JobUpdateVO) {
+export async function post_job_update (d?: any) {
 return await request.post< number,number> ('/system/job/update', d)
 }
 /**添加组织*/
-export async function post_org_add (d?: OrgBaseVO) {
+export async function post_org_add (d?: any) {
 return await request.post< number,number> ('/system/org/add', d)
 }
 /**删除组织*/
@@ -54,11 +55,11 @@ export async function get_org_getAll (d?: any) {
 return await request.get<OrgVO[],OrgVO[]>('/system/org/getAll', { params: d })
 }
 /**查询组织列表*/
-export async function post_org_getList (d?: OrgQueryVO) {
+export async function post_org_getList (d?: any) {
 return await request.post< PageModel<OrgVO>,PageModel<OrgVO>> ('/system/org/getList', d)
 }
 /**修改组织*/
-export async function post_org_update (d?: OrgUpdateVO) {
+export async function post_org_update (d?: any) {
 return await request.post< number,number> ('/system/org/update', d)
 }
 /**批量添加资源*/
@@ -66,7 +67,7 @@ export async function post_resource_addBatch (d?: any) {
 return await request.post< boolean,boolean> ('/system/resource/addBatch', d)
 }
 /**批量将资源分配给角色*/
-export async function post_resource_addResourceToRoleBatch (d?: ResourceRoleVO) {
+export async function post_resource_addResourceToRoleBatch (d?: any) {
 return await request.post< boolean,boolean> ('/system/resource/addResourceToRoleBatch', d)
 }
 /**删除资源*/
@@ -82,35 +83,35 @@ export async function get_resource_getAll (d?: any) {
 return await request.get<ResourceMinVO[],ResourceMinVO[]>('/system/resource/getAll', { params: d })
 }
 /**查询角色拥有的资源*/
-export async function post_resource_getAllByRoleId (d?: ResourceRoleQueryVO) {
+export async function post_resource_getAllByRoleId (d?: any) {
 return await request.post< ResourceMinVO[],ResourceMinVO[]> ('/system/resource/getAllByRoleId', d)
 }
 /**查询用户拥有的资源*/
-export async function post_resource_getAllByUserId (d?: ResourceUserQueryVO) {
+export async function post_resource_getAllByUserId (d?: any) {
 return await request.post< ResourceMinVO[],ResourceMinVO[]> ('/system/resource/getAllByUserId', d)
 }
 /**查询资源列表*/
-export async function post_resource_getList (d?: ResourceQueryVO) {
+export async function post_resource_getList (d?: any) {
 return await request.post< PageModel<ResourceVO>,PageModel<ResourceVO>> ('/system/resource/getList', d)
 }
 /**修改资源*/
-export async function post_resource_update (d?: ResourceUpdateVO) {
+export async function post_resource_update (d?: any) {
 return await request.post< number,number> ('/system/resource/update', d)
 }
 /**添加角色*/
-export async function post_role_add (d?: RoleBaseVO) {
+export async function post_role_add (d?: any) {
 return await request.post< number,number> ('/system/role/add', d)
 }
 /**批量添加角色资源权限*/
-export async function post_role_addRoleResourceBatch (d?: RoleResourceVO) {
+export async function post_role_addRoleResourceBatch (d?: any) {
 return await request.post< boolean,boolean> ('/system/role/addRoleResourceBatch', d)
 }
 /**将角色批量分配给岗位*/
-export async function post_role_addRoleToJobBatch (d?: RoleJobVO) {
+export async function post_role_addRoleToJobBatch (d?: any) {
 return await request.post< boolean,boolean> ('/system/role/addRoleToJobBatch', d)
 }
-/**将角色批量��配给用户*/
-export async function post_role_addRoleToUserBatch (d?: RoleUserVO) {
+/**将角色批量分配给用户*/
+export async function post_role_addRoleToUserBatch (d?: any) {
 return await request.post< boolean,boolean> ('/system/role/addRoleToUserBatch', d)
 }
 /**删除角色*/
@@ -134,15 +135,15 @@ export async function post_role_getAllByUserId__userId (d?: any) {
 return await request.post< RoleVO[],RoleVO[]> ('/system/role/getAllByUserId/{userId}', d)
 }
 /**查询角色列表*/
-export async function post_role_getList (d?: RoleQueryVO) {
+export async function post_role_getList (d?: any) {
 return await request.post< PageModel<RoleVO>,PageModel<RoleVO>> ('/system/role/getList', d)
 }
 /**查询拥有指定资源的角色列表*/
-export async function post_role_getListByResourceId (d?: RoleResourceQueryVO) {
+export async function post_role_getListByResourceId (d?: any) {
 return await request.post< PageModel<RoleVO>,PageModel<RoleVO>> ('/system/role/getListByResourceId', d)
 }
 /**修改角色*/
-export async function post_role_update (d?: RoleUpdateVO) {
+export async function post_role_update (d?: any) {
 return await request.post< number,number> ('/system/role/update', d)
 }
 /**激活用户*/
@@ -150,19 +151,19 @@ export async function post_user_activate__id (d?: any) {
 return await request.post< boolean,boolean> ('/system/user/activate/{id}', d)
 }
 /**添加用户*/
-export async function post_user_add (d?: UserBaseVO) {
+export async function post_user_add (d?: any) {
 return await request.post< string,string> ('/system/user/add', d)
 }
 /**批量添加用户岗位及角色*/
-export async function post_user_addJobAndRoleBatch (d?: UserJobRoleVO) {
+export async function post_user_addJobAndRoleBatch (d?: any) {
 return await request.post< boolean,boolean> ('/system/user/addJobAndRoleBatch', d)
 }
 /**批量添加用户组织权限*/
-export async function post_user_addUserOrgBatch (d?: UserOrgVO) {
+export async function post_user_addUserOrgBatch (d?: any) {
 return await request.post< boolean,boolean> ('/system/user/addUserOrgBatch', d)
 }
 /**复制用户岗位角色及组织权限*/
-export async function post_user_copyJobAndRole (d?: UserCopyVO) {
+export async function post_user_copyJobAndRole (d?: any) {
 return await request.post< boolean,boolean> ('/system/user/copyJobAndRole', d)
 }
 /**删除用户*/
@@ -178,19 +179,19 @@ export async function post_user_getAllUserOrgByUserId__userId (d?: any) {
 return await request.post< OrgMinVO[],OrgMinVO[]> ('/system/user/getAllUserOrgByUserId/{userId}', d)
 }
 /**查询用户列表*/
-export async function post_user_getList (d?: UserQueryVO) {
+export async function post_user_getList (d?: any) {
 return await request.post< PageModel<UserVO>,PageModel<UserVO>> ('/system/user/getList', d)
 }
 /**查询拥有指定岗位的用户列表*/
-export async function post_user_getListByJobId (d?: UserJobQueryVO) {
+export async function post_user_getListByJobId (d?: any) {
 return await request.post< PageModel<UserVO>,PageModel<UserVO>> ('/system/user/getListByJobId', d)
 }
-/**查询拥有指定资源的用户列表*/
-export async function post_user_getListByResourceId (d?: UserResourceQueryVO) {
+/**���询拥有指定资源的用户列表*/
+export async function post_user_getListByResourceId (d?: any) {
 return await request.post< PageModel<UserVO>,PageModel<UserVO>> ('/system/user/getListByResourceId', d)
 }
 /**查询拥有指定角色的用户列表*/
-export async function post_user_getListByRoleId (d?: UserRoleQueryVO) {
+export async function post_user_getListByRoleId (d?: any) {
 return await request.post< PageModel<UserVO>,PageModel<UserVO>> ('/system/user/getListByRoleId', d)
 }
 /**锁定用户*/
@@ -202,7 +203,7 @@ export async function post_user_resetPassword__id (d?: any) {
 return await request.post< string,string> ('/system/user/resetPassword/{id}', d)
 }
 /**修改用户*/
-export async function post_user_update (d?: UserUpdateVO) {
+export async function post_user_update (d?: any) {
 return await request.post< number,number> ('/system/user/update', d)
 }
 //===============================================================================================
@@ -426,7 +427,7 @@ export interface ResourceBaseVO {
 code: string;
 /**(必填)名称*/
 name: string;
-/**(必填)父��源id*/
+/**(必填)父资源id*/
 parentId: number;
 /**(必填)类型(Root-资源根节点、System-系统、Service-服务模块、Menu-功能菜单、Api-API、Button-按钮、Element-元素)*/
 type: string;
@@ -574,7 +575,7 @@ pageSize: number;
 }
 /**RoleResourceQueryVO*/
 export interface RoleResourceQueryVO {
-/**关键字*/
+/**关��字*/
 key: string;
 /**(必填)当前页*/
 pageNum: number;
@@ -680,7 +681,7 @@ pageSize: number;
 }
 /**UserJobRoleVO*/
 export interface UserJobRoleVO {
-/**(必填)用户id*/
+/**(必填)��户id*/
 id: number;
 /**(必填)岗位id*/
 jobId: number;
@@ -798,7 +799,7 @@ createUserName: string;
 deleted: number;
 /**email*/
 email: string;
-/**员工工���*/
+/**员工工号*/
 employeeCode: string;
 /**雇员状态(On-在职、Leave-离职)*/
 employeeStatus: string;

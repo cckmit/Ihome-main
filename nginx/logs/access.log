@@ -2876,3 +2876,4 @@
 10.188.0.139 - - [26/Aug/2020:10:42:22 +0800] "GET /web-sales/static/js/index.2a0b2e57.js HTTP/1.1" 304 0 "http://10.188.0.139:2001/web-system/" "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/84.0.4147.135 Safari/537.36"
 10.188.0.139 - - [26/Aug/2020:10:42:24 +0800] "GET /web-system/ HTTP/1.1" 304 0 "-" "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/84.0.4147.135 Safari/537.36"
 10.188.0.139 - - [26/Aug/2020:10:42:25 +0800] "GET /favicon.ico HTTP/1.1" 200 16958 "http://10.188.0.139:2001/web-system/" "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/84.0.4147.135 Safari/537.36"
+10.188.0.139 - - [26/Aug/2020:10:44:39 +0800] "GET /static/fonts/element-icons.535877f5.woff HTTP/1.1" 304 0 "http://10.188.0.139:2001/web-sales/" "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/84.0.4147.135 Safari/537.36"

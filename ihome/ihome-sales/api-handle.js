@@ -4,7 +4,7 @@
  * @Author: zyc
  * @Date: 2020-07-31 15:21:06
  * @LastEditors: zyc
- * @LastEditTime: 2020-08-26 10:16:54
+ * @LastEditTime: 2020-08-26 17:25:56
  */
 let http = require('http');
 let fs = require("fs");
@@ -200,10 +200,12 @@ function handleBody(body) {
 
         }
     });
-
-
-    fs.renameSync(outSrc, backupsSrc);
-    console.log(`脚本备份成功：路径${backupsSrc}`);
+    try {
+        fs.renameSync(outSrc, backupsSrc);
+        console.log(`脚本备份成功：路径${backupsSrc}`);
+    } catch (error) {
+        
+    }
 
     fs.writeFile(outSrc, text, function (err) {
         if (err) {
@@ -228,6 +230,19 @@ function handleSwagger(prefix) {
     };
     //生成文件路径
     outSrc = `./src/api/${prefix}/index.ts`;
+    let path_prefix = `./src/api/${prefix}/`;
+    fs.access(path_prefix, (err) => {
+        if (err) {
+            fs.mkdirSync(path_prefix);
+        }
+    })
+    let path_way = `./src/api/${prefix}/backups/`
+    fs.access(path_way, (err) => {
+        if (err) {
+            fs.mkdirSync(path_way);
+        }
+    })
+
     backupsSrc = `./src/api/${prefix}/backups/${new Date().toLocaleString()}.ts`;
     backupsSrc = backupsSrc.replace(' ', 'T')
     backupsSrc = backupsSrc.replace(':', '-')
@@ -252,11 +267,9 @@ function handleSwagger(prefix) {
 }
 
 function replaceUrlParameter(str) {
-    // var str = '/{id}/{name}';
-    // var data = { id: "id1", name: "张大大" }
-
+    
     let rstr = str.replace(/{[^}]*}/g, function (me) {
-        // console.log(arguments);
+        
         return "_" + me.replace("{", "").replace("}", "")
     });
     return rstr;
