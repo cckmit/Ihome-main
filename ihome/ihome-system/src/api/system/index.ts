@@ -1,6 +1,6 @@
 /* eslint-disable */
-/* 此脚本是自动生成，请勿修改 */
-//2020-8-26 17:24:51
+/* 此脚本由swagger-ui的api-docs自动生成，请勿修改 */
+//2020-8-26 17:45:48
 import { request } from '@/api/base'
 /**添加岗位*/
 export async function post_job_add (d?: any) {
@@ -86,7 +86,7 @@ return await request.get<ResourceMinVO[],ResourceMinVO[]>('/system/resource/getA
 export async function post_resource_getAllByRoleId (d?: any) {
 return await request.post< ResourceMinVO[],ResourceMinVO[]> ('/system/resource/getAllByRoleId', d)
 }
-/**查询用户拥有的资源*/
+/**��询用户拥有的资源*/
 export async function post_resource_getAllByUserId (d?: any) {
 return await request.post< ResourceMinVO[],ResourceMinVO[]> ('/system/resource/getAllByUserId', d)
 }
@@ -787,7 +787,7 @@ workType: string;
 export interface UserVO {
 /**登录账号*/
 account: string;
-/**用户类型(Ihome-爱家员工、Juheng-居恒员工、Poly-保��兼职、Channel-渠道用户、Customer-个人客户、Outsourcing-劳务派遣)*/
+/**用户类型(Ihome-爱家员工、Juheng-居恒员工、Poly-保顾兼职、Channel-渠道用户、Customer-个人客户、Outsourcing-劳务派遣)*/
 accountType: string;
 /**创建时间(yyyy-MM-dd HH:mm:ss)*/
 createTime: string;

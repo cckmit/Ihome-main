@@ -4,28 +4,68 @@
  * @Author: zyc
  * @Date: 2020-07-31 15:21:06
  * @LastEditors: zyc
- * @LastEditTime: 2020-08-26 17:25:56
+ * @LastEditTime: 2020-08-26 17:44:38
  */
 let http = require('http');
 let fs = require("fs");
 let name;
 let outSrc;
 let backupsSrc;
+let text = '';
 
-function replaceAll(str, FindText, RepText) {
-    let regExp = new RegExp(FindText, "g");
-    return str.replace(regExp, RepText);
+function handleSwagger(prefix) {
+    name = prefix;
+
+    //swagger配置数据
+    let options = {
+        host: '10.188.0.109',
+        port: '8610',
+        path: `/${prefix}/v2/api-docs`
+    };
+    //生成文件路径
+    outSrc = `./src/api/${prefix}/index.ts`;
+    let path_prefix = `./src/api/${prefix}/`;
+    fs.access(path_prefix, (err) => {
+        if (err) {
+            fs.mkdirSync(path_prefix);
+        }
+    })
+    let path_way = `./src/api/${prefix}/backups/`
+    fs.access(path_way, (err) => {
+        if (err) {
+            fs.mkdirSync(path_way);
+        }
+    })
+
+    backupsSrc = `./src/api/${prefix}/backups/${new Date().toLocaleString()}.ts`;
+    backupsSrc = backupsSrc.replace(' ', 'T')
+    backupsSrc = backupsSrc.replace(':', '-')
+    backupsSrc = backupsSrc.replace(':', '-')
+    // 处理响应的回调函数
+    let callback = function (response) {
+        // 不断更新数据
+        let body = '';
+        response.on('data', function (data) {
+            body += data;
+        });
+
+        response.on('end', function () {
+            // 数据接收完成
+            let data = JSON.parse(body)
+            handleBody(data)
+        });
+    }
+    // 向服务端发送请求
+    let req = http.request(options, callback);
+    req.end();
 }
-let text = ''
 function handleBody(body) {
 
     writeLine('/* eslint-disable */');
-    writeLine('/* 此脚本是自动生成，请勿修改 */');
+    writeLine('/* 此脚本由swagger-ui的api-docs自动生成，请勿修改 */');
     writeLine('//' + new Date().toLocaleString())
-
     writeLine("import { request } from '@/api/base'")
     const { paths, definitions } = body;
-
 
     let count = 0;
     let countGet = 0;
@@ -69,8 +109,6 @@ function handleBody(body) {
                 }
             }
             writeLine(`/**${paths[k]["get"].summary}*/`)
-
-            // writeLine(`export async function ${paths[k]["get"].operationId} (d?: ${res}) {`)
             let className = replaceAll('get' + k, '/', '_')
             className = replaceUrlParameter(className)
             if (!res) {
@@ -81,7 +119,7 @@ function handleBody(body) {
             writeLine(`return await request.get<${originalRef},${originalRef}>('${body.basePath}${k}', { params: d })`)
             writeLine(`}`)
 
-        } else {
+        } else if(paths[k]["post"]){
             //post
             countPost += 1;
             let originalRef =
@@ -129,8 +167,11 @@ function handleBody(body) {
             writeLine(`return await request.post< ${originalRef},${originalRef}> ('${body.basePath}${k}', d)`)
             writeLine(`}`)
 
+        }else{
+            console.log('\033[41;30m 暂只支持get,post;其他不支持，请检查\033[0m')
         }
     });
+     
     console.log(`一共有${count}个接口;get=${countGet};post=${countPost};其他=${count - countGet - countPost}`)
 
     writeLine('//===============================================================================================')
@@ -219,52 +260,6 @@ function writeLine(line) {
     text += line + '\n';
 }
 
-function handleSwagger(prefix) {
-    name = prefix;
-
-    //swagger配置数据
-    let options = {
-        host: '10.188.0.109',
-        port: '8610',
-        path: `/${prefix}/v2/api-docs`
-    };
-    //生成文件路径
-    outSrc = `./src/api/${prefix}/index.ts`;
-    let path_prefix = `./src/api/${prefix}/`;
-    fs.access(path_prefix, (err) => {
-        if (err) {
-            fs.mkdirSync(path_prefix);
-        }
-    })
-    let path_way = `./src/api/${prefix}/backups/`
-    fs.access(path_way, (err) => {
-        if (err) {
-            fs.mkdirSync(path_way);
-        }
-    })
-
-    backupsSrc = `./src/api/${prefix}/backups/${new Date().toLocaleString()}.ts`;
-    backupsSrc = backupsSrc.replace(' ', 'T')
-    backupsSrc = backupsSrc.replace(':', '-')
-    backupsSrc = backupsSrc.replace(':', '-')
-    // 处理响应的回调函数
-    let callback = function (response) {
-        // 不断更新数据
-        let body = '';
-        response.on('data', function (data) {
-            body += data;
-        });
-
-        response.on('end', function () {
-            // 数据接收完成
-            let data = JSON.parse(body)
-            handleBody(data)
-        });
-    }
-    // 向服务端发送请求
-    let req = http.request(options, callback);
-    req.end();
-}
 
 function replaceUrlParameter(str) {
     
@@ -273,6 +268,11 @@ function replaceUrlParameter(str) {
         return "_" + me.replace("{", "").replace("}", "")
     });
     return rstr;
+}
+
+function replaceAll(str, FindText, RepText) {
+    let regExp = new RegExp(FindText, "g");
+    return str.replace(regExp, RepText);
 }
 
 module.exports = handleSwagger;

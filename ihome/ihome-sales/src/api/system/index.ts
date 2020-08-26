@@ -1,6 +1,6 @@
 /* eslint-disable */
 /* 此脚本是自动生成，请勿修改 */
-//2020-8-26 17:23:46
+//2020-8-26 17:42:14
 import { request } from '@/api/base'
 /**添加岗位*/
 export async function post_job_add (d?: any) {
@@ -86,7 +86,7 @@ return await request.get<ResourceMinVO[],ResourceMinVO[]>('/system/resource/getA
 export async function post_resource_getAllByRoleId (d?: any) {
 return await request.post< ResourceMinVO[],ResourceMinVO[]> ('/system/resource/getAllByRoleId', d)
 }
-/**查询用户拥有的资源*/
+/**��询用户拥有的资源*/
 export async function post_resource_getAllByUserId (d?: any) {
 return await request.post< ResourceMinVO[],ResourceMinVO[]> ('/system/resource/getAllByUserId', d)
 }
@@ -186,7 +186,7 @@ return await request.post< PageModel<UserVO>,PageModel<UserVO>> ('/system/user/g
 export async function post_user_getListByJobId (d?: any) {
 return await request.post< PageModel<UserVO>,PageModel<UserVO>> ('/system/user/getListByJobId', d)
 }
-/**���询拥有指定资源的用户列表*/
+/**查询拥有指定资源的用户列表*/
 export async function post_user_getListByResourceId (d?: any) {
 return await request.post< PageModel<UserVO>,PageModel<UserVO>> ('/system/user/getListByResourceId', d)
 }
@@ -514,7 +514,7 @@ deleted: number;
 id: number;
 /**名称*/
 name: string;
-/**父资源编码*/
+/**���资源编码*/
 parentCode: string;
 /**父资源id*/
 parentId: number;
@@ -575,7 +575,7 @@ pageSize: number;
 }
 /**RoleResourceQueryVO*/
 export interface RoleResourceQueryVO {
-/**关��字*/
+/**关键字*/
 key: string;
 /**(必填)当前页*/
 pageNum: number;
@@ -681,7 +681,7 @@ pageSize: number;
 }
 /**UserJobRoleVO*/
 export interface UserJobRoleVO {
-/**(必填)��户id*/
+/**(必填)用户id*/
 id: number;
 /**(必填)岗位id*/
 jobId: number;
