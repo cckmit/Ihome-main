@@ -92,9 +92,13 @@
     line-height: 21px;
   }
   .ih-info-title {
-    font-weight: 600;
     text-align: left;
     margin-left: 20px;
+    border-left: 5px solid #F90;
+    padding-left: 5px;
+    color: #f90;
+    font-weight: 500;
+    line-height: 14px;
   }
  
   .ih-form .el-form-item__content {

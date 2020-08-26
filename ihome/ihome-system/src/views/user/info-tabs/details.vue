@@ -4,15 +4,15 @@
  * @Author: zyc
  * @Date: 2020-07-08 14:23:16
  * @LastEditors: zyc
- * @LastEditTime: 2020-08-13 09:55:08
+ * @LastEditTime: 2020-08-26 10:53:23
 --> 
 <template>
   <div>
-    <p class="ih-info-title">账号信息</p>
+    <p class="ih-info-title ">账号信息</p>
     <el-row class="ih-info-line">
       <el-col :span="8">
         <el-row>
-          <el-col :span="6" class="ih-info-item-left">用户类型</el-col>
+          <el-col :span="6" class="ih-info-item-left ">用户类型</el-col>
           <el-col
             :span="18"
             class="ih-info-item-right"
@@ -187,4 +187,5 @@ export default class UserInfoDetails extends Vue {
   text-align: left;
   margin-left: 20px;
 }
+ 
 </style>
