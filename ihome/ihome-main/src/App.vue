@@ -4,7 +4,7 @@
  * @Author: zyc
  * @Date: 2020-06-22 11:46:23
  * @LastEditors: zyc
- * @LastEditTime: 2020-08-13 15:49:11
+ * @LastEditTime: 2020-08-26 08:58:01
 --> 
 <template>
   <div>
@@ -72,6 +72,7 @@
             <!-- <div id="root-ihome-web-cli" class="app-view-box" v-html="content"></div> -->
             <div id="root-ihome-web-system" class="app-view-box" v-html="content"></div>
             <div id="root-ihome-web-common" class="app-view-box" v-html="content"></div>
+            <div id="root-ihome-web-sales" class="app-view-box" v-html="content"></div>
           </el-main>
         </div>
       </el-container>

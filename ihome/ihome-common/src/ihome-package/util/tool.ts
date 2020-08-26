@@ -4,7 +4,7 @@
  * @Author: zyc
  * @Date: 2020-06-09 16:38:00
  * @LastEditors: zyc
- * @LastEditTime: 2020-08-05 11:20:12
+ * @LastEditTime: 2020-08-26 10:28:44
  */
 export interface ToolInterface {
     /**深度拷贝
@@ -69,9 +69,9 @@ export class Tool implements ToolInterface {
             let month: any = today.getMonth() + 1;
             month = month < 10 ? '0' + month : month;
             let day = today.getDate() < 10 ? '0' + today.getDate() : today.getDate();
-            let hours = today.getHours() < 10 ? '0' + today.getHours() : today.getHours();
-            let mins = today.getMinutes() < 10 ? '0' + today.getMinutes() : today.getMinutes();
-            let secs = today.getSeconds() < 10 ? '0' + today.getSeconds() : today.getSeconds();
+            // let hours = today.getHours() < 10 ? '0' + today.getHours() : today.getHours();
+            // let mins = today.getMinutes() < 10 ? '0' + today.getMinutes() : today.getMinutes();
+            // let secs = today.getSeconds() < 10 ? '0' + today.getSeconds() : today.getSeconds();
             let result = `${year}-${month}-${day}`
             return result;
 

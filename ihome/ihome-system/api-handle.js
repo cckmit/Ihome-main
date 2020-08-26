@@ -4,7 +4,7 @@
  * @Author: zyc
  * @Date: 2020-07-31 15:21:06
  * @LastEditors: zyc
- * @LastEditTime: 2020-08-12 17:27:09
+ * @LastEditTime: 2020-08-26 10:16:31
  */
 let http = require('http');
 let fs = require("fs");
@@ -20,6 +20,7 @@ let text = ''
 function handleBody(body) {
 
     writeLine('/* eslint-disable */');
+    writeLine('/* 此脚本是自动生成，请勿修改 */');
     writeLine('//' + new Date().toLocaleString())
 
     writeLine("import { request } from '@/api/base'")

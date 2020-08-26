@@ -1,11 +1,3 @@
-/*
- * @Descripttion: 
- * @version: 
- * @Author: zyc
- * @Date: 2020-08-05 11:51:43
- * @LastEditors: zyc
- * @LastEditTime: 2020-08-10 09:59:34
- */
 /**组织类型
  * @param {type} 
  * @return {type} 

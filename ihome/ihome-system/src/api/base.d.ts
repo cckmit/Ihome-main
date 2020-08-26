@@ -4,26 +4,7 @@
  * @Author: zyc
  * @Date: 2020-07-08 10:41:39
  * @LastEditors: zyc
- * @LastEditTime: 2020-07-24 18:26:38
+ * @LastEditTime: 2020-08-26 10:09:44
  */
-
-/**返回结果定义 */
-export interface IRes<T> {
-  /**状态码 */
-  code: number;
-  /**返回数据 */
-  result: T,
-  /**信息 */
-  msg: string,
-  /**异常 */
-  ex: any
-}
-
-/**列表返回数据模型*/
-export interface IPageInfo<T> {
-  /**总数 */
-  total: number;
-  /**列表数据 */
-  list: T[]
-}
+export {IRes,IPageInfo,IPageBase} from 'ihome-common/util/api/base.d'
 

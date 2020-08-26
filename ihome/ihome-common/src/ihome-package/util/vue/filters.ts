@@ -4,9 +4,10 @@
  * @Author: zyc
  * @Date: 2020-07-16 08:55:55
  * @LastEditors: zyc
- * @LastEditTime: 2020-08-12 14:06:35
+ * @LastEditTime: 2020-08-26 10:28:14
  */
 export default (Vue: any, vm: any) => {
+    (vm)
     Vue.filter('sex', function (value: any) {
         let result = '';
         if (value == 1) {

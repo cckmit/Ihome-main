@@ -4,14 +4,14 @@
  * @Author: zyc
  * @Date: 2020-07-07 09:25:17
  * @LastEditors: zyc
- * @LastEditTime: 2020-08-13 09:37:43
+ * @LastEditTime: 2020-08-26 10:29:32
  */
 import '../util/base/extend'
 import Vue from 'vue'
 import App from './App.vue'
 import { router } from '@/router'
 import store from '@/store'
-import * as dic from '@/util/enums/dic'
+import * as dic from '../util/enums/dic'
 let $dic: any = dic;
 // import '@/public-path'
 if ((<any>window).__POWERED_BY_QIANKUN__) {
@@ -129,6 +129,7 @@ if (!(<any>window).__POWERED_BY_QIANKUN__) {
 // };
 
 export async function bootstrap(data: any) {
+  (data)
   // console.log('vue app bootstraped', data);
 }
 
@@ -145,6 +146,8 @@ export async function mount(props: any) {
   })
 
   props.onGlobalStateChange((state: any, prev: any) => {
+    (state);
+    (prev);
     // state: 变更后的状态; prev 变更前的状态
     // console.log(state, prev);
   });

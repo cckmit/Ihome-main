@@ -4,7 +4,7 @@
  * @Author: zyc
  * @Date: 2020-06-24 09:47:33
  * @LastEditors: zyc
- * @LastEditTime: 2020-08-13 15:49:51
+ * @LastEditTime: 2020-08-26 09:01:02
  */
 import { IRes } from "./users.d";
 import request from '@/utils/http';
@@ -104,6 +104,20 @@ export function allMenu<T>() {
             title: "组织架构",
             icon: null,
             path: "/web-system/organization/list",
+        },
+        {
+            id: 101,
+            parentId: 0,
+            title: "新房系统业务模块",
+            icon: "el-icon-setting",
+            path: null,
+        },
+        {
+            id: 102,
+            parentId: 101,
+            title: "首页导航",
+            icon: null,
+            path: "/web-sales/",
         },
     ];
     return menuList;
