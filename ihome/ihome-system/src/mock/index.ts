@@ -4,11 +4,11 @@
  * @Author: zyc
  * @Date: 2020-06-23 17:07:08
  * @LastEditors: zyc
- * @LastEditTime: 2020-08-01 09:55:18
+ * @LastEditTime: 2020-08-27 11:33:57
  */
 const Mock = require('mockjs');
 Mock.setup({
-    timeout: 200
+    timeout: 2000
 })
 function responseSuccess(result: any) {
     return {

@@ -4,7 +4,7 @@
  * @Author: zyc
  * @Date: 2020-07-07 09:25:17
  * @LastEditors: zyc
- * @LastEditTime: 2020-08-26 10:29:32
+ * @LastEditTime: 2020-08-27 11:07:53
  */
 import '../util/base/extend'
 import Vue from 'vue'
@@ -42,10 +42,10 @@ import filters from '../util/vue/filters'
 let instance: any = null;
 
 if (process.env.NODE_ENV !== 'production') {
-  // if (process.env.VUE_APP_FLAG === 'mock') {
-  //   require('@/mock/index')
-  // }
-  require('@/mock/index')
+  if (process.env.VUE_APP_FLAG === 'mock') {
+    require('@/mock/index')
+  }
+  // require('@/mock/index')
 }
 
 function render() {

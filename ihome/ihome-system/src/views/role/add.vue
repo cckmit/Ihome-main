@@ -4,7 +4,7 @@
  * @Author: zyc
  * @Date: 2020-07-09 14:08:24
  * @LastEditors: zyc
- * @LastEditTime: 2020-08-13 10:28:39
+ * @LastEditTime: 2020-08-27 15:05:53
 --> 
 <template>
   <el-dialog
@@ -45,6 +45,7 @@ import { Component, Vue, Prop } from "vue-property-decorator";
 import { Form as ElForm } from "element-ui";
 import { noTrim } from "ihome-common/util/base/form-ui";
 import { post_role_add, post_role_update } from "../../api/system/index";
+import { NoRepeatHttp } from "ihome-common/util/aop/no-repeat-http";
 @Component({
   components: {},
 })
@@ -55,7 +56,6 @@ export default class RoleAdd extends Vue {
   @Prop({ default: null }) data: any;
   dialogVisible = true;
 
-   
   ruleForm: any = {
     id: null,
     name: "",
@@ -78,23 +78,27 @@ export default class RoleAdd extends Vue {
   }
 
   async finish(formName: any) {
-    (this.$refs[formName] as ElForm).validate(async (valid) => {
-      if (valid) {
-        console.log(this.ruleForm);
-        if (this.ruleForm.id > 0) {
-          const res = await post_role_update(this.ruleForm);
-          this.$message.success("修改成功");
-          this.$emit("finish", res);
-        } else {
-          const res = await post_role_add(this.ruleForm);
-          this.$message.success("添加成功");
-          this.$emit("finish", res);
-        }
+    (this.$refs[formName] as ElForm).validate(this.submit);
+  }
+
+  
+  @NoRepeatHttp()
+  async submit(valid: any) {
+    if (valid) {
+      console.log(this.ruleForm);
+      if (this.ruleForm.id > 0) {
+        const res = await post_role_update(this.ruleForm);
+        this.$message.success("修改成功");
+        this.$emit("finish", res);
       } else {
-        console.log("error submit!!");
-        return false;
+        const res = await post_role_add(this.ruleForm);
+        this.$message.success("添加成功");
+        this.$emit("finish", res);
       }
-    });
+    } else {
+      console.log("error submit!!");
+      return false;
+    }
   }
   resetForm(formName: any) {
     (this.$refs[formName] as ElForm).resetFields();
