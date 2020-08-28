@@ -4,7 +4,7 @@
  * @Author: zyc
  * @Date: 2020-07-07 10:29:16
  * @LastEditors: zyc
- * @LastEditTime: 2020-08-13 10:14:23
+ * @LastEditTime: 2020-08-28 10:03:14
 --> 
  
 <template>
@@ -65,6 +65,7 @@ import { Component, Vue, Prop } from "vue-property-decorator";
 import { Form as ElForm } from "element-ui";
 import { post_resource_update } from "../../api/system/index";
 import { isUpperLetterValidato } from "ihome-common/util/base/form-ui";
+import { NoRepeatHttp } from "ihome-common/util/aop/no-repeat-http";
 @Component({
   components: {},
 })
@@ -116,28 +117,30 @@ export default class ResourcesEdit extends Vue {
   }
 
   async finish(formName: any) {
-    (this.$refs[formName] as ElForm).validate(async (valid) => {
-      if (valid) {
-        console.log(this.ruleForm);
-        let p = {
-          code: this.ruleForm.code,
-          id: this.ruleForm.id,
-          name: this.ruleForm.name,
-          parentId: this.ruleForm.parentId,
-          type: this.ruleForm.type,
-          url: this.ruleForm.url,
-        };
-        await post_resource_update(p);
-        this.$message({
-          type: "success",
-          message: "修改成功!",
-        });
-        this.$emit("finish", {});
-      } else {
-        console.log("error submit!!");
-        return false;
-      }
-    });
+    (this.$refs[formName] as ElForm).validate(this.submit);
+  }
+  @NoRepeatHttp()
+  async submit(valid: any) {
+    if (valid) {
+      console.log(this.ruleForm);
+      let p = {
+        code: this.ruleForm.code,
+        id: this.ruleForm.id,
+        name: this.ruleForm.name,
+        parentId: this.ruleForm.parentId,
+        type: this.ruleForm.type,
+        url: this.ruleForm.url,
+      };
+      await post_resource_update(p);
+      this.$message({
+        type: "success",
+        message: "修改成功!",
+      });
+      this.$emit("finish", {});
+    } else {
+      console.log("error submit!!");
+      return false;
+    }
   }
   resetForm(formName: any) {
     (this.$refs[formName] as ElForm).resetFields();

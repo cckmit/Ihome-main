@@ -4,7 +4,7 @@
  * @Author: zyc
  * @Date: 2020-07-06 17:16:31
  * @LastEditors: zyc
- * @LastEditTime: 2020-08-13 10:12:38
+ * @LastEditTime: 2020-08-28 09:59:13
 --> 
 <template>
   <el-dialog
@@ -87,6 +87,7 @@ import { Component, Vue, Prop } from "vue-property-decorator";
 // import { DictionariesModule } from "../../store/modules/dictionaries";
 import { post_resource_addBatch } from "../../api/system/index";
 import { isUpperLetterValidato } from "ihome-common/util/base/form-ui";
+import { NoRepeatHttp } from "ihome-common/util/aop/no-repeat-http";
 @Component({
   components: {},
 })
@@ -160,21 +161,22 @@ export default class ResourcesAdd extends Vue {
   }
   async finish() {
     console.log(this.model);
-    (this.$refs["form"] as any).validate(async (valid: any, model: any) => {
-      console.log(valid);
-      console.log(model);
-      if (valid) {
-        const res = await post_resource_addBatch(this.model.tableData);
-        console.log(res);
-        this.$message({
-          message: "添加成功",
-          type: "success",
-        });
-        this.$emit("finish", res);
-      }
-    });
+    (this.$refs["form"] as any).validate(this.submit);
   }
-
+  @NoRepeatHttp()
+  async submit(valid: any, model: any) {
+    console.log(valid);
+    console.log(model);
+    if (valid) {
+      const res = await post_resource_addBatch(this.model.tableData);
+      console.log(res);
+      this.$message({
+        message: "添加成功",
+        type: "success",
+      });
+      this.$emit("finish", res);
+    }
+  }
   reduceLine(item: any) {
     console.log(item);
     this.model.tableData.splice(item.$index, 1);

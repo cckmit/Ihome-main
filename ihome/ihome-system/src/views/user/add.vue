@@ -4,7 +4,7 @@
  * @Author: zyc
  * @Date: 2020-07-01 10:32:40
  * @LastEditors: zyc
- * @LastEditTime: 2020-08-13 10:05:54
+ * @LastEditTime: 2020-08-28 09:56:34
 --> 
 
 <template>
@@ -152,6 +152,8 @@ import { Component, Vue, Prop } from "vue-property-decorator";
 import { Form as ElForm } from "element-ui";
 
 import SelectOrganizationTree from "@/components/SelectOrganizationTree.vue";
+
+import { NoRepeatHttp } from "ihome-common/util/aop/no-repeat-http";
 import {
   post_user_add,
   post_user_update,
@@ -243,24 +245,26 @@ export default class UserAdd extends Vue {
     this.$emit("cancel", false);
   }
   finish() {
-    (this.$refs["form"] as ElForm).validate(async (valid) => {
-      if (valid) {
-        console.log(this.form);
-        if (this.form.id > 0) {
-          const res = await post_user_update(this.form);
-          this.$message.success("修改成功");
-          this.$emit("finish", res);
-        } else {
-          const res = await post_user_add(this.form);
-
-          this.$alert(res, "用户新增成功，密码是：");
-          this.$emit("finish", res);
-        }
+    (this.$refs["form"] as ElForm).validate(this.submit);
+  }
+  @NoRepeatHttp()
+  async submit(valid: any) {
+    if (valid) {
+      console.log(this.form);
+      if (this.form.id > 0) {
+        const res = await post_user_update(this.form);
+        this.$message.success("修改成功");
+        this.$emit("finish", res);
       } else {
-        console.log("error submit!!");
-        return false;
+        const res = await post_user_add(this.form);
+
+        this.$alert(res, "用户新增成功，密码是：");
+        this.$emit("finish", res);
       }
-    });
+    } else {
+      console.log("error submit!!");
+      return false;
+    }
   }
   async created() {
     console.log(this.data);
