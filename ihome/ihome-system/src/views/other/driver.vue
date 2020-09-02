@@ -4,7 +4,7 @@
  * @Author: zyc
  * @Date: 2020-09-02 16:41:21
  * @LastEditors: zyc
- * @LastEditTime: 2020-09-02 17:04:57
+ * @LastEditTime: 2020-09-02 17:44:03
 -->
 <template>
   <el-form
@@ -142,21 +142,29 @@ export default class DriverPage extends Vue {
   //   mounted() {}
   guide() {
     this.driver = new Driver({
-      className: "scoped-class", // className to wrap driver.js popover
-      animate: true, // Animate while changing highlighted element
-      opacity: 0.75, // Background opacity (0 means only popovers and without overlay)
-      padding: 10, // Distance of element from around the edges
-      allowClose: true, // Whether clicking on overlay should close or not
+      className: "scoped-class", // 包装类名
+      animate: true, // 动画
+      opacity: 0.75, // 遮罩层不透明度（0表示仅弹出且不覆盖）
+      padding: 10, // 边距
+      allowClose: true, // 点击遮罩层是否关闭
       overlayClickNext: false, // Should it move to next step on overlay click
-      doneBtnText: "完成", // Text on the final button
-      closeBtnText: "关闭", // Text on the close button for this step
-      nextBtnText: "下一步", // Next button text for this step
-      prevBtnText: "上一步", // Previous button text for this step
-      // Called when moving to next step on any step
+      doneBtnText: "完成", // 最后一个按钮上的文本
+      closeBtnText: "关闭", // “关闭”按钮上的文本
+      nextBtnText: "下一步", // “下一步”按钮上的文本
+      prevBtnText: "上一步", // “上一步”按钮上的文本
+      showButtons: true, // 不显示控制按钮（弹窗底部）
+      keyboardControl: true, // 允许通过键盘进行控制（esc以关闭，箭头键移动）
+      scrollIntoViewOptions: {}, // We use `scrollIntoView()` when possible, pass here the options for it if you want any
+      // onHighlightStarted: (Element) {}, // 在元素即将突出显示时调用
+      // onHighlighted: (Element) {}, // 当元素完全突出显示时调用
+      // onDeselected: (Element) {}, // 取消选择元素时调用
+      // onReset: (Element) {},        // 覆盖即将清除时调用
+      // onNext: (Element) => {},      // 在任何步骤转到下一步时调用
+      // onPrevious: (Element) => {},  // 在任何步骤转到上一步时调用
     });
     setTimeout(() => {
       this.driver.defineSteps(steps);
-      this.driver.start();
+      this.driver.start(0); //可以指定从第几步开始
     }, 0);
   }
 }
