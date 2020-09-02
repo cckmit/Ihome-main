@@ -4,7 +4,7 @@
  * @Author: zyc
  * @Date: 2020-06-22 11:10:43
  * @LastEditors: zyc
- * @LastEditTime: 2020-08-13 11:39:42
+ * @LastEditTime: 2020-09-02 16:42:55
  */
 import Vue from 'vue'
 import VueRouter, { RouteConfig, Route } from 'vue-router'
@@ -120,6 +120,21 @@ const routes: Array<RouteConfig> = [
         name: 'OrganizationList',
         component: () => import('../views/organization/list.vue'),
         meta: { title: '组织架构列表', icon: 'form' }
+      },
+
+    ]
+  },
+  {
+    path: '/other',
+    meta: { title: '其他', icon: 'form' },
+    redirect: '/other/driver',
+    component: Layout,
+    children: [
+      {
+        path: 'driver',
+        name: 'OtherDriver',
+        component: () => import('../views/other/driver.vue'),
+        meta: { title: '新手引导', icon: 'form' }
       },
 
     ]
