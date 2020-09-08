@@ -15,6 +15,7 @@
     "lib": "vue-cli-service build --dest lib --target lib --name ihome-common ./src/ihome-package/ui/src/index.ts"
   },
   "dependencies": {
+    "@types/js-cookie": "^2.2.6",
     "@types/nprogress": "^0.2.0",
     "axios": "^0.19.2",
     "core-js": "^3.6.5",
