@@ -9,15 +9,22 @@
 <template>
   <div>
     <el-container v-show="!loginPage" id="main-root" class="root">
-      <el-aside width="200px" :style="{'min-height':screenHeight+'px'}" class="ih-aside">
-        <div class="container-logo">
+      <el-aside :width="sidebarWidth" :style="{'min-height':screenHeight+'px'}" class="ih-aside">
+        <div class="container-logo" v-if="!isCollapse">
           <img src="./assets/img/logo/logo.png" style="width:100%;" alt srcset />
+        </div>
+        <div class="container-logo-lm" v-else>
+          <img src="./assets/img/logo/ihome.jpg" style="width:100%;" alt srcset />
         </div>
 
         <el-menu
           :default-openeds="defaultOpeneds"
           :default-active="defaultActive"
           class="el-menu-vertical-demo"
+          background-color="#ef9d39"
+          text-color="#fff"
+          active-text-color="#ffd04b"
+          :collapse-transition="false"
           :collapse="isCollapse"
         >
           <!-- <el-submenu index="1">
@@ -37,35 +44,32 @@
             <i class="el-icon-menu"></i>
             <span slot="title">导航二</span>
           </el-menu-item>-->
-          <div :index="item.id" v-for="(item) in groupMenuList" :key="item.id">
-            <el-menu-item :index="item.id" v-if="!item.children" @click="goto(item.path)">
-              <template slot="title">
-                <i :class="item.icon"></i>
-                <span>{{item.title}}</span>
-              </template>
+          <template :index="item.id" v-for="(item) in groupMenuList" >
+            <el-menu-item :index="item.id" v-if="!item.children" @click="goto(item.path)" :key="item.id">
+              <i :class="item.icon"></i>
+              <span>{{item.title}}</span>
             </el-menu-item>
 
-            <el-submenu :index="item.id" v-if="item.children">
+            <el-submenu :index="item.id" v-if="item.children" :key="item.id">
               <template slot="title">
                 <i :class="item.icon"></i>
                 <span>{{item.title}}</span>
               </template>
-              <template>
+              <template v-for="(childrenItem,childrenIndex) in item.children">
                 <el-menu-item
-                  v-for="(childrenItem,childrenIndex) in item.children"
                   :key="childrenIndex"
                   @click="goto(childrenItem.path)"
                   :index="childrenItem.id"
                 >{{childrenItem.title}}</el-menu-item>
               </template>
             </el-submenu>
-          </div>
+          </template>
         </el-menu>
       </el-aside>
 
       <el-container v-show="!loginPage">
         <div class="right-container">
-          <IhHeader class="right-container-header" />
+          <IhHeader class="right-container-header" @click-aside="handleClickAside"/>
           <!-- v-loading="loading" -->
           <el-main class="right-container-body" :style="{'min-height':screenHeight-50+'px'}">
             <!-- <div  id="root-view" class="app-view-box" v-html="content"></div> -->
@@ -86,6 +90,7 @@
 import IhHeader from "@/components/IhHeader.vue";
 import { Component, Vue, Prop, Watch } from "vue-property-decorator";
 import { UserModule } from "./store/modules/user";
+// import { AsideModule } from "./store/modules/aside";
 import { allMenu } from "./api/users";
 @Component({
   components: { IhHeader },
@@ -126,7 +131,22 @@ export default class App extends Vue {
     this.resize();
     this.loginPage = this.$route.path == "/login";
     this.login();
+    this.isCollapse = sessionStorage.getItem('isCollapse') === 'true'
+    window.addEventListener("beforeunload", ()=>{
+      sessionStorage.setItem('isCollapse', this.isCollapse+'')
+    })
   }
+
+  private get sidebarWidth():string {
+    console.log("sidebarWidth",this.isCollapse)
+    return  sessionStorage.getItem('isCollapse') === 'true' ? '64px' : '200px'
+  }
+  // ****
+  // private get isColl(): boolean {
+  //   console.log(AsideModule.getIsCollapse)
+  //   return AsideModule.getIsCollapse
+  // }
+
   login() {
     if (UserModule.token.length > 0) {
       UserModule.token;
@@ -217,6 +237,9 @@ export default class App extends Vue {
     }
     return tree;
   }
+  handleClickAside(isAside:boolean):void {
+    this.isCollapse = isAside
+  }
 }
 </script>
 <style lang="scss">
@@ -257,13 +280,13 @@ body {
 .el-aside {
   color: #333;
 }
-.el-menu .el-submenu,
-.el-menu-item-group__title,
-.el-menu-item,
-.el-menu-item.is-disabled,
-.el-menu-vertical-demo.el-menu {
-  background: $asideBg !important;
-}
+// .el-menu .el-submenu,
+// .el-menu-item-group__title,
+// .el-menu-item,
+// .el-menu-item.is-disabled,
+// .el-menu-vertical-demo.el-menu {
+//   background: $asideBg !important;
+// }
 
 .el-menu .el-submenu div,
 .el-submenu i,
@@ -295,20 +318,20 @@ $asideActive: #e29334;
   padding: 0;
   margin: 0;
   width: 100%;
-  position: fixed;
+  // position: fixed;
   z-index: 100;
   background: #fff;
-  padding-left: 210px !important;
+  // padding-left: 210px !important;
   box-sizing: border-box;
-  left: 0;
-  right: 0;
+  // left: 0;
+  // right: 0;
 }
 .right-container {
   width: 100%;
 }
-.right-container-body {
-  margin-top: 50px;
-}
+// .right-container-body {
+//   margin-top: 50px;
+// }
 .container-logo {
   width: 200px;
   height: 50px;
@@ -316,6 +339,13 @@ $asideActive: #e29334;
   padding: 10px;
   box-sizing: border-box;
   // border-bottom: 1px solid #2c4e5a;
+}
+.container-logo-lm {
+  width: 64px;
+  height: 64px;
+  line-height: 64px;
+  padding: 12px;
+  box-sizing: border-box;
 }
 .el-main {
   padding: 0px;
@@ -327,6 +357,8 @@ $asideActive: #e29334;
   background-color: #ef9d39;
   z-index: 101;
   color: $asideFontColor !important;
+  transition: width .28s;
+  overflow: hidden;
 }
 .ih-aside i {
   // background-color: #ef9d39;

@@ -35,6 +35,7 @@
 <script lang="ts">
 import { Component, Vue, Watch } from "vue-property-decorator";
 import { UserModule } from "../store/modules/user";
+// import { AsideModule } from "../store/modules/aside";
 import { headImg } from "../utils/base64-img";
 @Component({
   components: {},
@@ -42,6 +43,7 @@ import { headImg } from "../utils/base64-img";
 export default class IhHeader extends Vue {
   breadcrumbList: any = [];
   circleUrl = headImg;
+  private isAside:boolean = false;
   // created() {}
 
   async loginOut() {
@@ -53,8 +55,11 @@ export default class IhHeader extends Vue {
       this.$router.push("/login");
     }
   }
-  clickAside() {
-    console.log("未实现");
+  clickAside():void {
+    console.log("未实现", !this.isAside);
+    this.isAside = !this.isAside;
+    this.$emit('click-aside', this.isAside);
+    // AsideModule.SetIsCollapse(this.isAside+'')
   }
 
   @Watch("$route")
