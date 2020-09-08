@@ -4,7 +4,7 @@
  * @Author: zyc
  * @Date: 2020-06-22 16:44:13
  * @LastEditors: zyc
- * @LastEditTime: 2020-06-30 16:59:15
+ * @LastEditTime: 2020-09-08 09:35:57
 --> 
 <template >
   <div class="main">
@@ -42,20 +42,20 @@ import { UserModule } from "../store/modules/user";
 import { Form as ElForm } from "element-ui";
 import { defaultMountApp } from "../setting";
 @Component({
-  components: {}
+  components: {},
 })
 export default class Login extends Vue {
   loading: boolean = false;
   ruleForm: any = {
     username: "admin",
-    password: "123456"
+    password: "123456",
   };
   rules: any = {
     username: [{ required: true, message: "请输入账号", trigger: "blur" }, {}],
     password: [
       { required: true, message: "请输入密码", trigger: "blur" },
-      { min: 6, max: 30, message: "长度在最少6位", trigger: "change" }
-    ]
+      { min: 6, max: 30, message: "长度在最少6位", trigger: "change" },
+    ],
   };
   private submitForm() {
     // that.$refs[formName].validate((valid: any)
@@ -63,15 +63,15 @@ export default class Login extends Vue {
       if (valid) {
         this.loading = true;
         try {
-          const res = await UserModule.Login(
-            this.ruleForm.username,
-            this.ruleForm.password
-          );
+          console.log(this.ruleForm);
+           
+          const res = await UserModule.Login(this.ruleForm);
+         
           console.log(res);
 
           this.loading = false;
           this.$router.push({
-            path: defaultMountApp
+            path: defaultMountApp,
           });
         } catch (error) {
           this.loading = false;

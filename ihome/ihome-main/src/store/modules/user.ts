@@ -4,11 +4,11 @@
  * @Author: zyc
  * @Date: 2020-06-24 09:30:41
  * @LastEditors: zyc
- * @LastEditTime: 2020-08-06 17:01:38
+ * @LastEditTime: 2020-09-08 09:41:59
  */
 
 import { VuexModule, Module, Action, Mutation, getModule } from 'vuex-module-decorators'
-import { logout, getUserInfo } from '../../api/users'
+import { logout, getUserInfo, login } from '../../api/users'
 import { getToken, setToken, removeToken } from '../../utils/cookies'
 
 import store from '@/store'
@@ -36,16 +36,19 @@ class User extends VuexModule implements IUserState {
 
 
     @Action
-    public async Login(username: string, password: string) {
-        console.log(username, password)
+    public async Login(data: any) {
+         
+        console.log(data)
         // username = username.trim()
-        // const res: any = await login({ username, password, "grant": "password", "client_id": "test-client", "client_secret": "test_secret" })
-        const res = {
-            assess_token: 'xxxxxxxxxx'
-        }
-        setToken(res.assess_token)
-        this.SET_TOKEN(res.assess_token)
-        this.SET_USERINFO({ id: 1, name: 'zyc' })
+        const res: any = await login({ username: data.username, password: data.password })
+        // const res = {
+        //     assess_token: 'xxxxxxxxxx'
+        // }
+        console.log(res);
+        
+        setToken(res.access_token)
+        this.SET_TOKEN(res.access_token)
+        this.SET_USERINFO({ id: 1, name: data.username })
         return res;
     }
 

@@ -4,7 +4,7 @@
  * @Author: zyc
  * @Date: 2020-07-09 10:21:50
  * @LastEditors: zyc
- * @LastEditTime: 2020-08-27 14:58:07
+ * @LastEditTime: 2020-09-08 10:42:25
 --> 
 <template>
   <ih-page>
@@ -150,6 +150,7 @@ export default class RoleList extends Vue {
   }
   async getListMixin() {
     this.resPageInfo = await post_role_getList(this.queryPageParameters);
+    debugger
   }
   add(data: any) {
     this.itemData = data;

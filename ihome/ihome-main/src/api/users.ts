@@ -4,10 +4,11 @@
  * @Author: zyc
  * @Date: 2020-06-24 09:47:33
  * @LastEditors: zyc
- * @LastEditTime: 2020-08-26 09:01:02
+ * @LastEditTime: 2020-09-08 10:04:26
  */
 import { IRes } from "./users.d";
-import request from '@/utils/http';
+// import request from '@/utils/http';
+import request from 'ihome-common/util/api/http';
 
 
 /**响应数据结果处理
@@ -122,25 +123,17 @@ export function allMenu<T>() {
     ];
     return menuList;
 }
-export const login = (data: any) => {
-    const tokenRes = {
-        "assess_token": "xxxxxxx",
-        "token_type": "bearer",
-        "refresh_token": "yyyyyyy",
-        "expires_in": 4,
-        "scope": "default-scope",
-        "jti": "zzzzzz"
-    }
-    if (process.env.NODE_ENV == 'development') {
-        return request({
-            url: '/sales-oauth2/token',
-            method: 'get',
-            data
-        })
-
-    } else {
-        return tokenRes;
-    }
+export const login = async (data: any) => {
+    //http://localhost:8610/sales-oauth2/oauth/token?grant_type=password&client_id=sales-client-dev&client_secret=sales-dev&username=admin&password=123456
+ 
+    let url = `/sales-oauth2/oauth/token?grant_type=password&client_id=sales-client-dev&client_secret=sales-dev&username=${data.username}&password=${data.password}`;
+    
+    const res: any = await request({
+        url: url,
+        method: 'post',
+    })
+    
+    return res;
 
 }
 

@@ -4,11 +4,12 @@
  * @Author: zyc
  * @Date: 2020-06-24 09:49:42
  * @LastEditors: zyc
- * @LastEditTime: 2020-08-13 15:40:56
+ * @LastEditTime: 2020-09-08 09:53:26
  */
 import axios from 'axios'
 import { Message, MessageBox } from 'element-ui'
-import { UserModule } from '@/store/modules/user'
+// import { UserModule } from '@/store/modules/user'
+import { getToken,removeToken } from './cookies'
 
 const service = axios.create({
   // baseURL: process.env.VUE_APP_BASE_API,
@@ -31,8 +32,9 @@ service.interceptors.request.use(
       })
     }
     // Add X-Access-Token header to every request, you can add other custom headers here
-    if (UserModule.token) {
-      config.headers['X-Access-Token'] = UserModule.token
+    const token: any = getToken();
+    if (token) {
+      config.headers['Authorization'] = 'bearer ' +token;
     }
     return config
   },
@@ -44,7 +46,8 @@ service.interceptors.request.use(
 // Response interceptors
 service.interceptors.response.use(
   (response) => {
-    if (response.config.url == '/sales-oauth2/token') {
+
+    if (response.config.url?.startsWith('/sales-oauth2/oauth/token')) {
       return response.data
     } else {
       const res = response.data
@@ -64,7 +67,7 @@ service.interceptors.response.use(
               type: 'warning'
             }
           ).then(() => {
-            UserModule.ResetToken()
+            removeToken();
             location.reload() // To prevent bugs from vue-router
           })
         }
