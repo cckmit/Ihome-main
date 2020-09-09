@@ -16,60 +16,61 @@
         <div class="container-logo-lm" v-else>
           <img src="./assets/img/logo/ihome.jpg" style="width:100%;" alt srcset />
         </div>
-
-        <el-menu
-          :default-openeds="defaultOpeneds"
-          :default-active="defaultActive"
-          class="el-menu-vertical-demo"
-          background-color="#ef9d39"
-          text-color="#fff"
-          active-text-color="#ffd04b"
-          :collapse-transition="false"
-          :collapse="isCollapse"
-        >
-          <!-- <el-submenu index="1">
-            <template slot="title">
-              <i class="el-icon-location"></i>
-              <span slot="title">导航一</span>
-            </template>
-            <el-menu-item index="1-1">选项1</el-menu-item>
-            <el-menu-item index="1-2">选项2</el-menu-item>
-            <el-submenu index="1-4">
-              <span slot="title">选项4</span>
-              <el-menu-item index="1-4-1">选项4-1</el-menu-item>
-              <el-menu-item index="1-4-2">选项4-2</el-menu-item>
-            </el-submenu>
-          </el-submenu>
-          <el-menu-item index="2">
-            <i class="el-icon-menu"></i>
-            <span slot="title">导航二</span>
-          </el-menu-item>-->
-          <template :index="item.id" v-for="(item) in groupMenuList" >
-            <el-menu-item :index="item.id" v-if="!item.children" @click="goto(item.path)" :key="item.id">
-              <i :class="item.icon"></i>
-              <span>{{item.title}}</span>
-            </el-menu-item>
-
-            <el-submenu :index="item.id" v-if="item.children" :key="item.id">
+        <el-scrollbar class="scroll">
+          <el-menu
+            :default-openeds="defaultOpeneds"
+            :default-active="defaultActive"
+            class="el-menu-vertical-demo"
+            background-color="#ef9d39"
+            text-color="#fff"
+            active-text-color="#ffd04b"
+            :collapse-transition="false"
+            :collapse="isCollapse"
+          >
+            <!-- <el-submenu index="1">
               <template slot="title">
+                <i class="el-icon-location"></i>
+                <span slot="title">导航一</span>
+              </template>
+              <el-menu-item index="1-1">选项1</el-menu-item>
+              <el-menu-item index="1-2">选项2</el-menu-item>
+              <el-submenu index="1-4">
+                <span slot="title">选项4</span>
+                <el-menu-item index="1-4-1">选项4-1</el-menu-item>
+                <el-menu-item index="1-4-2">选项4-2</el-menu-item>
+              </el-submenu>
+            </el-submenu>
+            <el-menu-item index="2">
+              <i class="el-icon-menu"></i>
+              <span slot="title">导航二</span>
+            </el-menu-item>-->
+            <template :index="item.id" v-for="(item) in groupMenuList" >
+              <el-menu-item :index="item.id" v-if="!item.children" @click="goto(item.path)" :key="item.id">
                 <i :class="item.icon"></i>
                 <span>{{item.title}}</span>
-              </template>
-              <template v-for="(childrenItem,childrenIndex) in item.children">
-                <el-menu-item
-                  :key="childrenIndex"
-                  @click="goto(childrenItem.path)"
-                  :index="childrenItem.id"
-                >{{childrenItem.title}}</el-menu-item>
-              </template>
-            </el-submenu>
-          </template>
-        </el-menu>
+              </el-menu-item>
+
+              <el-submenu :index="item.id" v-if="item.children" :key="item.id">
+                <template slot="title">
+                  <i :class="item.icon"></i>
+                  <span>{{item.title}}</span>
+                </template>
+                <template v-for="(childrenItem,childrenIndex) in item.children">
+                  <el-menu-item
+                    :key="childrenIndex"
+                    @click="goto(childrenItem.path)"
+                    :index="childrenItem.id"
+                  >{{childrenItem.title}}</el-menu-item>
+                </template>
+              </el-submenu>
+            </template>
+          </el-menu>
+        </el-scrollbar>
       </el-aside>
 
       <el-container v-show="!loginPage">
         <div class="right-container">
-          <IhHeader class="right-container-header" @click-aside="handleClickAside"/>
+          <IhHeader class="right-container-header" @click-aside="handleClickAside" :isCollapse="isCollapse"/>
           <!-- v-loading="loading" -->
           <el-main class="right-container-body" :style="{'min-height':screenHeight-50+'px'}">
             <!-- <div  id="root-view" class="app-view-box" v-html="content"></div> -->
@@ -239,6 +240,7 @@ export default class App extends Vue {
   }
   handleClickAside(isAside:boolean):void {
     this.isCollapse = isAside
+    sessionStorage.setItem('isCollapse', this.isCollapse+'')
   }
 }
 </script>
@@ -279,6 +281,14 @@ body {
 
 .el-aside {
   color: #333;
+}
+
+.scroll {
+  height: 100%;
+  .el-scrollbar__wrap {
+    overflow-x: hidden;
+    overflow-y: auto;
+  }
 }
 // .el-menu .el-submenu,
 // .el-menu-item-group__title,

@@ -9,7 +9,7 @@
 <template>
   <div class="header-container">
     <div class="left-item">
-      <i class="el-icon-s-fold close-btn" style="font-size:20px;" @click="clickAside()"></i>
+      <i class="el-icon-s-fold close-btn" style="font-size:20px;cursor:pointer" :class="isCollapse?'is-active':''" @click="clickAside()"></i>
       {{$store.getters.asideClose }}{{$store.getters.asideWidth}}
       <div class="breadcrumb">
         <el-breadcrumb separator-class="el-icon-arrow-right">
@@ -33,7 +33,7 @@
   </div>
 </template>
 <script lang="ts">
-import { Component, Vue, Watch } from "vue-property-decorator";
+import { Component, Vue, Watch, Prop } from "vue-property-decorator";
 import { UserModule } from "../store/modules/user";
 // import { AsideModule } from "../store/modules/aside";
 import { headImg } from "../utils/base64-img";
@@ -41,6 +41,10 @@ import { headImg } from "../utils/base64-img";
   components: {},
 })
 export default class IhHeader extends Vue {
+  @Prop({
+    required: true
+  }) private isCollapse:boolean = false;
+
   breadcrumbList: any = [];
   circleUrl = headImg;
   private isAside:boolean = false;
@@ -106,6 +110,10 @@ export default class IhHeader extends Vue {
 .close-btn {
   width: 40px;
   line-height: 50px;
+}
+.is-active {
+  transform: rotate(180deg);
+  text-align: right;
 }
 .breadcrumb {
   flex: 1;
