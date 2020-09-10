@@ -1,11 +1,3 @@
-/*
- * @Descripttion: 
- * @version: 
- * @Author: zyc
- * @Date: 2020-06-29 16:35:01
- * @LastEditors: zyc
- * @LastEditTime: 2020-09-08 10:45:20
- */
 import axios from 'axios'
 import { Message, MessageBox } from 'element-ui'
 // import { UserModule } from '@/store/modules/user'
@@ -80,11 +72,38 @@ service.interceptors.response.use(
 
     },
     (error) => {
-        Message({
-            message: error.msg,
-            type: 'error',
-            duration: 5 * 1000
-        })
+        // console.log(error);
+        // console.log(error.response);
+        // console.log(error.message);
+        if (error.response.status == 401) {
+            Message({
+                message: '请先登录',
+                type: 'error',
+                duration: 5 * 1000
+            })
+
+        } else if (error.response.status == 403) {
+            Message({
+                message: '权限不足',
+                type: 'error',
+                duration: 5 * 1000
+            })
+
+        } else if (error.response.status >= 500) {
+            Message({
+                message: '系统异常' + error.response.status,
+                type: 'error',
+                duration: 5 * 1000
+            })
+        } else {
+            Message({
+                message: error.message,
+                type: 'error',
+                duration: 5 * 1000
+            })
+
+        }
+
         return Promise.reject(error)
     }
 )
