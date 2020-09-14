@@ -1,3 +1,6 @@
+import * as dicModular from '@/util/enums/dic';
+export {dicModular};
+
 /**组织类型
  * @param {type} 
  * @return {type} 

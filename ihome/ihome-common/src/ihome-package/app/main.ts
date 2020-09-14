@@ -4,7 +4,7 @@
  * @Author: zyc
  * @Date: 2020-07-07 09:25:17
  * @LastEditors: zyc
- * @LastEditTime: 2020-08-27 11:07:53
+ * @LastEditTime: 2020-09-14 16:46:51
  */
 import '../util/base/extend'
 import Vue from 'vue'
@@ -12,7 +12,8 @@ import App from './App.vue'
 import { router } from '@/router'
 import store from '@/store'
 import * as dic from '../util/enums/dic'
-let $dic: any = dic;
+let $dic: any = Object.assign(dic,dic.dicModular);
+
 // import '@/public-path'
 if ((<any>window).__POWERED_BY_QIANKUN__) {
   // eslint-disable-next-line no-undef
