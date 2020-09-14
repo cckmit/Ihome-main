@@ -37,17 +37,18 @@ import { Component, Vue, Watch, Prop } from "vue-property-decorator";
 import { UserModule } from "../store/modules/user";
 // import { AsideModule } from "../store/modules/aside";
 import { headImg } from "../utils/base64-img";
+import { defaultIsCollapse } from '@/setting';
 @Component({
   components: {},
 })
 export default class IhHeader extends Vue {
   @Prop({
     required: true
-  }) private isCollapse:boolean = false;
+  }) private isCollapse!:boolean;
 
   breadcrumbList: any = [];
   circleUrl = headImg;
-  private isAside:boolean = false;
+  private isAside:boolean = defaultIsCollapse;
   // created() {}
 
   async loginOut() {
@@ -60,10 +61,11 @@ export default class IhHeader extends Vue {
     }
   }
   clickAside():void {
-    console.log("未实现", !this.isAside);
+    this.isAside = sessionStorage.getItem('isCollapse') ? sessionStorage.getItem('isCollapse')  === 'true' : this.isAside
     this.isAside = !this.isAside;
+    console.log("未实现", !this.isAside);
     this.$emit('click-aside', this.isAside);
-    // AsideModule.SetIsCollapse(this.isAside+'')
+    sessionStorage.setItem('isCollapse', this.isAside+'')
   }
 
   @Watch("$route")

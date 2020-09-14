@@ -7,3 +7,7 @@
  * @LastEditTime: 2020-08-05 16:56:47
  */ 
 export const defaultMountApp='/web-system/'
+// 设置侧边栏伸缩 false--默认不伸缩， true--默认伸缩
+export const defaultIsCollapse = false
+export const normalAsideWidth = '200px' // 默认宽度
+export const stretchAsideWidth = '64px' // 伸缩宽度
