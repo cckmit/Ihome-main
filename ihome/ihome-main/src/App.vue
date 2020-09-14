@@ -9,11 +9,11 @@
 <template>
   <div>
     <el-container v-show="!loginPage" id="main-root" class="root">
-      <el-aside :width="sidebarWidth" :style="{'min-height':screenHeight+'px'}" class="ih-aside">
-        <div class="container-logo" v-if="!isCollapse">
+      <el-aside :width="sidebarWidth" :style="{'height':screenHeight+'px'}" class="ih-aside">
+        <div class="container-logo" v-show="!isCollapse">
           <img src="./assets/img/logo/logo.png" style="width:100%;" alt srcset />
         </div>
-        <div class="container-logo-lm" v-else>
+        <div class="container-logo-lm" v-show="isCollapse">
           <img src="./assets/img/logo/ihome.jpg" style="width:100%;" alt srcset />
         </div>
         <el-scrollbar class="scroll">
@@ -93,6 +93,7 @@ import { Component, Vue, Prop, Watch } from "vue-property-decorator";
 import { UserModule } from "./store/modules/user";
 // import { AsideModule } from "./store/modules/aside";
 import { allMenu } from "./api/users";
+import { normalAsideWidth, stretchAsideWidth, defaultIsCollapse } from '@/setting';
 @Component({
   components: { IhHeader },
 })
@@ -104,7 +105,7 @@ export default class App extends Vue {
   private screenWidth: any = document.body.clientWidth;
   private screenHeight: any = document.body.clientHeight;
   private timer: any = null;
-  private isCollapse: boolean = false;
+  private isCollapse: boolean = defaultIsCollapse;
   defaultOpeneds: any[] = []; //展开的菜单
   defaultActive: any = ""; //选中的菜单
 
@@ -132,21 +133,17 @@ export default class App extends Vue {
     this.resize();
     this.loginPage = this.$route.path == "/login";
     this.login();
-    this.isCollapse = sessionStorage.getItem('isCollapse') === 'true'
+    this.isCollapse = sessionStorage.getItem('isCollapse') ? sessionStorage.getItem('isCollapse')  === 'true' : this.isCollapse
     window.addEventListener("beforeunload", ()=>{
       sessionStorage.setItem('isCollapse', this.isCollapse+'')
     })
   }
 
   private get sidebarWidth():string {
-    console.log("sidebarWidth",this.isCollapse)
-    return  sessionStorage.getItem('isCollapse') === 'true' ? '64px' : '200px'
+    console.log("sidebarWidth",this.isCollapse, normalAsideWidth, stretchAsideWidth)
+    let isSession = sessionStorage.getItem('isCollapse') ? sessionStorage.getItem('isCollapse')  === 'true' : this.isCollapse
+    return isSession ? stretchAsideWidth : normalAsideWidth
   }
-  // ****
-  // private get isColl(): boolean {
-  //   console.log(AsideModule.getIsCollapse)
-  //   return AsideModule.getIsCollapse
-  // }
 
   login() {
     if (UserModule.token.length > 0) {
@@ -240,7 +237,6 @@ export default class App extends Vue {
   }
   handleClickAside(isAside:boolean):void {
     this.isCollapse = isAside
-    sessionStorage.setItem('isCollapse', this.isCollapse+'')
   }
 }
 </script>
@@ -288,6 +284,7 @@ body {
   .el-scrollbar__wrap {
     overflow-x: hidden;
     overflow-y: auto;
+    margin-right: 0 !important;
   }
 }
 // .el-menu .el-submenu,
@@ -305,6 +302,7 @@ body {
 }
 .el-menu {
   border-right: solid 1px $asideBg !important;
+  margin: 0 auto !important;
 }
 .el-submenu :hover {
   color: #fff !important;
@@ -348,6 +346,7 @@ $asideActive: #e29334;
   line-height: 50px;
   padding: 10px;
   box-sizing: border-box;
+  margin: 0 auto;
   // border-bottom: 1px solid #2c4e5a;
 }
 .container-logo-lm {
@@ -356,6 +355,7 @@ $asideActive: #e29334;
   line-height: 64px;
   padding: 12px;
   box-sizing: border-box;
+  margin: 0 auto;
 }
 .el-main {
   padding: 0px;
