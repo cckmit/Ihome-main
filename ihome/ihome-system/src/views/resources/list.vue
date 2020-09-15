@@ -61,7 +61,7 @@
                 <el-tooltip class="item" effect="light" content="编码" placement="top">
                   <i class="el-icon-question"></i>
                 </el-tooltip>
-              </template> -->
+              </template>-->
             </el-table-column>
 
             <el-table-column prop="type" label="类型" width="90">
@@ -74,7 +74,7 @@
                   </div>
                   <i class="el-icon-info"></i>
                 </el-tooltip>
-              </template> -->
+              </template>-->
               <template slot-scope="scope">
                 <span>{{$root.displayName('modular',scope.row.type)}}</span>
               </template>
@@ -148,7 +148,7 @@
 <script lang="ts">
 import ResourcesAdd from "./add.vue";
 import ResourcesEdit from "./edit.vue";
-import ResourcesRadio from "@/components/ResourcesRadio.vue";
+import ResourcesRadio from "@/components/resourcesRadio.vue";
 // import { DictionariesModule } from "../../store/modules/dictionaries";
 import { Component, Vue } from "vue-property-decorator";
 import PaginationMixin from "../../mixins/pagination";

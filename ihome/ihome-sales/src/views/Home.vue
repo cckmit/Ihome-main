@@ -9,27 +9,25 @@
 <template>
   <div>
     <p>路由导航·新房业务系统</p>
-    <div>
-      <el-tree
-        :default-expand-all="true"
-        :data="data"
-        :props="defaultProps"
-        @node-click="handleNodeClick"
-      ></el-tree>
-    </div>
+    <el-tree
+      :default-expand-all="true"
+      :data="data"
+      :props="defaultProps"
+      @node-click="handleNodeClick"
+    ></el-tree>
   </div>
 </template>
 <script lang="ts">
 import { Component, Vue } from "vue-property-decorator";
 import { routes } from "../router/index";
 @Component({
-  components: {}
+  components: {},
 })
 export default class Home extends Vue {
   private data: any = [];
   defaultProps: any = {
     children: "children",
-    label: "path"
+    label: "path",
   };
   created() {
     console.log(routes);
@@ -39,7 +37,7 @@ export default class Home extends Vue {
     console.log(data);
     if (!data.children) {
       this.$router.push({
-        name: data.name
+        name: data.name,
       });
     }
   }

@@ -3,13 +3,18 @@
  * @version: 
  * @Author: zyc
  * @Date: 2020-06-23 10:42:04
- * @LastEditors: zyc
- * @LastEditTime: 2020-07-28 16:17:41
+ * @LastEditors: lgf
+ * @LastEditTime: 2020-09-15 18:25:05
 --> 
 <template>
   <div class="header-container">
     <div class="left-item">
-      <i class="el-icon-s-fold close-btn" style="font-size:20px;cursor:pointer" :class="isCollapse?'is-active':''" @click="clickAside()"></i>
+      <i
+        class="el-icon-s-fold close-btn"
+        style="font-size:20px;cursor:pointer"
+        :class="isCollapse?'is-active':''"
+        @click="clickAside()"
+      ></i>
       {{$store.getters.asideClose }}{{$store.getters.asideWidth}}
       <div class="breadcrumb">
         <el-breadcrumb separator-class="el-icon-arrow-right">
@@ -37,18 +42,19 @@ import { Component, Vue, Watch, Prop } from "vue-property-decorator";
 import { UserModule } from "../store/modules/user";
 // import { AsideModule } from "../store/modules/aside";
 import { headImg } from "../utils/base64-img";
-import { defaultIsCollapse } from '@/setting';
+import { defaultIsCollapse } from "@/setting";
 @Component({
   components: {},
 })
 export default class IhHeader extends Vue {
   @Prop({
-    required: true
-  }) private isCollapse!:boolean;
+    required: true,
+  })
+  private isCollapse!: boolean;
 
   breadcrumbList: any = [];
   circleUrl = headImg;
-  private isAside:boolean = defaultIsCollapse;
+  private isAside: boolean = defaultIsCollapse;
   // created() {}
 
   async loginOut() {
@@ -60,12 +66,14 @@ export default class IhHeader extends Vue {
       this.$router.push("/login");
     }
   }
-  clickAside():void {
-    this.isAside = sessionStorage.getItem('isCollapse') ? sessionStorage.getItem('isCollapse')  === 'true' : this.isAside
+  clickAside(): void {
+    this.isAside = sessionStorage.getItem("isCollapse")
+      ? sessionStorage.getItem("isCollapse") === "true"
+      : this.isAside;
     this.isAside = !this.isAside;
     console.log("未实现", !this.isAside);
-    this.$emit('click-aside', this.isAside);
-    sessionStorage.setItem('isCollapse', this.isAside+'')
+    this.$emit("click-aside", this.isAside);
+    sessionStorage.setItem("isCollapse", this.isAside + "");
   }
 
   @Watch("$route")

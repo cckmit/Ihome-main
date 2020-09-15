@@ -69,7 +69,7 @@
 </template>
 <script lang="ts">
 import { Component, Vue, Prop, Watch } from "vue-property-decorator";
- 
+
 import {
   get_org_getAll,
   post_user_addUserOrgBatch,
@@ -121,7 +121,7 @@ export default class OrganizationJurisdiction extends Vue {
     });
     this.preData = this.$tool.listToGruop(all, { rootId: 0 });
   }
-  
+
   async created() {
     const selectData = await post_user_getAllUserOrgByUserId__userId({
       userId: this.data.id,
@@ -140,7 +140,6 @@ export default class OrganizationJurisdiction extends Vue {
     this.$nextTick(() => {
       this.check();
     });
-
   }
   cancel() {
     this.$emit("cancel", false);

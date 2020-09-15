@@ -120,19 +120,51 @@ export function allMenu<T>() {
             icon: null,
             path: "/web-sales/",
         },
+        {
+            id: 201,
+            parentId: 0,
+            title: "渠道管理",
+            icon: "el-icon-setting",
+            path: null,
+        },
+        {
+            id: 203,
+            parentId: 201,
+            title: "渠道商列表",
+            icon: null,
+            path: "/web-sales/distributorsList",
+        },
+        {
+            id: 202,
+            parentId: 201,
+            title: "渠道合作信息列表",
+            icon: null,
+            path: "/web-sales/list",
+        },
+
+        {
+            id: 204,
+            parentId: 201,
+            title: "渠道评级标准列表",
+            icon: null,
+            path: "/web-sales/ChannelRatings",
+        },
+
+
+
     ];
     return menuList;
 }
 export const login = async (data: any) => {
     //http://localhost:8610/sales-oauth2/oauth/token?grant_type=password&client_id=sales-client-dev&client_secret=sales-dev&username=admin&password=123456
- 
+
     let url = `/sales-oauth2/oauth/token?grant_type=password&client_id=sales-client-dev&client_secret=sales-dev&username=${data.username}&password=${data.password}`;
-    
+
     const res: any = await request({
         url: url,
         method: 'post',
     })
-    
+
     return res;
 
 }

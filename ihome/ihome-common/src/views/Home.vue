@@ -7,15 +7,14 @@
  * @LastEditTime: 2020-07-24 09:54:40
 --> 
 <template>
-  <div>
-    <el-button type="primary">primary</el-button>
-  </div>
+  <el-button type="primary">primary</el-button>
 </template>
 <script lang="ts">
 // import { testApi, testPostApi } from "../api/test";
 import { Component, Vue } from "vue-property-decorator";
+
 @Component({
-  components: {}
+  components: {},
 })
 export default class Home extends Vue {}
 </script>
