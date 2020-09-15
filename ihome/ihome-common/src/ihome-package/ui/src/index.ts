@@ -41,4 +41,7 @@ if (typeof window !== 'undefined' && window.Vue) {
   install(window.Vue);
 }
 
-export default install;
+export default {
+  // 导出的是对象且必须具有 install，才能被 Vue.use() 方法安装
+  install
+};
