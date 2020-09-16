@@ -4,7 +4,7 @@
  * @Author: wwq
  * @Date: 2020-09-09 16:17:16
  * @LastEditors: wwq
- * @LastEditTime: 2020-09-16 10:00:12
+ * @LastEditTime: 2020-09-16 16:08:15
 -->
 
 <template>
@@ -103,9 +103,11 @@ export default class IhomeUpload extends Vue {
     }
     @Watch("fileList", {immediate: true,deep: true})
     getFileList(fileList: any) {
-        fileList.forEach((v: any, index: number) => {
-            this.replaceUpload(v, fileList, index);
-        })
+        if (fileList.length) {
+            fileList.forEach((v: any, index: number) => {
+                this.replaceUpload(v, fileList, index);
+            })
+        }
     }
     created() {
         this.srcList = [];

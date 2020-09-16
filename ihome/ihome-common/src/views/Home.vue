@@ -4,13 +4,14 @@
  * @Author: zyc
  * @Date: 2020-06-22 11:10:43
  * @LastEditors: wwq
- * @LastEditTime: 2020-09-16 14:36:57
+ * @LastEditTime: 2020-09-16 16:16:06
 --> 
 <template>
   <div>
     <el-table
       :data="tableData"
       style="width:100%"
+      height="900"
       :highlight-current-row="false"
       border>
       <el-table-column
@@ -101,6 +102,20 @@ export default class Home extends Vue {
           preFileAdress: '2c92808873be3796017491182382061d',
           preFileCode: 'leixing5',
           preFileName: '类型5',
+          partCode: 'partCode_first'
+        }, {
+          fileCat: '.jpg',
+          fileName: '3333.jpg',
+          preFileAdress: '2c92808873be3796017495fb3297062a',
+          preFileCode: 'leixing6',
+          preFileName: '类型6',
+          partCode: 'partCode_first'
+        }, {
+          fileCat: '.jpg',
+          fileName: '1111.jpg',
+          preFileAdress: '2c92808873be3796017495fc0323062b',
+          preFileCode: 'leixing7',
+          preFileName: '类型7',
           partCode: 'partCode_first'
         }]);
       }, 2000)
