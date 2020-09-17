@@ -3,8 +3,8 @@
  * @version: 
  * @Author: zyc
  * @Date: 2020-06-22 11:10:43
- * @LastEditors: Please set LastEditors
- * @LastEditTime: 2020-09-15 18:14:40
+ * @LastEditors: lgf
+ * @LastEditTime: 2020-09-16 10:27:09
  */
 import Vue from 'vue'
 import VueRouter, { RouteConfig, Route } from 'vue-router'
@@ -73,20 +73,76 @@ const routes: Array<RouteConfig> = [
       },
       //渠道商页面即将跳转的路由
       {
-        path: '/change',
+        path: '/info',
         meta: { title: '用户', icon: 'form' },
         redirect: '/web-sales/',
         component: Layout,
         children: [
           {
             path: '/',
-            name: 'change',
-            component: () => import('../views/channel/distributorsList/change.vue'),
+            name: 'info',
+            component: () => import('../views/channel/distributorsList/info.vue'),
+            meta: { title: '详情', icon: 'form' }
+          },
+        ]
+      },
+      {
+        path: '/ModifyThe',
+        meta: { title: '用户', icon: 'form' },
+        redirect: '/web-sales/',
+        component: Layout,
+        children: [
+          {
+            path: '/',
+            name: 'ModifyThe',
+            component: () => import('../views/channel/distributorsList/MoreOperations/ModifyThe.vue'),
             meta: { title: '录入修改页', icon: 'form' }
           },
         ]
       },
 
+      {
+        path: '/confirm',
+        meta: { title: '用户', icon: 'form' },
+        redirect: '/web-sales/',
+        component: Layout,
+        children: [
+          {
+            path: '/',
+            name: 'confirm',
+            component: () => import('../views/channel/distributorsList/MoreOperations/confirm.vue'),
+            meta: { title: '确认', icon: 'form' }
+          },
+        ]
+      },
+      {
+        path: '/changeInfo',
+        meta: { title: '用户', icon: 'form' },
+        redirect: '/web-sales/',
+        component: Layout,
+        children: [
+          {
+            path: '/',
+            name: 'changeInfo',
+            component: () => import('../views/channel/distributorsList/MoreOperations/changeInfo.vue'),
+            meta: { title: '变更信息', icon: 'form' }
+          },
+        ]
+      },
+      {
+        path: '/MaintenanceOfChannels',
+        meta: { title: '用户', icon: 'form' },
+        redirect: '/web-sales/',
+        component: Layout,
+        children: [
+          {
+            path: '/',
+            name: 'MaintenanceOfChannels',
+            component: () => import('../views/channel/distributorsList/MoreOperations/MaintenanceOfChannels.vue'),
+            meta: { title: '维护渠道经纪人', icon: 'form' }
+          },
+        ]
+      },
       // 二级路由列子
       // {
       //   path: '/user',

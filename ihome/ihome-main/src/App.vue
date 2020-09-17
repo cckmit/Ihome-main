@@ -3,8 +3,8 @@
  * @version: 
  * @Author: zyc
  * @Date: 2020-06-22 11:46:23
- * @LastEditors: zyc
- * @LastEditTime: 2020-08-26 08:58:01
+ * @LastEditors: lgf
+ * @LastEditTime: 2020-09-16 16:59:58
 --> 
 <template>
   <div>
@@ -44,8 +44,13 @@
               <i class="el-icon-menu"></i>
               <span slot="title">导航二</span>
             </el-menu-item>-->
-            <template :index="item.id" v-for="(item) in groupMenuList" >
-              <el-menu-item :index="item.id" v-if="!item.children" @click="goto(item.path)" :key="item.id">
+            <template :index="item.id" v-for="(item) in groupMenuList">
+              <el-menu-item
+                :index="item.id"
+                v-if="!item.children"
+                @click="goto(item.path)"
+                :key="item.id"
+              >
                 <i :class="item.icon"></i>
                 <span>{{item.title}}</span>
               </el-menu-item>
@@ -70,7 +75,11 @@
 
       <el-container v-show="!loginPage">
         <div class="right-container">
-          <IhHeader class="right-container-header" @click-aside="handleClickAside" :isCollapse="isCollapse"/>
+          <IhHeader
+            class="right-container-header"
+            @click-aside="handleClickAside"
+            :isCollapse="isCollapse"
+          />
           <!-- v-loading="loading" -->
           <el-main class="right-container-body" :style="{'min-height':screenHeight-50+'px'}">
             <!-- <div  id="root-view" class="app-view-box" v-html="content"></div> -->
@@ -93,7 +102,11 @@ import { Component, Vue, Prop, Watch } from "vue-property-decorator";
 import { UserModule } from "./store/modules/user";
 // import { AsideModule } from "./store/modules/aside";
 import { allMenu } from "./api/users";
-import { normalAsideWidth, stretchAsideWidth, defaultIsCollapse } from '@/setting';
+import {
+  normalAsideWidth,
+  stretchAsideWidth,
+  defaultIsCollapse,
+} from "@/setting";
 @Component({
   components: { IhHeader },
 })
@@ -133,16 +146,25 @@ export default class App extends Vue {
     this.resize();
     this.loginPage = this.$route.path == "/login";
     this.login();
-    this.isCollapse = sessionStorage.getItem('isCollapse') ? sessionStorage.getItem('isCollapse')  === 'true' : this.isCollapse
-    window.addEventListener("beforeunload", ()=>{
-      sessionStorage.setItem('isCollapse', this.isCollapse+'')
-    })
+    this.isCollapse = sessionStorage.getItem("isCollapse")
+      ? sessionStorage.getItem("isCollapse") === "true"
+      : this.isCollapse;
+    window.addEventListener("beforeunload", () => {
+      sessionStorage.setItem("isCollapse", this.isCollapse + "");
+    });
   }
 
-  private get sidebarWidth():string {
-    console.log("sidebarWidth",this.isCollapse, normalAsideWidth, stretchAsideWidth)
-    let isSession = sessionStorage.getItem('isCollapse') ? sessionStorage.getItem('isCollapse')  === 'true' : this.isCollapse
-    return isSession ? stretchAsideWidth : normalAsideWidth
+  private get sidebarWidth(): string {
+    console.log(
+      "sidebarWidth",
+      this.isCollapse,
+      normalAsideWidth,
+      stretchAsideWidth
+    );
+    let isSession = sessionStorage.getItem("isCollapse")
+      ? sessionStorage.getItem("isCollapse") === "true"
+      : this.isCollapse;
+    return isSession ? stretchAsideWidth : normalAsideWidth;
   }
 
   login() {
@@ -235,8 +257,8 @@ export default class App extends Vue {
     }
     return tree;
   }
-  handleClickAside(isAside:boolean):void {
-    this.isCollapse = isAside
+  handleClickAside(isAside: boolean): void {
+    this.isCollapse = isAside;
   }
 }
 </script>
@@ -367,7 +389,7 @@ $asideActive: #e29334;
   background-color: #ef9d39;
   z-index: 101;
   color: $asideFontColor !important;
-  transition: width .28s;
+  transition: width 0.28s;
   overflow: hidden;
 }
 .ih-aside i {

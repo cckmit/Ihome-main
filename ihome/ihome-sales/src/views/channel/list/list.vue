@@ -3,8 +3,8 @@
  * @version: 
  * @Author: zyc
  * @Date: 2020-06-30 09:21:17
- * @LastEditors: zyc
- * @LastEditTime: 2020-08-13 16:18:01
+ * @LastEditors: lgf
+ * @LastEditTime: 2020-09-17 17:00:49
 --> 
 <template>
   <ih-page>
@@ -117,13 +117,13 @@
           <el-col :span="8">
             <el-form-item label="状态">
               <el-select
-                v-model="queryPageParameters.state"
+                v-model="queryPageParameters.stated"
                 clearable
                 placeholder="请选择"
                 class="width--100"
               >
                 <el-option
-                  v-for="item in $root.displayList('state')"
+                  v-for="item in $root.displayList('stated')"
                   :key="item.value"
                   :label="item.label"
                   :value="item.value"
@@ -239,9 +239,7 @@ export default class UserList extends Vue {
     employeeCode: null,
     employeeStatus: "On",
     employeeType: "Formal",
-    employmentDateEnd: null,
-    employmentDateStart: null,
-    employmentDate: null,
+
     leaveDateEnd: null,
     leaveDateStart: null,
     leaveDate: null,
@@ -398,6 +396,7 @@ export default class UserList extends Vue {
       this.$message.warning("请先选择数据");
     }
   }
+
   finishCopyUser(data: any) {
     console.log(data);
     this.search();
@@ -405,6 +404,10 @@ export default class UserList extends Vue {
   handleSelectionChange(val: any) {
     console.log(val);
     this.copyUserData = val;
+  }
+  //详情
+  info(scope: any) {
+    console.log("详情页跳转");
   }
 }
 </script>

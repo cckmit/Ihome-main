@@ -3,8 +3,8 @@
  * @version: 
  * @Author: zyc
  * @Date: 2020-06-24 09:47:33
- * @LastEditors: zyc
- * @LastEditTime: 2020-09-08 10:04:26
+ * @LastEditors: lgf
+ * @LastEditTime: 2020-09-16 09:56:46
  */
 import { IRes } from "./users.d";
 // import request from '@/utils/http';
@@ -149,6 +149,35 @@ export function allMenu<T>() {
             icon: null,
             path: "/web-sales/ChannelRatings",
         },
+        {
+            id: 205,
+            parentId: 201,
+            title: "渠道等级信息列表",
+            icon: "el-icon-setting",
+            path: "/web-sales/Channellevel",
+        },
+        {
+            id: 206,
+            parentId: 201,
+            title: "渠道呈批列表",
+            icon: "el-icon-setting",
+            path: "/web-sales/ChannelAgroupOf",
+        },
+        {
+            id: 207,
+            parentId: 201,
+            title: "渠道基础信息变更列表",
+            icon: "el-icon-setting",
+            path: "/web-sales/ChannelBasicInfoChange",
+        },
+        {
+            id: 208,
+            parentId: 201,
+            title: "渠道邀请码列表",
+            icon: "el-icon-setting",
+            path: "/web-sales/ChannelInviteCode",
+        },
+
 
 
 

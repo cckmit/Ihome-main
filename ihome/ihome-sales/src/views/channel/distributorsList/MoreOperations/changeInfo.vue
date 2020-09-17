@@ -4,10 +4,10 @@
  * @Author: lgf
  * @Date: 2020-09-15 17:26:19
  * @LastEditors: lgf
- * @LastEditTime: 2020-09-15 18:18:43
+ * @LastEditTime: 2020-09-16 10:19:25
 -->
 <template>
-  <div>录入修改页</div>
+  <div>变更信息页</div>
 </template>
 <script lang="ts">
 import { Component, Vue } from "vue-property-decorator";

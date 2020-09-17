@@ -4,7 +4,7 @@
  * @Author: zyc
  * @Date: 2020-08-13 11:40:10
  * @LastEditors: lgf
- * @LastEditTime: 2020-09-15 18:19:01
+ * @LastEditTime: 2020-09-17 08:52:30
 -->
 <template>
   <div>
@@ -31,13 +31,13 @@
         <el-col :span="8">
           <el-form-item label="省份">
             <el-select
-              v-model="queryPageParameters.status"
+              v-model="queryPageParameters.provinces"
               clearable
               placeholder="请选择省份"
               class="width--100"
             >
               <el-option
-                v-for="item in  $root.displayList('accountStatus')"
+                v-for="item in  $root.displayList('provinces')"
                 :key="item.value"
                 :label="item.label"
                 :value="item.value"
@@ -48,13 +48,13 @@
         <el-col :span="8">
           <el-form-item label="城市">
             <el-select
-              v-model="queryPageParameters.status"
+              v-model="queryPageParameters.city"
               clearable
               placeholder="请选择城市"
               class="width--100"
             >
               <el-option
-                v-for="item in  $root.displayList('accountStatus')"
+                v-for="item in  $root.displayList('city')"
                 :key="item.value"
                 :label="item.label"
                 :value="item.value"
@@ -65,13 +65,13 @@
         <el-col :span="8">
           <el-form-item label="行政区">
             <el-select
-              v-model="queryPageParameters.status"
+              v-model="queryPageParameters.administrative"
               clearable
               placeholder="行政区"
               class="width--100"
             >
               <el-option
-                v-for="item in  $root.displayList('accountStatus')"
+                v-for="item in  $root.displayList('administrative')"
                 :key="item.value"
                 :label="item.label"
                 :value="item.value"
@@ -87,13 +87,13 @@
         <el-col :span="8">
           <el-form-item label="状态">
             <el-select
-              v-model="queryPageParameters.status"
+              v-model="queryPageParameters.state"
               clearable
               placeholder="状态"
               class="width--100"
             >
               <el-option
-                v-for="item in  $root.displayList('accountStatus')"
+                v-for="item in  $root.displayList('state')"
                 :key="item.value"
                 :label="item.label"
                 :value="item.value"
@@ -156,13 +156,7 @@
 </template>
 <script lang="ts">
 import { Component, Vue } from "vue-property-decorator";
-import {
-  post_user_getList,
-  post_user_delete__id,
-  post_user_lock__id,
-  post_user_activate__id,
-  post_user_resetPassword__id,
-} from "../../../api/system/index";
+import { post_user_getList } from "../../../api/system/index";
 
 import PaginationMixin from "../../../mixins/pagination";
 @Component({
@@ -176,7 +170,10 @@ export default class UserList extends Vue {
     employeeCode: null,
     employeeStatus: "On",
     employeeType: "Formal",
-
+    provinces: "one",
+    city: "one",
+    administrative: "tianhe",
+    state: "draft",
     permissionOrgId: null,
     status: "Valid",
     workType: null,
@@ -196,20 +193,39 @@ export default class UserList extends Vue {
     console.log("清空");
   }
   //操作
-  info() {
-    console.log("详情");
+  info(scope: any) {
+    this.$router.push({
+      path: "/info",
+      query: { id: scope.row.id },
+    });
   }
-  change() {
-    console.log("修改");
+  change(scope: any) {
+    console.log("录入修改");
+    this.$router.push({
+      path: "//ModifyThe",
+      query: { id: scope.row.id },
+    });
   }
-  confirm() {
+  confirm(scope: any) {
     console.log("确认");
+    this.$router.push({
+      path: "/confirm",
+      query: { id: scope.row.id },
+    });
   }
-  changeinfo() {
+  changeinfo(scope: any) {
     console.log("变更信息");
+    this.$router.push({
+      path: "/changeInfo",
+      query: { id: scope.row.id },
+    });
   }
-  maintenance() {
+  maintenance(scope: any) {
     console.log("维护渠道经纪人");
+    this.$router.push({
+      path: "/MaintenanceOfChannels",
+      query: { id: scope.row.id },
+    });
   }
   created() {
     this.getListMixin();
@@ -222,12 +238,12 @@ export default class UserList extends Vue {
   handleSelectionChange(val: any) {
     console.log(val);
   }
-  handleSizeChangeMixin(val: any) {
-    console.log("页码大小");
-  }
-  handleCurrentChangeMixin(val: any) {
-    console.log("指定页码");
-  }
+  // handleSizeChangeMixin(val: any) {
+  //   console.log("页码大小");
+  // }
+  // handleCurrentChangeMixin(val: any) {
+  //   console.log("指定页码");
+  // }
 }
 </script>
 <style lang="scss" scoped>

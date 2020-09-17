@@ -3,8 +3,8 @@
  * @version: 
  * @Author: zyc
  * @Date: 2020-07-06 09:41:43
- * @LastEditors: zyc
- * @LastEditTime: 2020-08-14 09:29:21
+ * @LastEditors: lgf
+ * @LastEditTime: 2020-09-16 11:09:07
 --> 
 <template>
   <ih-page>
@@ -148,7 +148,7 @@
 <script lang="ts">
 import ResourcesAdd from "./add.vue";
 import ResourcesEdit from "./edit.vue";
-import ResourcesRadio from "@/components/resourcesRadio.vue";
+import ResourcesRadio from "@/components/ResourcesRadio.vue";
 // import { DictionariesModule } from "../../store/modules/dictionaries";
 import { Component, Vue } from "vue-property-decorator";
 import PaginationMixin from "../../mixins/pagination";
