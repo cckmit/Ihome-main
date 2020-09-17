@@ -4,7 +4,7 @@
  * @Author: wwq
  * @Date: 2020-09-09 16:17:16
  * @LastEditors: wwq
- * @LastEditTime: 2020-09-17 16:07:10
+ * @LastEditTime: 2020-09-17 17:12:17
 -->
 
 <template>
@@ -208,7 +208,10 @@ export default class IhomeUpload extends Vue {
       const delArr = viewerArr.splice(index, viewerArr.length - 1);
       viewerArr.unshift(...delArr);
     }
-    this.viewerArr = [...viewerArr];
+    this.viewerArr = viewerArr.map((v: any) => ({
+      ...v,
+      preFileName: this.list[0].preFileName,
+    }));
     this.viewerIndex = index;
     this.srcList = viewerArr.map((v: any) => v.img_url);
     this.visible = true;
