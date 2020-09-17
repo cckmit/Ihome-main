@@ -3,31 +3,49 @@
  * @version: 
  * @Author: zyc
  * @Date: 2020-06-23 10:42:04
- * @LastEditors: zyc
- * @LastEditTime: 2020-07-28 16:17:41
+ * @LastEditors: ywl
+ * @LastEditTime: 2020-09-17 17:22:52
 --> 
 <template>
   <div class="header-container">
     <div class="left-item">
-      <i class="el-icon-s-fold close-btn" style="font-size:20px;cursor:pointer" :class="isCollapse?'is-active':''" @click="clickAside()"></i>
+      <i
+        class="el-icon-s-fold close-btn"
+        style="font-size:20px;cursor:pointer"
+        :class="isCollapse?'is-active':''"
+        @click="clickAside()"
+      ></i>
       {{$store.getters.asideClose }}{{$store.getters.asideWidth}}
       <div class="breadcrumb">
         <el-breadcrumb separator-class="el-icon-arrow-right">
           <el-breadcrumb-item :to="{ path: '/app/' }">首页</el-breadcrumb-item>
-          <el-breadcrumb-item v-for="(item,index) in  breadcrumbList" :key="index">{{item.title}}</el-breadcrumb-item>
+          <el-breadcrumb-item
+            v-for="(item,index) in  breadcrumbList"
+            :key="index"
+          >{{item.title}}</el-breadcrumb-item>
           <!-- <el-breadcrumb-item>活动列表</el-breadcrumb-item>
           <el-breadcrumb-item>活动详情</el-breadcrumb-item>-->
         </el-breadcrumb>
       </div>
     </div>
     <div class="right-item">
-      <el-popover placement="top-start" width="120" trigger="hover" style="text-align: left;">
+      <el-popover
+        placement="top-start"
+        width="120"
+        trigger="hover"
+        style="text-align: left;"
+      >
         <ul class="head-ul">
           <li>个人中心</li>
           <li @click="doc()">开发规范文档</li>
           <li @click="loginOut()">退出</li>
         </ul>
-        <el-avatar slot="reference" class="avatar" size="medium" :src="circleUrl"></el-avatar>
+        <el-avatar
+          slot="reference"
+          class="avatar"
+          size="medium"
+          :src="circleUrl"
+        ></el-avatar>
       </el-popover>
     </div>
   </div>
@@ -37,18 +55,19 @@ import { Component, Vue, Watch, Prop } from "vue-property-decorator";
 import { UserModule } from "../store/modules/user";
 // import { AsideModule } from "../store/modules/aside";
 import { headImg } from "../utils/base64-img";
-import { defaultIsCollapse } from '@/setting';
+import { defaultIsCollapse } from "@/setting";
 @Component({
   components: {},
 })
 export default class IhHeader extends Vue {
   @Prop({
-    required: true
-  }) private isCollapse!:boolean;
+    required: true,
+  })
+  private isCollapse!: boolean;
 
   breadcrumbList: any = [];
   circleUrl = headImg;
-  private isAside:boolean = defaultIsCollapse;
+  private isAside: boolean = defaultIsCollapse;
   // created() {}
 
   async loginOut() {
@@ -60,12 +79,13 @@ export default class IhHeader extends Vue {
       this.$router.push("/login");
     }
   }
-  clickAside():void {
-    this.isAside = sessionStorage.getItem('isCollapse') ? sessionStorage.getItem('isCollapse')  === 'true' : this.isAside
+  clickAside(): void {
+    this.isAside = sessionStorage.getItem("isCollapse")
+      ? sessionStorage.getItem("isCollapse") === "true"
+      : this.isAside;
     this.isAside = !this.isAside;
-    console.log("未实现", !this.isAside);
-    this.$emit('click-aside', this.isAside);
-    sessionStorage.setItem('isCollapse', this.isAside+'')
+    this.$emit("click-aside", this.isAside);
+    sessionStorage.setItem("isCollapse", this.isAside + "");
   }
 
   @Watch("$route")
