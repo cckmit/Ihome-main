@@ -4,7 +4,7 @@
  * @Author: zyc
  * @Date: 2020-06-30 16:57:11
  * @LastEditors: ywl
- * @LastEditTime: 2020-09-17 16:27:29
+ * @LastEditTime: 2020-09-18 16:33:57
  */
 export const defaultMountApp = '/web-system/'
 // 设置侧边栏伸缩 false--默认不伸缩， true--默认伸缩

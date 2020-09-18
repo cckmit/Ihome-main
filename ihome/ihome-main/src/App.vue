@@ -4,7 +4,7 @@
  * @Author: zyc
  * @Date: 2020-06-22 11:46:23
  * @LastEditors: ywl
- * @LastEditTime: 2020-09-17 17:31:17
+ * @LastEditTime: 2020-09-18 16:07:00
 --> 
 <template>
   <div>
@@ -20,7 +20,7 @@
       >
         <div
           class="container-logo"
-          v-show="!isCollapse"
+          v-show="!isCollapsed"
         >
           <img
             src="./assets/img/logo/logo.png"
@@ -31,7 +31,7 @@
         </div>
         <div
           class="container-logo-lm"
-          v-show="isCollapse"
+          v-show="isCollapsed"
         >
           <img
             src="./assets/img/logo/ihome.jpg"
@@ -43,7 +43,7 @@
 
         <el-scrollbar
           class="scroll"
-          :style="{'height': `calc(100% - ${isCollapse ? '64' : '50'}px)`}"
+          :style="{'height': `calc(100% - ${isCollapsed ? '64' : '50'}px)`}"
         >
           <el-menu
             :default-openeds="defaultOpeneds"
@@ -53,8 +53,8 @@
             text-color="#fff"
             active-text-color="#ffd04b"
             :collapse-transition="false"
-            :collapse="isCollapse"
-            :class="{'is-collapse': isCollapse}"
+            :collapse="isCollapsed"
+            :class="{'is-collapse': isCollapsed}"
             :style="{'width': sidebarWidth}"
           >
             <template
@@ -81,7 +81,20 @@
                   <span>{{item.title}}</span>
                 </template>
                 <template v-for="(childrenItem,childrenIndex) in item.children">
+                  <el-submenu
+                    :index="childrenItem.id"
+                    :key="childrenIndex"
+                    v-if="childrenItem.children"
+                  >
+                    <template slot="title">{{childrenItem.title}}</template>
+                    <el-menu-item
+                      :index="cItem.id"
+                      v-for="(cItem, cIndex) in childrenItem.children"
+                      :key="cIndex"
+                    >{{cItem.title}}</el-menu-item>
+                  </el-submenu>
                   <el-menu-item
+                    v-else
                     :key="childrenIndex"
                     @click="goto(childrenItem.path)"
                     :index="childrenItem.id"
@@ -95,11 +108,7 @@
 
       <el-container v-show="!loginPage">
         <div class="right-container">
-          <IhHeader
-            class="right-container-header"
-            @click-aside="handleClickAside"
-            :isCollapse="isCollapse"
-          />
+          <IhHeader class="right-container-header" />
           <!-- v-loading="loading" -->
           <el-main
             class="right-container-body"
@@ -138,13 +147,9 @@
 import IhHeader from "@/components/IhHeader.vue";
 import { Component, Vue, Prop, Watch } from "vue-property-decorator";
 import { UserModule } from "./store/modules/user";
-// import { AsideModule } from "./store/modules/aside";
+import { AppModule } from "@/store/modules/app";
 import { allMenu } from "./api/users";
-import {
-  normalAsideWidth,
-  stretchAsideWidth,
-  defaultIsCollapse,
-} from "@/setting";
+import { normalAsideWidth, stretchAsideWidth } from "@/setting";
 @Component({
   components: { IhHeader },
 })
@@ -156,7 +161,6 @@ export default class App extends Vue {
   private screenWidth: any = document.body.clientWidth;
   private screenHeight: any = document.body.clientHeight;
   private timer: any = null;
-  private isCollapse: boolean = defaultIsCollapse;
   defaultOpeneds: any[] = []; //展开的菜单
   defaultActive: any = ""; //选中的菜单
 
@@ -184,19 +188,14 @@ export default class App extends Vue {
     this.resize();
     this.loginPage = this.$route.path == "/login";
     this.login();
-    this.isCollapse = sessionStorage.getItem("isCollapse")
-      ? sessionStorage.getItem("isCollapse") === "true"
-      : this.isCollapse;
-    window.addEventListener("beforeunload", () => {
-      sessionStorage.setItem("isCollapse", this.isCollapse + "");
-    });
   }
 
   private get sidebarWidth(): string {
-    let isSession = sessionStorage.getItem("isCollapse")
-      ? sessionStorage.getItem("isCollapse") === "true"
-      : this.isCollapse;
-    return isSession ? stretchAsideWidth : normalAsideWidth;
+    return this.isCollapsed ? stretchAsideWidth : normalAsideWidth;
+  }
+
+  private get isCollapsed(): boolean {
+    return AppModule.opened;
   }
 
   login() {
@@ -288,9 +287,6 @@ export default class App extends Vue {
       }
     }
     return tree;
-  }
-  handleClickAside(isAside: boolean): void {
-    this.isCollapse = isAside;
   }
 }
 </script>

@@ -4,7 +4,7 @@
  * @Author: zyc
  * @Date: 2020-06-23 10:42:04
  * @LastEditors: ywl
- * @LastEditTime: 2020-09-17 17:22:52
+ * @LastEditTime: 2020-09-18 16:04:45
 --> 
 <template>
   <div class="header-container">
@@ -51,19 +51,19 @@
   </div>
 </template>
 <script lang="ts">
-import { Component, Vue, Watch, Prop } from "vue-property-decorator";
+import { Component, Vue, Watch } from "vue-property-decorator";
 import { UserModule } from "../store/modules/user";
-// import { AsideModule } from "../store/modules/aside";
+import { AppModule } from "../store/modules/app";
 import { headImg } from "../utils/base64-img";
 import { defaultIsCollapse } from "@/setting";
 @Component({
   components: {},
 })
 export default class IhHeader extends Vue {
-  @Prop({
-    required: true,
-  })
-  private isCollapse!: boolean;
+  // @Prop({
+  //   required: true,
+  // })
+  // private isCollapse!: boolean;
 
   breadcrumbList: any = [];
   circleUrl = headImg;
@@ -79,13 +79,11 @@ export default class IhHeader extends Vue {
       this.$router.push("/login");
     }
   }
+  private get isCollapse(): boolean {
+    return AppModule.opened;
+  }
   clickAside(): void {
-    this.isAside = sessionStorage.getItem("isCollapse")
-      ? sessionStorage.getItem("isCollapse") === "true"
-      : this.isAside;
-    this.isAside = !this.isAside;
-    this.$emit("click-aside", this.isAside);
-    sessionStorage.setItem("isCollapse", this.isAside + "");
+    AppModule.toggleSideBar();
   }
 
   @Watch("$route")
