@@ -4,7 +4,7 @@
  * @Author: wwq
  * @Date: 2020-09-16 14:54:19
  * @LastEditors: wwq
- * @LastEditTime: 2020-09-17 14:35:52
+ * @LastEditTime: 2020-09-18 18:19:12
 -->
 <template>
   <div>
@@ -27,10 +27,8 @@
 <script lang="ts">
 // import { testApi, testPostApi } from "../api/test";
 import { Component, Vue } from "vue-property-decorator";
-import IhUpload from "@/components/IhUpload.vue";
-@Component({
-  components: { IhUpload },
-})
+// import { IhUpload } from "@/ihome-package/ui/packages/upload/index";
+@Component({})
 export default class Home extends Vue {
   private tableData: any = [];
   private fileList: any = [];

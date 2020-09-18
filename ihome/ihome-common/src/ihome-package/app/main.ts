@@ -3,8 +3,8 @@
  * @version: 
  * @Author: zyc
  * @Date: 2020-07-07 09:25:17
- * @LastEditors: zyc
- * @LastEditTime: 2020-09-14 16:46:51
+ * @LastEditors: wwq
+ * @LastEditTime: 2020-09-18 18:12:30
  */
 import '../util/base/extend'
 import Vue from 'vue'
@@ -12,7 +12,7 @@ import App from './App.vue'
 import { router } from '@/router'
 import store from '@/store'
 import * as dic from '../util/enums/dic'
-let $dic: any = Object.assign(dic,dic.dicModular);
+let $dic: any = Object.assign(dic, dic.dicModular);
 
 // import '@/public-path'
 if ((<any>window).__POWERED_BY_QIANKUN__) {
@@ -30,7 +30,7 @@ import { UserModule } from '@/store/modules/user'
 
 import IhHome from '../ui/src/index'
 import { Tool } from '../util/tool'
-
+console.log(IhHome, '1111111111111111')
 Vue.use(IhHome);
 Vue.use(ElementUI);
 Vue.config.productionTip = false;

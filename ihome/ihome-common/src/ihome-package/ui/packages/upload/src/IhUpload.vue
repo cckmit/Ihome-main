@@ -4,7 +4,7 @@
  * @Author: wwq
  * @Date: 2020-09-09 16:17:16
  * @LastEditors: wwq
- * @LastEditTime: 2020-09-17 17:12:17
+ * @LastEditTime: 2020-09-18 18:18:59
 -->
 
 <template>
@@ -61,14 +61,14 @@
 </template>
 <script lang="ts">
 import { Component, Vue, Prop, Watch } from "vue-property-decorator";
-import IhImageViewer from "@/components/IhImageViewer.vue";
+import IhImageViewer from "./IhImageViewer.vue";
 import request from "@/ihome-package/util/api/http";
 @Component({
   components: {
     IhImageViewer,
   },
 })
-export default class IhomeUpload extends Vue {
+export default class IhUpload extends Vue {
   @Prop() private action: any;
   @Prop() private fileList!: Array<object>;
   @Prop({
@@ -182,16 +182,16 @@ export default class IhomeUpload extends Vue {
       case "doc":
       case "docx":
       case "docm":
-        return require("../../public/word.jpg");
+        return require("../../../img/word.jpg");
       case "xls":
       case "xlsx":
-        return require("../../public/excel.png");
+        return require("../../../img/excel.png");
       case "pdf":
-        return require("../../public/pdf.jpg");
+        return require("../../../img/pdf.jpg");
       case "ppt":
       case "potx":
       case "pptx":
-        return require("../../public/ppt.png");
+        return require("../../../img/ppt.png");
     }
   }
   // 移除图片
@@ -257,19 +257,19 @@ export default class IhomeUpload extends Vue {
       case "doc":
       case "docx":
       case "docm":
-        fileList[index].img_url = require("../../public/word.jpg");
+        fileList[index].img_url = require("../../../img/word.jpg");
         break;
       case "xls":
       case "xlsx":
-        fileList[index].img_url = require("../../public/excel.png");
+        fileList[index].img_url = require("../../../img/excel.png");
         break;
       case "pdf":
-        fileList[index].img_url = require("../../public/pdf.jpg");
+        fileList[index].img_url = require("../../../img/pdf.jpg");
         break;
       case "ppt":
       case "potx":
       case "pptx":
-        fileList[index].img_url = require("../../public/ppt.png");
+        fileList[index].img_url = require("../../../img/ppt.png");
         break;
     }
     this.list = [...fileList];
