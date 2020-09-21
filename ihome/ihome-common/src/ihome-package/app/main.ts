@@ -4,7 +4,7 @@
  * @Author: zyc
  * @Date: 2020-07-07 09:25:17
  * @LastEditors: wwq
- * @LastEditTime: 2020-09-18 18:12:30
+ * @LastEditTime: 2020-09-21 08:41:57
  */
 import '../util/base/extend'
 import Vue from 'vue'
@@ -30,7 +30,6 @@ import { UserModule } from '@/store/modules/user'
 
 import IhHome from '../ui/src/index'
 import { Tool } from '../util/tool'
-console.log(IhHome, '1111111111111111')
 Vue.use(IhHome);
 Vue.use(ElementUI);
 Vue.config.productionTip = false;
