@@ -4,7 +4,7 @@
  * @Author: ywl
  * @Date: 2020-09-18 14:49:57
  * @LastEditors: ywl
- * @LastEditTime: 2020-09-18 16:04:29
+ * @LastEditTime: 2020-09-21 09:24:49
  */
 import { VuexModule, Module, Action, Mutation, getModule } from 'vuex-module-decorators'
 import store from '@/store'
@@ -20,9 +20,8 @@ class App extends VuexModule implements IAppState {
   public opened = sessionStorage.getItem('opened') ? sessionStorage.getItem('opened') === '1' : defaultIsCollapse;
 
   @Mutation
-  private TOGGLE_SIDEBAR() {
+  private TOGGLE_SIDEBAR(): void {
     this.opened = !this.opened
-    console.log(this.opened, 'vuex')
     if (this.opened) {
       sessionStorage.setItem('opened', '1')
     } else {
@@ -31,7 +30,7 @@ class App extends VuexModule implements IAppState {
   }
 
   @Action
-  public toggleSideBar() {
+  public toggleSideBar(): void {
     this.TOGGLE_SIDEBAR()
   }
 }

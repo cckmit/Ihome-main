@@ -4,7 +4,7 @@
  * @Author: zyc
  * @Date: 2020-06-22 11:46:23
  * @LastEditors: ywl
- * @LastEditTime: 2020-09-18 16:07:00
+ * @LastEditTime: 2020-09-21 10:42:24
 --> 
 <template>
   <div>
@@ -376,20 +376,20 @@ body {
   min-height: 400px;
 }
 // 滚动条整体样式
-::-webkit-scrollbar {
-  width: 6px;
-  height: 6px;
-}
-::-webkit-scrollbar-thumb {
-  border-radius: 12px;
-  box-shadow: inset 0 0 5px rgba(0, 0, 0, 0.2);
-  background: rgba(144, 147, 153, 0.3);
-}
-::-webkit-scrollbar-track {
-  box-shadow: inset 0 0 5px rgba(0, 0, 0, 0.2);
-  border-radius: 12px;
-  background: #ededed;
-}
+// ::-webkit-scrollbar {
+//   width: 6px;
+//   height: 6px;
+// }
+// ::-webkit-scrollbar-thumb {
+//   border-radius: 12px;
+//   box-shadow: inset 0 0 5px rgba(0, 0, 0, 0.2);
+//   background: rgba(144, 147, 153, 0.3);
+// }
+// ::-webkit-scrollbar-track {
+//   box-shadow: inset 0 0 5px rgba(0, 0, 0, 0.2);
+//   border-radius: 12px;
+//   background: #ededed;
+// }
 </style>
 <style scoped lang="scss">
 $asideFontColor: #f5eed4;

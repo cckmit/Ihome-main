@@ -4,7 +4,7 @@
  * @Author: zyc
  * @Date: 2020-06-23 10:42:04
  * @LastEditors: ywl
- * @LastEditTime: 2020-09-18 16:04:45
+ * @LastEditTime: 2020-09-21 08:44:07
 --> 
 <template>
   <div class="header-container">
@@ -15,7 +15,6 @@
         :class="isCollapse?'is-active':''"
         @click="clickAside()"
       ></i>
-      {{$store.getters.asideClose }}{{$store.getters.asideWidth}}
       <div class="breadcrumb">
         <el-breadcrumb separator-class="el-icon-arrow-right">
           <el-breadcrumb-item :to="{ path: '/app/' }">首页</el-breadcrumb-item>
