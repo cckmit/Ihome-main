@@ -4,14 +4,14 @@
  * @Author: zyc
  * @Date: 2020-08-13 11:40:10
  * @LastEditors: lgf
- * @LastEditTime: 2020-09-17 08:52:30
+ * @LastEditTime: 2020-09-18 17:47:52
 -->
 <template>
-  <div>
+  <ih-page>
     <el-breadcrumb separator-class="el-icon-arrow-right">
       <el-breadcrumb-item class="line">{{$route.meta.title}}</el-breadcrumb-item>
     </el-breadcrumb>
-    <el-form ref="form" label-width="90px">
+    <el-form ref="form" label-width="80px">
       <el-row>
         <el-col :span="8">
           <el-form-item label="名称">
@@ -103,11 +103,13 @@
         </el-col>
       </el-row>
     </el-form>
-    <el-row class="el-row">
-      <el-button type="primary" @click="search()">查询</el-button>
-      <el-button type="success" @click="add()">添加</el-button>
-      <el-button type="info" @click="empty()">清空</el-button>
-    </el-row>
+    <div class="ih-page-btn">
+      <el-row class="el-row">
+        <el-button type="primary" @click="search()">查询</el-button>
+        <el-button type="success" @click="add()">添加</el-button>
+        <el-button type="info" @click="empty()">清空</el-button>
+      </el-row>
+    </div>
     <br />
     <el-table
       class="ih-table"
@@ -116,16 +118,14 @@
       @selection-change="handleSelectionChange"
     >
       <el-table-column fixed type="selection" label="名称" width="100"></el-table-column>
-      <el-table-column fixed type="index" label="名称" width="100"></el-table-column>
-      <el-table-column fixed prop="name" label="简称" width="90"></el-table-column>
-      <el-table-column fixed prop="account" label="省份" width="150"></el-table-column>
-      <el-table-column prop="mobilePhone" label="城市" width="120"></el-table-column>
-      <el-table-column prop="accountType" label="行政区" width="120">
-        <template slot-scope="scope">{{$root.displayName('accountType',scope.row.accountType)}}</template>
-      </el-table-column>
-      <el-table-column prop="orgName" label="跟进人" width="120"></el-table-column>
-      <el-table-column prop="employeeCode" label="状态" width="150"></el-table-column>
-      <el-table-column label="操作" width="120">
+      <el-table-column fixed type="index" label="名称" width="200"></el-table-column>
+      <el-table-column fixed prop="name" label="简称" width="200"></el-table-column>
+      <el-table-column fixed prop="account" label="省份" width="200"></el-table-column>
+      <el-table-column prop="mobilePhone" label="城市" width="200"></el-table-column>
+      <el-table-column prop="accountType" label="行政区" width="200"></el-table-column>
+      <el-table-column prop="orgName" label="跟进人" width="150"></el-table-column>
+      <el-table-column prop="employeeCode" label="状态" width="200"></el-table-column>
+      <el-table-column label="操作" width="200">
         <template slot-scope="scope">
           <el-link type="primary" @click.native.prevent="info(scope)">详情</el-link>
           <el-dropdown trigger="click" style="margin-left:15px;">
@@ -152,7 +152,7 @@
       :layout="$root.paginationLayout"
       :total="resPageInfo.total"
     ></el-pagination>
-  </div>
+  </ih-page>
 </template>
 <script lang="ts">
 import { Component, Vue } from "vue-property-decorator";

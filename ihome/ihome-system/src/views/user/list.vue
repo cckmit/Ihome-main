@@ -3,8 +3,8 @@
  * @version: 
  * @Author: zyc
  * @Date: 2020-06-30 09:21:17
- * @LastEditors: zyc
- * @LastEditTime: 2020-08-13 16:18:01
+ * @LastEditors: lgf
+ * @LastEditTime: 2020-09-21 18:10:53
 --> 
 <template>
   <ih-page>
@@ -526,7 +526,7 @@ export default class UserList extends Vue {
   }
   handleSelectionChange(val: any) {
     console.log(val);
-    this.copyUserData = val;
+    // this.copyUserData = val;
   }
 }
 </script>

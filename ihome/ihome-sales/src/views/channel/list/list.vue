@@ -4,7 +4,7 @@
  * @Author: zyc
  * @Date: 2020-06-30 09:21:17
  * @LastEditors: lgf
- * @LastEditTime: 2020-09-17 17:00:49
+ * @LastEditTime: 2020-09-18 10:43:42
 --> 
 <template>
   <ih-page>
@@ -168,19 +168,19 @@
         :default-sort="{prop: 'id', order: 'descending'}"
         @selection-change="handleSelectionChange"
       >
-        <el-table-column fixed type="index" label="渠道商名称" width="100"></el-table-column>
-        <el-table-column fixed prop="name" label="业务开展省份" width="90"></el-table-column>
-        <el-table-column fixed prop="account" label="业务开展城市" width="150"></el-table-column>
-        <el-table-column prop="mobilePhone" label="城市等级" width="120"></el-table-column>
-        <el-table-column prop="accountType" label="渠道等级" width="120">
+        <el-table-column fixed type="index" label="渠道商名称" width="200"></el-table-column>
+        <el-table-column fixed prop="name" label="业务开展省份" width="170"></el-table-column>
+        <el-table-column fixed prop="account" label="业务开展城市" width="170"></el-table-column>
+        <el-table-column prop="mobilePhone" label="城市等级" width="170"></el-table-column>
+        <el-table-column prop="accountType" label="渠道等级" width="170">
           <template slot-scope="scope">{{$root.displayName('accountType',scope.row.accountType)}}</template>
         </el-table-column>
-        <el-table-column prop="orgName" label="事业部" width="150"></el-table-column>
+        <el-table-column prop="orgName" label="事业部" width="200"></el-table-column>
         <el-table-column prop="employeeCode" label="录入人" width="150"></el-table-column>
-        <el-table-column prop="status" label="状态" width="120">
+        <el-table-column prop="status" label="状态" width="150">
           <template slot-scope="scope">{{$root.displayName('accountStatus',scope.row.status)}}</template>
         </el-table-column>
-        <el-table-column label="操作" width="150">
+        <el-table-column label="操作" width="200">
           <template slot-scope="scope">
             <el-link type="primary" @click.native.prevent="info(scope)">详情</el-link>
             <el-dropdown trigger="click" style="margin-left:15px;">
