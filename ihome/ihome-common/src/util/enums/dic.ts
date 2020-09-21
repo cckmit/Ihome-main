@@ -3,8 +3,8 @@
  * @version: 
  * @Author: zyc
  * @Date: 2020-09-14 16:33:45
- * @LastEditors: zyc
- * @LastEditTime: 2020-09-14 16:34:06
+ * @LastEditors: wwq
+ * @LastEditTime: 2020-09-21 17:39:14
  */
 /**测试
  * @param {type} 
@@ -15,4 +15,8 @@ export const testData: any = {
     tow: '2',
 
 }
- 
+export const gender: any = {
+    0: '男',
+    1: '女',
+
+}
