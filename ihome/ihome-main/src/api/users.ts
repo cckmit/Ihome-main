@@ -3,8 +3,8 @@
  * @version: 
  * @Author: zyc
  * @Date: 2020-06-24 09:47:33
- * @LastEditors: zyc
- * @LastEditTime: 2020-09-08 10:04:26
+ * @LastEditors: ywl
+ * @LastEditTime: 2020-09-18 11:04:27
  */
 import { IRes } from "./users.d";
 // import request from '@/utils/http';
@@ -120,19 +120,32 @@ export function allMenu<T>() {
             icon: null,
             path: "/web-sales/",
         },
+        {
+            id: 401,
+            parentId: 101,
+            title: '合同管理',
+            path: null,
+        },
+        {
+            id: 402,
+            parentId: 401,
+            title: "甲方合同",
+            icon: null,
+            path: "/web-sales/project/list"
+        }
     ];
     return menuList;
 }
 export const login = async (data: any) => {
     //http://localhost:8610/sales-oauth2/oauth/token?grant_type=password&client_id=sales-client-dev&client_secret=sales-dev&username=admin&password=123456
- 
+
     let url = `/sales-oauth2/oauth/token?grant_type=password&client_id=sales-client-dev&client_secret=sales-dev&username=${data.username}&password=${data.password}`;
-    
+
     const res: any = await request({
         url: url,
         method: 'post',
     })
-    
+
     return res;
 
 }

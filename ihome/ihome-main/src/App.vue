@@ -3,20 +3,48 @@
  * @version: 
  * @Author: zyc
  * @Date: 2020-06-22 11:46:23
- * @LastEditors: zyc
- * @LastEditTime: 2020-08-26 08:58:01
+ * @LastEditors: ywl
+ * @LastEditTime: 2020-09-21 10:42:24
 --> 
 <template>
   <div>
-    <el-container v-show="!loginPage" id="main-root" class="root">
-      <el-aside :width="sidebarWidth" :style="{'height':screenHeight+'px'}" class="ih-aside">
-        <div class="container-logo" v-show="!isCollapse">
-          <img src="./assets/img/logo/logo.png" style="width:100%;" alt srcset />
+    <el-container
+      v-show="!loginPage"
+      id="main-root"
+      class="root"
+    >
+      <el-aside
+        :width="sidebarWidth"
+        :style="{'height':screenHeight+'px'}"
+        class="ih-aside"
+      >
+        <div
+          class="container-logo"
+          v-show="!isCollapsed"
+        >
+          <img
+            src="./assets/img/logo/logo.png"
+            style="width:100%;"
+            alt
+            srcset
+          />
         </div>
-        <div class="container-logo-lm" v-show="isCollapse">
-          <img src="./assets/img/logo/ihome.jpg" style="width:100%;" alt srcset />
+        <div
+          class="container-logo-lm"
+          v-show="isCollapsed"
+        >
+          <img
+            src="./assets/img/logo/ihome.jpg"
+            style="width:100%;"
+            alt
+            srcset
+          />
         </div>
-        <el-scrollbar class="scroll">
+
+        <el-scrollbar
+          class="scroll"
+          :style="{'height': `calc(100% - ${isCollapsed ? '64' : '50'}px)`}"
+        >
           <el-menu
             :default-openeds="defaultOpeneds"
             :default-active="defaultActive"
@@ -25,38 +53,48 @@
             text-color="#fff"
             active-text-color="#ffd04b"
             :collapse-transition="false"
-            :collapse="isCollapse"
+            :collapse="isCollapsed"
+            :class="{'is-collapse': isCollapsed}"
+            :style="{'width': sidebarWidth}"
           >
-            <!-- <el-submenu index="1">
-              <template slot="title">
-                <i class="el-icon-location"></i>
-                <span slot="title">导航一</span>
-              </template>
-              <el-menu-item index="1-1">选项1</el-menu-item>
-              <el-menu-item index="1-2">选项2</el-menu-item>
-              <el-submenu index="1-4">
-                <span slot="title">选项4</span>
-                <el-menu-item index="1-4-1">选项4-1</el-menu-item>
-                <el-menu-item index="1-4-2">选项4-2</el-menu-item>
-              </el-submenu>
-            </el-submenu>
-            <el-menu-item index="2">
-              <i class="el-icon-menu"></i>
-              <span slot="title">导航二</span>
-            </el-menu-item>-->
-            <template :index="item.id" v-for="(item) in groupMenuList" >
-              <el-menu-item :index="item.id" v-if="!item.children" @click="goto(item.path)" :key="item.id">
+            <template
+              :index="item.id"
+              v-for="(item) in groupMenuList"
+            >
+              <el-menu-item
+                :index="item.id"
+                v-if="!item.children"
+                @click="goto(item.path)"
+                :key="item.id"
+              >
                 <i :class="item.icon"></i>
                 <span>{{item.title}}</span>
               </el-menu-item>
 
-              <el-submenu :index="item.id" v-if="item.children" :key="item.id">
+              <el-submenu
+                :index="item.id"
+                v-if="item.children"
+                :key="item.id"
+              >
                 <template slot="title">
                   <i :class="item.icon"></i>
                   <span>{{item.title}}</span>
                 </template>
                 <template v-for="(childrenItem,childrenIndex) in item.children">
+                  <el-submenu
+                    :index="childrenItem.id"
+                    :key="childrenIndex"
+                    v-if="childrenItem.children"
+                  >
+                    <template slot="title">{{childrenItem.title}}</template>
+                    <el-menu-item
+                      :index="cItem.id"
+                      v-for="(cItem, cIndex) in childrenItem.children"
+                      :key="cIndex"
+                    >{{cItem.title}}</el-menu-item>
+                  </el-submenu>
                   <el-menu-item
+                    v-else
                     :key="childrenIndex"
                     @click="goto(childrenItem.path)"
                     :index="childrenItem.id"
@@ -70,19 +108,37 @@
 
       <el-container v-show="!loginPage">
         <div class="right-container">
-          <IhHeader class="right-container-header" @click-aside="handleClickAside" :isCollapse="isCollapse"/>
+          <IhHeader class="right-container-header" />
           <!-- v-loading="loading" -->
-          <el-main class="right-container-body" :style="{'min-height':screenHeight-50+'px'}">
+          <el-main
+            class="right-container-body"
+            :style="{'height':screenHeight-50+'px'}"
+          >
             <!-- <div  id="root-view" class="app-view-box" v-html="content"></div> -->
             <!-- <div id="root-ihome-web-cli" class="app-view-box" v-html="content"></div> -->
-            <div id="root-ihome-web-system" class="app-view-box" v-html="content"></div>
-            <div id="root-ihome-web-common" class="app-view-box" v-html="content"></div>
-            <div id="root-ihome-web-sales" class="app-view-box" v-html="content"></div>
+            <div
+              id="root-ihome-web-system"
+              class="app-view-box"
+              v-html="content"
+            ></div>
+            <div
+              id="root-ihome-web-common"
+              class="app-view-box"
+              v-html="content"
+            ></div>
+            <div
+              id="root-ihome-web-sales"
+              class="app-view-box"
+              v-html="content"
+            ></div>
           </el-main>
         </div>
       </el-container>
     </el-container>
-    <div class="layout-router" v-show="loginPage">
+    <div
+      class="layout-router"
+      v-show="loginPage"
+    >
       <router-view />
     </div>
   </div>
@@ -91,9 +147,9 @@
 import IhHeader from "@/components/IhHeader.vue";
 import { Component, Vue, Prop, Watch } from "vue-property-decorator";
 import { UserModule } from "./store/modules/user";
-// import { AsideModule } from "./store/modules/aside";
+import { AppModule } from "@/store/modules/app";
 import { allMenu } from "./api/users";
-import { normalAsideWidth, stretchAsideWidth, defaultIsCollapse } from '@/setting';
+import { normalAsideWidth, stretchAsideWidth } from "@/setting";
 @Component({
   components: { IhHeader },
 })
@@ -105,7 +161,6 @@ export default class App extends Vue {
   private screenWidth: any = document.body.clientWidth;
   private screenHeight: any = document.body.clientHeight;
   private timer: any = null;
-  private isCollapse: boolean = defaultIsCollapse;
   defaultOpeneds: any[] = []; //展开的菜单
   defaultActive: any = ""; //选中的菜单
 
@@ -133,16 +188,14 @@ export default class App extends Vue {
     this.resize();
     this.loginPage = this.$route.path == "/login";
     this.login();
-    this.isCollapse = sessionStorage.getItem('isCollapse') ? sessionStorage.getItem('isCollapse')  === 'true' : this.isCollapse
-    window.addEventListener("beforeunload", ()=>{
-      sessionStorage.setItem('isCollapse', this.isCollapse+'')
-    })
   }
 
-  private get sidebarWidth():string {
-    console.log("sidebarWidth",this.isCollapse, normalAsideWidth, stretchAsideWidth)
-    let isSession = sessionStorage.getItem('isCollapse') ? sessionStorage.getItem('isCollapse')  === 'true' : this.isCollapse
-    return isSession ? stretchAsideWidth : normalAsideWidth
+  private get sidebarWidth(): string {
+    return this.isCollapsed ? stretchAsideWidth : normalAsideWidth;
+  }
+
+  private get isCollapsed(): boolean {
+    return AppModule.opened;
   }
 
   login() {
@@ -235,9 +288,6 @@ export default class App extends Vue {
     }
     return tree;
   }
-  handleClickAside(isAside:boolean):void {
-    this.isCollapse = isAside
-  }
 }
 </script>
 <style lang="scss">
@@ -282,9 +332,14 @@ body {
 .scroll {
   height: 100%;
   .el-scrollbar__wrap {
-    overflow-x: hidden;
+    overflow: hidden;
     overflow-y: auto;
-    margin-right: 0 !important;
+  }
+  .el-scrollbar__bar.is-horizontal {
+    height: 0;
+  }
+  .el-scrollbar__bar.is-vertical {
+    width: 6px !important;
   }
 }
 // .el-menu .el-submenu,
@@ -302,7 +357,11 @@ body {
 }
 .el-menu {
   border-right: solid 1px $asideBg !important;
-  margin: 0 auto !important;
+  &.is-collapse {
+    // width: calc(100% - 17px) !important;
+    // margin: 0 auto !important;
+    text-align: center;
+  }
 }
 .el-submenu :hover {
   color: #fff !important;
@@ -316,6 +375,21 @@ body {
   width: 199px;
   min-height: 400px;
 }
+// 滚动条整体样式
+// ::-webkit-scrollbar {
+//   width: 6px;
+//   height: 6px;
+// }
+// ::-webkit-scrollbar-thumb {
+//   border-radius: 12px;
+//   box-shadow: inset 0 0 5px rgba(0, 0, 0, 0.2);
+//   background: rgba(144, 147, 153, 0.3);
+// }
+// ::-webkit-scrollbar-track {
+//   box-shadow: inset 0 0 5px rgba(0, 0, 0, 0.2);
+//   border-radius: 12px;
+//   background: #ededed;
+// }
 </style>
 <style scoped lang="scss">
 $asideFontColor: #f5eed4;
@@ -367,7 +441,7 @@ $asideActive: #e29334;
   background-color: #ef9d39;
   z-index: 101;
   color: $asideFontColor !important;
-  transition: width .28s;
+  transition: width 0.28s;
   overflow: hidden;
 }
 .ih-aside i {
