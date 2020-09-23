@@ -4,12 +4,11 @@
  * @Author: wwq
  * @Date: 2020-09-16 14:54:19
  * @LastEditors: wwq
- * @LastEditTime: 2020-09-21 18:06:45
+ * @LastEditTime: 2020-09-23 16:17:31
 -->
 <template>
   <div class="tableDemo">
     <ih-table
-      height="500"
       :data="tableData"
       :column="tableColumn"
       @row-dblclick="rowDblclick"
@@ -41,6 +40,13 @@
           </template>
         </el-table-column>
       </template>
+      <template #age>
+        <el-table-column label="年龄" width="500" align="left">
+          <template v-slot="{row}">
+            <span :class="{red: row.age > 20}">{{row.age}}</span>
+          </template>
+        </el-table-column>
+      </template>
     </ih-table>
   </div>
 </template>
@@ -53,28 +59,95 @@ export default class TableDemo extends Vue {
   private tableColumn = [
     {
       label: "名称",
-      prop: "name",
-      width: 100,
-      fixed: true,
+      align: "center",
+      children: [
+        {
+          label: "名称1",
+          align: "center",
+          children: [
+            {
+              label: "名称1-1",
+              prop: "name1",
+              peri: "111",
+            },
+            {
+              label: "名称1-2",
+              prop: "name2",
+              peri: "111",
+            },
+          ],
+        },
+        {
+          label: "名称2",
+          prop: "name2",
+          peri: "222",
+        },
+        {
+          label: "名称3",
+          align: "center",
+          children: [
+            {
+              label: "名称3-1",
+              align: "center",
+              children: [
+                {
+                  label: "名称3-1-1",
+                  width: 100,
+                  align: "center",
+                  prop: "name3",
+                  peri: "333",
+                },
+                {
+                  label: "名称3-1-2",
+                  width: 100,
+                  align: "center",
+                  prop: "name3",
+                  peri: "333",
+                },
+              ],
+            },
+            {
+              label: "名称3-2",
+              align: "center",
+              children: [
+                {
+                  label: "名称3-2-1",
+                  prop: "name3",
+                  width: 100,
+                  align: "center",
+                  peri: "333",
+                },
+                {
+                  label: "名称3-2-2",
+                  prop: "name3",
+                  width: 100,
+                  align: "center",
+                  peri: "333",
+                },
+              ],
+            },
+          ],
+        },
+      ],
     },
     {
-      label: "年龄",
-      prop: "age",
-      width: 500,
+      slot: "age",
     },
     {
       label: "性别",
       prop: "gender",
-      width: 500,
+      minWidth: 500,
       formatter: (cell: any) => {
         // return (this.$root as any).$root.displayName("gender", row.gender);
         return gender[cell.gender];
       },
+      peri: "gender",
     },
     {
       label: "职业",
       prop: "profession",
       width: 500,
+      peri: "profession",
     },
     {
       slot: "operation",
@@ -107,48 +180,61 @@ export default class TableDemo extends Vue {
     console.log(where, "操作");
   }
   private getImage() {
-    console.log(this.$root);
     return new Promise((resolve) => {
       setTimeout(() => {
         resolve([
           {
-            name: "aaa",
+            name1: "aaa1",
+            name2: "aaa2",
+            name3: "aaa3",
             age: 18,
             gender: "1",
             profession: "aaa",
           },
           {
-            name: "bbb",
+            name1: "bbb1",
+            name2: "bbb2",
+            name3: "bbb3",
             age: 19,
             gender: "0",
             profession: "bbb",
           },
           {
-            name: "ccc",
+            name1: "ccc1",
+            name2: "ccc2",
+            name3: "ccc3",
             age: 20,
             gender: "1",
             profession: "ccc",
           },
           {
-            name: "ddd",
+            name1: "ddd1",
+            name2: "ddd2",
+            name3: "ddd3",
             age: 21,
             gender: "0",
             profession: "ddd",
           },
           {
-            name: "eee",
+            name1: "eee1",
+            name2: "eee2",
+            name3: "eee3",
             age: 22,
             gender: "1",
             profession: "eee",
           },
           {
-            name: "fff",
+            name1: "fff1",
+            name2: "fff2",
+            name3: "fff3",
             age: 23,
             gender: "1",
             profession: "fff",
           },
           {
-            name: "ggg",
+            name1: "ggg1",
+            name2: "ggg2",
+            name3: "ggg3",
             age: 24,
             gender: "1",
             profession: "ggg",
@@ -165,7 +251,7 @@ export default class TableDemo extends Vue {
 }
 </script>
 <style lang="scss" scoped>
-.tableDemo {
-  height: 700px;
+.red {
+  color: #ff455b;
 }
 </style>

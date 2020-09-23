@@ -4,7 +4,7 @@
  * @Author: wwq
  * @Date: 2020-09-16 14:54:19
  * @LastEditors: wwq
- * @LastEditTime: 2020-09-21 17:05:54
+ * @LastEditTime: 2020-09-23 16:49:40
 -->
 <template>
   <div class="box">
@@ -17,7 +17,7 @@
         :row-key="rowKey"
         :row-class-name="rowClassName"
         :highlight-current-row="highlightCurrentRow"
-        @selection-change="(selection) => $emit('selection-change', selection)"
+        @selection-change="selection => $emit('selection-change', selection)"
         @row-dblclick="(row, column, event) => $emit('row-dblclick', row, column, event)"
         @current-change="(currentRow, oldCurrentRow) => $emit('current-change', currentRow, oldCurrentRow)"
       >
@@ -38,9 +38,9 @@
           align="center"
           :index="indexHandler"
         ></el-table-column>
-        <template v-for="(col, index) in column">
+        <template v-for="(col, index) in columns">
           <slot v-if="col.slot" :name="col.slot"></slot>
-          <table-column v-else :option="col" :key="index" :fixed="col.fixed"></table-column>
+          <table-column v-else :option="col" :key="index"></table-column>
         </template>
       </el-table>
     </div>
@@ -49,7 +49,7 @@
       v-if="isPagination"
       :current-page="pageCurrent"
       :total="pageTotal"
-      :page-sizes="[5, 10, 20, 50, 100, 200]"
+      :page-sizes="[20, 50, 100, 200]"
       :page-size="pageSize"
       layout="total, sizes, prev, pager, next, jumper"
       @current-change="pageChangeHandler"
@@ -66,18 +66,15 @@ import tableColumn from "./table-column.vue";
   },
 })
 export default class IhTable extends Vue {
-  @Prop({
-    default: "100%",
-  })
-  height!: string;
+  @Prop() height?: string;
   @Prop() private data!: any;
   @Prop() private column!: any;
   @Prop({
     default: true,
   })
   border!: boolean;
-  @Prop() private rowKey!: string;
-  @Prop() private rowClassName!: any;
+  @Prop() private rowKey?: string;
+  @Prop() private rowClassName?: any;
   @Prop({
     default: true,
   })
@@ -109,6 +106,7 @@ export default class IhTable extends Vue {
 
   private selection: any = [];
   private isPageChange = false;
+  private columns: any = [];
 
   @Watch("data")
   dataChange() {
@@ -118,6 +116,21 @@ export default class IhTable extends Vue {
         this.isPageChange = false;
       }
     });
+  }
+  @Watch("column", { immediate: true, deep: true })
+  columnChange(column: any) {
+    const enume = (arr: any) => {
+      arr.forEach((v: any) => {
+        if (v.children && v.children.length) {
+          v.children.forEach((j: any) => {
+            enume(v.children);
+            if (j.peri) v.peri = "-";
+          });
+        }
+      });
+      return arr;
+    };
+    this.columns = enume(column);
   }
 
   indexHandler(index: number) {
@@ -166,17 +179,12 @@ export default class IhTable extends Vue {
 <style lang="scss" scoped>
 .box {
   height: 100%;
-  position: relative;
 }
 .table {
-  position: absolute;
-  top: 0;
   width: 100%;
 }
 .pagination {
-  padding: 10px 0;
-  position: absolute;
-  bottom: 0;
-  right: 0;
+  text-align: right;
+  padding-top: 20px;
 }
 </style>
