@@ -1,6 +1,6 @@
 /* eslint-disable */
 /* 此脚本由swagger-ui的api-docs自动生成，请勿修改 */
-//2020-9-22 9:58:38
+//2020-9-21 9:26:54
 import { request } from '@/api/base'
 /**添加岗位*/
 export async function post_job_add (d?: any) {
@@ -531,7 +531,7 @@ id: number;
 name: string;
 /**父资源id*/
 parentId: number;
-/**类型(Root-资源根节点、System-系统、Service-服务模块、Menu-功能菜单、Api-API、Button-按钮、Element-元素)*/
+/**类型(Root-资源根节点��System-系统、Service-服务模块、Menu-功能菜单、Api-API、Button-按钮、Element-元素)*/
 type: string;
 /**更新时间(yyyy-MM-dd HH:mm:ss)*/
 updateTime: string;

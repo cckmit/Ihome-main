@@ -4,7 +4,7 @@
  * @Author: lgf
  * @Date: 2020-09-16 14:05:21
  * @LastEditors: lgf
- * @LastEditTime: 2020-09-21 16:37:04
+ * @LastEditTime: 2020-09-22 18:00:57
 -->
 
 <template>
@@ -14,7 +14,7 @@
       <el-col :span="8">
         <el-row>
           <el-col :span="6" class="ih-info-item-left">渠道商</el-col>
-          <el-col :span="18" class="ih-info-item-right">广州市择食电子商务有限责任公司</el-col>
+          <el-col :span="18" class="ih-info-item-right">{{resPageInfo.list[0].date}}</el-col>
         </el-row>
       </el-col>
       <el-col :span="8">
@@ -78,7 +78,7 @@
     </p>
     <!-- 对话框 -->
 
-    <el-dialog title="账户信息" :visible.sync="dialogFormVisible" width="800px">
+    <el-dialog title="账户信息" :visible.sync="dialogFormVisible" width="700px">
       <el-form
         :model="ruleForm"
         :rules="rules"
@@ -95,7 +95,7 @@
         <el-form-item label="开户银行" prop="bank">
           <el-input v-model="ruleForm.bank"></el-input>
         </el-form-item>
-        <el-form-item label="账户类型" label-width="300px" prop="bankType">
+        <el-form-item class="AccountType" label="账户类型" label-width="100px" prop="bankType">
           <el-select v-model="ruleForm.bankType" clearable placeholder="请选择" class="width--100">
             <el-option
               v-for="item in $root.displayList('bankType')"
@@ -129,7 +129,7 @@
 <script lang="ts">
 import { Component, Vue } from "vue-property-decorator";
 //引入请求数据的api
-// import { post_role_getList } from "../../../../api/system/index";
+import { get_channel_get__id } from "../../../../api/channel/index";
 // import PaginationMixin from "../../../../mixins/pagination";
 @Component({
   components: {},
@@ -185,6 +185,11 @@ export default class Home extends Vue {
   addAccount(scope: any) {
     console.log(11);
     this.dialogFormVisible = true;
+  }
+  async created() {
+    let id = this.$route.query.id;
+    this.info = await get_channel_get__id({ id: id });
+    console.log(this.info);
   }
 }
 //请求数据

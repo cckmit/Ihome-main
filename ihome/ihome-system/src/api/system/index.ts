@@ -1,6 +1,6 @@
 /* eslint-disable */
 /* 此脚本由swagger-ui的api-docs自动生成，请勿修改 */
-//2020-8-26 17:45:48
+//2020-9-18 17:37:12
 import { request } from '@/api/base'
 /**添加岗位*/
 export async function post_job_add (d?: any) {
@@ -14,7 +14,7 @@ return await request.post< boolean,boolean> ('/system/job/addJobRoleBatch', d)
 export async function post_job_delete__id (d?: any) {
 return await request.post< number,number> ('/system/job/delete/{id}', d)
 }
-/**查询岗位详情*/
+/**查询岗位详情【未实现】*/
 export async function get_job_get__id (d?: any) {
 return await request.get<JobVO,JobVO>('/system/job/get/{id}', { params: d })
 }
@@ -86,7 +86,7 @@ return await request.get<ResourceMinVO[],ResourceMinVO[]>('/system/resource/getA
 export async function post_resource_getAllByRoleId (d?: any) {
 return await request.post< ResourceMinVO[],ResourceMinVO[]> ('/system/resource/getAllByRoleId', d)
 }
-/**��询用户拥有的资源*/
+/**查询用户拥有的资源*/
 export async function post_resource_getAllByUserId (d?: any) {
 return await request.post< ResourceMinVO[],ResourceMinVO[]> ('/system/resource/getAllByUserId', d)
 }
@@ -145,6 +145,10 @@ return await request.post< PageModel<RoleVO>,PageModel<RoleVO>> ('/system/role/g
 /**修改角色*/
 export async function post_role_update (d?: any) {
 return await request.post< number,number> ('/system/role/update', d)
+}
+/**查询登录用户信息*/
+export async function post_sessionUser_getUserInfo (d?: any) {
+return await request.post< LoginUserVO,LoginUserVO> ('/system/sessionUser/getUserInfo', d)
 }
 /**激活用户*/
 export async function post_user_activate__id (d?: any) {
@@ -308,11 +312,97 @@ updateUser: number;
 /**更新用户姓名*/
 updateUserName: string;
 }
+/**LoginUserVO*/
+export interface LoginUserVO {
+/**登录账号*/
+account: string;
+/**用户类型(Ihome-爱家员工、Juheng-居恒员工、Poly-保顾兼职、Channel-渠道用户、Customer-个人客户、Outsourcing-劳务派遣)*/
+accountType: string;
+/**创建时间(yyyy-MM-dd HH:mm:ss)*/
+createTime: string;
+/**创建用户*/
+createUser: number;
+/**已删除*/
+deleted: number;
+/**email*/
+email: string;
+/**员工工号*/
+employeeCode: string;
+/**雇员状态(On-在职、Leave-离职)*/
+employeeStatus: string;
+/**人员类型(Formal-正式工、Probation-试用、Practice-实习、Vacation-暑期工、Rehire-离职返聘)*/
+employeeType: string;
+/**入职日期(yyyy-MM-dd)*/
+employmentDate: string;
+/**id*/
+id: number;
+/**离职日期(yyyy-MM-dd)*/
+leaveDate: string;
+/**手机号码*/
+mobilePhone: string;
+/**姓名*/
+name: string;
+/**用户归属组织*/
+org: Org;
+/**归属组织id*/
+orgId: number;
+/**密码*/
+password: string;
+/**状态(Valid-有效、Invalid-无效)*/
+status: string;
+/**更新时间(yyyy-MM-dd HH:mm:ss)*/
+updateTime: string;
+/**更新用户*/
+updateUser: number;
+/**职能类别(FrontLine-一线、NotFrontLine-非一线)*/
+workType: string;
+/**菜单列表*/
+menuList: Resource[];
+/**用户权限组织列表*/
+permissionOrgList: OrgMinVO[];
+/**资源列表*/
+resourceList: Resource[];
+}
+/**Org*/
+export interface Org {
+/**关闭日期(yyyy-MM-dd)*/
+closeDate: string;
+/**创建时间(yyyy-MM-dd HH:mm:ss)*/
+createTime: string;
+/**创建用户*/
+createUser: number;
+/**已删除*/
+deleted: number;
+/**部门分类(Business-营业线、Function-职能线)*/
+departmentType: string;
+/**id*/
+id: number;
+/**组织层级*/
+level: number;
+/**名称*/
+name: string;
+/**开业日期(yyyy-MM-dd)*/
+openDate: string;
+/**组织代码*/
+orgCode: string;
+/**组织类型(Company-公司、Department-部门、Root-组织根节点)*/
+orgType: string;
+/**父组织id*/
+parentId: number;
+/**简称*/
+shortName: string;
+/**状态(Valid-有效、Invalid-无效)*/
+status: string;
+/**更新时间(yyyy-MM-dd HH:mm:ss)*/
+updateTime: string;
+/**更新用户*/
+updateUser: number;
+}
 /**OrgBaseVO*/
 export interface OrgBaseVO {
 /**关闭日期(yyyy-MM-dd)*/
 closeDate: string;
-/**部门分类(Business-营业线、Function-职能线)*/
+/**部门分���(Business-营业线、Function-职能线)*/
 departmentType: string;
 /**名称*/
 name: string;
@@ -320,7 +410,7 @@ name: string;
 openDate: string;
 /**组织代码*/
 orgCode: string;
-/**组织类型(Company-公司、Department-部门)*/
+/**组织类型(Company-公司、Department-部门、Root-组织根节点)*/
 orgType: string;
 /**父组织id*/
 parentId: number;
@@ -333,12 +423,16 @@ status: string;
 export interface OrgMinVO {
 /**id*/
 id: number;
+/**是否为末级节点*/
+lastNodeFlag: boolean;
 /**组织层级*/
 level: number;
 /**名称*/
 name: string;
 /**父组织id*/
 parentId: number;
+/**是否具有权限*/
+permissionFlag: boolean;
 }
 /**OrgQueryVO*/
 export interface OrgQueryVO {
@@ -348,7 +442,7 @@ departmentType: string;
 level: number;
 /**名称*/
 name: string;
-/**组织类型(Company-公司、Department-部门)*/
+/**组织类型(Company-公司、Department-部门、Root-组织根节点)*/
 orgType: string;
 /**(必填)当前页*/
 pageNum: number;
@@ -373,7 +467,7 @@ name: string;
 openDate: string;
 /**组织代码*/
 orgCode: string;
-/**组织类型(Company-公司、Department-部门)*/
+/**组织类型(Company-公司、Department-部门、Root-组织根节点)*/
 orgType: string;
 /**父组织id*/
 parentId: number;
@@ -406,7 +500,7 @@ name: string;
 openDate: string;
 /**组织代码*/
 orgCode: string;
-/**组织类型(Company-公司、Department-部门)*/
+/**组织类型(Company-公司、Department-部门、Root-组织根节点)*/
 orgType: string;
 /**父组织id*/
 parentId: number;
@@ -420,6 +514,31 @@ updateTime: string;
 updateUser: number;
 /**更新用户姓名*/
 updateUserName: string;
+}
+/**Resource*/
+export interface Resource {
+/**编码*/
+code: string;
+/**创建时间(yyyy-MM-dd HH:mm:ss)*/
+createTime: string;
+/**创建用户*/
+createUser: number;
+/**已删除*/
+deleted: number;
+/**id*/
+id: number;
+/**名称*/
+name: string;
+/**父资源id*/
+parentId: number;
+/**类型(Root-资源根节点、System-系统、Service-服务模块、Menu-功能菜单、Api-API、Button-按钮、Element-元素)*/
+type: string;
+/**更新时间(yyyy-MM-dd HH:mm:ss)*/
+updateTime: string;
+/**更新用户*/
+updateUser: number;
+/**url*/
+url: string;
 }
 /**ResourceBaseVO*/
 export interface ResourceBaseVO {
@@ -758,7 +877,7 @@ roleId: number;
 export interface UserUpdateVO {
 /**登录账号*/
 account: string;
-/**用户类型(Ihome-爱家员工、Juheng-居恒员工、Poly-保顾兼职、Channel-渠道用户、Customer-个人��户、Outsourcing-劳务派遣)*/
+/**用户类型(Ihome-爱家员工、Juheng-居恒员工、Poly-保顾兼职、Channel-渠道用户、Customer-个人客户、Outsourcing-劳务派遣)*/
 accountType: string;
 /**email*/
 email: string;

@@ -3,8 +3,8 @@
  * @version: 
  * @Author: zyc
  * @Date: 2020-06-22 11:11:41
- * @LastEditors: zyc
- * @LastEditTime: 2020-08-26 09:06:58
+ * @LastEditors: lgf
+ * @LastEditTime: 2020-09-22 14:52:47
  */
 const path = require('path');
 const { name } = require('./package');
@@ -40,6 +40,9 @@ module.exports = {
 		proxy: {
 			'/system/': {
 				target: 'http://10.188.0.109:8610'
+			},
+			'/channel/': {
+				target: 'http://10.188.1.91:8610'
 			}
 		}
 	},

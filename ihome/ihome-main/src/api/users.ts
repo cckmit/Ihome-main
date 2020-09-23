@@ -3,8 +3,13 @@
  * @version: 
  * @Author: zyc
  * @Date: 2020-06-24 09:47:33
+<<<<<<< HEAD
  * @LastEditors: lgf
- * @LastEditTime: 2020-09-16 09:56:46
+ * @LastEditTime: 2020-09-22 10:34:53
+=======
+ * @LastEditors: ywl
+ * @LastEditTime: 2020-09-18 11:04:27
+>>>>>>> origin/develop
  */
 import { IRes } from "./users.d";
 // import request from '@/utils/http';
@@ -177,10 +182,19 @@ export function allMenu<T>() {
             icon: "el-icon-setting",
             path: "/web-sales/ChannelInviteCode",
         },
-
-
-
-
+        {
+            id: 401,
+            parentId: 101,
+            title: '合同管理',
+            path: null,
+        },
+        {
+            id: 402,
+            parentId: 401,
+            title: "甲方合同",
+            icon: null,
+            path: "/web-sales/project/list"
+        }
     ];
     return menuList;
 }

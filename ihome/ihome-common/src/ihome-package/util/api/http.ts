@@ -26,7 +26,11 @@ service.interceptors.request.use(
         // Add X-Access-Token header to every request, you can add other custom headers here
         const token: any = getToken();
         if (token) {
-            config.headers['Authorization'] = 'bearer ' + token;
+            if (config.url?.startsWith('http://filesvr.polyihome.test/aist-filesvr-web/webUploader/uploadAll')) {
+                // console.log(config.url)
+            }else{
+                config.headers['Authorization'] = 'bearer ' + token;
+            }
         }
         return config
     },
@@ -40,6 +44,8 @@ service.interceptors.response.use(
     (response) => {
 
         if (response.config.url?.startsWith('/sales-oauth2/oauth/token')) {
+            return response.data
+        } else if (response.config.url?.startsWith('http://filesvr.polyihome.test/aist-filesvr-web/webUploader/uploadAll')) {
             return response.data
         } else {
             const res: any = response.data

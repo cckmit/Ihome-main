@@ -4,7 +4,7 @@
  * @Author: zyc
  * @Date: 2020-06-30 09:21:17
  * @LastEditors: lgf
- * @LastEditTime: 2020-09-21 18:10:53
+ * @LastEditTime: 2020-09-23 15:26:29
 --> 
 <template>
   <ih-page>
@@ -385,8 +385,8 @@ export default class UserList extends Vue {
       permissionOrgId: null,
       status: "Valid",
       workType: null,
-      pageNum: this.queryPageParameters.pageNum,
-      pageSize: this.queryPageParameters.pageSize,
+      pageNum: null,
+      pageSize: null,
     };
   }
 

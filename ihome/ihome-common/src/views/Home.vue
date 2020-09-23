@@ -1,13 +1,15 @@
 <!--
  * @Descripttion: 
  * @version: 
- * @Author: zyc
- * @Date: 2020-06-22 11:10:43
- * @LastEditors: zyc
- * @LastEditTime: 2020-07-24 09:54:40
---> 
+ * @Author: wwq
+ * @Date: 2020-09-16 14:54:19
+ * @LastEditors: lgf
+ * @LastEditTime: 2020-09-22 10:37:22
+-->
 <template>
-  <el-button type="primary">primary</el-button>
+  <div>
+    <el-button type="primary" @click="routeTo">primary</el-button>
+  </div>
 </template>
 <script lang="ts">
 // import { testApi, testPostApi } from "../api/test";
@@ -16,7 +18,11 @@ import { Component, Vue } from "vue-property-decorator";
 @Component({
   components: {},
 })
-export default class Home extends Vue {}
+export default class Home extends Vue {
+  routeTo() {
+    this.$router.push("/upload");
+  }
+}
 </script>
 <style lang="scss" scoped>
 </style>

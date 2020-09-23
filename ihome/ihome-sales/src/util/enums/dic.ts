@@ -4,7 +4,7 @@
  * @Author: zyc
  * @Date: 2020-09-14 16:29:37
  * @LastEditors: lgf
- * @LastEditTime: 2020-09-18 11:22:00
+ * @LastEditTime: 2020-09-23 16:05:48
  */
 
 /**测试
@@ -118,6 +118,14 @@ export const BusinessDevCity: any = {
  */
 export const division: any = {
     one: "爱家广州产成品及联动事业部"
+}
+/**特批入库   firstLevel-一线城市、secondLevel-二线城市、thirdLevel-三线城市
+ * @param {type} 
+ * @return {type} 
+ */
+export const SpecialStorage: any = {
+    ok: "是",
+    no: "否"
 }
 
 /**状态   firstLevel-一线城市、secondLevel-二线城市、thirdLevel-三线城市

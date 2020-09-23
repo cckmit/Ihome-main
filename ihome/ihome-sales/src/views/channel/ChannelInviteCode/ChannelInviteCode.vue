@@ -4,7 +4,7 @@
  * @Author: lgf
  * @Date: 2020-09-18 09:14:40
  * @LastEditors: lgf
- * @LastEditTime: 2020-09-21 18:11:57
+ * @LastEditTime: 2020-09-23 18:09:08
 -->
 <template>
   <div>
@@ -53,9 +53,9 @@
       </template>
       <template v-slot:btn>
         <el-row>
-          <el-button type="primary" @click="search(scope)">查询</el-button>
-          <el-button type="success" @click="add(scope)">添加</el-button>
-          <el-button type="info" @click="reset(scope)">重置</el-button>
+          <el-button type="primary" @click="search()">查询</el-button>
+          <el-button type="success" @click="add()">添加</el-button>
+          <el-button type="info" @click="reset()">重置</el-button>
         </el-row>
       </template>
       <br />
@@ -65,12 +65,11 @@
           class="ih-table"
           :data="resPageInfo.list"
           :default-sort="{prop: 'id', order: 'descending'}"
-          @selection-change="handleSelectionChange"
         >
-          <el-table-column prop="employmentDate" label="邀请码" width="120"></el-table-column>
-          <el-table-column prop="leaveDate" label="失效日期" width="120"></el-table-column>
-          <el-table-column prop="employeeType" label="创建人"></el-table-column>
-          <el-table-column prop="creatTime" label="创建时间"></el-table-column>
+          <el-table-column prop="invitationCode" label="邀请码" width="120"></el-table-column>
+          <el-table-column prop="expiresTime" label="失效日期" width="120"></el-table-column>
+          <el-table-column prop="invitationUserId" label="创建人"></el-table-column>
+          <el-table-column prop="createTime" label="创建时间"></el-table-column>
           <el-table-column fixed="right" label="操作" width="120">
             <template slot-scope="scope">
               <el-link type="primary" class="detail" @click.native.prevent="info(scope)">详情</el-link>
@@ -97,7 +96,7 @@
 </template>
 <script lang="ts">
 import { Component, Vue } from "vue-property-decorator";
-import { post_user_getList } from "../../../api/system/index";
+import { post_channelInvitationCode_getList } from "../../../api/channel/index";
 import PaginationMixin from "../../../mixins/pagination";
 @Component({
   components: {},
@@ -122,6 +121,12 @@ export default class Home extends Vue {
       path: "/ChannelInviteCode/addCode",
     });
   }
+  //重置
+  reset() {
+    console.log("重置");
+    this.queryPageParameters = {};
+  }
+
   info(scope: any) {
     console.log("详情");
   }
@@ -131,14 +136,35 @@ export default class Home extends Vue {
   async created() {
     this.getListMixin();
   }
-  async getListMixin() {
-    this.resPageInfo = await post_user_getList(this.queryPageParameters);
+  search() {
+    console.log("查询");
+    this.getListMixin();
   }
-  handleSelectionChange(val: any) {
-    console.log(val);
-    // this.copyUserData = val;
+  async getListMixin() {
+    this.resPageInfo = await post_channelInvitationCode_getList(
+      this.queryPageParameters
+    );
+    // this.resPageInfo = await post_channelInvitationCode_getList({
+    //   pageNum: this.queryPageParameters.pageNum,
+    //   pageSize: this.queryPageParameters.pageSize,
+    // });
+  }
+  handleSizeChangeMixin(val: any) {
+    console.log("页码大小", val);
+    this.queryPageParameters.pageSize = val;
+    this.getListMixin();
+  }
+  handleCurrentChangeMixin(val: any) {
+    console.log("指定页码", val);
+    this.queryPageParameters.pageNum = val;
+    this.getListMixin();
   }
 }
+// handleSelectionChange(val: any) {
+//   console.log(val);
+//   // this.copyUserData = val;
+// }
+// }
 </script>
 <style lang="scss" scoped>
 .el-breadcrumb {
