@@ -1,7 +1,19 @@
 /* eslint-disable */
 /* 此脚本由swagger-ui的api-docs自动生成，请勿修改 */
-//2020-9-18 17:37:12
+//2020-9-23 18:05:13
 import { request } from '@/api/base'
+/**查询所有字典项*/
+export async function get_dict_getAll (d?: any) {
+return await request.get<any,any>('/system/dict/getAll', { params: d })
+}
+/**查询指定类型的所有字典项*/
+export async function post_dict_getAllByType__type (d?: any) {
+return await request.post< DictBaseVO[],DictBaseVO[]> ('/system/dict/getAllByType/{type}', d)
+}
+/**根据类型和编码查询字典项*/
+export async function post_dict_getByTypeAndCode (d?: any) {
+return await request.post< DictBaseVO,DictBaseVO> ('/system/dict/getByTypeAndCode', d)
+}
 /**添加岗位*/
 export async function post_job_add (d?: any) {
 return await request.post< number,number> ('/system/job/add', d)
@@ -14,7 +26,7 @@ return await request.post< boolean,boolean> ('/system/job/addJobRoleBatch', d)
 export async function post_job_delete__id (d?: any) {
 return await request.post< number,number> ('/system/job/delete/{id}', d)
 }
-/**查询岗位详情【未实现】*/
+/**查询岗位详情*/
 export async function get_job_get__id (d?: any) {
 return await request.get<JobVO,JobVO>('/system/job/get/{id}', { params: d })
 }
@@ -227,6 +239,39 @@ list:T[];
 /**总记录数*/
 total: number;
 }
+/**DictBaseVO*/
+export interface DictBaseVO {
+/**编码*/
+code: string;
+/**名称*/
+name: string;
+/**顺序*/
+seq: number;
+/**子类别*/
+subType: string;
+/**标签*/
+tag: string;
+/**类别*/
+type: string;
+/**是否有效*/
+valid: number;
+}
+/**DictTypeCodeQueryVO*/
+export interface DictTypeCodeQueryVO {
+/**(必填)编码*/
+code: string;
+/**(必填)类型*/
+type: string;
+/**是否有效*/
+valid: number;
+}
+/**DictTypeQueryVO*/
+export interface DictTypeQueryVO {
+/**(必填)类型*/
+type: string;
+/**是否有效*/
+valid: number;
+}
 /**JobBaseVO*/
 export interface JobBaseVO {
 /**(必填)编码*/
@@ -309,7 +354,7 @@ remark: string;
 updateTime: string;
 /**更新用户*/
 updateUser: number;
-/**更新用户姓名*/
+/**更��用户姓名*/
 updateUserName: string;
 }
 /**LoginUserVO*/
@@ -402,7 +447,7 @@ updateUser: number;
 export interface OrgBaseVO {
 /**关闭日期(yyyy-MM-dd)*/
 closeDate: string;
-/**部门分���(Business-营业线、Function-职能线)*/
+/**部门分类(Business-��业线、Function-职能线)*/
 departmentType: string;
 /**名称*/
 name: string;
@@ -918,7 +963,7 @@ createUserName: string;
 deleted: number;
 /**email*/
 email: string;
-/**员工工号*/
+/**��工工号*/
 employeeCode: string;
 /**雇员状态(On-在职、Leave-离职)*/
 employeeStatus: string;

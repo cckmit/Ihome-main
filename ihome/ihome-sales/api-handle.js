@@ -4,7 +4,7 @@
  * @Author: zyc
  * @Date: 2020-07-31 15:21:06
  * @LastEditors: zyc
- * @LastEditTime: 2020-09-22 09:54:54
+ * @LastEditTime: 2020-09-23 18:06:58
  */
 let http = require('http');
 let fs = require("fs");
@@ -100,6 +100,9 @@ function handleBody(body) {
                 originalRef = originalRef.substring(5, originalRef.length - 1)
                 originalRef += '[]'
             }
+            if (originalRef.startsWith('Map<')) {
+                originalRef = "any"
+            }
             let res = 'any'
             let parameters = paths[k]["get"].parameters;
             if (parameters && parameters.length > 0) {
@@ -145,6 +148,9 @@ function handleBody(body) {
             if (originalRef.startsWith('List<')) {
                 originalRef = originalRef.substring(5, originalRef.length - 1)
                 originalRef += '[]'
+            }
+            if (originalRef.startsWith('Map<')) {
+                originalRef = "any"
             }
             let res = 'any'
             let parameters = paths[k]["post"].parameters;
@@ -198,7 +204,7 @@ function handleBody(body) {
         if (k.includes("ApiResult") || k.includes("PageInfo")) {
             console.log('(k.includes("ApiResult") || k.includes("PageInfo")')
         } else {
-            if (k.startsWith('PageModel«') || k.startsWith('ResModel«')) {
+            if (k.startsWith('PageModel«') || k.startsWith('ResModel«') || k.startsWith('Map«')) {
 
             } else {
 
@@ -207,7 +213,6 @@ function handleBody(body) {
                 writeLine(`export interface ${k} {`)
 
                 let requiredList = definitions[k].required || [];
-                console.log(objs)
                 if(objs){
                     Object.keys(objs).forEach(key => {
                         let required = requiredList.includes(key);
