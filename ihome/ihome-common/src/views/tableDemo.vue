@@ -4,7 +4,7 @@
  * @Author: wwq
  * @Date: 2020-09-16 14:54:19
  * @LastEditors: wwq
- * @LastEditTime: 2020-09-23 16:17:31
+ * @LastEditTime: 2020-09-24 16:48:58
 -->
 <template>
   <div class="tableDemo">
@@ -22,19 +22,31 @@
     >
       <template #operation>
         <el-table-column label="操作" width="150" align="left" fixed="right">
-          <template v-slot="{row}">
-            <el-link type="primary" @click.native.prevent="routerTo(row)">详情</el-link>
+          <template v-slot="{ row }">
+            <el-link type="primary" @click.native.prevent="routerTo(row)"
+              >详情</el-link
+            >
             <el-dropdown trigger="click" class="margin-left-15">
               <span class="el-dropdown-link">
                 更多
                 <i class="el-icon-arrow-down el-icon--right"></i>
               </span>
               <el-dropdown-menu slot="dropdown">
-                <el-dropdown-item @click.native.prevent="routerTo(row)">编辑</el-dropdown-item>
-                <el-dropdown-item @click.native.prevent="routerTo(row)">删除角色</el-dropdown-item>
-                <el-dropdown-item @click.native.prevent="routerTo(row)">分配权限</el-dropdown-item>
-                <el-dropdown-item @click.native.prevent="routerTo(row)">批量分配岗位</el-dropdown-item>
-                <el-dropdown-item @click.native.prevent="routerTo(row)">批量分配用户</el-dropdown-item>
+                <el-dropdown-item @click.native.prevent="routerTo(row)"
+                  >编辑</el-dropdown-item
+                >
+                <el-dropdown-item @click.native.prevent="routerTo(row)"
+                  >删除角色</el-dropdown-item
+                >
+                <el-dropdown-item @click.native.prevent="routerTo(row)"
+                  >分配权限</el-dropdown-item
+                >
+                <el-dropdown-item @click.native.prevent="routerTo(row)"
+                  >批量分配岗位</el-dropdown-item
+                >
+                <el-dropdown-item @click.native.prevent="routerTo(row)"
+                  >批量分配用户</el-dropdown-item
+                >
               </el-dropdown-menu>
             </el-dropdown>
           </template>
@@ -42,8 +54,8 @@
       </template>
       <template #age>
         <el-table-column label="年龄" width="500" align="left">
-          <template v-slot="{row}">
-            <span :class="{red: row.age > 20}">{{row.age}}</span>
+          <template v-slot="{ row }">
+            <span :class="{ red: row.age > 20 }">{{ row.age }}</span>
           </template>
         </el-table-column>
       </template>
@@ -60,6 +72,8 @@ export default class TableDemo extends Vue {
     {
       label: "名称",
       align: "center",
+      fixed: true,
+      minWidth: 640,
       children: [
         {
           label: "名称1",
