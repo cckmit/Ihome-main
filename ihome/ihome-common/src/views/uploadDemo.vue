@@ -4,7 +4,7 @@
  * @Author: wwq
  * @Date: 2020-09-16 14:54:19
  * @LastEditors: wwq
- * @LastEditTime: 2020-09-21 08:42:43
+ * @LastEditTime: 2020-09-21 15:57:37
 -->
 <template>
   <div>
@@ -28,7 +28,7 @@
 // import { testApi, testPostApi } from "../api/test";
 import { Component, Vue } from "vue-property-decorator";
 @Component({})
-export default class Home extends Vue {
+export default class UploadDemo extends Vue {
   private tableData: any = [];
   private fileList: any = [];
   private size = "100px";
