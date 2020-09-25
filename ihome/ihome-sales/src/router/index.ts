@@ -4,7 +4,7 @@
  * @Author: zyc
  * @Date: 2020-06-22 11:10:43
  * @LastEditors: wwq
- * @LastEditTime: 2020-09-25 08:57:16
+ * @LastEditTime: 2020-09-25 14:17:10
  */
 import Vue from 'vue'
 import VueRouter, { RouteConfig, Route } from 'vue-router'
@@ -54,6 +54,12 @@ const routes: Array<RouteConfig> = [
         name: 'developerList',
         component: () => import('../views/developer/list.vue'),
         meta: { title: '开发商列表', icon: 'form' }
+      },
+      {
+        path: 'edit',
+        name: 'developerEdit',
+        component: () => import('../views/developer/edit.vue'),
+        meta: { title: '开发商信息录入修改', icon: 'form' }
       }
     ]
   }

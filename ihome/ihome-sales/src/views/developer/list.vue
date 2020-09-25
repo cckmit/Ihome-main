@@ -5,21 +5,21 @@
         <el-row>
           <el-col :span="8">
             <el-form-item label="名称">
-              <el-input v-model="searchList.name"></el-input>
+              <el-input v-model="queryPageParameters.name"></el-input>
             </el-form-item>
           </el-col>
           <el-col :span="8">
             <el-form-item label="信用代码">
-              <el-input v-model="searchList.creditCode"></el-input>
+              <el-input v-model="queryPageParameters.creditCode"></el-input>
             </el-form-item>
           </el-col>
           <el-col :span="8">
             <el-form-item label="状态">
               <el-select
-                v-model="searchList.devStatus"
+                style="width: 100%"
+                v-model="queryPageParameters.devStatus"
                 clearable
                 placeholder="请选择"
-                class="width--100"
               >
                 <el-option
                   v-for="item in $root.displayList('devStatus')"
@@ -35,8 +35,9 @@
           <el-col :span="8">
             <el-form-item label="省市区">
               <el-cascader
+                style="width: 100%"
                 placeholder="请选择省市区"
-                :options="searchList.provincesOptions"
+                :options="queryPageParameters.provincesOptions"
                 :props="{ checkStrictly: true }"
                 clearable
               ></el-cascader>
@@ -45,10 +46,10 @@
           <el-col :span="8">
             <el-form-item label="录入人">
               <el-select
-                v-model="searchList.keyboarder"
+                style="width: 100%"
+                v-model="queryPageParameters.keyboarder"
                 clearable
                 placeholder="请选择业务类型"
-                class="width--100"
               >
                 <el-option
                   v-for="item in $root.displayList('accountType')"
@@ -79,56 +80,47 @@
         :data="resPageInfo.list"
         :column="tableColumn"
         :default-sort="{ prop: 'id', order: 'descending' }"
-        :current-page.sync="searchList.pageNum"
+        :current-page.sync="queryPageParameters.pageNum"
         :page-sizes="$root.pageSizes"
+        :total="resPageInfo.total"
         @selection-change="handleSelectionChange"
         @page-change="handleCurrentChangeMixin"
         @size-change="handleSizeChangeMixin"
       >
         <template #operation>
-          <el-table-column fixed="right" label="操作" width="300">
-            <template slot-scope="scope">
-              <el-button
-                type="primary"
-                size="mini"
-                @click.native.prevent="edit(scope)"
-                >编辑</el-button
+          <el-table-column fixed="right" label="操作">
+            <template v-slot="{ row }">
+              <el-link type="primary" @click.native.prevent="routerTo(row)"
+                >详情</el-link
               >
-              <el-button
-                type="primary"
-                size="mini"
-                @click.native.prevent="info(scope)"
-                >详情</el-button
-              >
-              <el-button
-                type="primary"
-                size="mini"
-                @click.native.prevent="info(scope)"
-                >审核</el-button
-              >
-              <el-button
-                type="primary"
-                size="mini"
-                @click.native.prevent="remove(scope)"
-                >删除</el-button
-              >
+              <el-dropdown trigger="click" class="margin-left-15">
+                <span class="el-dropdown-link">
+                  更多
+                  <i class="el-icon-arrow-down el-icon--right"></i>
+                </span>
+                <el-dropdown-menu slot="dropdown">
+                  <el-dropdown-item @click.native.prevent="routerTo(row)"
+                    >修改</el-dropdown-item
+                  >
+                  <el-dropdown-item @click.native.prevent="routerTo(row)"
+                    >删除</el-dropdown-item
+                  >
+                  <el-dropdown-item @click.native.prevent="routerTo(row)"
+                    >撤回
+                  </el-dropdown-item>
+                  <el-dropdown-item @click.native.prevent="routerTo(row)"
+                    >审核</el-dropdown-item
+                  >
+                  <el-dropdown-item @click.native.prevent="routerTo(row)"
+                    >变更信息</el-dropdown-item
+                  >
+                </el-dropdown-menu>
+              </el-dropdown>
             </template>
           </el-table-column>
         </template>
       </ih-table>
     </template>
-    <!-- <template v-slot:pagination>
-      <br />
-      <el-pagination
-        @size-change="handleSizeChangeMixin"
-        @current-change="handleCurrentChangeMixin"
-        :current-page.sync="searchList.pageNum"
-        :page-sizes="$root.pageSizes"
-        :page-size="searchList.pageSize"
-        :layout="$root.paginationLayout"
-        :total="resPageInfo.total"
-      ></el-pagination>
-    </template> -->
 
     <ih-dialog :show="dialogVisible" desc="用户新增编辑">
       <!-- <UserAdd
@@ -137,63 +129,33 @@
         @finish="(data)=>{dialogVisible=false;finish(data)}"
       />-->
     </ih-dialog>
-
-    <ih-dialog :show="jobVisible" desc="分配岗位角色">
-      <!-- <UserJobRole
-        :data="jobVisibleData"
-        @cancel="()=>jobVisible=false"
-        @finish="(data)=>{jobVisible=false;finishJob(data)}"
-      />-->
-    </ih-dialog>
-    <!-- <ih-dialog :show="organizationJurisdictionVisible" desc="分配组织权限">
-      <OrganizationJurisdiction
-        :data="OrganizationJurisdictionData"
-        @cancel="()=>organizationJurisdictionVisible=false"
-        @finish="(data)=>{organizationJurisdictionVisible=false;finishJob(data)}"
-      />
-    </ih-dialog>-->
-    <ih-dialog :show="copyUserVisible" desc="复制用户岗位角色组织权限">
-      <!-- <CopyUsers
-        :data="copyUserData"
-        @cancel="()=>copyUserVisible=false"
-        @finish="(data)=>{copyUserVisible=false;finishCopyUser(data)}"
-      />-->
-    </ih-dialog>
   </ih-page>
 </template>
 <script lang="ts">
 import { Component, Vue } from "vue-property-decorator";
 // import UserAdd from "./add.vue";
-// import UserJobRole from "./dialog/job.vue";
-// import CopyUsers from "./dialog/copy-users.vue";
-// import OrganizationJurisdiction from "@/components/OrganizationJurisdiction.vue";
-// import SelectOrganizationTree from "@/components/SelectOrganizationTree.vue";
 import {
   post_user_getList,
   post_user_delete__id,
   //   post_user_lock__id,
-  //   post_user_activate__id,
-  //   post_user_resetPassword__id,
 } from "../../api/system/index";
 import PaginationMixin from "../../mixins/pagination";
 
 @Component({
   components: {
     // UserAdd,
-    // UserJobRole,
-    // OrganizationJurisdiction,
-    // CopyUsers,
-    // SelectOrganizationTree,
   },
   mixins: [PaginationMixin],
 })
-export default class UserList extends Vue {
-  searchList: any = {
+export default class DeveloperList extends Vue {
+  queryPageParameters: any = {
     name: null,
     creditCode: null,
     devStatus: null,
     ProvincesOptions: Array,
     keyboarder: null,
+    pageSize: 20,
+    pageNum: 1,
   };
 
   tableColumn = [
@@ -239,36 +201,24 @@ export default class UserList extends Vue {
 
   employmentDateChange(dateArray: any) {
     console.log(dateArray);
-    this.searchList.employmentDateStart = dateArray[0];
-    this.searchList.employmentDateEnd = dateArray[1];
+    this.queryPageParameters.employmentDateStart = dateArray[0];
+    this.queryPageParameters.employmentDateEnd = dateArray[1];
   }
   leaveDateChange(dateArray: any) {
     console.log(dateArray);
-    this.searchList.leaveDateStart = dateArray[0];
-    this.searchList.leaveDateEnd = dateArray[1];
+    this.queryPageParameters.leaveDateStart = dateArray[0];
+    this.queryPageParameters.leaveDateEnd = dateArray[1];
   }
 
   reset() {
-    this.searchList = {
-      account: null,
-      accountType: "Ihome",
-      employeeCode: null,
-      employeeStatus: "On",
-      employeeType: "Formal",
-      employmentDateEnd: null,
-      employmentDateStart: null,
-      employmentDate: null,
-      leaveDateEnd: null,
-      leaveDateStart: null,
-      leaveDate: null,
-      mobilePhone: null,
+    this.queryPageParameters = {
       name: null,
-      orgId: null,
-      permissionOrgId: null,
-      status: "Valid",
-      workType: null,
-      pageNum: this.searchList.pageNum,
-      pageSize: this.searchList.pageSize,
+      creditCode: null,
+      devStatus: null,
+      ProvincesOptions: Array,
+      keyboarder: null,
+      pageNum: this.queryPageParameters.pageNum,
+      pageSize: this.queryPageParameters.pageSize,
     };
   }
 
@@ -292,7 +242,7 @@ export default class UserList extends Vue {
 
   add(data: any) {
     this.addData = data;
-    this.dialogVisible = true;
+    this.$router.push("/developer/edit");
   }
 
   finishJob(data: any) {
@@ -304,15 +254,15 @@ export default class UserList extends Vue {
     this.getListMixin();
   }
   async getListMixin() {
-    this.resPageInfo = await post_user_getList(this.searchList);
+    this.resPageInfo = await post_user_getList(this.queryPageParameters);
   }
 
   getValue(value: any) {
-    this.searchList.orgId = value;
+    this.queryPageParameters.orgId = value;
   }
 
   search() {
-    console.log(this.searchList);
+    console.log(this.queryPageParameters);
     console.log(this.valuedate);
     this.getListMixin();
   }
