@@ -4,13 +4,14 @@
  * @Author: wwq
  * @Date: 2020-09-16 14:54:19
  * @LastEditors: wwq
- * @LastEditTime: 2020-09-24 16:48:58
+ * @LastEditTime: 2020-09-25 11:26:52
 -->
 <template>
   <div class="tableDemo">
     <ih-table
       :data="tableData"
       :column="tableColumn"
+      :isPeri="true"
       @row-dblclick="rowDblclick"
       @selection-change="selectionChange"
       @current-change="currentChange"
