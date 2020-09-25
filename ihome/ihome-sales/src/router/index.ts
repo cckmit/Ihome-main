@@ -4,7 +4,7 @@
  * @Author: zyc
  * @Date: 2020-06-22 11:10:43
  * @LastEditors: ywl
- * @LastEditTime: 2020-09-25 16:08:54
+ * @LastEditTime: 2020-09-25 18:00:47
  */
 import Vue from 'vue'
 import VueRouter, { RouteConfig, Route } from 'vue-router'
@@ -58,8 +58,14 @@ const routes: Array<RouteConfig> = [
       {
         path: 'partyAadd',
         name: 'PartyAadd',
-        component: () => import('../views/contract/partyA-add.vue'),
+        component: () => import('@/views/contract/partyA-add.vue'),
         meta: { title: '甲方合同录入', icon: 'form' }
+      },
+      {
+        path: 'intermediaryList',
+        name: 'IntermediaryList',
+        component: () => import('@/views/contract/intermediary-list.vue'),
+        meta: { title: '中介分销协议列表', icon: 'form' }
       }
     ]
   },
