@@ -4,12 +4,14 @@
  * @Author: zyc
  * @Date: 2020-08-13 11:40:10
  * @LastEditors: lgf
- * @LastEditTime: 2020-09-22 17:19:12
+ * @LastEditTime: 2020-09-24 11:13:48
 -->
 <template>
   <div>
     <el-breadcrumb separator-class="el-icon-arrow-right">
-      <el-breadcrumb-item class="line">{{$route.meta.title}}</el-breadcrumb-item>
+      <el-breadcrumb-item class="line">{{
+        $route.meta.title
+      }}</el-breadcrumb-item>
     </el-breadcrumb>
     <ih-page>
       <template v-slot:form>
@@ -17,17 +19,26 @@
           <el-row>
             <el-col :span="8">
               <el-form-item label="名称">
-                <el-input v-model="queryPageParameters.account" placeholder="名称"></el-input>
+                <el-input
+                  v-model="queryPageParameters.account"
+                  placeholder="名称"
+                ></el-input>
               </el-form-item>
             </el-col>
             <el-col :span="8">
               <el-form-item label="信用代码">
-                <el-input v-model="queryPageParameters.name" placeholder="信用代码"></el-input>
+                <el-input
+                  v-model="queryPageParameters.name"
+                  placeholder="信用代码"
+                ></el-input>
               </el-form-item>
             </el-col>
             <el-col :span="8">
               <el-form-item label="简称">
-                <el-input v-model="queryPageParameters.account" placeholder="简称"></el-input>
+                <el-input
+                  v-model="queryPageParameters.account"
+                  placeholder="简称"
+                ></el-input>
               </el-form-item>
             </el-col>
             <el-col :span="8">
@@ -39,7 +50,7 @@
                   class="width--100"
                 >
                   <el-option
-                    v-for="item in  $root.displayList('provinces')"
+                    v-for="item in $root.displayList('provinces')"
                     :key="item.value"
                     :label="item.label"
                     :value="item.value"
@@ -56,7 +67,7 @@
                   class="width--100"
                 >
                   <el-option
-                    v-for="item in  $root.displayList('city')"
+                    v-for="item in $root.displayList('city')"
                     :key="item.value"
                     :label="item.label"
                     :value="item.value"
@@ -73,7 +84,7 @@
                   class="width--100"
                 >
                   <el-option
-                    v-for="item in  $root.displayList('administrative')"
+                    v-for="item in $root.displayList('administrative')"
                     :key="item.value"
                     :label="item.label"
                     :value="item.value"
@@ -83,7 +94,10 @@
             </el-col>
             <el-col :span="8">
               <el-form-item label="渠道跟进人" label-width="90px">
-                <el-input v-model="queryPageParameters.account" placeholder="渠道跟进人"></el-input>
+                <el-input
+                  v-model="queryPageParameters.account"
+                  placeholder="渠道跟进人"
+                ></el-input>
               </el-form-item>
             </el-col>
             <el-col :span="8">
@@ -95,7 +109,7 @@
                   class="width--100"
                 >
                   <el-option
-                    v-for="item in  $root.displayList('state')"
+                    v-for="item in $root.displayList('state')"
                     :key="item.value"
                     :label="item.label"
                     :value="item.value"
@@ -120,30 +134,71 @@
         <el-table
           class="ih-table"
           :data="resPageInfo.list"
-          :default-sort="{prop: 'id', order: 'descending'}"
+          :default-sort="{ prop: 'id', order: 'descending' }"
           @selection-change="handleSelectionChange"
         >
-          <el-table-column fixed type="selection" label="名称" width="100"></el-table-column>
-          <el-table-column fixed type="index" label="名称" width="200"></el-table-column>
-          <el-table-column fixed prop="name" label="简称" width="200"></el-table-column>
-          <el-table-column fixed prop="account" label="省份" width="200"></el-table-column>
-          <el-table-column prop="mobilePhone" label="城市" width="200"></el-table-column>
-          <el-table-column prop="accountType" label="行政区" width="200"></el-table-column>
-          <el-table-column prop="orgName" label="跟进人" width="150"></el-table-column>
-          <el-table-column prop="employeeCode" label="状态" width="200"></el-table-column>
+          <el-table-column fixed type="selection" width="100"></el-table-column>
+          <el-table-column
+            fixed
+            prop="name"
+            label="名称"
+            width="200"
+          ></el-table-column>
+          <el-table-column
+            fixed
+            prop="shortName"
+            label="简称"
+            width="200"
+          ></el-table-column>
+          <el-table-column
+            fixed
+            prop="province"
+            label="省份"
+            width="200"
+          ></el-table-column>
+          <el-table-column
+            prop="city"
+            label="城市"
+            width="200"
+          ></el-table-column>
+          <el-table-column
+            prop="county"
+            label="行政区"
+            width="200"
+          ></el-table-column>
+          <el-table-column
+            prop="followUserId"
+            label="跟进人"
+            width="150"
+          ></el-table-column>
+          <el-table-column
+            prop="status"
+            label="状态"
+            width="200"
+          ></el-table-column>
           <el-table-column label="操作" width="200">
             <template slot-scope="scope">
-              <el-link type="primary" @click.native.prevent="info(scope)">详情</el-link>
-              <el-dropdown trigger="click" style="margin-left:15px;">
+              <el-link type="primary" @click.native.prevent="info(scope)"
+                >详情</el-link
+              >
+              <el-dropdown trigger="click" style="margin-left: 15px">
                 <span class="el-dropdown-link">
                   更多
                   <i class="el-icon-arrow-down el-icon--right"></i>
                 </span>
                 <el-dropdown-menu slot="dropdown">
-                  <el-dropdown-item @click.native.prevent="change(scope)">修改</el-dropdown-item>
-                  <el-dropdown-item @click.native.prevent="confirm(scope)">确认</el-dropdown-item>
-                  <el-dropdown-item @click.native.prevent="changeinfo(scope)">变更信息</el-dropdown-item>
-                  <el-dropdown-item @click.native.prevent="maintenance(scope)">维护渠道经纪人</el-dropdown-item>
+                  <el-dropdown-item @click.native.prevent="change(scope)"
+                    >修改</el-dropdown-item
+                  >
+                  <el-dropdown-item @click.native.prevent="confirm(scope)"
+                    >确认</el-dropdown-item
+                  >
+                  <el-dropdown-item @click.native.prevent="changeinfo(scope)"
+                    >变更信息</el-dropdown-item
+                  >
+                  <el-dropdown-item @click.native.prevent="maintenance(scope)"
+                    >维护渠道经纪人</el-dropdown-item
+                  >
                 </el-dropdown-menu>
               </el-dropdown>
             </template>

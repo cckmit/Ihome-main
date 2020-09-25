@@ -4,7 +4,7 @@
  * @Author: zyc
  * @Date: 2020-06-22 11:10:43
  * @LastEditors: lgf
- * @LastEditTime: 2020-09-21 18:09:26
+ * @LastEditTime: 2020-09-25 16:54:40
  */
 import Vue from 'vue'
 import VueRouter, { RouteConfig, Route } from 'vue-router'
@@ -148,6 +148,22 @@ const routes: Array<RouteConfig> = [
 
         ]
       },
+      //渠道呈批列表即将跳转路由
+      {
+        path: '/ChannelAgroupOf/info',
+        meta: { title: '用户', icon: 'form' },
+        redirect: '/web-sales/',
+        component: Layout,
+        children: [
+          {
+            path: '/',
+            name: 'info',
+            component: () => import('../views/channel/ChannelAgroupOf/info.vue'),
+            meta: { title: '详情', icon: 'form' }
+          },
+        ]
+      },
+
       //渠道基础信息变更列表
       {
         path: '/ChannelBasicInfoChange',
@@ -177,6 +193,21 @@ const routes: Array<RouteConfig> = [
             name: 'ChannelInviteCode',
             component: () => import('../views/channel/ChannelInviteCode/ChannelInviteCode.vue'),
             meta: { title: '渠道邀请码列表', icon: 'form' }
+          },
+
+        ]
+      },
+      {
+        path: '/cityLevel',
+        meta: { title: '用户', icon: 'form' },
+        redirect: '/web-sales/',
+        component: Layout,
+        children: [
+          {
+            path: '/',
+            name: 'ChannelInviteCode',
+            component: () => import('../views/channel/cityLevel/cityLevel.vue'),
+            meta: { title: '城市等级列表', icon: 'form' }
           },
 
         ]

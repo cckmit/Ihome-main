@@ -4,7 +4,7 @@
  * @Author: zyc
  * @Date: 2020-06-30 09:21:17
  * @LastEditors: lgf
- * @LastEditTime: 2020-09-18 10:43:42
+ * @LastEditTime: 2020-09-25 15:05:03
 --> 
 <template>
   <ih-page>
@@ -165,35 +165,78 @@
       <el-table
         class="ih-table"
         :data="resPageInfo.list"
-        :default-sort="{prop: 'id', order: 'descending'}"
+        :default-sort="{ prop: 'id', order: 'descending' }"
         @selection-change="handleSelectionChange"
       >
-        <el-table-column fixed type="index" label="渠道商名称" width="200"></el-table-column>
-        <el-table-column fixed prop="name" label="业务开展省份" width="170"></el-table-column>
-        <el-table-column fixed prop="account" label="业务开展城市" width="170"></el-table-column>
-        <el-table-column prop="mobilePhone" label="城市等级" width="170"></el-table-column>
+        <el-table-column
+          fixed
+          type="index"
+          label="渠道商名称"
+          width="200"
+        ></el-table-column>
+        <el-table-column
+          fixed
+          prop="name"
+          label="业务开展省份"
+          width="170"
+        ></el-table-column>
+        <el-table-column
+          fixed
+          prop="account"
+          label="业务开展城市"
+          width="170"
+        ></el-table-column>
+        <el-table-column
+          prop="mobilePhone"
+          label="城市等级"
+          width="170"
+        ></el-table-column>
         <el-table-column prop="accountType" label="渠道等级" width="170">
-          <template slot-scope="scope">{{$root.displayName('accountType',scope.row.accountType)}}</template>
+          <template slot-scope="scope">{{
+            $root.displayName("accountType", scope.row.accountType)
+          }}</template>
         </el-table-column>
-        <el-table-column prop="orgName" label="事业部" width="200"></el-table-column>
-        <el-table-column prop="employeeCode" label="录入人" width="150"></el-table-column>
+        <el-table-column
+          prop="orgName"
+          label="事业部"
+          width="200"
+        ></el-table-column>
+        <el-table-column
+          prop="employeeCode"
+          label="录入人"
+          width="150"
+        ></el-table-column>
         <el-table-column prop="status" label="状态" width="150">
-          <template slot-scope="scope">{{$root.displayName('accountStatus',scope.row.status)}}</template>
+          <template slot-scope="scope">{{
+            $root.displayName("accountStatus", scope.row.status)
+          }}</template>
         </el-table-column>
         <el-table-column label="操作" width="200">
           <template slot-scope="scope">
-            <el-link type="primary" @click.native.prevent="info(scope)">详情</el-link>
-            <el-dropdown trigger="click" style="margin-left:15px;">
+            <el-link type="primary" @click.native.prevent="info(scope)"
+              >详情</el-link
+            >
+            <el-dropdown trigger="click" style="margin-left: 15px">
               <span class="el-dropdown-link">
                 更多操作
                 <i class="el-icon-arrow-down el-icon--right"></i>
               </span>
               <el-dropdown-menu slot="dropdown">
-                <el-dropdown-item @click.native.prevent="edit(scope)">修改</el-dropdown-item>
-                <el-dropdown-item @click.native.prevent="remove(scope)">删除</el-dropdown-item>
-                <el-dropdown-item @click.native.prevent="locking(scope)">撤回</el-dropdown-item>
-                <el-dropdown-item @click.native.prevent="activation(scope)">审核</el-dropdown-item>
-                <el-dropdown-item @click.native.prevent="resetPassword(scope)">变更信息</el-dropdown-item>
+                <el-dropdown-item @click.native.prevent="edit(scope)"
+                  >修改</el-dropdown-item
+                >
+                <el-dropdown-item @click.native.prevent="remove(scope)"
+                  >删除</el-dropdown-item
+                >
+                <el-dropdown-item @click.native.prevent="locking(scope)"
+                  >撤回</el-dropdown-item
+                >
+                <el-dropdown-item @click.native.prevent="activation(scope)"
+                  >审核</el-dropdown-item
+                >
+                <el-dropdown-item @click.native.prevent="resetPassword(scope)"
+                  >变更信息</el-dropdown-item
+                >
               </el-dropdown-menu>
             </el-dropdown>
           </template>
@@ -217,13 +260,7 @@
 <script lang="ts">
 import { Component, Vue } from "vue-property-decorator";
 
-import {
-  post_user_getList,
-  post_user_delete__id,
-  post_user_lock__id,
-  post_user_activate__id,
-  post_user_resetPassword__id,
-} from "../../../api/system/index";
+import { post_channel_getList } from "../../../api/channel/index";
 import PaginationMixin from "../../../mixins/pagination";
 
 @Component({
@@ -311,7 +348,7 @@ export default class UserList extends Vue {
     this.getListMixin();
   }
   async getListMixin() {
-    this.resPageInfo = await post_user_getList(this.queryPageParameters);
+    this.resPageInfo = await post_channel_getList(this.queryPageParameters);
   }
 
   getValue(value: any) {
@@ -334,67 +371,6 @@ export default class UserList extends Vue {
     console.log(scope);
     this.OrganizationJurisdictionData = scope.row;
     this.organizationJurisdictionVisible = true;
-  }
-
-  async remove(scope: any) {
-    try {
-      await this.$confirm("是否确定删除?", "提示");
-      await post_user_delete__id({ id: scope.row.id });
-      this.resPageInfo.list.splice(scope.$index, 1);
-      this.$message({
-        type: "success",
-        message: "删除成功!",
-      });
-    } catch (error) {
-      console.log(error);
-    }
-  }
-  async locking(scope: any) {
-    console.log(scope);
-    try {
-      await this.$confirm("是否确定锁定用户?", "提示");
-      await post_user_lock__id({ id: scope.row.id });
-
-      this.$message({
-        type: "success",
-        message: "锁定成功!",
-      });
-      this.search();
-    } catch (error) {
-      console.log(error);
-    }
-  }
-  async activation(scope: any) {
-    console.log(scope);
-    try {
-      await this.$confirm("是否确定激活用户?", "提示");
-      await post_user_activate__id({ id: scope.row.id });
-
-      this.$message({
-        type: "success",
-        message: "激活成功!",
-      });
-      this.search();
-    } catch (error) {
-      console.log(error);
-    }
-  }
-  async resetPassword(scope: any) {
-    console.log(scope);
-    try {
-      await this.$confirm("是否确定重置密码?", "提示");
-      const res = await post_user_resetPassword__id({ id: scope.row.id });
-      this.$alert(res, "密码重置成功");
-    } catch (error) {
-      console.log(error);
-    }
-  }
-  copyUser() {
-    if (this.copyUserData && this.copyUserData.length > 0) {
-      this.copyUserVisible = true;
-    } else {
-      this.$message.warning("请先选择数据");
-    }
   }
 
   finishCopyUser(data: any) {

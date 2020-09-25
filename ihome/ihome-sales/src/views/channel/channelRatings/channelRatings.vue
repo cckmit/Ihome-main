@@ -4,12 +4,14 @@
  * @Author: zyc
  * @Date: 2020-08-13 11:40:10
  * @LastEditors: lgf
- * @LastEditTime: 2020-09-23 18:25:28
+ * @LastEditTime: 2020-09-24 09:22:31
 -->
 <template>
   <div>
     <el-breadcrumb separator-class="el-icon-arrow-right">
-      <el-breadcrumb-item class="line">{{$route.meta.title}}</el-breadcrumb-item>
+      <el-breadcrumb-item class="line">{{
+        $route.meta.title
+      }}</el-breadcrumb-item>
     </el-breadcrumb>
     <ih-page>
       <template v-slot:form>
@@ -24,7 +26,7 @@
                   class="width--100"
                 >
                   <el-option
-                    v-for="item in  $root.displayList('cityLevel')"
+                    v-for="item in $root.displayList('cityLevel')"
                     :key="item.value"
                     :label="item.label"
                     :value="item.value"
@@ -41,7 +43,7 @@
                   class="width--100"
                 >
                   <el-option
-                    v-for="item in  $root.displayList('ChannelLevel')"
+                    v-for="item in $root.displayList('ChannelLevel')"
                     :key="item.value"
                     :label="item.label"
                     :value="item.value"
@@ -69,24 +71,49 @@
         <el-table
           class="ih-table"
           :data="resPageInfo.list"
-          :default-sort="{prop: 'id', order: 'descending'}"
+          :default-sort="{ prop: 'id', order: 'descending' }"
           @selection-change="handleSelectionChange"
         >
-          <el-table-column fixed prop="storageNum" label="城市等级" width="360"></el-table-column>
-          <el-table-column fixed type="channelName" label="渠道等级" width="360"></el-table-column>
-          <el-table-column prop="cityGrade" label="城市等级" width="360"></el-table-column>
-          <el-table-column prop="channelGrade" label="评级标准" width="360"></el-table-column>
+          <el-table-column
+            fixed
+            prop="cityGrade"
+            label="城市等级"
+            width="360"
+          ></el-table-column>
+
+          <el-table-column
+            fixed
+            prop="channelGrade"
+            label="渠道等级"
+            width="360"
+          ></el-table-column>
+          <el-table-column
+            prop="gradeItem"
+            label="评级项"
+            width="360"
+          ></el-table-column>
+          <el-table-column
+            prop="gradeStandard"
+            label="评级标准"
+            width="360"
+          ></el-table-column>
           <el-table-column label="操作">
             <template slot-scope="scope">
-              <el-link type="primary" @click.native.prevent="info(scope)">详情</el-link>
-              <el-dropdown trigger="click" style="margin-left:15px;">
+              <el-link type="primary" @click.native.prevent="info(scope)"
+                >详情</el-link
+              >
+              <el-dropdown trigger="click" style="margin-left: 15px">
                 <span class="el-dropdown-link">
                   更多
                   <i class="el-icon-arrow-down el-icon--right"></i>
                 </span>
                 <el-dropdown-menu slot="dropdown">
-                  <el-dropdown-item @click.native.prevent="ModifyThe(scope)">修改</el-dropdown-item>
-                  <el-dropdown-item @click.native.prevent="remove(scope)">删除</el-dropdown-item>
+                  <el-dropdown-item @click.native.prevent="ModifyThe(scope)"
+                    >修改</el-dropdown-item
+                  >
+                  <el-dropdown-item @click.native.prevent="remove(scope)"
+                    >删除</el-dropdown-item
+                  >
                 </el-dropdown-menu>
               </el-dropdown>
             </template>
@@ -107,7 +134,7 @@
 </template>
 <script lang="ts">
 import { Component, Vue } from "vue-property-decorator";
-import { post_channelGrade_getList } from "../../../api/channel/index";
+import { post_channelGradeStandard_getList } from "../../../api/channel/index";
 import PaginationMixin from "../../../mixins/pagination";
 import { city } from "../../../util/enums/dic";
 @Component({
@@ -118,6 +145,8 @@ export default class UserList extends Vue {
   queryPageParameters: any = {
     ChannelLevel: "bigPlatform",
     cityLevel: "firstLevel",
+    pageNum: 1,
+    pageSize: 10,
   };
 
   resPageInfo: any = {
@@ -197,20 +226,22 @@ export default class UserList extends Vue {
 
   //获取数据
   async getListMixin() {
-    this.resPageInfo = await post_channelGrade_getList({
-      pageNum: this.queryPageParameters.pageNum,
-      pageSize: this.queryPageParameters.pageSize,
-    });
-    // this.resPageInfo = await post_channelGrade_getList(
-    //   this.queryPageParameters
-    // );
+    // this.resPageInfo = await post_channelGradeStandard_getList({
+    //   pageNum: this.queryPageParameters.pageNum,
+    //   pageSize: this.queryPageParameters.pageSize,
+    // });
+    this.resPageInfo = await post_channelGradeStandard_getList(
+      this.queryPageParameters
+    );
   }
   async searchChinnelLevelInfo() {
     console.log("查询");
   }
 
   handleSelectionChange(val: any) {
-    console.log(val);
+    // console.log(val);
+    console.log("下拉");
+
     // this.queryPageParameters.pageSize = val;
   }
   handleSizeChangeMixin(val: any) {

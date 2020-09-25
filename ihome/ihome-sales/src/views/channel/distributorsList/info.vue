@@ -4,7 +4,7 @@
  * @Author: zyc
  * @Date: 2020-07-08 14:22:25
  * @LastEditors: lgf
- * @LastEditTime: 2020-09-17 10:17:42
+ * @LastEditTime: 2020-09-25 17:42:19
 --> 
 <template>
   <ih-page>
@@ -28,6 +28,7 @@ import { Component, Vue } from "vue-property-decorator";
 
 import DetailsInfo from "./info_tabs/detailsInfo.vue";
 import OperationLog from "./info_tabs/operationLog.vue";
+// import ModifyThe from "./MoreOperations/ModifyThe";
 @Component({
   components: { DetailsInfo, OperationLog },
 })

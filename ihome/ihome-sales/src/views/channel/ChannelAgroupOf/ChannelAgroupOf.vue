@@ -4,12 +4,14 @@
  * @Author: zyc
  * @Date: 2020-08-13 11:40:10
  * @LastEditors: lgf
- * @LastEditTime: 2020-09-23 17:19:15
+ * @LastEditTime: 2020-09-25 18:12:08
 -->
 <template>
   <div>
     <el-breadcrumb separator-class="el-icon-arrow-right">
-      <el-breadcrumb-item class="line">{{$route.meta.title}}</el-breadcrumb-item>
+      <el-breadcrumb-item class="line">{{
+        $route.meta.title
+      }}</el-breadcrumb-item>
     </el-breadcrumb>
     <ih-page>
       <template v-slot:form>
@@ -18,13 +20,13 @@
             <el-col :span="8">
               <el-form-item label="事业部">
                 <el-select
-                  v-model="queryPageParameters.ChannelLevel"
+                  v-model="queryPageParameters.departmentOrgId"
                   clearable
                   placeholder="事业部"
                   class="width--100"
                 >
                   <el-option
-                    v-for="item in $root.displayList('ChannelLevel')"
+                    v-for="item in $root.displayList('division')"
                     :key="item.value"
                     :label="item.label"
                     :value="item.value"
@@ -33,32 +35,23 @@
               </el-form-item>
             </el-col>
             <el-col :span="8">
-              <el-form-item label="渠道等级">
-                <el-select
-                  v-model="queryPageParameters.ChannelLevel"
-                  clearable
-                  placeholder="渠道等级"
-                  class="width--100"
-                >
-                  <el-option
-                    v-for="item in  $root.displayList('ChannelLevel')"
-                    :key="item.value"
-                    :label="item.label"
-                    :value="item.value"
-                  ></el-option>
-                </el-select>
+              <el-form-item label="发起日期">
+                <el-input
+                  v-model="queryPageParameters.inputTime"
+                  placeholder="发起日期"
+                ></el-input>
               </el-form-item>
             </el-col>
             <el-col :span="8">
-              <el-form-item label="城市等级">
+              <el-form-item label="经办人">
                 <el-select
-                  v-model="queryPageParameters.cityLevel"
+                  v-model="queryPageParameters.inputUser"
                   clearable
-                  placeholder="城市等级"
+                  placeholder="经办人"
                   class="width--100"
                 >
                   <el-option
-                    v-for="item in  $root.displayList('cityLevel')"
+                    v-for="item in $root.displayList('state')"
                     :key="item.value"
                     :label="item.label"
                     :value="item.value"
@@ -66,51 +59,26 @@
                 </el-select>
               </el-form-item>
             </el-col>
+          </el-row>
+          <el-row>
             <el-col :span="8">
-              <el-form-item label="业务开展省份">
-                <el-select
-                  v-model="queryPageParameters.provinces"
-                  clearable
-                  placeholder="请选择省份"
-                  class="width--100"
-                >
-                  <el-option
-                    v-for="item in  $root.displayList('provinces')"
-                    :key="item.value"
-                    :label="item.label"
-                    :value="item.value"
-                  ></el-option>
-                </el-select>
+              <el-form-item label="申请编号">
+                <el-input
+                  v-model="queryPageParameters.approvalNo"
+                  placeholder="申请编号"
+                ></el-input>
               </el-form-item>
             </el-col>
-            <el-col :span="8">
-              <el-form-item label="业务开展城市">
-                <el-select
-                  v-model="queryPageParameters.city"
-                  clearable
-                  placeholder="请选择城市"
-                  class="width--100"
-                >
-                  <el-option
-                    v-for="item in  $root.displayList('city')"
-                    :key="item.value"
-                    :label="item.label"
-                    :value="item.value"
-                  ></el-option>
-                </el-select>
-              </el-form-item>
-            </el-col>
-
             <el-col :span="8">
               <el-form-item label="状态">
                 <el-select
-                  v-model="queryPageParameters.state"
+                  v-model="queryPageParameters.status"
                   clearable
                   placeholder="状态"
                   class="width--100"
                 >
                   <el-option
-                    v-for="item in  $root.displayList('state')"
+                    v-for="item in $root.displayList('state')"
                     :key="item.value"
                     :label="item.label"
                     :value="item.value"
@@ -119,42 +87,11 @@
               </el-form-item>
             </el-col>
             <el-col :span="8">
-              <el-form-item label="录入人">
-                <el-select
-                  v-model="queryPageParameters.enterPeople"
-                  clearable
-                  placeholder="录入人"
-                  class="width--100"
-                >
-                  <el-option
-                    v-for="item in  $root.displayList('enterPeople')"
-                    :key="item.value"
-                    :label="item.label"
-                    :value="item.value"
-                  ></el-option>
-                </el-select>
-              </el-form-item>
-            </el-col>
-            <el-col :span="8">
-              <el-form-item label="特批入库">
-                <el-select
-                  v-model="queryPageParameters.SpecialStorage"
-                  clearable
-                  placeholder="特批入库"
-                  class="width--100"
-                >
-                  <el-option
-                    v-for="item in  $root.displayList('SpecialStorage')"
-                    :key="item.value"
-                    :label="item.label"
-                    :value="item.value"
-                  ></el-option>
-                </el-select>
-              </el-form-item>
-            </el-col>
-            <el-col :span="8">
-              <el-form-item label="入库编号">
-                <el-input v-model="queryPageParameters.account" placeholder="入库编号"></el-input>
+              <el-form-item label="OA发文文号">
+                <el-input
+                  v-model="queryPageParameters.account"
+                  placeholder="OA发文文号"
+                ></el-input>
               </el-form-item>
             </el-col>
           </el-row>
@@ -166,6 +103,7 @@
           <el-button type="primary" @click="search()">查询</el-button>
           <el-button type="info" @click="empty()">清空</el-button>
           <el-button type="success" @click="add()">添加</el-button>
+          <el-button type="success" @click="add()">变更经办人</el-button>
         </el-row>
       </template>
 
@@ -174,33 +112,58 @@
         <el-table
           class="ih-table"
           :data="resPageInfo.list"
-          :default-sort="{prop: 'id', order: 'descending'}"
+          :default-sort="{ prop: 'id', order: 'descending' }"
           @selection-change="handleSelectionChange"
         >
-          <el-table-column fixed prop="storageNum" label="入库编号" width="120"></el-table-column>
-          <el-table-column fixed type="channelName" label="渠道商名称" width="150"></el-table-column>
-          <el-table-column fixed prop="province" label="业务开展省份" width="150"></el-table-column>
-          <el-table-column fixed prop="city" label="业务开展城市" width="150"></el-table-column>
-          <el-table-column prop="cityGrade" label="城市等级" width="150"></el-table-column>
-          <el-table-column prop="channelGrade" label="渠道等级" width="150"></el-table-column>
-          <el-table-column prop="special" label="特批入库" width="150"></el-table-column>
-          <el-table-column prop="departmentOrgId" label="事业部" width="170"></el-table-column>
-          <el-table-column prop="employeeCode" label="录入人" width="170"></el-table-column>
-          <el-table-column prop="status" label="状态" width="150"></el-table-column>
+          <el-table-column type="selection" width="70"> </el-table-column>
+          <el-table-column
+            fixed
+            prop="approvalNo"
+            label="申请编号"
+          ></el-table-column>
+          <el-table-column
+            fixed
+            type="channelName"
+            label="事业部"
+          ></el-table-column>
+          <el-table-column
+            fixed
+            prop="inputTime"
+            label="发起日期"
+          ></el-table-column>
+          <el-table-column
+            fixed
+            prop="inputUser"
+            label="经办人"
+          ></el-table-column>
+          <el-table-column prop="status" label="状态"></el-table-column>
+          <el-table-column prop="oaNo" label="OA发文文号"></el-table-column>
           <el-table-column label="操作" width="180">
             <template slot-scope="scope">
-              <el-link type="primary" @click.native.prevent="info(scope)">详情</el-link>
-              <el-dropdown trigger="click" style="margin-left:15px;">
+              <el-link type="primary" @click.native.prevent="info(scope)"
+                >详情</el-link
+              >
+              <el-dropdown trigger="click" style="margin-left: 15px">
                 <span class="el-dropdown-link">
                   更多
                   <i class="el-icon-arrow-down el-icon--right"></i>
                 </span>
                 <el-dropdown-menu slot="dropdown">
-                  <el-dropdown-item @click.native.prevent="ModifyThe(scope)">修改</el-dropdown-item>
-                  <el-dropdown-item @click.native.prevent="remove(scope)">删除</el-dropdown-item>
-                  <el-dropdown-item @click.native.prevent="withdraw(scope)">撤回</el-dropdown-item>
-                  <el-dropdown-item @click.native.prevent="audit(scope)">审核</el-dropdown-item>
-                  <el-dropdown-item @click.native.prevent="change(scope)">变更</el-dropdown-item>
+                  <el-dropdown-item @click.native.prevent="ModifyThe(scope)"
+                    >修改</el-dropdown-item
+                  >
+                  <el-dropdown-item @click.native.prevent="remove(scope)"
+                    >删除</el-dropdown-item
+                  >
+                  <el-dropdown-item @click.native.prevent="withdraw(scope)"
+                    >撤回重发</el-dropdown-item
+                  >
+                  <el-dropdown-item @click.native.prevent="audit(scope)"
+                    >下载供应商名录</el-dropdown-item
+                  >
+                  <el-dropdown-item @click.native.prevent="change(scope)"
+                    >变更</el-dropdown-item
+                  >
                 </el-dropdown-menu>
               </el-dropdown>
             </template>
@@ -222,29 +185,21 @@
 </template>
 <script lang="ts">
 import { Component, Vue } from "vue-property-decorator";
-import { post_channelGrade_getList } from "../../../api/channel/index";
+import { post_channelApproval_getList } from "../../../api/channel/index";
 import PaginationMixin from "../../../mixins/pagination";
-import { city } from "../../../util/enums/dic";
+// import { city } from "../../../util/enums/dic";
 @Component({
   components: {},
   mixins: [PaginationMixin],
 })
 export default class UserList extends Vue {
   queryPageParameters: any = {
-    employeeCode: null,
-    employeeStatus: "On",
-    provinces: "one",
-    city: "one",
-    state: "draft",
-    status: "Valid",
-    ChannelLevel: "bigPlatform",
-    distributorsName: "ruijia",
-    cityLevel: "firstLevel",
-    division: "one",
-    pageNum: 1,
-    pageSize: 10,
-    SpecialStorage: "",
-    enterPeople: "",
+    departmentOrgId: "",
+    oaNo: "",
+    inputUser: "",
+    status: "",
+    inputTime: "",
+    approvalNo: "",
   };
 
   resPageInfo: any = {
@@ -258,41 +213,29 @@ export default class UserList extends Vue {
   }
   add(scope: any) {
     console.log("添加");
-    this.$router.push({
-      path: "/channelLevel/ModifyThe",
-    });
+    // this.$router.push({
+    //   path: "/channelLevel/ModifyThe",
+    // });
   }
   empty() {
     console.log("清空");
-    this.queryPageParameters = {
-      employeeCode: null,
-      employeeStatus: null,
-      provinces: null,
-      city: null,
-      state: null,
-      status: null,
-      ChannelLevel: "",
-      distributorsName: null,
-      cityLevel: null,
-      division: null,
-      storageNum: "",
-    };
+    this.queryPageParameters = {};
   }
   currentPage: any = 1;
   total: any = null;
   //操作
   info(scope: any) {
     this.$router.push({
-      path: "/channelLevel/info",
+      path: "/ChannelAgroupOf/info",
       query: { id: scope.row.id },
     });
   }
   ModifyThe(scope: any) {
     console.log("修改");
-    this.$router.push({
-      path: "/channelLevel/ModifyThe",
-      query: { id: scope.row.id },
-    });
+    // this.$router.push({
+    //   path: "/channelLevel/ModifyThe",
+    //   query: { id: scope.row.id },
+    // });
   }
   remove(scope: any) {
     console.log("删除");
@@ -324,11 +267,11 @@ export default class UserList extends Vue {
 
   //获取数据
   async getListMixin() {
-    this.resPageInfo = await post_channelGrade_getList({
-      pageNum: this.queryPageParameters.pageNum,
-      pageSize: this.queryPageParameters.pageSize,
-    });
-    this.resPageInfo = await post_channelGrade_getList(
+    // this.resPageInfo = await post_channelApproval_getList({
+    //   pageNum: this.queryPageParameters.pageNum,
+    //   pageSize: this.queryPageParameters.pageSize,
+    // });
+    this.resPageInfo = await post_channelApproval_getList(
       this.queryPageParameters
     );
   }

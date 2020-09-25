@@ -4,45 +4,68 @@
  * @Author: lgf
  * @Date: 2020-09-21 18:06:34
  * @LastEditors: lgf
- * @LastEditTime: 2020-09-23 18:10:51
+ * @LastEditTime: 2020-09-25 11:13:55
 -->
 <template>
   <ih-page>
-    <template v-slot:info>
-      <el-col :span="4">
+    <template v-slot:form>
+      <el-form ref="form" label-width="80px">
         <el-row>
-          <el-form
-            :model="ruleForm"
-            :rules="rules"
-            ref="ruleForm"
-            label-width="100px"
-            class="demo-ruleForm"
-          >
-            <el-form-item label="失效日期" prop="date">
-              <el-form-item prop="date">
-                <el-date-picker
-                  type="date"
-                  placeholder="选择日期"
-                  v-model="ruleForm.date"
-                  style="width: 100%;"
-                ></el-date-picker>
+          <el-col :span="6">
+            <el-form
+              :model="ruleForm"
+              :rules="rules"
+              ref="ruleForm"
+              label-width="100px"
+              class="demo-ruleForm"
+            >
+              <el-form-item label="失效日期" prop="expiresTime">
+                <el-form-item prop="expiresTime">
+                  <el-date-picker
+                    type="date"
+                    placeholder="选择日期"
+                    value-format="yyyy-MM-dd"
+                    v-model="ruleForm.expiresTime"
+                    style="width: 100%"
+                  ></el-date-picker>
+                </el-form-item>
               </el-form-item>
+            </el-form>
+          </el-col>
+          <el-col :span="6">
+            <el-form-item label="事业部">
+              <el-select
+                v-model="ruleForm.division"
+                clearable
+                placeholder="事业部"
+                class="width--100"
+              >
+                <el-option
+                  v-for="item in $root.displayList('division')"
+                  :key="item.value"
+                  :label="item.label"
+                  :value="item.value"
+                ></el-option>
+              </el-select>
             </el-form-item>
-          </el-form>
+          </el-col>
         </el-row>
-      </el-col>
-      <el-col :span="2">
-        <el-button type="primary" @click="creat()">创建</el-button>
-      </el-col>
+      </el-form>
     </template>
-
-    <div class="imgList">
-      <img src alt />
-
-      <el-link class="elLink">下载二维码</el-link>
-    </div>
+    <template v-slot:btn>
+      <el-button type="primary" @click="creat()">创建</el-button>
+    </template>
+    <template v-slot:info>
+      <div class="imgList">
+        <img src="" alt="" />
+      </div>
+      <el-link type="success" class="elLink">下载二维码</el-link>
+    </template>
   </ih-page>
 </template>
+
+ 
+  
   
 <script lang="ts">
 import { Component, Vue } from "vue-property-decorator";
@@ -54,18 +77,30 @@ import {
   components: {},
 })
 export default class Home extends Vue {
-  ruleForm: any = { date: "", InviteCode: "" };
+  ruleForm: any = {
+    expiresTime: "",
+    invitationCode: "",
+    Imgrl: "",
+    division: "",
+  };
+
   rules: any = {
-    name: [{ required: true, message: "请输入失效日期" }],
+    expiresTime: [{ required: true, message: "请输入失效日期" }],
   };
   creat() {
     this.InviteCode();
     console.log("创建");
-    console.log(this.ruleForm.InviteCode.data);
+    // this.getImgurl();
   }
   async InviteCode() {
-    let InviteCode = await get_channelInvitationCode_create(this.ruleForm);
+    let invitationCode = await get_channelInvitationCode_create(this.ruleForm);
+    let Imgrl = await get_channelInvitationCode_download({
+      invitationCode: invitationCode,
+    });
   }
+  // async getImgurl() {
+  //   let Imgrl = await get_channelInvitationCode_download(InviteCode);
+  // }
 }
 </script>
 <style lang="scss" scoped>
@@ -75,11 +110,11 @@ export default class Home extends Vue {
   width: 300px;
   height: 300px;
   margin-left: 60px;
-  margin-top: 80px;
+  margin-top: 30px;
 }
 .elLink {
   position: relative;
-  left: 0px;
-  top: 335px;
+  left: -700px;
+  margin-top: 15px;
 }
 </style>

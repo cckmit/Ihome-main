@@ -5,7 +5,7 @@
  * @Date: 2020-06-24 09:47:33
 <<<<<<< HEAD
  * @LastEditors: lgf
- * @LastEditTime: 2020-09-22 10:34:53
+ * @LastEditTime: 2020-09-25 14:18:39
 =======
  * @LastEditors: ywl
  * @LastEditTime: 2020-09-18 11:04:27
@@ -181,6 +181,13 @@ export function allMenu<T>() {
             title: "渠道邀请码列表",
             icon: "el-icon-setting",
             path: "/web-sales/ChannelInviteCode",
+        },
+        {
+            id: 209,
+            parentId: 201,
+            title: "城市等级",
+            icon: "el-icon-setting",
+            path: "/web-sales/cityLevel",
         },
         {
             id: 401,

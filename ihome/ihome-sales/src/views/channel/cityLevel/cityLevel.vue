@@ -4,7 +4,7 @@
  * @Author: zyc
  * @Date: 2020-06-30 09:21:17
  * @LastEditors: lgf
- * @LastEditTime: 2020-09-25 14:00:38
+ * @LastEditTime: 2020-09-25 14:37:57
 --> 
 <template>
   <ih-page>
@@ -12,15 +12,15 @@
       <el-form ref="form" label-width="100px">
         <el-row>
           <el-col :span="8">
-            <el-form-item label="渠道商名称">
+            <el-form-item label="省份">
               <el-select
-                v-model="queryPageParameters.distributorsName"
+                v-model="queryPageParameters.provinces"
                 clearable
                 placeholder="请选择"
                 class="width--100"
               >
                 <el-option
-                  v-for="item in $root.displayList('distributorsName')"
+                  v-for="item in $root.displayList('provinces')"
                   :key="item.value"
                   :label="item.label"
                   :value="item.value"
@@ -29,15 +29,15 @@
             </el-form-item>
           </el-col>
           <el-col :span="8">
-            <el-form-item label="录入人">
+            <el-form-item label="城市">
               <el-select
-                v-model="queryPageParameters.enterPeople"
+                v-model="queryPageParameters.city"
                 clearable
                 placeholder="请选择"
                 class="width--100"
               >
                 <el-option
-                  v-for="item in $root.displayList('enterPeople')"
+                  v-for="item in $root.displayList('city')"
                   :key="item.value"
                   :label="item.label"
                   :value="item.value"
@@ -46,33 +46,15 @@
             </el-form-item>
           </el-col>
           <el-col :span="8">
-            <el-form-item label="状态">
+            <el-form-item label="城市等级">
               <el-select
-                v-model="queryPageParameters.stated"
+                v-model="queryPageParameters.cityLevel"
                 clearable
                 placeholder="请选择"
                 class="width--100"
               >
                 <el-option
-                  v-for="item in $root.displayList('stated')"
-                  :key="item.value"
-                  :label="item.label"
-                  :value="item.value"
-                ></el-option>
-              </el-select>
-            </el-form-item>
-          </el-col>
-
-          <el-col :span="8">
-            <el-form-item label="渠道跟进人">
-              <el-select
-                v-model="queryPageParameters.division"
-                clearable
-                placeholder="请选择"
-                class="width--100"
-              >
-                <el-option
-                  v-for="item in $root.displayList('division')"
+                  v-for="item in $root.displayList('cityLevel')"
                   :key="item.value"
                   :label="item.label"
                   :value="item.value"
@@ -88,7 +70,7 @@
       <el-row>
         <el-button type="primary" @click="search()">查询</el-button>
         <el-button type="warning" @click="add()">清空</el-button>
-        <el-button type="info" @click="reset()">变更录入人</el-button>
+        <el-button type="info" @click="reset()">修改</el-button>
       </el-row>
     </template>
 
@@ -103,66 +85,28 @@
         <el-table-column fixed type="selection" width="100"></el-table-column>
         <el-table-column
           fixed
-          poro=""
-          label="渠道商名称"
-          width="280"
+          poro="provinces"
+          label="省份"
+          width="350"
         ></el-table-column>
         <el-table-column
           fixed
           prop="name"
-          label="渠道跟进人"
-          width="240"
+          label="城市"
+          width="350"
         ></el-table-column>
         <el-table-column
           fixed
           prop="account"
-          label="录入人"
-          width="240"
-        ></el-table-column>
-        <el-table-column
-          prop="mobilePhone"
-          label="变更日期"
-          width="240"
-        ></el-table-column>
-        <el-table-column prop="accountType" label="状态" width="240">
-        </el-table-column>
-        <el-table-column
-          prop="orgName"
-          label="变更原因"
-          width="240"
+          label="城市等级"
+          width="350"
         ></el-table-column>
 
         <el-table-column label="操作">
           <template slot-scope="scope">
             <el-link type="primary" @click.native.prevent="info(scope)"
-              >详情</el-link
+              >修改</el-link
             >
-            <el-dropdown trigger="click" style="margin-left: 15px">
-              <span class="el-dropdown-link">
-                更多操作
-                <i class="el-icon-arrow-down el-icon--right"></i>
-              </span>
-              <el-dropdown-menu slot="dropdown">
-                <el-dropdown-item @click.native.prevent="edit(scope)"
-                  >修改</el-dropdown-item
-                >
-                <el-dropdown-item @click.native.prevent="remove(scope)"
-                  >删除</el-dropdown-item
-                >
-                <el-dropdown-item @click.native.prevent="resetPassword(scope)"
-                  >确认</el-dropdown-item
-                >
-                <el-dropdown-item @click.native.prevent="activation(scope)"
-                  >审核</el-dropdown-item
-                >
-                <el-dropdown-item @click.native.prevent="locking(scope)"
-                  >撤回</el-dropdown-item
-                >
-                <el-dropdown-item @click.native.prevent="locking(scope)"
-                  >退回起草</el-dropdown-item
-                >
-              </el-dropdown-menu>
-            </el-dropdown>
           </template>
         </el-table-column>
       </el-table>
@@ -200,15 +144,8 @@ import PaginationMixin from "../../../mixins/pagination";
 export default class UserList extends Vue {
   queryPageParameters: any = {
     cityLevel: "firstLevel",
-    ChannelLevel: "bigPlatform",
-    employeeCode: null,
-    employeeStatus: "On",
-    employeeType: "Formal",
-
-    name: null,
-    orgId: null,
-
-    status: "Valid",
+    provinces: "",
+    city: "",
   };
   jobVisibleData: any = null;
   OrganizationJurisdictionData: any = null;
