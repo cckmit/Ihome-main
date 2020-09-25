@@ -3,13 +3,13 @@
  * @version: 
  * @Author: zyc
  * @Date: 2020-06-22 11:10:43
- * @LastEditors: zyc
- * @LastEditTime: 2020-08-26 08:53:48
+ * @LastEditors: wwq
+ * @LastEditTime: 2020-09-25 08:57:16
  */
 import Vue from 'vue'
 import VueRouter, { RouteConfig, Route } from 'vue-router'
 import Home from '../views/Home.vue'
-// import Layout from '../components/Layout.vue'
+import Layout from '../components/Layout.vue'
 
 import NProgress from 'nprogress'
 import 'nprogress/nprogress.css'
@@ -43,6 +43,21 @@ const routes: Array<RouteConfig> = [
   //     },
   //   ]
   // },
+  {
+    path: '/developer',
+    meta: { title: '开发商管理', icon: null },
+    redirect: '/developer/list',
+    component: Layout,
+    children: [
+      {
+        path: 'list',
+        name: 'developerList',
+        component: () => import('../views/developer/list.vue'),
+        meta: { title: '开发商列表', icon: 'form' }
+      }
+    ]
+  }
+
 
 ]
 const router = new VueRouter({
