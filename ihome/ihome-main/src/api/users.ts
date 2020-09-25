@@ -4,7 +4,7 @@
  * @Author: zyc
  * @Date: 2020-06-24 09:47:33
  * @LastEditors: ywl
- * @LastEditTime: 2020-09-18 11:04:27
+ * @LastEditTime: 2020-09-25 11:59:52
  */
 import { IRes } from "./users.d";
 // import request from '@/utils/http';
@@ -122,16 +122,17 @@ export function allMenu<T>() {
         },
         {
             id: 401,
-            parentId: 101,
+            parentId: 0,
             title: '合同管理',
+            icon: "el-icon-setting",
             path: null,
         },
         {
             id: 402,
             parentId: 401,
-            title: "甲方合同",
+            title: "甲方合同列表",
             icon: null,
-            path: "/web-sales/project/list"
+            path: "/web-sales/contract/partyAList"
         }
     ];
     return menuList;

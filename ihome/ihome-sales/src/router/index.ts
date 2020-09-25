@@ -3,13 +3,13 @@
  * @version: 
  * @Author: zyc
  * @Date: 2020-06-22 11:10:43
- * @LastEditors: zyc
- * @LastEditTime: 2020-08-26 08:53:48
+ * @LastEditors: ywl
+ * @LastEditTime: 2020-09-25 16:08:54
  */
 import Vue from 'vue'
 import VueRouter, { RouteConfig, Route } from 'vue-router'
 import Home from '../views/Home.vue'
-// import Layout from '../components/Layout.vue'
+import Layout from '../components/Layout.vue'
 
 import NProgress from 'nprogress'
 import 'nprogress/nprogress.css'
@@ -43,7 +43,26 @@ const routes: Array<RouteConfig> = [
   //     },
   //   ]
   // },
-
+  {
+    path: '/contract',
+    meta: { title: '合同', icon: 'form' },
+    redirect: '/contract/partyAList',
+    component: Layout,
+    children: [
+      {
+        path: 'partyAList',
+        name: 'PartyAList',
+        component: () => import('@/views/contract/partyA-list.vue'),
+        meta: { title: '甲方合同列表', icon: 'form' }
+      },
+      {
+        path: 'partyAadd',
+        name: 'PartyAadd',
+        component: () => import('../views/contract/partyA-add.vue'),
+        meta: { title: '甲方合同录入', icon: 'form' }
+      }
+    ]
+  },
 ]
 const router = new VueRouter({
   mode: 'history',
