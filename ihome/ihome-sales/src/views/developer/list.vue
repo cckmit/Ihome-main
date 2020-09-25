@@ -81,7 +81,7 @@
         :column="tableColumn"
         :default-sort="{ prop: 'id', order: 'descending' }"
         :current-page.sync="queryPageParameters.pageNum"
-        :page-sizes="$root.pageSizes"
+        :page-size="queryPageParameters.pageSize"
         :total="resPageInfo.total"
         @selection-change="handleSelectionChange"
         @page-change="handleCurrentChangeMixin"
@@ -154,8 +154,6 @@ export default class DeveloperList extends Vue {
     devStatus: null,
     ProvincesOptions: Array,
     keyboarder: null,
-    pageSize: 20,
-    pageNum: 1,
   };
 
   tableColumn = [
