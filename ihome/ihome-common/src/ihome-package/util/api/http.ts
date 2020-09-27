@@ -14,21 +14,32 @@ service.interceptors.request.use(
         console.log(config)
         // let a = config.url?.includes;
         let url: string = config.url || '';
+
         if (url.includes('}')) {
-            //对{id}等参数进行替换
-            Object.keys(config.params || {}).forEach(k => {
-                let oldStr = '{' + k + '}'
-                let newStr = config.params[k]
-                config.url = url.replace(oldStr, newStr);
-                delete config.params[k];
-            })
+            if (config.method == 'get') {
+                Object.keys(config.params || {}).forEach(k => {
+                    let oldStr = '{' + k + '}'
+                    let newStr = config.params[k]
+                    config.url = url.replace(oldStr, newStr);
+                    delete config.params[k];
+                })
+            } else {
+                Object.keys(config.data || {}).forEach(k => {
+                    let oldStr = '{' + k + '}'
+                    let newStr = config.data[k]
+                    config.url = url.replace(oldStr, newStr);
+                    delete config.data[k];
+                })
+            }
         }
+
+
         // Add X-Access-Token header to every request, you can add other custom headers here
         const token: any = getToken();
         if (token) {
             if (config.url?.startsWith('http://filesvr.polyihome.test/aist-filesvr-web/webUploader/uploadAll')) {
                 // console.log(config.url)
-            }else{
+            } else {
                 config.headers['Authorization'] = 'bearer ' + token;
             }
         }
