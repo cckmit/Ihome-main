@@ -4,7 +4,7 @@
  * @Author: ywl
  * @Date: 2020-09-27 11:13:15
  * @LastEditors: ywl
- * @LastEditTime: 2020-09-27 16:11:56
+ * @LastEditTime: 2020-09-27 18:03:19
 -->
 <template>
   <IhPage>
@@ -267,7 +267,7 @@ export default class StrategyList extends Vue {
       label: "关联项目",
       align: "center",
       prop: "title",
-      width: 200,
+      minWidth: 200,
     },
     {
       label: "关联周期",

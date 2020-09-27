@@ -4,7 +4,7 @@
  * @Author: ywl
  * @Date: 2020-09-25 11:53:51
  * @LastEditors: ywl
- * @LastEditTime: 2020-09-27 14:25:55
+ * @LastEditTime: 2020-09-27 18:01:40
 -->
 <template>
   <ih-page>
@@ -279,7 +279,7 @@
         <template #operation>
           <el-table-column
             label="操作"
-            width="200"
+            width="230"
             align="left"
             fixed="right"
           >
