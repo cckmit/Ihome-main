@@ -4,10 +4,10 @@
  * @Author: ywl
  * @Date: 2020-09-25 17:34:32
  * @LastEditors: ywl
- * @LastEditTime: 2020-09-25 18:14:19
+ * @LastEditTime: 2020-09-27 09:36:25
 -->
 <template>
-  <ih-page>
+  <IhPage>
     <!-- 搜索 -->
     <template v-slot:form>
       <el-form
@@ -264,14 +264,187 @@
         </el-collapse-transition>
       </el-form>
     </template>
-  </ih-page>
+    <!-- 按钮 -->
+    <template v-slot:btn>
+      <el-row>
+        <el-button type="primary">查询</el-button>
+        <el-button type="info">重置</el-button>
+        <el-button type="success">申领合同</el-button>
+        <el-button type="success">派发合同</el-button>
+        <el-button type="success">转派发</el-button>
+        <el-button type="success">导出</el-button>
+        <el-link
+          type="primary"
+          class="float-right margin-right-40"
+          @click="openToggle()"
+        >{{searchOpen?'收起':'展开'}}</el-link>
+      </el-row>
+    </template>
+    <!-- table-content -->
+    <template v-slot:table>
+      <IhTable
+        class="intermediary-table"
+        :data="pageInfo.list"
+        :column="tableColumn"
+        :columnIndex="false"
+        @selection-change="handleSelectionChange"
+        :pageSize="queryPageParameters.pageSize"
+        :pageCurrent="queryPageParameters.pageNum"
+        :pageTotal="pageInfo.total"
+        @page-change="handleCurrentChangeMixin"
+        @size-change="handleSizeChangeMixin"
+      >
+        <template #operation>
+          <el-table-column
+            label="操作"
+            width="200"
+            align="left"
+            fixed="right"
+          >
+            <template v-slot="{ row }">
+              <el-link
+                type="primary"
+                @click.native.prevent="handleTo(row)"
+              >详情</el-link>
+              <el-link type="primary">盖章版归档</el-link>
+              <el-link type="primary">原件归档</el-link>
+              <!-- <el-dropdown
+                trigger="click"
+                class="margin-left-15"
+              >
+                <span class="el-dropdown-link">
+                  更多
+                  <i class="el-icon-arrow-down el-icon--right"></i>
+                </span>
+                <el-dropdown-menu slot="dropdown">
+                  <el-dropdown-item @click.native.prevent="routerTo(row)">编辑</el-dropdown-item>
+                </el-dropdown-menu>
+              </el-dropdown> -->
+            </template>
+          </el-table-column>
+        </template>
+      </IhTable>
+    </template>
+  </IhPage>
 </template>
 
 <script lang="ts">
 import { Component, Vue } from "vue-property-decorator";
-@Component({})
+import PaginationMixin from "../../mixins/pagination";
+@Component({
+  mixins: [PaginationMixin],
+})
 export default class IntermediaryList extends Vue {
   public queryPageParameters: any = {};
   private searchOpen = true;
+  private pageInfo: PageInfo = {
+    total: 0,
+    list: [
+      {
+        title: "123",
+      },
+    ],
+  };
+  // 表头
+  private tableColumn: Array<object> = [
+    {
+      label: "标题",
+      align: "center",
+      prop: "title",
+      width: 100,
+      fixed: true,
+    },
+    {
+      label: "甲方公司",
+      align: "center",
+      prop: "title",
+      width: 100,
+      fixed: true,
+    },
+    {
+      label: "乙方公司",
+      align: "center",
+      prop: "title",
+      width: 100,
+      fixed: true,
+    },
+    {
+      label: "项目地址",
+      align: "center",
+      prop: "title",
+      width: 200,
+    },
+    {
+      label: "合作时间",
+      align: "center",
+      prop: "title",
+      width: 200,
+    },
+    {
+      label: "关联项目",
+      align: "center",
+      prop: "title",
+      width: 200,
+    },
+    {
+      label: "关联周期",
+      align: "center",
+      prop: "title",
+      width: 200,
+    },
+    {
+      label: "归属组织",
+      align: "center",
+      prop: "title",
+      width: 200,
+    },
+    {
+      label: "合同编号",
+      align: "center",
+      prop: "title",
+      width: 200,
+    },
+    {
+      label: "归档状态",
+      align: "center",
+      prop: "title",
+      width: 200,
+    },
+    {
+      label: "归档编号",
+      align: "center",
+      prop: "title",
+      width: 200,
+    },
+    {
+      label: "合同跟进人",
+      align: "center",
+      prop: "title",
+      width: 200,
+    },
+    {
+      slot: "operation",
+    },
+  ];
+
+  private openToggle(): void {
+    this.searchOpen = !this.searchOpen;
+  }
+  private handleSelectionChange(val: any): void {
+    console.log(val);
+  }
+}
+interface PageInfo {
+  total: number;
+  list: Array<object>;
 }
 </script>
+
+<style lang="scss" scoped>
+.intermediary-table {
+  margin-top: 17px;
+  .el-link + .el-link {
+    margin-left: 15px;
+  }
+}
+</style>
