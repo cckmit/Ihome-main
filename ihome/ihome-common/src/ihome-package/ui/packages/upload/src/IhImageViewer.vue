@@ -36,8 +36,14 @@
           <i class="el-image-viewer__actions__divider"></i>
           <i :class="mode.icon" @click="toggleMode"></i>
           <i class="el-image-viewer__actions__divider"></i>
-          <i class="el-icon-refresh-left" @click="handleActions('anticlocelise')"></i>
-          <i class="el-icon-refresh-right" @click="handleActions('clocelise')"></i>
+          <i
+            class="el-icon-refresh-left"
+            @click="handleActions('anticlocelise')"
+          ></i>
+          <i
+            class="el-icon-refresh-right"
+            @click="handleActions('clocelise')"
+          ></i>
         </div>
       </div>
       <!-- CANVAS -->
@@ -54,13 +60,11 @@
             @load="handleImgLoad"
             @error="handleImgError"
             @mousedown="handleMouseDown"
-            style="cursor:pointer"
+            style="cursor: pointer"
           />
-          <span
-            class="title"
-            v-if="i === index"
-            :key="i"
-          >{{ `${viewerMsg[i].preFileName} ${(imgIndex + 1)}/${viewerMsg.length}`}}</span>
+          <span class="title" v-if="i === index" :key="i">{{
+            `${viewerMsg[i].preFileName} ${imgIndex + 1}/${viewerMsg.length}`
+          }}</span>
         </template>
       </div>
     </div>
@@ -198,7 +202,7 @@ export default {
         case "potx":
         case "ppt":
           window.open(
-            `https://view.officeapps.live.com/op/view.aspx?src=http://filesvr.polyihome.test/aist-filesvr-web/JQeryUpload/getfile?fileId=${this.uploadId}`
+            `https://view.officeapps.live.com/op/view.aspx?src=http://filesvr.polyihome.test/aist-filesvr-web/JQeryUpload/getfile?fileId=${file.url}`
           );
           break;
         case "pdf":

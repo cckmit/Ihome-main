@@ -4,7 +4,7 @@
  * @Author: zyc
  * @Date: 2020-06-22 14:34:07
  * @LastEditors: lgf
- * @LastEditTime: 2020-09-22 14:52:54
+ * @LastEditTime: 2020-09-28 09:19:26
  */
 
 console.log('\033[42;30m 这是main ts主应用')
@@ -51,13 +51,16 @@ module.exports = {
         },
         proxy: {
             '/system/v2/api-docs': {
-                target: 'http://10.188.0.109:8610'
+                target: 'http://192.168.200.114:8610'
             },
             '/system/': {
-                target: 'http://10.188.0.109:8610'
+                target: 'http://192.168.200.114:8610'
+            },
+            '/channel/': {
+                target: 'http://192.168.200.114:8610'
             },
             '/sales-oauth2': {
-                target: 'http://10.188.0.109:8610'
+                target: 'http://192.168.200.114:8610'
             },
             '/channel/': {
                 target: 'http://10.188.1.91:8610'

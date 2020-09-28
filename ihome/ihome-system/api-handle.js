@@ -4,7 +4,7 @@
  * @Author: zyc
  * @Date: 2020-07-31 15:21:06
  * @LastEditors: zyc
- * @LastEditTime: 2020-08-26 17:45:38
+ * @LastEditTime: 2020-09-23 18:07:09
  */
 let http = require('http');
 let fs = require("fs");
@@ -19,6 +19,7 @@ function handleSwagger(prefix) {
     //swagger配置数据
     let options = {
         host: '10.188.0.109',
+        // host: '10.188.1.91',
         port: '8610',
         path: `/${prefix}/v2/api-docs`
     };
@@ -99,6 +100,9 @@ function handleBody(body) {
                 originalRef = originalRef.substring(5, originalRef.length - 1)
                 originalRef += '[]'
             }
+            if (originalRef.startsWith('Map<')) {
+                originalRef = "any"
+            }
             let res = 'any'
             let parameters = paths[k]["get"].parameters;
             if (parameters && parameters.length > 0) {
@@ -144,6 +148,9 @@ function handleBody(body) {
             if (originalRef.startsWith('List<')) {
                 originalRef = originalRef.substring(5, originalRef.length - 1)
                 originalRef += '[]'
+            }
+            if (originalRef.startsWith('Map<')) {
+                originalRef = "any"
             }
             let res = 'any'
             let parameters = paths[k]["post"].parameters;
@@ -197,7 +204,7 @@ function handleBody(body) {
         if (k.includes("ApiResult") || k.includes("PageInfo")) {
             console.log('(k.includes("ApiResult") || k.includes("PageInfo")')
         } else {
-            if (k.startsWith('PageModel«') || k.startsWith('ResModel«')) {
+            if (k.startsWith('PageModel«') || k.startsWith('ResModel«') || k.startsWith('Map«')) {
 
             } else {
 
@@ -206,35 +213,38 @@ function handleBody(body) {
                 writeLine(`export interface ${k} {`)
 
                 let requiredList = definitions[k].required || [];
-                Object.keys(objs).forEach(key => {
-                    let required = requiredList.includes(key);
-                    writeLine(`/**${required ? '(必填)' : ''}${objs[key].description}*/`)
-                    let _type = objs[key].type;
-                    if (_type === "integer" || _type === "number" || _type === "int" || _type == "bigdecimal" || _type == "float" || _type == "double") {
-                        _type = "number";
-                    } else if (_type === "string" || _type === "String") {
-                        _type = "string";
-                    } else if (_type === "array") {
-                        let _arrType = objs[key].items.originalRef ? objs[key].items.originalRef : objs[key].items.type;
-                        if (_arrType === "integer" || _arrType === "number" || _arrType === "int" || _arrType == "bigdecimal" || _arrType == "float" || _arrType == "double") {
-                            _arrType = "number";
+                if(objs){
+                    Object.keys(objs).forEach(key => {
+                        let required = requiredList.includes(key);
+                        writeLine(`/**${required ? '(必填)' : ''}${objs[key].description}*/`)
+                        let _type = objs[key].type;
+                        if (_type === "integer" || _type === "number" || _type === "int" || _type == "bigdecimal" || _type == "float" || _type == "double") {
+                            _type = "number";
+                        } else if (_type === "string" || _type === "String") {
+                            _type = "string";
+                        } else if (_type === "array") {
+                            let _arrType = objs[key].items.originalRef ? objs[key].items.originalRef : objs[key].items.type;
+                            if (_arrType === "integer" || _arrType === "number" || _arrType === "int" || _arrType == "bigdecimal" || _arrType == "float" || _arrType == "double") {
+                                _arrType = "number";
+                            }
+                            if (!_arrType) {
+                                _arrType = 'any'
+                            }
+    
+                            _type = `${_arrType}[]`;
+                        } else if (_type === undefined) {
+                            _type = `${objs[key].originalRef}`;
+                        } else if (_type === 'boolean') {
+                            _type = "boolean";
                         }
-                        if (!_arrType) {
-                            _arrType = 'any'
+                        else {
+                            console.log(_type);
                         }
-
-                        _type = `${_arrType}[]`;
-                    } else if (_type === undefined) {
-                        _type = `${objs[key].originalRef}`;
-                    } else if (_type === 'boolean') {
-                        _type = "boolean";
-                    }
-                    else {
-                        console.log(_type);
-                    }
-                    writeLine(`${key}: ${_type};`)
-                });
-
+                        writeLine(`${key}: ${_type};`)
+                    });
+    
+                }
+               
                 writeLine(`}`)
             }
 

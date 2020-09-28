@@ -4,7 +4,7 @@
  * @Author: zyc
  * @Date: 2020-06-22 11:10:43
  * @LastEditors: wwq
- * @LastEditTime: 2020-09-21 08:58:42
+ * @LastEditTime: 2020-09-21 15:57:06
  */
 import Vue from 'vue'
 import VueRouter, { RouteConfig } from 'vue-router'
@@ -33,6 +33,14 @@ const routes: Array<RouteConfig> = [
     path: '/upload',
     name: 'Upload',
     component: () => import('../views/uploadDemo.vue'),
+    meta: {
+      title: '上传组件Demo'
+    }
+  },
+  {
+    path: '/table',
+    name: 'Tpload',
+    component: () => import('../views/tableDemo.vue'),
     meta: {
       title: '上传组件Demo'
     }
