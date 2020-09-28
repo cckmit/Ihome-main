@@ -4,7 +4,7 @@
  * @Author: zyc
  * @Date: 2020-06-22 11:11:41
  * @LastEditors: zyc
- * @LastEditTime: 2020-08-26 09:07:33
+ * @LastEditTime: 2020-09-28 09:11:04
  */
 const path = require('path');
 const { name } = require('./package');
@@ -39,7 +39,7 @@ module.exports = {
 		},
 		proxy: {
 			'/system/': {
-				target: 'http://10.188.0.109:8610'
+				target: 'http://192.168.200.114:8610'
 			}
 		}
 	},
