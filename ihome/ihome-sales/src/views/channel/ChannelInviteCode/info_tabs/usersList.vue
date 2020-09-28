@@ -4,7 +4,7 @@
  * @Author: zyc
  * @Date: 2020-06-30 09:21:17
  * @LastEditors: lgf
- * @LastEditTime: 2020-09-27 18:00:42
+ * @LastEditTime: 2020-09-27 18:46:10
 --> 
 <template>
   <ih-page>
@@ -12,49 +12,31 @@
       <el-form ref="form" label-width="100px">
         <el-row>
           <el-col :span="8">
-            <el-form-item label="省份">
-              <el-select
-                v-model="queryPageParameters.provinces"
-                clearable
-                placeholder="请选择"
-                class="width--100"
-              >
-                <el-option
-                  v-for="item in $root.displayList('provinces')"
-                  :key="item.value"
-                  :label="item.label"
-                  :value="item.value"
-                ></el-option>
-              </el-select>
+            <el-form-item label="姓名">
+              <el-input
+                v-model="queryPageParameters.username"
+                placeholder="姓名"
+              ></el-input>
             </el-form-item>
           </el-col>
           <el-col :span="8">
-            <el-form-item label="城市">
-              <el-select
-                v-model="queryPageParameters.city"
-                clearable
-                placeholder="请选择"
-                class="width--100"
-              >
-                <el-option
-                  v-for="item in $root.displayList('city')"
-                  :key="item.value"
-                  :label="item.label"
-                  :value="item.value"
-                ></el-option>
-              </el-select>
+            <el-form-item label="手机号码">
+              <el-input
+                v-model="queryPageParameters.mobile"
+                placeholder="手机号码"
+              ></el-input>
             </el-form-item>
           </el-col>
           <el-col :span="8">
-            <el-form-item label="城市等级">
+            <el-form-item label="渠道商名称">
               <el-select
-                v-model="queryPageParameters.cityLevel"
+                v-model="queryPageParameters.companyName"
                 clearable
-                placeholder="请选择"
+                placeholder="渠道商名称"
                 class="width--100"
               >
                 <el-option
-                  v-for="item in $root.displayList('cityLevel')"
+                  v-for="item in $root.displayList('distributorsName')"
                   :key="item.value"
                   :label="item.label"
                   :value="item.value"
@@ -69,8 +51,9 @@
     <template v-slot:btn>
       <el-row>
         <el-button type="primary" @click="search()">查询</el-button>
+        <el-button type="info" @click="reset()">添加</el-button>
         <el-button type="warning" @click="add()">清空</el-button>
-        <el-button type="info" @click="reset()">修改</el-button>
+        <el-button type="info" @click="reset()">作废</el-button>
       </el-row>
     </template>
 
@@ -85,30 +68,28 @@
         <el-table-column fixed type="selection" width="100"></el-table-column>
         <el-table-column
           fixed
-          poro="provinces"
-          label="省份"
+          poro="username"
+          label="姓名"
           width="350"
         ></el-table-column>
         <el-table-column
           fixed
-          prop="name"
-          label="城市"
+          prop="mobile"
+          label="手机号码"
           width="350"
         ></el-table-column>
         <el-table-column
           fixed
-          prop="account"
-          label="城市等级"
+          prop="companyName"
+          label="公司名称"
           width="350"
         ></el-table-column>
-
-        <el-table-column label="操作">
-          <template slot-scope="scope">
-            <el-link type="primary" @click.native.prevent="info(scope)"
-              >修改</el-link
-            >
-          </template>
-        </el-table-column>
+        <el-table-column
+          fixed
+          prop="registTime"
+          label="注册日期"
+          width="350"
+        ></el-table-column>
       </el-table>
     </template>
     <template v-slot:pagination>
@@ -128,14 +109,8 @@
 <script lang="ts">
 import { Component, Vue } from "vue-property-decorator";
 
-// import {
-//   post_user_getList,
-//   post_user_delete__id,
-//   post_user_lock__id,
-//   post_user_activate__id,
-//   post_user_resetPassword__id,
-// } from "../../../api/system/index";
-import PaginationMixin from "../../../mixins/pagination";
+import { post_channelRegistUser_getList } from "../../../../../src/api/channel/index";
+import PaginationMixin from "../../../../mixins/pagination";
 
 @Component({
   components: {},
@@ -143,9 +118,11 @@ import PaginationMixin from "../../../mixins/pagination";
 })
 export default class UserList extends Vue {
   queryPageParameters: any = {
-    cityLevel: "firstLevel",
-    provinces: "",
-    city: "",
+    username: "",
+    mobile: "",
+    distributorsName: "",
+    pageNum: 1,
+    pageSize: 10,
   };
   jobVisibleData: any = null;
   OrganizationJurisdictionData: any = null;
@@ -163,36 +140,23 @@ export default class UserList extends Vue {
 
   reset() {
     this.queryPageParameters = {
-      account: null,
-      accountType: "Ihome",
-
+      name: null,
+      phone: null,
+      distributorsName: null,
       pageNum: this.queryPageParameters.pageNum,
       pageSize: this.queryPageParameters.pageSize,
+      invitationCode: "",
     };
   }
 
   addData: any = null;
   value: any = "";
-  searchOpen = true;
-
-  organizationJurisdictionVisible = false;
-  jobVisible = false;
-  copyUserVisible = false;
 
   currentPage: any = 1;
-  valuedate: any = new Date().getTime();
+
   // valuedate: any ='2020-07-01';
   tableData: any = [];
   total: any = null;
-
-  formatter(row: any) {
-    return row.name;
-  }
-
-  openToggle() {
-    this.searchOpen = !this.searchOpen;
-  }
-  dialogVisible = false;
 
   add(data: any) {
     this.addData = data;
@@ -207,9 +171,13 @@ export default class UserList extends Vue {
   async created() {
     this.getListMixin();
   }
-  // async getListMixin() {
-  //   this.resPageInfo = await post_user_getList(this.queryPageParameters);
-  // }
+  async getListMixin() {
+    let invitationCode = this.$route.query.invitationCode;
+    console.log(invitationCode);
+    this.resPageInfo = await post_channelRegistUser_getList(
+      this.queryPageParameters
+    );
+  }
 
   getValue(value: any) {
     this.queryPageParameters.orgId = value;

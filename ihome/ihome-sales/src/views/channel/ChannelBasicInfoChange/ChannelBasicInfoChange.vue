@@ -4,7 +4,7 @@
  * @Author: zyc
  * @Date: 2020-06-30 09:21:17
  * @LastEditors: lgf
- * @LastEditTime: 2020-09-25 14:00:38
+ * @LastEditTime: 2020-09-27 16:18:13
 --> 
 <template>
   <ih-page>
@@ -105,24 +105,24 @@
           fixed
           poro=""
           label="渠道商名称"
-          width="280"
+          width="250"
         ></el-table-column>
         <el-table-column
           fixed
           prop="name"
           label="渠道跟进人"
-          width="240"
+          width="220"
         ></el-table-column>
         <el-table-column
           fixed
           prop="account"
           label="录入人"
-          width="240"
+          width="220"
         ></el-table-column>
         <el-table-column
           prop="mobilePhone"
           label="变更日期"
-          width="240"
+          width="220"
         ></el-table-column>
         <el-table-column prop="accountType" label="状态" width="240">
         </el-table-column>

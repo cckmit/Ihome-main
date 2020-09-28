@@ -4,7 +4,7 @@
  * @Author: lgf
  * @Date: 2020-09-18 09:14:40
  * @LastEditors: lgf
- * @LastEditTime: 2020-09-25 18:08:23
+ * @LastEditTime: 2020-09-27 18:39:24
 -->
 <template>
   <div>
@@ -159,6 +159,7 @@
           :current-page.sync="queryPageParameters.pageNum"
           :page-sizes="$root.pageSizes"
           :page-size="queryPageParameters.pageSize"
+          :page-num="queryPageParameters.pageNum"
           :layout="$root.paginationLayout"
           :total="resPageInfo.total"
         ></el-pagination>
@@ -167,10 +168,11 @@
   </div>
 </template>
 <script lang="ts">
+import { Row } from "element-ui";
 import { Component, Vue } from "vue-property-decorator";
 import {
   post_channelInvitationCode_getList,
-  post_channelInvitationCode_delete__invitationCode,
+  get_channelInvitationCode_delete__invitationCode,
   post_channelInvitationCode_cancel,
 } from "../../../api/channel/index";
 import PaginationMixin from "../../../mixins/pagination";
@@ -185,6 +187,8 @@ export default class Home extends Vue {
     expiresTime: "",
     state: "",
     division: "",
+    pageSize: 10,
+    pageNum: 1,
   };
 
   resPageInfo: any = {
@@ -195,7 +199,6 @@ export default class Home extends Vue {
   currentPage: any = 1;
   add(scope: any) {
     console.log("跳转至添加邀请码页面");
-
     this.$router.push({
       path: "/ChannelInviteCode/addCode",
     });
@@ -206,8 +209,14 @@ export default class Home extends Vue {
     this.queryPageParameters = {};
   }
 
-  info(scope: any) {
+  info(row) {
     console.log("详情");
+    console.log(row);
+    this.$router.push({
+      path: "/info",
+      query: { invitationCode: row.row.invitationCode },
+    });
+    console.log(row.row.invitationCode);
   }
   invalid() {
     console.log("作废");
@@ -221,15 +230,16 @@ export default class Home extends Vue {
     this.getListMixin();
   }
   deleted(row) {
-    let id = row.id;
-    console.log(id);
-    post_channelInvitationCode_delete__invitationCode(id);
-    // if (msg.code == "success") {
-    //   this.$message({
-    //     type: "info",
-    //     message: "删除成功",
-    //   });
-    // }
+    console.log(row.row);
+    let invitationCode = row.row.invitationCode;
+    console.log(invitationCode);
+    // post_channelInvitationCode_delete__invitationCode({
+    //   query: { invitationCode: invitationCode },
+    // });
+    get_channelInvitationCode_delete__invitationCode({
+      invitationCode: invitationCode,
+    });
+    this.getListMixin();
   }
   async getListMixin() {
     this.resPageInfo = await post_channelInvitationCode_getList(

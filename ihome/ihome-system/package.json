@@ -20,7 +20,7 @@
     "core-js": "^3.6.5",
     "driver.js": "^0.9.8",
     "element-ui": "^2.13.2",
-    "ihome-common": "^1.0.124",
+    "ihome-common": "^1.0.128",
     "js-cookie": "^2.2.1",
     "qiankun": "^2.0.24",
     "vue": "^2.6.11",

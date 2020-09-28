@@ -4,7 +4,7 @@
  * @Author: lgf
  * @Date: 2020-09-16 14:05:21
  * @LastEditors: lgf
- * @LastEditTime: 2020-09-22 18:00:57
+ * @LastEditTime: 2020-09-27 18:32:39
 -->
 
 <template>
@@ -14,13 +14,17 @@
       <el-col :span="8">
         <el-row>
           <el-col :span="6" class="ih-info-item-left">渠道商</el-col>
-          <el-col :span="18" class="ih-info-item-right">{{resPageInfo.list[0].date}}</el-col>
+          <el-col :span="18" class="ih-info-item-right">{{
+            resPageInfo.list[0].date
+          }}</el-col>
         </el-row>
       </el-col>
       <el-col :span="8">
         <el-row>
           <el-col :span="6" class="ih-info-item-left">渠道等级</el-col>
-          <el-col :span="18" class="ih-info-item-right">91440101MA5D6ETP8X</el-col>
+          <el-col :span="18" class="ih-info-item-right"
+            >91440101MA5D6ETP8X</el-col
+          >
         </el-row>
       </el-col>
       <el-col :span="8">
@@ -34,7 +38,9 @@
       <el-col :span="8">
         <el-row>
           <el-col :span="6" class="ih-info-item-left">业务开展省份</el-col>
-          <el-col :span="18" class="ih-info-item-right">有限责任公司（自然人投资或控股）</el-col>
+          <el-col :span="18" class="ih-info-item-right"
+            >有限责任公司（自然人投资或控股）</el-col
+          >
         </el-row>
       </el-col>
       <el-col :span="8">
@@ -46,7 +52,9 @@
       <el-col :span="8">
         <el-row>
           <el-col :span="6" class="ih-info-item-left">城市等级</el-col>
-          <el-col :span="18" class="ih-info-item-right">440111198710031817</el-col>
+          <el-col :span="18" class="ih-info-item-right"
+            >440111198710031817</el-col
+          >
         </el-row>
       </el-col>
     </el-row>
@@ -54,13 +62,17 @@
       <el-col :span="8">
         <el-row>
           <el-col :span="6" class="ih-info-item-left">是否特批入库</el-col>
-          <el-col :span="18" class="ih-info-item-right">广州市择食电子商务有限责任公司</el-col>
+          <el-col :span="18" class="ih-info-item-right"
+            >广州市择食电子商务有限责任公司</el-col
+          >
         </el-row>
       </el-col>
       <el-col :span="8">
         <el-row>
           <el-col :span="6" class="ih-info-item-left">入库编号</el-col>
-          <el-col :span="18" class="ih-info-item-right">91440101MA5D6ETP8X</el-col>
+          <el-col :span="18" class="ih-info-item-right"
+            >91440101MA5D6ETP8X</el-col
+          >
         </el-row>
       </el-col>
       <el-col :span="8">
@@ -73,7 +85,9 @@
     <p class="ih-info-title">
       <span>评级信息</span>
 
-      <el-button type="success" class="add" @click.native="addAccount()">添加</el-button>
+      <el-button type="success" class="add" @click.native="addAccount()"
+        >添加</el-button
+      >
       <a href>查看所有标准</a>
     </p>
     <!-- 对话框 -->
@@ -95,8 +109,18 @@
         <el-form-item label="开户银行" prop="bank">
           <el-input v-model="ruleForm.bank"></el-input>
         </el-form-item>
-        <el-form-item class="AccountType" label="账户类型" label-width="100px" prop="bankType">
-          <el-select v-model="ruleForm.bankType" clearable placeholder="请选择" class="width--100">
+        <el-form-item
+          class="AccountType"
+          label="账户类型"
+          label-width="100px"
+          prop="bankType"
+        >
+          <el-select
+            v-model="ruleForm.bankType"
+            clearable
+            placeholder="请选择"
+            class="width--100"
+          >
             <el-option
               v-for="item in $root.displayList('bankType')"
               :key="item.value"
@@ -109,16 +133,34 @@
 
       <div slot="footer" class="dialog-footer">
         <el-button @click="dialogFormVisible = false">取 消</el-button>
-        <el-button type="primary" @click="dialogFormVisible = false">确 定</el-button>
+        <el-button type="primary" @click="dialogFormVisible = false"
+          >确 定</el-button
+        >
       </div>
     </el-dialog>
 
-    <el-table :data="resPageInfo.list" border style="width:100%">
-      <el-table-column prop="date" label="城市等级" width="300"></el-table-column>
+    <el-table :data="resPageInfo.list" border style="width: 100%">
+      <el-table-column
+        prop="date"
+        label="城市等级"
+        width="300"
+      ></el-table-column>
       <el-table-column prop="name" label="渠道等级"></el-table-column>
-      <el-table-column prop="address" label="评级项" width="300"></el-table-column>
-      <el-table-column prop="address" label="录入信息" width="300"></el-table-column>
-      <el-table-column prop="address" label="评级标准" width="300"></el-table-column>
+      <el-table-column
+        prop="address"
+        label="评级项"
+        width="300"
+      ></el-table-column>
+      <el-table-column
+        prop="address"
+        label="录入信息"
+        width="300"
+      ></el-table-column>
+      <el-table-column
+        prop="address"
+        label="评级标准"
+        width="300"
+      ></el-table-column>
     </el-table>
     <p class="ih-info-title">
       <span>附件信息</span>

@@ -4,7 +4,7 @@
  * @Author: zyc
  * @Date: 2020-06-22 11:10:43
  * @LastEditors: lgf
- * @LastEditTime: 2020-09-25 16:54:40
+ * @LastEditTime: 2020-09-27 15:40:34
  */
 import Vue from 'vue'
 import VueRouter, { RouteConfig, Route } from 'vue-router'
@@ -224,6 +224,21 @@ const routes: Array<RouteConfig> = [
             name: 'ChannelInviteCode',
             component: () => import('../views/channel/ChannelInviteCode/addCode.vue'),
             meta: { title: '添加渠道邀请码', icon: 'form' }
+          },
+
+        ]
+      },
+      {
+        path: '/info',
+        meta: { title: '用户', icon: 'form' },
+        redirect: '/web-sales/',
+        component: Layout,
+        children: [
+          {
+            path: '/',
+            name: 'info',
+            component: () => import('../views/channel/ChannelInviteCode/info.vue'),
+            meta: { title: '详细信息', icon: 'form' }
           },
 
         ]

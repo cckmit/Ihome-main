@@ -4,7 +4,7 @@
  * @Author: zyc
  * @Date: 2020-07-09 14:29:02
  * @LastEditors: lgf
- * @LastEditTime: 2020-09-25 17:54:44
+ * @LastEditTime: 2020-09-27 16:07:13
 --> 
 <template>
   <ih-page>
@@ -28,9 +28,9 @@
 <script lang="ts">
 import { Component, Vue } from "vue-property-decorator";
 // import { getRoleList } from "../../api/system";
-import OAaudit from "./info_tab/OAaudit";
-import DetailInfo from "./info_tab/detailInfo";
-import OperationLog from "./info_tab/operationLog";
+import OAaudit from "./info_tab/OAaudit.vue";
+import DetailInfo from "./info_tab/detailInfo.vue";
+import OperationLog from "./info_tab/operationLog.vue";
 @Component({
   components: { OAaudit, DetailInfo, OperationLog },
 })

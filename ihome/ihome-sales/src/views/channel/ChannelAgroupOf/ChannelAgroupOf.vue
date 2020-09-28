@@ -4,7 +4,7 @@
  * @Author: zyc
  * @Date: 2020-08-13 11:40:10
  * @LastEditors: lgf
- * @LastEditTime: 2020-09-25 18:12:08
+ * @LastEditTime: 2020-09-27 15:16:13
 -->
 <template>
   <div>
@@ -35,13 +35,25 @@
               </el-form-item>
             </el-col>
             <el-col :span="8">
-              <el-form-item label="发起日期">
-                <el-input
+              <el-form-item label="入职日期">
+                <el-date-picker
+                  style="width: 100%"
                   v-model="queryPageParameters.inputTime"
-                  placeholder="发起日期"
-                ></el-input>
+                  type="daterange"
+                  align="left"
+                  unlink-panels
+                  range-separator="至"
+                  start-placeholder="开始日期"
+                  end-placeholder="结束日期"
+                  value-format="yyyy-MM-dd"
+                  :picker-options="$root.pickerOptions"
+                  @change="employmentDateChange"
+                >
+                  ></el-date-picker
+                >
               </el-form-item>
             </el-col>
+
             <el-col :span="8">
               <el-form-item label="经办人">
                 <el-select
@@ -198,18 +210,33 @@ export default class UserList extends Vue {
     oaNo: "",
     inputUser: "",
     status: "",
-    inputTime: "",
+    inputTime: null,
     approvalNo: "",
+    pageNum: 1,
+    pageSize: 10,
+    inputTimeStart: null,
+    inputTimeEnd: null,
   };
-
   resPageInfo: any = {
     total: 0,
     list: [],
   };
+  employmentDateChange(dateArray: any) {
+    console.log(dateArray);
+    this.queryPageParameters.inputTimeStart = dateArray[0];
+    this.queryPageParameters.inputTimeEnd = dateArray[1];
+  }
+
+  created() {
+    this.getListMixin();
+  }
   search() {
     console.log("查询");
+    console.log(this.queryPageParameters.inputTimeStart);
+
     // this.searchChinnelLevelInfo();
-    this.getListMixin;
+    this.getListMixin();
+    console.log("查询成功");
   }
   add(scope: any) {
     console.log("添加");
@@ -260,9 +287,6 @@ export default class UserList extends Vue {
     //   path: "/MaintenanceOfChannels",
     //   query: { id: scope.row.id },
     // });
-  }
-  created() {
-    this.getListMixin();
   }
 
   //获取数据

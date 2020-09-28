@@ -4,7 +4,7 @@
  * @Author: zyc
  * @Date: 2020-06-30 09:21:17
  * @LastEditors: lgf
- * @LastEditTime: 2020-09-23 15:26:29
+ * @LastEditTime: 2020-09-27 15:10:29
 --> 
 <template>
   <ih-page>
@@ -13,12 +13,18 @@
         <el-row>
           <el-col :span="8">
             <el-form-item label="登录账号">
-              <el-input v-model="queryPageParameters.account" placeholder="登录账号"></el-input>
+              <el-input
+                v-model="queryPageParameters.account"
+                placeholder="登录账号"
+              ></el-input>
             </el-form-item>
           </el-col>
           <el-col :span="8">
             <el-form-item label="姓名">
-              <el-input v-model="queryPageParameters.name" placeholder="姓名"></el-input>
+              <el-input
+                v-model="queryPageParameters.name"
+                placeholder="姓名"
+              ></el-input>
             </el-form-item>
           </el-col>
           <el-col :span="8">
@@ -44,12 +50,18 @@
             <el-row>
               <el-col :span="8">
                 <el-form-item label="手机号码">
-                  <el-input v-model="queryPageParameters.mobilePhone" placeholder="手机号码"></el-input>
+                  <el-input
+                    v-model="queryPageParameters.mobilePhone"
+                    placeholder="手机号码"
+                  ></el-input>
                 </el-form-item>
               </el-col>
               <el-col :span="8">
                 <el-form-item label="员工工号">
-                  <el-input v-model="queryPageParameters.employeeCode" placeholder="员工工号"></el-input>
+                  <el-input
+                    v-model="queryPageParameters.employeeCode"
+                    placeholder="员工工号"
+                  ></el-input>
                 </el-form-item>
               </el-col>
               <el-col :span="8">
@@ -61,7 +73,7 @@
                     class="width--100"
                   >
                     <el-option
-                      v-for="item in  $root.displayList('accountStatus')"
+                      v-for="item in $root.displayList('accountStatus')"
                       :key="item.value"
                       :label="item.label"
                       :value="item.value"
@@ -75,7 +87,7 @@
               <el-col :span="8">
                 <el-form-item label="入职日期">
                   <el-date-picker
-                    style="width:100%;"
+                    style="width: 100%"
                     v-model="queryPageParameters.employmentDate"
                     type="daterange"
                     align="left"
@@ -92,7 +104,7 @@
               <el-col :span="8">
                 <el-form-item label="离职日期">
                   <el-date-picker
-                    style="width:100%;"
+                    style="width: 100%"
                     v-model="queryPageParameters.leaveDate"
                     type="daterange"
                     align="left"
@@ -130,7 +142,7 @@
                 <el-form-item label="归属组织">
                   <SelectOrganizationTree
                     :orgId="queryPageParameters.orgId"
-                    @callback="(id)=>queryPageParameters.orgId=id"
+                    @callback="(id) => (queryPageParameters.orgId = id)"
                   />
                   <!-- <IhSelectTree
                     min-height="400px"
@@ -194,7 +206,8 @@
           type="primary"
           class="float-right margin-right-40"
           @click="openToggle()"
-        >{{searchOpen?'收起':'展开'}}</el-link>
+          >{{ searchOpen ? "收起" : "展开" }}</el-link
+        >
       </el-row>
     </template>
 
@@ -203,54 +216,117 @@
       <el-table
         class="ih-table"
         :data="resPageInfo.list"
-        :default-sort="{prop: 'id', order: 'descending'}"
+        :default-sort="{ prop: 'id', order: 'descending' }"
         @selection-change="handleSelectionChange"
       >
         <el-table-column fixed type="selection" width="50"></el-table-column>
-        <el-table-column fixed type="index" label="序号" width="50"></el-table-column>
-        <el-table-column fixed prop="name" label="姓名" width="90"></el-table-column>
-        <el-table-column fixed prop="account" label="登录账号" width="150"></el-table-column>
-        <el-table-column prop="mobilePhone" label="手机号码" width="120"></el-table-column>
+        <el-table-column
+          fixed
+          type="index"
+          label="序号"
+          width="50"
+        ></el-table-column>
+        <el-table-column
+          fixed
+          prop="name"
+          label="姓名"
+          width="90"
+        ></el-table-column>
+        <el-table-column
+          fixed
+          prop="account"
+          label="登录账号"
+          width="150"
+        ></el-table-column>
+        <el-table-column
+          prop="mobilePhone"
+          label="手机号码"
+          width="120"
+        ></el-table-column>
         <el-table-column prop="accountType" label="用户类型" width="120">
-          <template slot-scope="scope">{{$root.displayName('accountType',scope.row.accountType)}}</template>
+          <template slot-scope="scope">{{
+            $root.displayName("accountType", scope.row.accountType)
+          }}</template>
         </el-table-column>
-        <el-table-column prop="orgName" label="归属组织" width="300"></el-table-column>
-        <el-table-column prop="employeeCode" label="员工工号" width="150"></el-table-column>
+        <el-table-column
+          prop="orgName"
+          label="归属组织"
+          width="300"
+        ></el-table-column>
+        <el-table-column
+          prop="employeeCode"
+          label="员工工号"
+          width="150"
+        ></el-table-column>
         <el-table-column prop="status" label="账号状态" width="120">
-          <template slot-scope="scope">{{$root.displayName('accountStatus',scope.row.status)}}</template>
+          <template slot-scope="scope">{{
+            $root.displayName("accountStatus", scope.row.status)
+          }}</template>
         </el-table-column>
         <el-table-column prop="employeeStatus" label="雇员状态">
-          <template
-            slot-scope="scope"
-          >{{$root.displayName('employeeStatus',scope.row.employeeStatus)}}</template>
+          <template slot-scope="scope">{{
+            $root.displayName("employeeStatus", scope.row.employeeStatus)
+          }}</template>
         </el-table-column>
-        <el-table-column prop="employmentDate" label="入职日期" width="120"></el-table-column>
-        <el-table-column prop="leaveDate" label="离职日期" width="120"></el-table-column>
+        <el-table-column
+          prop="employmentDate"
+          label="入职日期"
+          width="120"
+        ></el-table-column>
+        <el-table-column
+          prop="leaveDate"
+          label="离职日期"
+          width="120"
+        ></el-table-column>
         <el-table-column prop="employeeType" label="人员类型">
-          <template slot-scope="scope">{{$root.displayName('employeeType',scope.row.employeeType)}}</template>
+          <template slot-scope="scope">{{
+            $root.displayName("employeeType", scope.row.employeeType)
+          }}</template>
         </el-table-column>
         <el-table-column prop="workType" label="职能类别">
-          <template slot-scope="scope">{{$root.displayName('workType',scope.row.workType)}}</template>
+          <template slot-scope="scope">{{
+            $root.displayName("workType", scope.row.workType)
+          }}</template>
         </el-table-column>
         <el-table-column prop="updateUserName" label="修改人"></el-table-column>
-        <el-table-column prop="updateTime" label="修改时间" width="150"></el-table-column>
+        <el-table-column
+          prop="updateTime"
+          label="修改时间"
+          width="150"
+        ></el-table-column>
 
         <el-table-column fixed="right" label="操作" width="120">
           <template slot-scope="scope">
-            <el-link type="primary" @click.native.prevent="info(scope)">详情</el-link>
-            <el-dropdown trigger="click" style="margin-left:15px;">
+            <el-link type="primary" @click.native.prevent="info(scope)"
+              >详情</el-link
+            >
+            <el-dropdown trigger="click" style="margin-left: 15px">
               <span class="el-dropdown-link">
                 更多
                 <i class="el-icon-arrow-down el-icon--right"></i>
               </span>
               <el-dropdown-menu slot="dropdown">
-                <el-dropdown-item @click.native.prevent="edit(scope)">编辑</el-dropdown-item>
-                <el-dropdown-item @click.native.prevent="remove(scope)">删除</el-dropdown-item>
-                <el-dropdown-item @click.native.prevent="locking(scope)">锁定用户</el-dropdown-item>
-                <el-dropdown-item @click.native.prevent="activation(scope)">激活用户</el-dropdown-item>
-                <el-dropdown-item @click.native.prevent="resetPassword(scope)">重置密码</el-dropdown-item>
-                <el-dropdown-item @click.native.prevent="jobRole(scope)">分配岗位角色</el-dropdown-item>
-                <el-dropdown-item @click.native.prevent="pOrganization(scope)">分配组织权限</el-dropdown-item>
+                <el-dropdown-item @click.native.prevent="edit(scope)"
+                  >编辑</el-dropdown-item
+                >
+                <el-dropdown-item @click.native.prevent="remove(scope)"
+                  >删除</el-dropdown-item
+                >
+                <el-dropdown-item @click.native.prevent="locking(scope)"
+                  >锁定用户</el-dropdown-item
+                >
+                <el-dropdown-item @click.native.prevent="activation(scope)"
+                  >激活用户</el-dropdown-item
+                >
+                <el-dropdown-item @click.native.prevent="resetPassword(scope)"
+                  >重置密码</el-dropdown-item
+                >
+                <el-dropdown-item @click.native.prevent="jobRole(scope)"
+                  >分配岗位角色</el-dropdown-item
+                >
+                <el-dropdown-item @click.native.prevent="pOrganization(scope)"
+                  >分配组织权限</el-dropdown-item
+                >
               </el-dropdown-menu>
             </el-dropdown>
           </template>
@@ -273,30 +349,50 @@
     <ih-dialog :show="dialogVisible" desc="用户新增编辑">
       <UserAdd
         :data="addData"
-        @cancel="()=>dialogVisible=false"
-        @finish="(data)=>{dialogVisible=false;finish(data)}"
+        @cancel="() => (dialogVisible = false)"
+        @finish="
+          (data) => {
+            dialogVisible = false;
+            finish(data);
+          }
+        "
       />
     </ih-dialog>
 
     <ih-dialog :show="jobVisible" desc="分配岗位角色">
       <UserJobRole
         :data="jobVisibleData"
-        @cancel="()=>jobVisible=false"
-        @finish="(data)=>{jobVisible=false;finishJob(data)}"
+        @cancel="() => (jobVisible = false)"
+        @finish="
+          (data) => {
+            jobVisible = false;
+            finishJob(data);
+          }
+        "
       />
     </ih-dialog>
     <ih-dialog :show="organizationJurisdictionVisible" desc="分配组织权限">
       <OrganizationJurisdiction
         :data="OrganizationJurisdictionData"
-        @cancel="()=>organizationJurisdictionVisible=false"
-        @finish="(data)=>{organizationJurisdictionVisible=false;finishJob(data)}"
+        @cancel="() => (organizationJurisdictionVisible = false)"
+        @finish="
+          (data) => {
+            organizationJurisdictionVisible = false;
+            finishJob(data);
+          }
+        "
       />
     </ih-dialog>
     <ih-dialog :show="copyUserVisible" desc="复制用户岗位角色组织权限">
       <CopyUsers
         :data="copyUserData"
-        @cancel="()=>copyUserVisible=false"
-        @finish="(data)=>{copyUserVisible=false;finishCopyUser(data)}"
+        @cancel="() => (copyUserVisible = false)"
+        @finish="
+          (data) => {
+            copyUserVisible = false;
+            finishCopyUser(data);
+          }
+        "
       />
     </ih-dialog>
   </ih-page>
