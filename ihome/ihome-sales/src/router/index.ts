@@ -4,7 +4,7 @@
  * @Author: zyc
  * @Date: 2020-06-22 11:10:43
  * @LastEditors: wwq
- * @LastEditTime: 2020-09-25 14:17:10
+ * @LastEditTime: 2020-09-27 15:32:53
  */
 import Vue from 'vue'
 import VueRouter, { RouteConfig, Route } from 'vue-router'
@@ -60,6 +60,30 @@ const routes: Array<RouteConfig> = [
         name: 'developerEdit',
         component: () => import('../views/developer/edit.vue'),
         meta: { title: '开发商信息录入修改', icon: 'form' }
+      },
+      {
+        path: 'change',
+        name: 'developerChange',
+        component: () => import('../views/developer/edit.vue'),
+        meta: { title: '开发商信息变更', icon: 'form' }
+      },
+      {
+        path: 'details',
+        name: 'developerDetails',
+        component: () => import('../views/developer/details.vue'),
+        meta: { title: '开发商信息详情', icon: 'form' }
+      },
+      {
+        path: 'check',
+        name: 'developerCheck',
+        component: () => import('../views/developer/details.vue'),
+        meta: { title: '开发商信息审核', icon: 'form' }
+      },
+      {
+        path: 'revocation',
+        name: 'developerRevocation',
+        component: () => import('../views/developer/details.vue'),
+        meta: { title: '开发商信息撤回', icon: 'form' }
       }
     ]
   }

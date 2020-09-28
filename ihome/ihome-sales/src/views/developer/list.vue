@@ -1,3 +1,11 @@
+<!--
+ * @Descripttion: 
+ * @version: 
+ * @Author: wwq
+ * @Date: 2020-09-25 17:59:09
+ * @LastEditors: wwq
+ * @LastEditTime: 2020-09-27 17:03:17
+-->
 <template>
   <ih-page>
     <template v-slot:form>
@@ -67,7 +75,7 @@
     <template v-slot:btn>
       <el-row>
         <el-button type="danger" @click="search()">查询</el-button>
-        <el-button type="success" @click="add()">添加</el-button>
+        <el-button type="success" @click="addMsg()">添加</el-button>
         <el-button type="success" @click="reset()">重置</el-button>
         <el-button type="info" @click="update()">变更录入人</el-button>
       </el-row>
@@ -90,7 +98,7 @@
         <template #operation>
           <el-table-column fixed="right" label="操作">
             <template v-slot="{ row }">
-              <el-link type="primary" @click.native.prevent="routerTo(row)"
+              <el-link type="primary" @click.native.prevent="detailsMsg(row)"
                 >详情</el-link
               >
               <el-dropdown trigger="click" class="margin-left-15">
@@ -105,13 +113,13 @@
                   <el-dropdown-item @click.native.prevent="routerTo(row)"
                     >删除</el-dropdown-item
                   >
-                  <el-dropdown-item @click.native.prevent="routerTo(row)"
+                  <el-dropdown-item @click.native.prevent="revocationMsg(row)"
                     >撤回
                   </el-dropdown-item>
-                  <el-dropdown-item @click.native.prevent="routerTo(row)"
+                  <el-dropdown-item @click.native.prevent="checkMsg(row)"
                     >审核</el-dropdown-item
                   >
-                  <el-dropdown-item @click.native.prevent="routerTo(row)"
+                  <el-dropdown-item @click.native.prevent="changeMsg(row)"
                     >变更信息</el-dropdown-item
                   >
                 </el-dropdown-menu>
@@ -238,9 +246,29 @@ export default class DeveloperList extends Vue {
   }
   dialogVisible = false;
 
-  add(data: any) {
+  addMsg(data: any) {
     this.addData = data;
     this.$router.push("/developer/edit");
+  }
+
+  changeMsg(row: any) {
+    console.log(row);
+    this.$router.push("/developer/change");
+  }
+
+  detailsMsg(row: any) {
+    console.log(row);
+    this.$router.push("/developer/details");
+  }
+
+  checkMsg(row: any) {
+    console.log(row);
+    this.$router.push("/developer/check");
+  }
+
+  revocationMsg(row: any) {
+    console.log(row);
+    this.$router.push("/developer/revocation");
   }
 
   finishJob(data: any) {
@@ -272,7 +300,7 @@ export default class DeveloperList extends Vue {
     });
   }
   edit(scope: any) {
-    this.add(scope.row);
+    this.addMsg(scope.row);
   }
 
   async remove(scope: any) {

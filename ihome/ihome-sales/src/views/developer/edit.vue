@@ -1,3 +1,11 @@
+<!--
+ * @Descripttion: 
+ * @version: 
+ * @Author: wwq
+ * @Date: 2020-09-25 17:59:09
+ * @LastEditors: wwq
+ * @LastEditTime: 2020-09-27 17:03:08
+-->
 <template>
   <ih-page>
     <template v-slot:form>
@@ -239,6 +247,18 @@
         v-model="queryPageParameters.employeeCode"
       >
       </el-input>
+
+      <div v-if="isShow">
+        <p class="ih-info-title">变更原因</p>
+        <el-input
+          type="textarea"
+          :autosize="{ minRows: 5, maxRows: 10 }"
+          placeholder="请输入内容"
+          v-model="queryPageParameters.employeeCode"
+        >
+        </el-input>
+      </div>
+
       <div class="bottom">
         <el-button @click="add()" type="primary">保存</el-button>
         <el-button @click="add()" type="primary">提交</el-button>
@@ -272,7 +292,7 @@
   </ih-page>
 </template>
 <script lang="ts">
-import { Component, Vue } from "vue-property-decorator";
+import { Component, Vue, Watch } from "vue-property-decorator";
 // import UserAdd from "./add.vue";
 import Contacts from "./dialog/contacts.vue";
 import Account from "./dialog/account.vue";
@@ -291,6 +311,13 @@ import PaginationMixin from "../../mixins/pagination";
   mixins: [PaginationMixin],
 })
 export default class Edit extends Vue {
+  private isShow = false;
+  @Watch("$route", { immediate: true })
+  watchRoute(val: any) {
+    if (val.name === "developerChange") {
+      this.isShow = true;
+    }
+  }
   queryPageParameters: any = {
     name: null,
     creditCode: null,
