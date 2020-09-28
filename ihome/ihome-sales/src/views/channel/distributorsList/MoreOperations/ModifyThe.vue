@@ -4,138 +4,90 @@
  * @Author: lgf
  * @Date: 2020-09-16 14:05:21
  * @LastEditors: lgf
- * @LastEditTime: 2020-09-25 17:46:26
+ * @LastEditTime: 2020-09-28 11:42:13
 -->
 
 <template>
-  <div class="detailInfo">
-    <p class="ih-info-title">基础信息</p>
-    <el-row class="ih-info-line">
-      <el-col :span="8">
+  <ih-page>
+    <template v-slot:form>
+      <p class="ih-info-title">基础信息</p>
+      <el-form
+        :model="ruleForm"
+        :rules="rules"
+        ref="ruleForm"
+        label-width="120px"
+        class="demo-ruleForm"
+      >
         <el-row>
-          <el-col :span="6" class="ih-info-item-left">名称</el-col>
-          <el-col :span="18" class="ih-info-item-right">{{ info.name }}</el-col>
+          <el-col :span="8">
+            <el-form-item label="名称" prop="name">
+              <el-input v-model="ruleForm.name"></el-input>
+            </el-form-item>
+          </el-col>
+          <el-col :span="8">
+            <el-form-item label="信用代码" prop="creditCode">
+              <el-input v-model="ruleForm.creditCode"></el-input>
+            </el-form-item>
+          </el-col>
+          <el-col :span="8">
+            <el-form-item label="简称" prop="shortName">
+              <el-input v-model="ruleForm.shortName"></el-input>
+            </el-form-item>
+          </el-col>
         </el-row>
-      </el-col>
-      <el-col :span="8">
         <el-row>
-          <el-col :span="6" class="ih-info-item-left">信用代码</el-col>
-          <el-col :span="18" class="ih-info-item-right">{{
-            info.creditCode
-          }}</el-col>
+          <el-col :span="8">
+            <el-form-item label="类型" prop="type">
+              <el-input v-model="ruleForm.type"></el-input>
+            </el-form-item>
+          </el-col>
+          <el-col :span="8">
+            <el-form-item label="法定代表人" prop="legalPerson">
+              <el-input v-model="ruleForm.legalPerson"></el-input>
+            </el-form-item>
+          </el-col>
+          <el-col :span="8">
+            <el-form-item label="法人身份证号码" prop="id">
+              <el-input v-model="ruleForm.id"></el-input>
+            </el-form-item>
+          </el-col>
         </el-row>
-      </el-col>
-      <el-col :span="8">
         <el-row>
-          <el-col :span="6" class="ih-info-item-left">简称</el-col>
-          <el-col :span="18" class="ih-info-item-right">{{
-            info.shortName
-          }}</el-col>
+          <el-col :span="8">
+            <el-form-item label="成立日期" prop="setupTime">
+              <el-input v-model="ruleForm.setupTime"></el-input>
+            </el-form-item>
+          </el-col>
+          <el-col :span="8">
+            <el-form-item label="注册资本" prop="capital">
+              <el-input v-model="ruleForm.capital"></el-input>
+            </el-form-item>
+          </el-col>
+          <el-col :span="8">
+            <el-form-item label="营业期限" prop="businessTime">
+              <el-input v-model="ruleForm.businessTime"></el-input>
+            </el-form-item>
+          </el-col>
         </el-row>
-      </el-col>
-    </el-row>
-    <el-row class="ih-info-line">
-      <el-col :span="8">
         <el-row>
-          <el-col :span="6" class="ih-info-item-left">类型</el-col>
-          <el-col :span="18" class="ih-info-item-right">{{ info.type }}</el-col>
+          <el-col :span="8">
+            <el-form-item label="省份" prop="province">
+              <el-input v-model="ruleForm.province"></el-input>
+            </el-form-item>
+          </el-col>
+          <el-col :span="8">
+            <el-form-item label="城市" prop="city">
+              <el-input v-model="ruleForm.city"></el-input>
+            </el-form-item>
+          </el-col>
+          <el-col :span="8">
+            <el-form-item label="行政区" prop="county">
+              <el-input v-model="ruleForm.county"></el-input>
+            </el-form-item>
+          </el-col>
         </el-row>
-      </el-col>
-      <el-col :span="8">
-        <el-row>
-          <el-col :span="6" class="ih-info-item-left">法定代表人</el-col>
-          <el-col :span="18" class="ih-info-item-right">{{
-            info.legalPerson
-          }}</el-col>
-        </el-row>
-      </el-col>
-      <el-col :span="8">
-        <el-row>
-          <el-col :span="6" class="ih-info-item-left">法人身份证号码</el-col>
-          <el-col :span="18" class="ih-info-item-right">{{ info.id }}</el-col>
-        </el-row>
-      </el-col>
-    </el-row>
-    <el-row class="ih-info-line">
-      <el-col :span="8">
-        <el-row>
-          <el-col :span="6" class="ih-info-item-left">成立日期</el-col>
-          <el-col :span="18" class="ih-info-item-right">{{
-            info.setupTime
-          }}</el-col>
-        </el-row>
-      </el-col>
-      <el-col :span="8">
-        <el-row>
-          <el-col :span="6" class="ih-info-item-left">注册资本</el-col>
-          <el-col :span="18" class="ih-info-item-right">{{
-            info.capital
-          }}</el-col>
-        </el-row>
-      </el-col>
-      <el-col :span="8">
-        <el-row>
-          <el-col :span="6" class="ih-info-item-left">营业期限</el-col>
-          <el-col :span="18" class="ih-info-item-right">{{
-            info.businessTime
-          }}</el-col>
-        </el-row>
-      </el-col>
-    </el-row>
-
-    <el-row class="ih-info-line">
-      <el-col :span="8">
-        <el-row>
-          <el-col :span="6" class="ih-info-item-left">省份</el-col>
-          <el-col :span="18" class="ih-info-item-right">{{
-            info.province
-          }}</el-col>
-        </el-row>
-      </el-col>
-      <el-col :span="8">
-        <el-row>
-          <el-col :span="6" class="ih-info-item-left">城市</el-col>
-          <el-col :span="18" class="ih-info-item-right">{{ info.city }}</el-col>
-        </el-row>
-      </el-col>
-      <el-col :span="8">
-        <el-row>
-          <el-col :span="6" class="ih-info-item-left">行政区</el-col>
-          <el-col :span="18" class="ih-info-item-right">{{
-            info.county
-          }}</el-col>
-        </el-row>
-      </el-col>
-    </el-row>
-    <el-row class="ih-info-line">
-      <el-col :span="8">
-        <el-row>
-          <el-col :span="6" class="ih-info-item-left">住所</el-col>
-          <el-col :span="18" class="ih-info-item-right">{{
-            info.address
-          }}</el-col>
-        </el-row>
-      </el-col>
-
-      <el-col :span="8">
-        <el-row>
-          <el-col :span="6" class="ih-info-item-left">跟进人</el-col>
-          <el-col :span="18" class="ih-info-item-right">{{
-            info.followUserId
-          }}</el-col>
-        </el-row>
-      </el-col>
-    </el-row>
-    <el-row class="ih-info-line">
-      <el-col :span="8">
-        <el-row>
-          <el-col :span="6" class="ih-info-item-left">状态</el-col>
-          <el-col :span="18" class="ih-info-item-right">{{
-            info.status
-          }}</el-col>
-        </el-row>
-      </el-col>
-    </el-row>
+      </el-form>
+    </template>
     <p class="ih-info-title">
       <span>银行账号信息</span>
 
@@ -201,42 +153,15 @@
         width="400"
       ></el-table-column>
       <el-table-column
-        prop="type"
+        prop="Banktype"
         label="账号类型"
         width="300"
       ></el-table-column>
     </el-table>
     <p class="ih-info-title">负责人信息</p>
-    <el-row class="ih-info-line">
-      <el-col :span="8">
-        <el-row>
-          <el-col :span="6" class="ih-info-item-left">姓名</el-col>
-          <el-col :span="18" class="ih-info-item-right">{{}}</el-col>
-        </el-row>
-      </el-col>
-      <el-col :span="8">
-        <el-row>
-          <el-col :span="6" class="ih-info-item-left">手机号码</el-col>
-          <el-col :span="18" class="ih-info-item-right">{{}}</el-col>
-        </el-row>
-      </el-col>
-      <el-col :span="8">
-        <el-row>
-          <el-col :span="6" class="ih-info-item-left">身份证号码</el-col>
-          <el-col :span="18" class="ih-info-item-right">{{}}</el-col>
-        </el-row>
-      </el-col>
-    </el-row>
-    <el-row class="ih-info-line">
-      <el-col :span="8">
-        <el-row>
-          <el-col :span="6" class="ih-info-item-left">电子邮箱</el-col>
-          <el-col :span="18" class="ih-info-item-right">{{}}</el-col>
-        </el-row>
-      </el-col>
-    </el-row>
+
     <p class="ih-info-title">附件信息</p>
-  </div>
+  </ih-page>
 </template>
 <script lang="ts">
 import { Component, Vue } from "vue-property-decorator";
@@ -257,7 +182,19 @@ export default class Home extends Vue {
     accountName: "",
     accountNum: "",
     bank: "",
+    Banktype: "",
+    county: "",
+    city: "",
+    province: "",
+    businessTime: "",
+    capital: "",
+    setupTime: "",
+    id: "",
+    legalPerson: "",
     type: "",
+    shortName: "",
+    creditCode: "",
+    name: "",
   };
   rules: any = {
     accountName: [
@@ -270,7 +207,25 @@ export default class Home extends Vue {
     bank: [
       { required: true, max: 64, message: "请输入开户银行", trigger: "blur" },
     ],
-    type: [{ required: true, message: "请选择账户类型", trigger: "blur" }],
+    Banktype: [{ required: true, message: "请选择账户类型", trigger: "blur" }],
+    county: [{ required: true, message: "请选择行政区", trigger: "blur" }],
+    city: [{ required: true, message: "请选择城市", trigger: "blur" }],
+    province: [{ required: true, message: "请选择省份", trigger: "blur" }],
+    businessTime: [
+      { required: true, message: "请输入营业期限", trigger: "blur" },
+    ],
+    id: [{ required: true, message: "请输入法人身份证号码", trigger: "blur" }],
+    type: [{ required: true, message: "请选择类型", trigger: "blur" }],
+    shortName: [{ required: true, message: "请输入简称", trigger: "blur" }],
+    creditCode: [
+      { required: true, message: "请输入信用代码", trigger: "blur" },
+    ],
+    legalPerson: [
+      { required: true, message: "请输入法定代表人", trigger: "blur" },
+    ],
+    name: [{ required: true, message: "请输入公司名称", trigger: "blur" }],
+    capital: [{ required: true, message: "请输入注册资本", trigger: "blur" }],
+    setupTime: [{ required: true, message: "请输入成立日期", trigger: "blur" }],
   };
 
   addAccount(scope: any) {
@@ -296,8 +251,11 @@ export default class Home extends Vue {
   }
   async getInfo() {
     let id = this.$route.query.id;
-    this.info = await get_channel_get__id({ id: id });
-    console.log(this.info);
+    if (id) {
+      this.ruleForm = await get_channel_get__id({ id: id });
+    } else {
+      this.ruleForm = {};
+    }
   }
 }
 </script>

@@ -4,7 +4,7 @@
  * @Author: zyc
  * @Date: 2020-06-30 09:21:17
  * @LastEditors: lgf
- * @LastEditTime: 2020-09-25 15:05:03
+ * @LastEditTime: 2020-09-28 15:10:24
 --> 
 <template>
   <ih-page>
@@ -29,84 +29,15 @@
             </el-form-item>
           </el-col>
           <el-col :span="8">
-            <el-form-item label="渠道等级">
+            <el-form-item label="录入人">
               <el-select
-                v-model="queryPageParameters.ChannelLevel"
+                v-model="queryPageParameters.enterPeople"
                 clearable
                 placeholder="请选择"
                 class="width--100"
               >
                 <el-option
-                  v-for="item in $root.displayList('ChannelLevel')"
-                  :key="item.value"
-                  :label="item.label"
-                  :value="item.value"
-                ></el-option>
-              </el-select>
-            </el-form-item>
-          </el-col>
-          <el-col :span="8">
-            <el-form-item label="城市等级">
-              <el-select
-                v-model="queryPageParameters.cityLevel"
-                clearable
-                placeholder="请选择"
-                class="width--100"
-              >
-                <el-option
-                  v-for="item in $root.displayList('cityLevel')"
-                  :key="item.value"
-                  :label="item.label"
-                  :value="item.value"
-                ></el-option>
-              </el-select>
-            </el-form-item>
-          </el-col>
-
-          <el-col :span="8">
-            <el-form-item label="业务开展省份">
-              <el-select
-                v-model="queryPageParameters.BusinessDevProvince"
-                clearable
-                placeholder="请选择"
-                class="width--100"
-              >
-                <el-option
-                  v-for="item in $root.displayList('BusinessDevProvince')"
-                  :key="item.value"
-                  :label="item.label"
-                  :value="item.value"
-                ></el-option>
-              </el-select>
-            </el-form-item>
-          </el-col>
-          <el-col :span="8">
-            <el-form-item label="业务开展城市">
-              <el-select
-                v-model="queryPageParameters.BusinessDevCity"
-                clearable
-                placeholder="请选择"
-                class="width--100"
-              >
-                <el-option
-                  v-for="item in $root.displayList('BusinessDevCity')"
-                  :key="item.value"
-                  :label="item.label"
-                  :value="item.value"
-                ></el-option>
-              </el-select>
-            </el-form-item>
-          </el-col>
-          <el-col :span="8">
-            <el-form-item label="事业部">
-              <el-select
-                v-model="queryPageParameters.division"
-                clearable
-                placeholder="请选择"
-                class="width--100"
-              >
-                <el-option
-                  v-for="item in $root.displayList('division')"
+                  v-for="item in $root.displayList('enterPeople')"
                   :key="item.value"
                   :label="item.label"
                   :value="item.value"
@@ -132,15 +63,31 @@
             </el-form-item>
           </el-col>
           <el-col :span="8">
-            <el-form-item label="录入人">
+            <el-form-item label="入库编号">
+              <el-input
+                v-model="queryPageParameters.account"
+                placeholder="入库编号"
+              ></el-input>
+            </el-form-item>
+          </el-col>
+          <el-col :span="8">
+            <el-form-item label="变更日期">
+              <el-input
+                v-model="queryPageParameters.account"
+                placeholder="入库编号"
+              ></el-input>
+            </el-form-item>
+          </el-col>
+          <el-col :span="8">
+            <el-form-item label="事业部">
               <el-select
-                v-model="queryPageParameters.enterPeople"
+                v-model="queryPageParameters.division"
                 clearable
                 placeholder="请选择"
                 class="width--100"
               >
                 <el-option
-                  v-for="item in $root.displayList('enterPeople')"
+                  v-for="item in $root.displayList('division')"
                   :key="item.value"
                   :label="item.label"
                   :value="item.value"
@@ -277,10 +224,6 @@ export default class UserList extends Vue {
     employeeStatus: "On",
     employeeType: "Formal",
 
-    leaveDateEnd: null,
-    leaveDateStart: null,
-    leaveDate: null,
-    mobilePhone: null,
     name: null,
     orgId: null,
     permissionOrgId: null,
@@ -305,7 +248,6 @@ export default class UserList extends Vue {
     this.queryPageParameters = {
       account: null,
       accountType: "Ihome",
-
       pageNum: this.queryPageParameters.pageNum,
       pageSize: this.queryPageParameters.pageSize,
     };

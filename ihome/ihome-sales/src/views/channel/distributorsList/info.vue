@@ -4,7 +4,7 @@
  * @Author: zyc
  * @Date: 2020-07-08 14:22:25
  * @LastEditors: lgf
- * @LastEditTime: 2020-09-25 17:42:19
+ * @LastEditTime: 2020-09-28 15:43:12
 --> 
 <template>
   <ih-page>
@@ -26,14 +26,16 @@
 import { Component, Vue } from "vue-property-decorator";
 // import { getRoleList } from "../../api/system";
 
-import DetailsInfo from "./info_tabs/detailsInfo.vue";
+// import DetailsInfo from "./info_tabs/detailsInfo.vue";
 import OperationLog from "./info_tabs/operationLog.vue";
+import DetailsInfo from "@/components/detailsInfo.vue";
 // import ModifyThe from "./MoreOperations/ModifyThe";
 @Component({
   components: { DetailsInfo, OperationLog },
 })
 export default class UserInfo extends Vue {
   tabActive: any = null;
+
   async created() {
     console.log(this.$route.query.id, this.$route.query.tab);
     this.tabActive = this.$route.query.tab || "1";

@@ -4,7 +4,7 @@
  * @Author: zyc
  * @Date: 2020-06-22 11:10:43
  * @LastEditors: lgf
- * @LastEditTime: 2020-09-27 15:40:34
+ * @LastEditTime: 2020-09-28 15:46:43
  */
 import Vue from 'vue'
 import VueRouter, { RouteConfig, Route } from 'vue-router'
@@ -246,7 +246,7 @@ const routes: Array<RouteConfig> = [
 
       //渠道商页面即将跳转的路由
       {
-        path: '/info',
+        path: '/distributorsList/info',
         meta: { title: '用户', icon: 'form' },
         redirect: '/web-sales/',
         component: Layout,
@@ -275,7 +275,7 @@ const routes: Array<RouteConfig> = [
       },
 
       {
-        path: '/confirm',
+        path: '/distributorsList/confirm',
         meta: { title: '用户', icon: 'form' },
         redirect: '/web-sales/',
         component: Layout,

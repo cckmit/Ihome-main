@@ -5,7 +5,7 @@
  * @Date: 2020-06-24 09:47:33
 <<<<<<< HEAD
  * @LastEditors: lgf
- * @LastEditTime: 2020-09-25 14:18:39
+ * @LastEditTime: 2020-09-28 09:44:22
 =======
  * @LastEditors: ywl
  * @LastEditTime: 2020-09-18 11:04:27
@@ -142,7 +142,7 @@ export function allMenu<T>() {
         {
             id: 202,
             parentId: 201,
-            title: "渠道合作信息列表",
+            title: "渠道等级信息变更列表",
             icon: null,
             path: "/web-sales/list",
         },

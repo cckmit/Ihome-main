@@ -4,7 +4,7 @@
  * @Author: zyc
  * @Date: 2020-08-13 11:40:10
  * @LastEditors: lgf
- * @LastEditTime: 2020-09-24 11:13:48
+ * @LastEditTime: 2020-09-28 15:45:19
 -->
 <template>
   <div>
@@ -256,6 +256,7 @@ export default class UserList extends Vue {
   }
   add() {
     console.log("添加");
+    this.$router.push("/ModifyThe");
   }
   empty() {
     console.log("清空");
@@ -263,22 +264,25 @@ export default class UserList extends Vue {
   //操作
   info(scope: any) {
     this.$router.push({
-      path: "/info",
+      path: "/distributorsList/info",
       query: { id: scope.row.id },
     });
   }
   change(scope: any) {
     console.log("录入修改");
     this.$router.push({
-      path: "//ModifyThe",
+      path: "/ModifyThe",
       query: { id: scope.row.id },
     });
   }
   confirm(scope: any) {
     console.log("确认");
     this.$router.push({
-      path: "/confirm",
-      query: { id: scope.row.id },
+      // path: "/confirm",
+      path: "/distributorsList/confirm",
+      query: {
+        id: scope.row.id,
+      },
     });
   }
   changeinfo(scope: any) {
