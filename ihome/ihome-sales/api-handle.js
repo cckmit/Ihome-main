@@ -3,8 +3,8 @@
  * @version: 
  * @Author: zyc
  * @Date: 2020-07-31 15:21:06
- * @LastEditors: zyc
- * @LastEditTime: 2020-09-23 18:06:58
+ * @LastEditors: wwq
+ * @LastEditTime: 2020-09-28 10:56:32
  */
 let http = require('http');
 let fs = require("fs");
@@ -19,7 +19,7 @@ function handleSwagger(prefix) {
     //swagger配置数据
     let options = {
         // host: '10.188.0.109',
-        host: '10.188.1.91',
+        host: '192.168.200.114',
         port: '8610',
         path: `/${prefix}/v2/api-docs`
     };
@@ -123,7 +123,7 @@ function handleBody(body) {
             writeLine(`return await request.get<${originalRef},${originalRef}>('${body.basePath}${k}', { params: d })`)
             writeLine(`}`)
 
-        } else if(paths[k]["post"]){
+        } else if (paths[k]["post"]) {
             //post
             countPost += 1;
             let originalRef =
@@ -174,11 +174,11 @@ function handleBody(body) {
             writeLine(`return await request.post< ${originalRef},${originalRef}> ('${body.basePath}${k}', d)`)
             writeLine(`}`)
 
-        }else{
+        } else {
             console.log('\033[41;30m 暂只支持get,post;其他不支持，请检查\033[0m')
         }
     });
-     
+
     console.log(`一共有${count}个接口;get=${countGet};post=${countPost};其他=${count - countGet - countPost}`)
 
     writeLine('//===============================================================================================')
@@ -213,7 +213,7 @@ function handleBody(body) {
                 writeLine(`export interface ${k} {`)
 
                 let requiredList = definitions[k].required || [];
-                if(objs){
+                if (objs) {
                     Object.keys(objs).forEach(key => {
                         let required = requiredList.includes(key);
                         writeLine(`/**${required ? '(必填)' : ''}${objs[key].description}*/`)
@@ -230,7 +230,7 @@ function handleBody(body) {
                             if (!_arrType) {
                                 _arrType = 'any'
                             }
-    
+
                             _type = `${_arrType}[]`;
                         } else if (_type === undefined) {
                             _type = `${objs[key].originalRef}`;
@@ -242,9 +242,9 @@ function handleBody(body) {
                         }
                         writeLine(`${key}: ${_type};`)
                     });
-    
+
                 }
-               
+
                 writeLine(`}`)
             }
 
@@ -255,7 +255,7 @@ function handleBody(body) {
         fs.renameSync(outSrc, backupsSrc);
         console.log(`脚本备份成功：路径${backupsSrc}`);
     } catch (error) {
-        
+
     }
 
     fs.writeFile(outSrc, text, function (err) {
@@ -272,9 +272,9 @@ function writeLine(line) {
 
 
 function replaceUrlParameter(str) {
-    
+
     let rstr = str.replace(/{[^}]*}/g, function (me) {
-        
+
         return "_" + me.replace("{", "").replace("}", "")
     });
     return rstr;
