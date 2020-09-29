@@ -4,7 +4,7 @@
  * @Author: wwq
  * @Date: 2020-09-29 08:55:05
  * @LastEditors: wwq
- * @LastEditTime: 2020-09-29 09:52:58
+ * @LastEditTime: 2020-09-29 14:28:18
 -->
 <template>
   <div class="cascader">
@@ -14,6 +14,7 @@
         value: 'code',
         checkStrictly: true,
       }"
+      popper-class="ih-cascader"
       style="width: 100%"
       placeholder="请选择省市区"
       :options="provincesOptions"
@@ -32,7 +33,7 @@ import request from "../../../../util/api/http";
   components: {},
 })
 export default class IhCascader extends Vue {
-  private provincesValue = null;
+  private provincesValue = [];
   private provincesOptions = [];
 
   async created() {
@@ -83,4 +84,9 @@ interface AreaBaseVO {
 }
 </script>
 <style lang="scss">
+.ih-cascader {
+  .el-cascader-menu__wrap {
+    height: 366px;
+  }
+}
 </style>
