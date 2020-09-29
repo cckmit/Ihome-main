@@ -1,6 +1,6 @@
 /* eslint-disable */
 /* 此脚本由swagger-ui的api-docs自动生成，请勿修改 */
-//2020-9-29 11:39:24
+//2020-9-29 11:11:11
 import { request } from '@/api/base'
 /**查询所有行政区划信息*/
 export async function get_area_getAll (d?: any) {

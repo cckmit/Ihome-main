@@ -4,7 +4,7 @@
  * @Author: zyc
  * @Date: 2020-06-22 11:10:43
  * @LastEditors: lgf
- * @LastEditTime: 2020-09-28 15:46:43
+ * @LastEditTime: 2020-09-29 14:13:33
  */
 import Vue from 'vue'
 import VueRouter, { RouteConfig, Route } from 'vue-router'

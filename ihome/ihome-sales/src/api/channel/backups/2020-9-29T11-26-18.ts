@@ -1,6 +1,6 @@
 /* eslint-disable */
 /* 此脚本由swagger-ui的api-docs自动生成，请勿修改 */
-//2020-9-29 11:26:18
+//2020-9-29 11:17:58
 import { request } from '@/api/base'
 /**添加渠道*/
 export async function post_channel_add (d?: any) {
@@ -802,16 +802,20 @@ createTime: string;
 createUser: number;
 /**已删除*/
 deleted: number;
-/**城市等级*/
-grade: number;
+/**渠道ID*/
+gradeId: number;
 /**ID*/
 id: number;
-/**层级*/
-level: number;
-/**名称*/
-name: string;
-/**父编码*/
-parentCode: string;
+/**处理时间(yyyy-MM-dd HH:mm:ss)*/
+operateTime: string;
+/**操作*/
+operation: string;
+/**处理人*/
+operator: string;
+/**处理意见*/
+remark: string;
+/**结果*/
+result: string;
 /**更新时间(yyyy-MM-dd HH:mm:ss)*/
 updateTime: string;
 /**更新用户*/

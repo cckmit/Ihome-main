@@ -4,11 +4,16 @@
  * @Author: zyc
  * @Date: 2020-06-24 09:47:33
 <<<<<<< HEAD
+<<<<<<< HEAD
  * @LastEditors: lgf
- * @LastEditTime: 2020-09-28 09:44:22
+ * @LastEditTime: 2020-09-29 14:08:37
 =======
  * @LastEditors: ywl
  * @LastEditTime: 2020-09-18 11:04:27
+>>>>>>> origin/develop
+=======
+ * @LastEditors: wwq
+ * @LastEditTime: 2020-09-25 08:54:25
 >>>>>>> origin/develop
  */
 import { IRes } from "./users.d";
@@ -126,6 +131,7 @@ export function allMenu<T>() {
             path: "/web-sales/",
         },
         {
+
             id: 201,
             parentId: 0,
             title: "渠道管理",
@@ -188,6 +194,20 @@ export function allMenu<T>() {
             title: "城市等级",
             icon: "el-icon-setting",
             path: "/web-sales/cityLevel",
+        }, {
+            id: 301,
+            parentId: 0,
+            title: '开发商管理模块',
+            icon: 'el-icon-setting',
+            path: null,
+        },
+        {
+            id: 302,
+            parentId: 301,
+            title: "开发商列表",
+            icon: null,
+            path: "/web-sales/developer/list"
+
         },
         {
             id: 401,

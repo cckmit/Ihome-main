@@ -4,9 +4,9 @@
  * @Author: zyc
  * @Date: 2020-07-24 17:08:03
  * @LastEditors: zyc
- * @LastEditTime: 2020-08-26 10:06:05
+ * @LastEditTime: 2020-09-29 11:08:16
  */
- 
+ /* eslint-disable  no-console */
 import { IPageInfo,IPageBase } from "../api/base.d";
 import { Vue, Component } from 'vue-property-decorator'
 declare module 'vue/types/vue' {

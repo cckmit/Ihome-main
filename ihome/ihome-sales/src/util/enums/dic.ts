@@ -4,7 +4,9 @@
  * @Author: zyc
  * @Date: 2020-09-14 16:29:37
  * @LastEditors: lgf
- * @LastEditTime: 2020-09-25 14:37:21
+ * @LastEditTime: 2020-09-29 11:59:28
+ * @LastEditors: wwq
+ * @LastEditTime: 2020-09-25 17:17:11
  */
 
 /**测试
@@ -144,6 +146,15 @@ export const stated: any = {
 export const enterPeople: any = {
     one: "张三",
     two: "李四"
+}
+export const devStatus: any = {
+    0: '起草',
+    1: '待分公司业管审核',
+    2: '已审核',
+}
+export const account: any = {
+    0: '基本存款账户',
+    1: '普通账户',
 }
 
 

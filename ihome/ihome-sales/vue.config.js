@@ -3,8 +3,8 @@
  * @version: 
  * @Author: zyc
  * @Date: 2020-06-22 11:11:41
- * @LastEditors: lgf
- * @LastEditTime: 2020-09-28 09:19:58
+ * @LastEditors: zyc
+ * @LastEditTime: 2020-09-29 11:41:23
  */
 const path = require('path');
 const { name } = require('./package');
@@ -12,12 +12,21 @@ const port = 8086; // 端口
 
 const childProcess = require('child_process')
 const branch = childProcess.execSync('git rev-parse --abbrev-ref HEAD').toString().replace(/\s+/, '')
-let git_email = childProcess.execSync('git show -s --format=%ce').toString().trim(); //邮箱
-console.log('\033[42;30m ' + name + '子应用 git信息 \033[40;32m 邮箱:' + git_email + ' 分支:' + branch + '\033[0m');
+let user_name = childProcess.execSync('git config user.name').toString().trim(); //当前用户名
+let user_email = childProcess.execSync('git config user.email').toString().trim(); //当前邮箱
+console.log('\033[42;30m ' + name + '子应用 git信息 \033[40;32m 用户名:' + user_name + '; 邮箱：' + user_email + '; 分支:' + branch + '\033[0m');
+
+let show_name = childProcess.execSync('git show -s --format=%cn').toString().trim(); //姓名
+let show_email = childProcess.execSync('git show -s --format=%ce').toString().trim(); //邮箱
+let show_date = new Date(childProcess.execSync('git show -s --format=%cd').toString()); //日期
+let show_message = childProcess.execSync('git show -s --format=%s').toString().trim(); //说明
+console.log('git提交记录信息  ', '用户名：' + show_name, '邮箱：' + show_email, '日期：', show_date, '说明：' + show_message);
+
 function resolve(dir) {
 	return path.join(__dirname, dir);
 }
-
+let proxyAddress = process.env.PROXY_PROTOCOL + '://' + process.env.PROXY_IP + ':' + process.env.PROXY_PORT;//代理地址
+console.log('\033[40;32mapi接口代理地址：' + proxyAddress + '\033[0m');
 module.exports = {
 	outputDir: 'dist',
 	assetsDir: 'static',
@@ -39,10 +48,10 @@ module.exports = {
 		},
 		proxy: {
 			'/system/': {
-				target: 'http://192.168.200.114:8610'
+				target: proxyAddress
 			},
 			'/channel/': {
-				target: 'http://192.168.200.114:8610'
+				target: proxyAddress
 			}
 		}
 	},
