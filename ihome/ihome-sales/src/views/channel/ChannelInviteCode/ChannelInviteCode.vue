@@ -4,7 +4,7 @@
  * @Author: lgf
  * @Date: 2020-09-18 09:14:40
  * @LastEditors: lgf
- * @LastEditTime: 2020-09-27 18:39:24
+ * @LastEditTime: 2020-09-29 11:47:39
 -->
 <template>
   <div>
@@ -106,6 +106,7 @@
         <el-table
           class="ih-table"
           :data="resPageInfo.list"
+          @selection-change="handleSelectionChange"
           :default-sort="{ prop: 'id', order: 'descending' }"
         >
           <el-table-column type="selection" width="70"> </el-table-column>
@@ -195,6 +196,9 @@ export default class Home extends Vue {
     total: 0,
     list: [],
   };
+  invaildList: any = {
+    list: [],
+  };
 
   currentPage: any = 1;
   add(scope: any) {
@@ -218,9 +222,6 @@ export default class Home extends Vue {
     });
     console.log(row.row.invitationCode);
   }
-  invalid() {
-    console.log("作废");
-  }
 
   async created() {
     this.getListMixin();
@@ -233,9 +234,6 @@ export default class Home extends Vue {
     console.log(row.row);
     let invitationCode = row.row.invitationCode;
     console.log(invitationCode);
-    // post_channelInvitationCode_delete__invitationCode({
-    //   query: { invitationCode: invitationCode },
-    // });
     get_channelInvitationCode_delete__invitationCode({
       invitationCode: invitationCode,
     });
@@ -254,6 +252,27 @@ export default class Home extends Vue {
   handleCurrentChangeMixin(val: any) {
     console.log("指定页码", val);
     this.queryPageParameters.pageNum = val;
+    this.getListMixin();
+  }
+  handleSelectionChange(val) {
+    console.log("fff");
+    this.invaildList.list = val;
+    // console.log(this.changeList.list);
+  }
+  invalid() {
+    if (this.invaildList) {
+      this.$message({
+        message: "请选择要作废的邀请码",
+        type: "warning",
+      });
+    }
+    let idArr = [];
+    this.invaildList.list.forEach((ele) => {
+      idArr.push(ele.id);
+    });
+    console.log(idArr);
+    post_channelInvitationCode_cancel(idArr);
+    console.log("作废");
     this.getListMixin();
   }
 }

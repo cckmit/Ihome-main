@@ -4,7 +4,7 @@
  * @Author: lgf
  * @Date: 2020-09-18 09:14:40
  * @LastEditors: lgf
- * @LastEditTime: 2020-09-28 17:53:00
+ * @LastEditTime: 2020-09-29 09:37:35
 -->
 <template>
   <div>
@@ -201,7 +201,7 @@ export default class Home extends Vue {
     total: 0,
     list: [],
   };
-  formLabelWidth = "120px";
+  // formLabelWidth = "120px";
   currentPage: any = 1;
 
   reset() {
@@ -209,7 +209,7 @@ export default class Home extends Vue {
     this.queryPageParameters = {};
   }
 
-  info(row) {
+  info(row: any) {
     console.log("详情");
     console.log(row);
     this.$router.push({

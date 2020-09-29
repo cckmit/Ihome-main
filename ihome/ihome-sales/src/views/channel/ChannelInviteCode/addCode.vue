@@ -4,7 +4,7 @@
  * @Author: lgf
  * @Date: 2020-09-21 18:06:34
  * @LastEditors: lgf
- * @LastEditTime: 2020-09-25 11:13:55
+ * @LastEditTime: 2020-09-29 11:53:37
 -->
 <template>
   <ih-page>
@@ -81,7 +81,7 @@ export default class Home extends Vue {
     expiresTime: "",
     invitationCode: "",
     Imgrl: "",
-    division: "",
+    division: 1,
   };
 
   rules: any = {
@@ -93,10 +93,13 @@ export default class Home extends Vue {
     // this.getImgurl();
   }
   async InviteCode() {
-    let invitationCode = await get_channelInvitationCode_create(this.ruleForm);
-    let Imgrl = await get_channelInvitationCode_download({
-      invitationCode: invitationCode,
+    let invitationCode = await get_channelInvitationCode_create({
+      expiresTime: this.ruleForm.expiresTime,
+      departmentOrgId: this.ruleForm.division,
     });
+    // let Imgrl = await get_channelInvitationCode_download({
+    //   invitationCode: invitationCode,
+    // });
   }
   // async getImgurl() {
   //   let Imgrl = await get_channelInvitationCode_download(InviteCode);

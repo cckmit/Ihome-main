@@ -1,6 +1,6 @@
 /* eslint-disable */
 /* 此脚本由swagger-ui的api-docs自动生成，请勿修改 */
-//2020-9-29 9:07:56
+//2020-9-27 17:38:04
 import { request } from '@/api/base'
 /**添加渠道*/
 export async function post_channel_add (d?: any) {
@@ -18,13 +18,13 @@ return await request.get<ChannelDetail,ChannelDetail>('/channel/channel/get/{id}
 export async function post_channel_getList (d?: any) {
 return await request.post< PageModel<ChannelVO>,PageModel<ChannelVO>> ('/channel/channel/getList', d)
 }
-/**渠道等级信息变更录入人*/
-export async function post_channel_modifyInputUser (d?: any) {
-return await request.post< string,string> ('/channel/channel/modifyInputUser', d)
-}
 /**渠道审核确认操作【未实现】*/
 export async function get_channel_operate (d?: any) {
 return await request.get<string,string>('/channel/channel/operate', { params: d })
+}
+/**变更跟进人【未实现】*/
+export async function post_channel_updateFlowUser (d?: any) {
+return await request.post< string,string> ('/channel/channel/updateFlowUser', d)
 }
 /**添加渠道经纪人*/
 export async function post_channelAgent_add (d?: any) {
@@ -94,10 +94,6 @@ return await request.post< number,number> ('/channel/channelCityLevel/updateLeve
 export async function post_channelGrade_add (d?: any) {
 return await request.post< string,string> ('/channel/channelGrade/add', d)
 }
-/**渠道等级审核操作【未实现】*/
-export async function get_channelGrade_approveRecord (d?: any) {
-return await request.get<string,string>('/channel/channelGrade/approveRecord', { params: d })
-}
 /**渠道等级信息变更【未实现】*/
 export async function post_channelGrade_edit (d?: any) {
 return await request.post< string,string> ('/channel/channelGrade/edit', d)
@@ -110,9 +106,9 @@ return await request.get<ChannelGradeVO,ChannelGradeVO>('/channel/channelGrade/g
 export async function post_channelGrade_getList (d?: any) {
 return await request.post< PageModel<ChannelGradeVO>,PageModel<ChannelGradeVO>> ('/channel/channelGrade/getList', d)
 }
-/**渠道等级信息变更录入人*/
-export async function post_channelGrade_modifyInputUser (d?: any) {
-return await request.post< string,string> ('/channel/channelGrade/modifyInputUser', d)
+/**渠道等级审核操作【未实现】*/
+export async function get_channelGrade_operate (d?: any) {
+return await request.get<string,string>('/channel/channelGrade/operate', { params: d })
 }
 /**查询渠道等级处理列表*/
 export async function get_channelGradeRecord_getList__gradeId (d?: any) {
@@ -210,15 +206,6 @@ export interface PageModel<T> {
 list:T[];
 /**总记录数*/
 total: number;
-}
-/**ApproveRecordVO*/
-export interface ApproveRecordVO {
-/**(必填)审核操作*/
-approveStatus: number;
-/**(必填)id*/
-id: number;
-/**(必填)处理意见*/
-remark: string;
 }
 /**ChannelAgent*/
 export interface ChannelAgent {
@@ -565,12 +552,6 @@ address: string;
 businessTime: string;
 /**注册资本*/
 capital: string;
-/**附件信息*/
-channelAttachments: ChannelAttachment[];
-/**渠道银行账号信息*/
-channelBanks: ChannelBank[];
-/**渠道负责人信息*/
-channelPersons: ChannelPerson[];
 /**渠道所在城市*/
 city: string;
 /**渠道所在行政区*/
@@ -585,7 +566,7 @@ legalPerson: string;
 name: string;
 /**渠道所在省份*/
 province: string;
-/**企业概况*/
+/**备注*/
 remark: string;
 /**成立日期(yyyy-MM-dd)*/
 setupTime: string;
@@ -689,35 +670,10 @@ updateTime: string;
 /**更新用户*/
 updateUser: number;
 }
-/**ChannelGradeAttachment*/
-export interface ChannelGradeAttachment {
-/**创建时间(yyyy-MM-dd HH:mm:ss)*/
-createTime: string;
-/**创建用户*/
-createUser: number;
-/**已删除*/
-deleted: number;
-/**文件ID*/
-fileId: string;
-/**渠道ID*/
-gradeId: number;
-/**ID*/
-id: number;
-/**类型*/
-type: string;
-/**更新时间(yyyy-MM-dd HH:mm:ss)*/
-updateTime: string;
-/**更新用户*/
-updateUser: number;
-}
 /**ChannelGradeBaseVO*/
 export interface ChannelGradeBaseVO {
 /**渠道等级*/
 channelGrade: string;
-/**附件信息*/
-channelGradeAttachments: ChannelGradeAttachment[];
-/**渠道评级标准信息*/
-channelGradeItems: ChannelGradeItem[];
 /**渠道ID*/
 channelId: number;
 /**渠道类型*/
@@ -728,35 +684,12 @@ city: string;
 cityGrade: string;
 /**事业部*/
 departmentOrgId: number;
-/**1保存2提交*/
-operateType: number;
 /**业务开展省份*/
 province: string;
 /**是否特批入库*/
 special: number;
 /**入库编号*/
 storageNum: string;
-}
-/**ChannelGradeItem*/
-export interface ChannelGradeItem {
-/**创建时间(yyyy-MM-dd HH:mm:ss)*/
-createTime: string;
-/**创建用户*/
-createUser: number;
-/**已删除*/
-deleted: number;
-/**渠道ID*/
-gradeId: number;
-/**ID*/
-id: number;
-/**录入信息*/
-inputValue: string;
-/**评级标准id*/
-standardId: number;
-/**更新时间(yyyy-MM-dd HH:mm:ss)*/
-updateTime: string;
-/**更新用户*/
-updateUser: number;
 }
 /**ChannelGradeQueryVO*/
 export interface ChannelGradeQueryVO {
@@ -860,6 +793,33 @@ id: number;
 updateTime: string;
 /**更新用户*/
 updateUser: number;
+}
+/**ChannelGradeUpdateVO*/
+export interface ChannelGradeUpdateVO {
+/**渠道等级*/
+channelGrade: string;
+/**渠道ID*/
+channelId: number;
+/**渠道类型*/
+channelType: string;
+/**业务开展城市*/
+city: string;
+/**城市等级*/
+cityGrade: string;
+/**事业部*/
+departmentOrgId: number;
+/**(必填)id*/
+id: number;
+/**(必填)审核操作*/
+operate: number;
+/**业务开展省份*/
+province: string;
+/**(必填)处理意见*/
+remark: number;
+/**是否特批入库*/
+special: number;
+/**入库编号*/
+storageNum: string;
 }
 /**ChannelGradeVO*/
 export interface ChannelGradeVO {
@@ -1138,12 +1098,6 @@ address: string;
 businessTime: string;
 /**注册资本*/
 capital: string;
-/**附件信息*/
-channelAttachments: ChannelAttachment[];
-/**渠道银行账号信息*/
-channelBanks: ChannelBank[];
-/**渠道负责人信息*/
-channelPersons: ChannelPerson[];
 /**渠道所在城市*/
 city: string;
 /**渠道所在行政区*/
@@ -1162,7 +1116,7 @@ name: string;
 operate: number;
 /**渠道所在省份*/
 province: string;
-/**企业概况*/
+/**备注*/
 remark: string;
 /**成立日期(yyyy-MM-dd)*/
 setupTime: string;
