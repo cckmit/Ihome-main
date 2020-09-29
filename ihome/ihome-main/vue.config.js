@@ -4,7 +4,7 @@
  * @Author: zyc
  * @Date: 2020-06-22 14:34:07
  * @LastEditors: zyc
- * @LastEditTime: 2020-09-28 14:45:04
+ * @LastEditTime: 2020-09-29 11:41:54
  */
 
 console.log('\033[42;30m 这是main ts主应用')
@@ -21,7 +21,7 @@ let show_name = childProcess.execSync('git show -s --format=%cn').toString().tri
 let show_email = childProcess.execSync('git show -s --format=%ce').toString().trim(); //邮箱
 let show_date = new Date(childProcess.execSync('git show -s --format=%cd').toString()); //日期
 let show_message = childProcess.execSync('git show -s --format=%s').toString().trim(); //说明
-console.log('git提交记录信息  ','用户名：'+show_name,'邮箱：'+ show_email, '日期：',show_date, '说明：'+show_message);
+console.log('git提交记录信息  ', '用户名：' + show_name, '邮箱：' + show_email, '日期：', show_date, '说明：' + show_message);
 
 
 
@@ -31,7 +31,8 @@ function resolve(dir) {
 
 
 const port = 8081; // dev port
-
+let proxyAddress = process.env.PROXY_PROTOCOL + '://' + process.env.PROXY_IP + ':' + process.env.PROXY_PORT;//代理地址
+console.log('\033[40;32mapi接口代理地址：' + proxyAddress + '\033[0m');
 module.exports = {
     /**
      * You will need to set publicPath if you plan to deploy your site under a sub path,
@@ -61,16 +62,16 @@ module.exports = {
         },
         proxy: {
             '/system/v2/api-docs': {
-                target: 'http://192.168.200.114:8610'
+                target: proxyAddress
             },
             '/system/': {
-                target: 'http://192.168.200.114:8610'
+                target: proxyAddress
             },
             '/channel/': {
-                target: 'http://192.168.200.114:8610'
+                target: proxyAddress
             },
             '/sales-oauth2': {
-                target: 'http://192.168.200.114:8610'
+                target: proxyAddress
             },
         }
     },

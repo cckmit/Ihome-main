@@ -3,8 +3,8 @@
  * @version: 
  * @Author: zyc
  * @Date: 2020-06-22 11:11:41
- * @LastEditors: wwq
- * @LastEditTime: 2020-09-29 09:26:51
+ * @LastEditors: zyc
+ * @LastEditTime: 2020-09-29 11:48:21
  */
 const path = require('path');
 const { name } = require('./package');
@@ -24,6 +24,8 @@ function resolve(dir) {
 	return path.join(__dirname, dir);
 }
 const port = 8084; // 端口
+let proxyAddress = process.env.PROXY_PROTOCOL + '://' + process.env.PROXY_IP + ':' + process.env.PROXY_PORT;//代理地址
+console.log('\033[40;32mapi接口代理地址：' + proxyAddress + '\033[0m');
 module.exports = {
 	outputDir: 'dist',
 	assetsDir: 'static',
@@ -44,7 +46,7 @@ module.exports = {
 		},
 		proxy: {
 			'/system/': {
-				target: 'http://192.168.200.114:8610'
+				target: proxyAddress
 			},
 		}
 	},
