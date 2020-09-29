@@ -1,6 +1,6 @@
 /* eslint-disable */
 /* 此脚本由swagger-ui的api-docs自动生成，请勿修改 */
-//2020-9-29 11:26:18
+//2020-9-29 11:17:58
 import { request } from '@/api/base'
 /**添加渠道*/
 export async function post_channel_add (d?: any) {
