@@ -4,13 +4,28 @@
  * @Author: zyc
  * @Date: 2020-06-29 16:35:32
  * @LastEditors: zyc
- * @LastEditTime: 2020-06-30 14:18:21
+ * @LastEditTime: 2020-09-29 15:18:35
+--> 
+<!--
+ * @Descripttion: 
+ * @version: 
+ * @Author: zyc
+ * @Date: 2020-06-29 16:35:32
+ * @LastEditors: zyc
+ * @LastEditTime: 2020-09-29 15:18:06
 --> 
 <template>
   <div id="app" class="root">
     <router-view />
   </div>
 </template>
+<script lang="ts">
+import { Component, Vue } from "vue-property-decorator";
+@Component({
+  components: {},
+})
+export default class App extends Vue {}
+</script>
 
 <style lang="scss">
 body {
