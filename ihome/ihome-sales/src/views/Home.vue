@@ -4,8 +4,9 @@
  * @Author: zyc
  * @Date: 2020-06-22 11:10:43
  * @LastEditors: zyc
- * @LastEditTime: 2020-08-26 09:03:03
+ * @LastEditTime: 2020-09-29 15:32:00
 --> 
+
 <template>
   <div>
     <p>路由导航·新房业务系统</p>
@@ -20,26 +21,34 @@
   </div>
 </template>
 <script lang="ts">
+/* eslint-disable  @typescript-eslint/no-unused-vars */
 import { Component, Vue } from "vue-property-decorator";
 import { routes } from "../router/index";
 @Component({
-  components: {}
+  components: {},
 })
 export default class Home extends Vue {
   private data: any = [];
   defaultProps: any = {
     children: "children",
-    label: "path"
+    label: "path",
   };
   created() {
     console.log(routes);
     this.data = routes;
+    let list = (this.$root as any).dictAllList("ChannelLevel"); //获取字典列表：参数是类别的key
+    let item = (this.$root as any).dictAllName(
+      "LargeIntermediary",
+      "ChannelLevel"
+    ); //获取某个字典下根据code获取该数据项：第一个参数是code，第二个参数是类别的key
+
+    console.log("后端给全部字典数据的用法列子看这里");
   }
   handleNodeClick(data: any) {
     console.log(data);
     if (!data.children) {
       this.$router.push({
-        name: data.name
+        name: data.name,
       });
     }
   }

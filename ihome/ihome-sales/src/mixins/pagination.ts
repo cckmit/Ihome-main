@@ -4,7 +4,7 @@
  * @Author: zyc
  * @Date: 2020-07-24 17:08:03
  * @LastEditors: zyc
- * @LastEditTime: 2020-09-29 11:09:54
+ * @LastEditTime: 2020-09-29 15:28:03
  */
  /* eslint-disable  no-console */
 interface IPageBase {
@@ -50,6 +50,7 @@ export default class PaginationMixin extends Vue {
         this.getListMixin();
     }
     handleCurrentChangeMixin(pageSize: number) {
+        (pageSize)
         this.getListMixin();
     }
 }
