@@ -4,7 +4,7 @@
  * @Author: wwq
  * @Date: 2020-09-25 17:59:09
  * @LastEditors: wwq
- * @LastEditTime: 2020-09-27 17:03:08
+ * @LastEditTime: 2020-09-29 11:34:31
 -->
 <template>
   <ih-page>
@@ -165,7 +165,7 @@
       <br />
       <ih-table
         class="ih-table"
-        :data="resPageInfo.list"
+        :data="contactsData"
         :column="contactsColumn"
         :isPagination="false"
         :columnCheck="false"
@@ -194,7 +194,7 @@
       <br />
       <ih-table
         class="ih-table"
-        :data="resPageInfo.list"
+        :data="accountData"
         :column="accountColumn"
         :isPagination="false"
         :columnCheck="false"
@@ -225,14 +225,13 @@
         :columnIndex="false"
       >
         <template #operation>
-          <el-table-column fixed="right" label="操作" align="center">
-            <template v-slot="{ row }">
-              <span class="el-dropdown-link" @click="routerTo(row)">
-                编辑
-              </span>
-              <span class="el-dropdown-link" @click="routerTo(row)">
-                移除
-              </span>
+          <el-table-column fixed="right" label="附件" align="center">
+            <template>
+              <IhUpload
+                :file-list="fileList"
+                size="100px"
+                :limit="2"
+              ></IhUpload>
             </template>
           </el-table-column>
         </template>
@@ -312,6 +311,13 @@ import PaginationMixin from "../../mixins/pagination";
 })
 export default class Edit extends Vue {
   private isShow = false;
+  private fileList: Array<object> = [
+    {
+      name: "abc.pdf",
+      url: `http://filesvr.polyihome.test/aist-filesvr-web/JQeryUpload/getfile?fileId=2c92808873be3796017490db113b0616`,
+      img_url: `http://filesvr.polyihome.test/aist-filesvr-web/JQeryUpload/getfile?fileId=2c92808873be3796017490db113b0616`,
+    },
+  ];
   @Watch("$route", { immediate: true })
   watchRoute(val: any) {
     if (val.name === "developerChange") {
@@ -337,14 +343,26 @@ export default class Edit extends Vue {
     },
     {
       label: "手机号",
-      prop: "name",
+      prop: "phone",
     },
     {
       label: "邮箱",
-      prop: "name",
+      prop: "email",
     },
     {
       slot: "operation",
+    },
+  ];
+  contactsData = [
+    {
+      name: "皮小强",
+      phone: "15119337612",
+      email: "15119337612@163.com",
+    },
+    {
+      name: "皮小强",
+      phone: "15119337612",
+      email: "15119337612@163.com",
     },
   ];
   accountColumn = [
@@ -354,28 +372,43 @@ export default class Edit extends Vue {
     },
     {
       label: "账号",
-      prop: "name",
+      prop: "names",
     },
     {
       label: "开户银行",
-      prop: "name",
+      prop: "aaaa",
     },
     {
       label: "账户类型",
-      prop: "name",
+      prop: "type",
     },
     {
       slot: "operation",
+    },
+  ];
+  accountData = [
+    {
+      name: "皮小强",
+      names: "443134654687310012445",
+      aaaa: "中国银行独山县支行",
+      type: "基本存款账户",
+    },
+    {
+      name: "皮小强",
+      names: "443134654687310012445",
+      aaaa: "中国银行独山县支行",
+      type: "基本存款账户",
     },
   ];
   accessoryColumn = [
     {
       label: "类型",
       prop: "name",
+      width: 200,
+      align: "center",
     },
     {
-      label: "附件",
-      prop: "name",
+      slot: "operation",
     },
   ];
   resPageInfo: any = {

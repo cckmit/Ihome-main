@@ -4,7 +4,7 @@
  * @Author: wwq
  * @Date: 2020-09-25 17:59:09
  * @LastEditors: wwq
- * @LastEditTime: 2020-09-27 17:03:17
+ * @LastEditTime: 2020-09-29 11:19:48
 -->
 <template>
   <ih-page>
@@ -42,13 +42,7 @@
         <el-row>
           <el-col :span="8">
             <el-form-item label="省市区">
-              <el-cascader
-                style="width: 100%"
-                placeholder="请选择省市区"
-                :options="queryPageParameters.provincesOptions"
-                :props="{ checkStrictly: true }"
-                clearable
-              ></el-cascader>
+              <IhCascader></IhCascader>
             </el-form-item>
           </el-col>
           <el-col :span="8">
@@ -85,7 +79,7 @@
       <br />
       <ih-table
         class="ih-table"
-        :data="resPageInfo.list"
+        :data="tableData"
         :column="tableColumn"
         :default-sort="{ prop: 'id', order: 'descending' }"
         :current-page.sync="queryPageParameters.pageNum"
@@ -168,6 +162,7 @@ export default class DeveloperList extends Vue {
     {
       label: "名称",
       prop: "name",
+      width: 250,
     },
     {
       label: "信用代码",
@@ -238,7 +233,53 @@ export default class DeveloperList extends Vue {
   currentPage: any = 1;
   valuedate: any = new Date().getTime();
   // valuedate: any ='2020-07-01';
-  tableData: any = [];
+  tableData = [
+    {
+      name: "东莞市高发房地产有限公司",
+      creditCode: "91440101MA59J0DJ66",
+      province: "广东",
+      city: "东莞",
+      administrative: "南城区",
+      keyboarder: "张三",
+      status: "草稿",
+    },
+    {
+      name: "东莞市新通实业投资有限公司",
+      creditCode: "91440101MA59J0DJ66",
+      province: "广东",
+      city: "东莞",
+      administrative: "南城区",
+      keyboarder: "张三",
+      status: "待分公司业管审核",
+    },
+    {
+      name: "东莞市金汇大厦开发建造有限公司",
+      creditCode: "91440101MA59J0DJ66",
+      province: "广东",
+      city: "东莞",
+      administrative: "南城区",
+      keyboarder: "张三",
+      status: "已审核",
+    },
+    {
+      name: "东莞市金汇大厦开发建造有限公司",
+      creditCode: "91440101MA59J0DJ66",
+      province: "广东",
+      city: "东莞",
+      administrative: "南城区",
+      keyboarder: "张三",
+      status: "已审核",
+    },
+    {
+      name: "东莞市金汇大厦开发建造有限公司",
+      creditCode: "91440101MA59J0DJ66",
+      province: "广东",
+      city: "东莞",
+      administrative: "南城区",
+      keyboarder: "张三",
+      status: "已审核",
+    },
+  ];
   total: any = null;
 
   formatter(row: any) {
