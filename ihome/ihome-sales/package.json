@@ -3,7 +3,7 @@
   "version": "0.1.0",
   "private": true,
   "scripts": {
-    "api": "node ./api",
+    "api": "vue-cli-service api",
     "serve": "vue-cli-service serve",
     "serve:dev": "vue-cli-service serve --mode dev",
     "serve:mock": "vue-cli-service serve --mode mock",
@@ -13,6 +13,11 @@
     "test:unit": "vue-cli-service test:unit",
     "test:e2e": "vue-cli-service test:e2e",
     "lint": "vue-cli-service lint"
+  },
+  "vuePlugins": {
+    "service": [
+      "./api.js"
+    ]
   },
   "dependencies": {
     "@types/js-cookie": "^2.2.6",

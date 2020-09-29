@@ -4,7 +4,7 @@
  * @Author: zyc
  * @Date: 2020-06-22 11:11:41
  * @LastEditors: zyc
- * @LastEditTime: 2020-09-28 14:45:52
+ * @LastEditTime: 2020-09-29 11:14:22
  */
 const path = require('path');
 const { name } = require('./package');
@@ -25,7 +25,7 @@ console.log('git提交记录信息  ','用户名：'+show_name,'邮箱：'+ show
 function resolve(dir) {
 	return path.join(__dirname, dir);
 }
-
+let proxyAddress = process.env.PROXY_PROTOCOL + '://' + process.env.PROXY_IP + ':' + process.env.PROXY_PORT;//代理地址
 module.exports = {
 	outputDir: 'dist',
 	assetsDir: 'static',
@@ -47,10 +47,10 @@ module.exports = {
 		},
 		proxy: {
 			'/system/': {
-				target: 'http://192.168.200.114:8610'
+				target: proxyAddress
 			},
 			'/channel/': {
-                target: 'http://192.168.200.114:8610'
+                target: proxyAddress
             }
 		}
 	},

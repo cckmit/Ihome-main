@@ -1,7 +1,19 @@
 /* eslint-disable */
 /* 此脚本由swagger-ui的api-docs自动生成，请勿修改 */
-//2020-9-23 18:05:13
+//2020-9-29 11:15:48
 import { request } from '@/api/base'
+/**查询所有行政区划信息*/
+export async function get_area_getAll (d?: any) {
+return await request.get<AreaBaseVO[],AreaBaseVO[]>('/system/area/getAll', { params: d })
+}
+/**根据行政区划编码查询所有下级行政区划信息*/
+export async function get_area_getAllChildArea__code (d?: any) {
+return await request.get<AreaBaseVO[],AreaBaseVO[]>('/system/area/getAllChildArea/{code}', { params: d })
+}
+/**查询所有省份信息*/
+export async function get_area_getAllProvince (d?: any) {
+return await request.get<AreaBaseVO[],AreaBaseVO[]>('/system/area/getAllProvince', { params: d })
+}
 /**查询所有字典项*/
 export async function get_dict_getAll (d?: any) {
 return await request.get<any,any>('/system/dict/getAll', { params: d })
@@ -13,6 +25,18 @@ return await request.post< DictBaseVO[],DictBaseVO[]> ('/system/dict/getAllByTyp
 /**根据类型和编码查询字典项*/
 export async function post_dict_getByTypeAndCode (d?: any) {
 return await request.post< DictBaseVO,DictBaseVO> ('/system/dict/getByTypeAndCode', d)
+}
+/**save*/
+export async function post_fileResource_add (d?: any) {
+return await request.post< any,any> ('/system/fileResource/add', d)
+}
+/**batchadd*/
+export async function post_fileResource_batchadd (d?: any) {
+return await request.post< any,any> ('/system/fileResource/batchadd', d)
+}
+/**save*/
+export async function post_fileResource_update (d?: any) {
+return await request.post< any,any> ('/system/fileResource/update', d)
 }
 /**添加岗位*/
 export async function post_job_add (d?: any) {
@@ -158,9 +182,221 @@ return await request.post< PageModel<RoleVO>,PageModel<RoleVO>> ('/system/role/g
 export async function post_role_update (d?: any) {
 return await request.post< number,number> ('/system/role/update', d)
 }
+/**findAll*/
+export async function get_scheJobGroup_findAll (d?: any) {
+return await request.get<any,any>('/system/scheJobGroup/findAll', { params: d })
+}
+/**findByAddressType*/
+export async function get_scheJobGroup_findByAddressType (d?: any) {
+return await request.get<any,any>('/system/scheJobGroup/findByAddressType', { params: d })
+}
+/**load*/
+export async function get_scheJobGroup_load (d?: any) {
+return await request.get<ScheJobGroupVO,ScheJobGroupVO>('/system/scheJobGroup/load', { params: d })
+}
+/**pageList*/
+export async function get_scheJobGroup_pageList (d?: any) {
+return await request.get<any,any>('/system/scheJobGroup/pageList', { params: d })
+}
+/**pageListCount*/
+export async function get_scheJobGroup_pageListCount (d?: any) {
+return await request.get<any,any>('/system/scheJobGroup/pageListCount', { params: d })
+}
+/**remove*/
+export async function get_scheJobGroup_remove (d?: any) {
+return await request.get<any,any>('/system/scheJobGroup/remove', { params: d })
+}
+/**save*/
+export async function put_scheJobGroup_save (d?: any) {
+return await request.post< any,any> ('/system/scheJobGroup/save', d)
+}
+/**update*/
+export async function put_scheJobGroup_update (d?: any) {
+return await request.post< any,any> ('/system/scheJobGroup/update', d)
+}
+/**scheduleUpdate*/
+export async function post_scheJobInfo (d?: any) {
+return await request.post< any,any> ('/system/scheJobInfo', d)
+}
+/**delete*/
+export async function delete_scheJobInfo_delete (d?: any) {
+return await request.post< any,any> ('/system/scheJobInfo/delete', d)
+}
+/**findAllCount*/
+export async function get_scheJobInfo_findAllCount (d?: any) {
+return await request.get<any,any>('/system/scheJobInfo/findAllCount', { params: d })
+}
+/**getJobsByGroup*/
+export async function get_scheJobInfo_getJobsByGroup (d?: any) {
+return await request.get<any,any>('/system/scheJobInfo/getJobsByGroup', { params: d })
+}
+/**loadById*/
+export async function get_scheJobInfo_loadById (d?: any) {
+return await request.get<ScheJobInfoVO,ScheJobInfoVO>('/system/scheJobInfo/loadById', { params: d })
+}
+/**pageList*/
+export async function get_scheJobInfo_pageList (d?: any) {
+return await request.get<any,any>('/system/scheJobInfo/pageList', { params: d })
+}
+/**pageListCount*/
+export async function get_scheJobInfo_pageListCount (d?: any) {
+return await request.get<any,any>('/system/scheJobInfo/pageListCount', { params: d })
+}
+/**save*/
+export async function put_scheJobInfo_save (d?: any) {
+return await request.post< any,any> ('/system/scheJobInfo/save', d)
+}
+/**scheduleJobQuery*/
+export async function get_scheJobInfo_scheduleJobQuery (d?: any) {
+return await request.get<any,any>('/system/scheJobInfo/scheduleJobQuery', { params: d })
+}
+/**update*/
+export async function put_scheJobInfo_update (d?: any) {
+return await request.post< any,any> ('/system/scheJobInfo/update', d)
+}
+/**clearLog*/
+export async function get_scheJobLog_clearLog (d?: any) {
+return await request.get<any,any>('/system/scheJobLog/clearLog', { params: d })
+}
+/**delete*/
+export async function get_scheJobLog_delete (d?: any) {
+return await request.get<any,any>('/system/scheJobLog/delete', { params: d })
+}
+/**findClearLogIds*/
+export async function get_scheJobLog_findClearLogIds (d?: any) {
+return await request.get<any,any>('/system/scheJobLog/findClearLogIds', { params: d })
+}
+/**findFailJobLogIds*/
+export async function get_scheJobLog_findFailJobLogIds (d?: any) {
+return await request.get<any,any>('/system/scheJobLog/findFailJobLogIds', { params: d })
+}
+/**findLogReport*/
+export async function get_scheJobLog_findLogReport (d?: any) {
+return await request.get<any,any>('/system/scheJobLog/findLogReport', { params: d })
+}
+/**findLostJobIds*/
+export async function get_scheJobLog_findLostJobIds (d?: any) {
+return await request.get<any,any>('/system/scheJobLog/findLostJobIds', { params: d })
+}
+/**load*/
+export async function get_scheJobLog_load (d?: any) {
+return await request.get<ScheJobLogVO,ScheJobLogVO>('/system/scheJobLog/load', { params: d })
+}
+/**pageList*/
+export async function get_scheJobLog_pageList (d?: any) {
+return await request.get<any,any>('/system/scheJobLog/pageList', { params: d })
+}
+/**pageListCount*/
+export async function get_scheJobLog_pageListCount (d?: any) {
+return await request.get<any,any>('/system/scheJobLog/pageListCount', { params: d })
+}
+/**save*/
+export async function put_scheJobLog_save (d?: any) {
+return await request.post< any,any> ('/system/scheJobLog/save', d)
+}
+/**updateAlarmStatus*/
+export async function get_scheJobLog_updateAlarmStatus (d?: any) {
+return await request.get<any,any>('/system/scheJobLog/updateAlarmStatus', { params: d })
+}
+/**updateHandleInfo*/
+export async function put_scheJobLog_updateHandleInfo (d?: any) {
+return await request.post< any,any> ('/system/scheJobLog/updateHandleInfo', d)
+}
+/**updateTriggerInfo*/
+export async function put_scheJobLog_updateTriggerInfo (d?: any) {
+return await request.post< any,any> ('/system/scheJobLog/updateTriggerInfo', d)
+}
+/**deleteByJobId*/
+export async function delete_scheJobLogGlue_deleteByJobId (d?: any) {
+return await request.post< any,any> ('/system/scheJobLogGlue/deleteByJobId', d)
+}
+/**findByJobId*/
+export async function get_scheJobLogGlue_findByJobId (d?: any) {
+return await request.get<any,any>('/system/scheJobLogGlue/findByJobId', { params: d })
+}
+/**removeOld*/
+export async function delete_scheJobLogGlue_removeOld (d?: any) {
+return await request.post< any,any> ('/system/scheJobLogGlue/removeOld', d)
+}
+/**save*/
+export async function put_scheJobLogGlue_save (d?: any) {
+return await request.post< any,any> ('/system/scheJobLogGlue/save', d)
+}
+/**queryLogReport*/
+export async function get_scheJobLogReport_queryLogReport (d?: any) {
+return await request.get<any,any>('/system/scheJobLogReport/queryLogReport', { params: d })
+}
+/**queryLogReportTotal*/
+export async function get_scheJobLogReport_queryLogReportTotal (d?: any) {
+return await request.get<ScheJobLogReportVO,ScheJobLogReportVO>('/system/scheJobLogReport/queryLogReportTotal', { params: d })
+}
+/**save*/
+export async function put_scheJobLogReport_save (d?: any) {
+return await request.post< any,any> ('/system/scheJobLogReport/save', d)
+}
+/**update*/
+export async function put_scheJobLogReport_update (d?: any) {
+return await request.post< any,any> ('/system/scheJobLogReport/update', d)
+}
+/**findAll*/
+export async function get_scheJobRegistry_findAll (d?: any) {
+return await request.get<any,any>('/system/scheJobRegistry/findAll', { params: d })
+}
+/**findDead*/
+export async function get_scheJobRegistry_findDead (d?: any) {
+return await request.get<any,any>('/system/scheJobRegistry/findDead', { params: d })
+}
+/**registryDelete*/
+export async function get_scheJobRegistry_registryDelete (d?: any) {
+return await request.get<any,any>('/system/scheJobRegistry/registryDelete', { params: d })
+}
+/**registrySave*/
+export async function get_scheJobRegistry_registrySave (d?: any) {
+return await request.get<any,any>('/system/scheJobRegistry/registrySave', { params: d })
+}
+/**registryUpdate*/
+export async function get_scheJobRegistry_registryUpdate (d?: any) {
+return await request.get<any,any>('/system/scheJobRegistry/registryUpdate', { params: d })
+}
+/**removeDead*/
+export async function get_scheJobRegistry_removeDead (d?: any) {
+return await request.get<any,any>('/system/scheJobRegistry/removeDead', { params: d })
+}
+/**delete*/
+export async function delete_scheJobUser_delete (d?: any) {
+return await request.post< any,any> ('/system/scheJobUser/delete', d)
+}
+/**loadByUserName*/
+export async function get_scheJobUser_loadByUserName (d?: any) {
+return await request.get<ScheJobUserVO,ScheJobUserVO>('/system/scheJobUser/loadByUserName', { params: d })
+}
+/**pageList*/
+export async function get_scheJobUser_pageList (d?: any) {
+return await request.get<any,any>('/system/scheJobUser/pageList', { params: d })
+}
+/**pageListCount*/
+export async function get_scheJobUser_pageListCount (d?: any) {
+return await request.get<any,any>('/system/scheJobUser/pageListCount', { params: d })
+}
+/**save*/
+export async function put_scheJobUser_save (d?: any) {
+return await request.post< any,any> ('/system/scheJobUser/save', d)
+}
+/**update*/
+export async function put_scheJobUser_update (d?: any) {
+return await request.post< any,any> ('/system/scheJobUser/update', d)
+}
 /**查询登录用户信息*/
 export async function post_sessionUser_getUserInfo (d?: any) {
 return await request.post< LoginUserVO,LoginUserVO> ('/system/sessionUser/getUserInfo', d)
+}
+/**save*/
+export async function post_smsSend_add (d?: any) {
+return await request.post< any,any> ('/system/smsSend/add', d)
+}
+/**save*/
+export async function get_smsTemplate_getByCode (d?: any) {
+return await request.get<SmsTemplateVO,SmsTemplateVO>('/system/smsTemplate/getByCode', { params: d })
 }
 /**激活用户*/
 export async function post_user_activate__id (d?: any) {
@@ -239,6 +475,19 @@ list:T[];
 /**总记录数*/
 total: number;
 }
+/**AreaBaseVO*/
+export interface AreaBaseVO {
+/**拼音简称*/
+abbr: string;
+/**编码*/
+code: string;
+/**层级*/
+level: number;
+/**名称*/
+name: string;
+/**父编码*/
+parentCode: string;
+}
 /**DictBaseVO*/
 export interface DictBaseVO {
 /**编码*/
@@ -271,6 +520,62 @@ export interface DictTypeQueryVO {
 type: string;
 /**是否有效*/
 valid: number;
+}
+/**FileResourceUpdateVo*/
+export interface FileResourceUpdateVo {
+/**创建时间(yyyy-MM-dd HH:mm:ss)*/
+createTime: string;
+/**创建用户*/
+createUser: number;
+/**已删除*/
+deleted: number;
+/**undefined*/
+fileId: number;
+/**文件资源ID*/
+fileSourceId: number;
+/**生成文件名*/
+generateFileName: string;
+/**生成文件类型*/
+generateFileType: string;
+/**生成文件地址*/
+generateFileUrl: string;
+/**原文件名*/
+originalFileName: string;
+/**原文件类型*/
+originalFileType: string;
+/**原文件地址*/
+originalFileUrl: string;
+/**更新时间(yyyy-MM-dd HH:mm:ss)*/
+updateTime: string;
+/**更新用户*/
+updateUser: number;
+}
+/**FileResourceVo*/
+export interface FileResourceVo {
+/**创建时间(yyyy-MM-dd HH:mm:ss)*/
+createTime: string;
+/**创建用户*/
+createUser: number;
+/**已删除*/
+deleted: number;
+/**undefined*/
+fileId: number;
+/**生成文件名*/
+generateFileName: string;
+/**生成文件类型*/
+generateFileType: string;
+/**生成文件地址*/
+generateFileUrl: string;
+/**原文件名*/
+originalFileName: string;
+/**原文件类型*/
+originalFileType: string;
+/**原文件地址*/
+originalFileUrl: string;
+/**更新时间(yyyy-MM-dd HH:mm:ss)*/
+updateTime: string;
+/**更新用户*/
+updateUser: number;
 }
 /**JobBaseVO*/
 export interface JobBaseVO {
@@ -354,7 +659,7 @@ remark: string;
 updateTime: string;
 /**更新用户*/
 updateUser: number;
-/**更��用户姓名*/
+/**更新用户姓名*/
 updateUserName: string;
 }
 /**LoginUserVO*/
@@ -447,7 +752,7 @@ updateUser: number;
 export interface OrgBaseVO {
 /**关闭日期(yyyy-MM-dd)*/
 closeDate: string;
-/**部门分类(Business-��业线、Function-职能线)*/
+/**部门分类(Business-营业线、Function-职能线)*/
 departmentType: string;
 /**名称*/
 name: string;
@@ -794,6 +1099,265 @@ updateUser: number;
 /**更新用户姓名*/
 updateUserName: string;
 }
+/**ScheJobGroupVO*/
+export interface ScheJobGroupVO {
+/**undefined*/
+addressList: string;
+/**undefined*/
+addressType: number;
+/**undefined*/
+appName: string;
+/**创建时间(yyyy-MM-dd HH:mm:ss)*/
+createTime: string;
+/**创建用户*/
+createUser: number;
+/**已删除*/
+deleted: number;
+/**undefined*/
+id: number;
+/**undefined*/
+title: string;
+/**更新时间(yyyy-MM-dd HH:mm:ss)*/
+updateTime: string;
+/**更新用户*/
+updateUser: number;
+}
+/**ScheJobInfoVO*/
+export interface ScheJobInfoVO {
+/**undefined*/
+addTime: string;
+/**undefined*/
+alarmEmail: string;
+/**undefined*/
+author: string;
+/**undefined*/
+childJobId: string;
+/**创建时间(yyyy-MM-dd HH:mm:ss)*/
+createTime: string;
+/**创建用户*/
+createUser: number;
+/**已删除*/
+deleted: number;
+/**undefined*/
+executorBlockStrategy: string;
+/**undefined*/
+executorFailRetryCount: number;
+/**undefined*/
+executorHandler: string;
+/**undefined*/
+executorParam: string;
+/**undefined*/
+executorRouteStrategy: string;
+/**undefined*/
+executorTimeout: number;
+/**undefined*/
+glueRemark: string;
+/**undefined*/
+glueSource: string;
+/**undefined*/
+glueType: string;
+/**undefined*/
+glueUpdatetime: string;
+/**undefined*/
+id: number;
+/**undefined*/
+jobCron: string;
+/**undefined*/
+jobDesc: string;
+/**undefined*/
+jobGroup: number;
+/**undefined*/
+triggerLastTime: number;
+/**undefined*/
+triggerNextTime: number;
+/**undefined*/
+triggerStatus: number;
+/**更新时间(yyyy-MM-dd HH:mm:ss)*/
+updateTime: string;
+/**更新用户*/
+updateUser: number;
+}
+/**ScheJobLogReportVO*/
+export interface ScheJobLogReportVO {
+/**创建时间(yyyy-MM-dd HH:mm:ss)*/
+createTime: string;
+/**创建用户*/
+createUser: number;
+/**已删除*/
+deleted: number;
+/**undefined*/
+failCount: number;
+/**undefined*/
+id: number;
+/**undefined*/
+runningCount: number;
+/**undefined*/
+sucCount: number;
+/**undefined*/
+triggerDay: string;
+/**更新时间(yyyy-MM-dd HH:mm:ss)*/
+updateTime: string;
+/**更新用户*/
+updateUser: number;
+}
+/**ScheJobLogVO*/
+export interface ScheJobLogVO {
+/**undefined*/
+alarmStatus: number;
+/**创建时间(yyyy-MM-dd HH:mm:ss)*/
+createTime: string;
+/**创建用户*/
+createUser: number;
+/**已删除*/
+deleted: number;
+/**undefined*/
+executorAddress: string;
+/**undefined*/
+executorFailRetryCount: number;
+/**undefined*/
+executorHandler: string;
+/**undefined*/
+executorParam: string;
+/**undefined*/
+executorShardingParam: string;
+/**undefined*/
+handleCode: number;
+/**undefined*/
+handleMsg: string;
+/**undefined*/
+handleTime: string;
+/**undefined*/
+id: number;
+/**undefined*/
+jobGroup: number;
+/**undefined*/
+jobId: number;
+/**undefined*/
+triggerCode: number;
+/**undefined*/
+triggerMsg: string;
+/**undefined*/
+triggerTime: string;
+/**更新时间(yyyy-MM-dd HH:mm:ss)*/
+updateTime: string;
+/**更新用户*/
+updateUser: number;
+}
+/**ScheJobLogglueVO*/
+export interface ScheJobLogglueVO {
+/**undefined*/
+addTime: string;
+/**创建时间(yyyy-MM-dd HH:mm:ss)*/
+createTime: string;
+/**创建用户*/
+createUser: number;
+/**已删除*/
+deleted: number;
+/**undefined*/
+glueRemark: string;
+/**undefined*/
+glueSource: string;
+/**undefined*/
+glueType: string;
+/**undefined*/
+id: number;
+/**undefined*/
+jobId: number;
+/**更新时间(yyyy-MM-dd HH:mm:ss)*/
+updateTime: string;
+/**更新用户*/
+updateUser: number;
+}
+/**ScheJobRegistryVO*/
+export interface ScheJobRegistryVO {
+/**创建时间(yyyy-MM-dd HH:mm:ss)*/
+createTime: string;
+/**创建用户*/
+createUser: number;
+/**已删除*/
+deleted: number;
+/**undefined*/
+id: number;
+/**undefined*/
+registryGroup: string;
+/**undefined*/
+registryKey: string;
+/**undefined*/
+registryValue: string;
+/**更新时间(yyyy-MM-dd HH:mm:ss)*/
+updateTime: string;
+/**更新用户*/
+updateUser: number;
+}
+/**ScheJobUserVO*/
+export interface ScheJobUserVO {
+/**创建时间(yyyy-MM-dd HH:mm:ss)*/
+createTime: string;
+/**创建用户*/
+createUser: number;
+/**已删除*/
+deleted: number;
+/**undefined*/
+id: number;
+/**undefined*/
+password: string;
+/**undefined*/
+permission: string;
+/**undefined*/
+role: number;
+/**更新时间(yyyy-MM-dd HH:mm:ss)*/
+updateTime: string;
+/**更新用户*/
+updateUser: number;
+/**undefined*/
+username: string;
+}
+/**SmsSendAddVO*/
+export interface SmsSendAddVO {
+/**创建时间(yyyy-MM-dd HH:mm:ss)*/
+createTime: string;
+/**创建用户*/
+createUser: number;
+/**已删除*/
+deleted: number;
+/**发送参数*/
+smsSendData: string;
+/**发送记录ID*/
+smsSendId: number;
+/**发送结果*/
+smsSendResult: string;
+/**发送类型 websocket、tx*/
+smsSendType: string;
+/**发送状态 (0:失败 1:成功)*/
+smsState: number;
+/**模板ID*/
+smsTemplateId: number;
+/**更新时间(yyyy-MM-dd HH:mm:ss)*/
+updateTime: string;
+/**更新用户*/
+updateUser: number;
+}
+/**SmsTemplateVO*/
+export interface SmsTemplateVO {
+/**创建时间(yyyy-MM-dd HH:mm:ss)*/
+createTime: string;
+/**创建用户*/
+createUser: number;
+/**已删除*/
+deleted: number;
+/**模板代码*/
+templateCode: string;
+/**模板内容*/
+templateContent: string;
+/**模板ID*/
+templateId: number;
+/**undefined*/
+tid: string;
+/**更新时间(yyyy-MM-dd HH:mm:ss)*/
+updateTime: string;
+/**更新用户*/
+updateUser: number;
+}
 /**UserBaseVO*/
 export interface UserBaseVO {
 /**登录账号*/
@@ -963,7 +1527,7 @@ createUserName: string;
 deleted: number;
 /**email*/
 email: string;
-/**��工工号*/
+/**员工工号*/
 employeeCode: string;
 /**雇员状态(On-在职、Leave-离职)*/
 employeeStatus: string;
