@@ -4,7 +4,7 @@
  * @Author: ywl
  * @Date: 2020-09-25 17:34:32
  * @LastEditors: ywl
- * @LastEditTime: 2020-09-27 18:02:28
+ * @LastEditTime: 2020-09-29 09:23:41
 -->
 <template>
   <IhPage>
@@ -301,10 +301,10 @@
             align="left"
             fixed="right"
           >
-            <template v-slot="{ row }">
+            <template v-slot="{  }">
               <el-link
                 type="primary"
-                @click.native.prevent="handleTo(row)"
+                @click.native.prevent="$router.push('/contract/intermediaryDetail')"
               >详情</el-link>
               <el-link type="primary">盖章版归档</el-link>
               <el-link type="primary">原件归档</el-link>
@@ -342,6 +342,75 @@ export default class IntermediaryList extends Vue {
     list: [
       {
         title: "123",
+        jia: "广州居恒信息科技有限公司",
+        yi: "asd",
+        pro: "保利XX项目",
+        time: "2020-9-28",
+        zoom: "周期",
+        pl: "保利",
+        id: "128418458315",
+        name: "爱家案场",
+        isAction: "保存",
+      },
+      {
+        title: "123",
+        jia: "广州居恒信息科技有限公司1",
+        yi: "asd",
+        pro: "保利XX项目",
+        time: "2020-9-28",
+        zoom: "周期1",
+        pl: "保利",
+        id: "128418458315",
+        name: "爱家案场1",
+        isAction: "保存",
+      },
+      {
+        title: "123",
+        jia: "广州居恒信息科技有限公司",
+        yi: "asd",
+        pro: "保利XX项目1",
+        time: "2020-9-29",
+        zoom: "周期",
+        pl: "保利",
+        id: "128418458315",
+        name: "爱家案场",
+        isAction: "保存",
+      },
+      {
+        title: "123",
+        jia: "广州居恒信息科技有限公司",
+        yi: "asd",
+        pro: "保利112项目1",
+        time: "2020-9-29",
+        zoom: "周期",
+        pl: "保利",
+        id: "128418458315",
+        name: "爱家案场",
+        isAction: "保存",
+      },
+      {
+        title: "分销协议",
+        jia: "广州居恒信息科技有限公司",
+        yi: "asd",
+        pro: "保利112项目1",
+        time: "2020-9-29",
+        zoom: "周期",
+        pl: "保利",
+        id: "128418458315",
+        name: "爱家案场",
+        isAction: "保存",
+      },
+      {
+        title: "分销协议",
+        jia: "广州居恒信息科技有限公司",
+        yi: "asd",
+        pro: "保利112项目1",
+        time: "2020-9-29",
+        zoom: "周期",
+        pl: "保利",
+        id: "128418458315",
+        name: "爱家案场",
+        isAction: "保存",
       },
     ],
   };
@@ -357,69 +426,68 @@ export default class IntermediaryList extends Vue {
     {
       label: "甲方公司",
       align: "center",
-      prop: "title",
-      width: 100,
+      prop: "jia",
+      width: 200,
       fixed: true,
     },
     {
       label: "乙方公司",
       align: "center",
-      prop: "title",
+      prop: "yi",
       width: 100,
       fixed: true,
     },
     {
       label: "项目地址",
       align: "center",
-      prop: "title",
+      prop: "pro",
       width: 200,
     },
     {
       label: "合作时间",
       align: "center",
-      prop: "title",
-      width: 200,
+      prop: "time",
+      width: 120,
     },
     {
       label: "关联项目",
       align: "center",
-      prop: "title",
-      width: 200,
+      prop: "pro",
+      width: 150,
     },
     {
       label: "关联周期",
       align: "center",
-      prop: "title",
+      prop: "zoom",
       width: 200,
     },
     {
       label: "归属组织",
       align: "center",
-      prop: "title",
-      width: 200,
+      prop: "pl",
     },
     {
       label: "合同编号",
       align: "center",
-      prop: "title",
+      prop: "id",
       width: 200,
     },
     {
       label: "归档状态",
       align: "center",
-      prop: "title",
+      prop: "isAction",
       width: 200,
     },
     {
       label: "归档编号",
       align: "center",
-      prop: "title",
+      prop: "id",
       width: 200,
     },
     {
       label: "合同跟进人",
       align: "center",
-      prop: "title",
+      prop: "name",
       width: 200,
     },
     {

@@ -4,7 +4,7 @@
  * @Author: ywl
  * @Date: 2020-09-25 11:53:51
  * @LastEditors: ywl
- * @LastEditTime: 2020-09-27 18:01:40
+ * @LastEditTime: 2020-09-29 08:45:05
 -->
 <template>
   <ih-page>
@@ -324,6 +324,51 @@ export default class PartyAList extends Vue {
     list: [
       {
         title: "123",
+        jia: "广州居恒信息科技有限公司",
+        yi: "asd",
+        pro: "保利XX项目",
+        time: "2020-9-28",
+        zoom: "周期",
+        pl: "保利",
+        id: "128418458315",
+        name: "爱家案场",
+        isAction: "保存",
+      },
+      {
+        title: "123",
+        jia: "广州居恒信息科技有限公司1",
+        yi: "asd",
+        pro: "保利XX项目",
+        time: "2020-9-28",
+        zoom: "周期1",
+        pl: "保利",
+        id: "128418458315",
+        name: "爱家案场1",
+        isAction: "保存",
+      },
+      {
+        title: "123",
+        jia: "广州居恒信息科技有限公司",
+        yi: "asd",
+        pro: "保利XX项目1",
+        time: "2020-9-29",
+        zoom: "周期",
+        pl: "保利",
+        id: "128418458315",
+        name: "爱家案场",
+        isAction: "保存",
+      },
+      {
+        title: "123",
+        jia: "广州居恒信息科技有限公司",
+        yi: "asd",
+        pro: "保利XX项目1",
+        time: "2020-9-29",
+        zoom: "周期",
+        pl: "保利",
+        id: "128418458315",
+        name: "爱家案场",
+        isAction: "保存",
       },
     ],
   };
@@ -339,76 +384,76 @@ export default class PartyAList extends Vue {
     {
       label: "甲方",
       align: "center",
-      prop: "title",
-      width: 100,
+      prop: "jia",
+      width: 200,
       fixed: true,
     },
     {
       label: "乙方",
       align: "center",
-      prop: "title",
+      prop: "yi",
       width: 100,
       fixed: true,
     },
     {
       label: "合作项目",
       align: "center",
-      prop: "title",
+      prop: "pro",
       width: 200,
     },
     {
       label: "合作时间",
       align: "center",
-      prop: "title",
+      prop: "time",
       width: 200,
     },
     {
       label: "执行时间",
       align: "center",
-      prop: "title",
+      prop: "time",
       width: 200,
     },
     {
       label: "关联项目",
       align: "center",
-      prop: "title",
+      prop: "pro",
       width: 200,
     },
     {
       label: "关联周期",
       align: "center",
-      prop: "title",
-      width: 200,
+      prop: "zoom",
+      width: 100,
     },
     {
       label: "归属组织",
       align: "center",
-      prop: "title",
+      prop: "pl",
       width: 200,
     },
     {
       label: "合同编号",
       align: "center",
-      prop: "title",
+      prop: "id",
       width: 200,
     },
     {
       label: "归档状态",
       align: "center",
-      prop: "title",
-      width: 200,
+      prop: "isAction",
+      width: 100,
     },
     {
       label: "归档编号",
       align: "center",
-      prop: "title",
+      prop: "id",
       width: 200,
     },
     {
       label: "合同跟进人",
       align: "center",
-      prop: "title",
-      width: 200,
+      prop: "name",
+      width: 100,
     },
     {
       slot: "operation",

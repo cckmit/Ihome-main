@@ -4,7 +4,7 @@
  * @Author: zyc
  * @Date: 2020-06-22 11:10:43
  * @LastEditors: ywl
- * @LastEditTime: 2020-09-27 17:44:42
+ * @LastEditTime: 2020-09-28 09:36:36
  */
 import Vue from 'vue'
 import VueRouter, { RouteConfig, Route } from 'vue-router'
@@ -66,6 +66,12 @@ const routes: Array<RouteConfig> = [
         name: 'IntermediaryList',
         component: () => import( /* webpackChunkName: "IntermediaryList" */ '@/views/contract/intermediary-list.vue'),
         meta: { title: '中介分销协议列表', icon: 'form' }
+      },
+      {
+        path: 'intermediaryDetail',
+        name: 'IntermediaryDetail',
+        component: () => import( /* webpackChunkName: "IntermediaryList" */ '@/views/contract/intermediary-detail.vue'),
+        meta: { title: '中介分销协议详情', icon: 'form' }
       },
       {
         path: 'strategyList',
