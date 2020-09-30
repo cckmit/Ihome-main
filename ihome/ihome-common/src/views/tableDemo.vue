@@ -4,7 +4,7 @@
  * @Author: wwq
  * @Date: 2020-09-16 14:54:19
  * @LastEditors: wwq
- * @LastEditTime: 2020-09-30 16:52:07
+ * @LastEditTime: 2020-09-30 17:37:09
 -->
 <template>
   <div class="tableDemo">
@@ -183,13 +183,13 @@ export default class TableDemo extends Vue {
   }
   private pageChange(index: number) {
     this.currentPage = index;
-    this.getImage();
+    // this.getImage();
     console.log(index, "pageChange");
   }
   private sizeChange(val: any) {
     this.currentPage = 1;
     this.pageSize = val;
-    this.getImage();
+    // this.getImage();
     console.log(val, "sizeChange");
   }
   routerTo(where: any) {
