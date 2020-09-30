@@ -4,7 +4,7 @@
  * @Author: wwq
  * @Date: 2020-09-09 16:17:16
  * @LastEditors: wwq
- * @LastEditTime: 2020-09-25 09:50:13
+ * @LastEditTime: 2020-09-30 15:19:07
 -->
 
 <template>
@@ -25,7 +25,7 @@
       :multiple="multiple"
       :limit="limit"
     >
-      <template slot="file" slot-scope="{ file }">
+      <template #file="{ file }">
         <img
           class="avatar"
           :style="{ width: size, height: size }"

@@ -4,7 +4,7 @@
  * @Author: wwq
  * @Date: 2020-09-16 14:54:19
  * @LastEditors: wwq
- * @LastEditTime: 2020-09-29 17:58:49
+ * @LastEditTime: 2020-09-30 17:36:10
 -->
 <template>
   <div class="ih-table-box">
@@ -15,7 +15,6 @@
         :data="data"
         :border="border"
         :row-key="rowKey"
-        :isPeri="isPeri"
         :row-class-name="rowClassName"
         :highlight-current-row="highlightCurrentRow"
         @selection-change="(selection) => $emit('selection-change', selection)"
@@ -30,8 +29,8 @@
         <el-table-column
           fixed
           v-if="columnCheck"
-          width="40"
-          min-width="40"
+          width="50"
+          min-width="50"
           type="selection"
           align="center"
         ></el-table-column>
