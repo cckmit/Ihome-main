@@ -4,7 +4,7 @@
  * @Author: zyc
  * @Date: 2020-08-13 11:40:10
  * @LastEditors: lgf
- * @LastEditTime: 2020-09-24 09:22:31
+ * @LastEditTime: 2020-09-29 14:55:46
 -->
 <template>
   <div>
@@ -20,7 +20,7 @@
             <el-col :span="12">
               <el-form-item label="城市等级">
                 <el-select
-                  v-model="queryPageParameters.cityLevel"
+                  v-model="queryPageParameters.cityGrade"
                   clearable
                   placeholder="城市等级"
                   class="width--100"
@@ -37,7 +37,7 @@
             <el-col :span="12">
               <el-form-item label="渠道等级">
                 <el-select
-                  v-model="queryPageParameters.ChannelLevel"
+                  v-model="queryPageParameters.channelGrade"
                   clearable
                   placeholder="渠道等级"
                   class="width--100"

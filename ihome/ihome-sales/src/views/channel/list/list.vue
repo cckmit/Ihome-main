@@ -4,7 +4,7 @@
  * @Author: zyc
  * @Date: 2020-06-30 09:21:17
  * @LastEditors: lgf
- * @LastEditTime: 2020-09-28 15:10:24
+ * @LastEditTime: 2020-09-29 14:36:31
 --> 
 <template>
   <ih-page>
@@ -102,8 +102,8 @@
     <template v-slot:btn>
       <el-row>
         <el-button type="primary" @click="search()">查询</el-button>
-        <el-button type="warning" @click="add()">清空</el-button>
-        <el-button type="info" @click="reset()">添加</el-button>
+        <el-button type="warning" @click="reset()">清空</el-button>
+        <el-button type="info" @click="add()">添加</el-button>
       </el-row>
     </template>
 
@@ -223,7 +223,6 @@ export default class UserList extends Vue {
     employeeCode: null,
     employeeStatus: "On",
     employeeType: "Formal",
-
     name: null,
     orgId: null,
     permissionOrgId: null,

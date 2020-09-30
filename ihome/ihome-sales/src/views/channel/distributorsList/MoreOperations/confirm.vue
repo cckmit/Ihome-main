@@ -4,7 +4,7 @@
  * @Author: lgf
  * @Date: 2020-09-16 10:05:17
  * @LastEditors: lgf
- * @LastEditTime: 2020-09-28 15:44:39
+ * @LastEditTime: 2020-09-29 14:24:54
 -->
 
 <template>
@@ -29,6 +29,7 @@ import { Component, Vue } from "vue-property-decorator";
 import OperationLog from "../info_tabs/operationLog.vue";
 import DetailsInfo from "@/components/detailsInfo.vue";
 import Confirmpage from "../info_tabs/confirmpage.vue";
+
 // import ModifyThe from "./MoreOperations/ModifyThe";
 @Component({
   components: { DetailsInfo, OperationLog, Confirmpage },

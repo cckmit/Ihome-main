@@ -4,7 +4,7 @@
  * @Author: zyc
  * @Date: 2020-08-13 11:40:10
  * @LastEditors: lgf
- * @LastEditTime: 2020-09-27 15:16:13
+ * @LastEditTime: 2020-09-29 15:40:34
 -->
 <template>
   <div>
@@ -259,10 +259,10 @@ export default class UserList extends Vue {
   }
   ModifyThe(scope: any) {
     console.log("修改");
-    // this.$router.push({
-    //   path: "/channelLevel/ModifyThe",
-    //   query: { id: scope.row.id },
-    // });
+    this.$router.push({
+      path: "/channelLevel/ModifyThe",
+      query: { id: scope.row.id },
+    });
   }
   remove(scope: any) {
     console.log("删除");
