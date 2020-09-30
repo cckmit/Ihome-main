@@ -4,7 +4,7 @@
  * @Author: wwq
  * @Date: 2020-09-16 14:54:19
  * @LastEditors: wwq
- * @LastEditTime: 2020-09-25 11:14:20
+ * @LastEditTime: 2020-09-29 17:58:49
 -->
 <template>
   <div class="ih-table-box">
@@ -81,7 +81,7 @@ export default class IhTable extends Vue {
   @Prop() private data!: any;
   @Prop() private column!: any;
   @Prop({
-    default: true,
+    default: false,
   })
   border!: boolean;
   @Prop() private rowKey?: string;
@@ -145,7 +145,8 @@ export default class IhTable extends Vue {
       });
       return arr;
     };
-    this.columns = enume(column);
+    if (this.isPeri) this.columns = enume(column);
+    else this.columns = column;
   }
 
   indexHandler(index: number) {
