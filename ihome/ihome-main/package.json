@@ -3,12 +3,18 @@
   "version": "0.1.0",
   "private": true,
   "scripts": {
+    "api": "vue-cli-service api",
     "serve": "vue-cli-service serve",
     "build": "vue-cli-service build",
     "build:nginx": "npm run build && xcopy /s/e/y  .\\dist  ..\\..\\nginx\\html\\main",
     "test:unit": "vue-cli-service test:unit",
     "test:e2e": "vue-cli-service test:e2e",
     "lint": "vue-cli-service lint"
+  },
+  "vuePlugins": {
+    "service": [
+      "./api.js"
+    ]
   },
   "dependencies": {
     "@types/js-cookie": "^2.2.6",
@@ -17,7 +23,7 @@
     "element-ui": "^2.13.2",
     "js-cookie": "^2.2.1",
     "qiankun": "^2.0.15",
-    "ihome-common": "^1.0.129",
+    "ihome-common": "^1.0.131",
     "vue": "^2.6.11",
     "vue-class-component": "^7.2.3",
     "vue-property-decorator": "^8.4.2",
