@@ -3,8 +3,8 @@
  * @version: 
  * @Author: zyc
  * @Date: 2020-07-01 10:32:40
- * @LastEditors: zyc
- * @LastEditTime: 2020-08-28 09:56:34
+ * @LastEditors: lgf
+ * @LastEditTime: 2020-10-09 11:06:12
 --> 
 
 <template>
@@ -49,7 +49,10 @@
         </el-col>
         <el-col :span="12">
           <el-form-item label="手机号码" prop="mobilePhone">
-            <el-input v-model="form.mobilePhone" placeholder="手机号码"></el-input>
+            <el-input
+              v-model="form.mobilePhone"
+              placeholder="手机号码"
+            ></el-input>
           </el-form-item>
         </el-col>
       </el-row>
@@ -59,12 +62,18 @@
       <el-row>
         <el-col :span="12">
           <el-form-item label="员工工号" :prop="getProp('employeeCode')">
-            <el-input v-model="form.employeeCode" placeholder="员工工号"></el-input>
+            <el-input
+              v-model="form.employeeCode"
+              placeholder="员工工号"
+            ></el-input>
           </el-form-item>
         </el-col>
         <el-col :span="12">
           <el-form-item label="归属组织" :prop="getProp('orgId')">
-            <SelectOrganizationTree :orgId="form.orgId" @callback="(id)=>form.orgId=id" />
+            <SelectOrganizationTree
+              :orgId="form.orgId"
+              @callback="(id) => (form.orgId = id)"
+            />
           </el-form-item>
         </el-col>
       </el-row>
@@ -95,9 +104,13 @@
       <el-row>
         <el-col :span="12">
           <el-form-item label="职能类别" :prop="getProp('workType')">
-            <el-select v-model="form.workType" clearable placeholder="请选择职能类别">
+            <el-select
+              v-model="form.workType"
+              clearable
+              placeholder="请选择职能类别"
+            >
               <el-option
-                v-for="item in  $root.displayList('workType')"
+                v-for="item in $root.displayList('workType')"
                 :key="item.value"
                 :label="item.label"
                 :value="item.value"
@@ -108,7 +121,11 @@
 
         <el-col :span="12">
           <el-form-item label="人员类型" :prop="getProp('employeeType')">
-            <el-select v-model="form.employeeType" clearable placeholder="请选择人员类型">
+            <el-select
+              v-model="form.employeeType"
+              clearable
+              placeholder="请选择人员类型"
+            >
               <el-option
                 v-for="item in $root.displayList('employeeType')"
                 :key="item.value"
@@ -128,7 +145,11 @@
         </el-col>
         <el-col :span="12">
           <el-form-item label="雇员状态" :prop="getProp('employeeStatus')">
-            <el-select v-model="form.employeeStatus" clearable placeholder="请选择雇员状态">
+            <el-select
+              v-model="form.employeeStatus"
+              clearable
+              placeholder="请选择雇员状态"
+            >
               <el-option
                 v-for="item in $root.displayList('employeeStatus')"
                 :key="item.value"

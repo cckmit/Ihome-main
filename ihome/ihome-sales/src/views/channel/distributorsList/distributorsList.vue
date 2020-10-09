@@ -4,7 +4,7 @@
  * @Author: zyc
  * @Date: 2020-08-13 11:40:10
  * @LastEditors: lgf
- * @LastEditTime: 2020-09-28 15:45:19
+ * @LastEditTime: 2020-10-09 16:47:12
 -->
 <template>
   <div>
@@ -15,12 +15,12 @@
     </el-breadcrumb>
     <ih-page>
       <template v-slot:form>
-        <el-form ref="form" label-width="80px">
+        <el-form ref="form" label-width="100px">
           <el-row>
             <el-col :span="8">
               <el-form-item label="名称">
                 <el-input
-                  v-model="queryPageParameters.account"
+                  v-model="queryPageParameters.name"
                   placeholder="名称"
                 ></el-input>
               </el-form-item>
@@ -28,7 +28,7 @@
             <el-col :span="8">
               <el-form-item label="信用代码">
                 <el-input
-                  v-model="queryPageParameters.name"
+                  v-model="queryPageParameters.creditCode"
                   placeholder="信用代码"
                 ></el-input>
               </el-form-item>
@@ -36,7 +36,7 @@
             <el-col :span="8">
               <el-form-item label="简称">
                 <el-input
-                  v-model="queryPageParameters.account"
+                  v-model="queryPageParameters.shortName"
                   placeholder="简称"
                 ></el-input>
               </el-form-item>
@@ -78,7 +78,7 @@
             <el-col :span="8">
               <el-form-item label="行政区">
                 <el-select
-                  v-model="queryPageParameters.administrative"
+                  v-model="queryPageParameters.county"
                   clearable
                   placeholder="行政区"
                   class="width--100"
@@ -93,11 +93,20 @@
               </el-form-item>
             </el-col>
             <el-col :span="8">
-              <el-form-item label="渠道跟进人" label-width="90px">
-                <el-input
-                  v-model="queryPageParameters.account"
+              <el-form-item label="渠道跟进人">
+                <el-select
+                  v-model="queryPageParameters.followUserId"
+                  clearable
                   placeholder="渠道跟进人"
-                ></el-input>
+                  class="width--100"
+                >
+                  <el-option
+                    v-for="item in $root.displayList('state')"
+                    :key="item.value"
+                    :label="item.label"
+                    :value="item.value"
+                  ></el-option>
+                </el-select>
               </el-form-item>
             </el-col>
             <el-col :span="8">
@@ -117,6 +126,23 @@
                 </el-select>
               </el-form-item>
             </el-col>
+            <el-col :span="8">
+              <el-form-item label="渠道录入人">
+                <el-select
+                  v-model="queryPageParameters.inputUser"
+                  clearable
+                  placeholder="渠道录入人"
+                  class="width--100"
+                >
+                  <el-option
+                    v-for="item in $root.displayList('state')"
+                    :key="item.value"
+                    :label="item.label"
+                    :value="item.value"
+                  ></el-option>
+                </el-select>
+              </el-form-item>
+            </el-col>
           </el-row>
         </el-form>
       </template>
@@ -125,7 +151,12 @@
           <el-button type="primary" @click="search()">查询</el-button>
           <el-button type="success" @click="add()">添加</el-button>
           <el-button type="info" @click="empty()">清空</el-button>
-          <el-button type="danger" @click="empty()">变更跟进人</el-button>
+          <el-button type="danger" @click="ChangeFollower()"
+            >变更跟进人</el-button
+          >
+          <el-button type="danger" @click="ChangeInputPerson()"
+            >变更录入人</el-button
+          >
         </el-row>
       </template>
 
@@ -190,6 +221,9 @@
                   <el-dropdown-item @click.native.prevent="change(scope)"
                     >修改</el-dropdown-item
                   >
+                  <el-dropdown-item @click.native.prevent="remove(scope)"
+                    >删除</el-dropdown-item
+                  >
                   <el-dropdown-item @click.native.prevent="confirm(scope)"
                     >确认</el-dropdown-item
                   >
@@ -231,18 +265,15 @@ import PaginationMixin from "../../../mixins/pagination";
 })
 export default class UserList extends Vue {
   queryPageParameters: any = {
-    account: null,
-    accountType: "Ihome",
-    employeeCode: null,
-    employeeStatus: "On",
-    employeeType: "Formal",
+    name: "",
+    creditCode: "",
+    shortName: "",
     provinces: "one",
+    county: "",
     city: "one",
-    administrative: "tianhe",
-    state: "draft",
-    permissionOrgId: null,
+    inputUser: "",
     status: "Valid",
-    workType: null,
+    followUserId: "",
     pageNum: 1,
     pageSize: 10,
   };
@@ -253,6 +284,7 @@ export default class UserList extends Vue {
   };
   search() {
     console.log("查询");
+    this.getListMixin();
   }
   add() {
     console.log("添加");
@@ -260,7 +292,15 @@ export default class UserList extends Vue {
   }
   empty() {
     console.log("清空");
+    this.queryPageParameters = {};
   }
+  ChangeFollower() {
+    console.log("变更跟进人");
+  }
+  ChangeInputPerson() {
+    console.log("变更录入人");
+  }
+
   //操作
   info(scope: any) {
     this.$router.push({
@@ -274,6 +314,10 @@ export default class UserList extends Vue {
       path: "/ModifyThe",
       query: { id: scope.row.id },
     });
+  }
+  remove(row: any) {
+    console.log("删除");
+    console.log(row.row.id);
   }
   confirm(scope: any) {
     console.log("确认");
@@ -305,19 +349,18 @@ export default class UserList extends Vue {
 
   //获取数据
   async getListMixin() {
-    this.resPageInfo = await post_channel_getList({
-      pageNum: this.queryPageParameters.pageNum,
-      pageSize: this.queryPageParameters.pageSize,
-    });
+    this.resPageInfo = await post_channel_getList(this.queryPageParameters);
   }
   handleSelectionChange(val: any) {
     console.log(val);
   }
   handleSizeChangeMixin(val: any) {
     console.log("页码大小");
+    this.queryPageParameters.pageSize = val;
   }
   handleCurrentChangeMixin(val: any) {
     console.log("指定页码");
+    this.queryPageParameters.pageNum = val;
   }
 }
 </script>

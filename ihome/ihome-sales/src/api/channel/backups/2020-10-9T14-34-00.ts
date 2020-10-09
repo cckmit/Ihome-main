@@ -1,10 +1,14 @@
 /* eslint-disable */
 /* 此脚本由swagger-ui的api-docs自动生成，请勿修改 */
-//2020-9-27 17:02:02
+//2020-9-30 9:58:54
 import { request } from '@/api/base'
 /**添加渠道*/
 export async function post_channel_add (d?: any) {
 return await request.post< string,string> ('/channel/channel/add', d)
+}
+/**渠道审核操作【未实现】*/
+export async function get_channel_approveRecord (d?: any) {
+return await request.get<string,string>('/channel/channel/approveRecord', { params: d })
 }
 /**渠道基础信息变更【未实现】*/
 export async function post_channel_edit (d?: any) {
@@ -18,13 +22,9 @@ return await request.get<ChannelDetail,ChannelDetail>('/channel/channel/get/{id}
 export async function post_channel_getList (d?: any) {
 return await request.post< PageModel<ChannelVO>,PageModel<ChannelVO>> ('/channel/channel/getList', d)
 }
-/**渠道审核确认操作【未实现】*/
-export async function get_channel_operate (d?: any) {
-return await request.get<string,string>('/channel/channel/operate', { params: d })
-}
-/**变更跟进人【未实现】*/
-export async function post_channel_updateFlowUser (d?: any) {
-return await request.post< string,string> ('/channel/channel/updateFlowUser', d)
+/**渠道等级信息变更录入人*/
+export async function post_channel_modifyInputUser (d?: any) {
+return await request.post< string,string> ('/channel/channel/modifyInputUser', d)
 }
 /**添加渠道经纪人*/
 export async function post_channelAgent_add (d?: any) {
@@ -39,12 +39,12 @@ export async function get_channelAgent_get__id (d?: any) {
 return await request.get<ChannelAgentVO,ChannelAgentVO>('/channel/channelAgent/get/{id}', { params: d })
 }
 /**查询渠道经纪人列表*/
-export async function post_channelAgent_getList (d?: any) {
-return await request.post< PageModel<ChannelAgentVO>,PageModel<ChannelAgentVO>> ('/channel/channelAgent/getList', d)
+export async function get_channelAgent_getAllByChannelId__channelId (d?: any) {
+return await request.get<ChannelAgent[],ChannelAgent[]>('/channel/channelAgent/getAllByChannelId/{channelId}', { params: d })
 }
 /**查询渠道经纪人列表*/
-export async function get_channelAgent_getListByChannelId__channelId (d?: any) {
-return await request.get<ChannelAgent对象[],ChannelAgent对象[]>('/channel/channelAgent/getListByChannelId/{channelId}', { params: d })
+export async function post_channelAgent_getList (d?: any) {
+return await request.post< PageModel<ChannelAgentVO>,PageModel<ChannelAgentVO>> ('/channel/channelAgent/getList', d)
 }
 /**新增渠道呈批*/
 export async function post_channelApproval_add (d?: any) {
@@ -59,12 +59,12 @@ export async function post_channelApproval_getList (d?: any) {
 return await request.post< PageModel<ChannelApprovalVO>,PageModel<ChannelApprovalVO>> ('/channel/channelApproval/getList', d)
 }
 /**查询渠道呈批OA处理列表*/
-export async function get_channelApprovalOaRecord_getList__approvalId (d?: any) {
-return await request.get<ChannelApprovalOaRecord对象[],ChannelApprovalOaRecord对象[]>('/channel/channelApprovalOaRecord/getList/{approvalId}', { params: d })
+export async function get_channelApprovalOaRecord_getAll__approvalId (d?: any) {
+return await request.get<ChannelApprovalOaRecord[],ChannelApprovalOaRecord[]>('/channel/channelApprovalOaRecord/getAll/{approvalId}', { params: d })
 }
 /**查询渠道呈批列表*/
-export async function get_channelApprovalRecord_getList__approvalId (d?: any) {
-return await request.get<ChannelApprovalRecord对象[],ChannelApprovalRecord对象[]>('/channel/channelApprovalRecord/getList/{approvalId}', { params: d })
+export async function get_channelApprovalRecord_getAll__approvalId (d?: any) {
+return await request.get<ChannelApprovalRecord[],ChannelApprovalRecord[]>('/channel/channelApprovalRecord/getAll/{approvalId}', { params: d })
 }
 /**添加渠道商银行账户*/
 export async function post_channelBank_add (d?: any) {
@@ -79,8 +79,8 @@ export async function get_channelBank_get__id (d?: any) {
 return await request.get<ChannelBankVO,ChannelBankVO>('/channel/channelBank/get/{id}', { params: d })
 }
 /**查询渠道商银行账户列表*/
-export async function get_channelBank_getList__channelId (d?: any) {
-return await request.get<ChannelBank对象[],ChannelBank对象[]>('/channel/channelBank/getList/{channelId}', { params: d })
+export async function get_channelBank_getAll__channelId (d?: any) {
+return await request.get<ChannelBank[],ChannelBank[]>('/channel/channelBank/getAll/{channelId}', { params: d })
 }
 /**查询城市等级列表*/
 export async function post_channelCityLevel_getList (d?: any) {
@@ -94,6 +94,10 @@ return await request.post< number,number> ('/channel/channelCityLevel/updateLeve
 export async function post_channelGrade_add (d?: any) {
 return await request.post< string,string> ('/channel/channelGrade/add', d)
 }
+/**渠道等级审核操作【未实现】*/
+export async function get_channelGrade_approveRecord (d?: any) {
+return await request.get<string,string>('/channel/channelGrade/approveRecord', { params: d })
+}
 /**渠道等级信息变更【未实现】*/
 export async function post_channelGrade_edit (d?: any) {
 return await request.post< string,string> ('/channel/channelGrade/edit', d)
@@ -106,13 +110,13 @@ return await request.get<ChannelGradeVO,ChannelGradeVO>('/channel/channelGrade/g
 export async function post_channelGrade_getList (d?: any) {
 return await request.post< PageModel<ChannelGradeVO>,PageModel<ChannelGradeVO>> ('/channel/channelGrade/getList', d)
 }
-/**渠道等级审核操作【未实现】*/
-export async function get_channelGrade_operate (d?: any) {
-return await request.get<string,string>('/channel/channelGrade/operate', { params: d })
+/**渠道等级信息变更录入人*/
+export async function post_channelGrade_modifyInputUser (d?: any) {
+return await request.post< string,string> ('/channel/channelGrade/modifyInputUser', d)
 }
 /**查询渠道等级处理列表*/
-export async function get_channelGradeRecord_getList__gradeId (d?: any) {
-return await request.get<ChannelGradeRecord对象[],ChannelGradeRecord对象[]>('/channel/channelGradeRecord/getList/{gradeId}', { params: d })
+export async function get_channelGradeRecord_getAll__gradeId (d?: any) {
+return await request.get<ChannelGradeRecord[],ChannelGradeRecord[]>('/channel/channelGradeRecord/getAll/{gradeId}', { params: d })
 }
 /**添加渠道评级标准*/
 export async function post_channelGradeStandard_add (d?: any) {
@@ -136,7 +140,7 @@ return await request.post< PageModel<ChannelGradeStandardVO>,PageModel<ChannelGr
 }
 /**查询渠道供应商管理办法附件列表*/
 export async function get_channelGradeStandard_getSupplierManagementAttachments (d?: any) {
-return await request.get<ChannelSupplierManagementAttachment对象[],ChannelSupplierManagementAttachment对象[]>('/channel/channelGradeStandard/getSupplierManagementAttachments', { params: d })
+return await request.get<ChannelSupplierManagementAttachment[],ChannelSupplierManagementAttachment[]>('/channel/channelGradeStandard/getSupplierManagementAttachments', { params: d })
 }
 /**查看渠道评级标准所需材料*/
 export async function get_channelGradeStandard_viewMaterials (d?: any) {
@@ -167,8 +171,8 @@ export async function post_channelInvitationCode_getList (d?: any) {
 return await request.post< PageModel<ChannelInvitationCodeVO>,PageModel<ChannelInvitationCodeVO>> ('/channel/channelInvitationCode/getList', d)
 }
 /**查询渠道处理列表*/
-export async function get_channelRecord_getList__channelId (d?: any) {
-return await request.get<ChannelRecord对象[],ChannelRecord对象[]>('/channel/channelRecord/getList/{channelId}', { params: d })
+export async function get_channelRecord_getAll__channelId (d?: any) {
+return await request.get<ChannelRecord[],ChannelRecord[]>('/channel/channelRecord/getAll/{channelId}', { params: d })
 }
 /**检查公司是否已经注册*/
 export async function get_channelRegistUser_checkIsExists (d?: any) {
@@ -207,6 +211,42 @@ list:T[];
 /**总记录数*/
 total: number;
 }
+/**ApproveRecordVO*/
+export interface ApproveRecordVO {
+/**(必填)审核操作*/
+approveStatus: number;
+/**(必填)id*/
+id: number;
+/**(必填)处理意见*/
+remark: string;
+}
+/**ChannelAgent*/
+export interface ChannelAgent {
+/**渠道商ID*/
+chanelId: number;
+/**创建时间(yyyy-MM-dd HH:mm:ss)*/
+createTime: string;
+/**创建用户*/
+createUser: number;
+/**已删除*/
+deleted: number;
+/**邮箱*/
+email: string;
+/**ID*/
+id: number;
+/**手机号码*/
+mobile: string;
+/**姓名*/
+name: string;
+/**是否结佣*/
+settlementFlag: number;
+/**状态(Valid-有效、Invalid-无效)*/
+status: string;
+/**更新时间(yyyy-MM-dd HH:mm:ss)*/
+updateTime: string;
+/**更新用户*/
+updateUser: number;
+}
 /**ChannelAgentBaseVO*/
 export interface ChannelAgentBaseVO {
 /**渠道商ID*/
@@ -221,10 +261,10 @@ mobile: string;
 name: string;
 /**是否结佣*/
 settlementFlag: number;
-/**状态*/
+/**状态(Valid-有效、Invalid-无效)*/
 status: string;
 }
-/**渠道经纪人信息*/
+/**ChannelAgentQueryVO*/
 export interface ChannelAgentQueryVO {
 /**手机号码*/
 mobile: string;
@@ -236,10 +276,10 @@ pageNum: number;
 pageSize: number;
 /**是否结佣*/
 settlementFlag: number;
-/**状态*/
+/**状态(Valid-有效、Invalid-无效)*/
 status: string;
 }
-/**渠道经纪人信息*/
+/**ChannelAgentVO*/
 export interface ChannelAgentVO {
 /**渠道商ID*/
 chanelId: number;
@@ -259,42 +299,36 @@ mobile: string;
 name: string;
 /**是否结佣*/
 settlementFlag: number;
-/**状态*/
+/**状态(Valid-有效、Invalid-无效)*/
 status: string;
 /**更新时间(yyyy-MM-dd HH:mm:ss)*/
 updateTime: string;
 /**更新用户*/
 updateUser: number;
 }
-/**渠道经纪人信息*/
-export interface ChannelAgent对象 {
-/**渠道商ID*/
-chanelId: number;
+/**ChannelApprovalAttachment*/
+export interface ChannelApprovalAttachment {
+/**渠道ID*/
+approvalId: number;
 /**创建时间(yyyy-MM-dd HH:mm:ss)*/
 createTime: string;
 /**创建用户*/
 createUser: number;
 /**已删除*/
 deleted: number;
-/**邮箱*/
-email: string;
+/**文件ID*/
+fileId: string;
 /**ID*/
 id: number;
-/**手机号码*/
-mobile: string;
-/**姓名*/
-name: string;
-/**是否结佣*/
-settlementFlag: number;
-/**状态*/
-status: string;
+/**类型*/
+type: string;
 /**更新时间(yyyy-MM-dd HH:mm:ss)*/
 updateTime: string;
 /**更新用户*/
 updateUser: number;
 }
-/**渠道呈批附件信息*/
-export interface ChannelApprovalAttachment对象 {
+/**ChannelApprovalAttachment_1*/
+export interface ChannelApprovalAttachment_1 {
 /**渠道ID*/
 approvalId: number;
 /**创建时间(yyyy-MM-dd HH:mm:ss)*/
@@ -321,14 +355,14 @@ approvalDesc: string;
 /**呈批标题*/
 approvalTitle: string;
 /**附件信息*/
-channelApprovalAttachments: ChannelApprovalAttachment对象[];
+channelApprovalAttachments: ChannelApprovalAttachment_1[];
 /**渠道等级信息*/
-channelApprovalGrades: ChannelApprovalGrade对象[];
+channelApprovalGrades: ChannelApprovalGrade_1[];
 /**事业部*/
 departmentOrgId: number;
 }
-/**渠道呈批等级信息*/
-export interface ChannelApprovalGrade对象 {
+/**ChannelApprovalGrade*/
+export interface ChannelApprovalGrade {
 /**渠道ID*/
 approvalId: number;
 /**创建时间(yyyy-MM-dd HH:mm:ss)*/
@@ -346,8 +380,27 @@ updateTime: string;
 /**更新用户*/
 updateUser: number;
 }
-/**渠道呈批OA处理记录*/
-export interface ChannelApprovalOaRecord对象 {
+/**ChannelApprovalGrade_1*/
+export interface ChannelApprovalGrade_1 {
+/**渠道ID*/
+approvalId: number;
+/**创建时间(yyyy-MM-dd HH:mm:ss)*/
+createTime: string;
+/**创建用户*/
+createUser: number;
+/**已删除*/
+deleted: number;
+/**渠道等级ID*/
+gradeId: number;
+/**ID*/
+id: number;
+/**更新时间(yyyy-MM-dd HH:mm:ss)*/
+updateTime: string;
+/**更新用户*/
+updateUser: number;
+}
+/**ChannelApprovalOaRecord*/
+export interface ChannelApprovalOaRecord {
 /**渠道ID*/
 approvalId: number;
 /**创建时间(yyyy-MM-dd HH:mm:ss)*/
@@ -373,7 +426,7 @@ updateTime: string;
 /**更新用户*/
 updateUser: number;
 }
-/**渠道呈批信息*/
+/**ChannelApprovalQueryVO*/
 export interface ChannelApprovalQueryVO {
 /**申请编号*/
 approvalNo: string;
@@ -391,11 +444,11 @@ oaNo: string;
 pageNum: number;
 /**(必填)每页条数*/
 pageSize: number;
-/**状态*/
+/**状态(Draft-草稿、SubmittedForApproval-已发起呈批、Approved-审批通过、ApprovalFailed-审批不通过)*/
 status: string;
 }
-/**渠道呈批处理记录*/
-export interface ChannelApprovalRecord对象 {
+/**ChannelApprovalRecord*/
+export interface ChannelApprovalRecord {
 /**渠道ID*/
 approvalId: number;
 /**创建时间(yyyy-MM-dd HH:mm:ss)*/
@@ -421,7 +474,7 @@ updateTime: string;
 /**更新用户*/
 updateUser: number;
 }
-/**渠道呈批信息*/
+/**ChannelApprovalVO*/
 export interface ChannelApprovalVO {
 /**呈批说明*/
 approvalDesc: string;
@@ -432,9 +485,9 @@ approvalTitle: string;
 /**经办人*/
 approvalUser: number;
 /**附件信息*/
-channelApprovalAttachments: ChannelApprovalAttachment对象[];
+channelApprovalAttachments: ChannelApprovalAttachment[];
 /**渠道等级信息*/
-channelApprovalGrades: ChannelApprovalGrade对象[];
+channelApprovalGrades: ChannelApprovalGrade[];
 /**创建时间(yyyy-MM-dd HH:mm:ss)*/
 createTime: string;
 /**创建用户*/
@@ -451,15 +504,15 @@ id: number;
 inputTime: string;
 /**OA发文文号*/
 oaNo: string;
-/**状态*/
+/**状态(Draft-草稿、SubmittedForApproval-已发起呈批、Approved-审批通过、ApprovalFailed-审批不通过)*/
 status: string;
 /**更新时间(yyyy-MM-dd HH:mm:ss)*/
 updateTime: string;
 /**更新用户*/
 updateUser: number;
 }
-/**渠道附件信息*/
-export interface ChannelAttachment对象 {
+/**ChannelAttachment*/
+export interface ChannelAttachment {
 /**渠道ID*/
 channelId: number;
 /**创建时间(yyyy-MM-dd HH:mm:ss)*/
@@ -473,6 +526,31 @@ fileId: string;
 /**ID*/
 id: number;
 /**类型*/
+type: string;
+/**更新时间(yyyy-MM-dd HH:mm:ss)*/
+updateTime: string;
+/**更新用户*/
+updateUser: number;
+}
+/**ChannelBank*/
+export interface ChannelBank {
+/**账户名称*/
+accountName: string;
+/**账户号码*/
+accountNum: string;
+/**开户银行*/
+bank: string;
+/**渠道商ID*/
+channelId: number;
+/**创建时间(yyyy-MM-dd HH:mm:ss)*/
+createTime: string;
+/**创建用户*/
+createUser: number;
+/**已删除*/
+deleted: number;
+/**ID*/
+id: number;
+/**账号类型(BasicDepositAccount-基本存款账户、GeneralDepositAccount-一般存款账户)*/
 type: string;
 /**更新时间(yyyy-MM-dd HH:mm:ss)*/
 updateTime: string;
@@ -494,7 +572,7 @@ id: number;
 /**账号类型*/
 type: string;
 }
-/**渠道银行账户信息*/
+/**ChannelBankVO*/
 export interface ChannelBankVO {
 /**账户名称*/
 accountName: string;
@@ -512,39 +590,14 @@ createUser: number;
 deleted: number;
 /**ID*/
 id: number;
-/**账号类型*/
+/**账号类型(BasicDepositAccount-基本存款账户、GeneralDepositAccount-一般存款账户)*/
 type: string;
 /**更新时间(yyyy-MM-dd HH:mm:ss)*/
 updateTime: string;
 /**更新用户*/
 updateUser: number;
 }
-/**渠道银行账户信息*/
-export interface ChannelBank对象 {
-/**账户名称*/
-accountName: string;
-/**账户号码*/
-accountNum: string;
-/**开户银行*/
-bank: string;
-/**渠道商ID*/
-channelId: number;
-/**创建时间(yyyy-MM-dd HH:mm:ss)*/
-createTime: string;
-/**创建用户*/
-createUser: number;
-/**已删除*/
-deleted: number;
-/**ID*/
-id: number;
-/**账号类型*/
-type: string;
-/**更新时间(yyyy-MM-dd HH:mm:ss)*/
-updateTime: string;
-/**更新用户*/
-updateUser: number;
-}
-/**渠道商信息*/
+/**ChannelBaseVO*/
 export interface ChannelBaseVO {
 /**营业住所*/
 address: string;
@@ -552,6 +605,12 @@ address: string;
 businessTime: string;
 /**注册资本*/
 capital: string;
+/**附件信息*/
+channelAttachments: ChannelAttachment[];
+/**渠道银行账号信息*/
+channelBanks: ChannelBank[];
+/**渠道负责人信息*/
+channelPersons: ChannelPerson[];
 /**渠道所在城市*/
 city: string;
 /**渠道所在行政区*/
@@ -564,20 +623,20 @@ followUserId: number;
 legalPerson: string;
 /**公司名称*/
 name: string;
+/**1保存2提交*/
+operateType: number;
 /**渠道所在省份*/
 province: string;
-/**备注*/
+/**企业概况*/
 remark: string;
 /**成立日期(yyyy-MM-dd)*/
 setupTime: string;
 /**简称*/
 shortName: string;
-/**状态*/
-status: string;
-/**公司类型*/
+/**公司类型(limitedLiabilityCompany-有限责任公司（自然人投资或控股）)*/
 type: string;
 }
-/**渠道城市等级信息*/
+/**ChannelCityLevelQueryVO*/
 export interface ChannelCityLevelQueryVO {
 /**城市编码*/
 cityCode: string;
@@ -592,7 +651,14 @@ pageSize: number;
 /**省份编码*/
 proviceCode: string;
 }
-/**渠道城市等级信息*/
+/**ChannelCityLevelUpdateVO*/
+export interface ChannelCityLevelUpdateVO {
+/**城市等级*/
+cityGrade: number;
+/**需要更新城市ids*/
+ids: number[];
+}
+/**ChannelCityLevelVO*/
 export interface ChannelCityLevelVO {
 /**编码*/
 code: string;
@@ -617,7 +683,7 @@ updateTime: string;
 /**更新用户*/
 updateUser: number;
 }
-/**渠道公司详情信息*/
+/**ChannelDetail*/
 export interface ChannelDetail {
 /**营业住所*/
 address: string;
@@ -626,11 +692,11 @@ businessTime: string;
 /**注册资本*/
 capital: string;
 /**附件信息*/
-channelAttachments: ChannelAttachment对象[];
+channelAttachments: ChannelAttachment[];
 /**银行账户信息*/
-channelBanks: ChannelBank对象[];
+channelBanks: ChannelBank[];
 /**负责人信息*/
-channelPersons: ChannelPerson对象[];
+channelPersons: ChannelPerson[];
 /**渠道所在城市*/
 city: string;
 /**渠道所在行政区*/
@@ -661,9 +727,30 @@ remark: string;
 setupTime: string;
 /**简称*/
 shortName: string;
-/**状态*/
+/**状态(DRAFT-草稿、ToBeConfirmed-待确认、PTWYSH-待平台文员审核、FGSYGSH-待分公司业管审核、ZBYGSH-待总部业管审核、Audited-已审核、Approved-变更中)*/
 status: string;
-/**公司类型*/
+/**公司类型(limitedLiabilityCompany-有限责任公司（自然人投资或控股）)*/
+type: string;
+/**更新时间(yyyy-MM-dd HH:mm:ss)*/
+updateTime: string;
+/**更新用户*/
+updateUser: number;
+}
+/**ChannelGradeAttachment*/
+export interface ChannelGradeAttachment {
+/**创建时间(yyyy-MM-dd HH:mm:ss)*/
+createTime: string;
+/**创建用户*/
+createUser: number;
+/**已删除*/
+deleted: number;
+/**文件ID*/
+fileId: string;
+/**渠道ID*/
+gradeId: number;
+/**ID*/
+id: number;
+/**类型*/
 type: string;
 /**更新时间(yyyy-MM-dd HH:mm:ss)*/
 updateTime: string;
@@ -674,16 +761,22 @@ updateUser: number;
 export interface ChannelGradeBaseVO {
 /**渠道等级*/
 channelGrade: string;
+/**附件信息*/
+channelGradeAttachments: ChannelGradeAttachment[];
+/**渠道评级标准信息*/
+channelGradeItems: ChannelGradeItem[];
 /**渠道ID*/
 channelId: number;
-/**渠道类型*/
+/**渠道类型(BigPlatform-大平台、LargeIntermediary-大型中介、FirstPlatform-一级平台、MediumIntermediary-中型中介、SecondPlatform-二级平台、SmallIntermediary-小型中介)*/
 channelType: string;
 /**业务开展城市*/
 city: string;
-/**城市等级*/
+/**城市等级(OneTierCity-一线城市、SecondTierCity-二线城市、ThirdTierCity-三线城市)*/
 cityGrade: string;
 /**事业部*/
 departmentOrgId: number;
+/**1保存2提交*/
+operateType: number;
 /**业务开展省份*/
 province: string;
 /**是否特批入库*/
@@ -691,15 +784,36 @@ special: number;
 /**入库编号*/
 storageNum: string;
 }
-/**渠道等级信息*/
+/**ChannelGradeItem*/
+export interface ChannelGradeItem {
+/**创建时间(yyyy-MM-dd HH:mm:ss)*/
+createTime: string;
+/**创建用户*/
+createUser: number;
+/**已删除*/
+deleted: number;
+/**渠道ID*/
+gradeId: number;
+/**ID*/
+id: number;
+/**录入信息*/
+inputValue: string;
+/**评级标准id*/
+standardId: number;
+/**更新时间(yyyy-MM-dd HH:mm:ss)*/
+updateTime: string;
+/**更新用户*/
+updateUser: number;
+}
+/**ChannelGradeQueryVO*/
 export interface ChannelGradeQueryVO {
-/**渠道等级*/
+/**渠道等级(BigPlatform-大平台、LargeIntermediary-大型中介、FirstPlatform-一级平台、MediumIntermediary-中型中介、SecondPlatform-二级平台、SmallIntermediary-小型中介)*/
 channelGrade: string;
 /**渠道ID*/
 channelId: number;
 /**业务开展城市*/
 city: string;
-/**城市等级*/
+/**城市等级(OneTierCity-一线城市、SecondTierCity-二线城市、ThirdTierCity-三线城市)*/
 cityGrade: string;
 /**事业部*/
 departmentOrgId: number;
@@ -713,13 +827,13 @@ pageSize: number;
 province: string;
 /**是否特批入库*/
 special: number;
-/**状态*/
+/**状态(DRAFT-草稿、PTWYSH-待平台文员审核、FGSYGSH-待分公司业管审核、ZBYGSH-待总部业管审核、PASS-审核通过、SubmittedForApproval-已发起呈批、Approved-已审批)*/
 status: string;
 /**入库编号*/
 storageNum: string;
 }
-/**渠道等级处理记录*/
-export interface ChannelGradeRecord���象 {
+/**ChannelGradeRecord*/
+export interface ChannelGradeRecord {
 /**创建时间(yyyy-MM-dd HH:mm:ss)*/
 createTime: string;
 /**创建用户*/
@@ -760,7 +874,7 @@ id: number;
 /**所需材料*/
 standardAttachments: string[];
 }
-/**渠道评级标准信息*/
+/**ChannelGradeStandardQueryVO*/
 export interface ChannelGradeStandardQueryVO {
 /**渠道等级*/
 channelGrade: string;
@@ -771,7 +885,7 @@ pageNum: number;
 /**(必填)每页条数*/
 pageSize: number;
 }
-/**渠道评级标准信息*/
+/**ChannelGradeStandardVO*/
 export interface ChannelGradeStandardVO {
 /**渠道等级*/
 channelGrade: string;
@@ -794,34 +908,7 @@ updateTime: string;
 /**更新用户*/
 updateUser: number;
 }
-/**ChannelGradeUpdateVO*/
-export interface ChannelGradeUpdateVO {
-/**渠道等级*/
-channelGrade: string;
-/**渠道ID*/
-channelId: number;
-/**渠道类型*/
-channelType: string;
-/**业务开展城市*/
-city: string;
-/**城市等级*/
-cityGrade: string;
-/**事业部*/
-departmentOrgId: number;
-/**(必填)id*/
-id: number;
-/**(必填)审核操作*/
-operate: number;
-/**业务开展省份*/
-province: string;
-/**(必填)处理意见*/
-remark: number;
-/**是否特批入库*/
-special: number;
-/**入库编号*/
-storageNum: string;
-}
-/**渠道等级信息*/
+/**ChannelGradeVO*/
 export interface ChannelGradeVO {
 /**渠道等级*/
 channelGrade: string;
@@ -829,11 +916,11 @@ channelGrade: string;
 channelId: number;
 /**渠道商名称*/
 channelName: string;
-/**渠道类型*/
+/**渠道类型(BigPlatform-大平台、LargeIntermediary-大型中介、FirstPlatform-一级平台、MediumIntermediary-中型中介、SecondPlatform-二级平台、SmallIntermediary-小型中介)*/
 channelType: string;
 /**业务开展城市*/
 city: string;
-/**城市等级*/
+/**城市等级(OneTierCity-一线城市、SecondTierCity-二线城市、ThirdTierCity-三线城市)*/
 cityGrade: string;
 /**创建时间(yyyy-MM-dd HH:mm:ss)*/
 createTime: string;
@@ -851,7 +938,7 @@ inputUser: number;
 province: string;
 /**是否特批入库*/
 special: number;
-/**状态*/
+/**状态(DRAFT-草稿、PTWYSH-待平台文员审核、FGSYGSH-待分公司业管审核、ZBYGSH-待总部业管审核、PASS-审核通过、SubmittedForApproval-已发起呈批、Approved-已审批)*/
 status: string;
 /**入库编号*/
 storageNum: string;
@@ -860,7 +947,7 @@ updateTime: string;
 /**更新用户*/
 updateUser: number;
 }
-/**渠道邀请码信息*/
+/**ChannelInvitationCodeQueryVO*/
 export interface ChannelInvitationCodeQueryVO {
 /**事业部*/
 departmentOrgId: number;
@@ -874,10 +961,10 @@ invitationUserId: number;
 pageNum: number;
 /**(必填)每页条数*/
 pageSize: number;
-/**状态*/
+/**状态(Valid-有效、Invalid-无效)*/
 status: string;
 }
-/**渠道邀请码信息*/
+/**ChannelInvitationCodeVO*/
 export interface ChannelInvitationCodeVO {
 /**创建时间(yyyy-MM-dd HH:mm:ss)*/
 createTime: string;
@@ -895,15 +982,15 @@ id: number;
 invitationCode: string;
 /**邀请人ID/创建人*/
 invitationUserId: number;
-/**状态*/
+/**状态(Valid-有效、Invalid-无效)*/
 status: string;
 /**更新时间(yyyy-MM-dd HH:mm:ss)*/
 updateTime: string;
 /**更新用户*/
 updateUser: number;
 }
-/**渠道负责人信息*/
-export interface ChannelPerson对象 {
+/**ChannelPerson*/
+export interface ChannelPerson {
 /**手机号码*/
 bobile: string;
 /**渠道商ID*/
@@ -929,7 +1016,7 @@ updateTime: string;
 /**更新用户*/
 updateUser: number;
 }
-/**渠道查询条件信息*/
+/**ChannelQueryVO*/
 export interface ChannelQueryVO {
 /**城市*/
 city: string;
@@ -949,11 +1036,11 @@ pageSize: number;
 province: string;
 /**简称*/
 shortName: string;
-/**状态*/
+/**状态(DRAFT-草稿、ToBeConfirmed-待确认、PTWYSH-待平台文员审核、FGSYGSH-待分公司业管审核、ZBYGSH-待总部业管审核、Audited-已审核、Approved-变更中)*/
 status: string;
 }
-/**渠道处理记录*/
-export interface ChannelRecord对象 {
+/**ChannelRecord*/
+export interface ChannelRecord {
 /**渠道ID*/
 channelId: number;
 /**创建时间(yyyy-MM-dd HH:mm:ss)*/
@@ -1002,7 +1089,7 @@ username: string;
 /**短信验证码*/
 verifyCode: string;
 }
-/**渠道用户注册信息*/
+/**ChannelRegistUserQueryVO*/
 export interface ChannelRegistUserQueryVO {
 /**渠道商名称*/
 companyName: string;
@@ -1017,7 +1104,7 @@ pageSize: number;
 /**姓名*/
 username: string;
 }
-/**渠道用户注册信息*/
+/**ChannelRegistUserVO*/
 export interface ChannelRegistUserVO {
 /**公司名称*/
 companyName: string;
@@ -1050,7 +1137,26 @@ updateUser: number;
 /**姓名*/
 username: string;
 }
-/**渠道供应商管理办法附件信息*/
+/**ChannelSupplierManagementAttachment*/
+export interface ChannelSupplierManagementAttachment {
+/**创建时间(yyyy-MM-dd HH:mm:ss)*/
+createTime: string;
+/**创建用户*/
+createUser: number;
+/**已删除*/
+deleted: number;
+/**文件ID*/
+fileId: string;
+/**ID*/
+id: number;
+/**类型*/
+type: string;
+/**更新时间(yyyy-MM-dd HH:mm:ss)*/
+updateTime: string;
+/**更新用户*/
+updateUser: number;
+}
+/**ChannelSupplierManagementAttachmentVO*/
 export interface ChannelSupplierManagementAttachmentVO {
 /**创建时间(yyyy-MM-dd HH:mm:ss)*/
 createTime: string;
@@ -1071,63 +1177,7 @@ updateTime: string;
 /**更新用户*/
 updateUser: number;
 }
-/**渠道供应商管理办法附件信息*/
-export interface ChannelSupplierManagementAttachment对象 {
-/**创建时间(yyyy-MM-dd HH:mm:ss)*/
-createTime: string;
-/**创建用户*/
-createUser: number;
-/**已删除*/
-deleted: number;
-/**文件ID*/
-fileId: string;
-/**ID*/
-id: number;
-/**类型*/
-type: string;
-/**更新时间(yyyy-MM-dd HH:mm:ss)*/
-updateTime: string;
-/**更新用户*/
-updateUser: number;
-}
-/**ChannelUpdateVO*/
-export interface ChannelUpdateVO {
-/**营业住所*/
-address: string;
-/**营业期限*/
-businessTime: string;
-/**注册资本*/
-capital: string;
-/**渠道所在城市*/
-city: string;
-/**渠道所在行政区*/
-county: string;
-/**统一社会信用代码*/
-creditCode: string;
-/**跟进人*/
-followUserId: number;
-/**(必填)id*/
-id: number;
-/**法人代表*/
-legalPerson: string;
-/**公司名称*/
-name: string;
-/**(必填)审核操作*/
-operate: number;
-/**渠道所在省份*/
-province: string;
-/**备注*/
-remark: string;
-/**成立日期(yyyy-MM-dd)*/
-setupTime: string;
-/**简称*/
-shortName: string;
-/**状态*/
-status: string;
-/**公司类型*/
-type: string;
-}
-/**渠道公司信息*/
+/**ChannelVO*/
 export interface ChannelVO {
 /**营业住所*/
 address: string;
@@ -1165,9 +1215,9 @@ remark: string;
 setupTime: string;
 /**简称*/
 shortName: string;
-/**状态*/
+/**状态(DRAFT-草稿、ToBeConfirmed-待确认、PTWYSH-待平台文员审核、FGSYGSH-待分公司业管审核、ZBYGSH-待总部业管审核、Audited-已审核、Approved-变更中)*/
 status: string;
-/**公司类型*/
+/**公司类型(limitedLiabilityCompany-有限责任公司（自然人投资或控股）)*/
 type: string;
 /**更新时间(yyyy-MM-dd HH:mm:ss)*/
 updateTime: string;

@@ -4,7 +4,7 @@
  * @Author: zyc
  * @Date: 2020-06-22 14:34:07
  * @LastEditors: lgf
- * @LastEditTime: 2020-09-30 09:14:07
+ * @LastEditTime: 2020-09-30 10:15:06
  */
 
 console.log('\033[42;30m 这是main ts主应用')
@@ -73,8 +73,8 @@ module.exports = {
             '/sales-oauth2': {
                 target: proxyAddress
             },
-            '/channel-local/': {
-                target: 'http://10.188.1.91:8610'
+            '/channel/': {
+                target: proxyAddress
             }
         }
     },

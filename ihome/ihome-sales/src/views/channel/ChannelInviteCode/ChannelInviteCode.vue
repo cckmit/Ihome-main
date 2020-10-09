@@ -4,7 +4,7 @@
  * @Author: lgf
  * @Date: 2020-09-18 09:14:40
  * @LastEditors: lgf
- * @LastEditTime: 2020-09-29 11:47:39
+ * @LastEditTime: 2020-10-09 16:47:56
 -->
 <template>
   <div>
@@ -169,7 +169,7 @@
   </div>
 </template>
 <script lang="ts">
-import { Row } from "element-ui";
+// import { Row } from "element-ui";
 import { Component, Vue } from "vue-property-decorator";
 import {
   post_channelInvitationCode_getList,
@@ -201,7 +201,7 @@ export default class Home extends Vue {
   };
 
   currentPage: any = 1;
-  add(scope: any) {
+  add() {
     console.log("跳转至添加邀请码页面");
     this.$router.push({
       path: "/ChannelInviteCode/addCode",
@@ -213,14 +213,15 @@ export default class Home extends Vue {
     this.queryPageParameters = {};
   }
 
-  info(row) {
+  info(row: any) {
     console.log("详情");
     console.log(row);
     this.$router.push({
       path: "/info",
-      query: { invitationCode: row.row.invitationCode },
+      params: {
+        invitationCode: row.row.invitationCode,
+      },
     });
-    console.log(row.row.invitationCode);
   }
 
   async created() {
@@ -230,7 +231,7 @@ export default class Home extends Vue {
     console.log("查询");
     this.getListMixin();
   }
-  deleted(row) {
+  deleted(row: any) {
     console.log(row.row);
     let invitationCode = row.row.invitationCode;
     console.log(invitationCode);
@@ -254,26 +255,37 @@ export default class Home extends Vue {
     this.queryPageParameters.pageNum = val;
     this.getListMixin();
   }
-  handleSelectionChange(val) {
+  handleSelectionChange(val: any) {
     console.log("fff");
     this.invaildList.list = val;
     // console.log(this.changeList.list);
   }
-  invalid() {
-    if (this.invaildList) {
+  private idArr: any[] = [];
+  async invalid() {
+    if (this.invaildList.list == "") {
       this.$message({
         message: "请选择要作废的邀请码",
         type: "warning",
       });
-    }
-    let idArr = [];
-    this.invaildList.list.forEach((ele) => {
-      idArr.push(ele.id);
-    });
-    console.log(idArr);
-    post_channelInvitationCode_cancel(idArr);
-    console.log("作废");
-    this.getListMixin();
+    } else
+      try {
+        await this.$confirm("是否确定作废?", "提示");
+        {
+          this.invaildList.list.forEach((ele: any) => {
+            this.idArr.push(ele.id);
+          });
+          // console.log(idArr);
+          post_channelInvitationCode_cancel(this.idArr);
+          console.log("作废");
+          this.getListMixin();
+        }
+        this.$message({
+          type: "success",
+          message: "作废成功!",
+        });
+      } catch (error) {
+        console.log(error);
+      }
   }
 }
 </script>

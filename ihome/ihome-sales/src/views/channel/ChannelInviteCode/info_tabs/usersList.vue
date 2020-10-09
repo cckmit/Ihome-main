@@ -4,7 +4,7 @@
  * @Author: zyc
  * @Date: 2020-06-30 09:21:17
  * @LastEditors: lgf
- * @LastEditTime: 2020-09-29 09:59:03
+ * @LastEditTime: 2020-09-30 11:39:46
 --> 
 <template>
   <ih-page>
@@ -51,9 +51,7 @@
     <template v-slot:btn>
       <el-row>
         <el-button type="primary" @click="search()">查询</el-button>
-        <el-button type="info" @click="reset()">添加</el-button>
-        <el-button type="warning" @click="add()">清空</el-button>
-        <el-button type="info" @click="reset()">作废</el-button>
+        <el-button type="warning" @click="reset()">清空</el-button>
       </el-row>
     </template>
 
@@ -160,12 +158,6 @@ export default class UserList extends Vue {
 
   add(data: any) {
     this.addData = data;
-    this.dialogVisible = true;
-  }
-
-  finishJob(data: any) {
-    console.log(data);
-    this.search();
   }
 
   async created() {
@@ -179,32 +171,32 @@ export default class UserList extends Vue {
     );
   }
 
-  getValue(value: any) {
-    this.queryPageParameters.orgId = value;
-  }
+  // getValue(value: any) {
+  //   this.queryPageParameters.orgId = value;
+  // }
 
   // search() {
   //   this.getListMixin();
   // }
 
-  pOrganization(scope: any) {
-    console.log(scope);
-    this.OrganizationJurisdictionData = scope.row;
-    this.organizationJurisdictionVisible = true;
-  }
+  // pOrganization(scope: any) {
+  //   console.log(scope);
+  //   this.OrganizationJurisdictionData = scope.row;
+  //   this.organizationJurisdictionVisible = true;
+  // }
 
-  finishCopyUser(data: any) {
-    console.log(data);
-    this.search();
-  }
+  // finishCopyUser(data: any) {
+  //   console.log(data);
+  //   this.search();
+  // }
   handleSelectionChange(val: any) {
     console.log(val);
     this.copyUserData = val;
   }
   //详情
-  info(scope: any) {
-    console.log("详情页跳转");
-  }
+  // info() {
+  //   console.log("详情页跳转");
+  // }
 }
 </script>
 <style lang="scss" scoped>

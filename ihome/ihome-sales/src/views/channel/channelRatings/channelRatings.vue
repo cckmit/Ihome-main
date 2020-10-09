@@ -4,7 +4,7 @@
  * @Author: zyc
  * @Date: 2020-08-13 11:40:10
  * @LastEditors: lgf
- * @LastEditTime: 2020-09-29 14:55:46
+ * @LastEditTime: 2020-10-09 16:59:34
 -->
 <template>
   <div>
@@ -61,8 +61,12 @@
           <el-button type="primary" @click="search()">查询</el-button>
           <el-button type="success" @click="add()">添加</el-button>
           <el-button type="info" @click="empty()">清空</el-button>
-          <el-button type="info" @click="empty()">上传供应商管理办法</el-button>
-          <el-button type="info" @click="empty()">查看供应商管理办法</el-button>
+          <el-button type="info" @click="upMethods()"
+            >上传供应商管理办法</el-button
+          >
+          <el-button type="info" @click="viewMethods()"
+            >查看供应商管理办法</el-button
+          >
         </el-row>
       </template>
 
@@ -99,12 +103,14 @@
           ></el-table-column>
           <el-table-column label="操作">
             <template slot-scope="scope">
-              <el-link type="primary" @click.native.prevent="info(scope)"
-                >详情</el-link
+              <el-link
+                type="primary"
+                @click.native.prevent="viewMaterial(scope)"
+                >查看所需材料</el-link
               >
               <el-dropdown trigger="click" style="margin-left: 15px">
                 <span class="el-dropdown-link">
-                  更多
+                  更多操作
                   <i class="el-icon-arrow-down el-icon--right"></i>
                 </span>
                 <el-dropdown-menu slot="dropdown">
@@ -129,6 +135,19 @@
         :layout="$root.paginationLayout"
         :total="resPageInfo.total"
       ></el-pagination>
+      <!-- <EntryToModify /> -->
+      <ih-dialog :show="dialogVisible" desc="用户新增编辑">
+        <EntryToModify
+          :data="addData"
+          @cancel="() => (dialogVisible = false)"
+          @finish="
+            (data) => {
+              dialogVisible = false;
+              finish(data);
+            }
+          "
+        />
+      </ih-dialog>
     </ih-page>
   </div>
 </template>
@@ -136,33 +155,45 @@
 import { Component, Vue } from "vue-property-decorator";
 import { post_channelGradeStandard_getList } from "../../../api/channel/index";
 import PaginationMixin from "../../../mixins/pagination";
-import { city } from "../../../util/enums/dic";
+// import { city } from "../../../util/enums/dic";
+import EntryToModify from "./dialog/EntryToModify.vue";
 @Component({
-  components: {},
+  components: { EntryToModify },
   mixins: [PaginationMixin],
 })
-export default class UserList extends Vue {
+export default class ChannelRatings extends Vue {
   queryPageParameters: any = {
     ChannelLevel: "bigPlatform",
     cityLevel: "firstLevel",
     pageNum: 1,
     pageSize: 10,
   };
-
+  dialogVisible = false;
+  addData: any = null;
   resPageInfo: any = {
     total: 0,
     list: [],
   };
+  private multipleSelection: any = [];
   search() {
     console.log("查询");
-    // this.searchChinnelLevelInfo();
     this.getListMixin;
   }
-  add(scope: any) {
+  add() {
     console.log("添加");
-    // this.$router.push({
-    //   path: "/channelLevel/ModifyThe",
-    // });
+    this.dialogVisible = true;
+  }
+  upMethods() {
+    console.log("上传管理办法");
+    this.$router.push({
+      path: "/channelRatings/upMethods",
+    });
+  }
+  viewMethods() {
+    console.log("查看管理办法");
+    this.$router.push({
+      path: "/channelRatings/viewMethods",
+    });
   }
   empty() {
     console.log("清空");
@@ -183,37 +214,38 @@ export default class UserList extends Vue {
   currentPage: any = 1;
   total: any = null;
   //操作
-  info(scope: any) {
-    this.$router.push({
-      path: "/channelLevel/info",
-      query: { id: scope.row.id },
-    });
+  viewMaterial() {
+    // this.$router.push({
+    //   path: "/channelLevel/info",
+    //   query: { id: scope.row.id },
+    // });
+    console.log("查看所需材料");
   }
-  ModifyThe(scope: any) {
+  ModifyThe() {
     console.log("修改");
-    this.$router.push({
-      path: "/channelLevel/ModifyThe",
-      query: { id: scope.row.id },
-    });
+    // this.$router.push({
+    //   path: "/channelLevel/ModifyThe",
+    //   query: { id: scope.row.id },
+    // });
   }
-  remove(scope: any) {
+  remove() {
     console.log("删除");
     // this.$router.push({
     //   path: "/confirm",
     //   query: { id: scope.row.id },
     // });
   }
-  withdraw(scope: any) {
+  withdraw() {
     console.log("撤回");
   }
-  audit(scope: any) {
+  audit() {
     console.log("审核");
     this.$router.push({
       path: "/channelLevel/levelInfoAudit",
     });
   }
 
-  change(scope: any) {
+  change() {
     console.log("变更");
     // this.$router.push({
     //   path: "/MaintenanceOfChannels",
@@ -241,6 +273,7 @@ export default class UserList extends Vue {
   handleSelectionChange(val: any) {
     // console.log(val);
     console.log("下拉");
+    this.multipleSelection = val;
 
     // this.queryPageParameters.pageSize = val;
   }

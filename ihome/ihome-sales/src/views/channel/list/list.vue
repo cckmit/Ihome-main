@@ -4,7 +4,7 @@
  * @Author: zyc
  * @Date: 2020-06-30 09:21:17
  * @LastEditors: lgf
- * @LastEditTime: 2020-09-29 14:36:31
+ * @LastEditTime: 2020-10-09 16:11:20
 --> 
 <template>
   <ih-page>
@@ -31,7 +31,7 @@
           <el-col :span="8">
             <el-form-item label="录入人">
               <el-select
-                v-model="queryPageParameters.enterPeople"
+                v-model="queryPageParameters.inputUser"
                 clearable
                 placeholder="请选择"
                 class="width--100"
@@ -48,7 +48,7 @@
           <el-col :span="8">
             <el-form-item label="状态">
               <el-select
-                v-model="queryPageParameters.stated"
+                v-model="queryPageParameters.status"
                 clearable
                 placeholder="请选择"
                 class="width--100"
@@ -65,7 +65,7 @@
           <el-col :span="8">
             <el-form-item label="入库编号">
               <el-input
-                v-model="queryPageParameters.account"
+                v-model="queryPageParameters.storageNum"
                 placeholder="入库编号"
               ></el-input>
             </el-form-item>
@@ -103,7 +103,7 @@
       <el-row>
         <el-button type="primary" @click="search()">查询</el-button>
         <el-button type="warning" @click="reset()">清空</el-button>
-        <el-button type="info" @click="add()">添加</el-button>
+        <el-button type="info" @click="add()">变更录入人</el-button>
       </el-row>
     </template>
 

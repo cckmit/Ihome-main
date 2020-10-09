@@ -4,7 +4,7 @@
  * @Author: zyc
  * @Date: 2020-07-08 14:22:25
  * @LastEditors: lgf
- * @LastEditTime: 2020-09-27 16:09:43
+ * @LastEditTime: 2020-09-30 17:27:01
 --> 
 <template>
   <ih-page>
@@ -36,6 +36,7 @@ export default class UserInfo extends Vue {
   async created() {
     console.log(this.$route.query.id, this.$route.query.tab);
     this.tabActive = this.$route.query.tab || "1";
+    let invitationCode = this.$route.params.invitationCode;
   }
 }
 </script>

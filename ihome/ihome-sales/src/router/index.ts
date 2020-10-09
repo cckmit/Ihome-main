@@ -4,7 +4,7 @@
  * @Author: zyc
  * @Date: 2020-06-22 11:10:43
  * @LastEditors: lgf
- * @LastEditTime: 2020-09-29 14:13:33
+ * @LastEditTime: 2020-10-09 15:28:52
  */
 import Vue from 'vue'
 import VueRouter, { RouteConfig, Route } from 'vue-router'
@@ -69,6 +69,37 @@ const routes: Array<RouteConfig> = [
             name: 'channelRatings',
             component: () => import('../views/channel/channelRatings/channelRatings.vue'),
             meta: { title: '渠道评级标准信息列表', icon: 'form' }
+          },
+
+        ]
+      },
+      //渠道评级标准跳转
+      {
+        path: '/channelRatings/upMethods',
+        meta: { title: '用户', icon: 'form' },
+        redirect: '/web-sales/',
+        component: Layout,
+        children: [
+          {
+            path: '/',
+            name: 'channelRatings',
+            component: () => import('../views/channel/channelRatings/methodsPages/upMethods.vue'),
+            meta: { title: '上传管理办法', icon: 'form' }
+          },
+
+        ]
+      },
+      {
+        path: '/channelRatings/viewMethods',
+        meta: { title: '用户', icon: 'form' },
+        redirect: '/web-sales/',
+        component: Layout,
+        children: [
+          {
+            path: '/',
+            name: 'channelRatings',
+            component: () => import('../views/channel/channelRatings/methodsPages/viewMethods.vue'),
+            meta: { title: '查看管理办法', icon: 'form' }
           },
 
         ]

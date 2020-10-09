@@ -4,7 +4,7 @@
  * @Author: zyc
  * @Date: 2020-06-30 09:21:17
  * @LastEditors: lgf
- * @LastEditTime: 2020-09-29 11:42:48
+ * @LastEditTime: 2020-09-30 15:56:54
 --> 
 <template>
   <ih-page>
@@ -85,13 +85,13 @@
         <el-table-column fixed type="selection" width="100"></el-table-column>
         <el-table-column
           fixed
-          poro="parentCode"
+          prop="code"
           label="省份"
           width="500"
         ></el-table-column>
         <el-table-column
           fixed
-          prop="code"
+          prop="name"
           label="城市"
           width="500"
         ></el-table-column>
@@ -161,14 +161,16 @@ export default class CityList extends Vue {
     list: [],
   };
   form: any = {
-    grade: 1,
+    grade: 2,
   };
   dialogFormVisible = false;
   resPageInfo: any = {
     total: 0,
     list: [],
   };
-
+  // ele: any = "";
+  private idArr: any = [];
+  val: any = "";
   reset() {
     this.queryPageParameters = {
       pageNum: this.queryPageParameters.pageNum,
@@ -179,16 +181,16 @@ export default class CityList extends Vue {
     };
   }
   handleSizeChangeMixin(val: any) {
-    console.log(val);
+    // console.log(val);
     this.queryPageParameters.pageSize = val;
     this.getListMixin();
   }
   handleCurrentChangeMixin(val: any) {
-    console.log(val);
+    // console.log(val);
     this.queryPageParameters.pageNum = val;
     this.getListMixin();
   }
-  handleSelectionChange(val) {
+  handleSelectionChange(val: any) {
     console.log("fff");
     this.changeList.list = val;
     // console.log(this.changeList.list);
@@ -211,13 +213,12 @@ export default class CityList extends Vue {
     this.dialogFormVisible = true;
   }
   update() {
-    let idArr: number[];
-    this.changeList.list.forEach((ele) => {
-      idArr.push(ele.id);
+    this.changeList.list.forEach((ele: any) => {
+      this.idArr.push(ele.id);
     });
-    console.log(idArr);
+    // console.log(idArr);
     post_channelCityLevel_updateLevel({
-      ids: idArr,
+      ids: this.idArr,
       cityGrade: this.form.grade,
     });
     this.dialogFormVisible = false;
