@@ -4,12 +4,12 @@
  * @Author: ywl
  * @Date: 2020-09-25 11:53:51
  * @LastEditors: ywl
- * @LastEditTime: 2020-09-29 08:45:05
+ * @LastEditTime: 2020-10-09 11:06:41
 -->
 <template>
-  <ih-page>
+  <IhPage>
     <!-- 搜索 -->
-    <template v-slot:form>
+    <template #form>
       <el-form
         ref="form"
         label-width="85px"
@@ -246,7 +246,7 @@
       </el-form>
     </template>
     <!-- 按钮 -->
-    <template v-slot:btn>
+    <template #btn>
       <el-row>
         <el-button type="primary">查询</el-button>
         <el-button type="info">重置</el-button>
@@ -263,34 +263,101 @@
       </el-row>
     </template>
     <!-- table-content -->
-    <template v-slot:table>
-      <IhTable
-        class="partyA-table"
+    <template #table>
+      <br />
+      <el-table
+        class="ih-table partyA-table"
         :data="pageInfo.list"
-        :column="tableColumn"
-        :columnIndex="false"
         @selection-change="handleSelectionChange"
-        :pageSize="queryPageParameters.pageSize"
-        :pageCurrent="queryPageParameters.pageNum"
-        :pageTotal="pageInfo.total"
-        @page-change="handleCurrentChangeMixin"
-        @size-change="handleSizeChangeMixin"
       >
-        <template #operation>
-          <el-table-column
-            label="操作"
-            width="230"
-            align="left"
-            fixed="right"
-          >
-            <template v-slot="{ row }">
-              <el-link
-                type="primary"
-                @click.native.prevent="handleTo(row)"
-              >详情</el-link>
-              <el-link type="primary">扫描件归档</el-link>
-              <el-link type="primary">原件归档</el-link>
-              <!-- <el-dropdown
+        <el-table-column
+          fixed
+          type="selection"
+          width="50"
+          align="center"
+        ></el-table-column>
+        <el-table-column
+          fixed
+          label="标题"
+          prop="title"
+          min-width="100"
+        ></el-table-column>
+        <el-table-column
+          fixed
+          label="甲方"
+          prop="jia"
+          min-width="200"
+        ></el-table-column>
+        <el-table-column
+          fixed
+          label="乙方"
+          prop="yi"
+          min-width="150"
+        ></el-table-column>
+        <el-table-column
+          label="合作项目"
+          prop="pro"
+          min-width="200"
+        ></el-table-column>
+        <el-table-column
+          label="合作时间"
+          prop="time"
+          width="200"
+        ></el-table-column>
+        <el-table-column
+          label="执行时间"
+          prop="time"
+          width="200"
+        ></el-table-column>
+        <el-table-column
+          label="关联项目"
+          prop="pro"
+          width="200"
+        ></el-table-column>
+        <el-table-column
+          label="关联周期"
+          prop="zoom"
+          width="100"
+        ></el-table-column>
+        <el-table-column
+          label="归属组织"
+          prop="pl"
+          width="200"
+        ></el-table-column>
+        <el-table-column
+          label="合同编号"
+          prop="id"
+          width="200"
+        ></el-table-column>
+        <el-table-column
+          label="归档状态"
+          prop="isAction"
+          width="100"
+        ></el-table-column>
+        <el-table-column
+          label="归档编号"
+          prop="id"
+          width="200"
+        ></el-table-column>
+        <el-table-column
+          label="合同跟进人"
+          prop="name"
+          width="100"
+        ></el-table-column>
+        <el-table-column
+          label="操作"
+          width="230"
+          align="left"
+          fixed="right"
+        >
+          <template v-slot="{ row }">
+            <el-link
+              type="primary"
+              @click.native.prevent="handleTo(row)"
+            >详情</el-link>
+            <el-link type="primary">扫描件归档</el-link>
+            <el-link type="primary">原件归档</el-link>
+            <!-- <el-dropdown
                 trigger="click"
                 class="margin-left-15"
               >
@@ -302,12 +369,24 @@
                   <el-dropdown-item @click.native.prevent="routerTo(row)">编辑</el-dropdown-item>
                 </el-dropdown-menu>
               </el-dropdown> -->
-            </template>
-          </el-table-column>
-        </template>
-      </IhTable>
+          </template>
+        </el-table-column>
+      </el-table>
     </template>
-  </ih-page>
+    <!-- 分页 -->
+    <template #pagination>
+      <br />
+      <el-pagination
+        @size-change="handleSizeChangeMixin"
+        @current-change="handleCurrentChangeMixin"
+        :current-page.sync="queryPageParameters.pageNum"
+        :page-sizes="$root.pageSizes"
+        :page-size="queryPageParameters.pageSize"
+        :layout="$root.paginationLayout"
+        :total="resPageInfo.total"
+      ></el-pagination>
+    </template>
+  </IhPage>
 </template>
 
 <script lang="ts">
@@ -372,93 +451,6 @@ export default class PartyAList extends Vue {
       },
     ],
   };
-  // 表头
-  private tableColumn: Array<object> = [
-    {
-      label: "标题",
-      align: "center",
-      prop: "title",
-      width: 100,
-      fixed: true,
-    },
-    {
-      label: "甲方",
-      align: "center",
-      prop: "jia",
-      width: 200,
-      fixed: true,
-    },
-    {
-      label: "乙方",
-      align: "center",
-      prop: "yi",
-      width: 100,
-      fixed: true,
-    },
-    {
-      label: "合作项目",
-      align: "center",
-      prop: "pro",
-      width: 200,
-    },
-    {
-      label: "合作时间",
-      align: "center",
-      prop: "time",
-      width: 200,
-    },
-    {
-      label: "执行时间",
-      align: "center",
-      prop: "time",
-      width: 200,
-    },
-    {
-      label: "关联项目",
-      align: "center",
-      prop: "pro",
-      width: 200,
-    },
-    {
-      label: "关联周期",
-      align: "center",
-      prop: "zoom",
-      width: 100,
-    },
-    {
-      label: "归属组织",
-      align: "center",
-      prop: "pl",
-      width: 200,
-    },
-    {
-      label: "合同编号",
-      align: "center",
-      prop: "id",
-      width: 200,
-    },
-    {
-      label: "归档状态",
-      align: "center",
-      prop: "isAction",
-      width: 100,
-    },
-    {
-      label: "归档编号",
-      align: "center",
-      prop: "id",
-      width: 200,
-    },
-    {
-      label: "合同跟进人",
-      align: "center",
-      prop: "name",
-      width: 100,
-    },
-    {
-      slot: "operation",
-    },
-  ];
 
   private openToggle(): void {
     this.searchOpen = !this.searchOpen;
@@ -475,7 +467,6 @@ interface PageInfo {
 
 <style lang="scss" scoped>
 .partyA-table {
-  margin-top: 17px;
   .el-link + .el-link {
     margin-left: 15px;
   }

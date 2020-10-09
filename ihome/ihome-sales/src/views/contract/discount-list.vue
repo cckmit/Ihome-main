@@ -4,7 +4,7 @@
  * @Author: ywl
  * @Date: 2020-09-27 16:27:36
  * @LastEditors: ywl
- * @LastEditTime: 2020-09-29 09:12:16
+ * @LastEditTime: 2020-10-09 09:46:25
 -->
 <template>
   <IhPage>
@@ -195,33 +195,93 @@
       </el-row>
     </template>
     <!-- table-content -->
-    <template v-slot:table>
+    <template #table>
       <br />
-      <IhTable
+      <el-table
+        class="ih-table"
         :data="pageInfo.list"
-        :column="tableColumn"
-        :columnCheck="false"
-        :columnIndex="false"
         @selection-change="handleSelectionChange"
-        :pageSize="queryPageParameters.pageSize"
-        :pageCurrent="queryPageParameters.pageNum"
-        :pageTotal="pageInfo.total"
-        @page-change="handleCurrentChangeMixin"
-        @size-change="handleSizeChangeMixin"
       >
-        <template #operation>
-          <el-table-column
-            label="操作"
-            width="120"
-            align="left"
-            fixed="right"
-          >
-            <template v-slot="{  }">
-              <el-link
-                type="primary"
-                @click.native.prevent="$router.push('/contract/discountDetail')"
-              >详情</el-link>
-              <!-- <el-dropdown
+        <el-table-column
+          fixed
+          label="甲方"
+          prop="jia"
+          min-width="200"
+        ></el-table-column>
+        <el-table-column
+          fixed
+          label="区域"
+          prop="area"
+        ></el-table-column>
+        <el-table-column
+          fixed
+          label="乙方"
+          prop="yi"
+        ></el-table-column>
+        <el-table-column
+          label="乙方联系电话"
+          prop="iphone"
+          width="130"
+        ></el-table-column>
+        <el-table-column
+          label="乙方证件号码"
+          prop="id"
+          width="160"
+        ></el-table-column>
+        <el-table-column
+          label="乙方常用地址"
+          prop="area"
+          min-width="160"
+        ></el-table-column>
+        <el-table-column
+          label="优惠项目名称"
+          width="200"
+          prop="pro"
+        ></el-table-column>
+        <el-table-column
+          label="(拟)购买单位"
+          width="200"
+          prop="addr"
+        ></el-table-column>
+        <el-table-column
+          label="优惠缴纳金额"
+          prop="qian"
+          width="120"
+        ></el-table-column>
+        <el-table-column
+          label="优惠抵扣金额"
+          prop="jin"
+          width="120"
+        ></el-table-column>
+        <el-table-column
+          label="优惠折扣比例"
+          prop="bili"
+          width="120"
+        ></el-table-column>
+        <el-table-column
+          label="优惠期限"
+          prop="qx"
+        ></el-table-column>
+        <el-table-column
+          label="项目"
+          prop="pro"
+          min-width="120"
+        ></el-table-column>
+        <el-table-column
+          label="周期"
+          prop="zoom"
+        ></el-table-column>
+        <el-table-column
+          fixed="right"
+          label="操作"
+          width="120"
+        >
+          <template v-slot="{  }">
+            <el-link
+              type="primary"
+              @click.native.prevent="$router.push('/contract/discountDetail')"
+            >详情</el-link>
+            <!-- <el-dropdown
                 trigger="click"
                 class="margin-left-15"
               >
@@ -235,10 +295,22 @@
                   <el-dropdown-item @click.native.prevent="routerTo(row)">原件归档</el-dropdown-item>
                 </el-dropdown-menu>
               </el-dropdown> -->
-            </template>
-          </el-table-column>
-        </template>
-      </IhTable>
+          </template>
+        </el-table-column>
+      </el-table>
+    </template>
+    <!-- 分页 -->
+    <template #pagination>
+      <br />
+      <el-pagination
+        @size-change="handleSizeChangeMixin"
+        @current-change="handleCurrentChangeMixin"
+        :current-page.sync="queryPageParameters.pageNum"
+        :page-sizes="$root.pageSizes"
+        :page-size="queryPageParameters.pageSize"
+        :layout="$root.paginationLayout"
+        :total="resPageInfo.total"
+      ></el-pagination>
     </template>
   </IhPage>
 </template>
@@ -334,99 +406,6 @@ export default class DiscountList extends Vue {
       },
     ],
   };
-  // 表头
-  private tableColumn: Array<object> = [
-    {
-      label: "甲方",
-      align: "center",
-      prop: "jia",
-      width: 200,
-      fixed: true,
-    },
-    {
-      label: "区域",
-      align: "center",
-      prop: "area",
-      width: 100,
-      fixed: true,
-    },
-    {
-      label: "乙方",
-      align: "center",
-      prop: "yi",
-      width: 100,
-      fixed: true,
-    },
-    {
-      label: "乙方联系电话",
-      align: "center",
-      prop: "iphone",
-      width: 150,
-    },
-    {
-      label: "乙方证件号码",
-      align: "center",
-      prop: "id",
-      width: 200,
-    },
-    {
-      label: "乙方常用地址",
-      align: "center",
-      prop: "area",
-      width: 150,
-    },
-    {
-      label: "优惠项目名称",
-      align: "center",
-      prop: "pro",
-      width: 200,
-    },
-    {
-      label: "(拟)购买单位",
-      align: "center",
-      prop: "addr",
-      width: 200,
-    },
-    {
-      label: "优惠缴纳金额",
-      align: "center",
-      prop: "qian",
-      width: 200,
-    },
-    {
-      label: "优惠抵扣金额",
-      align: "center",
-      prop: "jin",
-      width: 130,
-    },
-    {
-      label: "优惠折扣比例",
-      align: "center",
-      prop: "bili",
-      width: 150,
-    },
-    {
-      label: "优惠期限",
-      align: "center",
-      prop: "qx",
-      width: 100,
-    },
-    {
-      label: "项目",
-      align: "center",
-      prop: "pro",
-      width: 200,
-    },
-    {
-      label: "周期",
-      align: "center",
-      prop: "zoom",
-      width: 100,
-    },
-    {
-      slot: "operation",
-    },
-  ];
 
   private openToggle(): void {
     this.searchOpen = !this.searchOpen;

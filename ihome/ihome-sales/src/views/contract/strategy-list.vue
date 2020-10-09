@@ -4,12 +4,12 @@
  * @Author: ywl
  * @Date: 2020-09-27 11:13:15
  * @LastEditors: ywl
- * @LastEditTime: 2020-09-29 08:59:13
+ * @LastEditTime: 2020-10-09 10:09:27
 -->
 <template>
   <IhPage>
     <!-- 搜索 -->
-    <template v-slot:form>
+    <template #form>
       <el-form
         ref="form"
         label-width="100px"
@@ -158,7 +158,7 @@
       </el-form>
     </template>
     <!-- 按钮 -->
-    <template v-slot:btn>
+    <template #btn>
       <el-row>
         <el-button type="primary">查询</el-button>
         <el-button type="info">重置</el-button>
@@ -175,49 +175,103 @@
       </el-row>
     </template>
     <!-- table-content -->
-    <template v-slot:table>
+    <template #table>
       <br />
-      <IhTable
+      <el-table
+        class="ih-table"
         :data="pageInfo.list"
-        :column="tableColumn"
-        :columnIndex="false"
         @selection-change="handleSelectionChange"
-        :pageSize="queryPageParameters.pageSize"
-        :pageCurrent="queryPageParameters.pageNum"
-        :pageTotal="pageInfo.total"
-        @page-change="handleCurrentChangeMixin"
-        @size-change="handleSizeChangeMixin"
       >
-        <template #operation>
-          <el-table-column
-            label="操作"
-            width="150"
-            align="left"
-            fixed="right"
-          >
-            <template v-slot="{ row }">
-              <el-link
-                type="primary"
-                @click.native.prevent="$router.push('/contract/strategyDetail')"
-              >详情</el-link>
-              <el-dropdown
-                trigger="click"
-                class="margin-left-15"
-              >
-                <span class="el-dropdown-link">
-                  更多
-                  <i class="el-icon-arrow-down el-icon--right"></i>
-                </span>
-                <el-dropdown-menu slot="dropdown">
-                  <el-dropdown-item @click.native.prevent="routerTo(row)">编辑</el-dropdown-item>
-                  <el-dropdown-item @click.native.prevent="routerTo(row)">盖章版归档</el-dropdown-item>
-                  <el-dropdown-item @click.native.prevent="routerTo(row)">原件归档</el-dropdown-item>
-                </el-dropdown-menu>
-              </el-dropdown>
-            </template>
-          </el-table-column>
-        </template>
-      </IhTable>
+        <el-table-column
+          fixed
+          type="selection"
+          width="50"
+          align="center"
+        ></el-table-column>
+        <el-table-column
+          fixed
+          label="标题"
+          prop="title"
+          min-width="100"
+        ></el-table-column>
+        <el-table-column
+          fixed
+          label="甲方"
+          prop="jia"
+          min-width="200"
+        ></el-table-column>
+        <el-table-column
+          fixed
+          label="乙方"
+          prop="yi"
+          min-width="200"
+        ></el-table-column>
+        <el-table-column
+          label="关联项目"
+          prop="pro"
+          width="150"
+        ></el-table-column>
+        <el-table-column
+          label="关联周期"
+          prop="zoom"
+          width="150"
+        ></el-table-column>
+        <el-table-column
+          label="协议编号"
+          prop="id"
+          width="200"
+        ></el-table-column>
+        <el-table-column
+          label="归档状态"
+          prop="isAction"
+          width="100"
+        ></el-table-column>
+        <el-table-column
+          label="归档编号"
+          prop="id"
+          width="200"
+        ></el-table-column>
+        <el-table-column
+          label="操作"
+          width="150"
+          align="left"
+          fixed="right"
+        >
+          <template v-slot="{ row }">
+            <el-link
+              type="primary"
+              @click.native.prevent="$router.push('/contract/strategyDetail')"
+            >详情</el-link>
+            <el-dropdown
+              trigger="click"
+              class="margin-left-15"
+            >
+              <span class="el-dropdown-link">
+                更多
+                <i class="el-icon-arrow-down el-icon--right"></i>
+              </span>
+              <el-dropdown-menu slot="dropdown">
+                <el-dropdown-item @click.native.prevent="routerTo(row)">编辑</el-dropdown-item>
+                <el-dropdown-item @click.native.prevent="routerTo(row)">盖章版归档</el-dropdown-item>
+                <el-dropdown-item @click.native.prevent="routerTo(row)">原件归档</el-dropdown-item>
+              </el-dropdown-menu>
+            </el-dropdown>
+          </template>
+        </el-table-column>
+      </el-table>
+    </template>
+    <!-- 分页 -->
+    <template #pagination>
+      <br />
+      <el-pagination
+        @size-change="handleSizeChangeMixin"
+        @current-change="handleCurrentChangeMixin"
+        :current-page.sync="queryPageParameters.pageNum"
+        :page-sizes="$root.pageSizes"
+        :page-size="queryPageParameters.pageSize"
+        :layout="$root.paginationLayout"
+        :total="resPageInfo.total"
+      ></el-pagination>
     </template>
   </IhPage>
 </template>
@@ -285,62 +339,6 @@ export default class StrategyList extends Vue {
       },
     ],
   };
-  // 表头
-  private tableColumn: Array<object> = [
-    {
-      label: "标题",
-      align: "center",
-      prop: "title",
-      width: 100,
-      fixed: true,
-    },
-    {
-      label: "甲方",
-      align: "center",
-      prop: "jia",
-      width: 200,
-      fixed: true,
-    },
-    {
-      label: "乙方",
-      align: "center",
-      prop: "yi",
-      width: 100,
-    },
-    {
-      label: "关联项目",
-      align: "center",
-      prop: "pro",
-      minWidth: 150,
-    },
-    {
-      label: "关联周期",
-      align: "center",
-      prop: "zoom",
-      width: 100,
-    },
-    {
-      label: "协议编号",
-      align: "center",
-      prop: "id",
-      width: 200,
-    },
-    {
-      label: "归档状态",
-      align: "center",
-      prop: "isAction",
-      width: 200,
-    },
-    {
-      label: "归档编号",
-      align: "center",
-      prop: "id",
-      width: 200,
-    },
-    {
-      slot: "operation",
-    },
-  ];
 
   private openToggle(): void {
     this.searchOpen = !this.searchOpen;
