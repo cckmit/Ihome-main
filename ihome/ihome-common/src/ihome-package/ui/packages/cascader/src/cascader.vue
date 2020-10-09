@@ -4,7 +4,7 @@
  * @Author: wwq
  * @Date: 2020-09-29 08:55:05
  * @LastEditors: wwq
- * @LastEditTime: 2020-09-29 16:52:46
+ * @LastEditTime: 2020-09-30 11:56:55
 -->
 <template>
   <div class="cascader">
@@ -39,11 +39,9 @@ export default class IhCascader extends Vue {
   private provincesOptions = [];
 
   @Watch("provincesValue", { deep: true })
-  clearValue(v: any) {
-    if (!v.length) {
-      (this.$refs.cascader as any).$refs.panel.clearCheckedNodes();
-      (this.$refs.cascader as any).$refs.panel.activePath = [];
-    }
+  clearValue() {
+    (this.$refs.cascader as any).$refs.panel.clearCheckedNodes();
+    (this.$refs.cascader as any).$refs.panel.activePath = [];
   }
 
   async created() {

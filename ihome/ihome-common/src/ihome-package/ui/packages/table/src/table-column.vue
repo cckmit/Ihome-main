@@ -4,7 +4,7 @@
  * @Author: wwq
  * @Date: 2020-09-16 14:54:19
  * @LastEditors: wwq
- * @LastEditTime: 2020-09-25 11:26:04
+ * @LastEditTime: 2020-09-30 16:06:27
 -->
 <template>
   <el-table-column
@@ -14,8 +14,9 @@
     <template v-for="(child, index) in option.children">
       <TableColumn
         :option="child"
+        :isPeri="isPeri"
         :key="index"
-        v-if="(isPeri || !isPeri) && child.peri"
+        v-if="(isPeri && child.peri) || !isPeri"
       ></TableColumn>
     </template>
   </el-table-column>
