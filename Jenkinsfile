@@ -34,37 +34,22 @@ pipeline {
 		    agent any
 			
 			steps {
-				echo 'docker build mkdir html..'
-				script {
-					out = sh(script: "[ -f html ]  && echo 'true' || echo 'false' ", returnStdout: true)
-					if(out == "true") {
-						println "file download successfully."
-						sh 'rm -rf html'
-					}
-				}
-
-				sh 'mkdir html'
+				echo 'docker build mkdir dockerdir..'
+				sh 'rm -rf dockerdir && mkdir -p dockerdir/html'
 				
 				echo 'docker build copy ihome-main..'
-				sh 'cd html && mkdir web-main && cp ../ihome/ihome-main/ web-main'
+				sh 'mkdir dockerdir/html/web-main && cp -r ihome/ihome-main/dist/* dockerdir/html/web-main'
 				
 				echo 'docker build copy ihome-system..'
-				sh 'cd html && mkdir web-system && cp ../ihome/ihome-system/ web-system'
+				sh 'mkdir dockerdir/html/web-system && cp -r ihome/ihome-system/dist/* dockerdir/html/web-system'
 				
 				echo 'docker build copy ihome-sales..'
-				sh 'cd html && mkdir web-sales && cp ../ihome/ihome-sales/ web-sales'
-				
+				sh 'mkdir dockerdir/html/web-sales && cp -r ihome/ihome-sales/dist/* dockerdir/html/web-sales'
+								
 				echo 'docker build..'
-				sh 'docker build -f Dockerfile -t ${NEXUS3_ADDRESS}/${CURR_MODULE}:${IMAGE_NAME_VERSION} html/'
+				sh 'docker build -f Dockerfile -t ${NEXUS3_ADDRESS}/${CURR_MODULE}:${IMAGE_NAME_VERSION} dockerdir/'
             }
         }		
-    }
-	
-	post {
-        always {
-            echo 'delete html'
-			sh 'rm -rf html'
-        }
     }
 	
 }
