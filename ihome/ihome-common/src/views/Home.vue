@@ -22,6 +22,7 @@
 <script lang="ts">
 // import { testApi, testPostApi } from "../api/test";
 import { Component, Vue } from "vue-property-decorator";
+
 @Component({
   components: {},
 })

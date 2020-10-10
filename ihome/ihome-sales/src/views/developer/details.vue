@@ -4,7 +4,7 @@
  * @Author: wwq
  * @Date: 2020-09-27 11:52:41
  * @LastEditors: wwq
- * @LastEditTime: 2020-10-10 17:33:13
+ * @LastEditTime: 2020-10-10 18:22:17
 -->
 <template>
   <el-tabs type="border-card" v-model="activeName">

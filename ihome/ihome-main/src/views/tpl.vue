@@ -1,10 +1,10 @@
 <!--
  * @Descripttion: 
  * @version: 
- * @Author: zyc
- * @Date: 2020-05-25 09:37:07
- * @LastEditors: zyc
- * @LastEditTime: 2020-06-23 17:08:41
+ * @Author: lgf
+ * @Date: 2020-09-08 12:07:17
+ * @LastEditors: lgf
+ * @LastEditTime: 2020-10-09 11:44:13
 --> 
 <template>
   <div></div>
@@ -12,7 +12,7 @@
 <script lang="ts">
 import { Component, Vue } from "vue-property-decorator";
 @Component({
-  components: {}
+  components: {},
 })
 export default class Home extends Vue {}
 </script>

@@ -3,32 +3,33 @@
  * @version: 
  * @Author: zyc
  * @Date: 2020-07-08 14:23:16
- * @LastEditors: zyc
- * @LastEditTime: 2020-08-26 10:53:23
+ * @LastEditors: lgf
+ * @LastEditTime: 2020-09-27 11:30:11
 --> 
 <template>
   <div>
-    <p class="ih-info-title ">账号信息</p>
+    <p class="ih-info-title">账号信息</p>
     <el-row class="ih-info-line">
       <el-col :span="8">
         <el-row>
-          <el-col :span="6" class="ih-info-item-left ">用户类型</el-col>
-          <el-col
-            :span="18"
-            class="ih-info-item-right"
-          >{{$root.displayName('accountType',info.accountType)}}</el-col>
+          <el-col :span="6" class="ih-info-item-left">用户类型</el-col>
+          <el-col :span="18" class="ih-info-item-right">{{
+            $root.displayName("accountType", info.accountType)
+          }}</el-col>
         </el-row>
       </el-col>
       <el-col :span="8">
         <el-row>
           <el-col :span="6" class="ih-info-item-left">姓名</el-col>
-          <el-col :span="18" class="ih-info-item-right">{{info.name}}</el-col>
+          <el-col :span="18" class="ih-info-item-right">{{ info.name }}</el-col>
         </el-row>
       </el-col>
       <el-col :span="8">
         <el-row>
           <el-col :span="6" class="ih-info-item-left">登录账号</el-col>
-          <el-col :span="18" class="ih-info-item-right">{{info.account}}</el-col>
+          <el-col :span="18" class="ih-info-item-right">{{
+            info.account
+          }}</el-col>
         </el-row>
       </el-col>
     </el-row>
@@ -36,13 +37,17 @@
       <el-col :span="8">
         <el-row>
           <el-col :span="6" class="ih-info-item-left">手机号码</el-col>
-          <el-col :span="18" class="ih-info-item-right">{{info.mobilePhone}}</el-col>
+          <el-col :span="18" class="ih-info-item-right">{{
+            info.mobilePhone
+          }}</el-col>
         </el-row>
       </el-col>
       <el-col :span="8">
         <el-row>
           <el-col :span="6" class="ih-info-item-left">岗位</el-col>
-          <el-col :span="18" class="ih-info-item-right">{{info.jobName}}</el-col>
+          <el-col :span="18" class="ih-info-item-right">{{
+            info.jobName
+          }}</el-col>
         </el-row>
       </el-col>
     </el-row>
@@ -52,22 +57,25 @@
       <el-col :span="8">
         <el-row>
           <el-col :span="6" class="ih-info-item-left">员工工号</el-col>
-          <el-col :span="18" class="ih-info-item-right">{{info.employeeCode}}</el-col>
+          <el-col :span="18" class="ih-info-item-right">{{
+            info.employeeCode
+          }}</el-col>
         </el-row>
       </el-col>
       <el-col :span="8">
         <el-row>
           <el-col :span="6" class="ih-info-item-left">雇员状态</el-col>
-          <el-col
-            :span="18"
-            class="ih-info-item-right"
-          >{{$root.displayName('employeeStatus',info.employeeStatus)}}</el-col>
+          <el-col :span="18" class="ih-info-item-right">{{
+            $root.displayName("employeeStatus", info.employeeStatus)
+          }}</el-col>
         </el-row>
       </el-col>
       <el-col :span="8">
         <el-row>
           <el-col :span="6" class="ih-info-item-left">入职日期</el-col>
-          <el-col :span="18" class="ih-info-item-right">{{info.employmentDate}}</el-col>
+          <el-col :span="18" class="ih-info-item-right">{{
+            info.employmentDate
+          }}</el-col>
         </el-row>
       </el-col>
     </el-row>
@@ -75,25 +83,25 @@
       <el-col :span="8">
         <el-row>
           <el-col :span="6" class="ih-info-item-left">离职日期</el-col>
-          <el-col :span="18" class="ih-info-item-right">{{info.leaveDate}}</el-col>
+          <el-col :span="18" class="ih-info-item-right">{{
+            info.leaveDate
+          }}</el-col>
         </el-row>
       </el-col>
       <el-col :span="8">
         <el-row>
           <el-col :span="6" class="ih-info-item-left">职能类别</el-col>
-          <el-col
-            :span="18"
-            class="ih-info-item-right"
-          >{{$root.displayName('workType',info.workType)}}</el-col>
+          <el-col :span="18" class="ih-info-item-right">{{
+            $root.displayName("workType", info.workType)
+          }}</el-col>
         </el-row>
       </el-col>
       <el-col :span="8">
         <el-row>
           <el-col :span="6" class="ih-info-item-left">人员类型</el-col>
-          <el-col
-            :span="18"
-            class="ih-info-item-right"
-          >{{$root.displayName('employeeType',info.employeeType)}}</el-col>
+          <el-col :span="18" class="ih-info-item-right">{{
+            $root.displayName("employeeType", info.employeeType)
+          }}</el-col>
         </el-row>
       </el-col>
     </el-row>
@@ -101,13 +109,17 @@
       <el-col :span="8">
         <el-row>
           <el-col :span="6" class="ih-info-item-left">email</el-col>
-          <el-col :span="18" class="ih-info-item-right">{{info.email}}</el-col>
+          <el-col :span="18" class="ih-info-item-right">{{
+            info.email
+          }}</el-col>
         </el-row>
       </el-col>
       <el-col :span="8">
         <el-row>
           <el-col :span="6" class="ih-info-item-left">归属组织</el-col>
-          <el-col :span="18" class="ih-info-item-right">{{info.orgName}}</el-col>
+          <el-col :span="18" class="ih-info-item-right">{{
+            info.orgName
+          }}</el-col>
         </el-row>
       </el-col>
     </el-row>
@@ -117,22 +129,25 @@
       <el-col :span="8">
         <el-row>
           <el-col :span="6" class="ih-info-item-left">账号状态</el-col>
-          <el-col
-            :span="18"
-            class="ih-info-item-right"
-          >{{ $root.displayName('accountStatus',info.status)}}</el-col>
+          <el-col :span="18" class="ih-info-item-right">{{
+            $root.displayName("accountStatus", info.status)
+          }}</el-col>
         </el-row>
       </el-col>
       <el-col :span="8">
         <el-row>
           <el-col :span="6" class="ih-info-item-left">创建人</el-col>
-          <el-col :span="18" class="ih-info-item-right">{{info.createUserName}}</el-col>
+          <el-col :span="18" class="ih-info-item-right">{{
+            info.createUserName
+          }}</el-col>
         </el-row>
       </el-col>
       <el-col :span="8">
         <el-row>
           <el-col :span="6" class="ih-info-item-left">创建时间</el-col>
-          <el-col :span="18" class="ih-info-item-right">{{info.createTime}}</el-col>
+          <el-col :span="18" class="ih-info-item-right">{{
+            info.createTime
+          }}</el-col>
         </el-row>
       </el-col>
     </el-row>
@@ -140,13 +155,17 @@
       <el-col :span="8">
         <el-row>
           <el-col :span="6" class="ih-info-item-left">修改人</el-col>
-          <el-col :span="18" class="ih-info-item-right">{{info.updateUserName}}</el-col>
+          <el-col :span="18" class="ih-info-item-right">{{
+            info.updateUserName
+          }}</el-col>
         </el-row>
       </el-col>
       <el-col :span="8">
         <el-row>
           <el-col :span="6" class="ih-info-item-left">修改时间</el-col>
-          <el-col :span="18" class="ih-info-item-right">{{info.updateTime}}</el-col>
+          <el-col :span="18" class="ih-info-item-right">{{
+            info.updateTime
+          }}</el-col>
         </el-row>
       </el-col>
     </el-row>
@@ -187,5 +206,4 @@ export default class UserInfoDetails extends Vue {
   text-align: left;
   margin-left: 20px;
 }
- 
 </style>

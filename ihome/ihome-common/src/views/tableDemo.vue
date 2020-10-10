@@ -4,7 +4,7 @@
  * @Author: wwq
  * @Date: 2020-09-16 14:54:19
  * @LastEditors: wwq
- * @LastEditTime: 2020-09-25 11:26:52
+ * @LastEditTime: 2020-09-30 17:37:09
 -->
 <template>
   <div class="tableDemo">
@@ -66,6 +66,7 @@
 <script lang="ts">
 import { gender } from "@/util/enums/dic.ts";
 import { Component, Vue } from "vue-property-decorator";
+import { tableApi } from "@/api/test";
 @Component({})
 export default class TableDemo extends Vue {
   private tableData: any = [];
@@ -182,85 +183,22 @@ export default class TableDemo extends Vue {
   }
   private pageChange(index: number) {
     this.currentPage = index;
-    this.getImage();
+    // this.getImage();
     console.log(index, "pageChange");
   }
   private sizeChange(val: any) {
     this.currentPage = 1;
     this.pageSize = val;
-    this.getImage();
+    // this.getImage();
     console.log(val, "sizeChange");
   }
   routerTo(where: any) {
     console.log(where, "操作");
   }
-  private getImage() {
-    return new Promise((resolve) => {
-      setTimeout(() => {
-        resolve([
-          {
-            name1: "aaa1",
-            name2: "aaa2",
-            name3: "aaa3",
-            age: 18,
-            gender: "1",
-            profession: "aaa",
-          },
-          {
-            name1: "bbb1",
-            name2: "bbb2",
-            name3: "bbb3",
-            age: 19,
-            gender: "0",
-            profession: "bbb",
-          },
-          {
-            name1: "ccc1",
-            name2: "ccc2",
-            name3: "ccc3",
-            age: 20,
-            gender: "1",
-            profession: "ccc",
-          },
-          {
-            name1: "ddd1",
-            name2: "ddd2",
-            name3: "ddd3",
-            age: 21,
-            gender: "0",
-            profession: "ddd",
-          },
-          {
-            name1: "eee1",
-            name2: "eee2",
-            name3: "eee3",
-            age: 22,
-            gender: "1",
-            profession: "eee",
-          },
-          {
-            name1: "fff1",
-            name2: "fff2",
-            name3: "fff3",
-            age: 23,
-            gender: "1",
-            profession: "fff",
-          },
-          {
-            name1: "ggg1",
-            name2: "ggg2",
-            name3: "ggg3",
-            age: 24,
-            gender: "1",
-            profession: "ggg",
-          },
-        ]);
-      });
-    });
-  }
   created() {
-    this.getImage().then((res: any) => {
-      this.tableData = res;
+    tableApi().then((res: any) => {
+      console.log(res);
+      this.tableData = res.list;
     });
   }
 }

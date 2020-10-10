@@ -50,6 +50,76 @@ export const accountType: any = {
     Customer: '个人客户',
     Outsourcing: '劳务派遣'
 }
+
+//渠道管理专栏
+/**渠道商名称  
+ * @param {type} 
+ * @return {type} 
+ */
+export const distributorsName: any = {
+    ruijia: '上海瑞家信息技术有限公司',
+}
+
+/**渠道等级   bigPlatform-大平台、superPlatform-大型平台、firstPlatform-一级平台、middlePlatform-中型平台、secondPlatform-二级平台、smallMediation-小型中介
+ * @param {type} 
+ * @return {type} 
+ */
+export const ChannelLevel: any = {
+    bigPlatform: '大平台',
+    superPlatform: '大型平台',
+    firstPlatform: '一级平台',
+    middlePlatform: '中型平台',
+    secondPlatform: '二级平台',
+    smallMediation: '小型中介'
+}
+/**城市等级   firstLevel-一线城市、secondLevel-二线城市、thirdLevel-三线城市
+ * @param {type} 
+ * @return {type} 
+ */
+export const cityLevel: any = {
+    firstLevel: '一线城市',
+    secondLevel: '二线城市',
+    thirdLevel: '三线城市'
+}
+/**业务开展省份   firstLevel-一线城市、secondLevel-二线城市、thirdLevel-三线城市
+ * @param {type} 
+ * @return {type} 
+ */
+export const BusinessDevProvince: any = {
+    one: "广东省"
+}
+/**业务开展城市   firstLevel-一线城市、secondLevel-二线城市、thirdLevel-三线城市
+ * @param {type} 
+ * @return {type} 
+ */
+export const BusinessDevCity: any = {
+    one: "广州市"
+}
+/**事业部   firstLevel-一线城市、secondLevel-二线城市、thirdLevel-三线城市
+ * @param {type} 
+ * @return {type} 
+ */
+export const division: any = {
+    one: "爱家广州产成品及联动事业部"
+}
+
+/**状态   firstLevel-一线城市、secondLevel-二线城市、thirdLevel-三线城市
+ * @param {type} 
+ * @return {type} 
+ */
+export const state: any = {
+    one: "之前",
+    two: "之后"
+}
+/**录入人   firstLevel-一线城市、secondLevel-二线城市、thirdLevel-三线城市
+ * @param {type} 
+ * @return {type} 
+ */
+export const enterPeople: any = {
+    one: "张三",
+    two: "李四"
+}
+
 /**状态(Valid-有效、Invalid-无效)
  * @param {type} 
  * @return {type} 
@@ -88,13 +158,6 @@ export const workType: any = {
     NotFrontLine: '非一线',
 
 }
-
-
-
-
-
-
-
 /**获取列表工具类*/
 export function getListTool(dic: any, config = { value: 'value', label: 'label' }) {
     let list: any = [];

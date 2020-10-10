@@ -3,8 +3,8 @@
  * @version: 
  * @Author: zyc
  * @Date: 2020-06-23 17:07:08
- * @LastEditors: zyc
- * @LastEditTime: 2020-06-23 17:29:56
+ * @LastEditors: wwq
+ * @LastEditTime: 2020-09-30 16:43:50
  */
 const Mock = require('mockjs');
 Mock.setup({
@@ -24,6 +24,8 @@ function responseSuccess(result: any) {
 //         result: result
 //     }
 // }
+
+import { tableData } from './data/table'
 // 创建模拟数据
 const testData = {
     testData: '测试mock'
@@ -34,3 +36,4 @@ const testDataPost = {
 
 Mock.mock('/getMockData', 'get', responseSuccess(testData))
 Mock.mock('/getMockDataPost', 'post', responseSuccess(testDataPost))
+Mock.mock('http://localhost:8084/getTableDateList', 'get', responseSuccess(tableData))

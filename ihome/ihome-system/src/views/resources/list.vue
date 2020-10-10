@@ -3,8 +3,8 @@
  * @version: 
  * @Author: zyc
  * @Date: 2020-07-06 09:41:43
- * @LastEditors: zyc
- * @LastEditTime: 2020-08-14 09:29:21
+ * @LastEditors: lgf
+ * @LastEditTime: 2020-09-16 11:09:07
 --> 
 <template>
   <ih-page>
@@ -61,7 +61,7 @@
                 <el-tooltip class="item" effect="light" content="编码" placement="top">
                   <i class="el-icon-question"></i>
                 </el-tooltip>
-              </template> -->
+              </template>-->
             </el-table-column>
 
             <el-table-column prop="type" label="类型" width="90">
@@ -74,7 +74,7 @@
                   </div>
                   <i class="el-icon-info"></i>
                 </el-tooltip>
-              </template> -->
+              </template>-->
               <template slot-scope="scope">
                 <span>{{$root.displayName('modular',scope.row.type)}}</span>
               </template>

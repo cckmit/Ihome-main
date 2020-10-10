@@ -3,42 +3,18 @@
  * @version: 
  * @Author: zyc
  * @Date: 2020-06-22 11:46:23
- * @LastEditors: ywl
- * @LastEditTime: 2020-09-21 10:42:24
+ * @LastEditors: lgf
+ * @LastEditTime: 2020-09-22 10:34:05
 --> 
 <template>
   <div>
-    <el-container
-      v-show="!loginPage"
-      id="main-root"
-      class="root"
-    >
-      <el-aside
-        :width="sidebarWidth"
-        :style="{'height':screenHeight+'px'}"
-        class="ih-aside"
-      >
-        <div
-          class="container-logo"
-          v-show="!isCollapsed"
-        >
-          <img
-            src="./assets/img/logo/logo.png"
-            style="width:100%;"
-            alt
-            srcset
-          />
+    <el-container v-show="!loginPage" id="main-root" class="root">
+      <el-aside :width="sidebarWidth" :style="{'height':screenHeight+'px'}" class="ih-aside">
+        <div class="container-logo" v-show="!isCollapsed">
+          <img src="./assets/img/logo/logo.png" style="width:100%;" alt srcset />
         </div>
-        <div
-          class="container-logo-lm"
-          v-show="isCollapsed"
-        >
-          <img
-            src="./assets/img/logo/ihome.jpg"
-            style="width:100%;"
-            alt
-            srcset
-          />
+        <div class="container-logo-lm" v-show="isCollapsed">
+          <img src="./assets/img/logo/ihome.jpg" style="width:100%;" alt srcset />
         </div>
 
         <el-scrollbar
@@ -57,10 +33,7 @@
             :class="{'is-collapse': isCollapsed}"
             :style="{'width': sidebarWidth}"
           >
-            <template
-              :index="item.id"
-              v-for="(item) in groupMenuList"
-            >
+            <template :index="item.id" v-for="(item) in groupMenuList">
               <el-menu-item
                 :index="item.id"
                 v-if="!item.children"
@@ -71,11 +44,7 @@
                 <span>{{item.title}}</span>
               </el-menu-item>
 
-              <el-submenu
-                :index="item.id"
-                v-if="item.children"
-                :key="item.id"
-              >
+              <el-submenu :index="item.id" v-if="item.children" :key="item.id">
                 <template slot="title">
                   <i :class="item.icon"></i>
                   <span>{{item.title}}</span>
@@ -110,35 +79,17 @@
         <div class="right-container">
           <IhHeader class="right-container-header" />
           <!-- v-loading="loading" -->
-          <el-main
-            class="right-container-body"
-            :style="{'height':screenHeight-50+'px'}"
-          >
+          <el-main class="right-container-body" :style="{'height':screenHeight-50+'px'}">
             <!-- <div  id="root-view" class="app-view-box" v-html="content"></div> -->
             <!-- <div id="root-ihome-web-cli" class="app-view-box" v-html="content"></div> -->
-            <div
-              id="root-ihome-web-system"
-              class="app-view-box"
-              v-html="content"
-            ></div>
-            <div
-              id="root-ihome-web-common"
-              class="app-view-box"
-              v-html="content"
-            ></div>
-            <div
-              id="root-ihome-web-sales"
-              class="app-view-box"
-              v-html="content"
-            ></div>
+            <div id="root-ihome-web-system" class="app-view-box" v-html="content"></div>
+            <div id="root-ihome-web-common" class="app-view-box" v-html="content"></div>
+            <div id="root-ihome-web-sales" class="app-view-box" v-html="content"></div>
           </el-main>
         </div>
       </el-container>
     </el-container>
-    <div
-      class="layout-router"
-      v-show="loginPage"
-    >
+    <div class="layout-router" v-show="loginPage">
       <router-view />
     </div>
   </div>

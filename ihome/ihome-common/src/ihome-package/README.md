@@ -3,13 +3,15 @@
  * @version: 
  * @Author: wwq
  * @Date: 2020-09-16 14:12:50
- * @LastEditors: wwq
- * @LastEditTime: 2020-09-29 10:29:14
+ * @LastEditors: zyc
+ * @LastEditTime: 2020-09-29 15:23:26
 -->
 
 # ihome-common
 ## 版本更新
 ```
+v1.0.130 2020-09-29 15:23  全局字典的使用，语法错误问题
+v1.0.130 2020-09-29 15:20  全局字典的使用，挂载到$root的dictAllList和dictAllName方法中
 v1.0.129 2020-09-29 10:28  新增省市区级联选择组件
 v1.0.127 2020-09-25 10:15  解决table组件权限问题
 v1.0.126 2020-09-25 09:52  解决报错信息

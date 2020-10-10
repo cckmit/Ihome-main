@@ -4,7 +4,7 @@
  * @Author: wwq
  * @Date: 2020-09-29 08:55:05
  * @LastEditors: wwq
- * @LastEditTime: 2020-09-29 09:52:58
+ * @LastEditTime: 2020-09-30 11:56:55
 -->
 <template>
   <div class="cascader">
@@ -14,26 +14,35 @@
         value: 'code',
         checkStrictly: true,
       }"
+      ref="cascader"
+      popper-class="ih-cascader"
       style="width: 100%"
       placeholder="请选择省市区"
       :options="provincesOptions"
       :filter-method="filterMethod"
       filterable
       clearable
+      v-model="provincesValue"
       v-bind="$attrs"
       v-on="$listeners"
     ></el-cascader>
   </div>
 </template>
 <script lang="ts">
-import { Component, Vue } from "vue-property-decorator";
+import { Component, Vue, Watch } from "vue-property-decorator";
 import request from "../../../../util/api/http";
 @Component({
   components: {},
 })
 export default class IhCascader extends Vue {
-  private provincesValue = null;
+  private provincesValue = [];
   private provincesOptions = [];
+
+  @Watch("provincesValue", { deep: true })
+  clearValue() {
+    (this.$refs.cascader as any).$refs.panel.clearCheckedNodes();
+    (this.$refs.cascader as any).$refs.panel.activePath = [];
+  }
 
   async created() {
     this.getOptions();
@@ -50,10 +59,7 @@ export default class IhCascader extends Vue {
       parentId: "parentCode",
     });
   }
-  change(v: any) {
-    console.log(v);
-    console.log(this.provincesValue, "value");
-  }
+
   filterMethod(node: any, keyword: any) {
     return (
       node.data.abbr.includes(keyword.toUpperCase()) ||
@@ -83,4 +89,9 @@ interface AreaBaseVO {
 }
 </script>
 <style lang="scss">
+.ih-cascader {
+  .el-cascader-menu__wrap {
+    height: 366px;
+  }
+}
 </style>

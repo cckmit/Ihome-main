@@ -3,8 +3,8 @@
  * @version: 
  * @Author: zyc
  * @Date: 2020-06-23 10:42:04
- * @LastEditors: ywl
- * @LastEditTime: 2020-09-21 08:44:07
+ * @LastEditors: lgf
+ * @LastEditTime: 2020-09-22 10:35:33
 --> 
 <template>
   <div class="header-container">
@@ -18,33 +18,20 @@
       <div class="breadcrumb">
         <el-breadcrumb separator-class="el-icon-arrow-right">
           <el-breadcrumb-item :to="{ path: '/app/' }">首页</el-breadcrumb-item>
-          <el-breadcrumb-item
-            v-for="(item,index) in  breadcrumbList"
-            :key="index"
-          >{{item.title}}</el-breadcrumb-item>
+          <el-breadcrumb-item v-for="(item,index) in  breadcrumbList" :key="index">{{item.title}}</el-breadcrumb-item>
           <!-- <el-breadcrumb-item>活动列表</el-breadcrumb-item>
           <el-breadcrumb-item>活动详情</el-breadcrumb-item>-->
         </el-breadcrumb>
       </div>
     </div>
     <div class="right-item">
-      <el-popover
-        placement="top-start"
-        width="120"
-        trigger="hover"
-        style="text-align: left;"
-      >
+      <el-popover placement="top-start" width="120" trigger="hover" style="text-align: left;">
         <ul class="head-ul">
           <li>个人中心</li>
           <li @click="doc()">开发规范文档</li>
           <li @click="loginOut()">退出</li>
         </ul>
-        <el-avatar
-          slot="reference"
-          class="avatar"
-          size="medium"
-          :src="circleUrl"
-        ></el-avatar>
+        <el-avatar slot="reference" class="avatar" size="medium" :src="circleUrl"></el-avatar>
       </el-popover>
     </div>
   </div>
