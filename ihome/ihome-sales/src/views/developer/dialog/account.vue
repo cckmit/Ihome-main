@@ -4,7 +4,7 @@
  * @Author: wwq
  * @Date: 2020-07-08 14:23:16
  * @LastEditors: wwq
- * @LastEditTime: 2020-09-25 17:09:03
+ * @LastEditTime: 2020-10-10 18:05:47
 --> 
 <template>
   <el-dialog
@@ -27,19 +27,16 @@
 
       <el-row>
         <el-col :span="24">
-          <el-form-item label="账号" prop="mobilePhone">
-            <el-input v-model="form.mobilePhone" placeholder="账号"></el-input>
+          <el-form-item label="账号" prop="number">
+            <el-input v-model="form.number" placeholder="账号"></el-input>
           </el-form-item>
         </el-col>
       </el-row>
 
       <el-row>
         <el-col :span="24">
-          <el-form-item label="开户银行" prop="mobilePhone">
-            <el-input
-              v-model="form.mobilePhone"
-              placeholder="开户银行"
-            ></el-input>
+          <el-form-item label="开户银行" prop="name">
+            <el-input v-model="form.name" placeholder="开户银行"></el-input>
           </el-form-item>
         </el-col>
       </el-row>
@@ -49,12 +46,12 @@
           <el-form-item label="账号类型">
             <el-select
               style="width: 100%"
-              v-model="form.mobilePhone"
+              v-model="form.type"
               clearable
               placeholder="账号类型"
             >
               <el-option
-                v-for="item in $root.displayList('account')"
+                v-for="item in $root.displayList('accountTypes')"
                 :key="item.value"
                 :label="item.label"
                 :value="item.value"
@@ -91,19 +88,10 @@ export default class UserAdd extends Vue {
   dialogVisible = true;
 
   form: any = {
-    id: null,
-    account: null,
-    accountType: "Ihome",
-    email: null,
-    employeeCode: null,
-    employeeStatus: "On",
-    employeeType: "Formal",
-    employmentDate: this.$tool.todayStr(),
-    leaveDate: "2099-12-31",
-    mobilePhone: null,
+    bank: null,
     name: null,
-    orgId: null,
-    workType: "FrontLine",
+    number: null,
+    type: null,
   };
   rules: any = {
     name: [
@@ -120,15 +108,6 @@ export default class UserAdd extends Vue {
       { validator: emailOrNullValidato, trigger: "change" },
     ],
   };
-  getProp(type: any) {
-    let list: string[] = ["Ihome", "Juheng", "Poly"];
-    let required = list.includes(this.form.accountType);
-    if (required) {
-      return type;
-    } else {
-      return null;
-    }
-  }
 
   cancel() {
     this.$emit("cancel", false);
@@ -155,11 +134,7 @@ export default class UserAdd extends Vue {
     }
   }
   async created() {
-    console.log(this.data);
-    if (this.data && this.data.id > 0) {
-      // const res = await get_user_get__id({ id: this.data.id });
-      // this.form = res;
-    }
+    this.form = this.data;
   }
 }
 </script>

@@ -4,7 +4,7 @@
  * @Author: wwq
  * @Date: 2020-09-25 17:59:09
  * @LastEditors: wwq
- * @LastEditTime: 2020-09-29 11:19:48
+ * @LastEditTime: 2020-10-10 18:11:04
 -->
 <template>
   <ih-page>
@@ -25,7 +25,7 @@
             <el-form-item label="状态">
               <el-select
                 style="width: 100%"
-                v-model="queryPageParameters.devStatus"
+                v-model="queryPageParameters.status"
                 clearable
                 placeholder="请选择"
               >
@@ -42,24 +42,14 @@
         <el-row>
           <el-col :span="8">
             <el-form-item label="省市区">
-              <IhCascader></IhCascader>
+              <IhCascader
+                v-model="queryPageParameters.provinceOption"
+              ></IhCascader>
             </el-form-item>
           </el-col>
           <el-col :span="8">
             <el-form-item label="录入人">
-              <el-select
-                style="width: 100%"
-                v-model="queryPageParameters.keyboarder"
-                clearable
-                placeholder="请选择业务类型"
-              >
-                <el-option
-                  v-for="item in $root.displayList('accountType')"
-                  :key="item.value"
-                  :label="item.label"
-                  :value="item.value"
-                ></el-option>
-              </el-select>
+              <el-input v-model="queryPageParameters.inputUser"></el-input>
             </el-form-item>
           </el-col>
         </el-row>
@@ -71,81 +61,121 @@
         <el-button type="danger" @click="search()">查询</el-button>
         <el-button type="success" @click="addMsg()">添加</el-button>
         <el-button type="success" @click="reset()">重置</el-button>
-        <el-button type="info" @click="update()">变更录入人</el-button>
+        <el-button
+          type="info"
+          :disabled="updataUserDisabled"
+          @click="dialogVisible = true"
+          >变更录入人</el-button
+        >
       </el-row>
     </template>
 
     <template v-slot:table>
       <br />
-      <ih-table
+      <el-table
         class="ih-table"
-        :data="tableData"
-        :column="tableColumn"
-        :default-sort="{ prop: 'id', order: 'descending' }"
-        :current-page.sync="queryPageParameters.pageNum"
-        :page-size="queryPageParameters.pageSize"
-        :total="resPageInfo.total"
+        :data="resPageInfo.list"
+        style="width: 100%"
         @selection-change="handleSelectionChange"
-        @page-change="handleCurrentChangeMixin"
-        @size-change="handleSizeChangeMixin"
       >
-        <template #operation>
-          <el-table-column fixed="right" label="操作">
-            <template v-slot="{ row }">
-              <el-link type="primary" @click.native.prevent="detailsMsg(row)"
-                >详情</el-link
-              >
-              <el-dropdown trigger="click" class="margin-left-15">
-                <span class="el-dropdown-link">
-                  更多
-                  <i class="el-icon-arrow-down el-icon--right"></i>
-                </span>
-                <el-dropdown-menu slot="dropdown">
-                  <el-dropdown-item @click.native.prevent="routerTo(row)"
-                    >修改</el-dropdown-item
-                  >
-                  <el-dropdown-item @click.native.prevent="routerTo(row)"
-                    >删除</el-dropdown-item
-                  >
-                  <el-dropdown-item @click.native.prevent="revocationMsg(row)"
-                    >撤回
-                  </el-dropdown-item>
-                  <el-dropdown-item @click.native.prevent="checkMsg(row)"
-                    >审核</el-dropdown-item
-                  >
-                  <el-dropdown-item @click.native.prevent="changeMsg(row)"
-                    >变更信息</el-dropdown-item
-                  >
-                </el-dropdown-menu>
-              </el-dropdown>
-            </template>
-          </el-table-column>
-        </template>
-      </ih-table>
+        <el-table-column
+          width="50"
+          min-width="50"
+          type="selection"
+          align="center"
+        ></el-table-column>
+        <el-table-column prop="name" label="名称" width="250"></el-table-column>
+        <el-table-column
+          prop="creditCode"
+          label="信用代码"
+          width="180"
+        ></el-table-column>
+        <el-table-column prop="province" label="省份"></el-table-column>
+        <el-table-column prop="city" label="城市"></el-table-column>
+        <el-table-column prop="county" label="行政区"></el-table-column>
+        <el-table-column prop="inputUser" label="录入人"></el-table-column>
+        <el-table-column prop="status" label="状态">
+          <template v-slot="{ row }">{{
+            $root.displayName("devStatus", row.status)
+          }}</template>
+        </el-table-column>
+        <el-table-column fixed="right" label="操作" width="120">
+          <template v-slot="{ row }">
+            <el-link type="primary" @click.native.prevent="detailsMsg(row)"
+              >详情</el-link
+            >
+            <el-dropdown trigger="click" class="margin-left-15">
+              <span class="el-dropdown-link">
+                更多
+                <i class="el-icon-arrow-down el-icon--right"></i>
+              </span>
+              <el-dropdown-menu slot="dropdown">
+                <el-dropdown-item @click.native.prevent="edit(row)"
+                  >修改</el-dropdown-item
+                >
+                <el-dropdown-item
+                  :disabled="row.status !== 'Draft'"
+                  @click.native.prevent="remove(row)"
+                  >删除</el-dropdown-item
+                >
+                <el-dropdown-item
+                  :disabled="row.status !== 'WaitAuditByBranchHead'"
+                  @click.native.prevent="revocationMsg(row)"
+                  >撤回
+                </el-dropdown-item>
+                <el-dropdown-item @click.native.prevent="checkMsg(row)"
+                  >审核</el-dropdown-item
+                >
+                <el-dropdown-item
+                  :disabled="row.status !== 'Audited'"
+                  @click.native.prevent="changeMsg(row)"
+                  >变更信息</el-dropdown-item
+                >
+              </el-dropdown-menu>
+            </el-dropdown>
+          </template>
+        </el-table-column>
+      </el-table>
+    </template>
+    <template v-slot:pagination>
+      <br />
+      <el-pagination
+        @size-change="handleSizeChangeMixin"
+        @current-change="handleCurrentChangeMixin"
+        :current-page.sync="queryPageParameters.pageNum"
+        :page-sizes="$root.pageSizes"
+        :page-size="queryPageParameters.pageSize"
+        :layout="$root.paginationLayout"
+        :total="resPageInfo.total"
+      ></el-pagination>
     </template>
 
-    <ih-dialog :show="dialogVisible" desc="用户新增编辑">
-      <!-- <UserAdd
-        :data="addData"
-        @cancel="()=>dialogVisible=false"
-        @finish="(data)=>{dialogVisible=false;finish(data)}"
-      />-->
+    <ih-dialog :show="dialogVisible" desc="变更录入人">
+      <UpdateUser
+        :data="selection"
+        @cancel="() => (dialogVisible = false)"
+        @finish="
+          (data) => {
+            dialogVisible = false;
+            finish(data);
+          }
+        "
+      />
     </ih-dialog>
   </ih-page>
 </template>
 <script lang="ts">
 import { Component, Vue } from "vue-property-decorator";
-// import UserAdd from "./add.vue";
+import UpdateUser from "./dialog/updateUser.vue";
 import {
-  post_user_getList,
-  post_user_delete__id,
-  //   post_user_lock__id,
-} from "../../api/system/index";
+  post_company_getList,
+  get_company_delete__id,
+} from "../../api/developer/index";
 import PaginationMixin from "../../mixins/pagination";
 
 @Component({
   components: {
-    // UserAdd,
+    UpdateUser,
   },
   mixins: [PaginationMixin],
 })
@@ -153,202 +183,47 @@ export default class DeveloperList extends Vue {
   queryPageParameters: any = {
     name: null,
     creditCode: null,
-    devStatus: null,
-    ProvincesOptions: Array,
-    keyboarder: null,
+    status: null,
+    provinceOption: Array,
+    inputUser: null,
   };
-
-  tableColumn = [
-    {
-      label: "名称",
-      prop: "name",
-      width: 250,
-    },
-    {
-      label: "信用代码",
-      prop: "creditCode",
-    },
-    {
-      label: "省份",
-      prop: "province",
-    },
-    {
-      label: "城市",
-      prop: "city",
-    },
-    {
-      label: "行政区",
-      prop: "administrative",
-    },
-    {
-      label: "录入人",
-      prop: "keyboarder",
-    },
-    {
-      label: "状态",
-      prop: "status",
-    },
-    {
-      slot: "operation",
-    },
-  ];
-  jobVisibleData: any = null;
-  OrganizationJurisdictionData: any = null;
-  copyUserData: any = null;
+  selection: any = [];
   resPageInfo: any = {
     total: 0,
     list: [],
   };
-
-  employmentDateChange(dateArray: any) {
-    console.log(dateArray);
-    this.queryPageParameters.employmentDateStart = dateArray[0];
-    this.queryPageParameters.employmentDateEnd = dateArray[1];
-  }
-  leaveDateChange(dateArray: any) {
-    console.log(dateArray);
-    this.queryPageParameters.leaveDateStart = dateArray[0];
-    this.queryPageParameters.leaveDateEnd = dateArray[1];
-  }
-
-  reset() {
-    this.queryPageParameters = {
-      name: null,
-      creditCode: null,
-      devStatus: null,
-      ProvincesOptions: Array,
-      keyboarder: null,
-      pageNum: this.queryPageParameters.pageNum,
-      pageSize: this.queryPageParameters.pageSize,
-    };
-  }
-
-  addData: any = null;
-  value: any = "";
-
-  organizationJurisdictionVisible = false;
-  jobVisible = false;
-  copyUserVisible = false;
-
   currentPage: any = 1;
-  valuedate: any = new Date().getTime();
-  // valuedate: any ='2020-07-01';
-  tableData = [
-    {
-      name: "东莞市高发房地产有限公司",
-      creditCode: "91440101MA59J0DJ66",
-      province: "广东",
-      city: "东莞",
-      administrative: "南城区",
-      keyboarder: "张三",
-      status: "草稿",
-    },
-    {
-      name: "东莞市新通实业投资有限公司",
-      creditCode: "91440101MA59J0DJ66",
-      province: "广东",
-      city: "东莞",
-      administrative: "南城区",
-      keyboarder: "张三",
-      status: "待分公司业管审核",
-    },
-    {
-      name: "东莞市金汇大厦开发建造有限公司",
-      creditCode: "91440101MA59J0DJ66",
-      province: "广东",
-      city: "东莞",
-      administrative: "南城区",
-      keyboarder: "张三",
-      status: "已审核",
-    },
-    {
-      name: "东莞市金汇大厦开发建造有限公司",
-      creditCode: "91440101MA59J0DJ66",
-      province: "广东",
-      city: "东莞",
-      administrative: "南城区",
-      keyboarder: "张三",
-      status: "已审核",
-    },
-    {
-      name: "东莞市金汇大厦开发建造有限公司",
-      creditCode: "91440101MA59J0DJ66",
-      province: "广东",
-      city: "东莞",
-      administrative: "南城区",
-      keyboarder: "张三",
-      status: "已审核",
-    },
-  ];
   total: any = null;
-
-  formatter(row: any) {
-    return row.name;
-  }
   dialogVisible = false;
 
-  addMsg(data: any) {
-    this.addData = data;
-    this.$router.push("/developer/edit");
-  }
-
-  changeMsg(row: any) {
-    console.log(row);
-    this.$router.push("/developer/change");
-  }
-
-  detailsMsg(row: any) {
-    console.log(row);
-    this.$router.push("/developer/details");
-  }
-
-  checkMsg(row: any) {
-    console.log(row);
-    this.$router.push("/developer/check");
-  }
-
-  revocationMsg(row: any) {
-    console.log(row);
-    this.$router.push("/developer/revocation");
-  }
-
-  finishJob(data: any) {
-    console.log(data);
-    this.search();
+  private get updataUserDisabled() {
+    return this.selection.length === 0;
   }
 
   async created() {
     this.getListMixin();
   }
   async getListMixin() {
-    this.resPageInfo = await post_user_getList(this.queryPageParameters);
+    this.resPageInfo = await post_company_getList(this.queryPageParameters);
   }
 
-  getValue(value: any) {
-    this.queryPageParameters.orgId = value;
+  reset() {
+    this.queryPageParameters = {
+      name: null,
+      creditCode: null,
+      status: null,
+      provinceOption: Array,
+      inputUser: null,
+      pageNum: this.queryPageParameters.pageNum,
+      pageSize: this.queryPageParameters.pageSize,
+    };
   }
 
-  search() {
-    console.log(this.queryPageParameters);
-    console.log(this.valuedate);
-    this.getListMixin();
-  }
-
-  info(scope: any) {
-    this.$router.push({
-      path: "/user/info",
-      query: { id: scope.row.id },
-    });
-  }
-  edit(scope: any) {
-    this.addMsg(scope.row);
-  }
-
-  async remove(scope: any) {
+  async remove(row: any) {
     try {
       await this.$confirm("是否确定删除?", "提示");
-      await post_user_delete__id({ id: scope.row.id });
-      this.resPageInfo.list.splice(scope.$index, 1);
+      await get_company_delete__id({ id: row.id });
+      this.resPageInfo.list.splice(row.$index, 1);
       this.$message({
         type: "success",
         message: "删除成功!",
@@ -357,13 +232,63 @@ export default class DeveloperList extends Vue {
       console.log(error);
     }
   }
-  finishCopyUser(data: any) {
-    console.log(data);
-    this.search();
+
+  addMsg() {
+    this.$router.push("/developers/edit");
   }
+
+  edit(row: any) {
+    this.$router.push({
+      path: "/developers/edit",
+      query: {
+        id: row.id,
+      },
+    });
+  }
+
   handleSelectionChange(val: any) {
-    console.log(val);
-    this.copyUserData = val;
+    this.selection = val.map((v: any) => ({
+      name: v.name,
+      id: v.id,
+    }));
+    console.log(this.selection);
+  }
+
+  changeMsg(row: any) {
+    console.log(row);
+    this.$router.push("/developers/change");
+  }
+
+  detailsMsg(row: any) {
+    this.$router.push({
+      path: "/developers/details",
+      query: {
+        id: row.id,
+      },
+    });
+  }
+
+  checkMsg(row: any) {
+    this.$router.push({
+      path: "/developers/check",
+      query: {
+        id: row.id,
+      },
+    });
+  }
+
+  revocationMsg(row: any) {
+    this.$router.push({
+      path: "/developers/revocation",
+      query: {
+        id: row.id,
+      },
+    });
+  }
+
+  search() {
+    console.log(this.queryPageParameters);
+    this.getListMixin();
   }
 }
 </script>

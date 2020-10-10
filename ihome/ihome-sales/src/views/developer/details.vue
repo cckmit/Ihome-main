@@ -4,7 +4,7 @@
  * @Author: wwq
  * @Date: 2020-09-27 11:52:41
  * @LastEditors: wwq
- * @LastEditTime: 2020-09-27 17:02:59
+ * @LastEditTime: 2020-10-10 17:33:13
 -->
 <template>
   <el-tabs type="border-card" v-model="activeName">
@@ -16,17 +16,17 @@
             <el-row>
               <el-col :span="8">
                 <el-form-item label="名称" required align="left">
-                  <span>{{ queryPageParameters.name }}</span>
+                  <span class="text-ellipsis">{{ resPageInfo.name }}</span>
                 </el-form-item>
               </el-col>
               <el-col :span="8">
                 <el-form-item label="信用代码" required align="left">
-                  <span>{{ queryPageParameters.name }}</span>
+                  <span>{{ resPageInfo.creditCode }}</span>
                 </el-form-item>
               </el-col>
               <el-col :span="8">
                 <el-form-item label="简称" required align="left">
-                  <span>{{ queryPageParameters.name }}</span>
+                  <span>{{ resPageInfo.shortName }}</span>
                 </el-form-item>
               </el-col>
             </el-row>
@@ -34,54 +34,59 @@
               <div v-show="searchOpen">
                 <el-row>
                   <el-col :span="8">
-                    <el-form-item label="类型" align="left">
-                      <span>{{ queryPageParameters.name }}</span>
+                    <el-form-item label="类型" required align="left">
+                      <span>{{ resPageInfo.type }}</span>
                     </el-form-item>
                   </el-col>
                   <el-col :span="8">
                     <el-form-item label="法定代表人" required align="left">
-                      <span>{{ queryPageParameters.name }}</span>
+                      <span>{{ resPageInfo.legalPerson }}</span>
                     </el-form-item>
                   </el-col>
                   <el-col :span="8">
                     <el-form-item label="法人身份证号码" align="left">
-                      <span>{{ queryPageParameters.name }}</span>
+                      <span>{{ resPageInfo.legalPersonId }}</span>
                     </el-form-item>
                   </el-col>
                   <el-col :span="8">
                     <el-form-item label="成立日期" required align="left">
-                      <span>{{ queryPageParameters.name }}</span>
+                      <span>{{ resPageInfo.setupTime }}</span>
                     </el-form-item>
                   </el-col>
                   <el-col :span="8">
                     <el-form-item label="注册资本" required align="left">
-                      <span>{{ queryPageParameters.name }}</span>
+                      <span>{{ resPageInfo.capital }}</span>
                     </el-form-item>
                   </el-col>
 
                   <el-col :span="8">
                     <el-form-item label="营业期限" align="left">
-                      <span>{{ queryPageParameters.name }}</span>
+                      <span>{{ resPageInfo.businessTime }}</span>
                     </el-form-item>
                   </el-col>
                   <el-col :span="8">
-                    <el-form-item label="省市区" align="left">
-                      <span>{{ queryPageParameters.name }}</span>
+                    <el-form-item label="省市区">
+                      <IhCascader
+                        :disabled="true"
+                        v-model="resPageInfo.provinceOption"
+                      ></IhCascader>
                     </el-form-item>
                   </el-col>
                   <el-col :span="16">
                     <el-form-item label="住所" required align="left">
-                      <span>{{ queryPageParameters.name }}</span>
+                      <span>{{ resPageInfo.address }}</span>
                     </el-form-item>
                   </el-col>
                   <el-col :span="8">
                     <el-form-item label="录入人" required align="left">
-                      <span>{{ queryPageParameters.name }}</span>
+                      <span>{{ resPageInfo.inputUser }}</span>
                     </el-form-item>
                   </el-col>
                   <el-col :span="8">
-                    <el-form-item label="状态" required align="left">
-                      <span>{{ queryPageParameters.name }}</span>
+                    <el-form-item label="状态" align="left">
+                      <span>{{
+                        $root.displayName("devStatus", resPageInfo.status)
+                      }}</span>
                     </el-form-item>
                   </el-col>
                 </el-row>
@@ -104,36 +109,47 @@
         <template v-slot:table>
           <p class="ih-info-title">联系人信息</p>
           <br />
-          <ih-table
+          <el-table
             class="ih-table"
-            :data="tableData"
-            :column="contactsColumn"
-            :isPagination="false"
-            :columnCheck="false"
-            :columnIndex="false"
-          />
+            :data="resPageInfo.contactList"
+            style="width: 100%"
+          >
+            <el-table-column prop="contactName" label="姓名"></el-table-column>
+            <el-table-column prop="contactNum" label="手机号"></el-table-column>
+            <el-table-column prop="email" label="电子邮箱"></el-table-column>
+          </el-table>
           <br />
           <p class="ih-info-title">账户信息</p>
           <br />
-          <ih-table
+          <el-table
             class="ih-table"
-            :data="tableData"
-            :column="accountColumn"
-            :isPagination="false"
-            :columnCheck="false"
-            :columnIndex="false"
-          />
+            :data="resPageInfo.bankList"
+            style="width: 100%"
+          >
+            <el-table-column prop="name" label="账户名称"></el-table-column>
+            <el-table-column prop="number" label="账号"></el-table-column>
+            <el-table-column prop="bank" label="开户银行"></el-table-column>
+            <el-table-column prop="type" label="账号类型">
+              <template v-slot="{ row }">{{
+                $root.displayName("accountTypes", row.type)
+              }}</template>
+            </el-table-column>
+          </el-table>
           <br />
           <p class="ih-info-title">附件信息</p>
           <br />
-          <ih-table
+          <el-table
             class="ih-table"
-            :data="tableData"
-            :column="accessoryColumn"
-            :isPagination="false"
-            :columnCheck="false"
-            :columnIndex="false"
-          />
+            :data="resPageInfo.attachmentList"
+            style="width: 100%"
+          >
+            <el-table-column prop="type" label="类型">
+              <template v-slot="{ row }">{{
+                $root.displayName("accessoryTpye", row.type)
+              }}</template>
+            </el-table-column>
+            <el-table-column prop="fileId" label="附件"></el-table-column>
+          </el-table>
           <br />
 
           <p class="ih-info-title">企业概况</p>
@@ -141,7 +157,7 @@
             type="textarea"
             :autosize="{ minRows: 5, maxRows: 10 }"
             placeholder="请输入内容"
-            v-model="queryPageParameters.employeeCode"
+            v-model="resPageInfo.remark"
           >
           </el-input>
 
@@ -152,11 +168,14 @@
               type="textarea"
               :autosize="{ minRows: 5, maxRows: 10 }"
               placeholder="请输入内容"
-              v-model="queryPageParameters.employeeCode"
+              v-model="resPageInfo.recallReason"
             >
             </el-input>
             <!-- <div class="bottom"> -->
-            <el-button class="margin-top-30" @click="add()" type="primary"
+            <el-button
+              class="margin-top-30"
+              @click="submitRecall()"
+              type="primary"
               >提交</el-button
             >
             <!-- </div> -->
@@ -168,13 +187,13 @@
               type="textarea"
               :autosize="{ minRows: 5, maxRows: 10 }"
               placeholder="请输入内容"
-              v-model="queryPageParameters.employeeCode"
+              v-model="resPageInfo.checkOpinion"
             >
             </el-input>
-            <el-button class="margin-top-30" @click="add()" type="primary"
+            <el-button class="margin-top-30" @click="pass(true)" type="primary"
               >通过</el-button
             >
-            <el-button class="margin-top-30" @click="add()" type="primary"
+            <el-button class="margin-top-30" @click="pass(false)" type="primary"
               >驳回</el-button
             >
           </div>
@@ -182,14 +201,16 @@
       </ih-page>
     </el-tab-pane>
     <el-tab-pane label="操作日志" name="second">
-      <ih-table
-        class="ih-table"
-        :data="tableData"
-        :column="operationColumn"
-        :isPagination="false"
-        :columnCheck="false"
-        :columnIndex="false"
-      />
+      <el-table class="ih-table" :data="companyLogInfo" style="width: 100%">
+        <el-table-column prop="operation" label="操作"></el-table-column>
+        <el-table-column prop="operator" label="处理人"></el-table-column>
+        <el-table-column prop="operateTime" label="处理时间"></el-table-column>
+        <el-table-column
+          prop="operateResult"
+          label="处理结果"
+        ></el-table-column>
+        <el-table-column prop="remark" label="备注"></el-table-column>
+      </el-table>
     </el-tab-pane>
   </el-tabs>
 </template>
@@ -197,10 +218,11 @@
 import { Component, Vue, Watch } from "vue-property-decorator";
 // import UserAdd from "./add.vue";
 import {
-  post_user_getList,
-  post_user_delete__id,
-  //   post_user_lock__id,
-} from "../../api/system/index";
+  get_company_get__id,
+  get_companyLog_getAll__companyId,
+  post_company_retract__id,
+  post_company_audit__id,
+} from "../../api/developer/index";
 import PaginationMixin from "../../mixins/pagination";
 
 @Component({
@@ -213,7 +235,6 @@ export default class Edit extends Vue {
   private activeName = "first";
   @Watch("$route", { immediate: true })
   watchRoute(val: any) {
-    console.log(val.name, "aaaaaaaaaaa");
     switch (val.name) {
       case "developerRevocation":
         this.isRemove = true;
@@ -223,128 +244,28 @@ export default class Edit extends Vue {
         break;
     }
   }
-  queryPageParameters: any = {
-    name: "xxxxx",
-    creditCode: null,
-    devStatus: null,
-    ProvincesOptions: Array,
-    keyboarder: null,
-    pageSize: 20,
-    pageNum: 1,
-  };
-
+  private get developerId() {
+    return this.$route.query.id;
+  }
   searchOpen = true;
 
-  tableData = [
-    {
-      name: "xxx",
-    },
-    {
-      name: "xxx",
-    },
-    {
-      name: "xxx",
-    },
-    {
-      name: "xxx",
-    },
-  ];
-
-  contactsColumn = [
-    {
-      label: "姓名",
-      prop: "name",
-    },
-    {
-      label: "手机号",
-      prop: "name",
-    },
-    {
-      label: "邮箱",
-      prop: "name",
-    },
-    {
-      slot: "operation",
-    },
-  ];
-  accountColumn = [
-    {
-      label: "账户名称",
-      prop: "name",
-    },
-    {
-      label: "账号",
-      prop: "name",
-    },
-    {
-      label: "开户银行",
-      prop: "name",
-    },
-    {
-      label: "账户类型",
-      prop: "name",
-    },
-    {
-      slot: "operation",
-    },
-  ];
-  accessoryColumn = [
-    {
-      label: "类型",
-      prop: "name",
-    },
-    {
-      label: "附件",
-      prop: "name",
-    },
-  ];
-  operationColumn = [
-    {
-      label: "操作",
-      prop: "name",
-    },
-    {
-      label: "处理人",
-      prop: "name",
-    },
-    {
-      label: "处理时间",
-      prop: "name",
-    },
-    {
-      label: "处理结果",
-      prop: "name",
-    },
-    {
-      label: "备注",
-      prop: "name",
-    },
-  ];
   resPageInfo: any = {
-    total: 0,
-    list: [],
+    bankList: [],
+    contactList: [],
+    attachmentList: [],
+    provinceOption: [],
+    recallReason: null,
+    checkOpinion: null,
   };
+  companyLogInfo: any = [];
 
   openToggle() {
     this.searchOpen = !this.searchOpen;
   }
   employmentDateChange(dateArray: any) {
     console.log(dateArray);
-    this.queryPageParameters.employmentDateStart = dateArray[0];
-    this.queryPageParameters.employmentDateEnd = dateArray[1];
   }
 
-  reset() {
-    this.queryPageParameters = {
-      name: null,
-      creditCode: null,
-      devStatus: null,
-      ProvincesOptions: Array,
-      keyboarder: null,
-      pageNum: this.queryPageParameters.pageNum,
-      pageSize: this.queryPageParameters.pageSize,
-    };
-  }
   finish(data: any) {
     console.log(data);
   }
@@ -372,7 +293,38 @@ export default class Edit extends Vue {
     this.getListMixin();
   }
   async getListMixin() {
-    this.resPageInfo = await post_user_getList(this.queryPageParameters);
+    this.resPageInfo = await get_company_get__id({ id: this.developerId });
+    this.resPageInfo.provinceOption = [
+      this.resPageInfo.province,
+      this.resPageInfo.city,
+      this.resPageInfo.county,
+    ];
+    this.companyLogInfo = await get_companyLog_getAll__companyId({
+      companyId: this.developerId,
+    });
+  }
+
+  async submitRecall() {
+    await post_company_retract__id({
+      reason: this.resPageInfo.recallReason,
+      id: this.developerId,
+    });
+    this.$message({
+      type: "success",
+      message: "撤回成功!",
+    });
+  }
+
+  async pass(val: any) {
+    await post_company_audit__id({
+      reason: this.resPageInfo.checkOpinion,
+      id: this.developerId,
+      pass: val,
+    });
+    this.$message({
+      type: "success",
+      message: val ? "审核通过!" : "驳回成功!",
+    });
   }
 
   editContacts(row: any) {
@@ -384,9 +336,9 @@ export default class Edit extends Vue {
     console.log(row);
     this.accountDialogVisible = true;
   }
-  getValue(value: any) {
-    this.queryPageParameters.orgId = value;
-  }
+  // getValue(value: any) {
+  // this.queryPageParameters.orgId = value;
+  // }
 
   search() {
     console.log(this.queryPageParameters);
@@ -401,7 +353,7 @@ export default class Edit extends Vue {
   async remove(scope: any) {
     try {
       await this.$confirm("是否确定删除?", "提示");
-      await post_user_delete__id({ id: scope.row.id });
+      // await post_user_delete__id({ id: scope.row.id });
       this.resPageInfo.list.splice(scope.$index, 1);
       this.$message({
         type: "success",
@@ -417,5 +369,13 @@ export default class Edit extends Vue {
 .msg-title {
   text-align: left;
   margin-left: 25px;
+}
+
+.text-ellipsis {
+  width: 100%;
+  display: inline-block;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
 }
 </style>

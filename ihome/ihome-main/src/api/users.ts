@@ -4,7 +4,7 @@
  * @Author: zyc
  * @Date: 2020-06-24 09:47:33
  * @LastEditors: wwq
- * @LastEditTime: 2020-09-25 08:54:25
+ * @LastEditTime: 2020-10-09 17:38:37
  */
 import { IRes } from "./users.d";
 // import request from '@/utils/http';
@@ -132,7 +132,7 @@ export function allMenu<T>() {
             parentId: 301,
             title: "开发商列表",
             icon: null,
-            path: "/web-sales/developer/list"
+            path: "/web-sales/developers/list"
         },
         {
             id: 401,

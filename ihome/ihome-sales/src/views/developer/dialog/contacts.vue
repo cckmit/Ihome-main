@@ -4,7 +4,7 @@
  * @Author: wwq
  * @Date: 2020-07-08 14:23:16
  * @LastEditors: wwq
- * @LastEditTime: 2020-09-27 17:03:30
+ * @LastEditTime: 2020-10-10 17:58:18
 --> 
 <template>
   <el-dialog
@@ -19,17 +19,17 @@
     <el-form ref="form" :model="form" :rules="rules" label-width="80px">
       <el-row>
         <el-col :span="24">
-          <el-form-item label="姓名" prop="name">
-            <el-input v-model="form.name" placeholder="姓名"></el-input>
+          <el-form-item label="姓名" prop="contactName">
+            <el-input v-model="form.contactName" placeholder="姓名"></el-input>
           </el-form-item>
         </el-col>
       </el-row>
 
       <el-row>
         <el-col :span="24">
-          <el-form-item label="手机号码" prop="mobilePhone">
+          <el-form-item label="手机号码" prop="contactNum">
             <el-input
-              v-model="form.mobilePhone"
+              v-model="form.contactNum"
               placeholder="手机号码"
             ></el-input>
           </el-form-item>
@@ -71,19 +71,9 @@ export default class UserAdd extends Vue {
   dialogVisible = true;
 
   form: any = {
-    id: null,
-    account: null,
-    accountType: "Ihome",
+    contactName: null,
+    contactNum: null,
     email: null,
-    employeeCode: null,
-    employeeStatus: "On",
-    employeeType: "Formal",
-    employmentDate: this.$tool.todayStr(),
-    leaveDate: "2099-12-31",
-    mobilePhone: null,
-    name: null,
-    orgId: null,
-    workType: "FrontLine",
   };
   rules: any = {
     name: [
@@ -135,11 +125,7 @@ export default class UserAdd extends Vue {
     }
   }
   async created() {
-    console.log(this.data);
-    if (this.data && this.data.id > 0) {
-      // const res = await get_user_get__id({ id: this.data.id });
-      // this.form = res;
-    }
+    this.form = this.data;
   }
 }
 </script>

@@ -3,8 +3,8 @@
  * @version: 
  * @Author: zyc
  * @Date: 2020-06-22 14:34:07
- * @LastEditors: zyc
- * @LastEditTime: 2020-09-28 14:45:04
+ * @LastEditors: wwq
+ * @LastEditTime: 2020-10-10 18:08:37
  */
 
 console.log('\033[42;30m 这是main ts主应用')
@@ -21,7 +21,7 @@ let show_name = childProcess.execSync('git show -s --format=%cn').toString().tri
 let show_email = childProcess.execSync('git show -s --format=%ce').toString().trim(); //邮箱
 let show_date = new Date(childProcess.execSync('git show -s --format=%cd').toString()); //日期
 let show_message = childProcess.execSync('git show -s --format=%s').toString().trim(); //说明
-console.log('git提交记录信息  ','用户名：'+show_name,'邮箱：'+ show_email, '日期：',show_date, '说明：'+show_message);
+console.log('git提交记录信息  ', '用户名：' + show_name, '邮箱：' + show_email, '日期：', show_date, '说明：' + show_message);
 
 
 
@@ -72,6 +72,9 @@ module.exports = {
             '/sales-oauth2': {
                 target: 'http://192.168.200.114:8610'
             },
+            '/developer/': {
+                target: proxyAddress
+            }
         }
     },
     // 自定义webpack配置

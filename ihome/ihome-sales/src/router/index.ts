@@ -4,7 +4,7 @@
  * @Author: zyc
  * @Date: 2020-06-22 11:10:43
  * @LastEditors: wwq
- * @LastEditTime: 2020-09-27 15:32:53
+ * @LastEditTime: 2020-10-09 17:36:45
  */
 import Vue from 'vue'
 import VueRouter, { RouteConfig, Route } from 'vue-router'
@@ -44,9 +44,9 @@ const routes: Array<RouteConfig> = [
   //   ]
   // },
   {
-    path: '/developer',
+    path: '/developers',
     meta: { title: '开发商管理', icon: null },
-    redirect: '/developer/list',
+    redirect: '/developers/list',
     component: Layout,
     children: [
       {
