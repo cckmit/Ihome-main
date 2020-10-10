@@ -3,186 +3,202 @@
  * @version: 
  * @Author: zyc
  * @Date: 2020-08-13 11:40:10
- * @LastEditors: lgf
- * @LastEditTime: 2020-09-29 17:35:03
+ * @LastEditors: ywl
+ * @LastEditTime: 2020-10-10 16:36:38
 -->
 <template>
-  <div>
-    <el-breadcrumb separator-class="el-icon-arrow-right">
-      <el-breadcrumb-item class="line">{{
-        $route.meta.title
-      }}</el-breadcrumb-item>
-    </el-breadcrumb>
-    <ih-page>
-      <template v-slot:form>
-        <el-form ref="form" label-width="100px">
-          <el-row>
-            <el-col :span="8">
-              <el-form-item label="事业部">
-                <el-select
-                  v-model="queryPageParameters.departmentOrgId"
-                  clearable
-                  placeholder="事业部"
-                  class="width--100"
-                >
-                  <el-option
-                    v-for="item in $root.displayList('division')"
-                    :key="item.value"
-                    :label="item.label"
-                    :value="item.value"
-                  ></el-option>
-                </el-select>
-              </el-form-item>
-            </el-col>
-            <el-col :span="8">
-              <el-form-item label="入职日期">
-                <el-date-picker
-                  style="width: 100%"
-                  v-model="queryPageParameters.inputTime"
-                  type="daterange"
-                  align="left"
-                  unlink-panels
-                  range-separator="至"
-                  start-placeholder="开始日期"
-                  end-placeholder="结束日期"
-                  value-format="yyyy-MM-dd"
-                  :picker-options="$root.pickerOptions"
-                  @change="employmentDateChange"
-                >
-                  ></el-date-picker
-                >
-              </el-form-item>
-            </el-col>
-
-            <el-col :span="8">
-              <el-form-item label="经办人">
-                <el-select
-                  v-model="queryPageParameters.inputUser"
-                  clearable
-                  placeholder="经办人"
-                  class="width--100"
-                >
-                  <el-option
-                    v-for="item in $root.displayList('state')"
-                    :key="item.value"
-                    :label="item.label"
-                    :value="item.value"
-                  ></el-option>
-                </el-select>
-              </el-form-item>
-            </el-col>
-          </el-row>
-          <el-row>
-            <el-col :span="8">
-              <el-form-item label="申请编号">
-                <el-input
-                  v-model="queryPageParameters.approvalNo"
-                  placeholder="申请编号"
-                ></el-input>
-              </el-form-item>
-            </el-col>
-            <el-col :span="8">
-              <el-form-item label="状态">
-                <el-select
-                  v-model="queryPageParameters.status"
-                  clearable
-                  placeholder="状态"
-                  class="width--100"
-                >
-                  <el-option
-                    v-for="item in $root.displayList('state')"
-                    :key="item.value"
-                    :label="item.label"
-                    :value="item.value"
-                  ></el-option>
-                </el-select>
-              </el-form-item>
-            </el-col>
-            <el-col :span="8">
-              <el-form-item label="OA发文文号">
-                <el-input
-                  v-model="queryPageParameters.account"
-                  placeholder="OA发文文号"
-                ></el-input>
-              </el-form-item>
-            </el-col>
-          </el-row>
-        </el-form>
-      </template>
-
-      <template v-slot:btn>
-        <el-row class="el-row">
-          <el-button type="primary" @click="search()">查询</el-button>
-          <el-button type="info" @click="empty()">清空</el-button>
-          <el-button type="success" @click="add()">添加</el-button>
-          <el-button type="success" @click="add()">变更经办人</el-button>
-        </el-row>
-      </template>
-
-      <template v-slot:table>
-        <br />
-        <el-table
-          class="ih-table"
-          :data="resPageInfo.list"
-          :default-sort="{ prop: 'id', order: 'descending' }"
-          @selection-change="handleSelectionChange"
-        >
-          <el-table-column type="selection" width="70"> </el-table-column>
-          <el-table-column
-            fixed
-            prop="approvalNo"
-            label="申请编号"
-          ></el-table-column>
-          <el-table-column
-            fixed
-            type="channelName"
-            label="事业部"
-          ></el-table-column>
-          <el-table-column
-            fixed
-            prop="inputTime"
-            label="发起日期"
-          ></el-table-column>
-          <el-table-column
-            fixed
-            prop="inputUser"
-            label="经办人"
-          ></el-table-column>
-          <el-table-column prop="status" label="状态"></el-table-column>
-          <el-table-column prop="oaNo" label="OA发文文号"></el-table-column>
-          <el-table-column label="操作" width="180">
-            <template slot-scope="scope">
-              <el-link type="primary" @click.native.prevent="info(scope)"
-                >详情</el-link
+  <ih-page>
+    <template v-slot:form>
+      <el-form
+        ref="form"
+        label-width="100px"
+      >
+        <el-row>
+          <el-col :span="8">
+            <el-form-item label="事业部">
+              <el-select
+                v-model="queryPageParameters.departmentOrgId"
+                clearable
+                placeholder="事业部"
+                class="width--100"
               >
-              <el-dropdown trigger="click" style="margin-left: 15px">
-                <span class="el-dropdown-link">
-                  更多
-                  <i class="el-icon-arrow-down el-icon--right"></i>
-                </span>
-                <el-dropdown-menu slot="dropdown">
-                  <el-dropdown-item @click.native.prevent="ModifyThe(scope)"
-                    >修改</el-dropdown-item
-                  >
-                  <el-dropdown-item @click.native.prevent="remove(scope)"
-                    >删除</el-dropdown-item
-                  >
-                  <el-dropdown-item @click.native.prevent="withdraw(scope)"
-                    >撤回重发</el-dropdown-item
-                  >
-                  <el-dropdown-item @click.native.prevent="audit(scope)"
-                    >下载供应商名录</el-dropdown-item
-                  >
-                  <el-dropdown-item @click.native.prevent="change(scope)"
-                    >变更</el-dropdown-item
-                  >
-                </el-dropdown-menu>
-              </el-dropdown>
-            </template>
-          </el-table-column>
-        </el-table>
-      </template>
+                <el-option
+                  v-for="item in $root.displayList('division')"
+                  :key="item.value"
+                  :label="item.label"
+                  :value="item.value"
+                ></el-option>
+              </el-select>
+            </el-form-item>
+          </el-col>
+          <el-col :span="8">
+            <el-form-item label="入职日期">
+              <el-date-picker
+                style="width: 100%"
+                v-model="queryPageParameters.inputTime"
+                type="daterange"
+                align="left"
+                unlink-panels
+                range-separator="至"
+                start-placeholder="开始日期"
+                end-placeholder="结束日期"
+                value-format="yyyy-MM-dd"
+                :picker-options="$root.pickerOptions"
+                @change="employmentDateChange"
+              >
+                ></el-date-picker>
+            </el-form-item>
+          </el-col>
 
+          <el-col :span="8">
+            <el-form-item label="经办人">
+              <el-select
+                v-model="queryPageParameters.inputUser"
+                clearable
+                placeholder="经办人"
+                class="width--100"
+              >
+                <el-option
+                  v-for="item in $root.displayList('state')"
+                  :key="item.value"
+                  :label="item.label"
+                  :value="item.value"
+                ></el-option>
+              </el-select>
+            </el-form-item>
+          </el-col>
+        </el-row>
+        <el-row>
+          <el-col :span="8">
+            <el-form-item label="申请编号">
+              <el-input
+                v-model="queryPageParameters.approvalNo"
+                placeholder="申请编号"
+              ></el-input>
+            </el-form-item>
+          </el-col>
+          <el-col :span="8">
+            <el-form-item label="状态">
+              <el-select
+                v-model="queryPageParameters.status"
+                clearable
+                placeholder="状态"
+                class="width--100"
+              >
+                <el-option
+                  v-for="item in $root.displayList('state')"
+                  :key="item.value"
+                  :label="item.label"
+                  :value="item.value"
+                ></el-option>
+              </el-select>
+            </el-form-item>
+          </el-col>
+          <el-col :span="8">
+            <el-form-item label="OA发文文号">
+              <el-input
+                v-model="queryPageParameters.account"
+                placeholder="OA发文文号"
+              ></el-input>
+            </el-form-item>
+          </el-col>
+        </el-row>
+      </el-form>
+    </template>
+
+    <template v-slot:btn>
+      <el-row class="el-row">
+        <el-button
+          type="primary"
+          @click="search()"
+        >查询</el-button>
+        <el-button
+          type="info"
+          @click="empty()"
+        >清空</el-button>
+        <el-button
+          type="success"
+          @click="add()"
+        >添加</el-button>
+        <el-button
+          type="success"
+          @click="add()"
+        >变更经办人</el-button>
+      </el-row>
+    </template>
+
+    <template v-slot:table>
+      <br />
+      <el-table
+        class="ih-table"
+        :data="resPageInfo.list"
+        :default-sort="{ prop: 'id', order: 'descending' }"
+        @selection-change="handleSelectionChange"
+      >
+        <el-table-column
+          type="selection"
+          width="70"
+        > </el-table-column>
+        <el-table-column
+          fixed
+          prop="approvalNo"
+          label="申请编号"
+        ></el-table-column>
+        <el-table-column
+          fixed
+          type="channelName"
+          label="事业部"
+        ></el-table-column>
+        <el-table-column
+          fixed
+          prop="inputTime"
+          label="发起日期"
+        ></el-table-column>
+        <el-table-column
+          fixed
+          prop="inputUser"
+          label="经办人"
+        ></el-table-column>
+        <el-table-column
+          prop="status"
+          label="状态"
+        ></el-table-column>
+        <el-table-column
+          prop="oaNo"
+          label="OA发文文号"
+        ></el-table-column>
+        <el-table-column
+          label="操作"
+          width="180"
+        >
+          <template slot-scope="scope">
+            <el-link
+              type="primary"
+              @click.native.prevent="info(scope)"
+            >详情</el-link>
+            <el-dropdown
+              trigger="click"
+              style="margin-left: 15px"
+            >
+              <span class="el-dropdown-link">
+                更多
+                <i class="el-icon-arrow-down el-icon--right"></i>
+              </span>
+              <el-dropdown-menu slot="dropdown">
+                <el-dropdown-item @click.native.prevent="ModifyThe(scope)">修改</el-dropdown-item>
+                <el-dropdown-item @click.native.prevent="remove(scope)">删除</el-dropdown-item>
+                <el-dropdown-item @click.native.prevent="withdraw(scope)">撤回重发</el-dropdown-item>
+                <el-dropdown-item @click.native.prevent="audit(scope)">下载供应商名录</el-dropdown-item>
+                <el-dropdown-item @click.native.prevent="change(scope)">变更</el-dropdown-item>
+              </el-dropdown-menu>
+            </el-dropdown>
+          </template>
+        </el-table-column>
+      </el-table>
+    </template>
+
+    <template #pagination>
+      <br />
       <el-pagination
         @size-change="handleSizeChangeMixin"
         @current-change="handleCurrentChangeMixin"
@@ -192,9 +208,10 @@
         :layout="$root.paginationLayout"
         :total="resPageInfo.total"
       ></el-pagination>
-    </ih-page>
-  </div>
+    </template>
+  </ih-page>
 </template>
+
 <script lang="ts">
 import { Component, Vue } from "vue-property-decorator";
 import { post_channelApproval_getList } from "../../../api/channel/index";
@@ -212,8 +229,6 @@ export default class UserList extends Vue {
     status: "",
     inputTime: null,
     approvalNo: "",
-    pageNum: 1,
-    pageSize: 10,
     inputTimeStart: null,
     inputTimeEnd: null,
   };
@@ -239,7 +254,7 @@ export default class UserList extends Vue {
     console.log("查询成功");
   }
   add(scope: any) {
-    console.log("添加");
+    console.log("添加", scope);
     // this.$router.push({
     //   path: "/channelLevel/ModifyThe",
     // });
@@ -253,7 +268,7 @@ export default class UserList extends Vue {
   //操作
   info(scope: any) {
     this.$router.push({
-      path: "/ChannelAgroupOf/info",
+      path: "channelAgroupOf/info",
       query: { id: scope.row.id },
     });
   }
@@ -265,24 +280,24 @@ export default class UserList extends Vue {
     });
   }
   remove(scope: any) {
-    console.log("删除");
+    console.log("删除", scope);
     // this.$router.push({
     //   path: "/confirm",
     //   query: { id: scope.row.id },
     // });
   }
   withdraw(scope: any) {
-    console.log("撤回");
+    console.log("撤回", scope);
   }
   audit(scope: any) {
-    console.log("审核");
+    console.log("审核", scope);
     this.$router.push({
       path: "/channelLevel/levelInfoAudit",
     });
   }
 
   change(scope: any) {
-    console.log("变更");
+    console.log("变更", scope);
     // this.$router.push({
     //   path: "/MaintenanceOfChannels",
     //   query: { id: scope.row.id },

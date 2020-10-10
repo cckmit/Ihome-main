@@ -3,13 +3,16 @@
  * @version: 
  * @Author: zyc
  * @Date: 2020-06-30 09:21:17
- * @LastEditors: lgf
- * @LastEditTime: 2020-09-27 16:18:13
+ * @LastEditors: ywl
+ * @LastEditTime: 2020-10-10 16:31:52
 --> 
 <template>
   <ih-page>
     <template v-slot:form>
-      <el-form ref="form" label-width="100px">
+      <el-form
+        ref="form"
+        label-width="100px"
+      >
         <el-row>
           <el-col :span="8">
             <el-form-item label="渠道商名称">
@@ -86,9 +89,18 @@
 
     <template v-slot:btn>
       <el-row>
-        <el-button type="primary" @click="search()">查询</el-button>
-        <el-button type="warning" @click="add()">清空</el-button>
-        <el-button type="info" @click="reset()">变更录入人</el-button>
+        <el-button
+          type="primary"
+          @click="search()"
+        >查询</el-button>
+        <el-button
+          type="warning"
+          @click="add()"
+        >清空</el-button>
+        <el-button
+          type="info"
+          @click="reset()"
+        >变更录入人</el-button>
       </el-row>
     </template>
 
@@ -100,7 +112,11 @@
         :default-sort="{ prop: 'id', order: 'descending' }"
         @selection-change="handleSelectionChange"
       >
-        <el-table-column fixed type="selection" width="100"></el-table-column>
+        <el-table-column
+          fixed
+          type="selection"
+          width="100"
+        ></el-table-column>
         <el-table-column
           fixed
           poro=""
@@ -124,7 +140,11 @@
           label="变更日期"
           width="220"
         ></el-table-column>
-        <el-table-column prop="accountType" label="状态" width="240">
+        <el-table-column
+          prop="accountType"
+          label="状态"
+          width="240"
+        >
         </el-table-column>
         <el-table-column
           prop="orgName"
@@ -133,34 +153,26 @@
         ></el-table-column>
 
         <el-table-column label="操作">
-          <template slot-scope="scope">
-            <el-link type="primary" @click.native.prevent="info(scope)"
-              >详情</el-link
+          <template v-slot="{ row, $index }">
+            <el-link
+              type="primary"
+              @click.native.prevent="info(row)"
+            >详情</el-link>
+            <el-dropdown
+              trigger="click"
+              style="margin-left: 15px"
             >
-            <el-dropdown trigger="click" style="margin-left: 15px">
               <span class="el-dropdown-link">
                 更多操作
                 <i class="el-icon-arrow-down el-icon--right"></i>
               </span>
               <el-dropdown-menu slot="dropdown">
-                <el-dropdown-item @click.native.prevent="edit(scope)"
-                  >修改</el-dropdown-item
-                >
-                <el-dropdown-item @click.native.prevent="remove(scope)"
-                  >删除</el-dropdown-item
-                >
-                <el-dropdown-item @click.native.prevent="resetPassword(scope)"
-                  >确认</el-dropdown-item
-                >
-                <el-dropdown-item @click.native.prevent="activation(scope)"
-                  >审核</el-dropdown-item
-                >
-                <el-dropdown-item @click.native.prevent="locking(scope)"
-                  >撤回</el-dropdown-item
-                >
-                <el-dropdown-item @click.native.prevent="locking(scope)"
-                  >退回起草</el-dropdown-item
-                >
+                <el-dropdown-item @click.native.prevent="edit(row)">修改</el-dropdown-item>
+                <el-dropdown-item @click.native.prevent="remove(row, $index)">删除</el-dropdown-item>
+                <el-dropdown-item @click.native.prevent="resetPassword(row)">确认</el-dropdown-item>
+                <el-dropdown-item @click.native.prevent="activation(row)">审核</el-dropdown-item>
+                <el-dropdown-item @click.native.prevent="locking(row)">撤回</el-dropdown-item>
+                <el-dropdown-item @click.native.prevent="locking(row)">退回起草</el-dropdown-item>
               </el-dropdown-menu>
             </el-dropdown>
           </template>
@@ -282,25 +294,25 @@ export default class UserList extends Vue {
     this.getListMixin();
   }
 
-  edit(scope: any) {
-    this.add(scope.row);
+  edit(row: any) {
+    this.add(row);
   }
-  jobRole(scope: any) {
-    console.log(scope);
-    this.jobVisibleData = scope.row;
+  jobRole(row: any) {
+    console.log(row);
+    this.jobVisibleData = row;
     this.jobVisible = true;
   }
-  pOrganization(scope: any) {
-    console.log(scope);
-    this.OrganizationJurisdictionData = scope.row;
+  pOrganization(row: any) {
+    console.log(row);
+    this.OrganizationJurisdictionData = row;
     this.organizationJurisdictionVisible = true;
   }
 
-  async remove(scope: any) {
+  async row(row: any, index: number) {
     try {
       await this.$confirm("是否确定删除?", "提示");
-      await post_user_delete__id({ id: scope.row.id });
-      this.resPageInfo.list.splice(scope.$index, 1);
+      await post_user_delete__id({ id: row.id });
+      this.resPageInfo.list.splice(index, 1);
       this.$message({
         type: "success",
         message: "删除成功!",
@@ -309,11 +321,11 @@ export default class UserList extends Vue {
       console.log(error);
     }
   }
-  async locking(scope: any) {
-    console.log(scope);
+  async locking(row: any) {
+    console.log(row);
     try {
       await this.$confirm("是否确定锁定用户?", "提示");
-      await post_user_lock__id({ id: scope.row.id });
+      await post_user_lock__id({ id: row.id });
 
       this.$message({
         type: "success",
@@ -324,11 +336,11 @@ export default class UserList extends Vue {
       console.log(error);
     }
   }
-  async activation(scope: any) {
-    console.log(scope);
+  async activation(row: any) {
+    console.log(row);
     try {
       await this.$confirm("是否确定激活用户?", "提示");
-      await post_user_activate__id({ id: scope.row.id });
+      await post_user_activate__id({ id: row.id });
 
       this.$message({
         type: "success",
@@ -339,11 +351,11 @@ export default class UserList extends Vue {
       console.log(error);
     }
   }
-  async resetPassword(scope: any) {
-    console.log(scope);
+  async resetPassword(row: any) {
+    console.log(row);
     try {
       await this.$confirm("是否确定重置密码?", "提示");
-      const res = await post_user_resetPassword__id({ id: scope.row.id });
+      const res = await post_user_resetPassword__id({ id: row.id });
       this.$alert(res, "密码重置成功");
     } catch (error) {
       console.log(error);
@@ -366,8 +378,8 @@ export default class UserList extends Vue {
     this.copyUserData = val;
   }
   //详情
-  info(scope: any) {
-    console.log("详情页跳转");
+  info(row: any) {
+    console.log("详情页跳转", row);
   }
 }
 </script>

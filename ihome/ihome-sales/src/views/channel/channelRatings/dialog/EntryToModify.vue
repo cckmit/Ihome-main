@@ -3,8 +3,8 @@
  * @version: 
  * @Author: lgf
  * @Date: 2020-10-09 09:35:09
- * @LastEditors: lgf
- * @LastEditTime: 2020-10-09 17:28:52
+ * @LastEditors: ywl
+ * @LastEditTime: 2020-10-10 16:19:02
 -->
 
 <template>
@@ -18,10 +18,18 @@
     width="800px"
     class="dialog text-left"
   >
-    <el-form ref="form" :model="form" :rules="rules" label-width="80px">
+    <el-form
+      ref="form"
+      :model="form"
+      :rules="rules"
+      label-width="80px"
+    >
       <el-row>
         <el-col :span="12">
-          <el-form-item label="城市等级" :prop="getProp('workType')">
+          <el-form-item
+            label="城市等级"
+            :prop="getProp('workType')"
+          >
             <el-select
               v-model="form.workType"
               clearable
@@ -40,7 +48,10 @@
         </el-col>
 
         <el-col :span="12">
-          <el-form-item label="渠道等级" :prop="getProp('employeeType')">
+          <el-form-item
+            label="渠道等级"
+            :prop="getProp('employeeType')"
+          >
             <el-select
               v-model="form.employeeType"
               clearable
@@ -58,9 +69,15 @@
       </el-row>
     </el-form>
 
-    <span slot="footer" class="dialog-footer">
+    <span
+      slot="footer"
+      class="dialog-footer"
+    >
       <el-button @click="cancel()">取 消</el-button>
-      <el-button type="primary" @click="finish()">确 定</el-button>
+      <el-button
+        type="primary"
+        @click="finish()"
+      >确 定</el-button>
     </span>
   </el-dialog>
 </template>
@@ -77,9 +94,9 @@ import { NoRepeatHttp } from "ihome-common/util/aop/no-repeat-http";
 //   get_user_get__id,
 // } from "../../api/system";
 
-// @Component({
-//   components: { SelectOrganizationTree },
-// })
+@Component({
+  //   components: { SelectOrganizationTree },
+})
 export default class EntryToModify extends Vue {
   constructor() {
     super();
@@ -124,6 +141,7 @@ export default class EntryToModify extends Vue {
   }
   @NoRepeatHttp()
   async submit(valid: any) {
+    console.log(valid);
     // if (valid) {
     //   console.log(this.form);
     //   if (this.form.id > 0) {

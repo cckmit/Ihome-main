@@ -3,13 +3,16 @@
  * @version: 
  * @Author: zyc
  * @Date: 2020-06-30 09:21:17
- * @LastEditors: lgf
- * @LastEditTime: 2020-09-30 11:39:46
+ * @LastEditors: ywl
+ * @LastEditTime: 2020-10-10 16:36:50
 --> 
 <template>
   <ih-page>
     <template v-slot:form>
-      <el-form ref="form" label-width="100px">
+      <el-form
+        ref="form"
+        label-width="100px"
+      >
         <el-row>
           <el-col :span="8">
             <el-form-item label="姓名">
@@ -50,8 +53,14 @@
 
     <template v-slot:btn>
       <el-row>
-        <el-button type="primary" @click="search()">查询</el-button>
-        <el-button type="warning" @click="reset()">清空</el-button>
+        <el-button
+          type="primary"
+          @click="search()"
+        >查询</el-button>
+        <el-button
+          type="warning"
+          @click="reset()"
+        >清空</el-button>
       </el-row>
     </template>
 
@@ -63,7 +72,11 @@
         :default-sort="{ prop: 'id', order: 'descending' }"
         @selection-change="handleSelectionChange"
       >
-        <el-table-column fixed type="selection" width="100"></el-table-column>
+        <el-table-column
+          fixed
+          type="selection"
+          width="100"
+        ></el-table-column>
         <el-table-column
           fixed
           poro="username"
@@ -119,8 +132,6 @@ export default class UserList extends Vue {
     username: "",
     mobile: "",
     distributorsName: "",
-    pageNum: 1,
-    pageSize: 10,
   };
   jobVisibleData: any = null;
   OrganizationJurisdictionData: any = null;

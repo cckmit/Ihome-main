@@ -3,18 +3,25 @@
  * @version: 
  * @Author: lgf
  * @Date: 2020-09-16 14:05:21
- * @LastEditors: lgf
- * @LastEditTime: 2020-09-23 15:18:05
+ * @LastEditors: ywl
+ * @LastEditTime: 2020-10-10 16:21:03
 -->
 
 <template>
   <ih-page>
     <template v-slot:form>
       <p class="ih-info-title">基础信息</p>
-      <el-form ref="form" :rules="rules" label-width="120px">
+      <el-form
+        ref="form"
+        :rules="rules"
+        label-width="120px"
+      >
         <el-row>
           <el-col :span="8">
-            <el-form-item label="渠道商名称" prop="distributorsName">
+            <el-form-item
+              label="渠道商名称"
+              prop="distributorsName"
+            >
               <el-select
                 v-model="queryPageParameters.distributorsName"
                 clearable
@@ -32,7 +39,10 @@
           </el-col>
 
           <el-col :span="8">
-            <el-form-item label="渠道等级" prop="ChannelLevel">
+            <el-form-item
+              label="渠道等级"
+              prop="ChannelLevel"
+            >
               <el-select
                 v-model="queryPageParameters.ChannelLevel"
                 clearable
@@ -49,12 +59,18 @@
             </el-form-item>
           </el-col>
           <el-col :span="8">
-            <el-form-item label="渠道类型" prop="ChannelType">
+            <el-form-item
+              label="渠道类型"
+              prop="ChannelType"
+            >
               <el-input v-model="queryPageParameters.ChannelType"></el-input>
             </el-form-item>
           </el-col>
           <el-col :span="8">
-            <el-form-item label="业务开展省份" prop="provinces">
+            <el-form-item
+              label="业务开展省份"
+              prop="provinces"
+            >
               <el-select
                 v-model="queryPageParameters.provinces"
                 clearable
@@ -71,7 +87,10 @@
             </el-form-item>
           </el-col>
           <el-col :span="8">
-            <el-form-item label="业务开展城市" prop="city">
+            <el-form-item
+              label="业务开展城市"
+              prop="city"
+            >
               <el-select
                 v-model="queryPageParameters.city"
                 clearable
@@ -93,13 +112,19 @@
             </el-form-item>
           </el-col>
           <el-col :span="8">
-            <el-form-item label="特批入库" prop="checked">
+            <el-form-item
+              label="特批入库"
+              prop="checked"
+            >
               <el-checkbox v-model="queryPageParameters.checked">特批入库</el-checkbox>
             </el-form-item>
           </el-col>
           <el-col :span="8">
             <el-form-item label="入库编号">
-              <el-input v-model="queryPageParameters.account" placeholder="入库编号"></el-input>
+              <el-input
+                v-model="queryPageParameters.account"
+                placeholder="入库编号"
+              ></el-input>
             </el-form-item>
           </el-col>
           <el-col :span="8">
@@ -132,12 +157,35 @@
         <el-link>复制评级信息</el-link>
       </p>
 
-      <el-table :data="resPageInfo.list" border style="width:100%">
-        <el-table-column prop="date" label="城市等级" width="300"></el-table-column>
-        <el-table-column prop="name" label="渠道等级"></el-table-column>
-        <el-table-column prop="address" label="评级项" width="300"></el-table-column>
-        <el-table-column prop="address" label="录入信息" width="300"></el-table-column>
-        <el-table-column prop="address" label="评级标准" width="300"></el-table-column>
+      <el-table
+        :data="resPageInfo.list"
+        border
+        style="width:100%"
+      >
+        <el-table-column
+          prop="date"
+          label="城市等级"
+          width="300"
+        ></el-table-column>
+        <el-table-column
+          prop="name"
+          label="渠道等级"
+        ></el-table-column>
+        <el-table-column
+          prop="address"
+          label="评级项"
+          width="300"
+        ></el-table-column>
+        <el-table-column
+          prop="address"
+          label="录入信息"
+          width="300"
+        ></el-table-column>
+        <el-table-column
+          prop="address"
+          label="评级标准"
+          width="300"
+        ></el-table-column>
       </el-table>
     </template>
 
@@ -154,7 +202,7 @@
 <script lang="ts">
 import { Component, Vue } from "vue-property-decorator";
 //引入请求数据的api
-import { post_channelGrade_add } from "../../../../api/channel/index";
+// import { post_channelGrade_add } from "../../../../api/channel/index";
 
 @Component({
   components: {},

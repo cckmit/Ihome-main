@@ -3,17 +3,23 @@
  * @version: 
  * @Author: wwq
  * @Date: 2020-09-25 17:59:09
- * @LastEditors: wwq
- * @LastEditTime: 2020-09-27 17:03:08
+ * @LastEditors: ywl
+ * @LastEditTime: 2020-10-10 16:38:17
 -->
 <template>
   <ih-page>
     <template v-slot:form>
       <p class="ih-info-title">基础信息</p>
-      <el-form ref="form" label-width="120px">
+      <el-form
+        ref="form"
+        label-width="120px"
+      >
         <el-row>
           <el-col :span="8">
-            <el-form-item label="名称" required>
+            <el-form-item
+              label="名称"
+              required
+            >
               <el-input
                 v-model="queryPageParameters.account"
                 placeholder="名称"
@@ -21,7 +27,10 @@
             </el-form-item>
           </el-col>
           <el-col :span="8">
-            <el-form-item label="信用代码" required>
+            <el-form-item
+              label="信用代码"
+              required
+            >
               <el-input
                 v-model="queryPageParameters.name"
                 placeholder="信用代码"
@@ -29,7 +38,10 @@
             </el-form-item>
           </el-col>
           <el-col :span="8">
-            <el-form-item label="简称" required>
+            <el-form-item
+              label="简称"
+              required
+            >
               <el-input
                 v-model="queryPageParameters.name"
                 placeholder="简称"
@@ -58,7 +70,10 @@
                 </el-form-item>
               </el-col>
               <el-col :span="8">
-                <el-form-item label="法定代表人" required>
+                <el-form-item
+                  label="法定代表人"
+                  required
+                >
                   <el-input
                     v-model="queryPageParameters.mobilePhone"
                     placeholder="法定代表人"
@@ -74,7 +89,10 @@
                 </el-form-item>
               </el-col>
               <el-col :span="8">
-                <el-form-item label="成立日期" required>
+                <el-form-item
+                  label="成立日期"
+                  required
+                >
                   <el-date-picker
                     v-model="queryPageParameters.employeeCode"
                     style="width: 100%"
@@ -85,7 +103,10 @@
                 </el-form-item>
               </el-col>
               <el-col :span="8">
-                <el-form-item label="注册资本" required>
+                <el-form-item
+                  label="注册资本"
+                  required
+                >
                   <el-input
                     v-model="queryPageParameters.employeeCode"
                     placeholder="注册资本"
@@ -122,7 +143,10 @@
                 </el-form-item>
               </el-col>
               <el-col :span="16">
-                <el-form-item label="住所" required>
+                <el-form-item
+                  label="住所"
+                  required
+                >
                   <el-input
                     v-model="queryPageParameters.employeeCode"
                     placeholder="住所"
@@ -130,7 +154,10 @@
                 </el-form-item>
               </el-col>
               <el-col :span="8">
-                <el-form-item label="录入人" required>
+                <el-form-item
+                  label="录入人"
+                  required
+                >
                   <el-input
                     disabled
                     v-model="queryPageParameters.employeeCode"
@@ -150,17 +177,17 @@
           type="primary"
           class="float-right margin-right-40"
           @click="openToggle()"
-          >{{ searchOpen ? "收起" : "展开" }}</el-link
-        >
+        >{{ searchOpen ? "收起" : "展开" }}</el-link>
       </el-row>
     </template>
 
     <template v-slot:table>
       <div class="content">
         <p class="ih-info-title">联系人信息</p>
-        <el-button @click="contactsDialogVisible = true" type="primary"
-          >添加</el-button
-        >
+        <el-button
+          @click="contactsDialogVisible = true"
+          type="primary"
+        >添加</el-button>
       </div>
       <br />
       <ih-table
@@ -172,12 +199,22 @@
         :columnIndex="false"
       >
         <template #operation>
-          <el-table-column fixed="right" label="操作" align="center">
+          <el-table-column
+            fixed="right"
+            label="操作"
+            align="center"
+          >
             <template v-slot="{ row }">
-              <span class="el-dropdown-link" @click="editContacts(row)">
+              <span
+                class="el-dropdown-link"
+                @click="editContacts(row)"
+              >
                 编辑
               </span>
-              <span class="el-dropdown-link" @click="routerTo(row)">
+              <span
+                class="el-dropdown-link"
+                @click="routerTo(row)"
+              >
                 移除
               </span>
             </template>
@@ -187,9 +224,10 @@
       <br />
       <div class="content">
         <p class="ih-info-title">账户信息</p>
-        <el-button @click="accountDialogVisible = true" type="primary"
-          >添加</el-button
-        >
+        <el-button
+          @click="accountDialogVisible = true"
+          type="primary"
+        >添加</el-button>
       </div>
       <br />
       <ih-table
@@ -201,12 +239,22 @@
         :columnIndex="false"
       >
         <template #operation>
-          <el-table-column fixed="right" label="操作" align="center">
+          <el-table-column
+            fixed="right"
+            label="操作"
+            align="center"
+          >
             <template v-slot="{ row }">
-              <span class="el-dropdown-link" @click="editAccount(row)">
+              <span
+                class="el-dropdown-link"
+                @click="editAccount(row)"
+              >
                 编辑
               </span>
-              <span class="el-dropdown-link" @click="routerTo(row)">
+              <span
+                class="el-dropdown-link"
+                @click="routerTo(row)"
+              >
                 移除
               </span>
             </template>
@@ -225,12 +273,22 @@
         :columnIndex="false"
       >
         <template #operation>
-          <el-table-column fixed="right" label="操作" align="center">
+          <el-table-column
+            fixed="right"
+            label="操作"
+            align="center"
+          >
             <template v-slot="{ row }">
-              <span class="el-dropdown-link" @click="routerTo(row)">
+              <span
+                class="el-dropdown-link"
+                @click="routerTo(row)"
+              >
                 编辑
               </span>
-              <span class="el-dropdown-link" @click="routerTo(row)">
+              <span
+                class="el-dropdown-link"
+                @click="routerTo(row)"
+              >
                 移除
               </span>
             </template>
@@ -260,12 +318,21 @@
       </div>
 
       <div class="bottom">
-        <el-button @click="add()" type="primary">保存</el-button>
-        <el-button @click="add()" type="primary">提交</el-button>
+        <el-button
+          @click="add()"
+          type="primary"
+        >保存</el-button>
+        <el-button
+          @click="add()"
+          type="primary"
+        >提交</el-button>
       </div>
     </template>
 
-    <ih-dialog :show="contactsDialogVisible" desc="联系人信息录入">
+    <ih-dialog
+      :show="contactsDialogVisible"
+      desc="联系人信息录入"
+    >
       <Contacts
         :data="addData"
         @cancel="() => (contactsDialogVisible = false)"
@@ -277,7 +344,10 @@
         "
       />
     </ih-dialog>
-    <ih-dialog :show="accountDialogVisible" desc="账户信息录入">
+    <ih-dialog
+      :show="accountDialogVisible"
+      desc="账户信息录入"
+    >
       <Account
         :data="addData"
         @cancel="() => (accountDialogVisible = false)"
@@ -324,8 +394,6 @@ export default class Edit extends Vue {
     devStatus: null,
     ProvincesOptions: Array,
     keyboarder: null,
-    pageSize: 20,
-    pageNum: 1,
   };
 
   searchOpen = true;

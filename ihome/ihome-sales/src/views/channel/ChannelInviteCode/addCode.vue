@@ -3,13 +3,16 @@
  * @version: 
  * @Author: lgf
  * @Date: 2020-09-21 18:06:34
- * @LastEditors: lgf
- * @LastEditTime: 2020-09-29 11:53:37
+ * @LastEditors: ywl
+ * @LastEditTime: 2020-10-10 16:25:39
 -->
 <template>
   <ih-page>
     <template v-slot:form>
-      <el-form ref="form" label-width="80px">
+      <el-form
+        ref="form"
+        label-width="80px"
+      >
         <el-row>
           <el-col :span="6">
             <el-form
@@ -19,7 +22,10 @@
               label-width="100px"
               class="demo-ruleForm"
             >
-              <el-form-item label="失效日期" prop="expiresTime">
+              <el-form-item
+                label="失效日期"
+                prop="expiresTime"
+              >
                 <el-form-item prop="expiresTime">
                   <el-date-picker
                     type="date"
@@ -53,13 +59,22 @@
       </el-form>
     </template>
     <template v-slot:btn>
-      <el-button type="primary" @click="creat()">创建</el-button>
+      <el-button
+        type="primary"
+        @click="creat()"
+      >创建</el-button>
     </template>
     <template v-slot:info>
       <div class="imgList">
-        <img src="" alt="" />
+        <img
+          src=""
+          alt=""
+        />
       </div>
-      <el-link type="success" class="elLink">下载二维码</el-link>
+      <el-link
+        type="success"
+        class="elLink"
+      >下载二维码</el-link>
     </template>
   </ih-page>
 </template>
@@ -71,7 +86,7 @@
 import { Component, Vue } from "vue-property-decorator";
 import {
   get_channelInvitationCode_create,
-  get_channelInvitationCode_download,
+  // get_channelInvitationCode_download,
 } from "../../../api/channel/index";
 @Component({
   components: {},
@@ -93,7 +108,7 @@ export default class Home extends Vue {
     // this.getImgurl();
   }
   async InviteCode() {
-    let invitationCode = await get_channelInvitationCode_create({
+    await get_channelInvitationCode_create({
       expiresTime: this.ruleForm.expiresTime,
       departmentOrgId: this.ruleForm.division,
     });

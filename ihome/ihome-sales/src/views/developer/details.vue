@@ -3,29 +3,50 @@
  * @version: 
  * @Author: wwq
  * @Date: 2020-09-27 11:52:41
- * @LastEditors: wwq
- * @LastEditTime: 2020-09-27 17:02:59
+ * @LastEditors: ywl
+ * @LastEditTime: 2020-10-10 16:37:58
 -->
 <template>
-  <el-tabs type="border-card" v-model="activeName">
-    <el-tab-pane label="详情信息" name="first">
+  <el-tabs
+    type="border-card"
+    v-model="activeName"
+  >
+    <el-tab-pane
+      label="详情信息"
+      name="first"
+    >
       <ih-page>
         <template v-slot:form>
           <p class="ih-info-title">基础信息</p>
-          <el-form ref="form" label-width="120px">
+          <el-form
+            ref="form"
+            label-width="120px"
+          >
             <el-row>
               <el-col :span="8">
-                <el-form-item label="名称" required align="left">
+                <el-form-item
+                  label="名称"
+                  required
+                  align="left"
+                >
                   <span>{{ queryPageParameters.name }}</span>
                 </el-form-item>
               </el-col>
               <el-col :span="8">
-                <el-form-item label="信用代码" required align="left">
+                <el-form-item
+                  label="信用代码"
+                  required
+                  align="left"
+                >
                   <span>{{ queryPageParameters.name }}</span>
                 </el-form-item>
               </el-col>
               <el-col :span="8">
-                <el-form-item label="简称" required align="left">
+                <el-form-item
+                  label="简称"
+                  required
+                  align="left"
+                >
                   <span>{{ queryPageParameters.name }}</span>
                 </el-form-item>
               </el-col>
@@ -34,53 +55,89 @@
               <div v-show="searchOpen">
                 <el-row>
                   <el-col :span="8">
-                    <el-form-item label="类型" align="left">
+                    <el-form-item
+                      label="类型"
+                      align="left"
+                    >
                       <span>{{ queryPageParameters.name }}</span>
                     </el-form-item>
                   </el-col>
                   <el-col :span="8">
-                    <el-form-item label="法定代表人" required align="left">
+                    <el-form-item
+                      label="法定代表人"
+                      required
+                      align="left"
+                    >
                       <span>{{ queryPageParameters.name }}</span>
                     </el-form-item>
                   </el-col>
                   <el-col :span="8">
-                    <el-form-item label="法人身份证号码" align="left">
+                    <el-form-item
+                      label="法人身份证号码"
+                      align="left"
+                    >
                       <span>{{ queryPageParameters.name }}</span>
                     </el-form-item>
                   </el-col>
                   <el-col :span="8">
-                    <el-form-item label="成立日期" required align="left">
+                    <el-form-item
+                      label="成立日期"
+                      required
+                      align="left"
+                    >
                       <span>{{ queryPageParameters.name }}</span>
                     </el-form-item>
                   </el-col>
                   <el-col :span="8">
-                    <el-form-item label="注册资本" required align="left">
+                    <el-form-item
+                      label="注册资本"
+                      required
+                      align="left"
+                    >
                       <span>{{ queryPageParameters.name }}</span>
                     </el-form-item>
                   </el-col>
 
                   <el-col :span="8">
-                    <el-form-item label="营业期限" align="left">
+                    <el-form-item
+                      label="营业期限"
+                      align="left"
+                    >
                       <span>{{ queryPageParameters.name }}</span>
                     </el-form-item>
                   </el-col>
                   <el-col :span="8">
-                    <el-form-item label="省市区" align="left">
+                    <el-form-item
+                      label="省市区"
+                      align="left"
+                    >
                       <span>{{ queryPageParameters.name }}</span>
                     </el-form-item>
                   </el-col>
                   <el-col :span="16">
-                    <el-form-item label="住所" required align="left">
+                    <el-form-item
+                      label="住所"
+                      required
+                      align="left"
+                    >
                       <span>{{ queryPageParameters.name }}</span>
                     </el-form-item>
                   </el-col>
                   <el-col :span="8">
-                    <el-form-item label="录入人" required align="left">
+                    <el-form-item
+                      label="录入人"
+                      required
+                      align="left"
+                    >
                       <span>{{ queryPageParameters.name }}</span>
                     </el-form-item>
                   </el-col>
                   <el-col :span="8">
-                    <el-form-item label="状态" required align="left">
+                    <el-form-item
+                      label="状态"
+                      required
+                      align="left"
+                    >
                       <span>{{ queryPageParameters.name }}</span>
                     </el-form-item>
                   </el-col>
@@ -96,8 +153,7 @@
               type="primary"
               class="float-right margin-right-40"
               @click="openToggle()"
-              >{{ searchOpen ? "收起" : "展开" }}</el-link
-            >
+            >{{ searchOpen ? "收起" : "展开" }}</el-link>
           </el-row>
         </template>
 
@@ -145,7 +201,10 @@
           >
           </el-input>
 
-          <div v-if="isRemove" class="text-left">
+          <div
+            v-if="isRemove"
+            class="text-left"
+          >
             <p class="ih-info-title">撤回信息</p>
             <p class="msg-title">撤回原因</p>
             <el-input
@@ -156,12 +215,17 @@
             >
             </el-input>
             <!-- <div class="bottom"> -->
-            <el-button class="margin-top-30" @click="add()" type="primary"
-              >提交</el-button
-            >
+            <el-button
+              class="margin-top-30"
+              @click="add()"
+              type="primary"
+            >提交</el-button>
             <!-- </div> -->
           </div>
-          <div v-if="isCheck" class="text-left">
+          <div
+            v-if="isCheck"
+            class="text-left"
+          >
             <p class="ih-info-title">审核信息</p>
             <p class="msg-title">审核意见</p>
             <el-input
@@ -171,17 +235,24 @@
               v-model="queryPageParameters.employeeCode"
             >
             </el-input>
-            <el-button class="margin-top-30" @click="add()" type="primary"
-              >通过</el-button
-            >
-            <el-button class="margin-top-30" @click="add()" type="primary"
-              >驳回</el-button
-            >
+            <el-button
+              class="margin-top-30"
+              @click="add()"
+              type="primary"
+            >通过</el-button>
+            <el-button
+              class="margin-top-30"
+              @click="add()"
+              type="primary"
+            >驳回</el-button>
           </div>
         </template>
       </ih-page>
     </el-tab-pane>
-    <el-tab-pane label="操作日志" name="second">
+    <el-tab-pane
+      label="操作日志"
+      name="second"
+    >
       <ih-table
         class="ih-table"
         :data="tableData"
@@ -229,8 +300,6 @@ export default class Edit extends Vue {
     devStatus: null,
     ProvincesOptions: Array,
     keyboarder: null,
-    pageSize: 20,
-    pageNum: 1,
   };
 
   searchOpen = true;

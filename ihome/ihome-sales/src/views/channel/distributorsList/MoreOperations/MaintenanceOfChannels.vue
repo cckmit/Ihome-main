@@ -3,8 +3,8 @@
  * @version: 
  * @Author: lgf
  * @Date: 2020-09-18 09:14:40
- * @LastEditors: lgf
- * @LastEditTime: 2020-09-29 09:37:35
+ * @LastEditors: ywl
+ * @LastEditTime: 2020-10-10 16:37:40
 -->
 <template>
   <div>
@@ -15,7 +15,10 @@
     </el-breadcrumb>
     <ih-page>
       <template v-slot:form>
-        <el-form ref="form" label-width="80px">
+        <el-form
+          ref="form"
+          label-width="80px"
+        >
           <el-row>
             <el-col :span="8">
               <el-form-item label="姓名">
@@ -64,9 +67,18 @@
       </template>
       <template v-slot:btn>
         <el-row>
-          <el-button type="primary" @click="search()">查询</el-button>
-          <el-button type="success" @click="add()">添加</el-button>
-          <el-button type="info" @click="reset()">清空</el-button>
+          <el-button
+            type="primary"
+            @click="search()"
+          >查询</el-button>
+          <el-button
+            type="success"
+            @click="add()"
+          >添加</el-button>
+          <el-button
+            type="info"
+            @click="reset()"
+          >清空</el-button>
         </el-row>
       </template>
       <br />
@@ -77,7 +89,10 @@
           :data="resPageInfo.list"
           :default-sort="{ prop: 'id', order: 'descending' }"
         >
-          <el-table-column type="selection" width="70"> </el-table-column>
+          <el-table-column
+            type="selection"
+            width="70"
+          > </el-table-column>
           <el-table-column
             prop="name"
             label="姓名"
@@ -99,28 +114,32 @@
             label="结佣权限"
             width="170"
           ></el-table-column>
-          <el-table-column prop="status" label="状态"></el-table-column>
+          <el-table-column
+            prop="status"
+            label="状态"
+          ></el-table-column>
 
-          <el-table-column label="操作" width="200">
+          <el-table-column
+            label="操作"
+            width="200"
+          >
             <template slot-scope="scope">
-              <el-link type="primary" @click.native.prevent="change(scope)"
-                >修改</el-link
+              <el-link
+                type="primary"
+                @click.native.prevent="change(scope)"
+              >修改</el-link>
+              <el-dropdown
+                trigger="click"
+                style="margin-left: 15px"
               >
-              <el-dropdown trigger="click" style="margin-left: 15px">
                 <span class="el-dropdown-link">
                   更多
                   <i class="el-icon-arrow-down el-icon--right"></i>
                 </span>
                 <el-dropdown-menu slot="dropdown">
-                  <el-dropdown-item @click.native.prevent="confirm(scope)"
-                    >关闭</el-dropdown-item
-                  >
-                  <el-dropdown-item @click.native.prevent="changeinfo(scope)"
-                    >启用</el-dropdown-item
-                  >
-                  <el-dropdown-item @click.native.prevent="maintenance(scope)"
-                    >删除</el-dropdown-item
-                  >
+                  <el-dropdown-item @click.native.prevent="confirm(scope)">关闭</el-dropdown-item>
+                  <el-dropdown-item @click.native.prevent="changeinfo(scope)">启用</el-dropdown-item>
+                  <el-dropdown-item @click.native.prevent="maintenance(scope)">删除</el-dropdown-item>
                 </el-dropdown-menu>
               </el-dropdown>
             </template>
@@ -141,34 +160,67 @@
           :total="resPageInfo.total"
         ></el-pagination>
       </template>
-      <el-dialog title="" :visible.sync="dialogFormVisible" width="500px">
+      <el-dialog
+        title=""
+        :visible.sync="dialogFormVisible"
+        width="500px"
+      >
         <el-form :model="form">
-          <el-form-item label="渠道商名称" :label-width="formLabelWidth">
-            <el-input v-model="form.chanelId" autocomplete="off"></el-input>
+          <el-form-item
+            label="渠道商名称"
+            :label-width="formLabelWidth"
+          >
+            <el-input
+              v-model="form.chanelId"
+              autocomplete="off"
+            ></el-input>
           </el-form-item>
-          <el-form-item label="姓名" :label-width="formLabelWidth">
-            <el-input v-model="form.name" autocomplete="off"></el-input>
+          <el-form-item
+            label="姓名"
+            :label-width="formLabelWidth"
+          >
+            <el-input
+              v-model="form.name"
+              autocomplete="off"
+            ></el-input>
           </el-form-item>
-          <el-form-item label="手机号码" :label-width="formLabelWidth">
-            <el-input v-model="form.mobile" autocomplete="off"></el-input>
+          <el-form-item
+            label="手机号码"
+            :label-width="formLabelWidth"
+          >
+            <el-input
+              v-model="form.mobile"
+              autocomplete="off"
+            ></el-input>
           </el-form-item>
-          <el-form-item label="邮箱" :label-width="formLabelWidth">
-            <el-input v-model="form.email" autocomplete="off"></el-input>
+          <el-form-item
+            label="邮箱"
+            :label-width="formLabelWidth"
+          >
+            <el-input
+              v-model="form.email"
+              autocomplete="off"
+            ></el-input>
           </el-form-item>
           <el-form-item>
             <el-checkbox v-model="form.checked">结佣权限</el-checkbox>
           </el-form-item>
         </el-form>
-        <div slot="footer" class="dialog-footer">
+        <div
+          slot="footer"
+          class="dialog-footer"
+        >
           <el-button @click="dialogFormVisible = false">取 消</el-button>
-          <el-button type="primary" @click="addEdit">确 定</el-button>
+          <el-button
+            type="primary"
+            @click="addEdit"
+          >确 定</el-button>
         </div>
       </el-dialog>
     </ih-page>
   </div>
 </template>
 <script lang="ts">
-import { Row } from "element-ui";
 import { Component, Vue } from "vue-property-decorator";
 import {
   post_channelAgent_getList,
@@ -184,8 +236,6 @@ export default class Home extends Vue {
     settlementFlag: "",
     status: "",
     name: "",
-    pageSize: 10,
-    pageNum: 1,
   };
   form: any = {
     name: "",

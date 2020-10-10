@@ -3,18 +3,8 @@
  * @version: 
  * @Author: zyc
  * @Date: 2020-06-24 09:47:33
-<<<<<<< HEAD
-<<<<<<< HEAD
- * @LastEditors: lgf
- * @LastEditTime: 2020-09-29 14:08:37
-=======
  * @LastEditors: ywl
- * @LastEditTime: 2020-09-18 11:04:27
->>>>>>> origin/develop
-=======
- * @LastEditors: wwq
- * @LastEditTime: 2020-09-25 08:54:25
->>>>>>> origin/develop
+ * @LastEditTime: 2020-10-10 17:11:07
  */
 import { IRes } from "./users.d";
 // import request from '@/utils/http';
@@ -143,14 +133,14 @@ export function allMenu<T>() {
             parentId: 201,
             title: "渠道商列表",
             icon: null,
-            path: "/web-sales/distributorsList",
+            path: "/web-sales/channels/distributorsList",
         },
         {
             id: 202,
             parentId: 201,
             title: "渠道等级信息变更列表",
             icon: null,
-            path: "/web-sales/list",
+            path: "/web-sales/channels/channelInfoList",
         },
 
         {
@@ -158,42 +148,42 @@ export function allMenu<T>() {
             parentId: 201,
             title: "渠道评级标准列表",
             icon: null,
-            path: "/web-sales/ChannelRatings",
+            path: "/web-sales/channels/channelRatings",
         },
         {
             id: 205,
             parentId: 201,
             title: "渠道等级信息列表",
             icon: "el-icon-setting",
-            path: "/web-sales/Channellevel",
+            path: "/web-sales/channels/channelLevel",
         },
         {
             id: 206,
             parentId: 201,
             title: "渠道呈批列表",
             icon: "el-icon-setting",
-            path: "/web-sales/ChannelAgroupOf",
+            path: "/web-sales/channels/channelAgroupOf",
         },
         {
             id: 207,
             parentId: 201,
             title: "渠道基础信息变更列表",
             icon: "el-icon-setting",
-            path: "/web-sales/ChannelBasicInfoChange",
+            path: "/web-sales/channels/channelBasicInfoChange",
         },
         {
             id: 208,
             parentId: 201,
             title: "渠道邀请码列表",
             icon: "el-icon-setting",
-            path: "/web-sales/ChannelInviteCode",
+            path: "/web-sales/channels/channelInviteCode",
         },
         {
             id: 209,
             parentId: 201,
-            title: "城市等级",
+            title: "城市等级列表",
             icon: "el-icon-setting",
-            path: "/web-sales/cityLevel",
+            path: "/web-sales/channels/cityLevel",
         }, {
             id: 301,
             parentId: 0,
@@ -208,19 +198,6 @@ export function allMenu<T>() {
             icon: null,
             path: "/web-sales/developer/list"
 
-        },
-        {
-            id: 401,
-            parentId: 101,
-            title: '合同管理',
-            path: null,
-        },
-        {
-            id: 402,
-            parentId: 401,
-            title: "甲方合同",
-            icon: null,
-            path: "/web-sales/project/list"
         }
     ];
     return menuList;

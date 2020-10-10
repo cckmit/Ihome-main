@@ -3,13 +3,16 @@
  * @version: 
  * @Author: zyc
  * @Date: 2020-06-30 09:21:17
- * @LastEditors: lgf
- * @LastEditTime: 2020-10-09 16:11:20
+ * @LastEditors: ywl
+ * @LastEditTime: 2020-10-10 16:12:55
 --> 
 <template>
   <ih-page>
     <template v-slot:form>
-      <el-form ref="form" label-width="100px">
+      <el-form
+        ref="form"
+        label-width="100px"
+      >
         <el-row>
           <el-col :span="8">
             <el-form-item label="渠道商名称">
@@ -101,9 +104,18 @@
 
     <template v-slot:btn>
       <el-row>
-        <el-button type="primary" @click="search()">查询</el-button>
-        <el-button type="warning" @click="reset()">清空</el-button>
-        <el-button type="info" @click="add()">变更录入人</el-button>
+        <el-button
+          type="primary"
+          @click="search()"
+        >查询</el-button>
+        <el-button
+          type="warning"
+          @click="reset()"
+        >清空</el-button>
+        <el-button
+          type="info"
+          @click="add()"
+        >变更录入人</el-button>
       </el-row>
     </template>
 
@@ -138,8 +150,12 @@
           label="城市等级"
           width="170"
         ></el-table-column>
-        <el-table-column prop="accountType" label="渠道等级" width="170">
-          <template slot-scope="scope">{{
+        <el-table-column
+          prop="accountType"
+          label="渠道等级"
+          width="170"
+        >
+          <template v-slot="{ scope }">{{
             $root.displayName("accountType", scope.row.accountType)
           }}</template>
         </el-table-column>
@@ -153,37 +169,38 @@
           label="录入人"
           width="150"
         ></el-table-column>
-        <el-table-column prop="status" label="状态" width="150">
-          <template slot-scope="scope">{{
+        <el-table-column
+          prop="status"
+          label="状态"
+          width="150"
+        >
+          <template v-slot="{ scope }">{{
             $root.displayName("accountStatus", scope.row.status)
           }}</template>
         </el-table-column>
-        <el-table-column label="操作" width="200">
-          <template slot-scope="scope">
-            <el-link type="primary" @click.native.prevent="info(scope)"
-              >详情</el-link
+        <el-table-column
+          label="操作"
+          width="200"
+        >
+          <template v-slot="{ scope }">
+            <el-link
+              type="primary"
+              @click.native.prevent="info(scope)"
+            >详情</el-link>
+            <el-dropdown
+              trigger="click"
+              style="margin-left: 15px"
             >
-            <el-dropdown trigger="click" style="margin-left: 15px">
               <span class="el-dropdown-link">
                 更多操作
                 <i class="el-icon-arrow-down el-icon--right"></i>
               </span>
               <el-dropdown-menu slot="dropdown">
-                <el-dropdown-item @click.native.prevent="edit(scope)"
-                  >修改</el-dropdown-item
-                >
-                <el-dropdown-item @click.native.prevent="remove(scope)"
-                  >删除</el-dropdown-item
-                >
-                <el-dropdown-item @click.native.prevent="locking(scope)"
-                  >撤回</el-dropdown-item
-                >
-                <el-dropdown-item @click.native.prevent="activation(scope)"
-                  >审核</el-dropdown-item
-                >
-                <el-dropdown-item @click.native.prevent="resetPassword(scope)"
-                  >变更信息</el-dropdown-item
-                >
+                <el-dropdown-item @click.native.prevent="edit(scope)">修改</el-dropdown-item>
+                <el-dropdown-item @click.native.prevent="remove(scope)">删除</el-dropdown-item>
+                <el-dropdown-item @click.native.prevent="locking(scope)">撤回</el-dropdown-item>
+                <el-dropdown-item @click.native.prevent="activation(scope)">审核</el-dropdown-item>
+                <el-dropdown-item @click.native.prevent="resetPassword(scope)">变更信息</el-dropdown-item>
               </el-dropdown-menu>
             </el-dropdown>
           </template>
@@ -324,7 +341,7 @@ export default class UserList extends Vue {
   }
   //详情
   info(scope: any) {
-    console.log("详情页跳转");
+    console.log("详情页跳转", scope);
   }
 }
 </script>

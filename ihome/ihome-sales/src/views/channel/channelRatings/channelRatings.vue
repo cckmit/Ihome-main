@@ -3,129 +3,142 @@
  * @version: 
  * @Author: zyc
  * @Date: 2020-08-13 11:40:10
- * @LastEditors: lgf
- * @LastEditTime: 2020-10-09 16:59:34
+ * @LastEditors: ywl
+ * @LastEditTime: 2020-10-10 16:37:16
 -->
 <template>
-  <div>
-    <el-breadcrumb separator-class="el-icon-arrow-right">
-      <el-breadcrumb-item class="line">{{
-        $route.meta.title
-      }}</el-breadcrumb-item>
-    </el-breadcrumb>
-    <ih-page>
-      <template v-slot:form>
-        <el-form ref="form" label-width="100px">
-          <el-row>
-            <el-col :span="12">
-              <el-form-item label="城市等级">
-                <el-select
-                  v-model="queryPageParameters.cityGrade"
-                  clearable
-                  placeholder="城市等级"
-                  class="width--100"
-                >
-                  <el-option
-                    v-for="item in $root.displayList('cityLevel')"
-                    :key="item.value"
-                    :label="item.label"
-                    :value="item.value"
-                  ></el-option>
-                </el-select>
-              </el-form-item>
-            </el-col>
-            <el-col :span="12">
-              <el-form-item label="渠道等级">
-                <el-select
-                  v-model="queryPageParameters.channelGrade"
-                  clearable
-                  placeholder="渠道等级"
-                  class="width--100"
-                >
-                  <el-option
-                    v-for="item in $root.displayList('ChannelLevel')"
-                    :key="item.value"
-                    :label="item.label"
-                    :value="item.value"
-                  ></el-option>
-                </el-select>
-              </el-form-item>
-            </el-col>
-          </el-row>
-        </el-form>
-      </template>
-
-      <template v-slot:btn>
-        <br />
-        <el-row class="el-row">
-          <el-button type="primary" @click="search()">查询</el-button>
-          <el-button type="success" @click="add()">添加</el-button>
-          <el-button type="info" @click="empty()">清空</el-button>
-          <el-button type="info" @click="upMethods()"
-            >上传供应商管理办法</el-button
-          >
-          <el-button type="info" @click="viewMethods()"
-            >查看供应商管理办法</el-button
-          >
-        </el-row>
-      </template>
-
-      <template v-slot:table>
-        <br />
-        <el-table
-          class="ih-table"
-          :data="resPageInfo.list"
-          :default-sort="{ prop: 'id', order: 'descending' }"
-          @selection-change="handleSelectionChange"
-        >
-          <el-table-column
-            fixed
-            prop="cityGrade"
-            label="城市等级"
-            width="360"
-          ></el-table-column>
-
-          <el-table-column
-            fixed
-            prop="channelGrade"
-            label="渠道等级"
-            width="360"
-          ></el-table-column>
-          <el-table-column
-            prop="gradeItem"
-            label="评级项"
-            width="360"
-          ></el-table-column>
-          <el-table-column
-            prop="gradeStandard"
-            label="评级标准"
-            width="360"
-          ></el-table-column>
-          <el-table-column label="操作">
-            <template slot-scope="scope">
-              <el-link
-                type="primary"
-                @click.native.prevent="viewMaterial(scope)"
-                >查看所需材料</el-link
+  <ih-page>
+    <template v-slot:form>
+      <el-form
+        ref="form"
+        label-width="100px"
+      >
+        <el-row>
+          <el-col :span="12">
+            <el-form-item label="城市等级">
+              <el-select
+                v-model="queryPageParameters.cityGrade"
+                clearable
+                placeholder="城市等级"
+                class="width--100"
               >
-              <el-dropdown trigger="click" style="margin-left: 15px">
-                <span class="el-dropdown-link">
-                  更多操作
-                  <i class="el-icon-arrow-down el-icon--right"></i>
-                </span>
-                <el-dropdown-menu slot="dropdown">
-                  <el-dropdown-item @click.native.prevent="ModifyThe(scope)"
-                    >修改</el-dropdown-item
-                  >
-                  <el-dropdown-item @click.native.prevent="remove(scope)"
-                    >删除</el-dropdown-item
-                  >
-                </el-dropdown-menu>
-              </el-dropdown>
-            </template>
-          </el-table-column>
-        </el-table>
-      </template>
+                <el-option
+                  v-for="item in $root.displayList('cityLevel')"
+                  :key="item.value"
+                  :label="item.label"
+                  :value="item.value"
+                ></el-option>
+              </el-select>
+            </el-form-item>
+          </el-col>
+          <el-col :span="12">
+            <el-form-item label="渠道等级">
+              <el-select
+                v-model="queryPageParameters.channelGrade"
+                clearable
+                placeholder="渠道等级"
+                class="width--100"
+              >
+                <el-option
+                  v-for="item in $root.displayList('ChannelLevel')"
+                  :key="item.value"
+                  :label="item.label"
+                  :value="item.value"
+                ></el-option>
+              </el-select>
+            </el-form-item>
+          </el-col>
+        </el-row>
+      </el-form>
+    </template>
+
+    <template v-slot:btn>
+      <br />
+      <el-row class="el-row">
+        <el-button
+          type="primary"
+          @click="search()"
+        >查询</el-button>
+        <el-button
+          type="success"
+          @click="add()"
+        >添加</el-button>
+        <el-button
+          type="info"
+          @click="empty()"
+        >清空</el-button>
+        <el-button
+          type="info"
+          @click="upMethods()"
+        >上传供应商管理办法</el-button>
+        <el-button
+          type="info"
+          @click="viewMethods()"
+        >查看供应商管理办法</el-button>
+      </el-row>
+    </template>
+
+    <template v-slot:table>
+      <br />
+      <el-table
+        class="ih-table"
+        :data="resPageInfo.list"
+        :default-sort="{ prop: 'id', order: 'descending' }"
+        @selection-change="handleSelectionChange"
+      >
+        <el-table-column
+          fixed
+          prop="cityGrade"
+          label="城市等级"
+          width="160"
+        ></el-table-column>
+
+        <el-table-column
+          fixed
+          prop="channelGrade"
+          label="渠道等级"
+          width="160"
+        ></el-table-column>
+        <el-table-column
+          prop="gradeItem"
+          label="评级项"
+          width="360"
+        ></el-table-column>
+        <el-table-column
+          prop="gradeStandard"
+          label="评级标准"
+          width="360"
+        ></el-table-column>
+        <el-table-column
+          label="操作"
+          width="230"
+          fixed="right"
+        >
+          <template slot-scope="scope">
+            <el-link
+              type="primary"
+              @click.native.prevent="viewMaterial(scope)"
+            >查看所需材料</el-link>
+            <el-dropdown
+              trigger="click"
+              style="margin-left: 15px"
+            >
+              <span class="el-dropdown-link">
+                更多操作
+                <i class="el-icon-arrow-down el-icon--right"></i>
+              </span>
+              <el-dropdown-menu slot="dropdown">
+                <el-dropdown-item @click.native.prevent="ModifyThe(scope)">修改</el-dropdown-item>
+                <el-dropdown-item @click.native.prevent="remove(scope)">删除</el-dropdown-item>
+              </el-dropdown-menu>
+            </el-dropdown>
+          </template>
+        </el-table-column>
+      </el-table>
+    </template>
+
+    <template #pagination>
+      <br />
       <el-pagination
         @size-change="handleSizeChangeMixin"
         @current-change="handleCurrentChangeMixin"
@@ -135,22 +148,26 @@
         :layout="$root.paginationLayout"
         :total="resPageInfo.total"
       ></el-pagination>
-      <!-- <EntryToModify /> -->
-      <ih-dialog :show="dialogVisible" desc="用户新增编辑">
-        <EntryToModify
-          :data="addData"
-          @cancel="() => (dialogVisible = false)"
-          @finish="
-            (data) => {
-              dialogVisible = false;
-              finish(data);
-            }
-          "
-        />
-      </ih-dialog>
-    </ih-page>
-  </div>
+    </template>
+
+    <ih-dialog
+      :show="dialogVisible"
+      desc="用户新增编辑"
+    >
+      <EntryToModify
+        :data="addData"
+        @cancel="() => (dialogVisible = false)"
+        @finish="
+          (data) => {
+            dialogVisible = false;
+            finish(data);
+          }
+        "
+      />
+    </ih-dialog>
+  </ih-page>
 </template>
+
 <script lang="ts">
 import { Component, Vue } from "vue-property-decorator";
 import { post_channelGradeStandard_getList } from "../../../api/channel/index";
@@ -165,8 +182,6 @@ export default class ChannelRatings extends Vue {
   queryPageParameters: any = {
     ChannelLevel: "bigPlatform",
     cityLevel: "firstLevel",
-    pageNum: 1,
-    pageSize: 10,
   };
   dialogVisible = false;
   addData: any = null;
@@ -185,14 +200,12 @@ export default class ChannelRatings extends Vue {
   }
   upMethods() {
     console.log("上传管理办法");
-    this.$router.push({
-      path: "/channelRatings/upMethods",
-    });
+    this.$router.push("channelRatings/upMethods");
   }
   viewMethods() {
     console.log("查看管理办法");
     this.$router.push({
-      path: "/channelRatings/viewMethods",
+      path: "channelRatings/viewMethods",
     });
   }
   empty() {
