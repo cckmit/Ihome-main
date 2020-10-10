@@ -4,7 +4,7 @@
  * @Author: zyc
  * @Date: 2020-06-22 11:11:41
  * @LastEditors: wwq
- * @LastEditTime: 2020-10-10 18:17:33
+ * @LastEditTime: 2020-10-10 18:37:04
  */
 const path = require('path');
 const { name } = require('./package');
@@ -29,8 +29,6 @@ if (process.env.NODE_ENV !== 'production') {
 function resolve(dir) {
 	return path.join(__dirname, dir);
 }
-let proxyAddress = process.env.PROXY_PROTOCOL + '://' + process.env.PROXY_IP + ':' + process.env.PROXY_PORT;//代理地址
-console.log('\033[40;32mapi接口代理地址：' + proxyAddress + '\033[0m');
 module.exports = {
 	outputDir: 'dist',
 	assetsDir: 'static',
