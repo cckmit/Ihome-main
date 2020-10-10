@@ -4,7 +4,7 @@
  * @Author: zyc
  * @Date: 2020-06-30 09:21:17
  * @LastEditors: ywl
- * @LastEditTime: 2020-10-10 16:31:52
+ * @LastEditTime: 2020-10-10 17:33:48
 --> 
 <template>
   <ih-page>
@@ -115,25 +115,26 @@
         <el-table-column
           fixed
           type="selection"
-          width="100"
+          width="50"
+          align="center"
         ></el-table-column>
         <el-table-column
           fixed
           poro=""
           label="渠道商名称"
-          width="250"
+          width="150"
         ></el-table-column>
         <el-table-column
           fixed
           prop="name"
           label="渠道跟进人"
-          width="220"
+          width="120"
         ></el-table-column>
         <el-table-column
           fixed
           prop="account"
           label="录入人"
-          width="220"
+          width="120"
         ></el-table-column>
         <el-table-column
           prop="mobilePhone"
@@ -152,7 +153,11 @@
           width="240"
         ></el-table-column>
 
-        <el-table-column label="操作">
+        <el-table-column
+          label="操作"
+          width="150"
+          fixed="right"
+        >
           <template v-slot="{ row, $index }">
             <el-link
               type="primary"
