@@ -61,6 +61,8 @@ pipeline {
     }
 	
 	post {
+		agent any
+		
         always {
             echo 'delete html'
 			sh 'rm -rf html'
