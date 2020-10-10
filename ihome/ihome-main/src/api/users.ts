@@ -1,10 +1,10 @@
 /*
- * @Descripttion: 
+ * @Description: 
  * @version: 
  * @Author: zyc
  * @Date: 2020-06-24 09:47:33
  * @LastEditors: ywl
- * @LastEditTime: 2020-10-10 17:11:07
+ * @LastEditTime: 2020-10-10 17:19:15
  */
 import { IRes } from "./users.d";
 // import request from '@/utils/http';
@@ -198,7 +198,42 @@ export function allMenu<T>() {
             icon: null,
             path: "/web-sales/developer/list"
 
-        }
+        },
+        {
+            id: 401,
+            parentId: 0,
+            title: '合同管理',
+            icon: "el-icon-setting",
+            path: null,
+        },
+        {
+            id: 402,
+            parentId: 401,
+            title: "甲方合同列表",
+            icon: null,
+            path: "/web-sales/contract/partyAList"
+        },
+        {
+            id: 403,
+            parentId: 401,
+            title: "中介分销协议列表",
+            icon: null,
+            path: "/web-sales/contract/intermediaryList"
+        },
+        {
+            id: 404,
+            parentId: 401,
+            title: "甲方/中介战略协议列表",
+            icon: null,
+            path: "/web-sales/contract/strategyList"
+        },
+        {
+            id: 405,
+            parentId: 401,
+            title: "优惠告知书列表",
+            icon: null,
+            path: "/web-sales/contract/discountList"
+        },
     ];
     return menuList;
 }

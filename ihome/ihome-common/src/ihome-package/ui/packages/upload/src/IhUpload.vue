@@ -3,8 +3,8 @@
  * @version: 
  * @Author: wwq
  * @Date: 2020-09-09 16:17:16
- * @LastEditors: lgf
- * @LastEditTime: 2020-09-30 16:40:38
+ * @LastEditors: ywl
+ * @LastEditTime: 2020-10-10 17:18:05
 -->
 
 <template>
@@ -25,7 +25,7 @@
       :multiple="multiple"
       :limit="limit"
     >
-      <template slot="file" slot-scope="{ file }">
+      <template #file="{ file }">
         <img
           class="avatar"
           :style="{ width: size, height: size }"
@@ -37,21 +37,30 @@
             v-if="previewPermi"
             @click="handlePictureCardPreview(file)"
           >
-            <i class="el-icon-zoom-in" title="预览"></i>
+            <i
+              class="el-icon-zoom-in"
+              title="预览"
+            ></i>
           </span>
           <span
             class="el-upload-list__item-delete"
             v-if="loadPermi"
             @click="handleDownload(file)"
           >
-            <i class="el-icon-download" title="下载"></i>
+            <i
+              class="el-icon-download"
+              title="下载"
+            ></i>
           </span>
           <span
             class="el-upload-list__item-delete"
             v-if="removePermi"
             @click="handleRemove(file)"
           >
-            <i class="el-icon-delete" title="删除"></i>
+            <i
+              class="el-icon-delete"
+              title="删除"
+            ></i>
           </span>
         </span>
       </template>
