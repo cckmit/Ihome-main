@@ -3,8 +3,8 @@
  * @version: 
  * @Author: wwq
  * @Date: 2020-09-09 16:17:16
- * @LastEditors: wwq
- * @LastEditTime: 2020-09-21 10:59:52
+ * @LastEditors: ywl
+ * @LastEditTime: 2020-10-10 17:18:05
 -->
 
 <template>
@@ -25,27 +25,48 @@
       :multiple="multiple"
       :limit="limit"
     >
-      <template slot="file" slot-scope="{file}">
-        <img class="avatar" :style="{'width':size,'height':size}" :src="uploadType(file)" />
+      <template #file="{ file }">
+        <img
+          class="avatar"
+          :style="{ width: size, height: size }"
+          :src="uploadType(file)"
+        />
         <span class="el-upload-list__item-actions">
           <span
             class="el-upload-list__item-preview"
             v-if="previewPermi"
             @click="handlePictureCardPreview(file)"
           >
-            <i class="el-icon-zoom-in" title="预览"></i>
+            <i
+              class="el-icon-zoom-in"
+              title="预览"
+            ></i>
           </span>
-          <span class="el-upload-list__item-delete" v-if="loadPermi" @click="handleDownload(file)">
-            <i class="el-icon-download" title="下载"></i>
+          <span
+            class="el-upload-list__item-delete"
+            v-if="loadPermi"
+            @click="handleDownload(file)"
+          >
+            <i
+              class="el-icon-download"
+              title="下载"
+            ></i>
           </span>
-          <span class="el-upload-list__item-delete" v-if="removePermi" @click="handleRemove(file)">
-            <i class="el-icon-delete" title="删除"></i>
+          <span
+            class="el-upload-list__item-delete"
+            v-if="removePermi"
+            @click="handleRemove(file)"
+          >
+            <i
+              class="el-icon-delete"
+              title="删除"
+            ></i>
           </span>
         </span>
       </template>
       <i
         class="el-icon-plus avatar-uploader-icon"
-        :style="{'width':size,'height':size,'line-height':size}"
+        :style="{ width: size, height: size, 'line-height': size }"
       ></i>
     </el-upload>
     <ih-image-viewer
@@ -62,7 +83,8 @@
 <script lang="ts">
 import { Component, Vue, Prop, Watch } from "vue-property-decorator";
 import IhImageViewer from "./IhImageViewer.vue";
-import request from "@/ihome-package/util/api/http";
+// import request from "@/ihome-package/util/api/http";
+import request from "../../../../util/api/http";
 @Component({
   components: {
     IhImageViewer,
@@ -142,7 +164,7 @@ export default class IhUpload extends Vue {
         this.uploadId = res.files[0].id;
         this.successHandler(res);
       })
-      .catch((err) => {
+      .catch((err: any) => {
         this.errorHandler(err);
       });
   }

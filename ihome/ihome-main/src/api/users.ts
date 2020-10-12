@@ -1,10 +1,10 @@
 /*
- * @Descripttion: 
+ * @Description: 
  * @version: 
  * @Author: zyc
  * @Date: 2020-06-24 09:47:33
- * @LastEditors: zyc
- * @LastEditTime: 2020-09-08 10:04:26
+ * @LastEditors: wwq
+ * @LastEditTime: 2020-10-10 18:16:29
  */
 import { IRes } from "./users.d";
 // import request from '@/utils/http';
@@ -120,19 +120,132 @@ export function allMenu<T>() {
             icon: null,
             path: "/web-sales/",
         },
+        {
+
+            id: 201,
+            parentId: 0,
+            title: "渠道管理",
+            icon: "el-icon-setting",
+            path: null,
+        },
+        {
+            id: 203,
+            parentId: 201,
+            title: "渠道商列表",
+            icon: null,
+            path: "/web-sales/channels/distributorsList",
+        },
+        {
+            id: 202,
+            parentId: 201,
+            title: "渠道等级信息变更列表",
+            icon: null,
+            path: "/web-sales/channels/channelInfoList",
+        },
+
+        {
+            id: 204,
+            parentId: 201,
+            title: "渠道评级标准列表",
+            icon: null,
+            path: "/web-sales/channels/channelRatings",
+        },
+        {
+            id: 205,
+            parentId: 201,
+            title: "渠道等级信息列表",
+            icon: "el-icon-setting",
+            path: "/web-sales/channels/channelLevel",
+        },
+        {
+            id: 206,
+            parentId: 201,
+            title: "渠道呈批列表",
+            icon: "el-icon-setting",
+            path: "/web-sales/channels/channelAgroupOf",
+        },
+        {
+            id: 207,
+            parentId: 201,
+            title: "渠道基础信息变更列表",
+            icon: "el-icon-setting",
+            path: "/web-sales/channels/channelBasicInfoChange",
+        },
+        {
+            id: 208,
+            parentId: 201,
+            title: "渠道邀请码列表",
+            icon: "el-icon-setting",
+            path: "/web-sales/channels/channelInviteCode",
+        },
+        {
+            id: 209,
+            parentId: 201,
+            title: "城市等级列表",
+            icon: "el-icon-setting",
+            path: "/web-sales/channels/cityLevel",
+        }, {
+            id: 301,
+            parentId: 0,
+            title: '开发商管理模块',
+            icon: 'el-icon-setting',
+            path: null,
+        },
+        {
+            id: 302,
+            parentId: 301,
+            title: "开发商列表",
+            icon: null,
+            path: "/web-sales/developers/list"
+        },
+        {
+            id: 401,
+            parentId: 0,
+            title: '合同管理',
+            icon: "el-icon-setting",
+            path: null,
+        },
+        {
+            id: 402,
+            parentId: 401,
+            title: "甲方合同列表",
+            icon: null,
+            path: "/web-sales/contract/partyAList"
+        },
+        {
+            id: 403,
+            parentId: 401,
+            title: "中介分销协议列表",
+            icon: null,
+            path: "/web-sales/contract/intermediaryList"
+        },
+        {
+            id: 404,
+            parentId: 401,
+            title: "甲方/中介战略协议列表",
+            icon: null,
+            path: "/web-sales/contract/strategyList"
+        },
+        {
+            id: 405,
+            parentId: 401,
+            title: "优惠告知书列表",
+            icon: null,
+            path: "/web-sales/contract/discountList"
+        },
     ];
     return menuList;
 }
 export const login = async (data: any) => {
     //http://localhost:8610/sales-oauth2/oauth/token?grant_type=password&client_id=sales-client-dev&client_secret=sales-dev&username=admin&password=123456
- 
+
     let url = `/sales-oauth2/oauth/token?grant_type=password&client_id=sales-client-dev&client_secret=sales-dev&username=${data.username}&password=${data.password}`;
-    
+
     const res: any = await request({
         url: url,
         method: 'post',
     })
-    
+
     return res;
 
 }

@@ -3,12 +3,12 @@
  * @version: 
  * @Author: wwq
  * @Date: 2020-09-16 14:54:19
- * @LastEditors: wwq
- * @LastEditTime: 2020-09-23 16:49:40
+ * @LastEditors: ywl
+ * @LastEditTime: 2020-10-10 17:17:57
 -->
 <template>
-  <div class="box">
-    <div class="table">
+  <div class="ih-table-box">
+    <div class="ih-table">
       <el-table
         ref="table"
         :height="height"
@@ -17,15 +17,20 @@
         :row-key="rowKey"
         :row-class-name="rowClassName"
         :highlight-current-row="highlightCurrentRow"
-        @selection-change="selection => $emit('selection-change', selection)"
-        @row-dblclick="(row, column, event) => $emit('row-dblclick', row, column, event)"
-        @current-change="(currentRow, oldCurrentRow) => $emit('current-change', currentRow, oldCurrentRow)"
+        @selection-change="(selection) => $emit('selection-change', selection)"
+        @row-dblclick="
+          (row, column, event) => $emit('row-dblclick', row, column, event)
+        "
+        @current-change="
+          (currentRow, oldCurrentRow) =>
+            $emit('current-change', currentRow, oldCurrentRow)
+        "
       >
         <el-table-column
           fixed
           v-if="columnCheck"
-          width="40"
-          min-width="40"
+          width="50"
+          min-width="50"
           type="selection"
           align="center"
         ></el-table-column>
@@ -39,13 +44,21 @@
           :index="indexHandler"
         ></el-table-column>
         <template v-for="(col, index) in columns">
-          <slot v-if="col.slot" :name="col.slot"></slot>
-          <table-column v-else :option="col" :key="index"></table-column>
+          <slot
+            v-if="col.slot"
+            :name="col.slot"
+          ></slot>
+          <table-column
+            v-else
+            :option="col"
+            :isPeri="isPeri"
+            :key="index"
+          ></table-column>
         </template>
       </el-table>
     </div>
     <el-pagination
-      class="pagination"
+      class="ih-pagination"
       v-if="isPagination"
       :current-page="pageCurrent"
       :total="pageTotal"
@@ -70,7 +83,7 @@ export default class IhTable extends Vue {
   @Prop() private data!: any;
   @Prop() private column!: any;
   @Prop({
-    default: true,
+    default: false,
   })
   border!: boolean;
   @Prop() private rowKey?: string;
@@ -103,6 +116,10 @@ export default class IhTable extends Vue {
     default: 20,
   })
   pageSize!: number;
+  @Prop({
+    default: false,
+  })
+  isPeri!: boolean;
 
   private selection: any = [];
   private isPageChange = false;
@@ -130,7 +147,8 @@ export default class IhTable extends Vue {
       });
       return arr;
     };
-    this.columns = enume(column);
+    if (this.isPeri) this.columns = enume(column);
+    else this.columns = column;
   }
 
   indexHandler(index: number) {
@@ -177,13 +195,13 @@ export default class IhTable extends Vue {
 }
 </script>
 <style lang="scss" scoped>
-.box {
+.ih-table-box {
   height: 100%;
 }
-.table {
+.ih-table {
   width: 100%;
 }
-.pagination {
+.ih-pagination {
   text-align: right;
   padding-top: 20px;
 }

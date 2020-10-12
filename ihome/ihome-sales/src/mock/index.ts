@@ -10,6 +10,7 @@ const Mock = require('mockjs');
 Mock.setup({
     timeout: 200
 })
+
 // function responseSuccess(result: any) {
 //     return {
 //         code: 'Success',
@@ -25,7 +26,7 @@ Mock.setup({
 //     }
 // }
 
- 
+
 
 
 

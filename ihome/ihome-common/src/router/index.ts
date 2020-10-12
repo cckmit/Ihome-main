@@ -4,7 +4,7 @@
  * @Author: zyc
  * @Date: 2020-06-22 11:10:43
  * @LastEditors: wwq
- * @LastEditTime: 2020-09-21 15:57:06
+ * @LastEditTime: 2020-09-29 09:13:31
  */
 import Vue from 'vue'
 import VueRouter, { RouteConfig } from 'vue-router'
@@ -39,10 +39,18 @@ const routes: Array<RouteConfig> = [
   },
   {
     path: '/table',
-    name: 'Tpload',
+    name: 'Table',
     component: () => import('../views/tableDemo.vue'),
     meta: {
       title: '上传组件Demo'
+    }
+  },
+  {
+    path: '/cascader',
+    name: 'Cascader',
+    component: () => import('../views/cascaderDemo.vue'),
+    meta: {
+      title: '省市区级联选择Demo'
     }
   }
 ]

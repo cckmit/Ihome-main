@@ -4,7 +4,7 @@
  * @Author: zyc
  * @Date: 2020-07-31 15:21:06
  * @LastEditors: zyc
- * @LastEditTime: 2020-08-26 17:44:38
+ * @LastEditTime: 2020-09-29 11:25:46
  */
 let http = require('http');
 let fs = require("fs");
@@ -18,8 +18,10 @@ function handleSwagger(prefix) {
 
     //swagger配置数据
     let options = {
-        host: '10.188.0.109',
-        port: '8610',
+        host: process.env.PROXY_IP,
+        // host: '10.188.0.109',
+        // host: '10.188.1.91',
+        port: process.env.PROXY_PORT,
         path: `/${prefix}/v2/api-docs`
     };
     //生成文件路径
@@ -45,13 +47,14 @@ function handleSwagger(prefix) {
     let callback = function (response) {
         // 不断更新数据
         let body = '';
+        response.setEncoding('utf8');
         response.on('data', function (data) {
             body += data;
         });
 
         response.on('end', function () {
             // 数据接收完成
-            let data = JSON.parse(body)
+            let data = JSON.parse(body);
             handleBody(data)
         });
     }
@@ -70,6 +73,8 @@ function handleBody(body) {
     let count = 0;
     let countGet = 0;
     let countPost = 0;
+    let countPut = 0;
+    let countDelete = 0;
     Object.keys(paths).forEach(k => {
         count += 1;
         let v = paths[k];
@@ -78,6 +83,7 @@ function handleBody(body) {
             let originalRef =
                 paths[k]["get"]["responses"]["200"].schema &&
                 paths[k]["get"]["responses"]["200"].schema.originalRef;
+
             if (!originalRef) {
                 originalRef = "any";
             }
@@ -93,11 +99,17 @@ function handleBody(body) {
                 originalRef = "any"
             }
             if (originalRef.startsWith('ResModel')) {
+               
                 originalRef = originalRef.substring(9, originalRef.length - 1)
             }
             if (originalRef.startsWith('List<')) {
                 originalRef = originalRef.substring(5, originalRef.length - 1)
                 originalRef += '[]'
+              
+
+            }
+            if (originalRef.startsWith('Map<')) {
+                originalRef = "any"
             }
             let res = 'any'
             let parameters = paths[k]["get"].parameters;
@@ -114,17 +126,31 @@ function handleBody(body) {
             if (!res) {
                 res = 'any'
             }
-
+ 
             writeLine(`export async function ${className} (d?: ${res}) {`)
             writeLine(`return await request.get<${originalRef},${originalRef}>('${body.basePath}${k}', { params: d })`)
             writeLine(`}`)
 
-        } else if(paths[k]["post"]){
-            //post
-            countPost += 1;
+        } else {
+            //post,put,delete
+            let method = paths[k]["post"] || paths[k]["put"] || paths[k]["delete"];
+            let methodName = null;
+            if (paths[k]["post"]) {
+                methodName = 'post';
+                countPost += 1;
+            } else if (paths[k]["put"]) {
+                methodName = 'put';
+                countPut += 1;
+            } else if (paths[k]["delete"]) {
+                methodName = 'delete';
+                countDelete += 1;
+            } else {
+                console.error('未知的method方法')
+            }
+
             let originalRef =
-                paths[k]["post"]["responses"]["200"].schema &&
-                paths[k]["post"]["responses"]["200"].schema.originalRef;
+                method["responses"]["200"].schema &&
+                method["responses"]["200"].schema.originalRef;
 
             if (!originalRef) {
                 originalRef = "any";
@@ -138,6 +164,9 @@ function handleBody(body) {
             } else {
                 originalRef = "any"
             }
+            if (originalRef == 'ResModel') {
+                originalRef = 'any'
+            }
             if (originalRef.startsWith('ResModel')) {
                 originalRef = originalRef.substring(9, originalRef.length - 1)
             }
@@ -145,18 +174,22 @@ function handleBody(body) {
                 originalRef = originalRef.substring(5, originalRef.length - 1)
                 originalRef += '[]'
             }
+            if (originalRef.startsWith('Map<')) {
+                originalRef = "any"
+            }
+            
             let res = 'any'
-            let parameters = paths[k]["post"].parameters;
+            let parameters = method.parameters;
             if (parameters && parameters.length > 0) {
                 if (parameters[0].schema) {
                     res = parameters[0].schema.originalRef;
                 }
             }
 
-            writeLine(`/**${paths[k]["post"].summary}*/`)
+            writeLine(`/**${method.summary}*/`)
 
-            // writeLine(`export async function ${paths[k]["post"].operationId} (d?: ${res}) {`)
-            let className = replaceAll('post' + k, '/', '_')
+            // writeLine(`export async function ${method.operationId} (d?: ${res}) {`)
+            let className = replaceAll(methodName + k, '/', '_')
             className = replaceUrlParameter(className)
             if (!res) {
                 res = 'any'
@@ -167,12 +200,13 @@ function handleBody(body) {
             writeLine(`return await request.post< ${originalRef},${originalRef}> ('${body.basePath}${k}', d)`)
             writeLine(`}`)
 
-        }else{
-            console.log('\033[41;30m 暂只支持get,post;其他不支持，请检查\033[0m')
         }
+        // else {
+        //     console.log('\033[41;30m 暂只支持get,post;其他不支持，请检查\033[0m')
+        // }
     });
-     
-    console.log(`一共有${count}个接口;get=${countGet};post=${countPost};其他=${count - countGet - countPost}`)
+
+    console.log(`一共有${count}个接口;get=${countGet};post=${countPost};put=${countPut};delete=${countDelete};其他=${count - countGet - countPost - countPut - countDelete}`)
 
     writeLine('//===============================================================================================')
     writeLine(`/**ResModel模型*/`)
@@ -197,7 +231,7 @@ function handleBody(body) {
         if (k.includes("ApiResult") || k.includes("PageInfo")) {
             console.log('(k.includes("ApiResult") || k.includes("PageInfo")')
         } else {
-            if (k.startsWith('PageModel«') || k.startsWith('ResModel«')) {
+            if (k.startsWith('PageModel«')|| k.startsWith('ResModel') || k.startsWith('ResModel«') || k.startsWith('Map«')) {
 
             } else {
 
@@ -206,34 +240,37 @@ function handleBody(body) {
                 writeLine(`export interface ${k} {`)
 
                 let requiredList = definitions[k].required || [];
-                Object.keys(objs).forEach(key => {
-                    let required = requiredList.includes(key);
-                    writeLine(`/**${required ? '(必填)' : ''}${objs[key].description}*/`)
-                    let _type = objs[key].type;
-                    if (_type === "integer" || _type === "number" || _type === "int" || _type == "bigdecimal" || _type == "float" || _type == "double") {
-                        _type = "number";
-                    } else if (_type === "string" || _type === "String") {
-                        _type = "string";
-                    } else if (_type === "array") {
-                        let _arrType = objs[key].items.originalRef ? objs[key].items.originalRef : objs[key].items.type;
-                        if (_arrType === "integer" || _arrType === "number" || _arrType === "int" || _arrType == "bigdecimal" || _arrType == "float" || _arrType == "double") {
-                            _arrType = "number";
-                        }
-                        if (!_arrType) {
-                            _arrType = 'any'
-                        }
+                if (objs) {
+                    Object.keys(objs).forEach(key => {
+                        let required = requiredList.includes(key);
+                        writeLine(`/**${required ? '(必填)' : ''}${objs[key].description}*/`)
+                        let _type = objs[key].type;
+                        if (_type === "integer" || _type === "number" || _type === "int" || _type == "bigdecimal" || _type == "float" || _type == "double") {
+                            _type = "number";
+                        } else if (_type === "string" || _type === "String") {
+                            _type = "string";
+                        } else if (_type === "array") {
+                            let _arrType = objs[key].items.originalRef ? objs[key].items.originalRef : objs[key].items.type;
+                            if (_arrType === "integer" || _arrType === "number" || _arrType === "int" || _arrType == "bigdecimal" || _arrType == "float" || _arrType == "double") {
+                                _arrType = "number";
+                            }
+                            if (!_arrType) {
+                                _arrType = 'any'
+                            }
 
-                        _type = `${_arrType}[]`;
-                    } else if (_type === undefined) {
-                        _type = `${objs[key].originalRef}`;
-                    } else if (_type === 'boolean') {
-                        _type = "boolean";
-                    }
-                    else {
-                        console.log(_type);
-                    }
-                    writeLine(`${key}: ${_type};`)
-                });
+                            _type = `${_arrType}[]`;
+                        } else if (_type === undefined) {
+                            _type = `${objs[key].originalRef}`;
+                        } else if (_type === 'boolean') {
+                            _type = "boolean";
+                        }
+                        else {
+                            // console.log(_type);
+                        }
+                        writeLine(`${key}: ${_type};`)
+                    });
+
+                }
 
                 writeLine(`}`)
             }
@@ -245,7 +282,7 @@ function handleBody(body) {
         fs.renameSync(outSrc, backupsSrc);
         console.log(`脚本备份成功：路径${backupsSrc}`);
     } catch (error) {
-        
+
     }
 
     fs.writeFile(outSrc, text, function (err) {
@@ -262,9 +299,9 @@ function writeLine(line) {
 
 
 function replaceUrlParameter(str) {
-    
+
     let rstr = str.replace(/{[^}]*}/g, function (me) {
-        
+
         return "_" + me.replace("{", "").replace("}", "")
     });
     return rstr;
