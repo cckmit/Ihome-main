@@ -4,7 +4,7 @@
  * @Author: zyc
  * @Date: 2020-08-13 11:40:10
  * @LastEditors: ywl
- * @LastEditTime: 2020-10-13 11:10:36
+ * @LastEditTime: 2020-10-13 17:26:47
 -->
 <template>
   <ih-page>
@@ -38,6 +38,8 @@
               ></el-input>
             </el-form-item>
           </el-col>
+        </el-row>
+        <!-- <el-row>
           <el-col :span="8">
             <el-form-item label="省份">
               <el-select
@@ -89,6 +91,8 @@
               </el-select>
             </el-form-item>
           </el-col>
+        </el-row> -->
+        <el-row>
           <el-col :span="8">
             <el-form-item label="渠道跟进人">
               <el-select
@@ -115,10 +119,10 @@
                 class="width--100"
               >
                 <el-option
-                  v-for="item in $root.displayList('state')"
-                  :key="item.value"
-                  :label="item.label"
-                  :value="item.value"
+                  v-for="item in $root.dictAllList('ChannelStatus')"
+                  :key="item.code"
+                  :label="item.name"
+                  :value="item.code"
                 ></el-option>
               </el-select>
             </el-form-item>
@@ -139,6 +143,11 @@
                 ></el-option>
               </el-select>
             </el-form-item>
+          </el-col>
+        </el-row>
+        <el-row>
+          <el-col :span="8">
+
           </el-col>
         </el-row>
       </el-form>

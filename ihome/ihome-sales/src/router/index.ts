@@ -4,7 +4,7 @@
  * @Author: zyc
  * @Date: 2020-06-22 11:10:43
  * @LastEditors: ywl
- * @LastEditTime: 2020-10-13 10:40:37
+ * @LastEditTime: 2020-10-13 17:35:53
  */
 import Vue from 'vue'
 import VueRouter, { RouteConfig, Route } from 'vue-router'
@@ -35,7 +35,58 @@ const routes: Array<RouteConfig> = [
     redirect: '/channels/distributorsList',
     component: Layout,
     children: [
-      // 渠道商部分的路由
+      // 渠道邀请码列表 --- start
+      {
+        path: 'channelInviteCode',
+        name: 'ChannelInviteCode',
+        component: () => import('../views/channel/channelInviteCode/channelInviteCode.vue'),
+        meta: { title: '渠道邀请码列表', icon: 'form' }
+      },
+      {
+        path: 'channelInviteCode/addCode',
+        name: 'AddChannelInviteCode',
+        component: () => import('../views/channel/channelInviteCode/addCode.vue'),
+        meta: { title: '添加渠道邀请码', icon: 'form' }
+      },
+      {
+        path: 'channelInviteCode/info',
+        name: 'channelInviteCodeInfo',
+        component: () => import('../views/channel/channelInviteCode/info.vue'),
+        meta: { title: '渠道邀请码详细信息', icon: 'form' }
+      },
+      // 渠道邀请码列表 --- end
+
+      // 城市等级列表 -- start
+      {
+        path: 'cityLevel',
+        name: 'ChannelInviteCode',
+        component: () => import('../views/channel/cityLevel/cityLevel.vue'),
+        meta: { title: '城市等级列表', icon: 'form' }
+      },
+      // 城市等级列表 -- end
+
+      // 渠道评级标准列表 --- start
+      {
+        path: 'channelRatings',
+        name: 'ChannelRatings',
+        component: () => import('../views/channel/channelRatings/channelRatings.vue'),
+        meta: { title: '渠道评级标准列表', icon: 'form' }
+      },
+      {
+        path: 'channelRatings/upMethods',
+        name: 'UpMethods',
+        component: () => import('../views/channel/channelRatings/methodsPages/upMethods.vue'),
+        meta: { title: '上传管理办法', icon: 'form' }
+      },
+      {
+        path: 'channelRatings/viewMethods',
+        name: 'ViewMethods',
+        component: () => import('../views/channel/channelRatings/methodsPages/viewMethods.vue'),
+        meta: { title: '查看管理办法', icon: 'form' }
+      },
+      // 渠道评级标准列表 --- end
+
+      // 渠道商 --- start
       {
         path: 'distributorsList',
         name: 'DistributorsList',
@@ -72,33 +123,9 @@ const routes: Array<RouteConfig> = [
         component: () => import('../views/channel/distributorsList/moreOperations/maintenanceOfChannels.vue'),
         meta: { title: '维护渠道经纪人', icon: 'form' }
       },
-      // 渠道等级信息变更列表
-      {
-        path: 'channelInfoList',
-        name: 'ChannelInfoList',
-        component: () => import('../views/channel/list/list.vue'),
-        meta: { title: '渠道等级信息变更列表', icon: 'form' }
-      },
-      // 渠道评级标准列表
-      {
-        path: 'channelRatings',
-        name: 'ChannelRatings',
-        component: () => import('../views/channel/channelRatings/channelRatings.vue'),
-        meta: { title: '渠道评级标准列表', icon: 'form' }
-      },
-      {
-        path: 'channelRatings/upMethods',
-        name: 'UpMethods',
-        component: () => import('../views/channel/channelRatings/methodsPages/upMethods.vue'),
-        meta: { title: '上传管理办法', icon: 'form' }
-      },
-      {
-        path: 'channelRatings/viewMethods',
-        name: 'ViewMethods',
-        component: () => import('../views/channel/channelRatings/methodsPages/viewMethods.vue'),
-        meta: { title: '查看管理办法', icon: 'form' }
-      },
-      // 渠道等级信息列表
+      // 渠道商 --- end
+
+      // 渠道等级信息列表 --- start
       {
         path: 'channelLevel',
         name: 'ChannelLevel',
@@ -123,7 +150,9 @@ const routes: Array<RouteConfig> = [
         component: () => import('../views/channel/channelLevel/operation/levelInfoAudit.vue'),
         meta: { title: '等级信息审核页', icon: 'form' }
       },
-      // 渠道呈批列表
+      // 渠道等级信息列表 --- end
+
+      // 渠道呈批列表 --- start
       {
         path: 'channelAgroupOf',
         name: 'ChannelAgroupOf',
@@ -136,97 +165,107 @@ const routes: Array<RouteConfig> = [
         component: () => import('../views/channel/channelAgroupOf/info.vue'),
         meta: { title: '详情', icon: 'form' }
       },
-      // 渠道基础信息变更列表
+      // 渠道呈批列表 --- end
+
+      // 渠道基础信息变更列表 --- start
       {
         path: 'channelBasicInfoChange',
         name: 'ChannelBasicInfoChange',
         component: () => import('../views/channel/channelBasicInfoChange/channelBasicInfoChange.vue'),
         meta: { title: '渠道基础信息变更列表', icon: 'form' }
       },
-      // 渠道邀请码列表
+      // 渠道基础信息变更列表 --- end
+
+      // 渠道等级信息变更列表 --- start
       {
-        path: 'channelInviteCode',
-        name: 'ChannelInviteCode',
-        component: () => import('../views/channel/channelInviteCode/channelInviteCode.vue'),
-        meta: { title: '渠道邀请码列表', icon: 'form' }
+        path: 'channelInfoList',
+        name: 'ChannelInfoList',
+        component: () => import('../views/channel/list/list.vue'),
+        meta: { title: '渠道等级信息变更列表', icon: 'form' }
       },
-      {
-        path: 'channelInviteCode/addCode',
-        name: 'AddChannelInviteCode',
-        component: () => import('../views/channel/channelInviteCode/addCode.vue'),
-        meta: { title: '添加渠道邀请码', icon: 'form' }
-      },
-      {
-        path: 'channelInviteCode/info',
-        name: 'channelInviteCodeInfo',
-        component: () => import('../views/channel/channelInviteCode/info.vue'),
-        meta: { title: '渠道邀请码详细信息', icon: 'form' }
-      },
-      // 城市等级列表
-      {
-        path: 'cityLevel',
-        name: 'ChannelInviteCode',
-        component: () => import('../views/channel/cityLevel/cityLevel.vue'),
-        meta: { title: '城市等级列表', icon: 'form' }
-      },
+      // 渠道等级信息变更列表 --- end
     ]
   },
   {
-    path: '/contract',
-    meta: { title: '合同', icon: 'form' },
-    redirect: '/contract/partyAList',
+    path: '/partyA',
+    meta: { title: '甲方合同', icon: 'form' },
+    redirect: '/partyA/list',
     component: Layout,
     children: [
       {
-        path: 'partyAList',
+        path: 'list',
         name: 'PartyAList',
         component: () => import( /* webpackChunkName: "PartyAList" */ '@/views/contract/partyA-list.vue'),
         meta: { title: '甲方合同列表', icon: 'form' }
       },
       {
-        path: 'partyAadd',
+        path: 'add',
         name: 'PartyAadd',
         component: () => import( /* webpackChunkName: "PartyAadd" */ '@/views/contract/partyA-add.vue'),
         meta: { title: '甲方合同录入', icon: 'form' }
       },
+    ]
+  },
+  {
+    path: '/intermediary',
+    meta: { title: '中介分销协议', icon: 'form' },
+    redirect: '/intermediary/list',
+    component: Layout,
+    children: [
       {
-        path: 'intermediaryList',
+        path: 'list',
         name: 'IntermediaryList',
         component: () => import( /* webpackChunkName: "IntermediaryList" */ '@/views/contract/intermediary-list.vue'),
         meta: { title: '中介分销协议列表', icon: 'form' }
       },
       {
-        path: 'intermediaryDetail',
+        path: 'detail',
         name: 'IntermediaryDetail',
         component: () => import( /* webpackChunkName: "IntermediaryList" */ '@/views/contract/intermediary-detail.vue'),
         meta: { title: '中介分销协议详情', icon: 'form' }
       },
+    ]
+  },
+  {
+    path: '/strategy',
+    meta: { title: '甲方/中介战略协议', icon: 'form' },
+    redirect: '/strategy/list',
+    component: Layout,
+    children: [
       {
-        path: 'strategyList',
+        path: 'list',
         name: 'StrategyList',
         component: () => import( /* webpackChunkName: "StrategyList" */ '@/views/contract/strategy-list.vue'),
         meta: { title: '甲方/中介战略协议列表', icon: 'form' }
       },
       {
-        path: 'strategyAdd',
+        path: 'add',
         name: 'StrategyAdd',
         component: () => import( /* webpackChunkName: "StrategyAdd" */ '@/views/contract/strategy-add.vue'),
         meta: { title: '甲方/中介战略协议录入', icon: 'form' }
       },
       {
-        path: 'strategyDetail',
+        path: 'detail',
         name: 'StrategyDetail',
         component: () => import( /* webpackChunkName: "StrategyDetail" */ '@/views/contract/strategy-detail.vue'),
         meta: { title: '甲方/中介战略协议详情', icon: 'form' }
       },
+    ]
+  },
+  {
+    path: '/discount',
+    meta: { title: '甲方/中介战略协议', icon: 'form' },
+    redirect: '/discount/list',
+    component: Layout,
+    children: [
       {
-        path: 'discountList',
+        path: 'list',
         name: 'DiscountList',
         component: () => import( /* webpackChunkName: "DiscountList" */ '@/views/contract/discount-list.vue'),
         meta: { title: '优惠告知书列表', icon: 'form' }
       },
       {
-        path: 'discountDetail',
+        path: 'detail',
         name: 'DiscountDetail',
         component: () => import( /* webpackChunkName: "DiscountDetail" */ '@/views/contract/discount-detail.vue'),
         meta: { title: '优惠告知书详情页', icon: 'form' }
