@@ -1,47 +1,46 @@
 /* eslint-disable */
 /* 此脚本由swagger-ui的api-docs自动生成，请勿修改 */
-//2020-10-13 15:24:51
+//2020-10-9 4:59:22 ├F10: PM┤
 import { request } from '@/api/base'
-const basePath = "/developer"
 /**保存新增开发商信息【未完善】*/
 export async function post_company_add (d?: any) {
-return await request.post< boolean,boolean> (basePath+'/company/add', d)
+return await request.post< boolean,boolean> ('/developer/company/add', d)
 }
 /**审核开发商*/
 export async function post_company_audit__id (d?: any) {
-return await request.post< boolean,boolean> (basePath+'/company/audit/{id}', d)
+return await request.post< boolean,boolean> ('/developer/company/audit/{id}', d)
 }
 /**删除开发商*/
 export async function get_company_delete__id (d?: any) {
-return await request.get<boolean,boolean>(basePath+'/company/delete/{id}', { params: d })
+return await request.get<boolean,boolean>('/developer/company/delete/{id}', { params: d })
 }
 /**开发商详情*/
 export async function get_company_get__id (d?: any) {
-return await request.get<CompanyEditDetailVO,CompanyEditDetailVO>(basePath+'/company/get/{id}', { params: d })
+return await request.get<CompanyEditDetailVO,CompanyEditDetailVO>('/developer/company/get/{id}', { params: d })
 }
 /**开发商列表*/
 export async function post_company_getList (d?: any) {
-return await request.post< PageModel<CompanyListVO>,PageModel<CompanyListVO>> (basePath+'/company/getList', d)
+return await request.post< PageModel<CompanyListVO>,PageModel<CompanyListVO>> ('/developer/company/getList', d)
 }
 /**撤回开发商*/
 export async function post_company_retract__id (d?: any) {
-return await request.post< boolean,boolean> (basePath+'/company/retract/{id}', d)
+return await request.post< boolean,boolean> ('/developer/company/retract/{id}', d)
 }
 /**变更信息【未完善】*/
 export async function post_company_update (d?: any) {
-return await request.post< boolean,boolean> (basePath+'/company/update', d)
+return await request.post< boolean,boolean> ('/developer/company/update', d)
 }
 /**修改开发商信息【未完善】*/
 export async function post_company_updateDraft (d?: any) {
-return await request.post< boolean,boolean> (basePath+'/company/updateDraft', d)
+return await request.post< boolean,boolean> ('/developer/company/updateDraft', d)
 }
 /**变更录入人*/
 export async function post_company_updateInputUser (d?: any) {
-return await request.post< boolean,boolean> (basePath+'/company/updateInputUser', d)
+return await request.post< boolean,boolean> ('/developer/company/updateInputUser', d)
 }
 /**开发商操作日志列表*/
 export async function get_companyLog_getAll__companyId (d?: any) {
-return await request.get<CompanyLogDetailVO[],CompanyLogDetailVO[]>(basePath+'/companyLog/getAll/{companyId}', { params: d })
+return await request.get<CompanyLogDetailVO[],CompanyLogDetailVO[]>('/developer/companyLog/getAll/{companyId}', { params: d })
 }
 //===============================================================================================
 /**ResModel模型*/

@@ -4,7 +4,7 @@
  * @Author: zyc
  * @Date: 2020-06-22 11:11:41
  * @LastEditors: ywl
- * @LastEditTime: 2020-10-13 10:57:45
+ * @LastEditTime: 2020-10-13 16:18:10
  */
 const path = require('path');
 const { name } = require('./package');
@@ -52,9 +52,11 @@ module.exports = {
 			'/system/': {
 				target: proxyAddress
 			},
-			// '/channel/': {
-			// 	target: proxyAddress
-			// },
+			'/channel/': {
+				target: proxyAddress,
+				// changeOrigin: true, //开启代理
+				// pathRewrite: { '^/channel': '/channel-local' }  //路由重写
+			},
 			'/developer/': {
 				target: proxyAddress
 			},

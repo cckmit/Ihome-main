@@ -3,23 +3,37 @@
  * @version: 
  * @Author: zyc
  * @Date: 2020-06-22 11:46:23
- * @LastEditors: lgf
- * @LastEditTime: 2020-09-22 10:34:05
+ * @LastEditors: zyc
+ * @LastEditTime: 2020-10-13 15:42:27
 --> 
 <template>
   <div>
     <el-container v-show="!loginPage" id="main-root" class="root">
-      <el-aside :width="sidebarWidth" :style="{'height':screenHeight+'px'}" class="ih-aside">
+      <el-aside
+        :width="sidebarWidth"
+        :style="{ height: screenHeight + 'px' }"
+        class="ih-aside"
+      >
         <div class="container-logo" v-show="!isCollapsed">
-          <img src="./assets/img/logo/logo.png" style="width:100%;" alt srcset />
+          <img
+            src="./assets/img/logo/logo.png"
+            style="width: 100%"
+            alt
+            srcset
+          />
         </div>
         <div class="container-logo-lm" v-show="isCollapsed">
-          <img src="./assets/img/logo/ihome.jpg" style="width:100%;" alt srcset />
+          <img
+            src="./assets/img/logo/ihome.jpg"
+            style="width: 100%"
+            alt
+            srcset
+          />
         </div>
 
         <el-scrollbar
           class="scroll"
-          :style="{'height': `calc(100% - ${isCollapsed ? '64' : '50'}px)`}"
+          :style="{ height: `calc(100% - ${isCollapsed ? '64' : '50'}px)` }"
         >
           <el-menu
             :default-openeds="defaultOpeneds"
@@ -30,10 +44,10 @@
             active-text-color="#ffd04b"
             :collapse-transition="false"
             :collapse="isCollapsed"
-            :class="{'is-collapse': isCollapsed}"
-            :style="{'width': sidebarWidth}"
+            :class="{ 'is-collapse': isCollapsed }"
+            :style="{ width: sidebarWidth }"
           >
-            <template :index="item.id" v-for="(item) in groupMenuList">
+            <template :index="item.id" v-for="item in groupMenuList">
               <el-menu-item
                 :index="item.id"
                 v-if="!item.children"
@@ -41,33 +55,37 @@
                 :key="item.id"
               >
                 <i :class="item.icon"></i>
-                <span>{{item.title}}</span>
+                <span>{{ item.title }}</span>
               </el-menu-item>
 
               <el-submenu :index="item.id" v-if="item.children" :key="item.id">
                 <template slot="title">
                   <i :class="item.icon"></i>
-                  <span>{{item.title}}</span>
+                  <span>{{ item.title }}</span>
                 </template>
-                <template v-for="(childrenItem,childrenIndex) in item.children">
+                <template
+                  v-for="(childrenItem, childrenIndex) in item.children"
+                >
                   <el-submenu
                     :index="childrenItem.id"
                     :key="childrenIndex"
                     v-if="childrenItem.children"
                   >
-                    <template slot="title">{{childrenItem.title}}</template>
+                    <template slot="title">{{ childrenItem.title }}</template>
                     <el-menu-item
                       :index="cItem.id"
                       v-for="(cItem, cIndex) in childrenItem.children"
                       :key="cIndex"
-                    >{{cItem.title}}</el-menu-item>
+                      >{{ cItem.title }}</el-menu-item
+                    >
                   </el-submenu>
                   <el-menu-item
                     v-else
                     :key="childrenIndex"
                     @click="goto(childrenItem.path)"
                     :index="childrenItem.id"
-                  >{{childrenItem.title}}</el-menu-item>
+                    >{{ childrenItem.title }}</el-menu-item
+                  >
                 </template>
               </el-submenu>
             </template>
@@ -79,12 +97,27 @@
         <div class="right-container">
           <IhHeader class="right-container-header" />
           <!-- v-loading="loading" -->
-          <el-main class="right-container-body" :style="{'height':screenHeight-50+'px'}">
+          <el-main
+            class="right-container-body"
+            :style="{ height: screenHeight - 50 + 'px' }"
+          >
             <!-- <div  id="root-view" class="app-view-box" v-html="content"></div> -->
             <!-- <div id="root-ihome-web-cli" class="app-view-box" v-html="content"></div> -->
-            <div id="root-ihome-web-system" class="app-view-box" v-html="content"></div>
-            <div id="root-ihome-web-common" class="app-view-box" v-html="content"></div>
-            <div id="root-ihome-web-sales" class="app-view-box" v-html="content"></div>
+            <div
+              id="root-ihome-web-system"
+              class="app-view-box"
+              v-html="content"
+            ></div>
+            <div
+              id="root-ihome-web-common"
+              class="app-view-box"
+              v-html="content"
+            ></div>
+            <div
+              id="root-ihome-web-sales"
+              class="app-view-box"
+              v-html="content"
+            ></div>
           </el-main>
         </div>
       </el-container>

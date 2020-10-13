@@ -3,8 +3,8 @@
  * @version: 
  * @Author: zyc
  * @Date: 2020-06-24 09:47:33
- * @LastEditors: wwq
- * @LastEditTime: 2020-10-10 18:16:29
+ * @LastEditors: zyc
+ * @LastEditTime: 2020-10-13 15:42:50
  */
 import { IRes } from "./users.d";
 // import request from '@/utils/http';
@@ -57,13 +57,13 @@ export function userMenu<T>(d?: any) {
  */
 export function allMenu<T>() {
     const menuList: any[] = [
-        {
-            id: 7,
-            parentId: 0,
-            title: "系统管理首页",
-            icon: "el-icon-menu",
-            path: "/web-system/",
-        },
+        // {
+        //     id: 7,
+        //     parentId: 0,
+        //     title: "系统管理首页",
+        //     icon: "el-icon-menu",
+        //     path: "/web-system/",
+        // },
         {
             id: 1,
             parentId: 0,
@@ -106,20 +106,20 @@ export function allMenu<T>() {
             icon: null,
             path: "/web-system/organization/list",
         },
-        {
-            id: 101,
-            parentId: 0,
-            title: "新房系统业务模块",
-            icon: "el-icon-setting",
-            path: null,
-        },
-        {
-            id: 102,
-            parentId: 101,
-            title: "首页导航",
-            icon: null,
-            path: "/web-sales/",
-        },
+        // {
+        //     id: 101,
+        //     parentId: 0,
+        //     title: "新房系统业务模块",
+        //     icon: "el-icon-setting",
+        //     path: null,
+        // },
+        // {
+        //     id: 102,
+        //     parentId: 101,
+        //     title: "首页导航",
+        //     icon: null,
+        //     path: "/web-sales/",
+        // },
         {
 
             id: 201,

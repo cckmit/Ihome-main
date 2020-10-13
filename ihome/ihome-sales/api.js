@@ -4,9 +4,9 @@
  * @Author: zyc
  * @Date: 2020-08-04 17:43:48
  * @LastEditors: ywl
- * @LastEditTime: 2020-10-12 12:02:24
+ * @LastEditTime: 2020-10-13 16:17:56
  */
-let handleSwagger = require('./api-handle');
+let handleSwagger = require('./node_modules/ihome-common/util/api/api-hangle');
 function doneApi() {
     //在这里配置要生成的api
     // handleSwagger('system');

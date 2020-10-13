@@ -4,7 +4,7 @@
  * @Author: zyc
  * @Date: 2020-06-09 16:38:00
  * @LastEditors: zyc
- * @LastEditTime: 2020-08-26 10:28:44
+ * @LastEditTime: 2020-10-13 11:50:43
  */
 export interface ToolInterface {
     /**深度拷贝
@@ -34,9 +34,42 @@ export interface ToolInterface {
      * @return {type} 
      */
     todayLongStr(format?: string): string;
+    /**获取预览文件路径(fid,width?,height?)
+     * @param {type} 
+     * @return {type} 
+     */
+    getFileUrl(fid: number | string, width?: number | string, height?: number | string): string;
+    /**获取下载的文件路径
+     * @param {type} 
+     * @return {type} 
+     */
+    downloadFileUrl(fid: number | string): string;
 
 }
 export class Tool implements ToolInterface {
+    /**获取下载的文件路径
+     * @param {type} 
+     * @return {type} 
+     */
+    downloadFileUrl(fid: string | number): string {
+        let url = `/sales-document-cover/file/download/{${fid}}`;
+        return url;
+    }
+    /**获取预览文件路径(fid,width?,height?)
+   * @param {type} 
+   * @return {type} 
+   */
+    getFileUrl(fid: string | number, width?: string | number, height?: string | number): string {
+        if (width && height) {
+            //缩略图
+            let url = `/sales-document-cover/image/thumbnail/{${fid}}/{${width}}/{${height}}`;
+            return url;
+        } else {
+            //文件路径
+            let url = `/sales-document-cover/file​/browse​/{${fid}}`;
+            return url;
+        }
+    }
     /**今天的字符串格式年月日时分秒
      * @param {type} 
      * @return {type} 
