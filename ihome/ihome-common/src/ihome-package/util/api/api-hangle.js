@@ -4,7 +4,7 @@
  * @Author: zyc
  * @Date: 2020-07-31 15:21:06
  * @LastEditors: zyc
- * @LastEditTime: 2020-09-29 11:25:46
+ * @LastEditTime: 2020-10-13 15:18:15
  */
 let http = require('http');
 let fs = require("fs");
@@ -19,8 +19,6 @@ function handleSwagger(prefix) {
     //swagger配置数据
     let options = {
         host: process.env.PROXY_IP,
-        // host: '10.188.0.109',
-        // host: '10.188.1.91',
         port: process.env.PROXY_PORT,
         path: `/${prefix}/v2/api-docs`
     };
@@ -67,7 +65,8 @@ function handleBody(body) {
     writeLine('/* eslint-disable */');
     writeLine('/* 此脚本由swagger-ui的api-docs自动生成，请勿修改 */');
     writeLine('//' + new Date().toLocaleString())
-    writeLine("import { request } from '@/api/base'")
+    writeLine("import { request } from '@/api/base'");
+    writeLine(`const basePath = "${body.basePath}"`);
     const { paths, definitions } = body;
 
     let count = 0;
@@ -99,13 +98,13 @@ function handleBody(body) {
                 originalRef = "any"
             }
             if (originalRef.startsWith('ResModel')) {
-               
+
                 originalRef = originalRef.substring(9, originalRef.length - 1)
             }
             if (originalRef.startsWith('List<')) {
                 originalRef = originalRef.substring(5, originalRef.length - 1)
                 originalRef += '[]'
-              
+
 
             }
             if (originalRef.startsWith('Map<')) {
@@ -126,9 +125,9 @@ function handleBody(body) {
             if (!res) {
                 res = 'any'
             }
- 
+
             writeLine(`export async function ${className} (d?: ${res}) {`)
-            writeLine(`return await request.get<${originalRef},${originalRef}>('${body.basePath}${k}', { params: d })`)
+            writeLine(`return await request.get<${originalRef},${originalRef}>(basePath+'${k}', { params: d })`)
             writeLine(`}`)
 
         } else {
@@ -177,7 +176,7 @@ function handleBody(body) {
             if (originalRef.startsWith('Map<')) {
                 originalRef = "any"
             }
-            
+
             let res = 'any'
             let parameters = method.parameters;
             if (parameters && parameters.length > 0) {
@@ -197,7 +196,7 @@ function handleBody(body) {
 
             writeLine(`export async function ${className} (d?: ${res}) {`)
 
-            writeLine(`return await request.post< ${originalRef},${originalRef}> ('${body.basePath}${k}', d)`)
+            writeLine(`return await request.post< ${originalRef},${originalRef}> (basePath+'${k}', d)`)
             writeLine(`}`)
 
         }
@@ -231,7 +230,7 @@ function handleBody(body) {
         if (k.includes("ApiResult") || k.includes("PageInfo")) {
             console.log('(k.includes("ApiResult") || k.includes("PageInfo")')
         } else {
-            if (k.startsWith('PageModel«')|| k.startsWith('ResModel') || k.startsWith('ResModel«') || k.startsWith('Map«')) {
+            if (k.startsWith('PageModel«') || k.startsWith('ResModel') || k.startsWith('ResModel«') || k.startsWith('Map«')) {
 
             } else {
 

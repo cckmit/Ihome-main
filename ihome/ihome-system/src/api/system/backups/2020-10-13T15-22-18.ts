@@ -1,6 +1,6 @@
 /* eslint-disable */
 /* 此脚本由swagger-ui的api-docs自动生成，请勿修改 */
-//2020-10-13 15:22:18
+//2020-10-13 15:12:36
 import { request } from '@/api/base'
 const basePath = "/system"
 /**查询所有行政区划信息*/
