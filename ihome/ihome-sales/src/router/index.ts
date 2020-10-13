@@ -3,8 +3,8 @@
  * @version: 
  * @Author: zyc
  * @Date: 2020-06-22 11:10:43
- * @LastEditors: ywl
- * @LastEditTime: 2020-10-13 17:35:53
+ * @LastEditors: wwq
+ * @LastEditTime: 2020-10-13 19:34:57
  */
 import Vue from 'vue'
 import VueRouter, { RouteConfig, Route } from 'vue-router'
@@ -30,6 +30,20 @@ const routes: Array<RouteConfig> = [
   },
   //渠道商信息列表
   {
+    path: '/cityLevel',
+    meta: { title: '城市等级列表', icon: 'form' },
+    redirect: '/cityLevel/list',
+    component: Layout,
+    children: [
+      {
+        path: 'list',
+        name: 'cityLevel',
+        component: () => import('../views/channel/cityLevel/cityLevel.vue'),
+        meta: { title: '城市等级列表', icon: 'form' }
+      },
+    ]
+  },
+  {
     path: '/channels',
     meta: { title: '用户', icon: 'form' },
     redirect: '/channels/distributorsList',
@@ -54,16 +68,6 @@ const routes: Array<RouteConfig> = [
         component: () => import('../views/channel/channelInviteCode/info.vue'),
         meta: { title: '渠道邀请码详细信息', icon: 'form' }
       },
-      // 渠道邀请码列表 --- end
-
-      // 城市等级列表 -- start
-      {
-        path: 'cityLevel',
-        name: 'ChannelInviteCode',
-        component: () => import('../views/channel/cityLevel/cityLevel.vue'),
-        meta: { title: '城市等级列表', icon: 'form' }
-      },
-      // 城市等级列表 -- end
 
       // 渠道评级标准列表 --- start
       {
