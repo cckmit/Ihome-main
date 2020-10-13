@@ -1,6 +1,6 @@
 /* eslint-disable */
 /* 此脚本由swagger-ui的api-docs自动生成，请勿修改 */
-//2020-10-13 4:27:28 ├F10: PM┤
+//2020-10-13 20:25:18
 import { request } from '@/api/base'
 const basePath = "/channel-local"
 /**添加渠道*/
@@ -18,6 +18,10 @@ return await request.post< number,number> (basePath+'/channel/delete/{id}', d)
 /**查询渠道详情*/
 export async function get_channel_get__id (d?: any) {
 return await request.get<ChannelDetail,ChannelDetail>(basePath+'/channel/get/{id}', { params: d })
+}
+/**查询所有渠道商*/
+export async function get_channel_getAll (d?: any) {
+return await request.get<ChannelVO[],ChannelVO[]>(basePath+'/channel/getAll', { params: d })
 }
 /**查询渠道列表*/
 export async function post_channel_getList (d?: any) {
@@ -1456,8 +1460,10 @@ updateUser: number;
 export interface ChannelInvitationCodeQueryVO {
 /**事业部*/
 departmentOrgId: number;
-/**失效时间(yyyy-MM-dd)*/
-expiresTime: string;
+/**失效时间开始(yyyy-MM-dd)*/
+expiresTimeBegin: string;
+/**失效时间结束(yyyy-MM-dd)*/
+expiresTimeEnd: string;
 /**邀请码*/
 invitationCode: string;
 /**邀请人ID*/

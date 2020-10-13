@@ -4,7 +4,7 @@
  * @Author: zyc
  * @Date: 2020-07-31 15:21:06
  * @LastEditors: zyc
- * @LastEditTime: 2020-10-13 15:18:15
+ * @LastEditTime: 2020-10-13 20:16:11
  */
 let http = require('http');
 let fs = require("fs");
@@ -74,7 +74,7 @@ function handleBody(body) {
     let countPost = 0;
     let countPut = 0;
     let countDelete = 0;
-    Object.keys(paths).forEach(k => {
+    Object.keys(paths||{}).forEach(k => {
         count += 1;
         let v = paths[k];
         if (paths[k]["get"]) {
@@ -226,7 +226,7 @@ function handleBody(body) {
     writeLine(`total: number;`)
     writeLine(`}`)
 
-    Object.keys(definitions).forEach(k => {
+    Object.keys(definitions||{}).forEach(k => {
         if (k.includes("ApiResult") || k.includes("PageInfo")) {
             console.log('(k.includes("ApiResult") || k.includes("PageInfo")')
         } else {
@@ -240,7 +240,7 @@ function handleBody(body) {
 
                 let requiredList = definitions[k].required || [];
                 if (objs) {
-                    Object.keys(objs).forEach(key => {
+                    Object.keys(objs||{}).forEach(key => {
                         let required = requiredList.includes(key);
                         writeLine(`/**${required ? '(必填)' : ''}${objs[key].description}*/`)
                         let _type = objs[key].type;

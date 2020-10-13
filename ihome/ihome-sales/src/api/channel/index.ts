@@ -1,266 +1,271 @@
 /* eslint-disable */
 /* 此脚本由swagger-ui的api-docs自动生成，请勿修改 */
-//2020-10-12 12:02:37 ├F10: PM┤
+//2020-10-13 20:25:18
 import { request } from '@/api/base'
+const basePath = "/channel-local"
 /**添加渠道*/
 export async function post_channel_add (d?: any) {
-return await request.post< string,string> ('/channel-local/channel/add', d)
+return await request.post< string,string> (basePath+'/channel/add', d)
 }
 /**渠道审核操作*/
 export async function get_channel_approveRecord (d?: any) {
-return await request.get<string,string>('/channel-local/channel/approveRecord', { params: d })
+return await request.get<string,string>(basePath+'/channel/approveRecord', { params: d })
 }
 /**删除渠道信息*/
 export async function post_channel_delete__id (d?: any) {
-return await request.post< number,number> ('/channel-local/channel/delete/{id}', d)
+return await request.post< number,number> (basePath+'/channel/delete/{id}', d)
 }
 /**查询渠道详情*/
 export async function get_channel_get__id (d?: any) {
-return await request.get<ChannelDetail,ChannelDetail>('/channel-local/channel/get/{id}', { params: d })
+return await request.get<ChannelDetail,ChannelDetail>(basePath+'/channel/get/{id}', { params: d })
+}
+/**查询所有渠道商*/
+export async function get_channel_getAll (d?: any) {
+return await request.get<ChannelVO[],ChannelVO[]>(basePath+'/channel/getAll', { params: d })
 }
 /**查询渠道列表*/
 export async function post_channel_getList (d?: any) {
-return await request.post< PageModel<ChannelVO>,PageModel<ChannelVO>> ('/channel-local/channel/getList', d)
+return await request.post< PageModel<ChannelVO>,PageModel<ChannelVO>> (basePath+'/channel/getList', d)
 }
 /**渠道信息变更跟进人*/
 export async function post_channel_modifyFollowUser (d?: any) {
-return await request.post< string,string> ('/channel-local/channel/modifyFollowUser', d)
+return await request.post< string,string> (basePath+'/channel/modifyFollowUser', d)
 }
 /**渠道等级信息变更录入人*/
 export async function post_channel_modifyInputUser (d?: any) {
-return await request.post< string,string> ('/channel-local/channel/modifyInputUser', d)
+return await request.post< string,string> (basePath+'/channel/modifyInputUser', d)
 }
 /**添加渠道经纪人*/
 export async function post_channelAgent_add (d?: any) {
-return await request.post< string,string> ('/channel-local/channelAgent/add', d)
+return await request.post< string,string> (basePath+'/channelAgent/add', d)
 }
 /**修改渠道经纪人*/
 export async function post_channelAgent_edit (d?: any) {
-return await request.post< string,string> ('/channel-local/channelAgent/edit', d)
+return await request.post< string,string> (basePath+'/channelAgent/edit', d)
 }
 /**查询渠道经纪人详情*/
 export async function get_channelAgent_get__id (d?: any) {
-return await request.get<ChannelAgentVO,ChannelAgentVO>('/channel-local/channelAgent/get/{id}', { params: d })
+return await request.get<ChannelAgentVO,ChannelAgentVO>(basePath+'/channelAgent/get/{id}', { params: d })
 }
 /**查询渠道经纪人列表*/
 export async function get_channelAgent_getAllByChannelId__channelId (d?: any) {
-return await request.get<ChannelAgent[],ChannelAgent[]>('/channel-local/channelAgent/getAllByChannelId/{channelId}', { params: d })
+return await request.get<ChannelAgent[],ChannelAgent[]>(basePath+'/channelAgent/getAllByChannelId/{channelId}', { params: d })
 }
 /**查询渠道经纪人列表*/
 export async function post_channelAgent_getList (d?: any) {
-return await request.post< PageModel<ChannelAgentVO>,PageModel<ChannelAgentVO>> ('/channel-local/channelAgent/getList', d)
+return await request.post< PageModel<ChannelAgentVO>,PageModel<ChannelAgentVO>> (basePath+'/channelAgent/getList', d)
 }
 /**新增渠道呈批*/
 export async function post_channelApproval_add (d?: any) {
-return await request.post< string,string> ('/channel-local/channelApproval/add', d)
+return await request.post< string,string> (basePath+'/channelApproval/add', d)
 }
 /**查询渠道呈批详情*/
 export async function get_channelApproval_get__id (d?: any) {
-return await request.get<ChannelApprovalVO,ChannelApprovalVO>('/channel-local/channelApproval/get/{id}', { params: d })
+return await request.get<ChannelApprovalVO,ChannelApprovalVO>(basePath+'/channelApproval/get/{id}', { params: d })
 }
 /**查询渠道呈批列表*/
 export async function post_channelApproval_getList (d?: any) {
-return await request.post< PageModel<ChannelApprovalVO>,PageModel<ChannelApprovalVO>> ('/channel-local/channelApproval/getList', d)
+return await request.post< PageModel<ChannelApprovalVO>,PageModel<ChannelApprovalVO>> (basePath+'/channelApproval/getList', d)
 }
 /**查询渠道呈批OA处理列表*/
 export async function get_channelApprovalOaRecord_getAll__approvalId (d?: any) {
-return await request.get<ChannelApprovalOaRecord[],ChannelApprovalOaRecord[]>('/channel-local/channelApprovalOaRecord/getAll/{approvalId}', { params: d })
+return await request.get<ChannelApprovalOaRecord[],ChannelApprovalOaRecord[]>(basePath+'/channelApprovalOaRecord/getAll/{approvalId}', { params: d })
 }
 /**查询渠道呈批列表*/
 export async function get_channelApprovalRecord_getAll__approvalId (d?: any) {
-return await request.get<ChannelApprovalRecord[],ChannelApprovalRecord[]>('/channel-local/channelApprovalRecord/getAll/{approvalId}', { params: d })
+return await request.get<ChannelApprovalRecord[],ChannelApprovalRecord[]>(basePath+'/channelApprovalRecord/getAll/{approvalId}', { params: d })
 }
 /**添加渠道商银行账户*/
 export async function post_channelBank_add (d?: any) {
-return await request.post< string,string> ('/channel-local/channelBank/add', d)
+return await request.post< string,string> (basePath+'/channelBank/add', d)
 }
 /**修改渠道商银行账户*/
 export async function post_channelBank_edit (d?: any) {
-return await request.post< string,string> ('/channel-local/channelBank/edit', d)
+return await request.post< string,string> (basePath+'/channelBank/edit', d)
 }
 /**查询渠道商银行账户详情*/
 export async function get_channelBank_get__id (d?: any) {
-return await request.get<ChannelBankVO,ChannelBankVO>('/channel-local/channelBank/get/{id}', { params: d })
+return await request.get<ChannelBankVO,ChannelBankVO>(basePath+'/channelBank/get/{id}', { params: d })
 }
 /**查询渠道商银行账户列表*/
 export async function get_channelBank_getAll__channelId (d?: any) {
-return await request.get<ChannelBank[],ChannelBank[]>('/channel-local/channelBank/getAll/{channelId}', { params: d })
+return await request.get<ChannelBank[],ChannelBank[]>(basePath+'/channelBank/getAll/{channelId}', { params: d })
 }
 /**添加变更渠道商银行账户*/
 export async function post_channelBankChange_add (d?: any) {
-return await request.post< string,string> ('/channel-local/channelBankChange/add', d)
+return await request.post< string,string> (basePath+'/channelBankChange/add', d)
 }
 /**修改变更渠道商银行账户*/
 export async function post_channelBankChange_edit (d?: any) {
-return await request.post< string,string> ('/channel-local/channelBankChange/edit', d)
+return await request.post< string,string> (basePath+'/channelBankChange/edit', d)
 }
 /**查询渠道商银行账户变更详情*/
 export async function get_channelBankChange_get__id (d?: any) {
-return await request.get<ChannelBankChangeVO,ChannelBankChangeVO>('/channel-local/channelBankChange/get/{id}', { params: d })
+return await request.get<ChannelBankChangeVO,ChannelBankChangeVO>(basePath+'/channelBankChange/get/{id}', { params: d })
 }
 /**查询渠道商银行账户变更列表*/
 export async function get_channelBankChange_getAll__channelId (d?: any) {
-return await request.get<ChannelBankChange[],ChannelBankChange[]>('/channel-local/channelBankChange/getAll/{channelId}', { params: d })
+return await request.get<ChannelBankChange[],ChannelBankChange[]>(basePath+'/channelBankChange/getAll/{channelId}', { params: d })
 }
 /**添加渠道变更*/
 export async function post_channelChange_add (d?: any) {
-return await request.post< string,string> ('/channel-local/channelChange/add', d)
+return await request.post< string,string> (basePath+'/channelChange/add', d)
 }
 /**渠道变更审核操作*/
 export async function get_channelChange_approveRecord (d?: any) {
-return await request.get<string,string>('/channel-local/channelChange/approveRecord', { params: d })
+return await request.get<string,string>(basePath+'/channelChange/approveRecord', { params: d })
 }
 /**查询渠道变更详情*/
 export async function get_channelChange_get__id (d?: any) {
-return await request.get<ChannelChangeDetail,ChannelChangeDetail>('/channel-local/channelChange/get/{id}', { params: d })
+return await request.get<ChannelChangeDetail,ChannelChangeDetail>(basePath+'/channelChange/get/{id}', { params: d })
 }
 /**查询渠道变更列表*/
 export async function post_channelChange_getList (d?: any) {
-return await request.post< PageModel<ChannelChangeVO>,PageModel<ChannelChangeVO>> ('/channel-local/channelChange/getList', d)
+return await request.post< PageModel<ChannelChangeVO>,PageModel<ChannelChangeVO>> (basePath+'/channelChange/getList', d)
 }
 /**渠道变更信息变更跟进人*/
 export async function post_channelChange_modifyFollowUser (d?: any) {
-return await request.post< string,string> ('/channel-local/channelChange/modifyFollowUser', d)
+return await request.post< string,string> (basePath+'/channelChange/modifyFollowUser', d)
 }
 /**渠道变更信息变更录入人*/
 export async function post_channelChange_modifyInputUser (d?: any) {
-return await request.post< string,string> ('/channel-local/channelChange/modifyInputUser', d)
+return await request.post< string,string> (basePath+'/channelChange/modifyInputUser', d)
 }
 /**查询城市等级列表*/
 export async function post_channelCityLevel_getList (d?: any) {
-return await request.post< PageModel<ChannelCityLevelVO>,PageModel<ChannelCityLevelVO>> ('/channel-local/channelCityLevel/getList', d)
+return await request.post< PageModel<ChannelCityLevelVO>,PageModel<ChannelCityLevelVO>> (basePath+'/channelCityLevel/getList', d)
 }
 /**批量更新城市等级*/
 export async function post_channelCityLevel_updateLevel (d?: any) {
-return await request.post< number,number> ('/channel-local/channelCityLevel/updateLevel', d)
+return await request.post< number,number> (basePath+'/channelCityLevel/updateLevel', d)
 }
 /**添加渠道等级信息*/
 export async function post_channelGrade_add (d?: any) {
-return await request.post< string,string> ('/channel-local/channelGrade/add', d)
+return await request.post< string,string> (basePath+'/channelGrade/add', d)
 }
 /**渠道等级审核操作*/
 export async function get_channelGrade_approveRecord (d?: any) {
-return await request.get<string,string>('/channel-local/channelGrade/approveRecord', { params: d })
+return await request.get<string,string>(basePath+'/channelGrade/approveRecord', { params: d })
 }
 /**查询渠道等级详情*/
 export async function get_channelGrade_get__id (d?: any) {
-return await request.get<ChannelGradeVO,ChannelGradeVO>('/channel-local/channelGrade/get/{id}', { params: d })
+return await request.get<ChannelGradeVO,ChannelGradeVO>(basePath+'/channelGrade/get/{id}', { params: d })
 }
 /**查询渠道等级列表*/
 export async function post_channelGrade_getList (d?: any) {
-return await request.post< PageModel<ChannelGradeVO>,PageModel<ChannelGradeVO>> ('/channel-local/channelGrade/getList', d)
+return await request.post< PageModel<ChannelGradeVO>,PageModel<ChannelGradeVO>> (basePath+'/channelGrade/getList', d)
 }
 /**渠道等级信息变更录入人*/
 export async function post_channelGrade_modifyInputUser (d?: any) {
-return await request.post< string,string> ('/channel-local/channelGrade/modifyInputUser', d)
+return await request.post< string,string> (basePath+'/channelGrade/modifyInputUser', d)
 }
 /**添加渠道等级变更信息*/
 export async function post_channelGradeChange_add (d?: any) {
-return await request.post< string,string> ('/channel-local/channelGradeChange/add', d)
+return await request.post< string,string> (basePath+'/channelGradeChange/add', d)
 }
 /**渠道等级变更审核操作*/
 export async function get_channelGradeChange_approveRecord (d?: any) {
-return await request.get<string,string>('/channel-local/channelGradeChange/approveRecord', { params: d })
+return await request.get<string,string>(basePath+'/channelGradeChange/approveRecord', { params: d })
 }
 /**查询渠道等级变更详情*/
 export async function get_channelGradeChange_get__id (d?: any) {
-return await request.get<ChannelGradeChangeVO,ChannelGradeChangeVO>('/channel-local/channelGradeChange/get/{id}', { params: d })
+return await request.get<ChannelGradeChangeVO,ChannelGradeChangeVO>(basePath+'/channelGradeChange/get/{id}', { params: d })
 }
 /**查询渠道等级变更列表*/
 export async function post_channelGradeChange_getList (d?: any) {
-return await request.post< PageModel<ChannelGradeChangeVO>,PageModel<ChannelGradeChangeVO>> ('/channel-local/channelGradeChange/getList', d)
+return await request.post< PageModel<ChannelGradeChangeVO>,PageModel<ChannelGradeChangeVO>> (basePath+'/channelGradeChange/getList', d)
 }
 /**渠道等级变更信息变更录入人*/
 export async function post_channelGradeChange_modifyInputUser (d?: any) {
-return await request.post< string,string> ('/channel-local/channelGradeChange/modifyInputUser', d)
+return await request.post< string,string> (basePath+'/channelGradeChange/modifyInputUser', d)
 }
 /**查询渠道等级处理列表*/
 export async function get_channelGradeRecord_getAll__gradeId (d?: any) {
-return await request.get<ChannelGradeRecord[],ChannelGradeRecord[]>('/channel-local/channelGradeRecord/getAll/{gradeId}', { params: d })
+return await request.get<ChannelGradeRecord[],ChannelGradeRecord[]>(basePath+'/channelGradeRecord/getAll/{gradeId}', { params: d })
 }
 /**查询渠道等级变更处理列表*/
 export async function get_channelGradeRecordChange_getAll__gradeId (d?: any) {
-return await request.get<ChannelGradeRecordChange[],ChannelGradeRecordChange[]>('/channel-local/channelGradeRecordChange/getAll/{gradeId}', { params: d })
+return await request.get<ChannelGradeRecordChange[],ChannelGradeRecordChange[]>(basePath+'/channelGradeRecordChange/getAll/{gradeId}', { params: d })
 }
 /**添加渠道评级标准*/
 export async function post_channelGradeStandard_add (d?: any) {
-return await request.post< string,string> ('/channel-local/channelGradeStandard/add', d)
+return await request.post< string,string> (basePath+'/channelGradeStandard/add', d)
 }
 /**保存渠道供应商管理办法附件*/
 export async function post_channelGradeStandard_addManagementAttachment (d?: any) {
-return await request.post< string,string> ('/channel-local/channelGradeStandard/addManagementAttachment', d)
+return await request.post< string,string> (basePath+'/channelGradeStandard/addManagementAttachment', d)
 }
 /**下载渠道供应商管理办法附件【未实现】*/
 export async function get_channelGradeStandard_download (d?: any) {
-return await request.get<any,any>('/channel-local/channelGradeStandard/download', { params: d })
+return await request.get<any,any>(basePath+'/channelGradeStandard/download', { params: d })
 }
 /**修改渠道评级标准*/
 export async function post_channelGradeStandard_edit (d?: any) {
-return await request.post< string,string> ('/channel-local/channelGradeStandard/edit', d)
+return await request.post< string,string> (basePath+'/channelGradeStandard/edit', d)
 }
 /**查询渠道评级标准列表*/
 export async function post_channelGradeStandard_getList (d?: any) {
-return await request.post< PageModel<ChannelGradeStandardVO>,PageModel<ChannelGradeStandardVO>> ('/channel-local/channelGradeStandard/getList', d)
+return await request.post< PageModel<ChannelGradeStandardVO>,PageModel<ChannelGradeStandardVO>> (basePath+'/channelGradeStandard/getList', d)
 }
 /**查询渠道供应商管理办法附件列表*/
 export async function get_channelGradeStandard_getSupplierManagementAttachments (d?: any) {
-return await request.get<ChannelSupplierManagementAttachment[],ChannelSupplierManagementAttachment[]>('/channel-local/channelGradeStandard/getSupplierManagementAttachments', { params: d })
+return await request.get<ChannelSupplierManagementAttachment[],ChannelSupplierManagementAttachment[]>(basePath+'/channelGradeStandard/getSupplierManagementAttachments', { params: d })
 }
 /**查看渠道评级标准所需材料*/
 export async function get_channelGradeStandard_viewMaterials (d?: any) {
-return await request.get<ChannelGradeStandardBaseVO,ChannelGradeStandardBaseVO>('/channel-local/channelGradeStandard/viewMaterials', { params: d })
+return await request.get<ChannelGradeStandardBaseVO,ChannelGradeStandardBaseVO>(basePath+'/channelGradeStandard/viewMaterials', { params: d })
 }
 /**邀请码作废*/
 export async function post_channelInvitationCode_cancel (d?: any) {
-return await request.post< number,number> ('/channel-local/channelInvitationCode/cancel', d)
+return await request.post< number,number> (basePath+'/channelInvitationCode/cancel', d)
 }
 /**生成邀请码*/
 export async function get_channelInvitationCode_create (d?: any) {
-return await request.get<string,string>('/channel-local/channelInvitationCode/create', { params: d })
+return await request.get<string,string>(basePath+'/channelInvitationCode/create', { params: d })
 }
 /**删除邀请码*/
 export async function get_channelInvitationCode_delete__invitationCode (d?: any) {
-return await request.get<number,number>('/channel-local/channelInvitationCode/delete/{invitationCode}', { params: d })
+return await request.get<number,number>(basePath+'/channelInvitationCode/delete/{invitationCode}', { params: d })
 }
 /**获取/下载邀请码二维码图片*/
 export async function get_channelInvitationCode_download (d?: any) {
-return await request.get<any,any>('/channel-local/channelInvitationCode/download', { params: d })
+return await request.get<any,any>(basePath+'/channelInvitationCode/download', { params: d })
 }
 /**获取/下载邀请码二维码图片*/
 export async function get_channelInvitationCode_getInvitationCodeImage (d?: any) {
-return await request.get<any,any>('/channel-local/channelInvitationCode/getInvitationCodeImage', { params: d })
+return await request.get<any,any>(basePath+'/channelInvitationCode/getInvitationCodeImage', { params: d })
 }
 /**查询渠道邀请码列表*/
 export async function post_channelInvitationCode_getList (d?: any) {
-return await request.post< PageModel<ChannelInvitationCodeVO>,PageModel<ChannelInvitationCodeVO>> ('/channel-local/channelInvitationCode/getList', d)
+return await request.post< PageModel<ChannelInvitationCodeVO>,PageModel<ChannelInvitationCodeVO>> (basePath+'/channelInvitationCode/getList', d)
 }
 /**查询渠道处理列表*/
 export async function get_channelRecord_getAll__channelId (d?: any) {
-return await request.get<ChannelRecord[],ChannelRecord[]>('/channel-local/channelRecord/getAll/{channelId}', { params: d })
+return await request.get<ChannelRecord[],ChannelRecord[]>(basePath+'/channelRecord/getAll/{channelId}', { params: d })
 }
 /**查询渠道变更处理列表*/
 export async function get_channelRecordChange_getAll__channelId (d?: any) {
-return await request.get<ChannelRecordChange[],ChannelRecordChange[]>('/channel-local/channelRecordChange/getAll/{channelId}', { params: d })
+return await request.get<ChannelRecordChange[],ChannelRecordChange[]>(basePath+'/channelRecordChange/getAll/{channelId}', { params: d })
 }
 /**检查公司是否已经注册*/
 export async function get_channelRegistUser_checkIsExists (d?: any) {
-return await request.get<boolean,boolean>('/channel-local/channelRegistUser/checkIsExists', { params: d })
+return await request.get<boolean,boolean>(basePath+'/channelRegistUser/checkIsExists', { params: d })
 }
 /**校验短信*/
 export async function get_channelRegistUser_checkVerifyCode (d?: any) {
-return await request.get<boolean,boolean>('/channel-local/channelRegistUser/checkVerifyCode', { params: d })
+return await request.get<boolean,boolean>(basePath+'/channelRegistUser/checkVerifyCode', { params: d })
 }
 /**查询注册用户列表*/
 export async function post_channelRegistUser_getList (d?: any) {
-return await request.post< PageModel<ChannelRegistUserVO>,PageModel<ChannelRegistUserVO>> ('/channel-local/channelRegistUser/getList', d)
+return await request.post< PageModel<ChannelRegistUserVO>,PageModel<ChannelRegistUserVO>> (basePath+'/channelRegistUser/getList', d)
 }
 /**渠道用户注册*/
 export async function post_channelRegistUser_regist (d?: any) {
-return await request.post< string,string> ('/channel-local/channelRegistUser/regist', d)
+return await request.post< string,string> (basePath+'/channelRegistUser/regist', d)
 }
 /**发送短信*/
 export async function get_channelRegistUser_sendMessage (d?: any) {
-return await request.get<string,string>('/channel-local/channelRegistUser/sendMessage', { params: d })
+return await request.get<string,string>(basePath+'/channelRegistUser/sendMessage', { params: d })
 }
 //===============================================================================================
 /**ResModel模型*/
@@ -599,7 +604,7 @@ createUser: number;
 deleted: number;
 /**ID*/
 id: number;
-/**账号类型(BasicDepositAccount-基本存款账户、GeneralDepositAccount-一般存款账户)*/
+/**账号类型(Base-基本存款账户、Commonly-一般存款账户)*/
 type: string;
 /**更新时间(yyyy-MM-dd HH:mm:ss)*/
 updateTime: string;
@@ -704,7 +709,7 @@ createUser: number;
 deleted: number;
 /**ID*/
 id: number;
-/**账号类型(BasicDepositAccount-基本存款账户、GeneralDepositAccount-一般存款账户)*/
+/**账号类型(Base-基本存款账户、Commonly-一般存款账户)*/
 type: string;
 /**更新时间(yyyy-MM-dd HH:mm:ss)*/
 updateTime: string;
@@ -1455,8 +1460,10 @@ updateUser: number;
 export interface ChannelInvitationCodeQueryVO {
 /**事业部*/
 departmentOrgId: number;
-/**失效时间(yyyy-MM-dd)*/
-expiresTime: string;
+/**失效时间开始(yyyy-MM-dd)*/
+expiresTimeBegin: string;
+/**失效时间结束(yyyy-MM-dd)*/
+expiresTimeEnd: string;
 /**邀请码*/
 invitationCode: string;
 /**邀请人ID*/

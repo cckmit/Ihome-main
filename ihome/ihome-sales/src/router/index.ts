@@ -3,8 +3,8 @@
  * @version: 
  * @Author: zyc
  * @Date: 2020-06-22 11:10:43
- * @LastEditors: ywl
- * @LastEditTime: 2020-10-13 10:40:37
+ * @LastEditors: zyc
+ * @LastEditTime: 2020-10-13 19:42:55
  */
 import Vue from 'vue'
 import VueRouter, { RouteConfig, Route } from 'vue-router'
@@ -273,6 +273,25 @@ const routes: Array<RouteConfig> = [
         name: 'developerRevocation',
         component: () => import('../views/developer/details.vue'),
         meta: { title: '开发商信息撤回', icon: 'form' }
+      }
+    ]
+  },
+  {
+    path: '/invitationCode',
+    meta: { title: '邀请码', icon: null },
+    component: Layout,
+    children: [
+      {
+        path: 'list',
+        name: 'invitationCodeList',
+        component: () => import('../views/channel/invitationCode/list.vue'),
+        meta: { title: '邀请码列表', icon: 'form' }
+      },
+      {
+        path: 'info',
+        name: 'invitationCodeInfo',
+        component: () => import('../views/channel/invitationCode/info.vue'),
+        meta: { title: '邀请码详情', icon: 'form' }
       }
     ]
   }
