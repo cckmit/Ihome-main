@@ -23,9 +23,9 @@
 </template>
 <script lang="ts">
 import { Component, Vue } from "vue-property-decorator";
-import RegisterUserList from "./info-tabs/register-user-list.vue";
-import  InvitationCodeDetails from "./info-tabs/details.vue";
 
+import  InvitationCodeDetails from "./info-tabs/details.vue";
+import RegisterUserList from "./info-tabs/register-user-list.vue";
 @Component({
   components: { InvitationCodeDetails, RegisterUserList },
 })

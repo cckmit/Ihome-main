@@ -4,7 +4,7 @@
  * @Author: zyc
  * @Date: 2020-08-13 11:40:10
  * @LastEditors: ywl
- * @LastEditTime: 2020-10-13 11:10:36
+ * @LastEditTime: 2020-10-13 20:32:44
 -->
 <template>
   <ih-page>
@@ -38,6 +38,8 @@
               ></el-input>
             </el-form-item>
           </el-col>
+        </el-row>
+        <!-- <el-row>
           <el-col :span="8">
             <el-form-item label="省份">
               <el-select
@@ -89,6 +91,8 @@
               </el-select>
             </el-form-item>
           </el-col>
+        </el-row> -->
+        <el-row>
           <el-col :span="8">
             <el-form-item label="渠道跟进人">
               <el-select
@@ -115,10 +119,10 @@
                 class="width--100"
               >
                 <el-option
-                  v-for="item in $root.displayList('state')"
-                  :key="item.value"
-                  :label="item.label"
-                  :value="item.value"
+                  v-for="item in $root.dictAllList('ChannelStatus')"
+                  :key="item.code"
+                  :label="item.name"
+                  :value="item.code"
                 ></el-option>
               </el-select>
             </el-form-item>
@@ -141,17 +145,25 @@
             </el-form-item>
           </el-col>
         </el-row>
+        <el-row>
+          <el-col :span="8">
+            <el-form-item label="省市区">
+              <IhCascader v-model="queryPageParameters.provinceList"></IhCascader>
+            </el-form-item>
+          </el-col>
+        </el-row>
       </el-form>
     </template>
+
     <template v-slot:btn>
-      <el-row class="el-row">
+      <el-row>
         <el-button
           type="primary"
           @click="search()"
         >查询</el-button>
         <el-button
           type="success"
-          @click="add()"
+          @click="$router.push('add')"
         >添加</el-button>
         <el-button
           type="info"
@@ -173,7 +185,6 @@
       <el-table
         class="ih-table"
         :data="resPageInfo.list"
-        :default-sort="{ prop: 'id', order: 'descending' }"
         @selection-change="handleSelectionChange"
       >
         <el-table-column
@@ -186,18 +197,18 @@
           fixed
           prop="name"
           label="名称"
-          width="200"
+          min-width="200"
         ></el-table-column>
         <el-table-column
           fixed
           prop="shortName"
           label="简称"
-          width="100"
+          min-width="100"
         ></el-table-column>
         <el-table-column
           prop="province"
           label="省份"
-          width="100"
+          width="200"
         ></el-table-column>
         <el-table-column
           prop="city"
@@ -210,37 +221,47 @@
           width="200"
         ></el-table-column>
         <el-table-column
+          prop="inputUser"
+          label="录入人"
+          width="150"
+        ></el-table-column>
+        <el-table-column
           prop="followUserId"
-          label="跟进人"
+          label="渠道跟进人"
           width="150"
         ></el-table-column>
         <el-table-column
           prop="status"
           label="状态"
           width="200"
-        ></el-table-column>
+        >
+          <template v-slot="{ row }">
+            <span>{{$root.dictAllName(row.status, 'ChannelStatus').name}}</span>
+          </template>
+        </el-table-column>
         <el-table-column
           label="操作"
-          width="200"
+          width="120"
           fixed="right"
         >
-          <template slot-scope="scope">
+          <template v-slot="{ row }">
             <el-link
               type="primary"
-              @click.native.prevent="info(scope)"
+              @click.native.prevent="handleToInfo(row)"
             >详情</el-link>
             <el-dropdown
               trigger="click"
-              style="margin-left: 15px"
+              class="margin-left-15"
             >
               <span class="el-dropdown-link">
                 更多
                 <i class="el-icon-arrow-down el-icon--right"></i>
               </span>
               <el-dropdown-menu slot="dropdown">
-                <el-dropdown-item @click.native.prevent="change(scope)">修改</el-dropdown-item>
+                <el-dropdown-item @click.native.prevent="handleChange(row)">修改</el-dropdown-item>
                 <el-dropdown-item @click.native.prevent="remove(scope)">删除</el-dropdown-item>
                 <el-dropdown-item @click.native.prevent="confirm(scope)">确认</el-dropdown-item>
+                <el-dropdown-item @click.native.prevent="confirm(scope)">撤回起草</el-dropdown-item>
                 <el-dropdown-item @click.native.prevent="changeinfo(scope)">变更信息</el-dropdown-item>
                 <el-dropdown-item @click.native.prevent="maintenance(scope)">维护渠道经纪人</el-dropdown-item>
               </el-dropdown-menu>
@@ -278,11 +299,11 @@ export default class UserList extends Vue {
     name: "",
     creditCode: "",
     shortName: "",
-    provinces: "one",
+    provinces: "",
     county: "",
-    city: "one",
+    city: "",
     inputUser: "",
-    status: "Valid",
+    status: "",
     followUserId: "",
   };
 
@@ -293,10 +314,6 @@ export default class UserList extends Vue {
   search() {
     console.log("查询");
     this.getListMixin();
-  }
-  add() {
-    console.log("添加");
-    this.$router.push("distributorsList/ModifyThe");
   }
   empty() {
     console.log("清空");
@@ -309,18 +326,24 @@ export default class UserList extends Vue {
     console.log("变更录入人");
   }
 
-  //操作
-  info(scope: any) {
+  /**
+   * @description: 跳转详情
+   * @param {any} row
+   */
+  private handleToInfo(row: any): void {
     this.$router.push({
-      path: "distributorsList/info",
-      query: { id: scope.row.id },
+      path: "/channelsTest/info",
+      query: { id: row.id },
     });
   }
-  change(scope: any) {
-    console.log("录入修改");
+  /**
+   * @description: 跳转修改
+   * @param {any} row
+   */
+  private handleChange(row: any): void {
     this.$router.push({
-      path: "distributorsList/ModifyThe",
-      query: { id: scope.row.id },
+      path: "edit",
+      query: { id: row.id },
     });
   }
   remove(row: any) {
@@ -350,10 +373,6 @@ export default class UserList extends Vue {
       query: { id: scope.row.id },
     });
   }
-  created() {
-    this.getListMixin();
-  }
-
   //获取数据
   async getListMixin() {
     this.resPageInfo = await post_channel_getList(this.queryPageParameters);
@@ -361,13 +380,9 @@ export default class UserList extends Vue {
   handleSelectionChange(val: any) {
     console.log(val);
   }
-  handleSizeChangeMixin(val: any) {
-    console.log("页码大小");
-    this.queryPageParameters.pageSize = val;
-  }
-  handleCurrentChangeMixin(val: any) {
-    console.log("指定页码");
-    this.queryPageParameters.pageNum = val;
+
+  created() {
+    this.getListMixin();
   }
 }
 </script>

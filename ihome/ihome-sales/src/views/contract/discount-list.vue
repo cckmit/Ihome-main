@@ -4,7 +4,7 @@
  * @Author: ywl
  * @Date: 2020-09-27 16:27:36
  * @LastEditors: ywl
- * @LastEditTime: 2020-10-09 09:46:25
+ * @LastEditTime: 2020-10-13 17:57:57
 -->
 <template>
   <IhPage>
@@ -279,7 +279,7 @@
           <template v-slot="{  }">
             <el-link
               type="primary"
-              @click.native.prevent="$router.push('/contract/discountDetail')"
+              @click.native.prevent="$router.push('/discount/detail')"
             >详情</el-link>
             <!-- <el-dropdown
                 trigger="click"

@@ -4,9 +4,8 @@
  * @Author: lgf
  * @Date: 2020-09-16 14:05:21
  * @LastEditors: ywl
- * @LastEditTime: 2020-10-13 16:10:23
+ * @LastEditTime: 2020-10-13 20:33:43
 -->
-
 <template>
   <ih-page>
     <template v-slot:form>
@@ -329,6 +328,7 @@
     </IhDialog>
   </ih-page>
 </template>
+
 <script lang="ts">
 import { Component, Vue } from "vue-property-decorator";
 import { Form as ElForm } from "element-ui";

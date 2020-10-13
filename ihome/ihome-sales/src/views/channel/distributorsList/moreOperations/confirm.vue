@@ -3,8 +3,8 @@
  * @version: 
  * @Author: lgf
  * @Date: 2020-09-16 10:05:17
- * @LastEditors: lgf
- * @LastEditTime: 2020-09-29 14:24:54
+ * @LastEditors: ywl
+ * @LastEditTime: 2020-10-13 19:54:58
 -->
 
 <template>
@@ -36,12 +36,12 @@
 <script lang="ts">
 import { Component, Vue } from "vue-property-decorator";
 import OperationLog from "../info-tabs/operationLog.vue";
-import DetailsInfo from "@/components/detailsInfo.vue";
+// import DetailsInfo from "@/components/detailsInfo.vue";
 import Confirmpage from "../info-tabs/confirmpage.vue";
 
 // import ModifyThe from "./MoreOperations/ModifyThe";
 @Component({
-  components: { DetailsInfo, OperationLog, Confirmpage },
+  components: { OperationLog, Confirmpage },
 })
 export default class UserInfo extends Vue {
   tabActive: any = null;

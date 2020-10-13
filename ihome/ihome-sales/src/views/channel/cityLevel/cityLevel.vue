@@ -3,30 +3,28 @@
  * @version: 
  * @Author: zyc
  * @Date: 2020-06-30 09:21:17
- * @LastEditors: ywl
- * @LastEditTime: 2020-10-10 17:42:29
+ * @LastEditors: wwq
+ * @LastEditTime: 2020-10-13 19:21:57
 --> 
 <template>
   <ih-page>
     <template v-slot:form>
-      <el-form
-        ref="form"
-        label-width="100px"
-      >
+      <el-form ref="form" label-width="100px">
         <el-row>
           <el-col :span="8">
             <el-form-item label="省份">
               <el-select
-                v-model="queryPageParameters.parentCode"
+                v-model="queryPageParameters.proviceCode"
                 clearable
                 placeholder="请选择"
                 class="width--100"
+                @change="proviceChange"
               >
                 <el-option
-                  v-for="item in $root.displayList('provinces')"
-                  :key="item.value"
-                  :label="item.label"
-                  :value="item.value"
+                  v-for="item in provinceOption"
+                  :key="item.code"
+                  :label="item.name"
+                  :value="item.code"
                 ></el-option>
               </el-select>
             </el-form-item>
@@ -34,16 +32,16 @@
           <el-col :span="8">
             <el-form-item label="城市">
               <el-select
-                v-model="queryPageParameters.code"
+                v-model="queryPageParameters.cityCode"
                 clearable
                 placeholder="请选择"
                 class="width--100"
               >
                 <el-option
-                  v-for="item in $root.displayList('city')"
-                  :key="item.value"
-                  :label="item.label"
-                  :value="item.value"
+                  v-for="item in cityOption"
+                  :key="item.code"
+                  :label="item.name"
+                  :value="item.code"
                 ></el-option>
               </el-select>
             </el-form-item>
@@ -51,16 +49,16 @@
           <el-col :span="8">
             <el-form-item label="城市等级">
               <el-select
-                v-model="queryPageParameters.grade"
+                v-model="queryPageParameters.cityGrade"
                 clearable
                 placeholder="请选择"
                 class="width--100"
               >
                 <el-option
-                  v-for="item in $root.displayList('cityLevel')"
-                  :key="item.value"
-                  :label="item.label"
-                  :value="item.value"
+                  v-for="item in $root.dictAllList('CityLevel')"
+                  :key="item.code"
+                  :label="item.name"
+                  :value="item.code"
                 ></el-option>
               </el-select>
             </el-form-item>
@@ -71,18 +69,14 @@
 
     <template v-slot:btn>
       <el-row>
+        <el-button type="primary" @click="search()">查询</el-button>
+        <el-button type="info" @click="reset()">清空</el-button>
         <el-button
-          type="primary"
-          @click="search()"
-        >查询</el-button>
-        <el-button
-          type="warning"
-          @click="reset()"
-        >清空</el-button>
-        <el-button
-          type="info"
-          @click="change()"
-        >修改</el-button>
+          type="success"
+          @click="dialogFormVisible = true"
+          :disabled="editDisabled"
+          >修改</el-button
+        >
       </el-row>
     </template>
 
@@ -93,28 +87,14 @@
         @selection-change="handleSelectionChange"
         :data="resPageInfo.list"
       >
-        <el-table-column
-          fixed
-          type="selection"
-          width="100"
-        ></el-table-column>
-        <el-table-column
-          fixed
-          prop="code"
-          label="省份"
-          width="500"
-        ></el-table-column>
-        <el-table-column
-          fixed
-          prop="name"
-          label="城市"
-          width="500"
-        ></el-table-column>
-        <el-table-column
-          fixed
-          prop="grade"
-          label="城市等级"
-        ></el-table-column>
+        <el-table-column fixed type="selection" width="100"></el-table-column>
+        <el-table-column prop="parentCode" label="省份"></el-table-column>
+        <el-table-column fixed prop="code" label="城市"></el-table-column>
+        <el-table-column prop="cityGrade" label="城市等级">
+          <template v-slot="{ row }">{{
+            $root.dictAllName(row.cityGrade, "CityLevel").name
+          }}</template>
+        </el-table-column>
       </el-table>
     </template>
     <template v-slot:pagination>
@@ -130,37 +110,27 @@
         :total="resPageInfo.total"
       ></el-pagination>
     </template>
-    <el-dialog
-      title=""
-      width="500px"
-      :visible.sync="dialogFormVisible"
-    >
+    <el-dialog width="500px" :visible.sync="dialogFormVisible">
       <el-form :model="form">
-        <el-form-item label="城市等级">
+        <el-form-item label="城市等级" label-width="80px">
           <el-select
-            v-model="form.grade"
+            v-model="form.cityGrade"
             clearable
             placeholder="城市等级"
             class="width--100"
           >
             <el-option
-              v-for="item in $root.displayList('cityLevel')"
-              :key="item.value"
-              :label="item.label"
-              :value="item.value"
+              v-for="item in $root.dictAllList('CityLevel')"
+              :key="item.code"
+              :label="item.name"
+              :value="item.code"
             ></el-option>
           </el-select>
         </el-form-item>
       </el-form>
-      <div
-        slot="footer"
-        class="dialog-footer"
-      >
+      <div slot="footer" class="dialog-footer">
         <el-button @click="dialogFormVisible = false">取 消</el-button>
-        <el-button
-          type="primary"
-          @click="update"
-        >确 定</el-button>
+        <el-button type="primary" @click="finish">确 定</el-button>
       </div>
     </el-dialog>
   </ih-page>
@@ -172,6 +142,11 @@ import {
   post_channelCityLevel_getList,
   post_channelCityLevel_updateLevel,
 } from "../../../api/channel/index";
+
+import {
+  get_area_getAllProvince,
+  get_area_getAllChildArea__code,
+} from "../../../api/system/index";
 import PaginationMixin from "../../../mixins/pagination";
 
 @Component({
@@ -180,75 +155,83 @@ import PaginationMixin from "../../../mixins/pagination";
 })
 export default class CityList extends Vue {
   queryPageParameters: any = {
-    grade: "",
-    parentCode: "",
-    code: "",
+    proviceCode: null,
+    cityCode: null,
+    cityGrade: null,
   };
-  changeList: any = {
-    list: [],
-  };
-  form: any = {
-    grade: 2,
+  provinceOption: any = [];
+  cityOption: any = [];
+  selection: any = [];
+  form = {
+    cityGrade: null,
+    ids: [],
   };
   dialogFormVisible = false;
   resPageInfo: any = {
     total: 0,
     list: [],
   };
-  // ele: any = "";
-  private idArr: any = [];
-  val: any = "";
+
+  private get editDisabled() {
+    return this.selection.length === 0;
+  }
+
   reset() {
     this.queryPageParameters = {
       pageNum: this.queryPageParameters.pageNum,
       pageSize: this.queryPageParameters.pageSize,
-      grade: null,
+      proviceCode: null,
       cityCode: null,
-      parentCode: null,
+      cityGrade: null,
     };
   }
   handleSizeChangeMixin(val: any) {
-    // console.log(val);
     this.queryPageParameters.pageSize = val;
     this.getListMixin();
   }
   handleCurrentChangeMixin(val: any) {
-    // console.log(val);
     this.queryPageParameters.pageNum = val;
     this.getListMixin();
   }
   handleSelectionChange(val: any) {
-    console.log("fff");
-    this.changeList.list = val;
-    // console.log(this.changeList.list);
+    this.selection = val;
   }
   total: any = null;
   async created() {
     this.getListMixin();
+    this.getProvince();
+  }
+  async getProvince() {
+    this.provinceOption = await get_area_getAllProvince();
   }
   async getListMixin() {
     this.resPageInfo = await post_channelCityLevel_getList(
       this.queryPageParameters
     );
   }
+
+  async proviceChange(v: any) {
+    this.queryPageParameters.cityCode = null;
+    this.cityOption = [];
+    if (v) {
+      this.cityOption = await get_area_getAllChildArea__code({ code: v });
+    }
+  }
+
   search() {
     this.getListMixin();
   }
-  change() {
-    console.log("修改");
-    console.log(this.changeList.list);
-    this.dialogFormVisible = true;
-  }
-  update() {
-    this.changeList.list.forEach((ele: any) => {
-      this.idArr.push(ele.id);
-    });
-    // console.log(idArr);
-    post_channelCityLevel_updateLevel({
-      ids: this.idArr,
-      cityGrade: this.form.grade,
-    });
+
+  async finish() {
+    this.form.ids = this.selection.map((v: any) => v.id);
+    await post_channelCityLevel_updateLevel(this.form);
     this.dialogFormVisible = false;
+    this.$message.success("保存成功!");
+    this.getListMixin();
+    this.form = {
+      cityGrade: null,
+      ids: [],
+    };
   }
 }
 </script>

@@ -4,7 +4,7 @@
  * @Author: ywl
  * @Date: 2020-09-27 11:13:15
  * @LastEditors: ywl
- * @LastEditTime: 2020-10-09 10:09:27
+ * @LastEditTime: 2020-10-13 17:59:47
 -->
 <template>
   <IhPage>
@@ -164,7 +164,7 @@
         <el-button type="info">重置</el-button>
         <el-button
           type="success"
-          @click="$router.push('/contract/strategyAdd')"
+          @click="$router.push('/strategy/add')"
         >录入协议</el-button>
         <el-button type="success">导出</el-button>
         <el-link
@@ -240,7 +240,7 @@
           <template v-slot="{ row }">
             <el-link
               type="primary"
-              @click.native.prevent="$router.push('/contract/strategyDetail')"
+              @click.native.prevent="$router.push('/strategy/detail')"
             >详情</el-link>
             <el-dropdown
               trigger="click"
