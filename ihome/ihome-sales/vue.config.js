@@ -3,8 +3,8 @@
  * @version: 
  * @Author: zyc
  * @Date: 2020-06-22 11:11:41
- * @LastEditors: wwq
- * @LastEditTime: 2020-10-10 18:37:04
+ * @LastEditors: zyc
+ * @LastEditTime: 2020-10-13 14:57:19
  */
 const path = require('path');
 const { name } = require('./package');
@@ -53,7 +53,9 @@ module.exports = {
 				target: proxyAddress
 			},
 			'/channel/': {
-				target: proxyAddress
+				target: proxyAddress,
+				// changeOrigin: true, //开启代理
+				// pathRewrite: { '^/channel': '/channel-local' }  //路由重写
 			},
 			'/developer/': {
 				target: proxyAddress

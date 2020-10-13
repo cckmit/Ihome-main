@@ -3,8 +3,8 @@
  * @version: 
  * @Author: zyc
  * @Date: 2020-06-22 14:34:07
- * @LastEditors: wwq
- * @LastEditTime: 2020-10-10 18:15:57
+ * @LastEditors: zyc
+ * @LastEditTime: 2020-10-13 14:57:43
  */
 
 console.log('\033[42;30m 这是main ts主应用')
@@ -71,7 +71,9 @@ module.exports = {
                 target: proxyAddress
             },
             '/channel/': {
-                target: proxyAddress
+                target: proxyAddress,
+                // changeOrigin: true, //开启代理
+                // pathRewrite: { '^/channel': '/channel-local' }  //路由重写
             },
             '/sales-oauth2': {
                 target: proxyAddress
