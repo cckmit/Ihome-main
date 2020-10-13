@@ -3,8 +3,8 @@
  * @version: 
  * @Author: zyc
  * @Date: 2020-06-22 11:10:43
- * @LastEditors: wwq
- * @LastEditTime: 2020-10-10 18:27:14
+ * @LastEditors: ywl
+ * @LastEditTime: 2020-10-13 10:40:37
  */
 import Vue from 'vue'
 import VueRouter, { RouteConfig, Route } from 'vue-router'
@@ -51,25 +51,25 @@ const routes: Array<RouteConfig> = [
       {
         path: 'distributorsList/ModifyThe',
         name: 'ModifyThe',
-        component: () => import('../views/channel/distributorsList/MoreOperations/ModifyThe.vue'),
+        component: () => import('../views/channel/distributorsList/moreOperations/modifyThe.vue'),
         meta: { title: '渠道商录入修改页', icon: 'form' }
       },
       {
         path: 'distributorsList/confirm',
         name: 'confirm',
-        component: () => import('../views/channel/distributorsList/MoreOperations/confirm.vue'),
+        component: () => import('../views/channel/distributorsList/moreOperations/confirm.vue'),
         meta: { title: '渠道商确认', icon: 'form' }
       },
       {
         path: 'distributorsList/changeInfo',
         name: 'changeInfo',
-        component: () => import('../views/channel/distributorsList/MoreOperations/changeInfo.vue'),
+        component: () => import('../views/channel/distributorsList/moreOperations/changeInfo.vue'),
         meta: { title: '渠道商变更信息', icon: 'form' }
       },
       {
         path: 'distributorsList/MaintenanceOfChannels',
         name: 'MaintenanceOfChannels',
-        component: () => import('../views/channel/distributorsList/MoreOperations/MaintenanceOfChannels.vue'),
+        component: () => import('../views/channel/distributorsList/moreOperations/maintenanceOfChannels.vue'),
         meta: { title: '维护渠道经纪人', icon: 'form' }
       },
       // 渠道等级信息变更列表
@@ -127,39 +127,39 @@ const routes: Array<RouteConfig> = [
       {
         path: 'channelAgroupOf',
         name: 'ChannelAgroupOf',
-        component: () => import('../views/channel/ChannelAgroupOf/ChannelAgroupOf.vue'),
+        component: () => import('../views/channel/channelAgroupOf/channelAgroupOf.vue'),
         meta: { title: '渠道呈批列表', icon: 'form' }
       },
       {
         path: 'channelAgroupOf/info',
         name: 'ChannelAgroupOfInfo',
-        component: () => import('../views/channel/ChannelAgroupOf/info.vue'),
+        component: () => import('../views/channel/channelAgroupOf/info.vue'),
         meta: { title: '详情', icon: 'form' }
       },
       // 渠道基础信息变更列表
       {
         path: 'channelBasicInfoChange',
         name: 'ChannelBasicInfoChange',
-        component: () => import('../views/channel/ChannelBasicInfoChange/ChannelBasicInfoChange.vue'),
+        component: () => import('../views/channel/channelBasicInfoChange/channelBasicInfoChange.vue'),
         meta: { title: '渠道基础信息变更列表', icon: 'form' }
       },
       // 渠道邀请码列表
       {
         path: 'channelInviteCode',
         name: 'ChannelInviteCode',
-        component: () => import('../views/channel/ChannelInviteCode/ChannelInviteCode.vue'),
+        component: () => import('../views/channel/channelInviteCode/channelInviteCode.vue'),
         meta: { title: '渠道邀请码列表', icon: 'form' }
       },
       {
         path: 'channelInviteCode/addCode',
         name: 'AddChannelInviteCode',
-        component: () => import('../views/channel/ChannelInviteCode/addCode.vue'),
+        component: () => import('../views/channel/channelInviteCode/addCode.vue'),
         meta: { title: '添加渠道邀请码', icon: 'form' }
       },
       {
         path: 'channelInviteCode/info',
         name: 'channelInviteCodeInfo',
-        component: () => import('../views/channel/ChannelInviteCode/info.vue'),
+        component: () => import('../views/channel/channelInviteCode/info.vue'),
         meta: { title: '渠道邀请码详细信息', icon: 'form' }
       },
       // 城市等级列表

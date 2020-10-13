@@ -3,8 +3,8 @@
  * @version: 
  * @Author: zyc
  * @Date: 2020-06-22 14:34:07
- * @LastEditors: wwq
- * @LastEditTime: 2020-10-10 18:15:57
+ * @LastEditors: ywl
+ * @LastEditTime: 2020-10-12 14:23:40
  */
 
 console.log('\033[42;30m 这是main ts主应用')
@@ -70,14 +70,17 @@ module.exports = {
             '/system/': {
                 target: proxyAddress
             },
-            '/channel/': {
-                target: proxyAddress
-            },
+            // '/channel/': {
+            //     target: proxyAddress
+            // },
             '/sales-oauth2': {
                 target: proxyAddress
             },
             '/developer/': {
                 target: proxyAddress
+            },
+            '/channel-local/': { // 调试本地使用
+                target: 'http://10.188.1.91:8610'
             }
         }
     },
