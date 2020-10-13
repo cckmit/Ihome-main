@@ -4,7 +4,7 @@
  * @Author: zyc
  * @Date: 2020-06-22 11:10:43
  * @LastEditors: ywl
- * @LastEditTime: 2020-10-13 17:35:53
+ * @LastEditTime: 2020-10-13 20:30:23
  */
 import Vue from 'vue'
 import VueRouter, { RouteConfig, Route } from 'vue-router'
@@ -28,6 +28,58 @@ const routes: Array<RouteConfig> = [
       title: '主页'
     }
   },
+  // 渠道商路由
+  {
+    path: '/channelsTest',
+    meta: { title: '渠道商管理', icon: 'form' },
+    redirect: '/channelsTest/list',
+    component: Layout,
+    children: [
+      {
+        path: 'list',
+        name: 'DistributorsList',
+        component: () => import('../views/channel/distributorsList/distributorsList.vue'),
+        meta: { title: '渠道商列表', icon: 'form' }
+      },
+      {
+        path: 'info',
+        name: 'DistributorsListInfo',
+        component: () => import('../views/channel/distributorsList/info.vue'),
+        meta: { title: '渠道商详情', icon: 'form' }
+      },
+      {
+        path: 'add',
+        name: 'AddChannel',
+        component: () => import('../views/channel/distributorsList/moreOperations/modifyThe.vue'),
+        meta: { title: '渠道商录入修改页', icon: 'form' }
+      },
+      {
+        path: 'edit',
+        name: 'EditChannel',
+        component: () => import('../views/channel/distributorsList/moreOperations/modifyThe.vue'),
+        meta: { title: '渠道商录入修改页', icon: 'form' }
+      },
+      {
+        path: 'confirm',
+        name: 'confirm',
+        component: () => import('../views/channel/distributorsList/moreOperations/confirm.vue'),
+        meta: { title: '渠道商确认', icon: 'form' }
+      },
+      {
+        path: 'changeInfo',
+        name: 'changeInfo',
+        component: () => import('../views/channel/distributorsList/moreOperations/changeInfo.vue'),
+        meta: { title: '渠道商变更信息', icon: 'form' }
+      },
+      {
+        path: 'maintenanceOfChannels',
+        name: 'MaintenanceOfChannels',
+        component: () => import('../views/channel/distributorsList/moreOperations/maintenanceOfChannels.vue'),
+        meta: { title: '维护渠道经纪人', icon: 'form' }
+      },
+    ]
+  },
+
   //渠道商信息列表
   {
     path: '/channels',

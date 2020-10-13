@@ -3,244 +3,160 @@
  * @version: 
  * @Author: lgf
  * @Date: 2020-09-16 14:05:21
- * @LastEditors: lgf
- * @LastEditTime: 2020-09-30 17:27:26
+ * @LastEditors: ywl
+ * @LastEditTime: 2020-10-13 19:53:38
 -->
 
 <template>
-  <div class="detailInfo">
+  <div class="text-left">
     <p class="ih-info-title">基础信息</p>
-    <el-row class="ih-info-line">
-      <el-col :span="8">
-        <el-row>
-          <el-col :span="6" class="ih-info-item-left">名称</el-col>
-          <el-col :span="18" class="ih-info-item-right">{{ info.name }}</el-col>
-        </el-row>
-      </el-col>
-      <el-col :span="8">
-        <el-row>
-          <el-col :span="6" class="ih-info-item-left">信用代码</el-col>
-          <el-col :span="18" class="ih-info-item-right">{{
-            info.creditCode
-          }}</el-col>
-        </el-row>
-      </el-col>
-      <el-col :span="8">
-        <el-row>
-          <el-col :span="6" class="ih-info-item-left">简称</el-col>
-          <el-col :span="18" class="ih-info-item-right">{{
-            info.shortName
-          }}</el-col>
-        </el-row>
-      </el-col>
-    </el-row>
-    <el-row class="ih-info-line">
-      <el-col :span="8">
-        <el-row>
-          <el-col :span="6" class="ih-info-item-left">类型</el-col>
-          <el-col :span="18" class="ih-info-item-right">{{ info.type }}</el-col>
-        </el-row>
-      </el-col>
-      <el-col :span="8">
-        <el-row>
-          <el-col :span="6" class="ih-info-item-left">法定代表人</el-col>
-          <el-col :span="18" class="ih-info-item-right">{{
-            info.legalPerson
-          }}</el-col>
-        </el-row>
-      </el-col>
-      <el-col :span="8">
-        <el-row>
-          <el-col :span="6" class="ih-info-item-left">法人身份证号码</el-col>
-          <el-col :span="18" class="ih-info-item-right">{{ info.id }}</el-col>
-        </el-row>
-      </el-col>
-    </el-row>
-    <el-row class="ih-info-line">
-      <el-col :span="8">
-        <el-row>
-          <el-col :span="6" class="ih-info-item-left">成立日期</el-col>
-          <el-col :span="18" class="ih-info-item-right">{{
-            info.setupTime
-          }}</el-col>
-        </el-row>
-      </el-col>
-      <el-col :span="8">
-        <el-row>
-          <el-col :span="6" class="ih-info-item-left">注册资本</el-col>
-          <el-col :span="18" class="ih-info-item-right">{{
-            info.capital
-          }}</el-col>
-        </el-row>
-      </el-col>
-      <el-col :span="8">
-        <el-row>
-          <el-col :span="6" class="ih-info-item-left">营业期限</el-col>
-          <el-col :span="18" class="ih-info-item-right">{{
-            info.businessTime
-          }}</el-col>
-        </el-row>
-      </el-col>
-    </el-row>
+    <el-form label-width="120px">
+      <el-row class="ih-info-line">
+        <el-col :span="8">
+          <el-form-item label="名称">{{ info.name }}</el-form-item>
+        </el-col>
+        <el-col :span="8">
+          <el-form-item label="信用代码">{{ info.creditCode }}</el-form-item>
+        </el-col>
+        <el-col :span="8">
+          <el-form-item label="简称">{{ info.shortName }}</el-form-item>
+        </el-col>
+      </el-row>
+      <el-row class="ih-info-line">
+        <el-col :span="8">
+          <el-form-item label="类型">{{ info.type }}</el-form-item>
+        </el-col>
+        <el-col :span="8">
+          <el-form-item label="法定代表人">{{ info.legalPerson }}</el-form-item>
+        </el-col>
+        <el-col :span="8">
+          <el-form-item label="法人身份证号码">{{ info.legalIdentityCode }}</el-form-item>
+        </el-col>
+      </el-row>
+      <el-row class="ih-info-line">
+        <el-col :span="8">
+          <el-form-item label="成立日期">{{ info.setupTime }}</el-form-item>
+        </el-col>
+        <el-col :span="8">
+          <el-form-item label="注册资本">{{ info.capital }}</el-form-item>
+        </el-col>
+        <el-col :span="8">
+          <el-form-item label="营业期限">{{ info.businessTime }}</el-form-item>
+        </el-col>
+      </el-row>
+      <el-row class="ih-info-line">
+        <el-col :span="8">
+          <el-form-item label="省份">{{ info.province }}</el-form-item>
+        </el-col>
+        <el-col :span="8">
+          <el-form-item label="城市">{{ info.city }}</el-form-item>
+        </el-col>
+        <el-col :span="8">
+          <el-form-item label="行政区">{{ info.county }}</el-form-item>
+        </el-col>
+      </el-row>
+      <el-row class="ih-info-line">
+        <el-col :span="16">
+          <el-form-item label="住所">{{ info.address }}</el-form-item>
+        </el-col>
 
-    <el-row class="ih-info-line">
-      <el-col :span="8">
-        <el-row>
-          <el-col :span="6" class="ih-info-item-left">省份</el-col>
-          <el-col :span="18" class="ih-info-item-right">{{
-            info.province
-          }}</el-col>
-        </el-row>
-      </el-col>
-      <el-col :span="8">
-        <el-row>
-          <el-col :span="6" class="ih-info-item-left">城市</el-col>
-          <el-col :span="18" class="ih-info-item-right">{{ info.city }}</el-col>
-        </el-row>
-      </el-col>
-      <el-col :span="8">
-        <el-row>
-          <el-col :span="6" class="ih-info-item-left">行政区</el-col>
-          <el-col :span="18" class="ih-info-item-right">{{
-            info.county
-          }}</el-col>
-        </el-row>
-      </el-col>
-    </el-row>
-    <el-row class="ih-info-line">
-      <el-col :span="8">
-        <el-row>
-          <el-col :span="6" class="ih-info-item-left">住所</el-col>
-          <el-col :span="18" class="ih-info-item-right">{{
-            info.address
-          }}</el-col>
-        </el-row>
-      </el-col>
+        <el-col :span="8">
+          <el-form-item label="跟进人">{{ info.followUserId }}</el-form-item>
+        </el-col>
+      </el-row>
+      <el-row class="ih-info-line">
+        <el-col :span="8">
+          <el-form-item
+            label="状态"
+            v-if="info.status"
+          >{{ $root.dictAllName(info.status, 'ChannelStatus').name }}</el-form-item>
+        </el-col>
+      </el-row>
+    </el-form>
 
-      <el-col :span="8">
-        <el-row>
-          <el-col :span="6" class="ih-info-item-left">跟进人</el-col>
-          <el-col :span="18" class="ih-info-item-right">{{
-            info.followUserId
-          }}</el-col>
-        </el-row>
-      </el-col>
-    </el-row>
-    <el-row class="ih-info-line">
-      <el-col :span="8">
-        <el-row>
-          <el-col :span="6" class="ih-info-item-left">状态</el-col>
-          <el-col :span="18" class="ih-info-item-right">{{
-            info.status
-          }}</el-col>
-        </el-row>
-      </el-col>
-    </el-row>
     <p class="ih-info-title">
       <span>银行账号信息</span>
     </p>
-    <!-- 对话框 -->
-
-    <el-table :data="info.channelBanks" border style="width: 100%">
+    <el-table
+      :data="info.channelBanks"
+      border
+      style="width: 100%"
+    >
       <el-table-column
         prop="accountName"
         label="账户名称"
-        width="400"
+        min-width="300"
       ></el-table-column>
-      <el-table-column prop="accountNum" label="账号"> </el-table-column>
+      <el-table-column
+        prop="accountNum"
+        label="账号"
+        min-width="200"
+      > </el-table-column>
       <el-table-column
         prop="bank"
         label="开户银行"
-        width="400"
+        width="300"
       ></el-table-column>
       <el-table-column
         prop="type"
         label="账号类型"
-        width="300"
-      ></el-table-column>
+        width="200"
+      >
+        <template v-slot="{row}">
+          {{$root.dictAllName(row.type, "AccountEnum").name}}
+        </template>
+      </el-table-column>
     </el-table>
+
     <p class="ih-info-title">负责人信息</p>
-    <el-row class="ih-info-line">
-      <el-col :span="8">
-        <el-row>
-          <el-col :span="6" class="ih-info-item-left">姓名</el-col>
-          <el-col :span="18" class="ih-info-item-right">{{
-            info.channelPersons.name
-          }}</el-col>
-        </el-row>
-      </el-col>
-      <el-col :span="8">
-        <el-row>
-          <el-col :span="6" class="ih-info-item-left">手机号码</el-col>
-          <el-col :span="18" class="ih-info-item-right">{{
-            info.channelPersons.bobile
-          }}</el-col>
-        </el-row>
-      </el-col>
-      <el-col :span="8">
-        <el-row>
-          <el-col :span="6" class="ih-info-item-left">身份证号码</el-col>
-          <el-col :span="18" class="ih-info-item-right">{{
-            info.channelPersons.id
-          }}</el-col>
-        </el-row>
-      </el-col>
-    </el-row>
-    <el-row class="ih-info-line">
-      <el-col :span="8">
-        <el-row>
-          <el-col :span="6" class="ih-info-item-left">电子邮箱</el-col>
-          <el-col :span="18" class="ih-info-item-right">{{
-            info.channelPersons.email
-          }}</el-col>
-        </el-row>
-      </el-col>
-    </el-row>
+    <el-form label-width="120px">
+      <el-row class="ih-info-line">
+        <el-col :span="8">
+          <el-form-item label="姓名">{{ channelPersons.name }}</el-form-item>
+        </el-col>
+        <el-col :span="8">
+          <el-form-item label="手机号码">{{ channelPersons.bobile }}</el-form-item>
+        </el-col>
+        <el-col :span="8">
+          <el-form-item label="身份证号码">{{ channelPersons.identityCode }}</el-form-item>
+        </el-col>
+      </el-row>
+      <el-row class="ih-info-line">
+        <el-col :span="8">
+          <el-form-item label="电子邮箱">{{ channelPersons.email }}</el-form-item>
+        </el-col>
+      </el-row>
+    </el-form>
     <p class="ih-info-title">附件信息</p>
   </div>
 </template>
+
 <script lang="ts">
 import { Component, Vue } from "vue-property-decorator";
 //引入请求数据的api
-import { get_channel_get__id } from "../../../../api/channel/index";
+import { get_channel_get__id } from "@/api/channel/index";
 // import PaginationMixin from "../../../../mixins/pagination";
 @Component({
   components: {},
 })
 export default class Home extends Vue {
   info: any = {};
+  private channelPersons: object = {};
 
-  async created() {
-    this.getInfo();
-    console.log("4444");
-  }
   async getInfo() {
     let id = this.$route.query.id;
     this.info = await get_channel_get__id({ id: id });
-    console.log(this.info);
+    this.channelPersons = this.info.channelPersons[0];
+  }
+  async created() {
+    this.getInfo();
   }
 }
 </script>
+
 <style lang="scss" scoped>
-.ih-info-title {
-  border-left: 5px solid #4cccec;
-  .add {
-    color: #000;
-    margin-left: 20px;
-    cursor: pointer;
-  }
-}
 .line {
   padding: 15px;
-}
-.ih-info-item-left {
-  text-align: right;
-  line-height: 21px;
-}
-.ih-info-item-right {
-  text-align: left;
-  padding-left: 20px;
-  line-height: 21px;
 }
 .title {
   font-weight: 600;

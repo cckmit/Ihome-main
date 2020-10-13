@@ -4,7 +4,7 @@
  * @Author: ywl
  * @Date: 2020-10-12 10:38:48
  * @LastEditors: ywl
- * @LastEditTime: 2020-10-13 16:49:04
+ * @LastEditTime: 2020-10-13 20:17:06
 -->
 <template>
   <el-dialog
@@ -26,19 +26,31 @@
         label="账户名称"
         prop="accountName"
       >
-        <el-input v-model="Bankrule.accountName"></el-input>
+        <el-input
+          v-model="Bankrule.accountName"
+          maxlength="64"
+          show-word-limit
+        ></el-input>
       </el-form-item>
       <el-form-item
         label="账号"
         prop="accountNum"
       >
-        <el-input v-model="Bankrule.accountNum"></el-input>
+        <el-input
+          v-model="Bankrule.accountNum"
+          maxlength="32"
+          show-word-limit
+        ></el-input>
       </el-form-item>
       <el-form-item
         label="开户银行"
         prop="bank"
       >
-        <el-input v-model="Bankrule.bank"></el-input>
+        <el-input
+          v-model="Bankrule.bank"
+          maxlength="64"
+          show-word-limit
+        ></el-input>
       </el-form-item>
       <el-form-item
         label="账户类型"

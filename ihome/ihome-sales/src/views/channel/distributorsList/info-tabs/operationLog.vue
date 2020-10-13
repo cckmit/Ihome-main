@@ -1,57 +1,60 @@
 <!--
- * @Descripttion: 
+ * @Descripttion: 渠道商操作日志
  * @version: 
  * @Author: zyc
  * @Date: 2020-05-25 09:37:07
- * @LastEditors: lgf
- * @LastEditTime: 2020-09-16 16:51:16
+ * @LastEditors: ywl
+ * @LastEditTime: 2020-10-13 20:13:45
 --> 
 <template>
   <div>
-    <el-table :data="resPageInfo.list" border style="width:100%">
-      <el-table-column prop="date" label="操作"></el-table-column>
-      <el-table-column prop="name" label="处理人"></el-table-column>
-      <el-table-column prop="address" label="处理时间"></el-table-column>
-      <el-table-column prop="address" label="处理结果" width="100"></el-table-column>
-      <el-table-column prop="note" label="备注"></el-table-column>
+    <el-table
+      :data="list"
+      style="width:100%"
+    >
+      <el-table-column
+        prop="operation"
+        label="操作"
+      ></el-table-column>
+      <el-table-column
+        prop="operator"
+        label="处理人"
+      ></el-table-column>
+      <el-table-column
+        prop="operateTime"
+        label="处理时间"
+      ></el-table-column>
+      <el-table-column
+        prop="result"
+        label="处理结果"
+        width="100"
+      ></el-table-column>
+      <el-table-column
+        prop="remark"
+        label="备注"
+      ></el-table-column>
     </el-table>
   </div>
 </template>
 <script lang="ts">
 import { Component, Vue } from "vue-property-decorator";
+import { get_channelRecord_getAll__channelId } from "@/api/channel/index";
 @Component({
   components: {},
 })
-export default class Home extends Vue {
-  resPageInfo: any = {
-    total: 0,
-    list: [
-      {
-        date: "2016-05-02",
-        name: "王小虎",
-        address: "上海市普陀区金沙江路 1518 弄",
-        note: "通过",
-      },
-      {
-        date: "2016-05-04",
-        name: "王小虎",
-        address: "上海市普陀区金沙江路 1517 弄",
-        note: "通过",
-      },
-      {
-        date: "2016-05-01",
-        name: "王小虎",
-        address: "上海市普陀区金沙江路 1519 弄",
-        note: "通过",
-      },
-      {
-        date: "2016-05-03",
-        name: "王小虎",
-        address: "上海市普陀区金沙江路 1516 弄",
-        note: "通过",
-      },
-    ],
-  };
+export default class ChannelLog extends Vue {
+  private list: any = [];
+
+  private async getLogList(id: any): Promise<void> {
+    this.list = await get_channelRecord_getAll__channelId({ channelId: id });
+  }
+
+  created() {
+    let id = this.$route.query.id;
+    if (id) {
+      this.getLogList(id);
+    }
+  }
 }
 </script>
 <style lang="scss" scoped>
