@@ -4,7 +4,7 @@
  * @Author: ywl
  * @Date: 2020-10-12 10:38:48
  * @LastEditors: ywl
- * @LastEditTime: 2020-10-13 11:10:55
+ * @LastEditTime: 2020-10-13 15:13:59
 -->
 <template>
   <el-dialog
@@ -51,10 +51,10 @@
           class="width--100"
         >
           <el-option
-            v-for="item in $root.displayList('bankType')"
+            v-for="item in $root.dictAllList('AccountEnum')"
             :key="item.value"
-            :label="item.label"
-            :value="item.value"
+            :label="item.name"
+            :value="item.code"
           ></el-option>
         </el-select>
       </el-form-item>

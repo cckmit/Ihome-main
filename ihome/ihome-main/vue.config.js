@@ -4,7 +4,7 @@
  * @Author: zyc
  * @Date: 2020-06-22 14:34:07
  * @LastEditors: ywl
- * @LastEditTime: 2020-10-13 16:17:47
+ * @LastEditTime: 2020-10-13 16:34:53
  */
 
 console.log('\033[42;30m 这是main ts主应用')
@@ -70,9 +70,12 @@ module.exports = {
             '/system/': {
                 target: proxyAddress
             },
+            '/channel-local/': { // 调试本地使用
+                target: 'http://10.188.1.91:8610'
+            },
             '/channel/': {
                 target: proxyAddress,
-                // changeOrigin: true, //开启代理
+                changeOrigin: true, //开启代理
                 // pathRewrite: { '^/channel': '/channel-local' }  //路由重写
             },
             '/sales-oauth2': {
@@ -81,9 +84,7 @@ module.exports = {
             '/developer/': {
                 target: proxyAddress
             },
-            '/channel-local/': { // 调试本地使用
-                target: 'http://10.188.1.91:8610'
-            }
+
         }
     },
     // 自定义webpack配置

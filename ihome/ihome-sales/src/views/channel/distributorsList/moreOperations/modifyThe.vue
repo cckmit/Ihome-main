@@ -4,7 +4,7 @@
  * @Author: lgf
  * @Date: 2020-09-16 14:05:21
  * @LastEditors: ywl
- * @LastEditTime: 2020-10-13 11:10:46
+ * @LastEditTime: 2020-10-13 16:10:23
 -->
 
 <template>
@@ -50,7 +50,19 @@
               label="类型"
               prop="type"
             >
-              <el-input v-model="info.type"></el-input>
+              <el-select
+                v-model="info.type"
+                clearable
+                placeholder="请选择"
+                class="width--100"
+              >
+                <el-option
+                  v-for="item in $root.dictAllList('ChannelCompanyType')"
+                  :key="item.value"
+                  :label="item.name"
+                  :value="item.code"
+                ></el-option>
+              </el-select>
             </el-form-item>
           </el-col>
           <el-col :span="8">
@@ -151,16 +163,22 @@
         </el-row> -->
         <el-row>
           <el-col :span="8">
-            <el-form-item label="省市区">
-              <IhCascader v-model="provinceList"></IhCascader>
+            <el-form-item
+              label="省市区"
+              prop="provinceList"
+            >
+              <IhCascader v-model="info.provinceList"></IhCascader>
             </el-form-item>
           </el-col>
           <el-col :span="8">
-            <el-form-item label="住所">
+            <el-form-item
+              label="住所"
+              prop="address"
+            >
               <el-input
                 v-model="info.address"
                 clearable
-                placeholder="请选择住所"
+                placeholder="请输入住所"
               ></el-input>
             </el-form-item>
           </el-col>
@@ -202,7 +220,7 @@
         width="150"
       >
         <template v-slot="{ row }">
-          <span>{{$root.displayName('bankType', row.type)}}</span>
+          <span>{{$root.dictAllName(row.type, "AccountEnum").name}}</span>
         </template>
       </el-table-column>
       <el-table-column
@@ -315,7 +333,10 @@
 import { Component, Vue } from "vue-property-decorator";
 import { Form as ElForm } from "element-ui";
 //引入请求数据的api -- 先调用本地的
-import { get_channel_get__id } from "../../../../api/channel/index";
+import {
+  get_channel_get__id,
+  post_channel_add,
+} from "../../../../api/channel/index";
 import BankDialog from "../dialog/bankDialog.vue";
 // import PaginationMixin from "../../../../mixins/pagination";
 @Component({
@@ -342,8 +363,8 @@ export default class Home extends Vue {
     legalIdentityCode: "",
     setupTime: "",
     timeList: [],
+    provinceList: [],
   };
-  provinceList: any = [];
   dialogFormVisible = false;
   Bankrule: any = {
     bank: "",
@@ -379,13 +400,13 @@ export default class Home extends Vue {
   };
 
   private rules: any = {
-    county: [{ required: true, message: "请选择行政区", trigger: "blur" }],
-    city: [{ required: true, message: "请选择城市", trigger: "blur" }],
-    province: [{ required: true, message: "请选择省份", trigger: "blur" }],
-    businessTime: [
-      { required: true, message: "请输入营业期限", trigger: "blur" },
+    address: [{ required: true, message: "请输入住所", trigger: "blur" }],
+    provinceList: [
+      { required: true, message: "请选择省市区", trigger: ["blur", "change"] },
     ],
-    id: [{ required: true, message: "请输入法人身份证号码", trigger: "blur" }],
+    legalIdentityCode: [
+      { required: true, message: "请输入法人身份证号码", trigger: "blur" },
+    ],
     type: [{ required: true, message: "请选择类型", trigger: "blur" }],
     shortName: [{ required: true, message: "请输入简称", trigger: "blur" }],
     creditCode: [
@@ -437,33 +458,36 @@ export default class Home extends Vue {
     };
     this.dialogFormVisible = true;
   }
-  handleSave() {
+  async handleSave() {
     if (this.info.timeList.length) {
       this.info.businessTime = `${this.info.timeList[0]} - ${this.info.timeList[1]}`;
     }
-    let ruleFrom = new Promise(
-      (resolve: (value: any) => void, reject: (value: any) => void) => {
-        (this.$refs["ruleForm"] as ElForm).validate((val) => {
-          val ? resolve(val) : reject(val);
-        });
-      }
-    );
-    let personForm = new Promise(
-      (resolve: (value: any) => void, reject: (value: any) => void) => {
-        (this.$refs["personForm"] as ElForm).validate((val) => {
-          val ? resolve(val) : reject(val);
-        });
-      }
-    );
-
-    Promise.all([ruleFrom, personForm])
-      .then(() => {
-        console.log("验证通过");
-      })
-      .catch(() => {
-        console.log("验证失败");
+    if (this.info.provinceList.length) {
+      this.info.province = this.info.provinceList[0];
+      this.info.city = this.info.provinceList[1];
+      this.info.county = this.info.provinceList[2];
+    }
+    let ruleFrom = new Promise((resolve: (value: any) => void) => {
+      (this.$refs["ruleForm"] as ElForm).validate((val) => {
+        resolve(val);
       });
-    console.log("保存", this.info, this.channelPersons);
+    });
+    let personForm = new Promise((resolve: (value: any) => void) => {
+      (this.$refs["personForm"] as ElForm).validate((val) => {
+        resolve(val);
+      });
+    });
+
+    Promise.all([ruleFrom, personForm]).then(async (value) => {
+      console.log(value);
+      if (value[0] && value[1]) {
+        this.info.channelPersons.push(this.channelPersons);
+        await post_channel_add({ ...this.info, operateType: 1 });
+        this.$message.success("渠道商添加成功");
+      } else {
+        // 表单还有没填写
+      }
+    });
   }
   submit() {
     console.log("提交");
