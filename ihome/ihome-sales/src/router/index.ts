@@ -3,8 +3,8 @@
  * @version: 
  * @Author: zyc
  * @Date: 2020-06-22 11:10:43
- * @LastEditors: zyc
- * @LastEditTime: 2020-10-14 10:09:14
+ * @LastEditors: wwq
+ * @LastEditTime: 2020-10-14 19:18:26
  */
 import Vue from 'vue'
 import VueRouter, { RouteConfig, Route } from 'vue-router'
@@ -80,7 +80,7 @@ const routes: Array<RouteConfig> = [
     ]
   },
 
-  //渠道商信息列表
+  //城市等级列表
   {
     path: '/cityLevel',
     meta: { title: '城市等级列表', icon: 'form' },
@@ -95,33 +95,27 @@ const routes: Array<RouteConfig> = [
       },
     ]
   },
+  // 渠道评级标准列表
+  {
+    path: '/gradeStandard',
+    meta: { title: '渠道评级标准列表', icon: 'form' },
+    redirect: '/gradeStandard/list',
+    component: Layout,
+    children: [
+      {
+        path: 'list',
+        name: 'gradeStandardList',
+        component: () => import('../views/channel/channelRatings/channelRatings.vue'),
+        meta: { title: '渠道评级标准列表', icon: 'form' }
+      },
+    ]
+  },
   {
     path: '/channels',
     meta: { title: '用户', icon: 'form' },
     redirect: '/channels/distributorsList',
     component: Layout,
     children: [
-
-      // 渠道评级标准列表 --- start
-      {
-        path: 'channelRatings',
-        name: 'ChannelRatings',
-        component: () => import('../views/channel/channelRatings/channelRatings.vue'),
-        meta: { title: '渠道评级标准列表', icon: 'form' }
-      },
-      {
-        path: 'channelRatings/upMethods',
-        name: 'UpMethods',
-        component: () => import('../views/channel/channelRatings/methodsPages/upMethods.vue'),
-        meta: { title: '上传管理办法', icon: 'form' }
-      },
-      {
-        path: 'channelRatings/viewMethods',
-        name: 'ViewMethods',
-        component: () => import('../views/channel/channelRatings/methodsPages/viewMethods.vue'),
-        meta: { title: '查看管理办法', icon: 'form' }
-      },
-      // 渠道评级标准列表 --- end
 
       // 渠道商 --- start
       {

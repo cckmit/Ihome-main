@@ -1,20 +1,17 @@
 <!--
  * @Descripttion: 
  * @version: 
- * @Author: zyc
+ * @Author: wwq
  * @Date: 2020-08-13 11:40:10
- * @LastEditors: ywl
- * @LastEditTime: 2020-10-10 16:37:16
+ * @LastEditors: wwq
+ * @LastEditTime: 2020-10-14 17:20:49
 -->
 <template>
   <ih-page>
     <template v-slot:form>
-      <el-form
-        ref="form"
-        label-width="100px"
-      >
+      <el-form ref="form" label-width="100px">
         <el-row>
-          <el-col :span="12">
+          <el-col :span="8">
             <el-form-item label="城市等级">
               <el-select
                 v-model="queryPageParameters.cityGrade"
@@ -23,15 +20,15 @@
                 class="width--100"
               >
                 <el-option
-                  v-for="item in $root.displayList('cityLevel')"
-                  :key="item.value"
-                  :label="item.label"
-                  :value="item.value"
+                  v-for="item in $root.dictAllList('CityLevel')"
+                  :key="item.code"
+                  :label="item.name"
+                  :value="item.code"
                 ></el-option>
               </el-select>
             </el-form-item>
           </el-col>
-          <el-col :span="12">
+          <el-col :span="8">
             <el-form-item label="渠道等级">
               <el-select
                 v-model="queryPageParameters.channelGrade"
@@ -40,10 +37,10 @@
                 class="width--100"
               >
                 <el-option
-                  v-for="item in $root.displayList('ChannelLevel')"
-                  :key="item.value"
-                  :label="item.label"
-                  :value="item.value"
+                  v-for="item in $root.dictAllList('ChannelLevel')"
+                  :key="item.code"
+                  :label="item.name"
+                  :value="item.code"
                 ></el-option>
               </el-select>
             </el-form-item>
@@ -55,26 +52,11 @@
     <template v-slot:btn>
       <br />
       <el-row class="el-row">
-        <el-button
-          type="primary"
-          @click="search()"
-        >查询</el-button>
-        <el-button
-          type="success"
-          @click="add()"
-        >添加</el-button>
-        <el-button
-          type="info"
-          @click="empty()"
-        >清空</el-button>
-        <el-button
-          type="info"
-          @click="upMethods()"
-        >上传供应商管理办法</el-button>
-        <el-button
-          type="info"
-          @click="viewMethods()"
-        >查看供应商管理办法</el-button>
+        <el-button type="primary" @click="search()">查询</el-button>
+        <el-button type="success" @click="addMsg()">添加</el-button>
+        <el-button type="info" @click="empty()">重置</el-button>
+        <el-button @click="upMethods">上传供应商管理办法</el-button>
+        <el-button @click="viewMethods">查看供应商管理办法</el-button>
       </el-row>
     </template>
 
@@ -84,52 +66,39 @@
         class="ih-table"
         :data="resPageInfo.list"
         :default-sort="{ prop: 'id', order: 'descending' }"
-        @selection-change="handleSelectionChange"
       >
-        <el-table-column
-          fixed
-          prop="cityGrade"
-          label="城市等级"
-          width="160"
-        ></el-table-column>
-
-        <el-table-column
-          fixed
-          prop="channelGrade"
-          label="渠道等级"
-          width="160"
-        ></el-table-column>
-        <el-table-column
-          prop="gradeItem"
-          label="评级项"
-          width="360"
-        ></el-table-column>
+        <el-table-column prop="cityGrade" label="城市等级">
+          <template v-slot="{ row }">{{
+            $root.dictAllName(row.cityGrade, "CityLevel").name
+          }}</template>
+        </el-table-column>
+        <el-table-column prop="channelGrade" label="渠道等级">
+          <template v-slot="{ row }">{{
+            $root.dictAllName(row.channelGrade, "ChannelLevel").name
+          }}</template>
+        </el-table-column>
+        <el-table-column prop="gradeItem" label="评级项"></el-table-column>
         <el-table-column
           prop="gradeStandard"
           label="评级标准"
-          width="360"
         ></el-table-column>
-        <el-table-column
-          label="操作"
-          width="230"
-          fixed="right"
-        >
-          <template slot-scope="scope">
-            <el-link
-              type="primary"
-              @click.native.prevent="viewMaterial(scope)"
-            >查看所需材料</el-link>
-            <el-dropdown
-              trigger="click"
-              style="margin-left: 15px"
+        <el-table-column label="操作" width="230" fixed="right">
+          <template v-slot="{ row }">
+            <el-link type="primary" @click.native.prevent="viewMaterial(row)"
+              >查看所需材料</el-link
             >
+            <el-dropdown trigger="click" style="margin-left: 15px">
               <span class="el-dropdown-link">
                 更多操作
                 <i class="el-icon-arrow-down el-icon--right"></i>
               </span>
               <el-dropdown-menu slot="dropdown">
-                <el-dropdown-item @click.native.prevent="ModifyThe(scope)">修改</el-dropdown-item>
-                <el-dropdown-item @click.native.prevent="remove(scope)">删除</el-dropdown-item>
+                <el-dropdown-item @click.native.prevent="editMsg(row)"
+                  >修改</el-dropdown-item
+                >
+                <el-dropdown-item @click.native.prevent="delMsg(row)"
+                  >删除</el-dropdown-item
+                >
               </el-dropdown-menu>
             </el-dropdown>
           </template>
@@ -150,19 +119,48 @@
       ></el-pagination>
     </template>
 
-    <ih-dialog
-      :show="dialogVisible"
-      desc="用户新增编辑"
-    >
-      <EntryToModify
-        :data="addData"
+    <ih-dialog :show="dialogVisible">
+      <Edit
+        :data="editData"
+        :edit-dialog="editDialog"
         @cancel="() => (dialogVisible = false)"
         @finish="
           (data) => {
             dialogVisible = false;
-            finish(data);
+            this.getListMixin();
           }
         "
+      />
+    </ih-dialog>
+    <ih-dialog :show="materialDialogVisible">
+      <Material
+        :data="materialData"
+        @cancel="() => (materialDialogVisible = false)"
+        @finish="
+          (data) => {
+            materialDialogVisible = false;
+            this.getListMixin();
+          }
+        "
+      />
+    </ih-dialog>
+
+    <ih-dialog :show="upDialogVisible">
+      <UpMethods
+        @cancel="() => (upDialogVisible = false)"
+        @finish="
+          (data) => {
+            upDialogVisible = false;
+            this.getListMixin();
+          }
+        "
+      />
+    </ih-dialog>
+
+    <ih-dialog :show="viewDialogVisible">
+      <ViewMethods
+        @cancel="() => (viewDialogVisible = false)"
+        @finish="viewDialogVisible = false"
       />
     </ih-dialog>
   </ih-page>
@@ -170,135 +168,91 @@
 
 <script lang="ts">
 import { Component, Vue } from "vue-property-decorator";
-import { post_channelGradeStandard_getList } from "../../../api/channel/index";
+import {
+  post_channelGradeStandard_getList,
+  post_channelGradeStandard_delete__id,
+} from "../../../api/channel/index";
 import PaginationMixin from "../../../mixins/pagination";
-// import { city } from "../../../util/enums/dic";
-import EntryToModify from "./dialog/EntryToModify.vue";
+import Edit from "./dialog/edit.vue";
+import Material from "./dialog/material.vue";
+import UpMethods from "./dialog/upMethods.vue";
+import ViewMethods from "./dialog/viewMethods.vue";
 @Component({
-  components: { EntryToModify },
+  components: { Edit, Material, UpMethods, ViewMethods },
   mixins: [PaginationMixin],
 })
 export default class ChannelRatings extends Vue {
   queryPageParameters: any = {
-    ChannelLevel: "bigPlatform",
-    cityLevel: "firstLevel",
+    cityGrade: null,
+    channelGrade: null,
   };
-  dialogVisible = false;
-  addData: any = null;
   resPageInfo: any = {
     total: 0,
     list: [],
   };
-  private multipleSelection: any = [];
-  search() {
-    console.log("查询");
-    this.getListMixin;
-  }
-  add() {
-    console.log("添加");
-    this.dialogVisible = true;
-  }
-  upMethods() {
-    console.log("上传管理办法");
-    this.$router.push("channelRatings/upMethods");
-  }
-  viewMethods() {
-    console.log("查看管理办法");
-    this.$router.push({
-      path: "channelRatings/viewMethods",
-    });
-  }
-  empty() {
-    console.log("清空");
-    this.queryPageParameters = {
-      employeeCode: null,
-      employeeStatus: null,
-      provinces: null,
-      city: null,
-      state: null,
-      status: null,
-      ChannelLevel: "",
-      distributorsName: null,
-      cityLevel: null,
-      division: null,
-      storageNum: "",
-    };
-  }
+  dialogVisible = false;
+  materialDialogVisible = false;
+  upDialogVisible = false;
+  viewDialogVisible = false;
+  editData: any = {};
+  materialData: any = {};
   currentPage: any = 1;
   total: any = null;
-  //操作
-  viewMaterial() {
-    // this.$router.push({
-    //   path: "/channelLevel/info",
-    //   query: { id: scope.row.id },
-    // });
-    console.log("查看所需材料");
-  }
-  ModifyThe() {
-    console.log("修改");
-    // this.$router.push({
-    //   path: "/channelLevel/ModifyThe",
-    //   query: { id: scope.row.id },
-    // });
-  }
-  remove() {
-    console.log("删除");
-    // this.$router.push({
-    //   path: "/confirm",
-    //   query: { id: scope.row.id },
-    // });
-  }
-  withdraw() {
-    console.log("撤回");
-  }
-  audit() {
-    console.log("审核");
-    this.$router.push({
-      path: "/channelLevel/levelInfoAudit",
-    });
-  }
+  editDialog: any = null;
 
-  change() {
-    console.log("变更");
-    // this.$router.push({
-    //   path: "/MaintenanceOfChannels",
-    //   query: { id: scope.row.id },
-    // });
-  }
   created() {
     this.getListMixin();
   }
 
+  search() {
+    this.getListMixin();
+  }
+  addMsg() {
+    this.dialogVisible = true;
+    this.editData = {};
+    this.editDialog = "add";
+  }
+  editMsg(row: any) {
+    this.dialogVisible = true;
+    this.editDialog = "edit";
+    this.editData = row;
+  }
+  async delMsg(row: any) {
+    try {
+      await this.$confirm("是否确定删除?", "提示");
+      await post_channelGradeStandard_delete__id({ id: row.id });
+      this.resPageInfo.list.splice(row.$index, 1);
+      this.$message({
+        type: "success",
+        message: "删除成功!",
+      });
+    } catch (error) {
+      console.log(error);
+    }
+  }
+  upMethods() {
+    this.upDialogVisible = true;
+  }
+  viewMethods() {
+    this.viewDialogVisible = true;
+  }
+  empty() {
+    this.queryPageParameters = {
+      cityGrade: null,
+      channelGrade: null,
+    };
+  }
+  //操作
+  viewMaterial(row: any) {
+    this.materialData = row;
+    this.materialDialogVisible = true;
+  }
+
   //获取数据
   async getListMixin() {
-    // this.resPageInfo = await post_channelGradeStandard_getList({
-    //   pageNum: this.queryPageParameters.pageNum,
-    //   pageSize: this.queryPageParameters.pageSize,
-    // });
     this.resPageInfo = await post_channelGradeStandard_getList(
       this.queryPageParameters
     );
-  }
-  async searchChinnelLevelInfo() {
-    console.log("查询");
-  }
-
-  handleSelectionChange(val: any) {
-    // console.log(val);
-    console.log("下拉");
-    this.multipleSelection = val;
-
-    // this.queryPageParameters.pageSize = val;
-  }
-  handleSizeChangeMixin(val: any) {
-    console.log("页码大小", val);
-    this.queryPageParameters.pageSize = val;
-    this.getListMixin();
-  }
-  handleCurrentChangeMixin(val: any) {
-    console.log("指定页码", val);
-    this.queryPageParameters.pageNum = val;
-    this.getListMixin();
   }
 }
 </script>
