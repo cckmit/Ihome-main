@@ -4,13 +4,13 @@
  * @Author: zyc
  * @Date: 2020-10-13 19:51:15
  * @LastEditors: zyc
- * @LastEditTime: 2020-10-13 20:48:08
+ * @LastEditTime: 2020-10-14 10:01:02
 -->
 <template>
   <div>
     <p class="ih-info-title">注册用户列表</p>
     <div>
-      <el-form ref="form" label-width="80px">
+      <el-form class="form-condition" ref="form" label-width="80px">
         <el-row>
           <el-col :span="8">
             <el-form-item label="姓名">
@@ -124,5 +124,8 @@ export default class RegisterUserList extends Vue {
   }
 }
 </script>
-<style lang="scss" scoped>
+<style lang="scss" >
+.form-condition .el-form-item__content {
+  margin-right: 40px !important;
+}
 </style>
