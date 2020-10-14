@@ -4,9 +4,8 @@
  * @Author: lgf
  * @Date: 2020-09-16 14:05:21
  * @LastEditors: ywl
- * @LastEditTime: 2020-10-14 15:41:17
+ * @LastEditTime: 2020-10-14 20:45:28
 -->
-
 <template>
   <div class="text-left">
     <p class="ih-info-title">基础信息</p>
@@ -182,7 +181,7 @@ import { Component, Vue, Prop } from "vue-property-decorator";
 import {
   get_channel_get__id,
   post_channel_approveRecord,
-} from "@/api/channel/index";
+} from "../../../../api/channel/index";
 @Component({
   components: {},
 })
