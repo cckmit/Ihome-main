@@ -3,13 +3,14 @@
  * @version: 
  * @Author: wwq
  * @Date: 2020-09-16 14:12:50
- * @LastEditors: zyc
- * @LastEditTime: 2020-10-13 15:20:16
+ * @LastEditors: wwq
+ * @LastEditTime: 2020-10-14 20:31:41
 -->
 
 # ihome-common
 ## 版本更新
 ```
+v1.0.136 2020-10-14 20:22  省市区级联选择组件增加level,可选择任意一级
 v1.0.134 2020-10-13 15:18  api-hangdle.js
 v1.0.133 2020-10-13 15:00  $tool.getFileUrl  $tool.downloadFileUrl  获取文件路径
 v1.0.132 2020-10-12 09:00  省市区级联选择组件优化

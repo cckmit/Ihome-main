@@ -4,7 +4,7 @@
  * @Author: wwq
  * @Date: 2020-09-29 08:55:05
  * @LastEditors: wwq
- * @LastEditTime: 2020-09-30 11:56:55
+ * @LastEditTime: 2020-10-14 20:19:30
 -->
 <template>
   <div class="cascader">
@@ -22,23 +22,26 @@
       :filter-method="filterMethod"
       filterable
       clearable
-      v-model="provincesValue"
       v-bind="$attrs"
       v-on="$listeners"
     ></el-cascader>
   </div>
 </template>
 <script lang="ts">
-import { Component, Vue, Watch } from "vue-property-decorator";
+import { Component, Vue, Watch, Prop } from "vue-property-decorator";
 import request from "../../../../util/api/http";
 @Component({
   components: {},
 })
 export default class IhCascader extends Vue {
-  private provincesValue = [];
+  @Prop({
+    type: Number,
+    default: 3,
+  })
+  level: any;
   private provincesOptions = [];
 
-  @Watch("provincesValue", { deep: true })
+  @Watch("$attrs", { deep: true })
   clearValue() {
     (this.$refs.cascader as any).$refs.panel.clearCheckedNodes();
     (this.$refs.cascader as any).$refs.panel.activePath = [];
@@ -49,9 +52,17 @@ export default class IhCascader extends Vue {
   }
 
   async getOptions() {
-    const data = await this.get_area_getAll();
+    let data = await this.get_area_getAll();
     let first = this.$tool.deepClone(data[0]);
     data.splice(0, 1);
+    switch (this.level) {
+      case 1:
+        data = data.filter((v: any) => v.level === 1);
+        break;
+      case 2:
+        data = data.filter((v: any) => v.level !== 3);
+        break;
+    }
     this.provincesOptions = this.$tool.listToGruop(data, {
       rootId: first.code,
       id: "code",

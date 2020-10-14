@@ -3,8 +3,8 @@
  * @version: 
  * @Author: wwq
  * @Date: 2020-09-16 14:54:19
- * @LastEditors: lgf
- * @LastEditTime: 2020-09-29 14:20:59
+ * @LastEditors: wwq
+ * @LastEditTime: 2020-10-14 20:20:54
 -->
 <template>
   <div class="cascaderDemo">
@@ -12,7 +12,11 @@
       <el-row>
         <el-col :span="8">
           <el-form-item label="省市区">
-            <ih-cascader v-model="test" @change="handleChange"></ih-cascader>
+            <ih-cascader
+              v-model="test"
+              :level="3"
+              @change="handleChange"
+            ></ih-cascader>
           </el-form-item>
         </el-col>
       </el-row>
