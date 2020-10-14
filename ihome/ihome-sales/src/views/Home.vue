@@ -3,8 +3,8 @@
  * @version: 
  * @Author: zyc
  * @Date: 2020-06-22 11:10:43
- * @LastEditors: zyc
- * @LastEditTime: 2020-09-29 15:32:00
+ * @LastEditors: ywl
+ * @LastEditTime: 2020-10-13 14:59:14
 --> 
 
 <template>
@@ -34,13 +34,10 @@ export default class Home extends Vue {
   created() {
     console.log(routes);
     this.data = routes;
-    let list = (this.$root as any).dictAllList("ChannelLevel"); //获取字典列表：参数是类别的key
-    let item = (this.$root as any).dictAllName(
-      "LargeIntermediary",
-      "ChannelLevel"
-    ); //获取某个字典下根据code获取该数据项：第一个参数是code，第二个参数是类别的key
+    let list = (this.$root as any).dictAllList("AccountEnum"); //获取字典列表：参数是类别的key
+    let item = (this.$root as any).dictAllName("Base", "AccountEnum"); //获取某个字典下根据code获取该数据项：第一个参数是code，第二个参数是类别的key
 
-    console.log("后端给全部字典数据的用法列子看这里");
+    console.log("后端给全部字典数据的用法列子看这里", list, item);
   }
   handleNodeClick(data: any) {
     console.log(data);

@@ -9,16 +9,28 @@
 <template>
   <ih-page>
     <template v-slot:info>
-      <el-tabs type="border-card" v-model="tabActive">
-        <el-tab-pane label="详情信息" name="1">
+      <el-tabs
+        type="border-card"
+        v-model="tabActive"
+      >
+        <el-tab-pane
+          label="详情信息"
+          name="1"
+        >
           <DetailInfo />
         </el-tab-pane>
 
-        <el-tab-pane label="操作日志" name="2">
+        <el-tab-pane
+          label="操作日志"
+          name="2"
+        >
           <OperationLog />
         </el-tab-pane>
 
-        <el-tab-pane label="OA审批日志" name="3">
+        <el-tab-pane
+          label="OA审批日志"
+          name="3"
+        >
           <OAaudit />
         </el-tab-pane>
       </el-tabs>
@@ -28,9 +40,9 @@
 <script lang="ts">
 import { Component, Vue } from "vue-property-decorator";
 // import { getRoleList } from "../../api/system";
-import OAaudit from "./info_tab/OAaudit.vue";
-import DetailInfo from "./info_tab/detailInfo.vue";
-import OperationLog from "./info_tab/operationLog.vue";
+import OAaudit from "./info-tab/OAaudit.vue";
+import DetailInfo from "./info-tab/detailInfo.vue";
+import OperationLog from "./info-tab/operationLog.vue";
 @Component({
   components: { OAaudit, DetailInfo, OperationLog },
 })

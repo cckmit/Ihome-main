@@ -3,8 +3,8 @@
  * @version: 
  * @Author: zyc
  * @Date: 2020-06-22 11:11:41
- * @LastEditors: zyc
- * @LastEditTime: 2020-10-13 14:57:19
+ * @LastEditors: wwq
+ * @LastEditTime: 2020-10-14 19:14:04
  */
 const path = require('path');
 const { name } = require('./package');
@@ -52,6 +52,9 @@ module.exports = {
 			'/system/': {
 				target: proxyAddress
 			},
+			'/channel-local/': {
+				target: 'http://10.188.1.91:8610'
+			},
 			'/channel/': {
 				target: proxyAddress,
 				// changeOrigin: true, //开启代理
@@ -59,6 +62,12 @@ module.exports = {
 			},
 			'/developer/': {
 				target: proxyAddress
+			},
+			'/channel-local/': {
+				target: 'http://10.188.1.91:8610'
+			},
+			'/sales-document-cover-local/': {
+				target: 'http://10.188.1.91:8610'
 			}
 		}
 	},

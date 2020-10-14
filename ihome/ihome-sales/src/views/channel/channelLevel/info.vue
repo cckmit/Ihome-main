@@ -10,11 +10,20 @@
   <ih-page>
     <template v-slot:info>
       <el-scrollbar>
-        <el-tabs type="border-card" v-model="tabActive">
-          <el-tab-pane label="信息详情" name="1">
+        <el-tabs
+          type="border-card"
+          v-model="tabActive"
+        >
+          <el-tab-pane
+            label="信息详情"
+            name="1"
+          >
             <DetailsInfo />
           </el-tab-pane>
-          <el-tab-pane label="操作日志" name="2">
+          <el-tab-pane
+            label="操作日志"
+            name="2"
+          >
             <OperationLog />
           </el-tab-pane>
         </el-tabs>
@@ -26,8 +35,8 @@
 import { Component, Vue } from "vue-property-decorator";
 // import { getRoleList } from "../../api/system";
 
-import DetailsInfo from "./info_tabs/detailsInfo.vue";
-import OperationLog from "./info_tabs/operationLog.vue";
+import DetailsInfo from "./info-tabs/detailsInfo.vue";
+import OperationLog from "./info-tabs/operationLog.vue";
 @Component({
   components: { DetailsInfo, OperationLog },
 })

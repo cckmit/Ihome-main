@@ -3,8 +3,8 @@
  * @version: 
  * @Author: lgf
  * @Date: 2020-09-18 09:14:40
- * @LastEditors: ywl
- * @LastEditTime: 2020-10-10 17:10:12
+ * @LastEditors: zyc
+ * @LastEditTime: 2020-10-13 18:07:46
 -->
 <template>
   <ih-page>
@@ -158,12 +158,12 @@
         <el-table-column
           fixed="right"
           label="操作"
-          width="100"
+          width="120"
         >
           <template slot-scope="scope">
             <el-link
               type="primary"
-              class="detail"
+              class="margin-right-15"
               @click.native.prevent="info(scope)"
             >详情</el-link>
             <el-link
@@ -318,8 +318,5 @@ export default class Home extends Vue {
     color: #4cccec;
     padding-left: 7px;
   }
-}
-.detail {
-  margin-right: 5px;
 }
 </style>

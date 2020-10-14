@@ -4,7 +4,7 @@
  * @Author: zyc
  * @Date: 2020-07-08 14:22:25
  * @LastEditors: ywl
- * @LastEditTime: 2020-10-10 16:25:00
+ * @LastEditTime: 2020-10-13 10:44:50
 --> 
 <template>
   <ih-page>
@@ -35,8 +35,8 @@
 import { Component, Vue } from "vue-property-decorator";
 // import { getRoleList } from "../../api/system";
 
-import DetailsInfo from "./info_tabs/detailsInfo.vue";
-import UsersList from "./info_tabs/usersList.vue";
+import DetailsInfo from "./info-tabs/detailsInfo.vue";
+import UsersList from "./info-tabs/usersList.vue";
 @Component({
   components: { DetailsInfo, UsersList },
 })

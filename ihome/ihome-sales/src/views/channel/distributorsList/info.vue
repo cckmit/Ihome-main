@@ -3,19 +3,28 @@
  * @version: 
  * @Author: zyc
  * @Date: 2020-07-08 14:22:25
- * @LastEditors: lgf
- * @LastEditTime: 2020-09-28 15:43:12
+ * @LastEditors: ywl
+ * @LastEditTime: 2020-10-13 20:06:42
 --> 
 <template>
   <ih-page>
     <template v-slot:info>
       <el-scrollbar>
-        <el-tabs type="border-card" v-model="tabActive">
-          <el-tab-pane label="信息详情" name="1">
+        <el-tabs
+          type="border-card"
+          v-model="tabActive"
+        >
+          <el-tab-pane
+            label="信息详情"
+            name="1"
+          >
             <DetailsInfo />
           </el-tab-pane>
-          <el-tab-pane label="操作日志" name="2">
-            <OperationLog />
+          <el-tab-pane
+            label="操作日志"
+            name="2"
+          >
+            <ChannelLog />
           </el-tab-pane>
         </el-tabs>
       </el-scrollbar>
@@ -24,20 +33,17 @@
 </template>
 <script lang="ts">
 import { Component, Vue } from "vue-property-decorator";
-// import { getRoleList } from "../../api/system";
 
-// import DetailsInfo from "./info_tabs/detailsInfo.vue";
-import OperationLog from "./info_tabs/operationLog.vue";
-import DetailsInfo from "@/components/detailsInfo.vue";
-// import ModifyThe from "./MoreOperations/ModifyThe";
+import ChannelLog from "./info-tabs/operationLog.vue";
+import DetailsInfo from "./info-tabs/detailsInfo.vue";
 @Component({
-  components: { DetailsInfo, OperationLog },
+  components: { DetailsInfo, ChannelLog },
 })
-export default class UserInfo extends Vue {
+export default class ChannelInfo extends Vue {
   tabActive: any = null;
 
   async created() {
-    console.log(this.$route.query.id, this.$route.query.tab);
+    // console.log(this.$route.query.id, this.$route.query.tab);
     this.tabActive = this.$route.query.tab || "1";
   }
 }
