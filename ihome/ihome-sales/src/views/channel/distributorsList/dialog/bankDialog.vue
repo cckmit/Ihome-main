@@ -4,7 +4,7 @@
  * @Author: ywl
  * @Date: 2020-10-12 10:38:48
  * @LastEditors: ywl
- * @LastEditTime: 2020-10-13 20:17:06
+ * @LastEditTime: 2020-10-14 20:23:55
 -->
 <template>
   <el-dialog
@@ -26,31 +26,19 @@
         label="账户名称"
         prop="accountName"
       >
-        <el-input
-          v-model="Bankrule.accountName"
-          maxlength="64"
-          show-word-limit
-        ></el-input>
+        <el-input v-model="Bankrule.accountName"></el-input>
       </el-form-item>
       <el-form-item
         label="账号"
         prop="accountNum"
       >
-        <el-input
-          v-model="Bankrule.accountNum"
-          maxlength="32"
-          show-word-limit
-        ></el-input>
+        <el-input v-model="Bankrule.accountNum"></el-input>
       </el-form-item>
       <el-form-item
         label="开户银行"
         prop="bank"
       >
-        <el-input
-          v-model="Bankrule.bank"
-          maxlength="64"
-          show-word-limit
-        ></el-input>
+        <el-input v-model="Bankrule.bank"></el-input>
       </el-form-item>
       <el-form-item
         label="账户类型"
@@ -88,7 +76,7 @@
 import { Component, Vue, Prop } from "vue-property-decorator";
 import { Form as ElForm } from "element-ui";
 import { NoRepeatHttp } from "ihome-common/util/aop/no-repeat-http";
-import { post_channelBank_add } from "../../../../api/channel/index";
+// import { post_channelBank_add } from "@/api/channel/index";
 
 @Component({})
 export default class BankDialog extends Vue {
@@ -99,12 +87,15 @@ export default class BankDialog extends Vue {
   private rules: object = {
     accountName: [
       { required: true, message: "请输入账户名称", trigger: "blur" },
+      { max: 64, message: "字符长度不能大于64", trigger: "blur" },
     ],
     accountNum: [
-      { required: true, max: 32, message: "请输入账号", trigger: "blur" },
+      { required: true, message: "请输入账号", trigger: "blur" },
+      { max: 32, message: "字符长度不能大于32", trigger: "blur" },
     ],
     bank: [
-      { required: true, max: 64, message: "请输入开户银行", trigger: "blur" },
+      { required: true, message: "请输入开户银行", trigger: "blur" },
+      { max: 64, message: "字符长度不能大于64", trigger: "blur" },
     ],
     bankType: [{ required: true, message: "请选择账户类型", trigger: "blur" }],
   };
@@ -132,18 +123,13 @@ export default class BankDialog extends Vue {
         case "new-edit":
           this.$emit("finish", this.Bankrule, this.bankType);
       }
-      if (this.bankType) {
-        // 是否是新增
-      } else {
-        post_channelBank_add(this.Bankrule);
-      }
     } else {
       console.log("error submit!!");
       return false;
     }
   }
 
-  async created() {
+  created() {
     this.Bankrule = this.data;
   }
 }

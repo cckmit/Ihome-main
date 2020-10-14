@@ -1,10 +1,10 @@
 <!--
  * @Descripttion: 
  * @version: 
- * @Author: zyc
+ * @Author: wwq
  * @Date: 2020-06-30 09:21:17
  * @LastEditors: wwq
- * @LastEditTime: 2020-10-13 19:21:57
+ * @LastEditTime: 2020-10-14 19:11:10
 --> 
 <template>
   <ih-page>
@@ -12,38 +12,13 @@
       <el-form ref="form" label-width="100px">
         <el-row>
           <el-col :span="8">
-            <el-form-item label="省份">
-              <el-select
-                v-model="queryPageParameters.proviceCode"
+            <el-form-item label="省市">
+              <IhCascader
+                v-model="provinceOption"
                 clearable
                 placeholder="请选择"
                 class="width--100"
-                @change="proviceChange"
-              >
-                <el-option
-                  v-for="item in provinceOption"
-                  :key="item.code"
-                  :label="item.name"
-                  :value="item.code"
-                ></el-option>
-              </el-select>
-            </el-form-item>
-          </el-col>
-          <el-col :span="8">
-            <el-form-item label="城市">
-              <el-select
-                v-model="queryPageParameters.cityCode"
-                clearable
-                placeholder="请选择"
-                class="width--100"
-              >
-                <el-option
-                  v-for="item in cityOption"
-                  :key="item.code"
-                  :label="item.name"
-                  :value="item.code"
-                ></el-option>
-              </el-select>
+              />
             </el-form-item>
           </el-col>
           <el-col :span="8">
@@ -70,7 +45,7 @@
     <template v-slot:btn>
       <el-row>
         <el-button type="primary" @click="search()">查询</el-button>
-        <el-button type="info" @click="reset()">清空</el-button>
+        <el-button type="info" @click="reset">重置</el-button>
         <el-button
           type="success"
           @click="dialogFormVisible = true"
@@ -89,7 +64,7 @@
       >
         <el-table-column fixed type="selection" width="100"></el-table-column>
         <el-table-column prop="parentCode" label="省份"></el-table-column>
-        <el-table-column fixed prop="code" label="城市"></el-table-column>
+        <el-table-column prop="code" label="城市"></el-table-column>
         <el-table-column prop="cityGrade" label="城市等级">
           <template v-slot="{ row }">{{
             $root.dictAllName(row.cityGrade, "CityLevel").name
@@ -142,11 +117,6 @@ import {
   post_channelCityLevel_getList,
   post_channelCityLevel_updateLevel,
 } from "../../../api/channel/index";
-
-import {
-  get_area_getAllProvince,
-  get_area_getAllChildArea__code,
-} from "../../../api/system/index";
 import PaginationMixin from "../../../mixins/pagination";
 
 @Component({
@@ -171,6 +141,7 @@ export default class CityList extends Vue {
     total: 0,
     list: [],
   };
+  total: any = null;
 
   private get editDisabled() {
     return this.selection.length === 0;
@@ -184,6 +155,7 @@ export default class CityList extends Vue {
       cityCode: null,
       cityGrade: null,
     };
+    this.provinceOption = [];
   }
   handleSizeChangeMixin(val: any) {
     this.queryPageParameters.pageSize = val;
@@ -196,13 +168,8 @@ export default class CityList extends Vue {
   handleSelectionChange(val: any) {
     this.selection = val;
   }
-  total: any = null;
   async created() {
     this.getListMixin();
-    this.getProvince();
-  }
-  async getProvince() {
-    this.provinceOption = await get_area_getAllProvince();
   }
   async getListMixin() {
     this.resPageInfo = await post_channelCityLevel_getList(
@@ -210,15 +177,9 @@ export default class CityList extends Vue {
     );
   }
 
-  async proviceChange(v: any) {
-    this.queryPageParameters.cityCode = null;
-    this.cityOption = [];
-    if (v) {
-      this.cityOption = await get_area_getAllChildArea__code({ code: v });
-    }
-  }
-
   search() {
+    this.queryPageParameters.proviceCode = this.provinceOption[0];
+    this.queryPageParameters.cityCode = this.provinceOption[1];
     this.getListMixin();
   }
 

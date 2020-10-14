@@ -4,7 +4,7 @@
  * @Author: zyc
  * @Date: 2020-06-22 11:10:43
  * @LastEditors: zyc
- * @LastEditTime: 2020-10-14 20:12:33
+ * @LastEditTime: 2020-10-14 20:44:39
  */
 import Vue from 'vue'
 import VueRouter, { RouteConfig, Route } from 'vue-router'
@@ -51,36 +51,42 @@ const routes: Array<RouteConfig> = [
         path: 'add',
         name: 'AddChannel',
         component: () => import('../views/channel/distributorsList/moreOperations/modifyThe.vue'),
-        meta: { title: '渠道商录入修改页', icon: 'form' }
+        meta: { title: '渠道商录入页', icon: 'form' }
       },
       {
         path: 'edit',
         name: 'EditChannel',
         component: () => import('../views/channel/distributorsList/moreOperations/modifyThe.vue'),
-        meta: { title: '渠道商录入修改页', icon: 'form' }
+        meta: { title: '渠道商修改页', icon: 'form' }
       },
       {
         path: 'confirm',
-        name: 'confirm',
-        component: () => import('../views/channel/distributorsList/moreOperations/confirm.vue'),
+        name: 'ConfirmChannel',
+        component: () => import('../views/channel/distributorsList/info.vue'),
         meta: { title: '渠道商确认', icon: 'form' }
       },
       {
-        path: 'changeInfo',
-        name: 'changeInfo',
-        component: () => import('../views/channel/distributorsList/moreOperations/changeInfo.vue'),
+        path: 'revoke',
+        name: 'RevokeChannel',
+        component: () => import('../views/channel/distributorsList/info.vue'),
+        meta: { title: '渠道商起草撤回', icon: 'form' }
+      },
+      {
+        path: 'change',
+        name: 'ChangeChannel',
+        component: () => import('../views/channel/distributorsList/moreOperations/modifyThe.vue'),
         meta: { title: '渠道商变更信息', icon: 'form' }
       },
       {
-        path: 'maintenanceOfChannels',
+        path: 'agent',
         name: 'MaintenanceOfChannels',
-        component: () => import('../views/channel/distributorsList/moreOperations/maintenanceOfChannels.vue'),
+        component: () => import('../views/channel/distributorsList/moreOperations/agent.vue'),
         meta: { title: '维护渠道经纪人', icon: 'form' }
       },
     ]
   },
 
-  //渠道商信息列表
+  //城市等级列表
   {
     path: '/cityLevel',
     meta: { title: '城市等级列表', icon: 'form' },
@@ -95,33 +101,27 @@ const routes: Array<RouteConfig> = [
       },
     ]
   },
+  // 渠道评级标准列表
+  {
+    path: '/gradeStandard',
+    meta: { title: '渠道评级标准列表', icon: 'form' },
+    redirect: '/gradeStandard/list',
+    component: Layout,
+    children: [
+      {
+        path: 'list',
+        name: 'gradeStandardList',
+        component: () => import('../views/channel/channelRatings/channelRatings.vue'),
+        meta: { title: '渠道评级标准列表', icon: 'form' }
+      },
+    ]
+  },
   {
     path: '/channels',
     meta: { title: '用户', icon: 'form' },
     redirect: '/channels/distributorsList',
     component: Layout,
     children: [
-
-      // 渠道评级标准列表 --- start
-      {
-        path: 'channelRatings',
-        name: 'ChannelRatings',
-        component: () => import('../views/channel/channelRatings/channelRatings.vue'),
-        meta: { title: '渠道评级标准列表', icon: 'form' }
-      },
-      {
-        path: 'channelRatings/upMethods',
-        name: 'UpMethods',
-        component: () => import('../views/channel/channelRatings/methodsPages/upMethods.vue'),
-        meta: { title: '上传管理办法', icon: 'form' }
-      },
-      {
-        path: 'channelRatings/viewMethods',
-        name: 'ViewMethods',
-        component: () => import('../views/channel/channelRatings/methodsPages/viewMethods.vue'),
-        meta: { title: '查看管理办法', icon: 'form' }
-      },
-      // 渠道评级标准列表 --- end
 
       // 渠道商 --- start
       {
@@ -157,7 +157,7 @@ const routes: Array<RouteConfig> = [
       {
         path: 'distributorsList/MaintenanceOfChannels',
         name: 'MaintenanceOfChannels',
-        component: () => import('../views/channel/distributorsList/moreOperations/maintenanceOfChannels.vue'),
+        component: () => import('../views/channel/distributorsList/moreOperations/agent.vue'),
         meta: { title: '维护渠道经纪人', icon: 'form' }
       },
       // 渠道商 --- end
