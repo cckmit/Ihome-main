@@ -1,0 +1,307 @@
+<!--
+ * @Descripttion: 
+ * @version: 
+ * @Author: zyc
+ * @Date: 2020-07-14 09:23:40
+ * @LastEditors: zyc
+ * @LastEditTime: 2020-10-14 20:40:41
+--> 
+--> 
+<template>
+  <ih-page>
+    <template v-slot:form>
+      <el-form ref="form" label-width="100px">
+        <el-row>
+          <el-col :span="8">
+            <el-form-item label="事业部">
+              <el-select
+                v-model="queryPageParameters.departmentOrgId"
+                clearable
+                placeholder="事业部"
+                class="width--100"
+              >
+                <el-option
+                  v-for="item in divisionList"
+                  :key="item.value"
+                  :label="item.label"
+                  :value="item.value"
+                ></el-option>
+              </el-select>
+            </el-form-item>
+          </el-col>
+          <el-col :span="8">
+            <el-form-item label="发起日期">
+              <el-date-picker
+                style="width: 100%"
+                v-model="queryPageParameters.inputTime"
+                type="daterange"
+                align="left"
+                unlink-panels
+                range-separator="至"
+                start-placeholder="开始日期"
+                end-placeholder="结束日期"
+                :picker-options="$root.pickerOptions"
+                value-format="yyyy-MM-dd"
+                @change="inputTimeChange"
+              ></el-date-picker>
+            </el-form-item>
+          </el-col>
+          <el-col :span="8">
+            <el-form-item label="经办人">
+              <el-select
+                v-model="queryPageParameters.approvalUser"
+                clearable
+                placeholder="经办人"
+                class="width--100"
+              >
+                <el-option
+                  v-for="item in approvalUserList"
+                  :key="item.value"
+                  :label="item.label"
+                  :value="item.value"
+                ></el-option>
+              </el-select>
+            </el-form-item>
+          </el-col>
+          <el-col :span="8">
+            <el-form-item label="申请编号">
+              <el-input
+                v-model="queryPageParameters.approvalNo"
+                placeholder="申请编号"
+              ></el-input>
+            </el-form-item>
+          </el-col>
+          <el-col :span="8">
+            <el-form-item label="状态">
+              <el-select
+                v-model="queryPageParameters.status"
+                clearable
+                placeholder="状态"
+                class="width--100"
+              >
+                <el-option
+                  v-for="item in $root.dictAllList('ChannelApprovalStatus')"
+                  :key="item.code"
+                  :label="item.name"
+                  :value="item.code"
+                ></el-option>
+              </el-select>
+            </el-form-item>
+          </el-col>
+          <el-col :span="8">
+            <el-form-item label="OA发文文号">
+              <el-input
+                v-model="queryPageParameters.oaNo"
+                placeholder="OA发文文号"
+              ></el-input>
+            </el-form-item>
+          </el-col>
+        </el-row>
+      </el-form>
+    </template>
+
+    <template v-slot:btn>
+      <el-row>
+        <el-button type="primary" @click="getListMixin()">查询</el-button>
+        <el-button type="success" @click="add()">添加</el-button>
+        <el-button type="info" @click="reset()">重置</el-button>
+        <el-button type="default" @click="approvalUserChange()"
+          >变更经办人</el-button
+        >
+      </el-row>
+    </template>
+
+    <template v-slot:table>
+      <br />
+      <el-table
+        class="ih-table"
+        :data="resPageInfo.list"
+        @selection-change="handleSelectionChange"
+      >
+        <el-table-column type="selection" width="55"> </el-table-column>
+        <el-table-column type="index" label="序号" width="50"></el-table-column>
+        <el-table-column
+          prop="approvalNo"
+          label="申请编号"
+          width="180"
+        ></el-table-column>
+        <el-table-column
+          prop="departmentOrgId"
+          label="事业部"
+          width="180"
+        ></el-table-column>
+        <el-table-column
+          prop="inputTime"
+          label="发起日期"
+          width="180"
+        ></el-table-column>
+        <el-table-column
+          prop="approvalUser"
+          label="经办人"
+           
+        ></el-table-column>
+
+        <el-table-column label="状态" width="120">
+          <template slot-scope="scope">{{
+            $root.dictAllName(scope.row.status, "ChannelApprovalStatus").name
+          }}</template>
+        </el-table-column>
+        <el-table-column
+          prop="oaNo"
+          label="OA发文文号"
+          width="180"
+        ></el-table-column>
+
+        <el-table-column fixed="right" label="操作" width="120">
+          <template slot-scope="scope">
+            <el-link
+              style="color: #409eff"
+              class="margin-right-10"
+              type="primary"
+              @click.native.prevent="info(scope)"
+              >详情</el-link
+            >
+            <el-dropdown trigger="click" style="margin-left: 15px">
+              <span class="el-dropdown-link">
+                更多
+                <i class="el-icon-arrow-down el-icon--right"></i>
+              </span>
+              <el-dropdown-menu slot="dropdown">
+                <el-dropdown-item @click.native.prevent="edit(scope)"
+                  >编辑</el-dropdown-item
+                >
+                <el-dropdown-item @click.native.prevent="remove(scope)"
+                  >删除</el-dropdown-item
+                >
+                <el-dropdown-item @click.native.prevent="edit(scope)"
+                  >撤回重发</el-dropdown-item
+                >
+                <el-dropdown-item @click.native.prevent="edit(scope)"
+                  >下载供应商名录</el-dropdown-item
+                >
+              </el-dropdown-menu>
+            </el-dropdown>
+          </template>
+        </el-table-column>
+      </el-table>
+    </template>
+    <template v-slot:pagination>
+      <br />
+      <el-pagination
+        @size-change="handleSizeChangeMixin"
+        @current-change="handleCurrentChangeMixin"
+        :current-page.sync="queryPageParameters.pageNum"
+        :page-sizes="$root.pageSizes"
+        :page-size="queryPageParameters.pageSize"
+        :layout="$root.paginationLayout"
+        :total="resPageInfo.total"
+      ></el-pagination>
+    </template>
+    
+  </ih-page>
+</template>
+<script lang="ts">
+import { Component, Vue } from "vue-property-decorator";
+
+import { post_channelApproval_getList } from "../../../api/channel/index";
+
+import PaginationMixin from "../../../mixins/pagination";
+@Component({
+  components: {},
+  mixins: [PaginationMixin],
+})
+export default class InvitationCodeList extends Vue {
+  queryPageParameters: any = {
+    approvalNo: null,
+    approvalUser: null,
+    departmentOrgId: null,
+    inputTimeEnd: null,
+    inputTimeStart: null,
+    oaNo: null,
+    status: null,
+  };
+
+  divisionList: any = []; //事业部列表
+  approvalUserList: any = []; //经办人
+
+  resPageInfo: any = {
+    total: 0,
+    list: [],
+  };
+  dialogAdd = false;
+
+  async getListMixin() {
+    this.resPageInfo = await post_channelApproval_getList(
+      this.queryPageParameters
+    );
+  }
+
+  async created() {
+    this.getListMixin();
+  }
+  inputTimeChange(dateArray: any) {
+    this.queryPageParameters.inputTimeStart = dateArray[0];
+    this.queryPageParameters.inputTimeEnd = dateArray[1];
+  }
+  async remove(scope: any) {
+    console.log(scope);
+
+    try {
+      await this.$confirm("是否确定删除?", "提示");
+      //   const res = await get_channelInvitationCode_delete__invitationCode({
+      //     invitationCode: scope.row.invitationCode,
+      //   });
+      //   console.log(res);
+      this.resPageInfo.list.splice(scope.$index, 1);
+      this.$message({
+        type: "success",
+        message: "删除成功!",
+      });
+    } catch (error) {
+      console.log(error);
+    }
+  }
+  info(scope: any) {
+    console.log(scope);
+    this.$router.push({
+      path: "/invitationCode/info",
+      query: { id: scope.row.id },
+    });
+  }
+  reset() {
+    this.queryPageParameters = {
+      departmentOrgId: null,
+      expiresTime: null,
+      expiresTimeBegin: null,
+      expiresTimeEnd: null,
+      invitationCode: null,
+      invitationUserId: null,
+      status: "Valid",
+    };
+  }
+  finishAdd(data: any) {
+    console.log(data);
+    this.getListMixin();
+  }
+  async add() {
+    this.$router.push({
+      path: "/approval/add",
+    });
+  }
+  async edit(scope: any) {
+    this.$router.push({
+      path: "/approval/add",
+      query: { id: scope.row.id },
+    });
+  }
+
+  handleSelectionChange(val: any) {
+    console.log(val);
+  }
+  approvalUserChange() {
+    console.log("变更经办人");
+  }
+}
+</script>
+<style lang="scss" scoped>
+</style>

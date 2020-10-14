@@ -4,7 +4,7 @@
  * @Author: zyc
  * @Date: 2020-06-24 09:47:33
  * @LastEditors: zyc
- * @LastEditTime: 2020-10-14 10:05:18
+ * @LastEditTime: 2020-10-14 17:49:25
  */
 import { IRes } from "./users.d";
 // import request from '@/utils/http';
@@ -168,7 +168,7 @@ export function allMenu<T>() {
             parentId: 201,
             title: "渠道呈批列表",
             icon: "el-icon-setting",
-            path: "/web-sales/channels/channelAgroupOf",
+            path: "/web-sales/approval/list",
         },
         {
             id: 207,
