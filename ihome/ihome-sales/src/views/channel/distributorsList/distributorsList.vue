@@ -4,7 +4,7 @@
  * @Author: zyc
  * @Date: 2020-08-13 11:40:10
  * @LastEditors: ywl
- * @LastEditTime: 2020-10-13 20:32:44
+ * @LastEditTime: 2020-10-14 19:19:58
 -->
 <template>
   <ih-page>
@@ -113,7 +113,7 @@
           <el-col :span="8">
             <el-form-item label="状态">
               <el-select
-                v-model="queryPageParameters.state"
+                v-model="queryPageParameters.status"
                 clearable
                 placeholder="状态"
                 class="width--100"
@@ -168,15 +168,9 @@
         <el-button
           type="info"
           @click="empty()"
-        >清空</el-button>
-        <el-button
-          type="danger"
-          @click="ChangeFollower()"
-        >变更跟进人</el-button>
-        <el-button
-          type="danger"
-          @click="ChangeInputPerson()"
-        >变更录入人</el-button>
+        >重置</el-button>
+        <el-button @click="ChangeFollower()">变更跟进人</el-button>
+        <el-button @click="ChangeInputPerson()">变更录入人</el-button>
       </el-row>
     </template>
 
@@ -197,7 +191,7 @@
           fixed
           prop="name"
           label="名称"
-          min-width="200"
+          min-width="250"
         ></el-table-column>
         <el-table-column
           fixed
@@ -259,11 +253,11 @@
               </span>
               <el-dropdown-menu slot="dropdown">
                 <el-dropdown-item @click.native.prevent="handleChange(row)">修改</el-dropdown-item>
-                <el-dropdown-item @click.native.prevent="remove(scope)">删除</el-dropdown-item>
-                <el-dropdown-item @click.native.prevent="confirm(scope)">确认</el-dropdown-item>
-                <el-dropdown-item @click.native.prevent="confirm(scope)">撤回起草</el-dropdown-item>
-                <el-dropdown-item @click.native.prevent="changeinfo(scope)">变更信息</el-dropdown-item>
-                <el-dropdown-item @click.native.prevent="maintenance(scope)">维护渠道经纪人</el-dropdown-item>
+                <el-dropdown-item @click.native.prevent="handleRemove(row)">删除</el-dropdown-item>
+                <el-dropdown-item @click.native.prevent="handleToConfirm(row)">确认</el-dropdown-item>
+                <el-dropdown-item @click.native.prevent="handleToRevoke(row)">撤回起草</el-dropdown-item>
+                <el-dropdown-item @click.native.prevent="handleToChange(row)">变更信息</el-dropdown-item>
+                <el-dropdown-item @click.native.prevent="handleToMaintenance(row)">维护渠道经纪人</el-dropdown-item>
               </el-dropdown-menu>
             </el-dropdown>
           </template>
@@ -284,10 +278,14 @@
     </template>
   </ih-page>
 </template>
+
 <script lang="ts">
 import { Component, Vue } from "vue-property-decorator";
 // 引入api ---先调用本地
-import { post_channel_getList } from "../../../api/channel/index";
+import {
+  post_channel_getList,
+  post_channel_delete__id,
+} from "@/api/channel/index";
 
 import PaginationMixin from "../../../mixins/pagination";
 @Component({
@@ -306,11 +304,12 @@ export default class UserList extends Vue {
     status: "",
     followUserId: "",
   };
-
   resPageInfo: any = {
     total: 0,
     list: [],
   };
+  private provinceList: any = [];
+
   search() {
     console.log("查询");
     this.getListMixin();
@@ -346,31 +345,56 @@ export default class UserList extends Vue {
       query: { id: row.id },
     });
   }
-  remove(row: any) {
-    console.log("删除");
-    console.log(row.row.id);
+  /**
+   * @description: 删除当前 -- 只有草稿状态能删除
+   * @param {any} row
+   */
+  private async handleRemove(row: any) {
+    console.log(row.id);
+    await post_channel_delete__id({ id: row.id });
+    // 删除list最后一条数据 返回前一页面
+    if (this.resPageInfo.list.length === 1) {
+      this.queryPageParameters.pageNum === 1
+        ? (this.queryPageParameters.pageNum = 1)
+        : this.queryPageParameters.pageNum--;
+    }
+    this.getListMixin();
+    this.$message.success("删除成功");
   }
-  confirm(scope: any) {
-    console.log("确认");
+  /**
+   * @description: 跳转渠道商确认页面
+   * @param {any} row
+   */
+  handleToConfirm(row: any) {
     this.$router.push({
-      path: "distributorsList/confirm",
+      path: "confirm",
       query: {
-        id: scope.row.id,
+        id: row.id,
       },
     });
   }
-  changeinfo(scope: any) {
-    console.log("变更信息");
+  /**
+   * @description: 跳转渠道商撤回起草
+   * @param {any} row
+   */
+  handleToRevoke(row: any) {
     this.$router.push({
-      path: "distributorsList/changeInfo",
-      query: { id: scope.row.id },
+      path: "revoke",
+      query: {
+        id: row.id,
+      },
     });
   }
-  maintenance(scope: any) {
-    console.log("维护渠道经纪人");
+  handleToChange(row: any) {
     this.$router.push({
-      path: "distributorsList/MaintenanceOfChannels",
-      query: { id: scope.row.id },
+      path: "change",
+      query: { id: row.id },
+    });
+  }
+  handleToMaintenance(row: any) {
+    this.$router.push({
+      path: "agent",
+      query: { id: row.id },
     });
   }
   //获取数据

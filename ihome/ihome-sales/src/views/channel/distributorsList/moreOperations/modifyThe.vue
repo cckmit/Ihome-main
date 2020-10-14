@@ -4,7 +4,7 @@
  * @Author: lgf
  * @Date: 2020-09-16 14:05:21
  * @LastEditors: ywl
- * @LastEditTime: 2020-10-13 20:33:43
+ * @LastEditTime: 2020-10-14 19:52:31
 -->
 <template>
   <ih-page>
@@ -87,7 +87,15 @@
               label="成立日期"
               prop="setupTime"
             >
-              <el-input v-model="info.setupTime"></el-input>
+              <!-- <el-input v-model="info.setupTime"></el-input> -->
+              <el-date-picker
+                v-model="info.setupTime"
+                style="width: 100%"
+                type="date"
+                placeholder="选择日期"
+                value-format="yyyy-MM-dd"
+              >
+              </el-date-picker>
             </el-form-item>
           </el-col>
           <el-col :span="8">
@@ -302,6 +310,17 @@
       v-model="info.remark"
     >
     </el-input>
+
+    <template v-if="pageType === 'ChangeChannel'">
+      <p class="ih-info-title">变更原因</p>
+      <el-input
+        type="textarea"
+        :rows="3"
+        placeholder="请输入变更原因"
+        v-model="reason"
+      >
+      </el-input>
+    </template>
     <div>
       <br />
       <el-button
@@ -336,15 +355,17 @@ import { Form as ElForm } from "element-ui";
 import {
   get_channel_get__id,
   post_channel_add,
-} from "../../../../api/channel/index";
+  post_channel_edit,
+} from "@/api/channel/index";
 import BankDialog from "../dialog/bankDialog.vue";
-// import PaginationMixin from "../../../../mixins/pagination";
+
+Component.registerHooks(["beforeRouteEnter"]);
 @Component({
   components: {
     BankDialog,
   },
 })
-export default class Home extends Vue {
+export default class ModifyThe extends Vue {
   info: any = {
     name: "",
     creditCode: "",
@@ -365,6 +386,7 @@ export default class Home extends Vue {
     timeList: [],
     provinceList: [],
   };
+  reason = "";
   dialogFormVisible = false;
   Bankrule: any = {
     bank: "",
@@ -379,25 +401,7 @@ export default class Home extends Vue {
     identityCode: "",
     email: "",
   };
-  ruleForm: any = {
-    county: "",
-    city: "",
-    province: "",
-    businessTime: "",
-    capital: "",
-    setupTime: "",
-    id: "",
-    legalPerson: "",
-    type: "",
-    shortName: "",
-    creditCode: "",
-    name: "",
-    inputTimeStart: "",
-    inputTimeEnd: "",
-    address: "",
-    email: "",
-    bobile: "",
-  };
+  private pageType = "";
 
   private rules: any = {
     address: [{ required: true, message: "请输入住所", trigger: "blur" }],
@@ -444,11 +448,6 @@ export default class Home extends Vue {
     setupTime: [{ required: true, message: "请输入成立日期", trigger: "blur" }],
   };
 
-  employmentDateChange(dateArray: any) {
-    console.log(dateArray);
-    this.ruleForm.inputTimeStart = dateArray[0];
-    this.ruleForm.inputTimeEnd = dateArray[1];
-  }
   addAccount() {
     this.Bankrule = {
       bank: "",
@@ -458,7 +457,8 @@ export default class Home extends Vue {
     };
     this.dialogFormVisible = true;
   }
-  async handleSave() {
+
+  async handleSave(): Promise<void> {
     if (this.info.timeList.length) {
       this.info.businessTime = `${this.info.timeList[0]} - ${this.info.timeList[1]}`;
     }
@@ -479,16 +479,35 @@ export default class Home extends Vue {
     });
 
     Promise.all([ruleFrom, personForm]).then(async (value) => {
-      console.log(value);
       if (value[0] && value[1]) {
         this.info.channelPersons.push(this.channelPersons);
-        await post_channel_add({ ...this.info, operateType: 1 });
-        this.$message.success("渠道商添加成功");
+        console.log(this.pageType);
+        switch (this.pageType) {
+          case "AddChannel":
+            // 渠道商添加
+            await post_channel_add({ ...this.info, operateType: 1 });
+            this.$message.success("渠道商添加成功");
+            break;
+          case "EditChannel":
+            // 修改渠道商
+            await post_channel_edit({ ...this.info, operateType: 1 });
+            this.$message.success("修改渠道商成功");
+            break;
+          case "ChangeChannel":
+            // 渠道商提交变更
+            console.log("渠道商提交变更");
+            if (!this.reason) {
+              this.$message.error("变更原因不能为空");
+              return;
+            }
+            break;
+        }
       } else {
         // 表单还有没填写
       }
     });
   }
+
   submit() {
     console.log("提交");
   }
@@ -504,7 +523,7 @@ export default class Home extends Vue {
         break;
       case "new-edit":
         this.$set(this.info.channelBanks, value.index, value);
-        console.log(this.info.channelBanks);
+        // console.log(this.info.channelBanks);
         break;
     }
     this.dialogFormVisible = false;
@@ -512,9 +531,12 @@ export default class Home extends Vue {
   async getInfo() {
     let id = this.$route.query.id;
     if (id) {
-      this.ruleForm = await get_channel_get__id({ id: id });
+      let res: any = await get_channel_get__id({ id: id });
+      res.timeList = res.businessTime.split(" - ");
+      res.provinceList = ["120000000000", "120100000000", "120101000000"];
+      this.info = res;
+      this.channelPersons = this.info.channelPersons[0];
       console.log(this.info);
-      this.ruleForm = {};
     }
   }
   /**
@@ -540,6 +562,12 @@ export default class Home extends Vue {
 
   async created() {
     this.getInfo();
+  }
+  beforeRouteEnter(to: any, from: any, next: any) {
+    console.log(to, "asdasd");
+    next((vm: any) => {
+      vm.pageType = to.name;
+    });
   }
 }
 </script>
