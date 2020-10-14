@@ -3,8 +3,8 @@
  * @version: 
  * @Author: zyc
  * @Date: 2020-06-09 16:38:00
- * @LastEditors: zyc
- * @LastEditTime: 2020-10-13 11:50:43
+ * @LastEditors: wwq
+ * @LastEditTime: 2020-10-14 09:05:36
  */
 export interface ToolInterface {
     /**深度拷贝
@@ -66,7 +66,7 @@ export class Tool implements ToolInterface {
             return url;
         } else {
             //文件路径
-            let url = `/sales-document-cover/file​/browse​/{${fid}}`;
+            let url = `/sales-document-cover/file/browse/{${fid}}`;
             return url;
         }
     }

@@ -1,10 +1,10 @@
 /*
- * @Descripttion: 
+ * @Description: 
  * @version: 
  * @Author: zyc
  * @Date: 2020-06-22 11:11:41
  * @LastEditors: ywl
- * @LastEditTime: 2020-10-14 08:53:24
+ * @LastEditTime: 2020-10-14 20:32:54
  */
 const path = require('path');
 const { name } = require('./package');

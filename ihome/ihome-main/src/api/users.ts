@@ -3,8 +3,8 @@
  * @version: 
  * @Author: zyc
  * @Date: 2020-06-24 09:47:33
- * @LastEditors: ywl
- * @LastEditTime: 2020-10-13 20:41:20
+ * @LastEditors: wwq
+ * @LastEditTime: 2020-10-14 19:13:34
  */
 import { IRes } from "./users.d";
 // import request from '@/utils/http';
@@ -133,7 +133,7 @@ export function allMenu<T>() {
             parentId: 201,
             title: "渠道邀请码列表",
             icon: "el-icon-setting",
-            path: "/web-sales/channels/channelInviteCode",
+            path: "/web-sales/invitationCode/list",
         },
         {
             id: 209,
@@ -147,7 +147,7 @@ export function allMenu<T>() {
             parentId: 201,
             title: "渠道评级标准列表",
             icon: null,
-            path: "/web-sales/channels/channelRatings",
+            path: "/web-sales/gradeStandard/list",
         },
         {
             id: 203,

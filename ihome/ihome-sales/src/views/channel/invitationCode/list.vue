@@ -4,7 +4,7 @@
  * @Author: zyc
  * @Date: 2020-07-14 09:23:40
  * @LastEditors: zyc
- * @LastEditTime: 2020-10-13 20:52:59
+ * @LastEditTime: 2020-10-14 10:00:35
 --> 
 --> 
 <template>
@@ -74,7 +74,7 @@
           <el-col :span="8">
             <el-form-item label="状态">
               <el-select
-                v-model="queryPageParameters.state"
+                v-model="queryPageParameters.status"
                 clearable
                 placeholder="状态"
                 class="width--100"
@@ -103,7 +103,12 @@
 
     <template v-slot:table>
       <br />
-      <el-table class="ih-table" :data="resPageInfo.list">
+      <el-table
+        class="ih-table"
+        :data="resPageInfo.list"
+        @selection-change="handleSelectionChange"
+      >
+        <el-table-column type="selection" width="55"> </el-table-column>
         <el-table-column type="index" label="序号" width="50"></el-table-column>
         <el-table-column
           prop="invitationCode"
@@ -178,6 +183,7 @@ import { Component, Vue } from "vue-property-decorator";
 import {
   post_channelInvitationCode_getList,
   get_channelInvitationCode_delete__invitationCode,
+  post_channelInvitationCode_cancel,
 } from "../../../api/channel/index";
 import InvitationCodeAdd from "./add.vue";
 import PaginationMixin from "../../../mixins/pagination";
@@ -193,8 +199,9 @@ export default class InvitationCodeList extends Vue {
     expiresTimeEnd: null,
     invitationCode: null,
     invitationUserId: null,
-    status: "Valid",
+    status: null,
   };
+  toVoidList: any = [];
   createUserList: any = []; //创建人列表
   divisionList: any = []; //事业部列表
 
@@ -260,8 +267,30 @@ export default class InvitationCodeList extends Vue {
   async add() {
     this.dialogAdd = true;
   }
-  async toVoid(){
-    console.log('作废，未实现')
+  async toVoid() {
+    console.log("作废，未实现");
+    console.log(this.toVoid);
+    let postData = this.toVoidList.map((item: any) => {
+      return item.id;
+    });
+    console.log(postData);
+
+    if (postData && postData.length > 0) {
+      try {
+        await this.$confirm("是否确定作废?", "提示");
+        await post_channelInvitationCode_cancel(postData);
+        this.$message.success("操作成功");
+        this.getListMixin();
+      } catch (error) {
+        console.log(error);
+      }
+    } else {
+      this.$message.warning("请先在勾选需要作废的数据");
+    }
+  }
+  handleSelectionChange(val: any) {
+    console.log(val);
+    this.toVoidList = val;
   }
 }
 </script>
