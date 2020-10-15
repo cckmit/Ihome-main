@@ -1,6 +1,6 @@
 /* eslint-disable */
 /* 此脚本由swagger-ui的api-docs自动生成，请勿修改 */
-//2020-10-14 8:39:26 ├F10: PM┤
+//2020-10-15 16:46:43
 import { request } from '@/api/base'
 const basePath = "/channel-local"
 /**添加渠道*/
@@ -73,11 +73,15 @@ return await request.post< PageModel<ChannelAgentVO>,PageModel<ChannelAgentVO>> 
 }
 /**新增渠道呈批*/
 export async function post_channelApproval_add (d?: any) {
-return await request.post< string,string> (basePath+'/channelApproval/add', d)
+return await request.post< number,number> (basePath+'/channelApproval/add', d)
 }
 /**删除渠道呈批信息*/
 export async function post_channelApproval_delete__id (d?: any) {
 return await request.post< number,number> (basePath+'/channelApproval/delete/{id}', d)
+}
+/**修改渠道呈批*/
+export async function post_channelApproval_edit (d?: any) {
+return await request.post< number,number> (basePath+'/channelApproval/edit', d)
 }
 /**查询渠道呈批详情*/
 export async function get_channelApproval_get__id (d?: any) {
@@ -86,6 +90,10 @@ return await request.get<ChannelApprovalVO,ChannelApprovalVO>(basePath+'/channel
 /**查询渠道呈批列表*/
 export async function post_channelApproval_getList (d?: any) {
 return await request.post< PageModel<ChannelApprovalVO>,PageModel<ChannelApprovalVO>> (basePath+'/channelApproval/getList', d)
+}
+/**变更经办人*/
+export async function post_channelApproval_modifyApprovalUser (d?: any) {
+return await request.post< string,string> (basePath+'/channelApproval/modifyApprovalUser', d)
 }
 /**查询渠道呈批OA处理列表*/
 export async function get_channelApprovalOaRecord_getAll__approvalId (d?: any) {
@@ -140,8 +148,8 @@ export async function post_channelChange_add (d?: any) {
 return await request.post< string,string> (basePath+'/channelChange/add', d)
 }
 /**渠道变更审核操作*/
-export async function get_channelChange_approveRecord (d?: any) {
-return await request.get<string,string>(basePath+'/channelChange/approveRecord', { params: d })
+export async function post_channelChange_approveRecord (d?: any) {
+return await request.post< string,string> (basePath+'/channelChange/approveRecord', d)
 }
 /**删除渠道变更信息*/
 export async function post_channelChange_delete__id (d?: any) {
@@ -155,11 +163,11 @@ return await request.get<ChannelChangeDetail,ChannelChangeDetail>(basePath+'/cha
 export async function post_channelChange_getList (d?: any) {
 return await request.post< PageModel<ChannelChangeVO>,PageModel<ChannelChangeVO>> (basePath+'/channelChange/getList', d)
 }
-/**渠道变更信息变更跟进人*/
+/**渠道信息变更跟进人*/
 export async function post_channelChange_modifyFollowUser (d?: any) {
 return await request.post< string,string> (basePath+'/channelChange/modifyFollowUser', d)
 }
-/**渠道变更信息变更录入人*/
+/**渠道等级信息变更录入人*/
 export async function post_channelChange_modifyInputUser (d?: any) {
 return await request.post< string,string> (basePath+'/channelChange/modifyInputUser', d)
 }
@@ -173,7 +181,7 @@ return await request.post< number,number> (basePath+'/channelCityLevel/updateLev
 }
 /**添加渠道等级信息*/
 export async function post_channelGrade_add (d?: any) {
-return await request.post< string,string> (basePath+'/channelGrade/add', d)
+return await request.post< number,number> (basePath+'/channelGrade/add', d)
 }
 /**渠道等级审核操作*/
 export async function post_channelGrade_approveRecord (d?: any) {
@@ -182,6 +190,10 @@ return await request.post< string,string> (basePath+'/channelGrade/approveRecord
 /**删除等级信息*/
 export async function post_channelGrade_delete__id (d?: any) {
 return await request.post< number,number> (basePath+'/channelGrade/delete/{id}', d)
+}
+/**修改渠道等级信息*/
+export async function post_channelGrade_edit (d?: any) {
+return await request.post< number,number> (basePath+'/channelGrade/edit', d)
 }
 /**查询渠道等级详情*/
 export async function get_channelGrade_get__id (d?: any) {
@@ -200,8 +212,8 @@ export async function post_channelGradeChange_add (d?: any) {
 return await request.post< string,string> (basePath+'/channelGradeChange/add', d)
 }
 /**渠道等级变更审核操作*/
-export async function get_channelGradeChange_approveRecord (d?: any) {
-return await request.get<string,string>(basePath+'/channelGradeChange/approveRecord', { params: d })
+export async function post_channelGradeChange_approveRecord (d?: any) {
+return await request.post< string,string> (basePath+'/channelGradeChange/approveRecord', d)
 }
 /**删除渠道等级变更信息*/
 export async function post_channelGradeChange_delete__id (d?: any) {
@@ -477,6 +489,10 @@ channelApprovalAttachments: ChannelApprovalAttachmentBaseVO[];
 channelApprovalGrades: ChannelApprovalGradeBaseVO[];
 /**事业部*/
 departmentOrgId: number;
+/**ID*/
+id: number;
+/**1保存2提交*/
+operateType: number;
 }
 /**ChannelApprovalGrade*/
 export interface ChannelApprovalGrade {
@@ -501,6 +517,59 @@ updateUser: number;
 export interface ChannelApprovalGradeBaseVO {
 /**渠道等级ID*/
 gradeId: number;
+}
+/**ChannelApprovalModifyVO*/
+export interface ChannelApprovalModifyVO {
+/**营业住所*/
+address: string;
+/**营业期限*/
+businessTime: string;
+/**注册资本*/
+capital: string;
+/**渠道所在城市*/
+city: string;
+/**渠道所在行政区*/
+county: string;
+/**创建时间(yyyy-MM-dd HH:mm:ss)*/
+createTime: string;
+/**创建用户*/
+createUser: number;
+/**统一社会信用代码*/
+creditCode: string;
+/**已删除*/
+deleted: number;
+/**跟进人*/
+followUserId: number;
+/**ID*/
+id: number;
+/**渠道id数组*/
+ids: number[];
+/**录入人*/
+inputUser: number;
+/**法人身份证号码*/
+legalIdentityCode: string;
+/**法人代表*/
+legalPerson: string;
+/**公司名称*/
+name: string;
+/**渠道所在省份*/
+province: string;
+/**企业概况*/
+remark: string;
+/**成立日期(yyyy-MM-dd)*/
+setupTime: string;
+/**简称*/
+shortName: string;
+/**状态(DRAFT-草稿、ToBeConfirmed-待确认、PTWYSH-待平台文员审核、FGSYGSH-待分公司业管审核、ZBYGSH-待总部业管审核、Audited-已审核、Changing-变更中)*/
+status: string;
+/**公司类型(limitedLiabilityCompany-有限责任公司（自然人投资或控股）)*/
+type: string;
+/**更新时间(yyyy-MM-dd HH:mm:ss)*/
+updateTime: string;
+/**更新用户*/
+updateUser: number;
+/**undefined*/
+userId: number;
 }
 /**ChannelApprovalOaRecord*/
 export interface ChannelApprovalOaRecord {
@@ -837,6 +906,8 @@ address: string;
 businessTime: string;
 /**注册资本*/
 capital: string;
+/**变更原因*/
+changeReason: string;
 /**附件信息*/
 channelAttachmentChanges: ChannelAttachmentChange[];
 /**渠道银行账号信息*/
@@ -857,6 +928,8 @@ legalIdentityCode: string;
 legalPerson: string;
 /**公司名称*/
 name: string;
+/**原渠道ID*/
+oldChannelId: number;
 /**1保存2提交*/
 operateType: number;
 /**渠道所在省份*/
@@ -880,6 +953,8 @@ businessTime: string;
 capital: string;
 /**变更原因*/
 changeReason: string;
+/**变更时间*/
+changeTime: string;
 /**附件信息*/
 channelAttachmentChanges: ChannelAttachmentChange[];
 /**银行账户信息*/
@@ -929,6 +1004,59 @@ updateTime: string;
 /**更新用户*/
 updateUser: number;
 }
+/**ChannelChangeModifyVO*/
+export interface ChannelChangeModifyVO {
+/**营业住所*/
+address: string;
+/**营业期限*/
+businessTime: string;
+/**注册资本*/
+capital: string;
+/**渠道id数组*/
+channelIds: number[];
+/**渠道所在城市*/
+city: string;
+/**渠道所在行政区*/
+county: string;
+/**创建时间(yyyy-MM-dd HH:mm:ss)*/
+createTime: string;
+/**创建用户*/
+createUser: number;
+/**统一社会信用代码*/
+creditCode: string;
+/**已删除*/
+deleted: number;
+/**跟进人*/
+followUserId: number;
+/**ID*/
+id: number;
+/**录入人*/
+inputUser: number;
+/**法人身份证号码*/
+legalIdentityCode: string;
+/**法人代表*/
+legalPerson: string;
+/**公司名称*/
+name: string;
+/**渠道所在省份*/
+province: string;
+/**企业概况*/
+remark: string;
+/**成立日期(yyyy-MM-dd)*/
+setupTime: string;
+/**简称*/
+shortName: string;
+/**状态(DRAFT-草稿、ToBeConfirmed-待确认、PTWYSH-待平台文员审核、FGSYGSH-待分公司业管审核、ZBYGSH-待总部业管审核、Audited-已审核、Changing-变更中)*/
+status: string;
+/**公司类型(limitedLiabilityCompany-有限责任公司（自然人投资或控股）)*/
+type: string;
+/**更新时间(yyyy-MM-dd HH:mm:ss)*/
+updateTime: string;
+/**更新用户*/
+updateUser: number;
+/**undefined*/
+userId: number;
+}
 /**ChannelChangeQueryVO*/
 export interface ChannelChangeQueryVO {
 /**城市*/
@@ -939,6 +1067,8 @@ county: string;
 creditCode: string;
 /**跟进人*/
 followUserId: number;
+/**录入人*/
+inputUser: number;
 /**名称*/
 name: string;
 /**(必填)当前页*/
@@ -962,6 +1092,8 @@ businessTime: string;
 capital: string;
 /**变更原因*/
 changeReason: string;
+/**变更时间*/
+changeTime: string;
 /**渠道所在城市*/
 city: string;
 /**渠道所在行政区*/
@@ -1190,6 +1322,8 @@ city: string;
 cityGrade: string;
 /**事业部*/
 departmentOrgId: number;
+/**ID*/
+id: number;
 /**1保存2提交*/
 operateType: number;
 /**业务开展省份*/
@@ -1201,6 +1335,8 @@ storageNum: string;
 }
 /**ChannelGradeChangeBaseVO*/
 export interface ChannelGradeChangeBaseVO {
+/**变更原因*/
+changeReason: string;
 /**渠道等级*/
 channelGrade: string;
 /**附件信息*/
@@ -1228,6 +1364,8 @@ storageNum: string;
 }
 /**ChannelGradeChangeQueryVO*/
 export interface ChannelGradeChangeQueryVO {
+/**变更原因*/
+changeReason: string;
 /**渠道等级(BigPlatform-大平台、LargeIntermediary-大型中介、FirstPlatform-一级平台、MediumIntermediary-中型中介、SecondPlatform-二级平台、SmallIntermediary-小型中介)*/
 channelGrade: string;
 /**渠道ID*/
@@ -1255,13 +1393,17 @@ storageNum: string;
 }
 /**ChannelGradeChangeVO*/
 export interface ChannelGradeChangeVO {
-/**渠道等级*/
+/**变更原因*/
+changeReason: string;
+/**变更时间*/
+changeTime: string;
+/**统一社会信用代码*/
 channelGrade: string;
 /**附件信息*/
 channelGradeAttachmentChanges: ChannelGradeAttachmentChange[];
 /**渠道评级标准信息*/
 channelGradeItemChanges: ChannelGradeItemChange[];
-/**渠道ID*/
+/**公司名称*/
 channelId: number;
 /**渠道商名称*/
 channelName: string;
@@ -1283,10 +1425,12 @@ departmentOrgId: number;
 id: number;
 /**录入人*/
 inputUser: number;
-/**业务开展省份*/
+/**原渠道等级ID*/
+oldGradeId: number;
+/**营业住所*/
 province: string;
-/**是否特批入库(Yes-是、No-否)*/
-special: string;
+/**是否特批入库*/
+special: number;
 /**状态(DRAFT-草稿、PTWYSH-待平台文员审核、FGSYGSH-待分公司业管审核、ZBYGSH-待总部业管审核、PASS-已审核、SubmittedForApproval-已发起呈批、Approved-已审批、Withdrawn-已撤回)*/
 status: string;
 /**入库编号*/
@@ -1332,6 +1476,35 @@ id: number;
 /**文件ID*/
 inputValue: string;
 /**类型*/
+standardId: number;
+/**更新时间(yyyy-MM-dd HH:mm:ss)*/
+updateTime: string;
+/**更新用户*/
+updateUser: number;
+}
+/**ChannelGradeItemVO*/
+export interface ChannelGradeItemVO {
+/**渠道等级(BigPlatform-大平台、LargeIntermediary-大型中介、FirstPlatform-一级平台、MediumIntermediary-中型中介、SecondPlatform-二级平台、SmallIntermediary-小型中介)*/
+channelGrade: string;
+/**城市等级(OneTierCity-一线城市、SecondTierCity-二线城市、ThirdTierCity-三线城市)*/
+cityGrade: string;
+/**创建时间(yyyy-MM-dd HH:mm:ss)*/
+createTime: string;
+/**创建用户*/
+createUser: number;
+/**已删除*/
+deleted: number;
+/**渠道ID*/
+gradeId: number;
+/**评级项*/
+gradeItem: string;
+/**评级标准*/
+gradeStandard: string;
+/**ID*/
+id: number;
+/**录入信息*/
+inputValue: string;
+/**评级标准id*/
 standardId: number;
 /**更新时间(yyyy-MM-dd HH:mm:ss)*/
 updateTime: string;
@@ -1496,7 +1669,7 @@ channelGrade: string;
 /**附件信息*/
 channelGradeAttachments: ChannelGradeAttachment[];
 /**渠道评级标准信息*/
-channelGradeItems: ChannelGradeItem[];
+channelGradeItems: ChannelGradeItemVO[];
 /**渠道ID*/
 channelId: number;
 /**渠道商名称*/
