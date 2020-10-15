@@ -3,8 +3,8 @@
  * @version: 
  * @Author: zyc
  * @Date: 2020-06-22 11:10:43
- * @LastEditors: ywl
- * @LastEditTime: 2020-10-13 14:59:14
+ * @LastEditors: zyc
+ * @LastEditTime: 2020-10-15 09:08:11
 --> 
 
 <template>
@@ -37,7 +37,11 @@ export default class Home extends Vue {
     let list = (this.$root as any).dictAllList("AccountEnum"); //获取字典列表：参数是类别的key
     let item = (this.$root as any).dictAllName("Base", "AccountEnum"); //获取某个字典下根据code获取该数据项：第一个参数是code，第二个参数是类别的key
 
+    let areaName = (this.$root as any).getAreaName("440000000000"); //根据行政区code获取name
+    let area = (this.$root as any).getArea("440000000000"); //根据行政区code获取该项数据
+
     console.log("后端给全部字典数据的用法列子看这里", list, item);
+    console.log("省市区获取名称看这里", areaName, area);
   }
   handleNodeClick(data: any) {
     console.log(data);
