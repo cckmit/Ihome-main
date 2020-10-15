@@ -4,7 +4,7 @@
  * @Author: lgf
  * @Date: 2020-09-16 14:05:21
  * @LastEditors: ywl
- * @LastEditTime: 2020-10-14 20:45:28
+ * @LastEditTime: 2020-10-15 10:40:58
 -->
 <template>
   <div class="text-left">
@@ -210,6 +210,9 @@ export default class Home extends Vue {
       id: this.$route.query.id,
     });
     this.$message.success("成功");
+    this.$router.push({
+      path: "list",
+    });
   }
 
   async created() {

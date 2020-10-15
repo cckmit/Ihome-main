@@ -4,7 +4,7 @@
  * @Author: zyc
  * @Date: 2020-08-13 11:40:10
  * @LastEditors: ywl
- * @LastEditTime: 2020-10-15 09:08:44
+ * @LastEditTime: 2020-10-15 09:28:03
 -->
 <template>
   <ih-page>
@@ -203,17 +203,29 @@
           prop="province"
           label="省份"
           width="200"
-        ></el-table-column>
+        >
+          <template v-slot="{ row }">
+            {{ $root.getAreaName(row.province) }}
+          </template>
+        </el-table-column>
         <el-table-column
           prop="city"
           label="城市"
           width="200"
-        ></el-table-column>
+        >
+          <template v-slot="{ row }">
+            {{ $root.getAreaName(row.city) }}
+          </template>
+        </el-table-column>
         <el-table-column
           prop="county"
           label="行政区"
           width="200"
-        ></el-table-column>
+        >
+          <template v-slot="{ row }">
+            {{ $root.getAreaName(row.county) }}
+          </template>
+        </el-table-column>
         <el-table-column
           prop="inputUser"
           label="录入人"
@@ -292,7 +304,7 @@ import PaginationMixin from "../../../mixins/pagination";
   components: {},
   mixins: [PaginationMixin],
 })
-export default class UserList extends Vue {
+export default class List extends Vue {
   queryPageParameters: any = {
     name: "",
     creditCode: "",
