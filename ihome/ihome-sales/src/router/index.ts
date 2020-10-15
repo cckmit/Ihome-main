@@ -4,7 +4,7 @@
  * @Author: zyc
  * @Date: 2020-06-22 11:10:43
  * @LastEditors: ywl
- * @LastEditTime: 2020-10-15 09:00:47
+ * @LastEditTime: 2020-10-15 16:09:48
  */
 import Vue from 'vue'
 import VueRouter, { RouteConfig, Route } from 'vue-router'
@@ -82,6 +82,50 @@ const routes: Array<RouteConfig> = [
         name: 'MaintenanceOfChannels',
         component: () => import('../views/channel/distributorsList/agent.vue'),
         meta: { title: '维护渠道经纪人', icon: 'form' }
+      },
+    ]
+  },
+  {
+    path: '/channelsChange',
+    meta: { title: '渠道基础信息变更管理', icon: 'form' },
+    redirect: '/channelsChange/list',
+    component: Layout,
+    children: [
+      {
+        path: 'list',
+        name: 'ChannelsChangeList',
+        component: () => import('../views/channel/channelChange/list.vue'),
+        meta: { title: '渠道基础信息变更列表', icon: 'form' }
+      },
+      {
+        path: 'info',
+        name: 'ChannelChangeInfo',
+        component: () => import('../views/channel/channelChange/info.vue'),
+        meta: { title: '渠道基础信息变更详情', icon: 'form' }
+      },
+      {
+        path: 'edit',
+        name: 'ChannelChangeEdit',
+        component: () => import('../views/channel/distributorsList/modifyThe.vue'),
+        meta: { title: '修改渠道商变更信息', icon: 'form' }
+      },
+      {
+        path: 'confirm',
+        name: 'ChannelChangeConfirm',
+        component: () => import('../views/channel/channelChange/info.vue'),
+        meta: { title: '渠道基础信息变更确认', icon: 'form' }
+      },
+      {
+        path: 'examine',
+        name: 'ChannelChangeExamine',
+        component: () => import('../views/channel/channelChange/info.vue'),
+        meta: { title: '渠道基础信息变更审核', icon: 'form' }
+      },
+      {
+        path: 'revoke',
+        name: 'ChannelChangeRevoke',
+        component: () => import('../views/channel/channelChange/info.vue'),
+        meta: { title: '渠道基础信息变更撤回', icon: 'form' }
       },
     ]
   },
@@ -163,15 +207,6 @@ const routes: Array<RouteConfig> = [
         meta: { title: '详情', icon: 'form' }
       },
       // 渠道呈批列表 --- end
-
-      // 渠道基础信息变更列表 --- start
-      {
-        path: 'channelBasicInfoChange',
-        name: 'ChannelBasicInfoChange',
-        component: () => import('../views/channel/channelBasicInfoChange/channelBasicInfoChange.vue'),
-        meta: { title: '渠道基础信息变更列表', icon: 'form' }
-      },
-      // 渠道基础信息变更列表 --- end
 
       // 渠道等级信息变更列表 --- start
       {

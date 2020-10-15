@@ -4,7 +4,7 @@
  * @Author: zyc
  * @Date: 2020-07-08 14:22:25
  * @LastEditors: ywl
- * @LastEditTime: 2020-10-15 14:21:56
+ * @LastEditTime: 2020-10-15 14:50:59
 --> 
 <template>
   <ih-page>
@@ -43,15 +43,10 @@ Component.registerHooks(["beforeRouteEnter"]);
   components: { DetailsInfo, ChannelLog },
 })
 export default class ChannelInfo extends Vue {
-  tabActive: any = null;
+  tabActive = "1";
   typeStr = "";
 
-  async created() {
-    // console.log(this.$route.query.id, this.$route.query.tab);
-    this.tabActive = this.$route.query.tab || "1";
-  }
   private beforeRouteEnter(to: any, from: any, next: any) {
-    console.log(to, "asdasd");
     next((vm: any) => {
       vm.typeStr = to.name;
     });

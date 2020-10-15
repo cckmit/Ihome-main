@@ -4,7 +4,7 @@
  * @Author: ywl
  * @Date: 2020-09-16 14:05:21
  * @LastEditors: ywl
- * @LastEditTime: 2020-10-15 10:38:30
+ * @LastEditTime: 2020-10-15 15:15:36
 -->
 <template>
   <IhPage>
@@ -507,6 +507,8 @@ export default class ModifyThe extends Vue {
               oldChannelId: this.$route.query.id,
             });
             this.$message.success("渠道商变更提交成功");
+            break;
+          case "ChannelChangeEdit":
             break;
         }
         this.$router.push({
