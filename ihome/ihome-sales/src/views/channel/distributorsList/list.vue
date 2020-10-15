@@ -4,7 +4,7 @@
  * @Author: zyc
  * @Date: 2020-08-13 11:40:10
  * @LastEditors: ywl
- * @LastEditTime: 2020-10-14 19:19:58
+ * @LastEditTime: 2020-10-15 09:08:44
 -->
 <template>
   <ih-page>
@@ -331,7 +331,7 @@ export default class UserList extends Vue {
    */
   private handleToInfo(row: any): void {
     this.$router.push({
-      path: "/channelsTest/info",
+      path: "info",
       query: { id: row.id },
     });
   }
@@ -350,7 +350,6 @@ export default class UserList extends Vue {
    * @param {any} row
    */
   private async handleRemove(row: any) {
-    console.log(row.id);
     await post_channel_delete__id({ id: row.id });
     // 删除list最后一条数据 返回前一页面
     if (this.resPageInfo.list.length === 1) {
@@ -380,9 +379,7 @@ export default class UserList extends Vue {
   handleToRevoke(row: any) {
     this.$router.push({
       path: "revoke",
-      query: {
-        id: row.id,
-      },
+      query: { id: row.id },
     });
   }
   handleToChange(row: any) {
@@ -410,13 +407,3 @@ export default class UserList extends Vue {
   }
 }
 </script>
-<style lang="scss" scoped>
-.el-breadcrumb {
-  margin-bottom: 20px;
-}
-.line {
-  border-left: solid;
-  color: #4cccec;
-  padding-left: 7px;
-}
-</style>
