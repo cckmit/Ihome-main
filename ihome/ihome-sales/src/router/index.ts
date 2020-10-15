@@ -3,8 +3,8 @@
  * @version: 
  * @Author: zyc
  * @Date: 2020-06-22 11:10:43
- * @LastEditors: zyc
- * @LastEditTime: 2020-10-14 20:44:39
+ * @LastEditors: ywl
+ * @LastEditTime: 2020-10-15 09:00:47
  */
 import Vue from 'vue'
 import VueRouter, { RouteConfig, Route } from 'vue-router'
@@ -30,15 +30,15 @@ const routes: Array<RouteConfig> = [
   },
   // 渠道商路由
   {
-    path: '/channelsTest',
+    path: '/channels',
     meta: { title: '渠道商管理', icon: 'form' },
-    redirect: '/channelsTest/list',
+    redirect: '/channels/list',
     component: Layout,
     children: [
       {
         path: 'list',
         name: 'DistributorsList',
-        component: () => import('../views/channel/distributorsList/distributorsList.vue'),
+        component: () => import('../views/channel/distributorsList/list.vue'),
         meta: { title: '渠道商列表', icon: 'form' }
       },
       {
@@ -50,13 +50,13 @@ const routes: Array<RouteConfig> = [
       {
         path: 'add',
         name: 'AddChannel',
-        component: () => import('../views/channel/distributorsList/moreOperations/modifyThe.vue'),
+        component: () => import('../views/channel/distributorsList/modifyThe.vue'),
         meta: { title: '渠道商录入页', icon: 'form' }
       },
       {
         path: 'edit',
         name: 'EditChannel',
-        component: () => import('../views/channel/distributorsList/moreOperations/modifyThe.vue'),
+        component: () => import('../views/channel/distributorsList/modifyThe.vue'),
         meta: { title: '渠道商修改页', icon: 'form' }
       },
       {
@@ -74,13 +74,13 @@ const routes: Array<RouteConfig> = [
       {
         path: 'change',
         name: 'ChangeChannel',
-        component: () => import('../views/channel/distributorsList/moreOperations/modifyThe.vue'),
+        component: () => import('../views/channel/distributorsList/modifyThe.vue'),
         meta: { title: '渠道商变更信息', icon: 'form' }
       },
       {
         path: 'agent',
         name: 'MaintenanceOfChannels',
-        component: () => import('../views/channel/distributorsList/moreOperations/agent.vue'),
+        component: () => import('../views/channel/distributorsList/agent.vue'),
         meta: { title: '维护渠道经纪人', icon: 'form' }
       },
     ]
@@ -117,51 +117,11 @@ const routes: Array<RouteConfig> = [
     ]
   },
   {
-    path: '/channels',
+    path: '/xx',
     meta: { title: '用户', icon: 'form' },
-    redirect: '/channels/distributorsList',
+    redirect: '/xx/distributorsList',
     component: Layout,
     children: [
-
-      // 渠道商 --- start
-      {
-        path: 'distributorsList',
-        name: 'DistributorsList',
-        component: () => import('../views/channel/distributorsList/distributorsList.vue'),
-        meta: { title: '渠道商列表', icon: 'form' }
-      },
-      {
-        path: 'distributorsList/info',
-        name: 'DistributorsListInfo',
-        component: () => import('../views/channel/distributorsList/info.vue'),
-        meta: { title: '渠道商详情', icon: 'form' }
-      },
-      {
-        path: 'distributorsList/ModifyThe',
-        name: 'ModifyThe',
-        component: () => import('../views/channel/distributorsList/moreOperations/modifyThe.vue'),
-        meta: { title: '渠道商录入修改页', icon: 'form' }
-      },
-      {
-        path: 'distributorsList/confirm',
-        name: 'confirm',
-        component: () => import('../views/channel/distributorsList/moreOperations/confirm.vue'),
-        meta: { title: '渠道商确认', icon: 'form' }
-      },
-      {
-        path: 'distributorsList/changeInfo',
-        name: 'changeInfo',
-        component: () => import('../views/channel/distributorsList/moreOperations/changeInfo.vue'),
-        meta: { title: '渠道商变更信息', icon: 'form' }
-      },
-      {
-        path: 'distributorsList/MaintenanceOfChannels',
-        name: 'MaintenanceOfChannels',
-        component: () => import('../views/channel/distributorsList/moreOperations/agent.vue'),
-        meta: { title: '维护渠道经纪人', icon: 'form' }
-      },
-      // 渠道商 --- end
-
       // 渠道等级信息列表 --- start
       {
         path: 'channelLevel',

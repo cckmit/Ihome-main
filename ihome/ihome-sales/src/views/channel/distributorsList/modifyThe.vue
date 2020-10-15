@@ -1,13 +1,13 @@
 <!--
- * @Descripttion: 
+ * @Description: 
  * @version: 
- * @Author: lgf
+ * @Author: ywl
  * @Date: 2020-09-16 14:05:21
  * @LastEditors: ywl
- * @LastEditTime: 2020-10-14 19:52:31
+ * @LastEditTime: 2020-10-15 08:58:30
 -->
 <template>
-  <ih-page>
+  <IhPage>
     <template v-slot:form>
       <p class="ih-info-title">基础信息</p>
       <el-form
@@ -345,7 +345,7 @@
         @finish="handlePushBank"
       />
     </IhDialog>
-  </ih-page>
+  </IhPage>
 </template>
 
 <script lang="ts">
@@ -357,7 +357,7 @@ import {
   post_channel_add,
   post_channel_edit,
 } from "@/api/channel/index";
-import BankDialog from "../dialog/bankDialog.vue";
+import BankDialog from "./dialog/bankDialog.vue";
 
 Component.registerHooks(["beforeRouteEnter"]);
 @Component({

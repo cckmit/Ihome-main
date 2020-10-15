@@ -3,8 +3,8 @@
  * @version: 
  * @Author: zyc
  * @Date: 2020-06-24 09:47:33
- * @LastEditors: zyc
- * @LastEditTime: 2020-10-14 20:45:13
+ * @LastEditors: ywl
+ * @LastEditTime: 2020-10-15 08:36:59
  */
 import { IRes } from "./users.d";
 // import request from '@/utils/http';
@@ -154,7 +154,7 @@ export function allMenu<T>() {
             parentId: 201,
             title: "渠道商列表",
             icon: null,
-            path: "/web-sales/channelsTest/list",
+            path: "/web-sales/channels/list",
         },
         {
             id: 205,

@@ -4,7 +4,7 @@
  * @Author: ywl
  * @Date: 2020-09-18 09:14:40
  * @LastEditors: ywl
- * @LastEditTime: 2020-10-14 20:29:59
+ * @LastEditTime: 2020-10-15 08:58:14
 -->
 <template>
   <IhPage>
@@ -197,8 +197,8 @@ import {
   post_channelAgent_disable__id,
   post_channelAgent_enable__id,
 } from "@/api/channel/index";
-import PaginationMixin from "../../../../mixins/pagination";
-import AgentDialog from "../dialog/agentDailog.vue";
+import PaginationMixin from "@/mixins/pagination";
+import AgentDialog from "./dialog/agentDailog.vue";
 
 @Component({
   components: { AgentDialog },
