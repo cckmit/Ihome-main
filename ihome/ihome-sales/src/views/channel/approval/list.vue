@@ -4,7 +4,7 @@
  * @Author: zyc
  * @Date: 2020-07-14 09:23:40
  * @LastEditors: zyc
- * @LastEditTime: 2020-10-14 20:40:41
+ * @LastEditTime: 2020-10-15 18:03:11
 --> 
 --> 
 <template>
@@ -123,7 +123,12 @@
         <el-table-column
           prop="approvalNo"
           label="申请编号"
-          width="180"
+          width="120"
+        ></el-table-column>
+        <el-table-column
+          prop="approvalTitle"
+          label="标题"
+          width="240"
         ></el-table-column>
         <el-table-column
           prop="departmentOrgId"
@@ -135,11 +140,7 @@
           label="发起日期"
           width="180"
         ></el-table-column>
-        <el-table-column
-          prop="approvalUser"
-          label="经办人"
-           
-        ></el-table-column>
+        <el-table-column prop="approvalUser" label="经办人"></el-table-column>
 
         <el-table-column label="状态" width="120">
           <template slot-scope="scope">{{
@@ -152,10 +153,9 @@
           width="180"
         ></el-table-column>
 
-        <el-table-column fixed="right" label="操作" width="120">
+        <el-table-column fixed="right" label="操作" width="130">
           <template slot-scope="scope">
             <el-link
-              style="color: #409eff"
               class="margin-right-10"
               type="primary"
               @click.native.prevent="info(scope)"
@@ -197,17 +197,32 @@
         :total="resPageInfo.total"
       ></el-pagination>
     </template>
-    
+    <ih-dialog :show="changeUserVisible" desc="变更经办人">
+      <ApprovalChangeUser
+        :data="selectList"
+        @cancel="() => (changeUserVisible = false)"
+        @finish="
+          (data) => {
+            changeUserVisible = false;
+            finishChangeUser(data);
+          }
+        "
+      />
+    </ih-dialog>
   </ih-page>
 </template>
 <script lang="ts">
 import { Component, Vue } from "vue-property-decorator";
 
-import { post_channelApproval_getList } from "../../../api/channel/index";
+import {
+  post_channelApproval_getList,
+  post_channelApproval_delete__id,
+} from "../../../api/channel/index";
 
 import PaginationMixin from "../../../mixins/pagination";
+import ApprovalChangeUser from "./dialog/change-user.vue";
 @Component({
-  components: {},
+  components: { ApprovalChangeUser },
   mixins: [PaginationMixin],
 })
 export default class InvitationCodeList extends Vue {
@@ -223,6 +238,8 @@ export default class InvitationCodeList extends Vue {
 
   divisionList: any = []; //事业部列表
   approvalUserList: any = []; //经办人
+  selectList: any = []; //勾选的数据
+  changeUserVisible: any = false;
 
   resPageInfo: any = {
     total: 0,
@@ -252,6 +269,7 @@ export default class InvitationCodeList extends Vue {
       //     invitationCode: scope.row.invitationCode,
       //   });
       //   console.log(res);
+      await post_channelApproval_delete__id({ id: scope.row.id });
       this.resPageInfo.list.splice(scope.$index, 1);
       this.$message({
         type: "success",
@@ -264,7 +282,7 @@ export default class InvitationCodeList extends Vue {
   info(scope: any) {
     console.log(scope);
     this.$router.push({
-      path: "/invitationCode/info",
+      path: "/approval/info",
       query: { id: scope.row.id },
     });
   }
@@ -297,9 +315,25 @@ export default class InvitationCodeList extends Vue {
 
   handleSelectionChange(val: any) {
     console.log(val);
+    this.selectList = val;
   }
   approvalUserChange() {
-    console.log("变更经办人");
+    if (this.selectList && this.selectList.length > 0) {
+      let p = {
+        list: this.selectList.map((item: any) => {
+          return item.id;
+        }),
+      };
+      console.log(p);
+      this.changeUserVisible = true;
+    } else {
+      this.$message.warning("请先勾选数据");
+    }
+  }
+  finishChangeUser(data: any) {
+    if(data){
+      this.getListMixin();
+    }
   }
 }
 </script>
