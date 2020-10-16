@@ -3,8 +3,8 @@
  * @version: 
  * @Author: zyc
  * @Date: 2020-10-16 14:16:23
- * @LastEditors: wwq
- * @LastEditTime: 2020-10-16 17:23:18
+ * @LastEditors: ywl
+ * @LastEditTime: 2020-10-16 17:49:40
  */
 
 import { RouteConfig } from 'vue-router'
@@ -225,21 +225,36 @@ const channelRoutes: Array<RouteConfig> = [
             },
             {
                 path: 'recall',
-                name: 'channelLevlRecall',
+                name: 'channelLevelRecall',
                 component: () => import('../views/channel/channelLevel/info.vue'),
                 meta: { title: '渠道等级信息撤回', icon: 'form' }
             },
             {
                 path: 'audit',
-                name: 'channelLevlAudit',
+                name: 'channelLevelAudit',
                 component: () => import('../views/channel/channelLevel/info.vue'),
                 meta: { title: '渠道等级信息审核', icon: 'form' }
             },
             {
                 path: 'change',
-                name: 'channelLevlChange',
+                name: 'channelLevelChange',
                 component: () => import('../views/channel/channelLevel/edit.vue'),
                 meta: { title: '渠道等级变更信息', icon: 'form' }
+            },
+        ]
+    },
+    // 渠道等级变更管理
+    {
+        path: '/levelChange',
+        meta: { title: '渠道等级变更管理', icon: 'form' },
+        redirect: '/levelChange/list',
+        component: Layout,
+        children: [
+            {
+                path: 'list',
+                name: 'LevelChangeList',
+                component: () => import('../views/channel/channelLevelChange/list.vue'),
+                meta: { title: '渠道等级信息变更列表', icon: 'form' }
             },
         ]
     },

@@ -3,13 +3,13 @@
  * @version: 
  * @Author: zyc
  * @Date: 2020-06-22 11:10:43
- * @LastEditors: wwq
- * @LastEditTime: 2020-10-16 17:23:48
+ * @LastEditors: ywl
+ * @LastEditTime: 2020-10-16 17:49:09
  */
 import Vue from 'vue'
 import VueRouter, { RouteConfig, Route } from 'vue-router'
 import Home from '../views/Home.vue'
-import Layout from '../components/Layout.vue'
+// import Layout from '../components/Layout.vue'
 
 import NProgress from 'nprogress'
 import 'nprogress/nprogress.css'
@@ -32,20 +32,6 @@ let routes: Array<RouteConfig> = [
     meta: {
       title: '主页'
     }
-  },
-  {
-    path: '/levelChange',
-    meta: { title: '渠道等级变更管理', icon: 'form' },
-    redirect: '/levelChange/list',
-    component: Layout,
-    children: [
-      {
-        path: 'list',
-        name: 'LevelChangeList',
-        component: () => import('../views/channel/channelLevelChange/list.vue'),
-        meta: { title: '渠道等级信息变更列表', icon: 'form' }
-      },
-    ]
   },
 ]
 
