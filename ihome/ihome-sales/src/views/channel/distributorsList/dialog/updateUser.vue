@@ -1,10 +1,10 @@
 <!--
- * @Descripttion: 
+ * @Description: 
  * @version: 
- * @Author: wwq
+ * @Author: ywl
  * @Date: 2020-07-08 14:23:16
  * @LastEditors: ywl
- * @LastEditTime: 2020-10-15 16:59:43
+ * @LastEditTime: 2020-10-15 18:32:50
 --> 
 <template>
   <el-dialog
@@ -42,15 +42,15 @@
           <el-form-item label="选择用户">
             <el-select
               style="width: 100%"
-              v-model="form.inputUser"
+              v-model="user"
               clearable
               placeholder="请选择"
             >
               <el-option
-                v-for="item in $root.displayList('accountType')"
-                :key="item.value"
-                :label="item.label"
-                :value="item.value"
+                v-for="item in testList"
+                :key="item.id"
+                :label="item.value"
+                :value="item.id"
               ></el-option>
             </el-select>
           </el-form-item>
@@ -72,7 +72,10 @@
 <script lang="ts">
 import { Component, Vue, Prop } from "vue-property-decorator";
 import { Form as ElForm } from "element-ui";
-import { post_company_updateInputUser } from "../../../api/developer/index";
+import {
+  post_channel_modifyFollowUser,
+  post_channel_modifyInputUser,
+} from "@/api/channel/index";
 
 import { NoRepeatHttp } from "ihome-common/util/aop/no-repeat-http";
 @Component({
@@ -80,12 +83,18 @@ import { NoRepeatHttp } from "ihome-common/util/aop/no-repeat-http";
 })
 export default class UpdateUser extends Vue {
   @Prop({ default: [] }) data!: Array<object>;
+  @Prop() isInput!: boolean;
   dialogVisible = true;
 
   form: any = {
-    companyId: this.data.map((v: any) => v.id),
-    inputUser: null,
+    channelIds: this.data.map((v: any) => v.id),
   };
+  private user = "";
+  testList = [
+    { value: "管理员1", id: 1 },
+    { value: "管理员2", id: 2 },
+    { value: "管理员3", id: 3 },
+  ];
 
   cancel() {
     this.$emit("cancel", false);
@@ -96,9 +105,15 @@ export default class UpdateUser extends Vue {
   @NoRepeatHttp()
   async submit(valid: any) {
     if (valid) {
-      const res = await post_company_updateInputUser(this.form);
+      if (this.isInput) {
+        this.form.inputUser = this.user;
+        await post_channel_modifyInputUser(this.form);
+      } else {
+        this.form.followUserId = this.user;
+        await post_channel_modifyFollowUser(this.form);
+      }
       this.$message.success("保存成功");
-      this.$emit("finish", res);
+      this.$emit("finish");
     } else {
       console.log("error submit!!");
       return false;

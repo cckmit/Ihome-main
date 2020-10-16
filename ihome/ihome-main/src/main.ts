@@ -4,14 +4,14 @@
  * @Author: zyc
  * @Date: 2020-06-22 11:46:23
  * @LastEditors: zyc
- * @LastEditTime: 2020-08-13 15:47:11
+ * @LastEditTime: 2020-10-16 10:47:22
  */
 import Vue from 'vue'
 import App from './App.vue'
 import router from './router'
 import store from './store'
 import ElementUI from 'element-ui';
-import './theme/index.css'
+import 'ihome-common/ihome-theme/orange/theme/index.css'
 // import 'element-ui/lib/theme-chalk/index.css';
 import { registerMicroApps, setDefaultMountApp, start } from "qiankun"
 import { apps, lifeCycles } from './qiankun/register-app'

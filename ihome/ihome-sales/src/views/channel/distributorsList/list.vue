@@ -4,10 +4,10 @@
  * @Author: zyc
  * @Date: 2020-08-13 11:40:10
  * @LastEditors: ywl
- * @LastEditTime: 2020-10-15 09:08:44
+ * @LastEditTime: 2020-10-15 18:09:46
 -->
 <template>
-  <ih-page>
+  <IhPage>
     <template v-slot:form>
       <el-form
         ref="form"
@@ -169,8 +169,14 @@
           type="info"
           @click="empty()"
         >重置</el-button>
-        <el-button @click="ChangeFollower()">变更跟进人</el-button>
-        <el-button @click="ChangeInputPerson()">变更录入人</el-button>
+        <el-button
+          :disabled="!selectionData.length"
+          @click="ChangeFollower()"
+        >变更跟进人</el-button>
+        <el-button
+          :disabled="!selectionData.length"
+          @click="ChangeInputPerson()"
+        >变更录入人</el-button>
       </el-row>
     </template>
 
@@ -203,17 +209,29 @@
           prop="province"
           label="省份"
           width="200"
-        ></el-table-column>
+        >
+          <template v-slot="{ row }">
+            {{ $root.getAreaName(row.province) }}
+          </template>
+        </el-table-column>
         <el-table-column
           prop="city"
           label="城市"
           width="200"
-        ></el-table-column>
+        >
+          <template v-slot="{ row }">
+            {{ $root.getAreaName(row.city) }}
+          </template>
+        </el-table-column>
         <el-table-column
           prop="county"
           label="行政区"
           width="200"
-        ></el-table-column>
+        >
+          <template v-slot="{ row }">
+            {{ $root.getAreaName(row.county) }}
+          </template>
+        </el-table-column>
         <el-table-column
           prop="inputUser"
           label="录入人"
@@ -276,7 +294,24 @@
         :total="resPageInfo.total"
       ></el-pagination>
     </template>
-  </ih-page>
+    <!-- dialog -->
+    <IhDialog
+      :show="dialogVisible"
+      desc="变更录入人"
+    >
+      <UpdateUser
+        :data="selectionData"
+        :isInput="isInput"
+        @cancel="() => (dialogVisible = false)"
+        @finish="
+          (data) => {
+            dialogVisible = false;
+            getListMixin();
+          }
+        "
+      />
+    </IhDialog>
+  </IhPage>
 </template>
 
 <script lang="ts">
@@ -286,13 +321,14 @@ import {
   post_channel_getList,
   post_channel_delete__id,
 } from "@/api/channel/index";
+import UpdateUser from "./dialog/updateUser.vue";
 
 import PaginationMixin from "../../../mixins/pagination";
 @Component({
-  components: {},
+  components: { UpdateUser },
   mixins: [PaginationMixin],
 })
-export default class UserList extends Vue {
+export default class List extends Vue {
   queryPageParameters: any = {
     name: "",
     creditCode: "",
@@ -304,10 +340,13 @@ export default class UserList extends Vue {
     status: "",
     followUserId: "",
   };
+  dialogVisible = false;
   resPageInfo: any = {
     total: 0,
     list: [],
   };
+  selectionData = [];
+  isInput = true;
   private provinceList: any = [];
 
   search() {
@@ -320,11 +359,14 @@ export default class UserList extends Vue {
   }
   ChangeFollower() {
     console.log("变更跟进人");
+    this.dialogVisible = true;
+    this.isInput = false;
   }
   ChangeInputPerson() {
     console.log("变更录入人");
+    this.dialogVisible = true;
+    this.isInput = true;
   }
-
   /**
    * @description: 跳转详情
    * @param {any} row
@@ -394,12 +436,23 @@ export default class UserList extends Vue {
       query: { id: row.id },
     });
   }
+  /**
+   * @description: 跳转页面
+   * @param {any} row
+   * @param {string} type 页面page
+   */
+  private handleToPage(row: any, type: string): void {
+    this.$router.push({
+      path: type,
+      query: { id: row.id },
+    });
+  }
   //获取数据
   async getListMixin() {
     this.resPageInfo = await post_channel_getList(this.queryPageParameters);
   }
   handleSelectionChange(val: any) {
-    console.log(val);
+    this.selectionData = val;
   }
 
   created() {

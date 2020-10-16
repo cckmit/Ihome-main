@@ -4,7 +4,7 @@
  * @Author: ywl
  * @Date: 2020-09-16 14:05:21
  * @LastEditors: ywl
- * @LastEditTime: 2020-10-15 08:58:30
+ * @LastEditTime: 2020-10-15 15:15:36
 -->
 <template>
   <IhPage>
@@ -87,7 +87,6 @@
               label="成立日期"
               prop="setupTime"
             >
-              <!-- <el-input v-model="info.setupTime"></el-input> -->
               <el-date-picker
                 v-model="info.setupTime"
                 style="width: 100%"
@@ -317,7 +316,7 @@
         type="textarea"
         :rows="3"
         placeholder="请输入变更原因"
-        v-model="reason"
+        v-model="changeReason"
       >
       </el-input>
     </template>
@@ -325,11 +324,11 @@
       <br />
       <el-button
         type="primary"
-        @click="handleSave()"
+        @click="submit(1)"
       >保存</el-button>
       <el-button
         type="success"
-        @click="submit()"
+        @click="submit(2)"
       >提交</el-button>
     </div>
 
@@ -356,6 +355,7 @@ import {
   get_channel_get__id,
   post_channel_add,
   post_channel_edit,
+  post_channelChange_add,
 } from "@/api/channel/index";
 import BankDialog from "./dialog/bankDialog.vue";
 
@@ -386,7 +386,7 @@ export default class ModifyThe extends Vue {
     timeList: [],
     provinceList: [],
   };
-  reason = "";
+  changeReason = "";
   dialogFormVisible = false;
   Bankrule: any = {
     bank: "",
@@ -458,7 +458,7 @@ export default class ModifyThe extends Vue {
     this.dialogFormVisible = true;
   }
 
-  async handleSave(): Promise<void> {
+  async submit(type: number): Promise<void> {
     if (this.info.timeList.length) {
       this.info.businessTime = `${this.info.timeList[0]} - ${this.info.timeList[1]}`;
     }
@@ -485,31 +485,39 @@ export default class ModifyThe extends Vue {
         switch (this.pageType) {
           case "AddChannel":
             // 渠道商添加
-            await post_channel_add({ ...this.info, operateType: 1 });
+            await post_channel_add({ ...this.info, operateType: type });
             this.$message.success("渠道商添加成功");
             break;
           case "EditChannel":
             // 修改渠道商
-            await post_channel_edit({ ...this.info, operateType: 1 });
+            await post_channel_edit({ ...this.info, operateType: type });
             this.$message.success("修改渠道商成功");
             break;
           case "ChangeChannel":
             // 渠道商提交变更
             console.log("渠道商提交变更");
-            if (!this.reason) {
+            if (!this.changeReason) {
               this.$message.error("变更原因不能为空");
               return;
             }
+            await post_channelChange_add({
+              ...this.info,
+              operateType: type,
+              changeReason: this.changeReason,
+              oldChannelId: this.$route.query.id,
+            });
+            this.$message.success("渠道商变更提交成功");
+            break;
+          case "ChannelChangeEdit":
             break;
         }
+        this.$router.push({
+          path: "list",
+        });
       } else {
         // 表单还有没填写
       }
     });
-  }
-
-  submit() {
-    console.log("提交");
   }
   /**
    * @description: 新添加数据--银行账号信息

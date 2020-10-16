@@ -1,13 +1,13 @@
 <!--
- * @Descripttion: 
+ * @Description: 
  * @version: 
- * @Author: zyc
+ * @Author: ywl
  * @Date: 2020-06-30 09:21:17
  * @LastEditors: ywl
- * @LastEditTime: 2020-10-10 17:33:48
+ * @LastEditTime: 2020-10-15 16:35:57
 --> 
 <template>
-  <ih-page>
+  <IhPage>
     <template v-slot:form>
       <el-form
         ref="form"
@@ -21,12 +21,13 @@
                 clearable
                 placeholder="请选择"
                 class="width--100"
+                filterable
               >
                 <el-option
-                  v-for="item in $root.displayList('distributorsName')"
-                  :key="item.value"
-                  :label="item.label"
-                  :value="item.value"
+                  v-for="item in channelList"
+                  :key="item.id"
+                  :label="item.name"
+                  :value="item.name"
                 ></el-option>
               </el-select>
             </el-form-item>
@@ -57,10 +58,10 @@
                 class="width--100"
               >
                 <el-option
-                  v-for="item in $root.displayList('stated')"
-                  :key="item.value"
-                  :label="item.label"
-                  :value="item.value"
+                  v-for="item in $root.dictAllList('ChannelStatus')"
+                  :key="item.code"
+                  :label="item.name"
+                  :value="item.code"
                 ></el-option>
               </el-select>
             </el-form-item>
@@ -94,13 +95,10 @@
           @click="search()"
         >查询</el-button>
         <el-button
-          type="warning"
-          @click="add()"
-        >清空</el-button>
-        <el-button
           type="info"
           @click="reset()"
-        >变更录入人</el-button>
+        >重置</el-button>
+        <el-button>变更录入人</el-button>
       </el-row>
     </template>
 
@@ -109,7 +107,6 @@
       <el-table
         class="ih-table"
         :data="resPageInfo.list"
-        :default-sort="{ prop: 'id', order: 'descending' }"
         @selection-change="handleSelectionChange"
       >
         <el-table-column
@@ -120,37 +117,40 @@
         ></el-table-column>
         <el-table-column
           fixed
-          poro=""
+          prop="name"
           label="渠道商名称"
-          width="150"
+          min-width="150"
         ></el-table-column>
         <el-table-column
           fixed
-          prop="name"
+          prop="followUserId"
           label="渠道跟进人"
           width="120"
         ></el-table-column>
         <el-table-column
           fixed
-          prop="account"
+          prop="inputUser"
           label="录入人"
           width="120"
         ></el-table-column>
         <el-table-column
-          prop="mobilePhone"
+          prop="changeTime"
           label="变更日期"
           width="220"
         ></el-table-column>
         <el-table-column
-          prop="accountType"
+          prop="status"
           label="状态"
-          width="240"
+          width="150"
         >
+          <template v-slot="{ row }">
+            {{ $root.dictAllName(row.status, 'ChannelStatus').name }}
+          </template>
         </el-table-column>
         <el-table-column
-          prop="orgName"
+          prop="changeReason"
           label="变更原因"
-          width="240"
+          min-width="240"
         ></el-table-column>
 
         <el-table-column
@@ -158,14 +158,14 @@
           width="150"
           fixed="right"
         >
-          <template v-slot="{ row, $index }">
+          <template v-slot="{ row }">
             <el-link
               type="primary"
-              @click.native.prevent="info(row)"
+              @click.native.prevent="handleToPage(row, 'info')"
             >详情</el-link>
             <el-dropdown
               trigger="click"
-              style="margin-left: 15px"
+              class="margin-left-15"
             >
               <span class="el-dropdown-link">
                 更多操作
@@ -173,10 +173,10 @@
               </span>
               <el-dropdown-menu slot="dropdown">
                 <el-dropdown-item @click.native.prevent="edit(row)">修改</el-dropdown-item>
-                <el-dropdown-item @click.native.prevent="remove(row, $index)">删除</el-dropdown-item>
-                <el-dropdown-item @click.native.prevent="resetPassword(row)">确认</el-dropdown-item>
-                <el-dropdown-item @click.native.prevent="activation(row)">审核</el-dropdown-item>
-                <el-dropdown-item @click.native.prevent="locking(row)">撤回</el-dropdown-item>
+                <el-dropdown-item @click.native.prevent="remove(row)">删除</el-dropdown-item>
+                <el-dropdown-item @click.native.prevent="handleToPage(row, 'confirm')">确认</el-dropdown-item>
+                <el-dropdown-item @click.native.prevent="handleToPage(row, 'examine')">审核</el-dropdown-item>
+                <el-dropdown-item @click.native.prevent="handleToPage(row, 'revoke')">撤回</el-dropdown-item>
                 <el-dropdown-item @click.native.prevent="locking(row)">退回起草</el-dropdown-item>
               </el-dropdown-menu>
             </el-dropdown>
@@ -196,198 +196,93 @@
         :total="resPageInfo.total"
       ></el-pagination>
     </template>
-  </ih-page>
+  </IhPage>
 </template>
+
 <script lang="ts">
 import { Component, Vue } from "vue-property-decorator";
 
 import {
-  post_user_getList,
-  post_user_delete__id,
-  post_user_lock__id,
-  post_user_activate__id,
-  post_user_resetPassword__id,
-} from "../../../api/system/index";
+  post_channelChange_getList,
+  get_channel_getAll,
+  post_channelChange_delete__id,
+} from "@/api/channel/index";
 import PaginationMixin from "../../../mixins/pagination";
 
 @Component({
   components: {},
   mixins: [PaginationMixin],
 })
-export default class UserList extends Vue {
+export default class ChannelChangeList extends Vue {
   queryPageParameters: any = {
-    cityLevel: "firstLevel",
-    ChannelLevel: "bigPlatform",
-    employeeCode: null,
-    employeeStatus: "On",
-    employeeType: "Formal",
-
-    name: null,
-    orgId: null,
-
-    status: "Valid",
+    cityLevel: "",
+    ChannelLevel: "",
+    status: "",
   };
-  jobVisibleData: any = null;
-  OrganizationJurisdictionData: any = null;
-  copyUserData: any = null;
   resPageInfo: any = {
     total: 0,
     list: [],
   };
-
-  employmentDateChange(dateArray: any) {
-    console.log(dateArray);
-    this.queryPageParameters.employmentDateStart = dateArray[0];
-    this.queryPageParameters.employmentDateEnd = dateArray[1];
-  }
+  private channelList: any = [];
 
   reset() {
     this.queryPageParameters = {
       account: null,
-      accountType: "Ihome",
+      accountType: "",
 
       pageNum: this.queryPageParameters.pageNum,
       pageSize: this.queryPageParameters.pageSize,
     };
   }
-
-  addData: any = null;
-  value: any = "";
-  searchOpen = true;
-
-  organizationJurisdictionVisible = false;
-  jobVisible = false;
-  copyUserVisible = false;
-
-  currentPage: any = 1;
-  valuedate: any = new Date().getTime();
-  // valuedate: any ='2020-07-01';
-  tableData: any = [];
-  total: any = null;
-
-  formatter(row: any) {
-    return row.name;
+  handleToPage(row: any, page: string) {
+    this.$router.push({
+      path: page,
+      query: { id: row.id },
+    });
   }
-
-  openToggle() {
-    this.searchOpen = !this.searchOpen;
+  handleEdit() {
+    //
   }
-  dialogVisible = false;
-
-  add(data: any) {
-    this.addData = data;
-    this.dialogVisible = true;
+  search() {
+    this.getListMixin();
   }
-
-  finishJob(data: any) {
-    console.log(data);
-    this.search();
+  remove(row: any) {
+    this.$confirm("此操作将删除该渠道基础变更信息, 是否继续?", "提示", {
+      confirmButtonText: "确定",
+      cancelButtonText: "取消",
+      type: "warning",
+    })
+      .then(async () => {
+        await post_channelChange_delete__id({ id: row.id });
+        // 删除list最后一条数据 返回前一页面
+        if (this.resPageInfo.list.length === 1) {
+          this.queryPageParameters.pageNum === 1
+            ? (this.queryPageParameters.pageNum = 1)
+            : this.queryPageParameters.pageNum--;
+        }
+        this.getListMixin();
+        this.$message.success("删除成功");
+      })
+      .catch(async () => {
+        console.log("取消");
+      });
+  }
+  handleSelectionChange(val: any) {
+    console.log(val);
+  }
+  async getListMixin() {
+    this.resPageInfo = await post_channelChange_getList(
+      this.queryPageParameters
+    );
+  }
+  private async getChannelList(): Promise<void> {
+    this.channelList = await get_channel_getAll();
   }
 
   async created() {
     this.getListMixin();
-  }
-  async getListMixin() {
-    this.resPageInfo = await post_user_getList(this.queryPageParameters);
-  }
-
-  getValue(value: any) {
-    this.queryPageParameters.orgId = value;
-  }
-
-  search() {
-    this.getListMixin();
-  }
-
-  edit(row: any) {
-    this.add(row);
-  }
-  jobRole(row: any) {
-    console.log(row);
-    this.jobVisibleData = row;
-    this.jobVisible = true;
-  }
-  pOrganization(row: any) {
-    console.log(row);
-    this.OrganizationJurisdictionData = row;
-    this.organizationJurisdictionVisible = true;
-  }
-
-  async row(row: any, index: number) {
-    try {
-      await this.$confirm("是否确定删除?", "提示");
-      await post_user_delete__id({ id: row.id });
-      this.resPageInfo.list.splice(index, 1);
-      this.$message({
-        type: "success",
-        message: "删除成功!",
-      });
-    } catch (error) {
-      console.log(error);
-    }
-  }
-  async locking(row: any) {
-    console.log(row);
-    try {
-      await this.$confirm("是否确定锁定用户?", "提示");
-      await post_user_lock__id({ id: row.id });
-
-      this.$message({
-        type: "success",
-        message: "锁定成功!",
-      });
-      this.search();
-    } catch (error) {
-      console.log(error);
-    }
-  }
-  async activation(row: any) {
-    console.log(row);
-    try {
-      await this.$confirm("是否确定激活用户?", "提示");
-      await post_user_activate__id({ id: row.id });
-
-      this.$message({
-        type: "success",
-        message: "激活成功!",
-      });
-      this.search();
-    } catch (error) {
-      console.log(error);
-    }
-  }
-  async resetPassword(row: any) {
-    console.log(row);
-    try {
-      await this.$confirm("是否确定重置密码?", "提示");
-      const res = await post_user_resetPassword__id({ id: row.id });
-      this.$alert(res, "密码重置成功");
-    } catch (error) {
-      console.log(error);
-    }
-  }
-  copyUser() {
-    if (this.copyUserData && this.copyUserData.length > 0) {
-      this.copyUserVisible = true;
-    } else {
-      this.$message.warning("请先选择数据");
-    }
-  }
-
-  finishCopyUser(data: any) {
-    console.log(data);
-    this.search();
-  }
-  handleSelectionChange(val: any) {
-    console.log(val);
-    this.copyUserData = val;
-  }
-  //详情
-  info(row: any) {
-    console.log("详情页跳转", row);
+    this.getChannelList();
   }
 }
 </script>
-<style lang="scss" scoped>
-</style>
  

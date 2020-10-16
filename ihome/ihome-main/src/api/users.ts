@@ -4,7 +4,7 @@
  * @Author: zyc
  * @Date: 2020-06-24 09:47:33
  * @LastEditors: wwq
- * @LastEditTime: 2020-10-15 09:38:01
+ * @LastEditTime: 2020-10-16 12:01:32
  */
 import { IRes } from "./users.d";
 // import request from '@/utils/http';
@@ -175,7 +175,7 @@ export function allMenu<T>() {
             parentId: 201,
             title: "渠道基础信息变更列表",
             icon: "el-icon-setting",
-            path: "/web-sales/channels/channelBasicInfoChange",
+            path: "/web-sales/channelsChange/list",
         },
         {
             id: 202,

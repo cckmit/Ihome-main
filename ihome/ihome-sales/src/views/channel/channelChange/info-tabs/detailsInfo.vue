@@ -4,7 +4,7 @@
  * @Author: lgf
  * @Date: 2020-09-16 14:05:21
  * @LastEditors: ywl
- * @LastEditTime: 2020-10-15 10:40:58
+ * @LastEditTime: 2020-10-15 16:40:33
 -->
 <template>
   <div class="text-left">
@@ -133,16 +133,17 @@
     <br />
 
     <p class="ih-info-title">企业概况</p>
-    <div>
-      {{info.remark}}
-    </div>
+    <div>{{info.remark}}</div>
     <br />
 
-    <template v-if="typeStr === 'ConfirmChannel'">
+    <p class="ih-info-title">变更原因</p>
+    <div>{{info.changeReason}}</div>
+
+    <template v-if="typeStr === 'ChannelChangeConfirm'">
       <p class="ih-info-title">确认意见</p>
       <el-input
         type="textarea"
-        placeholder="请输入意见"
+        placeholder="请输入确认意见"
         v-model="approveRecord.remark"
         :rows="3"
       ></el-input>
@@ -156,7 +157,25 @@
       </div>
     </template>
 
-    <template v-if="typeStr === 'RevokeChannel'">
+    <template v-if="typeStr === 'ChannelChangeExamine'">
+      <p class="ih-info-title">审核意见</p>
+      <el-input
+        type="textarea"
+        placeholder="请输入审核意见"
+        v-model="approveRecord.remark"
+        :rows="3"
+      ></el-input>
+      <div class="text-center">
+        <br />
+        <el-button
+          type="success"
+          @click="confirmChannel('Pass')"
+        >通过</el-button>
+        <el-button>退回</el-button>
+      </div>
+    </template>
+
+    <template v-if="typeStr === 'ChannelChangeRevoke'">
       <p class="ih-info-title">撤回原因</p>
       <el-input
         type="textarea"
@@ -169,7 +188,8 @@
         <el-button
           type="success"
           @click="confirmChannel('Revoke')"
-        >提交</el-button>
+        >通过</el-button>
+        <el-button>退回</el-button>
       </div>
     </template>
   </div>
@@ -179,13 +199,13 @@
 import { Component, Vue, Prop } from "vue-property-decorator";
 //引入请求数据的api
 import {
-  get_channel_get__id,
-  post_channel_approveRecord,
-} from "../../../../api/channel/index";
+  get_channelChange_get__id,
+  post_channelChange_approveRecord,
+} from "@/api/channel/index";
 @Component({
   components: {},
 })
-export default class Home extends Vue {
+export default class DetailInfo extends Vue {
   @Prop() typeStr!: string;
   info: any = {};
   private channelPersons: object = {};
@@ -196,8 +216,9 @@ export default class Home extends Vue {
 
   async getInfo() {
     let id = this.$route.query.id;
-    this.info = await get_channel_get__id({ id: id });
-    this.channelPersons = this.info.channelPersons[0];
+    this.info = await get_channelChange_get__id({ id: id });
+    this.channelPersons =
+      this.info.channelPersonChanges.length && this.info.channelPersons[0];
   }
   private async confirmChannel(type: string): Promise<void> {
     if (!this.approveRecord.remark) {
@@ -205,7 +226,7 @@ export default class Home extends Vue {
       return;
     }
     this.approveRecord.result = type;
-    await post_channel_approveRecord({
+    await post_channelChange_approveRecord({
       ...this.approveRecord,
       id: this.$route.query.id,
     });
