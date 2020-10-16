@@ -3,18 +3,18 @@
  * @version: 
  * @Author: zyc
  * @Date: 2020-07-17 09:47:28
- * @LastEditors: lgf
- * @LastEditTime: 2020-09-23 15:47:59
+ * @LastEditors: zyc
+ * @LastEditTime: 2020-10-16 10:56:41
 --> 
 <template>
-  <div :style="{'min-height':minHeight}" class="ih-page">
+  <div :style="{ 'min-height': minHeight }" class="ih-page">
     <div class="ih-page-container">
       <slot name="container"></slot>
     </div>
     <div class="ih-page-form">
       <slot name="form"></slot>
     </div>
-    <div class="ih-page-btn">
+    <div class="ih-page-btn" :style="{ 'margin-left': labelWidth }">
       <slot name="btn"></slot>
     </div>
     <div class="ih-page-table">
@@ -35,6 +35,7 @@ export default {
   data() {
     return {};
   },
+  props: ["labelWidth"],
   computed: {
     minHeight() {
       let h =
