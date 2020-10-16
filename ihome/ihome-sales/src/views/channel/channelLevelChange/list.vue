@@ -4,7 +4,7 @@
  * @Author: zyc
  * @Date: 2020-06-30 09:21:17
  * @LastEditors: ywl
- * @LastEditTime: 2020-10-16 17:46:46
+ * @LastEditTime: 2020-10-16 18:07:55
 --> 
 <template>
   <IhPage label-width="100px">
@@ -83,10 +83,6 @@
                 placeholder="选择日期"
               >
               </el-date-picker>
-              <el-input
-                v-model="queryPageParameters.changeTime"
-                placeholder="入库编号"
-              ></el-input>
             </el-form-item>
           </el-col>
           <el-col :span="8">
