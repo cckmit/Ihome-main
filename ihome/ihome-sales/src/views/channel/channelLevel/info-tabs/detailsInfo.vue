@@ -1,350 +1,284 @@
 <!--
  * @Descripttion: 
  * @version: 
- * @Author: lgf
- * @Date: 2020-09-16 14:05:21
- * @LastEditors: ywl
- * @LastEditTime: 2020-10-10 16:21:33
+ * @Author: wwq
+ * @Date: 2020-10-15 12:33:25
+ * @LastEditors: wwq
+ * @LastEditTime: 2020-10-15 16:10:31
 -->
-
 <template>
-  <div class="detailInfo">
-    <p class="ih-info-title">基础信息---假数据</p>
-    <el-row class="ih-info-line">
-      <el-col :span="8">
-        <el-row>
-          <el-col
-            :span="6"
-            class="ih-info-item-left"
-          >渠道商</el-col>
-          <el-col
-            :span="18"
-            class="ih-info-item-right"
-          >{{
-            resPageInfo.list[0].date
-          }}</el-col>
-        </el-row>
-      </el-col>
-      <el-col :span="8">
-        <el-row>
-          <el-col
-            :span="6"
-            class="ih-info-item-left"
-          >渠道等级</el-col>
-          <el-col
-            :span="18"
-            class="ih-info-item-right"
-          >91440101MA5D6ETP8X</el-col>
-        </el-row>
-      </el-col>
-      <el-col :span="8">
-        <el-row>
-          <el-col
-            :span="6"
-            class="ih-info-item-left"
-          >渠道类型</el-col>
-          <el-col
-            :span="18"
-            class="ih-info-item-right"
-          >广州择食</el-col>
-        </el-row>
-      </el-col>
-    </el-row>
-    <el-row class="ih-info-line">
-      <el-col :span="8">
-        <el-row>
-          <el-col
-            :span="6"
-            class="ih-info-item-left"
-          >业务开展省份</el-col>
-          <el-col
-            :span="18"
-            class="ih-info-item-right"
-          >有限责任公司（自然人投资或控股）</el-col>
-        </el-row>
-      </el-col>
-      <el-col :span="8">
-        <el-row>
-          <el-col
-            :span="6"
-            class="ih-info-item-left"
-          >业务开展城市</el-col>
-          <el-col
-            :span="18"
-            class="ih-info-item-right"
-          >谭星科</el-col>
-        </el-row>
-      </el-col>
-      <el-col :span="8">
-        <el-row>
-          <el-col
-            :span="6"
-            class="ih-info-item-left"
-          >城市等级</el-col>
-          <el-col
-            :span="18"
-            class="ih-info-item-right"
-          >440111198710031817</el-col>
-        </el-row>
-      </el-col>
-    </el-row>
-    <el-row class="ih-info-line">
-      <el-col :span="8">
-        <el-row>
-          <el-col
-            :span="6"
-            class="ih-info-item-left"
-          >是否特批入库</el-col>
-          <el-col
-            :span="18"
-            class="ih-info-item-right"
-          >广州市择食电子商务有限责任公司</el-col>
-        </el-row>
-      </el-col>
-      <el-col :span="8">
-        <el-row>
-          <el-col
-            :span="6"
-            class="ih-info-item-left"
-          >入库编号</el-col>
-          <el-col
-            :span="18"
-            class="ih-info-item-right"
-          >91440101MA5D6ETP8X</el-col>
-        </el-row>
-      </el-col>
-      <el-col :span="8">
-        <el-row>
-          <el-col
-            :span="6"
-            class="ih-info-item-left"
-          >状态</el-col>
-          <el-col
-            :span="18"
-            class="ih-info-item-right"
-          >广州择食</el-col>
-        </el-row>
-      </el-col>
+  <div class="text-left">
+    <p class="ih-info-title">基础信息</p>
+    <el-form ref="form" label-width="120px">
+      <el-row>
+        <el-col :span="8">
+          <el-form-item label="渠道商" required align="left">
+            <span class="text-ellipsis"
+              >{{ resPageInfo.channelId
+              }}<el-link
+                style="margin-left: 5px"
+                :href="`/web-sales/channels/info?id=${resPageInfo.channelId}`"
+                type="primary"
+                target="_blank"
+                >详情</el-link
+              ></span
+            >
+          </el-form-item>
+        </el-col>
+        <el-col :span="8">
+          <el-form-item label="渠道等级" required align="left">
+            <span>{{
+              $root.dictAllName(resPageInfo.channelGrade, "ChannelLevel").name
+            }}</span>
+          </el-form-item>
+        </el-col>
+        <el-col :span="8">
+          <el-form-item label="渠道类型" required align="left">
+            <span>{{
+              $root.dictAllName(resPageInfo.channelType, "ChannelType").name
+            }}</span>
+          </el-form-item>
+        </el-col>
+      </el-row>
+      <el-collapse-transition>
+        <div v-show="searchOpen">
+          <el-row>
+            <el-col :span="8">
+              <el-form-item label="业务开展省份" required align="left">
+                <span>{{ $root.getAreaName(resPageInfo.province) }}</span>
+              </el-form-item>
+            </el-col>
+            <el-col :span="8">
+              <el-form-item label="业务开展城市" required align="left">
+                <span>{{ $root.getAreaName(resPageInfo.city) }}</span>
+              </el-form-item>
+            </el-col>
+            <el-col :span="8">
+              <el-form-item label="城市等级" align="left">
+                <span>{{
+                  $root.dictAllName(resPageInfo.cityGrade, "CityLevel").name
+                }}</span>
+              </el-form-item>
+            </el-col>
+            <el-col :span="8">
+              <el-form-item label="是否特批入库" required align="left">
+                <span>{{
+                  $root.dictAllName(resPageInfo.special, "YesOrNoType").name
+                }}</span>
+              </el-form-item>
+            </el-col>
+            <el-col :span="8">
+              <el-form-item label="入库编号" align="left">
+                <span>{{ resPageInfo.storageNum }}</span>
+              </el-form-item>
+            </el-col>
+            <el-col :span="8">
+              <el-form-item label="状态" align="left">
+                <span>{{
+                  $root.dictAllName(resPageInfo.status, "ChannelStatus").name
+                }}</span>
+              </el-form-item>
+            </el-col>
+          </el-row>
+        </div>
+      </el-collapse-transition>
+    </el-form>
+
+    <el-row>
+      <el-link
+        type="primary"
+        class="float-right margin-right-40"
+        @click="openToggle()"
+        >{{ searchOpen ? "收起" : "展开" }}</el-link
+      >
     </el-row>
     <p class="ih-info-title">
-      <span>评级信息</span>
-
-      <el-button
-        type="success"
-        class="add"
-        @click.native="addAccount()"
-      >添加</el-button>
-      <a href>查看所有标准</a>
+      评级信息
+      <el-link
+        style="margin-left: 15px; font-size: 15px"
+        href="/web-sales/gradeStandard/list"
+        type="primary"
+        target="_blank"
+        >查看所有标准</el-link
+      >
     </p>
-    <!-- 对话框 -->
-
-    <el-dialog
-      title="账户信息"
-      :visible.sync="dialogFormVisible"
-      width="700px"
-    >
-      <el-form
-        :model="ruleForm"
-        :rules="rules"
-        ref="ruleForm"
-        label-width="100px"
-        class="demo-ruleForm"
-      >
-        <el-form-item
-          label="账户名称"
-          prop="name"
-        >
-          <el-input v-model="ruleForm.name"></el-input>
-        </el-form-item>
-        <el-form-item
-          label="账号"
-          prop="account"
-        >
-          <el-input v-model="ruleForm.account"></el-input>
-        </el-form-item>
-        <el-form-item
-          label="开户银行"
-          prop="bank"
-        >
-          <el-input v-model="ruleForm.bank"></el-input>
-        </el-form-item>
-        <el-form-item
-          class="AccountType"
-          label="账户类型"
-          label-width="100px"
-          prop="bankType"
-        >
-          <el-select
-            v-model="ruleForm.bankType"
-            clearable
-            placeholder="请选择"
-            class="width--100"
-          >
-            <el-option
-              v-for="item in $root.displayList('bankType')"
-              :key="item.value"
-              :label="item.label"
-              :value="item.value"
-            ></el-option>
-          </el-select>
-        </el-form-item>
-      </el-form>
-
-      <div
-        slot="footer"
-        class="dialog-footer"
-      >
-        <el-button @click="dialogFormVisible = false">取 消</el-button>
-        <el-button
-          type="primary"
-          @click="dialogFormVisible = false"
-        >确 定</el-button>
-      </div>
-    </el-dialog>
-
+    <br />
     <el-table
-      :data="resPageInfo.list"
-      border
+      class="ih-table"
+      :data="resPageInfo.channelGradeItems"
       style="width: 100%"
     >
-      <el-table-column
-        prop="date"
-        label="城市等级"
-        width="300"
-      ></el-table-column>
-      <el-table-column
-        prop="name"
-        label="渠道等级"
-      ></el-table-column>
-      <el-table-column
-        prop="address"
-        label="评级项"
-        width="300"
-      ></el-table-column>
-      <el-table-column
-        prop="address"
-        label="录入信息"
-        width="300"
-      ></el-table-column>
-      <el-table-column
-        prop="address"
-        label="评级标准"
-        width="300"
-      ></el-table-column>
+      <el-table-column prop="cityGrade" label="城市等级">
+        <template v-slot="{ row }">{{
+          $root.dictAllName(row.cityGrade, "CityLevel").name
+        }}</template>
+      </el-table-column>
+      <el-table-column prop="channelGrade" label="渠道等级">
+        <template v-slot="{ row }">{{
+          $root.dictAllName(row.channelGrade, "ChannelLevel").name
+        }}</template>
+      </el-table-column>
+      <el-table-column prop="gradeItem" label="评级项"></el-table-column>
+      <el-table-column prop="inputValue" label="录入信息"></el-table-column>
+      <el-table-column prop="gradeStandard" label="评级标准"></el-table-column>
     </el-table>
+    <br />
     <p class="ih-info-title">
-      <span>附件信息</span>
-      <a href="./">综合查询被执行人</a>
+      附件信息
+      <el-link
+        style="margin-left: 15px; font-size: 15px"
+        href="http://zxgk.court.gov.cn/zhzxgk/"
+        type="primary"
+        target="_blank"
+        >综合查询被执行人</el-link
+      >
     </p>
+    <br />
+    <el-table
+      class="ih-table"
+      :data="resPageInfo.channelGradeAttachments"
+      style="width: 100%"
+    >
+      <el-table-column prop="type" label="类型" width="200">
+        <template v-slot="{ row }">{{
+          $root.displayName("accessoryTpye", row.type)
+        }}</template>
+      </el-table-column>
+      <el-table-column prop="fileId" label="附件">
+        <IhUpload size="100px" :fileList="fileList" />
+      </el-table-column>
+    </el-table>
+    <br />
+
+    <div v-if="typeStr === 'channelLevlAudit'" class="text-left">
+      <p class="ih-info-title">审核信息</p>
+      <p class="msg-title">审核意见</p>
+      <el-input
+        type="textarea"
+        :autosize="{ minRows: 5, maxRows: 10 }"
+        placeholder="请输入内容"
+        v-model="remark"
+      >
+      </el-input>
+      <el-button class="margin-top-30" @click="pass('Pass')" type="primary"
+        >通过</el-button
+      >
+      <el-button class="margin-top-30" @click="pass('Reject')" type="primary"
+        >驳回</el-button
+      >
+    </div>
+
+    <div v-if="typeStr === 'channelLevlRecall'" class="text-left">
+      <p class="ih-info-title">撤回信息</p>
+      <p class="msg-title">撤回原因</p>
+      <el-input
+        type="textarea"
+        :autosize="{ minRows: 5, maxRows: 10 }"
+        placeholder="请输入内容"
+        v-model="remark"
+      >
+      </el-input>
+      <el-button class="margin-top-30" @click="pass('Revoke')" type="primary"
+        >提交</el-button
+      >
+    </div>
   </div>
 </template>
+
 <script lang="ts">
-import { Component, Vue } from "vue-property-decorator";
+import { Component, Vue, Prop } from "vue-property-decorator";
 //引入请求数据的api
-import { get_channel_get__id } from "../../../../api/channel/index";
-// import PaginationMixin from "../../../../mixins/pagination";
+import {
+  get_channelGrade_get__id,
+  post_channelGrade_approveRecord,
+} from "../../../../api/channel/index";
 @Component({
   components: {},
 })
 export default class Home extends Vue {
-  info: any = {};
-  dialogFormVisible = false;
-  ruleForm: any = {
-    name: "",
-    account: "",
-    bank: "",
-    bankType: "",
-  };
-  rules: any = {
-    name: [
-      { required: true, message: "请输入账户名称", trigger: "blur" },
-      { min: 3, max: 5, message: "长度在 3 到 64 个字符", trigger: "blur" },
-    ],
-    account: [
-      { required: true, max: 32, message: "请输入账号", trigger: "blur" },
-    ],
-    bank: [
-      { required: true, max: 64, message: "请输入开户银行", trigger: "blur" },
-    ],
-    bankType: [{ required: true, message: "请选择账户类型", trigger: "blur" }],
-  };
+  @Prop() typeStr!: string;
+
+  private get Id() {
+    return this.$route.query.id;
+  }
+  private fileList = [];
+  private info = [];
+  private remark = "";
+  searchOpen = true;
 
   resPageInfo: any = {
-    total: 0,
-    list: [
-      {
-        date: "2016-05-02",
-        name: "王小虎",
-        address: "上海市普陀区金沙江路 1518 弄",
-      },
-      {
-        date: "2016-05-04",
-        name: "王小虎",
-        address: "上海市普陀区金沙江路 1517 弄",
-      },
-      {
-        date: "2016-05-01",
-        name: "王小虎",
-        address: "上海市普陀区金沙江路 1519 弄",
-      },
-      {
-        date: "2016-05-03",
-        name: "王小虎",
-        address: "上海市普陀区金沙江路 1516 弄",
-      },
-    ],
+    channelId: null,
+    channelGrade: null,
+    channelType: null,
+    province: null,
+    city: null,
+    cityGrade: null,
+    special: null,
+    storageNum: null,
+    status: null,
+    channelGradeItems: [],
+    channelGradeAttachments: [],
   };
-  addAccount(scope: any) {
-    console.log(scope);
-    this.dialogFormVisible = true;
+
+  openToggle() {
+    this.searchOpen = !this.searchOpen;
   }
+
   async created() {
+    this.getInfo();
+  }
+
+  async getInfo() {
     let id = this.$route.query.id;
-    this.info = await get_channel_get__id({ id: id });
-    console.log(this.info);
+    this.resPageInfo = await get_channelGrade_get__id({ id: id });
+  }
+
+  async pass(val: any) {
+    if (this.remark) {
+      await post_channelGrade_approveRecord({
+        remark: this.remark,
+        id: this.Id,
+        result: val,
+      });
+      this.$message({
+        type: "success",
+        message: this.showMsg(val),
+      });
+    } else {
+      this.$message({
+        type: "warning",
+        message: val === "Revoke" ? "请填写撤回原因" : "请填写审核意见",
+      });
+    }
+  }
+
+  showMsg(val: any): string {
+    console.log(val, "msg");
+    switch (val) {
+      case "Pass":
+        return "审核通过";
+      case "Reject":
+        return "驳回成功";
+      case "Revoke":
+        return "撤回成功";
+      default:
+        return "";
+    }
   }
 }
-//请求数据
-//   };
-//   async getListMixin() {
-//     this.resPageInfo = await post_role_getList(this.queryPageParameters);
-//     debugger;
-//   }
-//   async created() {
-//     this.getListMixin;
-//   }
-// }
 </script>
+
 <style lang="scss" scoped>
-.ih-info-title {
-  border-left: 5px solid #4cccec;
-  .add {
-    color: #000;
-    margin-left: 20px;
-    cursor: pointer;
-  }
+.text-ellipsis {
+  width: 100%;
+  display: inline-block;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
 }
-.line {
-  padding: 15px;
-}
-.ih-info-item-left {
-  text-align: right;
-  line-height: 21px;
-}
-.ih-info-item-right {
+
+.msg-title {
   text-align: left;
-  padding-left: 20px;
-  line-height: 21px;
-}
-.title {
-  font-weight: 600;
-  text-align: left;
-  margin-left: 20px;
-}
-.el-input__inner {
-  width: 1060px;
-}
-a {
-  margin-left: 10px;
+  margin-left: 25px;
 }
 </style>

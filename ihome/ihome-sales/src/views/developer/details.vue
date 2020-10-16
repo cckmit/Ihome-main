@@ -4,13 +4,13 @@
  * @Author: wwq
  * @Date: 2020-09-27 11:52:41
  * @LastEditors: wwq
- * @LastEditTime: 2020-10-10 18:22:17
+ * @LastEditTime: 2020-10-15 14:41:25
 -->
 <template>
-  <el-tabs type="border-card" v-model="activeName">
-    <el-tab-pane label="详情信息" name="first">
-      <ih-page>
-        <template v-slot:form>
+  <ih-page>
+    <template v-slot:info>
+      <el-tabs type="border-card" v-model="activeName">
+        <el-tab-pane label="详情信息" name="first">
           <p class="ih-info-title">基础信息</p>
           <el-form ref="form" label-width="120px">
             <el-row>
@@ -93,9 +93,7 @@
               </div>
             </el-collapse-transition>
           </el-form>
-        </template>
 
-        <template v-slot:btn>
           <el-row>
             <el-link
               type="primary"
@@ -104,9 +102,7 @@
               >{{ searchOpen ? "收起" : "展开" }}</el-link
             >
           </el-row>
-        </template>
 
-        <template v-slot:table>
           <p class="ih-info-title">联系人信息</p>
           <br />
           <el-table
@@ -171,14 +167,12 @@
               v-model="resPageInfo.recallReason"
             >
             </el-input>
-            <!-- <div class="bottom"> -->
             <el-button
               class="margin-top-30"
               @click="submitRecall()"
               type="primary"
               >提交</el-button
             >
-            <!-- </div> -->
           </div>
           <div v-if="isCheck" class="text-left">
             <p class="ih-info-title">审核信息</p>
@@ -197,22 +191,25 @@
               >驳回</el-button
             >
           </div>
-        </template>
-      </ih-page>
-    </el-tab-pane>
-    <el-tab-pane label="操作日志" name="second">
-      <el-table class="ih-table" :data="companyLogInfo" style="width: 100%">
-        <el-table-column prop="operation" label="操作"></el-table-column>
-        <el-table-column prop="operator" label="处理人"></el-table-column>
-        <el-table-column prop="operateTime" label="处理时间"></el-table-column>
-        <el-table-column
-          prop="operateResult"
-          label="处理结果"
-        ></el-table-column>
-        <el-table-column prop="remark" label="备注"></el-table-column>
-      </el-table>
-    </el-tab-pane>
-  </el-tabs>
+        </el-tab-pane>
+        <el-tab-pane label="操作日志" name="second">
+          <el-table class="ih-table" :data="companyLogInfo" style="width: 100%">
+            <el-table-column prop="operation" label="操作"></el-table-column>
+            <el-table-column prop="operator" label="处理人"></el-table-column>
+            <el-table-column
+              prop="operateTime"
+              label="处理时间"
+            ></el-table-column>
+            <el-table-column
+              prop="operateResult"
+              label="处理结果"
+            ></el-table-column>
+            <el-table-column prop="remark" label="备注"></el-table-column>
+          </el-table>
+        </el-tab-pane>
+      </el-tabs>
+    </template>
+  </ih-page>
 </template>
 <script lang="ts">
 import { Component, Vue, Watch } from "vue-property-decorator";
