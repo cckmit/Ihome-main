@@ -4,7 +4,7 @@
  * @Author: zyc
  * @Date: 2020-06-22 11:10:43
  * @LastEditors: zyc
- * @LastEditTime: 2020-10-16 14:10:45
+ * @LastEditTime: 2020-10-16 14:24:32
  */
 import Vue from 'vue'
 import VueRouter, { RouteConfig, Route } from 'vue-router'
@@ -17,7 +17,11 @@ import 'nprogress/nprogress.css'
 NProgress.configure({ showSpinner: false })
 
 
-Vue.use(VueRouter)
+Vue.use(VueRouter);
+
+
+import { channelRoutes } from './channel';
+import { developerRoutes } from './developer'
 
 const routes: Array<RouteConfig> = [
   {
@@ -357,53 +361,12 @@ const routes: Array<RouteConfig> = [
       }
     ]
   },
-  {
-    path: '/invitationCode',
-    meta: { title: '邀请码', icon: null },
-    component: Layout,
-    children: [
-      {
-        path: 'list',
-        name: 'invitationCodeList',
-        component: () => import('../views/channel/invitationCode/list.vue'),
-        meta: { title: '邀请码列表', icon: 'form' }
-      },
-      {
-        path: 'info',
-        name: 'invitationCodeInfo',
-        component: () => import('../views/channel/invitationCode/info.vue'),
-        meta: { title: '邀请码详情', icon: 'form' }
-      }
-    ]
-  },
-  {
-    path: '/approval',
-    meta: { title: '渠道呈批', icon: null },
-    component: Layout,
-    children: [
-      {
-        path: 'list',
-        name: 'ApprovalList',
-        component: () => import('../views/channel/approval/list.vue'),
-        meta: { title: '渠道呈批列表', icon: 'form' }
-      },
-      {
-        path: 'add',
-        name: 'ApprovalAdd',
-        component: () => import('../views/channel/approval/add.vue'),
-        meta: { title: '渠道呈批新增', icon: 'form' }
-      },
-      {
-        path: 'info',
-        name: 'ApprovalInfo',
-        component: () => import('../views/channel/approval/info.vue'),
-        meta: { title: '渠道呈批详情', icon: 'form' }
-      },
 
-    ]
-  }
 
 ]
+
+routes.concat(channelRoutes, developerRoutes);
+
 const router = new VueRouter({
   mode: 'history',
   base: process.env.BASE_URL,
