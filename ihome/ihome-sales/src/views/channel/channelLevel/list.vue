@@ -4,7 +4,7 @@
  * @Author: zyc
  * @Date: 2020-08-13 11:40:10
  * @LastEditors: wwq
- * @LastEditTime: 2020-10-16 16:55:45
+ * @LastEditTime: 2020-10-16 17:52:10
 -->
 <template>
   <IhPage label-width="100px">
@@ -66,6 +66,7 @@
             <el-form-item label="业务开展省市">
               <IhCascader
                 :level="2"
+                :checkStrictly="false"
                 v-model="provinceOption"
                 clearable
                 placeholder="请选择"
@@ -82,7 +83,7 @@
                 class="width--100"
               >
                 <el-option
-                  v-for="item in $root.dictAllList('CityLevel')"
+                  v-for="item in departmentOrgIdOptions"
                   :key="item.code"
                   :label="item.name"
                   :value="item.code"
@@ -116,10 +117,10 @@
                 class="width--100"
               >
                 <el-option
-                  v-for="item in $root.dictAllList('CityLevel')"
-                  :key="item.code"
+                  v-for="item in inputUserOptions"
+                  :key="item.id"
                   :label="item.name"
-                  :value="item.code"
+                  :value="item.id"
                 ></el-option>
               </el-select>
             </el-form-item>
@@ -181,7 +182,7 @@
         ></el-table-column>
         <el-table-column
           fixed
-          type="channelName"
+          prop="channelId"
           label="渠道商名称"
           width="100"
         ></el-table-column>
@@ -326,6 +327,43 @@ export default class UserList extends Vue {
   dialogVisible = false;
 
   channelOptions: any = [];
+  departmentOrgIdOptions: any = [
+    {
+      name: "人事部",
+      id: "111",
+    },
+    {
+      name: "产品研发部",
+      id: "222",
+    },
+    {
+      name: "技术部",
+      id: "333",
+    },
+  ];
+
+  inputUserOptions: any = [
+    {
+      name: "项目经理",
+      id: "111",
+    },
+    {
+      name: "产品经理",
+      id: "222",
+    },
+    {
+      name: "前端开发",
+      id: "333",
+    },
+    {
+      name: "java开发",
+      id: "444",
+    },
+    {
+      name: "测试",
+      id: "555",
+    },
+  ];
 
   resPageInfo: any = {
     total: 0,

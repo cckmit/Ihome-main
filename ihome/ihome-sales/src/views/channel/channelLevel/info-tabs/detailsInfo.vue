@@ -4,7 +4,7 @@
  * @Author: wwq
  * @Date: 2020-10-15 12:33:25
  * @LastEditors: wwq
- * @LastEditTime: 2020-10-16 14:20:28
+ * @LastEditTime: 2020-10-16 17:45:17
 -->
 <template>
   <div class="text-left">
@@ -244,6 +244,7 @@ export default class Home extends Vue {
         type: "success",
         message: this.showMsg(val),
       });
+      this.$router.push("/channelLevel/list");
     } else {
       this.$message({
         type: "warning",
@@ -253,7 +254,6 @@ export default class Home extends Vue {
   }
 
   showMsg(val: any): string {
-    console.log(val, "msg");
     switch (val) {
       case "Pass":
         return "审核通过";
