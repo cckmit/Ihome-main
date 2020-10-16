@@ -4,7 +4,7 @@
  * @Author: zyc
  * @Date: 2020-07-07 09:25:17
  * @LastEditors: zyc
- * @LastEditTime: 2020-10-15 09:09:07
+ * @LastEditTime: 2020-10-16 10:52:19
  */
 import '../util/base/extend'
 import Vue from 'vue'
@@ -25,7 +25,8 @@ if ((<any>window).__POWERED_BY_QIANKUN__) {
 
 import ElementUI from 'element-ui';
 // import 'element-ui/lib/theme-chalk/index.css';
-import '../ihome-theme/theme/index.css'
+// import '../ihome-theme/theme/index.css'
+import '../ihome-theme/orange/theme/index.css'
 
 import '../ui/css/ihome-ui.scss'
 import { UserModule } from '@/store/modules/user'
@@ -59,8 +60,7 @@ function render() {
   Promise.all([get_area_getAll(), get_dict_getAll()]).then((res: any) => {
     areaAll = res[0];
     dictAll = res[1];
-    console.log(areaAll);
-    console.log(dictAll);
+
 
   }).catch((err: any) => {
     console.error('系统初始化数据存在异常', err)
@@ -74,6 +74,7 @@ function render() {
          * @return {type} 
          */
         displayName(source: any, key: any) {
+          console.error('该方法已抛弃，使用dictAllName')
           let item: any = $dic[source];
           if (item) {
             return item[key];
@@ -87,6 +88,7 @@ function render() {
          * @return {type} 
          */
         displayList(source: any, key: any) {
+          console.error('该方法已抛弃，使用dictAllList')
           let item: any = $dic[source];
           if (item) {
             let list = $dic.getListTool(item);
@@ -114,28 +116,33 @@ function render() {
          * @return {type} 
          */
         dictAllName(data: any, category: any) {
-          let list: any[] = dictAll[category];
-          if (list) {
-            let item: any = list.filter((i: any) => {
-              if (i.code == data) {
-                return true;
-              } else {
-                return false;
-              }
-            })
-            if (item && item.length == 1) {
-              return item[0]
-            } else if (item && item.length > 1) {
-              console.error(data, category, item, '字典匹配到多项.取第一项');
-              return item[0]
-            } else {
-              console.error(data, category, '字典无法匹配到数据');
-              return {};
-            }
+          if (data === undefined || data === null) {
+            return {}
           } else {
-            console.error(category, '字典类型无法匹配.')
-            return [];
+            let list: any[] = dictAll[category];
+            if (list) {
+              let item: any = list.filter((i: any) => {
+                if (i.code == data) {
+                  return true;
+                } else {
+                  return false;
+                }
+              })
+              if (item && item.length == 1) {
+                return item[0]
+              } else if (item && item.length > 1) {
+                console.error(data, category, item, '字典匹配到多项.取第一项');
+                return item[0]
+              } else {
+                console.error(data, category, '字典无法匹配到数据');
+                return {};
+              }
+            } else {
+              console.error(category, '字典类型无法匹配.')
+              return [];
+            }
           }
+
         },
         /**根据行政区code获取对应的name
          * @param {type} 
