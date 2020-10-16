@@ -4,7 +4,7 @@
  * @Author: zyc
  * @Date: 2020-06-30 09:21:17
  * @LastEditors: ywl
- * @LastEditTime: 2020-10-16 17:17:14
+ * @LastEditTime: 2020-10-16 17:46:46
 --> 
 <template>
   <IhPage label-width="100px">
@@ -17,7 +17,7 @@
           <el-col :span="8">
             <el-form-item label="渠道商名称">
               <el-select
-                v-model="queryPageParameters.name"
+                v-model="queryPageParameters.channelId"
                 clearable
                 placeholder="请选择"
                 class="width--100"
@@ -75,8 +75,16 @@
           </el-col>
           <el-col :span="8">
             <el-form-item label="变更日期">
+              <el-date-picker
+                v-model="queryPageParameters.changeTime"
+                type="date"
+                style="width: 100%;"
+                value-format="yyyy-MM-dd"
+                placeholder="选择日期"
+              >
+              </el-date-picker>
               <el-input
-                v-model="queryPageParameters.account"
+                v-model="queryPageParameters.changeTime"
                 placeholder="入库编号"
               ></el-input>
             </el-form-item>
@@ -84,7 +92,7 @@
           <el-col :span="8">
             <el-form-item label="事业部">
               <el-select
-                v-model="queryPageParameters.division"
+                v-model="queryPageParameters.departmentOrgId"
                 clearable
                 placeholder="请选择"
                 class="width--100"
@@ -132,7 +140,7 @@
         <el-table-column
           fixed
           label="渠道商名称"
-          prop="channelName"
+          prop="channelId"
           width="200"
         ></el-table-column>
         <el-table-column
@@ -162,6 +170,9 @@
           label="状态"
           width="150"
         >
+          <template v-slot="{ row }">
+            {{ $root.dictAllName(row.status, 'ChannelStatus').name }}
+          </template>
         </el-table-column>
         <el-table-column
           prop="changeReason"
@@ -226,9 +237,14 @@ import PaginationMixin from "../../../mixins/pagination";
   mixins: [PaginationMixin],
 })
 export default class LevelChangeList extends Vue {
-  queryPageParameters: any = {};
-  OrganizationJurisdictionData: any = null;
-  copyUserData: any = null;
+  queryPageParameters: any = {
+    channelId: "",
+    inputUser: "",
+    status: "",
+    storageNum: "",
+    departmentOrgId: "",
+    changeTime: "",
+  };
   resPageInfo: any = {
     total: 0,
     list: [],
@@ -244,7 +260,17 @@ export default class LevelChangeList extends Vue {
   ];
 
   reset() {
-    this.queryPageParameters = {};
+    this.queryPageParameters = {
+      channelId: "",
+      inputUser: "",
+      status: "",
+      storageNum: "",
+      departmentOrgId: "",
+      changeTime: "",
+      pageNum: 1,
+      pageSize: 10,
+    };
+    this.getListMixin();
   }
   add() {
     this.dialogVisible = true;
@@ -265,7 +291,7 @@ export default class LevelChangeList extends Vue {
   private async getChannelList(): Promise<void> {
     this.channelList = await get_channel_getAll();
   }
-  public async getListMixin() {
+  public async getListMixin(): Promise<void> {
     this.resPageInfo = await post_channelGradeChange_getList(
       this.queryPageParameters
     );
