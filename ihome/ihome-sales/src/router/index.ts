@@ -3,8 +3,8 @@
  * @version: 
  * @Author: zyc
  * @Date: 2020-06-22 11:10:43
- * @LastEditors: ywl
- * @LastEditTime: 2020-10-16 12:08:47
+ * @LastEditors: zyc
+ * @LastEditTime: 2020-10-16 14:10:45
  */
 import Vue from 'vue'
 import VueRouter, { RouteConfig, Route } from 'vue-router'
@@ -218,21 +218,6 @@ const routes: Array<RouteConfig> = [
     redirect: '/xx/distributorsList',
     component: Layout,
     children: [
-      // 渠道呈批列表 --- start
-      {
-        path: 'channelAgroupOf',
-        name: 'ChannelAgroupOf',
-        component: () => import('../views/channel/channelAgroupOf/channelAgroupOf.vue'),
-        meta: { title: '渠道呈批列表', icon: 'form' }
-      },
-      {
-        path: 'channelAgroupOf/info',
-        name: 'ChannelAgroupOfInfo',
-        component: () => import('../views/channel/channelAgroupOf/info.vue'),
-        meta: { title: '详情', icon: 'form' }
-      },
-      // 渠道呈批列表 --- end
-
       // 渠道等级信息变更列表 --- start
       {
         path: 'channelInfoList',
