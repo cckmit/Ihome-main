@@ -1,6 +1,6 @@
 /* eslint-disable */
 /* 此脚本由swagger-ui的api-docs自动生成，请勿修改 */
-//2020-10-16 10:07:48
+//2020-10-16 09:04:27
 import { request } from '@/api/base'
 const basePath = "/channel-local"
 /**添加渠道*/
@@ -87,10 +87,6 @@ return await request.post< number,number> (basePath+'/channelApproval/backToDraf
 export async function post_channelApproval_delete__id (d?: any) {
 return await request.post< number,number> (basePath+'/channelApproval/delete/{id}', d)
 }
-/**下载渠道供应商名录*/
-export async function get_channelApproval_downloadML__id (d?: any) {
-return await request.get<any,any>(basePath+'/channelApproval/downloadML/{id}', { params: d })
-}
 /**修改渠道呈批*/
 export async function post_channelApproval_edit (d?: any) {
 return await request.post< number,number> (basePath+'/channelApproval/edit', d)
@@ -107,15 +103,11 @@ return await request.post< PageModel<ChannelApprovalVO>,PageModel<ChannelApprova
 export async function post_channelApproval_modifyApprovalUser (d?: any) {
 return await request.post< string,string> (basePath+'/channelApproval/modifyApprovalUser', d)
 }
-/**根据渠道呈批id查询渠道呈批OA处理列表*/
+/**查询渠道呈批OA处理列表*/
 export async function get_channelApprovalOaRecord_getAll__approvalId (d?: any) {
 return await request.get<ChannelApprovalOaRecord[],ChannelApprovalOaRecord[]>(basePath+'/channelApprovalOaRecord/getAll/{approvalId}', { params: d })
 }
-/**根据渠道呈批id查询当前代办人*/
-export async function get_channelApprovalOaRecord_getCurrentToDoUser__approvalId (d?: any) {
-return await request.get<string,string>(basePath+'/channelApprovalOaRecord/getCurrentToDoUser/{approvalId}', { params: d })
-}
-/**根据渠道呈批id查询渠道呈批处理列表*/
+/**查询渠道呈批列表*/
 export async function get_channelApprovalRecord_getAll__approvalId (d?: any) {
 return await request.get<ChannelApprovalRecord[],ChannelApprovalRecord[]>(basePath+'/channelApprovalRecord/getAll/{approvalId}', { params: d })
 }

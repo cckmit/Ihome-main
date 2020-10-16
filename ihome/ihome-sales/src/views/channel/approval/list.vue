@@ -4,11 +4,11 @@
  * @Author: zyc
  * @Date: 2020-07-14 09:23:40
  * @LastEditors: zyc
- * @LastEditTime: 2020-10-15 18:03:11
+ * @LastEditTime: 2020-10-16 10:41:43
 --> 
 --> 
 <template>
-  <ih-page>
+  <ih-page label-width="100px">
     <template v-slot:form>
       <el-form ref="form" label-width="100px">
         <el-row>
@@ -173,10 +173,11 @@
                 <el-dropdown-item @click.native.prevent="remove(scope)"
                   >删除</el-dropdown-item
                 >
-                <el-dropdown-item @click.native.prevent="edit(scope)"
+                <el-dropdown-item @click.native.prevent="withdraw(scope)"
                   >撤回重发</el-dropdown-item
                 >
-                <el-dropdown-item @click.native.prevent="edit(scope)"
+                <el-dropdown-item
+                  @click.native.prevent="downloadSupplier(scope)"
                   >下载供应商名录</el-dropdown-item
                 >
               </el-dropdown-menu>
@@ -217,6 +218,8 @@ import { Component, Vue } from "vue-property-decorator";
 import {
   post_channelApproval_getList,
   post_channelApproval_delete__id,
+  post_channel_backToDraft__id,
+  get_channelApproval_downloadML__id,
 } from "../../../api/channel/index";
 
 import PaginationMixin from "../../../mixins/pagination";
@@ -312,6 +315,28 @@ export default class InvitationCodeList extends Vue {
       query: { id: scope.row.id },
     });
   }
+  async withdraw(scope: any) {
+    try {
+      await this.$confirm("是否确定撤回?", "提示");
+      await post_channel_backToDraft__id({
+        id: scope.row.id,
+      });
+
+      this.$message({
+        type: "success",
+        message: "撤回成功!",
+      });
+      this.getListMixin();
+    } catch (error) {
+      console.log(error);
+    }
+  }
+  async downloadSupplier(scope: any) {
+    console.log(scope);
+    // await get_channelApproval_downloadML__id({ id: scope.row.id });
+    this.$message.warning("未实现");
+    get_channelApproval_downloadML__id;
+  }
 
   handleSelectionChange(val: any) {
     console.log(val);
@@ -331,7 +356,7 @@ export default class InvitationCodeList extends Vue {
     }
   }
   finishChangeUser(data: any) {
-    if(data){
+    if (data) {
       this.getListMixin();
     }
   }

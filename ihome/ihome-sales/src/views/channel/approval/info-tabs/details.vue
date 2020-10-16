@@ -4,7 +4,7 @@
  * @Author: zyc
  * @Date: 2020-07-09 14:31:23
  * @LastEditors: zyc
- * @LastEditTime: 2020-10-14 20:39:17
+ * @LastEditTime: 2020-10-16 09:43:34
 --> 
 <template>
   <div>
@@ -14,19 +14,25 @@
       <el-col :span="8">
         <el-row>
           <el-col :span="6" class="ih-info-item-left">申请编号</el-col>
-          <el-col :span="18" class="ih-info-item-right"> xxx</el-col>
+          <el-col :span="18" class="ih-info-item-right">
+            {{ info.approvalNo }}</el-col
+          >
         </el-row>
       </el-col>
       <el-col :span="8">
         <el-row>
           <el-col :span="6" class="ih-info-item-left">发起人</el-col>
-          <el-col :span="18" class="ih-info-item-right">xxx</el-col>
+          <el-col :span="18" class="ih-info-item-right">{{
+            info.approvalUser
+          }}</el-col>
         </el-row>
       </el-col>
       <el-col :span="8">
         <el-row>
-          <el-col :span="6" class="ih-info-item-left">发起人</el-col>
-          <el-col :span="18" class="ih-info-item-right">xxx</el-col>
+          <el-col :span="6" class="ih-info-item-left">事业部</el-col>
+          <el-col :span="18" class="ih-info-item-right">{{
+            info.departmentOrgId
+          }}</el-col>
         </el-row>
       </el-col>
     </el-row>
@@ -34,24 +40,31 @@
       <el-col :span="8">
         <el-row>
           <el-col :span="6" class="ih-info-item-left">发起日期</el-col>
-          <el-col :span="18" class="ih-info-item-right"> xxx</el-col>
+          <el-col :span="18" class="ih-info-item-right">
+            {{ info.inputTime }}</el-col
+          >
         </el-row>
       </el-col>
       <el-col :span="8">
         <el-row>
           <el-col :span="6" class="ih-info-item-left">状态</el-col>
-          <el-col :span="18" class="ih-info-item-right">xxx</el-col>
+          <el-col :span="18" class="ih-info-item-right">
+            {{ $root.dictAllName(info.status, "ChannelApprovalStatus").name }}
+          </el-col>
         </el-row>
       </el-col>
       <el-col :span="8">
         <el-row>
           <el-col :span="6" class="ih-info-item-left">OA发文文号</el-col>
-          <el-col :span="18" class="ih-info-item-right">xxx</el-col>
+          <el-col :span="18" class="ih-info-item-right">{{ info.oaNo }}</el-col>
         </el-row>
       </el-col>
     </el-row>
     <p class="ih-info-title">渠道等级信息列表</p>
-    <el-table :data="channelApprovalGrades" style="width: 100%; padding: 20px">
+    <el-table
+      :data="info.channelApprovalGrades"
+      style="width: 100%; padding: 20px"
+    >
       <el-table-column prop="storageNum" label="入库编号" width="180">
       </el-table-column>
       <el-table-column prop="channelName" label="渠道商名称" width="180">
@@ -65,7 +78,7 @@
     </el-table>
     <p class="ih-info-title">附件信息</p>
     <el-table
-      :data="channelApprovalAttachmentsList"
+      :data="info.channelApprovalAttachments"
       style="width: 100%; padding: 20px"
     >
       <el-table-column prop="date" label="类型" width="180"> </el-table-column>
@@ -89,18 +102,20 @@
 </template>
 <script lang="ts">
 import { Component, Vue } from "vue-property-decorator";
-
+import { get_channelApproval_get__id } from "../../../../api/channel/index";
 @Component({
   components: {},
 })
 export default class InvitationCodeDetails extends Vue {
-  info: any = {};
-  channelApprovalGrades: any = [];
-  channelApprovalAttachmentsList: any = [];
+  info: any = {
+    channelApprovalAttachments: [],
+    channelApprovalGrades: [],
+  };
 
   async created() {
     let id = this.$route.query.id;
     console.log(id);
+    this.info = await get_channelApproval_get__id({ id: id });
   }
 }
 </script>
