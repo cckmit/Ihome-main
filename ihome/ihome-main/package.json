@@ -23,7 +23,7 @@
     "element-ui": "^2.13.2",
     "js-cookie": "^2.2.1",
     "qiankun": "^2.0.15",
-    "ihome-common": "^1.0.136",
+    "ihome-common": "^1.0.140",
     "vue": "^2.6.11",
     "vue-class-component": "^7.2.3",
     "vue-property-decorator": "^8.4.2",

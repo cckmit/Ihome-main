@@ -4,7 +4,7 @@
  * @Author: wwq
  * @Date: 2020-06-30 09:21:17
  * @LastEditors: wwq
- * @LastEditTime: 2020-10-14 19:11:10
+ * @LastEditTime: 2020-10-15 10:05:17
 --> 
 <template>
   <ih-page>
@@ -14,6 +14,7 @@
           <el-col :span="8">
             <el-form-item label="省市">
               <IhCascader
+                :level="2"
                 v-model="provinceOption"
                 clearable
                 placeholder="请选择"
@@ -63,8 +64,16 @@
         :data="resPageInfo.list"
       >
         <el-table-column fixed type="selection" width="100"></el-table-column>
-        <el-table-column prop="parentCode" label="省份"></el-table-column>
-        <el-table-column prop="code" label="城市"></el-table-column>
+        <el-table-column prop="parentCode" label="省份">
+          <template v-slot="{ row }">{{
+            $root.getAreaName(row.parentCode)
+          }}</template>
+        </el-table-column>
+        <el-table-column prop="code" label="城市">
+          <template v-slot="{ row }">{{
+            $root.getAreaName(row.code)
+          }}</template>
+        </el-table-column>
         <el-table-column prop="cityGrade" label="城市等级">
           <template v-slot="{ row }">{{
             $root.dictAllName(row.cityGrade, "CityLevel").name
