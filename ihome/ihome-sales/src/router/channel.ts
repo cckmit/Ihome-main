@@ -3,8 +3,8 @@
  * @version: 
  * @Author: zyc
  * @Date: 2020-10-16 14:16:23
- * @LastEditors: ywl
- * @LastEditTime: 2020-10-16 15:41:28
+ * @LastEditors: wwq
+ * @LastEditTime: 2020-10-16 17:23:18
  */
 
 import { RouteConfig } from 'vue-router'
@@ -159,6 +159,87 @@ const channelRoutes: Array<RouteConfig> = [
                 name: 'ChannelChangeRevoke',
                 component: () => import('../views/channel/channelChange/info.vue'),
                 meta: { title: '渠道基础信息变更撤回', icon: 'form' }
+            },
+        ]
+    },
+    //城市等级列表
+    {
+        path: '/cityLevel',
+        meta: { title: '城市等级列表', icon: 'form' },
+        redirect: '/cityLevel/list',
+        component: Layout,
+        children: [
+            {
+                path: 'list',
+                name: 'cityLevel',
+                component: () => import('../views/channel/cityLevel/list.vue'),
+                meta: { title: '城市等级列表', icon: 'form' }
+            },
+        ]
+    },
+    // 渠道评级标准列表
+    {
+        path: '/gradeStandard',
+        meta: { title: '渠道评级标准列表', icon: 'form' },
+        redirect: '/gradeStandard/list',
+        component: Layout,
+        children: [
+            {
+                path: 'list',
+                name: 'gradeStandardList',
+                component: () => import('../views/channel/channelRatings/list.vue'),
+                meta: { title: '渠道评级标准列表', icon: 'form' }
+            },
+        ]
+    },
+    // 渠道等级信息
+    {
+        path: '/channelLevel',
+        meta: { title: '渠道等级信息列表', icon: 'form' },
+        redirect: '/ChannelLevel/list',
+        component: Layout,
+        children: [
+            {
+                path: 'list',
+                name: 'channelLevelList',
+                component: () => import('../views/channel/channelLevel/list.vue'),
+                meta: { title: '渠道等级信息列表', icon: 'form' }
+            },
+            {
+                path: 'info',
+                name: 'channelLevelInfo',
+                component: () => import('../views/channel/channelLevel/info.vue'),
+                meta: { title: '渠道等级信息详情', icon: 'form' }
+            },
+            {
+                path: 'add',
+                name: 'channelLevelAdd',
+                component: () => import('../views/channel/channelLevel/edit.vue'),
+                meta: { title: '渠道等级信息新增', icon: 'form' }
+            },
+            {
+                path: 'edit',
+                name: 'channelLevelEdit',
+                component: () => import('../views/channel/channelLevel/edit.vue'),
+                meta: { title: '渠道等级信息修改', icon: 'form' }
+            },
+            {
+                path: 'recall',
+                name: 'channelLevlRecall',
+                component: () => import('../views/channel/channelLevel/info.vue'),
+                meta: { title: '渠道等级信息撤回', icon: 'form' }
+            },
+            {
+                path: 'audit',
+                name: 'channelLevlAudit',
+                component: () => import('../views/channel/channelLevel/info.vue'),
+                meta: { title: '渠道等级信息审核', icon: 'form' }
+            },
+            {
+                path: 'change',
+                name: 'channelLevlChange',
+                component: () => import('../views/channel/channelLevel/edit.vue'),
+                meta: { title: '渠道等级变更信息', icon: 'form' }
             },
         ]
     },

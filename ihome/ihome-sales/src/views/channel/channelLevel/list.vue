@@ -4,10 +4,10 @@
  * @Author: zyc
  * @Date: 2020-08-13 11:40:10
  * @LastEditors: wwq
- * @LastEditTime: 2020-10-15 18:09:54
+ * @LastEditTime: 2020-10-16 16:55:45
 -->
 <template>
-  <IhPage>
+  <IhPage label-width="100px">
     <template v-slot:form>
       <el-form ref="form" label-width="100px">
         <el-row>
@@ -82,7 +82,7 @@
                 class="width--100"
               >
                 <el-option
-                  v-for="item in $root.dictAllList('division')"
+                  v-for="item in $root.dictAllList('CityLevel')"
                   :key="item.code"
                   :label="item.name"
                   :value="item.code"
@@ -116,7 +116,7 @@
                 class="width--100"
               >
                 <el-option
-                  v-for="item in $root.dictAllList('enterPeople')"
+                  v-for="item in $root.dictAllList('CityLevel')"
                   :key="item.code"
                   :label="item.name"
                   :value="item.code"
@@ -183,6 +183,7 @@
           fixed
           type="channelName"
           label="渠道商名称"
+          width="100"
         ></el-table-column>
         <el-table-column prop="province" label="业务开展省份">
           <template v-slot="{ row }">{{
@@ -221,7 +222,9 @@
         </el-table-column>
         <el-table-column label="操作" width="120" fixed="right">
           <template v-slot="{ row }">
-            <el-link type="primary" @click.native.prevent="info(row)"
+            <el-link
+              type="primary"
+              @click.native.prevent="routerTo(row, 'info')"
               >详情</el-link
             >
             <el-dropdown trigger="click" style="margin-left: 15px">
@@ -230,22 +233,32 @@
                 <i class="el-icon-arrow-down el-icon--right"></i>
               </span>
               <el-dropdown-menu slot="dropdown">
-                <el-dropdown-item @click.native.prevent="edit(row)"
+                <el-dropdown-item
+                  @click.native.prevent="routerTo(row, 'edit')"
+                  :disabled="row.status !== 'DRAFT'"
                   >修改</el-dropdown-item
                 >
-                <el-dropdown-item @click.native.prevent="remove(row)"
+                <el-dropdown-item
+                  @click.native.prevent="remove(row)"
+                  :disabled="row.status !== 'DRAFT'"
                   >删除</el-dropdown-item
                 >
-                <el-dropdown-item @click.native.prevent="recall(row)"
+                <el-dropdown-item
+                  @click.native.prevent="routerTo(row, 'recall')"
                   >撤回</el-dropdown-item
                 >
-                <el-dropdown-item @click.native.prevent="audit(row)"
+                <el-dropdown-item
+                  @click.native.prevent="routerTo(row, 'audit')"
+                  :disabled="row.status === 'DRAFT'"
                   >审核</el-dropdown-item
                 >
-                <el-dropdown-item @click.native.prevent="change(row)"
+                <el-dropdown-item
+                  @click.native.prevent="returnStatus(row)"
+                  :disabled="row.status === 'DRAFT'"
                   >退回起草</el-dropdown-item
                 >
-                <el-dropdown-item @click.native.prevent="change(row)"
+                <el-dropdown-item
+                  @click.native.prevent="routerTo(row, 'change')"
                   >变更信息</el-dropdown-item
                 >
               </el-dropdown-menu>
@@ -286,6 +299,7 @@ import {
   post_channelGrade_getList,
   get_channel_getAll,
   post_channelGrade_delete__id,
+  post_channelGrade_backToDraft__id,
 } from "../../../api/channel/index";
 import PaginationMixin from "../../../mixins/pagination";
 import UpdateUser from "./dialog/updateUser.vue";
@@ -340,52 +354,15 @@ export default class UserList extends Vue {
     };
     this.provinceOption = [];
   }
+
   // 添加
   add() {
     this.$router.push("/channelLevel/add");
   }
 
-  // 修改
-  edit(row: any) {
+  routerTo(row: any, where: string) {
     this.$router.push({
-      path: "/channelLevel/edit",
-      query: {
-        id: row.id,
-      },
-    });
-  }
-
-  // 详情
-  info(row: any) {
-    this.$router.push({
-      path: "/channelLevel/info",
-      query: {
-        id: row.id,
-      },
-    });
-  }
-  // 撤回
-  recall(row: any) {
-    this.$router.push({
-      path: "/channelLevel/recall",
-      query: {
-        id: row.id,
-      },
-    });
-  }
-  // 审核
-  audit(row: any) {
-    this.$router.push({
-      path: "/channelLevel/audit",
-      query: {
-        id: row.id,
-      },
-    });
-  }
-  // 信息变更
-  change(row: any) {
-    this.$router.push({
-      path: "/channelLevel/change",
+      path: `/channelLevel/${where}`,
       query: {
         id: row.id,
       },
@@ -397,14 +374,24 @@ export default class UserList extends Vue {
     try {
       await this.$confirm("是否确定删除?", "提示");
       await post_channelGrade_delete__id({ id: row.id });
-      this.resPageInfo.list.splice(row.$index, 1);
       this.$message({
         type: "success",
         message: "删除成功!",
       });
+      this.getListMixin();
     } catch (error) {
       console.log(error);
     }
+  }
+
+  // 退回起草
+  async returnStatus(row: any) {
+    await post_channelGrade_backToDraft__id({ id: row.id });
+    this.$message({
+      type: "success",
+      message: "退回起草成功!",
+    });
+    this.getListMixin();
   }
 
   created() {

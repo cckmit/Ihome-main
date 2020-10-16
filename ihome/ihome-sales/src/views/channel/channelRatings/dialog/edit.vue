@@ -4,7 +4,7 @@
  * @Author: wwq
  * @Date: 2020-10-09 09:35:09
  * @LastEditors: wwq
- * @LastEditTime: 2020-10-14 16:43:07
+ * @LastEditTime: 2020-10-16 14:46:56
 -->
 
 <template>
@@ -17,10 +17,10 @@
     width="900px"
     class="dialog text-left"
   >
-    <el-form ref="form" :model="form" label-width="80px">
+    <el-form ref="form" :model="form" :rules="rules" label-width="80px">
       <el-row>
         <el-col :span="12">
-          <el-form-item label="城市等级" prop="cityGrade" required>
+          <el-form-item label="城市等级" prop="cityGrade">
             <el-select
               v-model="form.cityGrade"
               clearable
@@ -36,7 +36,7 @@
           </el-form-item>
         </el-col>
         <el-col :span="12">
-          <el-form-item label="渠道等级" prop="channelGrade" required>
+          <el-form-item label="渠道等级" prop="channelGrade">
             <el-select
               v-model="form.channelGrade"
               clearable
@@ -54,7 +54,7 @@
       </el-row>
       <el-row>
         <el-col :span="12">
-          <el-form-item label="评级项" prop="gradeItem" required>
+          <el-form-item label="评级项" prop="gradeItem">
             <el-input
               v-model="form.gradeItem"
               maxlength="32"
@@ -66,7 +66,7 @@
       </el-row>
       <el-row>
         <el-col :span="24">
-          <el-form-item label="评级标准" prop="gradeStandard" required>
+          <el-form-item label="评级标准" prop="gradeStandard">
             <el-input
               v-model="form.gradeStandard"
               maxlength="64"
@@ -138,6 +138,17 @@ export default class Edit extends Vue {
     standardAttachments: [],
   };
 
+  private rules: any = {
+    cityGrade: [{ required: true, message: "请选择城市等级", trigger: "blur" }],
+    channelGrade: [
+      { required: true, message: "请选择渠道等级", trigger: "blur" },
+    ],
+    gradeItem: [{ required: true, message: "请填写评级项", trigger: "blur" }],
+    gradeStandard: [
+      { required: true, message: "请填写评级标准", trigger: "blur" },
+    ],
+  };
+
   created() {
     if (this.editDialog === "edit") {
       const standardAttachments = this.data.channelGradeStandardAttachments.map(
@@ -166,7 +177,7 @@ export default class Edit extends Vue {
         }
         this.$emit("finish");
       } else {
-        this.$message.warning("所需材料不能为空!");
+        this.$message.warning("请勾选所需材料!");
       }
     } else {
       console.log("error submit!!");

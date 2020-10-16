@@ -4,10 +4,10 @@
  * @Author: wwq
  * @Date: 2020-06-30 09:21:17
  * @LastEditors: wwq
- * @LastEditTime: 2020-10-15 10:05:17
+ * @LastEditTime: 2020-10-16 16:58:51
 --> 
 <template>
-  <ih-page>
+  <IhPage label-width="100px">
     <template v-slot:form>
       <el-form ref="form" label-width="100px">
         <el-row>
@@ -117,7 +117,7 @@
         <el-button type="primary" @click="finish">确 定</el-button>
       </div>
     </el-dialog>
-  </ih-page>
+  </IhPage>
 </template>
 <script lang="ts">
 import { Component, Vue } from "vue-property-decorator";

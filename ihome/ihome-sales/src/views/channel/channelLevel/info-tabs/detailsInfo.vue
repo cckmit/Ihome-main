@@ -4,7 +4,7 @@
  * @Author: wwq
  * @Date: 2020-10-15 12:33:25
  * @LastEditors: wwq
- * @LastEditTime: 2020-10-15 16:10:31
+ * @LastEditTime: 2020-10-16 14:20:28
 -->
 <template>
   <div class="text-left">
@@ -230,7 +230,7 @@ export default class Home extends Vue {
 
   async getInfo() {
     let id = this.$route.query.id;
-    this.resPageInfo = await get_channelGrade_get__id({ id: id });
+    if (id) this.resPageInfo = await get_channelGrade_get__id({ id: id });
   }
 
   async pass(val: any) {

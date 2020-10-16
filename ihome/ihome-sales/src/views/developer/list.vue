@@ -4,7 +4,7 @@
  * @Author: wwq
  * @Date: 2020-09-25 17:59:09
  * @LastEditors: wwq
- * @LastEditTime: 2020-10-10 18:23:18
+ * @LastEditTime: 2020-10-16 15:47:31
 -->
 <template>
   <ih-page>
@@ -223,7 +223,7 @@ export default class DeveloperList extends Vue {
     try {
       await this.$confirm("是否确定删除?", "提示");
       await get_company_delete__id({ id: row.id });
-      this.resPageInfo.list.splice(row.$index, 1);
+      this.getListMixin();
       this.$message({
         type: "success",
         message: "删除成功!",

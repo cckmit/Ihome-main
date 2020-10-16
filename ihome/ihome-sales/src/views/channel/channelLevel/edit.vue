@@ -4,7 +4,7 @@
  * @Author: wwq
  * @Date: 2020-10-15 16:02:03
  * @LastEditors: wwq
- * @LastEditTime: 2020-10-16 11:36:21
+ * @LastEditTime: 2020-10-16 17:21:06
 -->
 <template>
   <IhPage>
@@ -20,26 +20,29 @@
           <el-row>
             <el-col :span="8">
               <el-form-item label="渠道商" align="left" prop="channelId">
-                <el-select
-                  :disabled="$route.name === 'channelLevlChange'"
-                  v-model="resPageInfo.channelId"
-                  clearable
-                  placeholder="请选择渠道商"
-                >
-                  <el-option
-                    v-for="item in $root.dictAllList('CityLevel')"
-                    :key="item.code"
-                    :label="item.name"
-                    :value="item.code"
-                  ></el-option>
-                </el-select>
-                <el-link
-                  style="margin-left: 5px"
-                  :href="`/web-sales/channels/info?id=${resPageInfo.channelId}`"
-                  type="primary"
-                  target="_blank"
-                  >详情</el-link
-                >
+                <div style="display: flex; justify-contant: flex-start">
+                  <el-select
+                    :disabled="$route.name === 'channelLevlChange'"
+                    v-model="resPageInfo.channelId"
+                    clearable
+                    class="width--100"
+                    placeholder="请选择渠道商"
+                  >
+                    <el-option
+                      v-for="item in channelOptions"
+                      :key="item.id"
+                      :label="item.name"
+                      :value="item.id"
+                    ></el-option>
+                  </el-select>
+                  <el-link
+                    style="margin-left: 10px; text-align: center; width: 50px"
+                    :href="`/web-sales/channels/info?id=${resPageInfo.channelId}`"
+                    type="primary"
+                    target="_blank"
+                    >详情</el-link
+                  >
+                </div>
               </el-form-item>
             </el-col>
             <el-col :span="8">
@@ -61,7 +64,7 @@
               </el-form-item>
             </el-col>
             <el-col :span="8">
-              <el-form-item label="渠道类型" required align="left">
+              <el-form-item label="渠道类型" align="left">
                 <span>{{
                   $root.dictAllName(resPageInfo.channelType, "ChannelType").name
                 }}</span>
@@ -72,11 +75,12 @@
             <div v-show="searchOpen">
               <el-row>
                 <el-col :span="8">
-                  <el-form-item label="业务开展省市">
+                  <el-form-item label="业务开展省市" prop="provinceOption">
                     <IhCascader
                       :level="2"
+                      :checkStrictly="false"
                       @change="getTableData"
-                      v-model="provinceOption"
+                      v-model="resPageInfo.provinceOption"
                       clearable
                       placeholder="请选择"
                       class="width--100"
@@ -120,15 +124,16 @@
                 <el-col :span="8">
                   <el-form-item label="事业部" align="left">
                     <el-select
+                      class="width--100"
                       v-model="resPageInfo.departmentOrgId"
                       clearable
                       placeholder="请选择事业部"
                     >
                       <el-option
-                        v-for="item in $root.dictAllList('CityLevel')"
-                        :key="item.code"
+                        v-for="item in departmentOrgIdOptions"
+                        :key="item.id"
                         :label="item.name"
-                        :value="item.code"
+                        :value="item.id"
                       ></el-option>
                     </el-select>
                   </el-form-item>
@@ -166,28 +171,36 @@
           > -->
         </p>
         <br />
-        <el-table
-          class="ih-table"
-          :data="resPageInfo.channelGradeItems"
-          style="width: 100%"
-        >
-          <el-table-column prop="cityGrade" label="城市等级">
-            <template v-slot="{ row }">{{
-              $root.dictAllName(row.cityGrade, "CityLevel").name
-            }}</template>
-          </el-table-column>
-          <el-table-column prop="channelGrade" label="渠道等级">
-            <template v-slot="{ row }">{{
-              $root.dictAllName(row.channelGrade, "ChannelLevel").name
-            }}</template>
-          </el-table-column>
-          <el-table-column prop="gradeItem" label="评级项"></el-table-column>
-          <el-table-column prop="inputValue" label="录入信息"></el-table-column>
-          <el-table-column
-            prop="gradeStandard"
-            label="评级标准"
-          ></el-table-column>
-        </el-table>
+        <el-form ref="dynamicValidateForm">
+          <el-table
+            class="ih-table"
+            :data="resPageInfo.channelGradeItems"
+            style="width: 100%"
+          >
+            <el-table-column prop="cityGrade" label="城市等级">
+              <template v-slot="{ row }">{{
+                $root.dictAllName(row.cityGrade, "CityLevel").name
+              }}</template>
+            </el-table-column>
+            <el-table-column prop="channelGrade" label="渠道等级">
+              <template v-slot="{ row }">{{
+                $root.dictAllName(row.channelGrade, "ChannelLevel").name
+              }}</template>
+            </el-table-column>
+            <el-table-column prop="gradeItem" label="评级项"></el-table-column>
+            <el-table-column prop="inputValue" label="录入信息">
+              <template v-slot="{ row }">
+                <el-form-item>
+                  <el-input v-model="row.inputValue"></el-input>
+                </el-form-item>
+              </template>
+            </el-table-column>
+            <el-table-column
+              prop="gradeStandard"
+              label="评级标准"
+            ></el-table-column>
+          </el-table>
+        </el-form>
         <br />
         <p class="ih-info-title">
           附件信息
@@ -220,7 +233,7 @@
             type="textarea"
             :autosize="{ minRows: 5, maxRows: 10 }"
             placeholder="请输入内容"
-            v-model="remark"
+            v-model="changeReason"
           >
           </el-input>
         </div>
@@ -240,6 +253,8 @@ import { Component, Vue } from "vue-property-decorator";
 //引入请求数据的api
 import {
   get_channelGrade_get__id,
+  get_channel_getAll,
+  get_channelCityLevel_get__cityCode,
   post_channelGrade_add,
   post_channelGradeChange_add,
   post_channelGrade_edit,
@@ -255,24 +270,39 @@ export default class ChannelRates extends Vue {
     return this.$route.query.id;
   }
   private fileList = [];
-  private remark = "";
+  private changeReason = "";
   searchOpen = true;
+  channelOptions: any = [];
 
   resPageInfo: any = {
     channelId: "",
     channelGrade: "",
-    channelType: "",
+    channelType: "Platform",
     province: "",
     city: "",
     cityGrade: "",
-    departmentOrgId: "",
+    departmentOrgId: "1234",
     special: "",
     storageNum: "",
-    status: "",
     channelGradeItems: [],
     channelGradeAttachments: [],
+    provinceOption: [],
   };
-  provinceOption: any = [];
+
+  departmentOrgIdOptions: any = [
+    {
+      name: "人事部",
+      id: "111",
+    },
+    {
+      name: "产品研发部",
+      id: "222",
+    },
+    {
+      name: "技术部",
+      id: "333",
+    },
+  ];
 
   private rules: any = {
     channelId: [{ required: true, message: "请选择渠道商", trigger: "blur" }],
@@ -293,23 +323,46 @@ export default class ChannelRates extends Vue {
     this.getInfo();
   }
 
+  // 获取渠道商
+  async getChannelAll() {
+    this.channelOptions = await get_channel_getAll();
+  }
+
   async getInfo() {
+    this.getChannelAll();
     let id = this.$route.query.id;
     if (id) {
       this.resPageInfo = await get_channelGrade_get__id({ id: id });
       // this.provinceOption = [this.resPageInfo.province, this.resPageInfo.city];
-      this.provinceOption = ["120000000000", "120100000000"];
+      this.resPageInfo.provinceOption = ["120000000000", "120100000000"];
     }
+    console.log(this.resPageInfo);
   }
   // 获取评级信息数据
-  async getTableData() {
-    let obj: any = {};
-    if (this.resPageInfo.channelGrade && this.provinceOption.length) {
+  async getTableData(val: any) {
+    if (val instanceof Array) {
+      const { cityGrade } = await get_channelCityLevel_get__cityCode({
+        cityCode: val[1],
+      });
+      this.resPageInfo.cityGrade = cityGrade;
+      this.resPageInfo.province = val[0];
+      this.resPageInfo.city = val[1];
+    }
+    if (
+      this.resPageInfo.channelGrade &&
+      this.resPageInfo.provinceOption.length
+    ) {
+      let obj: any = {};
       obj.channelGrade = this.resPageInfo.channelGrade;
-      obj.cityCode = this.provinceOption[1];
-      this.resPageInfo.channelGradeItems = await post_channelGradeStandard_getAllByCityCodeAndChannelGrade(
+      obj.cityCode = this.resPageInfo.provinceOption[1];
+      let res = await post_channelGradeStandard_getAllByCityCodeAndChannelGrade(
         obj
       );
+      this.resPageInfo.channelGradeItems = res.map((v: any) => ({
+        ...v,
+        inputValue: "",
+        standardId: v.id,
+      }));
     }
   }
 
@@ -321,17 +374,28 @@ export default class ChannelRates extends Vue {
           case "channelLevelEdit":
             this.resPageInfo.id = this.Id;
             await post_channelGrade_edit(this.resPageInfo);
+            this.$router.push("/channelLevel/list");
             break;
           case "channelLevlChange":
-            if (this.remark) {
-              this.resPageInfo.id = this.Id;
+            if (this.changeReason) {
+              this.resPageInfo.oldGradeId = this.Id;
+              this.resPageInfo.channelGradeItemChanges = [
+                ...this.resPageInfo.channelGradeItems,
+              ];
+              this.resPageInfo.channelGradeAttachmentChanges = [
+                ...this.resPageInfo.channelGradeAttachments,
+              ];
+              this.resPageInfo.changeReason = this.changeReason;
               await post_channelGradeChange_add(this.resPageInfo);
+              this.$router.push("/levelChange/list");
             } else {
               this.$message.warning("请填写变更原因");
+              return;
             }
             break;
           case "channelLevelAdd":
             await post_channelGrade_add(this.resPageInfo);
+            this.$router.push("/channelLevel/list");
             break;
         }
         this.$message({
@@ -346,6 +410,7 @@ export default class ChannelRates extends Vue {
 
 <style lang="scss" scoped>
 .text-ellipsis {
+  justify-content: flex-start;
   width: 100%;
   display: inline-block;
   overflow: hidden;

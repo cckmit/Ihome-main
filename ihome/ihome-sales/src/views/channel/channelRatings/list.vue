@@ -4,10 +4,10 @@
  * @Author: wwq
  * @Date: 2020-08-13 11:40:10
  * @LastEditors: wwq
- * @LastEditTime: 2020-10-14 17:20:49
+ * @LastEditTime: 2020-10-16 16:56:20
 -->
 <template>
-  <ih-page>
+  <IhPage label-width="100px">
     <template v-slot:form>
       <el-form ref="form" label-width="100px">
         <el-row>
@@ -163,7 +163,7 @@
         @finish="viewDialogVisible = false"
       />
     </ih-dialog>
-  </ih-page>
+  </IhPage>
 </template>
 
 <script lang="ts">
@@ -221,11 +221,11 @@ export default class ChannelRatings extends Vue {
     try {
       await this.$confirm("是否确定删除?", "提示");
       await post_channelGradeStandard_delete__id({ id: row.id });
-      this.resPageInfo.list.splice(row.$index, 1);
       this.$message({
         type: "success",
         message: "删除成功!",
       });
+      this.getListMixin();
     } catch (error) {
       console.log(error);
     }
