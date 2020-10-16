@@ -1,13 +1,13 @@
 <!--
- * @Descripttion: 
+ * @Description: 
  * @version: 
  * @Author: zyc
  * @Date: 2020-06-30 09:21:17
  * @LastEditors: ywl
- * @LastEditTime: 2020-10-10 16:12:55
+ * @LastEditTime: 2020-10-16 17:17:14
 --> 
 <template>
-  <ih-page>
+  <IhPage label-width="100px">
     <template v-slot:form>
       <el-form
         ref="form"
@@ -17,16 +17,16 @@
           <el-col :span="8">
             <el-form-item label="渠道商名称">
               <el-select
-                v-model="queryPageParameters.distributorsName"
+                v-model="queryPageParameters.name"
                 clearable
                 placeholder="请选择"
                 class="width--100"
               >
                 <el-option
-                  v-for="item in $root.displayList('distributorsName')"
-                  :key="item.value"
-                  :label="item.label"
-                  :value="item.value"
+                  v-for="item in channelList"
+                  :key="item.id"
+                  :label="item.name"
+                  :value="item.name"
                 ></el-option>
               </el-select>
             </el-form-item>
@@ -40,10 +40,10 @@
                 class="width--100"
               >
                 <el-option
-                  v-for="item in $root.displayList('enterPeople')"
-                  :key="item.value"
-                  :label="item.label"
-                  :value="item.value"
+                  v-for="item in testList"
+                  :key="item.id"
+                  :label="item.value"
+                  :value="item.id"
                 ></el-option>
               </el-select>
             </el-form-item>
@@ -57,10 +57,10 @@
                 class="width--100"
               >
                 <el-option
-                  v-for="item in $root.displayList('stated')"
-                  :key="item.value"
-                  :label="item.label"
-                  :value="item.value"
+                  v-for="item in $root.dictAllList('ChannelStatus')"
+                  :key="item.code"
+                  :label="item.name"
+                  :value="item.code"
                 ></el-option>
               </el-select>
             </el-form-item>
@@ -90,10 +90,10 @@
                 class="width--100"
               >
                 <el-option
-                  v-for="item in $root.displayList('division')"
-                  :key="item.value"
-                  :label="item.label"
-                  :value="item.value"
+                  v-for="item in testList"
+                  :key="item.id"
+                  :label="item.value"
+                  :value="item.id"
                 ></el-option>
               </el-select>
             </el-form-item>
@@ -109,13 +109,10 @@
           @click="search()"
         >查询</el-button>
         <el-button
-          type="warning"
+          type="info"
           @click="reset()"
         >清空</el-button>
-        <el-button
-          type="info"
-          @click="add()"
-        >变更录入人</el-button>
+        <el-button @click="add()">变更录入人</el-button>
       </el-row>
     </template>
 
@@ -124,68 +121,62 @@
       <el-table
         class="ih-table"
         :data="resPageInfo.list"
-        :default-sort="{ prop: 'id', order: 'descending' }"
         @selection-change="handleSelectionChange"
       >
         <el-table-column
+          type="selection"
+          width="50"
+          align="center"
           fixed
-          type="index"
+        ></el-table-column>
+        <el-table-column
+          fixed
           label="渠道商名称"
+          prop="channelName"
           width="200"
         ></el-table-column>
         <el-table-column
           fixed
-          prop="name"
-          label="业务开展省份"
+          prop="storageNum"
+          label="入库编号"
           width="170"
         ></el-table-column>
         <el-table-column
-          fixed
-          prop="account"
-          label="业务开展城市"
+          prop="inputUser"
+          label="录入人"
           width="170"
         ></el-table-column>
         <el-table-column
-          prop="mobilePhone"
-          label="城市等级"
+          prop="changeTime"
+          label="变更日期"
           width="170"
         ></el-table-column>
         <el-table-column
-          prop="accountType"
-          label="渠道等级"
+          prop="departmentOrgId"
+          label="事业部"
           width="170"
         >
-          <template v-slot="{ scope }">{{
-            $root.displayName("accountType", scope.row.accountType)
-          }}</template>
         </el-table-column>
-        <el-table-column
-          prop="orgName"
-          label="事业部"
-          width="200"
-        ></el-table-column>
-        <el-table-column
-          prop="employeeCode"
-          label="录入人"
-          width="150"
-        ></el-table-column>
         <el-table-column
           prop="status"
           label="状态"
           width="150"
         >
-          <template v-slot="{ scope }">{{
-            $root.displayName("accountStatus", scope.row.status)
-          }}</template>
         </el-table-column>
         <el-table-column
+          prop="changeReason"
+          label="变更原因"
+          min-width="200"
+        ></el-table-column>
+        <el-table-column
           label="操作"
-          width="200"
+          fixed="right"
+          width="150"
         >
-          <template v-slot="{ scope }">
+          <template v-slot="{ row }">
             <el-link
               type="primary"
-              @click.native.prevent="info(scope)"
+              @click.native.prevent="info(row)"
             >详情</el-link>
             <el-dropdown
               trigger="click"
@@ -200,7 +191,7 @@
                 <el-dropdown-item @click.native.prevent="remove(scope)">删除</el-dropdown-item>
                 <el-dropdown-item @click.native.prevent="locking(scope)">撤回</el-dropdown-item>
                 <el-dropdown-item @click.native.prevent="activation(scope)">审核</el-dropdown-item>
-                <el-dropdown-item @click.native.prevent="resetPassword(scope)">变更信息</el-dropdown-item>
+                <el-dropdown-item @click.native.prevent="resetPassword(scope)">退回起草</el-dropdown-item>
               </el-dropdown-menu>
             </el-dropdown>
           </template>
@@ -219,132 +210,71 @@
         :total="resPageInfo.total"
       ></el-pagination>
     </template>
-  </ih-page>
+  </IhPage>
 </template>
 <script lang="ts">
 import { Component, Vue } from "vue-property-decorator";
 
-import { post_channel_getList } from "../../../api/channel/index";
+import {
+  post_channelGradeChange_getList,
+  get_channel_getAll,
+} from "@/api/channel/index";
 import PaginationMixin from "../../../mixins/pagination";
 
 @Component({
   components: {},
   mixins: [PaginationMixin],
 })
-export default class UserList extends Vue {
-  queryPageParameters: any = {
-    account: null,
-    distributorsName: "ruijia",
-    cityLevel: "firstLevel",
-    ChannelLevel: "bigPlatform",
-    employeeCode: null,
-    employeeStatus: "On",
-    employeeType: "Formal",
-    name: null,
-    orgId: null,
-    permissionOrgId: null,
-    status: "Valid",
-    workType: null,
-  };
-  jobVisibleData: any = null;
+export default class LevelChangeList extends Vue {
+  queryPageParameters: any = {};
   OrganizationJurisdictionData: any = null;
   copyUserData: any = null;
   resPageInfo: any = {
     total: 0,
     list: [],
   };
+  dialogVisible = false;
+  private channelList: any = [];
 
-  employmentDateChange(dateArray: any) {
-    console.log(dateArray);
-    this.queryPageParameters.employmentDateStart = dateArray[0];
-    this.queryPageParameters.employmentDateEnd = dateArray[1];
-  }
+  // 测试数据
+  testList = [
+    { value: "管理员1", id: 1 },
+    { value: "管理员2", id: 2 },
+    { value: "管理员3", id: 3 },
+  ];
 
   reset() {
-    this.queryPageParameters = {
-      account: null,
-      accountType: "Ihome",
-      pageNum: this.queryPageParameters.pageNum,
-      pageSize: this.queryPageParameters.pageSize,
-    };
+    this.queryPageParameters = {};
   }
-
-  addData: any = null;
-  value: any = "";
-  searchOpen = true;
-
-  organizationJurisdictionVisible = false;
-  jobVisible = false;
-  copyUserVisible = false;
-
-  currentPage: any = 1;
-  valuedate: any = new Date().getTime();
-  // valuedate: any ='2020-07-01';
-  tableData: any = [];
-  total: any = null;
-
-  formatter(row: any) {
-    return row.name;
-  }
-
-  openToggle() {
-    this.searchOpen = !this.searchOpen;
-  }
-  dialogVisible = false;
-
-  add(data: any) {
-    this.addData = data;
+  add() {
     this.dialogVisible = true;
   }
-
-  finishJob(data: any) {
-    console.log(data);
-    this.search();
-  }
-
-  async created() {
-    this.getListMixin();
-  }
-  async getListMixin() {
-    this.resPageInfo = await post_channel_getList(this.queryPageParameters);
-  }
-
-  getValue(value: any) {
-    this.queryPageParameters.orgId = value;
-  }
-
   search() {
     this.getListMixin();
   }
-
-  edit(scope: any) {
-    this.add(scope.row);
-  }
-  jobRole(scope: any) {
-    console.log(scope);
-    this.jobVisibleData = scope.row;
-    this.jobVisible = true;
-  }
-  pOrganization(scope: any) {
-    console.log(scope);
-    this.OrganizationJurisdictionData = scope.row;
-    this.organizationJurisdictionVisible = true;
-  }
-
-  finishCopyUser(data: any) {
-    console.log(data);
-    this.search();
+  edit() {
+    // this.add(scope.row);
   }
   handleSelectionChange(val: any) {
     console.log(val);
-    this.copyUserData = val;
   }
   //详情
   info(scope: any) {
     console.log("详情页跳转", scope);
   }
+  private async getChannelList(): Promise<void> {
+    this.channelList = await get_channel_getAll();
+  }
+  public async getListMixin() {
+    this.resPageInfo = await post_channelGradeChange_getList(
+      this.queryPageParameters
+    );
+  }
+
+  async created() {
+    this.getListMixin();
+    this.getChannelList();
+  }
 }
 </script>
-<style lang="scss" scoped>
-</style>
  

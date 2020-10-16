@@ -4,10 +4,10 @@
  * @Author: ywl
  * @Date: 2020-08-13 11:40:10
  * @LastEditors: ywl
- * @LastEditTime: 2020-10-16 15:18:14
+ * @LastEditTime: 2020-10-16 16:52:02
 -->
 <template>
-  <IhPage>
+  <IhPage label-width="100px">
     <template v-slot:form>
       <el-form
         ref="form"

@@ -4,7 +4,7 @@
  * @Author: zyc
  * @Date: 2020-06-22 11:10:43
  * @LastEditors: ywl
- * @LastEditTime: 2020-10-16 15:42:05
+ * @LastEditTime: 2020-10-16 15:55:47
  */
 import Vue from 'vue'
 import VueRouter, { RouteConfig, Route } from 'vue-router'
@@ -115,19 +115,17 @@ let routes: Array<RouteConfig> = [
     ]
   },
   {
-    path: '/xx',
-    meta: { title: '用户', icon: 'form' },
-    redirect: '/xx/distributorsList',
+    path: '/levelChange',
+    meta: { title: '渠道等级变更管理', icon: 'form' },
+    redirect: '/levelChange/list',
     component: Layout,
     children: [
-      // 渠道等级信息变更列表 --- start
       {
-        path: 'channelInfoList',
-        name: 'ChannelInfoList',
-        component: () => import('../views/channel/list/list.vue'),
+        path: 'list',
+        name: 'LevelChangeList',
+        component: () => import('../views/channel/channelLevelChange/list.vue'),
         meta: { title: '渠道等级信息变更列表', icon: 'form' }
       },
-      // 渠道等级信息变更列表 --- end
     ]
   },
   {

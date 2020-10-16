@@ -4,7 +4,7 @@
  * @Author: ywl
  * @Date: 2020-06-30 09:21:17
  * @LastEditors: ywl
- * @LastEditTime: 2020-10-16 15:00:17
+ * @LastEditTime: 2020-10-16 16:48:13
 --> 
 <template>
   <IhPage label-width="100px">
@@ -66,7 +66,8 @@
               </el-select>
             </el-form-item>
           </el-col>
-
+        </el-row>
+        <el-row>
           <el-col :span="8">
             <el-form-item label="渠道跟进人">
               <el-select
@@ -89,20 +90,18 @@
     </template>
 
     <template v-slot:btn>
-      <el-row>
-        <el-button
-          type="primary"
-          @click="search()"
-        >查询</el-button>
-        <el-button
-          type="info"
-          @click="reset()"
-        >重置</el-button>
-        <el-button
-          :disabled="!selectionData.length"
-          @click="dialogVisible = true"
-        >变更录入人</el-button>
-      </el-row>
+      <el-button
+        type="primary"
+        @click="search()"
+      >查询</el-button>
+      <el-button
+        type="info"
+        @click="reset()"
+      >重置</el-button>
+      <el-button
+        :disabled="!selectionData.length"
+        @click="dialogVisible = true"
+      >变更录入人</el-button>
     </template>
 
     <template v-slot:table>
