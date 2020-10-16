@@ -4,7 +4,7 @@
  * @Author: lgf
  * @Date: 2020-09-16 14:05:21
  * @LastEditors: ywl
- * @LastEditTime: 2020-10-15 10:40:58
+ * @LastEditTime: 2020-10-16 10:31:47
 -->
 <template>
   <div class="text-left">
@@ -81,7 +81,6 @@
     </p>
     <el-table
       :data="info.channelBanks"
-      border
       style="width: 100%"
     >
       <el-table-column
@@ -138,7 +137,7 @@
     </div>
     <br />
 
-    <template v-if="typeStr === 'ConfirmChannel'">
+    <template v-if="pageName === 'ConfirmChannel'">
       <p class="ih-info-title">确认意见</p>
       <el-input
         type="textarea"
@@ -156,7 +155,7 @@
       </div>
     </template>
 
-    <template v-if="typeStr === 'RevokeChannel'">
+    <template v-if="pageName === 'RevokeChannel'">
       <p class="ih-info-title">撤回原因</p>
       <el-input
         type="textarea"
@@ -176,7 +175,7 @@
 </template>
 
 <script lang="ts">
-import { Component, Vue, Prop } from "vue-property-decorator";
+import { Component, Vue } from "vue-property-decorator";
 //引入请求数据的api
 import {
   get_channel_get__id,
@@ -186,13 +185,15 @@ import {
   components: {},
 })
 export default class Home extends Vue {
-  @Prop() typeStr!: string;
   info: any = {};
   private channelPersons: object = {};
   private approveRecord: ConfirmObj = {
     remark: "",
     result: "",
   };
+  private get pageName(): string | null | undefined {
+    return this.$route.name;
+  }
 
   async getInfo() {
     let id = this.$route.query.id;
@@ -204,9 +205,9 @@ export default class Home extends Vue {
       this.$message.error("输入不能为空");
       return;
     }
-    this.approveRecord.result = type;
     await post_channel_approveRecord({
       ...this.approveRecord,
+      result: type,
       id: this.$route.query.id,
     });
     this.$message.success("成功");
@@ -224,18 +225,3 @@ interface ConfirmObj {
   result: string;
 }
 </script>
-
-<style lang="scss" scoped>
-.line {
-  padding: 15px;
-}
-.title {
-  font-weight: 600;
-  text-align: left;
-  margin-left: 20px;
-  height: 500px;
-}
-.el-input__inner {
-  width: 1060px;
-}
-</style>

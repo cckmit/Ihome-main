@@ -4,7 +4,7 @@
  * @Author: ywl
  * @Date: 2020-09-16 14:05:21
  * @LastEditors: ywl
- * @LastEditTime: 2020-10-16 11:31:23
+ * @LastEditTime: 2020-10-16 12:04:34
 -->
 <template>
   <IhPage>
@@ -158,7 +158,7 @@
     </p>
     <br />
     <el-table
-      :data="info.channelBanks"
+      :data="info.channelBankChanges"
       style="width: 100%"
     >
       <el-table-column
@@ -266,16 +266,14 @@
     >
     </el-input>
 
-    <template v-if="pageName === 'ChangeChannel'">
-      <p class="ih-info-title">变更原因</p>
-      <el-input
-        type="textarea"
-        :rows="3"
-        placeholder="请输入变更原因"
-        v-model="changeReason"
-      >
-      </el-input>
-    </template>
+    <p class="ih-info-title">变更原因</p>
+    <el-input
+      type="textarea"
+      :rows="3"
+      placeholder="请输入变更原因"
+      v-model="changeReason"
+    >
+    </el-input>
     <div>
       <br />
       <el-button
@@ -308,10 +306,8 @@ import { Component, Vue } from "vue-property-decorator";
 import { Form as ElForm } from "element-ui";
 //引入请求数据的api -- 先调用本地的
 import {
-  get_channel_get__id,
-  post_channel_add,
-  post_channel_edit,
-  post_channelChange_add,
+  get_channelChange_get__id,
+  post_channelChange_edit,
 } from "@/api/channel/index";
 import BankDialog from "./dialog/bankDialog.vue";
 
@@ -327,9 +323,9 @@ export default class ModifyThe extends Vue {
     address: "",
     businessTime: "",
     capital: "",
-    channelAttachments: [],
-    channelBanks: [],
-    channelPersons: [],
+    channelAttachmentChanges: [],
+    channelBankChanges: [],
+    channelPersonChanges: [],
     city: "",
     county: "",
     remark: "",
@@ -402,10 +398,6 @@ export default class ModifyThe extends Vue {
     setupTime: [{ required: true, message: "请输入成立日期", trigger: "blur" }],
   };
 
-  private get pageName(): string | null | undefined {
-    return this.$route.name;
-  }
-
   addAccount() {
     this.Bankrule = {
       bank: "",
@@ -438,37 +430,13 @@ export default class ModifyThe extends Vue {
 
     Promise.all([ruleFrom, personForm]).then(async (value) => {
       if (value[0] && value[1]) {
-        this.info.channelPersons.push(this.channelPersonsData);
-        console.log(this.pageName);
-        switch (this.pageName) {
-          case "AddChannel":
-            // 渠道商添加
-            await post_channel_add({ ...this.info, operateType: type });
-            this.$message.success("渠道商添加成功");
-            break;
-          case "EditChannel":
-            // 修改渠道商
-            await post_channel_edit({ ...this.info, operateType: type });
-            this.$message.success("修改渠道商成功");
-            break;
-          case "ChangeChannel":
-            // 渠道商提交变更
-            console.log("渠道商提交变更");
-            if (!this.changeReason) {
-              this.$message.error("变更原因不能为空");
-              return;
-            }
-            await post_channelChange_add({
-              ...this.info,
-              operateType: type,
-              changeReason: this.changeReason,
-              oldChannelId: this.$route.query.id,
-            });
-            this.$message.success("渠道商变更提交成功");
-            break;
-          case "ChannelChangeEdit":
-            break;
-        }
+        this.info.channelPersonChanges.push(this.channelPersonsData);
+        await post_channelChange_edit({
+          ...this.info,
+          operateType: type,
+          changeReason: this.changeReason,
+        });
+        this.$message.success("渠道商变更修改成功");
         this.$router.push({
           path: "list",
         });
@@ -497,13 +465,14 @@ export default class ModifyThe extends Vue {
   async getInfo() {
     let id = this.$route.query.id;
     if (id) {
-      let res: any = await get_channel_get__id({ id: id });
+      let res: any = await get_channelChange_get__id({ id: id });
       res.timeList = res.businessTime.split(" - ");
-      res.provinceList = ["120000000000", "120100000000", "120101000000"];
+      // res.provinceList = ["120000000000", "120100000000", "120101000000"];
       this.info = res;
-      this.channelPersonsData =
-        this.info.channelPersons.length && this.info.channelPersons[0];
-      console.log(this.info);
+      this.changeReason = res.changeReason;
+      this.channelPersonsData = this.info.channelBankChanges.length
+        ? this.info.channelBankChanges[0]
+        : {};
     }
   }
   /**

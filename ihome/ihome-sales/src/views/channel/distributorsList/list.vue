@@ -4,7 +4,7 @@
  * @Author: zyc
  * @Date: 2020-08-13 11:40:10
  * @LastEditors: ywl
- * @LastEditTime: 2020-10-15 18:09:46
+ * @LastEditTime: 2020-10-16 10:08:37
 -->
 <template>
   <IhPage>
@@ -171,11 +171,11 @@
         >重置</el-button>
         <el-button
           :disabled="!selectionData.length"
-          @click="ChangeFollower()"
+          @click="changeFollower()"
         >变更跟进人</el-button>
         <el-button
           :disabled="!selectionData.length"
-          @click="ChangeInputPerson()"
+          @click="changeInputPerson()"
         >变更录入人</el-button>
       </el-row>
     </template>
@@ -357,12 +357,12 @@ export default class List extends Vue {
     console.log("清空");
     this.queryPageParameters = {};
   }
-  ChangeFollower() {
+  changeFollower() {
     console.log("变更跟进人");
     this.dialogVisible = true;
     this.isInput = false;
   }
-  ChangeInputPerson() {
+  changeInputPerson() {
     console.log("变更录入人");
     this.dialogVisible = true;
     this.isInput = true;

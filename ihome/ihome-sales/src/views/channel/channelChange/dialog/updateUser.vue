@@ -4,7 +4,7 @@
  * @Author: ywl
  * @Date: 2020-07-08 14:23:16
  * @LastEditors: ywl
- * @LastEditTime: 2020-10-16 09:50:00
+ * @LastEditTime: 2020-10-16 09:47:46
 --> 
 <template>
   <el-dialog
@@ -72,10 +72,7 @@
 <script lang="ts">
 import { Component, Vue, Prop } from "vue-property-decorator";
 import { Form as ElForm } from "element-ui";
-import {
-  post_channel_modifyFollowUser,
-  post_channel_modifyInputUser,
-} from "@/api/channel/index";
+import { post_channelChange_modifyInputUser } from "@/api/channel/index";
 
 import { NoRepeatHttp } from "ihome-common/util/aop/no-repeat-http";
 @Component({
@@ -83,7 +80,6 @@ import { NoRepeatHttp } from "ihome-common/util/aop/no-repeat-http";
 })
 export default class UpdateUser extends Vue {
   @Prop({ default: [] }) data!: Array<object>;
-  @Prop() isInput!: boolean;
   dialogVisible = true;
 
   form: any = {
@@ -105,13 +101,10 @@ export default class UpdateUser extends Vue {
   @NoRepeatHttp()
   async submit(valid: any) {
     if (valid) {
-      if (this.isInput) {
-        this.form.userId = this.user;
-        await post_channel_modifyInputUser(this.form);
-      } else {
-        this.form.userId = this.user;
-        await post_channel_modifyFollowUser(this.form);
-      }
+      await post_channelChange_modifyInputUser({
+        ...this.form,
+        userId: this.user,
+      });
       this.$message.success("保存成功");
       this.$emit("finish");
     } else {

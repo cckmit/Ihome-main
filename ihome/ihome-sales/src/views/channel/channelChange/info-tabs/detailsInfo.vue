@@ -4,7 +4,7 @@
  * @Author: lgf
  * @Date: 2020-09-16 14:05:21
  * @LastEditors: ywl
- * @LastEditTime: 2020-10-15 16:40:33
+ * @LastEditTime: 2020-10-16 10:32:12
 -->
 <template>
   <div class="text-left">
@@ -139,7 +139,7 @@
     <p class="ih-info-title">变更原因</p>
     <div>{{info.changeReason}}</div>
 
-    <template v-if="typeStr === 'ChannelChangeConfirm'">
+    <template v-if="pageName === 'ChannelChangeConfirm'">
       <p class="ih-info-title">确认意见</p>
       <el-input
         type="textarea"
@@ -157,7 +157,7 @@
       </div>
     </template>
 
-    <template v-if="typeStr === 'ChannelChangeExamine'">
+    <template v-if="pageName === 'ChannelChangeExamine'">
       <p class="ih-info-title">审核意见</p>
       <el-input
         type="textarea"
@@ -175,7 +175,7 @@
       </div>
     </template>
 
-    <template v-if="typeStr === 'ChannelChangeRevoke'">
+    <template v-if="pageName === 'ChannelChangeRevoke'">
       <p class="ih-info-title">撤回原因</p>
       <el-input
         type="textarea"
@@ -196,7 +196,7 @@
 </template>
 
 <script lang="ts">
-import { Component, Vue, Prop } from "vue-property-decorator";
+import { Component, Vue } from "vue-property-decorator";
 //引入请求数据的api
 import {
   get_channelChange_get__id,
@@ -206,13 +206,15 @@ import {
   components: {},
 })
 export default class DetailInfo extends Vue {
-  @Prop() typeStr!: string;
   info: any = {};
   private channelPersons: object = {};
   private approveRecord: ConfirmObj = {
     remark: "",
     result: "",
   };
+  private get pageName(): string | null | undefined {
+    return this.$route.name;
+  }
 
   async getInfo() {
     let id = this.$route.query.id;
@@ -245,18 +247,3 @@ interface ConfirmObj {
   result: string;
 }
 </script>
-
-<style lang="scss" scoped>
-.line {
-  padding: 15px;
-}
-.title {
-  font-weight: 600;
-  text-align: left;
-  margin-left: 20px;
-  height: 500px;
-}
-.el-input__inner {
-  width: 1060px;
-}
-</style>

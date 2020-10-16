@@ -18,7 +18,7 @@
             label="信息详情"
             name="1"
           >
-            <DetailsInfo :typeStr="typeStr" />
+            <DetailsInfo />
           </el-tab-pane>
           <el-tab-pane
             label="操作日志"
@@ -38,19 +38,11 @@ import { Component, Vue } from "vue-property-decorator";
 import ChannelLog from "./info-tabs/operationLog.vue";
 import DetailsInfo from "./info-tabs/detailsInfo.vue";
 
-Component.registerHooks(["beforeRouteEnter"]);
 @Component({
   components: { DetailsInfo, ChannelLog },
 })
 export default class ChannelInfo extends Vue {
   tabActive = "1";
-  typeStr = "";
-
-  private beforeRouteEnter(to: any, from: any, next: any) {
-    next((vm: any) => {
-      vm.typeStr = to.name;
-    });
-  }
 }
 </script>
 

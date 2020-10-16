@@ -4,10 +4,10 @@
  * @Author: ywl
  * @Date: 2020-06-30 09:21:17
  * @LastEditors: ywl
- * @LastEditTime: 2020-10-15 16:35:57
+ * @LastEditTime: 2020-10-16 11:28:04
 --> 
 <template>
-  <IhPage>
+  <IhPage label-width="100px">
     <template v-slot:form>
       <el-form
         ref="form"
@@ -17,7 +17,7 @@
           <el-col :span="8">
             <el-form-item label="渠道商名称">
               <el-select
-                v-model="queryPageParameters.distributorsName"
+                v-model="queryPageParameters.name"
                 clearable
                 placeholder="请选择"
                 class="width--100"
@@ -35,7 +35,7 @@
           <el-col :span="8">
             <el-form-item label="录入人">
               <el-select
-                v-model="queryPageParameters.enterPeople"
+                v-model="queryPageParameters.inputUser"
                 clearable
                 placeholder="请选择"
                 class="width--100"
@@ -52,7 +52,7 @@
           <el-col :span="8">
             <el-form-item label="状态">
               <el-select
-                v-model="queryPageParameters.stated"
+                v-model="queryPageParameters.status"
                 clearable
                 placeholder="请选择"
                 class="width--100"
@@ -70,7 +70,7 @@
           <el-col :span="8">
             <el-form-item label="渠道跟进人">
               <el-select
-                v-model="queryPageParameters.division"
+                v-model="queryPageParameters.followUserId"
                 clearable
                 placeholder="请选择"
                 class="width--100"
@@ -98,7 +98,10 @@
           type="info"
           @click="reset()"
         >重置</el-button>
-        <el-button>变更录入人</el-button>
+        <el-button
+          :disabled="!selectionData.length"
+          @click="dialogVisible = true"
+        >变更录入人</el-button>
       </el-row>
     </template>
 
@@ -172,12 +175,12 @@
                 <i class="el-icon-arrow-down el-icon--right"></i>
               </span>
               <el-dropdown-menu slot="dropdown">
-                <el-dropdown-item @click.native.prevent="edit(row)">修改</el-dropdown-item>
+                <el-dropdown-item @click.native.prevent="handleToPage(row, 'edit')">修改</el-dropdown-item>
                 <el-dropdown-item @click.native.prevent="remove(row)">删除</el-dropdown-item>
                 <el-dropdown-item @click.native.prevent="handleToPage(row, 'confirm')">确认</el-dropdown-item>
                 <el-dropdown-item @click.native.prevent="handleToPage(row, 'examine')">审核</el-dropdown-item>
                 <el-dropdown-item @click.native.prevent="handleToPage(row, 'revoke')">撤回</el-dropdown-item>
-                <el-dropdown-item @click.native.prevent="locking(row)">退回起草</el-dropdown-item>
+                <el-dropdown-item @click.native.prevent="draft(row)">退回起草</el-dropdown-item>
               </el-dropdown-menu>
             </el-dropdown>
           </template>
@@ -196,6 +199,22 @@
         :total="resPageInfo.total"
       ></el-pagination>
     </template>
+    <!-- dialog -->
+    <IhDialog
+      :show="dialogVisible"
+      desc="变更录入人"
+    >
+      <UpdateUser
+        :data="selectionData"
+        @cancel="() => (dialogVisible = false)"
+        @finish="
+          (data) => {
+            dialogVisible = false;
+            getListMixin();
+          }
+        "
+      />
+    </IhDialog>
   </IhPage>
 </template>
 
@@ -208,45 +227,65 @@ import {
   post_channelChange_delete__id,
 } from "@/api/channel/index";
 import PaginationMixin from "../../../mixins/pagination";
+import UpdateUser from "./dialog/updateUser.vue";
 
 @Component({
-  components: {},
+  components: { UpdateUser },
   mixins: [PaginationMixin],
 })
 export default class ChannelChangeList extends Vue {
   queryPageParameters: any = {
-    cityLevel: "",
-    ChannelLevel: "",
+    name: "",
+    inputUser: "",
     status: "",
+    followUserId: "",
   };
   resPageInfo: any = {
     total: 0,
     list: [],
   };
+  selectionData = [];
+  dialogVisible = false;
   private channelList: any = [];
 
   reset() {
     this.queryPageParameters = {
-      account: null,
-      accountType: "",
-
-      pageNum: this.queryPageParameters.pageNum,
-      pageSize: this.queryPageParameters.pageSize,
+      name: "",
+      inputUser: "",
+      status: "",
+      followUserId: "",
+      pageNum: 1,
+      pageSize: 10,
     };
+    this.getListMixin();
   }
-  handleToPage(row: any, page: string) {
+  /**
+   * @description: 跳转页面
+   * @param {any} row
+   * @param {string} page 跳转页面path
+   */
+  private handleToPage(row: any, page: string): void {
     this.$router.push({
       path: page,
       query: { id: row.id },
     });
   }
-  handleEdit() {
-    //
+  private draft(row: any): void {
+    this.$confirm("此操作将退回起草该渠道基础变更信息, 是否继续?", "提示", {
+      confirmButtonText: "确定",
+      cancelButtonText: "取消",
+      type: "warning",
+    })
+      .then(async () => {
+        console.log(row);
+        this.getListMixin();
+        this.$message.success("删除成功");
+      })
+      .catch(async () => {
+        console.log("取消");
+      });
   }
-  search() {
-    this.getListMixin();
-  }
-  remove(row: any) {
+  private remove(row: any): void {
     this.$confirm("此操作将删除该渠道基础变更信息, 是否继续?", "提示", {
       confirmButtonText: "确定",
       cancelButtonText: "取消",
@@ -267,10 +306,13 @@ export default class ChannelChangeList extends Vue {
         console.log("取消");
       });
   }
-  handleSelectionChange(val: any) {
-    console.log(val);
+  search() {
+    this.getListMixin();
   }
-  async getListMixin() {
+  handleSelectionChange(val: any) {
+    this.selectionData = val;
+  }
+  public async getListMixin(): Promise<void> {
     this.resPageInfo = await post_channelChange_getList(
       this.queryPageParameters
     );

@@ -4,7 +4,7 @@
  * @Author: zyc
  * @Date: 2020-06-22 11:10:43
  * @LastEditors: ywl
- * @LastEditTime: 2020-10-15 16:09:48
+ * @LastEditTime: 2020-10-16 11:23:11
  */
 import Vue from 'vue'
 import VueRouter, { RouteConfig, Route } from 'vue-router'
@@ -85,6 +85,7 @@ const routes: Array<RouteConfig> = [
       },
     ]
   },
+  // 渠道基础信息变更管理
   {
     path: '/channelsChange',
     meta: { title: '渠道基础信息变更管理', icon: 'form' },
@@ -106,7 +107,7 @@ const routes: Array<RouteConfig> = [
       {
         path: 'edit',
         name: 'ChannelChangeEdit',
-        component: () => import('../views/channel/distributorsList/modifyThe.vue'),
+        component: () => import('../views/channel/channelChange/edit.vue'),
         meta: { title: '修改渠道商变更信息', icon: 'form' }
       },
       {
