@@ -3,13 +3,14 @@
  * @version: 
  * @Author: wwq
  * @Date: 2020-09-16 14:12:50
- * @LastEditors: zyc
- * @LastEditTime: 2020-10-16 11:03:24
+ * @LastEditors: wwq
+ * @LastEditTime: 2020-10-16 12:26:54
 -->
 
 # ihome-common
 ## 版本更新
 ```
+v1.0.141 2020-10-16 12:26  优化省市区组件取值被清空问题
 v1.0.140 2020-10-16 10:57  ih-page  按钮左边距 label-width
 v1.0.139 2020-10-16 10:53  主题,优化
 v1.0.138 2020-10-15 10:29  居恒主题

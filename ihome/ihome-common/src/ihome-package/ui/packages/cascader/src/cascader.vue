@@ -4,7 +4,7 @@
  * @Author: wwq
  * @Date: 2020-09-29 08:55:05
  * @LastEditors: wwq
- * @LastEditTime: 2020-10-14 20:19:30
+ * @LastEditTime: 2020-10-16 12:10:47
 -->
 <template>
   <div class="cascader">
@@ -12,7 +12,7 @@
       :props="{
         label: 'name',
         value: 'code',
-        checkStrictly: true,
+        checkStrictly: checkStrictly,
       }"
       ref="cascader"
       popper-class="ih-cascader"
@@ -39,12 +39,19 @@ export default class IhCascader extends Vue {
     default: 3,
   })
   level: any;
+  @Prop({
+    type: Boolean,
+    default: true,
+  })
+  checkStrictly: any;
   private provincesOptions = [];
 
   @Watch("$attrs", { deep: true })
-  clearValue() {
-    (this.$refs.cascader as any).$refs.panel.clearCheckedNodes();
+  clearValue(val: any) {
     (this.$refs.cascader as any).$refs.panel.activePath = [];
+    if (!val?.value?.length) {
+      (this.$refs.cascader as any).$refs.panel.clearCheckedNodes();
+    }
   }
 
   async created() {
