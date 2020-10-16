@@ -1,13 +1,13 @@
 /*
- * @Descripttion: 
+ * @Description: 渠道商路由
  * @version: 
  * @Author: zyc
  * @Date: 2020-10-16 14:16:23
- * @LastEditors: zyc
- * @LastEditTime: 2020-10-16 14:26:36
+ * @LastEditors: ywl
+ * @LastEditTime: 2020-10-16 15:01:44
  */
 
-import  { RouteConfig } from 'vue-router'
+import { RouteConfig } from 'vue-router'
 
 import Layout from '../components/Layout.vue';
 /**渠道路由

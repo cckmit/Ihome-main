@@ -4,7 +4,7 @@
  * @Author: ywl
  * @Date: 2020-09-18 09:14:40
  * @LastEditors: ywl
- * @LastEditTime: 2020-10-15 08:58:14
+ * @LastEditTime: 2020-10-16 14:58:20
 -->
 <template>
   <IhPage>
@@ -183,7 +183,11 @@
         :channelId="$route.query.id"
         :data="agentData"
         @cancel="() => (dialogFormVisible = false)"
-        @finish="handleGet"
+        @finish="(val) => {
+          dialogFormVisible = false;
+          if (val) queryPageParameters.pageNum = 1;
+          getListMixin()
+        }"
       />
     </IhDialog>
   </IhPage>
@@ -229,15 +233,6 @@ export default class Maintenance extends Vue {
       pageSize: 10,
       pageNum: 1,
     };
-    this.getListMixin();
-  }
-  /**
-   * @description: 弹窗成功
-   * @param {boolean} val
-   */
-  handleGet(val: boolean): void {
-    this.dialogFormVisible = false;
-    if (val) this.queryPageParameters.pageNum = 1;
     this.getListMixin();
   }
   /**

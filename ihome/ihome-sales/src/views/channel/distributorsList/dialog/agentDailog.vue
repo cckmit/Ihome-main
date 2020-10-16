@@ -18,7 +18,7 @@
         label="渠道商名称"
         v-if="!isAdd"
       >
-        <span>{{ data.name }}</span>
+        <span>渠道商名称</span>
       </el-form-item>
       <el-form-item
         label="姓名"

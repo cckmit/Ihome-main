@@ -4,7 +4,7 @@
  * @Author: ywl
  * @Date: 2020-09-16 14:05:21
  * @LastEditors: ywl
- * @LastEditTime: 2020-10-16 12:04:34
+ * @LastEditTime: 2020-10-16 14:21:47
 -->
 <template>
   <IhPage>
@@ -467,7 +467,7 @@ export default class ModifyThe extends Vue {
     if (id) {
       let res: any = await get_channelChange_get__id({ id: id });
       res.timeList = res.businessTime.split(" - ");
-      // res.provinceList = ["120000000000", "120100000000", "120101000000"];
+      res.provinceList = [res.province, res.city, res.county];
       this.info = res;
       this.changeReason = res.changeReason;
       this.channelPersonsData = this.info.channelBankChanges.length

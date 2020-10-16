@@ -1,10 +1,10 @@
 <!--
- * @Description: 
+ * @Description: 渠道商变更列表
  * @version: 
  * @Author: ywl
  * @Date: 2020-06-30 09:21:17
  * @LastEditors: ywl
- * @LastEditTime: 2020-10-16 11:28:04
+ * @LastEditTime: 2020-10-16 15:00:17
 --> 
 <template>
   <IhPage label-width="100px">
@@ -41,10 +41,10 @@
                 class="width--100"
               >
                 <el-option
-                  v-for="item in $root.displayList('enterPeople')"
-                  :key="item.value"
-                  :label="item.label"
-                  :value="item.value"
+                  v-for="item in testList"
+                  :key="item.id"
+                  :label="item.value"
+                  :value="item.id"
                 ></el-option>
               </el-select>
             </el-form-item>
@@ -76,10 +76,10 @@
                 class="width--100"
               >
                 <el-option
-                  v-for="item in $root.displayList('division')"
-                  :key="item.value"
-                  :label="item.label"
-                  :value="item.value"
+                  v-for="item in testList"
+                  :key="item.id"
+                  :label="item.value"
+                  :value="item.id"
                 ></el-option>
               </el-select>
             </el-form-item>
@@ -247,6 +247,13 @@ export default class ChannelChangeList extends Vue {
   selectionData = [];
   dialogVisible = false;
   private channelList: any = [];
+
+  // 测试数据
+  testList = [
+    { value: "管理员1", id: 1 },
+    { value: "管理员2", id: 2 },
+    { value: "管理员3", id: 3 },
+  ];
 
   reset() {
     this.queryPageParameters = {

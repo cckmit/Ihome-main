@@ -1,10 +1,10 @@
 <!--
- * @Descripttion: 
+ * @Description: 渠道商列表
  * @version: 
- * @Author: zyc
+ * @Author: ywl
  * @Date: 2020-08-13 11:40:10
  * @LastEditors: ywl
- * @LastEditTime: 2020-10-16 10:08:37
+ * @LastEditTime: 2020-10-16 15:18:14
 -->
 <template>
   <IhPage>
@@ -39,59 +39,6 @@
             </el-form-item>
           </el-col>
         </el-row>
-        <!-- <el-row>
-          <el-col :span="8">
-            <el-form-item label="省份">
-              <el-select
-                v-model="queryPageParameters.provinces"
-                clearable
-                placeholder="请选择省份"
-                class="width--100"
-              >
-                <el-option
-                  v-for="item in $root.displayList('provinces')"
-                  :key="item.value"
-                  :label="item.label"
-                  :value="item.value"
-                ></el-option>
-              </el-select>
-            </el-form-item>
-          </el-col>
-          <el-col :span="8">
-            <el-form-item label="城市">
-              <el-select
-                v-model="queryPageParameters.city"
-                clearable
-                placeholder="请选择城市"
-                class="width--100"
-              >
-                <el-option
-                  v-for="item in $root.displayList('city')"
-                  :key="item.value"
-                  :label="item.label"
-                  :value="item.value"
-                ></el-option>
-              </el-select>
-            </el-form-item>
-          </el-col>
-          <el-col :span="8">
-            <el-form-item label="行政区">
-              <el-select
-                v-model="queryPageParameters.county"
-                clearable
-                placeholder="行政区"
-                class="width--100"
-              >
-                <el-option
-                  v-for="item in $root.displayList('administrative')"
-                  :key="item.value"
-                  :label="item.label"
-                  :value="item.value"
-                ></el-option>
-              </el-select>
-            </el-form-item>
-          </el-col>
-        </el-row> -->
         <el-row>
           <el-col :span="8">
             <el-form-item label="渠道跟进人">
@@ -102,10 +49,10 @@
                 class="width--100"
               >
                 <el-option
-                  v-for="item in $root.displayList('state')"
-                  :key="item.value"
-                  :label="item.label"
-                  :value="item.value"
+                  v-for="item in testList"
+                  :key="item.id"
+                  :label="item.value"
+                  :value="item.id"
                 ></el-option>
               </el-select>
             </el-form-item>
@@ -136,10 +83,10 @@
                 class="width--100"
               >
                 <el-option
-                  v-for="item in $root.displayList('state')"
-                  :key="item.value"
-                  :label="item.label"
-                  :value="item.value"
+                  v-for="item in testList"
+                  :key="item.id"
+                  :label="item.value"
+                  :value="item.id"
                 ></el-option>
               </el-select>
             </el-form-item>
@@ -148,7 +95,7 @@
         <el-row>
           <el-col :span="8">
             <el-form-item label="省市区">
-              <IhCascader v-model="queryPageParameters.provinceList"></IhCascader>
+              <IhCascader v-model="provinceList"></IhCascader>
             </el-form-item>
           </el-col>
         </el-row>
@@ -167,7 +114,7 @@
         >添加</el-button>
         <el-button
           type="info"
-          @click="empty()"
+          @click="reset()"
         >重置</el-button>
         <el-button
           :disabled="!selectionData.length"
@@ -259,7 +206,7 @@
           <template v-slot="{ row }">
             <el-link
               type="primary"
-              @click.native.prevent="handleToInfo(row)"
+              @click.native.prevent="handleToPage(row, 'info')"
             >详情</el-link>
             <el-dropdown
               trigger="click"
@@ -270,12 +217,12 @@
                 <i class="el-icon-arrow-down el-icon--right"></i>
               </span>
               <el-dropdown-menu slot="dropdown">
-                <el-dropdown-item @click.native.prevent="handleChange(row)">修改</el-dropdown-item>
-                <el-dropdown-item @click.native.prevent="handleRemove(row)">删除</el-dropdown-item>
-                <el-dropdown-item @click.native.prevent="handleToConfirm(row)">确认</el-dropdown-item>
-                <el-dropdown-item @click.native.prevent="handleToRevoke(row)">撤回起草</el-dropdown-item>
-                <el-dropdown-item @click.native.prevent="handleToChange(row)">变更信息</el-dropdown-item>
-                <el-dropdown-item @click.native.prevent="handleToMaintenance(row)">维护渠道经纪人</el-dropdown-item>
+                <el-dropdown-item @click.native.prevent="handleToPage(row, 'edit')">修改</el-dropdown-item>
+                <el-dropdown-item @click.native.prevent="remove(row)">删除</el-dropdown-item>
+                <el-dropdown-item @click.native.prevent="handleToPage(row, 'confirm')">确认</el-dropdown-item>
+                <el-dropdown-item @click.native.prevent="handleToPage(row, 'revoke')">撤回起草</el-dropdown-item>
+                <el-dropdown-item @click.native.prevent="handleToPage(row, 'change')">变更信息</el-dropdown-item>
+                <el-dropdown-item @click.native.prevent="handleToPage(row, 'agent')">维护渠道经纪人</el-dropdown-item>
               </el-dropdown-menu>
             </el-dropdown>
           </template>
@@ -349,13 +296,41 @@ export default class List extends Vue {
   isInput = true;
   private provinceList: any = [];
 
+  // 测试数据
+  testList = [
+    { value: "管理员1", id: 1 },
+    { value: "管理员2", id: 2 },
+    { value: "管理员3", id: 3 },
+  ];
+
   search() {
-    console.log("查询");
+    switch (this.provinceList.length) {
+      case 1:
+        this.queryPageParameters.provinces = this.provinceList[0];
+        break;
+      case 2:
+        this.queryPageParameters.provinces = this.provinceList[0];
+        this.queryPageParameters.city = this.provinceList[1];
+        break;
+      case 3:
+        this.queryPageParameters.provinces = this.provinceList[0];
+        this.queryPageParameters.city = this.provinceList[1];
+        this.queryPageParameters.county = this.provinceList[2];
+        break;
+      default:
+        this.queryPageParameters.provinces = "";
+        this.queryPageParameters.city = "";
+        this.queryPageParameters.county = "";
+    }
     this.getListMixin();
   }
-  empty() {
-    console.log("清空");
-    this.queryPageParameters = {};
+  reset() {
+    this.queryPageParameters = {
+      pageNum: 1,
+      pageSize: 10,
+    };
+    this.provinceList = [];
+    this.getListMixin();
   }
   changeFollower() {
     console.log("变更跟进人");
@@ -368,73 +343,29 @@ export default class List extends Vue {
     this.isInput = true;
   }
   /**
-   * @description: 跳转详情
-   * @param {any} row
-   */
-  private handleToInfo(row: any): void {
-    this.$router.push({
-      path: "info",
-      query: { id: row.id },
-    });
-  }
-  /**
-   * @description: 跳转修改
-   * @param {any} row
-   */
-  private handleChange(row: any): void {
-    this.$router.push({
-      path: "edit",
-      query: { id: row.id },
-    });
-  }
-  /**
    * @description: 删除当前 -- 只有草稿状态能删除
    * @param {any} row
    */
-  private async handleRemove(row: any) {
-    await post_channel_delete__id({ id: row.id });
-    // 删除list最后一条数据 返回前一页面
-    if (this.resPageInfo.list.length === 1) {
-      this.queryPageParameters.pageNum === 1
-        ? (this.queryPageParameters.pageNum = 1)
-        : this.queryPageParameters.pageNum--;
-    }
-    this.getListMixin();
-    this.$message.success("删除成功");
-  }
-  /**
-   * @description: 跳转渠道商确认页面
-   * @param {any} row
-   */
-  handleToConfirm(row: any) {
-    this.$router.push({
-      path: "confirm",
-      query: {
-        id: row.id,
-      },
-    });
-  }
-  /**
-   * @description: 跳转渠道商撤回起草
-   * @param {any} row
-   */
-  handleToRevoke(row: any) {
-    this.$router.push({
-      path: "revoke",
-      query: { id: row.id },
-    });
-  }
-  handleToChange(row: any) {
-    this.$router.push({
-      path: "change",
-      query: { id: row.id },
-    });
-  }
-  handleToMaintenance(row: any) {
-    this.$router.push({
-      path: "agent",
-      query: { id: row.id },
-    });
+  private async remove(row: any): Promise<void> {
+    this.$confirm("此操作将删除该渠商, 是否继续?", "提示", {
+      confirmButtonText: "确定",
+      cancelButtonText: "取消",
+      type: "warning",
+    })
+      .then(async () => {
+        await post_channel_delete__id({ id: row.id });
+        // 删除list最后一条数据 返回前一页面
+        if (this.resPageInfo.list.length === 1) {
+          this.queryPageParameters.pageNum === 1
+            ? (this.queryPageParameters.pageNum = 1)
+            : this.queryPageParameters.pageNum--;
+        }
+        this.getListMixin();
+        this.$message.success("删除成功");
+      })
+      .catch(async () => {
+        console.log("取消");
+      });
   }
   /**
    * @description: 跳转页面

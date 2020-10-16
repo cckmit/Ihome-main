@@ -4,7 +4,7 @@
  * @Author: ywl
  * @Date: 2020-09-16 14:05:21
  * @LastEditors: ywl
- * @LastEditTime: 2020-10-16 11:31:23
+ * @LastEditTime: 2020-10-16 14:23:04
 -->
 <template>
   <IhPage>
@@ -499,10 +499,11 @@ export default class ModifyThe extends Vue {
     if (id) {
       let res: any = await get_channel_get__id({ id: id });
       res.timeList = res.businessTime.split(" - ");
-      res.provinceList = ["120000000000", "120100000000", "120101000000"];
+      res.provinceList = [res.province, res.city, res.county];
       this.info = res;
-      this.channelPersonsData =
-        this.info.channelPersons.length && this.info.channelPersons[0];
+      this.channelPersonsData = this.info.channelPersons.length
+        ? this.info.channelPersons[0]
+        : {};
       console.log(this.info);
     }
   }
