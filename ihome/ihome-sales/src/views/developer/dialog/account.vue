@@ -4,7 +4,7 @@
  * @Author: wwq
  * @Date: 2020-07-08 14:23:16
  * @LastEditors: wwq
- * @LastEditTime: 2020-10-10 18:05:47
+ * @LastEditTime: 2020-10-19 15:07:51
 --> 
 <template>
   <el-dialog
@@ -20,7 +20,11 @@
       <el-row>
         <el-col :span="24">
           <el-form-item label="账户姓名" prop="name">
-            <el-input v-model="form.name" placeholder="账户姓名"></el-input>
+            <el-input
+              v-model="form.name"
+              placeholder="账户姓名"
+              maxlength="64"
+            ></el-input>
           </el-form-item>
         </el-col>
       </el-row>
@@ -28,15 +32,23 @@
       <el-row>
         <el-col :span="24">
           <el-form-item label="账号" prop="number">
-            <el-input v-model="form.number" placeholder="账号"></el-input>
+            <el-input
+              v-model="form.number"
+              placeholder="账号"
+              maxlength="32"
+            ></el-input>
           </el-form-item>
         </el-col>
       </el-row>
 
       <el-row>
         <el-col :span="24">
-          <el-form-item label="开户银行" prop="name">
-            <el-input v-model="form.name" placeholder="开户银行"></el-input>
+          <el-form-item label="开户银行" prop="bank">
+            <el-input
+              v-model="form.bank"
+              placeholder="开户银行"
+              maxlength="64"
+            ></el-input>
           </el-form-item>
         </el-col>
       </el-row>
@@ -51,10 +63,10 @@
               placeholder="账号类型"
             >
               <el-option
-                v-for="item in $root.displayList('accountTypes')"
-                :key="item.value"
-                :label="item.label"
-                :value="item.value"
+                v-for="item in $root.dictAllList('BankAccountTypeEnum')"
+                :key="item.code"
+                :label="item.name"
+                :value="item.code"
               ></el-option>
             </el-select>
           </el-form-item>
@@ -73,17 +85,10 @@ import { Component, Vue, Prop } from "vue-property-decorator";
 import { Form as ElForm } from "element-ui";
 
 import { NoRepeatHttp } from "ihome-common/util/aop/no-repeat-http";
-import {
-  emailOrNullValidato,
-  phoneValidator,
-} from "ihome-common/util/base/form-ui";
 @Component({
   components: {},
 })
 export default class UserAdd extends Vue {
-  constructor() {
-    super();
-  }
   @Prop({ default: null }) data: any;
   dialogVisible = true;
 
@@ -94,19 +99,9 @@ export default class UserAdd extends Vue {
     type: null,
   };
   rules: any = {
-    name: [
-      { required: true, message: "请输入名称", trigger: "change" },
-      { min: 1, max: 32, message: "长度在 1 到 32 个字符", trigger: "change" },
-    ],
-    mobilePhone: [
-      { required: true, message: "请输入手机号码", trigger: "change" },
-
-      { validator: phoneValidator, trigger: "change" },
-    ],
-    email: [
-      { trigger: "change" },
-      { validator: emailOrNullValidato, trigger: "change" },
-    ],
+    name: [{ required: true, message: "请输入名称", trigger: "blur" }],
+    number: [{ required: true, message: "请输入账号", trigger: "blur" }],
+    bank: [{ required: true, message: "请输入开户银行", trigger: "blur" }],
   };
 
   cancel() {
@@ -118,23 +113,14 @@ export default class UserAdd extends Vue {
   @NoRepeatHttp()
   async submit(valid: any) {
     if (valid) {
-      // console.log(this.form);
-      // if (this.form.id > 0) {
-      //   const res = await post_user_update(this.form);
-      //   this.$message.success("修改成功");
-      //   this.$emit("finish", res);
-      // } else {
-      //   const res = await post_user_add(this.form);
-      //   this.$alert(res, "用户新增成功，密码是：");
-      //   this.$emit("finish", res);
-      // }
+      this.$emit("finish", this.form);
     } else {
       console.log("error submit!!");
       return false;
     }
   }
   async created() {
-    this.form = this.data;
+    this.form = { ...this.data };
   }
 }
 </script>

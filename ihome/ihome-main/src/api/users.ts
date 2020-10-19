@@ -3,8 +3,8 @@
  * @version: 
  * @Author: zyc
  * @Date: 2020-06-24 09:47:33
- * @LastEditors: wwq
- * @LastEditTime: 2020-10-14 19:13:34
+ * @LastEditors: ywl
+ * @LastEditTime: 2020-10-16 15:56:28
  */
 import { IRes } from "./users.d";
 // import request from '@/utils/http';
@@ -154,35 +154,35 @@ export function allMenu<T>() {
             parentId: 201,
             title: "渠道商列表",
             icon: null,
-            path: "/web-sales/channelsTest/list",
+            path: "/web-sales/channels/list",
         },
         {
             id: 205,
             parentId: 201,
             title: "渠道等级信息列表",
             icon: "el-icon-setting",
-            path: "/web-sales/channels/channelLevel",
+            path: "/web-sales/channelLevel/list",
         },
         {
             id: 206,
             parentId: 201,
             title: "渠道呈批列表",
             icon: "el-icon-setting",
-            path: "/web-sales/channels/channelAgroupOf",
+            path: "/web-sales/approval/list",
         },
         {
             id: 207,
             parentId: 201,
             title: "渠道基础信息变更列表",
             icon: "el-icon-setting",
-            path: "/web-sales/channels/channelBasicInfoChange",
+            path: "/web-sales/channelsChange/list",
         },
         {
             id: 202,
             parentId: 201,
             title: "渠道等级信息变更列表",
             icon: null,
-            path: "/web-sales/channels/channelInfoList",
+            path: "/web-sales/levelChange/list",
         },
         {
             id: 301,

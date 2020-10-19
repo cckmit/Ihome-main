@@ -4,7 +4,7 @@
  * @Author: wwq
  * @Date: 2020-07-08 14:23:16
  * @LastEditors: wwq
- * @LastEditTime: 2020-10-10 15:07:52
+ * @LastEditTime: 2020-10-19 15:44:06
 --> 
 <template>
   <el-dialog
@@ -83,9 +83,9 @@ export default class UpdateUser extends Vue {
   @NoRepeatHttp()
   async submit(valid: any) {
     if (valid) {
-      const res = await post_company_updateInputUser(this.form);
+      await post_company_updateInputUser(this.form);
       this.$message.success("保存成功");
-      this.$emit("finish", res);
+      this.$emit("finish");
     } else {
       console.log("error submit!!");
       return false;
