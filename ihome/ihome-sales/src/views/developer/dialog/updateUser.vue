@@ -3,8 +3,8 @@
  * @version: 
  * @Author: wwq
  * @Date: 2020-07-08 14:23:16
- * @LastEditors: ywl
- * @LastEditTime: 2020-10-15 16:59:43
+ * @LastEditors: wwq
+ * @LastEditTime: 2020-10-19 15:44:06
 --> 
 <template>
   <el-dialog
@@ -16,17 +16,10 @@
     width="500px"
     class="dialog text-left"
   >
-    <el-form
-      ref="form"
-      :model="form"
-      label-width="110px"
-    >
+    <el-form ref="form" :model="form" label-width="110px">
       <el-row>
         <el-col :span="24">
-          <el-form-item
-            label="已选渠道商"
-            prop="name"
-          >
+          <el-form-item label="已选渠道商" prop="name">
             <template v-for="(item, i) in data">
               <span :key="item.id">
                 <span>{{ `${item.name}` }}</span>
@@ -58,14 +51,8 @@
       </el-row>
     </el-form>
 
-    <span
-      slot="footer"
-      class="dialog-footer"
-    >
-      <el-button
-        type="primary"
-        @click="finish()"
-      >保 存</el-button>
+    <span slot="footer" class="dialog-footer">
+      <el-button type="primary" @click="finish()">保 存</el-button>
     </span>
   </el-dialog>
 </template>
@@ -79,7 +66,7 @@ import { NoRepeatHttp } from "ihome-common/util/aop/no-repeat-http";
   components: {},
 })
 export default class UpdateUser extends Vue {
-  @Prop({ default: [] }) data!: Array<object>;
+  @Prop({ default: null }) data: any;
   dialogVisible = true;
 
   form: any = {
@@ -96,9 +83,9 @@ export default class UpdateUser extends Vue {
   @NoRepeatHttp()
   async submit(valid: any) {
     if (valid) {
-      const res = await post_company_updateInputUser(this.form);
+      await post_company_updateInputUser(this.form);
       this.$message.success("保存成功");
-      this.$emit("finish", res);
+      this.$emit("finish");
     } else {
       console.log("error submit!!");
       return false;
