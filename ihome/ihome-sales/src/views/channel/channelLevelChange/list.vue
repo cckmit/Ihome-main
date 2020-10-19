@@ -4,7 +4,7 @@
  * @Author: zyc
  * @Date: 2020-06-30 09:21:17
  * @LastEditors: ywl
- * @LastEditTime: 2020-10-19 14:56:54
+ * @LastEditTime: 2020-10-19 16:13:50
 --> 
 <template>
   <IhPage label-width="100px">
@@ -239,7 +239,6 @@
     >
       <UpdateUser
         :data="selectionData"
-        :isInput="isInput"
         @cancel="() => (dialogVisible = false)"
         @finish="
           (data) => {

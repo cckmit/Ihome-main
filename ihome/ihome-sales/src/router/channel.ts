@@ -4,7 +4,7 @@
  * @Author: zyc
  * @Date: 2020-10-16 14:16:23
  * @LastEditors: ywl
- * @LastEditTime: 2020-10-19 11:44:25
+ * @LastEditTime: 2020-10-19 16:11:50
  */
 
 import { RouteConfig } from 'vue-router'
@@ -70,49 +70,49 @@ const channelRoutes: Array<RouteConfig> = [
             {
                 path: 'list',
                 name: 'DistributorsList',
-                component: () => import('../views/channel/distributorsList/list.vue'),
+                component: () => import('../views/channel/channelBusiness/list.vue'),
                 meta: { title: '渠道商列表', icon: 'form' }
             },
             {
                 path: 'info',
                 name: 'DistributorsListInfo',
-                component: () => import('../views/channel/distributorsList/info.vue'),
+                component: () => import('../views/channel/channelBusiness/info.vue'),
                 meta: { title: '渠道商详情', icon: 'form' }
             },
             {
                 path: 'add',
                 name: 'AddChannel',
-                component: () => import('../views/channel/distributorsList/modifyThe.vue'),
+                component: () => import('../views/channel/channelBusiness/modifyThe.vue'),
                 meta: { title: '渠道商录入页', icon: 'form' }
             },
             {
                 path: 'edit',
                 name: 'EditChannel',
-                component: () => import('../views/channel/distributorsList/modifyThe.vue'),
+                component: () => import('../views/channel/channelBusiness/modifyThe.vue'),
                 meta: { title: '渠道商修改页', icon: 'form' }
             },
             {
                 path: 'confirm',
                 name: 'ConfirmChannel',
-                component: () => import('../views/channel/distributorsList/info.vue'),
+                component: () => import('../views/channel/channelBusiness/info.vue'),
                 meta: { title: '渠道商确认', icon: 'form' }
             },
             {
                 path: 'revoke',
                 name: 'RevokeChannel',
-                component: () => import('../views/channel/distributorsList/info.vue'),
+                component: () => import('../views/channel/channelBusiness/info.vue'),
                 meta: { title: '渠道商起草撤回', icon: 'form' }
             },
             {
                 path: 'change',
                 name: 'ChangeChannel',
-                component: () => import('../views/channel/distributorsList/modifyThe.vue'),
+                component: () => import('../views/channel/channelBusiness/modifyThe.vue'),
                 meta: { title: '渠道商变更信息', icon: 'form' }
             },
             {
                 path: 'agent',
                 name: 'MaintenanceOfChannels',
-                component: () => import('../views/channel/distributorsList/agent.vue'),
+                component: () => import('../views/channel/channelBusiness/agent.vue'),
                 meta: { title: '维护渠道经纪人', icon: 'form' }
             },
         ]
