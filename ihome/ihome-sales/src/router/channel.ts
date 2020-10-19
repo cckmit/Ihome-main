@@ -4,7 +4,7 @@
  * @Author: zyc
  * @Date: 2020-10-16 14:16:23
  * @LastEditors: ywl
- * @LastEditTime: 2020-10-16 17:49:40
+ * @LastEditTime: 2020-10-19 11:44:25
  */
 
 import { RouteConfig } from 'vue-router'
@@ -256,6 +256,30 @@ const channelRoutes: Array<RouteConfig> = [
                 component: () => import('../views/channel/channelLevelChange/list.vue'),
                 meta: { title: '渠道等级信息变更列表', icon: 'form' }
             },
+            {
+                path: 'info',
+                name: 'LevelChangeInfo',
+                component: () => import('../views/channel/channelLevelChange/info.vue'),
+                meta: { title: '渠道等级信息变更详情', icon: 'form' }
+            },
+            {
+                path: 'edit',
+                name: 'LevelChangeEdit',
+                component: () => import('../views/channel/channelLevelChange/edit.vue'),
+                meta: { title: '渠道等级信息变更修改', icon: 'form' }
+            },
+            {
+                path: 'revoke',
+                name: 'LevelChangeRevoke',
+                component: () => import('../views/channel/channelLevelChange/info.vue'),
+                meta: { title: '渠道等级信息变更修改', icon: 'form' }
+            },
+            {
+                path: 'examine',
+                name: 'LevelChangeExamine',
+                component: () => import('../views/channel/channelLevelChange/info.vue'),
+                meta: { title: '渠道等级信息变更审核', icon: 'form' }
+            }
         ]
     },
 ];

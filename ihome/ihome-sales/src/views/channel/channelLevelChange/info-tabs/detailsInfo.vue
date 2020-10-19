@@ -4,7 +4,7 @@
  * @Author: wwq
  * @Date: 2020-10-15 12:33:25
  * @LastEditors: ywl
- * @LastEditTime: 2020-10-19 11:52:30
+ * @LastEditTime: 2020-10-19 12:05:06
 -->
 <template>
   <div class="text-left">
@@ -136,7 +136,7 @@
     <br />
     <el-table
       class="ih-table"
-      :data="resPageInfo.channelGradeItems"
+      :data="resPageInfo.channelGradeItemChanges"
       style="width: 100%"
     >
       <el-table-column
@@ -181,7 +181,7 @@
     <br />
     <el-table
       class="ih-table"
-      :data="resPageInfo.channelGradeAttachments"
+      :data="resPageInfo.channelGradeAttachmentChanges"
       style="width: 100%"
     >
       <el-table-column
@@ -205,12 +205,14 @@
     </el-table>
     <br />
 
+    <p class="ih-info-title">变更原因</p>
+    <div>{{resPageInfo.changeReason}}</div>
+
     <div
-      v-if="typeStr === 'channelLevelAudit'"
+      v-if="pageName === 'LevelChangeExamine'"
       class="text-left"
     >
-      <p class="ih-info-title">审核信息</p>
-      <p class="msg-title">审核意见</p>
+      <p class="ih-info-title">审核意见</p>
       <el-input
         type="textarea"
         :autosize="{ minRows: 5, maxRows: 10 }"
@@ -231,11 +233,10 @@
     </div>
 
     <div
-      v-if="typeStr === 'channelLevelRecall'"
+      v-if="pageName === 'LevelChangeRevoke'"
       class="text-left"
     >
-      <p class="ih-info-title">撤回信息</p>
-      <p class="msg-title">撤回原因</p>
+      <p class="ih-info-title">撤回原因</p>
       <el-input
         type="textarea"
         :autosize="{ minRows: 5, maxRows: 10 }"
@@ -253,21 +254,23 @@
 </template>
 
 <script lang="ts">
-import { Component, Vue, Prop } from "vue-property-decorator";
+import { Component, Vue } from "vue-property-decorator";
 //引入请求数据的api
 import {
-  get_channelGrade_get__id,
-  post_channelGrade_approveRecord,
+  get_channelGradeChange_get__id,
+  post_channelGradeChange_approveRecord,
 } from "../../../../api/channel/index";
 @Component({
   components: {},
 })
 export default class Home extends Vue {
-  @Prop() typeStr!: string;
-
+  private get pageName(): string | null | undefined {
+    return this.$route.name;
+  }
   private get Id() {
     return this.$route.query.id;
   }
+
   private fileList = [];
   private info = [];
   private remark = "";
@@ -290,19 +293,9 @@ export default class Home extends Vue {
   openToggle() {
     this.searchOpen = !this.searchOpen;
   }
-
-  async created() {
-    this.getInfo();
-  }
-
-  async getInfo() {
-    let id = this.$route.query.id;
-    if (id) this.resPageInfo = await get_channelGrade_get__id({ id: id });
-  }
-
   async pass(val: any) {
     if (this.remark) {
-      await post_channelGrade_approveRecord({
+      await post_channelGradeChange_approveRecord({
         remark: this.remark,
         id: this.Id,
         result: val,
@@ -311,7 +304,7 @@ export default class Home extends Vue {
         type: "success",
         message: this.showMsg(val),
       });
-      this.$router.push("/channelLevel/list");
+      this.$router.push("list");
     } else {
       this.$message({
         type: "warning",
@@ -319,7 +312,6 @@ export default class Home extends Vue {
       });
     }
   }
-
   showMsg(val: any): string {
     switch (val) {
       case "Pass":
@@ -331,6 +323,14 @@ export default class Home extends Vue {
       default:
         return "";
     }
+  }
+  async getInfo() {
+    let id = this.$route.query.id;
+    if (id) this.resPageInfo = await get_channelGradeChange_get__id({ id: id });
+  }
+
+  async created() {
+    this.getInfo();
   }
 }
 </script>

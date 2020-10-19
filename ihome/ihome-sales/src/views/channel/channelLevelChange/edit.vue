@@ -1,10 +1,10 @@
 <!--
  * @Description: 
  * @version: 
- * @Author: wwq
+ * @Author: ywl
  * @Date: 2020-10-15 16:02:03
  * @LastEditors: ywl
- * @LastEditTime: 2020-10-19 11:14:27
+ * @LastEditTime: 2020-10-19 11:32:39
 -->
 <template>
   <IhPage>
@@ -104,7 +104,7 @@
                     label="城市等级"
                     align="left"
                   >
-                    <span>{{
+                    <span v-if="resPageInfo.cityGrade">{{
                       $root.dictAllName(resPageInfo.cityGrade, "CityLevel").name
                     }}</span>
                   </el-form-item>
@@ -194,7 +194,7 @@
         <el-form ref="dynamicValidateForm">
           <el-table
             class="ih-table"
-            :data="resPageInfo.channelGradeItems"
+            :data="resPageInfo.channelGradeItemChanges"
             style="width: 100%"
           >
             <el-table-column
@@ -246,7 +246,7 @@
         <br />
         <el-table
           class="ih-table"
-          :data="resPageInfo.channelGradeAttachments"
+          :data="resPageInfo.channelGradeAttachmentChanges"
           style="width: 100%"
         >
           <el-table-column
@@ -268,10 +268,7 @@
             />
           </el-table-column>
         </el-table>
-        <div
-          v-if="$route.name === 'channelLevelChange'"
-          class="text-left"
-        >
+        <div class="text-left">
           <p class="ih-info-title">变更原因</p>
           <el-input
             type="textarea"
@@ -300,13 +297,11 @@
 import { Component, Vue } from "vue-property-decorator";
 //引入请求数据的api
 import {
-  get_channelGrade_get__id,
+  get_channelGradeChange_get__id,
   get_channel_getAll,
   get_channelCityLevel_get__cityCode,
-  post_channelGrade_add,
-  post_channelGradeChange_add,
-  post_channelGrade_edit,
   post_channelGradeStandard_getAllByCityCodeAndChannelGrade,
+  post_channelGradeChange_edit,
 } from "../../../api/channel/index";
 
 import { Form as ElForm } from "element-ui";
@@ -366,28 +361,6 @@ export default class ChannelRates extends Vue {
   openToggle() {
     this.searchOpen = !this.searchOpen;
   }
-
-  async created() {
-    this.getInfo();
-  }
-
-  // 获取渠道商
-  async getChannelAll() {
-    this.channelOptions = await get_channel_getAll();
-  }
-
-  async getInfo() {
-    this.getChannelAll();
-    let id = this.$route.query.id;
-    if (id) {
-      this.resPageInfo = await get_channelGrade_get__id({ id: id });
-      // this.provinceOption = [this.resPageInfo.province, this.resPageInfo.city];
-      this.resPageInfo.provinceOption = [
-        this.resPageInfo.province,
-        this.resPageInfo.city,
-      ];
-    }
-  }
   // 获取评级信息数据
   async getTableData(val: any) {
     if (val instanceof Array) {
@@ -415,38 +388,19 @@ export default class ChannelRates extends Vue {
       }));
     }
   }
-
   pass(val: any) {
     (this.$refs["form"] as ElForm).validate(async (v: any) => {
       if (v) {
         this.resPageInfo.operateType = val;
-        switch (this.$route.name) {
-          case "channelLevelEdit":
-            this.resPageInfo.id = this.Id;
-            await post_channelGrade_edit(this.resPageInfo);
-            this.$router.push("/channelLevel/list");
-            break;
-          case "channelLevelChange":
-            if (this.changeReason) {
-              this.resPageInfo.oldGradeId = this.Id;
-              this.resPageInfo.channelGradeItemChanges = [
-                ...this.resPageInfo.channelGradeItems,
-              ];
-              this.resPageInfo.channelGradeAttachmentChanges = [
-                ...this.resPageInfo.channelGradeAttachments,
-              ];
-              this.resPageInfo.changeReason = this.changeReason;
-              await post_channelGradeChange_add(this.resPageInfo);
-              this.$router.push("/levelChange/list");
-            } else {
-              this.$message.warning("请填写变更原因");
-              return;
-            }
-            break;
-          case "channelLevelAdd":
-            await post_channelGrade_add(this.resPageInfo);
-            this.$router.push("/channelLevel/list");
-            break;
+        if (this.changeReason) {
+          this.resPageInfo.oldGradeId = this.Id;
+          // this.resPageInfo.channelGradeItemChanges = this.resPageInfo.channelGradeItems;
+          // this.resPageInfo.channelGradeAttachmentChanges = this.resPageInfo.channelGradeAttachments;
+          this.resPageInfo.changeReason = this.changeReason;
+          await post_channelGradeChange_edit(this.resPageInfo);
+          this.$router.push("list");
+        } else {
+          this.$message.warning("请填写变更原因");
         }
         this.$message({
           type: "success",
@@ -454,6 +408,28 @@ export default class ChannelRates extends Vue {
         });
       }
     });
+  }
+  // 获取渠道商
+  async getChannelAll() {
+    this.channelOptions = await get_channel_getAll();
+  }
+
+  async getInfo() {
+    let id = this.$route.query.id;
+    if (id) {
+      this.resPageInfo = await get_channelGradeChange_get__id({ id: id });
+      // this.provinceOption = [this.resPageInfo.province, this.resPageInfo.city];
+      this.resPageInfo.provinceOption = [
+        this.resPageInfo.province,
+        this.resPageInfo.city,
+      ];
+      this.changeReason = this.resPageInfo.changeReason;
+    }
+  }
+
+  async created() {
+    this.getInfo();
+    this.getChannelAll();
   }
 }
 </script>
