@@ -4,7 +4,7 @@
  * @Author: wwq
  * @Date: 2020-09-16 14:54:19
  * @LastEditors: wwq
- * @LastEditTime: 2020-10-16 12:11:17
+ * @LastEditTime: 2020-10-19 16:07:30
 -->
 <template>
   <div class="cascaderDemo">
@@ -14,7 +14,7 @@
           <el-form-item label="省市区">
             <ih-cascader
               v-model="test"
-              :level="2"
+              :level="3"
               :checkStrictly="false"
               @change="handleChange"
             ></ih-cascader>

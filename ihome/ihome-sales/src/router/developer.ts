@@ -4,7 +4,7 @@
  * @Author: zyc
  * @Date: 2020-10-16 14:16:23
  * @LastEditors: wwq
- * @LastEditTime: 2020-10-16 17:24:09
+ * @LastEditTime: 2020-10-19 11:48:21
  */
 
 import { RouteConfig } from 'vue-router'
@@ -28,6 +28,11 @@ const developerRoutes: Array<RouteConfig> = [
         meta: { title: '开发商列表', icon: 'form' }
       },
       {
+        path: 'add',
+        name: 'developerAdd',
+        component: () => import('../views/developer/edit.vue'),
+        meta: { title: '开发商信息录入添加', icon: 'form' }
+      }, {
         path: 'edit',
         name: 'developerEdit',
         component: () => import('../views/developer/edit.vue'),
@@ -40,21 +45,21 @@ const developerRoutes: Array<RouteConfig> = [
         meta: { title: '开发商信息变更', icon: 'form' }
       },
       {
-        path: 'details',
-        name: 'developerDetails',
-        component: () => import('../views/developer/details.vue'),
+        path: 'info',
+        name: 'developerInfo',
+        component: () => import('../views/developer/info.vue'),
         meta: { title: '开发商信息详情', icon: 'form' }
       },
       {
         path: 'check',
         name: 'developerCheck',
-        component: () => import('../views/developer/details.vue'),
+        component: () => import('../views/developer/info.vue'),
         meta: { title: '开发商信息审核', icon: 'form' }
       },
       {
         path: 'revocation',
         name: 'developerRevocation',
-        component: () => import('../views/developer/details.vue'),
+        component: () => import('../views/developer/info.vue'),
         meta: { title: '开发商信息撤回', icon: 'form' }
       }
     ]
