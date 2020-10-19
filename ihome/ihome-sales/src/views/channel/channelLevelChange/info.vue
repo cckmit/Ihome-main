@@ -1,13 +1,13 @@
 <!--
- * @Descripttion: 
+ * @Description: file content
  * @version: 
- * @Author: zyc
- * @Date: 2020-07-08 14:22:25
+ * @Author: ywl
+ * @Date: 2020-10-19 09:04:33
  * @LastEditors: ywl
- * @LastEditTime: 2020-10-13 10:44:50
---> 
+ * @LastEditTime: 2020-10-19 10:04:25
+-->
 <template>
-  <ih-page>
+  <IhPage>
     <template v-slot:info>
       <el-scrollbar>
         <el-tabs
@@ -15,40 +15,37 @@
           v-model="tabActive"
         >
           <el-tab-pane
-            label="详细信息"
+            label="信息详情"
             name="1"
           >
             <DetailsInfo />
           </el-tab-pane>
           <el-tab-pane
-            label="注册用户列表"
+            label="操作日志"
             name="2"
           >
-            <UsersList />
+            <ChannelLog />
           </el-tab-pane>
         </el-tabs>
       </el-scrollbar>
     </template>
-  </ih-page>
+  </IhPage>
 </template>
+
 <script lang="ts">
 import { Component, Vue } from "vue-property-decorator";
-// import { getRoleList } from "../../api/system";
 
+import ChannelLog from "./info-tabs/operationLog.vue";
 import DetailsInfo from "./info-tabs/detailsInfo.vue";
-import UsersList from "./info-tabs/usersList.vue";
+
 @Component({
-  components: { DetailsInfo, UsersList },
+  components: { DetailsInfo, ChannelLog },
 })
-export default class UserInfo extends Vue {
-  tabActive: any = null;
-  async created() {
-    console.log(this.$route.query.id, this.$route.query.tab);
-    this.tabActive = this.$route.query.tab || "1";
-    // let invitationCode = this.$route.params.invitationCode;
-  }
+export default class ChannelInfo extends Vue {
+  tabActive: any = "1";
 }
 </script>
+
 <style lang="scss" scoped>
 .ih-page {
   overflow: hidden;

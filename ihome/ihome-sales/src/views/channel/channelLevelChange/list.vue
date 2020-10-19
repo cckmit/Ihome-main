@@ -4,7 +4,7 @@
  * @Author: zyc
  * @Date: 2020-06-30 09:21:17
  * @LastEditors: ywl
- * @LastEditTime: 2020-10-16 18:07:55
+ * @LastEditTime: 2020-10-19 16:13:50
 --> 
 <template>
   <IhPage label-width="100px">
@@ -115,8 +115,11 @@
         <el-button
           type="info"
           @click="reset()"
-        >清空</el-button>
-        <el-button @click="add()">变更录入人</el-button>
+        >重置</el-button>
+        <el-button
+          :disabled="!selectionData.length"
+          @click="dialogVisible = true"
+        >变更录入人</el-button>
       </el-row>
     </template>
 
@@ -183,7 +186,7 @@
           <template v-slot="{ row }">
             <el-link
               type="primary"
-              @click.native.prevent="info(row)"
+              @click.native.prevent="handleToPage(row, 'info')"
             >详情</el-link>
             <el-dropdown
               trigger="click"
@@ -194,11 +197,23 @@
                 <i class="el-icon-arrow-down el-icon--right"></i>
               </span>
               <el-dropdown-menu slot="dropdown">
-                <el-dropdown-item @click.native.prevent="edit(scope)">修改</el-dropdown-item>
-                <el-dropdown-item @click.native.prevent="remove(scope)">删除</el-dropdown-item>
-                <el-dropdown-item @click.native.prevent="locking(scope)">撤回</el-dropdown-item>
-                <el-dropdown-item @click.native.prevent="activation(scope)">审核</el-dropdown-item>
-                <el-dropdown-item @click.native.prevent="resetPassword(scope)">退回起草</el-dropdown-item>
+                <el-dropdown-item
+                  @click.native.prevent="handleToPage(row, 'edit')"
+                  :disabled="row.status !== 'DRAFT'"
+                >修改</el-dropdown-item>
+                <el-dropdown-item
+                  @click.native.prevent="remove(row)"
+                  :disabled="row.status !== 'DRAFT'"
+                >删除</el-dropdown-item>
+                <el-dropdown-item
+                  @click.native.prevent="handleToPage(row, 'revoke')"
+                  :disabled="row.status !== 'PTWYSH'"
+                >撤回</el-dropdown-item>
+                <el-dropdown-item @click.native.prevent="handleToPage(row, 'examine')">审核</el-dropdown-item>
+                <el-dropdown-item
+                  @click.native.prevent="backDraft(row)"
+                  :disabled="row.status !== 'PASS'"
+                >退回起草</el-dropdown-item>
               </el-dropdown-menu>
             </el-dropdown>
           </template>
@@ -217,19 +232,39 @@
         :total="resPageInfo.total"
       ></el-pagination>
     </template>
+    <!-- dialog -->
+    <IhDialog
+      :show="dialogVisible"
+      desc="变更录入人"
+    >
+      <UpdateUser
+        :data="selectionData"
+        @cancel="() => (dialogVisible = false)"
+        @finish="
+          (data) => {
+            dialogVisible = false;
+            getListMixin();
+          }
+        "
+      />
+    </IhDialog>
   </IhPage>
 </template>
+
 <script lang="ts">
 import { Component, Vue } from "vue-property-decorator";
 
 import {
   post_channelGradeChange_getList,
+  post_channelGradeChange_delete__id,
   get_channel_getAll,
+  post_channelGradeChange_backToDraft__id,
 } from "@/api/channel/index";
+import UpdateUser from "./dialog/updateUser.vue";
 import PaginationMixin from "../../../mixins/pagination";
 
 @Component({
-  components: {},
+  components: { UpdateUser },
   mixins: [PaginationMixin],
 })
 export default class LevelChangeList extends Vue {
@@ -246,6 +281,7 @@ export default class LevelChangeList extends Vue {
     list: [],
   };
   dialogVisible = false;
+  selectionData = [];
   private channelList: any = [];
 
   // 测试数据
@@ -274,15 +310,63 @@ export default class LevelChangeList extends Vue {
   search() {
     this.getListMixin();
   }
-  edit() {
-    // this.add(scope.row);
-  }
   handleSelectionChange(val: any) {
-    console.log(val);
+    this.selectionData = val;
   }
-  //详情
-  info(scope: any) {
-    console.log("详情页跳转", scope);
+  /**
+   * @description: 退回起草
+   * @param {any} row
+   */
+  private backDraft(row: any): void {
+    this.$confirm("此操作将该渠道等级变更信息退回起草, 是否继续?", "提示", {
+      confirmButtonText: "确定",
+      cancelButtonText: "取消",
+      type: "warning",
+    })
+      .then(async () => {
+        await post_channelGradeChange_backToDraft__id({ id: row.id });
+        this.getListMixin();
+        this.$message.success("退回起草成功");
+      })
+      .catch(async () => {
+        console.log("取消");
+      });
+  }
+  /**
+   * @description: 删除当前 -- 只有草稿状态能删除
+   * @param {any} row
+   */
+  private remove(row: any): void {
+    this.$confirm("此操作将删除该渠道等级变更信息, 是否继续?", "提示", {
+      confirmButtonText: "确定",
+      cancelButtonText: "取消",
+      type: "warning",
+    })
+      .then(async () => {
+        await post_channelGradeChange_delete__id({ id: row.id });
+        // 删除list最后一条数据 返回前一页面
+        if (this.resPageInfo.list.length === 1) {
+          this.queryPageParameters.pageNum === 1
+            ? (this.queryPageParameters.pageNum = 1)
+            : this.queryPageParameters.pageNum--;
+        }
+        this.getListMixin();
+        this.$message.success("删除成功");
+      })
+      .catch(async () => {
+        console.log("取消");
+      });
+  }
+  /**
+   * @description: 跳转页面
+   * @param {any} row
+   * @param {string} type 页面page
+   */
+  private handleToPage(row: any, type: string): void {
+    this.$router.push({
+      path: type,
+      query: { id: row.id },
+    });
   }
   private async getChannelList(): Promise<void> {
     this.channelList = await get_channel_getAll();
