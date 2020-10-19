@@ -4,7 +4,7 @@
  * @Author: zyc
  * @Date: 2020-07-31 15:21:06
  * @LastEditors: zyc
- * @LastEditTime: 2020-10-13 20:16:11
+ * @LastEditTime: 2020-10-19 17:44:07
  */
 let http = require('http');
 let fs = require("fs");
@@ -66,7 +66,7 @@ function handleBody(body) {
     writeLine('/* 此脚本由swagger-ui的api-docs自动生成，请勿修改 */');
     writeLine('//' + new Date().toLocaleString())
     writeLine("import { request } from '@/api/base'");
-    writeLine(`const basePath = "${body.basePath}"`);
+    writeLine(`const basePath = "/sales-api${body.basePath}"`);
     const { paths, definitions } = body;
 
     let count = 0;
