@@ -4,7 +4,7 @@
  * @Author: ywl
  * @Date: 2020-08-13 11:40:10
  * @LastEditors: ywl
- * @LastEditTime: 2020-10-16 18:02:28
+ * @LastEditTime: 2020-10-19 15:02:40
 -->
 <template>
   <IhPage label-width="100px">
@@ -230,6 +230,10 @@
                   @click.native.prevent="handleToPage(row, 'revoke')"
                   :disabled="row.status === 'DRAFT'"
                 >撤回起草</el-dropdown-item>
+                <!-- <el-dropdown-item
+                  @click.native.prevent="backDraft(row, 'revoke')"
+                  :disabled="row.status === 'DRAFT'"
+                >撤回起草</el-dropdown-item> -->
                 <el-dropdown-item
                   @click.native.prevent="handleToPage(row, 'change')"
                   :disabled="row.status !== 'PASS'"

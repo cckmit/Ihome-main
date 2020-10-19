@@ -4,7 +4,7 @@
  * @Author: zyc
  * @Date: 2020-06-30 09:21:17
  * @LastEditors: ywl
- * @LastEditTime: 2020-10-19 14:42:19
+ * @LastEditTime: 2020-10-19 14:56:54
 --> 
 <template>
   <IhPage label-width="100px">
@@ -197,11 +197,23 @@
                 <i class="el-icon-arrow-down el-icon--right"></i>
               </span>
               <el-dropdown-menu slot="dropdown">
-                <el-dropdown-item @click.native.prevent="handleToPage(row, 'edit')">修改</el-dropdown-item>
-                <el-dropdown-item @click.native.prevent="remove(row)">删除</el-dropdown-item>
-                <el-dropdown-item @click.native.prevent="handleToPage(row, 'revoke')">撤回</el-dropdown-item>
+                <el-dropdown-item
+                  @click.native.prevent="handleToPage(row, 'edit')"
+                  :disabled="row.status !== 'DRAFT'"
+                >修改</el-dropdown-item>
+                <el-dropdown-item
+                  @click.native.prevent="remove(row)"
+                  :disabled="row.status !== 'DRAFT'"
+                >删除</el-dropdown-item>
+                <el-dropdown-item
+                  @click.native.prevent="handleToPage(row, 'revoke')"
+                  :disabled="row.status !== 'PTWYSH'"
+                >撤回</el-dropdown-item>
                 <el-dropdown-item @click.native.prevent="handleToPage(row, 'examine')">审核</el-dropdown-item>
-                <el-dropdown-item @click.native.prevent="backDraft(row)">退回起草</el-dropdown-item>
+                <el-dropdown-item
+                  @click.native.prevent="backDraft(row)"
+                  :disabled="row.status !== 'PASS'"
+                >退回起草</el-dropdown-item>
               </el-dropdown-menu>
             </el-dropdown>
           </template>
