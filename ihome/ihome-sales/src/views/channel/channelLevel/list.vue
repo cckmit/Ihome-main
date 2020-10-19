@@ -4,7 +4,7 @@
  * @Author: zyc
  * @Date: 2020-08-13 11:40:10
  * @LastEditors: wwq
- * @LastEditTime: 2020-10-16 17:52:10
+ * @LastEditTime: 2020-10-19 11:35:21
 -->
 <template>
   <IhPage label-width="100px">
@@ -66,7 +66,6 @@
             <el-form-item label="业务开展省市">
               <IhCascader
                 :level="2"
-                :checkStrictly="false"
                 v-model="provinceOption"
                 clearable
                 placeholder="请选择"
@@ -375,6 +374,10 @@ export default class UserList extends Vue {
   }
 
   search() {
+    if (this.provinceOption.length) {
+      this.queryPageParameters.province = this.provinceOption[0];
+      this.queryPageParameters.city = this.provinceOption[1];
+    }
     this.getListMixin();
   }
   empty() {

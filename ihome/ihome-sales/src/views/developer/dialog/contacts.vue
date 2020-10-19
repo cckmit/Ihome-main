@@ -4,7 +4,7 @@
  * @Author: wwq
  * @Date: 2020-07-08 14:23:16
  * @LastEditors: wwq
- * @LastEditTime: 2020-10-10 17:58:18
+ * @LastEditTime: 2020-10-19 15:00:48
 --> 
 <template>
   <el-dialog
@@ -20,7 +20,11 @@
       <el-row>
         <el-col :span="24">
           <el-form-item label="姓名" prop="contactName">
-            <el-input v-model="form.contactName" placeholder="姓名"></el-input>
+            <el-input
+              v-model="form.contactName"
+              placeholder="姓名"
+              maxlength="32"
+            ></el-input>
           </el-form-item>
         </el-col>
       </el-row>
@@ -29,6 +33,7 @@
         <el-col :span="24">
           <el-form-item label="手机号码" prop="contactNum">
             <el-input
+              maxlength="16"
               v-model="form.contactNum"
               placeholder="手机号码"
             ></el-input>
@@ -38,8 +43,12 @@
 
       <el-row>
         <el-col :span="24">
-          <el-form-item label="邮箱" :prop="getProp('email')">
-            <el-input v-model="form.email" placeholder="电子邮箱"></el-input>
+          <el-form-item label="邮箱" prop="email">
+            <el-input
+              v-model="form.email"
+              placeholder="电子邮箱"
+              maxlength="64"
+            ></el-input>
           </el-form-item>
         </el-col>
       </el-row>
@@ -56,17 +65,11 @@ import { Component, Vue, Prop } from "vue-property-decorator";
 import { Form as ElForm } from "element-ui";
 
 import { NoRepeatHttp } from "ihome-common/util/aop/no-repeat-http";
-import {
-  emailOrNullValidato,
-  phoneValidator,
-} from "ihome-common/util/base/form-ui";
+// import { phoneValidator } from "ihome-common/util/base/form-ui";
 @Component({
   components: {},
 })
 export default class UserAdd extends Vue {
-  constructor() {
-    super();
-  }
   @Prop({ default: null }) data: any;
   dialogVisible = true;
 
@@ -76,29 +79,27 @@ export default class UserAdd extends Vue {
     email: null,
   };
   rules: any = {
-    name: [
+    contactName: [
       { required: true, message: "请输入名称", trigger: "change" },
       { min: 1, max: 32, message: "长度在 1 到 32 个字符", trigger: "change" },
     ],
-    mobilePhone: [
-      { required: true, message: "请输入手机号码", trigger: "change" },
-
-      { validator: phoneValidator, trigger: "change" },
+    contactNum: [
+      { required: true, message: "请输入手机号", trigger: "blur" },
+      {
+        pattern: /^1[3456789]\d{9}$/,
+        message: "手机号格式不对",
+        trigger: "blur",
+      },
     ],
     email: [
-      { trigger: "change" },
-      { validator: emailOrNullValidato, trigger: "change" },
+      { message: "请输入邮箱地址", trigger: "blur" },
+      {
+        type: "email",
+        message: "请输入正确的邮箱地址",
+        trigger: ["blur"],
+      },
     ],
   };
-  getProp(type: any) {
-    let list: string[] = ["Ihome", "Juheng", "Poly"];
-    let required = list.includes(this.form.accountType);
-    if (required) {
-      return type;
-    } else {
-      return null;
-    }
-  }
 
   cancel() {
     this.$emit("cancel", false);
@@ -109,23 +110,16 @@ export default class UserAdd extends Vue {
   @NoRepeatHttp()
   async submit(valid: any) {
     if (valid) {
-      // console.log(this.form);
-      // if (this.form.id > 0) {
-      //   const res = await post_user_update(this.form);
-      //   this.$message.success("修改成功");
-      //   this.$emit("finish", res);
-      // } else {
-      //   const res = await post_user_add(this.form);
-      //   this.$alert(res, "用户新增成功，密码是：");
-      //   this.$emit("finish", res);
-      // }
-    } else {
-      console.log("error submit!!");
-      return false;
+      if (valid) {
+        this.$emit("finish", this.form);
+      } else {
+        console.log("error submit!!");
+        return false;
+      }
     }
   }
-  async created() {
-    this.form = this.data;
+  created() {
+    this.form = { ...this.data };
   }
 }
 </script>
