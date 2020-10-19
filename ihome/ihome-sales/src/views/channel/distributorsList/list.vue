@@ -4,7 +4,7 @@
  * @Author: ywl
  * @Date: 2020-08-13 11:40:10
  * @LastEditors: ywl
- * @LastEditTime: 2020-10-19 15:02:40
+ * @LastEditTime: 2020-10-19 15:08:33
 -->
 <template>
   <IhPage label-width="100px">
@@ -226,14 +226,14 @@
                   :disabled="row.status !== 'DRAFT'"
                 >删除</el-dropdown-item>
                 <el-dropdown-item @click.native.prevent="handleToPage(row, 'confirm')">确认</el-dropdown-item>
-                <el-dropdown-item
+                <!-- <el-dropdown-item
                   @click.native.prevent="handleToPage(row, 'revoke')"
                   :disabled="row.status === 'DRAFT'"
-                >撤回起草</el-dropdown-item>
-                <!-- <el-dropdown-item
+                >撤回起草</el-dropdown-item> -->
+                <el-dropdown-item
                   @click.native.prevent="backDraft(row, 'revoke')"
                   :disabled="row.status === 'DRAFT'"
-                >撤回起草</el-dropdown-item> -->
+                >撤回起草</el-dropdown-item>
                 <el-dropdown-item
                   @click.native.prevent="handleToPage(row, 'change')"
                   :disabled="row.status !== 'PASS'"
@@ -286,6 +286,7 @@ import { Component, Vue } from "vue-property-decorator";
 import {
   post_channel_getList,
   post_channel_delete__id,
+  post_channel_backToDraft__id,
 } from "@/api/channel/index";
 import UpdateUser from "./dialog/updateUser.vue";
 
@@ -360,6 +361,25 @@ export default class List extends Vue {
     console.log("变更录入人");
     this.dialogVisible = true;
     this.isInput = true;
+  }
+  /**
+   * @description: 退回起草
+   * @param {any} row
+   */
+  private backDraft(row: any): void {
+    this.$confirm("此操作将该渠道商撤回起草, 是否继续?", "提示", {
+      confirmButtonText: "确定",
+      cancelButtonText: "取消",
+      type: "warning",
+    })
+      .then(async () => {
+        await post_channel_backToDraft__id({ id: row.id });
+        this.getListMixin();
+        this.$message.success("撤回起草成功");
+      })
+      .catch(async () => {
+        console.log("取消");
+      });
   }
   /**
    * @description: 删除当前 -- 只有草稿状态能删除
