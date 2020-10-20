@@ -4,7 +4,7 @@
  * @Author: wwq
  * @Date: 2020-10-15 12:33:25
  * @LastEditors: wwq
- * @LastEditTime: 2020-10-19 16:34:13
+ * @LastEditTime: 2020-10-20 11:08:56
 -->
 <template>
   <div class="text-left">
@@ -195,8 +195,8 @@ import { Component, Vue, Prop } from "vue-property-decorator";
 //引入请求数据的api
 import {
   get_company_get__id,
-  post_company_retract__id,
-  post_company_audit__id,
+  post_company_retract,
+  post_company_audit,
 } from "../../../api/developer/index";
 @Component({
   components: {},
@@ -240,7 +240,7 @@ export default class Home extends Vue {
 
   async submitRecall() {
     if (this.resPageInfo.recallReason) {
-      await post_company_retract__id({
+      await post_company_retract({
         reason: this.resPageInfo.recallReason,
         id: this.developerId,
       });
@@ -248,6 +248,7 @@ export default class Home extends Vue {
         type: "success",
         message: "撤回成功!",
       });
+      this.$router.push(`/developers/list`);
     } else {
       this.$message.warning("请填写撤回原因");
     }
@@ -260,7 +261,7 @@ export default class Home extends Vue {
         return;
       }
     }
-    await post_company_audit__id({
+    await post_company_audit({
       reason: this.resPageInfo.checkOpinion,
       id: this.developerId,
       pass: val,
@@ -269,6 +270,7 @@ export default class Home extends Vue {
       type: "success",
       message: val ? "审核通过!" : "驳回成功!",
     });
+    this.$router.push(`/developers/list`);
   }
 }
 </script>

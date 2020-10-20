@@ -4,7 +4,7 @@
  * @Author: wwq
  * @Date: 2020-10-09 09:35:09
  * @LastEditors: wwq
- * @LastEditTime: 2020-10-14 14:32:30
+ * @LastEditTime: 2020-10-20 09:27:33
 -->
 
 <template>
@@ -39,7 +39,7 @@
         <el-col :span="24">
           <el-form-item label="所需材料">
             <template v-for="item in form.standardAttachments"
-              ><div :key="item" class="bordersolid">
+              ><div :key="item" :class="item ? 'bordersolid' : ''">
                 {{
                   $root.dictAllName(item, "ChannelLevelStandardAttachment").name
                 }}

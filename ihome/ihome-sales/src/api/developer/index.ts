@@ -1,19 +1,19 @@
 /* eslint-disable */
 /* 此脚本由swagger-ui的api-docs自动生成，请勿修改 */
-//2020-10-13 15:24:51
+//2020-10-20 10:57:15 ├F10: AM┤
 import { request } from '@/api/base'
 const basePath = "/developer"
-/**保存新增开发商信息【未完善】*/
+/**保存新增开发商信息*/
 export async function post_company_add (d?: any) {
-return await request.post< boolean,boolean> (basePath+'/company/add', d)
+return await request.post< number,number> (basePath+'/company/add', d)
 }
 /**审核开发商*/
-export async function post_company_audit__id (d?: any) {
-return await request.post< boolean,boolean> (basePath+'/company/audit/{id}', d)
+export async function post_company_audit (d?: any) {
+return await request.post< number,number> (basePath+'/company/audit', d)
 }
 /**删除开发商*/
 export async function get_company_delete__id (d?: any) {
-return await request.get<boolean,boolean>(basePath+'/company/delete/{id}', { params: d })
+return await request.get<number,number>(basePath+'/company/delete/{id}', { params: d })
 }
 /**开发商详情*/
 export async function get_company_get__id (d?: any) {
@@ -24,20 +24,20 @@ export async function post_company_getList (d?: any) {
 return await request.post< PageModel<CompanyListVO>,PageModel<CompanyListVO>> (basePath+'/company/getList', d)
 }
 /**撤回开发商*/
-export async function post_company_retract__id (d?: any) {
-return await request.post< boolean,boolean> (basePath+'/company/retract/{id}', d)
+export async function post_company_retract (d?: any) {
+return await request.post< number,number> (basePath+'/company/retract', d)
 }
-/**变更信息【未完善】*/
+/**变更信息*/
 export async function post_company_update (d?: any) {
-return await request.post< boolean,boolean> (basePath+'/company/update', d)
+return await request.post< number,number> (basePath+'/company/update', d)
 }
-/**修改开发商信息【未完善】*/
+/**修改开发商信息*/
 export async function post_company_updateDraft (d?: any) {
-return await request.post< boolean,boolean> (basePath+'/company/updateDraft', d)
+return await request.post< number,number> (basePath+'/company/updateDraft', d)
 }
 /**变更录入人*/
 export async function post_company_updateInputUser (d?: any) {
-return await request.post< boolean,boolean> (basePath+'/company/updateInputUser', d)
+return await request.post< number,number> (basePath+'/company/updateInputUser', d)
 }
 /**开发商操作日志列表*/
 export async function get_companyLog_getAll__companyId (d?: any) {
@@ -121,10 +121,12 @@ province: string;
 remark: string;
 /**保存标识，是否直接保存为待审核状态*/
 saveToAudit: boolean;
-/**(必填)成立日期(yyyy-MM-dd HH:mm:ss)*/
+/**(必填)成立日期(yyyy-MM-dd)*/
 setupTime: string;
 /**(必填)简称*/
 shortName: string;
+/**状态(Draft-起草、WaitAuditByBranchHead-待分公司业管审核、Audited-已审核)*/
+status: string;
 /**(必填)公司类型(CompanyLimited-有限责任公司（自然人投资或控股）)*/
 type: string;
 }
@@ -175,10 +177,12 @@ reason: string;
 remark: string;
 /**保存标识，是否直接保存为待审核状态*/
 saveToAudit: boolean;
-/**(必填)成立日期(yyyy-MM-dd HH:mm:ss)*/
+/**(必填)成立日期(yyyy-MM-dd)*/
 setupTime: string;
 /**(必填)简称*/
 shortName: string;
+/**状态(Draft-起草、WaitAuditByBranchHead-待分公司业管审核、Audited-已审核)*/
+status: string;
 /**(必填)公司类型(CompanyLimited-有限责任公司（自然人投资或控股）)*/
 type: string;
 }
@@ -218,10 +222,12 @@ province: string;
 remark: string;
 /**保存标识，是否直接保存为待审核状态*/
 saveToAudit: boolean;
-/**(必填)成立日期(yyyy-MM-dd HH:mm:ss)*/
+/**(必填)成立日期(yyyy-MM-dd)*/
 setupTime: string;
 /**(必填)简称*/
 shortName: string;
+/**状态(Draft-起草、WaitAuditByBranchHead-待分公司业管审核、Audited-已审核)*/
+status: string;
 /**(必填)公司类型(CompanyLimited-有限责任公司（自然人投资或控股）)*/
 type: string;
 }
@@ -290,7 +296,7 @@ reason: string;
 /**UpdateInputUserVO*/
 export interface UpdateInputUserVO {
 /**开发商ID*/
-id: number;
+companyId: number[];
 /**(必填)新录入人*/
 inputUser: number;
 }
