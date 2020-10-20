@@ -1,7 +1,16 @@
+<!--
+ * @Descripttion: 
+ * @version: 
+ * @Author: zyc
+ * @Date: 2020-10-19 12:32:39
+ * @LastEditors: zyc
+ * @LastEditTime: 2020-10-20 10:09:10
+-->
 
 # ihome-common
 ## 版本更新
 ```
+v1.1.4 2020-10-20 10:08  修改配置
 v1.1.2 2020-10-19 15:54  配置新的仓库
 
 

@@ -4,7 +4,7 @@
  * @Author: zyc
  * @Date: 2020-06-24 09:30:41
  * @LastEditors: zyc
- * @LastEditTime: 2020-09-08 09:41:59
+ * @LastEditTime: 2020-10-20 09:57:51
  */
 
 import { VuexModule, Module, Action, Mutation, getModule } from 'vuex-module-decorators'
@@ -45,6 +45,7 @@ class User extends VuexModule implements IUserState {
         //     assess_token: 'xxxxxxxxxx'
         // }
         console.log(res);
+         
         
         setToken(res.access_token)
         this.SET_TOKEN(res.access_token)
