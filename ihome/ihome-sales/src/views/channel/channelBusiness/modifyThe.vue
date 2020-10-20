@@ -4,7 +4,7 @@
  * @Author: ywl
  * @Date: 2020-09-16 14:05:21
  * @LastEditors: ywl
- * @LastEditTime: 2020-10-16 14:23:04
+ * @LastEditTime: 2020-10-20 16:06:54
 -->
 <template>
   <IhPage>
@@ -23,7 +23,10 @@
               label="名称"
               prop="name"
             >
-              <el-input v-model="info.name"></el-input>
+              <el-input
+                v-model="info.name"
+                clearable
+              ></el-input>
             </el-form-item>
           </el-col>
           <el-col :span="8">
@@ -31,7 +34,10 @@
               label="信用代码"
               prop="creditCode"
             >
-              <el-input v-model="info.creditCode"></el-input>
+              <el-input
+                v-model="info.creditCode"
+                clearable
+              ></el-input>
             </el-form-item>
           </el-col>
           <el-col :span="8">
@@ -39,7 +45,10 @@
               label="简称"
               prop="shortName"
             >
-              <el-input v-model="info.shortName"></el-input>
+              <el-input
+                v-model="info.shortName"
+                clearable
+              ></el-input>
             </el-form-item>
           </el-col>
         </el-row>
@@ -69,7 +78,10 @@
               label="法定代表人"
               prop="legalPerson"
             >
-              <el-input v-model="info.legalPerson"></el-input>
+              <el-input
+                v-model="info.legalPerson"
+                clearable
+              ></el-input>
             </el-form-item>
           </el-col>
           <el-col :span="8">
@@ -77,7 +89,10 @@
               label="法人身份证号码"
               prop="legalIdentityCode"
             >
-              <el-input v-model="info.legalIdentityCode"></el-input>
+              <el-input
+                v-model="info.legalIdentityCode"
+                clearable
+              ></el-input>
             </el-form-item>
           </el-col>
         </el-row>
@@ -102,7 +117,10 @@
               label="注册资本"
               prop="capital"
             >
-              <el-input v-model="info.capital"></el-input>
+              <el-input
+                v-model="info.capital"
+                clearable
+              ></el-input>
             </el-form-item>
           </el-col>
           <el-col :span="8">
@@ -129,7 +147,10 @@
               label="省市区"
               prop="provinceList"
             >
-              <IhCascader v-model="info.provinceList"></IhCascader>
+              <IhCascader
+                v-model="info.provinceList"
+                :checkStrictly="false"
+              ></IhCascader>
             </el-form-item>
           </el-col>
           <el-col :span="8">
@@ -141,6 +162,15 @@
                 v-model="info.address"
                 clearable
                 placeholder="请输入住所"
+              ></el-input>
+            </el-form-item>
+          </el-col>
+          <el-col :span="8">
+            <el-form-item label="跟进人">
+              <el-input
+                v-model="info.followUserId"
+                placeholder="跟进人"
+                disabled
               ></el-input>
             </el-form-item>
           </el-col>
@@ -217,7 +247,10 @@
             label="姓名"
             prop="name"
           >
-            <el-input v-model="channelPersonsData.name"></el-input>
+            <el-input
+              v-model="channelPersonsData.name"
+              clearable
+            ></el-input>
           </el-form-item>
         </el-col>
         <el-col :span="8">
@@ -225,7 +258,10 @@
             label="手机号码"
             prop="bobile"
           >
-            <el-input v-model="channelPersonsData.bobile"></el-input>
+            <el-input
+              v-model="channelPersonsData.bobile"
+              clearable
+            ></el-input>
           </el-form-item>
         </el-col>
         <el-col :span="8">
@@ -233,7 +269,10 @@
             label="身份证号码"
             prop="identityCode"
           >
-            <el-input v-model="channelPersonsData.identityCode"></el-input>
+            <el-input
+              v-model="channelPersonsData.identityCode"
+              clearable
+            ></el-input>
           </el-form-item>
         </el-col>
         <el-col :span="8">
@@ -241,13 +280,29 @@
             label="邮箱"
             prop="email"
           >
-            <el-input v-model="channelPersonsData.email"></el-input>
+            <el-input
+              v-model="channelPersonsData.email"
+              clearable
+            ></el-input>
           </el-form-item>
         </el-col>
       </el-row>
     </el-form>
 
-    <p class="ih-info-title">附件信息</p>
+    <p class="ih-info-title">
+      <span>附件信息</span>
+      <el-link
+        class="margin-left-16"
+        style="font-size: 12px"
+        href="http://zxgk.court.gov.cn/zhzxgk/"
+        type="info"
+        target="_blank"
+      >综合查询被执行人</el-link>
+      <span
+        class="margin-left-10"
+        style="font-size: 12px; color: #909399;"
+      >附件类型支持jpg、png、bmp、tif、tiff等图片格式，以及pdf、word、excel文档，单个文件不能超过10M</span>
+    </p>
     <el-table style="width: 100%">
       <el-table-column
         prop="type"
@@ -260,7 +315,8 @@
     <p class="ih-info-title">企业概况</p>
     <el-input
       type="textarea"
-      :rows="3"
+      :autosize="{ minRows: 5, maxRows: 8 }"
+      maxlength="256"
       placeholder="请输入企业概况"
       v-model="info.remark"
     >
@@ -270,7 +326,8 @@
       <p class="ih-info-title">变更原因</p>
       <el-input
         type="textarea"
-        :rows="3"
+        :autosize="{ minRows: 5, maxRows: 8 }"
+        maxlength="256"
         placeholder="请输入变更原因"
         v-model="changeReason"
       >
@@ -438,22 +495,31 @@ export default class ModifyThe extends Vue {
 
     Promise.all([ruleFrom, personForm]).then(async (value) => {
       if (value[0] && value[1]) {
-        this.info.channelPersons.push(this.channelPersonsData);
+        // this.info.channelPersons.push(this.channelPersonsData);
         console.log(this.pageName);
         switch (this.pageName) {
           case "AddChannel":
             // 渠道商添加
-            await post_channel_add({ ...this.info, operateType: type });
+            await post_channel_add({
+              ...this.info,
+              channelPersons: [{ ...this.channelPersonsData }],
+              operateType: type,
+            });
             this.$message.success("渠道商添加成功");
+            this.$router.push("list");
             break;
           case "EditChannel":
             // 修改渠道商
-            await post_channel_edit({ ...this.info, operateType: type });
+            await post_channel_edit({
+              ...this.info,
+              channelPersons: [{ ...this.channelPersonsData }],
+              operateType: type,
+            });
             this.$message.success("修改渠道商成功");
+            this.$router.push("list");
             break;
           case "ChangeChannel":
             // 渠道商提交变更
-            console.log("渠道商提交变更");
             if (!this.changeReason) {
               this.$message.error("变更原因不能为空");
               return;
@@ -461,17 +527,17 @@ export default class ModifyThe extends Vue {
             await post_channelChange_add({
               ...this.info,
               operateType: type,
+              channelPersonChanges: [{ ...this.channelPersonsData }],
+              channelBankChanges: this.info.channelBanks,
               changeReason: this.changeReason,
               oldChannelId: this.$route.query.id,
             });
             this.$message.success("渠道商变更提交成功");
+            this.$router.push("/channelsChange/list");
             break;
           case "ChannelChangeEdit":
             break;
         }
-        this.$router.push({
-          path: "list",
-        });
       } else {
         // 表单还有没填写
       }

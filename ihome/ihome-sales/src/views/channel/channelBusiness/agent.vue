@@ -4,7 +4,7 @@
  * @Author: ywl
  * @Date: 2020-09-18 09:14:40
  * @LastEditors: ywl
- * @LastEditTime: 2020-10-16 14:58:20
+ * @LastEditTime: 2020-10-20 10:23:00
 -->
 <template>
   <IhPage>
@@ -224,16 +224,19 @@ export default class Maintenance extends Vue {
     list: [],
   };
 
+  search() {
+    this.queryPageParameters.pageNum = 1;
+    this.getListMixin();
+  }
   reset() {
     this.queryPageParameters = {
       settlementFlag: "",
       status: "",
       name: "",
       mobile: "",
-      pageSize: 10,
-      pageNum: 1,
+      pageSize: this.queryPageParameters.pageSize,
+      pageNum: this.queryPageParameters.pageNum,
     };
-    this.getListMixin();
   }
   /**
    * @description: 开启/关闭渠道经纪人
@@ -294,10 +297,6 @@ export default class Maintenance extends Vue {
     this.dialogFormVisible = true;
     this.agentData = { ...row };
     this.isAdd = false;
-  }
-  search() {
-    console.log("查询");
-    this.getListMixin();
   }
   async getListMixin() {
     this.resPageInfo = await post_channelAgent_getList(

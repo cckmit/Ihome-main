@@ -4,7 +4,7 @@
  * @Author: lgf
  * @Date: 2020-09-16 14:05:21
  * @LastEditors: ywl
- * @LastEditTime: 2020-10-16 10:31:47
+ * @LastEditTime: 2020-10-20 12:02:10
 -->
 <template>
   <div class="text-left">
@@ -12,7 +12,12 @@
     <el-form label-width="120px">
       <el-row>
         <el-col :span="8">
-          <el-form-item label="名称">{{ info.name }}</el-form-item>
+          <el-form-item label="名称">
+            <span
+              class="text-ellipsis"
+              :title="info.name"
+            >{{ info.name }}</span>
+          </el-form-item>
         </el-col>
         <el-col :span="8">
           <el-form-item label="信用代码">{{ info.creditCode }}</el-form-item>
@@ -26,7 +31,12 @@
           <el-form-item
             label="类型"
             v-if="info.type"
-          >{{ $root.dictAllName(info.type, "ChannelCompanyType").name }}</el-form-item>
+          >
+            <span
+              class="text-ellipsis"
+              :title="$root.dictAllName(info.type, 'ChannelCompanyType').name"
+            >{{ $root.dictAllName(info.type, "ChannelCompanyType").name }}</span>
+          </el-form-item>
         </el-col>
         <el-col :span="8">
           <el-form-item label="法定代表人">{{ info.legalPerson }}</el-form-item>
@@ -48,13 +58,13 @@
       </el-row>
       <el-row>
         <el-col :span="8">
-          <el-form-item label="省份">{{ info.province }}</el-form-item>
+          <el-form-item label="省份">{{ $root.getAreaName(info.province) }}</el-form-item>
         </el-col>
         <el-col :span="8">
-          <el-form-item label="城市">{{ info.city }}</el-form-item>
+          <el-form-item label="城市">{{ $root.getAreaName(info.city) }}</el-form-item>
         </el-col>
         <el-col :span="8">
-          <el-form-item label="行政区">{{ info.county }}</el-form-item>
+          <el-form-item label="行政区">{{ $root.getAreaName(info.county) }}</el-form-item>
         </el-col>
       </el-row>
       <el-row>
@@ -128,7 +138,24 @@
         </el-col>
       </el-row>
     </el-form>
-    <p class="ih-info-title">附件信息</p>
+    <p class="ih-info-title">
+      <span>附件信息</span>
+      <el-link
+        class="margin-left-16"
+        style="font-size: 12px"
+        href="http://zxgk.court.gov.cn/zhzxgk/"
+        type="info"
+        target="_blank"
+      >综合查询被执行人</el-link>
+    </p>
+    <el-table style="width: 100%">
+      <el-table-column
+        prop="type"
+        width="180"
+        label="类型"
+      ></el-table-column>
+      <el-table-column label="附件"></el-table-column>
+    </el-table>
     <br />
 
     <p class="ih-info-title">企业概况</p>
@@ -143,7 +170,8 @@
         type="textarea"
         placeholder="请输入意见"
         v-model="approveRecord.remark"
-        :rows="3"
+        :autosize="{ minRows: 5, maxRows: 8 }"
+        maxlength="256"
       ></el-input>
       <div class="text-center">
         <br />
@@ -151,7 +179,7 @@
           type="success"
           @click="confirmChannel('Confirm')"
         >通过</el-button>
-        <el-button>退回</el-button>
+        <el-button @click="confirmChannel('Reject')">退回</el-button>
       </div>
     </template>
 
@@ -161,7 +189,8 @@
         type="textarea"
         placeholder="请输入撤回原因"
         v-model="approveRecord.remark"
-        :rows="3"
+        :autosize="{ minRows: 5, maxRows: 8 }"
+        maxlength="256"
       ></el-input>
       <div class="text-center">
         <br />
@@ -201,7 +230,7 @@ export default class Home extends Vue {
     this.channelPersons = this.info.channelPersons[0];
   }
   private async confirmChannel(type: string): Promise<void> {
-    if (!this.approveRecord.remark) {
+    if (!this.approveRecord.remark && type === "Reject") {
       this.$message.error("输入不能为空");
       return;
     }
@@ -225,3 +254,13 @@ interface ConfirmObj {
   result: string;
 }
 </script>
+
+<style lang="scss" scoped>
+.text-ellipsis {
+  display: inline-block;
+  width: 100%;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+</style>

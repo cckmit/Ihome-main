@@ -4,7 +4,7 @@
  * @Author: ywl
  * @Date: 2020-06-30 09:21:17
  * @LastEditors: ywl
- * @LastEditTime: 2020-10-16 16:48:13
+ * @LastEditTime: 2020-10-20 16:09:13
 --> 
 <template>
   <IhPage label-width="100px">
@@ -121,7 +121,7 @@
           fixed
           prop="name"
           label="渠道商名称"
-          min-width="150"
+          min-width="250"
         ></el-table-column>
         <el-table-column
           fixed
@@ -174,9 +174,18 @@
                 <i class="el-icon-arrow-down el-icon--right"></i>
               </span>
               <el-dropdown-menu slot="dropdown">
-                <el-dropdown-item @click.native.prevent="handleToPage(row, 'edit')">修改</el-dropdown-item>
-                <el-dropdown-item @click.native.prevent="remove(row)">删除</el-dropdown-item>
-                <el-dropdown-item @click.native.prevent="handleToPage(row, 'confirm')">确认</el-dropdown-item>
+                <el-dropdown-item
+                  @click.native.prevent="handleToPage(row, 'edit')"
+                  :disabled="row.status !== 'DRAFT'"
+                >修改</el-dropdown-item>
+                <el-dropdown-item
+                  @click.native.prevent="remove(row)"
+                  :disabled="row.status !== 'DRAFT'"
+                >删除</el-dropdown-item>
+                <el-dropdown-item
+                  @click.native.prevent="handleToPage(row, 'confirm')"
+                  :disabled="row.status !== 'ToBeConfirmed'"
+                >确认</el-dropdown-item>
                 <el-dropdown-item @click.native.prevent="handleToPage(row, 'examine')">审核</el-dropdown-item>
                 <el-dropdown-item @click.native.prevent="handleToPage(row, 'revoke')">撤回</el-dropdown-item>
                 <el-dropdown-item @click.native.prevent="draft(row)">退回起草</el-dropdown-item>
@@ -260,9 +269,12 @@ export default class ChannelChangeList extends Vue {
       inputUser: "",
       status: "",
       followUserId: "",
-      pageNum: 1,
-      pageSize: 10,
+      pageNum: this.queryPageParameters.pageNum,
+      pageSize: this.queryPageParameters.pageSize,
     };
+  }
+  search() {
+    this.queryPageParameters.pageNum = 1;
     this.getListMixin();
   }
   /**
@@ -311,9 +323,6 @@ export default class ChannelChangeList extends Vue {
       .catch(async () => {
         console.log("取消");
       });
-  }
-  search() {
-    this.getListMixin();
   }
   handleSelectionChange(val: any) {
     this.selectionData = val;

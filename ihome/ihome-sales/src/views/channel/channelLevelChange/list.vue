@@ -4,7 +4,7 @@
  * @Author: zyc
  * @Date: 2020-06-30 09:21:17
  * @LastEditors: ywl
- * @LastEditTime: 2020-10-19 16:13:50
+ * @LastEditTime: 2020-10-20 10:25:15
 --> 
 <template>
   <IhPage label-width="100px">
@@ -299,15 +299,12 @@ export default class LevelChangeList extends Vue {
       storageNum: "",
       departmentOrgId: "",
       changeTime: "",
-      pageNum: 1,
-      pageSize: 10,
+      pageNum: this.queryPageParameters.pageNum,
+      pageSize: this.queryPageParameters.pageSize,
     };
-    this.getListMixin();
-  }
-  add() {
-    this.dialogVisible = true;
   }
   search() {
+    this.queryPageParameters.pageNum = 1;
     this.getListMixin();
   }
   handleSelectionChange(val: any) {
