@@ -4,7 +4,7 @@
  * @Author: wwq
  * @Date: 2020-10-09 09:35:09
  * @LastEditors: wwq
- * @LastEditTime: 2020-10-16 14:46:56
+ * @LastEditTime: 2020-10-20 12:00:02
 -->
 
 <template>
@@ -56,6 +56,7 @@
         <el-col :span="12">
           <el-form-item label="评级项" prop="gradeItem">
             <el-input
+              clearable
               v-model="form.gradeItem"
               maxlength="32"
               placeholder="请输入评级项"

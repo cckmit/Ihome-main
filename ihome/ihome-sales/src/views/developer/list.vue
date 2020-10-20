@@ -4,7 +4,7 @@
  * @Author: wwq
  * @Date: 2020-09-25 17:59:09
  * @LastEditors: wwq
- * @LastEditTime: 2020-10-19 16:26:47
+ * @LastEditTime: 2020-10-20 11:55:30
 -->
 <template>
   <ih-page>
@@ -13,12 +13,15 @@
         <el-row>
           <el-col :span="8">
             <el-form-item label="名称">
-              <el-input v-model="queryPageParameters.name"></el-input>
+              <el-input v-model="queryPageParameters.name" clearable></el-input>
             </el-form-item>
           </el-col>
           <el-col :span="8">
             <el-form-item label="信用代码">
-              <el-input v-model="queryPageParameters.creditCode"></el-input>
+              <el-input
+                v-model="queryPageParameters.creditCode"
+                clearable
+              ></el-input>
             </el-form-item>
           </el-col>
           <el-col :span="8">
@@ -47,7 +50,10 @@
           </el-col>
           <el-col :span="8">
             <el-form-item label="录入人">
-              <el-input v-model="queryPageParameters.inputUser"></el-input>
+              <el-input
+                v-model="queryPageParameters.inputUser"
+                clearable
+              ></el-input>
             </el-form-item>
           </el-col>
         </el-row>
@@ -56,7 +62,7 @@
 
     <template v-slot:btn>
       <el-row>
-        <el-button type="danger" @click="search()">查询</el-button>
+        <el-button type="primary" @click="search()">查询</el-button>
         <el-button type="success" @click="add()">添加</el-button>
         <el-button type="info" @click="reset()">重置</el-button>
         <el-button :disabled="updataUserDisabled" @click="dialogVisible = true"
@@ -117,7 +123,9 @@
                 <i class="el-icon-arrow-down el-icon--right"></i>
               </span>
               <el-dropdown-menu slot="dropdown">
-                <el-dropdown-item @click.native.prevent="routeTo(row, 'edit')"
+                <el-dropdown-item
+                  :disabled="row.status === 'Audited'"
+                  @click.native.prevent="routeTo(row, 'edit')"
                   >修改</el-dropdown-item
                 >
                 <el-dropdown-item
@@ -130,7 +138,9 @@
                   @click.native.prevent="routeTo(row, 'revocation')"
                   >撤回
                 </el-dropdown-item>
-                <el-dropdown-item @click.native.prevent="routeTo(row, 'check')"
+                <el-dropdown-item
+                  :disabled="row.status !== 'WaitAuditByBranchHead'"
+                  @click.native.prevent="routeTo(row, 'check')"
                   >审核</el-dropdown-item
                 >
                 <el-dropdown-item
@@ -201,7 +211,6 @@ export default class DeveloperList extends Vue {
     total: 0,
     list: [],
   };
-  currentPage: any = 1;
   total: any = null;
   dialogVisible = false;
 
@@ -221,13 +230,13 @@ export default class DeveloperList extends Vue {
       name: null,
       creditCode: null,
       status: null,
-      provinceOption: Array,
       inputUser: null,
       province: null,
       city: null,
       pageNum: this.queryPageParameters.pageNum,
       pageSize: this.queryPageParameters.pageSize,
     };
+    this.provinceOption = [];
   }
 
   async remove(row: any) {
@@ -265,11 +274,10 @@ export default class DeveloperList extends Vue {
   }
 
   search() {
-    if (this.provinceOption.length) {
-      this.queryPageParameters.province = this.provinceOption[0];
-      this.queryPageParameters.city = this.provinceOption[1];
-      this.queryPageParameters.county = this.provinceOption[2];
-    }
+    this.queryPageParameters.province = this.provinceOption[0];
+    this.queryPageParameters.city = this.provinceOption[1];
+    this.queryPageParameters.county = this.provinceOption[2];
+    this.queryPageParameters.pageNum = 1;
     this.getListMixin();
   }
 }

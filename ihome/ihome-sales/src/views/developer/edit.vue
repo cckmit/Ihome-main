@@ -4,7 +4,7 @@
  * @Author: wwq
  * @Date: 2020-09-25 17:59:09
  * @LastEditors: wwq
- * @LastEditTime: 2020-10-19 16:14:53
+ * @LastEditTime: 2020-10-20 11:57:16
 -->
 <template>
   <ih-page>
@@ -20,6 +20,7 @@
           <el-col :span="8">
             <el-form-item label="名称" prop="name">
               <el-input
+                clearable
                 maxlength="64"
                 v-model="resPageInfo.name"
                 placeholder="名称"
@@ -29,6 +30,7 @@
           <el-col :span="8">
             <el-form-item label="信用代码" prop="creditCode">
               <el-input
+                clearable
                 maxlength="18"
                 v-model="resPageInfo.creditCode"
                 placeholder="信用代码"
@@ -38,6 +40,7 @@
           <el-col :span="8">
             <el-form-item label="简称" prop="shortName">
               <el-input
+                clearable
                 maxlength="16"
                 v-model="resPageInfo.shortName"
                 placeholder="简称"
@@ -68,6 +71,7 @@
               <el-col :span="8">
                 <el-form-item label="法定代表人" required prop="legalPerson">
                   <el-input
+                    clearable
                     maxlength="32"
                     v-model="resPageInfo.legalPerson"
                     placeholder="法定代表人"
@@ -77,6 +81,7 @@
               <el-col :span="8">
                 <el-form-item label="法人身份证号码" prop="legalPersonId">
                   <el-input
+                    clearable
                     maxlength="18"
                     v-model="resPageInfo.legalPersonId"
                     placeholder="法人身份证号码"
@@ -98,6 +103,7 @@
               <el-col :span="8">
                 <el-form-item label="注册资本" prop="capital">
                   <el-input
+                    clearable
                     maxlength="32"
                     v-model="resPageInfo.capital"
                     placeholder="注册资本"
@@ -108,6 +114,7 @@
               <el-col :span="8">
                 <el-form-item label="营业期限">
                   <el-input
+                    clearable
                     maxlength="32"
                     v-model="resPageInfo.businessTime"
                     placeholder="营业期限"
@@ -125,6 +132,7 @@
               <el-col :span="16">
                 <el-form-item label="住所" prop="address">
                   <el-input
+                    clearable
                     maxlength="64"
                     v-model="resPageInfo.address"
                     placeholder="住所"
@@ -134,6 +142,7 @@
               <el-col :span="8">
                 <el-form-item label="录入人" prop="inputUser">
                   <el-input
+                    clearable
                     disabled
                     v-model="resPageInfo.inputUser"
                     placeholder="录入人"
@@ -229,15 +238,23 @@
       </el-table>
       <br />
 
-      <p class="ih-info-title">企业概况</p>
-      <el-input
-        maxlength="256"
-        type="textarea"
-        :autosize="{ minRows: 5, maxRows: 10 }"
-        placeholder="请输入企业概况"
-        v-model="resPageInfo.remark"
-      >
-      </el-input>
+      <div v-if="$route.name !== 'developerChange'">
+        <p class="ih-info-title">企业概况</p>
+        <el-input
+          maxlength="256"
+          type="textarea"
+          :autosize="{ minRows: 5, maxRows: 10 }"
+          placeholder="请输入企业概况"
+          v-model="resPageInfo.remark"
+        >
+        </el-input>
+        <div class="bottom">
+          <el-button @click="submit('Draft')" type="primary">保存</el-button>
+          <el-button @click="submit('WaitAuditByBranchHead')" type="primary"
+            >提交</el-button
+          >
+        </div>
+      </div>
 
       <div v-if="$route.name === 'developerChange'">
         <p class="ih-info-title">变更原因</p>
@@ -248,11 +265,9 @@
           v-model="resPageInfo.reason"
         >
         </el-input>
-      </div>
-
-      <div class="bottom">
-        <el-button @click="submit(false)" type="primary">保存</el-button>
-        <el-button @click="submit(true)" type="primary">提交</el-button>
+        <div class="bottom">
+          <el-button @click="submit('Audited')" type="primary">提交</el-button>
+        </div>
       </div>
     </template>
 
@@ -441,18 +456,13 @@ export default class Edit extends Vue {
     }
   }
 
-  submit(val: boolean) {
+  submit(val: string) {
     (this.$refs["form"] as ElForm).validate(async (v: any) => {
       if (v) {
         this.resPageInfo.province = this.resPageInfo.provinceOption[0];
         this.resPageInfo.city = this.resPageInfo.provinceOption[1];
         this.resPageInfo.county = this.resPageInfo.provinceOption[2];
-        this.resPageInfo.saveToAudit = val;
-        if (val) {
-          this.resPageInfo.status = "Draft";
-        } else {
-          this.resPageInfo.status = "WaitAuditByBranchHead";
-        }
+        this.resPageInfo.status = val;
         switch (this.$route.name) {
           case "developerAdd":
             await post_company_add(this.resPageInfo);
@@ -464,9 +474,10 @@ export default class Edit extends Vue {
             await post_company_update(this.resPageInfo);
             break;
         }
+        this.$router.push(`/developers/list`);
         this.$message({
           type: "success",
-          message: val ? "提交成功!" : "保存成功!",
+          message: val === "Draft" ? "保存成功!" : "提交成功!",
         });
       }
     });

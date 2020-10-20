@@ -3,8 +3,8 @@
  * @version: 
  * @Author: wwq
  * @Date: 2020-10-15 16:02:03
- * @LastEditors: ywl
- * @LastEditTime: 2020-10-19 11:14:27
+ * @LastEditors: wwq
+ * @LastEditTime: 2020-10-20 12:00:50
 -->
 <template>
   <IhPage>
@@ -19,11 +19,7 @@
         >
           <el-row>
             <el-col :span="8">
-              <el-form-item
-                label="渠道商"
-                align="left"
-                prop="channelId"
-              >
+              <el-form-item label="渠道商" align="left" prop="channelId">
                 <div style="display: flex; justify-contant: flex-start">
                   <el-select
                     :disabled="$route.name === 'channelLevlChange'"
@@ -44,15 +40,13 @@
                     :href="`/web-sales/channels/info?id=${resPageInfo.channelId}`"
                     type="primary"
                     target="_blank"
-                  >详情</el-link>
+                    >详情</el-link
+                  >
                 </div>
               </el-form-item>
             </el-col>
             <el-col :span="8">
-              <el-form-item
-                label="渠道等级"
-                prop="channelGrade"
-              >
+              <el-form-item label="渠道等级" prop="channelGrade">
                 <el-select
                   v-model="resPageInfo.channelGrade"
                   clearable
@@ -70,10 +64,7 @@
               </el-form-item>
             </el-col>
             <el-col :span="8">
-              <el-form-item
-                label="渠道类型"
-                align="left"
-              >
+              <el-form-item label="渠道类型" align="left">
                 <span>{{
                   $root.dictAllName(resPageInfo.channelType, "ChannelType").name
                 }}</span>
@@ -84,10 +75,7 @@
             <div v-show="searchOpen">
               <el-row>
                 <el-col :span="8">
-                  <el-form-item
-                    label="业务开展省市"
-                    prop="provinceOption"
-                  >
+                  <el-form-item label="业务开展省市" prop="provinceOption">
                     <IhCascader
                       :level="2"
                       :checkStrictly="false"
@@ -100,20 +88,14 @@
                   </el-form-item>
                 </el-col>
                 <el-col :span="8">
-                  <el-form-item
-                    label="城市等级"
-                    align="left"
-                  >
+                  <el-form-item label="城市等级" align="left">
                     <span>{{
                       $root.dictAllName(resPageInfo.cityGrade, "CityLevel").name
                     }}</span>
                   </el-form-item>
                 </el-col>
                 <el-col :span="8">
-                  <el-form-item
-                    label="是否特批入库"
-                    prop="special"
-                  >
+                  <el-form-item label="是否特批入库" prop="special">
                     <el-select
                       v-model="resPageInfo.special"
                       clearable
@@ -130,11 +112,9 @@
                   </el-form-item>
                 </el-col>
                 <el-col :span="8">
-                  <el-form-item
-                    label="入库编号"
-                    align="left"
-                  >
+                  <el-form-item label="入库编号" align="left">
                     <el-input
+                      clearable
                       v-model="resPageInfo.storageNum"
                       placeholder="系统自动创建"
                       disabled
@@ -143,10 +123,7 @@
                   </el-form-item>
                 </el-col>
                 <el-col :span="8">
-                  <el-form-item
-                    label="事业部"
-                    align="left"
-                  >
+                  <el-form-item label="事业部" align="left">
                     <el-select
                       class="width--100"
                       v-model="resPageInfo.departmentOrgId"
@@ -172,17 +149,21 @@
             type="primary"
             class="float-right margin-right-40"
             @click="openToggle()"
-          >{{ searchOpen ? "收起" : "展开" }}</el-link>
+            >{{ searchOpen ? "收起" : "展开" }}</el-link
+          >
         </el-row>
         <p class="ih-info-title">
           评级信息
-          <span style="font-size: 15px; margin-left: 10px">以下标准任填一项</span>
+          <span style="font-size: 15px; margin-left: 10px"
+            >以下标准任填一项</span
+          >
           <el-link
             style="margin-left: 15px; font-size: 15px"
             href="/web-sales/gradeStandard/list"
             type="primary"
             target="_blank"
-          >查看所有标准</el-link>
+            >查看所有标准</el-link
+          >
           <!-- <el-link
             style="margin-left: 15px; font-size: 15px"
             @click="copy"
@@ -197,33 +178,21 @@
             :data="resPageInfo.channelGradeItems"
             style="width: 100%"
           >
-            <el-table-column
-              prop="cityGrade"
-              label="城市等级"
-            >
+            <el-table-column prop="cityGrade" label="城市等级">
               <template v-slot="{ row }">{{
                 $root.dictAllName(row.cityGrade, "CityLevel").name
               }}</template>
             </el-table-column>
-            <el-table-column
-              prop="channelGrade"
-              label="渠道等级"
-            >
+            <el-table-column prop="channelGrade" label="渠道等级">
               <template v-slot="{ row }">{{
                 $root.dictAllName(row.channelGrade, "ChannelLevel").name
               }}</template>
             </el-table-column>
-            <el-table-column
-              prop="gradeItem"
-              label="评级项"
-            ></el-table-column>
-            <el-table-column
-              prop="inputValue"
-              label="录入信息"
-            >
+            <el-table-column prop="gradeItem" label="评级项"></el-table-column>
+            <el-table-column prop="inputValue" label="录入信息">
               <template v-slot="{ row }">
                 <el-form-item>
-                  <el-input v-model="row.inputValue"></el-input>
+                  <el-input clearable v-model="row.inputValue"></el-input>
                 </el-form-item>
               </template>
             </el-table-column>
@@ -241,7 +210,8 @@
             href="http://zxgk.court.gov.cn/zhzxgk/"
             type="primary"
             target="_blank"
-          >综合查询被执行人</el-link>
+            >综合查询被执行人</el-link
+          >
         </p>
         <br />
         <el-table
@@ -249,29 +219,16 @@
           :data="resPageInfo.channelGradeAttachments"
           style="width: 100%"
         >
-          <el-table-column
-            prop="type"
-            label="类型"
-            width="200"
-          >
+          <el-table-column prop="type" label="类型" width="200">
             <template v-slot="{ row }">{{
               $root.displayName("accessoryTpye", row.type)
             }}</template>
           </el-table-column>
-          <el-table-column
-            prop="fileId"
-            label="附件"
-          >
-            <IhUpload
-              size="100px"
-              :fileList="fileList"
-            />
+          <el-table-column prop="fileId" label="附件">
+            <IhUpload size="100px" :fileList="fileList" />
           </el-table-column>
         </el-table>
-        <div
-          v-if="$route.name === 'channelLevelChange'"
-          class="text-left"
-        >
+        <div v-if="$route.name === 'channelLevelChange'" class="text-left">
           <p class="ih-info-title">变更原因</p>
           <el-input
             type="textarea"
@@ -281,16 +238,12 @@
           >
           </el-input>
         </div>
-        <el-button
-          class="margin-top-30"
-          @click="pass('1')"
-          type="primary"
-        >保存</el-button>
-        <el-button
-          class="margin-top-30"
-          @click="pass('2')"
-          type="primary"
-        >提交</el-button>
+        <el-button class="margin-top-30" @click="pass('1')" type="primary"
+          >保存</el-button
+        >
+        <el-button class="margin-top-30" @click="pass('2')" type="primary"
+          >提交</el-button
+        >
       </div>
     </template>
   </IhPage>
