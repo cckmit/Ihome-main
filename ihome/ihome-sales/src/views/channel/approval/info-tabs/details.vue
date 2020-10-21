@@ -114,7 +114,6 @@ export default class InvitationCodeDetails extends Vue {
 
   async created() {
     let id = this.$route.query.id;
-    console.log(id);
     this.info = await get_channelApproval_get__id({ id: id });
   }
 }

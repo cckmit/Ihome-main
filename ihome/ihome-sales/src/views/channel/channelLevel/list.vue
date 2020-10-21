@@ -1,10 +1,10 @@
 <!--
  * @Descripttion: 
  * @version: 
- * @Author: zyc
+ * @Author: wwq
  * @Date: 2020-08-13 11:40:10
  * @LastEditors: wwq
- * @LastEditTime: 2020-10-19 11:35:21
+ * @LastEditTime: 2020-10-20 12:00:24
 -->
 <template>
   <IhPage label-width="100px">
@@ -144,6 +144,7 @@
           <el-col :span="8">
             <el-form-item label="入库编号">
               <el-input
+                clearable
                 v-model="queryPageParameters.storageNum"
                 placeholder="入库编号"
               ></el-input>
@@ -374,10 +375,9 @@ export default class UserList extends Vue {
   }
 
   search() {
-    if (this.provinceOption.length) {
-      this.queryPageParameters.province = this.provinceOption[0];
-      this.queryPageParameters.city = this.provinceOption[1];
-    }
+    this.queryPageParameters.province = this.provinceOption[0];
+    this.queryPageParameters.city = this.provinceOption[1];
+    this.queryPageParameters.pageNum = 1;
     this.getListMixin();
   }
   empty() {
@@ -392,6 +392,8 @@ export default class UserList extends Vue {
       inputUser: null,
       special: null,
       storageNum: null,
+      pageNum: this.queryPageParameters.pageNum,
+      pageSize: this.queryPageParameters.pageSize,
     };
     this.provinceOption = [];
   }
@@ -447,10 +449,9 @@ export default class UserList extends Vue {
 
   //获取数据
   async getListMixin() {
-    this.resPageInfo = await post_channelGrade_getList({
-      pageNum: this.queryPageParameters.pageNum,
-      pageSize: this.queryPageParameters.pageSize,
-    });
+    this.resPageInfo = await post_channelGrade_getList(
+      this.queryPageParameters
+    );
   }
 
   handleSelectionChange(val: any) {

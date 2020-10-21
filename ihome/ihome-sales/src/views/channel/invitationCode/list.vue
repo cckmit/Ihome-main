@@ -4,7 +4,7 @@
  * @Author: zyc
  * @Date: 2020-07-14 09:23:40
  * @LastEditors: zyc
- * @LastEditTime: 2020-10-14 10:00:35
+ * @LastEditTime: 2020-10-21 10:47:08
 --> 
 --> 
 <template>
@@ -225,14 +225,11 @@ export default class InvitationCodeList extends Vue {
     this.queryPageParameters.expiresTimeEnd = dateArray[1];
   }
   async remove(scope: any) {
-    console.log(scope);
-
     try {
       await this.$confirm("是否确定删除?", "提示");
-      const res = await get_channelInvitationCode_delete__invitationCode({
+      await get_channelInvitationCode_delete__invitationCode({
         invitationCode: scope.row.invitationCode,
       });
-      console.log(res);
       this.resPageInfo.list.splice(scope.$index, 1);
       this.$message({
         type: "success",
@@ -243,7 +240,6 @@ export default class InvitationCodeList extends Vue {
     }
   }
   info(scope: any) {
-    console.log(scope);
     this.$router.push({
       path: "/invitationCode/info",
       query: { id: scope.row.id },
@@ -260,8 +256,7 @@ export default class InvitationCodeList extends Vue {
       status: "Valid",
     };
   }
-  finishAdd(data: any) {
-    console.log(data);
+  finishAdd() {
     this.getListMixin();
   }
   async add() {
@@ -269,11 +264,9 @@ export default class InvitationCodeList extends Vue {
   }
   async toVoid() {
     console.log("作废，未实现");
-    console.log(this.toVoid);
     let postData = this.toVoidList.map((item: any) => {
       return item.id;
     });
-    console.log(postData);
 
     if (postData && postData.length > 0) {
       try {
@@ -289,7 +282,6 @@ export default class InvitationCodeList extends Vue {
     }
   }
   handleSelectionChange(val: any) {
-    console.log(val);
     this.toVoidList = val;
   }
 }

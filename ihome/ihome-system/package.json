@@ -4,6 +4,7 @@
   "private": true,
   "scripts": {
     "api": "vue-cli-service api",
+    "api:dev": "vue-cli-service api  --mode dev",
     "serve": "vue-cli-service serve",
     "serve:dev": "vue-cli-service serve --mode dev",
     "serve:mock": "vue-cli-service serve --mode mock",
@@ -25,7 +26,7 @@
     "core-js": "^3.6.5",
     "driver.js": "^0.9.8",
     "element-ui": "^2.13.2",
-    "ihome-common": "^1.0.136",
+    "ihome-common": "^1.1.5",
     "js-cookie": "^2.2.1",
     "qiankun": "^2.0.24",
     "vue": "^2.6.11",

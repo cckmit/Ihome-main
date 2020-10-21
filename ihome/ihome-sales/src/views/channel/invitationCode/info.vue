@@ -32,7 +32,6 @@ import RegisterUserList from "./info-tabs/register-user-list.vue";
 export default class InvitationCodeInfo extends Vue {
   tabActive: any = null;
   created() {
-    console.log(this.$route.query.id, this.$route.query.tab);
     this.tabActive = this.$route.query.tab || "1";
   }
 }

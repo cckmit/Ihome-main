@@ -3,8 +3,8 @@
  * @version: 
  * @Author: zyc
  * @Date: 2020-06-24 09:47:33
- * @LastEditors: ywl
- * @LastEditTime: 2020-10-16 15:56:28
+ * @LastEditors: zyc
+ * @LastEditTime: 2020-10-20 10:01:59
  */
 import { IRes } from "./users.d";
 // import request from '@/utils/http';
@@ -239,7 +239,8 @@ export function allMenu<T>() {
 export const login = async (data: any) => {
     //http://localhost:8610/sales-oauth2/oauth/token?grant_type=password&client_id=sales-client-dev&client_secret=sales-dev&username=admin&password=123456
 
-    let url = `/sales-oauth2/oauth/token?grant_type=password&client_id=sales-client-dev&client_secret=sales-dev&username=${data.username}&password=${data.password}`;
+     
+    let url = `/sales-api/sales-oauth2/oauth/token?grant_type=password&client_id=sales-client-dev&client_secret=sales-dev&username=${data.username}&password=${data.password}`;
 
     const res: any = await request({
         url: url,

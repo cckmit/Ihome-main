@@ -4,7 +4,7 @@
  * @Author: zyc
  * @Date: 2020-07-31 15:21:06
  * @LastEditors: zyc
- * @LastEditTime: 2020-10-13 20:16:11
+ * @LastEditTime: 2020-10-20 10:12:49
  */
 let http = require('http');
 let fs = require("fs");
@@ -20,7 +20,7 @@ function handleSwagger(prefix) {
     let options = {
         host: process.env.PROXY_IP,
         port: process.env.PROXY_PORT,
-        path: `/${prefix}/v2/api-docs`
+        path: `/sales-api/${prefix}/v2/api-docs`
     };
     //生成文件路径
     outSrc = `./src/api/${prefix}/index.ts`;
@@ -35,7 +35,8 @@ function handleSwagger(prefix) {
         if (err) {
             fs.mkdirSync(path_way);
         }
-    })
+    });
+
 
     backupsSrc = `./src/api/${prefix}/backups/${new Date().toLocaleString()}.ts`;
     backupsSrc = backupsSrc.replace(' ', 'T')
@@ -66,7 +67,7 @@ function handleBody(body) {
     writeLine('/* 此脚本由swagger-ui的api-docs自动生成，请勿修改 */');
     writeLine('//' + new Date().toLocaleString())
     writeLine("import { request } from '@/api/base'");
-    writeLine(`const basePath = "${body.basePath}"`);
+    writeLine(`const basePath = "/sales-api${body.basePath}"`);
     const { paths, definitions } = body;
 
     let count = 0;

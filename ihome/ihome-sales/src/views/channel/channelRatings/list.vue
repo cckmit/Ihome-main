@@ -4,7 +4,7 @@
  * @Author: wwq
  * @Date: 2020-08-13 11:40:10
  * @LastEditors: wwq
- * @LastEditTime: 2020-10-16 16:56:20
+ * @LastEditTime: 2020-10-20 10:15:25
 -->
 <template>
   <IhPage label-width="100px">
@@ -136,12 +136,6 @@
       <Material
         :data="materialData"
         @cancel="() => (materialDialogVisible = false)"
-        @finish="
-          (data) => {
-            materialDialogVisible = false;
-            this.getListMixin();
-          }
-        "
       />
     </ih-dialog>
 
@@ -205,6 +199,7 @@ export default class ChannelRatings extends Vue {
   }
 
   search() {
+    this.queryPageParameters.pageNum = 1;
     this.getListMixin();
   }
   addMsg() {
@@ -240,6 +235,8 @@ export default class ChannelRatings extends Vue {
     this.queryPageParameters = {
       cityGrade: null,
       channelGrade: null,
+      pageNum: this.queryPageParameters.pageNum,
+      pageSize: this.queryPageParameters.pageSize,
     };
   }
   //操作

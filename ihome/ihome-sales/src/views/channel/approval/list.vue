@@ -4,7 +4,7 @@
  * @Author: zyc
  * @Date: 2020-07-14 09:23:40
  * @LastEditors: zyc
- * @LastEditTime: 2020-10-16 10:41:43
+ * @LastEditTime: 2020-10-21 10:48:33
 --> 
 --> 
 <template>
@@ -264,8 +264,6 @@ export default class InvitationCodeList extends Vue {
     this.queryPageParameters.inputTimeEnd = dateArray[1];
   }
   async remove(scope: any) {
-    console.log(scope);
-
     try {
       await this.$confirm("是否确定删除?", "提示");
       //   const res = await get_channelInvitationCode_delete__invitationCode({
@@ -283,7 +281,6 @@ export default class InvitationCodeList extends Vue {
     }
   }
   info(scope: any) {
-    console.log(scope);
     this.$router.push({
       path: "/approval/info",
       query: { id: scope.row.id },
@@ -300,8 +297,7 @@ export default class InvitationCodeList extends Vue {
       status: "Valid",
     };
   }
-  finishAdd(data: any) {
-    console.log(data);
+  finishAdd() {
     this.getListMixin();
   }
   async add() {
@@ -332,24 +328,21 @@ export default class InvitationCodeList extends Vue {
     }
   }
   async downloadSupplier(scope: any) {
-    console.log(scope);
     // await get_channelApproval_downloadML__id({ id: scope.row.id });
     this.$message.warning("未实现");
     get_channelApproval_downloadML__id;
   }
 
   handleSelectionChange(val: any) {
-    console.log(val);
     this.selectList = val;
   }
   approvalUserChange() {
     if (this.selectList && this.selectList.length > 0) {
-      let p = {
-        list: this.selectList.map((item: any) => {
-          return item.id;
-        }),
-      };
-      console.log(p);
+      // let p = {
+      //   list: this.selectList.map((item: any) => {
+      //     return item.id;
+      //   }),
+      // };
       this.changeUserVisible = true;
     } else {
       this.$message.warning("请先勾选数据");

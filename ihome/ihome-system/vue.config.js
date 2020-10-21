@@ -4,7 +4,7 @@
  * @Author: zyc
  * @Date: 2020-06-22 11:11:41
  * @LastEditors: zyc
- * @LastEditTime: 2020-10-10 09:45:16
+ * @LastEditTime: 2020-10-20 10:58:22
  */
 const path = require('path');
 const { name } = require('./package');
@@ -52,9 +52,12 @@ module.exports = {
 			'Access-Control-Allow-Origin': '*',
 		},
 		proxy: {
-			'/system/': {
-				target: proxyAddress
-			}
+			'^/sales-api/': {
+				target: proxyAddress,
+				changeOrigin: true,  
+				// pathRewrite: { '^/sales-api/system/': '/sales-api/system-dev/' }  //路由重写
+			},
+			
 		}
 	},
 	pages: {

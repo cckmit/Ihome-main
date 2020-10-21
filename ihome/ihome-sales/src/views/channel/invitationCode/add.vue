@@ -4,7 +4,7 @@
  * @Author: zyc
  * @Date: 2020-10-13 19:06:12
  * @LastEditors: zyc
- * @LastEditTime: 2020-10-13 19:48:07
+ * @LastEditTime: 2020-10-21 10:41:31
 -->
 <template>
   <el-dialog
@@ -132,9 +132,7 @@ export default class InvitationCodeAdd extends Vue {
       this.$message.success("创建成功");
     }
   }
-  created() {
-    console.log(this.data);
-  }
+ 
   download() {
     console.log("下载，未实现");
   }

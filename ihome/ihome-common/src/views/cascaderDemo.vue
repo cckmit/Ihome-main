@@ -4,7 +4,7 @@
  * @Author: wwq
  * @Date: 2020-09-16 14:54:19
  * @LastEditors: wwq
- * @LastEditTime: 2020-10-19 16:07:30
+ * @LastEditTime: 2020-10-19 18:24:03
 -->
 <template>
   <div class="cascaderDemo">
@@ -15,7 +15,7 @@
             <ih-cascader
               v-model="test"
               :level="3"
-              :checkStrictly="false"
+              :checkStrictly="true"
               @change="handleChange"
             ></ih-cascader>
           </el-form-item>

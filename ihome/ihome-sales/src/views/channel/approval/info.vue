@@ -4,7 +4,7 @@
  * @Author: zyc
  * @Date: 2020-10-14 20:10:35
  * @LastEditors: zyc
- * @LastEditTime: 2020-10-14 20:36:00
+ * @LastEditTime: 2020-10-21 10:39:47
 -->
 <template>
   <ih-page>
@@ -36,7 +36,6 @@ import ApprovalInfoOALog from "./info-tabs/oaLog.vue";
 export default class ApprovalInfo extends Vue {
   tabActive: any = null;
   created() {
-    console.log(this.$route.query.id, this.$route.query.tab);
     this.tabActive = this.$route.query.tab || "1";
   }
 }

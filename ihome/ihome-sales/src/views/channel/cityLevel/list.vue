@@ -4,7 +4,7 @@
  * @Author: wwq
  * @Date: 2020-06-30 09:21:17
  * @LastEditors: wwq
- * @LastEditTime: 2020-10-16 16:58:51
+ * @LastEditTime: 2020-10-20 10:30:23
 --> 
 <template>
   <IhPage label-width="100px">
@@ -189,6 +189,7 @@ export default class CityList extends Vue {
   search() {
     this.queryPageParameters.proviceCode = this.provinceOption[0];
     this.queryPageParameters.cityCode = this.provinceOption[1];
+    this.queryPageParameters.pageNum = 1;
     this.getListMixin();
   }
 
@@ -196,7 +197,7 @@ export default class CityList extends Vue {
     this.form.ids = this.selection.map((v: any) => v.id);
     await post_channelCityLevel_updateLevel(this.form);
     this.dialogFormVisible = false;
-    this.$message.success("保存成功!");
+    this.$message.success("修改成功!");
     this.getListMixin();
     this.form = {
       cityGrade: null,

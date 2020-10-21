@@ -119,7 +119,6 @@ export default class RegisterUserList extends Vue {
     let id = this.$route.query.id;
     this.queryPageParameters.invitationCode = id;
     this.allList = await get_channel_getAll();
-    console.log(this.allList);
     this.getListMixin();
   }
 }

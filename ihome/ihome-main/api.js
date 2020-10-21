@@ -4,7 +4,7 @@
  * @Author: zyc
  * @Date: 2020-08-04 17:43:48
  * @LastEditors: zyc
- * @LastEditTime: 2020-10-13 15:27:50
+ * @LastEditTime: 2020-10-19 17:55:08
  */
 let handleSwagger = require('./node_modules/ihome-common/util/api/api-hangle');
 function doneApi() {

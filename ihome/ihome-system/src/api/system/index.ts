@@ -1,8 +1,8 @@
 /* eslint-disable */
 /* 此脚本由swagger-ui的api-docs自动生成，请勿修改 */
-//2020-10-13 15:22:18
+//2020-10-21 10:34:50
 import { request } from '@/api/base'
-const basePath = "/system"
+const basePath = "/sales-api/system"
 /**查询所有行政区划信息*/
 export async function get_area_getAll (d?: any) {
 return await request.get<AreaBaseVO[],AreaBaseVO[]>(basePath+'/area/getAll', { params: d })
@@ -20,8 +20,8 @@ export async function get_dict_getAll (d?: any) {
 return await request.get<any,any>(basePath+'/dict/getAll', { params: d })
 }
 /**查询指定类型的所有字典项*/
-export async function post_dict_getAllByType__type (d?: any) {
-return await request.post< DictBaseVO[],DictBaseVO[]> (basePath+'/dict/getAllByType/{type}', d)
+export async function post_dict_getAllByType (d?: any) {
+return await request.post< DictBaseVO[],DictBaseVO[]> (basePath+'/dict/getAllByType', d)
 }
 /**根据类型和编码查询字典项*/
 export async function post_dict_getByTypeAndCode (d?: any) {
