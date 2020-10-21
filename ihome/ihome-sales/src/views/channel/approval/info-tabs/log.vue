@@ -4,7 +4,7 @@
  * @Author: zyc
  * @Date: 2020-08-13 11:40:10
  * @LastEditors: zyc
- * @LastEditTime: 2020-10-16 10:25:28
+ * @LastEditTime: 2020-10-21 10:39:38
 -->
 <template>
   <div>
@@ -30,7 +30,6 @@ export default class ApprovalInfoLog extends Vue {
   logList: any = [];
   async created() {
     let id = this.$route.query.id;
-    console.log(id);
     this.logList = await get_channelApprovalRecord_getAll__approvalId({ approvalId: id });
   }
 }

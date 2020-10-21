@@ -1,8 +1,8 @@
 /* eslint-disable */
 /* 此脚本由swagger-ui的api-docs自动生成，请勿修改 */
-//2020-10-20 10:06:39
+//2020-10-20 10:14:59
 import { request } from '@/api/base'
-const basePath = "/sales-api//system-dev"
+const basePath = "/sales-api/system"
 /**查询所有行政区划信息*/
 export async function get_area_getAll (d?: any) {
 return await request.get<AreaBaseVO[],AreaBaseVO[]>(basePath+'/area/getAll', { params: d })

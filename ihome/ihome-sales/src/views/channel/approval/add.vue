@@ -4,7 +4,7 @@
  * @Author: zyc
  * @Date: 2020-07-09 14:31:23
  * @LastEditors: zyc
- * @LastEditTime: 2020-10-15 16:45:53
+ * @LastEditTime: 2020-10-21 10:38:57
 --> 
 <template>
   <ih-page>
@@ -226,13 +226,11 @@ export default class ApprovalAdd extends Vue {
       const res: any = await get_channelApproval_get__id({ id: this.id });
       this.postData = res;
     }
-    console.log(this.id);
   }
   addChannelApprovalGrades() {
     this.dialogAdd = true;
   }
   finishAdd(data: any) {
-    console.log(data);
     this.channelApprovalGrades = data;
   }
   addChannelApprovalGradesChange() {
@@ -252,7 +250,6 @@ export default class ApprovalAdd extends Vue {
   async addSave(valid: any) {
     if (valid) {
       const res: any = await post_channelApproval_add(this.postData);
-      console.log(res);
       this.$message.success("新增成功");
       this.$router.push({
         path: "/approval/list",
@@ -278,7 +275,6 @@ export default class ApprovalAdd extends Vue {
       // };
       // console.log(editData);
       const res: any = await post_channelApproval_edit(this.postData);
-      console.log(res);
       this.$message.success("编辑成功");
       this.$router.push({
         path: "/approval/list",
@@ -296,7 +292,6 @@ export default class ApprovalAdd extends Vue {
     if (valid) {
       this.postData.operateType = 2;
       const res: any = await post_channelApproval_edit(this.postData);
-      console.log(res);
       this.$message.success("提交成功");
       this.$router.push({
         path: "/approval/list",
