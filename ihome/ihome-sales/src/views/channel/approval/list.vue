@@ -4,7 +4,7 @@
  * @Author: zyc
  * @Date: 2020-07-14 09:23:40
  * @LastEditors: zyc
- * @LastEditTime: 2020-10-21 10:48:33
+ * @LastEditTime: 2020-10-21 14:41:07
 --> 
 --> 
 <template>
@@ -144,7 +144,7 @@
 
         <el-table-column label="状态" width="120">
           <template slot-scope="scope">{{
-            $root.dictAllName(scope.row.status, "ChannelApprovalStatus").name
+            $root.dictAllName(scope.row.status, "ChannelApprovalStatus")
           }}</template>
         </el-table-column>
         <el-table-column
@@ -327,7 +327,7 @@ export default class InvitationCodeList extends Vue {
       console.log(error);
     }
   }
-  async downloadSupplier(scope: any) {
+  async downloadSupplier() {
     // await get_channelApproval_downloadML__id({ id: scope.row.id });
     this.$message.warning("未实现");
     get_channelApproval_downloadML__id;

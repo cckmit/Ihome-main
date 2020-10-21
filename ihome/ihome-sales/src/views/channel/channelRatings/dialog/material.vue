@@ -23,14 +23,14 @@
         <el-col :span="12">
           <el-form-item label="城市等级" prop="cityGrade">
             <span>
-              {{ $root.dictAllName(form.cityGrade, "CityLevel").name }}
+              {{ $root.dictAllName(form.cityGrade, "CityLevel") }}
             </span>
           </el-form-item>
         </el-col>
         <el-col :span="12">
           <el-form-item label="渠道等级" prop="channelGrade">
             <span>{{
-              $root.dictAllName(form.channelGrade, "ChannelLevel").name
+              $root.dictAllName(form.channelGrade, "ChannelLevel")
             }}</span>
           </el-form-item>
         </el-col>
@@ -41,7 +41,7 @@
             <template v-for="item in form.standardAttachments"
               ><div :key="item" :class="item ? 'bordersolid' : ''">
                 {{
-                  $root.dictAllName(item, "ChannelLevelStandardAttachment").name
+                  $root.dictAllName(item, "ChannelLevelStandardAttachment")
                 }}
               </div>
             </template>

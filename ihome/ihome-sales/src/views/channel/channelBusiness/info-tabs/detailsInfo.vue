@@ -34,8 +34,8 @@
           >
             <span
               class="text-ellipsis"
-              :title="$root.dictAllName(info.type, 'ChannelCompanyType').name"
-            >{{ $root.dictAllName(info.type, "ChannelCompanyType").name }}</span>
+              :title="$root.dictAllName(info.type, 'ChannelCompanyType')"
+            >{{ $root.dictAllName(info.type, "ChannelCompanyType") }}</span>
           </el-form-item>
         </el-col>
         <el-col :span="8">
@@ -81,7 +81,7 @@
           <el-form-item
             label="状态"
             v-if="info.status"
-          >{{ $root.dictAllName(info.status, 'ChannelStatus').name }}</el-form-item>
+          >{{ $root.dictAllName(info.status, 'ChannelStatus') }}</el-form-item>
         </el-col>
       </el-row>
     </el-form>
@@ -114,7 +114,7 @@
         width="200"
       >
         <template v-slot="{row}">
-          {{$root.dictAllName(row.type, "AccountEnum").name}}
+          {{$root.dictAllName(row.type, "AccountEnum")}}
         </template>
       </el-table-column>
     </el-table>

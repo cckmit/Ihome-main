@@ -203,7 +203,7 @@
         width="150"
       >
         <template v-slot="{ row }">
-          <span>{{$root.dictAllName(row.type, "AccountEnum").name}}</span>
+          <span>{{$root.dictAllName(row.type, "AccountEnum")}}</span>
         </template>
       </el-table-column>
       <el-table-column

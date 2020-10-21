@@ -109,7 +109,7 @@
         <el-table-column prop="inputUser" label="录入人"></el-table-column>
         <el-table-column prop="status" label="状态">
           <template v-slot="{ row }">{{
-            $root.dictAllName(row.status, "CompanyStatusEnum").name
+            $root.dictAllName(row.status, "CompanyStatusEnum")
           }}</template>
         </el-table-column>
         <el-table-column fixed="right" label="操作" width="120">

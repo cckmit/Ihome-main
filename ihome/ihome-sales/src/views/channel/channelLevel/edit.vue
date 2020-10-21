@@ -66,7 +66,7 @@
             <el-col :span="8">
               <el-form-item label="渠道类型" align="left">
                 <span>{{
-                  $root.dictAllName(resPageInfo.channelType, "ChannelType").name
+                  $root.dictAllName(resPageInfo.channelType, "ChannelType")
                 }}</span>
               </el-form-item>
             </el-col>
@@ -90,7 +90,7 @@
                 <el-col :span="8">
                   <el-form-item label="城市等级" align="left">
                     <span>{{
-                      $root.dictAllName(resPageInfo.cityGrade, "CityLevel").name
+                      $root.dictAllName(resPageInfo.cityGrade, "CityLevel")
                     }}</span>
                   </el-form-item>
                 </el-col>
@@ -180,12 +180,12 @@
           >
             <el-table-column prop="cityGrade" label="城市等级">
               <template v-slot="{ row }">{{
-                $root.dictAllName(row.cityGrade, "CityLevel").name
+                $root.dictAllName(row.cityGrade, "CityLevel")
               }}</template>
             </el-table-column>
             <el-table-column prop="channelGrade" label="渠道等级">
               <template v-slot="{ row }">{{
-                $root.dictAllName(row.channelGrade, "ChannelLevel").name
+                $root.dictAllName(row.channelGrade, "ChannelLevel")
               }}</template>
             </el-table-column>
             <el-table-column prop="gradeItem" label="评级项"></el-table-column>

@@ -119,7 +119,7 @@
           min-width="170"
         >
           <template v-slot="{ row }">
-            <span>{{$root.dictAllName(row.settlementFlag, 'HasOrNoType').name}}</span>
+            <span>{{$root.dictAllName(row.settlementFlag, 'HasOrNoType')}}</span>
           </template>
         </el-table-column>
         <el-table-column
@@ -128,7 +128,7 @@
           width="120"
         >
           <template v-slot="{ row }">
-            <span>{{$root.dictAllName(row.status, 'ValidType').name}}</span>
+            <span>{{$root.dictAllName(row.status, 'ValidType')}}</span>
           </template>
         </el-table-column>
         <el-table-column
