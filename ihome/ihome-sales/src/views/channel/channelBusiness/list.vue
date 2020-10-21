@@ -4,7 +4,7 @@
  * @Author: ywl
  * @Date: 2020-08-13 11:40:10
  * @LastEditors: ywl
- * @LastEditTime: 2020-10-19 15:08:33
+ * @LastEditTime: 2020-10-20 16:14:17
 -->
 <template>
   <IhPage label-width="100px">
@@ -225,7 +225,10 @@
                   @click.native.prevent="remove(row)"
                   :disabled="row.status !== 'DRAFT'"
                 >删除</el-dropdown-item>
-                <el-dropdown-item @click.native.prevent="handleToPage(row, 'confirm')">确认</el-dropdown-item>
+                <el-dropdown-item
+                  @click.native.prevent="handleToPage(row, 'confirm')"
+                  :disabled="row.status !== 'ToBeConfirmed'"
+                >确认</el-dropdown-item>
                 <!-- <el-dropdown-item
                   @click.native.prevent="handleToPage(row, 'revoke')"
                   :disabled="row.status === 'DRAFT'"
@@ -236,7 +239,7 @@
                 >撤回起草</el-dropdown-item>
                 <el-dropdown-item
                   @click.native.prevent="handleToPage(row, 'change')"
-                  :disabled="row.status !== 'PASS'"
+                  :disabled="row.status !== 'Audited'"
                 >变更信息</el-dropdown-item>
                 <el-dropdown-item
                   @click.native.prevent="handleToPage(row, 'agent')"
@@ -324,33 +327,27 @@ export default class List extends Vue {
   ];
 
   search() {
-    switch (this.provinceList.length) {
-      case 1:
-        this.queryPageParameters.provinces = this.provinceList[0];
-        break;
-      case 2:
-        this.queryPageParameters.provinces = this.provinceList[0];
-        this.queryPageParameters.city = this.provinceList[1];
-        break;
-      case 3:
-        this.queryPageParameters.provinces = this.provinceList[0];
-        this.queryPageParameters.city = this.provinceList[1];
-        this.queryPageParameters.county = this.provinceList[2];
-        break;
-      default:
-        this.queryPageParameters.provinces = "";
-        this.queryPageParameters.city = "";
-        this.queryPageParameters.county = "";
-    }
+    this.queryPageParameters.provinces = this.provinceList[0];
+    this.queryPageParameters.city = this.provinceList[1];
+    this.queryPageParameters.county = this.provinceList[2];
+    this.queryPageParameters.pageNum = 1;
     this.getListMixin();
   }
   reset() {
     this.queryPageParameters = {
-      pageNum: 1,
-      pageSize: 10,
+      name: "",
+      creditCode: "",
+      shortName: "",
+      provinces: "",
+      county: "",
+      city: "",
+      inputUser: "",
+      status: "",
+      followUserId: "",
+      pageNum: this.queryPageParameters.pageNum,
+      pageSize: this.queryPageParameters.pageSize,
     };
     this.provinceList = [];
-    this.getListMixin();
   }
   changeFollower() {
     console.log("变更跟进人");

@@ -4,7 +4,7 @@
  * @Author: lgf
  * @Date: 2020-09-16 14:05:21
  * @LastEditors: ywl
- * @LastEditTime: 2020-10-16 10:32:12
+ * @LastEditTime: 2020-10-20 16:12:07
 -->
 <template>
   <div class="text-left">
@@ -12,10 +12,20 @@
     <el-form label-width="120px">
       <el-row>
         <el-col :span="8">
-          <el-form-item label="名称">{{ info.name }}</el-form-item>
+          <el-form-item label="名称">
+            <span
+              class="text-ellipsis"
+              :title="info.name"
+            >{{ info.name }}</span>
+          </el-form-item>
         </el-col>
         <el-col :span="8">
-          <el-form-item label="信用代码">{{ info.creditCode }}</el-form-item>
+          <el-form-item label="信用代码">
+            <span
+              class="text-ellipsis"
+              :title="info.creditCode"
+            >{{ info.creditCode }}</span>
+          </el-form-item>
         </el-col>
         <el-col :span="8">
           <el-form-item label="简称">{{ info.shortName }}</el-form-item>
@@ -26,7 +36,12 @@
           <el-form-item
             label="类型"
             v-if="info.type"
-          >{{ $root.dictAllName(info.type, "ChannelCompanyType").name }}</el-form-item>
+          >
+            <span
+              class="text-ellipsis"
+              :title="$root.dictAllName(info.type, 'ChannelCompanyType').name"
+            >{{ $root.dictAllName(info.type, "ChannelCompanyType").name }}</span>
+          </el-form-item>
         </el-col>
         <el-col :span="8">
           <el-form-item label="法定代表人">{{ info.legalPerson }}</el-form-item>
@@ -48,13 +63,13 @@
       </el-row>
       <el-row>
         <el-col :span="8">
-          <el-form-item label="省份">{{ info.province }}</el-form-item>
+          <el-form-item label="省份">{{ $root.getAreaName(info.province) }}</el-form-item>
         </el-col>
         <el-col :span="8">
-          <el-form-item label="城市">{{ info.city }}</el-form-item>
+          <el-form-item label="城市">{{ $root.getAreaName(info.city) }}</el-form-item>
         </el-col>
         <el-col :span="8">
-          <el-form-item label="行政区">{{ info.county }}</el-form-item>
+          <el-form-item label="行政区">{{ $root.getAreaName(info.county) }}</el-form-item>
         </el-col>
       </el-row>
       <el-row>
@@ -80,8 +95,7 @@
       <span>银行账号信息</span>
     </p>
     <el-table
-      :data="info.channelBanks"
-      border
+      :data="info.channelBankChanges"
       style="width: 100%"
     >
       <el-table-column
@@ -129,7 +143,24 @@
         </el-col>
       </el-row>
     </el-form>
-    <p class="ih-info-title">附件信息</p>
+    <p class="ih-info-title">
+      <span>附件信息</span>
+      <el-link
+        class="margin-left-16"
+        style="font-size: 12px"
+        href="http://zxgk.court.gov.cn/zhzxgk/"
+        type="info"
+        target="_blank"
+      >综合查询被执行人</el-link>
+    </p>
+    <el-table style="width: 100%">
+      <el-table-column
+        prop="type"
+        width="180"
+        label="类型"
+      ></el-table-column>
+      <el-table-column label="附件"></el-table-column>
+    </el-table>
     <br />
 
     <p class="ih-info-title">企业概况</p>
@@ -220,7 +251,8 @@ export default class DetailInfo extends Vue {
     let id = this.$route.query.id;
     this.info = await get_channelChange_get__id({ id: id });
     this.channelPersons =
-      this.info.channelPersonChanges.length && this.info.channelPersons[0];
+      this.info.channelPersonChanges.length &&
+      this.info.channelPersonChanges[0];
   }
   private async confirmChannel(type: string): Promise<void> {
     if (!this.approveRecord.remark) {
@@ -247,3 +279,13 @@ interface ConfirmObj {
   result: string;
 }
 </script>
+
+<style lang="scss" scoped>
+.text-ellipsis {
+  display: inline-block;
+  width: 100%;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+</style>

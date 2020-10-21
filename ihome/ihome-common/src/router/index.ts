@@ -3,8 +3,8 @@
  * @version: 
  * @Author: zyc
  * @Date: 2020-06-22 11:10:43
- * @LastEditors: wwq
- * @LastEditTime: 2020-09-29 09:13:31
+ * @LastEditors: ywl
+ * @LastEditTime: 2020-10-20 17:07:41
  */
 import Vue from 'vue'
 import VueRouter, { RouteConfig } from 'vue-router'
@@ -51,6 +51,14 @@ const routes: Array<RouteConfig> = [
     component: () => import('../views/cascaderDemo.vue'),
     meta: {
       title: '省市区级联选择Demo'
+    }
+  },
+  {
+    path: '/selectPage',
+    name: 'SelectPage',
+    component: () => import('../views/selectPageDemo.vue'),
+    meta: {
+      title: '下拉框分页Demo'
     }
   }
 ]
