@@ -1,12 +1,3 @@
-<!--
- * @Descripttion: 
- * @version: 
- * @Author: zyc
- * @Date: 2020-10-19 12:32:39
- * @LastEditors: zyc
- * @LastEditTime: 2020-10-20 10:09:10
--->
-
 # ihome-common
 ## 版本更新
 ```
@@ -50,11 +41,9 @@ v1.0.4  2020-5-30  fullLoading  AOP;   vue.d.ts声明
 npm install ihome-common
 ```
 
-### verdaccio
+### nexus
 ```
-1.设置用户密码  npm adduser --registry http://49.232.163.11:4873
-2.本地文件夹 npm init   写代码
-3.发布  npm publish --registry http://49.232.163.11:4873
+http://nexus.polyic.cn
 ```
 
 ## 各目录的约定规则

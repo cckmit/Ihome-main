@@ -1,8 +1,8 @@
 /* eslint-disable */
 /* 此脚本由swagger-ui的api-docs自动生成，请勿修改 */
-//2020-10-21 12:00:11 ├F10: PM┤
+//2020-10-16 11:24:56 ├F10: AM┤
 import { request } from '@/api/base'
-const basePath = "/sales-api/channel"
+const basePath = "/channel-local"
 /**添加渠道*/
 export async function post_channel_add(d?: any) {
   return await request.post<number, number>(basePath + '/channel/add', d)
@@ -853,6 +853,31 @@ export interface ChannelBankVO {
   /**更新用户*/
   updateUser: number;
 }
+/**ChannelBank_1*/
+export interface ChannelBank_1 {
+  /**账户名称*/
+  accountName: string;
+  /**账户号码*/
+  accountNum: string;
+  /**开户银行*/
+  bank: string;
+  /**渠道商ID*/
+  channelId: number;
+  /**创建时间(yyyy-MM-dd HH:mm:ss)*/
+  createTime: string;
+  /**创建用户*/
+  createUser: number;
+  /**已删除*/
+  deleted: number;
+  /**ID*/
+  id: number;
+  /**账号类型(Base-基本存款账户、Commonly-一般存款账户)*/
+  type: string;
+  /**更新时间(yyyy-MM-dd HH:mm:ss)*/
+  updateTime: string;
+  /**更新用户*/
+  updateUser: number;
+}
 /**ChannelBaseVO*/
 export interface ChannelBaseVO {
   /**营业住所*/
@@ -864,7 +889,7 @@ export interface ChannelBaseVO {
   /**附件信息*/
   channelAttachments: ChannelAttachment[];
   /**渠道银行账号信息*/
-  channelBanks: ChannelBank[];
+  channelBanks: ChannelBank_1[];
   /**渠道负责人信息*/
   channelPersons: ChannelPerson[];
   /**渠道所在城市*/
@@ -951,7 +976,7 @@ export interface ChannelChangeDetail {
   capital: string;
   /**变更原因*/
   changeReason: string;
-  /**变更时间(yyyy-MM-dd)*/
+  /**变更时间*/
   changeTime: string;
   /**附件信息*/
   channelAttachmentChanges: ChannelAttachmentChange[];
@@ -1044,7 +1069,7 @@ export interface ChannelChangeVO {
   capital: string;
   /**变更原因*/
   changeReason: string;
-  /**变更时间(yyyy-MM-dd)*/
+  /**变更时间*/
   changeTime: string;
   /**渠道所在城市*/
   city: string;
@@ -1103,6 +1128,8 @@ export interface ChannelCityLevel {
   deleted: number;
   /**ID*/
   id: number;
+  /**层级*/
+  level: number;
   /**名称*/
   name: string;
   /**父编码*/
@@ -1116,8 +1143,8 @@ export interface ChannelCityLevel {
 export interface ChannelCityLevelQueryVO {
   /**城市编码*/
   cityCode: string;
-  /**城市等级(OneTierCity-一线城市、SecondTierCity-二线城市、ThirdTierCity-三线城市)*/
-  cityGrade: string;
+  /**城市等级*/
+  cityGrade: ChannelCityLevel;
   /**(必填)当前页*/
   pageNum: number;
   /**(必填)每页条数*/
@@ -1146,6 +1173,8 @@ export interface ChannelCityLevelVO {
   deleted: number;
   /**ID*/
   id: number;
+  /**层级*/
+  level: number;
   /**名称*/
   name: string;
   /**父编码*/
@@ -1252,38 +1281,17 @@ export interface ChannelGradeAttachmentChange {
   /**更新用户*/
   updateUser: number;
 }
-/**ChannelGradeAttachment_1*/
-export interface ChannelGradeAttachment_1 {
-  /**创建时间(yyyy-MM-dd HH:mm:ss)*/
-  createTime: string;
-  /**创建用户*/
-  createUser: number;
-  /**已删除*/
-  deleted: number;
-  /**文件ID*/
-  fileId: string;
-  /**渠道ID*/
-  gradeId: number;
-  /**ID*/
-  id: number;
-  /**类型*/
-  type: string;
-  /**更新时间(yyyy-MM-dd HH:mm:ss)*/
-  updateTime: string;
-  /**更新用户*/
-  updateUser: number;
-}
 /**ChannelGradeBaseVO*/
 export interface ChannelGradeBaseVO {
   /**渠道等级*/
   channelGrade: string;
   /**附件信息*/
-  channelGradeAttachments: ChannelGradeAttachment_1[];
+  channelGradeAttachments: ChannelGradeAttachment[];
   /**渠道评级标准信息*/
   channelGradeItems: ChannelGradeItem[];
   /**渠道ID*/
   channelId: number;
-  /**渠道类型(Platform-平台)*/
+  /**渠道类型(BigPlatform-大平台、LargeIntermediary-大型中介、FirstPlatform-一级平台、MediumIntermediary-中型中介、SecondPlatform-二级平台、SmallIntermediary-小型中介)*/
   channelType: string;
   /**业务开展城市*/
   city: string;
@@ -1314,7 +1322,7 @@ export interface ChannelGradeChangeBaseVO {
   channelGradeItemChanges: ChannelGradeItemChange[];
   /**渠道ID*/
   channelId: number;
-  /**渠道类型(Platform-平台)*/
+  /**渠道类型(BigPlatform-大平台、LargeIntermediary-大型中介、FirstPlatform-一级平台、MediumIntermediary-中型中介、SecondPlatform-二级平台、SmallIntermediary-小型中介)*/
   channelType: string;
   /**业务开展城市*/
   city: string;
@@ -1324,16 +1332,21 @@ export interface ChannelGradeChangeBaseVO {
   departmentOrgId: number;
   /**ID*/
   id: number;
-  /**原渠道等级ID*/
-  oldGradeId: number;
   /**1保存2提交*/
   operateType: number;
   /**业务开展省份*/
   province: string;
-  /**是否特批入库(Yes-是、No-否)*/
-  special: string;
+  /**是否特批入库*/
+  special: number;
   /**入库编号*/
   storageNum: string;
+}
+/**ChannelGradeChangeModifyVO*/
+export interface ChannelGradeChangeModifyVO {
+  /**等级id数组*/
+  ids: number[];
+  /**undefined*/
+  userId: number;
 }
 /**ChannelGradeChangeModifyVO*/
 export interface ChannelGradeChangeModifyVO {
@@ -1379,14 +1392,14 @@ export interface ChannelGradeChangeQueryVO {
 export interface ChannelGradeChangeVO {
   /**变更原因*/
   changeReason: string;
-  /**变更时间(yyyy-MM-dd)*/
+  /**变更时间*/
   changeTime: string;
   /**统一社会信用代码*/
   channelGrade: string;
   /**附件信息*/
   channelGradeAttachmentChanges: ChannelGradeAttachmentChange[];
   /**渠道评级标准信息*/
-  channelGradeItemChanges: ChannelGradeItemChangeVO[];
+  channelGradeItemChanges: ChannelGradeItemChange[];
   /**公司名称*/
   channelId: number;
   /**渠道商名称*/
@@ -1413,8 +1426,8 @@ export interface ChannelGradeChangeVO {
   oldGradeId: number;
   /**营业住所*/
   province: string;
-  /**是否特批入库(Yes-是、No-否)*/
-  special: string;
+  /**是否特批入库*/
+  special: number;
   /**状态(DRAFT-草稿、PTWYSH-待平台文员审核、FGSYGSH-待分公司业管审核、ZBYGSH-待总部业管审核、PASS-已审核、SubmittedForApproval-已发起呈批、Approved-已审批、Withdrawn-已撤回)*/
   status: string;
   /**入库编号*/
@@ -1466,35 +1479,6 @@ export interface ChannelGradeItemChange {
   /**更新用户*/
   updateUser: number;
 }
-/**ChannelGradeItemChangeVO*/
-export interface ChannelGradeItemChangeVO {
-  /**渠道等级(BigPlatform-大平台、LargeIntermediary-大型中介、FirstPlatform-一级平台、MediumIntermediary-中型中介、SecondPlatform-二级平台、SmallIntermediary-小型中介)*/
-  channelGrade: string;
-  /**城市等级(OneTierCity-一线城市、SecondTierCity-二线城市、ThirdTierCity-三线城市)*/
-  cityGrade: string;
-  /**创建时间(yyyy-MM-dd HH:mm:ss)*/
-  createTime: string;
-  /**创建用户*/
-  createUser: number;
-  /**已删除*/
-  deleted: number;
-  /**渠道ID*/
-  gradeId: number;
-  /**评级项*/
-  gradeItem: string;
-  /**评级标准*/
-  gradeStandard: string;
-  /**ID*/
-  id: number;
-  /**文件ID*/
-  inputValue: string;
-  /**类型*/
-  standardId: number;
-  /**更新时间(yyyy-MM-dd HH:mm:ss)*/
-  updateTime: string;
-  /**更新用户*/
-  updateUser: number;
-}
 /**ChannelGradeItemVO*/
 export interface ChannelGradeItemVO {
   /**渠道等级(BigPlatform-大平台、LargeIntermediary-大型中介、FirstPlatform-一级平台、MediumIntermediary-中型中介、SecondPlatform-二级平台、SmallIntermediary-小型中介)*/
@@ -1523,6 +1507,13 @@ export interface ChannelGradeItemVO {
   updateTime: string;
   /**更新用户*/
   updateUser: number;
+}
+/**ChannelGradeModifyVO*/
+export interface ChannelGradeModifyVO {
+  /**等级id数组*/
+  ids: number[];
+  /**undefined*/
+  userId: number;
 }
 /**ChannelGradeModifyVO*/
 export interface ChannelGradeModifyVO {
@@ -1663,6 +1654,17 @@ export interface ChannelGradeStandardSearchVO {
   channelGrade: string;
   /**城市编码*/
   cityCode: string;
+}
+/**ChannelGradeStandardSearchVO*/
+export interface ChannelGradeStandardSearchVO {
+  /**渠道等级(BigPlatform-大平台、LargeIntermediary-大型中介、FirstPlatform-一级平台、MediumIntermediary-中型中介、SecondPlatform-二级平台、SmallIntermediary-小型中介)*/
+  channelGrade: string;
+  /**城市编码*/
+  cityCode: string;
+  /**(必填)当前页*/
+  pageNum: number;
+  /**(必填)每页条数*/
+  pageSize: number;
 }
 /**ChannelGradeStandardVO*/
 export interface ChannelGradeStandardVO {

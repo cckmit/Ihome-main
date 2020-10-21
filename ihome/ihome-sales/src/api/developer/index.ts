@@ -1,8 +1,8 @@
 /* eslint-disable */
 /* 此脚本由swagger-ui的api-docs自动生成，请勿修改 */
-//2020-10-20 10:57:15 ├F10: AM┤
+//2020-10-21 14:18:52
 import { request } from '@/api/base'
-const basePath = "/sales-api"
+const basePath = "/sales-api/developer"
 /**保存新增开发商信息*/
 export async function post_company_add(d?: any) {
   return await request.post<number, number>(basePath + '/company/add', d)
@@ -119,8 +119,6 @@ export interface CompanyBaseVO {
   province: string;
   /**企业概况*/
   remark: string;
-  /**保存标识，是否直接保存为待审核状态*/
-  saveToAudit: boolean;
   /**(必填)成立日期(yyyy-MM-dd)*/
   setupTime: string;
   /**(必填)简称*/
@@ -175,8 +173,6 @@ export interface CompanyEditAuditedDatalVO {
   reason: string;
   /**企业概况*/
   remark: string;
-  /**保存标识，是否直接保存为待审核状态*/
-  saveToAudit: boolean;
   /**(必填)成立日期(yyyy-MM-dd)*/
   setupTime: string;
   /**(必填)简称*/
@@ -220,8 +216,6 @@ export interface CompanyEditDetailVO {
   province: string;
   /**企业概况*/
   remark: string;
-  /**保存标识，是否直接保存为待审核状态*/
-  saveToAudit: boolean;
   /**(必填)成立日期(yyyy-MM-dd)*/
   setupTime: string;
   /**(必填)简称*/
