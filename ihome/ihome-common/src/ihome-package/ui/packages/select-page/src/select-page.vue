@@ -4,14 +4,16 @@
  * @Author: ywl
  * @Date: 2020-10-20 15:03:13
  * @LastEditors: ywl
- * @LastEditTime: 2020-10-21 10:47:30
+ * @LastEditTime: 2020-10-21 18:17:31
 -->
 <template>
   <el-select
     :value="value"
-    @change="handle"
+    @change="handleChange"
     :clearable="clearable"
     :disabled="disabled"
+    :placeholder="placeholder"
+    :value-key="valueKey"
   >
     <!-- 搜索 -->
     <el-input
@@ -24,7 +26,7 @@
       v-for="(item, index) in tableList.list"
       :key="item[keyProp]"
       :label="item[labelProp]"
-      :value="item[valueProp]"
+      :value="valueKey ? item : item[valueProp]"
       :disabled="item[disabledProp]"
     >
       <slot
@@ -43,7 +45,6 @@
         :total="tableList.total"
       >
       </el-pagination>
-
     </div>
   </el-select>
 </template>
@@ -58,6 +59,8 @@ export default class IhSelectPage extends Vue {
   @Prop() value!: string | number;
   @Prop() clearable?: boolean;
   @Prop() disabled?: boolean;
+  @Prop() placeholder?: string;
+  @Prop() valueKey?: string;
   @Prop() promiseFun?: Function;
   @Prop({
     default: {
@@ -70,24 +73,25 @@ export default class IhSelectPage extends Vue {
   props?: PropsType;
 
   private filterText = "";
-  private optionsList = [1];
   private tableList: any = {
     list: [],
     total: 0,
   };
   private pageInfo = {
     pageNum: 1,
-    pageSize: 1,
+    pageSize: 10,
   };
 
-  @Watch("value")
-  watchValue(val: any) {
-    console.log(val);
+  @Watch("value", { immediate: true, deep: true })
+  watchValue(val: any, old: any) {
+    if (typeof old === "undefined" && val) {
+      this.filterText = val.name;
+    }
   }
   @Watch("filterText")
   filter(val: any) {
     console.log(val);
-    this.getSelectList();
+    if (val.length >= 2 || !val.length) this.getSelectList();
   }
 
   private get labelProp(): string {
@@ -117,7 +121,7 @@ export default class IhSelectPage extends Vue {
       });
     }
   }
-  handle(val: any) {
+  handleChange(val: any) {
     this.$emit("input", val);
     console.log(val, this.value);
   }
