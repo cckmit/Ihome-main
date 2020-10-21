@@ -4,7 +4,7 @@
  * @Author: zyc
  * @Date: 2020-07-14 09:23:40
  * @LastEditors: zyc
- * @LastEditTime: 2020-10-21 10:42:34
+ * @LastEditTime: 2020-10-21 10:47:08
 --> 
 --> 
 <template>
@@ -225,10 +225,9 @@ export default class InvitationCodeList extends Vue {
     this.queryPageParameters.expiresTimeEnd = dateArray[1];
   }
   async remove(scope: any) {
-
     try {
       await this.$confirm("是否确定删除?", "提示");
-      const res = await get_channelInvitationCode_delete__invitationCode({
+      await get_channelInvitationCode_delete__invitationCode({
         invitationCode: scope.row.invitationCode,
       });
       this.resPageInfo.list.splice(scope.$index, 1);
@@ -257,7 +256,7 @@ export default class InvitationCodeList extends Vue {
       status: "Valid",
     };
   }
-  finishAdd(data: any) {
+  finishAdd() {
     this.getListMixin();
   }
   async add() {
