@@ -4,7 +4,7 @@
  * @Author: zyc
  * @Date: 2020-06-28 11:42:52
  * @LastEditors: zyc
- * @LastEditTime: 2020-10-21 10:19:19
+ * @LastEditTime: 2020-10-21 14:05:36
  */
 import { RegistrableApp, LoadableApp, FrameworkLifeCycles } from "qiankun"
 import { IRegisterApp, IProps, IPropsData } from './qiankun.d'
@@ -74,13 +74,14 @@ const devArray: Array<IRegisterApp<IProps<IPropsData>>> = [{
 }];
 const proIp = window.location.hostname;
 const proPort = 18080;
-const proArray: Array<IRegisterApp<IProps<IPropsData>>> = [{
-    routerPrefix: 'web-common',
-    publicPath: '/web-common/',
-    port: proPort,
-    ip: proIp,
-    props: props
-},
+const proArray: Array<IRegisterApp<IProps<IPropsData>>> = [
+//     {
+//     routerPrefix: 'web-common',
+//     publicPath: '/web-common/',
+//     port: proPort,
+//     ip: proIp,
+//     props: props
+// },
 {
     routerPrefix: 'web-system',
     publicPath: '/web-system/',
