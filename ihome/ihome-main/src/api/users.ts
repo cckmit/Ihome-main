@@ -4,7 +4,7 @@
  * @Author: zyc
  * @Date: 2020-06-24 09:47:33
  * @LastEditors: zyc
- * @LastEditTime: 2020-10-20 10:01:59
+ * @LastEditTime: 2020-10-21 15:31:49
  */
 import { IRes } from "./users.d";
 // import request from '@/utils/http';
@@ -105,6 +105,13 @@ export function allMenu<T>() {
             title: "组织架构",
             icon: null,
             path: "/web-system/organization/list",
+        },
+        {
+            id: 7,
+            parentId: 1,
+            title: "字典",
+            icon: null,
+            path: "/web-system/dic/list",
         },
         // {
         //     id: 101,
