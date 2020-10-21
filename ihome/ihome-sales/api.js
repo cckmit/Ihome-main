@@ -3,14 +3,14 @@
  * @version: 
  * @Author: zyc
  * @Date: 2020-08-04 17:43:48
- * @LastEditors: zyc
- * @LastEditTime: 2020-10-21 14:19:07
+ * @LastEditors: ywl
+ * @LastEditTime: 2020-10-21 14:31:26
  */
 let handleSwagger = require('./node_modules/ihome-common/util/api/api-hangle');
 function doneApi() {
     //在这里配置要生成的api
-    // handleSwagger('system');
-    handleSwagger('channel');
+    handleSwagger('system');
+    // handleSwagger('channel');
     // handleSwagger('developer');
 }
 module.exports = (api, projectOptions) => {
