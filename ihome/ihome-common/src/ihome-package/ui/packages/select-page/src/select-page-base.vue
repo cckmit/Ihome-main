@@ -4,7 +4,7 @@
  * @Author: ywl
  * @Date: 2020-10-20 15:03:13
  * @LastEditors: ywl
- * @LastEditTime: 2020-10-22 16:35:37
+ * @LastEditTime: 2020-10-22 16:42:26
 -->
 <template>
   <el-select
@@ -28,6 +28,7 @@
       :label="item[labelProp]"
       :value="valueKey ? item : item[valueProp]"
       :disabled="item[disabledProp]"
+      @click.native="handleClickOption(item)"
     >
       <slot
         :data="item"
@@ -39,8 +40,8 @@
       <el-pagination
         small
         @current-change="getSelectList"
-        :current-page.sync="pageInfo.pageNum"
-        :page-size="pageInfo.pageSize"
+        :current-page.sync="tableList.pageNum"
+        :page-size="tableList.pageSize"
         layout="prev,pager,next,total"
         :total="tableList.total"
       >
@@ -51,8 +52,6 @@
 
 <script lang="ts">
 import { Component, Vue, Prop, Watch } from "vue-property-decorator";
-
-import { post_user_getList } from "@/api/system/index";
 
 @Component({})
 export default class IhSelectPage extends Vue {
@@ -65,9 +64,9 @@ export default class IhSelectPage extends Vue {
   @Prop({
     default: () => {
       return {
-        lable: "name",
-        value: "id",
-        key: "id",
+        lable: "lable",
+        value: "value",
+        key: "key",
         disabled: "disabled",
       };
     },
@@ -75,11 +74,9 @@ export default class IhSelectPage extends Vue {
   props?: PropsType;
 
   private filterText = "";
-  private tableList: any = {
+  tableList: any = {
     list: [],
     total: 0,
-  };
-  private pageInfo = {
     pageNum: 1,
     pageSize: 10,
   };
@@ -97,26 +94,34 @@ export default class IhSelectPage extends Vue {
   }
 
   private get labelProp(): string {
-    return (this.props as PropsType).lable || "name";
+    return (this.props as PropsType).lable || "label";
   }
   private get valueProp(): string {
-    return (this.props as PropsType).value || "id";
+    return (this.props as PropsType).value || "value";
   }
   private get keyProp(): string {
-    return (this.props as PropsType).key || "id";
+    return (this.props as PropsType).key || "key";
   }
   private get disabledProp(): string {
     return (this.props as PropsType).disabled || "disabled";
   }
 
   async getSelectList() {
-    this.tableList = await post_user_getList({
-      ...this.pageInfo,
-      name: this.filterText,
-    });
+    console.error("需要重写回调的方法");
+    // console.log(this.promiseFun);
+    // this.tableList = await post_user_getList({
+    //   pageSize: this.tableList.pageSize,
+    //   pageNum: this.tableList.pageNum,
+    //   name: this.filterText,
+    // });
   }
   handleChange(val: any) {
+    this.$emit("change", val);
     this.$emit("input", val);
+  }
+  handleClickOption(data: any) {
+    console.log(data);
+    this.$emit("optionClick", data);
   }
 
   mounted() {

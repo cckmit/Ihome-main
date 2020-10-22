@@ -8,62 +8,45 @@
   >
     <el-form-item label="默认使用">
       <!-- clearable：是否可以清空选项；disabled：是否禁用；placeholder：占位符 -->
-      <IhSelectPage
+      <IhSelectPageUser
         v-model="form.testInput"
         placeholder="默认使用"
         clearable
-        :props="{
-          lable: 'name',
-          value: 'id',
-          key: 'id',
-        }"
       >
-      </IhSelectPage>
+      </IhSelectPageUser>
     </el-form-item>
     <el-form-item label="自定义模板使用">
-      <IhSelectPage
+      <IhSelectPageUser
         v-model="form.testInput1"
         clearable
-        :props="{
-          lable: 'name',
-          value: 'id',
-          key: 'id',
-        }"
       >
         <!-- 自定义模板使用 v-slot返回来的data：当前每条的数据；index：每一条数据的下标 -->
         <template v-slot="{ data, index }">
           <span style="float: left">{{ data.name }}</span>
           <span style="float: right; color: #8492a6; font-size: 13px">{{ index }}</span>
         </template>
-      </IhSelectPage>
-    </el-form-item>
-    <el-form-item label="拓展其他列表接口使用">
-      <IhSelectPage
-        v-model="form.testInput2"
-        clearable
-        :promiseFun="handleFun"
-        :props="{
-          lable: 'name',
-          value: 'id',
-          key: 'id',
-        }"
-      >
-      </IhSelectPage>
+      </IhSelectPageUser>
     </el-form-item>
     <el-form-item label="绑定值为对象">
       <!-- 如果需要绑定值为对象，value-key必须传 -->
-      <IhSelectPage
+      <IhSelectPageUser
         v-model="form.testInput3"
         clearable
         value-key="id"
+      >
+      </IhSelectPageUser>
+      <span>选中的值：{{form.testInput3}}</span>
+    </el-form-item>
+    <el-form-item label="测试继承">
+      <SelectPageByOther
+        v-model="form.testInput4"
         :props="{
-          lable: 'name',
           value: 'id',
           key: 'id',
+          lable: 'name'
         }"
       >
-      </IhSelectPage>
-      <span>选中的值：{{form.testInput3}}</span>
+      </SelectPageByOther>
     </el-form-item>
   </el-form>
 </template>
@@ -73,7 +56,12 @@ import { Component, Vue } from "vue-property-decorator";
 
 import { post_role_getList } from "@/api/system/index";
 
-@Component({})
+import SelectPageByOther from "./components/SelectPageByOther.vue";
+import { IhSelectPageUser } from "../ihome-package/ui/packages/select-page/index";
+
+@Component({
+  components: { SelectPageByOther, IhSelectPageUser },
+})
 export default class SelectPageDemo extends Vue {
   form = {
     testInput: "",
@@ -83,6 +71,7 @@ export default class SelectPageDemo extends Vue {
       id: 2,
       name: "张三",
     },
+    testInput4: "",
   };
   private rules = {};
 
