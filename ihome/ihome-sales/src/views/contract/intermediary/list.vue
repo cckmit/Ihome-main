@@ -4,7 +4,7 @@
  * @Author: ywl
  * @Date: 2020-09-25 17:34:32
  * @LastEditors: ywl
- * @LastEditTime: 2020-10-13 17:58:33
+ * @LastEditTime: 2020-10-22 17:54:50
 -->
 <template>
   <IhPage>
@@ -404,7 +404,7 @@
 
 <script lang="ts">
 import { Component, Vue } from "vue-property-decorator";
-import PaginationMixin from "../../mixins/pagination";
+import PaginationMixin from "@/mixins/pagination";
 @Component({
   mixins: [PaginationMixin],
 })

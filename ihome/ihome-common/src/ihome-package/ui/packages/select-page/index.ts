@@ -4,10 +4,12 @@
  * @Author: ywl
  * @Date: 2020-10-20 15:03:23
  * @LastEditors: ywl
- * @LastEditTime: 2020-10-20 15:05:04
+ * @LastEditTime: 2020-10-22 16:32:38
  */
-import IhSelectPage from './src/select-page.vue'
+import IhSelectPageUser from './src/select-page.vue'
+import IhSelectPageBase from './src/select-page-base.vue'
 
 export {
-  IhSelectPage
+  IhSelectPageUser,
+  IhSelectPageBase
 }
