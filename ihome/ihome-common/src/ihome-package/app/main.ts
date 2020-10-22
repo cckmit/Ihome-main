@@ -3,8 +3,8 @@
  * @version: 
  * @Author: zyc
  * @Date: 2020-07-07 09:25:17
- * @LastEditors: zyc
- * @LastEditTime: 2020-10-21 14:30:03
+ * @LastEditors: wwq
+ * @LastEditTime: 2020-10-22 09:06:47
  */
 import '../util/base/extend'
 import Vue from 'vue'
@@ -33,7 +33,9 @@ import { UserModule } from '@/store/modules/user'
 
 import IhHome from '../ui/src/index'
 import { Tool } from '../util/tool'
+import VueCropper from 'vue-cropper'
 
+Vue.use(VueCropper)
 Vue.use(IhHome);
 Vue.use(ElementUI);
 Vue.config.productionTip = false;
@@ -143,10 +145,10 @@ function render() {
             }
           }
         },
-         /**根据字典code和类别获取对应的name
-         * @param {type} 
-         * @return {type} 
-         */
+        /**根据字典code和类别获取对应的name
+        * @param {type} 
+        * @return {type} 
+        */
         dictAllItem(data: any, category: any) {
           if (data === undefined || data === null) {
             return {}
