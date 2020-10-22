@@ -4,7 +4,7 @@
  * @Author: zyc
  * @Date: 2020-07-07 09:25:17
  * @LastEditors: zyc
- * @LastEditTime: 2020-10-22 16:39:21
+ * @LastEditTime: 2020-10-22 18:55:40
  */
 import '../util/base/extend'
 import Vue from 'vue'
@@ -31,12 +31,14 @@ import '../ihome-theme/orange/theme/index.css'
 import '../ui/css/ihome-ui.scss'
 import { UserModule } from '@/store/modules/user'
 
-import IhHome from '../ui/src/index'
+import registerIhomeCommon from '../ui/src/index';
+registerIhomeCommon(Vue);
+ 
 import { Tool } from '../util/tool'
 import VueCropper from 'vue-cropper'
 
 Vue.use(VueCropper)
-Vue.use(IhHome);
+
 Vue.use(ElementUI);
 Vue.config.productionTip = false;
 Vue.prototype.$tool = new Tool();
