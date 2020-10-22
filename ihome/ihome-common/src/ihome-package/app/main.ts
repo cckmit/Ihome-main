@@ -3,8 +3,8 @@
  * @version: 
  * @Author: zyc
  * @Date: 2020-07-07 09:25:17
- * @LastEditors: wwq
- * @LastEditTime: 2020-10-22 09:06:47
+ * @LastEditors: zyc
+ * @LastEditTime: 2020-10-22 16:39:21
  */
 import '../util/base/extend'
 import Vue from 'vue'
@@ -53,8 +53,8 @@ if (process.env.NODE_ENV !== 'production') {
   }
   // require('@/mock/index')
 }
-let areaAll: any = null;//全部行政区数据
-let dictAll: any = null;//存在后端加载的所有字典数据
+let areaAll: any = {};//全部行政区数据
+let dictAll: any = [];//存在后端加载的所有字典数据
 
 function render() {
 
