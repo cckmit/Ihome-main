@@ -4,7 +4,7 @@
  * @Author: wwq
  * @Date: 2020-09-09 16:17:16
  * @LastEditors: wwq
- * @LastEditTime: 2020-10-22 09:00:39
+ * @LastEditTime: 2020-10-22 12:13:52
 -->
 <template>
   <div class="upload">
@@ -84,7 +84,7 @@
 import { Component, Vue, Prop, Watch } from "vue-property-decorator";
 import ImageViewer from "./image-viewer.vue";
 import Cropper from "./cropper.vue";
-import { post_file_upload } from "../../../../../api/sales-document-cover-local/index";
+import { post_file_upload } from "@/api/sales-document-cover-local/index";
 @Component({
   components: {
     ImageViewer,
