@@ -3,8 +3,8 @@
  * @version: 
  * @Author: zyc
  * @Date: 2020-06-22 16:44:13
- * @LastEditors: lgf
- * @LastEditTime: 2020-09-17 17:06:22
+ * @LastEditors: zyc
+ * @LastEditTime: 2020-10-20 10:02:09
 --> 
 <template >
   <div class="main">
@@ -66,6 +66,7 @@ export default class Login extends Vue {
           console.log(this.ruleForm);
 
           const res = await UserModule.Login(this.ruleForm);
+           
 
           console.log(res);
 

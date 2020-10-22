@@ -4,7 +4,7 @@
  * @Author: ywl
  * @Date: 2020-09-25 11:53:51
  * @LastEditors: ywl
- * @LastEditTime: 2020-10-09 11:06:41
+ * @LastEditTime: 2020-10-13 17:59:05
 -->
 <template>
   <IhPage>
@@ -252,7 +252,7 @@
         <el-button type="info">重置</el-button>
         <el-button
           type="success"
-          @click="$router.push('/contract/partyAadd')"
+          @click="$router.push('/partyA/add')"
         >录入</el-button>
         <el-button type="success">导出</el-button>
         <el-link

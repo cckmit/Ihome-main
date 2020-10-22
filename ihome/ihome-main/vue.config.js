@@ -3,8 +3,8 @@
  * @version: 
  * @Author: zyc
  * @Date: 2020-06-22 14:34:07
- * @LastEditors: wwq
- * @LastEditTime: 2020-10-10 18:15:57
+ * @LastEditors: zyc
+ * @LastEditTime: 2020-10-20 10:59:22
  */
 
 console.log('\033[42;30m 这是main ts主应用')
@@ -64,21 +64,11 @@ module.exports = {
             'Access-Control-Allow-Origin': '*',
         },
         proxy: {
-            '/system/v2/api-docs': {
-                target: proxyAddress
-            },
-            '/system/': {
-                target: proxyAddress
-            },
-            '/channel/': {
-                target: proxyAddress
-            },
-            '/sales-oauth2': {
-                target: proxyAddress
-            },
-            '/developer/': {
-                target: proxyAddress
-            }
+            '^/sales-api/': {
+				target: proxyAddress,
+				changeOrigin: true,  
+				// pathRewrite: { '^/sales-api/system/': '/sales-api/system-dev/' }  //路由重写
+			},
         }
     },
     // 自定义webpack配置

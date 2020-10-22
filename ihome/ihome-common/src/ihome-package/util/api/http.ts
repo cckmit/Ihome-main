@@ -54,7 +54,7 @@ service.interceptors.request.use(
 service.interceptors.response.use(
     (response) => {
 
-        if (response.config.url?.startsWith('/sales-oauth2/oauth/token')) {
+        if (response.config.url?.startsWith('/sales-oauth2/oauth/token')||response.config.url?.startsWith('/sales-api/sales-oauth2/oauth/token')) {
             return response.data
         } else if (response.config.url?.startsWith('http://filesvr.polyihome.test/aist-filesvr-web/webUploader/uploadAll')) {
             return response.data

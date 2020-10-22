@@ -1,10 +1,10 @@
 /*
- * @Descripttion: 
+ * @Description: 
  * @version: 
  * @Author: zyc
  * @Date: 2020-06-22 11:11:41
- * @LastEditors: zyc
- * @LastEditTime: 2020-09-29 11:48:21
+ * @LastEditors: wwq
+ * @LastEditTime: 2020-10-22 09:06:02
  */
 const path = require('path');
 const { name } = require('./package');
@@ -31,8 +31,6 @@ function resolve(dir) {
 	return path.join(__dirname, dir);
 }
 
-let proxyAddress = process.env.PROXY_PROTOCOL + '://' + process.env.PROXY_IP + ':' + process.env.PROXY_PORT;//代理地址
-console.log('\033[40;32mapi接口代理地址：' + proxyAddress + '\033[0m');
 module.exports = {
 	outputDir: 'dist',
 	assetsDir: 'static',
@@ -52,9 +50,14 @@ module.exports = {
 			'Access-Control-Allow-Origin': '*',
 		},
 		proxy: {
-			'/system/': {
-				target: proxyAddress
+			'^/sales-api/': {
+				target: proxyAddress,
+				changeOrigin: true,
+				// pathRewrite: { '^/sales-api/system/': '/sales-api/system-dev/' }  //路由重写
 			},
+			'/sales-document-cover-local/': {
+				target: 'http://10.188.0.13:8610'
+			}
 		}
 	},
 	pages: {

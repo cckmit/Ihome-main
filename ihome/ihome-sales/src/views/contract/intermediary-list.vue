@@ -4,7 +4,7 @@
  * @Author: ywl
  * @Date: 2020-09-25 17:34:32
  * @LastEditors: ywl
- * @LastEditTime: 2020-10-09 10:37:34
+ * @LastEditTime: 2020-10-13 17:58:33
 -->
 <template>
   <IhPage>
@@ -366,7 +366,7 @@
           <template v-slot="{  }">
             <el-link
               type="primary"
-              @click.native.prevent="$router.push('/contract/intermediaryDetail')"
+              @click.native.prevent="$router.push('/intermediary/detail')"
             >详情</el-link>
             <el-link type="primary">盖章版归档</el-link>
             <el-link type="primary">原件归档</el-link>

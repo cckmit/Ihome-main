@@ -3,8 +3,8 @@
  * @version: 
  * @Author: zyc
  * @Date: 2020-07-07 09:25:17
- * @LastEditors: ywl
- * @LastEditTime: 2020-10-10 09:18:04
+ * @LastEditors: wwq
+ * @LastEditTime: 2020-10-22 09:06:47
  */
 import '../util/base/extend'
 import Vue from 'vue'
@@ -14,7 +14,7 @@ import store from '@/store'
 import * as dic from '../util/enums/dic'
 let $dic: any = Object.assign(dic, dic.dicModular);
 
-import { get_dict_getAll } from '@/api/system'
+import { get_dict_getAll, get_area_getAll } from '@/api/system'
 
 // import '@/public-path'
 if ((<any>window).__POWERED_BY_QIANKUN__) {
@@ -25,14 +25,17 @@ if ((<any>window).__POWERED_BY_QIANKUN__) {
 
 import ElementUI from 'element-ui';
 // import 'element-ui/lib/theme-chalk/index.css';
-import '../ihome-theme/theme/index.css'
+// import '../ihome-theme/theme/index.css'
+import '../ihome-theme/orange/theme/index.css'
 
 import '../ui/css/ihome-ui.scss'
 import { UserModule } from '@/store/modules/user'
 
 import IhHome from '../ui/src/index'
 import { Tool } from '../util/tool'
+import VueCropper from 'vue-cropper'
 
+Vue.use(VueCropper)
 Vue.use(IhHome);
 Vue.use(ElementUI);
 Vue.config.productionTip = false;
@@ -50,19 +53,30 @@ if (process.env.NODE_ENV !== 'production') {
   }
   // require('@/mock/index')
 }
+let areaAll: any = null;//全部行政区数据
 let dictAll: any = null;//存在后端加载的所有字典数据
+
 function render() {
 
-  get_dict_getAll().then((res: any) => {
-    dictAll = res;
+
+  Promise.all([get_area_getAll(), get_dict_getAll()]).then((res: any) => {
+    areaAll = res[0];
+    dictAll = res[1];
+
+
   }).catch((err: any) => {
-    console.error('字典加载异常', err)
+    console.error('系统初始化数据存在异常', err)
   }).finally(() => {
     instance = new Vue({
       store,
       router,
       methods: {
+        /**该方法已抛弃，使用dictAllName
+         * @param {type} 
+         * @return {type} 
+         */
         displayName(source: any, key: any) {
+          console.error('该方法已抛弃，使用dictAllName')
           let item: any = $dic[source];
           if (item) {
             return item[key];
@@ -71,7 +85,12 @@ function render() {
             return null;
           }
         },
+        /**该方法已抛弃，使用dictAllList
+         * @param {type} 
+         * @return {type} 
+         */
         displayList(source: any, key: any) {
+          console.error('该方法已抛弃，使用dictAllList')
           let item: any = $dic[source];
           if (item) {
             let list = $dic.getListTool(item);
@@ -81,6 +100,10 @@ function render() {
             return [];
           }
         },
+        /**根据字典类别获取该分类的列表
+         * @param {type} 
+         * @return {type} 
+         */
         dictAllList(category: any) {
           let list: any[] = dictAll[category];
           if (list) {
@@ -90,28 +113,107 @@ function render() {
             return [];
           }
         },
+        /**根据字典code和类别获取对应的name
+         * @param {type} 
+         * @return {type} 
+         */
         dictAllName(data: any, category: any) {
-          let list: any[] = dictAll[category];
-          if (list) {
-            let item: any = list.filter((i: any) => {
-              if (i.code == data) {
-                return true;
+          if (data === undefined || data === null) {
+            return null;
+          } else {
+            let list: any[] = dictAll[category];
+            if (list) {
+              let item: any = list.filter((i: any) => {
+                if (i.code == data) {
+                  return true;
+                } else {
+                  return false;
+                }
+              })
+              if (item && item.length == 1) {
+                return item[0].name;
+              } else if (item && item.length > 1) {
+                console.error(data, category, item, '字典匹配到多项.返回第一项');
+                return item[0].name;
               } else {
-                return false;
+                console.error(data, category, '字典无法匹配到数据');
+                return null;
               }
-            })
-            if (item && item.length == 1) {
-              return item[0]
-            } else if (item && item.length > 1) {
-              console.error(data, category, item, '字典匹配到多项.取第一项');
-              return item[0]
             } else {
-              console.error(data, category, '字典无法匹配到数据');
+              console.error(category, '字典类型无法匹配.')
+              return null;
+            }
+          }
+        },
+        /**根据字典code和类别获取对应的name
+        * @param {type} 
+        * @return {type} 
+        */
+        dictAllItem(data: any, category: any) {
+          if (data === undefined || data === null) {
+            return {}
+          } else {
+            let list: any[] = dictAll[category];
+            if (list) {
+              let item: any = list.filter((i: any) => {
+                if (i.code == data) {
+                  return true;
+                } else {
+                  return false;
+                }
+              })
+              if (item && item.length == 1) {
+                return item[0]
+              } else if (item && item.length > 1) {
+                console.error(data, category, item, '字典匹配到多项.返回第一项');
+                return item[0]
+              } else {
+                console.error(data, category, '字典无法匹配到数据');
+                return {};
+              }
+            } else {
+              console.error(category, '字典类型无法匹配.')
               return {};
             }
+          }
+        },
+        /**根据行政区code获取对应的name
+         * @param {type} 
+         * @return {type} 
+         */
+        getAreaName(code: string) {
+          if (areaAll) {
+            let areaName = null;
+            for (let index = 0; index < areaAll.length; index++) {
+              const element = areaAll[index];
+              if (element.code == code) {
+                areaName = element.name;
+                break;
+              }
+            }
+            return areaName;
+
           } else {
-            console.error(category, '字典类型无法匹配.')
-            return [];
+            return null;
+          }
+        },
+        /**根据行政区code获取对应的该项数据
+        * @param {type} 
+        * @return {type} 
+        */
+        getArea(code: string) {
+          if (areaAll) {
+            let area = null;
+            for (let index = 0; index < areaAll.length; index++) {
+              const element = areaAll[index];
+              if (element.code == code) {
+                area = element;
+                break;
+              }
+            }
+            return area;
+          } else {
+            return null;
           }
         }
       },
@@ -154,7 +256,120 @@ function render() {
       render: h => h(App),
     }).$mount('#app');
 
+
   })
+
+  // get_area_getAll().then((res: any) => {
+  //   console.log(res)
+
+  // }).catch((err: any) => {
+  //   console.error('行政区加载异常', err)
+  // }).finally(() => {
+
+  // })
+
+  // get_dict_getAll().then((res: any) => {
+  //   dictAll = res;
+  // }).catch((err: any) => {
+  //   console.error('字典加载异常', err)
+  // }).finally(() => {
+  //   instance = new Vue({
+  //     store,
+  //     router,
+  //     methods: {
+  //       displayName(source: any, key: any) {
+  //         let item: any = $dic[source];
+  //         if (item) {
+  //           return item[key];
+  //         } else {
+  //           console.error(source, key, '枚举类型无法匹配')
+  //           return null;
+  //         }
+  //       },
+  //       displayList(source: any, key: any) {
+  //         let item: any = $dic[source];
+  //         if (item) {
+  //           let list = $dic.getListTool(item);
+  //           return list;
+  //         } else {
+  //           console.error(source, key, '枚举类型无法匹配.')
+  //           return [];
+  //         }
+  //       },
+  //       dictAllList(category: any) {
+  //         let list: any[] = dictAll[category];
+  //         if (list) {
+  //           return list;
+  //         } else {
+  //           console.error(category, '字典类型无法匹配.')
+  //           return [];
+  //         }
+  //       },
+  //       dictAllName(data: any, category: any) {
+  //         let list: any[] = dictAll[category];
+  //         if (list) {
+  //           let item: any = list.filter((i: any) => {
+  //             if (i.code == data) {
+  //               return true;
+  //             } else {
+  //               return false;
+  //             }
+  //           })
+  //           if (item && item.length == 1) {
+  //             return item[0]
+  //           } else if (item && item.length > 1) {
+  //             console.error(data, category, item, '字典匹配到多项.取第一项');
+  //             return item[0]
+  //           } else {
+  //             console.error(data, category, '字典无法匹配到数据');
+  //             return {};
+  //           }
+  //         } else {
+  //           console.error(category, '字典类型无法匹配.')
+  //           return [];
+  //         }
+  //       }
+  //     },
+  //     data: {
+  //       paginationLayout: "total, sizes, prev, pager, next, jumper",
+  //       pageSizes: [10, 20, 50],
+  //       pageSize: 10,
+  //       pickerOptions: {
+  //         shortcuts: [
+  //           {
+  //             text: "最近一周",
+  //             onClick(picker: any) {
+  //               const end = new Date();
+  //               const start = new Date();
+  //               start.setTime(start.getTime() - 3600 * 1000 * 24 * 7);
+  //               picker.$emit("pick", [start, end]);
+  //             },
+  //           },
+  //           {
+  //             text: "最近一个月",
+  //             onClick(picker: any) {
+  //               const end = new Date();
+  //               const start = new Date();
+  //               start.setTime(start.getTime() - 3600 * 1000 * 24 * 30);
+  //               picker.$emit("pick", [start, end]);
+  //             },
+  //           },
+  //           {
+  //             text: "最近三个月",
+  //             onClick(picker: any) {
+  //               const end = new Date();
+  //               const start = new Date();
+  //               start.setTime(start.getTime() - 3600 * 1000 * 24 * 90);
+  //               picker.$emit("pick", [start, end]);
+  //             },
+  //           },
+  //         ],
+  //       }
+  //     },
+  //     render: h => h(App),
+  //   }).$mount('#app');
+
+  // })
 
 
   directives(Vue, instance)

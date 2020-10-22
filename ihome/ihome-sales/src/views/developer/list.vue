@@ -4,7 +4,7 @@
  * @Author: wwq
  * @Date: 2020-09-25 17:59:09
  * @LastEditors: wwq
- * @LastEditTime: 2020-10-10 18:23:18
+ * @LastEditTime: 2020-10-20 11:55:30
 -->
 <template>
   <ih-page>
@@ -13,12 +13,15 @@
         <el-row>
           <el-col :span="8">
             <el-form-item label="名称">
-              <el-input v-model="queryPageParameters.name"></el-input>
+              <el-input v-model="queryPageParameters.name" clearable></el-input>
             </el-form-item>
           </el-col>
           <el-col :span="8">
             <el-form-item label="信用代码">
-              <el-input v-model="queryPageParameters.creditCode"></el-input>
+              <el-input
+                v-model="queryPageParameters.creditCode"
+                clearable
+              ></el-input>
             </el-form-item>
           </el-col>
           <el-col :span="8">
@@ -30,10 +33,10 @@
                 placeholder="请选择"
               >
                 <el-option
-                  v-for="item in $root.displayList('devStatus')"
-                  :key="item.value"
-                  :label="item.label"
-                  :value="item.value"
+                  v-for="item in $root.dictAllList('CompanyStatusEnum')"
+                  :key="item.code"
+                  :label="item.name"
+                  :value="item.code"
                 ></el-option>
               </el-select>
             </el-form-item>
@@ -42,14 +45,15 @@
         <el-row>
           <el-col :span="8">
             <el-form-item label="省市区">
-              <IhCascader
-                v-model="queryPageParameters.provinceOption"
-              ></IhCascader>
+              <IhCascader v-model="provinceOption"></IhCascader>
             </el-form-item>
           </el-col>
           <el-col :span="8">
             <el-form-item label="录入人">
-              <el-input v-model="queryPageParameters.inputUser"></el-input>
+              <el-input
+                v-model="queryPageParameters.inputUser"
+                clearable
+              ></el-input>
             </el-form-item>
           </el-col>
         </el-row>
@@ -58,13 +62,10 @@
 
     <template v-slot:btn>
       <el-row>
-        <el-button type="danger" @click="search()">查询</el-button>
-        <el-button type="success" @click="addMsg()">添加</el-button>
-        <el-button type="success" @click="reset()">重置</el-button>
-        <el-button
-          type="info"
-          :disabled="updataUserDisabled"
-          @click="dialogVisible = true"
+        <el-button type="primary" @click="search()">查询</el-button>
+        <el-button type="success" @click="add()">添加</el-button>
+        <el-button type="info" @click="reset()">重置</el-button>
+        <el-button :disabled="updataUserDisabled" @click="dialogVisible = true"
           >变更录入人</el-button
         >
       </el-row>
@@ -90,18 +91,30 @@
           label="信用代码"
           width="180"
         ></el-table-column>
-        <el-table-column prop="province" label="省份"></el-table-column>
-        <el-table-column prop="city" label="城市"></el-table-column>
-        <el-table-column prop="county" label="行政区"></el-table-column>
+        <el-table-column prop="province" label="省份">
+          <template v-slot="{ row }">{{
+            $root.getAreaName(row.province)
+          }}</template>
+        </el-table-column>
+        <el-table-column prop="city" label="城市">
+          <template v-slot="{ row }">{{
+            $root.getAreaName(row.city)
+          }}</template>
+        </el-table-column>
+        <el-table-column prop="county" label="行政区">
+          <template v-slot="{ row }">{{
+            $root.getAreaName(row.county)
+          }}</template>
+        </el-table-column>
         <el-table-column prop="inputUser" label="录入人"></el-table-column>
         <el-table-column prop="status" label="状态">
           <template v-slot="{ row }">{{
-            $root.displayName("devStatus", row.status)
+            $root.dictAllName(row.status, "CompanyStatusEnum")
           }}</template>
         </el-table-column>
         <el-table-column fixed="right" label="操作" width="120">
           <template v-slot="{ row }">
-            <el-link type="primary" @click.native.prevent="detailsMsg(row)"
+            <el-link type="primary" @click.native.prevent="routeTo(row, 'info')"
               >详情</el-link
             >
             <el-dropdown trigger="click" class="margin-left-15">
@@ -110,7 +123,9 @@
                 <i class="el-icon-arrow-down el-icon--right"></i>
               </span>
               <el-dropdown-menu slot="dropdown">
-                <el-dropdown-item @click.native.prevent="edit(row)"
+                <el-dropdown-item
+                  :disabled="row.status === 'Audited'"
+                  @click.native.prevent="routeTo(row, 'edit')"
                   >修改</el-dropdown-item
                 >
                 <el-dropdown-item
@@ -120,15 +135,17 @@
                 >
                 <el-dropdown-item
                   :disabled="row.status !== 'WaitAuditByBranchHead'"
-                  @click.native.prevent="revocationMsg(row)"
+                  @click.native.prevent="routeTo(row, 'revocation')"
                   >撤回
                 </el-dropdown-item>
-                <el-dropdown-item @click.native.prevent="checkMsg(row)"
+                <el-dropdown-item
+                  :disabled="row.status !== 'WaitAuditByBranchHead'"
+                  @click.native.prevent="routeTo(row, 'check')"
                   >审核</el-dropdown-item
                 >
                 <el-dropdown-item
                   :disabled="row.status !== 'Audited'"
-                  @click.native.prevent="changeMsg(row)"
+                  @click.native.prevent="routeTo(row, 'change')"
                   >变更信息</el-dropdown-item
                 >
               </el-dropdown-menu>
@@ -184,15 +201,16 @@ export default class DeveloperList extends Vue {
     name: null,
     creditCode: null,
     status: null,
-    provinceOption: Array,
     inputUser: null,
+    province: null,
+    city: null,
   };
+  provinceOption: any = [];
   selection: any = [];
   resPageInfo: any = {
     total: 0,
     list: [],
   };
-  currentPage: any = 1;
   total: any = null;
   dialogVisible = false;
 
@@ -212,18 +230,20 @@ export default class DeveloperList extends Vue {
       name: null,
       creditCode: null,
       status: null,
-      provinceOption: Array,
       inputUser: null,
+      province: null,
+      city: null,
       pageNum: this.queryPageParameters.pageNum,
       pageSize: this.queryPageParameters.pageSize,
     };
+    this.provinceOption = [];
   }
 
   async remove(row: any) {
     try {
       await this.$confirm("是否确定删除?", "提示");
       await get_company_delete__id({ id: row.id });
-      this.resPageInfo.list.splice(row.$index, 1);
+      this.getListMixin();
       this.$message({
         type: "success",
         message: "删除成功!",
@@ -233,17 +253,17 @@ export default class DeveloperList extends Vue {
     }
   }
 
-  addMsg() {
-    this.$router.push("/developers/edit");
-  }
-
-  edit(row: any) {
+  routeTo(row: any, where: string) {
     this.$router.push({
-      path: "/developers/edit",
+      path: `/developers/${where}`,
       query: {
         id: row.id,
       },
     });
+  }
+
+  add() {
+    this.$router.push("/developers/add");
   }
 
   handleSelectionChange(val: any) {
@@ -251,43 +271,13 @@ export default class DeveloperList extends Vue {
       name: v.name,
       id: v.id,
     }));
-    console.log(this.selection);
-  }
-
-  changeMsg(row: any) {
-    console.log(row);
-    this.$router.push("/developers/change");
-  }
-
-  detailsMsg(row: any) {
-    this.$router.push({
-      path: "/developers/details",
-      query: {
-        id: row.id,
-      },
-    });
-  }
-
-  checkMsg(row: any) {
-    this.$router.push({
-      path: "/developers/check",
-      query: {
-        id: row.id,
-      },
-    });
-  }
-
-  revocationMsg(row: any) {
-    this.$router.push({
-      path: "/developers/revocation",
-      query: {
-        id: row.id,
-      },
-    });
   }
 
   search() {
-    console.log(this.queryPageParameters);
+    this.queryPageParameters.province = this.provinceOption[0];
+    this.queryPageParameters.city = this.provinceOption[1];
+    this.queryPageParameters.county = this.provinceOption[2];
+    this.queryPageParameters.pageNum = 1;
     this.getListMixin();
   }
 }
