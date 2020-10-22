@@ -4,7 +4,7 @@
  * @Author: zyc
  * @Date: 2020-07-06 17:16:31
  * @LastEditors: zyc
- * @LastEditTime: 2020-08-28 09:59:13
+ * @LastEditTime: 2020-10-22 16:32:04
 --> 
 <template>
   <el-dialog
@@ -15,25 +15,32 @@
     :close-on-press-escape="false"
     :before-close="cancel"
     width="1000px"
-    style="text-align: left;"
+    style="text-align: left"
     class="dialog resources-list-add"
   >
     <el-form :rules="model.rules" :model="model" ref="form">
-      <p>父编码：{{pageData.parentCode}}</p>
-      <p>父名称：{{pageData.parentName}}</p>
+      <p>父编码：{{ pageData.parentCode }}</p>
+      <p>父名称：{{ pageData.parentName }}</p>
       <el-table :data="model.tableData" style="width: 100%">
         <el-table-column prop="add" label="操作" width="60">
           <template slot-scope="scope">
-            <i style=" cursor: pointer;" @click="reduceLine(scope)" class="el-icon-minus"></i>
+            <i
+              style="cursor: pointer"
+              @click="reduceLine(scope)"
+              class="el-icon-minus"
+            ></i>
           </template>
         </el-table-column>
         <el-table-column label="类型" width="130">
           <template slot-scope="scope">
             <span>
-              <el-form-item :prop="'tableData.' + scope.$index + '.type'" :rules="model.rules.type">
+              <el-form-item
+                :prop="'tableData.' + scope.$index + '.type'"
+                :rules="model.rules.type"
+              >
                 <el-select v-model="scope.row.type" placeholder="类型">
                   <el-option
-                    v-for="(item,index) in $root.displayList('modular')"
+                    v-for="(item, index) in $root.displayList('modular')"
                     :key="index"
                     :label="item.label"
                     :value="item.value"
@@ -43,9 +50,12 @@
             </span>
           </template>
         </el-table-column>
-        <el-table-column label="名称" width="180">
+        <el-table-column label="名称" width="150">
           <template slot-scope="scope">
-            <el-form-item :prop="'tableData.' + scope.$index + '.name'" :rules="model.rules.name">
+            <el-form-item
+              :prop="'tableData.' + scope.$index + '.name'"
+              :rules="model.rules.name"
+            >
               <el-input v-model="scope.row.name"></el-input>
             </el-form-item>
           </template>
@@ -58,7 +68,10 @@
         </el-table-column>-->
         <el-table-column prop="name" label="编码">
           <template slot-scope="scope">
-            <el-form-item :prop="'tableData.' + scope.$index + '.code'" :rules="model.rules.code">
+            <el-form-item
+              :prop="'tableData.' + scope.$index + '.code'"
+              :rules="model.rules.code"
+            >
               <el-input v-model="scope.row.code"></el-input>
             </el-form-item>
           </template>
@@ -70,9 +83,16 @@
             </el-form-item>
           </template>
         </el-table-column>
+        <el-table-column prop="name" label="ICON" width="150">
+          <template slot-scope="scope">
+            <el-form-item :prop="'tableData.' + scope.$index + '.icon'">
+              <el-input v-model="scope.row.icon"></el-input>
+            </el-form-item>
+          </template>
+        </el-table-column>
       </el-table>
       <p class="add-line">
-        <i style=" cursor: pointer;" @click="addLine()" class="el-icon-plus"></i>
+        <i style="cursor: pointer" @click="addLine()" class="el-icon-plus"></i>
       </p>
     </el-form>
 
@@ -153,6 +173,7 @@ export default class ResourcesAdd extends Vue {
       parentId: this.pageData.parentId,
       type: null,
       url: null,
+      icon: null,
     });
   }
 
