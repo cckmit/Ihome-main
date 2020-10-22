@@ -4,7 +4,7 @@
  * @Author: zyc
  * @Date: 2020-07-09 14:31:23
  * @LastEditors: zyc
- * @LastEditTime: 2020-10-21 10:38:57
+ * @LastEditTime: 2020-10-21 14:40:23
 --> 
 <template>
   <ih-page>
@@ -249,7 +249,7 @@ export default class ApprovalAdd extends Vue {
   @NoRepeatHttp()
   async addSave(valid: any) {
     if (valid) {
-      const res: any = await post_channelApproval_add(this.postData);
+       await post_channelApproval_add(this.postData);
       this.$message.success("新增成功");
       this.$router.push({
         path: "/approval/list",
@@ -274,7 +274,7 @@ export default class ApprovalAdd extends Vue {
       //   operateType: this.postData.operateType,
       // };
       // console.log(editData);
-      const res: any = await post_channelApproval_edit(this.postData);
+      await post_channelApproval_edit(this.postData);
       this.$message.success("编辑成功");
       this.$router.push({
         path: "/approval/list",
@@ -291,7 +291,7 @@ export default class ApprovalAdd extends Vue {
   async submitApi(valid: any) {
     if (valid) {
       this.postData.operateType = 2;
-      const res: any = await post_channelApproval_edit(this.postData);
+      await post_channelApproval_edit(this.postData);
       this.$message.success("提交成功");
       this.$router.push({
         path: "/approval/list",

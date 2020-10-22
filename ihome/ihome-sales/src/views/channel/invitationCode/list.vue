@@ -122,7 +122,7 @@
         ></el-table-column> -->
         <el-table-column label="状态" width="120">
           <template slot-scope="scope">{{
-            $root.dictAllName(scope.row.status, "ValidType").name
+            $root.dictAllName(scope.row.status, "ValidType")
           }}</template>
         </el-table-column>
         <el-table-column prop="expiresTime" label="失效日期"></el-table-column>

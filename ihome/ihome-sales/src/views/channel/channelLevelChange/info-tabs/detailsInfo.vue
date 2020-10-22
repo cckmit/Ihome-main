@@ -36,7 +36,7 @@
             align="left"
           >
             <span>{{
-              $root.dictAllName(resPageInfo.channelGrade, "ChannelLevel").name
+              $root.dictAllName(resPageInfo.channelGrade, "ChannelLevel")
             }}</span>
           </el-form-item>
         </el-col>
@@ -47,7 +47,7 @@
             align="left"
           >
             <span>{{
-              $root.dictAllName(resPageInfo.channelType, "ChannelType").name
+              $root.dictAllName(resPageInfo.channelType, "ChannelType")
             }}</span>
           </el-form-item>
         </el-col>
@@ -79,7 +79,7 @@
                 align="left"
               >
                 <span>{{
-                  $root.dictAllName(resPageInfo.cityGrade, "CityLevel").name
+                  $root.dictAllName(resPageInfo.cityGrade, "CityLevel")
                 }}</span>
               </el-form-item>
             </el-col>
@@ -90,7 +90,7 @@
                 align="left"
               >
                 <span>{{
-                  $root.dictAllName(resPageInfo.special, "YesOrNoType").name
+                  $root.dictAllName(resPageInfo.special, "YesOrNoType")
                 }}</span>
               </el-form-item>
             </el-col>
@@ -108,7 +108,7 @@
                 align="left"
               >
                 <span>{{
-                  $root.dictAllName(resPageInfo.status, "ChannelStatus").name
+                  $root.dictAllName(resPageInfo.status, "ChannelStatus")
                 }}</span>
               </el-form-item>
             </el-col>
@@ -144,7 +144,7 @@
         label="城市等级"
       >
         <template v-slot="{ row }">{{
-          $root.dictAllName(row.cityGrade, "CityLevel").name
+          $root.dictAllName(row.cityGrade, "CityLevel")
         }}</template>
       </el-table-column>
       <el-table-column
@@ -152,7 +152,7 @@
         label="渠道等级"
       >
         <template v-slot="{ row }">{{
-          $root.dictAllName(row.channelGrade, "ChannelLevel").name
+          $root.dictAllName(row.channelGrade, "ChannelLevel")
         }}</template>
       </el-table-column>
       <el-table-column

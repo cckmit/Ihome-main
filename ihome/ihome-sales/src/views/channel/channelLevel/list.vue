@@ -198,17 +198,17 @@
         </el-table-column>
         <el-table-column prop="cityGrade" label="城市等级">
           <template v-slot="{ row }">{{
-            $root.dictAllName(row.cityGrade, "CityLevel").name
+            $root.dictAllName(row.cityGrade, "CityLevel")
           }}</template>
         </el-table-column>
         <el-table-column prop="channelGrade" label="渠道等级">
           <template v-slot="{ row }">{{
-            $root.dictAllName(row.channelGrade, "ChannelLevel").name
+            $root.dictAllName(row.channelGrade, "ChannelLevel")
           }}</template>
         </el-table-column>
         <el-table-column prop="special" label="特批入库">
           <template v-slot="{ row }">{{
-            $root.dictAllName(row.special, "YesOrNoType").name
+            $root.dictAllName(row.special, "YesOrNoType")
           }}</template>
         </el-table-column>
         <el-table-column
@@ -218,7 +218,7 @@
         <el-table-column prop="inputUser" label="录入人"></el-table-column>
         <el-table-column prop="status" label="状态">
           <template v-slot="{ row }">{{
-            $root.dictAllName(row.status, "ChannelStatus").name
+            $root.dictAllName(row.status, "ChannelStatus")
           }}</template>
         </el-table-column>
         <el-table-column label="操作" width="120" fixed="right">

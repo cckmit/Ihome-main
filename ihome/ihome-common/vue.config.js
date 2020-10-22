@@ -3,8 +3,8 @@
  * @version: 
  * @Author: zyc
  * @Date: 2020-06-22 11:11:41
- * @LastEditors: zyc
- * @LastEditTime: 2020-10-20 10:59:39
+ * @LastEditors: wwq
+ * @LastEditTime: 2020-10-22 09:06:02
  */
 const path = require('path');
 const { name } = require('./package');
@@ -52,9 +52,12 @@ module.exports = {
 		proxy: {
 			'^/sales-api/': {
 				target: proxyAddress,
-				changeOrigin: true,  
+				changeOrigin: true,
 				// pathRewrite: { '^/sales-api/system/': '/sales-api/system-dev/' }  //路由重写
 			},
+			'/sales-document-cover-local/': {
+				target: 'http://10.188.0.13:8610'
+			}
 		}
 	},
 	pages: {

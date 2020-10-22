@@ -3,10 +3,9 @@
  * @version: 
  * @Author: wwq
  * @Date: 2020-09-09 16:17:16
- * @LastEditors: ywl
- * @LastEditTime: 2020-10-10 17:18:05
+ * @LastEditors: wwq
+ * @LastEditTime: 2020-10-22 09:00:39
 -->
-
 <template>
   <div class="upload">
     <el-upload
@@ -24,6 +23,7 @@
       :before-upload="beforeUpload"
       :multiple="multiple"
       :limit="limit"
+      :auto-upload="false"
     >
       <template #file="{ file }">
         <img
@@ -37,30 +37,21 @@
             v-if="previewPermi"
             @click="handlePictureCardPreview(file)"
           >
-            <i
-              class="el-icon-zoom-in"
-              title="预览"
-            ></i>
+            <i class="el-icon-zoom-in" title="预览"></i>
           </span>
           <span
             class="el-upload-list__item-delete"
             v-if="loadPermi"
             @click="handleDownload(file)"
           >
-            <i
-              class="el-icon-download"
-              title="下载"
-            ></i>
+            <i class="el-icon-download" title="下载"></i>
           </span>
           <span
             class="el-upload-list__item-delete"
             v-if="removePermi"
             @click="handleRemove(file)"
           >
-            <i
-              class="el-icon-delete"
-              title="删除"
-            ></i>
+            <i class="el-icon-delete" title="删除"></i>
           </span>
         </span>
       </template>
@@ -69,7 +60,7 @@
         :style="{ width: size, height: size, 'line-height': size }"
       ></i>
     </el-upload>
-    <ih-image-viewer
+    <image-viewer
       v-if="visible"
       ref="image"
       :url-list="srcList"
@@ -77,17 +68,27 @@
       :on-close="closeViewer"
       :viewer-msg="viewerArr"
       :viewer-index="viewerIndex"
-    ></ih-image-viewer>
+    ></image-viewer>
+    <ih-dialog :show="dialogVisible" desc="联系人信息">
+      <Cropper
+        ref="cropper"
+        :img="cropperImg"
+        :cropper-name="cropperName"
+        @cancel="cropperCancel()"
+        @finish="(data) => cropperFinish(data)"
+      ></Cropper>
+    </ih-dialog>
   </div>
 </template>
 <script lang="ts">
 import { Component, Vue, Prop, Watch } from "vue-property-decorator";
-import IhImageViewer from "./IhImageViewer.vue";
-// import request from "@/ihome-package/util/api/http";
-import request from "../../../../util/api/http";
+import ImageViewer from "./image-viewer.vue";
+import Cropper from "./cropper.vue";
+import { post_file_upload } from "../../../../../api/sales-document-cover-local/index";
 @Component({
   components: {
-    IhImageViewer,
+    ImageViewer,
+    Cropper,
   },
 })
 export default class IhUpload extends Vue {
@@ -103,12 +104,6 @@ export default class IhUpload extends Vue {
     default: true,
   })
   multiple!: boolean;
-  @Prop() private params!: any;
-  @Prop({
-    default:
-      "http://filesvr.polyihome.test/aist-filesvr-web/webUploader/uploadAll",
-  })
-  uploadUrl!: string;
   @Prop({
     type: String,
     default: "",
@@ -119,6 +114,16 @@ export default class IhUpload extends Vue {
     default: "150px",
   })
   size!: string;
+  @Prop({
+    type: Number,
+    default: 10,
+  })
+  fileSize!: number;
+  @Prop({
+    type: Boolean,
+    default: false,
+  })
+  isCrop!: boolean;
 
   private list: any[] = [];
   private srcList: any[] = [];
@@ -129,6 +134,11 @@ export default class IhUpload extends Vue {
   private removePermi = true;
   private uploadId!: any;
   private viewerIndex!: number;
+  private dialogVisible = false;
+  private fileUpload: any;
+  private cropperName = "";
+  private cropperImg = "";
+  private changeFileList: any = [];
 
   @Watch("list", { deep: true })
   getList(list: any) {
@@ -145,54 +155,71 @@ export default class IhUpload extends Vue {
   getFileList(fileList: any) {
     if (fileList.length) {
       fileList.forEach((v: any, index: number) => {
-        this.replaceUpload(v, fileList, index);
+        v.url = `/sales-document-cover-local/file/browse/${v.fileId}`;
+        v.img_url = `/sales-document-cover-local/file/browse/${v.fileId}`;
+        this.replaceUpload(v, fileList, index, v.fileId);
       });
     }
   }
   created() {
     this.srcList = [];
   }
-  httpRequest(req: any) {
+  // 自定义请求
+  async httpRequest(req: any) {
     const fd = new FormData();
-    fd.append("file", req.file);
-    for (let i in this.params) {
-      fd.append(i, this.params[i]);
+    if (this.fileUpload) {
+      fd.append("files", this.fileUpload);
+    } else {
+      fd.append("files", req.file);
     }
-    request
-      .post(this.uploadUrl, fd)
-      .then((res: any) => {
-        this.uploadId = res.files[0].id;
-        this.successHandler(res);
-      })
-      .catch((err: any) => {
-        this.errorHandler(err);
-      });
+    return await post_file_upload(fd);
   }
-  successHandler(res: any) {
+  successHandler(response: any, file: any, fileList: any) {
+    this.replaceUpload(file, fileList, fileList.length - 1, response[0].fileId);
     this.$message.success("上传成功");
-    console.log(res);
   }
-  errorHandler(res: any) {
+  errorHandler() {
     this.$message.error("上传失败");
-    console.log(res);
   }
   onChangeHandler(file: any, fileList: any) {
-    this.replaceUpload(file, fileList, fileList.length - 1);
+    this.changeFileList = fileList;
+    if (this.isCrop && file.status === "ready") {
+      const type = file.name.match(/(?<=\.).+/).toString();
+      switch (type) {
+        case "gif":
+        case "jpg":
+        case "png":
+        case "jpeg":
+          this.cropperName = file.name;
+          this.$nextTick(() => {
+            this.cropperImg = file.url;
+            this.dialogVisible = true;
+          });
+          break;
+        default:
+          (this.$refs.upload as any).submit();
+          break;
+      }
+    } else {
+      (this.$refs.upload as any).submit();
+    }
   }
   beforeUpload(file: any) {
     return new Promise((resolve, reject) => {
-      const size = file.size / 1024 / 1024 < 10;
+      const size = file.size / 1024 / 1024 < this.fileSize;
       if (!size) {
-        this.$alert("文件大小不能超过 10MB!", {
+        this.$message({
+          message: `文件大小不能超过 ${this.fileSize}MB`,
           type: "error",
         });
-        reject("图片容量过大!");
+        reject("文件容量过大!");
         return;
       } else {
         resolve();
       }
     });
   }
+  // 显示列表的图片URL
   uploadType(file: any) {
     const type = file.name.match(/(?<=\.).+/).toString();
     switch (type) {
@@ -200,7 +227,7 @@ export default class IhUpload extends Vue {
       case "jpg":
       case "png":
       case "jpeg":
-        return file.url;
+        return file.img_url;
       case "doc":
       case "docx":
       case "docm":
@@ -232,7 +259,7 @@ export default class IhUpload extends Vue {
     }
     this.viewerArr = viewerArr.map((v: any) => ({
       ...v,
-      preFileName: this.list[0].preFileName,
+      preFileName: this.list[0]?.preFileName,
     }));
     this.viewerIndex = index;
     this.srcList = viewerArr.map((v: any) => v.img_url);
@@ -240,21 +267,7 @@ export default class IhUpload extends Vue {
   }
   // 图片下载按钮
   handleDownload(file: any) {
-    request
-      .get(file.url, {
-        responseType: "blob",
-      })
-      .then((res: any) => {
-        if (res) {
-          const blob = new Blob([file.url]);
-          const href = window.URL.createObjectURL(blob);
-          const $a = document.createElement("a");
-          $a.href = href;
-          $a.download = file.name;
-          $a.click();
-          $a.remove();
-        }
-      });
+    window.open(file.img_url);
   }
   // 切换预览图触发
   switchHandler(index: number) {
@@ -268,13 +281,15 @@ export default class IhUpload extends Vue {
     this.$message.error("已超出文件上传数量限制,请重新选择!");
   }
   // 上传不同类型图片替换方法
-  replaceUpload(file: any, fileList: any, index: number) {
+  replaceUpload(file: any, fileList: any, index: number, fileId: number) {
     const type = file.name.match(/(?<=\.).+/).toString();
     switch (type) {
       case "gif":
       case "jpg":
       case "png":
-        fileList[index].img_url = file.url;
+        fileList[
+          index
+        ].img_url = `/sales-document-cover-local/file/browse/${fileId}`;
         break;
       case "doc":
       case "docx":
@@ -295,6 +310,17 @@ export default class IhUpload extends Vue {
         break;
     }
     this.list = [...fileList];
+  }
+  cropperFinish(data: any) {
+    this.dialogVisible = false;
+    this.fileUpload = data;
+    this.cropperImg = "";
+    (this.$refs.upload as any).submit();
+  }
+  cropperCancel() {
+    this.dialogVisible = false;
+    this.changeFileList.pop();
+    this.list = this.changeFileList;
   }
 }
 </script>

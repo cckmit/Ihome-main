@@ -180,7 +180,7 @@
 
       <!-- <el-table-column label="状态" width="120">
         <template slot-scope="scope">{{
-          $root.dictAllName(scope.row.status, "ChannelApprovalStatus").name
+          $root.dictAllName(scope.row.status, "ChannelApprovalStatus")
         }}</template>
       </el-table-column> -->
       <el-table-column

@@ -49,7 +49,7 @@
         <el-row>
           <el-col :span="6" class="ih-info-item-left">状态</el-col>
           <el-col :span="18" class="ih-info-item-right">
-            {{ $root.dictAllName(info.status, "ChannelApprovalStatus").name }}
+            {{ $root.dictAllName(info.status, "ChannelApprovalStatus") }}
           </el-col>
         </el-row>
       </el-col>

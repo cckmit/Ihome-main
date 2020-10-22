@@ -3,8 +3,8 @@
  * @version: 
  * @Author: zyc
  * @Date: 2020-07-07 09:25:17
- * @LastEditors: zyc
- * @LastEditTime: 2020-10-16 10:52:19
+ * @LastEditors: wwq
+ * @LastEditTime: 2020-10-22 09:06:47
  */
 import '../util/base/extend'
 import Vue from 'vue'
@@ -33,7 +33,9 @@ import { UserModule } from '@/store/modules/user'
 
 import IhHome from '../ui/src/index'
 import { Tool } from '../util/tool'
+import VueCropper from 'vue-cropper'
 
+Vue.use(VueCropper)
 Vue.use(IhHome);
 Vue.use(ElementUI);
 Vue.config.productionTip = false;
@@ -117,6 +119,38 @@ function render() {
          */
         dictAllName(data: any, category: any) {
           if (data === undefined || data === null) {
+            return null;
+          } else {
+            let list: any[] = dictAll[category];
+            if (list) {
+              let item: any = list.filter((i: any) => {
+                if (i.code == data) {
+                  return true;
+                } else {
+                  return false;
+                }
+              })
+              if (item && item.length == 1) {
+                return item[0].name;
+              } else if (item && item.length > 1) {
+                console.error(data, category, item, '字典匹配到多项.返回第一项');
+                return item[0].name;
+              } else {
+                console.error(data, category, '字典无法匹配到数据');
+                return null;
+              }
+            } else {
+              console.error(category, '字典类型无法匹配.')
+              return null;
+            }
+          }
+        },
+        /**根据字典code和类别获取对应的name
+        * @param {type} 
+        * @return {type} 
+        */
+        dictAllItem(data: any, category: any) {
+          if (data === undefined || data === null) {
             return {}
           } else {
             let list: any[] = dictAll[category];
@@ -131,7 +165,7 @@ function render() {
               if (item && item.length == 1) {
                 return item[0]
               } else if (item && item.length > 1) {
-                console.error(data, category, item, '字典匹配到多项.取第一项');
+                console.error(data, category, item, '字典匹配到多项.返回第一项');
                 return item[0]
               } else {
                 console.error(data, category, '字典无法匹配到数据');
@@ -139,10 +173,9 @@ function render() {
               }
             } else {
               console.error(category, '字典类型无法匹配.')
-              return [];
+              return {};
             }
           }
-
         },
         /**根据行政区code获取对应的name
          * @param {type} 

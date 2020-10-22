@@ -3,8 +3,8 @@
  * @version: 
  * @Author: wwq
  * @Date: 2020-10-15 12:33:25
- * @LastEditors: wwq
- * @LastEditTime: 2020-10-20 11:08:56
+ * @LastEditors: zyc
+ * @LastEditTime: 2020-10-21 14:39:26
 -->
 <template>
   <div class="text-left">
@@ -33,7 +33,7 @@
             <el-col :span="8">
               <el-form-item label="类型" required align="left">
                 <span>{{
-                  $root.dictAllName(resPageInfo.type, "CompanyTypeEnum").name
+                  $root.dictAllName(resPageInfo.type, "CompanyTypeEnum")
                 }}</span>
               </el-form-item>
             </el-col>
@@ -130,7 +130,7 @@
       <el-table-column prop="bank" label="开户银行"></el-table-column>
       <el-table-column prop="type" label="账号类型">
         <template v-slot="{ row }">{{
-          $root.dictAllName(row.type, "BankAccountTypeEnum").name
+          $root.dictAllName(row.type, "BankAccountTypeEnum")
         }}</template>
       </el-table-column>
     </el-table>

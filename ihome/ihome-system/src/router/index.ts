@@ -4,7 +4,7 @@
  * @Author: zyc
  * @Date: 2020-06-22 11:10:43
  * @LastEditors: zyc
- * @LastEditTime: 2020-09-02 16:42:55
+ * @LastEditTime: 2020-10-21 15:17:18
  */
 import Vue from 'vue'
 import VueRouter, { RouteConfig, Route } from 'vue-router'
@@ -135,6 +135,21 @@ const routes: Array<RouteConfig> = [
         name: 'OtherDriver',
         component: () => import('../views/other/driver.vue'),
         meta: { title: '新手引导', icon: 'form' }
+      },
+
+    ]
+  },
+  {
+    path: '/dic',
+    meta: { title: '字典', icon: 'form' },
+    redirect: '/dic/list',
+    component: Layout,
+    children: [
+      {
+        path: 'list',
+        name: 'DicList',
+        component: () => import('../views/dic/list.vue'),
+        meta: { title: '字典', icon: 'form' }
       },
 
     ]

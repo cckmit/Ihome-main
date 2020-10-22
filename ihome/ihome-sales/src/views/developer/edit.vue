@@ -207,7 +207,7 @@
         <el-table-column prop="bank" label="开户银行"></el-table-column>
         <el-table-column prop="type" label="账号类型">
           <template v-slot="{ row }">{{
-            $root.dictAllName(row.type, "BankAccountTypeEnum").name
+            $root.dictAllName(row.type, "BankAccountTypeEnum")
           }}</template>
         </el-table-column>
         <el-table-column fixed="right" label="操作" align="center">

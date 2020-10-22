@@ -75,7 +75,7 @@
                 align="left"
               >
                 <span>{{
-                  $root.dictAllName(resPageInfo.channelType, "ChannelType").name
+                  $root.dictAllName(resPageInfo.channelType, "ChannelType")
                 }}</span>
               </el-form-item>
             </el-col>
@@ -105,7 +105,7 @@
                     align="left"
                   >
                     <span v-if="resPageInfo.cityGrade">{{
-                      $root.dictAllName(resPageInfo.cityGrade, "CityLevel").name
+                      $root.dictAllName(resPageInfo.cityGrade, "CityLevel")
                     }}</span>
                   </el-form-item>
                 </el-col>
@@ -202,7 +202,7 @@
               label="城市等级"
             >
               <template v-slot="{ row }">{{
-                $root.dictAllName(row.cityGrade, "CityLevel").name
+                $root.dictAllName(row.cityGrade, "CityLevel")
               }}</template>
             </el-table-column>
             <el-table-column
@@ -210,7 +210,7 @@
               label="渠道等级"
             >
               <template v-slot="{ row }">{{
-                $root.dictAllName(row.channelGrade, "ChannelLevel").name
+                $root.dictAllName(row.channelGrade, "ChannelLevel")
               }}</template>
             </el-table-column>
             <el-table-column

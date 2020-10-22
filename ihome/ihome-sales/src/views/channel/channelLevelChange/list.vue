@@ -170,7 +170,7 @@
           width="150"
         >
           <template v-slot="{ row }">
-            {{ $root.dictAllName(row.status, 'ChannelStatus').name }}
+            {{ $root.dictAllName(row.status, 'ChannelStatus') }}
           </template>
         </el-table-column>
         <el-table-column

@@ -69,12 +69,12 @@
       >
         <el-table-column prop="cityGrade" label="城市等级">
           <template v-slot="{ row }">{{
-            $root.dictAllName(row.cityGrade, "CityLevel").name
+            $root.dictAllName(row.cityGrade, "CityLevel")
           }}</template>
         </el-table-column>
         <el-table-column prop="channelGrade" label="渠道等级">
           <template v-slot="{ row }">{{
-            $root.dictAllName(row.channelGrade, "ChannelLevel").name
+            $root.dictAllName(row.channelGrade, "ChannelLevel")
           }}</template>
         </el-table-column>
         <el-table-column prop="gradeItem" label="评级项"></el-table-column>
