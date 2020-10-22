@@ -266,7 +266,4 @@ export default class ChannelRatings extends Vue {
   text-align: right;
   margin-top: 10px;
 }
-.el-input--suffix {
-  width: 420.98px;
-}
 </style>

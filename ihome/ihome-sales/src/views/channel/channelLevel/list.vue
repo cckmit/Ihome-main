@@ -4,7 +4,7 @@
  * @Author: wwq
  * @Date: 2020-08-13 11:40:10
  * @LastEditors: wwq
- * @LastEditTime: 2020-10-20 12:00:24
+ * @LastEditTime: 2020-10-22 14:42:33
 -->
 <template>
   <IhPage label-width="100px">
@@ -474,8 +474,5 @@ export default class UserList extends Vue {
 .el-pagination {
   text-align: right;
   margin-top: 10px;
-}
-.el-input--suffix {
-  width: 420.98px;
 }
 </style>
