@@ -4,7 +4,7 @@
  * @Author: wwq
  * @Date: 2020-09-29 08:55:05
  * @LastEditors: wwq
- * @LastEditTime: 2020-10-19 17:34:29
+ * @LastEditTime: 2020-10-22 12:14:21
 -->
 <template>
   <div class="cascader">
@@ -29,7 +29,7 @@
 </template>
 <script lang="ts">
 import { Component, Vue, Watch, Prop } from "vue-property-decorator";
-import { get_area_getAll } from "../../../../../api/system/index";
+import { get_area_getAll } from "@/api/system/index";
 @Component({
   components: {},
 })
