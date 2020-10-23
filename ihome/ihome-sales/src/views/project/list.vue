@@ -4,7 +4,7 @@
  * @Author: wwq
  * @Date: 2020-08-13 11:40:10
  * @LastEditors: wwq
- * @LastEditTime: 2020-10-22 17:29:07
+ * @LastEditTime: 2020-10-23 14:55:56
 -->
 <template>
   <IhPage label-width="100px">
@@ -41,7 +41,6 @@
           <el-col :span="8">
             <el-form-item label="省市区">
               <IhCascader
-                :level="2"
                 v-model="provinceOption"
                 clearable
                 placeholder="请选择"

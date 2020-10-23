@@ -63,7 +63,7 @@
             style="cursor: pointer"
           />
           <span class="title" v-if="i === index" :key="i">{{
-            `${viewerMsg[i].preFileName} ${imgIndex + 1}/${viewerMsg.length}`
+            `${preFileName} ${imgIndex + 1}/${viewerMsg.length}`
           }}</span>
         </template>
       </div>
@@ -163,6 +163,11 @@ export default {
         style.maxWidth = style.maxHeight = "100%";
       }
       return style;
+    },
+    preFileName() {
+      return this.viewerMsg[this.imgIndex].preFileName
+        ? this.viewerMsg[this.imgIndex].preFileName
+        : "";
     },
   },
   watch: {

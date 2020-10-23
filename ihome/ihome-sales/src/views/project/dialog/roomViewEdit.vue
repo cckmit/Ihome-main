@@ -8,7 +8,7 @@
     :before-close="cancel"
     width="700px"
     class="dialog text-left"
-    title="添加/编辑房号"
+    :title="Object.keys(data).length === 0 ? '添加房号' : '编辑房号'"
   >
     <el-form ref="form" :model="form" :rules="rules" label-width="100px">
       <el-row>
