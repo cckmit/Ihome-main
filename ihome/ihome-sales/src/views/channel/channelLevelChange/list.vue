@@ -4,7 +4,7 @@
  * @Author: zyc
  * @Date: 2020-06-30 09:21:17
  * @LastEditors: ywl
- * @LastEditTime: 2020-10-23 14:36:50
+ * @LastEditTime: 2020-10-23 17:41:31
 --> 
 <template>
   <IhPage label-width="100px">
@@ -57,7 +57,7 @@
                 class="width--100"
               >
                 <el-option
-                  v-for="item in $root.dictAllList('ChannelStatus')"
+                  v-for="item in $root.dictAllList('ChannelGradeStatus')"
                   :key="item.code"
                   :label="item.name"
                   :value="item.code"
@@ -164,10 +164,10 @@
         <el-table-column
           prop="status"
           label="状态"
-          width="100"
+          width="130"
         >
           <template v-slot="{ row }">
-            {{ $root.dictAllName(row.status, 'ChannelStatus') }}
+            {{ $root.dictAllName(row.status, 'ChannelGradeStatus') }}
           </template>
         </el-table-column>
         <el-table-column

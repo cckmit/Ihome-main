@@ -4,7 +4,7 @@
  * @Author: ywl
  * @Date: 2020-09-16 14:05:21
  * @LastEditors: ywl
- * @LastEditTime: 2020-10-23 14:06:59
+ * @LastEditTime: 2020-10-23 17:31:02
 -->
 <template>
   <IhPage>
@@ -219,7 +219,7 @@
               @click="editBank(row, $index)"
             >编辑</el-link>
             <el-link
-              type="primary"
+              type="danger"
               @click="deleteBank(row, $index)"
             >删除</el-link>
           </template>
@@ -538,7 +538,6 @@ export default class ModifyThe extends Vue {
    * @param {number} index 编辑当前行数据下标
    */
   private editBank(row: object, index: number): void {
-    console.log("编辑银行信息", row, index);
     this.bankType = "new-edit";
     this.Bankrule = { ...row, index };
     this.dialogFormVisible = true;
@@ -549,8 +548,7 @@ export default class ModifyThe extends Vue {
    * @param {number} index 编辑当前行数据下标
    */
   private deleteBank(row: object, index: number): void {
-    console.log("删除银行信息", row, index);
-    this.info.channelBanks.splice(index, 1);
+    this.info.channelBankChanges.splice(index, 1);
   }
 
   async created() {
