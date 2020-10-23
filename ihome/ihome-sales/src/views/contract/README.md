@@ -2,7 +2,7 @@
 合同管理
 
 pages
-partyA  --  甲方合同
-distribution  --  渠道分销协议
-strategy -- 甲方/中介战略协议
-discount -- 优惠告知书
+1. partyA  --  甲方合同
+2. distribution  --  渠道分销协议
+3. strategy -- 甲方/渠道战略协议
+4. discount -- 优惠告知书
