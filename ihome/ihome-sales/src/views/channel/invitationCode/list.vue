@@ -4,7 +4,7 @@
  * @Author: zyc
  * @Date: 2020-07-14 09:23:40
  * @LastEditors: zyc
- * @LastEditTime: 2020-10-21 10:47:08
+ * @LastEditTime: 2020-10-23 10:48:00
 --> 
 --> 
 <template>
@@ -253,7 +253,7 @@ export default class InvitationCodeList extends Vue {
       expiresTimeEnd: null,
       invitationCode: null,
       invitationUserId: null,
-      status: "Valid",
+      status: null,
     };
   }
   finishAdd() {
@@ -278,7 +278,7 @@ export default class InvitationCodeList extends Vue {
         console.log(error);
       }
     } else {
-      this.$message.warning("请先在勾选需要作废的数据");
+      this.$message.warning("请先勾选表格数据");
     }
   }
   handleSelectionChange(val: any) {

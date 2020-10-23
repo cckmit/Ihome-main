@@ -6,8 +6,11 @@ const messageTime = 3000;//弹出消息的提示时间
 const service = axios.create({
     // baseURL: process.env.VUE_APP_BASE_API,
     timeout: 60000
-})
+});
+import NProgress from 'nprogress'
+import 'nprogress/nprogress.css'
 
+NProgress.configure({ showSpinner: false })
 // Request interceptors
 service.interceptors.request.use(
     (config) => {
@@ -43,6 +46,7 @@ service.interceptors.request.use(
                 config.headers['Authorization'] = 'bearer ' + token;
             }
         }
+        NProgress.start();
         return config
     },
     (error) => {
@@ -53,6 +57,7 @@ service.interceptors.request.use(
 // Response interceptors
 service.interceptors.response.use(
     (response) => {
+        NProgress.done();
 
         if (response.config.url?.startsWith('/sales-oauth2/oauth/token') || response.config.url?.startsWith('/sales-api/sales-oauth2/oauth/token')) {
             return response.data
