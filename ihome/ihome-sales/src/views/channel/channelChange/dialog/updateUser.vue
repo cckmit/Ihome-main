@@ -4,7 +4,7 @@
  * @Author: ywl
  * @Date: 2020-07-08 14:23:16
  * @LastEditors: ywl
- * @LastEditTime: 2020-10-16 09:47:46
+ * @LastEditTime: 2020-10-23 16:22:52
 --> 
 <template>
   <el-dialog
@@ -14,6 +14,7 @@
     :close-on-press-escape="false"
     :before-close="cancel"
     width="500px"
+    title="变更录入人"
     class="dialog text-left"
   >
     <el-form
