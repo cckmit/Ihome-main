@@ -4,7 +4,7 @@
  * @Author: zyc
  * @Date: 2020-06-30 09:21:17
  * @LastEditors: ywl
- * @LastEditTime: 2020-10-23 10:39:28
+ * @LastEditTime: 2020-10-23 14:36:50
 --> 
 <template>
   <IhPage label-width="100px">
@@ -137,13 +137,13 @@
           fixed
           label="渠道商名称"
           prop="channelId"
-          width="200"
+          min-width="200"
         ></el-table-column>
         <el-table-column
           fixed
           prop="storageNum"
           label="入库编号"
-          width="170"
+          min-width="170"
         ></el-table-column>
         <el-table-column
           prop="inputUser"
@@ -153,18 +153,18 @@
         <el-table-column
           prop="changeTime"
           label="变更日期"
-          width="170"
+          width="95"
         ></el-table-column>
         <el-table-column
           prop="departmentOrgId"
           label="事业部"
-          width="170"
+          width="150"
         >
         </el-table-column>
         <el-table-column
           prop="status"
           label="状态"
-          width="150"
+          width="100"
         >
           <template v-slot="{ row }">
             {{ $root.dictAllName(row.status, 'ChannelStatus') }}
