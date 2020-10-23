@@ -4,7 +4,7 @@
  * @Author: ywl
  * @Date: 2020-09-27 16:27:36
  * @LastEditors: ywl
- * @LastEditTime: 2020-10-22 17:52:11
+ * @LastEditTime: 2020-10-23 09:52:08
 -->
 <template>
   <IhPage>
@@ -199,7 +199,7 @@
       <br />
       <el-table
         class="ih-table"
-        :data="pageInfo.list"
+        :data="resPageInfo.list"
         @selection-change="handleSelectionChange"
       >
         <el-table-column
@@ -279,7 +279,7 @@
           <template v-slot="{  }">
             <el-link
               type="primary"
-              @click.native.prevent="$router.push('/discount/detail')"
+              @click.native.prevent="$router.push('/discount/info')"
             >详情</el-link>
             <!-- <el-dropdown
                 trigger="click"
@@ -325,7 +325,7 @@ import PaginationMixin from "@/mixins/pagination";
 export default class DiscountList extends Vue {
   public queryPageParameters: any = {};
   private searchOpen = true;
-  private pageInfo: PageInfo = {
+  resPageInfo: PageInfo = {
     total: 0,
     list: [
       {

@@ -4,7 +4,7 @@
  * @Author: ywl
  * @Date: 2020-09-25 11:53:51
  * @LastEditors: ywl
- * @LastEditTime: 2020-10-22 17:56:14
+ * @LastEditTime: 2020-10-23 09:52:33
 -->
 <template>
   <IhPage>
@@ -267,7 +267,7 @@
       <br />
       <el-table
         class="ih-table partyA-table"
-        :data="pageInfo.list"
+        :data="resPageInfo.list"
         @selection-change="handleSelectionChange"
       >
         <el-table-column
@@ -398,7 +398,7 @@ import PaginationMixin from "@/mixins/pagination";
 export default class PartyAList extends Vue {
   public queryPageParameters: any = {};
   private searchOpen = true;
-  private pageInfo: PageInfo = {
+  public resPageInfo: PageInfo = {
     total: 0,
     list: [
       {

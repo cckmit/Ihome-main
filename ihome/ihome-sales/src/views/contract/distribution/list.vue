@@ -4,7 +4,7 @@
  * @Author: ywl
  * @Date: 2020-09-25 17:34:32
  * @LastEditors: ywl
- * @LastEditTime: 2020-10-22 17:54:50
+ * @LastEditTime: 2020-10-23 09:52:19
 -->
 <template>
   <IhPage>
@@ -269,10 +269,10 @@
       <el-row>
         <el-button type="primary">查询</el-button>
         <el-button type="info">重置</el-button>
-        <el-button type="success">申领合同</el-button>
-        <el-button type="success">派发合同</el-button>
-        <el-button type="success">转派发</el-button>
-        <el-button type="success">导出</el-button>
+        <el-button>申领合同</el-button>
+        <el-button>派发合同</el-button>
+        <el-button>转派发</el-button>
+        <el-button>导出</el-button>
         <el-link
           type="primary"
           class="float-right margin-right-40"
@@ -285,7 +285,7 @@
       <br />
       <el-table
         class="ih-table intermediary-table"
-        :data="pageInfo.list"
+        :data="resPageInfo.list"
         @selection-change="handleSelectionChange"
       >
         <el-table-column
@@ -366,7 +366,7 @@
           <template v-slot="{  }">
             <el-link
               type="primary"
-              @click.native.prevent="$router.push('/intermediary/detail')"
+              @click.native.prevent="$router.push('/distribution/info')"
             >详情</el-link>
             <el-link type="primary">盖章版归档</el-link>
             <el-link type="primary">原件归档</el-link>
@@ -411,7 +411,7 @@ import PaginationMixin from "@/mixins/pagination";
 export default class IntermediaryList extends Vue {
   public queryPageParameters: any = {};
   private searchOpen = true;
-  private pageInfo: PageInfo = {
+  resPageInfo: PageInfo = {
     total: 0,
     list: [
       {

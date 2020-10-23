@@ -3,6 +3,6 @@
 
 pages
 partyA  --  甲方合同
-intermediary  --  中介分销协议
+distribution  --  渠道分销协议
 strategy -- 甲方/中介战略协议
 discount -- 优惠告知书

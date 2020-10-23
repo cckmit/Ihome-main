@@ -3,8 +3,8 @@
  * @version: 
  * @Author: zyc
  * @Date: 2020-06-24 09:47:33
- * @LastEditors: zyc
- * @LastEditTime: 2020-10-21 15:31:49
+ * @LastEditors: ywl
+ * @LastEditTime: 2020-10-23 09:45:12
  */
 import { IRes } from "./users.d";
 // import request from '@/utils/http';
@@ -222,14 +222,14 @@ export function allMenu<T>() {
         {
             id: 403,
             parentId: 401,
-            title: "中介分销协议列表",
+            title: "渠道合同列表",
             icon: null,
-            path: "/web-sales/intermediary/list"
+            path: "/web-sales/distribution/list"
         },
         {
             id: 404,
             parentId: 401,
-            title: "甲方/中介战略协议列表",
+            title: "甲方/渠道战略协议列表",
             icon: null,
             path: "/web-sales/strategy/list"
         },
@@ -246,7 +246,7 @@ export function allMenu<T>() {
 export const login = async (data: any) => {
     //http://localhost:8610/sales-oauth2/oauth/token?grant_type=password&client_id=sales-client-dev&client_secret=sales-dev&username=admin&password=123456
 
-     
+
     let url = `/sales-api/sales-oauth2/oauth/token?grant_type=password&client_id=sales-client-dev&client_secret=sales-dev&username=${data.username}&password=${data.password}`;
 
     const res: any = await request({

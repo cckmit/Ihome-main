@@ -32,7 +32,6 @@
     "axios": "^0.19.2",
     "nprogress": "^0.2.0",
     "vue-cropper": "^0.5.5"
-
   },
   "devDependencies": {
     "@types/chai": "^4.2.11",
