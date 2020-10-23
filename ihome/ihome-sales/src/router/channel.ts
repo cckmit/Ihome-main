@@ -3,8 +3,8 @@
  * @version: 
  * @Author: zyc
  * @Date: 2020-10-16 14:16:23
- * @LastEditors: wwq
- * @LastEditTime: 2020-10-23 17:53:42
+ * @LastEditors: ywl
+ * @LastEditTime: 2020-10-23 18:07:46
  */
 
 import { RouteConfig } from 'vue-router'
@@ -71,7 +71,7 @@ const channelRoutes: Array<RouteConfig> = [
                 path: 'list',
                 name: 'DistributorsList',
                 component: () => import('../views/channel/channelBusiness/list.vue'),
-                meta: { title: '渠道商列表', icon: 'form' }
+                meta: { title: '渠道商列表', icon: 'form', keepAlive: true }
             },
             {
                 path: 'info',
@@ -128,7 +128,7 @@ const channelRoutes: Array<RouteConfig> = [
                 path: 'list',
                 name: 'ChannelsChangeList',
                 component: () => import('../views/channel/channelChange/list.vue'),
-                meta: { title: '渠道基础信息变更列表', icon: 'form' }
+                meta: { title: '渠道基础信息变更列表', icon: 'form', keepAlive: true }
             },
             {
                 path: 'info',
