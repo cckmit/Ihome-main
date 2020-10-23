@@ -4,7 +4,7 @@
  * @Author: zyc
  * @Date: 2020-06-29 16:35:32
  * @LastEditors: zyc
- * @LastEditTime: 2020-09-29 15:18:35
+ * @LastEditTime: 2020-10-23 15:41:57
 --> 
 <!--
  * @Descripttion: 
@@ -16,7 +16,17 @@
 --> 
 <template>
   <div id="app" class="root">
-    <router-view />
+    <keep-alive>
+      <router-view
+        class="router-view keep-alive"
+        v-if="$route.meta.keepAlive"
+      ></router-view>
+    </keep-alive>
+    <router-view
+      class="router-view"
+      v-if="!$route.meta.keepAlive"
+    ></router-view>
+    <!-- <router-view /> -->
   </div>
 </template>
 <script lang="ts">

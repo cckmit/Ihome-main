@@ -4,7 +4,7 @@
  * @Author: zyc
  * @Date: 2020-07-14 09:23:40
  * @LastEditors: zyc
- * @LastEditTime: 2020-10-23 11:18:38
+ * @LastEditTime: 2020-10-23 15:48:55
 --> 
 --> 
 <template>
@@ -125,13 +125,21 @@
             $root.dictAllName(scope.row.status, "ValidType")
           }}</template>
         </el-table-column>
-        <el-table-column prop="expiresTime" label="失效日期" width="95"></el-table-column>
+        <el-table-column
+          prop="expiresTime"
+          label="失效日期"
+          width="95"
+        ></el-table-column>
         <el-table-column
           prop="departmentOrgId"
           label="事业部"
         ></el-table-column>
         <el-table-column prop="createUser" label="创建人"></el-table-column>
-        <el-table-column prop="createTime" label="创建时间" width="155"></el-table-column>
+        <el-table-column
+          prop="createTime"
+          label="创建时间"
+          width="155"
+        ></el-table-column>
 
         <el-table-column fixed="right" label="操作" width="120">
           <template slot-scope="scope">
@@ -192,6 +200,10 @@ import PaginationMixin from "../../../mixins/pagination";
   mixins: [PaginationMixin],
 })
 export default class InvitationCodeList extends Vue {
+  constructor() {
+    super();
+    console.log("constructor");
+  }
   queryPageParameters: any = {
     departmentOrgId: null,
     expiresTime: null,
@@ -218,7 +230,12 @@ export default class InvitationCodeList extends Vue {
   }
 
   async created() {
+    console.log("created");
     this.getListMixin();
+  }
+
+  async mounted() {
+    console.log("mounted");
   }
   expiresTimeChange(dateArray: any) {
     this.queryPageParameters.expiresTimeBegin = dateArray[0];
@@ -240,6 +257,7 @@ export default class InvitationCodeList extends Vue {
     }
   }
   info(scope: any) {
+   
     this.$router.push({
       path: "/invitationCode/info",
       query: { id: scope.row.id },

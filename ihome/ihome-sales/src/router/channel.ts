@@ -3,8 +3,8 @@
  * @version: 
  * @Author: zyc
  * @Date: 2020-10-16 14:16:23
- * @LastEditors: ywl
- * @LastEditTime: 2020-10-19 16:11:50
+ * @LastEditors: zyc
+ * @LastEditTime: 2020-10-23 14:58:02
  */
 
 import { RouteConfig } from 'vue-router'
@@ -24,7 +24,7 @@ const channelRoutes: Array<RouteConfig> = [
                 path: 'list',
                 name: 'invitationCodeList',
                 component: () => import('../views/channel/invitationCode/list.vue'),
-                meta: { title: '邀请码列表', icon: 'form' }
+                meta: { title: '邀请码列表', icon: 'form', keepAlive: true }
             },
             {
                 path: 'info',
