@@ -4,7 +4,7 @@
  * @Author: zyc
  * @Date: 2020-06-30 09:21:17
  * @LastEditors: ywl
- * @LastEditTime: 2020-10-20 10:25:15
+ * @LastEditTime: 2020-10-23 10:39:28
 --> 
 <template>
   <IhPage label-width="100px">
@@ -116,10 +116,7 @@
           type="info"
           @click="reset()"
         >重置</el-button>
-        <el-button
-          :disabled="!selectionData.length"
-          @click="dialogVisible = true"
-        >变更录入人</el-button>
+        <el-button @click="handleOpen()">变更录入人</el-button>
       </el-row>
     </template>
 
@@ -364,6 +361,13 @@ export default class LevelChangeList extends Vue {
       path: type,
       query: { id: row.id },
     });
+  }
+  private handleOpen() {
+    if (!this.selectionData.length) {
+      this.$message.warning("请先勾选表格数据");
+      return;
+    }
+    this.dialogVisible = true;
   }
   private async getChannelList(): Promise<void> {
     this.channelList = await get_channel_getAll();

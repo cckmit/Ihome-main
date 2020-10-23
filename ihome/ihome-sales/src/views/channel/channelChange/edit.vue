@@ -4,7 +4,7 @@
  * @Author: ywl
  * @Date: 2020-09-16 14:05:21
  * @LastEditors: ywl
- * @LastEditTime: 2020-10-20 16:02:01
+ * @LastEditTime: 2020-10-23 14:06:59
 -->
 <template>
   <IhPage>
@@ -173,57 +173,59 @@
       <span>银行账号信息</span>
       <el-button
         type="primary"
+        size="small"
         class="add-account"
         @click.native="addAccount()"
       >添加</el-button>
     </p>
-    <br />
-    <el-table
-      :data="info.channelBankChanges"
-      style="width: 100%"
-    >
-      <el-table-column
-        prop="accountName"
-        label="账户名称"
-        min-width="200"
-      ></el-table-column>
-      <el-table-column
-        prop="accountNum"
-        label="账号"
-        width="200"
-      > </el-table-column>
-      <el-table-column
-        prop="bank"
-        label="开户银行"
-        min-width="200"
-      ></el-table-column>
-      <el-table-column
-        prop="type"
-        label="账号类型"
-        width="150"
+    <div class="padding-left-20">
+      <el-table
+        :data="info.channelBankChanges"
+        style="width: 100%"
       >
-        <template v-slot="{ row }">
-          <span>{{$root.dictAllName(row.type, "AccountEnum")}}</span>
-        </template>
-      </el-table-column>
-      <el-table-column
-        label="操作"
-        fixed="right"
-        width="120"
-      >
-        <template v-slot="{ row, $index }">
-          <el-link
-            type="primary"
-            class="margin-right-15"
-            @click="editBank(row, $index)"
-          >编辑</el-link>
-          <el-link
-            type="primary"
-            @click="deleteBank(row, $index)"
-          >删除</el-link>
-        </template>
-      </el-table-column>
-    </el-table>
+        <el-table-column
+          prop="accountName"
+          label="账户名称"
+          min-width="200"
+        ></el-table-column>
+        <el-table-column
+          prop="accountNum"
+          label="账号"
+          width="200"
+        > </el-table-column>
+        <el-table-column
+          prop="bank"
+          label="开户银行"
+          min-width="200"
+        ></el-table-column>
+        <el-table-column
+          prop="type"
+          label="账号类型"
+          width="150"
+        >
+          <template v-slot="{ row }">
+            <span>{{$root.dictAllName(row.type, "AccountEnum")}}</span>
+          </template>
+        </el-table-column>
+        <el-table-column
+          label="操作"
+          fixed="right"
+          width="120"
+        >
+          <template v-slot="{ row, $index }">
+            <el-link
+              type="primary"
+              class="margin-right-15"
+              @click="editBank(row, $index)"
+            >编辑</el-link>
+            <el-link
+              type="primary"
+              @click="deleteBank(row, $index)"
+            >删除</el-link>
+          </template>
+        </el-table-column>
+      </el-table>
+    </div>
     <p class="ih-info-title">负责人信息</p>
     <el-form
       :model="channelPersonsData"
@@ -286,7 +288,7 @@
         class="margin-left-16"
         style="font-size: 12px"
         href="http://zxgk.court.gov.cn/zhzxgk/"
-        type="info"
+        type="success"
         target="_blank"
       >综合查询被执行人</el-link>
       <span
@@ -294,18 +296,22 @@
         style="font-size: 12px; color: #909399;"
       >附件类型支持jpg、png、bmp、tif、tiff等图片格式，以及pdf、word、excel文档，单个文件不能超过10M</span>
     </p>
-    <el-table style="width: 100%">
-      <el-table-column
-        prop="type"
-        width="180"
-        label="类型"
-      ></el-table-column>
-      <el-table-column label="附件"></el-table-column>
-    </el-table>
+    <div class="padding-left-20">
+      <el-table style="width: 100%">
+        <el-table-column
+          prop="type"
+          width="180"
+          label="类型"
+        ></el-table-column>
+        <el-table-column label="附件"></el-table-column>
+      </el-table>
+    </div>
 
     <p class="ih-info-title">企业概况</p>
     <el-input
       type="textarea"
+      style="box-sizing: border-box;"
+      class="padding-left-20"
       :autosize="{ minRows: 5, maxRows: 8 }"
       maxlength="256"
       placeholder="请输入企业概况"
@@ -316,6 +322,8 @@
     <p class="ih-info-title">变更原因</p>
     <el-input
       type="textarea"
+      style="box-sizing: border-box;"
+      class="padding-left-20"
       :autosize="{ minRows: 5, maxRows: 8 }"
       maxlength="256"
       placeholder="请输入变更原因"

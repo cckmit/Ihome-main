@@ -4,11 +4,11 @@
  * @Author: ywl
  * @Date: 2020-10-15 16:02:03
  * @LastEditors: ywl
- * @LastEditTime: 2020-10-19 11:32:39
+ * @LastEditTime: 2020-10-23 14:16:54
 -->
 <template>
   <IhPage>
-    <template v-slot:form>
+    <template v-slot:info>
       <div class="text-left">
         <p class="ih-info-title">基础信息</p>
         <el-form
@@ -178,116 +178,116 @@
           评级信息
           <span style="font-size: 15px; margin-left: 10px">以下标准任填一项</span>
           <el-link
-            style="margin-left: 15px; font-size: 15px"
+            style="margin-left: 15px;"
             href="/web-sales/gradeStandard/list"
-            type="primary"
+            type="success"
             target="_blank"
           >查看所有标准</el-link>
-          <!-- <el-link
-            style="margin-left: 15px; font-size: 15px"
-            @click="copy"
-            type="primary"
-            >复制评级信息</el-link
-          > -->
         </p>
-        <br />
         <el-form ref="dynamicValidateForm">
-          <el-table
-            class="ih-table"
-            :data="resPageInfo.channelGradeItemChanges"
-            style="width: 100%"
-          >
-            <el-table-column
-              prop="cityGrade"
-              label="城市等级"
+          <div class="padding-left-20">
+            <el-table
+              class="ih-table"
+              :data="resPageInfo.channelGradeItemChanges"
+              style="width: 100%"
             >
-              <template v-slot="{ row }">{{
+              <el-table-column
+                prop="cityGrade"
+                label="城市等级"
+              >
+                <template v-slot="{ row }">{{
                 $root.dictAllName(row.cityGrade, "CityLevel")
               }}</template>
-            </el-table-column>
-            <el-table-column
-              prop="channelGrade"
-              label="渠道等级"
-            >
-              <template v-slot="{ row }">{{
+              </el-table-column>
+              <el-table-column
+                prop="channelGrade"
+                label="渠道等级"
+              >
+                <template v-slot="{ row }">{{
                 $root.dictAllName(row.channelGrade, "ChannelLevel")
               }}</template>
-            </el-table-column>
-            <el-table-column
-              prop="gradeItem"
-              label="评级项"
-            ></el-table-column>
-            <el-table-column
-              prop="inputValue"
-              label="录入信息"
-            >
-              <template v-slot="{ row }">
-                <el-form-item>
-                  <el-input v-model="row.inputValue"></el-input>
-                </el-form-item>
-              </template>
-            </el-table-column>
-            <el-table-column
-              prop="gradeStandard"
-              label="评级标准"
-            ></el-table-column>
-          </el-table>
+              </el-table-column>
+              <el-table-column
+                prop="gradeItem"
+                label="评级项"
+              ></el-table-column>
+              <el-table-column
+                prop="inputValue"
+                label="录入信息"
+              >
+                <template v-slot="{ row }">
+                  <el-form-item>
+                    <el-input v-model="row.inputValue"></el-input>
+                  </el-form-item>
+                </template>
+              </el-table-column>
+              <el-table-column
+                prop="gradeStandard"
+                label="评级标准"
+              ></el-table-column>
+            </el-table>
+          </div>
         </el-form>
         <br />
         <p class="ih-info-title">
           附件信息
           <el-link
-            style="margin-left: 15px; font-size: 15px"
+            style="margin-left: 15px;"
             href="http://zxgk.court.gov.cn/zhzxgk/"
-            type="primary"
+            type="success"
             target="_blank"
           >综合查询被执行人</el-link>
         </p>
-        <br />
-        <el-table
-          class="ih-table"
-          :data="resPageInfo.channelGradeAttachmentChanges"
-          style="width: 100%"
-        >
-          <el-table-column
-            prop="type"
-            label="类型"
-            width="200"
+        <div class="padding-left-20">
+          <el-table
+            class="ih-table"
+            :data="resPageInfo.channelGradeAttachmentChanges"
+            style="width: 100%"
           >
-            <template v-slot="{ row }">{{
+            <el-table-column
+              prop="type"
+              label="类型"
+              width="200"
+            >
+              <template v-slot="{ row }">{{
               $root.displayName("accessoryTpye", row.type)
             }}</template>
-          </el-table-column>
-          <el-table-column
-            prop="fileId"
-            label="附件"
-          >
-            <IhUpload
-              size="100px"
-              :fileList="fileList"
-            />
-          </el-table-column>
-        </el-table>
+            </el-table-column>
+            <el-table-column
+              prop="fileId"
+              label="附件"
+            >
+              <IhUpload
+                size="100px"
+                :fileList="fileList"
+              />
+            </el-table-column>
+          </el-table>
+        </div>
         <div class="text-left">
           <p class="ih-info-title">变更原因</p>
-          <el-input
-            type="textarea"
-            :autosize="{ minRows: 5, maxRows: 10 }"
-            placeholder="请输入内容"
-            v-model="changeReason"
-          >
-          </el-input>
+          <div class="padding-left-20">
+            <el-input
+              type="textarea"
+              :autosize="{ minRows: 5, maxRows: 10 }"
+              placeholder="请输入内容"
+              v-model="changeReason"
+            >
+            </el-input>
+          </div>
         </div>
-        <el-button
-          class="margin-top-30"
-          @click="pass('1')"
-          type="primary"
-        >保存</el-button>
-        <el-button
-          class="margin-top-30"
-          @click="pass('2')"
-          type="primary"
-        >提交</el-button>
+        <div class="text-center">
+          <el-button
+            class="margin-top-30"
+            @click="pass('1')"
+            type="primary"
+          >保存</el-button>
+          <el-button
+            class="margin-top-30"
+            @click="pass('2')"
+            type="primary"
+          >提交</el-button>
+        </div>
       </div>
     </template>
   </IhPage>
