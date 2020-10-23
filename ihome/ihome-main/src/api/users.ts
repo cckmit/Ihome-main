@@ -3,8 +3,8 @@
  * @version: 
  * @Author: zyc
  * @Date: 2020-06-24 09:47:33
- * @LastEditors: zyc
- * @LastEditTime: 2020-10-21 15:31:49
+ * @LastEditors: wwq
+ * @LastEditTime: 2020-10-22 15:03:41
  */
 import { IRes } from "./users.d";
 // import request from '@/utils/http';
@@ -240,13 +240,27 @@ export function allMenu<T>() {
             icon: null,
             path: "/web-sales/discount/list"
         },
+        {
+            id: 501,
+            parentId: 0,
+            title: "项目基础信息管理",
+            icon: 'el-icon-setting',
+            path: null,
+        },
+        {
+            id: 502,
+            parentId: 501,
+            title: "项目基础信息列表",
+            icon: null,
+            path: "/web-sales/projects/list",
+        },
     ];
     return menuList;
 }
 export const login = async (data: any) => {
     //http://localhost:8610/sales-oauth2/oauth/token?grant_type=password&client_id=sales-client-dev&client_secret=sales-dev&username=admin&password=123456
 
-     
+
     let url = `/sales-api/sales-oauth2/oauth/token?grant_type=password&client_id=sales-client-dev&client_secret=sales-dev&username=${data.username}&password=${data.password}`;
 
     const res: any = await request({

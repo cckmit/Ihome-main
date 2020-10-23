@@ -1,0 +1,285 @@
+<!--
+ * @Descripttion: 
+ * @version: 
+ * @Author: wwq
+ * @Date: 2020-08-13 11:40:10
+ * @LastEditors: wwq
+ * @LastEditTime: 2020-10-22 17:29:07
+-->
+<template>
+  <IhPage label-width="100px">
+    <template v-slot:form>
+      <el-form ref="form" label-width="100px">
+        <el-row>
+          <el-col :span="8">
+            <el-form-item label="项目盘编">
+              <el-input
+                clearable
+                v-model="queryPageParameters.storageNum"
+                placeholder="项目盘编"
+              ></el-input>
+            </el-form-item>
+          </el-col>
+          <el-col :span="8">
+            <el-form-item label="项目名称">
+              <el-input
+                clearable
+                v-model="queryPageParameters.storageNum"
+                placeholder="项目名称"
+              ></el-input>
+            </el-form-item>
+          </el-col>
+          <el-col :span="8">
+            <el-form-item label="周期名称">
+              <el-input
+                clearable
+                v-model="queryPageParameters.storageNum"
+                placeholder="周期名称"
+              ></el-input>
+            </el-form-item>
+          </el-col>
+          <el-col :span="8">
+            <el-form-item label="省市区">
+              <IhCascader
+                :level="2"
+                v-model="provinceOption"
+                clearable
+                placeholder="请选择"
+                class="width--100"
+              />
+            </el-form-item>
+          </el-col>
+          <el-col :span="8">
+            <el-form-item label="业务类型">
+              <el-select
+                v-model="queryPageParameters.status"
+                clearable
+                placeholder="业务类型"
+                class="width--100"
+              >
+                <el-option
+                  v-for="item in $root.dictAllList('ChannelStatus')"
+                  :key="item.code"
+                  :label="item.name"
+                  :value="item.code"
+                ></el-option>
+              </el-select>
+            </el-form-item>
+          </el-col>
+          <el-col :span="8">
+            <el-form-item label="项目审核状态">
+              <el-select
+                v-model="queryPageParameters.special"
+                clearable
+                placeholder="特批入库"
+                class="width--100"
+              >
+                <el-option
+                  v-for="item in $root.dictAllList('YesOrNoType')"
+                  :key="item.code"
+                  :label="item.name"
+                  :value="item.code"
+                ></el-option>
+              </el-select>
+            </el-form-item>
+          </el-col>
+        </el-row>
+      </el-form>
+    </template>
+
+    <template v-slot:btn>
+      <el-row class="el-row">
+        <el-button type="primary" @click="search()">查询</el-button>
+        <el-button type="info" @click="empty()">重置</el-button>
+        <el-button type="success" @click="add()">添加</el-button>
+      </el-row>
+    </template>
+
+    <template v-slot:table>
+      <br />
+      <el-table
+        class="ih-table"
+        :data="resPageInfo.list"
+        :default-sort="{ prop: 'id', order: 'descending' }"
+      >
+        <el-table-column fixed prop="storageNum" label="盘编"></el-table-column>
+        <el-table-column
+          fixed
+          prop="channelId"
+          label="项目名称"
+          width="100"
+        ></el-table-column>
+        <el-table-column prop="province" label="省份">
+          <template v-slot="{ row }">{{
+            $root.getAreaName(row.province)
+          }}</template>
+        </el-table-column>
+        <el-table-column prop="city" label="城市">
+          <template v-slot="{ row }">{{
+            $root.getAreaName(row.city)
+          }}</template>
+        </el-table-column>
+        <el-table-column prop="county" label="行政区">
+          <template v-slot="{ row }">{{
+            $root.getAreaName(row.county)
+          }}</template>
+        </el-table-column>
+        <el-table-column prop="cityGrade" label="项目地址"> </el-table-column>
+        <el-table-column prop="status" label="项目审核状态">
+          <template v-slot="{ row }">{{
+            $root.dictAllName(row.status, "ChannelStatus")
+          }}</template>
+        </el-table-column>
+        <el-table-column label="操作" width="120" fixed="right">
+          <template v-slot="{ row }">
+            <el-link
+              type="primary"
+              @click.native.prevent="routerTo(row, 'info')"
+              >详情</el-link
+            >
+            <el-dropdown trigger="click" style="margin-left: 15px">
+              <span class="el-dropdown-link">
+                更多
+                <i class="el-icon-arrow-down el-icon--right"></i>
+              </span>
+              <el-dropdown-menu slot="dropdown">
+                <el-dropdown-item
+                  @click.native.prevent="routerTo(row, 'edit')"
+                  :disabled="row.status !== 'DRAFT'"
+                  >编辑</el-dropdown-item
+                >
+                <el-dropdown-item
+                  @click.native.prevent="remove(row)"
+                  :disabled="row.status !== 'DRAFT'"
+                  >删除</el-dropdown-item
+                >
+                <el-dropdown-item
+                  @click.native.prevent="routerTo(row, 'audit')"
+                  :disabled="row.status === 'DRAFT'"
+                  >审核</el-dropdown-item
+                >
+              </el-dropdown-menu>
+            </el-dropdown>
+          </template>
+        </el-table-column>
+      </el-table>
+    </template>
+
+    <el-pagination
+      @size-change="handleSizeChangeMixin"
+      @current-change="handleCurrentChangeMixin"
+      :current-page.sync="queryPageParameters.pageNum"
+      :page-sizes="$root.pageSizes"
+      :page-size="queryPageParameters.pageSize"
+      :layout="$root.paginationLayout"
+      :total="resPageInfo.total"
+    ></el-pagination>
+  </IhPage>
+</template>
+
+<script lang="ts">
+import { Component, Vue } from "vue-property-decorator";
+import { post_channelGrade_getList } from "../../api/channel/index";
+import PaginationMixin from "../../mixins/pagination";
+@Component({
+  components: {},
+  mixins: [PaginationMixin],
+})
+export default class ProjectList extends Vue {
+  queryPageParameters: any = {
+    channelId: null,
+    channelGrade: null,
+    cityGrade: null,
+    province: null,
+    city: null,
+    departmentOrgId: null,
+    status: null,
+    inputUser: null,
+    special: null,
+    storageNum: null,
+  };
+  provinceOption: any = [];
+  resPageInfo: any = {
+    total: 0,
+    list: [],
+  };
+
+  search() {
+    this.queryPageParameters.province = this.provinceOption[0];
+    this.queryPageParameters.city = this.provinceOption[1];
+    this.queryPageParameters.pageNum = 1;
+    this.getListMixin();
+  }
+  empty() {
+    this.queryPageParameters = {
+      channelId: null,
+      channelGrade: null,
+      cityGrade: null,
+      province: null,
+      city: null,
+      departmentOrgId: null,
+      status: null,
+      inputUser: null,
+      special: null,
+      storageNum: null,
+      pageNum: this.queryPageParameters.pageNum,
+      pageSize: this.queryPageParameters.pageSize,
+    };
+    this.provinceOption = [];
+  }
+
+  // 添加
+  add() {
+    this.$router.push("/projects/add");
+  }
+
+  routerTo(row: any, where: string) {
+    this.$router.push({
+      path: `/projects/${where}`,
+      query: {
+        id: row.id,
+      },
+    });
+  }
+
+  // 删除
+  async remove() {
+    try {
+      await this.$confirm("是否确定删除?", "提示");
+      // await post_channelGrade_delete__id({ id: row.id });
+      this.$message({
+        type: "success",
+        message: "删除成功!",
+      });
+      this.getListMixin();
+    } catch (error) {
+      console.log(error);
+    }
+  }
+
+  created() {
+    this.getListMixin();
+  }
+
+  //获取数据
+  async getListMixin() {
+    this.resPageInfo = await post_channelGrade_getList(
+      this.queryPageParameters
+    );
+  }
+}
+</script>
+<style lang="scss" scoped>
+.el-breadcrumb {
+  margin-bottom: 20px;
+}
+.line {
+  border-left: solid;
+  color: #4cccec;
+  padding-left: 7px;
+}
+.el-pagination {
+  text-align: right;
+  margin-top: 10px;
+}
+</style>
