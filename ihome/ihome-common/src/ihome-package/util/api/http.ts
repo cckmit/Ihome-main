@@ -66,20 +66,20 @@ service.interceptors.response.use(
                     type: 'error',
                     duration: messageTime
                 })
-                if (res.code === 50008 || res.code === 50012 || res.code === 50014) {
-                    MessageBox.confirm(
-                        'You have been logged out, try to login again.',
-                        'Log out',
-                        {
-                            confirmButtonText: 'Relogin',
-                            cancelButtonText: 'Cancel',
-                            type: 'warning'
-                        }
-                    ).then(() => {
-                        removeToken();
-                        location.reload() // To prevent bugs from vue-router
-                    })
-                }
+                // if (res.code === 50008 || res.code === 50012 || res.code === 50014) {
+                //     MessageBox.confirm(
+                //         'You have been logged out, try to login again.',
+                //         'Log out',
+                //         {
+                //             confirmButtonText: 'Relogin',
+                //             cancelButtonText: 'Cancel',
+                //             type: 'warning'
+                //         }
+                //     ).then(() => {
+                //         removeToken();
+                //         location.reload() // To prevent bugs from vue-router
+                //     })
+                // }
                 return Promise.reject(new Error(res.msg || 'Error'))
             } else {
                 return res.data;
@@ -98,7 +98,8 @@ service.interceptors.response.use(
                 type: 'error',
                 duration: messageTime
             });
-            (window as any).location = '/login';
+            removeToken();
+            (window as any).location.reload();
 
         } else if (error.response.status == 403) {
             Message({
