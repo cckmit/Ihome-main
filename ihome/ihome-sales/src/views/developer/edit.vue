@@ -4,7 +4,7 @@
  * @Author: wwq
  * @Date: 2020-09-25 17:59:09
  * @LastEditors: wwq
- * @LastEditTime: 2020-10-20 11:57:16
+ * @LastEditTime: 2020-10-23 14:29:15
 -->
 <template>
   <ih-page>
@@ -169,78 +169,86 @@
     <template v-slot:table>
       <div class="content">
         <p class="ih-info-title">联系人信息</p>
-        <el-button @click="addContacts()" type="primary">添加</el-button>
+        <el-button @click="addContacts()" type="primary" size="small"
+          >添加</el-button
+        >
       </div>
-      <br />
-      <el-table
-        class="ih-table"
-        :data="resPageInfo.contactList"
-        style="width: 100%"
-      >
-        <el-table-column prop="contactName" label="姓名"></el-table-column>
-        <el-table-column prop="contactNum" label="手机号"></el-table-column>
-        <el-table-column prop="email" label="电子邮箱"></el-table-column>
-        <el-table-column fixed="right" label="操作" align="center">
-          <template v-slot="{ row, $index }">
-            <span class="el-dropdown-link" @click="editContacts(row, $index)">
-              编辑
-            </span>
-            <span class="el-dropdown-link" @click="delContacts($index)">
-              移除
-            </span>
-          </template>
-        </el-table-column>
-      </el-table>
+      <div class="padding-left-20">
+        <el-table
+          class="ih-table"
+          :data="resPageInfo.contactList"
+          style="width: 100%"
+        >
+          <el-table-column prop="contactName" label="姓名"></el-table-column>
+          <el-table-column prop="contactNum" label="手机号"></el-table-column>
+          <el-table-column prop="email" label="电子邮箱"></el-table-column>
+          <el-table-column fixed="right" label="操作" align="center">
+            <template v-slot="{ row, $index }">
+              <span class="el-dropdown-link" @click="editContacts(row, $index)">
+                编辑
+              </span>
+              <span class="el-dropdown-link" @click="delContacts($index)">
+                移除
+              </span>
+            </template>
+          </el-table-column>
+        </el-table>
+      </div>
       <br />
       <div class="content">
         <p class="ih-info-title">账户信息</p>
-        <el-button @click="addAccount()" type="primary">添加</el-button>
+        <el-button @click="addAccount()" type="primary" size="small"
+          >添加</el-button
+        >
+      </div>
+      <div class="padding-left-20">
+        <el-table
+          class="ih-table"
+          :data="resPageInfo.bankList"
+          style="width: 100%"
+        >
+          <el-table-column prop="name" label="账户名称"></el-table-column>
+          <el-table-column prop="number" label="账号"></el-table-column>
+          <el-table-column prop="bank" label="开户银行"></el-table-column>
+          <el-table-column prop="type" label="账号类型">
+            <template v-slot="{ row }">{{
+              $root.dictAllName(row.type, "BankAccountTypeEnum")
+            }}</template>
+          </el-table-column>
+          <el-table-column fixed="right" label="操作" align="center">
+            <template v-slot="{ row, $index }">
+              <span class="el-dropdown-link" @click="editAccount(row, $index)">
+                编辑
+              </span>
+              <span class="el-dropdown-link" @click="delAccount($index)">
+                移除
+              </span>
+            </template>
+          </el-table-column>
+        </el-table>
       </div>
       <br />
-      <el-table
-        class="ih-table"
-        :data="resPageInfo.bankList"
-        style="width: 100%"
-      >
-        <el-table-column prop="name" label="账户名称"></el-table-column>
-        <el-table-column prop="number" label="账号"></el-table-column>
-        <el-table-column prop="bank" label="开户银行"></el-table-column>
-        <el-table-column prop="type" label="账号类型">
-          <template v-slot="{ row }">{{
-            $root.dictAllName(row.type, "BankAccountTypeEnum")
-          }}</template>
-        </el-table-column>
-        <el-table-column fixed="right" label="操作" align="center">
-          <template v-slot="{ row, $index }">
-            <span class="el-dropdown-link" @click="editAccount(row, $index)">
-              编辑
-            </span>
-            <span class="el-dropdown-link" @click="delAccount($index)">
-              移除
-            </span>
-          </template>
-        </el-table-column>
-      </el-table>
-      <br />
       <p class="ih-info-title">附件信息</p>
-      <br />
-      <el-table
-        class="ih-table"
-        :data="resPageInfo.attachmentList"
-        style="width: 100%"
-      >
-        <el-table-column prop="type" label="类型">
-          <!-- <template v-slot="{ row }">{{
+      <div class="padding-left-20">
+        <el-table
+          class="ih-table"
+          :data="resPageInfo.attachmentList"
+          style="width: 100%"
+        >
+          <el-table-column prop="type" label="类型">
+            <!-- <template v-slot="{ row }">{{
             $root.displayName("accessoryTpye", row.type)
           }}</template> -->
-        </el-table-column>
-        <el-table-column prop="fileId" label="附件"></el-table-column>
-      </el-table>
+          </el-table-column>
+          <el-table-column prop="fileId" label="附件"></el-table-column>
+        </el-table>
+      </div>
       <br />
-
       <div v-if="$route.name !== 'developerChange'">
         <p class="ih-info-title">企业概况</p>
         <el-input
+          class="padding-left-20"
+          style="box-sizing: border-box"
           maxlength="256"
           type="textarea"
           :autosize="{ minRows: 5, maxRows: 10 }"
@@ -259,6 +267,8 @@
       <div v-if="$route.name === 'developerChange'">
         <p class="ih-info-title">变更原因</p>
         <el-input
+          class="padding-left-20"
+          style="box-sizing: border-box"
           type="textarea"
           :autosize="{ minRows: 5, maxRows: 10 }"
           placeholder="请输入内容"
@@ -490,11 +500,11 @@ export default class Edit extends Vue {
   /deep/ .el-button {
     position: absolute;
     top: -15px;
-    left: 140px;
+    left: 130px;
   }
 }
 .bottom {
-  margin-top: 35px;
-  text-align: left;
+  margin-top: 30px;
+  text-align: center;
 }
 </style>

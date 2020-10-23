@@ -4,7 +4,7 @@
  * @Author: lgf
  * @Date: 2020-09-16 14:05:21
  * @LastEditors: ywl
- * @LastEditTime: 2020-10-20 12:02:10
+ * @LastEditTime: 2020-10-23 12:01:25
 -->
 <template>
   <div class="text-left">
@@ -89,35 +89,37 @@
     <p class="ih-info-title">
       <span>银行账号信息</span>
     </p>
-    <el-table
-      :data="info.channelBanks"
-      style="width: 100%"
-    >
-      <el-table-column
-        prop="accountName"
-        label="账户名称"
-        min-width="300"
-      ></el-table-column>
-      <el-table-column
-        prop="accountNum"
-        label="账号"
-        min-width="200"
-      > </el-table-column>
-      <el-table-column
-        prop="bank"
-        label="开户银行"
-        width="300"
-      ></el-table-column>
-      <el-table-column
-        prop="type"
-        label="账号类型"
-        width="200"
+    <div class="padding-left-20">
+      <el-table
+        :data="info.channelBanks"
+        style="width: 100%"
       >
-        <template v-slot="{row}">
-          {{$root.dictAllName(row.type, "AccountEnum")}}
-        </template>
-      </el-table-column>
-    </el-table>
+        <el-table-column
+          prop="accountName"
+          label="账户名称"
+          min-width="300"
+        ></el-table-column>
+        <el-table-column
+          prop="accountNum"
+          label="账号"
+          min-width="200"
+        > </el-table-column>
+        <el-table-column
+          prop="bank"
+          label="开户银行"
+          width="300"
+        ></el-table-column>
+        <el-table-column
+          prop="type"
+          label="账号类型"
+          width="200"
+        >
+          <template v-slot="{row}">
+            {{$root.dictAllName(row.type, "AccountEnum")}}
+          </template>
+        </el-table-column>
+      </el-table>
+    </div>
 
     <p class="ih-info-title">负责人信息</p>
     <el-form label-width="120px">
@@ -142,24 +144,25 @@
       <span>附件信息</span>
       <el-link
         class="margin-left-16"
-        style="font-size: 12px"
         href="http://zxgk.court.gov.cn/zhzxgk/"
-        type="info"
+        type="success"
         target="_blank"
       >综合查询被执行人</el-link>
     </p>
-    <el-table style="width: 100%">
-      <el-table-column
-        prop="type"
-        width="180"
-        label="类型"
-      ></el-table-column>
-      <el-table-column label="附件"></el-table-column>
-    </el-table>
-    <br />
+    <div class="padding-left-20">
+      <el-table style="width: 100%">
+        <el-table-column
+          prop="type"
+          width="180"
+          label="类型"
+        ></el-table-column>
+        <el-table-column label="附件"></el-table-column>
+      </el-table>
+      <br />
+    </div>
 
     <p class="ih-info-title">企业概况</p>
-    <div>
+    <div class="margin-left-20">
       {{info.remark}}
     </div>
     <br />
@@ -168,6 +171,8 @@
       <p class="ih-info-title">确认意见</p>
       <el-input
         type="textarea"
+        style="box-sizing: border-box;"
+        class="padding-left-20"
         placeholder="请输入意见"
         v-model="approveRecord.remark"
         :autosize="{ minRows: 5, maxRows: 8 }"
@@ -187,6 +192,8 @@
       <p class="ih-info-title">撤回原因</p>
       <el-input
         type="textarea"
+        style="box-sizing: border-box;"
+        class="padding-left-20"
         placeholder="请输入撤回原因"
         v-model="approveRecord.remark"
         :autosize="{ minRows: 5, maxRows: 8 }"

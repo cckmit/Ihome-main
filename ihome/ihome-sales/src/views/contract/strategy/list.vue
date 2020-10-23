@@ -4,7 +4,7 @@
  * @Author: ywl
  * @Date: 2020-09-27 11:13:15
  * @LastEditors: ywl
- * @LastEditTime: 2020-10-23 09:52:42
+ * @LastEditTime: 2020-10-23 15:04:55
 -->
 <template>
   <IhPage>
@@ -166,7 +166,7 @@
           type="success"
           @click="$router.push('/strategy/add')"
         >录入协议</el-button>
-        <el-button type="success">导出</el-button>
+        <el-button>导出</el-button>
         <el-link
           type="primary"
           class="float-right margin-right-40"

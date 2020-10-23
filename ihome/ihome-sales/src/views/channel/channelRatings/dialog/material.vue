@@ -4,7 +4,7 @@
  * @Author: wwq
  * @Date: 2020-10-09 09:35:09
  * @LastEditors: wwq
- * @LastEditTime: 2020-10-20 09:27:33
+ * @LastEditTime: 2020-10-23 10:29:46
 -->
 
 <template>
@@ -17,6 +17,7 @@
     :before-close="cancel"
     width="700px"
     class="dialog text-left"
+    title="查看所需材料"
   >
     <el-form ref="form" :model="form" label-width="80px">
       <el-row>
@@ -39,10 +40,16 @@
         <el-col :span="24">
           <el-form-item label="所需材料">
             <template v-for="item in form.standardAttachments"
-              ><div :key="item" :class="item ? 'bordersolid' : ''">
-                {{
-                  $root.dictAllName(item, "ChannelLevelStandardAttachment")
-                }}
+              ><div
+                :key="item"
+                :class="
+                  item &&
+                  $root.dictAllName(item, 'ChannelLevelStandardAttachment')
+                    ? 'bordersolid'
+                    : ''
+                "
+              >
+                {{ $root.dictAllName(item, "ChannelLevelStandardAttachment") }}
               </div>
             </template>
           </el-form-item>

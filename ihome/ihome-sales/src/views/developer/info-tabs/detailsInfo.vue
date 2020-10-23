@@ -3,8 +3,8 @@
  * @version: 
  * @Author: wwq
  * @Date: 2020-10-15 12:33:25
- * @LastEditors: zyc
- * @LastEditTime: 2020-10-21 14:39:26
+ * @LastEditors: wwq
+ * @LastEditTime: 2020-10-23 14:26:23
 -->
 <template>
   <div class="text-left">
@@ -92,7 +92,6 @@
               <el-form-item label="状态" align="left">
                 <span>{{
                   $root.dictAllName(resPageInfo.status, "CompanyStatusEnum")
-                    .name
                 }}</span>
               </el-form-item>
             </el-col>
@@ -111,44 +110,51 @@
     </el-row>
 
     <p class="ih-info-title">联系人信息</p>
-    <br />
-    <el-table
-      class="ih-table"
-      :data="resPageInfo.contactList"
-      style="width: 100%"
-    >
-      <el-table-column prop="contactName" label="姓名"></el-table-column>
-      <el-table-column prop="contactNum" label="手机号"></el-table-column>
-      <el-table-column prop="email" label="电子邮箱"></el-table-column>
-    </el-table>
+    <div class="padding-left-20">
+      <el-table
+        class="ih-table"
+        :data="resPageInfo.contactList"
+        style="width: 100%"
+      >
+        <el-table-column prop="contactName" label="姓名"></el-table-column>
+        <el-table-column prop="contactNum" label="手机号"></el-table-column>
+        <el-table-column prop="email" label="电子邮箱"></el-table-column>
+      </el-table>
+    </div>
     <br />
     <p class="ih-info-title">账户信息</p>
-    <br />
-    <el-table class="ih-table" :data="resPageInfo.bankList" style="width: 100%">
-      <el-table-column prop="name" label="账户名称"></el-table-column>
-      <el-table-column prop="number" label="账号"></el-table-column>
-      <el-table-column prop="bank" label="开户银行"></el-table-column>
-      <el-table-column prop="type" label="账号类型">
-        <template v-slot="{ row }">{{
-          $root.dictAllName(row.type, "BankAccountTypeEnum")
-        }}</template>
-      </el-table-column>
-    </el-table>
+    <div class="padding-left-20">
+      <el-table
+        class="ih-table"
+        :data="resPageInfo.bankList"
+        style="width: 100%"
+      >
+        <el-table-column prop="name" label="账户名称"></el-table-column>
+        <el-table-column prop="number" label="账号"></el-table-column>
+        <el-table-column prop="bank" label="开户银行"></el-table-column>
+        <el-table-column prop="type" label="账号类型">
+          <template v-slot="{ row }">{{
+            $root.dictAllName(row.type, "BankAccountTypeEnum")
+          }}</template>
+        </el-table-column>
+      </el-table>
+    </div>
     <br />
     <p class="ih-info-title">附件信息</p>
-    <br />
-    <el-table
-      class="ih-table"
-      :data="resPageInfo.attachmentList"
-      style="width: 100%"
-    >
-      <el-table-column prop="type" label="类型">
-        <template v-slot="{ row }">{{
-          $root.displayName("accessoryTpye", row.type)
-        }}</template>
-      </el-table-column>
-      <el-table-column prop="fileId" label="附件"></el-table-column>
-    </el-table>
+    <div class="padding-left-20">
+      <el-table
+        class="ih-table"
+        :data="resPageInfo.attachmentList"
+        style="width: 100%"
+      >
+        <el-table-column prop="type" label="类型">
+          <template v-slot="{ row }">{{
+            $root.displayName("accessoryTpye", row.type)
+          }}</template>
+        </el-table-column>
+        <el-table-column prop="fileId" label="附件"></el-table-column>
+      </el-table>
+    </div>
     <br />
 
     <p class="ih-info-title">企业概况</p>
@@ -161,31 +167,33 @@
       <p class="msg-title">撤回原因</p>
       <el-input
         type="textarea"
+        class="padding-left-20"
+        style="box-sizing: border-box"
         :autosize="{ minRows: 5, maxRows: 10 }"
         placeholder="请输入内容"
         v-model="resPageInfo.recallReason"
       >
       </el-input>
-      <el-button class="margin-top-30" @click="submitRecall()" type="primary"
-        >提交</el-button
-      >
+      <div class="margin-top-30 text-center">
+        <el-button @click="submitRecall()" type="primary">提交</el-button>
+      </div>
     </div>
     <div v-if="typeStr === 'developerCheck'" class="text-left">
       <p class="ih-info-title">审核信息</p>
       <p class="msg-title">审核意见</p>
       <el-input
+        class="padding-left-20"
+        style="box-sizing: border-box"
         type="textarea"
         :autosize="{ minRows: 5, maxRows: 10 }"
         placeholder="请输入内容"
         v-model="resPageInfo.checkOpinion"
       >
       </el-input>
-      <el-button class="margin-top-30" @click="pass(true)" type="primary"
-        >通过</el-button
-      >
-      <el-button class="margin-top-30" @click="pass(false)" type="primary"
-        >驳回</el-button
-      >
+      <div class="margin-top-30 text-center">
+        <el-button @click="pass(true)" type="primary">通过</el-button>
+        <el-button @click="pass(false)" type="primary">驳回</el-button>
+      </div>
     </div>
   </div>
 </template>
