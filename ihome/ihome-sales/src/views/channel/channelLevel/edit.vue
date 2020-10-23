@@ -4,7 +4,7 @@
  * @Author: wwq
  * @Date: 2020-10-15 16:02:03
  * @LastEditors: wwq
- * @LastEditTime: 2020-10-20 12:00:50
+ * @LastEditTime: 2020-10-23 14:20:46
 -->
 <template>
   <IhPage>
@@ -158,9 +158,9 @@
             >以下标准任填一项</span
           >
           <el-link
-            style="margin-left: 15px; font-size: 15px"
+            class="margin-left-15"
             href="/web-sales/gradeStandard/list"
-            type="primary"
+            type="success"
             target="_blank"
             >查看所有标准</el-link
           >
@@ -172,7 +172,7 @@
           > -->
         </p>
         <br />
-        <el-form ref="dynamicValidateForm">
+        <el-form ref="dynamicValidateForm" class="padding-left-20">
           <el-table
             class="ih-table"
             :data="resPageInfo.channelGradeItems"
@@ -206,31 +206,35 @@
         <p class="ih-info-title">
           附件信息
           <el-link
-            style="margin-left: 15px; font-size: 15px"
+            class="margin-left-15"
             href="http://zxgk.court.gov.cn/zhzxgk/"
-            type="primary"
+            type="success"
             target="_blank"
             >综合查询被执行人</el-link
           >
         </p>
-        <br />
-        <el-table
-          class="ih-table"
-          :data="resPageInfo.channelGradeAttachments"
-          style="width: 100%"
-        >
-          <el-table-column prop="type" label="类型" width="200">
-            <template v-slot="{ row }">{{
-              $root.displayName("accessoryTpye", row.type)
-            }}</template>
-          </el-table-column>
-          <el-table-column prop="fileId" label="附件">
-            <IhUpload size="100px" :fileList="fileList" />
-          </el-table-column>
-        </el-table>
+        <div class="padding-left-20">
+          <el-table
+            class="ih-table"
+            :data="resPageInfo.channelGradeAttachments"
+            style="width: 100%"
+          >
+            <el-table-column prop="type" label="类型" width="200">
+              <template v-slot="{ row }">{{
+                $root.displayName("accessoryTpye", row.type)
+              }}</template>
+            </el-table-column>
+            <el-table-column prop="fileId" label="附件">
+              <IhUpload size="100px" :fileList="fileList" />
+            </el-table-column>
+          </el-table>
+        </div>
         <div v-if="$route.name === 'channelLevelChange'" class="text-left">
+          <br />
           <p class="ih-info-title">变更原因</p>
           <el-input
+            class="padding-left-20"
+            style="box-sizing: border-box"
             type="textarea"
             :autosize="{ minRows: 5, maxRows: 10 }"
             placeholder="请输入内容"
@@ -238,12 +242,10 @@
           >
           </el-input>
         </div>
-        <el-button class="margin-top-30" @click="pass('1')" type="primary"
-          >保存</el-button
-        >
-        <el-button class="margin-top-30" @click="pass('2')" type="primary"
-          >提交</el-button
-        >
+        <div class="margin-top-30 text-center">
+          <el-button @click="pass('1')" type="primary">保存</el-button>
+          <el-button @click="pass('2')" type="primary">提交</el-button>
+        </div>
       </div>
     </template>
   </IhPage>

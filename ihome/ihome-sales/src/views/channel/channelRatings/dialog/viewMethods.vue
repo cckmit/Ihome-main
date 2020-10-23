@@ -4,9 +4,8 @@
  * @Author: wwq
  * @Date: 2020-10-09 09:35:09
  * @LastEditors: wwq
- * @LastEditTime: 2020-10-14 18:04:33
+ * @LastEditTime: 2020-10-23 11:01:03
 -->
-
 <template>
   <el-dialog
     v-dialogDrag
@@ -77,6 +76,14 @@ export default class Edit extends Vue {
 .dialog {
   /deep/ .el-dialog__body {
     padding: 0 20px 30px 20px !important;
+  }
+}
+.upload-demo {
+  margin-top: -20px;
+  /deep/ .el-upload-list__item-status-label,
+  /deep/ .el-icon-close,
+  /deep/ .el-icon-close-tip {
+    display: none !important;
   }
 }
 </style>

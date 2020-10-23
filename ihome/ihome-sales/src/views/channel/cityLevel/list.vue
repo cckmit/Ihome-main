@@ -4,7 +4,7 @@
  * @Author: wwq
  * @Date: 2020-06-30 09:21:17
  * @LastEditors: wwq
- * @LastEditTime: 2020-10-20 10:30:23
+ * @LastEditTime: 2020-10-23 10:45:04
 --> 
 <template>
   <IhPage label-width="100px">
@@ -47,12 +47,7 @@
       <el-row>
         <el-button type="primary" @click="search()">查询</el-button>
         <el-button type="info" @click="reset">重置</el-button>
-        <el-button
-          type="success"
-          @click="dialogFormVisible = true"
-          :disabled="editDisabled"
-          >修改</el-button
-        >
+        <el-button type="success" @click="citySet()">设置城市等级</el-button>
       </el-row>
     </template>
 
@@ -63,7 +58,11 @@
         @selection-change="handleSelectionChange"
         :data="resPageInfo.list"
       >
-        <el-table-column fixed type="selection" width="100"></el-table-column>
+        <el-table-column
+          type="selection"
+          width="50"
+          align="center"
+        ></el-table-column>
         <el-table-column prop="parentCode" label="省份">
           <template v-slot="{ row }">{{
             $root.getAreaName(row.parentCode)
@@ -152,10 +151,6 @@ export default class CityList extends Vue {
   };
   total: any = null;
 
-  private get editDisabled() {
-    return this.selection.length === 0;
-  }
-
   reset() {
     this.queryPageParameters = {
       pageNum: this.queryPageParameters.pageNum,
@@ -191,6 +186,11 @@ export default class CityList extends Vue {
     this.queryPageParameters.cityCode = this.provinceOption[1];
     this.queryPageParameters.pageNum = 1;
     this.getListMixin();
+  }
+
+  citySet() {
+    if (this.selection.length) this.dialogFormVisible = true;
+    else this.$message.warning("请先勾选表格数据");
   }
 
   async finish() {

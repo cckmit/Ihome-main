@@ -4,7 +4,7 @@
  * @Author: wwq
  * @Date: 2020-08-13 11:40:10
  * @LastEditors: wwq
- * @LastEditTime: 2020-10-22 14:42:33
+ * @LastEditTime: 2020-10-23 10:44:33
 -->
 <template>
   <IhPage label-width="100px">
@@ -159,9 +159,7 @@
         <el-button type="primary" @click="search()">查询</el-button>
         <el-button type="info" @click="empty()">重置</el-button>
         <el-button type="success" @click="add()">添加</el-button>
-        <el-button :disabled="updataUserDisabled" @click="dialogVisible = true"
-          >变更录入人</el-button
-        >
+        <el-button @click="update()">变更录入人</el-button>
       </el-row>
     </template>
 
@@ -173,7 +171,12 @@
         :default-sort="{ prop: 'id', order: 'descending' }"
         @selection-change="handleSelectionChange"
       >
-        <el-table-column fixed type="selection" width="100"></el-table-column>
+        <el-table-column
+          fixed
+          type="selection"
+          width="50"
+          align="center"
+        ></el-table-column>
         <el-table-column
           fixed
           prop="storageNum"
@@ -370,10 +373,6 @@ export default class UserList extends Vue {
     list: [],
   };
 
-  private get updataUserDisabled() {
-    return this.selection.length === 0;
-  }
-
   search() {
     this.queryPageParameters.province = this.provinceOption[0];
     this.queryPageParameters.city = this.provinceOption[1];
@@ -401,6 +400,11 @@ export default class UserList extends Vue {
   // 添加
   add() {
     this.$router.push("/channelLevel/add");
+  }
+
+  update() {
+    if (this.selection.length) this.dialogVisible = true;
+    else this.$message.warning("请先勾选表格数据");
   }
 
   routerTo(row: any, where: string) {

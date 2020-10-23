@@ -4,7 +4,7 @@
  * @Author: wwq
  * @Date: 2020-09-25 17:59:09
  * @LastEditors: wwq
- * @LastEditTime: 2020-10-20 11:55:30
+ * @LastEditTime: 2020-10-23 14:36:59
 -->
 <template>
   <ih-page>
@@ -65,9 +65,7 @@
         <el-button type="primary" @click="search()">查询</el-button>
         <el-button type="success" @click="add()">添加</el-button>
         <el-button type="info" @click="reset()">重置</el-button>
-        <el-button :disabled="updataUserDisabled" @click="dialogVisible = true"
-          >变更录入人</el-button
-        >
+        <el-button @click="updata()">变更录入人</el-button>
       </el-row>
     </template>
 
@@ -81,7 +79,6 @@
       >
         <el-table-column
           width="50"
-          min-width="50"
           type="selection"
           align="center"
         ></el-table-column>
@@ -107,7 +104,7 @@
           }}</template>
         </el-table-column>
         <el-table-column prop="inputUser" label="录入人"></el-table-column>
-        <el-table-column prop="status" label="状态">
+        <el-table-column prop="status" label="状态" width="150">
           <template v-slot="{ row }">{{
             $root.dictAllName(row.status, "CompanyStatusEnum")
           }}</template>
@@ -214,10 +211,6 @@ export default class DeveloperList extends Vue {
   total: any = null;
   dialogVisible = false;
 
-  private get updataUserDisabled() {
-    return this.selection.length === 0;
-  }
-
   async created() {
     this.getListMixin();
   }
@@ -264,6 +257,11 @@ export default class DeveloperList extends Vue {
 
   add() {
     this.$router.push("/developers/add");
+  }
+
+  updata() {
+    if (this.selection.length) this.dialogVisible = true;
+    else this.$message.warning("请先勾选表格数据");
   }
 
   handleSelectionChange(val: any) {
