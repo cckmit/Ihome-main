@@ -4,7 +4,7 @@
  * @Author: zyc
  * @Date: 2020-07-14 09:23:40
  * @LastEditors: zyc
- * @LastEditTime: 2020-10-21 14:41:07
+ * @LastEditTime: 2020-10-23 17:53:20
 --> 
 --> 
 <template>
@@ -218,7 +218,7 @@ import { Component, Vue } from "vue-property-decorator";
 import {
   post_channelApproval_getList,
   post_channelApproval_delete__id,
-  post_channel_backToDraft__id,
+  post_channelApproval_backToDraft__id,
   get_channelApproval_downloadML__id,
 } from "../../../api/channel/index";
 
@@ -314,7 +314,7 @@ export default class InvitationCodeList extends Vue {
   async withdraw(scope: any) {
     try {
       await this.$confirm("是否确定撤回?", "提示");
-      await post_channel_backToDraft__id({
+      await post_channelApproval_backToDraft__id({
         id: scope.row.id,
       });
 
