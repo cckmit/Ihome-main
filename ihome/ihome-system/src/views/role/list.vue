@@ -3,8 +3,8 @@
  * @version: 
  * @Author: zyc
  * @Date: 2020-07-09 10:21:50
- * @LastEditors: lgf
- * @LastEditTime: 2020-09-16 16:02:30
+ * @LastEditors: zyc
+ * @LastEditTime: 2020-10-23 11:41:08
 --> 
 <template>
   <ih-page>
@@ -34,9 +34,9 @@
         <el-table-column prop="name" label="名称" width="180"></el-table-column>
         <el-table-column prop="code" label="编码" width="180"></el-table-column>
         <el-table-column prop="createUserName" label="创建人"></el-table-column>
-        <el-table-column prop="createTime" label="创建时间"></el-table-column>
+        <el-table-column prop="createTime" label="创建时间" width="155"></el-table-column>
         <el-table-column prop="updateUserName" label="修改人"></el-table-column>
-        <el-table-column prop="updateTime" label="修改时间"></el-table-column>
+        <el-table-column prop="updateTime" label="修改时间" width="155"></el-table-column>
 
         <el-table-column fixed="right" label="操作" width="120">
           <template slot-scope="scope">
@@ -150,7 +150,6 @@ export default class RoleList extends Vue {
   }
   async getListMixin() {
     this.resPageInfo = await post_role_getList(this.queryPageParameters);
-    debugger;
   }
   add(data: any) {
     this.itemData = data;

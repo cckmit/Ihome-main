@@ -4,21 +4,30 @@
  * @Author: zyc
  * @Date: 2020-08-04 15:23:09
  * @LastEditors: zyc
- * @LastEditTime: 2020-08-13 10:26:47
+ * @LastEditTime: 2020-10-23 11:46:17
 --> 
 <template>
   <div class="OrganizationTree">
     <div class="text-left">
-      <el-checkbox @change="selectChange" v-model="selectType" label="仅查询有效的组织" border></el-checkbox>
+      <el-checkbox
+        @change="selectChange"
+        v-model="selectType"
+        label="仅查询有效的组织"
+        border
+      ></el-checkbox>
     </div>
     <br />
     <div>
-      <el-input clearable placeholder="输入关键字进行过滤" v-model="filterText"></el-input>
+      <el-input
+        clearable
+        placeholder="输入关键字进行过滤"
+        v-model="filterText"
+      ></el-input>
     </div>
     <br />
     <div>
       <el-tree
-        style="width:100%;"
+        style="width: 100%"
         class="filter-tree"
         :expand-on-click-node="false"
         :data="dataTree"
@@ -31,10 +40,16 @@
         @current-change="currentChange"
         ref="tree"
       >
-        <span :class="getInvalid(node)" slot-scope="{ node  }">
+        <span :class="getInvalid(node)" slot-scope="{ node }">
           <span class="left" :title="node.label">{{ node.label }}</span>
           <span class="right">
-            <el-button style="float:right;" type="text" size="mini" @click="edit(node)">编辑</el-button>
+            <el-button
+              style="float: right"
+              type="text"
+              size="mini"
+              @click="edit(node)"
+              >编辑</el-button
+            >
           </span>
         </span>
       </el-tree>
@@ -110,8 +125,7 @@ export default class OrganizationTree extends Vue {
   currentChange(item: any) {
     this.$emit("select", item);
   }
-  
-  async created() {
+  async init() {
     const res: any = await get_org_getAll({ onlyValid: false });
     this.list = res;
     if (res && res.length > 0) {
@@ -123,6 +137,10 @@ export default class OrganizationTree extends Vue {
       this.selectType = true;
       this.selectChange();
     });
+  }
+
+  async created() {
+    this.init();
   }
 }
 </script>

@@ -4,7 +4,7 @@
  * @Author: wwq
  * @Date: 2020-10-09 09:35:09
  * @LastEditors: wwq
- * @LastEditTime: 2020-10-14 18:18:20
+ * @LastEditTime: 2020-10-23 10:53:39
 -->
 
 <template>
@@ -31,7 +31,9 @@
       }"
       :on-preview="previewHandler"
     >
-      <el-button size="small" slot="trigger" type="primary">获取文件</el-button>
+      <el-button size="small" slot="trigger" type="primary"
+        >点击上传文件</el-button
+      >
     </el-upload>
     <span slot="footer" class="dialog-footer">
       <el-button type="primary" @click="finish()">保 存</el-button>

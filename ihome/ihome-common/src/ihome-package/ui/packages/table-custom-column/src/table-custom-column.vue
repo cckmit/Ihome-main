@@ -4,7 +4,7 @@
  * @Author: zyc
  * @Date: 2020-06-09 16:22:31
  * @LastEditors: zyc
- * @LastEditTime: 2020-07-24 09:54:27
+ * @LastEditTime: 2020-10-23 11:39:06
 --> 
 <template>
   <el-popover placement="top-start" width="200" trigger="hover">
@@ -47,7 +47,6 @@ export default class IhTableCustomColumn extends Vue {
     this.initColumn = this.$tool.deepClone(this.columns);
     // this.initColumn = this.columns;
     console.log(this.initColumn);
-    debugger;
     this.columnData = this.columns;
   }
   resetColumn() {

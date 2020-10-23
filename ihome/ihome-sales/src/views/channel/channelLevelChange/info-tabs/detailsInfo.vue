@@ -4,7 +4,7 @@
  * @Author: wwq
  * @Date: 2020-10-15 12:33:25
  * @LastEditors: ywl
- * @LastEditTime: 2020-10-19 12:05:06
+ * @LastEditTime: 2020-10-23 14:26:37
 -->
 <template>
   <div class="text-left">
@@ -127,129 +127,133 @@
     <p class="ih-info-title">
       评级信息
       <el-link
-        style="margin-left: 15px; font-size: 15px"
+        class="margin-left-15"
         href="/web-sales/gradeStandard/list"
-        type="primary"
+        type="success"
         target="_blank"
       >查看所有标准</el-link>
     </p>
-    <br />
-    <el-table
-      class="ih-table"
-      :data="resPageInfo.channelGradeItemChanges"
-      style="width: 100%"
-    >
-      <el-table-column
-        prop="cityGrade"
-        label="城市等级"
+    <div class="padding-left-20">
+      <el-table
+        class="ih-table"
+        :data="resPageInfo.channelGradeItemChanges"
+        style="width: 100%"
       >
-        <template v-slot="{ row }">{{
+        <el-table-column
+          prop="cityGrade"
+          label="城市等级"
+        >
+          <template v-slot="{ row }">{{
           $root.dictAllName(row.cityGrade, "CityLevel")
         }}</template>
-      </el-table-column>
-      <el-table-column
-        prop="channelGrade"
-        label="渠道等级"
-      >
-        <template v-slot="{ row }">{{
+        </el-table-column>
+        <el-table-column
+          prop="channelGrade"
+          label="渠道等级"
+        >
+          <template v-slot="{ row }">{{
           $root.dictAllName(row.channelGrade, "ChannelLevel")
         }}</template>
-      </el-table-column>
-      <el-table-column
-        prop="gradeItem"
-        label="评级项"
-      ></el-table-column>
-      <el-table-column
-        prop="inputValue"
-        label="录入信息"
-      ></el-table-column>
-      <el-table-column
-        prop="gradeStandard"
-        label="评级标准"
-      ></el-table-column>
-    </el-table>
-    <br />
+        </el-table-column>
+        <el-table-column
+          prop="gradeItem"
+          label="评级项"
+        ></el-table-column>
+        <el-table-column
+          prop="inputValue"
+          label="录入信息"
+        ></el-table-column>
+        <el-table-column
+          prop="gradeStandard"
+          label="评级标准"
+        ></el-table-column>
+      </el-table>
+      <br />
+    </div>
     <p class="ih-info-title">
       附件信息
       <el-link
-        style="margin-left: 15px; font-size: 15px"
+        class="margin-left-15"
         href="http://zxgk.court.gov.cn/zhzxgk/"
-        type="primary"
+        type="success"
         target="_blank"
       >综合查询被执行人</el-link>
     </p>
-    <br />
-    <el-table
-      class="ih-table"
-      :data="resPageInfo.channelGradeAttachmentChanges"
-      style="width: 100%"
-    >
-      <el-table-column
-        prop="type"
-        label="类型"
-        width="200"
+    <div class="padding-left-20">
+      <el-table
+        class="ih-table"
+        :data="resPageInfo.channelGradeAttachmentChanges"
+        style="width: 100%"
       >
-        <template v-slot="{ row }">{{
+        <el-table-column
+          prop="type"
+          label="类型"
+          width="200"
+        >
+          <template v-slot="{ row }">{{
           $root.displayName("accessoryTpye", row.type)
         }}</template>
-      </el-table-column>
-      <el-table-column
-        prop="fileId"
-        label="附件"
-      >
-        <IhUpload
-          size="100px"
-          :fileList="fileList"
-        />
-      </el-table-column>
-    </el-table>
-    <br />
+        </el-table-column>
+        <el-table-column
+          prop="fileId"
+          label="附件"
+        >
+          <IhUpload
+            size="100px"
+            :fileList="fileList"
+          />
+        </el-table-column>
+      </el-table>
+      <br />
+    </div>
 
     <p class="ih-info-title">变更原因</p>
-    <div>{{resPageInfo.changeReason}}</div>
+    <div class="padding-left-20">{{resPageInfo.changeReason}}</div>
 
-    <div
-      v-if="pageName === 'LevelChangeExamine'"
-      class="text-left"
-    >
+    <template v-if="pageName === 'LevelChangeExamine'">
       <p class="ih-info-title">审核意见</p>
-      <el-input
-        type="textarea"
-        :autosize="{ minRows: 5, maxRows: 10 }"
-        placeholder="请输入内容"
-        v-model="remark"
-      >
-      </el-input>
-      <el-button
-        class="margin-top-30"
-        @click="pass('Pass')"
-        type="primary"
-      >通过</el-button>
-      <el-button
-        class="margin-top-30"
-        @click="pass('Reject')"
-        type="primary"
-      >驳回</el-button>
-    </div>
+      <div class="padding-left-20">
+        <el-input
+          type="textarea"
+          :autosize="{ minRows: 5, maxRows: 10 }"
+          placeholder="请输入内容"
+          v-model="remark"
+        >
+        </el-input>
+      </div>
+      <div class="text-center">
+        <el-button
+          class="margin-top-30"
+          @click="pass('Pass')"
+          type="primary"
+        >通过</el-button>
+        <el-button
+          class="margin-top-30"
+          @click="pass('Reject')"
+          type="primary"
+        >驳回</el-button>
+      </div>
+    </template>
 
-    <div
-      v-if="pageName === 'LevelChangeRevoke'"
-      class="text-left"
-    >
+    <template v-if="pageName === 'LevelChangeRevoke'">
       <p class="ih-info-title">撤回原因</p>
-      <el-input
-        type="textarea"
-        :autosize="{ minRows: 5, maxRows: 10 }"
-        placeholder="请输入内容"
-        v-model="remark"
-      >
-      </el-input>
-      <el-button
-        class="margin-top-30"
-        @click="pass('Revoke')"
-        type="primary"
-      >提交</el-button>
-    </div>
+      <div class="padding-left-20">
+        <el-input
+          type="textarea"
+          :autosize="{ minRows: 5, maxRows: 10 }"
+          placeholder="请输入内容"
+          v-model="remark"
+        >
+        </el-input>
+      </div>
+      <div class="text-center">
+        <el-button
+          class="margin-top-30"
+          @click="pass('Revoke')"
+          type="primary"
+        >提交</el-button>
+      </div>
+    </template>
   </div>
 </template>
 

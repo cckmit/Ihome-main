@@ -4,7 +4,7 @@
  * @Author: zyc
  * @Date: 2020-07-07 10:29:16
  * @LastEditors: zyc
- * @LastEditTime: 2020-08-28 10:03:14
+ * @LastEditTime: 2020-10-22 16:27:50
 --> 
  
 <template>
@@ -52,6 +52,9 @@
       <el-form-item label="URL" :prop="ruleForm.type=='Menu'||ruleForm.type=='Api'?'url':null">
         <el-input type="url" v-model="ruleForm.url"></el-input>
       </el-form-item>
+       <el-form-item label="ICON">
+        <el-input type="icon" v-model="ruleForm.icon"></el-input>
+      </el-form-item>
     </el-form>
 
     <span slot="footer" class="dialog-footer">
@@ -83,6 +86,7 @@ export default class ResourcesEdit extends Vue {
     parentCode: null,
     type: "",
     url: "",
+    icon:''
   };
   rules: any = {
     type: [{ required: true, message: "请选择类型", trigger: "change" }],
@@ -130,6 +134,7 @@ export default class ResourcesEdit extends Vue {
         parentId: this.ruleForm.parentId,
         type: this.ruleForm.type,
         url: this.ruleForm.url,
+        icon:this.ruleForm.icon
       };
       await post_resource_update(p);
       this.$message({

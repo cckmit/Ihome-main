@@ -4,7 +4,7 @@
  * @Author: zyc
  * @Date: 2020-07-09 14:31:23
  * @LastEditors: zyc
- * @LastEditTime: 2020-10-21 14:40:23
+ * @LastEditTime: 2020-10-23 10:38:23
 --> 
 <template>
   <ih-page>
@@ -67,18 +67,13 @@
       <div class="ih-info-title">
         <div>渠道等级信息列表</div>
         <div class="info-btn-list">
-          <el-button type="primary" @click="addChannelApprovalGrades()"
+          <el-button size="small" type="primary" @click="addChannelApprovalGrades()"
             >添加</el-button
           >
-          <el-button type="success" @click="addChannelApprovalGradesChange()"
+          <el-button size="small" type="success" @click="addChannelApprovalGradesChange()"
             >添加变更信息</el-button
           >
-
-          <a
-            class="margin-left-20 el-link el-link--primary is-underline"
-            href="javascript:;"
-            >预览供应商名录</a
-          >
+          <span class="padding-left-20"><el-link type="success">预览供应商名录</el-link></span>
         </div>
       </div>
 

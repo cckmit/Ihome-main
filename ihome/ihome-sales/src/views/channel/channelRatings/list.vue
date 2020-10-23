@@ -3,13 +3,16 @@
  * @version: 
  * @Author: wwq
  * @Date: 2020-08-13 11:40:10
- * @LastEditors: wwq
- * @LastEditTime: 2020-10-20 10:15:25
+ * @LastEditors: ywl
+ * @LastEditTime: 2020-10-23 09:55:01
 -->
 <template>
   <IhPage label-width="100px">
     <template v-slot:form>
-      <el-form ref="form" label-width="100px">
+      <el-form
+        ref="form"
+        label-width="100px"
+      >
         <el-row>
           <el-col :span="8">
             <el-form-item label="城市等级">
@@ -50,11 +53,19 @@
     </template>
 
     <template v-slot:btn>
-      <br />
       <el-row class="el-row">
-        <el-button type="primary" @click="search()">查询</el-button>
-        <el-button type="success" @click="addMsg()">添加</el-button>
-        <el-button type="info" @click="empty()">重置</el-button>
+        <el-button
+          type="primary"
+          @click="search()"
+        >查询</el-button>
+        <el-button
+          type="success"
+          @click="addMsg()"
+        >添加</el-button>
+        <el-button
+          type="info"
+          @click="empty()"
+        >重置</el-button>
         <el-button @click="upMethods">上传供应商管理办法</el-button>
         <el-button @click="viewMethods">查看供应商管理办法</el-button>
       </el-row>
@@ -67,38 +78,51 @@
         :data="resPageInfo.list"
         :default-sort="{ prop: 'id', order: 'descending' }"
       >
-        <el-table-column prop="cityGrade" label="城市等级">
+        <el-table-column
+          prop="cityGrade"
+          label="城市等级"
+        >
           <template v-slot="{ row }">{{
             $root.dictAllName(row.cityGrade, "CityLevel")
           }}</template>
         </el-table-column>
-        <el-table-column prop="channelGrade" label="渠道等级">
+        <el-table-column
+          prop="channelGrade"
+          label="渠道等级"
+        >
           <template v-slot="{ row }">{{
             $root.dictAllName(row.channelGrade, "ChannelLevel")
           }}</template>
         </el-table-column>
-        <el-table-column prop="gradeItem" label="评级项"></el-table-column>
+        <el-table-column
+          prop="gradeItem"
+          label="评级项"
+        ></el-table-column>
         <el-table-column
           prop="gradeStandard"
           label="评级标准"
         ></el-table-column>
-        <el-table-column label="操作" width="230" fixed="right">
+        <el-table-column
+          label="操作"
+          width="230"
+          fixed="right"
+        >
           <template v-slot="{ row }">
-            <el-link type="primary" @click.native.prevent="viewMaterial(row)"
-              >查看所需材料</el-link
+            <el-link
+              type="primary"
+              @click.native.prevent="viewMaterial(row)"
+            >查看所需材料</el-link>
+            <el-dropdown
+              trigger="click"
+              style="margin-left: 15px"
             >
-            <el-dropdown trigger="click" style="margin-left: 15px">
               <span class="el-dropdown-link">
                 更多操作
                 <i class="el-icon-arrow-down el-icon--right"></i>
               </span>
               <el-dropdown-menu slot="dropdown">
-                <el-dropdown-item @click.native.prevent="editMsg(row)"
-                  >修改</el-dropdown-item
-                >
-                <el-dropdown-item @click.native.prevent="delMsg(row)"
-                  >删除</el-dropdown-item
-                >
+                <el-dropdown-item @click.native.prevent="editMsg(row)">修改</el-dropdown-item>
+                <el-dropdown-item @click.native.prevent="delMsg(row)">删除</el-dropdown-item>
               </el-dropdown-menu>
             </el-dropdown>
           </template>

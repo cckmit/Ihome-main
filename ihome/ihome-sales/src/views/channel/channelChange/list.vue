@@ -4,7 +4,7 @@
  * @Author: ywl
  * @Date: 2020-06-30 09:21:17
  * @LastEditors: ywl
- * @LastEditTime: 2020-10-20 16:09:13
+ * @LastEditTime: 2020-10-23 14:33:52
 --> 
 <template>
   <IhPage label-width="100px">
@@ -98,10 +98,7 @@
         type="info"
         @click="reset()"
       >重置</el-button>
-      <el-button
-        :disabled="!selectionData.length"
-        @click="dialogVisible = true"
-      >变更录入人</el-button>
+      <el-button @click="handleOpen()">变更录入人</el-button>
     </template>
 
     <template v-slot:table>
@@ -138,12 +135,12 @@
         <el-table-column
           prop="changeTime"
           label="变更日期"
-          width="220"
+          width="95"
         ></el-table-column>
         <el-table-column
           prop="status"
           label="状态"
-          width="150"
+          width="100"
         >
           <template v-slot="{ row }">
             {{ $root.dictAllName(row.status, 'ChannelStatus') }}
@@ -323,6 +320,13 @@ export default class ChannelChangeList extends Vue {
       .catch(async () => {
         console.log("取消");
       });
+  }
+  handleOpen() {
+    if (!this.selectionData.length) {
+      this.$message.warning("请先勾选表格数据");
+      return;
+    }
+    this.dialogVisible = true;
   }
   handleSelectionChange(val: any) {
     this.selectionData = val;

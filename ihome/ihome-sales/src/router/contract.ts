@@ -4,7 +4,7 @@
  * @Author: ywl
  * @Date: 2020-10-16 15:19:48
  * @LastEditors: ywl
- * @LastEditTime: 2020-10-16 15:23:02
+ * @LastEditTime: 2020-10-23 09:49:49
  */
 import { RouteConfig } from 'vue-router'
 
@@ -20,33 +20,33 @@ const contractRoutes: Array<RouteConfig> = [
       {
         path: 'list',
         name: 'PartyAList',
-        component: () => import( /* webpackChunkName: "PartyAList" */ '@/views/contract/partyA-list.vue'),
+        component: () => import( /* webpackChunkName: "PartyAList" */ '@/views/contract/partyA/list.vue'),
         meta: { title: '甲方合同列表', icon: 'form' }
       },
       {
         path: 'add',
         name: 'PartyAadd',
-        component: () => import( /* webpackChunkName: "PartyAadd" */ '@/views/contract/partyA-add.vue'),
+        component: () => import( /* webpackChunkName: "PartyAadd" */ '@/views/contract/partyA/add.vue'),
         meta: { title: '甲方合同录入', icon: 'form' }
       },
     ]
   },
   {
-    path: '/intermediary',
+    path: '/distribution',
     meta: { title: '中介分销协议', icon: 'form' },
-    redirect: '/intermediary/list',
+    redirect: '/distribution/list',
     component: Layout,
     children: [
       {
         path: 'list',
-        name: 'IntermediaryList',
-        component: () => import( /* webpackChunkName: "IntermediaryList" */ '@/views/contract/intermediary-list.vue'),
+        name: 'DistributionList',
+        component: () => import( /* webpackChunkName: "DistributionList" */ '@/views/contract/distribution/list.vue'),
         meta: { title: '中介分销协议列表', icon: 'form' }
       },
       {
-        path: 'detail',
-        name: 'IntermediaryDetail',
-        component: () => import( /* webpackChunkName: "IntermediaryList" */ '@/views/contract/intermediary-detail.vue'),
+        path: 'info',
+        name: 'DistributionDetail',
+        component: () => import( /* webpackChunkName: "DistributionDetail" */ '@/views/contract/distribution/info.vue'),
         meta: { title: '中介分销协议详情', icon: 'form' }
       },
     ]
@@ -60,19 +60,19 @@ const contractRoutes: Array<RouteConfig> = [
       {
         path: 'list',
         name: 'StrategyList',
-        component: () => import( /* webpackChunkName: "StrategyList" */ '@/views/contract/strategy-list.vue'),
+        component: () => import( /* webpackChunkName: "StrategyList" */ '@/views/contract/strategy/list.vue'),
         meta: { title: '甲方/中介战略协议列表', icon: 'form' }
       },
       {
         path: 'add',
         name: 'StrategyAdd',
-        component: () => import( /* webpackChunkName: "StrategyAdd" */ '@/views/contract/strategy-add.vue'),
+        component: () => import( /* webpackChunkName: "StrategyAdd" */ '@/views/contract/strategy/add.vue'),
         meta: { title: '甲方/中介战略协议录入', icon: 'form' }
       },
       {
-        path: 'detail',
+        path: 'info',
         name: 'StrategyDetail',
-        component: () => import( /* webpackChunkName: "StrategyDetail" */ '@/views/contract/strategy-detail.vue'),
+        component: () => import( /* webpackChunkName: "StrategyDetail" */ '@/views/contract/strategy/info.vue'),
         meta: { title: '甲方/中介战略协议详情', icon: 'form' }
       },
     ]
@@ -86,13 +86,13 @@ const contractRoutes: Array<RouteConfig> = [
       {
         path: 'list',
         name: 'DiscountList',
-        component: () => import( /* webpackChunkName: "DiscountList" */ '@/views/contract/discount-list.vue'),
+        component: () => import( /* webpackChunkName: "DiscountList" */ '@/views/contract/discount/list.vue'),
         meta: { title: '优惠告知书列表', icon: 'form' }
       },
       {
-        path: 'detail',
+        path: 'info',
         name: 'DiscountDetail',
-        component: () => import( /* webpackChunkName: "DiscountDetail" */ '@/views/contract/discount-detail.vue'),
+        component: () => import( /* webpackChunkName: "DiscountDetail" */ '@/views/contract/discount/info.vue'),
         meta: { title: '优惠告知书详情页', icon: 'form' }
       },
     ]

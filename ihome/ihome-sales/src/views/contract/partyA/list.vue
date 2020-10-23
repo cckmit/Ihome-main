@@ -1,10 +1,10 @@
 <!--
- * @Description: 中介分销协议列表
+ * @Description: 甲方合同列表
  * @version: 
  * @Author: ywl
- * @Date: 2020-09-25 17:34:32
+ * @Date: 2020-09-25 11:53:51
  * @LastEditors: ywl
- * @LastEditTime: 2020-10-13 17:58:33
+ * @LastEditTime: 2020-10-23 09:52:33
 -->
 <template>
   <IhPage>
@@ -12,35 +12,35 @@
     <template #form>
       <el-form
         ref="form"
-        label-width="100px"
+        label-width="85px"
       >
         <el-row>
           <el-col :span="8">
             <el-form-item label="标题">
               <el-select
                 v-model="queryPageParameters.name"
-                placeholder="标题"
+                placeholder="甲方"
                 clearable
                 class="width--100"
               ></el-select>
             </el-form-item>
           </el-col>
           <el-col :span="8">
-            <el-form-item label="甲方公司">
+            <el-form-item label="甲方">
               <el-select
                 v-model="queryPageParameters.name"
-                placeholder="甲方公司"
+                placeholder="甲方"
                 clearable
                 class="width--100"
               ></el-select>
             </el-form-item>
           </el-col>
           <el-col :span="8">
-            <el-form-item label="乙方公司">
+            <el-form-item label="乙方">
               <el-select
                 v-model="queryPageParameters.accountType"
                 clearable
-                placeholder="乙方公司"
+                placeholder="乙方"
                 class="width--100"
               >
                 <el-option
@@ -57,10 +57,10 @@
           <div v-show="searchOpen">
             <el-row>
               <el-col :span="8">
-                <el-form-item label="项目地址">
+                <el-form-item label="合作项目">
                   <el-input
                     v-model="queryPageParameters.mobilePhone"
-                    placeholder="项目地址"
+                    placeholder="合作项目"
                   ></el-input>
                 </el-form-item>
               </el-col>
@@ -81,20 +81,16 @@
                 </el-form-item>
               </el-col>
               <el-col :span="8">
-                <el-form-item label="合同模板">
-                  <el-select
-                    v-model="queryPageParameters.accountType"
-                    clearable
-                    placeholder="合同模板"
-                    class="width--100"
-                  >
-                    <el-option
-                      v-for="item in $root.displayList('accountType')"
-                      :key="item.value"
-                      :label="item.label"
-                      :value="item.value"
-                    ></el-option>
-                  </el-select>
+                <el-form-item label="执行时间">
+                  <el-date-picker
+                    style="width:100%;"
+                    v-model="queryPageParameters.employmentDate"
+                    type="date"
+                    align="left"
+                    placeholder="年/月/日"
+                    :picker-options="$root.pickerOptions"
+                    value-format="yyyy-MM-dd"
+                  ></el-date-picker>
                 </el-form-item>
               </el-col>
             </el-row>
@@ -243,21 +239,6 @@
                 </el-form-item>
               </el-col>
               <el-col :span="8">
-                <el-form-item label="中介战略协议">
-                  <el-select
-                    v-model="queryPageParameters.employeeType"
-                    clearable
-                    placeholder="请选择中介战略协议"
-                    class="width--100"
-                  >
-                    <el-option
-                      v-for="item in $root.displayList('employeeType')"
-                      :key="item.value"
-                      :label="item.label"
-                      :value="item.value"
-                    ></el-option>
-                  </el-select>
-                </el-form-item>
               </el-col>
             </el-row>
           </div>
@@ -269,9 +250,10 @@
       <el-row>
         <el-button type="primary">查询</el-button>
         <el-button type="info">重置</el-button>
-        <el-button type="success">申领合同</el-button>
-        <el-button type="success">派发合同</el-button>
-        <el-button type="success">转派发</el-button>
+        <el-button
+          type="success"
+          @click="$router.push('/partyA/add')"
+        >录入</el-button>
         <el-button type="success">导出</el-button>
         <el-link
           type="primary"
@@ -284,8 +266,8 @@
     <template #table>
       <br />
       <el-table
-        class="ih-table intermediary-table"
-        :data="pageInfo.list"
+        class="ih-table partyA-table"
+        :data="resPageInfo.list"
         @selection-change="handleSelectionChange"
       >
         <el-table-column
@@ -302,40 +284,45 @@
         ></el-table-column>
         <el-table-column
           fixed
-          label="甲方公司"
+          label="甲方"
           prop="jia"
           min-width="200"
         ></el-table-column>
         <el-table-column
           fixed
-          label="乙方公司"
+          label="乙方"
           prop="yi"
           min-width="150"
         ></el-table-column>
         <el-table-column
-          label="项目地址"
+          label="合作项目"
           prop="pro"
           min-width="200"
         ></el-table-column>
         <el-table-column
           label="合作时间"
           prop="time"
-          width="130"
+          width="200"
+        ></el-table-column>
+        <el-table-column
+          label="执行时间"
+          prop="time"
+          width="200"
         ></el-table-column>
         <el-table-column
           label="关联项目"
           prop="pro"
-          width="150"
+          width="200"
         ></el-table-column>
         <el-table-column
           label="关联周期"
           prop="zoom"
-          width="150"
+          width="100"
         ></el-table-column>
         <el-table-column
           label="归属组织"
           prop="pl"
-          width="150"
+          width="200"
         ></el-table-column>
         <el-table-column
           label="合同编号"
@@ -355,7 +342,7 @@
         <el-table-column
           label="合同跟进人"
           prop="name"
-          width="200"
+          width="100"
         ></el-table-column>
         <el-table-column
           label="操作"
@@ -363,12 +350,12 @@
           align="left"
           fixed="right"
         >
-          <template v-slot="{  }">
+          <template v-slot="{ row }">
             <el-link
               type="primary"
-              @click.native.prevent="$router.push('/intermediary/detail')"
+              @click.native.prevent="handleTo(row)"
             >详情</el-link>
-            <el-link type="primary">盖章版归档</el-link>
+            <el-link type="primary">扫描件归档</el-link>
             <el-link type="primary">原件归档</el-link>
             <!-- <el-dropdown
                 trigger="click"
@@ -404,14 +391,14 @@
 
 <script lang="ts">
 import { Component, Vue } from "vue-property-decorator";
-import PaginationMixin from "../../mixins/pagination";
+import PaginationMixin from "@/mixins/pagination";
 @Component({
   mixins: [PaginationMixin],
 })
-export default class IntermediaryList extends Vue {
+export default class PartyAList extends Vue {
   public queryPageParameters: any = {};
   private searchOpen = true;
-  private pageInfo: PageInfo = {
+  public resPageInfo: PageInfo = {
     total: 0,
     list: [
       {
@@ -454,31 +441,7 @@ export default class IntermediaryList extends Vue {
         title: "123",
         jia: "广州居恒信息科技有限公司",
         yi: "asd",
-        pro: "保利112项目1",
-        time: "2020-9-29",
-        zoom: "周期",
-        pl: "保利",
-        id: "128418458315",
-        name: "爱家案场",
-        isAction: "保存",
-      },
-      {
-        title: "分销协议",
-        jia: "广州居恒信息科技有限公司",
-        yi: "asd",
-        pro: "保利112项目1",
-        time: "2020-9-29",
-        zoom: "周期",
-        pl: "保利",
-        id: "128418458315",
-        name: "爱家案场",
-        isAction: "保存",
-      },
-      {
-        title: "分销协议",
-        jia: "广州居恒信息科技有限公司",
-        yi: "asd",
-        pro: "保利112项目1",
+        pro: "保利XX项目1",
         time: "2020-9-29",
         zoom: "周期",
         pl: "保利",
@@ -503,7 +466,7 @@ interface PageInfo {
 </script>
 
 <style lang="scss" scoped>
-.intermediary-table {
+.partyA-table {
   .el-link + .el-link {
     margin-left: 15px;
   }

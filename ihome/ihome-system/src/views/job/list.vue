@@ -4,7 +4,7 @@
  * @Author: zyc
  * @Date: 2020-07-14 09:23:40
  * @LastEditors: zyc
- * @LastEditTime: 2020-08-10 17:35:36
+ * @LastEditTime: 2020-10-23 11:41:36
 --> 
 --> 
 <template>
@@ -36,9 +36,9 @@
         <el-table-column prop="code" label="编码" width="180"></el-table-column>
         <el-table-column prop="remark" label="描述"></el-table-column>
         <el-table-column prop="createUserName" label="创建人" width="90"></el-table-column>
-        <el-table-column prop="createTime" label="创建时间" width="150"></el-table-column>
+        <el-table-column prop="createTime" label="创建时间" width="155"></el-table-column>
         <el-table-column prop="updateUserName" label="修改人" width="90"></el-table-column>
-        <el-table-column prop="updateTime" label="修改时间" width="150"></el-table-column>
+        <el-table-column prop="updateTime" label="修改时间" width="155"></el-table-column>
         <el-table-column fixed="right" label="操作" width="120">
           <template slot-scope="scope">
             <el-link type="primary" @click.native.prevent="info(scope)">详情</el-link>

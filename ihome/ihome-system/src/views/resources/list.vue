@@ -3,8 +3,8 @@
  * @version: 
  * @Author: zyc
  * @Date: 2020-07-06 09:41:43
- * @LastEditors: lgf
- * @LastEditTime: 2020-09-16 11:09:07
+ * @LastEditors: zyc
+ * @LastEditTime: 2020-10-22 16:21:39
 --> 
 <template>
   <ih-page>
@@ -80,6 +80,7 @@
               </template>
             </el-table-column>
             <el-table-column prop="url" label="URL"></el-table-column>
+            <el-table-column prop="icon" label="ICON"></el-table-column>
             <el-table-column prop="parentName" label="父资源" width="180"></el-table-column>
 
             <el-table-column prop="createUserName" label="创建人" width="90"></el-table-column>

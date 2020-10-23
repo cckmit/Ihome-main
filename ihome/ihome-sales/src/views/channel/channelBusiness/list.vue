@@ -4,7 +4,7 @@
  * @Author: ywl
  * @Date: 2020-08-13 11:40:10
  * @LastEditors: ywl
- * @LastEditTime: 2020-10-20 16:14:17
+ * @LastEditTime: 2020-10-23 14:42:50
 -->
 <template>
   <IhPage label-width="100px">
@@ -116,14 +116,8 @@
           type="info"
           @click="reset()"
         >重置</el-button>
-        <el-button
-          :disabled="!selectionData.length"
-          @click="changeFollower()"
-        >变更跟进人</el-button>
-        <el-button
-          :disabled="!selectionData.length"
-          @click="changeInputPerson()"
-        >变更录入人</el-button>
+        <el-button @click="changeFollower()">变更跟进人</el-button>
+        <el-button @click="changeInputPerson()">变更录入人</el-button>
       </el-row>
     </template>
 
@@ -192,7 +186,7 @@
         <el-table-column
           prop="status"
           label="状态"
-          width="200"
+          width="150"
         >
           <template v-slot="{ row }">
             <span>{{$root.dictAllName(row.status, 'ChannelStatus')}}</span>
@@ -350,12 +344,18 @@ export default class List extends Vue {
     this.provinceList = [];
   }
   changeFollower() {
-    console.log("变更跟进人");
+    if (!this.selectionData.length) {
+      this.$message.warning("请先勾选表格数据");
+      return;
+    }
     this.dialogVisible = true;
     this.isInput = false;
   }
   changeInputPerson() {
-    console.log("变更录入人");
+    if (!this.selectionData.length) {
+      this.$message.warning("请先勾选表格数据");
+      return;
+    }
     this.dialogVisible = true;
     this.isInput = true;
   }

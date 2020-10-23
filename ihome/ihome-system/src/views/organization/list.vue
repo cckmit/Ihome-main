@@ -4,21 +4,28 @@
  * @Author: zyc
  * @Date: 2020-07-14 11:26:26
  * @LastEditors: zyc
- * @LastEditTime: 2020-08-13 11:07:52
+ * @LastEditTime: 2020-10-23 11:51:27
 --> 
 <template>
   <ih-page class="organization-list">
     <template v-slot:container>
       <el-row>
         <el-col :span="6" class="organization-list-left" style>
-          <OrganizationTree @select="selectOrganizationTree" @edit="editTree" />
+          <OrganizationTree
+            ref="organizationTree"
+            @select="selectOrganizationTree"
+            @edit="editTree"
+          />
         </el-col>
         <el-col :span="18" class="padding-left-20">
           <el-form ref="form" label-width="80px" class="ih-form">
             <el-row>
               <el-col :span="8">
                 <el-form-item label="名称">
-                  <el-input v-model="queryPageParameters.name" placeholder="名称"></el-input>
+                  <el-input
+                    v-model="queryPageParameters.name"
+                    placeholder="名称"
+                  ></el-input>
                 </el-form-item>
               </el-col>
               <el-col :span="8">
@@ -30,7 +37,7 @@
                     class="width--100"
                   >
                     <el-option
-                      v-for="(item,index) in levelOptions"
+                      v-for="(item, index) in levelOptions"
                       :key="index"
                       :label="item"
                       :value="item"
@@ -103,30 +110,67 @@
             :data="resPageInfo.list"
             width="100%"
             class="ih-table"
-            :default-sort="{prop: 'date', order: 'descending'}"
+            :default-sort="{ prop: 'date', order: 'descending' }"
           >
             <!-- <el-table-column type="selection" width="50"></el-table-column> -->
             <!-- 名称 简称 层级 组织类型 -->
-            <el-table-column fixed type="index" label="序号" width="50"></el-table-column>
+            <el-table-column
+              fixed
+              type="index"
+              label="序号"
+              width="50"
+            ></el-table-column>
             <el-table-column fixed prop="name" label="名称"></el-table-column>
-            <el-table-column prop="shortName" label="简称" width="90"></el-table-column>
-            <el-table-column prop="level" label="层级" width="90"></el-table-column>
+            <el-table-column
+              prop="shortName"
+              label="简称"
+              width="90"
+            ></el-table-column>
+            <el-table-column
+              prop="level"
+              label="层级"
+              width="90"
+            ></el-table-column>
             <el-table-column label="组织类型" width="120">
-              <template slot-scope="scope">{{$root.displayName('orgType',scope.row.orgType)}}</template>
+              <template slot-scope="scope">{{
+                $root.displayName("orgType", scope.row.orgType)
+              }}</template>
             </el-table-column>
-            <el-table-column prop="createUserName" label="创建人" width="90"></el-table-column>
-            <el-table-column prop="createTime" label="创建时间" width="180"></el-table-column>
-            <el-table-column prop="updateUserName" label="修改人" width="90"></el-table-column>
-            <el-table-column prop="updateTime" label="修改人时间" width="180"></el-table-column>
+            <el-table-column
+              prop="createUserName"
+              label="创建人"
+              width="90"
+            ></el-table-column>
+            <el-table-column
+              prop="createTime"
+              label="创建时间"
+              width="155"
+            ></el-table-column>
+            <el-table-column
+              prop="updateUserName"
+              label="修改人"
+              width="90"
+            ></el-table-column>
+            <el-table-column
+              prop="updateTime"
+              label="修改人时间"
+              width="155"
+            ></el-table-column>
             <el-table-column fixed="right" label="操作" width="120">
               <template slot-scope="scope">
                 <el-link
-                  style="color:#409eff;"
+                  style="color: #409eff"
                   class="margin-right-10"
                   type="primary"
                   @click.native.prevent="edit(scope)"
-                >编辑</el-link>
-                <el-link style="color:#f66;" type="primary" @click.native.prevent="remove(scope)">删除</el-link>
+                  >编辑</el-link
+                >
+                <el-link
+                  style="color: #f66"
+                  type="primary"
+                  @click.native.prevent="remove(scope)"
+                  >删除</el-link
+                >
               </template>
             </el-table-column>
           </el-table>
@@ -148,8 +192,13 @@
     <ih-dialog :show="dialogVisible">
       <OrganizationAdd
         :data="organizationItem"
-        @cancel="()=>dialogVisible=false"
-        @finish="(data)=>{dialogVisible=false;finish(data)}"
+        @cancel="() => (dialogVisible = false)"
+        @finish="
+          (data) => {
+            dialogVisible = false;
+            finish(data);
+          }
+        "
       />
     </ih-dialog>
   </ih-page>
@@ -197,12 +246,11 @@ export default class OrganizationList extends Vue {
   dialogEdit = false;
   organizationItem: any = null;
   editData: any = null;
-   
+
   async created() {
     console.log("created");
   }
 
-  
   get levelOptions() {
     const list = [0, 1, 2, 3, 4, 5, 6, 7];
     return list;
@@ -234,10 +282,14 @@ export default class OrganizationList extends Vue {
   }
   finish(data: any) {
     console.log(data);
+    this.getListMixin();
+    (this.$refs as any).organizationTree.init();
   }
-  finishEdit(data: any) {
-    console.log(data);
-  }
+  // finishEdit(data: any) {
+  //   console.log(data);
+  //   this.getListMixin();
+  //   (this.$refs as any).organizationTree.init();
+  // }
 
   info(scope: any) {
     console.log(scope);

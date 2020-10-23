@@ -3,8 +3,8 @@
  * @version: 
  * @Author: zyc
  * @Date: 2020-07-14 09:23:40
- * @LastEditors: zyc
- * @LastEditTime: 2020-10-21 10:47:08
+ * @LastEditors: wwq
+ * @LastEditTime: 2020-10-23 14:32:56
 --> 
 --> 
 <template>
@@ -108,7 +108,8 @@
         :data="resPageInfo.list"
         @selection-change="handleSelectionChange"
       >
-        <el-table-column type="selection" width="55"> </el-table-column>
+        <el-table-column type="selection" width="50" align="center">
+        </el-table-column>
         <el-table-column type="index" label="序号" width="50"></el-table-column>
         <el-table-column
           prop="invitationCode"
@@ -125,13 +126,21 @@
             $root.dictAllName(scope.row.status, "ValidType")
           }}</template>
         </el-table-column>
-        <el-table-column prop="expiresTime" label="失效日期"></el-table-column>
+        <el-table-column
+          prop="expiresTime"
+          label="失效日期"
+          width="95"
+        ></el-table-column>
         <el-table-column
           prop="departmentOrgId"
           label="事业部"
         ></el-table-column>
         <el-table-column prop="createUser" label="创建人"></el-table-column>
-        <el-table-column prop="createTime" label="创建时间"></el-table-column>
+        <el-table-column
+          prop="createTime"
+          label="创建时间"
+          width="155"
+        ></el-table-column>
 
         <el-table-column fixed="right" label="操作" width="120">
           <template slot-scope="scope">
@@ -253,7 +262,7 @@ export default class InvitationCodeList extends Vue {
       expiresTimeEnd: null,
       invitationCode: null,
       invitationUserId: null,
-      status: "Valid",
+      status: null,
     };
   }
   finishAdd() {
@@ -278,7 +287,7 @@ export default class InvitationCodeList extends Vue {
         console.log(error);
       }
     } else {
-      this.$message.warning("请先在勾选需要作废的数据");
+      this.$message.warning("请先勾选表格数据");
     }
   }
   handleSelectionChange(val: any) {

@@ -4,7 +4,7 @@
  * @Author: ywl
  * @Date: 2020-09-27 11:13:15
  * @LastEditors: ywl
- * @LastEditTime: 2020-10-13 17:59:47
+ * @LastEditTime: 2020-10-23 09:52:42
 -->
 <template>
   <IhPage>
@@ -179,7 +179,7 @@
       <br />
       <el-table
         class="ih-table"
-        :data="pageInfo.list"
+        :data="resPageInfo.list"
         @selection-change="handleSelectionChange"
       >
         <el-table-column
@@ -278,7 +278,7 @@
 
 <script lang="ts">
 import { Component, Vue } from "vue-property-decorator";
-import PaginationMixin from "../../mixins/pagination";
+import PaginationMixin from "@/mixins/pagination";
 
 @Component({
   mixins: [PaginationMixin],
@@ -286,7 +286,7 @@ import PaginationMixin from "../../mixins/pagination";
 export default class StrategyList extends Vue {
   public queryPageParameters: any = {};
   private searchOpen = true;
-  private pageInfo: PageInfo = {
+  public resPageInfo: PageInfo = {
     total: 0,
     list: [
       {
