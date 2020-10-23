@@ -100,7 +100,6 @@ export default class BatchOperationJob extends Vue {
         }),
         roleId: this.data.id,
       };
-      debugger
       console.log(p);
       const res = await post_role_addRoleToJobBatch(p);
       this.$message.success("操作成功");
