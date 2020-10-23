@@ -3,8 +3,8 @@
  * @version: 
  * @Author: zyc
  * @Date: 2020-10-16 14:16:23
- * @LastEditors: zyc
- * @LastEditTime: 2020-10-23 14:58:02
+ * @LastEditors: wwq
+ * @LastEditTime: 2020-10-23 17:53:42
  */
 
 import { RouteConfig } from 'vue-router'
@@ -203,7 +203,7 @@ const channelRoutes: Array<RouteConfig> = [
                 path: 'list',
                 name: 'channelLevelList',
                 component: () => import('../views/channel/channelLevel/list.vue'),
-                meta: { title: '渠道等级信息列表', icon: 'form' }
+                meta: { title: '渠道等级信息列表', icon: 'form', keepAlive: true }
             },
             {
                 path: 'info',

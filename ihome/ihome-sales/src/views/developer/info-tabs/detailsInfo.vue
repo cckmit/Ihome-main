@@ -4,7 +4,7 @@
  * @Author: wwq
  * @Date: 2020-10-15 12:33:25
  * @LastEditors: wwq
- * @LastEditTime: 2020-10-23 14:26:23
+ * @LastEditTime: 2020-10-23 18:05:35
 -->
 <template>
   <div class="text-left">
@@ -27,87 +27,74 @@
           </el-form-item>
         </el-col>
       </el-row>
-      <el-collapse-transition>
-        <div v-show="searchOpen">
-          <el-row>
-            <el-col :span="8">
-              <el-form-item label="类型" required align="left">
-                <span>{{
-                  $root.dictAllName(resPageInfo.type, "CompanyTypeEnum")
-                }}</span>
-              </el-form-item>
-            </el-col>
-            <el-col :span="8">
-              <el-form-item label="法定代表人" required align="left">
-                <span>{{ resPageInfo.legalPerson }}</span>
-              </el-form-item>
-            </el-col>
-            <el-col :span="8">
-              <el-form-item label="法人身份证号码" align="left">
-                <span>{{ resPageInfo.legalPersonId }}</span>
-              </el-form-item>
-            </el-col>
-            <el-col :span="8">
-              <el-form-item label="成立日期" required align="left">
-                <span>{{ resPageInfo.setupTime }}</span>
-              </el-form-item>
-            </el-col>
-            <el-col :span="8">
-              <el-form-item label="注册资本" required align="left">
-                <span>{{ resPageInfo.capital }}</span>
-              </el-form-item>
-            </el-col>
+      <el-row>
+        <el-col :span="8">
+          <el-form-item label="类型" required align="left">
+            <span>{{
+              $root.dictAllName(resPageInfo.type, "CompanyTypeEnum")
+            }}</span>
+          </el-form-item>
+        </el-col>
+        <el-col :span="8">
+          <el-form-item label="法定代表人" required align="left">
+            <span>{{ resPageInfo.legalPerson }}</span>
+          </el-form-item>
+        </el-col>
+        <el-col :span="8">
+          <el-form-item label="法人身份证号码" align="left">
+            <span>{{ resPageInfo.legalPersonId }}</span>
+          </el-form-item>
+        </el-col>
+        <el-col :span="8">
+          <el-form-item label="成立日期" required align="left">
+            <span>{{ resPageInfo.setupTime }}</span>
+          </el-form-item>
+        </el-col>
+        <el-col :span="8">
+          <el-form-item label="注册资本" required align="left">
+            <span>{{ resPageInfo.capital }}</span>
+          </el-form-item>
+        </el-col>
 
-            <el-col :span="8">
-              <el-form-item label="营业期限" align="left">
-                <span>{{ resPageInfo.businessTime }}</span>
-              </el-form-item>
-            </el-col>
-            <el-col :span="8">
-              <el-form-item label="省份" required>
-                <span>{{ $root.getAreaName(resPageInfo.province) }}</span>
-              </el-form-item>
-            </el-col>
-            <el-col :span="8">
-              <el-form-item label="城市" required>
-                <span>{{ $root.getAreaName(resPageInfo.city) }}</span>
-              </el-form-item>
-            </el-col>
-            <el-col :span="8">
-              <el-form-item label="行政区" required>
-                <span>{{ $root.getAreaName(resPageInfo.county) }}</span>
-              </el-form-item>
-            </el-col>
-            <el-col :span="16">
-              <el-form-item label="住所" required align="left">
-                <span>{{ resPageInfo.address }}</span>
-              </el-form-item>
-            </el-col>
-            <el-col :span="8">
-              <el-form-item label="录入人" required align="left">
-                <span>{{ resPageInfo.inputUser }}</span>
-              </el-form-item>
-            </el-col>
-            <el-col :span="8">
-              <el-form-item label="状态" align="left">
-                <span>{{
-                  $root.dictAllName(resPageInfo.status, "CompanyStatusEnum")
-                }}</span>
-              </el-form-item>
-            </el-col>
-          </el-row>
-        </div>
-      </el-collapse-transition>
+        <el-col :span="8">
+          <el-form-item label="营业期限" align="left">
+            <span>{{ resPageInfo.businessTime }}</span>
+          </el-form-item>
+        </el-col>
+        <el-col :span="8">
+          <el-form-item label="省份" required>
+            <span>{{ $root.getAreaName(resPageInfo.province) }}</span>
+          </el-form-item>
+        </el-col>
+        <el-col :span="8">
+          <el-form-item label="城市" required>
+            <span>{{ $root.getAreaName(resPageInfo.city) }}</span>
+          </el-form-item>
+        </el-col>
+        <el-col :span="8">
+          <el-form-item label="行政区" required>
+            <span>{{ $root.getAreaName(resPageInfo.county) }}</span>
+          </el-form-item>
+        </el-col>
+        <el-col :span="16">
+          <el-form-item label="住所" required align="left">
+            <span>{{ resPageInfo.address }}</span>
+          </el-form-item>
+        </el-col>
+        <el-col :span="8">
+          <el-form-item label="录入人" required align="left">
+            <span>{{ resPageInfo.inputUser }}</span>
+          </el-form-item>
+        </el-col>
+        <el-col :span="8">
+          <el-form-item label="状态" align="left">
+            <span>{{
+              $root.dictAllName(resPageInfo.status, "CompanyStatusEnum")
+            }}</span>
+          </el-form-item>
+        </el-col>
+      </el-row>
     </el-form>
-
-    <el-row>
-      <el-link
-        type="primary"
-        class="float-right margin-right-40"
-        @click="openToggle()"
-        >{{ searchOpen ? "收起" : "展开" }}</el-link
-      >
-    </el-row>
 
     <p class="ih-info-title">联系人信息</p>
     <div class="padding-left-20">
@@ -256,7 +243,7 @@ export default class Home extends Vue {
         type: "success",
         message: "撤回成功!",
       });
-      this.$router.push(`/developers/list`);
+      this.$goto({ path: `/developers/list` });
     } else {
       this.$message.warning("请填写撤回原因");
     }
@@ -278,7 +265,7 @@ export default class Home extends Vue {
       type: "success",
       message: val ? "审核通过!" : "驳回成功!",
     });
-    this.$router.push(`/developers/list`);
+    this.$goto({ path: `/developers/list` });
   }
 }
 </script>

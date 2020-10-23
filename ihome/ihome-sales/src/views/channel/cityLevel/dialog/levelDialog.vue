@@ -1,3 +1,11 @@
+<!--
+ * @Descripttion: 
+ * @version: 
+ * @Author: wwq
+ * @Date: 2020-10-23 17:39:38
+ * @LastEditors: wwq
+ * @LastEditTime: 2020-10-23 17:43:20
+-->
 <template>
   <el-dialog
     v-dialogDrag
@@ -9,12 +17,8 @@
     title="设置城市等级"
     class="text-left"
   >
-    <el-form
-      :model="form"
-      ref="form"
-      label-width="80px"
-    >
-      <el-form-item label="城市等级">
+    <el-form :model="form" :rules="rules" ref="form" label-width="80px">
+      <el-form-item label="城市等级" prop="cityGrade">
         <el-select
           v-model="form.cityGrade"
           clearable
@@ -32,10 +36,7 @@
     </el-form>
     <template #footer>
       <el-button @click="cancel()">取 消</el-button>
-      <el-button
-        type="primary"
-        @click="finish()"
-      >确 定</el-button>
+      <el-button type="primary" @click="finish()">确 定</el-button>
     </template>
   </el-dialog>
 </template>
@@ -54,6 +55,10 @@ export default class LevelDialog extends Vue {
   form = {
     cityGrade: null,
     ids: this.data.map((v: any) => v.id),
+  };
+
+  rules: any = {
+    cityGrade: [{ required: true, message: "请选择城市等级", trigger: "blur" }],
   };
 
   cancel() {
