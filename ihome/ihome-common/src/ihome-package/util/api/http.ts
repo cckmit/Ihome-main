@@ -2,16 +2,16 @@ import axios from 'axios'
 import { Message, MessageBox } from 'element-ui'
 // import { UserModule } from '@/store/modules/user'
 import { getToken, removeToken } from '../cookies'
-
+const messageTime = 3000;//弹出消息的提示时间
 const service = axios.create({
     // baseURL: process.env.VUE_APP_BASE_API,
-    timeout: 50000
+    timeout: 60000
 })
 
 // Request interceptors
 service.interceptors.request.use(
     (config) => {
-        console.log(config)
+        // console.log(config)
         // let a = config.url?.includes;
         let url: string = config.url || '';
 
@@ -54,7 +54,7 @@ service.interceptors.request.use(
 service.interceptors.response.use(
     (response) => {
 
-        if (response.config.url?.startsWith('/sales-oauth2/oauth/token')||response.config.url?.startsWith('/sales-api/sales-oauth2/oauth/token')) {
+        if (response.config.url?.startsWith('/sales-oauth2/oauth/token') || response.config.url?.startsWith('/sales-api/sales-oauth2/oauth/token')) {
             return response.data
         } else if (response.config.url?.startsWith('http://filesvr.polyihome.test/aist-filesvr-web/webUploader/uploadAll')) {
             return response.data
@@ -64,22 +64,22 @@ service.interceptors.response.use(
                 Message({
                     message: res.msg || 'Error',
                     type: 'error',
-                    duration: 5 * 1000
+                    duration: messageTime
                 })
-                if (res.code === 50008 || res.code === 50012 || res.code === 50014) {
-                    MessageBox.confirm(
-                        'You have been logged out, try to login again.',
-                        'Log out',
-                        {
-                            confirmButtonText: 'Relogin',
-                            cancelButtonText: 'Cancel',
-                            type: 'warning'
-                        }
-                    ).then(() => {
-                        removeToken();
-                        location.reload() // To prevent bugs from vue-router
-                    })
-                }
+                // if (res.code === 50008 || res.code === 50012 || res.code === 50014) {
+                //     MessageBox.confirm(
+                //         'You have been logged out, try to login again.',
+                //         'Log out',
+                //         {
+                //             confirmButtonText: 'Relogin',
+                //             cancelButtonText: 'Cancel',
+                //             type: 'warning'
+                //         }
+                //     ).then(() => {
+                //         removeToken();
+                //         location.reload() // To prevent bugs from vue-router
+                //     })
+                // }
                 return Promise.reject(new Error(res.msg || 'Error'))
             } else {
                 return res.data;
@@ -96,27 +96,29 @@ service.interceptors.response.use(
             Message({
                 message: '请先登录',
                 type: 'error',
-                duration: 5 * 1000
-            })
+                duration: messageTime
+            });
+            removeToken();
+            (window as any).location.reload();
 
         } else if (error.response.status == 403) {
             Message({
                 message: '权限不足',
                 type: 'error',
-                duration: 5 * 1000
+                duration: messageTime
             })
 
         } else if (error.response.status >= 500) {
             Message({
                 message: '系统异常' + error.response.status,
                 type: 'error',
-                duration: 5 * 1000
+                duration: messageTime
             })
         } else {
             Message({
                 message: error.message,
                 type: 'error',
-                duration: 5 * 1000
+                duration: messageTime
             })
 
         }
