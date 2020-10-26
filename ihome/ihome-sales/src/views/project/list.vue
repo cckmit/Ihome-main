@@ -4,7 +4,7 @@
  * @Author: wwq
  * @Date: 2020-08-13 11:40:10
  * @LastEditors: wwq
- * @LastEditTime: 2020-10-23 14:55:56
+ * @LastEditTime: 2020-10-26 08:53:27
 -->
 <template>
   <IhPage label-width="100px">
@@ -101,7 +101,12 @@
         :data="resPageInfo.list"
         :default-sort="{ prop: 'id', order: 'descending' }"
       >
-        <el-table-column fixed prop="storageNum" label="盘编"></el-table-column>
+        <el-table-column
+          fixed
+          prop="storageNum"
+          label="盘编"
+          width="160"
+        ></el-table-column>
         <el-table-column
           fixed
           prop="channelId"

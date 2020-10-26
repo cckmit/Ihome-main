@@ -4,34 +4,29 @@
  * @Author: wwq
  * @Date: 2020-09-27 11:52:41
  * @LastEditors: wwq
- * @LastEditTime: 2020-10-23 17:37:30
+ * @LastEditTime: 2020-10-26 10:05:46
 -->
 <template>
   <div class="house-type">
-    <p class="ih-info-title">楼盘卖点</p>
-    <!-- <ih-upload
-      :file-list="fileList"
-      accept="image/*"
-      class="margin-left-20"
-      size="150px"
-    >
-      <template #info="{ data }">
-        <div class="file-item">
-          <div class="width-150">{{ data.msg }}</div>
-          <el-button type="success" size="small" @click="edit(data)"
+    <p class="ih-info-title">住宅户型</p>
+    <div class="content">
+      <template v-for="item in data">
+        <div :key="item.id" class="info">
+          <img class="img" :src="item.url" alt="" />
+          <div class="title">{{ item.msg }}</div>
+          <el-button size="small" type="success" @click="edit(item)"
             >编辑</el-button
           >
-          <el-button type="danger" size="small" @click="remove(data)"
+          <el-button size="small" type="danger" @click="remove(item)"
             >删除</el-button
           >
         </div>
       </template>
-    </ih-upload> -->
-    <template v-for="item in data">
-      <div :key="item.id" class="info">
-        <img class="img" :src="item.url" alt="" />
+      <div class="plus" @click="dialogVisible = true">
+        <i class="el-icon-plus"></i>
+        <div class="title">点击新增户型</div>
       </div>
-    </template>
+    </div>
     <ih-dialog :show="dialogVisible" desc="编辑">
       <HouseTypeEdit
         :data="editData"
@@ -87,6 +82,7 @@ export default class HouseType extends Vue {
   }
 
   async remove(data: any) {
+    console.log(data);
     try {
       let index = this.data.findIndex((v: any) => v.id === data.id);
       await this.$confirm("是否确定删除?", "提示");
@@ -103,15 +99,47 @@ export default class HouseType extends Vue {
 </script>
 <style lang="scss" scoped>
 .house-type {
-  display: flex;
+  width: 100%;
+  height: 100%;
   display: inline-block;
-  flex-direction: row;
-  justify-content: flex-start;
+  .content {
+    display: flex;
+    overflow-x: auto;
+    overflow-y: hidden;
+    margin-left: 20px;
+  }
+  .plus {
+    width: 150px;
+    height: 150px;
+    display: inline-block;
+    margin-left: 10px;
+    border: 1px dashed #d9d9d9;
+    cursor: pointer;
+    border-radius: 6px;
+    text-align: center;
+    .el-icon-plus {
+      font-size: 30px;
+      line-height: 150px;
+      color: #8c939d;
+    }
+  }
 }
 .info {
-  .img {
-    width: 100px;
-    height: 100px;
+  display: inline-block;
+  text-align: center;
+  padding: 5px;
+  & + & {
+    margin-left: 10px;
   }
+  .img {
+    width: 150px;
+    height: 150px;
+  }
+}
+
+.title {
+  width: 150px;
+  padding: 5px 0;
+  font-size: 14px;
 }
 </style>
