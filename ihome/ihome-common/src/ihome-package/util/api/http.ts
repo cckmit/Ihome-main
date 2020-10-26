@@ -4,7 +4,7 @@
  * @Author: zyc
  * @Date: 2020-10-22 09:00:11
  * @LastEditors: zyc
- * @LastEditTime: 2020-10-26 10:16:33
+ * @LastEditTime: 2020-10-26 17:57:54
  */
 import axios from 'axios'
 import { Message, MessageBox } from 'element-ui'
@@ -47,7 +47,11 @@ service.interceptors.request.use(
 
         // Add X-Access-Token header to every request, you can add other custom headers here
         const token: any = getToken();
-        config.headers['Authorization'] = 'bearer ' + token;
+
+        if (token) {
+            config.headers['Authorization'] = 'bearer ' + token;
+        }
+
         // if (token) {
         //     if (config.url?.startsWith('http://filesvr.polyihome.test/aist-filesvr-web/webUploader/uploadAll')) {
         //         // console.log(config.url)
@@ -115,7 +119,10 @@ service.interceptors.response.use(
                 duration: messageTime
             });
             removeToken();
-            (window as any).location='/login'
+            if (window.location.pathname != '/login') {
+                (window as any).location = '/login';
+            }
+
 
         } else if (error.response.status == 403) {
             Message({
