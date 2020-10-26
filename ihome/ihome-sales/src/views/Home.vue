@@ -4,7 +4,7 @@
  * @Author: zyc
  * @Date: 2020-06-22 11:10:43
  * @LastEditors: zyc
- * @LastEditTime: 2020-10-21 14:35:29
+ * @LastEditTime: 2020-10-26 15:51:53
 --> 
 
 <template>
@@ -32,7 +32,7 @@ export default class Home extends Vue {
     label: "path",
   };
   created() {
-    console.log(routes);
+    // console.log(routes);
     this.data = routes;
     let list = (this.$root as any).dictAllList("AccountEnum"); //获取字典列表：参数是类别的key
     let dicName = (this.$root as any).dictAllName("Base", "AccountEnum"); //获取某个字典下根据code获取该数据项：第一个参数是code，第二个参数是类别的key
@@ -44,7 +44,7 @@ export default class Home extends Vue {
     // console.log("省市区获取名称看这里", areaName, area);
   }
   handleNodeClick(data: any) {
-    console.log(data);
+    // console.log(data);
     if (!data.children) {
       this.$router.push({
         name: data.name,
