@@ -4,7 +4,7 @@
  * @Author: wwq
  * @Date: 2020-09-09 16:17:16
  * @LastEditors: wwq
- * @LastEditTime: 2020-10-22 12:13:52
+ * @LastEditTime: 2020-10-26 17:57:54
 -->
 <template>
   <div class="upload">
@@ -31,6 +31,7 @@
           :style="{ width: size, height: size }"
           :src="uploadType(file)"
         />
+        <slot name="extend" :data="file" />
         <span class="el-upload-list__item-actions">
           <span
             class="el-upload-list__item-preview"
@@ -84,7 +85,7 @@
 import { Component, Vue, Prop, Watch } from "vue-property-decorator";
 import ImageViewer from "./image-viewer.vue";
 import Cropper from "./cropper.vue";
-import { post_file_upload } from "@/api/sales-document-cover-local/index";
+import { post_file_upload } from "@/api/sales-document-cover/index";
 @Component({
   components: {
     ImageViewer,
@@ -155,8 +156,8 @@ export default class IhUpload extends Vue {
   getFileList(fileList: any) {
     if (fileList.length) {
       fileList.forEach((v: any, index: number) => {
-        v.url = `/sales-document-cover-local/file/browse/${v.fileId}`;
-        v.img_url = `/sales-document-cover-local/file/browse/${v.fileId}`;
+        v.url = `/sales-api/sales-document-cover/file/browse/${v.fileId}`;
+        v.img_url = `/sales-api/sales-document-cover/file/browse/${v.fileId}`;
         this.replaceUpload(v, fileList, index, v.fileId);
       });
     }
@@ -289,7 +290,7 @@ export default class IhUpload extends Vue {
       case "png":
         fileList[
           index
-        ].img_url = `/sales-document-cover-local/file/browse/${fileId}`;
+        ].img_url = `/sales-api/sales-document-cover/file/browse/${fileId}`;
         break;
       case "doc":
       case "docx":
