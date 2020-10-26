@@ -17,6 +17,9 @@
     ]
   },
   "dependencies": {
+    "@sentry/browser": "^5.27.1",
+    "@sentry/integrations": "^5.27.1",
+    "@sentry/tracing": "^5.27.1",
     "@types/js-cookie": "^2.2.6",
     "@types/nprogress": "^0.2.0",
     "axios": "^0.19.2",
