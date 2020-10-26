@@ -4,10 +4,10 @@
  * @Author: ywl
  * @Date: 2020-09-25 16:00:37
  * @LastEditors: ywl
- * @LastEditTime: 2020-10-26 14:09:40
+ * @LastEditTime: 2020-10-26 15:44:40
 -->
 <template>
-  <IhPage>
+  <IhPage class="text-left">
     <template v-slot:info>
       <p class="ih-info-title">甲方合同信息</p>
       <el-form
@@ -19,117 +19,74 @@
         <el-row>
           <el-col :span="24">
             <el-form-item label="合同标题">
-              <el-input
-                v-model="formData.title"
-                placeholder="合同标题"
-              ></el-input>
+              {{formData.title}}
             </el-form-item>
           </el-col>
         </el-row>
         <el-row>
           <el-col :span="12">
             <el-form-item label="甲方">
-              <el-select
-                v-model="formData.partyA"
-                placeholder="甲方"
-                clearable
-                class="width--100"
-              ></el-select>
+              <template v-for="(item, index) in formData.partyA">
+                <span :key="item.id">
+                  {{item.partyA}}
+                  <span v-if="index === (item.length-1)">、</span>
+                </span>
+              </template>
             </el-form-item>
           </el-col>
         </el-row>
         <el-row>
           <el-col :span="12">
             <el-form-item label="乙方">
-              <el-select
-                v-model="formData.partyB"
-                placeholder="乙方"
-                clearable
-                class="width--100"
-              ></el-select>
+              {{formData.partyB}}
             </el-form-item>
           </el-col>
         </el-row>
         <el-row>
           <el-col :span="12">
             <el-form-item label="执行时间">
-              <el-date-picker
-                style="width:100%;"
-                v-model="formData.effectiveTime"
-                type="date"
-                align="left"
-                placeholder="年/月/日"
-                :picker-options="$root.pickerOptions"
-                value-format="yyyy-MM-dd"
-              ></el-date-picker>
+              {{formData.effectiveTime}}
             </el-form-item>
           </el-col>
           <el-col :span="12">
             <el-form-item label="合同跟进人">
-              <el-select
-                v-model="formData.handler"
-                placeholder="合同跟进人"
-                clearable
-                class="width--100"
-              ></el-select>
+              {{formData.handler}}
             </el-form-item>
           </el-col>
         </el-row>
         <el-row>
           <el-col :span="12">
             <el-form-item label="成交确认人">
-              <el-input
-                v-model="formData.customer"
-                placeholder="成交确认人"
-              ></el-input>
+              {{formData.customer}}
             </el-form-item>
           </el-col>
           <el-col :span="12">
             <el-form-item label="联系方式">
-              <el-input
-                v-model="formData.customerNo"
-                placeholder="成交确认人联系方式"
-              ></el-input>
+              {{formData.customerNo}}
             </el-form-item>
           </el-col>
         </el-row>
         <el-row>
           <el-col :span="12">
             <el-form-item label="合同编号">
-              <el-input
-                v-model="formData.name"
-                placeholder="合同编号"
-              ></el-input>
+              {{formData.contractCode}}
             </el-form-item>
           </el-col>
           <el-col :span="12">
             <el-form-item label="归档编号">
-              <el-input
-                v-model="formData.name"
-                placeholder="归档编号"
-              ></el-input>
+              {{formData.fileCode}}
             </el-form-item>
           </el-col>
         </el-row>
         <el-row>
           <el-col :span="12">
             <el-form-item label="归档状态">
-              <el-select
-                v-model="formData.name"
-                placeholder="归档状态"
-                clearable
-                class="width--100"
-              ></el-select>
+              {{formData.fileState}}
             </el-form-item>
           </el-col>
           <el-col :span="12">
             <el-form-item label="当前状态">
-              <el-select
-                v-model="formData.name"
-                placeholder="当前状态"
-                clearable
-                class="width--100"
-              ></el-select>
+              {{formData.state}}
             </el-form-item>
           </el-col>
         </el-row>
@@ -155,14 +112,14 @@
             </el-form-item>
           </el-col>
         </el-row>
-        <el-row>
+        <!-- <el-row>
           <el-col :span="24">
             <div>
               <el-button type="primary">提交</el-button>
               <el-button>取消</el-button>
             </div>
           </el-col>
-        </el-row>
+        </el-row> -->
       </el-form>
     </template>
   </IhPage>
@@ -171,7 +128,7 @@
 <script lang="ts">
 import { Component, Vue } from "vue-property-decorator";
 
-import { post_contract_create } from "@/api/contract/index";
+import { get_contract_detail__id } from "@/api/contract/index";
 
 @Component({})
 export default class PartyAadd extends Vue {
@@ -193,8 +150,13 @@ export default class PartyAadd extends Vue {
   ];
   private fileList2: Array<object> = [];
 
-  private async submit() {
-    await post_contract_create(this.formData);
+  private async getInfo() {
+    let id = this.$route.query.id;
+    if (id) this.formData = await get_contract_detail__id({ id: id });
+  }
+
+  created() {
+    this.getInfo();
   }
 }
 </script>

@@ -21,9 +21,12 @@
         clearable
       >
         <!-- 自定义模板使用 v-slot返回来的data：当前每条的数据；index：每一条数据的下标 -->
-        <template v-slot="{ data, index }">
+        <template v-slot="{ data }">
           <span style="float: left">{{ data.name }}</span>
-          <span style="float: right; color: #8492a6; font-size: 13px">{{ index }}</span>
+          <span
+            class="margin-left-30"
+            style="float: right; color: #8492a6; font-size: 13px"
+          >{{ data.employeeCode }}</span>
         </template>
       </IhSelectPageUser>
     </el-form-item>
