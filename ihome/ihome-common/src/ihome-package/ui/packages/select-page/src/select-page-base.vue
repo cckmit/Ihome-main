@@ -4,7 +4,7 @@
  * @Author: ywl
  * @Date: 2020-10-20 15:03:13
  * @LastEditors: ywl
- * @LastEditTime: 2020-10-22 16:42:26
+ * @LastEditTime: 2020-10-26 16:19:18
 -->
 <template>
   <el-select
@@ -18,7 +18,7 @@
     <!-- 搜索 -->
     <el-input
       class="selectInput"
-      placeholder="检索关键字"
+      :placeholder="searchPlaceholder"
       v-model="filterText"
     ></el-input>
     <!-- 下拉部分 -->
@@ -61,6 +61,10 @@ export default class IhSelectPage extends Vue {
   @Prop() placeholder?: string;
   @Prop() valueKey?: string;
   @Prop() promiseFun?: Function;
+  @Prop({
+    default: "检索关键字",
+  })
+  searchPlaceholder?: string;
   @Prop({
     default: () => {
       return {
@@ -138,7 +142,7 @@ interface PropsType {
 
 <style scoped>
 .selectInput {
-  padding: 0 5px;
+  padding: 0 8px;
   box-sizing: border-box;
 }
 </style>
