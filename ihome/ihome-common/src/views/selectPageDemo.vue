@@ -38,6 +38,7 @@
       <span>选中的值：{{form.testInput3}}</span>
     </el-form-item>
     <el-form-item label="测试继承">
+      <!-- searchPlaceholder：搜索框提示语 -->
       <SelectPageByOther
         v-model="form.testInput4"
         :props="{
@@ -45,6 +46,7 @@
           key: 'id',
           lable: 'name'
         }"
+        searchPlaceholder="hhah"
       >
       </SelectPageByOther>
     </el-form-item>
