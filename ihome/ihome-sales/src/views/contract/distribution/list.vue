@@ -4,10 +4,10 @@
  * @Author: ywl
  * @Date: 2020-09-25 17:34:32
  * @LastEditors: ywl
- * @LastEditTime: 2020-10-23 09:52:19
+ * @LastEditTime: 2020-10-26 18:32:19
 -->
 <template>
-  <IhPage>
+  <IhPage label-width="100px">
     <!-- 搜索 -->
     <template #form>
       <el-form
@@ -17,18 +17,17 @@
         <el-row>
           <el-col :span="8">
             <el-form-item label="标题">
-              <el-select
-                v-model="queryPageParameters.name"
+              <el-input
+                v-model="queryPageParameters.title"
                 placeholder="标题"
                 clearable
-                class="width--100"
-              ></el-select>
+              ></el-input>
             </el-form-item>
           </el-col>
           <el-col :span="8">
             <el-form-item label="甲方公司">
               <el-select
-                v-model="queryPageParameters.name"
+                v-model="queryPageParameters.partyA"
                 placeholder="甲方公司"
                 clearable
                 class="width--100"
@@ -38,18 +37,11 @@
           <el-col :span="8">
             <el-form-item label="乙方公司">
               <el-select
-                v-model="queryPageParameters.accountType"
+                v-model="queryPageParameters.partyB"
                 clearable
                 placeholder="乙方公司"
                 class="width--100"
-              >
-                <el-option
-                  v-for="item in $root.displayList('accountType')"
-                  :key="item.value"
-                  :label="item.label"
-                  :value="item.value"
-                ></el-option>
-              </el-select>
+              ></el-select>
             </el-form-item>
           </el-col>
         </el-row>
@@ -59,7 +51,7 @@
               <el-col :span="8">
                 <el-form-item label="项目地址">
                   <el-input
-                    v-model="queryPageParameters.mobilePhone"
+                    v-model="queryPageParameters.address"
                     placeholder="项目地址"
                   ></el-input>
                 </el-form-item>
@@ -68,7 +60,7 @@
                 <el-form-item label="合作时间">
                   <el-date-picker
                     style="width:100%;"
-                    v-model="queryPageParameters.employmentDate"
+                    v-model="timeList"
                     type="daterange"
                     align="left"
                     unlink-panels
@@ -83,18 +75,11 @@
               <el-col :span="8">
                 <el-form-item label="合同模板">
                   <el-select
-                    v-model="queryPageParameters.accountType"
+                    v-model="queryPageParameters.template"
                     clearable
                     placeholder="合同模板"
                     class="width--100"
-                  >
-                    <el-option
-                      v-for="item in $root.displayList('accountType')"
-                      :key="item.value"
-                      :label="item.label"
-                      :value="item.value"
-                    ></el-option>
-                  </el-select>
+                  ></el-select>
                 </el-form-item>
               </el-col>
             </el-row>
@@ -102,53 +87,28 @@
             <el-row>
               <el-col :span="8">
                 <el-form-item label="项目">
-                  <el-select
-                    v-model="queryPageParameters.accountType"
+                  <el-input
+                    v-model="queryPageParameters.project"
                     clearable
                     placeholder="项目"
-                    class="width--100"
-                  >
-                    <el-option
-                      v-for="item in $root.displayList('accountType')"
-                      :key="item.value"
-                      :label="item.label"
-                      :value="item.value"
-                    ></el-option>
-                  </el-select>
+                  ></el-input>
                 </el-form-item>
               </el-col>
               <el-col :span="8">
                 <el-form-item label="周期">
-                  <el-select
-                    v-model="queryPageParameters.accountType"
+                  <el-input
+                    v-model="queryPageParameters.cycle"
                     clearable
                     placeholder="周期"
-                    class="width--100"
-                  >
-                    <el-option
-                      v-for="item in $root.displayList('accountType')"
-                      :key="item.value"
-                      :label="item.label"
-                      :value="item.value"
-                    ></el-option>
-                  </el-select>
+                  ></el-input>
                 </el-form-item>
               </el-col>
               <el-col :span="8">
                 <el-form-item label="归属组织">
-                  <el-select
-                    v-model="queryPageParameters.employeeStatus"
-                    clearable
-                    placeholder="请选择归属组织"
-                    class="width--100"
-                  >
-                    <el-option
-                      v-for="item in $root.displayList('employeeStatus')"
-                      :key="item.value"
-                      :label="item.label"
-                      :value="item.value"
-                    ></el-option>
-                  </el-select>
+                  <SelectOrganizationTree
+                    :orgId="queryPageParameters.organization"
+                    @callback="(id) => (queryPageParameters.organization = id)"
+                  />
                 </el-form-item>
               </el-col>
             </el-row>
@@ -156,25 +116,17 @@
             <el-row>
               <el-col :span="8">
                 <el-form-item label="合同编号">
-                  <el-select
-                    v-model="queryPageParameters.employeeStatus"
+                  <el-input
+                    v-model="queryPageParameters.contractCode"
                     clearable
-                    placeholder="请选择合同编号"
-                    class="width--100"
-                  >
-                    <el-option
-                      v-for="item in $root.displayList('employeeStatus')"
-                      :key="item.value"
-                      :label="item.label"
-                      :value="item.value"
-                    ></el-option>
-                  </el-select>
+                    placeholder="请输入合同编号"
+                  ></el-input>
                 </el-form-item>
               </el-col>
               <el-col :span="8">
                 <el-form-item label="归档状态">
                   <el-select
-                    v-model="queryPageParameters.employeeType"
+                    v-model="queryPageParameters.fileState"
                     clearable
                     placeholder="请选择归档状态"
                     class="width--100"
@@ -190,19 +142,11 @@
               </el-col>
               <el-col :span="8">
                 <el-form-item label="归档编号">
-                  <el-select
-                    v-model="queryPageParameters.workType"
+                  <el-input
+                    v-model="queryPageParameters.fileCode"
                     clearable
-                    placeholder="请选择归档编号"
-                    class="width--100"
-                  >
-                    <el-option
-                      v-for="item in $root.displayList('workType')"
-                      :key="item.value"
-                      :label="item.label"
-                      :value="item.value"
-                    ></el-option>
-                  </el-select>
+                    placeholder="请输入归档编号"
+                  ></el-input>
                 </el-form-item>
               </el-col>
             </el-row>
@@ -211,51 +155,22 @@
               <el-col :span="8">
                 <el-form-item label="合同录入人">
                   <el-select
-                    v-model="queryPageParameters.employeeStatus"
+                    v-model="queryPageParameters.creator"
                     clearable
                     placeholder="请选择合同录入人"
                     class="width--100"
                   >
-                    <el-option
-                      v-for="item in $root.displayList('employeeStatus')"
-                      :key="item.value"
-                      :label="item.label"
-                      :value="item.value"
-                    ></el-option>
                   </el-select>
                 </el-form-item>
               </el-col>
               <el-col :span="8">
                 <el-form-item label="合同跟进人">
                   <el-select
-                    v-model="queryPageParameters.employeeType"
+                    v-model="queryPageParameters.handler"
                     clearable
                     placeholder="请选择合同跟进人"
                     class="width--100"
                   >
-                    <el-option
-                      v-for="item in $root.displayList('employeeType')"
-                      :key="item.value"
-                      :label="item.label"
-                      :value="item.value"
-                    ></el-option>
-                  </el-select>
-                </el-form-item>
-              </el-col>
-              <el-col :span="8">
-                <el-form-item label="中介战略协议">
-                  <el-select
-                    v-model="queryPageParameters.employeeType"
-                    clearable
-                    placeholder="请选择中介战略协议"
-                    class="width--100"
-                  >
-                    <el-option
-                      v-for="item in $root.displayList('employeeType')"
-                      :key="item.value"
-                      :label="item.label"
-                      :value="item.value"
-                    ></el-option>
                   </el-select>
                 </el-form-item>
               </el-col>
@@ -405,13 +320,35 @@
 <script lang="ts">
 import { Component, Vue } from "vue-property-decorator";
 import PaginationMixin from "@/mixins/pagination";
+
+import { post_distribution_list } from "@/api/contract/index";
+import SelectOrganizationTree from "@/components/SelectOrganizationTree.vue";
+
 @Component({
+  components: { SelectOrganizationTree },
   mixins: [PaginationMixin],
 })
 export default class IntermediaryList extends Vue {
-  public queryPageParameters: any = {};
+  public queryPageParameters: any = {
+    title: "",
+    address: "",
+    contractCode: "",
+    partyA: "",
+    partyB: "",
+    beginTime: "",
+    endTime: "",
+    template: "",
+    project: "",
+    cycle: "",
+    organization: "",
+    fileState: "",
+    fileCode: "",
+    creator: "",
+    handler: "",
+  };
+  private timeList = [];
   private searchOpen = true;
-  resPageInfo: PageInfo = {
+  resPageInfo: any = {
     total: 0,
     list: [
       {
@@ -495,10 +432,13 @@ export default class IntermediaryList extends Vue {
   private handleSelectionChange(val: any): void {
     console.log(val);
   }
-}
-interface PageInfo {
-  total: number;
-  list: Array<object>;
+  public async getListMixin(): Promise<void> {
+    this.resPageInfo = await post_distribution_list(this.queryPageParameters);
+  }
+
+  created() {
+    this.getListMixin();
+  }
 }
 </script>
 

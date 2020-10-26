@@ -4,15 +4,15 @@
  * @Author: ywl
  * @Date: 2020-09-25 11:53:51
  * @LastEditors: ywl
- * @LastEditTime: 2020-10-26 15:28:01
+ * @LastEditTime: 2020-10-26 17:28:12
 -->
 <template>
-  <IhPage>
+  <IhPage label-width="100px">
     <!-- 搜索 -->
     <template #form>
       <el-form
         ref="form"
-        label-width="85px"
+        label-width="100px"
       >
         <el-row>
           <el-col :span="8">
