@@ -4,7 +4,7 @@
  * @Author: ywl
  * @Date: 2020-09-25 17:34:32
  * @LastEditors: ywl
- * @LastEditTime: 2020-10-26 18:32:19
+ * @LastEditTime: 2020-10-27 10:42:55
 -->
 <template>
   <IhPage label-width="100px">
@@ -322,6 +322,7 @@ import { Component, Vue } from "vue-property-decorator";
 import PaginationMixin from "@/mixins/pagination";
 
 import { post_distribution_list } from "@/api/contract/index";
+import { post_company_getAll } from "@/api/system/index";
 import SelectOrganizationTree from "@/components/SelectOrganizationTree.vue";
 
 @Component({
@@ -350,80 +351,7 @@ export default class IntermediaryList extends Vue {
   private searchOpen = true;
   resPageInfo: any = {
     total: 0,
-    list: [
-      {
-        title: "123",
-        jia: "广州居恒信息科技有限公司",
-        yi: "asd",
-        pro: "保利XX项目",
-        time: "2020-9-28",
-        zoom: "周期",
-        pl: "保利",
-        id: "128418458315",
-        name: "爱家案场",
-        isAction: "保存",
-      },
-      {
-        title: "123",
-        jia: "广州居恒信息科技有限公司1",
-        yi: "asd",
-        pro: "保利XX项目",
-        time: "2020-9-28",
-        zoom: "周期1",
-        pl: "保利",
-        id: "128418458315",
-        name: "爱家案场1",
-        isAction: "保存",
-      },
-      {
-        title: "123",
-        jia: "广州居恒信息科技有限公司",
-        yi: "asd",
-        pro: "保利XX项目1",
-        time: "2020-9-29",
-        zoom: "周期",
-        pl: "保利",
-        id: "128418458315",
-        name: "爱家案场",
-        isAction: "保存",
-      },
-      {
-        title: "123",
-        jia: "广州居恒信息科技有限公司",
-        yi: "asd",
-        pro: "保利112项目1",
-        time: "2020-9-29",
-        zoom: "周期",
-        pl: "保利",
-        id: "128418458315",
-        name: "爱家案场",
-        isAction: "保存",
-      },
-      {
-        title: "分销协议",
-        jia: "广州居恒信息科技有限公司",
-        yi: "asd",
-        pro: "保利112项目1",
-        time: "2020-9-29",
-        zoom: "周期",
-        pl: "保利",
-        id: "128418458315",
-        name: "爱家案场",
-        isAction: "保存",
-      },
-      {
-        title: "分销协议",
-        jia: "广州居恒信息科技有限公司",
-        yi: "asd",
-        pro: "保利112项目1",
-        time: "2020-9-29",
-        zoom: "周期",
-        pl: "保利",
-        id: "128418458315",
-        name: "爱家案场",
-        isAction: "保存",
-      },
-    ],
+    list: [],
   };
 
   private openToggle(): void {
@@ -431,6 +359,9 @@ export default class IntermediaryList extends Vue {
   }
   private handleSelectionChange(val: any): void {
     console.log(val);
+  }
+  private async getCompanyList() {
+    await post_company_getAll();
   }
   public async getListMixin(): Promise<void> {
     this.resPageInfo = await post_distribution_list(this.queryPageParameters);
