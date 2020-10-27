@@ -3,8 +3,8 @@
  * @version: 
  * @Author: zyc
  * @Date: 2020-07-16 08:55:55
- * @LastEditors: zyc
- * @LastEditTime: 2020-08-26 10:28:14
+ * @LastEditors: ywl
+ * @LastEditTime: 2020-10-27 10:31:08
  */
 export default (Vue: any, vm: any) => {
     (vm)
@@ -71,6 +71,46 @@ export default (Vue: any, vm: any) => {
                 result = "";
         }
         return result;
+    })
+    /**
+     * 时间戳转换日期时间
+     * @param {*} dates 日期字符串、GMT时间、时间戳
+     * @param {String} format 日期格式
+     * @returns {String} YYYY-MM-DD hh:mm:ss
+     */
+    Vue.filter('timestampToDate', function (value: any, format: string) {
+        format = format || "YYYY-MM-DD hh:mm:ss";
+        let time = new Date();
+        let month
+        if (!value) return "-";
+        if (/^[0-9]*$/.test(value) && typeof value === "number" && !isNaN(value)) {
+            time = new Date(typeof value == "string" ? parseInt(value) : value);
+            month = time.getMonth() + 1;
+        } else {
+            let d = value.match(/\w+|d+/g);
+            time = new Date(d[0], d[1], d[2], d[3], d[4], d[5]);
+            month = time.getMonth();
+        }
+        let digit = (num: number) => (num < 10 ? "0" + (num | 0) : num);
+        let year = time.getFullYear();
+        console.log(month, time, value)
+        let date = time.getDate();
+        let hour = time.getHours();
+        let minute = time.getMinutes();
+        let second = time.getSeconds(); // 秒 根据具体情况调用
+        let dates: any = {
+            YYYY: year,
+            MM: digit(month),
+            DD: digit(date),
+            hh: digit(hour),
+            mm: digit(minute),
+            ss: digit(second),
+        };
+        return format.replace(new RegExp("YYYY|MM|DD|hh|mm|ss", "g"), function (
+            val
+        ) {
+            return dates[val];
+        });
     })
 
 };

@@ -49,7 +49,7 @@
           key: 'id',
           lable: 'name'
         }"
-        searchPlaceholder="hhah"
+        :searchPlaceholder="'2020-10-27 10:10:00' | timestampToDate('YYYY-MM-DD')"
       >
       </SelectPageByOther>
     </el-form-item>
