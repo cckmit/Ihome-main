@@ -4,12 +4,13 @@
  * @Author: zyc
  * @Date: 2020-05-30 17:13:05
  * @LastEditors: zyc
- * @LastEditTime: 2020-07-10 09:45:49
+ * @LastEditTime: 2020-10-23 16:08:41
  */
 
 import Vue from "vue";
 import 'axios'
 import { ToolInterface } from './util/tool'
+import { RawLocation, Route } from 'vue-router/types/router.d'
 declare module "vue/types/vue" {
   interface Vue {
     component(name: string, component: any): any;
@@ -18,6 +19,11 @@ declare module "vue/types/vue" {
     $tool: ToolInterface;
     $setGlobalState: any;
     $qiankun: any;
+    /**跳转，与this.$router.push用法一致
+     * @param {*}
+     * @return {*}
+     */
+    $goto(location: RawLocation): Promise<Route>;
   }
 
 }

@@ -4,7 +4,7 @@
  * @Author: wwq
  * @Date: 2020-10-15 12:33:25
  * @LastEditors: wwq
- * @LastEditTime: 2020-10-23 14:23:11
+ * @LastEditTime: 2020-10-23 18:06:52
 -->
 <template>
   <div class="text-left">
@@ -40,58 +40,46 @@
           </el-form-item>
         </el-col>
       </el-row>
-      <el-collapse-transition>
-        <div v-show="searchOpen">
-          <el-row>
-            <el-col :span="8">
-              <el-form-item label="业务开展省份" required align="left">
-                <span>{{ $root.getAreaName(resPageInfo.province) }}</span>
-              </el-form-item>
-            </el-col>
-            <el-col :span="8">
-              <el-form-item label="业务开展城市" required align="left">
-                <span>{{ $root.getAreaName(resPageInfo.city) }}</span>
-              </el-form-item>
-            </el-col>
-            <el-col :span="8">
-              <el-form-item label="城市等级" align="left">
-                <span>{{
-                  $root.dictAllName(resPageInfo.cityGrade, "CityLevel")
-                }}</span>
-              </el-form-item>
-            </el-col>
-            <el-col :span="8">
-              <el-form-item label="是否特批入库" required align="left">
-                <span>{{
-                  $root.dictAllName(resPageInfo.special, "YesOrNoType")
-                }}</span>
-              </el-form-item>
-            </el-col>
-            <el-col :span="8">
-              <el-form-item label="入库编号" align="left">
-                <span>{{ resPageInfo.storageNum }}</span>
-              </el-form-item>
-            </el-col>
-            <el-col :span="8">
-              <el-form-item label="状态" align="left">
-                <span>{{
-                  $root.dictAllName(resPageInfo.status, "ChannelStatus")
-                }}</span>
-              </el-form-item>
-            </el-col>
-          </el-row>
-        </div>
-      </el-collapse-transition>
+      <el-row>
+        <el-col :span="8">
+          <el-form-item label="业务开展省份" required align="left">
+            <span>{{ $root.getAreaName(resPageInfo.province) }}</span>
+          </el-form-item>
+        </el-col>
+        <el-col :span="8">
+          <el-form-item label="业务开展城市" required align="left">
+            <span>{{ $root.getAreaName(resPageInfo.city) }}</span>
+          </el-form-item>
+        </el-col>
+        <el-col :span="8">
+          <el-form-item label="城市等级" align="left">
+            <span>{{
+              $root.dictAllName(resPageInfo.cityGrade, "CityLevel")
+            }}</span>
+          </el-form-item>
+        </el-col>
+        <el-col :span="8">
+          <el-form-item label="是否特批入库" required align="left">
+            <span>{{
+              $root.dictAllName(resPageInfo.special, "YesOrNoType")
+            }}</span>
+          </el-form-item>
+        </el-col>
+        <el-col :span="8">
+          <el-form-item label="入库编号" align="left">
+            <span>{{ resPageInfo.storageNum }}</span>
+          </el-form-item>
+        </el-col>
+        <el-col :span="8">
+          <el-form-item label="状态" align="left">
+            <span>{{
+              $root.dictAllName(resPageInfo.status, "ChannelStatus")
+            }}</span>
+          </el-form-item>
+        </el-col>
+      </el-row>
     </el-form>
 
-    <el-row>
-      <el-link
-        type="primary"
-        class="float-right margin-right-40"
-        @click="openToggle()"
-        >{{ searchOpen ? "收起" : "展开" }}</el-link
-      >
-    </el-row>
     <p class="ih-info-title">
       评级信息
       <el-link
@@ -211,7 +199,6 @@ export default class Home extends Vue {
   private fileList = [];
   private info = [];
   private remark = "";
-  searchOpen = true;
 
   resPageInfo: any = {
     channelId: null,
@@ -226,10 +213,6 @@ export default class Home extends Vue {
     channelGradeItems: [],
     channelGradeAttachments: [],
   };
-
-  openToggle() {
-    this.searchOpen = !this.searchOpen;
-  }
 
   async created() {
     this.getInfo();
@@ -251,7 +234,7 @@ export default class Home extends Vue {
         type: "success",
         message: this.showMsg(val),
       });
-      this.$router.push("/channelLevel/list");
+      this.$goto({ path: "/channelLevel/list" });
     } else {
       this.$message({
         type: "warning",

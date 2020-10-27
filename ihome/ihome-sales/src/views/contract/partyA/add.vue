@@ -4,7 +4,7 @@
  * @Author: ywl
  * @Date: 2020-09-25 16:00:37
  * @LastEditors: ywl
- * @LastEditTime: 2020-09-25 17:23:35
+ * @LastEditTime: 2020-10-23 15:02:01
 -->
 <template>
   <ih-page>
@@ -13,7 +13,7 @@
       <el-form
         :model="ruleForm"
         ref="ruleForm"
-        label-width="100px"
+        label-width="120px"
         class="demo-ruleForm"
       >
         <el-row>
@@ -157,7 +157,7 @@
         </el-row>
         <el-row>
           <el-col :span="24">
-            <el-form-item style="text-align:left;">
+            <el-form-item>
               <el-button type="primary">提交</el-button>
               <el-button>取消</el-button>
             </el-form-item>

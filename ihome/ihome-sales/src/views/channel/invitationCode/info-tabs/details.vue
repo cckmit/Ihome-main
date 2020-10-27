@@ -4,7 +4,7 @@
  * @Author: zyc
  * @Date: 2020-07-09 14:31:23
  * @LastEditors: zyc
- * @LastEditTime: 2020-10-13 19:54:52
+ * @LastEditTime: 2020-10-23 16:19:46
 --> 
 <template>
   <div>
@@ -44,6 +44,11 @@ export default class InvitationCodeDetails extends Vue {
   download() {
     console.log("下载,未实现");
   }
+  // goto() {
+  //   this.$goto({
+  //     path: "/invitationCode/list",
+  //   });
+  // }
 }
 </script>
 <style lang="scss" scoped>

@@ -4,7 +4,7 @@
  * @Author: ywl
  * @Date: 2020-09-18 09:14:40
  * @LastEditors: ywl
- * @LastEditTime: 2020-10-20 10:23:00
+ * @LastEditTime: 2020-10-23 17:44:13
 -->
 <template>
   <IhPage>
@@ -116,7 +116,7 @@
         <el-table-column
           prop="settlementFlag"
           label="结佣权限"
-          min-width="170"
+          min-width="80"
         >
           <template v-slot="{ row }">
             <span>{{$root.dictAllName(row.settlementFlag, 'HasOrNoType')}}</span>

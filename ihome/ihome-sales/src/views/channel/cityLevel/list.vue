@@ -3,13 +3,16 @@
  * @version: 
  * @Author: wwq
  * @Date: 2020-06-30 09:21:17
- * @LastEditors: wwq
- * @LastEditTime: 2020-10-23 10:45:04
+ * @LastEditors: ywl
+ * @LastEditTime: 2020-10-23 17:21:20
 --> 
 <template>
   <IhPage label-width="100px">
     <template v-slot:form>
-      <el-form ref="form" label-width="100px">
+      <el-form
+        ref="form"
+        label-width="100px"
+      >
         <el-row>
           <el-col :span="8">
             <el-form-item label="省市">
@@ -45,9 +48,18 @@
 
     <template v-slot:btn>
       <el-row>
-        <el-button type="primary" @click="search()">查询</el-button>
-        <el-button type="info" @click="reset">重置</el-button>
-        <el-button type="success" @click="citySet()">设置城市等级</el-button>
+        <el-button
+          type="primary"
+          @click="search()"
+        >查询</el-button>
+        <el-button
+          type="info"
+          @click="reset"
+        >重置</el-button>
+        <el-button
+          type="success"
+          @click="citySet()"
+        >设置城市等级</el-button>
       </el-row>
     </template>
 
@@ -63,17 +75,26 @@
           width="50"
           align="center"
         ></el-table-column>
-        <el-table-column prop="parentCode" label="省份">
+        <el-table-column
+          prop="parentCode"
+          label="省份"
+        >
           <template v-slot="{ row }">{{
             $root.getAreaName(row.parentCode)
           }}</template>
         </el-table-column>
-        <el-table-column prop="code" label="城市">
+        <el-table-column
+          prop="code"
+          label="城市"
+        >
           <template v-slot="{ row }">{{
             $root.getAreaName(row.code)
           }}</template>
         </el-table-column>
-        <el-table-column prop="cityGrade" label="城市等级">
+        <el-table-column
+          prop="cityGrade"
+          label="城市等级"
+        >
           <template v-slot="{ row }">{{
             $root.dictAllName(row.cityGrade, "CityLevel")
           }}</template>
@@ -88,47 +109,39 @@
         :current-page.sync="queryPageParameters.pageNum"
         :page-sizes="$root.pageSizes"
         :page-size="queryPageParameters.pageSize"
-        :page-num="queryPageParameters.pageNum"
         :layout="$root.paginationLayout"
         :total="resPageInfo.total"
       ></el-pagination>
     </template>
-    <el-dialog width="500px" :visible.sync="dialogFormVisible">
-      <el-form :model="form">
-        <el-form-item label="城市等级" label-width="80px">
-          <el-select
-            v-model="form.cityGrade"
-            clearable
-            placeholder="城市等级"
-            class="width--100"
-          >
-            <el-option
-              v-for="item in $root.dictAllList('CityLevel')"
-              :key="item.code"
-              :label="item.name"
-              :value="item.code"
-            ></el-option>
-          </el-select>
-        </el-form-item>
-      </el-form>
-      <div slot="footer" class="dialog-footer">
-        <el-button @click="dialogFormVisible = false">取 消</el-button>
-        <el-button type="primary" @click="finish">确 定</el-button>
-      </div>
-    </el-dialog>
+
+    <IhDialog
+      :show="dialogFormVisible"
+      desc="设置城市等级"
+    >
+      <LevalDialog
+        :data="selection"
+        @cancel="() => (dialogFormVisible = false)"
+        @finish="
+          (data) => {
+            dialogFormVisible = false;
+            getListMixin();
+          }
+        "
+      >
+      </LevalDialog>
+    </IhDialog>
   </IhPage>
 </template>
 <script lang="ts">
 import { Component, Vue } from "vue-property-decorator";
 
-import {
-  post_channelCityLevel_getList,
-  post_channelCityLevel_updateLevel,
-} from "../../../api/channel/index";
+import { post_channelCityLevel_getList } from "../../../api/channel/index";
 import PaginationMixin from "../../../mixins/pagination";
 
+import LevalDialog from "./dialog/levelDialog.vue";
+
 @Component({
-  components: {},
+  components: { LevalDialog },
   mixins: [PaginationMixin],
 })
 export default class CityList extends Vue {
@@ -140,10 +153,6 @@ export default class CityList extends Vue {
   provinceOption: any = [];
   cityOption: any = [];
   selection: any = [];
-  form = {
-    cityGrade: null,
-    ids: [],
-  };
   dialogFormVisible = false;
   resPageInfo: any = {
     total: 0,
@@ -160,14 +169,6 @@ export default class CityList extends Vue {
       cityGrade: null,
     };
     this.provinceOption = [];
-  }
-  handleSizeChangeMixin(val: any) {
-    this.queryPageParameters.pageSize = val;
-    this.getListMixin();
-  }
-  handleCurrentChangeMixin(val: any) {
-    this.queryPageParameters.pageNum = val;
-    this.getListMixin();
   }
   handleSelectionChange(val: any) {
     this.selection = val;
@@ -191,18 +192,6 @@ export default class CityList extends Vue {
   citySet() {
     if (this.selection.length) this.dialogFormVisible = true;
     else this.$message.warning("请先勾选表格数据");
-  }
-
-  async finish() {
-    this.form.ids = this.selection.map((v: any) => v.id);
-    await post_channelCityLevel_updateLevel(this.form);
-    this.dialogFormVisible = false;
-    this.$message.success("修改成功!");
-    this.getListMixin();
-    this.form = {
-      cityGrade: null,
-      ids: [],
-    };
   }
 }
 </script>

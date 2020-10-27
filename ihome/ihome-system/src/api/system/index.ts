@@ -1,6 +1,6 @@
 /* eslint-disable */
 /* 此脚本由swagger-ui的api-docs自动生成，请勿修改 */
-//2020-10-21 10:34:50
+//2020-10-26 6:25:33 ├F10: PM┤
 import { request } from '@/api/base'
 const basePath = "/sales-api/system"
 /**查询所有行政区划信息*/
@@ -14,6 +14,14 @@ return await request.get<AreaBaseVO[],AreaBaseVO[]>(basePath+'/area/getAllChildA
 /**查询所有省份信息*/
 export async function get_area_getAllProvince (d?: any) {
 return await request.get<AreaBaseVO[],AreaBaseVO[]>(basePath+'/area/getAllProvince', { params: d })
+}
+/**查询所有公司信息*/
+export async function post_company_getAll (d?: any) {
+return await request.post< CompanyBaseVO[],CompanyBaseVO[]> (basePath+'/company/getAll', d)
+}
+/**添加字典*/
+export async function post_dict_add (d?: any) {
+return await request.post< number,number> (basePath+'/dict/add', d)
 }
 /**查询所有字典项*/
 export async function get_dict_getAll (d?: any) {
@@ -265,6 +273,18 @@ name: string;
 /**父编码*/
 parentCode: string;
 }
+/**CompanyBaseVO*/
+export interface CompanyBaseVO {
+/**ID*/
+id: number;
+/**公司名称*/
+name: string;
+}
+/**CompanyQueryVO*/
+export interface CompanyQueryVO {
+/**公司名称*/
+name: string;
+}
 /**DictBaseVO*/
 export interface DictBaseVO {
 /**编码*/
@@ -279,8 +299,8 @@ subType: string;
 tag: string;
 /**类别*/
 type: string;
-/**是否有效*/
-valid: number;
+/**是否有效(Valid-有效、Invalid-无效)*/
+valid: string;
 }
 /**DictTypeCodeQueryVO*/
 export interface DictTypeCodeQueryVO {
@@ -288,15 +308,15 @@ export interface DictTypeCodeQueryVO {
 code: string;
 /**(必填)类型*/
 type: string;
-/**是否有效*/
-valid: number;
+/**是否有效(Valid-有效、Invalid-无效)*/
+valid: string;
 }
 /**DictTypeQueryVO*/
 export interface DictTypeQueryVO {
 /**(必填)类型*/
 type: string;
-/**是否有效*/
-valid: number;
+/**是否有效(Valid-有效、Invalid-无效)*/
+valid: string;
 }
 /**JobBaseVO*/
 export interface JobBaseVO {
@@ -596,11 +616,13 @@ createTime: string;
 createUser: number;
 /**已删除*/
 deleted: number;
-/**id*/
+/**图标*/
+icon: string;
+/**ID*/
 id: number;
 /**名称*/
 name: string;
-/**父资源id*/
+/**父ID*/
 parentId: number;
 /**类型(Root-资源根节点、System-系统、Service-服务模块、Menu-功能菜单、Api-API、Button-按钮、Element-元素)*/
 type: string;
@@ -608,13 +630,15 @@ type: string;
 updateTime: string;
 /**更新用户*/
 updateUser: number;
-/**url*/
+/**URL*/
 url: string;
 }
 /**ResourceBaseVO*/
 export interface ResourceBaseVO {
 /**(必填)编码*/
 code: string;
+/**图标*/
+icon: string;
 /**(必填)名称*/
 name: string;
 /**(必填)父资源id*/
@@ -668,6 +692,8 @@ roleIds: number[];
 export interface ResourceUpdateVO {
 /**(必填)编码*/
 code: string;
+/**图标*/
+icon: string;
 /**(必填)id*/
 id: number;
 /**(必填)名称*/
@@ -700,13 +726,15 @@ createUser: number;
 createUserName: string;
 /**已删除*/
 deleted: number;
-/**id*/
+/**图标*/
+icon: string;
+/**ID*/
 id: number;
 /**名称*/
 name: string;
 /**父资源编码*/
 parentCode: string;
-/**父资源id*/
+/**父ID*/
 parentId: number;
 /**父资源名称*/
 parentName: string;
@@ -718,7 +746,7 @@ updateTime: string;
 updateUser: number;
 /**更新用户姓名*/
 updateUserName: string;
-/**url*/
+/**URL*/
 url: string;
 }
 /**Role*/

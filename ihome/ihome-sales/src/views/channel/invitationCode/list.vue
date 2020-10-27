@@ -3,8 +3,8 @@
  * @version: 
  * @Author: zyc
  * @Date: 2020-07-14 09:23:40
- * @LastEditors: wwq
- * @LastEditTime: 2020-10-23 14:32:56
+ * @LastEditors: zyc
+ * @LastEditTime: 2020-10-23 15:48:55
 --> 
 --> 
 <template>
@@ -201,6 +201,10 @@ import PaginationMixin from "../../../mixins/pagination";
   mixins: [PaginationMixin],
 })
 export default class InvitationCodeList extends Vue {
+  constructor() {
+    super();
+    console.log("constructor");
+  }
   queryPageParameters: any = {
     departmentOrgId: null,
     expiresTime: null,
@@ -227,7 +231,12 @@ export default class InvitationCodeList extends Vue {
   }
 
   async created() {
+    console.log("created");
     this.getListMixin();
+  }
+
+  async mounted() {
+    console.log("mounted");
   }
   expiresTimeChange(dateArray: any) {
     this.queryPageParameters.expiresTimeBegin = dateArray[0];
@@ -249,6 +258,7 @@ export default class InvitationCodeList extends Vue {
     }
   }
   info(scope: any) {
+   
     this.$router.push({
       path: "/invitationCode/info",
       query: { id: scope.row.id },

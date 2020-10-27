@@ -4,7 +4,7 @@
  * @Author: wwq
  * @Date: 2020-09-25 17:59:09
  * @LastEditors: wwq
- * @LastEditTime: 2020-10-23 14:29:15
+ * @LastEditTime: 2020-10-23 18:04:54
 -->
 <template>
   <ih-page>
@@ -48,122 +48,107 @@
             </el-form-item>
           </el-col>
         </el-row>
-        <el-collapse-transition>
-          <div v-show="searchOpen">
-            <el-row>
-              <el-col :span="8">
-                <el-form-item label="类型" prop="type">
-                  <el-select
-                    v-model="resPageInfo.type"
-                    clearable
-                    placeholder="请选择类型"
-                    class="width--100"
-                  >
-                    <el-option
-                      v-for="item in $root.dictAllList('CompanyTypeEnum')"
-                      :key="item.code"
-                      :label="item.name"
-                      :value="item.code"
-                    ></el-option>
-                  </el-select>
-                </el-form-item>
-              </el-col>
-              <el-col :span="8">
-                <el-form-item label="法定代表人" required prop="legalPerson">
-                  <el-input
-                    clearable
-                    maxlength="32"
-                    v-model="resPageInfo.legalPerson"
-                    placeholder="法定代表人"
-                  ></el-input>
-                </el-form-item>
-              </el-col>
-              <el-col :span="8">
-                <el-form-item label="法人身份证号码" prop="legalPersonId">
-                  <el-input
-                    clearable
-                    maxlength="18"
-                    v-model="resPageInfo.legalPersonId"
-                    placeholder="法人身份证号码"
-                  ></el-input>
-                </el-form-item>
-              </el-col>
-              <el-col :span="8">
-                <el-form-item label="成立日期" prop="setupTime">
-                  <el-date-picker
-                    v-model="resPageInfo.setupTime"
-                    style="width: 100%"
-                    type="date"
-                    placeholder="选择日期"
-                    value-format="yyyy-MM-dd"
-                  >
-                  </el-date-picker>
-                </el-form-item>
-              </el-col>
-              <el-col :span="8">
-                <el-form-item label="注册资本" prop="capital">
-                  <el-input
-                    clearable
-                    maxlength="32"
-                    v-model="resPageInfo.capital"
-                    placeholder="注册资本"
-                  ></el-input>
-                </el-form-item>
-              </el-col>
+        <el-row>
+          <el-col :span="8">
+            <el-form-item label="类型" prop="type">
+              <el-select
+                v-model="resPageInfo.type"
+                clearable
+                placeholder="请选择类型"
+                class="width--100"
+              >
+                <el-option
+                  v-for="item in $root.dictAllList('CompanyTypeEnum')"
+                  :key="item.code"
+                  :label="item.name"
+                  :value="item.code"
+                ></el-option>
+              </el-select>
+            </el-form-item>
+          </el-col>
+          <el-col :span="8">
+            <el-form-item label="法定代表人" required prop="legalPerson">
+              <el-input
+                clearable
+                maxlength="32"
+                v-model="resPageInfo.legalPerson"
+                placeholder="法定代表人"
+              ></el-input>
+            </el-form-item>
+          </el-col>
+          <el-col :span="8">
+            <el-form-item label="法人身份证号码" prop="legalPersonId">
+              <el-input
+                clearable
+                maxlength="18"
+                v-model="resPageInfo.legalPersonId"
+                placeholder="法人身份证号码"
+              ></el-input>
+            </el-form-item>
+          </el-col>
+          <el-col :span="8">
+            <el-form-item label="成立日期" prop="setupTime">
+              <el-date-picker
+                v-model="resPageInfo.setupTime"
+                style="width: 100%"
+                type="date"
+                placeholder="选择日期"
+                value-format="yyyy-MM-dd"
+              >
+              </el-date-picker>
+            </el-form-item>
+          </el-col>
+          <el-col :span="8">
+            <el-form-item label="注册资本" prop="capital">
+              <el-input
+                clearable
+                maxlength="32"
+                v-model="resPageInfo.capital"
+                placeholder="注册资本"
+              ></el-input>
+            </el-form-item>
+          </el-col>
 
-              <el-col :span="8">
-                <el-form-item label="营业期限">
-                  <el-input
-                    clearable
-                    maxlength="32"
-                    v-model="resPageInfo.businessTime"
-                    placeholder="营业期限"
-                  ></el-input>
-                </el-form-item>
-              </el-col>
-              <el-col :span="8">
-                <el-form-item label="省市区" prop="provinceOption">
-                  <IhCascader
-                    v-model="resPageInfo.provinceOption"
-                    :checkStrictly="false"
-                  ></IhCascader>
-                </el-form-item>
-              </el-col>
-              <el-col :span="16">
-                <el-form-item label="住所" prop="address">
-                  <el-input
-                    clearable
-                    maxlength="64"
-                    v-model="resPageInfo.address"
-                    placeholder="住所"
-                  ></el-input>
-                </el-form-item>
-              </el-col>
-              <el-col :span="8">
-                <el-form-item label="录入人" prop="inputUser">
-                  <el-input
-                    clearable
-                    disabled
-                    v-model="resPageInfo.inputUser"
-                    placeholder="录入人"
-                  ></el-input>
-                </el-form-item>
-              </el-col>
-            </el-row>
-          </div>
-        </el-collapse-transition>
+          <el-col :span="8">
+            <el-form-item label="营业期限">
+              <el-input
+                clearable
+                maxlength="32"
+                v-model="resPageInfo.businessTime"
+                placeholder="营业期限"
+              ></el-input>
+            </el-form-item>
+          </el-col>
+          <el-col :span="8">
+            <el-form-item label="省市区" prop="provinceOption">
+              <IhCascader
+                v-model="resPageInfo.provinceOption"
+                :checkStrictly="false"
+              ></IhCascader>
+            </el-form-item>
+          </el-col>
+          <el-col :span="16">
+            <el-form-item label="住所" prop="address">
+              <el-input
+                clearable
+                maxlength="64"
+                v-model="resPageInfo.address"
+                placeholder="住所"
+              ></el-input>
+            </el-form-item>
+          </el-col>
+          <el-col :span="8">
+            <el-form-item label="录入人" prop="inputUser">
+              <el-input
+                clearable
+                disabled
+                v-model="resPageInfo.inputUser"
+                placeholder="录入人"
+              ></el-input>
+            </el-form-item>
+          </el-col>
+        </el-row>
       </el-form>
-    </template>
-
-    <template v-slot:btn>
-      <el-row>
-        <el-link
-          type="primary"
-          class="float-right margin-right-40"
-          @click="openToggle()"
-          >{{ searchOpen ? "收起" : "展开" }}</el-link
-        >
-      </el-row>
     </template>
 
     <template v-slot:table>
@@ -389,10 +374,6 @@ export default class Edit extends Vue {
     return this.$route.query.id;
   }
 
-  openToggle() {
-    this.searchOpen = !this.searchOpen;
-  }
-
   async created() {
     this.getInfo();
   }
@@ -484,7 +465,7 @@ export default class Edit extends Vue {
             await post_company_update(this.resPageInfo);
             break;
         }
-        this.$router.push(`/developers/list`);
+        this.$goto({ path: `/developers/list` });
         this.$message({
           type: "success",
           message: val === "Draft" ? "保存成功!" : "提交成功!",

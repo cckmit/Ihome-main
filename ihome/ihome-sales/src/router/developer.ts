@@ -4,7 +4,7 @@
  * @Author: zyc
  * @Date: 2020-10-16 14:16:23
  * @LastEditors: wwq
- * @LastEditTime: 2020-10-19 11:48:21
+ * @LastEditTime: 2020-10-23 18:03:22
  */
 
 import { RouteConfig } from 'vue-router'
@@ -25,7 +25,7 @@ const developerRoutes: Array<RouteConfig> = [
         path: 'list',
         name: 'developerList',
         component: () => import('../views/developer/list.vue'),
-        meta: { title: '开发商列表', icon: 'form' }
+        meta: { title: '开发商列表', icon: 'form', keepAlive: true }
       },
       {
         path: 'add',

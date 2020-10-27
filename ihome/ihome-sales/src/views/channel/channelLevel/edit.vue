@@ -4,7 +4,7 @@
  * @Author: wwq
  * @Date: 2020-10-15 16:02:03
  * @LastEditors: wwq
- * @LastEditTime: 2020-10-23 14:20:46
+ * @LastEditTime: 2020-10-23 18:06:45
 -->
 <template>
   <IhPage>
@@ -71,87 +71,75 @@
               </el-form-item>
             </el-col>
           </el-row>
-          <el-collapse-transition>
-            <div v-show="searchOpen">
-              <el-row>
-                <el-col :span="8">
-                  <el-form-item label="业务开展省市" prop="provinceOption">
-                    <IhCascader
-                      :level="2"
-                      :checkStrictly="false"
-                      @change="getTableData"
-                      v-model="resPageInfo.provinceOption"
-                      clearable
-                      placeholder="请选择"
-                      class="width--100"
-                    />
-                  </el-form-item>
-                </el-col>
-                <el-col :span="8">
-                  <el-form-item label="城市等级" align="left">
-                    <span>{{
-                      $root.dictAllName(resPageInfo.cityGrade, "CityLevel")
-                    }}</span>
-                  </el-form-item>
-                </el-col>
-                <el-col :span="8">
-                  <el-form-item label="是否特批入库" prop="special">
-                    <el-select
-                      v-model="resPageInfo.special"
-                      clearable
-                      placeholder="特批入库"
-                      class="width--100"
-                    >
-                      <el-option
-                        v-for="item in $root.dictAllList('YesOrNoType')"
-                        :key="item.code"
-                        :label="item.name"
-                        :value="item.code"
-                      ></el-option>
-                    </el-select>
-                  </el-form-item>
-                </el-col>
-                <el-col :span="8">
-                  <el-form-item label="入库编号" align="left">
-                    <el-input
-                      clearable
-                      v-model="resPageInfo.storageNum"
-                      placeholder="系统自动创建"
-                      disabled
-                      maxlength="32"
-                    />
-                  </el-form-item>
-                </el-col>
-                <el-col :span="8">
-                  <el-form-item label="事业部" align="left">
-                    <el-select
-                      class="width--100"
-                      v-model="resPageInfo.departmentOrgId"
-                      clearable
-                      placeholder="请选择事业部"
-                    >
-                      <el-option
-                        v-for="item in departmentOrgIdOptions"
-                        :key="item.id"
-                        :label="item.name"
-                        :value="item.id"
-                      ></el-option>
-                    </el-select>
-                  </el-form-item>
-                </el-col>
-              </el-row>
-            </div>
-          </el-collapse-transition>
+          <el-row>
+            <el-col :span="8">
+              <el-form-item label="业务开展省市" prop="provinceOption">
+                <IhCascader
+                  :level="2"
+                  :checkStrictly="false"
+                  @change="getTableData"
+                  v-model="resPageInfo.provinceOption"
+                  clearable
+                  placeholder="请选择"
+                  class="width--100"
+                />
+              </el-form-item>
+            </el-col>
+            <el-col :span="8">
+              <el-form-item label="城市等级" align="left">
+                <span>{{
+                  $root.dictAllName(resPageInfo.cityGrade, "CityLevel")
+                }}</span>
+              </el-form-item>
+            </el-col>
+            <el-col :span="8">
+              <el-form-item label="是否特批入库" prop="special">
+                <el-select
+                  v-model="resPageInfo.special"
+                  clearable
+                  placeholder="特批入库"
+                  class="width--100"
+                >
+                  <el-option
+                    v-for="item in $root.dictAllList('YesOrNoType')"
+                    :key="item.code"
+                    :label="item.name"
+                    :value="item.code"
+                  ></el-option>
+                </el-select>
+              </el-form-item>
+            </el-col>
+            <el-col :span="8">
+              <el-form-item label="入库编号" align="left">
+                <el-input
+                  clearable
+                  v-model="resPageInfo.storageNum"
+                  placeholder="系统自动创建"
+                  disabled
+                  maxlength="32"
+                />
+              </el-form-item>
+            </el-col>
+            <el-col :span="8">
+              <el-form-item label="事业部" align="left">
+                <el-select
+                  class="width--100"
+                  v-model="resPageInfo.departmentOrgId"
+                  clearable
+                  placeholder="请选择事业部"
+                >
+                  <el-option
+                    v-for="item in departmentOrgIdOptions"
+                    :key="item.id"
+                    :label="item.name"
+                    :value="item.id"
+                  ></el-option>
+                </el-select>
+              </el-form-item>
+            </el-col>
+          </el-row>
         </el-form>
 
-        <el-row>
-          <el-link
-            type="primary"
-            class="float-right margin-right-40"
-            @click="openToggle()"
-            >{{ searchOpen ? "收起" : "展开" }}</el-link
-          >
-        </el-row>
         <p class="ih-info-title">
           评级信息
           <span style="font-size: 15px; margin-left: 10px"
@@ -274,7 +262,6 @@ export default class ChannelRates extends Vue {
   }
   private fileList = [];
   private changeReason = "";
-  searchOpen = true;
   channelOptions: any = [];
 
   resPageInfo: any = {
@@ -317,10 +304,6 @@ export default class ChannelRates extends Vue {
     ],
     special: [{ required: true, message: "请选择特批入库", trigger: "blur" }],
   };
-
-  openToggle() {
-    this.searchOpen = !this.searchOpen;
-  }
 
   async created() {
     this.getInfo();
@@ -379,7 +362,6 @@ export default class ChannelRates extends Vue {
           case "channelLevelEdit":
             this.resPageInfo.id = this.Id;
             await post_channelGrade_edit(this.resPageInfo);
-            this.$router.push("/channelLevel/list");
             break;
           case "channelLevelChange":
             if (this.changeReason) {
@@ -392,7 +374,6 @@ export default class ChannelRates extends Vue {
               ];
               this.resPageInfo.changeReason = this.changeReason;
               await post_channelGradeChange_add(this.resPageInfo);
-              this.$router.push("/levelChange/list");
             } else {
               this.$message.warning("请填写变更原因");
               return;
@@ -400,13 +381,13 @@ export default class ChannelRates extends Vue {
             break;
           case "channelLevelAdd":
             await post_channelGrade_add(this.resPageInfo);
-            this.$router.push("/channelLevel/list");
             break;
         }
         this.$message({
           type: "success",
           message: val === "1" ? "保存成功" : "提交成功",
         });
+        this.$goto({ path: "/levelChange/list" });
       }
     });
   }

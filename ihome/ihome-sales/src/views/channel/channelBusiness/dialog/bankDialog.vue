@@ -4,7 +4,7 @@
  * @Author: ywl
  * @Date: 2020-10-12 10:38:48
  * @LastEditors: ywl
- * @LastEditTime: 2020-10-14 20:23:55
+ * @LastEditTime: 2020-10-23 16:15:37
 -->
 <template>
   <el-dialog
@@ -14,6 +14,8 @@
     :close-on-press-escape="false"
     :before-close="cancel"
     width="500px"
+    :title="bankType === 'new-add' ? '添加银行账户信息' : '编辑银行账户信息'"
+    class="text-left"
   >
     <el-form
       :model="Bankrule"
@@ -97,7 +99,7 @@ export default class BankDialog extends Vue {
       { required: true, message: "请输入开户银行", trigger: "blur" },
       { max: 64, message: "字符长度不能大于64", trigger: "blur" },
     ],
-    bankType: [{ required: true, message: "请选择账户类型", trigger: "blur" }],
+    type: [{ required: true, message: "请选择账户类型", trigger: "blur" }],
   };
   private Bankrule: any = {
     accountName: "",

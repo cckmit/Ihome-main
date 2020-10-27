@@ -4,13 +4,14 @@
  * @Author: zyc
  * @Date: 2020-07-07 09:25:17
  * @LastEditors: zyc
- * @LastEditTime: 2020-10-23 09:32:49
+ * @LastEditTime: 2020-10-23 16:12:19
  */
 /* eslint-disable  no-console */
 import '../util/base/extend'
 import Vue from 'vue'
 import App from './App.vue'
 import { router } from '@/router'
+import { Location } from 'vue-router/types/router.d'
 import store from '@/store'
 import * as dic from '../util/enums/dic'
 let $dic: any = Object.assign(dic, dic.dicModular);
@@ -34,7 +35,7 @@ import { UserModule } from '@/store/modules/user'
 
 import registerIhomeCommon from '../ui/src/index';
 registerIhomeCommon(Vue);
- 
+
 import { Tool } from '../util/tool'
 import VueCropper from 'vue-cropper'
 
@@ -43,7 +44,10 @@ Vue.use(VueCropper)
 Vue.use(ElementUI);
 Vue.config.productionTip = false;
 Vue.prototype.$tool = new Tool();
-
+Vue.prototype.$goto = function (location: Location) {
+  (window as any).activatedRefresh = location.path;
+  this.$router.push(location)
+}
 import directives from '../util/vue/directives'
 import filters from '../util/vue/filters'
 

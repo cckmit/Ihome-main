@@ -4,9 +4,9 @@
  * @Author: zyc
  * @Date: 2020-07-24 17:08:03
  * @LastEditors: zyc
- * @LastEditTime: 2020-09-29 15:28:03
+ * @LastEditTime: 2020-10-23 16:20:52
  */
- /* eslint-disable  no-console */
+/* eslint-disable  no-console */
 interface IPageBase {
     pageNum: number,
     pageSize: number,
@@ -52,5 +52,11 @@ export default class PaginationMixin extends Vue {
     handleCurrentChangeMixin(pageSize: number) {
         (pageSize)
         this.getListMixin();
+    }
+    async activated() {
+        if ((window as any).activatedRefresh == this.$route.path) {
+            this.getListMixin();
+        }
+        (window as any).activatedRefresh = false;
     }
 }

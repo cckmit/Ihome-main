@@ -5,7 +5,9 @@
     :close-on-click-modal="false"
     :close-on-press-escape="false"
     :before-close="cancel"
+    :title="`${isAdd ? '添加' : '修改'}渠道经纪人`"
     width="500px"
+    class="text-left"
   >
     <el-form
       :model="form"
@@ -127,7 +129,7 @@ export default class AgentDialog extends Vue {
   }
 
   created() {
-    this.form = this.data;
+    if (!this.isAdd) this.form = this.data;
   }
 }
 </script>

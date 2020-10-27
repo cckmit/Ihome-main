@@ -4,7 +4,7 @@
  * @Author: ywl
  * @Date: 2020-09-16 14:05:21
  * @LastEditors: ywl
- * @LastEditTime: 2020-10-23 14:07:57
+ * @LastEditTime: 2020-10-23 16:18:20
 -->
 <template>
   <IhPage>
@@ -316,29 +316,29 @@
     </div>
 
     <p class="ih-info-title">企业概况</p>
-    <el-input
-      type="textarea"
-      style="box-sizing: border-box;"
-      class="padding-left-20"
-      :autosize="{ minRows: 5, maxRows: 8 }"
-      maxlength="256"
-      placeholder="请输入企业概况"
-      v-model="info.remark"
-    >
-    </el-input>
+    <div class="padding-left-20">
+      <el-input
+        type="textarea"
+        :autosize="{ minRows: 5, maxRows: 8 }"
+        maxlength="256"
+        placeholder="请输入企业概况"
+        v-model="info.remark"
+      >
+      </el-input>
+    </div>
 
     <template v-if="pageName === 'ChangeChannel'">
       <p class="ih-info-title">变更原因</p>
-      <el-input
-        type="textarea"
-        style="box-sizing: border-box;"
-        class="padding-left-20"
-        :autosize="{ minRows: 5, maxRows: 8 }"
-        maxlength="256"
-        placeholder="请输入变更原因"
-        v-model="changeReason"
-      >
-      </el-input>
+      <div class="padding-left-20">
+        <el-input
+          type="textarea"
+          :autosize="{ minRows: 5, maxRows: 8 }"
+          maxlength="256"
+          placeholder="请输入变更原因"
+          v-model="changeReason"
+        >
+        </el-input>
+      </div>
     </template>
     <div>
       <br />
