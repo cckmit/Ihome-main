@@ -4,7 +4,7 @@
  * @Author: ywl
  * @Date: 2020-09-25 17:34:32
  * @LastEditors: ywl
- * @LastEditTime: 2020-10-27 12:00:41
+ * @LastEditTime: 2020-10-27 16:11:08
 -->
 <template>
   <IhPage label-width="100px">
@@ -31,7 +31,14 @@
                 placeholder="甲方公司"
                 clearable
                 class="width--100"
-              ></el-select>
+              >
+                <el-option
+                  v-for="item in partyAList"
+                  :key="item.id"
+                  :label="item.name"
+                  :value="item.id"
+                ></el-option>
+              </el-select>
             </el-form-item>
           </el-col>
           <el-col :span="8">
@@ -39,12 +46,8 @@
               <el-select
                 v-model="queryPageParameters.partyB"
                 clearable
-                filterable
-                remote
-                :remote-method="getCompanyList"
                 placeholder="请选择乙方公司"
                 class="width--100"
-                :loading="companyLoading"
               >
                 <el-option
                   v-for="item in companyList"
@@ -340,6 +343,7 @@ import { Component, Vue } from "vue-property-decorator";
 import PaginationMixin from "@/mixins/pagination";
 
 import { post_distribution_list } from "@/api/contract/index";
+import { post_company_listAll } from "@/api/developer/index";
 import { post_company_getAll } from "@/api/system/index";
 import SelectOrganizationTree from "@/components/SelectOrganizationTree.vue";
 
@@ -367,7 +371,8 @@ export default class IntermediaryList extends Vue {
   };
   private timeList = [];
   private companyLoading = false;
-  public companyList: any = [];
+  private companyList: any = [];
+  private partyAList: any = [];
   private searchOpen = true;
   resPageInfo: any = {
     total: 0,
@@ -408,20 +413,19 @@ export default class IntermediaryList extends Vue {
   private handleSelectionChange(val: any): void {
     console.log(val);
   }
-  private async getCompanyList(query: string) {
-    if (query !== "" && query.length >= 2) {
-      this.companyLoading = true;
-      this.companyList = await post_company_getAll({ name: query });
-      this.companyLoading = false;
-    } else {
-      this.companyList = [];
-    }
+  private async getCompanyList() {
+    this.companyList = await post_company_getAll({ name: "" });
+  }
+  private async getPartyAList() {
+    this.partyAList = await post_company_listAll({ name: "" });
   }
   public async getListMixin(): Promise<void> {
     this.resPageInfo = await post_distribution_list(this.queryPageParameters);
   }
 
   created() {
+    this.getPartyAList();
+    this.getCompanyList();
     this.getListMixin();
   }
 }
