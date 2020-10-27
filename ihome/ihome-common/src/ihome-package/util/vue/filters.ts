@@ -4,7 +4,7 @@
  * @Author: zyc
  * @Date: 2020-07-16 08:55:55
  * @LastEditors: ywl
- * @LastEditTime: 2020-10-27 10:31:08
+ * @LastEditTime: 2020-10-27 14:50:37
  */
 export default (Vue: any, vm: any) => {
     (vm)
@@ -93,7 +93,6 @@ export default (Vue: any, vm: any) => {
         }
         let digit = (num: number) => (num < 10 ? "0" + (num | 0) : num);
         let year = time.getFullYear();
-        console.log(month, time, value)
         let date = time.getDate();
         let hour = time.getHours();
         let minute = time.getMinutes();

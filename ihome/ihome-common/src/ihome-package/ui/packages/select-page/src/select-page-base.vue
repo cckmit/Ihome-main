@@ -4,7 +4,7 @@
  * @Author: ywl
  * @Date: 2020-10-20 15:03:13
  * @LastEditors: ywl
- * @LastEditTime: 2020-10-26 16:19:18
+ * @LastEditTime: 2020-10-27 14:55:40
 -->
 <template>
   <el-select
@@ -14,6 +14,9 @@
     :disabled="disabled"
     :placeholder="placeholder"
     :value-key="valueKey"
+    :multiple="multiple"
+    :collapse-tags="collapseTags"
+    popper-class="ih-select-page"
   >
     <!-- 搜索 -->
     <el-input
@@ -23,7 +26,7 @@
     ></el-input>
     <!-- 下拉部分 -->
     <el-option
-      v-for="(item, index) in tableList.list"
+      v-for="(item, index) in optionList"
       :key="item[keyProp]"
       :label="item[labelProp]"
       :value="valueKey ? item : item[valueProp]"
@@ -40,10 +43,11 @@
       <el-pagination
         small
         @current-change="getSelectList"
-        :current-page.sync="tableList.pageNum"
-        :page-size="tableList.pageSize"
+        :hide-on-single-page="switchHidePage"
+        :current-page.sync="pageInfo.pageNum"
+        :page-size="pageInfo.pageSize"
         layout="prev,pager,next,total"
-        :total="tableList.total"
+        :total="pageInfo.total"
       >
       </el-pagination>
     </div>
@@ -55,12 +59,18 @@ import { Component, Vue, Prop, Watch } from "vue-property-decorator";
 
 @Component({})
 export default class IhSelectPage extends Vue {
-  @Prop() value!: string | number;
+  @Prop() value!: any;
   @Prop() clearable?: boolean;
   @Prop() disabled?: boolean;
   @Prop() placeholder?: string;
   @Prop() valueKey?: string;
+  @Prop() multiple?: boolean;
+  @Prop() collapseTags?: boolean;
   @Prop() promiseFun?: Function;
+  @Prop({
+    default: false,
+  })
+  switchHidePage?: boolean;
   @Prop({
     default: "检索关键字",
   })
@@ -78,8 +88,10 @@ export default class IhSelectPage extends Vue {
   props?: PropsType;
 
   private filterText = "";
-  tableList: any = {
-    list: [],
+  // 下拉列表
+  optionList: any = [];
+  // 分页信息
+  pageInfo: any = {
     total: 0,
     pageNum: 1,
     pageSize: 10,
@@ -111,7 +123,9 @@ export default class IhSelectPage extends Vue {
   }
 
   async getSelectList() {
-    console.error("需要重写回调的方法");
+    console.error(
+      "getSelectList是需要重写回调的方法， pageInfo: 分页信息-不是必要、optionList：下拉列表"
+    );
     // console.log(this.promiseFun);
     // this.tableList = await post_user_getList({
     //   pageSize: this.tableList.pageSize,
@@ -124,7 +138,6 @@ export default class IhSelectPage extends Vue {
     this.$emit("input", val);
   }
   handleClickOption(data: any) {
-    console.log(data);
     this.$emit("optionClick", data);
   }
 
@@ -144,5 +157,13 @@ interface PropsType {
 .selectInput {
   padding: 0 8px;
   box-sizing: border-box;
+}
+</style>
+<style>
+.ih-select-page {
+  max-height: 400px;
+}
+.ih-select-page .el-scrollbar {
+  display: block !important;
 }
 </style>
