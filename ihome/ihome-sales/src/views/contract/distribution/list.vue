@@ -4,7 +4,7 @@
  * @Author: ywl
  * @Date: 2020-09-25 17:34:32
  * @LastEditors: ywl
- * @LastEditTime: 2020-10-27 10:42:55
+ * @LastEditTime: 2020-10-27 12:00:41
 -->
 <template>
   <IhPage label-width="100px">
@@ -39,9 +39,20 @@
               <el-select
                 v-model="queryPageParameters.partyB"
                 clearable
-                placeholder="乙方公司"
+                filterable
+                remote
+                :remote-method="getCompanyList"
+                placeholder="请选择乙方公司"
                 class="width--100"
-              ></el-select>
+                :loading="companyLoading"
+              >
+                <el-option
+                  v-for="item in companyList"
+                  :key="item.id"
+                  :label="item.name"
+                  :value="item.id"
+                ></el-option>
+              </el-select>
             </el-form-item>
           </el-col>
         </el-row>
@@ -182,8 +193,14 @@
     <!-- 按钮 -->
     <template #btn>
       <el-row>
-        <el-button type="primary">查询</el-button>
-        <el-button type="info">重置</el-button>
+        <el-button
+          type="primary"
+          @click="handleSearch()"
+        >查询</el-button>
+        <el-button
+          type="info"
+          @click="handleReact()"
+        >重置</el-button>
         <el-button>申领合同</el-button>
         <el-button>派发合同</el-button>
         <el-button>转派发</el-button>
@@ -216,66 +233,67 @@
           min-width="100"
         ></el-table-column>
         <el-table-column
-          fixed
           label="甲方公司"
-          prop="jia"
-          min-width="200"
+          prop="partyA"
+          min-width="150"
         ></el-table-column>
         <el-table-column
-          fixed
           label="乙方公司"
-          prop="yi"
+          prop="partyB"
           min-width="150"
         ></el-table-column>
         <el-table-column
           label="项目地址"
-          prop="pro"
+          prop="address"
           min-width="200"
         ></el-table-column>
         <el-table-column
           label="合作时间"
           prop="time"
-          width="130"
-        ></el-table-column>
+          width="195"
+        >
+          <template v-slot="{ row }">
+            <span>{{row.beginTime | timestampToDate('YYYY-MM-DD')}} 至 {{row.endTime | timestampToDate('YYYY-MM-DD')}}</span>
+          </template>
+        </el-table-column>
         <el-table-column
           label="关联项目"
-          prop="pro"
+          prop="project"
           width="150"
         ></el-table-column>
         <el-table-column
           label="关联周期"
-          prop="zoom"
+          prop="cycle"
           width="150"
         ></el-table-column>
         <el-table-column
           label="归属组织"
-          prop="pl"
+          prop="organization"
           width="150"
         ></el-table-column>
         <el-table-column
           label="合同编号"
-          prop="id"
+          prop="contractCode"
           width="200"
         ></el-table-column>
         <el-table-column
           label="归档状态"
-          prop="isAction"
+          prop="fileState"
           width="100"
         ></el-table-column>
         <el-table-column
           label="归档编号"
-          prop="id"
+          prop="fileCode"
           width="200"
         ></el-table-column>
         <el-table-column
           label="合同跟进人"
-          prop="name"
+          prop="handler"
           width="200"
         ></el-table-column>
         <el-table-column
           label="操作"
           width="230"
-          align="left"
           fixed="right"
         >
           <template v-slot="{  }">
@@ -348,6 +366,8 @@ export default class IntermediaryList extends Vue {
     handler: "",
   };
   private timeList = [];
+  private companyLoading = false;
+  public companyList: any = [];
   private searchOpen = true;
   resPageInfo: any = {
     total: 0,
@@ -357,11 +377,45 @@ export default class IntermediaryList extends Vue {
   private openToggle(): void {
     this.searchOpen = !this.searchOpen;
   }
+  private handleSearch(): void {
+    let sign = this.timeList && this.timeList.length;
+    this.queryPageParameters.beginTime = sign ? this.timeList[0] : "";
+    this.queryPageParameters.endTime = sign ? this.timeList[1] : "";
+    this.queryPageParameters.pageNum = 1;
+    this.getListMixin();
+  }
+  private handleReact(): void {
+    this.queryPageParameters = {
+      title: "",
+      address: "",
+      contractCode: "",
+      partyA: "",
+      partyB: "",
+      beginTime: "",
+      endTime: "",
+      template: "",
+      project: "",
+      cycle: "",
+      organization: "",
+      fileState: "",
+      fileCode: "",
+      creator: "",
+      handler: "",
+      pageNum: this.queryPageParameters.pageNum,
+      pageSize: this.queryPageParameters.pageSize,
+    };
+  }
   private handleSelectionChange(val: any): void {
     console.log(val);
   }
-  private async getCompanyList() {
-    await post_company_getAll();
+  private async getCompanyList(query: string) {
+    if (query !== "" && query.length >= 2) {
+      this.companyLoading = true;
+      this.companyList = await post_company_getAll({ name: query });
+      this.companyLoading = false;
+    } else {
+      this.companyList = [];
+    }
   }
   public async getListMixin(): Promise<void> {
     this.resPageInfo = await post_distribution_list(this.queryPageParameters);
