@@ -4,7 +4,7 @@
  * @Author: ywl
  * @Date: 2020-10-16 15:19:48
  * @LastEditors: ywl
- * @LastEditTime: 2020-10-26 15:24:33
+ * @LastEditTime: 2020-10-27 18:06:58
  */
 import { RouteConfig } from 'vue-router'
 
@@ -39,7 +39,7 @@ const contractRoutes: Array<RouteConfig> = [
   },
   {
     path: '/distribution',
-    meta: { title: '中介分销协议', icon: 'form' },
+    meta: { title: '渠道分销协议', icon: 'form' },
     redirect: '/distribution/list',
     component: Layout,
     children: [
@@ -47,13 +47,19 @@ const contractRoutes: Array<RouteConfig> = [
         path: 'list',
         name: 'DistributionList',
         component: () => import( /* webpackChunkName: "DistributionList" */ '@/views/contract/distribution/list.vue'),
-        meta: { title: '中介分销协议列表', icon: 'form' }
+        meta: { title: '渠道分销协议列表', icon: 'form' }
+      },
+      {
+        path: 'apply',
+        name: 'DistributionApply',
+        component: () => import(/* webpackChunkName: "DistributionApply" */ '@/views/contract/distribution/apply.vue'),
+        meta: { title: '渠道分销协议申领', icon: 'form' }
       },
       {
         path: 'info',
         name: 'DistributionDetail',
         component: () => import( /* webpackChunkName: "DistributionDetail" */ '@/views/contract/distribution/info.vue'),
-        meta: { title: '中介分销协议详情', icon: 'form' }
+        meta: { title: '渠道分销协议详情', icon: 'form' }
       },
     ]
   },

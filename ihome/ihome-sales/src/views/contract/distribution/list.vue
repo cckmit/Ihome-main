@@ -4,7 +4,7 @@
  * @Author: ywl
  * @Date: 2020-09-25 17:34:32
  * @LastEditors: ywl
- * @LastEditTime: 2020-10-27 16:11:08
+ * @LastEditTime: 2020-10-28 11:22:22
 -->
 <template>
   <IhPage label-width="100px">
@@ -204,7 +204,7 @@
           type="info"
           @click="handleReact()"
         >重置</el-button>
-        <el-button>申领合同</el-button>
+        <el-button @click="$router.push('apply')">申领合同</el-button>
         <el-button>派发合同</el-button>
         <el-button>转派发</el-button>
         <el-button>导出</el-button>
@@ -299,10 +299,10 @@
           width="230"
           fixed="right"
         >
-          <template v-slot="{  }">
+          <template v-slot="{ row }">
             <el-link
               type="primary"
-              @click.native.prevent="$router.push('/distribution/info')"
+              @click="handleTo(row, 'info')"
             >详情</el-link>
             <el-link type="primary">盖章版归档</el-link>
             <el-link type="primary">原件归档</el-link>
@@ -351,7 +351,7 @@ import SelectOrganizationTree from "@/components/SelectOrganizationTree.vue";
   components: { SelectOrganizationTree },
   mixins: [PaginationMixin],
 })
-export default class IntermediaryList extends Vue {
+export default class DistributionList extends Vue {
   public queryPageParameters: any = {
     title: "",
     address: "",
@@ -412,6 +412,14 @@ export default class IntermediaryList extends Vue {
   }
   private handleSelectionChange(val: any): void {
     console.log(val);
+  }
+  handleTo(row: any, page: string) {
+    this.$router.push({
+      path: page,
+      query: {
+        id: row.id,
+      },
+    });
   }
   private async getCompanyList() {
     this.companyList = await post_company_getAll({ name: "" });

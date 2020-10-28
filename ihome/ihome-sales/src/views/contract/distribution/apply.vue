@@ -1,19 +1,82 @@
-<!--
- * @Description: 中介分销协议详情
- * @version: 
- * @Author: ywl
- * @Date: 2020-09-27 10:46:14
- * @LastEditors: ywl
- * @LastEditTime: 2020-10-28 10:22:12
--->
 <template>
   <IhPage class="text-left">
-    <template v-slot:info>
-      <p class="ih-info-title">渠道分销合同相关信息</p>
+    <template #info>
+      <p class="ih-info-title">申领渠道分销合同</p>
       <el-form
         ref="ruleForm"
-        label-width="150px"
+        label-width="130px"
         class="demo-ruleForm"
+      >
+        <el-row>
+          <el-col :span="12">
+            <el-form-item label="周期">
+              <el-input placeholder="周期"></el-input>
+            </el-form-item>
+          </el-col>
+          <el-col :span="12">
+            <el-form-item label="乙方(渠道)公司">
+              <el-input placeholder="乙方(渠道)公司"></el-input>
+            </el-form-item>
+          </el-col>
+        </el-row>
+        <el-row>
+          <el-col :span="12">
+            <el-form-item label="渠道公司等级">
+              <el-input placeholder="渠道公司等级"></el-input>
+            </el-form-item>
+          </el-col>
+          <el-col :span="12">
+            <el-form-item label="合同跟进人">
+              <el-input placeholder="合同跟进人"></el-input>
+            </el-form-item>
+          </el-col>
+        </el-row>
+      </el-form>
+      <div class="padding-left-30">
+        <el-button
+          type="primary"
+          class="margin-bottom-17"
+        >选择分销合同模板</el-button>
+        <el-table>
+          <el-table-column
+            label="合同主标题"
+            prop="fileCode"
+          ></el-table-column>
+          <el-table-column
+            label="甲方公司"
+            prop="fileCode"
+            min-width="200"
+          ></el-table-column>
+          <el-table-column
+            label="派发佣金标准"
+            prop="fileCode"
+          ></el-table-column>
+          <el-table-column
+            label="是否垫佣"
+            prop="fileCode"
+          ></el-table-column>
+          <el-table-column
+            label="渠道类型"
+            prop="fileCode"
+          ></el-table-column>
+          <el-table-column
+            label="操作"
+            fixed="right"
+            width="200"
+          >
+            <template>
+              <el-link type="primary">查看参数</el-link>
+              <el-link type="primary">预览合同</el-link>
+            </template>
+          </el-table-column>
+        </el-table>
+        <br />
+        <el-divider>预览</el-divider>
+      </div>
+      <el-form
+        label-width="120px"
+        label-position="left"
+        class="padding-left-30"
       >
         <el-row>
           <el-col :span="12">
@@ -54,7 +117,7 @@
         <el-row>
           <el-col :span="12">
             <el-form-item label="乙方公司">
-              广州渠道公司
+              乙方公司
             </el-form-item>
           </el-col>
           <el-col :span="12">
@@ -89,8 +152,8 @@
         </el-row>
         <el-row>
           <el-col :span="12">
-            <el-form-item label="乙方账户">
-              乙方账户
+            <el-form-item label="乙方账号">
+              乙方账号
             </el-form-item>
           </el-col>
           <el-col :span="12">
@@ -107,23 +170,19 @@
           </el-col>
           <el-col :span="12">
             <el-form-item label="合同跟进人">
-              合同跟进人
+              某某员工
             </el-form-item>
           </el-col>
         </el-row>
-      </el-form>
-      <el-form
-        ref="ruleForm"
-        label-width="150px"
-        class="demo-ruleForm padding-left-30"
-      >
         <el-row>
           <el-col :span="24">
-            <el-form-item label="代理费计付标准备注">
+            <el-form-item
+              label="代理费计付标准备注"
+              label-width="90px"
+            >
               <el-input
                 type="textarea"
                 :autosize="{ minRows: 3, maxRows: 3}"
-                v-model="ruleForm.name"
                 placeholder="代理费计付标准备注"
               ></el-input>
             </el-form-item>
@@ -131,11 +190,13 @@
         </el-row>
         <el-row>
           <el-col :span="24">
-            <el-form-item label="客户成交以及确认">
+            <el-form-item
+              label="客户成交以及确认"
+              label-width="90px"
+            >
               <el-input
                 type="textarea"
                 :autosize="{ minRows: 3, maxRows: 3}"
-                v-model="ruleForm.name"
                 placeholder="客户成交以及确认"
               ></el-input>
             </el-form-item>
@@ -143,11 +204,13 @@
         </el-row>
         <el-row>
           <el-col :span="24">
-            <el-form-item label="代理费结算条件">
+            <el-form-item
+              label="代理费结算条件"
+              label-width="90px"
+            >
               <el-input
                 type="textarea"
                 :autosize="{ minRows: 3, maxRows: 3}"
-                v-model="ruleForm.name"
                 placeholder="代理费结算条件"
               ></el-input>
             </el-form-item>
@@ -155,11 +218,13 @@
         </el-row>
         <el-row>
           <el-col :span="24">
-            <el-form-item label="代理费结算方式">
+            <el-form-item
+              label="代理费结算方式"
+              label-width="90px"
+            >
               <el-input
                 type="textarea"
                 :autosize="{ minRows: 3, maxRows: 3}"
-                v-model="ruleForm.name"
                 placeholder="代理费结算方式"
               ></el-input>
             </el-form-item>
@@ -167,11 +232,13 @@
         </el-row>
         <el-row>
           <el-col :span="24">
-            <el-form-item label="违约责任">
+            <el-form-item
+              label="违约责任"
+              label-width="90px"
+            >
               <el-input
                 type="textarea"
                 :autosize="{ minRows: 3, maxRows: 3}"
-                v-model="ruleForm.name"
                 placeholder="违约责任"
               ></el-input>
             </el-form-item>
@@ -179,11 +246,13 @@
         </el-row>
         <el-row>
           <el-col :span="24">
-            <el-form-item label="补充条款">
+            <el-form-item
+              label="补充条款"
+              label-width="90px"
+            >
               <el-input
                 type="textarea"
                 :autosize="{ minRows: 3, maxRows: 3}"
-                v-model="ruleForm.name"
                 placeholder="补充条款"
               ></el-input>
             </el-form-item>
@@ -212,12 +281,12 @@
         <el-row>
           <el-col :span="24">
             <el-form-item label="渠道类型">
-              渠道类型
+              大型中介/一级平台
             </el-form-item>
           </el-col>
         </el-row>
         <el-row>
-          <el-col :span="18">
+          <el-col :span="24">
             <el-form-item label="代理费是否垫佣">
               1个月＜回款周期≤3个月
             </el-form-item>
@@ -247,32 +316,22 @@
         <br />
       </div>
       <el-form
-        ref="ruleForm"
-        label-width="150px"
+        label-width="120px"
+        label-position="left"
         class="padding-left-30"
       >
         <el-row>
           <el-col :span="18">
-            <el-form-item
-              label="合同电子版"
-              class="text-left"
-            >
+            <el-form-item label="合同电子版">
               <el-button type="success">预览电子版</el-button>
             </el-form-item>
           </el-col>
         </el-row>
-        <el-row>
-          <el-col :span="18">
-            <el-form-item label="扫描件归档">
-              <IhUpload
-                :file-list="fileList"
-                size="100px"
-                :limit="1"
-              ></IhUpload>
-            </el-form-item>
-          </el-col>
-        </el-row>
       </el-form>
+      <div class="text-center">
+        <el-button type="primary">提交</el-button>
+        <el-button>取消</el-button>
+      </div>
     </template>
   </IhPage>
 </template>
@@ -280,27 +339,6 @@
 <script lang="ts">
 import { Component, Vue } from "vue-property-decorator";
 
-import { get_distribution_detail__id } from "@/api/contract/index";
-
 @Component({})
-export default class DistributionDetail extends Vue {
-  private ruleForm: any = {};
-  private fileList: Array<object> = [
-    {
-      name: "abc.pdf",
-      url: `http://filesvr.polyihome.test/aist-filesvr-web/JQeryUpload/getfile?fileId=2c92808873be3796017490db113b0616`,
-      img_url: `http://filesvr.polyihome.test/aist-filesvr-web/JQeryUpload/getfile?fileId=2c92808873be3796017490db113b0616`,
-    },
-  ];
-
-  private async getInfo(): Promise<void> {
-    let id = this.$route.query.id;
-    this.ruleForm = await get_distribution_detail__id({ id: id });
-  }
-
-  created(): void {
-    let id = this.$route.query.id;
-    if (id) this.getInfo();
-  }
-}
+export default class DistributionApply extends Vue {}
 </script>
