@@ -4,7 +4,7 @@
  * @Author: wwq
  * @Date: 2020-09-09 16:17:16
  * @LastEditors: wwq
- * @LastEditTime: 2020-10-26 17:57:54
+ * @LastEditTime: 2020-10-28 15:20:31
 -->
 <template>
   <div class="upload">
@@ -32,7 +32,13 @@
           :src="uploadType(file)"
         />
         <slot name="extend" :data="file" />
-        <span class="el-upload-list__item-actions">
+        <span
+          class="el-upload-list__item-actions"
+          :style="{
+            width: size,
+            height: Object.keys($scopedSlots).length ? size : 'auto',
+          }"
+        >
           <span
             class="el-upload-list__item-preview"
             v-if="previewPermi"
@@ -157,7 +163,6 @@ export default class IhUpload extends Vue {
     if (fileList.length) {
       fileList.forEach((v: any, index: number) => {
         v.url = `/sales-api/sales-document-cover/file/browse/${v.fileId}`;
-        v.img_url = `/sales-api/sales-document-cover/file/browse/${v.fileId}`;
         this.replaceUpload(v, fileList, index, v.fileId);
       });
     }
@@ -178,6 +183,7 @@ export default class IhUpload extends Vue {
   successHandler(response: any, file: any, fileList: any) {
     this.replaceUpload(file, fileList, fileList.length - 1, response[0].fileId);
     this.$message.success("上传成功");
+    this.$emit("queryList", fileList);
   }
   errorHandler() {
     this.$message.error("上传失败");
@@ -310,6 +316,7 @@ export default class IhUpload extends Vue {
         fileList[index].img_url = require("../../../img/ppt.png");
         break;
     }
+    fileList[index].fileId = fileId;
     this.list = [...fileList];
   }
   cropperFinish(data: any) {
