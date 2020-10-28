@@ -4,7 +4,7 @@
  * @Author: ywl
  * @Date: 2020-10-12 10:38:48
  * @LastEditors: ywl
- * @LastEditTime: 2020-10-23 16:15:37
+ * @LastEditTime: 2020-10-28 17:15:51
 -->
 <template>
   <el-dialog
@@ -124,6 +124,7 @@ export default class BankDialog extends Vue {
           break;
         case "new-edit":
           this.$emit("finish", this.Bankrule, this.bankType);
+          break;
       }
     } else {
       console.log("error submit!!");

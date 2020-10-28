@@ -4,7 +4,7 @@
  * @Author: ywl
  * @Date: 2020-09-16 14:05:21
  * @LastEditors: ywl
- * @LastEditTime: 2020-10-23 16:18:20
+ * @LastEditTime: 2020-10-28 17:40:41
 -->
 <template>
   <IhPage>
@@ -433,6 +433,11 @@ export default class ModifyThe extends Vue {
     shortName: [{ required: true, message: "请输入简称", trigger: "blur" }],
     creditCode: [
       { required: true, message: "请输入信用代码", trigger: "blur" },
+      {
+        pattern: /^[A-Za-z0-9]{18}$/,
+        message: "信用代码格式不正确",
+        trigger: "blur",
+      },
     ],
     legalPerson: [
       { required: true, message: "请输入法定代表人", trigger: "blur" },
@@ -440,8 +445,8 @@ export default class ModifyThe extends Vue {
     bobile: [
       { required: true, message: "请输入手机号", trigger: "blur" },
       {
-        pattern: /^0{0,1}(13[0-9]|15[7-9]|153|156|18[7-9])[0-9]{8}$/,
-        message: "手机号格式不对",
+        pattern: /^1[3456789]\d{9}$/,
+        message: "手机号格式不正确",
         trigger: "blur",
       },
     ],
@@ -477,6 +482,7 @@ export default class ModifyThe extends Vue {
       accountName: "",
       accountNum: "",
     };
+    this.bankType = "new-add";
     this.dialogFormVisible = true;
   }
 
@@ -596,9 +602,10 @@ export default class ModifyThe extends Vue {
    * @param {object} row 编辑当前行数据
    * @param {number} index 编辑当前行数据下标
    */
-  private deleteBank(row: object, index: number): void {
-    console.log("删除银行信息", row, index);
+  private async deleteBank(row: object, index: number): Promise<void> {
+    await this.$confirm(`此操作将该银行信息, 是否继续?`, "提示");
     this.info.channelBanks.splice(index, 1);
+    this.$message.success("删除成功");
   }
 
   async created() {
