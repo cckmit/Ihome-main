@@ -4,10 +4,10 @@
  * @Author: ywl
  * @Date: 2020-09-27 16:27:36
  * @LastEditors: ywl
- * @LastEditTime: 2020-10-23 15:04:27
+ * @LastEditTime: 2020-10-28 15:24:18
 -->
 <template>
-  <IhPage>
+  <IhPage label-width="110px">
     <!-- 搜索 -->
     <template #form>
       <el-form
@@ -18,7 +18,7 @@
           <el-col :span="8">
             <el-form-item label="优惠告知书编号">
               <el-input
-                v-model="queryPageParameters.mobilePhone"
+                v-model="queryPageParameters.noticeCode"
                 placeholder="优惠告知书编号"
               ></el-input>
             </el-form-item>
@@ -26,7 +26,7 @@
           <el-col :span="8">
             <el-form-item label="甲方">
               <el-select
-                v-model="queryPageParameters.name"
+                v-model="queryPageParameters.partyA"
                 placeholder="甲方"
                 clearable
                 class="width--100"
@@ -36,7 +36,7 @@
           <el-col :span="8">
             <el-form-item label="区域">
               <el-input
-                v-model="queryPageParameters.mobilePhone"
+                v-model="queryPageParameters.area"
                 placeholder="区域"
               ></el-input>
             </el-form-item>
@@ -48,24 +48,18 @@
               <el-col :span="8">
                 <el-form-item label="客户">
                   <el-select
-                    v-model="queryPageParameters.accountType"
+                    v-model="queryPageParameters.partyB"
                     clearable
                     placeholder="客户"
                     class="width--100"
                   >
-                    <el-option
-                      v-for="item in $root.displayList('accountType')"
-                      :key="item.value"
-                      :label="item.label"
-                      :value="item.value"
-                    ></el-option>
                   </el-select>
                 </el-form-item>
               </el-col>
               <el-col :span="8">
                 <el-form-item label="客户电话">
                   <el-input
-                    v-model="queryPageParameters.mobilePhone"
+                    v-model="queryPageParameters.mobileB"
                     placeholder="客户电话"
                   ></el-input>
                 </el-form-item>
@@ -73,17 +67,11 @@
               <el-col :span="8">
                 <el-form-item label="项目名称">
                   <el-select
-                    v-model="queryPageParameters.accountType"
+                    v-model="queryPageParameters.projectName"
                     clearable
                     placeholder="项目名称"
                     class="width--100"
                   >
-                    <el-option
-                      v-for="item in $root.displayList('accountType')"
-                      :key="item.value"
-                      :label="item.label"
-                      :value="item.value"
-                    ></el-option>
                   </el-select>
                 </el-form-item>
               </el-col>
@@ -93,24 +81,18 @@
               <el-col :span="8">
                 <el-form-item label="房号">
                   <el-select
-                    v-model="queryPageParameters.accountType"
+                    v-model="queryPageParameters.room"
                     clearable
                     placeholder="房号"
                     class="width--100"
                   >
-                    <el-option
-                      v-for="item in $root.displayList('accountType')"
-                      :key="item.value"
-                      :label="item.label"
-                      :value="item.value"
-                    ></el-option>
                   </el-select>
                 </el-form-item>
               </el-col>
               <el-col :span="8">
                 <el-form-item label="优惠抵扣金额">
                   <el-input
-                    v-model="queryPageParameters.mobilePhone"
+                    v-model="queryPageParameters.deduction"
                     placeholder="优惠抵扣金额"
                   ></el-input>
                 </el-form-item>
@@ -118,7 +100,7 @@
               <el-col :span="8">
                 <el-form-item label="优惠折扣比例">
                   <el-input
-                    v-model="queryPageParameters.mobilePhone"
+                    v-model="queryPageParameters.discount"
                     placeholder="优惠折扣比例"
                   ></el-input>
                 </el-form-item>
@@ -130,7 +112,7 @@
                 <el-form-item label="优惠期限">
                   <el-date-picker
                     style="width:100%;"
-                    v-model="queryPageParameters.employmentDate"
+                    v-model="timeList"
                     type="daterange"
                     align="left"
                     unlink-panels
@@ -145,34 +127,22 @@
               <el-col :span="8">
                 <el-form-item label="立项周期">
                   <el-select
-                    v-model="queryPageParameters.accountType"
+                    v-model="queryPageParameters.cycle"
                     clearable
                     placeholder="立项周期"
                     class="width--100"
                   >
-                    <el-option
-                      v-for="item in $root.displayList('accountType')"
-                      :key="item.value"
-                      :label="item.label"
-                      :value="item.value"
-                    ></el-option>
                   </el-select>
                 </el-form-item>
               </el-col>
               <el-col :span="8">
                 <el-form-item label="信息状态">
                   <el-select
-                    v-model="queryPageParameters.accountType"
+                    v-model="queryPageParameters.state"
                     clearable
                     placeholder="信息状态"
                     class="width--100"
                   >
-                    <el-option
-                      v-for="item in $root.displayList('accountType')"
-                      :key="item.value"
-                      :label="item.label"
-                      :value="item.value"
-                    ></el-option>
                   </el-select>
                 </el-form-item>
               </el-col>
@@ -184,7 +154,10 @@
     <!-- 按钮 -->
     <template #btn>
       <el-row>
-        <el-button type="primary">查询</el-button>
+        <el-button
+          type="primary"
+          @click="handleSearch()"
+        >查询</el-button>
         <el-button type="info">重置</el-button>
         <el-button>导出</el-button>
         <el-link
@@ -205,7 +178,7 @@
         <el-table-column
           fixed
           label="甲方"
-          prop="jia"
+          prop="partyA"
           min-width="200"
         ></el-table-column>
         <el-table-column
@@ -216,52 +189,56 @@
         <el-table-column
           fixed
           label="乙方"
-          prop="yi"
+          prop="partyB"
         ></el-table-column>
         <el-table-column
           label="乙方联系电话"
-          prop="iphone"
+          prop="mobileB"
           width="130"
         ></el-table-column>
         <el-table-column
           label="乙方证件号码"
-          prop="id"
+          prop="idNo"
           width="160"
         ></el-table-column>
         <el-table-column
           label="乙方常用地址"
-          prop="area"
+          prop="address"
           min-width="160"
         ></el-table-column>
         <el-table-column
           label="优惠项目名称"
           width="200"
-          prop="pro"
+          prop="projectName"
         ></el-table-column>
         <el-table-column
           label="(拟)购买单位"
           width="200"
-          prop="addr"
+          prop="room"
         ></el-table-column>
         <el-table-column
           label="优惠缴纳金额"
-          prop="qian"
+          prop="payment"
           width="120"
         ></el-table-column>
         <el-table-column
           label="优惠抵扣金额"
-          prop="jin"
+          prop="deduction"
           width="120"
         ></el-table-column>
         <el-table-column
           label="优惠折扣比例"
-          prop="bili"
+          prop="discount"
           width="120"
         ></el-table-column>
         <el-table-column
           label="优惠期限"
-          prop="qx"
-        ></el-table-column>
+          width="195"
+        >
+          <template v-slot="{ row }">
+            <span>{{row.beginTime | timestampToDate('YYYY-MM-DD')}} 至 {{row.endTime | timestampToDate('YYYY-MM-DD')}}</span>
+          </template>
+        </el-table-column>
         <el-table-column
           label="项目"
           prop="pro"
@@ -269,7 +246,7 @@
         ></el-table-column>
         <el-table-column
           label="周期"
-          prop="zoom"
+          prop="cycle"
         ></el-table-column>
         <el-table-column
           fixed="right"
@@ -319,92 +296,32 @@
 import { Component, Vue } from "vue-property-decorator";
 import PaginationMixin from "@/mixins/pagination";
 
+import { post_notice_list } from "@/api/contract/index";
+
 @Component({
   mixins: [PaginationMixin],
 })
 export default class DiscountList extends Vue {
-  public queryPageParameters: any = {};
+  public queryPageParameters: any = {
+    noticeCode: "",
+    // partyA: "",
+    // partyB: "",
+    area: "",
+    mobileB: "",
+    projectName: "",
+    room: "",
+    deduction: "",
+    discount: "",
+    beginTime: "",
+    endTime: "",
+    cycle: "",
+    state: "",
+  };
+  private timeList: any = [];
   private searchOpen = true;
   resPageInfo: PageInfo = {
     total: 0,
-    list: [
-      {
-        title: "123",
-        jia: "广州居恒信息科技有限公司",
-        yi: "刘伟",
-        pro: "保利XX项目",
-        time: "2020-9-28",
-        zoom: "周期",
-        pl: "保利",
-        id: "128418458315",
-        name: "爱家案场",
-        isAction: "保存",
-        area: "广州天河",
-        iphone: "18822233888",
-        addr: "10栋1501",
-        qian: "1000000",
-        jin: "50000",
-        bili: "5%",
-        qx: "30",
-      },
-      {
-        title: "123",
-        jia: "广州居恒信息科技有限公司",
-        yi: "刘伟test",
-        pro: "保利XX项目",
-        time: "2020-9-28",
-        zoom: "周期",
-        pl: "保利",
-        id: "128418458315",
-        name: "爱家案场",
-        isAction: "保存",
-        area: "广州天河",
-        iphone: "18822233888",
-        addr: "10栋1501",
-        qian: "1000000",
-        jin: "50000",
-        bili: "5%",
-        qx: "30",
-      },
-      {
-        title: "123",
-        jia: "广州居恒信息科技有限公司",
-        yi: "123刘伟",
-        pro: "保利XX项目",
-        time: "2020-9-28",
-        zoom: "周期",
-        pl: "保利",
-        id: "128418458315",
-        name: "爱家案场",
-        isAction: "保存",
-        area: "广州天河",
-        iphone: "18822233888",
-        addr: "10栋1501",
-        qian: "2000000",
-        jin: "50000",
-        bili: "5%",
-        qx: "30",
-      },
-      {
-        title: "123",
-        jia: "广州居恒信息科技有限公司",
-        yi: "刘伟",
-        pro: "保利XX项目",
-        time: "2020-9-28",
-        zoom: "周期",
-        pl: "保利",
-        id: "128418458315",
-        name: "爱家案场",
-        isAction: "保存",
-        area: "广州天河",
-        iphone: "18822233888",
-        addr: "10栋1501",
-        qian: "1000000",
-        jin: "50000",
-        bili: "5%",
-        qx: "10",
-      },
-    ],
+    list: [],
   };
 
   private openToggle(): void {
@@ -412,6 +329,40 @@ export default class DiscountList extends Vue {
   }
   private handleSelectionChange(val: any): void {
     console.log(val);
+  }
+  private handleSearch() {
+    let sign = this.timeList && this.timeList.length;
+    this.queryPageParameters.beginTime = sign ? this.timeList[0] : "";
+    this.queryPageParameters.endTime = sign ? this.timeList[1] : "";
+    this.queryPageParameters.pageNum = 1;
+    this.getListMixin();
+  }
+  private handleReact(): void {
+    this.queryPageParameters = {
+      noticeCode: "",
+      // partyA: "",
+      // partyB: "",
+      area: "",
+      mobileB: "",
+      projectName: "",
+      room: "",
+      deduction: "",
+      discount: "",
+      beginTime: "",
+      endTime: "",
+      cycle: "",
+      state: "",
+      pageNum: this.queryPageParameters.pageNum,
+      pageSize: this.queryPageParameters.pageSize,
+    };
+    this.timeList = [];
+  }
+  public async getListMixin(): Promise<void> {
+    this.resPageInfo = await post_notice_list(this.queryPageParameters);
+  }
+
+  created() {
+    this.getListMixin();
   }
 }
 interface PageInfo {
