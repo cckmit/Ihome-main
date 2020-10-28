@@ -374,6 +374,7 @@ export default class FirstAgencyEdit extends Vue {
   }
 
   submit(val: any) {
+    console.log(val);
     (this.$refs["ruleForm"] as ElForm).validate(async (v: any) => {
       if (v) {
         let infoObj = { ...this.info };
@@ -394,7 +395,7 @@ export default class FirstAgencyEdit extends Vue {
             infoObj.agencyId = this.$route.query.id;
             break;
         }
-        let arr = [];
+        let arr: any = [];
         this.info.attachAgencyVOS.forEach((v: any) => {
           arr = v.fileList.map((j: any) => ({
             attachAddr: j.name,
@@ -404,7 +405,7 @@ export default class FirstAgencyEdit extends Vue {
         });
         infoObj.attachAgencyVOS = arr;
         console.log(infoObj);
-        // await post_firstAgencyCompany_save(this.info);
+        await post_firstAgencyCompany_save(infoObj);
       }
     });
   }
