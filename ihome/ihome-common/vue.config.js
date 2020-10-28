@@ -4,7 +4,7 @@
  * @Author: zyc
  * @Date: 2020-06-22 11:11:41
  * @LastEditors: wwq
- * @LastEditTime: 2020-10-22 09:06:02
+ * @LastEditTime: 2020-10-26 17:50:02
  */
 const path = require('path');
 const { name } = require('./package');
@@ -55,9 +55,6 @@ module.exports = {
 				changeOrigin: true,
 				// pathRewrite: { '^/sales-api/system/': '/sales-api/system-dev/' }  //路由重写
 			},
-			'/sales-document-cover-local/': {
-				target: 'http://10.188.0.13:8610'
-			}
 		}
 	},
 	pages: {

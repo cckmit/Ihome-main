@@ -4,7 +4,7 @@
  * @Author: ywl
  * @Date: 2020-08-13 11:40:10
  * @LastEditors: ywl
- * @LastEditTime: 2020-10-23 14:42:50
+ * @LastEditTime: 2020-10-26 16:37:32
 -->
 <template>
   <IhPage label-width="100px">
@@ -76,19 +76,16 @@
           </el-col>
           <el-col :span="8">
             <el-form-item label="渠道录入人">
-              <el-select
+              <IhSelectPageUser
                 v-model="queryPageParameters.inputUser"
                 clearable
-                placeholder="渠道录入人"
-                class="width--100"
               >
-                <el-option
-                  v-for="item in testList"
-                  :key="item.id"
-                  :label="item.value"
-                  :value="item.id"
-                ></el-option>
-              </el-select>
+                <!-- 自定义模板使用 v-slot返回来的data：当前每条的数据；index：每一条数据的下标 -->
+                <template v-slot="{ data }">
+                  <span style="float: left">{{ data.name }}</span>
+                  <span style="margin-left: 20px;float: right; color: #8492a6; font-size: 13px">{{ data.account }}</span>
+                </template>
+              </IhSelectPageUser>
             </el-form-item>
           </el-col>
         </el-row>
