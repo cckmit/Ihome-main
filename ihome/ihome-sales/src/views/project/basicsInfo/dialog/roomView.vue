@@ -115,7 +115,7 @@
 </template>
 <script lang="ts">
 import { Component, Vue } from "vue-property-decorator";
-import PaginationMixin from "../../../mixins/pagination";
+import PaginationMixin from "@/mixins/pagination";
 import RoomViewEdit from "./roomViewEdit.vue";
 
 @Component({

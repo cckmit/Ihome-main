@@ -4,7 +4,7 @@
  * @Author: zyc
  * @Date: 2020-06-24 09:47:33
  * @LastEditors: wwq
- * @LastEditTime: 2020-10-23 14:49:37
+ * @LastEditTime: 2020-10-28 15:35:20
  */
 import { IRes } from "./users.d";
 // import request from '@/utils/http';
@@ -253,6 +253,13 @@ export function allMenu<T>() {
             title: "项目基础信息列表",
             icon: null,
             path: "/web-sales/projects/list",
+        },
+        {
+            id: 503,
+            parentId: 501,
+            title: "一手代理公司列表",
+            icon: null,
+            path: "/web-sales/firstAgency/list",
         },
     ];
     return menuList;

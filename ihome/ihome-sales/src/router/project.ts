@@ -4,7 +4,7 @@
  * @Author: wwq
  * @Date: 2020-10-22 14:45:15
  * @LastEditors: wwq
- * @LastEditTime: 2020-10-22 15:35:55
+ * @LastEditTime: 2020-10-28 15:33:48
  */
 import { RouteConfig } from 'vue-router'
 
@@ -23,20 +23,46 @@ const projectRoutes: Array<RouteConfig> = [
       {
         path: 'list',
         name: 'projectList',
-        component: () => import('../views/project/list.vue'),
+        component: () => import('../views/project/basicsInfo/list.vue'),
         meta: { title: '项目基础信息列表', icon: 'form' }
       },
       {
         path: 'add',
         name: 'projectAdd',
-        component: () => import('../views/project/edit.vue'),
+        component: () => import('../views/project/basicsInfo/edit.vue'),
         meta: { title: '项目基础信息添加', icon: 'form' }
       },
       {
         path: 'edit',
         name: 'projectEdit',
-        component: () => import('../views/project/edit.vue'),
+        component: () => import('../views/project/basicsInfo/edit.vue'),
         meta: { title: '项目基础信息编辑', icon: 'form' }
+      }
+    ]
+  },
+  {
+    path: '/firstAgency',
+    meta: { title: '一手代理公司', icon: null },
+    redirect: '/firstAgency/list',
+    component: Layout,
+    children: [
+      {
+        path: 'list',
+        name: 'firstAgencyList',
+        component: () => import('../views/project/firstAgency/list.vue'),
+        meta: { title: '一手代理公司列表', icon: 'form' }
+      },
+      {
+        path: 'add',
+        name: 'firstAgencyAdd',
+        component: () => import('../views/project/firstAgency/edit.vue'),
+        meta: { title: '一手代理公司添加', icon: 'form' }
+      },
+      {
+        path: 'edit',
+        name: 'firstAgencyEdit',
+        component: () => import('../views/project/firstAgency/edit.vue'),
+        meta: { title: '一手代理公司编辑', icon: 'form' }
       }
     ]
   },

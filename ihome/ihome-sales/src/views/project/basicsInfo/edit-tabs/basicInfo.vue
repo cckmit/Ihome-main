@@ -4,7 +4,7 @@
  * @Author: wwq
  * @Date: 2020-09-27 11:52:41
  * @LastEditors: wwq
- * @LastEditTime: 2020-10-28 15:18:48
+ * @LastEditTime: 2020-10-28 15:29:13
 -->
 <template>
   <div>
@@ -419,8 +419,8 @@
 </template>
 <script lang="ts">
 import { Component, Vue } from "vue-property-decorator";
-import { post_company_listAll } from "../../../api/developer/index";
-import { get_project_get__proId } from "../../../api/project/index";
+import { post_company_listAll } from "@/api/developer/index";
+import { get_project_get__proId } from "@/api/project/index";
 
 @Component({
   components: {},

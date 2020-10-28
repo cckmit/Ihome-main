@@ -4,7 +4,7 @@
  * @Author: wwq
  * @Date: 2020-08-13 11:40:10
  * @LastEditors: wwq
- * @LastEditTime: 2020-10-26 08:53:27
+ * @LastEditTime: 2020-10-28 15:28:36
 -->
 <template>
   <IhPage label-width="100px">
@@ -183,8 +183,8 @@
 
 <script lang="ts">
 import { Component, Vue } from "vue-property-decorator";
-import { post_channelGrade_getList } from "../../api/channel/index";
-import PaginationMixin from "../../mixins/pagination";
+import { post_channelGrade_getList } from "@/api/channel/index";
+import PaginationMixin from "@/mixins/pagination";
 @Component({
   components: {},
   mixins: [PaginationMixin],

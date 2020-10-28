@@ -4,7 +4,7 @@
  * @Author: wwq
  * @Date: 2020-09-27 11:52:41
  * @LastEditors: wwq
- * @LastEditTime: 2020-10-22 17:38:27
+ * @LastEditTime: 2020-10-28 15:28:57
 -->
 <template>
   <div>
@@ -102,7 +102,7 @@
 import { Component, Vue } from "vue-property-decorator";
 import RoomNumEdit from "../dialog/roomNumEdit.vue";
 import RoomView from "../dialog/roomView.vue";
-import PaginationMixin from "../../../mixins/pagination";
+import PaginationMixin from "@/mixins/pagination";
 
 @Component({
   components: { RoomNumEdit, RoomView },
