@@ -4,7 +4,7 @@
  * @Author: ywl
  * @Date: 2020-09-25 11:53:51
  * @LastEditors: ywl
- * @LastEditTime: 2020-10-29 14:43:53
+ * @LastEditTime: 2020-10-29 16:58:52
 -->
 <template>
   <IhPage label-width="100px">
@@ -348,10 +348,13 @@
           <template v-slot="{ row }">
             <el-link
               type="primary"
-              @click.native.prevent="handleToPage(row, 'info')"
+              @click="handleToPage(row, 'info')"
             >详情</el-link>
             <el-link type="primary">扫描件归档</el-link>
-            <el-link type="primary">原件归档</el-link>
+            <el-link
+              type="primary"
+              @click="original(row)"
+            >原件归档</el-link>
           </template>
         </el-table-column>
       </el-table>
@@ -376,7 +379,11 @@
 import { Component, Vue } from "vue-property-decorator";
 import PaginationMixin from "@/mixins/pagination";
 
-import { post_contract_list } from "@/api/contract/index";
+import {
+  post_contract_list,
+  post_contract_duplicate,
+  post_contract_original__id,
+} from "@/api/contract/index";
 import { post_company_listAll } from "@/api/developer/index";
 import { post_company_getAll } from "@/api/system/index";
 import SelectOrganizationTree from "@/components/SelectOrganizationTree.vue";
@@ -452,6 +459,16 @@ export default class PartyAList extends Vue {
   }
   private handleSelectionChange(val: any): void {
     console.log(val);
+  }
+  private async duplicate(row: any): Promise<void> {
+    console.log(row);
+    await post_contract_duplicate();
+  }
+  private async original(row: any): Promise<void> {
+    await this.$confirm(`是否继续原件归档?`, "提示");
+    await post_contract_original__id({ id: row.id });
+    this.getListMixin();
+    this.$message.success("原件归档成功");
   }
   private async getCompanyList() {
     this.companyList = await post_company_getAll({ name: "" });

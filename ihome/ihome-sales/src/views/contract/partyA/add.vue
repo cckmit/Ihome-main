@@ -4,7 +4,7 @@
  * @Author: ywl
  * @Date: 2020-09-25 16:00:37
  * @LastEditors: ywl
- * @LastEditTime: 2020-10-29 14:39:55
+ * @LastEditTime: 2020-10-29 16:05:06
 -->
 <template>
   <IhPage>
@@ -191,7 +191,10 @@
         <el-row>
           <el-col :span="24">
             <div>
-              <el-button type="primary">提交</el-button>
+              <el-button
+                type="primary"
+                @click="submit()"
+              >提交</el-button>
               <el-button>取消</el-button>
             </div>
           </el-col>
@@ -227,10 +230,18 @@ export default class PartyAadd extends Vue {
   private partyAList: any = [];
   private rule: any = {
     title: [{ required: true, message: "请输入标题", trigger: "blur" }],
-    partyA: [{ required: true, message: "请选择甲方", trigger: "blur" }],
-    partyB: [{ required: true, message: "请选择乙方", trigger: "blur" }],
+    partyA: [
+      { required: true, message: "请选择甲方", trigger: ["blur", "change"] },
+    ],
+    partyB: [
+      { required: true, message: "请选择乙方", trigger: ["blur", "change"] },
+    ],
     effectiveTime: [
-      { required: true, message: "执行时间不能为空", trigger: "blur" },
+      {
+        required: true,
+        message: "执行时间不能为空",
+        trigger: ["blur", "change"],
+      },
     ],
   };
 
@@ -244,6 +255,8 @@ export default class PartyAadd extends Vue {
   private submit() {
     (this.$refs["ruleForm"] as ElForm).validate(async (val) => {
       if (val) {
+        console.log(this.formData);
+
         await post_contract_create(this.formData);
         this.$message.success("提交成功");
       }
