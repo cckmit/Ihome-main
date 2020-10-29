@@ -4,7 +4,7 @@
  * @Author: zyc
  * @Date: 2020-06-24 09:47:33
  * @LastEditors: ywl
- * @LastEditTime: 2020-10-23 09:45:12
+ * @LastEditTime: 2020-10-29 17:04:11
  */
 import { IRes } from "./users.d";
 // import request from '@/utils/http';
@@ -222,7 +222,7 @@ export function allMenu<T>() {
         {
             id: 403,
             parentId: 401,
-            title: "渠道合同列表",
+            title: "渠道分销协议列表",
             icon: null,
             path: "/web-sales/distribution/list"
         },
