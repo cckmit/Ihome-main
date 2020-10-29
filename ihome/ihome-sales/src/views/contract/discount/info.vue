@@ -4,7 +4,7 @@
  * @Author: ywl
  * @Date: 2020-09-27 17:27:00
  * @LastEditors: ywl
- * @LastEditTime: 2020-09-27 17:46:51
+ * @LastEditTime: 2020-10-29 15:54:30
 -->
 <template>
   <IhPage class="text-left">
@@ -16,35 +16,40 @@
         class="demo-ruleForm"
       >
         <el-row>
-          <el-col :span="24">
+          <el-col :span="12">
             <el-form-item label="优惠告知书编号">
-              128418458315
+              {{resInfo.noticeCode}}
+            </el-form-item>
+          </el-col>
+          <el-col :span="12">
+            <el-form-item label="模板类型">
+              电子模板/纸质模板
             </el-form-item>
           </el-col>
         </el-row>
         <el-row>
           <el-col :span="24">
             <el-form-item label="甲方">
-              广州居恒信息科技有限公司
+              {{resInfo.partyA}}
             </el-form-item>
           </el-col>
         </el-row>
         <el-row>
           <el-col :span="12">
             <el-form-item label="乙方">
-              刘伟
+              {{resInfo.partyB}}
             </el-form-item>
           </el-col>
           <el-col :span="12">
             <el-form-item label="乙方联系电话">
-              13812345678
+              {{resInfo.partyBMobile}}
             </el-form-item>
           </el-col>
         </el-row>
         <el-row>
           <el-col :span="12">
             <el-form-item label="乙方证件号码">
-              12345776897
+              {{resInfo.partyBIdNo}}
             </el-form-item>
           </el-col>
           <el-col :span="12">
@@ -56,7 +61,7 @@
         <el-row>
           <el-col :span="24">
             <el-form-item label="(拟)购买单位">
-              住宅-10栋-1301
+              {{resInfo.roomNumber}}
             </el-form-item>
           </el-col>
         </el-row>
@@ -71,19 +76,19 @@
         <el-row>
           <el-col :span="12">
             <el-form-item label="优惠服务费缴纳金额">
-              50000
+              {{ resInfo.payment }}
             </el-form-item>
           </el-col>
           <el-col :span="12">
             <el-form-item label="优惠方式说明">
-              5万抵10万优惠折扣
+              {{resInfo.explain}}
             </el-form-item>
           </el-col>
         </el-row>
         <el-row>
           <el-col :span="24">
             <el-form-item label="优惠期限">
-              2020-8-1 ~ 2020-8-31
+              {{resInfo.beginTime | timestampToDate('YYYY-MM-DD')}} ~ {{resInfo.endTime | timestampToDate('YYYY-MM-DD')}}
             </el-form-item>
           </el-col>
         </el-row>
@@ -98,19 +103,22 @@
         <el-row>
           <el-col :span="12">
             <el-form-item label="甲方退款天数">
-              30
+              {{resInfo.refundDays}}
             </el-form-item>
           </el-col>
           <el-col :span="12">
             <el-form-item label="经办人">
-              爱家案场A
+              {{resInfo.agent}}
             </el-form-item>
           </el-col>
         </el-row>
         <el-row>
           <el-col :span="24">
             <el-form-item label="告知书电子版">
-              <el-button type="success">预览电子版</el-button>
+              <el-button
+                type="success"
+                @click="preview()"
+              >预览电子版</el-button>
             </el-form-item>
           </el-col>
         </el-row>
@@ -133,14 +141,27 @@
 <script lang="ts">
 import { Component, Vue } from "vue-property-decorator";
 
+import { get_notice_detail__id } from "@/api/contract/index";
+
 @Component({})
 export default class DiscountDetail extends Vue {
-  private fileList: Array<object> = [
-    {
-      name: "abc.pdf",
-      url: `http://filesvr.polyihome.test/aist-filesvr-web/JQeryUpload/getfile?fileId=2c92808873be3796017490db113b0616`,
-      img_url: `http://filesvr.polyihome.test/aist-filesvr-web/JQeryUpload/getfile?fileId=2c92808873be3796017490db113b0616`,
-    },
-  ];
+  private fileList: Array<object> = [];
+  private resInfo: any = {};
+
+  private async getInfo(): Promise<void> {
+    let id = this.$route.query.id;
+    if (id) this.resInfo = await get_notice_detail__id({ id: id });
+  }
+
+  private async preview(): Promise<void> {
+    this.$message.warning("接口没有实现");
+    return;
+    // let id = this.$route.query.id;
+    // await get_notice_preview__id({ id });
+  }
+
+  created() {
+    this.getInfo();
+  }
 }
 </script>

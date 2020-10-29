@@ -4,7 +4,7 @@
  * @Author: ywl
  * @Date: 2020-09-25 17:34:32
  * @LastEditors: ywl
- * @LastEditTime: 2020-10-28 11:22:22
+ * @LastEditTime: 2020-10-29 14:59:54
 -->
 <template>
   <IhPage label-width="100px">
@@ -146,10 +146,10 @@
                     class="width--100"
                   >
                     <el-option
-                      v-for="item in $root.displayList('employeeType')"
-                      :key="item.value"
-                      :label="item.label"
-                      :value="item.value"
+                      v-for="item in $root.dictAllList('DistributionEnum.FileState')"
+                      :key="item.code"
+                      :label="item.name"
+                      :value="item.code"
                     ></el-option>
                   </el-select>
                 </el-form-item>
@@ -283,7 +283,11 @@
           label="归档状态"
           prop="fileState"
           width="100"
-        ></el-table-column>
+        >
+          <template v-slot="{ row }">
+            {{$root.dictAllName(row.fileState, 'DistributionEnum.FileState')}}
+          </template>
+        </el-table-column>
         <el-table-column
           label="归档编号"
           prop="fileCode"

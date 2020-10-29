@@ -4,7 +4,7 @@
  * @Author: ywl
  * @Date: 2020-09-27 16:27:36
  * @LastEditors: ywl
- * @LastEditTime: 2020-10-29 11:33:12
+ * @LastEditTime: 2020-10-29 15:14:52
 -->
 <template>
   <IhPage label-width="110px">
@@ -143,6 +143,12 @@
                     placeholder="信息状态"
                     class="width--100"
                   >
+                    <el-option
+                      v-for="item in $root.dictAllList('NoticeEnum.State')"
+                      :key="item.code"
+                      :label="item.name"
+                      :value="item.code"
+                    ></el-option>
                   </el-select>
                 </el-form-item>
               </el-col>
@@ -253,25 +259,11 @@
           label="操作"
           width="120"
         >
-          <template v-slot="{  }">
+          <template v-slot="{ row }">
             <el-link
               type="primary"
-              @click.native.prevent="$router.push('/discount/info')"
+              @click.native.prevent="$router.push(`/discount/info?id=${row.id}`)"
             >详情</el-link>
-            <!-- <el-dropdown
-                trigger="click"
-                class="margin-left-15"
-              >
-                <span class="el-dropdown-link">
-                  更多
-                  <i class="el-icon-arrow-down el-icon--right"></i>
-                </span>
-                <el-dropdown-menu slot="dropdown">
-                  <el-dropdown-item @click.native.prevent="routerTo(row)">编辑</el-dropdown-item>
-                  <el-dropdown-item @click.native.prevent="routerTo(row)">盖章版归档</el-dropdown-item>
-                  <el-dropdown-item @click.native.prevent="routerTo(row)">原件归档</el-dropdown-item>
-                </el-dropdown-menu>
-              </el-dropdown> -->
           </template>
         </el-table-column>
       </el-table>

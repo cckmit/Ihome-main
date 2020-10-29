@@ -4,7 +4,7 @@
  * @Author: ywl
  * @Date: 2020-09-27 11:13:15
  * @LastEditors: ywl
- * @LastEditTime: 2020-10-29 11:58:54
+ * @LastEditTime: 2020-10-29 15:07:47
 -->
 <template>
   <IhPage label-width="100px">
@@ -96,6 +96,12 @@
                     placeholder="归档状态"
                     class="width--100"
                   >
+                    <el-option
+                      v-for="item in $root.dictAllList('StrategyEnum.FileState')"
+                      :key="item.code"
+                      :label="item.name"
+                      :value="item.code"
+                    ></el-option>
                   </el-select>
                 </el-form-item>
               </el-col>
@@ -116,12 +122,12 @@
                     placeholder="请选择协议状态"
                     class="width--100"
                   >
-                    <!-- <el-option
-                      v-for="item in $root.displayList('employeeStatus')"
-                      :key="item.value"
-                      :label="item.label"
-                      :value="item.value"
-                    ></el-option> -->
+                    <el-option
+                      v-for="item in $root.dictAllList('StrategyEnum.State')"
+                      :key="item.code"
+                      :label="item.name"
+                      :value="item.code"
+                    ></el-option>
                   </el-select>
                 </el-form-item>
               </el-col>
@@ -202,11 +208,15 @@
           label="归档状态"
           prop="fileState"
           width="100"
-        ></el-table-column>
+        >
+          <template v-slot="{ row }">
+            {{$root.dictAllName(row.fileState, 'StrategyEnum.FileState')}}
+          </template>
+        </el-table-column>
         <el-table-column
           label="归档编号"
           prop="fileCode"
-          width="150"
+          width="245"
         ></el-table-column>
         <el-table-column
           label="操作"
