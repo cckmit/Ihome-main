@@ -4,7 +4,7 @@
  * @Author: ywl
  * @Date: 2020-09-25 11:53:51
  * @LastEditors: ywl
- * @LastEditTime: 2020-10-26 17:28:12
+ * @LastEditTime: 2020-10-29 14:43:53
 -->
 <template>
   <IhPage label-width="100px">
@@ -30,8 +30,16 @@
                 v-model="queryPageParameters.partyA"
                 placeholder="甲方"
                 clearable
+                filterable
                 class="width--100"
-              ></el-select>
+              >
+                <el-option
+                  v-for="item in partyAList"
+                  :key="item.id"
+                  :label="item.name"
+                  :value="item.id"
+                ></el-option>
+              </el-select>
             </el-form-item>
           </el-col>
           <el-col :span="8">
@@ -39,15 +47,16 @@
               <el-select
                 v-model="queryPageParameters.partyB"
                 clearable
+                filterable
                 placeholder="乙方"
                 class="width--100"
               >
-                <!-- <el-option
-                  v-for="item in $root.displayList('accountType')"
-                  :key="item.value"
-                  :label="item.label"
-                  :value="item.value"
-                ></el-option> -->
+                <el-option
+                  v-for="item in companyList"
+                  :key="item.id"
+                  :label="item.name"
+                  :value="item.id"
+                ></el-option>
               </el-select>
             </el-form-item>
           </el-col>
@@ -63,7 +72,7 @@
                   ></el-input>
                 </el-form-item>
               </el-col>
-              <el-col :span="8">
+              <!-- <el-col :span="8">
                 <el-form-item label="合作时间">
                   <el-date-picker
                     style="width:100%;"
@@ -78,7 +87,7 @@
                     value-format="yyyy-MM-dd"
                   ></el-date-picker>
                 </el-form-item>
-              </el-col>
+              </el-col> -->
               <el-col :span="8">
                 <el-form-item label="执行时间">
                   <el-date-picker
@@ -92,9 +101,6 @@
                   ></el-date-picker>
                 </el-form-item>
               </el-col>
-            </el-row>
-
-            <el-row>
               <el-col :span="8">
                 <el-form-item label="项目">
                   <el-select
@@ -112,6 +118,9 @@
                   </el-select>
                 </el-form-item>
               </el-col>
+            </el-row>
+
+            <el-row>
               <el-col :span="8">
                 <el-form-item label="周期">
                   <el-select
@@ -137,9 +146,6 @@
                   />
                 </el-form-item>
               </el-col>
-            </el-row>
-
-            <el-row>
               <el-col :span="8">
                 <el-form-item label="合同编号">
                   <el-input
@@ -149,6 +155,9 @@
                   ></el-input>
                 </el-form-item>
               </el-col>
+            </el-row>
+
+            <el-row>
               <el-col :span="8">
                 <el-form-item label="归档状态">
                   <el-select
@@ -158,10 +167,10 @@
                     class="width--100"
                   >
                     <el-option
-                      v-for="item in $root.displayList('employeeType')"
-                      :key="item.value"
-                      :label="item.label"
-                      :value="item.value"
+                      v-for="item in $root.dictAllList('ContractEnum.FileState')"
+                      :key="item.code"
+                      :label="item.name"
+                      :value="item.code"
                     ></el-option>
                   </el-select>
                 </el-form-item>
@@ -176,9 +185,6 @@
                   ></el-input>
                 </el-form-item>
               </el-col>
-            </el-row>
-
-            <el-row>
               <el-col :span="8">
                 <el-form-item label="合同录入人">
                   <el-select
@@ -187,15 +193,18 @@
                     placeholder="请选择合同录入人"
                     class="width--100"
                   >
-                    <el-option
+                    <!-- <el-option
                       v-for="item in $root.displayList('employeeStatus')"
                       :key="item.value"
                       :label="item.label"
                       :value="item.value"
-                    ></el-option>
+                    ></el-option> -->
                   </el-select>
                 </el-form-item>
               </el-col>
+            </el-row>
+
+            <el-row>
               <el-col :span="8">
                 <el-form-item label="合同跟进人">
                   <el-select
@@ -204,12 +213,12 @@
                     placeholder="请选择合同跟进人"
                     class="width--100"
                   >
-                    <el-option
+                    <!-- <el-option
                       v-for="item in $root.displayList('employeeType')"
                       :key="item.value"
                       :label="item.label"
                       :value="item.value"
-                    ></el-option>
+                    ></el-option> -->
                   </el-select>
                 </el-form-item>
               </el-col>
@@ -278,7 +287,7 @@
           prop="pro"
           min-width="200"
         ></el-table-column>
-        <el-table-column
+        <!-- <el-table-column
           label="合作时间"
           prop="time"
           width="200"
@@ -286,7 +295,7 @@
           <template v-slot="{ row }">
             {{ `${row.beginTime}-${row.endTime}` }}
           </template>
-        </el-table-column>
+        </el-table-column> -->
         <el-table-column
           label="执行时间"
           prop="effectiveTime"
@@ -316,7 +325,11 @@
           label="归档状态"
           prop="fileState"
           width="100"
-        ></el-table-column>
+        >
+          <template v-slot="{ row }">
+            {{$root.dictAllName(row.fileState, 'ContractEnum.FileState')}}
+          </template>
+        </el-table-column>
         <el-table-column
           label="归档编号"
           prop="fileCode"
@@ -335,7 +348,7 @@
           <template v-slot="{ row }">
             <el-link
               type="primary"
-              @click.native.prevent="handleToPage(row)"
+              @click.native.prevent="handleToPage(row, 'info')"
             >详情</el-link>
             <el-link type="primary">扫描件归档</el-link>
             <el-link type="primary">原件归档</el-link>
@@ -364,6 +377,8 @@ import { Component, Vue } from "vue-property-decorator";
 import PaginationMixin from "@/mixins/pagination";
 
 import { post_contract_list } from "@/api/contract/index";
+import { post_company_listAll } from "@/api/developer/index";
+import { post_company_getAll } from "@/api/system/index";
 import SelectOrganizationTree from "@/components/SelectOrganizationTree.vue";
 
 @Component({
@@ -388,6 +403,8 @@ export default class PartyAList extends Vue {
     endTime: "",
   };
   timeList = [];
+  private companyList: any = [];
+  private partyAList: any = [];
   private searchOpen = true;
   public resPageInfo: any = {
     total: 0,
@@ -395,9 +412,9 @@ export default class PartyAList extends Vue {
   };
 
   private handleSearch(): void {
-    let sign = this.timeList && this.timeList.length;
-    this.queryPageParameters.beginTime = sign ? this.timeList[0] : "";
-    this.queryPageParameters.endTime = sign ? this.timeList[1] : "";
+    // let sign = this.timeList && this.timeList.length;
+    // this.queryPageParameters.beginTime = sign ? this.timeList[0] : "";
+    // this.queryPageParameters.endTime = sign ? this.timeList[1] : "";
     this.queryPageParameters.pageNum = 1;
     this.getListMixin();
   }
@@ -425,9 +442,9 @@ export default class PartyAList extends Vue {
   private openToggle(): void {
     this.searchOpen = !this.searchOpen;
   }
-  private handleToPage(row: any) {
+  private handleToPage(row: any, page: string) {
     this.$router.push({
-      path: "info",
+      path: page,
       query: {
         id: row.id,
       },
@@ -436,12 +453,20 @@ export default class PartyAList extends Vue {
   private handleSelectionChange(val: any): void {
     console.log(val);
   }
+  private async getCompanyList() {
+    this.companyList = await post_company_getAll({ name: "" });
+  }
+  private async getPartyAList() {
+    this.partyAList = await post_company_listAll({ name: "" });
+  }
   public async getListMixin(): Promise<void> {
     this.resPageInfo = await post_contract_list(this.queryPageParameters);
   }
 
   created() {
     this.getListMixin();
+    this.getCompanyList();
+    this.getPartyAList();
   }
 }
 </script>

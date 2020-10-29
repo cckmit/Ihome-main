@@ -4,7 +4,7 @@
  * @Author: ywl
  * @Date: 2020-09-27 11:13:15
  * @LastEditors: ywl
- * @LastEditTime: 2020-10-28 15:51:58
+ * @LastEditTime: 2020-10-29 11:58:54
 -->
 <template>
   <IhPage label-width="100px">
@@ -30,6 +30,7 @@
                 v-model="queryPageParameters.partyA"
                 placeholder="甲方"
                 clearable
+                filterable
                 class="width--100"
               ></el-select>
             </el-form-item>
@@ -39,6 +40,7 @@
               <el-select
                 v-model="queryPageParameters.partyB"
                 clearable
+                filterable
                 placeholder="乙方"
                 class="width--100"
               >
@@ -131,8 +133,14 @@
     <!-- 按钮 -->
     <template #btn>
       <el-row>
-        <el-button type="primary">查询</el-button>
-        <el-button type="info">重置</el-button>
+        <el-button
+          type="primary"
+          @click="handleSearch()"
+        >查询</el-button>
+        <el-button
+          type="info"
+          @click="handleReact()"
+        >重置</el-button>
         <el-button
           type="success"
           @click="$router.push('/strategy/add')"
@@ -163,7 +171,7 @@
           fixed
           label="标题"
           prop="title"
-          min-width="100"
+          min-width="150"
         ></el-table-column>
         <el-table-column
           label="甲方"
@@ -202,7 +210,7 @@
         ></el-table-column>
         <el-table-column
           label="操作"
-          width="150"
+          width="130"
           align="left"
           fixed="right"
         >
@@ -220,7 +228,7 @@
                 <i class="el-icon-arrow-down el-icon--right"></i>
               </span>
               <el-dropdown-menu slot="dropdown">
-                <el-dropdown-item @click.native.prevent="routerTo(row)">编辑</el-dropdown-item>
+                <el-dropdown-item @click.native.prevent="handleToPage(row, 'edit')">编辑</el-dropdown-item>
                 <el-dropdown-item @click.native.prevent="routerTo(row)">盖章版归档</el-dropdown-item>
                 <el-dropdown-item @click.native.prevent="routerTo(row)">原件归档</el-dropdown-item>
               </el-dropdown-menu>
@@ -282,6 +290,25 @@ export default class StrategyList extends Vue {
         id: row.id,
       },
     });
+  }
+  private handleSearch() {
+    this.queryPageParameters.pageNum = 1;
+    this.getListMixin();
+  }
+  private handleReact() {
+    this.queryPageParameters = {
+      title: "",
+      partyA: "",
+      partyB: "",
+      projectName: "",
+      cycle: "",
+      strategyCode: "",
+      fileState: "",
+      fileCode: "",
+      state: "",
+      pageNum: this.queryPageParameters.pageNum,
+      pageSize: this.queryPageParameters.pageSize,
+    };
   }
   private handleSelectionChange(val: any): void {
     console.log(val);

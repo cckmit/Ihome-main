@@ -4,7 +4,7 @@
  * @Author: ywl
  * @Date: 2020-10-16 15:19:48
  * @LastEditors: ywl
- * @LastEditTime: 2020-10-27 18:06:58
+ * @LastEditTime: 2020-10-28 18:23:27
  */
 import { RouteConfig } from 'vue-router'
 
@@ -80,6 +80,12 @@ const contractRoutes: Array<RouteConfig> = [
         name: 'StrategyAdd',
         component: () => import( /* webpackChunkName: "StrategyAdd" */ '@/views/contract/strategy/add.vue'),
         meta: { title: '甲方/中介战略协议录入', icon: 'form' }
+      },
+      {
+        path: 'edit',
+        name: 'StrategyEdit',
+        component: () => import( /* webpackChunkName: "StrategyEdit" */ '@/views/contract/strategy/add.vue'),
+        meta: { title: '甲方/中介战略协议编辑', icon: 'form' }
       },
       {
         path: 'info',

@@ -4,7 +4,7 @@
  * @Author: ywl
  * @Date: 2020-09-27 16:27:36
  * @LastEditors: ywl
- * @LastEditTime: 2020-10-28 15:24:18
+ * @LastEditTime: 2020-10-29 11:33:12
 -->
 <template>
   <IhPage label-width="110px">
@@ -182,14 +182,14 @@
           min-width="200"
         ></el-table-column>
         <el-table-column
-          fixed
           label="区域"
           prop="area"
+          min-width="150"
         ></el-table-column>
         <el-table-column
-          fixed
           label="乙方"
           prop="partyB"
+          min-width="200"
         ></el-table-column>
         <el-table-column
           label="乙方联系电话"

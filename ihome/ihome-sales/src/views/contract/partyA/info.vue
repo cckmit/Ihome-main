@@ -4,7 +4,7 @@
  * @Author: ywl
  * @Date: 2020-09-25 16:00:37
  * @LastEditors: ywl
- * @LastEditTime: 2020-10-26 15:44:40
+ * @LastEditTime: 2020-10-29 14:45:10
 -->
 <template>
   <IhPage class="text-left">
@@ -81,7 +81,7 @@
         <el-row>
           <el-col :span="12">
             <el-form-item label="归档状态">
-              {{formData.fileState}}
+              {{ $root.dictAllName(formData.fileState, 'ContractEnum.FileState')}}
             </el-form-item>
           </el-col>
           <el-col :span="12">

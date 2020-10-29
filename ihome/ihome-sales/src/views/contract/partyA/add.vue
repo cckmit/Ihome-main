@@ -4,7 +4,7 @@
  * @Author: ywl
  * @Date: 2020-09-25 16:00:37
  * @LastEditors: ywl
- * @LastEditTime: 2020-10-26 14:09:40
+ * @LastEditTime: 2020-10-29 14:39:55
 -->
 <template>
   <IhPage>
@@ -12,13 +12,17 @@
       <p class="ih-info-title">甲方合同信息</p>
       <el-form
         :model="formData"
+        :rules="rule"
         ref="ruleForm"
         label-width="120px"
         class="demo-ruleForm"
       >
         <el-row>
           <el-col :span="24">
-            <el-form-item label="合同标题">
+            <el-form-item
+              label="合同标题"
+              prop="title"
+            >
               <el-input
                 v-model="formData.title"
                 placeholder="合同标题"
@@ -28,38 +32,63 @@
         </el-row>
         <el-row>
           <el-col :span="12">
-            <el-form-item label="甲方">
+            <el-form-item
+              label="甲方"
+              prop="partyA"
+            >
               <el-select
                 v-model="formData.partyA"
                 placeholder="甲方"
-                clearable
+                filterable
+                multiple
+                value-key="id"
                 class="width--100"
-              ></el-select>
+              >
+                <el-option
+                  v-for="(item) in partyAList"
+                  :key="item.id"
+                  :label="item.name"
+                  :value="item"
+                ></el-option>
+              </el-select>
             </el-form-item>
           </el-col>
         </el-row>
         <el-row>
           <el-col :span="12">
-            <el-form-item label="乙方">
+            <el-form-item
+              label="乙方"
+              prop="partyB"
+            >
               <el-select
                 v-model="formData.partyB"
                 placeholder="乙方"
                 clearable
+                filterable
                 class="width--100"
-              ></el-select>
+              >
+                <el-option
+                  v-for="(item) in companyList"
+                  :key="item.id"
+                  :label="item.name"
+                  :value="item.id"
+                ></el-option>
+              </el-select>
             </el-form-item>
           </el-col>
         </el-row>
         <el-row>
           <el-col :span="12">
-            <el-form-item label="执行时间">
+            <el-form-item
+              label="执行时间"
+              prop="effectiveTime"
+            >
               <el-date-picker
                 style="width:100%;"
                 v-model="formData.effectiveTime"
                 type="date"
                 align="left"
                 placeholder="年/月/日"
-                :picker-options="$root.pickerOptions"
                 value-format="yyyy-MM-dd"
               ></el-date-picker>
             </el-form-item>
@@ -98,7 +127,8 @@
             <el-form-item label="合同编号">
               <el-input
                 v-model="formData.name"
-                placeholder="合同编号"
+                placeholder="合同编号(自动生成)"
+                disabled
               ></el-input>
             </el-form-item>
           </el-col>
@@ -106,7 +136,8 @@
             <el-form-item label="归档编号">
               <el-input
                 v-model="formData.name"
-                placeholder="归档编号"
+                placeholder="归档编号(自动生成)"
+                disabled
               ></el-input>
             </el-form-item>
           </el-col>
@@ -118,6 +149,7 @@
                 v-model="formData.name"
                 placeholder="归档状态"
                 clearable
+                disabled
                 class="width--100"
               ></el-select>
             </el-form-item>
@@ -128,6 +160,7 @@
                 v-model="formData.name"
                 placeholder="当前状态"
                 clearable
+                disabled
                 class="width--100"
               ></el-select>
             </el-form-item>
@@ -170,8 +203,12 @@
 
 <script lang="ts">
 import { Component, Vue } from "vue-property-decorator";
+import { Form as ElForm } from "element-ui";
+import { NoRepeatHttp } from "ihome-common/util/aop/no-repeat-http";
 
 import { post_contract_create } from "@/api/contract/index";
+import { post_company_listAll } from "@/api/developer/index";
+import { post_company_getAll } from "@/api/system/index";
 
 @Component({})
 export default class PartyAadd extends Vue {
@@ -184,17 +221,38 @@ export default class PartyAadd extends Vue {
     customer: "",
     customerNo: "",
   };
-  private fileList: Array<object> = [
-    // {
-    //   name: "abc.pdf",
-    //   url: `http://filesvr.polyihome.test/aist-filesvr-web/JQeryUpload/getfile?fileId=2c92808873be3796017490db113b0616`,
-    //   img_url: `http://filesvr.polyihome.test/aist-filesvr-web/JQeryUpload/getfile?fileId=2c92808873be3796017490db113b0616`,
-    // },
-  ];
+  private fileList: Array<object> = [];
   private fileList2: Array<object> = [];
+  private companyList: any = [];
+  private partyAList: any = [];
+  private rule: any = {
+    title: [{ required: true, message: "请输入标题", trigger: "blur" }],
+    partyA: [{ required: true, message: "请选择甲方", trigger: "blur" }],
+    partyB: [{ required: true, message: "请选择乙方", trigger: "blur" }],
+    effectiveTime: [
+      { required: true, message: "执行时间不能为空", trigger: "blur" },
+    ],
+  };
 
-  private async submit() {
-    await post_contract_create(this.formData);
+  private async getCompanyList() {
+    this.companyList = await post_company_getAll({ name: "" });
+  }
+  private async getPartyAList() {
+    this.partyAList = await post_company_listAll({ name: "" });
+  }
+  @NoRepeatHttp()
+  private submit() {
+    (this.$refs["ruleForm"] as ElForm).validate(async (val) => {
+      if (val) {
+        await post_contract_create(this.formData);
+        this.$message.success("提交成功");
+      }
+    });
+  }
+
+  created() {
+    this.getPartyAList();
+    this.getCompanyList();
   }
 }
 </script>

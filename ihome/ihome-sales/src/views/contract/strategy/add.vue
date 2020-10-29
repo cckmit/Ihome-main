@@ -4,7 +4,7 @@
  * @Author: ywl
  * @Date: 2020-09-27 14:41:06
  * @LastEditors: ywl
- * @LastEditTime: 2020-10-28 17:01:06
+ * @LastEditTime: 2020-10-28 18:36:33
 -->
 <template>
   <IhPage>
@@ -12,13 +12,17 @@
       <p class="ih-info-title">基础信息</p>
       <el-form
         :model="ruleForm"
+        :rules="rules"
         ref="ruleForm"
         label-width="100px"
         class="padding-left-30"
       >
         <el-row>
           <el-col :span="24">
-            <el-form-item label="标题">
+            <el-form-item
+              label="标题"
+              prop="title"
+            >
               <el-input
                 v-model="ruleForm.title"
                 placeholder="标题"
@@ -28,32 +32,55 @@
         </el-row>
         <el-row>
           <el-col :span="12">
-            <el-form-item label="甲方">
+            <el-form-item
+              label="甲方"
+              prop="partyA"
+            >
               <el-select
                 v-model="ruleForm.partyA"
                 placeholder="甲方"
                 clearable
                 class="width--100"
-              ></el-select>
+              >
+                <el-option
+                  v-for="(item) in partyAList"
+                  :key="item.id"
+                  :label="item.name"
+                  :value="item.id"
+                ></el-option>
+              </el-select>
             </el-form-item>
           </el-col>
           <el-col :span="12">
-            <el-form-item label="乙方">
+            <el-form-item
+              label="乙方"
+              prop="partyB"
+            >
               <el-select
                 v-model="ruleForm.partyB"
                 placeholder="乙方"
                 clearable
                 class="width--100"
-              ></el-select>
+              >
+                <el-option
+                  v-for="(item) in companyList"
+                  :key="item.id"
+                  :label="item.name"
+                  :value="item.id"
+                ></el-option>
+              </el-select>
             </el-form-item>
           </el-col>
         </el-row>
         <el-row>
           <el-col :span="12">
-            <el-form-item label="协议时间">
+            <el-form-item
+              label="协议时间"
+              prop="timeList"
+            >
               <el-date-picker
                 style="width:100%;"
-                v-model="dateList"
+                v-model="ruleForm.timeList"
                 type="daterange"
                 align="left"
                 unlink-panels
@@ -149,9 +176,15 @@
 
 <script lang="ts">
 import { Component, Vue } from "vue-property-decorator";
+import { Form as ElForm } from "element-ui";
 import { NoRepeatHttp } from "ihome-common/util/aop/no-repeat-http";
 
-import { post_strategy_create } from "@/api/contract/index";
+import {
+  post_strategy_create,
+  get_strategy_detail__id,
+} from "@/api/contract/index";
+import { post_company_listAll } from "@/api/developer/index";
+import { post_company_getAll } from "@/api/system/index";
 
 @Component({})
 export default class StrategyAdd extends Vue {
@@ -161,14 +194,55 @@ export default class StrategyAdd extends Vue {
     partyA: "",
     partyB: "",
     title: "",
+    timeList: [],
   };
-  private dateList: any = [];
   private fileList: Array<object> = [];
   private fileList2: Array<object> = [];
+  private companyList: any = [];
+  private partyAList: any = [];
 
+  private rules: any = {
+    title: [{ required: true, message: "请输入标题", trigger: "blur" }],
+    partyA: [{ required: true, message: "请选择甲方", trigger: "blur" }],
+    partyB: [{ required: true, message: "请选择乙方", trigger: "blur" }],
+    timeList: [
+      { required: true, message: "协议时间不能为空", trigger: "blur" },
+    ],
+  };
+
+  private async getCompanyList() {
+    this.companyList = await post_company_getAll({ name: "" });
+  }
+  private async getPartyAList() {
+    this.partyAList = await post_company_listAll({ name: "" });
+  }
   @NoRepeatHttp()
   private submit() {
-    post_strategy_create();
+    (this.$refs["ruleForm"] as ElForm).validate(async (val) => {
+      if (val) {
+        let sign = this.ruleForm.timeList && this.ruleForm.timeList.length;
+        this.ruleForm.beginTime = sign ? this.ruleForm.timeList[0] : "";
+        this.ruleForm.endTime = sign ? this.ruleForm.timeList[1] : "";
+        await post_strategy_create(this.ruleForm);
+        this.$message.success("提交成功");
+      }
+    });
+  }
+  private async getInfo(): Promise<void> {
+    let id = this.$route.query.id;
+    if (id) {
+      let res = await get_strategy_detail__id({ id: id });
+      this.ruleForm = {
+        ...res,
+        timeList: res.beginTime ? [res.beginTime, res.endTime] : [],
+      };
+    }
+  }
+
+  created() {
+    this.getPartyAList();
+    this.getCompanyList();
+    this.getInfo();
   }
 }
 </script>
