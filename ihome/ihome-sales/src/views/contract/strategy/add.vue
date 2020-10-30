@@ -4,7 +4,7 @@
  * @Author: ywl
  * @Date: 2020-09-27 14:41:06
  * @LastEditors: ywl
- * @LastEditTime: 2020-10-30 09:16:45
+ * @LastEditTime: 2020-10-30 17:33:11
 -->
 <template>
   <IhPage>
@@ -27,6 +27,28 @@
                 v-model="ruleForm.title"
                 placeholder="标题"
               ></el-input>
+            </el-form-item>
+          </el-col>
+        </el-row>
+        <el-row>
+          <el-col :span="12">
+            <el-form-item
+              label="协议类型"
+              prop="agreementType"
+            >
+              <el-select
+                v-model="ruleForm.agreementType"
+                clearable
+                @change="handleChange"
+                class="width--100"
+              >
+                <el-option
+                  v-for="item in $root.dictAllList('AgreementTypeEnum')"
+                  :key="item.code"
+                  :label="item.name"
+                  :value="item.code"
+                ></el-option>
+              </el-select>
             </el-form-item>
           </el-col>
         </el-row>
@@ -63,7 +85,7 @@
                 class="width--100"
               >
                 <el-option
-                  v-for="(item) in companyList"
+                  v-for="(item) in partyBList"
                   :key="item.id"
                   :label="item.name"
                   :value="item.id"
@@ -185,6 +207,7 @@ import {
 } from "@/api/contract/index";
 import { post_company_listAll } from "@/api/developer/index";
 import { post_company_getAll } from "@/api/system/index";
+import { get_channel_getAll } from "@/api/channel/index";
 
 @Component({})
 export default class StrategyAdd extends Vue {
@@ -194,12 +217,16 @@ export default class StrategyAdd extends Vue {
     partyA: "",
     partyB: "",
     title: "",
+    agreementType: "",
     timeList: [],
   };
+  private partyBList: any = [];
+  private partyAList: any = [];
+  private myCompany: any = [];
+  private devList: any = [];
+  private channelList: any = [];
   private fileList: Array<object> = [];
   private fileList2: Array<object> = [];
-  private companyList: any = [];
-  private partyAList: any = [];
 
   private rules: any = {
     title: [{ required: true, message: "请输入标题", trigger: "blur" }],
@@ -208,13 +235,29 @@ export default class StrategyAdd extends Vue {
     timeList: [
       { required: true, message: "协议时间不能为空", trigger: "blur" },
     ],
+    agreementType: [
+      { required: true, message: "协议类型不能为空", trigger: "blur" },
+    ],
   };
 
-  private async getCompanyList() {
-    this.companyList = await post_company_getAll({ name: "" });
+  private handleChange(val: any) {
+    console.log(val);
+    if (val === "PartyA") {
+      this.partyAList = this.devList;
+      this.partyBList = this.myCompany;
+    } else {
+      this.partyAList = this.myCompany;
+      this.partyBList = this.channelList;
+    }
   }
-  private async getPartyAList() {
-    this.partyAList = await post_company_listAll({ name: "" });
+  private async getMyCompanyList(): Promise<void> {
+    this.myCompany = await post_company_getAll({ name: "" });
+  }
+  private async getDevList(): Promise<void> {
+    this.devList = await post_company_listAll({ name: "" });
+  }
+  private async getChannel(): Promise<void> {
+    this.channelList = await get_channel_getAll();
   }
   @NoRepeatHttp()
   private submit() {
@@ -240,8 +283,9 @@ export default class StrategyAdd extends Vue {
   }
 
   created() {
-    this.getPartyAList();
-    this.getCompanyList();
+    this.getMyCompanyList();
+    this.getDevList();
+    this.getChannel();
     this.getInfo();
   }
 }

@@ -4,7 +4,7 @@
  * @Author: ywl
  * @Date: 2020-09-27 11:13:15
  * @LastEditors: ywl
- * @LastEditTime: 2020-10-30 09:21:27
+ * @LastEditTime: 2020-10-30 16:47:17
 -->
 <template>
   <IhPage label-width="100px">
@@ -32,7 +32,14 @@
                 clearable
                 filterable
                 class="width--100"
-              ></el-select>
+              >
+                <el-option
+                  v-for="item in companyList"
+                  :key="item.id"
+                  :label="item.name"
+                  :value="item.id"
+                ></el-option>
+              </el-select>
             </el-form-item>
           </el-col>
           <el-col :span="8">
@@ -44,12 +51,12 @@
                 placeholder="乙方"
                 class="width--100"
               >
-                <!-- <el-option
-                  v-for="item in $root.displayList('accountType')"
-                  :key="item.value"
-                  :label="item.label"
-                  :value="item.value"
-                ></el-option> -->
+                <el-option
+                  v-for="item in channelList"
+                  :key="item.id"
+                  :label="item.name"
+                  :value="item.id"
+                ></el-option>
               </el-select>
             </el-form-item>
           </el-col>
@@ -124,6 +131,24 @@
                   >
                     <el-option
                       v-for="item in $root.dictAllList('StrategyEnum.State')"
+                      :key="item.code"
+                      :label="item.name"
+                      :value="item.code"
+                    ></el-option>
+                  </el-select>
+                </el-form-item>
+              </el-col>
+            </el-row>
+            <el-row>
+              <el-col :span="8">
+                <el-form-item label="协议类型">
+                  <el-select
+                    v-model="queryPageParameters.agreementType"
+                    clearable
+                    class="width--100"
+                  >
+                    <el-option
+                      v-for="item in $root.dictAllList('AgreementTypeEnum')"
                       :key="item.code"
                       :label="item.name"
                       :value="item.code"
@@ -268,6 +293,8 @@ import { Component, Vue } from "vue-property-decorator";
 import PaginationMixin from "@/mixins/pagination";
 
 import { post_strategy_list } from "@/api/contract/index";
+import { post_company_listAll } from "@/api/developer/index";
+import { get_channel_getAll } from "@/api/channel/index";
 
 @Component({
   mixins: [PaginationMixin],
@@ -289,6 +316,8 @@ export default class StrategyList extends Vue {
     total: 0,
     list: [],
   };
+  private companyList: any = [];
+  private channelList: any = [];
 
   private openToggle(): void {
     this.searchOpen = !this.searchOpen;
@@ -323,12 +352,20 @@ export default class StrategyList extends Vue {
   private handleSelectionChange(val: any): void {
     console.log(val);
   }
+  private async getCompanyAll(): Promise<void> {
+    this.companyList = await post_company_listAll({ name: "" });
+  }
+  private async getChannelAll(): Promise<void> {
+    this.channelList = await get_channel_getAll();
+  }
   public async getListMixin(): Promise<void> {
     this.resPageInfo = await post_strategy_list(this.queryPageParameters);
   }
 
   created() {
     this.getListMixin();
+    this.getCompanyAll();
+    this.getChannelAll();
   }
 }
 interface PageInfo {
