@@ -4,7 +4,7 @@
  * @Author: wwq
  * @Date: 2020-10-22 14:45:15
  * @LastEditors: wwq
- * @LastEditTime: 2020-10-28 15:33:48
+ * @LastEditTime: 2020-10-29 09:29:36
  */
 import { RouteConfig } from 'vue-router'
 
@@ -63,6 +63,12 @@ const projectRoutes: Array<RouteConfig> = [
         name: 'firstAgencyEdit',
         component: () => import('../views/project/firstAgency/edit.vue'),
         meta: { title: '一手代理公司编辑', icon: 'form' }
+      },
+      {
+        path: 'info',
+        name: 'firstAgencyInfo',
+        component: () => import('../views/project/firstAgency/info.vue'),
+        meta: { title: '一手代理公司详情', icon: 'form' }
       }
     ]
   },

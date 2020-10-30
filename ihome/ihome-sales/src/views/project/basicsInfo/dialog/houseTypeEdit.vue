@@ -13,20 +13,22 @@
     <el-form ref="form" :model="form" :rules="rules" label-width="100px">
       <el-row>
         <el-col :span="16">
-          <el-form-item label="户型图：">
-            <ih-upload
-              :file-list="fileList"
+          <el-form-item label="户型图：" prop="fileList">
+            <IhUpload
+              :file-list="form.fileList"
               accept="image/*"
               size="100px"
-            ></ih-upload>
+              :limit="1"
+              @queryList="queryList"
+            ></IhUpload>
           </el-form-item>
         </el-col>
       </el-row>
       <el-row>
         <el-col :span="16">
-          <el-form-item label="户型名称：" prop="number">
+          <el-form-item label="户型名称：" prop="houseName">
             <el-input
-              v-model="form.number"
+              v-model="form.houseName"
               placeholder="户型名称"
               maxlength="200"
             ></el-input>
@@ -35,10 +37,11 @@
       </el-row>
       <el-row>
         <el-col :span="10">
-          <el-form-item label="户型面积：" prop="number">
+          <el-form-item label="户型面积：" prop="space">
             <div style="display: flex; justify-contant: flex-start">
               <el-input
-                v-model.number="form.number"
+                v-model.number="form.space"
+                onkeyup="this.value = this.value.replace(/[^\d.]/g,'');"
                 placeholder="户型面积"
                 maxlength="50"
               ></el-input>
@@ -49,9 +52,9 @@
       </el-row>
       <el-row>
         <el-col :span="24">
-          <el-form-item label="户型：" prop="type">
+          <el-form-item label="户型：">
             <div style="display: flex; justify-contant: flex-start">
-              <el-select v-model="form.number" clearable>
+              <el-select v-model="form.room" clearable>
                 <el-option
                   v-for="item in numOptions"
                   :key="item.value"
@@ -60,7 +63,7 @@
                 ></el-option>
               </el-select>
               <span style="padding: 0 8px">室</span>
-              <el-select v-model="form.number" clearable>
+              <el-select v-model="form.hall" clearable>
                 <el-option
                   v-for="item in numOptions"
                   :key="item.value"
@@ -69,7 +72,7 @@
                 ></el-option>
               </el-select>
               <span style="padding: 0 8px">厅</span>
-              <el-select v-model="form.number" clearable>
+              <el-select v-model="form.kitchen" clearable>
                 <el-option
                   v-for="item in numOptions"
                   :key="item.value"
@@ -78,7 +81,7 @@
                 ></el-option>
               </el-select>
               <span style="padding: 0 8px">厨</span>
-              <el-select v-model="form.number" clearable>
+              <el-select v-model="form.toilet" clearable>
                 <el-option
                   v-for="item in numOptions"
                   :key="item.value"
@@ -93,10 +96,10 @@
       </el-row>
       <el-row>
         <el-col :span="24">
-          <el-form-item label="朝向：" prop="type">
-            <el-select v-model="form.number" clearable>
+          <el-form-item label="朝向：">
+            <el-select v-model="form.positionEnum" clearable>
               <el-option
-                v-for="item in $root.dictAllList('ChannelLevel')"
+                v-for="item in $root.dictAllList('PositionEnum')"
                 :key="item.code"
                 :label="item.name"
                 :value="item.code"
@@ -126,18 +129,21 @@ export default class HouseTypeEdit extends Vue {
   dialogVisible = true;
 
   form: any = {
-    bank: null,
-    name: null,
-    number: null,
-    type: null,
+    houseName: null,
+    space: null,
+    room: null,
+    hall: null,
+    kitchen: null,
+    toilet: null,
+    positionEnum: null,
+    propertyId: null,
+    fileList: [],
   };
   rules: any = {
-    name: [{ required: true, message: "请输入栋座名称", trigger: "blur" }],
-    number: [{ required: true, message: "请输入地上层数", trigger: "blur" }],
-    type: [{ required: true, message: "请输入地下层数", trigger: "blur" }],
+    fileList: [{ required: true, message: "请上传户型图", trigger: "blur" }],
+    houseName: [{ required: true, message: "请输入户型名称", trigger: "blur" }],
+    space: [{ required: true, message: "请输入户型面积", trigger: "blur" }],
   };
-
-  fileList: any = [];
 
   numOptions: any = [
     {
@@ -189,6 +195,19 @@ export default class HouseTypeEdit extends Vue {
   }
   async created() {
     this.form = { ...this.data };
+    if (Object.keys(this.data).length !== 1) {
+      this.form.fileList = [
+        {
+          fileId: this.data.picAddr,
+          name: `${this.data.houseName}.jpg`,
+        },
+      ];
+    } else {
+      this.form.fileList = [];
+    }
+  }
+  queryList(data: any) {
+    this.$set(this.form.fileList, 0, data[0]);
   }
 }
 </script>

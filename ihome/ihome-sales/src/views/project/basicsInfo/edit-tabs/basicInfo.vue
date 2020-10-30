@@ -4,7 +4,7 @@
  * @Author: wwq
  * @Date: 2020-09-27 11:52:41
  * @LastEditors: wwq
- * @LastEditTime: 2020-10-28 15:29:13
+ * @LastEditTime: 2020-10-30 10:15:21
 -->
 <template>
   <div>
@@ -269,7 +269,7 @@
                       </el-tag>
                       <el-input
                         class="input-new-tag"
-                        v-if="item.msg.inputVisible"
+                        v-show="item.msg.inputVisible"
                         v-model="item.msg.inputValue"
                         ref="saveTagInput"
                         size="small"
@@ -278,7 +278,10 @@
                         @blur="handleInputConfirm(i)"
                       >
                       </el-input>
-                      <el-button v-else size="small" @click="showInput(i)"
+                      <el-button
+                        v-show="!item.msg.inputVisible"
+                        size="small"
+                        @click="showInput(i)"
                         >+ 栋座</el-button
                       >
                     </el-form-item>
@@ -358,6 +361,7 @@
             top: 25px;
             left: 145px;
           "
+          @click="addFirstAgency"
           >+增加公司</el-button
         >
         <div class="padding-left-20">
@@ -415,15 +419,22 @@
       <el-button type="primary" @click="add">保存</el-button>
       <el-button @click="$goto({ path: '/projects/list' })">关闭</el-button>
     </div>
+    <ih-dialog :show="dialogVisible">
+      <FirstAgencyDialog
+        @cancel="() => (dialogVisible = false)"
+        @finish="(data) => firstAgencyFinish(data)"
+      />
+    </ih-dialog>
   </div>
 </template>
 <script lang="ts">
 import { Component, Vue } from "vue-property-decorator";
 import { post_company_listAll } from "@/api/developer/index";
 import { get_project_get__proId } from "@/api/project/index";
+import FirstAgencyDialog from "../dialog/firstAgency.vue";
 
 @Component({
-  components: {},
+  components: { FirstAgencyDialog },
 })
 export default class BasicInfo extends Vue {
   searchOpen = true;
@@ -535,6 +546,7 @@ export default class BasicInfo extends Vue {
   radio = {};
   houseList: any = [];
   accFileList: any = [];
+  dialogVisible = false;
 
   private get projectId() {
     return this.$route.query.id;
@@ -563,7 +575,11 @@ export default class BasicInfo extends Vue {
       } else {
         arr.push({
           ...v,
-          msg: item,
+          msg: {
+            ...item,
+            inputVisible: false,
+            inputValue: null,
+          },
         });
       }
     });
@@ -588,12 +604,19 @@ export default class BasicInfo extends Vue {
         buildingNames: v.buildingNames.map((j: any) => j.buildingName),
       }));
       this.form.jingwei = data.lat + "," + data.lng;
+      let arr: any = [];
       this.contantList.forEach((v: any) => {
-        this.form.checkboxEnum.push({
+        arr.push({
           ...(this.$root as any).dictAllItem(v.propertyEnum, "PropertyEnum"),
-          msg: v,
+          msg: {
+            ...v,
+            inputVisible: false,
+            inputValue: null,
+          },
         });
       });
+      this.form.checkboxEnum = this.$tool.deepClone(arr);
+      console.log(this.form.checkboxEnum, 22222);
       this.houseFileList = this.form.proPics.map((v: any) => ({
         name: v.attachAddr,
         fileId: v.attachId,
@@ -663,7 +686,7 @@ export default class BasicInfo extends Vue {
   showInput(i: number) {
     this.form.checkboxEnum[i].msg.inputVisible = true;
     this.$nextTick(() => {
-      (this.$refs.saveTagInput as any)[0].$refs.input.focus();
+      (this.$refs.saveTagInput as any)[i].$refs.input.focus();
     });
   }
   // 添加物业类型的栋座
@@ -690,6 +713,15 @@ export default class BasicInfo extends Vue {
       proAttachEnum: "ProPic",
       exIndex: null, // 是否设为主页
     }));
+    // let arr = data.map((v: any) => ({
+    //   attachAddr: v.name,
+    //   attachId: v.fileId,
+    //   proAttachEnum: "ProPic",
+    //   exIndex: null, // 是否设为主页
+    // }));
+    // arr.forEach((v: any, i: number) => {
+    //   this.$set(this.houseFileList, i, arr[i]);
+    // });
   }
 
   viewCycleData() {
@@ -706,6 +738,20 @@ export default class BasicInfo extends Vue {
     } catch (error) {
       console.log(error);
     }
+  }
+  addFirstAgency() {
+    this.dialogVisible = true;
+  }
+
+  firstAgencyFinish(data: any) {
+    if (this.form.firstAgencyCompanys.length) {
+      data.forEach((v: any) => {
+        this.form.firstAgencyCompanys.push(v);
+      });
+    } else {
+      this.form.firstAgencyCompanys = data;
+    }
+    this.dialogVisible = false;
   }
   add() {
     let obj = { ...this.form };

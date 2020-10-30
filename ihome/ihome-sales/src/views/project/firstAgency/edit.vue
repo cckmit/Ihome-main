@@ -214,7 +214,7 @@
               :file-list="row.fileList"
               size="100px"
               accept="image/*"
-              @queryList="houseFiles"
+              @queryList="queryFiles"
             >
             </IhUpload>
           </template>
@@ -235,8 +235,8 @@
     </el-input>
     <div>
       <br />
-      <el-button type="primary" @click="submit(1)">保存</el-button>
-      <el-button type="success" @click="submit(2)">提交</el-button>
+      <el-button type="primary" @click="save()">保存</el-button>
+      <el-button type="success" @click="submit()">提交</el-button>
     </div>
 
     <!-- 账户信息 -->
@@ -296,6 +296,7 @@ export default class FirstAgencyEdit extends Vue {
     remark: "",
     timeList: [],
   };
+  accessoryFile: any = [];
   dialogFormVisible = false;
   Bankrule: any = {
     accountName: "",
@@ -373,8 +374,7 @@ export default class FirstAgencyEdit extends Vue {
     this.dialogFormVisible = true;
   }
 
-  submit(val: any) {
-    console.log(val);
+  save() {
     (this.$refs["ruleForm"] as ElForm).validate(async (v: any) => {
       if (v) {
         let infoObj = { ...this.info };
@@ -385,7 +385,7 @@ export default class FirstAgencyEdit extends Vue {
         if (this.info.provinceList.length) {
           infoObj.province = this.info.provinceList[0];
           infoObj.city = this.info.provinceList[1];
-          infoObj.county = this.info.provinceList[2];
+          infoObj.area = this.info.provinceList[2];
         }
         switch (this.$route.name) {
           case "firstAgencyAdd":
@@ -396,18 +396,29 @@ export default class FirstAgencyEdit extends Vue {
             break;
         }
         let arr: any = [];
-        this.info.attachAgencyVOS.forEach((v: any) => {
-          arr = v.fileList.map((j: any) => ({
-            attachAddr: j.name,
-            attachId: j.fileId,
-            firstAgencyAttachEnum: j.firstAgencyAttachEnum,
-          }));
-        });
-        infoObj.attachAgencyVOS = arr;
+        if (this.accessoryFile.length) {
+          infoObj.attachAgencyVOS = this.accessoryFile;
+        } else {
+          this.info.attachAgencyVOS.forEach((v: any) => {
+            arr = v.fileList.map((j: any) => ({
+              attachAddr: j.name,
+              attachId: j.fileId,
+              firstAgencyAttachEnum: j.firstAgencyAttachEnum,
+            }));
+          });
+          infoObj.attachAgencyVOS = arr;
+        }
+        infoObj.followMan = "admin";
+        infoObj.followManId = 1;
         console.log(infoObj);
         await post_firstAgencyCompany_save(infoObj);
+        this.$message.success("保存成功");
+        this.$goto({ path: "/firstAgency/list" });
       }
     });
+  }
+  submit() {
+    this.$message.warning("接口未提供,功能未实现");
   }
   /**
    * @description: 新添加数据--银行账号信息
@@ -432,7 +443,6 @@ export default class FirstAgencyEdit extends Vue {
         agencyId: id,
       });
       res.timeList = [res.businessStart, res.businessEnd];
-      res.provinceList = [res.province, res.city, res.county];
       let arr: any = [];
       res.attachAgencyVOS.forEach((v: any) => {
         const item = arr.find(
@@ -457,8 +467,8 @@ export default class FirstAgencyEdit extends Vue {
           });
         }
       });
-      console.log(arr);
       this.info = { ...res, attachAgencyVOS: [...arr] };
+      this.info.provinceList = [res.province, res.city, res.area];
     }
   }
   /**
@@ -488,8 +498,12 @@ export default class FirstAgencyEdit extends Vue {
     this.getInfo();
   }
 
-  houseFiles(data: any) {
-    console.log(data);
+  queryFiles(data: any) {
+    this.accessoryFile = data.map((v: any) => ({
+      attachAddr: v.name,
+      attachId: v.fileId,
+      firstAgencyAttachEnum: data[0].firstAgencyAttachEnum,
+    }));
   }
 }
 </script>

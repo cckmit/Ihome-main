@@ -4,7 +4,7 @@
  * @Author: wwq
  * @Date: 2020-08-13 11:40:10
  * @LastEditors: wwq
- * @LastEditTime: 2020-10-28 15:28:36
+ * @LastEditTime: 2020-10-29 16:52:03
 -->
 <template>
   <IhPage label-width="100px">
@@ -15,7 +15,7 @@
             <el-form-item label="项目盘编">
               <el-input
                 clearable
-                v-model="queryPageParameters.storageNum"
+                v-model="queryPageParameters.proNo"
                 placeholder="项目盘编"
               ></el-input>
             </el-form-item>
@@ -24,7 +24,7 @@
             <el-form-item label="项目名称">
               <el-input
                 clearable
-                v-model="queryPageParameters.storageNum"
+                v-model="queryPageParameters.proName"
                 placeholder="项目名称"
               ></el-input>
             </el-form-item>
@@ -33,7 +33,7 @@
             <el-form-item label="周期名称">
               <el-input
                 clearable
-                v-model="queryPageParameters.storageNum"
+                v-model="queryPageParameters.termName"
                 placeholder="周期名称"
               ></el-input>
             </el-form-item>
@@ -51,13 +51,13 @@
           <el-col :span="8">
             <el-form-item label="业务类型">
               <el-select
-                v-model="queryPageParameters.status"
+                v-model="queryPageParameters.busTypeEnum"
                 clearable
                 placeholder="业务类型"
                 class="width--100"
               >
                 <el-option
-                  v-for="item in $root.dictAllList('ChannelStatus')"
+                  v-for="item in $root.dictAllList('BusTypeEnum')"
                   :key="item.code"
                   :label="item.name"
                   :value="item.code"
@@ -68,13 +68,13 @@
           <el-col :span="8">
             <el-form-item label="项目审核状态">
               <el-select
-                v-model="queryPageParameters.special"
+                v-model="queryPageParameters.auditEnum"
                 clearable
                 placeholder="特批入库"
                 class="width--100"
               >
                 <el-option
-                  v-for="item in $root.dictAllList('YesOrNoType')"
+                  v-for="item in $root.dictAllList('AuditEnum')"
                   :key="item.code"
                   :label="item.name"
                   :value="item.code"
@@ -103,13 +103,13 @@
       >
         <el-table-column
           fixed
-          prop="storageNum"
+          prop="proNo"
           label="盘编"
           width="160"
         ></el-table-column>
         <el-table-column
           fixed
-          prop="channelId"
+          prop="proName"
           label="项目名称"
           width="100"
         ></el-table-column>
@@ -123,15 +123,15 @@
             $root.getAreaName(row.city)
           }}</template>
         </el-table-column>
-        <el-table-column prop="county" label="行政区">
+        <el-table-column prop="district" label="行政区">
           <template v-slot="{ row }">{{
-            $root.getAreaName(row.county)
+            $root.getAreaName(row.district)
           }}</template>
         </el-table-column>
-        <el-table-column prop="cityGrade" label="项目地址"> </el-table-column>
-        <el-table-column prop="status" label="项目审核状态">
+        <el-table-column prop="proAddr" label="项目地址"> </el-table-column>
+        <el-table-column prop="auditEnum" label="项目审核状态">
           <template v-slot="{ row }">{{
-            $root.dictAllName(row.status, "ChannelStatus")
+            $root.dictAllName(row.auditEnum, "AuditEnum")
           }}</template>
         </el-table-column>
         <el-table-column label="操作" width="120" fixed="right">
@@ -147,14 +147,10 @@
                 <i class="el-icon-arrow-down el-icon--right"></i>
               </span>
               <el-dropdown-menu slot="dropdown">
-                <el-dropdown-item
-                  @click.native.prevent="routerTo(row, 'edit')"
-                  :disabled="row.status !== 'DRAFT'"
+                <el-dropdown-item @click.native.prevent="routerTo(row, 'edit')"
                   >编辑</el-dropdown-item
                 >
-                <el-dropdown-item
-                  @click.native.prevent="remove(row)"
-                  :disabled="row.status !== 'DRAFT'"
+                <el-dropdown-item @click.native.prevent="remove(row)"
                   >删除</el-dropdown-item
                 >
                 <el-dropdown-item
@@ -183,7 +179,10 @@
 
 <script lang="ts">
 import { Component, Vue } from "vue-property-decorator";
-import { post_channelGrade_getList } from "@/api/channel/index";
+import {
+  post_project_getList,
+  post_project_del__proId,
+} from "@/api/project/index";
 import PaginationMixin from "@/mixins/pagination";
 @Component({
   components: {},
@@ -191,16 +190,14 @@ import PaginationMixin from "@/mixins/pagination";
 })
 export default class ProjectList extends Vue {
   queryPageParameters: any = {
-    channelId: null,
-    channelGrade: null,
-    cityGrade: null,
+    proNo: null,
+    proName: null,
+    termName: null,
     province: null,
     city: null,
-    departmentOrgId: null,
-    status: null,
-    inputUser: null,
-    special: null,
-    storageNum: null,
+    district: null,
+    busTypeEnum: null,
+    auditEnum: null,
   };
   provinceOption: any = [];
   resPageInfo: any = {
@@ -211,21 +208,20 @@ export default class ProjectList extends Vue {
   search() {
     this.queryPageParameters.province = this.provinceOption[0];
     this.queryPageParameters.city = this.provinceOption[1];
+    this.queryPageParameters.district = this.provinceOption[2];
     this.queryPageParameters.pageNum = 1;
     this.getListMixin();
   }
   empty() {
     this.queryPageParameters = {
-      channelId: null,
-      channelGrade: null,
-      cityGrade: null,
+      proNo: null,
+      proName: null,
+      termName: null,
       province: null,
       city: null,
-      departmentOrgId: null,
-      status: null,
-      inputUser: null,
-      special: null,
-      storageNum: null,
+      district: null,
+      busTypeEnum: null,
+      auditEnum: null,
       pageNum: this.queryPageParameters.pageNum,
       pageSize: this.queryPageParameters.pageSize,
     };
@@ -241,16 +237,16 @@ export default class ProjectList extends Vue {
     this.$router.push({
       path: `/projects/${where}`,
       query: {
-        id: row.id,
+        id: row.proId,
       },
     });
   }
 
   // 删除
-  async remove() {
+  async remove(row: any) {
     try {
       await this.$confirm("是否确定删除?", "提示");
-      // await post_channelGrade_delete__id({ id: row.id });
+      await post_project_del__proId({ proId: row.proId });
       this.$message({
         type: "success",
         message: "删除成功!",
@@ -267,9 +263,7 @@ export default class ProjectList extends Vue {
 
   //获取数据
   async getListMixin() {
-    this.resPageInfo = await post_channelGrade_getList(
-      this.queryPageParameters
-    );
+    this.resPageInfo = await post_project_getList(this.queryPageParameters);
   }
 }
 </script>

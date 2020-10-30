@@ -4,7 +4,7 @@
  * @Author: wwq
  * @Date: 2020-10-28 15:34:27
  * @LastEditors: wwq
- * @LastEditTime: 2020-10-28 18:10:32
+ * @LastEditTime: 2020-10-29 10:09:19
 -->
 <template>
   <ih-page>
@@ -130,11 +130,12 @@
                   @click.native.prevent="routeTo(row, 'edit')"
                   >修改</el-dropdown-item
                 >
-                <!-- <el-dropdown-item
-                  :disabled="row.status !== 'WaitAuditByBranchHead'"
-                  @click.native.prevent="routeTo(row, 'check')"
+                <el-dropdown-item
+                  @click.native.prevent="
+                    $message.warning('接口未提供,功能未实现')
+                  "
                   >审核</el-dropdown-item
-                > -->
+                >
               </el-dropdown-menu>
             </el-dropdown>
           </template>
