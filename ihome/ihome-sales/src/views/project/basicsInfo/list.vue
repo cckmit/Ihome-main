@@ -4,7 +4,7 @@
  * @Author: wwq
  * @Date: 2020-08-13 11:40:10
  * @LastEditors: wwq
- * @LastEditTime: 2020-10-29 16:52:03
+ * @LastEditTime: 2020-10-30 18:19:48
 -->
 <template>
   <IhPage label-width="100px">
@@ -238,6 +238,7 @@ export default class ProjectList extends Vue {
       path: `/projects/${where}`,
       query: {
         id: row.proId,
+        proName: row.termName,
       },
     });
   }

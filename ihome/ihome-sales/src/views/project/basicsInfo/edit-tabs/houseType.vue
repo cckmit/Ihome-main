@@ -4,7 +4,7 @@
  * @Author: wwq
  * @Date: 2020-09-27 11:52:41
  * @LastEditors: wwq
- * @LastEditTime: 2020-10-30 10:06:08
+ * @LastEditTime: 2020-10-30 11:09:44
 -->
 <template>
   <div class="house-type">
@@ -21,7 +21,7 @@
               alt=""
             />
             <div class="title">
-              {{ `${item.houseName}${item.space}m²` }}<br />
+              {{ `${item.houseName} ${item.space}m²` }}<br />
               {{
                 `${item.room}室${item.hall}厅 ${item.kitchen}厨
               ${item.toilet}卫 ${item.space}m²`
@@ -82,7 +82,7 @@ export default class HouseType extends Vue {
     if (this.proId) {
       this.info = await get_houseType_getTabItem__proId({ proId: this.proId });
     } else {
-      this.$message.warning("请先填写基本信息");
+      this.$message.warning("请先完善基础信息");
     }
   }
 
@@ -97,7 +97,6 @@ export default class HouseType extends Vue {
   }
 
   async finish(data: any) {
-    console.log(data);
     let obj: any = {};
     obj = { ...data };
     obj.picAddr = data.fileList[0].fileId;

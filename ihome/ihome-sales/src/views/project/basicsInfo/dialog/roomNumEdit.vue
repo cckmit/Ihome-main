@@ -12,9 +12,9 @@
     <el-form ref="form" :model="form" :rules="rules" label-width="100px">
       <el-row>
         <el-col :span="24">
-          <el-form-item label="栋座名称：" prop="name">
+          <el-form-item label="栋座名称：" prop="buildingName">
             <el-input
-              v-model="form.name"
+              v-model="form.buildingName"
               placeholder="栋座名称"
               maxlength="50"
             ></el-input>
@@ -24,31 +24,34 @@
 
       <el-row>
         <el-col :span="24">
-          <el-form-item label="地上层数：" prop="number">
-            <el-input v-model="form.number" placeholder="地上层数"></el-input>
+          <el-form-item label="地上层数：" prop="floor">
+            <el-input v-model="form.floor" placeholder="地上层数"></el-input>
           </el-form-item>
         </el-col>
       </el-row>
 
       <el-row>
         <el-col :span="24">
-          <el-form-item label="地下层数：" prop="bank">
-            <el-input v-model="form.bank" placeholder="地下层数"></el-input>
+          <el-form-item label="地下层数：" prop="undergroundNum">
+            <el-input
+              v-model="form.undergroundNum"
+              placeholder="地下层数"
+            ></el-input>
           </el-form-item>
         </el-col>
       </el-row>
 
       <el-row>
         <el-col :span="24">
-          <el-form-item label="物业类型：">
+          <el-form-item label="物业类型：" prop="propertyEnum">
             <el-select
               style="width: 100%"
-              v-model="form.type"
+              v-model="form.propertyEnum"
               clearable
               placeholder="物业类型"
             >
               <el-option
-                v-for="item in $root.dictAllList('BankAccountTypeEnum')"
+                v-for="item in $root.dictAllList('PropertyEnum')"
                 :key="item.code"
                 :label="item.name"
                 :value="item.code"
@@ -78,15 +81,22 @@ export default class RoomNumEdit extends Vue {
   dialogVisible = true;
 
   form: any = {
-    bank: null,
-    name: null,
-    number: null,
-    type: null,
+    buildingName: null,
+    floor: null,
+    undergroundNum: null,
+    propertyEnum: null,
   };
   rules: any = {
-    name: [{ required: true, message: "请输入栋座名称", trigger: "blur" }],
-    number: [{ required: true, message: "请输入地上层数", trigger: "blur" }],
-    bank: [{ required: true, message: "请输入地下层数", trigger: "blur" }],
+    buildingName: [
+      { required: true, message: "请输入栋座名称", trigger: "blur" },
+    ],
+    floor: [{ required: true, message: "请输入地上层数", trigger: "blur" }],
+    undergroundNum: [
+      { required: true, message: "请输入地下层数", trigger: "blur" },
+    ],
+    propertyEnum: [
+      { required: true, message: "请选择物业类型", trigger: "blur" },
+    ],
   };
 
   cancel() {
@@ -110,15 +120,4 @@ export default class RoomNumEdit extends Vue {
 }
 </script>
 <style lang="scss" scoped>
-</style>
-<style lang="scss" >
-.ih-dialog {
-  .el-form-item__content {
-    margin-right: 40px;
-  }
-  .el-input,
-  .el-select {
-    width: 100%;
-  }
-}
 </style>
