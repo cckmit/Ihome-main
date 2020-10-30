@@ -128,7 +128,7 @@
           <el-form-item label="姓名">{{ channelPersons.name }}</el-form-item>
         </el-col>
         <el-col :span="8">
-          <el-form-item label="手机号码">{{ channelPersons.bobile }}</el-form-item>
+          <el-form-item label="手机号码">{{ channelPersons.mobile }}</el-form-item>
         </el-col>
         <el-col :span="8">
           <el-form-item label="身份证号码">{{ channelPersons.identityCode }}</el-form-item>

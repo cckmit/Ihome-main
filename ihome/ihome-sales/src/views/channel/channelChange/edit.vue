@@ -249,10 +249,10 @@
         <el-col :span="8">
           <el-form-item
             label="手机号码"
-            prop="bobile"
+            prop="mobile"
           >
             <el-input
-              v-model="channelPersonsData.bobile"
+              v-model="channelPersonsData.mobile"
               clearable
             ></el-input>
           </el-form-item>
@@ -404,7 +404,7 @@ export default class ModifyThe extends Vue {
   bankType: any = "new-add";
   channelPersonsData: any = {
     name: "",
-    bobile: "",
+    mobile: "",
     identityCode: "",
     email: "",
   };
@@ -430,7 +430,7 @@ export default class ModifyThe extends Vue {
     legalPerson: [
       { required: true, message: "请输入法定代表人", trigger: "blur" },
     ],
-    bobile: [
+    mobile: [
       { required: true, message: "请输入手机号", trigger: "blur" },
       {
         pattern: /^1[3456789]\d{9}$/,
