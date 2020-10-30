@@ -10,12 +10,39 @@
         <el-row>
           <el-col :span="12">
             <el-form-item label="周期">
-              <el-input placeholder="周期"></el-input>
+              <el-select
+                v-model="cycle"
+                placeholder="周期"
+                clearable
+                filterable
+                class="width--100"
+              >
+                <el-option
+                  v-for="item in dropOption"
+                  :key="item.termId"
+                  :label="item.termName"
+                  :value="item.termId"
+                ></el-option>
+              </el-select>
             </el-form-item>
           </el-col>
           <el-col :span="12">
             <el-form-item label="乙方(渠道)公司">
-              <el-input placeholder="乙方(渠道)公司"></el-input>
+              <el-select
+                v-model="channelData"
+                placeholder="乙方(渠道)公司"
+                clearable
+                filterable
+                class="width--100"
+                value-key="id"
+              >
+                <el-option
+                  v-for="item in channelList"
+                  :key="item.id"
+                  :label="item.name"
+                  :value="item"
+                ></el-option>
+              </el-select>
             </el-form-item>
           </el-col>
         </el-row>
@@ -36,8 +63,9 @@
         <el-button
           type="primary"
           class="margin-bottom-17"
+          @click="handleOpen()"
         >选择分销合同模板</el-button>
-        <el-table>
+        <el-table :data="templateData">
           <el-table-column
             label="合同主标题"
             prop="fileCode"
@@ -45,7 +73,7 @@
           <el-table-column
             label="甲方公司"
             prop="fileCode"
-            min-width="200"
+            min-width="160"
           ></el-table-column>
           <el-table-column
             label="派发佣金标准"
@@ -62,10 +90,13 @@
           <el-table-column
             label="操作"
             fixed="right"
-            width="200"
+            width="150"
           >
             <template>
-              <el-link type="primary">查看参数</el-link>
+              <el-link
+                type="primary"
+                class="margin-right-15"
+              >查看参数</el-link>
               <el-link type="primary">预览合同</el-link>
             </template>
           </el-table-column>
@@ -333,12 +364,58 @@
         <el-button>取消</el-button>
       </div>
     </template>
+
+    <IhDialog
+      :show="dialogFormVisible"
+      desc="分销合同模板"
+    >
+      <TemplateDailog
+        :data="cycle"
+        @cancel="() => (dialogFormVisible = false)"
+        @finish="(data) => {
+          dialogFormVisible = false;
+          templateData = [data]
+        }"
+      />
+    </IhDialog>
   </IhPage>
 </template>
 
 <script lang="ts">
 import { Component, Vue } from "vue-property-decorator";
 
-@Component({})
-export default class DistributionApply extends Vue {}
+import TemplateDailog from "./dialog/templateDialog.vue";
+import { post_term_getDropDown } from "@/api/project/index";
+import { get_channel_getAll } from "@/api/channel/index";
+
+@Component({
+  components: { TemplateDailog },
+})
+export default class DistributionApply extends Vue {
+  private dialogFormVisible = false;
+  private dropOption: any = [];
+  private channelList: any = [];
+  private cycle = "";
+  private channelData: any = {};
+  private templateData: any = [];
+
+  private handleOpen(): void {
+    if (!this.cycle) {
+      this.$message.warning("请选择周期信息");
+      return;
+    }
+    this.dialogFormVisible = true;
+  }
+  private async getDropDown(): Promise<void> {
+    this.dropOption = await post_term_getDropDown();
+  }
+  private async getChannelAll(): Promise<void> {
+    this.channelList = await get_channel_getAll();
+  }
+
+  created() {
+    this.getDropDown();
+    this.getChannelAll();
+  }
+}
 </script>

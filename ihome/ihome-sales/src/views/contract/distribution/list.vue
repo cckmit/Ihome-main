@@ -4,7 +4,7 @@
  * @Author: ywl
  * @Date: 2020-09-25 17:34:32
  * @LastEditors: ywl
- * @LastEditTime: 2020-10-29 14:59:54
+ * @LastEditTime: 2020-10-30 11:46:05
 -->
 <template>
   <IhPage label-width="100px">
@@ -33,7 +33,7 @@
                 class="width--100"
               >
                 <el-option
-                  v-for="item in partyAList"
+                  v-for="item in companyList"
                   :key="item.id"
                   :label="item.name"
                   :value="item.id"
@@ -50,7 +50,7 @@
                 class="width--100"
               >
                 <el-option
-                  v-for="item in companyList"
+                  v-for="item in channelList"
                   :key="item.id"
                   :label="item.name"
                   :value="item.id"
@@ -347,7 +347,7 @@ import { Component, Vue } from "vue-property-decorator";
 import PaginationMixin from "@/mixins/pagination";
 
 import { post_distribution_list } from "@/api/contract/index";
-import { post_company_listAll } from "@/api/developer/index";
+import { get_channel_getAll } from "@/api/channel/index";
 import { post_company_getAll } from "@/api/system/index";
 import SelectOrganizationTree from "@/components/SelectOrganizationTree.vue";
 
@@ -376,7 +376,7 @@ export default class DistributionList extends Vue {
   private timeList = [];
   private companyLoading = false;
   private companyList: any = [];
-  private partyAList: any = [];
+  private channelList: any = [];
   private searchOpen = true;
   resPageInfo: any = {
     total: 0,
@@ -428,15 +428,15 @@ export default class DistributionList extends Vue {
   private async getCompanyList() {
     this.companyList = await post_company_getAll({ name: "" });
   }
-  private async getPartyAList() {
-    this.partyAList = await post_company_listAll({ name: "" });
+  private async getChannelList() {
+    this.channelList = await get_channel_getAll({ name: "" });
   }
   public async getListMixin(): Promise<void> {
     this.resPageInfo = await post_distribution_list(this.queryPageParameters);
   }
 
   created() {
-    this.getPartyAList();
+    this.getChannelList();
     this.getCompanyList();
     this.getListMixin();
   }
