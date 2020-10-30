@@ -4,7 +4,7 @@
  * @Author: ywl
  * @Date: 2020-09-27 11:13:15
  * @LastEditors: ywl
- * @LastEditTime: 2020-10-29 15:07:47
+ * @LastEditTime: 2020-10-30 09:21:27
 -->
 <template>
   <IhPage label-width="100px">
@@ -177,7 +177,7 @@
           fixed
           label="标题"
           prop="title"
-          min-width="150"
+          min-width="180"
         ></el-table-column>
         <el-table-column
           label="甲方"

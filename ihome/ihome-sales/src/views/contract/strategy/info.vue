@@ -4,7 +4,7 @@
  * @Author: ywl
  * @Date: 2020-09-27 14:41:06
  * @LastEditors: ywl
- * @LastEditTime: 2020-10-28 16:05:55
+ * @LastEditTime: 2020-10-30 09:18:36
 -->
 <template>
   <IhPage class="text-left">
@@ -65,7 +65,14 @@
                 clearable
                 class="width--100"
                 disabled
-              ></el-select>
+              >
+                <el-option
+                  v-for="item in $root.dictAllList('StrategyEnum.FileState')"
+                  :key="item.code"
+                  :label="item.name"
+                  :value="item.code"
+                ></el-option>
+              </el-select>
             </el-form-item>
           </el-col>
           <el-col :span="12">
@@ -76,7 +83,14 @@
                 clearable
                 class="width--100"
                 disabled
-              ></el-select>
+              >
+                <el-option
+                  v-for="item in $root.dictAllList('StrategyEnum.State')"
+                  :key="item.code"
+                  :label="item.name"
+                  :value="item.code"
+                ></el-option>
+              </el-select>
             </el-form-item>
           </el-col>
         </el-row>

@@ -4,7 +4,7 @@
  * @Author: ywl
  * @Date: 2020-09-27 14:41:06
  * @LastEditors: ywl
- * @LastEditTime: 2020-10-28 18:36:33
+ * @LastEditTime: 2020-10-30 09:16:45
 -->
 <template>
   <IhPage>
@@ -97,7 +97,7 @@
           <el-col :span="12">
             <el-form-item label="协议编号">
               <el-input
-                v-model="ruleForm.name"
+                v-model="ruleForm.strategyCode"
                 disabled
                 placeholder="协议编号(自动生成)"
               ></el-input>

@@ -4,7 +4,7 @@
  * @Author: ywl
  * @Date: 2020-09-25 16:00:37
  * @LastEditors: ywl
- * @LastEditTime: 2020-10-29 16:05:06
+ * @LastEditTime: 2020-10-30 09:27:39
 -->
 <template>
   <IhPage>
@@ -95,12 +95,25 @@
           </el-col>
           <el-col :span="12">
             <el-form-item label="合同跟进人">
-              <el-select
+              <!-- <el-select
                 v-model="formData.handler"
                 placeholder="合同跟进人"
                 clearable
                 class="width--100"
-              ></el-select>
+              ></el-select> -->
+              <IhSelectPageUser
+                v-model="formData.handler"
+                clearable
+                class="width--100"
+              >
+                <template v-slot="{ data }">
+                  <span style="float: left">{{ data.name }}</span>
+                  <span
+                    class="margin-left-30"
+                    style="float: right; color: #8492a6; font-size: 13px"
+                  >{{ data.employeeCode }}</span>
+                </template>
+              </IhSelectPageUser>
             </el-form-item>
           </el-col>
         </el-row>
@@ -257,7 +270,7 @@ export default class PartyAadd extends Vue {
       if (val) {
         console.log(this.formData);
 
-        await post_contract_create(this.formData);
+        await post_contract_create({ ...this.formData, channel: "Contract" });
         this.$message.success("提交成功");
       }
     });
