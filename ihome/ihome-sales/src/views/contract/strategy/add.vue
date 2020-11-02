@@ -4,7 +4,7 @@
  * @Author: ywl
  * @Date: 2020-09-27 14:41:06
  * @LastEditors: ywl
- * @LastEditTime: 2020-10-30 17:33:11
+ * @LastEditTime: 2020-11-02 10:59:37
 -->
 <template>
   <IhPage>
@@ -63,6 +63,7 @@
                 placeholder="甲方"
                 clearable
                 class="width--100"
+                @focus="handleClick()"
               >
                 <el-option
                   v-for="(item) in partyAList"
@@ -83,6 +84,7 @@
                 placeholder="乙方"
                 clearable
                 class="width--100"
+                @focus="handleClick()"
               >
                 <el-option
                   v-for="(item) in partyBList"
@@ -242,6 +244,8 @@ export default class StrategyAdd extends Vue {
 
   private handleChange(val: any) {
     console.log(val);
+    this.ruleForm.partyA = "";
+    this.ruleForm.partyB = "";
     if (val === "PartyA") {
       this.partyAList = this.devList;
       this.partyBList = this.myCompany;
@@ -258,6 +262,12 @@ export default class StrategyAdd extends Vue {
   }
   private async getChannel(): Promise<void> {
     this.channelList = await get_channel_getAll();
+  }
+  private handleClick() {
+    if (!this.ruleForm.agreementType) {
+      this.$message.warning("请选择协议类型");
+      return;
+    }
   }
   @NoRepeatHttp()
   private submit() {
@@ -279,6 +289,13 @@ export default class StrategyAdd extends Vue {
         ...res,
         timeList: res.beginTime ? [res.beginTime, res.endTime] : [],
       };
+      if (this.ruleForm.agreementType === "PartyA") {
+        this.partyAList = this.devList;
+        this.partyBList = this.myCompany;
+      } else {
+        this.partyAList = this.myCompany;
+        this.partyBList = this.channelList;
+      }
     }
   }
 

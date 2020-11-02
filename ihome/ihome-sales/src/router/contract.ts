@@ -4,7 +4,7 @@
  * @Author: ywl
  * @Date: 2020-10-16 15:19:48
  * @LastEditors: ywl
- * @LastEditTime: 2020-10-28 18:23:27
+ * @LastEditTime: 2020-11-02 11:10:22
  */
 import { RouteConfig } from 'vue-router'
 
@@ -24,10 +24,10 @@ const contractRoutes: Array<RouteConfig> = [
         meta: { title: '甲方合同列表', icon: 'form' }
       },
       {
-        path: 'add',
-        name: 'PartyAadd',
-        component: () => import( /* webpackChunkName: "PartyAadd" */ '@/views/contract/partyA/add.vue'),
-        meta: { title: '甲方合同录入', icon: 'form' }
+        path: 'edit',
+        name: 'PartyAEdit',
+        component: () => import( /* webpackChunkName: "PartyAEdit" */ '@/views/contract/partyA/edit.vue'),
+        meta: { title: '甲方合同编辑', icon: 'form' }
       },
       {
         path: 'info',

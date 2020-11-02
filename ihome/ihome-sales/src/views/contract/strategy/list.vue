@@ -4,7 +4,7 @@
  * @Author: ywl
  * @Date: 2020-09-27 11:13:15
  * @LastEditors: ywl
- * @LastEditTime: 2020-10-30 16:47:17
+ * @LastEditTime: 2020-11-02 14:09:17
 -->
 <template>
   <IhPage label-width="100px">
@@ -33,12 +33,22 @@
                 filterable
                 class="width--100"
               >
+                <!-- <el-option-group label="我司">
+                  <el-option
+                    v-for="item in myCompany"
+                    :key="item.id"
+                    :label="item.name"
+                    :value="item.id"
+                  ></el-option>
+                </el-option-group> -->
+                <!-- <el-option-group label="开发商"> -->
                 <el-option
                   v-for="item in companyList"
                   :key="item.id"
                   :label="item.name"
                   :value="item.id"
                 ></el-option>
+                <!-- </el-option-group> -->
               </el-select>
             </el-form-item>
           </el-col>
@@ -294,6 +304,7 @@ import PaginationMixin from "@/mixins/pagination";
 
 import { post_strategy_list } from "@/api/contract/index";
 import { post_company_listAll } from "@/api/developer/index";
+import { post_company_getAll } from "@/api/system/index";
 import { get_channel_getAll } from "@/api/channel/index";
 
 @Component({
@@ -318,6 +329,7 @@ export default class StrategyList extends Vue {
   };
   private companyList: any = [];
   private channelList: any = [];
+  private myCompany: any = [];
 
   private openToggle(): void {
     this.searchOpen = !this.searchOpen;
@@ -352,6 +364,9 @@ export default class StrategyList extends Vue {
   private handleSelectionChange(val: any): void {
     console.log(val);
   }
+  private async getMyComAll(): Promise<void> {
+    this.myCompany = await post_company_getAll({ name: "" });
+  }
   private async getCompanyAll(): Promise<void> {
     this.companyList = await post_company_listAll({ name: "" });
   }
@@ -366,6 +381,7 @@ export default class StrategyList extends Vue {
     this.getListMixin();
     this.getCompanyAll();
     this.getChannelAll();
+    this.getMyComAll();
   }
 }
 interface PageInfo {
