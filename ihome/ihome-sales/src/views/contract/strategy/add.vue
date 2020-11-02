@@ -4,7 +4,7 @@
  * @Author: ywl
  * @Date: 2020-09-27 14:41:06
  * @LastEditors: ywl
- * @LastEditTime: 2020-11-02 10:59:37
+ * @LastEditTime: 2020-11-02 14:22:46
 -->
 <template>
   <IhPage>
@@ -62,14 +62,16 @@
                 v-model="ruleForm.partyA"
                 placeholder="甲方"
                 clearable
+                filterable
                 class="width--100"
                 @focus="handleClick()"
+                value-key="id"
               >
                 <el-option
                   v-for="(item) in partyAList"
                   :key="item.id"
                   :label="item.name"
-                  :value="item.id"
+                  :value="item"
                 ></el-option>
               </el-select>
             </el-form-item>
@@ -83,14 +85,16 @@
                 v-model="ruleForm.partyB"
                 placeholder="乙方"
                 clearable
+                filterable
                 class="width--100"
                 @focus="handleClick()"
+                value-key="id"
               >
                 <el-option
                   v-for="(item) in partyBList"
                   :key="item.id"
                   :label="item.name"
-                  :value="item.id"
+                  :value="item"
                 ></el-option>
               </el-select>
             </el-form-item>
@@ -216,8 +220,8 @@ export default class StrategyAdd extends Vue {
   private ruleForm: any = {
     beginTime: "",
     endTime: "",
-    partyA: "",
-    partyB: "",
+    partyA: null,
+    partyB: null,
     title: "",
     agreementType: "",
     timeList: [],
@@ -243,9 +247,8 @@ export default class StrategyAdd extends Vue {
   };
 
   private handleChange(val: any) {
-    console.log(val);
-    this.ruleForm.partyA = "";
-    this.ruleForm.partyB = "";
+    this.ruleForm.partyA = null;
+    this.ruleForm.partyB = null;
     if (val === "PartyA") {
       this.partyAList = this.devList;
       this.partyBList = this.myCompany;
@@ -276,7 +279,13 @@ export default class StrategyAdd extends Vue {
         let sign = this.ruleForm.timeList && this.ruleForm.timeList.length;
         this.ruleForm.beginTime = sign ? this.ruleForm.timeList[0] : "";
         this.ruleForm.endTime = sign ? this.ruleForm.timeList[1] : "";
-        await post_strategy_create(this.ruleForm);
+        await post_strategy_create({
+          ...this.ruleForm,
+          partyA: this.ruleForm.partyA.id,
+          partyAName: this.ruleForm.partyA.name,
+          partyB: this.ruleForm.partyB.id,
+          partyBName: this.ruleForm.partyB.name,
+        });
         this.$message.success("提交成功");
       }
     });

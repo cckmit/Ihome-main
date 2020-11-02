@@ -4,7 +4,7 @@
  * @Author: ywl
  * @Date: 2020-09-25 11:53:51
  * @LastEditors: ywl
- * @LastEditTime: 2020-10-30 10:15:05
+ * @LastEditTime: 2020-11-02 14:34:20
 -->
 <template>
   <IhPage label-width="100px">
@@ -187,19 +187,24 @@
               </el-col>
               <el-col :span="8">
                 <el-form-item label="合同录入人">
-                  <el-select
+                  <IhSelectPageUser
+                    v-model="queryPageParameters.createUser"
+                    clearable
+                    class="width--100"
+                  >
+                    <!-- 自定义模板使用 v-slot返回来的data：当前每条的数据；index：每一条数据的下标 -->
+                    <template v-slot="{ data }">
+                      <span style="float: left">{{ data.name }}</span>
+                      <span style="margin-left: 20px;float: right; color: #8492a6; font-size: 13px">{{ data.account }}</span>
+                    </template>
+                  </IhSelectPageUser>
+                  <!-- <el-select
                     v-model="queryPageParameters.createUser"
                     clearable
                     placeholder="请选择合同录入人"
                     class="width--100"
                   >
-                    <!-- <el-option
-                      v-for="item in $root.displayList('employeeStatus')"
-                      :key="item.value"
-                      :label="item.label"
-                      :value="item.value"
-                    ></el-option> -->
-                  </el-select>
+                  </el-select> -->
                 </el-form-item>
               </el-col>
             </el-row>
@@ -207,19 +212,24 @@
             <el-row>
               <el-col :span="8">
                 <el-form-item label="合同跟进人">
-                  <el-select
+                  <IhSelectPageUser
+                    v-model="queryPageParameters.handler"
+                    clearable
+                    class="width--100"
+                  >
+                    <!-- 自定义模板使用 v-slot返回来的data：当前每条的数据；index：每一条数据的下标 -->
+                    <template v-slot="{ data }">
+                      <span style="float: left">{{ data.name }}</span>
+                      <span style="margin-left: 20px;float: right; color: #8492a6; font-size: 13px">{{ data.account }}</span>
+                    </template>
+                  </IhSelectPageUser>
+                  <!-- <el-select
                     v-model="queryPageParameters.handler"
                     clearable
                     placeholder="请选择合同跟进人"
                     class="width--100"
                   >
-                    <!-- <el-option
-                      v-for="item in $root.displayList('employeeType')"
-                      :key="item.value"
-                      :label="item.label"
-                      :value="item.value"
-                    ></el-option> -->
-                  </el-select>
+                  </el-select> -->
                 </el-form-item>
               </el-col>
               <el-col :span="8">
