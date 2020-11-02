@@ -4,7 +4,7 @@
  * @Author: wwq
  * @Date: 2020-10-22 14:45:15
  * @LastEditors: wwq
- * @LastEditTime: 2020-10-29 09:29:36
+ * @LastEditTime: 2020-11-02 16:59:45
  */
 import { RouteConfig } from 'vue-router'
 
@@ -37,6 +37,18 @@ const projectRoutes: Array<RouteConfig> = [
         name: 'projectEdit',
         component: () => import('../views/project/basicsInfo/edit.vue'),
         meta: { title: '项目基础信息编辑', icon: 'form' }
+      },
+      {
+        path: 'info',
+        name: 'projectInfo',
+        component: () => import('../views/project/basicsInfo/info.vue'),
+        meta: { title: '项目基础信息详情', icon: 'form' }
+      },
+      {
+        path: 'audit',
+        name: 'projectAudit',
+        component: () => import('../views/project/basicsInfo/info.vue'),
+        meta: { title: '项目基础信息审核', icon: 'form' }
       }
     ]
   },

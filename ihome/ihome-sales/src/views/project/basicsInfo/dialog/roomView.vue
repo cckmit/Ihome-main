@@ -61,7 +61,12 @@
         <el-col :span="9" class="text-left">
           <el-form-item>
             <el-button type="primary" @click="search()">查询</el-button>
-            <el-button type="success" @click="add()">添加房号</el-button>
+            <el-button
+              type="success"
+              @click="add()"
+              v-if="!['projectInfo', 'projectAudit'].includes(this.$route.name)"
+              >添加房号</el-button
+            >
           </el-form-item>
         </el-col>
       </el-row>
@@ -82,7 +87,12 @@
           {{ $root.dictAllName(row.positionEnum, "PositionEnum") }}
         </template>
       </el-table-column>
-      <el-table-column label="操作" width="150" fixed="right">
+      <el-table-column
+        label="操作"
+        width="150"
+        fixed="right"
+        v-if="!['projectInfo', 'projectAudit'].includes(this.$route.name)"
+      >
         <template v-slot="{ row }">
           <el-link type="primary" @click="edit(row)">编辑</el-link>
           <el-link style="margin-left: 20px" type="primary" @click="remove(row)"

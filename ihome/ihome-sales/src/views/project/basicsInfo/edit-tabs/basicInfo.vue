@@ -4,7 +4,7 @@
  * @Author: wwq
  * @Date: 2020-09-27 11:52:41
  * @LastEditors: wwq
- * @LastEditTime: 2020-10-30 10:15:21
+ * @LastEditTime: 2020-11-02 18:17:40
 -->
 <template>
   <div>
@@ -140,7 +140,7 @@
               v-model="form.searchAddr"
               class="input-with-select"
             >
-              <el-button slot="append" icon="el-icon-search"></el-button>
+              <!-- <el-button slot="append" icon="el-icon-search"></el-button> -->
             </el-input>
           </el-form-item>
         </el-col>
@@ -148,17 +148,36 @@
       <el-row>
         <el-form-item
           ><el-col :span="16">
-            <div style="height: 200px">我是地图</div>
+            <BaiduMap
+              class="bm-view"
+              ak="7KCUbHHtMOe3DmrxbAZaLcUf4cKeWchn"
+              :scroll-wheel-zoom="true"
+              :center="{ lng: center.lng, lat: center.lat }"
+              :zoom="zoom"
+              @ready="handler"
+              @click="getLocationPoint"
+            >
+              <BmView style="width: 100%; height: 100%; flex: 1"></BmView>
+              <BmLocalSearch
+                v-if="form.searchAddr"
+                :keyword="form.searchAddr"
+                :auto-viewport="true"
+                style="display: none"
+              ></BmLocalSearch>
+            </BaiduMap>
           </el-col>
         </el-form-item>
       </el-row>
       <el-row>
         <el-col :span="24">
           <el-form-item label="物业类型" class="text-left">
-            <el-checkbox-group v-model="form.checkboxEnum">
+            <el-checkbox-group
+              v-model="form.checkboxEnum"
+              @change="checkboxChangeHandler"
+            >
               <template v-for="item in checkBoxList">
-                <el-checkbox :key="item.code" :label="item">{{
-                  item.name
+                <el-checkbox :key="JSON.parse(item).code" :label="item">{{
+                  JSON.parse(item).name
                 }}</el-checkbox>
               </template>
             </el-checkbox-group>
@@ -168,7 +187,7 @@
       <el-row v-if="form.checkboxEnum.length">
         <el-col
           :span="12"
-          v-for="(item, i) in form.checkboxEnum"
+          v-for="(item, i) in checkBoxChangeList"
           :key="item.code"
           class="msglist"
         >
@@ -231,10 +250,10 @@
                         clearable
                       >
                         <el-option
-                          v-for="item in ageOptions"
+                          v-for="item in $root.dictAllList('PropertyAgeEnum')"
                           :key="item.code"
-                          :label="item.value"
-                          :value="item.value"
+                          :label="item.name"
+                          :value="item.code"
                         ></el-option>
                       </el-select>
                     </el-form-item>
@@ -430,15 +449,16 @@
 <script lang="ts">
 import { Component, Vue } from "vue-property-decorator";
 import { post_company_listAll } from "@/api/developer/index";
-import { get_project_get__proId } from "@/api/project/index";
+import { get_project_get__proId, post_project_add } from "@/api/project/index";
 import FirstAgencyDialog from "../dialog/firstAgency.vue";
+import BaiduMap from "vue-baidu-map/components/map/Map.vue";
+import BmView from "vue-baidu-map/components/map/MapView.vue";
+import BmLocalSearch from "vue-baidu-map/components/search/LocalSearch.vue";
 
 @Component({
-  components: { FirstAgencyDialog },
+  components: { FirstAgencyDialog, BaiduMap, BmView, BmLocalSearch },
 })
 export default class BasicInfo extends Vue {
-  searchOpen = true;
-
   form: any = {
     proNo: null,
     exMarket: null,
@@ -454,7 +474,7 @@ export default class BasicInfo extends Vue {
     lng: null, // 经度
     lat: null, // 纬度
     jingwei: null, // 经纬度
-    searchAddr: null,
+    searchAddr: "",
     propertyArgs: [], // 物业类型
     attachPics: [], // 附件信息
     proPics: [], // 楼盘图片
@@ -505,32 +525,6 @@ export default class BasicInfo extends Vue {
   };
   buildingNames: any = [];
   inputVisible = false;
-  ageOptions: any = [
-    {
-      code: 30,
-      value: 30,
-    },
-    {
-      code: 40,
-      value: 40,
-    },
-    {
-      code: 50,
-      value: 50,
-    },
-    {
-      code: 60,
-      value: 60,
-    },
-    {
-      code: 70,
-      value: 70,
-    },
-    {
-      code: 0,
-      value: "永久",
-    },
-  ];
   YesOrNoType: any = [
     {
       code: 0,
@@ -547,6 +541,11 @@ export default class BasicInfo extends Vue {
   houseList: any = [];
   accFileList: any = [];
   dialogVisible = false;
+  checkBoxChangeList: any = [];
+  center: any = { lng: 113.379331, lat: 23.109411 };
+  zoom = 3;
+  BMap: any = {};
+  searchAddr = "";
 
   private get projectId() {
     return this.$route.query.id;
@@ -558,29 +557,33 @@ export default class BasicInfo extends Vue {
     list.forEach((v: any) => {
       let item = this.contantList.find((j: any) => v.code === j.propertyEnum);
       if (!item) {
-        arr.push({
-          ...v,
-          msg: {
-            title: v.name,
-            averPrice: null,
-            propertyAge: null,
-            renovatLevelEnum: "Rough",
-            buildingNames: [],
-            propertyCost: null,
-            inputVisible: false,
-            inputValue: null,
-            propertyEnum: v.code,
-          },
-        });
+        arr.push(
+          JSON.stringify({
+            ...v,
+            msg: {
+              title: v.name,
+              averPrice: null,
+              propertyAge: null,
+              renovatLevelEnum: "Rough",
+              buildingNames: [],
+              propertyCost: null,
+              inputVisible: false,
+              inputValue: null,
+              propertyEnum: v.code,
+            },
+          })
+        );
       } else {
-        arr.push({
-          ...v,
-          msg: {
-            ...item,
-            inputVisible: false,
-            inputValue: null,
-          },
-        });
+        arr.push(
+          JSON.stringify({
+            ...v,
+            msg: {
+              ...item,
+              inputVisible: false,
+              inputValue: null,
+            },
+          })
+        );
       }
     });
     return arr;
@@ -606,17 +609,21 @@ export default class BasicInfo extends Vue {
       this.form.jingwei = data.lat + "," + data.lng;
       let arr: any = [];
       this.contantList.forEach((v: any) => {
-        arr.push({
-          ...(this.$root as any).dictAllItem(v.propertyEnum, "PropertyEnum"),
-          msg: {
-            ...v,
-            inputVisible: false,
-            inputValue: null,
-          },
-        });
+        arr.push(
+          JSON.stringify({
+            ...(this.$root as any).dictAllItem(v.propertyEnum, "PropertyEnum"),
+            msg: {
+              ...v,
+              inputVisible: false,
+              inputValue: null,
+            },
+          })
+        );
       });
-      this.form.checkboxEnum = this.$tool.deepClone(arr);
-      console.log(this.form.checkboxEnum, 22222);
+      this.form.checkboxEnum = arr;
+      arr.forEach((v: any) => {
+        this.checkBoxChangeList.push(JSON.parse(v));
+      });
       this.houseFileList = this.form.proPics.map((v: any) => ({
         name: v.attachAddr,
         fileId: v.attachId,
@@ -676,33 +683,38 @@ export default class BasicInfo extends Vue {
     this.form.developerName = val.label;
   }
 
+  checkboxChangeHandler(val: any) {
+    const item = val.map((v: any) => JSON.parse(v));
+    this.checkBoxChangeList = item;
+  }
+
   handleClose(tag: any, i: number) {
-    this.form.checkboxEnum[i].msg.buildingNames.splice(
-      this.form.checkboxEnum[i].msg.buildingNames.indexOf(tag),
+    this.checkBoxChangeList[i].msg.buildingNames.splice(
+      this.checkBoxChangeList[i].msg.buildingNames.indexOf(tag),
       1
     );
   }
 
   showInput(i: number) {
-    this.form.checkboxEnum[i].msg.inputVisible = true;
+    this.checkBoxChangeList[i].msg.inputVisible = true;
     this.$nextTick(() => {
       (this.$refs.saveTagInput as any)[i].$refs.input.focus();
     });
   }
   // 添加物业类型的栋座
   handleInputConfirm(i: number) {
-    let inputValue = this.form.checkboxEnum[i].msg.inputValue;
+    let inputValue = this.checkBoxChangeList[i].msg.inputValue;
     if (inputValue) {
       let val = inputValue + "栋";
-      if (this.form.checkboxEnum[i].msg.buildingNames.includes(val)) {
+      if (this.checkBoxChangeList[i].msg.buildingNames.includes(val)) {
         this.$message.warning("栋座已存在,请重新填写");
         return;
       } else {
-        this.form.checkboxEnum[i].msg.buildingNames.push(`${inputValue}栋`);
+        this.checkBoxChangeList[i].msg.buildingNames.push(`${inputValue}栋`);
       }
     }
-    this.form.checkboxEnum[i].msg.inputVisible = false;
-    this.form.checkboxEnum[i].msg.inputValue = "";
+    this.checkBoxChangeList[i].msg.inputVisible = false;
+    this.checkBoxChangeList[i].msg.inputValue = "";
   }
 
   // 处理楼房图片
@@ -753,12 +765,31 @@ export default class BasicInfo extends Vue {
     }
     this.dialogVisible = false;
   }
-  add() {
+
+  handler({ BMap }: any) {
+    this.BMap = BMap;
+    this.zoom = 15;
+  }
+
+  getLocationPoint(e: any) {
+    this.center.lng = e.point.lng;
+    this.center.lat = e.point.lat;
+    let geoCoder = new this.BMap.Geocoder();
+    geoCoder.getPoint(this.form.searchAddr, (point: any) => {
+      this.form.jingwei = `${point?.lng},${point?.lat}`;
+    });
+    geoCoder.getLocation(e.point, (res: any) => {
+      this.searchAddr = res?.address;
+    });
+  }
+
+  async add() {
     let obj = { ...this.form };
     obj.province = this.form.provinceOption[0];
     obj.city = this.form.provinceOption[1];
     obj.district = this.form.provinceOption[2];
-    obj.propertyArgs = this.form.checkboxEnum.map((v: any) => ({
+    obj.searchAddr = this.searchAddr;
+    obj.propertyArgs = this.checkBoxChangeList.map((v: any) => ({
       ...v.msg,
       buildingNames: v.msg.buildingNames.map((j: any) => ({
         buildingName: j,
@@ -776,8 +807,9 @@ export default class BasicInfo extends Vue {
       }));
     }
     console.log(obj);
-    // this.$message.success("保存成功");
-    // this.$goto({ path: "/projects/list" });
+    await post_project_add(obj);
+    this.$message.success("保存成功");
+    this.$goto({ path: "/projects/list" });
   }
 }
 </script>
@@ -808,5 +840,10 @@ export default class BasicInfo extends Vue {
   /deep/ .el-radio__label {
     font-size: 12px;
   }
+}
+
+.bm-view {
+  width: 100%;
+  height: 400px;
 }
 </style>

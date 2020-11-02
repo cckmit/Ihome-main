@@ -2,9 +2,9 @@
  * @Descripttion: 
  * @version: 
  * @Author: wwq
- * @Date: 2020-10-22 15:16:54
+ * @Date: 2020-11-02 15:19:19
  * @LastEditors: wwq
- * @LastEditTime: 2020-11-02 10:32:28
+ * @LastEditTime: 2020-11-02 15:20:46
 -->
 <template>
   <ih-page>
@@ -30,10 +30,10 @@
 <script lang="ts">
 import { Component, Vue } from "vue-property-decorator";
 
-import BasicInfo from "./edit-tabs/basicInfo.vue";
-import HouseType from "./edit-tabs/houseType.vue";
-import PopularizeInfo from "./edit-tabs/popularizeInfo.vue";
-import RoomNum from "./edit-tabs/roomNum.vue";
+import BasicInfo from "./info-tabs/basicInfo.vue";
+import HouseType from "./info-tabs/houseType.vue";
+import PopularizeInfo from "./info-tabs/popularizeInfo.vue";
+import RoomNum from "./info-tabs/roomNum.vue";
 
 Component.registerHooks(["beforeRouteEnter"]);
 @Component({
