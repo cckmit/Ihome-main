@@ -4,7 +4,7 @@
  * @Author: wwq
  * @Date: 2020-09-27 11:52:41
  * @LastEditors: wwq
- * @LastEditTime: 2020-11-02 17:38:03
+ * @LastEditTime: 2020-11-03 14:46:41
 -->
 <template>
   <div>
@@ -111,8 +111,8 @@
           <el-form-item label="物业类型" class="text-left">
             <el-checkbox-group v-model="form.checkboxEnum" disabled>
               <template v-for="item in checkBoxList">
-                <el-checkbox :key="item.code" :label="item">{{
-                  item.name
+                <el-checkbox :key="JSON.parse(item).code" :label="item">{{
+                  JSON.parse(item).name
                 }}</el-checkbox>
               </template>
             </el-checkbox-group>
@@ -122,7 +122,7 @@
       <el-row v-if="form.checkboxEnum.length">
         <el-col
           :span="12"
-          v-for="item in form.checkboxEnum"
+          v-for="item in checkBoxChangeList"
           :key="item.code"
           class="msglist"
         >
@@ -319,7 +319,7 @@
       </el-row>
     </el-form>
     <div class="margin-top-20" v-if="$route.name === 'projectAudit'">
-      <p>审核意见</p>
+      <p class="ih-info-title">审核意见</p>
       <el-input
         class="padding-left-20"
         style="box-sizing: border-box"
@@ -329,8 +329,10 @@
         v-model="remark"
       >
       </el-input>
-      <el-button @click="pass()" type="primary">通过</el-button>
-      <el-button @click="pass()" type="primary">驳回</el-button>
+      <div class="margin-top-20">
+        <el-button @click="auditPass()" type="primary">通过</el-button>
+        <el-button @click="auditReject()" type="primary">驳回</el-button>
+      </div>
     </div>
   </div>
 </template>
@@ -339,6 +341,7 @@ import { Component, Vue } from "vue-property-decorator";
 import {
   get_project_get__proId,
   post_project_audit,
+  post_project_reject,
 } from "@/api/project/index";
 import BaiduMap from "vue-baidu-map/components/map/Map.vue";
 import BmView from "vue-baidu-map/components/map/MapView.vue";
@@ -373,6 +376,7 @@ export default class BasicInfo extends Vue {
   };
   remark = "";
   contantList: any = [];
+  checkBoxChangeList: any = [];
   buildingNames: any = [];
   YesOrNoType: any = [
     {
@@ -403,25 +407,29 @@ export default class BasicInfo extends Vue {
     list.forEach((v: any) => {
       let item = this.contantList.find((j: any) => v.code === j.propertyEnum);
       if (!item) {
-        arr.push({
-          ...v,
-          msg: {
-            title: v.name,
-            averPrice: null,
-            propertyAge: null,
-            renovatLevelEnum: "Rough",
-            buildingNames: [],
-            propertyCost: null,
-            propertyEnum: v.code,
-          },
-        });
+        arr.push(
+          JSON.stringify({
+            ...v,
+            msg: {
+              title: v.name,
+              averPrice: null,
+              propertyAge: null,
+              renovatLevelEnum: "Rough",
+              buildingNames: [],
+              propertyCost: null,
+              propertyEnum: v.code,
+            },
+          })
+        );
       } else {
-        arr.push({
-          ...v,
-          msg: {
-            ...item,
-          },
-        });
+        arr.push(
+          JSON.stringify({
+            ...v,
+            msg: {
+              ...item,
+            },
+          })
+        );
       }
     });
     return arr;
@@ -449,18 +457,22 @@ export default class BasicInfo extends Vue {
       this.form.jingwei = data.lat + "," + data.lng;
       let arr: any = [];
       this.contantList.forEach((v: any) => {
-        arr.push({
-          ...(this.$root as any).dictAllItem(v.propertyEnum, "PropertyEnum"),
-          msg: {
-            ...v,
-          },
-        });
+        arr.push(
+          JSON.stringify({
+            ...(this.$root as any).dictAllItem(v.propertyEnum, "PropertyEnum"),
+            msg: {
+              ...v,
+            },
+          })
+        );
       });
-      this.form.checkboxEnum = this.$tool.deepClone(arr);
-      console.log(this.form.checkboxEnum, 22222);
+      this.form.checkboxEnum = arr;
+      arr.forEach((v: any) => {
+        this.checkBoxChangeList.push(JSON.parse(v));
+      });
       this.houseFileList = this.form.proPics.map((v: any) => ({
-        name: v.attachAddr,
-        fileId: v.attachId,
+        name: v.attachName,
+        fileId: v.attachAddr,
         exIndex: v.exIndex,
         proAttachEnum: "ProPic",
       }));
@@ -475,9 +487,30 @@ export default class BasicInfo extends Vue {
     this.zoom = 15;
   }
 
-  async pass() {
+  async auditPass() {
     if (this.remark) {
-      await post_project_audit();
+      let obj: any = {};
+      obj.proId = this.projectId;
+      obj.auditOption = this.remark;
+      await post_project_audit(obj);
+      this.$message.success("审核成功");
+      this.$goto({ path: "/projects/list" });
+    } else {
+      this.$message({
+        type: "warning",
+        message: "请填写审核意见",
+      });
+    }
+  }
+
+  async auditReject() {
+    if (this.remark) {
+      let obj: any = {};
+      obj.proId = this.projectId;
+      obj.rejectOption = this.remark;
+      await post_project_reject(obj);
+      this.$message.success("驳回成功");
+      this.$goto({ path: "/projects/list" });
     } else {
       this.$message({
         type: "warning",

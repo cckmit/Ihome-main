@@ -4,7 +4,7 @@
  * @Author: wwq
  * @Date: 2020-09-27 11:52:41
  * @LastEditors: wwq
- * @LastEditTime: 2020-10-30 11:09:44
+ * @LastEditTime: 2020-11-03 14:52:18
 -->
 <template>
   <div class="house-type">
@@ -81,8 +81,6 @@ export default class HouseType extends Vue {
   async getInfo() {
     if (this.proId) {
       this.info = await get_houseType_getTabItem__proId({ proId: this.proId });
-    } else {
-      this.$message.warning("请先完善基础信息");
     }
   }
 

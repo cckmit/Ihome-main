@@ -4,7 +4,7 @@
  * @Author: wwq
  * @Date: 2020-10-22 11:52:41
  * @LastEditors: wwq
- * @LastEditTime: 2020-11-02 16:38:35
+ * @LastEditTime: 2020-11-03 16:58:57
 -->
 <template>
   <div>
@@ -82,5 +82,6 @@ export default class PopularizeInfo extends Vue {
 }
 .msg {
   padding: 20px;
+  text-align: left;
 }
 </style>

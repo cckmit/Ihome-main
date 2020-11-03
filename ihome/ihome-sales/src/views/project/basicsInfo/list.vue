@@ -4,7 +4,7 @@
  * @Author: wwq
  * @Date: 2020-08-13 11:40:10
  * @LastEditors: wwq
- * @LastEditTime: 2020-10-30 18:19:48
+ * @LastEditTime: 2020-11-03 16:09:11
 -->
 <template>
   <IhPage label-width="100px">
@@ -89,7 +89,7 @@
     <template v-slot:btn>
       <el-row class="el-row">
         <el-button type="primary" @click="search()">查询</el-button>
-        <el-button type="info" @click="empty()">重置</el-button>
+        <el-button type="info" @click="reset()">重置</el-button>
         <el-button type="success" @click="add()">添加</el-button>
       </el-row>
     </template>
@@ -147,15 +147,19 @@
                 <i class="el-icon-arrow-down el-icon--right"></i>
               </span>
               <el-dropdown-menu slot="dropdown">
-                <el-dropdown-item @click.native.prevent="routerTo(row, 'edit')"
+                <el-dropdown-item
+                  :disabled="row.auditEnum !== 'Draft'"
+                  @click.native.prevent="routerTo(row, 'edit')"
                   >编辑</el-dropdown-item
                 >
-                <el-dropdown-item @click.native.prevent="remove(row)"
+                <el-dropdown-item
+                  :disabled="row.auditEnum !== 'Draft'"
+                  @click.native.prevent="remove(row)"
                   >删除</el-dropdown-item
                 >
                 <el-dropdown-item
                   @click.native.prevent="routerTo(row, 'audit')"
-                  :disabled="row.status === 'DRAFT'"
+                  :disabled="row.status !== 'Conduct'"
                   >审核</el-dropdown-item
                 >
               </el-dropdown-menu>
@@ -212,8 +216,8 @@ export default class ProjectList extends Vue {
     this.queryPageParameters.pageNum = 1;
     this.getListMixin();
   }
-  empty() {
-    this.queryPageParameters = {
+  reset() {
+    Object.assign(this.queryPageParameters, {
       proNo: null,
       proName: null,
       termName: null,
@@ -222,9 +226,7 @@ export default class ProjectList extends Vue {
       district: null,
       busTypeEnum: null,
       auditEnum: null,
-      pageNum: this.queryPageParameters.pageNum,
-      pageSize: this.queryPageParameters.pageSize,
-    };
+    });
     this.provinceOption = [];
   }
 

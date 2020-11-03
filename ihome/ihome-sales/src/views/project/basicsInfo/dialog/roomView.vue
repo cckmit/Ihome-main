@@ -34,7 +34,7 @@
             >
               <el-option
                 v-for="item in houseTypeOptions"
-                :key="item.propertyId"
+                :key="item.houseTypeId"
                 :label="item.houseName"
                 :value="item.houseName"
               ></el-option>
@@ -219,6 +219,7 @@ export default class RoomView extends Vue {
     this.$message.success("保存成功");
     this.viewEditDialogVisible = false;
     this.getListMixin();
+    this.getHouseType();
   }
 
   async remove(row: any) {

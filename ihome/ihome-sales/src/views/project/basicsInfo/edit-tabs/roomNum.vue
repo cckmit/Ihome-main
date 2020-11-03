@@ -4,7 +4,7 @@
  * @Author: wwq
  * @Date: 2020-09-27 11:52:41
  * @LastEditors: wwq
- * @LastEditTime: 2020-10-30 18:17:05
+ * @LastEditTime: 2020-11-03 17:06:07
 -->
 <template>
   <div>
@@ -39,7 +39,12 @@
         <el-col :span="10" class="text-left">
           <el-form-item>
             <el-button type="primary" @click="search()">查询</el-button>
-            <el-button type="success">快捷导入房号</el-button>
+            <el-button
+              type="success"
+              v-if="$route.name !== 'projectAdd'"
+              @click="fastImport"
+              >快捷导入房号</el-button
+            >
           </el-form-item>
         </el-col>
       </el-row>
@@ -94,6 +99,12 @@
     <ih-dialog :show="viewDialogVisible" desc="查看房源">
       <RoomView :data="viewData" @cancel="() => (viewDialogVisible = false)" />
     </ih-dialog>
+    <ih-dialog :show="importDialogVisible" desc="查看房源">
+      <Import
+        :data="inportData"
+        @cancel="() => (importDialogVisible = false)"
+      />
+    </ih-dialog>
   </div>
 </template>
 <script lang="ts">
@@ -101,13 +112,14 @@ import { Component, Vue } from "vue-property-decorator";
 import RoomNumEdit from "../dialog/roomNumEdit.vue";
 import RoomView from "../dialog/roomView.vue";
 import PaginationMixin from "@/mixins/pagination";
+import Import from "../dialog/import.vue";
 import {
   post_building_getList,
   post_building_update,
 } from "@/api/project/index";
 
 @Component({
-  components: { RoomNumEdit, RoomView },
+  components: { RoomNumEdit, RoomView, Import },
   mixins: [PaginationMixin],
 })
 export default class RoomNum extends Vue {
@@ -119,8 +131,10 @@ export default class RoomNum extends Vue {
 
   editDialogVisible = false;
   viewDialogVisible = false;
+  importDialogVisible = false;
   editData: any = {};
   viewData: any = {};
+  inportData: any = {};
 
   resPageInfo: any = {
     list: [],
@@ -137,8 +151,6 @@ export default class RoomNum extends Vue {
   async getListMixin() {
     if (this.proId) {
       this.resPageInfo = await post_building_getList(this.queryPageParameters);
-    } else {
-      this.$message.warning("请先完善基础信息");
     }
   }
 
@@ -163,6 +175,10 @@ export default class RoomNum extends Vue {
   view(row: any) {
     this.viewData = row;
     this.viewDialogVisible = true;
+  }
+
+  fastImport() {
+    this.importDialogVisible = true;
   }
 }
 </script>

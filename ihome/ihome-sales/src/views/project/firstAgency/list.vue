@@ -4,7 +4,7 @@
  * @Author: wwq
  * @Date: 2020-10-28 15:34:27
  * @LastEditors: wwq
- * @LastEditTime: 2020-10-29 10:09:19
+ * @LastEditTime: 2020-11-03 16:07:36
 -->
 <template>
   <ih-page>
@@ -193,7 +193,7 @@ export default class FirstAgency extends Vue {
   }
 
   reset() {
-    this.queryPageParameters = {
+    Object.assign(this.queryPageParameters, {
       agencyName: null,
       creditCode: null,
       simpleName: null,
@@ -202,9 +202,7 @@ export default class FirstAgency extends Vue {
       area: null,
       followMan: null,
       agencyAuditEnum: null,
-      pageNum: this.queryPageParameters.pageNum,
-      pageSize: this.queryPageParameters.pageSize,
-    };
+    });
     this.provinceOption = [];
   }
 

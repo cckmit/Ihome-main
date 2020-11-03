@@ -4,7 +4,7 @@
  * @Author: wwq
  * @Date: 2020-09-27 11:52:41
  * @LastEditors: wwq
- * @LastEditTime: 2020-11-02 18:17:40
+ * @LastEditTime: 2020-11-03 18:08:39
 -->
 <template>
   <div>
@@ -324,7 +324,10 @@
             >
               <template #extend="{ data }">
                 <div class="padding-top-5 font">
-                  <el-radio v-model="radio" :label="data" @change="getRadio"
+                  <el-radio
+                    v-model="radio"
+                    :label="data.fileId"
+                    @change="getRadio"
                     >设为封面图</el-radio
                   >
                 </div>
@@ -435,7 +438,7 @@
       </el-row>
     </el-form>
     <div class="margin-top-20">
-      <el-button type="primary" @click="add">保存</el-button>
+      <el-button type="primary" @click="save">保存</el-button>
       <el-button @click="$goto({ path: '/projects/list' })">关闭</el-button>
     </div>
     <ih-dialog :show="dialogVisible">
@@ -449,7 +452,11 @@
 <script lang="ts">
 import { Component, Vue } from "vue-property-decorator";
 import { post_company_listAll } from "@/api/developer/index";
-import { get_project_get__proId, post_project_add } from "@/api/project/index";
+import {
+  get_project_get__proId,
+  post_project_add,
+  post_project_update,
+} from "@/api/project/index";
 import FirstAgencyDialog from "../dialog/firstAgency.vue";
 import BaiduMap from "vue-baidu-map/components/map/Map.vue";
 import BmView from "vue-baidu-map/components/map/MapView.vue";
@@ -625,14 +632,14 @@ export default class BasicInfo extends Vue {
         this.checkBoxChangeList.push(JSON.parse(v));
       });
       this.houseFileList = this.form.proPics.map((v: any) => ({
-        name: v.attachAddr,
-        fileId: v.attachId,
+        name: v.attachName,
+        fileId: v.attachAddr,
         exIndex: v.exIndex,
         proAttachEnum: "ProPic",
       }));
       this.radio = this.houseFileList.filter(
         (item: any) => item.exIndex === 1
-      )[0];
+      )[0]["fileId"];
     }
   }
 
@@ -649,7 +656,7 @@ export default class BasicInfo extends Vue {
   getRadio(data: any) {
     if (this.houseList.length) {
       this.houseList = this.houseList.map((v: any) => {
-        if (data.fileId === v.attachId) {
+        if (data === v.attachId) {
           return {
             ...v,
             exIndex: 1,
@@ -663,7 +670,7 @@ export default class BasicInfo extends Vue {
       });
     } else {
       this.houseFileList = this.houseFileList.map((v: any) => {
-        if (data.fileId === v.fileId) {
+        if (data === v.fileId) {
           return {
             ...v,
             exIndex: 1,
@@ -757,9 +764,11 @@ export default class BasicInfo extends Vue {
 
   firstAgencyFinish(data: any) {
     if (this.form.firstAgencyCompanys.length) {
-      data.forEach((v: any) => {
-        this.form.firstAgencyCompanys.push(v);
-      });
+      let arr: any = data.concat(this.form.firstAgencyCompanys);
+      const res = new Map();
+      this.form.firstAgencyCompanys = arr.filter(
+        (v: any) => !res.has(v.agencyId) && res.set(v.agencyId, 1)
+      );
     } else {
       this.form.firstAgencyCompanys = data;
     }
@@ -777,37 +786,50 @@ export default class BasicInfo extends Vue {
     let geoCoder = new this.BMap.Geocoder();
     geoCoder.getPoint(this.form.searchAddr, (point: any) => {
       this.form.jingwei = `${point?.lng},${point?.lat}`;
+      this.form.lng = point?.lng;
+      this.form.lat = point?.lat;
     });
     geoCoder.getLocation(e.point, (res: any) => {
       this.searchAddr = res?.address;
     });
   }
 
-  async add() {
+  async save() {
     let obj = { ...this.form };
     obj.province = this.form.provinceOption[0];
     obj.city = this.form.provinceOption[1];
     obj.district = this.form.provinceOption[2];
-    obj.searchAddr = this.searchAddr;
+    obj.provinceName = (this.$root as any).getAreaName(
+      this.form.provinceOption[0]
+    );
+    obj.cityName = (this.$root as any).getAreaName(this.form.provinceOption[1]);
+    obj.districtName = (this.$root as any).getAreaName(
+      this.form.provinceOption[2]
+    );
+    obj.searchAddr = this.searchAddr ? this.searchAddr : this.form.searchAddr;
     obj.propertyArgs = this.checkBoxChangeList.map((v: any) => ({
       ...v.msg,
       buildingNames: v.msg.buildingNames.map((j: any) => ({
         buildingName: j,
       })),
     }));
-    obj.proId = this.projectId;
     if (this.houseList.length) {
       obj.proPics = this.houseList;
     } else {
       obj.proPics = this.houseFileList.map((v: any) => ({
-        attachAddr: v.name,
-        attachId: v.fileId,
+        attachName: v.name,
+        attachAddr: v.fileId,
+        attachId: null,
         exIndex: v.exIndex,
         proAttachEnum: v.proAttachEnum,
       }));
     }
-    console.log(obj);
-    await post_project_add(obj);
+    if (this.$route.name === "projectAdd") {
+      await post_project_add(obj);
+    } else {
+      obj.proId = this.projectId;
+      await post_project_update(obj);
+    }
     this.$message.success("保存成功");
     this.$goto({ path: "/projects/list" });
   }
