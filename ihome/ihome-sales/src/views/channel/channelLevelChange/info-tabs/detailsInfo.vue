@@ -4,7 +4,7 @@
  * @Author: wwq
  * @Date: 2020-10-15 12:33:25
  * @LastEditors: ywl
- * @LastEditTime: 2020-10-23 17:35:58
+ * @LastEditTime: 2020-11-03 11:15:23
 -->
 <template>
   <div class="text-left">
@@ -117,7 +117,7 @@
       评级信息
       <el-link
         class="margin-left-15"
-        href="/web-sales/gradeStandard/list"
+        href="/web-sales/channelRatings/list"
         type="success"
         target="_blank"
       >查看所有标准</el-link>
