@@ -4,7 +4,7 @@
  * @Author: zyc
  * @Date: 2020-07-14 09:23:40
  * @LastEditors: zyc
- * @LastEditTime: 2020-11-03 10:09:55
+ * @LastEditTime: 2020-11-03 11:01:27
 --> 
 --> 
 <template>
@@ -273,7 +273,6 @@ export default class InvitationCodeList extends Vue {
       invitationUserId: null,
       status: null,
     });
-    console.log(this.queryPageParameters);
   }
   finishAdd() {
     this.getListMixin();
