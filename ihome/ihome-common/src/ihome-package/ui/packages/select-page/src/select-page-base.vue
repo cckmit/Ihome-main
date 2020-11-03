@@ -4,7 +4,7 @@
  * @Author: ywl
  * @Date: 2020-10-20 15:03:13
  * @LastEditors: ywl
- * @LastEditTime: 2020-10-27 14:55:40
+ * @LastEditTime: 2020-11-03 11:37:49
 -->
 <template>
   <el-select
@@ -17,6 +17,7 @@
     :multiple="multiple"
     :collapse-tags="collapseTags"
     popper-class="ih-select-page"
+    class="width--100"
   >
     <!-- 搜索 -->
     <el-input
@@ -160,8 +161,8 @@ interface PropsType {
 }
 </style>
 <style>
-.ih-select-page {
-  max-height: 400px;
+.ih-select-page .el-select-dropdown__wrap {
+  max-height: none !important;
 }
 .ih-select-page .el-scrollbar {
   display: block !important;
