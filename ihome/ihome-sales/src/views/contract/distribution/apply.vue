@@ -60,7 +60,6 @@
                 value-key="id"
                 class="width--100"
               >
-                <!-- 自定义模板使用 v-slot返回来的data：当前每条的数据；index：每一条数据的下标 -->
                 <template v-slot="{ data }">
                   <span style="float: left">{{ data.name }}</span>
                   <span style="margin-left: 20px;float: right; color: #8492a6; font-size: 13px">{{ data.account }}</span>
@@ -212,7 +211,7 @@
           </el-col>
           <el-col :span="12">
             <el-form-item label="合同跟进人">
-              {{handler.name}}
+              {{handler ? handler.name : '--'}}
             </el-form-item>
           </el-col>
         </el-row>

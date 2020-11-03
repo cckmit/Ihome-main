@@ -4,7 +4,7 @@
  * @Author: ywl
  * @Date: 2020-09-25 11:53:51
  * @LastEditors: ywl
- * @LastEditTime: 2020-11-02 14:34:20
+ * @LastEditTime: 2020-11-03 10:29:30
 -->
 <template>
   <IhPage label-width="100px">
@@ -129,12 +129,12 @@
                     placeholder="周期"
                     class="width--100"
                   >
-                    <!-- <el-option
-                      v-for="item in $root.displayList('accountType')"
-                      :key="item.value"
-                      :label="item.label"
-                      :value="item.value"
-                    ></el-option> -->
+                    <el-option
+                      v-for="item in dropOption"
+                      :key="item.termId"
+                      :label="item.termName"
+                      :value="item.termId"
+                    ></el-option>
                   </el-select>
                 </el-form-item>
               </el-col>
@@ -192,19 +192,11 @@
                     clearable
                     class="width--100"
                   >
-                    <!-- 自定义模板使用 v-slot返回来的data：当前每条的数据；index：每一条数据的下标 -->
                     <template v-slot="{ data }">
                       <span style="float: left">{{ data.name }}</span>
                       <span style="margin-left: 20px;float: right; color: #8492a6; font-size: 13px">{{ data.account }}</span>
                     </template>
                   </IhSelectPageUser>
-                  <!-- <el-select
-                    v-model="queryPageParameters.createUser"
-                    clearable
-                    placeholder="请选择合同录入人"
-                    class="width--100"
-                  >
-                  </el-select> -->
                 </el-form-item>
               </el-col>
             </el-row>
@@ -217,19 +209,11 @@
                     clearable
                     class="width--100"
                   >
-                    <!-- 自定义模板使用 v-slot返回来的data：当前每条的数据；index：每一条数据的下标 -->
                     <template v-slot="{ data }">
                       <span style="float: left">{{ data.name }}</span>
                       <span style="margin-left: 20px;float: right; color: #8492a6; font-size: 13px">{{ data.account }}</span>
                     </template>
                   </IhSelectPageUser>
-                  <!-- <el-select
-                    v-model="queryPageParameters.handler"
-                    clearable
-                    placeholder="请选择合同跟进人"
-                    class="width--100"
-                  >
-                  </el-select> -->
                 </el-form-item>
               </el-col>
               <el-col :span="8">
@@ -394,6 +378,7 @@ import {
   post_contract_duplicate,
   post_contract_original__id,
 } from "@/api/contract/index";
+import { post_term_getDropDown } from "@/api/project/index";
 import { post_company_listAll } from "@/api/developer/index";
 import { post_company_getAll } from "@/api/system/index";
 import SelectOrganizationTree from "@/components/SelectOrganizationTree.vue";
@@ -420,6 +405,7 @@ export default class PartyAList extends Vue {
     endTime: "",
   };
   timeList = [];
+  private dropOption: any = [];
   private companyList: any = [];
   private partyAList: any = [];
   private searchOpen = true;
@@ -486,6 +472,9 @@ export default class PartyAList extends Vue {
   private async getPartyAList() {
     this.partyAList = await post_company_listAll({ name: "" });
   }
+  private async getDropDown(): Promise<void> {
+    this.dropOption = await post_term_getDropDown();
+  }
   public async getListMixin(): Promise<void> {
     this.resPageInfo = await post_contract_list(this.queryPageParameters);
   }
@@ -494,6 +483,7 @@ export default class PartyAList extends Vue {
     this.getListMixin();
     this.getCompanyList();
     this.getPartyAList();
+    this.getDropDown();
   }
 }
 </script>
