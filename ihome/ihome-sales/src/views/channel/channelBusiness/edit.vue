@@ -1,10 +1,10 @@
 <!--
- * @Description: 
+ * @Description: 渠道商 添加、编辑
  * @version: 
  * @Author: ywl
  * @Date: 2020-09-16 14:05:21
  * @LastEditors: ywl
- * @LastEditTime: 2020-10-28 17:40:41
+ * @LastEditTime: 2020-11-03 11:22:22
 -->
 <template>
   <IhPage>
@@ -546,7 +546,7 @@ export default class ModifyThe extends Vue {
               oldChannelId: this.$route.query.id,
             });
             this.$message.success("渠道商变更提交成功");
-            this.$router.push("/channelsChange/list");
+            this.$router.push("/channelChange/list");
             break;
           case "ChannelChangeEdit":
             break;

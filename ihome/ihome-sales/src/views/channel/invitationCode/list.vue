@@ -4,7 +4,7 @@
  * @Author: zyc
  * @Date: 2020-07-14 09:23:40
  * @LastEditors: zyc
- * @LastEditTime: 2020-10-23 15:48:55
+ * @LastEditTime: 2020-11-03 11:01:27
 --> 
 --> 
 <template>
@@ -258,14 +258,13 @@ export default class InvitationCodeList extends Vue {
     }
   }
   info(scope: any) {
-   
     this.$router.push({
       path: "/invitationCode/info",
       query: { id: scope.row.id },
     });
   }
   reset() {
-    this.queryPageParameters = {
+    Object.assign(this.queryPageParameters, {
       departmentOrgId: null,
       expiresTime: null,
       expiresTimeBegin: null,
@@ -273,7 +272,7 @@ export default class InvitationCodeList extends Vue {
       invitationCode: null,
       invitationUserId: null,
       status: null,
-    };
+    });
   }
   finishAdd() {
     this.getListMixin();
