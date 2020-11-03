@@ -4,7 +4,7 @@
  * @Author: ywl
  * @Date: 2020-09-27 14:41:06
  * @LastEditors: ywl
- * @LastEditTime: 2020-11-02 17:28:47
+ * @LastEditTime: 2020-11-03 15:56:38
 -->
 <template>
   <IhPage class="text-left">
@@ -57,7 +57,7 @@
           </el-col>
           <el-col :span="12">
             <el-form-item label="归档编号">
-              {{ruleForm.fileCode}}
+              <span>{{ruleForm.fileCode}}</span>
             </el-form-item>
           </el-col>
         </el-row>
@@ -114,12 +114,21 @@
           <el-col :span="24">
             <el-form-item label="盖章版归档">
               <IhUpload
+                v-if="$route.name === 'scanArchived' || $route.name === 'StrategyDetail'"
                 :file-list="fileList2"
                 size="100px"
                 :limit="1"
               ></IhUpload>
             </el-form-item>
           </el-col>
+        </el-row>
+        <el-row>
+          <div
+            class="text-center"
+            v-if="$route.name === 'scanArchived'"
+          >
+            <el-button type="primary">扫描件归档</el-button>
+          </div>
         </el-row>
       </el-form>
     </template>

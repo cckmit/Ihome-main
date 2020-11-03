@@ -4,7 +4,7 @@
  * @Author: ywl
  * @Date: 2020-09-27 16:27:36
  * @LastEditors: ywl
- * @LastEditTime: 2020-10-29 15:14:52
+ * @LastEditTime: 2020-11-03 16:14:58
 -->
 <template>
   <IhPage label-width="110px">
@@ -295,19 +295,19 @@ import { post_notice_list } from "@/api/contract/index";
 })
 export default class DiscountList extends Vue {
   public queryPageParameters: any = {
-    noticeCode: "",
-    // partyA: "",
-    // partyB: "",
-    area: "",
-    mobileB: "",
-    projectName: "",
-    room: "",
-    deduction: "",
-    discount: "",
-    beginTime: "",
-    endTime: "",
-    cycle: "",
-    state: "",
+    noticeCode: null,
+    // partyA: null,
+    // partyB: null,
+    area: null,
+    mobileB: null,
+    projectName: null,
+    room: null,
+    deduction: null,
+    discount: null,
+    beginTime: null,
+    endTime: null,
+    cycle: null,
+    state: null,
   };
   private timeList: any = [];
   private searchOpen = true;
@@ -330,23 +330,21 @@ export default class DiscountList extends Vue {
     this.getListMixin();
   }
   private handleReact(): void {
-    this.queryPageParameters = {
-      noticeCode: "",
-      // partyA: "",
-      // partyB: "",
-      area: "",
-      mobileB: "",
-      projectName: "",
-      room: "",
-      deduction: "",
-      discount: "",
-      beginTime: "",
-      endTime: "",
-      cycle: "",
-      state: "",
-      pageNum: this.queryPageParameters.pageNum,
-      pageSize: this.queryPageParameters.pageSize,
-    };
+    Object.assign(this.queryPageParameters, {
+      noticeCode: null,
+      // partyA: null,
+      // partyB: null,
+      area: null,
+      mobileB: null,
+      projectName: null,
+      room: null,
+      deduction: null,
+      discount: null,
+      beginTime: null,
+      endTime: null,
+      cycle: null,
+      state: null,
+    });
     this.timeList = [];
   }
   public async getListMixin(): Promise<void> {

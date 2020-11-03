@@ -4,7 +4,7 @@
  * @Author: ywl
  * @Date: 2020-09-25 11:53:51
  * @LastEditors: ywl
- * @LastEditTime: 2020-11-03 10:29:30
+ * @LastEditTime: 2020-11-03 16:10:13
 -->
 <template>
   <IhPage label-width="100px">
@@ -234,10 +234,6 @@
           type="info"
           @click="handleReset()"
         >重置</el-button>
-        <!-- <el-button
-          type="success"
-          @click="$router.push('/partyA/add')"
-        >录入</el-button> -->
         <el-button>导出</el-button>
         <el-link
           type="primary"
@@ -347,7 +343,7 @@
             <el-link type="primary">扫描件归档</el-link>
             <el-link
               type="primary"
-              @click="original(row)"
+              @click="handleToPage(row, 'edit')"
             >原件归档</el-link>
           </template>
         </el-table-column>
@@ -376,7 +372,7 @@ import PaginationMixin from "@/mixins/pagination";
 import {
   post_contract_list,
   post_contract_duplicate,
-  post_contract_original__id,
+  // post_contract_original__id,
 } from "@/api/contract/index";
 import { post_term_getDropDown } from "@/api/project/index";
 import { post_company_listAll } from "@/api/developer/index";
@@ -389,20 +385,20 @@ import SelectOrganizationTree from "@/components/SelectOrganizationTree.vue";
 })
 export default class PartyAList extends Vue {
   public queryPageParameters: any = {
-    title: "",
-    partyA: "",
-    partyB: "",
-    projectName: "",
-    effectiveTime: "",
-    cycle: "",
-    organization: "",
-    contractCode: "",
-    fileState: "",
-    fileCode: "",
-    createUser: "",
-    handler: "",
-    beginTime: "",
-    endTime: "",
+    title: null,
+    partyA: null,
+    partyB: null,
+    projectName: null,
+    effectiveTime: null,
+    cycle: null,
+    organization: null,
+    contractCode: null,
+    fileState: null,
+    fileCode: null,
+    createUser: null,
+    handler: null,
+    beginTime: null,
+    endTime: null,
   };
   timeList = [];
   private dropOption: any = [];
@@ -422,24 +418,22 @@ export default class PartyAList extends Vue {
     this.getListMixin();
   }
   private handleReset(): void {
-    this.queryPageParameters = {
-      title: "",
-      partyA: "",
-      partyB: "",
-      projectName: "",
-      effectiveTime: "",
-      cycle: "",
-      organization: "",
-      contractCode: "",
-      fileState: "",
-      fileCode: "",
-      createUser: "",
-      handler: "",
-      beginTime: "",
-      endTime: "",
-      pageNum: this.queryPageParameters.pageNum,
-      pageSize: this.queryPageParameters.pageSize,
-    };
+    Object.assign(this.queryPageParameters, {
+      title: null,
+      partyA: null,
+      partyB: null,
+      projectName: null,
+      effectiveTime: null,
+      cycle: null,
+      organization: null,
+      contractCode: null,
+      fileState: null,
+      fileCode: null,
+      createUser: null,
+      handler: null,
+      beginTime: null,
+      endTime: null,
+    });
     this.timeList = [];
   }
   private openToggle(): void {
@@ -460,11 +454,13 @@ export default class PartyAList extends Vue {
     console.log(row);
     await post_contract_duplicate();
   }
-  private async original(row: any): Promise<void> {
-    await this.$confirm(`是否继续原件归档?`, "提示");
-    await post_contract_original__id({ id: row.id });
-    this.getListMixin();
-    this.$message.success("原件归档成功");
+  private original(row: any) {
+    console.log(row);
+
+    // await this.$confirm(`是否继续原件归档?`, "提示");
+    // await post_contract_original__id({ id: row.id });
+    // this.getListMixin();
+    // this.$message.success("原件归档成功");
   }
   private async getCompanyList() {
     this.companyList = await post_company_getAll({ name: "" });

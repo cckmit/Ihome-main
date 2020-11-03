@@ -4,7 +4,7 @@
  * @Author: ywl
  * @Date: 2020-09-25 16:00:37
  * @LastEditors: ywl
- * @LastEditTime: 2020-11-03 10:30:14
+ * @LastEditTime: 2020-11-03 14:47:59
 -->
 <template>
   <IhPage>
@@ -95,12 +95,6 @@
           </el-col>
           <el-col :span="12">
             <el-form-item label="合同跟进人">
-              <!-- <el-select
-                v-model="formData.handler"
-                placeholder="合同跟进人"
-                clearable
-                class="width--100"
-              ></el-select> -->
               <IhSelectPageUser
                 v-model="formData.handler"
                 clearable
@@ -222,7 +216,7 @@ import { Component, Vue } from "vue-property-decorator";
 import { Form as ElForm } from "element-ui";
 import { NoRepeatHttp } from "ihome-common/util/aop/no-repeat-http";
 
-import { post_contract_create } from "@/api/contract/index";
+import { get_contract_detail__id } from "@/api/contract/index";
 import { post_company_listAll } from "@/api/developer/index";
 import { post_company_getAll } from "@/api/system/index";
 
@@ -270,15 +264,22 @@ export default class PartyAadd extends Vue {
       if (val) {
         console.log(this.formData);
 
-        await post_contract_create({ ...this.formData, channel: "Contract" });
         this.$message.success("提交成功");
       }
     });
+  }
+  private async getInfo() {
+    let id = this.$route.query.id;
+    if (id) {
+      let res = await get_contract_detail__id({ id: id });
+      console.log(res);
+    }
   }
 
   created() {
     this.getPartyAList();
     this.getCompanyList();
+    this.getInfo();
   }
 }
 </script>

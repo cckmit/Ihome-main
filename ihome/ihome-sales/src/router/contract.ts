@@ -4,7 +4,7 @@
  * @Author: ywl
  * @Date: 2020-10-16 15:19:48
  * @LastEditors: ywl
- * @LastEditTime: 2020-11-03 09:16:23
+ * @LastEditTime: 2020-11-03 15:50:51
  */
 import { RouteConfig } from 'vue-router'
 
@@ -93,6 +93,12 @@ const contractRoutes: Array<RouteConfig> = [
         component: () => import( /* webpackChunkName: "StrategyDetail" */ '@/views/contract/strategy/info.vue'),
         meta: { title: '甲方/中介战略协议详情', icon: 'form' }
       },
+      {
+        path: 'archived',
+        name: 'scanArchived',
+        component: () => import( /* webpackChunkName: "ScanArchived" */ '@/views/contract/strategy/info.vue'),
+        meta: { title: '甲方/中介战略协议扫描件归档', icon: 'form' }
+      }
     ]
   },
   {

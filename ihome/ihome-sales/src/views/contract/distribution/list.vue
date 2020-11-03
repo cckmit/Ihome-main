@@ -4,7 +4,7 @@
  * @Author: ywl
  * @Date: 2020-09-25 17:34:32
  * @LastEditors: ywl
- * @LastEditTime: 2020-11-03 09:20:00
+ * @LastEditTime: 2020-11-03 16:13:08
 -->
 <template>
   <IhPage label-width="100px">
@@ -357,21 +357,21 @@ import SelectOrganizationTree from "@/components/SelectOrganizationTree.vue";
 })
 export default class DistributionList extends Vue {
   public queryPageParameters: any = {
-    title: "",
-    address: "",
-    contractCode: "",
-    partyA: "",
-    partyB: "",
-    beginTime: "",
-    endTime: "",
-    template: "",
-    project: "",
-    cycle: "",
-    organization: "",
-    fileState: "",
-    fileCode: "",
-    creator: "",
-    handler: "",
+    title: null,
+    address: null,
+    contractCode: null,
+    partyA: null,
+    partyB: null,
+    beginTime: null,
+    endTime: null,
+    template: null,
+    project: null,
+    cycle: null,
+    organization: null,
+    fileState: null,
+    fileCode: null,
+    creator: null,
+    handler: null,
   };
   private timeList = [];
   private companyLoading = false;
@@ -394,25 +394,23 @@ export default class DistributionList extends Vue {
     this.getListMixin();
   }
   private handleReact(): void {
-    this.queryPageParameters = {
-      title: "",
-      address: "",
-      contractCode: "",
-      partyA: "",
-      partyB: "",
-      beginTime: "",
-      endTime: "",
-      template: "",
-      project: "",
-      cycle: "",
-      organization: "",
-      fileState: "",
-      fileCode: "",
-      creator: "",
-      handler: "",
-      pageNum: this.queryPageParameters.pageNum,
-      pageSize: this.queryPageParameters.pageSize,
-    };
+    Object.assign(this.queryPageParameters, {
+      title: null,
+      address: null,
+      contractCode: null,
+      partyA: null,
+      partyB: null,
+      beginTime: null,
+      endTime: null,
+      template: null,
+      project: null,
+      cycle: null,
+      organization: null,
+      fileState: null,
+      fileCode: null,
+      creator: null,
+      handler: null,
+    });
   }
   private handleSelectionChange(val: any): void {
     console.log(val);

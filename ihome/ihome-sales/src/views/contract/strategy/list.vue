@@ -4,7 +4,7 @@
  * @Author: ywl
  * @Date: 2020-09-27 11:13:15
  * @LastEditors: ywl
- * @LastEditTime: 2020-11-02 16:29:54
+ * @LastEditTime: 2020-11-03 16:11:39
 -->
 <template>
   <IhPage label-width="100px">
@@ -274,7 +274,7 @@
               </span>
               <el-dropdown-menu slot="dropdown">
                 <el-dropdown-item @click.native.prevent="handleToPage(row, 'edit')">编辑</el-dropdown-item>
-                <el-dropdown-item @click.native.prevent="routerTo(row)">盖章版归档</el-dropdown-item>
+                <el-dropdown-item @click.native.prevent="handleToPage(row, 'archived')">盖章版归档</el-dropdown-item>
                 <el-dropdown-item @click.native.prevent="routerTo(row)">原件归档</el-dropdown-item>
               </el-dropdown-menu>
             </el-dropdown>
@@ -312,16 +312,16 @@ import { get_channel_getAll } from "@/api/channel/index";
 })
 export default class StrategyList extends Vue {
   public queryPageParameters: any = {
-    title: "",
-    partyA: "",
-    partyB: "",
-    projectName: "",
-    cycle: "",
-    strategyCode: "",
-    fileState: "",
-    fileCode: "",
-    state: "",
-    agreementType: "",
+    title: null,
+    partyA: null,
+    partyB: null,
+    projectName: null,
+    cycle: null,
+    strategyCode: null,
+    fileState: null,
+    fileCode: null,
+    state: null,
+    agreementType: null,
   };
   private searchOpen = true;
   public resPageInfo: PageInfo = {
@@ -348,19 +348,17 @@ export default class StrategyList extends Vue {
     this.getListMixin();
   }
   private handleReact() {
-    this.queryPageParameters = {
-      title: "",
-      partyA: "",
-      partyB: "",
-      projectName: "",
-      cycle: "",
-      strategyCode: "",
-      fileState: "",
-      fileCode: "",
-      state: "",
-      pageNum: this.queryPageParameters.pageNum,
-      pageSize: this.queryPageParameters.pageSize,
-    };
+    Object.assign(this.queryPageParameters, {
+      title: null,
+      partyA: null,
+      partyB: null,
+      projectName: null,
+      cycle: null,
+      strategyCode: null,
+      fileState: null,
+      fileCode: null,
+      state: null,
+    });
   }
   private handleSelectionChange(val: any): void {
     console.log(val);
