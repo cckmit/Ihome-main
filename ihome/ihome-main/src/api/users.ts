@@ -261,6 +261,13 @@ export function allMenu<T>() {
             icon: null,
             path: "/web-sales/achieveScaleScheme/companyList"
         },
+        {
+            id: 504,
+            parentId: 501,
+            title: "成交报告列表",
+            icon: null,
+            path: "/web-sales/dealReport/list"
+        },
     ];
     return menuList;
 }
