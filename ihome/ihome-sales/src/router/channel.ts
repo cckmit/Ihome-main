@@ -4,7 +4,7 @@
  * @Author: zyc
  * @Date: 2020-10-16 14:16:23
  * @LastEditors: ywl
- * @LastEditTime: 2020-10-27 10:37:13
+ * @LastEditTime: 2020-11-03 11:14:40
  */
 
 import { RouteConfig } from 'vue-router'
@@ -62,9 +62,9 @@ const channelRoutes: Array<RouteConfig> = [
     },
     // 渠道商路由
     {
-        path: '/channels',
+        path: '/channelBusiness',
         meta: { title: '渠道商管理', icon: 'form' },
-        redirect: '/channels/list',
+        redirect: '/channelBusiness/list',
         component: Layout,
         children: [
             {
@@ -82,13 +82,13 @@ const channelRoutes: Array<RouteConfig> = [
             {
                 path: 'add',
                 name: 'AddChannel',
-                component: () => import('../views/channel/channelBusiness/modifyThe.vue'),
+                component: () => import('../views/channel/channelBusiness/edit.vue'),
                 meta: { title: '渠道商录入页', icon: 'form' }
             },
             {
                 path: 'edit',
                 name: 'EditChannel',
-                component: () => import('../views/channel/channelBusiness/modifyThe.vue'),
+                component: () => import('../views/channel/channelBusiness/edit.vue'),
                 meta: { title: '渠道商修改页', icon: 'form' }
             },
             {
@@ -106,7 +106,7 @@ const channelRoutes: Array<RouteConfig> = [
             {
                 path: 'change',
                 name: 'ChangeChannel',
-                component: () => import('../views/channel/channelBusiness/modifyThe.vue'),
+                component: () => import('../views/channel/channelBusiness/edit.vue'),
                 meta: { title: '渠道商变更信息', icon: 'form' }
             },
             {
@@ -119,9 +119,9 @@ const channelRoutes: Array<RouteConfig> = [
     },
     // 渠道基础信息变更管理
     {
-        path: '/channelsChange',
+        path: '/channelChange',
         meta: { title: '渠道基础信息变更管理', icon: 'form' },
-        redirect: '/channelsChange/list',
+        redirect: '/channelChange/list',
         component: Layout,
         children: [
             {
@@ -179,14 +179,14 @@ const channelRoutes: Array<RouteConfig> = [
     },
     // 渠道评级标准列表
     {
-        path: '/gradeStandard',
+        path: '/channelRatings',
         meta: { title: '渠道评级标准列表', icon: 'form' },
-        redirect: '/gradeStandard/list',
+        redirect: '/channelRatings/list',
         component: Layout,
         children: [
             {
                 path: 'list',
-                name: 'gradeStandardList',
+                name: 'channelRatingList',
                 component: () => import('../views/channel/channelRatings/list.vue'),
                 meta: { title: '渠道评级标准列表', icon: 'form' }
             },
@@ -245,9 +245,9 @@ const channelRoutes: Array<RouteConfig> = [
     },
     // 渠道等级变更管理
     {
-        path: '/levelChange',
+        path: '/channelLevelChange',
         meta: { title: '渠道等级变更管理', icon: 'form' },
-        redirect: '/levelChange/list',
+        redirect: '/channelLevelChange/list',
         component: Layout,
         children: [
             {

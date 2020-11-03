@@ -4,7 +4,7 @@
  * @Author: wwq
  * @Date: 2020-06-30 09:21:17
  * @LastEditors: ywl
- * @LastEditTime: 2020-10-23 17:21:20
+ * @LastEditTime: 2020-11-03 17:18:57
 --> 
 <template>
   <IhPage label-width="100px">
@@ -161,13 +161,11 @@ export default class CityList extends Vue {
   total: any = null;
 
   reset() {
-    this.queryPageParameters = {
-      pageNum: this.queryPageParameters.pageNum,
-      pageSize: this.queryPageParameters.pageSize,
+    Object.assign(this.queryPageParameters, {
       proviceCode: null,
       cityCode: null,
       cityGrade: null,
-    };
+    });
     this.provinceOption = [];
   }
   handleSelectionChange(val: any) {

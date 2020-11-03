@@ -4,7 +4,7 @@
  * @Author: ywl
  * @Date: 2020-06-30 09:21:17
  * @LastEditors: ywl
- * @LastEditTime: 2020-10-23 14:33:52
+ * @LastEditTime: 2020-11-03 17:15:29
 --> 
 <template>
   <IhPage label-width="100px">
@@ -240,10 +240,10 @@ import UpdateUser from "./dialog/updateUser.vue";
 })
 export default class ChannelChangeList extends Vue {
   queryPageParameters: any = {
-    name: "",
-    inputUser: "",
-    status: "",
-    followUserId: "",
+    name: null,
+    inputUser: null,
+    status: null,
+    followUserId: null,
   };
   resPageInfo: any = {
     total: 0,
@@ -261,14 +261,12 @@ export default class ChannelChangeList extends Vue {
   ];
 
   reset() {
-    this.queryPageParameters = {
-      name: "",
-      inputUser: "",
-      status: "",
-      followUserId: "",
-      pageNum: this.queryPageParameters.pageNum,
-      pageSize: this.queryPageParameters.pageSize,
-    };
+    Object.assign(this.queryPageParameters, {
+      name: null,
+      inputUser: null,
+      status: null,
+      followUserId: null,
+    });
   }
   search() {
     this.queryPageParameters.pageNum = 1;

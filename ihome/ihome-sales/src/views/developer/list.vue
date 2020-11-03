@@ -4,7 +4,7 @@
  * @Author: wwq
  * @Date: 2020-09-25 17:59:09
  * @LastEditors: wwq
- * @LastEditTime: 2020-10-28 16:08:44
+ * @LastEditTime: 2020-11-03 18:11:12
 -->
 <template>
   <ih-page>
@@ -218,16 +218,14 @@ export default class DeveloperList extends Vue {
   }
 
   reset() {
-    this.queryPageParameters = {
+    Object.assign(this.queryPageParameters, {
       name: null,
       creditCode: null,
       status: null,
       inputUser: null,
       province: null,
       city: null,
-      pageNum: this.queryPageParameters.pageNum,
-      pageSize: this.queryPageParameters.pageSize,
-    };
+    });
     this.provinceOption = [];
   }
 

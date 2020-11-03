@@ -4,7 +4,7 @@
  * @Author: zyc
  * @Date: 2020-06-24 09:47:33
  * @LastEditors: wwq
- * @LastEditTime: 2020-10-28 15:35:20
+ * @LastEditTime: 2020-11-03 18:11:23
  */
 import { IRes } from "./users.d";
 // import request from '@/utils/http';
@@ -154,14 +154,14 @@ export function allMenu<T>() {
             parentId: 201,
             title: "渠道评级标准列表",
             icon: null,
-            path: "/web-sales/gradeStandard/list",
+            path: "/web-sales/channelRatings/list",
         },
         {
             id: 203,
             parentId: 201,
             title: "渠道商列表",
             icon: null,
-            path: "/web-sales/channels/list",
+            path: "/web-sales/channelBusiness/list",
         },
         {
             id: 205,
@@ -182,14 +182,14 @@ export function allMenu<T>() {
             parentId: 201,
             title: "渠道基础信息变更列表",
             icon: "el-icon-setting",
-            path: "/web-sales/channelsChange/list",
+            path: "/web-sales/channelChange/list",
         },
         {
             id: 202,
             parentId: 201,
             title: "渠道等级信息变更列表",
             icon: null,
-            path: "/web-sales/levelChange/list",
+            path: "/web-sales/channelLevelChange/list",
         },
         {
             id: 301,
