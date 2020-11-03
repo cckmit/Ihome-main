@@ -1,0 +1,120 @@
+<!--
+ * @Descripttion: 
+ * @version: 
+ * @Author: lsj
+ * @Date: 2020-10-30 15:23:40
+ * @LastEditors: lsj
+ * @LastEditTime: 2020-10-30 17:20:20
+-->
+<template>
+  <ih-page label-width="100px">
+    <template v-slot:form>
+      <el-form ref="form" label-width="100px">
+        <el-row>
+          <el-col :span="8">
+            <el-form-item label="分公司名称">
+              <el-input
+                v-model="queryPageParameters.branchCompanyName"
+                clearable
+                placeholder="请输入分公司名称"
+              ></el-input>
+            </el-form-item>
+          </el-col>
+        </el-row>
+      </el-form>
+    </template>
+    <template v-slot:btn>
+      <el-row>
+        <el-button type="primary" @click="getListMixin()">查询</el-button>
+        <el-button type="info" @click="reset()">重置</el-button>
+      </el-row>
+    </template>
+    <template v-slot:table>
+      <br/>
+      <el-table
+        class="ih-table"
+        :data="resPageInfo.list"
+      >
+        <el-table-column
+          prop="branchCompanyName"
+          label="分公司名称"
+          min-width="120"
+        ></el-table-column>
+        <el-table-column fixed="right" label="操作" width="130">
+          <template slot-scope="scope">
+            <el-link
+              class="margin-right-10"
+              type="primary"
+              @click.native.prevent="detail(scope)"
+            >详情
+            </el-link>
+          </template>
+        </el-table-column>
+      </el-table>
+    </template>
+    <template v-slot:pagination>
+      <br/>
+      <el-pagination
+        @size-change="handleSizeChangeMixin"
+        @current-change="handleCurrentChangeMixin"
+        :current-page.sync="queryPageParameters.pageNum"
+        :page-sizes="$root.pageSizes"
+        :page-size="queryPageParameters.pageSize"
+        :layout="$root.paginationLayout"
+        :total="resPageInfo.total"
+      ></el-pagination>
+    </template>
+  </ih-page>
+</template>
+<script lang="ts">
+  import {Component, Vue} from "vue-property-decorator";
+
+  import {
+    post_achieveScaleScheme_getBranchCompanyList
+  } from "@/api/deal";
+
+  import PaginationMixin from "@/mixins/pagination";
+
+  @Component({
+    components: {},
+    mixins: [PaginationMixin],
+  })
+  export default class CompanyList extends Vue {
+    queryPageParameters: any = {
+      branchCompanyName: null
+    };
+
+    resPageInfo: any = {
+      total: 0,
+      list: [{}],
+    };
+
+    async created() {
+      // await this.getListMixin();
+    }
+
+    // 获取分公司列表
+    async getListMixin() {
+      this.resPageInfo = await post_achieveScaleScheme_getBranchCompanyList(this.queryPageParameters);
+    }
+
+    // 重置
+    reset() {
+      this.queryPageParameters = {
+        branchCompanyName: null,
+        pageNum: 1,
+        pageSize: this.queryPageParameters.pageSize,
+      };
+    }
+
+    // 分公司详情
+    async detail(scope: any) {
+      this.$router.push({
+        path: "/achieveScaleScheme/list",
+        query: {id: scope.row.id},
+      });
+    }
+  }
+</script>
+<style lang="scss" scoped>
+</style>

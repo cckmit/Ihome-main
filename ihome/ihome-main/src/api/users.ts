@@ -240,6 +240,27 @@ export function allMenu<T>() {
             icon: null,
             path: "/web-sales/discount/list"
         },
+        {
+            id: 501,
+            parentId: 0,
+            title: '成交管理模块',
+            icon: 'el-icon-setting',
+            path: null,
+        },
+        {
+            id: 502,
+            parentId: 501,
+            title: "业务模式列表",
+            icon: null,
+            path: "/web-sales/businessModel/list"
+        },
+        {
+            id: 503,
+            parentId: 501,
+            title: "分公司方案列表",
+            icon: null,
+            path: "/web-sales/achieveScaleScheme/companyList"
+        },
     ];
     return menuList;
 }
