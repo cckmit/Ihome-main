@@ -54,7 +54,18 @@
           </el-col>
           <el-col :span="12">
             <el-form-item label="合同跟进人">
-              <el-input placeholder="合同跟进人"></el-input>
+              <IhSelectPageUser
+                v-model="handler"
+                clearable
+                value-key="id"
+                class="width--100"
+              >
+                <!-- 自定义模板使用 v-slot返回来的data：当前每条的数据；index：每一条数据的下标 -->
+                <template v-slot="{ data }">
+                  <span style="float: left">{{ data.name }}</span>
+                  <span style="margin-left: 20px;float: right; color: #8492a6; font-size: 13px">{{ data.account }}</span>
+                </template>
+              </IhSelectPageUser>
             </el-form-item>
           </el-col>
         </el-row>
@@ -201,7 +212,7 @@
           </el-col>
           <el-col :span="12">
             <el-form-item label="合同跟进人">
-              某某员工
+              {{handler.name}}
             </el-form-item>
           </el-col>
         </el-row>
@@ -215,6 +226,7 @@
                 type="textarea"
                 :autosize="{ minRows: 3, maxRows: 3}"
                 placeholder="代理费计付标准备注"
+                disabled
               ></el-input>
             </el-form-item>
           </el-col>
@@ -229,6 +241,7 @@
                 type="textarea"
                 :autosize="{ minRows: 3, maxRows: 3}"
                 placeholder="客户成交以及确认"
+                disabled
               ></el-input>
             </el-form-item>
           </el-col>
@@ -243,6 +256,7 @@
                 type="textarea"
                 :autosize="{ minRows: 3, maxRows: 3}"
                 placeholder="代理费结算条件"
+                disabled
               ></el-input>
             </el-form-item>
           </el-col>
@@ -257,6 +271,7 @@
                 type="textarea"
                 :autosize="{ minRows: 3, maxRows: 3}"
                 placeholder="代理费结算方式"
+                disabled
               ></el-input>
             </el-form-item>
           </el-col>
@@ -271,6 +286,7 @@
                 type="textarea"
                 :autosize="{ minRows: 3, maxRows: 3}"
                 placeholder="违约责任"
+                disabled
               ></el-input>
             </el-form-item>
           </el-col>
@@ -285,6 +301,7 @@
                 type="textarea"
                 :autosize="{ minRows: 3, maxRows: 3}"
                 placeholder="补充条款"
+                disabled
               ></el-input>
             </el-form-item>
           </el-col>
@@ -360,7 +377,10 @@
         </el-row>
       </el-form>
       <div class="text-center">
-        <el-button type="primary">提交</el-button>
+        <el-button
+          type="primary"
+          @click="submit()"
+        >提交</el-button>
         <el-button>取消</el-button>
       </div>
     </template>
@@ -396,7 +416,8 @@ export default class DistributionApply extends Vue {
   private dropOption: any = [];
   private channelList: any = [];
   private cycle = "";
-  private channelData: any = {};
+  private channelData: any = null;
+  private handler: any = null;
   private templateData: any = [];
 
   private handleOpen(): void {
@@ -411,6 +432,9 @@ export default class DistributionApply extends Vue {
   }
   private async getChannelAll(): Promise<void> {
     this.channelList = await get_channel_getAll();
+  }
+  private submit() {
+    console.log(this.handler);
   }
 
   created() {

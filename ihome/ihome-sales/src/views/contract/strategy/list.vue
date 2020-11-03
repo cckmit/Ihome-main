@@ -4,7 +4,7 @@
  * @Author: ywl
  * @Date: 2020-09-27 11:13:15
  * @LastEditors: ywl
- * @LastEditTime: 2020-11-02 14:09:17
+ * @LastEditTime: 2020-11-02 16:29:54
 -->
 <template>
   <IhPage label-width="100px">
@@ -140,7 +140,7 @@
                     class="width--100"
                   >
                     <el-option
-                      v-for="item in $root.dictAllList('StrategyEnum.State')"
+                      v-for="item in $root.dictAllList('StrategyState')"
                       :key="item.code"
                       :label="item.name"
                       :value="item.code"
@@ -321,6 +321,7 @@ export default class StrategyList extends Vue {
     fileState: "",
     fileCode: "",
     state: "",
+    agreementType: "",
   };
   private searchOpen = true;
   public resPageInfo: PageInfo = {

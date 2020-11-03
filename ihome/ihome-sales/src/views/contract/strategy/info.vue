@@ -4,7 +4,7 @@
  * @Author: ywl
  * @Date: 2020-09-27 14:41:06
  * @LastEditors: ywl
- * @LastEditTime: 2020-10-30 09:18:36
+ * @LastEditTime: 2020-11-02 17:28:47
 -->
 <template>
   <IhPage class="text-left">
@@ -22,6 +22,11 @@
               {{ruleForm.title}}
             </el-form-item>
           </el-col>
+        </el-row>
+        <el-row :span="24">
+          <el-form-item label="协议类型">
+            {{ $root.dictAllName(ruleForm.agreementType, 'AgreementTypeEnum') }}
+          </el-form-item>
         </el-row>
         <el-row>
           <el-col :span="12">
@@ -85,7 +90,7 @@
                 disabled
               >
                 <el-option
-                  v-for="item in $root.dictAllList('StrategyEnum.State')"
+                  v-for="item in $root.dictAllList('StrategyState')"
                   :key="item.code"
                   :label="item.name"
                   :value="item.code"

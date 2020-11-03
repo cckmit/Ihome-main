@@ -4,7 +4,7 @@
  * @Author: ywl
  * @Date: 2020-09-27 14:41:06
  * @LastEditors: ywl
- * @LastEditTime: 2020-11-02 14:22:46
+ * @LastEditTime: 2020-11-02 17:27:49
 -->
 <template>
   <IhPage>
@@ -149,17 +149,31 @@
                 placeholder="归档状态"
                 disabled
                 class="width--100"
-              ></el-select>
+              >
+                <el-option
+                  v-for="item in $root.dictAllList('StrategyEnum.fileState')"
+                  :key="item.code"
+                  :label="item.name"
+                  :value="item.code"
+                ></el-option>
+              </el-select>
             </el-form-item>
           </el-col>
           <el-col :span="12">
             <el-form-item label="当前状态">
               <el-select
-                v-model="ruleForm.name"
+                v-model="ruleForm.state"
                 placeholder="当前状态"
                 disabled
                 class="width--100"
-              ></el-select>
+              >
+                <el-option
+                  v-for="item in $root.dictAllList('StrategyState')"
+                  :key="item.code"
+                  :label="item.name"
+                  :value="item.code"
+                ></el-option>
+              </el-select>
             </el-form-item>
           </el-col>
         </el-row>
@@ -190,9 +204,12 @@
             <el-form-item style="text-align:left;">
               <el-button
                 type="primary"
-                @click="submit()"
+                @click="submit('Draft')"
               >保存草稿</el-button>
-              <el-button type="primary">提交审核</el-button>
+              <el-button
+                type="primary"
+                @click="submit('Audit')"
+              >提交审核</el-button>
               <el-button>取消</el-button>
             </el-form-item>
           </el-col>
@@ -225,6 +242,18 @@ export default class StrategyAdd extends Vue {
     title: "",
     agreementType: "",
     timeList: [],
+    originalList: [
+      {
+        url: "",
+        imageType: "",
+        type: "Seal",
+      },
+      {
+        url: "",
+        imageType: "",
+        type: "NoSeal",
+      },
+    ],
   };
   private partyBList: any = [];
   private partyAList: any = [];
@@ -273,7 +302,7 @@ export default class StrategyAdd extends Vue {
     }
   }
   @NoRepeatHttp()
-  private submit() {
+  private submit(state: any) {
     (this.$refs["ruleForm"] as ElForm).validate(async (val) => {
       if (val) {
         let sign = this.ruleForm.timeList && this.ruleForm.timeList.length;
@@ -285,6 +314,7 @@ export default class StrategyAdd extends Vue {
           partyAName: this.ruleForm.partyA.name,
           partyB: this.ruleForm.partyB.id,
           partyBName: this.ruleForm.partyB.name,
+          state,
         });
         this.$message.success("提交成功");
       }
@@ -293,9 +323,17 @@ export default class StrategyAdd extends Vue {
   private async getInfo(): Promise<void> {
     let id = this.$route.query.id;
     if (id) {
-      let res = await get_strategy_detail__id({ id: id });
+      let res: any = await get_strategy_detail__id({ id: id });
       this.ruleForm = {
         ...res,
+        partyA: {
+          id: res.partyA,
+          name: res.partyAName,
+        },
+        partyB: {
+          id: res.partyB,
+          name: res.partyBName,
+        },
         timeList: res.beginTime ? [res.beginTime, res.endTime] : [],
       };
       if (this.ruleForm.agreementType === "PartyA") {
