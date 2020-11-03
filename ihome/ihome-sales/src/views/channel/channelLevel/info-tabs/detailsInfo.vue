@@ -4,7 +4,7 @@
  * @Author: wwq
  * @Date: 2020-10-15 12:33:25
  * @LastEditors: ywl
- * @LastEditTime: 2020-11-03 11:14:58
+ * @LastEditTime: 2020-11-03 17:19:50
 -->
 <template>
   <div class="text-left">
@@ -17,7 +17,6 @@
         <el-col :span="8">
           <el-form-item
             label="渠道商"
-            required
             align="left"
           >
             <span class="text-ellipsis">{{ resPageInfo.channelId
@@ -32,7 +31,6 @@
         <el-col :span="8">
           <el-form-item
             label="渠道等级"
-            required
             align="left"
           >
             <span>{{
@@ -43,7 +41,6 @@
         <el-col :span="8">
           <el-form-item
             label="渠道类型"
-            required
             align="left"
           >
             <span>{{
@@ -56,7 +53,6 @@
         <el-col :span="8">
           <el-form-item
             label="业务开展省份"
-            required
             align="left"
           >
             <span>{{ $root.getAreaName(resPageInfo.province) }}</span>
@@ -65,7 +61,6 @@
         <el-col :span="8">
           <el-form-item
             label="业务开展城市"
-            required
             align="left"
           >
             <span>{{ $root.getAreaName(resPageInfo.city) }}</span>
@@ -84,7 +79,6 @@
         <el-col :span="8">
           <el-form-item
             label="是否特批入库"
-            required
             align="left"
           >
             <span>{{

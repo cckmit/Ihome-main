@@ -4,7 +4,7 @@
  * @Author: wwq
  * @Date: 2020-08-13 11:40:10
  * @LastEditors: ywl
- * @LastEditTime: 2020-10-23 17:28:24
+ * @LastEditTime: 2020-11-03 17:16:10
 -->
 <template>
   <IhPage label-width="100px">
@@ -414,7 +414,7 @@ export default class UserList extends Vue {
     this.getListMixin();
   }
   empty() {
-    this.queryPageParameters = {
+    Object.assign(this.queryPageParameters, {
       channelId: null,
       channelGrade: null,
       cityGrade: null,
@@ -425,9 +425,7 @@ export default class UserList extends Vue {
       inputUser: null,
       special: null,
       storageNum: null,
-      pageNum: this.queryPageParameters.pageNum,
-      pageSize: this.queryPageParameters.pageSize,
-    };
+    });
     this.provinceOption = [];
   }
 
