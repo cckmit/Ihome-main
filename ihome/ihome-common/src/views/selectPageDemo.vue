@@ -31,6 +31,7 @@
       <!-- 如果需要绑定值为对象，value-key必须传 -->
       <IhSelectPageUser
         v-model="form.testInput3"
+        class="width-300"
         clearable
         value-key="id"
       >

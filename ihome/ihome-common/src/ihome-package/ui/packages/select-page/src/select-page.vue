@@ -4,7 +4,7 @@
  * @Author: ywl
  * @Date: 2020-10-20 15:03:13
  * @LastEditors: ywl
- * @LastEditTime: 2020-11-03 08:42:19
+ * @LastEditTime: 2020-11-03 11:36:41
 -->
 <template>
   <el-select
@@ -15,6 +15,7 @@
     :placeholder="placeholder"
     :value-key="valueKey"
     popper-class="ih-select-page-user"
+    class="width--100"
   >
     <!-- 搜索 -->
     <el-input
@@ -145,7 +146,7 @@ interface PropsType {
 </style>
 <style>
 .ih-select-page-user .el-select-dropdown__wrap {
-  max-height: 500px !important;
+  max-height: none !important;
 }
 .ih-select-page-user .el-scrollbar {
   display: block !important;
