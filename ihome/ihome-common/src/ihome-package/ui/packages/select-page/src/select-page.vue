@@ -4,12 +4,13 @@
  * @Author: ywl
  * @Date: 2020-10-20 15:03:13
  * @LastEditors: ywl
- * @LastEditTime: 2020-11-03 11:36:41
+ * @LastEditTime: 2020-11-03 16:54:00
 -->
 <template>
   <el-select
     :value="value"
     @change="handleChange"
+    @visible-change="handleVisible"
     :clearable="clearable"
     :disabled="disabled"
     :placeholder="placeholder"
@@ -18,11 +19,14 @@
     class="width--100"
   >
     <!-- 搜索 -->
-    <el-input
-      class="selectInput"
-      :placeholder="searchPlaceholder"
-      v-model="filterText"
-    ></el-input>
+    <div class="selectInput">
+      <el-input
+        ref="search"
+        :placeholder="searchPlaceholder"
+        v-model="filterText"
+        clearable
+      ></el-input>
+    </div>
     <!-- 下拉部分 -->
     <el-option
       v-for="(item, index) in tableList.list"
@@ -66,7 +70,7 @@ export default class IhSelectPage extends Vue {
   @Prop() valueKey?: string;
   @Prop() promiseFun?: Function;
   @Prop({
-    default: "检索关键字",
+    default: "请输入两个关键字检索",
   })
   searchPlaceholder?: string;
   @Prop({
@@ -122,6 +126,13 @@ export default class IhSelectPage extends Vue {
       name: this.filterText,
     });
   }
+  handleVisible(val: any): void {
+    if (val && this.filterText) {
+      this.$nextTick(() => {
+        (this.$refs.search as any).focus();
+      });
+    }
+  }
   handleChange(val: any) {
     this.$emit("input", val);
   }
@@ -147,6 +158,8 @@ interface PropsType {
 <style>
 .ih-select-page-user .el-select-dropdown__wrap {
   max-height: none !important;
+  margin: 0 !important;
+  overflow: auto;
 }
 .ih-select-page-user .el-scrollbar {
   display: block !important;

@@ -4,7 +4,7 @@
  * @Author: ywl
  * @Date: 2020-10-20 15:03:13
  * @LastEditors: ywl
- * @LastEditTime: 2020-11-03 11:37:49
+ * @LastEditTime: 2020-11-03 16:21:32
 -->
 <template>
   <el-select
@@ -20,11 +20,13 @@
     class="width--100"
   >
     <!-- 搜索 -->
-    <el-input
-      class="selectInput"
-      :placeholder="searchPlaceholder"
-      v-model="filterText"
-    ></el-input>
+    <div class="selectInput">
+      <el-input
+        :placeholder="searchPlaceholder"
+        v-model="filterText"
+        clearable
+      ></el-input>
+    </div>
     <!-- 下拉部分 -->
     <el-option
       v-for="(item, index) in optionList"
