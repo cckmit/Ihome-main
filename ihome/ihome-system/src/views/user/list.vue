@@ -3,8 +3,8 @@
  * @version: 
  * @Author: zyc
  * @Date: 2020-06-30 09:21:17
- * @LastEditors: lgf
- * @LastEditTime: 2020-09-27 15:10:29
+ * @LastEditors: zyc
+ * @LastEditTime: 2020-11-03 10:15:19
 --> 
 <template>
   <ih-page>
@@ -463,7 +463,7 @@ export default class UserList extends Vue {
   }
 
   reset() {
-    this.queryPageParameters = {
+    Object.assign(this.queryPageParameters, {
       account: null,
       accountType: "Ihome",
       employeeCode: null,
@@ -481,9 +481,7 @@ export default class UserList extends Vue {
       permissionOrgId: null,
       status: "Valid",
       workType: null,
-      pageNum: null,
-      pageSize: null,
-    };
+    });
   }
 
   addData: any = null;

@@ -3,91 +3,130 @@
  * @version: 
  * @Author: wwq
  * @Date: 2020-10-15 12:33:25
- * @LastEditors: wwq
- * @LastEditTime: 2020-10-23 18:05:35
+ * @LastEditors: ywl
+ * @LastEditTime: 2020-11-03 17:53:14
 -->
 <template>
   <div class="text-left">
     <p class="ih-info-title">基础信息</p>
-    <el-form ref="form" label-width="120px">
+    <el-form
+      ref="form"
+      label-width="120px"
+    >
       <el-row>
         <el-col :span="8">
-          <el-form-item label="名称" required align="left">
+          <el-form-item
+            label="名称"
+            align="left"
+          >
             <span class="text-ellipsis">{{ resPageInfo.name }}</span>
           </el-form-item>
         </el-col>
         <el-col :span="8">
-          <el-form-item label="信用代码" required align="left">
+          <el-form-item
+            label="信用代码"
+            align="left"
+          >
             <span>{{ resPageInfo.creditCode }}</span>
           </el-form-item>
         </el-col>
         <el-col :span="8">
-          <el-form-item label="简称" required align="left">
+          <el-form-item
+            label="简称"
+            align="left"
+          >
             <span>{{ resPageInfo.shortName }}</span>
           </el-form-item>
         </el-col>
       </el-row>
       <el-row>
         <el-col :span="8">
-          <el-form-item label="类型" required align="left">
+          <el-form-item
+            label="类型"
+            align="left"
+          >
             <span>{{
               $root.dictAllName(resPageInfo.type, "CompanyTypeEnum")
             }}</span>
           </el-form-item>
         </el-col>
         <el-col :span="8">
-          <el-form-item label="法定代表人" required align="left">
+          <el-form-item
+            label="法定代表人"
+            align="left"
+          >
             <span>{{ resPageInfo.legalPerson }}</span>
           </el-form-item>
         </el-col>
         <el-col :span="8">
-          <el-form-item label="法人身份证号码" align="left">
+          <el-form-item
+            label="法人身份证号码"
+            align="left"
+          >
             <span>{{ resPageInfo.legalPersonId }}</span>
           </el-form-item>
         </el-col>
         <el-col :span="8">
-          <el-form-item label="成立日期" required align="left">
+          <el-form-item
+            label="成立日期"
+            align="left"
+          >
             <span>{{ resPageInfo.setupTime }}</span>
           </el-form-item>
         </el-col>
         <el-col :span="8">
-          <el-form-item label="注册资本" required align="left">
+          <el-form-item
+            label="注册资本"
+            align="left"
+          >
             <span>{{ resPageInfo.capital }}</span>
           </el-form-item>
         </el-col>
 
         <el-col :span="8">
-          <el-form-item label="营业期限" align="left">
+          <el-form-item
+            label="营业期限"
+            align="left"
+          >
             <span>{{ resPageInfo.businessTime }}</span>
           </el-form-item>
         </el-col>
         <el-col :span="8">
-          <el-form-item label="省份" required>
+          <el-form-item label="省份">
             <span>{{ $root.getAreaName(resPageInfo.province) }}</span>
           </el-form-item>
         </el-col>
         <el-col :span="8">
-          <el-form-item label="城市" required>
+          <el-form-item label="城市">
             <span>{{ $root.getAreaName(resPageInfo.city) }}</span>
           </el-form-item>
         </el-col>
         <el-col :span="8">
-          <el-form-item label="行政区" required>
+          <el-form-item label="行政区">
             <span>{{ $root.getAreaName(resPageInfo.county) }}</span>
           </el-form-item>
         </el-col>
         <el-col :span="16">
-          <el-form-item label="住所" required align="left">
+          <el-form-item
+            label="住所"
+            align="left"
+          >
             <span>{{ resPageInfo.address }}</span>
           </el-form-item>
         </el-col>
         <el-col :span="8">
-          <el-form-item label="录入人" required align="left">
+          <el-form-item
+            label="录入人"
+            align="left"
+          >
             <span>{{ resPageInfo.inputUser }}</span>
           </el-form-item>
         </el-col>
         <el-col :span="8">
-          <el-form-item label="状态" align="left">
+          <el-form-item
+            label="状态"
+            align="left"
+          >
             <span>{{
               $root.dictAllName(resPageInfo.status, "CompanyStatusEnum")
             }}</span>
@@ -103,9 +142,18 @@
         :data="resPageInfo.contactList"
         style="width: 100%"
       >
-        <el-table-column prop="contactName" label="姓名"></el-table-column>
-        <el-table-column prop="contactNum" label="手机号"></el-table-column>
-        <el-table-column prop="email" label="电子邮箱"></el-table-column>
+        <el-table-column
+          prop="contactName"
+          label="姓名"
+        ></el-table-column>
+        <el-table-column
+          prop="contactNum"
+          label="手机号"
+        ></el-table-column>
+        <el-table-column
+          prop="email"
+          label="电子邮箱"
+        ></el-table-column>
       </el-table>
     </div>
     <br />
@@ -116,10 +164,22 @@
         :data="resPageInfo.bankList"
         style="width: 100%"
       >
-        <el-table-column prop="name" label="账户名称"></el-table-column>
-        <el-table-column prop="number" label="账号"></el-table-column>
-        <el-table-column prop="bank" label="开户银行"></el-table-column>
-        <el-table-column prop="type" label="账号类型">
+        <el-table-column
+          prop="name"
+          label="账户名称"
+        ></el-table-column>
+        <el-table-column
+          prop="number"
+          label="账号"
+        ></el-table-column>
+        <el-table-column
+          prop="bank"
+          label="开户银行"
+        ></el-table-column>
+        <el-table-column
+          prop="type"
+          label="账号类型"
+        >
           <template v-slot="{ row }">{{
             $root.dictAllName(row.type, "BankAccountTypeEnum")
           }}</template>
@@ -134,12 +194,18 @@
         :data="resPageInfo.attachmentList"
         style="width: 100%"
       >
-        <el-table-column prop="type" label="类型">
+        <el-table-column
+          prop="type"
+          label="类型"
+        >
           <template v-slot="{ row }">{{
             $root.displayName("accessoryTpye", row.type)
           }}</template>
         </el-table-column>
-        <el-table-column prop="fileId" label="附件"></el-table-column>
+        <el-table-column
+          prop="fileId"
+          label="附件"
+        ></el-table-column>
       </el-table>
     </div>
     <br />
@@ -149,7 +215,10 @@
       {{ resPageInfo.remark }}
     </div>
 
-    <div v-if="typeStr === 'developerRevocation'" class="text-left">
+    <div
+      v-if="typeStr === 'developerRevocation'"
+      class="text-left"
+    >
       <p class="ih-info-title">撤回信息</p>
       <p class="msg-title">撤回原因</p>
       <el-input
@@ -162,10 +231,16 @@
       >
       </el-input>
       <div class="margin-top-30 text-center">
-        <el-button @click="submitRecall()" type="primary">提交</el-button>
+        <el-button
+          @click="submitRecall()"
+          type="primary"
+        >提交</el-button>
       </div>
     </div>
-    <div v-if="typeStr === 'developerCheck'" class="text-left">
+    <div
+      v-if="typeStr === 'developerCheck'"
+      class="text-left"
+    >
       <p class="ih-info-title">审核信息</p>
       <p class="msg-title">审核意见</p>
       <el-input
@@ -178,8 +253,14 @@
       >
       </el-input>
       <div class="margin-top-30 text-center">
-        <el-button @click="pass(true)" type="primary">通过</el-button>
-        <el-button @click="pass(false)" type="primary">驳回</el-button>
+        <el-button
+          @click="pass(true)"
+          type="primary"
+        >通过</el-button>
+        <el-button
+          @click="pass(false)"
+          type="primary"
+        >驳回</el-button>
       </div>
     </div>
   </div>

@@ -4,7 +4,7 @@
  * @Author: ywl
  * @Date: 2020-08-13 11:40:10
  * @LastEditors: ywl
- * @LastEditTime: 2020-10-26 16:37:32
+ * @LastEditTime: 2020-11-03 17:14:01
 -->
 <template>
   <IhPage label-width="100px">
@@ -291,15 +291,15 @@ import PaginationMixin from "../../../mixins/pagination";
 })
 export default class List extends Vue {
   queryPageParameters: any = {
-    name: "",
-    creditCode: "",
-    shortName: "",
-    provinces: "",
-    county: "",
-    city: "",
-    inputUser: "",
-    status: "",
-    followUserId: "",
+    name: null,
+    creditCode: null,
+    shortName: null,
+    provinces: null,
+    county: null,
+    city: null,
+    inputUser: null,
+    status: null,
+    followUserId: null,
   };
   dialogVisible = false;
   resPageInfo: any = {
@@ -325,19 +325,17 @@ export default class List extends Vue {
     this.getListMixin();
   }
   reset() {
-    this.queryPageParameters = {
-      name: "",
-      creditCode: "",
-      shortName: "",
-      provinces: "",
-      county: "",
-      city: "",
-      inputUser: "",
-      status: "",
-      followUserId: "",
-      pageNum: this.queryPageParameters.pageNum,
-      pageSize: this.queryPageParameters.pageSize,
-    };
+    Object.assign(this.queryPageParameters, {
+      name: null,
+      creditCode: null,
+      shortName: null,
+      provinces: null,
+      county: null,
+      city: null,
+      inputUser: null,
+      status: null,
+      followUserId: null,
+    });
     this.provinceList = [];
   }
   changeFollower() {

@@ -168,7 +168,7 @@
           <span style="font-size: 15px; margin-left: 10px">以下标准任填一项</span>
           <el-link
             style="margin-left: 15px;"
-            href="/web-sales/gradeStandard/list"
+            href="/web-sales/channelRatings/list"
             type="success"
             target="_blank"
           >查看所有标准</el-link>

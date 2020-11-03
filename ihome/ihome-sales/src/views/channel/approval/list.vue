@@ -4,7 +4,7 @@
  * @Author: zyc
  * @Date: 2020-07-14 09:23:40
  * @LastEditors: zyc
- * @LastEditTime: 2020-10-23 17:53:20
+ * @LastEditTime: 2020-11-03 10:12:28
 --> 
 --> 
 <template>
@@ -287,15 +287,15 @@ export default class InvitationCodeList extends Vue {
     });
   }
   reset() {
-    this.queryPageParameters = {
+    Object.assign(this.queryPageParameters, {
+      approvalNo: null,
+      approvalUser: null,
       departmentOrgId: null,
-      expiresTime: null,
-      expiresTimeBegin: null,
-      expiresTimeEnd: null,
-      invitationCode: null,
-      invitationUserId: null,
-      status: "Valid",
-    };
+      inputTimeEnd: null,
+      inputTimeStart: null,
+      oaNo: null,
+      status: null,
+    });
   }
   finishAdd() {
     this.getListMixin();

@@ -4,7 +4,7 @@
  * @Author: ywl
  * @Date: 2020-07-08 14:23:16
  * @LastEditors: ywl
- * @LastEditTime: 2020-10-26 16:16:43
+ * @LastEditTime: 2020-11-03 17:38:32
 --> 
 <template>
   <el-dialog
@@ -20,6 +20,7 @@
     <el-form
       ref="form"
       :model="form"
+      :rules="rule"
       label-width="110px"
     >
       <el-row>
@@ -43,9 +44,6 @@
           <el-form-item
             label="选择用户"
             prop="userId"
-            :rules="[
-              { required: true, message: '请选择用户'},
-            ]"
           >
             <IhSelectPageUser
               v-model="form.userId"
@@ -108,6 +106,9 @@ export default class UpdateUser extends Vue {
     userId: "",
   };
   private user = "";
+  rule = {
+    userId: [{ required: true, message: "请选择用户" }],
+  };
   testList = [
     { value: "管理员1", id: 1 },
     { value: "管理员2", id: 2 },
