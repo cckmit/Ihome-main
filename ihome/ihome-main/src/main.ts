@@ -4,7 +4,7 @@
  * @Author: zyc
  * @Date: 2020-06-22 11:46:23
  * @LastEditors: zyc
- * @LastEditTime: 2020-10-26 17:24:14
+ * @LastEditTime: 2020-11-03 10:57:57
  */
 import Vue from 'vue'
 import App from './App.vue'
@@ -40,20 +40,23 @@ import * as Sentry from "@sentry/browser";
 import { Vue as VueIntegration } from "@sentry/integrations";
 import { Integrations } from "@sentry/tracing";
 
-Sentry.init({
-  dsn: "https://d77cd04f9e2e438695e2f8625bb0e427@o467117.ingest.sentry.io/5493023",
-  integrations: [
-    new VueIntegration({
-      Vue,
-      tracing: true,
-    }),
-    new Integrations.BrowserTracing(),
-  ],
+if (process.env.NODE_ENV === 'production') {
+  Sentry.init({
+    dsn: "https://d77cd04f9e2e438695e2f8625bb0e427@o467117.ingest.sentry.io/5493023",
+    integrations: [
+      new VueIntegration({
+        Vue,
+        tracing: true,
+      }),
+      new Integrations.BrowserTracing(),
+    ],
+    // We recommend adjusting this value in production, or using tracesSampler
+    // for finer control
+    tracesSampleRate: 1.0,
+  });
+}
 
-  // We recommend adjusting this value in production, or using tracesSampler
-  // for finer control
-  tracesSampleRate: 1.0,
-});
+
 
 
 function render({ appContent, loading }: any = {}) {
