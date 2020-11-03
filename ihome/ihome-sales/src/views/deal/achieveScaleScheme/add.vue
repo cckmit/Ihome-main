@@ -188,7 +188,7 @@
       <el-button type="success" @click="save()">保存</el-button>
       <el-button type="primary" @click="cancel()">取消</el-button>
     </div>
-    <ih-dialog :show="dialogAdd" desc="渠道合作信息列表">
+    <ih-dialog :show="dialogAdd" desc="选择关联项目">
       <RelatedProjectList
         @cancel="() => (dialogAdd = false)"
         @finish="

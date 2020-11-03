@@ -69,5 +69,32 @@ const dealRoutes: Array<RouteConfig> = [
       },
     ]
   },
+  // 成交报告列表
+  {
+    path: '/dealReport',
+    meta: { title: '成交报告', icon: 'form' },
+    redirect: '/dealReport/list',
+    component: Layout,
+    children: [
+      {
+        path: 'list',
+        name: 'DealReportList',
+        component: () => import('../views/deal/dealReport/list.vue'),
+        meta: { title: '成交报告列表', icon: 'form', keepAlive: true }
+      },
+      {
+        path: 'add',
+        name: 'DealReportAdd',
+        component: () => import('../views/deal/dealReport/add.vue'),
+        meta: { title: '成交报告新增', icon: 'form' }
+      },
+      {
+        path: 'info',
+        name: 'DealReportInfo',
+        component: () => import('../views/deal/dealReport/info.vue'),
+        meta: { title: '成交报告详情', icon: 'form' }
+      }
+    ]
+  }
 ];
 export { dealRoutes }
