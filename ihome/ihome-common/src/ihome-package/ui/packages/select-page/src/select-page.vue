@@ -4,7 +4,7 @@
  * @Author: ywl
  * @Date: 2020-10-20 15:03:13
  * @LastEditors: ywl
- * @LastEditTime: 2020-10-22 16:35:37
+ * @LastEditTime: 2020-11-03 08:42:19
 -->
 <template>
   <el-select
@@ -14,11 +14,12 @@
     :disabled="disabled"
     :placeholder="placeholder"
     :value-key="valueKey"
+    popper-class="ih-select-page-user"
   >
     <!-- 搜索 -->
     <el-input
       class="selectInput"
-      placeholder="检索关键字"
+      :placeholder="searchPlaceholder"
       v-model="filterText"
     ></el-input>
     <!-- 下拉部分 -->
@@ -38,6 +39,7 @@
     <div style="bottom: 0;width: 100%;background: #fff">
       <el-pagination
         small
+        :hide-on-single-page="true"
         @current-change="getSelectList"
         :current-page.sync="pageInfo.pageNum"
         :page-size="pageInfo.pageSize"
@@ -62,6 +64,10 @@ export default class IhSelectPage extends Vue {
   @Prop() placeholder?: string;
   @Prop() valueKey?: string;
   @Prop() promiseFun?: Function;
+  @Prop({
+    default: "检索关键字",
+  })
+  searchPlaceholder?: string;
   @Prop({
     default: () => {
       return {
@@ -133,7 +139,16 @@ interface PropsType {
 
 <style scoped>
 .selectInput {
-  padding: 0 5px;
+  padding: 0 8px;
   box-sizing: border-box;
 }
 </style>
+<style>
+.ih-select-page-user .el-select-dropdown__wrap {
+  max-height: 500px !important;
+}
+.ih-select-page-user .el-scrollbar {
+  display: block !important;
+}
+</style>
+

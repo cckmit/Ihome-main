@@ -3,27 +3,24 @@
  * @version: 
  * @Author: wwq
  * @Date: 2020-09-16 14:54:19
- * @LastEditors: ywl
- * @LastEditTime: 2020-10-20 17:08:48
+ * @LastEditors: zyc
+ * @LastEditTime: 2020-10-26 15:40:21
 -->
 <template>
   <div>
-    <el-button
-      type="primary"
-      @click="routeTo('upload')"
-    >upload组件实例</el-button>
-    <el-button
-      type="primary"
-      @click="routeTo('table')"
-    >table组件实例</el-button>
-    <el-button
-      type="primary"
-      @click="routeTo('cascader')"
-    >省市区级联选择</el-button>
-    <el-button
-      type="primary"
-      @click="$router.push('/selectPage')"
-    >下拉框-分页</el-button>
+    <h1>公共组件库</h1>
+    <el-table :data="tableData" style="width: 100%">
+      <el-table-column prop="key" label="组件" width="150"> </el-table-column>
+      <el-table-column prop="name" label="名称" width="300"></el-table-column>
+      <el-table-column prop="desc" label="描述"></el-table-column>
+      <el-table-column fixed="right" label="操作" width="120">
+        <template slot-scope="scope">
+          <el-link type="primary" @click.native.prevent="info(scope)"
+            >详情demo</el-link
+          >
+        </template>
+      </el-table-column>
+    </el-table>
   </div>
 </template>
 <script lang="ts">
@@ -35,18 +32,28 @@ import { Component, Vue } from "vue-property-decorator";
 })
 export default class Home extends Vue {
   private abc!: boolean;
-  routeTo(type: string) {
-    switch (type) {
-      case "upload":
-        this.$router.push("/upload");
-        break;
-      case "table":
-        this.$router.push("/table");
-        break;
-      case "cascader":
-        this.$router.push("/cascader");
-        break;
-    }
+  tableData: any = [
+    {
+      key: "IhUpload",
+      name: "文件上传组件",
+      desc: "文件上传统一组件",
+      path: "/upload",
+    },
+    {
+      key: "IhCascader",
+      name: "省市区组件",
+      desc: "省市区组件，支持省，省市，省市区三种类型",
+      path: "/cascader",
+    },
+    {
+      key: "IhSelectPageUser",
+      name: "用户下拉分页",
+      desc: "用户下拉分页组件，支持多列，搜索，分页",
+      path: "/selectPage",
+    },
+  ];
+  info(scope: any) {
+    this.$router.push(scope.row.path);
   }
 }
 </script>

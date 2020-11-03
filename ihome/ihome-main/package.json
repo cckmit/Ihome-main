@@ -22,7 +22,7 @@
     "axios": "^0.19.2",
     "core-js": "^3.6.5",
     "element-ui": "^2.13.2",
-    "ihome-common": "^1.1.28",
+    "ihome-common": "^1.1.34",
     "js-cookie": "^2.2.1",
     "nprogress": "^0.2.0",
     "qiankun": "^2.0.15",

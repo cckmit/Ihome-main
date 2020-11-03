@@ -1,8 +1,23 @@
 <template>
-  <el-select :value="valueTitle" :clearable="clearable" @clear="clearHandle" class="ih-select-tree">
-    <el-input class="selectInput" :placeholder="placeholder" v-model="filterText"></el-input>
+  <el-select
+    :value="valueTitle"
+    :clearable="clearable"
+    @clear="clearHandle"
+    popper-class="ihome-tree"
+    class="ih-select-tree"
+  >
+    <el-input
+      class="selectInput"
+      :placeholder="placeholder"
+      v-model="filterText"
+    ></el-input>
 
-    <el-option :value="valueTitle" :label="valueTitle" class="options" style="max-height:400px;">
+    <el-option
+      :value="valueTitle"
+      :label="valueTitle"
+      class="options"
+      style="max-height:400px;"
+    >
       <el-tree
         :show-checkbox="false"
         id="tree-option"
@@ -38,51 +53,51 @@ export default {
         return {
           value: "id", // ID字段名
           label: "title", // 显示名称
-          children: "children" // 子级字段名
+          children: "children", // 子级字段名
         };
-      }
+      },
     },
     /* 选项列表数据(树形结构的对象数组) */
     options: {
       type: Array,
       default: () => {
         return [];
-      }
+      },
     },
     /* 初始值 */
     value: {
       type: Number | String,
       default: () => {
         return null;
-      }
+      },
     },
     /* 可清空选项 */
     clearable: {
       type: Boolean,
       default: () => {
         return true;
-      }
+      },
     },
     /* 自动收起 */
     accordion: {
       type: Boolean,
       default: () => {
         return false;
-      }
+      },
     },
     placeholder: {
       type: String,
       default: () => {
         return "检索关键字";
-      }
-    }
+      },
+    },
   },
   data() {
     return {
       filterText: "",
       valueId: this.value, // 初始值
       valueTitle: "",
-      defaultExpandedKey: []
+      defaultExpandedKey: [],
     };
   },
   mounted() {
@@ -137,14 +152,14 @@ export default {
     initScroll() {
       this.$nextTick(() => {
         let scrollWrap = document.querySelectorAll(
-          ".el-scrollbar .el-select-dropdown__wrap"
+          ".ihome-tree .el-scrollbar .el-select-dropdown__wrap"
         )[0];
         let scrollBar = document.querySelectorAll(
-          ".el-scrollbar .el-scrollbar__bar"
+          ".ihome-tree .el-scrollbar .el-scrollbar__bar"
         );
         scrollWrap.style.cssText =
           "margin: 0px; max-height: none; overflow: hidden;";
-        scrollBar.forEach(ele => (ele.style.width = 0));
+        scrollBar.forEach((ele) => (ele.style.width = 0));
       });
     },
     // 切换选项
@@ -165,7 +180,7 @@ export default {
     /* 清空选中样式 */
     clearSelected() {
       let allNode = document.querySelectorAll("#tree-option .el-tree-node");
-      allNode.forEach(element => element.classList.remove("is-current"));
+      allNode.forEach((element) => element.classList.remove("is-current"));
     },
     filterNode(value, data) {
       if (!value) return true;
@@ -176,7 +191,7 @@ export default {
     },
     OK() {
       console.log(this.valueId);
-    }
+    },
   },
   watch: {
     value() {
@@ -188,19 +203,19 @@ export default {
         this.options = newVal;
         this.initHandle();
       },
-      immediate: true
+      immediate: true,
     },
 
     filterText(val) {
       this.$refs.selectTree.filter(val);
-    }
-  }
+    },
+  },
 };
 </script>
 
 <!-- Add "scoped" attribute to limit CSS to this component only -->
 <style  scoped>
-.el-scrollbar .el-scrollbar__view .el-select-dropdown__item {
+.ihome-tree .el-scrollbar .el-scrollbar__view .el-select-dropdown__item {
   height: auto;
   max-height: 274px;
   padding: 0;

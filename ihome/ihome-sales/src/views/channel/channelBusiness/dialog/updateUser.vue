@@ -4,7 +4,7 @@
  * @Author: ywl
  * @Date: 2020-07-08 14:23:16
  * @LastEditors: ywl
- * @LastEditTime: 2020-10-23 16:10:54
+ * @LastEditTime: 2020-10-26 16:16:43
 --> 
 <template>
   <el-dialog
@@ -40,10 +40,26 @@
 
       <el-row>
         <el-col :span="24">
-          <el-form-item label="选择用户">
-            <el-select
+          <el-form-item
+            label="选择用户"
+            prop="userId"
+            :rules="[
+              { required: true, message: '请选择用户'},
+            ]"
+          >
+            <IhSelectPageUser
+              v-model="form.userId"
+              clearable
+            >
+              <!-- 自定义模板使用 v-slot返回来的data：当前每条的数据；index：每一条数据的下标 -->
+              <template v-slot="{ data }">
+                <span style="float: left">{{ data.name }}</span>
+                <span style="margin-left: 20px;float: right; color: #8492a6; font-size: 13px">{{ data.account }}</span>
+              </template>
+            </IhSelectPageUser>
+            <!-- <el-select
               style="width: 100%"
-              v-model="user"
+              v-model="form.userId"
               clearable
               placeholder="请选择"
             >
@@ -53,7 +69,7 @@
                 :label="item.value"
                 :value="item.id"
               ></el-option>
-            </el-select>
+            </el-select> -->
           </el-form-item>
         </el-col>
       </el-row>
@@ -89,6 +105,7 @@ export default class UpdateUser extends Vue {
 
   form: any = {
     channelIds: this.data.map((v: any) => v.id),
+    userId: "",
   };
   private user = "";
   testList = [
@@ -107,10 +124,10 @@ export default class UpdateUser extends Vue {
   async submit(valid: any) {
     if (valid) {
       if (this.isInput) {
-        this.form.userId = this.user;
+        // this.form.userId = this.user;
         await post_channel_modifyInputUser(this.form);
       } else {
-        this.form.userId = this.user;
+        // this.form.userId = this.user;
         await post_channel_modifyFollowUser(this.form);
       }
       this.$message.success("保存成功");

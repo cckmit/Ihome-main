@@ -38,13 +38,16 @@
       <span>选中的值：{{form.testInput3}}</span>
     </el-form-item>
     <el-form-item label="测试继承">
+      <!-- searchPlaceholder：搜索框提示语 -->
       <SelectPageByOther
+        class="width-300"
         v-model="form.testInput4"
         :props="{
           value: 'id',
           key: 'id',
           lable: 'name'
         }"
+        :searchPlaceholder="'2020-10-27 10:10:00' | timestampToDate('YYYY-MM-DD')"
       >
       </SelectPageByOther>
     </el-form-item>
@@ -54,7 +57,7 @@
 <script lang="ts">
 import { Component, Vue } from "vue-property-decorator";
 
-import { post_role_getList } from "@/api/system/index";
+import { post_company_getAll } from "@/api/system/index";
 
 import SelectPageByOther from "./components/SelectPageByOther.vue";
 import { IhSelectPageUser } from "../ihome-package/ui/packages/select-page/index";
@@ -81,7 +84,7 @@ export default class SelectPageDemo extends Vue {
    * @return {*} promise方法 -- 必须
    */
   handleFun(req: any) {
-    return post_role_getList(req);
+    return post_company_getAll(req);
   }
 }
 </script>

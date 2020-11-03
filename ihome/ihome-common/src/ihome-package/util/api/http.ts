@@ -1,3 +1,11 @@
+/*
+ * @Descripttion: 
+ * @version: 
+ * @Author: zyc
+ * @Date: 2020-10-22 09:00:11
+ * @LastEditors: zyc
+ * @LastEditTime: 2020-10-26 17:57:54
+ */
 import axios from 'axios'
 import { Message, MessageBox } from 'element-ui'
 // import { UserModule } from '@/store/modules/user'
@@ -39,13 +47,18 @@ service.interceptors.request.use(
 
         // Add X-Access-Token header to every request, you can add other custom headers here
         const token: any = getToken();
+
         if (token) {
-            if (config.url?.startsWith('http://filesvr.polyihome.test/aist-filesvr-web/webUploader/uploadAll')) {
-                // console.log(config.url)
-            } else {
-                config.headers['Authorization'] = 'bearer ' + token;
-            }
+            config.headers['Authorization'] = 'bearer ' + token;
         }
+
+        // if (token) {
+        //     if (config.url?.startsWith('http://filesvr.polyihome.test/aist-filesvr-web/webUploader/uploadAll')) {
+        //         // console.log(config.url)
+        //     } else {
+        //         config.headers['Authorization'] = 'bearer ' + token;
+        //     }
+        // }
         NProgress.start();
         return config
     },
@@ -61,9 +74,11 @@ service.interceptors.response.use(
 
         if (response.config.url?.startsWith('/sales-oauth2/oauth/token') || response.config.url?.startsWith('/sales-api/sales-oauth2/oauth/token')) {
             return response.data
-        } else if (response.config.url?.startsWith('http://filesvr.polyihome.test/aist-filesvr-web/webUploader/uploadAll')) {
-            return response.data
-        } else {
+        }
+        //  else if (response.config.url?.startsWith('http://filesvr.polyihome.test/aist-filesvr-web/webUploader/uploadAll')) {
+        //     return response.data
+        // } 
+        else {
             const res: any = response.data
             if (res.code !== 'Success') {
                 Message({
@@ -104,7 +119,10 @@ service.interceptors.response.use(
                 duration: messageTime
             });
             removeToken();
-            (window as any).location.reload();
+            if (window.location.pathname != '/login') {
+                (window as any).location = '/login';
+            }
+
 
         } else if (error.response.status == 403) {
             Message({
@@ -113,7 +131,15 @@ service.interceptors.response.use(
                 duration: messageTime
             })
 
-        } else if (error.response.status >= 500) {
+        } else if (error.response.status == 404) {
+            Message({
+                message: '接口404',
+                type: 'error',
+                duration: messageTime
+            })
+
+        }
+        else if (error.response.status >= 500) {
             Message({
                 message: '系统异常' + error.response.status,
                 type: 'error',

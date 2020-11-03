@@ -1,6 +1,6 @@
 /* eslint-disable */
 /* 此脚本由swagger-ui的api-docs自动生成，请勿修改 */
-//2020-10-26 6:35:08 ├F10: PM┤
+//2020-10-26 5:47:46 ├F10: PM┤
 import { request } from '@/api/base'
 const basePath = "/sales-api/sales-document-cover"
 /**freemarker 转 PDF*/
