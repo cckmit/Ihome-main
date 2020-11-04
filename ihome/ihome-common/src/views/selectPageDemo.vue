@@ -6,7 +6,13 @@
     label-width="200px"
     class="text-left"
   >
-    <el-form-item label="默认使用">
+    <el-form-item
+      label="默认使用"
+      prop="testInput"
+      :rules="[
+        { required: true, message: '请选择用户'},
+      ]"
+    >
       <!-- clearable：是否可以清空选项；disabled：是否禁用；placeholder：占位符 -->
       <IhSelectPageUser
         v-model="form.testInput"

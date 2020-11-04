@@ -4,7 +4,7 @@
  * @Author: ywl
  * @Date: 2020-10-12 10:38:48
  * @LastEditors: ywl
- * @LastEditTime: 2020-10-28 17:15:51
+ * @LastEditTime: 2020-11-04 11:36:50
 -->
 <template>
   <el-dialog
@@ -78,6 +78,7 @@
 import { Component, Vue, Prop } from "vue-property-decorator";
 import { Form as ElForm } from "element-ui";
 import { NoRepeatHttp } from "ihome-common/util/aop/no-repeat-http";
+import { noTrim } from "ihome-common/util/base/form-ui";
 // import { post_channelBank_add } from "@/api/channel/index";
 
 @Component({})
@@ -89,14 +90,17 @@ export default class BankDialog extends Vue {
   private rules: object = {
     accountName: [
       { required: true, message: "请输入账户名称", trigger: "blur" },
+      { validator: noTrim, trigger: ["change", "blur"] },
       { max: 64, message: "字符长度不能大于64", trigger: "blur" },
     ],
     accountNum: [
       { required: true, message: "请输入账号", trigger: "blur" },
+      { validator: noTrim, trigger: ["change", "blur"] },
       { max: 32, message: "字符长度不能大于32", trigger: "blur" },
     ],
     bank: [
       { required: true, message: "请输入开户银行", trigger: "blur" },
+      { validator: noTrim, trigger: ["change", "blur"] },
       { max: 64, message: "字符长度不能大于64", trigger: "blur" },
     ],
     type: [{ required: true, message: "请选择账户类型", trigger: "blur" }],

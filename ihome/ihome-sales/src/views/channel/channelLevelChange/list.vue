@@ -4,7 +4,7 @@
  * @Author: zyc
  * @Date: 2020-06-30 09:21:17
  * @LastEditors: ywl
- * @LastEditTime: 2020-10-23 17:41:31
+ * @LastEditTime: 2020-11-03 17:17:09
 --> 
 <template>
   <IhPage label-width="100px">
@@ -266,12 +266,12 @@ import PaginationMixin from "../../../mixins/pagination";
 })
 export default class LevelChangeList extends Vue {
   queryPageParameters: any = {
-    channelId: "",
-    inputUser: "",
-    status: "",
-    storageNum: "",
-    departmentOrgId: "",
-    changeTime: "",
+    channelId: null,
+    inputUser: null,
+    status: null,
+    storageNum: null,
+    departmentOrgId: null,
+    changeTime: null,
   };
   resPageInfo: any = {
     total: 0,
@@ -289,16 +289,14 @@ export default class LevelChangeList extends Vue {
   ];
 
   reset() {
-    this.queryPageParameters = {
-      channelId: "",
-      inputUser: "",
-      status: "",
-      storageNum: "",
-      departmentOrgId: "",
-      changeTime: "",
-      pageNum: this.queryPageParameters.pageNum,
-      pageSize: this.queryPageParameters.pageSize,
-    };
+    Object.assign(this.queryPageParameters, {
+      channelId: null,
+      inputUser: null,
+      status: null,
+      storageNum: null,
+      departmentOrgId: null,
+      changeTime: null,
+    });
   }
   search() {
     this.queryPageParameters.pageNum = 1;

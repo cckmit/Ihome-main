@@ -4,7 +4,7 @@
  * @Author: wwq
  * @Date: 2020-08-13 11:40:10
  * @LastEditors: ywl
- * @LastEditTime: 2020-10-23 09:55:01
+ * @LastEditTime: 2020-11-03 17:17:55
 -->
 <template>
   <IhPage label-width="100px">
@@ -256,12 +256,10 @@ export default class ChannelRatings extends Vue {
     this.viewDialogVisible = true;
   }
   empty() {
-    this.queryPageParameters = {
+    Object.assign(this.queryPageParameters, {
       cityGrade: null,
       channelGrade: null,
-      pageNum: this.queryPageParameters.pageNum,
-      pageSize: this.queryPageParameters.pageSize,
-    };
+    });
   }
   //操作
   viewMaterial(row: any) {
