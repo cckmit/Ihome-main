@@ -90,6 +90,7 @@
     </template>
     <ih-dialog :show="dialogAddModel" desc="新增/修改业务模式">
       <AddModelDialog
+        :data="modelId"
         @cancel="() => (dialogAddModel = false)"
         @finish="
             () => {
@@ -145,6 +146,7 @@
       list: [],
     };
     dialogAddModel: any = false;
+    modelId: any = false;
 
     async created() {
       await this.getListMixin();
@@ -225,13 +227,13 @@
 
     // 新增
     async add() {
-      localStorage.setItem('editModelId', "");
+      this.modelId = null;
       this.dialogAddModel = true;
     }
 
     // 编辑
     async edit(scope: any) {
-      localStorage.setItem('editModelId', scope.row.id);
+      this.modelId = scope.row.id;
       this.dialogAddModel = true;
     }
 

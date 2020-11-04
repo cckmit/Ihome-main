@@ -25,7 +25,7 @@ const dealRoutes: Array<RouteConfig> = [
       {
         path: 'list',
         name: 'BusinessModelList',
-        component: () => import('../views/deal/businessModel/list.vue'),
+        component: () => import('@/views/deal/businessModel/list.vue'),
         meta: { title: '业务模式列表', icon: 'form', keepAlive: true }
       }
     ]
@@ -40,25 +40,25 @@ const dealRoutes: Array<RouteConfig> = [
       {
         path: 'companyList',
         name: 'CompanyList',
-        component: () => import('../views/deal/achieveScaleScheme/companyList.vue'),
+        component: () => import('@/views/deal/achieveScaleScheme/companyList.vue'),
         meta: { title: '分公司方案列表', icon: 'form', keepAlive: true }
       },
       {
         path: 'list',
         name: 'AchieveScaleSchemeList',
-        component: () => import('../views/deal/achieveScaleScheme/list.vue'),
+        component: () => import('@/views/deal/achieveScaleScheme/list.vue'),
         meta: { title: '分公司业绩比例管理列表', icon: 'form', keepAlive: true }
       },
       {
         path: 'add',
         name: 'AchieveScaleSchemeAdd',
-        component: () => import('../views/deal/achieveScaleScheme/add.vue'),
+        component: () => import('@/views/deal/achieveScaleScheme/add.vue'),
         meta: { title: '分公司业绩比例管理新增', icon: 'form' }
       },
       {
         path: 'info',
         name: 'AchieveScaleSchemeInfo',
-        component: () => import('../views/deal/achieveScaleScheme/info.vue'),
+        component: () => import('@/views/deal/achieveScaleScheme/info.vue'),
         meta: { title: '分公司业绩比例管理详情', icon: 'form' }
       },
     ]
@@ -73,19 +73,19 @@ const dealRoutes: Array<RouteConfig> = [
       {
         path: 'list',
         name: 'DealReportList',
-        component: () => import('../views/deal/dealReport/list.vue'),
+        component: () => import('@/views/deal/dealReport/list.vue'),
         meta: { title: '成交报告列表', icon: 'form', keepAlive: true }
       },
       {
         path: 'add',
         name: 'DealReportAdd',
-        component: () => import('../views/deal/dealReport/add.vue'),
+        component: () => import('@/views/deal/dealReport/add.vue'),
         meta: { title: '成交报告新增', icon: 'form' }
       },
       {
         path: 'info',
         name: 'DealReportInfo',
-        component: () => import('../views/deal/dealReport/info.vue'),
+        component: () => import('@/views/deal/dealReport/info.vue'),
         meta: { title: '成交报告详情', icon: 'form' }
       }
     ]

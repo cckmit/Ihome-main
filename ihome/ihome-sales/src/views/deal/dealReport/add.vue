@@ -16,21 +16,23 @@
       label-width="160px"
       class="demo-ruleForm">
       <el-row>
+        <el-col :span="6" v-if="!!id">
+          <el-form-item label="成交报告编号">
+            <el-input
+              disabled
+              placeholder="成交报告编号"
+              v-model="postData.dealCode"/>
+          </el-form-item>
+        </el-col>
         <el-col :span="6">
           <el-form-item label="项目周期">
-            <el-select
-              v-model="postData.modelName"
-              clearable
+            <el-input
+              ref="inputSelect"
+              class="input-select-wrapper"
               placeholder="项目周期"
-              class="width--100"
-            >
-              <el-option
-                v-for="item in divisionList"
-                :key="item.value"
-                :label="item.label"
-                :value="item.value"
-              ></el-option>
-            </el-select>
+              prefix-icon="el-icon-search"
+              @click.native.prevent="selectProject"
+              v-model="postData.contType"/>
           </el-form-item>
         </el-col>
         <el-col :span="6">
@@ -373,7 +375,7 @@
                   <el-link
                     class="margin-right-10"
                     type="primary"
-                    @click.native.prevent="deleteAdd(scope)"
+                    @click.native.prevent="preview(scope)"
                   >预览
                   </el-link>
                 </template>
@@ -384,11 +386,11 @@
       </el-row>
     </el-form>
     <p class="ih-info-title">客户信息</p>
-    <div class="add-all-wrapper">
+    <div class="add-all-wrapper ih-padding-left-20">
       <el-button type="success" @click="handleAddCustomer">添加客户</el-button>
     </div>
     <el-table
-      class="ih-table"
+      class="ih-table ih-padding-left-20"
       :data="infoList">
       <el-table-column
         prop="modelName"
@@ -430,18 +432,18 @@
           <el-link
             class="margin-right-10"
             type="primary"
-            @click.native.prevent="deleteAdd(scope)"
+            @click.native.prevent="deleteAdd(scope, 'customer')"
           >删除
           </el-link>
         </template>
       </el-table-column>
     </el-table>
     <p class="ih-info-title">中介信息</p>
-    <div class="add-all-wrapper">
-      <el-button type="success">添加中介经纪人</el-button>
+    <div class="add-all-wrapper ih-padding-left-20">
+      <el-button type="success" @click="handleAddBroker">添加中介经纪人</el-button>
     </div>
     <el-table
-      class="ih-table"
+      class="ih-table ih-padding-left-20"
       :data="infoList">
       <el-table-column
         prop="modelName"
@@ -468,7 +470,7 @@
           <el-link
             class="margin-right-10"
             type="primary"
-            @click.native.prevent="deleteAdd(scope)"
+            @click.native.prevent="deleteAdd(scope, 'broker')"
           >删除
           </el-link>
         </template>
@@ -476,7 +478,7 @@
     </el-table>
     <p class="ih-info-title">收派金额</p>
     <el-table
-      class="ih-table"
+      class="ih-table ih-padding-left-20"
       :data="infoList">
       <el-table-column
         prop="modelName"
@@ -530,7 +532,7 @@
       ></el-table-column>
     </el-table>
     <el-table
-      class="ih-table"
+      class="ih-table ih-padding-left-20"
       :data="infoList">
       <el-table-column
         prop="modelName"
@@ -550,7 +552,7 @@
     </el-table>
     <p class="ih-info-title">上传附件</p>
     <el-table
-      class="ih-table"
+      class="ih-table ih-padding-left-20"
       :data="infoList">
       <el-table-column
         prop="modelName"
@@ -566,8 +568,19 @@
     <div class="text-center btn-top">
       <el-button type="info" @click="cancel()">取消</el-button>
       <el-button type="success" @click="save()">保存</el-button>
-      <el-button type="primary" @click="save()">确认业绩申报</el-button>
+      <el-button type="primary" @click="confirmPerformance()">确认业绩申报</el-button>
     </div>
+    <ih-dialog :show="dialogAddProjectCycle" desc="选择项目周期列表">
+      <SelectProjectCycle
+        @cancel="() => (dialogAddProjectCycle = false)"
+        @finish="
+            (data) => {
+              dialogAddProjectCycle = false;
+              finishAddProjectCycle(data);
+            }
+          "
+      />
+    </ih-dialog>
     <ih-dialog :show="dialogAddCustomer" desc="选择客户列表">
       <AddCustomer
         @cancel="() => (dialogAddCustomer = false)"
@@ -579,11 +592,24 @@
           "
       />
     </ih-dialog>
+    <ih-dialog :show="dialogAddBroker" desc="选择中介经纪人列表">
+      <AddBroker
+        @cancel="() => (dialogAddBroker = false)"
+        @finish="
+            (data) => {
+              dialogAddBroker = false;
+              finishAddBroker(data);
+            }
+          "
+      />
+    </ih-dialog>
   </ih-page>
 </template>
 <script lang="ts">
   import {Component, Vue} from "vue-property-decorator";
+  import SelectProjectCycle from "@/views/deal/dealReport/dialog/selectProjectCycle.vue";
   import AddCustomer from "@/views/deal/dealReport/dialog/addCustomer.vue";
+  import AddBroker from "@/views/deal/dealReport/dialog/addBroker.vue";
   import {
     post_achieveScaleScheme_add,
     get_achieveScaleScheme_get__id,
@@ -593,7 +619,7 @@
   import {NoRepeatHttp} from "ihome-common/util/aop/no-repeat-http";
 
   @Component({
-    components: {AddCustomer},
+    components: {AddCustomer, AddBroker, SelectProjectCycle},
   })
   export default class DealReportAdd extends Vue {
     postData: any = {
@@ -606,7 +632,7 @@
       remarks: null,
       buModelContTypeList: []
     };
-    infoList: any = [];
+    infoList: any = [{}];
     rules: any = {
       modelName: [
         {required: true, message: "业务模式必选", trigger: "change"},
@@ -653,6 +679,8 @@
     ]
     id: any = null;
     dialogAddCustomer: any = false;
+    dialogAddBroker: any = false;
+    dialogAddProjectCycle: any = false;
 
     async created() {
       this.id = this.$route.query.id;
@@ -662,24 +690,67 @@
       }
     }
 
+    // 选择项目周期
+    selectProject() {
+      this.dialogAddProjectCycle = true;
+      // input失焦
+      (this as any).$refs.inputSelect && (this as any).$refs.inputSelect.blur();
+    }
+
+    // 确定选择项目周期
+    async finishAddProjectCycle(data: any) {
+      console.log('data', data);
+      // this.addTotalPackageList = data;
+    }
+
+    // 预览-优惠告知书
+    preview(scope: any) {
+      console.log(scope);
+    }
+
     // 添加客户
     handleAddCustomer() {
       this.dialogAddCustomer = true;
     }
 
+    // 添加中介经纪人
+    handleAddBroker() {
+      this.dialogAddBroker = true;
+    }
+
+    // 确定选择客户
     async finishAddCustomer(data: any) {
       console.log('data', data);
       // this.addTotalPackageList = data;
     }
 
-    async deleteAdd(scope: any) {
+    // 确定选择中介经纪人
+    async finishAddBroker(data: any) {
+      console.log('data', data);
+      // this.addTotalPackageList = data;
+    }
+
+    // 删除客户/中介经纪人
+    async deleteAdd(scope: any, type: any) {
       console.log(scope);
+      console.log(type);
+      if (type === 'customer') {
+        // 删除客户信息逻辑
+        console.log(111);
+      } else if (type === 'broker') {
+        // 删除中介经纪人逻辑
+        console.log(222);
+      }
     }
 
-    async handleChange() {
-      this.postData.buModelContTypeList = [];
+    // 取消
+    async cancel() {
+      this.$goto({
+        path: "/dealReport/list",
+      });
     }
 
+    // 保存
     async save() {
       (this.$refs["ruleForm"] as ElForm).validate(this.addSave);
     }
@@ -733,10 +804,9 @@
       }
     }
 
-    async cancel() {
-      this.$goto({
-        path: "/dealReport/list",
-      });
+    // 确认业绩申报
+    confirmPerformance() {
+      console.log('确认业绩申报');
     }
   }
 </script>
@@ -788,5 +858,17 @@
   .btn-top {
     box-sizing: border-box;
     margin-top: 20px;
+  }
+
+  .input-select-wrapper {
+    cursor: pointer;
+
+    /deep/ .el-input__inner {
+      cursor: pointer;
+    }
+  }
+
+  .ih-padding-left-20 {
+    padding-left: 20px;
   }
 </style>

@@ -151,7 +151,7 @@
     editLoading: any = false;
 
     async created() {
-      this.id = localStorage.getItem('editModelId');
+      this.id = this.data;
       if (this.id) {
         this.editLoading = true;
         const res: any = await get_businessModel_get__id({id: this.id});

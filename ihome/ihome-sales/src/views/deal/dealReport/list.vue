@@ -290,7 +290,7 @@
                 <i class="el-icon-arrow-down el-icon--right"></i>
               </span>
               <el-dropdown-menu slot="dropdown">
-                <el-dropdown-item @click.native.prevent="remove(scope)"
+                <el-dropdown-item @click.native.prevent="edit(scope)"
                 >修改
                 </el-dropdown-item>
                 <el-dropdown-item @click.native.prevent="remove(scope)"
@@ -469,7 +469,7 @@
     // 编辑
     async edit(scope: any) {
       this.$router.push({
-        path: "/businessModel/add",
+        path: "/dealReport/add",
         query: {id: scope.row.id},
       });
     }

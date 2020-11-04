@@ -19,6 +19,7 @@
     class="dialog">
     <p class="ih-info-title">主成交报告审核信息</p>
     <el-table
+      style="padding-left: 20px"
       class="ih-table"
       :data="resPageInfo.list">
       <el-table-column
@@ -49,6 +50,7 @@
     </el-table>
     <p class="ih-info-title">补充成交报告审核信息</p>
     <el-table
+      style="padding-left: 20px"
       class="ih-table"
       :data="resPageInfo.list">
       <el-table-column

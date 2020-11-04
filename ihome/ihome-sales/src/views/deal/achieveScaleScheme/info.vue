@@ -51,6 +51,7 @@
       </el-row>
     </el-form>
     <el-table
+      style="padding-left: 20px"
       class="ih-table"
       :data="infoList">
       <el-table-column
