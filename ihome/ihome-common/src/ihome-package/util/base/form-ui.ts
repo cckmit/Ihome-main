@@ -3,14 +3,14 @@
  * @version: 
  * @Author: zyc
  * @Date: 2020-07-15 10:31:43
- * @LastEditors: ywl
- * @LastEditTime: 2020-11-04 10:41:27
+ * @LastEditors: zyc
+ * @LastEditTime: 2020-11-04 11:49:34
  */
-/**大陆手机号码校验*/
+/**手机号码校验（大陆及港澳台）*/
 export function phoneValidator(rule: any, value: any, callback: any) {
-    let reg = /^1[3456789]\d{9}$/
+    let reg = /^[1][3-9]\\d{9}$|([6|9])\\d{7}$|6\\d{7}$|[0][9]\\d{8}$/
     if (!(reg.test(value))) {
-        callback(new Error('请输入11位有效手机号码'))
+        callback(new Error('请输入有效手机号码'))
         return false;
     } else {
         callback();
