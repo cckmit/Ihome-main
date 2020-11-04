@@ -4,7 +4,7 @@
  * @Author: wwq
  * @Date: 2020-11-02 15:19:19
  * @LastEditors: wwq
- * @LastEditTime: 2020-11-02 15:20:46
+ * @LastEditTime: 2020-11-04 16:29:23
 -->
 <template>
   <ih-page>
@@ -39,7 +39,7 @@ Component.registerHooks(["beforeRouteEnter"]);
 @Component({
   components: { BasicInfo, HouseType, PopularizeInfo, RoomNum },
 })
-export default class ProjectEdit extends Vue {
+export default class ProjectInfo extends Vue {
   tabActive: any = "1";
   typeStr = "";
 

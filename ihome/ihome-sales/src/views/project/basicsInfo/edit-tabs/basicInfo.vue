@@ -2,9 +2,9 @@
  * @Descripttion: 
  * @version: 
  * @Author: wwq
- * @Date: 2020-09-27 11:52:41
+ * @Date: 2020-11-03 11:52:41
  * @LastEditors: wwq
- * @LastEditTime: 2020-11-03 18:08:39
+ * @LastEditTime: 2020-11-04 16:42:42
 -->
 <template>
   <div>
@@ -320,6 +320,7 @@
               :file-size="10"
               size="100px"
               accept="image/*"
+              :loadPermi="false"
               @queryList="houseFiles"
             >
               <template #extend="{ data }">
@@ -450,7 +451,7 @@
   </div>
 </template>
 <script lang="ts">
-import { Component, Vue } from "vue-property-decorator";
+import { Component, Vue, Watch } from "vue-property-decorator";
 import { post_company_listAll } from "@/api/developer/index";
 import {
   get_project_get__proId,
@@ -465,7 +466,7 @@ import BmLocalSearch from "vue-baidu-map/components/search/LocalSearch.vue";
 @Component({
   components: { FirstAgencyDialog, BaiduMap, BmView, BmLocalSearch },
 })
-export default class BasicInfo extends Vue {
+export default class EditBasicInfo extends Vue {
   form: any = {
     proNo: null,
     exMarket: null,
@@ -549,7 +550,7 @@ export default class BasicInfo extends Vue {
   accFileList: any = [];
   dialogVisible = false;
   checkBoxChangeList: any = [];
-  center: any = { lng: 113.379331, lat: 23.109411 };
+  center: any = { lng: 0, lat: 0 };
   zoom = 3;
   BMap: any = {};
   searchAddr = "";
@@ -594,6 +595,17 @@ export default class BasicInfo extends Vue {
       }
     });
     return arr;
+  }
+
+  @Watch("form.searchAddr", { deep: true })
+  getCenter(v: any) {
+    if (!v) {
+      const geolocation = new this.BMap.Geolocation();
+      geolocation.getCurrentPosition((r: any) => {
+        this.center.lng = r.longitude;
+        this.center.lat = r.latitude;
+      });
+    }
   }
 
   async created() {
@@ -830,6 +842,7 @@ export default class BasicInfo extends Vue {
       obj.proId = this.projectId;
       await post_project_update(obj);
     }
+    this.houseList = [];
     this.$message.success("保存成功");
     this.$goto({ path: "/projects/list" });
   }

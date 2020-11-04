@@ -2,9 +2,9 @@
  * @Descripttion: 
  * @version: 
  * @Author: wwq
- * @Date: 2020-10-22 11:52:41
+ * @Date: 2020-11-03 11:52:41
  * @LastEditors: wwq
- * @LastEditTime: 2020-11-03 09:48:05
+ * @LastEditTime: 2020-11-04 16:26:23
 -->
 <template>
   <div>
@@ -156,7 +156,7 @@ import {
 @Component({
   components: {},
 })
-export default class PopularizeInfo extends Vue {
+export default class EditPopularizeInfo extends Vue {
   searchOpen = true;
 
   info: any = {

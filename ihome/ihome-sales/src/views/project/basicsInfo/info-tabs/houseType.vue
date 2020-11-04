@@ -2,9 +2,9 @@
  * @Descripttion: 
  * @version: 
  * @Author: wwq
- * @Date: 2020-09-27 11:52:41
+ * @Date: 2020-11-03 11:52:41
  * @LastEditors: wwq
- * @LastEditTime: 2020-11-02 16:29:28
+ * @LastEditTime: 2020-11-04 16:28:33
 -->
 <template>
   <div class="house-type">
@@ -40,7 +40,7 @@ import { get_houseType_getTabItem__proId } from "@/api/project/index";
 @Component({
   components: {},
 })
-export default class HouseType extends Vue {
+export default class InfoHouseType extends Vue {
   searchOpen = true;
   info: any = {};
 

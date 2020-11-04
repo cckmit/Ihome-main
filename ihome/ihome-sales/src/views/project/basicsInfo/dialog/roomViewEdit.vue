@@ -1,3 +1,11 @@
+<!--
+ * @Descripttion: 
+ * @version: 
+ * @Author: wwq
+ * @Date: 2020-11-03 18:39:23
+ * @LastEditors: wwq
+ * @LastEditTime: 2020-11-04 16:26:59
+-->
 <template>
   <div>
     <el-dialog
@@ -158,7 +166,7 @@ import HouseTypeEdit from "./houseTypeEdit.vue";
 @Component({
   components: { HouseTypeEdit },
 })
-export default class RoomNumEdit extends Vue {
+export default class RoomViewEdit extends Vue {
   @Prop({ default: null }) data: any;
   dialogVisible = true;
   houseDialogVisible = false;

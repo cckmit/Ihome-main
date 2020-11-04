@@ -2,9 +2,9 @@
  * @Descripttion: 
  * @version: 
  * @Author: wwq
- * @Date: 2020-10-22 11:52:41
+ * @Date: 2020-11-03 11:52:41
  * @LastEditors: wwq
- * @LastEditTime: 2020-11-03 16:58:57
+ * @LastEditTime: 2020-11-04 16:28:43
 -->
 <template>
   <div>
@@ -51,7 +51,7 @@ import { get_promotion_get__proId } from "@/api/project/index";
 @Component({
   components: {},
 })
-export default class PopularizeInfo extends Vue {
+export default class InfoPopularizeInfo extends Vue {
   searchOpen = true;
 
   info: any = {};

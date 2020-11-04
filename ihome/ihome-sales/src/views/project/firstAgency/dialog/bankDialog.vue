@@ -1,10 +1,10 @@
 <!--
  * @Description: 银行账号信息弹窗
  * @version: 
- * @Author: ywl
+ * @Author: wwq
  * @Date: 2020-10-12 10:38:48
  * @LastEditors: wwq
- * @LastEditTime: 2020-10-28 18:07:09
+ * @LastEditTime: 2020-11-04 16:30:13
 -->
 <template>
   <el-dialog

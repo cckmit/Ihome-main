@@ -4,7 +4,7 @@
  * @Author: wwq
  * @Date: 2020-09-27 11:52:41
  * @LastEditors: wwq
- * @LastEditTime: 2020-11-03 17:06:07
+ * @LastEditTime: 2020-11-04 17:52:40
 -->
 <template>
   <div>
@@ -99,11 +99,8 @@
     <ih-dialog :show="viewDialogVisible" desc="查看房源">
       <RoomView :data="viewData" @cancel="() => (viewDialogVisible = false)" />
     </ih-dialog>
-    <ih-dialog :show="importDialogVisible" desc="查看房源">
-      <Import
-        :data="inportData"
-        @cancel="() => (importDialogVisible = false)"
-      />
+    <ih-dialog :show="importDialogVisible" desc="快捷导入房号">
+      <Import :data="inportData" @cancel="cancel" />
     </ih-dialog>
   </div>
 </template>
@@ -122,7 +119,7 @@ import {
   components: { RoomNumEdit, RoomView, Import },
   mixins: [PaginationMixin],
 })
-export default class RoomNum extends Vue {
+export default class EidtRoomNum extends Vue {
   queryPageParameters: any = {
     buildingName: null,
     propertyEnum: null,
@@ -169,6 +166,11 @@ export default class RoomNum extends Vue {
     await post_building_update(obj);
     this.$message.success("保存成功");
     this.editDialogVisible = false;
+    this.getListMixin();
+  }
+
+  cancel() {
+    this.importDialogVisible = false;
     this.getListMixin();
   }
 

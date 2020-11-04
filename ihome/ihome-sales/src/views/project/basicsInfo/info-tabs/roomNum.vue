@@ -2,9 +2,9 @@
  * @Descripttion: 
  * @version: 
  * @Author: wwq
- * @Date: 2020-09-27 11:52:41
+ * @Date: 2020-11-03 11:52:41
  * @LastEditors: wwq
- * @LastEditTime: 2020-11-02 16:46:05
+ * @LastEditTime: 2020-11-04 16:29:03
 -->
 <template>
   <div>
@@ -97,7 +97,7 @@ import { post_building_getList } from "@/api/project/index";
   components: { RoomView },
   mixins: [PaginationMixin],
 })
-export default class RoomNum extends Vue {
+export default class InfoRoomNum extends Vue {
   queryPageParameters: any = {
     buildingName: null,
     propertyEnum: null,

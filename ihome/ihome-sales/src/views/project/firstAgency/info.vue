@@ -1,3 +1,11 @@
+<!--
+ * @Descripttion: 
+ * @version: 
+ * @Author: wwq
+ * @Date: 2020-11-03 18:39:23
+ * @LastEditors: wwq
+ * @LastEditTime: 2020-11-04 16:31:02
+-->
 <template>
   <ih-page>
     <template v-slot:info>
@@ -178,7 +186,7 @@ import { get_firstAgencyCompany_get__agencyId } from "@/api/project/index";
 @Component({
   components: {},
 })
-export default class DetailInfo extends Vue {
+export default class FirstAgencyInfo extends Vue {
   info: any = {};
 
   async getInfo() {

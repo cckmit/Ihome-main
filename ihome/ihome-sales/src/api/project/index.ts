@@ -1,6 +1,6 @@
 /* eslint-disable */
 /* 此脚本由swagger-ui的api-docs自动生成，请勿修改 */
-//2020-11-3 11:40:20 ├F10: AM┤
+//2020-11-4 4:49:14 ├F10: PM┤
 import { request } from '@/api/base'
 const basePath = "/sales-api/project"
 /**index*/
@@ -247,13 +247,25 @@ export async function post_room_add(d?: any) {
 export async function post_room_del__id(d?: any) {
     return await request.post<number, number>(basePath + '/room/del/{id}', d)
 }
+/**获取建筑楼盘模板*/
+export async function get_room_getExcelTemplate(d?: any) {
+    return await request.get<any, any>(basePath + '/room/getExcelTemplate', { params: d })
+}
 /**查询项目房间列表*/
 export async function post_room_getList(d?: any) {
     return await request.post<PageModel<RoomVO>, PageModel<RoomVO>>(basePath + '/room/getList', d)
 }
+/**上传excel*/
+export async function post_room_importExcel(d?: any) {
+    return await request.post<number, number>(basePath + '/room/importExcel', d)
+}
 /**结算列表-新增*/
 export async function post_settleCondition_add(d?: any) {
     return await request.post<SettleConditionVO, SettleConditionVO>(basePath + '/settleCondition/add', d)
+}
+/**结算列表-作废*/
+export async function post_settleCondition_cancel(d?: any) {
+    return await request.post<number, number>(basePath + '/settleCondition/cancel', d)
 }
 /**结算详情查询*/
 export async function get_settleCondition_get__termId(d?: any) {
@@ -283,9 +295,13 @@ export async function post_shareChannelFee_start(d?: any) {
 export async function post_shareChannelFee_stop(d?: any) {
     return await request.post<string, string>(basePath + '/shareChannelFee/stop', d)
 }
+/**项目周期新增*/
+export async function post_term_add(d?: any) {
+    return await request.post<TermAddVO, TermAddVO>(basePath + '/term/add', d)
+}
 /**项目周期-审核*/
 export async function post_term_audit(d?: any) {
-    return await request.post<string, string>(basePath + '/term/audit', d)
+    return await request.post<number, number>(basePath + '/term/audit', d)
 }
 /**项目周期-删除*/
 export async function post_term_del(d?: any) {
@@ -307,11 +323,11 @@ export async function post_term_getList(d?: any) {
 export async function get_term_getProInfo__proId(d?: any) {
     return await request.get<ProTermVO, ProTermVO>(basePath + '/term/getProInfo/{proId}', { params: d })
 }
-/**项目周期新增or修改*/
-export async function post_term_save(d?: any) {
-    return await request.post<TermAddVO, TermAddVO>(basePath + '/term/save', d)
+/**项目周期-驳回*/
+export async function post_term_reject(d?: any) {
+    return await request.post<number, number>(basePath + '/term/reject', d)
 }
-/**修改项目周期*/
+/**项目周期修改*/
 export async function post_term_update(d?: any) {
     return await request.post<TermAddVO, TermAddVO>(basePath + '/term/update', d)
 }
@@ -357,19 +373,12 @@ export interface AttachItemVO {
 }
 /**AttachTermItemVO*/
 export interface AttachTermItemVO {
-    /**图片地址*/
+    /**文件地址*/
     attachAddr: string;
     /**附件ID*/
     attachId: number;
-    /**(必填)图片名称*/
+    /**(必填)文件名称*/
     attachName: string;
-}
-/**AttachTermVO*/
-export interface AttachTermVO {
-    /**(必填)图片地址*/
-    attachAddrs: AttachTermItemVO[];
-    /**(必填)文件类型(PartyAConfirm-甲方确认函/授权函、IntermediaryLetter-中介启动函、CalcForm-立项测算表、PartyAContract-甲方合同、PaperNoticeTemplate-纸质告知书模板、IntermediaryDistribut-中介分销协议、SubscriptTemplate-认购书模板、DiscountNotice-优惠告知书、OtherFile-其他附件)*/
-    termAttachEnum: string;
 }
 /**BuildingListVO*/
 export interface BuildingListVO {
@@ -1970,8 +1979,6 @@ export interface RoomAddArgs {
     houseTypeId: number;
     /**房号规则 房间号*/
     num: number;
-    /**(必填)项目ID*/
-    proId: number;
     /**房间号*/
     roomNo: string;
     /**房号格式*/
@@ -2082,6 +2089,56 @@ export interface SettleConditionAddVO {
     settleCompareVOS: SettleCompareVO[];
     /**结算类型 （请佣、结佣）(SettleCommission-结佣、ApplyCommission-请拥)*/
     settleEnum: string;
+    /**结算名称*/
+    settleName: string;
+    /**立项ID*/
+    termId: number;
+}
+/**SettleConditionCancelVO*/
+export interface SettleConditionCancelVO {
+    /**(必填)当前页*/
+    pageNum: number;
+    /**(必填)每页条数*/
+    pageSize: number;
+    /**结算ID*/
+    settleId: number;
+    /**立项ID*/
+    termId: number;
+}
+/**SettleConditionUpdateVO*/
+export interface SettleConditionUpdateVO {
+    /**代理费*/
+    agencyFee: number;
+    /**代理费结算金额*/
+    agencyFeeSettleAmount: number;
+    /**代理费设置比例*/
+    agencyFeeSettleRate: number;
+    /**代理费-垫佣类型*/
+    agencyPadCommisionType: number;
+    /**根据房款回笼比率-条件*/
+    conReturnRateByHouse: number;
+    /**合同类型(Normal-正常合同、TemPorary-临时合同、Other-其他)*/
+    contractTypeEnum: string;
+    /**是否备案*/
+    exRecord: number;
+    /**优先级(A-一级别、B-二级别、C-三级别、D-四级别、E-五级别)*/
+    priority: string;
+    /**结算后回款*/
+    returnAfterSettlement: number;
+    /**服务费*/
+    serviceFee: number;
+    /**服务费结算金额*/
+    serviceFeeSettleAmount: number;
+    /**服务费设置比例*/
+    serviceFeeSettleRate: number;
+    /**服务费-垫佣类型*/
+    servicePadCommisionType: number;
+    /**根据房款回笼比率-结算*/
+    setsReturnRateByHouse: number;
+    /**undefined*/
+    settleCompareVOS: SettleCompareVO[];
+    /**结算类型 （请佣、结佣）(SettleCommission-结佣、ApplyCommission-请拥)*/
+    settleEnum: string;
     /**结算ID*/
     settleId: number;
     /**结算名称*/
@@ -2155,7 +2212,7 @@ export interface SnapshotVO {
 /**TermAddVO*/
 export interface TermAddVO {
     /**附件信息*/
-    attachTermVOS: AttachTermVO[];
+    attachTermVOS: AttachTermItemVO[];
     /**业务背景*/
     busBackground: string;
     /**业务模式  GENERAL-总包、DISTRIBUTION-分销、UNDERWRITING-承销、GENERALANDDISTRIBUTION-总包+分销、OTHER-其他(TotalBagModel-总包模式、DistriModel-分销模式、TotalBagDistriModel-总包+分销模式、UnderwritingModel-承销、Other-其他)*/
@@ -2218,6 +2275,13 @@ export interface TermAddVO {
     termStageEnum: string;
     /**周期起始时间(yyyy-MM-dd HH:mm:ss)*/
     termStart: string;
+}
+/**TermAuditVO*/
+export interface TermAuditVO {
+    /**审核意见*/
+    auditOption: string;
+    /**(必填)ID*/
+    termId: number;
 }
 /**TermBaseByPro*/
 export interface TermBaseByPro {
@@ -2298,6 +2362,13 @@ export interface TermQueryVO {
     province: string;
     /**周期名称 合作项目名称(项目推广名)+周期时间*/
     termName: string;
+}
+/**TermRejectVO*/
+export interface TermRejectVO {
+    /**审核意见*/
+    rejectOption: string;
+    /**(必填)ID*/
+    termId: number;
 }
 /**TermVO*/
 export interface TermVO {

@@ -4,7 +4,7 @@
  * @Author: wwq
  * @Date: 2020-09-29 08:55:05
  * @LastEditors: wwq
- * @LastEditTime: 2020-10-22 12:14:21
+ * @LastEditTime: 2020-11-04 09:22:33
 -->
 <template>
   <div class="cascader">
@@ -17,7 +17,7 @@
       ref="cascader"
       popper-class="ih-cascader"
       style="width: 100%"
-      placeholder="请选择省市区"
+      :placeholder="placeholder"
       :options="provincesOptions"
       :filter-method="filterMethod"
       filterable
@@ -44,6 +44,11 @@ export default class IhCascader extends Vue {
     default: true,
   })
   checkStrictly: any;
+  @Prop({
+    type: String,
+    default: "请选择行政区",
+  })
+  placeholder: any;
   private provincesOptions = [];
 
   @Watch("$attrs", { deep: true })

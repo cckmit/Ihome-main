@@ -2,9 +2,9 @@
  * @Descripttion: 
  * @version: 
  * @Author: wwq
- * @Date: 2020-09-27 11:52:41
+ * @Date: 2020-11-03 11:52:41
  * @LastEditors: wwq
- * @LastEditTime: 2020-11-03 14:46:41
+ * @LastEditTime: 2020-11-04 16:28:13
 -->
 <template>
   <div>
@@ -350,7 +350,7 @@ import BmLocalSearch from "vue-baidu-map/components/search/LocalSearch.vue";
 @Component({
   components: { BaiduMap, BmView, BmLocalSearch },
 })
-export default class BasicInfo extends Vue {
+export default class InfoBasicInfo extends Vue {
   form: any = {
     proNo: null,
     exMarket: null,

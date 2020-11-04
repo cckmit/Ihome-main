@@ -4,7 +4,7 @@
  * @Author: wwq
  * @Date: 2020-10-28 15:34:27
  * @LastEditors: wwq
- * @LastEditTime: 2020-11-03 16:07:36
+ * @LastEditTime: 2020-11-04 16:31:12
 -->
 <template>
   <ih-page>
@@ -165,7 +165,7 @@ import PaginationMixin from "@/mixins/pagination";
   components: {},
   mixins: [PaginationMixin],
 })
-export default class FirstAgency extends Vue {
+export default class FirstAgencyList extends Vue {
   queryPageParameters: any = {
     agencyName: null,
     creditCode: null,
