@@ -11,23 +11,17 @@
     <template v-slot:form>
       <el-form ref="form" label-width="100px">
         <el-row>
-          <el-col :span="8">
-            <el-form-item label="分公司名称">
-              <el-input
-                v-model="queryPageParameters.branchCompanyName"
-                clearable
-                placeholder="请输入分公司名称"
-              ></el-input>
-            </el-form-item>
+          <el-col class="text-left">
+            <el-input
+              v-model="queryPageParameters.branchCompanyName"
+              clearable
+              class="input-wrapper"
+              placeholder="请输入分公司名称"
+            ></el-input>
+            <el-button type="primary" class="margin-left-20" @click="getListMixin()">查询</el-button>
           </el-col>
         </el-row>
       </el-form>
-    </template>
-    <template v-slot:btn>
-      <el-row>
-        <el-button type="primary" @click="getListMixin()">查询</el-button>
-        <el-button type="info" @click="reset()">重置</el-button>
-      </el-row>
     </template>
     <template v-slot:table>
       <br/>
@@ -117,4 +111,7 @@
   }
 </script>
 <style lang="scss" scoped>
+  .input-wrapper {
+    width: 40%;
+  }
 </style>
