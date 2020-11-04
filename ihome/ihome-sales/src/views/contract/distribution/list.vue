@@ -4,7 +4,7 @@
  * @Author: ywl
  * @Date: 2020-09-25 17:34:32
  * @LastEditors: ywl
- * @LastEditTime: 2020-11-03 16:13:08
+ * @LastEditTime: 2020-11-04 17:58:05
 -->
 <template>
   <IhPage label-width="100px">
@@ -205,8 +205,8 @@
           @click="handleReact()"
         >重置</el-button>
         <el-button @click="$router.push('apply')">申领合同</el-button>
-        <el-button>派发合同</el-button>
-        <el-button>转派发</el-button>
+        <el-button @click="distribute()">派发合同</el-button>
+        <el-button @click="turnDistribute()">转派发</el-button>
         <el-button>导出</el-button>
         <el-link
           type="primary"
@@ -220,8 +220,11 @@
       <br />
       <el-table
         class="ih-table intermediary-table"
+        ref="multipleTable"
         :data="resPageInfo.list"
         @selection-change="handleSelectionChange"
+        @select="handleSelect"
+        @select-all="handleSelectAll"
       >
         <el-table-column
           fixed
@@ -237,12 +240,12 @@
         ></el-table-column>
         <el-table-column
           label="甲方公司"
-          prop="partyA"
+          prop="partyACompany"
           min-width="150"
         ></el-table-column>
         <el-table-column
           label="乙方公司"
-          prop="partyB"
+          prop="partyBCompany"
           min-width="150"
         ></el-table-column>
         <el-table-column
@@ -346,7 +349,11 @@
 import { Component, Vue } from "vue-property-decorator";
 import PaginationMixin from "@/mixins/pagination";
 
-import { post_distribution_list } from "@/api/contract/index";
+import {
+  post_distribution_list,
+  post_distribution_confirm__id,
+  post_distribution_push__id,
+} from "@/api/contract/index";
 import { get_channel_getAll } from "@/api/channel/index";
 import { post_company_getAll } from "@/api/system/index";
 import SelectOrganizationTree from "@/components/SelectOrganizationTree.vue";
@@ -378,6 +385,7 @@ export default class DistributionList extends Vue {
   private companyList: any = [];
   private channelList: any = [];
   private searchOpen = true;
+  private selectionData: any = [];
   resPageInfo: any = {
     total: 0,
     list: [],
@@ -413,7 +421,42 @@ export default class DistributionList extends Vue {
     });
   }
   private handleSelectionChange(val: any): void {
-    console.log(val);
+    this.selectionData = val;
+  }
+  private handleSelect(selection: any) {
+    if (selection.length > 1) {
+      let del_row = selection.shift();
+      (this.$refs.multipleTable as any).toggleRowSelection(del_row, false);
+    }
+  }
+  private handleSelectAll() {
+    this.$message.warning("暂还不支持全选");
+    (this.$refs.multipleTable as any).clearSelection();
+    // if (selection.length > 1) {
+    //   selection.length = 1;
+    // }
+  }
+  /**
+   * @description: 派发合同
+   * @param {*}
+   */
+  private async distribute() {
+    if (!this.selectionData.length) {
+      this.$message.warning("请先勾选表格数据");
+      return;
+    }
+    await post_distribution_confirm__id({ id: this.selectionData[0]["id"] });
+  }
+  /**
+   * @description: 转派发合同
+   * @param {*}
+   */
+  private async turnDistribute() {
+    if (!this.selectionData.length) {
+      this.$message.warning("请先勾选表格数据");
+      return;
+    }
+    await post_distribution_push__id({ id: this.selectionData[0]["id"] });
   }
   handleTo(row: any, page: string) {
     this.$router.push({
