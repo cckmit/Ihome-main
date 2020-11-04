@@ -4,7 +4,7 @@
  * @Author: ywl
  * @Date: 2020-09-25 16:00:37
  * @LastEditors: ywl
- * @LastEditTime: 2020-11-03 14:47:59
+ * @LastEditTime: 2020-11-04 16:08:31
 -->
 <template>
   <IhPage>
@@ -26,6 +26,7 @@
               <el-input
                 v-model="formData.title"
                 placeholder="合同标题"
+                disabled
               ></el-input>
             </el-form-item>
           </el-col>
@@ -43,6 +44,7 @@
                 multiple
                 value-key="id"
                 class="width--100"
+                disabled
               >
                 <el-option
                   v-for="(item) in partyAList"
@@ -66,6 +68,7 @@
                 clearable
                 filterable
                 class="width--100"
+                disabled
               >
                 <el-option
                   v-for="(item) in companyList"
@@ -90,6 +93,7 @@
                 align="left"
                 placeholder="年/月/日"
                 value-format="yyyy-MM-dd"
+                disabled
               ></el-date-picker>
             </el-form-item>
           </el-col>
@@ -98,7 +102,7 @@
               <IhSelectPageUser
                 v-model="formData.handler"
                 clearable
-                class="width--100"
+                disabled
               >
                 <template v-slot="{ data }">
                   <span style="float: left">{{ data.name }}</span>
@@ -117,6 +121,7 @@
               <el-input
                 v-model="formData.customer"
                 placeholder="成交确认人"
+                disabled
               ></el-input>
             </el-form-item>
           </el-col>
@@ -125,6 +130,7 @@
               <el-input
                 v-model="formData.customerNo"
                 placeholder="成交确认人联系方式"
+                disabled
               ></el-input>
             </el-form-item>
           </el-col>
@@ -133,7 +139,7 @@
           <el-col :span="12">
             <el-form-item label="合同编号">
               <el-input
-                v-model="formData.name"
+                v-model="formData.contractCode"
                 placeholder="合同编号(自动生成)"
                 disabled
               ></el-input>
@@ -142,9 +148,8 @@
           <el-col :span="12">
             <el-form-item label="归档编号">
               <el-input
-                v-model="formData.name"
-                placeholder="归档编号(自动生成)"
-                disabled
+                v-model="formData.fileCode"
+                placeholder="归档编号"
               ></el-input>
             </el-form-item>
           </el-col>
@@ -153,23 +158,37 @@
           <el-col :span="12">
             <el-form-item label="归档状态">
               <el-select
-                v-model="formData.name"
+                v-model="formData.fileState"
                 placeholder="归档状态"
                 clearable
                 disabled
                 class="width--100"
-              ></el-select>
+              >
+                <el-option
+                  v-for="item in $root.dictAllList('ContractEnum.FileState')"
+                  :key="item.code"
+                  :label="item.name"
+                  :value="item.code"
+                ></el-option>
+              </el-select>
             </el-form-item>
           </el-col>
           <el-col :span="12">
             <el-form-item label="当前状态">
               <el-select
-                v-model="formData.name"
+                v-model="formData.state"
                 placeholder="当前状态"
                 clearable
                 disabled
                 class="width--100"
-              ></el-select>
+              >
+                <el-option
+                  v-for="item in $root.dictAllList('ContractEnum.State')"
+                  :key="item.code"
+                  :label="item.name"
+                  :value="item.code"
+                ></el-option>
+              </el-select>
             </el-form-item>
           </el-col>
         </el-row>
@@ -216,20 +235,24 @@ import { Component, Vue } from "vue-property-decorator";
 import { Form as ElForm } from "element-ui";
 import { NoRepeatHttp } from "ihome-common/util/aop/no-repeat-http";
 
-import { get_contract_detail__id } from "@/api/contract/index";
+import {
+  get_contract_detail__id,
+  post_contract_original_archive,
+} from "@/api/contract/index";
 import { post_company_listAll } from "@/api/developer/index";
 import { post_company_getAll } from "@/api/system/index";
 
 @Component({})
 export default class PartyAadd extends Vue {
   private formData: any = {
-    title: "",
+    title: null,
     partyA: [],
-    partyB: "",
-    effectiveTime: "",
-    handler: "",
-    customer: "",
-    customerNo: "",
+    partyB: null,
+    effectiveTime: null,
+    handler: null,
+    customer: null,
+    customerNo: null,
+    fileCode: null,
   };
   private fileList: Array<object> = [];
   private fileList2: Array<object> = [];
@@ -263,7 +286,10 @@ export default class PartyAadd extends Vue {
     (this.$refs["ruleForm"] as ElForm).validate(async (val) => {
       if (val) {
         console.log(this.formData);
-
+        await post_contract_original_archive({
+          contractId: this.formData.id,
+          fileCode: this.formData.fileCode,
+        });
         this.$message.success("提交成功");
       }
     });
@@ -272,7 +298,7 @@ export default class PartyAadd extends Vue {
     let id = this.$route.query.id;
     if (id) {
       let res = await get_contract_detail__id({ id: id });
-      console.log(res);
+      this.formData = { ...this.formData, ...res };
     }
   }
 

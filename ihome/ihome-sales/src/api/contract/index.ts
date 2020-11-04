@@ -1,6 +1,6 @@
 /* eslint-disable */
 /* 此脚本由swagger-ui的api-docs自动生成，请勿修改 */
-//2020-10-26 10:09:50 ├F10: AM┤
+//2020-11-4 3:07:30 ├F10: PM┤
 import { request } from '@/api/base'
 const basePath = "/sales-api/contract"
 /**甲方合同录入*/
@@ -12,8 +12,8 @@ export async function get_contract_detail__id (d?: any) {
 return await request.get<ContractDetailVO,ContractDetailVO>(basePath+'/contract/detail/{id}', { params: d })
 }
 /**扫描件归档*/
-export async function post_contract_duplicate (d?: any) {
-return await request.post< boolean,boolean> (basePath+'/contract/duplicate', d)
+export async function post_contract_duplicate__id (d?: any) {
+return await request.post< boolean,boolean> (basePath+'/contract/duplicate/{id}', d)
 }
 /**导出*/
 export async function post_contract_export (d?: any) {
@@ -21,11 +21,11 @@ return await request.post< string,string> (basePath+'/contract/export', d)
 }
 /**甲方合同列表*/
 export async function post_contract_list (d?: any) {
-return await request.post< PageModel<ContractListVO>,PageModel<ContractListVO>> (basePath+'/contract/list', d)
+return await request.post< PageModel<ContractPage>,PageModel<ContractPage>> (basePath+'/contract/list', d)
 }
 /**原件归档*/
-export async function post_contract_original__id (d?: any) {
-return await request.post< boolean,boolean> (basePath+'/contract/original/{id}', d)
+export async function post_contract_original_archive (d?: any) {
+return await request.post< boolean,boolean> (basePath+'/contract/original/archive', d)
 }
 /**推送OA审核*/
 export async function post_contract_push_oa__id (d?: any) {
@@ -254,6 +254,8 @@ total: number;
 }
 /**AnnexEditVO*/
 export interface AnnexEditVO {
+/**附件后缀*/
+attachmentSuffix: string;
 /**创建时间(yyyy-MM-dd HH:mm:ss)*/
 createTime: string;
 /**创建用户*/
@@ -273,8 +275,20 @@ url: string;
 }
 /**AnnexListVO*/
 export interface AnnexListVO {
+/**附件后缀*/
+attachmentSuffix: string;
+/**创建时间(yyyy-MM-dd HH:mm:ss)*/
+createTime: string;
+/**创建用户*/
+createUser: number;
+/**已删除*/
+deleted: number;
 /**附件ID*/
 id: number;
+/**更新时间(yyyy-MM-dd HH:mm:ss)*/
+updateTime: string;
+/**更新用户*/
+updateUser: number;
 /**附件路径*/
 url: string;
 }
@@ -282,6 +296,12 @@ url: string;
 export interface ConditionListVO {
 /**收派套餐主键*/
 chargeId: number;
+/**创建时间(yyyy-MM-dd HH:mm:ss)*/
+createTime: string;
+/**创建用户*/
+createUser: number;
+/**已删除*/
+deleted: number;
 /**主键*/
 id: number;
 /**逻辑条件1(GtOrEq-大于等于、Gt-大于、Eq-等于、Lt-小于、LtOrEq-小于或等于)*/
@@ -290,6 +310,37 @@ logic1: string;
 logic2: string;
 /**类型(House-户型、Area-面积、Sign-签约价格、Offer-认购价格)*/
 type: string;
+/**更新时间(yyyy-MM-dd HH:mm:ss)*/
+updateTime: string;
+/**更新用户*/
+updateUser: number;
+/**数值1*/
+value1: number;
+/**数值2*/
+value2: number;
+}
+/**ConditionTemplateListVO*/
+export interface ConditionTemplateListVO {
+/**收派套餐主键*/
+chargeId: number;
+/**创建时间(yyyy-MM-dd HH:mm:ss)*/
+createTime: string;
+/**创建用户*/
+createUser: number;
+/**已删除*/
+deleted: number;
+/**主键*/
+id: number;
+/**逻辑条件1(GtOrEq-大于等于、Gt-大于、Eq-等于、Lt-小于、LtOrEq-小于或等于)*/
+logic1: string;
+/**逻辑条件2(GtOrEq-大于等于、Gt-大于、Eq-等于、Lt-小于、LtOrEq-小于或等于)*/
+logic2: string;
+/**类型(House-户型、Area-面积、Sign-签约价格、Offer-认购价格)*/
+type: string;
+/**更新时间(yyyy-MM-dd HH:mm:ss)*/
+updateTime: string;
+/**更新用户*/
+updateUser: number;
 /**数值1*/
 value1: number;
 /**数值2*/
@@ -297,18 +348,20 @@ value2: number;
 }
 /**ContractDetailVO*/
 export interface ContractDetailVO {
-/**合作开始时间(yyyy-MM-dd HH:mm:ss)*/
-beginTime: string;
 /**协议编号*/
 contractCode: string;
+/**创建时间(yyyy-MM-dd HH:mm:ss)*/
+createTime: string;
+/**创建用户*/
+createUser: number;
 /**成交确认人*/
 customer: string;
 /**成交确认人联系方式*/
 customerNo: string;
-/**执行时间(yyyy-MM-dd HH:mm:ss)*/
+/**已删除*/
+deleted: number;
+/**执行时间(yyyy-MM-dd)*/
 effectiveTime: string;
-/**合作结束时间(yyyy-MM-dd HH:mm:ss)*/
-endTime: string;
 /**归档编号*/
 fileCode: string;
 /**盖章版归档*/
@@ -329,40 +382,57 @@ partyB: number;
 state: string;
 /**标题*/
 title: string;
+/**更新时间(yyyy-MM-dd HH:mm:ss)*/
+updateTime: string;
+/**更新用户*/
+updateUser: number;
 }
 /**ContractEditVO*/
 export interface ContractEditVO {
-/**开始时间(yyyy-MM-dd)*/
-beginTime: string;
 /**录入渠道(Cycle-立项周期、Contract-合同管理)*/
 channel: string;
+/**合作项目*/
+cooperativeProject: number;
+/**创建时间(yyyy-MM-dd HH:mm:ss)*/
+createTime: string;
+/**创建用户*/
+createUser: number;
 /**成交确认人*/
 customer: string;
 /**成交确认人联系方式*/
 customerNo: string;
+/**项目周期*/
+cycleId: number;
+/**已删除*/
+deleted: number;
 /**执行时间(yyyy-MM-dd)*/
 effectiveTime: string;
-/**结束时间(yyyy-MM-dd)*/
-endTime: string;
+/**合同录入人*/
+enteringPersonId: number;
+/**归档编号*/
+fileCode: string;
 /**合同跟进人*/
 handler: number;
+/**归属组织*/
+organizationId: number;
 /**中介合同电子版*/
 originalList: AnnexEditVO[];
+/**原件归档状态(Yes-已归档、No-未归档)*/
+originalState: string;
 /**甲方*/
 partyA: ContractPartyEditVO[];
 /**乙方*/
 partyB: number;
+/**项目名称*/
+projectId: number;
+/**状态(Submit-提交、Audit-审核中、Valid-有效、Invalid-无效)*/
+state: string;
 /**合同标题*/
 title: string;
-}
-/**ContractFileVO*/
-export interface ContractFileVO {
-/**盖章版归档*/
-fileList: AnnexEditVO[];
-/**甲方合同ID*/
-id: number;
-/**类型(Annex-附件、Seal-已盖章扫描件、NoSeal-未盖章扫描件)*/
-type: string;
+/**更新时间(yyyy-MM-dd HH:mm:ss)*/
+updateTime: string;
+/**更新用户*/
+updateUser: number;
 }
 /**ContractListQueryVO*/
 export interface ContractListQueryVO {
@@ -395,69 +465,82 @@ projectName: string;
 /**标题*/
 title: string;
 }
-/**ContractListVO*/
-export interface ContractListVO {
-/**合作开始时间(yyyy-MM-dd HH:mm:ss)*/
-beginTime: string;
-/**合同编号*/
-contractCode: string;
-/**关联周期*/
-cycle: string;
-/**执行时间(yyyy-MM-dd HH:mm:ss)*/
-effectiveTime: string;
-/**合作结束时间(yyyy-MM-dd HH:mm:ss)*/
-endTime: string;
+/**ContractOriginalVO*/
+export interface ContractOriginalVO {
+/**甲方合同ID*/
+contractId: number;
+/**创建时间(yyyy-MM-dd HH:mm:ss)*/
+createTime: string;
+/**创建用户*/
+createUser: number;
+/**已删除*/
+deleted: number;
 /**归档编号*/
 fileCode: string;
-/**归档状态(Yes-已归档、No-未归档)*/
-fileState: string;
+/**更新时间(yyyy-MM-dd HH:mm:ss)*/
+updateTime: string;
+/**更新用户*/
+updateUser: number;
+}
+/**ContractPage*/
+export interface ContractPage {
+/**合同编号*/
+contractCode: string;
+/**合作项目*/
+cooperativeProject: string;
+/**关联周期*/
+cycleId: number;
+/**执行时间(yyyy-MM-dd)*/
+effectiveTime: string;
+/**归档编号*/
+fileCode: string;
 /**合同跟进人*/
-handler: string;
+handler: number;
 /**主键*/
 id: number;
-/**归属组织*/
-organization: string;
-/**甲方*/
-partyA: string;
+/**归属组织id*/
+organizationId: number;
+/**原件归档状态(Yes-已归档、No-未归档)*/
+originalState: string;
 /**乙方*/
-partyB: string;
+partyB: number;
+/**甲方信息*/
+partyList: ContractPartyList[];
 /**关联项目*/
-projectName: string;
-/**标题*/
+projectId: number;
+/**合同标题*/
 title: string;
 }
 /**ContractPageQueryVO*/
 export interface ContractPageQueryVO {
-/**合作开始时间(yyyy-MM-dd HH:mm:ss)*/
-beginTime: string;
 /**合同编号*/
 contractCode: string;
+/**合作项目*/
+cooperativeProject: string;
 /**合同录入人*/
-createUser: number;
+createUserId: number;
 /**周期*/
-cycle: string;
-/**执行时间(yyyy-MM-dd HH:mm:ss)*/
+cycleId: number;
+/**执行时间(yyyy-MM-dd)*/
 effectiveTime: string;
-/**合作结束时间(yyyy-MM-dd HH:mm:ss)*/
-endTime: string;
 /**归档编号*/
 fileCode: string;
 /**归档状态(Yes-已归档、No-未归档)*/
 fileState: string;
 /**合同跟进人*/
-handler: number;
+handlerId: number;
 /**归属组织*/
-organization: string;
+organizationId: number;
 /**(必填)当前页*/
 pageNum: number;
 /**(必填)每页条数*/
 pageSize: number;
 /**甲方*/
-partyA: string;
+partyAId: number;
 /**乙方*/
-partyB: string;
-/**合作项目*/
-projectName: string;
+partyBId: number;
+/**项目*/
+projectId: number;
 /**标题*/
 title: string;
 }
@@ -465,6 +548,25 @@ title: string;
 export interface ContractPartyEditVO {
 /**甲方合同ID*/
 contractId: number;
+/**创建时间(yyyy-MM-dd HH:mm:ss)*/
+createTime: string;
+/**创建用户*/
+createUser: number;
+/**已删除*/
+deleted: number;
+/**甲方名字*/
+partyAName: string;
+/**更新时间(yyyy-MM-dd HH:mm:ss)*/
+updateTime: string;
+/**更新用户*/
+updateUser: number;
+/**甲方ID*/
+userId: number;
+}
+/**ContractPartyList*/
+export interface ContractPartyList {
+/**合同id*/
+contractId: string;
 /**甲方ID*/
 userId: number;
 }
@@ -472,23 +574,8 @@ userId: number;
 export interface ContractPartyListVO {
 /**ID*/
 id: number;
-/**甲方*/
-partyA: string;
 /**甲方ID*/
 userId: number;
-}
-/**DistributionChargeEditVO*/
-export interface DistributionChargeEditVO {
-/**收派套餐条件*/
-conditionList: ConditionListVO[];
-/**费用类型(Service-服务费、Agency-代理费)*/
-costType: string;
-/**收派套餐ID*/
-distributionId: number;
-/**物业类型(Residence-住宅、Apartment-公寓、Villa-别墅、Shops-商铺、OfficeBuilding-写字楼、ParkingLot-车位、Workshop-厂房、Othre-其它)*/
-estateType: string;
-/**收派套餐计费标准*/
-priceList: PriceListVO[];
 }
 /**DistributionChargeListVO*/
 export interface DistributionChargeListVO {
@@ -502,6 +589,29 @@ estateType: string;
 id: number;
 /**收派套餐计费标准*/
 priceList: PriceListVO[];
+}
+/**DistributionChargeTemplateEditVO*/
+export interface DistributionChargeTemplateEditVO {
+/**收派套餐条件*/
+conditionList: ConditionTemplateListVO[];
+/**费用类型(Service-服务费、Agency-代理费)*/
+costType: string;
+/**创建时间(yyyy-MM-dd HH:mm:ss)*/
+createTime: string;
+/**创建用户*/
+createUser: number;
+/**已删除*/
+deleted: number;
+/**物业类型(Residence-住宅、Apartment-公寓、Villa-别墅、Shops-商铺、OfficeBuilding-写字楼、ParkingLot-车位、Workshop-厂房、Othre-其它)*/
+estateType: string;
+/**收派套餐计费标准*/
+priceList: PriceTemplateListVO[];
+/**收派套餐模板ID*/
+templateId: number;
+/**更新时间(yyyy-MM-dd HH:mm:ss)*/
+updateTime: string;
+/**更新用户*/
+updateUser: number;
 }
 /**DistributionDetailVO*/
 export interface DistributionDetailVO {
@@ -580,9 +690,9 @@ url: string;
 }
 /**DistributionEditVO*/
 export interface DistributionEditVO {
-/**合作开始时间(yyyy-MM-dd HH:mm:ss)*/
+/**合作开始时间(yyyy-MM-dd)*/
 beginTime: string;
-/**合作结束时间(yyyy-MM-dd HH:mm:ss)*/
+/**合作结束时间(yyyy-MM-dd)*/
 endTime: string;
 /**跟进人*/
 handler: number;
@@ -629,10 +739,20 @@ intermediaryName: string;
 }
 /**DistributionIntermediaryTemplateEditVO*/
 export interface DistributionIntermediaryTemplateEditVO {
+/**创建时间(yyyy-MM-dd HH:mm:ss)*/
+createTime: string;
+/**创建用户*/
+createUser: number;
+/**已删除*/
+deleted: number;
 /**中介行主键*/
 intermediaryId: number;
 /**中介分销合同模板ID*/
 templateId: number;
+/**更新时间(yyyy-MM-dd HH:mm:ss)*/
+updateTime: string;
+/**更新用户*/
+updateUser: number;
 }
 /**DistributionListQueryVO*/
 export interface DistributionListQueryVO {
@@ -671,12 +791,10 @@ title: string;
 }
 /**DistributionListVO*/
 export interface DistributionListVO {
-/**项目地址*/
-address: string;
 /**合作开始时间(yyyy-MM-dd HH:mm:ss)*/
 beginTime: string;
 /**合同编号*/
-contractCode: string;
+code: string;
 /**周期*/
 cycle: string;
 /**合作结束时间(yyyy-MM-dd HH:mm:ss)*/
@@ -687,12 +805,16 @@ fileCode: string;
 fileState: string;
 /**合同跟进人*/
 handler: string;
+/**主键*/
+id: number;
 /**归属组织*/
 organization: string;
+/**项目地址*/
+partyAAddress: string;
 /**甲方公司*/
-partyA: string;
+partyACompany: string;
 /**乙方公司*/
-partyB: string;
+partyBCompany: string;
 /**项目*/
 project: string;
 /**标题*/
@@ -701,25 +823,27 @@ title: string;
 /**DistributionPageQueryVO*/
 export interface DistributionPageQueryVO {
 /**项目地址*/
-address: number[];
+address: string;
 /**中介战略协议*/
-agreement: number[];
+agreement: number;
 /**合作开始时间(yyyy-MM-dd HH:mm:ss)*/
 beginTime: string;
 /**合同编号*/
-contractCode: number[];
+contractCode: string;
 /**合同录入人*/
-creator: number[];
+creator: number;
 /**周期*/
 cycle: string;
 /**合作结束时间(yyyy-MM-dd HH:mm:ss)*/
 endTime: string;
 /**归档编号*/
-fileCode: number[];
-/**归档状态*/
-fileState: string[];
+fileCode: string;
+/**归档状态(Yes-已归档、No-未归档)*/
+fileState: string;
 /**合同跟进人*/
-handler: number[];
+handler: number;
+/**主键*/
+id: number;
 /**归属组织*/
 organization: string;
 /**(必填)当前页*/
@@ -727,15 +851,20 @@ pageNum: number;
 /**(必填)每页条数*/
 pageSize: number;
 /**甲方公司*/
-partyA: number[];
+partyA: string;
 /**乙方公司*/
-partyB: number[];
+partyB: string;
 /**项目*/
 project: string;
 /**合同模板*/
-template: number[];
+template: number;
 /**标题*/
 title: string;
+}
+/**DistributionProfileArchiveVO*/
+export interface DistributionProfileArchiveVO {
+/**ID*/
+id: number;
 }
 /**DistributionTemplateEditVO*/
 export interface DistributionTemplateEditVO {
@@ -746,11 +875,17 @@ breachOfContract: string;
 /**渠道类型(Big-大行/大平台、Medium-中行/中平台、Small-小行/小平台)*/
 channelType: string;
 /**收派套餐*/
-chargeEditList: DistributionChargeEditVO[];
+chargeEditList: DistributionChargeTemplateEditVO[];
+/**创建时间(yyyy-MM-dd HH:mm:ss)*/
+createTime: string;
+/**创建用户*/
+createUser: number;
 /**客户成交*/
 customerTransaction: string;
 /**立项周期主键*/
 cycleId: number;
+/**已删除*/
+deleted: number;
 /**中介行*/
 editList: DistributionIntermediaryTemplateEditVO[];
 /**甲方地址*/
@@ -777,6 +912,10 @@ subtitle: string;
 supplementaryProvision: string;
 /**主标题*/
 title: string;
+/**更新时间(yyyy-MM-dd HH:mm:ss)*/
+updateTime: string;
+/**更新用户*/
+updateUser: number;
 }
 /**DistributionTemplateListQueryVO*/
 export interface DistributionTemplateListQueryVO {
@@ -821,7 +960,9 @@ state: string;
 /**NoticeCheckVO*/
 export interface NoticeCheckVO {
 /**核查状态(Yes-是、No-否、Valid-核查通过、Invalid-核查不通过)*/
-check: string;
+checg: string;
+/**核查人*/
+checkUser: number;
 /**ID*/
 id: number;
 }
@@ -883,6 +1024,12 @@ export interface NoticeEditVO {
 annexEditList: AnnexEditVO[];
 /**录入渠道(Customer-客户、CustomerService-客服)*/
 channel: string;
+/**创建时间(yyyy-MM-dd HH:mm:ss)*/
+createTime: string;
+/**创建用户*/
+createUser: number;
+/**已删除*/
+deleted: number;
 /**乙方*/
 partyB: string;
 /**乙方证件号码*/
@@ -897,6 +1044,10 @@ roomNumber: string;
 templateId: number;
 /**是否纸质(Yes-是、No-否)*/
 type: string;
+/**更新时间(yyyy-MM-dd HH:mm:ss)*/
+updateTime: string;
+/**更新用户*/
+updateUser: number;
 }
 /**NoticeFileVO*/
 export interface NoticeFileVO {
@@ -954,14 +1105,14 @@ discount: number;
 endTime: string;
 /**主键*/
 id: number;
-/**乙方证件号码*/
-idNo: string;
-/**乙方联系电话*/
-mobileB: string;
 /**甲方*/
 partyA: string;
 /**乙方*/
 partyB: string;
+/**乙方证件号码*/
+partyBIdNo: string;
+/**乙方联系电话*/
+partyBMobile: string;
 /**优惠缴纳金额*/
 payment: number;
 /**优惠项目名称*/
@@ -1008,12 +1159,22 @@ export interface NoticePriceDetailEditVO {
 amount: number;
 /**付款渠道(Alipay-支付宝、Wechat-微信、UnionPay-银联)*/
 channel: string;
+/**创建时间(yyyy-MM-dd HH:mm:ss)*/
+createTime: string;
+/**创建用户*/
+createUser: number;
+/**已删除*/
+deleted: number;
 /**告知书主键*/
 noticeId: number;
 /**付款金额主键*/
 priceId: number;
 /**交易类型(Payment-付款、Refund-退款)*/
 type: string;
+/**更新时间(yyyy-MM-dd HH:mm:ss)*/
+updateTime: string;
+/**更新用户*/
+updateUser: number;
 }
 /**NoticeSignVO*/
 export interface NoticeSignVO {
@@ -1024,10 +1185,24 @@ sign: string;
 }
 /**NoticeStopEditVO*/
 export interface NoticeStopEditVO {
+/**创建时间(yyyy-MM-dd HH:mm:ss)*/
+createTime: string;
+/**创建用户*/
+createUser: number;
+/**已删除*/
+deleted: number;
+/**主键ID*/
+id: number;
 /**告知书主键*/
 noticeId: number;
 /**终止理由*/
 reason: string;
+/**更新时间(yyyy-MM-dd HH:mm:ss)*/
+updateTime: string;
+/**更新用户*/
+updateUser: number;
+/**电子版*/
+url: string;
 }
 /**NoticeStopSignVO*/
 export interface NoticeStopSignVO {
@@ -1051,16 +1226,30 @@ state: string;
 }
 /**NoticeSupplementEditVO*/
 export interface NoticeSupplementEditVO {
+/**创建时间(yyyy-MM-dd HH:mm:ss)*/
+createTime: string;
+/**创建用户*/
+createUser: number;
 /**现优惠抵扣金额*/
 deduction: number;
+/**已删除*/
+deleted: number;
 /**现优惠折扣*/
 discount: number;
+/**主键ID*/
+id: number;
 /**告知书主键*/
 noticeId: number;
 /**现需缴纳金额*/
 payment: number;
 /**现房号*/
 room: number;
+/**更新时间(yyyy-MM-dd HH:mm:ss)*/
+updateTime: string;
+/**更新用户*/
+updateUser: number;
+/**电子版*/
+url: string;
 }
 /**NoticeSupplementSignVO*/
 export interface NoticeSupplementSignVO {
@@ -1086,10 +1275,16 @@ state: string;
 export interface NoticeTemplateEditVO {
 /**优惠期限开始时间(yyyy-MM-dd HH:mm:ss)*/
 beginTime: string;
+/**创建时间(yyyy-MM-dd HH:mm:ss)*/
+createTime: string;
+/**创建用户*/
+createUser: number;
 /**立项周期主键*/
 cycleId: number;
 /**抵扣金额*/
 deduction: number;
+/**已删除*/
+deleted: number;
 /**折扣*/
 discount: number;
 /**优惠期限结束时间(yyyy-MM-dd HH:mm:ss)*/
@@ -1102,6 +1297,10 @@ partyA: string;
 payment: number;
 /**甲方退款天数*/
 refundDays: number;
+/**更新时间(yyyy-MM-dd HH:mm:ss)*/
+updateTime: string;
+/**更新用户*/
+updateUser: number;
 }
 /**NoticeTemplateListQueryVO*/
 export interface NoticeTemplateListQueryVO {
@@ -1159,11 +1358,34 @@ rate: number;
 /**类型(Commission-派发佣金、Reward-派发内场奖励)*/
 type: string;
 }
+/**PriceTemplateListVO*/
+export interface PriceTemplateListVO {
+/**创建时间(yyyy-MM-dd HH:mm:ss)*/
+createTime: string;
+/**创建用户*/
+createUser: number;
+/**已删除*/
+deleted: number;
+/**主键*/
+id: number;
+/**数值1*/
+price: number;
+/**数值2*/
+rate: number;
+/**类型(Commission-派发佣金、Reward-派发内场奖励)*/
+type: string;
+/**更新时间(yyyy-MM-dd HH:mm:ss)*/
+updateTime: string;
+/**更新用户*/
+updateUser: number;
+}
 /**StrategyDetailVO*/
 export interface StrategyDetailVO {
-/**合作开始时间*/
+/**战略协议状态：PartyA：甲方战略协议 Channel：渠道战略协议(PartyA-甲方战略协议、Channel-渠道战略协议)*/
+agreementType: string;
+/**合作开始时间(yyyy-MM-dd)*/
 beginTime: string;
-/**合作结束时间*/
+/**合作结束时间(yyyy-MM-dd)*/
 endTime: string;
 /**归档编号*/
 fileCode: string;
@@ -1176,10 +1398,14 @@ id: number;
 /**中介合同电子版*/
 originalList: AnnexListVO[];
 /**甲方*/
-partyA: string;
+partyA: number;
+/**甲方名字*/
+partyAName: string;
 /**乙方*/
-partyB: string;
-/**当前状态(Push-待提交、Audit-审核中、Valid-有效、Invalid-无效)*/
+partyB: number;
+/**乙方名字*/
+partyBName: string;
+/**当前状态(Push-待提交、Audit-审核中、Valid-有效、Invalid-无效、Draft-草稿)*/
 state: string;
 /**协议编号*/
 strategyCode: string;
@@ -1188,22 +1414,46 @@ title: string;
 }
 /**StrategyEditVO*/
 export interface StrategyEditVO {
-/**合作开始时间(yyyy-MM-dd HH:mm:ss)*/
+/**战略协议状态：PartyA：甲方战略协议 Channel：渠道战略协议(PartyA-甲方战略协议、Channel-渠道战略协议)*/
+agreementType: string;
+/**合作开始时间(yyyy-MM-dd)*/
 beginTime: string;
+/**创建时间(yyyy-MM-dd HH:mm:ss)*/
+createTime: string;
+/**创建用户*/
+createUser: number;
 /**立项周期ID*/
 cycleId: number;
-/**合作结束时间(yyyy-MM-dd HH:mm:ss)*/
+/**已删除*/
+deleted: number;
+/**合作结束时间(yyyy-MM-dd)*/
 endTime: string;
+/**归档编号*/
+fileCode: string;
+/**归档状态(Yes-已归档、No-未归档)*/
+fileState: string;
 /**ID*/
 id: number;
 /**中介合同电子版*/
 originalList: AnnexEditVO[];
+/**原件归档状态(Yes-已归档、No-未归档)*/
+originalState: string;
 /**甲方*/
 partyA: number;
+/**甲方名字*/
+partyAName: string;
 /**乙方*/
-partyB: string;
+partyB: number;
+/**乙方名字*/
+partyBName: string;
+/**当前状态(Push-待提交、Audit-审核中、Valid-有效、Invalid-无效、Draft-草稿)*/
+state: string;
 /**标题*/
 title: string;
+/**更新时间(yyyy-MM-dd HH:mm:ss)*/
+updateTime: string;
+/**更新用户*/
+updateUser: number;
 }
 /**StrategyFileVO*/
 export interface StrategyFileVO {
@@ -1228,7 +1478,7 @@ partyA: string;
 partyB: string;
 /**项目*/
 projectName: string;
-/**协议状态(Push-待提交、Audit-审核中、Valid-有效、Invalid-无效)*/
+/**协议状态(Push-待提交、Audit-审核中、Valid-有效、Invalid-无效、Draft-草稿)*/
 state: string;
 /**协议编号*/
 strategyCode: string;
@@ -1237,8 +1487,10 @@ title: string;
 }
 /**StrategyListVO*/
 export interface StrategyListVO {
+/**战略协议状态：PartyA：甲方战略协议 Channel：渠道战略协议(PartyA-甲方战略协议、Channel-渠道战略协议)*/
+agreementType: string;
 /**关联周期*/
-cycle: string;
+cycleId: number;
 /**归档编号*/
 fileCode: string;
 /**归档状态(Yes-已归档、No-未归档)*/
@@ -1246,11 +1498,11 @@ fileState: string;
 /**主键*/
 id: number;
 /**甲方*/
-partyA: string;
+partyA: number;
 /**乙方*/
-partyB: string;
+partyB: number;
 /**关联项目*/
-projectName: string;
+projectId: number;
 /**协议编号*/
 strategyCode: string;
 /**标题*/
@@ -1258,8 +1510,10 @@ title: string;
 }
 /**StrategyPageQueryVO*/
 export interface StrategyPageQueryVO {
+/**战略协议状态：PartyA：甲方战略协议 Channel：渠道战略协议(PartyA-甲方战略协议、Channel-渠道战略协议)*/
+agreementType: string;
 /**周期*/
-cycle: string;
+cycleId: number;
 /**归档编号*/
 fileCode: string;
 /**归档状态(Yes-已归档、No-未归档)*/
@@ -1269,12 +1523,12 @@ pageNum: number;
 /**(必填)每页条数*/
 pageSize: number;
 /**甲方*/
-partyA: string;
+partyA: number;
 /**乙方*/
-partyB: string;
+partyB: number;
 /**项目*/
-projectName: string;
-/**协议状态(Push-待提交、Audit-审核中、Valid-有效、Invalid-无效)*/
+projectId: number;
+/**协议状态(Push-待提交、Audit-审核中、Valid-有效、Invalid-无效、Draft-草稿)*/
 state: string;
 /**协议编号*/
 strategyCode: string;

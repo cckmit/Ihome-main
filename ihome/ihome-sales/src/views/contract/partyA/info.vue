@@ -4,7 +4,7 @@
  * @Author: ywl
  * @Date: 2020-09-25 16:00:37
  * @LastEditors: ywl
- * @LastEditTime: 2020-10-29 14:45:10
+ * @LastEditTime: 2020-11-04 15:31:02
 -->
 <template>
   <IhPage class="text-left">
@@ -28,7 +28,7 @@
             <el-form-item label="甲方">
               <template v-for="(item, index) in formData.partyA">
                 <span :key="item.id">
-                  {{item.partyA}}
+                  {{item.id}}
                   <span v-if="index === (item.length-1)">、</span>
                 </span>
               </template>
@@ -86,7 +86,7 @@
           </el-col>
           <el-col :span="12">
             <el-form-item label="当前状态">
-              {{formData.state}}
+              {{ $root.dictAllName(formData.state, 'ContractEnum.State') }}
             </el-form-item>
           </el-col>
         </el-row>

@@ -4,7 +4,7 @@
  * @Author: ywl
  * @Date: 2020-09-25 11:53:51
  * @LastEditors: ywl
- * @LastEditTime: 2020-11-03 16:10:13
+ * @LastEditTime: 2020-11-04 15:19:31
 -->
 <template>
   <IhPage label-width="100px">
@@ -27,7 +27,7 @@
           <el-col :span="8">
             <el-form-item label="甲方">
               <el-select
-                v-model="queryPageParameters.partyA"
+                v-model="queryPageParameters.partyAId"
                 placeholder="甲方"
                 clearable
                 filterable
@@ -45,7 +45,7 @@
           <el-col :span="8">
             <el-form-item label="乙方">
               <el-select
-                v-model="queryPageParameters.partyB"
+                v-model="queryPageParameters.partyBId"
                 clearable
                 filterable
                 placeholder="乙方"
@@ -67,7 +67,7 @@
               <el-col :span="8">
                 <el-form-item label="合作项目">
                   <el-input
-                    v-model="queryPageParameters.projectName"
+                    v-model="queryPageParameters.cooperativeProject"
                     placeholder="合作项目"
                   ></el-input>
                 </el-form-item>
@@ -104,7 +104,7 @@
               <el-col :span="8">
                 <el-form-item label="项目">
                   <el-select
-                    v-model="queryPageParameters.projectName"
+                    v-model="queryPageParameters.projectId"
                     clearable
                     placeholder="项目"
                     class="width--100"
@@ -124,7 +124,7 @@
               <el-col :span="8">
                 <el-form-item label="周期">
                   <el-select
-                    v-model="queryPageParameters.cycle"
+                    v-model="queryPageParameters.cycleId"
                     clearable
                     placeholder="周期"
                     class="width--100"
@@ -141,8 +141,8 @@
               <el-col :span="8">
                 <el-form-item label="归属组织">
                   <SelectOrganizationTree
-                    :orgId="queryPageParameters.organization"
-                    @callback="(id) => (queryPageParameters.organization = id)"
+                    :orgId="queryPageParameters.organizationId"
+                    @callback="(id) => (queryPageParameters.organizationId = id)"
                   />
                 </el-form-item>
               </el-col>
@@ -188,7 +188,7 @@
               <el-col :span="8">
                 <el-form-item label="合同录入人">
                   <IhSelectPageUser
-                    v-model="queryPageParameters.createUser"
+                    v-model="queryPageParameters.createUserId"
                     clearable
                     class="width--100"
                   >
@@ -205,7 +205,7 @@
               <el-col :span="8">
                 <el-form-item label="合同跟进人">
                   <IhSelectPageUser
-                    v-model="queryPageParameters.handler"
+                    v-model="queryPageParameters.handlerId"
                     clearable
                     class="width--100"
                   >
@@ -260,13 +260,22 @@
           fixed
           label="标题"
           prop="title"
-          min-width="100"
+          min-width="235"
         ></el-table-column>
         <el-table-column
           label="甲方"
-          prop="partyA"
           min-width="200"
-        ></el-table-column>
+        >
+          <template v-slot="{ row }">
+            <span
+              v-for="(item, index) in row.partyList"
+              :key="item.id"
+            >
+              {{item.userId}}
+              <span v-if="index === (item.length-1)">、</span>
+            </span>
+          </template>
+        </el-table-column>
         <el-table-column
           label="乙方"
           prop="partyB"
@@ -274,7 +283,7 @@
         ></el-table-column>
         <el-table-column
           label="合作项目"
-          prop="pro"
+          prop="cooperativeProject"
           min-width="200"
         ></el-table-column>
         <!-- <el-table-column
@@ -293,18 +302,18 @@
         ></el-table-column>
         <el-table-column
           label="关联项目"
-          prop="projectName"
+          prop="projectId"
           width="200"
         ></el-table-column>
         <el-table-column
           label="关联周期"
-          prop="cycle"
+          prop="cycleId"
           width="100"
         ></el-table-column>
         <el-table-column
           label="归属组织"
-          prop="organization"
-          width="200"
+          prop="organizationId"
+          width="150"
         ></el-table-column>
         <el-table-column
           label="合同编号"
@@ -340,7 +349,10 @@
               type="primary"
               @click="handleToPage(row, 'info')"
             >详情</el-link>
-            <el-link type="primary">扫描件归档</el-link>
+            <el-link
+              type="primary"
+              @click="duplicate(row)"
+            >扫描件归档</el-link>
             <el-link
               type="primary"
               @click="handleToPage(row, 'edit')"
@@ -371,8 +383,7 @@ import PaginationMixin from "@/mixins/pagination";
 
 import {
   post_contract_list,
-  post_contract_duplicate,
-  // post_contract_original__id,
+  post_contract_duplicate__id,
 } from "@/api/contract/index";
 import { post_term_getDropDown } from "@/api/project/index";
 import { post_company_listAll } from "@/api/developer/index";
@@ -386,17 +397,18 @@ import SelectOrganizationTree from "@/components/SelectOrganizationTree.vue";
 export default class PartyAList extends Vue {
   public queryPageParameters: any = {
     title: null,
-    partyA: null,
-    partyB: null,
-    projectName: null,
+    partyAId: null,
+    partyBId: null,
+    cooperativeProject: null,
     effectiveTime: null,
-    cycle: null,
-    organization: null,
+    projectId: null,
+    cycleId: null,
+    organizationId: null,
     contractCode: null,
     fileState: null,
     fileCode: null,
-    createUser: null,
-    handler: null,
+    createUserId: null,
+    handlerId: null,
     beginTime: null,
     endTime: null,
   };
@@ -420,17 +432,18 @@ export default class PartyAList extends Vue {
   private handleReset(): void {
     Object.assign(this.queryPageParameters, {
       title: null,
-      partyA: null,
-      partyB: null,
-      projectName: null,
+      partyAId: null,
+      partyBId: null,
+      cooperativeProject: null,
       effectiveTime: null,
-      cycle: null,
-      organization: null,
+      projectId: null,
+      cycleId: null,
+      organizationId: null,
       contractCode: null,
       fileState: null,
       fileCode: null,
-      createUser: null,
-      handler: null,
+      createUserId: null,
+      handlerId: null,
       beginTime: null,
       endTime: null,
     });
@@ -451,16 +464,10 @@ export default class PartyAList extends Vue {
     console.log(val);
   }
   private async duplicate(row: any): Promise<void> {
-    console.log(row);
-    await post_contract_duplicate();
-  }
-  private original(row: any) {
-    console.log(row);
-
-    // await this.$confirm(`是否继续原件归档?`, "提示");
-    // await post_contract_original__id({ id: row.id });
-    // this.getListMixin();
-    // this.$message.success("原件归档成功");
+    await this.$confirm("此操作将进行扫描件归档, 是否继续?", "提示");
+    await post_contract_duplicate__id({ id: row.id });
+    this.$message.success("归档成功");
+    this.getListMixin();
   }
   private async getCompanyList() {
     this.companyList = await post_company_getAll({ name: "" });
