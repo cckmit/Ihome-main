@@ -4,7 +4,7 @@
  * @Author: ywl
  * @Date: 2020-09-16 14:05:21
  * @LastEditors: ywl
- * @LastEditTime: 2020-11-04 10:40:43
+ * @LastEditTime: 2020-11-04 11:26:21
 -->
 <template>
   <IhPage>
@@ -127,7 +127,11 @@
           </el-col>
           <el-col :span="8">
             <el-form-item label="营业期限">
-              <el-input v-model="info.businessTime"></el-input>
+              <el-input
+                v-model="info.businessTime"
+                clearable
+                maxlength="32"
+              ></el-input>
             </el-form-item>
           </el-col>
         </el-row>
@@ -362,7 +366,12 @@
 <script lang="ts">
 import { Component, Vue } from "vue-property-decorator";
 import { Form as ElForm } from "element-ui";
-import { noTrim, phoneValidator } from "ihome-common/util/base/form-ui";
+import {
+  noTrim,
+  phoneValidator,
+  validIdentityCard,
+  validForbid,
+} from "ihome-common/util/base/form-ui";
 //引入请求数据的api -- 先调用本地的
 import {
   get_channel_get__id,
@@ -415,20 +424,12 @@ export default class ModifyThe extends Vue {
   };
 
   private rules: any = {
-    address: [{ required: true, message: "请输入住所", trigger: "blur" }],
-    provinceList: [
-      { required: true, message: "请选择省市区", trigger: ["blur", "change"] },
+    name: [
+      { required: true, message: "请输入不能为空", trigger: "blur" },
+      { validator: validForbid, trigger: ["blur", "change"] },
+      { validator: noTrim, trigger: "change" },
+      { min: 1, max: 64, message: "长度在 1 到 64 个字符", trigger: "change" },
     ],
-    legalIdentityCode: [
-      { required: true, message: "请输入法人身份证号码", trigger: "blur" },
-      {
-        pattern: /(^[1-9]\d{5}(18|19|([23]\d))\d{2}((0[1-9])|(10|11|12))(([0-2][1-9])|10|20|30|31)\d{3}[0-9Xx]$)|(^[1-9]\d{5}\d{2}((0[1-9])|(10|11|12))(([0-2][1-9])|10|20|30|31)\d{2}$)/,
-        message: "证件号码格式有误！",
-        trigger: "blur",
-      },
-    ],
-    type: [{ required: true, message: "请选择类型", trigger: "blur" }],
-    shortName: [{ required: true, message: "请输入简称", trigger: "blur" }],
     creditCode: [
       { required: true, message: "请输入信用代码", trigger: "blur" },
       {
@@ -437,19 +438,42 @@ export default class ModifyThe extends Vue {
         trigger: "blur",
       },
     ],
+    shortName: [
+      { required: true, message: "请输入简称", trigger: "blur" },
+      { validator: validForbid, trigger: ["blur", "change"] },
+      { validator: noTrim, trigger: "change" },
+      { min: 1, max: 16, message: "长度在 1 到 16 个字符", trigger: "change" },
+    ],
+    type: [{ required: true, message: "请选择类型", trigger: "blur" }],
     legalPerson: [
       { required: true, message: "请输入法定代表人", trigger: "blur" },
+      { validator: validForbid, trigger: ["blur", "change"] },
+      { validator: noTrim, trigger: "change" },
+      { min: 1, max: 32, message: "长度在 1 到 32 个字符", trigger: "change" },
+    ],
+    legalIdentityCode: [
+      { required: true, message: "请输入法人身份证号码", trigger: "blur" },
+      { validator: validIdentityCard, trigger: ["blur", "change"] },
+    ],
+    setupTime: [{ required: true, message: "请输入成立日期", trigger: "blur" }],
+    capital: [
+      { required: true, message: "请输入注册资本", trigger: "blur" },
+      { validator: noTrim, trigger: "change" },
+    ],
+    provinceList: [
+      { required: true, message: "请选择省市区", trigger: ["blur", "change"] },
+    ],
+    address: [
+      { required: true, message: "请输入住所", trigger: "blur" },
+      { validator: noTrim, trigger: "change" },
     ],
     mobile: [
       { required: true, message: "请输入手机号", trigger: "blur" },
-      { validator: phoneValidator, trigger: "blur" },
+      { validator: phoneValidator, trigger: ["blur", "change"] },
     ],
     identityCode: [
       { required: true, message: "请填写证件号码", trigger: "blur" },
-      {
-        validator: this.validForbid,
-        trigger: ["blur", "change"],
-      },
+      { validator: validIdentityCard, trigger: ["blur", "change"] },
     ],
     email: [
       { required: true, message: "请填写邮箱", trigger: "blur" },
@@ -459,27 +483,10 @@ export default class ModifyThe extends Vue {
         trigger: ["blur", "change"],
       },
     ],
-    name: [
-      { required: true, message: "请输入公司名称", trigger: "blur" },
-      { validator: noTrim, trigger: "change" },
-      { min: 1, max: 64, message: "长度在 1 到 64 个字符", trigger: "change" },
-    ],
-    capital: [{ required: true, message: "请输入注册资本", trigger: "blur" }],
-    setupTime: [{ required: true, message: "请输入成立日期", trigger: "blur" }],
   };
 
   private get pageName(): string | null | undefined {
     return this.$route.name;
-  }
-
-  validForbid(rule: any, value: any, callback: any) {
-    console.log(value);
-    const reg = /(^[1-9]\d{5}(18|19|([23]\d))\d{2}((0[1-9])|(10|11|12))(([0-2][1-9])|10|20|30|31)\d{3}[0-9Xx]$)|(^[1-9]\d{5}\d{2}((0[1-9])|(10|11|12))(([0-2][1-9])|10|20|30|31)\d{2}$)/;
-    if (!reg.test(value)) {
-      callback(new Error("请输入有效的证件号"));
-    } else {
-      callback();
-    }
   }
 
   addAccount() {

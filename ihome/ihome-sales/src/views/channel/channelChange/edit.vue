@@ -4,7 +4,7 @@
  * @Author: ywl
  * @Date: 2020-09-16 14:05:21
  * @LastEditors: ywl
- * @LastEditTime: 2020-10-28 17:42:36
+ * @LastEditTime: 2020-11-04 11:26:38
 -->
 <template>
   <IhPage>
@@ -26,6 +26,7 @@
               <el-input
                 v-model="info.name"
                 clearable
+                maxlength="64"
               ></el-input>
             </el-form-item>
           </el-col>
@@ -48,6 +49,7 @@
               <el-input
                 v-model="info.shortName"
                 clearable
+                maxlength="16"
               ></el-input>
             </el-form-item>
           </el-col>
@@ -125,19 +127,11 @@
           </el-col>
           <el-col :span="8">
             <el-form-item label="营业期限">
-              <el-date-picker
-                style="width: 100%"
-                v-model="info.timeList"
-                type="daterange"
-                align="left"
-                unlink-panels
-                range-separator="至"
-                start-placeholder="开始日期"
-                end-placeholder="结束日期"
-                value-format="yyyy-MM-dd"
-                :picker-options="$root.pickerOptions"
-              >
-                ></el-date-picker>
+              <el-input
+                v-model="info.businessTime"
+                clearable
+                maxlength="32"
+              ></el-input>
             </el-form-item>
           </el-col>
         </el-row>
@@ -162,6 +156,7 @@
                 v-model="info.address"
                 clearable
                 placeholder="请输入住所"
+                maxlength="64"
               ></el-input>
             </el-form-item>
           </el-col>
@@ -243,6 +238,7 @@
             <el-input
               v-model="channelPersonsData.name"
               clearable
+              maxlength="32"
             ></el-input>
           </el-form-item>
         </el-col>
@@ -360,7 +356,14 @@
 <script lang="ts">
 import { Component, Vue } from "vue-property-decorator";
 import { Form as ElForm } from "element-ui";
-//引入请求数据的api -- 先调用本地的
+import {
+  noTrim,
+  phoneValidator,
+  validIdentityCard,
+  validForbid,
+} from "ihome-common/util/base/form-ui";
+
+//引入请求数据的api
 import {
   get_channelChange_get__id,
   post_channelChange_edit,
@@ -410,15 +413,12 @@ export default class ModifyThe extends Vue {
   };
 
   private rules: any = {
-    address: [{ required: true, message: "请输入住所", trigger: "blur" }],
-    provinceList: [
-      { required: true, message: "请选择省市区", trigger: ["blur", "change"] },
+    name: [
+      { required: true, message: "请输入不能为空", trigger: "blur" },
+      { validator: validForbid, trigger: ["blur", "change"] },
+      { validator: noTrim, trigger: "change" },
+      { min: 1, max: 64, message: "长度在 1 到 64 个字符", trigger: "change" },
     ],
-    legalIdentityCode: [
-      { required: true, message: "请输入法人身份证号码", trigger: "blur" },
-    ],
-    type: [{ required: true, message: "请选择类型", trigger: "blur" }],
-    shortName: [{ required: true, message: "请输入简称", trigger: "blur" }],
     creditCode: [
       { required: true, message: "请输入信用代码", trigger: "blur" },
       {
@@ -427,24 +427,42 @@ export default class ModifyThe extends Vue {
         trigger: "blur",
       },
     ],
+    shortName: [
+      { required: true, message: "请输入简称", trigger: "blur" },
+      { validator: validForbid, trigger: ["blur", "change"] },
+      { validator: noTrim, trigger: "change" },
+      { min: 1, max: 16, message: "长度在 1 到 16 个字符", trigger: "change" },
+    ],
+    type: [{ required: true, message: "请选择类型", trigger: "blur" }],
     legalPerson: [
       { required: true, message: "请输入法定代表人", trigger: "blur" },
+      { validator: validForbid, trigger: ["blur", "change"] },
+      { validator: noTrim, trigger: "change" },
+      { min: 1, max: 32, message: "长度在 1 到 32 个字符", trigger: "change" },
+    ],
+    legalIdentityCode: [
+      { required: true, message: "请输入法人身份证号码", trigger: "blur" },
+      { validator: validIdentityCard, trigger: ["blur", "change"] },
+    ],
+    setupTime: [{ required: true, message: "请输入成立日期", trigger: "blur" }],
+    capital: [
+      { required: true, message: "请输入注册资本", trigger: "blur" },
+      { validator: noTrim, trigger: "change" },
+    ],
+    provinceList: [
+      { required: true, message: "请选择省市区", trigger: ["blur", "change"] },
+    ],
+    address: [
+      { required: true, message: "请输入住所", trigger: "blur" },
+      { validator: noTrim, trigger: "change" },
     ],
     mobile: [
       { required: true, message: "请输入手机号", trigger: "blur" },
-      {
-        pattern: /^1[3456789]\d{9}$/,
-        message: "手机号格式不对",
-        trigger: "blur",
-      },
+      { validator: phoneValidator, trigger: ["blur", "change"] },
     ],
     identityCode: [
       { required: true, message: "请填写证件号码", trigger: "blur" },
-      {
-        pattern: /(^[1-9]\d{5}(18|19|([23]\d))\d{2}((0[1-9])|(10|11|12))(([0-2][1-9])|10|20|30|31)\d{3}[0-9Xx]$)|(^[1-9]\d{5}\d{2}((0[1-9])|(10|11|12))(([0-2][1-9])|10|20|30|31)\d{2}$)/,
-        message: "证件号码格式有误！",
-        trigger: "blur",
-      },
+      { validator: validIdentityCard, trigger: ["blur", "change"] },
     ],
     email: [
       { required: true, message: "请填写邮箱", trigger: "blur" },
@@ -454,9 +472,6 @@ export default class ModifyThe extends Vue {
         trigger: ["blur", "change"],
       },
     ],
-    name: [{ required: true, message: "请输入公司名称", trigger: "blur" }],
-    capital: [{ required: true, message: "请输入注册资本", trigger: "blur" }],
-    setupTime: [{ required: true, message: "请输入成立日期", trigger: "blur" }],
   };
 
   addAccount() {
@@ -471,9 +486,9 @@ export default class ModifyThe extends Vue {
   }
 
   async submit(type: number): Promise<void> {
-    if (this.info.timeList.length) {
-      this.info.businessTime = `${this.info.timeList[0]} - ${this.info.timeList[1]}`;
-    }
+    // if (this.info.timeList.length) {
+    //   this.info.businessTime = `${this.info.timeList[0]} - ${this.info.timeList[1]}`;
+    // }
     if (this.info.provinceList.length) {
       this.info.province = this.info.provinceList[0];
       this.info.city = this.info.provinceList[1];
@@ -528,7 +543,7 @@ export default class ModifyThe extends Vue {
     let id = this.$route.query.id;
     if (id) {
       let res: any = await get_channelChange_get__id({ id: id });
-      res.timeList = res.businessTime.split(" - ");
+      // res.timeList = res.businessTime.split(" - ");
       res.provinceList = [res.province, res.city, res.county];
       this.info = res;
       this.changeReason = res.changeReason;
