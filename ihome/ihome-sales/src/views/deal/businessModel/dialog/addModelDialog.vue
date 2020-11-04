@@ -2,13 +2,23 @@
  * @Descripttion: 
  * @version: 
  * @Author: lsj
- * @Date: 2020-10-30 10:38:23
+ * @Date: 2020-11-03 15:28:12
  * @LastEditors: lsj
- * @LastEditTime: 2020-10-30 10:38:23
+ * @LastEditTime: 2020-11-03 15:30:12
 -->
 <template>
-  <ih-page>
+  <el-dialog
+    v-dialogDrag
+    title="新增/修改业务模式"
+    :visible.sync="dialogVisible"
+    :close-on-click-modal="false"
+    :close-on-press-escape="false"
+    :before-close="finish"
+    width="1000px"
+    style="text-align: left"
+    class="dialog">
     <el-form
+      v-loading="editLoading"
       :model="postData"
       :rules="rules"
       ref="ruleForm"
@@ -16,7 +26,7 @@
       class="demo-ruleForm"
     >
       <el-row class="ih-info-line">
-        <el-col :span="12">
+        <el-col>
           <el-form-item
             label="业务模式"
             prop="modelName"
@@ -38,9 +48,7 @@
             </el-select>
           </el-form-item>
         </el-col>
-      </el-row>
-      <el-row class="ih-info-line">
-        <el-col :span="12">
+        <el-col>
           <el-form-item
             label="合同类型"
             prop="buModelContTypeList"
@@ -58,15 +66,14 @@
           </el-form-item>
         </el-col>
       </el-row>
-      <div>
-        <el-button type="success" @click="save()">保存</el-button>
-        <el-button type="primary" @click="cancel()">取消</el-button>
-      </div>
     </el-form>
-  </ih-page>
+    <span slot="footer" class="dialog-footer">
+      <el-button type="success" @click="save()">保存</el-button>
+    </span>
+  </el-dialog>
 </template>
 <script lang="ts">
-  import {Component, Vue} from "vue-property-decorator";
+  import {Component, Vue, Prop} from "vue-property-decorator";
   import {
     post_businessModel_add,
     get_businessModel_get__id,
@@ -78,8 +85,16 @@
 
   @Component({
     components: {},
+    mixins: [],
   })
-  export default class BusinessModeAdd extends Vue {
+  export default class AddModelDialog extends Vue {
+    constructor() {
+      super();
+    }
+
+    @Prop({default: null}) data: any;
+    dialogVisible = true;
+
     postData: any = {
       modelName: null,
       buModelContTypeList: []
@@ -133,12 +148,18 @@
       },
     ]
     id: any = null;
+    editLoading: any = false;
 
     async created() {
-      this.id = this.$route.query.id;
+      this.id = localStorage.getItem('editModelId');
       if (this.id) {
+        this.editLoading = true;
         const res: any = await get_businessModel_get__id({id: this.id});
         this.postData = res;
+        await this.getModelContTypeList();
+        this.$nextTick(() => {
+          this.editLoading = false;
+        })
       }
     }
 
@@ -200,9 +221,7 @@
           }
           await post_businessModel_update(postData);
           this.$message.success("编辑成功");
-          this.$goto({
-            path: "/businessModel/list",
-          });
+          await this.finish();
         } else {
           // 新增模式
           let postData: any = {
@@ -220,9 +239,7 @@
           }
           await post_businessModel_add(postData);
           this.$message.success("新增成功");
-          this.$goto({
-            path: "/businessModel/list",
-          });
+          await this.finish();
         }
       } else {
         this.$message.warning("请先填好数据再保存");
@@ -230,27 +247,10 @@
       }
     }
 
-    // 取消
-    async cancel() {
-      this.$goto({
-        path: "/businessModel/list",
-      });
+    async finish() {
+      this.$emit("finish");
     }
   }
 </script>
 <style lang="scss" scoped>
-  .ih-info-item-left,
-  .ih-info-item-right {
-    line-height: 40px;
-  }
-
-  .info-btn-list {
-    float: left;
-    margin-left: 150px;
-    margin-top: -25px;
-  }
-
-  .checkbox-align {
-    text-align: left;
-  }
 </style>

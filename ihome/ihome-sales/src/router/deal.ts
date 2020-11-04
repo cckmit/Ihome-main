@@ -27,13 +27,7 @@ const dealRoutes: Array<RouteConfig> = [
         name: 'BusinessModelList',
         component: () => import('../views/deal/businessModel/list.vue'),
         meta: { title: '业务模式列表', icon: 'form', keepAlive: true }
-      },
-      {
-        path: 'add',
-        name: 'BusinessModeAdd',
-        component: () => import('../views/deal/businessModel/add.vue'),
-        meta: { title: '业务模式新增', icon: 'form' }
-      },
+      }
     ]
   },
   // 业绩比例方案-分公司方案列表路由

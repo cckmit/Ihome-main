@@ -11,38 +11,31 @@
     <template v-slot:form>
       <el-form ref="form" label-width="100px">
         <el-row>
-          <el-col :span="8">
-            <el-form-item label="业务模式">
-              <el-select
-                v-model="queryPageParameters.modelName"
-                clearable
-                placeholder="请选择业务模式"
-                class="width--100"
-              >
-                <!--                <el-option-->
-                <!--                  v-for="item in $root.dictAllList('ChannelStatus')"-->
-                <!--                  :key="item.code"-->
-                <!--                  :label="item.name"-->
-                <!--                  :value="item.code"-->
-                <!--                ></el-option>-->
-                <el-option
-                  v-for="item in modelNameList"
-                  :key="item.value"
-                  :label="item.label"
-                  :value="item.value"
-                ></el-option>
-              </el-select>
-            </el-form-item>
+          <el-col :span="2" class="text-left">
+            <el-button type="success" @click="add()">新增</el-button>
+          </el-col>
+          <el-col :span="22" class="text-right">
+            <el-select
+              v-model="queryPageParameters.modelName"
+              clearable
+              placeholder="请选择业务模式">
+              <!--                <el-option-->
+              <!--                  v-for="item in $root.dictAllList('ChannelStatus')"-->
+              <!--                  :key="item.code"-->
+              <!--                  :label="item.name"-->
+              <!--                  :value="item.code"-->
+              <!--                ></el-option>-->
+              <el-option
+                v-for="item in modelNameList"
+                :key="item.value"
+                :label="item.label"
+                :value="item.value"
+              ></el-option>
+            </el-select>
+            <el-button type="primary" class="margin-left-20" @click="getListMixin()">查询</el-button>
           </el-col>
         </el-row>
       </el-form>
-    </template>
-    <template v-slot:btn>
-      <el-row>
-        <el-button type="primary" @click="getListMixin()">查询</el-button>
-        <el-button type="info" @click="reset()">重置</el-button>
-        <el-button type="success" @click="add()">新增</el-button>
-      </el-row>
     </template>
     <template v-slot:table>
       <br/>
@@ -95,10 +88,22 @@
         :total="resPageInfo.total"
       ></el-pagination>
     </template>
+    <ih-dialog :show="dialogAddModel" desc="新增/修改业务模式">
+      <AddModelDialog
+        @cancel="() => (dialogAddModel = false)"
+        @finish="
+            () => {
+              dialogAddModel = false;
+              finishAddModel();
+            }
+          "
+      />
+    </ih-dialog>
   </ih-page>
 </template>
 <script lang="ts">
   import {Component, Vue} from "vue-property-decorator";
+  import AddModelDialog from "./dialog/addModelDialog.vue";
 
   import {
     post_businessModel_getList,
@@ -108,7 +113,7 @@
   import PaginationMixin from "@/mixins/pagination";
 
   @Component({
-    components: {},
+    components: {AddModelDialog},
     mixins: [PaginationMixin],
   })
   export default class BusinessModelList extends Vue {
@@ -139,6 +144,7 @@
       total: 0,
       list: [],
     };
+    dialogAddModel: any = false;
 
     async created() {
       await this.getListMixin();
@@ -217,28 +223,22 @@
       }
     }
 
-    // 重置
-    reset() {
-      this.queryPageParameters = {
-        modelName: null,
-        pageNum: 1,
-        pageSize: this.queryPageParameters.pageSize,
-      };
-    }
-
     // 新增
     async add() {
-      this.$router.push({
-        path: "/businessModel/add",
-      });
+      localStorage.setItem('editModelId', "");
+      this.dialogAddModel = true;
     }
 
     // 编辑
     async edit(scope: any) {
-      this.$router.push({
-        path: "/businessModel/add",
-        query: {id: scope.row.id},
-      });
+      localStorage.setItem('editModelId', scope.row.id);
+      this.dialogAddModel = true;
+    }
+
+    // 保存新增/编辑
+    async finishAddModel(data: any) {
+      console.log('data', data);
+      await this.getListMixin();
     }
   }
 </script>
