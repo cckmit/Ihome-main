@@ -3,8 +3,8 @@
  * @version: 
  * @Author: zyc
  * @Date: 2020-06-24 09:47:33
- * @LastEditors: ywl
- * @LastEditTime: 2020-11-03 11:18:32
+ * @LastEditors: wwq
+ * @LastEditTime: 2020-11-03 18:11:23
  */
 import { IRes } from "./users.d";
 // import request from '@/utils/http';
@@ -239,6 +239,27 @@ export function allMenu<T>() {
             title: "优惠告知书列表",
             icon: null,
             path: "/web-sales/discount/list"
+        },
+        {
+            id: 501,
+            parentId: 0,
+            title: "项目基础信息管理",
+            icon: 'el-icon-setting',
+            path: null,
+        },
+        {
+            id: 502,
+            parentId: 501,
+            title: "项目基础信息列表",
+            icon: null,
+            path: "/web-sales/projects/list",
+        },
+        {
+            id: 503,
+            parentId: 501,
+            title: "一手代理公司列表",
+            icon: null,
+            path: "/web-sales/firstAgency/list",
         },
     ];
     return menuList;
