@@ -4,7 +4,7 @@
  * @Author: wwq
  * @Date: 2020-09-16 14:54:19
  * @LastEditors: wwq
- * @LastEditTime: 2020-10-26 18:06:46
+ * @LastEditTime: 2020-10-28 18:47:48
 -->
 <template>
   <div>
@@ -160,6 +160,7 @@ export default class UploadDemo extends Vue {
         }
       });
       this.tableData = [...arr];
+      console.log(arr);
     });
   }
 }

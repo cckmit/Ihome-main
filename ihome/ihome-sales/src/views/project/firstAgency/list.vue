@@ -2,9 +2,9 @@
  * @Descripttion: 
  * @version: 
  * @Author: wwq
- * @Date: 2020-09-25 17:59:09
+ * @Date: 2020-10-28 15:34:27
  * @LastEditors: wwq
- * @LastEditTime: 2020-11-03 18:11:12
+ * @LastEditTime: 2020-11-04 16:31:12
 -->
 <template>
   <ih-page>
@@ -13,7 +13,10 @@
         <el-row>
           <el-col :span="8">
             <el-form-item label="名称">
-              <el-input v-model="queryPageParameters.name" clearable></el-input>
+              <el-input
+                v-model="queryPageParameters.agencyName"
+                clearable
+              ></el-input>
             </el-form-item>
           </el-col>
           <el-col :span="8">
@@ -25,20 +28,11 @@
             </el-form-item>
           </el-col>
           <el-col :span="8">
-            <el-form-item label="状态">
-              <el-select
-                style="width: 100%"
-                v-model="queryPageParameters.status"
+            <el-form-item label="简称">
+              <el-input
+                v-model="queryPageParameters.simpleName"
                 clearable
-                placeholder="请选择"
-              >
-                <el-option
-                  v-for="item in $root.dictAllList('CompanyStatusEnum')"
-                  :key="item.code"
-                  :label="item.name"
-                  :value="item.code"
-                ></el-option>
-              </el-select>
+              ></el-input>
             </el-form-item>
           </el-col>
         </el-row>
@@ -49,11 +43,28 @@
             </el-form-item>
           </el-col>
           <el-col :span="8">
-            <el-form-item label="录入人">
+            <el-form-item label="跟进人">
               <el-input
-                v-model="queryPageParameters.inputUser"
+                v-model="queryPageParameters.followMan"
                 clearable
               ></el-input>
+            </el-form-item>
+          </el-col>
+          <el-col :span="8">
+            <el-form-item label="状态">
+              <el-select
+                style="width: 100%"
+                v-model="queryPageParameters.agencyAuditEnum"
+                clearable
+                placeholder="请选择"
+              >
+                <el-option
+                  v-for="item in $root.dictAllList('AgencyAuditEnum')"
+                  :key="item.code"
+                  :label="item.name"
+                  :value="item.code"
+                ></el-option>
+              </el-select>
             </el-form-item>
           </el-col>
         </el-row>
@@ -65,29 +76,23 @@
         <el-button type="primary" @click="search()">查询</el-button>
         <el-button type="success" @click="add()">添加</el-button>
         <el-button type="info" @click="reset()">重置</el-button>
-        <el-button @click="updata()">变更录入人</el-button>
       </el-row>
     </template>
 
     <template v-slot:table>
       <br />
-      <el-table
-        class="ih-table"
-        :data="resPageInfo.list"
-        style="width: 100%"
-        @selection-change="handleSelectionChange"
-      >
+      <el-table class="ih-table" :data="resPageInfo.list" style="width: 100%">
         <el-table-column
-          width="50"
-          type="selection"
-          align="center"
+          prop="agencyName"
+          label="名称"
+          width="200"
         ></el-table-column>
-        <el-table-column prop="name" label="名称" width="250"></el-table-column>
         <el-table-column
           prop="creditCode"
           label="信用代码"
           width="180"
         ></el-table-column>
+        <el-table-column prop="simpleName" label="简称"></el-table-column>
         <el-table-column prop="province" label="省份">
           <template v-slot="{ row }">{{
             $root.getAreaName(row.province)
@@ -98,15 +103,15 @@
             $root.getAreaName(row.city)
           }}</template>
         </el-table-column>
-        <el-table-column prop="county" label="行政区">
+        <el-table-column prop="area" label="行政区">
           <template v-slot="{ row }">{{
-            $root.getAreaName(row.county)
+            $root.getAreaName(row.area)
           }}</template>
         </el-table-column>
-        <el-table-column prop="inputUser" label="录入人"></el-table-column>
-        <el-table-column prop="status" label="状态" width="150">
+        <el-table-column prop="followMan" label="跟进人"></el-table-column>
+        <el-table-column prop="agencyAuditEnum" label="状态" width="150">
           <template v-slot="{ row }">{{
-            $root.dictAllName(row.status, "CompanyStatusEnum")
+            $root.dictAllName(row.agencyAuditEnum, "AgencyAuditEnum")
           }}</template>
         </el-table-column>
         <el-table-column fixed="right" label="操作" width="120">
@@ -126,24 +131,10 @@
                   >修改</el-dropdown-item
                 >
                 <el-dropdown-item
-                  :disabled="row.status !== 'Draft'"
-                  @click.native.prevent="remove(row)"
-                  >删除</el-dropdown-item
-                >
-                <el-dropdown-item
-                  :disabled="row.status !== 'WaitAuditByBranchHead'"
-                  @click.native.prevent="routeTo(row, 'revocation')"
-                  >撤回
-                </el-dropdown-item>
-                <el-dropdown-item
-                  :disabled="row.status !== 'WaitAuditByBranchHead'"
-                  @click.native.prevent="routeTo(row, 'check')"
+                  @click.native.prevent="
+                    $message.warning('接口未提供,功能未实现')
+                  "
                   >审核</el-dropdown-item
-                >
-                <el-dropdown-item
-                  :disabled="row.status !== 'Audited'"
-                  @click.native.prevent="routeTo(row, 'change')"
-                  >变更信息</el-dropdown-item
                 >
               </el-dropdown-menu>
             </el-dropdown>
@@ -163,44 +154,27 @@
         :total="resPageInfo.total"
       ></el-pagination>
     </template>
-
-    <ih-dialog :show="dialogVisible" desc="变更录入人">
-      <UpdateUser
-        :data="selection"
-        @cancel="() => (dialogVisible = false)"
-        @finish="
-          (data) => {
-            dialogVisible = false;
-            finish(data);
-          }
-        "
-      />
-    </ih-dialog>
   </ih-page>
 </template>
 <script lang="ts">
 import { Component, Vue } from "vue-property-decorator";
-import UpdateUser from "./dialog/updateUser.vue";
-import {
-  post_company_getList,
-  get_company_delete__id,
-} from "../../api/developer/index";
-import PaginationMixin from "../../mixins/pagination";
+import { post_firstAgencyCompany_getList } from "@/api/project/index";
+import PaginationMixin from "@/mixins/pagination";
 
 @Component({
-  components: {
-    UpdateUser,
-  },
+  components: {},
   mixins: [PaginationMixin],
 })
-export default class DeveloperList extends Vue {
+export default class FirstAgencyList extends Vue {
   queryPageParameters: any = {
-    name: null,
+    agencyName: null,
     creditCode: null,
-    status: null,
-    inputUser: null,
+    simpleName: null,
     province: null,
     city: null,
+    area: null,
+    followMan: null,
+    agencyAuditEnum: null,
   };
   provinceOption: any = [];
   selection: any = [];
@@ -208,64 +182,41 @@ export default class DeveloperList extends Vue {
     total: 0,
     list: [],
   };
-  dialogVisible = false;
 
   async created() {
     this.getListMixin();
   }
   async getListMixin() {
-    this.resPageInfo = await post_company_getList(this.queryPageParameters);
+    this.resPageInfo = await post_firstAgencyCompany_getList(
+      this.queryPageParameters
+    );
   }
 
   reset() {
     Object.assign(this.queryPageParameters, {
-      name: null,
+      agencyName: null,
       creditCode: null,
-      status: null,
-      inputUser: null,
+      simpleName: null,
       province: null,
       city: null,
+      area: null,
+      followMan: null,
+      agencyAuditEnum: null,
     });
     this.provinceOption = [];
   }
 
-  async remove(row: any) {
-    try {
-      await this.$confirm("是否确定删除?", "提示");
-      await get_company_delete__id({ id: row.id });
-      this.getListMixin();
-      this.$message({
-        type: "success",
-        message: "删除成功!",
-      });
-    } catch (error) {
-      console.log(error);
-    }
-  }
-
   routeTo(row: any, where: string) {
     this.$router.push({
-      path: `/developers/${where}`,
+      path: `/firstAgency/${where}`,
       query: {
-        id: row.id,
+        id: row.agencyId,
       },
     });
   }
 
   add() {
-    this.$router.push("/developers/add");
-  }
-
-  updata() {
-    if (this.selection.length) this.dialogVisible = true;
-    else this.$message.warning("请先勾选表格数据");
-  }
-
-  handleSelectionChange(val: any) {
-    this.selection = val.map((v: any) => ({
-      name: v.name,
-      id: v.id,
-    }));
+    this.$router.push("/firstAgency/add");
   }
 
   search() {

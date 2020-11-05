@@ -4,7 +4,7 @@
  * @Author: ywl
  * @Date: 2020-07-08 14:23:16
  * @LastEditors: ywl
- * @LastEditTime: 2020-11-03 17:38:32
+ * @LastEditTime: 2020-11-03 18:25:41
 --> 
 <template>
   <el-dialog
@@ -49,25 +49,11 @@
               v-model="form.userId"
               clearable
             >
-              <!-- 自定义模板使用 v-slot返回来的data：当前每条的数据；index：每一条数据的下标 -->
               <template v-slot="{ data }">
                 <span style="float: left">{{ data.name }}</span>
                 <span style="margin-left: 20px;float: right; color: #8492a6; font-size: 13px">{{ data.account }}</span>
               </template>
             </IhSelectPageUser>
-            <!-- <el-select
-              style="width: 100%"
-              v-model="form.userId"
-              clearable
-              placeholder="请选择"
-            >
-              <el-option
-                v-for="item in testList"
-                :key="item.id"
-                :label="item.value"
-                :value="item.id"
-              ></el-option>
-            </el-select> -->
           </el-form-item>
         </el-col>
       </el-row>
@@ -107,7 +93,7 @@ export default class UpdateUser extends Vue {
   };
   private user = "";
   rule = {
-    userId: [{ required: true, message: "请选择用户" }],
+    userId: [{ required: true, message: "请选择用户", trigger: "blur" }],
   };
   testList = [
     { value: "管理员1", id: 1 },

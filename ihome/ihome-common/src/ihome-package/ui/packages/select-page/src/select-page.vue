@@ -4,7 +4,7 @@
  * @Author: ywl
  * @Date: 2020-10-20 15:03:13
  * @LastEditors: ywl
- * @LastEditTime: 2020-11-03 16:54:00
+ * @LastEditTime: 2020-11-04 08:55:48
 -->
 <template>
   <el-select
@@ -22,6 +22,7 @@
     <div class="selectInput">
       <el-input
         ref="search"
+        class="select-page-search"
         :placeholder="searchPlaceholder"
         v-model="filterText"
         clearable
@@ -156,6 +157,10 @@ interface PropsType {
 }
 </style>
 <style>
+.select-page-search .el-input__suffix {
+  width: 25px !important;
+  overflow: hidden;
+}
 .ih-select-page-user .el-select-dropdown__wrap {
   max-height: none !important;
   margin: 0 !important;

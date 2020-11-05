@@ -3,8 +3,8 @@
  * @version: 
  * @Author: wwq
  * @Date: 2020-10-09 09:35:09
- * @LastEditors: wwq
- * @LastEditTime: 2020-10-20 12:00:02
+ * @LastEditors: ywl
+ * @LastEditTime: 2020-11-04 11:42:07
 -->
 
 <template>
@@ -17,10 +17,18 @@
     width="900px"
     class="dialog text-left"
   >
-    <el-form ref="form" :model="form" :rules="rules" label-width="80px">
+    <el-form
+      ref="form"
+      :model="form"
+      :rules="rules"
+      label-width="80px"
+    >
       <el-row>
         <el-col :span="12">
-          <el-form-item label="城市等级" prop="cityGrade">
+          <el-form-item
+            label="城市等级"
+            prop="cityGrade"
+          >
             <el-select
               v-model="form.cityGrade"
               clearable
@@ -36,7 +44,10 @@
           </el-form-item>
         </el-col>
         <el-col :span="12">
-          <el-form-item label="渠道等级" prop="channelGrade">
+          <el-form-item
+            label="渠道等级"
+            prop="channelGrade"
+          >
             <el-select
               v-model="form.channelGrade"
               clearable
@@ -54,7 +65,10 @@
       </el-row>
       <el-row>
         <el-col :span="12">
-          <el-form-item label="评级项" prop="gradeItem">
+          <el-form-item
+            label="评级项"
+            prop="gradeItem"
+          >
             <el-input
               clearable
               v-model="form.gradeItem"
@@ -67,7 +81,10 @@
       </el-row>
       <el-row>
         <el-col :span="24">
-          <el-form-item label="评级标准" prop="gradeStandard">
+          <el-form-item
+            label="评级标准"
+            prop="gradeStandard"
+          >
             <el-input
               v-model="form.gradeStandard"
               maxlength="64"
@@ -81,21 +98,24 @@
       </el-row>
       <el-row>
         <el-col :span="24">
-          <el-form-item label="所需材料" required>
+          <el-form-item
+            label="所需材料"
+            required
+          >
             <el-checkbox-group v-model="form.standardAttachments">
               <el-row>
-                <template
-                  v-for="item in $root.dictAllList(
+                <template v-for="item in $root.dictAllList(
                     'ChannelLevelStandardAttachment'
-                  )"
-                >
-                  <el-col :span="12" :key="item.code">
+                  )">
+                  <el-col
+                    :span="12"
+                    :key="item.code"
+                  >
                     <el-checkbox
                       :label="item.code"
                       class="checkboxlist"
                       :title="item.name"
-                      >{{ item.name }}</el-checkbox
-                    >
+                    >{{ item.name }}</el-checkbox>
                   </el-col>
                 </template>
               </el-row>
@@ -105,9 +125,15 @@
       </el-row>
     </el-form>
 
-    <span slot="footer" class="dialog-footer">
+    <span
+      slot="footer"
+      class="dialog-footer"
+    >
       <el-button @click="cancel()">取 消</el-button>
-      <el-button type="primary" @click="finish()">保 存</el-button>
+      <el-button
+        type="primary"
+        @click="finish()"
+      >保 存</el-button>
     </span>
   </el-dialog>
 </template>
@@ -115,6 +141,7 @@
 import { Component, Vue, Prop } from "vue-property-decorator";
 import { Form as ElForm } from "element-ui";
 import { NoRepeatHttp } from "ihome-common/util/aop/no-repeat-http";
+import { noTrim } from "ihome-common/util/base/form-ui";
 import {
   post_channelGradeStandard_add,
   post_channelGradeStandard_edit,
@@ -144,7 +171,10 @@ export default class Edit extends Vue {
     channelGrade: [
       { required: true, message: "请选择渠道等级", trigger: "blur" },
     ],
-    gradeItem: [{ required: true, message: "请填写评级项", trigger: "blur" }],
+    gradeItem: [
+      { required: true, message: "请填写评级项", trigger: "blur" },
+      { validator: noTrim, trigger: ["change", "blur"] },
+    ],
     gradeStandard: [
       { required: true, message: "请填写评级标准", trigger: "blur" },
     ],
