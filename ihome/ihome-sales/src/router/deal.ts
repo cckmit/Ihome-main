@@ -87,6 +87,12 @@ const dealRoutes: Array<RouteConfig> = [
         name: 'DealReportInfo',
         component: () => import('@/views/deal/dealReport/info.vue'),
         meta: { title: '成交报告详情', icon: 'form' }
+      },
+      {
+        path: 'achieveAllotEntry',
+        name: 'AchieveAllotEntry',
+        component: () => import('@/views/deal/dealReport/achieveAllotEntry.vue'),
+        meta: { title: '成交业绩分配录入', icon: 'form' }
       }
     ]
   }

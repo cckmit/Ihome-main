@@ -543,7 +543,7 @@
         </el-table>
       </el-col>
     </el-row>
-    <el-row style="padding-left: 20px">
+    <el-row style="padding-left: 20px; margin-top: 20px">
       <el-col>
         <el-table
           class="ih-table"
@@ -652,7 +652,7 @@
       remarks: null,
       buModelContTypeList: []
     };
-    infoList: any = [{}];
+    infoList: any = [];
     rules: any = {
       modelName: [
         {required: true, message: "业务模式必选", trigger: "change"},
@@ -827,6 +827,10 @@
     // 确认业绩申报
     confirmPerformance() {
       console.log('确认业绩申报');
+      this.$router.push({
+        path: "/dealReport/achieveAllotEntry",
+        query: {id: this.id},
+      });
     }
   }
 </script>
@@ -886,9 +890,5 @@
     /deep/ .el-input__inner {
       cursor: pointer;
     }
-  }
-
-  .ih-padding-left-20 {
-    padding-left: 20px;
   }
 </style>
