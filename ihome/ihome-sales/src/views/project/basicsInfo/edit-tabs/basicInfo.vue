@@ -4,7 +4,7 @@
  * @Author: wwq
  * @Date: 2020-11-03 11:52:41
  * @LastEditors: wwq
- * @LastEditTime: 2020-11-04 16:42:42
+ * @LastEditTime: 2020-11-05 10:52:25
 -->
 <template>
   <div>
@@ -315,13 +315,13 @@
         <el-col :span="24">
           <el-form-item label="楼盘图片" prop="name">
             <IhUpload
-              :file-list="houseFileList"
+              :file-list.sync="houseFileList"
               :limit="5"
               :file-size="10"
               size="100px"
               accept="image/*"
               :loadPermi="false"
-              @queryList="houseFiles"
+              @newFileList="houseFiles"
             >
               <template #extend="{ data }">
                 <div class="padding-top-5 font">

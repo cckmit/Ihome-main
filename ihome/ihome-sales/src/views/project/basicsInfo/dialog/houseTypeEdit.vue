@@ -27,7 +27,7 @@
               accept="image/*"
               size="100px"
               :limit="1"
-              @queryList="queryList"
+              @newFileList="newFileList"
             ></IhUpload>
           </el-form-item>
         </el-col>
@@ -214,7 +214,7 @@ export default class HouseTypeEdit extends Vue {
       this.form.fileList = [];
     }
   }
-  queryList(data: any) {
+  newFileList(data: any) {
     this.$set(this.form.fileList, 0, data[0]);
   }
 }

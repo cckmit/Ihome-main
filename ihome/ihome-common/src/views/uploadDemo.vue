@@ -4,7 +4,7 @@
  * @Author: wwq
  * @Date: 2020-09-16 14:54:19
  * @LastEditors: wwq
- * @LastEditTime: 2020-10-28 18:47:48
+ * @LastEditTime: 2020-11-05 16:22:01
 -->
 <template>
   <div>
@@ -24,10 +24,11 @@
         <template v-slot="{ row }">
           <IhUpload
             :isCrop="isCrop"
-            :file-list="row.fileList"
+            :file-list.sync="row.fileList"
             :size="size"
             :limit="limit"
             :file-size="fileSize"
+            :is-move="isMove"
           ></IhUpload>
         </template>
       </el-table-column>
@@ -44,7 +45,8 @@ export default class UploadDemo extends Vue {
   private isCrop = true; // 上传前是否开启图片裁剪(只针对于图片上传)
   private size = "100px"; // 上传框的长宽为100px
   private limit = 3; // 上传文件的个数
-  private fileSize = 10; // 限制上传文件大小为1M
+  private fileSize = 10; // 限制上传文件大小为10M
+  private isMove = true; // 是否开启左右切换功能
   private getImage() {
     return new Promise((resolve) => {
       setTimeout(() => {
@@ -52,7 +54,7 @@ export default class UploadDemo extends Vue {
           {
             fileCat: ".pdf",
             fileName: "abc.pdf",
-            preFileAdress: 495,
+            preFileAdress: "5fa40529282f22000106af99",
             preFileCode: "leixing1",
             preFileName: "类型1",
             partCode: "partCode_first",
@@ -60,7 +62,7 @@ export default class UploadDemo extends Vue {
           {
             fileCat: ".jpg",
             fileName: "4444.jpg",
-            preFileAdress: 496,
+            preFileAdress: "5fa40580282f22000106af9f",
             preFileCode: "leixing1",
             preFileName: "类型1",
             partCode: "partCode_first",
@@ -68,7 +70,7 @@ export default class UploadDemo extends Vue {
           {
             fileCat: ".docx",
             fileName: "word.docx",
-            preFileAdress: 497,
+            preFileAdress: "5fa4055f282f22000106af9d",
             preFileCode: "leixing2",
             preFileName: "类型2",
             partCode: "partCode_first",
@@ -76,7 +78,7 @@ export default class UploadDemo extends Vue {
           {
             fileCat: ".xlsx",
             fileName: "excel.xlsx",
-            preFileAdress: 498,
+            preFileAdress: "5fa405a2282f22000106afa1",
             preFileCode: "leixing3",
             preFileName: "类型3",
             partCode: "partCode_first",
@@ -84,7 +86,7 @@ export default class UploadDemo extends Vue {
           {
             fileCat: ".jpg",
             fileName: "1111.jpg",
-            preFileAdress: 499,
+            preFileAdress: "5fa41dd7282f22000106afb7",
             preFileCode: "leixing3",
             preFileName: "类型3",
             partCode: "partCode_first",
@@ -92,7 +94,7 @@ export default class UploadDemo extends Vue {
           {
             fileCat: ".jpg",
             fileName: "2222.jpg",
-            preFileAdress: 500,
+            preFileAdress: "5fa3bdb8282f22000106af81",
             preFileCode: "leixing3",
             preFileName: "类型3",
             partCode: "partCode_first",
@@ -100,7 +102,7 @@ export default class UploadDemo extends Vue {
           {
             fileCat: ".pptx",
             fileName: "2222.pptx",
-            preFileAdress: 501,
+            preFileAdress: "5fa405b3282f22000106afa3",
             preFileCode: "leixing4",
             preFileName: "类型4",
             partCode: "partCode_first",
@@ -108,7 +110,7 @@ export default class UploadDemo extends Vue {
           {
             fileCat: ".jpg",
             fileName: "4444.jpg",
-            preFileAdress: 502,
+            preFileAdress: "5fa405c5282f22000106afa5",
             preFileCode: "leixing5",
             preFileName: "类型5",
             partCode: "partCode_first",
@@ -116,7 +118,7 @@ export default class UploadDemo extends Vue {
           {
             fileCat: ".jpg",
             fileName: "3333.jpg",
-            preFileAdress: 503,
+            preFileAdress: "5fa405de282f22000106afa7",
             preFileCode: "leixing6",
             preFileName: "类型6",
             partCode: "partCode_first",
@@ -124,7 +126,7 @@ export default class UploadDemo extends Vue {
           {
             fileCat: ".jpg",
             fileName: "1111.jpg",
-            preFileAdress: 504,
+            preFileAdress: "5fa41029282f22000106afaf",
             preFileCode: "leixing7",
             preFileName: "类型7",
             partCode: "partCode_first",
