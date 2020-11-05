@@ -261,6 +261,34 @@ export function allMenu<T>() {
             icon: null,
             path: "/web-sales/firstAgency/list",
         },
+        {
+            id: 601,
+            parentId: 0,
+            title: '成交管理模块',
+            icon: 'el-icon-setting',
+            path: null,
+        },
+        {
+            id: 602,
+            parentId: 601,
+            title: "业务模式列表",
+            icon: null,
+            path: "/web-sales/businessModel/list"
+        },
+        {
+            id: 603,
+            parentId: 601,
+            title: "分公司方案列表",
+            icon: null,
+            path: "/web-sales/achieveScaleScheme/companyList"
+        },
+        {
+            id: 604,
+            parentId: 601,
+            title: "成交报告列表",
+            icon: null,
+            path: "/web-sales/dealReport/list"
+        },
     ];
     return menuList;
 }
