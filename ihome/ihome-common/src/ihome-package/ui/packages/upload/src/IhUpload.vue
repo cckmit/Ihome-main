@@ -4,7 +4,7 @@
  * @Author: wwq
  * @Date: 2020-09-09 16:17:16
  * @LastEditors: wwq
- * @LastEditTime: 2020-11-04 16:46:07
+ * @LastEditTime: 2020-11-05 16:20:31
 -->
 <template>
   <div class="upload">
@@ -33,32 +33,42 @@
         />
         <slot name="extend" :data="file" />
         <span
-          class="el-upload-list__item-actions"
+          class="el-upload-list__item-actions uploadbutton"
           :style="{
             width: size,
             height: Object.keys($scopedSlots).length ? size : '',
           }"
         >
-          <span
-            class="el-upload-list__item-preview"
-            v-if="previewPermi"
-            @click="handlePictureCardPreview(file)"
-          >
-            <i class="el-icon-zoom-in" title="预览"></i>
+          <span class="operation">
+            <span
+              class="el-upload-list__item-preview"
+              v-if="previewPermi"
+              @click="handlePictureCardPreview(file)"
+            >
+              <i class="el-icon-zoom-in" title="预览"></i>
+            </span>
+            <span
+              class="el-upload-list__item-delete"
+              v-if="loadPermi"
+              @click="handleDownload(file)"
+            >
+              <i class="el-icon-download" title="下载"></i>
+            </span>
+            <span
+              class="el-upload-list__item-delete"
+              v-if="removePermi"
+              @click="handleRemove(file)"
+            >
+              <i class="el-icon-delete" title="删除"></i>
+            </span>
           </span>
-          <span
-            class="el-upload-list__item-delete"
-            v-if="loadPermi"
-            @click="handleDownload(file)"
-          >
-            <i class="el-icon-download" title="下载"></i>
-          </span>
-          <span
-            class="el-upload-list__item-delete"
-            v-if="removePermi"
-            @click="handleRemove(file)"
-          >
-            <i class="el-icon-delete" title="删除"></i>
+          <span class="move" v-if="isMove">
+            <span @click="leftShift(file)">
+              <i class="el-icon-back" title="左移"></i>
+            </span>
+            <span @click="rightShift(file)">
+              <i class="el-icon-right" title="右移"></i>
+            </span>
           </span>
         </span>
       </template>
@@ -81,7 +91,7 @@
         ref="cropper"
         :img="cropperImg"
         :cropper-name="cropperName"
-        @cancel="dialogVisible = false"
+        @cancel="cancel"
         @finish="(data) => cropperFinish(data)"
       ></Cropper>
     </ih-dialog>
@@ -149,6 +159,11 @@ export default class IhUpload extends Vue {
     default: true,
   })
   removePermi!: boolean;
+  @Prop({
+    type: Boolean,
+    default: false,
+  })
+  isMove!: boolean;
 
   private list: any[] = [];
   private srcList: any[] = [];
@@ -182,13 +197,6 @@ export default class IhUpload extends Vue {
       });
     }
   }
-  @Watch("dialogVisible")
-  isDialogVisible(dialogVisible: boolean) {
-    if (!dialogVisible) {
-      this.changeFileList.pop();
-      this.list = this.changeFileList;
-    }
-  }
 
   created() {
     this.srcList = [];
@@ -206,7 +214,7 @@ export default class IhUpload extends Vue {
   successHandler(response: any, file: any, fileList: any) {
     this.replaceUpload(file, fileList, fileList.length - 1, response[0].fileId);
     this.$message.success("上传成功");
-    this.$emit("queryList", fileList);
+    this.$emit("newFileList", fileList);
   }
   errorHandler() {
     this.$message.error("上传失败");
@@ -343,11 +351,44 @@ export default class IhUpload extends Vue {
     fileList[index].fileId = fileId;
     this.list = [...fileList];
   }
+
+  // 图片裁剪确定
   cropperFinish(data: any) {
     this.dialogVisible = false;
     this.fileUpload = data;
     this.cropperImg = "";
     (this.$refs.upload as any).submit();
+  }
+
+  cancel() {
+    this.dialogVisible = false;
+    this.changeFileList.pop();
+    this.list = this.changeFileList;
+  }
+
+  // 右移
+  rightShift(file: any) {
+    let index = this.list.findIndex((v: any) => v.fileId === file.fileId);
+    if (index + 1 < this.list.length) {
+      let arr = [...this.list];
+      arr.splice(index, 1);
+      arr.splice(index + 1, 0, file);
+      this.$emit("update:fileList", [...arr]);
+    } else {
+      this.$message.warning("最后一项不可右移");
+    }
+  }
+  // 左移
+  leftShift(file: any) {
+    let index = this.list.findIndex((v: any) => v.fileId === file.fileId);
+    if (index > 0) {
+      let arr = [...this.list];
+      arr.splice(index, 1);
+      arr.splice(index - 1, 0, file);
+      this.$emit("update:fileList", [...arr]);
+    } else {
+      this.$message.warning("第一项不可左移");
+    }
   }
 }
 </script>
@@ -390,5 +431,24 @@ export default class IhUpload extends Vue {
     min-width: 100px;
     min-height: 100px;
   }
+}
+
+.uploadbutton {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  .move,
+  .operation {
+    width: 100%;
+  }
+  .move {
+    display: flex !important;
+    justify-content: space-around !important;
+    margin-left: 0 !important;
+  }
+}
+
+.el-upload-list--picture-card .el-upload-list__item-actions::after {
+  height: 0;
 }
 </style>
