@@ -243,27 +243,48 @@ export function allMenu<T>() {
         {
             id: 501,
             parentId: 0,
-            title: '成交管理模块',
+            title: "项目基础信息管理",
             icon: 'el-icon-setting',
             path: null,
         },
         {
             id: 502,
             parentId: 501,
+            title: "项目基础信息列表",
+            icon: null,
+            path: "/web-sales/projects/list",
+        },
+        {
+            id: 503,
+            parentId: 501,
+            title: "一手代理公司列表",
+            icon: null,
+            path: "/web-sales/firstAgency/list",
+        },
+        {
+            id: 601,
+            parentId: 0,
+            title: '成交管理模块',
+            icon: 'el-icon-setting',
+            path: null,
+        },
+        {
+            id: 602,
+            parentId: 601,
             title: "业务模式列表",
             icon: null,
             path: "/web-sales/businessModel/list"
         },
         {
-            id: 503,
-            parentId: 501,
+            id: 603,
+            parentId: 601,
             title: "分公司方案列表",
             icon: null,
             path: "/web-sales/achieveScaleScheme/companyList"
         },
         {
-            id: 504,
-            parentId: 501,
+            id: 604,
+            parentId: 601,
             title: "成交报告列表",
             icon: null,
             path: "/web-sales/dealReport/list"
