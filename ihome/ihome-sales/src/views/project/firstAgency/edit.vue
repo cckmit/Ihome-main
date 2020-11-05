@@ -222,7 +222,7 @@
               :file-list="row.fileList"
               size="100px"
               accept="image/*"
-              @queryList="queryFiles"
+              @newFileList="queryFiles"
             >
             </IhUpload>
           </template>
