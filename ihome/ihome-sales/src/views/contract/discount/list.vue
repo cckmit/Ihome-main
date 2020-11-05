@@ -4,7 +4,7 @@
  * @Author: ywl
  * @Date: 2020-09-27 16:27:36
  * @LastEditors: ywl
- * @LastEditTime: 2020-11-03 16:14:58
+ * @LastEditTime: 2020-11-05 14:31:51
 -->
 <template>
   <IhPage label-width="110px">
@@ -48,7 +48,7 @@
               <el-col :span="8">
                 <el-form-item label="客户">
                   <el-select
-                    v-model="queryPageParameters.partyB"
+                    v-model="queryPageParameters.ownerName"
                     clearable
                     placeholder="客户"
                     class="width--100"
@@ -59,7 +59,7 @@
               <el-col :span="8">
                 <el-form-item label="客户电话">
                   <el-input
-                    v-model="queryPageParameters.mobileB"
+                    v-model="queryPageParameters.ownerMobile"
                     placeholder="客户电话"
                   ></el-input>
                 </el-form-item>
@@ -81,7 +81,7 @@
               <el-col :span="8">
                 <el-form-item label="房号">
                   <el-select
-                    v-model="queryPageParameters.room"
+                    v-model="queryPageParameters.roomNumber"
                     clearable
                     placeholder="房号"
                     class="width--100"
@@ -127,7 +127,7 @@
               <el-col :span="8">
                 <el-form-item label="立项周期">
                   <el-select
-                    v-model="queryPageParameters.cycle"
+                    v-model="queryPageParameters.cycleId"
                     clearable
                     placeholder="立项周期"
                     class="width--100"
@@ -164,7 +164,10 @@
           type="primary"
           @click="handleSearch()"
         >查询</el-button>
-        <el-button type="info">重置</el-button>
+        <el-button
+          type="info"
+          @click="handleReact()"
+        >重置</el-button>
         <el-button>导出</el-button>
         <el-link
           type="primary"
@@ -199,12 +202,12 @@
         ></el-table-column>
         <el-table-column
           label="乙方联系电话"
-          prop="mobileB"
+          prop="partyBMobile"
           width="130"
         ></el-table-column>
         <el-table-column
           label="乙方证件号码"
-          prop="idNo"
+          prop="partyBIdNo"
           width="160"
         ></el-table-column>
         <el-table-column
@@ -247,7 +250,7 @@
         </el-table-column>
         <el-table-column
           label="项目"
-          prop="pro"
+          prop="projectName"
           min-width="120"
         ></el-table-column>
         <el-table-column
@@ -296,17 +299,17 @@ import { post_notice_list } from "@/api/contract/index";
 export default class DiscountList extends Vue {
   public queryPageParameters: any = {
     noticeCode: null,
-    // partyA: null,
-    // partyB: null,
+    partyA: null,
+    ownerName: null,
+    ownerMobile: null,
     area: null,
-    mobileB: null,
     projectName: null,
-    room: null,
+    roomNumber: null,
     deduction: null,
     discount: null,
     beginTime: null,
     endTime: null,
-    cycle: null,
+    cycleId: null,
     state: null,
   };
   private timeList: any = [];
@@ -332,17 +335,17 @@ export default class DiscountList extends Vue {
   private handleReact(): void {
     Object.assign(this.queryPageParameters, {
       noticeCode: null,
-      // partyA: null,
-      // partyB: null,
+      partyA: null,
+      ownerName: null,
+      ownerMobile: null,
       area: null,
-      mobileB: null,
       projectName: null,
-      room: null,
+      roomNumber: null,
       deduction: null,
       discount: null,
       beginTime: null,
       endTime: null,
-      cycle: null,
+      cycleId: null,
       state: null,
     });
     this.timeList = [];

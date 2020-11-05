@@ -4,7 +4,7 @@
  * @Author: ywl
  * @Date: 2020-09-27 14:41:06
  * @LastEditors: ywl
- * @LastEditTime: 2020-11-02 17:27:49
+ * @LastEditTime: 2020-11-05 10:58:48
 -->
 <template>
   <IhPage>
@@ -145,13 +145,13 @@
           <el-col :span="12">
             <el-form-item label="归档状态">
               <el-select
-                v-model="ruleForm.name"
+                v-model="ruleForm.fileState"
                 placeholder="归档状态"
                 disabled
                 class="width--100"
               >
                 <el-option
-                  v-for="item in $root.dictAllList('StrategyEnum.fileState')"
+                  v-for="item in $root.dictAllList('StrategyEnum.FileState')"
                   :key="item.code"
                   :label="item.name"
                   :value="item.code"
@@ -192,6 +192,7 @@
           <el-col :span="24">
             <el-form-item label="盖章版归档">
               <IhUpload
+                v-if="$route.name === 'StrategyAdd'"
                 :file-list="fileList2"
                 size="100px"
                 :limit="1"
@@ -227,6 +228,7 @@ import { NoRepeatHttp } from "ihome-common/util/aop/no-repeat-http";
 import {
   post_strategy_create,
   get_strategy_detail__id,
+  post_strategy_update,
 } from "@/api/contract/index";
 import { post_company_listAll } from "@/api/developer/index";
 import { post_company_getAll } from "@/api/system/index";
@@ -308,15 +310,28 @@ export default class StrategyAdd extends Vue {
         let sign = this.ruleForm.timeList && this.ruleForm.timeList.length;
         this.ruleForm.beginTime = sign ? this.ruleForm.timeList[0] : "";
         this.ruleForm.endTime = sign ? this.ruleForm.timeList[1] : "";
-        await post_strategy_create({
-          ...this.ruleForm,
-          partyA: this.ruleForm.partyA.id,
-          partyAName: this.ruleForm.partyA.name,
-          partyB: this.ruleForm.partyB.id,
-          partyBName: this.ruleForm.partyB.name,
-          state,
-        });
-        this.$message.success("提交成功");
+        if (this.$route.name === "StrategyAdd") {
+          await post_strategy_create({
+            ...this.ruleForm,
+            partyA: this.ruleForm.partyA.id,
+            partyAName: this.ruleForm.partyA.name,
+            partyB: this.ruleForm.partyB.id,
+            partyBName: this.ruleForm.partyB.name,
+            state,
+          });
+          this.$message.success("添加成功");
+        } else {
+          console.log(this.$route.name);
+          await post_strategy_update({
+            ...this.ruleForm,
+            partyA: this.ruleForm.partyA.id,
+            partyAName: this.ruleForm.partyA.name,
+            partyB: this.ruleForm.partyB.id,
+            partyBName: this.ruleForm.partyB.name,
+            state,
+          });
+          this.$message.success("编辑成功");
+        }
       }
     });
   }

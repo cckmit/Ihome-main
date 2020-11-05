@@ -4,7 +4,7 @@
  * @Author: ywl
  * @Date: 2020-09-27 17:27:00
  * @LastEditors: ywl
- * @LastEditTime: 2020-10-29 15:54:30
+ * @LastEditTime: 2020-11-05 14:40:37
 -->
 <template>
   <IhPage class="text-left">
@@ -54,7 +54,7 @@
           </el-col>
           <el-col :span="12">
             <el-form-item label="优惠项目名称">
-              保利XX项目
+              {{resInfo.projectName}}
             </el-form-item>
           </el-col>
         </el-row>
@@ -141,7 +141,10 @@
 <script lang="ts">
 import { Component, Vue } from "vue-property-decorator";
 
-import { get_notice_detail__id } from "@/api/contract/index";
+import {
+  get_notice_detail__id,
+  get_notice_preview__id,
+} from "@/api/contract/index";
 
 @Component({})
 export default class DiscountDetail extends Vue {
@@ -154,10 +157,9 @@ export default class DiscountDetail extends Vue {
   }
 
   private async preview(): Promise<void> {
-    this.$message.warning("接口没有实现");
-    return;
-    // let id = this.$route.query.id;
-    // await get_notice_preview__id({ id });
+    // this.$message.warning("接口没有实现");
+    let id = this.$route.query.id;
+    await get_notice_preview__id({ id });
   }
 
   created() {

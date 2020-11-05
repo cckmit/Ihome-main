@@ -4,7 +4,7 @@
  * @Author: ywl
  * @Date: 2020-09-25 17:34:32
  * @LastEditors: ywl
- * @LastEditTime: 2020-11-04 17:58:05
+ * @LastEditTime: 2020-11-04 18:10:10
 -->
 <template>
   <IhPage label-width="100px">
@@ -250,7 +250,7 @@
         ></el-table-column>
         <el-table-column
           label="项目地址"
-          prop="address"
+          prop="partyAAddress"
           min-width="200"
         ></el-table-column>
         <el-table-column
@@ -279,7 +279,7 @@
         ></el-table-column>
         <el-table-column
           label="合同编号"
-          prop="contractCode"
+          prop="code"
           width="200"
         ></el-table-column>
         <el-table-column

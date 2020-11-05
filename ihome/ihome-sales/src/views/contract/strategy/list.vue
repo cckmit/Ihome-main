@@ -4,7 +4,7 @@
  * @Author: ywl
  * @Date: 2020-09-27 11:13:15
  * @LastEditors: ywl
- * @LastEditTime: 2020-11-03 16:11:39
+ * @LastEditTime: 2020-11-05 09:05:30
 -->
 <template>
   <IhPage label-width="100px">
@@ -226,12 +226,12 @@
         ></el-table-column>
         <el-table-column
           label="关联项目"
-          prop="projectName"
+          prop="projectId"
           width="150"
         ></el-table-column>
         <el-table-column
           label="关联周期"
-          prop="cycle"
+          prop="cycleId"
           width="150"
         ></el-table-column>
         <el-table-column
@@ -253,6 +253,15 @@
           prop="fileCode"
           width="245"
         ></el-table-column>
+        <el-table-column
+          label="协议类型"
+          prop="agreementType"
+          width="125"
+        >
+          <template v-slot="{ row }">
+            {{$root.dictAllName(row.agreementType, 'AgreementTypeEnum')}}
+          </template>
+        </el-table-column>
         <el-table-column
           label="操作"
           width="130"
