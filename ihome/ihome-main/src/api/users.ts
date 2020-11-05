@@ -3,8 +3,8 @@
  * @version: 
  * @Author: zyc
  * @Date: 2020-06-24 09:47:33
- * @LastEditors: ywl
- * @LastEditTime: 2020-11-03 11:18:32
+ * @LastEditors: wwq
+ * @LastEditTime: 2020-11-03 18:11:23
  */
 import { IRes } from "./users.d";
 // import request from '@/utils/http';
@@ -17,7 +17,7 @@ import request from 'ihome-common/util/api/http';
  */
 function resHandle<T>(result: Promise<IRes<T>>) {
     return result.then((res: IRes<T>) => res.data)
-        .catch((err: IRes<T>) => err.data)
+      .catch((err: IRes<T>) => err.data)
 }
 
 /**获取用户信息
@@ -261,34 +261,6 @@ export function allMenu<T>() {
             icon: null,
             path: "/web-sales/firstAgency/list",
         },
-        {
-            id: 601,
-            parentId: 0,
-            title: '成交管理模块',
-            icon: 'el-icon-setting',
-            path: null,
-        },
-        {
-            id: 602,
-            parentId: 601,
-            title: "业务模式列表",
-            icon: null,
-            path: "/web-sales/businessModel/list"
-        },
-        {
-            id: 603,
-            parentId: 601,
-            title: "分公司方案列表",
-            icon: null,
-            path: "/web-sales/achieveScaleScheme/companyList"
-        },
-        {
-            id: 604,
-            parentId: 601,
-            title: "成交报告列表",
-            icon: null,
-            path: "/web-sales/dealReport/list"
-        },
     ];
     return menuList;
 }
@@ -317,7 +289,7 @@ export async function logout() {
 
 
 export const getUserInfo = () =>
-    request({
-        url: '/users/logout',
-        method: 'post'
-    })
+  request({
+      url: '/users/logout',
+      method: 'post'
+  })

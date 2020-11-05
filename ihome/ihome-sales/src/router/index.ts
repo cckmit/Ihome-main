@@ -3,8 +3,8 @@
  * @version: 
  * @Author: zyc
  * @Date: 2020-06-22 11:10:43
- * @LastEditors: zyc
- * @LastEditTime: 2020-10-23 15:25:55
+ * @LastEditors: wwq
+ * @LastEditTime: 2020-10-27 08:53:44
  */
 import Vue from 'vue'
 import VueRouter, { RouteConfig, Route } from 'vue-router'
@@ -22,8 +22,8 @@ Vue.use(VueRouter);
 
 import { channelRoutes } from './channel';
 import { developerRoutes } from './developer';
-import { contractRoutes } from './contract';
-import { dealRoutes } from './deal'
+import { contractRoutes } from './contract'
+import { projectRoutes } from './project'
 
 let routes: Array<RouteConfig> = [
   {
@@ -36,7 +36,7 @@ let routes: Array<RouteConfig> = [
   },
 ]
 
-routes = routes.concat(channelRoutes, developerRoutes, contractRoutes, dealRoutes);
+routes = routes.concat(channelRoutes, developerRoutes, contractRoutes, projectRoutes);
 
 const router = new VueRouter({
   mode: 'history',
