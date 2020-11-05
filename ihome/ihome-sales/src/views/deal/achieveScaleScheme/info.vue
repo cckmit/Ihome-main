@@ -50,36 +50,39 @@
         </el-col>
       </el-row>
     </el-form>
-    <el-table
-      style="padding-left: 20px"
-      class="ih-table"
-      :data="infoList">
-      <el-table-column
-        prop="modelName"
-        label="类别"
-        min-width="120"
-      ></el-table-column>
-      <el-table-column
-        prop="contType"
-        label="角色"
-        min-width="120"
-      ></el-table-column>
-      <el-table-column
-        prop="contType"
-        label="拆分比例 (%)"
-        min-width="120"
-      ></el-table-column>
-      <el-table-column
-        prop="contType"
-        label="角色缺失处理方式"
-        min-width="120"
-      ></el-table-column>
-      <el-table-column
-        prop="contType"
-        label="备注"
-        min-width="150"
-      ></el-table-column>
-    </el-table>
+    <el-row style="padding-left: 20px">
+      <el-col>
+        <el-table
+          class="ih-table"
+          :data="infoList">
+          <el-table-column
+            prop="modelName"
+            label="类别"
+            min-width="120"
+          ></el-table-column>
+          <el-table-column
+            prop="contType"
+            label="角色"
+            min-width="120"
+          ></el-table-column>
+          <el-table-column
+            prop="contType"
+            label="拆分比例 (%)"
+            min-width="120"
+          ></el-table-column>
+          <el-table-column
+            prop="contType"
+            label="角色缺失处理方式"
+            min-width="120"
+          ></el-table-column>
+          <el-table-column
+            prop="contType"
+            label="备注"
+            min-width="150"
+          ></el-table-column>
+        </el-table>
+      </el-col>
+    </el-row>
   </ih-page>
 </template>
 <script lang="ts">

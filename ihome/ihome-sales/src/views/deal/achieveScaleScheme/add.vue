@@ -120,7 +120,7 @@
           </el-form-item>
         </el-col>
       </el-row>
-      <el-form-item label="" label-width="0">
+      <el-form-item label="" label-width="0" style="padding-left: 20px;">
         <div class="add-all-wrapper">
           <el-button type="success" @click="addTotalPackage">添加总包</el-button>
           <el-button type="success" @click="addDistribution">添加分销</el-button>
