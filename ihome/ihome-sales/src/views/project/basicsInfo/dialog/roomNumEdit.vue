@@ -4,7 +4,7 @@
  * @Author: wwq
  * @Date: 2020-11-03 18:39:23
  * @LastEditors: wwq
- * @LastEditTime: 2020-11-04 16:25:33
+ * @LastEditTime: 2020-11-06 17:25:22
 -->
 <template>
   <el-dialog
@@ -15,7 +15,7 @@
     :before-close="cancel"
     width="500px"
     class="dialog text-left"
-    title="编辑栋座"
+    :title="Object.keys(data).length === 0 ? '新增栋座' : '编辑栋座'"
   >
     <el-form ref="form" :model="form" :rules="rules" label-width="100px">
       <el-row>
@@ -48,7 +48,6 @@
           </el-form-item>
         </el-col>
       </el-row>
-
       <el-row>
         <el-col :span="24">
           <el-form-item label="物业类型：" prop="propertyEnum">
@@ -57,9 +56,29 @@
               v-model="form.propertyEnum"
               clearable
               placeholder="物业类型"
+              value-key="propertyId"
             >
               <el-option
-                v-for="item in $root.dictAllList('PropertyEnum')"
+                v-for="item in propertyEnumOptions"
+                :key="item.propertyId"
+                :label="item.propertyName"
+                :value="item"
+              ></el-option>
+            </el-select>
+          </el-form-item>
+        </el-col>
+      </el-row>
+      <el-row>
+        <el-col :span="24">
+          <el-form-item label="装修级别">
+            <el-select
+              style="width: 100%"
+              v-model="form.renovatLevelEnum"
+              clearable
+              placeholder="装修级别"
+            >
+              <el-option
+                v-for="item in $root.dictAllList('RenovatLevelEnum')"
                 :key="item.code"
                 :label="item.name"
                 :value="item.code"
@@ -79,7 +98,8 @@
 <script lang="ts">
 import { Component, Vue, Prop } from "vue-property-decorator";
 import { Form as ElForm } from "element-ui";
-
+import { isNumberValidato } from "ihome-common/util/base/form-ui";
+import { get_building_getPropertyDropDowm__proId } from "@/api/project/index";
 import { NoRepeatHttp } from "ihome-common/util/aop/no-repeat-http";
 @Component({
   components: {},
@@ -90,17 +110,24 @@ export default class RoomNumEdit extends Vue {
 
   form: any = {
     buildingName: null,
-    floor: null,
-    undergroundNum: null,
+    floor: 0,
+    undergroundNum: 0,
     propertyEnum: null,
+    renovatLevelEnum: null,
+    propertyId: null,
   };
+  propertyEnumOptions: any = [];
   rules: any = {
     buildingName: [
       { required: true, message: "请输入栋座名称", trigger: "blur" },
     ],
-    floor: [{ required: true, message: "请输入地上层数", trigger: "blur" }],
+    floor: [
+      { required: true, message: "请输入地上层数", trigger: "blur" },
+      { validator: isNumberValidato, trigger: ["change", "blur"] },
+    ],
     undergroundNum: [
       { required: true, message: "请输入地下层数", trigger: "blur" },
+      { validator: isNumberValidato, trigger: ["change", "blur"] },
     ],
     propertyEnum: [
       { required: true, message: "请选择物业类型", trigger: "blur" },
@@ -123,7 +150,10 @@ export default class RoomNumEdit extends Vue {
     }
   }
   async created() {
-    this.form = { ...this.data };
+    this.propertyEnumOptions = await get_building_getPropertyDropDowm__proId({
+      proId: this.$route.query.id,
+    });
+    this.form = { floor: 0, undergroundNum: 0, ...this.data };
   }
 }
 </script>

@@ -4,45 +4,33 @@
  * @Author: wwq
  * @Date: 2020-11-03 11:52:41
  * @LastEditors: wwq
- * @LastEditTime: 2020-11-04 16:27:35
+ * @LastEditTime: 2020-11-06 15:31:32
 -->
 <template>
-  <div class="house-type">
-    <div v-for="list in info" :key="list.propertyId">
-      <p class="ih-info-title">
-        {{ $root.dictAllName(list.propertyEnum, "PropertyEnum") + "户型" }}
-      </p>
-      <div class="content">
-        <template v-for="item in list.houseTypeVOS">
-          <div :key="item.houseTypeId" class="info">
-            <img
-              class="img"
-              :src="`/sales-api/sales-document-cover/file/browse/${item.picAddr}`"
-              alt=""
-            />
-            <div class="title">
-              {{ `${item.houseName} ${item.space}m²` }}<br />
-              {{
-                `${item.room}室${item.hall}厅 ${item.kitchen}厨
+  <div class="house-type text-left">
+    <div class="content" v-for="item in info" :key="item.houseTypeId">
+      <img
+        class="img"
+        :src="`/sales-api/sales-document-cover/file/browse/${item.picAddr}`"
+        alt=""
+      />
+      <div class="title">
+        {{ `${item.houseName} ${item.space}m²` }}<br />
+        {{
+          `${item.room}室${item.hall}厅 ${item.kitchen}厨
               ${item.toilet}卫 ${item.space}m²`
-              }}
-            </div>
-            <el-button
-              size="small"
-              type="success"
-              @click="edit(item, list.propertyId)"
-              >编辑</el-button
-            >
-            <el-button size="small" type="danger" @click="remove(item)"
-              >删除</el-button
-            >
-          </div>
-        </template>
-        <div class="plus" @click="add(list.propertyId)">
-          <i class="el-icon-plus"></i>
-          <div class="title">点击新增户型</div>
-        </div>
+        }}
       </div>
+      <el-button size="small" type="success" @click="edit(item)"
+        >编辑</el-button
+      >
+      <el-button size="small" type="danger" @click="remove(item)"
+        >删除</el-button
+      >
+    </div>
+    <div class="plus" @click="add()">
+      <i class="el-icon-plus"></i>
+      <div class="title">点击新增户型</div>
     </div>
     <ih-dialog :show="dialogVisible" desc="编辑">
       <HouseTypeEdit
@@ -58,7 +46,7 @@ import { Component, Vue } from "vue-property-decorator";
 import HouseTypeEdit from "../dialog/houseTypeEdit.vue";
 import {
   get_houseType_getTabItem__proId,
-  post_houseType_save,
+  post_houseType_add,
   post_houseType_delete__houseTypeId,
 } from "@/api/project/index";
 
@@ -84,13 +72,13 @@ export default class EditHouseType extends Vue {
     }
   }
 
-  add(id: any) {
-    this.editData = { propertyId: id };
+  add() {
+    this.editData = {};
     this.dialogVisible = true;
   }
 
-  edit(data: any, id: any) {
-    this.editData = { ...data, propertyId: id };
+  edit(data: any) {
+    this.editData = { ...data };
     this.dialogVisible = true;
   }
 
@@ -99,7 +87,7 @@ export default class EditHouseType extends Vue {
     obj = { ...data };
     obj.picAddr = data.fileList[0].fileId;
     obj.proId = this.proId;
-    await post_houseType_save(obj);
+    await post_houseType_add(obj);
     this.$message.success("保存成功");
     this.dialogVisible = false;
     this.getInfo();
@@ -124,15 +112,24 @@ export default class EditHouseType extends Vue {
 </script>
 <style lang="scss" scoped>
 .house-type {
+  display: flex;
+  overflow: auto;
   width: 100%;
   height: 100%;
-  display: inline-block;
   .content {
-    display: flex;
-    overflow-x: auto;
-    overflow-y: hidden;
+    display: inline-block;
     margin-left: 20px;
+    text-align: center;
+    padding: 5px;
+    & + & {
+      margin-left: 10px;
+    }
+    .img {
+      width: 150px;
+      height: 150px;
+    }
   }
+
   .plus {
     width: 150px;
     height: 150px;
@@ -142,6 +139,7 @@ export default class EditHouseType extends Vue {
     cursor: pointer;
     border-radius: 6px;
     text-align: center;
+    vertical-align: top;
     .el-icon-plus {
       font-size: 30px;
       line-height: 150px;
@@ -149,19 +147,6 @@ export default class EditHouseType extends Vue {
     }
   }
 }
-.info {
-  display: inline-block;
-  text-align: center;
-  padding: 5px;
-  & + & {
-    margin-left: 10px;
-  }
-  .img {
-    width: 150px;
-    height: 150px;
-  }
-}
-
 .title {
   width: 150px;
   padding: 5px 0;

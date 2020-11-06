@@ -4,7 +4,7 @@
  * @Author: wwq
  * @Date: 2020-11-03 18:39:23
  * @LastEditors: wwq
- * @LastEditTime: 2020-11-04 16:26:59
+ * @LastEditTime: 2020-11-06 18:04:03
 -->
 <template>
   <div>
@@ -122,6 +122,7 @@
                 v-model="form.houseTypeId"
                 clearable
                 placeholder="房屋户型"
+                @change="houseTypeChange"
               >
                 <el-option
                   v-for="item in houseTypeOptions"
@@ -136,6 +137,52 @@
             <el-link @click="addHouseType"
               >没有找到适合的户型?点击去添加户型</el-link
             >
+          </el-col>
+        </el-row>
+        <el-row v-if="houseInfo">
+          <el-col :span="10">
+            <el-form-item label="户型面积：" prop="space">
+              <div style="display: flex; justify-contant: flex-start">
+                <el-input
+                  disabled
+                  v-model.number="form.space"
+                  onkeyup="this.value = this.value.replace(/[^\d.]/g,'');"
+                ></el-input>
+                <span style="width: 30px; margin-left: 10px">m²</span>
+              </div>
+            </el-form-item>
+          </el-col>
+        </el-row>
+        <el-row v-if="houseInfo">
+          <el-col :span="24">
+            <el-form-item label="户型：">
+              <div style="display: flex; justify-contant: flex-start">
+                <el-select v-model="form.room" clearable disabled> </el-select>
+                <span style="padding: 0 8px">室</span>
+                <el-select v-model="form.hall" clearable disabled> </el-select>
+                <span style="padding: 0 8px">厅</span>
+                <el-select v-model="form.kitchen" clearable disabled>
+                </el-select>
+                <span style="padding: 0 8px">厨</span>
+                <el-select v-model="form.toilet" clearable disabled>
+                </el-select>
+                <span style="padding: 0 8px">卫</span>
+              </div>
+            </el-form-item>
+          </el-col>
+        </el-row>
+        <el-row v-if="form.exSimple === 1 && houseInfo">
+          <el-col :span="24">
+            <el-form-item label="朝向：">
+              <el-select v-model="form.positionEnum" clearable disabled>
+                <el-option
+                  v-for="item in $root.dictAllList('PositionEnum')"
+                  :key="item.code"
+                  :label="item.name"
+                  :value="item.code"
+                ></el-option>
+              </el-select>
+            </el-form-item>
           </el-col>
         </el-row>
       </el-form>
@@ -155,12 +202,12 @@
   </div>
 </template>
 <script lang="ts">
-import { Component, Vue, Prop } from "vue-property-decorator";
+import { Component, Vue, Prop, Watch } from "vue-property-decorator";
 import { Form as ElForm } from "element-ui";
 import { NoRepeatHttp } from "ihome-common/util/aop/no-repeat-http";
 import {
-  get_houseType_getItemsByProperty__propertyId,
-  post_houseType_save,
+  get_houseType_getItemsByProperty__proId,
+  post_houseType_add,
 } from "@/api/project/index";
 import HouseTypeEdit from "./houseTypeEdit.vue";
 @Component({
@@ -172,6 +219,7 @@ export default class RoomViewEdit extends Vue {
   houseDialogVisible = false;
   editData: any = {};
   private isShow = false;
+  houseInfo = false;
 
   form: any = {
     buildingName: null,
@@ -182,6 +230,13 @@ export default class RoomViewEdit extends Vue {
     to: null,
     num: null,
     houseTypeId: null,
+
+    space: null,
+    room: null,
+    hall: null,
+    kitchen: null,
+    toilet: null,
+    positionEnum: null,
   };
   rules: any = {
     roomNo: [{ required: true, message: "请输入房号", trigger: "blur" }],
@@ -200,13 +255,31 @@ export default class RoomViewEdit extends Vue {
     return this.$route.query.id;
   }
 
+  @Watch("form.houseTypeId")
+  isHouseInfo(v: any) {
+    if (v) this.houseInfo = true;
+    else this.houseInfo = false;
+  }
+
   cancel() {
     this.$emit("cancel", false);
   }
 
   addHouseType() {
+    this.editData = {};
     this.houseDialogVisible = true;
-    this.editData = { propertyId: this.data.propertyId };
+  }
+
+  houseTypeChange(v: any) {
+    if (v) {
+      const item = this.houseTypeOptions.find((j: any) => j.houseTypeId === v);
+      this.form.space = item.space;
+      this.form.room = item.room;
+      this.form.hall = item.hall;
+      this.form.kitchen = item.kitchen;
+      this.form.toilet = item.toilet;
+      this.form.positionEnum = item.positionEnum;
+    }
   }
 
   async houseFinish(data: any) {
@@ -214,7 +287,7 @@ export default class RoomViewEdit extends Vue {
     obj = { ...data };
     obj.picAddr = data.fileList[0].fileId;
     obj.proId = this.proId;
-    await post_houseType_save(obj);
+    await post_houseType_add(obj);
     this.$message.success("保存成功");
     this.houseDialogVisible = false;
     this.getInfo();
@@ -233,8 +306,8 @@ export default class RoomViewEdit extends Vue {
     }
   }
   async getInfo() {
-    this.houseTypeOptions = await get_houseType_getItemsByProperty__propertyId({
-      propertyId: this.data.propertyId,
+    this.houseTypeOptions = await get_houseType_getItemsByProperty__proId({
+      proId: this.$route.query.id,
     });
   }
   async created() {

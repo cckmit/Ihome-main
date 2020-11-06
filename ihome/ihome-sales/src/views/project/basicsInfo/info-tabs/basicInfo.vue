@@ -4,7 +4,7 @@
  * @Author: wwq
  * @Date: 2020-11-03 11:52:41
  * @LastEditors: wwq
- * @LastEditTime: 2020-11-04 16:28:13
+ * @LastEditTime: 2020-11-06 17:39:09
 -->
 <template>
   <div>
@@ -68,7 +68,7 @@
         </el-col>
         <el-col :span="8">
           <el-form-item label="开发商名称" prop="developerName">
-            <span>{{ form.developerName }}</span>
+            <span>{{ form.developerId }}</span>
           </el-form-item>
         </el-col>
       </el-row>
@@ -177,39 +177,6 @@
                       }}</span>
                     </el-form-item>
                   </el-col>
-                  <el-col :span="24">
-                    <el-form-item
-                      label="装修级别"
-                      label-width="90px"
-                      class="text-left"
-                      prop="renovatLevelEnum"
-                    >
-                      <el-radio-group
-                        v-model="item.msg.renovatLevelEnum"
-                        disabled
-                      >
-                        <el-radio label="Rough">毛坯</el-radio>
-                        <el-radio label="HardBound">精装修</el-radio>
-                      </el-radio-group>
-                    </el-form-item>
-                  </el-col>
-                  <el-col :span="24">
-                    <el-form-item
-                      label="包含栋座"
-                      label-width="90px"
-                      class="text-left"
-                    >
-                      <el-tag
-                        class="tagClass"
-                        :key="tag"
-                        v-for="tag in item.msg.buildingNames"
-                        closable
-                        :disable-transitions="false"
-                      >
-                        {{ tag }}
-                      </el-tag>
-                    </el-form-item>
-                  </el-col>
                 </el-row>
               </div>
             </el-form>
@@ -228,7 +195,7 @@
             >
               <template #extend="{ data }">
                 <div class="padding-top-5 font">
-                  <el-radio v-model="radio" :label="data" disabled
+                  <el-radio v-model="radio" :label="data.fileId" disabled
                     >设为封面图</el-radio
                   >
                 </div>
@@ -377,7 +344,6 @@ export default class InfoBasicInfo extends Vue {
   remark = "";
   contantList: any = [];
   checkBoxChangeList: any = [];
-  buildingNames: any = [];
   YesOrNoType: any = [
     {
       code: 0,
@@ -414,8 +380,6 @@ export default class InfoBasicInfo extends Vue {
               title: v.name,
               averPrice: null,
               propertyAge: null,
-              renovatLevelEnum: "Rough",
-              buildingNames: [],
               propertyCost: null,
               propertyEnum: v.code,
             },
@@ -452,7 +416,6 @@ export default class InfoBasicInfo extends Vue {
       this.contantList = data.propertyArgs.map((v: any) => ({
         ...v,
         title: (this.$root as any).dictAllName(v.propertyEnum, "PropertyEnum"),
-        buildingNames: v.buildingNames.map((j: any) => j.buildingName),
       }));
       this.form.jingwei = data.lat + "," + data.lng;
       let arr: any = [];
@@ -478,7 +441,7 @@ export default class InfoBasicInfo extends Vue {
       }));
       this.radio = this.houseFileList.filter(
         (item: any) => item.exIndex === 1
-      )[0];
+      )[0]["fileId"];
     }
   }
 
@@ -529,14 +492,6 @@ export default class InfoBasicInfo extends Vue {
   }
 }
 
-.el-tag {
-  margin-right: 10px;
-}
-.input-new-tag {
-  width: 90px;
-  vertical-align: bottom;
-}
-
 .msglist {
   /deep/ .el-form-item__content {
     margin-left: 80px !important;
@@ -544,6 +499,7 @@ export default class InfoBasicInfo extends Vue {
 }
 
 .font {
+  padding: 0 5px;
   /deep/ .el-radio__label {
     font-size: 12px;
   }
@@ -552,12 +508,5 @@ export default class InfoBasicInfo extends Vue {
 .bm-view {
   width: 100%;
   height: 400px;
-}
-
-.tagClass {
-  /deep/ .el-tag__close,
-  .el-icon-close {
-    display: none;
-  }
 }
 </style>
