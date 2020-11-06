@@ -19,17 +19,11 @@
               v-model="queryPageParameters.modelName"
               clearable
               placeholder="请选择业务模式">
-              <!--                <el-option-->
-              <!--                  v-for="item in $root.dictAllList('ChannelStatus')"-->
-              <!--                  :key="item.code"-->
-              <!--                  :label="item.name"-->
-              <!--                  :value="item.code"-->
-              <!--                ></el-option>-->
               <el-option
-                v-for="item in modelNameList"
-                :key="item.value"
-                :label="item.label"
-                :value="item.value"
+                v-for="item in $root.dictAllList('BusinessModel')"
+                :key="item.code"
+                :label="item.name"
+                :value="item.code"
               ></el-option>
             </el-select>
             <el-button type="primary" class="margin-left-20" @click="getListMixin()">查询</el-button>
@@ -122,25 +116,6 @@
       modelName: null
     };
 
-    modelNameList: any = [
-      {
-        value: "TotalBagModel",
-        label: "总包模式"
-      },
-      {
-        value: "DistriModel",
-        label: "分销模式"
-      },
-      {
-        value: "TotalBagDistriModel",
-        label: "总包+分销模式"
-      },
-      {
-        value: "UnderwritingModel",
-        label: "承销"
-      }
-    ]; // 业务模式
-
     resPageInfo: any = {
       total: 0,
       list: [],
@@ -149,6 +124,7 @@
     modelId: any = false;
 
     async created() {
+      // console.log('业务模式', (this as any).$root.dictAllList('BusinessModel'));
       await this.getListMixin();
     }
 

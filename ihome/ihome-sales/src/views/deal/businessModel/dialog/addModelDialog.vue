@@ -31,20 +31,18 @@
           <el-form-item
             label="业务模式"
             prop="modelName"
-            class="width--100"
-          >
+            class="width--100">
             <el-select
               v-model="postData.modelName"
               @change="handleChange"
               clearable
               placeholder="业务模式"
-              class="width--100"
-            >
+              class="width--100">
               <el-option
-                v-for="item in divisionList"
-                :key="item.value"
-                :label="item.label"
-                :value="item.value"
+                v-for="item in $root.dictAllList('BusinessModel')"
+                :key="item.code"
+                :label="item.name"
+                :value="item.code"
               ></el-option>
             </el-select>
           </el-form-item>
@@ -53,15 +51,14 @@
           <el-form-item
             label="合同类型"
             prop="buModelContTypeList"
-            class="width--100"
-          >
+            class="width--100">
             <el-checkbox-group v-model="postData.buModelContTypeList" class="checkbox-align">
               <el-checkbox
-                v-for="item in contractTypeList"
-                :key="item.label"
-                :label="item.label"
-                :disabled="item.disabled">
-                {{item.value}}
+                v-for="item in $root.dictAllList('ContType')"
+                :key="item.code"
+                :label="item.code"
+                :disabled="!getByNameList.includes(item.code)">
+                {{item.name}}
               </el-checkbox>
             </el-checkbox-group>
           </el-form-item>
@@ -108,50 +105,12 @@
         {required: true, message: "合同类型必选", trigger: "change"},
       ]
     };
-    divisionList: any = [
-      {
-        value: "TotalBagModel",
-        label: "总包模式"
-      },
-      {
-        value: "DistriModel",
-        label: "分销模式"
-      },
-      {
-        value: "TotalBagDistriModel",
-        label: "总包+分销模式"
-      },
-      {
-        value: "UnderwritingModel",
-        label: "承销"
-      }
-    ];
-    contractTypeList: any = [
-      {
-        value: "分销成交",
-        label: "DistriDeal",
-        disabled: false
-      },
-      {
-        value: "自然来访成交",
-        label: "NaturalVisitDeal",
-        disabled: false
-      },
-      {
-        value: "自渠成交",
-        label: "SelfChannelDeal",
-        disabled: false
-      },
-      {
-        value: "自行成交",
-        label: "SelfDeal",
-        disabled: false
-      },
-    ]
+    getByNameList: any = [];
     id: any = null;
     editLoading: any = false;
 
     async created() {
+      // console.log('业务模式', (this as any).$root.dictAllList('BusinessModel'));
       this.id = this.data;
       if (this.id) {
         this.editLoading = true;
@@ -167,20 +126,8 @@
     // 根据业务模式名称，获取对应的合同类型列表
     async getModelContTypeList() {
       const res: any = await get_businessModel_getByName__modelName({modelName: this.postData.modelName});
-      // console.log('getModelContTypeList', res);
-      if (res && res.length > 0) {
-        this.contractTypeList.forEach((list: any) => {
-          if (res.includes(list.label)) {
-            list.disabled = false;
-          } else {
-            list.disabled = true;
-          }
-        })
-      } else {
-        this.contractTypeList.forEach((list: any) => {
-          list.disabled = false;
-        })
-      }
+      console.log('getModelContTypeList', res);
+      this.getByNameList = res;
     }
 
     // 改变业务模式
@@ -188,11 +135,6 @@
       this.postData.buModelContTypeList = [];
       if (this.postData.modelName) {
         await this.getModelContTypeList();
-      } else {
-        // 默认全可选
-        this.contractTypeList.forEach((list: any) => {
-          list.disabled = false;
-        })
       }
     }
 
@@ -201,6 +143,7 @@
       (this.$refs["ruleForm"] as ElForm).validate(this.addSave);
     }
 
+    // 提交保存
     @NoRepeatHttp()
     async addSave(valid: any) {
       if (valid) {
@@ -248,6 +191,7 @@
       }
     }
 
+    // 完成选择
     async finish() {
       this.$emit("finish");
     }
