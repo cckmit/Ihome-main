@@ -4,7 +4,7 @@
  * @Author: ywl
  * @Date: 2020-09-27 14:41:06
  * @LastEditors: ywl
- * @LastEditTime: 2020-11-03 15:56:38
+ * @LastEditTime: 2020-11-06 16:24:09
 -->
 <template>
   <IhPage class="text-left">
@@ -103,6 +103,7 @@
           <el-col :span="24">
             <el-form-item label="未盖章扫描件">
               <IhUpload
+                :removePermi="false"
                 :file-list="fileList"
                 size="100px"
                 :limit="1"
@@ -114,6 +115,7 @@
           <el-col :span="24">
             <el-form-item label="盖章版归档">
               <IhUpload
+                :removePermi="false"
                 v-if="$route.name === 'scanArchived' || $route.name === 'StrategyDetail'"
                 :file-list="fileList2"
                 size="100px"
@@ -150,6 +152,22 @@ export default class StrategyDetail extends Vue {
     let id = this.$route.query.id;
     if (id) {
       this.ruleForm = await get_strategy_detail__id({ id: id });
+      this.ruleForm.originalList.forEach((item: any) => {
+        switch (item.type) {
+          case "NoSeal":
+            this.fileList.push({
+              name: item.attachmentSuffix,
+              fileId: item.url,
+            });
+            break;
+          case "Seal":
+            this.fileList2.push({
+              name: item.attachmentSuffix,
+              fileId: item.url,
+            });
+            break;
+        }
+      });
     }
   }
 

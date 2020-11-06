@@ -4,7 +4,7 @@
  * @Author: ywl
  * @Date: 2020-09-27 14:41:06
  * @LastEditors: ywl
- * @LastEditTime: 2020-11-05 10:58:48
+ * @LastEditTime: 2020-11-06 18:12:49
 -->
 <template>
   <IhPage>
@@ -135,7 +135,7 @@
             <el-form-item label="归档编号">
               <el-input
                 v-model="ruleForm.name"
-                placeholder="归档编号(自动生成)"
+                placeholder="归档编号"
                 disabled
               ></el-input>
             </el-form-item>
@@ -182,6 +182,7 @@
             <el-form-item label="未盖章扫描件">
               <IhUpload
                 :file-list="fileList"
+                @newFileList="handleNoSealFile"
                 size="100px"
                 :limit="1"
               ></IhUpload>
@@ -194,6 +195,7 @@
               <IhUpload
                 v-if="$route.name === 'StrategyAdd'"
                 :file-list="fileList2"
+                @newFileList="handleSealFile"
                 size="100px"
                 :limit="1"
               ></IhUpload>
@@ -244,19 +246,21 @@ export default class StrategyAdd extends Vue {
     title: "",
     agreementType: "",
     timeList: [],
-    originalList: [
-      {
-        url: "",
-        imageType: "",
-        type: "Seal",
-      },
-      {
-        url: "",
-        imageType: "",
-        type: "NoSeal",
-      },
-    ],
   };
+  private noSealFile: any = [
+    {
+      url: "",
+      attachmentSuffix: "",
+      type: "NoSeal",
+    },
+  ];
+  private sealFile: any = [
+    {
+      url: "",
+      attachmentSuffix: "",
+      type: "Seal",
+    },
+  ];
   private partyBList: any = [];
   private partyAList: any = [];
   private myCompany: any = [];
@@ -277,6 +281,24 @@ export default class StrategyAdd extends Vue {
     ],
   };
 
+  private handleNoSealFile(val: any) {
+    this.noSealFile = val.map((v: any) => {
+      return {
+        type: "NoSeal",
+        attachmentSuffix: v.name,
+        url: v.fileId,
+      };
+    });
+  }
+  private handleSealFile(val: any) {
+    this.sealFile = val.map((v: any) => {
+      return {
+        type: "Seal",
+        attachmentSuffix: v.name,
+        url: v.fileId,
+      };
+    });
+  }
   private handleChange(val: any) {
     this.ruleForm.partyA = null;
     this.ruleForm.partyB = null;
@@ -313,6 +335,7 @@ export default class StrategyAdd extends Vue {
         if (this.$route.name === "StrategyAdd") {
           await post_strategy_create({
             ...this.ruleForm,
+            originalList: [...this.noSealFile, ...this.sealFile],
             partyA: this.ruleForm.partyA.id,
             partyAName: this.ruleForm.partyA.name,
             partyB: this.ruleForm.partyB.id,
@@ -324,6 +347,7 @@ export default class StrategyAdd extends Vue {
           console.log(this.$route.name);
           await post_strategy_update({
             ...this.ruleForm,
+            originalList: [...this.noSealFile, ...this.sealFile],
             partyA: this.ruleForm.partyA.id,
             partyAName: this.ruleForm.partyA.name,
             partyB: this.ruleForm.partyB.id,
@@ -339,6 +363,28 @@ export default class StrategyAdd extends Vue {
     let id = this.$route.query.id;
     if (id) {
       let res: any = await get_strategy_detail__id({ id: id });
+
+      this.noSealFile = res.originalList.filter(
+        (val: any) => val.type === "NoSeal"
+      );
+      this.fileList = this.noSealFile.map((item: any) => ({
+        name: item.attachmentSuffix,
+        fileId: item.url,
+      }));
+      this.sealFile = res.originalList.filter(
+        (val: any) => val.type === "Seal"
+      );
+      this.fileList2 = this.sealFile.map((item: any) => ({
+        name: item.attachmentSuffix,
+        fileId: item.url,
+      }));
+      if (res.agreementType === "PartyA") {
+        this.partyAList = this.devList;
+        this.partyBList = this.myCompany;
+      } else {
+        this.partyAList = this.myCompany;
+        this.partyBList = this.channelList;
+      }
       this.ruleForm = {
         ...res,
         partyA: {
@@ -351,13 +397,7 @@ export default class StrategyAdd extends Vue {
         },
         timeList: res.beginTime ? [res.beginTime, res.endTime] : [],
       };
-      if (this.ruleForm.agreementType === "PartyA") {
-        this.partyAList = this.devList;
-        this.partyBList = this.myCompany;
-      } else {
-        this.partyAList = this.myCompany;
-        this.partyBList = this.channelList;
-      }
+      console.log(this.fileList, this.ruleForm);
     }
   }
 
