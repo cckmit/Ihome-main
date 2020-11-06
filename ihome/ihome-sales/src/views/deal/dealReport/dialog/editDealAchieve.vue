@@ -14,6 +14,7 @@
     :close-on-click-modal="false"
     :close-on-press-escape="false"
     :before-close="finish"
+    append-to-body
     width="1000px"
     style="text-align: left"
     class="dialog">
@@ -275,6 +276,11 @@
       this.dialogAddRole = true;
       // input失焦
       (this as any).$refs.inputSelect && (this as any).$refs.inputSelect.blur();
+    }
+
+    // 确定选择角色
+    async finishAddProjectCycle(data: any) {
+      console.log('data', data);
     }
 
     async getListMixin() {

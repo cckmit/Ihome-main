@@ -194,8 +194,8 @@
     <template v-slot:btn>
       <el-row>
         <el-button type="primary" @click="getListMixin()">查询</el-button>
-        <el-button type="info" @click="reset()">重置</el-button>
-        <el-button type="success" @click="add()">新增</el-button>
+        <el-button type="info" @click="handleReset()">重置</el-button>
+        <el-button type="success" @click="handleAdd()">新增</el-button>
       </el-row>
     </template>
     <template v-slot:table>
@@ -281,7 +281,7 @@
             <el-link
               class="margin-right-10"
               type="primary"
-              @click.native.prevent="info(scope)"
+              @click.native.prevent="handleInfo(scope)"
             >查看
             </el-link>
             <el-dropdown trigger="click" style="margin-left: 15px">
@@ -290,25 +290,25 @@
                 <i class="el-icon-arrow-down el-icon--right"></i>
               </span>
               <el-dropdown-menu slot="dropdown">
-                <el-dropdown-item @click.native.prevent="edit(scope)"
+                <el-dropdown-item @click.native.prevent="handleEdit(scope)"
                 >修改
                 </el-dropdown-item>
-                <el-dropdown-item @click.native.prevent="remove(scope)"
+                <el-dropdown-item @click.native.prevent="handleDelete(scope)"
                 >删除
                 </el-dropdown-item>
-                <el-dropdown-item @click.native.prevent="remove(scope)"
+                <el-dropdown-item @click.native.prevent="handleRecall(scope)"
                 >撤回
                 </el-dropdown-item>
-                <el-dropdown-item @click.native.prevent="remove(scope)"
+                <el-dropdown-item @click.native.prevent="handleReview(scope)"
                 >审核
                 </el-dropdown-item>
-                <el-dropdown-item @click.native.prevent="remove(scope)"
+                <el-dropdown-item @click.native.prevent="handleReviewAchieve(scope)"
                 >审核申报业绩
                 </el-dropdown-item>
                 <el-dropdown-item @click.native.prevent="remove(scope)"
                 >补充成交
                 </el-dropdown-item>
-                <el-dropdown-item @click.native.prevent="remove(scope)"
+                <el-dropdown-item @click.native.prevent="handleWithdrawalReview(scope)"
                 >撤回审核
                 </el-dropdown-item>
               </el-dropdown-menu>
@@ -412,7 +412,7 @@
     }
 
     // 重置
-    reset() {
+    handleReset() {
       this.queryPageParameters = {
         dealCode: null,
         contType: null,
@@ -436,16 +436,31 @@
       this.selectTimeRange = [];
     }
 
+    // 新增
+    async handleAdd() {
+      this.$router.push({
+        path: "/dealReport/add",
+      });
+    }
+
     // 查看
-    info(scope: any) {
+    async handleInfo(scope: any) {
       this.$router.push({
         path: "/dealReport/info",
         query: {id: scope.row.id},
       });
     }
 
+    // 修改
+    async handleEdit(scope: any) {
+      this.$router.push({
+        path: "/dealReport/add",
+        query: {id: scope.row.id},
+      });
+    }
+
     // 删除
-    async remove(scope: any) {
+    async handleDelete(scope: any) {
       try {
         await this.$confirm("是否确定删除?", "提示");
         await post_deal_delete__id({id: scope.row.id});
@@ -459,19 +474,44 @@
       }
     }
 
-    // 新增
-    async add() {
-      this.$router.push({
-        path: "/dealReport/add",
-      });
+    // 撤回
+    async handleRecall(scope: any) {
+      try {
+        await this.$confirm("是否确定撤回?", "提示");
+        await post_deal_delete__id({id: scope.row.id});
+        this.$message({
+          type: "success",
+          message: "撤回成功!",
+        });
+        await this.getListMixin();
+      } catch (error) {
+        console.log(error);
+      }
     }
 
-    // 编辑
-    async edit(scope: any) {
-      this.$router.push({
-        path: "/dealReport/add",
-        query: {id: scope.row.id},
-      });
+    // 审核
+    async handleReview(scope: any) {
+      console.log(scope);
+    }
+
+    // 审核申报业绩
+    async handleReviewAchieve(scope: any) {
+      console.log(scope);
+    }
+
+    // 撤回审核
+    async handleWithdrawalReview(scope: any) {
+      try {
+        await this.$confirm("是否确定撤回审核?", "提示");
+        await post_deal_delete__id({id: scope.row.id});
+        this.$message({
+          type: "success",
+          message: "撤回审核成功!",
+        });
+        await this.getListMixin();
+      } catch (error) {
+        console.log(error);
+      }
     }
   }
 </script>

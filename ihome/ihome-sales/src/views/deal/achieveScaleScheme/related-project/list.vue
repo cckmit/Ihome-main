@@ -14,6 +14,7 @@
     :close-on-click-modal="false"
     :close-on-press-escape="false"
     :before-close="cancel"
+    append-to-body
     width="1000px"
     style="text-align: left"
     class="dialog">
