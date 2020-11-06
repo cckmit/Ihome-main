@@ -4,7 +4,7 @@
  * @Author: ywl
  * @Date: 2020-10-20 15:03:13
  * @LastEditors: ywl
- * @LastEditTime: 2020-11-04 08:55:48
+ * @LastEditTime: 2020-11-06 11:41:25
 -->
 <template>
   <el-select
@@ -26,7 +26,14 @@
         :placeholder="searchPlaceholder"
         v-model="filterText"
         clearable
-      ></el-input>
+        @keyup.enter.native="handleKeyup()"
+      >
+        <i
+          slot="suffix"
+          class="el-input__icon el-icon-loading"
+          v-if="searchLoad"
+        ></i>
+      </el-input>
     </div>
     <!-- 下拉部分 -->
     <el-option
@@ -62,14 +69,26 @@ import { Component, Vue, Prop, Watch } from "vue-property-decorator";
 
 import { post_user_getList } from "@/api/system/index";
 
+const debounce = (function () {
+  let timer: any;
+  return function (fn: any, interval?: any) {
+    clearTimeout(timer);
+    timer = setTimeout(fn, interval || 200);
+  };
+})();
+
 @Component({})
 export default class IhSelectPage extends Vue {
-  @Prop() value!: string | number;
+  @Prop() value!: any;
   @Prop() clearable?: boolean;
   @Prop() disabled?: boolean;
   @Prop() placeholder?: string;
   @Prop() valueKey?: string;
   @Prop() promiseFun?: Function;
+  @Prop({
+    default: false,
+  })
+  isKeyUp?: boolean;
   @Prop({
     default: "请输入两个关键字检索",
   })
@@ -95,6 +114,7 @@ export default class IhSelectPage extends Vue {
     pageNum: 1,
     pageSize: 10,
   };
+  private searchLoad = false;
 
   @Watch("value", { immediate: true, deep: true })
   watchValue(val: any, old: any) {
@@ -104,8 +124,11 @@ export default class IhSelectPage extends Vue {
   }
   @Watch("filterText")
   filter(val: any) {
-    console.log(val);
-    if (val.length >= 2 || !val.length) this.getSelectList();
+    if (val.length >= 2 && !this.isKeyUp) {
+      debounce(this.getSelectList, 1000);
+    } else if (!val.length) {
+      this.getSelectList();
+    }
   }
 
   private get labelProp(): string {
@@ -121,11 +144,18 @@ export default class IhSelectPage extends Vue {
     return (this.props as PropsType).disabled || "disabled";
   }
 
+  handleKeyup() {
+    if (this.isKeyUp) {
+      this.getSelectList();
+    }
+  }
   async getSelectList() {
+    this.searchLoad = true;
     this.tableList = await post_user_getList({
       ...this.pageInfo,
       name: this.filterText,
     });
+    this.searchLoad = false;
   }
   handleVisible(val: any): void {
     if (val && this.filterText) {
@@ -142,6 +172,7 @@ export default class IhSelectPage extends Vue {
     this.getSelectList();
   }
 }
+
 interface PropsType {
   lable: string;
   key: string;

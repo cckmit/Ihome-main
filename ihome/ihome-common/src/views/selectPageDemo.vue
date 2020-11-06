@@ -48,10 +48,11 @@
       <span>选中的值：{{form.testInput3}}</span>
     </el-form-item>
     <el-form-item label="测试继承">
-      <!-- searchPlaceholder：搜索框提示语 -->
+      <!-- searchPlaceholder：搜索框提示语, isKeyUp：设置回车搜索 -->
       <SelectPageByOther
         class="width-300"
         v-model="form.testInput4"
+        :isKeyUp="true"
         :props="{
           value: 'id',
           key: 'id',

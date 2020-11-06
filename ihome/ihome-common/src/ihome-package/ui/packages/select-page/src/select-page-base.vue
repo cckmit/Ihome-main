@@ -4,7 +4,7 @@
  * @Author: ywl
  * @Date: 2020-10-20 15:03:13
  * @LastEditors: ywl
- * @LastEditTime: 2020-11-03 16:21:32
+ * @LastEditTime: 2020-11-06 11:39:52
 -->
 <template>
   <el-select
@@ -22,9 +22,11 @@
     <!-- 搜索 -->
     <div class="selectInput">
       <el-input
+        class="select-page-search"
         :placeholder="searchPlaceholder"
         v-model="filterText"
         clearable
+        @keyup.enter.native="handleKeyup()"
       ></el-input>
     </div>
     <!-- 下拉部分 -->
@@ -60,6 +62,14 @@
 <script lang="ts">
 import { Component, Vue, Prop, Watch } from "vue-property-decorator";
 
+const debounce = (function () {
+  let timer: any;
+  return function (fn: any, interval?: any) {
+    clearTimeout(timer);
+    timer = setTimeout(fn, interval || 200);
+  };
+})();
+
 @Component({})
 export default class IhSelectPage extends Vue {
   @Prop() value!: any;
@@ -74,6 +84,10 @@ export default class IhSelectPage extends Vue {
     default: false,
   })
   switchHidePage?: boolean;
+  @Prop({
+    default: false,
+  })
+  isKeyUp?: boolean;
   @Prop({
     default: "检索关键字",
   })
@@ -108,8 +122,11 @@ export default class IhSelectPage extends Vue {
   }
   @Watch("filterText")
   filter(val: any) {
-    console.log(val);
-    if (val.length >= 2 || !val.length) this.getSelectList();
+    if (val.length >= 2 && !this.isKeyUp) {
+      debounce(this.getSelectList, 1000);
+    } else if (!val.length) {
+      this.getSelectList();
+    }
   }
 
   private get labelProp(): string {
@@ -125,6 +142,11 @@ export default class IhSelectPage extends Vue {
     return (this.props as PropsType).disabled || "disabled";
   }
 
+  handleKeyup() {
+    if (this.isKeyUp) {
+      this.getSelectList();
+    }
+  }
   async getSelectList() {
     console.error(
       "getSelectList是需要重写回调的方法， pageInfo: 分页信息-不是必要、optionList：下拉列表"
@@ -163,6 +185,10 @@ interface PropsType {
 }
 </style>
 <style>
+.select-page-search .el-input__suffix {
+  width: 25px !important;
+  overflow: hidden;
+}
 .ih-select-page .el-select-dropdown__wrap {
   max-height: none !important;
 }

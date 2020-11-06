@@ -4,7 +4,7 @@
  * @Author: wwq
  * @Date: 2020-10-21 14:17:48
  * @LastEditors: wwq
- * @LastEditTime: 2020-10-21 17:45:09
+ * @LastEditTime: 2020-11-05 16:38:23
 -->
 <template>
   <el-dialog
@@ -12,6 +12,7 @@
     title="图片剪裁"
     :visible.sync="dialogVisible"
     append-to-body
+    :before-close="cancel"
     :close-on-click-modal="false"
   >
     <div class="cropper-content">
@@ -71,11 +72,11 @@ export default class Cropper extends Vue {
     outputType: "jpeg", // 裁剪生成图片的格式
     canScale: true, // 图片是否允许滚轮缩放
     autoCrop: true, // 是否默认生成截图框
-    autoCropWidth: 300, // 默认生成截图框宽度
-    autoCropHeight: 200, // 默认生成截图框高度
+    autoCropWidth: 500, // 默认生成截图框宽度
+    autoCropHeight: 300, // 默认生成截图框高度
     fixedBox: false, // 固定截图框大小 不允许改变
     fixed: false, // 是否开启截图框宽高固定比例
-    fixedNumber: [4, 3], // 截图框的宽高比例
+    fixedNumber: [5, 3], // 截图框的宽高比例
     full: true, // 是否输出原图比例的截图
     canMoveBox: true, // 截图框能否拖动
     original: false, // 上传图片按照原始比例渲染
