@@ -19,17 +19,11 @@
               v-model="queryPageParameters.modelName"
               clearable
               placeholder="请选择业务模式">
-              <!--                <el-option-->
-              <!--                  v-for="item in $root.dictAllList('ChannelStatus')"-->
-              <!--                  :key="item.code"-->
-              <!--                  :label="item.name"-->
-              <!--                  :value="item.code"-->
-              <!--                ></el-option>-->
               <el-option
-                v-for="item in modelNameList"
-                :key="item.value"
-                :label="item.label"
-                :value="item.value"
+                v-for="item in $root.dictAllList('BusinessModel')"
+                :key="item.code"
+                :label="item.name"
+                :value="item.code"
               ></el-option>
             </el-select>
             <el-button type="primary" class="margin-left-20" @click="getListMixin()">查询</el-button>
@@ -42,41 +36,23 @@
       <el-table
         class="ih-table"
         :data="resPageInfo.list">
-        <el-table-column
-          prop="branchCompany"
-          label="分公司"
-          min-width="120"
-        ></el-table-column>
-        <el-table-column
-          prop="contType"
-          label="合同类型"
-          min-width="120"
-        ></el-table-column>
-        <el-table-column
-          prop="achievePropertyTypeList"
-          label="物业类型"
-          min-width="120"
-        ></el-table-column>
-        <el-table-column
-          prop="modelName"
-          label="业务模式"
-          min-width="120"
-        ></el-table-column>
-        <el-table-column
-          prop="isMarketProject"
-          label="是否市场化项目"
-          min-width="120"
-        ></el-table-column>
-        <el-table-column
-          prop="isSame"
-          label="分销同步总包"
-          min-width="120"
-        ></el-table-column>
-        <el-table-column
-          prop="remarks"
-          label="备注说明"
-          min-width="120"
-        ></el-table-column>
+        <el-table-column prop="branchCompany" label="分公司" min-width="120"></el-table-column>
+        <el-table-column prop="contType" label="合同类型" min-width="120"></el-table-column>
+        <el-table-column prop="propertyTypeStr" label="物业类型" min-width="120"></el-table-column>
+        <el-table-column prop="modelName" label="业务模式" min-width="120"></el-table-column>
+        <el-table-column prop="isMarketProject" label="是否市场化项目" min-width="120">
+          <template slot-scope="scope">
+            <div v-if="scope.row.isMarketProject">{{scope.row.isMarketProject === 'Yes' ? '是' : '否'}}</div>
+            <div v-else></div>
+          </template>
+        </el-table-column>
+        <el-table-column prop="isSame" label="分销同步总包" min-width="120">
+          <template slot-scope="scope">
+            <div v-if="scope.row.isSame">{{scope.row.isSame === 'Yes' ? '是' : '否'}}</div>
+            <div v-else></div>
+          </template>
+        </el-table-column>
+        <el-table-column prop="remarks" label="备注说明" min-width="120"></el-table-column>
         <el-table-column fixed="right" label="操作" width="130">
           <template slot-scope="scope">
             <el-link
@@ -136,25 +112,6 @@
       modelName: null
     };
 
-    modelNameList: any = [
-      {
-        value: "TotalBagModel",
-        label: "总包模式"
-      },
-      {
-        value: "DistriModel",
-        label: "分销模式"
-      },
-      {
-        value: "TotalBagDistriModel",
-        label: "总包+分销模式"
-      },
-      {
-        value: "UnderwritingModel",
-        label: "承销"
-      }
-    ]; // 业务模式
-
     resPageInfo: any = {
       total: 0,
       list: [{}],
@@ -162,6 +119,7 @@
     companyId: any = null; // 分公司id
 
     async created() {
+      // console.log('物业类型', (this as any).$root.dictAllList('PropertyEnum'));
       this.companyId = this.$route.query.id;
       if (this.companyId) {
         await this.getListMixin();
@@ -170,57 +128,76 @@
 
     // 获取分公司业绩比例方案列表
     async getListMixin() {
-      this.queryPageParameters.branchCompanyId = this.companyId; // 分公司id
-      this.resPageInfo = await post_achieveScaleScheme_getList(this.queryPageParameters);
-      if (this.resPageInfo.list && this.resPageInfo.list.length > 0) {
-        this.resPageInfo.list.forEach((listItem: any) => {
-          // 业务模式
-          if (listItem.modelName) {
-            switch (listItem.modelName) {
-              case "TotalBagModel":
-                listItem.modelName = "总包模式";
-                break;
-              case "DistriModel":
-                listItem.modelName = "分销模式";
-                break;
-              case "TotalBagDistriModel":
-                listItem.modelName = "总包+分销模式";
-                break;
-              case "UnderwritingModel":
-                listItem.modelName = "承销";
-                break;
-              default:
-                listItem.modelName = "其他";
-            }
-          }
+      let self = this;
+      if (!self.companyId) return;
+      let contTypeList = (self as any).$root.dictAllList('ContType'); // 合同类型
+      let propertyEnumList = (self as any).$root.dictAllList('PropertyEnum'); // 物业类型
+      let businessModelList = (self as any).$root.dictAllList('BusinessModel'); // 业务类型
+      self.queryPageParameters.branchCompanyId = self.companyId; // 分公司id
+      self.resPageInfo = await post_achieveScaleScheme_getList(self.queryPageParameters);
+      if (self.resPageInfo.list && self.resPageInfo.list.length > 0) {
+        self.resPageInfo.list.forEach((listItem: any) => {
           // 合同类型
           if (listItem.contType) {
             let typeArr = listItem.contType.split(',');
             let nameType: any = [];
             if (typeArr.length > 0) {
               typeArr.forEach((typeItem: any) => {
-                switch (typeItem.replace(" ", "")) {
-                  case "DistriDeal":
-                    nameType.push("分销成交");
-                    break;
-                  case "NaturalVisitDeal":
-                    nameType.push("自然来访成交");
-                    break;
-                  case "SelfChannelDeal":
-                    nameType.push("自渠成交");
-                    break;
-                  case "SelfDeal":
-                    nameType.push("自行成交");
-                    break;
-                  default:
-                    nameType.push("其他");
+                if (contTypeList && contTypeList.length > 0) {
+                  contTypeList.forEach((list: any) => {
+                    if (list.code === typeItem.replace(" ", "")) {
+                      nameType.push(list.name);
+                    }
+                  })
                 }
               })
             }
             if (nameType.length > 0) {
-              listItem.contType = nameType.join(',')
+              listItem.contType = nameType.join(',');
             } else {
-              listItem.contType = ""
+              listItem.contType = "";
+            }
+          }
+          // 物业类型
+          if (listItem.propertyTypeStr) {
+            let typeArr = listItem.contType.split(',');
+            let propertyNameType: any = [];
+            if (typeArr.length > 0) {
+              typeArr.forEach((typeItem: any) => {
+                if (propertyEnumList && propertyEnumList.length > 0) {
+                  propertyEnumList.forEach((propertyItem: any) => {
+                    if (typeItem === propertyItem.code) {
+                      propertyNameType.push(propertyItem.name);
+                    }
+                  })
+                }
+              })
+            }
+            if (propertyNameType.length > 0) {
+              listItem.propertyTypeStr = propertyNameType.join(',');
+            } else {
+              listItem.propertyTypeStr = "";
+            }
+          }
+          // 业务模式
+          if (listItem.modelName) {
+            let typeArr = listItem.contType.split(',');
+            let businessNameType: any = [];
+            if (typeArr.length > 0) {
+              typeArr.forEach((typeItem: any) => {
+                if (businessModelList && businessModelList.length > 0) {
+                  businessModelList.forEach((businessItem: any) => {
+                    if (typeItem === businessItem.code) {
+                      businessNameType.push(businessItem.name);
+                    }
+                  })
+                }
+              })
+            }
+            if (businessNameType.length > 0) {
+              listItem.modelName = businessNameType.join(',');
+            } else {
+              listItem.modelName = "";
             }
           }
         })
@@ -263,6 +240,9 @@
     async add() {
       this.$router.push({
         path: "/achieveScaleScheme/add",
+        query: {
+          companyId: this.companyId
+        },
       });
     }
 
@@ -270,7 +250,10 @@
     async edit(scope: any) {
       this.$router.push({
         path: "/achieveScaleScheme/add",
-        query: {id: scope.row.id},
+        query: {
+          id: scope.row.id,
+          companyId: this.companyId
+        },
       });
     }
   }

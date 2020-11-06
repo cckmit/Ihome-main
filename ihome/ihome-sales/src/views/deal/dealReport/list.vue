@@ -26,13 +26,12 @@
                 v-model="queryPageParameters.contType"
                 clearable
                 placeholder="合同类型"
-                class="width--100"
-              >
+                class="width--100">
                 <el-option
-                  v-for="item in modelNameList"
-                  :key="item.value"
-                  :label="item.label"
-                  :value="item.value"
+                  v-for="item in $root.dictAllList('ContType')"
+                  :key="item.code"
+                  :label="item.name"
+                  :value="item.code"
                 ></el-option>
               </el-select>
             </el-form-item>
@@ -43,13 +42,12 @@
                 v-model="queryPageParameters.status"
                 clearable
                 placeholder="成交状态"
-                class="width--100"
-              >
+                class="width--100">
                 <el-option
-                  v-for="item in modelNameList"
-                  :key="item.value"
-                  :label="item.label"
-                  :value="item.value"
+                  v-for="item in $root.dictAllList('DealStatus')"
+                  :key="item.code"
+                  :label="item.name"
+                  :value="item.code"
                 ></el-option>
               </el-select>
             </el-form-item>
@@ -60,13 +58,12 @@
                 v-model="queryPageParameters.suppContType"
                 clearable
                 placeholder="补充类型"
-                class="width--100"
-              >
+                class="width--100">
                 <el-option
-                  v-for="item in modelNameList"
-                  :key="item.value"
-                  :label="item.label"
-                  :value="item.value"
+                  v-for="item in $root.dictAllList('SuppContType')"
+                  :key="item.code"
+                  :label="item.name"
+                  :value="item.code"
                 ></el-option>
               </el-select>
             </el-form-item>
@@ -122,13 +119,12 @@
                 v-model="queryPageParameters.stage"
                 clearable
                 placeholder="成交阶段"
-                class="width--100"
-              >
+                class="width--100">
                 <el-option
-                  v-for="item in modelNameList"
-                  :key="item.value"
-                  :label="item.label"
-                  :value="item.value"
+                  v-for="item in $root.dictAllList('DealStage')"
+                  :key="item.code"
+                  :label="item.name"
+                  :value="item.code"
                 ></el-option>
               </el-select>
             </el-form-item>
@@ -164,11 +160,17 @@
             <el-form-item label="查询时间">
               <div class="search-time-wrapper">
                 <div class="time-type">
-                  <el-select v-model="queryPageParameters.timeType" placeholder="请选择" clearable>
-                    <el-option label="填写日期" value="1"></el-option>
-                    <el-option label="认购日期" value="2"></el-option>
-                    <el-option label="签约日期" value="3"></el-option>
-                    <el-option label="业绩日期" value="4"></el-option>
+                  <el-select
+                    v-model="queryPageParameters.timeType"
+                    placeholder="请选择"
+                    clearable
+                    class="width--100">
+                    <el-option
+                      v-for="item in $root.dictAllList('DealTimeType')"
+                      :key="item.code"
+                      :label="item.name"
+                      :value="item.code"
+                    ></el-option>
                   </el-select>
                 </div>
                 <div class="time-range">
@@ -365,25 +367,6 @@
       endTime: null
     };
     selectTimeRange: any = [];
-
-    modelNameList: any = [
-      {
-        value: "TotalBagModel",
-        label: "总包模式"
-      },
-      {
-        value: "DistriModel",
-        label: "分销模式"
-      },
-      {
-        value: "TotalBagDistriModel",
-        label: "总包+分销模式"
-      },
-      {
-        value: "UnderwritingModel",
-        label: "承销"
-      }
-    ]; // 业务模式
 
     resPageInfo: any = {
       total: 0,

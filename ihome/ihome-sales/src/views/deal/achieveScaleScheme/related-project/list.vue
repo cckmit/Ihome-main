@@ -217,7 +217,7 @@
     }
 
     created() {
-      this.getListMixin();
+      // this.getListMixin();
     }
 
     handleSelectionChange(val: any) {

@@ -27,8 +27,7 @@
       <br/>
       <el-table
         class="ih-table"
-        :data="resPageInfo.list"
-      >
+        :data="resPageInfo.list">
         <el-table-column
           prop="branchCompanyName"
           label="分公司名称"
