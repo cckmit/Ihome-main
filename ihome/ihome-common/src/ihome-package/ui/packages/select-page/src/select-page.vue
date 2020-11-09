@@ -4,7 +4,7 @@
  * @Author: ywl
  * @Date: 2020-10-20 15:03:13
  * @LastEditors: ywl
- * @LastEditTime: 2020-11-05 17:48:11
+ * @LastEditTime: 2020-11-06 11:41:25
 -->
 <template>
   <el-select
@@ -69,26 +69,13 @@ import { Component, Vue, Prop, Watch } from "vue-property-decorator";
 
 import { post_user_getList } from "@/api/system/index";
 
-// function throttle(fn: any, interval?: any) {
-//   return function () {
-//     let last: any;
-//     let timer: any;
-//     // let th = this;
-//     // let args = arguments;
-//     let now = new Date().getTime();
-//     if (last && now - last < (interval || 200)) {
-//       clearTimeout(timer);
-//       timer = setTimeout(function () {
-//         last = now;
-//         fn.apply();
-//       }, interval || 200);
-//     } else {
-//       console.log(last, now, now - last);
-//       last = now;
-//       fn.apply();
-//     }
-//   };
-// }
+const debounce = (function () {
+  let timer: any;
+  return function (fn: any, interval?: any) {
+    clearTimeout(timer);
+    timer = setTimeout(fn, interval || 200);
+  };
+})();
 
 @Component({})
 export default class IhSelectPage extends Vue {
@@ -99,7 +86,7 @@ export default class IhSelectPage extends Vue {
   @Prop() valueKey?: string;
   @Prop() promiseFun?: Function;
   @Prop({
-    default: true,
+    default: false,
   })
   isKeyUp?: boolean;
   @Prop({
@@ -128,8 +115,6 @@ export default class IhSelectPage extends Vue {
     pageSize: 10,
   };
   private searchLoad = false;
-  private pending = true;
-  private time = 0;
 
   @Watch("value", { immediate: true, deep: true })
   watchValue(val: any, old: any) {
@@ -139,10 +124,9 @@ export default class IhSelectPage extends Vue {
   }
   @Watch("filterText")
   filter(val: any) {
-    if (val.length >= 2) {
-      this.getSelectList();
+    if (val.length >= 2 && !this.isKeyUp) {
+      debounce(this.getSelectList, 1000);
     } else if (!val.length) {
-      this.pending = true;
       this.getSelectList();
     }
   }
@@ -160,35 +144,18 @@ export default class IhSelectPage extends Vue {
     return (this.props as PropsType).disabled || "disabled";
   }
 
-  start(waitTime = 0) {
-    this.pending = false;
-    this.time = waitTime;
-  }
-  finish() {
-    setTimeout(() => {
-      this.pending = true;
-    }, this.time);
-  }
-  stop() {
-    this.finish();
-  }
-
   handleKeyup() {
     if (this.isKeyUp) {
       this.getSelectList();
     }
   }
   async getSelectList() {
-    // if (this.searchLoad) {
-    // this.start(1000);
     this.searchLoad = true;
     this.tableList = await post_user_getList({
       ...this.pageInfo,
       name: this.filterText,
     });
-    // this.stop();
     this.searchLoad = false;
-    // }
   }
   handleVisible(val: any): void {
     if (val && this.filterText) {
@@ -202,7 +169,6 @@ export default class IhSelectPage extends Vue {
   }
 
   mounted() {
-    this.searchLoad = true;
     this.getSelectList();
   }
 }

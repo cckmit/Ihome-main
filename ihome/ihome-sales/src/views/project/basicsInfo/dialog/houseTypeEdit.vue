@@ -4,7 +4,7 @@
  * @Author: wwq
  * @Date: 2020-11-03 18:39:23
  * @LastEditors: wwq
- * @LastEditTime: 2020-11-04 16:25:02
+ * @LastEditTime: 2020-11-06 14:37:42
 -->
 <template>
   <el-dialog
@@ -203,7 +203,7 @@ export default class HouseTypeEdit extends Vue {
   }
   async created() {
     this.form = { ...this.data };
-    if (Object.keys(this.data).length !== 1) {
+    if (Object.keys(this.data).length) {
       this.form.fileList = [
         {
           fileId: this.data.picAddr,

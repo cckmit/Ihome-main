@@ -4,7 +4,7 @@
  * @Author: wwq
  * @Date: 2020-11-03 11:52:41
  * @LastEditors: wwq
- * @LastEditTime: 2020-11-05 10:52:25
+ * @LastEditTime: 2020-11-06 17:36:48
 -->
 <template>
   <div>
@@ -103,20 +103,19 @@
           </el-form-item>
         </el-col>
         <el-col :span="8">
-          <el-form-item label="开发商名称" prop="developerName">
+          <el-form-item label="开发商名称" prop="developerId">
             <el-select
-              v-model="form.developerName"
+              v-model="form.developerId"
               clearable
               filterable
               class="width--100"
               placeholder="开发商名称"
-              @change="developerChange"
             >
               <el-option
                 v-for="item in developerOptions"
                 :key="item.value"
                 :label="item.label"
-                :value="item"
+                :value="item.value"
               ></el-option>
             </el-select>
           </el-form-item>
@@ -187,7 +186,7 @@
       <el-row v-if="form.checkboxEnum.length">
         <el-col
           :span="12"
-          v-for="(item, i) in checkBoxChangeList"
+          v-for="item in checkBoxChangeList"
           :key="item.code"
           class="msglist"
         >
@@ -256,53 +255,6 @@
                           :value="item.code"
                         ></el-option>
                       </el-select>
-                    </el-form-item>
-                  </el-col>
-                  <el-col :span="24">
-                    <el-form-item
-                      label="装修级别"
-                      label-width="90px"
-                      class="text-left"
-                      prop="renovatLevelEnum"
-                    >
-                      <el-radio-group v-model="item.msg.renovatLevelEnum">
-                        <el-radio label="Rough">毛坯</el-radio>
-                        <el-radio label="HardBound">精装修</el-radio>
-                      </el-radio-group>
-                    </el-form-item>
-                  </el-col>
-                  <el-col :span="24">
-                    <el-form-item
-                      label="包含栋座"
-                      label-width="90px"
-                      class="text-left"
-                    >
-                      <el-tag
-                        :key="tag"
-                        v-for="tag in item.msg.buildingNames"
-                        closable
-                        :disable-transitions="false"
-                        @close="handleClose(tag, i)"
-                      >
-                        {{ tag }}
-                      </el-tag>
-                      <el-input
-                        class="input-new-tag"
-                        v-show="item.msg.inputVisible"
-                        v-model="item.msg.inputValue"
-                        ref="saveTagInput"
-                        size="small"
-                        placeholder="输入栋座"
-                        @keyup.enter.native="handleInputConfirm(i)"
-                        @blur="handleInputConfirm(i)"
-                      >
-                      </el-input>
-                      <el-button
-                        v-show="!item.msg.inputVisible"
-                        size="small"
-                        @click="showInput(i)"
-                        >+ 栋座</el-button
-                      >
                     </el-form-item>
                   </el-col>
                 </el-row>
@@ -451,7 +403,7 @@
   </div>
 </template>
 <script lang="ts">
-import { Component, Vue, Watch } from "vue-property-decorator";
+import { Component, Vue } from "vue-property-decorator";
 import { post_company_listAll } from "@/api/developer/index";
 import {
   get_project_get__proId,
@@ -478,7 +430,6 @@ export default class EditBasicInfo extends Vue {
     proRecord: null,
     proAddr: null,
     developerId: null,
-    developerName: null,
     lng: null, // 经度
     lat: null, // 纬度
     jingwei: null, // 经纬度
@@ -495,9 +446,6 @@ export default class EditBasicInfo extends Vue {
   contantForm: any = {
     averPrice: null,
     propertyAge: null,
-    renovatLevelEnum: "Rough",
-    buildingNames: [],
-    inputValue: null,
     propertyCost: null,
     propertyId: null,
   };
@@ -518,7 +466,7 @@ export default class EditBasicInfo extends Vue {
       { required: true, message: "请填写项目备案名", trigger: "blur" },
     ],
     proAddr: [{ required: true, message: "请填写项目地址", trigger: "blur" }],
-    developerName: [
+    developerId: [
       { required: true, message: "请填写开发商名称", trigger: "blur" },
     ],
     jingwei: [{ required: true, message: "请填写经纬度", trigger: "blur" }],
@@ -527,12 +475,7 @@ export default class EditBasicInfo extends Vue {
     propertyAge: [
       { required: true, message: "请选择产权年限", trigger: "blur" },
     ],
-    renovatLevelEnum: [
-      { required: true, message: "请选择装修级别", trigger: "blur" },
-    ],
   };
-  buildingNames: any = [];
-  inputVisible = false;
   YesOrNoType: any = [
     {
       code: 0,
@@ -545,7 +488,7 @@ export default class EditBasicInfo extends Vue {
   ];
   developerOptions: any = [];
   houseFileList: any = [];
-  radio = {};
+  radio = "";
   houseList: any = [];
   accFileList: any = [];
   dialogVisible = false;
@@ -572,11 +515,7 @@ export default class EditBasicInfo extends Vue {
               title: v.name,
               averPrice: null,
               propertyAge: null,
-              renovatLevelEnum: "Rough",
-              buildingNames: [],
               propertyCost: null,
-              inputVisible: false,
-              inputValue: null,
               propertyEnum: v.code,
             },
           })
@@ -587,8 +526,6 @@ export default class EditBasicInfo extends Vue {
             ...v,
             msg: {
               ...item,
-              inputVisible: false,
-              inputValue: null,
             },
           })
         );
@@ -597,18 +534,7 @@ export default class EditBasicInfo extends Vue {
     return arr;
   }
 
-  @Watch("form.searchAddr", { deep: true })
-  getCenter(v: any) {
-    if (!v) {
-      const geolocation = new this.BMap.Geolocation();
-      geolocation.getCurrentPosition((r: any) => {
-        this.center.lng = r.longitude;
-        this.center.lat = r.latitude;
-      });
-    }
-  }
-
-  async created() {
+  created() {
     this.getInfo();
     this.getDeveloper();
   }
@@ -623,7 +549,6 @@ export default class EditBasicInfo extends Vue {
       this.contantList = data.propertyArgs.map((v: any) => ({
         ...v,
         title: (this.$root as any).dictAllName(v.propertyEnum, "PropertyEnum"),
-        buildingNames: v.buildingNames.map((j: any) => j.buildingName),
       }));
       this.form.jingwei = data.lat + "," + data.lng;
       let arr: any = [];
@@ -633,8 +558,6 @@ export default class EditBasicInfo extends Vue {
             ...(this.$root as any).dictAllItem(v.propertyEnum, "PropertyEnum"),
             msg: {
               ...v,
-              inputVisible: false,
-              inputValue: null,
             },
           })
         );
@@ -668,7 +591,7 @@ export default class EditBasicInfo extends Vue {
   getRadio(data: any) {
     if (this.houseList.length) {
       this.houseList = this.houseList.map((v: any) => {
-        if (data === v.attachId) {
+        if (data === v.attachAddr) {
           return {
             ...v,
             exIndex: 1,
@@ -697,56 +620,24 @@ export default class EditBasicInfo extends Vue {
     }
   }
 
-  developerChange(val: any) {
-    this.form.developerId = val.value;
-    this.form.developerName = val.label;
-  }
-
   checkboxChangeHandler(val: any) {
     const item = val.map((v: any) => JSON.parse(v));
     this.checkBoxChangeList = item;
   }
 
-  handleClose(tag: any, i: number) {
-    this.checkBoxChangeList[i].msg.buildingNames.splice(
-      this.checkBoxChangeList[i].msg.buildingNames.indexOf(tag),
-      1
-    );
-  }
-
-  showInput(i: number) {
-    this.checkBoxChangeList[i].msg.inputVisible = true;
-    this.$nextTick(() => {
-      (this.$refs.saveTagInput as any)[i].$refs.input.focus();
-    });
-  }
-  // 添加物业类型的栋座
-  handleInputConfirm(i: number) {
-    let inputValue = this.checkBoxChangeList[i].msg.inputValue;
-    if (inputValue) {
-      let val = inputValue + "栋";
-      if (this.checkBoxChangeList[i].msg.buildingNames.includes(val)) {
-        this.$message.warning("栋座已存在,请重新填写");
-        return;
-      } else {
-        this.checkBoxChangeList[i].msg.buildingNames.push(`${inputValue}栋`);
-      }
-    }
-    this.checkBoxChangeList[i].msg.inputVisible = false;
-    this.checkBoxChangeList[i].msg.inputValue = "";
-  }
-
   // 处理楼房图片
   houseFiles(data: any) {
     this.houseList = data.map((v: any) => ({
-      attachAddr: v.name,
-      attachId: v.fileId,
+      attachAddr: v.fileId,
+      attachName: v.name,
+      attachId: null,
       proAttachEnum: "ProPic",
       exIndex: null, // 是否设为主页
     }));
     // let arr = data.map((v: any) => ({
-    //   attachAddr: v.name,
-    //   attachId: v.fileId,
+    //   attachAddr: v.fileId,
+    //   attachName: v.name,
+    //   attachId: v.null,
     //   proAttachEnum: "ProPic",
     //   exIndex: null, // 是否设为主页
     // }));
@@ -790,6 +681,12 @@ export default class EditBasicInfo extends Vue {
   handler({ BMap }: any) {
     this.BMap = BMap;
     this.zoom = 15;
+    const geolocation = new BMap.Geolocation();
+    geolocation.getCurrentPosition((r: any) => {
+      this.center.lng = r.longitude;
+      this.center.lat = r.latitude;
+      // this.getInfo();
+    });
   }
 
   getLocationPoint(e: any) {
@@ -821,9 +718,6 @@ export default class EditBasicInfo extends Vue {
     obj.searchAddr = this.searchAddr ? this.searchAddr : this.form.searchAddr;
     obj.propertyArgs = this.checkBoxChangeList.map((v: any) => ({
       ...v.msg,
-      buildingNames: v.msg.buildingNames.map((j: any) => ({
-        buildingName: j,
-      })),
     }));
     if (this.houseList.length) {
       obj.proPics = this.houseList;
@@ -857,14 +751,6 @@ export default class EditBasicInfo extends Vue {
   }
 }
 
-.el-tag {
-  margin-right: 10px;
-}
-.input-new-tag {
-  width: 90px;
-  vertical-align: bottom;
-}
-
 .msglist {
   /deep/ .el-form-item__content {
     margin-left: 80px !important;
@@ -872,6 +758,7 @@ export default class EditBasicInfo extends Vue {
 }
 
 .font {
+  padding: 0 5px;
   /deep/ .el-radio__label {
     font-size: 12px;
   }

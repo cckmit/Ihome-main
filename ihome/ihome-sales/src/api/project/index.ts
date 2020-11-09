@@ -1,11 +1,15 @@
 /* eslint-disable */
 /* 此脚本由swagger-ui的api-docs自动生成，请勿修改 */
-//2020-11-4 4:49:14 ├F10: PM┤
+//2020-11-6 2:50:51 ├F10: PM┤
 import { request } from '@/api/base'
 const basePath = "/sales-api/project"
 /**index*/
 export async function get_(d?: any) {
     return await request.get<any, any>(basePath + '/', { params: d })
+}
+/**栋座新增*/
+export async function post_building_add(d?: any) {
+    return await request.post<BuildingUpdateVO, BuildingUpdateVO>(basePath + '/building/add', d)
 }
 /**获取项目的栋座详情*/
 export async function get_building_get__buildingId(d?: any) {
@@ -14,6 +18,10 @@ export async function get_building_get__buildingId(d?: any) {
 /**获取项目的栋座列表*/
 export async function post_building_getList(d?: any) {
     return await request.post<PageModel<BuildingListVO>, PageModel<BuildingListVO>>(basePath + '/building/getList', d)
+}
+/**获取项目的栋座物业【下拉】*/
+export async function get_building_getPropertyDropDowm__proId(d?: any) {
+    return await request.get<PropertyVO[], PropertyVO[]>(basePath + '/building/getPropertyDropDowm/{proId}', { params: d })
 }
 /**栋座更新*/
 export async function post_building_update(d?: any) {
@@ -111,25 +119,29 @@ export async function post_firstAgencyCompany_save(d?: any) {
 export async function post_firstAgencyCompany_update(d?: any) {
     return await request.post<FirstAgencyCompanyAddArgs, FirstAgencyCompanyAddArgs>(basePath + '/firstAgencyCompany/update', d)
 }
+/**楼盘项目的户型-新增*/
+export async function post_houseType_add(d?: any) {
+    return await request.post<HouseTypeUpdateArgs, HouseTypeUpdateArgs>(basePath + '/houseType/add', d)
+}
 /**删除楼盘项目的户型*/
 export async function post_houseType_delete__houseTypeId(d?: any) {
     return await request.post<number, number>(basePath + '/houseType/delete/{houseTypeId}', d)
 }
 /**通过栋座物业ID的获取楼盘户型(下拉)*/
-export async function get_houseType_getItemsByProperty__propertyId(d?: any) {
-    return await request.get<HouseTypeItemsByBuildingVO[], HouseTypeItemsByBuildingVO[]>(basePath + '/houseType/getItemsByProperty/{propertyId}', { params: d })
+export async function get_houseType_getItemsByProperty__proId(d?: any) {
+    return await request.get<HouseTypeItemsByBuildingVO[], HouseTypeItemsByBuildingVO[]>(basePath + '/houseType/getItemsByProperty/{proId}', { params: d })
 }
 /**查询项目的楼盘户型*/
 export async function get_houseType_getTabItem__proId(d?: any) {
-    return await request.get<HouseTypeItemsVO[], HouseTypeItemsVO[]>(basePath + '/houseType/getTabItem/{proId}', { params: d })
+    return await request.get<HouseTypeVO[], HouseTypeVO[]>(basePath + '/houseType/getTabItem/{proId}', { params: d })
 }
 /**户型详情*/
 export async function get_houseType_houseDetail__houseId(d?: any) {
     return await request.get<HouseTypeDetailVo, HouseTypeDetailVo>(basePath + '/houseType/houseDetail/{houseId}', { params: d })
 }
-/**楼盘项目的户型-新增or修改*/
-export async function post_houseType_save(d?: any) {
-    return await request.post<HouseTypeAddArgs, HouseTypeAddArgs>(basePath + '/houseType/save', d)
+/**修改楼盘项目的户型*/
+export async function post_houseType_update(d?: any) {
+    return await request.post<number, number>(basePath + '/houseType/update', d)
 }
 /**查询其他配置信息*/
 export async function get_logAndOA_get__termId(d?: any) {
@@ -259,6 +271,10 @@ export async function post_room_getList(d?: any) {
 export async function post_room_importExcel(d?: any) {
     return await request.post<number, number>(basePath + '/room/importExcel', d)
 }
+/**项目房间号修改*/
+export async function post_room_update(d?: any) {
+    return await request.post<number, number>(basePath + '/room/update', d)
+}
 /**结算列表-新增*/
 export async function post_settleCondition_add(d?: any) {
     return await request.post<SettleConditionVO, SettleConditionVO>(basePath + '/settleCondition/add', d)
@@ -380,6 +396,23 @@ export interface AttachTermItemVO {
     /**(必填)文件名称*/
     attachName: string;
 }
+/**BuildingAddVO*/
+export interface BuildingAddVO {
+    /**(必填)楼盘编号*/
+    buildingName: string;
+    /**楼层数*/
+    floor: number;
+    /**(必填)楼盘项目ID*/
+    proId: number;
+    /**(必填)物业类型(Residence-住宅、WorkShop-厂房、Apartment-公寓、Villa-别墅、Shop-商铺、Office-写字楼、Parking-车位、Other-其他)*/
+    propertyEnum: string;
+    /**(必填)物业类型ID*/
+    propertyId: number;
+    /**装修级别  ROUGH-毛坯、SHIMIZU -清水、SIMPLE-简装修、HARDBOUND-精装修(Rough-毛坯、QinShui-清水、Simple-简装修、HardBound-精装修、Luxury-豪华装修)*/
+    renovatLevelEnum: string;
+    /**地下层数*/
+    undergroundNum: number;
+}
 /**BuildingListVO*/
 export interface BuildingListVO {
     /**id*/
@@ -394,6 +427,8 @@ export interface BuildingListVO {
     propertyEnum: string;
     /**物业类型ID*/
     propertyId: number;
+    /**装修级别  ROUGH-毛坯、SHIMIZU -清水、SIMPLE-简装修、HARDBOUND-精装修(Rough-毛坯、QinShui-清水、Simple-简装修、HardBound-精装修、Luxury-豪华装修)*/
+    renovatLevelEnum: string;
     /**地下层数*/
     undergroundNum: number;
 }
@@ -424,15 +459,10 @@ export interface BuildingUpdateVO {
     propertyEnum: string;
     /**(必填)物业类型ID*/
     propertyId: number;
+    /**装修级别  ROUGH-毛坯、SHIMIZU -清水、SIMPLE-简装修、HARDBOUND-精装修(Rough-毛坯、QinShui-清水、Simple-简装修、HardBound-精装修、Luxury-豪华装修)*/
+    renovatLevelEnum: string;
     /**地下层数*/
     undergroundNum: number;
-}
-/**BuildingVO*/
-export interface BuildingVO {
-    /**id*/
-    buildingId: number;
-    /**栋座信息*/
-    buildingName: string;
 }
 /**CalcAgencyCostVO*/
 export interface CalcAgencyCostVO {
@@ -1280,8 +1310,6 @@ export interface HouseTypeAddArgs {
     hall: number;
     /**(必填)户型名称*/
     houseName: string;
-    /**id*/
-    houseTypeId: number;
     /**(必填)厨*/
     kitchen: number;
     /**户型图片*/
@@ -1291,8 +1319,6 @@ export interface HouseTypeAddArgs {
     positionEnum: string;
     /**(必填)项目ID*/
     proId: number;
-    /**(必填)物业类型ID*/
-    propertyId: number;
     /**(必填)室*/
     room: number;
     /**(必填)户型面积*/
@@ -1348,14 +1374,29 @@ export interface HouseTypeItemsByBuildingVO {
     /**卫*/
     toilet: number;
 }
-/**楼盘物业对应所属户型*/
-export interface HouseTypeItemsVO {
-    /**户型列表*/
-    houseTypeVOS: HouseTypeVO[];
-    /**物业类型(Residence-住宅、WorkShop-厂房、Apartment-公寓、Villa-别墅、Shop-商铺、Office-写字楼、Parking-车位、Other-其他)*/
-    propertyEnum: string;
-    /**物业ID*/
-    propertyId: number;
+/**HouseTypeUpdateArgs*/
+export interface HouseTypeUpdateArgs {
+    /**(必填)厅*/
+    hall: number;
+    /**(必填)户型名称*/
+    houseName: string;
+    /**id*/
+    houseTypeId: number;
+    /**(必填)厨*/
+    kitchen: number;
+    /**户型图片*/
+    picAddr: string;
+    /**(必填)    Unknown("未知"),WestEast("东西"),NorthSouth("南北"),NorthEast("东北"),SouthEast("东南"),NorthWest ("西北"),
+        SouthWest("西南"),East("东"),West("西"),South("南"),North("北")(Unknown-未知、WestEast-东西、NorthSouth-南北、NorthEast-东北、SouthEast-东南、NorthWest-西北、SouthWest-西南、East-东、West-西、South-南、North-北)*/
+    positionEnum: string;
+    /**(必填)项目ID*/
+    proId: number;
+    /**(必填)室*/
+    room: number;
+    /**(必填)户型面积*/
+    space: number;
+    /**(必填)卫*/
+    toilet: number;
 }
 /**HouseTypeVO*/
 export interface HouseTypeVO {
@@ -1600,8 +1641,6 @@ export interface ProjectAddArgs {
     cityName: string;
     /**(必填)开发商ID*/
     developerId: number;
-    /**(必填)开发商名称*/
-    developerName: string;
     /**(必填)区*/
     district: string;
     /**(必填)区名称*/
@@ -1770,8 +1809,6 @@ export interface ProjectUpdateArgs {
     cityName: string;
     /**(必填)开发商ID*/
     developerId: number;
-    /**(必填)开发商名称*/
-    developerName: string;
     /**(必填)区*/
     district: string;
     /**(必填)区名称*/
@@ -1897,8 +1934,6 @@ export interface PromotionVO {
 export interface PropertyArgs {
     /**住宅均价*/
     averPrice: number;
-    /**栋座名称*/
-    buildingNames: BuildingVO[];
     /**产权年限(Thirty-null、Forty-null、Fifty-null、Sixty-null、Seventy-null、Permanent-null)*/
     propertyAge: string;
     /**物业费*/
@@ -1910,6 +1945,15 @@ export interface PropertyArgs {
     propertyId: number;
     /**装修级别  Rough("毛坯"),QinShui("清水"),Simple("简装修"),HardBound("精装修");(Rough-毛坯、QinShui-清水、Simple-简装修、HardBound-精装修、Luxury-豪华装修)*/
     renovatLevelEnum: string;
+}
+/**PropertyVO*/
+export interface PropertyVO {
+    /**物业类型(Residence-住宅、WorkShop-厂房、Apartment-公寓、Villa-别墅、Shop-商铺、Office-写字楼、Parking-车位、Other-其他)*/
+    propertyEnum: string;
+    /**ID*/
+    propertyId: number;
+    /**物业类型名称(Residence-住宅、WorkShop-厂房、Apartment-公寓、Villa-别墅、Shop-商铺、Office-写字楼、Parking-车位、Other-其他)*/
+    propertyName: string;
 }
 /**ReceiptDelVO*/
 export interface ReceiptDelVO {
@@ -1998,6 +2042,15 @@ export interface RoomQueryVO {
     positionEnum: string;
     /**项目ID*/
     proId: number;
+    /**房间号*/
+    roomNo: string;
+}
+/**RoomUpdateArgs*/
+export interface RoomUpdateArgs {
+    /**(必填)户型ID*/
+    houseTypeId: number;
+    /**id*/
+    roomId: number;
     /**房间号*/
     roomNo: string;
 }
