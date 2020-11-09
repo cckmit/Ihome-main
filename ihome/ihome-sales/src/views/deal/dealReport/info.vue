@@ -251,6 +251,9 @@
       <el-col>
         <el-table
           class="ih-table"
+          show-summary
+          sum-text="合计金额"
+          :summary-method="getReceiveSummaries"
           :data="infoList.receiveList">
           <el-table-column
             prop="type"
@@ -333,6 +336,9 @@
       <el-col>
         <el-table
           class="ih-table"
+          show-summary
+          sum-text="合计金额"
+          :summary-method="getCommissionSummaries"
           :data="infoList.channelCommList">
           <el-table-column
             prop="target"
@@ -383,6 +389,9 @@
       <el-col>
         <el-table
           class="ih-table"
+          show-summary
+          sum-text="合计金额"
+          :summary-method="getAchieveSummaries"
           :data="infoList.achieveTotalBagList">
           <el-table-column
             prop="roleType"
@@ -465,6 +474,9 @@
       <el-col>
         <el-table
           class="ih-table"
+          show-summary
+          sum-text="合计金额"
+          :summary-method="getAchieveSummaries"
           :data="infoList.achieveDistriList">
           <el-table-column
             prop="roleType"
@@ -693,6 +705,96 @@
           })
         }
       }
+    }
+
+    // 计算收派金额总计
+    getReceiveSummaries(param: any) {
+      const {columns, data} = param;
+      const sums: any = [];
+      columns.forEach((column: any, index: any) => {
+        if (index === 0) {
+          sums[index] = '合计金额';
+          return;
+        }
+        if (![0, 1, 2].includes(index)) {
+          const values = data.map((item: any) => Number(item[column.property]));
+          if (!values.every((value: any) => isNaN(value))) {
+            sums[index] = values.reduce((prev: any, curr: any) => {
+              const value = Number(curr);
+              if (!isNaN(value)) {
+                return prev + curr;
+              } else {
+                return prev;
+              }
+            }, 0);
+          } else {
+            sums[index] = '';
+          }
+        } else {
+          sums[index] = '';
+        }
+      });
+      return sums;
+    }
+
+    // 计算对外拆佣合计
+    getCommissionSummaries(param: any) {
+      const {columns, data} = param;
+      const sums: any = [];
+      columns.forEach((column: any, index: any) => {
+        if (index === 0) {
+          sums[index] = '合计';
+          return;
+        }
+        if ([4].includes(index)) {
+          const values = data.map((item: any) => Number(item[column.property]));
+          if (!values.every((value: any) => isNaN(value))) {
+            sums[index] = values.reduce((prev: any, curr: any) => {
+              const value = Number(curr);
+              if (!isNaN(value)) {
+                return prev + curr;
+              } else {
+                return prev;
+              }
+            }, 0);
+          } else {
+            sums[index] = '';
+          }
+        } else {
+          sums[index] = '';
+        }
+      });
+      return sums;
+    }
+
+    // 计算平台费用-总包/分销合计
+    getAchieveSummaries(param: any) {
+      const {columns, data} = param;
+      const sums: any = [];
+      columns.forEach((column: any, index: any) => {
+        if (index === 0) {
+          sums[index] = '合计';
+          return;
+        }
+        if ([1, 2, 3, 4, 5].includes(index)) {
+          const values = data.map((item: any) => Number(item[column.property]));
+          if (!values.every((value: any) => isNaN(value))) {
+            sums[index] = values.reduce((prev: any, curr: any) => {
+              const value = Number(curr);
+              if (!isNaN(value)) {
+                return prev + curr;
+              } else {
+                return prev;
+              }
+            }, 0);
+          } else {
+            sums[index] = '';
+          }
+        } else {
+          sums[index] = '';
+        }
+      });
+      return sums;
     }
 
     // 预览

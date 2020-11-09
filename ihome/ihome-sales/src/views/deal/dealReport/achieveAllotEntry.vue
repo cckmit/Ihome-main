@@ -650,7 +650,7 @@
       return sums;
     }
 
-    // 计算平台费用-总包合计
+    // 计算平台费用-总包/分销合计
     getAchieveSummaries(param: any) {
       const {columns, data} = param;
       const sums: any = [];

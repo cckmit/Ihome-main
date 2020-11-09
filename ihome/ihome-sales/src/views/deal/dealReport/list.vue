@@ -204,8 +204,7 @@
       <br/>
       <el-table
         class="ih-table"
-        :data="resPageInfo.list"
-      >
+        :data="resPageInfo.list">
         <el-table-column
           prop="dealCode"
           label="成交报告编号"
@@ -307,9 +306,26 @@
                 <el-dropdown-item @click.native.prevent="handleReviewAchieve(scope)"
                 >审核申报业绩
                 </el-dropdown-item>
-                <el-dropdown-item @click.native.prevent="remove(scope)"
-                >补充成交
-                </el-dropdown-item>
+                <el-dropdown trigger="click" class="el-dropdown-menu__item" placement="top-start">
+                  <span class="el-dropdown-link">
+                  补充成交
+                  <i class="el-icon-arrow-down el-icon--right"></i>
+                  </span>
+                  <el-dropdown-menu slot="dropdown">
+                    <el-dropdown-item
+                    >变更基础信息
+                    </el-dropdown-item>
+                    <el-dropdown-item
+                    >变更业绩信息
+                    </el-dropdown-item>
+                    <el-dropdown-item
+                    >退房
+                    </el-dropdown-item>
+                    <el-dropdown-item
+                    >内部员工业绩变更
+                    </el-dropdown-item>
+                  </el-dropdown-menu>
+                </el-dropdown>
                 <el-dropdown-item @click.native.prevent="handleWithdrawalReview(scope)"
                 >撤回审核
                 </el-dropdown-item>
