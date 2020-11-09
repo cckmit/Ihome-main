@@ -4,7 +4,7 @@
  * @Author: zyc
  * @Date: 2020-10-21 15:16:14
  * @LastEditors: ywl
- * @LastEditTime: 2020-11-09 15:39:08
+ * @LastEditTime: 2020-11-09 18:04:30
 -->
 <template>
   <IhPage ref="ihPage">
@@ -14,25 +14,34 @@
           :span="6"
           class="dict-list-left"
         >
-          <el-row>
+          <el-row
+            type="flex"
+            justify="space-between"
+            class="search-box"
+          >
             <el-col
-              :span="8"
+              :span="6"
               class="text-left"
             >
               <el-button
                 type="success"
-                @click="dictTypeVisible = true"
+                size="small"
+                class="add-button"
+                @click="handleAddDicType()"
               >添加</el-button>
             </el-col>
-            <el-col :span="16">
+            <el-col :span="18">
               <el-input
                 placeholder="请输入内容"
-                class="input-with-select"
+                v-model="dicTypeSearch"
+                clearable
+                size="small"
               >
                 <el-button
                   slot="append"
                   style="width: 50px;"
                   icon="el-icon-search"
+                  @click="getAllByType(dicTypeSearch)"
                 ></el-button>
               </el-input>
             </el-col>
@@ -42,19 +51,28 @@
               class="dict-type-list text-left"
               :style="{ 'maxHeight': pageHeight }"
             >
-              <li
-                v-for="(item, i) in list"
-                :key="i"
-              >
-                <div>1111</div>
-                <div class="setting">
-                  <el-link type="primary">修改</el-link>
-                  <el-link
-                    type="danger"
-                    class="margin-left-10"
-                  >删除</el-link>
-                </div>
-              </li>
+              <template v-for="(item, index) in dictTypeList">
+                <li
+                  :key="item.code"
+                  :class="{active: activeIndex === index}"
+                  @click.stop="handleActive()"
+                >
+                  <div
+                    class="dict-type-title"
+                    :title="item.name"
+                  >{{item.name}}</div>
+                  <div class="setting">
+                    <el-link
+                      type="primary"
+                      @click.stop="handleEditDicType(item)"
+                    >修改</el-link>
+                    <el-link
+                      type="danger"
+                      class="margin-left-10"
+                    >删除</el-link>
+                  </div>
+                </li>
+              </template>
             </ul>
           </el-row>
         </el-col>
@@ -140,7 +158,12 @@
     >
       <DictType
         :isAdd="isAdd"
+        :data="itemData"
         @cancel="() => (dictTypeVisible = false)"
+        @finish="() => {
+          dictTypeVisible = false;
+          getAllByType('')
+        }"
       />
     </IhDialog>
     <!-- 字典项dialog -->
@@ -155,7 +178,10 @@
 
 <script lang="ts">
 import { Component, Vue } from "vue-property-decorator";
-import { get_dict_getAll } from "../../api/system/index";
+import {
+  post_dict_getAllDictType,
+  post_dict_getAllByType,
+} from "../../api/system/index";
 
 import DictType from "./dialog/dictType.vue";
 import DictItem from "./dialog/dictItem.vue";
@@ -166,8 +192,13 @@ import DictItem from "./dialog/dictItem.vue";
 export default class DicList extends Vue {
   list: any = [];
   isAdd = true;
+  itemData: any = {};
+  private activeIndex = 0;
   private dictTypeVisible = false;
   private dictItemVisible = false;
+  private dictTypeList: any = [];
+  private dicTypeSearch: any = null;
+  private dictList: any = [];
 
   private get pageHeight() {
     let h =
@@ -176,26 +207,39 @@ export default class DicList extends Vue {
       "px";
     return h;
   }
+  private handleAddDicType(): void {
+    this.dictTypeVisible = true;
+    this.isAdd = true;
+  }
+  private handleEditDicType(item: any): void {
+    this.dictTypeVisible = true;
+    this.isAdd = false;
+    this.itemData = item;
+  }
+  private async getAllByType(key: any): Promise<void> {
+    this.dictTypeList = await post_dict_getAllDictType({ key });
+  }
+  private async getDictAll(): Promise<void> {
+    let dictType = this.dictTypeList[this.activeIndex].code;
+    this.dictList = await post_dict_getAllByType({ type: dictType });
+  }
 
   async created() {
-    const res: any = await get_dict_getAll();
-    Object.keys(res).forEach((key: any) => {
-      const item = res[key];
-      let obj: any = {
-        key: key,
-        data: item,
-      };
-      this.list.push(obj || []);
-    });
+    await this.getAllByType("");
+    this.getDictAll();
   }
 }
 </script>
 
 <style lang="scss" scoped>
+$active: #ef9d39;
 .dict-list-left {
   border-right: 1px solid #e6e6e6;
   padding-right: 10px;
   overflow: auto;
+  .search-box {
+    align-items: center;
+  }
 }
 .dict-type-list {
   list-style: none;
@@ -203,11 +247,21 @@ export default class DicList extends Vue {
   padding: 0;
   height: 100%;
   overflow-y: auto;
-}
-.dict-type-list li {
-  display: flex;
-  padding: 4px 6px;
-  line-height: 24px;
+  font-size: 14px;
+  li {
+    display: flex;
+    padding: 4px 6px;
+    line-height: 24px;
+    &.active {
+      background-color: rgba($color: $active, $alpha: 0.2);
+    }
+  }
+  .dict-type-title {
+    width: 140px;
+    overflow: hidden;
+    white-space: nowrap;
+    text-overflow: ellipsis;
+  }
 }
 .dict-type-list li:hover {
   div:nth-child(2) {
