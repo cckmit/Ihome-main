@@ -4,7 +4,7 @@
  * @Author: zyc
  * @Date: 2020-06-24 09:47:33
  * @LastEditors: ywl
- * @LastEditTime: 2020-11-06 12:03:08
+ * @LastEditTime: 2020-11-10 11:54:17
  */
 import { IRes } from "./users.d";
 // import request from '@/utils/http';
@@ -109,7 +109,7 @@ export function allMenu<T>() {
         {
             id: 7,
             parentId: 1,
-            title: "字典",
+            title: "数据字典",
             icon: null,
             path: "/web-system/dic/list",
         },

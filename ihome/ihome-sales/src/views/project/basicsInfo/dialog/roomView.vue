@@ -4,7 +4,7 @@
  * @Author: wwq
  * @Date: 2020-11-03 18:39:23
  * @LastEditors: wwq
- * @LastEditTime: 2020-11-04 16:25:37
+ * @LastEditTime: 2020-11-06 17:25:32
 -->
 <template>
   <el-dialog
@@ -20,7 +20,7 @@
       'PropertyEnum'
     )} ${data.buildingName}`"
   >
-    <el-form ref="form" label-width="100px">
+    <el-form ref="form" label-width="70px">
       <el-row>
         <el-col :span="5">
           <el-form-item label="房号：">
@@ -66,7 +66,7 @@
             </el-select>
           </el-form-item>
         </el-col>
-        <el-col :span="9" class="text-left">
+        <el-col :span="8" class="text-left width--50">
           <el-form-item>
             <el-button type="primary" @click="search()">查询</el-button>
             <el-button
@@ -85,7 +85,11 @@
       <el-table-column label="房型">
         <template v-slot="{ row }">
           <span>
-            {{ `${row.room}室${row.hall}厅${row.kitchen}厨` }}
+            {{
+              `${row.room ? row.room : 0}室${row.hall ? row.hall : 0}厅${
+                row.kitchen ? row.kitchen : 0
+              }厨`
+            }}
           </span>
         </template>
       </el-table-column>
@@ -141,7 +145,7 @@ import PaginationMixin from "@/mixins/pagination";
 import RoomViewEdit from "./roomViewEdit.vue";
 import {
   post_room_getList,
-  get_houseType_getItemsByProperty__propertyId,
+  get_houseType_getItemsByProperty__proId,
   post_room_add,
   post_room_del__id,
 } from "@/api/project/index";
@@ -182,8 +186,8 @@ export default class RoomView extends Vue {
   }
 
   async getHouseType() {
-    this.houseTypeOptions = await get_houseType_getItemsByProperty__propertyId({
-      propertyId: this.data.propertyId,
+    this.houseTypeOptions = await get_houseType_getItemsByProperty__proId({
+      proId: this.proId,
     });
   }
 
@@ -222,7 +226,6 @@ export default class RoomView extends Vue {
   async editFinish(data: any) {
     let obj = { ...data };
     obj.proId = this.proId;
-    console.log(obj);
     await post_room_add(obj);
     this.$message.success("保存成功");
     this.viewEditDialogVisible = false;
@@ -232,7 +235,6 @@ export default class RoomView extends Vue {
 
   async remove(row: any) {
     try {
-      console.log(row);
       await this.$confirm("是否确定移除?", "提示");
       await post_room_del__id({ id: row.roomId });
       this.getListMixin();

@@ -4,7 +4,7 @@
  * @Author: wwq
  * @Date: 2020-09-16 14:54:19
  * @LastEditors: wwq
- * @LastEditTime: 2020-11-05 16:22:01
+ * @LastEditTime: 2020-11-10 09:38:00
 -->
 <template>
   <div>
@@ -23,12 +23,13 @@
       <el-table-column prop="accessory" label="附件">
         <template v-slot="{ row }">
           <IhUpload
-            :isCrop="isCrop"
+            isCrop
             :file-list.sync="row.fileList"
             :size="size"
             :limit="limit"
             :file-size="fileSize"
-            :is-move="isMove"
+            isMove
+            @newFileList="queryNew"
           ></IhUpload>
         </template>
       </el-table-column>
@@ -86,7 +87,7 @@ export default class UploadDemo extends Vue {
           {
             fileCat: ".jpg",
             fileName: "1111.jpg",
-            preFileAdress: "5fa41dd7282f22000106afb7",
+            preFileAdress: "5faa567a282f22000106b005",
             preFileCode: "leixing3",
             preFileName: "类型3",
             partCode: "partCode_first",
@@ -94,7 +95,7 @@ export default class UploadDemo extends Vue {
           {
             fileCat: ".jpg",
             fileName: "2222.jpg",
-            preFileAdress: "5fa3bdb8282f22000106af81",
+            preFileAdress: "5faa5628282f22000106b003",
             preFileCode: "leixing3",
             preFileName: "类型3",
             partCode: "partCode_first",
@@ -164,6 +165,9 @@ export default class UploadDemo extends Vue {
       this.tableData = [...arr];
       console.log(arr);
     });
+  }
+  queryNew(val: any) {
+    console.log(val);
   }
 }
 </script>

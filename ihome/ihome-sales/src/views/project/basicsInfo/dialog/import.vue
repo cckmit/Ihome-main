@@ -4,7 +4,7 @@
  * @Author: wwq
  * @Date: 2020-11-03 17:00:29
  * @LastEditors: wwq
- * @LastEditTime: 2020-11-04 17:53:21
+ * @LastEditTime: 2020-11-06 17:41:49
 -->
 <template>
   <el-dialog
@@ -82,6 +82,7 @@ export default class ImportDialog extends Vue {
   }
   successHandler() {
     this.$emit("cancel");
+    this.$message.success("导入成功");
   }
   cancel() {
     this.$emit("cancel");

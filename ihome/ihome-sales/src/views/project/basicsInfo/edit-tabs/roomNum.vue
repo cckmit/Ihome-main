@@ -4,7 +4,7 @@
  * @Author: wwq
  * @Date: 2020-09-27 11:52:41
  * @LastEditors: wwq
- * @LastEditTime: 2020-11-04 17:52:40
+ * @LastEditTime: 2020-11-06 17:27:40
 -->
 <template>
   <div>
@@ -36,9 +36,10 @@
             </el-select>
           </el-form-item>
         </el-col>
-        <el-col :span="10" class="text-left">
+        <el-col :span="12" class="text-left">
           <el-form-item>
             <el-button type="primary" @click="search()">查询</el-button>
+            <el-button type="success" @click="add()">新增栋座</el-button>
             <el-button
               type="success"
               v-if="$route.name !== 'projectAdd'"
@@ -56,11 +57,16 @@
           $root.dictAllName(row.propertyEnum, "PropertyEnum")
         }}</template>
       </el-table-column>
+      <el-table-column prop="renovatLevelEnum" label="装修级别">
+        <template v-slot="{ row }">{{
+          $root.dictAllName(row.renovatLevelEnum, "RenovatLevelEnum")
+        }}</template>
+      </el-table-column>
       <el-table-column prop="floor" label="地上层数"></el-table-column>
       <el-table-column prop="undergroundNum" label="地下层数"></el-table-column>
       <el-table-column prop="houseTypes" label="户型">
         <template v-slot="{ row }">
-          <span v-for="(item, i) in row.houseTypes" :key="item">
+          <span v-for="(item, i) in row.houseTypes" :key="i">
             <span>{{ item }}</span>
             <span v-if="i !== row.houseTypes.length - 1">、</span>
           </span>
@@ -112,6 +118,7 @@ import PaginationMixin from "@/mixins/pagination";
 import Import from "../dialog/import.vue";
 import {
   post_building_getList,
+  post_building_add,
   post_building_update,
 } from "@/api/project/index";
 
@@ -132,6 +139,7 @@ export default class EidtRoomNum extends Vue {
   editData: any = {};
   viewData: any = {};
   inportData: any = {};
+  roomNumType = "";
 
   resPageInfo: any = {
     list: [],
@@ -156,14 +164,33 @@ export default class EidtRoomNum extends Vue {
     this.getListMixin();
   }
 
+  add() {
+    this.editData = {};
+    this.roomNumType = "add";
+    this.editDialogVisible = true;
+  }
+
   edit(row: any) {
-    this.editData = row;
+    this.editData = {
+      ...row,
+      propertyEnum: {
+        propertyId: row.propertyId,
+        propertyEnum: row.propertyEnum,
+      },
+    };
+    this.roomNumType = "edit";
     this.editDialogVisible = true;
   }
   async editFinish(data: any) {
     let obj = { ...data };
     obj.proId = this.proId;
-    await post_building_update(obj);
+    obj.propertyEnum = data.propertyEnum.propertyEnum;
+    obj.propertyId = data.propertyEnum.propertyId;
+    if (this.roomNumType === "add") {
+      await post_building_add(obj);
+    } else {
+      await post_building_update(obj);
+    }
     this.$message.success("保存成功");
     this.editDialogVisible = false;
     this.getListMixin();
