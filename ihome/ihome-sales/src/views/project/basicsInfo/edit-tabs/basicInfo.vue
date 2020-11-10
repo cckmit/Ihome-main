@@ -4,7 +4,7 @@
  * @Author: wwq
  * @Date: 2020-11-03 11:52:41
  * @LastEditors: wwq
- * @LastEditTime: 2020-11-06 17:36:48
+ * @LastEditTime: 2020-11-09 15:14:40
 -->
 <template>
   <div>
@@ -133,7 +133,7 @@
           </el-form-item>
         </el-col>
         <el-col :span="8">
-          <el-form-item label-width="30px">
+          <el-form-item label="详细地址">
             <el-input
               placeholder="请输入地址"
               v-model="form.searchAddr"
@@ -157,9 +157,19 @@
               @click="getLocationPoint"
             >
               <BmView style="width: 100%; height: 100%; flex: 1"></BmView>
+              <BmControl>
+                <BmAutoComplete :sugStyle="{ zIndex: 999999 }">
+                  <el-input
+                    v-model="searchAddr"
+                    clearable
+                    type="text"
+                    placeholder="请输入搜索关键字"
+                  />
+                </BmAutoComplete>
+              </BmControl>
               <BmLocalSearch
-                v-if="form.searchAddr"
-                :keyword="form.searchAddr"
+                v-if="searchAddr"
+                :keyword="searchAddr"
                 :auto-viewport="true"
                 style="display: none"
               ></BmLocalSearch>
@@ -183,7 +193,7 @@
           </el-form-item>
         </el-col>
       </el-row>
-      <el-row v-if="form.checkboxEnum.length">
+      <el-row v-if="form.checkboxEnum.length" class="margin-left-50">
         <el-col
           :span="12"
           v-for="item in checkBoxChangeList"
@@ -411,12 +421,24 @@ import {
   post_project_update,
 } from "@/api/project/index";
 import FirstAgencyDialog from "../dialog/firstAgency.vue";
-import BaiduMap from "vue-baidu-map/components/map/Map.vue";
-import BmView from "vue-baidu-map/components/map/MapView.vue";
-import BmLocalSearch from "vue-baidu-map/components/search/LocalSearch.vue";
+
+import {
+  BaiduMap,
+  BmControl,
+  BmView,
+  BmAutoComplete,
+  BmLocalSearch,
+} from "vue-baidu-map";
 
 @Component({
-  components: { FirstAgencyDialog, BaiduMap, BmView, BmLocalSearch },
+  components: {
+    FirstAgencyDialog,
+    BaiduMap,
+    BmControl,
+    BmView,
+    BmAutoComplete,
+    BmLocalSearch,
+  },
 })
 export default class EditBasicInfo extends Vue {
   form: any = {
@@ -680,12 +702,11 @@ export default class EditBasicInfo extends Vue {
 
   handler({ BMap }: any) {
     this.BMap = BMap;
-    this.zoom = 15;
+    this.zoom = 12;
     const geolocation = new BMap.Geolocation();
     geolocation.getCurrentPosition((r: any) => {
       this.center.lng = r.longitude;
       this.center.lat = r.latitude;
-      // this.getInfo();
     });
   }
 
@@ -693,13 +714,11 @@ export default class EditBasicInfo extends Vue {
     this.center.lng = e.point.lng;
     this.center.lat = e.point.lat;
     let geoCoder = new this.BMap.Geocoder();
-    geoCoder.getPoint(this.form.searchAddr, (point: any) => {
+    geoCoder.getPoint(this.searchAddr, (point: any) => {
       this.form.jingwei = `${point?.lng},${point?.lat}`;
-      this.form.lng = point?.lng;
-      this.form.lat = point?.lat;
     });
     geoCoder.getLocation(e.point, (res: any) => {
-      this.searchAddr = res?.address;
+      this.form.searchAddr = res?.address;
     });
   }
 
@@ -715,7 +734,9 @@ export default class EditBasicInfo extends Vue {
     obj.districtName = (this.$root as any).getAreaName(
       this.form.provinceOption[2]
     );
-    obj.searchAddr = this.searchAddr ? this.searchAddr : this.form.searchAddr;
+    obj.lng = this.form.jingwei.split(",")[0];
+    obj.lat = this.form.jingwei.split(",")[1];
+    obj.searchAddr = this.form.searchAddr;
     obj.propertyArgs = this.checkBoxChangeList.map((v: any) => ({
       ...v.msg,
     }));

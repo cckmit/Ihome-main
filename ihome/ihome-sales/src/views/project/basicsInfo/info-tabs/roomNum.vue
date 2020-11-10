@@ -4,7 +4,7 @@
  * @Author: wwq
  * @Date: 2020-11-03 11:52:41
  * @LastEditors: wwq
- * @LastEditTime: 2020-11-04 16:29:03
+ * @LastEditTime: 2020-11-09 09:09:04
 -->
 <template>
   <div>
@@ -54,7 +54,7 @@
       <el-table-column prop="undergroundNum" label="地下层数"></el-table-column>
       <el-table-column prop="houseTypes" label="户型">
         <template v-slot="{ row }">
-          <span v-for="(item, i) in row.houseTypes" :key="item">
+          <span v-for="(item, i) in row.houseTypes" :key="i">
             <span>{{ item }}</span>
             <span v-if="i !== row.houseTypes.length - 1">、</span>
           </span>

@@ -3,13 +3,14 @@
  * @version: 
  * @Author: wwq
  * @Date: 2020-11-04 17:56:27
- * @LastEditors: ywl
- * @LastEditTime: 2020-11-06 11:45:08
+ * @LastEditors: wwq
+ * @LastEditTime: 2020-11-10 09:44:23
 -->
 
 # ihome-common
 ## 版本更新
 ```
+v1.1.39 2020-11-10 09:45  上传组件优化
 v1.1.38 2020-11-06 11:46  下拉分页组件加上loading和防抖、支持回车搜索
 v1.1.37 2020-11-05 16:44  upload组件新增左右移动功能
 v1.1.36 2020-11-04 10:44  新增表单验证
