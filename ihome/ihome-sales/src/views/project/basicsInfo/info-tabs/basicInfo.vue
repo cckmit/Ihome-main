@@ -4,7 +4,7 @@
  * @Author: wwq
  * @Date: 2020-11-03 11:52:41
  * @LastEditors: wwq
- * @LastEditTime: 2020-11-06 17:39:09
+ * @LastEditTime: 2020-11-10 14:03:10
 -->
 <template>
   <div>
@@ -12,17 +12,53 @@
       <el-row>
         <el-col :span="8">
           <el-form-item label="盘编">
-            <span>{{ form.proNo }}</span>
+            <span class="text-ellipsis" :title="form.proNo">{{
+              form.proNo
+            }}</span>
           </el-form-item>
         </el-col>
         <el-col :span="8">
-          <el-form-item label="是否市场化项目" prop="exMarket">
+          <el-form-item label="项目推广名">
+            <span>{{ form.proName }}</span>
+          </el-form-item>
+        </el-col>
+        <el-col :span="8">
+          <el-form-item label="项目备案名">
+            <span>{{ form.proRecord }}</span>
+          </el-form-item>
+        </el-col>
+      </el-row>
+      <el-row>
+        <el-col :span="8">
+          <el-form-item label="开发商名称">
+            <span>{{ form.developerId }}</span>
+          </el-form-item>
+        </el-col>
+        <el-col :span="8">
+          <el-form-item label="市场化项目">
             <span>{{ filterExMarket(form.exMarket) }}</span>
           </el-form-item>
         </el-col>
         <el-col :span="8">
-          <el-form-item label="是否关联明源" prop="exMinyuan">
+          <el-form-item label="关联明源">
             <span>{{ filterExMarket(form.exMinyuan) }}</span>
+          </el-form-item>
+        </el-col>
+      </el-row>
+      <el-row v-if="isShow">
+        <el-col :span="8">
+          <el-form-item label="爱家父项目推广名">
+            <span>{{ form.parentName }}</span>
+          </el-form-item>
+        </el-col>
+        <el-col :span="8">
+          <el-form-item label="明源楼盘名">
+            <span>{{ form.buildingGuidName }}</span>
+          </el-form-item>
+        </el-col>
+        <el-col :span="8">
+          <el-form-item label="同步明源房号数据">
+            <span>{{ filterExMarket(form.exSyncRoom) }}</span>
           </el-form-item>
         </el-col>
       </el-row>
@@ -44,42 +80,20 @@
         </el-col>
       </el-row>
       <el-row>
-        <el-col :span="8">
-          <el-form-item label="项目推广名" prop="proName">
-            <span>{{ form.proName }}</span>
-          </el-form-item>
-        </el-col>
-        <el-col :span="8">
-          <el-form-item label="明源楼盘名">
-            <span>{{ form.minyuanName }}</span>
-          </el-form-item>
-        </el-col>
-        <el-col :span="8">
-          <el-form-item label="项目备案名" prop="proRecord">
-            <span>{{ form.proRecord }}</span>
-          </el-form-item>
-        </el-col>
-      </el-row>
-      <el-row>
-        <el-col :span="8">
-          <el-form-item label="项目地址" prop="proAddr">
+        <el-col :span="24">
+          <el-form-item label="项目地址">
             <span>{{ form.proAddr }}</span>
           </el-form-item>
         </el-col>
-        <el-col :span="8">
-          <el-form-item label="开发商名称" prop="developerName">
-            <span>{{ form.developerId }}</span>
-          </el-form-item>
-        </el-col>
       </el-row>
       <el-row>
         <el-col :span="8">
-          <el-form-item label="经纬度" prop="jingwei">
+          <el-form-item label="经纬度">
             <span>{{ form.jingwei }}</span>
           </el-form-item>
         </el-col>
         <el-col :span="8">
-          <el-form-item label-width="30px">
+          <el-form-item label="详细地址">
             <span>{{ form.searchAddr }}</span>
           </el-form-item>
         </el-col>
@@ -167,7 +181,6 @@
                       label="产权年限"
                       label-width="90px"
                       class="text-left"
-                      prop="propertyAge"
                     >
                       <span>{{
                         $root.dictAllName(
@@ -185,7 +198,7 @@
       </el-row>
       <el-row>
         <el-col :span="24">
-          <el-form-item label="楼盘图片" prop="name">
+          <el-form-item label="楼盘图片">
             <IhUpload
               :file-list="houseFileList"
               :limit="houseFileList.length"
@@ -285,7 +298,7 @@
         </div>
       </el-row>
     </el-form>
-    <div class="margin-top-20" v-if="$route.name === 'projectAudit'">
+    <div class="margin-top-20" v-if="$route.name === 'projectChildAudit'">
       <p class="ih-info-title">审核意见</p>
       <el-input
         class="padding-left-20"
@@ -304,7 +317,7 @@
   </div>
 </template>
 <script lang="ts">
-import { Component, Vue } from "vue-property-decorator";
+import { Component, Vue, Watch } from "vue-property-decorator";
 import {
   get_project_get__proId,
   post_project_audit,
@@ -320,16 +333,18 @@ import BmLocalSearch from "vue-baidu-map/components/search/LocalSearch.vue";
 export default class InfoBasicInfo extends Vue {
   form: any = {
     proNo: null,
+    proName: null,
+    proRecord: null,
+    developerId: null,
     exMarket: null,
     exMinyuan: 0,
+    parentId: null,
+    buildingGuidName: null,
+    exSyncRoom: null,
     province: null,
     city: null,
     district: null,
-    minyuanName: null,
-    proRecord: null,
     proAddr: null,
-    developerId: null,
-    developerName: null,
     lng: null, // 经度
     lat: null, // 纬度
     jingwei: null, // 经纬度
@@ -362,6 +377,13 @@ export default class InfoBasicInfo extends Vue {
   zoom = 3;
   BMap: any = {};
   searchAddr = "";
+  isShow = true;
+
+  @Watch("form.exMinyuan", { immediate: true, deep: true })
+  isShowList(v: any) {
+    if (!v) this.isShow = false;
+    else this.isShow = true;
+  }
 
   private get projectId() {
     return this.$route.query.id;
@@ -508,5 +530,13 @@ export default class InfoBasicInfo extends Vue {
 .bm-view {
   width: 100%;
   height: 400px;
+}
+
+.text-ellipsis {
+  width: 100%;
+  display: inline-block;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
 }
 </style>
