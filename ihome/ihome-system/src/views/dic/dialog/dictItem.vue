@@ -4,7 +4,7 @@
  * @Author: ywl
  * @Date: 2020-11-09 15:15:30
  * @LastEditors: ywl
- * @LastEditTime: 2020-11-10 10:41:34
+ * @LastEditTime: 2020-11-10 14:08:48
 -->
 <template>
   <el-dialog
@@ -126,6 +126,11 @@ export default class DictItemDialog extends Vue {
       { validator: noTrim, trigger: ["change", "blur"] },
       { validator: isChineseValidato, trigger: ["change", "blur"] },
     ],
+    subType: [
+      { validator: noTrim, trigger: ["change", "blur"] },
+      { pattern: /([A-Z])([a-z0-9]+)/, message: "请首字母大写，使用驼峰命名" },
+    ],
+    tag: [{ validator: noTrim, trigger: ["change", "blur"] }],
   };
 
   cancel(): void {
