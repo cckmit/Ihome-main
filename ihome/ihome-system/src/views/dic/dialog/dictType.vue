@@ -4,7 +4,7 @@
  * @Author: ywl
  * @Date: 2020-11-09 14:55:48
  * @LastEditors: ywl
- * @LastEditTime: 2020-11-09 16:55:58
+ * @LastEditTime: 2020-11-10 10:33:32
 -->
 <template>
   <el-dialog
@@ -78,9 +78,11 @@ export default class DictTypeDialog extends Vue {
     code: [
       { required: true, message: "请输入编码", trigger: "blur" },
       { validator: noTrim, trigger: ["change", "blur"] },
+      { pattern: /([A-Z])([a-z0-9]+)/, message: "请首字母大写，使用驼峰命名" },
     ],
     name: [
       { required: true, message: "请输入名称", trigger: "blur" },
+      { validator: noTrim, trigger: ["change", "blur"] },
       { validator: isChineseValidato, trigger: ["change", "blur"] },
     ],
   };

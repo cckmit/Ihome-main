@@ -4,7 +4,7 @@
  * @Author: zyc
  * @Date: 2020-10-21 15:16:14
  * @LastEditors: ywl
- * @LastEditTime: 2020-11-09 18:04:30
+ * @LastEditTime: 2020-11-10 11:46:19
 -->
 <template>
   <IhPage ref="ihPage">
@@ -54,8 +54,8 @@
               <template v-for="(item, index) in dictTypeList">
                 <li
                   :key="item.code"
-                  :class="{active: activeIndex === index}"
-                  @click.stop="handleActive()"
+                  :class="{'active': activeIndex === index}"
+                  @click.stop="handleActive(index)"
                 >
                   <div
                     class="dict-type-title"
@@ -69,6 +69,7 @@
                     <el-link
                       type="danger"
                       class="margin-left-10"
+                      @click.stop="removeDicType(item, index)"
                     >删除</el-link>
                   </div>
                 </li>
@@ -82,32 +83,37 @@
         >
           <el-row>
             <el-col
-              :span="2"
+              :span="4"
               class="text-left"
             >
               <el-button
                 type="success"
-                @click="dictItemVisible = true"
+                @click="handleAddDic()"
               >添加字典项</el-button>
             </el-col>
             <el-col
-              :span="22"
+              :span="20"
               class="text-right"
             >
               <el-input
-                style="width:300px;"
+                class="width-250"
                 placeholder="编码、名称或者标签"
-                class="input-with-select"
+                v-model="dictSearch"
+                clearable
               ></el-input>
               <el-button
                 class="margin-left-10"
                 type="primary"
+                @click="searchDictBykey(dictSearch)"
               >查询</el-button>
             </el-col>
           </el-row>
           <el-row>
             <br />
-            <el-table>
+            <el-table
+              class="ih-table"
+              :data="dictList"
+            >
               <el-table-column
                 type="index"
                 width="55px"
@@ -115,23 +121,55 @@
                 label="序号"
                 fixed
               ></el-table-column>
-              <el-table-column label="名称"></el-table-column>
-              <el-table-column label="编码"></el-table-column>
-              <el-table-column label="类型"></el-table-column>
-              <el-table-column label="子类型"></el-table-column>
-              <el-table-column label="标签"></el-table-column>
-              <el-table-column label="顺序"></el-table-column>
-              <el-table-column label="状态"></el-table-column>
+              <el-table-column
+                label="名称"
+                prop="name"
+                min-width="135"
+                fixed
+              ></el-table-column>
+              <el-table-column
+                label="编码"
+                prop="code"
+                min-width="135"
+                fixed
+              ></el-table-column>
+              <el-table-column
+                label="类型"
+                prop="type"
+                min-width="100"
+              ></el-table-column>
+              <el-table-column
+                label="子类型"
+                prop="subType"
+              ></el-table-column>
+              <el-table-column
+                label="标签"
+                prop="tag"
+              ></el-table-column>
+              <el-table-column
+                label="顺序"
+                prop="seq"
+                width="80"
+              ></el-table-column>
+              <el-table-column
+                label="状态"
+                prop="valid"
+              >
+                <template v-slot="{ row }">
+                  {{$root.dictAllName(row.valid, 'ValidType')}}
+                </template>
+              </el-table-column>
               <el-table-column label="修改时间"></el-table-column>
               <el-table-column
                 label="操作"
                 fixed="right"
-                width="100"
+                width="120"
               >
-                <template>
+                <template v-slot="{ row, $index }">
                   <el-link
                     class="margin-right-10"
                     type="primary"
+                    @click="handleEditDic(row)"
                   >修改</el-link>
                   <el-dropdown trigger="click">
                     <span class="el-dropdown-link">
@@ -139,9 +177,9 @@
                       <i class="el-icon-arrow-down el-icon--right"></i>
                     </span>
                     <el-dropdown-menu slot="dropdown">
-                      <el-dropdown-item>删除</el-dropdown-item>
-                      <el-dropdown-item>停用</el-dropdown-item>
-                      <el-dropdown-item>启用</el-dropdown-item>
+                      <el-dropdown-item @click.native.prevent="removeDict(row, $index)">删除</el-dropdown-item>
+                      <el-dropdown-item @click.native.prevent="switchDict(row, false)">停用</el-dropdown-item>
+                      <el-dropdown-item @click.native.prevent="switchDict(row, true)">启用</el-dropdown-item>
                     </el-dropdown-menu>
                   </el-dropdown>
                 </template>
@@ -171,7 +209,16 @@
       :show="dictItemVisible"
       desc="字典项"
     >
-      <DictItem @cancel="() => (dictItemVisible = false)" />
+      <DictItem
+        :isAdd="isAdd"
+        :data="itemData"
+        :select="selectDicType"
+        @cancel="() => (dictItemVisible = false)"
+        @finish="() => {
+          dictItemVisible = false;
+          getDictAll()
+        }"
+      />
     </IhDialog>
   </IhPage>
 </template>
@@ -181,6 +228,11 @@ import { Component, Vue } from "vue-property-decorator";
 import {
   post_dict_getAllDictType,
   post_dict_getAllByType,
+  post_dict_deleteDictType__id,
+  post_dict_close__id,
+  post_dict_open__id,
+  post_dict_delete__id,
+  post_dict_getAllDictItemByType,
 } from "../../api/system/index";
 
 import DictType from "./dialog/dictType.vue";
@@ -197,8 +249,10 @@ export default class DicList extends Vue {
   private dictTypeVisible = false;
   private dictItemVisible = false;
   private dictTypeList: any = [];
+  private selectDicType: any = [];
   private dicTypeSearch: any = null;
   private dictList: any = [];
+  private dictSearch: any = null;
 
   private get pageHeight() {
     let h =
@@ -207,18 +261,124 @@ export default class DicList extends Vue {
       "px";
     return h;
   }
-  private handleAddDicType(): void {
-    this.dictTypeVisible = true;
-    this.isAdd = true;
+
+  /**
+   * @description: 查询指定字典类型的所有字典项
+   * @param {any} key
+   */
+  private async searchDictBykey(key: any): Promise<void> {
+    this.dictList = await post_dict_getAllDictItemByType({
+      key,
+      type: this.dictTypeList[this.activeIndex].code,
+    });
   }
-  private handleEditDicType(item: any): void {
+  /**
+   * @description: 删除字典项
+   * @param {any} row
+   * @param {number} index
+   */
+  private removeDict(row: any, index: number): void {
+    this.$confirm("是否确定删除该字典项?", "提示")
+      .then(async () => {
+        await post_dict_delete__id({ id: row.id });
+        this.dictList.splice(index, 1);
+        this.$message.success("删除成功");
+      })
+      .catch(() => {
+        console.log("取消");
+      });
+  }
+  /**
+   * @description: 启用、停用字典项
+   * @param {any} row
+   * @param {boolean} type
+   */
+  private switchDict(row: any, type: boolean): void {
+    this.$confirm(`是否确定${type ? "启用" : "停用"}该字典项?`, "提示")
+      .then(async () => {
+        type
+          ? await post_dict_open__id({ id: row.id })
+          : await post_dict_close__id({ id: row.id });
+        this.getDictAll();
+        this.$message.success(`${type ? "启用" : "停用"}成功`);
+      })
+      .catch(async () => {
+        console.log("取消");
+      });
+  }
+  /**
+   * @description: 编辑字典项弹窗
+   * @param {any} row
+   */
+  private handleEditDic(row: any): void {
+    this.isAdd = false;
+    this.itemData = row;
+    this.dictItemVisible = true;
+  }
+  /**
+   * @description: 新增字典项弹窗
+   */
+  private handleAddDic(): void {
+    this.itemData.type = this.dictTypeList[this.activeIndex].code;
+    this.isAdd = true;
+    this.dictItemVisible = true;
+  }
+  /**
+   * @description: 删除字典类型
+   * @param {any} item
+   * @param {number} index 当前下标
+   */
+  private removeDicType(item: any, index: number): void {
+    this.$confirm("是否确定删除该字典类型?", "提示")
+      .then(async () => {
+        await post_dict_deleteDictType__id({ id: item.id });
+        this.dictTypeList.splice(index, 1);
+        this.$message.success("删除成功");
+      })
+      .catch(async () => {
+        console.log("取消");
+      });
+  }
+  /**
+   * @description: 查询指定类型的所有字典项
+   * @param {number} index
+   */
+  private handleActive(index: number): void {
+    this.activeIndex = index;
+    this.getDictAll();
+  }
+  /**
+   * @description: 新增字典类型弹窗
+   */
+  private handleAddDicType(): void {
+    this.isAdd = true;
     this.dictTypeVisible = true;
+  }
+  /**
+   * @description: 编辑字典类型弹窗
+   * @param {any} item
+   */
+  private handleEditDicType(item: any): void {
     this.isAdd = false;
     this.itemData = item;
+    this.dictTypeVisible = true;
   }
+  /**
+   * @description: 获取字典类型
+   * @param {any} key
+   */
   private async getAllByType(key: any): Promise<void> {
-    this.dictTypeList = await post_dict_getAllDictType({ key });
+    let res = await post_dict_getAllDictType({ key });
+    if (key) {
+      this.dictTypeList = res;
+    } else {
+      this.dictTypeList = res;
+      this.selectDicType = res;
+    }
   }
+  /**
+   * @description: 获取当前选中的字典类型对应的所有字典项
+   */
   private async getDictAll(): Promise<void> {
     let dictType = this.dictTypeList[this.activeIndex].code;
     this.dictList = await post_dict_getAllByType({ type: dictType });
@@ -252,12 +412,13 @@ $active: #ef9d39;
     display: flex;
     padding: 4px 6px;
     line-height: 24px;
+    cursor: pointer;
     &.active {
       background-color: rgba($color: $active, $alpha: 0.2);
     }
   }
   .dict-type-title {
-    width: 140px;
+    width: 64%;
     overflow: hidden;
     white-space: nowrap;
     text-overflow: ellipsis;
