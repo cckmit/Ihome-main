@@ -42,7 +42,7 @@
             <el-button type="success" @click="add()">新增栋座</el-button>
             <el-button
               type="success"
-              v-if="$route.name !== 'projectAdd'"
+              v-if="$route.name !== 'projectChildAdd'"
               @click="fastImport"
               >快捷导入房号</el-button
             >

@@ -4,7 +4,7 @@
  * @Author: wwq
  * @Date: 2020-11-03 11:52:41
  * @LastEditors: wwq
- * @LastEditTime: 2020-11-04 16:26:23
+ * @LastEditTime: 2020-11-10 10:24:16
 -->
 <template>
   <div>
@@ -140,7 +140,7 @@
         v-model="info.customerOther"
       />
     </div>
-    <div class="margin-top-20" v-if="$route.name !== 'projectAdd'">
+    <div class="margin-top-20" v-if="$route.name !== 'projectChildAdd'">
       <el-button type="primary" @click="save">保存</el-button>
       <el-button @click="$goto({ path: '/projects/list' })">关闭</el-button>
     </div>

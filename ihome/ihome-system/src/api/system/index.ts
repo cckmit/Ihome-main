@@ -1,6 +1,6 @@
 /* eslint-disable */
 /* 此脚本由swagger-ui的api-docs自动生成，请勿修改 */
-//2020-10-26 6:25:33 ├F10: PM┤
+//2020-11-9 3:42:38 ├F10: PM┤
 import { request } from '@/api/base'
 const basePath = "/sales-api/system"
 /**查询所有行政区划信息*/
@@ -15,13 +15,33 @@ return await request.get<AreaBaseVO[],AreaBaseVO[]>(basePath+'/area/getAllChildA
 export async function get_area_getAllProvince (d?: any) {
 return await request.get<AreaBaseVO[],AreaBaseVO[]>(basePath+'/area/getAllProvince', { params: d })
 }
+/**根据行政区划编码查询行政区划信息*/
+export async function get_area_getByCode__code (d?: any) {
+return await request.get<AreaBaseVO,AreaBaseVO>(basePath+'/area/getByCode/{code}', { params: d })
+}
 /**查询所有公司信息*/
 export async function post_company_getAll (d?: any) {
 return await request.post< CompanyBaseVO[],CompanyBaseVO[]> (basePath+'/company/getAll', d)
 }
-/**添加字典*/
+/**添加字典项*/
 export async function post_dict_add (d?: any) {
 return await request.post< number,number> (basePath+'/dict/add', d)
+}
+/**添加字典类型*/
+export async function post_dict_addDictType (d?: any) {
+return await request.post< number,number> (basePath+'/dict/addDictType', d)
+}
+/**停用字典项*/
+export async function post_dict_close__id (d?: any) {
+return await request.post< number,number> (basePath+'/dict/close/{id}', d)
+}
+/**删除字典项*/
+export async function post_dict_delete__id (d?: any) {
+return await request.post< number,number> (basePath+'/dict/delete/{id}', d)
+}
+/**删除字典类型*/
+export async function post_dict_deleteDictType__id (d?: any) {
+return await request.post< number,number> (basePath+'/dict/deleteDictType/{id}', d)
 }
 /**查询所有字典项*/
 export async function get_dict_getAll (d?: any) {
@@ -31,9 +51,29 @@ return await request.get<any,any>(basePath+'/dict/getAll', { params: d })
 export async function post_dict_getAllByType (d?: any) {
 return await request.post< DictBaseVO[],DictBaseVO[]> (basePath+'/dict/getAllByType', d)
 }
+/**查询指定字典类型的所有字典项*/
+export async function post_dict_getAllDictItemByType (d?: any) {
+return await request.post< DictBaseVO[],DictBaseVO[]> (basePath+'/dict/getAllDictItemByType', d)
+}
+/**查询所有字典类型*/
+export async function post_dict_getAllDictType (d?: any) {
+return await request.post< DictTypeVO[],DictTypeVO[]> (basePath+'/dict/getAllDictType', d)
+}
 /**根据类型和编码查询字典项*/
 export async function post_dict_getByTypeAndCode (d?: any) {
 return await request.post< DictBaseVO,DictBaseVO> (basePath+'/dict/getByTypeAndCode', d)
+}
+/**启用字典项*/
+export async function post_dict_open__id (d?: any) {
+return await request.post< number,number> (basePath+'/dict/open/{id}', d)
+}
+/**修改字典项*/
+export async function post_dict_update (d?: any) {
+return await request.post< number,number> (basePath+'/dict/update', d)
+}
+/**修改字典类型*/
+export async function post_dict_updateDictType (d?: any) {
+return await request.post< number,number> (basePath+'/dict/updateDictType', d)
 }
 /**添加岗位*/
 export async function post_job_add (d?: any) {
@@ -285,6 +325,21 @@ export interface CompanyQueryVO {
 /**公司名称*/
 name: string;
 }
+/**DictAddVO*/
+export interface DictAddVO {
+/**编码*/
+code: string;
+/**名称*/
+name: string;
+/**顺序*/
+seq: number;
+/**子类别*/
+subType: string;
+/**标签*/
+tag: string;
+/**类别*/
+type: string;
+}
 /**DictBaseVO*/
 export interface DictBaseVO {
 /**编码*/
@@ -302,6 +357,22 @@ type: string;
 /**是否有效(Valid-有效、Invalid-无效)*/
 valid: string;
 }
+/**DictItemKeyQueryVO*/
+export interface DictItemKeyQueryVO {
+/**关键字*/
+key: string;
+/**(必填)类型*/
+type: string;
+/**是否有效(Valid-有效、Invalid-无效)*/
+valid: string;
+}
+/**DictTypeAddVO*/
+export interface DictTypeAddVO {
+/**编码*/
+code: string;
+/**名称*/
+name: string;
+}
 /**DictTypeCodeQueryVO*/
 export interface DictTypeCodeQueryVO {
 /**(必填)编码*/
@@ -311,12 +382,52 @@ type: string;
 /**是否有效(Valid-有效、Invalid-无效)*/
 valid: string;
 }
+/**DictTypeKeyQueryVO*/
+export interface DictTypeKeyQueryVO {
+/**关键字*/
+key: string;
+}
 /**DictTypeQueryVO*/
 export interface DictTypeQueryVO {
 /**(必填)类型*/
 type: string;
 /**是否有效(Valid-有效、Invalid-无效)*/
 valid: string;
+}
+/**DictTypeUpdateVO*/
+export interface DictTypeUpdateVO {
+/**编码*/
+code: string;
+/**(必填)id*/
+id: number;
+/**名称*/
+name: string;
+}
+/**DictTypeVO*/
+export interface DictTypeVO {
+/**编码*/
+code: string;
+/**名称*/
+name: string;
+/**是否有效(Valid-有效、Invalid-无效)*/
+valid: string;
+}
+/**DictUpdateVO*/
+export interface DictUpdateVO {
+/**编码*/
+code: string;
+/**(必填)id*/
+id: number;
+/**名称*/
+name: string;
+/**顺序*/
+seq: number;
+/**子类别*/
+subType: string;
+/**标签*/
+tag: string;
+/**类别*/
+type: string;
 }
 /**JobBaseVO*/
 export interface JobBaseVO {
@@ -476,7 +587,7 @@ name: string;
 openDate: string;
 /**组织代码*/
 orgCode: string;
-/**组织类型(Company-公司、Department-部门、Root-组织根节点)*/
+/**组织类型(Company-公司、Department-事业部、Root-组织根节点、Zone-战区、smallZone-小战区、District-片区、Shop-门店、Group-店组)*/
 orgType: string;
 /**父组织id*/
 parentId: number;
@@ -501,7 +612,7 @@ name: string;
 openDate: string;
 /**组织代码*/
 orgCode: string;
-/**组织类型(Company-公司、Department-部门、Root-组织根节点)*/
+/**组织类型(Company-公司、Department-事业部、Root-组织根节点、Zone-战区、smallZone-小战区、District-片区、Shop-门店、Group-店组)*/
 orgType: string;
 /**父组织id*/
 parentId: number;
@@ -533,7 +644,7 @@ departmentType: string;
 level: number;
 /**名称*/
 name: string;
-/**组织类型(Company-公司、Department-部门、Root-组织根节点)*/
+/**组织类型(Company-公司、Department-事业部、Root-组织根节点、Zone-战区、smallZone-小战区、District-片区、Shop-门店、Group-店组)*/
 orgType: string;
 /**(必填)当前页*/
 pageNum: number;
@@ -558,7 +669,7 @@ name: string;
 openDate: string;
 /**组织代码*/
 orgCode: string;
-/**组织类型(Company-公司、Department-部门、Root-组织根节点)*/
+/**组织类型(Company-公司、Department-事业部、Root-组织根节点、Zone-战区、smallZone-小战区、District-片区、Shop-门店、Group-店组)*/
 orgType: string;
 /**父组织id*/
 parentId: number;
@@ -591,7 +702,7 @@ name: string;
 openDate: string;
 /**组织代码*/
 orgCode: string;
-/**组织类型(Company-公司、Department-部门、Root-组织根节点)*/
+/**组织类型(Company-公司、Department-事业部、Root-组织根节点、Zone-战区、smallZone-小战区、District-片区、Shop-门店、Group-店组)*/
 orgType: string;
 /**父组织id*/
 parentId: number;

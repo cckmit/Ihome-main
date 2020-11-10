@@ -4,7 +4,7 @@
  * @Author: wwq
  * @Date: 2020-09-09 16:17:16
  * @LastEditors: wwq
- * @LastEditTime: 2020-11-05 16:20:31
+ * @LastEditTime: 2020-11-10 09:34:54
 -->
 <template>
   <div class="upload">
@@ -62,7 +62,7 @@
               <i class="el-icon-delete" title="删除"></i>
             </span>
           </span>
-          <span class="move" v-if="isMove">
+          <span class="move" v-if="isMove" ref="move">
             <span @click="leftShift(file)">
               <i class="el-icon-back" title="左移"></i>
             </span>
@@ -123,7 +123,7 @@ export default class IhUpload extends Vue {
     type: Boolean,
     default: true,
   })
-  multiple!: boolean;
+  multiple?: boolean;
   @Prop({
     type: String,
     default: "",
@@ -143,27 +143,27 @@ export default class IhUpload extends Vue {
     type: Boolean,
     default: false,
   })
-  isCrop!: boolean;
+  isCrop?: boolean;
   @Prop({
     type: Boolean,
     default: true,
   })
-  previewPermi!: boolean;
+  previewPermi?: boolean;
   @Prop({
     type: Boolean,
     default: true,
   })
-  loadPermi!: boolean;
+  loadPermi?: boolean;
   @Prop({
     type: Boolean,
     default: true,
   })
-  removePermi!: boolean;
+  removePermi?: boolean;
   @Prop({
     type: Boolean,
     default: false,
   })
-  isMove!: boolean;
+  isMove?: boolean;
 
   private list: any[] = [];
   private srcList: any[] = [];
@@ -287,6 +287,7 @@ export default class IhUpload extends Vue {
     await (this.$refs.upload as any).handleRemove(file);
     let index = this.list.findIndex((v) => v.uid === file.uid);
     this.$delete(this.list, index);
+    this.$emit("newFileList", this.list);
   }
   // 点击图片预览按钮
   handlePictureCardPreview(file: any) {
@@ -368,6 +369,7 @@ export default class IhUpload extends Vue {
 
   // 右移
   rightShift(file: any) {
+    (this.$refs.move as any).click();
     let index = this.list.findIndex((v: any) => v.fileId === file.fileId);
     if (index + 1 < this.list.length) {
       let arr = [...this.list];

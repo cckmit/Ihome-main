@@ -4,7 +4,7 @@
  * @Author: wwq
  * @Date: 2020-08-13 11:40:10
  * @LastEditors: wwq
- * @LastEditTime: 2020-11-03 16:09:11
+ * @LastEditTime: 2020-11-10 16:01:16
 -->
 <template>
   <IhPage label-width="100px">
@@ -232,15 +232,51 @@ export default class ProjectList extends Vue {
 
   // 添加
   add() {
-    this.$router.push("/projects/add");
+    this.$router.push("/projects/childAdd");
   }
 
-  routerTo(row: any, where: string) {
+  routerTo(row: any, type: string) {
+    let where: any = "";
+    switch (type) {
+      case "info":
+        if (row.exMinyuan) {
+          if (!row.parentId) {
+            where = "parentInfo";
+          } else {
+            where = "childInfo";
+          }
+        } else {
+          where = "childInfo";
+        }
+        break;
+      case "edit":
+        if (row.exMinyuan) {
+          if (!row.parentId) {
+            where = "parentEdit";
+          } else {
+            where = "childEdit";
+          }
+        } else {
+          where = "childEdit";
+        }
+        break;
+      case "audit":
+        if (row.exMinyuan) {
+          if (!row.parentId) {
+            where = "parentAudit";
+          } else {
+            where = "childAudit";
+          }
+        } else {
+          where = "childAudit";
+        }
+        break;
+    }
     this.$router.push({
       path: `/projects/${where}`,
       query: {
         id: row.proId,
-        proName: row.termName,
+        proName: row.proName,
       },
     });
   }
