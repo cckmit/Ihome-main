@@ -51,6 +51,12 @@ export default class Home extends Vue {
       desc: "用户下拉分页组件，支持多列，搜索，分页",
       path: "/selectPage",
     },
+    {
+      key: "IhTableCheckBox",
+      name: "表格多选",
+      desc: "表格多选，支持回显，显示选择项",
+      path: "/tableCheckBox",
+    },
   ];
   info(scope: any) {
     this.$router.push(scope.row.path);

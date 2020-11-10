@@ -60,6 +60,14 @@ const routes: Array<RouteConfig> = [
     meta: {
       title: '下拉框分页Demo'
     }
+  },
+  {
+    path: '/tableCheckBox',
+    name: 'tableCheckBox',
+    component: () => import('../views/tableCheckBoxDemo.vue'),
+    meta: {
+      title: '表格多选'
+    }
   }
 ]
 const router = new VueRouter({
