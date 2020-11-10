@@ -1,17 +1,17 @@
 <!--
- * @Descripttion: 
+ * @Description: 数据字典列表
  * @version: 
  * @Author: zyc
  * @Date: 2020-10-21 15:16:14
  * @LastEditors: ywl
- * @LastEditTime: 2020-11-10 11:46:19
+ * @LastEditTime: 2020-11-10 14:30:45
 -->
 <template>
   <IhPage ref="ihPage">
     <template #container>
       <el-row>
         <el-col
-          :span="6"
+          :span="5"
           class="dict-list-left"
         >
           <el-row
@@ -78,7 +78,7 @@
           </el-row>
         </el-col>
         <el-col
-          :span="18"
+          :span="19"
           class="padding-left-10"
         >
           <el-row>
@@ -124,7 +124,7 @@
               <el-table-column
                 label="名称"
                 prop="name"
-                min-width="135"
+                min-width="155"
                 fixed
               ></el-table-column>
               <el-table-column
@@ -136,7 +136,7 @@
               <el-table-column
                 label="类型"
                 prop="type"
-                min-width="100"
+                min-width="175"
               ></el-table-column>
               <el-table-column
                 label="子类型"
@@ -154,12 +154,16 @@
               <el-table-column
                 label="状态"
                 prop="valid"
+                width="80"
               >
                 <template v-slot="{ row }">
                   {{$root.dictAllName(row.valid, 'ValidType')}}
                 </template>
               </el-table-column>
-              <el-table-column label="修改时间"></el-table-column>
+              <el-table-column
+                label="修改时间"
+                prop="updateTime"
+              ></el-table-column>
               <el-table-column
                 label="操作"
                 fixed="right"
@@ -200,7 +204,7 @@
         @cancel="() => (dictTypeVisible = false)"
         @finish="() => {
           dictTypeVisible = false;
-          getAllByType('')
+          getAllByType()
         }"
       />
     </IhDialog>
@@ -284,9 +288,7 @@ export default class DicList extends Vue {
         this.dictList.splice(index, 1);
         this.$message.success("删除成功");
       })
-      .catch(() => {
-        console.log("取消");
-      });
+      .catch(() => console.log("取消"));
   }
   /**
    * @description: 启用、停用字典项
@@ -302,9 +304,7 @@ export default class DicList extends Vue {
         this.getDictAll();
         this.$message.success(`${type ? "启用" : "停用"}成功`);
       })
-      .catch(async () => {
-        console.log("取消");
-      });
+      .catch(async () => console.log("取消"));
   }
   /**
    * @description: 编辑字典项弹窗
@@ -335,9 +335,7 @@ export default class DicList extends Vue {
         this.dictTypeList.splice(index, 1);
         this.$message.success("删除成功");
       })
-      .catch(async () => {
-        console.log("取消");
-      });
+      .catch(async () => console.log("取消"));
   }
   /**
    * @description: 查询指定类型的所有字典项
@@ -367,8 +365,8 @@ export default class DicList extends Vue {
    * @description: 获取字典类型
    * @param {any} key
    */
-  private async getAllByType(key: any): Promise<void> {
-    let res = await post_dict_getAllDictType({ key });
+  private async getAllByType(key?: any): Promise<void> {
+    let res = await post_dict_getAllDictType({ key: key });
     if (key) {
       this.dictTypeList = res;
     } else {
@@ -385,7 +383,7 @@ export default class DicList extends Vue {
   }
 
   async created() {
-    await this.getAllByType("");
+    await this.getAllByType();
     this.getDictAll();
   }
 }
@@ -396,6 +394,7 @@ $active: #ef9d39;
 .dict-list-left {
   border-right: 1px solid #e6e6e6;
   padding-right: 10px;
+  padding-bottom: 10px;
   overflow: auto;
   .search-box {
     align-items: center;
