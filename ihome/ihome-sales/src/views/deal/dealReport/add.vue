@@ -219,6 +219,11 @@
           </el-form-item>
         </el-col>
         <el-col :span="6">
+          <el-form-item label="录入人">
+            <el-input v-model="postData.entryPerson" clearable placeholder="录入人"></el-input>
+          </el-form-item>
+        </el-col>
+        <el-col :span="6">
           <el-form-item label="录入日期">
             <el-date-picker
               style="width: 100%"
@@ -228,16 +233,15 @@
             </el-date-picker>
           </el-form-item>
         </el-col>
-        <el-col :span="6">
-          <el-form-item label="录入人">
-            <el-input v-model="postData.entryPerson" clearable placeholder="录入人"></el-input>
-          </el-form-item>
-        </el-col>
       </el-row>
       <el-row>
         <el-col :span="24">
           <el-form-item label="备注">
-            <el-input v-model="postData.remarks" clearable placeholder="请输入备注说明"></el-input>
+            <el-input
+              type="textarea"
+              :rows="3"
+              v-model="postData.remarks"
+              placeholder="请输入备注说明"></el-input>
           </el-form-item>
         </el-col>
       </el-row>
@@ -664,24 +668,6 @@
         {required: true, message: "合同类型必选", trigger: "change"},
       ]
     };
-    divisionList: any = [
-      {
-        value: "TotalBagModel",
-        label: "总包模式"
-      },
-      {
-        value: "DistriModel",
-        label: "分销模式"
-      },
-      {
-        value: "TotalBagDistriModel",
-        label: "总包+分销模式"
-      },
-      {
-        value: "UnderwritingModel",
-        label: "承销"
-      }
-    ];
     modelContType: any = [
       {
         value: "SelfDeal",
@@ -799,7 +785,7 @@
     // 取消
     async cancel() {
       this.$goto({
-        path: "/dealReport/list",
+        path: "/dealReport/list"
       });
     }
 
@@ -868,29 +854,6 @@
   }
 </script>
 <style lang="scss" scoped>
-  .ih-info-item-left,
-  .ih-info-item-right {
-    line-height: 40px;
-  }
-
-  .info-btn-list {
-    float: left;
-    margin-left: 150px;
-    margin-top: -25px;
-  }
-
-  .checkbox-align {
-    text-align: left;
-  }
-
-  .link-pro-wrapper {
-    width: 100%;
-
-    .el-button, .el-tag {
-      margin-right: 10px;
-    }
-  }
-
   .add-all-wrapper {
     width: 100%;
     box-sizing: border-box;

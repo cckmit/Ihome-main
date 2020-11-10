@@ -80,7 +80,7 @@ const dealRoutes: Array<RouteConfig> = [
         path: 'add',
         name: 'DealReportAdd',
         component: () => import('@/views/deal/dealReport/add.vue'),
-        meta: { title: '成交报告新增', icon: 'form' }
+        meta: { title: '成交报告新增/修改', icon: 'form' }
       },
       {
         path: 'info',
@@ -93,6 +93,18 @@ const dealRoutes: Array<RouteConfig> = [
         name: 'AchieveAllotEntry',
         component: () => import('@/views/deal/dealReport/achieveAllotEntry.vue'),
         meta: { title: '成交业绩分配录入', icon: 'form' }
+      },
+      {
+        path: 'changeDealInfo',
+        name: 'ChangeDealInfo',
+        component: () => import('@/views/deal/dealReport/changeDealInfo.vue'),
+        meta: { title: '成交信息变更', icon: 'form' }
+      },
+      {
+        path: 'previewDealInfo',
+        name: 'PreviewDealInfo',
+        component: () => import('@/views/deal/dealReport/previewDealInfo.vue'),
+        meta: { title: '成交信息变更', icon: 'form' }
       }
     ]
   }

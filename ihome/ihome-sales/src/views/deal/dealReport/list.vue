@@ -312,16 +312,16 @@
                   <i class="el-icon-arrow-down el-icon--right"></i>
                   </span>
                   <el-dropdown-menu slot="dropdown">
-                    <el-dropdown-item
+                    <el-dropdown-item @click.native.prevent="handleChangeDealInfo(scope, 'baseInfo')"
                     >变更基础信息
                     </el-dropdown-item>
-                    <el-dropdown-item
+                    <el-dropdown-item @click.native.prevent="handleChangeDealInfo(scope, 'achieveInfo')"
                     >变更业绩信息
                     </el-dropdown-item>
-                    <el-dropdown-item
+                    <el-dropdown-item @click.native.prevent="handleChangeDealInfo(scope, 'checkOut')"
                     >退房
                     </el-dropdown-item>
-                    <el-dropdown-item
+                    <el-dropdown-item @click.native.prevent="handleChangeDealInfo(scope, 'staffAchieveInfo')"
                     >内部员工业绩变更
                     </el-dropdown-item>
                   </el-dropdown-menu>
@@ -438,7 +438,7 @@
     // 新增
     async handleAdd() {
       this.$router.push({
-        path: "/dealReport/add",
+        path: "/dealReport/add"
       });
     }
 
@@ -446,7 +446,7 @@
     async handleInfo(scope: any) {
       this.$router.push({
         path: "/dealReport/info",
-        query: {id: scope.row.id},
+        query: {id: scope.row.id}
       });
     }
 
@@ -454,7 +454,7 @@
     async handleEdit(scope: any) {
       this.$router.push({
         path: "/dealReport/add",
-        query: {id: scope.row.id},
+        query: {id: scope.row.id}
       });
     }
 
@@ -496,6 +496,24 @@
     // 审核申报业绩
     async handleReviewAchieve(scope: any) {
       console.log(scope);
+    }
+
+    /*
+    * type: 变更成交按钮类型
+    * baseInfo --- 变更基础信息
+    * achieveInfo --- 变更业绩信息
+    * checkOut --- 退房
+    * staffAchieveInfo --- 内部员工业绩变更
+    * */
+    async handleChangeDealInfo(scope: any, type: any) {
+      console.log(scope);
+      this.$router.push({
+        path: "/dealReport/changeDealInfo",
+        query: {
+          id: scope.row.id,
+          type: type
+        }
+      });
     }
 
     // 撤回审核
