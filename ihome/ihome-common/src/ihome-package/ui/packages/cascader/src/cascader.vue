@@ -4,7 +4,7 @@
  * @Author: wwq
  * @Date: 2020-09-29 08:55:05
  * @LastEditors: wwq
- * @LastEditTime: 2020-11-04 09:22:33
+ * @LastEditTime: 2020-11-11 14:29:07
 -->
 <template>
   <div class="cascader">
@@ -43,7 +43,7 @@ export default class IhCascader extends Vue {
     type: Boolean,
     default: true,
   })
-  checkStrictly: any;
+  checkStrictly?: any;
   @Prop({
     type: String,
     default: "请选择行政区",

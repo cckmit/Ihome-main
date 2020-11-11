@@ -4,7 +4,7 @@
  * @Author: wwq
  * @Date: 2020-07-08 14:23:16
  * @LastEditors: wwq
- * @LastEditTime: 2020-10-19 15:44:06
+ * @LastEditTime: 2020-11-11 10:51:03
 --> 
 <template>
   <el-dialog
@@ -16,10 +16,17 @@
     width="500px"
     class="dialog text-left"
   >
-    <el-form ref="form" :model="form" label-width="110px">
+    <el-form
+      ref="form"
+      :model="form"
+      label-width="110px"
+    >
       <el-row>
         <el-col :span="24">
-          <el-form-item label="已选渠道商" prop="name">
+          <el-form-item
+            label="已选渠道商"
+            prop="name"
+          >
             <template v-for="(item, i) in data">
               <span :key="item.id">
                 <span>{{ `${item.name}` }}</span>
@@ -33,26 +40,33 @@
       <el-row>
         <el-col :span="24">
           <el-form-item label="选择用户">
-            <el-select
-              style="width: 100%"
+            <IhSelectPageUser
               v-model="form.inputUser"
               clearable
-              placeholder="请选择"
             >
-              <el-option
-                v-for="item in $root.displayList('accountType')"
-                :key="item.value"
-                :label="item.label"
-                :value="item.value"
-              ></el-option>
-            </el-select>
+              <template v-slot="{ data }">
+                <span style="float: left">{{ data.name }}</span>
+                <span style="
+                    margin-left: 20px;
+                    float: right;
+                    color: #8492a6;
+                    font-size: 13px;
+                  ">{{ data.account }}</span>
+              </template>
+            </IhSelectPageUser>
           </el-form-item>
         </el-col>
       </el-row>
     </el-form>
 
-    <span slot="footer" class="dialog-footer">
-      <el-button type="primary" @click="finish()">保 存</el-button>
+    <span
+      slot="footer"
+      class="dialog-footer"
+    >
+      <el-button
+        type="primary"
+        @click="finish()"
+      >保 存</el-button>
     </span>
   </el-dialog>
 </template>
