@@ -3,8 +3,8 @@
  * @version: 
  * @Author: ywl
  * @Date: 2020-09-16 14:05:21
- * @LastEditors: ywl
- * @LastEditTime: 2020-11-11 08:45:52
+ * @LastEditors: wwq
+ * @LastEditTime: 2020-11-11 10:23:59
 -->
 <template>
   <IhPage>
@@ -536,7 +536,7 @@ export default class ModifyThe extends Vue {
               operateType: type,
             });
             this.$message.success("渠道商添加成功");
-            this.$router.push("list");
+            this.$goto({ path: "list" });
             break;
           case "EditChannel":
             // 修改渠道商
@@ -546,7 +546,7 @@ export default class ModifyThe extends Vue {
               operateType: type,
             });
             this.$message.success("修改渠道商成功");
-            this.$router.push("list");
+            this.$goto({ path: "list" });
             break;
           case "ChangeChannel":
             // 渠道商提交变更
@@ -563,7 +563,7 @@ export default class ModifyThe extends Vue {
               oldChannelId: this.$route.query.id,
             });
             this.$message.success("渠道商变更提交成功");
-            this.$router.push("/channelChange/list");
+            this.$goto({ path: "/channelChange/list" });
             break;
           case "ChannelChangeEdit":
             break;

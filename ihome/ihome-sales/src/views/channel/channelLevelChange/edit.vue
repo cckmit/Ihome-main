@@ -3,8 +3,8 @@
  * @version: 
  * @Author: ywl
  * @Date: 2020-10-15 16:02:03
- * @LastEditors: ywl
- * @LastEditTime: 2020-10-23 17:38:31
+ * @LastEditors: wwq
+ * @LastEditTime: 2020-11-11 10:18:51
 -->
 <template>
   <IhPage>
@@ -103,8 +103,8 @@
                 align="left"
               >
                 <span v-if="resPageInfo.cityGrade">{{
-                      $root.dictAllName(resPageInfo.cityGrade, "CityLevel")
-                    }}</span>
+                  $root.dictAllName(resPageInfo.cityGrade, "CityLevel")
+                }}</span>
               </el-form-item>
             </el-col>
             <el-col :span="8">
@@ -185,16 +185,16 @@
                 label="城市等级"
               >
                 <template v-slot="{ row }">{{
-                $root.dictAllName(row.cityGrade, "CityLevel")
-              }}</template>
+                  $root.dictAllName(row.cityGrade, "CityLevel")
+                }}</template>
               </el-table-column>
               <el-table-column
                 prop="channelGrade"
                 label="渠道等级"
               >
                 <template v-slot="{ row }">{{
-                $root.dictAllName(row.channelGrade, "ChannelLevel")
-              }}</template>
+                  $root.dictAllName(row.channelGrade, "ChannelLevel")
+                }}</template>
               </el-table-column>
               <el-table-column
                 prop="gradeItem"
@@ -239,8 +239,8 @@
               width="200"
             >
               <template v-slot="{ row }">{{
-              $root.displayName("accessoryTpye", row.type)
-            }}</template>
+                $root.displayName("accessoryTpye", row.type)
+              }}</template>
             </el-table-column>
             <el-table-column
               prop="fileId"
@@ -383,7 +383,7 @@ export default class ChannelRates extends Vue {
           // this.resPageInfo.channelGradeAttachmentChanges = this.resPageInfo.channelGradeAttachments;
           this.resPageInfo.changeReason = this.changeReason;
           await post_channelGradeChange_edit(this.resPageInfo);
-          this.$router.push("list");
+          this.$goto({ path: "list" });
         } else {
           this.$message.warning("请填写变更原因");
         }

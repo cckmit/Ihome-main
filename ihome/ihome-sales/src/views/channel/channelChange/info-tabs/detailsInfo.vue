@@ -3,8 +3,8 @@
  * @version: 
  * @Author: lgf
  * @Date: 2020-09-16 14:05:21
- * @LastEditors: ywl
- * @LastEditTime: 2020-10-23 11:59:27
+ * @LastEditors: wwq
+ * @LastEditTime: 2020-11-11 10:21:00
 -->
 <template>
   <div class="text-left">
@@ -272,9 +272,7 @@ export default class DetailInfo extends Vue {
       id: this.$route.query.id,
     });
     this.$message.success("成功");
-    this.$router.push({
-      path: "list",
-    });
+    this.$goto({ path: "list" });
   }
 
   async created() {

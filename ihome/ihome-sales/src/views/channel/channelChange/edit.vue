@@ -3,8 +3,8 @@
  * @version: 
  * @Author: ywl
  * @Date: 2020-09-16 14:05:21
- * @LastEditors: ywl
- * @LastEditTime: 2020-11-04 11:26:38
+ * @LastEditors: wwq
+ * @LastEditTime: 2020-11-11 10:21:39
 -->
 <template>
   <IhPage>
@@ -514,9 +514,7 @@ export default class ModifyThe extends Vue {
           changeReason: this.changeReason,
         });
         this.$message.success("渠道商变更修改成功");
-        this.$router.push({
-          path: "list",
-        });
+        this.$goto({ path: "list" });
       } else {
         // 表单还有没填写
       }

@@ -3,8 +3,8 @@
  * @version: 
  * @Author: lgf
  * @Date: 2020-09-16 14:05:21
- * @LastEditors: ywl
- * @LastEditTime: 2020-11-11 08:55:57
+ * @LastEditors: wwq
+ * @LastEditTime: 2020-11-11 10:23:19
 -->
 <template>
   <div class="text-left">
@@ -247,9 +247,7 @@ export default class Home extends Vue {
       id: this.$route.query.id,
     });
     this.$message.success("成功");
-    this.$router.push({
-      path: "list",
-    });
+    this.$goto({ path: "list" });
   }
   private switchType(type: any) {
     switch (type) {
