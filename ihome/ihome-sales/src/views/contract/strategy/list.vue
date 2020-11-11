@@ -4,7 +4,7 @@
  * @Author: ywl
  * @Date: 2020-09-27 11:13:15
  * @LastEditors: ywl
- * @LastEditTime: 2020-11-05 09:05:30
+ * @LastEditTime: 2020-11-11 09:25:15
 -->
 <template>
   <IhPage label-width="100px">
@@ -77,7 +77,7 @@
               <el-col :span="8">
                 <el-form-item label="项目">
                   <el-input
-                    v-model="queryPageParameters.projectName"
+                    v-model="queryPageParameters.projectId"
                     placeholder="项目"
                   ></el-input>
                 </el-form-item>
@@ -85,7 +85,7 @@
               <el-col :span="8">
                 <el-form-item label="周期">
                   <el-select
-                    v-model="queryPageParameters.cycle"
+                    v-model="queryPageParameters.cycleId"
                     clearable
                     placeholder="周期"
                     class="width--100"
@@ -324,8 +324,8 @@ export default class StrategyList extends Vue {
     title: null,
     partyA: null,
     partyB: null,
-    projectName: null,
-    cycle: null,
+    projectId: null,
+    cycleId: null,
     strategyCode: null,
     fileState: null,
     fileCode: null,
@@ -333,7 +333,7 @@ export default class StrategyList extends Vue {
     agreementType: null,
   };
   private searchOpen = true;
-  public resPageInfo: PageInfo = {
+  public resPageInfo: any = {
     total: 0,
     list: [],
   };
@@ -391,9 +391,5 @@ export default class StrategyList extends Vue {
     this.getChannelAll();
     this.getMyComAll();
   }
-}
-interface PageInfo {
-  total: number;
-  list: Array<object>;
 }
 </script>
