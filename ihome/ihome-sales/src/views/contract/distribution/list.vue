@@ -4,7 +4,7 @@
  * @Author: ywl
  * @Date: 2020-09-25 17:34:32
  * @LastEditors: ywl
- * @LastEditTime: 2020-11-11 15:00:42
+ * @LastEditTime: 2020-11-11 15:48:56
 -->
 <template>
   <IhPage label-width="100px">
@@ -225,6 +225,7 @@
         class="ih-table intermediary-table"
         ref="multipleTable"
         :data="resPageInfo.list"
+        :empty-text="emptyText"
         @selection-change="handleSelectionChange"
         @select="handleSelect"
         @select-all="handleSelectAll"

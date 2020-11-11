@@ -4,7 +4,7 @@
  * @Author: ywl
  * @Date: 2020-09-27 11:13:15
  * @LastEditors: ywl
- * @LastEditTime: 2020-11-11 09:25:15
+ * @LastEditTime: 2020-11-11 15:49:39
 -->
 <template>
   <IhPage label-width="100px">
@@ -200,6 +200,7 @@
       <el-table
         class="ih-table"
         :data="resPageInfo.list"
+        :empty-text="emptyText"
         @selection-change="handleSelectionChange"
       >
         <el-table-column
