@@ -4,7 +4,7 @@
  * @Author: ywl
  * @Date: 2020-09-27 10:46:14
  * @LastEditors: ywl
- * @LastEditTime: 2020-11-11 14:47:22
+ * @LastEditTime: 2020-11-11 17:07:56
 -->
 <template>
   <IhPage class="text-left">
@@ -274,6 +274,7 @@
             <el-form-item label="扫描件归档">
               <IhUpload
                 :file-list="fileList"
+                @newFileList="handleSealFile"
                 size="100px"
                 :limit="1"
               ></IhUpload>
@@ -300,8 +301,20 @@
           type="primary"
           @click="archive()"
         >提交</el-button>
-        <el-button>取消</el-button>
+        <el-button @click="$router.push(-1)">取消</el-button>
       </div>
+      <div
+        v-if="$route.name === 'DistributionArchived'"
+        class="text-center"
+      >
+        <br />
+        <el-button
+          type="primary"
+          @click="duplicate()"
+        >提交</el-button>
+        <el-button @click="$router.push(-1)">取消</el-button>
+      </div>
+
     </template>
   </IhPage>
 </template>
@@ -312,6 +325,7 @@ import { Component, Vue } from "vue-property-decorator";
 import {
   get_distribution_detail__id,
   post_distribution_original_archive,
+  post_distribution_duplicate,
 } from "@/api/contract/index";
 
 @Component({})
@@ -320,7 +334,8 @@ export default class DistributionDetail extends Vue {
     fileCode: null,
   };
   private business: any = {};
-  private fileList: Array<object> = [];
+  private sealFile: any = [];
+  private fileList: any = [];
 
   private async archive() {
     if (!this.ruleForm.fileCode) {
@@ -332,6 +347,23 @@ export default class DistributionDetail extends Vue {
       fileCode: this.ruleForm.fileCode,
     });
     this.$message.success("原件归档成功");
+  }
+  private handleSealFile(val: any) {
+    this.sealFile = val.map((v: any) => ({
+      type: "Seal",
+      attachmentSuffix: v.name,
+      fileNo: v.fileId,
+    }));
+  }
+  private async duplicate() {
+    if (!this.sealFile.length) {
+      return;
+    }
+    await post_distribution_duplicate({
+      annexList: this.sealFile,
+      distributionId: this.ruleForm.id,
+    });
+    this.$message.success("扫描件归档成功");
   }
   private async getInfo(): Promise<void> {
     let id = this.$route.query.id;

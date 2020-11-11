@@ -4,7 +4,7 @@
  * @Author: ywl
  * @Date: 2020-09-27 16:27:36
  * @LastEditors: ywl
- * @LastEditTime: 2020-11-11 15:49:14
+ * @LastEditTime: 2020-11-11 16:02:18
 -->
 <template>
   <IhPage label-width="110px">
@@ -65,20 +65,6 @@
                 </el-form-item>
               </el-col>
               <el-col :span="8">
-                <el-form-item label="项目名称">
-                  <el-select
-                    v-model="queryPageParameters.projectName"
-                    clearable
-                    placeholder="项目名称"
-                    class="width--100"
-                  >
-                  </el-select>
-                </el-form-item>
-              </el-col>
-            </el-row>
-
-            <el-row>
-              <el-col :span="8">
                 <el-form-item label="房号">
                   <el-select
                     v-model="queryPageParameters.roomNumber"
@@ -89,39 +75,18 @@
                   </el-select>
                 </el-form-item>
               </el-col>
-              <el-col :span="8">
-                <el-form-item label="优惠抵扣金额">
-                  <el-input
-                    v-model="queryPageParameters.deduction"
-                    placeholder="优惠抵扣金额"
-                  ></el-input>
-                </el-form-item>
-              </el-col>
-              <el-col :span="8">
-                <el-form-item label="优惠折扣比例">
-                  <el-input
-                    v-model="queryPageParameters.discount"
-                    placeholder="优惠折扣比例"
-                  ></el-input>
-                </el-form-item>
-              </el-col>
             </el-row>
 
             <el-row>
               <el-col :span="8">
-                <el-form-item label="优惠期限">
-                  <el-date-picker
-                    style="width:100%;"
-                    v-model="timeList"
-                    type="daterange"
-                    align="left"
-                    unlink-panels
-                    range-separator="至"
-                    start-placeholder="开始日期"
-                    end-placeholder="结束日期"
-                    :picker-options="$root.pickerOptions"
-                    value-format="yyyy-MM-dd"
-                  ></el-date-picker>
+                <el-form-item label="项目名称">
+                  <el-select
+                    v-model="queryPageParameters.projectName"
+                    clearable
+                    placeholder="项目名称"
+                    class="width--100"
+                  >
+                  </el-select>
                 </el-form-item>
               </el-col>
               <el-col :span="8">
@@ -150,6 +115,25 @@
                       :value="item.code"
                     ></el-option>
                   </el-select>
+                </el-form-item>
+              </el-col>
+            </el-row>
+
+            <el-row>
+              <el-col :span="8">
+                <el-form-item label="优惠期限">
+                  <el-date-picker
+                    style="width:100%;"
+                    v-model="timeList"
+                    type="daterange"
+                    align="left"
+                    unlink-panels
+                    range-separator="至"
+                    start-placeholder="开始日期"
+                    end-placeholder="结束日期"
+                    :picker-options="$root.pickerOptions"
+                    value-format="yyyy-MM-dd"
+                  ></el-date-picker>
                 </el-form-item>
               </el-col>
             </el-row>
@@ -232,13 +216,8 @@
           width="120"
         ></el-table-column>
         <el-table-column
-          label="优惠抵扣金额"
+          label="优惠方式说明"
           prop="deduction"
-          width="120"
-        ></el-table-column>
-        <el-table-column
-          label="优惠折扣比例"
-          prop="discount"
           width="120"
         ></el-table-column>
         <el-table-column

@@ -4,7 +4,7 @@
  * @Author: ywl
  * @Date: 2020-09-27 11:13:15
  * @LastEditors: ywl
- * @LastEditTime: 2020-11-11 15:49:39
+ * @LastEditTime: 2020-11-11 16:04:27
 -->
 <template>
   <IhPage label-width="100px">
@@ -362,12 +362,13 @@ export default class StrategyList extends Vue {
       title: null,
       partyA: null,
       partyB: null,
-      projectName: null,
-      cycle: null,
+      projectId: null,
+      cycleId: null,
       strategyCode: null,
       fileState: null,
       fileCode: null,
       state: null,
+      agreementType: null,
     });
   }
   private handleSelectionChange(val: any): void {

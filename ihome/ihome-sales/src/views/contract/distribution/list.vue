@@ -4,7 +4,7 @@
  * @Author: ywl
  * @Date: 2020-09-25 17:34:32
  * @LastEditors: ywl
- * @LastEditTime: 2020-11-11 15:48:56
+ * @LastEditTime: 2020-11-11 16:54:06
 -->
 <template>
   <IhPage label-width="100px">
@@ -315,7 +315,10 @@
               type="primary"
               @click="handleTo(row, 'info')"
             >详情</el-link>
-            <el-link type="primary">盖章版归档</el-link>
+            <el-link
+              type="primary"
+              @click="handleTo(row, 'archived')"
+            >盖章版归档</el-link>
             <el-link
               type="primary"
               @click="handleTo(row, 'original')"
