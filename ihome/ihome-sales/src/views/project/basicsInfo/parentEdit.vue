@@ -1,3 +1,11 @@
+<!--
+ * @Descripttion: 
+ * @version: 
+ * @Author: wwq
+ * @Date: 2020-11-10 10:21:03
+ * @LastEditors: wwq
+ * @LastEditTime: 2020-11-11 15:00:00
+-->
 <template>
   <ih-page>
     <template v-slot:info>
@@ -22,7 +30,10 @@
             </el-form-item>
           </el-col>
           <el-col :span="8">
-            <el-form-item label="项目推广名" prop="proName">
+            <el-form-item
+              label="项目推广名"
+              prop="proName"
+            >
               <el-input
                 clearable
                 maxlength="50"
@@ -32,7 +43,10 @@
             </el-form-item>
           </el-col>
           <el-col :span="8">
-            <el-form-item label="项目备案名" prop="proRecord">
+            <el-form-item
+              label="项目备案名"
+              prop="proRecord"
+            >
               <el-input
                 clearable
                 maxlength="50"
@@ -44,8 +58,15 @@
         </el-row>
         <el-row>
           <el-col :span="8">
-            <el-form-item label="市场化项目" prop="exMarket">
-              <el-select v-model="form.exMarket" clearable class="width--100">
+            <el-form-item
+              label="市场化项目"
+              prop="exMarket"
+            >
+              <el-select
+                v-model="form.exMarket"
+                clearable
+                class="width--100"
+              >
                 <el-option
                   v-for="item in YesOrNoType"
                   :key="item.code"
@@ -56,7 +77,10 @@
             </el-form-item>
           </el-col>
           <el-col :span="8">
-            <el-form-item label="关联明源" prop="exMinyuan">
+            <el-form-item
+              label="关联明源"
+              prop="exMinyuan"
+            >
               <el-select
                 v-model="form.exMinyuan"
                 clearable
@@ -85,7 +109,10 @@
         </el-row>
         <el-row>
           <el-col :span="8">
-            <el-form-item label="省市区" prop="provinceOption">
+            <el-form-item
+              label="省市区"
+              prop="provinceOption"
+            >
               <IhCascader
                 v-model="form.provinceOption"
                 :checkStrictly="false"
@@ -93,7 +120,10 @@
             </el-form-item>
           </el-col>
           <el-col :span="16">
-            <el-form-item label="项目地址" prop="proAddr">
+            <el-form-item
+              label="项目地址"
+              prop="proAddr"
+            >
               <el-input
                 clearable
                 maxlength="200"
@@ -105,7 +135,10 @@
         </el-row>
       </el-form>
       <div class="margin-top-20">
-        <el-button type="primary" @click="save">保存</el-button>
+        <el-button
+          type="primary"
+          @click="save"
+        >保存</el-button>
         <el-button @click="$goto({ path: '/projects/list' })">关闭</el-button>
       </div>
     </template>
@@ -136,18 +169,22 @@ export default class EditBasicInfo extends Vue {
   };
 
   rules: any = {
-    proName: [{ required: true, message: "请填写项目推广名", trigger: "blur" }],
+    proName: [
+      { required: true, message: "请填写项目推广名", trigger: "change" },
+    ],
     proRecord: [
-      { required: true, message: "请填写项目备案名", trigger: "blur" },
+      { required: true, message: "请填写项目备案名", trigger: "change" },
     ],
     exMarket: [
-      { required: true, message: "请选择市场化项目", trigger: "blur" },
+      { required: true, message: "请选择市场化项目", trigger: "change" },
     ],
-    exMinyuan: [{ required: true, message: "请选择关联明源", trigger: "blur" }],
+    exMinyuan: [
+      { required: true, message: "请选择关联明源", trigger: "change" },
+    ],
     provinceOption: [
-      { required: true, message: "请选择省市区", trigger: "blur" },
+      { required: true, message: "请选择省市区", trigger: "change" },
     ],
-    proAddr: [{ required: true, message: "请填写项目地址", trigger: "blur" }],
+    proAddr: [{ required: true, message: "请填写项目地址", trigger: "change" }],
   };
   YesOrNoType: any = [
     {

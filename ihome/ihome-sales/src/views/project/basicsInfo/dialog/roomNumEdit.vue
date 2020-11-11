@@ -4,7 +4,7 @@
  * @Author: wwq
  * @Date: 2020-11-03 18:39:23
  * @LastEditors: wwq
- * @LastEditTime: 2020-11-06 17:25:22
+ * @LastEditTime: 2020-11-11 11:36:47
 -->
 <template>
   <el-dialog
@@ -17,10 +17,18 @@
     class="dialog text-left"
     :title="Object.keys(data).length === 0 ? '新增栋座' : '编辑栋座'"
   >
-    <el-form ref="form" :model="form" :rules="rules" label-width="100px">
+    <el-form
+      ref="form"
+      :model="form"
+      :rules="rules"
+      label-width="100px"
+    >
       <el-row>
         <el-col :span="24">
-          <el-form-item label="栋座名称：" prop="buildingName">
+          <el-form-item
+            label="栋座名称："
+            prop="buildingName"
+          >
             <el-input
               v-model="form.buildingName"
               placeholder="栋座名称"
@@ -32,15 +40,24 @@
 
       <el-row>
         <el-col :span="24">
-          <el-form-item label="地上层数：" prop="floor">
-            <el-input v-model="form.floor" placeholder="地上层数"></el-input>
+          <el-form-item
+            label="地上层数："
+            prop="floor"
+          >
+            <el-input
+              v-model="form.floor"
+              placeholder="地上层数"
+            ></el-input>
           </el-form-item>
         </el-col>
       </el-row>
 
       <el-row>
         <el-col :span="24">
-          <el-form-item label="地下层数：" prop="undergroundNum">
+          <el-form-item
+            label="地下层数："
+            prop="undergroundNum"
+          >
             <el-input
               v-model="form.undergroundNum"
               placeholder="地下层数"
@@ -50,7 +67,10 @@
       </el-row>
       <el-row>
         <el-col :span="24">
-          <el-form-item label="物业类型：" prop="propertyEnum">
+          <el-form-item
+            label="物业类型："
+            prop="propertyEnum"
+          >
             <el-select
               style="width: 100%"
               v-model="form.propertyEnum"
@@ -89,9 +109,15 @@
       </el-row>
     </el-form>
 
-    <span slot="footer" class="dialog-footer">
+    <span
+      slot="footer"
+      class="dialog-footer"
+    >
       <el-button @click="cancel()">返 回</el-button>
-      <el-button type="primary" @click="finish()">保 存</el-button>
+      <el-button
+        type="primary"
+        @click="finish()"
+      >保 存</el-button>
     </span>
   </el-dialog>
 </template>
@@ -119,18 +145,18 @@ export default class RoomNumEdit extends Vue {
   propertyEnumOptions: any = [];
   rules: any = {
     buildingName: [
-      { required: true, message: "请输入栋座名称", trigger: "blur" },
+      { required: true, message: "请输入栋座名称", trigger: "change" },
     ],
     floor: [
-      { required: true, message: "请输入地上层数", trigger: "blur" },
-      { validator: isNumberValidato, trigger: ["change", "blur"] },
+      { required: true, message: "请输入地上层数", trigger: "change" },
+      { validator: isNumberValidato, trigger: "change" },
     ],
     undergroundNum: [
-      { required: true, message: "请输入地下层数", trigger: "blur" },
-      { validator: isNumberValidato, trigger: ["change", "blur"] },
+      { required: true, message: "请输入地下层数", trigger: "change" },
+      { validator: isNumberValidato, trigger: "change" },
     ],
     propertyEnum: [
-      { required: true, message: "请选择物业类型", trigger: "blur" },
+      { required: true, message: "请选择物业类型", trigger: "change" },
     ],
   };
 

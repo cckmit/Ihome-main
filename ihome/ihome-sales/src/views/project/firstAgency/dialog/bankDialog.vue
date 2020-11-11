@@ -4,7 +4,7 @@
  * @Author: wwq
  * @Date: 2020-10-12 10:38:48
  * @LastEditors: wwq
- * @LastEditTime: 2020-11-04 16:30:13
+ * @LastEditTime: 2020-11-11 11:38:48
 -->
 <template>
   <el-dialog
@@ -23,16 +23,28 @@
       label-width="100px"
       class="demo-ruleForm"
     >
-      <el-form-item label="账户名称" prop="accountName">
+      <el-form-item
+        label="账户名称"
+        prop="accountName"
+      >
         <el-input v-model="Bankrule.accountName"></el-input>
       </el-form-item>
-      <el-form-item label="账号" prop="accountNo">
+      <el-form-item
+        label="账号"
+        prop="accountNo"
+      >
         <el-input v-model="Bankrule.accountNo"></el-input>
       </el-form-item>
-      <el-form-item label="开户银行" prop="depositBank">
+      <el-form-item
+        label="开户银行"
+        prop="depositBank"
+      >
         <el-input v-model="Bankrule.depositBank"></el-input>
       </el-form-item>
-      <el-form-item label="账户类型" prop="accountEnum">
+      <el-form-item
+        label="账户类型"
+        prop="accountEnum"
+      >
         <el-select
           v-model="Bankrule.accountEnum"
           clearable
@@ -48,9 +60,15 @@
         </el-select>
       </el-form-item>
     </el-form>
-    <div slot="footer" class="dialog-footer">
+    <div
+      slot="footer"
+      class="dialog-footer"
+    >
       <el-button @click="cancel()">取 消</el-button>
-      <el-button type="primary" @click="finish()">确 定</el-button>
+      <el-button
+        type="primary"
+        @click="finish()"
+      >确 定</el-button>
     </div>
   </el-dialog>
 </template>
@@ -69,19 +87,19 @@ export default class FirstAgencyBankDialog extends Vue {
   private dialogVisible = true;
   private rules: object = {
     accountName: [
-      { required: true, message: "请输入账户名称", trigger: "blur" },
-      { max: 64, message: "字符长度不能大于64", trigger: "blur" },
+      { required: true, message: "请输入账户名称", trigger: "change" },
+      { max: 64, message: "字符长度不能大于64", trigger: "change" },
     ],
     accountNo: [
-      { required: true, message: "请输入账号", trigger: "blur" },
-      { max: 32, message: "字符长度不能大于32", trigger: "blur" },
+      { required: true, message: "请输入账号", trigger: "change" },
+      { max: 32, message: "字符长度不能大于32", trigger: "change" },
     ],
     depositBank: [
-      { required: true, message: "请输入开户银行", trigger: "blur" },
-      { max: 64, message: "字符长度不能大于64", trigger: "blur" },
+      { required: true, message: "请输入开户银行", trigger: "change" },
+      { max: 64, message: "字符长度不能大于64", trigger: "change" },
     ],
     accountEnum: [
-      { required: true, message: "请选择账户类型", trigger: "blur" },
+      { required: true, message: "请选择账户类型", trigger: "change" },
     ],
   };
   private Bankrule: any = {

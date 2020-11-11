@@ -4,11 +4,16 @@
  * @Author: wwq
  * @Date: 2020-11-03 11:52:41
  * @LastEditors: wwq
- * @LastEditTime: 2020-11-10 16:28:08
+ * @LastEditTime: 2020-11-11 11:37:31
 -->
 <template>
   <div>
-    <el-form ref="form" label-width="150px" :model="form" :rules="rules">
+    <el-form
+      ref="form"
+      label-width="150px"
+      :model="form"
+      :rules="rules"
+    >
       <el-row>
         <el-col :span="8">
           <el-form-item label="盘编">
@@ -22,7 +27,10 @@
           </el-form-item>
         </el-col>
         <el-col :span="8">
-          <el-form-item label="项目推广名" prop="proName">
+          <el-form-item
+            label="项目推广名"
+            prop="proName"
+          >
             <el-input
               clearable
               maxlength="50"
@@ -32,7 +40,10 @@
           </el-form-item>
         </el-col>
         <el-col :span="8">
-          <el-form-item label="项目备案名" prop="proRecord">
+          <el-form-item
+            label="项目备案名"
+            prop="proRecord"
+          >
             <el-input
               clearable
               maxlength="50"
@@ -44,7 +55,10 @@
       </el-row>
       <el-row>
         <el-col :span="8">
-          <el-form-item label="开发商名称" prop="developerId">
+          <el-form-item
+            label="开发商名称"
+            prop="developerId"
+          >
             <el-select
               v-model="form.developerId"
               clearable
@@ -62,8 +76,15 @@
           </el-form-item>
         </el-col>
         <el-col :span="8">
-          <el-form-item label="市场化项目" prop="exMarket">
-            <el-select v-model="form.exMarket" clearable class="width--100">
+          <el-form-item
+            label="市场化项目"
+            prop="exMarket"
+          >
+            <el-select
+              v-model="form.exMarket"
+              clearable
+              class="width--100"
+            >
               <el-option
                 v-for="item in YesOrNoType"
                 :key="item.code"
@@ -74,7 +95,10 @@
           </el-form-item>
         </el-col>
         <el-col :span="8">
-          <el-form-item label="关联明源" prop="exMinyuan">
+          <el-form-item
+            label="关联明源"
+            prop="exMinyuan"
+          >
             <el-select
               v-model="form.exMinyuan"
               clearable
@@ -113,8 +137,15 @@
           </el-form-item>
         </el-col>
         <el-col :span="8">
-          <el-form-item label="同步明源房号数据" prop="exSyncRoom">
-            <el-select v-model="form.exSyncRoom" clearable class="width--100">
+          <el-form-item
+            label="同步明源房号数据"
+            prop="exSyncRoom"
+          >
+            <el-select
+              v-model="form.exSyncRoom"
+              clearable
+              class="width--100"
+            >
               <el-option
                 v-for="item in YesOrNoType"
                 :key="item.code"
@@ -127,7 +158,10 @@
       </el-row>
       <el-row>
         <el-col :span="8">
-          <el-form-item label="省市区" prop="provinceOption">
+          <el-form-item
+            label="省市区"
+            prop="provinceOption"
+          >
             <IhCascader
               v-model="form.provinceOption"
               :checkStrictly="false"
@@ -135,7 +169,10 @@
           </el-form-item>
         </el-col>
         <el-col :span="16">
-          <el-form-item label="项目地址" prop="proAddr">
+          <el-form-item
+            label="项目地址"
+            prop="proAddr"
+          >
             <el-input
               clearable
               maxlength="200"
@@ -147,7 +184,10 @@
       </el-row>
       <el-row>
         <el-col :span="8">
-          <el-form-item label="经纬度" prop="jingwei">
+          <el-form-item
+            label="经纬度"
+            prop="jingwei"
+          >
             <el-input
               clearable
               v-model="form.jingwei"
@@ -169,8 +209,8 @@
         </el-col>
       </el-row>
       <el-row>
-        <el-form-item
-          ><el-col :span="16">
+        <el-form-item>
+          <el-col :span="16">
             <BaiduMap
               class="bm-view"
               ak="7KCUbHHtMOe3DmrxbAZaLcUf4cKeWchn"
@@ -203,13 +243,19 @@
       </el-row>
       <el-row>
         <el-col :span="24">
-          <el-form-item label="物业类型" class="text-left">
+          <el-form-item
+            label="物业类型"
+            class="text-left"
+          >
             <el-checkbox-group
               v-model="form.checkboxEnum"
               @change="checkboxChangeHandler"
             >
               <template v-for="item in checkBoxList">
-                <el-checkbox :key="JSON.parse(item).code" :label="item">{{
+                <el-checkbox
+                  :key="JSON.parse(item).code"
+                  :label="item"
+                >{{
                   JSON.parse(item).name
                 }}</el-checkbox>
               </template>
@@ -217,7 +263,10 @@
           </el-form-item>
         </el-col>
       </el-row>
-      <el-row v-if="form.checkboxEnum.length" class="margin-left-60">
+      <el-row
+        v-if="form.checkboxEnum.length"
+        class="margin-left-60"
+      >
         <el-col
           :span="12"
           v-for="item in checkBoxChangeList"
@@ -225,16 +274,18 @@
           class="msglist"
         >
           <el-form-item>
-            <el-form ref="contantForm" :model="item.msg" :rules="contantRules">
+            <el-form
+              ref="contantForm"
+              :model="item.msg"
+              :rules="contantRules"
+            >
               <div class="contant">
-                <div
-                  style="
+                <div style="
                     font-weight: bold;
                     margin-left: 20px;
                     text-align: left;
                     font-size: 15px;
-                  "
-                >
+                  ">
                   {{ `${item.msg.title}信息` }}
                 </div>
                 <el-row style="padding-bottom: 10px">
@@ -265,9 +316,7 @@
                         placeholder="住宅均价"
                         maxlength="50"
                       ></el-input>
-                      <span style="width: 80px; margin-left: 10px"
-                        >元/m²/月</span
-                      >
+                      <span style="width: 80px; margin-left: 10px">元/m²/月</span>
                     </el-form-item>
                   </el-col>
                   <el-col :span="24">
@@ -299,7 +348,10 @@
       </el-row>
       <el-row>
         <el-col :span="24">
-          <el-form-item label="楼盘图片" prop="name">
+          <el-form-item
+            label="楼盘图片"
+            prop="name"
+          >
             <IhUpload
               :file-list.sync="houseFileList"
               :limit="5"
@@ -315,8 +367,7 @@
                     v-model="radio"
                     :label="data.fileId"
                     @change="getRadio"
-                    >设为封面图</el-radio
-                  >
+                  >设为封面图</el-radio>
                 </div>
               </template>
             </IhUpload>
@@ -326,12 +377,19 @@
       <el-row>
         <p class="ih-info-title">项目周期</p>
         <div class="padding-left-20">
-          <el-table class="ih-table" :data="form.terms" style="width: 100%">
+          <el-table
+            class="ih-table"
+            :data="form.terms"
+            style="width: 100%"
+          >
             <el-table-column
               prop="termName"
               label="项目周期名称"
             ></el-table-column>
-            <el-table-column prop="busTypeEnum" label="业务类型">
+            <el-table-column
+              prop="busTypeEnum"
+              label="业务类型"
+            >
               <template v-slot="{ row }">{{
                 $root.dictAllName(row.busTypeEnum, "BusTypeEnum")
               }}</template>
@@ -344,15 +402,28 @@
               prop="termStart"
               label="开始时间"
             ></el-table-column>
-            <el-table-column prop="termEnd" label="结束时间"></el-table-column>
-            <el-table-column prop="auditEnum" label="审核状态">
+            <el-table-column
+              prop="termEnd"
+              label="结束时间"
+            ></el-table-column>
+            <el-table-column
+              prop="auditEnum"
+              label="审核状态"
+            >
               <template v-slot="{ row }">{{
                 $root.dictAllName(row.auditEnum, "AuditEnum")
               }}</template>
             </el-table-column>
-            <el-table-column label="操作" width="120" fixed="right">
+            <el-table-column
+              label="操作"
+              width="120"
+              fixed="right"
+            >
               <template>
-                <el-button size="small" @click="viewCycleData">查看</el-button>
+                <el-button
+                  size="small"
+                  @click="viewCycleData"
+                >查看</el-button>
               </template>
             </el-table-column>
           </el-table>
@@ -371,8 +442,7 @@
             left: 145px;
           "
           @click="addFirstAgency"
-          >+增加公司</el-button
-        >
+        >+增加公司</el-button>
         <div class="padding-left-20">
           <el-table
             class="ih-table"
@@ -383,22 +453,36 @@
               prop="agencyName"
               label="一手代理团队名称"
             ></el-table-column>
-            <el-table-column prop="simpleName" label="简称"></el-table-column>
-            <el-table-column prop="province" label="省份">
+            <el-table-column
+              prop="simpleName"
+              label="简称"
+            ></el-table-column>
+            <el-table-column
+              prop="province"
+              label="省份"
+            >
               <template v-slot="{ row }">{{
                 $root.getAreaName(row.province)
               }}</template>
             </el-table-column>
-            <el-table-column prop="city" label="城市">
+            <el-table-column
+              prop="city"
+              label="城市"
+            >
               <template v-slot="{ row }">{{
                 $root.getAreaName(row.city)
               }}</template>
             </el-table-column>
-            <el-table-column label="操作" width="120" fixed="right">
+            <el-table-column
+              label="操作"
+              width="120"
+              fixed="right"
+            >
               <template v-slot="{ $index }">
-                <el-button size="small" @click="delFirstAgencyCompanys($index)"
-                  >删除</el-button
-                >
+                <el-button
+                  size="small"
+                  @click="delFirstAgencyCompanys($index)"
+                >删除</el-button>
               </template>
             </el-table-column>
           </el-table>
@@ -412,20 +496,29 @@
             :data="form.attachPics"
             style="width: 100%"
           >
-            <el-table-column prop="proAttachEnum" label="类型">
+            <el-table-column
+              prop="proAttachEnum"
+              label="类型"
+            >
               <template v-slot="{ row }">{{
                 $root.dictAllName(row.proAttachEnum, "ProAttachEnum")
               }}</template>
             </el-table-column>
             <el-table-column label="附件">
-              <IhUpload :file-list="accFileList" size="100px"></IhUpload>
+              <IhUpload
+                :file-list="accFileList"
+                size="100px"
+              ></IhUpload>
             </el-table-column>
           </el-table>
         </div>
       </el-row>
     </el-form>
     <div class="margin-top-20">
-      <el-button type="primary" @click="save">保存</el-button>
+      <el-button
+        type="primary"
+        @click="save"
+      >保存</el-button>
       <el-button @click="$goto({ path: '/projects/list' })">关闭</el-button>
     </div>
     <ih-dialog :show="dialogVisible">
@@ -445,6 +538,7 @@ import {
   post_project_update,
 } from "@/api/project/index";
 import FirstAgencyDialog from "../dialog/firstAgency.vue";
+import { Form as ElForm } from "element-ui";
 
 import {
   BaiduMap,
@@ -502,32 +596,36 @@ export default class EditBasicInfo extends Vue {
 
   rules: any = {
     exMarket: [
-      { required: true, message: "请选择市场化项目", trigger: "blur" },
+      { required: true, message: "请选择市场化项目", trigger: "change" },
     ],
-    exMinyuan: [{ required: true, message: "请选择关联明源", trigger: "blur" }],
+    exMinyuan: [
+      { required: true, message: "请选择关联明源", trigger: "change" },
+    ],
     provinceOption: [
-      { required: true, message: "请选择省市区", trigger: "blur" },
+      { required: true, message: "请选择省市区", trigger: "change" },
     ],
-    proName: [{ required: true, message: "请填写项目推广名", trigger: "blur" }],
+    proName: [
+      { required: true, message: "请填写项目推广名", trigger: "change" },
+    ],
     proRecord: [
-      { required: true, message: "请填写项目备案名", trigger: "blur" },
+      { required: true, message: "请填写项目备案名", trigger: "change" },
     ],
-    proAddr: [{ required: true, message: "请填写项目地址", trigger: "blur" }],
+    proAddr: [{ required: true, message: "请填写项目地址", trigger: "change" }],
     developerId: [
-      { required: true, message: "请填写开发商名称", trigger: "blur" },
+      { required: true, message: "请填写开发商名称", trigger: "change" },
     ],
-    jingwei: [{ required: true, message: "请填写经纬度", trigger: "blur" }],
+    jingwei: [{ required: true, message: "请填写经纬度", trigger: "change" }],
     exSyncRoom: [
       {
         required: true,
         message: "请选择同步明源房号数据",
-        trigger: "blur",
+        trigger: "change",
       },
     ],
   };
   contantRules: any = {
     propertyAge: [
-      { required: true, message: "请选择产权年限", trigger: "blur" },
+      { required: true, message: "请选择产权年限", trigger: "change" },
     ],
   };
   YesOrNoType: any = [
@@ -753,6 +851,7 @@ export default class EditBasicInfo extends Vue {
   getLocationPoint(e: any) {
     this.center.lng = e.point.lng;
     this.center.lat = e.point.lat;
+    this.zoom = 15;
     let geoCoder = new this.BMap.Geocoder();
     geoCoder.getPoint(this.searchAddr, (point: any) => {
       this.form.jingwei = `${point?.lng},${point?.lat}`;
@@ -763,43 +862,49 @@ export default class EditBasicInfo extends Vue {
   }
 
   async save() {
-    let obj = { ...this.form };
-    obj.province = this.form.provinceOption[0];
-    obj.city = this.form.provinceOption[1];
-    obj.district = this.form.provinceOption[2];
-    obj.provinceName = (this.$root as any).getAreaName(
-      this.form.provinceOption[0]
-    );
-    obj.cityName = (this.$root as any).getAreaName(this.form.provinceOption[1]);
-    obj.districtName = (this.$root as any).getAreaName(
-      this.form.provinceOption[2]
-    );
-    obj.lng = this.form.jingwei.split(",")[0];
-    obj.lat = this.form.jingwei.split(",")[1];
-    obj.searchAddr = this.form.searchAddr;
-    obj.propertyArgs = this.checkBoxChangeList.map((v: any) => ({
-      ...v.msg,
-    }));
-    if (this.houseList.length) {
-      obj.proPics = this.houseList;
-    } else {
-      obj.proPics = this.houseFileList.map((v: any) => ({
-        attachName: v.name,
-        attachAddr: v.fileId,
-        attachId: null,
-        exIndex: v.exIndex,
-        proAttachEnum: v.proAttachEnum,
-      }));
-    }
-    if (this.$route.name === "projectChildAdd") {
-      await post_project_add(obj);
-    } else {
-      obj.proId = this.projectId;
-      await post_project_update(obj);
-    }
-    this.houseList = [];
-    this.$message.success("保存成功");
-    this.$goto({ path: "/projects/list" });
+    (this.$refs["form"] as ElForm).validate(async (v: any) => {
+      if (v) {
+        let obj = { ...this.form };
+        obj.province = this.form.provinceOption[0];
+        obj.city = this.form.provinceOption[1];
+        obj.district = this.form.provinceOption[2];
+        obj.provinceName = (this.$root as any).getAreaName(
+          this.form.provinceOption[0]
+        );
+        obj.cityName = (this.$root as any).getAreaName(
+          this.form.provinceOption[1]
+        );
+        obj.districtName = (this.$root as any).getAreaName(
+          this.form.provinceOption[2]
+        );
+        obj.lng = this.form.jingwei.split(",")[0];
+        obj.lat = this.form.jingwei.split(",")[1];
+        obj.searchAddr = this.form.searchAddr;
+        obj.propertyArgs = this.checkBoxChangeList.map((v: any) => ({
+          ...v.msg,
+        }));
+        if (this.houseList.length) {
+          obj.proPics = this.houseList;
+        } else {
+          obj.proPics = this.houseFileList.map((v: any) => ({
+            attachName: v.name,
+            attachAddr: v.fileId,
+            attachId: null,
+            exIndex: v.exIndex,
+            proAttachEnum: v.proAttachEnum,
+          }));
+        }
+        if (this.$route.name === "projectChildAdd") {
+          await post_project_add(obj);
+        } else {
+          obj.proId = this.projectId;
+          await post_project_update(obj);
+        }
+        this.houseList = [];
+        this.$message.success("保存成功");
+        this.$goto({ path: "/projects/list" });
+      }
+    });
   }
 }
 </script>
