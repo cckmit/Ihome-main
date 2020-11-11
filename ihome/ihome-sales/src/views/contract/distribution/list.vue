@@ -4,7 +4,7 @@
  * @Author: ywl
  * @Date: 2020-09-25 17:34:32
  * @LastEditors: ywl
- * @LastEditTime: 2020-11-04 18:10:10
+ * @LastEditTime: 2020-11-10 15:35:17
 -->
 <template>
   <IhPage label-width="100px">
@@ -27,7 +27,7 @@
           <el-col :span="8">
             <el-form-item label="甲方公司">
               <el-select
-                v-model="queryPageParameters.partyA"
+                v-model="queryPageParameters.partyACompany"
                 placeholder="甲方公司"
                 clearable
                 class="width--100"
@@ -44,7 +44,7 @@
           <el-col :span="8">
             <el-form-item label="乙方公司">
               <el-select
-                v-model="queryPageParameters.partyB"
+                v-model="queryPageParameters.partyBCompany"
                 clearable
                 placeholder="请选择乙方公司"
                 class="width--100"
@@ -65,7 +65,7 @@
               <el-col :span="8">
                 <el-form-item label="项目地址">
                   <el-input
-                    v-model="queryPageParameters.address"
+                    v-model="queryPageParameters.projectAddress"
                     placeholder="项目地址"
                   ></el-input>
                 </el-form-item>
@@ -111,7 +111,7 @@
               <el-col :span="8">
                 <el-form-item label="周期">
                   <el-input
-                    v-model="queryPageParameters.cycle"
+                    v-model="queryPageParameters.cycleId"
                     clearable
                     placeholder="周期"
                   ></el-input>
@@ -120,8 +120,8 @@
               <el-col :span="8">
                 <el-form-item label="归属组织">
                   <SelectOrganizationTree
-                    :orgId="queryPageParameters.organization"
-                    @callback="(id) => (queryPageParameters.organization = id)"
+                    :orgId="queryPageParameters.organizationId"
+                    @callback="(id) => (queryPageParameters.organizationId = id)"
                   />
                 </el-form-item>
               </el-col>
@@ -131,7 +131,7 @@
               <el-col :span="8">
                 <el-form-item label="合同编号">
                   <el-input
-                    v-model="queryPageParameters.contractCode"
+                    v-model="queryPageParameters.contractNo"
                     clearable
                     placeholder="请输入合同编号"
                   ></el-input>
@@ -169,7 +169,7 @@
               <el-col :span="8">
                 <el-form-item label="合同录入人">
                   <el-select
-                    v-model="queryPageParameters.creator"
+                    v-model="queryPageParameters.entryPerson"
                     clearable
                     placeholder="请选择合同录入人"
                     class="width--100"
@@ -250,7 +250,7 @@
         ></el-table-column>
         <el-table-column
           label="项目地址"
-          prop="partyAAddress"
+          prop="projectAddress"
           min-width="200"
         ></el-table-column>
         <el-table-column
@@ -259,7 +259,7 @@
           width="195"
         >
           <template v-slot="{ row }">
-            <span>{{row.beginTime | timestampToDate('YYYY-MM-DD')}} 至 {{row.endTime | timestampToDate('YYYY-MM-DD')}}</span>
+            <span>{{row.beginTime}} 至 {{row.endTime}}</span>
           </template>
         </el-table-column>
         <el-table-column
@@ -269,18 +269,18 @@
         ></el-table-column>
         <el-table-column
           label="关联周期"
-          prop="cycle"
+          prop="cycleId"
           width="150"
         ></el-table-column>
         <el-table-column
           label="归属组织"
-          prop="organization"
+          prop="organizationId"
           width="150"
         ></el-table-column>
         <el-table-column
           label="合同编号"
-          prop="code"
-          width="200"
+          prop="contractNo"
+          width="220"
         ></el-table-column>
         <el-table-column
           label="归档状态"

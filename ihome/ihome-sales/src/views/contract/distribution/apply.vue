@@ -35,6 +35,7 @@
                 filterable
                 class="width--100"
                 value-key="id"
+                @change="getChannelInfo"
               >
                 <el-option
                   v-for="item in channelList"
@@ -43,6 +44,30 @@
                   :value="item"
                 ></el-option>
               </el-select>
+            </el-form-item>
+          </el-col>
+        </el-row>
+        <el-row>
+          <el-col :span="12">
+            <el-form-item label="乙方联系人">
+              <el-input placeholder="乙方联系人"></el-input>
+            </el-form-item>
+          </el-col>
+          <el-col :span="12">
+            <el-form-item label="乙方联系人电话">
+              <el-input placeholder="乙方联系人电话"></el-input>
+            </el-form-item>
+          </el-col>
+        </el-row>
+        <el-row>
+          <el-col :span="12">
+            <el-form-item label="乙方收款账号">
+              <el-input placeholder="乙方收款账号"></el-input>
+            </el-form-item>
+          </el-col>
+          <el-col :span="12">
+            <el-form-item label="乙方开户行">
+              <el-input placeholder="乙方开户行"></el-input>
             </el-form-item>
           </el-col>
         </el-row>
@@ -405,7 +430,7 @@ import { Component, Vue } from "vue-property-decorator";
 
 import TemplateDailog from "./dialog/templateDialog.vue";
 import { post_term_getDropDown } from "@/api/project/index";
-import { get_channel_getAll } from "@/api/channel/index";
+import { get_channel_getAll, get_channel_get__id } from "@/api/channel/index";
 
 @Component({
   components: { TemplateDailog },
@@ -431,6 +456,10 @@ export default class DistributionApply extends Vue {
   }
   private async getChannelAll(): Promise<void> {
     this.channelList = await get_channel_getAll();
+  }
+  private async getChannelInfo(item: any) {
+    let res = await get_channel_get__id({ id: item.id });
+    console.log(res);
   }
   private submit() {
     console.log(this.handler);

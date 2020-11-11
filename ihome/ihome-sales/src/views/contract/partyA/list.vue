@@ -4,7 +4,7 @@
  * @Author: ywl
  * @Date: 2020-09-25 11:53:51
  * @LastEditors: ywl
- * @LastEditTime: 2020-11-04 15:19:31
+ * @LastEditTime: 2020-11-10 15:00:00
 -->
 <template>
   <IhPage label-width="100px">
@@ -96,7 +96,6 @@
                     type="date"
                     align="left"
                     placeholder="年/月/日"
-                    :picker-options="$root.pickerOptions"
                     value-format="yyyy-MM-dd"
                   ></el-date-picker>
                 </el-form-item>
