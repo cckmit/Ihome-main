@@ -4,7 +4,7 @@
  * @Author: wwq
  * @Date: 2020-11-03 18:39:23
  * @LastEditors: wwq
- * @LastEditTime: 2020-11-06 14:37:42
+ * @LastEditTime: 2020-11-11 11:36:19
 -->
 <template>
   <el-dialog
@@ -18,10 +18,18 @@
     class="dialog text-left"
     :title="Object.keys(data).length === 0 ? '新增户型' : '编辑户型'"
   >
-    <el-form ref="form" :model="form" :rules="rules" label-width="100px">
+    <el-form
+      ref="form"
+      :model="form"
+      :rules="rules"
+      label-width="100px"
+    >
       <el-row>
         <el-col :span="16">
-          <el-form-item label="户型图：" prop="fileList">
+          <el-form-item
+            label="户型图："
+            prop="fileList"
+          >
             <IhUpload
               :file-list="form.fileList"
               accept="image/*"
@@ -34,7 +42,10 @@
       </el-row>
       <el-row>
         <el-col :span="16">
-          <el-form-item label="户型名称：" prop="houseName">
+          <el-form-item
+            label="户型名称："
+            prop="houseName"
+          >
             <el-input
               v-model="form.houseName"
               placeholder="户型名称"
@@ -45,7 +56,10 @@
       </el-row>
       <el-row>
         <el-col :span="10">
-          <el-form-item label="户型面积：" prop="space">
+          <el-form-item
+            label="户型面积："
+            prop="space"
+          >
             <div style="display: flex; justify-contant: flex-start">
               <el-input
                 v-model.number="form.space"
@@ -62,7 +76,10 @@
         <el-col :span="24">
           <el-form-item label="户型：">
             <div style="display: flex; justify-contant: flex-start">
-              <el-select v-model="form.room" clearable>
+              <el-select
+                v-model="form.room"
+                clearable
+              >
                 <el-option
                   v-for="item in numOptions"
                   :key="item.value"
@@ -71,7 +88,10 @@
                 ></el-option>
               </el-select>
               <span style="padding: 0 8px">室</span>
-              <el-select v-model="form.hall" clearable>
+              <el-select
+                v-model="form.hall"
+                clearable
+              >
                 <el-option
                   v-for="item in numOptions"
                   :key="item.value"
@@ -80,7 +100,10 @@
                 ></el-option>
               </el-select>
               <span style="padding: 0 8px">厅</span>
-              <el-select v-model="form.kitchen" clearable>
+              <el-select
+                v-model="form.kitchen"
+                clearable
+              >
                 <el-option
                   v-for="item in numOptions"
                   :key="item.value"
@@ -89,7 +112,10 @@
                 ></el-option>
               </el-select>
               <span style="padding: 0 8px">厨</span>
-              <el-select v-model="form.toilet" clearable>
+              <el-select
+                v-model="form.toilet"
+                clearable
+              >
                 <el-option
                   v-for="item in numOptions"
                   :key="item.value"
@@ -105,7 +131,10 @@
       <el-row>
         <el-col :span="24">
           <el-form-item label="朝向：">
-            <el-select v-model="form.positionEnum" clearable>
+            <el-select
+              v-model="form.positionEnum"
+              clearable
+            >
               <el-option
                 v-for="item in $root.dictAllList('PositionEnum')"
                 :key="item.code"
@@ -118,9 +147,15 @@
       </el-row>
     </el-form>
 
-    <span slot="footer" class="dialog-footer">
+    <span
+      slot="footer"
+      class="dialog-footer"
+    >
       <el-button @click="cancel()">返 回</el-button>
-      <el-button type="primary" @click="finish()">保 存</el-button>
+      <el-button
+        type="primary"
+        @click="finish()"
+      >保 存</el-button>
     </span>
   </el-dialog>
 </template>
@@ -148,9 +183,11 @@ export default class HouseTypeEdit extends Vue {
     fileList: [],
   };
   rules: any = {
-    fileList: [{ required: true, message: "请上传户型图", trigger: "blur" }],
-    houseName: [{ required: true, message: "请输入户型名称", trigger: "blur" }],
-    space: [{ required: true, message: "请输入户型面积", trigger: "blur" }],
+    fileList: [{ required: true, message: "请上传户型图", trigger: "change" }],
+    houseName: [
+      { required: true, message: "请输入户型名称", trigger: "change" },
+    ],
+    space: [{ required: true, message: "请输入户型面积", trigger: "change" }],
   };
 
   numOptions: any = [

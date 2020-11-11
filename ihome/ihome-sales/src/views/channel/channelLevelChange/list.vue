@@ -3,8 +3,8 @@
  * @version: 
  * @Author: zyc
  * @Date: 2020-06-30 09:21:17
- * @LastEditors: wwq
- * @LastEditTime: 2020-11-10 17:45:10
+ * @LastEditors: zyc
+ * @LastEditTime: 2020-11-11 15:05:33
 --> 
 <template>
   <IhPage label-width="100px">
@@ -30,19 +30,23 @@
           </el-col>
           <el-col :span="8">
             <el-form-item label="录入人">
-              <el-select
+              <IhSelectPageUser
                 v-model="queryPageParameters.inputUser"
                 clearable
-                placeholder="请选择"
-                class="width--100"
               >
-                <el-option
-                  v-for="item in testList"
-                  :key="item.id"
-                  :label="item.value"
-                  :value="item.id"
-                ></el-option>
-              </el-select>
+                <template v-slot="{ data }">
+                  <span style="float: left">{{ data.name }}</span>
+                  <span
+                    style="
+                      margin-left: 20px;
+                      float: right;
+                      color: #8492a6;
+                      font-size: 13px;
+                    "
+                    >{{ data.account }}</span
+                  >
+                </template>
+              </IhSelectPageUser>
             </el-form-item>
           </el-col>
           <el-col :span="8">
@@ -117,6 +121,7 @@
         class="ih-table"
         :data="resPageInfo.list"
         @selection-change="handleSelectionChange"
+        :empty-text="emptyText"
       >
         <el-table-column
           type="selection"
@@ -255,7 +260,7 @@ export default class LevelChangeList extends Vue {
     changeTime: null,
   };
   resPageInfo: any = {
-    total: 0,
+    total: null,
     list: [],
   };
   dialogVisible = false;

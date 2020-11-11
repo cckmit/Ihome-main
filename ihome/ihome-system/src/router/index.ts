@@ -4,7 +4,7 @@
  * @Author: zyc
  * @Date: 2020-06-22 11:10:43
  * @LastEditors: zyc
- * @LastEditTime: 2020-10-21 15:17:18
+ * @LastEditTime: 2020-11-11 09:10:16
  */
 import Vue from 'vue'
 import VueRouter, { RouteConfig, Route } from 'vue-router'
@@ -39,7 +39,7 @@ const routes: Array<RouteConfig> = [
         path: 'list',
         name: 'UserList',
         component: () => import('../views/user/list.vue'),
-        meta: { title: '用户列表', icon: 'form' }
+        meta: { title: '用户列表', icon: 'form', keepAlive: true }
       },
       {
         path: 'info',
@@ -59,7 +59,7 @@ const routes: Array<RouteConfig> = [
         path: 'list',
         name: 'ResourcesList',
         component: () => import('../views/resources/list.vue'),
-        meta: { title: '资源列表', icon: 'form' }
+        meta: { title: '资源列表', icon: 'form', keepAlive: true }
       },
       {
         path: 'info',
@@ -79,7 +79,7 @@ const routes: Array<RouteConfig> = [
         path: 'list',
         name: 'RoleList',
         component: () => import('../views/role/list.vue'),
-        meta: { title: '角色列表', icon: 'form' }
+        meta: { title: '角色列表', icon: 'form', keepAlive: true }
       },
       {
         path: 'info',
@@ -99,7 +99,7 @@ const routes: Array<RouteConfig> = [
         path: 'list',
         name: 'JobList',
         component: () => import('../views/job/list.vue'),
-        meta: { title: '岗位列表', icon: 'form' }
+        meta: { title: '岗位列表', icon: 'form', keepAlive: true }
       },
       {
         path: 'info',
@@ -119,7 +119,7 @@ const routes: Array<RouteConfig> = [
         path: 'list',
         name: 'OrganizationList',
         component: () => import('../views/organization/list.vue'),
-        meta: { title: '组织架构列表', icon: 'form' }
+        meta: { title: '组织架构列表', icon: 'form', keepAlive: true }
       },
 
     ]

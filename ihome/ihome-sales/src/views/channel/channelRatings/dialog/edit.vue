@@ -4,7 +4,7 @@
  * @Author: wwq
  * @Date: 2020-10-09 09:35:09
  * @LastEditors: ywl
- * @LastEditTime: 2020-11-04 11:42:07
+ * @LastEditTime: 2020-11-11 11:45:30
 -->
 
 <template>
@@ -167,16 +167,18 @@ export default class Edit extends Vue {
   };
 
   private rules: any = {
-    cityGrade: [{ required: true, message: "请选择城市等级", trigger: "blur" }],
+    cityGrade: [
+      { required: true, message: "请选择城市等级", trigger: "change" },
+    ],
     channelGrade: [
-      { required: true, message: "请选择渠道等级", trigger: "blur" },
+      { required: true, message: "请选择渠道等级", trigger: "change" },
     ],
     gradeItem: [
-      { required: true, message: "请填写评级项", trigger: "blur" },
-      { validator: noTrim, trigger: ["change", "blur"] },
+      { required: true, message: "请填写评级项", trigger: "change" },
+      { validator: noTrim, trigger: "change" },
     ],
     gradeStandard: [
-      { required: true, message: "请填写评级标准", trigger: "blur" },
+      { required: true, message: "请填写评级标准", trigger: "change" },
     ],
   };
 

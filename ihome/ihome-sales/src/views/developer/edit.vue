@@ -4,7 +4,7 @@
  * @Author: wwq
  * @Date: 2020-09-25 17:59:09
  * @LastEditors: wwq
- * @LastEditTime: 2020-10-23 18:04:54
+ * @LastEditTime: 2020-11-11 11:46:19
 -->
 <template>
   <ih-page>
@@ -18,7 +18,10 @@
       >
         <el-row>
           <el-col :span="8">
-            <el-form-item label="名称" prop="name">
+            <el-form-item
+              label="名称"
+              prop="name"
+            >
               <el-input
                 clearable
                 maxlength="64"
@@ -28,7 +31,10 @@
             </el-form-item>
           </el-col>
           <el-col :span="8">
-            <el-form-item label="信用代码" prop="creditCode">
+            <el-form-item
+              label="信用代码"
+              prop="creditCode"
+            >
               <el-input
                 clearable
                 maxlength="18"
@@ -38,7 +44,10 @@
             </el-form-item>
           </el-col>
           <el-col :span="8">
-            <el-form-item label="简称" prop="shortName">
+            <el-form-item
+              label="简称"
+              prop="shortName"
+            >
               <el-input
                 clearable
                 maxlength="16"
@@ -50,7 +59,10 @@
         </el-row>
         <el-row>
           <el-col :span="8">
-            <el-form-item label="类型" prop="type">
+            <el-form-item
+              label="类型"
+              prop="type"
+            >
               <el-select
                 v-model="resPageInfo.type"
                 clearable
@@ -67,7 +79,11 @@
             </el-form-item>
           </el-col>
           <el-col :span="8">
-            <el-form-item label="法定代表人" required prop="legalPerson">
+            <el-form-item
+              label="法定代表人"
+              required
+              prop="legalPerson"
+            >
               <el-input
                 clearable
                 maxlength="32"
@@ -77,7 +93,10 @@
             </el-form-item>
           </el-col>
           <el-col :span="8">
-            <el-form-item label="法人身份证号码" prop="legalPersonId">
+            <el-form-item
+              label="法人身份证号码"
+              prop="legalPersonId"
+            >
               <el-input
                 clearable
                 maxlength="18"
@@ -87,7 +106,10 @@
             </el-form-item>
           </el-col>
           <el-col :span="8">
-            <el-form-item label="成立日期" prop="setupTime">
+            <el-form-item
+              label="成立日期"
+              prop="setupTime"
+            >
               <el-date-picker
                 v-model="resPageInfo.setupTime"
                 style="width: 100%"
@@ -99,7 +121,10 @@
             </el-form-item>
           </el-col>
           <el-col :span="8">
-            <el-form-item label="注册资本" prop="capital">
+            <el-form-item
+              label="注册资本"
+              prop="capital"
+            >
               <el-input
                 clearable
                 maxlength="32"
@@ -120,7 +145,10 @@
             </el-form-item>
           </el-col>
           <el-col :span="8">
-            <el-form-item label="省市区" prop="provinceOption">
+            <el-form-item
+              label="省市区"
+              prop="provinceOption"
+            >
               <IhCascader
                 v-model="resPageInfo.provinceOption"
                 :checkStrictly="false"
@@ -128,7 +156,10 @@
             </el-form-item>
           </el-col>
           <el-col :span="16">
-            <el-form-item label="住所" prop="address">
+            <el-form-item
+              label="住所"
+              prop="address"
+            >
               <el-input
                 clearable
                 maxlength="64"
@@ -138,7 +169,10 @@
             </el-form-item>
           </el-col>
           <el-col :span="8">
-            <el-form-item label="录入人" prop="inputUser">
+            <el-form-item
+              label="录入人"
+              prop="inputUser"
+            >
               <el-input
                 clearable
                 disabled
@@ -154,9 +188,11 @@
     <template v-slot:table>
       <div class="content">
         <p class="ih-info-title">联系人信息</p>
-        <el-button @click="addContacts()" type="primary" size="small"
-          >添加</el-button
-        >
+        <el-button
+          @click="addContacts()"
+          type="primary"
+          size="small"
+        >添加</el-button>
       </div>
       <div class="padding-left-20">
         <el-table
@@ -164,15 +200,34 @@
           :data="resPageInfo.contactList"
           style="width: 100%"
         >
-          <el-table-column prop="contactName" label="姓名"></el-table-column>
-          <el-table-column prop="contactNum" label="手机号"></el-table-column>
-          <el-table-column prop="email" label="电子邮箱"></el-table-column>
-          <el-table-column fixed="right" label="操作" align="center">
+          <el-table-column
+            prop="contactName"
+            label="姓名"
+          ></el-table-column>
+          <el-table-column
+            prop="contactNum"
+            label="手机号"
+          ></el-table-column>
+          <el-table-column
+            prop="email"
+            label="电子邮箱"
+          ></el-table-column>
+          <el-table-column
+            fixed="right"
+            label="操作"
+            align="center"
+          >
             <template v-slot="{ row, $index }">
-              <span class="el-dropdown-link" @click="editContacts(row, $index)">
+              <span
+                class="el-dropdown-link"
+                @click="editContacts(row, $index)"
+              >
                 编辑
               </span>
-              <span class="el-dropdown-link" @click="delContacts($index)">
+              <span
+                class="el-dropdown-link"
+                @click="delContacts($index)"
+              >
                 移除
               </span>
             </template>
@@ -182,9 +237,11 @@
       <br />
       <div class="content">
         <p class="ih-info-title">账户信息</p>
-        <el-button @click="addAccount()" type="primary" size="small"
-          >添加</el-button
-        >
+        <el-button
+          @click="addAccount()"
+          type="primary"
+          size="small"
+        >添加</el-button>
       </div>
       <div class="padding-left-20">
         <el-table
@@ -192,20 +249,42 @@
           :data="resPageInfo.bankList"
           style="width: 100%"
         >
-          <el-table-column prop="name" label="账户名称"></el-table-column>
-          <el-table-column prop="number" label="账号"></el-table-column>
-          <el-table-column prop="bank" label="开户银行"></el-table-column>
-          <el-table-column prop="type" label="账号类型">
+          <el-table-column
+            prop="name"
+            label="账户名称"
+          ></el-table-column>
+          <el-table-column
+            prop="number"
+            label="账号"
+          ></el-table-column>
+          <el-table-column
+            prop="bank"
+            label="开户银行"
+          ></el-table-column>
+          <el-table-column
+            prop="type"
+            label="账号类型"
+          >
             <template v-slot="{ row }">{{
               $root.dictAllName(row.type, "BankAccountTypeEnum")
             }}</template>
           </el-table-column>
-          <el-table-column fixed="right" label="操作" align="center">
+          <el-table-column
+            fixed="right"
+            label="操作"
+            align="center"
+          >
             <template v-slot="{ row, $index }">
-              <span class="el-dropdown-link" @click="editAccount(row, $index)">
+              <span
+                class="el-dropdown-link"
+                @click="editAccount(row, $index)"
+              >
                 编辑
               </span>
-              <span class="el-dropdown-link" @click="delAccount($index)">
+              <span
+                class="el-dropdown-link"
+                @click="delAccount($index)"
+              >
                 移除
               </span>
             </template>
@@ -220,12 +299,18 @@
           :data="resPageInfo.attachmentList"
           style="width: 100%"
         >
-          <el-table-column prop="type" label="类型">
+          <el-table-column
+            prop="type"
+            label="类型"
+          >
             <!-- <template v-slot="{ row }">{{
             $root.displayName("accessoryTpye", row.type)
           }}</template> -->
           </el-table-column>
-          <el-table-column prop="fileId" label="附件"></el-table-column>
+          <el-table-column
+            prop="fileId"
+            label="附件"
+          ></el-table-column>
         </el-table>
       </div>
       <br />
@@ -242,10 +327,14 @@
         >
         </el-input>
         <div class="bottom">
-          <el-button @click="submit('Draft')" type="primary">保存</el-button>
-          <el-button @click="submit('WaitAuditByBranchHead')" type="primary"
-            >提交</el-button
-          >
+          <el-button
+            @click="submit('Draft')"
+            type="primary"
+          >保存</el-button>
+          <el-button
+            @click="submit('WaitAuditByBranchHead')"
+            type="primary"
+          >提交</el-button>
         </div>
       </div>
 
@@ -261,12 +350,18 @@
         >
         </el-input>
         <div class="bottom">
-          <el-button @click="submit('Audited')" type="primary">提交</el-button>
+          <el-button
+            @click="submit('Audited')"
+            type="primary"
+          >提交</el-button>
         </div>
       </div>
     </template>
 
-    <ih-dialog :show="contactsDialogVisible" desc="联系人信息">
+    <ih-dialog
+      :show="contactsDialogVisible"
+      desc="联系人信息"
+    >
       <Contacts
         :data="contactsData"
         @cancel="() => (contactsDialogVisible = false)"
@@ -278,7 +373,10 @@
         "
       />
     </ih-dialog>
-    <ih-dialog :show="accountDialogVisible" desc="账户信息">
+    <ih-dialog
+      :show="accountDialogVisible"
+      desc="账户信息"
+    >
       <Account
         :data="accountData"
         @cancel="() => (accountDialogVisible = false)"
@@ -344,28 +442,30 @@ export default class Edit extends Vue {
   accountDialogVisible = false;
 
   private rules: any = {
-    name: [{ required: true, message: "请填写名称", trigger: "blur" }],
+    name: [{ required: true, message: "请填写名称", trigger: "change" }],
     creditCode: [
-      { required: true, message: "请填写信用代码", trigger: "blur" },
+      { required: true, message: "请填写信用代码", trigger: "change" },
     ],
-    shortName: [{ required: true, message: "请填写简称", trigger: "blur" }],
-    type: [{ required: true, message: "请选择类型", trigger: "blur" }],
+    shortName: [{ required: true, message: "请填写简称", trigger: "change" }],
+    type: [{ required: true, message: "请选择类型", trigger: "change" }],
     legalPersonId: [
-      { required: true, message: "请填写法人身份证号码", trigger: "blur" },
+      { required: true, message: "请填写法人身份证号码", trigger: "change" },
       {
         pattern: /(^[1-9]\d{5}(18|19|([23]\d))\d{2}((0[1-9])|(10|11|12))(([0-2][1-9])|10|20|30|31)\d{3}[0-9Xx]$)|(^[1-9]\d{5}\d{2}((0[1-9])|(10|11|12))(([0-2][1-9])|10|20|30|31)\d{2}$)/,
         message: "证件号码格式有误！",
-        trigger: "blur",
+        trigger: "change",
       },
     ],
-    setupTime: [{ required: true, message: "请选择成立日期", trigger: "blur" }],
-    capital: [{ required: true, message: "请填写注册资本", trigger: "blur" }],
-    provinceOption: [
-      { required: true, message: "请选择省市区", trigger: "blur" },
+    setupTime: [
+      { required: true, message: "请选择成立日期", trigger: "change" },
     ],
-    address: [{ required: true, message: "请填写住所", trigger: "blur" }],
+    capital: [{ required: true, message: "请填写注册资本", trigger: "change" }],
+    provinceOption: [
+      { required: true, message: "请选择省市区", trigger: "change" },
+    ],
+    address: [{ required: true, message: "请填写住所", trigger: "change" }],
     legalPerson: [
-      { required: true, message: "请填法定代表人", trigger: "blur" },
+      { required: true, message: "请填法定代表人", trigger: "change" },
     ],
   };
 

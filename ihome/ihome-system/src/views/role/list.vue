@@ -4,7 +4,7 @@
  * @Author: zyc
  * @Date: 2020-07-09 10:21:50
  * @LastEditors: zyc
- * @LastEditTime: 2020-10-23 11:41:08
+ * @LastEditTime: 2020-11-11 14:48:05
 --> 
 <template>
   <ih-page>
@@ -16,42 +16,74 @@
           </el-col>
           <el-col :span="22" class="text-right">
             <el-input
-              style="width:200px;"
+              style="width: 200px"
               placeholder="名称 编码"
               class="input-with-select"
               v-model="queryPageParameters.key"
               @keyup.enter.native="getListMixin"
             ></el-input>
-            <el-button type="primary" class="margin-left-20" @click="getListMixin()">查询</el-button>
+            <el-button
+              type="primary"
+              class="margin-left-20"
+              @click="getListMixin()"
+              >查询</el-button
+            >
           </el-col>
         </el-row>
       </el-form>
     </template>
     <template v-slot:table>
       <br />
-      <el-table class="ih-table" :data="resPageInfo.list" style="width: 100%">
+      <el-table
+        class="ih-table"
+        :data="resPageInfo.list"
+        style="width: 100%"
+       :empty-text="emptyText"
+      >
         <el-table-column type="index" label="序号" width="50"></el-table-column>
         <el-table-column prop="name" label="名称" width="180"></el-table-column>
         <el-table-column prop="code" label="编码" width="180"></el-table-column>
         <el-table-column prop="createUserName" label="创建人"></el-table-column>
-        <el-table-column prop="createTime" label="创建时间" width="155"></el-table-column>
+        <el-table-column
+          prop="createTime"
+          label="创建时间"
+          width="155"
+        ></el-table-column>
         <el-table-column prop="updateUserName" label="修改人"></el-table-column>
-        <el-table-column prop="updateTime" label="修改时间" width="155"></el-table-column>
+        <el-table-column
+          prop="updateTime"
+          label="修改时间"
+          width="155"
+        ></el-table-column>
 
         <el-table-column fixed="right" label="操作" width="120">
           <template slot-scope="scope">
-            <el-link type="primary" @click.native.prevent="info(scope)">详情</el-link>
+            <el-link type="primary" @click.native.prevent="info(scope)"
+              >详情</el-link
+            >
             <el-dropdown trigger="click" class="margin-left-15">
               <span class="el-dropdown-link">
                 更多
                 <i class="el-icon-arrow-down el-icon--right"></i>
               </span>
               <el-dropdown-menu slot="dropdown">
-                <el-dropdown-item @click.native.prevent="edit(scope)">编辑</el-dropdown-item>
-                <el-dropdown-item @click.native.prevent="remove(scope)">删除角色</el-dropdown-item>
-                <el-dropdown-item @click.native.prevent="setJurisdiction(scope)">分配权限</el-dropdown-item>
-                <el-dropdown-item @click.native.prevent="batchOperationJob(scope)">批量分配岗位</el-dropdown-item>
-                <el-dropdown-item @click.native.prevent="batchOperationUser(scope)">批量分配用户</el-dropdown-item>
+                <el-dropdown-item @click.native.prevent="edit(scope)"
+                  >编辑</el-dropdown-item
+                >
+                <el-dropdown-item @click.native.prevent="remove(scope)"
+                  >删除角色</el-dropdown-item
+                >
+                <el-dropdown-item @click.native.prevent="setJurisdiction(scope)"
+                  >分配权限</el-dropdown-item
+                >
+                <el-dropdown-item
+                  @click.native.prevent="batchOperationJob(scope)"
+                  >批量分配岗位</el-dropdown-item
+                >
+                <el-dropdown-item
+                  @click.native.prevent="batchOperationUser(scope)"
+                  >批量分配用户</el-dropdown-item
+                >
               </el-dropdown-menu>
             </el-dropdown>
           </template>
@@ -74,29 +106,49 @@
     <ih-dialog :show="dialogAdd" desc="角色新增编辑">
       <RoleAdd
         :data="itemData"
-        @cancel="()=>dialogAdd=false"
-        @finish="(data)=>{dialogAdd=false;finish(data)}"
+        @cancel="() => (dialogAdd = false)"
+        @finish="
+          (data) => {
+            dialogAdd = false;
+            finish(data);
+          }
+        "
       />
     </ih-dialog>
     <ih-dialog :show="dialogResourcesCheck" desc="分配权限，资源多选">
       <ResourcesCheck
         :data="resourcesCheckData"
-        @cancel="()=>dialogResourcesCheck=false"
-        @finish="(data)=>{dialogResourcesCheck=false;finishdialogResourcesCheck(data)}"
+        @cancel="() => (dialogResourcesCheck = false)"
+        @finish="
+          (data) => {
+            dialogResourcesCheck = false;
+            finishdialogResourcesCheck(data);
+          }
+        "
       />
     </ih-dialog>
     <ih-dialog :show="dialogBatchOperationJob" desc="分配岗位">
       <BatchOperationJob
         :data="batchOperationJobData"
-        @cancel="()=>dialogBatchOperationJob=false"
-        @finish="(data)=>{dialogBatchOperationJob=false;finishBatchOperationJob(data)}"
+        @cancel="() => (dialogBatchOperationJob = false)"
+        @finish="
+          (data) => {
+            dialogBatchOperationJob = false;
+            finishBatchOperationJob(data);
+          }
+        "
       />
     </ih-dialog>
     <ih-dialog :show="dialogBatchOperationUser" desc="批量分配用户">
       <BatchOperationUser
         :data="batchOperationUserData"
-        @cancel="()=>dialogBatchOperationUser=false"
-        @finish="(data)=>{dialogBatchOperationUser=false;finishBatchOperationUser(data)}"
+        @cancel="() => (dialogBatchOperationUser = false)"
+        @finish="
+          (data) => {
+            dialogBatchOperationUser = false;
+            finishBatchOperationUser(data);
+          }
+        "
       />
     </ih-dialog>
   </ih-page>
@@ -131,7 +183,7 @@ export default class RoleList extends Vue {
   };
 
   resPageInfo: any = {
-    total: 0,
+    total: null,
     list: [],
   };
   currentPage = 1;

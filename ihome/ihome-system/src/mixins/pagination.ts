@@ -4,7 +4,7 @@
  * @Author: zyc
  * @Date: 2020-07-24 17:08:03
  * @LastEditors: zyc
- * @LastEditTime: 2020-09-29 11:08:16
+ * @LastEditTime: 2020-11-11 14:56:25
  */
  /* eslint-disable  no-console */
 import { IPageInfo,IPageBase } from "../api/base.d";
@@ -47,5 +47,8 @@ export default class PaginationMixin extends Vue {
     }
     handleCurrentChangeMixin() {
         this.getListMixin();
+    }
+    get emptyText() {
+        return this.resPageInfo.total === null ? '正在加载数据...' : '暂无数据';
     }
 }

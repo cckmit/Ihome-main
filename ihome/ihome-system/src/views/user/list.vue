@@ -4,7 +4,7 @@
  * @Author: zyc
  * @Date: 2020-06-30 09:21:17
  * @LastEditors: zyc
- * @LastEditTime: 2020-11-03 10:15:19
+ * @LastEditTime: 2020-11-11 14:47:23
 --> 
 <template>
   <ih-page>
@@ -218,6 +218,7 @@
         :data="resPageInfo.list"
         :default-sort="{ prop: 'id', order: 'descending' }"
         @selection-change="handleSelectionChange"
+        :empty-text="emptyText"
       >
         <el-table-column fixed type="selection" width="50"></el-table-column>
         <el-table-column
@@ -447,7 +448,7 @@ export default class UserList extends Vue {
   OrganizationJurisdictionData: any = null;
   copyUserData: any = null;
   resPageInfo: any = {
-    total: 0,
+    total: null,
     list: [],
   };
 

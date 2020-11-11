@@ -4,8 +4,8 @@
  * @version: 
  * @Author: zyc
  * @Date: 2020-10-13 19:06:12
- * @LastEditors: zyc
- * @LastEditTime: 2020-10-14 19:22:27
+ * @LastEditors: wwq
+ * @LastEditTime: 2020-11-11 08:58:11
 -->
 <template>
   <el-dialog
@@ -82,19 +82,20 @@
         </el-col>
         <el-col :span="8">
           <el-form-item label="录入人">
-            <el-select
-              v-model="queryPageParameters.inputUser"
-              clearable
-              placeholder="状态"
-              class="width--100"
-            >
-              <el-option
-                v-for="item in inputUserList"
-                :key="item.code"
-                :label="item.name"
-                :value="item.code"
-              ></el-option>
-            </el-select>
+            <IhSelectPageUser v-model="queryPageParameters.inputUser" clearable>
+              <template v-slot="{ data }">
+                <span style="float: left">{{ data.name }}</span>
+                <span
+                  style="
+                    margin-left: 20px;
+                    float: right;
+                    color: #8492a6;
+                    font-size: 13px;
+                  "
+                  >{{ data.account }}</span
+                >
+              </template>
+            </IhSelectPageUser>
           </el-form-item>
         </el-col>
         <el-col :span="8">
@@ -226,7 +227,6 @@ export default class ChannelApprovalGradesList extends Vue {
   };
 
   channelList: any = []; //渠道商列表
-  inputUserList: any = []; //录入人列表
   selectList: any = [];
   queryPageParameters: any = {
     channelGrade: null,

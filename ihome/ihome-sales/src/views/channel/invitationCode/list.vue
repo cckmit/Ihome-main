@@ -4,7 +4,7 @@
  * @Author: zyc
  * @Date: 2020-07-14 09:23:40
  * @LastEditors: zyc
- * @LastEditTime: 2020-11-03 11:01:27
+ * @LastEditTime: 2020-11-11 14:53:47
 --> 
 --> 
 <template>
@@ -107,6 +107,7 @@
         class="ih-table"
         :data="resPageInfo.list"
         @selection-change="handleSelectionChange"
+        :empty-text="emptyText"
       >
         <el-table-column type="selection" width="50" align="center">
         </el-table-column>
@@ -219,7 +220,7 @@ export default class InvitationCodeList extends Vue {
   divisionList: any = []; //事业部列表
 
   resPageInfo: any = {
-    total: 0,
+    total: null,
     list: [],
   };
   dialogAdd = false;

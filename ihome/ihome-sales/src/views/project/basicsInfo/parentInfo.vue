@@ -1,3 +1,11 @@
+<!--
+ * @Descripttion: 
+ * @version: 
+ * @Author: wwq
+ * @Date: 2020-11-10 10:34:18
+ * @LastEditors: wwq
+ * @LastEditTime: 2020-11-11 14:59:50
+-->
 <template>
   <ih-page>
     <template v-slot:info>
@@ -11,7 +19,10 @@
         <el-row>
           <el-col :span="8">
             <el-form-item label="盘编">
-              <span class="text-ellipsis" :title="form.proNo">{{
+              <span
+                class="text-ellipsis"
+                :title="form.proNo"
+              >{{
                 form.proNo
               }}</span>
             </el-form-item>
@@ -69,7 +80,10 @@
           </el-col>
         </el-row>
       </el-form>
-      <div class="margin-top-20" v-if="$route.name === 'projectParentAudit'">
+      <div
+        class="margin-top-20"
+        v-if="$route.name === 'projectParentAudit'"
+      >
         <p class="ih-info-title">审核意见</p>
         <el-input
           class="padding-left-20"
@@ -81,8 +95,14 @@
         >
         </el-input>
         <div class="margin-top-20">
-          <el-button @click="auditPass()" type="primary">通过</el-button>
-          <el-button @click="auditReject()" type="primary">驳回</el-button>
+          <el-button
+            @click="auditPass()"
+            type="primary"
+          >通过</el-button>
+          <el-button
+            @click="auditReject()"
+            type="primary"
+          >驳回</el-button>
         </div>
       </div>
     </template>

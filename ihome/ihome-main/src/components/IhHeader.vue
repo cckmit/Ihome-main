@@ -3,35 +3,57 @@
  * @version: 
  * @Author: zyc
  * @Date: 2020-06-23 10:42:04
- * @LastEditors: lgf
- * @LastEditTime: 2020-09-22 10:35:33
+ * @LastEditors: zyc
+ * @LastEditTime: 2020-11-11 14:20:41
 --> 
 <template>
   <div class="header-container">
     <div class="left-item">
       <i
         class="el-icon-s-fold close-btn"
-        style="font-size:20px;cursor:pointer"
-        :class="isCollapse?'is-active':''"
+        style="font-size: 20px; cursor: pointer"
+        :class="isCollapse ? 'is-active' : ''"
         @click="clickAside()"
       ></i>
+      <el-link
+        :underline="false"
+        @click="$router.go(-1)"
+        style="margin-right: 20px"
+      >
+        <i class="el-icon-arrow-left"></i>
+        返回</el-link
+      >
       <div class="breadcrumb">
         <el-breadcrumb separator-class="el-icon-arrow-right">
-          <el-breadcrumb-item :to="{ path: '/app/' }">首页</el-breadcrumb-item>
-          <el-breadcrumb-item v-for="(item,index) in  breadcrumbList" :key="index">{{item.title}}</el-breadcrumb-item>
+          <!-- <el-breadcrumb-item :to="{ path: '/' }">首页</el-breadcrumb-item> -->
+          <el-breadcrumb-item
+            v-for="(item, index) in breadcrumbList"
+            :key="index"
+            >{{ item && item.title }}</el-breadcrumb-item
+          >
           <!-- <el-breadcrumb-item>活动列表</el-breadcrumb-item>
           <el-breadcrumb-item>活动详情</el-breadcrumb-item>-->
         </el-breadcrumb>
       </div>
     </div>
     <div class="right-item">
-      <el-popover placement="top-start" width="120" trigger="hover" style="text-align: left;">
+      <el-popover
+        placement="top-start"
+        width="120"
+        trigger="hover"
+        style="text-align: left"
+      >
         <ul class="head-ul">
           <li>个人中心</li>
           <li @click="doc()">开发规范文档</li>
           <li @click="loginOut()">退出</li>
         </ul>
-        <el-avatar slot="reference" class="avatar" size="medium" :src="circleUrl"></el-avatar>
+        <el-avatar
+          slot="reference"
+          class="avatar"
+          size="medium"
+          :src="circleUrl"
+        ></el-avatar>
       </el-popover>
     </div>
   </div>
@@ -42,6 +64,7 @@ import { UserModule } from "../store/modules/user";
 import { AppModule } from "../store/modules/app";
 import { headImg } from "../utils/base64-img";
 import { defaultIsCollapse } from "@/setting";
+import { allMenu } from "../api/users";
 @Component({
   components: {},
 })
@@ -73,14 +96,34 @@ export default class IhHeader extends Vue {
   }
 
   @Watch("$route")
-  getBreadcrumb(newVal: any) {
-    this.breadcrumbList = [];
-    newVal.matched.forEach((item: any) => {
-      this.breadcrumbList.push({
-        title: item.meta?.title,
-        path: item.path,
-      });
-    });
+  async getBreadcrumb(newVal: any) {
+     
+    let menuList: any = await allMenu();
+    let arr = null;
+    for (let index = 0; index < menuList.length; index++) {
+      const element = menuList[index];
+      if (newVal.path == element.path) {
+        arr = element;
+        break;
+      }
+    }
+    let data = null;
+    for (let index = 0; index < menuList.length; index++) {
+      const element = menuList[index];
+      if (arr?.parentId == element.id) {
+        data = element;
+        break;
+      }
+    }
+
+    this.breadcrumbList = [data, arr];
+    
+    // newVal.matched.forEach((item: any) => {
+    //   this.breadcrumbList.push({
+    //     title: item.meta?.title,
+    //     path: item.path,
+    //   });
+    // });
   }
   doc() {
     console.log("开发规范文档");
@@ -89,13 +132,14 @@ export default class IhHeader extends Vue {
     );
   }
   created() {
-    this.breadcrumbList = [];
-    this.$route.matched.forEach((item: any) => {
-      this.breadcrumbList.push({
-        title: item.meta?.title,
-        path: item.path,
-      });
-    });
+    // this.breadcrumbList = [];
+    // this.$route.matched.forEach((item: any) => {
+    //   this.breadcrumbList.push({
+    //     title: item.meta?.title,
+    //     path: item.path,
+    //   });
+    // });
+    this.getBreadcrumb(this.$route);
   }
 }
 </script>

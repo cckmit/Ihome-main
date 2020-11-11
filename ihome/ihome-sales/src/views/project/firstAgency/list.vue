@@ -4,12 +4,15 @@
  * @Author: wwq
  * @Date: 2020-10-28 15:34:27
  * @LastEditors: wwq
- * @LastEditTime: 2020-11-04 16:31:12
+ * @LastEditTime: 2020-11-11 15:32:42
 -->
 <template>
   <ih-page>
     <template v-slot:form>
-      <el-form ref="form" label-width="80px">
+      <el-form
+        ref="form"
+        label-width="80px"
+      >
         <el-row>
           <el-col :span="8">
             <el-form-item label="名称">
@@ -73,15 +76,28 @@
 
     <template v-slot:btn>
       <el-row>
-        <el-button type="primary" @click="search()">查询</el-button>
-        <el-button type="success" @click="add()">添加</el-button>
-        <el-button type="info" @click="reset()">重置</el-button>
+        <el-button
+          type="primary"
+          @click="search()"
+        >查询</el-button>
+        <el-button
+          type="success"
+          @click="add()"
+        >添加</el-button>
+        <el-button
+          type="info"
+          @click="reset()"
+        >重置</el-button>
       </el-row>
     </template>
 
     <template v-slot:table>
       <br />
-      <el-table class="ih-table" :data="resPageInfo.list" style="width: 100%">
+      <el-table
+        class="ih-table"
+        :data="resPageInfo.list"
+        :empty-text="emptyText"
+      >
         <el-table-column
           prop="agencyName"
           label="名称"
@@ -92,34 +108,61 @@
           label="信用代码"
           width="180"
         ></el-table-column>
-        <el-table-column prop="simpleName" label="简称"></el-table-column>
-        <el-table-column prop="province" label="省份">
+        <el-table-column
+          prop="simpleName"
+          label="简称"
+        ></el-table-column>
+        <el-table-column
+          prop="province"
+          label="省份"
+        >
           <template v-slot="{ row }">{{
             $root.getAreaName(row.province)
           }}</template>
         </el-table-column>
-        <el-table-column prop="city" label="城市">
+        <el-table-column
+          prop="city"
+          label="城市"
+        >
           <template v-slot="{ row }">{{
             $root.getAreaName(row.city)
           }}</template>
         </el-table-column>
-        <el-table-column prop="area" label="行政区">
+        <el-table-column
+          prop="area"
+          label="行政区"
+        >
           <template v-slot="{ row }">{{
             $root.getAreaName(row.area)
           }}</template>
         </el-table-column>
-        <el-table-column prop="followMan" label="跟进人"></el-table-column>
-        <el-table-column prop="agencyAuditEnum" label="状态" width="150">
+        <el-table-column
+          prop="followMan"
+          label="跟进人"
+        ></el-table-column>
+        <el-table-column
+          prop="agencyAuditEnum"
+          label="状态"
+          width="150"
+        >
           <template v-slot="{ row }">{{
             $root.dictAllName(row.agencyAuditEnum, "AgencyAuditEnum")
           }}</template>
         </el-table-column>
-        <el-table-column fixed="right" label="操作" width="120">
+        <el-table-column
+          fixed="right"
+          label="操作"
+          width="120"
+        >
           <template v-slot="{ row }">
-            <el-link type="primary" @click.native.prevent="routeTo(row, 'info')"
-              >详情</el-link
+            <el-link
+              type="primary"
+              @click.native.prevent="routeTo(row, 'info')"
+            >详情</el-link>
+            <el-dropdown
+              trigger="click"
+              class="margin-left-15"
             >
-            <el-dropdown trigger="click" class="margin-left-15">
               <span class="el-dropdown-link">
                 更多
                 <i class="el-icon-arrow-down el-icon--right"></i>
@@ -128,14 +171,10 @@
                 <el-dropdown-item
                   :disabled="row.status === 'Audited'"
                   @click.native.prevent="routeTo(row, 'edit')"
-                  >修改</el-dropdown-item
-                >
-                <el-dropdown-item
-                  @click.native.prevent="
+                >修改</el-dropdown-item>
+                <el-dropdown-item @click.native.prevent="
                     $message.warning('接口未提供,功能未实现')
-                  "
-                  >审核</el-dropdown-item
-                >
+                  ">审核</el-dropdown-item>
               </el-dropdown-menu>
             </el-dropdown>
           </template>
@@ -179,9 +218,13 @@ export default class FirstAgencyList extends Vue {
   provinceOption: any = [];
   selection: any = [];
   resPageInfo: any = {
-    total: 0,
+    total: null,
     list: [],
   };
+
+  get emptyText() {
+    return this.resPageInfo.total === null ? "正在加载数据..." : "暂无数据";
+  }
 
   async created() {
     this.getListMixin();

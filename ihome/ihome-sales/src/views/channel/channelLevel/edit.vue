@@ -3,8 +3,8 @@
  * @version: 
  * @Author: wwq
  * @Date: 2020-10-15 16:02:03
- * @LastEditors: wwq
- * @LastEditTime: 2020-11-10 18:12:58
+ * @LastEditors: ywl
+ * @LastEditTime: 2020-11-11 11:44:23
 -->
 <template>
   <IhPage>
@@ -19,7 +19,11 @@
         >
           <el-row>
             <el-col :span="8">
-              <el-form-item label="渠道商" align="left" prop="channelId">
+              <el-form-item
+                label="渠道商"
+                align="left"
+                prop="channelId"
+              >
                 <div style="display: flex; justify-contant: flex-start">
                   <el-select
                     :disabled="$route.name === 'channelLevlChange'"
@@ -41,13 +45,15 @@
                     type="primary"
                     target="_blank"
                     :disabled="!resPageInfo.channelId"
-                    >详情</el-link
-                  >
+                  >详情</el-link>
                 </div>
               </el-form-item>
             </el-col>
             <el-col :span="8">
-              <el-form-item label="渠道等级" prop="channelGrade">
+              <el-form-item
+                label="渠道等级"
+                prop="channelGrade"
+              >
                 <el-select
                   v-model="resPageInfo.channelGrade"
                   clearable
@@ -65,7 +71,10 @@
               </el-form-item>
             </el-col>
             <el-col :span="8">
-              <el-form-item label="渠道类型" align="left">
+              <el-form-item
+                label="渠道类型"
+                align="left"
+              >
                 <span>{{
                   $root.dictAllName(resPageInfo.channelType, "ChannelType")
                 }}</span>
@@ -74,7 +83,10 @@
           </el-row>
           <el-row>
             <el-col :span="8">
-              <el-form-item label="业务开展省市" prop="provinceOption">
+              <el-form-item
+                label="业务开展省市"
+                prop="provinceOption"
+              >
                 <IhCascader
                   :level="2"
                   :checkStrictly="false"
@@ -87,7 +99,10 @@
               </el-form-item>
             </el-col>
             <el-col :span="8">
-              <el-form-item label="城市等级" align="left">
+              <el-form-item
+                label="城市等级"
+                align="left"
+              >
                 <span>{{
                   resPageInfo.cityGrade
                     ? $root.dictAllName(resPageInfo.cityGrade, "CityLevel")
@@ -96,7 +111,10 @@
               </el-form-item>
             </el-col>
             <el-col :span="8">
-              <el-form-item label="是否特批入库" prop="special">
+              <el-form-item
+                label="是否特批入库"
+                prop="special"
+              >
                 <el-select
                   v-model="resPageInfo.special"
                   clearable
@@ -113,7 +131,10 @@
               </el-form-item>
             </el-col>
             <el-col :span="8">
-              <el-form-item label="入库编号" align="left">
+              <el-form-item
+                label="入库编号"
+                align="left"
+              >
                 <el-input
                   clearable
                   v-model="resPageInfo.storageNum"
@@ -124,7 +145,10 @@
               </el-form-item>
             </el-col>
             <el-col :span="8">
-              <el-form-item label="事业部" align="left">
+              <el-form-item
+                label="事业部"
+                align="left"
+              >
                 <el-select
                   class="width--100"
                   v-model="resPageInfo.departmentOrgId"
@@ -145,16 +169,13 @@
 
         <p class="ih-info-title">
           评级信息
-          <span style="font-size: 15px; margin-left: 10px"
-            >以下标准任填一项</span
-          >
+          <span style="font-size: 15px; margin-left: 10px">以下标准任填一项</span>
           <el-link
             class="margin-left-15"
             href="/web-sales/channelRatings/list"
             type="success"
             target="_blank"
-            >查看所有标准</el-link
-          >
+          >查看所有标准</el-link>
           <!-- <el-link
             style="margin-left: 15px; font-size: 15px"
             @click="copy"
@@ -163,27 +184,45 @@
           > -->
         </p>
         <br />
-        <el-form ref="dynamicValidateForm" class="padding-left-20">
+        <el-form
+          ref="dynamicValidateForm"
+          class="padding-left-20"
+        >
           <el-table
             class="ih-table"
             :data="resPageInfo.channelGradeItems"
             style="width: 100%"
           >
-            <el-table-column prop="cityGrade" label="城市等级">
+            <el-table-column
+              prop="cityGrade"
+              label="城市等级"
+            >
               <template v-slot="{ row }">{{
                 $root.dictAllName(row.cityGrade, "CityLevel")
               }}</template>
             </el-table-column>
-            <el-table-column prop="channelGrade" label="渠道等级">
+            <el-table-column
+              prop="channelGrade"
+              label="渠道等级"
+            >
               <template v-slot="{ row }">{{
                 $root.dictAllName(row.channelGrade, "ChannelLevel")
               }}</template>
             </el-table-column>
-            <el-table-column prop="gradeItem" label="评级项"></el-table-column>
-            <el-table-column prop="inputValue" label="录入信息">
+            <el-table-column
+              prop="gradeItem"
+              label="评级项"
+            ></el-table-column>
+            <el-table-column
+              prop="inputValue"
+              label="录入信息"
+            >
               <template v-slot="{ row }">
                 <el-form-item>
-                  <el-input clearable v-model="row.inputValue"></el-input>
+                  <el-input
+                    clearable
+                    v-model="row.inputValue"
+                  ></el-input>
                 </el-form-item>
               </template>
             </el-table-column>
@@ -201,8 +240,7 @@
             href="http://zxgk.court.gov.cn/zhzxgk/"
             type="success"
             target="_blank"
-            >综合查询被执行人</el-link
-          >
+          >综合查询被执行人</el-link>
         </p>
         <div class="padding-left-20">
           <el-table
@@ -210,17 +248,30 @@
             :data="resPageInfo.channelGradeAttachments"
             style="width: 100%"
           >
-            <el-table-column prop="type" label="类型" width="200">
+            <el-table-column
+              prop="type"
+              label="类型"
+              width="200"
+            >
               <template v-slot="{ row }">{{
                 $root.displayName("accessoryTpye", row.type)
               }}</template>
             </el-table-column>
-            <el-table-column prop="fileId" label="附件">
-              <IhUpload size="100px" :fileList="fileList" />
+            <el-table-column
+              prop="fileId"
+              label="附件"
+            >
+              <IhUpload
+                size="100px"
+                :fileList="fileList"
+              />
             </el-table-column>
           </el-table>
         </div>
-        <div v-if="$route.name === 'channelLevelChange'" class="text-left">
+        <div
+          v-if="$route.name === 'channelLevelChange'"
+          class="text-left"
+        >
           <br />
           <p class="ih-info-title">变更原因</p>
           <el-input
@@ -234,8 +285,14 @@
           </el-input>
         </div>
         <div class="margin-top-30 text-center">
-          <el-button @click="pass('1')" type="primary">保存</el-button>
-          <el-button @click="pass('2')" type="primary">提交</el-button>
+          <el-button
+            @click="pass('1')"
+            type="primary"
+          >保存</el-button>
+          <el-button
+            @click="pass('2')"
+            type="primary"
+          >提交</el-button>
         </div>
       </div>
     </template>
@@ -298,14 +355,14 @@ export default class ChannelRates extends Vue {
   ];
 
   private rules: any = {
-    channelId: [{ required: true, message: "请选择渠道商", trigger: "blur" }],
+    channelId: [{ required: true, message: "请选择渠道商", trigger: "change" }],
     channelGrade: [
-      { required: true, message: "请选择渠道等级", trigger: "blur" },
+      { required: true, message: "请选择渠道等级", trigger: "change" },
     ],
     provinceOption: [
-      { required: true, message: "请选择业务开展省市", trigger: "blur" },
+      { required: true, message: "请选择业务开展省市", trigger: "change" },
     ],
-    special: [{ required: true, message: "请选择特批入库", trigger: "blur" }],
+    special: [{ required: true, message: "请选择特批入库", trigger: "change" }],
   };
 
   async created() {
