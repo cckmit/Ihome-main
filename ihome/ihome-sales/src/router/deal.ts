@@ -104,7 +104,13 @@ const dealRoutes: Array<RouteConfig> = [
         path: 'previewDealInfo',
         name: 'PreviewDealInfo',
         component: () => import('@/views/deal/dealReport/previewDealInfo.vue'),
-        meta: { title: '成交信息变更', icon: 'form' }
+        meta: { title: '成交信息预览', icon: 'form' }
+      },
+      {
+        path: 'reviewDealInfo',
+        name: 'ReviewDealInfo',
+        component: () => import('@/views/deal/dealReport/reviewDealInfo.vue'),
+        meta: { title: '成交信息审核', icon: 'form' }
       }
     ]
   }

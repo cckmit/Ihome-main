@@ -491,6 +491,12 @@
     // 审核
     async handleReview(scope: any) {
       console.log(scope);
+      this.$router.push({
+        path: "/dealReport/reviewDealInfo",
+        query: {
+          id: scope.row.id
+        }
+      });
     }
 
     // 审核申报业绩
