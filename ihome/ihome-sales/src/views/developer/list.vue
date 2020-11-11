@@ -4,7 +4,7 @@
  * @Author: wwq
  * @Date: 2020-09-25 17:59:09
  * @LastEditors: wwq
- * @LastEditTime: 2020-11-03 18:11:12
+ * @LastEditTime: 2020-11-11 09:03:38
 -->
 <template>
   <ih-page>
@@ -50,10 +50,23 @@
           </el-col>
           <el-col :span="8">
             <el-form-item label="录入人">
-              <el-input
+              <IhSelectPageUser
                 v-model="queryPageParameters.inputUser"
                 clearable
-              ></el-input>
+              >
+                <template v-slot="{ data }">
+                  <span style="float: left">{{ data.name }}</span>
+                  <span
+                    style="
+                      margin-left: 20px;
+                      float: right;
+                      color: #8492a6;
+                      font-size: 13px;
+                    "
+                    >{{ data.account }}</span
+                  >
+                </template>
+              </IhSelectPageUser>
             </el-form-item>
           </el-col>
         </el-row>
