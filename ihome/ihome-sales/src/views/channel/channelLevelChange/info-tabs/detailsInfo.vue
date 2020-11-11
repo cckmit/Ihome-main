@@ -3,8 +3,8 @@
  * @version: 
  * @Author: wwq
  * @Date: 2020-10-15 12:33:25
- * @LastEditors: ywl
- * @LastEditTime: 2020-11-03 17:21:13
+ * @LastEditors: wwq
+ * @LastEditTime: 2020-11-11 10:18:38
 -->
 <template>
   <div class="text-left">
@@ -72,8 +72,8 @@
             align="left"
           >
             <span>{{
-                  $root.dictAllName(resPageInfo.cityGrade, "CityLevel")
-                }}</span>
+              $root.dictAllName(resPageInfo.cityGrade, "CityLevel")
+            }}</span>
           </el-form-item>
         </el-col>
         <el-col :span="8">
@@ -82,8 +82,8 @@
             align="left"
           >
             <span>{{
-                  $root.dictAllName(resPageInfo.special, "YesOrNoType")
-                }}</span>
+              $root.dictAllName(resPageInfo.special, "YesOrNoType")
+            }}</span>
           </el-form-item>
         </el-col>
         <el-col :span="8">
@@ -100,8 +100,8 @@
             align="left"
           >
             <span>{{
-                  $root.dictAllName(resPageInfo.status, "ChannelStatus")
-                }}</span>
+              $root.dictAllName(resPageInfo.status, "ChannelStatus")
+            }}</span>
           </el-form-item>
         </el-col>
       </el-row>
@@ -127,16 +127,16 @@
           label="城市等级"
         >
           <template v-slot="{ row }">{{
-          $root.dictAllName(row.cityGrade, "CityLevel")
-        }}</template>
+            $root.dictAllName(row.cityGrade, "CityLevel")
+          }}</template>
         </el-table-column>
         <el-table-column
           prop="channelGrade"
           label="渠道等级"
         >
           <template v-slot="{ row }">{{
-          $root.dictAllName(row.channelGrade, "ChannelLevel")
-        }}</template>
+            $root.dictAllName(row.channelGrade, "ChannelLevel")
+          }}</template>
         </el-table-column>
         <el-table-column
           prop="gradeItem"
@@ -174,8 +174,8 @@
           width="200"
         >
           <template v-slot="{ row }">{{
-          $root.displayName("accessoryTpye", row.type)
-        }}</template>
+            $root.displayName("accessoryTpye", row.type)
+          }}</template>
         </el-table-column>
         <el-table-column
           prop="fileId"
@@ -287,7 +287,7 @@ export default class Home extends Vue {
         type: "success",
         message: this.showMsg(val),
       });
-      this.$router.push("list");
+      this.$goto({ path: "list" });
     } else {
       this.$message({
         type: "warning",

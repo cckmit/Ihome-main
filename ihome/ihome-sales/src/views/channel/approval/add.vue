@@ -4,7 +4,7 @@
  * @Author: zyc
  * @Date: 2020-07-09 14:31:23
  * @LastEditors: zyc
- * @LastEditTime: 2020-10-23 10:38:23
+ * @LastEditTime: 2020-11-11 09:07:56
 --> 
 <template>
   <ih-page>
@@ -271,7 +271,7 @@ export default class ApprovalAdd extends Vue {
       // console.log(editData);
       await post_channelApproval_edit(this.postData);
       this.$message.success("编辑成功");
-      this.$router.push({
+      this.$goto({
         path: "/approval/list",
       });
     } else {
@@ -288,7 +288,7 @@ export default class ApprovalAdd extends Vue {
       this.postData.operateType = 2;
       await post_channelApproval_edit(this.postData);
       this.$message.success("提交成功");
-      this.$router.push({
+      this.$goto({
         path: "/approval/list",
       });
     } else {

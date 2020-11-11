@@ -1,6 +1,6 @@
 /* eslint-disable */
 /* 此脚本由swagger-ui的api-docs自动生成，请勿修改 */
-//2020-11-6 2:50:51 ├F10: PM┤
+//2020-11-10 2:28:35 ├F10: PM┤
 import { request } from '@/api/base'
 const basePath = "/sales-api/project"
 /**index*/
@@ -195,6 +195,10 @@ export async function post_preferential_save(d?: any) {
 export async function post_project_add(d?: any) {
     return await request.post<ProjectUpdateArgs, ProjectUpdateArgs>(basePath + '/project/add', d)
 }
+/**新增父项目*/
+export async function post_project_addParent(d?: any) {
+    return await request.post<ParentProjectUpdateArgs, ParentProjectUpdateArgs>(basePath + '/project/addParent', d)
+}
 /**联动项目-审核*/
 export async function post_project_audit(d?: any) {
     return await request.post<number, number>(basePath + '/project/audit', d)
@@ -205,7 +209,7 @@ export async function post_project_del__proId(d?: any) {
 }
 /**获取联动项目-基础信息*/
 export async function get_project_get__proId(d?: any) {
-    return await request.get<ProjectAddArgs, ProjectAddArgs>(basePath + '/project/get/{proId}', { params: d })
+    return await request.get<ProjectUpdateArgs, ProjectUpdateArgs>(basePath + '/project/get/{proId}', { params: d })
 }
 /**查询项目列表*/
 export async function post_project_getList(d?: any) {
@@ -218,6 +222,10 @@ export async function post_project_getListByIds(d?: any) {
 /**查询项目列表-客户报备*/
 export async function post_project_getListForCustomer(d?: any) {
     return await request.post<PageModel<ProjectListVO>, PageModel<ProjectListVO>>(basePath + '/project/getListForCustomer', d)
+}
+/**获取联动项目-父项目基础信息*/
+export async function get_project_getParent__proId(d?: any) {
+    return await request.get<ParentProjectUpdateArgs, ParentProjectUpdateArgs>(basePath + '/project/getParent/{proId}', { params: d })
 }
 /**项目项目-客户报备*/
 export async function get_project_getProDetail__proId(d?: any) {
@@ -234,6 +242,10 @@ export async function post_project_reject(d?: any) {
 /**修改联动项目*/
 export async function post_project_update(d?: any) {
     return await request.post<ProjectUpdateArgs, ProjectUpdateArgs>(basePath + '/project/update', d)
+}
+/**修改父项目*/
+export async function post_project_updateParent(d?: any) {
+    return await request.post<number, number>(basePath + '/project/updateParent', d)
 }
 /**推广信息查询*/
 export async function get_promotion_get__proId(d?: any) {
@@ -398,7 +410,7 @@ export interface AttachTermItemVO {
 }
 /**BuildingAddVO*/
 export interface BuildingAddVO {
-    /**(必填)楼盘编号*/
+    /**(必填)栋座名称*/
     buildingName: string;
     /**楼层数*/
     floor: number;
@@ -449,7 +461,7 @@ export interface BuildingQueryVO {
 export interface BuildingUpdateVO {
     /**(必填)id*/
     buildingId: number;
-    /**(必填)楼盘编号*/
+    /**(必填)栋座名称*/
     buildingName: string;
     /**楼层数*/
     floor: number;
@@ -1410,6 +1422,8 @@ export interface HouseTypeVO {
     hall: number;
     /**户型名称*/
     houseName: string;
+    /**明源户型ID*/
+    houseTypeGuid: string;
     /**id*/
     houseTypeId: number;
     /**厨*/
@@ -1420,8 +1434,6 @@ export interface HouseTypeVO {
     positionEnum: string;
     /**项目ID*/
     proId: number;
-    /**物业类型ID*/
-    propertyId: number;
     /**室*/
     room: number;
     /**户型面积*/
@@ -1517,6 +1529,68 @@ export interface OtherVo {
     shareChannelFeeVOS: ShareChannelFeeVO[];
     /**立项ID*/
     termId: number;
+}
+/**ParentProjectAddArgs*/
+export interface ParentProjectAddArgs {
+    /**明源楼盘ID*/
+    buildingGuid: string;
+    /**明源楼盘名称*/
+    buildingGuidName: string;
+    /**(必填)市*/
+    city: string;
+    /**市名称*/
+    cityName: string;
+    /**(必填)区*/
+    district: string;
+    /**区名称*/
+    districtName: string;
+    /**(必填)是否市场化*/
+    exMarket: number;
+    /**(必填)是否明远源*/
+    exMinyuan: number;
+    /**(必填)项目地址*/
+    proAddr: string;
+    /**(必填)项目推广名*/
+    proName: string;
+    /**(必填)项目备案名*/
+    proRecord: string;
+    /**(必填)省*/
+    province: string;
+    /**省名称*/
+    provinceName: string;
+}
+/**ParentProjectUpdateArgs*/
+export interface ParentProjectUpdateArgs {
+    /**明源楼盘ID*/
+    buildingGuid: string;
+    /**明源楼盘名称*/
+    buildingGuidName: string;
+    /**(必填)市*/
+    city: string;
+    /**市名称*/
+    cityName: string;
+    /**(必填)区*/
+    district: string;
+    /**区名称*/
+    districtName: string;
+    /**(必填)是否市场化*/
+    exMarket: number;
+    /**(必填)是否明远源*/
+    exMinyuan: number;
+    /**(必填)项目地址*/
+    proAddr: string;
+    /**id*/
+    proId: number;
+    /**(必填)项目推广名*/
+    proName: string;
+    /**项目编号*/
+    proNo: string;
+    /**(必填)项目备案名*/
+    proRecord: string;
+    /**(必填)省*/
+    province: string;
+    /**省名称*/
+    provinceName: string;
 }
 /**PartyAContractPageVO*/
 export interface PartyAContractPageVO {
@@ -1635,6 +1709,10 @@ export interface ProTermVO {
 export interface ProjectAddArgs {
     /**附件图片*/
     attachPics: AttachItemVO[];
+    /**明源楼盘ID*/
+    buildingGuid: string;
+    /**明源楼盘父ID*/
+    buildingParentGuid: string;
     /**(必填)市*/
     city: string;
     /**(必填)市名称*/
@@ -1649,22 +1727,20 @@ export interface ProjectAddArgs {
     exMarket: number;
     /**(必填)是否明远源*/
     exMinyuan: number;
+    /**是否同步明源房间*/
+    exSyncRoom: number;
     /**一手代理商列表*/
     firstAgencyCompanys: 一手公司代理[];
     /**(必填)纬度*/
     lat: number;
     /**(必填)经度*/
     lng: number;
-    /**明源楼盘ID*/
-    minyuanId: number;
-    /**明源楼盘名称*/
-    minyuanName: string;
+    /**父项目ID*/
+    parentId: number;
     /**(必填)项目地址*/
     proAddr: string;
     /**(必填)项目推广名*/
     proName: string;
-    /**项目编号*/
-    proNo: string;
     /**(必填)楼盘图片*/
     proPics: AttachItemVO[];
     /**(必填)项目备案名*/
@@ -1781,16 +1857,18 @@ export interface ProjectQueryVO {
     city: string;
     /**区*/
     district: string;
+    /**父项目ID*/
+    parentId: number;
     /**项目地址*/
     proAddr: string;
     /**id*/
     proId: number;
+    /**项目名称*/
+    proName: string;
     /**项目编号*/
     proNo: string;
     /**省*/
     province: string;
-    /**周期名称 合作项目名称(项目推广名)+周期时间*/
-    termName: string;
 }
 /**ProjectRejectArgs*/
 export interface ProjectRejectArgs {
@@ -1803,6 +1881,10 @@ export interface ProjectRejectArgs {
 export interface ProjectUpdateArgs {
     /**附件图片*/
     attachPics: AttachItemVO[];
+    /**明源楼盘ID*/
+    buildingGuid: string;
+    /**明源楼盘父ID*/
+    buildingParentGuid: string;
     /**(必填)市*/
     city: string;
     /**(必填)市名称*/
@@ -1817,16 +1899,16 @@ export interface ProjectUpdateArgs {
     exMarket: number;
     /**(必填)是否明远源*/
     exMinyuan: number;
+    /**是否同步明源房间*/
+    exSyncRoom: number;
     /**一手代理商列表*/
     firstAgencyCompanys: 一手公司代理[];
     /**(必填)纬度*/
     lat: number;
     /**(必填)经度*/
     lng: number;
-    /**明源楼盘ID*/
-    minyuanId: number;
-    /**明源楼盘名称*/
-    minyuanName: string;
+    /**父项目ID*/
+    parentId: number;
     /**(必填)项目地址*/
     proAddr: string;
     /**id*/

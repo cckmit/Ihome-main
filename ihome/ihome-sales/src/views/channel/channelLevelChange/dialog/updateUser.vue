@@ -3,8 +3,8 @@
  * @version: 
  * @Author: ywl
  * @Date: 2020-07-08 14:23:16
- * @LastEditors: ywl
- * @LastEditTime: 2020-10-23 16:24:12
+ * @LastEditors: wwq
+ * @LastEditTime: 2020-11-11 09:07:34
 --> 
 <template>
   <el-dialog
@@ -17,17 +17,10 @@
     title="变更录入人"
     class="dialog text-left"
   >
-    <el-form
-      ref="form"
-      :model="form"
-      label-width="110px"
-    >
+    <el-form ref="form" :model="form" label-width="110px">
       <el-row>
         <el-col :span="24">
-          <el-form-item
-            label="已选渠道商"
-            prop="name"
-          >
+          <el-form-item label="已选渠道商" prop="name">
             <template v-for="(item, i) in data">
               <span :key="item.id">
                 <span>{{ `${item.id}` }}</span>
@@ -41,32 +34,27 @@
       <el-row>
         <el-col :span="24">
           <el-form-item label="选择用户">
-            <el-select
-              style="width: 100%"
-              v-model="user"
-              clearable
-              placeholder="请选择"
-            >
-              <el-option
-                v-for="item in testList"
-                :key="item.id"
-                :label="item.value"
-                :value="item.id"
-              ></el-option>
-            </el-select>
+            <IhSelectPageUser v-model="user" clearable>
+              <template v-slot="{ data }">
+                <span style="float: left">{{ data.name }}</span>
+                <span
+                  style="
+                    margin-left: 20px;
+                    float: right;
+                    color: #8492a6;
+                    font-size: 13px;
+                  "
+                  >{{ data.account }}</span
+                >
+              </template>
+            </IhSelectPageUser>
           </el-form-item>
         </el-col>
       </el-row>
     </el-form>
 
-    <span
-      slot="footer"
-      class="dialog-footer"
-    >
-      <el-button
-        type="primary"
-        @click="finish()"
-      >保 存</el-button>
+    <span slot="footer" class="dialog-footer">
+      <el-button type="primary" @click="finish()">保 存</el-button>
     </span>
   </el-dialog>
 </template>
@@ -88,11 +76,6 @@ export default class UpdateUser extends Vue {
     ids: this.data.map((v: any) => v.id),
   };
   private user = "";
-  testList = [
-    { value: "管理员1", id: 1 },
-    { value: "管理员2", id: 2 },
-    { value: "管理员3", id: 3 },
-  ];
 
   cancel() {
     this.$emit("cancel", false);

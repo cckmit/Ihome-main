@@ -4,7 +4,7 @@
  * @Author: ywl
  * @Date: 2020-07-08 14:23:16
  * @LastEditors: ywl
- * @LastEditTime: 2020-11-03 18:25:41
+ * @LastEditTime: 2020-11-11 11:49:11
 --> 
 <template>
   <el-dialog
@@ -93,7 +93,7 @@ export default class UpdateUser extends Vue {
   };
   private user = "";
   rule = {
-    userId: [{ required: true, message: "请选择用户", trigger: "blur" }],
+    userId: [{ required: true, message: "请选择用户", trigger: "change" }],
   };
   testList = [
     { value: "管理员1", id: 1 },

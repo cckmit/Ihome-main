@@ -4,11 +4,11 @@
  * @Author: wwq
  * @Date: 2020-11-03 11:52:41
  * @LastEditors: wwq
- * @LastEditTime: 2020-11-09 15:14:40
+ * @LastEditTime: 2020-11-10 16:28:08
 -->
 <template>
   <div>
-    <el-form ref="form" label-width="130px" :model="form" :rules="rules">
+    <el-form ref="form" label-width="150px" :model="form" :rules="rules">
       <el-row>
         <el-col :span="8">
           <el-form-item label="盘编">
@@ -22,7 +22,47 @@
           </el-form-item>
         </el-col>
         <el-col :span="8">
-          <el-form-item label="是否市场化项目" prop="exMarket">
+          <el-form-item label="项目推广名" prop="proName">
+            <el-input
+              clearable
+              maxlength="50"
+              v-model="form.proName"
+              placeholder="项目推广名"
+            ></el-input>
+          </el-form-item>
+        </el-col>
+        <el-col :span="8">
+          <el-form-item label="项目备案名" prop="proRecord">
+            <el-input
+              clearable
+              maxlength="50"
+              v-model="form.proRecord"
+              placeholder="项目备案名"
+            ></el-input>
+          </el-form-item>
+        </el-col>
+      </el-row>
+      <el-row>
+        <el-col :span="8">
+          <el-form-item label="开发商名称" prop="developerId">
+            <el-select
+              v-model="form.developerId"
+              clearable
+              filterable
+              class="width--100"
+              placeholder="开发商名称"
+            >
+              <el-option
+                v-for="item in developerOptions"
+                :key="item.value"
+                :label="item.label"
+                :value="item.value"
+              ></el-option>
+            </el-select>
+          </el-form-item>
+        </el-col>
+        <el-col :span="8">
+          <el-form-item label="市场化项目" prop="exMarket">
             <el-select v-model="form.exMarket" clearable class="width--100">
               <el-option
                 v-for="item in YesOrNoType"
@@ -34,13 +74,47 @@
           </el-form-item>
         </el-col>
         <el-col :span="8">
-          <el-form-item label="是否关联明源" prop="exMinyuan">
+          <el-form-item label="关联明源" prop="exMinyuan">
             <el-select
               v-model="form.exMinyuan"
               clearable
               class="width--100"
               disabled
             >
+              <el-option
+                v-for="item in YesOrNoType"
+                :key="item.code"
+                :label="item.name"
+                :value="item.code"
+              ></el-option>
+            </el-select>
+          </el-form-item>
+        </el-col>
+      </el-row>
+      <el-row v-if="isShow">
+        <el-col :span="8">
+          <el-form-item label="爱家父项目推广名">
+            <el-input
+              clearable
+              v-model="form.parentName"
+              placeholder="爱家父项目推广名"
+              disabled
+            ></el-input>
+          </el-form-item>
+        </el-col>
+        <el-col :span="8">
+          <el-form-item label="明源楼盘名">
+            <el-input
+              clearable
+              v-model="form.buildingGuidName"
+              placeholder="明源楼盘名"
+              disabled
+            ></el-input>
+          </el-form-item>
+        </el-col>
+        <el-col :span="8">
+          <el-form-item label="同步明源房号数据" prop="exSyncRoom">
+            <el-select v-model="form.exSyncRoom" clearable class="width--100">
               <el-option
                 v-for="item in YesOrNoType"
                 :key="item.code"
@@ -60,39 +134,7 @@
             ></IhCascader>
           </el-form-item>
         </el-col>
-        <el-col :span="8">
-          <el-form-item label="项目推广名" prop="proName">
-            <el-input
-              clearable
-              maxlength="50"
-              v-model="form.proName"
-              placeholder="项目推广名"
-            ></el-input>
-          </el-form-item>
-        </el-col>
-        <el-col :span="8">
-          <el-form-item label="明源楼盘名">
-            <el-input
-              clearable
-              v-model="form.minyuanName"
-              placeholder="明源楼盘名"
-              disabled
-            ></el-input>
-          </el-form-item>
-        </el-col>
-      </el-row>
-      <el-row>
-        <el-col :span="8">
-          <el-form-item label="项目备案名" prop="proRecord">
-            <el-input
-              clearable
-              maxlength="50"
-              v-model="form.proRecord"
-              placeholder="项目备案名"
-            ></el-input>
-          </el-form-item>
-        </el-col>
-        <el-col :span="8">
+        <el-col :span="16">
           <el-form-item label="项目地址" prop="proAddr">
             <el-input
               clearable
@@ -100,24 +142,6 @@
               v-model="form.proAddr"
               placeholder="项目地址"
             ></el-input>
-          </el-form-item>
-        </el-col>
-        <el-col :span="8">
-          <el-form-item label="开发商名称" prop="developerId">
-            <el-select
-              v-model="form.developerId"
-              clearable
-              filterable
-              class="width--100"
-              placeholder="开发商名称"
-            >
-              <el-option
-                v-for="item in developerOptions"
-                :key="item.value"
-                :label="item.label"
-                :value="item.value"
-              ></el-option>
-            </el-select>
           </el-form-item>
         </el-col>
       </el-row>
@@ -193,7 +217,7 @@
           </el-form-item>
         </el-col>
       </el-row>
-      <el-row v-if="form.checkboxEnum.length" class="margin-left-50">
+      <el-row v-if="form.checkboxEnum.length" class="margin-left-60">
         <el-col
           :span="12"
           v-for="item in checkBoxChangeList"
@@ -413,7 +437,7 @@
   </div>
 </template>
 <script lang="ts">
-import { Component, Vue } from "vue-property-decorator";
+import { Component, Vue, Watch } from "vue-property-decorator";
 import { post_company_listAll } from "@/api/developer/index";
 import {
   get_project_get__proId,
@@ -443,15 +467,18 @@ import {
 export default class EditBasicInfo extends Vue {
   form: any = {
     proNo: null,
+    proName: null,
+    proRecord: null,
+    developerId: null,
     exMarket: null,
     exMinyuan: 0,
+    parentId: null,
+    buildingGuidName: null,
+    exSyncRoom: null,
     province: null,
     city: null,
     district: null,
-    minyuanName: null,
-    proRecord: null,
     proAddr: null,
-    developerId: null,
     lng: null, // 经度
     lat: null, // 纬度
     jingwei: null, // 经纬度
@@ -475,11 +502,9 @@ export default class EditBasicInfo extends Vue {
 
   rules: any = {
     exMarket: [
-      { required: true, message: "请选择是否市场化项目", trigger: "blur" },
+      { required: true, message: "请选择市场化项目", trigger: "blur" },
     ],
-    exMinyuan: [
-      { required: true, message: "请选择是否关联明源", trigger: "blur" },
-    ],
+    exMinyuan: [{ required: true, message: "请选择关联明源", trigger: "blur" }],
     provinceOption: [
       { required: true, message: "请选择省市区", trigger: "blur" },
     ],
@@ -492,6 +517,13 @@ export default class EditBasicInfo extends Vue {
       { required: true, message: "请填写开发商名称", trigger: "blur" },
     ],
     jingwei: [{ required: true, message: "请填写经纬度", trigger: "blur" }],
+    exSyncRoom: [
+      {
+        required: true,
+        message: "请选择同步明源房号数据",
+        trigger: "blur",
+      },
+    ],
   };
   contantRules: any = {
     propertyAge: [
@@ -519,6 +551,13 @@ export default class EditBasicInfo extends Vue {
   zoom = 3;
   BMap: any = {};
   searchAddr = "";
+  isShow = true;
+
+  @Watch("form.exMinyuan", { immediate: true, deep: true })
+  isShowList(v: any) {
+    if (!v) this.isShow = false;
+    else this.isShow = true;
+  }
 
   private get projectId() {
     return this.$route.query.id;
@@ -596,7 +635,7 @@ export default class EditBasicInfo extends Vue {
       }));
       this.radio = this.houseFileList.filter(
         (item: any) => item.exIndex === 1
-      )[0]["fileId"];
+      )[0]?.fileId;
     }
   }
 
@@ -649,12 +688,13 @@ export default class EditBasicInfo extends Vue {
 
   // 处理楼房图片
   houseFiles(data: any) {
+    console.log(data);
     this.houseList = data.map((v: any) => ({
       attachAddr: v.fileId,
       attachName: v.name,
       attachId: null,
       proAttachEnum: "ProPic",
-      exIndex: null, // 是否设为主页
+      exIndex: v.exIndex, // 是否设为主页
     }));
     // let arr = data.map((v: any) => ({
     //   attachAddr: v.fileId,
@@ -751,7 +791,7 @@ export default class EditBasicInfo extends Vue {
         proAttachEnum: v.proAttachEnum,
       }));
     }
-    if (this.$route.name === "projectAdd") {
+    if (this.$route.name === "projectChildAdd") {
       await post_project_add(obj);
     } else {
       obj.proId = this.projectId;

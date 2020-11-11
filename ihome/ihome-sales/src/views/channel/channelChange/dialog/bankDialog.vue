@@ -4,7 +4,7 @@
  * @Author: ywl
  * @Date: 2020-10-12 10:38:48
  * @LastEditors: ywl
- * @LastEditTime: 2020-11-04 11:38:09
+ * @LastEditTime: 2020-11-11 11:48:02
 -->
 <template>
   <el-dialog
@@ -88,21 +88,21 @@ export default class BankDialog extends Vue {
   private dialogVisible = true;
   private rules: object = {
     accountName: [
-      { required: true, message: "请输入账户名称", trigger: "blur" },
-      { validator: noTrim, trigger: ["change", "blur"] },
-      { max: 64, message: "字符长度不能大于64", trigger: "blur" },
+      { required: true, message: "请输入账户名称", trigger: "change" },
+      { validator: noTrim, trigger: "change" },
+      { max: 64, message: "字符长度不能大于64", trigger: "change" },
     ],
     accountNum: [
-      { required: true, message: "请输入账号", trigger: "blur" },
-      { validator: noTrim, trigger: ["change", "blur"] },
-      { max: 32, message: "字符长度不能大于32", trigger: "blur" },
+      { required: true, message: "请输入账号", trigger: "change" },
+      { validator: noTrim, trigger: "change" },
+      { max: 32, message: "字符长度不能大于32", trigger: "change" },
     ],
     bank: [
-      { required: true, message: "请输入开户银行", trigger: "blur" },
-      { validator: noTrim, trigger: ["change", "blur"] },
-      { max: 64, message: "字符长度不能大于64", trigger: "blur" },
+      { required: true, message: "请输入开户银行", trigger: "change" },
+      { validator: noTrim, trigger: "change" },
+      { max: 64, message: "字符长度不能大于64", trigger: "change" },
     ],
-    type: [{ required: true, message: "请选择账户类型", trigger: "blur" }],
+    type: [{ required: true, message: "请选择账户类型", trigger: "change" }],
   };
   private Bankrule: any = {
     accountName: "",

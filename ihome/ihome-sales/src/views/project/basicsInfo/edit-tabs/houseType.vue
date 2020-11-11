@@ -4,7 +4,7 @@
  * @Author: wwq
  * @Date: 2020-11-03 11:52:41
  * @LastEditors: wwq
- * @LastEditTime: 2020-11-06 15:31:32
+ * @LastEditTime: 2020-11-10 16:38:08
 -->
 <template>
   <div class="house-type text-left">
@@ -115,7 +115,7 @@ export default class EditHouseType extends Vue {
   display: flex;
   overflow: auto;
   width: 100%;
-  height: 100%;
+  height: 260px;
   .content {
     display: inline-block;
     margin-left: 20px;

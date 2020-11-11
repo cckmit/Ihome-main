@@ -3,8 +3,8 @@
  * @version: 
  * @Author: zyc
  * @Date: 2020-10-16 14:16:23
- * @LastEditors: ywl
- * @LastEditTime: 2020-11-03 11:14:40
+ * @LastEditors: zyc
+ * @LastEditTime: 2020-11-11 09:06:18
  */
 
 import { RouteConfig } from 'vue-router'
@@ -43,7 +43,7 @@ const channelRoutes: Array<RouteConfig> = [
                 path: 'list',
                 name: 'ApprovalList',
                 component: () => import('../views/channel/approval/list.vue'),
-                meta: { title: '渠道呈批列表', icon: 'form' }
+                meta: { title: '渠道呈批列表', icon: 'form', keepAlive: true }
             },
             {
                 path: 'add',

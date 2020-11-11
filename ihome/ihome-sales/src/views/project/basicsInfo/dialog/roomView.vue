@@ -4,7 +4,7 @@
  * @Author: wwq
  * @Date: 2020-11-03 18:39:23
  * @LastEditors: wwq
- * @LastEditTime: 2020-11-06 17:25:32
+ * @LastEditTime: 2020-11-10 16:55:46
 -->
 <template>
   <el-dialog
@@ -14,6 +14,7 @@
     :close-on-press-escape="false"
     :before-close="cancel"
     width="80%"
+    top="11vh"
     class="dialog text-left"
     :title="`当前位置: ${$route.query.proName} ${$root.dictAllName(
       data.propertyEnum,
@@ -72,14 +73,23 @@
             <el-button
               type="success"
               @click="add()"
-              v-if="!['projectInfo', 'projectAudit'].includes(this.$route.name)"
+              v-if="
+                !['projectChildInfo', 'projectChildAudit'].includes(
+                  this.$route.name
+                )
+              "
               >添加房号</el-button
             >
           </el-form-item>
         </el-col>
       </el-row>
     </el-form>
-    <el-table class="ih-table" :data="resPageInfo.list" style="width: 100%">
+    <el-table
+      class="ih-table"
+      :data="resPageInfo.list"
+      style="width: 100%"
+      height="538px"
+    >
       <el-table-column prop="roomNo" label="房号"></el-table-column>
       <el-table-column prop="houseName" label="户型"></el-table-column>
       <el-table-column label="房型">
@@ -103,7 +113,9 @@
         label="操作"
         width="150"
         fixed="right"
-        v-if="!['projectInfo', 'projectAudit'].includes(this.$route.name)"
+        v-if="
+          !['projectChildInfo', 'projectChildAudit'].includes(this.$route.name)
+        "
       >
         <template v-slot="{ row }">
           <el-link type="primary" @click="edit(row)">编辑</el-link>

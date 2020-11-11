@@ -4,7 +4,7 @@
  * @Author: wwq
  * @Date: 2020-10-15 16:02:03
  * @LastEditors: ywl
- * @LastEditTime: 2020-11-03 11:16:13
+ * @LastEditTime: 2020-11-11 11:44:23
 -->
 <template>
   <IhPage>
@@ -41,9 +41,10 @@
                   </el-select>
                   <el-link
                     style="margin-left: 10px; text-align: center; width: 50px"
-                    :href="`/web-sales/channels/info?id=${resPageInfo.channelId}`"
+                    :href="`/web-sales/channelBusiness/info?id=${resPageInfo.channelId}`"
                     type="primary"
                     target="_blank"
+                    :disabled="!resPageInfo.channelId"
                   >详情</el-link>
                 </div>
               </el-form-item>
@@ -103,7 +104,9 @@
                 align="left"
               >
                 <span>{{
-                  $root.dictAllName(resPageInfo.cityGrade, "CityLevel")
+                  resPageInfo.cityGrade
+                    ? $root.dictAllName(resPageInfo.cityGrade, "CityLevel")
+                    : ""
                 }}</span>
               </el-form-item>
             </el-col>
@@ -352,14 +355,14 @@ export default class ChannelRates extends Vue {
   ];
 
   private rules: any = {
-    channelId: [{ required: true, message: "请选择渠道商", trigger: "blur" }],
+    channelId: [{ required: true, message: "请选择渠道商", trigger: "change" }],
     channelGrade: [
-      { required: true, message: "请选择渠道等级", trigger: "blur" },
+      { required: true, message: "请选择渠道等级", trigger: "change" },
     ],
     provinceOption: [
-      { required: true, message: "请选择业务开展省市", trigger: "blur" },
+      { required: true, message: "请选择业务开展省市", trigger: "change" },
     ],
-    special: [{ required: true, message: "请选择特批入库", trigger: "blur" }],
+    special: [{ required: true, message: "请选择特批入库", trigger: "change" }],
   };
 
   async created() {
@@ -385,7 +388,7 @@ export default class ChannelRates extends Vue {
   }
   // 获取评级信息数据
   async getTableData(val: any) {
-    if (val instanceof Array) {
+    if (val instanceof Array && val.length) {
       const { cityGrade } = await get_channelCityLevel_get__cityCode({
         cityCode: val[1],
       });
@@ -408,6 +411,8 @@ export default class ChannelRates extends Vue {
         inputValue: "",
         standardId: v.id,
       }));
+    } else {
+      this.resPageInfo.channelGradeItems = [];
     }
   }
 
@@ -437,14 +442,19 @@ export default class ChannelRates extends Vue {
             }
             break;
           case "channelLevelAdd":
-            await post_channelGrade_add(this.resPageInfo);
+            if (this.resPageInfo.channelGradeItems.length) {
+              await post_channelGrade_add(this.resPageInfo);
+            } else {
+              this.$message.warning("请填写评级信息");
+              return;
+            }
             break;
         }
         this.$message({
           type: "success",
           message: val === "1" ? "保存成功" : "提交成功",
         });
-        this.$goto({ path: "/channelLevelChange/list" });
+        this.$goto({ path: "/channelLevel/list" });
       }
     });
   }

@@ -4,7 +4,7 @@
  * @Author: wwq
  * @Date: 2020-10-22 14:45:15
  * @LastEditors: wwq
- * @LastEditTime: 2020-11-02 16:59:45
+ * @LastEditTime: 2020-11-10 15:49:49
  */
 import { RouteConfig } from 'vue-router'
 
@@ -27,28 +27,46 @@ const projectRoutes: Array<RouteConfig> = [
         meta: { title: '项目基础信息列表', icon: 'form' }
       },
       {
-        path: 'add',
-        name: 'projectAdd',
-        component: () => import('../views/project/basicsInfo/edit.vue'),
-        meta: { title: '项目基础信息添加', icon: 'form' }
+        path: 'parentEdit',
+        name: 'projectParentEdit',
+        component: () => import('../views/project/basicsInfo/parentEdit.vue'),
+        meta: { title: '项目基础信息父项目编辑', icon: 'form' }
       },
       {
-        path: 'edit',
-        name: 'projectEdit',
-        component: () => import('../views/project/basicsInfo/edit.vue'),
-        meta: { title: '项目基础信息编辑', icon: 'form' }
+        path: 'parentInfo',
+        name: 'projectParentInfo',
+        component: () => import('../views/project/basicsInfo/parentInfo.vue'),
+        meta: { title: '项目基础信息父项目详情', icon: 'form' }
       },
       {
-        path: 'info',
-        name: 'projectInfo',
-        component: () => import('../views/project/basicsInfo/info.vue'),
-        meta: { title: '项目基础信息详情', icon: 'form' }
+        path: 'parentAudit',
+        name: 'projectParentAudit',
+        component: () => import('../views/project/basicsInfo/parentInfo.vue'),
+        meta: { title: '项目基础信息父项目审核', icon: 'form' }
       },
       {
-        path: 'audit',
-        name: 'projectAudit',
-        component: () => import('../views/project/basicsInfo/info.vue'),
-        meta: { title: '项目基础信息审核', icon: 'form' }
+        path: 'childAdd',
+        name: 'projectChildAdd',
+        component: () => import('../views/project/basicsInfo/childEdit.vue'),
+        meta: { title: '项目基础信息子项目添加', icon: 'form' }
+      },
+      {
+        path: 'childEdit',
+        name: 'projectChildEdit',
+        component: () => import('../views/project/basicsInfo/childEdit.vue'),
+        meta: { title: '项目基础信息子项目编辑', icon: 'form' }
+      },
+      {
+        path: 'childInfo',
+        name: 'projectChildInfo',
+        component: () => import('../views/project/basicsInfo/childInfo.vue'),
+        meta: { title: '项目基础信息子项目详情', icon: 'form' }
+      },
+      {
+        path: 'childAudit',
+        name: 'projectChildAudit',
+        component: () => import('../views/project/basicsInfo/childInfo.vue'),
+        meta: { title: '项目基础信息子项目审核', icon: 'form' }
       }
     ]
   },
