@@ -4,7 +4,7 @@
  * @Author: zyc
  * @Date: 2020-07-14 09:23:40
  * @LastEditors: zyc
- * @LastEditTime: 2020-10-23 11:41:36
+ * @LastEditTime: 2020-11-11 14:48:41
 --> 
 --> 
 <template>
@@ -30,7 +30,8 @@
     </template>
     <template v-slot:table>
       <br />
-      <el-table class="ih-table" :data="resPageInfo.list">
+      <el-table class="ih-table" :data="resPageInfo.list"
+      :empty-text="emptyText">
         <el-table-column type="index" label="序号" width="50"></el-table-column>
         <el-table-column prop="name" label="名称" width="180"></el-table-column>
         <el-table-column prop="code" label="编码" width="180"></el-table-column>
@@ -102,7 +103,7 @@ export default class JobInfo extends Vue {
   };
 
   resPageInfo: any = {
-    total: 0,
+    total: null,
     list: [],
   };
   editData: any = null;

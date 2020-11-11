@@ -4,13 +4,13 @@
  * @Author: zyc
  * @Date: 2020-06-29 17:39:52
  * @LastEditors: zyc
- * @LastEditTime: 2020-08-26 10:10:11
- */ 
- 
- /**接口返回模型
- * @param {type}
- * @return:
+ * @LastEditTime: 2020-11-11 14:58:00
  */
+
+/**接口返回模型
+* @param {type}
+* @return:
+*/
 export interface IRes<T> {
   /**状态码
    * @param {type}
@@ -37,7 +37,7 @@ export interface IRes<T> {
 /**列表返回数据模型*/
 export interface IPageInfo<T> {
   /**总数 */
-  total: number;
+  total: number | null;
   /**列表数据 */
   list: T[]
 }

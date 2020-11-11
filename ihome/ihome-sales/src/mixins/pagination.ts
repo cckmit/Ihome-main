@@ -4,7 +4,7 @@
  * @Author: zyc
  * @Date: 2020-07-24 17:08:03
  * @LastEditors: zyc
- * @LastEditTime: 2020-10-23 16:20:52
+ * @LastEditTime: 2020-11-11 14:53:30
  */
 /* eslint-disable  no-console */
 interface IPageBase {
@@ -41,7 +41,7 @@ export default class PaginationMixin extends Vue {
         "pageSize": 10,
     }
     resPageInfo: IPageInfo<any> = {
-        total: 0,
+        total: null,
         list: []
     }
     handleSizeChangeMixin(size: number) {
@@ -58,5 +58,8 @@ export default class PaginationMixin extends Vue {
             this.getListMixin();
         }
         (window as any).activatedRefresh = false;
+    }
+    get emptyText() {
+        return this.resPageInfo.total === null ? '正在加载数据...' : '暂无数据';
     }
 }
