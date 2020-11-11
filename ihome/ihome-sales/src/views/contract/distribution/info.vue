@@ -4,7 +4,7 @@
  * @Author: ywl
  * @Date: 2020-09-27 10:46:14
  * @LastEditors: ywl
- * @LastEditTime: 2020-11-11 11:36:05
+ * @LastEditTime: 2020-11-11 14:47:22
 -->
 <template>
   <IhPage class="text-left">
@@ -283,7 +283,10 @@
         <el-row>
           <el-col :span="10">
             <el-form-item label="归档编号">
-              <el-input :disabled="$route.name !== 'DistributionOriginal'"></el-input>
+              <el-input
+                v-model="ruleForm.fileCode"
+                :disabled="$route.name !== 'DistributionOriginal'"
+              ></el-input>
             </el-form-item>
           </el-col>
         </el-row>
@@ -293,7 +296,10 @@
         class="text-center"
       >
         <br />
-        <el-button type="primary">提交</el-button>
+        <el-button
+          type="primary"
+          @click="archive()"
+        >提交</el-button>
         <el-button>取消</el-button>
       </div>
     </template>
@@ -303,18 +309,35 @@
 <script lang="ts">
 import { Component, Vue } from "vue-property-decorator";
 
-import { get_distribution_detail__id } from "@/api/contract/index";
+import {
+  get_distribution_detail__id,
+  post_distribution_original_archive,
+} from "@/api/contract/index";
 
 @Component({})
 export default class DistributionDetail extends Vue {
-  private ruleForm: any = {};
+  private ruleForm: any = {
+    fileCode: null,
+  };
   private business: any = {};
   private fileList: Array<object> = [];
 
+  private async archive() {
+    if (!this.ruleForm.fileCode) {
+      this.$message.warning("归档编号不能为空");
+      return;
+    }
+    await post_distribution_original_archive({
+      distributionId: this.ruleForm.id,
+      fileCode: this.ruleForm.fileCode,
+    });
+    this.$message.success("原件归档成功");
+  }
   private async getInfo(): Promise<void> {
     let id = this.$route.query.id;
     if (id) {
-      this.ruleForm = await get_distribution_detail__id({ id: id });
+      let res = await get_distribution_detail__id({ id: id });
+      this.ruleForm = { ...this.ruleForm, ...res };
       this.ruleForm.businessList.length
         ? (this.business = this.ruleForm.businessList[0])
         : (this.business = {});

@@ -4,7 +4,7 @@
  * @Author: ywl
  * @Date: 2020-09-25 17:34:32
  * @LastEditors: ywl
- * @LastEditTime: 2020-11-11 10:35:28
+ * @LastEditTime: 2020-11-11 15:00:42
 -->
 <template>
   <IhPage label-width="100px">
@@ -204,7 +204,10 @@
           type="info"
           @click="handleReact()"
         >重置</el-button>
-        <el-button @click="$router.push('apply')">申领合同</el-button>
+        <el-button
+          type="success"
+          @click="$router.push('apply')"
+        >申领合同</el-button>
         <el-button @click="distribute()">派发合同</el-button>
         <el-button @click="turnDistribute()">转派发</el-button>
         <el-button>导出</el-button>
@@ -355,7 +358,7 @@ import PaginationMixin from "@/mixins/pagination";
 import {
   post_distribution_list,
   post_distribution_confirm__id,
-  post_distribution_push__id,
+  post_distribution_repost_intermediary,
 } from "@/api/contract/index";
 import { get_channel_getAll } from "@/api/channel/index";
 import { post_company_getAll } from "@/api/system/index";
@@ -459,7 +462,9 @@ export default class DistributionList extends Vue {
       this.$message.warning("请先勾选表格数据");
       return;
     }
-    await post_distribution_push__id({ id: this.selectionData[0]["id"] });
+    await post_distribution_repost_intermediary({
+      id: this.selectionData[0]["id"],
+    });
   }
   handleTo(row: any, page: string) {
     this.$router.push({
