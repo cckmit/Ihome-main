@@ -4,7 +4,7 @@
  * @Author: wwq
  * @Date: 2020-09-25 17:59:09
  * @LastEditors: wwq
- * @LastEditTime: 2020-11-11 10:54:50
+ * @LastEditTime: 2020-11-11 15:32:28
 -->
 <template>
   <ih-page>
@@ -99,7 +99,7 @@
       <el-table
         class="ih-table"
         :data="resPageInfo.list"
-        style="width: 100%"
+        :empty-text="emptyText"
         @selection-change="handleSelectionChange"
       >
         <el-table-column
@@ -254,10 +254,14 @@ export default class DeveloperList extends Vue {
   provinceOption: any = [];
   selection: any = [];
   resPageInfo: any = {
-    total: 0,
+    total: null,
     list: [],
   };
   dialogVisible = false;
+
+  get emptyText() {
+    return this.resPageInfo.total === null ? "正在加载数据..." : "暂无数据";
+  }
 
   async created() {
     this.getListMixin();
