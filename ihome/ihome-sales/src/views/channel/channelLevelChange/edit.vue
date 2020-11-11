@@ -3,8 +3,8 @@
  * @version: 
  * @Author: ywl
  * @Date: 2020-10-15 16:02:03
- * @LastEditors: wwq
- * @LastEditTime: 2020-11-11 10:18:51
+ * @LastEditors: ywl
+ * @LastEditTime: 2020-11-11 11:44:50
 -->
 <template>
   <IhPage>
@@ -336,14 +336,14 @@ export default class ChannelRates extends Vue {
   ];
 
   private rules: any = {
-    channelId: [{ required: true, message: "请选择渠道商", trigger: "blur" }],
+    channelId: [{ required: true, message: "请选择渠道商", trigger: "change" }],
     channelGrade: [
-      { required: true, message: "请选择渠道等级", trigger: "blur" },
+      { required: true, message: "请选择渠道等级", trigger: "change" },
     ],
     provinceOption: [
-      { required: true, message: "请选择业务开展省市", trigger: "blur" },
+      { required: true, message: "请选择业务开展省市", trigger: "change" },
     ],
-    special: [{ required: true, message: "请选择特批入库", trigger: "blur" }],
+    special: [{ required: true, message: "请选择特批入库", trigger: "change" }],
   };
 
   // 获取评级信息数据

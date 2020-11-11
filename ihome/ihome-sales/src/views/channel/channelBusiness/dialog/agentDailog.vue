@@ -86,19 +86,19 @@ export default class AgentDialog extends Vue {
 
   private rules: object = {
     name: [
-      { required: true, message: "请输入姓名", trigger: "blur" },
-      { max: 32, message: "字符长度不能大于32", trigger: "blur" },
+      { required: true, message: "请输入姓名", trigger: "change" },
+      { max: 32, message: "字符长度不能大于32", trigger: "change" },
     ],
     mobile: [
-      { required: true, message: "请输入手机号", trigger: "blur" },
-      { max: 16, message: "字符长度不能大于16", trigger: "blur" },
+      { required: true, message: "请输入手机号", trigger: "change" },
+      { max: 16, message: "字符长度不能大于16", trigger: "change" },
     ],
     email: [
       {
         type: "email",
         max: 64,
         message: "字符长度不能大于16",
-        trigger: "blur",
+        trigger: "change",
       },
     ],
   };

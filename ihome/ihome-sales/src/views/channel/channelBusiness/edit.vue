@@ -3,8 +3,8 @@
  * @version: 
  * @Author: ywl
  * @Date: 2020-09-16 14:05:21
- * @LastEditors: wwq
- * @LastEditTime: 2020-11-11 10:23:59
+ * @LastEditors: ywl
+ * @LastEditTime: 2020-11-11 11:43:56
 -->
 <template>
   <IhPage>
@@ -244,7 +244,7 @@
             label="姓名"
             prop="name"
             :rules="[
-              { required: true, message: '请输入姓名', trigger: 'blur' },
+              { required: true, message: '请输入姓名', trigger: 'change' },
             ]"
           >
             <el-input
@@ -428,63 +428,61 @@ export default class ModifyThe extends Vue {
 
   private rules: any = {
     name: [
-      { required: true, message: "请输入名称", trigger: "blur" },
-      { validator: validForbid, trigger: ["blur", "change"] },
+      { required: true, message: "请输入名称", trigger: "change" },
+      { validator: validForbid, trigger: "change" },
       { validator: noTrim, trigger: "change" },
       { min: 1, max: 64, message: "长度在 1 到 64 个字符", trigger: "change" },
     ],
     creditCode: [
-      { required: true, message: "请输入信用代码", trigger: "blur" },
+      { required: true, message: "请输入信用代码", trigger: "change" },
       {
         pattern: /^[A-Za-z0-9]{18}$/,
-        message: "信用代码格式不正确",
-        trigger: "blur",
+        message: "格式不正确, 请输入18位正确的信用代码",
+        trigger: "change",
       },
     ],
     shortName: [
-      { required: true, message: "请输入简称", trigger: "blur" },
-      { validator: validForbid, trigger: ["blur", "change"] },
+      { required: true, message: "请输入简称", trigger: "change" },
+      { validator: validForbid, trigger: "change" },
       { validator: noTrim, trigger: "change" },
       { min: 1, max: 16, message: "长度在 1 到 16 个字符", trigger: "change" },
     ],
-    type: [{ required: true, message: "请选择类型", trigger: "blur" }],
+    type: [{ required: true, message: "请选择类型", trigger: "change" }],
     legalPerson: [
-      { required: true, message: "请输入法定代表人", trigger: "blur" },
-      { validator: validForbid, trigger: ["blur", "change"] },
+      { required: true, message: "请输入法定代表人", trigger: "change" },
+      { validator: validForbid, trigger: "change" },
       { validator: noTrim, trigger: "change" },
       { min: 1, max: 32, message: "长度在 1 到 32 个字符", trigger: "change" },
     ],
     legalIdentityCode: [
-      { required: true, message: "请输入法人身份证号码", trigger: "blur" },
-      { validator: validIdentityCard, trigger: ["blur", "change"] },
+      { required: true, message: "请输入法人身份证号码", trigger: "change" },
+      { validator: validIdentityCard, trigger: "change" },
     ],
-    setupTime: [{ required: true, message: "请输入成立日期", trigger: "blur" }],
+    setupTime: [
+      { required: true, message: "请输入成立日期", trigger: "change" },
+    ],
     capital: [
-      { required: true, message: "请输入注册资本", trigger: "blur" },
+      { required: true, message: "请输入注册资本", trigger: "change" },
       { validator: noTrim, trigger: "change" },
     ],
     provinceList: [
-      { required: true, message: "请选择省市区", trigger: ["blur", "change"] },
+      { required: true, message: "请选择省市区", trigger: "change" },
     ],
     address: [
-      { required: true, message: "请输入住所", trigger: "blur" },
+      { required: true, message: "请输入住所", trigger: "change" },
       { validator: noTrim, trigger: "change" },
     ],
     mobile: [
-      { required: true, message: "请输入手机号", trigger: "blur" },
-      { validator: phoneValidator, trigger: ["blur", "change"] },
+      { required: true, message: "请输入手机号", trigger: "change" },
+      { validator: phoneValidator, trigger: "change" },
     ],
     identityCode: [
-      { required: true, message: "请填写证件号码", trigger: "blur" },
-      { validator: validIdentityCard, trigger: ["blur", "change"] },
+      { required: true, message: "请填写证件号码", trigger: "change" },
+      { validator: validIdentityCard, trigger: "change" },
     ],
     email: [
-      { required: true, message: "请填写邮箱", trigger: "blur" },
-      {
-        type: "email",
-        message: "请输入正确的邮箱地址",
-        trigger: ["blur", "change"],
-      },
+      { required: true, message: "请填写邮箱", trigger: "change" },
+      { type: "email", message: "请输入正确的邮箱地址", trigger: "change" },
     ],
   };
 
