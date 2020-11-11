@@ -20,6 +20,7 @@
           <el-form-item label="业务模式">
             <el-select
               v-model="postData.modelId"
+              @change="handleChange"
               clearable
               placeholder="请选择业务模式"
               class="width--100">
@@ -40,7 +41,7 @@
               placeholder="请选择合同类型"
               class="width--100">
               <el-option
-                v-for="item in $root.dictAllList('ContType')"
+                v-for="item in getByNameList"
                 :key="item.code"
                 :label="item.name"
                 :value="item.code"
@@ -209,6 +210,7 @@
     post_achieveScaleScheme_add,
     get_achieveScaleScheme_get__id,
     post_achieveScaleScheme_update,
+    get_businessModel_getByName__modelName
   } from "@/api/deal";
   import {Form as ElForm} from "element-ui";
   import {NoRepeatHttp} from "ihome-common/util/aop/no-repeat-http";
@@ -235,6 +237,7 @@
     id: any = null;
     companyId: any = null;
     dialogAdd: any = false;
+    getByNameList: any = []; // 合同类型
     totalPackageList: any = []; // 总包
     distributionList: any = []; // 分销
 
@@ -274,6 +277,30 @@
             }
           }
         })
+      }
+    }
+
+    // 根据业务模式名称，获取对应的合同类型列表
+    async getModelContTypeList() {
+      const contTypeList = (this as any).$root.dictAllList('ContType');
+      const res: any = await get_businessModel_getByName__modelName({modelName: this.postData.modelId});
+      // console.log('getModelContTypeList', res);
+      if (contTypeList && contTypeList.length > 0 && res && res.length > 0) {
+        this.getByNameList = contTypeList.filter((list: any) => {
+          return res.includes(list.code);
+        });
+      } else {
+        this.getByNameList = [];
+      }
+    }
+
+    // 改变业务模式
+    async handleChange(value: any) {
+      // console.log('valuevalue', value);
+      this.postData.contType = null;
+      this.getByNameList = [];
+      if (value) {
+        await this.getModelContTypeList();
       }
     }
 

@@ -44,7 +44,7 @@
               placeholder="业务类型"
               class="width--100">
               <el-option
-                v-for="item in $root.dictAllList('CityLevel')"
+                v-for="item in $root.dictAllList('BusTypeEnum')"
                 :key="item.code"
                 :label="item.name"
                 :value="item.code"
