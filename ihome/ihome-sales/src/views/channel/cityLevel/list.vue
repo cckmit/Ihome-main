@@ -3,8 +3,8 @@
  * @version: 
  * @Author: wwq
  * @Date: 2020-06-30 09:21:17
- * @LastEditors: ywl
- * @LastEditTime: 2020-11-03 17:18:57
+ * @LastEditors: zyc
+ * @LastEditTime: 2020-11-11 15:04:35
 --> 
 <template>
   <IhPage label-width="100px">
@@ -69,6 +69,7 @@
         class="ih-table"
         @selection-change="handleSelectionChange"
         :data="resPageInfo.list"
+        :empty-text="emptyText"
       >
         <el-table-column
           type="selection"
@@ -155,7 +156,7 @@ export default class CityList extends Vue {
   selection: any = [];
   dialogFormVisible = false;
   resPageInfo: any = {
-    total: 0,
+    total: null,
     list: [],
   };
   total: any = null;

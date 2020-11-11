@@ -3,8 +3,8 @@
  * @version: 
  * @Author: ywl
  * @Date: 2020-06-30 09:21:17
- * @LastEditors: wwq
- * @LastEditTime: 2020-11-11 08:59:58
+ * @LastEditors: zyc
+ * @LastEditTime: 2020-11-11 15:06:19
 --> 
 <template>
   <IhPage label-width="100px">
@@ -106,6 +106,7 @@
         class="ih-table"
         :data="resPageInfo.list"
         @selection-change="handleSelectionChange"
+        :empty-text="emptyText"
       >
         <el-table-column
           fixed
@@ -243,7 +244,7 @@ export default class ChannelChangeList extends Vue {
     followUserId: null,
   };
   resPageInfo: any = {
-    total: 0,
+    total: null,
     list: [],
   };
   selectionData = [];

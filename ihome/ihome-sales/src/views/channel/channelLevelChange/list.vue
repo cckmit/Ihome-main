@@ -3,8 +3,8 @@
  * @version: 
  * @Author: zyc
  * @Date: 2020-06-30 09:21:17
- * @LastEditors: wwq
- * @LastEditTime: 2020-11-11 09:01:08
+ * @LastEditors: zyc
+ * @LastEditTime: 2020-11-11 15:05:33
 --> 
 <template>
   <IhPage label-width="100px">
@@ -121,6 +121,7 @@
         class="ih-table"
         :data="resPageInfo.list"
         @selection-change="handleSelectionChange"
+        :empty-text="emptyText"
       >
         <el-table-column
           type="selection"
@@ -259,7 +260,7 @@ export default class LevelChangeList extends Vue {
     changeTime: null,
   };
   resPageInfo: any = {
-    total: 0,
+    total: null,
     list: [],
   };
   dialogVisible = false;

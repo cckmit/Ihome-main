@@ -4,7 +4,7 @@
  * @Author: wwq
  * @Date: 2020-11-03 18:39:23
  * @LastEditors: wwq
- * @LastEditTime: 2020-11-04 16:30:22
+ * @LastEditTime: 2020-11-11 11:41:50
 -->
 <template>
   <IhPage>
@@ -19,24 +19,45 @@
       >
         <el-row>
           <el-col :span="8">
-            <el-form-item label="名称" prop="agencyName">
-              <el-input v-model="info.agencyName" clearable></el-input>
+            <el-form-item
+              label="名称"
+              prop="agencyName"
+            >
+              <el-input
+                v-model="info.agencyName"
+                clearable
+              ></el-input>
             </el-form-item>
           </el-col>
           <el-col :span="8">
-            <el-form-item label="信用代码" prop="creditCode">
-              <el-input v-model="info.creditCode" clearable></el-input>
+            <el-form-item
+              label="信用代码"
+              prop="creditCode"
+            >
+              <el-input
+                v-model="info.creditCode"
+                clearable
+              ></el-input>
             </el-form-item>
           </el-col>
           <el-col :span="8">
-            <el-form-item label="简称" prop="simpleName">
-              <el-input v-model="info.simpleName" clearable></el-input>
+            <el-form-item
+              label="简称"
+              prop="simpleName"
+            >
+              <el-input
+                v-model="info.simpleName"
+                clearable
+              ></el-input>
             </el-form-item>
           </el-col>
         </el-row>
         <el-row>
           <el-col :span="8">
-            <el-form-item label="省市区" prop="provinceList">
+            <el-form-item
+              label="省市区"
+              prop="provinceList"
+            >
               <IhCascader
                 v-model="info.provinceList"
                 :checkStrictly="false"
@@ -44,7 +65,10 @@
             </el-form-item>
           </el-col>
           <el-col :span="8">
-            <el-form-item label="住所" prop="addr">
+            <el-form-item
+              label="住所"
+              prop="addr"
+            >
               <el-input
                 v-model="info.addr"
                 clearable
@@ -53,14 +77,23 @@
             </el-form-item>
           </el-col>
           <el-col :span="8">
-            <el-form-item label="法定代表人" prop="legalPerson">
-              <el-input v-model="info.legalPerson" clearable></el-input>
+            <el-form-item
+              label="法定代表人"
+              prop="legalPerson"
+            >
+              <el-input
+                v-model="info.legalPerson"
+                clearable
+              ></el-input>
             </el-form-item>
           </el-col>
         </el-row>
         <el-row>
           <el-col :span="8">
-            <el-form-item label="类型" prop="companyType">
+            <el-form-item
+              label="类型"
+              prop="companyType"
+            >
               <el-select
                 v-model="info.companyType"
                 clearable
@@ -77,7 +110,10 @@
             </el-form-item>
           </el-col>
           <el-col :span="8">
-            <el-form-item label="成立日期" prop="establishDate">
+            <el-form-item
+              label="成立日期"
+              prop="establishDate"
+            >
               <el-date-picker
                 v-model="info.establishDate"
                 style="width: 100%"
@@ -89,8 +125,14 @@
             </el-form-item>
           </el-col>
           <el-col :span="8">
-            <el-form-item label="注册资本" prop="registeredCapital">
-              <el-input v-model="info.registeredCapital" clearable></el-input>
+            <el-form-item
+              label="注册资本"
+              prop="registeredCapital"
+            >
+              <el-input
+                v-model="info.registeredCapital"
+                clearable
+              ></el-input>
             </el-form-item>
           </el-col>
         </el-row>
@@ -109,12 +151,14 @@
                 value-format="yyyy-MM-dd"
                 :picker-options="$root.pickerOptions"
               >
-                ></el-date-picker
-              >
+                ></el-date-picker>
             </el-form-item>
           </el-col>
           <el-col :span="8">
-            <el-form-item label="跟进人" prop="followMan">
+            <el-form-item
+              label="跟进人"
+              prop="followMan"
+            >
               <el-input
                 v-model="info.followMan"
                 disabled
@@ -133,37 +177,53 @@
         size="small"
         class="add-account"
         @click.native="addAccount()"
-        >添加</el-button
-      >
+      >添加</el-button>
     </p>
     <div class="padding-left-20">
-      <el-table :data="info.firstAgencyAccounts" style="width: 100%">
+      <el-table
+        :data="info.firstAgencyAccounts"
+        style="width: 100%"
+      >
         <el-table-column
           prop="accountName"
           label="账户名称"
           min-width="200"
         ></el-table-column>
-        <el-table-column prop="accountNo" label="账号" width="200">
+        <el-table-column
+          prop="accountNo"
+          label="账号"
+          width="200"
+        >
         </el-table-column>
         <el-table-column
           prop="depositBank"
           label="开户银行"
           min-width="200"
         ></el-table-column>
-        <el-table-column prop="accountEnum" label="账号类型" width="150">
+        <el-table-column
+          prop="accountEnum"
+          label="账号类型"
+          width="150"
+        >
           <template v-slot="{ row }">
             <span>{{ $root.dictAllName(row.accountEnum, "AccountEnum") }}</span>
           </template>
         </el-table-column>
-        <el-table-column label="操作" fixed="right" width="120">
+        <el-table-column
+          label="操作"
+          fixed="right"
+          width="120"
+        >
           <template v-slot="{ row, $index }">
             <el-link
               type="primary"
               class="margin-right-15"
               @click="editBank(row, $index)"
-              >编辑</el-link
-            >
-            <el-link type="danger" @click="deleteBank($index)">移除</el-link>
+            >编辑</el-link>
+            <el-link
+              type="danger"
+              @click="deleteBank($index)"
+            >移除</el-link>
           </template>
         </el-table-column>
       </el-table>
@@ -178,23 +238,47 @@
     >
       <el-row>
         <el-col :span="8">
-          <el-form-item label="姓名" prop="responsibleMan">
-            <el-input v-model="info.responsibleMan" clearable></el-input>
+          <el-form-item
+            label="姓名"
+            prop="responsibleMan"
+          >
+            <el-input
+              v-model="info.responsibleMan"
+              clearable
+            ></el-input>
           </el-form-item>
         </el-col>
         <el-col :span="8">
-          <el-form-item label="手机号码" prop="mobile">
-            <el-input v-model="info.mobile" clearable></el-input>
+          <el-form-item
+            label="手机号码"
+            prop="mobile"
+          >
+            <el-input
+              v-model="info.mobile"
+              clearable
+            ></el-input>
           </el-form-item>
         </el-col>
         <el-col :span="8">
-          <el-form-item label="身份证号码" prop="idCard">
-            <el-input v-model="info.idCard" clearable></el-input>
+          <el-form-item
+            label="身份证号码"
+            prop="idCard"
+          >
+            <el-input
+              v-model="info.idCard"
+              clearable
+            ></el-input>
           </el-form-item>
         </el-col>
         <el-col :span="8">
-          <el-form-item label="邮箱" prop="mail">
-            <el-input v-model="info.mail" clearable></el-input>
+          <el-form-item
+            label="邮箱"
+            prop="mail"
+          >
+            <el-input
+              v-model="info.mail"
+              clearable
+            ></el-input>
           </el-form-item>
         </el-col>
       </el-row>
@@ -202,7 +286,10 @@
 
     <p class="ih-info-title">附件信息</p>
     <div class="padding-left-20">
-      <el-table style="width: 100%" :data="info.attachAgencyVOS">
+      <el-table
+        style="width: 100%"
+        :data="info.attachAgencyVOS"
+      >
         <el-table-column
           prop="firstAgencyAttachEnum"
           width="180"
@@ -216,7 +303,10 @@
             )
           }}</template>
         </el-table-column>
-        <el-table-column label="附件" align="center">
+        <el-table-column
+          label="附件"
+          align="center"
+        >
           <template v-slot="{ row }">
             <IhUpload
               :file-list="row.fileList"
@@ -243,12 +333,21 @@
     </el-input>
     <div>
       <br />
-      <el-button type="primary" @click="save()">保存</el-button>
-      <el-button type="success" @click="submit()">提交</el-button>
+      <el-button
+        type="primary"
+        @click="save()"
+      >保存</el-button>
+      <el-button
+        type="success"
+        @click="submit()"
+      >提交</el-button>
     </div>
 
     <!-- 账户信息 -->
-    <IhDialog :show="dialogFormVisible" desc="账户信息">
+    <IhDialog
+      :show="dialogFormVisible"
+      desc="账户信息"
+    >
       <BankDialog
         :data="Bankrule"
         :bankType="bankType"
@@ -272,6 +371,7 @@ import {
   post_firstAgencyCompany_save,
 } from "@/api/project/index";
 import BankDialog from "./dialog/bankDialog.vue";
+import { phoneValidator } from "ihome-common/util/base/form-ui";
 
 @Component({
   components: {
@@ -317,56 +417,52 @@ export default class FirstAgencyEdit extends Vue {
 
   private rules: any = {
     agencyName: [
-      { required: true, message: "请输入公司名称", trigger: "blur" },
+      { required: true, message: "请输入公司名称", trigger: "change" },
     ],
     creditCode: [
-      { required: true, message: "请输入信用代码", trigger: "blur" },
+      { required: true, message: "请输入信用代码", trigger: "change" },
       {
         pattern: /^[A-Za-z0-9]{18}$/,
         message: "信用代码格式不对",
-        trigger: "blur",
+        trigger: "change",
       },
     ],
-    simpleName: [{ required: true, message: "请输入简称", trigger: "blur" }],
+    simpleName: [{ required: true, message: "请输入简称", trigger: "change" }],
     provinceList: [
-      { required: true, message: "请选择省市区", trigger: ["blur", "change"] },
+      { required: true, message: "请选择省市区", trigger: "change" },
     ],
-    addr: [{ required: true, message: "请输入住所", trigger: "blur" }],
+    addr: [{ required: true, message: "请输入住所", trigger: "change" }],
     legalPerson: [
-      { required: true, message: "请输入法定代表人", trigger: "blur" },
+      { required: true, message: "请输入法定代表人", trigger: "change" },
     ],
-    companyType: [{ required: true, message: "请选择类型", trigger: "blur" }],
+    companyType: [{ required: true, message: "请选择类型", trigger: "change" }],
     registeredCapital: [
-      { required: true, message: "请输入注册资本", trigger: "blur" },
+      { required: true, message: "请输入注册资本", trigger: "change" },
     ],
     establishDate: [
-      { required: true, message: "请输入成立日期", trigger: "blur" },
+      { required: true, message: "请输入成立日期", trigger: "change" },
     ],
     responsibleMan: [
-      { required: true, message: "请输入姓名", trigger: "blur" },
+      { required: true, message: "请输入姓名", trigger: "change" },
     ],
     mobile: [
-      { required: true, message: "请输入手机号", trigger: "blur" },
-      {
-        pattern: /^1[3456789]\d{9}$/,
-        message: "手机号格式不对",
-        trigger: "blur",
-      },
+      { required: true, message: "请输入手机号", trigger: "change" },
+      { validator: phoneValidator, trigger: "change" },
     ],
     idCard: [
-      { required: true, message: "请填写证件号码", trigger: "blur" },
+      { required: true, message: "请填写证件号码", trigger: "change" },
       {
         pattern: /(^[1-9]\d{5}(18|19|([23]\d))\d{2}((0[1-9])|(10|11|12))(([0-2][1-9])|10|20|30|31)\d{3}[0-9Xx]$)|(^[1-9]\d{5}\d{2}((0[1-9])|(10|11|12))(([0-2][1-9])|10|20|30|31)\d{2}$)/,
         message: "证件号码格式有误！",
-        trigger: "blur",
+        trigger: "change",
       },
     ],
     mail: [
-      { required: true, message: "请填写邮箱", trigger: "blur" },
+      { required: true, message: "请填写邮箱", trigger: "change" },
       {
         type: "email",
         message: "请输入正确的邮箱地址",
-        trigger: "blur",
+        trigger: "change",
       },
     ],
   };

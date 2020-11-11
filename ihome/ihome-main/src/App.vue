@@ -4,7 +4,7 @@
  * @Author: zyc
  * @Date: 2020-06-22 11:46:23
  * @LastEditors: zyc
- * @LastEditTime: 2020-10-13 15:42:27
+ * @LastEditTime: 2020-11-11 14:21:04
 --> 
 <template>
   <div>
@@ -131,9 +131,9 @@
 import IhHeader from "@/components/IhHeader.vue";
 import { Component, Vue, Prop, Watch } from "vue-property-decorator";
 import { UserModule } from "./store/modules/user";
-import { AppModule } from "@/store/modules/app";
+import { AppModule } from "./store/modules/app";
 import { allMenu } from "./api/users";
-import { normalAsideWidth, stretchAsideWidth } from "@/setting";
+import { normalAsideWidth, stretchAsideWidth } from "./setting";
 @Component({
   components: { IhHeader },
 })
@@ -147,12 +147,16 @@ export default class App extends Vue {
   private timer: any = null;
   defaultOpeneds: any[] = []; //展开的菜单
   defaultActive: any = ""; //选中的菜单
+  menuList: any = [];
 
   groupMenuList: any[] = [];
 
   async created() {
-    let menuList: any = await allMenu();
-
+    this.menuList = await allMenu();
+    this.setMenu();
+  }
+  setMenu() {
+    let menuList = this.menuList;
     menuList.map((item: any) => {
       item.id = item.id.toString();
       item.parentId = item.parentId.toString();
@@ -195,9 +199,9 @@ export default class App extends Vue {
   }
   @Watch("$route")
   getWatch(newVal: any) {
-    console.log(newVal);
     this.loginPage = newVal.path == "/login";
     this.login();
+    this.setMenu();
   }
   @Watch("screenHeight")
   screenHeightWatch(val: any) {

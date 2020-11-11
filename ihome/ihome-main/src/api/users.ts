@@ -4,7 +4,7 @@
  * @Author: zyc
  * @Date: 2020-06-24 09:47:33
  * @LastEditors: ywl
- * @LastEditTime: 2020-11-10 11:54:17
+ * @LastEditTime: 2020-11-11 15:26:27
  */
 import { IRes } from "./users.d";
 // import request from '@/utils/http';
@@ -67,7 +67,7 @@ export function allMenu<T>() {
         {
             id: 1,
             parentId: 0,
-            title: "系统管理模块",
+            title: "系统管理",
             icon: "el-icon-setting",
             path: null,
         },

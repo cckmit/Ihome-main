@@ -4,7 +4,7 @@
  * @Author: wwq
  * @Date: 2020-07-08 14:23:16
  * @LastEditors: wwq
- * @LastEditTime: 2020-10-19 15:00:48
+ * @LastEditTime: 2020-11-11 11:45:14
 --> 
 <template>
   <el-dialog
@@ -16,10 +16,18 @@
     width="500px"
     class="dialog text-left"
   >
-    <el-form ref="form" :model="form" :rules="rules" label-width="80px">
+    <el-form
+      ref="form"
+      :model="form"
+      :rules="rules"
+      label-width="80px"
+    >
       <el-row>
         <el-col :span="24">
-          <el-form-item label="姓名" prop="contactName">
+          <el-form-item
+            label="姓名"
+            prop="contactName"
+          >
             <el-input
               v-model="form.contactName"
               placeholder="姓名"
@@ -31,7 +39,10 @@
 
       <el-row>
         <el-col :span="24">
-          <el-form-item label="手机号码" prop="contactNum">
+          <el-form-item
+            label="手机号码"
+            prop="contactNum"
+          >
             <el-input
               maxlength="16"
               v-model="form.contactNum"
@@ -43,7 +54,10 @@
 
       <el-row>
         <el-col :span="24">
-          <el-form-item label="邮箱" prop="email">
+          <el-form-item
+            label="邮箱"
+            prop="email"
+          >
             <el-input
               v-model="form.email"
               placeholder="电子邮箱"
@@ -54,9 +68,15 @@
       </el-row>
     </el-form>
 
-    <span slot="footer" class="dialog-footer">
+    <span
+      slot="footer"
+      class="dialog-footer"
+    >
       <el-button @click="cancel()">取 消</el-button>
-      <el-button type="primary" @click="finish()">确 定</el-button>
+      <el-button
+        type="primary"
+        @click="finish()"
+      >确 定</el-button>
     </span>
   </el-dialog>
 </template>
@@ -65,7 +85,7 @@ import { Component, Vue, Prop } from "vue-property-decorator";
 import { Form as ElForm } from "element-ui";
 
 import { NoRepeatHttp } from "ihome-common/util/aop/no-repeat-http";
-// import { phoneValidator } from "ihome-common/util/base/form-ui";
+import { phoneValidator } from "ihome-common/util/base/form-ui";
 @Component({
   components: {},
 })
@@ -84,19 +104,15 @@ export default class UserAdd extends Vue {
       { min: 1, max: 32, message: "长度在 1 到 32 个字符", trigger: "change" },
     ],
     contactNum: [
-      { required: true, message: "请输入手机号", trigger: "blur" },
-      {
-        pattern: /^1[3456789]\d{9}$/,
-        message: "手机号格式不对",
-        trigger: "blur",
-      },
+      { required: true, message: "请输入手机号", trigger: "change" },
+      { validator: phoneValidator, trigger: "change" },
     ],
     email: [
-      { message: "请输入邮箱地址", trigger: "blur" },
+      { message: "请输入邮箱地址", trigger: "change" },
       {
         type: "email",
         message: "请输入正确的邮箱地址",
-        trigger: ["blur"],
+        trigger: "change",
       },
     ],
   };

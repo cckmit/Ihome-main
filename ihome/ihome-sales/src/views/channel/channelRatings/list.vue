@@ -3,8 +3,8 @@
  * @version: 
  * @Author: wwq
  * @Date: 2020-08-13 11:40:10
- * @LastEditors: ywl
- * @LastEditTime: 2020-11-03 17:17:55
+ * @LastEditors: zyc
+ * @LastEditTime: 2020-11-11 15:05:11
 -->
 <template>
   <IhPage label-width="100px">
@@ -77,6 +77,7 @@
         class="ih-table"
         :data="resPageInfo.list"
         :default-sort="{ prop: 'id', order: 'descending' }"
+        :empty-text="emptyText"
       >
         <el-table-column
           prop="cityGrade"
@@ -205,7 +206,7 @@ export default class ChannelRatings extends Vue {
     channelGrade: null,
   };
   resPageInfo: any = {
-    total: 0,
+    total: null,
     list: [],
   };
   dialogVisible = false;

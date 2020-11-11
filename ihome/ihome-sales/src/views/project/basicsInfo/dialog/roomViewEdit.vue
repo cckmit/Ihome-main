@@ -4,7 +4,7 @@
  * @Author: wwq
  * @Date: 2020-11-03 18:39:23
  * @LastEditors: wwq
- * @LastEditTime: 2020-11-06 18:04:03
+ * @LastEditTime: 2020-11-11 11:37:10
 -->
 <template>
   <div>
@@ -19,7 +19,12 @@
       class="dialog text-left"
       :title="data.roomViewType === 'add' ? '添加房号' : '编辑房号'"
     >
-      <el-form ref="form" :model="form" :rules="rules" label-width="100px">
+      <el-form
+        ref="form"
+        :model="form"
+        :rules="rules"
+        label-width="100px"
+      >
         <el-row>
           <el-col :span="16">
             <el-form-item label="当前栋座：">
@@ -34,14 +39,12 @@
         <el-row v-if="data.roomViewType !== 'edit'">
           <el-col :span="24">
             <el-form-item label="添加方式：">
-              <div
-                style="
+              <div style="
                   display: flex;
                   justify-contant: flex-start;
                   align-items: center;
                   line-height: auto;
-                "
-              >
+                ">
                 <el-radio-group
                   v-model="form.exSimple"
                   @change="$refs.form.clearValidate()"
@@ -53,10 +56,12 @@
                   style="padding: 0 16px; font-size: 12px; cursor: pointer"
                   @mouseover="isShow = true"
                   @mouseout="isShow = false"
-                  >示例说明</span
-                >
+                >示例说明</span>
               </div>
-              <div class="explain" v-if="isShow">
+              <div
+                class="explain"
+                v-if="isShow"
+              >
                 <span class="explain-item">房号格式为: 【101】</span>
                 <span class="explain-item">
                   房号规则为: 从【8】到【13】层的【1】号房则生成出以下房号：
@@ -68,7 +73,10 @@
         </el-row>
         <el-row v-if="form.exSimple === 1">
           <el-col :span="16">
-            <el-form-item label="房号：" prop="roomNo">
+            <el-form-item
+              label="房号："
+              prop="roomNo"
+            >
               <el-input
                 v-model="form.roomNo"
                 placeholder="房号"
@@ -79,7 +87,10 @@
         </el-row>
         <el-row v-if="form.exSimple === 2">
           <el-col :span="16">
-            <el-form-item label="房号格式：" prop="roomPattern">
+            <el-form-item
+              label="房号格式："
+              prop="roomPattern"
+            >
               <el-input
                 v-model="form.roomPattern"
                 placeholder="房号格式"
@@ -101,12 +112,18 @@
                 </el-form-item>
                 <span style="padding: 0 8px">到</span>
                 <el-form-item prop="to">
-                  <el-input v-model.number="form.to" maxlength="50"></el-input>
+                  <el-input
+                    v-model.number="form.to"
+                    maxlength="50"
+                  ></el-input>
                 </el-form-item>
                 <span style="padding: 0 0 0 8px">层</span>
                 <span style="padding: 0 8px 0 0">的</span>
                 <el-form-item prop="num">
-                  <el-input v-model.number="form.num" maxlength="50"></el-input>
+                  <el-input
+                    v-model.number="form.num"
+                    maxlength="50"
+                  ></el-input>
                 </el-form-item>
                 <span style="padding: 0 0 0 8px">房</span>
                 <span>号</span>
@@ -116,7 +133,10 @@
         </el-row>
         <el-row>
           <el-col :span="10">
-            <el-form-item label="房屋户型：" prop="houseTypeId">
+            <el-form-item
+              label="房屋户型："
+              prop="houseTypeId"
+            >
               <el-select
                 style="width: 100%"
                 v-model="form.houseTypeId"
@@ -133,15 +153,19 @@
               </el-select>
             </el-form-item>
           </el-col>
-          <el-col :span="14" class="col-router">
-            <el-link @click="addHouseType"
-              >没有找到适合的户型?点击去添加户型</el-link
-            >
+          <el-col
+            :span="14"
+            class="col-router"
+          >
+            <el-link @click="addHouseType">没有找到适合的户型?点击去添加户型</el-link>
           </el-col>
         </el-row>
         <el-row v-if="houseInfo">
           <el-col :span="10">
-            <el-form-item label="户型面积：" prop="space">
+            <el-form-item
+              label="户型面积："
+              prop="space"
+            >
               <div style="display: flex; justify-contant: flex-start">
                 <el-input
                   disabled
@@ -157,14 +181,30 @@
           <el-col :span="24">
             <el-form-item label="户型：">
               <div style="display: flex; justify-contant: flex-start">
-                <el-select v-model="form.room" clearable disabled> </el-select>
+                <el-select
+                  v-model="form.room"
+                  clearable
+                  disabled
+                > </el-select>
                 <span style="padding: 0 8px">室</span>
-                <el-select v-model="form.hall" clearable disabled> </el-select>
+                <el-select
+                  v-model="form.hall"
+                  clearable
+                  disabled
+                > </el-select>
                 <span style="padding: 0 8px">厅</span>
-                <el-select v-model="form.kitchen" clearable disabled>
+                <el-select
+                  v-model="form.kitchen"
+                  clearable
+                  disabled
+                >
                 </el-select>
                 <span style="padding: 0 8px">厨</span>
-                <el-select v-model="form.toilet" clearable disabled>
+                <el-select
+                  v-model="form.toilet"
+                  clearable
+                  disabled
+                >
                 </el-select>
                 <span style="padding: 0 8px">卫</span>
               </div>
@@ -174,7 +214,11 @@
         <el-row v-if="form.exSimple === 1 && houseInfo">
           <el-col :span="24">
             <el-form-item label="朝向：">
-              <el-select v-model="form.positionEnum" clearable disabled>
+              <el-select
+                v-model="form.positionEnum"
+                clearable
+                disabled
+              >
                 <el-option
                   v-for="item in $root.dictAllList('PositionEnum')"
                   :key="item.code"
@@ -187,12 +231,21 @@
         </el-row>
       </el-form>
 
-      <span slot="footer" class="dialog-footer">
+      <span
+        slot="footer"
+        class="dialog-footer"
+      >
         <el-button @click="cancel()">返 回</el-button>
-        <el-button type="primary" @click="finish()">保 存</el-button>
+        <el-button
+          type="primary"
+          @click="finish()"
+        >保 存</el-button>
       </span>
     </el-dialog>
-    <ih-dialog :show="houseDialogVisible" desc="编辑">
+    <ih-dialog
+      :show="houseDialogVisible"
+      desc="编辑"
+    >
       <HouseTypeEdit
         :data="editData"
         @cancel="() => (houseDialogVisible = false)"
@@ -239,15 +292,15 @@ export default class RoomViewEdit extends Vue {
     positionEnum: null,
   };
   rules: any = {
-    roomNo: [{ required: true, message: "请输入房号", trigger: "blur" }],
+    roomNo: [{ required: true, message: "请输入房号", trigger: "change" }],
     roomPattern: [
-      { required: true, message: "请输入房号格式", trigger: "blur" },
+      { required: true, message: "请输入房号格式", trigger: "change" },
     ],
-    form: [{ required: true, message: "请输入内容", trigger: "blur" }],
-    to: [{ required: true, message: "请输入内容", trigger: "blur" }],
-    num: [{ required: true, message: "请输入内容", trigger: "blur" }],
+    form: [{ required: true, message: "请输入内容", trigger: "change" }],
+    to: [{ required: true, message: "请输入内容", trigger: "change" }],
+    num: [{ required: true, message: "请输入内容", trigger: "change" }],
     houseTypeId: [
-      { required: true, message: "请选择房屋户型", trigger: "blur" },
+      { required: true, message: "请选择房屋户型", trigger: "change" },
     ],
   };
   houseTypeOptions: any = [];
