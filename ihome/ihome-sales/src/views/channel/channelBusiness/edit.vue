@@ -4,7 +4,7 @@
  * @Author: ywl
  * @Date: 2020-09-16 14:05:21
  * @LastEditors: ywl
- * @LastEditTime: 2020-11-04 11:26:21
+ * @LastEditTime: 2020-11-11 08:45:52
 -->
 <template>
   <IhPage>
@@ -243,6 +243,9 @@
           <el-form-item
             label="姓名"
             prop="name"
+            :rules="[
+              { required: true, message: '请输入姓名', trigger: 'blur' },
+            ]"
           >
             <el-input
               v-model="channelPersonsData.name"
@@ -425,7 +428,7 @@ export default class ModifyThe extends Vue {
 
   private rules: any = {
     name: [
-      { required: true, message: "请输入不能为空", trigger: "blur" },
+      { required: true, message: "请输入名称", trigger: "blur" },
       { validator: validForbid, trigger: ["blur", "change"] },
       { validator: noTrim, trigger: "change" },
       { min: 1, max: 64, message: "长度在 1 到 64 个字符", trigger: "change" },

@@ -4,7 +4,7 @@
  * @Author: lgf
  * @Date: 2020-09-16 14:05:21
  * @LastEditors: ywl
- * @LastEditTime: 2020-10-23 12:01:25
+ * @LastEditTime: 2020-11-11 08:55:57
 -->
 <template>
   <div class="text-left">
@@ -237,8 +237,8 @@ export default class Home extends Vue {
     this.channelPersons = this.info.channelPersons[0];
   }
   private async confirmChannel(type: string): Promise<void> {
-    if (!this.approveRecord.remark && type === "Reject") {
-      this.$message.error("输入不能为空");
+    if (!this.approveRecord.remark) {
+      this.$message.error(`${this.switchType(type)}不能为空`);
       return;
     }
     await post_channel_approveRecord({
@@ -250,6 +250,17 @@ export default class Home extends Vue {
     this.$router.push({
       path: "list",
     });
+  }
+  private switchType(type: any) {
+    switch (type) {
+      case "Confirm":
+      case "Reject":
+        return "确认意见";
+      case "Revoke":
+        return "撤回原因";
+      default:
+        break;
+    }
   }
 
   async created() {
