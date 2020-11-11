@@ -4,7 +4,7 @@
  * @Author: ywl
  * @Date: 2020-09-25 17:34:32
  * @LastEditors: ywl
- * @LastEditTime: 2020-11-10 15:35:17
+ * @LastEditTime: 2020-11-11 10:35:28
 -->
 <template>
   <IhPage label-width="100px">
@@ -312,7 +312,10 @@
               @click="handleTo(row, 'info')"
             >详情</el-link>
             <el-link type="primary">盖章版归档</el-link>
-            <el-link type="primary">原件归档</el-link>
+            <el-link
+              type="primary"
+              @click="handleTo(row, 'original')"
+            >原件归档</el-link>
             <!-- <el-dropdown
                 trigger="click"
                 class="margin-left-15"

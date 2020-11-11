@@ -4,7 +4,7 @@
  * @Author: ywl
  * @Date: 2020-09-27 10:46:14
  * @LastEditors: ywl
- * @LastEditTime: 2020-10-29 18:53:00
+ * @LastEditTime: 2020-11-11 11:36:05
 -->
 <template>
   <IhPage class="text-left">
@@ -54,48 +54,48 @@
         <el-row>
           <el-col :span="12">
             <el-form-item label="乙方公司">
-              {{ruleForm.partyBCompany}}
+              {{business.channelBusinessId}}
             </el-form-item>
           </el-col>
           <el-col :span="12">
             <el-form-item label="乙方渠道等级">
-              乙方渠道等级
+              {{business.channelLevel}}
             </el-form-item>
           </el-col>
         </el-row>
         <el-row>
           <el-col :span="12">
             <el-form-item label="乙方地址">
-              {{ruleForm.partyBAddress}}
+              {{business.channelBusinessAddress}}
             </el-form-item>
           </el-col>
           <el-col :span="12">
             <el-form-item label="乙方联系人">
-              {{ruleForm.partyBContact}}
+              {{business.contactPerson}}
             </el-form-item>
           </el-col>
         </el-row>
         <el-row>
           <el-col :span="12">
             <el-form-item label="乙方联系人电话">
-              {{ruleForm.partyBMobile}}
+              {{business.contactNumber}}
             </el-form-item>
           </el-col>
           <el-col :span="12">
             <el-form-item label="乙方账户名">
-              {{ruleForm.partyBAccountName}}
+              {{business.accountName}}
             </el-form-item>
           </el-col>
         </el-row>
         <el-row>
           <el-col :span="12">
             <el-form-item label="乙方账户">
-              {{ruleForm.partyBAccountNo}}
+              {{business.partyBAccountNo}}
             </el-form-item>
           </el-col>
           <el-col :span="12">
             <el-form-item label="乙方开户行">
-              {{ruleForm.partyBBank}}
+              {{business.accountBank}}
             </el-form-item>
           </el-col>
         </el-row>
@@ -280,7 +280,22 @@
             </el-form-item>
           </el-col>
         </el-row>
+        <el-row>
+          <el-col :span="10">
+            <el-form-item label="归档编号">
+              <el-input :disabled="$route.name !== 'DistributionOriginal'"></el-input>
+            </el-form-item>
+          </el-col>
+        </el-row>
       </el-form>
+      <div
+        v-if="$route.name === 'DistributionOriginal'"
+        class="text-center"
+      >
+        <br />
+        <el-button type="primary">提交</el-button>
+        <el-button>取消</el-button>
+      </div>
     </template>
   </IhPage>
 </template>
@@ -293,16 +308,22 @@ import { get_distribution_detail__id } from "@/api/contract/index";
 @Component({})
 export default class DistributionDetail extends Vue {
   private ruleForm: any = {};
+  private business: any = {};
   private fileList: Array<object> = [];
 
   private async getInfo(): Promise<void> {
     let id = this.$route.query.id;
-    this.ruleForm = await get_distribution_detail__id({ id: id });
+    if (id) {
+      this.ruleForm = await get_distribution_detail__id({ id: id });
+      this.ruleForm.businessList.length
+        ? (this.business = this.ruleForm.businessList[0])
+        : (this.business = {});
+      console.log(this.ruleForm, this.business);
+    }
   }
 
   created(): void {
-    let id = this.$route.query.id;
-    if (id) this.getInfo();
+    this.getInfo();
   }
 }
 </script>

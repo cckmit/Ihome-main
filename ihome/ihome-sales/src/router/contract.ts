@@ -4,7 +4,7 @@
  * @Author: ywl
  * @Date: 2020-10-16 15:19:48
  * @LastEditors: ywl
- * @LastEditTime: 2020-11-03 15:50:51
+ * @LastEditTime: 2020-11-11 10:29:40
  */
 import { RouteConfig } from 'vue-router'
 
@@ -21,7 +21,7 @@ const contractRoutes: Array<RouteConfig> = [
         path: 'list',
         name: 'PartyAList',
         component: () => import( /* webpackChunkName: "PartyAList" */ '@/views/contract/partyA/list.vue'),
-        meta: { title: '甲方合同列表', icon: 'form' }
+        meta: { title: '甲方合同列表', icon: 'form', keepAlive: true }
       },
       {
         path: 'edit',
@@ -47,7 +47,7 @@ const contractRoutes: Array<RouteConfig> = [
         path: 'list',
         name: 'DistributionList',
         component: () => import( /* webpackChunkName: "DistributionList" */ '@/views/contract/distribution/list.vue'),
-        meta: { title: '渠道分销协议列表', icon: 'form' }
+        meta: { title: '渠道分销协议列表', icon: 'form', keepAlive: true }
       },
       {
         path: 'apply',
@@ -61,6 +61,12 @@ const contractRoutes: Array<RouteConfig> = [
         component: () => import( /* webpackChunkName: "DistributionDetail" */ '@/views/contract/distribution/info.vue'),
         meta: { title: '渠道分销协议详情', icon: 'form' }
       },
+      {
+        path: 'original',
+        name: 'DistributionOriginal',
+        component: () => import(/* webpackChunkName: "DistributionOriginal" */ '@/views/contract/distribution/info.vue'),
+        meta: { title: '渠道分销协议原件归档', icon: 'form' }
+      }
     ]
   },
   {
@@ -73,7 +79,7 @@ const contractRoutes: Array<RouteConfig> = [
         path: 'list',
         name: 'StrategyList',
         component: () => import( /* webpackChunkName: "StrategyList" */ '@/views/contract/strategy/list.vue'),
-        meta: { title: '甲方/中介战略协议列表', icon: 'form' }
+        meta: { title: '甲方/中介战略协议列表', icon: 'form', keepAlive: true }
       },
       {
         path: 'add',
@@ -111,7 +117,7 @@ const contractRoutes: Array<RouteConfig> = [
         path: 'list',
         name: 'DiscountList',
         component: () => import( /* webpackChunkName: "DiscountList" */ '@/views/contract/discount/list.vue'),
-        meta: { title: '优惠告知书列表', icon: 'form' }
+        meta: { title: '优惠告知书列表', icon: 'form', keepAlive: true }
       },
       {
         path: 'info',
