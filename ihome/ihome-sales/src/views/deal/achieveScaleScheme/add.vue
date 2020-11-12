@@ -56,8 +56,8 @@
               clearable
               placeholder="请选择"
               class="width--100">
-              <el-option label="是" value="yes"></el-option>
-              <el-option label="否" value="no"></el-option>
+              <el-option label="是" value="Yes"></el-option>
+              <el-option label="否" value="No"></el-option>
             </el-select>
           </el-form-item>
         </el-col>
@@ -69,8 +69,8 @@
               clearable
               placeholder="请选择"
               class="width--100">
-              <el-option label="是" value="yes"></el-option>
-              <el-option label="否" value="no"></el-option>
+              <el-option label="是" value="Yes"></el-option>
+              <el-option label="否" value="No"></el-option>
             </el-select>
           </el-form-item>
         </el-col>
@@ -166,7 +166,7 @@
               :prop="'tableData.' + scope.$index + '.ratio'"
               :rules='tableModel.rules.ratio'>
               <el-input
-                @keyup.native="handleChangeRatio(scope)"
+                v-input2="{num: 2, scope: scope.row}"
                 clearable
                 :disabled="postData.isSame === 'yes' && scope.row.type === 'Distri'"
                 v-model="scope.row.ratio"
@@ -240,7 +240,45 @@
   </ih-page>
 </template>
 <script lang="ts">
-  import {Component, Vue} from "vue-property-decorator";
+  import {Component, Vue, Watch} from "vue-property-decorator";
+
+  // 自定义指令
+  Vue.directive('input2', {
+    bind(el: any, binding: any) {
+      function checkInput(el: any, binding: any) {
+        console.log('binding', binding.value.scope)
+        if (binding.value.scope) {
+          binding.value.scope.ratio = binding.scope.ratio.replace(/[^\d.]/g, ""); // 清除"数字"和以外的字符
+          binding.value.scope.ratio = binding.scope.ratio.replace(/^\./g, ""); // 验证第一个字符是不是数字
+          binding.value.scope.ratio = binding.scope.ratio.replace(/\.{2,}/g, "."); // 只保留第一个"."
+          binding.value.scope.ratio = binding.scope.ratio.replace(".", "$#$").replace(/\./g, "").replace("$#$", ".");
+          binding.value.scope.ratio = binding.scope.ratio.replace(/^(\-)*(\d+)\.(\d{2}).*$/, '$1$2.$3'); // 只能输入两个小数
+        }
+        // const El = el.querySelector('.el-input__inner');
+        // El.value = El.value.replace(/[^\d.]/g, ""); // 清除"数字"和以外的字符
+        // El.value = El.value.replace(/^\./g, ""); // 验证第一个字符是不是数字
+        // El.value = El.value.replace(/\.{2,}/g, "."); // 只保留第一个"."
+        // El.value = El.value.replace(".", "$#$").replace(/\./g, "").replace("$#$", "."); // 只保留第一个"."
+        // if (binding.value && binding.value > 0) {
+        //   // 只能输入规定位数的小数
+        //   // /^(\-)*(\d+)\.(\d{2}).*$/
+        //   let regNum = new RegExp("^(\\-)*(\\d+)\\.(\\d{"+ binding.value +"}).*$");
+        //   El.value = El.value.replace(regNum, '$1$2.$3');
+        // }
+      }
+
+      el.addEventListener('keyup', function () {
+        // 输入验证
+        checkInput(el, binding)
+      });
+
+      el.addEventListener('blur', function () {
+        //失去焦点进行验证
+        checkInput(el, binding)
+      });
+    }
+  })
+
   import RelatedProjectList from "@/views/deal/achieveScaleScheme/related-project/list.vue";
   import {
     post_achieveScaleScheme_add,
@@ -252,8 +290,9 @@
   import {NoRepeatHttp} from "ihome-common/util/aop/no-repeat-http";
 
   @Component({
-    components: {RelatedProjectList},
+    components: {RelatedProjectList}
   })
+
   export default class AchieveScaleSchemeAdd extends Vue {
     postData: any = {
       modelId: null, // 业务模式ID
@@ -273,13 +312,13 @@
     tableModel: any = {
       rules: {
         role: [
-          {required: true, message: "业务模式必选", trigger: "blur"},
+          {required: true, message: "业务模式必选", trigger: "change"},
         ],
         ratio: [
-          {required: true, message: "业务模式必选", trigger: "blur"},
+          {required: true, message: "业务模式必选", trigger: "change"},
         ],
         missingRole: [
-          {required: true, message: "业务模式必选", trigger: "blur"},
+          {required: true, message: "业务模式必选", trigger: "change"},
         ]
       },
       tableData: []
@@ -290,6 +329,18 @@
     getByNameList: any = []; // 合同类型
     totalPackageList: any = []; // 总包
     distributionList: any = []; // 分销
+
+    // 监听-总包
+    @Watch("totalPackageList")
+    totalPackageListChange(list: any) {
+      console.log('totalPackageList', list);
+    }
+
+    // 监听-分销
+    @Watch("distributionList")
+    distributionListChange(list: any) {
+      console.log('distributionList', list);
+    }
 
     async created() {
       this.id = this.$route.query.id; // 业绩比例方案
@@ -321,7 +372,7 @@
       scope.row.ratio = scope.row.ratio.replace(/^\./g, ""); // 验证第一个字符是不是数字
       scope.row.ratio = scope.row.ratio.replace(/\.{2,}/g, "."); // 只保留第一个"."
       scope.row.ratio = scope.row.ratio.replace(".", "$#$").replace(/\./g, "").replace("$#$", ".");
-      scope.row.ratio = scope.row.ratio.replace(/^(\-)*(\d+)\.(\d\d).*$/, '$1$2.$3'); // 只能输入两个小数
+      scope.row.ratio = scope.row.ratio.replace(/^(\-)*(\d+)\.(\d{2}).*$/, '$1$2.$3'); // 只能输入两个小数
     }
 
     // 初始化编辑页面
@@ -408,6 +459,7 @@
       } else {
         this.tableModel.tableData.push(obj);
       }
+      this.totalPackageList.push(obj);
       // this.$nextTick(() => {
       //   (this as any).$refs.tableForm.clearValidate(); // 清空校验
       // })
@@ -425,6 +477,7 @@
         remarks: null
       }
       this.tableModel.tableData.push(obj);
+      this.distributionList.push(obj);
       // this.$nextTick(() => {
       //   (this as any).$refs.tableForm.clearValidate();
       // })
@@ -464,7 +517,9 @@
 
     // 保存
     async save() {
-      (this.$refs["ruleForm"] as ElForm).validate(this.addSave);
+      console.log(this.totalPackageList);
+      return;
+      // (this.$refs["ruleForm"] as ElForm).validate(this.addSave);
     }
 
     @NoRepeatHttp()
