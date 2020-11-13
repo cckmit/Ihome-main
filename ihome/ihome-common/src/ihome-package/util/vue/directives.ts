@@ -95,4 +95,39 @@ export default (Vue: any, vm: any) => {
             }
         }
     });
+
+    // v-inputDigits：Input、inputNumber输入框输入位数限制
+    Vue.directive("inputDigits", {
+        bind(el: any, binding: any) {
+            const El = el.querySelector('.el-input__inner');
+            el.inputListen = function () {
+                if ([null, undefined, 0, ""].includes(binding.value)) {
+                    // 只能输入数字
+                    El.value = El.value.replace(/[^\d]/g, ""); // 清除"数字"和以外的字符
+                } else if (binding.value > 0) {
+                    // 只能输入规定小数位数的数字
+                    // /^(\-)*(\d+)\.(\d{2}).*$/
+                    El.value = El.value.replace(/[^\d.]/g, ""); // 清除"数字"和以外的字符
+                    El.value = El.value.replace(/^\./g, ""); // 验证第一个字符是不是数字
+                    El.value = El.value.replace(/\.{2,}/g, "."); // 只保留第一个"."
+                    El.value = El.value.replace(".", "$#$").replace(/\./g, "").replace("$#$", "."); // 只保留第一个"."
+                    let regDigits = new RegExp("^(\\-)*(\\d+)\\.(\\d{" + binding.value + "}).*$");
+                    El.value = El.value.replace(regDigits, '$1$2.$3');
+                }
+                // 重新赋值
+                El.dispatchEvent(new Event('input'));
+            }
+            el.addEventListener('input', el.inputListen);
+
+            function inputBlur() {
+                El.value = El.value.replace(/\.$/g, ""); // 失焦后去除最后一个是"."的情况
+                // 重新赋值
+                El.dispatchEvent(new Event('input'));
+            }
+            El.addEventListener('blur', inputBlur);
+        },
+        unbind(el: any) {
+            el.removeEventListener('input', el.inputListen);
+        }
+    });
 };
