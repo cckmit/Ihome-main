@@ -4,7 +4,7 @@
  * @Author: lsj
  * @Date: 2020-10-29 13:53:20
  * @LastEditors: lsj
- * @LastEditTime: 2020-10-30 13:53:20
+ * @LastEditTime: 2020-11-13 14:36:16
 -->
 <template>
   <ih-page label-width="100px">
@@ -35,6 +35,7 @@
       <br/>
       <el-table
         class="ih-table"
+        :empty-text="emptyText"
         :data="resPageInfo.list">
         <el-table-column prop="branchCompany" label="分公司" min-width="120"></el-table-column>
         <el-table-column prop="contType" label="合同类型" min-width="120"></el-table-column>
@@ -113,7 +114,7 @@
     };
 
     resPageInfo: any = {
-      total: 0,
+      total: null,
       list: [{}],
     };
     companyId: any = null; // 分公司id

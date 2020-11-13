@@ -4,7 +4,7 @@
  * @Author: lsj
  * @Date: 2020-10-30 15:23:40
  * @LastEditors: lsj
- * @LastEditTime: 2020-10-30 17:20:20
+ * @LastEditTime: 2020-11-13 14:35:38
 -->
 <template>
   <ih-page label-width="100px">
@@ -27,6 +27,7 @@
       <br/>
       <el-table
         class="ih-table"
+        :empty-text="emptyText"
         :data="resPageInfo.list">
         <el-table-column
           prop="branchCompanyName"
@@ -78,7 +79,7 @@
     };
 
     resPageInfo: any = {
-      total: 0,
+      total: null,
       list: [{}],
     };
 

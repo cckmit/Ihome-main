@@ -154,23 +154,15 @@
         </el-table-column>
         <el-table-column prop="ratio" label="拆分比例 (%)" min-width="120">
           <template slot-scope="scope">
-            <!--              <el-input-number-->
-            <!--                class="input-number-left"-->
-            <!--                v-model="scope.row.ratio"-->
-            <!--                @change.native="handleChangeRatio"-->
-            <!--                :min="0" :max="100"-->
-            <!--                :precision="2"-->
-            <!--                :controls="false"-->
-            <!--                placeholder="拆分比例"></el-input-number>-->
             <el-form-item
               :prop="'tableData.' + scope.$index + '.ratio'"
               :rules='tableModel.rules.ratio'>
-              <el-input
-                v-input2="{num: 2, scope: scope.row}"
-                clearable
-                :disabled="postData.isSame === 'yes' && scope.row.type === 'Distri'"
+              <el-input-number
+                class="input-number-left"
                 v-model="scope.row.ratio"
-                placeholder="拆分比例"></el-input>
+                :min="0" :max="100"
+                :controls="false"
+                placeholder="拆分比例"></el-input-number>
             </el-form-item>
           </template>
         </el-table-column>
@@ -363,16 +355,6 @@
         console.log('value', value);
         this.distributionList = (this as any).$tool.deepClone(this.distributionList);
       }
-    }
-
-    // 修改比例
-    handleChangeRatio(scope: any) {
-      // console.log(scope);
-      scope.row.ratio = scope.row.ratio.replace(/[^\d.]/g, ""); // 清除"数字"和以外的字符
-      scope.row.ratio = scope.row.ratio.replace(/^\./g, ""); // 验证第一个字符是不是数字
-      scope.row.ratio = scope.row.ratio.replace(/\.{2,}/g, "."); // 只保留第一个"."
-      scope.row.ratio = scope.row.ratio.replace(".", "$#$").replace(/\./g, "").replace("$#$", ".");
-      scope.row.ratio = scope.row.ratio.replace(/^(\-)*(\d+)\.(\d{2}).*$/, '$1$2.$3'); // 只能输入两个小数
     }
 
     // 初始化编辑页面

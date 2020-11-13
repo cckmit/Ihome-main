@@ -4,7 +4,7 @@
  * @Author: lsj
  * @Date: 2020-10-29 13:53:20
  * @LastEditors: lsj
- * @LastEditTime: 2020-10-30 13:53:20
+ * @LastEditTime: 2020-10-30 14:34:50
 -->
 <template>
   <ih-page label-width="100px">
@@ -36,6 +36,7 @@
       <el-table
         class="ih-table"
         :data="resPageInfo.list"
+        :empty-text="emptyText"
       >
         <el-table-column
           prop="modelName"
@@ -117,7 +118,7 @@
     };
 
     resPageInfo: any = {
-      total: 0,
+      total: null,
       list: [],
     };
     dialogAddModel: any = false;

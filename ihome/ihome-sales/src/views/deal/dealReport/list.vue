@@ -4,7 +4,7 @@
  * @Author: lsj
  * @Date: 2020-11-03 09:10:20
  * @LastEditors: lsj
- * @LastEditTime: 2020-11-03 09:10:20
+ * @LastEditTime: 2020-11-13 14:38:33
 -->
 <template>
   <ih-page label-width="100px">
@@ -204,6 +204,7 @@
       <br/>
       <el-table
         class="ih-table"
+        :empty-text="emptyText"
         :data="resPageInfo.list">
         <el-table-column
           prop="dealCode"
@@ -385,7 +386,7 @@
     selectTimeRange: any = [];
 
     resPageInfo: any = {
-      total: 0,
+      total: null,
       list: [{}],
     };
 

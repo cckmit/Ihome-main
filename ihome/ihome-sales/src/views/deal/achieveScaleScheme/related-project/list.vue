@@ -4,7 +4,7 @@
  * @Author: lsj
  * @Date: 2020-11-02 19:35:12
  * @LastEditors: lsj
- * @LastEditTime: 2020-11-02 19:35:12
+ * @LastEditTime: 2020-11-13 14:37:22
 -->
 <template>
   <el-dialog
@@ -112,6 +112,7 @@
     </el-form>
     <el-table
       class="ih-table"
+      :empty-text="emptyText"
       :data="resPageInfo.list"
       @selection-change="handleSelectionChange">
       <el-table-column type="selection" width="55"></el-table-column>
@@ -184,12 +185,11 @@
     @Prop({default: null}) data: any;
     dialogVisible = true;
     resPageInfo: any = {
-      total: 0,
+      total: null,
       list: [],
     };
 
     channelList: any = []; //渠道商列表
-    inputUserList: any = []; //录入人列表
     selectList: any = [];
     queryPageParameters: any = {
       channelGrade: null,
