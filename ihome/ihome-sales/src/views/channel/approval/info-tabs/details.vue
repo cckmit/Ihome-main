@@ -4,7 +4,7 @@
  * @Author: zyc
  * @Date: 2020-07-09 14:31:23
  * @LastEditors: zyc
- * @LastEditTime: 2020-10-16 09:43:34
+ * @LastEditTime: 2020-11-16 10:46:24
 --> 
 <template>
   <div>
@@ -72,9 +72,20 @@
       <!-- <el-table-column prop="name" label="信用代码"> </el-table-column>
       <el-table-column prop="name" label="法定代表人"> </el-table-column> -->
       <el-table-column prop="special" label="特批入库"> </el-table-column>
-      <el-table-column prop="city" label="业务开展城市"> </el-table-column>
-      <el-table-column prop="cityGrade" label="城市等级"> </el-table-column>
-      <el-table-column prop="channelGrade" label="渠道等级"> </el-table-column>
+      <el-table-column prop="city" label="业务开展城市">
+        <template v-slot="{ row }">
+          {{ $root.getAreaName(row.city) }}
+        </template>
+      </el-table-column>
+      <el-table-column prop="cityGrade" label="城市等级">
+          <template slot-scope="scope">{{
+            $root.dictAllName(scope.row.cityGrade, "CityLevel")
+          }}</template>
+         </el-table-column>
+      <el-table-column prop="channelGrade" label="渠道等级">
+          <template slot-scope="scope">{{
+            $root.dictAllName(scope.row.channelGrade, "ChannelLevel")
+          }}</template> </el-table-column>
     </el-table>
     <p class="ih-info-title">附件信息</p>
     <el-table
