@@ -22,12 +22,12 @@
         <el-input
           v-if="isShow"
           clearable
-          v-inputDigits="inputDigits"
+          v-digits="inputDigits"
           v-model="inputValue"
           style="width: 500px"></el-input>
       </el-form-item>
     </el-form>
-    <div>使用描述：在Input或者InputNumber组件中直接用自定义指令：v-inputDigits="需要限制的小数位数"即可。</div>
+    <div>使用描述：在Input或者InputNumber组件中直接用自定义指令：v-digits="x"(x表示需要限制的小数位数，eg:v-digits="2"表示只能输入2位小数)即可。</div>
     <div>注意事项：只能在Input或者InputNumber组件中使用。</div>
   </div>
 </template>

@@ -118,8 +118,8 @@
       label-width="0"
       class="demo-ruleForm form-padding-20">
       <div class="add-all-wrapper">
-        <el-button type="success" @click="addTotalPackage">添加总包</el-button>
-        <el-button type="success" @click="addDistribution">添加分销</el-button>
+        <el-button type="success" @click="addPerformance('TotalBag')">添加总包</el-button>
+        <el-button type="success" @click="addPerformance('Distri')">添加分销</el-button>
       </div>
       <el-table
         class="ih-table"
@@ -139,7 +139,7 @@
                 v-model="scope.row.role"
                 @change="handleChangeRole($event, scope)"
                 clearable
-                :disabled="postData.isSame === 'yes' && scope.row.type === 'Distri'"
+                :disabled="postData.isSame === 'Yes' && scope.row.type === 'Distri'"
                 placeholder="请选择角色"
                 class="width--100">
                 <el-option
@@ -160,6 +160,8 @@
               <el-input-number
                 class="input-number-left"
                 v-model="scope.row.ratio"
+                @blur="handleChangeValue($event, scope)"
+                :disabled="postData.isSame === 'Yes' && scope.row.type === 'Distri'"
                 :min="0" :max="100"
                 :controls="false"
                 placeholder="拆分比例"></el-input-number>
@@ -173,8 +175,9 @@
               :rules='tableModel.rules.missingRole'>
               <el-select
                 v-model="scope.row.missingRole"
+                @change="handleChangeValue($event, scope)"
                 clearable
-                :disabled="postData.isSame === 'yes' && scope.row.type === 'Distri'"
+                :disabled="postData.isSame === 'Yes' && scope.row.type === 'Distri'"
                 placeholder="角色缺失处理方式"
                 class="width--100">
                 <el-option
@@ -193,8 +196,9 @@
             <el-form-item>
               <el-input
                 v-model="scope.row.remarks"
+                @blur="handleChangeValue($event, scope)"
                 clearable
-                :disabled="postData.isSame === 'yes' && scope.row.type === 'Distri'"
+                :disabled="postData.isSame === 'Yes' && scope.row.type === 'Distri'"
                 placeholder="备注"
               ></el-input>
             </el-form-item>
@@ -307,15 +311,40 @@
     // 分销同步总包逻辑
     handleChangeIsSame(value: any) {
       console.log('value', value);
-      if (value === 'yes') {
-        this.distributionList = this.totalPackageList;
-        this.distributionList.forEach((item: any) => {
-          item.type = "Distri";
-          item.typeName = "分销";
-        })
-      } else if (value === 'no') {
-        console.log('value', value);
-        this.distributionList = (this as any).$tool.deepClone(this.distributionList);
+      if (value === 'Yes') {
+        // 同步
+        if (this.tableModel.tableData && this.tableModel.tableData.length > 0) {
+          let totalPageList: any = []; // 记录总包数据
+          let distriList: any = []; // 记录分销数据
+          this.tableModel.tableData.forEach((data: any) => {
+            if (data.type === 'TotalBag') {
+              totalPageList.push(data);
+            } else {
+              distriList.push(data);
+            }
+          })
+          if (totalPageList.length > 0) {
+            // 有总包数据，分销数据以总包数据为主
+            let tempList = (this as any).$tool.deepClone(totalPageList);
+            tempList.forEach((list: any, index: any) => {
+              list.customizeId = new Date().getTime() + index + 1; // 自定义id，主要用于删除
+              list.type = "Distri";
+              list.typeName = "分销";
+            })
+            this.tableModel.tableData = totalPageList.concat(tempList);
+          } else {
+            if (distriList.length > 0) {
+              // 没有总包数据，但是又有分销数据，这时候用分销数据生成总包数据，保证总包数据和分销数据一致
+              let tempList = (this as any).$tool.deepClone(distriList);
+              tempList.forEach((list: any, index: any) => {
+                list.customizeId = new Date().getTime() + index + 1; // 自定义id，主要用于删除
+                list.type = "TotalBag";
+                list.typeName = "总包";
+              })
+              this.tableModel.tableData = totalPageList.concat(tempList);
+            }
+          }
+        }
       }
     }
 
@@ -377,17 +406,31 @@
       console.log('data', data);
     }
 
-    // 新增总包
-    async addTotalPackage() {
+    // 构建总包/分销对象
+    getObj(type: any) {
       let obj = {
         customizeId: new Date().getTime() + this.tableModel.tableData.length, // 自定义id，主要用于删除
-        type: "TotalBag",
-        typeName: "总包",
+        type: '',
+        typeName: '',
         role: null,
         ratio: null,
         missingRole: null,
         remarks: null
       }
+      if (type === 'TotalBag') {
+        // 总包
+        obj.type = "TotalBag";
+        obj.typeName = "总包";
+      } else {
+        // 分销
+        obj.type = "Distri";
+        obj.typeName = "分销";
+      }
+      return obj;
+    }
+
+    // 添加总包方法
+    addTotalPage() {
       if (this.tableModel.tableData && this.tableModel.tableData.length > 0) {
         let lastIndex = null;
         this.tableModel.tableData.forEach((data: any, index: any) => {
@@ -396,35 +439,34 @@
           }
         })
         if (lastIndex !== null) {
-          this.tableModel.tableData.splice(lastIndex + 1, 0, obj)
+          this.tableModel.tableData.splice(lastIndex + 1, 0, this.getObj('TotalBag'))
         } else {
-          this.tableModel.tableData.unshift(obj);
+          this.tableModel.tableData.unshift(this.getObj('TotalBag'));
         }
       } else {
-        this.tableModel.tableData.push(obj);
+        this.tableModel.tableData.push(this.getObj('TotalBag'));
       }
-      this.totalPackageList.push(obj);
-      // this.$nextTick(() => {
-      //   (this as any).$refs.tableForm.clearValidate(); // 清空校验
-      // })
     }
 
-    // 新增分销
-    async addDistribution() {
-      let obj = {
-        customizeId: new Date().getTime() + this.tableModel.tableData.length, // 自定义id，主要用于删除
-        type: "Distri",
-        typeName: "分销",
-        role: null,
-        ratio: null,
-        dealByMissing: null,
-        remarks: null
+    // 新增总包/分销
+    addPerformance(type: any) {
+      if (this.postData.isSame === 'Yes') {
+        // 分销同步总包：总包和分销同时增加一条
+        this.addTotalPage();
+        this.$nextTick(() => {
+          // 添加分销
+          this.tableModel.tableData.push(this.getObj('Distri'));
+        })
+      } else {
+        // 分销不同步总包：总包和分销各自增加一条
+        if (type === 'TotalBag') {
+          // 添加总包逻辑
+          this.addTotalPage();
+        } else {
+          // 添加分销逻辑
+          this.tableModel.tableData.push(this.getObj('Distri'));
+        }
       }
-      this.tableModel.tableData.push(obj);
-      this.distributionList.push(obj);
-      // this.$nextTick(() => {
-      //   (this as any).$refs.tableForm.clearValidate();
-      // })
     }
 
     // 删除总包/分销
@@ -433,9 +475,34 @@
       try {
         await this.$confirm("是否确定删除?", "提示");
         if (this.tableModel.tableData && this.tableModel.tableData.length > 0) {
-          this.tableModel.tableData = this.tableModel.tableData.filter((data: any) => {
-            return data.customizeId !== scope.row.customizeId;
-          })
+          if (this.postData.isSame === 'Yes') {
+            // 分销同步总包：总包和分销同时增加一条
+            let totalPageList: any = []; // 记录总包数据
+            this.tableModel.tableData.forEach((data: any) => {
+              if (data.type === 'TotalBag') {
+                totalPageList.push(data);
+              }
+            })
+            let totalPageLength = totalPageList.length; // 总包数据长度
+            let distriIndex: any = null; // 要删除的分销数据的位置
+            if (scope.row.type === 'TotalBag') {
+              distriIndex = scope.$index + totalPageLength - 1; // 要删除的分销数据的位置
+            } else {
+              distriIndex = scope.$index - totalPageLength; // 要删除的总包数据的位置
+            }
+            // 删除总包/分销
+            this.tableModel.tableData = this.tableModel.tableData.filter((data: any) => {
+              return data.customizeId !== scope.row.customizeId;
+            })
+            this.$nextTick(() => {
+              // 删除对应的分销/总包
+              this.tableModel.tableData.splice(distriIndex, 1);
+            })
+          } else {
+            this.tableModel.tableData = this.tableModel.tableData.filter((data: any) => {
+              return data.customizeId !== scope.row.customizeId;
+            })
+          }
         }
         this.$message({
           type: "success",
@@ -444,6 +511,31 @@
       } catch (error) {
         console.log(error);
       }
+    }
+
+    // 改变方法
+    changeValue(scope: any) {
+      if (!scope) return;
+      this.$nextTick(() => {
+        // 分销同步总包逻辑
+        if (this.postData.isSame === 'Yes') {
+          if (this.tableModel.tableData && this.tableModel.tableData.length > 0) {
+            let totalPageList: any = []; // 记录总包数据
+            this.tableModel.tableData.forEach((data: any) => {
+              if (data.type === 'TotalBag') {
+                totalPageList.push(data);
+              }
+            })
+            let totalPageLength = totalPageList.length; // 总包数据长度
+            let distriIndex = scope.$index + totalPageLength; // 要改变的分销数据的位置
+            this.tableModel.tableData.forEach((data: any, index: any) => {
+              if (index === distriIndex) {
+                data[scope.column.property] = scope.row[scope.column.property];
+              }
+            })
+          }
+        }
+      })
     }
 
     // 改变角色选项时的逻辑
@@ -457,6 +549,12 @@
       } else {
         scope.row.missingRole = null;
       }
+      this.changeValue(scope);
+    }
+
+    handleChangeValue(value: any, scope: any) {
+      // console.log('eeee', value);
+      this.changeValue(scope);
     }
 
     // 保存

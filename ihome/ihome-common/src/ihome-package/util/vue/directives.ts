@@ -97,7 +97,7 @@ export default (Vue: any, vm: any) => {
     });
 
     // v-inputDigits：Input、inputNumber输入框输入位数限制
-    Vue.directive("inputDigits", {
+    Vue.directive("digits", {
         bind(el: any, binding: any) {
             const El = el.querySelector('.el-input__inner');
             el.inputListen = function () {
