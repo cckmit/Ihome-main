@@ -4,7 +4,7 @@
  * @Author: ywl
  * @Date: 2020-09-16 14:05:21
  * @LastEditors: ywl
- * @LastEditTime: 2020-11-11 11:43:56
+ * @LastEditTime: 2020-11-16 17:57:05
 -->
 <template>
   <IhPage>
@@ -524,7 +524,6 @@ export default class ModifyThe extends Vue {
     Promise.all([ruleFrom, personForm]).then(async (value) => {
       if (value[0] && value[1]) {
         // this.info.channelPersons.push(this.channelPersonsData);
-        console.log(this.pageName);
         switch (this.pageName) {
           case "AddChannel":
             // 渠道商添加
@@ -534,7 +533,7 @@ export default class ModifyThe extends Vue {
               operateType: type,
             });
             this.$message.success("渠道商添加成功");
-            this.$goto({ path: "list" });
+            this.$goto({ path: "/channelBusiness/list" });
             break;
           case "EditChannel":
             // 修改渠道商
@@ -544,7 +543,7 @@ export default class ModifyThe extends Vue {
               operateType: type,
             });
             this.$message.success("修改渠道商成功");
-            this.$goto({ path: "list" });
+            this.$goto({ path: "/channelBusiness/list" });
             break;
           case "ChangeChannel":
             // 渠道商提交变更
@@ -598,7 +597,6 @@ export default class ModifyThe extends Vue {
       this.channelPersonsData = this.info.channelPersons.length
         ? this.info.channelPersons[0]
         : {};
-      console.log(this.info);
     }
   }
   /**

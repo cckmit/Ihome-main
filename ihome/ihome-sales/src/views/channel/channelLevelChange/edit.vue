@@ -4,7 +4,7 @@
  * @Author: ywl
  * @Date: 2020-10-15 16:02:03
  * @LastEditors: ywl
- * @LastEditTime: 2020-11-11 11:44:50
+ * @LastEditTime: 2020-11-16 17:54:53
 -->
 <template>
   <IhPage>
@@ -383,7 +383,7 @@ export default class ChannelRates extends Vue {
           // this.resPageInfo.channelGradeAttachmentChanges = this.resPageInfo.channelGradeAttachments;
           this.resPageInfo.changeReason = this.changeReason;
           await post_channelGradeChange_edit(this.resPageInfo);
-          this.$goto({ path: "list" });
+          this.$goto({ path: "/channelLevelChange/list" });
         } else {
           this.$message.warning("请填写变更原因");
         }

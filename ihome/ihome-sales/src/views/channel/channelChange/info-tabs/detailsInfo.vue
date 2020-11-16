@@ -4,7 +4,7 @@
  * @Author: lgf
  * @Date: 2020-09-16 14:05:21
  * @LastEditors: ywl
- * @LastEditTime: 2020-11-16 10:31:04
+ * @LastEditTime: 2020-11-16 17:54:27
 -->
 <template>
   <div class="text-left">
@@ -270,7 +270,7 @@ export default class DetailInfo extends Vue {
       id: this.$route.query.id,
     });
     this.$message.success("成功");
-    this.$goto({ path: "list" });
+    this.$goto({ path: "/channelChange/list" });
   }
   private filterType(type: string): string {
     switch (type) {

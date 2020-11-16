@@ -4,7 +4,7 @@
  * @Author: ywl
  * @Date: 2020-09-16 14:05:21
  * @LastEditors: ywl
- * @LastEditTime: 2020-11-16 15:35:06
+ * @LastEditTime: 2020-11-16 17:54:06
 -->
 <template>
   <IhPage>
@@ -524,7 +524,7 @@ export default class ModifyThe extends Vue {
           changeReason: this.changeReason,
         });
         this.$message.success("渠道商变更修改成功");
-        this.$goto({ path: "list" });
+        this.$goto({ path: "/channelChange/list" });
       } else {
         // 表单还有没填写
       }

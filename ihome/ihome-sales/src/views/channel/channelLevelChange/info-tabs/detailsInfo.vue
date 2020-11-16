@@ -4,7 +4,7 @@
  * @Author: wwq
  * @Date: 2020-10-15 12:33:25
  * @LastEditors: ywl
- * @LastEditTime: 2020-11-13 17:56:42
+ * @LastEditTime: 2020-11-16 17:55:22
 -->
 <template>
   <div class="text-left">
@@ -287,7 +287,7 @@ export default class Home extends Vue {
         type: "success",
         message: this.showMsg(val),
       });
-      this.$goto({ path: "list" });
+      this.$goto({ path: "/channelLevelChange/list" });
     } else {
       this.$message({
         type: "warning",
