@@ -4,7 +4,7 @@
  * @Author: ywl
  * @Date: 2020-06-30 09:21:17
  * @LastEditors: ywl
- * @LastEditTime: 2020-11-16 10:56:16
+ * @LastEditTime: 2020-11-16 15:18:16
 --> 
 <template>
   <IhPage label-width="100px">
@@ -143,7 +143,7 @@
         <el-table-column
           prop="status"
           label="状态"
-          width="100"
+          width="115"
         >
           <template v-slot="{ row }">
             {{ $root.dictAllName(row.status, "ChannelStatus") }}

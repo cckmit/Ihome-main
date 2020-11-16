@@ -4,7 +4,7 @@
  * @Author: zyc
  * @Date: 2020-10-21 15:16:14
  * @LastEditors: ywl
- * @LastEditTime: 2020-11-16 14:22:21
+ * @LastEditTime: 2020-11-16 14:48:35
 -->
 <template>
   <IhPage ref="ihPage">
@@ -32,7 +32,7 @@
             </el-col>
             <el-col :span="18">
               <el-input
-                placeholder="请输入内容"
+                placeholder="编码、名称"
                 v-model="dicTypeSearch"
                 clearable
                 size="small"
