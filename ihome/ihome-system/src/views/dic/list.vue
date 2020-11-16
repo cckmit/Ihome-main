@@ -4,7 +4,7 @@
  * @Author: zyc
  * @Date: 2020-10-21 15:16:14
  * @LastEditors: ywl
- * @LastEditTime: 2020-11-10 14:30:45
+ * @LastEditTime: 2020-11-16 14:22:21
 -->
 <template>
   <IhPage ref="ihPage">
@@ -36,6 +36,7 @@
                 v-model="dicTypeSearch"
                 clearable
                 size="small"
+                @keyup.enter.native="getAllByType(dicTypeSearch)"
               >
                 <el-button
                   slot="append"
@@ -60,10 +61,15 @@
                   <div
                     class="dict-type-title"
                     :title="item.name"
-                  >{{item.name}}</div>
+                  >{{`${item.code}·${item.name}`}}</div>
                   <div class="setting">
                     <el-link
                       type="primary"
+                      @click.stop="handleCopy(item)"
+                    >复制code</el-link>
+                    <el-link
+                      type="primary"
+                      class="margin-left-10"
                       @click.stop="handleEditDicType(item)"
                     >修改</el-link>
                     <el-link
@@ -100,6 +106,7 @@
                 placeholder="编码、名称或者标签"
                 v-model="dictSearch"
                 clearable
+                @keyup.enter.native="searchDictBykey(dictSearch)"
               ></el-input>
               <el-button
                 class="margin-left-10"
@@ -163,6 +170,7 @@
               <el-table-column
                 label="修改时间"
                 prop="updateTime"
+                width="155"
               ></el-table-column>
               <el-table-column
                 label="操作"
@@ -228,7 +236,7 @@
 </template>
 
 <script lang="ts">
-import { Component, Vue } from "vue-property-decorator";
+import { Component, Vue, Watch } from "vue-property-decorator";
 import {
   post_dict_getAllDictType,
   post_dict_getAllByType,
@@ -241,6 +249,26 @@ import {
 
 import DictType from "./dialog/dictType.vue";
 import DictItem from "./dialog/dictItem.vue";
+
+function copyFn(text: any, callback: any) {
+  let value = text.replace(/\s+/g, "");
+  let element = document.createElement("SPAN");
+  element.textContent = value;
+  document.body.appendChild(element);
+  if ((document as any).selection) {
+    let range = (document.body as any).createTextRange();
+    range.moveToElementText(element);
+    range.select();
+  } else if ((window as any).getSelection) {
+    let range = document.createRange();
+    range.selectNode(element);
+    (window as any).getSelection().removeAllRanges();
+    (window as any).getSelection().addRange(range);
+  }
+  document.execCommand("Copy");
+  element.remove ? element.remove() : (element as any).removeNode(true);
+  callback && callback();
+}
 
 @Component({
   components: { DictType, DictItem },
@@ -257,6 +285,15 @@ export default class DicList extends Vue {
   private dicTypeSearch: any = null;
   private dictList: any = [];
   private dictSearch: any = null;
+
+  @Watch("dicTypeSearch")
+  dicTypeSearchWatch(val: any) {
+    if (!val.length) this.getAllByType(val);
+  }
+  @Watch("dictSearch")
+  dictSearchWatch(val: any) {
+    if (!val.length) this.searchDictBykey(val);
+  }
 
   private get pageHeight() {
     let h =
@@ -381,6 +418,15 @@ export default class DicList extends Vue {
     let dictType = this.dictTypeList[this.activeIndex].code;
     this.dictList = await post_dict_getAllByType({ type: dictType });
   }
+  /**
+   * @description: 复制code
+   * @param {any} item
+   */
+  private handleCopy(item: any) {
+    copyFn(item.code, () => {
+      this.$message.success("复制成功");
+    });
+  }
 
   async created() {
     await this.getAllByType();
@@ -409,15 +455,27 @@ $active: #ef9d39;
   font-size: 14px;
   li {
     display: flex;
+    position: relative;
     padding: 4px 6px;
     line-height: 24px;
     cursor: pointer;
     &.active {
       background-color: rgba($color: $active, $alpha: 0.2);
+      // .setting {
+      //   background-color: rgba($color: $active, $alpha: 0.6);
+      // }
+    }
+    .setting {
+      position: absolute;
+      padding: 0 4px;
+      background-color: #fff;
+      right: 4px;
+      top: 50%;
+      transform: translateY(-50%);
     }
   }
   .dict-type-title {
-    width: 64%;
+    width: 100%;
     overflow: hidden;
     white-space: nowrap;
     text-overflow: ellipsis;
