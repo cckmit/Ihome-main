@@ -3,21 +3,40 @@
  * @version: 
  * @Author: wwq
  * @Date: 2020-10-15 12:33:37
- * @LastEditors: wwq
- * @LastEditTime: 2020-10-15 14:19:12
+ * @LastEditors: ywl
+ * @LastEditTime: 2020-11-16 10:43:55
 -->
 <template>
   <div>
-    <el-table :data="list" style="width: 100%">
-      <el-table-column prop="operation" label="操作"></el-table-column>
-      <el-table-column prop="operator" label="处理人"></el-table-column>
-      <el-table-column prop="operateTime" label="处理时间"></el-table-column>
+    <el-table
+      :data="list"
+      style="width: 100%"
+    >
+      <el-table-column
+        prop="operation"
+        label="操作"
+      ></el-table-column>
+      <el-table-column
+        prop="operator"
+        label="处理人"
+      ></el-table-column>
+      <el-table-column
+        prop="operateTime"
+        label="处理时间"
+      ></el-table-column>
       <el-table-column
         prop="result"
         label="处理结果"
         width="100"
+      >
+        <template v-slot="{ row }">
+          {{ $root.dictAllName(row.result, 'ApproveResult') }}
+        </template>
+      </el-table-column>
+      <el-table-column
+        prop="remark"
+        label="备注"
       ></el-table-column>
-      <el-table-column prop="remark" label="备注"></el-table-column>
     </el-table>
   </div>
 </template>
