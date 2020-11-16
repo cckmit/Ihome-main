@@ -96,6 +96,7 @@
               <el-tag
                 v-for="item in postData.achieveProjectList"
                 :key="item.name"
+                @close="handleCloseProject(item)"
                 closable>
                 {{item.name}}
               </el-tag>
@@ -236,7 +237,7 @@
   </ih-page>
 </template>
 <script lang="ts">
-  import {Component, Vue, Watch} from "vue-property-decorator";
+  import {Component, Vue} from "vue-property-decorator";
   import RelatedProjectList from "@/views/deal/achieveScaleScheme/related-project/list.vue";
   import {
     post_achieveScaleScheme_add,
@@ -287,18 +288,6 @@
     getByNameList: any = []; // 合同类型
     totalPackageList: any = []; // 总包
     distributionList: any = []; // 分销
-
-    // 监听-总包
-    @Watch("totalPackageList")
-    totalPackageListChange(list: any) {
-      console.log('totalPackageList', list);
-    }
-
-    // 监听-分销
-    @Watch("distributionList")
-    distributionListChange(list: any) {
-      console.log('distributionList', list);
-    }
 
     async created() {
       this.id = this.$route.query.id; // 业绩比例方案
@@ -398,12 +387,19 @@
       }
     }
 
+    // 选择关联项目
     async addRelatedProject() {
       this.dialogAdd = true;
     }
 
+    // 删除关联项目
+    handleCloseProject(item: any) {
+      this.postData.achieveProjectList.splice(this.postData.achieveProjectList.indexOf(item), 1);
+    }
+
     async finishAdd(data: any) {
-      console.log('data', data);
+      // console.log('data', data);
+      this.postData.achieveProjectList = data;
     }
 
     // 构建总包/分销对象
@@ -564,11 +560,14 @@
 
     @NoRepeatHttp()
     async addSave(valid: any) {
+      // console.log('this.postData', this.postData);
       if (valid) {
+        this.postData.achieveScaleConfigList = this.tableModel.tableData;
         if (this.id) {
           let postData: any = {
             id: this.id,
-            modelName: this.postData.modelName
+            modelName: this.postData.modelName,
+            ...this.postData
           };
           await post_achieveScaleScheme_update(postData);
           this.$message.success("编辑成功");
@@ -578,7 +577,8 @@
         } else {
           let postData: any = {
             id: this.id,
-            modelName: this.postData.modelName
+            modelName: this.postData.modelName,
+            ...this.postData
           };
           await post_achieveScaleScheme_add(postData);
           this.$message.success("新增成功");
