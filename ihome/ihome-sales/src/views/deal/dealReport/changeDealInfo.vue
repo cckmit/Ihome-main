@@ -949,12 +949,10 @@
   import SelectRole from "@/views/deal/dealReport/dialog/selectRole.vue";
   import EditDealAchieve from "@/views/deal/dealReport/dialog/editDealAchieve.vue";
   import {
-    post_achieveScaleScheme_add,
-    get_achieveScaleScheme_get__id,
-    post_achieveScaleScheme_update
+    get_achieveScaleScheme_get__id
   } from "@/api/deal";
-  import {Form as ElForm} from "element-ui";
-  import {NoRepeatHttp} from "ihome-common/util/aop/no-repeat-http";
+  // import {Form as ElForm} from "element-ui";
+  // import {NoRepeatHttp} from "ihome-common/util/aop/no-repeat-http";
 
   @Component({
     components: {AddCustomer, AddBroker, SelectProjectCycle, SelectRole, EditDealAchieve},

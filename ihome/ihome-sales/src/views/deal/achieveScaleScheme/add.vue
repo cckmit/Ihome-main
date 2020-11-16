@@ -233,44 +233,6 @@
 </template>
 <script lang="ts">
   import {Component, Vue, Watch} from "vue-property-decorator";
-
-  // 自定义指令
-  Vue.directive('input2', {
-    bind(el: any, binding: any) {
-      function checkInput(el: any, binding: any) {
-        console.log('binding', binding.value.scope)
-        if (binding.value.scope) {
-          binding.value.scope.ratio = binding.scope.ratio.replace(/[^\d.]/g, ""); // 清除"数字"和以外的字符
-          binding.value.scope.ratio = binding.scope.ratio.replace(/^\./g, ""); // 验证第一个字符是不是数字
-          binding.value.scope.ratio = binding.scope.ratio.replace(/\.{2,}/g, "."); // 只保留第一个"."
-          binding.value.scope.ratio = binding.scope.ratio.replace(".", "$#$").replace(/\./g, "").replace("$#$", ".");
-          binding.value.scope.ratio = binding.scope.ratio.replace(/^(\-)*(\d+)\.(\d{2}).*$/, '$1$2.$3'); // 只能输入两个小数
-        }
-        // const El = el.querySelector('.el-input__inner');
-        // El.value = El.value.replace(/[^\d.]/g, ""); // 清除"数字"和以外的字符
-        // El.value = El.value.replace(/^\./g, ""); // 验证第一个字符是不是数字
-        // El.value = El.value.replace(/\.{2,}/g, "."); // 只保留第一个"."
-        // El.value = El.value.replace(".", "$#$").replace(/\./g, "").replace("$#$", "."); // 只保留第一个"."
-        // if (binding.value && binding.value > 0) {
-        //   // 只能输入规定位数的小数
-        //   // /^(\-)*(\d+)\.(\d{2}).*$/
-        //   let regNum = new RegExp("^(\\-)*(\\d+)\\.(\\d{"+ binding.value +"}).*$");
-        //   El.value = El.value.replace(regNum, '$1$2.$3');
-        // }
-      }
-
-      el.addEventListener('keyup', function () {
-        // 输入验证
-        checkInput(el, binding)
-      });
-
-      el.addEventListener('blur', function () {
-        //失去焦点进行验证
-        checkInput(el, binding)
-      });
-    }
-  })
-
   import RelatedProjectList from "@/views/deal/achieveScaleScheme/related-project/list.vue";
   import {
     post_achieveScaleScheme_add,
@@ -499,9 +461,7 @@
 
     // 保存
     async save() {
-      console.log(this.totalPackageList);
-      return;
-      // (this.$refs["ruleForm"] as ElForm).validate(this.addSave);
+      (this.$refs["ruleForm"] as ElForm).validate(this.addSave);
     }
 
     @NoRepeatHttp()
