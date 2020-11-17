@@ -3,8 +3,8 @@
  * @version: 
  * @Author: ywl
  * @Date: 2020-09-16 14:05:21
- * @LastEditors: wwq
- * @LastEditTime: 2020-11-11 10:21:39
+ * @LastEditors: ywl
+ * @LastEditTime: 2020-11-16 17:54:06
 -->
 <template>
   <IhPage>
@@ -157,6 +157,15 @@
                 clearable
                 placeholder="请输入住所"
                 maxlength="64"
+              ></el-input>
+            </el-form-item>
+          </el-col>
+          <el-col :span="8">
+            <el-form-item label="跟进人">
+              <el-input
+                v-model="info.followUserId"
+                placeholder="跟进人"
+                disabled
               ></el-input>
             </el-form-item>
           </el-col>
@@ -515,7 +524,7 @@ export default class ModifyThe extends Vue {
           changeReason: this.changeReason,
         });
         this.$message.success("渠道商变更修改成功");
-        this.$goto({ path: "list" });
+        this.$goto({ path: "/channelChange/list" });
       } else {
         // 表单还有没填写
       }

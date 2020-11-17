@@ -4,7 +4,7 @@
  * @Author: zyc
  * @Date: 2020-06-23 10:42:04
  * @LastEditors: zyc
- * @LastEditTime: 2020-11-11 14:20:41
+ * @LastEditTime: 2020-11-16 14:18:36
 --> 
 <template>
   <div class="header-container">
@@ -97,7 +97,6 @@ export default class IhHeader extends Vue {
 
   @Watch("$route")
   async getBreadcrumb(newVal: any) {
-     
     let menuList: any = await allMenu();
     let arr = null;
     for (let index = 0; index < menuList.length; index++) {
@@ -115,9 +114,14 @@ export default class IhHeader extends Vue {
         break;
       }
     }
+    if (data && arr) {
+      this.breadcrumbList = [data, arr];
+    } else {
+      this.breadcrumbList.push({
+        title: "子页面",
+      });
+    }
 
-    this.breadcrumbList = [data, arr];
-    
     // newVal.matched.forEach((item: any) => {
     //   this.breadcrumbList.push({
     //     title: item.meta?.title,

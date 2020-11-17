@@ -3,13 +3,16 @@
  * @version: 
  * @Author: ywl
  * @Date: 2020-08-13 11:40:10
- * @LastEditors: zyc
- * @LastEditTime: 2020-11-11 15:06:41
+ * @LastEditors: ywl
+ * @LastEditTime: 2020-11-16 17:42:00
 -->
 <template>
   <IhPage label-width="100px">
     <template v-slot:form>
-      <el-form ref="form" label-width="100px">
+      <el-form
+        ref="form"
+        label-width="100px"
+      >
         <el-row>
           <el-col :span="8">
             <el-form-item label="名称">
@@ -80,15 +83,12 @@
                 <!-- 自定义模板使用 v-slot返回来的data：当前每条的数据；index：每一条数据的下标 -->
                 <template v-slot="{ data }">
                   <span style="float: left">{{ data.name }}</span>
-                  <span
-                    style="
+                  <span style="
                       margin-left: 20px;
                       float: right;
                       color: #8492a6;
                       font-size: 13px;
-                    "
-                    >{{ data.account }}</span
-                  >
+                    ">{{ data.account }}</span>
                 </template>
               </IhSelectPageUser>
             </el-form-item>
@@ -106,9 +106,18 @@
 
     <template v-slot:btn>
       <el-row>
-        <el-button type="primary" @click="search()">查询</el-button>
-        <el-button type="success" @click="$router.push('add')">添加</el-button>
-        <el-button type="info" @click="reset()">重置</el-button>
+        <el-button
+          type="primary"
+          @click="search()"
+        >查询</el-button>
+        <el-button
+          type="success"
+          @click="$router.push('add')"
+        >添加</el-button>
+        <el-button
+          type="info"
+          @click="reset()"
+        >重置</el-button>
         <el-button @click="changeFollower()">变更跟进人</el-button>
         <el-button @click="changeInputPerson()">变更录入人</el-button>
       </el-row>
@@ -140,17 +149,29 @@
           label="简称"
           min-width="100"
         ></el-table-column>
-        <el-table-column prop="province" label="省份" width="200">
+        <el-table-column
+          prop="province"
+          label="省份"
+          width="200"
+        >
           <template v-slot="{ row }">
             {{ $root.getAreaName(row.province) }}
           </template>
         </el-table-column>
-        <el-table-column prop="city" label="城市" width="200">
+        <el-table-column
+          prop="city"
+          label="城市"
+          width="200"
+        >
           <template v-slot="{ row }">
             {{ $root.getAreaName(row.city) }}
           </template>
         </el-table-column>
-        <el-table-column prop="county" label="行政区" width="200">
+        <el-table-column
+          prop="county"
+          label="行政区"
+          width="200"
+        >
           <template v-slot="{ row }">
             {{ $root.getAreaName(row.county) }}
           </template>
@@ -165,19 +186,29 @@
           label="渠道跟进人"
           width="150"
         ></el-table-column>
-        <el-table-column prop="status" label="状态" width="150">
+        <el-table-column
+          prop="status"
+          label="状态"
+          width="150"
+        >
           <template v-slot="{ row }">
             <span>{{ $root.dictAllName(row.status, "ChannelStatus") }}</span>
           </template>
         </el-table-column>
-        <el-table-column label="操作" width="120" fixed="right">
+        <el-table-column
+          label="操作"
+          width="120"
+          fixed="right"
+        >
           <template v-slot="{ row }">
             <el-link
               type="primary"
               @click.native.prevent="handleToPage(row, 'info')"
-              >详情</el-link
+            >详情</el-link>
+            <el-dropdown
+              trigger="click"
+              class="margin-left-15"
             >
-            <el-dropdown trigger="click" class="margin-left-15">
               <span class="el-dropdown-link">
                 更多
                 <i class="el-icon-arrow-down el-icon--right"></i>
@@ -186,18 +217,15 @@
                 <el-dropdown-item
                   @click.native.prevent="handleToPage(row, 'edit')"
                   :disabled="row.status !== 'DRAFT'"
-                  >修改</el-dropdown-item
-                >
+                >修改</el-dropdown-item>
                 <el-dropdown-item
                   @click.native.prevent="remove(row)"
                   :disabled="row.status !== 'DRAFT'"
-                  >删除</el-dropdown-item
-                >
+                >删除</el-dropdown-item>
                 <el-dropdown-item
                   @click.native.prevent="handleToPage(row, 'confirm')"
                   :disabled="row.status !== 'ToBeConfirmed'"
-                  >确认</el-dropdown-item
-                >
+                >确认</el-dropdown-item>
                 <!-- <el-dropdown-item
                   @click.native.prevent="handleToPage(row, 'revoke')"
                   :disabled="row.status === 'DRAFT'"
@@ -205,18 +233,15 @@
                 <el-dropdown-item
                   @click.native.prevent="backDraft(row, 'revoke')"
                   :disabled="row.status === 'DRAFT'"
-                  >撤回起草</el-dropdown-item
-                >
+                >撤回起草</el-dropdown-item>
                 <el-dropdown-item
                   @click.native.prevent="handleToPage(row, 'change')"
-                  :disabled="row.status !== 'Audited'"
-                  >变更信息</el-dropdown-item
-                >
+                  :disabled="row.status !== 'PASS'"
+                >变更信息</el-dropdown-item>
                 <el-dropdown-item
                   @click.native.prevent="handleToPage(row, 'agent')"
                   :disabled="row.status !== 'DRAFT'"
-                  >维护渠道经纪人</el-dropdown-item
-                >
+                >维护渠道经纪人</el-dropdown-item>
               </el-dropdown-menu>
             </el-dropdown>
           </template>
@@ -236,7 +261,10 @@
       ></el-pagination>
     </template>
     <!-- dialog -->
-    <IhDialog :show="dialogVisible" desc="变更录入人">
+    <IhDialog
+      :show="dialogVisible"
+      desc="变更录入人"
+    >
       <UpdateUser
         :data="selectionData"
         :isInput="isInput"

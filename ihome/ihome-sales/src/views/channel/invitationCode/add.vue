@@ -4,7 +4,7 @@
  * @Author: zyc
  * @Date: 2020-10-13 19:06:12
  * @LastEditors: zyc
- * @LastEditTime: 2020-10-23 16:21:51
+ * @LastEditTime: 2020-11-16 10:15:47
 -->
 <template>
   <el-dialog
@@ -31,6 +31,7 @@
           type="date"
           placeholder="失效时间"
           value-format="yyyy-MM-dd"
+          :picker-options="pickerOptions"
         ></el-date-picker>
       </el-form-item>
 
@@ -93,7 +94,7 @@ export default class InvitationCodeAdd extends Vue {
   dialogVisible = true;
 
   form: any = {
-    expiresTime: null,
+    expiresTime: this.$tool.currentAddDay(14),
     departmentOrgId: null,
   };
   divisionList: any = [
@@ -106,6 +107,16 @@ export default class InvitationCodeAdd extends Vue {
       value: 2,
     },
   ];
+  pickerOptions = {
+    disabledDate(time: any) {
+      // 在科学计数法中，为了使公式简便，可以用带“E”的格式表示。例如1.03乘10的8次方，可简写为“1.03e8”的形式
+      // 一天是24*60*60*1000 = 86400000 = 8.64e7
+      return (
+        time.getTime() < Date.now() - 24 * 60 * 60 * 1000 ||
+        time.getTime() > Date.now() + 14 * 24 * 60 * 60 * 1000
+      );
+    },
+  };
 
   rules: any = {
     expiresTime: [

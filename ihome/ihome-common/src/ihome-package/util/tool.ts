@@ -3,8 +3,8 @@
  * @version: 
  * @Author: zyc
  * @Date: 2020-06-09 16:38:00
- * @LastEditors: wwq
- * @LastEditTime: 2020-10-14 09:05:36
+ * @LastEditors: zyc
+ * @LastEditTime: 2020-11-16 10:17:20
  */
 export interface ToolInterface {
     /**深度拷贝
@@ -29,6 +29,11 @@ export interface ToolInterface {
      * @return {type} 
      */
     todayStr(format?: string): string;
+    /**获取当前时间+n天yyyy-MM-dd字符串
+     * @param {*}
+     * @return {*}
+     */
+    currentAddDay(num: number): string;
     /**今天的字符串格式年月日时分秒
      * @param {type} 
      * @return {type} 
@@ -47,6 +52,22 @@ export interface ToolInterface {
 
 }
 export class Tool implements ToolInterface {
+    /**获取当前时间+n天yyyy-MM-dd字符串
+    * @param {type} 
+    * @return {type} 
+    */
+    currentAddDay(num = 0): string {
+        let today = new Date(new Date().getTime() + num * 24 * 3600 * 1000);
+        let year = today.getFullYear();
+        let month: any = today.getMonth() + 1;
+        month = month < 10 ? '0' + month : month;
+        let day = today.getDate() < 10 ? '0' + today.getDate() : today.getDate();
+        // let hours = today.getHours() < 10 ? '0' + today.getHours() : today.getHours();
+        // let mins = today.getMinutes() < 10 ? '0' + today.getMinutes() : today.getMinutes();
+        // let secs = today.getSeconds() < 10 ? '0' + today.getSeconds() : today.getSeconds();
+        let result = `${year}-${month}-${day}`
+        return result;
+    }
     /**获取下载的文件路径
      * @param {type} 
      * @return {type} 

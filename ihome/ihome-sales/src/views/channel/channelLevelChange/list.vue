@@ -3,13 +3,16 @@
  * @version: 
  * @Author: zyc
  * @Date: 2020-06-30 09:21:17
- * @LastEditors: zyc
- * @LastEditTime: 2020-11-11 15:05:33
+ * @LastEditors: ywl
+ * @LastEditTime: 2020-11-16 15:18:37
 --> 
 <template>
   <IhPage label-width="100px">
     <template v-slot:form>
-      <el-form ref="form" label-width="100px">
+      <el-form
+        ref="form"
+        label-width="100px"
+      >
         <el-row>
           <el-col :span="8">
             <el-form-item label="渠道商名称">
@@ -36,15 +39,12 @@
               >
                 <template v-slot="{ data }">
                   <span style="float: left">{{ data.name }}</span>
-                  <span
-                    style="
+                  <span style="
                       margin-left: 20px;
                       float: right;
                       color: #8492a6;
                       font-size: 13px;
-                    "
-                    >{{ data.account }}</span
-                  >
+                    ">{{ data.account }}</span>
                 </template>
               </IhSelectPageUser>
             </el-form-item>
@@ -77,11 +77,16 @@
           <el-col :span="8">
             <el-form-item label="变更日期">
               <el-date-picker
-                v-model="queryPageParameters.changeTime"
-                type="date"
+                v-model="changeTime"
+                type="daterange"
+                align="left"
                 style="width: 100%"
                 value-format="yyyy-MM-dd"
-                placeholder="选择日期"
+                unlink-panels
+                range-separator="至"
+                start-placeholder="开始日期"
+                end-placeholder="结束日期"
+                :picker-options="$root.pickerOptions"
               >
               </el-date-picker>
             </el-form-item>
@@ -109,8 +114,14 @@
 
     <template v-slot:btn>
       <el-row>
-        <el-button type="primary" @click="search()">查询</el-button>
-        <el-button type="info" @click="reset()">重置</el-button>
+        <el-button
+          type="primary"
+          @click="search()"
+        >查询</el-button>
+        <el-button
+          type="info"
+          @click="reset()"
+        >重置</el-button>
         <el-button @click="handleOpen()">变更录入人</el-button>
       </el-row>
     </template>
@@ -151,9 +162,17 @@
           label="变更日期"
           width="95"
         ></el-table-column>
-        <el-table-column prop="departmentOrgId" label="事业部" width="150">
+        <el-table-column
+          prop="departmentOrgId"
+          label="事业部"
+          width="150"
+        >
         </el-table-column>
-        <el-table-column prop="status" label="状态" width="130">
+        <el-table-column
+          prop="status"
+          label="状态"
+          width="135"
+        >
           <template v-slot="{ row }">
             {{ $root.dictAllName(row.status, "ChannelGradeStatus") }}
           </template>
@@ -163,14 +182,20 @@
           label="变更原因"
           min-width="200"
         ></el-table-column>
-        <el-table-column label="操作" fixed="right" width="150">
+        <el-table-column
+          label="操作"
+          fixed="right"
+          width="150"
+        >
           <template v-slot="{ row }">
             <el-link
               type="primary"
               @click.native.prevent="handleToPage(row, 'info')"
-              >详情</el-link
+            >详情</el-link>
+            <el-dropdown
+              trigger="click"
+              style="margin-left: 15px"
             >
-            <el-dropdown trigger="click" style="margin-left: 15px">
               <span class="el-dropdown-link">
                 更多操作
                 <i class="el-icon-arrow-down el-icon--right"></i>
@@ -179,27 +204,20 @@
                 <el-dropdown-item
                   @click.native.prevent="handleToPage(row, 'edit')"
                   :disabled="row.status !== 'DRAFT'"
-                  >修改</el-dropdown-item
-                >
+                >修改</el-dropdown-item>
                 <el-dropdown-item
                   @click.native.prevent="remove(row)"
                   :disabled="row.status !== 'DRAFT'"
-                  >删除</el-dropdown-item
-                >
+                >删除</el-dropdown-item>
                 <el-dropdown-item
                   @click.native.prevent="handleToPage(row, 'revoke')"
                   :disabled="row.status !== 'PTWYSH'"
-                  >撤回</el-dropdown-item
-                >
-                <el-dropdown-item
-                  @click.native.prevent="handleToPage(row, 'examine')"
-                  >审核</el-dropdown-item
-                >
+                >撤回</el-dropdown-item>
+                <el-dropdown-item @click.native.prevent="handleToPage(row, 'examine')">审核</el-dropdown-item>
                 <el-dropdown-item
                   @click.native.prevent="backDraft(row)"
                   :disabled="row.status !== 'PASS'"
-                  >退回起草</el-dropdown-item
-                >
+                >退回起草</el-dropdown-item>
               </el-dropdown-menu>
             </el-dropdown>
           </template>
@@ -219,7 +237,10 @@
       ></el-pagination>
     </template>
     <!-- dialog -->
-    <IhDialog :show="dialogVisible" desc="变更录入人">
+    <IhDialog
+      :show="dialogVisible"
+      desc="变更录入人"
+    >
       <UpdateUser
         :data="selectionData"
         @cancel="() => (dialogVisible = false)"
@@ -257,8 +278,10 @@ export default class LevelChangeList extends Vue {
     status: null,
     storageNum: null,
     departmentOrgId: null,
-    changeTime: null,
+    changeTimeStart: null,
+    changeTimeEnd: null,
   };
+  changeTime: any = null;
   resPageInfo: any = {
     total: null,
     list: [],
@@ -281,10 +304,15 @@ export default class LevelChangeList extends Vue {
       status: null,
       storageNum: null,
       departmentOrgId: null,
-      changeTime: null,
+      changeTimeStart: null,
+      changeTimeEnd: null,
     });
+    this.changeTime = null;
   }
   search() {
+    let sign = this.changeTime && this.changeTime.length;
+    this.queryPageParameters.changeTimeStart = sign ? this.changeTime[0] : null;
+    this.queryPageParameters.changeTimeEnd = sign ? this.changeTime[1] : null;
     this.queryPageParameters.pageNum = 1;
     this.getListMixin();
   }

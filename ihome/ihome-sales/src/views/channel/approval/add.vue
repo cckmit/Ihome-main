@@ -4,7 +4,7 @@
  * @Author: zyc
  * @Date: 2020-07-09 14:31:23
  * @LastEditors: zyc
- * @LastEditTime: 2020-11-11 09:07:56
+ * @LastEditTime: 2020-11-16 10:34:21
 --> 
 <template>
   <ih-page>
@@ -67,13 +67,21 @@
       <div class="ih-info-title">
         <div>渠道等级信息列表</div>
         <div class="info-btn-list">
-          <el-button size="small" type="primary" @click="addChannelApprovalGrades()"
+          <el-button
+            size="small"
+            type="primary"
+            @click="addChannelApprovalGrades()"
             >添加</el-button
           >
-          <el-button size="small" type="success" @click="addChannelApprovalGradesChange()"
+          <el-button
+            size="small"
+            type="success"
+            @click="addChannelApprovalGradesChange()"
             >添加变更信息</el-button
           >
-          <span class="padding-left-20"><el-link type="success">预览供应商名录</el-link></span>
+          <span class="padding-left-20"
+            ><el-link type="success">预览供应商名录</el-link></span
+          >
         </div>
       </div>
 
@@ -82,6 +90,14 @@
         style="width: 100%; padding: 20px"
       >
         <el-table-column prop="storageNum" label="入库编号" width="180">
+          <template slot-scope="scope">
+            <el-link
+              class="margin-right-10"
+              type="primary"
+              @click.native.prevent="goInfo(scope)"
+              >{{ scope.row.storageNum }}</el-link
+            >
+          </template>
         </el-table-column>
         <el-table-column prop="channelName" label="渠道商名称" width="180">
         </el-table-column>
@@ -184,7 +200,7 @@ export default class ApprovalAdd extends Vue {
   input: any = null;
   textarea: any = null;
   dialogAdd: any = false;
-  channelApprovalGrades: any = [];
+  channelApprovalGrades: any[] = [];
   channelApprovalAttachmentsList: any = [];
   id: any = null;
 
@@ -226,7 +242,15 @@ export default class ApprovalAdd extends Vue {
     this.dialogAdd = true;
   }
   finishAdd(data: any) {
-    this.channelApprovalGrades = data;
+    for (let index = 0; index < data.length; index++) {
+      const element = data[index];
+      let result = this.channelApprovalGrades.some((item: any) => {
+        return item.id == element.id;
+      });
+      if (!result) {
+        this.channelApprovalGrades.push(element);
+      }
+    }
   }
   addChannelApprovalGradesChange() {
     this.dialogAdd = true;
@@ -244,7 +268,7 @@ export default class ApprovalAdd extends Vue {
   @NoRepeatHttp()
   async addSave(valid: any) {
     if (valid) {
-       await post_channelApproval_add(this.postData);
+      await post_channelApproval_add(this.postData);
       this.$message.success("新增成功");
       this.$router.push({
         path: "/approval/list",
@@ -295,6 +319,9 @@ export default class ApprovalAdd extends Vue {
       this.$message.warning("请先填好数据再保存");
       return false;
     }
+  }
+  goInfo(scope: any) {
+    window.open(`/web-sales/channelLevel/info?id=${scope.row.id}`);
   }
 }
 </script>

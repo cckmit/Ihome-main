@@ -3,18 +3,21 @@
  * @version: 
  * @Author: ywl
  * @Date: 2020-06-30 09:21:17
- * @LastEditors: zyc
- * @LastEditTime: 2020-11-11 15:06:19
+ * @LastEditors: ywl
+ * @LastEditTime: 2020-11-16 15:18:16
 --> 
 <template>
   <IhPage label-width="100px">
     <template v-slot:form>
-      <el-form ref="form" label-width="100px">
+      <el-form
+        ref="form"
+        label-width="100px"
+      >
         <el-row>
           <el-col :span="8">
             <el-form-item label="渠道商名称">
               <el-select
-                v-model="queryPageParameters.name"
+                v-model="queryPageParameters.oldChannelId"
                 clearable
                 placeholder="请选择"
                 class="width--100"
@@ -24,7 +27,7 @@
                   v-for="item in channelList"
                   :key="item.id"
                   :label="item.name"
-                  :value="item.name"
+                  :value="item.id"
                 ></el-option>
               </el-select>
             </el-form-item>
@@ -37,15 +40,12 @@
               >
                 <template v-slot="{ data }">
                   <span style="float: left">{{ data.name }}</span>
-                  <span
-                    style="
+                  <span style="
                       margin-left: 20px;
                       float: right;
                       color: #8492a6;
                       font-size: 13px;
-                    "
-                    >{{ data.account }}</span
-                  >
+                    ">{{ data.account }}</span>
                 </template>
               </IhSelectPageUser>
             </el-form-item>
@@ -77,15 +77,12 @@
               >
                 <template v-slot="{ data }">
                   <span style="float: left">{{ data.name }}</span>
-                  <span
-                    style="
+                  <span style="
                       margin-left: 20px;
                       float: right;
                       color: #8492a6;
                       font-size: 13px;
-                    "
-                    >{{ data.account }}</span
-                  >
+                    ">{{ data.account }}</span>
                 </template>
               </IhSelectPageUser>
             </el-form-item>
@@ -95,8 +92,14 @@
     </template>
 
     <template v-slot:btn>
-      <el-button type="primary" @click="search()">查询</el-button>
-      <el-button type="info" @click="reset()">重置</el-button>
+      <el-button
+        type="primary"
+        @click="search()"
+      >查询</el-button>
+      <el-button
+        type="info"
+        @click="reset()"
+      >重置</el-button>
       <el-button @click="handleOpen()">变更录入人</el-button>
     </template>
 
@@ -137,7 +140,11 @@
           label="变更日期"
           width="95"
         ></el-table-column>
-        <el-table-column prop="status" label="状态" width="100">
+        <el-table-column
+          prop="status"
+          label="状态"
+          width="115"
+        >
           <template v-slot="{ row }">
             {{ $root.dictAllName(row.status, "ChannelStatus") }}
           </template>
@@ -148,14 +155,20 @@
           min-width="240"
         ></el-table-column>
 
-        <el-table-column label="操作" width="150" fixed="right">
+        <el-table-column
+          label="操作"
+          width="150"
+          fixed="right"
+        >
           <template v-slot="{ row }">
             <el-link
               type="primary"
               @click.native.prevent="handleToPage(row, 'info')"
-              >详情</el-link
+            >详情</el-link>
+            <el-dropdown
+              trigger="click"
+              class="margin-left-15"
             >
-            <el-dropdown trigger="click" class="margin-left-15">
               <span class="el-dropdown-link">
                 更多操作
                 <i class="el-icon-arrow-down el-icon--right"></i>
@@ -164,29 +177,18 @@
                 <el-dropdown-item
                   @click.native.prevent="handleToPage(row, 'edit')"
                   :disabled="row.status !== 'DRAFT'"
-                  >修改</el-dropdown-item
-                >
+                >修改</el-dropdown-item>
                 <el-dropdown-item
                   @click.native.prevent="remove(row)"
                   :disabled="row.status !== 'DRAFT'"
-                  >删除</el-dropdown-item
-                >
+                >删除</el-dropdown-item>
                 <el-dropdown-item
                   @click.native.prevent="handleToPage(row, 'confirm')"
                   :disabled="row.status !== 'ToBeConfirmed'"
-                  >确认</el-dropdown-item
-                >
-                <el-dropdown-item
-                  @click.native.prevent="handleToPage(row, 'examine')"
-                  >审核</el-dropdown-item
-                >
-                <el-dropdown-item
-                  @click.native.prevent="handleToPage(row, 'revoke')"
-                  >撤回</el-dropdown-item
-                >
-                <el-dropdown-item @click.native.prevent="draft(row)"
-                  >退回起草</el-dropdown-item
-                >
+                >确认</el-dropdown-item>
+                <el-dropdown-item @click.native.prevent="handleToPage(row, 'examine')">审核</el-dropdown-item>
+                <el-dropdown-item @click.native.prevent="handleToPage(row, 'revoke')">撤回</el-dropdown-item>
+                <el-dropdown-item @click.native.prevent="draft(row)">退回起草</el-dropdown-item>
               </el-dropdown-menu>
             </el-dropdown>
           </template>
@@ -206,7 +208,10 @@
       ></el-pagination>
     </template>
     <!-- dialog -->
-    <IhDialog :show="dialogVisible" desc="变更录入人">
+    <IhDialog
+      :show="dialogVisible"
+      desc="变更录入人"
+    >
       <UpdateUser
         :data="selectionData"
         @cancel="() => (dialogVisible = false)"
@@ -238,7 +243,7 @@ import UpdateUser from "./dialog/updateUser.vue";
 })
 export default class ChannelChangeList extends Vue {
   queryPageParameters: any = {
-    name: null,
+    oldChannelId: null,
     inputUser: null,
     status: null,
     followUserId: null,
@@ -253,7 +258,7 @@ export default class ChannelChangeList extends Vue {
 
   reset() {
     Object.assign(this.queryPageParameters, {
-      name: null,
+      oldChannelId: null,
       inputUser: null,
       status: null,
       followUserId: null,
