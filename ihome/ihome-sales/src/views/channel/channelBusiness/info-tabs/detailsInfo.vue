@@ -4,7 +4,7 @@
  * @Author: lgf
  * @Date: 2020-09-16 14:05:21
  * @LastEditors: ywl
- * @LastEditTime: 2020-11-16 17:53:05
+ * @LastEditTime: 2020-11-23 10:05:24
 -->
 <template>
   <div class="text-left">
@@ -238,7 +238,7 @@ export default class Home extends Vue {
   }
   private async confirmChannel(type: string): Promise<void> {
     if (!this.approveRecord.remark) {
-      this.$message.error(`${this.switchType(type)}不能为空`);
+      this.$message.warning(`${this.switchType(type)}不能为空`);
       return;
     }
     await post_channel_approveRecord({
