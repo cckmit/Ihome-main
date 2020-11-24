@@ -24,6 +24,7 @@ import { channelRoutes } from './channel';
 import { developerRoutes } from './developer';
 import { contractRoutes } from './contract'
 import { projectRoutes } from './project'
+import { dealRoutes } from './deal'
 
 let routes: Array<RouteConfig> = [
   {
@@ -36,7 +37,7 @@ let routes: Array<RouteConfig> = [
   },
 ]
 
-routes = routes.concat(channelRoutes, developerRoutes, contractRoutes, projectRoutes);
+routes = routes.concat(channelRoutes, developerRoutes, contractRoutes, projectRoutes, dealRoutes);
 
 const router = new VueRouter({
   mode: 'history',
