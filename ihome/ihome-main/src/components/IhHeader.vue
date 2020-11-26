@@ -4,7 +4,7 @@
  * @Author: zyc
  * @Date: 2020-06-23 10:42:04
  * @LastEditors: zyc
- * @LastEditTime: 2020-11-16 14:18:36
+ * @LastEditTime: 2020-11-24 11:24:59
 --> 
 <template>
   <div class="header-container">
@@ -45,7 +45,7 @@
       >
         <ul class="head-ul">
           <li>个人中心</li>
-          <li @click="doc()">开发规范文档</li>
+          <!-- <li @click="doc()">开发规范文档</li> -->
           <li @click="loginOut()">退出</li>
         </ul>
         <el-avatar
@@ -114,12 +114,20 @@ export default class IhHeader extends Vue {
         break;
       }
     }
+
     if (data && arr) {
       this.breadcrumbList = [data, arr];
     } else {
-      this.breadcrumbList.push({
-        title: "子页面",
-      });
+      if (
+        newVal.path != "/web-sales/" &&
+        newVal.path != "/web-sales" &&
+        newVal.path != "/web-system/" &&
+        newVal.path != "/web-system"
+      ) {
+        this.breadcrumbList.push({
+          title: "子页面",
+        });
+      }
     }
 
     // newVal.matched.forEach((item: any) => {

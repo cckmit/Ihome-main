@@ -4,7 +4,7 @@
  * @Author: ywl
  * @Date: 2020-09-16 14:05:21
  * @LastEditors: ywl
- * @LastEditTime: 2020-11-16 17:57:05
+ * @LastEditTime: 2020-11-23 10:05:12
 -->
 <template>
   <IhPage>
@@ -548,7 +548,7 @@ export default class ModifyThe extends Vue {
           case "ChangeChannel":
             // 渠道商提交变更
             if (!this.changeReason) {
-              this.$message.error("变更原因不能为空");
+              this.$message.warning("变更原因不能为空");
               return;
             }
             await post_channelChange_add({

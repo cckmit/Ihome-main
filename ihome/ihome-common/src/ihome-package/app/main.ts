@@ -2,9 +2,17 @@
  * @Descripttion: 
  * @version: 
  * @Author: zyc
+ * @Date: 2020-11-24 10:49:02
+ * @LastEditors: zyc
+ * @LastEditTime: 2020-11-24 11:09:26
+ */
+/*
+ * @Descripttion: 
+ * @version: 
+ * @Author: zyc
  * @Date: 2020-07-07 09:25:17
  * @LastEditors: zyc
- * @LastEditTime: 2020-10-23 16:12:19
+ * @LastEditTime: 2020-11-24 11:07:55
  */
 /* eslint-disable  no-console */
 import '../util/base/extend'
@@ -16,7 +24,7 @@ import store from '@/store'
 import * as dic from '../util/enums/dic'
 let $dic: any = Object.assign(dic, dic.dicModular);
 
-import { get_dict_getAll, get_area_getAll } from '@/api/system'
+import { get_dict_getAll, get_area_getAll, post_sessionUser_getUserInfo } from '@/api/system'
 
 // import '@/public-path'
 if ((<any>window).__POWERED_BY_QIANKUN__) {
@@ -62,13 +70,14 @@ if (process.env.NODE_ENV !== 'production') {
 }
 let areaAll: any = {};//全部行政区数据
 let dictAll: any = [];//存在后端加载的所有字典数据
-
+let userInfo: any = {};//用户信息
 function render() {
 
 
-  Promise.all([get_area_getAll(), get_dict_getAll()]).then((res: any) => {
+  Promise.all([get_area_getAll(), get_dict_getAll(), post_sessionUser_getUserInfo()]).then((res: any) => {
     areaAll = res[0];
     dictAll = res[1];
+    userInfo = res[2];
 
 
   }).catch((err: any) => {
@@ -225,6 +234,7 @@ function render() {
         }
       },
       data: {
+        userInfo: userInfo,
         paginationLayout: "total, sizes, prev, pager, next, jumper",
         pageSizes: [10, 20, 50],
         pageSize: 10,

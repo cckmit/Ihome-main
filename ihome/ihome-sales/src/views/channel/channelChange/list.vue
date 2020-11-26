@@ -4,7 +4,7 @@
  * @Author: ywl
  * @Date: 2020-06-30 09:21:17
  * @LastEditors: ywl
- * @LastEditTime: 2020-11-16 15:18:16
+ * @LastEditTime: 2020-11-23 15:49:13
 --> 
 <template>
   <IhPage label-width="100px">
@@ -233,6 +233,7 @@ import {
   post_channelChange_getList,
   get_channel_getAll,
   post_channelChange_delete__id,
+  post_channelChange_backToDraft__id,
 } from "@/api/channel/index";
 import PaginationMixin from "../../../mixins/pagination";
 import UpdateUser from "./dialog/updateUser.vue";
@@ -286,9 +287,9 @@ export default class ChannelChangeList extends Vue {
       type: "warning",
     })
       .then(async () => {
-        console.log(row);
+        await post_channelChange_backToDraft__id({ id: row.id });
         this.getListMixin();
-        this.$message.success("删除成功");
+        this.$message.success("退回起草成功");
       })
       .catch(async () => {
         console.log("取消");
