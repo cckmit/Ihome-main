@@ -1,0 +1,278 @@
+<!--
+ * @Descripttion: 
+ * @version: 
+ * @Author: wwq
+ * @Date: 2020-11-27 17:11:14
+ * @LastEditors: wwq
+ * @LastEditTime: 2020-11-27 18:36:59
+-->
+<template>
+  <IhPage label-width="100px">
+    <template v-slot:form>
+      <el-form
+        ref="form"
+        label-width="100px"
+      >
+        <el-row>
+          <el-col :span="8">
+            <el-form-item label="项目盘编">
+              <el-input
+                v-model="queryPageParameters.proNo"
+                clearable
+              ></el-input>
+            </el-form-item>
+          </el-col>
+          <el-col :span="8">
+            <el-form-item label="项目名称">
+              <el-input
+                v-model="queryPageParameters.proName"
+                clearable
+              ></el-input>
+            </el-form-item>
+          </el-col>
+          <el-col :span="8">
+            <el-form-item label="周期名称">
+              <el-input
+                v-model="queryPageParameters.termName"
+                clearable
+              ></el-input>
+            </el-form-item>
+          </el-col>
+        </el-row>
+        <el-row>
+          <el-col :span="8">
+            <el-form-item label="业务类型">
+              <el-input
+                v-model="queryPageParameters.busTypeEnum"
+                clearable
+              ></el-input>
+            </el-form-item>
+          </el-col>
+          <el-col :span="8">
+            <el-form-item label="省市区">
+              <IhCascader v-model="provinceOption"></IhCascader>
+            </el-form-item>
+          </el-col>
+          <el-col :span="8">
+            <el-form-item label="周期审核状态">
+              <el-select
+                style="width: 100%"
+                v-model="queryPageParameters.auditEnum"
+                clearable
+                placeholder="请选择"
+              >
+                <el-option
+                  v-for="item in $root.dictAllList('AgencyAuditEnum')"
+                  :key="item.code"
+                  :label="item.name"
+                  :value="item.code"
+                ></el-option>
+              </el-select>
+            </el-form-item>
+          </el-col>
+        </el-row>
+      </el-form>
+    </template>
+
+    <template v-slot:btn>
+      <el-row>
+        <el-button
+          type="primary"
+          @click="search()"
+        >查询</el-button>
+        <el-button
+          type="success"
+          @click="add()"
+        >添加</el-button>
+        <el-button
+          type="info"
+          @click="reset()"
+        >重置</el-button>
+      </el-row>
+    </template>
+
+    <template v-slot:table>
+      <br />
+      <el-table
+        class="ih-table"
+        :data="resPageInfo.list"
+        :empty-text="emptyText"
+      >
+        <el-table-column
+          prop="province"
+          label="省份"
+        >
+          <template v-slot="{ row }">{{
+            $root.getAreaName(row.province)
+          }}</template>
+        </el-table-column>
+        <el-table-column
+          prop="city"
+          label="城市"
+        >
+          <template v-slot="{ row }">{{
+            $root.getAreaName(row.city)
+          }}</template>
+        </el-table-column>
+        <el-table-column
+          prop="district"
+          label="行政区"
+        >
+          <template v-slot="{ row }">{{
+            $root.getAreaName(row.district)
+          }}</template>
+        </el-table-column>
+        <el-table-column
+          prop="proName"
+          label="归属项目"
+        ></el-table-column>
+        <el-table-column
+          prop="proNo"
+          label="项目盘编"
+        ></el-table-column>
+        <el-table-column
+          prop="termName"
+          label="周期名称"
+        ></el-table-column>
+        <el-table-column
+          prop="busTypeEnum"
+          label="业务类型"
+        >
+          <template v-slot="{ row }">{{
+            $root.dictAllName(row.busTypeEnum, "BusTypeEnum")
+          }}</template>
+        </el-table-column>
+        <el-table-column label="周期时间">
+          <template v-slot="{ row }">{{
+            row.termStart + row.termEnd
+          }}</template>
+        </el-table-column>
+        <el-table-column
+          prop="auditEnum"
+          label="周期审核状态"
+          width="150"
+        >
+          <template v-slot="{ row }">{{
+            $root.dictAllName(row.auditEnum, "AuditEnum")
+          }}</template>
+        </el-table-column>
+        <el-table-column
+          fixed="right"
+          label="操作"
+          width="120"
+        >
+          <template v-slot="{ row }">
+            <el-link
+              type="primary"
+              @click.native.prevent="routeTo(row, 'info')"
+            >查看</el-link>
+            <el-dropdown
+              trigger="click"
+              class="margin-left-15"
+            >
+              <span class="el-dropdown-link">
+                更多
+                <i class="el-icon-arrow-down el-icon--right"></i>
+              </span>
+              <el-dropdown-menu slot="dropdown">
+                <el-dropdown-item @click.native.prevent="routeTo(row, 'edit')">修改</el-dropdown-item>
+                <el-dropdown-item @click.native.prevent="routeTo(row, 'audit')">审核</el-dropdown-item>
+                <el-dropdown-item @click.native.prevent="remove(row)">删除</el-dropdown-item>
+                <el-dropdown-item @click.native.prevent="routeTo(row, 'edit')">申领分销协议</el-dropdown-item>
+                <el-dropdown-item @click.native.prevent="routeTo(row, 'edit')">发起补充协议</el-dropdown-item>
+              </el-dropdown-menu>
+            </el-dropdown>
+          </template>
+        </el-table-column>
+      </el-table>
+    </template>
+    <template v-slot:pagination>
+      <br />
+      <el-pagination
+        @size-change="handleSizeChangeMixin"
+        @current-change="handleCurrentChangeMixin"
+        :current-page.sync="queryPageParameters.pageNum"
+        :page-sizes="$root.pageSizes"
+        :page-size="queryPageParameters.pageSize"
+        :layout="$root.paginationLayout"
+        :total="resPageInfo.total"
+      ></el-pagination>
+    </template>
+  </IhPage>
+</template>
+<script lang="ts">
+import { Component, Vue } from "vue-property-decorator";
+import { post_term_getList } from "@/api/project/index";
+import PaginationMixin from "@/mixins/pagination";
+
+@Component({
+  components: {},
+  mixins: [PaginationMixin],
+})
+export default class FirstAgencyList extends Vue {
+  queryPageParameters: any = {
+    proNo: null,
+    proName: null,
+    termName: null,
+    busTypeEnum: null,
+    province: null,
+    city: null,
+    district: null,
+    auditEnum: null,
+  };
+  provinceOption: any = [];
+  selection: any = [];
+  resPageInfo: any = {
+    total: null,
+    list: [],
+  };
+
+  get emptyText() {
+    return this.resPageInfo.total === null ? "正在加载数据..." : "暂无数据";
+  }
+
+  async created() {
+    this.getListMixin();
+  }
+  async getListMixin() {
+    this.resPageInfo = await post_term_getList(this.queryPageParameters);
+  }
+
+  reset() {
+    Object.assign(this.queryPageParameters, {
+      proNo: null,
+      proName: null,
+      termName: null,
+      busTypeEnum: null,
+      province: null,
+      city: null,
+      district: null,
+      auditEnum: null,
+    });
+    this.provinceOption = [];
+  }
+
+  routeTo(row: any, where: string) {
+    this.$router.push({
+      path: `/projectApproval/${where}`,
+      query: {
+        id: row.termId,
+      },
+    });
+  }
+
+  add() {
+    this.$router.push("/projectApproval/add");
+  }
+
+  search() {
+    this.queryPageParameters.province = this.provinceOption[0];
+    this.queryPageParameters.city = this.provinceOption[1];
+    this.queryPageParameters.county = this.provinceOption[2];
+    this.queryPageParameters.pageNum = 1;
+    this.getListMixin();
+  }
+}
+</script>
+<style lang="scss" scoped>
+</style>
