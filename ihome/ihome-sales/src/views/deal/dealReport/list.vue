@@ -391,7 +391,7 @@
     };
 
     async created() {
-      // await this.getListMixin();
+      await this.getListMixin();
     }
 
     // 改变查询时间

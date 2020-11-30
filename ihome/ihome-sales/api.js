@@ -13,7 +13,8 @@ function doneApi() {
     // handleSwagger('channel');
     // handleSwagger('contract');
     // handleSwagger('developer');
-    handleSwagger('project');
+    // handleSwagger('project');
+    handleSwagger('deal');
 }
 module.exports = (api, projectOptions) => {
     api.registerCommand('api', {
