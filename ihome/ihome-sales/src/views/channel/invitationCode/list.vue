@@ -3,14 +3,17 @@
  * @version: 
  * @Author: zyc
  * @Date: 2020-07-14 09:23:40
- * @LastEditors: zyc
- * @LastEditTime: 2020-11-11 14:53:47
+ * @LastEditors: ywl
+ * @LastEditTime: 2020-11-30 17:47:11
 --> 
 --> 
 <template>
   <ih-page>
     <template v-slot:form>
-      <el-form ref="form" label-width="80px">
+      <el-form
+        ref="form"
+        label-width="80px"
+      >
         <el-row>
           <el-col :span="8">
             <el-form-item label="邀请码">
@@ -94,10 +97,22 @@
 
     <template v-slot:btn>
       <el-row>
-        <el-button type="primary" @click="getListMixin()">查询</el-button>
-        <el-button type="success" @click="add()">添加</el-button>
-        <el-button type="info" @click="reset()">重置</el-button>
-        <el-button type="default" @click="toVoid()">作废</el-button>
+        <el-button
+          type="primary"
+          @click="getListMixin()"
+        >查询</el-button>
+        <el-button
+          type="success"
+          @click="add()"
+        >添加</el-button>
+        <el-button
+          type="info"
+          @click="reset()"
+        >重置</el-button>
+        <el-button
+          type="default"
+          @click="toVoid()"
+        >作废</el-button>
       </el-row>
     </template>
 
@@ -109,9 +124,17 @@
         @selection-change="handleSelectionChange"
         :empty-text="emptyText"
       >
-        <el-table-column type="selection" width="50" align="center">
+        <el-table-column
+          type="selection"
+          width="50"
+          align="center"
+        >
         </el-table-column>
-        <el-table-column type="index" label="序号" width="50"></el-table-column>
+        <el-table-column
+          type="index"
+          label="序号"
+          width="50"
+        ></el-table-column>
         <el-table-column
           prop="invitationCode"
           label="邀请码"
@@ -122,7 +145,10 @@
           label="状态"
           width="180"
         ></el-table-column> -->
-        <el-table-column label="状态" width="120">
+        <el-table-column
+          label="状态"
+          width="120"
+        >
           <template slot-scope="scope">{{
             $root.dictAllName(scope.row.status, "ValidType")
           }}</template>
@@ -133,31 +159,36 @@
           width="95"
         ></el-table-column>
         <el-table-column
-          prop="departmentOrgId"
+          prop="departmentName"
           label="事业部"
         ></el-table-column>
-        <el-table-column prop="createUser" label="创建人"></el-table-column>
+        <el-table-column
+          prop="createUserName"
+          label="创建人"
+        ></el-table-column>
         <el-table-column
           prop="createTime"
           label="创建时间"
           width="155"
         ></el-table-column>
 
-        <el-table-column fixed="right" label="操作" width="120">
+        <el-table-column
+          fixed="right"
+          label="操作"
+          width="120"
+        >
           <template slot-scope="scope">
             <el-link
               style="color: #409eff"
               class="margin-right-10"
               type="primary"
               @click.native.prevent="info(scope)"
-              >详情</el-link
-            >
+            >详情</el-link>
             <el-link
               style="color: #f66"
               type="primary"
               @click.native.prevent="remove(scope)"
-              >删除</el-link
-            >
+            >删除</el-link>
           </template>
         </el-table-column>
       </el-table>
@@ -175,7 +206,10 @@
       ></el-pagination>
     </template>
 
-    <ih-dialog :show="dialogAdd" desc="新增二维码">
+    <ih-dialog
+      :show="dialogAdd"
+      desc="新增二维码"
+    >
       <InvitationCodeAdd
         @cancel="() => (dialogAdd = false)"
         @finish="

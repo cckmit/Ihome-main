@@ -4,7 +4,7 @@
  * @Author: ywl
  * @Date: 2020-06-30 09:21:17
  * @LastEditors: ywl
- * @LastEditTime: 2020-11-23 15:49:13
+ * @LastEditTime: 2020-11-30 18:01:20
 --> 
 <template>
   <IhPage label-width="100px">
@@ -32,7 +32,7 @@
               </el-select>
             </el-form-item>
           </el-col>
-          <el-col :span="8">
+          <!-- <el-col :span="8">
             <el-form-item label="录入人">
               <IhSelectPageUser
                 v-model="queryPageParameters.inputUser"
@@ -49,7 +49,7 @@
                 </template>
               </IhSelectPageUser>
             </el-form-item>
-          </el-col>
+          </el-col> -->
           <el-col :span="8">
             <el-form-item label="状态">
               <el-select
@@ -67,8 +67,6 @@
               </el-select>
             </el-form-item>
           </el-col>
-        </el-row>
-        <el-row>
           <el-col :span="8">
             <el-form-item label="渠道跟进人">
               <IhSelectPageUser
@@ -100,7 +98,7 @@
         type="info"
         @click="reset()"
       >重置</el-button>
-      <el-button @click="handleOpen()">变更录入人</el-button>
+      <!-- <el-button @click="handleOpen()">变更录入人</el-button> -->
     </template>
 
     <template v-slot:table>
@@ -124,17 +122,15 @@
           min-width="250"
         ></el-table-column>
         <el-table-column
-          fixed
-          prop="followUserId"
+          prop="followUserName"
           label="渠道跟进人"
           width="120"
         ></el-table-column>
-        <el-table-column
-          fixed
+        <!-- <el-table-column
           prop="inputUser"
           label="录入人"
           width="120"
-        ></el-table-column>
+        ></el-table-column> -->
         <el-table-column
           prop="changeTime"
           label="变更日期"

@@ -4,7 +4,7 @@
  * @Author: lgf
  * @Date: 2020-09-16 14:05:21
  * @LastEditors: ywl
- * @LastEditTime: 2020-11-16 17:54:27
+ * @LastEditTime: 2020-11-30 18:08:51
 -->
 <template>
   <div class="text-left">
@@ -78,7 +78,7 @@
         </el-col>
 
         <el-col :span="8">
-          <el-form-item label="跟进人">{{ info.followUserId }}</el-form-item>
+          <el-form-item label="跟进人">{{ info.followUserName }}</el-form-item>
         </el-col>
       </el-row>
       <el-row>
