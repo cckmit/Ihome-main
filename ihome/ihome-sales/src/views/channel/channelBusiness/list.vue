@@ -4,7 +4,7 @@
  * @Author: ywl
  * @Date: 2020-08-13 11:40:10
  * @LastEditors: ywl
- * @LastEditTime: 2020-11-16 17:42:00
+ * @LastEditTime: 2020-11-30 17:43:53
 -->
 <template>
   <IhPage label-width="100px">
@@ -41,6 +41,11 @@
         </el-row>
         <el-row>
           <el-col :span="8">
+            <el-form-item label="省市区">
+              <IhCascader v-model="provinceList"></IhCascader>
+            </el-form-item>
+          </el-col>
+          <el-col :span="8">
             <el-form-item label="渠道跟进人">
               <el-select
                 v-model="queryPageParameters.followUserId"
@@ -74,13 +79,12 @@
               </el-select>
             </el-form-item>
           </el-col>
-          <el-col :span="8">
+          <!-- <el-col :span="8">
             <el-form-item label="渠道录入人">
               <IhSelectPageUser
                 v-model="queryPageParameters.inputUser"
                 clearable
               >
-                <!-- 自定义模板使用 v-slot返回来的data：当前每条的数据；index：每一条数据的下标 -->
                 <template v-slot="{ data }">
                   <span style="float: left">{{ data.name }}</span>
                   <span style="
@@ -92,14 +96,7 @@
                 </template>
               </IhSelectPageUser>
             </el-form-item>
-          </el-col>
-        </el-row>
-        <el-row>
-          <el-col :span="8">
-            <el-form-item label="省市区">
-              <IhCascader v-model="provinceList"></IhCascader>
-            </el-form-item>
-          </el-col>
+          </el-col> -->
         </el-row>
       </el-form>
     </template>
@@ -112,14 +109,14 @@
         >查询</el-button>
         <el-button
           type="success"
-          @click="$router.push('add')"
+          @click="$router.push('/channelBusiness/add')"
         >添加</el-button>
         <el-button
           type="info"
           @click="reset()"
         >重置</el-button>
         <el-button @click="changeFollower()">变更跟进人</el-button>
-        <el-button @click="changeInputPerson()">变更录入人</el-button>
+        <!-- <el-button @click="changeInputPerson()">变更录入人</el-button> -->
       </el-row>
     </template>
 
@@ -176,13 +173,13 @@
             {{ $root.getAreaName(row.county) }}
           </template>
         </el-table-column>
-        <el-table-column
+        <!-- <el-table-column
           prop="inputUser"
           label="录入人"
           width="150"
-        ></el-table-column>
+        ></el-table-column> -->
         <el-table-column
-          prop="followUserId"
+          prop="followUserName"
           label="渠道跟进人"
           width="150"
         ></el-table-column>
@@ -282,7 +279,7 @@
 
 <script lang="ts">
 import { Component, Vue } from "vue-property-decorator";
-// 引入api ---先调用本地
+// 引入api
 import {
   post_channel_getList,
   post_channel_delete__id,
