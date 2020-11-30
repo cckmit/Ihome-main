@@ -4,7 +4,7 @@
  * @Author: wwq
  * @Date: 2020-10-22 14:45:15
  * @LastEditors: wwq
- * @LastEditTime: 2020-11-27 18:41:10
+ * @LastEditTime: 2020-11-30 15:30:13
  */
 import { RouteConfig } from 'vue-router'
 
@@ -104,7 +104,7 @@ const projectRoutes: Array<RouteConfig> = [
   },
   {
     path: '/projectApproval',
-    meta: { title: '项目基础信息', icon: null },
+    meta: { title: '立项周期管理', icon: null },
     redirect: '/projectApproval/list',
     component: Layout,
     children: [

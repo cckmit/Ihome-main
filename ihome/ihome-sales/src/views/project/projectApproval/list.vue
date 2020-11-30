@@ -4,7 +4,7 @@
  * @Author: wwq
  * @Date: 2020-11-27 17:11:14
  * @LastEditors: wwq
- * @LastEditTime: 2020-11-27 18:36:59
+ * @LastEditTime: 2020-11-30 16:09:33
 -->
 <template>
   <IhPage label-width="100px">
@@ -82,7 +82,7 @@
         >查询</el-button>
         <el-button
           type="success"
-          @click="add()"
+          @click="dialogVisible = true"
         >添加</el-button>
         <el-button
           type="info"
@@ -133,6 +133,7 @@
         <el-table-column
           prop="termName"
           label="周期名称"
+          width="220"
         ></el-table-column>
         <el-table-column
           prop="busTypeEnum"
@@ -142,9 +143,12 @@
             $root.dictAllName(row.busTypeEnum, "BusTypeEnum")
           }}</template>
         </el-table-column>
-        <el-table-column label="周期时间">
+        <el-table-column
+          label="周期时间"
+          width="180"
+        >
           <template v-slot="{ row }">{{
-            row.termStart + row.termEnd
+            row.termStart + '至' + row.termEnd
           }}</template>
         </el-table-column>
         <el-table-column
@@ -198,18 +202,25 @@
         :total="resPageInfo.total"
       ></el-pagination>
     </template>
+    <ih-dialog :show="dialogVisible">
+      <Add
+        @cancel="() => (dialogVisible = false)"
+        @finish="(data) => addFinish(data)"
+      />
+    </ih-dialog>
   </IhPage>
 </template>
 <script lang="ts">
 import { Component, Vue } from "vue-property-decorator";
 import { post_term_getList } from "@/api/project/index";
 import PaginationMixin from "@/mixins/pagination";
+import Add from "./dialog/basicInfo-dialog/add.vue";
 
 @Component({
-  components: {},
+  components: { Add },
   mixins: [PaginationMixin],
 })
-export default class FirstAgencyList extends Vue {
+export default class ProjectApproval extends Vue {
   queryPageParameters: any = {
     proNo: null,
     proName: null,
@@ -226,6 +237,7 @@ export default class FirstAgencyList extends Vue {
     total: null,
     list: [],
   };
+  dialogVisible = false;
 
   get emptyText() {
     return this.resPageInfo.total === null ? "正在加载数据..." : "暂无数据";
@@ -261,16 +273,21 @@ export default class FirstAgencyList extends Vue {
     });
   }
 
-  add() {
-    this.$router.push("/projectApproval/add");
-  }
-
   search() {
     this.queryPageParameters.province = this.provinceOption[0];
     this.queryPageParameters.city = this.provinceOption[1];
     this.queryPageParameters.county = this.provinceOption[2];
     this.queryPageParameters.pageNum = 1;
     this.getListMixin();
+  }
+  addFinish(data: any) {
+    this.dialogVisible = false;
+    this.$router.push({
+      path: `/projectApproval/edit`,
+      query: {
+        id: data.termId,
+      },
+    });
   }
 }
 </script>
