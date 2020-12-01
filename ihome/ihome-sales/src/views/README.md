@@ -10,3 +10,4 @@
 付款管理 sales-payoff
 开发商管理 sales-developer
 请佣管理 sales-apply
+财务管理 sales-finance
