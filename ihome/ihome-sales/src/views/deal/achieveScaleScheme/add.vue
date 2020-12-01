@@ -235,6 +235,7 @@
 <script lang="ts">
   import {Component, Vue} from "vue-property-decorator";
   import {
+    post_businessModel_getList,
     post_achieveScaleScheme_add,
     get_achieveScaleScheme_get__id,
     post_achieveScaleScheme_update,
@@ -354,16 +355,25 @@
     tableFormValidate: any = false;
     id: any = null;
     companyId: any = null;
+    getModelList: any = []; // 业务模式
     getByNameList: any = []; // 合同类型
     totalPackageList: any = []; // 总包
     distributionList: any = []; // 分销
 
     async created() {
+      await this.getBusinessModelList();
       this.companyId = this.$route.query.companyId; // 分公司id
       this.id = this.$route.query.id; // 具体业绩比例方案---详情用
       if (this.id) {
         await this.initGetInfo()
       }
+    }
+
+    // 获取业务模式
+    async getBusinessModelList() {
+      const res: any = await post_businessModel_getList();
+      // this.getModelList = res.data.list;
+      console.log('resresres', res);
     }
 
     // 分销同步总包逻辑

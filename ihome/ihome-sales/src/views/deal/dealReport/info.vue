@@ -21,19 +21,19 @@
           <el-form-item label="项目周期">{{infoForm.projectCycle}}</el-form-item>
         </el-col>
         <el-col :span="8">
-          <el-form-item label="合同类型">{{infoForm.contType}}</el-form-item>
-        </el-col>
-        <el-col :span="8">
           <el-form-item label="业务模式">{{infoForm.modelName}}</el-form-item>
         </el-col>
         <el-col :span="8">
-          <el-form-item label="成交渠道等级">{{infoForm.channelLevel}}</el-form-item>
+          <el-form-item label="合同类型">{{infoForm.contType}}</el-form-item>
+        </el-col>
+        <el-col :span="8">
+          <el-form-item label="细分业务模式">{{infoForm.contType}}</el-form-item>
         </el-col>
         <el-col :span="8">
           <el-form-item label="成交状态">{{infoForm.status}}</el-form-item>
         </el-col>
         <el-col :span="8">
-          <el-form-item label="是否垫佣">{{infoForm.isMat}}</el-form-item>
+          <el-form-item label="是否代销">{{infoForm.isConsign}}</el-form-item>
         </el-col>
         <el-col :span="8">
           <el-form-item label="一手代理团队">{{infoForm.oneAgentTeam}}</el-form-item>
@@ -45,16 +45,16 @@
           <el-form-item label="业务类型">{{infoForm.businessType}}</el-form-item>
         </el-col>
         <el-col :span="8">
-          <el-form-item label="是否代销">{{infoForm.isConsign}}</el-form-item>
+          <el-form-item label="明源房款回笼比例">{{infoForm.returnRatio}}%</el-form-item>
         </el-col>
         <el-col :span="8">
           <el-form-item label="备案情况">{{infoForm.recordState}}</el-form-item>
         </el-col>
         <el-col :span="8">
-          <el-form-item label="合同编号">{{infoForm.contNo}}</el-form-item>
+          <el-form-item label="分销协议编号">{{infoForm.channelLevel}}</el-form-item>
         </el-col>
         <el-col :span="8">
-          <el-form-item label="明源房款回笼比例">{{infoForm.returnRatio}}%</el-form-item>
+          <el-form-item label="是否垫佣">{{infoForm.isMat}}</el-form-item>
         </el-col>
         <el-col :span="8">
           <el-form-item label="数据标志">{{infoForm.dataSign}}</el-form-item>
@@ -118,7 +118,7 @@
           <el-form-item label="房产证/预售合同编号">{{infoForm.houseList.propertyNo}}</el-form-item>
         </el-col>
         <el-col :span="16">
-          <el-form-item label="房屋地址">{{infoForm.houseList.address}}</el-form-item>
+          <el-form-item label="房产证地址">{{infoForm.houseList.address}}</el-form-item>
         </el-col>
         <el-col :span="8">
           <el-form-item label="建筑面积">{{infoForm.houseList.area}}</el-form-item>
@@ -217,7 +217,7 @@
         </el-table>
       </el-col>
     </el-row>
-    <p class="ih-info-title">中介信息</p>
+    <p class="ih-info-title">渠道信息</p>
     <el-row style="padding-left: 20px">
       <el-col>
         <el-table
@@ -225,7 +225,7 @@
           :data="infoList.agencyList">
           <el-table-column
             prop="agencyName"
-            label="中介公司名称"
+            label="渠道公司名称"
             min-width="120"
           ></el-table-column>
           <el-table-column
@@ -346,11 +346,6 @@
             min-width="120"
           ></el-table-column>
           <el-table-column
-            prop="commName"
-            label="拆佣名称"
-            min-width="120"
-          ></el-table-column>
-          <el-table-column
             prop="payee"
             label="收款方"
             min-width="120"
@@ -361,9 +356,9 @@
             min-width="120"
           ></el-table-column>
           <el-table-column
-            prop="amount"
-            label="金额"
-            min-width="150"
+            prop="feeType"
+            label="费用来源(客户/甲方)"
+            min-width="120"
           ></el-table-column>
           <el-table-column
             prop="paidAmount"
@@ -371,8 +366,8 @@
             min-width="150"
           ></el-table-column>
           <el-table-column
-            prop="partyACustomerName"
-            label="客户/甲方"
+            prop="amount"
+            label="金额"
             min-width="150"
           ></el-table-column>
           <el-table-column
@@ -433,32 +428,10 @@
             label="店组"
             min-width="150"
           ></el-table-column>
-          <el-table-column prop="type" label="主管" min-width="150">
+          <el-table-column prop="type" label="管理岗" min-width="150">
             <template slot-scope="scope">
               <div v-if="scope.row.SupervisorList.length > 0">
                 <div v-for="list in scope.row.SupervisorList" :key="list.id">
-                  <span>{{list.ratio}}%</span>
-                  <span>{{list.manager}}({{list.managerPosition}})</span>
-                </div>
-              </div>
-              <div v-else>暂无信息</div>
-            </template>
-          </el-table-column>
-          <el-table-column prop="type" label="经理" min-width="150">
-            <template slot-scope="scope">
-              <div v-if="scope.row.ManagerList.length > 0">
-                <div v-for="list in scope.row.ManagerList" :key="list.id">
-                  <span>{{list.ratio}}%</span>
-                  <span>{{list.manager}}({{list.managerPosition}})</span>
-                </div>
-              </div>
-              <div v-else>暂无信息</div>
-            </template>
-          </el-table-column>
-          <el-table-column prop="type" label="总监" min-width="150">
-            <template slot-scope="scope">
-              <div v-if="scope.row.DirectorList.length > 0">
-                <div v-for="list in scope.row.DirectorList" :key="list.id">
                   <span>{{list.ratio}}%</span>
                   <span>{{list.manager}}({{list.managerPosition}})</span>
                 </div>
@@ -518,32 +491,10 @@
             label="店组"
             min-width="150"
           ></el-table-column>
-          <el-table-column prop="type" label="主管" min-width="150">
+          <el-table-column prop="type" label="管理岗" min-width="150">
             <template slot-scope="scope">
               <div v-if="scope.row.SupervisorList.length > 0">
                 <div v-for="list in scope.row.SupervisorList" :key="list.id">
-                  <span>{{list.ratio}}%</span>
-                  <span>{{list.manager}}({{list.managerPosition}})</span>
-                </div>
-              </div>
-              <div v-else>暂无信息</div>
-            </template>
-          </el-table-column>
-          <el-table-column prop="type" label="经理" min-width="150">
-            <template slot-scope="scope">
-              <div v-if="scope.row.ManagerList.length > 0">
-                <div v-for="list in scope.row.ManagerList" :key="list.id">
-                  <span>{{list.ratio}}%</span>
-                  <span>{{list.manager}}({{list.managerPosition}})</span>
-                </div>
-              </div>
-              <div v-else>暂无信息</div>
-            </template>
-          </el-table-column>
-          <el-table-column prop="type" label="总监" min-width="150">
-            <template slot-scope="scope">
-              <div v-if="scope.row.DirectorList.length > 0">
-                <div v-for="list in scope.row.DirectorList" :key="list.id">
                   <span>{{list.ratio}}%</span>
                   <span>{{list.manager}}({{list.managerPosition}})</span>
                 </div>

@@ -65,6 +65,7 @@
     <el-table
       class="ih-table"
       :data="resPageInfo.list"
+      :empty-text="emptyText"
       @selection-change="handleSelectionChange">
       <el-table-column type="selection" width="55"></el-table-column>
       <el-table-column
@@ -130,7 +131,7 @@
     @Prop({default: null}) data: any;
     dialogVisible = true;
     resPageInfo: any = {
-      total: 0,
+      total: null,
       list: [],
     };
 
