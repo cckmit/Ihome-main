@@ -4,7 +4,7 @@
  * @Author: zyc
  * @Date: 2020-05-25 09:37:07
  * @LastEditors: ywl
- * @LastEditTime: 2020-10-13 20:13:45
+ * @LastEditTime: 2020-11-16 10:37:11
 --> 
 <template>
   <div>
@@ -28,7 +28,11 @@
         prop="result"
         label="处理结果"
         width="100"
-      ></el-table-column>
+      >
+        <template v-slot="{ row }">
+          {{ $root.dictAllName(row.result, 'ApproveResult') }}
+        </template>
+      </el-table-column>
       <el-table-column
         prop="remark"
         label="备注"

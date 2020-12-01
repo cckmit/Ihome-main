@@ -3,8 +3,8 @@
  * @version: 
  * @Author: lgf
  * @Date: 2020-09-16 14:05:21
- * @LastEditors: wwq
- * @LastEditTime: 2020-11-11 10:21:00
+ * @LastEditors: ywl
+ * @LastEditTime: 2020-11-30 18:08:51
 -->
 <template>
   <div class="text-left">
@@ -78,7 +78,7 @@
         </el-col>
 
         <el-col :span="8">
-          <el-form-item label="跟进人">{{ info.followUserId }}</el-form-item>
+          <el-form-item label="跟进人">{{ info.followUserName }}</el-form-item>
         </el-col>
       </el-row>
       <el-row>
@@ -86,7 +86,7 @@
           <el-form-item
             label="状态"
             v-if="info.status"
-          >{{ $root.dictAllName(info.status, 'ChannelStatus').name }}</el-form-item>
+          >{{ $root.dictAllName(info.status, 'ChannelStatus') }}</el-form-item>
         </el-col>
       </el-row>
     </el-form>
@@ -179,15 +179,14 @@
         type="textarea"
         placeholder="请输入确认意见"
         v-model="approveRecord.remark"
-        :rows="3"
+        :rows="5"
       ></el-input>
       <div class="text-center">
         <br />
         <el-button
           type="success"
           @click="confirmChannel('Confirm')"
-        >通过</el-button>
-        <el-button>退回</el-button>
+        >提交</el-button>
       </div>
     </template>
 
@@ -199,7 +198,7 @@
         class="padding-left-20"
         placeholder="请输入审核意见"
         v-model="approveRecord.remark"
-        :rows="3"
+        :rows="5"
       ></el-input>
       <div class="text-center">
         <br />
@@ -207,7 +206,7 @@
           type="success"
           @click="confirmChannel('Pass')"
         >通过</el-button>
-        <el-button>退回</el-button>
+        <el-button @click="confirmChannel('Reject')">驳回</el-button>
       </div>
     </template>
 
@@ -219,15 +218,14 @@
         class="padding-left-20"
         placeholder="请输入撤回原因"
         v-model="approveRecord.remark"
-        :rows="3"
+        :rows="5"
       ></el-input>
       <div class="text-center">
         <br />
         <el-button
           type="success"
           @click="confirmChannel('Revoke')"
-        >通过</el-button>
-        <el-button>退回</el-button>
+        >提交</el-button>
       </div>
     </template>
   </div>
@@ -263,7 +261,7 @@ export default class DetailInfo extends Vue {
   }
   private async confirmChannel(type: string): Promise<void> {
     if (!this.approveRecord.remark) {
-      this.$message.error("输入不能为空");
+      this.$message.warning(`${this.filterType(type)}不能为空`);
       return;
     }
     this.approveRecord.result = type;
@@ -272,7 +270,20 @@ export default class DetailInfo extends Vue {
       id: this.$route.query.id,
     });
     this.$message.success("成功");
-    this.$goto({ path: "list" });
+    this.$goto({ path: "/channelChange/list" });
+  }
+  private filterType(type: string): string {
+    switch (type) {
+      case "Confirm":
+        return "确认意见";
+      case "Pass":
+      case "Reject":
+        return "审核意见";
+      case "Revoke":
+        return "撤回原因";
+      default:
+        return "";
+    }
   }
 
   async created() {

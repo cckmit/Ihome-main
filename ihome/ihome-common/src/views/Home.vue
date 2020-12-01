@@ -51,6 +51,18 @@ export default class Home extends Vue {
       desc: "用户下拉分页组件，支持多列，搜索，分页",
       path: "/selectPage",
     },
+    {
+      key: "IhTableCheckBox",
+      name: "表格多选",
+      desc: "表格多选，支持回显，显示选择项",
+      path: "/tableCheckBox",
+    },
+    {
+      key: "v-inputDigits（自定义指令）",
+      name: "input输入数字限制小数位数",
+      desc: "限制input框只能输入数字，支持小数位数限制",
+      path: "/inputDigits",
+    },
   ];
   info(scope: any) {
     this.$router.push(scope.row.path);

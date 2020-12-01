@@ -19,7 +19,8 @@ import { IhFilePre } from '../packages/file-pre/index';
 import { IhUpload } from '../packages/upload/index';
 import { IhTable } from '../packages/table';
 import { IhCascader } from '../packages/cascader';
-import { IhSelectPageUser } from '../packages/select-page'
+import { IhSelectPageUser } from '../packages/select-page';
+import { IhTableCheckBox } from '../packages/table-checkbox'
 
 
 export default (Vue: any) => {
@@ -35,4 +36,5 @@ export default (Vue: any) => {
   Vue.component("IhTable", IhTable);
   Vue.component("IhCascader", IhCascader);
   Vue.component("IhSelectPageUser", IhSelectPageUser);
+  Vue.component("IhTableCheckBox", IhTableCheckBox);
 };

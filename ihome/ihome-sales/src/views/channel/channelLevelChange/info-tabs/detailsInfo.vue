@@ -3,8 +3,8 @@
  * @version: 
  * @Author: wwq
  * @Date: 2020-10-15 12:33:25
- * @LastEditors: wwq
- * @LastEditTime: 2020-11-11 10:18:38
+ * @LastEditors: ywl
+ * @LastEditTime: 2020-11-16 17:55:22
 -->
 <template>
   <div class="text-left">
@@ -22,7 +22,7 @@
             <span class="text-ellipsis">{{ resPageInfo.channelId
               }}<el-link
                 style="margin-left: 5px"
-                :href="`/web-sales/channels/info?id=${resPageInfo.channelId}`"
+                :href="`/web-sales/channelBusiness/info?id=${resPageInfo.channelId}`"
                 type="primary"
                 target="_blank"
               >详情</el-link></span>
@@ -287,7 +287,7 @@ export default class Home extends Vue {
         type: "success",
         message: this.showMsg(val),
       });
-      this.$goto({ path: "list" });
+      this.$goto({ path: "/channelLevelChange/list" });
     } else {
       this.$message({
         type: "warning",

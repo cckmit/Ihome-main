@@ -60,6 +60,22 @@ const routes: Array<RouteConfig> = [
     meta: {
       title: '下拉框分页Demo'
     }
+  },
+  {
+    path: '/tableCheckBox',
+    name: 'tableCheckBox',
+    component: () => import('../views/tableCheckBoxDemo.vue'),
+    meta: {
+      title: '表格多选'
+    }
+  },
+  {
+    path: '/inputDigits',
+    name: 'InputDigits',
+    component: () => import('../views/inputDigitsDemo.vue'),
+    meta: {
+      title: 'input输入框限制输入小数'
+    }
   }
 ]
 const router = new VueRouter({

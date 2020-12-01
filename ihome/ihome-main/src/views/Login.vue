@@ -4,24 +4,26 @@
  * @Author: zyc
  * @Date: 2020-06-22 16:44:13
  * @LastEditors: zyc
- * @LastEditTime: 2020-10-20 10:02:09
+ * @LastEditTime: 2020-11-24 11:27:45
 --> 
 <template >
   <div class="main">
     <el-form
-      style=" background: #eee;
-  padding: 20px 20px;
-  margin-top: 200px;
-  width: 500px !important;
-  border-radius: 5px;
-  border: 1px solid #eee;"
+      style="
+        background: #eee;
+        padding: 20px 20px;
+        margin-top: 200px;
+        width: 500px !important;
+        border-radius: 5px;
+        border: 1px solid #eee;
+      "
       class="demo-ruleForm"
       :model="ruleForm"
       :rules="rules"
       ref="ruleForm"
       label-width="100px"
     >
-      <h3 style="text-align: center;margin: 10px;">登录页面</h3>
+      <h3 style="text-align: center; margin: 10px">登录页面</h3>
       <el-form-item label="账号" prop="username">
         <el-input v-model="ruleForm.username"></el-input>
       </el-form-item>
@@ -30,7 +32,12 @@
       </el-form-item>
 
       <el-form-item>
-        <el-button type="primary" @click="submitForm('ruleForm')" :loading="loading">登录</el-button>
+        <el-button
+          type="primary"
+          @click="submitForm('ruleForm')"
+          :loading="loading"
+          >登录</el-button
+        >
       </el-form-item>
     </el-form>
   </div>
@@ -66,14 +73,14 @@ export default class Login extends Vue {
           console.log(this.ruleForm);
 
           const res = await UserModule.Login(this.ruleForm);
-           
 
           console.log(res);
 
           this.loading = false;
-          this.$router.push({
-            path: defaultMountApp,
-          });
+          (window as any).location = defaultMountApp;
+          // this.$router.push({
+          //   path: defaultMountApp,
+          // });
         } catch (error) {
           this.loading = false;
         }

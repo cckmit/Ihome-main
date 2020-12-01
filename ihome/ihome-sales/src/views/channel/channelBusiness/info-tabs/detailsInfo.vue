@@ -3,8 +3,8 @@
  * @version: 
  * @Author: lgf
  * @Date: 2020-09-16 14:05:21
- * @LastEditors: wwq
- * @LastEditTime: 2020-11-11 10:23:19
+ * @LastEditors: ywl
+ * @LastEditTime: 2020-11-30 18:06:53
 -->
 <template>
   <div class="text-left">
@@ -73,7 +73,7 @@
         </el-col>
 
         <el-col :span="8">
-          <el-form-item label="跟进人">{{ info.followUserId }}</el-form-item>
+          <el-form-item label="跟进人">{{ info.followUserName }}</el-form-item>
         </el-col>
       </el-row>
       <el-row>
@@ -238,7 +238,7 @@ export default class Home extends Vue {
   }
   private async confirmChannel(type: string): Promise<void> {
     if (!this.approveRecord.remark) {
-      this.$message.error(`${this.switchType(type)}不能为空`);
+      this.$message.warning(`${this.switchType(type)}不能为空`);
       return;
     }
     await post_channel_approveRecord({
@@ -247,7 +247,7 @@ export default class Home extends Vue {
       id: this.$route.query.id,
     });
     this.$message.success("成功");
-    this.$goto({ path: "list" });
+    this.$goto({ path: "/channelBusiness/list" });
   }
   private switchType(type: any) {
     switch (type) {

@@ -4,7 +4,7 @@
  * @Author: ywl
  * @Date: 2020-10-12 10:38:48
  * @LastEditors: ywl
- * @LastEditTime: 2020-11-11 11:48:02
+ * @LastEditTime: 2020-11-17 08:48:12
 -->
 <template>
   <el-dialog
@@ -77,7 +77,7 @@
 import { Component, Vue, Prop } from "vue-property-decorator";
 import { Form as ElForm } from "element-ui";
 import { NoRepeatHttp } from "ihome-common/util/aop/no-repeat-http";
-import { noTrim } from "ihome-common/util/base/form-ui";
+import { noTrim, isNumberValidato } from "ihome-common/util/base/form-ui";
 // import { post_channelBank_add } from "@/api/channel/index";
 
 @Component({})
@@ -95,6 +95,7 @@ export default class BankDialog extends Vue {
     accountNum: [
       { required: true, message: "请输入账号", trigger: "change" },
       { validator: noTrim, trigger: "change" },
+      { validator: isNumberValidato, trigger: "change" },
       { max: 32, message: "字符长度不能大于32", trigger: "change" },
     ],
     bank: [
