@@ -25,11 +25,11 @@
               placeholder="请选择业务模式"
               class="width--100">
               <el-option
-                v-for="item in $root.dictAllList('BusinessModel')"
-                :key="item.code"
-                :label="item.name"
-                :value="item.code"
-              ></el-option>
+                v-for="item in getModelList"
+                :key="item.id"
+                :label="item.Desc"
+                :value="item.id"
+              >{{item.Desc}}</el-option>
             </el-select>
           </el-form-item>
         </el-col>
@@ -235,7 +235,7 @@
 <script lang="ts">
   import {Component, Vue} from "vue-property-decorator";
   import {
-    post_businessModel_getList,
+    post_businessModel_getAll,
     post_achieveScaleScheme_add,
     get_achieveScaleScheme_get__id,
     post_achieveScaleScheme_update,
@@ -371,9 +371,22 @@
 
     // 获取业务模式
     async getBusinessModelList() {
-      const res: any = await post_businessModel_getList();
-      // this.getModelList = res.data.list;
-      console.log('resresres', res);
+      const res: any = await post_businessModel_getAll();
+      // console.log('resresres', res);
+      let businessModelList = (this as any).$root.dictAllList('BusinessModel');
+      if (res && res.length > 0 && businessModelList && businessModelList.length > 0) {
+        res.forEach((item: any) => {
+          businessModelList.forEach((list: any) => {
+            if (item.modelName === list.code) {
+              item.Desc = list.name
+            }
+          })
+        })
+        this.getModelList = res;
+      } else {
+        this.getModelList = [];
+      }
+      console.log('getModelList', this.getModelList);
     }
 
     // 分销同步总包逻辑
@@ -445,7 +458,18 @@
     // 根据业务模式名称，获取对应的合同类型列表
     async getModelContTypeList() {
       const contTypeList = (this as any).$root.dictAllList('ContType');
-      const res: any = await get_businessModel_getByName__modelName({modelName: this.postData.modelId});
+      let modelName = '';
+      if (this.getModelList.length > 0) {
+        this.getModelList.forEach((list: any) => {
+          if (list.id === this.postData.modelId) {
+            modelName = list.modelName
+          }
+        })
+      } else {
+        return;
+      }
+      if (!modelName) return;
+      const res: any = await get_businessModel_getByName__modelName({modelName: modelName});
       // console.log('getModelContTypeList', res);
       if (contTypeList && contTypeList.length > 0 && res && res.length > 0) {
         this.getByNameList = contTypeList.filter((list: any) => {
@@ -458,7 +482,7 @@
 
     // 改变业务模式
     async handleChange(value: any) {
-      // console.log('valuevalue', value);
+      console.log('valuevalue', value);
       this.postData.contType = null;
       this.getByNameList = [];
       if (value) {
@@ -639,17 +663,28 @@
     async addSave(valid: any) {
       // console.log('this.postData', this.postData);
       if (valid && this.tableFormValidate && !this.showEmpty) {
-        this.postData.achieveScaleConfigList = this.tableModel.tableData; // 业绩比例配置
         this.postData.branchCompanyId = this.companyId; // 分公司ID
+        this.postData.achieveScaleConfigList = this.tableModel.tableData; // 业绩比例配置
+        // 构建参数
+        let postData: any = {
+          ...this.postData,
+          achievePropertyTypeList: []
+        };
+        if (this.postData.achievePropertyTypeList.length > 0) {
+          this.postData.achievePropertyTypeList.forEach((list: any) => {
+            postData.achievePropertyTypeList.push(
+              {
+                propertyType: list
+              }
+            )
+          })
+        }
         if (this.id) {
-          let postData: any = {
-            id: this.id,
-            ...this.postData
-          };
+          postData.id = this.id;
           await post_achieveScaleScheme_update(postData);
           this.$message.success("编辑成功");
         } else {
-          await post_achieveScaleScheme_add(this.postData);
+          await post_achieveScaleScheme_add(postData);
           this.$message.success("新增成功");
         }
         this.$goto({
