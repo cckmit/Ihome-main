@@ -260,7 +260,7 @@
       </el-row>
     </div>
     <div>
-      <p class="ih-info-title">中介信息</p>
+      <p class="ih-info-title">渠道信息</p>
       <el-row style="padding-left: 20px">
         <el-col>
           <el-table
@@ -268,7 +268,7 @@
             :data="infoList">
             <el-table-column
               prop="agencyName"
-              label="中介公司名称"
+              label="渠道公司名称"
               min-width="120"
             ></el-table-column>
             <el-table-column
@@ -490,32 +490,10 @@
               label="店组"
               min-width="150"
             ></el-table-column>
-            <el-table-column prop="type" label="主管" min-width="150">
+            <el-table-column prop="type" label="管理岗" min-width="150">
               <template slot-scope="scope">
                 <div v-if="scope.row.SupervisorList.length > 0">
                   <div v-for="list in scope.row.SupervisorList" :key="list.id">
-                    <span>{{list.ratio}}%</span>
-                    <span>{{list.manager}}({{list.managerPosition}})</span>
-                  </div>
-                </div>
-                <div v-else>暂无信息</div>
-              </template>
-            </el-table-column>
-            <el-table-column prop="type" label="经理" min-width="150">
-              <template slot-scope="scope">
-                <div v-if="scope.row.ManagerList.length > 0">
-                  <div v-for="list in scope.row.ManagerList" :key="list.id">
-                    <span>{{list.ratio}}%</span>
-                    <span>{{list.manager}}({{list.managerPosition}})</span>
-                  </div>
-                </div>
-                <div v-else>暂无信息</div>
-              </template>
-            </el-table-column>
-            <el-table-column prop="type" label="总监" min-width="150">
-              <template slot-scope="scope">
-                <div v-if="scope.row.DirectorList.length > 0">
-                  <div v-for="list in scope.row.DirectorList" :key="list.id">
                     <span>{{list.ratio}}%</span>
                     <span>{{list.manager}}({{list.managerPosition}})</span>
                   </div>
@@ -577,32 +555,10 @@
               label="店组"
               min-width="150"
             ></el-table-column>
-            <el-table-column prop="type" label="主管" min-width="150">
+            <el-table-column prop="type" label="管理岗" min-width="150">
               <template slot-scope="scope">
                 <div v-if="scope.row.SupervisorList.length > 0">
                   <div v-for="list in scope.row.SupervisorList" :key="list.id">
-                    <span>{{list.ratio}}%</span>
-                    <span>{{list.manager}}({{list.managerPosition}})</span>
-                  </div>
-                </div>
-                <div v-else>暂无信息</div>
-              </template>
-            </el-table-column>
-            <el-table-column prop="type" label="经理" min-width="150">
-              <template slot-scope="scope">
-                <div v-if="scope.row.ManagerList.length > 0">
-                  <div v-for="list in scope.row.ManagerList" :key="list.id">
-                    <span>{{list.ratio}}%</span>
-                    <span>{{list.manager}}({{list.managerPosition}})</span>
-                  </div>
-                </div>
-                <div v-else>暂无信息</div>
-              </template>
-            </el-table-column>
-            <el-table-column prop="type" label="总监" min-width="150">
-              <template slot-scope="scope">
-                <div v-if="scope.row.DirectorList.length > 0">
-                  <div v-for="list in scope.row.DirectorList" :key="list.id">
                     <span>{{list.ratio}}%</span>
                     <span>{{list.manager}}({{list.managerPosition}})</span>
                   </div>
@@ -662,9 +618,9 @@
       </el-form>
     </div>
     <div class="text-center btn-top">
+      <el-button @click="handleBack()">取消</el-button>
       <el-button type="success" @click="handlePass()">通过</el-button>
       <el-button type="danger" @click="handleFail()">驳回</el-button>
-      <el-button type="info" @click="handleBack()">返回</el-button>
     </div>
     <ih-dialog :show="dialogReviewDeal" desc="成交审核记录">
       <ReviewDetailsDialog

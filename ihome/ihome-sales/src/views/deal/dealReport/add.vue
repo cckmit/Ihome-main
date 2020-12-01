@@ -70,11 +70,11 @@
         <el-col :span="6">
           <el-form-item label="渠道商">
             <el-input
-              ref="inputSelect"
+              ref="inputCompany"
               class="input-select-wrapper"
               placeholder="渠道商"
               prefix-icon="el-icon-search"
-              @click.native.prevent="selectProject"
+              @click.native.prevent="selectCompany"
               v-model="postData.contType"/>
           </el-form-item>
         </el-col>
@@ -618,6 +618,17 @@
           "
       />
     </ih-dialog>
+    <ih-dialog :show="dialogAddAgentCompany" desc="选择渠道商列表">
+      <AgentCompanyList
+        @cancel="() => (dialogAddAgentCompany = false)"
+        @finish="
+            (data) => {
+              dialogAddAgentCompany = false;
+              finishAddAgentCompany(data);
+            }
+          "
+      />
+    </ih-dialog>
     <ih-dialog :show="dialogAddRoom" desc="选择房号列表">
       <SelectRoom
         @cancel="() => (dialogAddRoom = false)"
@@ -656,6 +667,7 @@
 <script lang="ts">
   import {Component, Vue} from "vue-property-decorator";
   import SelectProjectCycle from "@/views/deal/dealReport/dialog/selectProjectCycle.vue";
+  import AgentCompanyList from "@/views/deal/dealReport/dialog/agentCompanyList.vue";
   import SelectRoom from "@/views/deal/dealReport/dialog/selectRoom.vue";
   import AddCustomer from "@/views/deal/dealReport/dialog/addCustomer.vue";
   import AddBroker from "@/views/deal/dealReport/dialog/addBroker.vue";
@@ -668,7 +680,7 @@
   import {NoRepeatHttp} from "ihome-common/util/aop/no-repeat-http";
 
   @Component({
-    components: {AddCustomer, AddBroker, SelectProjectCycle, SelectRoom},
+    components: {AddCustomer, AddBroker, SelectProjectCycle, SelectRoom, AgentCompanyList},
   })
   export default class DealReportAdd extends Vue {
     postData: any = {
@@ -713,6 +725,7 @@
     dialogAddCustomer: any = false;
     dialogAddBroker: any = false;
     dialogAddProjectCycle: any = false;
+    dialogAddAgentCompany: any = false;
 
     async created() {
       this.id = this.$route.query.id;
@@ -765,6 +778,19 @@
       // this.addTotalPackageList = data;
     }
 
+    // 选择渠道商
+    selectCompany() {
+      this.dialogAddAgentCompany = true;
+      // input失焦
+      (this as any).$refs.inputCompany && (this as any).$refs.inputCompany.blur();
+    }
+
+    // 确定选择渠道商
+    finishAddAgentCompany(data: any) {
+      console.log('data', data);
+      // this.addTotalPackageList = data;
+    }
+
     // 选择房号
     selectRoom() {
       this.dialogAddRoom = true;
@@ -788,7 +814,7 @@
       this.dialogAddCustomer = true;
     }
 
-    // 添加中介经纪人
+    // 添加渠道经纪人
     handleAddBroker() {
       this.dialogAddBroker = true;
     }
@@ -799,13 +825,13 @@
       // this.addTotalPackageList = data;
     }
 
-    // 确定选择中介经纪人
+    // 确定选择渠道经纪人
     async finishAddBroker(data: any) {
       console.log('data', data);
       // this.addTotalPackageList = data;
     }
 
-    // 删除客户/中介经纪人
+    // 删除客户/渠道经纪人
     async deleteAdd(scope: any, type: any) {
       console.log(scope);
       console.log(type);
@@ -813,7 +839,7 @@
         // 删除客户信息逻辑
         console.log(111);
       } else if (type === 'broker') {
-        // 删除中介经纪人逻辑
+        // 删除渠道经纪人逻辑
         console.log(222);
       }
     }

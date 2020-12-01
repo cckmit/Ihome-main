@@ -105,11 +105,20 @@
             </el-form-item>
           </el-col>
           <el-col :span="8">
-            <el-form-item label="房屋地址">
+            <el-form-item label="渠道公司">
               <el-input
                 v-model="queryPageParameters.address"
                 clearable
-                placeholder="房屋地址"
+                placeholder="渠道公司"
+              ></el-input>
+            </el-form-item>
+          </el-col>
+          <el-col :span="8">
+            <el-form-item label="经纪人">
+              <el-input
+                v-model="queryPageParameters.broker"
+                clearable
+                placeholder="经纪人"
               ></el-input>
             </el-form-item>
           </el-col>
@@ -139,20 +148,20 @@
             </el-form-item>
           </el-col>
           <el-col :span="8">
-            <el-form-item label="中介公司">
+            <el-form-item label="栋座">
               <el-input
                 v-model="queryPageParameters.agencyName"
                 clearable
-                placeholder="中介公司"
+                placeholder="栋座"
               ></el-input>
             </el-form-item>
           </el-col>
           <el-col :span="8">
-            <el-form-item label="经纪人">
+            <el-form-item label="房号">
               <el-input
-                v-model="queryPageParameters.broker"
+                v-model="queryPageParameters.agencyName"
                 clearable
-                placeholder="经纪人"
+                placeholder="房号"
               ></el-input>
             </el-form-item>
           </el-col>
@@ -212,10 +221,15 @@
           min-width="250"
         ></el-table-column>
         <el-table-column
-          prop="address"
-          label="房产证地址"
-          min-width="250"
-        ></el-table-column>
+          prop="contType"
+          label="房产信息"
+          min-width="250">
+          <template slot-scope="scope">
+            <div>地址：{{scope.row.contType}}</div>
+            <div>客户：{{scope.row.suppContType}}</div>
+            <div>客户电话：{{scope.row.suppContType}}</div>
+          </template>
+        </el-table-column>
         <el-table-column
           prop="contType"
           label="交易类型"
@@ -223,6 +237,7 @@
           <template slot-scope="scope">
             <div v-if="scope.row.contType">{{scope.row.contType}}</div>
             <div v-if="scope.row.suppContType">{{scope.row.suppContType}}</div>
+            <div v-if="scope.row.suppContType">状态：{{scope.row.suppContType}}</div>
           </template>
         </el-table-column>
         <el-table-column
@@ -245,15 +260,23 @@
           </template>
         </el-table-column>
         <el-table-column
-          prop="status"
-          label="成交状态"
-          min-width="150"
-        ></el-table-column>
+          prop="commAmount"
+          label="渠道信息"
+          min-width="160">
+          <template slot-scope="scope">
+            <div>公司：{{scope.row.commAmount}}</div>
+            <div>经纪人：{{scope.row.paidCommAmount}}</div>
+          </template>
+        </el-table-column>
         <el-table-column
-          prop="approveTime"
-          label="审批时间"
-          min-width="180"
-        ></el-table-column>
+          prop="commAmount"
+          label="项目周期信息"
+          min-width="160">
+          <template slot-scope="scope">
+            <div>项目：{{scope.row.commAmount}}</div>
+            <div>周期：{{scope.row.paidCommAmount}}</div>
+          </template>
+        </el-table-column>
         <el-table-column
           prop="entryPerson"
           label="人员信息"
@@ -276,6 +299,7 @@
             <div>签约：{{scope.row.signDate}}</div>
             <div>填写：{{scope.row.createTime}}</div>
             <div>业绩：{{scope.row.allotDate}}</div>
+            <div>审批：{{scope.row.allotDate}}</div>
           </template>
         </el-table-column>
         <el-table-column fixed="right" label="操作" width="130">
@@ -503,6 +527,10 @@
     // 审核申报业绩
     async handleReviewAchieve(scope: any) {
       console.log(scope);
+      this.$router.push({
+        path: "/dealReport/add",
+        query: {id: scope.row.id}
+      });
     }
 
     /*
@@ -543,15 +571,21 @@
   .search-time-wrapper {
     width: 100%;
     display: flex;
+    flex-direction: row;
+    align-items: center;
 
     .time-type {
-      width: 45%;
+      width: 29%;
       box-sizing: border-box;
-      margin-right: 10px;
+      margin-right: 5px;
     }
 
     .time-range {
-      width: 50%;
+      flex: 1;
+
+      /deep/.el-date-editor {
+        width: 100% !important;
+      }
     }
   }
 </style>
