@@ -3,8 +3,8 @@
  * @version: 
  * @Author: zyc
  * @Date: 2020-06-24 09:47:33
- * @LastEditors: zyc
- * @LastEditTime: 2020-11-11 14:13:19
+ * @LastEditors: ywl
+ * @LastEditTime: 2020-12-01 17:14:37
  */
 import { IRes } from "./users.d";
 // import request from '@/utils/http';
@@ -17,7 +17,7 @@ import request from 'ihome-common/util/api/http';
  */
 function resHandle<T>(result: Promise<IRes<T>>) {
     return result.then((res: IRes<T>) => res.data)
-      .catch((err: IRes<T>) => err.data)
+        .catch((err: IRes<T>) => err.data)
 }
 
 /**获取用户信息
@@ -289,6 +289,27 @@ export function allMenu<T>() {
             icon: null,
             path: "/web-sales/dealReport/list"
         },
+        {
+            id: 701,
+            parentId: 0,
+            title: '财务管理模块',
+            icon: 'el-icon-setting',
+            path: null,
+        },
+        {
+            id: 702,
+            parentId: 701,
+            title: "银行网点列表",
+            icon: null,
+            path: "/web-sales/bankBranch/list"
+        },
+        {
+            id: 703,
+            parentId: 701,
+            title: "收款账号列表",
+            icon: null,
+            path: "/web-sales/receiptAccount/list"
+        }
     ];
     return menuList;
 }
@@ -317,7 +338,7 @@ export async function logout() {
 
 
 export const getUserInfo = () =>
-  request({
-      url: '/users/logout',
-      method: 'post'
-  })
+    request({
+        url: '/users/logout',
+        method: 'post'
+    })
