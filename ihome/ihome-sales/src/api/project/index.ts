@@ -1,6 +1,6 @@
 /* eslint-disable */
 /* 此脚本由swagger-ui的api-docs自动生成，请勿修改 */
-//2020-11-30 6:55:04 ├F10: PM┤
+//2020-12-1 11:29:29 ├F10: AM┤
 import { request } from '@/api/base'
 const basePath = "/sales-api/project"
 /**index*/
@@ -199,15 +199,23 @@ export async function post_partyAContract_add(d?: any) {
 export async function post_partyAContract_addPartyABuildings(d?: any) {
     return await request.post<number, number>(basePath + '/partyAContract/addPartyABuildings', d)
 }
+/**甲方合同-删除*/
+export async function post_partyAContract_del(d?: any) {
+    return await request.post<number, number>(basePath + '/partyAContract/del', d)
+}
 /**甲方合同查询*/
 export async function get_partyAContract_get__termId(d?: any) {
     return await request.get<PartyAContractPageVO, PartyAContractPageVO>(basePath + '/partyAContract/get/{termId}', { params: d })
 }
-/**甲方合同/栋座信息-新增or修改*/
-export async function post_partyAContract_save(d?: any) {
-    return await request.post<PartyAContractPageVO, PartyAContractPageVO>(basePath + '/partyAContract/save', d)
+/**甲方合同/栋座信息-获取楼盘栋座信息*/
+export async function post_partyAContract_getBuilding__termId(d?: any) {
+    return await request.post<BuildingItemVO[], BuildingItemVO[]>(basePath + '/partyAContract/getBuilding/{termId}', d)
 }
-/**甲方合同OA呈批备注-save*/
+/**甲方合同关联周期-新增*/
+export async function post_partyAContract_relationTerm(d?: any) {
+    return await request.post<number, number>(basePath + '/partyAContract/relationTerm', d)
+}
+/**甲方合同OA呈批备注-保存*/
 export async function post_partyAContract_saveOaRemark(d?: any) {
     return await request.post<number, number>(basePath + '/partyAContract/saveOaRemark', d)
 }
@@ -282,6 +290,10 @@ export async function post_project_getListByIds(d?: any) {
 /**查询项目列表-客户报备*/
 export async function post_project_getListForCustomer(d?: any) {
     return await request.post<PageModel<ProjectListVO>, PageModel<ProjectListVO>>(basePath + '/project/getListForCustomer', d)
+}
+/**getName*/
+export async function get_project_getName__id(d?: any) {
+    return await request.get<string, string>(basePath + '/project/getName/{id}', { params: d })
 }
 /**获取联动项目-父项目基础信息*/
 export async function get_project_getParent__proId(d?: any) {
@@ -393,11 +405,15 @@ export async function post_term_audit(d?: any) {
 }
 /**项目周期-删除*/
 export async function post_term_del(d?: any) {
-    return await request.post<any, any>(basePath + '/term/del', d)
+    return await request.post<number, number>(basePath + '/term/del', d)
 }
 /**获取立项基础详情*/
 export async function get_term_get__termId(d?: any) {
     return await request.get<TermRespVO, TermRespVO>(basePath + '/term/get/{termId}', { params: d })
+}
+/**获取周期项目信息2-合同模块*/
+export async function post_term_getContractByTermIds(d?: any) {
+    return await request.post<ContractByTermIdsDTO[], ContractByTermIdsDTO[]>(basePath + '/term/getContractByTermIds', d)
 }
 /**优惠合同相关-根据周期ID获取相关信息*/
 export async function get_term_getDistrictbuteProAndTerm__termId(d?: any) {
@@ -411,11 +427,15 @@ export async function post_term_getDropDown(d?: any) {
 export async function post_term_getList(d?: any) {
     return await request.post<PageModel<TermVO>, PageModel<TermVO>>(basePath + '/term/getList', d)
 }
+/**获取周期名称*/
+export async function get_term_getName__termId(d?: any) {
+    return await request.get<string, string>(basePath + '/term/getName/{termId}', { params: d })
+}
 /**基本信息-获取项目相关信息*/
 export async function get_term_getProInfo__proId(d?: any) {
     return await request.get<ProTermVO, ProTermVO>(basePath + '/term/getProInfo/{proId}', { params: d })
 }
-/**获取周期项目信息-合同模块*/
+/**获取周期项目信息1-合同模块*/
 export async function post_term_getTermInfoByTermId__termId(d?: any) {
     return await request.post<TermInfoMsgVo, TermInfoMsgVo>(basePath + '/term/getTermInfoByTermId/{termId}', d)
 }
@@ -711,9 +731,9 @@ export interface CollectPackageVo {
     chargeEnum: string;
     /**是否垫佣 (Veto-否、One-1个月、Two-2个月、Three-3个月、FOUR-4个月、Five-5个月、Six-6个月、Seven-7个月、Eight-8个月、Nine-9个月、Ten-10个月、Eleven-11个月、Twelve-12个月)*/
     padCommissionEnum: string;
-    /**周期结束时间(yyyy-MM-dd HH:mm:ss)*/
+    /**周期结束时间(yyyy-MM-dd)*/
     termEnd: string;
-    /**周期起始时间(yyyy-MM-dd HH:mm:ss)*/
+    /**周期起始时间(yyyy-MM-dd)*/
     termStart: string;
 }
 /**CollectandsendConditionVO*/
@@ -811,7 +831,7 @@ export interface CollectandsendDetailVO_1 {
     chargeEnum: string;
     /**收派套餐明细*/
     colletionandsendMxs: CollectandsendCustomerVO[];
-    /**有效截至时间(yyyy-MM-dd HH:mm:ss)*/
+    /**有效截至时间(yyyy-MM-dd)*/
     endTime: string;
     /**假定成交价 单位万*/
     estimatedTransactionPrice: number;
@@ -825,13 +845,13 @@ export interface CollectandsendDetailVO_1 {
     padCommissionEnum: string;
     /**物业类型 WorkShop("厂房"),Apartment("公寓"),Villa("别墅"),Shop("商铺"),Office("写字楼"),Parking("车位"),Other("其他")(Residence-住宅、WorkShop-厂房、Apartment-公寓、Villa-别墅、Shop-商铺、Office-写字楼、Parking-车位、Other-其他)*/
     propertyEnum: string;
-    /**有效开始时间(yyyy-MM-dd HH:mm:ss)*/
+    /**有效开始时间(yyyy-MM-dd)*/
     startTime: string;
-    /**周期结束时间(yyyy-MM-dd HH:mm:ss)*/
+    /**周期结束时间(yyyy-MM-dd)*/
     termEnd: string;
     /**立项周期ID*/
     termId: number;
-    /**周期起始时间(yyyy-MM-dd HH:mm:ss)*/
+    /**周期起始时间(yyyy-MM-dd)*/
     termStart: string;
 }
 /**CollectandsendUpdateVO*/
@@ -840,7 +860,7 @@ export interface CollectandsendUpdateVO {
     baseCostEnum: string;
     /**收派套餐明细*/
     colletionandsendMxs: CollectandsendCustomerVO[];
-    /**有效截至时间(yyyy-MM-dd HH:mm:ss)*/
+    /**有效截至时间(yyyy-MM-dd)*/
     endTime: string;
     /**假定成交价 单位万*/
     estimatedTransactionPrice: number;
@@ -852,7 +872,7 @@ export interface CollectandsendUpdateVO {
     packageName: string;
     /**物业类型 WorkShop("厂房"),Apartment("公寓"),Villa("别墅"),Shop("商铺"),Office("写字楼"),Parking("车位"),Other("其他")(Residence-住宅、WorkShop-厂房、Apartment-公寓、Villa-别墅、Shop-商铺、Office-写字楼、Parking-车位、Other-其他)*/
     propertyEnum: string;
-    /**有效开始时间(yyyy-MM-dd HH:mm:ss)*/
+    /**有效开始时间(yyyy-MM-dd)*/
     startTime: string;
     /**立项周期ID*/
     termId: number;
@@ -861,7 +881,7 @@ export interface CollectandsendUpdateVO {
 export interface CollectandsendVO {
     /**基准费用  CONTRACT-按签约价 SUBSCRIPTION-按认购价(Contract-按签约价、Subscription-按认购价)*/
     baseCostEnum: string;
-    /**有效截至时间(yyyy-MM-dd HH:mm:ss)*/
+    /**有效截至时间(yyyy-MM-dd)*/
     endTime: string;
     /**假定成交价*/
     estimatedTransactionPrice: number;
@@ -873,7 +893,7 @@ export interface CollectandsendVO {
     packageName: string;
     /**物业类型  WORKSHOP-厂房 APARTMENT-公寓 VILLA-别墅 sSHOPS-商铺 OFFICEO-写字楼 PARKING-车位 OTHER-其他(Residence-住宅、WorkShop-厂房、Apartment-公寓、Villa-别墅、Shop-商铺、Office-写字楼、Parking-车位、Other-其他)*/
     propertyEnum: string;
-    /**有效开始时间(yyyy-MM-dd HH:mm:ss)*/
+    /**有效开始时间(yyyy-MM-dd)*/
     startTime: string;
     /**立项周期ID*/
     termId: number;
@@ -909,6 +929,61 @@ export interface ConstractOaVO {
     updateTime: string;
     /**更新用户*/
     updateUser: number;
+}
+/**ContractByTermIdsDTO*/
+export interface ContractByTermIdsDTO {
+    /**审核状态   CONDUCT-审核中 ADOPT-审核通过(Draft-草稿、Conduct-审核中、Adopt-审核通过、Reject-审核驳回)*/
+    auditEnum: string;
+    /**业务类型 NEW-新房(默认)、FINISHED-产成品(New-新房、Finished-产成品)*/
+    busTypeEnum: string;
+    /**市*/
+    city: string;
+    /**区*/
+    district: string;
+    /**项目id*/
+    proId: number;
+    /**项目名称*/
+    proName: string;
+    /**省*/
+    province: string;
+    /**周期结束时间(yyyy-MM-dd)*/
+    termEnd: string;
+    /**周期名称*/
+    termName: string;
+    /**周期起始时间(yyyy-MM-dd)*/
+    termStart: string;
+}
+/**ContractPartyListVO*/
+export interface ContractPartyListVO {
+    /**合同id*/
+    contractId: string;
+    /**ID*/
+    id: number;
+    /**甲方ID*/
+    userId: number;
+    /**甲方名字*/
+    userName: string;
+}
+/**ContractRelatedCycleResponseVO*/
+export interface ContractRelatedCycleResponseVO {
+    /**甲方合同编号*/
+    contractNo: string;
+    /**合作时间(yyyy-MM-dd)*/
+    cooperationTime: string;
+    /**合同跟进人ID*/
+    handler: number;
+    /**合同跟进人名字*/
+    handlerName: number;
+    /**甲方合同ID*/
+    id: number;
+    /**乙方Id*/
+    partyB: number;
+    /**甲方信息*/
+    partyList: ContractPartyListVO[];
+    /**乙方名字*/
+    partyName: number;
+    /**合同标题*/
+    title: string;
 }
 /**CustomerReportAddRuleVO*/
 export interface CustomerReportAddRuleVO {
@@ -1207,13 +1282,13 @@ export interface DistributeProTermVO {
     proId: number;
     /**项目名称*/
     proName: string;
-    /**周期结束时间(yyyy-MM-dd HH:mm:ss)*/
+    /**周期结束时间(yyyy-MM-dd)*/
     termEnd: string;
     /**周期名称*/
     termName: string;
     /**项目周期阶段 SUBSCRIPTION-认购(默认)、RECOGNIZE-认筹(Subscription-认购(默认)、Recognize-认筹)*/
     termStageEnum: string;
-    /**周期起始时间(yyyy-MM-dd HH:mm:ss)*/
+    /**周期起始时间(yyyy-MM-dd)*/
     termStart: string;
 }
 /**File*/
@@ -1773,37 +1848,25 @@ export interface PartyAContractAddVO {
     /**立项ID*/
     termId: number;
 }
+/**PartyAContractDelVO*/
+export interface PartyAContractDelVO {
+    /**甲方合同ID*/
+    contractId: number;
+    /**甲方ID*/
+    partyAIds: number[];
+    /**立项ID*/
+    termId: number;
+}
 /**PartyAContractPageVO*/
 export interface PartyAContractPageVO {
     /**甲方合同信息*/
-    partyAContractInfos: PartyAContractVO[];
+    partyAContractInfos: ContractRelatedCycleResponseVO[];
     /**甲方关联栋座*/
     partyAInfoMesgVOS: PartyAInfoMesgVO[];
     /**备注信息*/
     partyAOaVO: PartyAOaVO;
     /**立项ID*/
     termId: number;
-}
-/**PartyAContractVO*/
-export interface PartyAContractVO {
-    /**合同ID*/
-    contractId: number;
-    /**合同标题*/
-    contractTitle: string;
-    /**执行时间(yyyy-MM-dd HH:mm:ss)*/
-    excuteTime: string;
-    /**跟进人Id*/
-    followId: number;
-    /**跟进人*/
-    followMan: string;
-    /**甲方合同ID*/
-    partyAContrctId: number;
-    /**甲方*/
-    partyAs: PartyAInfoVO[];
-    /**乙方*/
-    partyB: string;
-    /**乙方ID*/
-    partyBId: number;
 }
 /**PartyAInfoAddVO*/
 export interface PartyAInfoAddVO {
@@ -1819,7 +1882,7 @@ export interface PartyAInfoMesgVO {
     /**(必填)甲方ID*/
     companyId: number;
     /**(必填)甲方名称*/
-    companyName: number;
+    companyName: string;
 }
 /**PartyAInfoVO*/
 export interface PartyAInfoVO {
@@ -1832,7 +1895,7 @@ export interface PartyAInfoVO {
 export interface PartyAOaSaveVO {
     /**(必填)自增ID*/
     partyAOaId: number;
-    /**(必填)自增ID*/
+    /**(必填)备注信息*/
     remark: string;
     /**(必填)type类型不能为空！*/
     type: number;
@@ -2316,6 +2379,13 @@ export interface ReceiptVO {
     /**立项周期ID*/
     termId: number;
 }
+/**RelationTermVO*/
+export interface RelationTermVO {
+    /**甲方合同id*/
+    contractId: number;
+    /**立项ID*/
+    termId: number;
+}
 /**Resource*/
 export interface Resource {
     /**undefined*/
@@ -2629,13 +2699,13 @@ export interface TermBaseByPro {
     auditEnum: string;
     /**业务类型 NEW-新房(默认)、FINISHED-产成品(New-新房、Finished-产成品)*/
     busTypeEnum: string;
-    /**周期结束时间(yyyy-MM-dd HH:mm:ss)*/
+    /**周期结束时间(yyyy-MM-dd)*/
     termEnd: string;
     /**立项ID*/
     termId: number;
     /**周期名称 合作项目名称(项目推广名)+周期时间*/
     termName: string;
-    /**周期起始时间(yyyy-MM-dd HH:mm:ss)*/
+    /**周期起始时间(yyyy-MM-dd)*/
     termStart: string;
 }
 /**TermCalcVo*/

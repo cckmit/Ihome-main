@@ -4,7 +4,7 @@
  * @Author: wwq
  * @Date: 2020-11-27 17:15:27
  * @LastEditors: wwq
- * @LastEditTime: 2020-11-30 16:58:09
+ * @LastEditTime: 2020-12-01 17:12:59
 -->
 <template>
   <ih-page>
@@ -75,7 +75,6 @@
 </template>
 <script lang="ts">
 import { Component, Vue } from "vue-property-decorator";
-
 import BasicInfo from "./edit-tabs/basicInfo.vue";
 import Calculation from "./edit-tabs/calculation.vue";
 import Close from "./edit-tabs/close.vue";
@@ -101,7 +100,7 @@ Component.registerHooks(["beforeRouteEnter"]);
   },
 })
 export default class ProjectApprovalEdit extends Vue {
-  tabActive: any = "3";
+  tabActive: any = "2";
   typeStr = "";
 
   private beforeRouteEnter(to: any, from: any, next: any) {

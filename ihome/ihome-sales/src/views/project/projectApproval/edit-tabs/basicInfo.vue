@@ -4,7 +4,7 @@
  * @Author: wwq
  * @Date: 2020-11-27 17:17:06
  * @LastEditors: wwq
- * @LastEditTime: 2020-11-30 16:52:23
+ * @LastEditTime: 2020-12-01 19:03:19
 -->
 <template>
   <IhPage>
@@ -157,6 +157,7 @@
                 clearable
                 placeholder="请选择"
                 class="width--100"
+                @change="busEnumChange"
               >
                 <el-option
                   v-for="item in $root.dictAllList('BusEnum')"
@@ -177,6 +178,7 @@
                 clearable
                 placeholder="请选择"
                 class="width--100"
+                @change="chargeEnumChange"
               >
                 <el-option
                   v-for="item in $root.dictAllList('ChargeEnum')"
@@ -201,7 +203,7 @@
                 class="width--100"
               >
                 <el-option
-                  v-for="item in $root.dictAllList('AttributeEnum')"
+                  v-for="item in attributeEnumOptions"
                   :key="item.code"
                   :label="item.name"
                   :value="item.code"
@@ -710,6 +712,7 @@
 import { Component, Vue } from "vue-property-decorator";
 import { Form as ElForm } from "element-ui";
 import { get_term_get__termId, post_term_update } from "@/api/project/index";
+import { post_dict_getAllByType } from "@/api/system/index";
 @Component({
   components: {},
 })
@@ -760,6 +763,7 @@ export default class FirstAgencyEdit extends Vue {
     attachTermVOS: [],
   };
   private fileList: any = [];
+  attributeEnumOptions: any = [];
   private attachTermVOS: any = [];
   private rules: any = {
     proName: [
@@ -949,6 +953,28 @@ export default class FirstAgencyEdit extends Vue {
     this.getInfo();
   }
 
+  busEnumChange(val: any) {
+    this.info.attributeEnum = null;
+    if (val && this.info.chargeEnum) {
+      this.getAttributeEnumOptions();
+    }
+  }
+
+  chargeEnumChange(val: any) {
+    this.info.attributeEnum = null;
+    if (val && this.info.busEnum) {
+      this.getAttributeEnumOptions();
+    }
+  }
+
+  async getAttributeEnumOptions() {
+    this.attributeEnumOptions = await post_dict_getAllByType({
+      type: "AttributeEnum",
+      tag: `${this.info.busEnum},${this.info.chargeEnum}`,
+      valid: "Valid",
+    });
+  }
+
   save() {
     (this.$refs["ruleForm"] as ElForm).validate(async (v: any) => {
       if (v) {
@@ -997,6 +1023,10 @@ export default class FirstAgencyEdit extends Vue {
       this.info.startDivision = (this.$root as any).userInfo.account;
       this.info.timeList = [res.termStart, res.termEnd];
       this.info.termStageEnum = "Subscription";
+      window.sessionStorage.setItem("proId", res.proId);
+      if (this.info.chargeEnum && this.info.busEnum) {
+        this.getAttributeEnumOptions();
+      }
       // this.fileList = res.attachTermVOS.map((v: any) => ({
       //   name: v.attachName,
       //   fileId: v.attachId,

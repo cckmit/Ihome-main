@@ -4,7 +4,7 @@
  * @Author: wwq
  * @Date: 2020-11-27 17:21:01
  * @LastEditors: wwq
- * @LastEditTime: 2020-11-30 19:59:18
+ * @LastEditTime: 2020-12-01 19:42:17
 -->
 <template>
   <ih-page>
@@ -200,7 +200,6 @@ export default class ReportedRules extends Vue {
     this.businessDialogVisible = true;
   }
   async businessFinish(data: any) {
-    console.log(data);
     let arr: any = [];
     data.forEach((v: any) => {
       arr.push(v.id);
@@ -210,6 +209,7 @@ export default class ReportedRules extends Vue {
       termId: this.$route.query.id,
     });
     this.$message.success("新增成功");
+    this.getInfo();
     this.businessDialogVisible = false;
   }
   async delChannel(row: any) {
