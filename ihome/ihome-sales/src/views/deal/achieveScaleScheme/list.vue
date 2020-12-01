@@ -204,13 +204,13 @@
 
     resPageInfo: any = {
       total: null,
-      list: [{}],
+      list: [],
     };
     companyId: any = null; // 分公司id
 
     async created() {
       // console.log('物业类型', (this as any).$root.dictAllList('PropertyEnum'));
-      this.companyId = this.$route.query.id;
+      this.companyId = localStorage.getItem('companyId');
       if (this.companyId) {
         await this.getListMixin();
       }

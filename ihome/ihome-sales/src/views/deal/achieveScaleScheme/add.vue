@@ -386,7 +386,6 @@
       } else {
         this.getModelList = [];
       }
-      console.log('getModelList', this.getModelList);
     }
 
     // 分销同步总包逻辑
@@ -433,25 +432,33 @@
     async initGetInfo() {
       const res: any = await get_achieveScaleScheme_get__id({id: this.id});
       this.postData = res;
-      if (this.postData.achieveScaleConfigList && this.postData.achieveScaleConfigList.length > 0) {
-        // 初始化
-        this.totalPackageList = [];
-        this.distributionList = [];
-        this.postData.achieveScaleConfigList.forEach((list: any) => {
-          if (list.type) {
-            list.customizeId = list.id;
-            switch (list.type) {
-              // 总包
-              case "TotalBag":
-                this.totalPackageList.push(list);
-                break;
-              // 分销
-              case "Distri":
-                this.distributionList.push(list);
-                break;
-            }
-          }
+      // 根据业务模式获取合同类型下拉选项
+      await this.getModelContTypeList();
+      // 物业类型
+      if (this.postData.achievePropertyTypeList.length > 0) {
+        let tempArr: any = [];
+        this.postData.achievePropertyTypeList.forEach((list: any) => {
+          tempArr.push(list.propertyType);
         })
+        this.postData.achievePropertyTypeList = tempArr;
+      } else {
+        this.postData.achievePropertyTypeList = []
+      }
+      // 分配方案表格数据
+      if (this.postData.achieveScaleConfigList.length > 0) {
+        this.tableModel.tableData = [];
+        this.postData.achieveScaleConfigList.forEach((list: any, index: any) => {
+          // (this as any).$set(list, 'customizeId', new Date().getTime() + index);
+          this.tableModel.tableData.push(
+            {
+              ...list,
+              typeName: list.type === 'TotalBag' ? '总包' : '分销',
+              customizeId: new Date().getTime() + index
+            }
+          )
+        })
+      } else {
+        this.tableModel.tableData = []
       }
     }
 
