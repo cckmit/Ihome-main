@@ -13,7 +13,7 @@
       :model="postData"
       :rules="rules"
       ref="ruleForm"
-      label-width="160px"
+      label-width="150px"
       class="demo-ruleForm">
       <el-row>
         <el-col :span="6" v-if="!!postData.dealCode">
@@ -27,28 +27,12 @@
         <el-col :span="6">
           <el-form-item label="项目周期">
             <el-input
-              ref="inputSelect"
+              ref="inputCycle"
               class="input-select-wrapper"
               placeholder="项目周期"
               prefix-icon="el-icon-search"
               @click.native.prevent="selectProject"
               v-model="postData.contType"/>
-          </el-form-item>
-        </el-col>
-        <el-col :span="6">
-          <el-form-item label="合同类型">
-            <el-select
-              v-model="postData.contType"
-              clearable
-              placeholder="请选择合同类型"
-              class="width--100">
-              <el-option
-                v-for="item in $root.dictAllList('ContType')"
-                :key="item.code"
-                :label="item.name"
-                :value="item.code"
-              ></el-option>
-            </el-select>
           </el-form-item>
         </el-col>
         <el-col :span="6">
@@ -68,14 +52,14 @@
           </el-form-item>
         </el-col>
         <el-col :span="6">
-          <el-form-item label="成交渠道等级">
+          <el-form-item label="合同类型">
             <el-select
-              v-model="postData.channelLevel"
+              v-model="postData.contType"
               clearable
-              placeholder="成交渠道等级"
+              placeholder="请选择合同类型"
               class="width--100">
               <el-option
-                v-for="item in $root.dictAllList('DealChannelLevel')"
+                v-for="item in $root.dictAllList('ContType')"
                 :key="item.code"
                 :label="item.name"
                 :value="item.code"
@@ -84,19 +68,25 @@
           </el-form-item>
         </el-col>
         <el-col :span="6">
-          <el-form-item label="成交状态">
-            <el-input v-model="postData.status" clearable placeholder="成交状态"></el-input>
+          <el-form-item label="渠道商">
+            <el-input
+              ref="inputSelect"
+              class="input-select-wrapper"
+              placeholder="渠道商"
+              prefix-icon="el-icon-search"
+              @click.native.prevent="selectProject"
+              v-model="postData.contType"/>
           </el-form-item>
         </el-col>
         <el-col :span="6">
-          <el-form-item label="是否垫佣">
+          <el-form-item label="细分业务模式">
             <el-select
-              v-model="postData.isMat"
+              v-model="postData.businessType"
               clearable
-              placeholder="是否垫佣"
+              placeholder="细分业务模式"
               class="width--100">
-              <el-option label="是" value="yes"></el-option>
-              <el-option label="否" value="no"></el-option>
+              <el-option label="总包" value="totalBag"></el-option>
+              <el-option label="分销" value="distri"></el-option>
             </el-select>
           </el-form-item>
         </el-col>
@@ -125,6 +115,11 @@
           </el-form-item>
         </el-col>
         <el-col :span="6">
+          <el-form-item label="成交组织">
+            <el-input v-model="postData.dealOrgId" clearable placeholder="成交组织"></el-input>
+          </el-form-item>
+        </el-col>
+        <el-col :span="6">
           <el-form-item label="备案情况">
             <el-select
               v-model="postData.recordState"
@@ -147,13 +142,27 @@
           </el-form-item>
         </el-col>
         <el-col :span="6">
-          <el-form-item label="成交组织">
-            <el-input v-model="postData.dealOrgId" clearable placeholder="成交组织"></el-input>
+          <el-form-item label="分销协议编号">
+            <el-select
+              v-model="postData.recordState"
+              clearable
+              placeholder="分销协议编号"
+              class="width--100">
+              <el-option label="A" value="Has"></el-option>
+              <el-option label="B" value="No"></el-option>
+            </el-select>
           </el-form-item>
         </el-col>
         <el-col :span="6">
-          <el-form-item label="合同编号">
-            <el-input v-model="postData.contNo" clearable placeholder="合同编号"></el-input>
+          <el-form-item label="是否垫佣">
+            <el-select
+              v-model="postData.isMat"
+              clearable
+              placeholder="是否垫佣"
+              class="width--100">
+              <el-option label="是" value="yes"></el-option>
+              <el-option label="否" value="no"></el-option>
+            </el-select>
           </el-form-item>
         </el-col>
         <el-col :span="6">
@@ -219,11 +228,6 @@
           </el-form-item>
         </el-col>
         <el-col :span="6">
-          <el-form-item label="录入人">
-            <el-input v-model="postData.entryPerson" clearable placeholder="录入人"></el-input>
-          </el-form-item>
-        </el-col>
-        <el-col :span="6">
           <el-form-item label="录入日期">
             <el-date-picker
               style="width: 100%"
@@ -231,6 +235,16 @@
               type="datetime"
               placeholder="录入日期">
             </el-date-picker>
+          </el-form-item>
+        </el-col>
+        <el-col :span="6">
+          <el-form-item label="录入人">
+            <el-input v-model="postData.entryPerson" clearable placeholder="录入人"></el-input>
+          </el-form-item>
+        </el-col>
+        <el-col :span="6">
+          <el-form-item label="成交状态">
+            <el-input v-model="postData.status" clearable placeholder="成交状态"></el-input>
           </el-form-item>
         </el-col>
       </el-row>
@@ -251,7 +265,7 @@
       :model="postData"
       :rules="rules"
       ref="ruleForm"
-      label-width="160px"
+      label-width="150px"
       class="demo-ruleForm">
       <el-row>
         <el-col :span="8">
@@ -288,18 +302,13 @@
         </el-col>
         <el-col :span="8">
           <el-form-item label="房号">
-            <el-select
-              v-model="postData.roomNo"
-              clearable
+            <el-input
+              ref="inputRoom"
+              class="input-select-wrapper"
               placeholder="房号"
-              class="width--100">
-              <el-option
-                v-for="item in modelContType"
-                :key="item.value"
-                :label="item.label"
-                :value="item.value"
-              ></el-option>
-            </el-select>
+              prefix-icon="el-icon-search"
+              @click.native.prevent="selectRoom"
+              v-model="postData.contType"/>
           </el-form-item>
         </el-col>
         <el-col :span="12">
@@ -446,18 +455,18 @@
         </el-table>
       </el-col>
     </el-row>
-    <p class="ih-info-title">中介信息</p>
+    <p class="ih-info-title">渠道信息</p>
     <el-row style="padding-left: 20px">
       <el-col>
         <div class="add-all-wrapper">
-          <el-button type="success" @click="handleAddBroker">添加中介经纪人</el-button>
+          <el-button type="success" @click="handleAddBroker">添加渠道经纪人</el-button>
         </div>
         <el-table
           class="ih-table"
           :data="infoList">
           <el-table-column
             prop="agencyName"
-            label="中介公司名称"
+            label="渠道公司名称"
             min-width="120"
           ></el-table-column>
           <el-table-column
@@ -593,9 +602,10 @@
       </el-col>
     </el-row>
     <div class="text-center btn-top">
-      <el-button type="info" @click="cancel()">取消</el-button>
-      <el-button type="success" @click="save()">保存</el-button>
-      <el-button type="primary" @click="confirmPerformance()">确认业绩申报</el-button>
+      <el-button @click="cancel()">取消</el-button>
+      <el-button type="primary" @click="save()">保存</el-button>
+      <el-button type="success" @click="save()">提交</el-button>
+      <el-button type="warning" @click="confirmPerformance()">确认业绩申报</el-button>
     </div>
     <ih-dialog :show="dialogAddProjectCycle" desc="选择项目周期列表">
       <SelectProjectCycle
@@ -604,6 +614,17 @@
             (data) => {
               dialogAddProjectCycle = false;
               finishAddProjectCycle(data);
+            }
+          "
+      />
+    </ih-dialog>
+    <ih-dialog :show="dialogAddRoom" desc="选择房号列表">
+      <SelectRoom
+        @cancel="() => (dialogAddRoom = false)"
+        @finish="
+            (data) => {
+              dialogAddRoom = false;
+              finishAddRoom(data);
             }
           "
       />
@@ -619,7 +640,7 @@
           "
       />
     </ih-dialog>
-    <ih-dialog :show="dialogAddBroker" desc="选择中介经纪人列表">
+    <ih-dialog :show="dialogAddBroker" desc="选择渠道经纪人列表">
       <AddBroker
         @cancel="() => (dialogAddBroker = false)"
         @finish="
@@ -635,6 +656,7 @@
 <script lang="ts">
   import {Component, Vue} from "vue-property-decorator";
   import SelectProjectCycle from "@/views/deal/dealReport/dialog/selectProjectCycle.vue";
+  import SelectRoom from "@/views/deal/dealReport/dialog/selectRoom.vue";
   import AddCustomer from "@/views/deal/dealReport/dialog/addCustomer.vue";
   import AddBroker from "@/views/deal/dealReport/dialog/addBroker.vue";
   import {
@@ -646,7 +668,7 @@
   import {NoRepeatHttp} from "ihome-common/util/aop/no-repeat-http";
 
   @Component({
-    components: {AddCustomer, AddBroker, SelectProjectCycle},
+    components: {AddCustomer, AddBroker, SelectProjectCycle, SelectRoom},
   })
   export default class DealReportAdd extends Vue {
     postData: any = {
@@ -687,6 +709,7 @@
       }
     ]
     id: any = null;
+    dialogAddRoom: any = false;
     dialogAddCustomer: any = false;
     dialogAddBroker: any = false;
     dialogAddProjectCycle: any = false;
@@ -733,11 +756,24 @@
     selectProject() {
       this.dialogAddProjectCycle = true;
       // input失焦
-      (this as any).$refs.inputSelect && (this as any).$refs.inputSelect.blur();
+      (this as any).$refs.inputCycle && (this as any).$refs.inputCycle.blur();
     }
 
     // 确定选择项目周期
     async finishAddProjectCycle(data: any) {
+      console.log('data', data);
+      // this.addTotalPackageList = data;
+    }
+
+    // 选择房号
+    selectRoom() {
+      this.dialogAddRoom = true;
+      // input失焦
+      (this as any).$refs.inputRoom && (this as any).$refs.inputRoom.blur();
+    }
+
+    // 确定选择房号
+    async finishAddRoom(data: any) {
       console.log('data', data);
       // this.addTotalPackageList = data;
     }

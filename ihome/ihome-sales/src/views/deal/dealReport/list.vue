@@ -213,7 +213,7 @@
         ></el-table-column>
         <el-table-column
           prop="address"
-          label="房屋地址"
+          label="房产证地址"
           min-width="250"
         ></el-table-column>
         <el-table-column

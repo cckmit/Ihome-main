@@ -22,6 +22,7 @@
     <el-table
       style="padding-left: 20px"
       class="ih-table"
+      :empty-text="emptyText"
       :data="resPageInfo.list">
       <el-table-column
         prop="storageNum"
@@ -53,6 +54,7 @@
     <el-table
       style="padding-left: 20px"
       class="ih-table"
+      :empty-text="emptyText"
       :data="resPageInfo.list">
       <el-table-column
         prop="storageNum"
@@ -89,10 +91,11 @@
   import {Component, Vue, Prop} from "vue-property-decorator";
 
   import {post_channelGrade_getList} from "@/api/channel";
+  import PaginationMixin from "@/mixins/pagination";
 
   @Component({
     components: {},
-    mixins: [],
+    mixins: [PaginationMixin],
   })
   export default class ReviewDetailsDialog extends Vue {
     constructor() {
@@ -102,7 +105,7 @@
     @Prop({default: null}) data: any;
     dialogVisible = true;
     resPageInfo: any = {
-      total: 0,
+      total: null,
       list: [],
     };
 
