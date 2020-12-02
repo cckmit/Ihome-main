@@ -4,7 +4,7 @@
  * @Author: ywl
  * @Date: 2020-12-01 10:37:53
  * @LastEditors: ywl
- * @LastEditTime: 2020-12-02 15:13:02
+ * @LastEditTime: 2020-12-02 15:53:00
 -->
 <template>
   <IhPage label-width="80px">
@@ -201,8 +201,6 @@ export default class ReceiptList extends Vue {
   private async remove(row: any) {
     try {
       await this.$confirm("是否确定删除?", "提示");
-      console.log(row);
-
       await post_bankAccount_delete__id({ id: row.id });
       // 删除list最后一条数据 返回前一页面
       if (this.resPageInfo.list.length === 1) {

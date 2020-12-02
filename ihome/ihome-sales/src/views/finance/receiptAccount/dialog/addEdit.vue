@@ -4,7 +4,7 @@
  * @Author: ywl
  * @Date: 2020-12-01 18:20:03
  * @LastEditors: ywl
- * @LastEditTime: 2020-12-02 11:47:02
+ * @LastEditTime: 2020-12-02 18:16:45
 -->
 <template>
   <el-dialog
@@ -172,11 +172,11 @@ export default class AddEdit extends Vue {
         message: "只能录入数字或者中划线，不能以中划线开头或者结尾",
         trigger: "change",
       },
-      { max: 32, message: "账号字符长度不能大于32", trigger: "change" },
+      { max: 32, message: "账号字符长度不能大于32位", trigger: "change" },
     ],
     branchName: [
       { required: true, message: "请输入开户银行", trigger: "change" },
-      { max: 64, message: "开户银行字符长度不能大于64", trigger: "change" },
+      { max: 64, message: "开户银行字符长度不能大于64位", trigger: "change" },
     ],
     accountType: [
       { required: true, message: "请选择账号类型", trigger: "change" },

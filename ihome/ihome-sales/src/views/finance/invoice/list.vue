@@ -4,7 +4,7 @@
  * @Author: ywl
  * @Date: 2020-12-01 10:38:45
  * @LastEditors: ywl
- * @LastEditTime: 2020-12-02 15:40:53
+ * @LastEditTime: 2020-12-02 18:19:25
 -->
 <template>
   <IhPage label-width="100px">
@@ -59,7 +59,10 @@
           type="info"
           @click="reset()"
         >重置</el-button>
-        <el-button type="success">添加</el-button>
+        <el-button
+          type="success"
+          @click="handleAdd()"
+        >添加</el-button>
       </el-row>
     </template>
     <template v-slot:table>
@@ -72,17 +75,17 @@
           fixed
           prop="companyName"
           label="名称"
-          min-width="150"
+          min-width="255"
         ></el-table-column>
         <el-table-column
           prop="taxpayerNo"
           label="纳税人识别号"
-          width="155"
+          width="200"
         ></el-table-column>
         <el-table-column
           prop="address"
           label="地址"
-          min-width="200"
+          min-width="455"
         ></el-table-column>
         <el-table-column
           prop="phone"
@@ -107,7 +110,7 @@
           width="135"
           fixed="right"
         >
-          <template v-slot="{}">
+          <template v-slot="{ row }">
             <el-link
               type="success"
               class="margin-right-10"
@@ -115,21 +118,39 @@
             <el-link
               type="primary"
               class="margin-right-10"
+              @click="handleEdit(row)"
             >修改</el-link>
-            <el-link type="danger">删除</el-link>
+            <el-link
+              type="danger"
+              @click="remove(row)"
+            >删除</el-link>
           </template>
         </el-table-column>
       </el-table>
     </template>
+    <!-- 弹窗 -->
+    <IhDialog :show="dialogVisible">
+      <Add
+        :isAdd="isAdd"
+        :data="tableData"
+        @finish="handleFinish"
+        @cancel="() => (dialogVisible = false)"
+      />
+    </IhDialog>
   </IhPage>
 </template>
 
 <script lang="ts">
 import { Component, Vue } from "vue-property-decorator";
 import PaginationMixin from "../../../mixins/pagination";
-import { post_invoiceConfig_getList } from "@/api/finance/index";
+import {
+  post_invoiceConfig_getList,
+  post_invoiceConfig_delete__id,
+} from "@/api/finance/index";
+import Add from "./dialog/add.vue";
 
 @Component({
+  components: { Add },
   mixins: [PaginationMixin],
 })
 export default class InvoiceList extends Vue {
@@ -142,7 +163,40 @@ export default class InvoiceList extends Vue {
     total: null,
     list: [],
   };
+  dialogVisible = false;
+  isAdd = true;
+  tableData: any = {};
 
+  private handleFinish(isAdd: boolean) {
+    if (isAdd) this.queryPageParameters.pageNum = 1;
+    this.dialogVisible = false;
+    this.getListMixin();
+  }
+  private async remove(row: any) {
+    try {
+      await this.$confirm("是否确定删除?", "提示");
+      await post_invoiceConfig_delete__id({ id: row.id });
+      // 删除list最后一条数据 返回前一页面
+      if (this.resPageInfo.list.length === 1) {
+        this.queryPageParameters.pageNum === 1
+          ? (this.queryPageParameters.pageNum = 1)
+          : this.queryPageParameters.pageNum--;
+      }
+      this.getListMixin();
+      this.$message.success("删除成功");
+    } catch (err) {
+      console.log(err);
+    }
+  }
+  private handleAdd() {
+    this.isAdd = true;
+    this.dialogVisible = true;
+  }
+  private handleEdit(row: any) {
+    this.isAdd = false;
+    this.dialogVisible = true;
+    this.tableData = { ...row };
+  }
   private search() {
     if (
       this.queryPageParameters.companyName &&
