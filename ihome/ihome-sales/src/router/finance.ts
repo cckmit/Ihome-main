@@ -4,7 +4,7 @@
  * @Author: ywl
  * @Date: 2020-12-01 15:49:07
  * @LastEditors: ywl
- * @LastEditTime: 2020-12-02 16:49:59
+ * @LastEditTime: 2020-12-02 18:37:56
  */
 import { RouteConfig } from 'vue-router'
 
@@ -57,7 +57,13 @@ const financeRoutes: Array<RouteConfig> = [
       //   name: 'InvoiceAdd',
       //   component: () => import('../views/finance/invoice/add.vue'),
       //   meta: { title: '发票税率维护添加', icon: 'form' }
-      // }
+      // },
+      {
+        path: 'info',
+        name: 'InvoiceInfo',
+        component: () => import('../views/finance/invoice/info.vue'),
+        meta: { title: '发票税率维护详情', icon: 'form' }
+      }
     ]
   }
 ]

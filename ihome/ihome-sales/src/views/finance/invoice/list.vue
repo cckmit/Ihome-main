@@ -4,7 +4,7 @@
  * @Author: ywl
  * @Date: 2020-12-01 10:38:45
  * @LastEditors: ywl
- * @LastEditTime: 2020-12-02 18:19:25
+ * @LastEditTime: 2020-12-02 18:37:22
 -->
 <template>
   <IhPage label-width="100px">
@@ -114,6 +114,7 @@
             <el-link
               type="success"
               class="margin-right-10"
+              @click="handleTo(row)"
             >详情</el-link>
             <el-link
               type="primary"
@@ -187,6 +188,14 @@ export default class InvoiceList extends Vue {
     } catch (err) {
       console.log(err);
     }
+  }
+  private handleTo(row: any) {
+    this.$router.push({
+      path: "/invoice/info",
+      query: {
+        id: row.id,
+      },
+    });
   }
   private handleAdd() {
     this.isAdd = true;

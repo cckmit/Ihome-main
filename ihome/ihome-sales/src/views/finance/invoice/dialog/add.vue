@@ -4,7 +4,7 @@
  * @Author: ywl
  * @Date: 2020-12-02 15:53:23
  * @LastEditors: ywl
- * @LastEditTime: 2020-12-02 18:14:33
+ * @LastEditTime: 2020-12-02 18:32:41
 -->
 <template>
   <!-- <IhPage> -->
@@ -346,7 +346,6 @@ export default class InvoiceAdd extends Vue {
     this.getCompanyList();
     if (!this.isAdd)
       this.form = { ...this.data, companyItem: { id: this.data.companyId } };
-    console.log(this.form);
   }
 }
 </script>
