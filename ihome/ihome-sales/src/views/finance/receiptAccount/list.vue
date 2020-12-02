@@ -4,7 +4,7 @@
  * @Author: ywl
  * @Date: 2020-12-01 10:37:53
  * @LastEditors: ywl
- * @LastEditTime: 2020-12-02 14:46:20
+ * @LastEditTime: 2020-12-02 15:13:02
 -->
 <template>
   <IhPage label-width="80px">
@@ -165,7 +165,7 @@ import PaginationMixin from "../../../mixins/pagination";
   components: { AddEdit, PayInfo },
   mixins: [PaginationMixin],
 })
-export default class BankBranchList extends Vue {
+export default class ReceiptList extends Vue {
   queryPageParameters: any = {
     accountName: null,
     accountNo: null,
