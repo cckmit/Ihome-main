@@ -4,7 +4,7 @@
  * @Author: wwq
  * @Date: 2020-11-27 17:17:06
  * @LastEditors: wwq
- * @LastEditTime: 2020-12-01 19:03:19
+ * @LastEditTime: 2020-12-02 17:35:02
 -->
 <template>
   <IhPage>
@@ -191,7 +191,7 @@
           </el-col>
         </el-row>
         <el-row>
-          <el-col :span="16">
+          <el-col :span="8">
             <el-form-item
               label="模式属性"
               prop="attributeEnum"
@@ -231,8 +231,39 @@
               </el-select>
             </el-form-item>
           </el-col>
+          <el-col :span="8">
+            <el-form-item
+              label="业务类型"
+              prop="busTypeEnum"
+            >
+              <el-select
+                v-model="info.busTypeEnum"
+                clearable
+                placeholder="请选择"
+                class="width--100"
+              >
+                <el-option
+                  v-for="item in $root.dictAllList('BusTypeEnum')"
+                  :key="item.code"
+                  :label="item.name"
+                  :value="item.code"
+                ></el-option>
+              </el-select>
+            </el-form-item>
+          </el-col>
         </el-row>
         <el-row>
+          <el-col :span="8">
+            <el-form-item label="我司主体">
+              <el-input
+                v-model="info.companyName"
+                clearable
+                disabled
+                class="width--100"
+              >
+              </el-input>
+            </el-form-item>
+          </el-col>
           <el-col :span="8">
             <el-form-item
               label="是否直签开发商"
@@ -264,26 +295,6 @@
                 clearable
                 disabled
               ></el-input>
-            </el-form-item>
-          </el-col>
-          <el-col :span="8">
-            <el-form-item
-              label="业务类型"
-              prop="busTypeEnum"
-            >
-              <el-select
-                v-model="info.busTypeEnum"
-                clearable
-                placeholder="请选择"
-                class="width--100"
-              >
-                <el-option
-                  v-for="item in $root.dictAllList('BusTypeEnum')"
-                  :key="item.code"
-                  :label="item.name"
-                  :value="item.code"
-                ></el-option>
-              </el-select>
             </el-form-item>
           </el-col>
         </el-row>
@@ -417,7 +428,7 @@
             </el-form-item>
           </el-col>
         </el-row>
-        <el-row>
+        <el-row v-if="isShow">
           <el-col :span="8">
             <el-form-item
               label="认购书是否体现优惠折扣"
@@ -473,7 +484,10 @@
               ></el-input>
             </el-form-item>
           </el-col>
-          <el-col :span="12">
+          <el-col
+            :span="12"
+            v-if="isShow"
+          >
             <el-form-item
               label="【项目房款/车位款+服务费】>备案价"
               prop="houseandcarGtRecordEnum"
@@ -709,7 +723,7 @@
   </IhPage>
 </template>
 <script lang="ts">
-import { Component, Vue } from "vue-property-decorator";
+import { Component, Vue, Watch } from "vue-property-decorator";
 import { Form as ElForm } from "element-ui";
 import { get_term_get__termId, post_term_update } from "@/api/project/index";
 import { post_dict_getAllByType } from "@/api/system/index";
@@ -761,6 +775,8 @@ export default class FirstAgencyEdit extends Vue {
     distributeServiceRate: null,
     termOverallRate: null,
     attachTermVOS: [],
+    companyName: null,
+    companyId: null,
   };
   private fileList: any = [];
   attributeEnumOptions: any = [];
@@ -927,6 +943,13 @@ export default class FirstAgencyEdit extends Vue {
         trigger: "change",
       },
     ],
+    companyName: [
+      {
+        required: true,
+        message: "请填写我司主体",
+        trigger: "change",
+      },
+    ],
   };
 
   YesOrNoType = [
@@ -939,6 +962,16 @@ export default class FirstAgencyEdit extends Vue {
       name: "否",
     },
   ];
+  isShow: any = true;
+
+  @Watch("info.chargeEnum", { immediate: true })
+  getIsShow(val: any) {
+    if (val === "Agent") {
+      this.isShow = false;
+    } else {
+      this.isShow = true;
+    }
+  }
 
   private get padCommissionEnumOptions() {
     let arr = (this.$root as any).dictAllList("PadCommissionEnum");
@@ -1023,6 +1056,7 @@ export default class FirstAgencyEdit extends Vue {
       this.info.startDivision = (this.$root as any).userInfo.account;
       this.info.timeList = [res.termStart, res.termEnd];
       this.info.termStageEnum = "Subscription";
+      this.info.companyId = res.companyId;
       window.sessionStorage.setItem("proId", res.proId);
       if (this.info.chargeEnum && this.info.busEnum) {
         this.getAttributeEnumOptions();

@@ -4,7 +4,7 @@
  * @Author: wwq
  * @Date: 2020-12-01 09:05:50
  * @LastEditors: wwq
- * @LastEditTime: 2020-12-01 19:36:14
+ * @LastEditTime: 2020-12-02 20:46:20
 -->
 <template>
   <el-dialog
@@ -275,7 +275,7 @@
       <el-table-column
         fixed
         label="乙方"
-        prop="partyBId"
+        prop="partyBName"
         min-width="150"
       ></el-table-column>
       <el-table-column

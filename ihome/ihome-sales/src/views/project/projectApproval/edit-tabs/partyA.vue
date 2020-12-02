@@ -4,7 +4,7 @@
  * @Author: wwq
  * @Date: 2020-11-27 17:20:24
  * @LastEditors: wwq
- * @LastEditTime: 2020-12-01 19:09:38
+ * @LastEditTime: 2020-12-02 09:30:00
 -->
 <template>
   <div>
@@ -107,7 +107,7 @@
       </el-table>
       <br />
       <el-form
-        :model="form"
+        :model="info"
         label-width="140px"
       >
         <el-row>
@@ -205,8 +205,6 @@ import {
   },
 })
 export default class PartyA extends Vue {
-  partyAData = [];
-  dongzuoData = [];
   dialogVisible = false;
   editDialogVisible = false;
   budingEditDialogVisible = false;
@@ -219,7 +217,6 @@ export default class PartyA extends Vue {
       responsibiltity: null,
     },
   };
-  form: any = {};
   editData: any = {};
   editType: any = "";
   budingEditData: any = [];

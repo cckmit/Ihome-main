@@ -4,7 +4,7 @@
  * @Author: wwq
  * @Date: 2020-11-30 17:32:39
  * @LastEditors: wwq
- * @LastEditTime: 2020-11-30 19:18:21
+ * @LastEditTime: 2020-12-02 11:40:35
 -->
 <template>
   <el-dialog
@@ -164,7 +164,7 @@ import { isNumberValidato } from "ihome-common/util/base/form-ui";
 @Component({
   components: {},
 })
-export default class UserAdd extends Vue {
+export default class ReportedRulesEdit extends Vue {
   @Prop({ default: null }) data: any;
   dialogVisible = true;
 

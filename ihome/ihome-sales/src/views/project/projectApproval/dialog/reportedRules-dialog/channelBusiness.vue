@@ -4,7 +4,7 @@
  * @Author: wwq
  * @Date: 2020-11-30 19:24:37
  * @LastEditors: wwq
- * @LastEditTime: 2020-11-30 19:37:23
+ * @LastEditTime: 2020-12-02 19:28:25
 -->
 <template>
   <el-dialog
@@ -15,7 +15,7 @@
     :before-close="cancel"
     width="80%"
     class="text-left dialog-table"
-    :title="`项目基础信息`"
+    :title="`渠道商信息`"
     :append-to-body="true"
   >
     <el-form

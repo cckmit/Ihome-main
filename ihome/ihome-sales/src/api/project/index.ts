@@ -1,6 +1,6 @@
 /* eslint-disable */
 /* 此脚本由swagger-ui的api-docs自动生成，请勿修改 */
-//2020-12-1 11:29:29 ├F10: AM┤
+//2020-12-2 3:28:41 ├F10: PM┤
 import { request } from '@/api/base'
 const basePath = "/sales-api/project"
 /**index*/
@@ -93,11 +93,11 @@ export async function post_customerReportRule_update(d?: any) {
 }
 /**中介分销合同-新增*/
 export async function post_distributContract_add(d?: any) {
-    return await request.post<DistributContractVO, DistributContractVO>(basePath + '/distributContract/add', d)
+    return await request.post<DistributContractUpdateVO, DistributContractUpdateVO>(basePath + '/distributContract/add', d)
 }
-/**中介分销合同-删除*/
-export async function post_distributContract_del(d?: any) {
-    return await request.post<string, string>(basePath + '/distributContract/del', d)
+/**中介分销合同-作废*/
+export async function post_distributContract_cancel__agencyContrictId(d?: any) {
+    return await request.post<number, number>(basePath + '/distributContract/cancel/{agencyContrictId}', d)
 }
 /**查询页面全部内容*/
 export async function get_distributContract_get__termId(d?: any) {
@@ -106,6 +106,10 @@ export async function get_distributContract_get__termId(d?: any) {
 /**根据立项查询分销合同信息*/
 export async function get_distributContract_getByTerm__termId(d?: any) {
     return await request.get<DistributContractByTermVO[], DistributContractByTermVO[]>(basePath + '/distributContract/getByTerm/{termId}', { params: d })
+}
+/**中介分销合检验条件是否符合*/
+export async function post_distributContract_getCheckCollectByCondition(d?: any) {
+    return await request.post<DistributContractMxVO[], DistributContractMxVO[]>(basePath + '/distributContract/getCheckCollectByCondition', d)
 }
 /**中介分销合同根据条件获取收派套餐*/
 export async function post_distributContract_getCollectByCondition(d?: any) {
@@ -118,6 +122,10 @@ export async function get_distributContract_getDistri__agencyContrictId(d?: any)
 /**甲方合同OA呈批备注-save*/
 export async function post_distributContract_saveOaRemark(d?: any) {
     return await request.post<number, number>(basePath + '/distributContract/saveOaRemark', d)
+}
+/**中介分销合同-更新*/
+export async function post_distributContract_update(d?: any) {
+    return await request.post<DistributContractUpdateVO, DistributContractUpdateVO>(basePath + '/distributContract/update', d)
 }
 /**distribute*/
 export async function get_distribute(d?: any) {
@@ -236,8 +244,8 @@ export async function post_preferential_add(d?: any) {
     return await request.post<PreferentialMxVO, PreferentialMxVO>(basePath + '/preferential/add', d)
 }
 /**优惠告知书-作废*/
-export async function post_preferential_cancel(d?: any) {
-    return await request.post<number, number>(basePath + '/preferential/cancel', d)
+export async function post_preferential_cancel__preferentialMxId(d?: any) {
+    return await request.post<number, number>(basePath + '/preferential/cancel/{preferentialMxId}', d)
 }
 /**案场录入-优惠告知书列表*/
 export async function get_preferential_getListByTermId__termId(d?: any) {
@@ -491,8 +499,6 @@ export interface AttachItemVO {
 export interface AttachTermItemVO {
     /**文件地址*/
     attachAddr: string;
-    /**附件ID*/
-    attachId: number;
     /**(必填)文件名称*/
     attachName: string;
 }
@@ -904,7 +910,7 @@ export interface ConstractOaSaveVO {
     constractOaId: number;
     /**(必填)自增ID*/
     remark: string;
-    /**(必填)type类型不能为空！*/
+    /**(必填)type类型 1~客户成交以及确认,2~违约责任,3~合同其它说明*/
     type: number;
 }
 /**ConstractOaVO*/
@@ -1118,8 +1124,6 @@ export interface DistributContractByTermVO {
     channelEnum: string;
     /**合同主标题*/
     contractTitle: string;
-    /**甲方合同ID*/
-    firstContractId: number;
     /**是否垫佣 VETO-否、 TREE-3个月 SIX-6个月 NINE-9个月 MORETEN 10个月以上(Veto-否、One-1个月、Two-2个月、Three-3个月、FOUR-4个月、Five-5个月、Six-6个月、Seven-7个月、Eight-8个月、Nine-9个月、Ten-10个月、Eleven-11个月、Twelve-12个月)*/
     padCommissionEnum: string;
     /**甲方公司 甲方合同-乙方*/
@@ -1128,6 +1132,21 @@ export interface DistributContractByTermVO {
     scanningContract: string;
     /**状态(New-新增、Update-修改、Delete-删除、Stop-停用、Start-启用、Cancel-作废、Audit-审核、Reject-驳回)*/
     state: string;
+}
+/**DistributContractCheckConditionVo*/
+export interface DistributContractCheckConditionVo {
+    /**成交客户ID*/
+    consumerId: number;
+    /**客户名称*/
+    consumerName: string;
+    /**派发条件的的集合*/
+    packMxIds: number[];
+    /**是否垫佣  Veto("否"),Tree("3个月"),Six("6个月"),Nine("9个月"),MoreTen("10个月以上");(Veto-否、One-1个月、Two-2个月、Three-3个月、FOUR-4个月、Five-5个月、Six-6个月、Seven-7个月、Eight-8个月、Nine-9个月、Ten-10个月、Eleven-11个月、Twelve-12个月)*/
+    padCommissionEnum: string;
+    /**立项ID*/
+    termId: number;
+    /**客户类型(成交方式) NationalMarket("全民营销"),Natural("自然到访"),Self("自行成交"),SelfChannel("自渠"),Big("一级大行"),Middle("二级中行"),Small("三级小行"),Appoint("指定中介行");(NationalMarket-全民营销、Natural-自然到访、Self-自行成交、SelfChannel-自渠、Big-一级大行、Middle-二级中行、Small-三级小行、Appoint-指定中介行)*/
+    transactionEnum: string;
 }
 /**DistributContractConditionVo*/
 export interface DistributContractConditionVo {
@@ -1169,8 +1188,6 @@ export interface DistributContractMO {
 export interface DistributContractMxVO {
     /**基准费用 Contract("按签约价"),Subscription("按认购价");(Contract-按签约价、Subscription-按认购价)*/
     baseCostEnum: string;
-    /**undefined*/
-    condition: string;
     /**条件ID*/
     conditionId: number;
     /**中介分销合同明细表ID*/
@@ -1179,13 +1196,9 @@ export interface DistributContractMxVO {
     costTypeEnum: string;
     /**物业类型(Residence-住宅、WorkShop-厂房、Apartment-公寓、Villa-别墅、Shop-商铺、Office-写字楼、Parking-车位、Other-其他)*/
     propertyEnum: string;
-    /**派发金额*/
-    sendAmount: number;
     /**派发佣金标准*/
     sendContext: string;
-    /**派发内场点数*/
-    sendPoint: number;
-    /**计付标准*/
+    /**条件*/
     standardPay: string;
 }
 /**DistributContractQueryVO*/
@@ -1198,10 +1211,12 @@ export interface DistributContractQueryVO {
     contractTitle: string;
     /**派发佣金标准*/
     distributContractMxVOS: DistributContractMxVO[];
-    /**甲方合同ID*/
-    firstContractId: number;
     /**是否垫佣 VETO-否、 TREE-3个月 SIX-6个月 NINE-9个月 MORETEN 10个月以上(Veto-否、One-1个月、Two-2个月、Three-3个月、FOUR-4个月、Five-5个月、Six-6个月、Seven-7个月、Eight-8个月、Nine-9个月、Ten-10个月、Eleven-11个月、Twelve-12个月)*/
     padCommissionEnum: string;
+    /**甲方公司 甲方合同-乙方*/
+    partyCompany: string;
+    /**甲方公司ID*/
+    partyCompanyId: number;
     /**合同扫描件地址*/
     scanningContract: string;
     /**状态(New-新增、Update-修改、Delete-删除、Stop-停用、Start-启用、Cancel-作废、Audit-审核、Reject-驳回)*/
@@ -1210,8 +1225,8 @@ export interface DistributContractQueryVO {
     termId: number;
 }
 /**中介分销合同相关信息表*/
-export interface DistributContractVO {
-    /**中介分销合同ID*/
+export interface DistributContractUpdateVO {
+    /**中介分销合同*/
     agencyContrictId: number;
     /**代理费结算条件*/
     agencyCostCondition: string;
@@ -1227,11 +1242,11 @@ export interface DistributContractVO {
     channelEnum: string;
     /**客户成交以及确认*/
     consumerComplete: string;
-    /**合作结束时间(yyyy-MM-dd HH:mm:ss)*/
+    /**合作结束时间(yyyy-MM-dd)*/
     contractEndTime: string;
     /**派发套餐明细*/
     contractMxVOList: DistributContractMxVO[];
-    /**合作开始时间(yyyy-MM-dd HH:mm:ss)*/
+    /**合作开始时间(yyyy-MM-dd)*/
     contractStartTime: string;
     /**合同副标题*/
     contractSubtitle: string;
@@ -1245,12 +1260,67 @@ export interface DistributContractVO {
     designatedAgency: string;
     /**中介行ID*/
     designatedAgencyId: number;
-    /**甲方合同ID*/
-    firstContractId: number;
     /**是否垫佣  Veto("否"),LessOrEqualOne("回款周期≤1个月"),Between1To3("1个月＜回款周期≤3个月"),Between3To6("3个月＜回款周期≤6个月"),Between6To9("6个月＜回款周期≤9个月"),Between9To12("9个月＜回款周期≤12个月");(Veto-否、One-1个月、Two-2个月、Three-3个月、FOUR-4个月、Five-5个月、Six-6个月、Seven-7个月、Eight-8个月、Nine-9个月、Ten-10个月、Eleven-11个月、Twelve-12个月)*/
     padCommissionEnum: string;
     /**甲方公司 甲方合同-乙方*/
     partyCompany: string;
+    /**甲方公司ID*/
+    partyCompanyId: number;
+    /**甲方地址*/
+    partyaAddr: string;
+    /**甲方联系人*/
+    partyaMan: string;
+    /**甲方联系人电话*/
+    partyaTel: string;
+    /**合同扫描件地址*/
+    scanningContract: string;
+    /**补充条款*/
+    supplementary: string;
+    /**立项周期ID*/
+    termId: number;
+    /**违约责任*/
+    unContractLiability: string;
+}
+/**中介分销合同相关信息表*/
+export interface DistributContractVO {
+    /**代理费结算条件*/
+    agencyCostCondition: string;
+    /**代理费结算方式*/
+    agencyCostSettleWay: string;
+    /**代理费计付标准备注*/
+    agencyFeeRemark: string;
+    /**房屋未成交乙方退回代理费比例*/
+    agencyFeeReturnRate: string;
+    /**房屋未成交乙方退回代理费期限*/
+    agencyFeeReturnTime: string;
+    /**渠道类型 BigPlatform("大平台"),FirstPlatform("大型中介/一级平台"),MiddlePlatform("中型中介/二级平台"),SmallPlatform("小型中介"),Appoint("指定中介行");(BigPlatform-大平台、FirstPlatform-大型中介/一级平台、MiddlePlatform-中型中介/二级平台、SmallPlatform-小型中介、Appoint-指定中介行)*/
+    channelEnum: string;
+    /**客户成交以及确认*/
+    consumerComplete: string;
+    /**合作结束时间(yyyy-MM-dd)*/
+    contractEndTime: string;
+    /**派发套餐明细*/
+    contractMxVOList: DistributContractMxVO[];
+    /**合作开始时间(yyyy-MM-dd)*/
+    contractStartTime: string;
+    /**合同副标题*/
+    contractSubtitle: string;
+    /**合同主标题*/
+    contractTitle: string;
+    /**成交确认人,从甲方合同带过来*/
+    dealMan: string;
+    /**成交确认人联系电话,从甲方合同带过来*/
+    dealTel: string;
+    /**指定中介行*/
+    designatedAgency: string;
+    /**中介行ID*/
+    designatedAgencyId: number;
+    /**是否垫佣  Veto("否"),LessOrEqualOne("回款周期≤1个月"),Between1To3("1个月＜回款周期≤3个月"),Between3To6("3个月＜回款周期≤6个月"),Between6To9("6个月＜回款周期≤9个月"),Between9To12("9个月＜回款周期≤12个月");(Veto-否、One-1个月、Two-2个月、Three-3个月、FOUR-4个月、Five-5个月、Six-6个月、Seven-7个月、Eight-8个月、Nine-9个月、Ten-10个月、Eleven-11个月、Twelve-12个月)*/
+    padCommissionEnum: string;
+    /**甲方公司 甲方合同-乙方*/
+    partyCompany: string;
+    /**甲方公司ID*/
+    partyCompanyId: number;
     /**甲方地址*/
     partyaAddr: string;
     /**甲方联系人*/
@@ -1843,7 +1913,7 @@ export interface ParentProjectUpdateArgs {
 }
 /**PartyAContractAddVO*/
 export interface PartyAContractAddVO {
-    /**甲方合同id集合*/
+    /**合同id集合*/
     partyAContractVOS: number[];
     /**立项ID*/
     termId: number;
@@ -1897,7 +1967,7 @@ export interface PartyAOaSaveVO {
     partyAOaId: number;
     /**(必填)备注信息*/
     remark: string;
-    /**(必填)type类型不能为空！*/
+    /**(必填)type类型不能为空！1~客户成交以及确认,2~违约责任*/
     type: number;
 }
 /**PartyAOaVO*/
@@ -1969,8 +2039,6 @@ export interface PreferentialMxUpdateVO {
     modeDescription: string;
     /**甲方退款天数*/
     partyARefundDays: number;
-    /**预览地址*/
-    preferentialAddr: string;
     /**优惠MxID*/
     preferentialMxId: number;
     /**缴纳金额*/
@@ -1984,10 +2052,6 @@ export interface PreferentialMxVO {
     modeDescription: string;
     /**甲方退款天数*/
     partyARefundDays: number;
-    /**预览地址*/
-    preferentialAddr: string;
-    /**优惠MxID*/
-    preferentialMxId: number;
     /**缴纳金额*/
     premiumReceived: number;
     /**立项ID*/
@@ -2028,6 +2092,8 @@ export interface ProjectAddArgs {
     cityName: string;
     /**(必填)开发商ID*/
     developerId: number;
+    /**开发商名称*/
+    developerName: number;
     /**(必填)区*/
     district: string;
     /**(必填)区名称*/
@@ -2215,6 +2281,8 @@ export interface ProjectUpdateArgs {
     cityName: string;
     /**(必填)开发商ID*/
     developerId: number;
+    /**开发商名称*/
+    developerName: number;
     /**(必填)区*/
     district: string;
     /**(必填)区名称*/
@@ -2521,6 +2589,37 @@ export interface SettleCompareVO {
     /**更新用户*/
     updateUser: number;
 }
+/**SettleCompareVO_1*/
+export interface SettleCompareVO_1 {
+    /**条件 <> <= >= ==*/
+    compare: string;
+    /**条件 <> <= >= ==*/
+    compareB: string;
+    /**条件 且*/
+    conditionAnd: number;
+    /**条件类型  HOUSETYPE-户型、AREA-面积、CONTRACTPRICE-签约价格、   SUBSCRIPPRICE-认购价格(HouseType-户型、Area-面积、ContractPrice-签约价格、SubscriPrice-认购价格)*/
+    conditionEnum: string;
+    /**条件依据 HOUSETYPE-户型、AREA-面积、CONTRACTPRICE-签约价格、   SUBSCRIPPRICE-认购价格*/
+    conditionModel: string;
+    /**值A*/
+    conditionNumA: number;
+    /**值B*/
+    conditionNumB: number;
+    /**条件ID*/
+    conditionSetId: number;
+    /**创建时间(yyyy-MM-dd HH:mm:ss)*/
+    createTime: string;
+    /**创建用户*/
+    createUser: number;
+    /**已删除*/
+    deleted: number;
+    /**收派套餐ID*/
+    settleId: number;
+    /**更新时间(yyyy-MM-dd HH:mm:ss)*/
+    updateTime: string;
+    /**更新用户*/
+    updateUser: number;
+}
 /**SettleConditionAddVO*/
 export interface SettleConditionAddVO {
     /**代理费*/
@@ -2553,6 +2652,45 @@ export interface SettleConditionAddVO {
     setsReturnRateByHouse: number;
     /**undefined*/
     settleCompareVOS: SettleCompareVO[];
+    /**结算类型 （请佣、结佣）(SettleCommission-结佣、ApplyCommission-请拥)*/
+    settleEnum: string;
+    /**结算名称*/
+    settleName: string;
+    /**立项ID*/
+    termId: number;
+}
+/**SettleConditionAddVO_1*/
+export interface SettleConditionAddVO_1 {
+    /**代理费*/
+    agencyFee: number;
+    /**代理费结算金额*/
+    agencyFeeSettleAmount: number;
+    /**代理费设置比例*/
+    agencyFeeSettleRate: number;
+    /**代理费-垫佣类型*/
+    agencyPadCommisionType: number;
+    /**根据房款回笼比率-条件*/
+    conReturnRateByHouse: number;
+    /**合同类型(Normal-正常合同、TemPorary-临时合同、Other-其他)*/
+    contractTypeEnum: string;
+    /**是否备案*/
+    exRecord: number;
+    /**优先级(A-一级别、B-二级别、C-三级别、D-四级别、E-五级别)*/
+    priority: string;
+    /**结算后回款*/
+    returnAfterSettlement: number;
+    /**服务费*/
+    serviceFee: number;
+    /**服务费结算金额*/
+    serviceFeeSettleAmount: number;
+    /**服务费设置比例*/
+    serviceFeeSettleRate: number;
+    /**服务费-垫佣类型*/
+    servicePadCommisionType: number;
+    /**根据房款回笼比率-结算*/
+    setsReturnRateByHouse: number;
+    /**undefined*/
+    settleCompareVOS: SettleCompareVO_1[];
     /**结算类型 （请佣、结佣）(SettleCommission-结佣、ApplyCommission-请拥)*/
     settleEnum: string;
     /**结算名称*/
@@ -2602,7 +2740,7 @@ export interface SettleConditionUpdateVO {
     /**根据房款回笼比率-结算*/
     setsReturnRateByHouse: number;
     /**undefined*/
-    settleCompareVOS: SettleCompareVO[];
+    settleCompareVOS: SettleCompareVO_1[];
     /**结算类型 （请佣、结佣）(SettleCommission-结佣、ApplyCommission-请拥)*/
     settleEnum: string;
     /**结算ID*/

@@ -4,7 +4,7 @@
  * @Author: wwq
  * @Date: 2020-11-27 18:41:30
  * @LastEditors: wwq
- * @LastEditTime: 2020-11-30 10:46:50
+ * @LastEditTime: 2020-12-02 17:19:26
 -->
 <template>
   <el-dialog
@@ -41,6 +41,16 @@
                 @click="basicInfoDialog = true"
               ></el-button>
             </el-input>
+          </el-form-item>
+        </el-col>
+      </el-row>
+      <el-row>
+        <el-col :span="20">
+          <el-form-item label="归属组织">
+            <SelectOrganizationTree
+              :orgId="form.companyId"
+              @callback="(id) => (form.companyId = id)"
+            />
           </el-form-item>
         </el-col>
       </el-row>
@@ -89,9 +99,10 @@ import BasicInfo from "./basicinfo.vue";
 import { NoRepeatHttp } from "ihome-common/util/aop/no-repeat-http";
 import { Form as ElForm } from "element-ui";
 import { post_term_add } from "@/api/project/index.ts";
+import SelectOrganizationTree from "@/components/SelectOrganizationTree.vue";
 
 @Component({
-  components: { BasicInfo },
+  components: { BasicInfo, SelectOrganizationTree },
 })
 export default class AddDialog extends Vue {
   dialogVisible = true;
@@ -101,6 +112,7 @@ export default class AddDialog extends Vue {
     termEnd: null,
     proId: null,
     proName: null,
+    companyId: null,
     timeList: [],
   };
 

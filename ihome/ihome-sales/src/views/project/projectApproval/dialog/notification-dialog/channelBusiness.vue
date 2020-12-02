@@ -2,9 +2,9 @@
  * @Descripttion: 
  * @version: 
  * @Author: wwq
- * @Date: 2020-11-30 08:49:31
+ * @Date: 2020-11-30 19:24:37
  * @LastEditors: wwq
- * @LastEditTime: 2020-12-02 19:45:00
+ * @LastEditTime: 2020-12-02 19:42:46
 -->
 <template>
   <el-dialog
@@ -15,7 +15,7 @@
     :before-close="cancel"
     width="80%"
     class="text-left dialog-table"
-    :title="`项目基础信息`"
+    :title="`渠道商信息`"
     :append-to-body="true"
   >
     <el-form
@@ -24,74 +24,89 @@
     >
       <el-row>
         <el-col :span="8">
-          <el-form-item label="项目盘编">
+          <el-form-item label="名称">
             <el-input
-              clearable
-              v-model="queryPageParameters.proNo"
-              placeholder="项目盘编"
+              v-model="queryPageParameters.name"
+              placeholder="名称"
             ></el-input>
           </el-form-item>
         </el-col>
         <el-col :span="8">
-          <el-form-item label="项目名称">
+          <el-form-item label="信用代码">
             <el-input
-              clearable
-              v-model="queryPageParameters.proName"
-              placeholder="项目名称"
+              v-model="queryPageParameters.creditCode"
+              placeholder="信用代码"
             ></el-input>
           </el-form-item>
         </el-col>
         <el-col :span="8">
-          <el-form-item label="周期名称">
+          <el-form-item label="简称">
             <el-input
-              clearable
-              v-model="queryPageParameters.termName"
-              placeholder="周期名称"
+              v-model="queryPageParameters.shortName"
+              placeholder="简称"
             ></el-input>
           </el-form-item>
         </el-col>
+      </el-row>
+      <el-row>
+        <el-col :span="8">
+          <el-form-item label="渠道跟进人">
+            <el-select
+              v-model="queryPageParameters.followUserId"
+              clearable
+              placeholder="渠道跟进人"
+              class="width--100"
+            >
+              <el-option
+                v-for="item in testList"
+                :key="item.id"
+                :label="item.value"
+                :value="item.id"
+              ></el-option>
+            </el-select>
+          </el-form-item>
+        </el-col>
+        <el-col :span="8">
+          <el-form-item label="状态">
+            <el-select
+              v-model="queryPageParameters.status"
+              clearable
+              placeholder="状态"
+              class="width--100"
+            >
+              <el-option
+                v-for="item in $root.dictAllList('ChannelStatus')"
+                :key="item.code"
+                :label="item.name"
+                :value="item.code"
+              ></el-option>
+            </el-select>
+          </el-form-item>
+        </el-col>
+        <el-col :span="8">
+          <el-form-item label="渠道录入人">
+            <IhSelectPageUser
+              v-model="queryPageParameters.inputUser"
+              clearable
+            >
+              <!-- 自定义模板使用 v-slot返回来的data：当前每条的数据；index：每一条数据的下标 -->
+              <template v-slot="{ data }">
+                <span style="float: left">{{ data.name }}</span>
+                <span style="
+                      margin-left: 20px;
+                      float: right;
+                      color: #8492a6;
+                      font-size: 13px;
+                    ">{{ data.account }}</span>
+              </template>
+            </IhSelectPageUser>
+          </el-form-item>
+        </el-col>
+      </el-row>
+      <el-row>
         <el-col :span="8">
           <el-form-item label="省市区">
-            <IhCascader
-              v-model="provinceOption"
-              clearable
-              placeholder="请选择"
-              class="width--100"
-            />
-          </el-form-item>
-        </el-col>
-        <el-col :span="8">
-          <el-form-item label="业务类型">
-            <el-select
-              v-model="queryPageParameters.busTypeEnum"
-              clearable
-              placeholder="业务类型"
-              class="width--100"
-            >
-              <el-option
-                v-for="item in $root.dictAllList('BusTypeEnum')"
-                :key="item.code"
-                :label="item.name"
-                :value="item.code"
-              ></el-option>
-            </el-select>
-          </el-form-item>
-        </el-col>
-        <el-col :span="8">
-          <el-form-item label="项目审核状态">
-            <el-select
-              v-model="queryPageParameters.auditEnum"
-              clearable
-              placeholder="特批入库"
-              class="width--100"
-            >
-              <el-option
-                v-for="item in $root.dictAllList('AuditEnum')"
-                :key="item.code"
-                :label="item.name"
-                :value="item.code"
-              ></el-option>
-            </el-select>
+            <IhCascader v-model="provinceOption"></IhCascader>
           </el-form-item>
         </el-col>
       </el-row>
@@ -111,62 +126,73 @@
       class="ih-table"
       ref="multipleTable"
       :data="resPageInfo.list"
-      :empty-text="emptyText"
       @selection-change="handleSelectionChange"
       @select="handleSelect"
+      :empty-text="emptyText"
     >
       <el-table-column
+        fixed
         type="selection"
         width="50"
         align="center"
       ></el-table-column>
       <el-table-column
         fixed
-        prop="proNo"
-        label="盘编"
-        width="160"
+        prop="name"
+        label="名称"
+        min-width="250"
       ></el-table-column>
       <el-table-column
         fixed
-        prop="proName"
-        label="项目名称"
-        width="100"
+        prop="shortName"
+        label="简称"
+        min-width="100"
       ></el-table-column>
       <el-table-column
         prop="province"
         label="省份"
+        width="200"
       >
-        <template v-slot="{ row }">{{
-            $root.getAreaName(row.province)
-          }}</template>
+        <template v-slot="{ row }">
+          {{ $root.getAreaName(row.province) }}
+        </template>
       </el-table-column>
       <el-table-column
         prop="city"
         label="城市"
+        width="200"
       >
-        <template v-slot="{ row }">{{
-            $root.getAreaName(row.city)
-          }}</template>
+        <template v-slot="{ row }">
+          {{ $root.getAreaName(row.city) }}
+        </template>
       </el-table-column>
       <el-table-column
-        prop="district"
+        prop="county"
         label="行政区"
+        width="200"
       >
-        <template v-slot="{ row }">{{
-            $root.getAreaName(row.district)
-          }}</template>
+        <template v-slot="{ row }">
+          {{ $root.getAreaName(row.county) }}
+        </template>
       </el-table-column>
       <el-table-column
-        prop="proAddr"
-        label="项目地址"
-      > </el-table-column>
+        prop="inputUser"
+        label="录入人"
+        width="150"
+      ></el-table-column>
       <el-table-column
-        prop="auditEnum"
-        label="项目审核状态"
+        prop="followUserId"
+        label="渠道跟进人"
+        width="150"
+      ></el-table-column>
+      <el-table-column
+        prop="status"
+        label="状态"
+        width="150"
       >
-        <template v-slot="{ row }">{{
-            $root.dictAllName(row.auditEnum, "AuditEnum")
-          }}</template>
+        <template v-slot="{ row }">
+          <span>{{ $root.dictAllName(row.status, "ChannelStatus") }}</span>
+        </template>
       </el-table-column>
       <el-table-column
         fixed="right"
@@ -208,7 +234,7 @@
 <script lang="ts">
 import { Component, Vue } from "vue-property-decorator";
 import PaginationMixin from "@/mixins/pagination";
-import { post_project_getList } from "@/api/project/index";
+import { post_channel_getList } from "@/api/channel/index";
 
 @Component({
   components: {},
@@ -216,16 +242,16 @@ import { post_project_getList } from "@/api/project/index";
 })
 export default class ProjectApprovalDialog extends Vue {
   dialogVisible = true;
-  viewEditDialogVisible = false;
   queryPageParameters: any = {
-    proNo: null,
-    proName: null,
-    termName: null,
-    province: null,
+    name: null,
+    creditCode: null,
+    shortName: null,
+    provinces: null,
+    county: null,
     city: null,
-    district: null,
-    busTypeEnum: null,
-    auditEnum: null,
+    inputUser: null,
+    status: null,
+    followUserId: null,
   };
   provinceOption: any = [];
   resPageInfo: any = {
@@ -233,6 +259,12 @@ export default class ProjectApprovalDialog extends Vue {
     total: 0,
   };
   selection: any = [];
+  // 测试数据
+  testList = [
+    { value: "管理员1", id: 1 },
+    { value: "管理员2", id: 2 },
+    { value: "管理员3", id: 3 },
+  ];
 
   get emptyText() {
     return this.resPageInfo.total === null ? "正在加载数据..." : "暂无数据";
@@ -242,19 +274,20 @@ export default class ProjectApprovalDialog extends Vue {
     this.getListMixin();
   }
   async getListMixin() {
-    this.resPageInfo = await post_project_getList(this.queryPageParameters);
+    this.resPageInfo = await post_channel_getList(this.queryPageParameters);
   }
 
   reset() {
     Object.assign(this.queryPageParameters, {
-      proNo: null,
-      proName: null,
-      termName: null,
-      province: null,
+      name: null,
+      creditCode: null,
+      shortName: null,
+      provinces: null,
+      county: null,
       city: null,
-      district: null,
-      busTypeEnum: null,
-      auditEnum: null,
+      inputUser: null,
+      status: null,
+      followUserId: null,
     });
     this.provinceOption = [];
   }
@@ -274,9 +307,9 @@ export default class ProjectApprovalDialog extends Vue {
   }
 
   search() {
-    this.queryPageParameters.province = this.provinceOption[0];
+    this.queryPageParameters.provinces = this.provinceOption[0];
     this.queryPageParameters.city = this.provinceOption[1];
-    this.queryPageParameters.district = this.provinceOption[2];
+    this.queryPageParameters.county = this.provinceOption[2];
     this.queryPageParameters.pageNum = 1;
     this.getListMixin();
   }
@@ -290,25 +323,10 @@ export default class ProjectApprovalDialog extends Vue {
   }
 
   routerTo(row: any, type: string) {
-    let where: any = "";
-    switch (type) {
-      case "info":
-        if (row.exMinyuan) {
-          if (!row.parentId) {
-            where = "parentInfo";
-          } else {
-            where = "childInfo";
-          }
-        } else {
-          where = "childInfo";
-        }
-        break;
-    }
     const item = this.$router.resolve({
-      path: `/projects/${where}`,
+      path: `/channelBusiness/${type}`,
       query: {
-        id: row.proId,
-        proName: row.proName,
+        id: row.id,
       },
     });
     window.open(item.href, "_blank");
