@@ -4,7 +4,7 @@
  * @Author: ywl
  * @Date: 2020-12-01 10:37:53
  * @LastEditors: ywl
- * @LastEditTime: 2020-12-01 17:55:29
+ * @LastEditTime: 2020-12-02 14:46:20
 -->
 <template>
   <IhPage label-width="80px">
@@ -52,7 +52,10 @@
           type="info"
           @click="reset()"
         >重置</el-button>
-        <el-button type="success">添加</el-button>
+        <el-button
+          type="success"
+          @click="handleAdd()"
+        >添加</el-button>
       </el-row>
     </template>
     <template v-slot:table>
@@ -91,16 +94,21 @@
           width="215"
           fixed="right"
         >
-          <template>
+          <template v-slot="{ row }">
             <el-link
               type="primary"
               class="margin-right-10"
+              @click="handleEdit(row)"
             >修改</el-link>
             <el-link
               type="danger"
               class="margin-right-10"
+              @click="remove(row)"
             >删除</el-link>
-            <el-link type="success">维护在线支付信息</el-link>
+            <el-link
+              type="success"
+              @click="handleShowPay(row)"
+            >维护在线支付信息</el-link>
           </template>
         </el-table-column>
       </el-table>
@@ -117,16 +125,44 @@
         :total="resPageInfo.total"
       ></el-pagination>
     </template>
+    <!-- 弹窗 -->
+    <IhDialog
+      :show="dialogVisible"
+      desc="收款账号"
+    >
+      <AddEdit
+        :isAdd="isAdd"
+        :data="tableData"
+        @finish="handleFinish"
+        @cancel="() => (dialogVisible = false)"
+      />
+    </IhDialog>
+    <IhDialog
+      :show="payVisble"
+      desc="在线支付信息维护"
+    >
+      <PayInfo
+        :data="tableData"
+        @finish="() => (payVisble = false)"
+        @cancel="() => (payVisble = false)"
+      />
+    </IhDialog>
   </IhPage>
 </template>
 
 <script lang="ts">
 import { Component, Vue } from "vue-property-decorator";
-import { post_bankAccount_getList } from "@/api/finance/index";
+import AddEdit from "./dialog/addEdit.vue";
+import PayInfo from "./dialog/payInfo.vue";
+import {
+  post_bankAccount_getList,
+  post_bankAccount_delete__id,
+} from "@/api/finance/index";
 
 import PaginationMixin from "../../../mixins/pagination";
 
 @Component({
+  components: { AddEdit, PayInfo },
   mixins: [PaginationMixin],
 })
 export default class BankBranchList extends Vue {
@@ -139,7 +175,47 @@ export default class BankBranchList extends Vue {
     total: null,
     list: [],
   };
+  dialogVisible = false;
+  payVisble = false;
+  isAdd = true;
+  tableData: any = {};
 
+  private handleFinish(isAdd: boolean) {
+    if (isAdd) this.queryPageParameters.pageNum = 1;
+    this.dialogVisible = false;
+    this.getListMixin();
+  }
+  private handleAdd() {
+    this.isAdd = true;
+    this.dialogVisible = true;
+  }
+  private handleEdit(row: any) {
+    this.isAdd = false;
+    this.tableData = { ...row };
+    this.dialogVisible = true;
+  }
+  private handleShowPay(row: any) {
+    this.tableData = { ...row };
+    this.payVisble = true;
+  }
+  private async remove(row: any) {
+    try {
+      await this.$confirm("是否确定删除?", "提示");
+      console.log(row);
+
+      await post_bankAccount_delete__id({ id: row.id });
+      // 删除list最后一条数据 返回前一页面
+      if (this.resPageInfo.list.length === 1) {
+        this.queryPageParameters.pageNum === 1
+          ? (this.queryPageParameters.pageNum = 1)
+          : this.queryPageParameters.pageNum--;
+      }
+      this.getListMixin();
+      this.$message.success("删除成功");
+    } catch (error) {
+      console.log(error);
+    }
+  }
   private search() {
     if (
       this.queryPageParameters.accountName &&
