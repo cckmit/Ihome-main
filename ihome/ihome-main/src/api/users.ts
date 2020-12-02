@@ -4,7 +4,7 @@
  * @Author: zyc
  * @Date: 2020-06-24 09:47:33
  * @LastEditors: ywl
- * @LastEditTime: 2020-12-02 15:19:33
+ * @LastEditTime: 2020-12-02 19:53:10
  */
 import { IRes } from "./users.d";
 // import request from '@/utils/http';
@@ -316,6 +316,13 @@ export function allMenu<T>() {
             title: "发票税率维护",
             icon: null,
             path: "/web-sales/invoice/list"
+        },
+        {
+            id: 705,
+            parentId: 701,
+            title: "POS机管理列表",
+            icon: null,
+            path: "/web-sales/pos/list"
         }
     ];
     return menuList;

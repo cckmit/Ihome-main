@@ -4,7 +4,7 @@
  * @Author: ywl
  * @Date: 2020-12-01 15:49:07
  * @LastEditors: ywl
- * @LastEditTime: 2020-12-02 18:37:56
+ * @LastEditTime: 2020-12-02 19:52:20
  */
 import { RouteConfig } from 'vue-router'
 
@@ -64,6 +64,19 @@ const financeRoutes: Array<RouteConfig> = [
         component: () => import('../views/finance/invoice/info.vue'),
         meta: { title: '发票税率维护详情', icon: 'form' }
       }
+    ]
+  },
+  {
+    path: '/pos',
+    meta: { title: 'POS机管理', icon: null },
+    component: Layout,
+    children: [
+      {
+        path: 'list',
+        name: 'POSList',
+        component: () => import('../views/finance/pos/list.vue'),
+        meta: { title: 'POS机管理列表', icon: 'form', keepAlive: true }
+      },
     ]
   }
 ]
