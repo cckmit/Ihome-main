@@ -204,13 +204,13 @@
 
     resPageInfo: any = {
       total: null,
-      list: [{}],
+      list: [],
     };
     companyId: any = null; // 分公司id
 
     async created() {
       // console.log('物业类型', (this as any).$root.dictAllList('PropertyEnum'));
-      this.companyId = this.$route.query.id;
+      this.companyId = localStorage.getItem('companyId');
       if (this.companyId) {
         await this.getListMixin();
       }
@@ -244,14 +244,14 @@
               })
             }
             if (nameType.length > 0) {
-              listItem.contType = nameType.join(',');
+              listItem.contType = nameType.join('，');
             } else {
               listItem.contType = "";
             }
           }
           // 物业类型
           if (listItem.propertyTypeStr) {
-            let typeArr = listItem.contType.split(',');
+            let typeArr = listItem.propertyTypeStr.split(',');
             let propertyNameType: any = [];
             if (typeArr.length > 0) {
               typeArr.forEach((typeItem: any) => {
@@ -265,28 +265,19 @@
               })
             }
             if (propertyNameType.length > 0) {
-              listItem.propertyTypeStr = propertyNameType.join(',');
+              listItem.propertyTypeStr = propertyNameType.join('，');
             } else {
               listItem.propertyTypeStr = "";
             }
           }
           // 业务模式
           if (listItem.modelName) {
-            let typeArr = listItem.contType.split(',');
-            let businessNameType: any = [];
-            if (typeArr.length > 0) {
-              typeArr.forEach((typeItem: any) => {
-                if (businessModelList && businessModelList.length > 0) {
-                  businessModelList.forEach((businessItem: any) => {
-                    if (typeItem === businessItem.code) {
-                      businessNameType.push(businessItem.name);
-                    }
-                  })
+            if (businessModelList && businessModelList.length > 0) {
+              businessModelList.forEach((businessItem: any) => {
+                if (listItem.modelName === businessItem.code) {
+                  listItem.modelName = businessItem.name;
                 }
               })
-            }
-            if (businessNameType.length > 0) {
-              listItem.modelName = businessNameType.join(',');
             } else {
               listItem.modelName = "";
             }

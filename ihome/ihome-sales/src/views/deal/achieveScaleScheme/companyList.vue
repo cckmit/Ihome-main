@@ -104,12 +104,8 @@
 
     // 分公司详情
     async detail(scope: any) {
-      // localStorage.setItem()
-      // scope.row.id = 10086; // 测试ID
-      this.$router.push({
-        path: "/achieveScaleScheme/list",
-        query: {id: scope.row.id},
-      });
+      localStorage.setItem('companyId', scope.row.id);
+      this.$router.push({path: "/achieveScaleScheme/list"});
     }
   }
 </script>
