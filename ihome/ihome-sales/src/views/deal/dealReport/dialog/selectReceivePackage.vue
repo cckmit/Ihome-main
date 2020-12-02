@@ -23,6 +23,7 @@
       <div v-else class="title">代理费收派套餐</div>
       <el-table
         class="ih-table"
+        :empty-text="emptyText"
         :data="resPageInfo.list"
         @selection-change="handleSelectionChange">
         <el-table-column type="selection" width="55"></el-table-column>
@@ -116,7 +117,7 @@
     @Prop({default: null}) data: any;
     dialogVisible = true;
     resPageInfo: any = {
-      total: 0,
+      total: null,
       list: [],
     };
 

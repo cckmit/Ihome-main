@@ -4,7 +4,7 @@
  * @Author: ywl
  * @Date: 2020-09-16 14:05:21
  * @LastEditors: ywl
- * @LastEditTime: 2020-11-23 10:05:12
+ * @LastEditTime: 2020-12-01 15:11:59
 -->
 <template>
   <IhPage>
@@ -163,7 +163,7 @@
           <el-col :span="8">
             <el-form-item label="跟进人">
               <el-input
-                v-model="info.followUserId"
+                v-model="info.followUserName"
                 placeholder="跟进人"
                 disabled
               ></el-input>
@@ -193,22 +193,27 @@
           min-width="200"
         ></el-table-column>
         <el-table-column
-          prop="accountNum"
+          prop="accountNo"
           label="账号"
           min-width="200"
         > </el-table-column>
         <el-table-column
-          prop="bank"
+          prop="branchName"
           label="开户银行"
           min-width="200"
         ></el-table-column>
         <el-table-column
-          prop="type"
+          prop="branchNo"
+          label="联行号"
+          width="150"
+        ></el-table-column>
+        <el-table-column
+          prop="accountType"
           label="账号类型"
           width="150"
         >
           <template v-slot="{ row }">
-            <span>{{$root.dictAllName(row.type, "AccountEnum")}}</span>
+            <span>{{$root.dictAllName(row.accountType, "AccountEnum")}}</span>
           </template>
         </el-table-column>
         <el-table-column
@@ -413,10 +418,11 @@ export default class ModifyThe extends Vue {
   changeReason = "";
   dialogFormVisible = false;
   Bankrule: any = {
-    bank: "",
-    type: "",
-    accountName: "",
-    accountNum: "",
+    accountName: null,
+    accountNo: null,
+    accountType: null,
+    branchName: null,
+    branchNo: null,
   };
   bankType: any = "new-add";
   channelPersonsData: any = {
@@ -492,10 +498,11 @@ export default class ModifyThe extends Vue {
 
   addAccount() {
     this.Bankrule = {
-      bank: "",
-      type: "",
-      accountName: "",
-      accountNum: "",
+      accountName: null,
+      accountNo: null,
+      accountType: null,
+      branchName: null,
+      branchNo: null,
     };
     this.bankType = "new-add";
     this.dialogFormVisible = true;
@@ -523,7 +530,14 @@ export default class ModifyThe extends Vue {
 
     Promise.all([ruleFrom, personForm]).then(async (value) => {
       if (value[0] && value[1]) {
-        // this.info.channelPersons.push(this.channelPersonsData);
+        let includeBase = this.info.channelBanks
+          .map((i: any) => i.accountType)
+          .includes("Base");
+        if (!includeBase) {
+          this.$message.warning("账户信息中，基本存款账号必须录入");
+          return;
+        }
+        this.info.channelPersons.push(this.channelPersonsData);
         switch (this.pageName) {
           case "AddChannel":
             // 渠道商添加

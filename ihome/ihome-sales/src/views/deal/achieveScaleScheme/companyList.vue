@@ -62,10 +62,6 @@
 </template>
 <script lang="ts">
   import {Component, Vue} from "vue-property-decorator";
-
-  import {
-    post_achieveScaleScheme_getBranchCompanyList
-  } from "@/api/deal";
   import {
     post_org_getList
   } from "@/api/system";
@@ -108,12 +104,8 @@
 
     // 分公司详情
     async detail(scope: any) {
-      // localStorage.setItem()
-      // scope.row.id = 10086; // 测试ID
-      this.$router.push({
-        path: "/achieveScaleScheme/list",
-        query: {id: scope.row.id},
-      });
+      localStorage.setItem('companyId', scope.row.id);
+      this.$router.push({path: "/achieveScaleScheme/list"});
     }
   }
 </script>

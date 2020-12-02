@@ -20,6 +20,7 @@
     class="dialog">
     <el-table
       class="ih-table"
+      :empty-text="emptyText"
       :data="resPageInfo.list">
       <el-table-column prop="roleType" label="角色类型" min-width="120">
         <template slot-scope="scope">
@@ -237,7 +238,7 @@
     @Prop({default: null}) data: any;
     dialogVisible = true;
     resPageInfo: any = {
-      total: 0,
+      total: null,
       list: [
         {
           SupervisorList: [],

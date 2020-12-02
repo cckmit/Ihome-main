@@ -25,18 +25,19 @@
           </el-form-item>
         </el-col>
         <el-col :span="6">
-          <el-form-item label="分销同步总包">
+          <el-form-item label="分销与总包一致">
             {{infoForm.isSame === 'Yes' ? "是" : "否"}}
           </el-form-item>
         </el-col>
-      </el-row>
-      <el-row>
-        <el-col :span="24">
-          <el-form-item label="物业类型">{{infoForm.achievePropertyTypeList}}</el-form-item>
+        <el-col :span="6">
+          <el-form-item label="物业类型">{{infoForm.achievePropertyTypeStr}}</el-form-item>
         </el-col>
-      </el-row>
-      <el-row>
-        <el-col :span="24">
+        <el-col :span="6">
+          <el-form-item label="是否特殊方案">
+            {{infoForm.isSpecial === 'Yes' ? "是" : "否"}}
+          </el-form-item>
+        </el-col>
+        <el-col :span="6">
           <el-form-item label="关联项目">
             <el-tag
               v-for="item in infoForm.achieveProjectList"
@@ -45,8 +46,6 @@
             </el-tag>
           </el-form-item>
         </el-col>
-      </el-row>
-      <el-row>
         <el-col :span="24">
           <el-form-item label="备注说明">{{infoForm.remarks}}</el-form-item>
         </el-col>
@@ -57,31 +56,11 @@
         <el-table
           class="ih-table"
           :data="infoForm.achieveScaleConfigList">
-          <el-table-column
-            prop="typeName"
-            label="类别"
-            min-width="120"
-          ></el-table-column>
-          <el-table-column
-            prop="role"
-            label="角色"
-            min-width="120"
-          ></el-table-column>
-          <el-table-column
-            prop="ratio"
-            label="拆分比例 (%)"
-            min-width="120"
-          ></el-table-column>
-          <el-table-column
-            prop="missingRole"
-            label="角色缺失处理方式"
-            min-width="120"
-          ></el-table-column>
-          <el-table-column
-            prop="remarks"
-            label="备注"
-            min-width="150"
-          ></el-table-column>
+          <el-table-column prop="type" label="类别" min-width="120"></el-table-column>
+          <el-table-column prop="role" label="角色" min-width="120"></el-table-column>
+          <el-table-column prop="ratio" label="拆分比例 (%)" min-width="120"></el-table-column>
+          <el-table-column prop="missingRole" label="角色缺失处理方式" min-width="120"></el-table-column>
+          <el-table-column prop="remarks" label="备注" min-width="150"></el-table-column>
         </el-table>
       </el-col>
     </el-row>
@@ -108,9 +87,9 @@
       let id = this.$route.query.id;
       if (id) {
         this.infoForm = await get_achieveScaleScheme_get__id({id: id});
-        let businessModelList = (self as any).$root.dictAllList('BusinessModel'); // 业务类型
-        let contTypeList = (self as any).$root.dictAllList('ContType'); // 合同类型
-        let propertyEnumList = (self as any).$root.dictAllList('PropertyEnum'); // 物业类型
+        let businessModelList = (this as any).$root.dictAllList('BusinessModel'); // 业务类型
+        let contTypeList = (this as any).$root.dictAllList('ContType'); // 合同类型
+        let propertyEnumList = (this as any).$root.dictAllList('PropertyEnum'); // 物业类型
         // 处理数据
         // 1.业务模式
         if (this.infoForm.modelName) {
@@ -145,7 +124,7 @@
             }
           })
           if (achieveNameArr.length > 0) {
-            this.infoForm.achievePropertyTypeStr = achieveNameArr.join(',');
+            this.infoForm.achievePropertyTypeStr = achieveNameArr.join('，');
           } else {
             this.infoForm.achievePropertyTypeStr = "";
           }
