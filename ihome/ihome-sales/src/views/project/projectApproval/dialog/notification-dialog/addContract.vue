@@ -4,7 +4,7 @@
  * @Author: wwq
  * @Date: 2020-12-02 15:37:31
  * @LastEditors: wwq
- * @LastEditTime: 2020-12-02 20:53:32
+ * @LastEditTime: 2020-12-03 09:29:08
 -->
 <template>
   <el-dialog
@@ -59,7 +59,6 @@
             prop="partyCompany"
           >
             <el-input
-              disabled
               v-model="info.partyCompany"
               class="width--100"
             ></el-input>
@@ -71,7 +70,6 @@
             prop='partyaAddr'
           >
             <el-input
-              disabled
               v-model="info.partyaAddr"
               class="width--100"
             ></el-input>
@@ -297,7 +295,7 @@
               class="width--100"
             >
               <el-option
-                v-for="item in $root.dictAllList('PadCommissionEnum')"
+                v-for="item in padCommissionEnumOptions"
                 :key="item.code"
                 :label="item.name"
                 :value="item.code"
@@ -471,6 +469,7 @@ export default class AddContract extends Vue {
   };
   isShow: any = false;
   unContractDisabled: any = true;
+  padCommissionEnumOptions: any = [];
   private get termId() {
     return this.$route.query.id;
   }
@@ -485,20 +484,35 @@ export default class AddContract extends Vue {
   }
 
   async created() {
-    if (this.data.id) {
+    if (this.data.agencyContrictId) {
       this.getListMixin();
     } else {
       this.info.partyCompany = this.data.preferentialPartyA;
-      this.info.partyaAddr = this.data.partyaAddr;
-      this.info.unContractLiability = `乙方在销售过程中有下列行为之一时，甲方有权解除本协议，乙方需向甲方赔偿因此行为对甲方造成的所有损失（包括但不限于律师费、诉讼费、公证费、差旅费等费用），并向甲方支付实际应付代理费总额的20%作为违约金：
-    8.1.1 对客户做出任何虚假承诺或擅自向客户收取费用；
-    8.1.2 乙方人员与甲方现场销售人员或其他人员相互勾结，将原本属于自然到访客户通过不正当手段转化为乙方客户；
-    8.1.3 乙方人员在项目周边直径1公里范围以内，有揽客、举牌、打街霸活动的；
-    8.1.4 乙方人员在销售现场不服从甲方人员管理的且拒不改正；
-    8.1.5 乙方人员在销售现场出现争客抢客、打架斗殴行为；
-    8.1.6 乙方人员带客到现场，未经甲方代表确认，私自带客户进入项目；
-    8.1.7 擅自将甲方提供的资料及在工作过程中知悉的甲方商业秘密对外披露、提供、发布等；
-    8.1.8 其他有损害甲方及其关联公司合法权益和声誉的行为。`;
+      this.info.partyaAddr = this.data.preferentialPartyAddr;
+      this.padCommissionEnumOptions = [
+        {
+          code: "Veto",
+          name: "否",
+        },
+        {
+          code: this.data.padCommissionEnum,
+          name: (this.$root as any).dictAllName(
+            this.data.padCommissionEnum,
+            "PadCommissionEnum"
+          ),
+        },
+      ];
+      this.info.padCommissionEnum = this.data.padCommissionEnum;
+      this.info.unContractLiability = `乙方在销售过程中有下列行为之一时，甲方有权解除本协议，乙方需向甲方赔偿因此行为对甲方造成的
+        所有损失（包括但不限于律师费、诉讼费、公证费、差旅费等费用），并向甲方支付实际应付代理费总额的20%作为违约金：
+        8.1.1 对客户做出任何虚假承诺或擅自向客户收取费用；
+        8.1.2 乙方人员与甲方现场销售人员或其他人员相互勾结，将原本属于自然到访客户通过不正当手段转化为乙方客户；
+        8.1.3 乙方人员在项目周边直径1公里范围以内，有揽客、举牌、打街霸活动的；
+        8.1.4 乙方人员在销售现场不服从甲方人员管理的且拒不改正；
+        8.1.5 乙方人员在销售现场出现争客抢客、打架斗殴行为；
+        8.1.6 乙方人员带客到现场，未经甲方代表确认，私自带客户进入项目；
+        8.1.7 擅自将甲方提供的资料及在工作过程中知悉的甲方商业秘密对外披露、提供、发布等；
+        8.1.8 其他有损害甲方及其关联公司合法权益和声誉的行为。`;
       this.info.contractMxVOList = [
         {
           conditionId: 21,
@@ -522,12 +536,25 @@ export default class AddContract extends Vue {
 
   async getListMixin() {
     const item = await get_distributContract_getDistri__agencyContrictId({
-      agencyContrictId: this.data.id,
+      agencyContrictId: this.data.agencyContrictId,
     });
     this.info = {
       ...item,
       timeList: [item.contractStartTime, item.contractEndTime],
     };
+    this.padCommissionEnumOptions = [
+      {
+        code: "Veto",
+        name: "否",
+      },
+      {
+        code: item.padCommissionEnum,
+        name: (this.$root as any).dictAllName(
+          item.padCommissionEnum,
+          "PadCommissionEnum"
+        ),
+      },
+    ];
   }
 
   cancel() {

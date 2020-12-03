@@ -4,7 +4,7 @@
  * @Author: wwq
  * @Date: 2020-12-02 20:13:07
  * @LastEditors: wwq
- * @LastEditTime: 2020-12-02 20:59:29
+ * @LastEditTime: 2020-12-03 09:27:42
 -->
 <template>
   <el-dialog
@@ -90,60 +90,60 @@
       <el-row>
         <el-col :span="24">
           <el-form-item label="代理费计付标准备注">
-            <span
-              class="text-ellipsis"
+            <pre
+              class="pre-style"
               :title="info.agencyFeeRemark"
-            >{{info.agencyFeeRemark}}</span>
+            >{{info.agencyFeeRemark}}</pre>
           </el-form-item>
         </el-col>
       </el-row>
       <el-row>
         <el-col :span="24">
           <el-form-item label="客户成交以及确认">
-            <span
-              class="text-ellipsis"
+            <pre
+              class="pre-style"
               :title="info.consumerComplete"
-            >{{info.consumerComplete}}</span>
+            >{{info.consumerComplete}}</pre>
           </el-form-item>
         </el-col>
       </el-row>
       <el-row>
         <el-col :span="24">
           <el-form-item label="代理费结算条件">
-            <span
-              class="text-ellipsis"
+            <pre
+              class="pre-style"
               :title="info.agencyCostCondition"
-            >{{info.agencyCostCondition}}</span>
+            >{{info.agencyCostCondition}}</pre>
           </el-form-item>
         </el-col>
       </el-row>
       <el-row>
         <el-col :span="24">
           <el-form-item label="代理费结算方式">
-            <span
-              class="text-ellipsis"
+            <pre
+              class="pre-style"
               :title="info.agencyCostSettleWay"
-            >{{info.agencyCostSettleWay}}</span>
+            >{{info.agencyCostSettleWay}}</pre>
           </el-form-item>
         </el-col>
       </el-row>
       <el-row>
         <el-col :span="24">
           <el-form-item label="违约责任">
-            <span
-              class="text-ellipsis"
+            <pre
+              class="pre-style"
               :title="info.unContractLiability"
-            >{{info.unContractLiability}}</span>
+            >{{info.unContractLiability}}</pre>
           </el-form-item>
         </el-col>
       </el-row>
       <el-row>
         <el-col :span="24">
           <el-form-item label="补充条款">
-            <span
-              class="text-ellipsis"
+            <pre
+              class="pre-style"
               :title="info.supplementary"
-            >{{info.supplementary}}</span>
+            >{{info.supplementary}}</pre>
           </el-form-item>
         </el-col>
       </el-row>
@@ -182,10 +182,12 @@
           :span='10'
           v-if="isShow"
         >
-          <span
-            class="text-ellipsis"
-            :title="info.designatedAgency"
-          >{{info.designatedAgency}}</span>
+          <el-form-item label="中介公司">
+            <span
+              class="text-ellipsis"
+              :title="info.designatedAgency"
+            >{{info.designatedAgency}}</span>
+          </el-form-item>
         </el-col>
       </el-row>
       <el-row>
@@ -297,14 +299,14 @@ export default class AddContract extends Vue {
   }
 
   async created() {
-    if (this.data.id) {
+    if (this.data.agencyContrictId) {
       this.getListMixin();
     }
   }
 
   async getListMixin() {
     const item = await get_distributContract_getDistri__agencyContrictId({
-      agencyContrictId: this.data.id,
+      agencyContrictId: this.data.agencyContrictId,
     });
     this.info = { ...item };
   }
@@ -334,5 +336,9 @@ export default class AddContract extends Vue {
   overflow: hidden;
   text-overflow: ellipsis;
   white-space: nowrap;
+}
+.pre-style {
+  white-space: pre-wrap;
+  margin: 0;
 }
 </style>

@@ -4,7 +4,7 @@
  * @Author: wwq
  * @Date: 2020-11-27 17:27:01
  * @LastEditors: wwq
- * @LastEditTime: 2020-12-02 20:17:19
+ * @LastEditTime: 2020-12-03 09:31:53
 -->
 <template>
   <div>
@@ -79,7 +79,7 @@
             <el-button
               size="small"
               type="success"
-              @click="delPartyA(row)"
+              @click="preview(row)"
             >预览</el-button>
             <el-button
               size="small"
@@ -205,7 +205,7 @@
             <el-button
               size="small"
               type="primary"
-              @click="delPartyA(row)"
+              @click="preview(row)"
             >预览</el-button>
             <el-button
               size="small"
@@ -327,9 +327,21 @@ export default class Notification extends Vue {
   addType = "";
   addNotificationData: any = {};
 
-  @Watch("info.attachTermVOS", { immediate: true })
+  @Watch("info.attachTermVOS")
   geiFileList(val: any, oldVal: any) {
-    console.log(val, oldVal, "wacth");
+    if (oldVal === undefined) {
+      this.fileList = val.map((v: any) => ({
+        name: v.attachName,
+        fileId: v.attachAddr,
+      }));
+    } else {
+      if (val.length !== oldVal.length) {
+        this.fileList = val.map((v: any) => ({
+          name: v.attachName,
+          fileId: v.attachAddr,
+        }));
+      }
+    }
   }
 
   created() {
@@ -344,60 +356,39 @@ export default class Notification extends Vue {
       });
       this.contractData = {
         preferentialPartyA: this.info.preferentialPartyA,
-        partyaAddr: this.info.partyaAddr,
+        preferentialPartyAddr: this.info.preferentialPartyAddr,
+        padCommissionEnum: this.info.padCommissionEnum,
       };
-      this.fileList = this.info.attachTermVOS.map((v: any) => ({
-        name: v.attachName,
-        fileId: v.attachAddr,
-      }));
     }
   }
 
-  async delPartyA(row: any) {
-    // try {
-    //   await this.$confirm("是否确定删除?", "提示");
-    //   let partyAIds = row.partyList.map((v: any) => v.userId);
-    // await post_partyAContract_del({
-    //   termId: this.$route.query.id,
-    //   contractId: row.id,
-    //   partyAIds: partyAIds,
-    // });
-    //   this.$message({
-    //     type: "success",
-    //     message: "删除成功!",
-    //   });
-    //   this.getInfo();
-    // } catch (error) {
-    //   console.log(error);
-    // }
+  async preview(row: any) {
     console.log(row);
   }
 
   addTemplate() {
-    this.contractData.id = "";
+    this.contractData.agencyContrictId = "";
     this.dialogVisible = true;
   }
 
   editTemplate(data: any) {
-    this.contractData.id = data.agencyContrictId;
+    this.contractData.agencyContrictId = data.agencyContrictId;
     this.dialogVisible = true;
   }
 
   viewTemplate(data: any) {
-    this.viewData.id = data.agencyContrictId;
+    this.viewData.agencyContrictId = data.agencyContrictId;
     this.viewDialogVisible = true;
   }
 
   async contractFinish(data: any) {
     data.termId = this.$route.query.id;
-    // 假
-    // data.dealMan = "xxxx";
-    // data.dealTel = "xxxx";
-    // data.partyCompanyId = 2;
-    if (this.contractData.id) {
+    if (this.contractData.agencyContrictId) {
+      data.agencyContrictId = this.contractData.agencyContrictId;
       await post_distributContract_update(data);
       this.$message.success("修改成功");
     } else {
+      data.partyCompanyId = this.info.preferentialPartyAId;
       await post_distributContract_add(data);
       this.$message.success("新增成功");
     }
