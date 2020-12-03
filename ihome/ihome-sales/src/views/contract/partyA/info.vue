@@ -4,7 +4,7 @@
  * @Author: ywl
  * @Date: 2020-09-25 16:00:37
  * @LastEditors: ywl
- * @LastEditTime: 2020-12-03 11:31:57
+ * @LastEditTime: 2020-12-03 15:30:31
 -->
 <template>
   <IhPage class="text-left partyA-info">
@@ -115,6 +115,7 @@
               <IhUpload
                 :file-list="contractList"
                 size="100px"
+                @newFileList="handleContract"
               ></IhUpload>
             </el-form-item>
           </el-col>
@@ -126,10 +127,12 @@
                 :file-list="archiveList"
                 size="100px"
                 class="upload"
+                @newFileList="handleArchive"
               ></IhUpload>
               <el-button
                 type="primary"
                 class="upload-button"
+                @click="submit()"
               >提交</el-button>
             </el-form-item>
           </el-col>
@@ -193,14 +196,58 @@
 <script lang="ts">
 import { Component, Vue } from "vue-property-decorator";
 
-import { get_contract_detail__id } from "@/api/contract/index";
+import {
+  get_contract_detail__id,
+  post_contract_annex,
+} from "@/api/contract/index";
 
 @Component({})
 export default class PartyAadd extends Vue {
   private formData: any = {};
   private contractList: any = [];
   private archiveList: any = [];
+  private addContract: any = [];
+  private addArchive: any = [];
 
+  private handleContract(val: any) {
+    this.addContract = val
+      .filter((i: any) => {
+        return i.response;
+      })
+      .map((item: any) => ({
+        attachmentSuffix: item.name,
+        fileNo: item.fileId,
+        type: "ContractAnnex",
+      }));
+  }
+  private handleArchive(val: any) {
+    console.log(val);
+    this.addArchive = val
+      .filter((i: any) => {
+        return i.response;
+      })
+      .map((item: any) => ({
+        attachmentSuffix: item.name,
+        fileNo: item.fileId,
+        type: "ArchiveAnnex",
+      }));
+    console.log(this.addArchive);
+  }
+  private async submit() {
+    if (this.addContract.length || this.addArchive.length) {
+      try {
+        await post_contract_annex({
+          contractId: this.formData.id,
+          annexList: this.addContract.concat(this.addArchive),
+        });
+        this.$message.success("提交附件成功");
+      } catch (err) {
+        console.log(err);
+      }
+    } else {
+      this.$message.warning("请先上传附件");
+    }
+  }
   private async getInfo() {
     let id = this.$route.query.id;
     if (id) {
@@ -209,13 +256,13 @@ export default class PartyAadd extends Vue {
         if (i.type === "ContractAnnex") {
           this.contractList.push({
             name: i.attachmentSuffix,
-            url: i.fileNo,
+            fileId: i.fileNo,
           });
         }
         if (i.type === "ArchiveAnnex") {
           this.archiveList.push({
             name: i.attachmentSuffix,
-            url: i.fileNo,
+            fileId: i.fileNo,
           });
         }
       });

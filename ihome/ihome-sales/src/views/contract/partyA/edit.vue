@@ -4,7 +4,7 @@
  * @Author: ywl
  * @Date: 2020-09-25 16:00:37
  * @LastEditors: ywl
- * @LastEditTime: 2020-12-03 12:24:04
+ * @LastEditTime: 2020-12-03 14:20:33
 -->
 <template>
   <IhPage>
@@ -95,7 +95,7 @@
             >
               <el-input
                 v-model="formData.archiveNo"
-                placeholder="归档编号"
+                placeholder="请填写归档编号"
               ></el-input>
             </el-form-item>
           </el-col>
@@ -123,6 +123,7 @@
                 :file-list="contractList"
                 size="100px"
                 :limit="1"
+                :removePermi="false"
               ></IhUpload>
             </el-form-item>
           </el-col>
@@ -135,6 +136,7 @@
                 :file-list="archiveList"
                 size="100px"
                 :limit="1"
+                :removePermi="false"
               ></IhUpload>
             </el-form-item>
           </el-col>
@@ -167,7 +169,9 @@ import {
 
 @Component({})
 export default class PartyAadd extends Vue {
-  private formData: any = {};
+  private formData: any = {
+    archiveNo: null,
+  };
   private contractList: any = [];
   private archiveList: any = [];
 
@@ -176,11 +180,15 @@ export default class PartyAadd extends Vue {
     (this.$refs["ruleForm"] as ElForm).validate(async (val) => {
       if (val) {
         console.log(this.formData);
+        if (!this.formData.archiveNo) {
+          this.$message.warning("归档编号不能为空");
+          return;
+        }
         await post_contract_original_archive({
           contractId: this.formData.id,
-          fileCode: this.formData.fileCode,
+          archiveNo: this.formData.archiveNo,
         });
-        this.$message.success("提交成功");
+        this.$message.success("原件归档成功");
       }
     });
   }
@@ -189,6 +197,20 @@ export default class PartyAadd extends Vue {
     if (id) {
       let res = await get_contract_detail__id({ id: id });
       this.formData = { ...this.formData, ...res };
+      res.fileList.forEach((i: any) => {
+        if (i.type === "ContractAnnex") {
+          this.contractList.push({
+            name: i.attachmentSuffix,
+            url: i.fileNo,
+          });
+        }
+        if (i.type === "ArchiveAnnex") {
+          this.archiveList.push({
+            name: i.attachmentSuffix,
+            url: i.fileNo,
+          });
+        }
+      });
     }
   }
 
