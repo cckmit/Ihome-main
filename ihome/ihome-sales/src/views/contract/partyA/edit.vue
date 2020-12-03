@@ -1,10 +1,10 @@
 <!--
- * @Description: 合同的修改页面
+ * @Description: 合同的原件归档页面
  * @version: 
  * @Author: ywl
  * @Date: 2020-09-25 16:00:37
  * @LastEditors: ywl
- * @LastEditTime: 2020-11-04 16:08:31
+ * @LastEditTime: 2020-12-03 12:24:04
 -->
 <template>
   <IhPage>
@@ -12,10 +12,9 @@
       <p class="ih-info-title">甲方合同信息</p>
       <el-form
         :model="formData"
-        :rules="rule"
         ref="ruleForm"
         label-width="120px"
-        class="demo-ruleForm"
+        class="text-left"
       >
         <el-row>
           <el-col :span="24">
@@ -23,132 +22,79 @@
               label="合同标题"
               prop="title"
             >
-              <el-input
-                v-model="formData.title"
-                placeholder="合同标题"
-                disabled
-              ></el-input>
+              {{formData.title}}
+            </el-form-item>
+          </el-col>
+        </el-row>
+        <el-row>
+          <el-col :span="24">
+            <el-form-item label="甲方">
+              <template v-for="(item, index) in formData.partyA">
+                <span :key="item.id">
+                  {{item.userName}}
+                  <span v-if="index !== (formData.partyA.length-1)">、</span>
+                </span>
+              </template>
             </el-form-item>
           </el-col>
         </el-row>
         <el-row>
           <el-col :span="12">
-            <el-form-item
-              label="甲方"
-              prop="partyA"
-            >
-              <el-select
-                v-model="formData.partyA"
-                placeholder="甲方"
-                filterable
-                multiple
-                value-key="id"
-                class="width--100"
-                disabled
-              >
-                <el-option
-                  v-for="(item) in partyAList"
-                  :key="item.id"
-                  :label="item.name"
-                  :value="item"
-                ></el-option>
-              </el-select>
+            <el-form-item label="乙方">
+              {{formData.partyBName}}
+            </el-form-item>
+          </el-col>
+        </el-row>
+        <el-row>
+          <el-col :span="24">
+            <el-form-item label="合作项目">
+              {{formData.cooperationProjectsName}}
             </el-form-item>
           </el-col>
         </el-row>
         <el-row>
           <el-col :span="12">
-            <el-form-item
-              label="乙方"
-              prop="partyB"
-            >
-              <el-select
-                v-model="formData.partyB"
-                placeholder="乙方"
-                clearable
-                filterable
-                class="width--100"
-                disabled
-              >
-                <el-option
-                  v-for="(item) in companyList"
-                  :key="item.id"
-                  :label="item.name"
-                  :value="item.id"
-                ></el-option>
-              </el-select>
-            </el-form-item>
-          </el-col>
-        </el-row>
-        <el-row>
-          <el-col :span="12">
-            <el-form-item
-              label="执行时间"
-              prop="effectiveTime"
-            >
-              <el-date-picker
-                style="width:100%;"
-                v-model="formData.effectiveTime"
-                type="date"
-                align="left"
-                placeholder="年/月/日"
-                value-format="yyyy-MM-dd"
-                disabled
-              ></el-date-picker>
+            <el-form-item label="合作时间">
+              {{formData.cooperationTime}}
             </el-form-item>
           </el-col>
           <el-col :span="12">
-            <el-form-item label="合同跟进人">
-              <IhSelectPageUser
-                v-model="formData.handler"
-                clearable
-                disabled
-              >
-                <template v-slot="{ data }">
-                  <span style="float: left">{{ data.name }}</span>
-                  <span
-                    class="margin-left-30"
-                    style="float: right; color: #8492a6; font-size: 13px"
-                  >{{ data.employeeCode }}</span>
-                </template>
-              </IhSelectPageUser>
+            <el-form-item
+              label="合同跟进人"
+              label-width="160px"
+            >
+              {{formData.handlerName}}
             </el-form-item>
           </el-col>
         </el-row>
         <el-row>
           <el-col :span="12">
             <el-form-item label="成交确认人">
-              <el-input
-                v-model="formData.customer"
-                placeholder="成交确认人"
-                disabled
-              ></el-input>
+              {{formData.confirmer}}
             </el-form-item>
           </el-col>
           <el-col :span="12">
-            <el-form-item label="联系方式">
-              <el-input
-                v-model="formData.customerNo"
-                placeholder="成交确认人联系方式"
-                disabled
-              ></el-input>
+            <el-form-item
+              label="成交确认人联系方式"
+              label-width="160px"
+            >
+              {{formData.confirmerContact}}
             </el-form-item>
           </el-col>
         </el-row>
         <el-row>
           <el-col :span="12">
             <el-form-item label="合同编号">
-              <el-input
-                v-model="formData.contractCode"
-                placeholder="合同编号(自动生成)"
-                disabled
-              ></el-input>
+              {{formData.contractNo}}
             </el-form-item>
           </el-col>
           <el-col :span="12">
-            <el-form-item label="归档编号">
+            <el-form-item
+              label="归档编号"
+              label-width="160px"
+            >
               <el-input
-                v-model="formData.fileCode"
+                v-model="formData.archiveNo"
                 placeholder="归档编号"
               ></el-input>
             </el-form-item>
@@ -157,38 +103,15 @@
         <el-row>
           <el-col :span="12">
             <el-form-item label="归档状态">
-              <el-select
-                v-model="formData.fileState"
-                placeholder="归档状态"
-                clearable
-                disabled
-                class="width--100"
-              >
-                <el-option
-                  v-for="item in $root.dictAllList('ContractEnum.FileState')"
-                  :key="item.code"
-                  :label="item.name"
-                  :value="item.code"
-                ></el-option>
-              </el-select>
+              {{ $root.dictAllName(formData.archiveStatus, 'ContractEnum.ArchiveStatus')}}
             </el-form-item>
           </el-col>
           <el-col :span="12">
-            <el-form-item label="当前状态">
-              <el-select
-                v-model="formData.state"
-                placeholder="当前状态"
-                clearable
-                disabled
-                class="width--100"
-              >
-                <el-option
-                  v-for="item in $root.dictAllList('ContractEnum.State')"
-                  :key="item.code"
-                  :label="item.name"
-                  :value="item.code"
-                ></el-option>
-              </el-select>
+            <el-form-item
+              label="审核状态"
+              label-width="160px"
+            >
+              {{ $root.dictAllName(formData.approvalStatus, 'ContractEnum.ApprovalStatus') }}
             </el-form-item>
           </el-col>
         </el-row>
@@ -196,7 +119,8 @@
           <el-col :span="24">
             <el-form-item label="甲方合同附件">
               <IhUpload
-                :file-list="fileList"
+                v-if="contractList.length"
+                :file-list="contractList"
                 size="100px"
                 :limit="1"
               ></IhUpload>
@@ -207,7 +131,8 @@
           <el-col :span="24">
             <el-form-item label="盖章版归档">
               <IhUpload
-                :file-list="fileList2"
+                v-if="archiveList.length"
+                :file-list="archiveList"
                 size="100px"
                 :limit="1"
               ></IhUpload>
@@ -216,7 +141,7 @@
         </el-row>
         <el-row>
           <el-col :span="24">
-            <div>
+            <div class="text-center">
               <el-button
                 type="primary"
                 @click="submit()"
@@ -239,48 +164,13 @@ import {
   get_contract_detail__id,
   post_contract_original_archive,
 } from "@/api/contract/index";
-import { post_company_listAll } from "@/api/developer/index";
-import { post_company_getAll } from "@/api/system/index";
 
 @Component({})
 export default class PartyAadd extends Vue {
-  private formData: any = {
-    title: null,
-    partyA: [],
-    partyB: null,
-    effectiveTime: null,
-    handler: null,
-    customer: null,
-    customerNo: null,
-    fileCode: null,
-  };
-  private fileList: Array<object> = [];
-  private fileList2: Array<object> = [];
-  private companyList: any = [];
-  private partyAList: any = [];
-  private rule: any = {
-    title: [{ required: true, message: "请输入标题", trigger: "blur" }],
-    partyA: [
-      { required: true, message: "请选择甲方", trigger: ["blur", "change"] },
-    ],
-    partyB: [
-      { required: true, message: "请选择乙方", trigger: ["blur", "change"] },
-    ],
-    effectiveTime: [
-      {
-        required: true,
-        message: "执行时间不能为空",
-        trigger: ["blur", "change"],
-      },
-    ],
-  };
+  private formData: any = {};
+  private contractList: any = [];
+  private archiveList: any = [];
 
-  private async getCompanyList() {
-    this.companyList = await post_company_getAll({ name: "" });
-  }
-  private async getPartyAList() {
-    this.partyAList = await post_company_listAll({ name: "" });
-  }
   @NoRepeatHttp()
   private submit() {
     (this.$refs["ruleForm"] as ElForm).validate(async (val) => {
@@ -303,8 +193,6 @@ export default class PartyAadd extends Vue {
   }
 
   created() {
-    this.getPartyAList();
-    this.getCompanyList();
     this.getInfo();
   }
 }

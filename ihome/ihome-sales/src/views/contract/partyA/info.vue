@@ -1,13 +1,13 @@
 <!--
- * @Description: 合同的录入页面
+ * @Description: 合同的详情页面
  * @version: 
  * @Author: ywl
  * @Date: 2020-09-25 16:00:37
  * @LastEditors: ywl
- * @LastEditTime: 2020-11-04 15:31:02
+ * @LastEditTime: 2020-12-03 11:31:57
 -->
 <template>
-  <IhPage class="text-left">
+  <IhPage class="text-left partyA-info">
     <template v-slot:info>
       <p class="ih-info-title">甲方合同信息</p>
       <el-form
@@ -24,69 +24,88 @@
           </el-col>
         </el-row>
         <el-row>
-          <el-col :span="12">
+          <el-col :span="24">
             <el-form-item label="甲方">
               <template v-for="(item, index) in formData.partyA">
                 <span :key="item.id">
-                  {{item.id}}
-                  <span v-if="index === (item.length-1)">、</span>
+                  {{item.userName}}
+                  <span v-if="index !== (formData.partyA.length-1)">、</span>
                 </span>
               </template>
             </el-form-item>
           </el-col>
         </el-row>
         <el-row>
-          <el-col :span="12">
+          <el-col :span="24">
             <el-form-item label="乙方">
-              {{formData.partyB}}
+              {{formData.partyBName}}
+            </el-form-item>
+          </el-col>
+        </el-row>
+        <el-row>
+          <el-col :span="24">
+            <el-form-item label="合作项目">
+              {{formData.cooperationProjectsName}}
             </el-form-item>
           </el-col>
         </el-row>
         <el-row>
           <el-col :span="12">
-            <el-form-item label="执行时间">
-              {{formData.effectiveTime}}
+            <el-form-item label="合作时间">
+              {{formData.cooperationTime}}
             </el-form-item>
           </el-col>
           <el-col :span="12">
-            <el-form-item label="合同跟进人">
-              {{formData.handler}}
+            <el-form-item
+              label="合同跟进人"
+              label-width="160px"
+            >
+              {{formData.handlerName}}
             </el-form-item>
           </el-col>
         </el-row>
         <el-row>
           <el-col :span="12">
             <el-form-item label="成交确认人">
-              {{formData.customer}}
+              {{formData.confirmer}}
             </el-form-item>
           </el-col>
           <el-col :span="12">
-            <el-form-item label="联系方式">
-              {{formData.customerNo}}
+            <el-form-item
+              label="成交确认人联系方式"
+              label-width="160px"
+            >
+              {{formData.confirmerContact}}
             </el-form-item>
           </el-col>
         </el-row>
         <el-row>
           <el-col :span="12">
             <el-form-item label="合同编号">
-              {{formData.contractCode}}
+              {{formData.contractNo}}
             </el-form-item>
           </el-col>
           <el-col :span="12">
-            <el-form-item label="归档编号">
-              {{formData.fileCode}}
+            <el-form-item
+              label="归档编号"
+              label-width="160px"
+            >
+              {{formData.archiveNo}}
             </el-form-item>
           </el-col>
         </el-row>
         <el-row>
           <el-col :span="12">
             <el-form-item label="归档状态">
-              {{ $root.dictAllName(formData.fileState, 'ContractEnum.FileState')}}
+              {{ $root.dictAllName(formData.archiveStatus, 'ContractEnum.ArchiveStatus')}}
             </el-form-item>
           </el-col>
           <el-col :span="12">
-            <el-form-item label="当前状态">
-              {{ $root.dictAllName(formData.state, 'ContractEnum.State') }}
+            <el-form-item
+              label="审核状态"
+              label-width="160px"
+            >
+              {{ $root.dictAllName(formData.approvalStatus, 'ContractEnum.ApprovalStatus') }}
             </el-form-item>
           </el-col>
         </el-row>
@@ -94,9 +113,8 @@
           <el-col :span="24">
             <el-form-item label="甲方合同附件">
               <IhUpload
-                :file-list="fileList"
+                :file-list="contractList"
                 size="100px"
-                :limit="1"
               ></IhUpload>
             </el-form-item>
           </el-col>
@@ -105,13 +123,18 @@
           <el-col :span="24">
             <el-form-item label="盖章版归档">
               <IhUpload
-                :file-list="fileList2"
+                :file-list="archiveList"
                 size="100px"
-                :limit="1"
+                class="upload"
               ></IhUpload>
+              <el-button
+                type="primary"
+                class="upload-button"
+              >提交</el-button>
             </el-form-item>
           </el-col>
         </el-row>
+        <div class="annotation padding-left-20">*注：上传附件后请点击提交按钮保存</div>
         <!-- <el-row>
           <el-col :span="24">
             <div>
@@ -121,6 +144,48 @@
           </el-col>
         </el-row> -->
       </el-form>
+      <p class="ih-info-title">甲方合同已关联周期</p>
+      <div class="padding-left-20">
+        <el-table
+          class="ih-table partyA-table"
+          :data="formData.cycleList"
+        >
+          <el-table-column label="周期编号"></el-table-column>
+          <el-table-column
+            label="周期名称"
+            prop="termName"
+          ></el-table-column>
+          <el-table-column label="周期时间">
+            <template v-slot="{row}">
+              <span>{{`${row.termStart}-${row.termEnd}`}}</span>
+            </template>
+          </el-table-column>
+          <el-table-column
+            label="周期审核状态"
+            prop="auditEnum"
+          ></el-table-column>
+          <el-table-column
+            label="业务类型"
+            prop="busTypeEnum"
+          ></el-table-column>
+          <el-table-column
+            label="归属项目"
+            prop="proName"
+          ></el-table-column>
+          <el-table-column
+            label="省份"
+            prop="province"
+          ></el-table-column>
+          <el-table-column
+            label="城市"
+            prop="city"
+          ></el-table-column>
+          <el-table-column
+            label="行政区"
+            prop="district"
+          ></el-table-column>
+        </el-table>
+      </div>
     </template>
   </IhPage>
 </template>
@@ -132,27 +197,29 @@ import { get_contract_detail__id } from "@/api/contract/index";
 
 @Component({})
 export default class PartyAadd extends Vue {
-  private formData: any = {
-    title: "",
-    partyA: [],
-    partyB: "",
-    effectiveTime: "",
-    handler: "",
-    customer: "",
-    customerNo: "",
-  };
-  private fileList: Array<object> = [
-    // {
-    //   name: "abc.pdf",
-    //   url: `http://filesvr.polyihome.test/aist-filesvr-web/JQeryUpload/getfile?fileId=2c92808873be3796017490db113b0616`,
-    //   img_url: `http://filesvr.polyihome.test/aist-filesvr-web/JQeryUpload/getfile?fileId=2c92808873be3796017490db113b0616`,
-    // },
-  ];
-  private fileList2: Array<object> = [];
+  private formData: any = {};
+  private contractList: any = [];
+  private archiveList: any = [];
 
   private async getInfo() {
     let id = this.$route.query.id;
-    if (id) this.formData = await get_contract_detail__id({ id: id });
+    if (id) {
+      this.formData = await get_contract_detail__id({ id: id });
+      this.formData.fileList.forEach((i: any) => {
+        if (i.type === "ContractAnnex") {
+          this.contractList.push({
+            name: i.attachmentSuffix,
+            url: i.fileNo,
+          });
+        }
+        if (i.type === "ArchiveAnnex") {
+          this.archiveList.push({
+            name: i.attachmentSuffix,
+            url: i.fileNo,
+          });
+        }
+      });
+    }
   }
 
   created() {
@@ -160,3 +227,20 @@ export default class PartyAadd extends Vue {
   }
 }
 </script>
+
+<style lang="scss" scoped>
+.partyA-info {
+  /deep/ .upload {
+    display: inline-block;
+  }
+  .upload-button {
+    position: absolute;
+    bottom: 25px;
+    margin-left: 15px;
+  }
+  .annotation {
+    color: #d9001b;
+    font-size: 14px;
+  }
+}
+</style>

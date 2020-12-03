@@ -4,7 +4,7 @@
  * @Author: ywl
  * @Date: 2020-09-25 11:53:51
  * @LastEditors: ywl
- * @LastEditTime: 2020-11-11 16:03:34
+ * @LastEditTime: 2020-12-03 11:21:22
 -->
 <template>
   <IhPage label-width="100px">
@@ -19,7 +19,7 @@
             <el-form-item label="标题">
               <el-input
                 v-model="queryPageParameters.title"
-                placeholder="标题"
+                placeholder="请输入标题"
                 clearable
               ></el-input>
             </el-form-item>
@@ -28,7 +28,7 @@
             <el-form-item label="甲方">
               <el-select
                 v-model="queryPageParameters.partyAId"
-                placeholder="甲方"
+                placeholder="请选择甲方"
                 clearable
                 filterable
                 class="width--100"
@@ -48,7 +48,7 @@
                 v-model="queryPageParameters.partyBId"
                 clearable
                 filterable
-                placeholder="乙方"
+                placeholder="请选择乙方"
                 class="width--100"
               >
                 <el-option
@@ -67,12 +67,12 @@
               <el-col :span="8">
                 <el-form-item label="合作项目">
                   <el-input
-                    v-model="queryPageParameters.cooperativeProject"
-                    placeholder="合作项目"
+                    v-model="queryPageParameters.cooperationProjectsName"
+                    placeholder="请输入合作项目"
                   ></el-input>
                 </el-form-item>
               </el-col>
-              <!-- <el-col :span="8">
+              <el-col :span="8">
                 <el-form-item label="合作时间">
                   <el-date-picker
                     style="width:100%;"
@@ -87,8 +87,8 @@
                     value-format="yyyy-MM-dd"
                   ></el-date-picker>
                 </el-form-item>
-              </el-col> -->
-              <el-col :span="8">
+              </el-col>
+              <!-- <el-col :span="8">
                 <el-form-item label="执行时间">
                   <el-date-picker
                     style="width:100%;"
@@ -99,13 +99,13 @@
                     value-format="yyyy-MM-dd"
                   ></el-date-picker>
                 </el-form-item>
-              </el-col>
+              </el-col> -->
               <el-col :span="8">
-                <el-form-item label="项目">
+                <el-form-item label="关联项目">
                   <el-select
-                    v-model="queryPageParameters.projectId"
+                    v-model="queryPageParameters.projectsId"
                     clearable
-                    placeholder="项目"
+                    placeholder="关联项目"
                     class="width--100"
                   >
                     <!-- <el-option
@@ -121,23 +121,6 @@
 
             <el-row>
               <el-col :span="8">
-                <el-form-item label="周期">
-                  <el-select
-                    v-model="queryPageParameters.cycleId"
-                    clearable
-                    placeholder="周期"
-                    class="width--100"
-                  >
-                    <el-option
-                      v-for="item in dropOption"
-                      :key="item.termId"
-                      :label="item.termName"
-                      :value="item.termId"
-                    ></el-option>
-                  </el-select>
-                </el-form-item>
-              </el-col>
-              <el-col :span="8">
                 <el-form-item label="归属组织">
                   <SelectOrganizationTree
                     :orgId="queryPageParameters.organizationId"
@@ -148,10 +131,27 @@
               <el-col :span="8">
                 <el-form-item label="合同编号">
                   <el-input
-                    v-model="queryPageParameters.contractCode"
+                    v-model="queryPageParameters.contractNo"
                     clearable
                     placeholder="请输入合同编号"
                   ></el-input>
+                </el-form-item>
+              </el-col>
+              <el-col :span="8">
+                <el-form-item label="审核状态">
+                  <el-select
+                    v-model="queryPageParameters.approvalStatus"
+                    clearable
+                    placeholder="请选择审核状态"
+                    class="width--100"
+                  >
+                    <el-option
+                      v-for="item in $root.dictAllList('ContractEnum.ApprovalStatus')"
+                      :key="item.code"
+                      :label="item.name"
+                      :value="item.code"
+                    ></el-option>
+                  </el-select>
                 </el-form-item>
               </el-col>
             </el-row>
@@ -160,13 +160,13 @@
               <el-col :span="8">
                 <el-form-item label="归档状态">
                   <el-select
-                    v-model="queryPageParameters.fileState"
+                    v-model="queryPageParameters.archiveStatus"
                     clearable
                     placeholder="请选择归档状态"
                     class="width--100"
                   >
                     <el-option
-                      v-for="item in $root.dictAllList('ContractEnum.FileState')"
+                      v-for="item in $root.dictAllList('ContractEnum.ArchiveStatus')"
                       :key="item.code"
                       :label="item.name"
                       :value="item.code"
@@ -177,9 +177,9 @@
               <el-col :span="8">
                 <el-form-item label="归档编号">
                   <el-input
-                    v-model="queryPageParameters.fileCode"
+                    v-model="queryPageParameters.archiveNo"
                     clearable
-                    placeholder="请选择归档编号"
+                    placeholder="请输入归档编号"
                     class="width--100"
                   ></el-input>
                 </el-form-item>
@@ -187,7 +187,7 @@
               <el-col :span="8">
                 <el-form-item label="合同录入人">
                   <IhSelectPageUser
-                    v-model="queryPageParameters.createUserId"
+                    v-model="queryPageParameters.enteringPersonId"
                     clearable
                     class="width--100"
                   >
@@ -215,8 +215,6 @@
                   </IhSelectPageUser>
                 </el-form-item>
               </el-col>
-              <el-col :span="8">
-              </el-col>
             </el-row>
           </div>
         </el-collapse-transition>
@@ -233,7 +231,18 @@
           type="info"
           @click="handleReset()"
         >重置</el-button>
-        <el-button>导出</el-button>
+        <el-dropdown
+          class="margin-left-10"
+          trigger="click"
+        >
+          <el-button type="success">
+            导出<i class="el-icon-arrow-down el-icon--right"></i>
+          </el-button>
+          <el-dropdown-menu slot="dropdown">
+            <el-dropdown-item>导出列表</el-dropdown-item>
+            <el-dropdown-item>导出附件</el-dropdown-item>
+          </el-dropdown-menu>
+        </el-dropdown>
         <el-link
           type="primary"
           class="float-right margin-right-40"
@@ -247,7 +256,6 @@
       <el-table
         class="ih-table partyA-table"
         :data="resPageInfo.list"
-        :empty-text="emptyText"
         @selection-change="handleSelectionChange"
       >
         <el-table-column
@@ -271,14 +279,14 @@
               v-for="(item, index) in row.partyList"
               :key="item.id"
             >
-              {{item.userId}}
-              <span v-if="index === (item.length-1)">、</span>
+              {{item.userName}}
+              <span v-if="index !== (row.partyList.length-1)">、</span>
             </span>
           </template>
         </el-table-column>
         <el-table-column
           label="乙方"
-          prop="partyB"
+          prop="partyBName"
           min-width="150"
         ></el-table-column>
         <el-table-column
@@ -286,29 +294,15 @@
           prop="cooperativeProject"
           min-width="200"
         ></el-table-column>
-        <!-- <el-table-column
-          label="合作时间"
-          prop="time"
-          width="200"
-        >
-          <template v-slot="{ row }">
-            {{ `${row.beginTime}-${row.endTime}` }}
-          </template>
-        </el-table-column> -->
         <el-table-column
-          label="执行时间"
-          prop="effectiveTime"
+          label="合作时间"
+          prop="cooperationTime"
           width="200"
         ></el-table-column>
         <el-table-column
           label="关联项目"
-          prop="projectId"
+          prop="projectsId"
           width="200"
-        ></el-table-column>
-        <el-table-column
-          label="关联周期"
-          prop="cycleId"
-          width="100"
         ></el-table-column>
         <el-table-column
           label="归属组织"
@@ -317,26 +311,34 @@
         ></el-table-column>
         <el-table-column
           label="合同编号"
-          prop="contractCode"
+          prop="contractNo"
           width="200"
         ></el-table-column>
         <el-table-column
+          label="审核状态"
+          prop="contractCode"
+        >
+          <template v-slot="{ row }">
+            {{$root.dictAllName(row.approvalStatus, "ContractEnum.ApprovalStatus")}}
+          </template>
+        </el-table-column>
+        <el-table-column
           label="归档状态"
-          prop="fileState"
+          prop="archiveStatus"
           width="100"
         >
           <template v-slot="{ row }">
-            {{$root.dictAllName(row.fileState, 'ContractEnum.FileState')}}
+            {{ $root.dictAllName(row.archiveStatus, "ContractEnum.ArchiveStatus") }}
           </template>
         </el-table-column>
         <el-table-column
           label="归档编号"
-          prop="fileCode"
+          prop="archiveNo"
           width="230"
         ></el-table-column>
         <el-table-column
           label="合同跟进人"
-          prop="handler"
+          prop="handlerId"
           width="100"
         ></el-table-column>
         <el-table-column
@@ -355,7 +357,7 @@
             >扫描件归档</el-link>
             <el-link
               type="primary"
-              @click="handleToPage(row, 'edit')"
+              @click="handleToPage(row, '/partyA/edit')"
             >原件归档</el-link>
           </template>
         </el-table-column>
@@ -380,15 +382,14 @@
 <script lang="ts">
 import { Component, Vue } from "vue-property-decorator";
 import PaginationMixin from "@/mixins/pagination";
-
+import SelectOrganizationTree from "@/components/SelectOrganizationTree.vue";
+import { post_term_getDropDown } from "@/api/project/index";
+import { post_company_listAll } from "@/api/developer/index";
+import { post_company_getAll } from "@/api/system/index";
 import {
   post_contract_list,
   post_contract_duplicate__id,
 } from "@/api/contract/index";
-import { post_term_getDropDown } from "@/api/project/index";
-import { post_company_listAll } from "@/api/developer/index";
-import { post_company_getAll } from "@/api/system/index";
-import SelectOrganizationTree from "@/components/SelectOrganizationTree.vue";
 
 @Component({
   components: { SelectOrganizationTree },
@@ -396,21 +397,20 @@ import SelectOrganizationTree from "@/components/SelectOrganizationTree.vue";
 })
 export default class PartyAList extends Vue {
   public queryPageParameters: any = {
-    title: null,
+    approvalStatus: null,
+    archiveNo: null,
+    archiveStatus: null,
+    contractNo: null,
+    cooperationBeginTime: null,
+    cooperationEndTime: null,
+    cooperationProjectsName: null,
+    enteringPersonId: null,
+    handlerId: null,
+    organizationId: null,
     partyAId: null,
     partyBId: null,
-    cooperativeProject: null,
-    effectiveTime: null,
-    projectId: null,
-    cycleId: null,
-    organizationId: null,
-    contractCode: null,
-    fileState: null,
-    fileCode: null,
-    createUserId: null,
-    handlerId: null,
-    beginTime: null,
-    endTime: null,
+    projectsId: null,
+    title: null,
   };
   timeList = [];
   private dropOption: any = [];
@@ -418,34 +418,33 @@ export default class PartyAList extends Vue {
   private partyAList: any = [];
   private searchOpen = true;
   public resPageInfo: any = {
-    total: 0,
+    total: null,
     list: [],
   };
 
   private handleSearch(): void {
-    // let sign = this.timeList && this.timeList.length;
-    // this.queryPageParameters.beginTime = sign ? this.timeList[0] : "";
-    // this.queryPageParameters.endTime = sign ? this.timeList[1] : "";
+    let sign = this.timeList && this.timeList.length;
+    this.queryPageParameters.beginTime = sign ? this.timeList[0] : "";
+    this.queryPageParameters.endTime = sign ? this.timeList[1] : "";
     this.queryPageParameters.pageNum = 1;
     this.getListMixin();
   }
   private handleReset(): void {
     Object.assign(this.queryPageParameters, {
-      title: null,
+      approvalStatus: null,
+      archiveNo: null,
+      archiveStatus: null,
+      contractNo: null,
+      cooperationBeginTime: null,
+      cooperationEndTime: null,
+      cooperationProjectsName: null,
+      enteringPersonId: null,
+      handlerId: null,
+      organizationId: null,
       partyAId: null,
       partyBId: null,
-      cooperativeProject: null,
-      effectiveTime: null,
-      projectId: null,
-      cycleId: null,
-      organizationId: null,
-      contractCode: null,
-      fileState: null,
-      fileCode: null,
-      createUserId: null,
-      handlerId: null,
-      beginTime: null,
-      endTime: null,
+      projectsId: null,
+      title: null,
     });
     this.timeList = [];
   }
