@@ -4,7 +4,7 @@
  * @Author: wwq
  * @Date: 2020-11-27 17:27:01
  * @LastEditors: wwq
- * @LastEditTime: 2020-12-03 09:31:53
+ * @LastEditTime: 2020-12-03 10:13:18
 -->
 <template>
   <div>
@@ -234,15 +234,14 @@
                 size="100px"
                 @newFileList="newFileList"
               ></IhUpload>
+              <el-button
+                class="file-button"
+                size="small"
+                type="success"
+                @click="uploadAdd"
+              >保存</el-button>
             </el-form-item>
           </el-col>
-        </el-row>
-        <el-row class="text-center">
-          <el-button
-            size="small"
-            type="success"
-            @click="uploadAdd"
-          >保存</el-button>
         </el-row>
       </el-form>
       <div class="file-hint">特殊情况无法使用电子优惠告知书模板，请上传纸质版优惠告知书附件</div>
@@ -560,6 +559,17 @@ export default class Notification extends Vue {
     font-size: 14px;
     text-align: left;
     margin-top: 5px;
+  }
+  &-item {
+    /deep/ .upload {
+      display: inline-block;
+    }
+  }
+
+  &-button {
+    margin-left: 10px;
+    position: absolute;
+    bottom: 25px;
   }
 }
 </style>

@@ -4,7 +4,7 @@
  * @Author: wwq
  * @Date: 2020-11-27 17:15:27
  * @LastEditors: wwq
- * @LastEditTime: 2020-12-02 09:27:15
+ * @LastEditTime: 2020-12-03 10:56:55
 -->
 <template>
   <ih-page>
@@ -13,60 +13,61 @@
         <el-tabs
           type="border-card"
           v-model="tabActive"
+          @tab-click="tabClick(tabActive)"
         >
           <el-tab-pane
             label="基础信息"
-            name="1"
+            name="BasicInfo"
           >
-            <BasicInfo :typeStr="typeStr" />
+            <BasicInfo v-if="componetName === 'BasicInfo'" />
           </el-tab-pane>
           <el-tab-pane
             label="甲方合同"
-            name="2"
+            name="PartyA"
           >
-            <PartyA />
+            <PartyA v-if="componetName === 'PartyA'" />
           </el-tab-pane>
           <el-tab-pane
             label="报备规则"
-            name="3"
+            name="ReportedRules"
           >
-            <ReportedRules />
+            <ReportedRules v-if="componetName === 'ReportedRules'" />
           </el-tab-pane>
           <el-tab-pane
             label="收派套餐"
-            name="4"
+            name="SetMeal"
           >
-            <SetMeal />
+            <SetMeal v-if="componetName === 'SetMeal'" />
           </el-tab-pane>
           <el-tab-pane
             label="结算条件"
-            name="5"
+            name="Close"
           >
-            <Close />
+            <Close v-if="componetName === 'Close'" />
           </el-tab-pane>
           <el-tab-pane
             label="中介分销合同/优惠告知书"
-            name="6"
+            name="Notification"
           >
-            <Notification />
+            <Notification v-if="componetName === 'Notification'" />
           </el-tab-pane>
           <el-tab-pane
             label="立项测算表"
-            name="7"
+            name="Calculation"
           >
-            <Calculation />
+            <Calculation v-if="componetName === 'Calculation'" />
           </el-tab-pane>
           <el-tab-pane
             label="其他配置"
-            name="8"
+            name="Other"
           >
-            <Other />
+            <Other v-if="componetName === 'Other'" />
           </el-tab-pane>
           <el-tab-pane
             label="日志及OA附言"
-            name="9"
+            name="LogOA"
           >
-            <LogOA />
+            <LogOA v-if="componetName === 'LogOA'" />
           </el-tab-pane>
         </el-tabs>
       </el-scrollbar>
@@ -100,13 +101,18 @@ Component.registerHooks(["beforeRouteEnter"]);
   },
 })
 export default class ProjectApprovalEdit extends Vue {
-  tabActive: any = "6";
+  tabActive: any = "Calculation";
   typeStr = "";
+  componetName: any = "Calculation";
 
   private beforeRouteEnter(to: any, from: any, next: any) {
     next((vm: any) => {
       vm.typeStr = to.name;
     });
+  }
+
+  tabClick(val: any) {
+    this.componetName = val;
   }
 }
 </script>
