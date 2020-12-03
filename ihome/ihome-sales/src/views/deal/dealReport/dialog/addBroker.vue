@@ -52,36 +52,12 @@
       :empty-text="emptyText"
       @selection-change="handleSelectionChange">
       <el-table-column type="selection" width="55"></el-table-column>
-      <el-table-column
-        prop="storageNum"
-        label="经纪人姓名"
-        min-width="180"
-      ></el-table-column>
-      <el-table-column
-        prop="channelName"
-        label="渠道公司"
-        min-width="180"
-      ></el-table-column>
-      <el-table-column
-        prop="province"
-        label="公司渠道等级"
-        min-width="180"
-      ></el-table-column>
-      <el-table-column
-        prop="city"
-        label="门店名称"
-        min-width="180"
-      ></el-table-column>
-      <el-table-column
-        prop="cityGrade"
-        label="岗位"
-        min-width="180"
-      ></el-table-column>
-      <el-table-column
-        prop="cityGrade"
-        label="状态"
-        min-width="180"
-      ></el-table-column>
+      <el-table-column prop="storageNum" label="经纪人姓名" min-width="180"></el-table-column>
+      <el-table-column prop="channelName" label="渠道公司" min-width="180"></el-table-column>
+      <el-table-column prop="province" label="公司渠道等级" min-width="180"></el-table-column>
+      <el-table-column prop="city" label="门店名称" min-width="180"></el-table-column>
+      <el-table-column prop="cityGrade" label="岗位" min-width="180"></el-table-column>
+      <el-table-column prop="cityGrade" label="状态" min-width="180"></el-table-column>
     </el-table>
     <el-pagination
       @size-change="handleSizeChangeMixin"

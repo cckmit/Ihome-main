@@ -406,33 +406,31 @@
         this.resPageInfo.list.forEach((list: any) => {
           // 1.合同类型
           if (list.contType) {
-            let contTypeList = (this as any).$root.dictAllList('ContType');
-            contTypeList.forEach((item: any) => {
-              if (item.code === list.contType) {
-                list.contType = item.name
-              }
-            })
+            list.contType = this.getName('ContType', list.contType);
           }
           // 2.补充类型
           if (list.suppContType) {
-            let suppContTypeList = (this as any).$root.dictAllList('SuppContType');
-            suppContTypeList.forEach((item: any) => {
-              if (item.code === list.suppContType) {
-                list.suppContType = item.name
-              }
-            })
+            list.suppContType = this.getName('SuppContType', list.suppContType);
           }
           // 3.成交状态
           if (list.status) {
-            let dealStatusList = (this as any).$root.dictAllList('DealStatus');
-            dealStatusList.forEach((item: any) => {
-              if (item.code === list.status) {
-                list.status = item.name
-              }
-            })
+            list.status = this.getName('DealStatus', list.status);
           }
         })
       }
+    }
+
+    // 在数据字典中获取对应的中文名
+    getName(key: any, type: any) {
+      if (!key || !type) return;
+      let name = '';
+      let list = (this as any).$root.dictAllList(key);
+      list.forEach((item: any) => {
+        if (item.code === type) {
+          name = item.name
+        }
+      })
+      return name;
     }
 
     // 重置

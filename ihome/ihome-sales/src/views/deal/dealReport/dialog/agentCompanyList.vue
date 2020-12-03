@@ -36,41 +36,13 @@
       :empty-text="emptyText"
       @selection-change="handleSelectionChange">
       <el-table-column type="selection" width="55"></el-table-column>
-      <el-table-column
-        prop="storageNum"
-        label="渠道公司"
-        min-width="180"
-      ></el-table-column>
-      <el-table-column
-        prop="channelName"
-        label="简称"
-        min-width="180"
-      ></el-table-column>
-      <el-table-column
-        prop="province"
-        label="渠道等级"
-        min-width="180"
-      ></el-table-column>
-      <el-table-column
-        prop="city"
-        label="省份"
-        min-width="180"
-      ></el-table-column>
-      <el-table-column
-        prop="cityGrade"
-        label="城市"
-        min-width="180"
-      ></el-table-column>
-      <el-table-column
-        prop="cityGrade"
-        label="行政区"
-        min-width="180"
-      ></el-table-column>
-      <el-table-column
-        prop="cityGrade"
-        label="状态"
-        min-width="180"
-      ></el-table-column>
+      <el-table-column prop="storageNum" label="渠道公司" min-width="180"></el-table-column>
+      <el-table-column prop="channelName" label="简称" min-width="180"></el-table-column>
+      <el-table-column prop="province" label="渠道等级" min-width="180"></el-table-column>
+      <el-table-column prop="city" label="省份" min-width="180"></el-table-column>
+      <el-table-column prop="cityGrade" label="城市" min-width="180"></el-table-column>
+      <el-table-column prop="cityGrade" label="行政区" min-width="180"></el-table-column>
+      <el-table-column prop="cityGrade" label="状态" min-width="180"></el-table-column>
     </el-table>
     <el-pagination
       @size-change="handleSizeChangeMixin"

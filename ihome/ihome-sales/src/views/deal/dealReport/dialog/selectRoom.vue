@@ -84,36 +84,12 @@
       :empty-text="emptyText"
       @selection-change="handleSelectionChange">
       <el-table-column type="selection" width="55"></el-table-column>
-      <el-table-column
-        prop="storageNum"
-        label="栋座"
-        min-width="180"
-      ></el-table-column>
-      <el-table-column
-        prop="channelName"
-        label="房号"
-        min-width="180"
-      ></el-table-column>
-      <el-table-column
-        prop="province"
-        label="户型"
-        min-width="180"
-      ></el-table-column>
-      <el-table-column
-        prop="city"
-        label="房型"
-        min-width="180"
-      ></el-table-column>
-      <el-table-column
-        prop="cityGrade"
-        label="面积"
-        min-width="180"
-      ></el-table-column>
-      <el-table-column
-        prop="cityGrade"
-        label="朝向"
-        min-width="180"
-      ></el-table-column>
+      <el-table-column prop="storageNum" label="栋座" min-width="180"></el-table-column>
+      <el-table-column prop="channelName" label="房号" min-width="180"></el-table-column>
+      <el-table-column prop="province" label="户型" min-width="180"></el-table-column>
+      <el-table-column prop="city" label="房型" min-width="180"></el-table-column>
+      <el-table-column prop="cityGrade" label="面积" min-width="180"></el-table-column>
+      <el-table-column prop="cityGrade" label="朝向" min-width="180"></el-table-column>
     </el-table>
     <el-pagination
       @size-change="handleSizeChangeMixin"
