@@ -4,7 +4,7 @@
  * @Author: ywl
  * @Date: 2020-09-25 11:53:51
  * @LastEditors: ywl
- * @LastEditTime: 2020-12-03 11:21:22
+ * @LastEditTime: 2020-12-03 19:08:30
 -->
 <template>
   <IhPage label-width="100px">
@@ -343,7 +343,7 @@
         ></el-table-column>
         <el-table-column
           label="操作"
-          width="230"
+          width="210"
           fixed="right"
         >
           <template v-slot="{ row }">
@@ -424,8 +424,10 @@ export default class PartyAList extends Vue {
 
   private handleSearch(): void {
     let sign = this.timeList && this.timeList.length;
-    this.queryPageParameters.beginTime = sign ? this.timeList[0] : "";
-    this.queryPageParameters.endTime = sign ? this.timeList[1] : "";
+    this.queryPageParameters.cooperationBeginTime = sign
+      ? this.timeList[0]
+      : "";
+    this.queryPageParameters.cooperationEndTime = sign ? this.timeList[1] : "";
     this.queryPageParameters.pageNum = 1;
     this.getListMixin();
   }
@@ -493,7 +495,7 @@ export default class PartyAList extends Vue {
 <style lang="scss" scoped>
 .partyA-table {
   .el-link + .el-link {
-    margin-left: 15px;
+    margin-left: 10px;
   }
 }
 </style>

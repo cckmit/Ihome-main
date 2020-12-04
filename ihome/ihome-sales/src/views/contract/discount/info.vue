@@ -4,7 +4,7 @@
  * @Author: ywl
  * @Date: 2020-09-27 17:27:00
  * @LastEditors: ywl
- * @LastEditTime: 2020-11-05 14:40:37
+ * @LastEditTime: 2020-12-03 16:46:08
 -->
 <template>
   <IhPage class="text-left">
@@ -141,10 +141,7 @@
 <script lang="ts">
 import { Component, Vue } from "vue-property-decorator";
 
-import {
-  get_notice_detail__id,
-  get_notice_preview__id,
-} from "@/api/contract/index";
+import { get_notice_detail__id } from "@/api/contract/index";
 
 @Component({})
 export default class DiscountDetail extends Vue {
@@ -158,8 +155,7 @@ export default class DiscountDetail extends Vue {
 
   private async preview(): Promise<void> {
     // this.$message.warning("接口没有实现");
-    let id = this.$route.query.id;
-    await get_notice_preview__id({ id });
+    // let id = this.$route.query.id;
   }
 
   created() {

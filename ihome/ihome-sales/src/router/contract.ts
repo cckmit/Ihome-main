@@ -4,7 +4,7 @@
  * @Author: ywl
  * @Date: 2020-10-16 15:19:48
  * @LastEditors: ywl
- * @LastEditTime: 2020-11-11 16:52:08
+ * @LastEditTime: 2020-12-04 08:45:31
  */
 import { RouteConfig } from 'vue-router'
 
@@ -66,12 +66,6 @@ const contractRoutes: Array<RouteConfig> = [
         name: 'DistributionOriginal',
         component: () => import(/* webpackChunkName: "DistributionOriginal" */ '@/views/contract/distribution/info.vue'),
         meta: { title: '渠道分销协议原件归档', icon: 'form' }
-      },
-      {
-        path: 'archived',
-        name: 'DistributionArchived',
-        component: () => import(/* webpackChunkName: "DistributionArchived" */ '@/views/contract/distribution/info.vue'),
-        meta: { title: '渠道分销协议扫描件归档', icon: 'form' }
       }
     ]
   },

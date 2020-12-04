@@ -4,7 +4,7 @@
  * @Author: ywl
  * @Date: 2020-09-25 16:00:37
  * @LastEditors: ywl
- * @LastEditTime: 2020-12-03 15:30:31
+ * @LastEditTime: 2020-12-04 09:16:24
 -->
 <template>
   <IhPage class="text-left partyA-info">
@@ -221,7 +221,6 @@ export default class PartyAadd extends Vue {
       }));
   }
   private handleArchive(val: any) {
-    console.log(val);
     this.addArchive = val
       .filter((i: any) => {
         return i.response;

@@ -4,10 +4,10 @@
  * @Author: ywl
  * @Date: 2020-09-27 10:46:14
  * @LastEditors: ywl
- * @LastEditTime: 2020-11-11 17:07:56
+ * @LastEditTime: 2020-12-04 10:27:33
 -->
 <template>
-  <IhPage class="text-left">
+  <IhPage class="text-left distribution-info">
     <template v-slot:info>
       <p class="ih-info-title">渠道分销合同相关信息</p>
       <el-form
@@ -18,96 +18,96 @@
         <el-row>
           <el-col :span="12">
             <el-form-item label="合同主标题">
-              {{ruleForm.title}}
+              {{ruleForm.contractTitle}}
             </el-form-item>
           </el-col>
           <el-col :span="12">
             <el-form-item label="合同副标题">
-              {{ruleForm.subtitle}}
+              {{ruleForm.contractSubtitle}}
             </el-form-item>
           </el-col>
         </el-row>
         <el-row>
           <el-col :span="12">
             <el-form-item label="甲方公司">
-              {{ruleForm.partyACompany}}
+              {{ruleForm.partyCompany}}
             </el-form-item>
           </el-col>
           <el-col :span="12">
             <el-form-item label="甲方地址">
-              {{ruleForm.partyAAddress}}
+              {{ruleForm.partyaAddr}}
             </el-form-item>
           </el-col>
         </el-row>
         <el-row>
           <el-col :span="12">
             <el-form-item label="甲方联系人">
-              {{ruleForm.partyAContact}}
+              {{ruleForm.partyaMan}}
             </el-form-item>
           </el-col>
           <el-col :span="12">
             <el-form-item label="甲方联系人电话">
-              {{ruleForm.partyAMobile}}
+              {{ruleForm.partyaTel}}
             </el-form-item>
           </el-col>
         </el-row>
         <el-row>
           <el-col :span="12">
             <el-form-item label="乙方公司">
-              {{business.channelBusinessId}}
+              {{ruleForm.channelCompanyName}}
             </el-form-item>
           </el-col>
           <el-col :span="12">
             <el-form-item label="乙方渠道等级">
-              {{business.channelLevel}}
+              {{$root.dictAllName(ruleForm.channelLevel, 'ChannelLevel')}}
             </el-form-item>
           </el-col>
         </el-row>
         <el-row>
           <el-col :span="12">
             <el-form-item label="乙方地址">
-              {{business.channelBusinessAddress}}
+              {{ruleForm.channelAddress}}
             </el-form-item>
           </el-col>
           <el-col :span="12">
             <el-form-item label="乙方联系人">
-              {{business.contactPerson}}
+              {{ruleForm.channelContact}}
             </el-form-item>
           </el-col>
         </el-row>
         <el-row>
           <el-col :span="12">
             <el-form-item label="乙方联系人电话">
-              {{business.contactNumber}}
+              {{ruleForm.channelContactTel}}
             </el-form-item>
           </el-col>
           <el-col :span="12">
             <el-form-item label="乙方账户名">
-              {{business.accountName}}
+              {{ruleForm.channelAccountName}}
             </el-form-item>
           </el-col>
         </el-row>
         <el-row>
           <el-col :span="12">
             <el-form-item label="乙方账户">
-              {{business.partyBAccountNo}}
+              {{ruleForm.channelAccount}}
             </el-form-item>
           </el-col>
           <el-col :span="12">
             <el-form-item label="乙方开户行">
-              {{business.accountBank}}
+              {{ruleForm.channelAccountBank}}
             </el-form-item>
           </el-col>
         </el-row>
         <el-row>
           <el-col :span="12">
             <el-form-item label="合作期限">
-              {{ruleForm.beginTime | timestampToDate('YYYY-MM-DD')}} -- {{ruleForm.endTime | timestampToDate('YYYY-MM-DD')}}
+              {{ruleForm.contractStartTime}} -- {{ruleForm.contractEndTime}}
             </el-form-item>
           </el-col>
           <el-col :span="12">
             <el-form-item label="合同跟进人">
-              {{ruleForm.handler}}
+              {{ruleForm.handlerName}}
             </el-form-item>
           </el-col>
         </el-row>
@@ -123,7 +123,7 @@
               <el-input
                 type="textarea"
                 :autosize="{ minRows: 3, maxRows: 3}"
-                v-model="ruleForm.paymentStandard"
+                v-model="ruleForm.agencyFeeRemark"
                 placeholder="代理费计付标准备注"
                 disabled
               ></el-input>
@@ -136,7 +136,7 @@
               <el-input
                 type="textarea"
                 :autosize="{ minRows: 3, maxRows: 3}"
-                v-model="ruleForm.customerTransaction"
+                v-model="ruleForm.consumerComplete"
                 placeholder="客户成交以及确认"
                 disabled
               ></el-input>
@@ -149,7 +149,7 @@
               <el-input
                 type="textarea"
                 :autosize="{ minRows: 3, maxRows: 3}"
-                v-model="ruleForm.settlementCondition"
+                v-model="ruleForm.agencyCostCondition"
                 placeholder="代理费结算条件"
                 disabled
               ></el-input>
@@ -162,7 +162,7 @@
               <el-input
                 type="textarea"
                 :autosize="{ minRows: 3, maxRows: 3}"
-                v-model="ruleForm.settlementMethod"
+                v-model="ruleForm.agencyCostSettleWay"
                 placeholder="代理费结算方式"
                 disabled
               ></el-input>
@@ -175,7 +175,7 @@
               <el-input
                 type="textarea"
                 :autosize="{ minRows: 3, maxRows: 3}"
-                v-model="ruleForm.breachOfContract"
+                v-model="ruleForm.unContractLiability"
                 placeholder="违约责任"
                 disabled
               ></el-input>
@@ -188,7 +188,7 @@
               <el-input
                 type="textarea"
                 :autosize="{ minRows: 3, maxRows: 3}"
-                v-model="ruleForm.supplementaryProvision"
+                v-model="ruleForm.supplementary"
                 placeholder="补充条款"
                 disabled
               ></el-input>
@@ -201,7 +201,7 @@
               label="房屋未成交乙方退回代理费期限"
               label-width="280px"
             >
-              {{ruleForm.refundPeriod}}
+              {{ruleForm.agencyFeeReturnTime}}
             </el-form-item>
           </el-col>
         </el-row>
@@ -211,86 +211,109 @@
               label="房屋未成交乙方退回代理费逾期违约金比例"
               label-width="280px"
             >
-              {{ruleForm.refundRatio}}
+              {{ruleForm.agencyFeeReturnRate}}
             </el-form-item>
           </el-col>
         </el-row>
         <el-row>
           <el-col :span="24">
             <el-form-item label="渠道类型">
-              {{$root.dictAllName(ruleForm.channelType, 'DistributionEnum.ChannelType')}}
+              {{$root.dictAllName(ruleForm.channelEnum, 'ChannelEnum')}}
             </el-form-item>
           </el-col>
         </el-row>
         <el-row>
           <el-col :span="18">
             <el-form-item label="代理费是否垫佣">
-              {{$root.dictAllName(ruleForm.advancePayment, 'DistributionEnum.AdvancePayment')}}
+              {{$root.dictAllName(ruleForm.padCommissionEnum, 'PadCommissionEnum')}}
             </el-form-item>
           </el-col>
         </el-row>
       </el-form>
       <div class="padding-left-30">
-        <el-table :data="ruleForm.chargeList">
+        <el-table :data="ruleForm.distributionMxList">
           <el-table-column
             label="物业类型"
-            prop="estateType"
+            prop="propertyEnum"
           >
             <template v-slot="{ row }">
-              {{$root.dictAllName(row.estateType, 'DistributionChargeEnum.EstateType')}}
+              {{$root.dictAllName(row.propertyEnum, 'PropertyEnum')}}
             </template>
           </el-table-column>
           <el-table-column
             label="佣金分类"
-            prop="costType"
+            prop="costTypeEnum"
           >
             <template v-slot="{ row }">
-              {{$root.dictAllName(row.costType, 'DistributionChargeEnum.CostType')}}
+              {{$root.dictAllName(row.costTypeEnum, 'FeeType')}}
             </template>
           </el-table-column>
-          <el-table-column label="条件">
-          </el-table-column>
-          <el-table-column label="派发佣金标准"></el-table-column>
+          <el-table-column
+            label="条件"
+            prop="sendContext"
+          ></el-table-column>
+          <el-table-column
+            label="派发佣金标准"
+            prop="sendStandard"
+          ></el-table-column>
         </el-table>
         <br />
       </div>
       <el-form
         ref="ruleForm"
         label-width="150px"
-        class="padding-left-30"
+        class="text-left"
       >
         <el-row>
-          <el-col :span="18">
-            <el-form-item
-              label="合同电子版"
-              class="text-left"
-            >
+          <el-col :span="12">
+            <el-form-item label="归档状态">
+              {{$root.dictAllName(ruleForm.archiveStatus, 'DistributionEnum.ArchiveStatus')}}
+            </el-form-item>
+          </el-col>
+          <el-col :span="12">
+            <el-form-item label="审核状态">
+            </el-form-item>
+          </el-col>
+        </el-row>
+        <el-row>
+          <el-col :span="12">
+            <el-form-item label="合同电子版">
               <el-button type="success">预览电子版</el-button>
+            </el-form-item>
+          </el-col>
+          <el-col :span="12">
+            <el-form-item label="归档编号">
+              <el-input
+                v-model="ruleForm.archiveNo"
+                placeholder="请输入归档编号"
+                v-if="$route.name === 'DistributionOriginal'"
+              ></el-input>
+              <span v-else>{{ruleForm.archiveNo}}</span>
             </el-form-item>
           </el-col>
         </el-row>
         <el-row>
           <el-col :span="18">
-            <el-form-item label="扫描件归档">
+            <el-form-item label="盖章版归档">
               <IhUpload
                 :file-list="fileList"
                 @newFileList="handleSealFile"
                 size="100px"
-                :limit="1"
+                class="upload"
               ></IhUpload>
+              <el-button
+                type="primary"
+                class="upload-button"
+                v-if="$route.name === 'DistributionDetail'"
+                @click="duplicate()"
+              >提交</el-button>
             </el-form-item>
           </el-col>
         </el-row>
-        <el-row>
-          <el-col :span="10">
-            <el-form-item label="归档编号">
-              <el-input
-                v-model="ruleForm.fileCode"
-                :disabled="$route.name !== 'DistributionOriginal'"
-              ></el-input>
-            </el-form-item>
-          </el-col>
-        </el-row>
+        <div
+          v-if="$route.name === 'DistributionDetail'"
+          class="annotation padding-left-20"
+        >*注：上传附件后请点击提交按钮保存</div>
       </el-form>
       <div
         v-if="$route.name === 'DistributionOriginal'"
@@ -303,18 +326,6 @@
         >提交</el-button>
         <el-button @click="$router.push(-1)">取消</el-button>
       </div>
-      <div
-        v-if="$route.name === 'DistributionArchived'"
-        class="text-center"
-      >
-        <br />
-        <el-button
-          type="primary"
-          @click="duplicate()"
-        >提交</el-button>
-        <el-button @click="$router.push(-1)">取消</el-button>
-      </div>
-
     </template>
   </IhPage>
 </template>
@@ -325,42 +336,46 @@ import { Component, Vue } from "vue-property-decorator";
 import {
   get_distribution_detail__id,
   post_distribution_original_archive,
-  post_distribution_duplicate,
+  post_distribution_annex,
 } from "@/api/contract/index";
 
 @Component({})
 export default class DistributionDetail extends Vue {
   private ruleForm: any = {
-    fileCode: null,
+    archiveNo: null,
   };
-  private business: any = {};
   private sealFile: any = [];
   private fileList: any = [];
 
   private async archive() {
-    if (!this.ruleForm.fileCode) {
+    if (!this.ruleForm.archiveNo) {
       this.$message.warning("归档编号不能为空");
       return;
     }
     await post_distribution_original_archive({
       distributionId: this.ruleForm.id,
-      fileCode: this.ruleForm.fileCode,
+      archiveNo: this.ruleForm.archiveNo,
     });
     this.$message.success("原件归档成功");
   }
   private handleSealFile(val: any) {
-    this.sealFile = val.map((v: any) => ({
-      type: "Seal",
-      attachmentSuffix: v.name,
-      fileNo: v.fileId,
-    }));
+    this.sealFile = val
+      .filter((i: any) => {
+        return i.response;
+      })
+      .map((v: any) => ({
+        type: "ArchiveAnnex",
+        attachmentSuffix: v.name,
+        fileNo: v.fileId,
+      }));
   }
   private async duplicate() {
     if (!this.sealFile.length) {
+      this.$message.warning("请先上传文件");
       return;
     }
-    await post_distribution_duplicate({
-      annexList: this.sealFile,
+    await post_distribution_annex({
+      annexCreateListList: this.sealFile,
       distributionId: this.ruleForm.id,
     });
     this.$message.success("扫描件归档成功");
@@ -370,10 +385,6 @@ export default class DistributionDetail extends Vue {
     if (id) {
       let res = await get_distribution_detail__id({ id: id });
       this.ruleForm = { ...this.ruleForm, ...res };
-      this.ruleForm.businessList.length
-        ? (this.business = this.ruleForm.businessList[0])
-        : (this.business = {});
-      console.log(this.ruleForm, this.business);
     }
   }
 
@@ -382,3 +393,20 @@ export default class DistributionDetail extends Vue {
   }
 }
 </script>
+
+<style lang="scss" scoped>
+.distribution-info {
+  /deep/ .upload {
+    display: inline-block;
+  }
+  .upload-button {
+    position: absolute;
+    bottom: 0;
+    margin-left: 15px;
+  }
+  .annotation {
+    color: #d9001b;
+    font-size: 14px;
+  }
+}
+</style>

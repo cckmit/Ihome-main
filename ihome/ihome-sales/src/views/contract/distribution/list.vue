@@ -4,7 +4,7 @@
  * @Author: ywl
  * @Date: 2020-09-25 17:34:32
  * @LastEditors: ywl
- * @LastEditTime: 2020-11-11 16:54:06
+ * @LastEditTime: 2020-12-03 19:05:16
 -->
 <template>
   <IhPage label-width="100px">
@@ -27,7 +27,7 @@
           <el-col :span="8">
             <el-form-item label="甲方公司">
               <el-select
-                v-model="queryPageParameters.partyACompany"
+                v-model="queryPageParameters.partyACompanyId"
                 placeholder="甲方公司"
                 clearable
                 class="width--100"
@@ -44,7 +44,7 @@
           <el-col :span="8">
             <el-form-item label="乙方公司">
               <el-select
-                v-model="queryPageParameters.partyBCompany"
+                v-model="queryPageParameters.channelCompanyId"
                 clearable
                 placeholder="请选择乙方公司"
                 class="width--100"
@@ -87,27 +87,17 @@
                 </el-form-item>
               </el-col>
               <el-col :span="8">
-                <el-form-item label="合同模板">
-                  <el-select
-                    v-model="queryPageParameters.template"
+                <el-form-item label="项目">
+                  <el-input
+                    v-model="queryPageParameters.projectId"
                     clearable
-                    placeholder="合同模板"
-                    class="width--100"
-                  ></el-select>
+                    placeholder="请选择项目"
+                  ></el-input>
                 </el-form-item>
               </el-col>
             </el-row>
 
             <el-row>
-              <el-col :span="8">
-                <el-form-item label="项目">
-                  <el-input
-                    v-model="queryPageParameters.project"
-                    clearable
-                    placeholder="项目"
-                  ></el-input>
-                </el-form-item>
-              </el-col>
               <el-col :span="8">
                 <el-form-item label="周期">
                   <el-input
@@ -125,9 +115,6 @@
                   />
                 </el-form-item>
               </el-col>
-            </el-row>
-
-            <el-row>
               <el-col :span="8">
                 <el-form-item label="合同编号">
                   <el-input
@@ -137,16 +124,36 @@
                   ></el-input>
                 </el-form-item>
               </el-col>
+            </el-row>
+
+            <el-row>
+              <el-col :span="8">
+                <el-form-item label="审核状态">
+                  <el-select
+                    v-model="queryPageParameters.distributionState"
+                    clearable
+                    placeholder="请选择审核状态"
+                    class="width--100"
+                  >
+                    <el-option
+                      v-for="item in $root.dictAllList('DistributionEnum.DistributionState')"
+                      :key="item.code"
+                      :label="item.name"
+                      :value="item.code"
+                    ></el-option>
+                  </el-select>
+                </el-form-item>
+              </el-col>
               <el-col :span="8">
                 <el-form-item label="归档状态">
                   <el-select
-                    v-model="queryPageParameters.fileState"
+                    v-model="queryPageParameters.archiveStatus"
                     clearable
                     placeholder="请选择归档状态"
                     class="width--100"
                   >
                     <el-option
-                      v-for="item in $root.dictAllList('DistributionEnum.FileState')"
+                      v-for="item in $root.dictAllList('DistributionEnum.ArchiveStatus')"
                       :key="item.code"
                       :label="item.name"
                       :value="item.code"
@@ -157,7 +164,7 @@
               <el-col :span="8">
                 <el-form-item label="归档编号">
                   <el-input
-                    v-model="queryPageParameters.fileCode"
+                    v-model="queryPageParameters.archiveNo"
                     clearable
                     placeholder="请输入归档编号"
                   ></el-input>
@@ -168,24 +175,28 @@
             <el-row>
               <el-col :span="8">
                 <el-form-item label="合同录入人">
-                  <el-select
+                  <IhSelectPageUser
                     v-model="queryPageParameters.entryPerson"
                     clearable
-                    placeholder="请选择合同录入人"
-                    class="width--100"
                   >
-                  </el-select>
+                    <template v-slot="{ data }">
+                      <span style="float: left">{{ data.name }}</span>
+                      <span style="margin-left: 20px;float: right; color: #8492a6; font-size: 13px">{{ data.account }}</span>
+                    </template>
+                  </IhSelectPageUser>
                 </el-form-item>
               </el-col>
               <el-col :span="8">
                 <el-form-item label="合同跟进人">
-                  <el-select
+                  <IhSelectPageUser
                     v-model="queryPageParameters.handler"
                     clearable
-                    placeholder="请选择合同跟进人"
-                    class="width--100"
                   >
-                  </el-select>
+                    <template v-slot="{ data }">
+                      <span style="float: left">{{ data.name }}</span>
+                      <span style="margin-left: 20px;float: right; color: #8492a6; font-size: 13px">{{ data.account }}</span>
+                    </template>
+                  </IhSelectPageUser>
                 </el-form-item>
               </el-col>
             </el-row>
@@ -206,11 +217,32 @@
         >重置</el-button>
         <el-button
           type="success"
-          @click="$router.push('apply')"
-        >申领合同</el-button>
-        <el-button @click="distribute()">派发合同</el-button>
-        <el-button @click="turnDistribute()">转派发</el-button>
-        <el-button>导出</el-button>
+          @click="review()"
+        >审核</el-button>
+        <el-button
+          type="success"
+          @click="distribute()"
+        >派发</el-button>
+        <el-button
+          type="danger"
+          @click="disallowance()"
+        >驳回</el-button>
+        <el-button
+          type="danger"
+          @click="withdraw()"
+        >撤回</el-button>
+        <el-dropdown
+          class="margin-left-10"
+          trigger="click"
+        >
+          <el-button type="success">
+            导出<i class="el-icon-arrow-down el-icon--right"></i>
+          </el-button>
+          <el-dropdown-menu slot="dropdown">
+            <el-dropdown-item>导出列表</el-dropdown-item>
+            <el-dropdown-item>导出附件</el-dropdown-item>
+          </el-dropdown-menu>
+        </el-dropdown>
         <el-link
           type="primary"
           class="float-right margin-right-40"
@@ -225,10 +257,7 @@
         class="ih-table intermediary-table"
         ref="multipleTable"
         :data="resPageInfo.list"
-        :empty-text="emptyText"
         @selection-change="handleSelectionChange"
-        @select="handleSelect"
-        @select-all="handleSelectAll"
       >
         <el-table-column
           fixed
@@ -244,12 +273,12 @@
         ></el-table-column>
         <el-table-column
           label="甲方公司"
-          prop="partyACompany"
+          prop="partyACompanyName"
           min-width="150"
         ></el-table-column>
         <el-table-column
           label="乙方公司"
-          prop="partyBCompany"
+          prop="channelCompanyName"
           min-width="150"
         ></el-table-column>
         <el-table-column
@@ -268,17 +297,17 @@
         </el-table-column>
         <el-table-column
           label="关联项目"
-          prop="project"
+          prop="projectName"
           width="150"
         ></el-table-column>
         <el-table-column
           label="关联周期"
-          prop="cycleId"
+          prop="cycleName"
           width="150"
         ></el-table-column>
         <el-table-column
           label="归属组织"
-          prop="organizationId"
+          prop="organizationName"
           width="150"
         ></el-table-column>
         <el-table-column
@@ -287,27 +316,36 @@
           width="220"
         ></el-table-column>
         <el-table-column
-          label="归档状态"
-          prop="fileState"
+          label="审核状态"
+          prop="distributionState"
           width="100"
         >
           <template v-slot="{ row }">
-            {{$root.dictAllName(row.fileState, 'DistributionEnum.FileState')}}
+            {{$root.dictAllName(row.distributionState, 'DistributionEnum.DistributionState')}}
+          </template>
+        </el-table-column>
+        <el-table-column
+          label="归档状态"
+          prop="archiveStatus"
+          width="120"
+        >
+          <template v-slot="{ row }">
+            {{$root.dictAllName(row.archiveStatus, 'DistributionEnum.ArchiveStatus')}}
           </template>
         </el-table-column>
         <el-table-column
           label="归档编号"
-          prop="fileCode"
+          prop="archiveNo"
           width="200"
         ></el-table-column>
         <el-table-column
           label="合同跟进人"
-          prop="handler"
-          width="200"
+          prop="handlerName"
+          width="110"
         ></el-table-column>
         <el-table-column
           label="操作"
-          width="230"
+          width="200"
           fixed="right"
         >
           <template v-slot="{ row }">
@@ -317,24 +355,12 @@
             >详情</el-link>
             <el-link
               type="primary"
-              @click="handleTo(row, 'archived')"
+              @click="duplicate(row)"
             >盖章版归档</el-link>
             <el-link
               type="primary"
               @click="handleTo(row, 'original')"
             >原件归档</el-link>
-            <!-- <el-dropdown
-                trigger="click"
-                class="margin-left-15"
-              >
-                <span class="el-dropdown-link">
-                  更多
-                  <i class="el-icon-arrow-down el-icon--right"></i>
-                </span>
-                <el-dropdown-menu slot="dropdown">
-                  <el-dropdown-item @click.native.prevent="routerTo(row)">编辑</el-dropdown-item>
-                </el-dropdown-menu>
-              </el-dropdown> -->
           </template>
         </el-table-column>
       </el-table>
@@ -359,14 +385,17 @@
 import { Component, Vue } from "vue-property-decorator";
 import PaginationMixin from "@/mixins/pagination";
 
-import {
-  post_distribution_list,
-  post_distribution_confirm__id,
-  post_distribution_repost_intermediary,
-} from "@/api/contract/index";
+import SelectOrganizationTree from "@/components/SelectOrganizationTree.vue";
 import { get_channel_getAll } from "@/api/channel/index";
 import { post_company_getAll } from "@/api/system/index";
-import SelectOrganizationTree from "@/components/SelectOrganizationTree.vue";
+import {
+  post_distribution_list,
+  post_distribution_review,
+  post_distribution_distribute,
+  post_distribution_disallowance,
+  post_distribution_withdraw,
+  post_distribution_duplicate,
+} from "@/api/contract/index";
 
 @Component({
   components: { SelectOrganizationTree },
@@ -374,21 +403,21 @@ import SelectOrganizationTree from "@/components/SelectOrganizationTree.vue";
 })
 export default class DistributionList extends Vue {
   public queryPageParameters: any = {
-    title: null,
-    address: null,
-    contractCode: null,
-    partyA: null,
-    partyB: null,
+    archiveNo: null,
+    archiveStatus: null,
     beginTime: null,
+    channelCompanyId: null,
+    contractNo: null,
+    cycleId: null,
+    distributionState: null,
     endTime: null,
-    template: null,
-    project: null,
-    cycle: null,
-    organization: null,
-    fileState: null,
-    fileCode: null,
-    creator: null,
+    entryPerson: null,
     handler: null,
+    organizationId: null,
+    partyACompanyId: null,
+    projectAddress: null,
+    projectId: null,
+    title: null,
   };
   private timeList = [];
   private companyLoading = false;
@@ -397,7 +426,7 @@ export default class DistributionList extends Vue {
   private searchOpen = true;
   private selectionData: any = [];
   resPageInfo: any = {
-    total: 0,
+    total: null,
     list: [],
   };
 
@@ -413,38 +442,79 @@ export default class DistributionList extends Vue {
   }
   private handleReact(): void {
     Object.assign(this.queryPageParameters, {
-      title: null,
-      address: null,
-      contractCode: null,
-      partyA: null,
-      partyB: null,
+      archiveNo: null,
+      archiveStatus: null,
       beginTime: null,
+      channelCompanyId: null,
+      contractNo: null,
+      cycleId: null,
+      distributionState: null,
       endTime: null,
-      template: null,
-      project: null,
-      cycle: null,
-      organization: null,
-      fileState: null,
-      fileCode: null,
-      creator: null,
+      entryPerson: null,
       handler: null,
+      organizationId: null,
+      partyACompanyId: null,
+      projectAddress: null,
+      projectId: null,
+      title: null,
     });
   }
   private handleSelectionChange(val: any): void {
     this.selectionData = val;
   }
-  private handleSelect(selection: any) {
-    if (selection.length > 1) {
-      let del_row = selection.shift();
-      (this.$refs.multipleTable as any).toggleRowSelection(del_row, false);
+  /**
+   * @description: 渠道分销合同撤回
+   */
+  private async withdraw() {
+    if (!this.selectionData.length) {
+      this.$message.warning("请先勾选表格数据");
+      return;
+    }
+    try {
+      await post_distribution_withdraw({
+        ids: this.selectionData.map((i: any) => i.id),
+      });
+      this.$message.success("撤回成功");
+      this.getListMixin();
+    } catch (error) {
+      console.log(error);
     }
   }
-  private handleSelectAll() {
-    this.$message.warning("暂还不支持全选");
-    (this.$refs.multipleTable as any).clearSelection();
-    // if (selection.length > 1) {
-    //   selection.length = 1;
-    // }
+  /**
+   * @description: 渠道分销合同驳回
+   */
+  private async disallowance() {
+    if (!this.selectionData.length) {
+      this.$message.warning("请先勾选表格数据");
+      return;
+    }
+    try {
+      await post_distribution_disallowance({
+        ids: this.selectionData.map((i: any) => i.id),
+      });
+      this.$message.success("驳回成功");
+      this.getListMixin();
+    } catch (error) {
+      console.log(error);
+    }
+  }
+  /**
+   * @description: 渠道分销合同审核
+   */
+  private async review() {
+    if (!this.selectionData.length) {
+      this.$message.warning("请先勾选表格数据");
+      return;
+    }
+    try {
+      await post_distribution_review({
+        ids: this.selectionData.map((i: any) => i.id),
+      });
+      this.$message.success("审核成功");
+      this.getListMixin();
+    } catch (err) {
+      console.log(err);
+    }
   }
   /**
    * @description: 派发合同
@@ -455,24 +525,32 @@ export default class DistributionList extends Vue {
       this.$message.warning("请先勾选表格数据");
       return;
     }
-    await post_distribution_confirm__id({ id: this.selectionData[0]["id"] });
+    try {
+      await post_distribution_distribute({
+        ids: this.selectionData.map((i: any) => i.id),
+      });
+      this.$message.success("派发成功");
+      this.getListMixin();
+    } catch (error) {
+      console.log(error);
+    }
   }
   /**
-   * @description: 转派发合同
-   * @param {*}
+   * @description: 渠道分销合同扫描件归档
    */
-  private async turnDistribute() {
-    if (!this.selectionData.length) {
-      this.$message.warning("请先勾选表格数据");
-      return;
+  private async duplicate(row: any) {
+    try {
+      await this.$confirm("此操作将进行盖章版归档, 是否继续?", "提示");
+      await post_distribution_duplicate({ distributionId: row.id });
+      this.$message.success("盖章版归档成功");
+      this.getListMixin();
+    } catch (err) {
+      console.log(err);
     }
-    await post_distribution_repost_intermediary({
-      id: this.selectionData[0]["id"],
-    });
   }
   handleTo(row: any, page: string) {
     this.$router.push({
-      path: page,
+      path: "/distribution/" + page,
       query: {
         id: row.id,
       },
@@ -499,7 +577,7 @@ export default class DistributionList extends Vue {
 <style lang="scss" scoped>
 .intermediary-table {
   .el-link + .el-link {
-    margin-left: 15px;
+    margin-left: 10px;
   }
 }
 </style>
