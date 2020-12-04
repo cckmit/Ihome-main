@@ -4,40 +4,47 @@
  * @Author: ywl
  * @Date: 2020-09-27 16:27:36
  * @LastEditors: ywl
- * @LastEditTime: 2020-11-11 16:02:18
+ * @LastEditTime: 2020-12-04 14:17:33
 -->
 <template>
-  <IhPage label-width="110px">
+  <IhPage label-width="80px">
     <!-- 搜索 -->
     <template #form>
       <el-form
         ref="form"
-        label-width="110px"
+        label-width="80px"
       >
         <el-row>
           <el-col :span="8">
-            <el-form-item label="优惠告知书编号">
+            <el-form-item label="编号">
               <el-input
-                v-model="queryPageParameters.noticeCode"
-                placeholder="优惠告知书编号"
+                v-model="queryPageParameters.noticeNo"
+                placeholder="请输入编号"
               ></el-input>
             </el-form-item>
           </el-col>
           <el-col :span="8">
-            <el-form-item label="甲方">
+            <el-form-item label="类型">
               <el-select
-                v-model="queryPageParameters.partyA"
-                placeholder="甲方"
+                v-model="queryPageParameters.notificationType"
+                placeholder="请选择类型"
                 clearable
                 class="width--100"
-              ></el-select>
+              >
+                <el-option
+                  v-for="i in $root.dictAllList('NoticeEnum.NotificationType')"
+                  :key="i.code"
+                  :label="i.name"
+                  :value="i.code"
+                ></el-option>
+              </el-select>
             </el-form-item>
           </el-col>
           <el-col :span="8">
-            <el-form-item label="区域">
+            <el-form-item label="项目名称">
               <el-input
-                v-model="queryPageParameters.area"
-                placeholder="区域"
+                v-model="queryPageParameters.projectId"
+                placeholder="请选择联动项目"
               ></el-input>
             </el-form-item>
           </el-col>
@@ -46,70 +53,67 @@
           <div v-show="searchOpen">
             <el-row>
               <el-col :span="8">
-                <el-form-item label="客户">
+                <el-form-item label="立项周期">
                   <el-select
-                    v-model="queryPageParameters.ownerName"
+                    v-model="queryPageParameters.cycleId"
                     clearable
-                    placeholder="客户"
+                    placeholder="请选择立项周期"
                     class="width--100"
                   >
                   </el-select>
                 </el-form-item>
               </el-col>
               <el-col :span="8">
-                <el-form-item label="客户电话">
+                <el-form-item label="栋座">
                   <el-input
-                    v-model="queryPageParameters.ownerMobile"
-                    placeholder="客户电话"
+                    v-model="queryPageParameters.buyUnit"
+                    placeholder="请输入栋座"
                   ></el-input>
                 </el-form-item>
               </el-col>
               <el-col :span="8">
                 <el-form-item label="房号">
-                  <el-select
-                    v-model="queryPageParameters.roomNumber"
+                  <el-input
+                    v-model="queryPageParameters.roomNumberId"
                     clearable
-                    placeholder="房号"
-                    class="width--100"
+                    placeholder="请输入房号"
                   >
-                  </el-select>
+                  </el-input>
                 </el-form-item>
               </el-col>
             </el-row>
 
             <el-row>
               <el-col :span="8">
-                <el-form-item label="项目名称">
+                <el-form-item label="甲方">
                   <el-select
-                    v-model="queryPageParameters.projectName"
+                    v-model="queryPageParameters.partyAId"
                     clearable
-                    placeholder="项目名称"
+                    placeholder="请选择甲方"
                     class="width--100"
                   >
                   </el-select>
                 </el-form-item>
               </el-col>
               <el-col :span="8">
-                <el-form-item label="立项周期">
-                  <el-select
-                    v-model="queryPageParameters.cycleId"
+                <el-form-item label="区域">
+                  <el-input
+                    v-model="queryPageParameters.area"
                     clearable
-                    placeholder="立项周期"
-                    class="width--100"
-                  >
-                  </el-select>
+                    placeholder="请输入区域"
+                  ></el-input>
                 </el-form-item>
               </el-col>
               <el-col :span="8">
-                <el-form-item label="信息状态">
+                <el-form-item label="状态">
                   <el-select
-                    v-model="queryPageParameters.state"
+                    v-model="queryPageParameters.informationStatus"
                     clearable
-                    placeholder="信息状态"
+                    placeholder="请选择状态"
                     class="width--100"
                   >
                     <el-option
-                      v-for="item in $root.dictAllList('NoticeEnum.State')"
+                      v-for="item in $root.dictAllList('NoticeEnum.InformationStatus')"
                       :key="item.code"
                       :label="item.name"
                       :value="item.code"
@@ -121,19 +125,19 @@
 
             <el-row>
               <el-col :span="8">
-                <el-form-item label="优惠期限">
-                  <el-date-picker
-                    style="width:100%;"
-                    v-model="timeList"
-                    type="daterange"
-                    align="left"
-                    unlink-panels
-                    range-separator="至"
-                    start-placeholder="开始日期"
-                    end-placeholder="结束日期"
-                    :picker-options="$root.pickerOptions"
-                    value-format="yyyy-MM-dd"
-                  ></el-date-picker>
+                <el-form-item label="客户">
+                  <el-input
+                    v-model="queryPageParameters.ownerName"
+                    placeholder="请输入客户"
+                  ></el-input>
+                </el-form-item>
+              </el-col>
+              <el-col :span="8">
+                <el-form-item label="客户电话">
+                  <el-input
+                    v-model="queryPageParameters.ownerMobile"
+                    placeholder="请输入客户电话"
+                  ></el-input>
                 </el-form-item>
               </el-col>
             </el-row>
@@ -152,7 +156,18 @@
           type="info"
           @click="handleReact()"
         >重置</el-button>
-        <el-button>导出</el-button>
+        <el-dropdown
+          class="margin-left-10"
+          trigger="click"
+        >
+          <el-button type="success">
+            导出<i class="el-icon-arrow-down el-icon--right"></i>
+          </el-button>
+          <el-dropdown-menu slot="dropdown">
+            <el-dropdown-item>导出列表</el-dropdown-item>
+            <el-dropdown-item>导出附件</el-dropdown-item>
+          </el-dropdown-menu>
+        </el-dropdown>
         <el-link
           type="primary"
           class="float-right margin-right-40"
@@ -171,82 +186,96 @@
       >
         <el-table-column
           fixed
-          label="甲方"
-          prop="partyA"
-          min-width="200"
+          label="编号"
+          prop="noticeNo"
+          min-width="300"
         ></el-table-column>
         <el-table-column
-          label="区域"
-          prop="area"
-          min-width="150"
-        ></el-table-column>
-        <el-table-column
-          label="乙方"
-          prop="partyB"
-          min-width="200"
-        ></el-table-column>
-        <el-table-column
-          label="乙方联系电话"
-          prop="partyBMobile"
-          width="130"
-        ></el-table-column>
-        <el-table-column
-          label="乙方证件号码"
-          prop="partyBIdNo"
-          width="160"
-        ></el-table-column>
-        <el-table-column
-          label="乙方常用地址"
-          prop="address"
-          min-width="160"
-        ></el-table-column>
-        <el-table-column
-          label="优惠项目名称"
-          width="200"
-          prop="projectName"
-        ></el-table-column>
-        <el-table-column
-          label="(拟)购买单位"
-          width="200"
-          prop="room"
-        ></el-table-column>
-        <el-table-column
-          label="优惠缴纳金额"
-          prop="payment"
-          width="120"
-        ></el-table-column>
-        <el-table-column
-          label="优惠方式说明"
-          prop="deduction"
-          width="120"
-        ></el-table-column>
-        <el-table-column
-          label="优惠期限"
-          width="195"
+          label="类型"
+          prop="notificationType"
+          min-width="140"
         >
           <template v-slot="{ row }">
-            <span>{{row.beginTime | timestampToDate('YYYY-MM-DD')}} 至 {{row.endTime | timestampToDate('YYYY-MM-DD')}}</span>
+            {{$root.dictAllName(row.notificationType, 'NoticeEnum.NotificationType')}}
           </template>
         </el-table-column>
         <el-table-column
-          label="项目"
+          label="项目名称"
           prop="projectName"
-          min-width="120"
+          min-width="200"
         ></el-table-column>
         <el-table-column
-          label="周期"
-          prop="cycle"
+          label="联动周期"
+          prop="cycleName"
+          width="130"
         ></el-table-column>
+        <el-table-column
+          label="栋座"
+          prop="buyUnit"
+          width="160"
+        ></el-table-column>
+        <el-table-column
+          label="房号"
+          prop="roomNumberId"
+          min-width="160"
+        ></el-table-column>
+        <el-table-column
+          label="甲方名称"
+          width="200"
+          prop="partyAName"
+        ></el-table-column>
+        <el-table-column
+          label="区域"
+          width="200"
+          prop="area"
+        ></el-table-column>
+        <el-table-column
+          label="客户名称"
+          prop="ownerName"
+          width="120"
+        >
+          <template v-slot="{ row }">
+            <div
+              v-for="(i, n) in row.ownerList"
+              :key="n"
+            >{{i.ownerName}} <span v-if="n !== (row.ownerList.length-1)">、</span></div>
+          </template>
+        </el-table-column>
+        <el-table-column
+          label="客户电话"
+          prop="ownerMobile"
+          width="120"
+        >
+          <template v-slot="{ row }">
+            <div
+              v-for="(i, n) in row.ownerList"
+              :key="n"
+            >{{i.ownerMobile}} <span v-if="n !== (row.ownerList.length-1)">、</span></div>
+          </template>
+        </el-table-column>
+        <el-table-column
+          label="状态"
+          prop="notificationStatus"
+          width="120"
+        >
+          <template v-slot="{ row }">
+            {{$root.dictAllName(row.notificationStatus, 'NoticeEnum.NotificationStatus')}}
+          </template>
+        </el-table-column>
         <el-table-column
           fixed="right"
           label="操作"
-          width="120"
+          width="100"
         >
           <template v-slot="{ row }">
             <el-link
               type="primary"
               @click.native.prevent="$router.push(`/discount/info?id=${row.id}`)"
             >详情</el-link>
+            <el-link
+              type="success"
+              class="margin-left-10"
+            >预览</el-link>
           </template>
         </el-table-column>
       </el-table>
@@ -278,24 +307,22 @@ import { post_notice_list } from "@/api/contract/index";
 })
 export default class DiscountList extends Vue {
   public queryPageParameters: any = {
-    noticeCode: null,
-    partyA: null,
-    ownerName: null,
-    ownerMobile: null,
     area: null,
-    projectName: null,
-    roomNumber: null,
-    deduction: null,
-    discount: null,
-    beginTime: null,
-    endTime: null,
     cycleId: null,
-    state: null,
+    informationStatus: null,
+    noticeNo: null,
+    ownerMobile: null,
+    ownerName: null,
+    partyAId: null,
+    projectId: null,
+    roomNumberId: null,
+    notificationType: null,
+    buyUnit: null,
   };
   private timeList: any = [];
   private searchOpen = true;
-  resPageInfo: PageInfo = {
-    total: 0,
+  resPageInfo: any = {
+    total: null,
     list: [],
   };
 
@@ -306,27 +333,25 @@ export default class DiscountList extends Vue {
     console.log(val);
   }
   private handleSearch() {
-    let sign = this.timeList && this.timeList.length;
-    this.queryPageParameters.beginTime = sign ? this.timeList[0] : "";
-    this.queryPageParameters.endTime = sign ? this.timeList[1] : "";
+    // let sign = this.timeList && this.timeList.length;
+    // this.queryPageParameters.beginTime = sign ? this.timeList[0] : "";
+    // this.queryPageParameters.endTime = sign ? this.timeList[1] : "";
     this.queryPageParameters.pageNum = 1;
     this.getListMixin();
   }
   private handleReact(): void {
     Object.assign(this.queryPageParameters, {
-      noticeCode: null,
-      partyA: null,
-      ownerName: null,
-      ownerMobile: null,
       area: null,
-      projectName: null,
-      roomNumber: null,
-      deduction: null,
-      discount: null,
-      beginTime: null,
-      endTime: null,
       cycleId: null,
-      state: null,
+      informationStatus: null,
+      noticeNo: null,
+      ownerMobile: null,
+      ownerName: null,
+      partyAId: null,
+      projectId: null,
+      roomNumberId: null,
+      notificationType: null,
+      buyUnit: null,
     });
     this.timeList = [];
   }
@@ -337,9 +362,5 @@ export default class DiscountList extends Vue {
   created() {
     this.getListMixin();
   }
-}
-interface PageInfo {
-  total: number;
-  list: Array<object>;
 }
 </script>

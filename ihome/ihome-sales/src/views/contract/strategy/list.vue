@@ -4,7 +4,7 @@
  * @Author: ywl
  * @Date: 2020-09-27 11:13:15
  * @LastEditors: ywl
- * @LastEditTime: 2020-11-11 16:04:27
+ * @LastEditTime: 2020-12-04 11:09:25
 -->
 <template>
   <IhPage label-width="100px">
@@ -335,7 +335,7 @@ export default class StrategyList extends Vue {
   };
   private searchOpen = true;
   public resPageInfo: any = {
-    total: 0,
+    total: null,
     list: [],
   };
   private companyList: any = [];

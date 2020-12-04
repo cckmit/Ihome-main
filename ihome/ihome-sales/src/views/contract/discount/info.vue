@@ -4,7 +4,7 @@
  * @Author: ywl
  * @Date: 2020-09-27 17:27:00
  * @LastEditors: ywl
- * @LastEditTime: 2020-12-03 16:46:08
+ * @LastEditTime: 2020-12-04 14:31:11
 -->
 <template>
   <IhPage class="text-left">
@@ -18,38 +18,50 @@
         <el-row>
           <el-col :span="12">
             <el-form-item label="优惠告知书编号">
-              {{resInfo.noticeCode}}
+              {{resInfo.noticeNo}}
             </el-form-item>
           </el-col>
           <el-col :span="12">
             <el-form-item label="模板类型">
-              电子模板/纸质模板
+              {{$root.dictAllName(resInfo.templateType, 'NoticeEnum.TemplateType')}}
             </el-form-item>
           </el-col>
         </el-row>
         <el-row>
           <el-col :span="24">
             <el-form-item label="甲方">
-              {{resInfo.partyA}}
+              {{resInfo.partyAName}}
             </el-form-item>
           </el-col>
         </el-row>
         <el-row>
           <el-col :span="12">
             <el-form-item label="乙方">
-              {{resInfo.partyB}}
+              <span
+                v-for="(i, n) in resInfo.ownerList"
+                :key="n"
+              >{{i.ownerName}} <span v-if="n !== (resInfo.ownerList.length-1)">、</span>
+              </span>
             </el-form-item>
           </el-col>
           <el-col :span="12">
             <el-form-item label="乙方联系电话">
-              {{resInfo.partyBMobile}}
+              <span
+                v-for="(i, n) in resInfo.ownerList"
+                :key="n"
+              >{{i.ownerMobile}} <span v-if="n !== (resInfo.ownerList.length-1)">、</span>
+              </span>
             </el-form-item>
           </el-col>
         </el-row>
         <el-row>
           <el-col :span="12">
             <el-form-item label="乙方证件号码">
-              {{resInfo.partyBIdNo}}
+              <span
+                v-for="(i, n) in resInfo.ownerList"
+                :key="n"
+              >{{i.ownerCertificateNo}} <span v-if="n !== (resInfo.ownerList.length-1)">、</span>
+              </span>
             </el-form-item>
           </el-col>
           <el-col :span="12">
@@ -61,7 +73,7 @@
         <el-row>
           <el-col :span="24">
             <el-form-item label="(拟)购买单位">
-              {{resInfo.roomNumber}}
+              {{`${resInfo.buyUnit}栋-${resInfo.roomNumberId}`}}
             </el-form-item>
           </el-col>
         </el-row>
@@ -76,7 +88,7 @@
         <el-row>
           <el-col :span="12">
             <el-form-item label="优惠服务费缴纳金额">
-              {{ resInfo.payment }}
+              {{ resInfo.paymentAmount }}
             </el-form-item>
           </el-col>
           <el-col :span="12">
@@ -88,7 +100,7 @@
         <el-row>
           <el-col :span="24">
             <el-form-item label="优惠期限">
-              {{resInfo.beginTime | timestampToDate('YYYY-MM-DD')}} ~ {{resInfo.endTime | timestampToDate('YYYY-MM-DD')}}
+              {{resInfo.beginTime}} ~ {{resInfo.endTime}}
             </el-form-item>
           </el-col>
         </el-row>
@@ -108,7 +120,7 @@
           </el-col>
           <el-col :span="12">
             <el-form-item label="经办人">
-              {{resInfo.agent}}
+              {{resInfo.agentName}}
             </el-form-item>
           </el-col>
         </el-row>
@@ -126,6 +138,7 @@
           <el-col :span="24">
             <el-form-item label="告知书扫描件">
               <IhUpload
+                v-if="fileList.length"
                 :file-list="fileList"
                 size="100px"
                 :limit="1"
@@ -141,7 +154,10 @@
 <script lang="ts">
 import { Component, Vue } from "vue-property-decorator";
 
-import { get_notice_detail__id } from "@/api/contract/index";
+import {
+  get_notice_detail__id,
+  post_notice_preview__noticeId,
+} from "@/api/contract/index";
 
 @Component({})
 export default class DiscountDetail extends Vue {
@@ -150,12 +166,27 @@ export default class DiscountDetail extends Vue {
 
   private async getInfo(): Promise<void> {
     let id = this.$route.query.id;
-    if (id) this.resInfo = await get_notice_detail__id({ id: id });
+    if (id) {
+      this.resInfo = await get_notice_detail__id({ id: id });
+      this.fileList = this.resInfo.noticeAttachmentList
+        .filter((i: any) => {
+          return i.type === "NoticeAttachment";
+        })
+        .map((item: any) => ({
+          name: item.attachmentSuffix,
+          fileId: item.fileNo,
+        }));
+    }
   }
 
   private async preview(): Promise<void> {
-    // this.$message.warning("接口没有实现");
-    // let id = this.$route.query.id;
+    let id = this.$route.query.id;
+    try {
+      let res = await post_notice_preview__noticeId({ noticeId: id });
+      console.log(res);
+    } catch (error) {
+      console.log(error);
+    }
   }
 
   created() {
