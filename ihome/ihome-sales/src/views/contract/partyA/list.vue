@@ -4,7 +4,7 @@
  * @Author: ywl
  * @Date: 2020-09-25 11:53:51
  * @LastEditors: ywl
- * @LastEditTime: 2020-12-03 19:08:30
+ * @LastEditTime: 2020-12-04 19:00:47
 -->
 <template>
   <IhPage label-width="100px">
@@ -102,19 +102,10 @@
               </el-col> -->
               <el-col :span="8">
                 <el-form-item label="关联项目">
-                  <el-select
+                  <SelectPageByProject
                     v-model="queryPageParameters.projectsId"
-                    clearable
-                    placeholder="关联项目"
-                    class="width--100"
-                  >
-                    <!-- <el-option
-                      v-for="item in $root.displayList('accountType')"
-                      :key="item.value"
-                      :label="item.label"
-                      :value="item.value"
-                    ></el-option> -->
-                  </el-select>
+                    placeholder="请选择关联项目"
+                  ></SelectPageByProject>
                 </el-form-item>
               </el-col>
             </el-row>
@@ -239,8 +230,8 @@
             导出<i class="el-icon-arrow-down el-icon--right"></i>
           </el-button>
           <el-dropdown-menu slot="dropdown">
-            <el-dropdown-item>导出列表</el-dropdown-item>
-            <el-dropdown-item>导出附件</el-dropdown-item>
+            <el-dropdown-item @click.native.prevent="handleExport()">导出列表</el-dropdown-item>
+            <el-dropdown-item @click.native.prevent="handleExportFile()">导出附件</el-dropdown-item>
           </el-dropdown-menu>
         </el-dropdown>
         <el-link
@@ -256,6 +247,7 @@
       <el-table
         class="ih-table partyA-table"
         :data="resPageInfo.list"
+        :empty-text="emptyText"
         @selection-change="handleSelectionChange"
       >
         <el-table-column
@@ -383,16 +375,19 @@
 import { Component, Vue } from "vue-property-decorator";
 import PaginationMixin from "@/mixins/pagination";
 import SelectOrganizationTree from "@/components/SelectOrganizationTree.vue";
+import SelectPageByProject from "@/components/SelectPageByProject.vue";
 import { post_term_getDropDown } from "@/api/project/index";
 import { post_company_listAll } from "@/api/developer/index";
 import { post_company_getAll } from "@/api/system/index";
+import axios from "axios";
+import { getToken } from "ihome-common/util/cookies";
 import {
   post_contract_list,
   post_contract_duplicate__id,
 } from "@/api/contract/index";
 
 @Component({
-  components: { SelectOrganizationTree },
+  components: { SelectOrganizationTree, SelectPageByProject },
   mixins: [PaginationMixin],
 })
 export default class PartyAList extends Vue {
@@ -416,12 +411,63 @@ export default class PartyAList extends Vue {
   private dropOption: any = [];
   private companyList: any = [];
   private partyAList: any = [];
+  private selectTable: any = [];
   private searchOpen = true;
   public resPageInfo: any = {
     total: null,
     list: [],
   };
 
+  private handleExport() {
+    if (!this.selectTable.length) {
+      this.$message.warning("请先勾选表格数据");
+      return;
+    }
+    const token: any = getToken();
+    axios({
+      method: "POST",
+      url: `/sales-api/contract/export/contract/list`,
+      xsrfHeaderName: "Authorization",
+      responseType: "blob",
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: "bearer " + token,
+      },
+      data: this.selectTable.map((i: any) => i.id),
+    }).then((res: any) => {
+      const href = window.URL.createObjectURL(res.data);
+      const $a = document.createElement("a");
+      $a.href = href;
+      $a.download = "列表.xlsx";
+      $a.click();
+      $a.remove();
+    });
+  }
+  private handleExportFile() {
+    if (!this.selectTable.length) {
+      this.$message.warning("请先勾选表格数据");
+      return;
+    }
+    const token: any = getToken();
+    axios({
+      method: "POST",
+      url: `/sales-api/contract/export/contract/file`,
+      xsrfHeaderName: "Authorization",
+      responseType: "blob",
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: "bearer " + token,
+      },
+      data: this.selectTable.map((i: any) => i.id),
+    }).then((res: any) => {
+      const href = window.URL.createObjectURL(res.data);
+      const $a = document.createElement("a");
+      $a.href = href;
+      $a.download = "列表.xlsx";
+      $a.click();
+      $a.remove();
+    });
+  }
   private handleSearch(): void {
     let sign = this.timeList && this.timeList.length;
     this.queryPageParameters.cooperationBeginTime = sign
@@ -462,7 +508,8 @@ export default class PartyAList extends Vue {
     });
   }
   private handleSelectionChange(val: any): void {
-    console.log(val);
+    // console.log(val);
+    this.selectTable = val;
   }
   private async duplicate(row: any): Promise<void> {
     await this.$confirm("此操作将进行扫描件归档, 是否继续?", "提示");

@@ -4,7 +4,7 @@
  * @Author: ywl
  * @Date: 2020-09-25 17:34:32
  * @LastEditors: ywl
- * @LastEditTime: 2020-12-03 19:05:16
+ * @LastEditTime: 2020-12-04 19:00:41
 -->
 <template>
   <IhPage label-width="100px">
@@ -88,11 +88,10 @@
               </el-col>
               <el-col :span="8">
                 <el-form-item label="项目">
-                  <el-input
+                  <SelectPageByProject
                     v-model="queryPageParameters.projectId"
-                    clearable
                     placeholder="请选择项目"
-                  ></el-input>
+                  ></SelectPageByProject>
                 </el-form-item>
               </el-col>
             </el-row>
@@ -100,11 +99,10 @@
             <el-row>
               <el-col :span="8">
                 <el-form-item label="周期">
-                  <el-input
+                  <SelectPageByCycle
                     v-model="queryPageParameters.cycleId"
-                    clearable
-                    placeholder="周期"
-                  ></el-input>
+                    placeholder="请选择周期"
+                  ></SelectPageByCycle>
                 </el-form-item>
               </el-col>
               <el-col :span="8">
@@ -257,6 +255,7 @@
         class="ih-table intermediary-table"
         ref="multipleTable"
         :data="resPageInfo.list"
+        :empty-text="emptyText"
         @selection-change="handleSelectionChange"
       >
         <el-table-column
@@ -385,6 +384,8 @@
 import { Component, Vue } from "vue-property-decorator";
 import PaginationMixin from "@/mixins/pagination";
 
+import SelectPageByProject from "@/components/SelectPageByProject.vue";
+import SelectPageByCycle from "@/components/SelectPageByCycle.vue";
 import SelectOrganizationTree from "@/components/SelectOrganizationTree.vue";
 import { get_channel_getAll } from "@/api/channel/index";
 import { post_company_getAll } from "@/api/system/index";
@@ -398,7 +399,11 @@ import {
 } from "@/api/contract/index";
 
 @Component({
-  components: { SelectOrganizationTree },
+  components: {
+    SelectOrganizationTree,
+    SelectPageByProject,
+    SelectPageByCycle,
+  },
   mixins: [PaginationMixin],
 })
 export default class DistributionList extends Vue {

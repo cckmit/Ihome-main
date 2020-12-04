@@ -2,16 +2,12 @@
 import { Component, Vue, Prop } from "vue-property-decorator";
 import { IhSelectPageBase } from "ihome-common/ui/packages/select-page/index";
 
-import { post_company_getAll } from "@/api/system/index";
+import { post_channel_getList } from "@/api/channel/index";
 
 @Component({
   extends: IhSelectPageBase,
 })
-export default class SelectPageByOther extends Vue {
-  @Prop({
-    default: true,
-  })
-  multiple?: boolean;
+export default class SelectPageByChannel extends Vue {
   @Prop({
     default: true,
   })
@@ -29,12 +25,22 @@ export default class SelectPageByOther extends Vue {
   props?: any;
 
   optionList: any = [];
+  // 分页信息
+  pageInfo: any = {
+    total: 0,
+    pageNum: 1,
+    pageSize: 10,
+  };
   filterText = "";
 
   async getSelectList() {
-    this.optionList = await post_company_getAll({
+    let res = await post_channel_getList({
       name: this.filterText,
+      pageSize: this.pageInfo.pageSize,
+      pageNum: this.pageInfo.pageNum,
     });
+    this.optionList = res.list;
+    this.pageInfo = res;
   }
 }
 </script>

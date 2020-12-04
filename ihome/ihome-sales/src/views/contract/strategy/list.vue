@@ -4,7 +4,7 @@
  * @Author: ywl
  * @Date: 2020-09-27 11:13:15
  * @LastEditors: ywl
- * @LastEditTime: 2020-12-04 11:09:25
+ * @LastEditTime: 2020-12-04 18:33:17
 -->
 <template>
   <IhPage label-width="100px">
@@ -76,21 +76,18 @@
             <el-row>
               <el-col :span="8">
                 <el-form-item label="项目">
-                  <el-input
+                  <SelectPageByProject
                     v-model="queryPageParameters.projectId"
-                    placeholder="项目"
-                  ></el-input>
+                    placeholder="请选择项目"
+                  ></SelectPageByProject>
                 </el-form-item>
               </el-col>
               <el-col :span="8">
                 <el-form-item label="周期">
-                  <el-select
+                  <SelectPageByCycle
                     v-model="queryPageParameters.cycleId"
-                    clearable
-                    placeholder="周期"
-                    class="width--100"
-                  >
-                  </el-select>
+                    placeholder="请选择周期"
+                  ></SelectPageByCycle>
                 </el-form-item>
               </el-col>
               <el-col :span="8">
@@ -186,7 +183,18 @@
           type="success"
           @click="$router.push('/strategy/add')"
         >录入协议</el-button>
-        <el-button>导出</el-button>
+        <el-dropdown
+          class="margin-left-10"
+          trigger="click"
+        >
+          <el-button type="success">
+            导出<i class="el-icon-arrow-down el-icon--right"></i>
+          </el-button>
+          <el-dropdown-menu slot="dropdown">
+            <el-dropdown-item>导出列表</el-dropdown-item>
+            <el-dropdown-item>导出附件</el-dropdown-item>
+          </el-dropdown-menu>
+        </el-dropdown>
         <el-link
           type="primary"
           class="float-right margin-right-40"
@@ -316,8 +324,11 @@ import { post_strategy_list } from "@/api/contract/index";
 import { post_company_listAll } from "@/api/developer/index";
 import { post_company_getAll } from "@/api/system/index";
 import { get_channel_getAll } from "@/api/channel/index";
+import SelectPageByProject from "@/components/SelectPageByProject.vue";
+import SelectPageByCycle from "@/components/SelectPageByCycle.vue";
 
 @Component({
+  components: { SelectPageByProject, SelectPageByCycle },
   mixins: [PaginationMixin],
 })
 export default class StrategyList extends Vue {

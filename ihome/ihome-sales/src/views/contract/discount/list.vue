@@ -4,7 +4,7 @@
  * @Author: ywl
  * @Date: 2020-09-27 16:27:36
  * @LastEditors: ywl
- * @LastEditTime: 2020-12-04 14:17:33
+ * @LastEditTime: 2020-12-04 18:31:20
 -->
 <template>
   <IhPage label-width="80px">
@@ -42,10 +42,10 @@
           </el-col>
           <el-col :span="8">
             <el-form-item label="项目名称">
-              <el-input
+              <SelectPageByProject
                 v-model="queryPageParameters.projectId"
                 placeholder="请选择联动项目"
-              ></el-input>
+              ></SelectPageByProject>
             </el-form-item>
           </el-col>
         </el-row>
@@ -54,13 +54,10 @@
             <el-row>
               <el-col :span="8">
                 <el-form-item label="立项周期">
-                  <el-select
+                  <SelectPageByCycle
                     v-model="queryPageParameters.cycleId"
-                    clearable
                     placeholder="请选择立项周期"
-                    class="width--100"
-                  >
-                  </el-select>
+                  ></SelectPageByCycle>
                 </el-form-item>
               </el-col>
               <el-col :span="8">
@@ -275,6 +272,7 @@
             <el-link
               type="success"
               class="margin-left-10"
+              @click="preview(row)"
             >预览</el-link>
           </template>
         </el-table-column>
@@ -299,10 +297,13 @@
 <script lang="ts">
 import { Component, Vue } from "vue-property-decorator";
 import PaginationMixin from "@/mixins/pagination";
+import SelectPageByProject from "@/components/SelectPageByProject.vue";
+import SelectPageByCycle from "@/components/SelectPageByCycle.vue";
 
 import { post_notice_list } from "@/api/contract/index";
 
 @Component({
+  components: { SelectPageByProject, SelectPageByCycle },
   mixins: [PaginationMixin],
 })
 export default class DiscountList extends Vue {
@@ -328,6 +329,13 @@ export default class DiscountList extends Vue {
 
   private openToggle(): void {
     this.searchOpen = !this.searchOpen;
+  }
+  private preview(row: any) {
+    window.open(
+      `/sales-api/sales-document-cover/file/browse/${
+        row.templateId || "5fc62269282f220001926755"
+      }`
+    );
   }
   private handleSelectionChange(val: any): void {
     console.log(val);
