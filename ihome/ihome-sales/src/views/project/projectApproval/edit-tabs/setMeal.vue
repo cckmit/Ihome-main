@@ -4,8 +4,192 @@
  * @Author: wwq
  * @Date: 2020-11-27 17:22:45
  * @LastEditors: wwq
- * @LastEditTime: 2020-11-27 17:23:17
+ * @LastEditTime: 2020-12-04 09:56:55
 -->
 <template>
-  <div>收派套餐</div>
+  <div>
+    <div class="setMeal">
+      <p class="ih-info-title">收派套餐</p>
+      <div class="setMealButton">
+        <el-button
+          size="small"
+          type="success"
+          @click="add"
+        >+增加收派套餐</el-button>
+      </div>
+    </div>
+    <div class="padding-left-20">
+      <el-table
+        class="ih-table"
+        :data="info"
+        style="width: 100%"
+      >
+        <el-table-column
+          prop="packageName"
+          label="套餐名称"
+        ></el-table-column>
+        <el-table-column
+          label="物业类型"
+          prop="propertyEnum"
+        >
+          <template v-slot="{ row }">{{
+            $root.dictAllName(row.propertyEnum, "PropertyEnum")
+          }}</template>
+        </el-table-column>
+        <el-table-column
+          label="基准费用类型"
+          width="120"
+        >
+          <template v-slot="{ row }">{{
+            $root.dictAllName(row.baseCostEnum, "BaseCostEnum")
+          }}</template>
+        </el-table-column>
+        <el-table-column
+          label="套餐有效时间"
+          width="180"
+        >
+          <template v-slot="{ row }">
+            {{row.startTime + '~' + row.endTime}}</template>
+        </el-table-column>
+        <el-table-column
+          prop="estimatedTransactionPrice"
+          label="假定成交均价(万元)"
+          width="150"
+        ></el-table-column>
+        <el-table-column
+          prop="exStop"
+          label="状态"
+        >
+          <template v-slot="{ row }">{{row.exStop ? '禁用' : '启用'}}</template>
+        </el-table-column>
+        <el-table-column
+          label="操作"
+          width="280"
+          fixed="right"
+          align="center"
+        >
+          <template v-slot="{ row }">
+            <el-button
+              size="small"
+              type="primary"
+              @click="view(row)"
+            >查看</el-button>
+            <el-button
+              size="small"
+              type="success"
+              @click="edit(row)"
+            >修改</el-button>
+            <el-button
+              size="small"
+              type="success"
+              @click="start(row)"
+            >启用</el-button>
+            <el-button
+              size="small"
+              type="danger"
+              @click="cancellation(row)"
+            >作废</el-button>
+          </template>
+        </el-table-column>
+      </el-table>
+    </div>
+    <ih-dialog :show="dialogVisible">
+      <Edit
+        :data="editData"
+        @cancel="() => (dialogVisible = false)"
+        @finish="(data) => addFinish(data)"
+      />
+    </ih-dialog>
+  </div>
 </template>
+<script lang="ts">
+import { Component, Vue } from "vue-property-decorator";
+import Edit from "../dialog/setMeal-dialog/edit.vue";
+import {
+  post_collectandsend_getAllByTerm,
+  post_collectandsend_start,
+  post_collectandsend_cancel,
+  post_distributContract_add,
+  post_distributContract_update,
+} from "@/api/project/index.ts";
+@Component({
+  components: {
+    Edit,
+  },
+})
+export default class SetMeal extends Vue {
+  dialogVisible = false;
+  viewDialogVisible = false;
+  info: any = [];
+  editData: any = {};
+
+  created() {
+    this.getInfo();
+  }
+
+  async getInfo() {
+    const id = this.$route.query.id;
+    if (id) {
+      this.info = await post_collectandsend_getAllByTerm({
+        termId: id,
+      });
+      this.info = [{}];
+    }
+  }
+
+  add() {
+    this.editData.id = "";
+    this.dialogVisible = true;
+  }
+
+  edit(row: any) {
+    this.editData.id = row.id;
+    this.dialogVisible = true;
+  }
+
+  view() {
+    this.viewDialogVisible = true;
+  }
+
+  async addFinish(data: any) {
+    data.termId = this.$route.query.id;
+    if (this.editData.id) {
+      data.id = this.editData.id;
+      await post_distributContract_update(data);
+      this.$message.success("修改成功");
+    } else {
+      data.partyCompanyId = this.info.preferentialPartyAId;
+      await post_distributContract_add(data);
+      this.$message.success("新增成功");
+    }
+    this.dialogVisible = false;
+    this.getInfo();
+  }
+
+  async start(row: any) {
+    await post_collectandsend_start({
+      packageId: row.packageId,
+    });
+    this.$message.success("启用成功");
+    this.getInfo();
+  }
+
+  async cancellation(data: any) {
+    await post_collectandsend_cancel({
+      packageId: data.packageId,
+    });
+    this.$message.success("作废成功");
+    this.getInfo();
+  }
+}
+</script>
+<style lang="scss" scoped>
+.setMeal {
+  display: flex;
+  flex-flow: row nowrap;
+  justify-content: flex-start;
+}
+.setMealButton {
+  margin: 5px 0 0 20px;
+}
+</style>

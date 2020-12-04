@@ -4,7 +4,7 @@
  * @Author: wwq
  * @Date: 2020-09-25 17:59:09
  * @LastEditors: wwq
- * @LastEditTime: 2020-11-11 11:46:19
+ * @LastEditTime: 2020-12-04 20:50:42
 -->
 <template>
   <ih-page>
@@ -500,12 +500,16 @@ export default class Edit extends Vue {
   }
 
   async delContacts(index: number) {
-    await this.$confirm("是否确定移除?", "提示");
-    this.resPageInfo.contactList.splice(index, 1);
-    this.$message({
-      type: "success",
-      message: "移除成功!",
-    });
+    try {
+      await this.$confirm("是否确定移除?", "提示");
+      this.resPageInfo.contactList.splice(index, 1);
+      this.$message({
+        type: "success",
+        message: "移除成功!",
+      });
+    } catch (err) {
+      console.log(err);
+    }
   }
 
   contactsFinish(data: any) {
@@ -531,12 +535,16 @@ export default class Edit extends Vue {
   }
 
   async delAccount(index: number) {
-    await this.$confirm("是否确定移除?", "提示");
-    this.resPageInfo.bankList.splice(index, 1);
-    this.$message({
-      type: "success",
-      message: "移除成功!",
-    });
+    try {
+      await this.$confirm("是否确定移除?", "提示");
+      this.resPageInfo.bankList.splice(index, 1);
+      this.$message({
+        type: "success",
+        message: "移除成功!",
+      });
+    } catch (error) {
+      console.log(error);
+    }
   }
 
   accountFinish(data: any) {

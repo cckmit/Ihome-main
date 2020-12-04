@@ -4,7 +4,7 @@
  * @Author: wwq
  * @Date: 2020-12-02 15:37:31
  * @LastEditors: wwq
- * @LastEditTime: 2020-12-03 09:29:08
+ * @LastEditTime: 2020-12-04 08:50:47
 -->
 <template>
   <el-dialog
@@ -514,22 +514,22 @@ export default class AddContract extends Vue {
         8.1.7 擅自将甲方提供的资料及在工作过程中知悉的甲方商业秘密对外披露、提供、发布等；
         8.1.8 其他有损害甲方及其关联公司合法权益和声誉的行为。`;
       this.info.contractMxVOList = [
-        {
-          conditionId: 21,
-          costTypeEnum: "ServiceFee",
-          propertyEnum: "Residence",
-          sendContext: "xxx",
-          baseCostEnum: "Contract",
-          standardPay: "321",
-        },
-        {
-          conditionId: 22,
-          costTypeEnum: "AgencyFee",
-          propertyEnum: "Apartment",
-          sendContext: "xxx",
-          baseCostEnum: "Contract",
-          standardPay: "123",
-        },
+        // {
+        //   conditionId: 21,
+        //   costTypeEnum: "ServiceFee",
+        //   propertyEnum: "Residence",
+        //   sendContext: "xxx",
+        //   baseCostEnum: "Contract",
+        //   standardPay: "321",
+        // },
+        // {
+        //   conditionId: 22,
+        //   costTypeEnum: "AgencyFee",
+        //   propertyEnum: "Apartment",
+        //   sendContext: "xxx",
+        //   baseCostEnum: "Contract",
+        //   standardPay: "123",
+        // },
       ];
     }
   }

@@ -4,7 +4,7 @@
  * @Author: wwq
  * @Date: 2020-11-27 17:17:06
  * @LastEditors: wwq
- * @LastEditTime: 2020-12-02 17:35:02
+ * @LastEditTime: 2020-12-04 18:24:09
 -->
 <template>
   <IhPage>
@@ -221,6 +221,7 @@
                 clearable
                 placeholder="请选择"
                 class="width--100"
+                @change="padCommissionEnumChange"
               >
                 <el-option
                   v-for="item in padCommissionEnumOptions"
@@ -1008,6 +1009,10 @@ export default class FirstAgencyEdit extends Vue {
     });
   }
 
+  padCommissionEnumChange(val: any) {
+    window.sessionStorage.setItem("padCommissionEnum", val);
+  }
+
   save() {
     (this.$refs["ruleForm"] as ElForm).validate(async (v: any) => {
       if (v) {
@@ -1058,6 +1063,7 @@ export default class FirstAgencyEdit extends Vue {
       this.info.termStageEnum = "Subscription";
       this.info.companyId = res.companyId;
       window.sessionStorage.setItem("proId", res.proId);
+      window.sessionStorage.setItem("padCommissionEnum", res.padCommissionEnum);
       if (this.info.chargeEnum && this.info.busEnum) {
         this.getAttributeEnumOptions();
       }
