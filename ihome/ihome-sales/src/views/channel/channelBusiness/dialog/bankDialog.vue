@@ -4,7 +4,7 @@
  * @Author: ywl
  * @Date: 2020-10-12 10:38:48
  * @LastEditors: ywl
- * @LastEditTime: 2020-11-17 08:46:51
+ * @LastEditTime: 2020-12-01 15:09:38
 -->
 <template>
   <el-dialog
@@ -32,22 +32,36 @@
       </el-form-item>
       <el-form-item
         label="账号"
-        prop="accountNum"
+        prop="accountNo"
       >
-        <el-input v-model="Bankrule.accountNum"></el-input>
+        <el-input v-model="Bankrule.accountNo"></el-input>
       </el-form-item>
       <el-form-item
         label="开户银行"
-        prop="bank"
+        prop="branchName"
       >
-        <el-input v-model="Bankrule.bank"></el-input>
+        <el-input
+          v-model="Bankrule.branchName"
+          readonly
+          @click.native="dialogFormVisible = true"
+        ></el-input>
+      </el-form-item>
+      <el-form-item
+        label="联行号"
+        prop="branchNo"
+      >
+        <el-input
+          v-model="Bankrule.branchNo"
+          readonly
+          @click.native="dialogFormVisible = true"
+        ></el-input>
       </el-form-item>
       <el-form-item
         label="账户类型"
-        prop="type"
+        prop="accountType"
       >
         <el-select
-          v-model="Bankrule.type"
+          v-model="Bankrule.accountType"
           clearable
           placeholder="请选择"
           class="width--100"
@@ -71,6 +85,15 @@
         @click="finish()"
       >确 定</el-button>
     </div>
+    <IhDialog
+      :show="dialogFormVisible"
+      desc="银行网点档案库"
+    >
+      <BankRecord
+        @cancel="() => (dialogFormVisible = false)"
+        @finish="handleFinish"
+      />
+    </IhDialog>
   </el-dialog>
 </template>
 
@@ -80,8 +103,11 @@ import { Form as ElForm } from "element-ui";
 import { NoRepeatHttp } from "ihome-common/util/aop/no-repeat-http";
 import { noTrim, isNumberValidato } from "ihome-common/util/base/form-ui";
 // import { post_channelBank_add } from "@/api/channel/index";
+import BankRecord from "./bankRecord.vue";
 
-@Component({})
+@Component({
+  components: { BankRecord },
+})
 export default class BankDialog extends Vue {
   @Prop({ default: null }) data: any;
   @Prop({ default: "new-add" }) bankType!: string;
@@ -93,31 +119,39 @@ export default class BankDialog extends Vue {
       { validator: noTrim, trigger: "change" },
       { max: 64, message: "字符长度不能大于64", trigger: "change" },
     ],
-    accountNum: [
+    accountNo: [
       { required: true, message: "请输入账号", trigger: "change" },
       { validator: noTrim, trigger: "change" },
       { validator: isNumberValidato, trigger: "change" },
       { max: 32, message: "字符长度不能大于32", trigger: "change" },
     ],
-    bank: [
-      { required: true, message: "请输入开户银行", trigger: "change" },
-      { validator: noTrim, trigger: "change" },
-      { max: 64, message: "字符长度不能大于64", trigger: "change" },
+    accountType: [
+      { required: true, message: "请选择账户类型", trigger: "change" },
     ],
-    type: [{ required: true, message: "请选择账户类型", trigger: "change" }],
+    branchName: [
+      { required: true, message: "请选择开户银行", trigger: "change" },
+    ],
+    branchNo: [{ required: true, message: "请选择联行号", trigger: "change" }],
   };
   private Bankrule: any = {
-    accountName: "",
-    accountNum: "",
-    bank: "",
-    type: "",
+    accountName: null,
+    accountNo: null,
+    accountType: null,
+    branchName: null,
+    branchNo: null,
   };
+  private dialogFormVisible = false;
 
   cancel(): void {
     this.$emit("cancel", false);
   }
   finish(): void {
     (this.$refs["Bankrule"] as ElForm).validate(this.submit);
+  }
+  handleFinish(data: any) {
+    this.dialogFormVisible = false;
+    this.Bankrule.branchName = data.branchName;
+    this.Bankrule.branchNo = data.branchNo;
   }
   @NoRepeatHttp()
   async submit(valid: any) {

@@ -406,72 +406,28 @@
           <el-table
             class="ih-table"
             :data="infoList">
-            <el-table-column
-              prop="customerNo"
-              label="客户编号"
-              min-width="120"
-            ></el-table-column>
-            <el-table-column
-              prop="customerType"
-              label="客户类型"
-              min-width="120"
-            ></el-table-column>
-            <el-table-column
-              prop="customerName"
-              label="客户名称"
-              min-width="120"
-            ></el-table-column>
-            <el-table-column
-              prop="customerPhone"
-              label="手机号码"
-              min-width="120"
-            ></el-table-column>
-            <el-table-column
-              prop="cardType"
-              label="证件类型"
-              min-width="150"
-            ></el-table-column>
-            <el-table-column
-              prop="cardNo"
-              label="证件编号"
-              min-width="150"
-            ></el-table-column>
-            <el-table-column
-              prop="email"
-              label="邮箱"
-              min-width="150"
-            ></el-table-column>
+            <el-table-column prop="customerNo" label="客户编号" min-width="120"></el-table-column>
+            <el-table-column prop="customerType" label="客户类型" min-width="120"></el-table-column>
+            <el-table-column prop="customerName" label="客户名称" min-width="120"></el-table-column>
+            <el-table-column prop="customerPhone" label="手机号码" min-width="120"></el-table-column>
+            <el-table-column prop="cardType" label="证件类型" min-width="150"></el-table-column>
+            <el-table-column prop="cardNo" label="证件编号" min-width="150"></el-table-column>
+            <el-table-column prop="email" label="邮箱" min-width="150"></el-table-column>
           </el-table>
         </el-col>
       </el-row>
     </div>
     <div>
-      <p class="ih-info-title">中介信息</p>
+      <p class="ih-info-title">渠道信息</p>
       <el-row style="padding-left: 20px">
         <el-col>
           <el-table
             class="ih-table"
             :data="infoList">
-            <el-table-column
-              prop="agencyName"
-              label="中介公司名称"
-              min-width="120"
-            ></el-table-column>
-            <el-table-column
-              prop="channelLevel"
-              label="渠道等级"
-              min-width="120"
-            ></el-table-column>
-            <el-table-column
-              prop="broker"
-              label="经纪人"
-              min-width="120"
-            ></el-table-column>
-            <el-table-column
-              prop="storeIdName"
-              label="门店"
-              min-width="120"
-            ></el-table-column>
+            <el-table-column prop="agencyName" label="渠道公司名称" min-width="120"></el-table-column>
+            <el-table-column prop="channelLevel" label="渠道等级" min-width="120"></el-table-column>
+            <el-table-column prop="broker" label="经纪人" min-width="120"></el-table-column>
+            <el-table-column prop="storeIdName" label="门店" min-width="120"></el-table-column>
           </el-table>
         </el-col>
       </el-row>
@@ -486,56 +442,16 @@
             sum-text="合计金额"
             :summary-method="getReceiveSummaries"
             :data="infoList">
-            <el-table-column
-              prop="type"
-              label="类型"
-              min-width="120"
-            ></el-table-column>
-            <el-table-column
-              prop="partyACustomerName"
-              label="甲方/客户"
-              min-width="120"
-            ></el-table-column>
-            <el-table-column
-              prop="packageId"
-              label="收派套餐"
-              min-width="120"
-            ></el-table-column>
-            <el-table-column
-              prop="receiveAmount"
-              label="应收金额"
-              min-width="120"
-            ></el-table-column>
-            <el-table-column
-              prop="receivedAmount"
-              label="应收已收金额"
-              min-width="150"
-            ></el-table-column>
-            <el-table-column
-              prop="commAmount"
-              label="派发佣金金额"
-              min-width="150"
-            ></el-table-column>
-            <el-table-column
-              prop="rewardAmount"
-              label="派发内场奖励金额"
-              min-width="150"
-            ></el-table-column>
-            <el-table-column
-              prop="totalPackageAmount"
-              label="总包业绩金额"
-              min-width="150"
-            ></el-table-column>
-            <el-table-column
-              prop="distributionAmount"
-              label="分销业绩金额"
-              min-width="150"
-            ></el-table-column>
-            <el-table-column
-              prop="otherChannelFees"
-              label="其他渠道费用(正数为产生，负数为使用)"
-              min-width="150"
-            ></el-table-column>
+            <el-table-column prop="type" label="类型" min-width="120"></el-table-column>
+            <el-table-column prop="partyACustomerName" label="甲方/客户" min-width="120"></el-table-column>
+            <el-table-column prop="packageId" label="收派套餐" min-width="120"></el-table-column>
+            <el-table-column prop="receiveAmount" label="应收金额" min-width="120"></el-table-column>
+            <el-table-column prop="receivedAmount" label="应收已收金额" min-width="150"></el-table-column>
+            <el-table-column prop="commAmount" label="派发佣金金额" min-width="150"></el-table-column>
+            <el-table-column prop="rewardAmount" label="派发内场奖励金额" min-width="150"></el-table-column>
+            <el-table-column prop="totalPackageAmount" label="总包业绩金额" min-width="150"></el-table-column>
+            <el-table-column prop="distributionAmount" label="分销业绩金额" min-width="150"></el-table-column>
+            <el-table-column prop="otherChannelFees" label="其他渠道费用(正数为产生，负数为使用)" min-width="150"></el-table-column>
           </el-table>
         </el-col>
       </el-row>
@@ -544,21 +460,9 @@
           <el-table
             class="ih-table"
             :data="infoList">
-            <el-table-column
-              prop="receiveAmount"
-              label="本单应收"
-              min-width="120"
-            ></el-table-column>
-            <el-table-column
-              prop="achieveAmount"
-              label="本单业绩"
-              min-width="120"
-            ></el-table-column>
-            <el-table-column
-              prop="otherChannelFees"
-              label="其他渠道费用(正数为产生，负数为使用)"
-              min-width="150"
-            ></el-table-column>
+            <el-table-column prop="receiveAmount" label="本单应收" min-width="120"></el-table-column>
+            <el-table-column prop="achieveAmount" label="本单业绩" min-width="120"></el-table-column>
+            <el-table-column prop="otherChannelFees" label="其他渠道费用(正数为产生，负数为使用)" min-width="150"></el-table-column>
           </el-table>
         </el-col>
       </el-row>
@@ -636,72 +540,18 @@
             sum-text="合计金额"
             :summary-method="getAchieveSummaries"
             :data="postData.achieveTotalBagList">
-            <el-table-column
-              prop="roleType"
-              label="角色类型"
-              min-width="120"
-            ></el-table-column>
-            <el-table-column
-              prop="roleAchieveCap"
-              label="角色业绩上限"
-              min-width="120"
-            ></el-table-column>
-            <el-table-column
-              prop="corporateAchieve"
-              label="公司业绩"
-              min-width="120"
-            ></el-table-column>
-            <el-table-column
-              prop="corporateAchieveRatio"
-              label="公司业绩比例（%）"
-              min-width="120"
-            ></el-table-column>
-            <el-table-column
-              prop="commFees"
-              label="拆佣金额"
-              min-width="150"
-            ></el-table-column>
-            <el-table-column
-              prop="commFeesRatio"
-              label="拆佣比例（%）"
-              min-width="150"
-            ></el-table-column>
-            <el-table-column
-              prop="rolerName"
-              label="角色人"
-              min-width="150"
-            ></el-table-column>
-            <el-table-column
-              prop="belongOrgName"
-              label="店组"
-              min-width="150"
-            ></el-table-column>
-            <el-table-column prop="type" label="主管" min-width="150">
+            <el-table-column prop="roleType" label="角色类型" min-width="120"></el-table-column>
+            <el-table-column prop="roleAchieveCap" label="角色业绩上限" min-width="120"></el-table-column>
+            <el-table-column prop="corporateAchieve" label="公司业绩" min-width="120"></el-table-column>
+            <el-table-column prop="corporateAchieveRatio" label="公司业绩比例（%）" min-width="120"></el-table-column>
+            <el-table-column prop="commFees" label="拆佣金额" min-width="150"></el-table-column>
+            <el-table-column prop="commFeesRatio" label="拆佣比例（%）" min-width="150"></el-table-column>
+            <el-table-column prop="rolerName" label="角色人" min-width="150"></el-table-column>
+            <el-table-column prop="belongOrgName" label="店组" min-width="150"></el-table-column>
+            <el-table-column prop="type" label="管理岗" min-width="150">
               <template slot-scope="scope">
                 <div v-if="scope.row.SupervisorList.length > 0">
                   <div v-for="list in scope.row.SupervisorList" :key="list.id">
-                    <span>{{list.ratio}}%</span>
-                    <span>{{list.manager}}({{list.managerPosition}})</span>
-                  </div>
-                </div>
-                <div v-else>暂无信息</div>
-              </template>
-            </el-table-column>
-            <el-table-column prop="type" label="经理" min-width="150">
-              <template slot-scope="scope">
-                <div v-if="scope.row.ManagerList.length > 0">
-                  <div v-for="list in scope.row.ManagerList" :key="list.id">
-                    <span>{{list.ratio}}%</span>
-                    <span>{{list.manager}}({{list.managerPosition}})</span>
-                  </div>
-                </div>
-                <div v-else>暂无信息</div>
-              </template>
-            </el-table-column>
-            <el-table-column prop="type" label="总监" min-width="150">
-              <template slot-scope="scope">
-                <div v-if="scope.row.DirectorList.length > 0">
-                  <div v-for="list in scope.row.DirectorList" :key="list.id">
                     <span>{{list.ratio}}%</span>
                     <span>{{list.manager}}({{list.managerPosition}})</span>
                   </div>
@@ -723,72 +573,18 @@
             sum-text="合计金额"
             :summary-method="getAchieveSummaries"
             :data="postData.achieveDistriList">
-            <el-table-column
-              prop="roleType"
-              label="角色类型"
-              min-width="120"
-            ></el-table-column>
-            <el-table-column
-              prop="roleAchieveCap"
-              label="角色业绩上限"
-              min-width="120"
-            ></el-table-column>
-            <el-table-column
-              prop="corporateAchieve"
-              label="公司业绩"
-              min-width="120"
-            ></el-table-column>
-            <el-table-column
-              prop="corporateAchieveRatio"
-              label="公司业绩比例（%）"
-              min-width="120"
-            ></el-table-column>
-            <el-table-column
-              prop="commFees"
-              label="拆佣金额"
-              min-width="150"
-            ></el-table-column>
-            <el-table-column
-              prop="commFeesRatio"
-              label="拆佣比例（%）"
-              min-width="150"
-            ></el-table-column>
-            <el-table-column
-              prop="rolerName"
-              label="角色人"
-              min-width="150"
-            ></el-table-column>
-            <el-table-column
-              prop="belongOrgName"
-              label="店组"
-              min-width="150"
-            ></el-table-column>
-            <el-table-column prop="type" label="主管" min-width="150">
+            <el-table-column prop="roleType" label="角色类型" min-width="120"></el-table-column>
+            <el-table-column prop="roleAchieveCap" label="角色业绩上限" min-width="120"></el-table-column>
+            <el-table-column prop="corporateAchieve" label="公司业绩" min-width="120"></el-table-column>
+            <el-table-column prop="corporateAchieveRatio" label="公司业绩比例（%）" min-width="120"></el-table-column>
+            <el-table-column prop="commFees" label="拆佣金额" min-width="150"></el-table-column>
+            <el-table-column prop="commFeesRatio" label="拆佣比例（%）" min-width="150"></el-table-column>
+            <el-table-column prop="rolerName" label="角色人" min-width="150"></el-table-column>
+            <el-table-column prop="belongOrgName" label="店组" min-width="150"></el-table-column>
+            <el-table-column prop="type" label="管理岗" min-width="150">
               <template slot-scope="scope">
                 <div v-if="scope.row.SupervisorList.length > 0">
                   <div v-for="list in scope.row.SupervisorList" :key="list.id">
-                    <span>{{list.ratio}}%</span>
-                    <span>{{list.manager}}({{list.managerPosition}})</span>
-                  </div>
-                </div>
-                <div v-else>暂无信息</div>
-              </template>
-            </el-table-column>
-            <el-table-column prop="type" label="经理" min-width="150">
-              <template slot-scope="scope">
-                <div v-if="scope.row.ManagerList.length > 0">
-                  <div v-for="list in scope.row.ManagerList" :key="list.id">
-                    <span>{{list.ratio}}%</span>
-                    <span>{{list.manager}}({{list.managerPosition}})</span>
-                  </div>
-                </div>
-                <div v-else>暂无信息</div>
-              </template>
-            </el-table-column>
-            <el-table-column prop="type" label="总监" min-width="150">
-              <template slot-scope="scope">
-                <div v-if="scope.row.DirectorList.length > 0">
-                  <div v-for="list in scope.row.DirectorList" :key="list.id">
                     <span>{{list.ratio}}%</span>
                     <span>{{list.manager}}({{list.managerPosition}})</span>
                   </div>
@@ -807,24 +603,16 @@
           <el-table
             class="ih-table"
             :data="infoList">
-            <el-table-column
-              prop="fileType"
-              label="类型"
-              min-width="120"
-            ></el-table-column>
-            <el-table-column
-              prop="fileName"
-              label="附件"
-              min-width="120"
-            ></el-table-column>
+            <el-table-column prop="fileType" label="类型" min-width="120"></el-table-column>
+            <el-table-column prop="fileName" label="附件" min-width="120"></el-table-column>
           </el-table>
         </el-col>
       </el-row>
     </div>
     <div class="text-center btn-top">
+      <el-button @click="handleCancel()">取消</el-button>
       <el-button type="primary" @click="handleSave()">保存</el-button>
       <el-button type="success" @click="handleSubmit()">提交</el-button>
-      <el-button type="info" @click="handleCancel()">取消</el-button>
     </div>
   </ih-page>
 </template>

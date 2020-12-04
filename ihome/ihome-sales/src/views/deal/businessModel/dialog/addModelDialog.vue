@@ -22,7 +22,7 @@
       v-loading="editLoading"
       :model="postData"
       :rules="rules"
-      ref="ruleForm"
+      ref="modelForm"
       label-width="100px"
       class="demo-ruleForm"
     >
@@ -66,7 +66,8 @@
       </el-row>
     </el-form>
     <span slot="footer" class="dialog-footer">
-      <el-button type="success" @click="save()">保存</el-button>
+      <el-button @click="cancel()">取 消</el-button>
+      <el-button type="primary" @click="save()">保 存</el-button>
     </span>
   </el-dialog>
 </template>
@@ -138,9 +139,14 @@
       }
     }
 
+    // 取消
+    cancel() {
+      this.$emit("cancel", false);
+    }
+
     // 保存
     async save() {
-      (this.$refs["ruleForm"] as ElForm).validate(this.addSave);
+      (this.$refs["modelForm"] as ElForm).validate(this.addSave);
     }
 
     // 提交保存

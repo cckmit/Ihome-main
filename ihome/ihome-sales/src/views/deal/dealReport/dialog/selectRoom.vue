@@ -2,14 +2,14 @@
  * @Descripttion: 
  * @version: 
  * @Author: lsj
- * @Date: 2020-11-03 15:28:12
+ * @Date: 2020-12-01 09:05:15
  * @LastEditors: lsj
- * @LastEditTime: 2020-11-03 15:30:12
+ * @LastEditTime: 2020-12-01 10:02:25
 -->
 <template>
   <el-dialog
     v-dialogDrag
-    title="选择客户列表"
+    title="选择房号列表"
     :visible.sync="dialogVisible"
     :close-on-click-modal="false"
     :close-on-press-escape="false"
@@ -21,35 +21,51 @@
     <el-form ref="form" label-width="100px">
       <el-row>
         <el-col :span="8">
-          <el-form-item label="客户姓名">
+          <el-form-item label="栋座">
             <el-input
               v-model="queryPageParameters.city"
-              placeholder="客户姓名"
+              placeholder="栋座"
             ></el-input>
           </el-form-item>
         </el-col>
         <el-col :span="8">
-          <el-form-item label="客户类型">
+          <el-form-item label="房号">
             <el-input
               v-model="queryPageParameters.city"
-              placeholder="客户类型"
+              placeholder="房号"
             ></el-input>
           </el-form-item>
         </el-col>
         <el-col :span="8">
-          <el-form-item label="客户编号">
-            <el-input
-              v-model="queryPageParameters.city"
-              placeholder="客户编号"
-            ></el-input>
+          <el-form-item label="户型">
+            <el-select
+              v-model="queryPageParameters.room"
+              clearable
+              placeholder="户型"
+              class="width--100">
+              <el-option
+                v-for="item in $root.dictAllList('BusinessModel')"
+                :key="item.code"
+                :label="item.name"
+                :value="item.code"
+              ></el-option>
+            </el-select>
           </el-form-item>
         </el-col>
         <el-col :span="8">
-          <el-form-item label="手机号码">
-            <el-input
-              v-model="queryPageParameters.city"
-              placeholder="手机号码"
-            ></el-input>
+          <el-form-item label="朝向">
+            <el-select
+              v-model="queryPageParameters.room"
+              clearable
+              placeholder="朝向"
+              class="width--100">
+              <el-option
+                v-for="item in $root.dictAllList('BusinessModel')"
+                :key="item.code"
+                :label="item.name"
+                :value="item.code"
+              ></el-option>
+            </el-select>
           </el-form-item>
         </el-col>
       </el-row>
@@ -68,12 +84,12 @@
       :empty-text="emptyText"
       @selection-change="handleSelectionChange">
       <el-table-column type="selection" width="55"></el-table-column>
-      <el-table-column prop="storageNum" label="客户编号" min-width="180"></el-table-column>
-      <el-table-column prop="channelName" label="客户姓名" min-width="180"></el-table-column>
-      <el-table-column prop="province" label="客户类型" min-width="180"></el-table-column>
-      <el-table-column prop="city" label="手机号码" min-width="180"></el-table-column>
-      <el-table-column prop="cityGrade" label="证件类型" min-width="180"></el-table-column>
-      <el-table-column prop="cityGrade" label="证件号码" min-width="180"></el-table-column>
+      <el-table-column prop="storageNum" label="栋座" min-width="180"></el-table-column>
+      <el-table-column prop="channelName" label="房号" min-width="180"></el-table-column>
+      <el-table-column prop="province" label="户型" min-width="180"></el-table-column>
+      <el-table-column prop="city" label="房型" min-width="180"></el-table-column>
+      <el-table-column prop="cityGrade" label="面积" min-width="180"></el-table-column>
+      <el-table-column prop="cityGrade" label="朝向" min-width="180"></el-table-column>
     </el-table>
     <el-pagination
       @size-change="handleSizeChangeMixin"
@@ -99,7 +115,7 @@
     components: {},
     mixins: [PaginationMixin],
   })
-  export default class AddCustomer extends Vue {
+  export default class SelectRoom extends Vue {
     constructor() {
       super();
     }
@@ -115,6 +131,7 @@
       channelGrade: null,
       channelId: null,
       city: null,
+      room: null,
       cityGrade: null,
       departmentOrgId: null,
       inputUser: null,
@@ -143,4 +160,28 @@
   }
 </script>
 <style lang="scss" scoped>
+  .content-wrapper {
+    width: 100%;
+    max-height: 500px;
+    overflow-x: hidden;
+    overflow-y: auto;
+    display: flex;
+
+    .content-tree-wrapper {
+      /*width: 40%;*/
+      width: 280px;
+      max-height: 500px;
+      overflow: auto;
+      box-sizing: border-box;
+      margin-right: 10px;
+    }
+
+    .content-transfer-wrapper {
+      /*width: 60%;*/
+      flex: 1;
+      max-height: 500px;
+      overflow-x: hidden;
+      overflow-y: auto;
+    }
+  }
 </style>

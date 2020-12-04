@@ -9,7 +9,7 @@
 <template>
   <el-dialog
     v-dialogDrag
-    title="选择中介公司列表"
+    title="选择渠道公司列表"
     :visible.sync="dialogVisible"
     :close-on-click-modal="false"
     :close-on-press-escape="false"
@@ -24,7 +24,7 @@
           <el-input
             style="width: 30%; margin-right: 20px"
             v-model="queryPageParameters.city"
-            placeholder="中介公司"
+            placeholder="渠道公司"
           ></el-input>
           <el-button type="primary" @click="getListMixin()">查询</el-button>
         </el-col>
@@ -33,43 +33,16 @@
     <el-table
       class="ih-table"
       :data="resPageInfo.list"
+      :empty-text="emptyText"
       @selection-change="handleSelectionChange">
       <el-table-column type="selection" width="55"></el-table-column>
-      <el-table-column
-        prop="storageNum"
-        label="中介公司"
-        min-width="180"
-      ></el-table-column>
-      <el-table-column
-        prop="channelName"
-        label="简称"
-        min-width="180"
-      ></el-table-column>
-      <el-table-column
-        prop="province"
-        label="渠道等级"
-        min-width="180"
-      ></el-table-column>
-      <el-table-column
-        prop="city"
-        label="省份"
-        min-width="180"
-      ></el-table-column>
-      <el-table-column
-        prop="cityGrade"
-        label="城市"
-        min-width="180"
-      ></el-table-column>
-      <el-table-column
-        prop="cityGrade"
-        label="行政区"
-        min-width="180"
-      ></el-table-column>
-      <el-table-column
-        prop="cityGrade"
-        label="状态"
-        min-width="180"
-      ></el-table-column>
+      <el-table-column prop="storageNum" label="渠道公司" min-width="180"></el-table-column>
+      <el-table-column prop="channelName" label="简称" min-width="180"></el-table-column>
+      <el-table-column prop="province" label="渠道等级" min-width="180"></el-table-column>
+      <el-table-column prop="city" label="省份" min-width="180"></el-table-column>
+      <el-table-column prop="cityGrade" label="城市" min-width="180"></el-table-column>
+      <el-table-column prop="cityGrade" label="行政区" min-width="180"></el-table-column>
+      <el-table-column prop="cityGrade" label="状态" min-width="180"></el-table-column>
     </el-table>
     <el-pagination
       @size-change="handleSizeChangeMixin"
@@ -103,7 +76,7 @@
     @Prop({default: null}) data: any;
     dialogVisible = true;
     resPageInfo: any = {
-      total: 0,
+      total: null,
       list: [],
     };
 

@@ -9,7 +9,7 @@
 <template>
   <el-dialog
     v-dialogDrag
-    title="成交审核记录"
+    title="成交操作记录"
     :visible.sync="dialogVisible"
     :close-on-click-modal="false"
     :close-on-press-escape="false"
@@ -18,67 +18,35 @@
     width="1000px"
     style="text-align: left"
     class="dialog">
-    <p class="ih-info-title">主成交报告审核信息</p>
+    <p class="ih-info-title">主成交报告操作记录信息</p>
     <el-table
       style="padding-left: 20px"
       class="ih-table"
+      :empty-text="emptyText"
       :data="resPageInfo.list">
-      <el-table-column
-        prop="storageNum"
-        label="操作后状态"
-        min-width="180"
-      ></el-table-column>
-      <el-table-column
-        prop="channelName"
-        label="操作者（岗位）"
-        min-width="180"
-      ></el-table-column>
-      <el-table-column
-        prop="province"
-        label="操作说明"
-        min-width="180"
-      ></el-table-column>
-      <el-table-column
-        prop="city"
-        label="审核意见"
-        min-width="180"
-      ></el-table-column>
-      <el-table-column
-        prop="cityGrade"
-        label="操作时间"
-        min-width="180"
-      ></el-table-column>
+      <el-table-column prop="storageNum" label="操作" min-width="180"></el-table-column>
+      <el-table-column prop="storageNum" label="操作人" min-width="180"></el-table-column>
+      <el-table-column prop="channelName" label="岗位" min-width="180"></el-table-column>
+      <el-table-column prop="channelName" label="操作后状态" min-width="180"></el-table-column>
+      <el-table-column prop="cityGrade" label="操作时间" min-width="180"></el-table-column>
+      <el-table-column prop="cityGrade" label="处理结果" min-width="180"></el-table-column>
+      <el-table-column prop="cityGrade" label="系统" min-width="180"></el-table-column>
+      <el-table-column prop="cityGrade" label="备注" min-width="180"></el-table-column>
     </el-table>
-    <p class="ih-info-title">补充成交报告审核信息</p>
+    <p class="ih-info-title">补充成交报告操作记录信息</p>
     <el-table
       style="padding-left: 20px"
       class="ih-table"
+      :empty-text="emptyText"
       :data="resPageInfo.list">
-      <el-table-column
-        prop="storageNum"
-        label="操作后状态"
-        min-width="180"
-      ></el-table-column>
-      <el-table-column
-        prop="channelName"
-        label="操作者（岗位）"
-        min-width="180"
-      ></el-table-column>
-      <el-table-column
-        prop="province"
-        label="操作说明"
-        min-width="180"
-      ></el-table-column>
-      <el-table-column
-        prop="city"
-        label="审核意见"
-        min-width="180"
-      ></el-table-column>
-      <el-table-column
-        prop="cityGrade"
-        label="操作时间"
-        min-width="180"
-      ></el-table-column>
+      <el-table-column prop="storageNum" label="操作" min-width="180"></el-table-column>
+      <el-table-column prop="storageNum" label="操作人" min-width="180"></el-table-column>
+      <el-table-column prop="channelName" label="岗位" min-width="180"></el-table-column>
+      <el-table-column prop="channelName" label="操作后状态" min-width="180"></el-table-column>
+      <el-table-column prop="cityGrade" label="操作时间" min-width="180"></el-table-column>
+      <el-table-column prop="cityGrade" label="处理结果" min-width="180"></el-table-column>
+      <el-table-column prop="cityGrade" label="系统" min-width="180"></el-table-column>
+      <el-table-column prop="cityGrade" label="备注" min-width="180"></el-table-column>
     </el-table>
     <span slot="footer" class="dialog-footer">
       <el-button type="primary" @click="finish()">确 定</el-button>
@@ -89,10 +57,11 @@
   import {Component, Vue, Prop} from "vue-property-decorator";
 
   import {post_channelGrade_getList} from "@/api/channel";
+  import PaginationMixin from "@/mixins/pagination";
 
   @Component({
     components: {},
-    mixins: [],
+    mixins: [PaginationMixin],
   })
   export default class ReviewDetailsDialog extends Vue {
     constructor() {
@@ -102,7 +71,7 @@
     @Prop({default: null}) data: any;
     dialogVisible = true;
     resPageInfo: any = {
-      total: 0,
+      total: null,
       list: [],
     };
 

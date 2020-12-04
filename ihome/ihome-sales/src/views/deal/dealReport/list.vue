@@ -71,7 +71,7 @@
           <el-col :span="8">
             <el-form-item label="组织">
               <el-input
-                v-model="queryPageParameters.dealOrgId"
+                v-model="queryPageParameters.dealOrg"
                 clearable
                 placeholder="组织"
               ></el-input>
@@ -105,11 +105,20 @@
             </el-form-item>
           </el-col>
           <el-col :span="8">
-            <el-form-item label="房屋地址">
+            <el-form-item label="渠道公司">
               <el-input
-                v-model="queryPageParameters.address"
+                v-model="queryPageParameters.agencyName"
                 clearable
-                placeholder="房屋地址"
+                placeholder="渠道公司"
+              ></el-input>
+            </el-form-item>
+          </el-col>
+          <el-col :span="8">
+            <el-form-item label="经纪人">
+              <el-input
+                v-model="queryPageParameters.broker"
+                clearable
+                placeholder="经纪人"
               ></el-input>
             </el-form-item>
           </el-col>
@@ -139,20 +148,20 @@
             </el-form-item>
           </el-col>
           <el-col :span="8">
-            <el-form-item label="中介公司">
+            <el-form-item label="栋座">
               <el-input
                 v-model="queryPageParameters.agencyName"
                 clearable
-                placeholder="中介公司"
+                placeholder="栋座"
               ></el-input>
             </el-form-item>
           </el-col>
           <el-col :span="8">
-            <el-form-item label="经纪人">
+            <el-form-item label="房号">
               <el-input
-                v-model="queryPageParameters.broker"
+                v-model="queryPageParameters.agencyName"
                 clearable
-                placeholder="经纪人"
+                placeholder="房号"
               ></el-input>
             </el-form-item>
           </el-col>
@@ -206,76 +215,59 @@
         class="ih-table"
         :empty-text="emptyText"
         :data="resPageInfo.list">
-        <el-table-column
-          prop="dealCode"
-          label="成交报告编号"
-          min-width="250"
-        ></el-table-column>
-        <el-table-column
-          prop="address"
-          label="房屋地址"
-          min-width="250"
-        ></el-table-column>
-        <el-table-column
-          prop="contType"
-          label="交易类型"
-          min-width="160">
+        <el-table-column prop="dealCode" label="成交报告编号" min-width="260"></el-table-column>
+        <el-table-column prop="contType" label="房产信息" min-width="260">
+          <template slot-scope="scope">
+            <div>地址：{{scope.row.address}}</div>
+            <div>客户：{{scope.row.customerName}}</div>
+            <div>客户电话：{{scope.row.customerPhone}}</div>
+          </template>
+        </el-table-column>
+        <el-table-column prop="contType" label="交易类型" min-width="180">
           <template slot-scope="scope">
             <div v-if="scope.row.contType">{{scope.row.contType}}</div>
             <div v-if="scope.row.suppContType">{{scope.row.suppContType}}</div>
+            <div>状态：{{scope.row.status}}</div>
           </template>
         </el-table-column>
-        <el-table-column
-          prop="actualAmount"
-          label="应收实收金额"
-          min-width="160">
+        <el-table-column prop="actualAmount" label="应收实收金额" min-width="190">
           <template slot-scope="scope">
             <div>应收：{{scope.row.receiveAmount}}</div>
             <div>实收：{{scope.row.actualAmount}}</div>
           </template>
         </el-table-column>
-        <el-table-column
-          prop="commAmount"
-          label="拆用金额"
-          min-width="160">
+        <el-table-column prop="commAmount" label="拆用金额" min-width="190">
           <template slot-scope="scope">
             <div>总金额：{{scope.row.commAmount}}</div>
             <div>已付金额：{{scope.row.paidCommAmount}}</div>
             <div>未付金额：{{scope.row.unpaidCommAmount}}</div>
           </template>
         </el-table-column>
-        <el-table-column
-          prop="status"
-          label="成交状态"
-          min-width="150"
-        ></el-table-column>
-        <el-table-column
-          prop="approveTime"
-          label="审批时间"
-          min-width="180"
-        ></el-table-column>
-        <el-table-column
-          prop="entryPerson"
-          label="人员信息"
-          min-width="240">
+        <el-table-column prop="commAmount" label="渠道信息" min-width="190">
+          <template slot-scope="scope">
+            <div>公司：{{scope.row.commAmount}}</div>
+            <div>经纪人：{{scope.row.paidCommAmount}}</div>
+          </template>
+        </el-table-column>
+        <el-table-column prop="commAmount" label="项目周期信息" min-width="180">
+          <template slot-scope="scope">
+            <div>项目：{{scope.row.commAmount}}</div>
+            <div>周期：{{scope.row.paidCommAmount}}</div>
+          </template>
+        </el-table-column>
+        <el-table-column prop="entryPerson" label="人员信息" min-width="180">
           <template slot-scope="scope">
             <div>录入人：{{scope.row.entryPerson}}</div>
             <div>业绩分配人：{{scope.row.alloter}}</div>
           </template>
         </el-table-column>
-        <el-table-column
-          prop="dealOrg"
-          label="组织信息"
-          min-width="240"
-        ></el-table-column>
-        <el-table-column
-          prop="allotDate"
-          label="签约/填写/业绩日期"
-          min-width="240">
+        <el-table-column prop="dealOrg" label="组织信息" min-width="260"></el-table-column>
+        <el-table-column prop="allotDate" label="签约/填写/业绩/审批日期" min-width="210">
           <template slot-scope="scope">
             <div>签约：{{scope.row.signDate}}</div>
             <div>填写：{{scope.row.createTime}}</div>
             <div>业绩：{{scope.row.allotDate}}</div>
+            <div>审批：{{scope.row.approveTime}}</div>
           </template>
         </el-table-column>
         <el-table-column fixed="right" label="操作" width="130">
@@ -355,7 +347,8 @@
 
   import {
     post_deal_getList,
-    post_deal_delete__id
+    post_deal_delete__id,
+    post_deal_withdrawDeal
   } from "@/api/deal";
 
   import PaginationMixin from "@/mixins/pagination";
@@ -370,14 +363,13 @@
       contType: null,
       status: null,
       suppContType: null,
-      dealOrgId: null,
+      dealOrg: null,
       entryPerson: null,
       customerName: null,
       customerPhone: null,
-      address: null,
+      agencyName: null,
       stage: null,
       projectCycle: null,
-      agencyName: null,
       broker: null,
       timeType: null,
       beginTime: null,
@@ -391,7 +383,7 @@
     };
 
     async created() {
-      // await this.getListMixin();
+      await this.getListMixin();
     }
 
     // 改变查询时间
@@ -409,6 +401,36 @@
     // 获取成交报告列表
     async getListMixin() {
       this.resPageInfo = await post_deal_getList(this.queryPageParameters);
+      // 处理显示的数据
+      if (this.resPageInfo.list && this.resPageInfo.list.length > 0) {
+        this.resPageInfo.list.forEach((list: any) => {
+          // 1.合同类型
+          if (list.contType) {
+            list.contType = this.getName('ContType', list.contType);
+          }
+          // 2.补充类型
+          if (list.suppContType) {
+            list.suppContType = this.getName('SuppContType', list.suppContType);
+          }
+          // 3.成交状态
+          if (list.status) {
+            list.status = this.getName('DealStatus', list.status);
+          }
+        })
+      }
+    }
+
+    // 在数据字典中获取对应的中文名
+    getName(key: any, type: any) {
+      if (!key || !type) return;
+      let name = '';
+      let list = (this as any).$root.dictAllList(key);
+      list.forEach((item: any) => {
+        if (item.code === type) {
+          name = item.name
+        }
+      })
+      return name;
     }
 
     // 重置
@@ -418,20 +440,19 @@
         contType: null,
         status: null,
         suppContType: null,
-        dealOrgId: null,
+        dealOrg: null,
         entryPerson: null,
         customerName: null,
         customerPhone: null,
-        address: null,
+        agencyName: null,
         stage: null,
         projectCycle: null,
-        agencyName: null,
         broker: null,
         timeType: null,
         beginTime: null,
         endTime: null,
         pageNum: 1,
-        pageSize: this.queryPageParameters.pageSize,
+        pageSize: this.queryPageParameters.pageSize
       };
       this.selectTimeRange = [];
     }
@@ -478,7 +499,7 @@
     async handleRecall(scope: any) {
       try {
         await this.$confirm("是否确定撤回?", "提示");
-        await post_deal_delete__id({id: scope.row.id});
+        await post_deal_withdrawDeal({id: scope.row.id});
         this.$message({
           type: "success",
           message: "撤回成功!",
@@ -503,6 +524,10 @@
     // 审核申报业绩
     async handleReviewAchieve(scope: any) {
       console.log(scope);
+      this.$router.push({
+        path: "/dealReport/add",
+        query: {id: scope.row.id}
+      });
     }
 
     /*
@@ -543,15 +568,21 @@
   .search-time-wrapper {
     width: 100%;
     display: flex;
+    flex-direction: row;
+    align-items: center;
 
     .time-type {
-      width: 45%;
+      width: 29%;
       box-sizing: border-box;
-      margin-right: 10px;
+      margin-right: 5px;
     }
 
     .time-range {
-      width: 50%;
+      flex: 1;
+
+      /deep/.el-date-editor {
+        width: 100% !important;
+      }
     }
   }
 </style>
