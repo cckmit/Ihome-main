@@ -4,7 +4,7 @@
  * @Author: ywl
  * @Date: 2020-09-25 17:34:32
  * @LastEditors: ywl
- * @LastEditTime: 2020-12-04 19:00:41
+ * @LastEditTime: 2020-12-04 19:14:41
 -->
 <template>
   <IhPage label-width="100px">
@@ -43,6 +43,10 @@
           </el-col>
           <el-col :span="8">
             <el-form-item label="乙方公司">
+              <!-- <SelectPageByChannle
+                v-model="queryPageParameters.channelCompanyId"
+                placeholder="请选择乙方公司"
+              ></SelectPageByChannle> -->
               <el-select
                 v-model="queryPageParameters.channelCompanyId"
                 clearable
@@ -386,6 +390,7 @@ import PaginationMixin from "@/mixins/pagination";
 
 import SelectPageByProject from "@/components/SelectPageByProject.vue";
 import SelectPageByCycle from "@/components/SelectPageByCycle.vue";
+import SelectPageByChannle from "@/components/SelectPageByChannel.vue";
 import SelectOrganizationTree from "@/components/SelectOrganizationTree.vue";
 import { get_channel_getAll } from "@/api/channel/index";
 import { post_company_getAll } from "@/api/system/index";
@@ -403,6 +408,7 @@ import {
     SelectOrganizationTree,
     SelectPageByProject,
     SelectPageByCycle,
+    SelectPageByChannle,
   },
   mixins: [PaginationMixin],
 })

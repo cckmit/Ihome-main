@@ -4,7 +4,7 @@
  * @Author: ywl
  * @Date: 2020-09-27 16:27:36
  * @LastEditors: ywl
- * @LastEditTime: 2020-12-04 18:31:20
+ * @LastEditTime: 2020-12-05 14:42:04
 -->
 <template>
   <IhPage label-width="80px">
@@ -42,6 +42,7 @@
           </el-col>
           <el-col :span="8">
             <el-form-item label="项目名称">
+              <!-- @change="queryPageParameters.buyUnit='';queryPageParameters.buyUnit='';" -->
               <SelectPageByProject
                 v-model="queryPageParameters.projectId"
                 placeholder="请选择联动项目"
@@ -62,20 +63,23 @@
               </el-col>
               <el-col :span="8">
                 <el-form-item label="栋座">
-                  <el-input
+                  <!-- @change="queryPageParameters.roomNumberId = ''" -->
+                  <SelectPageByBuild
                     v-model="queryPageParameters.buyUnit"
-                    placeholder="请输入栋座"
-                  ></el-input>
+                    :proId="queryPageParameters.projectId"
+                    placeholder="请选择栋座"
+                  ></SelectPageByBuild>
                 </el-form-item>
               </el-col>
               <el-col :span="8">
                 <el-form-item label="房号">
-                  <el-input
+                  <!-- projectId项目, buyUnit栋座 -->
+                  <SelectPageByRoom
                     v-model="queryPageParameters.roomNumberId"
-                    clearable
-                    placeholder="请输入房号"
-                  >
-                  </el-input>
+                    :proId="queryPageParameters.projectId"
+                    :buildingId="queryPageParameters.buyUnit"
+                    placeholder="请选择房号"
+                  ></SelectPageByRoom>
                 </el-form-item>
               </el-col>
             </el-row>
@@ -299,11 +303,18 @@ import { Component, Vue } from "vue-property-decorator";
 import PaginationMixin from "@/mixins/pagination";
 import SelectPageByProject from "@/components/SelectPageByProject.vue";
 import SelectPageByCycle from "@/components/SelectPageByCycle.vue";
+import SelectPageByBuild from "@/components/SelectPageByBuild.vue";
+import SelectPageByRoom from "@/components/selectPageByRoom.vue";
 
 import { post_notice_list } from "@/api/contract/index";
 
 @Component({
-  components: { SelectPageByProject, SelectPageByCycle },
+  components: {
+    SelectPageByProject,
+    SelectPageByCycle,
+    SelectPageByBuild,
+    SelectPageByRoom,
+  },
   mixins: [PaginationMixin],
 })
 export default class DiscountList extends Vue {

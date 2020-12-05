@@ -4,16 +4,16 @@
  * @Author: zyc
  * @Date: 2020-08-04 17:43:48
  * @LastEditors: ywl
- * @LastEditTime: 2020-12-03 15:08:43
+ * @LastEditTime: 2020-12-05 08:42:32
  */
 let handleSwagger = require('./node_modules/ihome-common/util/api/api-hangle');
 function doneApi() {
     //在这里配置要生成的api
     // handleSwagger('system');
     // handleSwagger('channel');
-    handleSwagger('contract');
+    // handleSwagger('contract');
     // handleSwagger('developer');
-    // handleSwagger('project');
+    handleSwagger('project');
     // handleSwagger('deal');
     // handleSwagger('finance');
 }

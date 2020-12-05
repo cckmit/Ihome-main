@@ -4,10 +4,10 @@
  * @Author: ywl
  * @Date: 2020-09-27 14:41:06
  * @LastEditors: ywl
- * @LastEditTime: 2020-11-06 16:24:09
+ * @LastEditTime: 2020-12-05 08:42:17
 -->
 <template>
-  <IhPage class="text-left">
+  <IhPage class="text-left strategy-info">
     <template #info>
       <p class="ih-info-title">基础信息</p>
       <el-form
@@ -64,6 +64,9 @@
         <el-row>
           <el-col :span="12">
             <el-form-item label="归档状态">
+              <span v-if="$route.name === 'StrategyDetail'">
+                {{$root.dictAllName(ruleForm.fileState, 'StrategyEnum.FileState')}}
+              </span>
               <el-select
                 v-model="ruleForm.fileState"
                 placeholder="归档状态"
@@ -81,11 +84,15 @@
             </el-form-item>
           </el-col>
           <el-col :span="12">
-            <el-form-item label="当前状态">
+            <el-form-item label="审核状态">
+              <span v-if="$route.name === 'StrategyDetail'">
+                {{$root.dictAllName(ruleForm.state, 'StrategyState')}}
+              </span>
               <el-select
                 v-model="ruleForm.state"
                 placeholder="当前状态"
                 clearable
+                v-else
                 class="width--100"
                 disabled
               >
@@ -106,7 +113,7 @@
                 :removePermi="false"
                 :file-list="fileList"
                 size="100px"
-                :limit="1"
+                @newFileList="handleNoSealFile"
               ></IhUpload>
             </el-form-item>
           </el-col>
@@ -116,22 +123,28 @@
             <el-form-item label="盖章版归档">
               <IhUpload
                 :removePermi="false"
-                v-if="$route.name === 'scanArchived' || $route.name === 'StrategyDetail'"
                 :file-list="fileList2"
                 size="100px"
-                :limit="1"
+                class="update"
+                @newFileList="handleSealFile"
               ></IhUpload>
+              <el-button
+                type="primary"
+                class="upload-button"
+                @click="duplicate()"
+              >提交</el-button>
             </el-form-item>
           </el-col>
         </el-row>
-        <el-row>
+        <div class="annotation padding-left-20">*注：上传附件后请点击提交按钮保存</div>
+        <!-- <el-row>
           <div
             class="text-center"
             v-if="$route.name === 'scanArchived'"
           >
             <el-button type="primary">扫描件归档</el-button>
           </div>
-        </el-row>
+        </el-row> -->
       </el-form>
     </template>
   </IhPage>
@@ -148,6 +161,30 @@ export default class StrategyDetail extends Vue {
   private fileList: Array<object> = [];
   private fileList2: Array<object> = [];
 
+  private noSealFile: any = [];
+  private sealFile: any = [];
+
+  private handleNoSealFile(val: any) {
+    this.noSealFile = val.map((v: any) => {
+      return {
+        type: "NoSeal",
+        attachmentSuffix: v.name,
+        url: v.fileId,
+      };
+    });
+  }
+  private handleSealFile(val: any) {
+    this.sealFile = val.map((v: any) => {
+      return {
+        type: "Seal",
+        attachmentSuffix: v.name,
+        url: v.fileId,
+      };
+    });
+  }
+  private duplicate() {
+    //
+  }
   private async getInfo(): Promise<void> {
     let id = this.$route.query.id;
     if (id) {
@@ -176,3 +213,20 @@ export default class StrategyDetail extends Vue {
   }
 }
 </script>
+
+<style lang="scss" scoped>
+.strategy-info {
+  /deep/ .upload {
+    display: inline-block;
+  }
+  .upload-button {
+    position: absolute;
+    bottom: 0;
+    margin-left: 15px;
+  }
+  .annotation {
+    color: #d9001b;
+    font-size: 14px;
+  }
+}
+</style>

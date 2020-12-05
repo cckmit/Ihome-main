@@ -4,7 +4,7 @@
  * @Author: ywl
  * @Date: 2020-09-27 14:41:06
  * @LastEditors: ywl
- * @LastEditTime: 2020-11-06 18:12:49
+ * @LastEditTime: 2020-12-04 20:06:36
 -->
 <template>
   <IhPage>
@@ -184,7 +184,6 @@
                 :file-list="fileList"
                 @newFileList="handleNoSealFile"
                 size="100px"
-                :limit="1"
               ></IhUpload>
             </el-form-item>
           </el-col>
@@ -193,11 +192,9 @@
           <el-col :span="24">
             <el-form-item label="盖章版归档">
               <IhUpload
-                v-if="$route.name === 'StrategyAdd'"
                 :file-list="fileList2"
                 @newFileList="handleSealFile"
                 size="100px"
-                :limit="1"
               ></IhUpload>
             </el-form-item>
           </el-col>
@@ -248,18 +245,18 @@ export default class StrategyAdd extends Vue {
     timeList: [],
   };
   private noSealFile: any = [
-    {
-      url: "",
-      attachmentSuffix: "",
-      type: "NoSeal",
-    },
+    // {
+    //   url: "",
+    //   attachmentSuffix: "",
+    //   type: "NoSeal",
+    // },
   ];
   private sealFile: any = [
-    {
-      url: "",
-      attachmentSuffix: "",
-      type: "Seal",
-    },
+    // {
+    //   url: "",
+    //   attachmentSuffix: "",
+    //   type: "Seal",
+    // },
   ];
   private partyBList: any = [];
   private partyAList: any = [];
