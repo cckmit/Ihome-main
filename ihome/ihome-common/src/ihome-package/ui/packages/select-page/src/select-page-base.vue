@@ -4,7 +4,7 @@
  * @Author: ywl
  * @Date: 2020-10-20 15:03:13
  * @LastEditors: ywl
- * @LastEditTime: 2020-12-05 11:41:06
+ * @LastEditTime: 2020-12-05 15:59:17
 -->
 <template>
   <el-select
@@ -16,6 +16,7 @@
     :placeholder="placeholder"
     :value-key="valueKey"
     :multiple="multiple"
+    ref="selectPage"
     :collapse-tags="collapseTags"
     popper-class="ih-select-page"
     class="width--100"
@@ -210,6 +211,9 @@ interface PropsType {
 .select-page-search .el-input__suffix {
   width: 25px !important;
   overflow: hidden;
+}
+.ih-select-page .el-select-dropdown__list {
+  padding-top: 46px !important;
 }
 .ih-select-page .el-select-dropdown__wrap {
   max-height: 500px !important;
