@@ -4,7 +4,7 @@
  * @Author: ywl
  * @Date: 2020-12-01 10:37:53
  * @LastEditors: ywl
- * @LastEditTime: 2020-12-02 15:53:00
+ * @LastEditTime: 2020-12-05 18:08:26
 -->
 <template>
   <IhPage label-width="80px">
@@ -36,7 +36,14 @@
                 v-model="queryPageParameters.accountType"
                 class="width--100"
                 placeholder="请选择账号类型"
-              ></el-select>
+              >
+                <el-option
+                  v-for="i in $root.dictAllList('AccountType')"
+                  :key="i.code"
+                  :value="i.code"
+                  :label="i.name"
+                ></el-option>
+              </el-select>
             </el-form-item>
           </el-col>
         </el-row>
