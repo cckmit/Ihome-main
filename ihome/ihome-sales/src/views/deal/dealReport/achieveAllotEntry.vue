@@ -43,11 +43,16 @@
         <el-col :span="6">
           <el-form-item label="计算方式">
             <el-select
-              v-model="postData.contType"
+              v-model="postData.calculation"
               clearable
-              placeholder="计算方式">
-              <el-option label="自动" value="auto"></el-option>
-              <el-option label="手动" value="man"></el-option>
+              placeholder="计算方式"
+              class="width--100">
+              <el-option
+                v-for="item in $root.dictAllList('DealCalculateWay')"
+                :key="item.code"
+                :label="item.name"
+                :value="item.code"
+              ></el-option>
             </el-select>
           </el-form-item>
         </el-col>
@@ -62,19 +67,12 @@
           sum-text="合计金额"
           :summary-method="getReceiveSummaries"
           :data="postData.receiveInfoList">
-          <el-table-column
-            prop="type"
-            label="类型"
-            min-width="120"
-          ></el-table-column>
-          <el-table-column
-            prop="partyACustomer"
-            label="甲方/客户"
-            min-width="120"
-          ></el-table-column>
+          <el-table-column prop="type" label="类型" min-width="120"></el-table-column>
+          <el-table-column prop="partyACustomer" label="甲方/客户" min-width="120"></el-table-column>
           <el-table-column prop="packageId" label="收派套餐" min-width="140">
             <template slot-scope="scope">
               <el-input
+                :disabled="postData.calculation === 'Manual'"
                 v-model="scope.row.packageId"
                 ref="inputSelect"
                 class="input-select-wrapper"
@@ -83,36 +81,47 @@
                 @click.native.prevent="selectPackage(scope)"/>
             </template>
           </el-table-column>
-          <el-table-column
-            prop="receiveAmount"
-            label="应收金额"
-            min-width="120"
-          ></el-table-column>
-          <el-table-column
-            prop="commAmount"
-            label="派发佣金金额"
-            min-width="150"
-          ></el-table-column>
-          <el-table-column
-            prop="rewardAmount"
-            label="派发内场奖励金额"
-            min-width="150"
-          ></el-table-column>
-          <el-table-column
-            prop="totalPackageAmount"
-            label="总包业绩金额"
-            min-width="150"
-          ></el-table-column>
-          <el-table-column
-            prop="distributionAmount"
-            label="分销业绩金额"
-            min-width="150"
-          ></el-table-column>
-          <el-table-column
-            prop="otherChannelFees"
-            label="其他渠道费用(正数为产生，负数为使用)"
-            min-width="150"
-          ></el-table-column>
+          <el-table-column prop="receiveAmount" label="应收金额" min-width="120">
+            <template slot-scope="scope">
+              <el-input
+                v-model="scope.row.receiveAmount"
+                :disabled="postData.calculation === 'Auto'"
+                placeholder="应收金额"></el-input>
+            </template>
+          </el-table-column>
+          <el-table-column prop="commAmount" label="派发佣金金额" min-width="150">
+            <template slot-scope="scope">
+              <el-input
+                v-model="scope.row.commAmount"
+                :disabled="postData.calculation === 'Auto'"
+                placeholder="应收金额"></el-input>
+            </template>
+          </el-table-column>
+          <el-table-column prop="rewardAmount" label="派发内场奖励金额" min-width="150">
+            <template slot-scope="scope">
+              <el-input
+                v-model="scope.row.rewardAmount"
+                :disabled="postData.calculation === 'Auto'"
+                placeholder="应收金额"></el-input>
+            </template>
+          </el-table-column>
+          <el-table-column prop="totalPackageAmount" label="总包业绩金额" min-width="150">
+            <template slot-scope="scope">
+              <el-input
+                v-model="scope.row.totalPackageAmount"
+                :disabled="postData.calculation === 'Auto'"
+                placeholder="应收金额"></el-input>
+            </template>
+          </el-table-column>
+          <el-table-column prop="distributionAmount" label="分销业绩金额" min-width="150">
+            <template slot-scope="scope">
+              <el-input
+                v-model="scope.row.distributionAmount"
+                :disabled="postData.calculation === 'Auto'"
+                placeholder="应收金额"></el-input>
+            </template>
+          </el-table-column>
+          <el-table-column prop="otherChannelFees" label="其他渠道费用(正数为产生，负数为使用)" min-width="150"></el-table-column>
         </el-table>
       </el-col>
     </el-row>
@@ -121,21 +130,9 @@
         <el-table
           class="ih-table"
           :data="postData.receiveAmountList">
-          <el-table-column
-            prop="receiveAmount"
-            label="本单应收"
-            min-width="120"
-          ></el-table-column>
-          <el-table-column
-            prop="achieveAmount"
-            label="本单业绩"
-            min-width="120"
-          ></el-table-column>
-          <el-table-column
-            prop="otherChannelFees"
-            label="其他渠道费用(正数为产生，负数为使用)"
-            min-width="150"
-          ></el-table-column>
+          <el-table-column prop="receiveAmount" label="本单应收" min-width="120"></el-table-column>
+          <el-table-column prop="achieveAmount" label="本单业绩" min-width="120"></el-table-column>
+          <el-table-column prop="otherChannelFees" label="其他渠道费用(正数为产生，负数为使用)" min-width="150"></el-table-column>
         </el-table>
       </el-col>
     </el-row>
@@ -145,33 +142,17 @@
         <el-table
           class="ih-table"
           :data="postData.agentInfoList">
-          <el-table-column
-            prop="modelName"
-            label="渠道公司名称"
-            min-width="120"
-          ></el-table-column>
-          <el-table-column
-            prop="contType"
-            label="渠道等级"
-            min-width="120"
-          ></el-table-column>
-          <el-table-column
-            prop="contType"
-            label="经纪人"
-            min-width="120"
-          ></el-table-column>
-          <el-table-column
-            prop="contType"
-            label="门店"
-            min-width="120"
-          ></el-table-column>
+          <el-table-column prop="modelName" label="渠道公司名称" min-width="120"></el-table-column>
+          <el-table-column prop="contType" label="渠道等级" min-width="120"></el-table-column>
+          <el-table-column prop="contType" label="经纪人" min-width="120"></el-table-column>
+          <el-table-column prop="contType" label="门店" min-width="120"></el-table-column>
         </el-table>
       </el-col>
     </el-row>
     <p class="ih-info-title">对外拆佣</p>
     <el-row style="padding-left: 20px">
       <el-col>
-        <div class="add-all-wrapper">
+        <div class="add-all-wrapper" v-if="postData.calculation === 'Manual'">
           <el-button type="success" @click="handleAddCommission">增加拆佣项</el-button>
         </div>
         <el-table
@@ -199,16 +180,19 @@
                 @click.native.prevent="selectCommName(scope)"/>
             </template>
           </el-table-column>
-          <el-table-column prop="payee" label="收款方" min-width="120">
-            <template slot-scope="scope">
-              <el-input v-model="scope.row.payee" clearable placeholder="收款方"/>
-            </template>
-          </el-table-column>
           <el-table-column prop="feeType" label="费用类型" min-width="120">
             <template slot-scope="scope">
-              <el-select v-model="scope.row.feeType" placeholder="请选择">
-                <el-option label="代理费" value="AgencyFee"></el-option>
-                <el-option label="服务费" value="ServiceFee"></el-option>
+              <el-select
+                v-model="scope.row.feeType"
+                clearable
+                placeholder="费用类型"
+                class="width--100">
+                <el-option
+                  v-for="item in $root.dictAllList('FeeType')"
+                  :key="item.code"
+                  :label="item.name"
+                  :value="item.code"
+                ></el-option>
               </el-select>
             </template>
           </el-table-column>
@@ -258,46 +242,14 @@
           sum-text="合计金额"
           :summary-method="getAchieveSummaries"
           :data="postData.achieveTotalBagList">
-          <el-table-column
-            prop="roleType"
-            label="角色类型"
-            min-width="120"
-          ></el-table-column>
-          <el-table-column
-            prop="roleAchieveCap"
-            label="角色业绩上限"
-            min-width="120"
-          ></el-table-column>
-          <el-table-column
-            prop="corporateAchieve"
-            label="公司业绩"
-            min-width="120"
-          ></el-table-column>
-          <el-table-column
-            prop="corporateAchieveRatio"
-            label="公司业绩比例（%）"
-            min-width="120"
-          ></el-table-column>
-          <el-table-column
-            prop="commFees"
-            label="拆佣金额"
-            min-width="150"
-          ></el-table-column>
-          <el-table-column
-            prop="commFeesRatio"
-            label="拆佣比例（%）"
-            min-width="150"
-          ></el-table-column>
-          <el-table-column
-            prop="rolerName"
-            label="角色人"
-            min-width="150"
-          ></el-table-column>
-          <el-table-column
-            prop="belongOrgName"
-            label="店组"
-            min-width="150"
-          ></el-table-column>
+          <el-table-column prop="roleType" label="角色类型" min-width="120"></el-table-column>
+          <el-table-column prop="roleAchieveCap" label="角色业绩上限" min-width="150"></el-table-column>
+          <el-table-column prop="corporateAchieve" label="公司业绩" min-width="150"></el-table-column>
+          <el-table-column prop="corporateAchieveRatio" label="公司业绩比例（%）" min-width="150"></el-table-column>
+          <el-table-column prop="commFees" label="拆佣金额" min-width="150"></el-table-column>
+          <el-table-column prop="commFeesRatio" label="拆佣比例（%）" min-width="150"></el-table-column>
+          <el-table-column prop="rolerName" label="角色人" min-width="150"></el-table-column>
+          <el-table-column prop="belongOrgName" label="店组" min-width="130"></el-table-column>
           <el-table-column prop="type" label="管理岗" min-width="150">
             <template slot-scope="scope">
               <div v-if="scope.row.SupervisorList.length > 0">
@@ -491,6 +443,7 @@
       status: null,
       alloter: null,
       allotDate: null,
+      calculation: 'Auto',
       receiveInfoList: [
         {
           type: '服务费',
@@ -630,6 +583,7 @@
     // 选择收派套餐
     selectPackage(scope: any) {
       console.log('选择收派套餐', scope);
+      if (this.postData.calculation === 'Manual') return;
       this.dialogAddReceivePackage = true;
       this.receiveData = {
         type: 'service1',

@@ -27,26 +27,10 @@
         :data="resPageInfo.list"
         @selection-change="handleSelectionChange">
         <el-table-column type="selection" width="55"></el-table-column>
-        <el-table-column
-          prop="storageNum"
-          label="类型"
-          min-width="180"
-        ></el-table-column>
-        <el-table-column
-          prop="channelName"
-          label="合同类型"
-          min-width="180"
-        ></el-table-column>
-        <el-table-column
-          prop="province"
-          label="客户类型"
-          min-width="180"
-        ></el-table-column>
-        <el-table-column
-          prop="province"
-          label="条件"
-          min-width="180"
-        ></el-table-column>
+        <el-table-column prop="storageNum" label="类型" min-width="180"></el-table-column>
+        <el-table-column prop="channelName" label="合同类型" min-width="180"></el-table-column>
+        <el-table-column prop="province" label="客户类型" min-width="180"></el-table-column>
+        <el-table-column prop="province" label="条件" min-width="180"></el-table-column>
         <el-table-column prop="province" label="应收金额" min-width="180">
           <template slot-scope="scope">
             <div>金额：{{scope}}</div>

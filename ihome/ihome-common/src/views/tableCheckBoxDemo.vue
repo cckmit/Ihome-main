@@ -9,6 +9,8 @@
 <template>
   <div class="table-checkbox-demo">
     <IhTableCheckBox
+      :isSingle="true"
+      valueKey="code"
       :data="tableData"
       :hasCheckedData="hasCheckedData"
       :rowKey="rowKey"
@@ -69,14 +71,14 @@
     private pageTotal = 0;
     private allTableData: any = [];
 
-    // 获取选中项
+    // 获取选中项 --- 最后需要获取的数据
     private selectionChange(selection: any) {
       console.log(selection, "selectionChange");
     }
 
     private pageChange(index: number) {
       this.currentPage = index;
-      console.log(index, "pageChange");
+      // console.log(index, "pageChange");
       // 假分页
       if (index === 1) {
         this.tableData = this.allTableData.slice(0, this.pageSize);
@@ -88,7 +90,7 @@
     private sizeChange(val: any) {
       this.currentPage = 1;
       this.pageSize = val;
-      console.log(val, "sizeChange");
+      // console.log(val, "sizeChange");
       // 假分页
       this.tableData = this.allTableData.slice(0, this.pageSize);
     }
@@ -102,6 +104,7 @@
           private: `省${i}`,
           city: `市${i}`,
           area: `区${i}`,
+          checked: false
         }
         this.allTableData.push(obj);
       }
@@ -109,9 +112,15 @@
       this.pageTotal = this.allTableData.length;
       if (this.allTableData.length > 0) {
         this.tableData = this.allTableData.slice(0, this.pageSize);
-        // 初始化勾选-回显勾选
+        // 多选-初始化勾选-回显勾选
         // this.allTableData.forEach((data: any) => {
         //   if ([0, 3, 6, 20].includes(data.code)) {
+        //     this.hasCheckedData.push(data);
+        //   }
+        // })
+        // 单选-初始化勾选
+        // this.allTableData.forEach((data: any) => {
+        //   if (data.checked) {
         //     this.hasCheckedData.push(data);
         //   }
         // })
