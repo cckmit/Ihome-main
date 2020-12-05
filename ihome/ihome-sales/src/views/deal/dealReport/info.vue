@@ -7,11 +7,12 @@
  * @LastEditTime: 2020-11-03 13:20:35
 -->
 <template>
-  <ih-page class="text-right">
+  <ih-page class="text-left">
     <p class="ih-info-title">成交信息</p>
     <el-form
+      :model="infoForm"
       ref="ruleForm"
-      label-width="160px"
+      label-width="150px"
       class="demo-ruleForm">
       <el-row>
         <el-col :span="8">
@@ -27,7 +28,7 @@
           <el-form-item label="合同类型">{{infoForm.contType}}</el-form-item>
         </el-col>
         <el-col :span="8">
-          <el-form-item label="细分业务模式">{{infoForm.contType}}</el-form-item>
+          <el-form-item label="细分业务模式">{{infoForm.refineModel}}</el-form-item>
         </el-col>
         <el-col :span="8">
           <el-form-item label="成交状态">{{infoForm.status}}</el-form-item>
@@ -101,35 +102,36 @@
     </el-form>
     <p class="ih-info-title">房产信息</p>
     <el-form
+      :model="infoForm"
       ref="ruleForm"
       label-width="160px"
       class="demo-ruleForm">
       <el-row>
         <el-col :span="8">
-          <el-form-item label="物业类型">{{infoForm.houseList.propertyType}}</el-form-item>
+          <el-form-item label="物业类型">{{infoForm.house.propertyType}}</el-form-item>
         </el-col>
         <el-col :span="8">
-          <el-form-item label="栋座">{{infoForm.houseList.buildingName}}</el-form-item>
+          <el-form-item label="栋座">{{infoForm.house.buildingName}}</el-form-item>
         </el-col>
         <el-col :span="8">
-          <el-form-item label="房号">{{infoForm.houseList.roomNo}}</el-form-item>
+          <el-form-item label="房号">{{infoForm.house.roomNo}}</el-form-item>
         </el-col>
         <el-col :span="8">
-          <el-form-item label="房产证/预售合同编号">{{infoForm.houseList.propertyNo}}</el-form-item>
+          <el-form-item label="房产证/预售合同编号">{{infoForm.house.propertyNo}}</el-form-item>
         </el-col>
         <el-col :span="16">
-          <el-form-item label="房产证地址">{{infoForm.houseList.address}}</el-form-item>
+          <el-form-item label="房产证地址">{{infoForm.house.address}}</el-form-item>
         </el-col>
         <el-col :span="8">
-          <el-form-item label="建筑面积">{{infoForm.houseList.area}}</el-form-item>
+          <el-form-item label="建筑面积">{{infoForm.house.area}}</el-form-item>
         </el-col>
         <el-col :span="16">
           <el-form-item label="户型">
             <div class="home-type-wrapper">
-              <div>{{infoForm.houseList.room}}室</div>
-              <div>{{infoForm.houseList.hall}}厅</div>
-              <div>{{infoForm.houseList.kitchen}}厨</div>
-              <div>{{infoForm.houseList.toilet}}卫</div>
+              <div>{{infoForm.house.room}}室</div>
+              <div>{{infoForm.house.hall}}厅</div>
+              <div>{{infoForm.house.kitchen}}厨</div>
+              <div>{{infoForm.house.toilet}}卫</div>
             </div>
           </el-form-item>
         </el-col>
@@ -142,22 +144,10 @@
           <el-form-item label="" label-width="80px">
             <el-table
               class="ih-table"
-              :data="infoList.offerNoticeList">
-              <el-table-column
-                prop="offerNoticeName"
-                label="名称"
-                min-width="120"
-              ></el-table-column>
-              <el-table-column
-                prop="offerNoticeCode"
-                label="优惠告知书编号"
-                min-width="120"
-              ></el-table-column>
-              <el-table-column
-                prop="offerNoticeStatus"
-                label="优惠告知书状态"
-                min-width="120"
-              ></el-table-column>
+              :data="infoForm.offerNoticeList">
+              <el-table-column prop="offerNoticeName" label="名称" min-width="120"></el-table-column>
+              <el-table-column prop="offerNoticeCode" label="优惠告知书编号" min-width="120"></el-table-column>
+              <el-table-column prop="offerNoticeStatus" label="优惠告知书状态" min-width="120"></el-table-column>
               <el-table-column fixed="right" label="操作" width="130">
                 <template slot-scope="scope">
                   <el-link
@@ -178,42 +168,14 @@
       <el-col>
         <el-table
           class="ih-table"
-          :data="infoList.customerList">
-          <el-table-column
-            prop="customerNo"
-            label="客户编号"
-            min-width="120"
-          ></el-table-column>
-          <el-table-column
-            prop="customerType"
-            label="客户类型"
-            min-width="120"
-          ></el-table-column>
-          <el-table-column
-            prop="customerName"
-            label="客户名称"
-            min-width="120"
-          ></el-table-column>
-          <el-table-column
-            prop="customerPhone"
-            label="手机号码"
-            min-width="120"
-          ></el-table-column>
-          <el-table-column
-            prop="cardType"
-            label="证件类型"
-            min-width="150"
-          ></el-table-column>
-          <el-table-column
-            prop="cardNo"
-            label="证件编号"
-            min-width="150"
-          ></el-table-column>
-          <el-table-column
-            prop="email"
-            label="邮箱"
-            min-width="150"
-          ></el-table-column>
+          :data="infoForm.customerList">
+          <el-table-column prop="customerNo" label="客户编号" min-width="120"></el-table-column>
+          <el-table-column prop="customerType" label="客户类型" min-width="120"></el-table-column>
+          <el-table-column prop="customerName" label="客户名称" min-width="120"></el-table-column>
+          <el-table-column prop="customerPhone" label="手机号码" min-width="120"></el-table-column>
+          <el-table-column prop="cardType" label="证件类型" min-width="150"></el-table-column>
+          <el-table-column prop="cardNo" label="证件编号" min-width="150"></el-table-column>
+          <el-table-column prop="email" label="邮箱" min-width="150"></el-table-column>
         </el-table>
       </el-col>
     </el-row>
@@ -222,27 +184,11 @@
       <el-col>
         <el-table
           class="ih-table"
-          :data="infoList.agencyList">
-          <el-table-column
-            prop="agencyName"
-            label="渠道公司名称"
-            min-width="120"
-          ></el-table-column>
-          <el-table-column
-            prop="channelLevel"
-            label="渠道等级"
-            min-width="120"
-          ></el-table-column>
-          <el-table-column
-            prop="broker"
-            label="经纪人"
-            min-width="120"
-          ></el-table-column>
-          <el-table-column
-            prop="storeIdName"
-            label="门店"
-            min-width="120"
-          ></el-table-column>
+          :data="infoForm.agencyList">
+          <el-table-column prop="agencyName" label="渠道公司名称" min-width="120"></el-table-column>
+          <el-table-column prop="channelLevel" label="渠道等级" min-width="120"></el-table-column>
+          <el-table-column prop="broker" label="经纪人" min-width="120"></el-table-column>
+          <el-table-column prop="storeIdName" label="门店" min-width="120"></el-table-column>
         </el-table>
       </el-col>
     </el-row>
@@ -254,57 +200,17 @@
           show-summary
           sum-text="合计金额"
           :summary-method="getReceiveSummaries"
-          :data="infoList.receiveList">
-          <el-table-column
-            prop="type"
-            label="类型"
-            min-width="120"
-          ></el-table-column>
-          <el-table-column
-            prop="partyACustomerName"
-            label="甲方/客户"
-            min-width="120"
-          ></el-table-column>
-          <el-table-column
-            prop="packageId"
-            label="收派套餐"
-            min-width="120"
-          ></el-table-column>
-          <el-table-column
-            prop="receiveAmount"
-            label="应收金额"
-            min-width="120"
-          ></el-table-column>
-          <el-table-column
-            prop="receivedAmount"
-            label="应收已收金额"
-            min-width="150"
-          ></el-table-column>
-          <el-table-column
-            prop="commAmount"
-            label="派发佣金金额"
-            min-width="150"
-          ></el-table-column>
-          <el-table-column
-            prop="rewardAmount"
-            label="派发内场奖励金额"
-            min-width="150"
-          ></el-table-column>
-          <el-table-column
-            prop="totalPackageAmount"
-            label="总包业绩金额"
-            min-width="150"
-          ></el-table-column>
-          <el-table-column
-            prop="distributionAmount"
-            label="分销业绩金额"
-            min-width="150"
-          ></el-table-column>
-          <el-table-column
-            prop="otherChannelFees"
-            label="其他渠道费用(正数为产生，负数为使用)"
-            min-width="150"
-          ></el-table-column>
+          :data="infoForm.receiveList">
+          <el-table-column prop="type" label="类型" min-width="120"></el-table-column>
+          <el-table-column prop="partyACustomerName" label="甲方/客户" min-width="120"></el-table-column>
+          <el-table-column prop="packageId" label="收派套餐" min-width="120"></el-table-column>
+          <el-table-column prop="receiveAmount" label="应收金额" min-width="120"></el-table-column>
+          <el-table-column prop="receivedAmount" label="应收已收金额" min-width="150"></el-table-column>
+          <el-table-column prop="commAmount" label="派发佣金金额" min-width="150"></el-table-column>
+          <el-table-column prop="rewardAmount" label="派发内场奖励金额" min-width="150"></el-table-column>
+          <el-table-column prop="totalPackageAmount" label="总包业绩金额" min-width="150"></el-table-column>
+          <el-table-column prop="distributionAmount" label="分销业绩金额" min-width="150"></el-table-column>
+          <el-table-column prop="otherChannelFees" label="其他渠道费用(正数为产生，负数为使用)" min-width="150"></el-table-column>
         </el-table>
       </el-col>
     </el-row>
@@ -312,22 +218,10 @@
       <el-col>
         <el-table
           class="ih-table"
-          :data="infoList.receiveAchieveList">
-          <el-table-column
-            prop="receiveAmount"
-            label="本单应收"
-            min-width="120"
-          ></el-table-column>
-          <el-table-column
-            prop="achieveAmount"
-            label="本单业绩"
-            min-width="120"
-          ></el-table-column>
-          <el-table-column
-            prop="otherChannelFees"
-            label="其他渠道费用(正数为产生，负数为使用)"
-            min-width="150"
-          ></el-table-column>
+          :data="infoForm.receiveAchieveList">
+          <el-table-column prop="receiveAmount" label="本单应收" min-width="120"></el-table-column>
+          <el-table-column prop="achieveAmount" label="本单业绩" min-width="120"></el-table-column>
+          <el-table-column prop="otherChannelFees" label="其他渠道费用(正数为产生，负数为使用)" min-width="150"></el-table-column>
         </el-table>
       </el-col>
     </el-row>
@@ -339,42 +233,14 @@
           show-summary
           sum-text="合计金额"
           :summary-method="getCommissionSummaries"
-          :data="infoList.channelCommList">
-          <el-table-column
-            prop="target"
-            label="拆佣对象"
-            min-width="120"
-          ></el-table-column>
-          <el-table-column
-            prop="payee"
-            label="收款方"
-            min-width="120"
-          ></el-table-column>
-          <el-table-column
-            prop="feeType"
-            label="费用类型"
-            min-width="120"
-          ></el-table-column>
-          <el-table-column
-            prop="feeType"
-            label="费用来源(客户/甲方)"
-            min-width="120"
-          ></el-table-column>
-          <el-table-column
-            prop="paidAmount"
-            label="已付金额"
-            min-width="150"
-          ></el-table-column>
-          <el-table-column
-            prop="amount"
-            label="金额"
-            min-width="150"
-          ></el-table-column>
-          <el-table-column
-            prop="remarks"
-            label="备注"
-            min-width="150"
-          ></el-table-column>
+          :data="infoForm.channelCommList">
+          <el-table-column prop="target" label="拆佣对象" min-width="120"></el-table-column>
+          <el-table-column prop="payee" label="收款方" min-width="120"></el-table-column>
+          <el-table-column prop="feeType" label="费用类型" min-width="120"></el-table-column>
+          <el-table-column prop="feeType" label="费用来源(客户/甲方)" min-width="120"></el-table-column>
+          <el-table-column prop="paidAmount" label="已付金额" min-width="150"></el-table-column>
+          <el-table-column prop="amount" label="金额" min-width="150"></el-table-column>
+          <el-table-column prop="remarks" label="备注" min-width="150"></el-table-column>
         </el-table>
       </el-col>
     </el-row>
@@ -387,56 +253,18 @@
           show-summary
           sum-text="合计金额"
           :summary-method="getAchieveSummaries"
-          :data="infoList.achieveTotalBagList">
-          <el-table-column
-            prop="roleType"
-            label="角色类型"
-            min-width="120"
-          ></el-table-column>
-          <el-table-column
-            prop="roleAchieveCap"
-            label="角色业绩上限"
-            min-width="120"
-          ></el-table-column>
-          <el-table-column
-            prop="corporateAchieve"
-            label="公司业绩"
-            min-width="120"
-          ></el-table-column>
-          <el-table-column
-            prop="corporateAchieveRatio"
-            label="公司业绩比例（%）"
-            min-width="120"
-          ></el-table-column>
-          <el-table-column
-            prop="commFees"
-            label="拆佣金额"
-            min-width="150"
-          ></el-table-column>
-          <el-table-column
-            prop="commFeesRatio"
-            label="拆佣比例（%）"
-            min-width="150"
-          ></el-table-column>
-          <el-table-column
-            prop="rolerName"
-            label="角色人"
-            min-width="150"
-          ></el-table-column>
-          <el-table-column
-            prop="belongOrgName"
-            label="店组"
-            min-width="150"
-          ></el-table-column>
+          :data="infoForm.achieveTotalBagList">
+          <el-table-column prop="roleType" label="角色类型" min-width="120"></el-table-column>
+          <el-table-column prop="roleAchieveCap" label="角色业绩上限" min-width="120"></el-table-column>
+          <el-table-column prop="corporateAchieve" label="公司业绩" min-width="120"></el-table-column>
+          <el-table-column prop="corporateAchieveRatio" label="公司业绩比例（%）" min-width="120"></el-table-column>
+          <el-table-column prop="commFees" label="拆佣金额" min-width="150"></el-table-column>
+          <el-table-column prop="commFeesRatio" label="拆佣比例（%）" min-width="150"></el-table-column>
+          <el-table-column prop="rolerName" label="角色人" min-width="150"></el-table-column>
+          <el-table-column prop="belongOrgName" label="店组" min-width="150"></el-table-column>
           <el-table-column prop="type" label="管理岗" min-width="150">
             <template slot-scope="scope">
-              <div v-if="scope.row.SupervisorList.length > 0">
-                <div v-for="list in scope.row.SupervisorList" :key="list.id">
-                  <span>{{list.ratio}}%</span>
-                  <span>{{list.manager}}({{list.managerPosition}})</span>
-                </div>
-              </div>
-              <div v-else>暂无信息</div>
+              <span>{{scope.row.commFees}}%</span>
             </template>
           </el-table-column>
         </el-table>
@@ -450,56 +278,18 @@
           show-summary
           sum-text="合计金额"
           :summary-method="getAchieveSummaries"
-          :data="infoList.achieveDistriList">
-          <el-table-column
-            prop="roleType"
-            label="角色类型"
-            min-width="120"
-          ></el-table-column>
-          <el-table-column
-            prop="roleAchieveCap"
-            label="角色业绩上限"
-            min-width="120"
-          ></el-table-column>
-          <el-table-column
-            prop="corporateAchieve"
-            label="公司业绩"
-            min-width="120"
-          ></el-table-column>
-          <el-table-column
-            prop="corporateAchieveRatio"
-            label="公司业绩比例（%）"
-            min-width="120"
-          ></el-table-column>
-          <el-table-column
-            prop="commFees"
-            label="拆佣金额"
-            min-width="150"
-          ></el-table-column>
-          <el-table-column
-            prop="commFeesRatio"
-            label="拆佣比例（%）"
-            min-width="150"
-          ></el-table-column>
-          <el-table-column
-            prop="rolerName"
-            label="角色人"
-            min-width="150"
-          ></el-table-column>
-          <el-table-column
-            prop="belongOrgName"
-            label="店组"
-            min-width="150"
-          ></el-table-column>
+          :data="infoForm.achieveDistriList">
+          <el-table-column prop="roleType" label="角色类型" min-width="120"></el-table-column>
+          <el-table-column prop="roleAchieveCap" label="角色业绩上限" min-width="120"></el-table-column>
+          <el-table-column prop="corporateAchieve" label="公司业绩" min-width="120"></el-table-column>
+          <el-table-column prop="corporateAchieveRatio" label="公司业绩比例（%）" min-width="120"></el-table-column>
+          <el-table-column prop="commFees" label="拆佣金额" min-width="150"></el-table-column>
+          <el-table-column prop="commFeesRatio" label="拆佣比例（%）" min-width="150"></el-table-column>
+          <el-table-column prop="rolerName" label="角色人" min-width="150"></el-table-column>
+          <el-table-column prop="belongOrgName" label="店组" min-width="150"></el-table-column>
           <el-table-column prop="type" label="管理岗" min-width="150">
             <template slot-scope="scope">
-              <div v-if="scope.row.SupervisorList.length > 0">
-                <div v-for="list in scope.row.SupervisorList" :key="list.id">
-                  <span>{{list.ratio}}%</span>
-                  <span>{{list.manager}}({{list.managerPosition}})</span>
-                </div>
-              </div>
-              <div v-else>暂无信息</div>
+              <span>{{scope.row.commFees}}%</span>
             </template>
           </el-table-column>
         </el-table>
@@ -510,17 +300,9 @@
       <el-col>
         <el-table
           class="ih-table"
-          :data="infoList.documentList">
-          <el-table-column
-            prop="fileType"
-            label="类型"
-            min-width="120"
-          ></el-table-column>
-          <el-table-column
-            prop="fileName"
-            label="附件"
-            min-width="120"
-          ></el-table-column>
+          :data="infoForm.documentList">
+          <el-table-column prop="fileType" label="类型" min-width="120"></el-table-column>
+          <el-table-column prop="fileName" label="附件" min-width="120"></el-table-column>
         </el-table>
       </el-col>
     </el-row>
@@ -529,62 +311,18 @@
       <el-col>
         <el-table
           class="ih-table"
-          :data="infoList">
-          <el-table-column
-            prop="modelName"
-            label="开票日期"
-            min-width="120"
-          ></el-table-column>
-          <el-table-column
-            prop="contType"
-            label="发票类型"
-            min-width="120"
-          ></el-table-column>
-          <el-table-column
-            prop="contType"
-            label="发票代码"
-            min-width="120"
-          ></el-table-column>
-          <el-table-column
-            prop="contType"
-            label="发票号码"
-            min-width="120"
-          ></el-table-column>
-          <el-table-column
-            prop="contType"
-            label="抬头"
-            min-width="150"
-          ></el-table-column>
-          <el-table-column
-            prop="contType"
-            label="发票金额（含税）"
-            min-width="150"
-          ></el-table-column>
-          <el-table-column
-            prop="contType"
-            label="确认主营（不含税）"
-            min-width="150"
-          ></el-table-column>
-          <el-table-column
-            prop="contType"
-            label="税额（公式）"
-            min-width="150"
-          ></el-table-column>
-          <el-table-column
-            prop="contType"
-            label="NC凭证号"
-            min-width="150"
-          ></el-table-column>
-          <el-table-column
-            prop="contType"
-            label="备注"
-            min-width="150"
-          ></el-table-column>
-          <el-table-column
-            prop="contType"
-            label="附件"
-            min-width="150"
-          ></el-table-column>
+          :data="infoForm.invoiceList">
+          <el-table-column prop="modelName" label="开票日期" min-width="120"></el-table-column>
+          <el-table-column prop="contType" label="发票类型" min-width="120"></el-table-column>
+          <el-table-column prop="contType" label="发票代码" min-width="120"></el-table-column>
+          <el-table-column prop="contType" label="发票号码" min-width="120"></el-table-column>
+          <el-table-column prop="contType" label="抬头" min-width="150"></el-table-column>
+          <el-table-column prop="contType" label="发票金额（含税）" min-width="150"></el-table-column>
+          <el-table-column prop="contType" label="确认主营（不含税）" min-width="150"></el-table-column>
+          <el-table-column prop="contType" label="税额（公式）" min-width="150"></el-table-column>
+          <el-table-column prop="contType" label="NC凭证号" min-width="150"></el-table-column>
+          <el-table-column prop="contType" label="备注" min-width="150"></el-table-column>
+          <el-table-column prop="contType" label="附件" min-width="150"></el-table-column>
         </el-table>
       </el-col>
     </el-row>
@@ -613,49 +351,146 @@
   })
   export default class DealReportInfo extends Vue {
     infoForm: any = {
-      houseList: {},
-      achieveTotalBagList: [], // 平台费用-总包
-      achieveDistriList: [], // 平台费用-分销
+      dealCode: null,
+      house: {}, // 房产信息
+      offerNoticeList: [], // 优惠告知书
+      customerList: [], // 客户信息
+      agencyList: [], // 渠道信息
+      receiveList: [], // 收派金额
+      receiveAchieveList: [], // 应收业绩 - 收派信息下
+      channelCommList: [], // 对外拆佣信息
+      achieveList: [], // 平台费用 - 包含总包和分销
+      achieveTotalBagList: [], // 平台费用 - 总包 - 前端拆分
+      achieveDistriList: [], // 平台费用 - 分销 - 前端拆分
+      documentList: [], // 附件信息
+      processRecordList: [], // 审核信息
+      invoiceList: [] // 发票信息
     };
-    infoList: any = [{}];
     reviewDialog: any = false;
     dealId: any = null;
 
-    async created() {
+    created() {
       this.dealId = this.$route.query.id;
       if (this.dealId) {
-        this.infoForm = await get_deal_get__id({id: this.dealId});
-        // 处理平台费用中总包和分销的表格数据
-        if (this.infoForm.achieveList && this.infoForm.achieveList.length > 0) {
-          this.infoForm.achieveList.forEach((list: any) => {
-            this.$set(list, "SupervisorList", []); // 主管
-            this.$set(list, "ManagerList", []); // 经理
-            this.$set(list, "DirectorList", []); // 总监
-            if (list.managerAchieveList && list.managerAchieveList.length > 0) {
-              list.managerAchieveList.forEach((mList: any) => {
-                switch (mList.type) {
-                  case "Supervisor":
-                    list.SupervisorList.push(mList);
-                    break;
-                  case "Manager":
-                    list.ManagerList.push(mList);
-                    break;
-                  case "Director":
-                    list.DirectorList.push(mList);
-                    break;
-                }
-              })
-            }
-            if (list.type === "TotalBag") {
-              // 总包
-              this.infoForm.achieveTotalBagList.push(list);
-            } else if (list.type === "Distri") {
-              // 分销
-              this.infoForm.achieveDistriList.push(list);
-            }
-          })
-        }
+        this.init();
       }
+    }
+
+    // 初始化数据
+    async init() {
+      this.infoForm = await get_deal_get__id({id: this.dealId});
+      // console.log(this.infoForm);
+      // 业务模式
+      if (this.infoForm.modelName) {
+        this.infoForm.modelName = this.getName('BusinessModel', this.infoForm.modelName);
+      }
+      // 合同模式
+      if (this.infoForm.contType) {
+        this.infoForm.contType = this.getName('ContType', this.infoForm.contType);
+      }
+      // 细分业务模式
+      if (this.infoForm.refineModel) {
+        this.infoForm.refineModel = this.infoForm.refineModel === 'All' ? '总包' : '分销';
+      }
+      // 成交状态
+      if (this.infoForm.status) {
+        this.infoForm.status = this.getName('DealStatus', this.infoForm.status);
+      }
+      // 是否代销
+      if (this.infoForm.isConsign) {
+        this.infoForm.isConsign = this.infoForm.isConsign === 'Yes' ? '是' : '否';
+      }
+      // 是否市场化项目
+      if (this.infoForm.isMarketProject) {
+        this.infoForm.isMarketProject = this.infoForm.isMarketProject === 'Yes' ? '是' : '否';
+      }
+      // 业务类型
+      if (this.infoForm.businessType) {
+        this.infoForm.businessType = this.getName('BusTypeEnum', this.infoForm.businessType);
+      }
+      // 备案情况
+      if (this.infoForm.recordState) {
+        this.infoForm.recordState = this.infoForm.recordState === 'Has' ? '有' : '无';
+      }
+      // 是否垫佣
+      if (this.infoForm.isMat) {
+        this.infoForm.isMat = this.infoForm.isMat === 'Yes' ? '是' : '否';
+      }
+      // 数据源标志
+      if (this.infoForm.dataSign) {
+        this.infoForm.dataSign = this.getName('DealDataFlag', this.infoForm.dataSign);
+      }
+      // 签约类型
+      if (this.infoForm.signType) {
+        this.infoForm.signType = this.getName('SignUp', this.infoForm.signType);
+      }
+      // 成交阶段
+      if (this.infoForm.stage) {
+        this.infoForm.stage = this.getName('DealStage', this.infoForm.stage);
+      }
+      // 物业类型
+      if (this.infoForm.house && this.infoForm.house.propertyType) {
+        this.infoForm.house.propertyType = this.getName('PropertyEnum', this.infoForm.house.propertyType);
+      }
+      // 客户信息
+      if (this.infoForm.customerList.length > 0) {
+        this.infoForm.customerList.forEach((list: any) => {
+          // 客户类型
+          if (list.customerType) {
+            list.customerType = this.getName('CustType', list.customerType);
+          }
+          // 证件类型
+          if (list.cardType) {
+            list.cardType = this.getName('CardType', list.cardType);
+          }
+        })
+      }
+      // 渠道信息
+      if (this.infoForm.agencyList.length > 0) {
+        this.infoForm.agencyList.forEach((list: any) => {
+          // 渠道等级
+          if (list.channelLevel) {
+            list.channelLevel = this.getName('ChannelLevel', list.channelLevel);
+          }
+        })
+      }
+      // 收派金额
+      if (this.infoForm.receiveList.length > 0) {
+        this.infoForm.receiveList.forEach((list: any) => {
+          // 渠道等级
+          if (list.type) {
+            list.type = this.getName('FeeType', list.type);
+          }
+        })
+      }
+      // 平台费用
+      if (this.infoForm.achieveList.length > 0) {
+        this.infoForm.achieveTotalBagList = [];
+        this.infoForm.achieveDistriList = [];
+        this.infoForm.achieveList.forEach((list: any) => {
+          if (list.roleType) {
+            list.roleType = this.getName('DealRole', list.roleType);
+          }
+          if (list.type === 'TotalBag') {
+            this.infoForm.achieveTotalBagList.push(list);
+          } else if (list.type === 'Distri') {
+            this.infoForm.achieveDistriList.push(list);
+          }
+        })
+      }
+    }
+
+    // 在数据字典中获取对应的中文名
+    getName(key: any, type: any) {
+      if (!key || !type) return;
+      let name = '';
+      let list = (this as any).$root.dictAllList(key);
+      list.forEach((item: any) => {
+        if (item.code === type) {
+          name = item.name
+        }
+      })
+      return name;
     }
 
     // 计算收派金额总计

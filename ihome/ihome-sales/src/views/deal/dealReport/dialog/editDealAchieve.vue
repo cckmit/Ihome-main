@@ -35,11 +35,7 @@
           <div v-else>{{scope.row.roleType}}</div>
         </template>
       </el-table-column>
-      <el-table-column
-        prop="roleAchieveCap"
-        label="角色业绩上限"
-        min-width="120"
-      ></el-table-column>
+      <el-table-column prop="roleAchieveCap" label="角色业绩上限" min-width="120"></el-table-column>
       <el-table-column prop="corporateAchieve" label="公司业绩" min-width="120">
         <template slot-scope="scope">
           <div v-if="!isCompany">
@@ -50,11 +46,7 @@
           <div v-else>{{scope.row.corporateAchieve}}</div>
         </template>
       </el-table-column>
-      <el-table-column
-        prop="corporateAchieveRatio"
-        label="公司业绩比例（%）"
-        min-width="120"
-      ></el-table-column>
+      <el-table-column prop="corporateAchieveRatio" label="公司业绩比例（%）" min-width="120"></el-table-column>
       <el-table-column prop="commFees" label="拆佣金额" min-width="150">
         <template slot-scope="scope">
           <div v-if="!isCompany">
@@ -65,11 +57,7 @@
           <div v-else>{{scope.row.commFees}}</div>
         </template>
       </el-table-column>
-      <el-table-column
-        prop="commFeesRatio"
-        label="拆佣比例（%）"
-        min-width="150"
-      ></el-table-column>
+      <el-table-column prop="commFeesRatio" label="拆佣比例（%）" min-width="150"></el-table-column>
       <el-table-column prop="rolerName" label="角色人" min-width="150">
         <template slot-scope="scope">
           <div v-if="!isCompany">

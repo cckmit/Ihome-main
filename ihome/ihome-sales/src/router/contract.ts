@@ -4,7 +4,7 @@
  * @Author: ywl
  * @Date: 2020-10-16 15:19:48
  * @LastEditors: ywl
- * @LastEditTime: 2020-10-23 09:49:49
+ * @LastEditTime: 2020-12-04 08:45:31
  */
 import { RouteConfig } from 'vue-router'
 
@@ -21,19 +21,25 @@ const contractRoutes: Array<RouteConfig> = [
         path: 'list',
         name: 'PartyAList',
         component: () => import( /* webpackChunkName: "PartyAList" */ '@/views/contract/partyA/list.vue'),
-        meta: { title: '甲方合同列表', icon: 'form' }
+        meta: { title: '甲方合同列表', icon: 'form', keepAlive: true }
       },
       {
-        path: 'add',
-        name: 'PartyAadd',
-        component: () => import( /* webpackChunkName: "PartyAadd" */ '@/views/contract/partyA/add.vue'),
-        meta: { title: '甲方合同录入', icon: 'form' }
+        path: 'edit',
+        name: 'PartyAEdit',
+        component: () => import( /* webpackChunkName: "PartyAEdit" */ '@/views/contract/partyA/edit.vue'),
+        meta: { title: '甲方合同编辑', icon: 'form' }
       },
+      {
+        path: 'info',
+        name: 'PartyAInfo',
+        component: () => import( /* webpackChunkName: "PartyAInfo" */ '@/views/contract/partyA/info.vue'),
+        meta: { title: '甲方合同详情', icon: 'form' }
+      }
     ]
   },
   {
     path: '/distribution',
-    meta: { title: '中介分销协议', icon: 'form' },
+    meta: { title: '渠道分销协议', icon: 'form' },
     redirect: '/distribution/list',
     component: Layout,
     children: [
@@ -41,14 +47,26 @@ const contractRoutes: Array<RouteConfig> = [
         path: 'list',
         name: 'DistributionList',
         component: () => import( /* webpackChunkName: "DistributionList" */ '@/views/contract/distribution/list.vue'),
-        meta: { title: '中介分销协议列表', icon: 'form' }
+        meta: { title: '渠道分销协议列表', icon: 'form', keepAlive: true }
+      },
+      {
+        path: 'apply',
+        name: 'DistributionApply',
+        component: () => import(/* webpackChunkName: "DistributionApply" */ '@/views/contract/distribution/apply.vue'),
+        meta: { title: '渠道分销协议申领', icon: 'form' }
       },
       {
         path: 'info',
         name: 'DistributionDetail',
         component: () => import( /* webpackChunkName: "DistributionDetail" */ '@/views/contract/distribution/info.vue'),
-        meta: { title: '中介分销协议详情', icon: 'form' }
+        meta: { title: '渠道分销协议详情', icon: 'form' }
       },
+      {
+        path: 'original',
+        name: 'DistributionOriginal',
+        component: () => import(/* webpackChunkName: "DistributionOriginal" */ '@/views/contract/distribution/info.vue'),
+        meta: { title: '渠道分销协议原件归档', icon: 'form' }
+      }
     ]
   },
   {
@@ -61,7 +79,7 @@ const contractRoutes: Array<RouteConfig> = [
         path: 'list',
         name: 'StrategyList',
         component: () => import( /* webpackChunkName: "StrategyList" */ '@/views/contract/strategy/list.vue'),
-        meta: { title: '甲方/中介战略协议列表', icon: 'form' }
+        meta: { title: '甲方/中介战略协议列表', icon: 'form', keepAlive: true }
       },
       {
         path: 'add',
@@ -70,11 +88,23 @@ const contractRoutes: Array<RouteConfig> = [
         meta: { title: '甲方/中介战略协议录入', icon: 'form' }
       },
       {
+        path: 'edit',
+        name: 'StrategyEdit',
+        component: () => import( /* webpackChunkName: "StrategyEdit" */ '@/views/contract/strategy/add.vue'),
+        meta: { title: '甲方/中介战略协议编辑', icon: 'form' }
+      },
+      {
         path: 'info',
         name: 'StrategyDetail',
         component: () => import( /* webpackChunkName: "StrategyDetail" */ '@/views/contract/strategy/info.vue'),
         meta: { title: '甲方/中介战略协议详情', icon: 'form' }
       },
+      {
+        path: 'archived',
+        name: 'scanArchived',
+        component: () => import( /* webpackChunkName: "ScanArchived" */ '@/views/contract/strategy/info.vue'),
+        meta: { title: '甲方/中介战略协议扫描件归档', icon: 'form' }
+      }
     ]
   },
   {
@@ -87,7 +117,7 @@ const contractRoutes: Array<RouteConfig> = [
         path: 'list',
         name: 'DiscountList',
         component: () => import( /* webpackChunkName: "DiscountList" */ '@/views/contract/discount/list.vue'),
-        meta: { title: '优惠告知书列表', icon: 'form' }
+        meta: { title: '优惠告知书列表', icon: 'form', keepAlive: true }
       },
       {
         path: 'info',

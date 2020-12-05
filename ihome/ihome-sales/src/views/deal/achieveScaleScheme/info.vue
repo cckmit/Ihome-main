@@ -87,7 +87,7 @@
       let id = this.$route.query.id;
       if (id) {
         this.infoForm = await get_achieveScaleScheme_get__id({id: id});
-        let businessModelList = (this as any).$root.dictAllList('BusinessModel'); // 业务类型
+        let businessModelList = (this as any).$root.dictAllList('BusinessModel'); // 业务模式
         let contTypeList = (this as any).$root.dictAllList('ContType'); // 合同类型
         let propertyEnumList = (this as any).$root.dictAllList('PropertyEnum'); // 物业类型
         // 处理数据

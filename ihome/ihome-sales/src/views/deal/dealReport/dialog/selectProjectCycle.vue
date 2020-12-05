@@ -52,26 +52,10 @@
       :empty-text="emptyText"
       @selection-change="handleSelectionChange">
       <el-table-column type="selection" width="55"></el-table-column>
-      <el-table-column
-        prop="storageNum"
-        label="项目周期名称"
-        min-width="180"
-      ></el-table-column>
-      <el-table-column
-        prop="channelName"
-        label="业务类型"
-        min-width="180"
-      ></el-table-column>
-      <el-table-column
-        prop="province"
-        label="开始时间"
-        min-width="180"
-      ></el-table-column>
-      <el-table-column
-        prop="city"
-        label="结束时间"
-        min-width="180"
-      ></el-table-column>
+      <el-table-column prop="storageNum" label="项目周期名称" min-width="180"></el-table-column>
+      <el-table-column prop="channelName" label="业务类型" min-width="180"></el-table-column>
+      <el-table-column prop="province" label="开始时间" min-width="180"></el-table-column>
+      <el-table-column prop="city" label="结束时间" min-width="180"></el-table-column>
     </el-table>
     <el-pagination
       @size-change="handleSizeChangeMixin"

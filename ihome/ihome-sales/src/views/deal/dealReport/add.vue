@@ -550,7 +550,9 @@
       <el-button @click="cancel()">取消</el-button>
       <el-button type="primary" @click="save()">保存</el-button>
       <el-button type="success" @click="save()">提交</el-button>
-      <el-button type="warning" @click="confirmPerformance()">确认业绩申报</el-button>
+      <el-button
+        v-if="![null, undefined, ''].includes(id)"
+        type="warning" @click="confirmPerformance()">确认业绩申报</el-button>
     </div>
     <ih-dialog :show="dialogAddProjectCycle" desc="选择项目周期列表">
       <SelectProjectCycle

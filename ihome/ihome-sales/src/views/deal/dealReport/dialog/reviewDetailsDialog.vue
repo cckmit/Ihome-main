@@ -24,46 +24,14 @@
       class="ih-table"
       :empty-text="emptyText"
       :data="resPageInfo.list">
-      <el-table-column
-        prop="storageNum"
-        label="操作"
-        min-width="180"
-      ></el-table-column>
-      <el-table-column
-        prop="storageNum"
-        label="操作人"
-        min-width="180"
-      ></el-table-column>
-      <el-table-column
-        prop="channelName"
-        label="岗位"
-        min-width="180"
-      ></el-table-column>
-      <el-table-column
-        prop="channelName"
-        label="操作后状态"
-        min-width="180"
-      ></el-table-column>
-      <el-table-column
-        prop="cityGrade"
-        label="操作时间"
-        min-width="180"
-      ></el-table-column>
-      <el-table-column
-        prop="cityGrade"
-        label="处理结果"
-        min-width="180"
-      ></el-table-column>
-      <el-table-column
-        prop="cityGrade"
-        label="系统"
-        min-width="180"
-      ></el-table-column>
-      <el-table-column
-        prop="cityGrade"
-        label="备注"
-        min-width="180"
-      ></el-table-column>
+      <el-table-column prop="storageNum" label="操作" min-width="180"></el-table-column>
+      <el-table-column prop="storageNum" label="操作人" min-width="180"></el-table-column>
+      <el-table-column prop="channelName" label="岗位" min-width="180"></el-table-column>
+      <el-table-column prop="channelName" label="操作后状态" min-width="180"></el-table-column>
+      <el-table-column prop="cityGrade" label="操作时间" min-width="180"></el-table-column>
+      <el-table-column prop="cityGrade" label="处理结果" min-width="180"></el-table-column>
+      <el-table-column prop="cityGrade" label="系统" min-width="180"></el-table-column>
+      <el-table-column prop="cityGrade" label="备注" min-width="180"></el-table-column>
     </el-table>
     <p class="ih-info-title">补充成交报告操作记录信息</p>
     <el-table
@@ -71,46 +39,14 @@
       class="ih-table"
       :empty-text="emptyText"
       :data="resPageInfo.list">
-      <el-table-column
-        prop="storageNum"
-        label="操作"
-        min-width="180"
-      ></el-table-column>
-      <el-table-column
-        prop="storageNum"
-        label="操作人"
-        min-width="180"
-      ></el-table-column>
-      <el-table-column
-        prop="channelName"
-        label="岗位"
-        min-width="180"
-      ></el-table-column>
-      <el-table-column
-        prop="channelName"
-        label="操作后状态"
-        min-width="180"
-      ></el-table-column>
-      <el-table-column
-        prop="cityGrade"
-        label="操作时间"
-        min-width="180"
-      ></el-table-column>
-      <el-table-column
-        prop="cityGrade"
-        label="处理结果"
-        min-width="180"
-      ></el-table-column>
-      <el-table-column
-        prop="cityGrade"
-        label="系统"
-        min-width="180"
-      ></el-table-column>
-      <el-table-column
-        prop="cityGrade"
-        label="备注"
-        min-width="180"
-      ></el-table-column>
+      <el-table-column prop="storageNum" label="操作" min-width="180"></el-table-column>
+      <el-table-column prop="storageNum" label="操作人" min-width="180"></el-table-column>
+      <el-table-column prop="channelName" label="岗位" min-width="180"></el-table-column>
+      <el-table-column prop="channelName" label="操作后状态" min-width="180"></el-table-column>
+      <el-table-column prop="cityGrade" label="操作时间" min-width="180"></el-table-column>
+      <el-table-column prop="cityGrade" label="处理结果" min-width="180"></el-table-column>
+      <el-table-column prop="cityGrade" label="系统" min-width="180"></el-table-column>
+      <el-table-column prop="cityGrade" label="备注" min-width="180"></el-table-column>
     </el-table>
     <span slot="footer" class="dialog-footer">
       <el-button type="primary" @click="finish()">确 定</el-button>
