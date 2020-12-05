@@ -4,7 +4,7 @@
  * @Author: wwq
  * @Date: 2020-12-04 09:40:47
  * @LastEditors: wwq
- * @LastEditTime: 2020-12-04 20:55:23
+ * @LastEditTime: 2020-12-05 18:51:29
 -->
 <template>
   <el-dialog
@@ -14,7 +14,7 @@
     :close-on-press-escape="false"
     :before-close="cancel"
     width="90%"
-    class="dialog text-left"
+    class="editDialog text-left"
     :title="(data.id ? '编辑' : '新增') + `收派套餐`"
   >
     <p class="ih-info-title">基础信息</p>
@@ -187,6 +187,7 @@
                     style="width: 100%"
                     v-model="row.subdivideEnum"
                     clearable
+                    :disabled="isSubdivideEnum"
                     placeholder="请选择"
                   >
                     <el-option
@@ -248,14 +249,14 @@
                 width="150"
                 align="center"
               >
-                <template v-slot="{ row }">
-                  <div
+                <template v-slot="{ row, $index }">
+                  <pre
                     class="text-ellipsis"
                     :title="row.condition"
-                  >{{row.condition}}</div>
+                  >{{row.condition}}</pre>
                   <el-button
                     size="small"
-                    @click="rulesDialog(i, row.collectandsendConditionVOS)"
+                    @click="rulesDialog(row.collectandsendConditionVOS, i, $index)"
                   >编辑</el-button>
                 </template>
               </el-table-column>
@@ -268,7 +269,7 @@
                   <div>
                     金额:
                     <el-input
-                      v-model="row.receivableAmout"
+                      v-model.number="row.receivableAmout"
                       v-digits="2"
                       clearable
                       style="width: 70%"
@@ -277,7 +278,7 @@
                   <div class="margin-top-5">
                     点数:
                     <el-input
-                      v-model="row.receivablePoint"
+                      v-model.number="row.receivablePoint"
                       v-digits="2"
                       clearable
                       style="width: 70%"
@@ -294,7 +295,7 @@
                   <div>
                     金额:
                     <el-input
-                      v-model="row.sendAmount"
+                      v-model.number="row.sendAmount"
                       v-digits="2"
                       clearable
                       style="width: 70%"
@@ -303,7 +304,7 @@
                   <div class="margin-top-5">
                     点数:
                     <el-input
-                      v-model="row.sendPoint"
+                      v-model.number="row.sendPoint"
                       v-digits="2"
                       clearable
                       style="width: 70%"
@@ -320,7 +321,7 @@
                   <div>
                     金额:
                     <el-input
-                      v-model="row.sendInAmount"
+                      v-model.number="row.sendInAmount"
                       v-digits="2"
                       clearable
                       style="width: 70%"
@@ -329,7 +330,7 @@
                   <div class="margin-top-5">
                     点数:
                     <el-input
-                      v-model="row.sendInPoint"
+                      v-model.number="row.sendInPoint"
                       v-digits="2"
                       clearable
                       style="width: 70%"
@@ -346,18 +347,20 @@
                   <div>
                     金额:
                     <el-input
-                      v-model="row.generalAchieveAmount"
+                      v-model.number="row.generalAchieveAmount"
                       v-digits="2"
                       clearable
+                      :disabled="(info.busEnum === 'TotalBagDistriModel' || row.subdivideEnum === 'All') ? false : true"
                       style="width: 70%"
                     />
                   </div>
                   <div class="margin-top-5">
                     点数:
                     <el-input
-                      v-model="row.generalAchievePoint"
+                      v-model.number="row.generalAchievePoint"
                       v-digits="2"
                       clearable
+                      :disabled="(info.busEnum === 'TotalBagDistriModel' || row.subdivideEnum === 'All') ? false : true"
                       style="width: 70%"
                     />
                   </div>
@@ -372,18 +375,20 @@
                   <div>
                     金额:
                     <el-input
-                      v-model="row.distributeAchieveAmount"
+                      v-model.number="row.distributeAchieveAmount"
                       v-digits="2"
                       clearable
+                      :disabled="row.subdivideEnum === 'All' ? true : false"
                       style="width: 70%"
                     />
                   </div>
                   <div class="margin-top-5">
                     点数:
                     <el-input
-                      v-model="row.distributeAchievePoint"
+                      v-model.number="row.distributeAchievePoint"
                       v-digits="2"
                       clearable
+                      :disabled="row.subdivideEnum === 'All' ? true : false"
                       style="width: 70%"
                     />
                   </div>
@@ -398,16 +403,7 @@
                   <div>
                     金额:
                     <el-input
-                      v-model="row.otherChannelAmount"
-                      v-digits="2"
-                      disabled
-                      style="width: 70%"
-                    />
-                  </div>
-                  <div class="margin-top-5">
-                    点数:
-                    <el-input
-                      v-model="row.otherChannelPoint"
+                      :value="otherChannelAmount(row)"
                       v-digits="2"
                       disabled
                       style="width: 70%"
@@ -422,7 +418,7 @@
               >
                 <template v-slot="{ row }">
                   <el-input
-                    v-model="row.estimateComplateNum"
+                    v-model.number="row.estimateComplateNum"
                     v-digits="0"
                     style="width: 80%"
                     placeholder="套数"
@@ -434,13 +430,25 @@
                 width="120"
                 align="center"
                 prop="estimateComplateAmount"
-              ></el-table-column>
+              >
+                <template v-slot="{ row }">
+                  <span>
+                    {{estimateComplateAmount(row)}}
+                  </span>
+                </template>
+              </el-table-column>
               <el-table-column
-                label="预计应收房款"
+                label="预计应收金额"
                 width="120"
                 align="center"
                 prop="estimateReceiveAmount"
-              ></el-table-column>
+              >
+                <template v-slot="{ row }">
+                  <span>
+                    {{estimateReceiveAmount(row)}}
+                  </span>
+                </template>
+              </el-table-column>
               <el-table-column
                 label="备注"
                 width="200"
@@ -533,6 +541,7 @@
                     style="width: 100%"
                     v-model="row.subdivideEnum"
                     clearable
+                    :disabled="isSubdivideEnum"
                     placeholder="请选择"
                   >
                     <el-option
@@ -594,14 +603,14 @@
                 width="150"
                 align="center"
               >
-                <template v-slot="{ row }">
-                  <div
+                <template v-slot="{ row, $index }">
+                  <pre
                     class="text-ellipsis"
                     :title="row.condition"
-                  >{{row.condition}}</div>
+                  >{{row.condition}}</pre>
                   <el-button
                     size="small"
-                    @click="rulesDialog(i, row.collectandsendConditionVOS)"
+                    @click="rulesDialog(row.collectandsendConditionVOS, i, $index)"
                   >编辑</el-button>
                 </template>
               </el-table-column>
@@ -636,7 +645,7 @@
                   <div>
                     金额:
                     <el-input
-                      v-model="row.receivableAmout"
+                      v-model.number="row.receivableAmout"
                       v-digits="2"
                       clearable
                       style="width: 70%"
@@ -645,7 +654,7 @@
                   <div class="margin-top-5">
                     点数:
                     <el-input
-                      v-model="row.receivablePoint"
+                      v-model.number="row.receivablePoint"
                       v-digits="2"
                       clearable
                       style="width: 70%"
@@ -662,7 +671,7 @@
                   <div>
                     金额:
                     <el-input
-                      v-model="row.sendAmount"
+                      v-model.number="row.sendAmount"
                       v-digits="2"
                       clearable
                       style="width: 70%"
@@ -671,7 +680,7 @@
                   <div class="margin-top-5">
                     点数:
                     <el-input
-                      v-model="row.sendPoint"
+                      v-model.number="row.sendPoint"
                       v-digits="2"
                       clearable
                       style="width: 70%"
@@ -688,7 +697,7 @@
                   <div>
                     金额:
                     <el-input
-                      v-model="row.sendInAmount"
+                      v-model.number="row.sendInAmount"
                       v-digits="2"
                       clearable
                       style="width: 70%"
@@ -697,7 +706,7 @@
                   <div class="margin-top-5">
                     点数:
                     <el-input
-                      v-model="row.sendInPoint"
+                      v-model.number="row.sendInPoint"
                       v-digits="2"
                       clearable
                       style="width: 70%"
@@ -714,18 +723,20 @@
                   <div>
                     金额:
                     <el-input
-                      v-model="row.generalAchieveAmount"
+                      v-model.number="row.generalAchieveAmount"
                       v-digits="2"
                       clearable
+                      :disabled="(info.busEnum === 'TotalBagDistriModel' || row.subdivideEnum === 'All') ? false : true"
                       style="width: 70%"
                     />
                   </div>
                   <div class="margin-top-5">
                     点数:
                     <el-input
-                      v-model="row.generalAchievePoint"
+                      v-model.number="row.generalAchievePoint"
                       v-digits="2"
                       clearable
+                      :disabled="(info.busEnum === 'TotalBagDistriModel' || row.subdivideEnum === 'All') ? false : true"
                       style="width: 70%"
                     />
                   </div>
@@ -740,18 +751,20 @@
                   <div>
                     金额:
                     <el-input
-                      v-model="row.distributeAchieveAmount"
+                      v-model.number="row.distributeAchieveAmount"
                       v-digits="2"
                       clearable
+                      :disabled="row.subdivideEnum === 'All' ? true : false"
                       style="width: 70%"
                     />
                   </div>
                   <div class="margin-top-5">
                     点数:
                     <el-input
-                      v-model="row.distributeAchievePoint"
+                      v-model.number="row.distributeAchievePoint"
                       v-digits="2"
                       clearable
+                      :disabled="row.subdivideEnum === 'All' ? true : false"
                       style="width: 70%"
                     />
                   </div>
@@ -764,7 +777,7 @@
               >
                 <template v-slot="{ row }">
                   <el-input
-                    v-model="row.estimateComplateNum"
+                    v-model.number="row.estimateComplateNum"
                     v-digits="0"
                     style="width: 80%"
                     placeholder="套数"
@@ -776,13 +789,25 @@
                 width="120"
                 align="center"
                 prop="estimateComplateAmount"
-              ></el-table-column>
+              >
+                <template v-slot="{ row }">
+                  <span>
+                    {{estimateComplateAmount(row)}}
+                  </span>
+                </template>
+              </el-table-column>
               <el-table-column
                 label="预计应收金额"
                 width="120"
                 align="center"
                 prop="estimateReceiveAmount"
-              ></el-table-column>
+              >
+                <template v-slot="{ row }">
+                  <span>
+                    {{estimateReceiveAmount(row)}}
+                  </span>
+                </template>
+              </el-table-column>
               <el-table-column
                 label="备注"
                 width="200"
@@ -850,7 +875,7 @@
   </el-dialog>
 </template>
 <script lang="ts">
-import { Component, Vue, Prop } from "vue-property-decorator";
+import { Component, Vue, Prop, Watch } from "vue-property-decorator";
 import { Form as ElForm } from "element-ui";
 import { NoRepeatHttp } from "ihome-common/util/aop/no-repeat-http";
 import {
@@ -871,6 +896,8 @@ export default class SetMealEdit extends Vue {
   businessDialogVisible = false;
   rulesDialogVisible = false;
   rulesData: any = [];
+  isSubdivideEnum = false;
+  busEnumType = "";
 
   info: any = {
     packageName: null,
@@ -883,6 +910,8 @@ export default class SetMealEdit extends Vue {
     colletionandsendMxs: [],
   };
   partyCompanyIndex = 0;
+  conditionIndex = 0;
+  conditionRowIndex = 0;
   padCommissionEnumOptions: any = [];
   rules: any = {
     packageName: [
@@ -898,6 +927,82 @@ export default class SetMealEdit extends Vue {
       { required: true, message: "请选择有效时间", trigger: "change" },
     ],
   };
+
+  otherChannelAmount(row: any) {
+    let total =
+      Number(row.receivableAmout) +
+      Number(row.receivablePoint / 100) *
+        Number(this.info.estimatedTransactionPrice) *
+        10000;
+    let num1 =
+      Number(row.sendAmount) +
+      Number(row.sendPoint / 100) *
+        Number(this.info.estimatedTransactionPrice) *
+        10000;
+    let num2 =
+      Number(row.sendInAmount) +
+      Number(row.sendInPoint / 100) *
+        Number(this.info.estimatedTransactionPrice) *
+        10000;
+    let num3 =
+      Number(row.generalAchieveAmount) +
+      Number(row.generalAchievePoint / 100) *
+        Number(this.info.estimatedTransactionPrice) *
+        10000;
+    let num4 =
+      Number(row.distributeAchieveAmount) +
+      Number(row.distributeAchievePoint / 100) *
+        Number(this.info.estimatedTransactionPrice) *
+        10000;
+    let computed = total - (num1 + num2 + num3 + num4);
+    row.otherChannelAmount = computed;
+    return isNaN(computed) ? 0 : computed;
+  }
+
+  estimateComplateAmount(row: any) {
+    let total = 0;
+    total =
+      Number(this.info.estimatedTransactionPrice) *
+      10000 *
+      Number(row.estimateComplateNum);
+    row.estimateComplateAmount = total;
+    return isNaN(total) ? 0 : total;
+  }
+
+  estimateReceiveAmount(row: any) {
+    let total = 0;
+    total =
+      Number(row.receivableAmout) +
+      Number(row.receivablePoint / 100) *
+        Number(this.info.estimatedTransactionPrice) *
+        10000;
+    row.estimateReceiveAmount = total;
+    return isNaN(total) ? 0 : total;
+  }
+
+  @Watch("info.busEnum", { immediate: true })
+  getSubdivideEnum(v: any) {
+    if (v === "TotalBagModel") {
+      this.busEnumType = "All";
+      this.isSubdivideEnum = true;
+      this.info.colletionandsendMxs.forEach((v: any) => {
+        v.colletionandsendDetails.forEach((j: any) => {
+          j.subdivideEnum = "All";
+        });
+      });
+    } else if (v === "DistriModel") {
+      this.busEnumType = "District";
+      this.isSubdivideEnum = true;
+      this.info.colletionandsendMxs.forEach((v: any) => {
+        v.colletionandsendDetails.forEach((j: any) => {
+          j.subdivideEnum = "District";
+        });
+      });
+    } else {
+      this.busEnumType = "";
+      this.isSubdivideEnum = false;
+    }
+  }
 
   cancel() {
     this.$emit("cancel", false);
@@ -956,6 +1061,8 @@ export default class SetMealEdit extends Vue {
       ];
       this.info.busEnum = item.busEnum;
       this.info.chargeEnum = item.chargeEnum;
+      // this.info.busEnum = "TotalBagModel";
+      // this.info.busEnum = "DistriModel";
       // 假数据
       // this.info.chargeEnum = "Service";
       this.info.colletionandsendMxs = [
@@ -970,6 +1077,7 @@ export default class SetMealEdit extends Vue {
       ];
     }
   }
+  // 上移
   shiftUp(data: any, i: number, index: number) {
     if (index > 0) {
       this.info.colletionandsendMxs[i].colletionandsendDetails.splice(index, 1);
@@ -982,6 +1090,8 @@ export default class SetMealEdit extends Vue {
       this.$message.warning("第一行不可再上移");
     }
   }
+
+  // 下移
   shiftDown(data: any, i: number, index: number) {
     if (
       index + 1 <
@@ -997,6 +1107,8 @@ export default class SetMealEdit extends Vue {
       this.$message.warning("最后一行不可再下移");
     }
   }
+
+  // 删除行
   async delRow(data: any, i: number, index: number) {
     try {
       await this.$confirm("是否确定删除?", "提示");
@@ -1010,6 +1122,7 @@ export default class SetMealEdit extends Vue {
     }
   }
 
+  // 增加模板
   async addTemplate() {
     if (this.info.chargeEnum === "ServiceAndAgent") {
       this.$confirm("请选择增加模板类型?", "提示", {
@@ -1030,13 +1143,21 @@ export default class SetMealEdit extends Vue {
               return;
             } else {
               this.info.colletionandsendMxs.unshift({
-                colletionandsendDetails: [{}],
+                colletionandsendDetails: [
+                  {
+                    subdivideEnum: this.busEnumType,
+                  },
+                ],
                 costTypeEnum: "ServiceFee",
               });
             }
           } else if (action === "confirm") {
             this.info.colletionandsendMxs.push({
-              colletionandsendDetails: [{}],
+              colletionandsendDetails: [
+                {
+                  subdivideEnum: this.busEnumType,
+                },
+              ],
               costTypeEnum: "AgencyFee",
             });
           }
@@ -1049,18 +1170,27 @@ export default class SetMealEdit extends Vue {
         return;
       } else {
         this.info.colletionandsendMxs.unshift({
-          colletionandsendDetails: [{}],
+          colletionandsendDetails: [
+            {
+              subdivideEnum: this.busEnumType,
+            },
+          ],
           costTypeEnum: "ServiceFee",
         });
       }
     } else {
       this.info.colletionandsendMxs.push({
-        colletionandsendDetails: [{}],
+        colletionandsendDetails: [
+          {
+            subdivideEnum: this.busEnumType,
+          },
+        ],
         costTypeEnum: "AgencyFee",
       });
     }
   }
 
+  // 删除模板
   async delTemplate(i: number) {
     try {
       await this.$confirm("是否确定删除模板?", "提示");
@@ -1073,6 +1203,8 @@ export default class SetMealEdit extends Vue {
       console.log(err);
     }
   }
+
+  // 删除行
   addRow(i: number) {
     this.info.colletionandsendMxs[i].colletionandsendDetails.push({
       collectandsendConditionVOS: [],
@@ -1096,11 +1228,12 @@ export default class SetMealEdit extends Vue {
       sendInPoint: "",
       sendPoint: "",
       sort: "",
-      subdivideEnum: "",
+      subdivideEnum: this.busEnumType,
       transactionEnum: "",
     });
   }
 
+  // 选择代理费公司
   businessFinish(data: any) {
     this.info.colletionandsendMxs[this.partyCompanyIndex].partyCompany =
       data[0].name;
@@ -1109,26 +1242,30 @@ export default class SetMealEdit extends Vue {
     this.businessDialogVisible = false;
   }
 
-  rulesDialog(i: number, data: any) {
+  // 编辑条件
+  rulesDialog(data: any, i: number, index: number) {
     this.rulesData = data;
-    this.rulesData = [
-      {
-        compare: "GT",
-        compareB: "IN",
-        conditionAnd: 1,
-      },
-    ];
+    this.conditionIndex = i;
+    this.conditionRowIndex = index;
     this.rulesDialogVisible = true;
   }
 
+  // 编辑条件完成
   rulesFinish(data: any) {
-    console.log(data);
+    console.log(data, this.conditionIndex, this.conditionRowIndex);
+    this.info.colletionandsendMxs[this.conditionIndex].colletionandsendDetails[
+      this.conditionRowIndex
+    ].collectandsendConditionVOS = data;
+    // 条件文本信息
+    this.info.colletionandsendMxs[this.conditionIndex].colletionandsendDetails[
+      this.conditionRowIndex
+    ].condition = "";
     this.rulesDialogVisible = false;
   }
 }
 </script>
 <style lang="scss" scoped>
-.dialog {
+.editDialog {
   /deep/ .el-dialog {
     margin-top: 5vh !important;
   }
