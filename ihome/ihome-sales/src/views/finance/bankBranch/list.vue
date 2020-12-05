@@ -4,7 +4,7 @@
  * @Author: ywl
  * @Date: 2020-12-01 10:29:31
  * @LastEditors: ywl
- * @LastEditTime: 2020-12-01 16:14:36
+ * @LastEditTime: 2020-12-05 17:30:42
 -->
 <template>
   <IhPage label-width="80px">
@@ -105,8 +105,11 @@
           width="70"
           fixed="right"
         >
-          <template v-slot="{  }">
-            <el-link type="danger">删除</el-link>
+          <template v-slot="{ row }">
+            <el-link
+              type="danger"
+              @click="remove(row)"
+            >删除</el-link>
           </template>
         </el-table-column>
       </el-table>
@@ -128,7 +131,10 @@
 
 <script lang="ts">
 import { Component, Vue } from "vue-property-decorator";
-import { post_bankBranch_getList } from "@/api/finance/index";
+import {
+  post_bankBranch_getList,
+  post_bankBranch_delete__id,
+} from "@/api/finance/index";
 
 import PaginationMixin from "../../../mixins/pagination";
 
@@ -161,9 +167,26 @@ export default class BankBranchList extends Vue {
       provinceName: null,
     });
   }
+  private async remove(row: any): Promise<void> {
+    try {
+      await this.$confirm("是否确定删除?", "提示");
+      await post_bankBranch_delete__id({ id: row.id });
+      // 删除list最后一条数据 返回前一页面
+      if (this.resPageInfo.list.length === 1) {
+        this.queryPageParameters.pageNum === 1
+          ? (this.queryPageParameters.pageNum = 1)
+          : this.queryPageParameters.pageNum--;
+      }
+      this.$message.success("删除成功");
+      this.getListMixin();
+    } catch (error) {
+      console.log(error);
+    }
+  }
   async getListMixin() {
     this.resPageInfo = await post_bankBranch_getList(this.queryPageParameters);
   }
+
   created() {
     this.getListMixin();
   }

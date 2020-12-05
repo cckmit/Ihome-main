@@ -4,7 +4,7 @@
  * @Author: ywl
  * @Date: 2020-12-01 18:20:03
  * @LastEditors: ywl
- * @LastEditTime: 2020-12-02 18:16:45
+ * @LastEditTime: 2020-12-05 17:06:13
 -->
 <template>
   <el-dialog
@@ -67,10 +67,15 @@
       >
         <el-input
           v-model="form.branchName"
-          placeholder="请输入开户银行"
+          placeholder="请选择开户银行"
           readonly
-          @click.native="dialogFormVisible = true"
-        ></el-input>
+        >
+          <el-button
+            slot="append"
+            icon="el-icon-search"
+            @click.native="dialogFormVisible = true"
+          ></el-button>
+        </el-input>
       </el-form-item>
       <el-form-item
         label="账号类型"
