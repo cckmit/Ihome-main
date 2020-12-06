@@ -4,17 +4,19 @@
  * @Author: ywl
  * @Date: 2020-10-20 15:03:13
  * @LastEditors: ywl
- * @LastEditTime: 2020-11-06 11:39:52
+ * @LastEditTime: 2020-12-05 15:59:17
 -->
 <template>
   <el-select
     :value="value"
     @change="handleChange"
+    @visible-change="handleVisible"
     :clearable="clearable"
     :disabled="disabled"
     :placeholder="placeholder"
     :value-key="valueKey"
     :multiple="multiple"
+    ref="selectPage"
     :collapse-tags="collapseTags"
     popper-class="ih-select-page"
     class="width--100"
@@ -80,6 +82,11 @@ export default class IhSelectPage extends Vue {
   @Prop() multiple?: boolean;
   @Prop() collapseTags?: boolean;
   @Prop() promiseFun?: Function;
+  @Prop() proId?: any;
+  @Prop({
+    default: false,
+  })
+  isBlur?: boolean;
   @Prop({
     default: false,
   })
@@ -142,6 +149,17 @@ export default class IhSelectPage extends Vue {
     return (this.props as PropsType).disabled || "disabled";
   }
 
+  handleVisible(val: any): void {
+    if (val) {
+      if (this.isBlur && !this.proId) {
+        (this.$refs.selectPage as any).blur();
+        this.handleMessage();
+      }
+    }
+  }
+  handleMessage() {
+    // 不能点击时候的提醒 -- 需要重写
+  }
   handleKeyup() {
     if (this.isKeyUp) {
       this.getSelectList();
@@ -180,8 +198,13 @@ interface PropsType {
 
 <style scoped>
 .selectInput {
-  padding: 0 8px;
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  padding: 4px 9px;
   box-sizing: border-box;
+  z-index: 100;
 }
 </style>
 <style>
@@ -189,8 +212,11 @@ interface PropsType {
   width: 25px !important;
   overflow: hidden;
 }
+.ih-select-page .el-select-dropdown__list {
+  padding-top: 46px !important;
+}
 .ih-select-page .el-select-dropdown__wrap {
-  max-height: none !important;
+  max-height: 500px !important;
 }
 .ih-select-page .el-scrollbar {
   display: block !important;

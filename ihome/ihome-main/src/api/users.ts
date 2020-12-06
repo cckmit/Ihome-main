@@ -3,8 +3,8 @@
  * @version: 
  * @Author: zyc
  * @Date: 2020-06-24 09:47:33
- * @LastEditors: zyc
- * @LastEditTime: 2020-11-11 14:13:19
+ * @LastEditors: ywl
+ * @LastEditTime: 2020-11-11 15:26:27
  */
 import { IRes } from "./users.d";
 // import request from '@/utils/http';
@@ -222,7 +222,7 @@ export function allMenu<T>() {
         {
             id: 403,
             parentId: 401,
-            title: "渠道合同列表",
+            title: "渠道分销协议列表",
             icon: null,
             path: "/web-sales/distribution/list"
         },
