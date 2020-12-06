@@ -9,7 +9,7 @@
 <template>
   <el-dialog
     v-dialogDrag
-    title="选择渠道公司列表"
+    title="选择已成交报备信息列表"
     :visible.sync="dialogVisible"
     :close-on-click-modal="false"
     :close-on-press-escape="false"
@@ -18,16 +18,50 @@
     width="1000px"
     style="text-align: left"
     class="dialog">
-    <el-form>
+    <el-form ref="form" label-width="100px">
       <el-row>
-        <el-col class="col-bottom-20">
-          <el-input
-            style="width: 30%; margin-right: 20px"
-            clearable
-            v-model="queryPageParameters.name"
-            placeholder="渠道公司"
-          ></el-input>
-          <el-button type="primary" @click="getListMixin()">查询</el-button>
+        <el-col :span="8">
+          <el-form-item label="项目名称">
+            <el-input
+              v-model="queryPageParameters.termName"
+              placeholder="项目周期名称"
+            ></el-input>
+          </el-form-item>
+        </el-col>
+        <el-col :span="8">
+          <el-form-item label="渠道公司">
+            <el-input
+              v-model="queryPageParameters.termName"
+              placeholder="渠道公司"
+            ></el-input>
+          </el-form-item>
+        </el-col>
+        <el-col :span="8">
+          <el-form-item label="报备人">
+            <el-input
+              v-model="queryPageParameters.termName"
+              placeholder="报备人"
+            ></el-input>
+          </el-form-item>
+        </el-col>
+        <el-col :span="8">
+          <el-form-item label="报备时间">
+            <el-date-picker
+              v-model="queryPageParameters.time"
+              type="daterange"
+              range-separator="至"
+              start-placeholder="开始日期"
+              end-placeholder="结束日期">
+            </el-date-picker>
+          </el-form-item>
+        </el-col>
+      </el-row>
+      <el-row>
+        <el-col :span="8">
+          <el-form-item label="">
+            <el-button type="primary" @click="getListMixin()">查询</el-button>
+            <el-button type="info" @click="reset()">重置</el-button>
+          </el-form-item>
         </el-col>
       </el-row>
     </el-form>
@@ -47,21 +81,21 @@
       @size-change="sizeChange">
     </IhTableCheckBox>
     <span slot="footer" class="dialog-footer">
-      <el-button type="primary" @click="finish()">确 定</el-button>
+      <el-button type="primary" @click="finish">确 定</el-button>
     </span>
   </el-dialog>
 </template>
 <script lang="ts">
   import {Component, Vue, Prop} from "vue-property-decorator";
 
-  import {post_channel_getList} from "@/api/channel";
+  import {post_term_getList} from "@/api/project/index";
   import PaginationMixin from "@/mixins/pagination";
 
   @Component({
     components: {},
     mixins: [PaginationMixin],
   })
-  export default class AgentCompanyList extends Vue {
+  export default class SelectReportInfo extends Vue {
     constructor() {
       super();
     }
@@ -70,44 +104,38 @@
     private tableMaxHeight: any = 500;
     private tableColumn = [
       {
-        prop: "name",
-        label: "渠道公司",
+        prop: "termName",
+        label: "栋座",
         align: "left",
         minWidth: 200,
       },
       {
-        prop: "shortName",
-        label: "简称",
+        prop: "busTypeEnum",
+        label: "房号",
         align: "left",
         minWidth: 100,
       },
       {
         prop: "termStart",
-        label: "渠道等级",
+        label: "户型",
         align: "left",
         minWidth: 140,
       },
       {
-        prop: "province",
-        label: "省份",
+        prop: "termEnd",
+        label: "房型",
         align: "left",
         minWidth: 140,
       },
       {
-        prop: "city",
-        label: "城市",
+        prop: "termEnd1",
+        label: "面积",
         align: "left",
         minWidth: 140,
       },
       {
-        prop: "county",
-        label: "行政区",
-        align: "left",
-        minWidth: 140,
-      },
-      {
-        prop: "status",
-        label: "状态",
+        prop: "termEnd2",
+        label: "朝向",
         align: "left",
         minWidth: 140,
       }
@@ -127,12 +155,14 @@
     };
 
     queryPageParameters: any = {
-      name: null
+      termName: null,
+      busTypeEnum: null,
+      time: null
     };
     currentSelection: any = []; // 当前选择的项
 
     created() {
-      this.getListMixin();
+      // this.getListMixin();
     }
 
     async beforeFinish() {
@@ -143,7 +173,7 @@
       if (this.currentSelection.length === 0) {
         this.$message({
           type: "error",
-          message: "请选择渠道商",
+          message: "请选择房号",
         });
         return
       }
@@ -170,11 +200,27 @@
       this.getListMixin();
     }
 
+    // 在数据字典中获取对应的中文名
+    private getNameByDict(key: any, type: any) {
+      if (!key || !type) return;
+      let name = '';
+      let list = (this as any).$root.dictAllList(key);
+      list.forEach((item: any) => {
+        if (item.code === type) {
+          name = item.name
+        }
+      })
+      return name;
+    }
+
     async getListMixin() {
-      const infoList = await post_channel_getList(this.queryPageParameters);
+      const infoList = await post_term_getList(this.queryPageParameters);
       if (infoList.list.length > 0) {
         infoList.list.forEach((item: any) => {
           item.checked = false;
+          if (item.busTypeEnum) {
+            item.busTypeEnum = this.getNameByDict('BusTypeEnum', item.busTypeEnum);
+          }
         })
       }
       this.resPageInfo = JSON.parse(JSON.stringify(infoList));
@@ -193,7 +239,8 @@
 
     reset() {
       this.queryPageParameters = {
-        name: null,
+        termName: null,
+        busTypeEnum: null,
         pageNum: 1,
         pageSize: this.queryPageParameters.pageSize
       };
@@ -201,7 +248,4 @@
   }
 </script>
 <style lang="scss" scoped>
-  .col-bottom-20 {
-    margin-bottom: 20px;
-  }
 </style>

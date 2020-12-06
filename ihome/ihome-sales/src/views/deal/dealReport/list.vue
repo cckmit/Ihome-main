@@ -70,20 +70,27 @@
           </el-col>
           <el-col :span="8">
             <el-form-item label="组织">
-              <el-input
-                v-model="queryPageParameters.dealOrg"
-                clearable
-                placeholder="组织"
-              ></el-input>
+              <SelectOrganizationTree
+                :orgId="queryPageParameters.dealOrg"
+                @callback="(id) => (queryPageParameters.dealOrg = id)"
+              />
             </el-form-item>
           </el-col>
           <el-col :span="8">
             <el-form-item label="录入人">
-              <el-input
+              <IhSelectPageUser
                 v-model="queryPageParameters.entryPerson"
-                clearable
-                placeholder="录入人"
-              ></el-input>
+                clearable>
+                <template v-slot="{ data }">
+                  <span style="float: left">{{ data.name }}</span>
+                  <span style="
+                      margin-left: 20px;
+                      float: right;
+                      color: #8492a6;
+                      font-size: 13px;
+                    ">{{ data.account }}</span>
+                </template>
+              </IhSelectPageUser>
             </el-form-item>
           </el-col>
           <el-col :span="8">
@@ -115,11 +122,14 @@
           </el-col>
           <el-col :span="8">
             <el-form-item label="经纪人">
-              <el-input
+              <SelectByBroker
                 v-model="queryPageParameters.broker"
-                clearable
-                placeholder="经纪人"
-              ></el-input>
+                :isKeyUp="true"
+                :props="{
+                  value: 'id',
+                  key: 'id',
+                  lable: 'name'}"
+              />
             </el-form-item>
           </el-col>
           <el-col :span="8">
@@ -140,20 +150,26 @@
           </el-col>
           <el-col :span="8">
             <el-form-item label="项目周期">
-              <el-input
+              <SelectByCycle
                 v-model="queryPageParameters.projectCycle"
-                clearable
-                placeholder="项目周期"
-              ></el-input>
+                :isKeyUp="true"
+                :props="{
+                  value: 'id',
+                  key: 'id',
+                  lable: 'name'}"
+              />
             </el-form-item>
           </el-col>
           <el-col :span="8">
             <el-form-item label="栋座">
-              <el-input
+              <SelectByTower
                 v-model="queryPageParameters.agencyName"
-                clearable
-                placeholder="栋座"
-              ></el-input>
+                :isKeyUp="true"
+                :props="{
+                  value: 'id',
+                  key: 'id',
+                  lable: 'name'}"
+              />
             </el-form-item>
           </el-col>
           <el-col :span="8">
@@ -344,6 +360,10 @@
 </template>
 <script lang="ts">
   import {Component, Vue} from "vue-property-decorator";
+  import SelectOrganizationTree from "@/components/select/SelectOrganizationTree.vue";
+  import SelectByBroker from "@/components/select/SelectByBroker.vue";
+  import SelectByCycle from "@/components/select/SelectByCycle.vue";
+  import SelectByTower from "@/components/select/SelectByTower.vue";
 
   import {
     post_deal_getList,
@@ -355,7 +375,7 @@
   import PaginationMixin from "@/mixins/pagination";
 
   @Component({
-    components: {},
+    components: {SelectOrganizationTree, SelectByBroker, SelectByCycle, SelectByTower},
     mixins: [PaginationMixin],
   })
   export default class DealReportList extends Vue {
