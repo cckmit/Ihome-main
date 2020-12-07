@@ -4,7 +4,7 @@
  * @Author: zyc
  * @Date: 2020-10-22 09:00:11
  * @LastEditors: zyc
- * @LastEditTime: 2020-10-26 17:57:54
+ * @LastEditTime: 2020-12-07 09:24:47
  */
 import axios from 'axios'
 import { Message, MessageBox } from 'element-ui'
@@ -72,38 +72,36 @@ service.interceptors.response.use(
     (response) => {
         NProgress.done();
 
-        if (response.config.url?.startsWith('/sales-oauth2/oauth/token') || response.config.url?.startsWith('/sales-api/sales-oauth2/oauth/token')) {
-            return response.data
-        }
+        // if (response.config.url?.startsWith('/sales-oauth2/oauth/token') || response.config.url?.startsWith('/sales-api/sales-oauth2/oauth/token')) {
+        //     return response.data
+        // }
         //  else if (response.config.url?.startsWith('http://filesvr.polyihome.test/aist-filesvr-web/webUploader/uploadAll')) {
         //     return response.data
         // } 
-        else {
-            const res: any = response.data
-            if (res.code !== 'Success') {
-                Message({
-                    message: res.msg || 'Error',
-                    type: 'error',
-                    duration: messageTime
-                })
-                // if (res.code === 50008 || res.code === 50012 || res.code === 50014) {
-                //     MessageBox.confirm(
-                //         'You have been logged out, try to login again.',
-                //         'Log out',
-                //         {
-                //             confirmButtonText: 'Relogin',
-                //             cancelButtonText: 'Cancel',
-                //             type: 'warning'
-                //         }
-                //     ).then(() => {
-                //         removeToken();
-                //         location.reload() // To prevent bugs from vue-router
-                //     })
-                // }
-                return Promise.reject(new Error(res.msg || 'Error'))
-            } else {
-                return res.data;
-            }
+        const res: any = response.data
+        if (res.code !== 'Success') {
+            Message({
+                message: res.msg || 'Error',
+                type: 'error',
+                duration: messageTime
+            })
+            // if (res.code === 50008 || res.code === 50012 || res.code === 50014) {
+            //     MessageBox.confirm(
+            //         'You have been logged out, try to login again.',
+            //         'Log out',
+            //         {
+            //             confirmButtonText: 'Relogin',
+            //             cancelButtonText: 'Cancel',
+            //             type: 'warning'
+            //         }
+            //     ).then(() => {
+            //         removeToken();
+            //         location.reload() // To prevent bugs from vue-router
+            //     })
+            // }
+            return Promise.reject(new Error(res.msg || 'Error'))
+        } else {
+            return res.data;
         }
 
 

@@ -331,6 +331,7 @@
     </div>
     <ih-dialog :show="reviewDialog" desc="成交审核记录">
       <ReviewDetailsDialog
+        :data="reviewData"
         @cancel="() => (reviewDialog = false)"
         @finish="
             () => {
@@ -367,6 +368,7 @@
       invoiceList: [] // 发票信息
     };
     reviewDialog: any = false;
+    reviewData: any = {};
     dealId: any = null;
 
     created() {
@@ -382,11 +384,11 @@
       // console.log(this.infoForm);
       // 业务模式
       if (this.infoForm.modelName) {
-        this.infoForm.modelName = this.getName('BusinessModel', this.infoForm.modelName);
+        this.infoForm.modelName = this.getNameByDict('BusinessModel', this.infoForm.modelName);
       }
       // 合同模式
       if (this.infoForm.contType) {
-        this.infoForm.contType = this.getName('ContType', this.infoForm.contType);
+        this.infoForm.contType = this.getNameByDict('ContType', this.infoForm.contType);
       }
       // 细分业务模式
       if (this.infoForm.refineModel) {
@@ -394,7 +396,7 @@
       }
       // 成交状态
       if (this.infoForm.status) {
-        this.infoForm.status = this.getName('DealStatus', this.infoForm.status);
+        this.infoForm.status = this.getNameByDict('DealStatus', this.infoForm.status);
       }
       // 是否代销
       if (this.infoForm.isConsign) {
@@ -406,7 +408,7 @@
       }
       // 业务类型
       if (this.infoForm.businessType) {
-        this.infoForm.businessType = this.getName('BusTypeEnum', this.infoForm.businessType);
+        this.infoForm.businessType = this.getNameByDict('BusTypeEnum', this.infoForm.businessType);
       }
       // 备案情况
       if (this.infoForm.recordState) {
@@ -418,30 +420,30 @@
       }
       // 数据源标志
       if (this.infoForm.dataSign) {
-        this.infoForm.dataSign = this.getName('DealDataFlag', this.infoForm.dataSign);
+        this.infoForm.dataSign = this.getNameByDict('DealDataFlag', this.infoForm.dataSign);
       }
       // 签约类型
       if (this.infoForm.signType) {
-        this.infoForm.signType = this.getName('SignUp', this.infoForm.signType);
+        this.infoForm.signType = this.getNameByDict('SignUp', this.infoForm.signType);
       }
       // 成交阶段
       if (this.infoForm.stage) {
-        this.infoForm.stage = this.getName('DealStage', this.infoForm.stage);
+        this.infoForm.stage = this.getNameByDict('DealStage', this.infoForm.stage);
       }
       // 物业类型
       if (this.infoForm.house && this.infoForm.house.propertyType) {
-        this.infoForm.house.propertyType = this.getName('PropertyEnum', this.infoForm.house.propertyType);
+        this.infoForm.house.propertyType = this.getNameByDict('PropertyEnum', this.infoForm.house.propertyType);
       }
       // 客户信息
       if (this.infoForm.customerList.length > 0) {
         this.infoForm.customerList.forEach((list: any) => {
           // 客户类型
           if (list.customerType) {
-            list.customerType = this.getName('CustType', list.customerType);
+            list.customerType = this.getNameByDict('CustType', list.customerType);
           }
           // 证件类型
           if (list.cardType) {
-            list.cardType = this.getName('CardType', list.cardType);
+            list.cardType = this.getNameByDict('CardType', list.cardType);
           }
         })
       }
@@ -450,7 +452,7 @@
         this.infoForm.agencyList.forEach((list: any) => {
           // 渠道等级
           if (list.channelLevel) {
-            list.channelLevel = this.getName('ChannelLevel', list.channelLevel);
+            list.channelLevel = this.getNameByDict('ChannelLevel', list.channelLevel);
           }
         })
       }
@@ -459,7 +461,7 @@
         this.infoForm.receiveList.forEach((list: any) => {
           // 渠道等级
           if (list.type) {
-            list.type = this.getName('FeeType', list.type);
+            list.type = this.getNameByDict('FeeType', list.type);
           }
         })
       }
@@ -469,7 +471,7 @@
         this.infoForm.achieveDistriList = [];
         this.infoForm.achieveList.forEach((list: any) => {
           if (list.roleType) {
-            list.roleType = this.getName('DealRole', list.roleType);
+            list.roleType = this.getNameByDict('DealRole', list.roleType);
           }
           if (list.type === 'TotalBag') {
             this.infoForm.achieveTotalBagList.push(list);
@@ -481,7 +483,7 @@
     }
 
     // 在数据字典中获取对应的中文名
-    getName(key: any, type: any) {
+    getNameByDict(key: any, type: any) {
       if (!key || !type) return;
       let name = '';
       let list = (this as any).$root.dictAllList(key);
@@ -591,6 +593,10 @@
     // 查看审核详情
     viewReviewDetails() {
       console.log('查看审核详情');
+      this.reviewData = {
+        title: 'main', // 标题
+        dealId: this.infoForm.id // 成交id
+      }
       this.reviewDialog = true;
     }
   }

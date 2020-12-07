@@ -4,7 +4,7 @@
  * @Author: zyc
  * @Date: 2020-06-24 09:47:33
  * @LastEditors: ywl
- * @LastEditTime: 2020-12-05 16:24:43
+ * @LastEditTime: 2020-12-07 09:35:32
  */
 import { IRes } from "./users.d";
 // import request from '@/utils/http';
@@ -331,12 +331,13 @@ export const login = async (data: any) => {
     //http://localhost:8610/sales-oauth2/oauth/token?grant_type=password&client_id=sales-client-dev&client_secret=sales-dev&username=admin&password=123456
 
 
-    let url = `/sales-api/sales-oauth2/oauth/token?grant_type=password&client_id=sales-client-dev&client_secret=sales-dev&username=${data.username}&password=${data.password}`;
-
+    // let url = `/sales-api/sales-oauth2/oauth/token?grant_type=password&client_id=sales-client-dev&client_secret=sales-dev&username=${data.username}&password=${data.password}`;
+    const auth_client = 'UGM6c2FsZXMhMjAyMA==';
+    let url = `/sales-api/sales-oauth2/oauth/token?grant_type=password&username=${data.username}&password=${data.password}&auth_client=${auth_client}`
     const res: any = await request({
         url: url,
         method: 'post',
-    })
+    });
 
     return res;
 

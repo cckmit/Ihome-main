@@ -18,35 +18,22 @@
     width="1000px"
     style="text-align: left"
     class="dialog">
-    <p class="ih-info-title">主成交报告操作记录信息</p>
+    <p class="ih-info-title">
+      {{data.title === 'main' ? '主成交报告操作记录信息' : '补充成交报告操作记录信息'}}
+    </p>
     <el-table
       style="padding-left: 20px"
       class="ih-table"
       :empty-text="emptyText"
-      :data="resPageInfo.list">
-      <el-table-column prop="storageNum" label="操作" min-width="180"></el-table-column>
-      <el-table-column prop="storageNum" label="操作人" min-width="180"></el-table-column>
-      <el-table-column prop="channelName" label="岗位" min-width="180"></el-table-column>
-      <el-table-column prop="channelName" label="操作后状态" min-width="180"></el-table-column>
-      <el-table-column prop="cityGrade" label="操作时间" min-width="180"></el-table-column>
-      <el-table-column prop="cityGrade" label="处理结果" min-width="180"></el-table-column>
-      <el-table-column prop="cityGrade" label="系统" min-width="180"></el-table-column>
-      <el-table-column prop="cityGrade" label="备注" min-width="180"></el-table-column>
-    </el-table>
-    <p class="ih-info-title">补充成交报告操作记录信息</p>
-    <el-table
-      style="padding-left: 20px"
-      class="ih-table"
-      :empty-text="emptyText"
-      :data="resPageInfo.list">
-      <el-table-column prop="storageNum" label="操作" min-width="180"></el-table-column>
-      <el-table-column prop="storageNum" label="操作人" min-width="180"></el-table-column>
-      <el-table-column prop="channelName" label="岗位" min-width="180"></el-table-column>
-      <el-table-column prop="channelName" label="操作后状态" min-width="180"></el-table-column>
-      <el-table-column prop="cityGrade" label="操作时间" min-width="180"></el-table-column>
-      <el-table-column prop="cityGrade" label="处理结果" min-width="180"></el-table-column>
-      <el-table-column prop="cityGrade" label="系统" min-width="180"></el-table-column>
-      <el-table-column prop="cityGrade" label="备注" min-width="180"></el-table-column>
+      :data="data.list">
+      <el-table-column prop="operate" label="操作" min-width="150"></el-table-column>
+      <el-table-column prop="operaterName" label="操作人" min-width="130"></el-table-column>
+      <el-table-column prop="operaterJob" label="岗位" min-width="130"></el-table-column>
+      <el-table-column prop="afterStatus" label="操作后状态" min-width="150"></el-table-column>
+      <el-table-column prop="operateTime" label="操作时间" min-width="150"></el-table-column>
+      <el-table-column prop="result" label="处理结果" min-width="130"></el-table-column>
+      <el-table-column prop="system" label="系统" min-width="120"></el-table-column>
+      <el-table-column prop="remark" label="备注" min-width="150"></el-table-column>
     </el-table>
     <span slot="footer" class="dialog-footer">
       <el-button type="primary" @click="finish()">确 定</el-button>
@@ -56,7 +43,7 @@
 <script lang="ts">
   import {Component, Vue, Prop} from "vue-property-decorator";
 
-  import {post_channelGrade_getList} from "@/api/channel";
+  import {post_processRecord_getProcessRecordList} from "@/api/deal";
   import PaginationMixin from "@/mixins/pagination";
 
   @Component({
@@ -74,17 +61,22 @@
       total: null,
       list: [],
     };
+    queryPageParameters: any = {
+      dealId: null,
+    }
 
     async finish() {
       this.$emit("finish", true);
     }
 
     created() {
-      // this.getListMixin();
+      this.getListMixin();
     }
 
     async getListMixin() {
-      this.resPageInfo = await post_channelGrade_getList(this.queryPageParameters);
+      if (!this.data.dealId) return
+      this.queryPageParameters.dealId = this.data.dealId;
+      this.resPageInfo = await post_processRecord_getProcessRecordList(this.queryPageParameters);
     }
   }
 </script>

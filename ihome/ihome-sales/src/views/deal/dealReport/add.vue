@@ -8,13 +8,13 @@
 -->
 <template>
   <ih-page class="text-left">
-    <p class="ih-info-title">成交信息</p>
     <el-form
       :model="postData"
       :rules="rules"
       ref="ruleForm"
-      label-width="150px"
+      label-width="160px"
       class="demo-ruleForm">
+      <p class="ih-info-title">成交信息</p>
       <el-row>
         <el-col :span="6" v-if="!!postData.dealCode">
           <el-form-item label="成交报告编号" :prop="!!postData.dealCode ? 'dealCode' : ''">
@@ -26,13 +26,9 @@
         </el-col>
         <el-col :span="6">
           <el-form-item label="项目周期" prop="cycleId">
-            <el-input
-              ref="inputCycle"
-              class="input-select-wrapper"
-              placeholder="项目周期"
-              prefix-icon="el-icon-search"
-              @click.native.prevent="selectProject"
-              v-model="postData.cycleId"/>
+            <el-input placeholder="请选择项目周期" readonly v-model="postData.cycleName">
+              <el-button slot="append" icon="el-icon-search" @click.native.prevent="selectProject"></el-button>
+            </el-input>
           </el-form-item>
         </el-col>
         <el-col :span="6">
@@ -54,29 +50,33 @@
         </el-col>
         <el-col :span="6">
           <el-form-item label="合同类型" prop="contType">
-            <el-select
-              v-model="postData.contType"
-              clearable
-              placeholder="请选择合同类型"
-              class="width--100">
-              <el-option
-                v-for="item in $root.dictAllList('ContType')"
-                :key="item.code"
-                :label="item.name"
-                :value="item.code"
-              ></el-option>
-            </el-select>
+            <div class="cont-type-wrapper">
+              <div>
+                <el-select
+                  v-model="postData.contType"
+                  clearable
+                  placeholder="请选择合同类型"
+                  class="width--100">
+                  <el-option
+                    v-for="item in $root.dictAllList('ContType')"
+                    :key="item.code"
+                    :label="item.name"
+                    :value="item.code"
+                  ></el-option>
+                </el-select>
+              </div>
+              <el-button
+                @click="selectReport"
+                v-if="postData.contType === 'DistriDeal'"
+                type="primary" icon="el-icon-plus" size="small">报备信息</el-button>
+            </div>
           </el-form-item>
         </el-col>
         <el-col :span="6" v-if="postData.contType !== 'NaturalVisitDeal'">
           <el-form-item label="渠道商">
-            <el-input
-              ref="inputCompany"
-              class="input-select-wrapper"
-              placeholder="渠道商"
-              prefix-icon="el-icon-search"
-              @click.native.prevent="selectCompany"
-              v-model="postData.channel"/>
+            <el-input placeholder="请选择渠道商" readonly v-model="postData.channelName">
+              <el-button slot="append" icon="el-icon-search" @click.native.prevent="selectCompany"></el-button>
+            </el-input>
           </el-form-item>
         </el-col>
         <el-col :span="6">
@@ -117,7 +117,7 @@
         </el-col>
         <el-col :span="6">
           <el-form-item label="成交组织" prop="dealOrgId">
-            <el-input v-model="postData.dealOrgId" clearable placeholder="成交组织"></el-input>
+            <el-input v-model="postData.dealOrgId" disabled placeholder="成交组织"></el-input>
           </el-form-item>
         </el-col>
         <el-col :span="6">
@@ -228,7 +228,7 @@
             </el-date-picker>
           </el-form-item>
         </el-col>
-        <el-col :span="6">
+        <el-col :span="6" v-if="!!id">
           <el-form-item label="录入日期" prop="entryDate">
             <el-date-picker
               style="width: 100%"
@@ -239,34 +239,36 @@
             </el-date-picker>
           </el-form-item>
         </el-col>
-        <el-col :span="6">
+        <el-col :span="6" v-if="!!id">
           <el-form-item label="录入人" prop="entryPerson">
             <el-input v-model="postData.entryPerson" readonly placeholder="录入人"></el-input>
           </el-form-item>
         </el-col>
-        <el-col :span="6">
+        <el-col :span="6" v-if="!!id">
           <el-form-item label="成交状态" prop="status">
-            <el-input v-model="postData.status" clearable placeholder="成交状态"></el-input>
+            <el-input v-model="postData.status" disabled placeholder="成交状态"></el-input>
           </el-form-item>
         </el-col>
-        <el-col :span="24">
+        <el-col :span="12">
+          <el-form-item label="现场销售">
+            <el-input
+              type="textarea"
+              :rows="3"
+              v-model="postData.remarks"
+              placeholder="现场销售"></el-input>
+          </el-form-item>
+        </el-col>
+        <el-col :span="12">
           <el-form-item label="备注">
             <el-input
               type="textarea"
               :rows="3"
               v-model="postData.remarks"
-              placeholder="请输入备注说明"></el-input>
+              placeholder="备注说明"></el-input>
           </el-form-item>
         </el-col>
       </el-row>
-    </el-form>
-    <p class="ih-info-title">房产信息</p>
-    <el-form
-      :model="postData"
-      :rules="rules"
-      ref="ruleForm"
-      label-width="150px"
-      class="demo-ruleForm">
+      <p class="ih-info-title">房产信息</p>
       <el-row>
         <el-col :span="8">
           <el-form-item label="物业类型" prop="propertyType">
@@ -291,13 +293,9 @@
         </el-col>
         <el-col :span="8">
           <el-form-item label="房号">
-            <el-input
-              ref="inputRoom"
-              class="input-select-wrapper"
-              placeholder="房号"
-              prefix-icon="el-icon-search"
-              @click.native.prevent="selectRoom"
-              v-model="postData.roomNo"/>
+            <el-input placeholder="请选择房号" readonly v-model="postData.roomNo">
+              <el-button slot="append" icon="el-icon-search" @click.native.prevent="selectRoom"></el-button>
+            </el-input>
           </el-form-item>
         </el-col>
         <el-col :span="12">
@@ -556,6 +554,7 @@
     </div>
     <ih-dialog :show="dialogAddProjectCycle" desc="选择项目周期列表">
       <SelectProjectCycle
+        :hasCheckedData="cycleCheckedData"
         @cancel="() => (dialogAddProjectCycle = false)"
         @finish="
             (data) => {
@@ -567,11 +566,24 @@
     </ih-dialog>
     <ih-dialog :show="dialogAddAgentCompany" desc="选择渠道商列表">
       <AgentCompanyList
+        :hasCheckedData="companyCheckedData"
         @cancel="() => (dialogAddAgentCompany = false)"
         @finish="
             (data) => {
               dialogAddAgentCompany = false;
               finishAddAgentCompany(data);
+            }
+          "
+      />
+    </ih-dialog>
+    <ih-dialog :show="dialogAddReportInfo" desc="选择已成交报备信息列表">
+      <SelectReportInfo
+        :hasCheckedData="reportCheckedData"
+        @cancel="() => (dialogAddReportInfo = false)"
+        @finish="
+            (data) => {
+              dialogAddReportInfo = false;
+              finishAddReportInfo(data);
             }
           "
       />
@@ -614,6 +626,7 @@
 <script lang="ts">
   import {Component, Vue} from "vue-property-decorator";
   import SelectProjectCycle from "@/views/deal/dealReport/dialog/selectProjectCycle.vue";
+  import SelectReportInfo from "@/views/deal/dealReport/dialog/selectReportInfo.vue";
   import AgentCompanyList from "@/views/deal/dealReport/dialog/agentCompanyList.vue";
   import SelectRoom from "@/views/deal/dealReport/dialog/selectRoom.vue";
   import AddCustomer from "@/views/deal/dealReport/dialog/addCustomer.vue";
@@ -627,16 +640,18 @@
   import {NoRepeatHttp} from "ihome-common/util/aop/no-repeat-http";
 
   @Component({
-    components: {AddCustomer, AddBroker, SelectProjectCycle, SelectRoom, AgentCompanyList},
+    components: {AddCustomer, AddBroker, SelectProjectCycle, SelectRoom, AgentCompanyList, SelectReportInfo},
   })
   export default class DealReportAdd extends Vue {
     postData: any = {
       dealCode: null,
       cycleId: null,
+      cycleName: null,
       businessType: null,
       contType: null,
       subdivisionType: null,
-      channel: null,
+      channelId: null,
+      channelName: null,
       oneAgentTeamId: null,
       isMarketProject: null,
       dealOrgId: null,
@@ -677,7 +692,7 @@
       dealCode: [
         {required: true, message: "成交报告编号不能为空", trigger: "change"},
       ],
-      projectCycle: [
+      cycleId: [
         {required: true, message: "项目周期必选", trigger: "change"},
       ],
       businessType: [
@@ -728,7 +743,11 @@
     dialogAddCustomer: any = false;
     dialogAddBroker: any = false;
     dialogAddProjectCycle: any = false;
+    cycleCheckedData: any = [];
+    dialogAddReportInfo: any = false;
+    reportCheckedData: any = [];
     dialogAddAgentCompany: any = false;
+    companyCheckedData: any = [];
 
     async created() {
       this.DealDataFlag = (this as any).$root.dictAllList('DealDataFlag'); // 数据来源
@@ -804,33 +823,60 @@
     selectProject() {
       this.dialogAddProjectCycle = true;
       // input失焦
-      (this as any).$refs.inputCycle && (this as any).$refs.inputCycle.blur();
+      // (this as any).$refs.inputCycle && (this as any).$refs.inputCycle.blur();
     }
 
     // 确定选择项目周期
     async finishAddProjectCycle(data: any) {
       console.log('data', data);
-      // this.addTotalPackageList = data;
+      if (data && data.length > 0) {
+        this.postData.cycleName = data[0].termName;
+        this.postData.cycleId = data[0].termId;
+        this.cycleCheckedData = [...data];
+      }
+    }
+
+    // 选择已成交的报备信息-分销成交模式下
+    selectReport() {
+      this.dialogAddReportInfo = true;
+      // input失焦
+      // (this as any).$refs.inputCompany && (this as any).$refs.inputCompany.blur();
+    }
+
+    // 确定选择已成交的报备信息-分销成交模式下
+    finishAddReportInfo(data: any) {
+      // console.log('data', data);
+      if (data && data.length > 0) {
+        this.postData.channelName = data[0].name;
+        this.postData.channelId = data[0].id;
+        this.reportCheckedData = [...data];
+      }
     }
 
     // 选择渠道商
     selectCompany() {
       this.dialogAddAgentCompany = true;
       // input失焦
-      (this as any).$refs.inputCompany && (this as any).$refs.inputCompany.blur();
+      // (this as any).$refs.inputCompany && (this as any).$refs.inputCompany.blur();
     }
 
     // 确定选择渠道商
     finishAddAgentCompany(data: any) {
-      console.log('data', data);
-      // this.addTotalPackageList = data;
+      // console.log('data', data);
+      if (data && data.length > 0) {
+        this.postData.channelName = data[0].name;
+        this.postData.channelId = data[0].id;
+        this.companyCheckedData = [...data];
+      }
     }
 
     // 选择房号
     selectRoom() {
+      // 分销成交模式下不能选择房号，房号是不可编辑的
+      if (this.postData.contType === 'DistriDeal') return
       this.dialogAddRoom = true;
       // input失焦
-      (this as any).$refs.inputRoom && (this as any).$refs.inputRoom.blur();
+      // (this as any).$refs.inputRoom && (this as any).$refs.inputRoom.blur();
     }
 
     // 确定选择房号
@@ -986,6 +1032,17 @@
 
     /deep/ .el-input__inner {
       cursor: pointer;
+    }
+  }
+
+  .cont-type-wrapper {
+    width: 100%;
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+
+    div {
+      flex: 1;
     }
   }
 </style>

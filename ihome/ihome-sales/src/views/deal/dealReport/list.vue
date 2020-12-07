@@ -70,20 +70,27 @@
           </el-col>
           <el-col :span="8">
             <el-form-item label="组织">
-              <el-input
-                v-model="queryPageParameters.dealOrg"
-                clearable
-                placeholder="组织"
-              ></el-input>
+              <SelectOrganizationTree
+                :orgId="queryPageParameters.dealOrg"
+                @callback="(id) => (queryPageParameters.dealOrg = id)"
+              />
             </el-form-item>
           </el-col>
           <el-col :span="8">
             <el-form-item label="录入人">
-              <el-input
+              <IhSelectPageUser
                 v-model="queryPageParameters.entryPerson"
-                clearable
-                placeholder="录入人"
-              ></el-input>
+                clearable>
+                <template v-slot="{ data }">
+                  <span style="float: left">{{ data.name }}</span>
+                  <span style="
+                      margin-left: 20px;
+                      float: right;
+                      color: #8492a6;
+                      font-size: 13px;
+                    ">{{ data.account }}</span>
+                </template>
+              </IhSelectPageUser>
             </el-form-item>
           </el-col>
           <el-col :span="8">
@@ -115,11 +122,14 @@
           </el-col>
           <el-col :span="8">
             <el-form-item label="经纪人">
-              <el-input
+              <SelectByBroker
                 v-model="queryPageParameters.broker"
-                clearable
-                placeholder="经纪人"
-              ></el-input>
+                :isKeyUp="true"
+                :props="{
+                  value: 'id',
+                  key: 'id',
+                  lable: 'name'}"
+              />
             </el-form-item>
           </el-col>
           <el-col :span="8">
@@ -140,20 +150,26 @@
           </el-col>
           <el-col :span="8">
             <el-form-item label="项目周期">
-              <el-input
+              <SelectByCycle
                 v-model="queryPageParameters.projectCycle"
-                clearable
-                placeholder="项目周期"
-              ></el-input>
+                :isKeyUp="true"
+                :props="{
+                  value: 'id',
+                  key: 'id',
+                  lable: 'name'}"
+              />
             </el-form-item>
           </el-col>
           <el-col :span="8">
             <el-form-item label="栋座">
-              <el-input
+              <SelectByTower
                 v-model="queryPageParameters.agencyName"
-                clearable
-                placeholder="栋座"
-              ></el-input>
+                :isKeyUp="true"
+                :props="{
+                  value: 'id',
+                  key: 'id',
+                  lable: 'name'}"
+              />
             </el-form-item>
           </el-col>
           <el-col :span="8">
@@ -225,9 +241,9 @@
         </el-table-column>
         <el-table-column prop="contType" label="交易类型" min-width="180">
           <template slot-scope="scope">
-            <div v-if="scope.row.contType">{{scope.row.contType}}</div>
-            <div v-if="scope.row.suppContType">{{scope.row.suppContType}}</div>
-            <div>状态：{{scope.row.status}}</div>
+            <div v-if="scope.row.contType">{{ getNameByDict('ContType', scope.row.contType) }}</div>
+            <div v-if="scope.row.suppContType">{{ getNameByDict('SuppContType', scope.row.suppContType) }}</div>
+            <div>状态：{{ getNameByDict('DealStatus', scope.row.status) }}</div>
           </template>
         </el-table-column>
         <el-table-column prop="actualAmount" label="应收实收金额" min-width="190">
@@ -344,17 +360,22 @@
 </template>
 <script lang="ts">
   import {Component, Vue} from "vue-property-decorator";
+  import SelectOrganizationTree from "@/components/select/SelectOrganizationTree.vue";
+  import SelectByBroker from "@/components/select/SelectByBroker.vue";
+  import SelectByCycle from "@/components/select/SelectByCycle.vue";
+  import SelectByTower from "@/components/select/SelectByTower.vue";
 
   import {
     post_deal_getList,
     post_deal_delete__id,
-    post_deal_withdrawDeal
+    post_deal_withdrawDeal,
+    post_processRecord_withdrawReview
   } from "@/api/deal";
 
   import PaginationMixin from "@/mixins/pagination";
 
   @Component({
-    components: {},
+    components: {SelectOrganizationTree, SelectByBroker, SelectByCycle, SelectByTower},
     mixins: [PaginationMixin],
   })
   export default class DealReportList extends Vue {
@@ -379,7 +400,7 @@
 
     resPageInfo: any = {
       total: null,
-      list: [{}],
+      list: [],
     };
 
     async created() {
@@ -401,32 +422,18 @@
     // 获取成交报告列表
     async getListMixin() {
       this.resPageInfo = await post_deal_getList(this.queryPageParameters);
-      // 处理显示的数据
-      if (this.resPageInfo.list && this.resPageInfo.list.length > 0) {
-        this.resPageInfo.list.forEach((list: any) => {
-          // 1.合同类型
-          if (list.contType) {
-            list.contType = this.getName('ContType', list.contType);
-          }
-          // 2.补充类型
-          if (list.suppContType) {
-            list.suppContType = this.getName('SuppContType', list.suppContType);
-          }
-          // 3.成交状态
-          if (list.status) {
-            list.status = this.getName('DealStatus', list.status);
-          }
-        })
-      }
     }
 
-    // 在数据字典中获取对应的中文名
-    getName(key: any, type: any) {
-      if (!key || !type) return;
-      let name = '';
+    /** 在数据字典中获取对应的中文名
+    *   key: 字典的类型
+     *  value: 对应字典的code值
+    * */
+    getNameByDict(key: any, value: any) {
+      if (!key && !value) return "";
+      let name = "";
       let list = (this as any).$root.dictAllList(key);
       list.forEach((item: any) => {
-        if (item.code === type) {
+        if (item.code === value) {
           name = item.name
         }
       })
@@ -499,7 +506,13 @@
     async handleRecall(scope: any) {
       try {
         await this.$confirm("是否确定撤回?", "提示");
-        await post_deal_withdrawDeal({id: scope.row.id});
+        let postData: any = {
+          id: scope.row.id, // 成交ID
+          jobId: 0, // 当前用户岗位ID
+          status: scope.row.status, // 成交当前状态
+          userId: 0 // 当前用户ID
+        }
+        await post_deal_withdrawDeal(postData);
         this.$message({
           type: "success",
           message: "撤回成功!",
@@ -552,7 +565,13 @@
     async handleWithdrawalReview(scope: any) {
       try {
         await this.$confirm("是否确定撤回审核?", "提示");
-        await post_deal_delete__id({id: scope.row.id});
+        let postData: any = {
+          id: scope.row.id, // 成交ID
+          jobId: 0, // 当前用户岗位ID
+          status: scope.row.status, // 成交当前状态
+          userId: 0 // 当前用户ID
+        }
+        await post_processRecord_withdrawReview(postData);
         this.$message({
           type: "success",
           message: "撤回审核成功!",
