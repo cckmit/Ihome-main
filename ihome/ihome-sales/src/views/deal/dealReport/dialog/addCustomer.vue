@@ -85,7 +85,7 @@
 <script lang="ts">
   import {Component, Vue, Prop} from "vue-property-decorator";
 
-  import {post_channel_getList, post_channelGrade_getList} from "@/api/channel";
+  import {post_channelGrade_getList} from "@/api/channel";
   import PaginationMixin from "@/mixins/pagination";
 
   @Component({
