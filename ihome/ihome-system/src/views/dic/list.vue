@@ -4,7 +4,7 @@
  * @Author: zyc
  * @Date: 2020-11-24 10:49:12
  * @LastEditors: zyc
- * @LastEditTime: 2020-12-07 15:35:40
+ * @LastEditTime: 2020-12-07 17:01:53
 -->
 <!--
  * @Description: 数据字典列表
@@ -127,10 +127,11 @@
                 min-width="135"
               ></el-table-column>
               <el-table-column
-                label="类型"
+                label="类型code"
                 prop="type"
                 min-width="175"
               ></el-table-column>
+
               <el-table-column label="子类型" prop="subType"></el-table-column>
               <el-table-column label="标签" prop="tag"></el-table-column>
               <el-table-column
@@ -229,7 +230,6 @@ import {
 import DictType from "./dialog/dictType.vue";
 import DictItem from "./dialog/dictItem.vue";
 
- 
 @Component({
   components: { DictType, DictItem },
 })
