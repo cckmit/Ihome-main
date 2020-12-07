@@ -4,7 +4,7 @@
  * @Author: wwq
  * @Date: 2020-12-04 09:40:47
  * @LastEditors: wwq
- * @LastEditTime: 2020-12-05 18:51:29
+ * @LastEditTime: 2020-12-07 14:56:40
 -->
 <template>
   <el-dialog
@@ -189,6 +189,7 @@
                     clearable
                     :disabled="isSubdivideEnum"
                     placeholder="请选择"
+                    @change="subdivideEnumChange(row)"
                   >
                     <el-option
                       v-for="item in $root.dictAllList('SubdivideEnum')"
@@ -211,9 +212,10 @@
                     v-model="row.contractEnum"
                     clearable
                     placeholder="请选择"
+                    @change="contractEnumChange(row)"
                   >
                     <el-option
-                      v-for="item in $root.dictAllList('ContractEnum')"
+                      v-for="item in contractTypeOptions"
                       :key="item.code"
                       :label="item.name"
                       :value="item.code"
@@ -235,7 +237,7 @@
                     placeholder="请选择"
                   >
                     <el-option
-                      v-for="item in $root.dictAllList('TransactionEnum')"
+                      v-for="item in row.transactionEnumOptions"
                       :key="item.code"
                       :label="item.name"
                       :value="item.code"
@@ -543,6 +545,7 @@
                     clearable
                     :disabled="isSubdivideEnum"
                     placeholder="请选择"
+                    @change="subdivideEnumChange(row)"
                   >
                     <el-option
                       v-for="item in $root.dictAllList('SubdivideEnum')"
@@ -559,15 +562,16 @@
                 width="150"
                 align="center"
               >
-                <template v-slot="{ row }">
+                <template v-slot="{ row, $index }">
                   <el-select
                     style="width: 100%"
                     v-model="row.contractEnum"
                     clearable
                     placeholder="请选择"
+                    @change="contractEnumChange(row, i, $index)"
                   >
                     <el-option
-                      v-for="item in $root.dictAllList('ContractEnum')"
+                      v-for="item in contractTypeOptions"
                       :key="item.code"
                       :label="item.name"
                       :value="item.code"
@@ -589,7 +593,7 @@
                     placeholder="请选择"
                   >
                     <el-option
-                      v-for="item in $root.dictAllList('TransactionEnum')"
+                      v-for="item in row.transactionEnumOptions"
                       :key="item.code"
                       :label="item.name"
                       :value="item.code"
@@ -882,6 +886,8 @@ import {
   get_collectandsend_get__packageId,
   get_collectandsend_getBaseTermByTermId__termId,
 } from "@/api/project/index";
+import { get_businessModel_getContTypeByName__modelName } from "@/api/deal/index";
+import { post_dict_getAllByType } from "@/api/system/index";
 import Business from "../notification-dialog/channelBusiness.vue";
 import Rules from "../setMeal-dialog/rules.vue";
 @Component({
@@ -913,6 +919,7 @@ export default class SetMealEdit extends Vue {
   conditionIndex = 0;
   conditionRowIndex = 0;
   padCommissionEnumOptions: any = [];
+  contractTypeOptions: any = [];
   rules: any = {
     packageName: [
       { required: true, message: "请输入套餐名称", trigger: "change" },
@@ -1002,6 +1009,7 @@ export default class SetMealEdit extends Vue {
       this.busEnumType = "";
       this.isSubdivideEnum = false;
     }
+    if (this.info.busEnum) this.queryContractType();
   }
 
   cancel() {
@@ -1013,6 +1021,16 @@ export default class SetMealEdit extends Vue {
   @NoRepeatHttp()
   async submit(valid: any) {
     if (valid) {
+      this.info.startTime = this.info.timeList[0];
+      this.info.endTime = this.info.timeList[1];
+      this.info.colletionandsendMxs.forEach((v: any) => {
+        v.colletionandsendDetails = v.colletionandsendDetails.map(
+          (j: any, h: number) => ({
+            ...j,
+            sort: h,
+          })
+        );
+      });
       this.$emit("finish", this.info);
     } else {
       console.log("error submit!!");
@@ -1026,7 +1044,7 @@ export default class SetMealEdit extends Vue {
   async getInfo() {
     const id = this.data.id;
     if (id) {
-      this.info = await get_collectandsend_get__packageId({
+      const res = await get_collectandsend_get__packageId({
         packageId: id,
       });
       this.padCommissionEnumOptions = [
@@ -1042,6 +1060,7 @@ export default class SetMealEdit extends Vue {
           ),
         },
       ];
+      this.info = (this.$root as any).deepClone(res);
     } else {
       const item = await get_collectandsend_getBaseTermByTermId__termId({
         termId: this.$route.query.id,
@@ -1067,11 +1086,19 @@ export default class SetMealEdit extends Vue {
       // this.info.chargeEnum = "Service";
       this.info.colletionandsendMxs = [
         {
-          colletionandsendDetails: [{}],
+          colletionandsendDetails: [
+            {
+              transactionEnumOptions: [],
+            },
+          ],
           costTypeEnum: "ServiceFee",
         },
         {
-          colletionandsendDetails: [{}],
+          colletionandsendDetails: [
+            {
+              transactionEnumOptions: [],
+            },
+          ],
           costTypeEnum: "AgencyFee",
         },
       ];
@@ -1146,6 +1173,7 @@ export default class SetMealEdit extends Vue {
                 colletionandsendDetails: [
                   {
                     subdivideEnum: this.busEnumType,
+                    transactionEnumOptions: [],
                   },
                 ],
                 costTypeEnum: "ServiceFee",
@@ -1156,6 +1184,7 @@ export default class SetMealEdit extends Vue {
               colletionandsendDetails: [
                 {
                   subdivideEnum: this.busEnumType,
+                  transactionEnumOptions: [],
                 },
               ],
               costTypeEnum: "AgencyFee",
@@ -1173,6 +1202,7 @@ export default class SetMealEdit extends Vue {
           colletionandsendDetails: [
             {
               subdivideEnum: this.busEnumType,
+              transactionEnumOptions: [],
             },
           ],
           costTypeEnum: "ServiceFee",
@@ -1183,6 +1213,7 @@ export default class SetMealEdit extends Vue {
         colletionandsendDetails: [
           {
             subdivideEnum: this.busEnumType,
+            transactionEnumOptions: [],
           },
         ],
         costTypeEnum: "AgencyFee",
@@ -1204,7 +1235,7 @@ export default class SetMealEdit extends Vue {
     }
   }
 
-  // 删除行
+  // 新增行
   addRow(i: number) {
     this.info.colletionandsendMxs[i].colletionandsendDetails.push({
       collectandsendConditionVOS: [],
@@ -1230,6 +1261,35 @@ export default class SetMealEdit extends Vue {
       sort: "",
       subdivideEnum: this.busEnumType,
       transactionEnum: "",
+      transactionEnumOptions: [],
+    });
+  }
+
+  // 选择业务模式时清除行部分数据
+  subdivideEnumChange(data: any) {
+    if (data.subdivideEnum === "All") {
+      data.distributeAchieveAmount = 0;
+      data.distributeAchievePoint = 0;
+    }
+  }
+
+  // 根据业务模式获取合同类型
+  async queryContractType() {
+    const item = await get_businessModel_getContTypeByName__modelName({
+      modelName: this.info.busEnum,
+    });
+    this.contractTypeOptions = item.map((v: any) => ({
+      code: v,
+      name: (this.$root as any).dictAllName(v, "ContType"),
+    }));
+  }
+
+  // 根据合同类型获取客户类型
+  async contractEnumChange(data: any) {
+    data.transactionEnumOptions = await post_dict_getAllByType({
+      type: "TransactionEnum",
+      tag: data.contractEnum,
+      valid: "Valid",
     });
   }
 

@@ -4,7 +4,7 @@
  * @Author: wwq
  * @Date: 2020-12-04 19:58:24
  * @LastEditors: wwq
- * @LastEditTime: 2020-12-05 16:10:47
+ * @LastEditTime: 2020-12-07 09:25:08
 -->
 <template>
   <el-dialog
@@ -239,7 +239,7 @@ export default class RulesDialog extends Vue {
       info = this.data.map((v: any) => {
         let arr: any = [];
         const item = ruleEnumList.find((j: any) => j.code === v.compare);
-        if (item) arr = item?.tag.split(",");
+        if (item) arr = item.tag?.split(",");
         return {
           ...v,
           checkboxed: true,

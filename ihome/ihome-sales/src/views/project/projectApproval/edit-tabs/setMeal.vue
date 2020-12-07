@@ -4,7 +4,7 @@
  * @Author: wwq
  * @Date: 2020-11-27 17:22:45
  * @LastEditors: wwq
- * @LastEditTime: 2020-12-04 09:56:55
+ * @LastEditTime: 2020-12-07 15:25:55
 -->
 <template>
   <div>
@@ -100,21 +100,29 @@
         @finish="(data) => addFinish(data)"
       />
     </ih-dialog>
+    <ih-dialog :show="viewDialogVisible">
+      <info
+        :data="infoData"
+        @cancel="() => (viewDialogVisible = false)"
+      />
+    </ih-dialog>
   </div>
 </template>
 <script lang="ts">
 import { Component, Vue } from "vue-property-decorator";
 import Edit from "../dialog/setMeal-dialog/edit.vue";
+import Info from "../dialog/setMeal-dialog/info.vue";
 import {
   post_collectandsend_getAllByTerm,
   post_collectandsend_start,
   post_collectandsend_cancel,
-  post_distributContract_add,
-  post_distributContract_update,
+  post_collectandsend_add,
+  post_collectandsend_update,
 } from "@/api/project/index.ts";
 @Component({
   components: {
     Edit,
+    Info,
   },
 })
 export default class SetMeal extends Vue {
@@ -122,6 +130,7 @@ export default class SetMeal extends Vue {
   viewDialogVisible = false;
   info: any = [];
   editData: any = {};
+  infoData: any = {};
 
   created() {
     this.getInfo();
@@ -133,7 +142,6 @@ export default class SetMeal extends Vue {
       this.info = await post_collectandsend_getAllByTerm({
         termId: id,
       });
-      this.info = [{}];
     }
   }
 
@@ -143,23 +151,25 @@ export default class SetMeal extends Vue {
   }
 
   edit(row: any) {
-    this.editData.id = row.id;
+    this.editData.id = row.packageId;
     this.dialogVisible = true;
   }
 
-  view() {
+  view(row: any) {
     this.viewDialogVisible = true;
+    this.infoData.id = row.packageId;
   }
 
   async addFinish(data: any) {
     data.termId = this.$route.query.id;
+    data.exStop = 0;
+    console.log(data);
     if (this.editData.id) {
-      data.id = this.editData.id;
-      await post_distributContract_update(data);
+      data.packageId = this.editData.id;
+      await post_collectandsend_update(data);
       this.$message.success("修改成功");
     } else {
-      data.partyCompanyId = this.info.preferentialPartyAId;
-      await post_distributContract_add(data);
+      await post_collectandsend_add(data);
       this.$message.success("新增成功");
     }
     this.dialogVisible = false;
