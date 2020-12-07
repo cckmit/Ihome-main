@@ -23,7 +23,7 @@
         <el-col :span="8">
           <el-form-item label="客户姓名">
             <el-input
-              v-model="queryPageParameters.city"
+              v-model="queryPageParameters.custName"
               placeholder="客户姓名"
             ></el-input>
           </el-form-item>
@@ -31,7 +31,7 @@
         <el-col :span="8">
           <el-form-item label="客户类型">
             <el-input
-              v-model="queryPageParameters.city"
+              v-model="queryPageParameters.custType"
               placeholder="客户类型"
             ></el-input>
           </el-form-item>
@@ -39,7 +39,7 @@
         <el-col :span="8">
           <el-form-item label="客户编号">
             <el-input
-              v-model="queryPageParameters.city"
+              v-model="queryPageParameters.custCode"
               placeholder="客户编号"
             ></el-input>
           </el-form-item>
@@ -47,7 +47,7 @@
         <el-col :span="8">
           <el-form-item label="手机号码">
             <el-input
-              v-model="queryPageParameters.city"
+              v-model="queryPageParameters.custTel"
               placeholder="手机号码"
             ></el-input>
           </el-form-item>
@@ -85,7 +85,7 @@
 <script lang="ts">
   import {Component, Vue, Prop} from "vue-property-decorator";
 
-  import {post_channelGrade_getList} from "@/api/channel";
+  import {post_customer_getCustList} from "@/api/customer";
   import PaginationMixin from "@/mixins/pagination";
 
   @Component({
@@ -98,43 +98,43 @@
     }
 
     private rowKey: any = 'id'; // 选择项的标识
-    private tableMaxHeight: any = 500;
+    private tableMaxHeight: any = 350;
     private tableColumn = [
       {
-        prop: "name",
+        prop: "custCode",
         label: "客户编号",
         align: "left",
-        minWidth: 200,
+        minWidth: 250,
       },
       {
-        prop: "shortName",
+        prop: "custName",
         label: "客户姓名",
+        align: "left",
+        minWidth: 110,
+      },
+      {
+        prop: "custTypeByName",
+        label: "客户类型",
+        align: "left",
+        minWidth: 110,
+      },
+      {
+        prop: "custTel",
+        label: "手机号码",
+        align: "left",
+        minWidth: 160,
+      },
+      {
+        prop: "cardTypeByName",
+        label: "证件类型",
         align: "left",
         minWidth: 120,
       },
       {
-        prop: "termStart",
-        label: "客户类型",
-        align: "left",
-        minWidth: 100,
-      },
-      {
-        prop: "province",
-        label: "手机号码",
-        align: "left",
-        minWidth: 150,
-      },
-      {
-        prop: "city",
-        label: "证件类型",
-        align: "left",
-        minWidth: 100,
-      },
-      {
-        prop: "county",
+        prop: "certificateNumber",
         label: "证件号码",
         align: "left",
-        minWidth: 150,
+        minWidth: 180,
       }
     ];
     private pageSize = 10;
@@ -152,21 +152,15 @@
     };
 
     queryPageParameters: any = {
-      channelGrade: null,
-      channelId: null,
-      city: null,
-      cityGrade: null,
-      departmentOrgId: null,
-      inputUser: null,
-      province: null,
-      special: null,
-      status: null,
-      storageNum: null,
+      custName: null,
+      custType: null,
+      custCode: null,
+      custTel: null
     };
     currentSelection: any = []; // 当前选择的项
 
     created() {
-      // this.getListMixin();
+      this.getListMixin();
     }
 
     async beforeFinish() {
@@ -205,10 +199,19 @@
     }
 
     async getListMixin() {
-      const infoList = await post_channelGrade_getList(this.queryPageParameters);
+      const infoList = await post_customer_getCustList(this.queryPageParameters);
+      // 原始数据处理
       if (infoList.list.length > 0) {
         infoList.list.forEach((item: any) => {
-          item.checked = false;
+          item.checked = false; // 勾选标志
+          // 客户类型
+          if (item.custType) {
+            item.custTypeByName = (this as any).$root.dictAllName(item.custType, 'CustType');
+          }
+          // 证件类型
+          if (item.cardType) {
+            item.cardTypeByName = (this as any).$root.dictAllName(item.cardType, 'CardType');
+          }
         })
       }
       this.resPageInfo = JSON.parse(JSON.stringify(infoList));
@@ -227,7 +230,10 @@
 
     reset() {
       this.queryPageParameters = {
-        name: null,
+        custName: null,
+        custType: null,
+        custCode: null,
+        custTel: null,
         pageNum: 1,
         pageSize: this.queryPageParameters.pageSize
       };

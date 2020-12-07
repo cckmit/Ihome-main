@@ -241,9 +241,9 @@
         </el-table-column>
         <el-table-column prop="contType" label="交易类型" min-width="180">
           <template slot-scope="scope">
-            <div v-if="scope.row.contType">{{ getNameByDict('ContType', scope.row.contType) }}</div>
-            <div v-if="scope.row.suppContType">{{ getNameByDict('SuppContType', scope.row.suppContType) }}</div>
-            <div>状态：{{ getNameByDict('DealStatus', scope.row.status) }}</div>
+            <div v-if="scope.row.contType">{{ $root.dictAllName(scope.row.contType, 'ContType') }}</div>
+            <div v-if="scope.row.suppContType">{{ $root.dictAllName(scope.row.suppContType, 'SuppContType') }}</div>
+            <div>状态：{{ $root.dictAllName(scope.row.status, 'DealStatus') }}</div>
           </template>
         </el-table-column>
         <el-table-column prop="actualAmount" label="应收实收金额" min-width="190">
@@ -421,23 +421,14 @@
 
     // 获取成交报告列表
     async getListMixin() {
+      if (this.queryPageParameters.timeType && this.selectTimeRange.length === 0) {
+        this.$message({
+          type: "error",
+          message: "请选择对应查询时间!",
+        });
+        return
+      }
       this.resPageInfo = await post_deal_getList(this.queryPageParameters);
-    }
-
-    /** 在数据字典中获取对应的中文名
-    *   key: 字典的类型
-     *  value: 对应字典的code值
-    * */
-    getNameByDict(key: any, value: any) {
-      if (!key && !value) return "";
-      let name = "";
-      let list = (this as any).$root.dictAllList(key);
-      list.forEach((item: any) => {
-        if (item.code === value) {
-          name = item.name
-        }
-      })
-      return name;
     }
 
     // 重置

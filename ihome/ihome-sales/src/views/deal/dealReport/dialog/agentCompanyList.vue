@@ -67,7 +67,7 @@
     }
 
     private rowKey: any = 'id'; // 选择项的标识
-    private tableMaxHeight: any = 500;
+    private tableMaxHeight: any = 350;
     private tableColumn = [
       {
         prop: "name",
