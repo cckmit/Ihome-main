@@ -4,7 +4,7 @@
  * @Author: zyc
  * @Date: 2020-07-14 09:23:40
  * @LastEditors: zyc
- * @LastEditTime: 2020-11-11 14:48:41
+ * @LastEditTime: 2020-12-07 18:04:04
 --> 
 --> 
 <template>
@@ -17,41 +17,78 @@
           </el-col>
           <el-col :span="22" class="text-right">
             <el-input
-              style="width:300px;"
+              style="width: 300px"
               placeholder="名称 编码"
               class="input-with-select"
               v-model="queryPageParameters.key"
               @keyup.enter.native="getListMixin"
             ></el-input>
-            <el-button class="margin-left-20" type="primary" @click="getListMixin()">查询</el-button>
+            <el-button
+              class="margin-left-20"
+              type="primary"
+              @click="getListMixin()"
+              >查询</el-button
+            >
           </el-col>
         </el-row>
       </el-form>
     </template>
     <template v-slot:table>
       <br />
-      <el-table class="ih-table" :data="resPageInfo.list"
-      :empty-text="emptyText">
+      <el-table
+        class="ih-table"
+        :data="resPageInfo.list"
+        :empty-text="emptyText"
+      >
         <el-table-column type="index" label="序号" width="50"></el-table-column>
         <el-table-column prop="name" label="名称" width="180"></el-table-column>
         <el-table-column prop="code" label="编码" width="180"></el-table-column>
+        <el-table-column prop="code" label="数据权限" width="180">
+          <template slot-scope="scope">{{
+            $root.dictAllName(scope.row.dataLimit, "DataLimit")
+          }}</template>
+        </el-table-column>
         <el-table-column prop="remark" label="描述"></el-table-column>
-        <el-table-column prop="createUserName" label="创建人" width="90"></el-table-column>
-        <el-table-column prop="createTime" label="创建时间" width="155"></el-table-column>
-        <el-table-column prop="updateUserName" label="修改人" width="90"></el-table-column>
-        <el-table-column prop="updateTime" label="修改时间" width="155"></el-table-column>
+        <el-table-column
+          prop="createUserName"
+          label="创建人"
+          width="90"
+        ></el-table-column>
+        <el-table-column
+          prop="createTime"
+          label="创建时间"
+          width="155"
+        ></el-table-column>
+        <el-table-column
+          prop="updateUserName"
+          label="修改人"
+          width="90"
+        ></el-table-column>
+        <el-table-column
+          prop="updateTime"
+          label="修改时间"
+          width="155"
+        ></el-table-column>
         <el-table-column fixed="right" label="操作" width="120">
           <template slot-scope="scope">
-            <el-link type="primary" @click.native.prevent="info(scope)">详情</el-link>
-            <el-dropdown trigger="click" style="margin-left:15px;">
+            <el-link type="primary" @click.native.prevent="info(scope)"
+              >详情</el-link
+            >
+            <el-dropdown trigger="click" style="margin-left: 15px">
               <span class="el-dropdown-link">
                 更多
                 <i class="el-icon-arrow-down el-icon--right"></i>
               </span>
               <el-dropdown-menu slot="dropdown">
-                <el-dropdown-item @click.native.prevent="edit(scope)">编辑</el-dropdown-item>
-                <el-dropdown-item @click.native.prevent="remove(scope)">删除</el-dropdown-item>
-                <el-dropdown-item @click.native.prevent="assignRole(scope)">分配角色</el-dropdown-item>
+                <el-dropdown-item @click.native.prevent="edit(scope)"
+                  >修改</el-dropdown-item
+                >
+                <el-dropdown-item @click.native.prevent="remove(scope)"
+                  >删除</el-dropdown-item
+                >
+                <el-dropdown-item @click.native.prevent="assignRole(scope)"
+                  >分配角色</el-dropdown-item
+                >
               </el-dropdown-menu>
             </el-dropdown>
           </template>
@@ -71,18 +108,28 @@
       ></el-pagination>
     </template>
 
-    <ih-dialog :show="dialogAddEdit" desc="岗位新增编辑">
+    <ih-dialog :show="dialogAddEdit" desc="岗位新增修改">
       <JobAddEdit
         :data="editData"
-        @cancel="()=>dialogAddEdit=false"
-        @finish="(data)=>{dialogAddEdit=false;finishAddEdit(data)}"
+        @cancel="() => (dialogAddEdit = false)"
+        @finish="
+          (data) => {
+            dialogAddEdit = false;
+            finishAddEdit(data);
+          }
+        "
       />
     </ih-dialog>
     <ih-dialog :show="dialogAssignRole" desc="分配角色">
       <AssignRole
         :data="dialogAssignRoleData"
-        @cancel="()=>dialogAssignRole=false"
-        @finish="(data)=>{dialogAssignRole=false;finishAssignRole(data)}"
+        @cancel="() => (dialogAssignRole = false)"
+        @finish="
+          (data) => {
+            dialogAssignRole = false;
+            finishAssignRole(data);
+          }
+        "
       />
     </ih-dialog>
   </ih-page>
@@ -116,7 +163,7 @@ export default class JobInfo extends Vue {
 
   async add(data: any) {
     console.log(data);
-    this.editData = data;
+    this.editData = this.$tool.deepClone(data);
 
     this.dialogAddEdit = true;
   }

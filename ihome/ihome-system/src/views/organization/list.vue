@@ -4,7 +4,7 @@
  * @Author: zyc
  * @Date: 2020-07-14 11:26:26
  * @LastEditors: zyc
- * @LastEditTime: 2020-12-07 17:26:37
+ * @LastEditTime: 2020-12-07 17:31:59
 --> 
 <template>
   <ih-page class="organization-list">
@@ -170,7 +170,7 @@
                   class="margin-right-10"
                   type="primary"
                   @click.native.prevent="edit(scope)"
-                  >编辑</el-link
+                  >修改</el-link
                 >
                 <el-link
                   style="color: #f66"
