@@ -3,8 +3,8 @@
  * @version: 
  * @Author: ywl
  * @Date: 2020-11-09 15:15:30
- * @LastEditors: ywl
- * @LastEditTime: 2020-11-10 14:08:48
+ * @LastEditors: zyc
+ * @LastEditTime: 2020-12-07 15:21:58
 -->
 <template>
   <el-dialog
@@ -96,7 +96,7 @@
 import { Component, Vue, Prop } from "vue-property-decorator";
 import { Form as ElForm } from "element-ui";
 import { NoRepeatHttp } from "ihome-common/util/aop/no-repeat-http";
-import { noTrim, isChineseValidato } from "ihome-common/util/base/form-ui";
+import { noTrim } from "ihome-common/util/base/form-ui";
 
 import { post_dict_add, post_dict_update } from "@/api/system/index";
 
@@ -124,7 +124,7 @@ export default class DictItemDialog extends Vue {
     name: [
       { required: true, message: "请输入名称", trigger: "blur" },
       { validator: noTrim, trigger: ["change", "blur"] },
-      { validator: isChineseValidato, trigger: ["change", "blur"] },
+      // { validator: isChineseValidato, trigger: ["change", "blur"] },
     ],
     subType: [
       { validator: noTrim, trigger: ["change", "blur"] },
