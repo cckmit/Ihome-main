@@ -4,86 +4,105 @@
  * @Author: ywl
  * @Date: 2020-09-27 14:41:06
  * @LastEditors: ywl
- * @LastEditTime: 2020-09-27 16:34:59
+ * @LastEditTime: 2020-12-05 08:42:17
 -->
 <template>
-  <IhPage class="text-left">
+  <IhPage class="text-left strategy-info">
     <template #info>
       <p class="ih-info-title">基础信息</p>
       <el-form
         :model="ruleForm"
         ref="ruleForm"
         label-width="100px"
-        class="demo-ruleForm"
+        class="padding-left-30"
       >
         <el-row>
           <el-col :span="24">
             <el-form-item label="标题">
-              XXX合作框架协议
+              {{ruleForm.title}}
             </el-form-item>
           </el-col>
+        </el-row>
+        <el-row :span="24">
+          <el-form-item label="协议类型">
+            {{ $root.dictAllName(ruleForm.agreementType, 'AgreementTypeEnum') }}
+          </el-form-item>
         </el-row>
         <el-row>
           <el-col :span="12">
             <el-form-item label="甲方">
-              保利地产
+              {{ruleForm.partyA}}
             </el-form-item>
           </el-col>
         </el-row>
         <el-row>
           <el-col :span="12">
             <el-form-item label="乙方">
-              广州居恒
+              {{ruleForm.partyB}}
             </el-form-item>
           </el-col>
         </el-row>
         <el-row>
           <el-col :span="12">
             <el-form-item label="协议时间">
-              2020-09-01 至 2020-09-27
-              <!-- <el-date-picker
-                style="width:100%;"
-                v-model="ruleForm.employmentDate"
-                type="date"
-                align="left"
-                placeholder="年/月/日"
-                :picker-options="$root.pickerOptions"
-                value-format="yyyy-MM-dd"
-              ></el-date-picker> -->
+              {{ruleForm.beginTime}} 至 {{ruleForm.endTime}}
             </el-form-item>
           </el-col>
         </el-row>
         <el-row>
           <el-col :span="12">
             <el-form-item label="协议编号">
-              (自动生成)
+              {{ruleForm.strategyCode}}
             </el-form-item>
           </el-col>
           <el-col :span="12">
             <el-form-item label="归档编号">
-              (自动生成)
+              <span>{{ruleForm.fileCode}}</span>
             </el-form-item>
           </el-col>
         </el-row>
         <el-row>
           <el-col :span="12">
             <el-form-item label="归档状态">
+              <span v-if="$route.name === 'StrategyDetail'">
+                {{$root.dictAllName(ruleForm.fileState, 'StrategyEnum.FileState')}}
+              </span>
               <el-select
-                v-model="ruleForm.name"
+                v-model="ruleForm.fileState"
                 placeholder="归档状态"
                 clearable
                 class="width--100"
-              ></el-select>
+                disabled
+              >
+                <el-option
+                  v-for="item in $root.dictAllList('StrategyEnum.FileState')"
+                  :key="item.code"
+                  :label="item.name"
+                  :value="item.code"
+                ></el-option>
+              </el-select>
             </el-form-item>
           </el-col>
           <el-col :span="12">
-            <el-form-item label="当前状态">
+            <el-form-item label="审核状态">
+              <span v-if="$route.name === 'StrategyDetail'">
+                {{$root.dictAllName(ruleForm.state, 'StrategyState')}}
+              </span>
               <el-select
-                v-model="ruleForm.name"
+                v-model="ruleForm.state"
                 placeholder="当前状态"
                 clearable
+                v-else
                 class="width--100"
-              ></el-select>
+                disabled
+              >
+                <el-option
+                  v-for="item in $root.dictAllList('StrategyState')"
+                  :key="item.code"
+                  :label="item.name"
+                  :value="item.code"
+                ></el-option>
+              </el-select>
             </el-form-item>
           </el-col>
         </el-row>
@@ -91,9 +110,10 @@
           <el-col :span="24">
             <el-form-item label="未盖章扫描件">
               <IhUpload
+                :removePermi="false"
                 :file-list="fileList"
                 size="100px"
-                :limit="1"
+                @newFileList="handleNoSealFile"
               ></IhUpload>
             </el-form-item>
           </el-col>
@@ -102,13 +122,29 @@
           <el-col :span="24">
             <el-form-item label="盖章版归档">
               <IhUpload
+                :removePermi="false"
                 :file-list="fileList2"
                 size="100px"
-                :limit="1"
+                class="update"
+                @newFileList="handleSealFile"
               ></IhUpload>
+              <el-button
+                type="primary"
+                class="upload-button"
+                @click="duplicate()"
+              >提交</el-button>
             </el-form-item>
           </el-col>
         </el-row>
+        <div class="annotation padding-left-20">*注：上传附件后请点击提交按钮保存</div>
+        <!-- <el-row>
+          <div
+            class="text-center"
+            v-if="$route.name === 'scanArchived'"
+          >
+            <el-button type="primary">扫描件归档</el-button>
+          </div>
+        </el-row> -->
       </el-form>
     </template>
   </IhPage>
@@ -117,16 +153,80 @@
 <script lang="ts">
 import { Component, Vue } from "vue-property-decorator";
 
+import { get_strategy_detail__id } from "@/api/contract/index";
+
 @Component({})
 export default class StrategyDetail extends Vue {
   private ruleForm: any = {};
-  private fileList: Array<object> = [
-    {
-      name: "abc.pdf",
-      url: `http://filesvr.polyihome.test/aist-filesvr-web/JQeryUpload/getfile?fileId=2c92808873be3796017490db113b0616`,
-      img_url: `http://filesvr.polyihome.test/aist-filesvr-web/JQeryUpload/getfile?fileId=2c92808873be3796017490db113b0616`,
-    },
-  ];
+  private fileList: Array<object> = [];
   private fileList2: Array<object> = [];
+
+  private noSealFile: any = [];
+  private sealFile: any = [];
+
+  private handleNoSealFile(val: any) {
+    this.noSealFile = val.map((v: any) => {
+      return {
+        type: "NoSeal",
+        attachmentSuffix: v.name,
+        url: v.fileId,
+      };
+    });
+  }
+  private handleSealFile(val: any) {
+    this.sealFile = val.map((v: any) => {
+      return {
+        type: "Seal",
+        attachmentSuffix: v.name,
+        url: v.fileId,
+      };
+    });
+  }
+  private duplicate() {
+    //
+  }
+  private async getInfo(): Promise<void> {
+    let id = this.$route.query.id;
+    if (id) {
+      this.ruleForm = await get_strategy_detail__id({ id: id });
+      this.ruleForm.originalList.forEach((item: any) => {
+        switch (item.type) {
+          case "NoSeal":
+            this.fileList.push({
+              name: item.attachmentSuffix,
+              fileId: item.url,
+            });
+            break;
+          case "Seal":
+            this.fileList2.push({
+              name: item.attachmentSuffix,
+              fileId: item.url,
+            });
+            break;
+        }
+      });
+    }
+  }
+
+  created() {
+    this.getInfo();
+  }
 }
 </script>
+
+<style lang="scss" scoped>
+.strategy-info {
+  /deep/ .upload {
+    display: inline-block;
+  }
+  .upload-button {
+    position: absolute;
+    bottom: 0;
+    margin-left: 15px;
+  }
+  .annotation {
+    color: #d9001b;
+    font-size: 14px;
+  }
+}
+</style>

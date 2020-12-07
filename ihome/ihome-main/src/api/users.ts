@@ -4,7 +4,7 @@
  * @Author: zyc
  * @Date: 2020-06-24 09:47:33
  * @LastEditors: wwq
- * @LastEditTime: 2020-11-27 18:24:49
+ * @LastEditTime: 2020-12-07 09:35:36
  */
 import { IRes } from "./users.d";
 // import request from '@/utils/http';
@@ -222,7 +222,7 @@ export function allMenu<T>() {
         {
             id: 403,
             parentId: 401,
-            title: "渠道合同列表",
+            title: "渠道分销协议列表",
             icon: null,
             path: "/web-sales/distribution/list"
         },
@@ -310,12 +310,13 @@ export const login = async (data: any) => {
     //http://localhost:8610/sales-oauth2/oauth/token?grant_type=password&client_id=sales-client-dev&client_secret=sales-dev&username=admin&password=123456
 
 
-    let url = `/sales-api/sales-oauth2/oauth/token?grant_type=password&client_id=sales-client-dev&client_secret=sales-dev&username=${data.username}&password=${data.password}`;
-
+    // let url = `/sales-api/sales-oauth2/oauth/token?grant_type=password&client_id=sales-client-dev&client_secret=sales-dev&username=${data.username}&password=${data.password}`;
+    const auth_client = 'UGM6c2FsZXMhMjAyMA==';
+    let url = `/sales-api/sales-oauth2/oauth/token?grant_type=password&username=${data.username}&password=${data.password}&auth_client=${auth_client}`
     const res: any = await request({
         url: url,
         method: 'post',
-    })
+    });
 
     return res;
 

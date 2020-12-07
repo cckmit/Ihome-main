@@ -166,6 +166,7 @@
               :prop="'tableData.' + scope.$index + '.ratio'"
               :rules='tableModel.rules.ratio'>
               <el-input-number
+                v-digits="2"
                 class="input-number-left"
                 v-model="scope.row.ratio"
                 @blur="handleChangeValue($event, scope)"

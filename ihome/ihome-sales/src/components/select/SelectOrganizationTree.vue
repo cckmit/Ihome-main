@@ -3,8 +3,8 @@
  * @version: 
  * @Author: zyc
  * @Date: 2020-08-12 10:12:11
- * @LastEditors: wwq
- * @LastEditTime: 2020-12-07 09:36:40
+ * @LastEditors: zyc
+ * @LastEditTime: 2020-08-12 14:10:56
 -->
 <template>
   <IhSelectTree
@@ -20,7 +20,7 @@
 </template>
 <script lang="ts">
 import { Component, Vue, Prop } from "vue-property-decorator";
-import { get_org_getAll } from "../api/system/index";
+import { get_org_getAll } from "@/api/system/index";
 @Component({
   components: {},
 })
@@ -40,7 +40,7 @@ export default class SelectOrganizationTree extends Vue {
     this.$emit("callback", value);
   }
   async created() {
-    this.currentId = this.orgId;
+      this.currentId=this.orgId;
     let listOrg = await get_org_getAll({ onlyValid: true });
     if (listOrg && listOrg.length > 0) {
       listOrg[0].parentId = 0;
