@@ -4,7 +4,7 @@
  * @Author: ywl
  * @Date: 2020-09-25 17:34:32
  * @LastEditors: ywl
- * @LastEditTime: 2020-12-04 19:14:41
+ * @LastEditTime: 2020-12-07 10:13:50
 -->
 <template>
   <IhPage label-width="100px">
@@ -241,8 +241,8 @@
             导出<i class="el-icon-arrow-down el-icon--right"></i>
           </el-button>
           <el-dropdown-menu slot="dropdown">
-            <el-dropdown-item>导出列表</el-dropdown-item>
-            <el-dropdown-item>导出附件</el-dropdown-item>
+            <el-dropdown-item @click.native.prevent="handleExport()">导出列表</el-dropdown-item>
+            <el-dropdown-item @click.native.prevent="handleExportFile()">导出附件</el-dropdown-item>
           </el-dropdown-menu>
         </el-dropdown>
         <el-link
@@ -272,7 +272,7 @@
           fixed
           label="标题"
           prop="title"
-          min-width="100"
+          min-width="235"
         ></el-table-column>
         <el-table-column
           label="甲方公司"
@@ -392,6 +392,8 @@ import SelectPageByProject from "@/components/SelectPageByProject.vue";
 import SelectPageByCycle from "@/components/SelectPageByCycle.vue";
 import SelectPageByChannle from "@/components/SelectPageByChannel.vue";
 import SelectOrganizationTree from "@/components/SelectOrganizationTree.vue";
+import axios from "axios";
+import { getToken } from "ihome-common/util/cookies";
 import { get_channel_getAll } from "@/api/channel/index";
 import { post_company_getAll } from "@/api/system/index";
 import {
@@ -490,6 +492,56 @@ export default class DistributionList extends Vue {
     } catch (error) {
       console.log(error);
     }
+  }
+  private handleExport() {
+    if (!this.selectionData.length) {
+      this.$message.warning("请先勾选表格数据");
+      return;
+    }
+    const token: any = getToken();
+    axios({
+      method: "POST",
+      url: `/sales-api/contract/export/distribution/list`,
+      xsrfHeaderName: "Authorization",
+      responseType: "blob",
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: "bearer " + token,
+      },
+      data: this.selectionData.map((i: any) => i.id),
+    }).then((res: any) => {
+      const href = window.URL.createObjectURL(res.data);
+      const $a = document.createElement("a");
+      $a.href = href;
+      $a.download = "列表.xlsx";
+      $a.click();
+      $a.remove();
+    });
+  }
+  private handleExportFile() {
+    if (!this.selectionData.length) {
+      this.$message.warning("请先勾选表格数据");
+      return;
+    }
+    const token: any = getToken();
+    axios({
+      method: "POST",
+      url: `/sales-api/contract/export/distribution/file`,
+      xsrfHeaderName: "Authorization",
+      responseType: "blob",
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: "bearer " + token,
+      },
+      data: this.selectionData.map((i: any) => i.id),
+    }).then((res: any) => {
+      const href = window.URL.createObjectURL(res.data);
+      const $a = document.createElement("a");
+      $a.href = href;
+      $a.download = "附件.zip";
+      $a.click();
+      $a.remove();
+    });
   }
   /**
    * @description: 渠道分销合同驳回

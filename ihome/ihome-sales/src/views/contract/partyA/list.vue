@@ -4,7 +4,7 @@
  * @Author: ywl
  * @Date: 2020-09-25 11:53:51
  * @LastEditors: ywl
- * @LastEditTime: 2020-12-04 19:00:47
+ * @LastEditTime: 2020-12-07 10:12:21
 -->
 <template>
   <IhPage label-width="100px">
@@ -463,7 +463,7 @@ export default class PartyAList extends Vue {
       const href = window.URL.createObjectURL(res.data);
       const $a = document.createElement("a");
       $a.href = href;
-      $a.download = "列表.xlsx";
+      $a.download = "附件.zip";
       $a.click();
       $a.remove();
     });
