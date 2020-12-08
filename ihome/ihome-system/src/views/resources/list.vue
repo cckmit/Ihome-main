@@ -4,13 +4,16 @@
  * @Author: zyc
  * @Date: 2020-07-06 09:41:43
  * @LastEditors: zyc
- * @LastEditTime: 2020-10-22 16:21:39
+ * @LastEditTime: 2020-12-08 09:55:15
 --> 
 <template>
   <ih-page>
     <template v-slot:container>
       <el-row>
-        <el-col :span="6" style="border-right: 1px solid #e6e6e6;padding-right: 20px">
+        <el-col
+          :span="6"
+          style="border-right: 1px solid #e6e6e6; padding-right: 20px"
+        >
           <resourcesRadio ref="resourcesRadio" @select="selectResources" />
         </el-col>
         <el-col :span="18" class="padding-left-20">
@@ -21,27 +24,32 @@
               </el-col>
               <el-col :span="22" class="text-right">
                 <el-select
-                  style="width:120px;margin-right:20px;"
+                  style="width: 120px; margin-right: 20px"
                   v-model="queryPageParameters.type"
                   clearable
                   placeholder="请选择类型"
                   @change="search()"
                 >
                   <el-option
-                    v-for="item in $root.displayList('modular')"
+                    v-for="item in $root.dictAllList('ResourceType')"
                     :key="item.value"
-                    :label="item.label"
-                    :value="item.value"
+                    :label="item.name"
+                    :value="item.code"
                   ></el-option>
                 </el-select>
                 <el-input
-                  style="width:200px;"
+                  style="width: 200px"
                   placeholder="名称 编码 URL"
                   class="input-with-select"
                   @keyup.enter.native="search"
                   v-model="queryPageParameters.key"
                 ></el-input>
-                <el-button class="margin-left-20" type="primary" @click="search()">查询</el-button>
+                <el-button
+                  class="margin-left-20"
+                  type="primary"
+                  @click="search()"
+                  >查询</el-button
+                >
               </el-col>
             </el-row>
           </el-form>
@@ -50,11 +58,21 @@
             :data="resPageInfo.list"
             width="100%"
             class="ih-table"
-            :default-sort="{prop: 'date', order: 'descending'}"
+            :default-sort="{ prop: 'date', order: 'descending' }"
           >
             <!-- <el-table-column type="selection" width="50"></el-table-column> -->
-            <el-table-column fixed type="index" label="序号" width="50"></el-table-column>
-            <el-table-column fixed prop="name" label="名称" width="180"></el-table-column>
+            <el-table-column
+              fixed
+              type="index"
+              label="序号"
+              width="50"
+            ></el-table-column>
+            <el-table-column
+              fixed
+              prop="name"
+              label="名称"
+              width="180"
+            ></el-table-column>
             <el-table-column prop="code" label="编码" width="180">
               <!-- <template slot="header">
                 <span>编码</span>
@@ -76,33 +94,64 @@
                 </el-tooltip>
               </template>-->
               <template slot-scope="scope">
-                <span>{{$root.displayName('modular',scope.row.type)}}</span>
+                <span>{{
+                  $root.dictAllName(scope.row.type, "ResourceType")
+                }}</span>
               </template>
             </el-table-column>
             <el-table-column prop="url" label="URL"></el-table-column>
             <el-table-column prop="icon" label="ICON"></el-table-column>
-            <el-table-column prop="parentName" label="父资源" width="180"></el-table-column>
+            <el-table-column
+              prop="parentName"
+              label="父资源"
+              width="180"
+            ></el-table-column>
 
-            <el-table-column prop="createUserName" label="创建人" width="90"></el-table-column>
+            <el-table-column
+              prop="createUserName"
+              label="创建人"
+              width="90"
+            ></el-table-column>
 
-            <el-table-column prop="createTime" label="创建时间" width="180"></el-table-column>
+            <el-table-column
+              prop="createTime"
+              label="创建时间"
+              width="180"
+            ></el-table-column>
 
-            <el-table-column prop="updateUserName" label="修改人" width="90"></el-table-column>
+            <el-table-column
+              prop="updateUserName"
+              label="修改人"
+              width="90"
+            ></el-table-column>
 
-            <el-table-column prop="updateTime" label="修改人时间" width="180"></el-table-column>
+            <el-table-column
+              prop="updateTime"
+              label="修改人时间"
+              width="180"
+            ></el-table-column>
 
             <el-table-column fixed="right" label="操作" width="120">
               <template slot-scope="scope">
-                <el-link type="primary" @click.native.prevent="info(scope)">详情</el-link>
-                <el-dropdown trigger="click" style="margin-left:15px;">
+                <el-link type="primary" @click.native.prevent="info(scope)"
+                  >详情</el-link
+                >
+                <el-dropdown trigger="click" style="margin-left: 15px">
                   <span class="el-dropdown-link" style>
                     更多
                     <i class="el-icon-arrow-down el-icon--right"></i>
                   </span>
                   <el-dropdown-menu slot="dropdown">
-                    <el-dropdown-item @click.native.prevent="edit(scope)">编辑</el-dropdown-item>
-                    <el-dropdown-item @click.native.prevent="remove(scope)">删除</el-dropdown-item>
-                    <el-dropdown-item @click.native.prevent="batchOperationRole(scope)">批量分配角色</el-dropdown-item>
+                    <el-dropdown-item @click.native.prevent="edit(scope)"
+                      >编辑</el-dropdown-item
+                    >
+                    <el-dropdown-item @click.native.prevent="remove(scope)"
+                      >删除</el-dropdown-item
+                    >
+                    <el-dropdown-item
+                      @click.native.prevent="batchOperationRole(scope)"
+                      >批量分配角色</el-dropdown-item
+                    >
                   </el-dropdown-menu>
                 </el-dropdown>
               </template>
@@ -126,22 +175,37 @@
     <ih-dialog :show="dialogVisible" desc="新增资源">
       <ResourcesAdd
         :data="resourcesAddData"
-        @cancel="()=>dialogVisible=false"
-        @finish="(data)=>{dialogVisible=false;finish(data)}"
+        @cancel="() => (dialogVisible = false)"
+        @finish="
+          (data) => {
+            dialogVisible = false;
+            finish(data);
+          }
+        "
       />
     </ih-dialog>
     <ih-dialog :show="dialogEdit" desc="编辑资源">
       <ResourcesEdit
         :data="editData"
-        @cancel="()=>dialogEdit=false"
-        @finish="(data)=>{dialogEdit=false;finishEdit(data)}"
+        @cancel="() => (dialogEdit = false)"
+        @finish="
+          (data) => {
+            dialogEdit = false;
+            finishEdit(data);
+          }
+        "
       />
     </ih-dialog>
     <ih-dialog :show="dialogBatchOperationRole" desc="批量分配角色">
       <BatchOperationRole
         :data="batchOperationRoleData"
-        @cancel="()=>dialogBatchOperationRole=false"
-        @finish="(data)=>{dialogBatchOperationRole=false;finishBatchOperationRole(data)}"
+        @cancel="() => (dialogBatchOperationRole = false)"
+        @finish="
+          (data) => {
+            dialogBatchOperationRole = false;
+            finishBatchOperationRole(data);
+          }
+        "
       />
     </ih-dialog>
   </ih-page>
