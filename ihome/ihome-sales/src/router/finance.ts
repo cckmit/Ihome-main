@@ -4,7 +4,7 @@
  * @Author: ywl
  * @Date: 2020-12-01 15:49:07
  * @LastEditors: ywl
- * @LastEditTime: 2020-12-02 19:52:20
+ * @LastEditTime: 2020-12-08 17:53:10
  */
 import { RouteConfig } from 'vue-router'
 
@@ -42,14 +42,14 @@ const financeRoutes: Array<RouteConfig> = [
     ]
   },
   {
-    path: '/invoice',
+    path: '/invoiceTax',
     meta: { title: '发票税率维护', icon: null },
     component: Layout,
     children: [
       {
         path: 'list',
-        name: 'InvoiceList',
-        component: () => import('../views/finance/invoice/list.vue'),
+        name: 'InvoiceTaxList',
+        component: () => import('../views/finance/invoiceTax/list.vue'),
         meta: { title: '发票税率维护列表', icon: 'form', keepAlive: true }
       },
       // {
@@ -60,8 +60,8 @@ const financeRoutes: Array<RouteConfig> = [
       // },
       {
         path: 'info',
-        name: 'InvoiceInfo',
-        component: () => import('../views/finance/invoice/info.vue'),
+        name: 'InvoiceTaxInfo',
+        component: () => import('../views/finance/invoiceTax/info.vue'),
         meta: { title: '发票税率维护详情', icon: 'form' }
       }
     ]
@@ -77,6 +77,19 @@ const financeRoutes: Array<RouteConfig> = [
         component: () => import('../views/finance/pos/list.vue'),
         meta: { title: 'POS机管理列表', icon: 'form', keepAlive: true }
       },
+    ]
+  },
+  {
+    path: '/invoice',
+    meta: { title: '开票管理', icon: null },
+    component: Layout,
+    children: [
+      {
+        path: 'list',
+        name: 'invoiceList',
+        component: () => import('../views/finance/invoice/list.vue'),
+        meta: { title: '开票列表', icon: 'form', keepAlive: true }
+      }
     ]
   }
 ]
