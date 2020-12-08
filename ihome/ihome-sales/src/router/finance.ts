@@ -4,7 +4,7 @@
  * @Author: ywl
  * @Date: 2020-12-01 15:49:07
  * @LastEditors: ywl
- * @LastEditTime: 2020-12-08 17:53:10
+ * @LastEditTime: 2020-12-08 19:58:29
  */
 import { RouteConfig } from 'vue-router'
 
@@ -89,6 +89,12 @@ const financeRoutes: Array<RouteConfig> = [
         name: 'invoiceList',
         component: () => import('../views/finance/invoice/list.vue'),
         meta: { title: '开票列表', icon: 'form', keepAlive: true }
+      },
+      {
+        path: 'info',
+        name: 'invoiceInfo',
+        component: () => import('../views/finance/invoice/info.vue'),
+        meta: { title: '开票详情', icon: 'form' }
       }
     ]
   }

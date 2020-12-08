@@ -4,7 +4,7 @@
  * @Author: ywl
  * @Date: 2020-12-01 10:38:45
  * @LastEditors: ywl
- * @LastEditTime: 2020-12-08 14:58:45
+ * @LastEditTime: 2020-12-08 19:30:53
 -->
 <template>
   <IhPage label-width="100px">
@@ -130,6 +130,18 @@
         </el-table-column>
       </el-table>
     </template>
+    <template v-slot:pagination>
+      <br />
+      <el-pagination
+        @size-change="handleSizeChangeMixin"
+        @current-change="handleCurrentChangeMixin"
+        :current-page.sync="queryPageParameters.pageNum"
+        :page-sizes="$root.pageSizes"
+        :page-size="queryPageParameters.pageSize"
+        :layout="$root.paginationLayout"
+        :total="resPageInfo.total"
+      ></el-pagination>
+    </template>
     <!-- 弹窗 -->
     <IhDialog :show="dialogVisible">
       <Add
@@ -155,7 +167,7 @@ import Add from "./dialog/add.vue";
   components: { Add },
   mixins: [PaginationMixin],
 })
-export default class InvoiceList extends Vue {
+export default class InvoiceTaxList extends Vue {
   queryPageParameters: any = {
     companyName: null,
     taxScale: null,
