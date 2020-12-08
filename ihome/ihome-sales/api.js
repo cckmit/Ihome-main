@@ -4,7 +4,7 @@
  * @Author: zyc
  * @Date: 2020-08-04 17:43:48
  * @LastEditors: ywl
- * @LastEditTime: 2020-12-05 08:42:32
+ * @LastEditTime: 2020-12-08 11:46:47
  */
 let handleSwagger = require('./node_modules/ihome-common/util/api/api-hangle');
 function doneApi() {
@@ -13,9 +13,9 @@ function doneApi() {
     // handleSwagger('channel');
     // handleSwagger('contract');
     // handleSwagger('developer');
-    handleSwagger('project');
+    // handleSwagger('project');
     // handleSwagger('deal');
-    // handleSwagger('finance');
+    handleSwagger('finance');
 }
 module.exports = (api, projectOptions) => {
     api.registerCommand('api', {

@@ -4,7 +4,7 @@
  * @Author: ywl
  * @Date: 2020-12-01 10:39:24
  * @LastEditors: ywl
- * @LastEditTime: 2020-12-02 19:49:23
+ * @LastEditTime: 2020-12-08 14:58:52
 -->
 <template>
   <IhPage>
@@ -52,6 +52,7 @@
       <br />
       <el-table
         class="ih-table"
+        :empty-text="emptyText"
         :data="resPageInfo.list"
       >
         <el-table-column

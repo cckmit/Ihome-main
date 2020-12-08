@@ -4,7 +4,7 @@
  * @Author: ywl
  * @Date: 2020-12-01 10:37:53
  * @LastEditors: ywl
- * @LastEditTime: 2020-12-05 18:08:26
+ * @LastEditTime: 2020-12-08 16:31:08
 -->
 <template>
   <IhPage label-width="80px">
@@ -69,6 +69,7 @@
       <br />
       <el-table
         class="ih-table"
+        :empty-text="emptyText"
         :data="resPageInfo.list"
       >
         <el-table-column
@@ -85,7 +86,7 @@
         <el-table-column
           prop="branchName"
           label="开户银行"
-          min-width="345"
+          min-width="355"
         ></el-table-column>
         <el-table-column
           prop="branchNo"
@@ -95,7 +96,12 @@
         <el-table-column
           prop="accountType"
           label="账号类型"
-        ></el-table-column>
+          width="125"
+        >
+          <template v-slot="{ row }">
+            {{ $root.dictAllName(row.accountType, 'AccountType') }}
+          </template>
+        </el-table-column>
         <el-table-column
           label="操作"
           width="215"

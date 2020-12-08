@@ -4,7 +4,7 @@
  * @Author: ywl
  * @Date: 2020-12-02 11:31:40
  * @LastEditors: ywl
- * @LastEditTime: 2020-12-02 14:45:47
+ * @LastEditTime: 2020-12-08 16:54:37
 -->
 <template>
   <el-dialog
@@ -82,7 +82,11 @@ import { Component, Vue, Prop } from "vue-property-decorator";
 import { NoRepeatHttp } from "ihome-common/util/aop/no-repeat-http";
 import { Form as ElForm } from "element-ui";
 import { noTrim } from "ihome-common/util/base/form-ui";
-import { post_accountOnlinePay_add } from "@/api/finance/index";
+import {
+  post_accountOnlinePay_add,
+  get_accountOnlinePay_getByAccountId__accountId,
+  post_accountOnlinePay_update,
+} from "@/api/finance/index";
 
 @Component({})
 export default class PayInfo extends Vue {
@@ -143,16 +147,32 @@ export default class PayInfo extends Vue {
   @NoRepeatHttp()
   async submit(valid: any) {
     if (valid) {
-      await post_accountOnlinePay_add(this.form);
-      this.$message.success("保存成功");
+      if (this.form.id) {
+        await post_accountOnlinePay_update(this.form);
+        this.$message.success("修改成功");
+      } else {
+        await post_accountOnlinePay_add(this.form);
+        this.$message.success("保存成功");
+      }
       this.$emit("finish");
     } else {
       return;
     }
   }
+  async getInfo() {
+    try {
+      let res = await get_accountOnlinePay_getByAccountId__accountId({
+        accountId: this.data.id,
+      });
+      Object.assign(this.form, { ...res, accountId: this.data.id });
+    } catch (error) {
+      console.log(error);
+    }
+  }
 
   created() {
     this.form.accountId = this.data.id;
+    this.getInfo();
   }
 }
 </script>

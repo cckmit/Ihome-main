@@ -4,7 +4,7 @@
  * @Author: ywl
  * @Date: 2020-12-01 10:29:31
  * @LastEditors: ywl
- * @LastEditTime: 2020-12-05 17:30:42
+ * @LastEditTime: 2020-12-08 15:45:52
 -->
 <template>
   <IhPage label-width="80px">
@@ -76,6 +76,7 @@
       <br />
       <el-table
         class="ih-table"
+        :empty-text="emptyText"
         :data="resPageInfo.list"
       >
         <el-table-column
@@ -143,11 +144,11 @@ import PaginationMixin from "../../../mixins/pagination";
 })
 export default class BankBranchList extends Vue {
   queryPageParameters: any = {
-    bankName: null,
-    branchName: null,
-    branchNo: null,
-    cityName: null,
-    provinceName: null,
+    bankName: "",
+    branchName: "",
+    branchNo: "",
+    cityName: "",
+    provinceName: "",
   };
   resPageInfo: any = {
     total: null,
