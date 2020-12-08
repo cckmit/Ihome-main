@@ -95,16 +95,18 @@
             <div v-if="!isCompany">
               <el-button type="primary" size="mini" @click="addManagement">添加</el-button>
             </div>
-            <div v-for="(list, index) in form.managementList" :key="index" class="role-type-wrapper">
-              <div>
-                <el-input v-model="list.money"></el-input>
-              </div>
-              <div>
-                <el-input v-model="list.money"></el-input>%
-              </div>
-              <div>{{list.manager}}({{list.managerPosition}})</div>
-              <div>
-                <el-button type="danger" size="small">删除</el-button>
+            <div class="role-wrapper">
+              <div v-for="(list, index) in form.managementList" :key="index" class="role-type-wrapper">
+                <div>
+                  <el-input v-digits="2" v-model="list.money" placeholder="请输入金额"></el-input>
+                </div>
+                <div>
+                  <el-input v-digits="2" v-model="list.money" placeholder="请输入比例"></el-input>%
+                </div>
+                <div>{{list.manager}}({{list.managerPosition}})</div>
+                <div>
+                  <el-button type="danger" size="small">删除</el-button>
+                </div>
               </div>
             </div>
           </el-form-item>
@@ -223,18 +225,28 @@
     }
   }
 
-  .role-type-wrapper {
+  .role-wrapper {
     width: 100%;
-    margin-top: 10px;
-    box-sizing: border-box;
-    display: flex;
-    align-content: space-between;
+    max-height: 180px;
+    overflow-y: auto;
 
-    div {
-      flex: 1;
+    .role-type-wrapper {
+      width: 100%;
+      margin-top: 10px;
+      box-sizing: border-box;
+      display: flex;
+      align-content: space-between;
 
-      &:not(:last-child) {
-        margin-right: 20px;
+      div {
+        flex: 1;
+
+        &:not(:last-child) {
+          margin-right: 20px;
+        }
+
+        /deep/.el-input {
+          width: 90%;
+        }
       }
     }
   }
