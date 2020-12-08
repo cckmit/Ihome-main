@@ -4,7 +4,7 @@
  * @Author: wwq
  * @Date: 2020-12-03 10:50:26
  * @LastEditors: wwq
- * @LastEditTime: 2020-12-03 19:13:33
+ * @LastEditTime: 2020-12-08 16:52:26
 -->
 <template>
   <el-dialog
@@ -32,21 +32,21 @@
       </tr>
       <tr>
         <td class="bold">周期时间</td>
-        <td colspan="9">{{form.termCalcVo.termStart + '~' + form.termCalcVo.termEnd}}</td>
+        <td colspan="9">{{form.termCalcVo && form.termCalcVo.termStart + '~' + form.termCalcVo && form.termCalcVo.termEnd}}</td>
       </tr>
       <tr>
         <td class="bold">是否市场化项目</td>
-        <td colspan="2">{{form.termCalcVo.exMarket}}</td>
+        <td colspan="2">{{form.termCalcVo && form.termCalcVo.exMarket}}</td>
         <td class="bold">业务模式</td>
-        <td colspan="2">{{$root.dictAllName(form.termCalcVo.busEnum, 'BusEnum')}}</td>
+        <td colspan="2">{{form.termCalcVo && $root.dictAllName(form.termCalcVo.busEnum, 'BusEnum')}}</td>
         <td class="bold">收费类型</td>
-        <td colspan="3">{{$root.dictAllName(form.termCalcVo.chargeEnum, 'ChargeEnum')}}</td>
+        <td colspan="3">{{form.termCalcVo && $root.dictAllName(form.termCalcVo.chargeEnum, 'ChargeEnum')}}</td>
       </tr>
       <tr>
         <td class="bold">模式属性</td>
-        <td colspan="5">{{$root.dictAllName(form.termCalcVo.attributeEnum, 'AttributeEnum')}}</td>
+        <td colspan="5">{{$root.dictAllName(form.termCalcVo && form.termCalcVo.attributeEnum, 'AttributeEnum')}}</td>
         <td class="bold">垫佣周期</td>
-        <td colspan="3">{{$root.dictAllName(form.termCalcVo.padCommissionEnum, 'PadCommissionEnum')}}</td>
+        <td colspan="3">{{$root.dictAllName(form.termCalcVo && form.termCalcVo.padCommissionEnum, 'PadCommissionEnum')}}</td>
       </tr>
       <tr>
         <td

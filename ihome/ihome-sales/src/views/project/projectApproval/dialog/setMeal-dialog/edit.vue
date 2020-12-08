@@ -4,7 +4,7 @@
  * @Author: wwq
  * @Date: 2020-12-04 09:40:47
  * @LastEditors: wwq
- * @LastEditTime: 2020-12-07 14:56:40
+ * @LastEditTime: 2020-12-08 19:00:23
 -->
 <template>
   <el-dialog
@@ -229,7 +229,7 @@
                 width="150"
                 align="center"
               >
-                <template v-slot="{ row }">
+                <template v-slot="{ row, $index }">
                   <el-select
                     style="width: 100%"
                     v-model="row.transactionEnum"
@@ -243,6 +243,25 @@
                       :value="item.code"
                     ></el-option>
                   </el-select>
+                  <div
+                    class="margin-top-5"
+                    v-if="row.transactionEnum === 'Appoint' || row.transactionEnum === 'Strategic'"
+                  >
+                    <el-input
+                      placeholder="请选择"
+                      :title="row.consumerName"
+                      v-model="row.consumerName"
+                      class="input-with-select"
+                      readonly
+                    >
+                      <i
+                        slot="suffix"
+                        class="el-input__icon el-icon-search"
+                        style="cursor: pointer;"
+                        @click="channnelChange(i, $index )"
+                      ></i>
+                    </el-input>
+                  </div>
                 </template>
               </el-table-column>
               <el-table-column
@@ -506,11 +525,6 @@
                   class="input-with-select margin-left-10"
                   readonly
                 >
-                  <el-button
-                    slot="append"
-                    icon="el-icon-search"
-                    @click="businessDialogVisible = true;partyCompanyIndex = i;"
-                  ></el-button>
                 </el-input>
               </div>
               <!-- 删除模板,新增行 -->
@@ -585,7 +599,7 @@
                 width="150"
                 align="center"
               >
-                <template v-slot="{ row }">
+                <template v-slot="{ row, $index }">
                   <el-select
                     style="width: 100%"
                     v-model="row.transactionEnum"
@@ -599,6 +613,25 @@
                       :value="item.code"
                     ></el-option>
                   </el-select>
+                  <div
+                    class="margin-top-5"
+                    v-if="row.transactionEnum === 'Appoint' || row.transactionEnum === 'Strategic'"
+                  >
+                    <el-input
+                      placeholder="请选择"
+                      :title="row.consumerName"
+                      v-model="row.consumerName"
+                      class="input-with-select"
+                      readonly
+                    >
+                      <i
+                        slot="suffix"
+                        class="el-input__icon el-icon-search"
+                        style="cursor: pointer;"
+                        @click="channnelChange(i, $index)"
+                      ></i>
+                    </el-input>
+                  </div>
                 </template>
               </el-table-column>
               <el-table-column
@@ -918,6 +951,8 @@ export default class SetMealEdit extends Vue {
   partyCompanyIndex = 0;
   conditionIndex = 0;
   conditionRowIndex = 0;
+  channelIndex = 0;
+  channelRowIndex = 0;
   padCommissionEnumOptions: any = [];
   contractTypeOptions: any = [];
   rules: any = {
@@ -1060,7 +1095,8 @@ export default class SetMealEdit extends Vue {
           ),
         },
       ];
-      this.info = (this.$root as any).deepClone(res);
+      this.info = (this.$tool as any).deepClone(res);
+      this.info.timeList = [this.info.startTime, this.info.endTime];
     } else {
       const item = await get_collectandsend_getBaseTermByTermId__termId({
         termId: this.$route.query.id,
@@ -1286,19 +1322,40 @@ export default class SetMealEdit extends Vue {
 
   // 根据合同类型获取客户类型
   async contractEnumChange(data: any) {
-    data.transactionEnumOptions = await post_dict_getAllByType({
+    const item = await post_dict_getAllByType({
       type: "TransactionEnum",
       tag: data.contractEnum,
       valid: "Valid",
     });
+    data.transactionEnumOptions = item.map((v: any) => ({
+      code: v.code,
+      name: v.name,
+    }));
+  }
+
+  // 合同类型为指定中介/战略合作方时
+  channnelChange(i: number, index: number) {
+    this.channelIndex = i;
+    this.channelRowIndex = index;
+    this.businessDialogVisible = true;
   }
 
   // 选择代理费公司
   businessFinish(data: any) {
-    this.info.colletionandsendMxs[this.partyCompanyIndex].partyCompany =
-      data[0].name;
-    this.info.colletionandsendMxs[this.partyCompanyIndex].partyCompanyId =
-      data[0].id;
+    this.$set(
+      this.info.colletionandsendMxs[this.channelIndex].colletionandsendDetails[
+        this.channelRowIndex
+      ],
+      "consumerName",
+      data[0].name
+    );
+    this.$set(
+      this.info.colletionandsendMxs[this.channelIndex].colletionandsendDetails[
+        this.channelRowIndex
+      ],
+      "consumerId",
+      data[0].id
+    );
     this.businessDialogVisible = false;
   }
 
@@ -1312,7 +1369,6 @@ export default class SetMealEdit extends Vue {
 
   // 编辑条件完成
   rulesFinish(data: any) {
-    console.log(data, this.conditionIndex, this.conditionRowIndex);
     this.info.colletionandsendMxs[this.conditionIndex].colletionandsendDetails[
       this.conditionRowIndex
     ].collectandsendConditionVOS = data;

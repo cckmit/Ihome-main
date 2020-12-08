@@ -4,7 +4,7 @@
  * @Author: wwq
  * @Date: 2020-11-27 17:22:45
  * @LastEditors: wwq
- * @LastEditTime: 2020-12-07 15:25:55
+ * @LastEditTime: 2020-12-08 17:14:11
 -->
 <template>
   <div>
@@ -57,14 +57,14 @@
           width="150"
         ></el-table-column>
         <el-table-column
-          prop="exStop"
+          prop="state"
           label="状态"
         >
-          <template v-slot="{ row }">{{row.exStop ? '禁用' : '启用'}}</template>
+          <template v-slot="{ row }">{{$root.dictAllName(row.state, 'OperEnum')}}</template>
         </el-table-column>
         <el-table-column
           label="操作"
-          width="280"
+          width="220"
           fixed="right"
           align="center"
         >
@@ -80,11 +80,13 @@
               @click="edit(row)"
             >修改</el-button>
             <el-button
+              v-if="row.state === 'Cancel'"
               size="small"
               type="success"
               @click="start(row)"
             >启用</el-button>
             <el-button
+              v-if="row.state === 'Start'"
               size="small"
               type="danger"
               @click="cancellation(row)"
@@ -162,8 +164,6 @@ export default class SetMeal extends Vue {
 
   async addFinish(data: any) {
     data.termId = this.$route.query.id;
-    data.exStop = 0;
-    console.log(data);
     if (this.editData.id) {
       data.packageId = this.editData.id;
       await post_collectandsend_update(data);

@@ -4,15 +4,24 @@
  * @Author: wwq
  * @Date: 2020-11-27 17:28:28
  * @LastEditors: wwq
- * @LastEditTime: 2020-12-07 17:32:52
+ * @LastEditTime: 2020-12-08 21:07:46
 -->
 <template>
   <div>
-    <p class="ih-info-title">收款信息</p>
+    <div class="setMeal">
+      <p class="ih-info-title">收款信息</p>
+      <div class="setMealButton">
+        <el-button
+          size="small"
+          type="success"
+          @click="select"
+        >选择</el-button>
+      </div>
+    </div>
     <div class="padding-left-20">
       <el-table
         class="ih-table"
-        :data="info"
+        :data="info.shareChannelFeeVOS"
         style="width: 100%"
       >
         <el-table-column
@@ -27,28 +36,23 @@
             $root.dictAllName(row.baseCostEnum, "BaseCostEnum")
           }}</template>
         </el-table-column>
-        <el-table-column
-          label="操作"
-          width="120"
-          fixed="right"
-          align="center"
-        >
-          <template v-slot="{ row }">
-            <el-button
-              size="small"
-              type="primary"
-              @click="select(row)"
-            >选择</el-button>
-          </template>
-        </el-table-column>
       </el-table>
     </div>
     <br />
-    <p class="ih-info-title">成交归属组织</p>
+    <div class="setMeal">
+      <p class="ih-info-title">成交归属组织</p>
+      <div class="setMealButton">
+        <el-button
+          size="small"
+          type="success"
+          @click="select"
+        >选择</el-button>
+      </div>
+    </div>
     <div class="padding-left-20">
       <el-table
         class="ih-table"
-        :data="info"
+        :data="info.shareChannelFeeVOS"
         style="width: 100%"
       >
         <el-table-column
@@ -62,20 +66,6 @@
           <template v-slot="{ row }">{{
             $root.dictAllName(row.baseCostEnum, "BaseCostEnum")
           }}</template>
-        </el-table-column>
-        <el-table-column
-          label="操作"
-          width="120"
-          fixed="right"
-          align="center"
-        >
-          <template v-slot="{ row }">
-            <el-button
-              size="small"
-              type="primary"
-              @click="select(row)"
-            >选择</el-button>
-          </template>
         </el-table-column>
       </el-table>
     </div>
@@ -100,7 +90,7 @@
         <div>
           <el-input
             placeholder="特殊业绩方案"
-            v-model="special"
+            v-model="info.specialName"
             class="input-with-select margin-left-10"
             style="width: 90%"
             clearable
@@ -133,9 +123,10 @@
         </div>
         <div class="margin-left-20">
           <el-switch
-            v-model="otherChannel"
+            v-model="info.exOver"
             active-color="#ef9d39"
             inactive-color="#7b7b7b"
+            @change="exOverChange"
           >
           </el-switch>
         </div>
@@ -156,9 +147,10 @@
         </div>
         <div class="margin-left-20">
           <el-switch
-            v-model="allow"
+            v-model="info.exOtherProChannelUse"
             active-color="#ef9d39"
             inactive-color="#7b7b7b"
+            @change="exOtherProChannelUseChange"
           >
           </el-switch>
         </div>
@@ -171,12 +163,13 @@
             <div style="width: 40px">筛选</div>
             <el-select
               style="width: 40%"
-              v-model="info.propertyEnum"
+              v-model="screen"
               clearable
               placeholder="请选择"
+              @change="screenChange"
             >
               <el-option
-                v-for="item in $root.dictAllList('PropertyEnum')"
+                v-for="item in selectionOptions"
                 :key="item.code"
                 :label="item.name"
                 :value="item.code"
@@ -193,29 +186,30 @@
       <br />
       <el-table
         class="ih-table"
-        :data="info"
+        :data="info.shareChannelFeeVOS"
         style="width: 100%"
       >
         <el-table-column
-          prop="packageName"
           label="周期名称"
+          prop="termName"
         ></el-table-column>
         <el-table-column
-          label="分公司"
-          prop="所属项目"
+          label="所属项目"
+          prop="proName"
         >
-          <template v-slot="{ row }">{{
-            $root.dictAllName(row.baseCostEnum, "BaseCostEnum")
-          }}</template>
         </el-table-column>
         <el-table-column
-          prop="packageName"
           label="已用其他渠道费金额"
+          prop="amount"
         ></el-table-column>
         <el-table-column
-          prop="packageName"
           label="状态"
-        ></el-table-column>
+          prop="shareStateEnum"
+        >
+          <template v-slot="{ row }">{{
+            $root.dictAllName(row.shareStateEnum, "ShareStateEnum")
+          }}</template>
+        </el-table-column>
         <el-table-column
           label="操作"
           width="120"
@@ -224,49 +218,86 @@
         >
           <template v-slot="{ row }">
             <el-button
+              v-if="row.shareStateEnum === 'Enable'"
               size="small"
               type="info"
-              @click="select(row)"
+              @click="forbidden(row)"
             >禁用</el-button>
             <el-button
+              v-if="row.shareStateEnum === 'Disable'"
               size="small"
               type="success"
-              @click="select(row)"
+              @click="start(row)"
             >启用</el-button>
             <el-button
+              v-if="row.shareStateEnum === 'New'"
               size="small"
               type="danger"
-              @click="select(row)"
+              @click="remove(row)"
             >移除</el-button>
           </template>
         </el-table-column>
       </el-table>
     </div>
     <ih-dialog :show="dialogVisible">
-      <Edit
+      <BankAccount
         :data="editData"
         @cancel="() => (dialogVisible = false)"
-        @finish="(data) => addFinish(data)"
+        @finish="(data) => selectFinish(data)"
+      />
+    </ih-dialog>
+    <ih-dialog :show="approvalDialogVisible">
+      <ProjectApproval
+        @cancel="() => (approvalDialogVisible = false)"
+        @finish="(data) => approvalFinish(data)"
       />
     </ih-dialog>
   </div>
 </template>
 <script lang="ts">
 import { Component, Vue } from "vue-property-decorator";
-import Edit from "../dialog/setMeal-dialog/edit.vue";
-import { post_collectandsend_getAllByTerm } from "@/api/project/index.ts";
+import BankAccount from "../dialog/other-dialog/bankAccount.vue";
+import ProjectApproval from "../dialog/other-dialog/projectApproval.vue";
+import {
+  get_other_get__termId,
+  post_other_changOver,
+  post_other_changOtherProChannelUse,
+  post_other_add,
+  post_other_del,
+  post_other_start,
+  post_other_stop,
+} from "@/api/project/index.ts";
+
 @Component({
   components: {
-    Edit,
+    ProjectApproval,
+    BankAccount,
   },
 })
 export default class Other extends Vue {
   dialogVisible = false;
-  info: any = [];
+  approvalDialogVisible = false;
+  info: any = {
+    exOver: false,
+    exOtherProChannelUse: false,
+    shareChannelFeeVOS: [],
+  };
   editData: any = {};
-  special = "";
-  otherChannel = false;
-  allow = false;
+  selectionOptions = [
+    {
+      code: "all",
+      name: "全部",
+    },
+    {
+      code: "Enable",
+      name: "已启用",
+    },
+    {
+      code: "Disable",
+      name: "已禁用",
+    },
+  ];
+  screen = "";
 
   created() {
     this.getInfo();
@@ -275,24 +306,103 @@ export default class Other extends Vue {
   async getInfo() {
     const id = this.$route.query.id;
     if (id) {
-      this.info = await post_collectandsend_getAllByTerm({
+      this.info = await get_other_get__termId({
         termId: id,
       });
-      this.info = [{}];
     }
   }
 
-  select(row: any) {
+  select() {
     this.dialogVisible = true;
-    this.editData.id = row.packageId;
+    this.editData.id = this.info.companyId;
+  }
+
+  selectFinish(data: any) {
+    console.log(data);
+    this.dialogVisible = false;
   }
 
   specialClick() {
     console.log();
   }
 
+  async exOverChange(val: any) {
+    await post_other_changOver({
+      termId: this.$route.query.id,
+      type: val ? 1 : 0,
+    });
+  }
+
+  async exOtherProChannelUseChange(val: any) {
+    await post_other_changOtherProChannelUse({
+      termId: this.$route.query.id,
+      type: val ? 1 : 0,
+    });
+  }
+
+  screenChange(val: any) {
+    switch (val) {
+      case "Enable":
+        this.info.shareChannelFeeVOS = this.info.shareChannelFeeVOS.filter(
+          (v: any) => v.shareStateEnum === "Enable"
+        );
+        break;
+      case "Disable":
+        this.info.shareChannelFeeVOS = this.info.shareChannelFeeVOS.filter(
+          (v: any) => v.shareStateEnum === "Disable"
+        );
+        break;
+    }
+  }
+
   add() {
-    console.log();
+    this.approvalDialogVisible = true;
+  }
+
+  async approvalFinish(data: any) {
+    let arr = data.map((v: any) => v.termId);
+    await post_other_add({
+      shareTermIds: arr,
+      termId: this.$route.query.id,
+    });
+    this.$message.success("新增成功");
+    this.approvalDialogVisible = false;
+  }
+
+  async forbidden(row: any) {
+    await post_other_stop({
+      shareId: row.shareId,
+    });
+    this.$message({
+      type: "success",
+      message: "禁用成功",
+    });
+    this.getInfo();
+  }
+
+  async start(row: any) {
+    await post_other_start({
+      shareId: row.shareId,
+    });
+    this.$message({
+      type: "success",
+      message: "启用成功",
+    });
+    this.getInfo();
+  }
+
+  async remove(row: any) {
+    try {
+      await this.$confirm("是否确定移除?", "提示");
+      await post_other_del({ shareId: row.shareId });
+      this.$message({
+        type: "success",
+        message: "移除成功",
+      });
+      this.getInfo();
+    } catch (error) {
+      console.log(error);
+    }
   }
 }
 </script>
@@ -325,5 +435,14 @@ export default class Other extends Vue {
     justify-content: space-around;
     align-items: center;
   }
+}
+
+.setMeal {
+  display: flex;
+  flex-flow: row nowrap;
+  justify-content: flex-start;
+}
+.setMealButton {
+  margin: 5px 0 0 20px;
 }
 </style>

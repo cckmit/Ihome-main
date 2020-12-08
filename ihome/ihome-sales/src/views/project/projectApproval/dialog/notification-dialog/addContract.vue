@@ -4,7 +4,7 @@
  * @Author: wwq
  * @Date: 2020-12-02 15:37:31
  * @LastEditors: wwq
- * @LastEditTime: 2020-12-04 08:50:47
+ * @LastEditTime: 2020-12-08 16:48:09
 -->
 <template>
   <el-dialog
@@ -253,6 +253,7 @@
               clearable
               placeholder="请选择渠道类型"
               class="width--100"
+              @change="queryUnderData(info.channelEnum, 'channelEnum')"
             >
               <el-option
                 v-for="item in $root.dictAllList('ChannelEnum')"
@@ -293,6 +294,7 @@
               clearable
               placeholder="请选择垫佣周期"
               class="width--100"
+              @change="queryUnderData(info.padCommissionEnum, 'padCommissionEnum')"
             >
               <el-option
                 v-for="item in padCommissionEnumOptions"
@@ -379,24 +381,38 @@
         @finish="(data) => businessFinish(data)"
       />
     </ih-dialog>
+    <ih-dialog :show="setmealDialogVisible">
+      <SetMealDialog
+        @cancel="() => (setmealDialogVisible = false)"
+        @finish="(data) => setMealFinish(data)"
+      />
+    </ih-dialog>
   </el-dialog>
 </template>
 <script lang="ts">
-import { Component, Vue, Prop, Watch } from "vue-property-decorator";
-import { get_distributContract_getDistri__agencyContrictId } from "@/api/project/index";
+import { Component, Vue, Prop } from "vue-property-decorator";
+import {
+  get_distributContract_getDistri__agencyContrictId,
+  post_distributContract_getCollectByCondition,
+  post_distributContract_getCheckCollectByCondition,
+} from "@/api/project/index";
 import { Form as ElForm } from "element-ui";
 import { NoRepeatHttp } from "ihome-common/util/aop/no-repeat-http";
 import Business from "../notification-dialog/channelBusiness.vue";
+import SetMealDialog from "./setMealDialog.vue";
 
 @Component({
   components: {
     Business,
+    SetMealDialog,
   },
 })
 export default class AddContract extends Vue {
   @Prop({ default: null }) data: any;
   dialogVisible = true;
   businessDialogVisible = false;
+  setmealDialogVisible = false;
+  queryObj: any = {};
   info: any = {
     contractTitle: null,
     contractSubtitle: null,
@@ -474,15 +490,6 @@ export default class AddContract extends Vue {
     return this.$route.query.id;
   }
 
-  @Watch("info.channelEnum", { immediate: true })
-  getIsShow(val: any) {
-    if (val === "Appoint") {
-      this.isShow = true;
-    } else {
-      this.isShow = false;
-    }
-  }
-
   async created() {
     if (this.data.agencyContrictId) {
       this.getListMixin();
@@ -502,7 +509,7 @@ export default class AddContract extends Vue {
           ),
         },
       ];
-      this.info.padCommissionEnum = this.data.padCommissionEnum;
+      // this.info.padCommissionEnum = this.data.padCommissionEnum;
       this.info.unContractLiability = `乙方在销售过程中有下列行为之一时，甲方有权解除本协议，乙方需向甲方赔偿因此行为对甲方造成的
         所有损失（包括但不限于律师费、诉讼费、公证费、差旅费等费用），并向甲方支付实际应付代理费总额的20%作为违约金：
         8.1.1 对客户做出任何虚假承诺或擅自向客户收取费用；
@@ -513,24 +520,6 @@ export default class AddContract extends Vue {
         8.1.6 乙方人员带客到现场，未经甲方代表确认，私自带客户进入项目；
         8.1.7 擅自将甲方提供的资料及在工作过程中知悉的甲方商业秘密对外披露、提供、发布等；
         8.1.8 其他有损害甲方及其关联公司合法权益和声誉的行为。`;
-      this.info.contractMxVOList = [
-        // {
-        //   conditionId: 21,
-        //   costTypeEnum: "ServiceFee",
-        //   propertyEnum: "Residence",
-        //   sendContext: "xxx",
-        //   baseCostEnum: "Contract",
-        //   standardPay: "321",
-        // },
-        // {
-        //   conditionId: 22,
-        //   costTypeEnum: "AgencyFee",
-        //   propertyEnum: "Apartment",
-        //   sendContext: "xxx",
-        //   baseCostEnum: "Contract",
-        //   standardPay: "123",
-        // },
-      ];
     }
   }
 
@@ -579,6 +568,7 @@ export default class AddContract extends Vue {
     this.info.designatedAgency = data[0].name;
     this.info.designatedAgencyId = data[0].id;
     this.businessDialogVisible = false;
+    this.queryUnderData(this.info.designatedAgency, "business");
   }
 
   finish() {
@@ -595,6 +585,70 @@ export default class AddContract extends Vue {
       });
     } catch (error) {
       console.log(error);
+    }
+  }
+
+  // 根据渠道类型,垫佣周期,中介公司获取下表数据
+  queryUnderData(data: any, type: any) {
+    this.queryObj = {
+      padCommissionEnum: this.info.padCommissionEnum,
+      termId: this.$route.query.id,
+      channelEnum: this.info.channelEnum,
+      consumerName: null,
+      consumerId: null,
+    };
+    if (type === "channelEnum") {
+      this.isShow = data === "Appoint" || data === "Strategic" ? true : false;
+    }
+    if (this.isShow) {
+      if (
+        this.info.designatedAgency &&
+        this.info.padCommissionEnum &&
+        this.info.channelEnum
+      ) {
+        this.queryObj.consumerName = this.info.designatedAgency;
+        this.queryObj.consumerId = this.info.designatedAgencyId;
+        this.queryCondition();
+      }
+    } else {
+      if (this.info.padCommissionEnum && this.info.channelEnum) {
+        this.queryObj.consumerName = null;
+        this.queryObj.consumerId = null;
+        this.queryCondition();
+      }
+    }
+  }
+
+  // 表数据
+  async queryCondition() {
+    this.info.contractMxVOList = await post_distributContract_getCollectByCondition(
+      this.queryObj
+    );
+  }
+
+  add() {
+    this.setmealDialogVisible = true;
+  }
+
+  async setMealFinish(data: any) {
+    if (data.length) {
+      let arr: any = [];
+      arr = data.map((v: any) => v.packageMxId);
+      this.queryObj.packMxIds = [
+        ...new Set(
+          arr.concat(this.info.contractMxVOList.map((v: any) => v.conditionId))
+        ),
+      ];
+      console.log(this.queryObj);
+      const item = await post_distributContract_getCheckCollectByCondition(
+        this.queryObj
+      );
+      console.log(item);
+      this.info.contractMxVOList = item;
+      this.$message.success("新增成功");
+      this.setmealDialogVisible = false;
+    } else {
+      this.$message.warning("请勾选详细收派标准信息");
     }
   }
 }

@@ -4,7 +4,7 @@
  * @Author: wwq
  * @Date: 2020-12-07 14:32:16
  * @LastEditors: wwq
- * @LastEditTime: 2020-12-07 15:26:49
+ * @LastEditTime: 2020-12-08 14:47:41
 -->
 <template>
   <el-dialog
@@ -16,6 +16,7 @@
     width="90%"
     class="editDialog text-left"
     :title="`查看收派套餐`"
+    :append-to-body="true"
   >
     <p class="ih-info-title">基础信息</p>
     <el-form
@@ -82,21 +83,23 @@
       </el-row>
     </el-form>
 
-    <div class="setMeal">
-      <p class="ih-info-title">收派套餐</p>
-    </div>
-    <div class="estimated">
-      <el-form :model="info">
-        <el-form-item label="假定成交价">
-          <span class="text-ellipsis">{{
+    <p class="ih-info-title">收派套餐</p>
+    <el-form
+      :model="info"
+      label-width="90px"
+      class="margin-left-20"
+    >
+      <el-row>
+        <el-col :span="24">
+          <el-form-item label="假定成交价">
+            <span class="text-ellipsis">{{
               info.estimatedTransactionPrice + '万元/套'
             }}</span>
-        </el-form-item>
-      </el-form>
-    </div>
-
+          </el-form-item>
+        </el-col>
+      </el-row>
+    </el-form>
     <div>
-
       <div>
         <template v-for="(item, i) in info.colletionandsendMxs">
           <!-- 服务费 -->
@@ -529,7 +532,7 @@ export default class SetMealEdit extends Vue {
       const res = await get_collectandsend_get__packageId({
         packageId: id,
       });
-      this.info = (this.$root as any).deepClone(res);
+      this.info = (this.$tool as any).deepClone(res);
     }
   }
 }
@@ -549,20 +552,6 @@ export default class SetMealEdit extends Vue {
   overflow: hidden;
   text-overflow: ellipsis;
   white-space: nowrap;
-}
-
-.setMeal {
-  display: flex;
-  flex-flow: row nowrap;
-  justify-content: flex-start;
-  float: left;
-}
-.estimated {
-  margin-left: 20px;
-  display: inline-block;
-  /deep/ .el-form-item__error {
-    margin-left: 80px;
-  }
 }
 
 .top-select {
