@@ -4,7 +4,7 @@
  * @Author: zyc
  * @Date: 2020-11-24 10:49:02
  * @LastEditors: zyc
- * @LastEditTime: 2020-11-24 11:09:26
+ * @LastEditTime: 2020-12-07 17:07:30
  */
 /*
  * @Descripttion: 
@@ -120,10 +120,23 @@ function render() {
          * @param {type} 
          * @return {type} 
          */
-        dictAllList(category: any) {
+        dictAllList(category: any, tag?: any) {
           let list: any[] = dictAll[category];
           if (list) {
-            return list;
+            if (tag) {
+              let listTag = list.filter((item: any) => {
+                if (item.tag == tag) {
+                  return true;
+                } else {
+                  return false;
+                }
+              })
+              return listTag;
+
+            } else {
+              return list;
+            }
+
           } else {
             console.error(category, '字典类型无法匹配.')
             return [];

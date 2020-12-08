@@ -4,7 +4,7 @@
  * @Author: zyc
  * @Date: 2020-07-14 11:26:26
  * @LastEditors: zyc
- * @LastEditTime: 2020-10-23 11:51:27
+ * @LastEditTime: 2020-12-07 17:31:59
 --> 
 <template>
   <ih-page class="organization-list">
@@ -28,7 +28,7 @@
                   ></el-input>
                 </el-form-item>
               </el-col>
-              <el-col :span="8">
+              <!-- <el-col :span="8">
                 <el-form-item label="组织层级">
                   <el-select
                     v-model="queryPageParameters.level"
@@ -44,43 +44,48 @@
                     ></el-option>
                   </el-select>
                 </el-form-item>
+              </el-col> -->
+              <el-col :span="8">
+                <el-form-item label="组织类型">
+                  <el-select
+                    v-model="queryPageParameters.orgType"
+                    clearable
+                    placeholder="组织类型"
+                    class="width--100"
+                  >
+                    <el-option
+                      v-for="(item, index) in $root.dictAllList(
+                        'OrgType',
+                        'RealOrg'
+                      )"
+                      :key="index"
+                      :label="item.name"
+                      :value="item.code"
+                    ></el-option>
+                  </el-select>
+                </el-form-item>
               </el-col>
               <el-col :span="8">
                 <el-form-item label="部门分类">
                   <el-select
                     v-model="queryPageParameters.departmentType"
                     clearable
-                    placeholder="请选择部门分类"
+                    placeholder="部门分类"
                     class="width--100"
                   >
                     <el-option
-                      v-for="item in $root.displayList('departmentType')"
-                      :key="item.value"
-                      :label="item.label"
-                      :value="item.value"
+                      v-for="(item, index) in $root.dictAllList(
+                        'DepartmentType'
+                      )"
+                      :key="index"
+                      :label="item.name"
+                      :value="item.code"
                     ></el-option>
                   </el-select>
                 </el-form-item>
               </el-col>
             </el-row>
             <el-row>
-              <el-col :span="8">
-                <el-form-item label="组织类型">
-                  <el-select
-                    v-model="queryPageParameters.orgType"
-                    clearable
-                    placeholder="请选择组织类型"
-                    class="width--100"
-                  >
-                    <el-option
-                      v-for="item in $root.displayList('orgType')"
-                      :key="item.value"
-                      :label="item.label"
-                      :value="item.value"
-                    ></el-option>
-                  </el-select>
-                </el-form-item>
-              </el-col>
               <el-col :span="8">
                 <el-form-item label="是否有效">
                   <el-select
@@ -90,10 +95,10 @@
                     class="width--100"
                   >
                     <el-option
-                      v-for="item in $root.displayList('orgStatus')"
-                      :key="item.value"
-                      :label="item.label"
-                      :value="item.value"
+                      v-for="(item, index) in $root.dictAllList('ValidType')"
+                      :key="index"
+                      :label="item.name"
+                      :value="item.code"
                     ></el-option>
                   </el-select>
                 </el-form-item>
@@ -127,25 +132,27 @@
               width="90"
             ></el-table-column>
             <el-table-column
-              prop="level"
-              label="层级"
+              prop="shortNameAbbr"
+              label="简称首字母"
               width="90"
             ></el-table-column>
             <el-table-column label="组织类型" width="120">
               <template slot-scope="scope">{{
-                $root.displayName("orgType", scope.row.orgType)
+                $root.dictAllName(scope.row.orgType, "OrgType")
+              }}</template>
+            </el-table-column>
+
+            <el-table-column label="部门分类" width="120">
+              <template slot-scope="scope">{{
+                $root.dictAllName(scope.row.departmentType, "DepartmentType")
               }}</template>
             </el-table-column>
             <el-table-column
-              prop="createUserName"
-              label="创建人"
+              prop="oaChar"
+              label="OA呈字"
               width="90"
             ></el-table-column>
-            <el-table-column
-              prop="createTime"
-              label="创建时间"
-              width="155"
-            ></el-table-column>
+
             <el-table-column
               prop="updateUserName"
               label="修改人"
@@ -163,7 +170,7 @@
                   class="margin-right-10"
                   type="primary"
                   @click.native.prevent="edit(scope)"
-                  >编辑</el-link
+                  >修改</el-link
                 >
                 <el-link
                   style="color: #f66"
@@ -247,16 +254,11 @@ export default class OrganizationList extends Vue {
   organizationItem: any = null;
   editData: any = null;
 
-  async created() {
-    console.log("created");
-  }
-
   get levelOptions() {
     const list = [0, 1, 2, 3, 4, 5, 6, 7];
     return list;
   }
   async getListMixin() {
-    console.log(this.queryPageParameters);
     this.resPageInfo = await post_org_getList(this.queryPageParameters);
   }
 
