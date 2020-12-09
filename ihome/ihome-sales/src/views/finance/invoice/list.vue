@@ -4,7 +4,7 @@
  * @Author: ywl
  * @Date: 2020-12-08 17:45:05
  * @LastEditors: ywl
- * @LastEditTime: 2020-12-08 19:59:07
+ * @LastEditTime: 2020-12-09 16:03:20
 -->
 <template>
   <IhPage label-width="80px">
@@ -154,8 +154,8 @@
                 <i class="el-icon-arrow-down el-icon--right"></i>
               </span>
               <el-dropdown-menu slot="dropdown">
-                <el-dropdown-item>自动开票</el-dropdown-item>
-                <el-dropdown-item>手动开票</el-dropdown-item>
+                <el-dropdown-item @click.native.prevent="autoVisble = true">自动开票</el-dropdown-item>
+                <el-dropdown-item @click.native.prevent="dialogVisible = true">手动开票</el-dropdown-item>
                 <el-dropdown-item>下载发票</el-dropdown-item>
               </el-dropdown-menu>
             </el-dropdown>
@@ -175,17 +175,33 @@
         :total="resPageInfo.total"
       ></el-pagination>
     </template>
+    <!-- 弹窗 -->
+    <IhDialog :show="dialogVisible">
+      <HandmadelInvoice @cancel="() => (dialogVisible = false)" />
+    </IhDialog>
+    <IhDialog :show="autoVisble">
+      <AutoInvoice @cancel="() => (autoVisble = false)" />
+    </IhDialog>
   </IhPage>
 </template>
 
 <script lang="ts">
 import { Component, Vue } from "vue-property-decorator";
 import PaginationMixin from "../../../mixins/pagination";
+import HandmadelInvoice from "./dialog/handmadeInvoice.vue";
+import AutoInvoice from "./dialog/autoInvoice.vue";
 
 @Component({
+  components: { HandmadelInvoice, AutoInvoice },
   mixins: [PaginationMixin],
 })
 export default class InvoiceList extends Vue {
   queryPageParameters: any = {};
+  resPageInfo: any = {
+    total: null,
+    list: [{}],
+  };
+  dialogVisible = false;
+  autoVisble = false;
 }
 </script>

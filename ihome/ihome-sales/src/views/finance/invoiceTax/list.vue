@@ -4,7 +4,7 @@
  * @Author: ywl
  * @Date: 2020-12-01 10:38:45
  * @LastEditors: ywl
- * @LastEditTime: 2020-12-08 19:30:53
+ * @LastEditTime: 2020-12-09 10:24:58
 -->
 <template>
   <IhPage label-width="100px">
@@ -204,7 +204,7 @@ export default class InvoiceTaxList extends Vue {
   }
   private handleTo(row: any) {
     this.$router.push({
-      path: "/invoice/info",
+      path: "/invoiceTax/info",
       query: {
         id: row.id,
       },
