@@ -4,7 +4,7 @@
  * @Author: zyc
  * @Date: 2020-07-14 16:00:28
  * @LastEditors: zyc
- * @LastEditTime: 2020-08-13 11:09:26
+ * @LastEditTime: 2020-12-09 14:52:37
 --> 
 <template>
   <el-dialog
@@ -84,7 +84,7 @@
               <el-table-column prop="accountType" label="用户类型" width="120">
                 <template
                   slot-scope="scope"
-                >{{$root.displayName('accountType',scope.row.accountType)}}</template>
+                >{{$root.dictAllName(scope.row.accountType,'UserAccountType')}}</template>
               </el-table-column>
             </el-table>
             <div>

@@ -3,8 +3,8 @@
  * @version: 
  * @Author: zyc
  * @Date: 2020-07-08 14:23:16
- * @LastEditors: lgf
- * @LastEditTime: 2020-09-27 11:30:11
+ * @LastEditors: zyc
+ * @LastEditTime: 2020-12-09 14:48:34
 --> 
 <template>
   <div>
@@ -13,8 +13,8 @@
       <el-col :span="8">
         <el-row>
           <el-col :span="6" class="ih-info-item-left">用户类型</el-col>
-          <el-col :span="18" class="ih-info-item-right">{{
-            $root.displayName("accountType", info.accountType)
+          <el-col :span="18" class="ih-info-item-right">{{ 
+             $root.dictAllName(info.accountType,"UserAccountType")
           }}</el-col>
         </el-row>
       </el-col>
@@ -66,7 +66,7 @@
         <el-row>
           <el-col :span="6" class="ih-info-item-left">雇员状态</el-col>
           <el-col :span="18" class="ih-info-item-right">{{
-            $root.displayName("employeeStatus", info.employeeStatus)
+             $root.dictAllName(info.employeeStatus,"EmployeeStatus",)
           }}</el-col>
         </el-row>
       </el-col>
@@ -92,7 +92,7 @@
         <el-row>
           <el-col :span="6" class="ih-info-item-left">职能类别</el-col>
           <el-col :span="18" class="ih-info-item-right">{{
-            $root.displayName("workType", info.workType)
+            $root.dictAllName(info.workType,"UserWorkType")
           }}</el-col>
         </el-row>
       </el-col>
@@ -100,7 +100,7 @@
         <el-row>
           <el-col :span="6" class="ih-info-item-left">人员类型</el-col>
           <el-col :span="18" class="ih-info-item-right">{{
-            $root.displayName("employeeType", info.employeeType)
+            $root.dictAllName(info.employeeType,"EmployeeType")
           }}</el-col>
         </el-row>
       </el-col>
@@ -130,7 +130,7 @@
         <el-row>
           <el-col :span="6" class="ih-info-item-left">账号状态</el-col>
           <el-col :span="18" class="ih-info-item-right">{{
-            $root.displayName("accountStatus", info.status)
+            $root.dictAllName(info.status,"ValidType")
           }}</el-col>
         </el-row>
       </el-col>

@@ -4,7 +4,7 @@
  * @Author: zyc
  * @Date: 2020-06-30 09:21:17
  * @LastEditors: zyc
- * @LastEditTime: 2020-12-09 14:13:22
+ * @LastEditTime: 2020-12-09 14:51:05
 --> 
 <template>
   <ih-page>
@@ -342,7 +342,7 @@
               </span>
               <el-dropdown-menu slot="dropdown">
                 <el-dropdown-item @click.native.prevent="edit(scope)"
-                  >编辑</el-dropdown-item
+                  >修改</el-dropdown-item
                 >
                 <el-dropdown-item @click.native.prevent="remove(scope)"
                   >删除</el-dropdown-item
@@ -655,7 +655,7 @@ export default class UserList extends Vue {
   }
   handleSelectionChange(val: any) {
     console.log(val);
-    // this.copyUserData = val;
+    this.copyUserData = val;
   }
 }
 </script>

@@ -4,7 +4,7 @@
  * @Author: zyc
  * @Date: 2020-07-09 16:53:27
  * @LastEditors: zyc
- * @LastEditTime: 2020-08-13 11:03:41
+ * @LastEditTime: 2020-12-09 15:07:45
 --> 
 <template>
   <el-dialog
@@ -33,19 +33,19 @@
             </el-form-item>
           </el-col>
           <el-col :span="8">
-            <el-form-item label="用户类型">
+            <el-form-item label="账号类型">
               <el-select
                 v-model="queryPageParameters.accountType"
                 clearable
-                placeholder="请选择用户类型"
+                placeholder="请选择账号类型"
                 class="width--100"
               >
                 <el-option
-                  v-for="item in  $root.displayList('accountType')"
-                  :key="item.value"
-                  :label="item.label"
-                  :value="item.value"
-                ></el-option>
+                v-for="item in $root.dictAllList('UserAccountType')"
+                :key="item.code"
+                :label="item.name"
+                :value="item.code"
+              ></el-option>
               </el-select>
             </el-form-item>
           </el-col>
@@ -81,12 +81,12 @@
                 placeholder="请选择状态"
                 class="width--100"
               >
-                <el-option
-                  v-for="item in  $root.displayList('accountStatus')"
-                  :key="item.value"
-                  :label="item.label"
-                  :value="item.value"
-                ></el-option>
+                 <el-option
+                    v-for="item in $root.dictAllList('ValidType')"
+                    :key="item.code"
+                    :label="item.name"
+                    :value="item.code"
+                  ></el-option>
               </el-select>
             </el-form-item>
           </el-col>
@@ -101,12 +101,12 @@
                 placeholder="请选择状态"
                 class="width--100"
               >
-                <el-option
-                  v-for="item in $root.displayList('employeeStatus')"
-                  :key="item.value"
-                  :label="item.label"
-                  :value="item.value"
-                ></el-option>
+                 <el-option
+                v-for="item in $root.dictAllList('EmployeeStatus')"
+                :key="item.code"
+                :label="item.name"
+                :value="item.code"
+              ></el-option>
               </el-select>
             </el-form-item>
           </el-col>
@@ -123,6 +123,24 @@
                 @getValue="getValue($event)"
               />
             </el-form-item>
+          </el-col>
+          <el-col :span="8">
+             <el-form-item label="用户类别">
+                  <el-select
+                    v-model="queryPageParameters.userType"
+                    clearable
+                    placeholder="请选择用户类别"
+                    class="width--100"
+                   :disabled="true"
+                  >
+                     <el-option
+                    v-for="item in $root.dictAllList('UserType')"
+                    :key="item.code"
+                    :label="item.name"
+                    :value="item.code"
+                  ></el-option>
+                  </el-select>
+                </el-form-item>
           </el-col>
         </el-row>
         <el-row>
@@ -148,10 +166,10 @@
         <el-table-column prop="employeeStatus" label="雇员状态">
           <template
             slot-scope="scope"
-          >{{$root.displayName('employeeStatus',scope.row.employeeStatus)}}</template>
+          >{{ $root.dictAllName(scope.row.employeeStatus,"EmployeeStatus")}}</template>
         </el-table-column>
         <el-table-column prop="status" label="账号状态">
-          <template slot-scope="scope">{{$root.displayName('accountStatus',scope.row.status)}}</template>
+          <template slot-scope="scope">{{ $root.dictAllName( scope.row.status,"ValidType")}}</template>
         </el-table-column>
         <el-table-column prop="orgName" label="归属组织"></el-table-column>
       </el-table>
@@ -214,6 +232,7 @@ export default class BatchOperationUser extends Vue {
     permissionOrgId: null,
     status: "Valid",
     workType: null,
+    userType:'Staff',
   };
   jobVisibleData: any = null;
   OrganizationJurisdictionData: any = null;
@@ -233,7 +252,6 @@ export default class BatchOperationUser extends Vue {
   };
   orgList: any = [];
   employmentDateChange(dateArray: any) {
-    console.log(dateArray);
     this.queryPageParameters.employmentDateStart = dateArray[0];
     this.queryPageParameters.employmentDateEnd = dateArray[1];
   }
@@ -248,7 +266,6 @@ export default class BatchOperationUser extends Vue {
         roleId: this.data.id,
         userIds: this.selectList.map((item: any) => item.id),
       };
-      console.log(p);
       const res = await post_role_addRoleToUserBatch(p);
       this.$message.success("操作成功");
 
@@ -270,7 +287,6 @@ export default class BatchOperationUser extends Vue {
     if (listOrg && listOrg.length > 0) {
       listOrg[0].parentId = 0;
     }
-    console.log(listOrg);
     this.orgList = this.$tool.listToGruop(listOrg, {
       id: "id",
       children: "children",
@@ -279,7 +295,6 @@ export default class BatchOperationUser extends Vue {
     });
   }
   handleSelectionChange(val: any) {
-    console.log(val);
     this.selectList = val;
   }
   getValue(value: any) {

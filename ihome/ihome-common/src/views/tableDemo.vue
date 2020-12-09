@@ -3,8 +3,8 @@
  * @version: 
  * @Author: wwq
  * @Date: 2020-09-16 14:54:19
- * @LastEditors: wwq
- * @LastEditTime: 2020-09-30 17:37:09
+ * @LastEditors: zyc
+ * @LastEditTime: 2020-12-09 14:55:03
 -->
 <template>
   <div class="tableDemo">
@@ -154,7 +154,6 @@ export default class TableDemo extends Vue {
       prop: "gender",
       minWidth: 500,
       formatter: (cell: any) => {
-        // return (this.$root as any).$root.displayName("gender", row.gender);
         return gender[cell.gender];
       },
       peri: "gender",
