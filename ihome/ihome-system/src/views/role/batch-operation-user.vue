@@ -4,7 +4,7 @@
  * @Author: zyc
  * @Date: 2020-07-09 16:53:27
  * @LastEditors: zyc
- * @LastEditTime: 2020-12-09 15:07:45
+ * @LastEditTime: 2020-12-09 15:45:33
 --> 
 <template>
   <el-dialog
@@ -162,6 +162,11 @@
         <el-table-column type="index" label="序号" width="50"></el-table-column>
         <el-table-column prop="name" label="姓名"></el-table-column>
         <el-table-column prop="account" label="登录账号"></el-table-column>
+         <el-table-column prop="employeeStatus" label="用户类别">
+          <template
+            slot-scope="scope"
+          >{{ $root.dictAllName(scope.row.userType,"UserType")}}</template>
+        </el-table-column>
         <el-table-column prop="employmentDate" label="入职日期"></el-table-column>
         <el-table-column prop="employeeStatus" label="雇员状态">
           <template

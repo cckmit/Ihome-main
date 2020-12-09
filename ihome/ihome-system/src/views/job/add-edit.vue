@@ -4,7 +4,7 @@
  * @Author: zyc
  * @Date: 2020-07-14 09:48:18
  * @LastEditors: zyc
- * @LastEditTime: 2020-12-07 18:08:47
+ * @LastEditTime: 2020-12-09 15:42:52
 --> 
 <template>
   <el-dialog
@@ -133,11 +133,11 @@ export default class JobAddEdit extends Vue {
     if (valid) {
       if (this.ruleForm.id > 0) {
         const res = await post_job_update(this.ruleForm);
-        this.$message.success("操作成功");
+        this.$message.success("修改成功");
         this.$emit("finish", res);
       } else {
         const res = await post_job_add(this.ruleForm);
-        this.$message.success("操作成功.");
+        this.$message.success("添加成功");
 
         this.$emit("finish", res);
       }

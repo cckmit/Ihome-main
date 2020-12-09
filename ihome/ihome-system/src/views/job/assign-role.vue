@@ -4,7 +4,7 @@
  * @Author: zyc
  * @Date: 2020-07-14 10:03:09
  * @LastEditors: zyc
- * @LastEditTime: 2020-08-07 15:40:59
+ * @LastEditTime: 2020-12-09 15:39:54
 --> 
 <template>
   <el-dialog
@@ -87,7 +87,8 @@ export default class JobAddEdit extends Vue {
     const list = await get_role_getAll();
     list.forEach((item: any) => {
       item.key = item.id;
-      item.label = item.name;
+      item.label = item.name+' ('+item.code+')';
+
     });
 
     this.leftData = list;
