@@ -4,7 +4,7 @@
  * @Author: ywl
  * @Date: 2020-12-01 15:49:07
  * @LastEditors: ywl
- * @LastEditTime: 2020-12-08 19:58:29
+ * @LastEditTime: 2020-12-09 20:12:17
  */
 import { RouteConfig } from 'vue-router'
 
@@ -96,6 +96,19 @@ const financeRoutes: Array<RouteConfig> = [
         component: () => import('../views/finance/invoice/info.vue'),
         meta: { title: '开票详情', icon: 'form' }
       }
+    ]
+  },
+  {
+    path: '/receipt',
+    meta: { title: '收款管理', icon: null },
+    component: Layout,
+    children: [
+      {
+        path: 'list',
+        name: 'receiptList',
+        component: () => import('../views/finance/receipt/list.vue'),
+        meta: { title: '收款列表', icon: 'form', keepAlive: true }
+      },
     ]
   }
 ]

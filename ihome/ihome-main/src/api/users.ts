@@ -4,7 +4,7 @@
  * @Author: zyc
  * @Date: 2020-06-24 09:47:33
  * @LastEditors: ywl
- * @LastEditTime: 2020-12-08 18:13:54
+ * @LastEditTime: 2020-12-09 20:12:55
  */
 import { IRes } from "./users.d";
 // import request from '@/utils/http';
@@ -330,6 +330,13 @@ export function allMenu<T>() {
             title: '开票列表',
             icon: null,
             path: '/web-sales/invoice/list'
+        },
+        {
+            id: 707,
+            parentId: 701,
+            title: '收款列表',
+            icon: null,
+            path: '/web-sales/receipt/list'
         }
     ];
     return menuList;
