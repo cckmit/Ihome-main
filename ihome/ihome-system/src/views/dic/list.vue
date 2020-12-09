@@ -4,7 +4,7 @@
  * @Author: zyc
  * @Date: 2020-11-24 10:49:12
  * @LastEditors: zyc
- * @LastEditTime: 2020-12-09 16:46:03
+ * @LastEditTime: 2020-12-09 17:41:27
 -->
 <!--
  * @Description: 数据字典列表
@@ -18,7 +18,9 @@
   <IhPage ref="ihPage">
     <template #container>
       <el-row>
-        <el-col :span="8" class="dict-list-left">
+        <LeftRightContainer :leftHeight="pageHeight" :leftWidth="400">
+          <template slot="left">
+          <div class="dict-list-left">
           <el-row type="flex" justify="space-between" class="search-box">
             <el-col :span="6" class="text-left">
               <el-button
@@ -49,7 +51,7 @@
           <el-row class="padding-top-10">
             <ul
               class="dict-type-list text-left"
-              :style="{ maxHeight: pageHeight }"
+              :style="{ maxHeight: pageHeight+'px' }"
             >
               <template v-for="(item, index) in dictTypeList">
                 <li
@@ -81,8 +83,10 @@
               </template>
             </ul>
           </el-row>
-        </el-col>
-        <el-col :span="16" class="padding-left-10">
+        </div>
+          </template>
+           <template slot="right">
+                <el-col :span="24" class="padding-left-10">
           <el-row>
             <el-col :span="4" class="text-left">
               <el-button type="success" @click="handleAddDic()"
@@ -107,7 +111,7 @@
           </el-row>
           <el-row>
             <br />
-            <el-table class="ih-table" :data="dictList" :height="pageHeight">
+            <el-table class="ih-table" :data="dictList" :height="pageHeight+'px'">
               <el-table-column
                 type="index"
                 width="55px"
@@ -182,6 +186,11 @@
             </el-table>
           </el-row>
         </el-col>
+           </template>
+         
+     
+        </LeftRightContainer>
+       
       </el-row>
     </template>
     <!-- 字典类型dialog -->
@@ -229,9 +238,10 @@ import {
 
 import DictType from "./dialog/dictType.vue";
 import DictItem from "./dialog/dictItem.vue";
+import LeftRightContainer from '../../components/LeftRightContainer.vue'
 
 @Component({
-  components: { DictType, DictItem },
+  components: { DictType, DictItem, LeftRightContainer },
 })
 export default class DicList extends Vue {
   list: any = [];
@@ -258,8 +268,7 @@ export default class DicList extends Vue {
   private get pageHeight() {
     let h =
       (document.documentElement.clientHeight || document.body.clientHeight) -
-      (90 + 90) +
-      "px";
+      (90 + 90) -50 ;
     return h;
   }
 
@@ -416,7 +425,7 @@ export default class DicList extends Vue {
 <style lang="scss" scoped>
 $active: #ef9d39;
 .dict-list-left {
-  border-right: 1px solid #e6e6e6;
+  // border-right: 1px solid #e6e6e6;
   padding-right: 10px;
   padding-bottom: 10px;
   overflow: auto;
