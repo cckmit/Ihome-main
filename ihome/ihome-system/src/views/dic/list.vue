@@ -4,7 +4,7 @@
  * @Author: zyc
  * @Date: 2020-11-24 10:49:12
  * @LastEditors: zyc
- * @LastEditTime: 2020-12-07 17:01:53
+ * @LastEditTime: 2020-12-09 16:46:03
 -->
 <!--
  * @Description: 数据字典列表
@@ -339,8 +339,13 @@ export default class DicList extends Vue {
    * @param {number} index
    */
   private handleActive(index: number): void {
-    this.activeIndex = index;
-    this.getDictAll();
+    if(this.activeIndex===index){
+        this.activeIndex=null;
+       this.dictList=[];
+      }else{
+         this.activeIndex = index;
+         this.getDictAll();
+      }
   }
   /**
    * @description: 新增字典类型弹窗
@@ -380,12 +385,16 @@ export default class DicList extends Vue {
     if (this.activeIndex !== null) {
       dictType = this.dictTypeList[this.activeIndex].code;
     }
-
+    if(dictType||this.dictSearch){
     this.dictList = await post_dict_getAllDictItemByType({
-      type: dictType,
-      key: this.dictSearch,
-      valid: null,
-    });
+          type: dictType,
+          key: this.dictSearch,
+          valid: null,
+        });
+    }else{
+      this.$message.warning('输入关键词或选择左边列表再查询')
+    }
+    
   }
   /**
    * @description: 复制code
@@ -399,7 +408,7 @@ export default class DicList extends Vue {
 
   async created() {
     await this.getAllByType();
-    this.getDictAll();
+    // this.getDictAll();
   }
 }
 </script>
