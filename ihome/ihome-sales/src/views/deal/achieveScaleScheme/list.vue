@@ -9,16 +9,16 @@
 <template>
   <ih-page label-width="100px">
     <template v-slot:form>
-      <el-form ref="form" label-width="100px">
+      <p class="ih-info-title">{{branchCompanyName}}业绩比例管理</p>
+      <el-form ref="form" label-width="110px">
         <el-row>
-          <el-col :span="2" class="text-left">
-            <el-button type="success" @click="add()">新增</el-button>
-          </el-col>
-          <el-col :span="22" class="text-right">
-            <el-select
+          <el-col :span="8">
+            <el-form-item label="业务模式">
+              <el-select
               v-model="queryPageParameters.modelName"
               clearable
-              placeholder="请选择业务模式">
+              placeholder="请选择业务模式"
+              class="width--100">
               <el-option
                 v-for="item in $root.dictAllList('BusinessModel')"
                 :key="item.code"
@@ -26,10 +26,87 @@
                 :value="item.code"
               ></el-option>
             </el-select>
-            <el-button type="primary" class="margin-left-20" @click="getListMixin()">查询</el-button>
+            </el-form-item>
+          </el-col>
+          <el-col :span="8">
+            <el-form-item label="合同类型">
+              <el-select
+                v-model="queryPageParameters.contType"
+                clearable
+                placeholder="请选择合同类型"
+                class="width--100">
+                <el-option
+                  v-for="item in $root.dictAllList('ContType')"
+                  :key="item.code"
+                  :label="item.name"
+                  :value="item.code"
+                ></el-option>
+              </el-select>
+            </el-form-item>
+          </el-col>
+          <el-col :span="8">
+            <el-form-item label="物业类型">
+              <el-select
+                v-model="queryPageParameters.property"
+                clearable
+                multiple
+                collapse-tags
+                placeholder="请选择物业类型"
+                class="width--100">
+                <el-option
+                  v-for="item in $root.dictAllList('PropertyEnum')"
+                  :key="item.code"
+                  :label="item.name"
+                  :value="item.code"
+                ></el-option>
+              </el-select>
+            </el-form-item>
+          </el-col>
+          <el-col :span="8">
+            <el-form-item label="是否市场化项目">
+              <el-select
+                v-model="queryPageParameters.isMarketProject"
+                clearable
+                placeholder="请选择是否市场化项目"
+                class="width--100">
+                <el-option label="是" value="Yes"></el-option>
+                <el-option label="否" value="No"></el-option>
+              </el-select>
+            </el-form-item>
+          </el-col>
+          <el-col :span="8">
+            <el-form-item label="分销与总包一致">
+              <el-select
+                v-model="queryPageParameters.isSame"
+                clearable
+                placeholder="请选择分销与总包一致"
+                class="width--100">
+                <el-option label="是" value="Yes"></el-option>
+                <el-option label="否" value="No"></el-option>
+              </el-select>
+            </el-form-item>
+          </el-col>
+          <el-col :span="8">
+            <el-form-item label="是否特殊方案">
+              <el-select
+                v-model="queryPageParameters.isSpecial"
+                clearable
+                placeholder="请选择是否特殊方案"
+                class="width--100">
+                <el-option label="是" value="Yes"></el-option>
+                <el-option label="否" value="No"></el-option>
+              </el-select>
+            </el-form-item>
           </el-col>
         </el-row>
       </el-form>
+    </template>
+    <template v-slot:btn>
+      <el-row>
+        <el-button type="primary" @click="getListMixin()">查询</el-button>
+        <el-button type="info" @click="reset()">重置</el-button>
+        <el-button type="success" @click="add()">新增</el-button>
+      </el-row>
     </template>
     <template v-slot:table>
       <br/>
@@ -47,7 +124,13 @@
             <div v-else></div>
           </template>
         </el-table-column>
-        <el-table-column prop="isSame" label="分销同步总包" min-width="120">
+        <el-table-column prop="isMarketProject" label="是否特殊方案" min-width="120">
+          <template slot-scope="scope">
+            <div v-if="scope.row.isMarketProject">{{scope.row.isMarketProject === 'Yes' ? '是' : '否'}}</div>
+            <div v-else></div>
+          </template>
+        </el-table-column>
+        <el-table-column prop="isSame" label="分销与总包一致" min-width="120">
           <template slot-scope="scope">
             <div v-if="scope.row.isSame">{{scope.row.isSame === 'Yes' ? '是' : '否'}}</div>
             <div v-else></div>
@@ -109,19 +192,25 @@
     mixins: [PaginationMixin],
   })
   export default class AchieveScaleSchemeList extends Vue {
+    branchCompanyName: any = null; // 分公司名称
     queryPageParameters: any = {
-      modelName: null
+      modelName: null,
+      contType: null,
+      property: null,
+      isMarketProject: null,
+      isSame: null,
+      isSpecial: null
     };
 
     resPageInfo: any = {
       total: null,
-      list: [{}],
+      list: [],
     };
     companyId: any = null; // 分公司id
 
     async created() {
       // console.log('物业类型', (this as any).$root.dictAllList('PropertyEnum'));
-      this.companyId = this.$route.query.id;
+      this.companyId = localStorage.getItem('companyId');
       if (this.companyId) {
         await this.getListMixin();
       }
@@ -137,6 +226,7 @@
       self.queryPageParameters.branchCompanyId = self.companyId; // 分公司id
       self.resPageInfo = await post_achieveScaleScheme_getList(self.queryPageParameters);
       if (self.resPageInfo.list && self.resPageInfo.list.length > 0) {
+        this.branchCompanyName = self.resPageInfo.list[0].branchCompany;
         self.resPageInfo.list.forEach((listItem: any) => {
           // 合同类型
           if (listItem.contType) {
@@ -154,14 +244,14 @@
               })
             }
             if (nameType.length > 0) {
-              listItem.contType = nameType.join(',');
+              listItem.contType = nameType.join('，');
             } else {
               listItem.contType = "";
             }
           }
           // 物业类型
           if (listItem.propertyTypeStr) {
-            let typeArr = listItem.contType.split(',');
+            let typeArr = listItem.propertyTypeStr.split(',');
             let propertyNameType: any = [];
             if (typeArr.length > 0) {
               typeArr.forEach((typeItem: any) => {
@@ -175,28 +265,19 @@
               })
             }
             if (propertyNameType.length > 0) {
-              listItem.propertyTypeStr = propertyNameType.join(',');
+              listItem.propertyTypeStr = propertyNameType.join('，');
             } else {
               listItem.propertyTypeStr = "";
             }
           }
           // 业务模式
           if (listItem.modelName) {
-            let typeArr = listItem.contType.split(',');
-            let businessNameType: any = [];
-            if (typeArr.length > 0) {
-              typeArr.forEach((typeItem: any) => {
-                if (businessModelList && businessModelList.length > 0) {
-                  businessModelList.forEach((businessItem: any) => {
-                    if (typeItem === businessItem.code) {
-                      businessNameType.push(businessItem.name);
-                    }
-                  })
+            if (businessModelList && businessModelList.length > 0) {
+              businessModelList.forEach((businessItem: any) => {
+                if (listItem.modelName === businessItem.code) {
+                  listItem.modelName = businessItem.name;
                 }
               })
-            }
-            if (businessNameType.length > 0) {
-              listItem.modelName = businessNameType.join(',');
             } else {
               listItem.modelName = "";
             }
@@ -232,6 +313,11 @@
     reset() {
       this.queryPageParameters = {
         modelName: null,
+        contType: null,
+        achievePropertyTypeList: null,
+        isMarketProject: null,
+        isSame: null,
+        isSpecial: null,
         pageNum: 1,
         pageSize: this.queryPageParameters.pageSize,
       };

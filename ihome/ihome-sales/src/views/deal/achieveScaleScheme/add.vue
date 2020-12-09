@@ -16,8 +16,8 @@
       label-width="130px"
       class="demo-ruleForm">
       <el-row>
-        <el-col :span="6">
-          <el-form-item label="业务模式">
+        <el-col :span="8">
+          <el-form-item label="业务模式" prop="modelId">
             <el-select
               v-model="postData.modelId"
               @change="handleChange"
@@ -25,19 +25,20 @@
               placeholder="请选择业务模式"
               class="width--100">
               <el-option
-                v-for="item in $root.dictAllList('BusinessModel')"
-                :key="item.code"
-                :label="item.name"
-                :value="item.code"
-              ></el-option>
+                v-for="item in getModelList"
+                :key="item.id"
+                :label="item.Desc"
+                :value="item.id"
+              >{{item.Desc}}</el-option>
             </el-select>
           </el-form-item>
         </el-col>
-        <el-col :span="6">
-          <el-form-item label="合同类型">
+        <el-col :span="8">
+          <el-form-item label="合同类型" prop="contType">
             <el-select
               v-model="postData.contType"
               clearable
+              no-data-text="请先选择业务模式"
               placeholder="请选择合同类型"
               class="width--100">
               <el-option
@@ -49,8 +50,8 @@
             </el-select>
           </el-form-item>
         </el-col>
-        <el-col :span="6">
-          <el-form-item label="是否市场化项目">
+        <el-col :span="8">
+          <el-form-item label="是否市场化项目" prop="isMarketProject">
             <el-select
               v-model="postData.isMarketProject"
               clearable
@@ -61,8 +62,26 @@
             </el-select>
           </el-form-item>
         </el-col>
-        <el-col :span="6">
-          <el-form-item label="分销同步总包">
+        <el-col :span="8">
+          <el-form-item label="物业类型" prop="achievePropertyTypeList">
+            <el-select
+              v-model="postData.achievePropertyTypeList"
+              clearable
+              multiple
+              collapse-tags
+              placeholder="请选择物业类型"
+              class="width--100">
+              <el-option
+                v-for="item in $root.dictAllList('PropertyEnum')"
+                :key="item.code"
+                :label="item.name"
+                :value="item.code"
+              ></el-option>
+            </el-select>
+          </el-form-item>
+        </el-col>
+        <el-col :span="8">
+          <el-form-item label="分销与总包一致">
             <el-select
               v-model="postData.isSame"
               @change="handleChangeIsSame"
@@ -74,40 +93,25 @@
             </el-select>
           </el-form-item>
         </el-col>
-      </el-row>
-      <el-row>
-        <el-col :span="24">
-          <el-form-item label="物业类型">
-            <el-checkbox-group v-model="postData.achievePropertyTypeList">
-              <el-checkbox
-                v-for="item in $root.dictAllList('PropertyEnum')"
-                :key="item.code"
-                :label="item.code">{{item.name}}
-              </el-checkbox>
-            </el-checkbox-group>
+        <el-col :span="8">
+          <el-form-item label="是否特殊方案">
+            <el-select
+              v-model="postData.isSpecial"
+              clearable
+              placeholder="请选择"
+              class="width--100">
+              <el-option label="是" value="Yes"></el-option>
+              <el-option label="否" value="No"></el-option>
+            </el-select>
           </el-form-item>
         </el-col>
-      </el-row>
-      <el-row>
-        <el-col :span="24">
-          <el-form-item label="关联项目">
-            <div class="link-pro-wrapper">
-              <el-button type="success" @click="addRelatedProject">选择关联项目</el-button>
-              <el-tag
-                v-for="item in postData.achieveProjectList"
-                :key="item.name"
-                @close="handleCloseProject(item)"
-                closable>
-                {{item.name}}
-              </el-tag>
-            </div>
-          </el-form-item>
-        </el-col>
-      </el-row>
-      <el-row>
         <el-col :span="24">
           <el-form-item label="备注说明">
-            <el-input v-model="postData.remarks" clearable placeholder="请输入备注说明"></el-input>
+            <el-input
+              type="textarea"
+              clearable
+              :rows="3"
+              v-model="postData.remarks" placeholder="请输入备注说明"></el-input>
           </el-form-item>
         </el-col>
       </el-row>
@@ -126,6 +130,9 @@
         class="ih-table"
         :max-height="500"
         :data="tableModel.tableData">
+        <template slot="empty" v-if="showEmpty">
+          <div class="tips-color">业绩比例方案必须配置</div>
+        </template>
         <el-table-column prop="typeName" label="类别" min-width="100">
           <template slot-scope="scope">
             <el-form-item>{{scope.row.typeName}}</el-form-item>
@@ -159,6 +166,7 @@
               :prop="'tableData.' + scope.$index + '.ratio'"
               :rules='tableModel.rules.ratio'>
               <el-input-number
+                v-digits="2"
                 class="input-number-left"
                 v-model="scope.row.ratio"
                 @blur="handleChangeValue($event, scope)"
@@ -220,26 +228,15 @@
       </el-table>
     </el-form>
     <div class="text-center text-margin-top">
+      <el-button @click="cancel()">取消</el-button>
       <el-button type="success" @click="save()">保存</el-button>
-      <el-button type="primary" @click="cancel()">取消</el-button>
     </div>
-    <ih-dialog :show="dialogAdd" desc="选择关联项目">
-      <RelatedProjectList
-        @cancel="() => (dialogAdd = false)"
-        @finish="
-            (data) => {
-              dialogAdd = false;
-              finishAdd(data);
-            }
-          "
-      />
-    </ih-dialog>
   </ih-page>
 </template>
 <script lang="ts">
   import {Component, Vue} from "vue-property-decorator";
-  import RelatedProjectList from "@/views/deal/achieveScaleScheme/related-project/list.vue";
   import {
+    post_businessModel_getAll,
     post_achieveScaleScheme_add,
     get_achieveScaleScheme_get__id,
     post_achieveScaleScheme_update,
@@ -249,7 +246,7 @@
   import {NoRepeatHttp} from "ihome-common/util/aop/no-repeat-http";
 
   @Component({
-    components: {RelatedProjectList}
+    components: {}
   })
 
   export default class AchieveScaleSchemeAdd extends Vue {
@@ -258,42 +255,137 @@
       contType: null, // 合同类型
       isMarketProject: null, // 是否市场化
       isSame: null, // 是否同步
+      isSpecial: null, // 是否同步
       remarks: null, // 备注
       achievePropertyTypeList: [], // 物业类型[{propertyType: ""}]
-      achieveProjectList: [], // 关联项目[{projectId: ""}]
       achieveScaleConfigList: [] // 业绩比例配置
     };
     rules: any = {
-      modelName: [
+      modelId: [
         {required: true, message: "业务模式必选", trigger: "change"},
+      ],
+      contType: [
+        {required: true, message: "合同类型必选", trigger: "change"},
+      ],
+      isMarketProject: [
+        {required: true, message: "是否市场化项目必选", trigger: "change"},
+      ],
+      achievePropertyTypeList: [
+        {required: true, message: "物业类型必选", trigger: "change"},
       ]
+    };
+    private checkRole: any = (rule: any, value: any, callback: any) => {
+      // console.log('value', value);
+      let index = rule.field.split('.')[1];
+      let currentType = this.tableModel.tableData[index].type; // 总包---"TotalBag",分销---"Distri"
+      if (!value) {
+        return callback(new Error('角色必选'));
+      } else {
+        if (this.tableModel.tableData.length > 0) {
+          let tempList = [];
+          tempList = this.tableModel.tableData.filter((item: any) => {
+            return item.type === currentType && item.role === value;
+          });
+          if (tempList.length > 1) {
+            return callback(new Error('不能存在2个相同的角色'));
+          }
+        }
+        callback();
+      }
+    };
+    private checkRatio: any = (rule: any, value: any, callback: any) => {
+      // console.log('rule', rule);
+      let index = rule.field.split('.')[1];
+      let currentType = this.tableModel.tableData[index].type; // 总包---"TotalBag",分销---"Distri"
+      // 计算和
+      function getTotal(list: any) {
+        let total = 0;
+        if (list.length > 0) {
+          list.forEach((item: any) => {
+            total = (total * 100 + (item['ratio'] * 100)) / 100;
+          })
+        }
+        return total;
+      }
+      if (!value) {
+        return callback(new Error('拆分比例必填'));
+      } else {
+        if (this.tableModel.tableData.length > 0) {
+          let TotalBagRatioTotal = 0; // 总包类型的拆分比例之和
+          let TotalBagList = []; // 总包类型数据
+          let DistriRatioTotal = 0; // 分销类型的拆分比例之和
+          let DistriList = []; // 分销类型数据
+          TotalBagList = this.tableModel.tableData.filter((item: any) => {
+            return item.type === 'TotalBag';
+          });
+          DistriList = this.tableModel.tableData.filter((item: any) => {
+            return item.type === 'Distri';
+          });
+          TotalBagRatioTotal = getTotal(TotalBagList);
+          DistriRatioTotal = getTotal(DistriList);
+          // console.log('TotalBagRatioTotal', TotalBagRatioTotal);
+          // console.log('DistriRatioTotal', DistriRatioTotal);
+          if (currentType === 'TotalBag' && !this.$tool.eq(TotalBagRatioTotal, 100)) {
+            return callback(new Error('总包方拆分比例合计必须为100%'));
+          } else if (currentType === 'Distri' && !this.$tool.eq(DistriRatioTotal, 100)) {
+            return callback(new Error('分销方拆分比例合计必须为100%'));
+          } else {
+            callback();
+          }
+        }
+        callback();
+      }
     };
     tableModel: any = {
       rules: {
         role: [
-          {required: true, message: "业务模式必选", trigger: "change"},
+          // {required: true, message: "角色必选", trigger: "change"},
+          {validator: this.checkRole, trigger: "change"},
         ],
         ratio: [
-          {required: true, message: "业务模式必选", trigger: "change"},
+          // {required: true, message: "拆分比例必填", trigger: "change"},
+          {validator: this.checkRatio, trigger: "blur"},
         ],
         missingRole: [
-          {required: true, message: "业务模式必选", trigger: "change"},
+          {required: true, message: "角色缺失处理方式必选", trigger: "change"},
         ]
       },
       tableData: []
     }
+    showEmpty: any = false;
+    tableFormValidate: any = false;
     id: any = null;
     companyId: any = null;
-    dialogAdd: any = false;
+    getModelList: any = []; // 业务模式
     getByNameList: any = []; // 合同类型
     totalPackageList: any = []; // 总包
     distributionList: any = []; // 分销
 
     async created() {
-      this.id = this.$route.query.id; // 业绩比例方案
+      await this.getBusinessModelList();
       this.companyId = this.$route.query.companyId; // 分公司id
+      this.id = this.$route.query.id; // 具体业绩比例方案---详情用
       if (this.id) {
         await this.initGetInfo()
+      }
+    }
+
+    // 获取业务模式
+    async getBusinessModelList() {
+      const res: any = await post_businessModel_getAll();
+      // console.log('resresres', res);
+      let businessModelList = (this as any).$root.dictAllList('BusinessModel');
+      if (res && res.length > 0 && businessModelList && businessModelList.length > 0) {
+        res.forEach((item: any) => {
+          businessModelList.forEach((list: any) => {
+            if (item.modelName === list.code) {
+              item.Desc = list.name
+            }
+          })
+        })
+        this.getModelList = res;
+      } else {
+        this.getModelList = [];
       }
     }
 
@@ -341,32 +433,51 @@
     async initGetInfo() {
       const res: any = await get_achieveScaleScheme_get__id({id: this.id});
       this.postData = res;
-      if (this.postData.achieveScaleConfigList && this.postData.achieveScaleConfigList.length > 0) {
-        // 初始化
-        this.totalPackageList = [];
-        this.distributionList = [];
-        this.postData.achieveScaleConfigList.forEach((list: any) => {
-          if (list.type) {
-            list.customizeId = list.id;
-            switch (list.type) {
-              // 总包
-              case "TotalBag":
-                this.totalPackageList.push(list);
-                break;
-              // 分销
-              case "Distri":
-                this.distributionList.push(list);
-                break;
-            }
-          }
+      // 根据业务模式获取合同类型下拉选项
+      await this.getModelContTypeList();
+      // 物业类型
+      if (this.postData.achievePropertyTypeList.length > 0) {
+        let tempArr: any = [];
+        this.postData.achievePropertyTypeList.forEach((list: any) => {
+          tempArr.push(list.propertyType);
         })
+        this.postData.achievePropertyTypeList = tempArr;
+      } else {
+        this.postData.achievePropertyTypeList = []
+      }
+      // 分配方案表格数据
+      if (this.postData.achieveScaleConfigList.length > 0) {
+        this.tableModel.tableData = [];
+        this.postData.achieveScaleConfigList.forEach((list: any, index: any) => {
+          // (this as any).$set(list, 'customizeId', new Date().getTime() + index);
+          this.tableModel.tableData.push(
+            {
+              ...list,
+              typeName: list.type === 'TotalBag' ? '总包' : '分销',
+              customizeId: new Date().getTime() + index
+            }
+          )
+        })
+      } else {
+        this.tableModel.tableData = []
       }
     }
 
     // 根据业务模式名称，获取对应的合同类型列表
     async getModelContTypeList() {
       const contTypeList = (this as any).$root.dictAllList('ContType');
-      const res: any = await get_businessModel_getByName__modelName({modelName: this.postData.modelId});
+      let modelName = '';
+      if (this.getModelList.length > 0) {
+        this.getModelList.forEach((list: any) => {
+          if (list.id === this.postData.modelId) {
+            modelName = list.modelName
+          }
+        })
+      } else {
+        return;
+      }
+      if (!modelName) return;
+      const res: any = await get_businessModel_getByName__modelName({modelName: modelName});
       // console.log('getModelContTypeList', res);
       if (contTypeList && contTypeList.length > 0 && res && res.length > 0) {
         this.getByNameList = contTypeList.filter((list: any) => {
@@ -379,27 +490,12 @@
 
     // 改变业务模式
     async handleChange(value: any) {
-      // console.log('valuevalue', value);
+      console.log('valuevalue', value);
       this.postData.contType = null;
       this.getByNameList = [];
       if (value) {
         await this.getModelContTypeList();
       }
-    }
-
-    // 选择关联项目
-    async addRelatedProject() {
-      this.dialogAdd = true;
-    }
-
-    // 删除关联项目
-    handleCloseProject(item: any) {
-      this.postData.achieveProjectList.splice(this.postData.achieveProjectList.indexOf(item), 1);
-    }
-
-    async finishAdd(data: any) {
-      // console.log('data', data);
-      this.postData.achieveProjectList = data;
     }
 
     // 构建总包/分销对象
@@ -548,6 +644,7 @@
       this.changeValue(scope);
     }
 
+    // 改变值
     handleChangeValue(value: any, scope: any) {
       // console.log('eeee', value);
       this.changeValue(scope);
@@ -555,37 +652,52 @@
 
     // 保存
     async save() {
-      (this.$refs["ruleForm"] as ElForm).validate(this.addSave);
+      if (this.tableModel.tableData.length === 0) {
+        this.showEmpty = true;
+      } else {
+        this.showEmpty = false;
+      }
+      (this.$refs["tableForm"] as ElForm).validate((valid: any) => {
+        if (valid) {
+          this.tableFormValidate = true;
+        } else {
+          this.tableFormValidate = false;
+        }
+        (this.$refs["ruleForm"] as ElForm).validate(this.addSave);
+      });
     }
 
     @NoRepeatHttp()
     async addSave(valid: any) {
       // console.log('this.postData', this.postData);
-      if (valid) {
-        this.postData.achieveScaleConfigList = this.tableModel.tableData;
+      if (valid && this.tableFormValidate && !this.showEmpty) {
+        this.postData.branchCompanyId = this.companyId; // 分公司ID
+        this.postData.achieveScaleConfigList = this.tableModel.tableData; // 业绩比例配置
+        // 构建参数
+        let postData: any = {
+          ...this.postData,
+          achievePropertyTypeList: []
+        };
+        if (this.postData.achievePropertyTypeList.length > 0) {
+          this.postData.achievePropertyTypeList.forEach((list: any) => {
+            postData.achievePropertyTypeList.push(
+              {
+                propertyType: list
+              }
+            )
+          })
+        }
         if (this.id) {
-          let postData: any = {
-            id: this.id,
-            modelName: this.postData.modelName,
-            ...this.postData
-          };
+          postData.id = this.id;
           await post_achieveScaleScheme_update(postData);
           this.$message.success("编辑成功");
-          this.$goto({
-            path: "/achieveScaleScheme/list",
-          });
         } else {
-          let postData: any = {
-            id: this.id,
-            modelName: this.postData.modelName,
-            ...this.postData
-          };
           await post_achieveScaleScheme_add(postData);
           this.$message.success("新增成功");
-          this.$goto({
-            path: "/achieveScaleScheme/list",
-          });
         }
+        this.$goto({
+          path: "/achieveScaleScheme/list",
+        });
       } else {
         this.$message.warning("请先填好数据再保存");
         return false;
@@ -627,5 +739,9 @@
 
   .text-margin-top {
     margin-top: 20px;
+  }
+
+  .tips-color {
+    color: #F66;
   }
 </style>

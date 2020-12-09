@@ -4,7 +4,7 @@
  * @Author: zyc
  * @Date: 2020-06-24 09:47:33
  * @LastEditors: zyc
- * @LastEditTime: 2020-11-11 14:13:19
+ * @LastEditTime: 2020-12-07 09:19:12
  */
 import { IRes } from "./users.d";
 // import request from '@/utils/http';
@@ -17,7 +17,7 @@ import request from 'ihome-common/util/api/http';
  */
 function resHandle<T>(result: Promise<IRes<T>>) {
     return result.then((res: IRes<T>) => res.data)
-      .catch((err: IRes<T>) => err.data)
+        .catch((err: IRes<T>) => err.data)
 }
 
 /**获取用户信息
@@ -222,7 +222,7 @@ export function allMenu<T>() {
         {
             id: 403,
             parentId: 401,
-            title: "渠道合同列表",
+            title: "渠道分销协议列表",
             icon: null,
             path: "/web-sales/distribution/list"
         },
@@ -296,12 +296,13 @@ export const login = async (data: any) => {
     //http://localhost:8610/sales-oauth2/oauth/token?grant_type=password&client_id=sales-client-dev&client_secret=sales-dev&username=admin&password=123456
 
 
-    let url = `/sales-api/sales-oauth2/oauth/token?grant_type=password&client_id=sales-client-dev&client_secret=sales-dev&username=${data.username}&password=${data.password}`;
-
+    // let url = `/sales-api/sales-oauth2/oauth/token?grant_type=password&client_id=sales-client-dev&client_secret=sales-dev&username=${data.username}&password=${data.password}`;
+    const auth_client = 'UGM6c2FsZXMhMjAyMA==';
+    let url = `/sales-api/sales-oauth2/oauth/token?grant_type=password&username=${data.username}&password=${data.password}&auth_client=${auth_client}`
     const res: any = await request({
         url: url,
         method: 'post',
-    })
+    });
 
     return res;
 
@@ -317,7 +318,7 @@ export async function logout() {
 
 
 export const getUserInfo = () =>
-  request({
-      url: '/users/logout',
-      method: 'post'
-  })
+    request({
+        url: '/users/logout',
+        method: 'post'
+    })

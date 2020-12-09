@@ -19,9 +19,14 @@
             :border="border"
             :row-key="getRowKeys"
             @selection-change="handleSelectChange">
+            <el-table-column fixed v-if="isSingle" width="50" min-width="50" align="center">
+              <template slot-scope="scope">
+                <el-checkbox v-model="scope.row.checked" @change="changSingle($event, scope)"></el-checkbox>
+              </template>
+            </el-table-column>
             <el-table-column
               fixed
-              v-if="isSelection"
+              v-else
               :reserve-selection="true"
               width="50"
               min-width="50"
@@ -81,7 +86,7 @@
   </div>
 </template>
 <script lang="ts">
-  import {Component, Vue, Prop} from "vue-property-decorator";
+  import {Component, Vue, Prop, Watch} from "vue-property-decorator";
 
   @Component({
     components: {},
@@ -93,6 +98,14 @@
     @Prop() private hasCheckedData!: any; // 已选项
     @Prop() private rowKey!: any; // 选择项的标识
     @Prop() private column!: any; // 表头
+    @Prop({
+      default: 'id',
+    })
+    valueKey!: string; // 单选/多选用于匹配数据的唯一值，不传默认id
+    @Prop({
+      default: false,
+    })
+    isSingle!: boolean; // 是否单选
     @Prop({
       default: false,
     })
@@ -122,6 +135,28 @@
     private checkedData: any = [];
     private isPageChange = false;
 
+    @Watch("data")
+    dataChange() {
+      if (this.isSingle) {
+        // 单选
+        if (this.checkedData.length > 0) {
+          this.checkedData.forEach((data: any) => {
+            this.data.forEach((item: any) => {
+              if (data[this.valueKey] === item[this.valueKey]) {
+                item.checked = true;
+              } else {
+                item.checked = false;
+              }
+            })
+          })
+        } else {
+          this.data.forEach((item: any) => {
+            item.checked = false;
+          })
+        }
+      }
+    }
+
     created() {
       this.tabActive = "1";
       this.init();
@@ -130,10 +165,27 @@
     // 初始化回显
     init() {
       this.$nextTick(() => {
-        if (this.hasCheckedData && this.hasCheckedData.length > 0) {
-          this.hasCheckedData.forEach((data: any) => {
-            (this as any).$refs.checkTable.toggleRowSelection(data, true);
-          });
+        // console.log(this.hasCheckedData);
+        if (this.isSingle) {
+          // 单选模式
+          this.checkedData = JSON.parse(JSON.stringify(this.hasCheckedData));
+          this.data.forEach((item: any) => {
+            this.hasCheckedData.forEach((data: any) => {
+              if (item[this.valueKey] === data[this.valueKey]) {
+                item.checked = true;
+              } else {
+                item.checked = false;
+              }
+            })
+          })
+        } else {
+          // 多选模式
+          if (this.hasCheckedData && this.hasCheckedData.length > 0) {
+            this.hasCheckedData.forEach((data: any) => {
+              (this as any).$refs.checkTable.toggleRowSelection(data, true);
+            });
+            this.checkedData = JSON.parse(JSON.stringify(this.hasCheckedData));
+          }
         }
       })
     }
@@ -146,29 +198,51 @@
     // 勾选
     handleSelectChange(selection: any) {
       // console.log('selection', selection);
-      this.$emit('selection-change', selection);
       if (selection && selection.length > 0) {
         this.checkedData = selection;
       } else {
         this.checkedData = [];
       }
+      this.$emit('selection-change', selection);
     }
 
+    // 改变每页长度
     pageSizeChangeHandler(val: any) {
       this.$emit("size-change", val);
     }
 
+    // 改变页码
     pageChangeHandler(index: number) {
       this.isPageChange = true;
       this.$emit("page-change", index);
     }
 
+    // 删除选择项
     async remove(scope: any) {
       // console.log('scope', scope);
       try {
         await this.$confirm("是否确定删除?", "提示");
         // 取消选择项中对应的项
-        (this as any).$refs.checkTable.toggleRowSelection(scope.row);
+        if (this.isSingle) {
+          // 单选
+          this.$nextTick(() => {
+            this.data.forEach((item: any) => {
+              if (item[this.valueKey] === scope.row[this.valueKey]) {
+                item.checked = false;
+              }
+            })
+          })
+          this.checkedData = [];
+          this.$emit('selection-change', this.checkedData);
+        } else {
+          // 多选
+          this.checkedData = this.checkedData.filter((data: any) => {
+            return data[this.valueKey] !== scope.row[this.valueKey]
+          })
+          this.$nextTick(() => {
+            (this as any).$refs.checkTable.toggleRowSelection(scope.row);
+          })
+        }
         this.$message({
           type: "success",
           message: "删除成功!",
@@ -176,6 +250,23 @@
       } catch (error) {
         console.log(error);
       }
+    }
+
+    // 单选模式，改变选项
+    changSingle(e: any, scope: any) {
+      // console.log(e);
+      // console.log(scope);
+      this.checkedData = [];
+      if (e) {
+        this.data.forEach((item: any, index: any) => {
+          if (index !== scope.$index) {
+            item.checked = false;
+          } else {
+            this.checkedData.push(item);
+          }
+        })
+      }
+      this.$emit('selection-change', this.checkedData);
     }
   }
 </script>

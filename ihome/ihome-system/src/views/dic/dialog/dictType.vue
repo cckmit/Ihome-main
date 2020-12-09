@@ -3,8 +3,8 @@
  * @version: 
  * @Author: ywl
  * @Date: 2020-11-09 14:55:48
- * @LastEditors: ywl
- * @LastEditTime: 2020-11-10 10:33:32
+ * @LastEditors: zyc
+ * @LastEditTime: 2020-12-07 15:21:14
 -->
 <template>
   <el-dialog
@@ -24,31 +24,19 @@
       label-width="100px"
       class="text-left"
     >
-      <el-form-item
-        label="编码"
-        prop="code"
-      >
+      <el-form-item label="编码" prop="code">
         <el-input
           v-model="form.code"
           placeholder="编码中多个单词使用驼峰写法"
         ></el-input>
       </el-form-item>
-      <el-form-item
-        label="名称"
-        prop="name"
-      >
-        <el-input
-          v-model="form.name"
-          placeholder="请输入名称"
-        ></el-input>
+      <el-form-item label="名称" prop="name">
+        <el-input v-model="form.name" placeholder="请输入名称"></el-input>
       </el-form-item>
     </el-form>
     <template #footer>
       <el-button @click="cancel()">取 消</el-button>
-      <el-button
-        type="primary"
-        @click="finish()"
-      >确 定</el-button>
+      <el-button type="primary" @click="finish()">确 定</el-button>
     </template>
   </el-dialog>
 </template>
@@ -57,7 +45,7 @@
 import { Component, Vue, Prop } from "vue-property-decorator";
 import { NoRepeatHttp } from "ihome-common/util/aop/no-repeat-http";
 import { Form as ElForm } from "element-ui";
-import { noTrim, isChineseValidato } from "ihome-common/util/base/form-ui";
+import { noTrim } from "ihome-common/util/base/form-ui";
 
 import {
   post_dict_addDictType,
@@ -83,7 +71,7 @@ export default class DictTypeDialog extends Vue {
     name: [
       { required: true, message: "请输入名称", trigger: "blur" },
       { validator: noTrim, trigger: ["change", "blur"] },
-      { validator: isChineseValidato, trigger: ["change", "blur"] },
+      // { validator: isChineseValidato, trigger: ["change", "blur"]   },
     ],
   };
 

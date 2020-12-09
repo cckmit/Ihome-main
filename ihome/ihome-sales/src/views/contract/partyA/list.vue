@@ -4,50 +4,58 @@
  * @Author: ywl
  * @Date: 2020-09-25 11:53:51
  * @LastEditors: ywl
- * @LastEditTime: 2020-10-23 15:03:10
+ * @LastEditTime: 2020-12-07 10:12:21
 -->
 <template>
-  <IhPage>
+  <IhPage label-width="100px">
     <!-- 搜索 -->
     <template #form>
       <el-form
         ref="form"
-        label-width="85px"
+        label-width="100px"
       >
         <el-row>
           <el-col :span="8">
             <el-form-item label="标题">
-              <el-select
-                v-model="queryPageParameters.name"
-                placeholder="甲方"
+              <el-input
+                v-model="queryPageParameters.title"
+                placeholder="请输入标题"
                 clearable
-                class="width--100"
-              ></el-select>
+              ></el-input>
             </el-form-item>
           </el-col>
           <el-col :span="8">
             <el-form-item label="甲方">
               <el-select
-                v-model="queryPageParameters.name"
-                placeholder="甲方"
+                v-model="queryPageParameters.partyAId"
+                placeholder="请选择甲方"
                 clearable
+                filterable
                 class="width--100"
-              ></el-select>
+              >
+                <el-option
+                  v-for="item in partyAList"
+                  :key="item.id"
+                  :label="item.name"
+                  :value="item.id"
+                ></el-option>
+              </el-select>
             </el-form-item>
           </el-col>
           <el-col :span="8">
             <el-form-item label="乙方">
               <el-select
-                v-model="queryPageParameters.accountType"
+                v-model="queryPageParameters.partyBId"
                 clearable
-                placeholder="乙方"
+                filterable
+                placeholder="请选择乙方"
                 class="width--100"
               >
                 <el-option
-                  v-for="item in $root.displayList('accountType')"
-                  :key="item.value"
-                  :label="item.label"
-                  :value="item.value"
+                  v-for="item in companyList"
+                  :key="item.id"
+                  :label="item.name"
+                  :value="item.id"
                 ></el-option>
               </el-select>
             </el-form-item>
@@ -59,8 +67,8 @@
               <el-col :span="8">
                 <el-form-item label="合作项目">
                   <el-input
-                    v-model="queryPageParameters.mobilePhone"
-                    placeholder="合作项目"
+                    v-model="queryPageParameters.cooperationProjectsName"
+                    placeholder="请输入合作项目"
                   ></el-input>
                 </el-form-item>
               </el-col>
@@ -68,7 +76,7 @@
                 <el-form-item label="合作时间">
                   <el-date-picker
                     style="width:100%;"
-                    v-model="queryPageParameters.employmentDate"
+                    v-model="timeList"
                     type="daterange"
                     align="left"
                     unlink-panels
@@ -80,69 +88,59 @@
                   ></el-date-picker>
                 </el-form-item>
               </el-col>
-              <el-col :span="8">
+              <!-- <el-col :span="8">
                 <el-form-item label="执行时间">
                   <el-date-picker
                     style="width:100%;"
-                    v-model="queryPageParameters.employmentDate"
+                    v-model="queryPageParameters.effectiveTime"
                     type="date"
                     align="left"
                     placeholder="年/月/日"
-                    :picker-options="$root.pickerOptions"
                     value-format="yyyy-MM-dd"
                   ></el-date-picker>
                 </el-form-item>
+              </el-col> -->
+              <el-col :span="8">
+                <el-form-item label="关联项目">
+                  <SelectPageByProject
+                    v-model="queryPageParameters.projectsId"
+                    placeholder="请选择关联项目"
+                  ></SelectPageByProject>
+                </el-form-item>
               </el-col>
             </el-row>
 
             <el-row>
-              <el-col :span="8">
-                <el-form-item label="项目">
-                  <el-select
-                    v-model="queryPageParameters.accountType"
-                    clearable
-                    placeholder="项目"
-                    class="width--100"
-                  >
-                    <el-option
-                      v-for="item in $root.displayList('accountType')"
-                      :key="item.value"
-                      :label="item.label"
-                      :value="item.value"
-                    ></el-option>
-                  </el-select>
-                </el-form-item>
-              </el-col>
-              <el-col :span="8">
-                <el-form-item label="周期">
-                  <el-select
-                    v-model="queryPageParameters.accountType"
-                    clearable
-                    placeholder="周期"
-                    class="width--100"
-                  >
-                    <el-option
-                      v-for="item in $root.displayList('accountType')"
-                      :key="item.value"
-                      :label="item.label"
-                      :value="item.value"
-                    ></el-option>
-                  </el-select>
-                </el-form-item>
-              </el-col>
               <el-col :span="8">
                 <el-form-item label="归属组织">
-                  <el-select
-                    v-model="queryPageParameters.employeeStatus"
+                  <SelectOrganizationTree
+                    :orgId="queryPageParameters.organizationId"
+                    @callback="(id) => (queryPageParameters.organizationId = id)"
+                  />
+                </el-form-item>
+              </el-col>
+              <el-col :span="8">
+                <el-form-item label="合同编号">
+                  <el-input
+                    v-model="queryPageParameters.contractNo"
                     clearable
-                    placeholder="请选择归属组织"
+                    placeholder="请输入合同编号"
+                  ></el-input>
+                </el-form-item>
+              </el-col>
+              <el-col :span="8">
+                <el-form-item label="审核状态">
+                  <el-select
+                    v-model="queryPageParameters.approvalStatus"
+                    clearable
+                    placeholder="请选择审核状态"
                     class="width--100"
                   >
                     <el-option
-                      v-for="item in $root.displayList('employeeStatus')"
-                      :key="item.value"
-                      :label="item.label"
-                      :value="item.value"
+                      v-for="item in $root.dictAllList('ContractEnum.ApprovalStatus')"
+                      :key="item.code"
+                      :label="item.name"
+                      :value="item.code"
                     ></el-option>
                   </el-select>
                 </el-form-item>
@@ -150,95 +148,63 @@
             </el-row>
 
             <el-row>
-              <el-col :span="8">
-                <el-form-item label="合同编号">
-                  <el-select
-                    v-model="queryPageParameters.employeeStatus"
-                    clearable
-                    placeholder="请选择合同编号"
-                    class="width--100"
-                  >
-                    <el-option
-                      v-for="item in $root.displayList('employeeStatus')"
-                      :key="item.value"
-                      :label="item.label"
-                      :value="item.value"
-                    ></el-option>
-                  </el-select>
-                </el-form-item>
-              </el-col>
               <el-col :span="8">
                 <el-form-item label="归档状态">
                   <el-select
-                    v-model="queryPageParameters.employeeType"
+                    v-model="queryPageParameters.archiveStatus"
                     clearable
                     placeholder="请选择归档状态"
                     class="width--100"
                   >
                     <el-option
-                      v-for="item in $root.displayList('employeeType')"
-                      :key="item.value"
-                      :label="item.label"
-                      :value="item.value"
+                      v-for="item in $root.dictAllList('ContractEnum.ArchiveStatus')"
+                      :key="item.code"
+                      :label="item.name"
+                      :value="item.code"
                     ></el-option>
                   </el-select>
                 </el-form-item>
               </el-col>
               <el-col :span="8">
                 <el-form-item label="归档编号">
-                  <el-select
-                    v-model="queryPageParameters.workType"
+                  <el-input
+                    v-model="queryPageParameters.archiveNo"
                     clearable
-                    placeholder="请选择归档编号"
+                    placeholder="请输入归档编号"
+                    class="width--100"
+                  ></el-input>
+                </el-form-item>
+              </el-col>
+              <el-col :span="8">
+                <el-form-item label="合同录入人">
+                  <IhSelectPageUser
+                    v-model="queryPageParameters.enteringPersonId"
+                    clearable
                     class="width--100"
                   >
-                    <el-option
-                      v-for="item in $root.displayList('workType')"
-                      :key="item.value"
-                      :label="item.label"
-                      :value="item.value"
-                    ></el-option>
-                  </el-select>
+                    <template v-slot="{ data }">
+                      <span style="float: left">{{ data.name }}</span>
+                      <span style="margin-left: 20px;float: right; color: #8492a6; font-size: 13px">{{ data.account }}</span>
+                    </template>
+                  </IhSelectPageUser>
                 </el-form-item>
               </el-col>
             </el-row>
 
             <el-row>
               <el-col :span="8">
-                <el-form-item label="合同录入人">
-                  <el-select
-                    v-model="queryPageParameters.employeeStatus"
-                    clearable
-                    placeholder="请选择合同录入人"
-                    class="width--100"
-                  >
-                    <el-option
-                      v-for="item in $root.displayList('employeeStatus')"
-                      :key="item.value"
-                      :label="item.label"
-                      :value="item.value"
-                    ></el-option>
-                  </el-select>
-                </el-form-item>
-              </el-col>
-              <el-col :span="8">
                 <el-form-item label="合同跟进人">
-                  <el-select
-                    v-model="queryPageParameters.employeeType"
+                  <IhSelectPageUser
+                    v-model="queryPageParameters.handlerId"
                     clearable
-                    placeholder="请选择合同跟进人"
                     class="width--100"
                   >
-                    <el-option
-                      v-for="item in $root.displayList('employeeType')"
-                      :key="item.value"
-                      :label="item.label"
-                      :value="item.value"
-                    ></el-option>
-                  </el-select>
+                    <template v-slot="{ data }">
+                      <span style="float: left">{{ data.name }}</span>
+                      <span style="margin-left: 20px;float: right; color: #8492a6; font-size: 13px">{{ data.account }}</span>
+                    </template>
+                  </IhSelectPageUser>
                 </el-form-item>
-              </el-col>
-              <el-col :span="8">
               </el-col>
             </el-row>
           </div>
@@ -248,13 +214,26 @@
     <!-- 按钮 -->
     <template #btn>
       <el-row>
-        <el-button type="primary">查询</el-button>
-        <el-button type="info">重置</el-button>
         <el-button
-          type="success"
-          @click="$router.push('/partyA/add')"
-        >录入</el-button>
-        <el-button>导出</el-button>
+          type="primary"
+          @click="handleSearch()"
+        >查询</el-button>
+        <el-button
+          type="info"
+          @click="handleReset()"
+        >重置</el-button>
+        <el-dropdown
+          class="margin-left-10"
+          trigger="click"
+        >
+          <el-button type="success">
+            导出<i class="el-icon-arrow-down el-icon--right"></i>
+          </el-button>
+          <el-dropdown-menu slot="dropdown">
+            <el-dropdown-item @click.native.prevent="handleExport()">导出列表</el-dropdown-item>
+            <el-dropdown-item @click.native.prevent="handleExportFile()">导出附件</el-dropdown-item>
+          </el-dropdown-menu>
+        </el-dropdown>
         <el-link
           type="primary"
           class="float-right margin-right-40"
@@ -268,6 +247,7 @@
       <el-table
         class="ih-table partyA-table"
         :data="resPageInfo.list"
+        :empty-text="emptyText"
         @selection-change="handleSelectionChange"
       >
         <el-table-column
@@ -280,95 +260,97 @@
           fixed
           label="标题"
           prop="title"
-          min-width="100"
+          min-width="235"
         ></el-table-column>
         <el-table-column
-          fixed
           label="甲方"
-          prop="jia"
           min-width="200"
-        ></el-table-column>
+        >
+          <template v-slot="{ row }">
+            <span
+              v-for="(item, index) in row.partyList"
+              :key="item.id"
+            >
+              {{item.userName}}
+              <span v-if="index !== (row.partyList.length-1)">、</span>
+            </span>
+          </template>
+        </el-table-column>
         <el-table-column
-          fixed
           label="乙方"
-          prop="yi"
+          prop="partyBName"
           min-width="150"
         ></el-table-column>
         <el-table-column
           label="合作项目"
-          prop="pro"
+          prop="cooperativeProject"
           min-width="200"
         ></el-table-column>
         <el-table-column
           label="合作时间"
-          prop="time"
-          width="200"
-        ></el-table-column>
-        <el-table-column
-          label="执行时间"
-          prop="time"
+          prop="cooperationTime"
           width="200"
         ></el-table-column>
         <el-table-column
           label="关联项目"
-          prop="pro"
+          prop="projectsId"
           width="200"
-        ></el-table-column>
-        <el-table-column
-          label="关联周期"
-          prop="zoom"
-          width="100"
         ></el-table-column>
         <el-table-column
           label="归属组织"
-          prop="pl"
-          width="200"
+          prop="organizationId"
+          width="150"
         ></el-table-column>
         <el-table-column
           label="合同编号"
-          prop="id"
+          prop="contractNo"
           width="200"
         ></el-table-column>
+        <el-table-column
+          label="审核状态"
+          prop="contractCode"
+        >
+          <template v-slot="{ row }">
+            {{$root.dictAllName(row.approvalStatus, "ContractEnum.ApprovalStatus")}}
+          </template>
+        </el-table-column>
         <el-table-column
           label="归档状态"
-          prop="isAction"
+          prop="archiveStatus"
           width="100"
-        ></el-table-column>
+        >
+          <template v-slot="{ row }">
+            {{ $root.dictAllName(row.archiveStatus, "ContractEnum.ArchiveStatus") }}
+          </template>
+        </el-table-column>
         <el-table-column
           label="归档编号"
-          prop="id"
-          width="200"
+          prop="archiveNo"
+          width="230"
         ></el-table-column>
         <el-table-column
           label="合同跟进人"
-          prop="name"
+          prop="handlerId"
           width="100"
         ></el-table-column>
         <el-table-column
           label="操作"
-          width="230"
-          align="left"
+          width="210"
           fixed="right"
         >
           <template v-slot="{ row }">
             <el-link
               type="primary"
-              @click.native.prevent="handleTo(row)"
+              @click="handleToPage(row, 'info')"
             >详情</el-link>
-            <el-link type="primary">扫描件归档</el-link>
-            <el-link type="primary">原件归档</el-link>
-            <!-- <el-dropdown
-                trigger="click"
-                class="margin-left-15"
-              >
-                <span class="el-dropdown-link">
-                  更多
-                  <i class="el-icon-arrow-down el-icon--right"></i>
-                </span>
-                <el-dropdown-menu slot="dropdown">
-                  <el-dropdown-item @click.native.prevent="routerTo(row)">编辑</el-dropdown-item>
-                </el-dropdown-menu>
-              </el-dropdown> -->
+            <el-link
+              type="primary"
+              @click="duplicate(row)"
+            >扫描件归档</el-link>
+            <el-link
+              type="primary"
+              @click="handleToPage(row, '/partyA/edit')"
+            >原件归档</el-link>
           </template>
         </el-table-column>
       </el-table>
@@ -392,83 +374,175 @@
 <script lang="ts">
 import { Component, Vue } from "vue-property-decorator";
 import PaginationMixin from "@/mixins/pagination";
+import SelectOrganizationTree from "@/components/SelectOrganizationTree.vue";
+import SelectPageByProject from "@/components/SelectPageByProject.vue";
+import { post_term_getDropDown } from "@/api/project/index";
+import { post_company_listAll } from "@/api/developer/index";
+import { post_company_getAll } from "@/api/system/index";
+import axios from "axios";
+import { getToken } from "ihome-common/util/cookies";
+import {
+  post_contract_list,
+  post_contract_duplicate__id,
+} from "@/api/contract/index";
+
 @Component({
+  components: { SelectOrganizationTree, SelectPageByProject },
   mixins: [PaginationMixin],
 })
 export default class PartyAList extends Vue {
-  public queryPageParameters: any = {};
+  public queryPageParameters: any = {
+    approvalStatus: null,
+    archiveNo: null,
+    archiveStatus: null,
+    contractNo: null,
+    cooperationBeginTime: null,
+    cooperationEndTime: null,
+    cooperationProjectsName: null,
+    enteringPersonId: null,
+    handlerId: null,
+    organizationId: null,
+    partyAId: null,
+    partyBId: null,
+    projectsId: null,
+    title: null,
+  };
+  timeList = [];
+  private dropOption: any = [];
+  private companyList: any = [];
+  private partyAList: any = [];
+  private selectTable: any = [];
   private searchOpen = true;
-  public resPageInfo: PageInfo = {
-    total: 0,
-    list: [
-      {
-        title: "123",
-        jia: "广州居恒信息科技有限公司",
-        yi: "asd",
-        pro: "保利XX项目",
-        time: "2020-9-28",
-        zoom: "周期",
-        pl: "保利",
-        id: "128418458315",
-        name: "爱家案场",
-        isAction: "保存",
-      },
-      {
-        title: "123",
-        jia: "广州居恒信息科技有限公司1",
-        yi: "asd",
-        pro: "保利XX项目",
-        time: "2020-9-28",
-        zoom: "周期1",
-        pl: "保利",
-        id: "128418458315",
-        name: "爱家案场1",
-        isAction: "保存",
-      },
-      {
-        title: "123",
-        jia: "广州居恒信息科技有限公司",
-        yi: "asd",
-        pro: "保利XX项目1",
-        time: "2020-9-29",
-        zoom: "周期",
-        pl: "保利",
-        id: "128418458315",
-        name: "爱家案场",
-        isAction: "保存",
-      },
-      {
-        title: "123",
-        jia: "广州居恒信息科技有限公司",
-        yi: "asd",
-        pro: "保利XX项目1",
-        time: "2020-9-29",
-        zoom: "周期",
-        pl: "保利",
-        id: "128418458315",
-        name: "爱家案场",
-        isAction: "保存",
-      },
-    ],
+  public resPageInfo: any = {
+    total: null,
+    list: [],
   };
 
+  private handleExport() {
+    if (!this.selectTable.length) {
+      this.$message.warning("请先勾选表格数据");
+      return;
+    }
+    const token: any = getToken();
+    axios({
+      method: "POST",
+      url: `/sales-api/contract/export/contract/list`,
+      xsrfHeaderName: "Authorization",
+      responseType: "blob",
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: "bearer " + token,
+      },
+      data: this.selectTable.map((i: any) => i.id),
+    }).then((res: any) => {
+      const href = window.URL.createObjectURL(res.data);
+      const $a = document.createElement("a");
+      $a.href = href;
+      $a.download = "列表.xlsx";
+      $a.click();
+      $a.remove();
+    });
+  }
+  private handleExportFile() {
+    if (!this.selectTable.length) {
+      this.$message.warning("请先勾选表格数据");
+      return;
+    }
+    const token: any = getToken();
+    axios({
+      method: "POST",
+      url: `/sales-api/contract/export/contract/file`,
+      xsrfHeaderName: "Authorization",
+      responseType: "blob",
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: "bearer " + token,
+      },
+      data: this.selectTable.map((i: any) => i.id),
+    }).then((res: any) => {
+      const href = window.URL.createObjectURL(res.data);
+      const $a = document.createElement("a");
+      $a.href = href;
+      $a.download = "附件.zip";
+      $a.click();
+      $a.remove();
+    });
+  }
+  private handleSearch(): void {
+    let sign = this.timeList && this.timeList.length;
+    this.queryPageParameters.cooperationBeginTime = sign
+      ? this.timeList[0]
+      : "";
+    this.queryPageParameters.cooperationEndTime = sign ? this.timeList[1] : "";
+    this.queryPageParameters.pageNum = 1;
+    this.getListMixin();
+  }
+  private handleReset(): void {
+    Object.assign(this.queryPageParameters, {
+      approvalStatus: null,
+      archiveNo: null,
+      archiveStatus: null,
+      contractNo: null,
+      cooperationBeginTime: null,
+      cooperationEndTime: null,
+      cooperationProjectsName: null,
+      enteringPersonId: null,
+      handlerId: null,
+      organizationId: null,
+      partyAId: null,
+      partyBId: null,
+      projectsId: null,
+      title: null,
+    });
+    this.timeList = [];
+  }
   private openToggle(): void {
     this.searchOpen = !this.searchOpen;
   }
-  private handleSelectionChange(val: any): void {
-    console.log(val);
+  private handleToPage(row: any, page: string) {
+    this.$router.push({
+      path: page,
+      query: {
+        id: row.id,
+      },
+    });
   }
-}
-interface PageInfo {
-  total: number;
-  list: Array<object>;
+  private handleSelectionChange(val: any): void {
+    // console.log(val);
+    this.selectTable = val;
+  }
+  private async duplicate(row: any): Promise<void> {
+    await this.$confirm("此操作将进行扫描件归档, 是否继续?", "提示");
+    await post_contract_duplicate__id({ id: row.id });
+    this.$message.success("归档成功");
+    this.getListMixin();
+  }
+  private async getCompanyList() {
+    this.companyList = await post_company_getAll({ name: "" });
+  }
+  private async getPartyAList() {
+    this.partyAList = await post_company_listAll({ name: "" });
+  }
+  private async getDropDown(): Promise<void> {
+    this.dropOption = await post_term_getDropDown();
+  }
+  public async getListMixin(): Promise<void> {
+    this.resPageInfo = await post_contract_list(this.queryPageParameters);
+  }
+
+  created() {
+    this.getListMixin();
+    this.getCompanyList();
+    this.getPartyAList();
+    this.getDropDown();
+  }
 }
 </script>
 
 <style lang="scss" scoped>
 .partyA-table {
   .el-link + .el-link {
-    margin-left: 15px;
+    margin-left: 10px;
   }
 }
 </style>

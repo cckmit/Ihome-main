@@ -4,7 +4,7 @@
  * @Author: zyc
  * @Date: 2020-06-30 09:21:17
  * @LastEditors: ywl
- * @LastEditTime: 2020-11-16 15:18:37
+ * @LastEditTime: 2020-11-30 17:51:12
 --> 
 <template>
   <IhPage label-width="100px">
@@ -153,7 +153,7 @@
           min-width="170"
         ></el-table-column>
         <el-table-column
-          prop="inputUser"
+          prop="inputUserName"
           label="录入人"
           width="170"
         ></el-table-column>
@@ -163,7 +163,7 @@
           width="95"
         ></el-table-column>
         <el-table-column
-          prop="departmentOrgId"
+          prop="departmentName"
           label="事业部"
           width="150"
         >

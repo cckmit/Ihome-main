@@ -4,7 +4,7 @@
  * @Author: lgf
  * @Date: 2020-09-16 14:05:21
  * @LastEditors: ywl
- * @LastEditTime: 2020-11-16 17:54:27
+ * @LastEditTime: 2020-12-01 15:03:51
 -->
 <template>
   <div class="text-left">
@@ -78,7 +78,7 @@
         </el-col>
 
         <el-col :span="8">
-          <el-form-item label="跟进人">{{ info.followUserId }}</el-form-item>
+          <el-form-item label="跟进人">{{ info.followUserName }}</el-form-item>
         </el-col>
       </el-row>
       <el-row>
@@ -102,25 +102,30 @@
         <el-table-column
           prop="accountName"
           label="账户名称"
-          min-width="300"
+          min-width="200"
         ></el-table-column>
         <el-table-column
-          prop="accountNum"
+          prop="accountNo"
           label="账号"
           min-width="200"
         > </el-table-column>
         <el-table-column
-          prop="bank"
+          prop="branchName"
           label="开户银行"
           width="300"
         ></el-table-column>
         <el-table-column
-          prop="type"
+          prop="branchNo"
+          label="联行号"
+          width="150"
+        ></el-table-column>
+        <el-table-column
+          prop="accountType"
           label="账号类型"
           width="200"
         >
           <template v-slot="{row}">
-            {{$root.dictAllName(row.type, "AccountEnum")}}
+            {{$root.dictAllName(row.accountType, "AccountEnum")}}
           </template>
         </el-table-column>
       </el-table>

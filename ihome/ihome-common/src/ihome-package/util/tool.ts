@@ -4,7 +4,7 @@
  * @Author: zyc
  * @Date: 2020-06-09 16:38:00
  * @LastEditors: zyc
- * @LastEditTime: 2020-11-16 10:17:20
+ * @LastEditTime: 2020-12-07 15:30:44
  */
 export interface ToolInterface {
     /**深度拷贝
@@ -49,9 +49,15 @@ export interface ToolInterface {
      * @return {type} 
      */
     downloadFileUrl(fid: number | string): string;
+    /**复制文本
+     * @param {*}
+     * @return {*}
+     */
+    coptText(text: any, callback: Function): any;
 
 }
 export class Tool implements ToolInterface {
+
     /**获取当前时间+n天yyyy-MM-dd字符串
     * @param {type} 
     * @return {type} 
@@ -201,5 +207,28 @@ export class Tool implements ToolInterface {
         }
         return tree;
 
+    }
+    /**复制文本
+   * @param {*}
+   * @return {*}
+   */
+    coptText(text: any, callback: Function) {
+        let value = text.replace(/\s+/g, "");
+        let element = document.createElement("SPAN");
+        element.textContent = value;
+        document.body.appendChild(element);
+        if ((document as any).selection) {
+            let range = (document.body as any).createTextRange();
+            range.moveToElementText(element);
+            range.select();
+        } else if ((window as any).getSelection) {
+            let range = document.createRange();
+            range.selectNode(element);
+            (window as any).getSelection().removeAllRanges();
+            (window as any).getSelection().addRange(range);
+        }
+        document.execCommand("Copy");
+        element.remove ? element.remove() : (element as any).removeNode(true);
+        callback && callback();
     }
 }

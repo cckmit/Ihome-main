@@ -56,17 +56,11 @@
               @click.native.prevent="edit(scope)"
             >编辑
             </el-link>
-            <el-dropdown trigger="click" style="margin-left: 15px">
-              <span class="el-dropdown-link">
-                更多
-                <i class="el-icon-arrow-down el-icon--right"></i>
-              </span>
-              <el-dropdown-menu slot="dropdown">
-                <el-dropdown-item @click.native.prevent="remove(scope)"
-                >删除
-                </el-dropdown-item>
-              </el-dropdown-menu>
-            </el-dropdown>
+            <el-link
+              style="color: #f66"
+              type="primary"
+              @click.native.prevent="remove(scope)"
+            >删除</el-link>
           </template>
         </el-table-column>
       </el-table>

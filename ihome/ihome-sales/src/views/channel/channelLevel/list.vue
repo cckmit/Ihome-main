@@ -4,7 +4,7 @@
  * @Author: wwq
  * @Date: 2020-08-13 11:40:10
  * @LastEditors: ywl
- * @LastEditTime: 2020-11-16 15:20:26
+ * @LastEditTime: 2020-11-30 17:49:55
 -->
 <template>
   <IhPage label-width="100px">
@@ -246,11 +246,11 @@
           }}</template>
         </el-table-column>
         <el-table-column
-          prop="departmentOrgId"
+          prop="departmentName"
           label="事业部"
         ></el-table-column>
         <el-table-column
-          prop="inputUser"
+          prop="inputUserName"
           label="录入人"
         ></el-table-column>
         <el-table-column

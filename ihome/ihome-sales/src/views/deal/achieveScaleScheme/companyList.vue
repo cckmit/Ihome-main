@@ -13,7 +13,7 @@
         <el-row>
           <el-col class="text-left">
             <el-input
-              v-model="queryPageParameters.branchCompanyName"
+              v-model="queryPageParameters.name"
               clearable
               class="input-wrapper"
               placeholder="请输入分公司名称"
@@ -30,7 +30,7 @@
         :empty-text="emptyText"
         :data="resPageInfo.list">
         <el-table-column
-          prop="branchCompanyName"
+          prop="name"
           label="分公司名称"
           min-width="120"
         ></el-table-column>
@@ -62,10 +62,9 @@
 </template>
 <script lang="ts">
   import {Component, Vue} from "vue-property-decorator";
-
   import {
-    post_achieveScaleScheme_getBranchCompanyList
-  } from "@/api/deal";
+    post_org_getList
+  } from "@/api/system";
 
   import PaginationMixin from "@/mixins/pagination";
 
@@ -75,7 +74,8 @@
   })
   export default class CompanyList extends Vue {
     queryPageParameters: any = {
-      branchCompanyName: null
+      name: null,
+      orgType: 'Department'
     };
 
     resPageInfo: any = {
@@ -84,18 +84,19 @@
     };
 
     async created() {
-      // await this.getListMixin();
+      await this.getListMixin();
     }
 
     // 获取分公司列表
     async getListMixin() {
-      this.resPageInfo = await post_achieveScaleScheme_getBranchCompanyList(this.queryPageParameters);
+      this.resPageInfo = await post_org_getList(this.queryPageParameters);
     }
 
     // 重置
     reset() {
       this.queryPageParameters = {
-        branchCompanyName: null,
+        name: null,
+        orgType: 'Department',
         pageNum: 1,
         pageSize: this.queryPageParameters.pageSize,
       };
@@ -103,10 +104,8 @@
 
     // 分公司详情
     async detail(scope: any) {
-      this.$router.push({
-        path: "/achieveScaleScheme/list",
-        query: {id: scope.row.id},
-      });
+      localStorage.setItem('companyId', scope.row.id);
+      this.$router.push({path: "/achieveScaleScheme/list"});
     }
   }
 </script>

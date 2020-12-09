@@ -9,11 +9,11 @@
 <template>
   <el-dialog
     v-dialogDrag
-    title="选择中介经纪人列表"
+    title="选择渠道经纪人列表"
     :visible.sync="dialogVisible"
     :close-on-click-modal="false"
     :close-on-press-escape="false"
-    :before-close="finish"
+    :before-close="beforeFinish"
     append-to-body
     width="1000px"
     style="text-align: left"
@@ -23,16 +23,16 @@
         <el-col :span="8">
           <el-form-item label="经纪人姓名">
             <el-input
-              v-model="queryPageParameters.city"
+              v-model="queryPageParameters.name"
               placeholder="经纪人姓名"
             ></el-input>
           </el-form-item>
         </el-col>
         <el-col :span="8">
-          <el-form-item label="中介公司">
+          <el-form-item label="渠道公司">
             <el-input
-              v-model="queryPageParameters.city"
-              placeholder="中介公司"
+              v-model="queryPageParameters.company"
+              placeholder="渠道公司"
             ></el-input>
           </el-form-item>
         </el-col>
@@ -46,51 +46,21 @@
         </el-col>
       </el-row>
     </el-form>
-    <el-table
-      class="ih-table"
+    <IhTableCheckBox
+      :isSingle="true"
+      :valueKey="rowKey"
       :data="resPageInfo.list"
-      @selection-change="handleSelectionChange">
-      <el-table-column type="selection" width="55"></el-table-column>
-      <el-table-column
-        prop="storageNum"
-        label="经纪人姓名"
-        min-width="180"
-      ></el-table-column>
-      <el-table-column
-        prop="channelName"
-        label="中介公司"
-        min-width="180"
-      ></el-table-column>
-      <el-table-column
-        prop="province"
-        label="公司渠道等级"
-        min-width="180"
-      ></el-table-column>
-      <el-table-column
-        prop="city"
-        label="门店名称"
-        min-width="180"
-      ></el-table-column>
-      <el-table-column
-        prop="cityGrade"
-        label="岗位"
-        min-width="180"
-      ></el-table-column>
-      <el-table-column
-        prop="cityGrade"
-        label="状态"
-        min-width="180"
-      ></el-table-column>
-    </el-table>
-    <el-pagination
-      @size-change="handleSizeChangeMixin"
-      @current-change="handleCurrentChangeMixin"
-      :current-page.sync="queryPageParameters.pageNum"
-      :page-sizes="$root.pageSizes"
-      :page-size="queryPageParameters.pageSize"
-      :layout="$root.paginationLayout"
-      :total="resPageInfo.total"
-    ></el-pagination>
+      :hasCheckedData="hasCheckedData"
+      :rowKey="rowKey"
+      :column="tableColumn"
+      :maxHeight="tableMaxHeight"
+      @selection-change="selectionChange"
+      :pageSize="pageSize"
+      :pageCurrent="currentPage"
+      :pageTotal="resPageInfo.total"
+      @page-change="pageChange"
+      @size-change="sizeChange">
+    </IhTableCheckBox>
     <span slot="footer" class="dialog-footer">
       <el-button type="primary" @click="finish()">确 定</el-button>
     </span>
@@ -99,7 +69,7 @@
 <script lang="ts">
   import {Component, Vue, Prop} from "vue-property-decorator";
 
-  import {post_channelGrade_getList} from "@/api/channel";
+  import {post_channelAgent_getList} from "@/api/channel";
   import PaginationMixin from "@/mixins/pagination";
 
   @Component({
@@ -111,41 +81,119 @@
       super();
     }
 
+    private rowKey: any = 'id'; // 选择项的标识
+    private tableMaxHeight: any = 350;
+    private tableColumn = [
+      {
+        prop: "name",
+        label: "经纪人姓名",
+        align: "left",
+        minWidth: 200,
+      },
+      {
+        prop: "channelId",
+        label: "渠道公司",
+        align: "left",
+        minWidth: 120,
+      },
+      {
+        prop: "channelLevel",
+        label: "公司渠道等级",
+        align: "left",
+        minWidth: 100,
+      },
+      {
+        prop: "province",
+        label: "岗位",
+        align: "left",
+        minWidth: 150,
+      },
+      {
+        prop: "status",
+        label: "状态",
+        align: "left",
+        minWidth: 100,
+      }
+    ];
+    private pageSize = 10;
+    private currentPage = 1;
+
     @Prop({default: null}) data: any;
+    @Prop({
+      default: ()=>[]
+    })
+    hasCheckedData!: any;
     dialogVisible = true;
     resPageInfo: any = {
-      total: 0,
+      total: null,
       list: [],
     };
 
     queryPageParameters: any = {
-      channelGrade: null,
-      channelId: null,
-      city: null,
-      cityGrade: null,
-      departmentOrgId: null,
-      inputUser: null,
-      province: null,
-      special: null,
-      status: null,
-      storageNum: null,
+      name: null,
+      company: null
     };
+    currentSelection: any = []; // 当前选择的项
+
+    created() {
+      this.getListMixin();
+    }
+
+    async beforeFinish() {
+      this.$emit("cancel");
+    }
 
     async finish() {
       this.$emit("finish", true);
     }
 
-    created() {
-      // this.getListMixin();
+    // 获取选中项 --- 最后需要获取的数据
+    private selectionChange(selection: any) {
+      console.log(selection, "selectionChange");
+      this.currentSelection = selection;
     }
 
-    handleSelectionChange(val: any) {
-      console.log(val);
-      // this.selectList = val;
+    private pageChange(index: number) {
+      this.currentPage = index;
+      this.queryPageParameters.pageNum = index;
+      this.getListMixin();
+    }
+
+    private sizeChange(val: any) {
+      this.currentPage = 1;
+      this.pageSize = val;
+      this.queryPageParameters.pageNum = 1;
+      this.queryPageParameters.pageSize = val;
+      this.getListMixin();
     }
 
     async getListMixin() {
-      this.resPageInfo = await post_channelGrade_getList(this.queryPageParameters);
+      const infoList = await post_channelAgent_getList(this.queryPageParameters);
+      if (infoList.list.length > 0) {
+        infoList.list.forEach((item: any) => {
+          item.checked = false;
+        })
+      }
+      this.resPageInfo = JSON.parse(JSON.stringify(infoList));
+      // 勾选回显
+      if (this.resPageInfo.list.length > 0 && this.hasCheckedData.length > 0) {
+        this.hasCheckedData.forEach((data: any) => {
+          this.resPageInfo.list.forEach((list: any) => {
+            if (list[this.rowKey] === data[this.rowKey]) {
+              list.checked = true;
+              this.currentSelection = [...list];
+            }
+          })
+        })
+      }
+    }
+
+    reset() {
+      this.queryPageParameters = {
+        name: null,
+        pageNum: 1,
+        pageSize: this.queryPageParameters.pageSize
+      };
     }
   }
 </script>
