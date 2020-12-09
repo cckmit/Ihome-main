@@ -38,8 +38,8 @@
             </el-form-item>
           </el-col>
           <el-col :span="6">
-            <el-form-item label="成交渠道等级">
-              <div>{{postData.channelLevel}}</div>
+            <el-form-item label="细分业务模式">
+              <div>{{postData.businessType}}</div>
             </el-form-item>
           </el-col>
           <el-col :span="6">
@@ -48,7 +48,7 @@
             </el-form-item>
           </el-col>
           <el-col :span="6">
-            <el-form-item label="是否垫佣">
+            <el-form-item label="是否代销">
               <div>{{postData.isMat}}</div>
             </el-form-item>
           </el-col>
@@ -63,13 +63,28 @@
             </el-form-item>
           </el-col>
           <el-col :span="6">
-            <el-form-item label="备案情况">
-              <div>{{postData.recordState}}</div>
+            <el-form-item label="业务类型">
+              <div>{{postData.businessType}}</div>
             </el-form-item>
           </el-col>
           <el-col :span="6">
             <el-form-item label="明源房款回笼比例">
               <div>{{postData.returnRatio}}</div>
+            </el-form-item>
+          </el-col>
+          <el-col :span="6">
+            <el-form-item label="备案情况">
+              <div>{{postData.recordState}}</div>
+            </el-form-item>
+          </el-col>
+          <el-col :span="6">
+            <el-form-item label="分销协议编号">
+              <div>{{postData.recordState}}</div>
+            </el-form-item>
+          </el-col>
+          <el-col :span="6">
+            <el-form-item label="是否垫佣">
+              <div>{{postData.isMat}}</div>
             </el-form-item>
           </el-col>
           <el-col :span="6">
@@ -80,11 +95,6 @@
           <el-col :span="6">
             <el-form-item label="成交组织">
               <div>{{postData.dealOrgId}}</div>
-            </el-form-item>
-          </el-col>
-          <el-col :span="6">
-            <el-form-item label="合同编号">
-              <div>{{postData.contNo}}</div>
             </el-form-item>
           </el-col>
           <el-col :span="6">
@@ -118,13 +128,28 @@
             </el-form-item>
           </el-col>
           <el-col :span="6">
+            <el-form-item label="录入日期">
+              <div>{{postData.entryDate}}</div>
+            </el-form-item>
+          </el-col>
+          <el-col :span="6">
             <el-form-item label="录入人">
               <div>{{postData.entryPerson}}</div>
             </el-form-item>
           </el-col>
           <el-col :span="6">
-            <el-form-item label="录入日期">
-              <div>{{postData.entryDate}}</div>
+            <el-form-item label="业绩分配人">
+              <div>{{postData.entryPerson}}</div>
+            </el-form-item>
+          </el-col>
+          <el-col :span="6">
+            <el-form-item label="业绩分配日期">
+              <div>{{postData.entryPerson}}</div>
+            </el-form-item>
+          </el-col>
+          <el-col :span="6">
+            <el-form-item label="现场销售">
+              <div>{{postData.entryPerson}}</div>
             </el-form-item>
           </el-col>
         </el-row>

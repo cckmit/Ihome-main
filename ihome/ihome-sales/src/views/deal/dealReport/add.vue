@@ -167,18 +167,14 @@
           </el-form-item>
         </el-col>
         <el-col :span="6">
-          <el-form-item label="成交阶段" prop="stage">
+          <el-form-item label="是否代销" prop="isMat">
             <el-select
-              v-model="postData.stage"
+              v-model="postData.isMat"
               clearable
-              placeholder="成交阶段"
+              placeholder="是否垫佣"
               class="width--100">
-              <el-option
-                v-for="item in $root.dictAllList('DealStage')"
-                :key="item.code"
-                :label="item.name"
-                :value="item.code"
-              ></el-option>
+              <el-option label="是" value="yes"></el-option>
+              <el-option label="否" value="no"></el-option>
             </el-select>
           </el-form-item>
         </el-col>
@@ -244,21 +240,28 @@
             <el-input v-model="postData.entryPerson" readonly placeholder="录入人"></el-input>
           </el-form-item>
         </el-col>
+        <el-col :span="6">
+          <el-form-item label="成交阶段" prop="stage">
+            <el-select
+              v-model="postData.stage"
+              clearable
+              placeholder="成交阶段"
+              class="width--100">
+              <el-option
+                v-for="item in $root.dictAllList('DealStage')"
+                :key="item.code"
+                :label="item.name"
+                :value="item.code"
+              ></el-option>
+            </el-select>
+          </el-form-item>
+        </el-col>
         <el-col :span="6" v-if="!!id">
           <el-form-item label="成交状态" prop="status">
             <el-input v-model="postData.status" disabled placeholder="成交状态"></el-input>
           </el-form-item>
         </el-col>
-        <el-col :span="12">
-          <el-form-item label="现场销售">
-            <el-input
-              type="textarea"
-              :rows="3"
-              v-model="postData.remarks"
-              placeholder="现场销售"></el-input>
-          </el-form-item>
-        </el-col>
-        <el-col :span="12">
+        <el-col :span="16">
           <el-form-item label="备注">
             <el-input
               type="textarea"
@@ -267,9 +270,19 @@
               placeholder="备注说明"></el-input>
           </el-form-item>
         </el-col>
+        <el-col :span="8">
+          <el-form-item label="现场销售">
+            <el-input v-model="postData.remarks" placeholder="现场销售"></el-input>
+          </el-form-item>
+        </el-col>
       </el-row>
       <p class="ih-info-title">房产信息</p>
       <el-row>
+        <el-col :span="24">
+          <div class="add-all-wrapper padding-left-20">
+            <el-button type="success">更新明源数据</el-button>
+          </div>
+        </el-col>
         <el-col :span="8">
           <el-form-item label="物业类型" prop="propertyType">
             <el-select
@@ -359,32 +372,30 @@
             </div>
           </el-form-item>
         </el-col>
-        <el-col :span="24">
-          <el-form-item label="优惠告知书"></el-form-item>
-        </el-col>
-        <el-col :span="24">
-          <el-form-item label="" label-width="80px">
-            <el-table
-              class="ih-table"
-              :data="postData.offerNoticeVO">
-              <el-table-column prop="offerNoticeName" label="名称" min-width="120"></el-table-column>
-              <el-table-column prop="offerNoticeCode" label="优惠告知书编号" min-width="120"></el-table-column>
-              <el-table-column prop="offerNoticeStatus" label="优惠告知书状态" min-width="120"></el-table-column>
-              <el-table-column fixed="right" label="操作" width="100">
-                <template slot-scope="scope">
-                  <el-link
-                    class="margin-right-10"
-                    type="primary"
-                    @click.native.prevent="preview(scope)"
-                  >预览
-                  </el-link>
-                </template>
-              </el-table-column>
-            </el-table>
-          </el-form-item>
-        </el-col>
       </el-row>
     </el-form>
+    <p class="ih-info-title">优惠告知书信息</p>
+    <el-row style="padding-left: 20px">
+      <el-col>
+        <el-table
+          class="ih-table"
+          :data="postData.offerNoticeVO">
+          <el-table-column prop="offerNoticeName" label="名称" min-width="120"></el-table-column>
+          <el-table-column prop="offerNoticeCode" label="优惠告知书编号" min-width="120"></el-table-column>
+          <el-table-column prop="offerNoticeStatus" label="优惠告知书状态" min-width="120"></el-table-column>
+          <el-table-column fixed="right" label="操作" width="100">
+            <template slot-scope="scope">
+              <el-link
+                class="margin-right-10"
+                type="primary"
+                @click.native.prevent="preview(scope)"
+              >预览
+              </el-link>
+            </template>
+          </el-table-column>
+        </el-table>
+      </el-col>
+    </el-row>
     <p class="ih-info-title">客户信息</p>
     <el-row style="padding-left: 20px">
       <el-col>
@@ -470,7 +481,6 @@
           <el-table-column prop="agencyName" label="渠道公司名称" min-width="120"></el-table-column>
           <el-table-column prop="channelLevel" label="渠道等级" min-width="120"></el-table-column>
           <el-table-column prop="broker" label="经纪人" min-width="120"></el-table-column>
-          <el-table-column prop="storeIdName" label="门店" min-width="120"></el-table-column>
           <el-table-column fixed="right" label="操作" width="100">
             <template slot-scope="scope">
               <el-link
@@ -501,7 +511,6 @@
           <el-table-column prop="partyACustomerName" label="甲方/客户" min-width="120"></el-table-column>
           <el-table-column prop="packageId" label="收派套餐" min-width="120"></el-table-column>
           <el-table-column prop="receiveAmount" label="应收金额" min-width="120"></el-table-column>
-          <el-table-column prop="receivedAmount" label="应收已收金额" min-width="150"></el-table-column>
           <el-table-column prop="commAmount" label="派发佣金金额" min-width="150"></el-table-column>
           <el-table-column prop="rewardAmount" label="派发内场奖励金额" min-width="150"></el-table-column>
           <el-table-column prop="totalPackageAmount" label="总包业绩金额" min-width="150"></el-table-column>

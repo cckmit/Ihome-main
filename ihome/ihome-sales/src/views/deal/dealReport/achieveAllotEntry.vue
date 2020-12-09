@@ -232,7 +232,7 @@
     <p class="ih-info-title">平台费用</p>
     <div class="ih-type-wrapper">
       <div class="title">总包</div>
-      <el-button type="success" @click="handleAddRole('total')">增加角色人</el-button>
+      <el-button type="success" @click="handleAddAchieve('total')">新增总包业绩</el-button>
     </div>
     <el-row style="padding-left: 20px">
       <el-col>
@@ -282,7 +282,7 @@
     </el-row>
     <div class="ih-type-wrapper">
       <div class="title">分销</div>
-      <el-button type="success" @click="handleAddRole('distri')">增加角色人</el-button>
+      <el-button type="success" @click="handleAddAchieve('distri')">新增分销业绩</el-button>
     </div>
     <el-row style="padding-left: 20px">
       <el-col>
@@ -402,7 +402,7 @@
           "
       />
     </ih-dialog>
-    <ih-dialog :show="dialogEditDealAchieve" desc="修改成交业绩">
+    <ih-dialog :show="dialogEditDealAchieve" desc="新增/修改成交业绩">
       <EditDealAchieve
         @cancel="() => (dialogEditDealAchieve = false)"
         @finish="
@@ -608,10 +608,11 @@
       (this as any).$refs.inputSelect && (this as any).$refs.inputSelect.blur();
     }
 
-    // 增加角色人
-    handleAddRole(type: any) {
+    // 新增总包/分销业绩
+    handleAddAchieve(type: any) {
       console.log('type', type);
-      this.dialogAddRole = true;
+      // this.dialogAddRole = true;
+      this.dialogEditDealAchieve = true;
       // total - 总包； distri - 分销
     }
 

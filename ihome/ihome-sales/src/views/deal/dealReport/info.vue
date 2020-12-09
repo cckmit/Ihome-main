@@ -32,18 +32,11 @@
           </el-form-item>
         </el-col>
         <el-col :span="8">
+          <el-form-item label="渠道商">{{infoForm.projectCycle}}</el-form-item>
+        </el-col>
+        <el-col :span="8">
           <el-form-item label="细分业务模式">
             {{!!infoForm.refineModel ? infoForm.refineModel === 'All' ? '总包' : '分销' : ''}}
-          </el-form-item>
-        </el-col>
-        <el-col :span="8">
-          <el-form-item label="成交状态">
-            {{$root.dictAllName(infoForm.status, 'DealStatus')}}
-          </el-form-item>
-        </el-col>
-        <el-col :span="8">
-          <el-form-item label="是否代销">
-            {{!!infoForm.isConsign ? infoForm.isConsign === 'Yes' ? '是' : '否' : ''}}
           </el-form-item>
         </el-col>
         <el-col :span="8">
@@ -55,16 +48,19 @@
           </el-form-item>
         </el-col>
         <el-col :span="8">
-          <el-form-item label="业务类型">
-            {{$root.dictAllName(infoForm.businessType, 'BusTypeEnum')}}
+          <el-form-item label="成交组织">{{infoForm.dealOrgId}}</el-form-item>
+        </el-col>
+        <el-col :span="8">
+          <el-form-item label="备案情况">
+            {{!!infoForm.recordState ? infoForm.recordState === 'Has' ? '有' : '无' : ''}}
           </el-form-item>
         </el-col>
         <el-col :span="8">
           <el-form-item label="明源房款回笼比例">{{infoForm.returnRatio}}%</el-form-item>
         </el-col>
         <el-col :span="8">
-          <el-form-item label="备案情况">
-            {{!!infoForm.recordState ? infoForm.recordState === 'Has' ? '有' : '无' : ''}}
+          <el-form-item label="数据标志">
+            {{$root.dictAllName(infoForm.dataSign, 'DealDataFlag')}}
           </el-form-item>
         </el-col>
         <el-col :span="8">
@@ -76,16 +72,8 @@
           </el-form-item>
         </el-col>
         <el-col :span="8">
-          <el-form-item label="数据标志">
-            {{$root.dictAllName(infoForm.dataSign, 'DealDataFlag')}}
-          </el-form-item>
-        </el-col>
-        <el-col :span="8">
-          <el-form-item label="成交组织">{{infoForm.dealOrgId}}</el-form-item>
-        </el-col>
-        <el-col :span="8">
-          <el-form-item label="成交阶段">
-            {{$root.dictAllName(infoForm.stage, 'DealStage')}}
+          <el-form-item label="是否代销">
+            {{!!infoForm.isConsign ? infoForm.isConsign === 'Yes' ? '是' : '否' : ''}}
           </el-form-item>
         </el-col>
         <el-col :span="8">
@@ -112,15 +100,29 @@
           <el-form-item label="录入人">{{infoForm.entryDate}}</el-form-item>
         </el-col>
         <el-col :span="8">
+          <el-form-item label="成交阶段">
+            {{$root.dictAllName(infoForm.stage, 'DealStage')}}
+          </el-form-item>
+        </el-col>
+        <el-col :span="8">
+          <el-form-item label="成交状态">
+            {{$root.dictAllName(infoForm.status, 'DealStatus')}}
+          </el-form-item>
+        </el-col>
+        <el-col :span="16">
+          <el-form-item label="备注">{{infoForm.remarks}}</el-form-item>
+        </el-col>
+        <el-col :span="8">
+          <el-form-item label="现场销售">{{infoForm.allotDate}}</el-form-item>
+        </el-col>
+        <el-col :span="8">
           <el-form-item label="业绩分配人">{{infoForm.alloter}}</el-form-item>
         </el-col>
         <el-col :span="8">
           <el-form-item label="业绩分配日期">{{infoForm.allotDate}}</el-form-item>
         </el-col>
-      </el-row>
-      <el-row>
-        <el-col>
-          <el-form-item label="备注">{{infoForm.remarks}}</el-form-item>
+        <el-col :span="8">
+          <el-form-item label="计算方式">{{infoForm.remarks}}</el-form-item>
         </el-col>
       </el-row>
     </el-form>
@@ -162,33 +164,29 @@
           </el-form-item>
         </el-col>
       </el-row>
-      <el-row>
-        <el-col>
-          <el-form-item label="优惠告知书"></el-form-item>
-        </el-col>
-        <el-col>
-          <el-form-item label="" label-width="80px">
-            <el-table
-              class="ih-table"
-              :data="infoForm.offerNoticeList">
-              <el-table-column prop="offerNoticeName" label="名称" min-width="120"></el-table-column>
-              <el-table-column prop="offerNoticeCode" label="优惠告知书编号" min-width="120"></el-table-column>
-              <el-table-column prop="offerNoticeStatus" label="优惠告知书状态" min-width="120"></el-table-column>
-              <el-table-column fixed="right" label="操作" width="130">
-                <template slot-scope="scope">
-                  <el-link
-                    class="margin-right-10"
-                    type="primary"
-                    @click.native.prevent="preview(scope)"
-                  >预览
-                  </el-link>
-                </template>
-              </el-table-column>
-            </el-table>
-          </el-form-item>
-        </el-col>
-      </el-row>
     </el-form>
+    <p class="ih-info-title">优惠告知书</p>
+    <el-row style="padding-left: 20px">
+      <el-col>
+        <el-table
+          class="ih-table"
+          :data="infoForm.offerNoticeList">
+          <el-table-column prop="offerNoticeName" label="名称" min-width="120"></el-table-column>
+          <el-table-column prop="offerNoticeCode" label="优惠告知书编号" min-width="120"></el-table-column>
+          <el-table-column prop="offerNoticeStatus" label="优惠告知书状态" min-width="120"></el-table-column>
+          <el-table-column fixed="right" label="操作" width="130">
+            <template slot-scope="scope">
+              <el-link
+                class="margin-right-10"
+                type="primary"
+                @click.native.prevent="preview(scope)"
+              >预览
+              </el-link>
+            </template>
+          </el-table-column>
+        </el-table>
+      </el-col>
+    </el-row>
     <p class="ih-info-title">客户信息</p>
     <el-row style="padding-left: 20px">
       <el-col>
@@ -226,7 +224,6 @@
             </template>
           </el-table-column>
           <el-table-column prop="broker" label="经纪人" min-width="120"></el-table-column>
-          <el-table-column prop="storeIdName" label="门店" min-width="120"></el-table-column>
         </el-table>
       </el-col>
     </el-row>
@@ -247,7 +244,6 @@
           <el-table-column prop="partyACustomerName" label="甲方/客户" min-width="120"></el-table-column>
           <el-table-column prop="packageId" label="收派套餐" min-width="120"></el-table-column>
           <el-table-column prop="receiveAmount" label="应收金额" min-width="120"></el-table-column>
-          <el-table-column prop="receivedAmount" label="应收已收金额" min-width="150"></el-table-column>
           <el-table-column prop="commAmount" label="派发佣金金额" min-width="150"></el-table-column>
           <el-table-column prop="rewardAmount" label="派发内场奖励金额" min-width="150"></el-table-column>
           <el-table-column prop="totalPackageAmount" label="总包业绩金额" min-width="150"></el-table-column>
@@ -277,10 +273,9 @@
           :summary-method="getCommissionSummaries"
           :data="infoForm.channelCommList">
           <el-table-column prop="target" label="拆佣对象" min-width="120"></el-table-column>
-          <el-table-column prop="payee" label="收款方" min-width="120"></el-table-column>
+          <el-table-column prop="payee" label="拆佣名称" min-width="120"></el-table-column>
           <el-table-column prop="feeType" label="费用类型" min-width="120"></el-table-column>
           <el-table-column prop="feeType" label="费用来源(客户/甲方)" min-width="120"></el-table-column>
-          <el-table-column prop="paidAmount" label="已付金额" min-width="150"></el-table-column>
           <el-table-column prop="amount" label="金额" min-width="150"></el-table-column>
           <el-table-column prop="remarks" label="备注" min-width="150"></el-table-column>
         </el-table>
@@ -303,7 +298,7 @@
           </el-table-column>
           <el-table-column prop="roleAchieveCap" label="角色业绩上限" min-width="120"></el-table-column>
           <el-table-column prop="corporateAchieve" label="公司业绩" min-width="120"></el-table-column>
-          <el-table-column prop="corporateAchieveRatio" label="公司业绩比例（%）" min-width="120"></el-table-column>
+          <el-table-column prop="corporateAchieveRatio" label="角色业绩比例（%）" min-width="120"></el-table-column>
           <el-table-column prop="commFees" label="拆佣金额" min-width="150"></el-table-column>
           <el-table-column prop="commFeesRatio" label="拆佣比例（%）" min-width="150"></el-table-column>
           <el-table-column prop="rolerName" label="角色人" min-width="150"></el-table-column>
@@ -332,7 +327,7 @@
           </el-table-column>
           <el-table-column prop="roleAchieveCap" label="角色业绩上限" min-width="120"></el-table-column>
           <el-table-column prop="corporateAchieve" label="公司业绩" min-width="120"></el-table-column>
-          <el-table-column prop="corporateAchieveRatio" label="公司业绩比例（%）" min-width="120"></el-table-column>
+          <el-table-column prop="corporateAchieveRatio" label="角色业绩比例（%）" min-width="120"></el-table-column>
           <el-table-column prop="commFees" label="拆佣金额" min-width="150"></el-table-column>
           <el-table-column prop="commFeesRatio" label="拆佣比例（%）" min-width="150"></el-table-column>
           <el-table-column prop="rolerName" label="角色人" min-width="150"></el-table-column>
@@ -377,6 +372,7 @@
       </el-col>
     </el-row>
     <div class="btn-wrapper">
+      <el-button >关闭</el-button>
       <el-button type="primary" @click="viewReviewDetails">查看审核详情</el-button>
     </div>
     <ih-dialog :show="reviewDialog" desc="成交审核记录">
