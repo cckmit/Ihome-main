@@ -4,7 +4,7 @@
  * @Author: zyc
  * @Date: 2020-07-09 15:03:17
  * @LastEditors: zyc
- * @LastEditTime: 2020-08-13 11:06:32
+ * @LastEditTime: 2020-12-08 09:57:12
 --> 
 <template>
   <div>
@@ -17,10 +17,10 @@
         placeholder="请选择"
       >
         <el-option
-          v-for="(item,index) in $root.displayList('modular')"
+          v-for="(item,index) in $root.dictAllList('ResourceType')"
           :key="index"
-          :label="item.label"
-          :value="item.value"
+          :label="item.name"
+          :value="item.code"
         ></el-option>
       </el-select>
     </div>

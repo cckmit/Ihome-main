@@ -114,7 +114,7 @@
     }
 
     private rowKey: any = 'termId'; // 选择项的标识
-    private tableMaxHeight: any = 500;
+    private tableMaxHeight: any = 350;
     private tableColumn = [
       {
         prop: "termName",
@@ -209,26 +209,13 @@
       this.getListMixin();
     }
 
-    // 在数据字典中获取对应的中文名
-    private getNameByDict(key: any, type: any) {
-      if (!key || !type) return;
-      let name = '';
-      let list = (this as any).$root.dictAllList(key);
-      list.forEach((item: any) => {
-        if (item.code === type) {
-          name = item.name
-        }
-      })
-      return name;
-    }
-
     async getListMixin() {
       const infoList = await post_term_getList(this.queryPageParameters);
       if (infoList.list.length > 0) {
         infoList.list.forEach((item: any) => {
           item.checked = false;
           if (item.busTypeEnum) {
-            item.busTypeEnum = this.getNameByDict('BusTypeEnum', item.busTypeEnum);
+            item.busTypeEnum = (this as any).$root.dictAllName(item.busTypeEnum, 'BusTypeEnum');
           }
         })
       }

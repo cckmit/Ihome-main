@@ -4,7 +4,7 @@
  * @Author: zyc
  * @Date: 2020-07-09 10:21:50
  * @LastEditors: zyc
- * @LastEditTime: 2020-11-11 14:48:05
+ * @LastEditTime: 2020-12-08 09:13:17
 --> 
 <template>
   <ih-page>
@@ -68,7 +68,7 @@
               </span>
               <el-dropdown-menu slot="dropdown">
                 <el-dropdown-item @click.native.prevent="edit(scope)"
-                  >编辑</el-dropdown-item
+                  >修改</el-dropdown-item
                 >
                 <el-dropdown-item @click.native.prevent="remove(scope)"
                   >删除角色</el-dropdown-item
@@ -103,7 +103,7 @@
       ></el-pagination>
     </template>
 
-    <ih-dialog :show="dialogAdd" desc="角色新增编辑">
+    <ih-dialog :show="dialogAdd" desc="角色新增修改">
       <RoleAdd
         :data="itemData"
         @cancel="() => (dialogAdd = false)"

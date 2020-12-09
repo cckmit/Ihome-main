@@ -22,52 +22,76 @@
           <el-form-item label="项目周期">{{infoForm.projectCycle}}</el-form-item>
         </el-col>
         <el-col :span="8">
-          <el-form-item label="业务模式">{{infoForm.modelName}}</el-form-item>
+          <el-form-item label="业务模式">
+            {{$root.dictAllName(infoForm.modelName, 'BusinessModel')}}
+          </el-form-item>
         </el-col>
         <el-col :span="8">
-          <el-form-item label="合同类型">{{infoForm.contType}}</el-form-item>
+          <el-form-item label="合同类型">
+            {{$root.dictAllName(infoForm.contType, 'ContType')}}
+          </el-form-item>
         </el-col>
         <el-col :span="8">
-          <el-form-item label="细分业务模式">{{infoForm.refineModel}}</el-form-item>
+          <el-form-item label="细分业务模式">
+            {{!!infoForm.refineModel ? infoForm.refineModel === 'All' ? '总包' : '分销' : ''}}
+          </el-form-item>
         </el-col>
         <el-col :span="8">
-          <el-form-item label="成交状态">{{infoForm.status}}</el-form-item>
+          <el-form-item label="成交状态">
+            {{$root.dictAllName(infoForm.status, 'DealStatus')}}
+          </el-form-item>
         </el-col>
         <el-col :span="8">
-          <el-form-item label="是否代销">{{infoForm.isConsign}}</el-form-item>
+          <el-form-item label="是否代销">
+            {{!!infoForm.isConsign ? infoForm.isConsign === 'Yes' ? '是' : '否' : ''}}
+          </el-form-item>
         </el-col>
         <el-col :span="8">
           <el-form-item label="一手代理团队">{{infoForm.oneAgentTeam}}</el-form-item>
         </el-col>
         <el-col :span="8">
-          <el-form-item label="是否市场化项目">{{infoForm.isMarketProject}}</el-form-item>
+          <el-form-item label="是否市场化项目">
+            {{!!infoForm.isMarketProject ? infoForm.isMarketProject === 'Yes' ? '是' : '否' : ''}}
+          </el-form-item>
         </el-col>
         <el-col :span="8">
-          <el-form-item label="业务类型">{{infoForm.businessType}}</el-form-item>
+          <el-form-item label="业务类型">
+            {{$root.dictAllName(infoForm.businessType, 'BusTypeEnum')}}
+          </el-form-item>
         </el-col>
         <el-col :span="8">
           <el-form-item label="明源房款回笼比例">{{infoForm.returnRatio}}%</el-form-item>
         </el-col>
         <el-col :span="8">
-          <el-form-item label="备案情况">{{infoForm.recordState}}</el-form-item>
+          <el-form-item label="备案情况">
+            {{!!infoForm.recordState ? infoForm.recordState === 'Has' ? '有' : '无' : ''}}
+          </el-form-item>
         </el-col>
         <el-col :span="8">
           <el-form-item label="分销协议编号">{{infoForm.channelLevel}}</el-form-item>
         </el-col>
         <el-col :span="8">
-          <el-form-item label="是否垫佣">{{infoForm.isMat}}</el-form-item>
+          <el-form-item label="是否垫佣">
+            {{!!infoForm.isMat ? infoForm.isMat === 'Yes' ? '是' : '否' : ''}}
+          </el-form-item>
         </el-col>
         <el-col :span="8">
-          <el-form-item label="数据标志">{{infoForm.dataSign}}</el-form-item>
+          <el-form-item label="数据标志">
+            {{$root.dictAllName(infoForm.dataSign, 'DealDataFlag')}}
+          </el-form-item>
         </el-col>
         <el-col :span="8">
           <el-form-item label="成交组织">{{infoForm.dealOrgId}}</el-form-item>
         </el-col>
         <el-col :span="8">
-          <el-form-item label="成交阶段">{{infoForm.stage}}</el-form-item>
+          <el-form-item label="成交阶段">
+            {{$root.dictAllName(infoForm.stage, 'DealStage')}}
+          </el-form-item>
         </el-col>
         <el-col :span="8">
-          <el-form-item label="签约类型">{{infoForm.signType}}</el-form-item>
+          <el-form-item label="签约类型">
+            {{$root.dictAllName(infoForm.signType, 'SignUp')}}
+          </el-form-item>
         </el-col>
         <el-col :span="8">
           <el-form-item label="认购价格">{{infoForm.subscribePrice}}</el-form-item>
@@ -108,7 +132,9 @@
       class="demo-ruleForm">
       <el-row>
         <el-col :span="8">
-          <el-form-item label="物业类型">{{infoForm.house.propertyType}}</el-form-item>
+          <el-form-item label="物业类型">
+            {{$root.dictAllName(infoForm.house.propertyType, 'PropertyEnum')}}
+          </el-form-item>
         </el-col>
         <el-col :span="8">
           <el-form-item label="栋座">{{infoForm.house.buildingName}}</el-form-item>
@@ -170,10 +196,18 @@
           class="ih-table"
           :data="infoForm.customerList">
           <el-table-column prop="customerNo" label="客户编号" min-width="120"></el-table-column>
-          <el-table-column prop="customerType" label="客户类型" min-width="120"></el-table-column>
+          <el-table-column prop="customerType" label="客户类型" min-width="120">
+            <template slot-scope="scope">
+              <div>{{$root.dictAllName(scope.row.customerType, 'CustType')}}</div>
+            </template>
+          </el-table-column>
           <el-table-column prop="customerName" label="客户名称" min-width="120"></el-table-column>
           <el-table-column prop="customerPhone" label="手机号码" min-width="120"></el-table-column>
-          <el-table-column prop="cardType" label="证件类型" min-width="150"></el-table-column>
+          <el-table-column prop="cardType" label="证件类型" min-width="150">
+            <template slot-scope="scope">
+              <div>{{$root.dictAllName(scope.row.cardType, 'CardType')}}</div>
+            </template>
+          </el-table-column>
           <el-table-column prop="cardNo" label="证件编号" min-width="150"></el-table-column>
           <el-table-column prop="email" label="邮箱" min-width="150"></el-table-column>
         </el-table>
@@ -186,7 +220,11 @@
           class="ih-table"
           :data="infoForm.agencyList">
           <el-table-column prop="agencyName" label="渠道公司名称" min-width="120"></el-table-column>
-          <el-table-column prop="channelLevel" label="渠道等级" min-width="120"></el-table-column>
+          <el-table-column prop="channelLevel" label="渠道等级" min-width="120">
+            <template slot-scope="scope">
+              <div>{{$root.dictAllName(scope.row.channelLevel, 'ChannelLevel')}}</div>
+            </template>
+          </el-table-column>
           <el-table-column prop="broker" label="经纪人" min-width="120"></el-table-column>
           <el-table-column prop="storeIdName" label="门店" min-width="120"></el-table-column>
         </el-table>
@@ -201,7 +239,11 @@
           sum-text="合计金额"
           :summary-method="getReceiveSummaries"
           :data="infoForm.receiveList">
-          <el-table-column prop="type" label="类型" min-width="120"></el-table-column>
+          <el-table-column prop="type" label="类型" min-width="120">
+            <template slot-scope="scope">
+              <div>{{$root.dictAllName(scope.row.type, 'FeeType')}}</div>
+            </template>
+          </el-table-column>
           <el-table-column prop="partyACustomerName" label="甲方/客户" min-width="120"></el-table-column>
           <el-table-column prop="packageId" label="收派套餐" min-width="120"></el-table-column>
           <el-table-column prop="receiveAmount" label="应收金额" min-width="120"></el-table-column>
@@ -254,7 +296,11 @@
           sum-text="合计金额"
           :summary-method="getAchieveSummaries"
           :data="infoForm.achieveTotalBagList">
-          <el-table-column prop="roleType" label="角色类型" min-width="120"></el-table-column>
+          <el-table-column prop="roleType" label="角色类型" min-width="120">
+            <template slot-scope="scope">
+              <div>{{$root.dictAllName(scope.row.roleType, 'DealRole')}}</div>
+            </template>
+          </el-table-column>
           <el-table-column prop="roleAchieveCap" label="角色业绩上限" min-width="120"></el-table-column>
           <el-table-column prop="corporateAchieve" label="公司业绩" min-width="120"></el-table-column>
           <el-table-column prop="corporateAchieveRatio" label="公司业绩比例（%）" min-width="120"></el-table-column>
@@ -279,7 +325,11 @@
           sum-text="合计金额"
           :summary-method="getAchieveSummaries"
           :data="infoForm.achieveDistriList">
-          <el-table-column prop="roleType" label="角色类型" min-width="120"></el-table-column>
+          <el-table-column prop="roleType" label="角色类型" min-width="120">
+            <template slot-scope="scope">
+              <div>{{$root.dictAllName(scope.row.roleType, 'DealRole')}}</div>
+            </template>
+          </el-table-column>
           <el-table-column prop="roleAchieveCap" label="角色业绩上限" min-width="120"></el-table-column>
           <el-table-column prop="corporateAchieve" label="公司业绩" min-width="120"></el-table-column>
           <el-table-column prop="corporateAchieveRatio" label="公司业绩比例（%）" min-width="120"></el-table-column>
@@ -382,97 +432,11 @@
     async init() {
       this.infoForm = await get_deal_get__id({id: this.dealId});
       // console.log(this.infoForm);
-      // 业务模式
-      if (this.infoForm.modelName) {
-        this.infoForm.modelName = this.getNameByDict('BusinessModel', this.infoForm.modelName);
-      }
-      // 合同模式
-      if (this.infoForm.contType) {
-        this.infoForm.contType = this.getNameByDict('ContType', this.infoForm.contType);
-      }
-      // 细分业务模式
-      if (this.infoForm.refineModel) {
-        this.infoForm.refineModel = this.infoForm.refineModel === 'All' ? '总包' : '分销';
-      }
-      // 成交状态
-      if (this.infoForm.status) {
-        this.infoForm.status = this.getNameByDict('DealStatus', this.infoForm.status);
-      }
-      // 是否代销
-      if (this.infoForm.isConsign) {
-        this.infoForm.isConsign = this.infoForm.isConsign === 'Yes' ? '是' : '否';
-      }
-      // 是否市场化项目
-      if (this.infoForm.isMarketProject) {
-        this.infoForm.isMarketProject = this.infoForm.isMarketProject === 'Yes' ? '是' : '否';
-      }
-      // 业务类型
-      if (this.infoForm.businessType) {
-        this.infoForm.businessType = this.getNameByDict('BusTypeEnum', this.infoForm.businessType);
-      }
-      // 备案情况
-      if (this.infoForm.recordState) {
-        this.infoForm.recordState = this.infoForm.recordState === 'Has' ? '有' : '无';
-      }
-      // 是否垫佣
-      if (this.infoForm.isMat) {
-        this.infoForm.isMat = this.infoForm.isMat === 'Yes' ? '是' : '否';
-      }
-      // 数据源标志
-      if (this.infoForm.dataSign) {
-        this.infoForm.dataSign = this.getNameByDict('DealDataFlag', this.infoForm.dataSign);
-      }
-      // 签约类型
-      if (this.infoForm.signType) {
-        this.infoForm.signType = this.getNameByDict('SignUp', this.infoForm.signType);
-      }
-      // 成交阶段
-      if (this.infoForm.stage) {
-        this.infoForm.stage = this.getNameByDict('DealStage', this.infoForm.stage);
-      }
-      // 物业类型
-      if (this.infoForm.house && this.infoForm.house.propertyType) {
-        this.infoForm.house.propertyType = this.getNameByDict('PropertyEnum', this.infoForm.house.propertyType);
-      }
-      // 客户信息
-      if (this.infoForm.customerList.length > 0) {
-        this.infoForm.customerList.forEach((list: any) => {
-          // 客户类型
-          if (list.customerType) {
-            list.customerType = this.getNameByDict('CustType', list.customerType);
-          }
-          // 证件类型
-          if (list.cardType) {
-            list.cardType = this.getNameByDict('CardType', list.cardType);
-          }
-        })
-      }
-      // 渠道信息
-      if (this.infoForm.agencyList.length > 0) {
-        this.infoForm.agencyList.forEach((list: any) => {
-          // 渠道等级
-          if (list.channelLevel) {
-            list.channelLevel = this.getNameByDict('ChannelLevel', list.channelLevel);
-          }
-        })
-      }
-      // 收派金额
-      if (this.infoForm.receiveList.length > 0) {
-        this.infoForm.receiveList.forEach((list: any) => {
-          // 渠道等级
-          if (list.type) {
-            list.type = this.getNameByDict('FeeType', list.type);
-          }
-        })
-      }
-      // 平台费用
+      // 平台费用 - 拆分总包和分销数据
       if (this.infoForm.achieveList.length > 0) {
         this.infoForm.achieveTotalBagList = [];
         this.infoForm.achieveDistriList = [];
         this.infoForm.achieveList.forEach((list: any) => {
-          if (list.roleType) {
-            list.roleType = this.getNameByDict('DealRole', list.roleType);
-          }
           if (list.type === 'TotalBag') {
             this.infoForm.achieveTotalBagList.push(list);
           } else if (list.type === 'Distri') {
@@ -480,19 +444,6 @@
           }
         })
       }
-    }
-
-    // 在数据字典中获取对应的中文名
-    getNameByDict(key: any, type: any) {
-      if (!key || !type) return;
-      let name = '';
-      let list = (this as any).$root.dictAllList(key);
-      list.forEach((item: any) => {
-        if (item.code === type) {
-          name = item.name
-        }
-      })
-      return name;
     }
 
     // 计算收派金额总计

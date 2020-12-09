@@ -20,36 +20,13 @@
     class="dialog">
     <el-form ref="form" label-width="100px">
       <el-row>
-        <el-col :span="8">
-          <el-form-item label="项目周期名称">
-            <el-input
-              v-model="queryPageParameters.termName"
-              placeholder="项目周期名称"
-            ></el-input>
-          </el-form-item>
-        </el-col>
-        <el-col :span="8">
-          <el-form-item label="业务类型">
-            <el-select
-              v-model="queryPageParameters.busTypeEnum"
-              clearable
-              placeholder="业务类型">
-              <el-option
-                v-for="item in $root.dictAllList('BusinessTypeEnum')"
-                :key="item.code"
-                :label="item.name"
-                :value="item.code"
-              ></el-option>
-            </el-select>
-          </el-form-item>
-        </el-col>
-      </el-row>
-      <el-row>
-        <el-col :span="8">
-          <el-form-item label="">
-            <el-button type="primary" @click="getListMixin()">查询</el-button>
-            <el-button type="info" @click="reset()">重置</el-button>
-          </el-form-item>
+        <el-col :span="8" class="search-col">
+          <el-input
+            v-model="queryPageParameters.termName"
+            clearable
+            placeholder="项目周期名称"
+          ></el-input>
+          <el-button type="primary" class="margin-left-20" @click="getListMixin()">查询</el-button>
         </el-col>
       </el-row>
     </el-form>
@@ -89,7 +66,7 @@
     }
 
     private rowKey: any = 'id'; // 选择项的标识
-    private tableMaxHeight: any = 500;
+    private tableMaxHeight: any = 350;
     private tableColumn = [
       {
         prop: "termName",
@@ -104,25 +81,25 @@
         minWidth: 100,
       },
       {
-        prop: "termStart",
+        prop: "houseName",
         label: "户型",
         align: "left",
         minWidth: 140,
       },
       {
-        prop: "termEnd",
+        prop: "house",
         label: "房型",
         align: "left",
         minWidth: 140,
       },
       {
-        prop: "termEnd",
+        prop: "area",
         label: "面积",
         align: "left",
         minWidth: 140,
       },
       {
-        prop: "termEnd",
+        prop: "positionEnum",
         label: "朝向",
         align: "left",
         minWidth: 140,
@@ -160,7 +137,7 @@
       if (this.currentSelection.length === 0) {
         this.$message({
           type: "error",
-          message: "请选择房号",
+          message: "请选择项目",
         });
         return
       }
@@ -187,26 +164,13 @@
       this.getListMixin();
     }
 
-    // 在数据字典中获取对应的中文名
-    private getNameByDict(key: any, type: any) {
-      if (!key || !type) return;
-      let name = '';
-      let list = (this as any).$root.dictAllList(key);
-      list.forEach((item: any) => {
-        if (item.code === type) {
-          name = item.name
-        }
-      })
-      return name;
-    }
-
     async getListMixin() {
       const infoList = await post_term_getList(this.queryPageParameters);
       if (infoList.list.length > 0) {
         infoList.list.forEach((item: any) => {
           item.checked = false;
           if (item.busTypeEnum) {
-            item.busTypeEnum = this.getNameByDict('BusTypeEnum', item.busTypeEnum);
+            item.busTypeEnum = (this as any).$root.dictAllName(item.busTypeEnum, 'BusTypeEnum');
           }
         })
       }
@@ -235,4 +199,9 @@
   }
 </script>
 <style lang="scss" scoped>
+  .search-col {
+    display: flex;
+    align-items: center;
+    margin-bottom: 20px;
+  }
 </style>

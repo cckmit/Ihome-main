@@ -1,34 +1,33 @@
 <!--
+ * @Descripttion: 
+ * @version: 
+ * @Author: zyc
+ * @Date: 2020-11-24 10:49:12
+ * @LastEditors: zyc
+ * @LastEditTime: 2020-12-07 17:01:53
+-->
+<!--
  * @Description: 数据字典列表
  * @version: 
  * @Author: zyc
  * @Date: 2020-10-21 15:16:14
- * @LastEditors: ywl
- * @LastEditTime: 2020-11-16 14:48:35
+ * @LastEditors: zyc
+ * @LastEditTime: 2020-12-07 15:27:22
 -->
 <template>
   <IhPage ref="ihPage">
     <template #container>
       <el-row>
-        <el-col
-          :span="5"
-          class="dict-list-left"
-        >
-          <el-row
-            type="flex"
-            justify="space-between"
-            class="search-box"
-          >
-            <el-col
-              :span="6"
-              class="text-left"
-            >
+        <el-col :span="8" class="dict-list-left">
+          <el-row type="flex" justify="space-between" class="search-box">
+            <el-col :span="6" class="text-left">
               <el-button
                 type="success"
                 size="small"
                 class="add-button"
                 @click="handleAddDicType()"
-              >添加</el-button>
+                >添加</el-button
+              >
             </el-col>
             <el-col :span="18">
               <el-input
@@ -40,7 +39,7 @@
               >
                 <el-button
                   slot="append"
-                  style="width: 50px;"
+                  style="width: 50px"
                   icon="el-icon-search"
                   @click="getAllByType(dicTypeSearch)"
                 ></el-button>
@@ -50,57 +49,47 @@
           <el-row class="padding-top-10">
             <ul
               class="dict-type-list text-left"
-              :style="{ 'maxHeight': pageHeight }"
+              :style="{ maxHeight: pageHeight }"
             >
               <template v-for="(item, index) in dictTypeList">
                 <li
-                  :key="item.code"
-                  :class="{'active': activeIndex === index}"
+                  :key="item.id"
+                  :class="{ active: activeIndex === index }"
                   @click.stop="handleActive(index)"
                 >
-                  <div
-                    class="dict-type-title"
-                    :title="item.name"
-                  >{{`${item.code}·${item.name}`}}</div>
+                  <div class="dict-type-title" :title="item.name">
+                    {{ `${item.code}·${item.name}` }}
+                  </div>
                   <div class="setting">
-                    <el-link
-                      type="primary"
-                      @click.stop="handleCopy(item)"
-                    >复制code</el-link>
+                    <el-link type="primary" @click.stop="handleCopy(item)"
+                      >复制code</el-link
+                    >
                     <el-link
                       type="primary"
                       class="margin-left-10"
                       @click.stop="handleEditDicType(item)"
-                    >修改</el-link>
+                      >修改</el-link
+                    >
                     <el-link
                       type="danger"
                       class="margin-left-10"
                       @click.stop="removeDicType(item, index)"
-                    >删除</el-link>
+                      >删除</el-link
+                    >
                   </div>
                 </li>
               </template>
             </ul>
           </el-row>
         </el-col>
-        <el-col
-          :span="19"
-          class="padding-left-10"
-        >
+        <el-col :span="16" class="padding-left-10">
           <el-row>
-            <el-col
-              :span="4"
-              class="text-left"
-            >
-              <el-button
-                type="success"
-                @click="handleAddDic()"
-              >添加字典项</el-button>
+            <el-col :span="4" class="text-left">
+              <el-button type="success" @click="handleAddDic()"
+                >添加字典项</el-button
+              >
             </el-col>
-            <el-col
-              :span="20"
-              class="text-right"
-            >
+            <el-col :span="20" class="text-right">
               <el-input
                 class="width-250"
                 placeholder="编码、名称或者标签"
@@ -112,15 +101,13 @@
                 class="margin-left-10"
                 type="primary"
                 @click="searchDictBykey(dictSearch)"
-              >查询</el-button>
+                >查询</el-button
+              >
             </el-col>
           </el-row>
           <el-row>
             <br />
-            <el-table
-              class="ih-table"
-              :data="dictList"
-            >
+            <el-table class="ih-table" :data="dictList" :height="pageHeight">
               <el-table-column
                 type="index"
                 width="55px"
@@ -138,33 +125,23 @@
                 label="编码"
                 prop="code"
                 min-width="135"
-                fixed
               ></el-table-column>
               <el-table-column
-                label="类型"
+                label="类型code"
                 prop="type"
                 min-width="175"
               ></el-table-column>
-              <el-table-column
-                label="子类型"
-                prop="subType"
-              ></el-table-column>
-              <el-table-column
-                label="标签"
-                prop="tag"
-              ></el-table-column>
+
+              <el-table-column label="子类型" prop="subType"></el-table-column>
+              <el-table-column label="标签" prop="tag"></el-table-column>
               <el-table-column
                 label="顺序"
                 prop="seq"
                 width="80"
               ></el-table-column>
-              <el-table-column
-                label="状态"
-                prop="valid"
-                width="80"
-              >
+              <el-table-column label="状态" prop="valid" width="80">
                 <template v-slot="{ row }">
-                  {{$root.dictAllName(row.valid, 'ValidType')}}
+                  {{ $root.dictAllName(row.valid, "ValidType") }}
                 </template>
               </el-table-column>
               <el-table-column
@@ -172,26 +149,32 @@
                 prop="updateTime"
                 width="155"
               ></el-table-column>
-              <el-table-column
-                label="操作"
-                fixed="right"
-                width="120"
-              >
+              <el-table-column label="操作" fixed="right" width="120">
                 <template v-slot="{ row, $index }">
                   <el-link
                     class="margin-right-10"
                     type="primary"
                     @click="handleEditDic(row)"
-                  >修改</el-link>
+                    >修改</el-link
+                  >
                   <el-dropdown trigger="click">
                     <span class="el-dropdown-link">
                       更多
                       <i class="el-icon-arrow-down el-icon--right"></i>
                     </span>
                     <el-dropdown-menu slot="dropdown">
-                      <el-dropdown-item @click.native.prevent="removeDict(row, $index)">删除</el-dropdown-item>
-                      <el-dropdown-item @click.native.prevent="switchDict(row, false)">停用</el-dropdown-item>
-                      <el-dropdown-item @click.native.prevent="switchDict(row, true)">启用</el-dropdown-item>
+                      <el-dropdown-item
+                        @click.native.prevent="removeDict(row, $index)"
+                        >删除</el-dropdown-item
+                      >
+                      <el-dropdown-item
+                        @click.native.prevent="switchDict(row, false)"
+                        >停用</el-dropdown-item
+                      >
+                      <el-dropdown-item
+                        @click.native.prevent="switchDict(row, true)"
+                        >启用</el-dropdown-item
+                      >
                     </el-dropdown-menu>
                   </el-dropdown>
                 </template>
@@ -202,34 +185,32 @@
       </el-row>
     </template>
     <!-- 字典类型dialog -->
-    <IhDialog
-      :show="dictTypeVisible"
-      desc="字典类型"
-    >
+    <IhDialog :show="dictTypeVisible" desc="字典类型">
       <DictType
         :isAdd="isAdd"
         :data="itemData"
         @cancel="() => (dictTypeVisible = false)"
-        @finish="() => {
-          dictTypeVisible = false;
-          getAllByType()
-        }"
+        @finish="
+          () => {
+            dictTypeVisible = false;
+            getAllByType();
+          }
+        "
       />
     </IhDialog>
     <!-- 字典项dialog -->
-    <IhDialog
-      :show="dictItemVisible"
-      desc="字典项"
-    >
+    <IhDialog :show="dictItemVisible" desc="字典项">
       <DictItem
         :isAdd="isAdd"
         :data="itemData"
         :select="selectDicType"
         @cancel="() => (dictItemVisible = false)"
-        @finish="() => {
-          dictItemVisible = false;
-          getDictAll()
-        }"
+        @finish="
+          () => {
+            dictItemVisible = false;
+            getDictAll();
+          }
+        "
       />
     </IhDialog>
   </IhPage>
@@ -239,7 +220,6 @@
 import { Component, Vue, Watch } from "vue-property-decorator";
 import {
   post_dict_getAllDictType,
-  post_dict_getAllByType,
   post_dict_deleteDictType__id,
   post_dict_close__id,
   post_dict_open__id,
@@ -250,26 +230,6 @@ import {
 import DictType from "./dialog/dictType.vue";
 import DictItem from "./dialog/dictItem.vue";
 
-function copyFn(text: any, callback: any) {
-  let value = text.replace(/\s+/g, "");
-  let element = document.createElement("SPAN");
-  element.textContent = value;
-  document.body.appendChild(element);
-  if ((document as any).selection) {
-    let range = (document.body as any).createTextRange();
-    range.moveToElementText(element);
-    range.select();
-  } else if ((window as any).getSelection) {
-    let range = document.createRange();
-    range.selectNode(element);
-    (window as any).getSelection().removeAllRanges();
-    (window as any).getSelection().addRange(range);
-  }
-  document.execCommand("Copy");
-  element.remove ? element.remove() : (element as any).removeNode(true);
-  callback && callback();
-}
-
 @Component({
   components: { DictType, DictItem },
 })
@@ -277,7 +237,7 @@ export default class DicList extends Vue {
   list: any = [];
   isAdd = true;
   itemData: any = {};
-  private activeIndex = 0;
+  private activeIndex: any = null;
   private dictTypeVisible = false;
   private dictItemVisible = false;
   private dictTypeList: any = [];
@@ -292,7 +252,7 @@ export default class DicList extends Vue {
   }
   @Watch("dictSearch")
   dictSearchWatch(val: any) {
-    if (!val.length) this.searchDictBykey(val);
+    if (!val.length) this.searchDictBykey();
   }
 
   private get pageHeight() {
@@ -307,11 +267,8 @@ export default class DicList extends Vue {
    * @description: 查询指定字典类型的所有字典项
    * @param {any} key
    */
-  private async searchDictBykey(key: any): Promise<void> {
-    this.dictList = await post_dict_getAllDictItemByType({
-      key,
-      type: this.dictTypeList[this.activeIndex].code,
-    });
+  private async searchDictBykey(): Promise<void> {
+    this.getDictAll();
   }
   /**
    * @description: 删除字典项
@@ -356,7 +313,10 @@ export default class DicList extends Vue {
    * @description: 新增字典项弹窗
    */
   private handleAddDic(): void {
-    this.itemData.type = this.dictTypeList[this.activeIndex].code;
+    if (this.activeIndex !== null) {
+      this.itemData.type = this.dictTypeList[this.activeIndex].code;
+    }
+
     this.isAdd = true;
     this.dictItemVisible = true;
   }
@@ -403,6 +363,7 @@ export default class DicList extends Vue {
    * @param {any} key
    */
   private async getAllByType(key?: any): Promise<void> {
+    this.activeIndex = null;
     let res = await post_dict_getAllDictType({ key: key });
     if (key) {
       this.dictTypeList = res;
@@ -415,16 +376,24 @@ export default class DicList extends Vue {
    * @description: 获取当前选中的字典类型对应的所有字典项
    */
   private async getDictAll(): Promise<void> {
-    let dictType = this.dictTypeList[this.activeIndex].code;
-    this.dictList = await post_dict_getAllByType({ type: dictType });
+    let dictType = null;
+    if (this.activeIndex !== null) {
+      dictType = this.dictTypeList[this.activeIndex].code;
+    }
+
+    this.dictList = await post_dict_getAllDictItemByType({
+      type: dictType,
+      key: this.dictSearch,
+      valid: null,
+    });
   }
   /**
    * @description: 复制code
    * @param {any} item
    */
   private handleCopy(item: any) {
-    copyFn(item.code, () => {
-      this.$message.success("复制成功");
+    this.$tool.coptText(item.code, () => {
+      this.$message.success(`[${item.code}]复制成功`);
     });
   }
 

@@ -4,7 +4,7 @@
  * @Author: zyc
  * @Date: 2020-07-14 11:30:07
  * @LastEditors: zyc
- * @LastEditTime: 2020-08-28 10:03:24
+ * @LastEditTime: 2020-12-07 16:36:02
 --> 
 <template>
   <el-dialog
@@ -15,7 +15,7 @@
     :close-on-press-escape="false"
     :before-close="cancel"
     width="800px"
-    style="text-align: left;"
+    style="text-align: left"
     class="dialog"
   >
     <el-form
@@ -27,26 +27,17 @@
     >
       <el-row>
         <el-col :span="12">
-          <el-form-item label="父组织名称" prop="parentName">{{ruleForm.parentName}}</el-form-item>
+          <el-form-item label="父组织名称" prop="parentName">{{
+            ruleForm.parentName
+          }}</el-form-item>
 
           <el-form-item label="名称" prop="name">
             <el-input v-model="ruleForm.name"></el-input>
           </el-form-item>
-          <el-form-item label="组织类型" prop="orgType">
-            <el-select
-              v-model="ruleForm.orgType"
-              clearable
-              placeholder="请选择组织类型"
-              class="width--100"
-            >
-              <el-option
-                v-for="item in $root.displayList('orgType')"
-                :key="item.value"
-                :label="item.label"
-                :value="item.value"
-              ></el-option>
-            </el-select>
+          <el-form-item label="简称首字母" prop="shortNameAbbr">
+            <el-input v-model="ruleForm.shortNameAbbr"></el-input>
           </el-form-item>
+
           <el-form-item label="开业日期" prop="openDate">
             <el-date-picker
               v-model="ruleForm.openDate"
@@ -55,12 +46,17 @@
               value-format="yyyy-MM-dd"
             ></el-date-picker>
           </el-form-item>
-          <el-form-item label="组织代码" prop="orgCode">
-            <el-input v-model="ruleForm.orgCode"></el-input>
+          <el-form-item label="OA呈字" prop="oaChar">
+            <el-input v-model="ruleForm.oaChar"></el-input>
           </el-form-item>
         </el-col>
         <el-col :span="12">
-          <el-form-item label="组织层级" prop="level">{{ruleForm.level}}</el-form-item>
+          <el-form-item
+            style="visibility: hidden"
+            label="组织层级"
+            prop="level"
+            >{{ ruleForm.level }}</el-form-item
+          >
 
           <el-form-item label="简称" prop="shortName">
             <el-input v-model="ruleForm.shortName"></el-input>
@@ -73,10 +69,10 @@
               class="width--100"
             >
               <el-option
-                v-for="item in $root.displayList('departmentType')"
-                :key="item.value"
-                :label="item.label"
-                :value="item.value"
+                v-for="(item, index) in $root.dictAllList('DepartmentType')"
+                :key="index"
+                :label="item.name"
+                :value="item.code"
               ></el-option>
             </el-select>
           </el-form-item>
@@ -89,12 +85,17 @@
             ></el-date-picker>
           </el-form-item>
           <el-form-item label="状态" prop="status">
-            <el-select v-model="ruleForm.status" clearable placeholder="请选择" class="width--100">
+            <el-select
+              v-model="ruleForm.status"
+              clearable
+              placeholder="请选择"
+              class="width--100"
+            >
               <el-option
-                v-for="item in $root.displayList('orgStatus')"
-                :key="item.value"
-                :label="item.label"
-                :value="item.value"
+                v-for="(item, index) in $root.dictAllList('ValidType')"
+                :key="index"
+                :label="item.name"
+                :value="item.code"
               ></el-option>
             </el-select>
           </el-form-item>
@@ -111,7 +112,11 @@
 <script lang="ts">
 import { Component, Vue, Prop } from "vue-property-decorator";
 import { Form as ElForm } from "element-ui";
-import { isUpperLetterValidato } from "ihome-common/util/base/form-ui";
+import {
+  isUpperLetterValidato,
+  isChineseValidato,
+  noTrim,
+} from "ihome-common/util/base/form-ui";
 import { post_org_add, post_org_update } from "../../api/system/index";
 import { NoRepeatHttp } from "ihome-common/util/aop/no-repeat-http";
 @Component({
@@ -134,25 +139,53 @@ export default class OrganizationAdd extends Vue {
     parentId: 0,
     shortName: null,
     status: "Valid",
+    oaChar: null,
   };
   rules: any = {
     type: [{ required: true, message: "请选择类型", trigger: "change" }],
     name: [
+      {
+        validator: noTrim,
+        message: "不允许输入空格",
+        trigger: "change",
+      },
       { required: true, message: "请输入名称", trigger: "change" },
-      { min: 1, max: 64, message: "长度在 1 到 64 个字符", trigger: "change" },
+      { min: 2, max: 32, message: "长度在 2 到 32 个字符", trigger: "change" },
+      {
+        validator: isChineseValidato,
+        message: "名称只能输入中文",
+        trigger: "change",
+      },
     ],
-    orgType: [{ required: true, message: "请选择组织类型", trigger: "change" }],
+    shortNameAbbr: [
+      {
+        validator: noTrim,
+        message: "不允许输入空格",
+        trigger: "change",
+      },
+      { required: true, message: "请填写简称首字母", trigger: "change" },
+
+      { min: 2, max: 16, message: "长度在 2 到 16 个字符", trigger: "change" },
+      { validator: isUpperLetterValidato, trigger: "change" },
+    ],
     openDate: [
       { required: true, message: "请选择开业日期", trigger: "change" },
     ],
-    orgCode: [
-      { required: true, message: "请输入组织代码", trigger: "change" },
-      { min: 1, max: 16, message: "长度在 1 到 16 个字符", trigger: "change" },
-      { validator: isUpperLetterValidato, trigger: "change" },
-    ],
+
     shortName: [
+      {
+        validator: noTrim,
+        message: "不允许输入空格",
+        trigger: "change",
+      },
       { required: true, message: "请输入简称", trigger: "change" },
-      { min: 1, max: 16, message: "长度在 1 到 16 个字符", trigger: "change" },
+      { min: 2, max: 16, message: "长度在 2 到 16 个字符", trigger: "change" },
+
+      {
+        validator: isChineseValidato,
+        message: "简称只能输入中文",
+        trigger: "change",
+      },
     ],
     departmentType: [
       { required: true, message: "请选择部门分类", trigger: "change" },
@@ -161,6 +194,14 @@ export default class OrganizationAdd extends Vue {
       { required: true, message: "请选择关闭日期", trigger: "change" },
     ],
     status: [{ required: true, message: "请选择状态", trigger: "change" }],
+    oaChar: [
+      {
+        validator: noTrim,
+        message: "不允许输入空格",
+        trigger: "change",
+      },
+      { min: 1, max: 8, message: "长度在 1 到 8 个字符", trigger: "change" },
+    ],
   };
 
   cancel() {

@@ -992,7 +992,7 @@
 
     // 确认业绩申报
     confirmPerformance() {
-      console.log('确认业绩申报');
+      // console.log('确认业绩申报');
       this.$router.push({
         path: "/dealReport/achieveAllotEntry",
         query: {id: this.id},
