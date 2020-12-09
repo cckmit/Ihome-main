@@ -4,7 +4,7 @@
  * @Author: wwq
  * @Date: 2020-11-27 17:28:28
  * @LastEditors: wwq
- * @LastEditTime: 2020-12-08 21:07:46
+ * @LastEditTime: 2020-12-09 10:02:06
 -->
 <template>
   <div>
@@ -243,7 +243,7 @@
       <BankAccount
         :data="editData"
         @cancel="() => (dialogVisible = false)"
-        @finish="(data) => selectFinish(data)"
+        @finish="(data) => bankFinish(data)"
       />
     </ih-dialog>
     <ih-dialog :show="approvalDialogVisible">
@@ -262,6 +262,7 @@ import {
   get_other_get__termId,
   post_other_changOver,
   post_other_changOtherProChannelUse,
+  post_other_saveReceipt,
   post_other_add,
   post_other_del,
   post_other_start,
@@ -317,8 +318,12 @@ export default class Other extends Vue {
     this.editData.id = this.info.companyId;
   }
 
-  selectFinish(data: any) {
-    console.log(data);
+  async bankFinish(data: any) {
+    await post_other_saveReceipt({
+      receiptId: data,
+      termId: this.$route.query.id,
+    });
+    this.getInfo();
     this.dialogVisible = false;
   }
 

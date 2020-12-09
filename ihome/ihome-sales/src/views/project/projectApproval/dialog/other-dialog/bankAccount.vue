@@ -4,7 +4,7 @@
  * @Author: wwq
  * @Date: 2020-12-08 20:54:08
  * @LastEditors: wwq
- * @LastEditTime: 2020-12-08 21:09:13
+ * @LastEditTime: 2020-12-09 10:01:38
 -->
 <template>
   <el-dialog
@@ -13,7 +13,7 @@
     :close-on-click-modal="false"
     :close-on-press-escape="false"
     :before-close="cancel"
-    width="500px"
+    width="900px"
     class="dialog text-left"
     title="收款信息"
   >
@@ -32,22 +32,16 @@
       <el-table-column
         prop="accountName"
         label="账户名称"
+        width="200"
       ></el-table-column>
       <el-table-column
         prop="accountNo"
         label="账号"
       ></el-table-column>
       <el-table-column
-        prop="accountType"
-        label="账号类型"
-      >
-        <template v-slot="{ row }">{{
-            $root.dictAllName(row.accountType, 'BankAccountTypeEnum')
-          }}</template>
-      </el-table-column>
-      <el-table-column
         prop="branchName"
         label="开户银行"
+        width="280"
       >
       </el-table-column>
       <el-table-column
@@ -77,7 +71,7 @@ import { get_bankAccount_get__companyId } from "@/api/finance/index";
 export default class BankAccount extends Vue {
   @Prop({ default: null }) data: any;
   dialogVisible = true;
-  selection = [];
+  selection: any = [];
   info: any = [];
 
   handleSelectionChange(selection: any) {
@@ -93,7 +87,11 @@ export default class BankAccount extends Vue {
     this.$emit("cancel", false);
   }
   finish() {
-    this.$emit("finish");
+    if (this.selection.length) {
+      this.$emit("finish", this.selection[0].id);
+    } else {
+      this.$message.warning("请勾选收款信息");
+    }
   }
   async created() {
     this.getInfo();
@@ -103,7 +101,7 @@ export default class BankAccount extends Vue {
     const id = this.$route.query.id;
     if (id) {
       this.info = await get_bankAccount_get__companyId({
-        companyId: this.data.id,
+        companyId: "1",
       });
     }
   }
