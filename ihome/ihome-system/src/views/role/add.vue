@@ -4,7 +4,7 @@
  * @Author: zyc
  * @Date: 2020-07-09 14:08:24
  * @LastEditors: zyc
- * @LastEditTime: 2020-08-27 15:05:53
+ * @LastEditTime: 2020-12-08 09:18:08
 --> 
 <template>
   <el-dialog
@@ -15,7 +15,7 @@
     :close-on-press-escape="false"
     :before-close="cancel"
     width="800px"
-    style="text-align: left;"
+    style="text-align: left"
     class="dialog"
   >
     <el-form
@@ -43,9 +43,17 @@
 <script lang="ts">
 import { Component, Vue, Prop } from "vue-property-decorator";
 import { Form as ElForm } from "element-ui";
-import { noTrim } from "ihome-common/util/base/form-ui";
+import { noTrim, isLetterValidato } from "ihome-common/util/base/form-ui";
 import { post_role_add, post_role_update } from "../../api/system/index";
 import { NoRepeatHttp } from "ihome-common/util/aop/no-repeat-http";
+function startR(rule: any, value: any, callback: any) {
+  if (value.startsWith("R")) {
+    callback();
+  } else {
+    callback(new Error("必须以R开头"));
+    return;
+  }
+}
 @Component({
   components: {},
 })
@@ -63,13 +71,16 @@ export default class RoleAdd extends Vue {
   };
   rules: any = {
     name: [
+      { validator: noTrim, trigger: "change" },
       { required: true, message: "请输入名称", trigger: "change" },
       { min: 1, max: 16, message: "长度在 1 到 16 个字符", trigger: "change" },
     ],
     code: [
-      { required: true, message: "请输入编码", trigger: "change" },
-      { min: 1, max: 16, message: "长度在 1 到 16 个字符", trigger: "change" },
       { validator: noTrim, trigger: "change" },
+      { required: true, message: "请输入编码", trigger: "change" },
+      { min: 1, max: 32, message: "长度在 1 到 32 个字符", trigger: "change" },
+      { validator: startR, trigger: "change" },
+      { validator: isLetterValidato, trigger: "change" },
     ],
   };
 
@@ -81,7 +92,6 @@ export default class RoleAdd extends Vue {
     (this.$refs[formName] as ElForm).validate(this.submit);
   }
 
-  
   @NoRepeatHttp()
   async submit(valid: any) {
     if (valid) {
