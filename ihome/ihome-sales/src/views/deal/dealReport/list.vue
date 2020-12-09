@@ -4,7 +4,7 @@
  * @Author: lsj
  * @Date: 2020-11-03 09:10:20
  * @LastEditors: lsj
- * @LastEditTime: 2020-11-13 14:38:33
+ * @LastEditTime: 2020-12-09 17:28:20
 -->
 <template>
   <ih-page label-width="100px">
@@ -222,6 +222,7 @@
       <el-row>
         <el-button type="primary" @click="getListMixin()">查询</el-button>
         <el-button type="info" @click="handleReset()">重置</el-button>
+        <el-button type="success" @click="handleAdd()">业绩申报</el-button>
         <el-button type="success" @click="handleAdd()">新增</el-button>
       </el-row>
     </template>
@@ -278,7 +279,7 @@
           </template>
         </el-table-column>
         <el-table-column prop="dealOrg" label="组织信息" min-width="260"></el-table-column>
-        <el-table-column prop="allotDate" label="签约/填写/业绩/审批日期" min-width="210">
+        <el-table-column prop="allotDate" label="签约/填写/业绩确认/审批日期" min-width="210">
           <template slot-scope="scope">
             <div>签约：{{scope.row.signDate}}</div>
             <div>填写：{{scope.row.createTime}}</div>

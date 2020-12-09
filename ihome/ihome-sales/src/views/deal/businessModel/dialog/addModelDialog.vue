@@ -4,7 +4,7 @@
  * @Author: lsj
  * @Date: 2020-11-03 15:28:12
  * @LastEditors: lsj
- * @LastEditTime: 2020-11-03 15:30:12
+ * @LastEditTime: 2020-12-09 17:28:20
 -->
 <template>
   <el-dialog
@@ -24,8 +24,7 @@
       :rules="rules"
       ref="modelForm"
       label-width="100px"
-      class="demo-ruleForm"
-    >
+      class="demo-ruleForm">
       <el-row class="ih-info-line">
         <el-col>
           <el-form-item
