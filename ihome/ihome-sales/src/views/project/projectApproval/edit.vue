@@ -4,7 +4,7 @@
  * @Author: wwq
  * @Date: 2020-11-27 17:15:27
  * @LastEditors: wwq
- * @LastEditTime: 2020-12-08 19:08:20
+ * @LastEditTime: 2020-12-09 19:37:35
 -->
 <template>
   <ih-page>
@@ -101,9 +101,9 @@ Component.registerHooks(["beforeRouteEnter"]);
   },
 })
 export default class ProjectApprovalEdit extends Vue {
-  tabActive: any = "Other";
+  tabActive: any = "Close";
   typeStr = "";
-  componetName: any = "Other";
+  componetName: any = "Close";
 
   private beforeRouteEnter(to: any, from: any, next: any) {
     next((vm: any) => {

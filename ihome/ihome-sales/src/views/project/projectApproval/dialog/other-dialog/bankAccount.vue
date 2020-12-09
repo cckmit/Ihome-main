@@ -4,7 +4,7 @@
  * @Author: wwq
  * @Date: 2020-12-08 20:54:08
  * @LastEditors: wwq
- * @LastEditTime: 2020-12-09 10:01:38
+ * @LastEditTime: 2020-12-09 16:09:39
 -->
 <template>
   <el-dialog
@@ -20,6 +20,7 @@
     <el-table
       class="ih-table"
       :data="info"
+      ref="multipleTable"
       @selection-change="handleSelectionChange"
       @select="handleSelect"
     >
@@ -101,7 +102,7 @@ export default class BankAccount extends Vue {
     const id = this.$route.query.id;
     if (id) {
       this.info = await get_bankAccount_get__companyId({
-        companyId: "1",
+        companyId: this.data.id,
       });
     }
   }

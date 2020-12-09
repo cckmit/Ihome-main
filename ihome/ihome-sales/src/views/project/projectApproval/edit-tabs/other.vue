@@ -4,7 +4,7 @@
  * @Author: wwq
  * @Date: 2020-11-27 17:28:28
  * @LastEditors: wwq
- * @LastEditTime: 2020-12-09 10:02:06
+ * @LastEditTime: 2020-12-09 16:07:46
 -->
 <template>
   <div>
@@ -21,20 +21,17 @@
     <div class="padding-left-20">
       <el-table
         class="ih-table"
-        :data="info.shareChannelFeeVOS"
+        :data="info.bankAccount"
         style="width: 100%"
       >
         <el-table-column
-          prop="packageName"
+          prop="receiptMan"
           label="收款方"
         ></el-table-column>
         <el-table-column
           label="收款方账号"
-          prop="xxxxx"
+          prop="receiptAccount"
         >
-          <template v-slot="{ row }">{{
-            $root.dictAllName(row.baseCostEnum, "BaseCostEnum")
-          }}</template>
         </el-table-column>
       </el-table>
     </div>
@@ -45,23 +42,23 @@
         <el-button
           size="small"
           type="success"
-          @click="select"
+          @click="organSelect"
         >选择</el-button>
       </div>
     </div>
     <div class="padding-left-20">
       <el-table
         class="ih-table"
-        :data="info.shareChannelFeeVOS"
+        :data="info.group"
         style="width: 100%"
       >
         <el-table-column
-          prop="packageName"
+          prop="groupName"
           label="末级组织"
         ></el-table-column>
         <el-table-column
           label="分公司"
-          prop="xxxx"
+          prop="startDivisionName"
         >
           <template v-slot="{ row }">{{
             $root.dictAllName(row.baseCostEnum, "BaseCostEnum")
@@ -248,8 +245,23 @@
     </ih-dialog>
     <ih-dialog :show="approvalDialogVisible">
       <ProjectApproval
+        :data="approvalData"
         @cancel="() => (approvalDialogVisible = false)"
         @finish="(data) => approvalFinish(data)"
+      />
+    </ih-dialog>
+    <ih-dialog :show="achieveDialogVisible">
+      <AchieveScaleScheme
+        :data="achieveData"
+        @cancel="() => (achieveDialogVisible = false)"
+        @finish="(data) => achieveFinish(data)"
+      />
+    </ih-dialog>
+    <ih-dialog :show="organDialogVisible">
+      <Organization
+        :data="organData"
+        @cancel="() => (organDialogVisible = false)"
+        @finish="(data) => organFinish(data)"
       />
     </ih-dialog>
   </div>
@@ -258,11 +270,15 @@
 import { Component, Vue } from "vue-property-decorator";
 import BankAccount from "../dialog/other-dialog/bankAccount.vue";
 import ProjectApproval from "../dialog/other-dialog/projectApproval.vue";
+import AchieveScaleScheme from "../dialog/other-dialog/achieveScaleScheme.vue";
+import Organization from "../dialog/other-dialog/organization.vue";
 import {
   get_other_get__termId,
   post_other_changOver,
   post_other_changOtherProChannelUse,
   post_other_saveReceipt,
+  post_other_saveGroup,
+  post_other_saveSpecial,
   post_other_add,
   post_other_del,
   post_other_start,
@@ -273,15 +289,24 @@ import {
   components: {
     ProjectApproval,
     BankAccount,
+    AchieveScaleScheme,
+    Organization,
   },
 })
 export default class Other extends Vue {
   dialogVisible = false;
   approvalDialogVisible = false;
+  achieveDialogVisible = false;
+  organDialogVisible = false;
+  approvalData: any = {};
+  achieveData: any = {};
+  organData: any = {};
   info: any = {
     exOver: false,
     exOtherProChannelUse: false,
     shareChannelFeeVOS: [],
+    bankAccount: [],
+    group: [],
   };
   editData: any = {};
   selectionOptions = [
@@ -310,6 +335,22 @@ export default class Other extends Vue {
       this.info = await get_other_get__termId({
         termId: id,
       });
+      if (this.info.receiptMan || this.info.receiptAccount) {
+        this.info.bankAccount = [
+          {
+            receiptMan: this.info.receiptMan,
+            receiptAccount: this.info.receiptAccount,
+          },
+        ];
+      }
+      if (this.info.startDivisionName || this.info.groupName) {
+        this.info.group = [
+          {
+            startDivisionName: this.info.startDivisionName,
+            groupName: this.info.groupName,
+          },
+        ];
+      }
     }
   }
 
@@ -327,8 +368,18 @@ export default class Other extends Vue {
     this.dialogVisible = false;
   }
 
-  specialClick() {
-    console.log();
+  organSelect() {
+    this.organDialogVisible = true;
+    this.organData.id = this.info.startDivisionId;
+  }
+
+  async organFinish(data: any) {
+    await post_other_saveGroup({
+      groupId: data[0].id,
+      termId: this.$route.query.id,
+    });
+    this.getInfo();
+    this.organDialogVisible = false;
   }
 
   async exOverChange(val: any) {
@@ -357,11 +408,31 @@ export default class Other extends Vue {
           (v: any) => v.shareStateEnum === "Disable"
         );
         break;
+      case "all":
+        this.getInfo();
+        break;
     }
+  }
+
+  specialClick() {
+    this.achieveDialogVisible = true;
+    this.achieveData.id = this.info.companyId;
+  }
+
+  async achieveFinish(data: any) {
+    await post_other_saveSpecial({
+      specialId: data[0].id,
+      termId: this.$route.query.id,
+    });
+    this.getInfo();
+    this.$message.success("新增成功");
+    this.achieveDialogVisible = false;
   }
 
   add() {
     this.approvalDialogVisible = true;
+    this.approvalData.exOver = this.info.exOver ? 1 : 0;
+    this.approvalData.proId = this.info.proId;
   }
 
   async approvalFinish(data: any) {
@@ -370,6 +441,7 @@ export default class Other extends Vue {
       shareTermIds: arr,
       termId: this.$route.query.id,
     });
+    this.getInfo();
     this.$message.success("新增成功");
     this.approvalDialogVisible = false;
   }

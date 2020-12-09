@@ -4,7 +4,7 @@
  * @Author: wwq
  * @Date: 2020-12-01 11:34:52
  * @LastEditors: wwq
- * @LastEditTime: 2020-12-01 19:49:06
+ * @LastEditTime: 2020-12-09 20:08:47
 -->
 <template>
   <el-dialog
@@ -17,7 +17,7 @@
     class="dialog text-left"
     title="栋座归属信息"
   >
-    <template v-for="(item, i) in data">
+    <template v-for="(item, i) in form">
       <div :key="i">
         <p class="ih-info-title">{{item.companyName + '关联栋座'}}</p>
         <div style="margin-left: 20px">
@@ -59,12 +59,19 @@ export default class PartyABuding extends Vue {
   @Prop({ default: null }) data: any;
   dialogVisible = true;
   info: any = [];
+  form: any = [
+    {
+      companyId: null,
+      companyName: null,
+      buildingIds: [],
+    },
+  ];
 
   cancel() {
     this.$emit("cancel", false);
   }
   finish() {
-    this.$emit("finish", this.data);
+    this.$emit("finish", this.form);
   }
 
   async getInfo() {
@@ -75,6 +82,7 @@ export default class PartyABuding extends Vue {
 
   async created() {
     this.getInfo();
+    this.form = [...this.data];
   }
 }
 </script>

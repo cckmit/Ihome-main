@@ -4,7 +4,7 @@
  * @Author: wwq
  * @Date: 2020-12-01 14:49:06
  * @LastEditors: wwq
- * @LastEditTime: 2020-12-01 19:52:22
+ * @LastEditTime: 2020-12-09 17:50:19
 -->
 <template>
   <el-dialog
@@ -111,11 +111,12 @@
         <el-col :span="12">
           <el-form-item
             label="合同跟进人"
-            prop="handlerId"
+            prop="tesHhandlerId"
           >
             <IhSelectPageUser
-              v-model="form.handlerId"
+              v-model="form.tesHhandlerId"
               clearable
+              value-key="id"
             >
               <!-- 自定义模板使用 v-slot返回来的data：当前每条的数据；index：每一条数据的下标 -->
               <template v-slot="{ data }">
@@ -206,6 +207,7 @@ export default class PartyAAdd extends Vue {
     cooperationProjectsName: null,
     cooperationTime: null,
     handlerId: null,
+    tesHhandlerId: null,
     confirmer: null,
     confirmerContact: null,
   };
@@ -235,7 +237,7 @@ export default class PartyAAdd extends Vue {
         trigger: "change",
       },
     ],
-    handlerId: [
+    tesHhandlerId: [
       {
         required: true,
         message: "请选择合同跟进人",
@@ -275,7 +277,7 @@ export default class PartyAAdd extends Vue {
   @NoRepeatHttp()
   async submit(valid: any) {
     if (valid) {
-      this.form.handlerId = this.form.handlerId.id;
+      this.form.handlerId = this.form.tesHhandlerId.id;
       let arr: any = [];
       arr = this.form.partyA.map((v: any) => ({
         userId: v,
@@ -302,7 +304,7 @@ export default class PartyAAdd extends Vue {
   created() {
     this.getPartyA();
     this.getPartyB();
-    this.form.handlerId = {
+    this.form.tesHhandlerId = {
       name: (this.$root as any).userInfo.account,
       id: (this.$root as any).userInfo.id,
     };

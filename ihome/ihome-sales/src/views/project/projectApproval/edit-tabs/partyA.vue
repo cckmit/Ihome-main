@@ -4,7 +4,7 @@
  * @Author: wwq
  * @Date: 2020-11-27 17:20:24
  * @LastEditors: wwq
- * @LastEditTime: 2020-12-02 09:30:00
+ * @LastEditTime: 2020-12-09 20:04:27
 -->
 <template>
   <div>
@@ -287,12 +287,13 @@ export default class PartyA extends Vue {
     this.budingEditData = this.info.partyAInfoMesgVOS.map((v: any) => ({
       companyId: v.companyId,
       companyName: v.companyName,
-      buildingIds: [],
+      buildingIds: v.buildingVos.map((j: any) => j.buildingId),
     }));
     this.budingEditDialogVisible = true;
   }
 
   async budingEditFinish(data: any) {
+    console.log(data);
     let obj: any = {};
     obj.partyAInfoVOS = data;
     obj.termId = this.$route.query.id;

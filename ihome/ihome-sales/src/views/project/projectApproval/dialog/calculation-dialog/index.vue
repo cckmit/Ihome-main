@@ -4,7 +4,7 @@
  * @Author: wwq
  * @Date: 2020-12-03 10:50:26
  * @LastEditors: wwq
- * @LastEditTime: 2020-12-08 16:52:26
+ * @LastEditTime: 2020-12-09 10:25:03
 -->
 <template>
   <el-dialog
@@ -32,71 +32,71 @@
       </tr>
       <tr>
         <td class="bold">周期时间</td>
-        <td colspan="9">{{form.termCalcVo && form.termCalcVo.termStart + '~' + form.termCalcVo && form.termCalcVo.termEnd}}</td>
+        <td colspan="9">{{form && form.termCalcVo && form.termCalcVo.termStart + '~' + form.termCalcVo && form.termCalcVo.termEnd}}</td>
       </tr>
       <tr>
         <td class="bold">是否市场化项目</td>
-        <td colspan="2">{{form.termCalcVo && form.termCalcVo.exMarket}}</td>
+        <td colspan="2">{{form && form.termCalcVo && form.termCalcVo.exMarket}}</td>
         <td class="bold">业务模式</td>
-        <td colspan="2">{{form.termCalcVo && $root.dictAllName(form.termCalcVo.busEnum, 'BusEnum')}}</td>
+        <td colspan="2">{{form && form.termCalcVo && $root.dictAllName(form.termCalcVo.busEnum, 'BusEnum')}}</td>
         <td class="bold">收费类型</td>
-        <td colspan="3">{{form.termCalcVo && $root.dictAllName(form.termCalcVo.chargeEnum, 'ChargeEnum')}}</td>
+        <td colspan="3">{{form && form.termCalcVo && $root.dictAllName(form.termCalcVo.chargeEnum, 'ChargeEnum')}}</td>
       </tr>
       <tr>
         <td class="bold">模式属性</td>
-        <td colspan="5">{{$root.dictAllName(form.termCalcVo && form.termCalcVo.attributeEnum, 'AttributeEnum')}}</td>
+        <td colspan="5">{{form && form.termCalcVo && $root.dictAllName(form.termCalcVo.attributeEnum, 'AttributeEnum')}}</td>
         <td class="bold">垫佣周期</td>
-        <td colspan="3">{{$root.dictAllName(form.termCalcVo && form.termCalcVo.padCommissionEnum, 'PadCommissionEnum')}}</td>
+        <td colspan="3">{{form && form.termCalcVo && $root.dictAllName(form.termCalcVo.padCommissionEnum, 'PadCommissionEnum')}}</td>
       </tr>
       <tr>
         <td
           class="bold"
           colspan="2"
         >服务费总包模式-总包成交留存率</td>
-        <td>{{(form.termCalcVo.serviceFeeTotalByTotalRate || 0) + '%'}}</td>
+        <td>{{(form && form.termCalcVo && form.termCalcVo.serviceFeeTotalByTotalRate || 0) + '%'}}</td>
         <td
           class="bold"
           colspan="2"
         >代理费总包模式-总包成交留存率</td>
-        <td>{{(form.termCalcVo.agencyFeeTotalByTotalRate || 0)  + '%'}}</td>
+        <td>{{(form && form.termCalcVo && form.termCalcVo.agencyFeeTotalByTotalRate || 0)  + '%'}}</td>
         <td class="bold">纯分销模式-代理费留存率</td>
-        <td colspan="1">{{(form.termCalcVo.districtbuteAgencyRate || 0)  + '%'}}</td>
+        <td colspan="1">{{(form && form.termCalcVo && form.termCalcVo.districtbuteAgencyRate || 0)  + '%'}}</td>
         <td
           class="bold"
           rowspan="2"
         >项目综合留存率</td>
-        <td rowspan="2">{{(form.termCalcVo.termOverallRate || 0)  + '%'}}</td>
+        <td rowspan="2">{{(form && form.termCalcVo && form.termCalcVo.termOverallRate || 0)  + '%'}}</td>
       </tr>
       <tr>
         <td
           class="bold"
           colspan="2"
         >服务费总包模式-分销成交留存率</td>
-        <td>{{(form.termCalcVo.serviceFeeTotalByDistrictbuteRate || 0)  + '%'}}</td>
+        <td>{{(form && form.termCalcVo && form.termCalcVo.serviceFeeTotalByDistrictbuteRate || 0)  + '%'}}</td>
         <td
           class="bold"
           colspan="2"
         >代理费总包模式-分销成交留存率</td>
-        <td>{{(form.termCalcVo.agencyFeeTotalByDistrictbuteRate || 0)  + '%'}}</td>
+        <td>{{(form && form.termCalcVo && form.termCalcVo.agencyFeeTotalByDistrictbuteRate || 0)  + '%'}}</td>
         <td class="bold">纯分销模式-服务费留存率</td>
-        <td colspan="1">{{(form.termCalcVo.districtbuteServiceRate || 0 ) + '%'}}</td>
+        <td colspan="1">{{(form && form.termCalcVo && form.termCalcVo.districtbuteServiceRate || 0 ) + '%'}}</td>
       </tr>
       <tr>
         <td
           class="bold"
           colspan="2"
         >服务费可用留存</td>
-        <td colspan="2">{{form.termCalcVo.serviceBalance}}</td>
+        <td colspan="2">{{form && form.termCalcVo && form.termCalcVo.serviceBalance}}</td>
         <td colspan="2">万</td>
         <td class="bold">留存是否存在穿底</td>
-        <td colspan="3">{{yesOrNo(form.termCalcVo.exOver)}}</td>
+        <td colspan="3">{{form && form.termCalcVo && yesOrNo(form.termCalcVo.exOver)}}</td>
       </tr>
       <tr>
         <td class="bold">项目物业类型</td>
         <td colspan="9">
           <template>
             <span
-              v-for="(item, i) in form.termCalcVo.properties"
+              v-for="(item, i) in form && form.termCalcVo && form.termCalcVo.properties"
               :key="i"
             >
               <span>{{$root.dictAllName(item, 'PropertyEnum')}}</span>
@@ -107,11 +107,11 @@
       </tr>
       <tr>
         <td class="bold">佣金收取标准描述</td>
-        <td colspan="9">{{form.termCalcVo.collectCommissionStandardSketch}}</td>
+        <td colspan="9">{{form && form.termCalcVo && form.termCalcVo.collectCommissionStandardSketch}}</td>
       </tr>
       <tr>
         <td class="bold">佣金派发标准描述</td>
-        <td colspan="9">{{form.termCalcVo.sendCommissionStandardSketch}}</td>
+        <td colspan="9">{{form && form.termCalcVo && form.termCalcVo.sendCommissionStandardSketch}}</td>
       </tr>
     </table>
     <br />
@@ -128,7 +128,7 @@
           style="color: red; text-align: left;padding-left:10px"
         >2、项目成交情况</td>
       </tr>
-      <template v-for="(item, i) in form.serviceCalcComplateModelVOS">
+      <template v-for="(item, i) in form && form.serviceCalcComplateModelVOS">
         <tr :key="i + Math.random()">
           <td>物业类型</td>
           <td colspan="10">{{$root.dictAllName(item.calcComplateVO.propertyEnum, 'PropertyEnum')}}</td>
@@ -192,12 +192,12 @@
       </template>
       <tr>
         <td colspan="2">服务费模式合计</td>
-        <td>{{form.serviceSum.estimateComplateNum}}</td>
-        <td>{{form.serviceSum.estimateReceiveAmount}}</td>
-        <td>{{form.serviceSum.estimatePayChannelAmount}}</td>
-        <td>{{form.serviceSum.otherDemolition}}</td>
-        <td>{{form.serviceSum.otherChannelAmount}}</td>
-        <td>{{(form.serviceSum.plateRate || 0) + '%'}}</td>
+        <td>{{form && form.serviceSum && form.serviceSum.estimateComplateNum}}</td>
+        <td>{{form && form.serviceSum && form.serviceSum.estimateReceiveAmount}}</td>
+        <td>{{form && form.serviceSum && form.serviceSum.estimatePayChannelAmount}}</td>
+        <td>{{form && form.serviceSum && form.serviceSum.otherDemolition}}</td>
+        <td>{{form && form.serviceSum && form.serviceSum.otherChannelAmount}}</td>
+        <td>{{(form && form.serviceSum && form.serviceSum.plateRate || 0) + '%'}}</td>
         <td colspan="3">
           <el-input
             ref="serviceSum"
@@ -207,7 +207,7 @@
         </td>
       </tr>
 
-      <template v-for="(item, i) in form.agencyCalcComplateModelVOS">
+      <template v-for="(item, i) in form && form.agencyCalcComplateModelVOS">
         <tr :key="i + Math.random()">
           <td>物业类型</td>
           <td colspan="10">{{$root.dictAllName(item.calcComplateVO.propertyEnum, 'PropertyEnum')}}</td>
@@ -279,12 +279,12 @@
       </template>
       <tr>
         <td colspan="2">代理费模式合计</td>
-        <td>{{form.agencySum.estimateComplateNum}}</td>
-        <td>{{form.agencySum.estimateReceiveAmount}}</td>
-        <td>{{form.agencySum.estimatePayChannelAmount}}</td>
-        <td>{{form.agencySum.otherDemolition}}</td>
+        <td>{{form && form.agencySum && form.agencySum.estimateComplateNum}}</td>
+        <td>{{form && form.agencySum && form.agencySum.estimateReceiveAmount}}</td>
+        <td>{{form && form.agencySum && form.agencySum.estimatePayChannelAmount}}</td>
+        <td>{{form && form.agencySum && form.agencySum.otherDemolition}}</td>
         <td>-</td>
-        <td>{{(form.agencySum.plateRate || 0) + '%'}}</td>
+        <td>{{(form && form.agencySum && form.agencySum.plateRate || 0) + '%'}}</td>
         <td colspan="3">
           <el-input v-model="form.agencySum.remark"></el-input>
         </td>
@@ -336,9 +336,18 @@ export default class CalculationDialog extends Vue {
   }
 
   async getInfo() {
-    this.form = await get_calc_getCalc__termId({
+    const item = await get_calc_getCalc__termId({
       termId: this.$route.query.id,
     });
+    this.form = item
+      ? item
+      : {
+          termCalcVo: {}, //测算指标
+          agencyCalcComplateModelVOS: [], //代理费
+          agencySum: [], //代理费合计
+          serviceCalcComplateModelVOS: [], //服务费
+          serviceSum: [], // 服务费合计
+        };
   }
 
   cancel() {

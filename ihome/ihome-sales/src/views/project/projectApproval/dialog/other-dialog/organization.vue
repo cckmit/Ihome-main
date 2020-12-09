@@ -2,9 +2,9 @@
  * @Descripttion: 
  * @version: 
  * @Author: wwq
- * @Date: 2020-11-30 08:49:31
+ * @Date: 2020-12-09 14:49:18
  * @LastEditors: wwq
- * @LastEditTime: 2020-12-09 14:27:01
+ * @LastEditTime: 2020-12-09 20:11:48
 -->
 <template>
   <el-dialog
@@ -15,7 +15,7 @@
     :before-close="cancel"
     width="80%"
     class="text-left dialog-table"
-    :title="`项目基础信息`"
+    :title="`成交归属组织`"
     :append-to-body="true"
   >
     <el-form
@@ -24,52 +24,59 @@
     >
       <el-row>
         <el-col :span="8">
-          <el-form-item label="项目盘编">
+          <el-form-item label="名称">
             <el-input
-              clearable
-              v-model="queryPageParameters.proNo"
-              placeholder="项目盘编"
+              v-model="queryPageParameters.name"
+              placeholder="名称"
             ></el-input>
           </el-form-item>
         </el-col>
         <el-col :span="8">
-          <el-form-item label="项目名称">
-            <el-input
-              clearable
-              v-model="queryPageParameters.proName"
-              placeholder="项目名称"
-            ></el-input>
-          </el-form-item>
-        </el-col>
-        <el-col :span="8">
-          <el-form-item label="周期名称">
-            <el-input
-              clearable
-              v-model="queryPageParameters.termName"
-              placeholder="周期名称"
-            ></el-input>
-          </el-form-item>
-        </el-col>
-        <el-col :span="8">
-          <el-form-item label="省市区">
-            <IhCascader
-              v-model="provinceOption"
-              clearable
-              placeholder="请选择"
-              class="width--100"
-            />
-          </el-form-item>
-        </el-col>
-        <el-col :span="8">
-          <el-form-item label="业务类型">
+          <el-form-item label="组织层级">
             <el-select
-              v-model="queryPageParameters.busTypeEnum"
+              v-model="queryPageParameters.level"
               clearable
-              placeholder="业务类型"
+              placeholder="请选择组组织层级"
               class="width--100"
             >
               <el-option
-                v-for="item in $root.dictAllList('BusTypeEnum')"
+                v-for="(item, index) in levelOptions"
+                :key="index"
+                :label="item"
+                :value="item"
+              ></el-option>
+            </el-select>
+          </el-form-item>
+        </el-col>
+        <el-col :span="8">
+          <el-form-item label="部门分类">
+            <el-select
+              v-model="queryPageParameters.departmentType"
+              clearable
+              placeholder="请选择部门分类"
+              class="width--100"
+            >
+              <el-option
+                v-for="item in $root.dictAllList('DepartmentType')"
+                :key="item.code"
+                :label="item.name"
+                :value="item.code"
+              ></el-option>
+            </el-select>
+          </el-form-item>
+        </el-col>
+      </el-row>
+      <el-row>
+        <el-col :span="8">
+          <el-form-item label="组织类型">
+            <el-select
+              v-model="queryPageParameters.orgType"
+              clearable
+              placeholder="请选择组织类型"
+              class="width--100"
+            >
+              <el-option
+                v-for="item in $root.dictAllList('OrgType')"
                 :key="item.code"
                 :label="item.name"
                 :value="item.code"
@@ -78,15 +85,15 @@
           </el-form-item>
         </el-col>
         <el-col :span="8">
-          <el-form-item label="项目审核状态">
+          <el-form-item label="是否有效">
             <el-select
-              v-model="queryPageParameters.auditEnum"
+              v-model="queryPageParameters.status"
               clearable
-              placeholder="特批入库"
+              placeholder="请选择"
               class="width--100"
             >
               <el-option
-                v-for="item in $root.dictAllList('AuditEnum')"
+                v-for="item in $root.dictAllList('ValidType')"
                 :key="item.code"
                 :label="item.name"
                 :value="item.code"
@@ -96,7 +103,7 @@
         </el-col>
       </el-row>
     </el-form>
-    <div class="margin-left-80">
+    <div class="margin-left-100">
       <el-button
         type="primary"
         @click="search()"
@@ -116,70 +123,52 @@
       @select="handleSelect"
     >
       <el-table-column
+        fixed
         type="selection"
         width="50"
         align="center"
       ></el-table-column>
       <el-table-column
         fixed
-        prop="proNo"
-        label="盘编"
-        width="160"
+        prop="name"
+        label="名称"
+        width="180"
       ></el-table-column>
       <el-table-column
-        fixed
-        prop="proName"
-        label="项目名称"
-        width="100"
+        prop="shortName"
+        label="简称"
+        width="180"
       ></el-table-column>
       <el-table-column
-        prop="province"
-        label="省份"
+        prop="level"
+        label="层级"
+      ></el-table-column>
+      <el-table-column
+        label="组织类型"
+        width="180"
       >
         <template v-slot="{ row }">{{
-            $root.getAreaName(row.province)
-          }}</template>
+          $root.dictAllName(row.orgType, "OrgType")
+        }}</template>
       </el-table-column>
       <el-table-column
-        prop="city"
-        label="城市"
-      >
-        <template v-slot="{ row }">{{
-            $root.getAreaName(row.city)
-          }}</template>
-      </el-table-column>
+        prop="createUserName"
+        label="创建人"
+      ></el-table-column>
       <el-table-column
-        prop="district"
-        label="行政区"
-      >
-        <template v-slot="{ row }">{{
-            $root.getAreaName(row.district)
-          }}</template>
-      </el-table-column>
+        prop="createTime"
+        label="创建时间"
+        width="180"
+      ></el-table-column>
       <el-table-column
-        prop="proAddr"
-        label="项目地址"
-      > </el-table-column>
+        prop="updateUserName"
+        label="修改人"
+      ></el-table-column>
       <el-table-column
-        prop="auditEnum"
-        label="项目审核状态"
-      >
-        <template v-slot="{ row }">{{
-            $root.dictAllName(row.auditEnum, "AuditEnum")
-          }}</template>
-      </el-table-column>
-      <el-table-column
-        fixed="right"
-        label="操作"
-        width="100"
-      >
-        <template v-slot="{ row }">
-          <el-link
-            type="primary"
-            @click.native.prevent="routerTo(row, 'info')"
-          >详情</el-link>
-        </template>
-      </el-table-column>
+        prop="updateTime"
+        label="修改人时间"
+        width="180"
+      ></el-table-column>
     </el-table>
     <br />
     <el-pagination
@@ -206,28 +195,24 @@
   </el-dialog>
 </template>
 <script lang="ts">
-import { Component, Vue } from "vue-property-decorator";
+import { Component, Vue, Prop } from "vue-property-decorator";
 import PaginationMixin from "@/mixins/pagination";
-import { post_project_getList } from "@/api/project/index";
+import { post_org_getListRecursion } from "@/api/system/index";
 
 @Component({
   components: {},
   mixins: [PaginationMixin],
 })
-export default class ProjectApprovalDialog extends Vue {
+export default class Organization extends Vue {
+  @Prop({ default: null }) data: any;
   dialogVisible = true;
-  viewEditDialogVisible = false;
   queryPageParameters: any = {
-    proNo: null,
-    proName: null,
-    termName: null,
-    province: null,
-    city: null,
-    district: null,
-    busTypeEnum: null,
-    auditEnum: null,
+    departmentType: null,
+    level: 0,
+    name: null,
+    orgType: null,
+    status: null,
   };
-  provinceOption: any = [];
   resPageInfo: any = {
     list: [],
     total: 0,
@@ -238,29 +223,40 @@ export default class ProjectApprovalDialog extends Vue {
     return this.resPageInfo.total === null ? "正在加载数据..." : "暂无数据";
   }
 
+  get levelOptions() {
+    const list = [0, 1, 2, 3, 4, 5, 6, 7];
+    return list;
+  }
+
   async created() {
     this.getListMixin();
   }
   async getListMixin() {
-    this.resPageInfo = await post_project_getList(this.queryPageParameters);
+    this.queryPageParameters.id = this.data.id;
+    this.queryPageParameters.orgType = "Group";
+    this.resPageInfo = await post_org_getListRecursion(
+      this.queryPageParameters
+    );
   }
 
   reset() {
     Object.assign(this.queryPageParameters, {
+      termName: null,
       proNo: null,
       proName: null,
-      termName: null,
       province: null,
       city: null,
       district: null,
-      busTypeEnum: null,
-      auditEnum: null,
     });
-    this.provinceOption = [];
   }
 
   cancel() {
     this.$emit("cancel");
+  }
+
+  search() {
+    this.queryPageParameters.pageNum = 1;
+    this.getListMixin();
   }
 
   handleSelectionChange(selection: any) {
@@ -273,14 +269,6 @@ export default class ProjectApprovalDialog extends Vue {
     }
   }
 
-  search() {
-    this.queryPageParameters.province = this.provinceOption[0];
-    this.queryPageParameters.city = this.provinceOption[1];
-    this.queryPageParameters.district = this.provinceOption[2];
-    this.queryPageParameters.pageNum = 1;
-    this.getListMixin();
-  }
-
   finish() {
     if (this.selection.length) {
       this.$emit("finish", this.selection);
@@ -290,25 +278,10 @@ export default class ProjectApprovalDialog extends Vue {
   }
 
   routerTo(row: any, type: string) {
-    let where: any = "";
-    switch (type) {
-      case "info":
-        if (row.exMinyuan) {
-          if (!row.parentId) {
-            where = "parentInfo";
-          } else {
-            where = "childInfo";
-          }
-        } else {
-          where = "childInfo";
-        }
-        break;
-    }
     const item = this.$router.resolve({
-      path: `/projects/${where}`,
+      path: `/projectApproval/${type}`,
       query: {
-        id: row.proId,
-        proName: row.proName,
+        id: row.id,
       },
     });
     window.open(item.href, "_blank");
@@ -320,10 +293,8 @@ export default class ProjectApprovalDialog extends Vue {
   /deep/ .el-dialog {
     margin-top: 5vh !important;
   }
-  /deep/ .el-dialog__body {
-    padding: 10px 20px;
-  }
 }
+
 .ih-table {
   /deep/ .el-table__header {
     .el-checkbox {

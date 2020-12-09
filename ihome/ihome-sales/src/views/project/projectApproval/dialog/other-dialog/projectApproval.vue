@@ -4,7 +4,7 @@
  * @Author: wwq
  * @Date: 2020-12-08 19:26:43
  * @LastEditors: wwq
- * @LastEditTime: 2020-12-08 20:01:15
+ * @LastEditTime: 2020-12-09 14:26:27
 -->
 <template>
   <el-dialog
@@ -15,7 +15,7 @@
     :before-close="cancel"
     width="80%"
     class="text-left dialog-table"
-    :title="`渠道商信息`"
+    :title="`周期信息`"
     :append-to-body="true"
   >
     <el-form
@@ -90,6 +90,11 @@
         width="150"
       ></el-table-column>
       <el-table-column
+        prop="proName"
+        label="项目名称"
+        width="150"
+      ></el-table-column>
+      <el-table-column
         prop="province"
         label="省份"
       >
@@ -114,44 +119,15 @@
           }}</template>
       </el-table-column>
       <el-table-column
-        prop="proName"
-        label="归属项目"
-      ></el-table-column>
-      <el-table-column
-        prop="busTypeEnum"
-        label="业务类型"
-      >
-        <template v-slot="{ row }">{{
-            $root.dictAllName(row.busTypeEnum, "BusTypeEnum")
-          }}</template>
-      </el-table-column>
-      <el-table-column
-        label="周期时间"
-        width="200"
-      >
-        <template v-slot="{ row }">{{
-            row.termStart + '至' + row.termEnd
-          }}</template>
-      </el-table-column>
-      <el-table-column
-        prop="auditEnum"
-        label="周期审核状态"
-        width="150"
-      >
-        <template v-slot="{ row }">{{
-            $root.dictAllName(row.auditEnum, "AuditEnum")
-          }}</template>
-      </el-table-column>
-      <el-table-column
         fixed="right"
         label="操作"
-        width="100"
+        width="120"
       >
         <template v-slot="{ row }">
           <el-link
             type="primary"
             @click.native.prevent="routerTo(row, 'info')"
-          >详情</el-link>
+          >查看详情</el-link>
         </template>
       </el-table-column>
     </el-table>
@@ -180,25 +156,24 @@
   </el-dialog>
 </template>
 <script lang="ts">
-import { Component, Vue } from "vue-property-decorator";
+import { Component, Vue, Prop } from "vue-property-decorator";
 import PaginationMixin from "@/mixins/pagination";
-import { post_term_getList } from "@/api/project/index";
+import { post_term_getListAccrossTerm } from "@/api/project/index";
 
 @Component({
   components: {},
   mixins: [PaginationMixin],
 })
 export default class ProjectApproval extends Vue {
+  @Prop({ default: null }) data: any;
   dialogVisible = true;
   queryPageParameters: any = {
+    termName: null,
     proNo: null,
     proName: null,
-    termName: null,
-    busTypeEnum: null,
     province: null,
     city: null,
     district: null,
-    auditEnum: null,
   };
   provinceOption: any = [];
   resPageInfo: any = {
@@ -215,19 +190,21 @@ export default class ProjectApproval extends Vue {
     this.getListMixin();
   }
   async getListMixin() {
-    this.resPageInfo = await post_term_getList(this.queryPageParameters);
+    this.queryPageParameters.exOver = this.data.exOver;
+    this.queryPageParameters.proId = this.data.proId;
+    this.resPageInfo = await post_term_getListAccrossTerm(
+      this.queryPageParameters
+    );
   }
 
   reset() {
     Object.assign(this.queryPageParameters, {
+      termName: null,
       proNo: null,
       proName: null,
-      termName: null,
-      busTypeEnum: null,
       province: null,
       city: null,
       district: null,
-      auditEnum: null,
     });
     this.provinceOption = [];
   }
@@ -243,7 +220,7 @@ export default class ProjectApproval extends Vue {
   search() {
     this.queryPageParameters.provinces = this.provinceOption[0];
     this.queryPageParameters.city = this.provinceOption[1];
-    this.queryPageParameters.county = this.provinceOption[2];
+    this.queryPageParameters.district = this.provinceOption[2];
     this.queryPageParameters.pageNum = 1;
     this.getListMixin();
   }

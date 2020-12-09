@@ -4,7 +4,7 @@
  * @Author: wwq
  * @Date: 2020-12-04 09:40:47
  * @LastEditors: wwq
- * @LastEditTime: 2020-12-08 19:00:23
+ * @LastEditTime: 2020-12-09 21:09:28
 -->
 <template>
   <el-dialog
@@ -519,13 +519,19 @@
               <!-- 服务费代理费 -->
               <div class="msg-left">
                 <div class="title">代理费</div>
-                <el-input
-                  placeholder="请选择甲方公司名称"
+                <el-select
                   v-model="item.partyCompany"
-                  class="input-with-select margin-left-10"
-                  readonly
+                  clearable
+                  placeholder="请选择"
+                  @change="selectCompany(item.partyCompany, i)"
                 >
-                </el-input>
+                  <el-option
+                    v-for="item in info.partyAInfoList"
+                    :key="item.companyId"
+                    :label="item.companyName"
+                    :value="item.companyId"
+                  ></el-option>
+                </el-select>
               </div>
               <!-- 删除模板,新增行 -->
               <div class="right-button">
@@ -947,7 +953,9 @@ export default class SetMealEdit extends Vue {
     chargeEnum: null,
     estimatedTransactionPrice: null,
     colletionandsendMxs: [],
+    partyAInfoList: [],
   };
+  partyAInfoList: any = [];
   partyCompanyIndex = 0;
   conditionIndex = 0;
   conditionRowIndex = 0;
@@ -1047,6 +1055,17 @@ export default class SetMealEdit extends Vue {
     if (this.info.busEnum) this.queryContractType();
   }
 
+  selectCompany(v: any, i: number) {
+    this.info.colletionandsendMxs[i].partyCompanyId = v;
+    let arr: any = [];
+    this.info.colletionandsendMxs.forEach((j: any) => {
+      if (j.partyCompanyId) arr.push(j.partyCompanyId);
+    });
+    this.info.partyAInfoList = this.partyAInfoList.filter((h: any) => {
+      return !arr.includes(h.companyId);
+    });
+  }
+
   cancel() {
     this.$emit("cancel", false);
   }
@@ -1079,7 +1098,7 @@ export default class SetMealEdit extends Vue {
   async getInfo() {
     const id = this.data.id;
     if (id) {
-      const res = await get_collectandsend_get__packageId({
+      const res: any = await get_collectandsend_get__packageId({
         packageId: id,
       });
       this.padCommissionEnumOptions = [
@@ -1088,19 +1107,23 @@ export default class SetMealEdit extends Vue {
           name: "否",
         },
         {
-          code: window.sessionStorage.getItem("padCommissionEnum"),
+          code: res.padCommissionEnum,
           name: (this.$root as any).dictAllName(
-            window.sessionStorage.getItem("padCommissionEnum"),
+            res.padCommissionEnum,
             "PadCommissionEnum"
           ),
         },
       ];
       this.info = (this.$tool as any).deepClone(res);
       this.info.timeList = [this.info.startTime, this.info.endTime];
+      this.info.partyAInfoList = [...res.partyAInfoList];
+      this.partyAInfoList = [...res.partyAInfoList];
     } else {
       const item = await get_collectandsend_getBaseTermByTermId__termId({
         termId: this.$route.query.id,
       });
+      this.info.partyAInfoList = [...item.partyAInfoList];
+      this.partyAInfoList = [...item.partyAInfoList];
       this.padCommissionEnumOptions = [
         {
           code: "Veto",
@@ -1120,6 +1143,7 @@ export default class SetMealEdit extends Vue {
       // this.info.busEnum = "DistriModel";
       // 假数据
       // this.info.chargeEnum = "Service";
+      // this.info.chargeEnum = "Agent";
       this.info.colletionandsendMxs = [
         {
           colletionandsendDetails: [
@@ -1187,6 +1211,10 @@ export default class SetMealEdit extends Vue {
 
   // 增加模板
   async addTemplate() {
+    let arr: any = [];
+    arr = this.info.colletionandsendMxs.map((v: any) => v.costTypeEnum);
+    // let serviceArr = arr.filter((v: any) => v === "ServiceFee");
+    let agentArr = arr.filter((v: any) => v === "AgencyFee");
     if (this.info.chargeEnum === "ServiceAndAgent") {
       this.$confirm("请选择增加模板类型?", "提示", {
         confirmButtonText: "代理费模板",
@@ -1198,10 +1226,7 @@ export default class SetMealEdit extends Vue {
         center: true,
         callback: (action) => {
           if (action === "cancel") {
-            let item = this.info.colletionandsendMxs.map(
-              (v: any) => v.costTypeEnum
-            );
-            if (item.includes("ServiceFee")) {
+            if (arr.includes("ServiceFee")) {
               this.$message.warning("服务费已存在,无需再增加");
               return;
             } else {
@@ -1216,15 +1241,19 @@ export default class SetMealEdit extends Vue {
               });
             }
           } else if (action === "confirm") {
-            this.info.colletionandsendMxs.push({
-              colletionandsendDetails: [
-                {
-                  subdivideEnum: this.busEnumType,
-                  transactionEnumOptions: [],
-                },
-              ],
-              costTypeEnum: "AgencyFee",
-            });
+            if (this.partyAInfoList.length > agentArr.length) {
+              this.info.colletionandsendMxs.push({
+                colletionandsendDetails: [
+                  {
+                    subdivideEnum: this.busEnumType,
+                    transactionEnumOptions: [],
+                  },
+                ],
+                costTypeEnum: "AgencyFee",
+              });
+            } else {
+              this.$message.warning("代理费模板已超过甲方个数,无法新增");
+            }
           }
         },
       });
@@ -1244,16 +1273,20 @@ export default class SetMealEdit extends Vue {
           costTypeEnum: "ServiceFee",
         });
       }
-    } else {
-      this.info.colletionandsendMxs.push({
-        colletionandsendDetails: [
-          {
-            subdivideEnum: this.busEnumType,
-            transactionEnumOptions: [],
-          },
-        ],
-        costTypeEnum: "AgencyFee",
-      });
+    } else if (this.info.chargeEnum === "Agent") {
+      if (this.partyAInfoList.length > agentArr.length) {
+        this.info.colletionandsendMxs.push({
+          colletionandsendDetails: [
+            {
+              subdivideEnum: this.busEnumType,
+              transactionEnumOptions: [],
+            },
+          ],
+          costTypeEnum: "AgencyFee",
+        });
+      } else {
+        this.$message.warning("代理费模板已超过甲方个数,无法新增");
+      }
     }
   }
 
@@ -1321,13 +1354,15 @@ export default class SetMealEdit extends Vue {
   }
 
   // 根据合同类型获取客户类型
-  async contractEnumChange(data: any) {
-    const item = await post_dict_getAllByType({
+  async contractEnumChange(row: any) {
+    row.transactionEnum = "";
+    let item: any = [];
+    item = await post_dict_getAllByType({
       type: "TransactionEnum",
-      tag: data.contractEnum,
+      tag: row.contractEnum,
       valid: "Valid",
     });
-    data.transactionEnumOptions = item.map((v: any) => ({
+    row.transactionEnumOptions = item.map((v: any) => ({
       code: v.code,
       name: v.name,
     }));
