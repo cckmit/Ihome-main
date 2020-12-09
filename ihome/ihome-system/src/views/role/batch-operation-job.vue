@@ -15,19 +15,23 @@
     :close-on-press-escape="false"
     :before-close="cancel"
     width="800px"
-    style="text-align: left;"
+    style="text-align: left"
     class="dialog"
     top="50px"
   >
     <div>
-      <div style="text-align:right;">
+      <div style="text-align: right">
         <el-input
-          style="width:300px;"
+          style="width: 300px"
           placeholder="名称 编码"
           class="input-with-select"
           v-model="queryPageParameters.key"
         >
-          <el-button slot="append" icon="el-icon-search" @click="getListMixin()"></el-button>
+          <el-button
+            slot="append"
+            icon="el-icon-search"
+            @click="getListMixin()"
+          ></el-button>
         </el-input>
       </div>
       <br />

@@ -4,7 +4,7 @@
  * @Author: zyc
  * @Date: 2020-06-30 09:21:17
  * @LastEditors: zyc
- * @LastEditTime: 2020-12-09 14:51:05
+ * @LastEditTime: 2020-12-09 17:54:13
 --> 
 <template>
   <ih-page>
@@ -36,11 +36,11 @@
                 class="width--100"
               >
                 <el-option
-                    v-for="item in $root.dictAllList('UserAccountType')"
-                    :key="item.code"
-                    :label="item.name"
-                    :value="item.code"
-                  ></el-option>
+                  v-for="item in $root.dictAllList('UserAccountType')"
+                  :key="item.code"
+                  :label="item.name"
+                  :value="item.code"
+                ></el-option>
               </el-select>
             </el-form-item>
           </el-col>
@@ -73,11 +73,11 @@
                     class="width--100"
                   >
                     <el-option
-                    v-for="item in $root.dictAllList('ValidType')"
-                    :key="item.code"
-                    :label="item.name"
-                    :value="item.code"
-                  ></el-option>
+                      v-for="item in $root.dictAllList('ValidType')"
+                      :key="item.code"
+                      :label="item.name"
+                      :value="item.code"
+                    ></el-option>
                   </el-select>
                 </el-form-item>
               </el-col>
@@ -126,12 +126,12 @@
                     placeholder="请选择雇员状态"
                     class="width--100"
                   >
-                   <el-option
-                    v-for="item in $root.dictAllList('EmployeeStatus')"
-                    :key="item.code"
-                    :label="item.name"
-                    :value="item.code"
-                  ></el-option>
+                    <el-option
+                      v-for="item in $root.dictAllList('EmployeeStatus')"
+                      :key="item.code"
+                      :label="item.name"
+                      :value="item.code"
+                    ></el-option>
                   </el-select>
                 </el-form-item>
               </el-col>
@@ -164,12 +164,12 @@
                     placeholder="请选择人员类型"
                     class="width--100"
                   >
-                     <el-option
-                    v-for="item in $root.dictAllList('EmployeeType')"
-                    :key="item.code"
-                    :label="item.name"
-                    :value="item.code"
-                  ></el-option>
+                    <el-option
+                      v-for="item in $root.dictAllList('EmployeeType')"
+                      :key="item.code"
+                      :label="item.name"
+                      :value="item.code"
+                    ></el-option>
                   </el-select>
                 </el-form-item>
               </el-col>
@@ -181,18 +181,17 @@
                     placeholder="请选择职能类别"
                     class="width--100"
                   >
-                   <el-option
-                    v-for="item in $root.dictAllList('UserWorkType')"
-                    :key="item.code"
-                    :label="item.name"
-                    :value="item.code"
-                  ></el-option>
+                    <el-option
+                      v-for="item in $root.dictAllList('UserWorkType')"
+                      :key="item.code"
+                      :label="item.name"
+                      :value="item.code"
+                    ></el-option>
                   </el-select>
                 </el-form-item>
               </el-col>
             </el-row>
-                 <el-row>
-            
+            <el-row>
               <el-col :span="8">
                 <el-form-item label="用户类别">
                   <el-select
@@ -201,12 +200,12 @@
                     placeholder="请选择用户类别"
                     class="width--100"
                   >
-                     <el-option
-                    v-for="item in $root.dictAllList('UserType')"
-                    :key="item.code"
-                    :label="item.name"
-                    :value="item.code"
-                  ></el-option>
+                    <el-option
+                      v-for="item in $root.dictAllList('UserType')"
+                      :key="item.code"
+                      :label="item.name"
+                      :value="item.code"
+                    ></el-option>
                   </el-select>
                 </el-form-item>
               </el-col>
@@ -214,10 +213,11 @@
                 <el-form-item label="权限组织">
                   <SelectOrganizationTree
                     :orgId="queryPageParameters.permissionOrgId"
-                    @callback="(id) => (queryPageParameters.permissionOrgId = id)"
+                    @callback="
+                      (id) => (queryPageParameters.permissionOrgId = id)
+                    "
                   />
                 </el-form-item>
-               
               </el-col>
             </el-row>
           </div>
@@ -275,12 +275,12 @@
         ></el-table-column>
         <el-table-column prop="accountType" label="账号类型" width="120">
           <template slot-scope="scope">{{
-            $root.dictAllName(scope.row.accountType,"UserAccountType" )
+            $root.dictAllName(scope.row.accountType, "UserAccountType")
           }}</template>
         </el-table-column>
-          <el-table-column prop="userType" label="用户类型" width="120">
+        <el-table-column prop="userType" label="用户类型" width="120">
           <template slot-scope="scope">{{
-            $root.dictAllName(scope.row.userType,"UserType" )
+            $root.dictAllName(scope.row.userType, "UserType")
           }}</template>
         </el-table-column>
         <el-table-column
@@ -295,12 +295,12 @@
         ></el-table-column>
         <el-table-column prop="status" label="账号状态" width="120">
           <template slot-scope="scope">{{
-            $root.dictAllName( scope.row.status,"ValidType")
+            $root.dictAllName(scope.row.status, "ValidType")
           }}</template>
         </el-table-column>
         <el-table-column prop="employeeStatus" label="雇员状态">
           <template slot-scope="scope">{{
-            $root.dictAllName(scope.row.employeeStatus,"EmployeeStatus")
+            $root.dictAllName(scope.row.employeeStatus, "EmployeeStatus")
           }}</template>
         </el-table-column>
         <el-table-column
@@ -315,12 +315,12 @@
         ></el-table-column>
         <el-table-column prop="employeeType" label="人员类型">
           <template slot-scope="scope">{{
-            $root.dictAllName( scope.row.employeeType,"EmployeeType")
+            $root.dictAllName(scope.row.employeeType, "EmployeeType")
           }}</template>
         </el-table-column>
         <el-table-column prop="workType" label="职能类别">
           <template slot-scope="scope">{{
-            $root.dictAllName(scope.row.workType,"UserWorkType")
+            $root.dictAllName(scope.row.workType, "UserWorkType")
           }}</template>
         </el-table-column>
         <el-table-column prop="updateUserName" label="修改人"></el-table-column>
@@ -487,12 +487,10 @@ export default class UserList extends Vue {
   };
 
   employmentDateChange(dateArray: any) {
-    console.log(dateArray);
     this.queryPageParameters.employmentDateStart = dateArray[0];
     this.queryPageParameters.employmentDateEnd = dateArray[1];
   }
   leaveDateChange(dateArray: any) {
-    console.log(dateArray);
     this.queryPageParameters.leaveDateStart = dateArray[0];
     this.queryPageParameters.leaveDateEnd = dateArray[1];
   }
@@ -547,8 +545,7 @@ export default class UserList extends Vue {
     this.dialogVisible = true;
   }
 
-  finishJob(data: any) {
-    console.log(data);
+  finishJob() {
     this.search();
   }
 
@@ -564,8 +561,6 @@ export default class UserList extends Vue {
   }
 
   search() {
-    console.log(this.queryPageParameters);
-    console.log(this.valuedate);
     this.getListMixin();
   }
 
@@ -579,12 +574,10 @@ export default class UserList extends Vue {
     this.add(scope.row);
   }
   jobRole(scope: any) {
-    console.log(scope);
     this.jobVisibleData = scope.row;
     this.jobVisible = true;
   }
   pOrganization(scope: any) {
-    console.log(scope);
     this.OrganizationJurisdictionData = scope.row;
     this.organizationJurisdictionVisible = true;
   }
@@ -603,7 +596,6 @@ export default class UserList extends Vue {
     }
   }
   async locking(scope: any) {
-    console.log(scope);
     try {
       await this.$confirm("是否确定锁定用户?", "提示");
       await post_user_lock__id({ id: scope.row.id });
@@ -618,7 +610,6 @@ export default class UserList extends Vue {
     }
   }
   async activation(scope: any) {
-    console.log(scope);
     try {
       await this.$confirm("是否确定激活用户?", "提示");
       await post_user_activate__id({ id: scope.row.id });
@@ -633,7 +624,6 @@ export default class UserList extends Vue {
     }
   }
   async resetPassword(scope: any) {
-    console.log(scope);
     try {
       await this.$confirm("是否确定重置密码?", "提示");
       const res = await post_user_resetPassword__id({ id: scope.row.id });
@@ -649,12 +639,10 @@ export default class UserList extends Vue {
       this.$message.warning("请先选择数据");
     }
   }
-  finishCopyUser(data: any) {
-    console.log(data);
+  finishCopyUser() {
     this.search();
   }
   handleSelectionChange(val: any) {
-    console.log(val);
     this.copyUserData = val;
   }
 }

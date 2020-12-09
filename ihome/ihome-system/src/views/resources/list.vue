@@ -4,7 +4,7 @@
  * @Author: zyc
  * @Date: 2020-07-06 09:41:43
  * @LastEditors: zyc
- * @LastEditTime: 2020-12-09 14:38:45
+ * @LastEditTime: 2020-12-09 17:55:15
 --> 
 <template>
   <ih-page>
@@ -31,7 +31,10 @@
                   @change="search()"
                 >
                   <el-option
-                    v-for="item in $root.dictAllList('ResourceType','AllowAdjust')"
+                    v-for="item in $root.dictAllList(
+                      'ResourceType',
+                      'AllowAdjust'
+                    )"
                     :key="item.code"
                     :label="item.name"
                     :value="item.code"
@@ -142,9 +145,16 @@
                     <i class="el-icon-arrow-down el-icon--right"></i>
                   </span>
                   <el-dropdown-menu slot="dropdown">
-                    <el-dropdown-item @click.native.prevent="edit(scope)">修改</el-dropdown-item>
-                    <el-dropdown-item @click.native.prevent="remove(scope)">删除</el-dropdown-item>
-                    <el-dropdown-item @click.native.prevent="batchOperationRole(scope)">批量分配角色</el-dropdown-item>
+                    <el-dropdown-item @click.native.prevent="edit(scope)"
+                      >修改</el-dropdown-item
+                    >
+                    <el-dropdown-item @click.native.prevent="remove(scope)"
+                      >删除</el-dropdown-item
+                    >
+                    <el-dropdown-item
+                      @click.native.prevent="batchOperationRole(scope)"
+                      >批量分配角色</el-dropdown-item
+                    >
                   </el-dropdown-menu>
                 </el-dropdown>
               </template>

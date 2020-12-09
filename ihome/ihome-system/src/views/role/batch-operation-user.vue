@@ -4,7 +4,7 @@
  * @Author: zyc
  * @Date: 2020-07-09 16:53:27
  * @LastEditors: zyc
- * @LastEditTime: 2020-12-09 15:45:33
+ * @LastEditTime: 2020-12-09 17:54:48
 --> 
 <template>
   <el-dialog
@@ -15,7 +15,7 @@
     :close-on-press-escape="false"
     :before-close="cancel"
     width="1000px"
-    style="text-align: left;"
+    style="text-align: left"
     class="dialog"
     top="50px"
   >
@@ -24,12 +24,18 @@
         <el-row>
           <el-col :span="8">
             <el-form-item label="登录账号">
-              <el-input placeholder="登录账号" v-model="queryPageParameters.account"></el-input>
+              <el-input
+                placeholder="登录账号"
+                v-model="queryPageParameters.account"
+              ></el-input>
             </el-form-item>
           </el-col>
           <el-col :span="8">
             <el-form-item label="姓名">
-              <el-input placeholder="姓名" v-model="queryPageParameters.name"></el-input>
+              <el-input
+                placeholder="姓名"
+                v-model="queryPageParameters.name"
+              ></el-input>
             </el-form-item>
           </el-col>
           <el-col :span="8">
@@ -41,11 +47,11 @@
                 class="width--100"
               >
                 <el-option
-                v-for="item in $root.dictAllList('UserAccountType')"
-                :key="item.code"
-                :label="item.name"
-                :value="item.code"
-              ></el-option>
+                  v-for="item in $root.dictAllList('UserAccountType')"
+                  :key="item.code"
+                  :label="item.name"
+                  :value="item.code"
+                ></el-option>
               </el-select>
             </el-form-item>
           </el-col>
@@ -53,13 +59,16 @@
         <el-row>
           <el-col :span="8">
             <el-form-item label="手机号码">
-              <el-input placeholder="手机号码" v-model="queryPageParameters.mobilePhone"></el-input>
+              <el-input
+                placeholder="手机号码"
+                v-model="queryPageParameters.mobilePhone"
+              ></el-input>
             </el-form-item>
           </el-col>
           <el-col :span="8">
             <el-form-item label="入职日期">
               <el-date-picker
-                style="width:100%;"
+                style="width: 100%"
                 v-model="queryPageParameters.employmentDate"
                 type="daterange"
                 align="right"
@@ -81,12 +90,12 @@
                 placeholder="请选择状态"
                 class="width--100"
               >
-                 <el-option
-                    v-for="item in $root.dictAllList('ValidType')"
-                    :key="item.code"
-                    :label="item.name"
-                    :value="item.code"
-                  ></el-option>
+                <el-option
+                  v-for="item in $root.dictAllList('ValidType')"
+                  :key="item.code"
+                  :label="item.name"
+                  :value="item.code"
+                ></el-option>
               </el-select>
             </el-form-item>
           </el-col>
@@ -101,12 +110,12 @@
                 placeholder="请选择状态"
                 class="width--100"
               >
-                 <el-option
-                v-for="item in $root.dictAllList('EmployeeStatus')"
-                :key="item.code"
-                :label="item.name"
-                :value="item.code"
-              ></el-option>
+                <el-option
+                  v-for="item in $root.dictAllList('EmployeeStatus')"
+                  :key="item.code"
+                  :label="item.name"
+                  :value="item.code"
+                ></el-option>
               </el-select>
             </el-form-item>
           </el-col>
@@ -125,22 +134,22 @@
             </el-form-item>
           </el-col>
           <el-col :span="8">
-             <el-form-item label="用户类别">
-                  <el-select
-                    v-model="queryPageParameters.userType"
-                    clearable
-                    placeholder="请选择用户类别"
-                    class="width--100"
-                   :disabled="true"
-                  >
-                     <el-option
-                    v-for="item in $root.dictAllList('UserType')"
-                    :key="item.code"
-                    :label="item.name"
-                    :value="item.code"
-                  ></el-option>
-                  </el-select>
-                </el-form-item>
+            <el-form-item label="用户类别">
+              <el-select
+                v-model="queryPageParameters.userType"
+                clearable
+                placeholder="请选择用户类别"
+                class="width--100"
+                :disabled="true"
+              >
+                <el-option
+                  v-for="item in $root.dictAllList('UserType')"
+                  :key="item.code"
+                  :label="item.name"
+                  :value="item.code"
+                ></el-option>
+              </el-select>
+            </el-form-item>
           </el-col>
         </el-row>
         <el-row>
@@ -162,19 +171,24 @@
         <el-table-column type="index" label="序号" width="50"></el-table-column>
         <el-table-column prop="name" label="姓名"></el-table-column>
         <el-table-column prop="account" label="登录账号"></el-table-column>
-         <el-table-column prop="employeeStatus" label="用户类别">
-          <template
-            slot-scope="scope"
-          >{{ $root.dictAllName(scope.row.userType,"UserType")}}</template>
+        <el-table-column prop="employeeStatus" label="用户类别">
+          <template slot-scope="scope">{{
+            $root.dictAllName(scope.row.userType, "UserType")
+          }}</template>
         </el-table-column>
-        <el-table-column prop="employmentDate" label="入职日期"></el-table-column>
+        <el-table-column
+          prop="employmentDate"
+          label="入职日期"
+        ></el-table-column>
         <el-table-column prop="employeeStatus" label="雇员状态">
-          <template
-            slot-scope="scope"
-          >{{ $root.dictAllName(scope.row.employeeStatus,"EmployeeStatus")}}</template>
+          <template slot-scope="scope">{{
+            $root.dictAllName(scope.row.employeeStatus, "EmployeeStatus")
+          }}</template>
         </el-table-column>
         <el-table-column prop="status" label="账号状态">
-          <template slot-scope="scope">{{ $root.dictAllName( scope.row.status,"ValidType")}}</template>
+          <template slot-scope="scope">{{
+            $root.dictAllName(scope.row.status, "ValidType")
+          }}</template>
         </el-table-column>
         <el-table-column prop="orgName" label="归属组织"></el-table-column>
       </el-table>
@@ -237,7 +251,7 @@ export default class BatchOperationUser extends Vue {
     permissionOrgId: null,
     status: "Valid",
     workType: null,
-    userType:'Staff',
+    userType: "Staff",
   };
   jobVisibleData: any = null;
   OrganizationJurisdictionData: any = null;
@@ -246,7 +260,7 @@ export default class BatchOperationUser extends Vue {
     total: 0,
     list: [],
   };
-  
+
   props = {
     // 配置项（必选）
     value: "id",

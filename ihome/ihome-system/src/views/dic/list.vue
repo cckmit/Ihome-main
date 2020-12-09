@@ -4,7 +4,7 @@
  * @Author: zyc
  * @Date: 2020-11-24 10:49:12
  * @LastEditors: zyc
- * @LastEditTime: 2020-12-09 17:41:27
+ * @LastEditTime: 2020-12-09 17:56:35
 -->
 <!--
  * @Description: 数据字典列表
@@ -20,177 +20,181 @@
       <el-row>
         <LeftRightContainer :leftHeight="pageHeight" :leftWidth="400">
           <template slot="left">
-          <div class="dict-list-left">
-          <el-row type="flex" justify="space-between" class="search-box">
-            <el-col :span="6" class="text-left">
-              <el-button
-                type="success"
-                size="small"
-                class="add-button"
-                @click="handleAddDicType()"
-                >添加</el-button
-              >
-            </el-col>
-            <el-col :span="18">
-              <el-input
-                placeholder="编码、名称"
-                v-model="dicTypeSearch"
-                clearable
-                size="small"
-                @keyup.enter.native="getAllByType(dicTypeSearch)"
-              >
-                <el-button
-                  slot="append"
-                  style="width: 50px"
-                  icon="el-icon-search"
-                  @click="getAllByType(dicTypeSearch)"
-                ></el-button>
-              </el-input>
-            </el-col>
-          </el-row>
-          <el-row class="padding-top-10">
-            <ul
-              class="dict-type-list text-left"
-              :style="{ maxHeight: pageHeight+'px' }"
-            >
-              <template v-for="(item, index) in dictTypeList">
-                <li
-                  :key="item.id"
-                  :class="{ active: activeIndex === index }"
-                  @click.stop="handleActive(index)"
-                >
-                  <div class="dict-type-title" :title="item.name">
-                    {{ `${item.code}·${item.name}` }}
-                  </div>
-                  <div class="setting">
-                    <el-link type="primary" @click.stop="handleCopy(item)"
-                      >复制code</el-link
-                    >
-                    <el-link
-                      type="primary"
-                      class="margin-left-10"
-                      @click.stop="handleEditDicType(item)"
-                      >修改</el-link
-                    >
-                    <el-link
-                      type="danger"
-                      class="margin-left-10"
-                      @click.stop="removeDicType(item, index)"
-                      >删除</el-link
-                    >
-                  </div>
-                </li>
-              </template>
-            </ul>
-          </el-row>
-        </div>
-          </template>
-           <template slot="right">
-                <el-col :span="24" class="padding-left-10">
-          <el-row>
-            <el-col :span="4" class="text-left">
-              <el-button type="success" @click="handleAddDic()"
-                >添加字典项</el-button
-              >
-            </el-col>
-            <el-col :span="20" class="text-right">
-              <el-input
-                class="width-250"
-                placeholder="编码、名称或者标签"
-                v-model="dictSearch"
-                clearable
-                @keyup.enter.native="searchDictBykey(dictSearch)"
-              ></el-input>
-              <el-button
-                class="margin-left-10"
-                type="primary"
-                @click="searchDictBykey(dictSearch)"
-                >查询</el-button
-              >
-            </el-col>
-          </el-row>
-          <el-row>
-            <br />
-            <el-table class="ih-table" :data="dictList" :height="pageHeight+'px'">
-              <el-table-column
-                type="index"
-                width="55px"
-                align="center"
-                label="序号"
-                fixed
-              ></el-table-column>
-              <el-table-column
-                label="名称"
-                prop="name"
-                min-width="155"
-                fixed
-              ></el-table-column>
-              <el-table-column
-                label="编码"
-                prop="code"
-                min-width="135"
-              ></el-table-column>
-              <el-table-column
-                label="类型code"
-                prop="type"
-                min-width="175"
-              ></el-table-column>
-
-              <el-table-column label="子类型" prop="subType"></el-table-column>
-              <el-table-column label="标签" prop="tag"></el-table-column>
-              <el-table-column
-                label="顺序"
-                prop="seq"
-                width="80"
-              ></el-table-column>
-              <el-table-column label="状态" prop="valid" width="80">
-                <template v-slot="{ row }">
-                  {{ $root.dictAllName(row.valid, "ValidType") }}
-                </template>
-              </el-table-column>
-              <el-table-column
-                label="修改时间"
-                prop="updateTime"
-                width="155"
-              ></el-table-column>
-              <el-table-column label="操作" fixed="right" width="120">
-                <template v-slot="{ row, $index }">
-                  <el-link
-                    class="margin-right-10"
-                    type="primary"
-                    @click="handleEditDic(row)"
-                    >修改</el-link
+            <div class="dict-list-left">
+              <el-row type="flex" justify="space-between" class="search-box">
+                <el-col :span="6" class="text-left">
+                  <el-button
+                    type="success"
+                    size="small"
+                    class="add-button"
+                    @click="handleAddDicType()"
+                    >添加</el-button
                   >
-                  <el-dropdown trigger="click">
-                    <span class="el-dropdown-link">
-                      更多
-                      <i class="el-icon-arrow-down el-icon--right"></i>
-                    </span>
-                    <el-dropdown-menu slot="dropdown">
-                      <el-dropdown-item
-                        @click.native.prevent="removeDict(row, $index)"
-                        >删除</el-dropdown-item
+                </el-col>
+                <el-col :span="18">
+                  <el-input
+                    placeholder="编码、名称"
+                    v-model="dicTypeSearch"
+                    clearable
+                    size="small"
+                    @keyup.enter.native="getAllByType(dicTypeSearch)"
+                  >
+                    <el-button
+                      slot="append"
+                      style="width: 50px"
+                      icon="el-icon-search"
+                      @click="getAllByType(dicTypeSearch)"
+                    ></el-button>
+                  </el-input>
+                </el-col>
+              </el-row>
+              <el-row class="padding-top-10">
+                <ul
+                  class="dict-type-list text-left"
+                  :style="{ maxHeight: pageHeight + 'px' }"
+                >
+                  <template v-for="(item, index) in dictTypeList">
+                    <li
+                      :key="item.id"
+                      :class="{ active: activeIndex === index }"
+                      @click.stop="handleActive(index)"
+                    >
+                      <div class="dict-type-title" :title="item.name">
+                        {{ `${item.code}·${item.name}` }}
+                      </div>
+                      <div class="setting">
+                        <el-link type="primary" @click.stop="handleCopy(item)"
+                          >复制code</el-link
+                        >
+                        <el-link
+                          type="primary"
+                          class="margin-left-10"
+                          @click.stop="handleEditDicType(item)"
+                          >修改</el-link
+                        >
+                        <el-link
+                          type="danger"
+                          class="margin-left-10"
+                          @click.stop="removeDicType(item, index)"
+                          >删除</el-link
+                        >
+                      </div>
+                    </li>
+                  </template>
+                </ul>
+              </el-row>
+            </div>
+          </template>
+          <template slot="right">
+            <el-col :span="24" class="padding-left-10">
+              <el-row>
+                <el-col :span="4" class="text-left">
+                  <el-button type="success" @click="handleAddDic()"
+                    >添加字典项</el-button
+                  >
+                </el-col>
+                <el-col :span="20" class="text-right">
+                  <el-input
+                    class="width-250"
+                    placeholder="编码、名称或者标签"
+                    v-model="dictSearch"
+                    clearable
+                    @keyup.enter.native="searchDictBykey(dictSearch)"
+                  ></el-input>
+                  <el-button
+                    class="margin-left-10"
+                    type="primary"
+                    @click="searchDictBykey(dictSearch)"
+                    >查询</el-button
+                  >
+                </el-col>
+              </el-row>
+              <el-row>
+                <br />
+                <el-table
+                  class="ih-table"
+                  :data="dictList"
+                  :height="pageHeight + 'px'"
+                >
+                  <el-table-column
+                    type="index"
+                    width="55px"
+                    align="center"
+                    label="序号"
+                    fixed
+                  ></el-table-column>
+                  <el-table-column
+                    label="名称"
+                    prop="name"
+                    min-width="155"
+                    fixed
+                  ></el-table-column>
+                  <el-table-column
+                    label="编码"
+                    prop="code"
+                    min-width="135"
+                  ></el-table-column>
+                  <el-table-column
+                    label="类型code"
+                    prop="type"
+                    min-width="175"
+                  ></el-table-column>
+
+                  <el-table-column
+                    label="子类型"
+                    prop="subType"
+                  ></el-table-column>
+                  <el-table-column label="标签" prop="tag"></el-table-column>
+                  <el-table-column
+                    label="顺序"
+                    prop="seq"
+                    width="80"
+                  ></el-table-column>
+                  <el-table-column label="状态" prop="valid" width="80">
+                    <template v-slot="{ row }">
+                      {{ $root.dictAllName(row.valid, "ValidType") }}
+                    </template>
+                  </el-table-column>
+                  <el-table-column
+                    label="修改时间"
+                    prop="updateTime"
+                    width="155"
+                  ></el-table-column>
+                  <el-table-column label="操作" fixed="right" width="120">
+                    <template v-slot="{ row, $index }">
+                      <el-link
+                        class="margin-right-10"
+                        type="primary"
+                        @click="handleEditDic(row)"
+                        >修改</el-link
                       >
-                      <el-dropdown-item
-                        @click.native.prevent="switchDict(row, false)"
-                        >停用</el-dropdown-item
-                      >
-                      <el-dropdown-item
-                        @click.native.prevent="switchDict(row, true)"
-                        >启用</el-dropdown-item
-                      >
-                    </el-dropdown-menu>
-                  </el-dropdown>
-                </template>
-              </el-table-column>
-            </el-table>
-          </el-row>
-        </el-col>
-           </template>
-         
-     
+                      <el-dropdown trigger="click">
+                        <span class="el-dropdown-link">
+                          更多
+                          <i class="el-icon-arrow-down el-icon--right"></i>
+                        </span>
+                        <el-dropdown-menu slot="dropdown">
+                          <el-dropdown-item
+                            @click.native.prevent="removeDict(row, $index)"
+                            >删除</el-dropdown-item
+                          >
+                          <el-dropdown-item
+                            @click.native.prevent="switchDict(row, false)"
+                            >停用</el-dropdown-item
+                          >
+                          <el-dropdown-item
+                            @click.native.prevent="switchDict(row, true)"
+                            >启用</el-dropdown-item
+                          >
+                        </el-dropdown-menu>
+                      </el-dropdown>
+                    </template>
+                  </el-table-column>
+                </el-table>
+              </el-row>
+            </el-col>
+          </template>
         </LeftRightContainer>
-       
       </el-row>
     </template>
     <!-- 字典类型dialog -->
@@ -238,7 +242,7 @@ import {
 
 import DictType from "./dialog/dictType.vue";
 import DictItem from "./dialog/dictItem.vue";
-import LeftRightContainer from '../../components/LeftRightContainer.vue'
+import LeftRightContainer from "../../components/LeftRightContainer.vue";
 
 @Component({
   components: { DictType, DictItem, LeftRightContainer },
@@ -268,7 +272,8 @@ export default class DicList extends Vue {
   private get pageHeight() {
     let h =
       (document.documentElement.clientHeight || document.body.clientHeight) -
-      (90 + 90) -50 ;
+      (90 + 90) -
+      50;
     return h;
   }
 
@@ -348,13 +353,13 @@ export default class DicList extends Vue {
    * @param {number} index
    */
   private handleActive(index: number): void {
-    if(this.activeIndex===index){
-        this.activeIndex=null;
-       this.dictList=[];
-      }else{
-         this.activeIndex = index;
-         this.getDictAll();
-      }
+    if (this.activeIndex === index) {
+      this.activeIndex = null;
+      this.dictList = [];
+    } else {
+      this.activeIndex = index;
+      this.getDictAll();
+    }
   }
   /**
    * @description: 新增字典类型弹窗
@@ -394,16 +399,15 @@ export default class DicList extends Vue {
     if (this.activeIndex !== null) {
       dictType = this.dictTypeList[this.activeIndex].code;
     }
-    if(dictType||this.dictSearch){
-    this.dictList = await post_dict_getAllDictItemByType({
-          type: dictType,
-          key: this.dictSearch,
-          valid: null,
-        });
-    }else{
-      this.$message.warning('输入关键词或选择左边列表再查询')
+    if (dictType || this.dictSearch) {
+      this.dictList = await post_dict_getAllDictItemByType({
+        type: dictType,
+        key: this.dictSearch,
+        valid: null,
+      });
+    } else {
+      this.$message.warning("输入关键词或选择左边列表再查询");
     }
-    
   }
   /**
    * @description: 复制code

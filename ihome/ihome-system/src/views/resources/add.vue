@@ -40,7 +40,10 @@
               >
                 <el-select v-model="scope.row.type" placeholder="类型">
                   <el-option
-                    v-for="item in $root.dictAllList('ResourceType','AllowAdjust')"
+                    v-for="item in $root.dictAllList(
+                      'ResourceType',
+                      'AllowAdjust'
+                    )"
                     :key="item.code"
                     :label="item.name"
                     :value="item.code"

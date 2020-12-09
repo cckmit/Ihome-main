@@ -13,8 +13,8 @@
       <el-col :span="8">
         <el-row>
           <el-col :span="6" class="ih-info-item-left">用户类型</el-col>
-          <el-col :span="18" class="ih-info-item-right">{{ 
-             $root.dictAllName(info.accountType,"UserAccountType")
+          <el-col :span="18" class="ih-info-item-right">{{
+            $root.dictAllName(info.accountType, "UserAccountType")
           }}</el-col>
         </el-row>
       </el-col>
@@ -66,7 +66,7 @@
         <el-row>
           <el-col :span="6" class="ih-info-item-left">雇员状态</el-col>
           <el-col :span="18" class="ih-info-item-right">{{
-             $root.dictAllName(info.employeeStatus,"EmployeeStatus",)
+            $root.dictAllName(info.employeeStatus, "EmployeeStatus")
           }}</el-col>
         </el-row>
       </el-col>
@@ -92,7 +92,7 @@
         <el-row>
           <el-col :span="6" class="ih-info-item-left">职能类别</el-col>
           <el-col :span="18" class="ih-info-item-right">{{
-            $root.dictAllName(info.workType,"UserWorkType")
+            $root.dictAllName(info.workType, "UserWorkType")
           }}</el-col>
         </el-row>
       </el-col>
@@ -100,7 +100,7 @@
         <el-row>
           <el-col :span="6" class="ih-info-item-left">人员类型</el-col>
           <el-col :span="18" class="ih-info-item-right">{{
-            $root.dictAllName(info.employeeType,"EmployeeType")
+            $root.dictAllName(info.employeeType, "EmployeeType")
           }}</el-col>
         </el-row>
       </el-col>
@@ -130,7 +130,7 @@
         <el-row>
           <el-col :span="6" class="ih-info-item-left">账号状态</el-col>
           <el-col :span="18" class="ih-info-item-right">{{
-            $root.dictAllName(info.status,"ValidType")
+            $root.dictAllName(info.status, "ValidType")
           }}</el-col>
         </el-row>
       </el-col>

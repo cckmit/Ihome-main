@@ -4,7 +4,7 @@
  * @Author: zyc
  * @Date: 2020-07-01 10:32:40
  * @LastEditors: zyc
- * @LastEditTime: 2020-12-09 14:31:00
+ * @LastEditTime: 2020-12-09 17:53:15
 --> 
 
 <template>
@@ -254,7 +254,11 @@ export default class UserAdd extends Vue {
   };
   getProp(type: any) {
     // let list: string[] = ["Ihome", "Juheng", "Poly"];
-    let list: string[] =(this.$root as any).dictAllList('UserAccountType','Staff').map((i: any)=>{return i.code;});
+    let list: string[] = (this.$root as any)
+      .dictAllList("UserAccountType", "Staff")
+      .map((i: any) => {
+        return i.code;
+      });
     let required = list.includes(this.form.accountType);
     if (required) {
       return type;

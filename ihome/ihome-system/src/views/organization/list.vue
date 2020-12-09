@@ -4,7 +4,7 @@
  * @Author: zyc
  * @Date: 2020-07-14 11:26:26
  * @LastEditors: zyc
- * @LastEditTime: 2020-12-09 15:20:39
+ * @LastEditTime: 2020-12-09 17:55:57
 --> 
 <template>
   <ih-page class="organization-list">
@@ -294,7 +294,6 @@ export default class OrganizationList extends Vue {
   // }
 
   info(scope: any) {
-    console.log(scope);
     this.$router.push({
       path: "/resources/info",
       query: { id: scope.row.id },
@@ -302,8 +301,6 @@ export default class OrganizationList extends Vue {
   }
 
   async remove(scope: any) {
-    console.log(scope);
-
     try {
       await this.$confirm("是否确定删除?", "提示");
       await post_org_delete__id({ id: scope.row.id });
