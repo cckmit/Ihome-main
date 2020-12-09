@@ -4,13 +4,13 @@
  * @Author: zyc
  * @Date: 2020-07-07 10:29:16
  * @LastEditors: zyc
- * @LastEditTime: 2020-10-22 16:27:50
+ * @LastEditTime: 2020-12-09 10:05:45
 --> 
  
 <template>
   <el-dialog
     v-dialogDrag
-    title="资源编辑"
+    title="资源修改"
     :visible.sync="dialogVisible"
     :close-on-click-modal="false"
     :close-on-press-escape="false"
@@ -35,10 +35,10 @@
       <el-form-item label="类型" prop="type">
         <el-select v-model="ruleForm.type" placeholder="请选择类型">
           <el-option
-            v-for="(item,index) in  $root.displayList('modular')"
-            :key="index"
-            :label="item.label"
-            :value="item.value"
+           v-for="item in $root.dictAllList('ResourceType','AllowAdjust')"
+                    :key="item.code"
+                    :label="item.name"
+                    :value="item.code"
           ></el-option>
         </el-select>
       </el-form-item>

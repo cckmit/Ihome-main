@@ -4,7 +4,7 @@
  * @Author: zyc
  * @Date: 2020-06-30 09:21:17
  * @LastEditors: zyc
- * @LastEditTime: 2020-11-11 14:47:23
+ * @LastEditTime: 2020-12-09 14:13:22
 --> 
 <template>
   <ih-page>
@@ -28,19 +28,19 @@
             </el-form-item>
           </el-col>
           <el-col :span="8">
-            <el-form-item label="用户类型">
+            <el-form-item label="账号类型">
               <el-select
                 v-model="queryPageParameters.accountType"
                 clearable
-                placeholder="请选择用户类型"
+                placeholder="请选择账号类型"
                 class="width--100"
               >
                 <el-option
-                  v-for="item in $root.displayList('accountType')"
-                  :key="item.value"
-                  :label="item.label"
-                  :value="item.value"
-                ></el-option>
+                    v-for="item in $root.dictAllList('UserAccountType')"
+                    :key="item.code"
+                    :label="item.name"
+                    :value="item.code"
+                  ></el-option>
               </el-select>
             </el-form-item>
           </el-col>
@@ -73,11 +73,11 @@
                     class="width--100"
                   >
                     <el-option
-                      v-for="item in $root.displayList('accountStatus')"
-                      :key="item.value"
-                      :label="item.label"
-                      :value="item.value"
-                    ></el-option>
+                    v-for="item in $root.dictAllList('ValidType')"
+                    :key="item.code"
+                    :label="item.name"
+                    :value="item.code"
+                  ></el-option>
                   </el-select>
                 </el-form-item>
               </el-col>
@@ -126,12 +126,12 @@
                     placeholder="请选择雇员状态"
                     class="width--100"
                   >
-                    <el-option
-                      v-for="item in $root.displayList('employeeStatus')"
-                      :key="item.value"
-                      :label="item.label"
-                      :value="item.value"
-                    ></el-option>
+                   <el-option
+                    v-for="item in $root.dictAllList('EmployeeStatus')"
+                    :key="item.code"
+                    :label="item.name"
+                    :value="item.code"
+                  ></el-option>
                   </el-select>
                 </el-form-item>
               </el-col>
@@ -164,12 +164,12 @@
                     placeholder="请选择人员类型"
                     class="width--100"
                   >
-                    <el-option
-                      v-for="item in $root.displayList('employeeType')"
-                      :key="item.value"
-                      :label="item.label"
-                      :value="item.value"
-                    ></el-option>
+                     <el-option
+                    v-for="item in $root.dictAllList('EmployeeType')"
+                    :key="item.code"
+                    :label="item.name"
+                    :value="item.code"
+                  ></el-option>
                   </el-select>
                 </el-form-item>
               </el-col>
@@ -181,14 +181,43 @@
                     placeholder="请选择职能类别"
                     class="width--100"
                   >
-                    <el-option
-                      v-for="item in $root.displayList('workType')"
-                      :key="item.value"
-                      :label="item.label"
-                      :value="item.value"
-                    ></el-option>
+                   <el-option
+                    v-for="item in $root.dictAllList('UserWorkType')"
+                    :key="item.code"
+                    :label="item.name"
+                    :value="item.code"
+                  ></el-option>
                   </el-select>
                 </el-form-item>
+              </el-col>
+            </el-row>
+                 <el-row>
+            
+              <el-col :span="8">
+                <el-form-item label="用户类别">
+                  <el-select
+                    v-model="queryPageParameters.userType"
+                    clearable
+                    placeholder="请选择用户类别"
+                    class="width--100"
+                  >
+                     <el-option
+                    v-for="item in $root.dictAllList('UserType')"
+                    :key="item.code"
+                    :label="item.name"
+                    :value="item.code"
+                  ></el-option>
+                  </el-select>
+                </el-form-item>
+              </el-col>
+              <el-col :span="8">
+                <el-form-item label="权限组织">
+                  <SelectOrganizationTree
+                    :orgId="queryPageParameters.permissionOrgId"
+                    @callback="(id) => (queryPageParameters.permissionOrgId = id)"
+                  />
+                </el-form-item>
+               
               </el-col>
             </el-row>
           </div>
@@ -244,9 +273,14 @@
           label="手机号码"
           width="120"
         ></el-table-column>
-        <el-table-column prop="accountType" label="用户类型" width="120">
+        <el-table-column prop="accountType" label="账号类型" width="120">
           <template slot-scope="scope">{{
-            $root.displayName("accountType", scope.row.accountType)
+            $root.dictAllName(scope.row.accountType,"UserAccountType" )
+          }}</template>
+        </el-table-column>
+          <el-table-column prop="userType" label="用户类型" width="120">
+          <template slot-scope="scope">{{
+            $root.dictAllName(scope.row.userType,"UserType" )
           }}</template>
         </el-table-column>
         <el-table-column
@@ -261,12 +295,12 @@
         ></el-table-column>
         <el-table-column prop="status" label="账号状态" width="120">
           <template slot-scope="scope">{{
-            $root.displayName("accountStatus", scope.row.status)
+            $root.dictAllName( scope.row.status,"ValidType")
           }}</template>
         </el-table-column>
         <el-table-column prop="employeeStatus" label="雇员状态">
           <template slot-scope="scope">{{
-            $root.displayName("employeeStatus", scope.row.employeeStatus)
+            $root.dictAllName(scope.row.employeeStatus,"EmployeeStatus")
           }}</template>
         </el-table-column>
         <el-table-column
@@ -281,12 +315,12 @@
         ></el-table-column>
         <el-table-column prop="employeeType" label="人员类型">
           <template slot-scope="scope">{{
-            $root.displayName("employeeType", scope.row.employeeType)
+            $root.dictAllName( scope.row.employeeType,"EmployeeType")
           }}</template>
         </el-table-column>
         <el-table-column prop="workType" label="职能类别">
           <template slot-scope="scope">{{
-            $root.displayName("workType", scope.row.workType)
+            $root.dictAllName(scope.row.workType,"UserWorkType")
           }}</template>
         </el-table-column>
         <el-table-column prop="updateUserName" label="修改人"></el-table-column>
