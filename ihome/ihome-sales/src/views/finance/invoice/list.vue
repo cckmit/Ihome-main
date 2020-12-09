@@ -4,7 +4,7 @@
  * @Author: ywl
  * @Date: 2020-12-08 17:45:05
  * @LastEditors: ywl
- * @LastEditTime: 2020-12-09 16:03:20
+ * @LastEditTime: 2020-12-09 17:06:46
 -->
 <template>
   <IhPage label-width="80px">
@@ -76,7 +76,7 @@
         <el-button type="info">重置</el-button>
         <el-button>批量自动开票</el-button>
         <el-button>批量自动红冲</el-button>
-        <el-button>批量手工红冲</el-button>
+        <el-button @click="redVisble = true">批量手工红冲</el-button>
         <el-button>批量下载发票</el-button>
       </el-row>
     </template>
@@ -182,6 +182,9 @@
     <IhDialog :show="autoVisble">
       <AutoInvoice @cancel="() => (autoVisble = false)" />
     </IhDialog>
+    <IhDialog :show="redVisble">
+      <RedDashed @cancel="() => (redVisble = false)" />
+    </IhDialog>
   </IhPage>
 </template>
 
@@ -190,9 +193,10 @@ import { Component, Vue } from "vue-property-decorator";
 import PaginationMixin from "../../../mixins/pagination";
 import HandmadelInvoice from "./dialog/handmadeInvoice.vue";
 import AutoInvoice from "./dialog/autoInvoice.vue";
+import RedDashed from "./dialog/redDashed.vue";
 
 @Component({
-  components: { HandmadelInvoice, AutoInvoice },
+  components: { HandmadelInvoice, AutoInvoice, RedDashed },
   mixins: [PaginationMixin],
 })
 export default class InvoiceList extends Vue {
@@ -203,5 +207,6 @@ export default class InvoiceList extends Vue {
   };
   dialogVisible = false;
   autoVisble = false;
+  redVisble = false;
 }
 </script>
