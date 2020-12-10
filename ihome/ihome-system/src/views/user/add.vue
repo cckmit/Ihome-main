@@ -3,8 +3,8 @@
  * @version: 
  * @Author: zyc
  * @Date: 2020-07-01 10:32:40
- * @LastEditors: lgf
- * @LastEditTime: 2020-10-09 11:06:12
+ * @LastEditors: zyc
+ * @LastEditTime: 2020-12-09 17:53:15
 --> 
 
 <template>
@@ -24,13 +24,13 @@
       </p>
       <el-row>
         <el-col :span="12">
-          <el-form-item label="用户类型" prop="accountType">
-            <el-select v-model="form.accountType" placeholder="请选择用户类型">
+          <el-form-item label="账号类型" prop="accountType">
+            <el-select v-model="form.accountType" placeholder="请选择账号类型">
               <el-option
-                v-for="item in $root.displayList('accountType')"
-                :key="item.value"
-                :label="item.label"
-                :value="item.value"
+                v-for="item in $root.dictAllList('UserAccountType')"
+                :key="item.code"
+                :label="item.name"
+                :value="item.code"
               ></el-option>
             </el-select>
           </el-form-item>
@@ -110,10 +110,10 @@
               placeholder="请选择职能类别"
             >
               <el-option
-                v-for="item in $root.displayList('workType')"
-                :key="item.value"
-                :label="item.label"
-                :value="item.value"
+                v-for="item in $root.dictAllList('UserWorkType')"
+                :key="item.code"
+                :label="item.name"
+                :value="item.code"
               ></el-option>
             </el-select>
           </el-form-item>
@@ -127,10 +127,10 @@
               placeholder="请选择人员类型"
             >
               <el-option
-                v-for="item in $root.displayList('employeeType')"
-                :key="item.value"
-                :label="item.label"
-                :value="item.value"
+                v-for="item in $root.dictAllList('EmployeeType')"
+                :key="item.code"
+                :label="item.name"
+                :value="item.code"
               ></el-option>
             </el-select>
           </el-form-item>
@@ -151,10 +151,10 @@
               placeholder="请选择雇员状态"
             >
               <el-option
-                v-for="item in $root.displayList('employeeStatus')"
-                :key="item.value"
-                :label="item.label"
-                :value="item.value"
+                v-for="item in $root.dictAllList('EmployeeStatus')"
+                :key="item.code"
+                :label="item.name"
+                :value="item.code"
               ></el-option>
             </el-select>
           </el-form-item>
@@ -197,7 +197,7 @@ export default class UserAdd extends Vue {
   form: any = {
     id: null,
     account: null,
-    accountType: "Ihome",
+    accountType: "Juheng",
     email: null,
     employeeCode: null,
     employeeStatus: "On",
@@ -253,7 +253,12 @@ export default class UserAdd extends Vue {
     ],
   };
   getProp(type: any) {
-    let list: string[] = ["Ihome", "Juheng", "Poly"];
+    // let list: string[] = ["Ihome", "Juheng", "Poly"];
+    let list: string[] = (this.$root as any)
+      .dictAllList("UserAccountType", "Staff")
+      .map((i: any) => {
+        return i.code;
+      });
     let required = list.includes(this.form.accountType);
     if (required) {
       return type;

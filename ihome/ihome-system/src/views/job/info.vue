@@ -4,12 +4,12 @@
  * @Author: zyc
  * @Date: 2020-07-14 09:23:40
  * @LastEditors: zyc
- * @LastEditTime: 2020-07-17 14:18:02
+ * @LastEditTime: 2020-12-09 17:56:18
 --> 
 <template>
   <ih-page>
     <template v-slot:info>
-      <el-tabs type="border-card"   v-model="tabActive">
+      <el-tabs type="border-card" v-model="tabActive">
         <el-tab-pane label="岗位详情" name="1">
           <JobInfoDetails />
         </el-tab-pane>
@@ -27,7 +27,7 @@ import { Component, Vue } from "vue-property-decorator";
 import JobInfoDetails from "./info-tabs/details.vue";
 import JobInfoUser from "./info-tabs/user.vue";
 @Component({
-  components: { JobInfoDetails, JobInfoUser }
+  components: { JobInfoDetails, JobInfoUser },
 })
 export default class JobInfo extends Vue {
   tabActive: any = null;

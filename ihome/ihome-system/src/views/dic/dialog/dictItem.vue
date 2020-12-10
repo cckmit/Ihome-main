@@ -4,7 +4,7 @@
  * @Author: ywl
  * @Date: 2020-11-09 15:15:30
  * @LastEditors: zyc
- * @LastEditTime: 2020-12-07 15:21:58
+ * @LastEditTime: 2020-12-09 17:56:27
 -->
 <template>
   <el-dialog
@@ -34,46 +34,28 @@
           ></el-option>
         </el-select>
       </el-form-item>
-      <el-form-item
-        label="编码"
-        prop="code"
-      >
+      <el-form-item label="编码" prop="code">
         <el-input
           v-model="form.code"
           placeholder="编码中多个单词使用驼峰写法"
         ></el-input>
       </el-form-item>
-      <el-form-item
-        label="名称"
-        prop="name"
-      >
-        <el-input
-          v-model="form.name"
-          placeholder="请输入名称"
-        ></el-input>
+      <el-form-item label="名称" prop="name">
+        <el-input v-model="form.name" placeholder="请输入名称"></el-input>
       </el-form-item>
-      <el-form-item
-        label="子类型"
-        prop="subType"
-      >
+      <el-form-item label="子类型" prop="subType">
         <el-input
           v-model="form.subType"
           placeholder="子类型中多个单词使用驼峰写法"
         ></el-input>
       </el-form-item>
-      <el-form-item
-        label="标签"
-        prop="tag"
-      >
+      <el-form-item label="标签" prop="tag">
         <el-input
           v-model="form.tag"
           placeholder="多个标签使用逗号分隔"
         ></el-input>
       </el-form-item>
-      <el-form-item
-        label="顺序"
-        prop="seq"
-      >
+      <el-form-item label="顺序" prop="seq">
         <el-input-number
           v-model="form.seq"
           :min="1"
@@ -84,10 +66,7 @@
     </el-form>
     <template #footer>
       <el-button @click="cancel()">取 消</el-button>
-      <el-button
-        type="primary"
-        @click="finish()"
-      >确 定</el-button>
+      <el-button type="primary" @click="finish()">确 定</el-button>
     </template>
   </el-dialog>
 </template>

@@ -4,7 +4,7 @@
  * @Author: zyc
  * @Date: 2020-07-09 15:03:17
  * @LastEditors: zyc
- * @LastEditTime: 2020-08-13 11:05:51
+ * @LastEditTime: 2020-12-09 14:56:17
 --> 
 <template>
   <el-dialog
@@ -28,7 +28,7 @@
           placeholder="请选择"
         >
           <el-option
-            v-for="(item,index) in $root.displayList('modular')"
+            v-for="(item,index) in $root.dictAllList('Module')" 
             :key="index"
             :label="item.label"
             :value="item.value"

@@ -4,7 +4,7 @@
  * @Author: ywl
  * @Date: 2020-09-27 16:27:36
  * @LastEditors: ywl
- * @LastEditTime: 2020-12-05 14:42:04
+ * @LastEditTime: 2020-12-10 09:20:33
 -->
 <template>
   <IhPage label-width="80px">
@@ -26,7 +26,7 @@
           <el-col :span="8">
             <el-form-item label="类型">
               <el-select
-                v-model="queryPageParameters.notificationType"
+                v-model="queryPageParameters.notificationTypes"
                 placeholder="请选择类型"
                 clearable
                 class="width--100"
@@ -108,7 +108,7 @@
               <el-col :span="8">
                 <el-form-item label="状态">
                   <el-select
-                    v-model="queryPageParameters.informationStatus"
+                    v-model="queryPageParameters.notificationStatuses"
                     clearable
                     placeholder="请选择状态"
                     class="width--100"
@@ -321,14 +321,14 @@ export default class DiscountList extends Vue {
   public queryPageParameters: any = {
     area: null,
     cycleId: null,
-    informationStatus: null,
+    notificationStatuses: null,
     noticeNo: null,
     ownerMobile: null,
     ownerName: null,
     partyAId: null,
     projectId: null,
     roomNumberId: null,
-    notificationType: null,
+    notificationTypes: null,
     buyUnit: null,
   };
   private timeList: any = [];
@@ -362,20 +362,33 @@ export default class DiscountList extends Vue {
     Object.assign(this.queryPageParameters, {
       area: null,
       cycleId: null,
-      informationStatus: null,
+      notificationStatuses: null,
       noticeNo: null,
       ownerMobile: null,
       ownerName: null,
       partyAId: null,
       projectId: null,
       roomNumberId: null,
-      notificationType: null,
+      notificationTypes: null,
       buyUnit: null,
     });
     this.timeList = [];
   }
   public async getListMixin(): Promise<void> {
-    this.resPageInfo = await post_notice_list(this.queryPageParameters);
+    let notificationStatuses: any, notificationTypes: any;
+    if (this.queryPageParameters.notificationStatuses) {
+      notificationStatuses = [this.queryPageParameters.notificationStatuses];
+    }
+    if (this.queryPageParameters.notificationTypes) {
+      notificationTypes = [this.queryPageParameters.notificationTypes];
+    }
+    console.log(notificationStatuses, notificationTypes);
+
+    this.resPageInfo = await post_notice_list({
+      ...this.queryPageParameters,
+      notificationStatuses,
+      notificationTypes,
+    });
   }
 
   created() {

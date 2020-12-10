@@ -4,7 +4,7 @@
  * @Author: zyc
  * @Date: 2020-07-06 17:16:31
  * @LastEditors: zyc
- * @LastEditTime: 2020-10-22 16:32:04
+ * @LastEditTime: 2020-12-09 10:07:11
 --> 
 <template>
   <el-dialog
@@ -40,10 +40,13 @@
               >
                 <el-select v-model="scope.row.type" placeholder="类型">
                   <el-option
-                    v-for="(item, index) in $root.displayList('modular')"
-                    :key="index"
-                    :label="item.label"
-                    :value="item.value"
+                    v-for="item in $root.dictAllList(
+                      'ResourceType',
+                      'AllowAdjust'
+                    )"
+                    :key="item.code"
+                    :label="item.name"
+                    :value="item.code"
                   ></el-option>
                 </el-select>
               </el-form-item>
