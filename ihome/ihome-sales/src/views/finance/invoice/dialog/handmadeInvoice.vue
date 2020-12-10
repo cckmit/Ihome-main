@@ -4,7 +4,7 @@
  * @Author: ywl
  * @Date: 2020-12-08 21:04:03
  * @LastEditors: ywl
- * @LastEditTime: 2020-12-09 15:46:27
+ * @LastEditTime: 2020-12-10 09:50:02
 -->
 <template>
   <el-dialog
@@ -175,6 +175,7 @@ export default class Handadel extends Vue {
     font-size: 25px;
     top: 8px;
     right: -30px;
+    cursor: pointer;
   }
 }
 </style>
