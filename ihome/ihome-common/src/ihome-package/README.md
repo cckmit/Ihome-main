@@ -1,7 +1,8 @@
 
 # ihome-common
-## 版本更新
+## 10
 ```
+v1.1.49 2020-12-07 15:52  事业部下拉框IhSelectPageDivision
 v1.1.49 2020-12-07 17:23  字典全局方法$root.dictAllList加tag参数
 v1.1.48 2020-12-07 15:31  复制文本tool.ts copyText方法
 v1.1.47 2020-12-07 09:25  http.ts 修改，解决登录问题

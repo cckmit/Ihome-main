@@ -4,8 +4,8 @@
  * @version: 
  * @Author: zyc
  * @Date: 2020-10-13 19:06:12
- * @LastEditors: wwq
- * @LastEditTime: 2020-11-11 08:58:11
+ * @LastEditors: zyc
+ * @LastEditTime: 2020-12-10 15:18:23
 -->
 <template>
   <el-dialog
@@ -153,39 +153,34 @@
         label="法定代表人"
         width="180"
       ></el-table-column> -->
-      <el-table-column
-        prop="province"
-        label="业务开展省份"
-        width="180"
-      ></el-table-column>
-      <el-table-column
-        prop="city"
-        label="业务开展城市"
-        width="180"
-      ></el-table-column>
-      <el-table-column
-        prop="cityGrade"
-        label="城市等级"
-        width="180"
-      ></el-table-column>
-      <el-table-column
-        prop="channelGrade"
-        label="渠道等级"
-        width="180"
-      ></el-table-column>
-      <el-table-column
-        prop="special"
-        label="特批入库"
-        width="180"
-      ></el-table-column>
+      <el-table-column prop="province" label="业务开展省份" width="180">
+        <template slot-scope="scope">
+          {{ $root.getAreaName(scope.row.province) }}
+        </template>
+      </el-table-column>
+      <el-table-column prop="city" label="业务开展城市" width="180">
+        <template slot-scope="scope">
+          {{ $root.getAreaName(scope.row.city) }}
+        </template></el-table-column
+      >
+      <el-table-column prop="cityGrade" label="城市等级" width="180">
+        <template slot-scope="scope">
+          {{ $root.dictAllName(scope.row.cityGrade, "CityLevel") }}
+        </template></el-table-column
+      >
+      <el-table-column prop="channelGrade" label="渠道等级" width="180">
+        <template slot-scope="scope">
+          {{ $root.dictAllName(scope.row.channelGrade, "ChannelLevel") }}
+        </template></el-table-column
+      >
+      <el-table-column prop="special" label="特批入库" width="180">
+        <template slot-scope="scope">
+          {{ $root.dictAllName(scope.row.special, "YesOrNoType") }}
+        </template>
+      </el-table-column>
 
-      <!-- <el-table-column label="状态" width="120">
-        <template slot-scope="scope">{{
-          $root.dictAllName(scope.row.status, "ChannelApprovalStatus")
-        }}</template>
-      </el-table-column> -->
       <el-table-column
-        prop="inputUser"
+        prop="inputUserName"
         label="录入人"
         width="180"
       ></el-table-column>

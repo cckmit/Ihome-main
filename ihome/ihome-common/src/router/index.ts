@@ -3,8 +3,8 @@
  * @version: 
  * @Author: zyc
  * @Date: 2020-06-22 11:10:43
- * @LastEditors: ywl
- * @LastEditTime: 2020-10-20 17:07:41
+ * @LastEditors: zyc
+ * @LastEditTime: 2020-12-10 15:46:11
  */
 import Vue from 'vue'
 import VueRouter, { RouteConfig } from 'vue-router'
@@ -61,6 +61,15 @@ const routes: Array<RouteConfig> = [
       title: '下拉框分页Demo'
     }
   },
+  {
+    path: '/selectPageDivision',
+    name: 'selectPageDivision',
+    component: () => import('../views/selectPageDivision.vue'),
+    meta: {
+      title: '下拉框分页Demo'
+    }
+  },
+  
   {
     path: '/tableCheckBox',
     name: 'tableCheckBox',
