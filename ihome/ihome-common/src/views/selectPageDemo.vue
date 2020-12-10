@@ -39,13 +39,15 @@
     <el-form-item label="绑定值为对象">
       <!-- 如果需要绑定值为对象，value-key必须传 -->
       <IhSelectPageUser
-        v-model="form.testInput3"
+        v-model="form.testInput3.id"
+        :searchName="form.testInput3.name"
+        @changeOption="(data) => {form.data = data}"
         class="width-300"
         clearable
         value-key="id"
       >
       </IhSelectPageUser>
-      <span>选中的值：{{form.testInput3}}</span>
+      <span>选中的值：{{form.data}}</span>
     </el-form-item>
     <el-form-item label="测试继承">
       <!-- searchPlaceholder：搜索框提示语, isKeyUp：设置回车搜索 -->
@@ -62,6 +64,9 @@
       >
       </SelectPageByOther>
     </el-form-item>
+    <el-form-item label="事业部">
+      <IhSelectPageDivision v-model="form.testInput5"></IhSelectPageDivision>
+    </el-form-item>
   </el-form>
 </template>
 
@@ -71,10 +76,13 @@ import { Component, Vue } from "vue-property-decorator";
 import { post_company_getAll } from "@/api/system/index";
 
 import SelectPageByOther from "./components/SelectPageByOther.vue";
-import { IhSelectPageUser } from "../ihome-package/ui/packages/select-page/index";
+import {
+  IhSelectPageUser,
+  IhSelectPageDivision,
+} from "../ihome-package/ui/packages/select-page/index";
 
 @Component({
-  components: { SelectPageByOther, IhSelectPageUser },
+  components: { SelectPageByOther, IhSelectPageUser, IhSelectPageDivision },
 })
 export default class SelectPageDemo extends Vue {
   form = {
@@ -86,6 +94,8 @@ export default class SelectPageDemo extends Vue {
       name: "张三",
     },
     testInput4: "",
+    testInput5: "",
+    data: null,
   };
   private rules = {};
 

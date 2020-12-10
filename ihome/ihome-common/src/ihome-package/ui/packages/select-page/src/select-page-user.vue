@@ -1,21 +1,21 @@
 <!--
- * @Description: 事业部下拉分页
+ * @Description: file content
  * @version: 
  * @Author: ywl
- * @Date: 2020-10-20 15:03:13
+ * @Date: 2020-12-10 17:01:33
  * @LastEditors: ywl
- * @LastEditTime: 2020-12-10 17:49:29
+ * @LastEditTime: 2020-12-10 17:33:06
 -->
 <script lang="ts">
 import { Component, Vue, Prop } from "vue-property-decorator";
-import IhSelectPageBase from "./select-page-base.vue";
 
-import { post_org_getList } from "@/api/system/index";
+import { post_user_getList } from "@/api/system/index";
+import IhSelectPageBase from "./select-page-base.vue";
 
 @Component({
   extends: IhSelectPageBase,
 })
-export default class IhSelectPageDivision extends Vue {
+export default class SelectPageByUser extends Vue {
   @Prop({
     default: () => {
       return {
@@ -28,23 +28,19 @@ export default class IhSelectPageDivision extends Vue {
   })
   props?: any;
 
-  filterText = "";
-  optionList: any = [];
   pageInfo: any = {
     total: 0,
     pageNum: 1,
     pageSize: 10,
   };
+  optionList: any = [];
+  filterText = "";
   searchLoad = false;
 
   async getSelectList() {
     this.searchLoad = true;
-    let res = await post_org_getList({
+    let res = await post_user_getList({
       ...this.pageInfo,
-      departmentType: null,
-      orgType: "Department",
-      parentId: null,
-      status: "Valid",
       name: this.filterText,
     });
     this.optionList = res.list;
