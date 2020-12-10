@@ -310,12 +310,6 @@
                 <el-dropdown-item @click.native.prevent="handleRecall(scope)"
                 >撤回
                 </el-dropdown-item>
-                <el-dropdown-item @click.native.prevent="handleReview(scope)"
-                >审核
-                </el-dropdown-item>
-                <el-dropdown-item @click.native.prevent="handleReviewAchieve(scope)"
-                >审核申报业绩
-                </el-dropdown-item>
                 <el-dropdown trigger="click" class="el-dropdown-menu__item" placement="top-start">
                   <span class="el-dropdown-link">
                   补充成交
@@ -336,6 +330,9 @@
                     </el-dropdown-item>
                   </el-dropdown-menu>
                 </el-dropdown>
+                <el-dropdown-item @click.native.prevent="handleReview(scope)"
+                >审核
+                </el-dropdown-item>
                 <el-dropdown-item @click.native.prevent="handleWithdrawalReview(scope)"
                 >撤回审核
                 </el-dropdown-item>
@@ -523,15 +520,6 @@
         query: {
           id: scope.row.id
         }
-      });
-    }
-
-    // 审核申报业绩
-    async handleReviewAchieve(scope: any) {
-      console.log(scope);
-      this.$router.push({
-        path: "/dealReport/add",
-        query: {id: scope.row.id}
       });
     }
 
