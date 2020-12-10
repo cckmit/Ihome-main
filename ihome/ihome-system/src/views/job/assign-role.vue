@@ -4,7 +4,7 @@
  * @Author: zyc
  * @Date: 2020-07-14 10:03:09
  * @LastEditors: zyc
- * @LastEditTime: 2020-12-09 15:39:54
+ * @LastEditTime: 2020-12-10 18:21:55
 --> 
 <template>
   <el-dialog
@@ -91,6 +91,7 @@ export default class JobAddEdit extends Vue {
     });
 
     this.leftData = list;
+    this.rightData = this.data.jobRoleIdList;
   }
 }
 </script>
