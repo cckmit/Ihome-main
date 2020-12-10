@@ -4,7 +4,7 @@
  * @Author: zyc
  * @Date: 2020-06-30 09:21:17
  * @LastEditors: zyc
- * @LastEditTime: 2020-12-09 17:54:13
+ * @LastEditTime: 2020-12-10 10:06:18
 --> 
 <template>
   <ih-page>
@@ -487,12 +487,22 @@ export default class UserList extends Vue {
   };
 
   employmentDateChange(dateArray: any) {
-    this.queryPageParameters.employmentDateStart = dateArray[0];
-    this.queryPageParameters.employmentDateEnd = dateArray[1];
+    if (dateArray) {
+      this.queryPageParameters.employmentDateStart = dateArray[0];
+      this.queryPageParameters.employmentDateEnd = dateArray[1];
+    } else {
+      this.queryPageParameters.employmentDateStart = null;
+      this.queryPageParameters.employmentDateEnd = null;
+    }
   }
   leaveDateChange(dateArray: any) {
-    this.queryPageParameters.leaveDateStart = dateArray[0];
-    this.queryPageParameters.leaveDateEnd = dateArray[1];
+    if (dateArray) {
+      this.queryPageParameters.leaveDateStart = dateArray[0];
+      this.queryPageParameters.leaveDateEnd = dateArray[1];
+    } else {
+      this.queryPageParameters.leaveDateStart = null;
+      this.queryPageParameters.leaveDateEnd = null;
+    }
   }
 
   reset() {
