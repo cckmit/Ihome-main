@@ -553,183 +553,188 @@
         </el-table>
       </el-col>
     </el-row>
-    <p id="anchor-8" class="ih-info-title">对外拆佣</p>
-    <el-row style="padding-left: 20px">
-      <el-col>
-        <div class="add-all-wrapper" v-if="postData.calculation === 'Manual'">
-          <el-button type="success" @click="handleAddCommission">增加拆佣项</el-button>
-        </div>
-        <el-table
-          class="ih-table"
-          show-summary
-          sum-text="合计金额"
-          :summary-method="getCommissionSummaries"
-          :data="postData.commissionInfoList">
-          <el-table-column prop="target" label="拆佣对象" min-width="120">
-            <template slot-scope="scope">
-              <el-select v-model="scope.row.target" placeholder="请选择">
-                <el-option label="公司" value="Company"></el-option>
-                <el-option label="个人" value="Personal"></el-option>
-              </el-select>
-            </template>
-          </el-table-column>
-          <el-table-column prop="commName" label="收款方" min-width="120">
-            <template slot-scope="scope">
-              <el-input placeholder="请选择收款方" readonly v-model="scope.row.commName">
-                <el-button slot="append" icon="el-icon-search" @click.native.prevent="selectCommName"></el-button>
-              </el-input>
-            </template>
-          </el-table-column>
-          <el-table-column prop="feeType" label="费用类型" min-width="120">
-            <template slot-scope="scope">
-              <el-select
-                v-model="scope.row.feeType"
-                clearable
-                placeholder="费用类型"
-                class="width--100">
-                <el-option
-                  v-for="item in $root.dictAllList('FeeType')"
-                  :key="item.code"
-                  :label="item.name"
-                  :value="item.code"
-                ></el-option>
-              </el-select>
-            </template>
-          </el-table-column>
-          <el-table-column prop="partyACustomer" label="费用来源(客户/甲方)" min-width="120">
-            <template slot-scope="scope">
-              <el-select v-model="scope.row.partyACustomer" placeholder="请选择">
-                <el-option label="客户A" value="AA"></el-option>
-                <el-option label="客户B" value="BB"></el-option>
-                <el-option label="甲方A" value="CC"></el-option>
-                <el-option label="甲方B" value="DD"></el-option>
-              </el-select>
-            </template>
-          </el-table-column>
-          <el-table-column prop="amount" label="金额" min-width="120">
-            <template slot-scope="scope">
-              <el-input v-model="scope.row.amount" clearable placeholder="金额"/>
-            </template>
-          </el-table-column>
-          <el-table-column prop="remarks" label="备注" min-width="120">
-            <template slot-scope="scope">
-              <el-input v-model="scope.row.remarks" clearable placeholder="备注"/>
-            </template>
-          </el-table-column>
-          <el-table-column fixed="right" label="操作" width="100">
-            <template slot-scope="scope">
-              <el-link
-                class="margin-right-10"
-                type="primary"
-                @click.native.prevent="deleteAdd(scope, 'broker')"
-              >删除
-              </el-link>
-            </template>
-          </el-table-column>
-        </el-table>
-      </el-col>
-    </el-row>
-    <p id="anchor-9" class="ih-info-title">平台费用</p>
-    <div class="ih-type-wrapper">
-      <div class="title">总包</div>
-      <el-button type="success" @click="handleAddAchieve('total')">新增总包业绩</el-button>
-    </div>
-    <el-row style="padding-left: 20px">
-      <el-col>
-        <el-table
-          class="ih-table"
-          show-summary
-          sum-text="合计金额"
-          :summary-method="getAchieveSummaries"
-          :data="postData.achieveTotalBagList">
-          <el-table-column prop="roleType" label="角色类型" min-width="120"></el-table-column>
-          <el-table-column prop="roleAchieveCap" label="角色业绩上限" min-width="150"></el-table-column>
-          <el-table-column prop="corporateAchieve" label="公司业绩" min-width="150"></el-table-column>
-          <el-table-column prop="corporateAchieveRatio" label="公司业绩比例（%）" min-width="150"></el-table-column>
-          <el-table-column prop="commFees" label="拆佣金额" min-width="150"></el-table-column>
-          <el-table-column prop="commFeesRatio" label="拆佣比例（%）" min-width="150"></el-table-column>
-          <el-table-column prop="rolerName" label="角色人" min-width="150"></el-table-column>
-          <el-table-column prop="belongOrgName" label="店组" min-width="130"></el-table-column>
-          <el-table-column prop="type" label="管理岗" min-width="150">
-            <template slot-scope="scope">
-              <div v-if="scope.row.SupervisorList.length > 0">
-                <div v-for="list in scope.row.SupervisorList" :key="list.id">
-                  <span>{{list.ratio}}%</span>
-                  <span>{{list.manager}}({{list.managerPosition}})</span>
+    <div v-if="currentType !== 'declare'">
+      <div class="divider-padding">
+        <el-divider>业绩分配</el-divider>
+      </div>
+      <p id="anchor-8" class="ih-info-title">对外拆佣</p>
+      <el-row style="padding-left: 20px">
+        <el-col>
+          <div class="add-all-wrapper" v-if="postData.calculation === 'Manual'">
+            <el-button type="success" @click="handleAddCommission">增加拆佣项</el-button>
+          </div>
+          <el-table
+            class="ih-table"
+            show-summary
+            sum-text="合计金额"
+            :summary-method="getCommissionSummaries"
+            :data="postData.commissionInfoList">
+            <el-table-column prop="target" label="拆佣对象" min-width="120">
+              <template slot-scope="scope">
+                <el-select v-model="scope.row.target" placeholder="请选择">
+                  <el-option label="公司" value="Company"></el-option>
+                  <el-option label="个人" value="Personal"></el-option>
+                </el-select>
+              </template>
+            </el-table-column>
+            <el-table-column prop="commName" label="收款方" min-width="120">
+              <template slot-scope="scope">
+                <el-input placeholder="请选择收款方" readonly v-model="scope.row.commName">
+                  <el-button slot="append" icon="el-icon-search" @click.native.prevent="selectCommName"></el-button>
+                </el-input>
+              </template>
+            </el-table-column>
+            <el-table-column prop="feeType" label="费用类型" min-width="120">
+              <template slot-scope="scope">
+                <el-select
+                  v-model="scope.row.feeType"
+                  clearable
+                  placeholder="费用类型"
+                  class="width--100">
+                  <el-option
+                    v-for="item in $root.dictAllList('FeeType')"
+                    :key="item.code"
+                    :label="item.name"
+                    :value="item.code"
+                  ></el-option>
+                </el-select>
+              </template>
+            </el-table-column>
+            <el-table-column prop="partyACustomer" label="费用来源(客户/甲方)" min-width="120">
+              <template slot-scope="scope">
+                <el-select v-model="scope.row.partyACustomer" placeholder="请选择">
+                  <el-option label="客户A" value="AA"></el-option>
+                  <el-option label="客户B" value="BB"></el-option>
+                  <el-option label="甲方A" value="CC"></el-option>
+                  <el-option label="甲方B" value="DD"></el-option>
+                </el-select>
+              </template>
+            </el-table-column>
+            <el-table-column prop="amount" label="金额" min-width="120">
+              <template slot-scope="scope">
+                <el-input v-model="scope.row.amount" clearable placeholder="金额"/>
+              </template>
+            </el-table-column>
+            <el-table-column prop="remarks" label="备注" min-width="120">
+              <template slot-scope="scope">
+                <el-input v-model="scope.row.remarks" clearable placeholder="备注"/>
+              </template>
+            </el-table-column>
+            <el-table-column fixed="right" label="操作" width="100">
+              <template slot-scope="scope">
+                <el-link
+                  class="margin-right-10"
+                  type="primary"
+                  @click.native.prevent="deleteAdd(scope, 'broker')"
+                >删除
+                </el-link>
+              </template>
+            </el-table-column>
+          </el-table>
+        </el-col>
+      </el-row>
+      <p id="anchor-9" class="ih-info-title">平台费用</p>
+      <div class="ih-type-wrapper">
+        <div class="title">总包</div>
+        <el-button type="success" @click="handleAddAchieve('total')">新增总包业绩</el-button>
+      </div>
+      <el-row style="padding-left: 20px">
+        <el-col>
+          <el-table
+            class="ih-table"
+            show-summary
+            sum-text="合计金额"
+            :summary-method="getAchieveSummaries"
+            :data="postData.achieveTotalBagList">
+            <el-table-column prop="roleType" label="角色类型" min-width="120"></el-table-column>
+            <el-table-column prop="roleAchieveCap" label="角色业绩上限" min-width="150"></el-table-column>
+            <el-table-column prop="corporateAchieve" label="公司业绩" min-width="150"></el-table-column>
+            <el-table-column prop="corporateAchieveRatio" label="公司业绩比例（%）" min-width="150"></el-table-column>
+            <el-table-column prop="commFees" label="拆佣金额" min-width="150"></el-table-column>
+            <el-table-column prop="commFeesRatio" label="拆佣比例（%）" min-width="150"></el-table-column>
+            <el-table-column prop="rolerName" label="角色人" min-width="150"></el-table-column>
+            <el-table-column prop="belongOrgName" label="店组" min-width="130"></el-table-column>
+            <el-table-column prop="type" label="管理岗" min-width="150">
+              <template slot-scope="scope">
+                <div v-if="scope.row.SupervisorList.length > 0">
+                  <div v-for="list in scope.row.SupervisorList" :key="list.id">
+                    <span>{{list.ratio}}%</span>
+                    <span>{{list.manager}}({{list.managerPosition}})</span>
+                  </div>
                 </div>
-              </div>
-              <div v-else>暂无信息</div>
-            </template>
-          </el-table-column>
-          <el-table-column fixed="right" label="操作" width="130">
-            <template slot-scope="scope">
-              <el-link
-                class="margin-right-10"
-                type="error"
-                @click.native.prevent="deleteAchieveTotalBag(scope)"
-              >删除
-              </el-link>
-              <el-link
-                class="margin-right-10"
-                type="primary"
-                @click.native.prevent="editAchieveTotalBag(scope)"
-              >修改
-              </el-link>
-            </template>
-          </el-table-column>
-        </el-table>
-      </el-col>
-    </el-row>
-    <div class="ih-type-wrapper">
-      <div class="title">分销</div>
-      <el-button type="success" @click="handleAddAchieve('distri')">新增分销业绩</el-button>
-    </div>
-    <el-row style="padding-left: 20px">
-      <el-col>
-        <el-table
-          class="ih-table"
-          show-summary
-          sum-text="合计金额"
-          :summary-method="getAchieveSummaries"
-          :data="postData.achieveDistriList">
-          <el-table-column prop="roleType" label="角色类型" min-width="120"></el-table-column>
-          <el-table-column prop="roleAchieveCap" label="角色业绩上限" min-width="120"></el-table-column>
-          <el-table-column prop="corporateAchieve" label="公司业绩" min-width="120"></el-table-column>
-          <el-table-column prop="corporateAchieveRatio" label="公司业绩比例（%）" min-width="120"></el-table-column>
-          <el-table-column prop="commFees" label="拆佣金额" min-width="150"></el-table-column>
-          <el-table-column prop="commFeesRatio" label="拆佣比例（%）" min-width="150"></el-table-column>
-          <el-table-column prop="rolerName" label="角色人" min-width="150"></el-table-column>
-          <el-table-column prop="belongOrgName" label="店组" min-width="150"></el-table-column>
-          <el-table-column prop="type" label="管理岗" min-width="150">
-            <template slot-scope="scope">
-              <div v-if="scope.row.SupervisorList.length > 0">
-                <div v-for="list in scope.row.SupervisorList" :key="list.id">
-                  <span>{{list.ratio}}%</span>
-                  <span>{{list.manager}}({{list.managerPosition}})</span>
+                <div v-else>暂无信息</div>
+              </template>
+            </el-table-column>
+            <el-table-column fixed="right" label="操作" width="130">
+              <template slot-scope="scope">
+                <el-link
+                  class="margin-right-10"
+                  type="error"
+                  @click.native.prevent="deleteAchieveTotalBag(scope)"
+                >删除
+                </el-link>
+                <el-link
+                  class="margin-right-10"
+                  type="primary"
+                  @click.native.prevent="editAchieveTotalBag(scope)"
+                >修改
+                </el-link>
+              </template>
+            </el-table-column>
+          </el-table>
+        </el-col>
+      </el-row>
+      <div class="ih-type-wrapper">
+        <div class="title">分销</div>
+        <el-button type="success" @click="handleAddAchieve('distri')">新增分销业绩</el-button>
+      </div>
+      <el-row style="padding-left: 20px">
+        <el-col>
+          <el-table
+            class="ih-table"
+            show-summary
+            sum-text="合计金额"
+            :summary-method="getAchieveSummaries"
+            :data="postData.achieveDistriList">
+            <el-table-column prop="roleType" label="角色类型" min-width="120"></el-table-column>
+            <el-table-column prop="roleAchieveCap" label="角色业绩上限" min-width="120"></el-table-column>
+            <el-table-column prop="corporateAchieve" label="公司业绩" min-width="120"></el-table-column>
+            <el-table-column prop="corporateAchieveRatio" label="公司业绩比例（%）" min-width="120"></el-table-column>
+            <el-table-column prop="commFees" label="拆佣金额" min-width="150"></el-table-column>
+            <el-table-column prop="commFeesRatio" label="拆佣比例（%）" min-width="150"></el-table-column>
+            <el-table-column prop="rolerName" label="角色人" min-width="150"></el-table-column>
+            <el-table-column prop="belongOrgName" label="店组" min-width="150"></el-table-column>
+            <el-table-column prop="type" label="管理岗" min-width="150">
+              <template slot-scope="scope">
+                <div v-if="scope.row.SupervisorList.length > 0">
+                  <div v-for="list in scope.row.SupervisorList" :key="list.id">
+                    <span>{{list.ratio}}%</span>
+                    <span>{{list.manager}}({{list.managerPosition}})</span>
+                  </div>
                 </div>
-              </div>
-              <div v-else>暂无信息</div>
-            </template>
-          </el-table-column>
-          <el-table-column fixed="right" label="操作" width="130">
-            <template slot-scope="scope">
-              <el-link
-                class="margin-right-10"
-                type="error"
-                @click.native.prevent="deleteAchieveDistri(scope)"
-              >删除
-              </el-link>
-              <el-link
-                class="margin-right-10"
-                type="primary"
-                @click.native.prevent="editAchieveDistri(scope)"
-              >修改
-              </el-link>
-            </template>
-          </el-table-column>
-        </el-table>
-      </el-col>
-    </el-row>
+                <div v-else>暂无信息</div>
+              </template>
+            </el-table-column>
+            <el-table-column fixed="right" label="操作" width="130">
+              <template slot-scope="scope">
+                <el-link
+                  class="margin-right-10"
+                  type="error"
+                  @click.native.prevent="deleteAchieveDistri(scope)"
+                >删除
+                </el-link>
+                <el-link
+                  class="margin-right-10"
+                  type="primary"
+                  @click.native.prevent="editAchieveDistri(scope)"
+                >修改
+                </el-link>
+              </template>
+            </el-table-column>
+          </el-table>
+        </el-col>
+      </el-row>
+    </div>
     <div class="text-center btn-top">
       <el-button type="primary" @click="save()">保存</el-button>
       <el-button type="success" @click="save()">提交</el-button>
@@ -842,6 +847,7 @@
       AgentCompanyList, SelectReportInfo, EditDealAchieve},
   })
   export default class DealReportAdd extends Vue {
+    currentType: any = null; // 用来区别是文员岗(add)位还是案场岗位(declare)
     postData: any = {
       dealCode: null,
       cycleId: null,
@@ -1012,13 +1018,9 @@
           vo.fileList = []
         })
       }
-      this.id = this.$route.query.id;
-      if (this.id) {
-        const res: any = await get_achieveScaleScheme_get__id({id: this.id});
-        this.postData = res;
-      } else {
-        // 录入日期
-        this.postData.entryDate = new Date();
+      // 根据岗位来判断显示的新增页面
+      if (this.$route.query.btnType) {
+        this.currentType = this.$route.query.btnType;
       }
       // 锚点设置默认值
       this.navList = (this as any).$tool.deepClone(this.defaultNavList);
@@ -1026,6 +1028,20 @@
         this.navList = this.navList.filter((list: any) => {
           return list.id !== 5
         })
+      }
+      // debugger
+      if (this.currentType === 'declare') {
+        this.navList = this.navList.filter((list: any) => {
+          return (list.id !== 8 && list.id !== 9)
+        })
+      }
+      this.id = this.$route.query.id;
+      if (this.id) {
+        const res: any = await get_achieveScaleScheme_get__id({id: this.id});
+        this.postData = res;
+      } else {
+        // 录入日期
+        this.postData.entryDate = new Date();
       }
     }
 
@@ -1456,6 +1472,10 @@
     .title {
       margin-right: 20px;
       box-sizing: border-box;
+      border-left: 5px solid #F90;
+      padding-left: 5px;
+      color: #f90;
+      margin-left: 20px;
     }
   }
 
@@ -1483,6 +1503,22 @@
       &:not(:last-child) {
         border-bottom: 1px solid #ffffff;
       }
+    }
+  }
+
+  .divider-padding {
+    padding: 20px 20px;
+    box-sizing: border-box;
+    margin: 10px 0px;
+
+    /deep/.el-divider {
+      background-color: #409EFF;
+    }
+
+    /deep/.el-divider__text {
+      color: #409EFF;
+      font-size: 18px;
+      font-weight: bold;
     }
   }
 </style>

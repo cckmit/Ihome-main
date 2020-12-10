@@ -80,7 +80,7 @@
     }
 
     created() {
-      this.getListMixin();
+      // this.getListMixin();
     }
 
     async getListMixin() {

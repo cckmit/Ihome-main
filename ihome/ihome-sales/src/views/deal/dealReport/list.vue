@@ -222,8 +222,8 @@
       <el-row>
         <el-button type="primary" @click="getListMixin()">查询</el-button>
         <el-button type="info" @click="handleReset()">重置</el-button>
-        <el-button type="success" @click="handleAdd()">业绩申报</el-button>
-        <el-button type="success" @click="handleAdd()">新增</el-button>
+        <el-button type="success" @click="handleAdd('declare')">业绩申报</el-button>
+        <el-button type="success" @click="handleAdd('add')">新增</el-button>
       </el-row>
     </template>
     <template v-slot:table>
@@ -454,9 +454,10 @@
     }
 
     // 新增
-    async handleAdd() {
+    async handleAdd(type: any) {
       this.$router.push({
-        path: "/dealReport/add"
+        path: "/dealReport/add",
+        query: {btnType: type}
       });
     }
 
