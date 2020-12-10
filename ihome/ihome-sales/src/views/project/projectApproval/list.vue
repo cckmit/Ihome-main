@@ -4,7 +4,7 @@
  * @Author: wwq
  * @Date: 2020-11-27 17:11:14
  * @LastEditors: wwq
- * @LastEditTime: 2020-11-30 16:09:33
+ * @LastEditTime: 2020-12-10 17:10:54
 -->
 <template>
   <IhPage label-width="100px">
@@ -182,7 +182,7 @@
                 <el-dropdown-item @click.native.prevent="routeTo(row, 'edit')">修改</el-dropdown-item>
                 <el-dropdown-item @click.native.prevent="routeTo(row, 'audit')">审核</el-dropdown-item>
                 <el-dropdown-item @click.native.prevent="remove(row)">删除</el-dropdown-item>
-                <el-dropdown-item @click.native.prevent="routeTo(row, 'edit')">申领分销协议</el-dropdown-item>
+                <el-dropdown-item @click.native.prevent="routeTo(row, 'apply')">申领分销协议</el-dropdown-item>
                 <el-dropdown-item @click.native.prevent="routeTo(row, 'edit')">发起补充协议</el-dropdown-item>
               </el-dropdown-menu>
             </el-dropdown>

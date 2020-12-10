@@ -4,7 +4,7 @@
  * @Author: wwq
  * @Date: 2020-12-01 11:34:52
  * @LastEditors: wwq
- * @LastEditTime: 2020-12-09 20:08:47
+ * @LastEditTime: 2020-12-10 09:29:20
 -->
 <template>
   <el-dialog
@@ -71,7 +71,16 @@ export default class PartyABuding extends Vue {
     this.$emit("cancel", false);
   }
   finish() {
-    this.$emit("finish", this.form);
+    let pass: any = true;
+    this.form.forEach((v: any) => {
+      if (!v.buildingIds.length) {
+        this.$message.warning("请关联栋座信息");
+        pass = false;
+      }
+    });
+    if (pass) {
+      this.$emit("finish", this.form);
+    }
   }
 
   async getInfo() {

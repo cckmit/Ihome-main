@@ -4,7 +4,7 @@
  * @Author: wwq
  * @Date: 2020-11-27 17:22:45
  * @LastEditors: wwq
- * @LastEditTime: 2020-12-08 17:14:11
+ * @LastEditTime: 2020-12-10 11:15:29
 -->
 <template>
   <div>
@@ -164,6 +164,13 @@ export default class SetMeal extends Vue {
 
   async addFinish(data: any) {
     data.termId = this.$route.query.id;
+    data.colletionandsendMxs.forEach((v: any) => {
+      v.colletionandsendDetails = v.colletionandsendDetails.map((j: any) => ({
+        ...j,
+        transactionEnumOptions: JSON.stringify(j.transactionEnumOptions),
+      }));
+    });
+    console.log(data);
     if (this.editData.id) {
       data.packageId = this.editData.id;
       await post_collectandsend_update(data);

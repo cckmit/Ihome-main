@@ -4,7 +4,7 @@
  * @Author: wwq
  * @Date: 2020-11-27 17:28:28
  * @LastEditors: wwq
- * @LastEditTime: 2020-12-09 16:07:46
+ * @LastEditTime: 2020-12-10 11:05:22
 -->
 <template>
   <div>
@@ -335,6 +335,10 @@ export default class Other extends Vue {
       this.info = await get_other_get__termId({
         termId: id,
       });
+      this.info.exOver = this.info.exOver ? true : false;
+      this.info.exOtherProChannelUse = this.info.exOtherProChannelUse
+        ? true
+        : false;
       if (this.info.receiptMan || this.info.receiptAccount) {
         this.info.bankAccount = [
           {

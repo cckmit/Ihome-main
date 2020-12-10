@@ -4,7 +4,7 @@
  * @Author: wwq
  * @Date: 2020-12-04 09:40:47
  * @LastEditors: wwq
- * @LastEditTime: 2020-12-09 21:09:28
+ * @LastEditTime: 2020-12-10 09:20:03
 -->
 <template>
   <el-dialog
@@ -1118,6 +1118,12 @@ export default class SetMealEdit extends Vue {
       this.info.timeList = [this.info.startTime, this.info.endTime];
       this.info.partyAInfoList = [...res.partyAInfoList];
       this.partyAInfoList = [...res.partyAInfoList];
+      this.info.colletionandsendMxs.forEach((v: any) => {
+        v.colletionandsendDetails = v.colletionandsendDetails.map((j: any) => ({
+          ...j,
+          transactionEnumOptions: JSON.parse(j.transactionEnumOptions),
+        }));
+      });
     } else {
       const item = await get_collectandsend_getBaseTermByTermId__termId({
         termId: this.$route.query.id,
@@ -1355,7 +1361,7 @@ export default class SetMealEdit extends Vue {
 
   // 根据合同类型获取客户类型
   async contractEnumChange(row: any) {
-    row.transactionEnum = "";
+    // row.transactionEnum = "";
     let item: any = [];
     item = await post_dict_getAllByType({
       type: "TransactionEnum",
