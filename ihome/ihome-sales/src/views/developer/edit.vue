@@ -3,8 +3,8 @@
  * @version: 
  * @Author: wwq
  * @Date: 2020-09-25 17:59:09
- * @LastEditors: wwq
- * @LastEditTime: 2020-11-11 11:46:19
+ * @LastEditors: zyc
+ * @LastEditTime: 2020-12-10 11:55:26
 -->
 <template>
   <ih-page>
@@ -70,7 +70,7 @@
                 class="width--100"
               >
                 <el-option
-                  v-for="item in $root.dictAllList('CompanyTypeEnum')"
+                  v-for="item in $root.dictAllList('ChannelCompanyType')"
                   :key="item.code"
                   :label="item.name"
                   :value="item.code"

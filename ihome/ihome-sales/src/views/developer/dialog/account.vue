@@ -3,8 +3,8 @@
  * @version: 
  * @Author: wwq
  * @Date: 2020-07-08 14:23:16
- * @LastEditors: wwq
- * @LastEditTime: 2020-11-11 11:43:52
+ * @LastEditors: zyc
+ * @LastEditTime: 2020-12-10 11:51:00
 --> 
 <template>
   <el-dialog
@@ -16,18 +16,10 @@
     width="500px"
     class="dialog text-left"
   >
-    <el-form
-      ref="form"
-      :model="form"
-      :rules="rules"
-      label-width="80px"
-    >
+    <el-form ref="form" :model="form" :rules="rules" label-width="80px">
       <el-row>
         <el-col :span="24">
-          <el-form-item
-            label="账户姓名"
-            prop="name"
-          >
+          <el-form-item label="账户姓名" prop="name">
             <el-input
               v-model="form.name"
               placeholder="账户姓名"
@@ -39,10 +31,7 @@
 
       <el-row>
         <el-col :span="24">
-          <el-form-item
-            label="账号"
-            prop="number"
-          >
+          <el-form-item label="账号" prop="number">
             <el-input
               v-model="form.number"
               placeholder="账号"
@@ -54,10 +43,7 @@
 
       <el-row>
         <el-col :span="24">
-          <el-form-item
-            label="开户银行"
-            prop="bank"
-          >
+          <el-form-item label="开户银行" prop="bank">
             <el-input
               v-model="form.bank"
               placeholder="开户银行"
@@ -69,7 +55,7 @@
 
       <el-row>
         <el-col :span="24">
-          <el-form-item label="账号类型">
+          <el-form-item label="账号类型" prop="type">
             <el-select
               style="width: 100%"
               v-model="form.type"
@@ -88,22 +74,30 @@
       </el-row>
     </el-form>
 
-    <span
-      slot="footer"
-      class="dialog-footer"
-    >
+    <span slot="footer" class="dialog-footer">
       <el-button @click="cancel()">取 消</el-button>
-      <el-button
-        type="primary"
-        @click="finish()"
-      >确 定</el-button>
+      <el-button type="primary" @click="finish()">确 定</el-button>
     </span>
   </el-dialog>
 </template>
 <script lang="ts">
+function isNumberOrStrikethrough(rule: any, value: any, callback: any) {
+  let reg = /[0-9]|-$/;
+  if (value != "" && !reg.test(value)) {
+    callback(new Error("只能输入数字或-，以数字开头"));
+    return;
+  } else {
+    if (value.startsWith("-")||value.endsWith("-")) {
+      callback(new Error("不能以-开头和结尾"));
+      return;
+    } else {
+      callback();
+    }
+  }
+}
 import { Component, Vue, Prop } from "vue-property-decorator";
 import { Form as ElForm } from "element-ui";
-
+import { noTrim } from "ihome-common/util/base/form-ui";
 import { NoRepeatHttp } from "ihome-common/util/aop/no-repeat-http";
 @Component({
   components: {},
@@ -119,9 +113,20 @@ export default class UserAdd extends Vue {
     type: null,
   };
   rules: any = {
-    name: [{ required: true, message: "请输入名称", trigger: "change" }],
-    number: [{ required: true, message: "请输入账号", trigger: "change" }],
-    bank: [{ required: true, message: "请输入开户银行", trigger: "change" }],
+    name: [
+      { validator: noTrim, trigger: "change" },
+      { required: true, message: "请输入名称", trigger: "change" },
+    ],
+    number: [
+      { validator: noTrim, trigger: "change" },
+      { required: true, message: "请输入账号", trigger: "change" },
+      { validator: isNumberOrStrikethrough, trigger: "change" },
+    ],
+    bank: [
+      { validator: noTrim, trigger: "change" },
+      { required: true, message: "请输入开户银行", trigger: "change" },
+    ],
+    type: [{ required: true, message: "账号类型必选", trigger: "change" }],
   };
 
   cancel() {
