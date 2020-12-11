@@ -998,7 +998,6 @@
     navList: any = []; // 锚点列表
 
     async created() {
-      console.log('info:', this.info);
       this.DealDataFlag = (this as any).$root.dictAllList('DealDataFlag'); // 数据来源
       this.postData.documentVO = (this as any).$root.dictAllList('DealFileType'); // 附件类型
       // 附件类型增加key
