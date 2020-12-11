@@ -4,7 +4,7 @@
  * @Author: lsj
  * @Date: 2020-11-03 13:20:35
  * @LastEditors: lsj
- * @LastEditTime: 2020-12-10 10:56:45
+ * @LastEditTime: 2020-12-11 11:40:30
 -->
 <template>
   <ih-page class="text-left">
@@ -351,55 +351,19 @@
         </el-table>
       </el-col>
     </el-row>
-    <p class="ih-info-title">发票信息</p>
-    <el-row style="padding-left: 20px">
-      <el-col>
-        <el-table
-          class="ih-table"
-          :data="infoForm.invoiceList">
-          <el-table-column prop="modelName" label="开票日期" min-width="120"></el-table-column>
-          <el-table-column prop="contType" label="发票类型" min-width="120"></el-table-column>
-          <el-table-column prop="contType" label="发票代码" min-width="120"></el-table-column>
-          <el-table-column prop="contType" label="发票号码" min-width="120"></el-table-column>
-          <el-table-column prop="contType" label="抬头" min-width="150"></el-table-column>
-          <el-table-column prop="contType" label="发票金额（含税）" min-width="150"></el-table-column>
-          <el-table-column prop="contType" label="确认主营（不含税）" min-width="150"></el-table-column>
-          <el-table-column prop="contType" label="税额（公式）" min-width="150"></el-table-column>
-          <el-table-column prop="contType" label="NC凭证号" min-width="150"></el-table-column>
-          <el-table-column prop="contType" label="备注" min-width="150"></el-table-column>
-          <el-table-column prop="contType" label="附件" min-width="150"></el-table-column>
-        </el-table>
-      </el-col>
-    </el-row>
-    <div class="btn-wrapper">
-      <el-button>关闭</el-button>
-      <el-button type="primary" @click="viewReviewDetails">查看审核详情</el-button>
-    </div>
     <div class="nav-box">
       <div @click="goAnchor(item.id)" v-for="item in navList" :key="item.id" class="nav-item">{{item.name}}</div>
     </div>
-    <ih-dialog :show="reviewDialog" desc="成交审核记录">
-      <ReviewDetailsDialog
-        :data="reviewData"
-        @cancel="() => (reviewDialog = false)"
-        @finish="
-            () => {
-              reviewDialog = false;
-            }
-          "
-      />
-    </ih-dialog>
   </ih-page>
 </template>
 <script lang="ts">
   import {Component, Vue} from "vue-property-decorator";
-  import ReviewDetailsDialog from "@/views/deal/dealReport/dialog/reviewDetailsDialog.vue";
   import {get_deal_get__id} from "@/api/deal";
 
   @Component({
-    components: {ReviewDetailsDialog},
+    components: {},
   })
-  export default class DealReportInfo extends Vue {
+  export default class PreviewPage extends Vue {
     infoForm: any = {
       dealCode: null,
       house: {}, // 房产信息
@@ -413,11 +377,8 @@
       achieveTotalBagList: [], // 平台费用 - 总包 - 前端拆分
       achieveDistriList: [], // 平台费用 - 分销 - 前端拆分
       documentList: [], // 附件信息
-      processRecordList: [], // 审核信息
-      invoiceList: [] // 发票信息
+      processRecordList: [] // 审核信息
     };
-    reviewDialog: any = false;
-    reviewData: any = {};
     dealId: any = null;
     navList: any = [
       {
@@ -629,16 +590,6 @@
     // 预览
     preview(scope: any) {
       console.log('预览scope', scope);
-    }
-
-    // 查看审核详情
-    viewReviewDetails() {
-      console.log('查看审核详情');
-      this.reviewData = {
-        title: 'main', // 标题
-        dealId: this.infoForm.id // 成交id
-      }
-      this.reviewDialog = true;
     }
   }
 </script>

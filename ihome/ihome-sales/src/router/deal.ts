@@ -97,7 +97,7 @@ const dealRoutes: Array<RouteConfig> = [
       {
         path: 'changeDealInfo',
         name: 'ChangeDealInfo',
-        component: () => import('@/views/deal/dealReport/changeDealInfo.vue'),
+        component: () => import('@/views/deal/dealReport/suppDeal.vue'),
         meta: { title: '成交信息变更', icon: 'form' }
       },
       {
