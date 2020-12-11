@@ -4,7 +4,7 @@
  * @Author: wwq
  * @Date: 2020-12-01 09:05:50
  * @LastEditors: wwq
- * @LastEditTime: 2020-12-11 09:06:05
+ * @LastEditTime: 2020-12-11 10:21:58
 -->
 <template>
   <el-dialog
@@ -147,8 +147,8 @@
                   class="width--100"
                 >
                   <el-option
-                    v-for="item in $root.dictAllList('ApprovalStatus')"
-                    :key="item.code"
+                    v-for="(item, i) in $root.dictAllList('ApprovalStatus')"
+                    :key="i"
                     :label="item.name"
                     :value="item.code"
                   ></el-option>
@@ -164,8 +164,8 @@
                   class="width--100"
                 >
                   <el-option
-                    v-for="item in $root.dictAllList('ArchiveStatus')"
-                    :key="item.code"
+                    v-for="(item, i) in $root.dictAllList('ArchiveStatus')"
+                    :key="i"
                     :label="item.name"
                     :value="item.code"
                   ></el-option>

@@ -4,7 +4,7 @@
  * @Author: wwq
  * @Date: 2020-11-27 17:27:01
  * @LastEditors: wwq
- * @LastEditTime: 2020-12-11 09:16:37
+ * @LastEditTime: 2020-12-11 10:27:04
 -->
 <template>
   <div>
@@ -56,7 +56,7 @@
           label="渠道类型"
         >
           <template v-slot="{ row }">{{
-            $root.dictAllName(row.channelEnum, "Channel")
+            $root.dictAllName(row.channelEnum, "ChannelCustomer")
           }}</template>
         </el-table-column>
         <el-table-column
