@@ -4,7 +4,7 @@
  * @Author: zyc
  * @Date: 2020-06-30 09:21:17
  * @LastEditors: zyc
- * @LastEditTime: 2020-12-11 10:40:37
+ * @LastEditTime: 2020-12-11 14:08:54
 --> 
 <template>
   <ih-page>
@@ -461,10 +461,10 @@ import PaginationMixin from "../../mixins/pagination";
 export default class UserList extends Vue {
   queryPageParameters: any = {
     account: null,
-    accountType: "Ihome",
+    accountType: null,
     employeeCode: null,
-    employeeStatus: "On",
-    employeeType: "Formal",
+    employeeStatus: null,
+    employeeType: null,
     employmentDateEnd: null,
     employmentDateStart: null,
     employmentDate: null,
@@ -475,7 +475,7 @@ export default class UserList extends Vue {
     name: null,
     orgId: null,
     permissionOrgId: null,
-    status: "Valid",
+    status: null,
     workType: null,
   };
   jobVisibleData: any = null;
@@ -508,10 +508,10 @@ export default class UserList extends Vue {
   reset() {
     Object.assign(this.queryPageParameters, {
       account: null,
-      accountType: "Ihome",
+      accountType: null,
       employeeCode: null,
-      employeeStatus: "On",
-      employeeType: "Formal",
+      employeeStatus: null,
+      employeeType: null,
       employmentDateEnd: null,
       employmentDateStart: null,
       employmentDate: null,
@@ -522,7 +522,7 @@ export default class UserList extends Vue {
       name: null,
       orgId: null,
       permissionOrgId: null,
-      status: "Valid",
+      status: null,
       workType: null,
     });
   }
@@ -637,8 +637,8 @@ export default class UserList extends Vue {
     this.$prompt("请输入新密码", "提示", {
       confirmButtonText: "确定",
       cancelButtonText: "取消",
-      inputPattern: /^[a-zA-Z0-9!@#$%^&*]{8,16}$/,
-      inputErrorMessage: "新密码8-16位，仅包含数字字母及!@#$%^&*",
+      inputPattern: /^[a-zA-Z0-9@#$%^&]{8,20}$/,
+      inputErrorMessage: "新密码8-20位，仅包含数字字母及@#$%^&",
     })
       .then(async (obj: any) => {
         await post_user_resetPassword({

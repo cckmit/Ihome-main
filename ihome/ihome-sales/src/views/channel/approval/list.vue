@@ -3,21 +3,24 @@
  * @version: 
  * @Author: zyc
  * @Date: 2020-07-14 09:23:40
- * @LastEditors: ywl
- * @LastEditTime: 2020-11-30 18:03:11
+ * @LastEditors: zyc
+ * @LastEditTime: 2020-12-11 14:46:59
 --> 
 --> 
 <template>
   <ih-page label-width="100px">
     <template v-slot:form>
-      <el-form
-        ref="form"
-        label-width="100px"
-      >
+      <el-form ref="form" label-width="100px">
         <el-row>
           <el-col :span="8">
             <el-form-item label="事业部">
-              <el-select
+              <IhSelectPageDivision
+                clearable
+                placeholder="事业部"
+                v-model="queryPageParameters.departmentOrgId"
+              >
+              </IhSelectPageDivision>
+              <!-- <el-select
                 v-model="queryPageParameters.departmentOrgId"
                 clearable
                 placeholder="事业部"
@@ -29,7 +32,7 @@
                   :label="item.label"
                   :value="item.value"
                 ></el-option>
-              </el-select>
+              </el-select> -->
             </el-form-item>
           </el-col>
           <el-col :span="8">
@@ -51,7 +54,21 @@
           </el-col>
           <el-col :span="8">
             <el-form-item label="经办人">
-              <el-select
+              <IhSelectPageUser
+                v-model="queryPageParameters.approvalUser"
+                placeholder="经办人"
+                clearable
+              >
+                <template v-slot="{ data }">
+                  <span style="float: left">{{ data.name }}</span>
+                  <span
+                    class="margin-left-30"
+                    style="float: right; color: #8492a6; font-size: 13px"
+                    >{{ data.employeeCode }}</span
+                  >
+                </template>
+              </IhSelectPageUser>
+              <!-- <el-select
                 v-model="queryPageParameters.approvalUser"
                 clearable
                 placeholder="经办人"
@@ -63,7 +80,7 @@
                   :label="item.label"
                   :value="item.value"
                 ></el-option>
-              </el-select>
+              </el-select> -->
             </el-form-item>
           </el-col>
           <el-col :span="8">
@@ -105,22 +122,12 @@
 
     <template v-slot:btn>
       <el-row>
-        <el-button
-          type="primary"
-          @click="getListMixin()"
-        >查询</el-button>
-        <el-button
-          type="success"
-          @click="add()"
-        >添加</el-button>
-        <el-button
-          type="info"
-          @click="reset()"
-        >重置</el-button>
-        <el-button
-          type="default"
-          @click="approvalUserChange()"
-        >变更经办人</el-button>
+        <el-button type="primary" @click="getListMixin()">查询</el-button>
+        <el-button type="success" @click="add()">添加</el-button>
+        <el-button type="info" @click="reset()">重置</el-button>
+        <el-button type="default" @click="approvalUserChange()"
+          >变更经办人</el-button
+        >
       </el-row>
     </template>
 
@@ -132,15 +139,8 @@
         @selection-change="handleSelectionChange"
         :empty-text="emptyText"
       >
-        <el-table-column
-          type="selection"
-          width="55"
-        > </el-table-column>
-        <el-table-column
-          type="index"
-          label="序号"
-          width="50"
-        ></el-table-column>
+        <el-table-column type="selection" width="55"> </el-table-column>
+        <el-table-column type="index" label="序号" width="50"></el-table-column>
         <el-table-column
           prop="approvalNo"
           label="申请编号"
@@ -166,10 +166,7 @@
           label="经办人"
         ></el-table-column>
 
-        <el-table-column
-          label="状态"
-          width="120"
-        >
+        <el-table-column label="状态" width="120">
           <template slot-scope="scope">{{
             $root.dictAllName(scope.row.status, "ChannelApprovalStatus")
           }}</template>
@@ -180,30 +177,33 @@
           width="180"
         ></el-table-column>
 
-        <el-table-column
-          fixed="right"
-          label="操作"
-          width="130"
-        >
+        <el-table-column fixed="right" label="操作" width="130">
           <template slot-scope="scope">
             <el-link
               class="margin-right-10"
               type="primary"
               @click.native.prevent="info(scope)"
-            >详情</el-link>
-            <el-dropdown
-              trigger="click"
-              style="margin-left: 15px"
+              >详情</el-link
             >
+            <el-dropdown trigger="click" style="margin-left: 15px">
               <span class="el-dropdown-link">
                 更多
                 <i class="el-icon-arrow-down el-icon--right"></i>
               </span>
               <el-dropdown-menu slot="dropdown">
-                <el-dropdown-item @click.native.prevent="edit(scope)">编辑</el-dropdown-item>
-                <el-dropdown-item @click.native.prevent="remove(scope)">删除</el-dropdown-item>
-                <el-dropdown-item @click.native.prevent="withdraw(scope)">撤回重发</el-dropdown-item>
-                <el-dropdown-item @click.native.prevent="downloadSupplier(scope)">下载供应商名录</el-dropdown-item>
+                <el-dropdown-item @click.native.prevent="edit(scope)"
+                  >修改</el-dropdown-item
+                >
+                <el-dropdown-item @click.native.prevent="remove(scope)"
+                  >删除</el-dropdown-item
+                >
+                <el-dropdown-item @click.native.prevent="withdraw(scope)"
+                  >撤回重发</el-dropdown-item
+                >
+                <el-dropdown-item
+                  @click.native.prevent="downloadSupplier(scope)"
+                  >下载供应商名录</el-dropdown-item
+                >
               </el-dropdown-menu>
             </el-dropdown>
           </template>
@@ -222,10 +222,7 @@
         :total="resPageInfo.total"
       ></el-pagination>
     </template>
-    <ih-dialog
-      :show="changeUserVisible"
-      desc="变更经办人"
-    >
+    <ih-dialog :show="changeUserVisible" desc="变更经办人">
       <ApprovalChangeUser
         :data="selectList"
         @cancel="() => (changeUserVisible = false)"
