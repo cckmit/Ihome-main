@@ -4,7 +4,7 @@
  * @Author: wwq
  * @Date: 2020-11-27 17:17:06
  * @LastEditors: wwq
- * @LastEditTime: 2020-12-10 11:09:17
+ * @LastEditTime: 2020-12-11 09:18:17
 -->
 <template>
   <IhPage>
@@ -100,7 +100,7 @@
               label="业务模式"
               prop="busEnum"
             >
-              <span class="text-ellipsis">{{ $root.dictAllName(info.busEnumChange, "BusEnum") }}</span>
+              <span class="text-ellipsis">{{ $root.dictAllName(info.busEnumChange, "Bus") }}</span>
             </el-form-item>
           </el-col>
           <el-col :span="8">
@@ -108,7 +108,7 @@
               label="收费类型"
               prop="chargeEnum"
             >
-              <span class="text-ellipsis">{{ $root.dictAllName(info.chargeEnum, "ChargeEnum") }}</span>
+              <span class="text-ellipsis">{{ $root.dictAllName(info.chargeEnum, "Charge") }}</span>
             </el-form-item>
           </el-col>
         </el-row>
@@ -118,7 +118,7 @@
               label="模式属性"
               prop="attributeEnum"
             >
-              <span class="text-ellipsis">{{ $root.dictAllName(info.attributeEnum, "AttributeEnum") }}</span>
+              <span class="text-ellipsis">{{ $root.dictAllName(info.attributeEnum, "Attribute") }}</span>
             </el-form-item>
           </el-col>
           <el-col :span="8">
@@ -126,7 +126,7 @@
               label="垫佣周期"
               prop="padCommissionEnum"
             >
-              <span class="text-ellipsis">{{ $root.dictAllName(info.padCommissionEnum, "PadCommissionEnum") }}</span>
+              <span class="text-ellipsis">{{ $root.dictAllName(info.padCommissionEnum, "PadCommission") }}</span>
             </el-form-item>
           </el-col>
           <el-col :span="8">
@@ -134,7 +134,7 @@
               label="业务类型"
               prop="busTypeEnum"
             >
-              <span class="text-ellipsis">{{ $root.dictAllName(info.busTypeEnum, "BusTypeEnum") }}</span>
+              <span class="text-ellipsis">{{ $root.dictAllName(info.busTypeEnum, "BusType") }}</span>
             </el-form-item>
           </el-col>
         </el-row>
@@ -167,7 +167,7 @@
               label="项目周期阶段"
               prop="termStageEnum"
             >
-              <span class="text-ellipsis">{{ $root.dictAllName(info.termStageEnum, "TermStageEnum") }}</span>
+              <span class="text-ellipsis">{{ $root.dictAllName(info.termStageEnum, "TermStage") }}</span>
             </el-form-item>
           </el-col>
           <el-col :span="8">

@@ -4,7 +4,7 @@
  * @Author: wwq
  * @Date: 2020-11-27 17:26:20
  * @LastEditors: wwq
- * @LastEditTime: 2020-12-09 21:10:55
+ * @LastEditTime: 2020-12-11 09:16:02
 -->
 <template>
   <div>
@@ -33,7 +33,7 @@
           prop="propertyEnum"
         >
           <template v-slot="{ row }">{{
-            $root.dictAllName(row.propertyEnum, "PropertyEnum")
+            $root.dictAllName(row.propertyEnum, "Property")
           }}</template>
         </el-table-column>
         <el-table-column label="优先级">
@@ -93,7 +93,7 @@
           prop="propertyEnum"
         >
           <template v-slot="{ row }">{{
-            $root.dictAllName(row.propertyEnum, "PropertyEnum")
+            $root.dictAllName(row.propertyEnum, "Property")
           }}</template>
         </el-table-column>
         <el-table-column label="优先级">

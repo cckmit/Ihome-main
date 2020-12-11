@@ -3,8 +3,8 @@
  * @version: 
  * @Author: zyc
  * @Date: 2020-06-22 11:10:43
- * @LastEditors: zyc
- * @LastEditTime: 2020-10-26 15:51:53
+ * @LastEditors: wwq
+ * @LastEditTime: 2020-12-11 08:41:20
 --> 
 
 <template>
@@ -34,8 +34,8 @@ export default class Home extends Vue {
   created() {
     // console.log(routes);
     this.data = routes;
-    let list = (this.$root as any).dictAllList("AccountEnum"); //获取字典列表：参数是类别的key
-    let dicName = (this.$root as any).dictAllName("Base", "AccountEnum"); //获取某个字典下根据code获取该数据项：第一个参数是code，第二个参数是类别的key
+    let list = (this.$root as any).dictAllList("Account"); //获取字典列表：参数是类别的key
+    let dicName = (this.$root as any).dictAllName("Base", "Account"); //获取某个字典下根据code获取该数据项：第一个参数是code，第二个参数是类别的key
 
     let areaName = (this.$root as any).getAreaName("440000000000"); //根据行政区code获取name
     let area = (this.$root as any).getArea("440000000000"); //根据行政区code获取该项数据

@@ -3,8 +3,8 @@
  * @version: 
  * @Author: ywl
  * @Date: 2020-09-27 10:46:14
- * @LastEditors: ywl
- * @LastEditTime: 2020-12-04 10:27:33
+ * @LastEditors: wwq
+ * @LastEditTime: 2020-12-11 08:44:30
 -->
 <template>
   <IhPage class="text-left distribution-info">
@@ -218,14 +218,14 @@
         <el-row>
           <el-col :span="24">
             <el-form-item label="渠道类型">
-              {{$root.dictAllName(ruleForm.channelEnum, 'ChannelEnum')}}
+              {{$root.dictAllName(ruleForm.channelEnum, 'Channel')}}
             </el-form-item>
           </el-col>
         </el-row>
         <el-row>
           <el-col :span="18">
             <el-form-item label="代理费是否垫佣">
-              {{$root.dictAllName(ruleForm.padCommissionEnum, 'PadCommissionEnum')}}
+              {{$root.dictAllName(ruleForm.padCommissionEnum, 'PadCommission')}}
             </el-form-item>
           </el-col>
         </el-row>
@@ -237,7 +237,7 @@
             prop="propertyEnum"
           >
             <template v-slot="{ row }">
-              {{$root.dictAllName(row.propertyEnum, 'PropertyEnum')}}
+              {{$root.dictAllName(row.propertyEnum, 'Property')}}
             </template>
           </el-table-column>
           <el-table-column
@@ -267,7 +267,7 @@
         <el-row>
           <el-col :span="12">
             <el-form-item label="归档状态">
-              {{$root.dictAllName(ruleForm.archiveStatus, 'DistributionEnum.ArchiveStatus')}}
+              {{$root.dictAllName(ruleForm.archiveStatus, 'ArchiveStatus')}}
             </el-form-item>
           </el-col>
           <el-col :span="12">

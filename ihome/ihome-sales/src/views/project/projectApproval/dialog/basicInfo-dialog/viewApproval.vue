@@ -4,7 +4,7 @@
  * @Author: wwq
  * @Date: 2020-12-10 11:42:19
  * @LastEditors: wwq
- * @LastEditTime: 2020-12-10 16:50:13
+ * @LastEditTime: 2020-12-11 08:59:08
 -->
 <template>
   <el-dialog
@@ -46,15 +46,15 @@
         <td>周期名称</td>
         <td>{{info.termName}}</td>
         <td>业务模式</td>
-        <td>{{$root.dictAllName(info.busEnum, 'BusEnum')}}</td>
+        <td>{{$root.dictAllName(info.busEnum, 'Bus')}}</td>
         <td>收费类型</td>
-        <td>{{$root.dictAllName(info.chargeEnum, 'ChargeEnum')}}</td>
+        <td>{{$root.dictAllName(info.chargeEnum, 'Charge')}}</td>
       </tr>
       <tr>
         <td>模式属性</td>
-        <td colspan="3">{{$root.dictAllName(info.attributeEnum, "AttributeEnum")}}</td>
+        <td colspan="3">{{$root.dictAllName(info.attributeEnum, "Attribute")}}</td>
         <td>垫佣周期</td>
-        <td>{{$root.dictAllName(info.padCommissionEnum, "PadCommissionEnum")}}</td>
+        <td>{{$root.dictAllName(info.padCommissionEnum, "PadCommission")}}</td>
       </tr>
       <tr>
         <td>项目推广名称</td>
@@ -74,13 +74,13 @@
         <td>是否市场化项目</td>
         <td>{{info.exMarket?'是':'否'}}</td>
         <td>业务类型</td>
-        <td>{{$root.dictAllName(info.busTypeEnum, "BusTypeEnum")}}</td>
+        <td>{{$root.dictAllName(info.busTypeEnum, "BusType")}}</td>
         <td style="color: #D9001B">项目委托方</td>
         <td>{{info.proClient}}</td>
       </tr>
       <tr>
         <td>项目周期阶段</td>
-        <td>{{$root.dictAllName(info.termStageEnum, "TermStageEnum")}}</td>
+        <td>{{$root.dictAllName(info.termStageEnum, "TermStage")}}</td>
         <td>是否代销</td>
         <td>{{info.exConsignment?'是':'否'}}</td>
         <td style="color: #D9001B">往期业绩金额（万元）</td>

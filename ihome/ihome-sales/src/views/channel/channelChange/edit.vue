@@ -4,7 +4,7 @@
  * @Author: ywl
  * @Date: 2020-09-16 14:05:21
  * @LastEditors: wwq
- * @LastEditTime: 2020-12-04 20:56:59
+ * @LastEditTime: 2020-12-11 08:41:59
 -->
 <template>
   <IhPage>
@@ -213,7 +213,7 @@
           width="150"
         >
           <template v-slot="{ row }">
-            <span>{{$root.dictAllName(row.accountType, "AccountEnum")}}</span>
+            <span>{{$root.dictAllName(row.accountType, "Account")}}</span>
           </template>
         </el-table-column>
         <el-table-column

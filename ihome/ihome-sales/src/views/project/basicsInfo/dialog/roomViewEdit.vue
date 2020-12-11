@@ -4,7 +4,7 @@
  * @Author: wwq
  * @Date: 2020-11-03 18:39:23
  * @LastEditors: wwq
- * @LastEditTime: 2020-11-11 11:37:10
+ * @LastEditTime: 2020-12-11 08:51:46
 -->
 <template>
   <div>
@@ -220,7 +220,7 @@
                 disabled
               >
                 <el-option
-                  v-for="item in $root.dictAllList('PositionEnum')"
+                  v-for="item in $root.dictAllList('Position')"
                   :key="item.code"
                   :label="item.name"
                   :value="item.code"

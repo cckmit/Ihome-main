@@ -4,7 +4,7 @@
  * @Author: wwq
  * @Date: 2020-11-27 17:22:45
  * @LastEditors: wwq
- * @LastEditTime: 2020-12-10 11:15:29
+ * @LastEditTime: 2020-12-11 09:17:23
 -->
 <template>
   <div>
@@ -33,7 +33,7 @@
           prop="propertyEnum"
         >
           <template v-slot="{ row }">{{
-            $root.dictAllName(row.propertyEnum, "PropertyEnum")
+            $root.dictAllName(row.propertyEnum, "Property")
           }}</template>
         </el-table-column>
         <el-table-column
@@ -41,7 +41,7 @@
           width="120"
         >
           <template v-slot="{ row }">{{
-            $root.dictAllName(row.baseCostEnum, "BaseCostEnum")
+            $root.dictAllName(row.baseCostEnum, "BaseCost")
           }}</template>
         </el-table-column>
         <el-table-column
@@ -60,7 +60,7 @@
           prop="state"
           label="状态"
         >
-          <template v-slot="{ row }">{{$root.dictAllName(row.state, 'OperEnum')}}</template>
+          <template v-slot="{ row }">{{$root.dictAllName(row.state, 'Oper')}}</template>
         </el-table-column>
         <el-table-column
           label="操作"

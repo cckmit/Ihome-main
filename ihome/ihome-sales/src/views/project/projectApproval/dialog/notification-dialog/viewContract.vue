@@ -4,7 +4,7 @@
  * @Author: wwq
  * @Date: 2020-12-02 20:13:07
  * @LastEditors: wwq
- * @LastEditTime: 2020-12-03 09:27:42
+ * @LastEditTime: 2020-12-11 09:05:24
 -->
 <template>
   <el-dialog
@@ -173,8 +173,8 @@
           <el-form-item label="渠道类型">
             <span
               class="text-ellipsis"
-              :title="$root.dictAllName(info.channelEnum, 'ChannelEnum')"
-            >{{$root.dictAllName(info.channelEnum, 'ChannelEnum')}}</span>
+              :title="$root.dictAllName(info.channelEnum, 'Channel')"
+            >{{$root.dictAllName(info.channelEnum, 'Channel')}}</span>
           </el-form-item>
         </el-col>
         <el-col
@@ -198,8 +198,8 @@
           >
             <span
               class="text-ellipsis"
-              :title="$root.dictAllName(info.padCommissionEnum, 'PadCommissionEnum')"
-            >{{$root.dictAllName(info.padCommissionEnum, 'PadCommissionEnum')}}</span>
+              :title="$root.dictAllName(info.padCommissionEnum, 'PadCommission')"
+            >{{$root.dictAllName(info.padCommissionEnum, 'PadCommission')}}</span>
           </el-form-item>
         </el-col>
       </el-row>
@@ -214,7 +214,7 @@
         prop="propertyEnum"
       >
         <template v-slot="{ row }">{{
-            $root.dictAllName(row.propertyEnum, "PropertyEnum")
+            $root.dictAllName(row.propertyEnum, "Property")
           }}</template>
       </el-table-column>
       <el-table-column

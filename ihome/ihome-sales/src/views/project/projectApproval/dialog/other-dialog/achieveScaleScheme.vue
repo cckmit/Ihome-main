@@ -4,7 +4,7 @@
  * @Author: wwq
  * @Date: 2020-12-09 11:11:02
  * @LastEditors: wwq
- * @LastEditTime: 2020-12-09 14:46:53
+ * @LastEditTime: 2020-12-11 09:05:45
 -->
 <template>
   <el-dialog
@@ -68,7 +68,7 @@
               class="width--100"
             >
               <el-option
-                v-for="item in $root.dictAllList('PropertyEnum')"
+                v-for="item in $root.dictAllList('Property')"
                 :key="item.code"
                 :label="item.name"
                 :value="item.code"
@@ -179,7 +179,7 @@
         min-width="120"
       >
         <template v-slot="{ row }">
-          <span>{{$root.dictAllName(row.propertyTypeStr, 'PropertyEnum')}}</span>
+          <span>{{$root.dictAllName(row.propertyTypeStr, 'Property')}}</span>
         </template>
       </el-table-column>
       <el-table-column

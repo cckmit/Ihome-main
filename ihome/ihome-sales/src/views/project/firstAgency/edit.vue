@@ -4,7 +4,7 @@
  * @Author: wwq
  * @Date: 2020-11-03 18:39:23
  * @LastEditors: wwq
- * @LastEditTime: 2020-12-04 20:51:36
+ * @LastEditTime: 2020-12-11 08:55:11
 -->
 <template>
   <IhPage>
@@ -206,7 +206,7 @@
           width="150"
         >
           <template v-slot="{ row }">
-            <span>{{ $root.dictAllName(row.accountEnum, "AccountEnum") }}</span>
+            <span>{{ $root.dictAllName(row.accountEnum, "Account") }}</span>
           </template>
         </el-table-column>
         <el-table-column
@@ -299,7 +299,7 @@
           <template v-slot="{ row }">{{
             $root.dictAllName(
               row.firstAgencyAttachEnum,
-              "FirstAgencyAttachEnum"
+              "FirstAgencyAttach"
             )
           }}</template>
         </el-table-column>

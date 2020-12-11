@@ -4,7 +4,7 @@
  * @Author: wwq
  * @Date: 2020-11-03 18:39:23
  * @LastEditors: wwq
- * @LastEditTime: 2020-11-04 16:31:02
+ * @LastEditTime: 2020-12-11 08:56:00
 -->
 <template>
   <ih-page>
@@ -15,14 +15,20 @@
           <el-row>
             <el-col :span="8">
               <el-form-item label="名称">
-                <span class="text-ellipsis" :title="info.agencyName">{{
+                <span
+                  class="text-ellipsis"
+                  :title="info.agencyName"
+                >{{
                   info.agencyName
                 }}</span>
               </el-form-item>
             </el-col>
             <el-col :span="8">
               <el-form-item label="信用代码">
-                <span class="text-ellipsis" :title="info.creditCode">{{
+                <span
+                  class="text-ellipsis"
+                  :title="info.creditCode"
+                >{{
                   info.creditCode
                 }}</span>
               </el-form-item>
@@ -50,8 +56,14 @@
           </el-row>
           <el-row>
             <el-col :span="8">
-              <el-form-item label="住所" prop="addr">
-                <span class="text-ellipsis" :title="info.addr">{{
+              <el-form-item
+                label="住所"
+                prop="addr"
+              >
+                <span
+                  class="text-ellipsis"
+                  :title="info.addr"
+                >{{
                   info.addr
                 }}</span>
               </el-form-item>
@@ -68,10 +80,9 @@
                   :title="
                     $root.dictAllName(info.companyType, 'ChannelCompanyType')
                   "
-                  >{{
+                >{{
                     $root.dictAllName(info.companyType, "ChannelCompanyType")
-                  }}</span
-                >
+                  }}</span>
               </el-form-item>
             </el-col>
           </el-row>
@@ -99,8 +110,11 @@
           </el-row>
           <el-row>
             <el-col :span="8">
-              <el-form-item label="状态" v-if="info.agencyAuditEnum">{{
-                $root.dictAllName(info.agencyAuditEnum, "AgencyAuditEnum")
+              <el-form-item
+                label="状态"
+                v-if="info.agencyAuditEnum"
+              >{{
+                $root.dictAllName(info.agencyAuditEnum, "AgencyAudit")
               }}</el-form-item>
             </el-col>
           </el-row>
@@ -109,22 +123,33 @@
           <span>银行账号信息</span>
         </p>
         <div class="padding-left-20">
-          <el-table :data="info.firstAgencyAccounts" style="100%">
+          <el-table
+            :data="info.firstAgencyAccounts"
+            style="100%"
+          >
             <el-table-column
               prop="accountName"
               label="账户名称"
               min-width="300"
             ></el-table-column>
-            <el-table-column prop="accountNo" label="账号" min-width="200">
+            <el-table-column
+              prop="accountNo"
+              label="账号"
+              min-width="200"
+            >
             </el-table-column>
             <el-table-column
               prop="depositBank"
               label="开户银行"
               width="300"
             ></el-table-column>
-            <el-table-column prop="accountEnum" label="账号类型" width="200">
+            <el-table-column
+              prop="accountEnum"
+              label="账号类型"
+              width="200"
+            >
               <template v-slot="{ row }">
-                {{ $root.dictAllName(row.accountEnum, "AccountEnum") }}
+                {{ $root.dictAllName(row.accountEnum, "Account") }}
               </template>
             </el-table-column>
           </el-table>
@@ -155,15 +180,18 @@
           <span>附件信息</span>
         </p>
         <div class="padding-left-20">
-          <el-table style="width: 100%" :data="info.attachAgencyVOS">
+          <el-table
+            style="width: 100%"
+            :data="info.attachAgencyVOS"
+          >
             <el-table-column
               prop="firstAgencyAttachEnum"
               width="180"
               label="类型"
-              ><template v-slot="{ row }">{{
+            ><template v-slot="{ row }">{{
                 $root.dictAllName(
                   row.firstAgencyAttachEnum,
-                  "FirstAgencyAttachEnum"
+                  "FirstAgencyAttach"
                 )
               }}</template>
             </el-table-column>

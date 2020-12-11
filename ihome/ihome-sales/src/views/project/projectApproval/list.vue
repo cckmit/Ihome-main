@@ -4,7 +4,7 @@
  * @Author: wwq
  * @Date: 2020-11-27 17:11:14
  * @LastEditors: wwq
- * @LastEditTime: 2020-12-10 17:10:54
+ * @LastEditTime: 2020-12-11 08:57:56
 -->
 <template>
   <IhPage label-width="100px">
@@ -62,7 +62,7 @@
                 placeholder="请选择"
               >
                 <el-option
-                  v-for="item in $root.dictAllList('AgencyAuditEnum')"
+                  v-for="item in $root.dictAllList('AgencyAudit')"
                   :key="item.code"
                   :label="item.name"
                   :value="item.code"
@@ -140,7 +140,7 @@
           label="业务类型"
         >
           <template v-slot="{ row }">{{
-            $root.dictAllName(row.busTypeEnum, "BusTypeEnum")
+            $root.dictAllName(row.busTypeEnum, "BusType")
           }}</template>
         </el-table-column>
         <el-table-column
@@ -157,7 +157,7 @@
           width="150"
         >
           <template v-slot="{ row }">{{
-            $root.dictAllName(row.auditEnum, "AuditEnum")
+            $root.dictAllName(row.auditEnum, "Audit")
           }}</template>
         </el-table-column>
         <el-table-column

@@ -4,7 +4,7 @@
  * @Author: wwq
  * @Date: 2020-11-27 17:29:09
  * @LastEditors: wwq
- * @LastEditTime: 2020-12-10 10:36:17
+ * @LastEditTime: 2020-12-11 09:18:46
 -->
 <template>
   <div>
@@ -20,7 +20,7 @@
           label="类型"
         >
           <template v-slot="{ row }">{{
-            $root.dictAllName(row.snapshotEnum, "SnapshotEnum")
+            $root.dictAllName(row.snapshotEnum, "Snapshot")
           }}</template>
         </el-table-column>
         <el-table-column

@@ -4,7 +4,7 @@
  * @Author: wwq
  * @Date: 2020-11-30 08:49:31
  * @LastEditors: wwq
- * @LastEditTime: 2020-12-09 14:27:01
+ * @LastEditTime: 2020-12-11 08:58:37
 -->
 <template>
   <el-dialog
@@ -69,7 +69,7 @@
               class="width--100"
             >
               <el-option
-                v-for="item in $root.dictAllList('BusTypeEnum')"
+                v-for="item in $root.dictAllList('BusType')"
                 :key="item.code"
                 :label="item.name"
                 :value="item.code"
@@ -86,7 +86,7 @@
               class="width--100"
             >
               <el-option
-                v-for="item in $root.dictAllList('AuditEnum')"
+                v-for="item in $root.dictAllList('Audit')"
                 :key="item.code"
                 :label="item.name"
                 :value="item.code"
@@ -165,7 +165,7 @@
         label="项目审核状态"
       >
         <template v-slot="{ row }">{{
-            $root.dictAllName(row.auditEnum, "AuditEnum")
+            $root.dictAllName(row.auditEnum, "Audit")
           }}</template>
       </el-table-column>
       <el-table-column

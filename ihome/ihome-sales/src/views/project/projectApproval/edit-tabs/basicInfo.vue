@@ -4,7 +4,7 @@
  * @Author: wwq
  * @Date: 2020-11-27 17:17:06
  * @LastEditors: wwq
- * @LastEditTime: 2020-12-10 12:05:01
+ * @LastEditTime: 2020-12-11 09:15:46
 -->
 <template>
   <div>
@@ -159,7 +159,7 @@
               @change="busEnumChange"
             >
               <el-option
-                v-for="item in $root.dictAllList('BusEnum')"
+                v-for="item in $root.dictAllList('Bus')"
                 :key="item.code"
                 :label="item.name"
                 :value="item.code"
@@ -180,7 +180,7 @@
               @change="chargeEnumChange"
             >
               <el-option
-                v-for="item in $root.dictAllList('ChargeEnum')"
+                v-for="item in $root.dictAllList('Charge')"
                 :key="item.code"
                 :label="item.name"
                 :value="item.code"
@@ -243,7 +243,7 @@
               class="width--100"
             >
               <el-option
-                v-for="item in $root.dictAllList('BusTypeEnum')"
+                v-for="item in $root.dictAllList('BusType')"
                 :key="item.code"
                 :label="item.name"
                 :value="item.code"
@@ -311,7 +311,7 @@
               class="width--100"
             >
               <el-option
-                v-for="item in $root.dictAllList('TermStageEnum')"
+                v-for="item in $root.dictAllList('TermStage')"
                 :key="item.code"
                 :label="item.name"
                 :value="item.code"
@@ -988,7 +988,7 @@ export default class FirstAgencyEdit extends Vue {
   }
 
   private get padCommissionEnumOptions() {
-    let arr = (this.$root as any).dictAllList("PadCommissionEnum");
+    let arr = (this.$root as any).dictAllList("PadCommission");
     if (Number(this.info.exMarket)) {
       return arr.slice(0, 7);
     } else {
@@ -1016,7 +1016,7 @@ export default class FirstAgencyEdit extends Vue {
 
   async getAttributeEnumOptions() {
     this.attributeEnumOptions = await post_dict_getAllByType({
-      type: "AttributeEnum",
+      type: "Attribute",
       tag: `${this.info.busEnum},${this.info.chargeEnum}`,
       valid: "Valid",
     });
@@ -1076,7 +1076,7 @@ export default class FirstAgencyEdit extends Vue {
       this.info.termStageEnum = "Subscription";
       this.info.companyId = res.companyId;
       window.sessionStorage.setItem("proId", res.proId);
-      window.sessionStorage.setItem("padCommissionEnum", res.padCommissionEnum);
+      window.sessionStorage.setItem("padCommission", res.padCommissionEnum);
       if (this.info.chargeEnum && this.info.busEnum) {
         this.getAttributeEnumOptions();
       }

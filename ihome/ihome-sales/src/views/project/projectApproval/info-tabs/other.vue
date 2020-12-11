@@ -4,7 +4,7 @@
  * @Author: wwq
  * @Date: 2020-11-27 17:28:28
  * @LastEditors: wwq
- * @LastEditTime: 2020-12-10 11:04:46
+ * @LastEditTime: 2020-12-11 09:19:07
 -->
 <template>
   <div>
@@ -43,7 +43,7 @@
           prop="startDivisionName"
         >
           <template v-slot="{ row }">{{
-            $root.dictAllName(row.baseCostEnum, "BaseCostEnum")
+            $root.dictAllName(row.baseCostEnum, "BaseCost")
           }}</template>
         </el-table-column>
       </el-table>
@@ -169,7 +169,7 @@
           prop="shareStateEnum"
         >
           <template v-slot="{ row }">{{
-            $root.dictAllName(row.shareStateEnum, "ShareStateEnum")
+            $root.dictAllName(row.shareStateEnum, "ShareState")
           }}</template>
         </el-table-column>
       </el-table>

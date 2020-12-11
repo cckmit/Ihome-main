@@ -3,8 +3,8 @@
  * @version: 
  * @Author: ywl
  * @Date: 2020-09-27 16:27:36
- * @LastEditors: ywl
- * @LastEditTime: 2020-12-05 14:42:04
+ * @LastEditors: wwq
+ * @LastEditTime: 2020-12-11 08:43:43
 -->
 <template>
   <IhPage label-width="80px">
@@ -32,7 +32,7 @@
                 class="width--100"
               >
                 <el-option
-                  v-for="i in $root.dictAllList('NoticeEnum.NotificationType')"
+                  v-for="i in $root.dictAllList('NotificationType')"
                   :key="i.code"
                   :label="i.name"
                   :value="i.code"
@@ -114,7 +114,7 @@
                     class="width--100"
                   >
                     <el-option
-                      v-for="item in $root.dictAllList('NoticeEnum.InformationStatus')"
+                      v-for="item in $root.dictAllList('InformationStatus')"
                       :key="item.code"
                       :label="item.name"
                       :value="item.code"
@@ -197,7 +197,7 @@
           min-width="140"
         >
           <template v-slot="{ row }">
-            {{$root.dictAllName(row.notificationType, 'NoticeEnum.NotificationType')}}
+            {{$root.dictAllName(row.notificationType, 'NotificationType')}}
           </template>
         </el-table-column>
         <el-table-column
@@ -260,7 +260,7 @@
           width="120"
         >
           <template v-slot="{ row }">
-            {{$root.dictAllName(row.notificationStatus, 'NoticeEnum.NotificationStatus')}}
+            {{$root.dictAllName(row.notificationStatus, 'NotificationStatus')}}
           </template>
         </el-table-column>
         <el-table-column

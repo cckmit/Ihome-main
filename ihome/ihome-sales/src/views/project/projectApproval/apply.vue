@@ -63,7 +63,7 @@
                 label="是否垫佣"
               >
                 <template v-slot="{ row }">{{
-                  $root.dictAllName(row.padCommissionEnum, "PadCommissionEnum")
+                  $root.dictAllName(row.padCommissionEnum, "PadCommission")
                 }}</template>
               </el-table-column>
               <el-table-column
@@ -71,7 +71,7 @@
                 label="渠道类型"
               >
                 <template v-slot="{ row }">{{
-                  $root.dictAllName(row.channelEnum, "ChannelEnum")
+                  $root.dictAllName(row.channelEnum, "Channel")
                 }}</template>
               </el-table-column>
               <el-table-column
@@ -377,8 +377,8 @@
             <el-form-item label="渠道类型">
               <span
                 class="text-ellipsis"
-                :title="$root.dictAllName(info.channelEnum, 'ChannelEnum')"
-              >{{$root.dictAllName(info.channelEnum, 'ChannelEnum')}}</span>
+                :title="$root.dictAllName(info.channelEnum, 'Channel')"
+              >{{$root.dictAllName(info.channelEnum, 'Channel')}}</span>
             </el-form-item>
           </el-col>
           <el-col
@@ -399,8 +399,8 @@
             <el-form-item label="代理费是否垫佣">
               <span
                 class="text-ellipsis"
-                :title="$root.dictAllName(info.padCommissionEnum, 'PadCommissionEnum')"
-              >{{$root.dictAllName(info.padCommissionEnum, 'PadCommissionEnum')}}</span>
+                :title="$root.dictAllName(info.padCommissionEnum, 'PadCommission')"
+              >{{$root.dictAllName(info.padCommissionEnum, 'PadCommission')}}</span>
             </el-form-item>
           </el-col>
         </el-row>
@@ -412,7 +412,7 @@
             prop="propertyEnum"
           >
             <template v-slot="{ row }">{{
-            $root.dictAllName(row.propertyEnum, "PropertyEnum")
+            $root.dictAllName(row.propertyEnum, "Property")
           }}</template>
           </el-table-column>
           <el-table-column

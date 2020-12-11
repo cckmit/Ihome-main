@@ -3,8 +3,8 @@
  * @version: 
  * @Author: ywl
  * @Date: 2020-09-27 14:41:06
- * @LastEditors: ywl
- * @LastEditTime: 2020-12-05 08:42:17
+ * @LastEditors: wwq
+ * @LastEditTime: 2020-12-11 08:46:21
 -->
 <template>
   <IhPage class="text-left strategy-info">
@@ -25,7 +25,7 @@
         </el-row>
         <el-row :span="24">
           <el-form-item label="协议类型">
-            {{ $root.dictAllName(ruleForm.agreementType, 'AgreementTypeEnum') }}
+            {{ $root.dictAllName(ruleForm.agreementType, 'AgreementType') }}
           </el-form-item>
         </el-row>
         <el-row>
@@ -65,7 +65,7 @@
           <el-col :span="12">
             <el-form-item label="归档状态">
               <span v-if="$route.name === 'StrategyDetail'">
-                {{$root.dictAllName(ruleForm.fileState, 'StrategyEnum.FileState')}}
+                {{$root.dictAllName(ruleForm.fileState, 'FileState')}}
               </span>
               <el-select
                 v-model="ruleForm.fileState"
@@ -75,7 +75,7 @@
                 disabled
               >
                 <el-option
-                  v-for="item in $root.dictAllList('StrategyEnum.FileState')"
+                  v-for="item in $root.dictAllList('FileState')"
                   :key="item.code"
                   :label="item.name"
                   :value="item.code"

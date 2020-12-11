@@ -4,7 +4,7 @@
  * @Author: wwq
  * @Date: 2020-12-03 10:50:26
  * @LastEditors: wwq
- * @LastEditTime: 2020-12-10 14:25:46
+ * @LastEditTime: 2020-12-11 09:00:45
 -->
 <template>
   <el-dialog
@@ -38,15 +38,15 @@
         <td class="bold">是否市场化项目</td>
         <td colspan="2">{{form && form.termCalcVo && form.termCalcVo.exMarket}}</td>
         <td class="bold">业务模式</td>
-        <td colspan="2">{{form && form.termCalcVo && $root.dictAllName(form.termCalcVo.busEnum, 'BusEnum')}}</td>
+        <td colspan="2">{{form && form.termCalcVo && $root.dictAllName(form.termCalcVo.busEnum, 'Bus')}}</td>
         <td class="bold">收费类型</td>
-        <td colspan="3">{{form && form.termCalcVo && $root.dictAllName(form.termCalcVo.chargeEnum, 'ChargeEnum')}}</td>
+        <td colspan="3">{{form && form.termCalcVo && $root.dictAllName(form.termCalcVo.chargeEnum, 'Charge')}}</td>
       </tr>
       <tr>
         <td class="bold">模式属性</td>
-        <td colspan="5">{{form && form.termCalcVo && $root.dictAllName(form.termCalcVo.attributeEnum, 'AttributeEnum')}}</td>
+        <td colspan="5">{{form && form.termCalcVo && $root.dictAllName(form.termCalcVo.attributeEnum, 'Attribute')}}</td>
         <td class="bold">垫佣周期</td>
-        <td colspan="3">{{form && form.termCalcVo && $root.dictAllName(form.termCalcVo.padCommissionEnum, 'PadCommissionEnum')}}</td>
+        <td colspan="3">{{form && form.termCalcVo && $root.dictAllName(form.termCalcVo.padCommissionEnum, 'PadCommission')}}</td>
       </tr>
       <tr>
         <td
@@ -99,7 +99,7 @@
               v-for="(item, i) in form && form.termCalcVo && form.termCalcVo.properties"
               :key="i"
             >
-              <span>{{$root.dictAllName(item, 'PropertyEnum')}}</span>
+              <span>{{$root.dictAllName(item, 'Property')}}</span>
               <span v-if="i !== form.termCalcVo.properties.length - 1">+</span>
             </span>
           </template>
@@ -131,7 +131,7 @@
       <template v-for="(item, i) in form && form.serviceCalcComplateModelVOS">
         <tr :key="i + Math.random()">
           <td>物业类型</td>
-          <td colspan="10">{{$root.dictAllName(item.calcComplateVO.propertyEnum, 'PropertyEnum')}}</td>
+          <td colspan="10">{{$root.dictAllName(item.calcComplateVO.propertyEnum, 'Property')}}</td>
         </tr>
         <tr :key="i + Math.random()">
           <td>收费类型</td>
@@ -172,7 +172,7 @@
                 :rowspan="data.length"
                 v-if="h===0"
               >{{key}}</td>
-              <td>{{row.transactionEnum ? $root.dictAllName(row.transactionEnum, 'TransactionEnum') : `${key}成交合计`}}</td>
+              <td>{{row.transactionEnum ? $root.dictAllName(row.transactionEnum, 'Transaction') : `${key}成交合计`}}</td>
               <td>{{row.estimateComplateNum}}</td>
               <td>{{row.estimateReceiveAmount}}</td>
               <td>{{row.estimatePayChannelAmount}}</td>
@@ -210,7 +210,7 @@
       <template v-for="(item, i) in form && form.agencyCalcComplateModelVOS">
         <tr :key="i + Math.random()">
           <td>物业类型</td>
-          <td colspan="10">{{$root.dictAllName(item.calcComplateVO.propertyEnum, 'PropertyEnum')}}</td>
+          <td colspan="10">{{$root.dictAllName(item.calcComplateVO.propertyEnum, 'Property')}}</td>
         </tr>
         <tr :key="i + Math.random()">
           <td>收费类型</td>
@@ -259,7 +259,7 @@
                 :rowspan="data.length"
                 v-if="h===0"
               >{{key}}</td>
-              <td>{{row.transactionEnum ? $root.dictAllName(row.transactionEnum, 'TransactionEnum') : `${key}成交合计`}}</td>
+              <td>{{row.transactionEnum ? $root.dictAllName(row.transactionEnum, 'Transaction') : `${key}成交合计`}}</td>
               <td>{{row.estimateComplateNum}}</td>
               <td>{{row.estimateReceiveAmount}}</td>
               <td>{{row.estimatePayChannelAmount}}</td>

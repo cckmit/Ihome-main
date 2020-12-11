@@ -4,7 +4,7 @@
  * @Author: ywl
  * @Date: 2020-10-30 09:53:42
  * @LastEditors: wwq
- * @LastEditTime: 2020-12-10 18:40:11
+ * @LastEditTime: 2020-12-11 08:58:14
 -->
 <template>
   <el-dialog
@@ -41,7 +41,7 @@
         label="是否垫佣"
       >
         <template v-slot="{ row }">{{
-            $root.dictAllName(row.padCommissionEnum, "PadCommissionEnum")
+            $root.dictAllName(row.padCommissionEnum, "PadCommission")
           }}</template>
       </el-table-column>
       <el-table-column
@@ -49,7 +49,7 @@
         label="渠道类型"
       >
         <template v-slot="{ row }">{{
-            $root.dictAllName(row.channelEnum, "ChannelEnum")
+            $root.dictAllName(row.channelEnum, "Channel")
           }}</template>
       </el-table-column>
       <el-table-column

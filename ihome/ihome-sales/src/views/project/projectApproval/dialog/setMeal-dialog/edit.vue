@@ -4,7 +4,7 @@
  * @Author: wwq
  * @Date: 2020-12-04 09:40:47
  * @LastEditors: wwq
- * @LastEditTime: 2020-12-10 09:20:03
+ * @LastEditTime: 2020-12-11 09:11:16
 -->
 <template>
   <el-dialog
@@ -49,7 +49,7 @@
               placeholder="物业类型"
             >
               <el-option
-                v-for="item in $root.dictAllList('PropertyEnum')"
+                v-for="item in $root.dictAllList('Property')"
                 :key="item.code"
                 :label="item.name"
                 :value="item.code"
@@ -72,7 +72,7 @@
               placeholder="物业类型"
             >
               <el-option
-                v-for="item in $root.dictAllList('BaseCostEnum')"
+                v-for="item in $root.dictAllList('BaseCost')"
                 :key="item.code"
                 :label="item.name"
                 :value="item.code"
@@ -107,7 +107,7 @@
             <span
               class="text-ellipsis"
               :title="info.busEnum"
-            >{{$root.dictAllName(info.busEnum, 'BusEnum')}}</span>
+            >{{$root.dictAllName(info.busEnum, 'Bus')}}</span>
           </el-form-item>
         </el-col>
         <el-col :span="12">
@@ -115,7 +115,7 @@
             <span
               class="text-ellipsis"
               :title="info.chargeEnum"
-            >{{$root.dictAllName(info.chargeEnum, 'ChargeEnum')}}</span>
+            >{{$root.dictAllName(info.chargeEnum, 'Charge')}}</span>
           </el-form-item>
         </el-col>
       </el-row>
@@ -192,7 +192,7 @@
                     @change="subdivideEnumChange(row)"
                   >
                     <el-option
-                      v-for="item in $root.dictAllList('SubdivideEnum')"
+                      v-for="item in $root.dictAllList('Subdivide')"
                       :key="item.code"
                       :label="item.name"
                       :value="item.code"
@@ -568,7 +568,7 @@
                     @change="subdivideEnumChange(row)"
                   >
                     <el-option
-                      v-for="item in $root.dictAllList('SubdivideEnum')"
+                      v-for="item in $root.dictAllList('Subdivide')"
                       :key="item.code"
                       :label="item.name"
                       :value="item.code"
@@ -1110,7 +1110,7 @@ export default class SetMealEdit extends Vue {
           code: res.padCommissionEnum,
           name: (this.$root as any).dictAllName(
             res.padCommissionEnum,
-            "PadCommissionEnum"
+            "PadCommission"
           ),
         },
       ];
@@ -1139,7 +1139,7 @@ export default class SetMealEdit extends Vue {
           code: item.padCommissionEnum,
           name: (this.$root as any).dictAllName(
             item.padCommissionEnum,
-            "PadCommissionEnum"
+            "PadCommission"
           ),
         },
       ];
@@ -1364,7 +1364,7 @@ export default class SetMealEdit extends Vue {
     // row.transactionEnum = "";
     let item: any = [];
     item = await post_dict_getAllByType({
-      type: "TransactionEnum",
+      type: "Transaction",
       tag: row.contractEnum,
       valid: "Valid",
     });

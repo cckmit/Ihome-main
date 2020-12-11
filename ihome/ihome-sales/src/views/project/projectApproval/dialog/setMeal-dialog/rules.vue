@@ -4,7 +4,7 @@
  * @Author: wwq
  * @Date: 2020-12-04 19:58:24
  * @LastEditors: wwq
- * @LastEditTime: 2020-12-07 09:25:08
+ * @LastEditTime: 2020-12-11 09:13:53
 -->
 <template>
   <el-dialog
@@ -30,7 +30,7 @@
                 <el-checkbox
                   :label="item.conditionEnum"
                   v-model="item.checkboxed"
-                >{{$root.dictAllName(item.conditionEnum, 'ConditionEnum')}}
+                >{{$root.dictAllName(item.conditionEnum, 'Condition')}}
                 </el-checkbox>
               </span>
               <span v-if="item.checkboxed && item.conditionEnum !== 'OtherMsg'">
@@ -43,7 +43,7 @@
                   @change="compareChange(item.compare, i)"
                 >
                   <el-option
-                    v-for="item in $root.dictAllList('RuleEnum')"
+                    v-for="item in $root.dictAllList('Rule')"
                     :key="item.code"
                     :label="item.name"
                     :value="item.code"
@@ -55,7 +55,7 @@
                   style="width: 15%;"
                   clearable
                   v-digits="0"
-                  :placeholder="$root.dictAllName(item.conditionEnum, 'ConditionEnum')"
+                  :placeholder="$root.dictAllName(item.conditionEnum, 'Condition')"
                 ></el-input>
                 <el-checkbox
                   v-if="item.isConditionAndShow"
@@ -85,7 +85,7 @@
                     style="width: 20%"
                     clearable
                     v-digits="0"
-                    :placeholder="$root.dictAllName(item.conditionEnum, 'ConditionEnum')"
+                    :placeholder="$root.dictAllName(item.conditionEnum, 'Condition')"
                   ></el-input>
                 </span>
               </span>
@@ -193,13 +193,13 @@ export default class RulesDialog extends Vue {
         this.form[i].isConditionAndShow = false;
       } else {
         this.form[i].isConditionAndShow = true;
-        const ruleEnumList = (this.$root as any).dictAllList("RuleEnum");
+        const ruleEnumList = (this.$root as any).dictAllList("Rule");
         const item = ruleEnumList.find((v: any) => v.code === data);
         let arr: any = [];
         arr = item.tag.split(",");
         this.form[i].compareBList = arr.map((v: any) => ({
           code: v,
-          name: (this.$root as any).dictAllName(v, "RuleEnum"),
+          name: (this.$root as any).dictAllName(v, "Rule"),
         }));
       }
     }
@@ -233,7 +233,7 @@ export default class RulesDialog extends Vue {
     this.$emit("finish", arr);
   }
   async created() {
-    const ruleEnumList = (this.$root as any).dictAllList("RuleEnum");
+    const ruleEnumList = (this.$root as any).dictAllList("Rule");
     let info: any = [];
     if (this.data) {
       info = this.data.map((v: any) => {
@@ -250,7 +250,7 @@ export default class RulesDialog extends Vue {
               ? []
               : arr.map((h: any) => ({
                   code: h,
-                  name: (this.$root as any).dictAllName(h, "RuleEnum"),
+                  name: (this.$root as any).dictAllName(h, "Rule"),
                 })),
         };
       });

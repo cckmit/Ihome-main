@@ -4,7 +4,7 @@
  * @Author: wwq
  * @Date: 2020-12-02 15:37:31
  * @LastEditors: wwq
- * @LastEditTime: 2020-12-08 16:48:09
+ * @LastEditTime: 2020-12-11 09:03:03
 -->
 <template>
   <el-dialog
@@ -253,10 +253,10 @@
               clearable
               placeholder="请选择渠道类型"
               class="width--100"
-              @change="queryUnderData(info.channelEnum, 'channelEnum')"
+              @change="queryUnderData(info.channelEnum, 'channel')"
             >
               <el-option
-                v-for="item in $root.dictAllList('ChannelEnum')"
+                v-for="item in $root.dictAllList('Channel')"
                 :key="item.code"
                 :label="item.name"
                 :value="item.code"
@@ -294,7 +294,7 @@
               clearable
               placeholder="请选择垫佣周期"
               class="width--100"
-              @change="queryUnderData(info.padCommissionEnum, 'padCommissionEnum')"
+              @change="queryUnderData(info.padCommissionEnum, 'padCommission')"
             >
               <el-option
                 v-for="item in padCommissionEnumOptions"
@@ -323,7 +323,7 @@
         prop="propertyEnum"
       >
         <template v-slot="{ row }">{{
-            $root.dictAllName(row.propertyEnum, "PropertyEnum")
+            $root.dictAllName(row.propertyEnum, "Property")
           }}</template>
       </el-table-column>
       <el-table-column
@@ -505,7 +505,7 @@ export default class AddContract extends Vue {
           code: this.data.padCommissionEnum,
           name: (this.$root as any).dictAllName(
             this.data.padCommissionEnum,
-            "PadCommissionEnum"
+            "PadCommission"
           ),
         },
       ];
@@ -540,7 +540,7 @@ export default class AddContract extends Vue {
         code: item.padCommissionEnum,
         name: (this.$root as any).dictAllName(
           item.padCommissionEnum,
-          "PadCommissionEnum"
+          "PadCommission"
         ),
       },
     ];

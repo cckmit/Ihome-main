@@ -3,8 +3,8 @@
  * @version: 
  * @Author: ywl
  * @Date: 2020-09-25 16:00:37
- * @LastEditors: ywl
- * @LastEditTime: 2020-12-03 14:20:33
+ * @LastEditors: wwq
+ * @LastEditTime: 2020-12-11 08:45:25
 -->
 <template>
   <IhPage>
@@ -103,7 +103,7 @@
         <el-row>
           <el-col :span="12">
             <el-form-item label="归档状态">
-              {{ $root.dictAllName(formData.archiveStatus, 'ContractEnum.ArchiveStatus')}}
+              {{ $root.dictAllName(formData.archiveStatus, 'ArchiveStatus')}}
             </el-form-item>
           </el-col>
           <el-col :span="12">
@@ -111,7 +111,7 @@
               label="审核状态"
               label-width="160px"
             >
-              {{ $root.dictAllName(formData.approvalStatus, 'ContractEnum.ApprovalStatus') }}
+              {{ $root.dictAllName(formData.approvalStatus, 'ApprovalStatus') }}
             </el-form-item>
           </el-col>
         </el-row>

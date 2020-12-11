@@ -4,7 +4,7 @@
  * @Author: wwq
  * @Date: 2020-09-25 17:59:09
  * @LastEditors: wwq
- * @LastEditTime: 2020-12-04 20:50:42
+ * @LastEditTime: 2020-12-11 08:49:25
 -->
 <template>
   <ih-page>
@@ -70,7 +70,7 @@
                 class="width--100"
               >
                 <el-option
-                  v-for="item in $root.dictAllList('CompanyTypeEnum')"
+                  v-for="item in $root.dictAllList('CompanyType')"
                   :key="item.code"
                   :label="item.name"
                   :value="item.code"
@@ -266,7 +266,7 @@
             label="账号类型"
           >
             <template v-slot="{ row }">{{
-              $root.dictAllName(row.type, "BankAccountTypeEnum")
+              $root.dictAllName(row.type, "BankAccountType")
             }}</template>
           </el-table-column>
           <el-table-column

@@ -4,7 +4,7 @@
  * @Author: wwq
  * @Date: 2020-12-08 14:28:17
  * @LastEditors: wwq
- * @LastEditTime: 2020-12-08 19:27:18
+ * @LastEditTime: 2020-12-11 09:04:50
 -->
 <template>
   <el-dialog
@@ -35,7 +35,7 @@
           prop="propertyEnum"
         >
           <template v-slot="{ row }">{{
-            $root.dictAllName(row.propertyEnum, "PropertyEnum")
+            $root.dictAllName(row.propertyEnum, "Property")
           }}</template>
         </el-table-column>
         <el-table-column
@@ -43,7 +43,7 @@
           width="120"
         >
           <template v-slot="{ row }">{{
-            $root.dictAllName(row.baseCostEnum, "BaseCostEnum")
+            $root.dictAllName(row.baseCostEnum, "BaseCost")
           }}</template>
         </el-table-column>
         <el-table-column
@@ -62,7 +62,7 @@
           prop="state"
           label="状态"
         >
-          <template v-slot="{ row }">{{$root.dictAllName(row.state, 'OperEnum')}}</template>
+          <template v-slot="{ row }">{{$root.dictAllName(row.state, 'Oper')}}</template>
         </el-table-column>
         <el-table-column
           label="操作"
@@ -123,7 +123,7 @@
                   align="center"
                 >
                   <template v-slot="{ row }">
-                    <span>{{$root.dictAllName(row.subdivideEnum, "SubdivideEnum")}}</span>
+                    <span>{{$root.dictAllName(row.subdivideEnum, "Subdivide")}}</span>
                   </template>
                 </el-table-column>
                 <el-table-column
@@ -143,7 +143,7 @@
                   align="center"
                 >
                   <template v-slot="{ row }">
-                    <span>{{$root.dictAllName(row.transactionEnum, "TransactionEnum")}}</span>
+                    <span>{{$root.dictAllName(row.transactionEnum, "Transaction")}}</span>
                   </template>
                 </el-table-column>
                 <el-table-column
@@ -301,7 +301,7 @@
                   align="center"
                 >
                   <template v-slot="{ row }">
-                    <span>{{$root.dictAllName(row.subdivideEnum, "SubdivideEnum")}}</span>
+                    <span>{{$root.dictAllName(row.subdivideEnum, "Subdivide")}}</span>
                   </template>
                 </el-table-column>
                 <el-table-column
@@ -321,7 +321,7 @@
                   align="center"
                 >
                   <template v-slot="{ row }">
-                    <span>{{$root.dictAllName(row.transactionEnum, "TransactionEnum")}}</span>
+                    <span>{{$root.dictAllName(row.transactionEnum, "Transaction")}}</span>
                   </template>
                 </el-table-column>
                 <el-table-column
@@ -344,7 +344,7 @@
                   align="center"
                 >
                   <template v-slot="{ row }">
-                    <span>{{$root.dictAllName(row.padCommissionEnum, "PadCommissionEnum")}}</span>
+                    <span>{{$root.dictAllName(row.padCommissionEnum, "PadCommission")}}</span>
                   </template>
                 </el-table-column>
                 <el-table-column
