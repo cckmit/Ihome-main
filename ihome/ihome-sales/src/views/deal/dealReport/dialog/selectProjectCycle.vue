@@ -3,8 +3,8 @@
  * @version: 
  * @Author: lsj
  * @Date: 2020-11-03 15:28:12
- * @LastEditors: wwq
- * @LastEditTime: 2020-12-11 09:34:51
+ * @LastEditors: lsj
+ * @LastEditTime: 2020-11-03 15:30:12
 -->
 <template>
   <el-dialog
@@ -17,27 +17,16 @@
     append-to-body
     width="1000px"
     style="text-align: left"
-    class="dialog"
-  >
-    <el-form
-      ref="form"
-      label-width="100px"
-    >
+    class="dialog">
+    <el-form ref="form" label-width="100px">
       <el-row>
-        <el-col
-          :span="8"
-          class="search-col"
-        >
+        <el-col :span="8" class="search-col">
           <el-input
             v-model="queryPageParameters.termName"
             clearable
             placeholder="项目周期名称"
           ></el-input>
-          <el-button
-            type="primary"
-            class="margin-left-20"
-            @click="getListMixin()"
-          >查询</el-button>
+          <el-button type="primary" class="margin-left-20" @click="getListMixin()">查询</el-button>
         </el-col>
       </el-row>
     </el-form>
@@ -54,34 +43,27 @@
       :pageCurrent="currentPage"
       :pageTotal="resPageInfo.total"
       @page-change="pageChange"
-      @size-change="sizeChange"
-    >
+      @size-change="sizeChange">
     </IhTableCheckBox>
-    <span
-      slot="footer"
-      class="dialog-footer"
-    >
-      <el-button
-        type="primary"
-        @click="finish"
-      >确 定</el-button>
+    <span slot="footer" class="dialog-footer">
+      <el-button type="primary" @click="finish">确 定</el-button>
     </span>
   </el-dialog>
 </template>
 <script lang="ts">
-import { Component, Vue, Prop } from "vue-property-decorator";
+  import {Component, Vue, Prop} from "vue-property-decorator";
 
-import { post_term_getList } from "@/api/project/index";
-import PaginationMixin from "@/mixins/pagination";
+  import {post_term_getList} from "@/api/project/index";
+  import PaginationMixin from "@/mixins/pagination";
 
-@Component({
-  components: {},
-  mixins: [PaginationMixin],
-})
-export default class SelectProjectCycle extends Vue {
-  constructor() {
-    super();
-  }
+  @Component({
+    components: {},
+    mixins: [PaginationMixin],
+  })
+  export default class SelectProjectCycle extends Vue {
+    constructor() {
+      super();
+    }
 
     private rowKey: any = 'id'; // 选择项的标识
     private tableMaxHeight: any = 350;
@@ -126,30 +108,30 @@ export default class SelectProjectCycle extends Vue {
     private pageSize = 10;
     private currentPage = 1;
 
-  @Prop({ default: null }) data: any;
-  @Prop({
-    default: () => [],
-  })
-  hasCheckedData!: any;
-  dialogVisible = true;
-  resPageInfo: any = {
-    total: null,
-    list: [],
-  };
+    @Prop({default: null}) data: any;
+    @Prop({
+      default: ()=>[]
+    })
+    hasCheckedData!: any;
+    dialogVisible = true;
+    resPageInfo: any = {
+      total: null,
+      list: [],
+    };
 
-  queryPageParameters: any = {
-    termName: null,
-    busTypeEnum: null,
-  };
-  currentSelection: any = []; // 当前选择的项
+    queryPageParameters: any = {
+      termName: null,
+      busTypeEnum: null
+    };
+    currentSelection: any = []; // 当前选择的项
 
-  created() {
-    this.getListMixin();
-  }
+    created() {
+      this.getListMixin();
+    }
 
-  async beforeFinish() {
-    this.$emit("cancel");
-  }
+    async beforeFinish() {
+      this.$emit("cancel");
+    }
 
     async finish() {
       if (this.currentSelection.length === 0) {
@@ -161,41 +143,26 @@ export default class SelectProjectCycle extends Vue {
       }
       this.$emit("finish", this.currentSelection);
     }
-    this.$emit("finish", this.currentSelection);
-  }
 
-  // 获取选中项 --- 最后需要获取的数据
-  private selectionChange(selection: any) {
-    console.log(selection, "selectionChange");
-    this.currentSelection = selection;
-  }
+    // 获取选中项 --- 最后需要获取的数据
+    private selectionChange(selection: any) {
+      console.log(selection, "selectionChange");
+      this.currentSelection = selection;
+    }
 
-  private pageChange(index: number) {
-    this.currentPage = index;
-    this.queryPageParameters.pageNum = index;
-    this.getListMixin();
-  }
+    private pageChange(index: number) {
+      this.currentPage = index;
+      this.queryPageParameters.pageNum = index;
+      this.getListMixin();
+    }
 
-  private sizeChange(val: any) {
-    this.currentPage = 1;
-    this.pageSize = val;
-    this.queryPageParameters.pageNum = 1;
-    this.queryPageParameters.pageSize = val;
-    this.getListMixin();
-  }
-
-  // 在数据字典中获取对应的中文名
-  private getNameByDict(key: any, type: any) {
-    if (!key || !type) return;
-    let name = "";
-    let list = (this as any).$root.dictAllList(key);
-    list.forEach((item: any) => {
-      if (item.code === type) {
-        name = item.name;
-      }
-    });
-    return name;
-  }
+    private sizeChange(val: any) {
+      this.currentPage = 1;
+      this.pageSize = val;
+      this.queryPageParameters.pageNum = 1;
+      this.queryPageParameters.pageSize = val;
+      this.getListMixin();
+    }
 
     async getListMixin() {
       const infoList = await post_term_getList(this.queryPageParameters);
@@ -205,25 +172,36 @@ export default class SelectProjectCycle extends Vue {
           if (item.busTypeEnum) {
             item.busTypeEnum = (this as any).$root.dictAllName(item.busTypeEnum, 'BusTypeEnum');
           }
-        });
-      });
+        })
+      }
+      this.resPageInfo = JSON.parse(JSON.stringify(infoList));
+      // 勾选回显
+      if (this.resPageInfo.list.length > 0 && this.hasCheckedData.length > 0) {
+        this.hasCheckedData.forEach((data: any) => {
+          this.resPageInfo.list.forEach((list: any) => {
+            if (list[this.rowKey] === data[this.rowKey]) {
+              list.checked = true;
+              this.currentSelection = [...list];
+            }
+          })
+        })
+      }
+    }
+
+    reset() {
+      this.queryPageParameters = {
+        termName: null,
+        busTypeEnum: null,
+        pageNum: 1,
+        pageSize: this.queryPageParameters.pageSize
+      };
     }
   }
-
-  reset() {
-    this.queryPageParameters = {
-      termName: null,
-      busTypeEnum: null,
-      pageNum: 1,
-      pageSize: this.queryPageParameters.pageSize,
-    };
-  }
-}
 </script>
 <style lang="scss" scoped>
-.search-col {
-  display: flex;
-  align-items: center;
-  margin-bottom: 20px;
-}
+  .search-col {
+    display: flex;
+    align-items: center;
+    margin-bottom: 20px;
+  }
 </style>

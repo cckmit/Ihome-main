@@ -3,8 +3,8 @@
  * @version: 
  * @Author: lsj
  * @Date: 2020-11-02 19:35:12
- * @LastEditors: wwq
- * @LastEditTime: 2020-12-11 08:47:18
+ * @LastEditors: lsj
+ * @LastEditTime: 2020-11-13 14:37:22
 -->
 <template>
   <el-dialog
@@ -17,12 +17,8 @@
     append-to-body
     width="1000px"
     style="text-align: left"
-    class="dialog"
-  >
-    <el-form
-      ref="form"
-      label-width="100px"
-    >
+    class="dialog">
+    <el-form ref="form" label-width="100px">
       <el-row>
         <el-col :span="8">
           <el-form-item label="项目盘编">
@@ -46,10 +42,9 @@
               v-model="queryPageParameters.cityGrade"
               clearable
               placeholder="业务类型"
-              class="width--100"
-            >
+              class="width--100">
               <el-option
-                v-for="item in $root.dictAllList('BusType')"
+                v-for="item in $root.dictAllList('BusTypeEnum')"
                 :key="item.code"
                 :label="item.name"
                 :value="item.code"
@@ -63,8 +58,7 @@
               v-model="queryPageParameters.channelId"
               clearable
               placeholder="省份"
-              class="width--100"
-            >
+              class="width--100">
               <el-option
                 v-for="item in channelList"
                 :key="item.value"
@@ -80,8 +74,7 @@
               v-model="queryPageParameters.channelId"
               clearable
               placeholder="城市"
-              class="width--100"
-            >
+              class="width--100">
               <el-option
                 v-for="item in channelList"
                 :key="item.value"
@@ -97,8 +90,7 @@
               v-model="queryPageParameters.channelId"
               clearable
               placeholder="行政区"
-              class="width--100"
-            >
+              class="width--100">
               <el-option
                 v-for="item in channelList"
                 :key="item.value"
@@ -112,14 +104,8 @@
       <el-row>
         <el-col :span="8">
           <el-form-item label="">
-            <el-button
-              type="primary"
-              @click="getListMixin()"
-            >查询</el-button>
-            <el-button
-              type="info"
-              @click="reset()"
-            >重置</el-button>
+            <el-button type="primary" @click="getListMixin()">查询</el-button>
+            <el-button type="info" @click="reset()">重置</el-button>
           </el-form-item>
         </el-col>
       </el-row>
@@ -128,12 +114,8 @@
       class="ih-table"
       :empty-text="emptyText"
       :data="resPageInfo.list"
-      @selection-change="handleSelectionChange"
-    >
-      <el-table-column
-        type="selection"
-        width="55"
-      ></el-table-column>
+      @selection-change="handleSelectionChange">
+      <el-table-column type="selection" width="55"></el-table-column>
       <el-table-column
         prop="storageNum"
         label="盘编"
@@ -179,82 +161,76 @@
       :layout="$root.paginationLayout"
       :total="resPageInfo.total"
     ></el-pagination>
-    <span
-      slot="footer"
-      class="dialog-footer"
-    >
+    <span slot="footer" class="dialog-footer">
       <el-button @click="cancel()">取 消</el-button>
-      <el-button
-        type="primary"
-        @click="finish()"
-      >确 定</el-button>
+      <el-button type="primary" @click="finish()">确 定</el-button>
     </span>
   </el-dialog>
 </template>
 <script lang="ts">
-import { Component, Vue, Prop } from "vue-property-decorator";
+  import {Component, Vue, Prop} from "vue-property-decorator";
 
-import { post_channelGrade_getList } from "@/api/channel";
-import PaginationMixin from "@/mixins/pagination";
+  import {post_channelGrade_getList} from "@/api/channel";
+  import PaginationMixin from "@/mixins/pagination";
 
-@Component({
-  components: {},
-  mixins: [PaginationMixin],
-})
-export default class RelatedProjectList extends Vue {
-  constructor() {
-    super();
-  }
+  @Component({
+    components: {},
+    mixins: [PaginationMixin],
+  })
+  export default class RelatedProjectList extends Vue {
+    constructor() {
+      super();
+    }
 
-  @Prop({ default: null }) data: any;
-  dialogVisible = true;
-  resPageInfo: any = {
-    total: null,
-    list: [],
-  };
+    @Prop({default: null}) data: any;
+    dialogVisible = true;
+    resPageInfo: any = {
+      total: null,
+      list: [],
+    };
 
-  channelList: any = []; //渠道商列表
-  selectList: any = [];
-  queryPageParameters: any = {
-    channelGrade: null,
-    channelId: null,
-    city: null,
-    cityGrade: null,
-    departmentOrgId: null,
-    inputUser: null,
-    province: null,
-    special: null,
-    status: null,
-    storageNum: null,
-  };
+    channelList: any = []; //渠道商列表
+    selectList: any = [];
+    queryPageParameters: any = {
+      channelGrade: null,
+      channelId: null,
+      city: null,
+      cityGrade: null,
+      departmentOrgId: null,
+      inputUser: null,
+      province: null,
+      special: null,
+      status: null,
+      storageNum: null,
+    };
 
-  cancel() {
-    this.$emit("finish", true);
-  }
+    cancel() {
+      this.$emit("finish", true);
+    }
 
-  async finish() {
-    if (this.selectList && this.selectList.length > 0) {
-      this.$emit("finish", this.selectList);
-    } else {
-      this.$message.warning("请先勾选数据");
+    async finish() {
+      if (this.selectList && this.selectList.length > 0) {
+        this.$emit("finish", this.selectList);
+      } else {
+        this.$message.warning("请先勾选数据");
+      }
+    }
+
+    created() {
+      // this.getListMixin();
+    }
+
+    handleSelectionChange(val: any) {
+      console.log(val);
+      this.selectList = val;
+    }
+
+    async getListMixin() {
+      this.resPageInfo = await post_channelGrade_getList(
+        this.queryPageParameters
+      );
     }
   }
-
-  created() {
-    // this.getListMixin();
-  }
-
-  handleSelectionChange(val: any) {
-    console.log(val);
-    this.selectList = val;
-  }
-
-  async getListMixin() {
-    this.resPageInfo = await post_channelGrade_getList(
-      this.queryPageParameters
-    );
-  }
-}
 </script>
 <style lang="scss" scoped>
 </style>
