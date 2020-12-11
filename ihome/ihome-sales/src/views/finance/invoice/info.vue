@@ -4,7 +4,7 @@
  * @Author: ywl
  * @Date: 2020-12-08 19:55:43
  * @LastEditors: ywl
- * @LastEditTime: 2020-12-08 20:53:31
+ * @LastEditTime: 2020-12-11 19:38:53
 -->
 <template>
   <IhPage class="text-left">
@@ -13,93 +13,105 @@
       <el-form label-width="145px">
         <el-row>
           <el-col :span="8">
-            <el-form-item label="业务单号">QK-202012070001</el-form-item>
+            <el-form-item label="业务单号">{{info.invoiceInfo.businessNo}}</el-form-item>
           </el-col>
           <el-col :span="8">
-            <el-form-item label="发票抬头">富力集团有限公司</el-form-item>
+            <el-form-item label="发票抬头">{{info.invoiceInfo.invoiceTitle}}</el-form-item>
           </el-col>
           <el-col :span="8">
-            <el-form-item label="费用类型">代理费</el-form-item>
-          </el-col>
-        </el-row>
-        <el-row>
-          <el-col :span="8">
-            <el-form-item label="金额（含税）">5000</el-form-item>
-          </el-col>
-          <el-col :span="8">
-            <el-form-item label="税额">5000</el-form-item>
-          </el-col>
-          <el-col :span="8">
-            <el-form-item label="确认主营（不含税）">470000</el-form-item>
+            <el-form-item label="费用类型">{{$root.dictAllName(info.invoiceInfo.feeType, 'FeeType')}}</el-form-item>
           </el-col>
         </el-row>
         <el-row>
           <el-col :span="8">
-            <el-form-item label="开票类型">自动开票</el-form-item>
+            <el-form-item label="金额（含税）">{{info.invoiceInfo.amount}}</el-form-item>
           </el-col>
           <el-col :span="8">
-            <el-form-item label="开票日期">2020-12-08</el-form-item>
+            <el-form-item label="税额">{{info.invoiceInfo.tax}}</el-form-item>
           </el-col>
           <el-col :span="8">
-            <el-form-item label="发票类型">增值税专用发票（电子）</el-form-item>
+            <el-form-item label="确认主营（不含税）">{{info.invoiceInfo.noTax}}</el-form-item>
           </el-col>
         </el-row>
         <el-row>
           <el-col :span="8">
-            <el-form-item label="发票代码">发票代码</el-form-item>
+            <el-form-item label="开票类型">{{$root.dictAllName(info.invoiceInfo.operationType, 'InvoiceOperationType')}}</el-form-item>
           </el-col>
           <el-col :span="8">
-            <el-form-item label="NC凭证号">NC凭证号</el-form-item>
+            <el-form-item label="开票日期">{{info.invoiceInfo.operationDate}}</el-form-item>
+          </el-col>
+          <el-col :span="8">
+            <el-form-item label="发票类型">{{$root.dictAllName(info.invoiceInfo.invoiceType, 'InvoiceType')}}</el-form-item>
+          </el-col>
+        </el-row>
+        <el-row>
+          <el-col :span="8">
+            <el-form-item label="税率">{{info.invoiceInfo.taxRate}}</el-form-item>
+          </el-col>
+          <el-col :span="8">
+            <el-form-item label="NC凭证号">{{info.invoiceInfo.ncCode}}</el-form-item>
           </el-col>
           <el-col :span="8">
             <el-form-item label="收款方">
               <span
                 class="text-ellipsis"
-                title=""
-              >西藏保利爱家房地产经纪有限公司广州分公司</span>
+                :title="info.invoiceInfo.payee"
+              >{{info.invoiceInfo.payee}}</span>
             </el-form-item>
           </el-col>
         </el-row>
         <el-row>
           <el-col :span="8">
-            <el-form-item label="状态">状态</el-form-item>
-          </el-col>
-          <el-col :span="8">
-            <el-form-item label="税率">6%</el-form-item>
+            <el-form-item label="状态">{{$root.dictAllName(info.invoiceInfo.status, 'InvoiceOperationStatus')}}</el-form-item>
           </el-col>
         </el-row>
         <el-row>
           <el-col :span="8">
-            <el-form-item label="备注">备注备注备注</el-form-item>
+            <el-form-item label="备注">{{info.invoiceInfo.remark}}</el-form-item>
           </el-col>
         </el-row>
       </el-form>
       <p class="ih-info-title">发票信息</p>
       <div class="padding-left-20">
-        <el-table style="width: 100%">
+        <el-table
+          style="width: 100%"
+          :data="info.invoiceBillInfos"
+        >
           <el-table-column
-            prop="accountName"
+            prop="invoiceNo"
             label="发票号码"
           ></el-table-column>
           <el-table-column
-            prop="accountNo"
-            label="金额（含税）"
-          > </el-table-column>
-          <el-table-column
-            prop="branchName"
-            label="确认主营（不含税）"
+            label="发票代码"
+            prop="invoiceCode"
+            width="120"
           ></el-table-column>
           <el-table-column
-            prop="branchNo"
+            prop="amount"
+            label="金额（含税）"
+            width="110"
+          > </el-table-column>
+          <el-table-column
+            prop="noTax"
+            label="确认主营（不含税）"
+            width="155"
+          ></el-table-column>
+          <el-table-column
+            prop="tax"
             label="税额"
           ></el-table-column>
           <el-table-column
-            prop="accountType"
+            prop="invoiceType"
             label="发票类别"
-          ></el-table-column>
+          >
+            <template v-slot="{ row }">
+              {{row.invoiceType == 1 ? '正票' : '红票'}}
+            </template>
+          </el-table-column>
           <el-table-column
-            prop="accountType"
+            prop="serialNo"
             label="航天开票流水号"
+            min-width="265"
           ></el-table-column>
         </el-table>
       </div>
@@ -112,24 +124,30 @@
       </div>
       <p class="ih-info-title">开票历史记录</p>
       <div class="padding-left-20">
-        <el-table style="width: 100%">
+        <el-table
+          style="width: 100%"
+          :data="info.invoiceRecords"
+        >
           <el-table-column
-            prop="accountName"
+            prop="operateTime"
             label="开票时间"
-            min-width="200"
           ></el-table-column>
           <el-table-column
-            prop="accountNo"
+            prop="operator"
             label="开票人"
-            min-width="200"
           > </el-table-column>
           <el-table-column
-            prop="branchName"
+            prop="operation"
             label="操作"
-          ></el-table-column>
+          >
+            <template v-slot="{ row }">
+              {{$root.dictAllName(row.operation, 'InvoiceOperation')}}
+            </template>
+          </el-table-column>
           <el-table-column
-            prop="branchNo"
+            prop="remark"
             label="备注"
+            min-width="200"
           ></el-table-column>
         </el-table>
         <br />
@@ -143,10 +161,26 @@
 
 <script lang="ts">
 import { Component, Vue } from "vue-property-decorator";
+import { get_invoice_get__id } from "../../../api/finance/index";
 
 @Component({})
 export default class InvoiceInfo extends Vue {
   fileList: any = [];
+  private info: any = {
+    invoiceBillInfos: [],
+    invoiceInfo: {},
+    invoiceRecords: [],
+    fileIds: [],
+  };
+
+  private async getInfo() {
+    let id = this.$route.query.id;
+    if (id) this.info = await get_invoice_get__id({ id });
+  }
+
+  created() {
+    this.getInfo();
+  }
 }
 </script>
 

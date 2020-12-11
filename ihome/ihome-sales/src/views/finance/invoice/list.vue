@@ -4,7 +4,7 @@
  * @Author: ywl
  * @Date: 2020-12-08 17:45:05
  * @LastEditors: ywl
- * @LastEditTime: 2020-12-11 17:18:16
+ * @LastEditTime: 2020-12-11 17:37:12
 -->
 <template>
   <IhPage label-width="80px">
@@ -193,10 +193,10 @@
           label="操作"
           width="120"
         >
-          <template v-slot="{  }">
+          <template v-slot="{ row }">
             <el-link
               type="primary"
-              @click="$router.push('/invoice/info')"
+              @click="$router.push(`/invoice/info?id=${row.id}`)"
             >详情</el-link>
             <el-dropdown
               trigger="click"
