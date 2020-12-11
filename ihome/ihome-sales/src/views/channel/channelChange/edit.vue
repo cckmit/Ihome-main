@@ -3,8 +3,8 @@
  * @version: 
  * @Author: ywl
  * @Date: 2020-09-16 14:05:21
- * @LastEditors: ywl
- * @LastEditTime: 2020-12-01 15:13:18
+ * @LastEditors: wwq
+ * @LastEditTime: 2020-12-11 08:41:59
 -->
 <template>
   <IhPage>
@@ -213,7 +213,7 @@
           width="150"
         >
           <template v-slot="{ row }">
-            <span>{{$root.dictAllName(row.accountType, "AccountEnum")}}</span>
+            <span>{{$root.dictAllName(row.accountType, "Account")}}</span>
           </template>
         </el-table-column>
         <el-table-column
@@ -590,9 +590,13 @@ export default class ModifyThe extends Vue {
    * @param {number} index 编辑当前行数据下标
    */
   private async deleteBank(row: object, index: number): Promise<void> {
-    await this.$confirm(`此操作将该银行信息, 是否继续?`, "提示");
-    this.info.channelBankChanges.splice(index, 1);
-    this.$message.success("删除成功");
+    try {
+      await this.$confirm(`此操作将该银行信息, 是否继续?`, "提示");
+      this.info.channelBankChanges.splice(index, 1);
+      this.$message.success("删除成功");
+    } catch (error) {
+      console.log(error);
+    }
   }
 
   async created() {

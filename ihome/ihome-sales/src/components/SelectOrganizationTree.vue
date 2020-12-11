@@ -3,8 +3,8 @@
  * @version: 
  * @Author: zyc
  * @Date: 2020-08-12 10:12:11
- * @LastEditors: zyc
- * @LastEditTime: 2020-08-12 14:10:56
+ * @LastEditors: wwq
+ * @LastEditTime: 2020-12-07 09:36:40
 -->
 <template>
   <IhSelectTree
@@ -40,7 +40,7 @@ export default class SelectOrganizationTree extends Vue {
     this.$emit("callback", value);
   }
   async created() {
-      this.currentId=this.orgId;
+    this.currentId = this.orgId;
     let listOrg = await get_org_getAll({ onlyValid: true });
     if (listOrg && listOrg.length > 0) {
       listOrg[0].parentId = 0;

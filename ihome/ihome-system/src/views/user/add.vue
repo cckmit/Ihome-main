@@ -3,8 +3,8 @@
  * @version: 
  * @Author: zyc
  * @Date: 2020-07-01 10:32:40
- * @LastEditors: zyc
- * @LastEditTime: 2020-12-09 17:53:15
+ * @LastEditors: wwq
+ * @LastEditTime: 2020-12-11 09:24:56
 --> 
 
 <template>
@@ -18,14 +18,25 @@
     width="800px"
     class="dialog text-left"
   >
-    <el-form ref="form" :model="form" :rules="rules" label-width="80px">
+    <el-form
+      ref="form"
+      :model="form"
+      :rules="rules"
+      label-width="80px"
+    >
       <p>
         <b>账号信息</b>
       </p>
       <el-row>
         <el-col :span="12">
-          <el-form-item label="账号类型" prop="accountType">
-            <el-select v-model="form.accountType" placeholder="请选择账号类型">
+          <el-form-item
+            label="账号类型"
+            prop="accountType"
+          >
+            <el-select
+              v-model="form.accountType"
+              placeholder="请选择账号类型"
+            >
               <el-option
                 v-for="item in $root.dictAllList('UserAccountType')"
                 :key="item.code"
@@ -36,19 +47,34 @@
           </el-form-item>
         </el-col>
         <el-col :span="12">
-          <el-form-item label="姓名" prop="name">
-            <el-input v-model="form.name" placeholder="姓名"></el-input>
+          <el-form-item
+            label="姓名"
+            prop="name"
+          >
+            <el-input
+              v-model="form.name"
+              placeholder="姓名"
+            ></el-input>
           </el-form-item>
         </el-col>
       </el-row>
       <el-row>
         <el-col :span="12">
-          <el-form-item label="登录账号" prop="account">
-            <el-input v-model="form.account" placeholder="登录账号"></el-input>
+          <el-form-item
+            label="登录账号"
+            prop="account"
+          >
+            <el-input
+              v-model="form.account"
+              placeholder="登录账号"
+            ></el-input>
           </el-form-item>
         </el-col>
         <el-col :span="12">
-          <el-form-item label="手机号码" prop="mobilePhone">
+          <el-form-item
+            label="手机号码"
+            prop="mobilePhone"
+          >
             <el-input
               v-model="form.mobilePhone"
               placeholder="手机号码"
@@ -61,7 +87,10 @@
       </p>
       <el-row>
         <el-col :span="12">
-          <el-form-item label="员工工号" :prop="getProp('employeeCode')">
+          <el-form-item
+            label="员工工号"
+            :prop="getProp('employeeCode')"
+          >
             <el-input
               v-model="form.employeeCode"
               placeholder="员工工号"
@@ -69,7 +98,10 @@
           </el-form-item>
         </el-col>
         <el-col :span="12">
-          <el-form-item label="归属组织" :prop="getProp('orgId')">
+          <el-form-item
+            label="归属组织"
+            :prop="getProp('orgId')"
+          >
             <SelectOrganizationTree
               :orgId="form.orgId"
               @callback="(id) => (form.orgId = id)"
@@ -80,7 +112,10 @@
 
       <el-row>
         <el-col :span="12">
-          <el-form-item label="入职日期" :prop="getProp('employmentDate')">
+          <el-form-item
+            label="入职日期"
+            :prop="getProp('employmentDate')"
+          >
             <el-date-picker
               v-model="form.employmentDate"
               type="date"
@@ -90,7 +125,10 @@
           </el-form-item>
         </el-col>
         <el-col :span="12">
-          <el-form-item label="离职日期" :prop="getProp('leaveDate')">
+          <el-form-item
+            label="离职日期"
+            :prop="getProp('leaveDate')"
+          >
             <el-date-picker
               v-model="form.leaveDate"
               type="date"
@@ -103,7 +141,10 @@
 
       <el-row>
         <el-col :span="12">
-          <el-form-item label="职能类别" :prop="getProp('workType')">
+          <el-form-item
+            label="职能类别"
+            :prop="getProp('workType')"
+          >
             <el-select
               v-model="form.workType"
               clearable
@@ -120,7 +161,10 @@
         </el-col>
 
         <el-col :span="12">
-          <el-form-item label="人员类型" :prop="getProp('employeeType')">
+          <el-form-item
+            label="人员类型"
+            :prop="getProp('employeeType')"
+          >
             <el-select
               v-model="form.employeeType"
               clearable
@@ -139,12 +183,21 @@
 
       <el-row>
         <el-col :span="12">
-          <el-form-item label="邮箱" :prop="getProp('email')">
-            <el-input v-model="form.email" placeholder="电子邮箱"></el-input>
+          <el-form-item
+            label="邮箱"
+            :prop="getProp('email')"
+          >
+            <el-input
+              v-model="form.email"
+              placeholder="电子邮箱"
+            ></el-input>
           </el-form-item>
         </el-col>
         <el-col :span="12">
-          <el-form-item label="雇员状态" :prop="getProp('employeeStatus')">
+          <el-form-item
+            label="雇员状态"
+            :prop="getProp('employeeStatus')"
+          >
             <el-select
               v-model="form.employeeStatus"
               clearable
@@ -162,9 +215,15 @@
       </el-row>
     </el-form>
 
-    <span slot="footer" class="dialog-footer">
+    <span
+      slot="footer"
+      class="dialog-footer"
+    >
       <el-button @click="cancel()">取 消</el-button>
-      <el-button type="primary" @click="finish()">确 定</el-button>
+      <el-button
+        type="primary"
+        @click="finish()"
+      >确 定</el-button>
     </span>
   </el-dialog>
 </template>
@@ -180,10 +239,7 @@ import {
   post_user_update,
   get_user_get__id,
 } from "../../api/system";
-import {
-  emailOrNullValidato,
-  phoneValidator,
-} from "ihome-common/util/base/form-ui";
+import { phoneValidator } from "ihome-common/util/base/form-ui";
 @Component({
   components: { SelectOrganizationTree },
 })
@@ -246,7 +302,11 @@ export default class UserAdd extends Vue {
     ],
     email: [
       { required: true, message: "邮箱必填", trigger: "change" },
-      { validator: emailOrNullValidato, trigger: "change" },
+      {
+        type: "email",
+        message: "请输入正确的邮箱地址",
+        trigger: "change",
+      },
     ],
     employeeStatus: [
       { required: true, message: "请选择雇员状态", trigger: "change" },

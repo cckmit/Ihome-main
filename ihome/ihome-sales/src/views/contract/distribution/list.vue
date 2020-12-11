@@ -3,8 +3,8 @@
  * @version: 
  * @Author: ywl
  * @Date: 2020-09-25 17:34:32
- * @LastEditors: ywl
- * @LastEditTime: 2020-12-07 10:13:50
+ * @LastEditors: wwq
+ * @LastEditTime: 2020-12-11 09:29:56
 -->
 <template>
   <IhPage label-width="100px">
@@ -138,7 +138,7 @@
                     class="width--100"
                   >
                     <el-option
-                      v-for="item in $root.dictAllList('DistributionEnum.DistributionState')"
+                      v-for="item in $root.dictAllList('DistributionState')"
                       :key="item.code"
                       :label="item.name"
                       :value="item.code"
@@ -155,7 +155,7 @@
                     class="width--100"
                   >
                     <el-option
-                      v-for="item in $root.dictAllList('DistributionEnum.ArchiveStatus')"
+                      v-for="item in $root.dictAllList('ArchiveStatus')"
                       :key="item.code"
                       :label="item.name"
                       :value="item.code"
@@ -324,7 +324,7 @@
           width="100"
         >
           <template v-slot="{ row }">
-            {{$root.dictAllName(row.distributionState, 'DistributionEnum.DistributionState')}}
+            {{$root.dictAllName(row.distributionState, 'DistributionState')}}
           </template>
         </el-table-column>
         <el-table-column
@@ -333,7 +333,7 @@
           width="120"
         >
           <template v-slot="{ row }">
-            {{$root.dictAllName(row.archiveStatus, 'DistributionEnum.ArchiveStatus')}}
+            {{$root.dictAllName(row.archiveStatus, 'ArchiveStatus')}}
           </template>
         </el-table-column>
         <el-table-column

@@ -3,8 +3,8 @@
  * @version: 
  * @Author: wwq
  * @Date: 2020-10-15 12:33:25
- * @LastEditors: ywl
- * @LastEditTime: 2020-11-03 17:53:14
+ * @LastEditors: wwq
+ * @LastEditTime: 2020-12-11 08:49:49
 -->
 <template>
   <div class="text-left">
@@ -46,7 +46,7 @@
             align="left"
           >
             <span>{{
-              $root.dictAllName(resPageInfo.type, "CompanyTypeEnum")
+              $root.dictAllName(resPageInfo.type, "CompanyType")
             }}</span>
           </el-form-item>
         </el-col>
@@ -128,7 +128,7 @@
             align="left"
           >
             <span>{{
-              $root.dictAllName(resPageInfo.status, "CompanyStatusEnum")
+              $root.dictAllName(resPageInfo.status, "CompanyStatus")
             }}</span>
           </el-form-item>
         </el-col>
@@ -181,7 +181,7 @@
           label="账号类型"
         >
           <template v-slot="{ row }">{{
-            $root.dictAllName(row.type, "BankAccountTypeEnum")
+            $root.dictAllName(row.type, "BankAccountType")
           }}</template>
         </el-table-column>
       </el-table>

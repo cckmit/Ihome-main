@@ -3,8 +3,8 @@
  * @version: 
  * @Author: wwq
  * @Date: 2020-09-25 17:59:09
- * @LastEditors: zyc
- * @LastEditTime: 2020-12-10 11:55:26
+ * @LastEditors: wwq
+ * @LastEditTime: 2020-12-11 09:26:03
 -->
 <template>
   <ih-page>
@@ -266,7 +266,7 @@
             label="账号类型"
           >
             <template v-slot="{ row }">{{
-              $root.dictAllName(row.type, "BankAccountTypeEnum")
+              $root.dictAllName(row.type, "BankAccountType")
             }}</template>
           </el-table-column>
           <el-table-column
@@ -500,12 +500,16 @@ export default class Edit extends Vue {
   }
 
   async delContacts(index: number) {
-    await this.$confirm("是否确定移除?", "提示");
-    this.resPageInfo.contactList.splice(index, 1);
-    this.$message({
-      type: "success",
-      message: "移除成功!",
-    });
+    try {
+      await this.$confirm("是否确定移除?", "提示");
+      this.resPageInfo.contactList.splice(index, 1);
+      this.$message({
+        type: "success",
+        message: "移除成功!",
+      });
+    } catch (err) {
+      console.log(err);
+    }
   }
 
   contactsFinish(data: any) {
@@ -531,12 +535,16 @@ export default class Edit extends Vue {
   }
 
   async delAccount(index: number) {
-    await this.$confirm("是否确定移除?", "提示");
-    this.resPageInfo.bankList.splice(index, 1);
-    this.$message({
-      type: "success",
-      message: "移除成功!",
-    });
+    try {
+      await this.$confirm("是否确定移除?", "提示");
+      this.resPageInfo.bankList.splice(index, 1);
+      this.$message({
+        type: "success",
+        message: "移除成功!",
+      });
+    } catch (error) {
+      console.log(error);
+    }
   }
 
   accountFinish(data: any) {

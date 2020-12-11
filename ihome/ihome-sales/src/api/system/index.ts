@@ -1,6 +1,6 @@
 /* eslint-disable */
 /* 此脚本由swagger-ui的api-docs自动生成，请勿修改 */
-//2020-10-26 6:29:02 ├F10: PM┤
+//2020-12-9 2:43:51 ├F10: PM┤
 import { request } from '@/api/base'
 const basePath = "/sales-api/system"
 /**查询所有行政区划信息*/
@@ -15,13 +15,97 @@ return await request.get<AreaBaseVO[],AreaBaseVO[]>(basePath+'/area/getAllChildA
 export async function get_area_getAllProvince (d?: any) {
 return await request.get<AreaBaseVO[],AreaBaseVO[]>(basePath+'/area/getAllProvince', { params: d })
 }
+/**根据行政区划编码查询行政区划信息*/
+export async function get_area_getByCode__code (d?: any) {
+return await request.get<AreaBaseVO,AreaBaseVO>(basePath+'/area/getByCode/{code}', { params: d })
+}
+/**获取请款单编号*/
+export async function post_codeGenerate_getApplyNo (d?: any) {
+return await request.post< string,string> (basePath+'/codeGenerate/getApplyNo', d)
+}
+/**获取渠道呈批编号*/
+export async function post_codeGenerate_getChannelApproveNo (d?: any) {
+return await request.post< string,string> (basePath+'/codeGenerate/getChannelApproveNo', d)
+}
+/**获取渠道商分销协议编号*/
+export async function post_codeGenerate_getChannelContractNo (d?: any) {
+return await request.post< string,string> (basePath+'/codeGenerate/getChannelContractNo', d)
+}
+/**获取渠道等级编号*/
+export async function post_codeGenerate_getChannelLevelNo (d?: any) {
+return await request.post< string,string> (basePath+'/codeGenerate/getChannelLevelNo', d)
+}
+/**获取优惠告知书房号确认书编号*/
+export async function post_codeGenerate_getCustomerConfirmContractNo (d?: any) {
+return await request.post< string,string> (basePath+'/codeGenerate/getCustomerConfirmContractNo', d)
+}
+/**获取优惠告知书编号*/
+export async function post_codeGenerate_getCustomerContractNo (d?: any) {
+return await request.post< string,string> (basePath+'/codeGenerate/getCustomerContractNo', d)
+}
+/**获取客户编号*/
+export async function post_codeGenerate_getCustomerNo (d?: any) {
+return await request.post< string,string> (basePath+'/codeGenerate/getCustomerNo', d)
+}
+/**获取优惠告知书退款申请书编号*/
+export async function post_codeGenerate_getCustomerRefundContractNo (d?: any) {
+return await request.post< string,string> (basePath+'/codeGenerate/getCustomerRefundContractNo', d)
+}
+/**获取客户报备单编号*/
+export async function post_codeGenerate_getCustomerReportNo (d?: any) {
+return await request.post< string,string> (basePath+'/codeGenerate/getCustomerReportNo', d)
+}
+/**获取成交报告编号*/
+export async function post_codeGenerate_getDealNo (d?: any) {
+return await request.post< string,string> (basePath+'/codeGenerate/getDealNo', d)
+}
+/**获取甲方合同编号*/
+export async function post_codeGenerate_getDeveloperContractNo (d?: any) {
+return await request.post< string,string> (basePath+'/codeGenerate/getDeveloperContractNo', d)
+}
+/**获取收款编号*/
+export async function post_codeGenerate_getPaymentNo (d?: any) {
+return await request.post< string,string> (basePath+'/codeGenerate/getPaymentNo', d)
+}
+/**获取付款单编号*/
+export async function post_codeGenerate_getPayoffNo (d?: any) {
+return await request.post< string,string> (basePath+'/codeGenerate/getPayoffNo', d)
+}
+/**获取联动项目立项编号*/
+export async function post_codeGenerate_getProjectItemNo (d?: any) {
+return await request.post< string,string> (basePath+'/codeGenerate/getProjectItemNo', d)
+}
+/**获取联动项目编号*/
+export async function post_codeGenerate_getProjectNo (d?: any) {
+return await request.post< string,string> (basePath+'/codeGenerate/getProjectNo', d)
+}
+/**获取退款编号*/
+export async function post_codeGenerate_getRefundNo (d?: any) {
+return await request.post< string,string> (basePath+'/codeGenerate/getRefundNo', d)
+}
 /**查询所有公司信息*/
 export async function post_company_getAll (d?: any) {
 return await request.post< CompanyBaseVO[],CompanyBaseVO[]> (basePath+'/company/getAll', d)
 }
-/**添加字典*/
+/**添加字典项*/
 export async function post_dict_add (d?: any) {
 return await request.post< number,number> (basePath+'/dict/add', d)
+}
+/**添加字典类型*/
+export async function post_dict_addDictType (d?: any) {
+return await request.post< number,number> (basePath+'/dict/addDictType', d)
+}
+/**停用字典项*/
+export async function post_dict_close__id (d?: any) {
+return await request.post< number,number> (basePath+'/dict/close/{id}', d)
+}
+/**删除字典项*/
+export async function post_dict_delete__id (d?: any) {
+return await request.post< number,number> (basePath+'/dict/delete/{id}', d)
+}
+/**删除字典类型*/
+export async function post_dict_deleteDictType__id (d?: any) {
+return await request.post< number,number> (basePath+'/dict/deleteDictType/{id}', d)
 }
 /**查询所有字典项*/
 export async function get_dict_getAll (d?: any) {
@@ -31,9 +115,29 @@ return await request.get<any,any>(basePath+'/dict/getAll', { params: d })
 export async function post_dict_getAllByType (d?: any) {
 return await request.post< DictBaseVO[],DictBaseVO[]> (basePath+'/dict/getAllByType', d)
 }
+/**查询指定字典类型的所有字典项*/
+export async function post_dict_getAllDictItemByType (d?: any) {
+return await request.post< DictBaseVO[],DictBaseVO[]> (basePath+'/dict/getAllDictItemByType', d)
+}
+/**查询所有字典类型*/
+export async function post_dict_getAllDictType (d?: any) {
+return await request.post< DictTypeVO[],DictTypeVO[]> (basePath+'/dict/getAllDictType', d)
+}
 /**根据类型和编码查询字典项*/
 export async function post_dict_getByTypeAndCode (d?: any) {
 return await request.post< DictBaseVO,DictBaseVO> (basePath+'/dict/getByTypeAndCode', d)
+}
+/**启用字典项*/
+export async function post_dict_open__id (d?: any) {
+return await request.post< number,number> (basePath+'/dict/open/{id}', d)
+}
+/**修改字典项*/
+export async function post_dict_update (d?: any) {
+return await request.post< number,number> (basePath+'/dict/update', d)
+}
+/**修改字典类型*/
+export async function post_dict_updateDictType (d?: any) {
+return await request.post< number,number> (basePath+'/dict/updateDictType', d)
 }
 /**添加岗位*/
 export async function post_job_add (d?: any) {
@@ -87,9 +191,17 @@ return await request.get<OrgVO,OrgVO>(basePath+'/org/get/{id}', { params: d })
 export async function get_org_getAll (d?: any) {
 return await request.get<OrgVO[],OrgVO[]>(basePath+'/org/getAll', { params: d })
 }
+/**查询组织层次树*/
+export async function get_org_getLevelTree__id (d?: any) {
+return await request.get<OrgLevelTreeVO,OrgLevelTreeVO>(basePath+'/org/getLevelTree/{id}', { params: d })
+}
 /**查询组织列表*/
 export async function post_org_getList (d?: any) {
 return await request.post< PageModel<OrgVO>,PageModel<OrgVO>> (basePath+'/org/getList', d)
+}
+/**递归查询组织列表*/
+export async function post_org_getListRecursion (d?: any) {
+return await request.post< PageModel<OrgVO>,PageModel<OrgVO>> (basePath+'/org/getListRecursion', d)
 }
 /**修改组织*/
 export async function post_org_update (d?: any) {
@@ -179,9 +291,17 @@ return await request.post< PageModel<RoleVO>,PageModel<RoleVO>> (basePath+'/role
 export async function post_role_update (d?: any) {
 return await request.post< number,number> (basePath+'/role/update', d)
 }
+/**添加渠道用户*/
+export async function post_sessionUser_addChannelUser (d?: any) {
+return await request.post< number,number> (basePath+'/sessionUser/addChannelUser', d)
+}
 /**查询登录用户信息*/
 export async function post_sessionUser_getUserInfo (d?: any) {
 return await request.post< LoginUserVO,LoginUserVO> (basePath+'/sessionUser/getUserInfo', d)
+}
+/**修改渠道用户*/
+export async function post_sessionUser_updateChannelUser (d?: any) {
+return await request.post< number,number> (basePath+'/sessionUser/updateChannelUser', d)
 }
 /**激活用户*/
 export async function post_user_activate__id (d?: any) {
@@ -189,7 +309,7 @@ return await request.post< boolean,boolean> (basePath+'/user/activate/{id}', d)
 }
 /**添加用户*/
 export async function post_user_add (d?: any) {
-return await request.post< string,string> (basePath+'/user/add', d)
+return await request.post< number,number> (basePath+'/user/add', d)
 }
 /**批量添加用户岗位及角色*/
 export async function post_user_addJobAndRoleBatch (d?: any) {
@@ -236,8 +356,8 @@ export async function post_user_lock__id (d?: any) {
 return await request.post< boolean,boolean> (basePath+'/user/lock/{id}', d)
 }
 /**重置密码*/
-export async function post_user_resetPassword__id (d?: any) {
-return await request.post< string,string> (basePath+'/user/resetPassword/{id}', d)
+export async function post_user_resetPassword (d?: any) {
+return await request.post< number,number> (basePath+'/user/resetPassword', d)
 }
 /**修改用户*/
 export async function post_user_update (d?: any) {
@@ -273,8 +393,44 @@ name: string;
 /**父编码*/
 parentCode: string;
 }
+/**ChannelUserUpdateVO*/
+export interface ChannelUserUpdateVO {
+/**渠道id*/
+channelId: number;
+/**(必填)渠道用户类型(Leader-渠道负责人、Agent-渠道经纪人、Commission-渠道结佣)*/
+channelUserType: string;
+/**email*/
+email: string;
+/**(必填)id*/
+id: number;
+/**(必填)手机号码*/
+mobilePhone: string;
+/**(必填)姓名*/
+name: string;
+/**密码*/
+password: string;
+}
+/**ChannelUserVO*/
+export interface ChannelUserVO {
+/**渠道id*/
+channelId: number;
+/**(必填)渠道用户类型(Leader-渠道负责人、Agent-渠道经纪人、Commission-渠道结佣)*/
+channelUserType: string;
+/**email*/
+email: string;
+/**(必填)手机号码*/
+mobilePhone: string;
+/**(必填)姓名*/
+name: string;
+/**密码*/
+password: string;
+}
 /**CompanyBaseVO*/
 export interface CompanyBaseVO {
+/**营业住所*/
+address: string;
+/**统一社会信用代码*/
+creditCode: string;
 /**ID*/
 id: number;
 /**公司名称*/
@@ -285,8 +441,13 @@ export interface CompanyQueryVO {
 /**公司名称*/
 name: string;
 }
-/**DictBaseVO*/
-export interface DictBaseVO {
+/**DepartmentVO*/
+export interface DepartmentVO {
+/**事业部ID*/
+departmentId: number;
+}
+/**DictAddVO*/
+export interface DictAddVO {
 /**编码*/
 code: string;
 /**名称*/
@@ -299,8 +460,45 @@ subType: string;
 tag: string;
 /**类别*/
 type: string;
+}
+/**DictBaseVO*/
+export interface DictBaseVO {
+/**编码*/
+code: string;
+/**id*/
+id: number;
+/**名称*/
+name: string;
+/**顺序*/
+seq: number;
+/**子类别*/
+subType: string;
+/**标签*/
+tag: string;
+/**类别*/
+type: string;
+/**类别名称*/
+typeName: string;
+/**更新时间(yyyy-MM-dd HH:mm:ss)*/
+updateTime: string;
 /**是否有效(Valid-有效、Invalid-无效)*/
 valid: string;
+}
+/**DictItemKeyQueryVO*/
+export interface DictItemKeyQueryVO {
+/**关键字*/
+key: string;
+/**类型*/
+type: string;
+/**是否有效(Valid-有效、Invalid-无效)*/
+valid: string;
+}
+/**DictTypeAddVO*/
+export interface DictTypeAddVO {
+/**编码*/
+code: string;
+/**名称*/
+name: string;
 }
 /**DictTypeCodeQueryVO*/
 export interface DictTypeCodeQueryVO {
@@ -311,17 +509,63 @@ type: string;
 /**是否有效(Valid-有效、Invalid-无效)*/
 valid: string;
 }
+/**DictTypeKeyQueryVO*/
+export interface DictTypeKeyQueryVO {
+/**关键字*/
+key: string;
+}
 /**DictTypeQueryVO*/
 export interface DictTypeQueryVO {
+/**标签*/
+tag: string;
 /**(必填)类型*/
 type: string;
 /**是否有效(Valid-有效、Invalid-无效)*/
 valid: string;
 }
+/**DictTypeUpdateVO*/
+export interface DictTypeUpdateVO {
+/**编码*/
+code: string;
+/**(必填)id*/
+id: number;
+/**名称*/
+name: string;
+}
+/**DictTypeVO*/
+export interface DictTypeVO {
+/**编码*/
+code: string;
+/**id*/
+id: number;
+/**名称*/
+name: string;
+/**是否有效(Valid-有效、Invalid-无效)*/
+valid: string;
+}
+/**DictUpdateVO*/
+export interface DictUpdateVO {
+/**编码*/
+code: string;
+/**(必填)id*/
+id: number;
+/**名称*/
+name: string;
+/**顺序*/
+seq: number;
+/**子类别*/
+subType: string;
+/**标签*/
+tag: string;
+/**类别*/
+type: string;
+}
 /**JobBaseVO*/
 export interface JobBaseVO {
 /**(必填)编码*/
 code: string;
+/**数据权限(OrgLimit-组织数据权限、SelfLimit-个人数据权限、ChannelLimit-渠道数据权限、CustomerLimit-客户数据权限)*/
+dataLimit: string;
 /**(必填)名称*/
 name: string;
 /**(必填)备注*/
@@ -369,6 +613,8 @@ roleIds: number[];
 export interface JobUpdateVO {
 /**(必填)编码*/
 code: string;
+/**数据权限(OrgLimit-组织数据权限、SelfLimit-个人数据权限、ChannelLimit-渠道数据权限、CustomerLimit-客户数据权限)*/
+dataLimit: string;
 /**(必填)id*/
 id: number;
 /**(必填)名称*/
@@ -386,6 +632,8 @@ createTime: string;
 createUser: number;
 /**创建用户姓名*/
 createUserName: string;
+/**数据权限(OrgLimit-组织数据权限、SelfLimit-个人数据权限、ChannelLimit-渠道数据权限、CustomerLimit-客户数据权限)*/
+dataLimit: string;
 /**已删除*/
 deleted: number;
 /**id*/
@@ -396,6 +644,8 @@ jobRoles: string;
 name: string;
 /**备注*/
 remark: string;
+/**特殊岗位*/
+special: number;
 /**更新时间(yyyy-MM-dd HH:mm:ss)*/
 updateTime: string;
 /**更新用户*/
@@ -407,12 +657,14 @@ updateUserName: string;
 export interface LoginUserVO {
 /**登录账号*/
 account: string;
-/**用户类型(Ihome-爱家员工、Juheng-居恒员工、Poly-保顾兼职、Channel-渠道用户、Customer-个人客户、Outsourcing-劳务派遣)*/
+/**账号类型(Ihome-爱家员工、Juheng-居恒员工、Poly-保顾兼职、Channel-渠道用户、Customer-个人客户、Outsourcing-劳务派遣、RestUser-外部接口调用)*/
 accountType: string;
 /**创建时间(yyyy-MM-dd HH:mm:ss)*/
 createTime: string;
 /**创建用户*/
 createUser: number;
+/**数据权限(OrgLimit-组织数据权限、SelfLimit-个人数据权限、ChannelLimit-渠道数据权限、CustomerLimit-客户数据权限)*/
+dataLimit: string;
 /**已删除*/
 deleted: number;
 /**email*/
@@ -421,7 +673,7 @@ email: string;
 employeeCode: string;
 /**雇员状态(On-在职、Leave-离职)*/
 employeeStatus: string;
-/**人员类型(Formal-正式工、Probation-试用、Practice-实习、Vacation-暑期工、Rehire-离职返聘)*/
+/**人员类型(Formal-正式工、Probation-试用、Practice-实习、Vacation-暑期工、Rehire-离职返聘、Other-其他)*/
 employeeType: string;
 /**入职日期(yyyy-MM-dd)*/
 employmentDate: string;
@@ -433,8 +685,6 @@ leaveDate: string;
 mobilePhone: string;
 /**姓名*/
 name: string;
-/**用户归属组织*/
-org: Org;
 /**归属组织id*/
 orgId: number;
 /**密码*/
@@ -445,49 +695,16 @@ status: string;
 updateTime: string;
 /**更新用户*/
 updateUser: number;
+/**用户类别(Staff-员工、Channel-渠道、Customer-客户)*/
+userType: string;
 /**职能类别(FrontLine-一线、NotFrontLine-非一线)*/
 workType: string;
 /**菜单列表*/
 menuList: Resource[];
-/**用户权限组织列表*/
-permissionOrgList: OrgMinVO[];
 /**资源列表*/
 resourceList: Resource[];
-}
-/**Org*/
-export interface Org {
-/**关闭日期(yyyy-MM-dd)*/
-closeDate: string;
-/**创建时间(yyyy-MM-dd HH:mm:ss)*/
-createTime: string;
-/**创建用户*/
-createUser: number;
-/**已删除*/
-deleted: number;
-/**部门分类(Business-营业线、Function-职能线)*/
-departmentType: string;
-/**id*/
-id: number;
-/**组织层级*/
-level: number;
-/**名称*/
-name: string;
-/**开业日期(yyyy-MM-dd)*/
-openDate: string;
-/**组织代码*/
-orgCode: string;
-/**组织类型(Company-公司、Department-部门、Root-组织根节点)*/
-orgType: string;
-/**父组织id*/
-parentId: number;
-/**简称*/
-shortName: string;
-/**状态(Valid-有效、Invalid-无效)*/
-status: string;
-/**更新时间(yyyy-MM-dd HH:mm:ss)*/
-updateTime: string;
-/**更新用户*/
-updateUser: number;
+/**用户类别列表*/
+userTypeList: string[];
 }
 /**OrgBaseVO*/
 export interface OrgBaseVO {
@@ -497,18 +714,57 @@ closeDate: string;
 departmentType: string;
 /**名称*/
 name: string;
+/**OA呈字*/
+oaChar: string;
 /**开业日期(yyyy-MM-dd)*/
 openDate: string;
-/**组织代码*/
-orgCode: string;
-/**组织类型(Company-公司、Department-部门、Root-组织根节点)*/
-orgType: string;
 /**父组织id*/
 parentId: number;
 /**简称*/
 shortName: string;
+/**简称首字母*/
+shortNameAbbr: string;
 /**状态(Valid-有效、Invalid-无效)*/
 status: string;
+}
+/**OrgLevelTreeVO*/
+export interface OrgLevelTreeVO {
+/**公司id*/
+companyId: number;
+/**公司名称*/
+companyName: string;
+/**事业部id*/
+departmentId: number;
+/**事业部名称*/
+departmentName: string;
+/**片区id*/
+districtId: number;
+/**片区名称*/
+districtName: string;
+/**店组id*/
+groupId: number;
+/**店组名称*/
+groupName: string;
+/**组织层级*/
+level: number;
+/**组织id*/
+orgId: number;
+/**组织名称*/
+orgName: string;
+/**组织类型(Root-组织根节点、Company-公司、Department-事业部、Zone-战区、SmallZone-小战区、District-片区、Shop-门店、Group-店组)*/
+orgType: string;
+/**门店id*/
+shopId: number;
+/**门店名称*/
+shopName: string;
+/**小战区id*/
+smallZoneId: number;
+/**小战区名称*/
+smallZoneName: string;
+/**战区id*/
+zoneId: number;
+/**战区名称*/
+zoneName: string;
 }
 /**OrgMinVO*/
 export interface OrgMinVO {
@@ -516,10 +772,10 @@ export interface OrgMinVO {
 id: number;
 /**是否为末级节点*/
 lastNodeFlag: boolean;
-/**组织层级*/
-level: number;
 /**名称*/
 name: string;
+/**组织类型(Root-组织根节点、Company-公司、Department-事业部、Zone-战区、SmallZone-小战区、District-片区、Shop-门店、Group-店组)*/
+orgType: string;
 /**父组织id*/
 parentId: number;
 /**是否具有权限*/
@@ -529,11 +785,9 @@ permissionFlag: boolean;
 export interface OrgQueryVO {
 /**部门分类(Business-营业线、Function-职能线)*/
 departmentType: string;
-/**组织层级*/
-level: number;
 /**名称*/
 name: string;
-/**组织类型(Company-公司、Department-部门、Root-组织根节点)*/
+/**组织类型(Root-组织根节点、Company-公司、Department-事业部、Zone-战区、SmallZone-小战区、District-片区、Shop-门店、Group-店组)*/
 orgType: string;
 /**(必填)当前页*/
 pageNum: number;
@@ -541,6 +795,21 @@ pageNum: number;
 pageSize: number;
 /**父组织id*/
 parentId: number;
+/**状态(Valid-有效、Invalid-无效)*/
+status: string;
+}
+/**OrgRecursionQueryVO*/
+export interface OrgRecursionQueryVO {
+/**id*/
+id: number;
+/**名称*/
+name: string;
+/**组织类型(Root-组织根节点、Company-公司、Department-事业部、Zone-战区、SmallZone-小战区、District-片区、Shop-门店、Group-店组)*/
+orgType: string;
+/**(必填)当前页*/
+pageNum: number;
+/**(必填)每页条数*/
+pageSize: number;
 /**状态(Valid-有效、Invalid-无效)*/
 status: string;
 }
@@ -554,16 +823,16 @@ departmentType: string;
 id: number;
 /**名称*/
 name: string;
+/**OA呈字*/
+oaChar: string;
 /**开业日期(yyyy-MM-dd)*/
 openDate: string;
-/**组织代码*/
-orgCode: string;
-/**组织类型(Company-公司、Department-部门、Root-组织根节点)*/
-orgType: string;
 /**父组织id*/
 parentId: number;
 /**简称*/
 shortName: string;
+/**简称首字母*/
+shortNameAbbr: string;
 /**状态(Valid-有效、Invalid-无效)*/
 status: string;
 }
@@ -587,16 +856,18 @@ id: number;
 level: number;
 /**名称*/
 name: string;
+/**OA呈字*/
+oaChar: string;
 /**开业日期(yyyy-MM-dd)*/
 openDate: string;
-/**组织代码*/
-orgCode: string;
-/**组织类型(Company-公司、Department-部门、Root-组织根节点)*/
+/**组织类型(Root-组织根节点、Company-公司、Department-事业部、Zone-战区、SmallZone-小战区、District-片区、Shop-门店、Group-店组)*/
 orgType: string;
 /**父组织id*/
 parentId: number;
 /**简称*/
 shortName: string;
+/**简称首字母*/
+shortNameAbbr: string;
 /**状态(Valid-有效、Invalid-无效)*/
 status: string;
 /**更新时间(yyyy-MM-dd HH:mm:ss)*/
@@ -605,6 +876,13 @@ updateTime: string;
 updateUser: number;
 /**更新用户姓名*/
 updateUserName: string;
+}
+/**ResetPasswordVO*/
+export interface ResetPasswordVO {
+/**(必填)id*/
+id: number;
+/**(必填)密码*/
+password: string;
 }
 /**Resource*/
 export interface Resource {
@@ -624,6 +902,8 @@ id: number;
 name: string;
 /**父ID*/
 parentId: number;
+/**终端类型(Pc-Pc端、WechatApp-微信小程序)*/
+terminalType: string;
 /**类型(Root-资源根节点、System-系统、Service-服务模块、Menu-功能菜单、Api-API、Button-按钮、Element-元素)*/
 type: string;
 /**更新时间(yyyy-MM-dd HH:mm:ss)*/
@@ -738,6 +1018,8 @@ parentCode: string;
 parentId: number;
 /**父资源名称*/
 parentName: string;
+/**终端类型(Pc-Pc端、WechatApp-微信小程序)*/
+terminalType: string;
 /**类型(Root-资源根节点、System-系统、Service-服务模块、Menu-功能菜单、Api-API、Button-按钮、Element-元素)*/
 type: string;
 /**更新时间(yyyy-MM-dd HH:mm:ss)*/
@@ -763,6 +1045,8 @@ deleted: number;
 id: number;
 /**名称*/
 name: string;
+/**特殊角色*/
+special: number;
 /**更新时间(yyyy-MM-dd HH:mm:ss)*/
 updateTime: string;
 /**更新用户*/
@@ -841,6 +1125,8 @@ deleted: number;
 id: number;
 /**名称*/
 name: string;
+/**特殊角色*/
+special: number;
 /**更新时间(yyyy-MM-dd HH:mm:ss)*/
 updateTime: string;
 /**更新用户*/
@@ -852,7 +1138,7 @@ updateUserName: string;
 export interface UserBaseVO {
 /**登录账号*/
 account: string;
-/**用户类型(Ihome-爱家员工、Juheng-居恒员工、Poly-保顾兼职、Channel-渠道用户、Customer-个人客户、Outsourcing-劳务派遣)*/
+/**账号类型(Ihome-爱家员工、Juheng-居恒员工、Poly-保顾兼职、Channel-渠道用户、Customer-个人客户、Outsourcing-劳务派遣、RestUser-外部接口调用)*/
 accountType: string;
 /**email*/
 email: string;
@@ -860,7 +1146,7 @@ email: string;
 employeeCode: string;
 /**雇员状态(On-在职、Leave-离职)*/
 employeeStatus: string;
-/**人员类型(Formal-正式工、Probation-试用、Practice-实习、Vacation-暑期工、Rehire-离职返聘)*/
+/**人员类型(Formal-正式工、Probation-试用、Practice-实习、Vacation-暑期工、Rehire-离职返聘、Other-其他)*/
 employeeType: string;
 /**入职日期(yyyy-MM-dd)*/
 employmentDate: string;
@@ -917,13 +1203,13 @@ orgIds: number[];
 export interface UserQueryVO {
 /**登录账号*/
 account: string;
-/**用户类型(Ihome-爱家员工、Juheng-居恒员工、Poly-保顾兼职、Channel-渠道用户、Customer-个人客户、Outsourcing-劳务派遣)*/
+/**账号类型(Ihome-爱家员工、Juheng-居恒员工、Poly-保顾兼职、Channel-渠道用户、Customer-个人客户、Outsourcing-劳务派遣、RestUser-外部接口调用)*/
 accountType: string;
 /**员工工号*/
 employeeCode: string;
 /**雇员状态(On-在职、Leave-离职)*/
 employeeStatus: string;
-/**人员类型(Formal-正式工、Probation-试用、Practice-实习、Vacation-暑期工、Rehire-离职返聘)*/
+/**人员类型(Formal-正式工、Probation-试用、Practice-实习、Vacation-暑期工、Rehire-离职返聘、Other-其他)*/
 employeeType: string;
 /**入职日期止期(yyyy-MM-dd)*/
 employmentDateEnd: string;
@@ -976,7 +1262,7 @@ roleId: number;
 export interface UserUpdateVO {
 /**登录账号*/
 account: string;
-/**用户类型(Ihome-爱家员工、Juheng-居恒员工、Poly-保顾兼职、Channel-渠道用户、Customer-个人客户、Outsourcing-劳务派遣)*/
+/**账号类型(Ihome-爱家员工、Juheng-居恒员工、Poly-保顾兼职、Channel-渠道用户、Customer-个人客户、Outsourcing-劳务派遣、RestUser-外部接口调用)*/
 accountType: string;
 /**email*/
 email: string;
@@ -984,7 +1270,7 @@ email: string;
 employeeCode: string;
 /**雇员状态(On-在职、Leave-离职)*/
 employeeStatus: string;
-/**人员类型(Formal-正式工、Probation-试用、Practice-实习、Vacation-暑期工、Rehire-离职返聘)*/
+/**人员类型(Formal-正式工、Probation-试用、Practice-实习、Vacation-暑期工、Rehire-离职返聘、Other-其他)*/
 employeeType: string;
 /**入职日期(yyyy-MM-dd)*/
 employmentDate: string;
@@ -1005,7 +1291,7 @@ workType: string;
 export interface UserVO {
 /**登录账号*/
 account: string;
-/**用户类型(Ihome-爱家员工、Juheng-居恒员工、Poly-保顾兼职、Channel-渠道用户、Customer-个人客户、Outsourcing-劳务派遣)*/
+/**账号类型(Ihome-爱家员工、Juheng-居恒员工、Poly-保顾兼职、Channel-渠道用户、Customer-个人客户、Outsourcing-劳务派遣、RestUser-外部接口调用)*/
 accountType: string;
 /**创建时间(yyyy-MM-dd HH:mm:ss)*/
 createTime: string;
@@ -1013,6 +1299,8 @@ createTime: string;
 createUser: number;
 /**创建用户姓名*/
 createUserName: string;
+/**数据权限(OrgLimit-组织数据权限、SelfLimit-个人数据权限、ChannelLimit-渠道数据权限、CustomerLimit-客户数据权限)*/
+dataLimit: string;
 /**已删除*/
 deleted: number;
 /**email*/
@@ -1021,7 +1309,7 @@ email: string;
 employeeCode: string;
 /**雇员状态(On-在职、Leave-离职)*/
 employeeStatus: string;
-/**人员类型(Formal-正式工、Probation-试用、Practice-实习、Vacation-暑期工、Rehire-离职返聘)*/
+/**人员类型(Formal-正式工、Probation-试用、Practice-实习、Vacation-暑期工、Rehire-离职返聘、Other-其他)*/
 employeeType: string;
 /**入职日期(yyyy-MM-dd)*/
 employmentDate: string;
@@ -1051,6 +1339,8 @@ updateTime: string;
 updateUser: number;
 /**更新用户姓名*/
 updateUserName: string;
+/**用户类别(Staff-员工、Channel-渠道、Customer-客户)*/
+userType: string;
 /**职能类别(FrontLine-一线、NotFrontLine-非一线)*/
 workType: string;
 }

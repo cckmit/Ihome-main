@@ -3,8 +3,8 @@
  * @version: 
  * @Author: ywl
  * @Date: 2020-09-27 11:13:15
- * @LastEditors: ywl
- * @LastEditTime: 2020-12-04 18:33:17
+ * @LastEditors: wwq
+ * @LastEditTime: 2020-12-11 08:46:38
 -->
 <template>
   <IhPage label-width="100px">
@@ -111,7 +111,7 @@
                     class="width--100"
                   >
                     <el-option
-                      v-for="item in $root.dictAllList('StrategyEnum.FileState')"
+                      v-for="item in $root.dictAllList('FileState')"
                       :key="item.code"
                       :label="item.name"
                       :value="item.code"
@@ -155,7 +155,7 @@
                     class="width--100"
                   >
                     <el-option
-                      v-for="item in $root.dictAllList('AgreementTypeEnum')"
+                      v-for="item in $root.dictAllList('AgreementType')"
                       :key="item.code"
                       :label="item.name"
                       :value="item.code"
@@ -254,7 +254,7 @@
           width="100"
         >
           <template v-slot="{ row }">
-            {{$root.dictAllName(row.fileState, 'StrategyEnum.FileState')}}
+            {{$root.dictAllName(row.fileState, 'FileState')}}
           </template>
         </el-table-column>
         <el-table-column
@@ -268,7 +268,7 @@
           width="125"
         >
           <template v-slot="{ row }">
-            {{$root.dictAllName(row.agreementType, 'AgreementTypeEnum')}}
+            {{$root.dictAllName(row.agreementType, 'AgreementType')}}
           </template>
         </el-table-column>
         <el-table-column

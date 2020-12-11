@@ -4,7 +4,7 @@
  * @Author: wwq
  * @Date: 2020-11-03 18:39:23
  * @LastEditors: wwq
- * @LastEditTime: 2020-11-11 11:41:50
+ * @LastEditTime: 2020-12-11 08:55:11
 -->
 <template>
   <IhPage>
@@ -206,7 +206,7 @@
           width="150"
         >
           <template v-slot="{ row }">
-            <span>{{ $root.dictAllName(row.accountEnum, "AccountEnum") }}</span>
+            <span>{{ $root.dictAllName(row.accountEnum, "Account") }}</span>
           </template>
         </el-table-column>
         <el-table-column
@@ -299,7 +299,7 @@
           <template v-slot="{ row }">{{
             $root.dictAllName(
               row.firstAgencyAttachEnum,
-              "FirstAgencyAttachEnum"
+              "FirstAgencyAttach"
             )
           }}</template>
         </el-table-column>
@@ -590,12 +590,16 @@ export default class FirstAgencyEdit extends Vue {
    * @param {number} index 编辑当前行数据下标
    */
   private async deleteBank(index: number): Promise<void> {
-    await this.$confirm("是否确定移除?", "提示");
-    this.info.firstAgencyAccounts.splice(index, 1);
-    this.$message({
-      type: "success",
-      message: "移除成功!",
-    });
+    try {
+      await this.$confirm("是否确定移除?", "提示");
+      this.info.firstAgencyAccounts.splice(index, 1);
+      this.$message({
+        type: "success",
+        message: "移除成功!",
+      });
+    } catch (err) {
+      console.log(err);
+    }
   }
 
   async created() {
