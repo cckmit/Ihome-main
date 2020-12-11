@@ -27,12 +27,9 @@
       class="demo-ruleForm">
       <el-row class="ih-info-line">
         <el-col>
-          <el-form-item
-            label="业务模式"
-            prop="modelName"
-            class="width--100">
+          <el-form-item label="业务模式" prop="modelCode" class="width--100">
             <el-select
-              v-model="postData.modelName"
+              v-model="postData.modelCode"
               @change="handleChange"
               clearable
               placeholder="业务模式"
@@ -47,11 +44,8 @@
           </el-form-item>
         </el-col>
         <el-col>
-          <el-form-item
-            label="合同类型"
-            prop="buModelContTypeList"
-            class="width--100">
-            <el-checkbox-group v-model="postData.buModelContTypeList" class="checkbox-align">
+          <el-form-item label="合同类型" prop="contTypeList" class="width--100">
+            <el-checkbox-group v-model="postData.contTypeList" class="checkbox-align">
               <el-checkbox
                 v-for="item in $root.dictAllList('ContType')"
                 :key="item.code"
@@ -73,10 +67,9 @@
 <script lang="ts">
   import {Component, Vue, Prop} from "vue-property-decorator";
   import {
-    post_businessModel_add,
-    get_businessModel_get__id,
-    post_businessModel_update,
-    get_businessModel_getByName__modelName
+    post_buModelContType_add,
+    post_buModelContType_get,
+    post_buModelContType_update
   } from "@/api/deal";
   import {Form as ElForm} from "element-ui";
   import {NoRepeatHttp} from "ihome-common/util/aop/no-repeat-http";
@@ -94,27 +87,27 @@
     dialogVisible = true;
 
     postData: any = {
-      modelName: null,
-      buModelContTypeList: []
+      modelCode: null,
+      contTypeList: []
     };
     rules: any = {
-      modelName: [
+      modelCode: [
         {required: true, message: "业务模式必选", trigger: "change"},
       ],
-      buModelContTypeList: [
+      contTypeList: [
         {required: true, message: "合同类型必选", trigger: "change"},
       ]
     };
     getByNameList: any = [];
-    id: any = null;
+    modelCode: any = null;
     editLoading: any = false;
 
     async created() {
       // console.log('业务模式', (this as any).$root.dictAllList('BusinessModel'));
-      this.id = this.data;
-      if (this.id) {
+      this.modelCode = this.data;
+      if (this.modelCode) {
         this.editLoading = true;
-        const res: any = await get_businessModel_get__id({id: this.id});
+        const res: any = await post_buModelContType_get({modelCode: this.modelCode});
         this.postData = res;
         await this.getModelContTypeList();
         this.$nextTick(() => {
@@ -125,15 +118,15 @@
 
     // 根据业务模式名称，获取对应的合同类型列表
     async getModelContTypeList() {
-      const res: any = await get_businessModel_getByName__modelName({modelName: this.postData.modelName});
+      const res: any = await post_buModelContType_get({modelCode: this.postData.modelCode});
       console.log('getModelContTypeList', res);
-      this.getByNameList = res;
+      this.getByNameList = res.contTypeList;
     }
 
     // 改变业务模式
     async handleChange() {
-      this.postData.buModelContTypeList = [];
-      if (this.postData.modelName) {
+      this.postData.contTypeList = [];
+      if (this.postData.modelCode) {
         await this.getModelContTypeList();
       }
     }
@@ -152,41 +145,22 @@
     @NoRepeatHttp()
     async addSave(valid: any) {
       if (valid) {
-        if (this.id) {
+        if (this.modelCode) {
           // 编辑模式
-          let postData: any = {
-            id: this.id,
-            modelName: this.postData.modelName,
-            buModelContTypeList: []
-          };
-          if (this.postData.buModelContTypeList.length > 0) {
-            this.postData.buModelContTypeList.forEach((list: any) => {
-              postData.buModelContTypeList.push(
-                {
-                  contType: list
-                }
-              )
-            })
-          }
-          await post_businessModel_update(postData);
+          // let postData: any = {
+          //   modelCode: this.modelCode,
+          //   contTypeList: []
+          // };
+          await post_buModelContType_update(this.postData);
           this.$message.success("编辑成功");
           await this.finish();
         } else {
           // 新增模式
-          let postData: any = {
-            modelName: this.postData.modelName,
-            buModelContTypeList: []
-          };
-          if (this.postData.buModelContTypeList.length > 0) {
-            this.postData.buModelContTypeList.forEach((list: any) => {
-              postData.buModelContTypeList.push(
-                {
-                  contType: list
-                }
-              )
-            })
-          }
-          await post_businessModel_add(postData);
+          // let postData: any = {
+          //   modelCode: this.postData.modelCode,
+          //   contTypeList: this.postData.contTypeList
+          // };
+          await post_buModelContType_add(this.postData);
           this.$message.success("新增成功");
           await this.finish();
         }
