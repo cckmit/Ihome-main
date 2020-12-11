@@ -1,6 +1,5 @@
 /* eslint-disable */
 /* 此脚本由swagger-ui的api-docs自动生成，请勿修改 */
-//2020-12-7 10:08:08
 //2020-12-11 9:36:08 ├F10: AM┤
 import { request } from '@/api/base'
 const basePath = "/sales-api/deal"
@@ -221,12 +220,6 @@ export interface AchieveAddVO {
   commFeesRatio: number;
   /**公司业绩*/
   corporateAchieve: number;
-  /**成交ID*/
-  dealId: number;
-  /**应收业绩ID*/
-  receiveAchieveId: number;
-
-
   /**角色业绩上限*/
   roleAchieveCap: number;
   /**角色业绩比例*/
@@ -480,16 +473,6 @@ export interface AchieveScaleSchemeVO {
   /**业绩比例配置*/
   achieveScaleConfigList: AchieveScaleConfigVO[];
 }
-
-
-
-
-
-
-
-
-
-
 /**AchieveScaleSpecialSchemeVO*/
 export interface AchieveScaleSpecialSchemeVO {
   /**分公司ID*/
@@ -507,21 +490,6 @@ export interface AchieveScaleSpecialSchemeVO {
   /**(必填)每页条数*/
   pageSize: number;
 }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 /**AchieveVO*/
 export interface AchieveVO {
   /**业绩比例方案ID*/
@@ -577,8 +545,6 @@ export interface AgencyAddVO {
   brokerId: number;
   /**渠道等级(BigPlatform-大平台、LargeIntermediary-大型中介、FirstPlatform-一级平台、MediumIntermediary-中型中介、SecondPlatform-二级平台、SmallIntermediary-小型中介)*/
   channelLevel: string;
-  /**门店ID*/
-  storeId: number;
 }
 /**AgencyUpdateVO*/
 export interface AgencyUpdateVO {
@@ -592,8 +558,6 @@ export interface AgencyUpdateVO {
   dealId: number;
   /**ID*/
   id: number;
-  /**门店ID*/
-  storeId: number;
 }
 /**AgencyVO*/
 export interface AgencyVO {
@@ -617,8 +581,6 @@ export interface AgencyVO {
   deleted: number;
   /**ID*/
   id: number;
-  /**门店ID*/
-  storeId: number;
   /**门店名称*/
   storeIdName: string;
   /**更新时间(yyyy-MM-dd HH:mm:ss)*/
@@ -744,14 +706,10 @@ export interface ChannelCommAddVO {
   agencyName: string;
   /**拆佣金额*/
   amount: number;
-  /**成交ID*/
-  dealId: number;
   /**费用类型(ServiceFee-服务费、AgencyFee-代理费)*/
   feeType: string;
   /**甲方或客户*/
   partyACustomer: number;
-  /**应收ID*/
-  receiveAchieveId: number;
   /**备注*/
   remarks: string;
   /**拆佣对象(Personal-个人、Company-公司)*/
@@ -1620,8 +1578,6 @@ export interface ManagerAchieveAddVO {
   achieveId: number;
   /**归属组织ID*/
   belongOrgId: number;
-  /**成交ID*/
-  dealId: number;
   /**管理者ID*/
   managerId: number;
   /**管理者岗位*/
