@@ -4,7 +4,7 @@
  * @Author: lsj
  * @Date: 2020-11-03 15:28:12
  * @LastEditors: lsj
- * @LastEditTime: 2020-11-03 15:30:12
+ * @LastEditTime: 2020-12-09 17:28:20
 -->
 <template>
   <el-dialog
@@ -47,6 +47,7 @@
       @size-change="sizeChange">
     </IhTableCheckBox>
     <span slot="footer" class="dialog-footer">
+      <el-button @click="cancel()">取 消</el-button>
       <el-button type="primary" @click="finish()">确 定</el-button>
     </span>
   </el-dialog>
@@ -136,7 +137,12 @@
     }
 
     async beforeFinish() {
-      this.$emit("cancel");
+      this.$emit("cancel", false);
+    }
+
+    // 取消
+    cancel() {
+      this.$emit("cancel", false);
     }
 
     async finish() {

@@ -4,7 +4,7 @@
  * @Author: wwq
  * @Date: 2020-11-03 18:39:23
  * @LastEditors: wwq
- * @LastEditTime: 2020-11-11 11:36:47
+ * @LastEditTime: 2020-12-11 08:51:11
 -->
 <template>
   <el-dialog
@@ -98,7 +98,7 @@
               placeholder="装修级别"
             >
               <el-option
-                v-for="item in $root.dictAllList('RenovatLevelEnum')"
+                v-for="item in $root.dictAllList('RenovatLevel')"
                 :key="item.code"
                 :label="item.name"
                 :value="item.code"

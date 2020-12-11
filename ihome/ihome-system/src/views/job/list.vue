@@ -4,7 +4,7 @@
  * @Author: zyc
  * @Date: 2020-07-14 09:23:40
  * @LastEditors: zyc
- * @LastEditTime: 2020-12-07 18:04:04
+ * @LastEditTime: 2020-12-10 18:22:35
 --> 
 --> 
 <template>
@@ -205,6 +205,7 @@ export default class JobInfo extends Vue {
   }
   async finishAssignRole(data: any) {
     console.log(data);
+    this.getListMixin();
   }
   async created() {
     this.getListMixin();

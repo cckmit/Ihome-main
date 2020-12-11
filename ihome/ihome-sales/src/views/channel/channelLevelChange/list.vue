@@ -3,8 +3,8 @@
  * @version: 
  * @Author: zyc
  * @Date: 2020-06-30 09:21:17
- * @LastEditors: ywl
- * @LastEditTime: 2020-11-30 17:51:12
+ * @LastEditors: zyc
+ * @LastEditTime: 2020-12-10 14:58:39
 --> 
 <template>
   <IhPage label-width="100px">
@@ -143,11 +143,10 @@
         <el-table-column
           fixed
           label="渠道商名称"
-          prop="channelId"
+          prop="channelName"
           min-width="200"
         ></el-table-column>
         <el-table-column
-          fixed
           prop="storageNum"
           label="入库编号"
           min-width="170"

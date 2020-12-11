@@ -4,11 +4,11 @@
  * @Author: lsj
  * @Date: 2020-11-03 13:20:35
  * @LastEditors: lsj
- * @LastEditTime: 2020-11-03 13:20:35
+ * @LastEditTime: 2020-12-10 10:56:45
 -->
 <template>
   <ih-page class="text-left">
-    <p class="ih-info-title">成交信息</p>
+    <p id="anchor-1" class="ih-info-title">成交信息</p>
     <el-form
       :model="infoForm"
       ref="ruleForm"
@@ -126,7 +126,7 @@
         </el-col>
       </el-row>
     </el-form>
-    <p class="ih-info-title">房产信息</p>
+    <p id="anchor-2" class="ih-info-title">房产信息</p>
     <el-form
       :model="infoForm"
       ref="ruleForm"
@@ -165,7 +165,7 @@
         </el-col>
       </el-row>
     </el-form>
-    <p class="ih-info-title">优惠告知书</p>
+    <p id="anchor-3" class="ih-info-title">优惠告知书信息</p>
     <el-row style="padding-left: 20px">
       <el-col>
         <el-table
@@ -187,7 +187,7 @@
         </el-table>
       </el-col>
     </el-row>
-    <p class="ih-info-title">客户信息</p>
+    <p id="anchor-4" class="ih-info-title">客户信息</p>
     <el-row style="padding-left: 20px">
       <el-col>
         <el-table
@@ -211,7 +211,7 @@
         </el-table>
       </el-col>
     </el-row>
-    <p class="ih-info-title">渠道信息</p>
+    <p id="anchor-5" class="ih-info-title">渠道信息</p>
     <el-row style="padding-left: 20px">
       <el-col>
         <el-table
@@ -227,7 +227,7 @@
         </el-table>
       </el-col>
     </el-row>
-    <p class="ih-info-title">收派金额</p>
+    <p id="anchor-6" class="ih-info-title">收派金额</p>
     <el-row style="padding-left: 20px">
       <el-col>
         <el-table
@@ -263,7 +263,7 @@
         </el-table>
       </el-col>
     </el-row>
-    <p class="ih-info-title">对外拆佣</p>
+    <p id="anchor-7" class="ih-info-title">对外拆佣</p>
     <el-row style="padding-left: 20px">
       <el-col>
         <el-table
@@ -281,7 +281,7 @@
         </el-table>
       </el-col>
     </el-row>
-    <p class="ih-info-title">平台费用</p>
+    <p id="anchor-8" class="ih-info-title">平台费用</p>
     <p class="ih-type-wrapper">总包</p>
     <el-row style="padding-left: 20px">
       <el-col>
@@ -340,7 +340,7 @@
         </el-table>
       </el-col>
     </el-row>
-    <p class="ih-info-title">附件</p>
+    <p id="anchor-9" class="ih-info-title">上传附件</p>
     <el-row style="padding-left: 20px">
       <el-col>
         <el-table
@@ -372,8 +372,11 @@
       </el-col>
     </el-row>
     <div class="btn-wrapper">
-      <el-button >关闭</el-button>
+      <el-button>关闭</el-button>
       <el-button type="primary" @click="viewReviewDetails">查看审核详情</el-button>
+    </div>
+    <div class="nav-box">
+      <div @click="goAnchor(item.id)" v-for="item in navList" :key="item.id" class="nav-item">{{item.name}}</div>
     </div>
     <ih-dialog :show="reviewDialog" desc="成交审核记录">
       <ReviewDetailsDialog
@@ -416,6 +419,44 @@
     reviewDialog: any = false;
     reviewData: any = {};
     dealId: any = null;
+    navList: any = [
+      {
+        id: 1,
+        name: '成交信息'
+      },
+      {
+        id: 2,
+        name: '房产信息'
+      },
+      {
+        id: 3,
+        name: '优惠告知书信息'
+      },
+      {
+        id: 4,
+        name: '客户信息'
+      },
+      {
+        id: 5,
+        name: '渠道信息'
+      },
+      {
+        id: 6,
+        name: '收派金额'
+      },
+      {
+        id: 7,
+        name: '对外拆佣'
+      },
+      {
+        id: 8,
+        name: '平台费用'
+      },
+      {
+        id: 9,
+        name: '上传附件'
+      }
+    ]; // 锚点列表
 
     created() {
       this.dealId = this.$route.query.id;
@@ -440,6 +481,59 @@
           }
         })
       }
+    }
+
+    // 跳转到指定索引的元素
+    goAnchor(id: any) {
+      this.$nextTick(() => {
+        // 获取目标的 offsetTop
+        let selector = `#anchor-${id}`;
+        let dom = document.querySelector(selector) as any;
+        const targetOffsetTop = dom ? dom.offsetTop - 60 : 0;
+        // console.log('targetOffsetTop:', targetOffsetTop);
+        // 获取当前 offsetTop
+        let mainDom =  document.querySelector('.el-main') as any;
+        let scrollTop = mainDom ? mainDom.scrollTop : 0;
+        // console.log('scrollTop:', scrollTop);
+        // 定义一次跳 50 个像素，数字越大跳得越快，但是会有掉帧得感觉，步子迈大了会扯到蛋
+        const STEP = 50;
+        // 定义往下滑函数
+        function smoothDown() {
+          // 如果当前 scrollTop 小于 targetOffsetTop 说明视口还没滑到指定位置
+          if (scrollTop < targetOffsetTop) {
+            // 如果和目标相差距离大于等于 STEP 就跳 STEP
+            // 否则直接跳到目标点，目标是为了防止跳过了。
+            if (targetOffsetTop - scrollTop >= STEP) {
+              scrollTop += STEP;
+            } else {
+              scrollTop = targetOffsetTop;
+            }
+            mainDom.scrollTop = scrollTop;
+            // 关于 requestAnimationFrame 可以自己查一下，在这种场景下，相比 setInterval 性价比更高
+            window.requestAnimationFrame(smoothDown);
+          }
+        }
+        // 定义往上滑函数
+        function smoothUp() {
+          if (scrollTop > targetOffsetTop) {
+            if (scrollTop - targetOffsetTop >= STEP) {
+              scrollTop -= STEP;
+            } else {
+              scrollTop = targetOffsetTop;
+            }
+            mainDom.scrollTop = scrollTop;
+            window.requestAnimationFrame(smoothUp);
+          }
+        }
+        // 判断是往下滑还是往上滑
+        if (scrollTop > targetOffsetTop) {
+          // 往上滑
+          smoothUp();
+        } else {
+          // 往下滑
+          smoothDown();
+        }
+      })
     }
 
     // 计算收派金额总计
@@ -567,10 +661,38 @@
   }
 
   .ih-type-wrapper {
-    width: 100%;
-    display: inline-block;
+    margin-right: 20px;
     box-sizing: border-box;
-    padding-left: 20px;
-    text-align: left;
+    border-left: 5px solid #F90;
+    padding-left: 5px;
+    color: #f90;
+    margin-left: 40px;
+  }
+
+  .nav-box {
+    position: fixed;
+    right: 20px;
+    top: 30%;
+    box-sizing: border-box;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    border: 1px solid #ffffff;
+    color: #ffffff;
+    background-color: #2B4558;
+    z-index: 200;
+
+    .nav-item {
+      height: 45px;
+      line-height: 45px;
+      text-align: center;
+      box-sizing: border-box;
+      padding: 0px 20px;
+      cursor: pointer;
+
+      &:not(:last-child) {
+        border-bottom: 1px solid #ffffff;
+      }
+    }
   }
 </style>

@@ -4,7 +4,7 @@
  * @Author: ywl
  * @Date: 2020-09-25 11:53:51
  * @LastEditors: ywl
- * @LastEditTime: 2020-12-07 10:12:21
+ * @LastEditTime: 2020-12-11 10:24:36
 -->
 <template>
   <IhPage label-width="100px">
@@ -137,8 +137,8 @@
                     class="width--100"
                   >
                     <el-option
-                      v-for="item in $root.dictAllList('ContractEnum.ApprovalStatus')"
-                      :key="item.code"
+                      v-for="(item, i) in $root.dictAllList('ApprovalStatus')"
+                      :key="i"
                       :label="item.name"
                       :value="item.code"
                     ></el-option>
@@ -157,8 +157,8 @@
                     class="width--100"
                   >
                     <el-option
-                      v-for="item in $root.dictAllList('ContractEnum.ArchiveStatus')"
-                      :key="item.code"
+                      v-for="(item, i) in $root.dictAllList('ArchiveStatus')"
+                      :key="i"
                       :label="item.name"
                       :value="item.code"
                     ></el-option>
@@ -311,7 +311,7 @@
           prop="contractCode"
         >
           <template v-slot="{ row }">
-            {{$root.dictAllName(row.approvalStatus, "ContractEnum.ApprovalStatus")}}
+            {{$root.dictAllName(row.approvalStatus, "ApprovalStatus")}}
           </template>
         </el-table-column>
         <el-table-column
@@ -320,7 +320,7 @@
           width="100"
         >
           <template v-slot="{ row }">
-            {{ $root.dictAllName(row.archiveStatus, "ContractEnum.ArchiveStatus") }}
+            {{ $root.dictAllName(row.archiveStatus, "ArchiveStatus") }}
           </template>
         </el-table-column>
         <el-table-column

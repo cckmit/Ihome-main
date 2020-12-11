@@ -4,7 +4,7 @@
  * @Author: zyc
  * @Date: 2020-07-01 10:32:40
  * @LastEditors: zyc
- * @LastEditTime: 2020-12-09 17:53:15
+ * @LastEditTime: 2020-12-11 09:50:28
 --> 
 
 <template>
@@ -180,10 +180,7 @@ import {
   post_user_update,
   get_user_get__id,
 } from "../../api/system";
-import {
-  emailOrNullValidato,
-  phoneValidator,
-} from "ihome-common/util/base/form-ui";
+import { phoneValidator } from "ihome-common/util/base/form-ui";
 @Component({
   components: { SelectOrganizationTree },
 })
@@ -246,7 +243,11 @@ export default class UserAdd extends Vue {
     ],
     email: [
       { required: true, message: "邮箱必填", trigger: "change" },
-      { validator: emailOrNullValidato, trigger: "change" },
+      {
+        type: "email",
+        message: "请输入正确的邮箱地址",
+        trigger: "change",
+      },
     ],
     employeeStatus: [
       { required: true, message: "请选择雇员状态", trigger: "change" },
@@ -279,12 +280,12 @@ export default class UserAdd extends Vue {
       console.log(this.form);
       if (this.form.id > 0) {
         const res = await post_user_update(this.form);
-        this.$message.success("修改成功");
+        this.$message.success("用户修改成功");
         this.$emit("finish", res);
       } else {
         const res = await post_user_add(this.form);
-
-        this.$alert(res, "用户新增成功，密码是：");
+        this.$message.success("用户新增成功");
+        // this.$alert(res, "用户新增成功，密码是：");
         this.$emit("finish", res);
       }
     } else {

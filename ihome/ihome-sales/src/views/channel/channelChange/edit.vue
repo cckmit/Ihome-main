@@ -3,8 +3,8 @@
  * @version: 
  * @Author: ywl
  * @Date: 2020-09-16 14:05:21
- * @LastEditors: ywl
- * @LastEditTime: 2020-12-01 15:13:18
+ * @LastEditors: zyc
+ * @LastEditTime: 2020-12-11 15:51:38
 -->
 <template>
   <IhPage>
@@ -19,33 +19,17 @@
       >
         <el-row>
           <el-col :span="8">
-            <el-form-item
-              label="名称"
-              prop="name"
-            >
-              <el-input
-                v-model="info.name"
-                clearable
-                maxlength="64"
-              ></el-input>
+            <el-form-item label="名称" prop="name">
+              <el-input v-model="info.name" clearable maxlength="64"></el-input>
             </el-form-item>
           </el-col>
           <el-col :span="8">
-            <el-form-item
-              label="信用代码"
-              prop="creditCode"
-            >
-              <el-input
-                v-model="info.creditCode"
-                clearable
-              ></el-input>
+            <el-form-item label="信用代码" prop="creditCode">
+              <el-input v-model="info.creditCode" clearable></el-input>
             </el-form-item>
           </el-col>
           <el-col :span="8">
-            <el-form-item
-              label="简称"
-              prop="shortName"
-            >
+            <el-form-item label="简称" prop="shortName">
               <el-input
                 v-model="info.shortName"
                 clearable
@@ -56,10 +40,7 @@
         </el-row>
         <el-row>
           <el-col :span="8">
-            <el-form-item
-              label="类型"
-              prop="type"
-            >
+            <el-form-item label="类型" prop="type">
               <el-select
                 v-model="info.type"
                 clearable
@@ -76,34 +57,19 @@
             </el-form-item>
           </el-col>
           <el-col :span="8">
-            <el-form-item
-              label="法定代表人"
-              prop="legalPerson"
-            >
-              <el-input
-                v-model="info.legalPerson"
-                clearable
-              ></el-input>
+            <el-form-item label="法定代表人" prop="legalPerson">
+              <el-input v-model="info.legalPerson" clearable></el-input>
             </el-form-item>
           </el-col>
           <el-col :span="8">
-            <el-form-item
-              label="法人身份证号码"
-              prop="legalIdentityCode"
-            >
-              <el-input
-                v-model="info.legalIdentityCode"
-                clearable
-              ></el-input>
+            <el-form-item label="法人身份证号码" prop="legalIdentityCode">
+              <el-input v-model="info.legalIdentityCode" clearable></el-input>
             </el-form-item>
           </el-col>
         </el-row>
         <el-row>
           <el-col :span="8">
-            <el-form-item
-              label="成立日期"
-              prop="setupTime"
-            >
+            <el-form-item label="成立日期" prop="setupTime">
               <el-date-picker
                 v-model="info.setupTime"
                 style="width: 100%"
@@ -115,14 +81,8 @@
             </el-form-item>
           </el-col>
           <el-col :span="8">
-            <el-form-item
-              label="注册资本"
-              prop="capital"
-            >
-              <el-input
-                v-model="info.capital"
-                clearable
-              ></el-input>
+            <el-form-item label="注册资本" prop="capital">
+              <el-input v-model="info.capital" clearable></el-input>
             </el-form-item>
           </el-col>
           <el-col :span="8">
@@ -137,10 +97,7 @@
         </el-row>
         <el-row>
           <el-col :span="8">
-            <el-form-item
-              label="省市区"
-              prop="provinceList"
-            >
+            <el-form-item label="省市区" prop="provinceList">
               <IhCascader
                 v-model="info.provinceList"
                 :checkStrictly="false"
@@ -148,10 +105,7 @@
             </el-form-item>
           </el-col>
           <el-col :span="8">
-            <el-form-item
-              label="住所"
-              prop="address"
-            >
+            <el-form-item label="住所" prop="address">
               <el-input
                 v-model="info.address"
                 clearable
@@ -180,23 +134,18 @@
         size="small"
         class="add-account"
         @click.native="addAccount()"
-      >添加</el-button>
+        >添加</el-button
+      >
     </p>
     <div class="padding-left-20">
-      <el-table
-        :data="info.channelBankChanges"
-        style="width: 100%"
-      >
+      <el-table :data="info.channelBankChanges" style="width: 100%">
         <el-table-column
           prop="accountName"
           label="账户名称"
           min-width="200"
         ></el-table-column>
-        <el-table-column
-          prop="accountNo"
-          label="账号"
-          width="200"
-        > </el-table-column>
+        <el-table-column prop="accountNo" label="账号" width="200">
+        </el-table-column>
         <el-table-column
           prop="branchName"
           label="开户银行"
@@ -207,30 +156,22 @@
           label="联行号"
           width="150"
         ></el-table-column>
-        <el-table-column
-          prop="accountType"
-          label="账号类型"
-          width="150"
-        >
+        <el-table-column prop="accountType" label="账号类型" width="150">
           <template v-slot="{ row }">
-            <span>{{$root.dictAllName(row.accountType, "AccountEnum")}}</span>
+            <span>{{ $root.dictAllName(row.accountType, "Account") }}</span>
           </template>
         </el-table-column>
-        <el-table-column
-          label="操作"
-          fixed="right"
-          width="120"
-        >
+        <el-table-column label="操作" fixed="right" width="120">
           <template v-slot="{ row, $index }">
             <el-link
               type="primary"
               class="margin-right-15"
               @click="editBank(row, $index)"
-            >编辑</el-link>
-            <el-link
-              type="danger"
-              @click="deleteBank(row, $index)"
-            >删除</el-link>
+              >修改</el-link
+            >
+            <el-link type="danger" @click="deleteBank(row, $index)"
+              >删除</el-link
+            >
           </template>
         </el-table-column>
       </el-table>
@@ -260,21 +201,12 @@
           </el-form-item>
         </el-col>
         <el-col :span="8">
-          <el-form-item
-            label="手机号码"
-            prop="mobile"
-          >
-            <el-input
-              v-model="channelPersonsData.mobile"
-              clearable
-            ></el-input>
+          <el-form-item label="手机号码" prop="mobile">
+            <el-input v-model="channelPersonsData.mobile" clearable></el-input>
           </el-form-item>
         </el-col>
         <el-col :span="8">
-          <el-form-item
-            label="身份证号码"
-            prop="identityCode"
-          >
+          <el-form-item label="身份证号码" prop="identityCode">
             <el-input
               v-model="channelPersonsData.identityCode"
               clearable
@@ -282,14 +214,8 @@
           </el-form-item>
         </el-col>
         <el-col :span="8">
-          <el-form-item
-            label="邮箱"
-            prop="email"
-          >
-            <el-input
-              v-model="channelPersonsData.email"
-              clearable
-            ></el-input>
+          <el-form-item label="邮箱" prop="email">
+            <el-input v-model="channelPersonsData.email" clearable></el-input>
           </el-form-item>
         </el-col>
       </el-row>
@@ -303,19 +229,15 @@
         href="http://zxgk.court.gov.cn/zhzxgk/"
         type="success"
         target="_blank"
-      >综合查询被执行人</el-link>
-      <span
-        class="margin-left-10"
-        style="font-size: 12px; color: #909399;"
-      >附件类型支持jpg、png、bmp、tif、tiff等图片格式，以及pdf、word、excel文档，单个文件不能超过10M</span>
+        >综合查询被执行人</el-link
+      >
+      <span class="margin-left-10" style="font-size: 12px; color: #909399"
+        >附件类型支持jpg、png、bmp、tif、tiff等图片格式，以及pdf、word、excel文档，单个文件不能超过10M</span
+      >
     </p>
     <div class="padding-left-20">
       <el-table style="width: 100%">
-        <el-table-column
-          prop="type"
-          width="180"
-          label="类型"
-        ></el-table-column>
+        <el-table-column prop="type" width="180" label="类型"></el-table-column>
         <el-table-column label="附件"></el-table-column>
       </el-table>
     </div>
@@ -323,7 +245,7 @@
     <p class="ih-info-title">企业概况</p>
     <el-input
       type="textarea"
-      style="box-sizing: border-box;"
+      style="box-sizing: border-box"
       class="padding-left-20"
       :autosize="{ minRows: 5, maxRows: 8 }"
       maxlength="256"
@@ -335,7 +257,7 @@
     <p class="ih-info-title">变更原因</p>
     <el-input
       type="textarea"
-      style="box-sizing: border-box;"
+      style="box-sizing: border-box"
       class="padding-left-20"
       :autosize="{ minRows: 5, maxRows: 8 }"
       maxlength="256"
@@ -345,21 +267,12 @@
     </el-input>
     <div>
       <br />
-      <el-button
-        type="primary"
-        @click="submit(1)"
-      >保存</el-button>
-      <el-button
-        type="success"
-        @click="submit(2)"
-      >提交</el-button>
+      <el-button type="primary" @click="submit(1)">保存</el-button>
+      <el-button type="success" @click="submit(2)">提交</el-button>
     </div>
 
     <!-- 账户信息 -->
-    <IhDialog
-      :show="dialogFormVisible"
-      desc="账户信息"
-    >
+    <IhDialog :show="dialogFormVisible" desc="账户信息">
       <BankDialog
         :data="Bankrule"
         :bankType="bankType"
@@ -475,6 +388,7 @@ export default class ModifyThe extends Vue {
     address: [
       { required: true, message: "请输入住所", trigger: "change" },
       { validator: noTrim, trigger: "change" },
+      { min: 1, max: 64, message: "长度在 1 到 64 个字符", trigger: "change" },
     ],
     mobile: [
       { required: true, message: "请输入手机号", trigger: "change" },
@@ -524,7 +438,7 @@ export default class ModifyThe extends Vue {
 
     Promise.all([ruleFrom, personForm]).then(async (value) => {
       if (value[0] && value[1]) {
-        let includeBase = this.info.channelBanks
+        let includeBase = this.info.channelBankChanges
           .map((i: any) => i.accountType)
           .includes("Base");
         if (!includeBase) {
@@ -590,9 +504,14 @@ export default class ModifyThe extends Vue {
    * @param {number} index 编辑当前行数据下标
    */
   private async deleteBank(row: object, index: number): Promise<void> {
-    await this.$confirm(`此操作将该银行信息, 是否继续?`, "提示");
     this.info.channelBankChanges.splice(index, 1);
-    this.$message.success("删除成功");
+    // try {
+    //   await this.$confirm(`此操作将该银行信息, 是否继续?`, "提示");
+    //   this.info.channelBankChanges.splice(index, 1);
+    //   this.$message.success("删除成功");
+    // } catch (error) {
+    //   console.log(error);
+    // }
   }
 
   async created() {

@@ -17,18 +17,18 @@
       class="demo-ruleForm">
       <el-row>
         <el-col :span="8">
-          <el-form-item label="业务模式" prop="modelId">
+          <el-form-item label="业务模式" prop="modelCode">
             <el-select
-              v-model="postData.modelId"
+              v-model="postData.modelCode"
               @change="handleChange"
               clearable
               placeholder="请选择业务模式"
               class="width--100">
               <el-option
-                v-for="item in getModelList"
-                :key="item.id"
+                v-for="(item, index) in getModelList"
+                :key="index"
                 :label="item.Desc"
-                :value="item.id"
+                :value="item.modelCode"
               >{{item.Desc}}</el-option>
             </el-select>
           </el-form-item>
@@ -236,11 +236,11 @@
 <script lang="ts">
   import {Component, Vue} from "vue-property-decorator";
   import {
-    post_businessModel_getAll,
+    post_buModelContType_getList,
     post_achieveScaleScheme_add,
     get_achieveScaleScheme_get__id,
     post_achieveScaleScheme_update,
-    get_businessModel_getByName__modelName
+    post_buModelContType_get
   } from "@/api/deal";
   import {Form as ElForm} from "element-ui";
   import {NoRepeatHttp} from "ihome-common/util/aop/no-repeat-http";
@@ -251,7 +251,7 @@
 
   export default class AchieveScaleSchemeAdd extends Vue {
     postData: any = {
-      modelId: null, // 业务模式ID
+      modelCode: null, // 业务模式code
       contType: null, // 合同类型
       isMarketProject: null, // 是否市场化
       isSame: null, // 是否同步
@@ -261,7 +261,7 @@
       achieveScaleConfigList: [] // 业绩比例配置
     };
     rules: any = {
-      modelId: [
+      modelCode: [
         {required: true, message: "业务模式必选", trigger: "change"},
       ],
       contType: [
@@ -372,13 +372,13 @@
 
     // 获取业务模式
     async getBusinessModelList() {
-      const res: any = await post_businessModel_getAll();
+      const res: any = await post_buModelContType_getList({modelCode: ''});
       // console.log('resresres', res);
       let businessModelList = (this as any).$root.dictAllList('BusinessModel');
       if (res && res.length > 0 && businessModelList && businessModelList.length > 0) {
         res.forEach((item: any) => {
           businessModelList.forEach((list: any) => {
-            if (item.modelName === list.code) {
+            if (item.modelCode === list.code) {
               item.Desc = list.name
             }
           })
@@ -466,22 +466,12 @@
     // 根据业务模式名称，获取对应的合同类型列表
     async getModelContTypeList() {
       const contTypeList = (this as any).$root.dictAllList('ContType');
-      let modelName = '';
-      if (this.getModelList.length > 0) {
-        this.getModelList.forEach((list: any) => {
-          if (list.id === this.postData.modelId) {
-            modelName = list.modelName
-          }
-        })
-      } else {
-        return;
-      }
-      if (!modelName) return;
-      const res: any = await get_businessModel_getByName__modelName({modelName: modelName});
+      if (!this.postData.modelCode) return;
+      const res: any = await post_buModelContType_get({modelCode: this.postData.modelCode});
       // console.log('getModelContTypeList', res);
-      if (contTypeList && contTypeList.length > 0 && res && res.length > 0) {
+      if (contTypeList && contTypeList.length > 0 && res && res.contTypeList && res.contTypeList.length > 0) {
         this.getByNameList = contTypeList.filter((list: any) => {
-          return res.includes(list.code);
+          return res.contTypeList.includes(list.code);
         });
       } else {
         this.getByNameList = [];

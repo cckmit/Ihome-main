@@ -3,8 +3,8 @@
  * @version: 
  * @Author: ywl
  * @Date: 2020-10-12 10:38:48
- * @LastEditors: ywl
- * @LastEditTime: 2020-12-01 15:09:38
+ * @LastEditors: wwq
+ * @LastEditTime: 2020-12-11 08:41:44
 -->
 <template>
   <el-dialog
@@ -67,7 +67,7 @@
           class="width--100"
         >
           <el-option
-            v-for="item in $root.dictAllList('AccountEnum')"
+            v-for="item in $root.dictAllList('Account')"
             :key="item.code"
             :label="item.name"
             :value="item.code"

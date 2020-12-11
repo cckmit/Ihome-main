@@ -1,0 +1,575 @@
+<!--
+ * @Descripttion: 
+ * @version: 
+ * @Author: wwq
+ * @Date: 2020-11-27 17:27:01
+ * @LastEditors: wwq
+ * @LastEditTime: 2020-12-11 10:27:04
+-->
+<template>
+  <div>
+    <div class="notification">
+      <p class="ih-info-title">中介分销合同模板</p>
+      <div class="notificationButton">
+        <el-button
+          size="small"
+          type="success"
+          @click="addTemplate"
+        >+增加模板</el-button>
+      </div>
+    </div>
+    <div class="padding-left-20">
+      <el-table
+        class="ih-table"
+        :data="info.distributContractVOS"
+        style="width: 100%"
+      >
+        <el-table-column
+          prop="contractTitle"
+          label="合同主标题"
+        ></el-table-column>
+        <el-table-column
+          label="甲方公司"
+          prop="partyCompany"
+        >
+        </el-table-column>
+        <el-table-column label="派发佣金标准">
+          <template v-slot="{ row }">
+            <template v-for="(item, i) in row.distributContractMxVOS">
+              <span :key="i">
+                <span>{{item.sendContext}}</span>
+                <span v-if="i !== row.distributContractMxVOS.length - 1">、</span>
+              </span>
+            </template>
+          </template>
+        </el-table-column>
+        <el-table-column
+          prop="padCommissionEnum"
+          label="是否垫佣"
+        >
+          <template v-slot="{ row }">{{
+            $root.dictAllName(row.padCommissionEnum, "PadCommission")
+          }}</template>
+        </el-table-column>
+        <el-table-column
+          prop="channelEnum"
+          label="渠道类型"
+        >
+          <template v-slot="{ row }">{{
+            $root.dictAllName(row.channelEnum, "ChannelCustomer")
+          }}</template>
+        </el-table-column>
+        <el-table-column
+          label="操作"
+          width="280"
+          fixed="right"
+          align="center"
+        >
+          <template v-slot="{ row }">
+            <el-button
+              size="small"
+              type="primary"
+              @click="viewTemplate(row)"
+            >查看</el-button>
+            <el-button
+              size="small"
+              type="success"
+              @click="editTemplate(row)"
+            >编辑</el-button>
+            <el-button
+              size="small"
+              type="success"
+              @click="preview(row)"
+            >预览</el-button>
+            <el-button
+              size="small"
+              type="danger"
+              @click="cancellationTemplate(row)"
+            >作废</el-button>
+          </template>
+        </el-table-column>
+      </el-table>
+    </div>
+    <br />
+    <el-form
+      :model="info"
+      label-width="140px"
+    >
+      <el-row>
+        <el-col :span="24">
+          <el-form-item label="客户成交以及确认">
+            <div class="editParty">
+              <el-input
+                show-word-limit
+                type="textarea"
+                disabled
+                :autosize="{ minRows: 4, maxRows: 8 }"
+                placeholder="请输入客户成交以及确认"
+                v-model="info.constractOaVO.customerConfirm"
+              >
+              </el-input>
+              <i
+                class="el-icon-edit-outline tubiao"
+                @click="editDialog('customerConfirm')"
+              ></i>
+            </div>
+          </el-form-item>
+        </el-col>
+      </el-row>
+      <el-row>
+        <el-col :span="24">
+          <el-form-item label="违约责任">
+            <div class="editParty">
+              <el-input
+                show-word-limit
+                type="textarea"
+                disabled
+                :autosize="{ minRows: 4, maxRows: 8 }"
+                placeholder="请输入违约责任"
+                v-model="info.constractOaVO.responsibiltity"
+              >
+              </el-input>
+              <i
+                class="el-icon-edit-outline tubiao"
+                @click="editDialog('responsibiltity')"
+              ></i>
+            </div>
+          </el-form-item>
+        </el-col>
+      </el-row>
+      <el-row>
+        <el-col :span="24">
+          <el-form-item label="合同其他说明">
+            <div class="editParty">
+              <el-input
+                show-word-limit
+                type="textarea"
+                disabled
+                :autosize="{ minRows: 4, maxRows: 8 }"
+                placeholder="请输入违约责任"
+                v-model="info.constractOaVO.otherRemark"
+              >
+              </el-input>
+              <i
+                class="el-icon-edit-outline tubiao"
+                @click="editDialog('otherRemark')"
+              ></i>
+            </div>
+          </el-form-item>
+        </el-col>
+      </el-row>
+    </el-form>
+    <br />
+    <div class="notification">
+      <p class="ih-info-title">优惠告知书模板</p>
+      <div class="notificationButton">
+        <el-button
+          size="small"
+          type="success"
+          @click="addNotification"
+        >+增加电子优惠告知书
+        </el-button>
+      </div>
+    </div>
+    <div class="hint">(注: 当 立项周期信息里的 启动模式设置为 服务费模式 或 服务费加代理费模式 时，表示 收取服务费。 才会显示 优惠告知书信息 模块内容. )</div>
+    <div class="padding-left-20">
+      <el-table
+        class="ih-table"
+        :data="info.preferentialMxVOS"
+        style="width: 100%"
+      >
+        <el-table-column
+          prop="premiumReceived"
+          label="优惠服务费缴纳金额"
+        ></el-table-column>
+        <el-table-column
+          label="优惠方式说明"
+          prop="modeDescription"
+        ></el-table-column>
+        <el-table-column
+          prop="partyARefundDays"
+          label="甲方退款天数"
+        ></el-table-column>
+        <el-table-column
+          label="操作"
+          width="320"
+          fixed="right"
+          align="center"
+        >
+          <template v-slot="{ row }">
+            <el-button
+              size="small"
+              type="success"
+              @click="editNotification(row)"
+            >编辑</el-button>
+            <el-button
+              size="small"
+              type="primary"
+              @click="preview(row)"
+            >预览</el-button>
+            <el-button
+              size="small"
+              type="success"
+              @click="uploadQRcode(row)"
+            >下载二维码</el-button>
+            <el-button
+              size="small"
+              type="danger"
+              @click="cancellation(row)"
+            >作废</el-button>
+          </template>
+        </el-table-column>
+      </el-table>
+    </div>
+    <div class="file text-left">
+      <el-form>
+        <el-row>
+          <el-col :span="24">
+            <el-form-item
+              label="纸质告知书模板"
+              class="file-item"
+            >
+              <IhUpload
+                :file-list="fileList"
+                size="100px"
+                @newFileList="newFileList"
+              ></IhUpload>
+              <el-button
+                class="file-button"
+                size="small"
+                type="success"
+                @click="uploadAdd"
+              >保存</el-button>
+            </el-form-item>
+          </el-col>
+        </el-row>
+      </el-form>
+      <div class="file-hint">特殊情况无法使用电子优惠告知书模板，请上传纸质版优惠告知书附件</div>
+    </div>
+    <ih-dialog :show="dialogVisible">
+      <AddContract
+        :data="contractData"
+        @cancel="() => (dialogVisible = false)"
+        @finish="(data) => contractFinish(data)"
+      />
+    </ih-dialog>
+    <ih-dialog :show="editDialogVisible">
+      <PartyADialog
+        :data="editData"
+        @cancel="() => (editDialogVisible = false)"
+        @finish="(data) => editFinish(data)"
+      />
+    </ih-dialog>
+    <ih-dialog :show="addDialogVisible">
+      <AddNotification
+        :data="addNotificationData"
+        @cancel="() => (addDialogVisible = false)"
+        @finish="(data) => addFinish(data)"
+      />
+    </ih-dialog>
+    <ih-dialog :show="viewDialogVisible">
+      <ViewContract
+        :data="viewData"
+        @cancel="() => (viewDialogVisible = false)"
+      />
+    </ih-dialog>
+  </div>
+</template>
+<script lang="ts">
+import { Component, Vue, Watch } from "vue-property-decorator";
+import PartyADialog from "../dialog/partyA-dialog/partyADialog.vue";
+import AddNotification from "../dialog/notification-dialog/addNotification.vue";
+import AddContract from "../dialog/notification-dialog/addContract.vue";
+import ViewContract from "../dialog/notification-dialog/viewContract.vue";
+import {
+  get_distributContract_get__termId,
+  post_distributContract_add,
+  post_distributContract_update,
+  post_distributContract_saveOaRemark,
+  post_distributContract_cancel__agencyContrictId,
+  post_preferential_uploadTemplate,
+  post_preferential_add,
+  post_preferential_update,
+  post_preferential_cancel__preferentialMxId,
+} from "@/api/project/index.ts";
+import axios from "axios";
+import { getToken } from "ihome-common/util/cookies";
+@Component({
+  components: {
+    PartyADialog,
+    AddNotification,
+    AddContract,
+    ViewContract,
+  },
+})
+export default class Notification extends Vue {
+  dialogVisible = false;
+  editDialogVisible = false;
+  addDialogVisible = false;
+  viewDialogVisible = false;
+  info: any = {
+    distributContractVOS: [],
+    preferentialMxVOS: [],
+    constractOaVO: {
+      customerConfirm: null,
+      responsibiltity: null,
+      otherRemark: null,
+    },
+  };
+  editData: any = {};
+  contractData: any = {};
+  editType: any = "";
+  viewData: any = {};
+  budingEditData: any = [];
+  fileList: any = [];
+  uploadList: any = [];
+  addType = "";
+  addNotificationData: any = {};
+
+  @Watch("info.attachTermVOS")
+  geiFileList(val: any, oldVal: any) {
+    if (oldVal === undefined) {
+      this.fileList = val.map((v: any) => ({
+        name: v.attachName,
+        fileId: v.attachAddr,
+      }));
+    } else {
+      if (val.length !== oldVal.length) {
+        this.fileList = val.map((v: any) => ({
+          name: v.attachName,
+          fileId: v.attachAddr,
+        }));
+      }
+    }
+  }
+
+  created() {
+    this.getInfo();
+  }
+
+  async getInfo() {
+    const id = this.$route.query.id;
+    if (id) {
+      this.info = await get_distributContract_get__termId({
+        termId: id,
+      });
+      this.contractData = {
+        preferentialPartyA: this.info.preferentialPartyA,
+        preferentialPartyAddr: this.info.preferentialPartyAddr,
+        padCommissionEnum: this.info.padCommissionEnum,
+      };
+    }
+  }
+
+  async preview(row: any) {
+    console.log(row);
+  }
+
+  addTemplate() {
+    this.contractData.agencyContrictId = "";
+    this.dialogVisible = true;
+  }
+
+  editTemplate(data: any) {
+    this.contractData.agencyContrictId = data.agencyContrictId;
+    this.dialogVisible = true;
+  }
+
+  viewTemplate(data: any) {
+    this.viewData.agencyContrictId = data.agencyContrictId;
+    this.viewDialogVisible = true;
+  }
+
+  async contractFinish(data: any) {
+    data.termId = this.$route.query.id;
+    if (this.contractData.agencyContrictId) {
+      data.agencyContrictId = this.contractData.agencyContrictId;
+      await post_distributContract_update(data);
+      this.$message.success("修改成功");
+    } else {
+      data.partyCompanyId = this.info.preferentialPartyAId;
+      await post_distributContract_add(data);
+      this.$message.success("新增成功");
+    }
+    this.dialogVisible = false;
+    this.getInfo();
+  }
+
+  // 中介分销合同作废
+  async cancellationTemplate(data: any) {
+    await post_distributContract_cancel__agencyContrictId({
+      agencyContrictId: data.agencyContrictId,
+    });
+    this.$message.success("作废成功");
+    this.getInfo();
+  }
+
+  editDialog(type: string) {
+    this.editType = type;
+    switch (type) {
+      case "customerConfirm":
+        this.editData.title = "客户成交以及确认";
+        break;
+      case "responsibiltity":
+        this.editData.title = "违约责任";
+        break;
+      case "otherRemark":
+        this.editData.title = "合同其他说明";
+        break;
+    }
+    this.editData.value = this.info.constractOaVO[type];
+    this.editDialogVisible = true;
+  }
+
+  async editFinish(data: any) {
+    let type: any = null;
+    switch (this.editType) {
+      case "customerConfirm":
+        type = 1;
+        break;
+      case "responsibiltity":
+        type = 2;
+        break;
+      case "otherRemark":
+        type = 3;
+        break;
+    }
+    await post_distributContract_saveOaRemark({
+      constractOaId: this.info.constractOaVO.constractOaId,
+      remark: data,
+      type: type,
+    });
+    this.$message.success("保存成功");
+    this.getInfo();
+    this.editDialogVisible = false;
+  }
+
+  addNotification() {
+    this.addType = "add";
+    this.addDialogVisible = true;
+    this.addNotificationData = {};
+    this.addNotificationData.title = "新增";
+  }
+
+  // 优惠告知书编辑
+  editNotification(data: any) {
+    this.addType = "edit";
+    this.addDialogVisible = true;
+    this.addNotificationData = { ...data };
+    this.addNotificationData.title = "修改";
+  }
+
+  //优惠告知书下载二维码
+  async uploadQRcode(data: any) {
+    const token: any = getToken();
+    axios({
+      method: "GET",
+      url: `/sales-api/project/preferential/getQRCodeImage/${data.preferentialMxId}`,
+      xsrfHeaderName: "Authorization",
+      responseType: "blob",
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: "bearer " + token,
+      },
+    }).then((res: any) => {
+      const href = window.URL.createObjectURL(res.data);
+      const $a = document.createElement("a");
+      $a.href = href;
+      $a.download = "二维码.jpg";
+      $a.click();
+      $a.remove();
+    });
+  }
+
+  //优惠告知书作废
+  async cancellation(data: any) {
+    await post_preferential_cancel__preferentialMxId({
+      preferentialMxId: data.preferentialMxId,
+    });
+    this.$message.success("作废成功");
+    this.getInfo();
+  }
+
+  async addFinish(data: any) {
+    delete data.title;
+    data.termId = this.$route.query.id;
+    if (this.addType === "add") {
+      await post_preferential_add(data);
+      this.$message.success("新增成功");
+    } else if (this.addType === "edit") {
+      await post_preferential_update(data);
+      this.$message.success("修改成功");
+    }
+    this.getInfo();
+    this.addDialogVisible = false;
+  }
+
+  newFileList(data: any) {
+    let arr = data.map((v: any) => ({
+      attachAddr: v.fileId,
+      attachName: v.name,
+    }));
+    arr.forEach((v: any, i: number) => {
+      this.$set(this.uploadList, i, arr[i]);
+    });
+  }
+
+  async uploadAdd() {
+    let obj: any = {};
+    obj.attachTermItemVOS = [...this.uploadList];
+    obj.termId = this.$route.query.id;
+    await post_preferential_uploadTemplate(obj);
+    this.$message.success("保存成功");
+  }
+}
+</script>
+<style lang="scss" scoped>
+.notification {
+  display: flex;
+  flex-flow: row nowrap;
+  justify-content: flex-start;
+}
+.notificationButton {
+  margin: 5px 0 0 20px;
+}
+.editParty {
+  position: relative;
+  .tubiao {
+    position: absolute;
+    bottom: 10px;
+    right: 10px;
+    font-size: 24px;
+    cursor: pointer;
+  }
+}
+.hint {
+  text-align: left;
+  color: #909399;
+  font-size: 14px;
+  padding: 5px 20px 10px 20px;
+}
+
+.file {
+  margin: 20px 0 0 20px;
+  &-button {
+    margin-left: 20px;
+  }
+  &-hint {
+    color: #ff0000;
+    font-size: 14px;
+    text-align: left;
+    margin-top: 5px;
+  }
+  &-item {
+    /deep/ .upload {
+      display: inline-block;
+    }
+  }
+
+  &-button {
+    margin-left: 10px;
+    position: absolute;
+    bottom: 25px;
+  }
+}
+</style>

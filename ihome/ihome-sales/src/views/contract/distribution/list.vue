@@ -4,7 +4,7 @@
  * @Author: ywl
  * @Date: 2020-09-25 17:34:32
  * @LastEditors: ywl
- * @LastEditTime: 2020-12-07 10:13:50
+ * @LastEditTime: 2020-12-11 10:23:10
 -->
 <template>
   <IhPage label-width="100px">
@@ -43,10 +43,6 @@
           </el-col>
           <el-col :span="8">
             <el-form-item label="乙方公司">
-              <!-- <SelectPageByChannle
-                v-model="queryPageParameters.channelCompanyId"
-                placeholder="请选择乙方公司"
-              ></SelectPageByChannle> -->
               <el-select
                 v-model="queryPageParameters.channelCompanyId"
                 clearable
@@ -138,8 +134,8 @@
                     class="width--100"
                   >
                     <el-option
-                      v-for="item in $root.dictAllList('DistributionEnum.DistributionState')"
-                      :key="item.code"
+                      v-for="(item, i) in $root.dictAllList('DistributionState')"
+                      :key="i"
                       :label="item.name"
                       :value="item.code"
                     ></el-option>
@@ -155,8 +151,8 @@
                     class="width--100"
                   >
                     <el-option
-                      v-for="item in $root.dictAllList('DistributionEnum.ArchiveStatus')"
-                      :key="item.code"
+                      v-for="(item, i) in $root.dictAllList('ArchiveStatus')"
+                      :key="i"
                       :label="item.name"
                       :value="item.code"
                     ></el-option>
@@ -324,7 +320,7 @@
           width="100"
         >
           <template v-slot="{ row }">
-            {{$root.dictAllName(row.distributionState, 'DistributionEnum.DistributionState')}}
+            {{$root.dictAllName(row.distributionState, 'DistributionState')}}
           </template>
         </el-table-column>
         <el-table-column
@@ -333,7 +329,7 @@
           width="120"
         >
           <template v-slot="{ row }">
-            {{$root.dictAllName(row.archiveStatus, 'DistributionEnum.ArchiveStatus')}}
+            {{$root.dictAllName(row.archiveStatus, 'ArchiveStatus')}}
           </template>
         </el-table-column>
         <el-table-column

@@ -4,7 +4,7 @@
  * @Author: zyc
  * @Date: 2020-07-09 14:31:23
  * @LastEditors: zyc
- * @LastEditTime: 2020-11-16 10:34:21
+ * @LastEditTime: 2020-12-11 15:37:07
 --> 
 <template>
   <ih-page>
@@ -29,7 +29,7 @@
           <el-row>
             <el-col :span="6" class="ih-info-item-left">发起人</el-col>
             <el-col :span="18" class="ih-info-item-right">{{
-              postData.approvalUser
+              postData.approvalUserName
             }}</el-col>
           </el-row>
         </el-col>
@@ -46,19 +46,13 @@
                 prop="departmentOrgId"
                 class="width--100"
               >
-                <el-select
+                <IhSelectPageDivision
                   v-model="postData.departmentOrgId"
+                  :searchName="postData.departmentOrgName"
                   clearable
-                  placeholder="事业部"
-                  class="width--100"
+                  value-key="id"
                 >
-                  <el-option
-                    v-for="item in divisionList"
-                    :key="item.id"
-                    :label="item.name"
-                    :value="item.id"
-                  ></el-option>
-                </el-select>
+                </IhSelectPageDivision>
               </el-form-item>
             </el-col>
           </el-row>
@@ -103,10 +97,25 @@
         </el-table-column>
         <!-- <el-table-column prop="name" label="信用代码"> </el-table-column>
       <el-table-column prop="name" label="法定代表人"> </el-table-column> -->
-        <el-table-column prop="special" label="特批入库"> </el-table-column>
-        <el-table-column prop="city" label="业务开展城市"> </el-table-column>
-        <el-table-column prop="cityGrade" label="城市等级"> </el-table-column>
+        <el-table-column prop="special" label="特批入库">
+          <template slot-scope="scope">
+            {{ $root.dictAllName(scope.row.special, "YesOrNoType") }}
+          </template>
+        </el-table-column>
+        <el-table-column prop="city" label="业务开展城市">
+          <template slot-scope="scope">
+            {{ $root.getAreaName(scope.row.city) }}
+          </template>
+        </el-table-column>
+        <el-table-column prop="cityGrade" label="城市等级">
+          <template slot-scope="scope">
+            {{ $root.dictAllName(scope.row.cityGrade, "CityLevel") }}
+          </template>
+        </el-table-column>
         <el-table-column prop="channelGrade" label="渠道等级">
+          <template slot-scope="scope">
+            {{ $root.dictAllName(scope.row.channelGrade, "ChannelLevel") }}
+          </template>
         </el-table-column>
         <el-table-column prop="" label="操作">
           <template slot-scope="scope">
@@ -160,11 +169,12 @@
       </div>
       <ih-dialog :show="dialogAdd" desc="渠道合作信息列表">
         <ChannelApprovalGradesList
+          :data="dialogAddGradeType"
           @cancel="() => (dialogAdd = false)"
           @finish="
             (data) => {
               dialogAdd = false;
-              finishAdd(data);
+              finishAdd(data, gradeType);
             }
           "
         />
@@ -200,8 +210,9 @@ export default class ApprovalAdd extends Vue {
   input: any = null;
   textarea: any = null;
   dialogAdd: any = false;
-  channelApprovalGrades: any[] = [];
-  channelApprovalAttachmentsList: any = [];
+  dialogAddGradeType: any = null;
+  channelApprovalGrades: any[] = []; //渠道等级信息列表,页面显示字段
+  channelApprovalAttachmentsList: any = []; //附件信息
   id: any = null;
 
   rules: any = {
@@ -215,19 +226,10 @@ export default class ApprovalAdd extends Vue {
   postData: any = {
     approvalDesc: null,
     approvalTitle: null,
-    channelApprovalAttachments: [
-      // {
-      //   approvalId: null,
-      //   id: null,
-      // },
-    ],
-    channelApprovalGrades: [
-      // {
-      //   approvalId: null,
-      //   id: null,
-      // },
-    ],
+    channelApprovalAttachments: [],
+    channelApprovalGrades: [],
     departmentOrgId: null,
+    departmentOrgName: null,
     operateType: null, //1保存2提交
   };
 
@@ -236,9 +238,13 @@ export default class ApprovalAdd extends Vue {
     if (this.id) {
       const res: any = await get_channelApproval_get__id({ id: this.id });
       this.postData = res;
+      this.channelApprovalGrades = res.channelApprovalGrades;
+      this.channelApprovalAttachmentsList = res.channelApprovalAttachments;
     }
   }
   addChannelApprovalGrades() {
+    this.dialogAddGradeType = "Basic";
+
     this.dialogAdd = true;
   }
   finishAdd(data: any) {
@@ -253,6 +259,7 @@ export default class ApprovalAdd extends Vue {
     }
   }
   addChannelApprovalGradesChange() {
+    this.dialogAddGradeType = "Change";
     this.dialogAdd = true;
   }
   remove(scope: any) {
@@ -283,18 +290,40 @@ export default class ApprovalAdd extends Vue {
     if (valid) {
       this.postData.operateType = 1;
 
-      // let editData = {
-      //   approvalDesc: this.postData.approvalDesc,
-      //   approvalTitle: this.postData.approvalTitle,
-      //   channelApprovalAttachments: this.postData.channelApprovalAttachments,
-      //   channelApprovalGrades: this.postData.channelApprovalGrades,
-      //   departmentOrgId: this.postData.departmentOrgId,
-      //   id: this.postData.id,
-      //   operateType: this.postData.operateType,
-      // };
-      // console.log(editData);
-      await post_channelApproval_edit(this.postData);
-      this.$message.success("编辑成功");
+      let editData = {
+        approvalDesc: this.postData.approvalDesc,
+        approvalTitle: this.postData.approvalTitle,
+        channelApprovalAttachments: this.channelApprovalAttachmentsList.map(
+          (item: any) => {
+            return {
+              approvalId: this.id,
+              channelId: item.channelId,
+              city: item.city,
+              fileId: item.fileId,
+              type: item.type,
+            };
+          }
+        ),
+        channelApprovalGrades: this.channelApprovalGrades.map((item: any) => {
+          return {
+            gradeId: item.id,
+            gradeType: "Basic",
+          };
+          // return {
+          //   approvalId: this.id,
+          //   channelId: item.channelId,
+          //   city: item.city,
+          //   fileId: item.fileId,
+          //   type: item.type,
+          // };
+        }),
+        departmentOrgId: this.postData.departmentOrgId,
+        id: this.postData.id,
+        operateType: this.postData.operateType,
+      };
+      console.log(editData);
+      await post_channelApproval_edit(editData);
+      this.$message.success("修改成功");
       this.$goto({
         path: "/approval/list",
       });

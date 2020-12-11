@@ -4,7 +4,7 @@
  * @Author: wwq
  * @Date: 2020-07-08 14:23:16
  * @LastEditors: wwq
- * @LastEditTime: 2020-11-11 11:43:52
+ * @LastEditTime: 2020-12-11 09:25:13
 --> 
 <template>
   <el-dialog
@@ -69,7 +69,10 @@
 
       <el-row>
         <el-col :span="24">
-          <el-form-item label="账号类型">
+          <el-form-item
+            label="账号类型"
+            prop="type"
+          >
             <el-select
               style="width: 100%"
               v-model="form.type"
@@ -77,7 +80,7 @@
               placeholder="账号类型"
             >
               <el-option
-                v-for="item in $root.dictAllList('BankAccountTypeEnum')"
+                v-for="item in $root.dictAllList('BankAccountType')"
                 :key="item.code"
                 :label="item.name"
                 :value="item.code"
@@ -101,9 +104,23 @@
   </el-dialog>
 </template>
 <script lang="ts">
+function isNumberOrStrikethrough(rule: any, value: any, callback: any) {
+  let reg = /[0-9]|-$/;
+  if (value != "" && !reg.test(value)) {
+    callback(new Error("只能输入数字或-，以数字开头"));
+    return;
+  } else {
+    if (value.startsWith("-") || value.endsWith("-")) {
+      callback(new Error("不能以-开头和结尾"));
+      return;
+    } else {
+      callback();
+    }
+  }
+}
 import { Component, Vue, Prop } from "vue-property-decorator";
 import { Form as ElForm } from "element-ui";
-
+import { noTrim } from "ihome-common/util/base/form-ui";
 import { NoRepeatHttp } from "ihome-common/util/aop/no-repeat-http";
 @Component({
   components: {},
@@ -119,9 +136,20 @@ export default class UserAdd extends Vue {
     type: null,
   };
   rules: any = {
-    name: [{ required: true, message: "请输入名称", trigger: "change" }],
-    number: [{ required: true, message: "请输入账号", trigger: "change" }],
-    bank: [{ required: true, message: "请输入开户银行", trigger: "change" }],
+    name: [
+      { validator: noTrim, trigger: "change" },
+      { required: true, message: "请输入名称", trigger: "change" },
+    ],
+    number: [
+      { validator: noTrim, trigger: "change" },
+      { required: true, message: "请输入账号", trigger: "change" },
+      { validator: isNumberOrStrikethrough, trigger: "change" },
+    ],
+    bank: [
+      { validator: noTrim, trigger: "change" },
+      { required: true, message: "请输入开户银行", trigger: "change" },
+    ],
+    type: [{ required: true, message: "账号类型必选", trigger: "change" }],
   };
 
   cancel() {

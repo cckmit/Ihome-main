@@ -4,13 +4,13 @@
  * @version: 
  * @Author: zyc
  * @Date: 2020-10-13 19:06:12
- * @LastEditors: wwq
- * @LastEditTime: 2020-11-11 08:58:11
+ * @LastEditors: zyc
+ * @LastEditTime: 2020-12-11 15:21:31
 -->
 <template>
   <el-dialog
     v-dialogDrag
-    title="渠道合作信息列表"
+    :title="title"
     :visible.sync="dialogVisible"
     :close-on-click-modal="false"
     :close-on-press-escape="false"
@@ -153,39 +153,34 @@
         label="法定代表人"
         width="180"
       ></el-table-column> -->
-      <el-table-column
-        prop="province"
-        label="业务开展省份"
-        width="180"
-      ></el-table-column>
-      <el-table-column
-        prop="city"
-        label="业务开展城市"
-        width="180"
-      ></el-table-column>
-      <el-table-column
-        prop="cityGrade"
-        label="城市等级"
-        width="180"
-      ></el-table-column>
-      <el-table-column
-        prop="channelGrade"
-        label="渠道等级"
-        width="180"
-      ></el-table-column>
-      <el-table-column
-        prop="special"
-        label="特批入库"
-        width="180"
-      ></el-table-column>
+      <el-table-column prop="province" label="业务开展省份" width="180">
+        <template slot-scope="scope">
+          {{ $root.getAreaName(scope.row.province) }}
+        </template>
+      </el-table-column>
+      <el-table-column prop="city" label="业务开展城市" width="180">
+        <template slot-scope="scope">
+          {{ $root.getAreaName(scope.row.city) }}
+        </template></el-table-column
+      >
+      <el-table-column prop="cityGrade" label="城市等级" width="180">
+        <template slot-scope="scope">
+          {{ $root.dictAllName(scope.row.cityGrade, "CityLevel") }}
+        </template></el-table-column
+      >
+      <el-table-column prop="channelGrade" label="渠道等级" width="180">
+        <template slot-scope="scope">
+          {{ $root.dictAllName(scope.row.channelGrade, "ChannelLevel") }}
+        </template></el-table-column
+      >
+      <el-table-column prop="special" label="特批入库" width="180">
+        <template slot-scope="scope">
+          {{ $root.dictAllName(scope.row.special, "YesOrNoType") }}
+        </template>
+      </el-table-column>
 
-      <!-- <el-table-column label="状态" width="120">
-        <template slot-scope="scope">{{
-          $root.dictAllName(scope.row.status, "ChannelApprovalStatus")
-        }}</template>
-      </el-table-column> -->
       <el-table-column
-        prop="inputUser"
+        prop="inputUserName"
         label="录入人"
         width="180"
       ></el-table-column>
@@ -221,6 +216,7 @@ export default class ChannelApprovalGradesList extends Vue {
   }
   @Prop({ default: null }) data: any;
   dialogVisible = true;
+  title = "渠道合作信息列表";
   resPageInfo: any = {
     total: 0,
     list: [],
@@ -248,13 +244,17 @@ export default class ChannelApprovalGradesList extends Vue {
 
   async finish() {
     if (this.selectList && this.selectList.length > 0) {
-      this.$emit("finish", this.selectList);
+      this.$emit("finish", this.selectList, this.data);
     } else {
       this.$message.warning("请先勾选数据");
     }
   }
 
   created() {
+    console.log(this.data);
+    if (this.data == "") {
+      this.title = "渠道合作信息列表(变更信息)";
+    }
     this.getListMixin();
   }
   handleSelectionChange(val: any) {

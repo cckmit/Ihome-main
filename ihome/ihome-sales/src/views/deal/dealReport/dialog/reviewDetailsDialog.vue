@@ -4,7 +4,7 @@
  * @Author: lsj
  * @Date: 2020-11-03 15:28:12
  * @LastEditors: lsj
- * @LastEditTime: 2020-11-03 15:30:12
+ * @LastEditTime: 2020-12-09 17:28:20
 -->
 <template>
   <el-dialog
@@ -13,7 +13,7 @@
     :visible.sync="dialogVisible"
     :close-on-click-modal="false"
     :close-on-press-escape="false"
-    :before-close="finish"
+    :before-close="beforeFinish"
     append-to-body
     width="1000px"
     style="text-align: left"
@@ -36,6 +36,7 @@
       <el-table-column prop="remark" label="备注" min-width="150"></el-table-column>
     </el-table>
     <span slot="footer" class="dialog-footer">
+      <el-button @click="cancel()">取 消</el-button>
       <el-button type="primary" @click="finish()">确 定</el-button>
     </span>
   </el-dialog>
@@ -65,12 +66,21 @@
       dealId: null,
     }
 
+    async beforeFinish() {
+      this.$emit("cancel", false);
+    }
+
+    // 取消
+    cancel() {
+      this.$emit("cancel", false);
+    }
+
     async finish() {
       this.$emit("finish", true);
     }
 
     created() {
-      this.getListMixin();
+      // this.getListMixin();
     }
 
     async getListMixin() {

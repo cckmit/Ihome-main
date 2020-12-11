@@ -4,7 +4,7 @@
  * @Author: wwq
  * @Date: 2020-09-25 17:59:09
  * @LastEditors: wwq
- * @LastEditTime: 2020-11-11 15:32:28
+ * @LastEditTime: 2020-12-11 09:25:23
 -->
 <template>
   <ih-page>
@@ -39,7 +39,7 @@
                 placeholder="请选择"
               >
                 <el-option
-                  v-for="item in $root.dictAllList('CompanyStatusEnum')"
+                  v-for="item in $root.dictAllList('CompanyStatus')"
                   :key="item.code"
                   :label="item.name"
                   :value="item.code"
@@ -151,7 +151,7 @@
           width="150"
         >
           <template v-slot="{ row }">{{
-            $root.dictAllName(row.status, "CompanyStatusEnum")
+            $root.dictAllName(row.status, "CompanyStatus")
           }}</template>
         </el-table-column>
         <el-table-column
