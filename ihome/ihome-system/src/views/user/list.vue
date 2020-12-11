@@ -4,7 +4,7 @@
  * @Author: zyc
  * @Date: 2020-06-30 09:21:17
  * @LastEditors: zyc
- * @LastEditTime: 2020-12-10 10:06:18
+ * @LastEditTime: 2020-12-11 10:40:37
 --> 
 <template>
   <ih-page>
@@ -444,7 +444,7 @@ import {
   post_user_delete__id,
   post_user_lock__id,
   post_user_activate__id,
-  post_user_resetPassword__id,
+  post_user_resetPassword,
 } from "../../api/system/index";
 import PaginationMixin from "../../mixins/pagination";
 
@@ -634,13 +634,22 @@ export default class UserList extends Vue {
     }
   }
   async resetPassword(scope: any) {
-    try {
-      await this.$confirm("是否确定重置密码?", "提示");
-      const res = await post_user_resetPassword__id({ id: scope.row.id });
-      this.$alert(res, "密码重置成功");
-    } catch (error) {
-      console.log(error);
-    }
+    this.$prompt("请输入新密码", "提示", {
+      confirmButtonText: "确定",
+      cancelButtonText: "取消",
+      inputPattern: /^[a-zA-Z0-9!@#$%^&*]{8,16}$/,
+      inputErrorMessage: "新密码8-16位，仅包含数字字母及!@#$%^&*",
+    })
+      .then(async (obj: any) => {
+        await post_user_resetPassword({
+          id: scope.row.id,
+          password: obj.value,
+        });
+        this.$alert("密码重置成功");
+      })
+      .catch((err) => {
+        console.log(err);
+      });
   }
   copyUser() {
     if (this.copyUserData && this.copyUserData.length > 0) {
@@ -654,6 +663,9 @@ export default class UserList extends Vue {
   }
   handleSelectionChange(val: any) {
     this.copyUserData = val;
+  }
+  finish() {
+    this.getListMixin();
   }
 }
 </script>
