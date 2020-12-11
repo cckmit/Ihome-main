@@ -4,7 +4,7 @@
  * @Author: wwq
  * @Date: 2020-12-02 15:37:31
  * @LastEditors: wwq
- * @LastEditTime: 2020-12-11 14:37:06
+ * @LastEditTime: 2020-12-11 16:34:38
 -->
 <template>
   <el-dialog
@@ -640,11 +640,10 @@ export default class AddContract extends Vue {
           arr.concat(this.info.contractMxVOList.map((v: any) => v.conditionId))
         ),
       ];
-      console.log(this.queryObj);
+      this.queryObj.termId = this.$route.query.id;
       const item = await post_distributContract_getCheckCollectByCondition(
         this.queryObj
       );
-      console.log(item);
       this.info.contractMxVOList = item;
       this.$message.success("新增成功");
       this.setmealDialogVisible = false;

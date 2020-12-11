@@ -4,7 +4,7 @@
  * @Author: wwq
  * @Date: 2020-11-27 17:26:20
  * @LastEditors: wwq
- * @LastEditTime: 2020-12-11 15:43:45
+ * @LastEditTime: 2020-12-11 18:53:16
 -->
 <template>
   <div>
@@ -137,7 +137,7 @@
       <MakingEdit
         :data="editData"
         @cancel="() => (makingEditDialogVisible = false)"
-        @finish="(data) => MakingEditFinish(data)"
+        @finish="(data) => makingEditFinish(data)"
       />
     </ih-dialog>
     <ih-dialog :show="makingInfoDialogVisible">
@@ -171,8 +171,6 @@ import {
   get_settleCondition_getPage__termId,
   post_settleCondition_cancelPlease,
   post_settleCondition_cancelMaking,
-  post_collectandsend_add,
-  post_collectandsend_update,
 } from "@/api/project/index.ts";
 @Component({
   components: {
@@ -230,18 +228,11 @@ export default class Close extends Vue {
     }
   }
 
-  async addFinish(data: any) {
-    data.termId = this.$route.query.id;
-    if (this.editData.id) {
-      data.packageId = this.editData.id;
-      await post_collectandsend_update(data);
-      this.$message.success("修改成功");
-    } else {
-      await post_collectandsend_add(data);
-      this.$message.success("新增成功");
-    }
-    // this.dialogVisible = false;
-    this.getInfo();
+  makingEditFinish(data: any) {
+    // data.termId = this.$route.query.id;
+    console.log(data);
+    // this.makingEditDialogVisible = false;
+    // this.getInfo();
   }
 
   async cancellation(data: any, type: any) {
