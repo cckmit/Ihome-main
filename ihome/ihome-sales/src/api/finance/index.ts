@@ -1,6 +1,6 @@
 /* eslint-disable */
 /* 此脚本由swagger-ui的api-docs自动生成，请勿修改 */
-//2020-12-8 8:43:43 ├F10: PM┤
+//2020-12-11 4:31:19 ├F10: PM┤
 import { request } from '@/api/base'
 const basePath = "/sales-api/finance"
 /**新增收款账号在线支付信息*/
@@ -31,6 +31,10 @@ export async function post_bankAccount_delete__id(d?: any) {
 export async function get_bankAccount_get__companyId(d?: any) {
   return await request.get<BankAccountVO[], BankAccountVO[]>(basePath + '/bankAccount/get/{companyId}', { params: d })
 }
+/**查询公司收款账户信息详情*/
+export async function get_bankAccount_getById__id(d?: any) {
+  return await request.get<BankAccountVO, BankAccountVO>(basePath + '/bankAccount/getById/{id}', { params: d })
+}
 /**查询公司收款账户信息列表数据*/
 export async function post_bankAccount_getList(d?: any) {
   return await request.post<PageModel<BankAccountVO>, PageModel<BankAccountVO>>(basePath + '/bankAccount/getList', d)
@@ -51,73 +55,45 @@ export async function get_bankBranch_get__id(d?: any) {
 export async function post_bankBranch_getList(d?: any) {
   return await request.post<PageModel<BankBranchVO>, PageModel<BankBranchVO>>(basePath + '/bankBranch/getList', d)
 }
-/**(已实现)新增甲方开票信息数据*/
-export async function post_invoice_add(d?: any) {
-  return await request.post<string, string>(basePath + '/invoice/add', d)
+/**航天自动红冲可批量*/
+export async function post_invoice_autoHCInvoicing(d?: any) {
+  return await request.post<number, number>(basePath + '/invoice/autoHCInvoicing', d)
 }
-/**(已实现)航天自动红冲-可批量*/
-export async function post_invoice_autoHongChong(d?: any) {
-  return await request.post<string, string>(basePath + '/invoice/autoHongChong', d)
+/**航天自动开票可批量*/
+export async function post_invoice_autoZPInvoicing(d?: any) {
+  return await request.post<number, number>(basePath + '/invoice/autoZPInvoicing', d)
 }
-/**(已实现)航天自动开正票-可批量*/
-export async function post_invoice_autoKaiPiao(d?: any) {
-  return await request.post<string, string>(basePath + '/invoice/autoKaiPiao', d)
-}
-/**(已实现)下载发票文件-可批量*/
+/**下载发票文件-可批量*/
 export async function post_invoice_downloadFile(d?: any) {
   return await request.post<string[], string[]>(basePath + '/invoice/downloadFile', d)
 }
-/**(未实现)导出数据*/
-export async function post_invoice_exportData(d?: any) {
-  return await request.post<any, any>(basePath + '/invoice/exportData', d)
+/**查询开票详情*/
+export async function get_invoice_get__id(d?: any) {
+  return await request.get<InvoiceDetailVO, InvoiceDetailVO>(basePath + '/invoice/get/{id}', { params: d })
 }
-/**[已实现]查询航天发票文件信息*/
-export async function post_invoice_getHtFileInfo(d?: any) {
-  return await request.post<InvoiceBillHtPdfInfo, InvoiceBillHtPdfInfo>(basePath + '/invoice/getHtFileInfo', d)
-}
-/**(未实现)查询开票信息列表数据*/
+/**查询开票信息列表数据*/
 export async function post_invoice_getList(d?: any) {
   return await request.post<PageModel<InvoiceVO>, PageModel<InvoiceVO>>(basePath + '/invoice/getList', d)
 }
-/**(未实现)查询甲方正票信息列表数据*/
-export async function post_invoice_getPartyAList(d?: any) {
-  return await request.post<PageModel<InvoicePartyAVO>, PageModel<InvoicePartyAVO>>(basePath + '/invoice/getPartyAList', d)
+/**手动红冲可批量*/
+export async function post_invoice_handHCInvoicing(d?: any) {
+  return await request.post<number, number>(basePath + '/invoice/handHCInvoicing', d)
 }
-/**(未实现)查询甲方红票信息列表数据*/
-export async function post_invoice_getPartyARedList(d?: any) {
-  return await request.post<PageModel<InvoicePartyAVO>, PageModel<InvoicePartyAVO>>(basePath + '/invoice/getPartyARedList', d)
-}
-/**(已实现)Excel导入历史发票信息*/
-export async function post_invoice_importData(d?: any) {
-  return await request.post<number, number>(basePath + '/invoice/importData', d)
-}
-/**(已实现)手动开票*/
-export async function post_invoice_manualKaiPiao(d?: any) {
-  return await request.post<string, string>(basePath + '/invoice/manualKaiPiao', d)
-}
-/**(实现中)甲方手动开票*/
-export async function post_invoice_partyAManualKaiPiao(d?: any) {
-  return await request.post<string, string>(basePath + '/invoice/partyAManualKaiPiao', d)
-}
-/**(实现中)查询开票详情*/
-export async function post_invoice_queryInvoiceInfo(d?: any) {
-  return await request.post<InvoiceInfoVO, InvoiceInfoVO>(basePath + '/invoice/queryInvoiceInfo', d)
-}
-/**测试航天开票*/
-export async function post_invoice_test(d?: any) {
-  return await request.post<number, number>(basePath + '/invoice/test', d)
+/**手动开票可批量*/
+export async function post_invoice_handInvoicing(d?: any) {
+  return await request.post<number, number>(basePath + '/invoice/handInvoicing', d)
 }
 /**(未实现)Excel导入开票基础数据*/
 export async function post_invoiceBase_importData(d?: any) {
   return await request.post<number, number>(basePath + '/invoiceBase/importData', d)
 }
 /**(未实现)下载航天发票文件-可批量*/
-export async function post_invoiceBill_downloadFile(d?: any) {
-  return await request.post<number, number>(basePath + '/invoiceBill/downloadFile', d)
+export async function post_invoiceBillOld_downloadFile(d?: any) {
+  return await request.post<number, number>(basePath + '/invoiceBillOld/downloadFile', d)
 }
 /**(已实现)查询航天发票信息列表数据*/
-export async function post_invoiceBill_getList(d?: any) {
-  return await request.post<PageModel<InvoiceHTBillVO>, PageModel<InvoiceHTBillVO>>(basePath + '/invoiceBill/getList', d)
+export async function post_invoiceBillOld_getList(d?: any) {
+  return await request.post<PageModel<InvoiceHTBillVO>, PageModel<InvoiceHTBillVO>>(basePath + '/invoiceBillOld/getList', d)
 }
 /**添加发票税率配置信息*/
 export async function post_invoiceConfig_add(d?: any) {
@@ -139,6 +115,62 @@ export async function post_invoiceConfig_getList(d?: any) {
 export async function post_invoiceConfig_update(d?: any) {
   return await request.post<number, number>(basePath + '/invoiceConfig/update', d)
 }
+/**(已实现)新增甲方开票信息数据*/
+export async function post_invoiceOld_add(d?: any) {
+  return await request.post<string, string>(basePath + '/invoiceOld/add', d)
+}
+/**(已实现)航天自动红冲-可批量*/
+export async function post_invoiceOld_autoHongChong(d?: any) {
+  return await request.post<string, string>(basePath + '/invoiceOld/autoHongChong', d)
+}
+/**(已实现)航天自动开正票-可批量*/
+export async function post_invoiceOld_autoKaiPiao(d?: any) {
+  return await request.post<string, string>(basePath + '/invoiceOld/autoKaiPiao', d)
+}
+/**(已实现)下载发票文件-可批量*/
+export async function post_invoiceOld_downloadFile(d?: any) {
+  return await request.post<string[], string[]>(basePath + '/invoiceOld/downloadFile', d)
+}
+/**(未实现)导出数据*/
+export async function post_invoiceOld_exportData(d?: any) {
+  return await request.post<any, any>(basePath + '/invoiceOld/exportData', d)
+}
+/**[已实现]查询航天发票文件信息*/
+export async function post_invoiceOld_getHtFileInfo(d?: any) {
+  return await request.post<InvoiceBillHtPdfInfo, InvoiceBillHtPdfInfo>(basePath + '/invoiceOld/getHtFileInfo', d)
+}
+/**(未实现)查询开票信息列表数据*/
+export async function post_invoiceOld_getList(d?: any) {
+  return await request.post<PageModel<InvoiceVO>, PageModel<InvoiceVO>>(basePath + '/invoiceOld/getList', d)
+}
+/**(未实现)查询甲方正票信息列表数据*/
+export async function post_invoiceOld_getPartyAList(d?: any) {
+  return await request.post<PageModel<InvoicePartyAVO>, PageModel<InvoicePartyAVO>>(basePath + '/invoiceOld/getPartyAList', d)
+}
+/**(未实现)查询甲方红票信息列表数据*/
+export async function post_invoiceOld_getPartyARedList(d?: any) {
+  return await request.post<PageModel<InvoicePartyAVO>, PageModel<InvoicePartyAVO>>(basePath + '/invoiceOld/getPartyARedList', d)
+}
+/**(已实现)Excel导入历史发票信息*/
+export async function post_invoiceOld_importData(d?: any) {
+  return await request.post<number, number>(basePath + '/invoiceOld/importData', d)
+}
+/**(已实现)手动开票*/
+export async function post_invoiceOld_manualKaiPiao(d?: any) {
+  return await request.post<string, string>(basePath + '/invoiceOld/manualKaiPiao', d)
+}
+/**(实现中)甲方手动开票*/
+export async function post_invoiceOld_partyAManualKaiPiao(d?: any) {
+  return await request.post<string, string>(basePath + '/invoiceOld/partyAManualKaiPiao', d)
+}
+/**(实现中)查询开票详情*/
+export async function post_invoiceOld_queryInvoiceInfo(d?: any) {
+  return await request.post<InvoiceInfoVO, InvoiceInfoVO>(basePath + '/invoiceOld/queryInvoiceInfo', d)
+}
+/**测试航天开票*/
+export async function post_invoiceOld_test(d?: any) {
+  return await request.post<number, number>(basePath + '/invoiceOld/test', d)
+}
 /**添加付款记录*/
 export async function post_payment_add(d?: any) {
   return await request.post<number, number>(basePath + '/payment/add', d)
@@ -155,13 +187,21 @@ export async function post_payment_delete__id(d?: any) {
 export async function get_payment_doPayment__id(d?: any) {
   return await request.get<object, object>(basePath + '/payment/doPayment/{id}', { params: d })
 }
-/**获取待付款记录ID*/
-export async function get_payment_get_businessId__businessId(d?: any) {
-  return await request.get<number, number>(basePath + '/payment/get/businessId/{businessId}', { params: d })
-}
 /**查询一条付款记录*/
 export async function get_payment_get__id(d?: any) {
   return await request.get<PaymentVO, PaymentVO>(basePath + '/payment/get/{id}', { params: d })
+}
+/**根据优惠告知书ID获取已付金额*/
+export async function get_payment_getAmountPaidByBusinessId__businessId(d?: any) {
+  return await request.get<any, any>(basePath + '/payment/getAmountPaidByBusinessId/{businessId}', { params: d })
+}
+/**根据成交ID获取已付金额*/
+export async function get_payment_getAmountPaidByDealId__dealId(d?: any) {
+  return await request.get<any, any>(basePath + '/payment/getAmountPaidByDealId/{dealId}', { params: d })
+}
+/**获取待付款记录ID*/
+export async function get_payment_getBusinessId__businessId(d?: any) {
+  return await request.get<number, number>(basePath + '/payment/getBusinessId/{businessId}', { params: d })
 }
 /**查询收款信息列表数据*/
 export async function get_payment_getList__businessId(d?: any) {
@@ -372,6 +412,13 @@ export interface HandInvoiceBillVO {
   /**税额[公式]*/
   taxAmount: number;
 }
+/**InvoiceAttachmentVO*/
+export interface InvoiceAttachmentVO {
+  /**附件ID*/
+  fileId: string;
+  /**附件类型*/
+  type: string;
+}
 /**InvoiceBaseVO*/
 export interface InvoiceBaseVO {
   /**商品分类编码*/
@@ -482,6 +529,29 @@ export interface InvoiceBillHtPdfInfo {
   htPdfFile: string;
   /**undefined*/
   htPdfUrl: string;
+}
+/**InvoiceBillInfoVO*/
+export interface InvoiceBillInfoVO {
+  /**金额（含税）*/
+  amount: number;
+  /**红冲状态*/
+  cancelFlag: number;
+  /**ID*/
+  id: number;
+  /**发票代码*/
+  invoiceCode: string;
+  /**开票ID*/
+  invoiceId: number;
+  /**发票号码*/
+  invoiceNo: string;
+  /**发票类别*/
+  invoiceType: number;
+  /**确认主营（不含税）*/
+  noTax: number;
+  /**航天开票流水号*/
+  serialNo: string;
+  /**税额*/
+  tax: number;
 }
 /**InvoiceBillQueryVO*/
 export interface InvoiceBillQueryVO {
@@ -614,6 +684,26 @@ export interface InvoiceConfigVO {
   /**纳税人识别号*/
   taxpayerNo: string;
 }
+/**InvoiceDetailVO*/
+export interface InvoiceDetailVO {
+  /**附件信息fileId集合*/
+  fileIds: string[];
+  /**发票信息集合*/
+  invoiceBillInfos: InvoiceBillInfoVO[];
+  /**开票信息*/
+  invoiceInfo: InvoiceInfoVO_1;
+  /**开票历史记录信息集合*/
+  invoiceRecords: InvoiceRecordVO[];
+}
+/**InvoiceHCVO*/
+export interface InvoiceHCVO {
+  /**开票信息ID集合*/
+  ids: number[];
+  /**代理费红冲备注*/
+  remark: string;
+  /**代理费红冲初始化状态*/
+  state: number;
+}
 /**InvoiceHTBillVO*/
 export interface InvoiceHTBillVO {
   /**发票金额[含税]*/
@@ -645,6 +735,32 @@ export interface InvoiceHTBillVO {
   /**税额[公式]*/
   taxAmount: number;
 }
+/**InvoiceHTZPVO*/
+export interface InvoiceHTZPVO {
+  /**开票信息ID集合*/
+  ids: number[];
+  /**发票类型(SpecialElectron-增值税专用发票（电子）、OrdinaryElectron-增值税普通发票（电子）、OrdinaryPaper-增值税普通发票（纸质)、SpecialPaper-增值税专用发票（纸质）)*/
+  operationType: string;
+}
+/**InvoiceHandVO*/
+export interface InvoiceHandVO {
+  /**附件集合(fileIds)*/
+  attachments: InvoiceAttachmentVO[];
+  /**开票信息ID*/
+  invoiceId: number;
+  /**map: key-发票号码 value-发票代码)*/
+  invoiceNoAndInvoiceCodeMap: object;
+  /**发票类型(SpecialElectron-增值税专用发票（电子）、OrdinaryElectron-增值税普通发票（电子）、OrdinaryPaper-增值税普通发票（纸质)、SpecialPaper-增值税专用发票（纸质）)*/
+  invoiceType: string;
+  /**NC凭证号*/
+  ncCode: string;
+  /**开票日期(yyyy-MM-dd)*/
+  operationDate: string;
+  /**备注*/
+  remark: string;
+  /**税额*/
+  tax: number;
+}
 /**InvoiceInfoVO*/
 export interface InvoiceInfoVO {
   /**undefined*/
@@ -653,6 +769,47 @@ export interface InvoiceInfoVO {
   billList: InvoiceBillHandVO[];
   /**undefined*/
   invoiceInfo: InvoiceVO;
+}
+/**InvoiceInfoVO_1*/
+export interface InvoiceInfoVO_1 {
+  /**金额（含税）*/
+  amount: number;
+  /**业务ID*/
+  businessId: number;
+  /**业务单号*/
+  businessNo: string;
+  /**事业部ID*/
+  departmentId: number;
+  /**费用类型(ServiceFee-服务费、AgencyFee-代理费)*/
+  feeType: string;
+  /**ID*/
+  id: number;
+  /**发票抬头*/
+  invoiceTitle: string;
+  /**发票类型(SpecialElectron-增值税专用发票（电子）、OrdinaryElectron-增值税普通发票（电子）、OrdinaryPaper-增值税普通发票（纸质)、SpecialPaper-增值税专用发票（纸质）)*/
+  invoiceType: string;
+  /**NC凭证号*/
+  ncCode: string;
+  /**确认主营（不含税）*/
+  noTax: number;
+  /**开票日期(yyyy-MM-dd)*/
+  operationDate: string;
+  /**开票类型(Hand-手工开票、Auto-自动开票)*/
+  operationType: string;
+  /**开票人*/
+  operationUser: number;
+  /**收款方*/
+  payee: string;
+  /**收款方账号*/
+  payeeAccountNo: string;
+  /**备注*/
+  remark: string;
+  /**状态(Done-已开票、NotDone-未开票)*/
+  status: string;
+  /**税额*/
+  tax: number;
+  /**税率*/
+  taxRate: number;
 }
 /**InvoiceManualInfoVO*/
 export interface InvoiceManualInfoVO {
@@ -789,6 +946,40 @@ export interface InvoiceQueryVO {
   /**(必填)业务编号*/
   businessCodes: string[];
 }
+/**InvoiceQueryVO_1*/
+export interface InvoiceQueryVO_1 {
+  /**业务单号*/
+  businessNo: string;
+  /**截止开票日期(yyyy-MM-dd)*/
+  endTime: string;
+  /**费用类型(ServiceFee-服务费、AgencyFee-代理费)*/
+  feeType: string;
+  /**发票抬头*/
+  invoiceTitle: string;
+  /**开票类型(Hand-手工开票、Auto-自动开票)*/
+  operationType: string;
+  /**(必填)当前页*/
+  pageNum: number;
+  /**(必填)每页条数*/
+  pageSize: number;
+  /**起始开票日期(yyyy-MM-dd)*/
+  startTime: string;
+  /**开票状态(Done-已开票、NotDone-未开票)*/
+  status: string;
+}
+/**InvoiceRecordVO*/
+export interface InvoiceRecordVO {
+  /**开票ID*/
+  invoiceId: number;
+  /**操作时间(yyyy-MM-dd HH:mm:ss)*/
+  operateTime: string;
+  /**操作(HandMake-手工开票、AutoMake-自动开票、HandCancel-手工红冲、AutoCancel-自动红冲)*/
+  operation: string;
+  /**操作人*/
+  operator: number;
+  /**备注*/
+  remark: string;
+}
 /**InvoiceVO*/
 export interface InvoiceVO {
   /**业绩确认时间(yyyy-MM-dd HH:mm:ss)*/
@@ -842,6 +1033,33 @@ export interface InvoiceVO {
   /**备注信息*/
   remark: string;
 }
+/**InvoiceVO_1*/
+export interface InvoiceVO_1 {
+  /**金额（含税）*/
+  amount: number;
+  /**业务ID*/
+  businessId: number;
+  /**业务单号*/
+  businessNo: string;
+  /**费用类型(ServiceFee-服务费、AgencyFee-代理费)*/
+  feeType: string;
+  /**ID*/
+  id: number;
+  /**发票抬头*/
+  invoiceTitle: string;
+  /**开票日期(yyyy-MM-dd)*/
+  operationDate: string;
+  /**开票类型(Hand-手工开票、Auto-自动开票)*/
+  operationType: string;
+  /**收款方*/
+  payee: string;
+  /**收款方账号*/
+  payeeAccountNo: string;
+  /**状态(Done-已开票、NotDone-未开票)*/
+  status: string;
+  /**税额*/
+  tax: number;
+}
 /**PaymentAddVO*/
 export interface PaymentAddVO {
   /**(必填)支付金额*/
@@ -858,7 +1076,7 @@ export interface PaymentAddVO {
   operator: number;
   /**(必填)项目ID*/
   orgId: number;
-  /**(必填)支付方式(Pos-银联刷卡、WeChatPay-微信支付、UnionPay-银联支付、Alipay-支付宝支付、Transfer-银行转账、PosNoOrder-无订单刷卡)*/
+  /**(必填)支付方式(Pos-POS刷卡、WeChatPay-微信支付、UnionPay-银联支付、Alipay-支付宝支付、Transfer-银行转账、PosNoOrder-无订单刷卡)*/
   payType: string;
   /**(必填)付款方(Customer-客户、PartyA-甲方)*/
   payer: string;
@@ -900,7 +1118,7 @@ export interface PaymentUpdateVO {
   foundType: string;
   /**(必填)ID*/
   id: number;
-  /**(必填)支付方式(Pos-银联刷卡、WeChatPay-微信支付、UnionPay-银联支付、Alipay-支付宝支付、Transfer-银行转账、PosNoOrder-无订单刷卡)*/
+  /**(必填)支付方式(Pos-POS刷卡、WeChatPay-微信支付、UnionPay-银联支付、Alipay-支付宝支付、Transfer-银行转账、PosNoOrder-无订单刷卡)*/
   payType: string;
   /**(必填)付款服务费*/
   serviceAmount: number;
@@ -921,7 +1139,7 @@ export interface PaymentVO {
   payDate: string;
   /**收款编号*/
   payNo: string;
-  /**支付方式(Pos-银联刷卡、WeChatPay-微信支付、UnionPay-银联支付、Alipay-支付宝支付、Transfer-银行转账、PosNoOrder-无订单刷卡)*/
+  /**支付方式(Pos-POS刷卡、WeChatPay-微信支付、UnionPay-银联支付、Alipay-支付宝支付、Transfer-银行转账、PosNoOrder-无订单刷卡)*/
   payType: string;
   /**状态(NotPaid-待支付、Paid-已支付、NotCheck-待对账)*/
   status: string;
