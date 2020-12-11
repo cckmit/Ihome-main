@@ -4,7 +4,7 @@
  * @Author: wwq
  * @Date: 2020-11-03 11:52:41
  * @LastEditors: wwq
- * @LastEditTime: 2020-11-11 11:37:31
+ * @LastEditTime: 2020-12-11 08:52:50
 -->
 <template>
   <div>
@@ -332,7 +332,7 @@
                         clearable
                       >
                         <el-option
-                          v-for="item in $root.dictAllList('PropertyAgeEnum')"
+                          v-for="item in $root.dictAllList('PropertyAge')"
                           :key="item.code"
                           :label="item.name"
                           :value="item.code"
@@ -391,7 +391,7 @@
               label="业务类型"
             >
               <template v-slot="{ row }">{{
-                $root.dictAllName(row.busTypeEnum, "BusTypeEnum")
+                $root.dictAllName(row.busTypeEnum, "BusType")
               }}</template>
             </el-table-column>
             <el-table-column
@@ -411,7 +411,7 @@
               label="审核状态"
             >
               <template v-slot="{ row }">{{
-                $root.dictAllName(row.auditEnum, "AuditEnum")
+                $root.dictAllName(row.auditEnum, "Audit")
               }}</template>
             </el-table-column>
             <el-table-column
@@ -501,7 +501,7 @@
               label="类型"
             >
               <template v-slot="{ row }">{{
-                $root.dictAllName(row.proAttachEnum, "ProAttachEnum")
+                $root.dictAllName(row.proAttachEnum, "ProAttach")
               }}</template>
             </el-table-column>
             <el-table-column label="附件">
@@ -662,7 +662,7 @@ export default class EditBasicInfo extends Vue {
   }
 
   private get checkBoxList() {
-    let list = (this.$root as any).dictAllList("PropertyEnum");
+    let list = (this.$root as any).dictAllList("Property");
     let arr: any = [];
     list.forEach((v: any) => {
       let item = this.contantList.find((j: any) => v.code === j.propertyEnum);
@@ -707,14 +707,14 @@ export default class EditBasicInfo extends Vue {
       this.form.provinceOption = [data.province, data.city, data.district];
       this.contantList = data.propertyArgs.map((v: any) => ({
         ...v,
-        title: (this.$root as any).dictAllName(v.propertyEnum, "PropertyEnum"),
+        title: (this.$root as any).dictAllName(v.propertyEnum, "Property"),
       }));
       this.form.jingwei = data.lat + "," + data.lng;
       let arr: any = [];
       this.contantList.forEach((v: any) => {
         arr.push(
           JSON.stringify({
-            ...(this.$root as any).dictAllItem(v.propertyEnum, "PropertyEnum"),
+            ...(this.$root as any).dictAllItem(v.propertyEnum, "Property"),
             msg: {
               ...v,
             },

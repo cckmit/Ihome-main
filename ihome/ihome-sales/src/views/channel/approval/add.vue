@@ -4,7 +4,7 @@
  * @Author: zyc
  * @Date: 2020-07-09 14:31:23
  * @LastEditors: zyc
- * @LastEditTime: 2020-11-16 10:34:21
+ * @LastEditTime: 2020-12-10 15:59:46
 --> 
 <template>
   <ih-page>
@@ -46,7 +46,14 @@
                 prop="departmentOrgId"
                 class="width--100"
               >
-                <el-select
+                <IhSelectPageDivision
+                   v-model="postData.departmentOrgId"
+                  class="width-100"
+                  clearable
+                  value-key="id"
+                >
+                </IhSelectPageDivision>
+                <!-- <el-select
                   v-model="postData.departmentOrgId"
                   clearable
                   placeholder="事业部"
@@ -58,7 +65,7 @@
                     :label="item.name"
                     :value="item.id"
                   ></el-option>
-                </el-select>
+                </el-select> -->
               </el-form-item>
             </el-col>
           </el-row>
@@ -104,9 +111,20 @@
         <!-- <el-table-column prop="name" label="信用代码"> </el-table-column>
       <el-table-column prop="name" label="法定代表人"> </el-table-column> -->
         <el-table-column prop="special" label="特批入库"> </el-table-column>
-        <el-table-column prop="city" label="业务开展城市"> </el-table-column>
-        <el-table-column prop="cityGrade" label="城市等级"> </el-table-column>
+        <el-table-column prop="city" label="业务开展城市">
+          <template slot-scope="scope">
+            {{ $root.getAreaName(scope.row.city) }}
+          </template>
+        </el-table-column>
+        <el-table-column prop="cityGrade" label="城市等级">
+          <template slot-scope="scope">
+            {{ $root.dictAllName(scope.row.cityGrade, "CityLevel") }}
+          </template>
+        </el-table-column>
         <el-table-column prop="channelGrade" label="渠道等级">
+          <template slot-scope="scope">
+            {{ $root.dictAllName(scope.row.channelGrade, "ChannelLevel") }}
+          </template>
         </el-table-column>
         <el-table-column prop="" label="操作">
           <template slot-scope="scope">
@@ -227,7 +245,7 @@ export default class ApprovalAdd extends Vue {
       //   id: null,
       // },
     ],
-    departmentOrgId: null,
+    departmentOrgId: 10,
     operateType: null, //1保存2提交
   };
 

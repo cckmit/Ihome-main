@@ -4,7 +4,7 @@
  * @Author: wwq
  * @Date: 2020-09-09 16:17:16
  * @LastEditors: wwq
- * @LastEditTime: 2020-11-10 09:34:54
+ * @LastEditTime: 2020-12-02 10:53:11
 -->
 <template>
   <div class="upload">
@@ -31,7 +31,10 @@
           :style="{ width: size, height: size }"
           :src="uploadType(file)"
         />
-        <slot name="extend" :data="file" />
+        <slot
+          name="extend"
+          :data="file"
+        />
         <span
           class="el-upload-list__item-actions uploadbutton"
           :style="{
@@ -45,29 +48,48 @@
               v-if="previewPermi"
               @click="handlePictureCardPreview(file)"
             >
-              <i class="el-icon-zoom-in" title="预览"></i>
+              <i
+                class="el-icon-zoom-in"
+                title="预览"
+              ></i>
             </span>
             <span
               class="el-upload-list__item-delete"
               v-if="loadPermi"
               @click="handleDownload(file)"
             >
-              <i class="el-icon-download" title="下载"></i>
+              <i
+                class="el-icon-download"
+                title="下载"
+              ></i>
             </span>
             <span
               class="el-upload-list__item-delete"
               v-if="removePermi"
               @click="handleRemove(file)"
             >
-              <i class="el-icon-delete" title="删除"></i>
+              <i
+                class="el-icon-delete"
+                title="删除"
+              ></i>
             </span>
           </span>
-          <span class="move" v-if="isMove" ref="move">
+          <span
+            class="move"
+            v-if="isMove"
+            ref="move"
+          >
             <span @click="leftShift(file)">
-              <i class="el-icon-back" title="左移"></i>
+              <i
+                class="el-icon-back"
+                title="左移"
+              ></i>
             </span>
             <span @click="rightShift(file)">
-              <i class="el-icon-right" title="右移"></i>
+              <i
+                class="el-icon-right"
+                title="右移"
+              ></i>
             </span>
           </span>
         </span>
@@ -86,7 +108,10 @@
       :viewer-msg="viewerArr"
       :viewer-index="viewerIndex"
     ></image-viewer>
-    <ih-dialog :show="dialogVisible" desc="联系人信息">
+    <ih-dialog
+      :show="dialogVisible"
+      desc="联系人信息"
+    >
       <Cropper
         ref="cropper"
         :img="cropperImg"

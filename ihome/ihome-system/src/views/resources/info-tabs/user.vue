@@ -8,19 +8,37 @@
 --> 
 <template>
   <div>
-    <div style="text-align:right;">
-      <el-input style="width:300px;" placeholder="登录账号 姓名" class="input-with-select">
-        <el-button slot="append" icon="el-icon-search" @click="search()"></el-button>
+    <div style="text-align: right">
+      <el-input
+        style="width: 300px"
+        placeholder="登录账号 姓名"
+        class="input-with-select"
+      >
+        <el-button
+          slot="append"
+          icon="el-icon-search"
+          @click="search()"
+        ></el-button>
       </el-input>
     </div>
     <br />
     <el-table :data="resPageInfo.list" style="width: 100%">
       <el-table-column type="index" label="序号" width="50"></el-table-column>
       <el-table-column prop="name" label="姓名" width="180"></el-table-column>
-      <el-table-column prop="account" label="登录账号" width="180"></el-table-column>
-      <el-table-column prop="mobilePhone" label="手机号码" width="180"></el-table-column>
+      <el-table-column
+        prop="account"
+        label="登录账号"
+        width="180"
+      ></el-table-column>
+      <el-table-column
+        prop="mobilePhone"
+        label="手机号码"
+        width="180"
+      ></el-table-column>
       <el-table-column prop="userType" label="用户类型">
-        <template slot-scope="scope">{{$root.displayName('accountType',scope.row.accountType)}}</template>
+        <template slot-scope="scope">{{
+          $root.displayName("accountType", scope.row.accountType)
+        }}</template>
       </el-table-column>
       <el-table-column prop="orgName" label="归属组织"></el-table-column>
     </el-table>
@@ -53,7 +71,7 @@ export default class InfoUser extends Vue {
     list: [],
     total: 0,
   };
- 
+
   async search() {
     this.resPageInfo = await post_user_getListByResourceId(
       this.queryPageParameters

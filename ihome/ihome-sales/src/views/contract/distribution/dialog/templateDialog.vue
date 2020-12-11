@@ -3,8 +3,8 @@
  * @version: 
  * @Author: ywl
  * @Date: 2020-10-30 09:53:42
- * @LastEditors: ywl
- * @LastEditTime: 2020-10-30 14:20:48
+ * @LastEditors: wwq
+ * @LastEditTime: 2020-12-11 08:45:08
 -->
 <template>
   <el-dialog
@@ -33,7 +33,7 @@
         prop="padCommissionEnum"
       >
         <template v-slot="{ row }">
-          {{$root.dictAllName(row.padCommissionEnum, 'PadCommissionEnum')}}
+          {{$root.dictAllName(row.padCommissionEnum, 'PadCommission')}}
         </template>
       </el-table-column>
       <el-table-column
@@ -41,7 +41,7 @@
         prop="channelEnum"
       >
         <template v-slot="{ row }">
-          {{$root.dictAllName(row.channelEnum, 'ChannelEnum')}}
+          {{$root.dictAllName(row.channelEnum, 'Channel')}}
         </template>
       </el-table-column>
       <el-table-column

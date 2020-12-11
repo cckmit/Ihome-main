@@ -4,7 +4,7 @@
  * @Author: wwq
  * @Date: 2020-10-22 14:45:15
  * @LastEditors: wwq
- * @LastEditTime: 2020-11-10 15:49:49
+ * @LastEditTime: 2020-12-10 17:08:02
  */
 import { RouteConfig } from 'vue-router'
 
@@ -99,6 +99,44 @@ const projectRoutes: Array<RouteConfig> = [
         name: 'firstAgencyInfo',
         component: () => import('../views/project/firstAgency/info.vue'),
         meta: { title: '一手代理公司详情', icon: 'form' }
+      }
+    ]
+  },
+  {
+    path: '/projectApproval',
+    meta: { title: '立项周期管理', icon: null },
+    redirect: '/projectApproval/list',
+    component: Layout,
+    children: [
+      {
+        path: 'list',
+        name: 'projectApprovalList',
+        component: () => import('../views/project/projectApproval/list.vue'),
+        meta: { title: '立项周期列表', icon: 'form' }
+      },
+      {
+        path: 'edit',
+        name: 'projectApprovalEdit',
+        component: () => import('../views/project/projectApproval/edit.vue'),
+        meta: { title: '立项周期编辑', icon: 'form' }
+      },
+      {
+        path: 'info',
+        name: 'projectApprovalInfo',
+        component: () => import('../views/project/projectApproval/info.vue'),
+        meta: { title: '立项周期详情', icon: 'form' }
+      },
+      {
+        path: 'audit',
+        name: 'projectApprovalAudit',
+        component: () => import('../views/project/projectApproval/info.vue'),
+        meta: { title: '立项周期审核', icon: 'form' }
+      },
+      {
+        path: 'apply',
+        name: 'projectApprovalApply',
+        component: () => import('../views/project/projectApproval/apply.vue'),
+        meta: { title: '立项周期申领分销协议', icon: 'form' }
       }
     ]
   },

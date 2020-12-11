@@ -3,8 +3,8 @@
  * @version: 
  * @Author: ywl
  * @Date: 2020-09-16 14:05:21
- * @LastEditors: ywl
- * @LastEditTime: 2020-12-01 15:11:59
+ * @LastEditors: wwq
+ * @LastEditTime: 2020-12-11 08:41:29
 -->
 <template>
   <IhPage>
@@ -213,7 +213,7 @@
           width="150"
         >
           <template v-slot="{ row }">
-            <span>{{$root.dictAllName(row.accountType, "AccountEnum")}}</span>
+            <span>{{$root.dictAllName(row.accountType, "Account")}}</span>
           </template>
         </el-table-column>
         <el-table-column

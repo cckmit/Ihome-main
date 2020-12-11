@@ -4,7 +4,7 @@
  * @Author: ywl
  * @Date: 2020-10-20 15:03:13
  * @LastEditors: ywl
- * @LastEditTime: 2020-12-05 15:59:17
+ * @LastEditTime: 2020-12-10 17:34:04
 -->
 <template>
   <el-select
@@ -29,14 +29,20 @@
         v-model="filterText"
         clearable
         @keyup.enter.native="handleKeyup()"
-      ></el-input>
+      >
+        <i
+          slot="suffix"
+          class="el-input__icon el-icon-loading"
+          v-if="searchLoad"
+        ></i>
+      </el-input>
     </div>
     <!-- 下拉部分 -->
     <el-option
       v-for="(item, index) in optionList"
       :key="item[keyProp]"
       :label="item[labelProp]"
-      :value="valueKey ? item : item[valueProp]"
+      :value="item[valueProp]"
       :disabled="item[disabledProp]"
       @click.native="handleClickOption(item)"
     >
@@ -74,7 +80,7 @@ const debounce = (function () {
 
 @Component({})
 export default class IhSelectPage extends Vue {
-  @Prop() value!: any;
+  @Prop() value!: string | number;
   @Prop() clearable?: boolean;
   @Prop() disabled?: boolean;
   @Prop() placeholder?: string;
@@ -82,13 +88,14 @@ export default class IhSelectPage extends Vue {
   @Prop() multiple?: boolean;
   @Prop() collapseTags?: boolean;
   @Prop() promiseFun?: Function;
+  @Prop() searchName?: string;
   @Prop() proId?: any;
   @Prop({
     default: false,
   })
   isBlur?: boolean;
   @Prop({
-    default: false,
+    default: true,
   })
   switchHidePage?: boolean;
   @Prop({
@@ -96,7 +103,7 @@ export default class IhSelectPage extends Vue {
   })
   isKeyUp?: boolean;
   @Prop({
-    default: "检索关键字",
+    default: "请输入两个关键字检索",
   })
   searchPlaceholder?: string;
   @Prop({
@@ -120,20 +127,25 @@ export default class IhSelectPage extends Vue {
     pageNum: 1,
     pageSize: 10,
   };
+  searchLoad = false;
 
-  @Watch("value", { immediate: true, deep: true })
-  watchValue(val: any, old: any) {
-    if (typeof old === "undefined" && val) {
-      this.filterText = val.name;
-    }
-  }
+  // @Watch("value", { immediate: true, deep: true })
+  // watchValue(val: any, old: any) {
+  //   if (typeof old === "undefined" && val) {
+  //     this.filterText = val.name;
+  //   }
+  // }
   @Watch("filterText")
   filter(val: any) {
     if (val.length >= 2 && !this.isKeyUp) {
-      debounce(this.getSelectList, 1000);
+      debounce(this.getSelectList, 500);
     } else if (!val.length) {
       this.getSelectList();
     }
+  }
+  @Watch("searchName", { immediate: true })
+  watchSearch(val: any) {
+    if (val) this.filterText = val;
   }
 
   private get labelProp(): string {
@@ -181,7 +193,7 @@ export default class IhSelectPage extends Vue {
     this.$emit("input", val);
   }
   handleClickOption(data: any) {
-    this.$emit("optionClick", data);
+    this.$emit("changeOption", data);
   }
 
   mounted() {

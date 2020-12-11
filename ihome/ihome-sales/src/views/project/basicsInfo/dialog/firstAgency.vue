@@ -4,7 +4,7 @@
  * @Author: wwq
  * @Date: 2020-11-03 18:39:23
  * @LastEditors: wwq
- * @LastEditTime: 2020-11-04 16:25:23
+ * @LastEditTime: 2020-12-11 08:50:35
 -->
 <template>
   <el-dialog
@@ -17,7 +17,10 @@
     class="text-left dialog-table"
     :title="`一手代理公司列表`"
   >
-    <el-form ref="form" label-width="80px">
+    <el-form
+      ref="form"
+      label-width="80px"
+    >
       <el-row>
         <el-col :span="8">
           <el-form-item label="名称">
@@ -47,7 +50,10 @@
       <el-row>
         <el-col :span="8">
           <el-form-item label="省市">
-            <IhCascader v-model="provinceOption" :level="2"></IhCascader>
+            <IhCascader
+              v-model="provinceOption"
+              :level="2"
+            ></IhCascader>
           </el-form-item>
         </el-col>
         <el-col :span="8">
@@ -67,7 +73,7 @@
               placeholder="请选择"
             >
               <el-option
-                v-for="item in $root.dictAllList('AgencyAuditEnum')"
+                v-for="item in $root.dictAllList('AgencyAudit')"
                 :key="item.code"
                 :label="item.name"
                 :value="item.code"
@@ -78,8 +84,14 @@
       </el-row>
     </el-form>
     <div class="margin-left-80">
-      <el-button type="primary" @click="search()">查询</el-button>
-      <el-button type="info" @click="reset()">重置</el-button>
+      <el-button
+        type="primary"
+        @click="search()"
+      >查询</el-button>
+      <el-button
+        type="info"
+        @click="reset()"
+      >重置</el-button>
     </div>
     <br />
     <el-table
@@ -98,30 +110,49 @@
         label="名称"
         width="200"
       ></el-table-column>
-      <el-table-column prop="simpleName" label="简称"></el-table-column>
-      <el-table-column prop="province" label="省份">
+      <el-table-column
+        prop="simpleName"
+        label="简称"
+      ></el-table-column>
+      <el-table-column
+        prop="province"
+        label="省份"
+      >
         <template v-slot="{ row }">{{
           $root.getAreaName(row.province)
         }}</template>
       </el-table-column>
-      <el-table-column prop="city" label="城市">
+      <el-table-column
+        prop="city"
+        label="城市"
+      >
         <template v-slot="{ row }">{{ $root.getAreaName(row.city) }}</template>
       </el-table-column>
-      <el-table-column prop="followMan" label="跟进人"></el-table-column>
-      <el-table-column prop="agencyAuditEnum" label="状态" width="150">
+      <el-table-column
+        prop="followMan"
+        label="跟进人"
+      ></el-table-column>
+      <el-table-column
+        prop="agencyAuditEnum"
+        label="状态"
+        width="150"
+      >
         <template v-slot="{ row }">{{
-          $root.dictAllName(row.agencyAuditEnum, "AgencyAuditEnum")
+          $root.dictAllName(row.agencyAuditEnum, "AgencyAudit")
         }}</template>
       </el-table-column>
-      <el-table-column fixed="right" label="操作" width="100">
+      <el-table-column
+        fixed="right"
+        label="操作"
+        width="100"
+      >
         <template v-slot="{ row }">
           <el-link
             type="primary"
             class="margin-left-16"
             :href="`/web-sales/firstAgency/info?id=${row.agencyId}`"
             target="_blank"
-            >详情</el-link
-          >
+          >详情</el-link>
         </template>
       </el-table-column>
     </el-table>
@@ -137,9 +168,15 @@
       :layout="$root.paginationLayout"
       :total="resPageInfo.total"
     ></el-pagination>
-    <span slot="footer" class="dialog-footer">
+    <span
+      slot="footer"
+      class="dialog-footer"
+    >
       <el-button @click="cancel()">取 消</el-button>
-      <el-button type="primary" @click="finish()">确 定</el-button>
+      <el-button
+        type="primary"
+        @click="finish()"
+      >确 定</el-button>
     </span>
   </el-dialog>
 </template>

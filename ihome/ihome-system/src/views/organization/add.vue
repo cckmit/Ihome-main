@@ -4,7 +4,7 @@
  * @Author: zyc
  * @Date: 2020-07-14 11:30:07
  * @LastEditors: zyc
- * @LastEditTime: 2020-12-07 16:36:02
+ * @LastEditTime: 2020-12-10 16:08:39
 --> 
 <template>
   <el-dialog
@@ -27,8 +27,8 @@
     >
       <el-row>
         <el-col :span="12">
-          <el-form-item label="父组织名称" prop="parentName">{{
-            ruleForm.parentName
+          <el-form-item label="父组织名称" prop="parentOrgName">{{
+            ruleForm.parentOrgName
           }}</el-form-item>
 
           <el-form-item label="名称" prop="name">
@@ -140,6 +140,7 @@ export default class OrganizationAdd extends Vue {
     shortName: null,
     status: "Valid",
     oaChar: null,
+    parentOrgName: null,
   };
   rules: any = {
     type: [{ required: true, message: "请选择类型", trigger: "change" }],
@@ -233,6 +234,7 @@ export default class OrganizationAdd extends Vue {
 
   created() {
     Object.assign(this.ruleForm, this.data);
+
     console.log(this.ruleForm);
   }
 }

@@ -3,8 +3,8 @@
  * @version: 
  * @Author: ywl
  * @Date: 2020-09-27 17:27:00
- * @LastEditors: ywl
- * @LastEditTime: 2020-12-04 14:31:11
+ * @LastEditors: wwq
+ * @LastEditTime: 2020-12-11 08:43:18
 -->
 <template>
   <IhPage class="text-left">
@@ -23,7 +23,7 @@
           </el-col>
           <el-col :span="12">
             <el-form-item label="模板类型">
-              {{$root.dictAllName(resInfo.templateType, 'NoticeEnum.TemplateType')}}
+              {{$root.dictAllName(resInfo.templateType, 'TemplateType')}}
             </el-form-item>
           </el-col>
         </el-row>

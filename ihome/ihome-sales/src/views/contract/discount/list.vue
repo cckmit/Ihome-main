@@ -3,8 +3,8 @@
  * @version: 
  * @Author: ywl
  * @Date: 2020-09-27 16:27:36
- * @LastEditors: ywl
- * @LastEditTime: 2020-12-05 14:42:04
+ * @LastEditors: wwq
+ * @LastEditTime: 2020-12-11 09:30:05
 -->
 <template>
   <IhPage label-width="80px">
@@ -26,13 +26,13 @@
           <el-col :span="8">
             <el-form-item label="类型">
               <el-select
-                v-model="queryPageParameters.notificationType"
+                v-model="queryPageParameters.notificationTypes"
                 placeholder="请选择类型"
                 clearable
                 class="width--100"
               >
                 <el-option
-                  v-for="i in $root.dictAllList('NoticeEnum.NotificationType')"
+                  v-for="i in $root.dictAllList('NotificationType')"
                   :key="i.code"
                   :label="i.name"
                   :value="i.code"
@@ -108,13 +108,13 @@
               <el-col :span="8">
                 <el-form-item label="状态">
                   <el-select
-                    v-model="queryPageParameters.informationStatus"
+                    v-model="queryPageParameters.notificationStatuses"
                     clearable
                     placeholder="请选择状态"
                     class="width--100"
                   >
                     <el-option
-                      v-for="item in $root.dictAllList('NoticeEnum.InformationStatus')"
+                      v-for="item in $root.dictAllList('InformationStatus')"
                       :key="item.code"
                       :label="item.name"
                       :value="item.code"
@@ -197,7 +197,7 @@
           min-width="140"
         >
           <template v-slot="{ row }">
-            {{$root.dictAllName(row.notificationType, 'NoticeEnum.NotificationType')}}
+            {{$root.dictAllName(row.notificationType, 'NotificationType')}}
           </template>
         </el-table-column>
         <el-table-column
@@ -260,7 +260,7 @@
           width="120"
         >
           <template v-slot="{ row }">
-            {{$root.dictAllName(row.notificationStatus, 'NoticeEnum.NotificationStatus')}}
+            {{$root.dictAllName(row.notificationStatus, 'NotificationStatus')}}
           </template>
         </el-table-column>
         <el-table-column
@@ -321,14 +321,14 @@ export default class DiscountList extends Vue {
   public queryPageParameters: any = {
     area: null,
     cycleId: null,
-    informationStatus: null,
+    notificationStatuses: null,
     noticeNo: null,
     ownerMobile: null,
     ownerName: null,
     partyAId: null,
     projectId: null,
     roomNumberId: null,
-    notificationType: null,
+    notificationTypes: null,
     buyUnit: null,
   };
   private timeList: any = [];
@@ -362,20 +362,33 @@ export default class DiscountList extends Vue {
     Object.assign(this.queryPageParameters, {
       area: null,
       cycleId: null,
-      informationStatus: null,
+      notificationStatuses: null,
       noticeNo: null,
       ownerMobile: null,
       ownerName: null,
       partyAId: null,
       projectId: null,
       roomNumberId: null,
-      notificationType: null,
+      notificationTypes: null,
       buyUnit: null,
     });
     this.timeList = [];
   }
   public async getListMixin(): Promise<void> {
-    this.resPageInfo = await post_notice_list(this.queryPageParameters);
+    let notificationStatuses: any, notificationTypes: any;
+    if (this.queryPageParameters.notificationStatuses) {
+      notificationStatuses = [this.queryPageParameters.notificationStatuses];
+    }
+    if (this.queryPageParameters.notificationTypes) {
+      notificationTypes = [this.queryPageParameters.notificationTypes];
+    }
+    console.log(notificationStatuses, notificationTypes);
+
+    this.resPageInfo = await post_notice_list({
+      ...this.queryPageParameters,
+      notificationStatuses,
+      notificationTypes,
+    });
   }
 
   created() {

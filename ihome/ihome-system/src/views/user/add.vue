@@ -3,8 +3,8 @@
  * @version: 
  * @Author: zyc
  * @Date: 2020-07-01 10:32:40
- * @LastEditors: lgf
- * @LastEditTime: 2020-10-09 11:06:12
+ * @LastEditors: zyc
+ * @LastEditTime: 2020-12-11 09:50:28
 --> 
 
 <template>
@@ -24,13 +24,13 @@
       </p>
       <el-row>
         <el-col :span="12">
-          <el-form-item label="用户类型" prop="accountType">
-            <el-select v-model="form.accountType" placeholder="请选择用户类型">
+          <el-form-item label="账号类型" prop="accountType">
+            <el-select v-model="form.accountType" placeholder="请选择账号类型">
               <el-option
-                v-for="item in $root.displayList('accountType')"
-                :key="item.value"
-                :label="item.label"
-                :value="item.value"
+                v-for="item in $root.dictAllList('UserAccountType')"
+                :key="item.code"
+                :label="item.name"
+                :value="item.code"
               ></el-option>
             </el-select>
           </el-form-item>
@@ -110,10 +110,10 @@
               placeholder="请选择职能类别"
             >
               <el-option
-                v-for="item in $root.displayList('workType')"
-                :key="item.value"
-                :label="item.label"
-                :value="item.value"
+                v-for="item in $root.dictAllList('UserWorkType')"
+                :key="item.code"
+                :label="item.name"
+                :value="item.code"
               ></el-option>
             </el-select>
           </el-form-item>
@@ -127,10 +127,10 @@
               placeholder="请选择人员类型"
             >
               <el-option
-                v-for="item in $root.displayList('employeeType')"
-                :key="item.value"
-                :label="item.label"
-                :value="item.value"
+                v-for="item in $root.dictAllList('EmployeeType')"
+                :key="item.code"
+                :label="item.name"
+                :value="item.code"
               ></el-option>
             </el-select>
           </el-form-item>
@@ -151,10 +151,10 @@
               placeholder="请选择雇员状态"
             >
               <el-option
-                v-for="item in $root.displayList('employeeStatus')"
-                :key="item.value"
-                :label="item.label"
-                :value="item.value"
+                v-for="item in $root.dictAllList('EmployeeStatus')"
+                :key="item.code"
+                :label="item.name"
+                :value="item.code"
               ></el-option>
             </el-select>
           </el-form-item>
@@ -180,10 +180,7 @@ import {
   post_user_update,
   get_user_get__id,
 } from "../../api/system";
-import {
-  emailOrNullValidato,
-  phoneValidator,
-} from "ihome-common/util/base/form-ui";
+import { phoneValidator } from "ihome-common/util/base/form-ui";
 @Component({
   components: { SelectOrganizationTree },
 })
@@ -197,7 +194,7 @@ export default class UserAdd extends Vue {
   form: any = {
     id: null,
     account: null,
-    accountType: "Ihome",
+    accountType: "Juheng",
     email: null,
     employeeCode: null,
     employeeStatus: "On",
@@ -246,14 +243,23 @@ export default class UserAdd extends Vue {
     ],
     email: [
       { required: true, message: "邮箱必填", trigger: "change" },
-      { validator: emailOrNullValidato, trigger: "change" },
+      {
+        type: "email",
+        message: "请输入正确的邮箱地址",
+        trigger: "change",
+      },
     ],
     employeeStatus: [
       { required: true, message: "请选择雇员状态", trigger: "change" },
     ],
   };
   getProp(type: any) {
-    let list: string[] = ["Ihome", "Juheng", "Poly"];
+    // let list: string[] = ["Ihome", "Juheng", "Poly"];
+    let list: string[] = (this.$root as any)
+      .dictAllList("UserAccountType", "Staff")
+      .map((i: any) => {
+        return i.code;
+      });
     let required = list.includes(this.form.accountType);
     if (required) {
       return type;
@@ -274,12 +280,12 @@ export default class UserAdd extends Vue {
       console.log(this.form);
       if (this.form.id > 0) {
         const res = await post_user_update(this.form);
-        this.$message.success("修改成功");
+        this.$message.success("用户修改成功");
         this.$emit("finish", res);
       } else {
         const res = await post_user_add(this.form);
-
-        this.$alert(res, "用户新增成功，密码是：");
+        this.$message.success("用户新增成功");
+        // this.$alert(res, "用户新增成功，密码是：");
         this.$emit("finish", res);
       }
     } else {

@@ -4,7 +4,7 @@
  * @Author: wwq
  * @Date: 2020-09-16 14:54:19
  * @LastEditors: zyc
- * @LastEditTime: 2020-10-26 15:40:21
+ * @LastEditTime: 2020-12-10 15:45:37
 -->
 <template>
   <div>
@@ -50,6 +50,12 @@ export default class Home extends Vue {
       name: "用户下拉分页",
       desc: "用户下拉分页组件，支持多列，搜索，分页",
       path: "/selectPage",
+    },
+     {
+      key: "IhSelectPageDivision",
+      name: "事业部下拉分页",
+      desc: "事业部下拉分页组件，支持多列，搜索，分页",
+      path: "/SelectPageDivision",
     },
     {
       key: "IhTableCheckBox",

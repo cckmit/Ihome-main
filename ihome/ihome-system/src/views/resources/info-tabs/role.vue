@@ -8,9 +8,17 @@
 --> 
 <template>
   <div>
-    <div style="text-align:right;">
-      <el-input style="width:300px;" placeholder="名称 编码" class="input-with-select">
-        <el-button slot="append" icon="el-icon-search" @click="search()"></el-button>
+    <div style="text-align: right">
+      <el-input
+        style="width: 300px"
+        placeholder="名称 编码"
+        class="input-with-select"
+      >
+        <el-button
+          slot="append"
+          icon="el-icon-search"
+          @click="search()"
+        ></el-button>
       </el-input>
     </div>
     <br />

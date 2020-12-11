@@ -4,7 +4,7 @@
  * @Author: zyc
  * @Date: 2020-07-06 09:41:43
  * @LastEditors: zyc
- * @LastEditTime: 2020-12-08 09:55:15
+ * @LastEditTime: 2020-12-09 17:55:15
 --> 
 <template>
   <ih-page>
@@ -31,8 +31,11 @@
                   @change="search()"
                 >
                   <el-option
-                    v-for="item in $root.dictAllList('ResourceType')"
-                    :key="item.value"
+                    v-for="item in $root.dictAllList(
+                      'ResourceType',
+                      'AllowAdjust'
+                    )"
+                    :key="item.code"
                     :label="item.name"
                     :value="item.code"
                   ></el-option>
@@ -143,7 +146,7 @@
                   </span>
                   <el-dropdown-menu slot="dropdown">
                     <el-dropdown-item @click.native.prevent="edit(scope)"
-                      >编辑</el-dropdown-item
+                      >修改</el-dropdown-item
                     >
                     <el-dropdown-item @click.native.prevent="remove(scope)"
                       >删除</el-dropdown-item
@@ -184,7 +187,7 @@
         "
       />
     </ih-dialog>
-    <ih-dialog :show="dialogEdit" desc="编辑资源">
+    <ih-dialog :show="dialogEdit" desc="修改资源">
       <ResourcesEdit
         :data="editData"
         @cancel="() => (dialogEdit = false)"

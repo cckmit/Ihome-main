@@ -4,7 +4,7 @@
  * @Author: zyc
  * @Date: 2020-07-09 10:21:50
  * @LastEditors: zyc
- * @LastEditTime: 2020-12-08 09:13:17
+ * @LastEditTime: 2020-12-09 17:54:35
 --> 
 <template>
   <ih-page>
@@ -38,7 +38,7 @@
         class="ih-table"
         :data="resPageInfo.list"
         style="width: 100%"
-       :empty-text="emptyText"
+        :empty-text="emptyText"
       >
         <el-table-column type="index" label="序号" width="50"></el-table-column>
         <el-table-column prop="name" label="名称" width="180"></el-table-column>

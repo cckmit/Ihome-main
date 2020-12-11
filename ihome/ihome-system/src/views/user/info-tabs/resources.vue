@@ -4,12 +4,17 @@
  * @Author: zyc
  * @Date: 2020-07-08 14:23:49
  * @LastEditors: zyc
- * @LastEditTime: 2020-08-13 11:12:58
+ * @LastEditTime: 2020-12-09 17:53:23
 --> 
 <template>
   <div>
-    <div style="text-align: left;">
-      <el-input style="width:300px;" clearable placeholder="输入关键字进行过滤" v-model="filterText"></el-input>
+    <div style="text-align: left">
+      <el-input
+        style="width: 300px"
+        clearable
+        placeholder="输入关键字进行过滤"
+        v-model="filterText"
+      ></el-input>
     </div>
     <br />
 

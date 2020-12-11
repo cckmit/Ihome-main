@@ -4,7 +4,7 @@
  * @Author: zyc
  * @Date: 2020-07-14 10:03:09
  * @LastEditors: zyc
- * @LastEditTime: 2020-08-07 15:40:59
+ * @LastEditTime: 2020-12-10 18:21:55
 --> 
 <template>
   <el-dialog
@@ -15,12 +15,12 @@
     :close-on-press-escape="false"
     :before-close="cancel"
     width="1000px"
-    style="text-align: left;"
+    style="text-align: left"
     class="dialog"
   >
     <div class="text-left dialog-transfer">
       <el-transfer
-        style="height:500px;"
+        style="height: 500px"
         class="width--100"
         :titles="['可选数据', '选中数据']"
         filterable
@@ -87,10 +87,11 @@ export default class JobAddEdit extends Vue {
     const list = await get_role_getAll();
     list.forEach((item: any) => {
       item.key = item.id;
-      item.label = item.name;
+      item.label = item.name + " (" + item.code + ")";
     });
 
     this.leftData = list;
+    this.rightData = this.data.jobRoleIdList;
   }
 }
 </script>
