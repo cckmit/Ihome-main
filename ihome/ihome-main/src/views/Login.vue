@@ -4,7 +4,7 @@
  * @Author: zyc
  * @Date: 2020-06-22 16:44:13
  * @LastEditors: zyc
- * @LastEditTime: 2020-12-07 09:26:22
+ * @LastEditTime: 2020-12-11 14:09:36
 --> 
 <template >
   <div class="main">
@@ -61,7 +61,7 @@ export default class Login extends Vue {
     username: [{ required: true, message: "请输入账号", trigger: "blur" }, {}],
     password: [
       { required: true, message: "请输入密码", trigger: "blur" },
-      { min: 6, max: 30, message: "长度在最少6位", trigger: "change" },
+      // { min: 6, max: 30, message: "长度在最少6位", trigger: "change" },
     ],
   };
   private submitForm() {

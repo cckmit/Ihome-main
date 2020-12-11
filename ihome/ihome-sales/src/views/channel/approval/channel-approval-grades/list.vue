@@ -5,12 +5,12 @@
  * @Author: zyc
  * @Date: 2020-10-13 19:06:12
  * @LastEditors: zyc
- * @LastEditTime: 2020-12-10 15:18:23
+ * @LastEditTime: 2020-12-11 15:21:31
 -->
 <template>
   <el-dialog
     v-dialogDrag
-    title="渠道合作信息列表"
+    :title="title"
     :visible.sync="dialogVisible"
     :close-on-click-modal="false"
     :close-on-press-escape="false"
@@ -216,6 +216,7 @@ export default class ChannelApprovalGradesList extends Vue {
   }
   @Prop({ default: null }) data: any;
   dialogVisible = true;
+  title = "渠道合作信息列表";
   resPageInfo: any = {
     total: 0,
     list: [],
@@ -243,13 +244,17 @@ export default class ChannelApprovalGradesList extends Vue {
 
   async finish() {
     if (this.selectList && this.selectList.length > 0) {
-      this.$emit("finish", this.selectList);
+      this.$emit("finish", this.selectList, this.data);
     } else {
       this.$message.warning("请先勾选数据");
     }
   }
 
   created() {
+    console.log(this.data);
+    if (this.data == "") {
+      this.title = "渠道合作信息列表(变更信息)";
+    }
     this.getListMixin();
   }
   handleSelectionChange(val: any) {
