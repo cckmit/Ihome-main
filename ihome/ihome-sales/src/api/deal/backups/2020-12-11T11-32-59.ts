@@ -1,12 +1,8 @@
 /* eslint-disable */
 /* 此脚本由swagger-ui的api-docs自动生成，请勿修改 */
-//2020-12-11 15:37:57
+//2020-12-7 10:08:08
 import { request } from '@/api/base'
 const basePath = "/sales-api/deal"
-/**重新计算平台费用部分*/
-export async function post_achieve_recalculte (d?: any) {
-return await request.post< AchieveRefreshDataDetailVO[],AchieveRefreshDataDetailVO[]> (basePath+'/achieve/recalculte', d)
-}
 /**添加业绩比例方案信息*/
 export async function post_achieveScaleScheme_add (d?: any) {
 return await request.post< number,number> (basePath+'/achieveScaleScheme/add', d)
@@ -19,45 +15,45 @@ return await request.post< number,number> (basePath+'/achieveScaleScheme/delete/
 export async function get_achieveScaleScheme_get__id (d?: any) {
 return await request.get<AchieveScaleSchemeVO,AchieveScaleSchemeVO>(basePath+'/achieveScaleScheme/get/{id}', { params: d })
 }
-/**getCfgByDeal*/
-export async function post_achieveScaleScheme_getByDeal_ (d?: any) {
-return await request.post< AchieveScaleConfig[],AchieveScaleConfig[]> (basePath+'/achieveScaleScheme/getByDeal/', d)
-}
 /**查询分公司业绩比例方案列表*/
 export async function post_achieveScaleScheme_getList (d?: any) {
 return await request.post< PageModel<AchieveScaleSchemeListVO>,PageModel<AchieveScaleSchemeListVO>> (basePath+'/achieveScaleScheme/getList', d)
-}
-/**查询分公司业绩比例方案*/
-export async function post_achieveScaleScheme_listSpecial_ (d?: any) {
-return await request.post< PageModel<AchieveScaleSchemeListVO>,PageModel<AchieveScaleSchemeListVO>> (basePath+'/achieveScaleScheme/listSpecial/', d)
 }
 /**修改业绩比例方案*/
 export async function post_achieveScaleScheme_update (d?: any) {
 return await request.post< number,number> (basePath+'/achieveScaleScheme/update', d)
 }
-/**新增业务模式——合同类型对应关系信息*/
-export async function post_buModelContType_add (d?: any) {
-return await request.post< number,number> (basePath+'/buModelContType/add', d)
+/**添加业务模式信息*/
+export async function post_businessModel_add (d?: any) {
+return await request.post< number,number> (basePath+'/businessModel/add', d)
 }
-/**删除业务模式——合同类型对应关系信息*/
-export async function post_buModelContType_delete (d?: any) {
-return await request.post< number,number> (basePath+'/buModelContType/delete', d)
+/**删除业务模式*/
+export async function post_businessModel_delete__id (d?: any) {
+return await request.post< number,number> (basePath+'/businessModel/delete/{id}', d)
 }
-/**获取业务模式——合同类型对应关系信息*/
-export async function post_buModelContType_get (d?: any) {
-return await request.post< BuModelContTypeListVO,BuModelContTypeListVO> (basePath+'/buModelContType/get', d)
+/**查询业务模式详情*/
+export async function get_businessModel_get__id (d?: any) {
+return await request.get<BusinessModelVO,BusinessModelVO>(basePath+'/businessModel/get/{id}', { params: d })
 }
-/**查询业务模式——合同类型对应关系列表*/
-export async function post_buModelContType_getList (d?: any) {
-return await request.post< BuModelContTypeListVO[],BuModelContTypeListVO[]> (basePath+'/buModelContType/getList', d)
+/**查询所有已配置的业务模式*/
+export async function post_businessModel_getAll (d?: any) {
+return await request.post< BusinessModel[],BusinessModel[]> (basePath+'/businessModel/getAll', d)
 }
-/**根据业务模式获取可选择的细分业务模式*/
-export async function post_buModelContType_subList (d?: any) {
-return await request.post< string[],string[]> (basePath+'/buModelContType/subList', d)
+/**根据业务模式名称，获取对应的所有合同类型*/
+export async function get_businessModel_getByName__modelName (d?: any) {
+return await request.get<string[],string[]>(basePath+'/businessModel/getByName/{modelName}', { params: d })
 }
-/**修改业务模式——合同类型对应关系信息*/
-export async function post_buModelContType_update (d?: any) {
-return await request.post< number,number> (basePath+'/buModelContType/update', d)
+/**根据业务模式名称，获取对应的已配置的合同类型*/
+export async function get_businessModel_getContTypeByName__modelName (d?: any) {
+return await request.get<string[],string[]>(basePath+'/businessModel/getContTypeByName/{modelName}', { params: d })
+}
+/**查询业务模式列表*/
+export async function post_businessModel_getList (d?: any) {
+return await request.post< PageModel<BusinessModelListVO>,PageModel<BusinessModelListVO>> (basePath+'/businessModel/getList', d)
+}
+/**修改业务模式*/
+export async function post_businessModel_update (d?: any) {
+return await request.post< number,number> (basePath+'/businessModel/update', d)
 }
 /**成交业绩分配录入*/
 export async function post_deal_achieveAllotEntry (d?: any) {
@@ -82,6 +78,10 @@ return await request.get<DealReceiveAmountResponseVO,DealReceiveAmountResponseVO
 /**查询成交列表*/
 export async function post_deal_getList (d?: any) {
 return await request.post< PageModel<DealListVO>,PageModel<DealListVO>> (basePath+'/deal/getList', d)
+}
+/**文员审核业绩申报*/
+export async function post_deal_reviewDealBasicInf (d?: any) {
+return await request.post< number,number> (basePath+'/deal/reviewDealBasicInf', d)
 }
 /**去修改主成交*/
 export async function get_deal_toUpdateMainDeal__id (d?: any) {
@@ -130,16 +130,24 @@ total: number;
 }
 /**AchieveAddVO*/
 export interface AchieveAddVO {
+/**业绩比例方案ID*/
+achieveSchemeId: number;
 /**归属组织ID*/
 belongOrgId: number;
 /**拆佣金额*/
 commFees: number;
+/**拆佣比例*/
+commFeesRatio: number;
 /**公司业绩*/
 corporateAchieve: number;
-/**主成交ID*/
-parentId: number;
+/**成交ID*/
+dealId: number;
+/**应收业绩ID*/
+receiveAchieveId: number;
 /**角色业绩上限*/
 roleAchieveCap: number;
+/**角色业绩比例*/
+roleAchieveRatio: number;
 /**角色类型(Expand-拓盘方、SourcePartner-客源合作人、ChannelPost-渠道岗、CasePost-案场岗、AgentIntegrate-中介整合方、ParkingSalesTeam-车位销售小组、Dealer-成交人、SalesPost-销售代表岗、ClerkPost-文员岗、BranchOffice-分公司)*/
 roleType: string;
 /**角色人ID*/
@@ -189,53 +197,6 @@ id: number;
 propertyType: string;
 /**业绩比例方案ID*/
 scaleSchemeId: number;
-/**更新时间(yyyy-MM-dd HH:mm:ss)*/
-updateTime: string;
-/**更新用户*/
-updateUser: number;
-}
-/**AchieveRefreshDataDetailVO*/
-export interface AchieveRefreshDataDetailVO {
-/**公司业绩*/
-corporateAchieve: number;
-/**角色业绩上限*/
-roleAchieveCap: number;
-/**角色业绩比例*/
-roleAchieveRatio: number;
-/**角色类型(Expand-拓盘方、SourcePartner-客源合作人、ChannelPost-渠道岗、CasePost-案场岗、AgentIntegrate-中介整合方、ParkingSalesTeam-车位销售小组、Dealer-成交人、SalesPost-销售代表岗、ClerkPost-文员岗、BranchOffice-分公司)*/
-roleType: string;
-}
-/**AchieveRefreshDataVO*/
-export interface AchieveRefreshDataVO {
-/**总包/分销一方内的已分配的平台费用*/
-list: AchieveRefreshDataDetailVO[];
-/**查询业绩分配比例方案参数*/
-queryConfigVO: AchieveSchemeQueryConfigVO;
-/**平台费用类型(TotalBag-总包、Distri-分销)*/
-type: string;
-}
-/**AchieveScaleConfig*/
-export interface AchieveScaleConfig {
-/**创建时间(yyyy-MM-dd HH:mm:ss)*/
-createTime: string;
-/**创建用户*/
-createUser: number;
-/**已删除*/
-deleted: number;
-/**ID*/
-id: number;
-/**角色缺失处理方式(Expand-拓盘方、SourcePartner-客源合作人、ChannelPost-渠道岗、CasePost-案场岗、AgentIntegrate-中介整合方、ParkingSalesTeam-车位销售小组、Dealer-成交人、SalesPost-销售代表岗、ClerkPost-文员岗、BranchOffice-分公司)*/
-missingRole: string;
-/**拆分比例 (%)*/
-ratio: number;
-/**备注说明*/
-remarks: string;
-/**角色(Expand-拓盘方、SourcePartner-客源合作人、ChannelPost-渠道岗、CasePost-案场岗、AgentIntegrate-中介整合方、ParkingSalesTeam-车位销售小组、Dealer-成交人、SalesPost-销售代表岗、ClerkPost-文员岗、BranchOffice-分公司)*/
-role: string;
-/**业绩比例方案ID*/
-scaleSchemeId: number;
-/**类型(TotalBag-总包、Distri-分销)*/
-type: string;
 /**更新时间(yyyy-MM-dd HH:mm:ss)*/
 updateTime: string;
 /**更新用户*/
@@ -293,8 +254,8 @@ isMarketProject: string;
 isSame: string;
 /**是否特殊方案(Yes-是、No-否)*/
 isSpecial: string;
-/**业务模式(TotalBagModel-总包模式、DistriModel-分销模式、TotalBagDistriModel-总包+分销模式、Other-其他)*/
-modelCode: string;
+/**业务模式ID*/
+modelId: number;
 /**备注说明*/
 remarks: string;
 /**业绩配置物业类型*/
@@ -330,8 +291,10 @@ isSpecial: string;
 jobId: number;
 /**岗位名称*/
 jobName: string;
-/**业务模式(TotalBagModel-总包模式、DistriModel-分销模式、TotalBagDistriModel-总包+分销模式、Other-其他)*/
-modelCode: string;
+/**业务模式ID*/
+modelId: number;
+/**业务模式名称*/
+modelName: string;
 /**归属组织名称*/
 orgName: string;
 /**备注说明*/
@@ -357,8 +320,8 @@ isMarketProject: string;
 isSame: string;
 /**是否特殊方案(Yes-是、No-否)*/
 isSpecial: string;
-/**业务模式(TotalBagModel-总包模式、DistriModel-分销模式、TotalBagDistriModel-总包+分销模式、Other-其他)*/
-modelCode: string;
+/**业务模式名称(TotalBagModel-总包模式、DistriModel-分销模式、TotalBagDistriModel-总包+分销模式、Other-其他)*/
+modelName: string;
 /**(必填)当前页*/
 pageNum: number;
 /**(必填)每页条数*/
@@ -380,8 +343,8 @@ isMarketProject: string;
 isSame: string;
 /**是否特殊方案(Yes-是、No-否)*/
 isSpecial: string;
-/**业务模式(TotalBagModel-总包模式、DistriModel-分销模式、TotalBagDistriModel-总包+分销模式、Other-其他)*/
-modelCode: string;
+/**业务模式ID*/
+modelId: number;
 /**备注说明*/
 remarks: string;
 /**业绩配置物业类型*/
@@ -411,8 +374,16 @@ isMarketProject: string;
 isSame: string;
 /**是否特殊方案(Yes-是、No-否)*/
 isSpecial: string;
-/**业务模式(TotalBagModel-总包模式、DistriModel-分销模式、TotalBagDistriModel-总包+分销模式、Other-其他)*/
-modelCode: string;
+/**岗位id*/
+jobId: number;
+/**岗位名称*/
+jobName: string;
+/**业务模式ID*/
+modelId: number;
+/**业务模式名称*/
+modelName: string;
+/**归属组织名称*/
+orgName: string;
 /**备注说明*/
 remarks: string;
 /**更新时间(yyyy-MM-dd HH:mm:ss)*/
@@ -426,40 +397,10 @@ achievePropertyTypeList: AchievePropertyTypeVO[];
 /**业绩比例配置*/
 achieveScaleConfigList: AchieveScaleConfigVO[];
 }
-/**AchieveScaleSpecialSchemeVO*/
-export interface AchieveScaleSpecialSchemeVO {
-/**分公司ID*/
-branchCompanyId: number;
-/**合同类型(DistriDeal-分销成交、NaturalVisitDeal-自然来访成交、SelfChannelDeal-自渠成交)*/
-contType: string;
-/**是否市场化项目(Yes-是、No-否)*/
-isMarketProject: string;
-/**分销同步总包(Yes-是、No-否)*/
-isSame: string;
-/**业务模式(TotalBagModel-总包模式、DistriModel-分销模式、TotalBagDistriModel-总包+分销模式、Other-其他)*/
-modelCode: string;
-/**(必填)当前页*/
-pageNum: number;
-/**(必填)每页条数*/
-pageSize: number;
-}
-/**AchieveSchemeQueryConfigVO*/
-export interface AchieveSchemeQueryConfigVO {
-/**合同类型(DistriDeal-分销成交、NaturalVisitDeal-自然来访成交、SelfChannelDeal-自渠成交)*/
-contType: string;
-/**周期Id*/
-cycleId: number;
-/**成交组织ID*/
-dealOrgId: number;
-/**是否市场化项目(Yes-是、No-否)*/
-isMarketProject: string;
-/**业务模式(TotalBagModel-总包模式、DistriModel-分销模式、TotalBagDistriModel-总包+分销模式、Other-其他)*/
-modelCode: string;
-/**物业类型(Residence-住宅、WorkShop-厂房、Apartment-公寓、Villa-别墅、Shop-商铺、Office-写字楼、Parking-车位、Other-其他)*/
-propertyType: string;
-}
 /**AchieveVO*/
 export interface AchieveVO {
+/**业绩比例方案ID*/
+achieveSchemeId: number;
 /**归属组织ID*/
 belongOrgId: number;
 /**角色人归属组织名称*/
@@ -480,8 +421,6 @@ dealId: number;
 deleted: number;
 /**ID*/
 id: number;
-/**主成交ID*/
-parentId: number;
 /**应收业绩ID*/
 receiveAchieveId: number;
 /**角色业绩上限*/
@@ -513,6 +452,8 @@ agencyId: number;
 brokerId: number;
 /**渠道等级(BigPlatform-大平台、LargeIntermediary-大型中介、FirstPlatform-一级平台、MediumIntermediary-中型中介、SecondPlatform-二级平台、SmallIntermediary-小型中介)*/
 channelLevel: string;
+/**门店ID*/
+storeId: number;
 }
 /**AgencyUpdateVO*/
 export interface AgencyUpdateVO {
@@ -526,6 +467,8 @@ channelLevel: string;
 dealId: number;
 /**ID*/
 id: number;
+/**门店ID*/
+storeId: number;
 }
 /**AgencyVO*/
 export interface AgencyVO {
@@ -549,6 +492,8 @@ dealId: number;
 deleted: number;
 /**ID*/
 id: number;
+/**门店ID*/
+storeId: number;
 /**门店名称*/
 storeIdName: string;
 /**更新时间(yyyy-MM-dd HH:mm:ss)*/
@@ -558,27 +503,113 @@ updateUser: number;
 }
 /**BuModelContTypeAddVO*/
 export interface BuModelContTypeAddVO {
+/**合同类型(DistriDeal-分销成交、NaturalVisitDeal-自然来访成交、SelfChannelDeal-自渠成交)*/
+contType: string;
+}
+/**BuModelContTypeUpdateVO*/
+export interface BuModelContTypeUpdateVO {
+/**合同类型(DistriDeal-分销成交、NaturalVisitDeal-自然来访成交、SelfChannelDeal-自渠成交)*/
+contType: string;
+}
+/**BusinessModel*/
+export interface BusinessModel {
+/**创建时间(yyyy-MM-dd HH:mm:ss)*/
+createTime: string;
+/**创建用户*/
+createUser: number;
+/**已删除*/
+deleted: number;
+/**ID*/
+id: number;
+/**业务模式名称(TotalBagModel-总包模式、DistriModel-分销模式、TotalBagDistriModel-总包+分销模式、Other-其他)*/
+modelName: string;
+/**更新时间(yyyy-MM-dd HH:mm:ss)*/
+updateTime: string;
+/**更新用户*/
+updateUser: number;
+}
+/**BusinessModelAddVO*/
+export interface BusinessModelAddVO {
 /**合同类型*/
-contTypeList: string[];
-/**业务模式(TotalBagModel-总包模式、DistriModel-分销模式、TotalBagDistriModel-总包+分销模式、Other-其他)*/
-modelCode: string;
+buModelContTypeList: BuModelContTypeAddVO[];
+/**业务模式名称(TotalBagModel-总包模式、DistriModel-分销模式、TotalBagDistriModel-总包+分销模式、Other-其他)*/
+modelName: string;
 }
-/**BuModelContTypeListVO*/
-export interface BuModelContTypeListVO {
+/**BusinessModelListVO*/
+export interface BusinessModelListVO {
 /**合同类型*/
-contTypeList: string[];
-/**业务模式(TotalBagModel-总包模式、DistriModel-分销模式、TotalBagDistriModel-总包+分销模式、Other-其他)*/
-modelCode: string;
+contType: string;
+/**创建时间(yyyy-MM-dd HH:mm:ss)*/
+createTime: string;
+/**创建用户*/
+createUser: number;
+/**创建用户姓名*/
+createUserName: string;
+/**已删除*/
+deleted: number;
+/**ID*/
+id: number;
+/**岗位id*/
+jobId: number;
+/**岗位名称*/
+jobName: string;
+/**业务模式名称(TotalBagModel-总包模式、DistriModel-分销模式、TotalBagDistriModel-总包+分销模式、Other-其他)*/
+modelName: string;
+/**归属组织名称*/
+orgName: string;
+/**更新时间(yyyy-MM-dd HH:mm:ss)*/
+updateTime: string;
+/**更新用户*/
+updateUser: number;
+/**更新用户姓名*/
+updateUserName: string;
 }
-/**BuModelContTypeQueryByNameVO*/
-export interface BuModelContTypeQueryByNameVO {
-/**业务模式(TotalBagModel-总包模式、DistriModel-分销模式、TotalBagDistriModel-总包+分销模式、Other-其他)*/
-modelCode: string;
+/**BusinessModelQueryVO*/
+export interface BusinessModelQueryVO {
+/**业务模式名称(TotalBagModel-总包模式、DistriModel-分销模式、TotalBagDistriModel-总包+分销模式、Other-其他)*/
+modelName: string;
+/**(必填)当前页*/
+pageNum: number;
+/**(必填)每页条数*/
+pageSize: number;
 }
-/**BuModelContTypeQueryVO*/
-export interface BuModelContTypeQueryVO {
-/**业务模式(TotalBagModel-总包模式、DistriModel-分销模式、TotalBagDistriModel-总包+分销模式、Other-其他)*/
-modelCode: string;
+/**BusinessModelUpdateVO*/
+export interface BusinessModelUpdateVO {
+/**合同类型*/
+buModelContTypeList: BuModelContTypeUpdateVO[];
+/**(必填)id*/
+id: number;
+/**业务模式名称(TotalBagModel-总包模式、DistriModel-分销模式、TotalBagDistriModel-总包+分销模式、Other-其他)*/
+modelName: string;
+}
+/**BusinessModelVO*/
+export interface BusinessModelVO {
+/**合同类型*/
+buModelContTypeList: string[];
+/**创建时间(yyyy-MM-dd HH:mm:ss)*/
+createTime: string;
+/**创建用户*/
+createUser: number;
+/**创建用户姓名*/
+createUserName: string;
+/**已删除*/
+deleted: number;
+/**ID*/
+id: number;
+/**岗位id*/
+jobId: number;
+/**岗位名称*/
+jobName: string;
+/**业务模式名称(TotalBagModel-总包模式、DistriModel-分销模式、TotalBagDistriModel-总包+分销模式、Other-其他)*/
+modelName: string;
+/**归属组织名称*/
+orgName: string;
+/**更新时间(yyyy-MM-dd HH:mm:ss)*/
+updateTime: string;
+/**更新用户*/
+updateUser: number;
+/**更新用户姓名*/
+updateUserName: string;
 }
 /**ChannelCommAddVO*/
 export interface ChannelCommAddVO {
@@ -588,14 +619,14 @@ agencyId: number;
 agencyName: string;
 /**拆佣金额*/
 amount: number;
+/**成交ID*/
+dealId: number;
 /**费用类型(ServiceFee-服务费、AgencyFee-代理费)*/
 feeType: string;
-/**收派标准*/
-packageId: number;
-/**主成交ID*/
-parentId: number;
 /**甲方或客户*/
 partyACustomer: number;
+/**应收ID*/
+receiveAchieveId: number;
 /**备注*/
 remarks: string;
 /**拆佣对象(Personal-个人、Company-公司)*/
@@ -621,12 +652,8 @@ deleted: number;
 feeType: string;
 /**ID*/
 id: number;
-/**收派标准ID*/
-packageId: number;
 /**已付金额*/
 paidAmount: number;
-/**主成交ID*/
-parentId: number;
 /**甲方或客户*/
 partyACustomer: number;
 /**甲方或客户名称*/
@@ -741,8 +768,8 @@ isConsign: string;
 isMarketProject: string;
 /**是否垫佣(Yes-是、No-否)*/
 isMat: string;
-/**业务模式(TotalBagModel-总包模式、DistriModel-分销模式、TotalBagDistriModel-总包+分销模式、Other-其他)*/
-modelCode: string;
+/**业务模式ID*/
+modelId: number;
 /**一手代理团队ID*/
 oneAgentTeamId: number;
 /**主成交ID*/
@@ -820,8 +847,10 @@ isConsign: string;
 isMarketProject: string;
 /**是否垫佣(Yes-是、No-否)*/
 isMat: string;
-/**业务模式(TotalBagModel-总包模式、DistriModel-分销模式、TotalBagDistriModel-总包+分销模式、Other-其他)*/
-modelCode: string;
+/**业务模式ID*/
+modelId: number;
+/**业务模式名称(TotalBagModel-总包模式、DistriModel-分销模式、TotalBagDistriModel-总包+分销模式、Other-其他)*/
+modelName: string;
 /**一手代理团队*/
 oneAgentTeam: string;
 /**一手代理团队ID*/
@@ -874,6 +903,8 @@ customerList: CustomerVO[];
 documentList: DocumentVO[];
 /**房产信息*/
 house: HouseVO;
+/**优惠告知书*/
+offerNoticeList: OfferNoticeVO[];
 /**成交操作记录信息*/
 processRecordList: ProcessRecordVO[];
 /**应收业绩*/
@@ -939,8 +970,8 @@ isConsign: string;
 isMarketProject: string;
 /**是否垫佣(Yes-是、No-否)*/
 isMat: string;
-/**业务模式(TotalBagModel-总包模式、DistriModel-分销模式、TotalBagDistriModel-总包+分销模式、Other-其他)*/
-modelCode: string;
+/**业务模式ID*/
+modelId: number;
 /**一手代理团队ID*/
 oneAgentTeamId: number;
 /**已付拆佣金额*/
@@ -1062,8 +1093,8 @@ isConsign: string;
 isMarketProject: string;
 /**是否垫佣(Yes-是、No-否)*/
 isMat: string;
-/**业务模式(TotalBagModel-总包模式、DistriModel-分销模式、TotalBagDistriModel-总包+分销模式、Other-其他)*/
-modelCode: string;
+/**业务模式ID*/
+modelId: number;
 /**一手代理团队ID*/
 oneAgentTeamId: number;
 /**主成交ID*/
@@ -1150,6 +1181,8 @@ dealVO: DealAddVO;
 documentVO: DocumentAddVO[];
 /**房产信息*/
 houseVO: HouseAddVO;
+/**优惠告知书*/
+offerNoticeVO: OfferNoticeAddVO[];
 /**应收业绩信息*/
 receiveAchieveVO: ReceiveAchieveAddVO[];
 /**应收信息（收派金额）*/
@@ -1258,12 +1291,14 @@ achieveFees: number;
 achieveId: number;
 /**归属组织ID*/
 belongOrgId: number;
+/**成交ID*/
+dealId: number;
 /**管理者ID*/
 managerId: number;
 /**管理者岗位*/
 managerPosition: string;
-/**主成交ID*/
-parentId: number;
+/**业绩比例*/
+ratio: number;
 /**类型(Supervisor-主管、Manager-经理、Director-总监)*/
 type: string;
 }
@@ -1293,12 +1328,49 @@ manager: string;
 managerId: number;
 /**管理者岗位*/
 managerPosition: string;
-/**主成交ID*/
-parentId: number;
 /**业绩比例*/
 ratio: number;
 /**类型(Supervisor-主管、Manager-经理、Director-总监)*/
 type: string;
+/**更新时间(yyyy-MM-dd HH:mm:ss)*/
+updateTime: string;
+/**更新用户*/
+updateUser: number;
+}
+/**OfferNoticeAddVO*/
+export interface OfferNoticeAddVO {
+/**告知书ID*/
+offerNoticeId: number;
+}
+/**OfferNoticeUpdateVO*/
+export interface OfferNoticeUpdateVO {
+/**成交ID*/
+dealId: number;
+/**ID*/
+id: number;
+/**告知书ID*/
+offerNoticeId: number;
+}
+/**OfferNoticeVO*/
+export interface OfferNoticeVO {
+/**创建时间(yyyy-MM-dd HH:mm:ss)*/
+createTime: string;
+/**创建用户*/
+createUser: number;
+/**成交ID*/
+dealId: number;
+/**已删除*/
+deleted: number;
+/**ID*/
+id: number;
+/**告知书编号*/
+offerNoticeCode: string;
+/**告知书ID*/
+offerNoticeId: number;
+/**告知书名称*/
+offerNoticeName: string;
+/**告知书状态*/
+offerNoticeStatus: string;
 /**更新时间(yyyy-MM-dd HH:mm:ss)*/
 updateTime: string;
 /**更新用户*/
@@ -1354,126 +1426,28 @@ updateUser: number;
 export interface ReceiveAchieveAddVO {
 /**本单业绩*/
 achieveAmount: number;
-/**业绩确认日期(yyyy-MM-dd HH:mm:ss)*/
-achieveConfirmTime: string;
-/**代理费派发佣金总额*/
-ageDispenseAmount: number;
-/**代理费已派发佣金总额*/
-ageDispensedAmount: number;
-/**代理费总已收*/
-agePaidAmount: number;
-/**代理费总应收*/
-ageReceiveAmount: number;
-/**代理费派发内场奖励总额*/
-ageRewardAmount: number;
-/**代理费已派发内场奖励总额*/
-ageRewardedAmount: number;
-/**本单派发佣金*/
-dispenseAmount: number;
-/**本单已派发佣金*/
-dispensedAmount: number;
-/**分销业绩总额*/
-distributeAmount: number;
 /**其他渠道费用*/
 otherChannelFees: number;
-/**本单已收*/
-paidAmount: number;
-/**主成交ID*/
-parentId: number;
 /**本单应收*/
 receiveAmount: number;
-/**本单派发内场奖励*/
-rewardAmount: number;
-/**本单已派发内场奖励*/
-rewardedAmount: number;
-/**服务费派发佣金总额*/
-serDispenseAmount: number;
-/**服务费已派发佣金总额*/
-serDispensedAmount: number;
-/**服务费总已收*/
-serPaidAmount: number;
-/**服务费总应收*/
-serReceiveAmount: number;
-/**服务费派发内场奖励总额*/
-serRewardAmount: number;
-/**服务费已派发内场奖励总额*/
-serRewardedAmount: number;
-/**总包业绩总额*/
-totalPackageAmount: number;
 }
 /**ReceiveAchieveUpdateVO*/
 export interface ReceiveAchieveUpdateVO {
 /**本单业绩*/
 achieveAmount: number;
-/**业绩确认日期(yyyy-MM-dd HH:mm:ss)*/
-achieveConfirmTime: string;
-/**代理费派发佣金总额*/
-ageDispenseAmount: number;
-/**代理费已派发佣金总额*/
-ageDispensedAmount: number;
-/**代理费总已收*/
-agePaidAmount: number;
-/**代理费总应收*/
-ageReceiveAmount: number;
-/**代理费派发内场奖励总额*/
-ageRewardAmount: number;
-/**代理费已派发内场奖励总额*/
-ageRewardedAmount: number;
 /**成交ID*/
 dealId: number;
-/**本单派发佣金*/
-dispenseAmount: number;
-/**本单已派发佣金*/
-dispensedAmount: number;
-/**分销业绩总额*/
-distributeAmount: number;
 /**ID*/
 id: number;
 /**其他渠道费用*/
 otherChannelFees: number;
-/**本单已收*/
-paidAmount: number;
-/**主成交ID*/
-parentId: number;
 /**本单应收*/
 receiveAmount: number;
-/**本单派发内场奖励*/
-rewardAmount: number;
-/**本单已派发内场奖励*/
-rewardedAmount: number;
-/**服务费派发佣金总额*/
-serDispenseAmount: number;
-/**服务费已派发佣金总额*/
-serDispensedAmount: number;
-/**服务费总已收*/
-serPaidAmount: number;
-/**服务费总应收*/
-serReceiveAmount: number;
-/**服务费派发内场奖励总额*/
-serRewardAmount: number;
-/**服务费已派发内场奖励总额*/
-serRewardedAmount: number;
-/**总包业绩总额*/
-totalPackageAmount: number;
 }
 /**ReceiveAchieveVO*/
 export interface ReceiveAchieveVO {
 /**本单业绩*/
 achieveAmount: number;
-/**业绩确认日期(yyyy-MM-dd HH:mm:ss)*/
-achieveConfirmTime: string;
-/**代理费派发佣金总额*/
-ageDispenseAmount: number;
-/**代理费已派发佣金总额*/
-ageDispensedAmount: number;
-/**代理费总已收*/
-agePaidAmount: number;
-/**代理费总应收*/
-ageReceiveAmount: number;
-/**代理费派发内场奖励总额*/
-ageRewardAmount: number;
-/**代理费已派发内场奖励总额*/
-ageRewardedAmount: number;
 /**创建时间(yyyy-MM-dd HH:mm:ss)*/
 createTime: string;
 /**创建用户*/
@@ -1482,40 +1456,12 @@ createUser: number;
 dealId: number;
 /**已删除*/
 deleted: number;
-/**本单派发佣金*/
-dispenseAmount: number;
-/**本单已派发佣金*/
-dispensedAmount: number;
-/**分销业绩总额*/
-distributeAmount: number;
 /**ID*/
 id: number;
 /**其他渠道费用*/
 otherChannelFees: number;
-/**本单已收*/
-paidAmount: number;
-/**主成交ID*/
-parentId: number;
 /**本单应收*/
 receiveAmount: number;
-/**本单派发内场奖励*/
-rewardAmount: number;
-/**本单已派发内场奖励*/
-rewardedAmount: number;
-/**服务费派发佣金总额*/
-serDispenseAmount: number;
-/**服务费已派发佣金总额*/
-serDispensedAmount: number;
-/**服务费总已收*/
-serPaidAmount: number;
-/**服务费总应收*/
-serReceiveAmount: number;
-/**服务费派发内场奖励总额*/
-serRewardAmount: number;
-/**服务费已派发内场奖励总额*/
-serRewardedAmount: number;
-/**总包业绩总额*/
-totalPackageAmount: number;
 /**更新时间(yyyy-MM-dd HH:mm:ss)*/
 updateTime: string;
 /**更新用户*/
@@ -1529,10 +1475,8 @@ commAmount: number;
 distributionAmount: number;
 /**其他渠道费用*/
 otherChannelFees: number;
-/**收派标准*/
+/**收派套餐*/
 packageId: number;
-/**主成交ID*/
-parentId: number;
 /**甲方或客户*/
 partyACustomer: number;
 /**应收金额*/
@@ -1556,10 +1500,8 @@ distributionAmount: number;
 id: number;
 /**其他渠道费用*/
 otherChannelFees: number;
-/**收派标准*/
+/**收派套餐*/
 packageId: number;
-/**主成交ID*/
-parentId: number;
 /**甲方或客户*/
 partyACustomer: number;
 /**应收业绩主表ID*/
@@ -1575,6 +1517,8 @@ type: string;
 }
 /**ReceiveVO*/
 export interface ReceiveVO {
+/**业绩确认时间(yyyy-MM-dd HH:mm:ss)*/
+achieveConfirmTime: string;
 /**派发佣金金额*/
 commAmount: number;
 /**创建时间(yyyy-MM-dd HH:mm:ss)*/
@@ -1591,10 +1535,8 @@ distributionAmount: number;
 id: number;
 /**其他渠道费用*/
 otherChannelFees: number;
-/**收派标准*/
+/**收派套餐*/
 packageId: number;
-/**主成交ID*/
-parentId: number;
 /**甲方或客户*/
 partyACustomer: number;
 /**甲方或客户名称*/
@@ -1615,6 +1557,25 @@ type: string;
 updateTime: string;
 /**更新用户*/
 updateUser: number;
+}
+/**ReviewDealBasicInfVO*/
+export interface ReviewDealBasicInfVO {
+/**中介信息*/
+agencyVO: AgencyUpdateVO[];
+/**客户信息*/
+customerVO: CustomerUpdateVO[];
+/**成交信息*/
+dealVO: DealUpdateVO;
+/**成交附件信息*/
+documentVO: DocumentUpdateVO[];
+/**房产信息*/
+houseVO: HouseUpdateVO;
+/**优惠告知书*/
+offerNoticeVO: OfferNoticeUpdateVO[];
+/**应收业绩信息*/
+receiveAchieveVO: ReceiveAchieveUpdateVO[];
+/**应收信息（收派金额）*/
+receiveVO: ReceiveUpdateVO[];
 }
 /**ReviewDealVO*/
 export interface ReviewDealVO {
@@ -1674,6 +1635,8 @@ dealVO: DealUpdateVO;
 documentVO: DocumentUpdateVO[];
 /**房产信息*/
 houseVO: HouseUpdateVO;
+/**优惠告知书*/
+offerNoticeVO: OfferNoticeUpdateVO[];
 /**应收业绩信息*/
 receiveAchieveVO: ReceiveAchieveUpdateVO[];
 /**应收信息（收派金额）*/

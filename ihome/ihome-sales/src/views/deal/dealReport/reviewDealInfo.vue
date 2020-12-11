@@ -4,7 +4,7 @@
  * @Author: lsj
  * @Date: 2020-11-11 08:48:35
  * @LastEditors: lsj
- * @LastEditTime: 2020-11-11 0:25:33
+ * @LastEditTime: 2020-12-10 11:40:30
 -->
 <template>
   <ih-page class="text-left">
@@ -17,146 +17,149 @@
         label-width="160px"
         class="demo-ruleForm">
         <el-row>
-          <el-col :span="6">
+          <el-col :span="8">
             <el-form-item label="成交报告编号">
               <div>{{postData.dealCode}}</div>
             </el-form-item>
           </el-col>
-          <el-col :span="6">
+          <el-col :span="8">
             <el-form-item label="项目周期">
               <div>{{postData.contType}}</div>
             </el-form-item>
           </el-col>
-          <el-col :span="6">
-            <el-form-item label="合同类型">
-              <div>{{postData.contType}}</div>
-            </el-form-item>
-          </el-col>
-          <el-col :span="6">
+          <el-col :span="8">
             <el-form-item label="业务模式">
               <div>{{postData.businessType}}</div>
             </el-form-item>
           </el-col>
-          <el-col :span="6">
+          <el-col :span="8">
+            <el-form-item label="合同类型">
+              <div>{{postData.contType}}</div>
+            </el-form-item>
+          </el-col>
+          <el-col :span="8">
+            <el-form-item label="渠道商">
+              <div>{{postData.businessType}}</div>
+            </el-form-item>
+          </el-col>
+          <el-col :span="8">
             <el-form-item label="细分业务模式">
               <div>{{postData.businessType}}</div>
             </el-form-item>
           </el-col>
-          <el-col :span="6">
-            <el-form-item label="成交状态">
-              <div>{{postData.status}}</div>
-            </el-form-item>
-          </el-col>
-          <el-col :span="6">
-            <el-form-item label="是否代销">
-              <div>{{postData.isMat}}</div>
-            </el-form-item>
-          </el-col>
-          <el-col :span="6">
+          <el-col :span="8">
             <el-form-item label="一手代理团队">
               <div>{{postData.oneAgentTeamId}}</div>
             </el-form-item>
           </el-col>
-          <el-col :span="6">
+          <el-col :span="8">
             <el-form-item label="是否市场化项目">
               <div>{{postData.isMarketProject}}</div>
             </el-form-item>
           </el-col>
-          <el-col :span="6">
-            <el-form-item label="业务类型">
-              <div>{{postData.businessType}}</div>
-            </el-form-item>
-          </el-col>
-          <el-col :span="6">
-            <el-form-item label="明源房款回笼比例">
-              <div>{{postData.returnRatio}}</div>
-            </el-form-item>
-          </el-col>
-          <el-col :span="6">
-            <el-form-item label="备案情况">
-              <div>{{postData.recordState}}</div>
-            </el-form-item>
-          </el-col>
-          <el-col :span="6">
-            <el-form-item label="分销协议编号">
-              <div>{{postData.recordState}}</div>
-            </el-form-item>
-          </el-col>
-          <el-col :span="6">
-            <el-form-item label="是否垫佣">
-              <div>{{postData.isMat}}</div>
-            </el-form-item>
-          </el-col>
-          <el-col :span="6">
-            <el-form-item label="数据标志">
-              <div>{{postData.dataSign}}</div>
-            </el-form-item>
-          </el-col>
-          <el-col :span="6">
+          <el-col :span="8">
             <el-form-item label="成交组织">
               <div>{{postData.dealOrgId}}</div>
             </el-form-item>
           </el-col>
-          <el-col :span="6">
-            <el-form-item label="成交阶段">
-              <div>{{postData.stage}}</div>
+          <el-col :span="8">
+            <el-form-item label="备案情况">
+              <div>{{postData.recordState}}</div>
             </el-form-item>
           </el-col>
-          <el-col :span="6">
+          <el-col :span="8">
+            <el-form-item label="明源房款回笼比例">
+              <div>{{postData.returnRatio}}</div>
+            </el-form-item>
+          </el-col>
+          <el-col :span="8">
+            <el-form-item label="数据标志">
+              <div>{{postData.dataSign}}</div>
+            </el-form-item>
+          </el-col>
+          <el-col :span="8">
+            <el-form-item label="分销协议编号">
+              <div>{{postData.recordState}}</div>
+            </el-form-item>
+          </el-col>
+          <el-col :span="8">
+            <el-form-item label="是否垫佣">
+              <div>{{postData.isMat}}</div>
+            </el-form-item>
+          </el-col>
+          <el-col :span="8">
+            <el-form-item label="是否代销">
+              <div>{{postData.isMat}}</div>
+            </el-form-item>
+          </el-col>
+          <el-col :span="8">
             <el-form-item label="签约类型">
               <div>{{postData.signType}}</div>
             </el-form-item>
           </el-col>
-          <el-col :span="6">
+          <el-col :span="8">
             <el-form-item label="认购价格">
               <div>{{postData.subscribePrice}}</div>
             </el-form-item>
           </el-col>
-          <el-col :span="6">
+          <el-col :span="8">
             <el-form-item label="认购日期">
               <div>{{postData.subscribeDate}}</div>
             </el-form-item>
           </el-col>
-          <el-col :span="6">
+          <el-col :span="8">
             <el-form-item label="签约价格">
               <div>{{postData.signPrice}}</div>
             </el-form-item>
           </el-col>
-          <el-col :span="6">
+          <el-col :span="8">
             <el-form-item label="签约日期">
               <div>{{postData.signDate}}</div>
             </el-form-item>
           </el-col>
-          <el-col :span="6">
+          <el-col :span="8">
             <el-form-item label="录入日期">
               <div>{{postData.entryDate}}</div>
             </el-form-item>
           </el-col>
-          <el-col :span="6">
+          <el-col :span="8">
             <el-form-item label="录入人">
               <div>{{postData.entryPerson}}</div>
             </el-form-item>
           </el-col>
-          <el-col :span="6">
-            <el-form-item label="业绩分配人">
-              <div>{{postData.entryPerson}}</div>
+          <el-col :span="8">
+            <el-form-item label="成交阶段">
+              <div>{{postData.stage}}</div>
             </el-form-item>
           </el-col>
-          <el-col :span="6">
-            <el-form-item label="业绩分配日期">
-              <div>{{postData.entryPerson}}</div>
+          <el-col :span="8">
+            <el-form-item label="成交状态">
+              <div>{{postData.status}}</div>
             </el-form-item>
           </el-col>
-          <el-col :span="6">
+          <el-col :span="16">
+            <el-form-item label="备注">
+              <div>{{postData.remarks}}</div>
+            </el-form-item>
+          </el-col>
+          <el-col :span="8">
             <el-form-item label="现场销售">
               <div>{{postData.entryPerson}}</div>
             </el-form-item>
           </el-col>
-        </el-row>
-        <el-row>
-          <el-col :span="24">
-            <el-form-item label="备注">
-              <div>{{postData.remarks}}</div>
+          <el-col :span="8">
+            <el-form-item label="业绩分配人">
+              <div>{{postData.entryPerson}}</div>
+            </el-form-item>
+          </el-col>
+          <el-col :span="8">
+            <el-form-item label="业绩分配日期">
+              <div>{{postData.entryPerson}}</div>
+            </el-form-item>
+          </el-col>
+          <el-col :span="8">
+            <el-form-item label="计算方式">
+              <div>{{postData.entryPerson}}</div>
             </el-form-item>
           </el-col>
         </el-row>
@@ -192,7 +195,7 @@
             </el-form-item>
           </el-col>
           <el-col :span="12">
-            <el-form-item label="房屋地址">
+            <el-form-item label="房产证地址">
               <div>{{postData.address}}</div>
             </el-form-item>
           </el-col>
@@ -211,32 +214,32 @@
               </div>
             </el-form-item>
           </el-col>
-          <el-col :span="24">
-            <el-form-item label="优惠告知书"></el-form-item>
-          </el-col>
-          <el-col :span="24">
-            <el-form-item label="" label-width="80px">
-              <el-table
-                class="ih-table"
-                :data="infoList">
-                <el-table-column prop="offerNoticeName" label="名称" min-width="120"></el-table-column>
-                <el-table-column prop="offerNoticeCode" label="优惠告知书编号" min-width="120"></el-table-column>
-                <el-table-column prop="offerNoticeStatus" label="优惠告知书状态" min-width="120"></el-table-column>
-                <el-table-column fixed="right" label="操作" width="100">
-                  <template slot-scope="scope">
-                    <el-link
-                      class="margin-right-10"
-                      type="primary"
-                      @click.native.prevent="preview(scope)"
-                    >预览
-                    </el-link>
-                  </template>
-                </el-table-column>
-              </el-table>
-            </el-form-item>
-          </el-col>
         </el-row>
       </el-form>
+    </div>
+    <div>
+      <p class="ih-info-title">优惠告知书信息</p>
+      <el-row style="padding-left: 20px">
+        <el-col>
+          <el-table
+            class="ih-table"
+            :data="infoList">
+            <el-table-column prop="offerNoticeName" label="名称" min-width="120"></el-table-column>
+            <el-table-column prop="offerNoticeCode" label="优惠告知书编号" min-width="120"></el-table-column>
+            <el-table-column prop="offerNoticeStatus" label="优惠告知书状态" min-width="120"></el-table-column>
+            <el-table-column fixed="right" label="操作" width="130">
+              <template slot-scope="scope">
+                <el-link
+                  class="margin-right-10"
+                  type="primary"
+                  @click.native.prevent="preview(scope)"
+                >预览
+                </el-link>
+              </template>
+            </el-table-column>
+          </el-table>
+        </el-col>
+      </el-row>
     </div>
     <div>
       <p class="ih-info-title">客户信息</p>
@@ -266,7 +269,6 @@
             <el-table-column prop="agencyName" label="渠道公司名称" min-width="120"></el-table-column>
             <el-table-column prop="channelLevel" label="渠道等级" min-width="120"></el-table-column>
             <el-table-column prop="broker" label="经纪人" min-width="120"></el-table-column>
-            <el-table-column prop="storeIdName" label="门店" min-width="120"></el-table-column>
           </el-table>
         </el-col>
       </el-row>
@@ -285,7 +287,6 @@
             <el-table-column prop="partyACustomerName" label="甲方/客户" min-width="120"></el-table-column>
             <el-table-column prop="packageId" label="收派套餐" min-width="120"></el-table-column>
             <el-table-column prop="receiveAmount" label="应收金额" min-width="120"></el-table-column>
-            <el-table-column prop="receivedAmount" label="应收已收金额" min-width="150"></el-table-column>
             <el-table-column prop="commAmount" label="派发佣金金额" min-width="150"></el-table-column>
             <el-table-column prop="rewardAmount" label="派发内场奖励金额" min-width="150"></el-table-column>
             <el-table-column prop="totalPackageAmount" label="总包业绩金额" min-width="150"></el-table-column>
@@ -329,11 +330,6 @@
                 <el-input v-model="scope.row.commName" placeholder="拆佣名称"/>
               </template>
             </el-table-column>
-            <el-table-column prop="payee" label="收款方" min-width="120">
-              <template slot-scope="scope">
-                <el-input v-model="scope.row.payee" clearable placeholder="收款方"/>
-              </template>
-            </el-table-column>
             <el-table-column prop="feeType" label="费用类型" min-width="120">
               <template slot-scope="scope">
                 <el-select v-model="scope.row.feeType" placeholder="请选择">
@@ -342,19 +338,14 @@
                 </el-select>
               </template>
             </el-table-column>
+            <el-table-column prop="payee" label="费用来源(客户/甲方)" min-width="120">
+              <template slot-scope="scope">
+                <el-input v-model="scope.row.payee" clearable placeholder="收款方"/>
+              </template>
+            </el-table-column>
             <el-table-column prop="amount" label="金额" min-width="120">
               <template slot-scope="scope">
                 <el-input v-model="scope.row.amount" clearable placeholder="金额"/>
-              </template>
-            </el-table-column>
-            <el-table-column prop="partyACustomer" label="客户/甲方" min-width="120">
-              <template slot-scope="scope">
-                <el-select v-model="scope.row.partyACustomer" placeholder="请选择">
-                  <el-option label="客户A" value="AA"></el-option>
-                  <el-option label="客户B" value="BB"></el-option>
-                  <el-option label="甲方A" value="CC"></el-option>
-                  <el-option label="甲方B" value="DD"></el-option>
-                </el-select>
               </template>
             </el-table-column>
             <el-table-column prop="remarks" label="备注" min-width="120">
@@ -382,7 +373,7 @@
             <el-table-column prop="roleType" label="角色类型" min-width="120"></el-table-column>
             <el-table-column prop="roleAchieveCap" label="角色业绩上限" min-width="120"></el-table-column>
             <el-table-column prop="corporateAchieve" label="公司业绩" min-width="120"></el-table-column>
-            <el-table-column prop="corporateAchieveRatio" label="公司业绩比例（%）" min-width="120"></el-table-column>
+            <el-table-column prop="corporateAchieveRatio" label="角色业绩比例（%）" min-width="120"></el-table-column>
             <el-table-column prop="commFees" label="拆佣金额" min-width="150"></el-table-column>
             <el-table-column prop="commFeesRatio" label="拆佣比例（%）" min-width="150"></el-table-column>
             <el-table-column prop="rolerName" label="角色人" min-width="150"></el-table-column>
@@ -415,7 +406,7 @@
             <el-table-column prop="roleType" label="角色类型" min-width="120"></el-table-column>
             <el-table-column prop="roleAchieveCap" label="角色业绩上限" min-width="120"></el-table-column>
             <el-table-column prop="corporateAchieve" label="公司业绩" min-width="120"></el-table-column>
-            <el-table-column prop="corporateAchieveRatio" label="公司业绩比例（%）" min-width="120"></el-table-column>
+            <el-table-column prop="corporateAchieveRatio" label="角色业绩比例（%）" min-width="120"></el-table-column>
             <el-table-column prop="commFees" label="拆佣金额" min-width="150"></el-table-column>
             <el-table-column prop="commFeesRatio" label="拆佣比例（%）" min-width="150"></el-table-column>
             <el-table-column prop="rolerName" label="角色人" min-width="150"></el-table-column>
@@ -450,15 +441,16 @@
       </el-row>
     </div>
     <div class="audit-info-wrapper">
+      <p class="ih-info-title">审核意见</p>
       <el-form
         :model="postData"
         :rules="rules"
         ref="ruleForm"
-        label-width="160px"
+        label-width="20px"
         class="demo-ruleForm">
         <el-row class="audit-info">
           <el-col :span="12">
-            <el-form-item label="审核意见">
+            <el-form-item label="">
               <el-input
                 type="textarea"
                 :rows="3"
@@ -477,11 +469,12 @@
     </div>
     <div class="text-center btn-top">
       <el-button @click="handleBack()">取消</el-button>
-      <el-button type="success" @click="handlePass()">通过</el-button>
       <el-button type="danger" @click="handleFail()">驳回</el-button>
+      <el-button type="success" @click="handlePass()">通过</el-button>
     </div>
     <ih-dialog :show="dialogReviewDeal" desc="成交审核记录">
       <ReviewDetailsDialog
+        :data="reviewData"
         @cancel="() => (dialogReviewDeal = false)"
         @finish="() => {dialogReviewDeal = false;}"
       />
@@ -529,6 +522,7 @@
     id: any = null;
     changeType: any = null; // 改变成交信息的类型
     dialogReviewDeal: any = false; // 成交审核记录弹窗标识
+    reviewData: any = null;
 
     async created() {
       this.id = this.$route.query.id;
@@ -638,6 +632,9 @@
     // 查看审核记录
     handleViewReviewDetail() {
       this.dialogReviewDeal = true;
+      this.reviewData = {
+        title: 'main'
+      }
     }
 
     // 查看原成交详情
@@ -754,6 +751,10 @@
     .title {
       margin-right: 20px;
       box-sizing: border-box;
+      border-left: 5px solid #F90;
+      padding-left: 5px;
+      color: #f90;
+      margin-left: 20px;
     }
   }
 

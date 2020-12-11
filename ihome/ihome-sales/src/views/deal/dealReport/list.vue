@@ -4,7 +4,7 @@
  * @Author: lsj
  * @Date: 2020-11-03 09:10:20
  * @LastEditors: lsj
- * @LastEditTime: 2020-11-13 14:38:33
+ * @LastEditTime: 2020-12-09 17:28:20
 -->
 <template>
   <ih-page label-width="100px">
@@ -222,7 +222,8 @@
       <el-row>
         <el-button type="primary" @click="getListMixin()">查询</el-button>
         <el-button type="info" @click="handleReset()">重置</el-button>
-        <el-button type="success" @click="handleAdd()">新增</el-button>
+        <el-button type="success" @click="handleAdd('declare')">业绩申报</el-button>
+        <el-button type="success" @click="handleAdd('add')">新增</el-button>
       </el-row>
     </template>
     <template v-slot:table>
@@ -278,7 +279,7 @@
           </template>
         </el-table-column>
         <el-table-column prop="dealOrg" label="组织信息" min-width="260"></el-table-column>
-        <el-table-column prop="allotDate" label="签约/填写/业绩/审批日期" min-width="210">
+        <el-table-column prop="allotDate" label="签约/填写/业绩确认/审批日期" min-width="210">
           <template slot-scope="scope">
             <div>签约：{{scope.row.signDate}}</div>
             <div>填写：{{scope.row.createTime}}</div>
@@ -309,12 +310,6 @@
                 <el-dropdown-item @click.native.prevent="handleRecall(scope)"
                 >撤回
                 </el-dropdown-item>
-                <el-dropdown-item @click.native.prevent="handleReview(scope)"
-                >审核
-                </el-dropdown-item>
-                <el-dropdown-item @click.native.prevent="handleReviewAchieve(scope)"
-                >审核申报业绩
-                </el-dropdown-item>
                 <el-dropdown trigger="click" class="el-dropdown-menu__item" placement="top-start">
                   <span class="el-dropdown-link">
                   补充成交
@@ -335,6 +330,9 @@
                     </el-dropdown-item>
                   </el-dropdown-menu>
                 </el-dropdown>
+                <el-dropdown-item @click.native.prevent="handleReview(scope)"
+                >审核
+                </el-dropdown-item>
                 <el-dropdown-item @click.native.prevent="handleWithdrawalReview(scope)"
                 >撤回审核
                 </el-dropdown-item>
@@ -456,9 +454,10 @@
     }
 
     // 新增
-    async handleAdd() {
+    async handleAdd(type: any) {
       this.$router.push({
-        path: "/dealReport/add"
+        path: "/dealReport/add",
+        query: {btnType: type}
       });
     }
 
@@ -522,15 +521,6 @@
         query: {
           id: scope.row.id
         }
-      });
-    }
-
-    // 审核申报业绩
-    async handleReviewAchieve(scope: any) {
-      console.log(scope);
-      this.$router.push({
-        path: "/dealReport/add",
-        query: {id: scope.row.id}
       });
     }
 
