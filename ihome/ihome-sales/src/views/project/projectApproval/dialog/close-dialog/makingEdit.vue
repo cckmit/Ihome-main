@@ -4,7 +4,7 @@
  * @Author: wwq
  * @Date: 2020-12-09 20:12:21
  * @LastEditors: wwq
- * @LastEditTime: 2020-12-11 09:01:58
+ * @LastEditTime: 2020-12-11 15:53:09
 -->
 <template>
   <el-dialog
@@ -118,150 +118,34 @@
 </template>
 <script lang="ts">
 import { Component, Vue, Prop } from "vue-property-decorator";
+import { get_settleCondition_getMakingType } from "@/api/project/index";
 @Component({
   components: {},
 })
 export default class CloseRules extends Vue {
   @Prop({ default: null }) data: any;
   dialogVisible = true;
-  form: any = [
-    {
-      conditionEnum: "HouseType",
-      compare: null,
-      conditionNumA: null,
-      conditionAnd: null,
-      compareB: null,
-      conditionNumB: null,
-      checkboxed: false,
-      compareBList: [],
-      conditionAndCheckboxed: false,
-      isConditionAndShow: true,
-    },
-    {
-      conditionEnum: "Area",
-      compare: null,
-      conditionNumA: null,
-      conditionAnd: null,
-      compareB: null,
-      conditionNumB: null,
-      checkboxed: false,
-      compareBList: [],
-      conditionAndCheckboxed: false,
-      isConditionAndShow: true,
-    },
-    {
-      conditionEnum: "ContractPrice",
-      compare: null,
-      conditionNumA: null,
-      conditionAnd: null,
-      compareB: null,
-      conditionNumB: null,
-      checkboxed: false,
-      compareBList: [],
-      conditionAndCheckboxed: false,
-      isConditionAndShow: true,
-    },
-    {
-      conditionEnum: "SubscriPrice",
-      compare: null,
-      conditionNumA: null,
-      conditionAnd: null,
-      compareB: null,
-      conditionNumB: null,
-      checkboxed: false,
-      compareBList: [],
-      conditionAndCheckboxed: false,
-      isConditionAndShow: true,
-    },
-    {
-      conditionEnum: "OtherMsg",
-      compare: null,
-      conditionNumA: null,
-      conditionAnd: null,
-      compareB: null,
-      conditionNumB: null,
-      checkboxed: false,
-      compareBList: [],
-      conditionAndCheckboxed: false,
-      isConditionAndShow: true,
-    },
-  ];
+  form: any = [];
+  type: any = [];
 
   compareChange(data: any, i: number) {
-    if (Object.keys(data).length) {
-      if (data === "EQ") {
-        this.form[i].isConditionAndShow = false;
-      } else {
-        this.form[i].isConditionAndShow = true;
-        const ruleEnumList = (this.$root as any).dictAllList("Rule");
-        const item = ruleEnumList.find((v: any) => v.code === data);
-        let arr: any = [];
-        arr = item.tag.split(",");
-        this.form[i].compareBList = arr.map((v: any) => ({
-          code: v,
-          name: (this.$root as any).dictAllName(v, "Rule"),
-        }));
-      }
-    }
+    console.log(data, i);
   }
 
   cancel() {
     this.$emit("cancel", false);
   }
+
   finish() {
-    let arr: any = [];
-    arr = this.form.filter((v: any) => v.checkboxed === true);
-    arr = arr.map((v: any) => {
-      if (v.conditionEnum !== "OtherMsg") {
-        return {
-          ...v,
-          compare: v.compare,
-          conditionAnd: v.conditionAndCheckboxed ? 1 : 0,
-        };
-      } else {
-        return {
-          ...v,
-        };
-      }
-    });
-    arr.forEach((v: any) => {
-      delete v.compareBList;
-      delete v.checkboxed;
-      delete v.conditionAndCheckboxed;
-      delete v.isConditionAndShow;
-    });
-    this.$emit("finish", arr);
+    this.$emit("finish");
   }
-  async created() {
-    const ruleEnumList = (this.$root as any).dictAllList("Rule");
-    let info: any = [];
-    if (this.data) {
-      info = this.data.map((v: any) => {
-        let arr: any = [];
-        const item = ruleEnumList.find((j: any) => j.code === v.compare);
-        if (item) arr = item.tag?.split(",");
-        return {
-          ...v,
-          checkboxed: true,
-          conditionAndCheckboxed: v.conditionAnd ? true : false,
-          isConditionAndShow: v.compare === "EQ" ? false : true,
-          compareBList:
-            v.compare === "EQ"
-              ? []
-              : arr.map((h: any) => ({
-                  code: h,
-                  name: (this.$root as any).dictAllName(h, "Rule"),
-                })),
-        };
-      });
-    }
-    this.form.forEach((v: any, i: number) => {
-      info.forEach((j: any) => {
-        if (v.conditionEnum === j.conditionEnum) {
-          this.$set(this.form, i, j);
-        }
-      });
-    });
+
+  // 获取类型
+  async getMakingType() {
+    this.type = await get_settleCondition_getMakingType();
+  }
+  created() {
+    this.getMakingType();
   }
 }
 </script>

@@ -49,7 +49,7 @@
         label="渠道类型"
       >
         <template v-slot="{ row }">{{
-            $root.dictAllName(row.channelEnum, "Channel")
+            $root.dictAllName(row.channelEnum, "ChannelCustomer")
           }}</template>
       </el-table-column>
       <el-table-column

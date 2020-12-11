@@ -4,7 +4,7 @@
  * @Author: wwq
  * @Date: 2020-12-04 09:40:47
  * @LastEditors: wwq
- * @LastEditTime: 2020-12-11 09:11:16
+ * @LastEditTime: 2020-12-11 15:57:33
 -->
 <template>
   <el-dialog
@@ -925,7 +925,7 @@ import {
   get_collectandsend_get__packageId,
   get_collectandsend_getBaseTermByTermId__termId,
 } from "@/api/project/index";
-import { get_businessModel_getContTypeByName__modelName } from "@/api/deal/index";
+import { post_buModelContType_get } from "@/api/deal/index";
 import { post_dict_getAllByType } from "@/api/system/index";
 import Business from "../notification-dialog/channelBusiness.vue";
 import Rules from "../setMeal-dialog/rules.vue";
@@ -1350,10 +1350,10 @@ export default class SetMealEdit extends Vue {
 
   // 根据业务模式获取合同类型
   async queryContractType() {
-    const item = await get_businessModel_getContTypeByName__modelName({
+    const item = await post_buModelContType_get({
       modelName: this.info.busEnum,
     });
-    this.contractTypeOptions = item.map((v: any) => ({
+    this.contractTypeOptions = item.contTypeList.map((v: any) => ({
       code: v,
       name: (this.$root as any).dictAllName(v, "ContType"),
     }));

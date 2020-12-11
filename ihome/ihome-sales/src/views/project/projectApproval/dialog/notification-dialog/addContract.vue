@@ -4,7 +4,7 @@
  * @Author: wwq
  * @Date: 2020-12-02 15:37:31
  * @LastEditors: wwq
- * @LastEditTime: 2020-12-11 09:03:03
+ * @LastEditTime: 2020-12-11 14:37:06
 -->
 <template>
   <el-dialog
@@ -256,7 +256,7 @@
               @change="queryUnderData(info.channelEnum, 'channel')"
             >
               <el-option
-                v-for="item in $root.dictAllList('Channel')"
+                v-for="item in $root.dictAllList('ChannelCustomer')"
                 :key="item.code"
                 :label="item.name"
                 :value="item.code"
@@ -597,7 +597,7 @@ export default class AddContract extends Vue {
       consumerName: null,
       consumerId: null,
     };
-    if (type === "channelEnum") {
+    if (type === "channel") {
       this.isShow = data === "Appoint" || data === "Strategic" ? true : false;
     }
     if (this.isShow) {
@@ -611,6 +611,7 @@ export default class AddContract extends Vue {
         this.queryCondition();
       }
     } else {
+      this.info.designatedAgency = null;
       if (this.info.padCommissionEnum && this.info.channelEnum) {
         this.queryObj.consumerName = null;
         this.queryObj.consumerId = null;
