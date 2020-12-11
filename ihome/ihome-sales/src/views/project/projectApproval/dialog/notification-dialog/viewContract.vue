@@ -4,7 +4,7 @@
  * @Author: wwq
  * @Date: 2020-12-02 20:13:07
  * @LastEditors: wwq
- * @LastEditTime: 2020-12-11 09:05:24
+ * @LastEditTime: 2020-12-11 10:26:57
 -->
 <template>
   <el-dialog
@@ -173,8 +173,8 @@
           <el-form-item label="渠道类型">
             <span
               class="text-ellipsis"
-              :title="$root.dictAllName(info.channelEnum, 'Channel')"
-            >{{$root.dictAllName(info.channelEnum, 'Channel')}}</span>
+              :title="$root.dictAllName(info.channelEnum, 'ChannelCustomer')"
+            >{{$root.dictAllName(info.channelEnum, 'ChannelCustomer')}}</span>
           </el-form-item>
         </el-col>
         <el-col

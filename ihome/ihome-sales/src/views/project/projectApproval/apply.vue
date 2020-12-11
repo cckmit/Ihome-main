@@ -71,7 +71,7 @@
                 label="渠道类型"
               >
                 <template v-slot="{ row }">{{
-                  $root.dictAllName(row.channelEnum, "Channel")
+                  $root.dictAllName(row.channelEnum, "ChannelCustomer")
                 }}</template>
               </el-table-column>
               <el-table-column
@@ -220,7 +220,7 @@
           <el-col :span="12">
             <el-form-item label="乙方账号名">
               <el-select
-                v-model="info.channelAccountName"
+                v-model="channelAccountName"
                 placeholder="乙方账号名"
                 clearable
                 style="width: 70%"
@@ -229,9 +229,9 @@
               >
                 <el-option
                   v-for="item in channelAccountOptions"
-                  :key="item.accountNo"
+                  :key="item.id"
                   :label="item.accountName"
-                  :value="item.accountNo"
+                  :value="item.id"
                 ></el-option>
               </el-select>
             </el-form-item>
@@ -377,8 +377,8 @@
             <el-form-item label="渠道类型">
               <span
                 class="text-ellipsis"
-                :title="$root.dictAllName(info.channelEnum, 'Channel')"
-              >{{$root.dictAllName(info.channelEnum, 'Channel')}}</span>
+                :title="$root.dictAllName(info.channelEnum, 'ChannelCustomer')"
+              >{{$root.dictAllName(info.channelEnum, 'ChannelCustomer')}}</span>
             </el-form-item>
           </el-col>
           <el-col
@@ -446,7 +446,7 @@
           type="primary"
           @click="submit()"
         >提交</el-button>
-        <el-button>取消</el-button>
+        <el-button @click="cancel">取消</el-button>
       </div>
     </template>
 
@@ -479,6 +479,7 @@ import {
   get_channel_get__id,
   post_channelGrade_getList,
 } from "@/api/channel/index";
+import { post_distribution_create } from "@/api/contract/index";
 import ViewContract from "./dialog/notification-dialog/viewContract.vue";
 
 @Component({
@@ -516,8 +517,10 @@ export default class Apply extends Vue {
     channelEnum: null,
     designatedAgency: null,
     padCommissionEnum: null,
+    handlerId: null,
     contractMxVOList: [],
   };
+  channelAccountName = "";
   isShow = false;
   channelAccountOptions: any = [];
 
@@ -547,6 +550,7 @@ export default class Apply extends Vue {
   templateFinish(data: any) {
     this.getApplyInfo(data.agencyContrictId);
     this.dialogFormVisible = false;
+    this.info.agencyId = data.agencyContrictId;
     this.templateData = [data];
   }
 
@@ -569,6 +573,7 @@ export default class Apply extends Vue {
     this.channelAccountOptions = res.channelBanks;
     this.info.channelAddress = res.address;
     this.info.channelAccountName = "";
+    this.info.channelCompanyId = item.id;
     // 以下操作仅仅是为了获取渠道等级
     let list = this.dropOption.find((v: any) => v.termId === this.info.cycleId);
     let obj: any = {
@@ -580,23 +585,35 @@ export default class Apply extends Vue {
     };
     let channelList: any = await post_channelGrade_getList(obj);
     this.info.channelLevel = channelList.channelGrade;
+    this.info.channelLevel = "BigPlatform"; // 假数据
+    this.info.organizationId = 1; // 假数据
   }
 
   channelAccountChange(val: any) {
-    const item = this.channelAccountOptions.find(
-      (v: any) => v.accountNo === val
-    );
+    const item = this.channelAccountOptions.find((v: any) => v.id === val);
     this.info.channelAccount = item.accountNo;
     this.info.channelAccountBank = item.branchName;
+    this.info.channelAccountName = item.accountName;
   }
-  private submit() {
-    console.log(this.handler);
+  async submit() {
+    this.info.handlerId = this.handler.id;
+    await post_distribution_create(this.info);
+    this.$message.success("申领成功");
+    this.$goto({
+      path: "/projectApproval/list",
+    });
   }
 
   async created() {
     await this.getDropDown();
     this.info.cycleId = Number(this.$route.query.id);
     this.getChannelAll();
+  }
+
+  cancel() {
+    this.$goto({
+      path: "/projectApproval/list",
+    });
   }
 }
 </script>

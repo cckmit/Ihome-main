@@ -4,7 +4,7 @@
  * @Author: wwq
  * @Date: 2020-12-04 09:40:47
  * @LastEditors: wwq
- * @LastEditTime: 2020-12-11 09:11:16
+ * @LastEditTime: 2020-12-11 11:15:41
 -->
 <template>
   <el-dialog
@@ -1357,6 +1357,13 @@ export default class SetMealEdit extends Vue {
       code: v,
       name: (this.$root as any).dictAllName(v, "ContType"),
     }));
+    // const item = await post_buModelContType_get({
+    //   modelName: this.info.busEnum,
+    // });
+    // this.contractTypeOptions = item.contTypeList.map((v: any) => ({
+    //   code: v,
+    //   name: (this.$root as any).dictAllName(v, "ContType"),
+    // }));
   }
 
   // 根据合同类型获取客户类型
