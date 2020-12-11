@@ -1,7 +1,8 @@
 
 # ihome-common
-## 10
+## 日志
 ```
+v1.1.52 2020-12-11 16:39  下拉组件注册
 v1.1.51 2020-12-07 15:52  渠道商下拉框IhSelectPageByChannel&修改下拉框组件
 v1.1.50 2020-12-07 15:52  事业部下拉框IhSelectPageDivision
 v1.1.49 2020-12-07 17:23  字典全局方法$root.dictAllList加tag参数
