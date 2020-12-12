@@ -4,7 +4,7 @@
  * @Author: wwq
  * @Date: 2020-10-15 12:33:25
  * @LastEditors: wwq
- * @LastEditTime: 2020-12-11 08:49:49
+ * @LastEditTime: 2020-12-12 15:15:33
 -->
 <template>
   <div class="text-left">
@@ -46,7 +46,7 @@
             align="left"
           >
             <span>{{
-              $root.dictAllName(resPageInfo.type, "CompanyType")
+              $root.dictAllName(resPageInfo.type, "ChannelCompanyType")
             }}</span>
           </el-form-item>
         </el-col>
@@ -181,7 +181,7 @@
           label="账号类型"
         >
           <template v-slot="{ row }">{{
-            $root.dictAllName(row.type, "BankAccountType")
+            $root.dictAllName(row.type, "AccountType")
           }}</template>
         </el-table-column>
       </el-table>
