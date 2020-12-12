@@ -4,7 +4,7 @@
  * @Author: ywl
  * @Date: 2020-12-01 10:37:53
  * @LastEditors: ywl
- * @LastEditTime: 2020-12-08 16:31:08
+ * @LastEditTime: 2020-12-12 17:09:52
 -->
 <template>
   <IhPage label-width="80px">
@@ -80,7 +80,7 @@
         ></el-table-column>
         <el-table-column
           prop="accountNo"
-          width="155"
+          min-width="195"
           label="账号"
         ></el-table-column>
         <el-table-column

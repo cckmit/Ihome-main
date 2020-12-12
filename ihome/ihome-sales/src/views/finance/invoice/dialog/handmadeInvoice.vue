@@ -4,7 +4,7 @@
  * @Author: ywl
  * @Date: 2020-12-08 21:04:03
  * @LastEditors: ywl
- * @LastEditTime: 2020-12-10 09:50:02
+ * @LastEditTime: 2020-12-12 17:32:21
 -->
 <template>
   <el-dialog
@@ -27,61 +27,114 @@
       <el-row>
         <el-col :span="12">
           <el-form-item label="发票抬头">
-            <el-input></el-input>
+            <el-input
+              :value="data.invoiceTitle"
+              disabled
+            ></el-input>
           </el-form-item>
         </el-col>
         <el-col :span="12">
           <el-form-item label="发票金额（含税）">
-            <el-input></el-input>
+            <el-input
+              :value="data.amount"
+              disabled
+            ></el-input>
           </el-form-item>
         </el-col>
       </el-row>
       <el-row>
         <el-col :span="12">
           <el-form-item label="确认主营（不含税）">
-            <el-input></el-input>
+            <el-input
+              :value="data.amount - form.tax"
+              disabled
+            ></el-input>
           </el-form-item>
         </el-col>
         <el-col :span="12">
-          <el-form-item label="税额">
-            <el-input></el-input>
+          <el-form-item
+            label="税额"
+            prop="tax"
+          >
+            <el-input
+              v-model="form.tax"
+              placeholder="请输入税额"
+              v-digits="2"
+            ></el-input>
           </el-form-item>
         </el-col>
       </el-row>
       <el-row>
         <el-col :span="12">
-          <el-form-item label="发票类型">
-            <el-input></el-input>
+          <el-form-item
+            label="发票类型"
+            prop="invoiceType"
+          >
+            <el-select
+              v-model="form.invoiceType"
+              placeholder="请选择发票类型"
+            >
+              <el-option
+                v-for="(i, n) in $root.dictAllList('InvoiceType')"
+                :key="n"
+                :value="i.code"
+                :label="i.name"
+              ></el-option>
+            </el-select>
           </el-form-item>
         </el-col>
         <el-col :span="12">
-          <el-form-item label="开票日期">
-            <el-select v-model="form.xx"></el-select>
+          <el-form-item
+            label="开票日期"
+            prop="operationDate"
+          >
+            <el-date-picker
+              type="date"
+              placeholder="选择开票日期"
+              v-model="form.operationDate"
+              value-format="yyyy-MM-dd"
+            ></el-date-picker>
           </el-form-item>
         </el-col>
       </el-row>
       <el-row>
         <el-col :span="12">
-          <el-form-item label="NC凭证号">
-            <el-input v-model="form.xx"></el-input>
+          <el-form-item
+            label="NC凭证号"
+            prop="ncCode"
+          >
+            <el-input
+              v-model="form.ncCode"
+              placeholder="请输入NC凭证号"
+            ></el-input>
           </el-form-item>
         </el-col>
       </el-row>
       <el-row
-        v-for="(i, n) in form.code"
+        v-for="(i, n) in form.invoiceNoAndInvoiceCodeMap"
         :key="n"
       >
         <el-col :span="12">
-          <el-form-item label="发票号码">
-            <el-input v-model="form.xx"></el-input>
+          <el-form-item
+            label="发票号码"
+            :prop="`invoiceNoAndInvoiceCodeMap.${n}.key`"
+            :rules="[
+              {required: true, message: '请输入发票号码', trigger: 'change'}
+            ]"
+          >
+            <el-input v-model="i.key"></el-input>
           </el-form-item>
         </el-col>
         <el-col :span="12">
           <el-form-item
             label="发票代码"
             class="code-item padding-right-20"
+            :prop="`invoiceNoAndInvoiceCodeMap.${n}.value`"
+            :rules="[
+              {required: true, message: '请输入发票号码', trigger: 'change'}
+            ]"
           >
-            <el-input v-model="form.xx"></el-input>
+            <el-input v-model="i.value"></el-input>
             <i
               :class="['add-icon', {'el-icon-circle-plus-outline': n === 0}]"
               @click="handleAdd()"
@@ -99,6 +152,7 @@
             <IhUpload
               size="100px"
               :file-list="fileList"
+              @newFileList="handleFile"
             ></IhUpload>
           </el-form-item>
         </el-col>
@@ -126,17 +180,35 @@
 </template>
 
 <script lang="ts">
-import { Component, Vue } from "vue-property-decorator";
+import { Component, Vue, Prop } from "vue-property-decorator";
 import { NoRepeatHttp } from "ihome-common/util/aop/no-repeat-http";
 import { Form as ElForm } from "element-ui";
+import { post_invoice_handInvoicing } from "../../../../api/finance/index";
 
 @Component({})
 export default class Handadel extends Vue {
+  @Prop() data!: any;
+
   private dialogVisible = true;
   private form: any = {
-    code: [{}],
+    attachments: [],
+    invoiceId: null,
+    invoiceNoAndInvoiceCodeMap: [{ key: null, value: null }],
+    invoiceType: null,
+    ncCode: null,
+    operationDate: null,
+    remark: null,
+    tax: null,
   };
-  private rules: any = {};
+  private rules: any = {
+    tax: [{ required: true, message: "请输入税额", trigger: "change" }],
+    invoiceType: [
+      { required: true, message: "请选择发票类型", trigger: "change" },
+    ],
+    operationDate: [
+      { required: true, message: "请选择开票日期", trigger: "change" },
+    ],
+  };
   fileList: any = [];
 
   cancel(): void {
@@ -145,19 +217,44 @@ export default class Handadel extends Vue {
   finish(): void {
     (this.$refs["ruleForm"] as ElForm).validate(this.submit);
   }
+  private handleFile(list: any) {
+    this.form.attachments = list.map((i: any) => ({
+      fileId: i.fileId,
+      type: i.name,
+    }));
+  }
   private handleAdd() {
-    this.form.code.push({});
+    this.form.invoiceNoAndInvoiceCodeMap.push({ key: null, value: null });
   }
   private handleRemove(index: number) {
-    this.form.code.splice(index, 1);
+    this.form.invoiceNoAndInvoiceCodeMap.splice(index, 1);
   }
   @NoRepeatHttp()
   async submit(valid: any) {
     if (valid) {
-      //
+      let map: any = {};
+      this.form.invoiceNoAndInvoiceCodeMap.forEach((i: any) => {
+        map[i.key] = i.value;
+      });
+      try {
+        const res = await post_invoice_handInvoicing({
+          ...this.form,
+          invoiceNoAndInvoiceCodeMap: map,
+        });
+        this.$message.success(`手工开票成功${res}条`);
+        this.$emit("finish");
+      } catch (err) {
+        console.log(err);
+      }
     } else {
       return false;
     }
+  }
+
+  created() {
+    console.log(this.data);
+    this.form.tax = this.data.tax;
+    this.form.invoiceId = this.data.id;
   }
 }
 </script>

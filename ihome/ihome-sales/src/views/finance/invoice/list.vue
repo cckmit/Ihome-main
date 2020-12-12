@@ -4,7 +4,7 @@
  * @Author: ywl
  * @Date: 2020-12-08 17:45:05
  * @LastEditors: ywl
- * @LastEditTime: 2020-12-12 15:13:39
+ * @LastEditTime: 2020-12-12 16:52:30
 -->
 <template>
   <IhPage label-width="80px">
@@ -209,7 +209,7 @@
               </span>
               <el-dropdown-menu slot="dropdown">
                 <el-dropdown-item @click.native.prevent="handleAutoItem(row)">自动开票</el-dropdown-item>
-                <el-dropdown-item @click.native.prevent="dialogVisible = true">手动开票</el-dropdown-item>
+                <el-dropdown-item @click.native.prevent="handleHand(row)">手工开票</el-dropdown-item>
                 <el-dropdown-item>下载发票</el-dropdown-item>
               </el-dropdown-menu>
             </el-dropdown>
@@ -231,7 +231,10 @@
     </template>
     <!-- 弹窗 -->
     <IhDialog :show="dialogVisible">
-      <HandmadelInvoice @cancel="() => (dialogVisible = false)" />
+      <HandmadelInvoice
+        :data="itemData.data"
+        @cancel="() => (dialogVisible = false)"
+      />
     </IhDialog>
     <IhDialog :show="autoVisble">
       <AutoInvoice
@@ -282,10 +285,15 @@ export default class InvoiceList extends Vue {
   redVisble = false;
   itemData: any = {
     ids: [],
+    data: {},
   };
   isAll = false;
   private selection: any = [];
 
+  private handleHand(row: any) {
+    this.dialogVisible = true;
+    this.itemData.data = { ...row };
+  }
   /**
    * @description: 自动开票弹窗--批量
    */
