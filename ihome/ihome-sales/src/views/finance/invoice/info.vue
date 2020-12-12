@@ -4,7 +4,7 @@
  * @Author: ywl
  * @Date: 2020-12-08 19:55:43
  * @LastEditors: ywl
- * @LastEditTime: 2020-12-11 19:38:53
+ * @LastEditTime: 2020-12-12 09:42:33
 -->
 <template>
   <IhPage class="text-left">
@@ -153,17 +153,30 @@
         <br />
       </div>
       <div class="text-center">
-        <el-button type="success">红冲</el-button>
+        <el-button
+          type="danger"
+          @click="handHInvoice(info.invoiceInfo.feeType)"
+        >红冲</el-button>
       </div>
     </template>
+    <!-- 弹窗 -->
+    <IhDialog :show="redVisble">
+      <RedDashed @cancel="() => (redVisble = false)" />
+    </IhDialog>
   </IhPage>
 </template>
 
 <script lang="ts">
 import { Component, Vue } from "vue-property-decorator";
-import { get_invoice_get__id } from "../../../api/finance/index";
+import RedDashed from "./dialog/redDashed.vue";
+import {
+  get_invoice_get__id,
+  post_invoice_handHCInvoicing,
+} from "../../../api/finance/index";
 
-@Component({})
+@Component({
+  components: { RedDashed },
+})
 export default class InvoiceInfo extends Vue {
   fileList: any = [];
   private info: any = {
@@ -172,10 +185,26 @@ export default class InvoiceInfo extends Vue {
     invoiceRecords: [],
     fileIds: [],
   };
+  private redVisble = false;
 
   private async getInfo() {
     let id = this.$route.query.id;
     if (id) this.info = await get_invoice_get__id({ id });
+  }
+  private async handHInvoice(type: any) {
+    if (type === "ServiceFee") {
+      console.log(type);
+      try {
+        await this.$confirm("是否确定红冲?", "提示");
+        await post_invoice_handHCInvoicing({ ids: [this.info.invoiceInfo.id] });
+        this.$message.success("红冲成功");
+        this.getInfo();
+      } catch (error) {
+        console.log(error);
+      }
+    } else {
+      this.redVisble = true;
+    }
   }
 
   created() {

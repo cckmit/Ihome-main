@@ -4,7 +4,7 @@
  * @Author: ywl
  * @Date: 2020-12-09 15:49:33
  * @LastEditors: ywl
- * @LastEditTime: 2020-12-09 16:03:52
+ * @LastEditTime: 2020-12-12 11:03:24
 -->
 <template>
   <el-dialog
@@ -24,10 +24,17 @@
       label-width="130px"
       class="demo-ruleForm"
     >
-      <el-form-item label="发票抬头">发票抬头</el-form-item>
-      <el-form-item label="发票金额（含税）">发票金额（含税）</el-form-item>
+      <!-- <el-form-item label="发票抬头">发票抬头</el-form-item>
+      <el-form-item label="发票金额（含税）">发票金额（含税）</el-form-item> -->
       <el-form-item label="发票类型">
-        <el-select v-model="form.xx"></el-select>
+        <el-select v-model="form.xx">
+          <el-option
+            v-for="(i, n) in $root.dictAllList('InvoiceType')"
+            :key="n"
+            :value="i.code"
+            :label="i.name"
+          ></el-option>
+        </el-select>
       </el-form-item>
     </el-form>
     <template #footer>
@@ -48,6 +55,7 @@ import { Form as ElForm } from "element-ui";
 @Component({})
 export default class AutoInvoice extends Vue {
   @Prop({ default: false }) isAll!: boolean;
+  @Prop() data!: any;
 
   private dialogVisible = true;
   private form: any = {};

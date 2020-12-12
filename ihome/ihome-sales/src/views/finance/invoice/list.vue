@@ -4,7 +4,7 @@
  * @Author: ywl
  * @Date: 2020-12-08 17:45:05
  * @LastEditors: ywl
- * @LastEditTime: 2020-12-11 17:37:12
+ * @LastEditTime: 2020-12-12 11:00:50
 -->
 <template>
   <IhPage label-width="80px">
@@ -207,7 +207,7 @@
                 <i class="el-icon-arrow-down el-icon--right"></i>
               </span>
               <el-dropdown-menu slot="dropdown">
-                <el-dropdown-item @click.native.prevent="autoVisble = true">自动开票</el-dropdown-item>
+                <el-dropdown-item @click.native.prevent="handleAutoItem(row)">自动开票</el-dropdown-item>
                 <el-dropdown-item @click.native.prevent="dialogVisible = true">手动开票</el-dropdown-item>
                 <el-dropdown-item>下载发票</el-dropdown-item>
               </el-dropdown-menu>
@@ -233,7 +233,10 @@
       <HandmadelInvoice @cancel="() => (dialogVisible = false)" />
     </IhDialog>
     <IhDialog :show="autoVisble">
-      <AutoInvoice @cancel="() => (autoVisble = false)" />
+      <AutoInvoice
+        :data="itemData"
+        @cancel="() => (autoVisble = false)"
+      />
     </IhDialog>
     <IhDialog :show="redVisble">
       <RedDashed @cancel="() => (redVisble = false)" />
@@ -271,7 +274,12 @@ export default class InvoiceList extends Vue {
   dialogVisible = false;
   autoVisble = false;
   redVisble = false;
+  itemData: any = {};
 
+  private handleAutoItem(row: any) {
+    this.itemData.ids = [row.id];
+    this.autoVisble = true;
+  }
   private search() {
     let flag = this.timeList && this.timeList.length;
     this.queryPageParameters.startTime = flag ? this.timeList[0] : null;
