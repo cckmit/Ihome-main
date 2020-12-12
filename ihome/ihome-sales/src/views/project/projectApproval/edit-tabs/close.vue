@@ -4,7 +4,7 @@
  * @Author: wwq
  * @Date: 2020-11-27 17:26:20
  * @LastEditors: wwq
- * @LastEditTime: 2020-12-11 18:53:16
+ * @LastEditTime: 2020-12-12 14:15:18
 -->
 <template>
   <div>
@@ -21,7 +21,7 @@
     <div class="padding-left-20">
       <el-table
         class="ih-table"
-        :data="info.settlePleaseVOS"
+        :data="info.settleMakingVOS"
         style="width: 100%"
       >
         <el-table-column
@@ -84,7 +84,7 @@
     <div class="padding-left-20">
       <el-table
         class="ih-table"
-        :data="info.settleMakingVOS"
+        :data="info.settlePleaseVOS"
         style="width: 100%"
       >
         <el-table-column
@@ -135,27 +135,27 @@
     </div>
     <ih-dialog :show="makingEditDialogVisible">
       <MakingEdit
-        :data="editData"
+        :data="makingData"
         @cancel="() => (makingEditDialogVisible = false)"
         @finish="(data) => makingEditFinish(data)"
       />
     </ih-dialog>
     <ih-dialog :show="makingInfoDialogVisible">
       <MakingInfo
-        :data="editData"
+        :data="makingData"
         @cancel="() => (makingInfoDialogVisible = false)"
       />
     </ih-dialog>
     <ih-dialog :show="pleaseEditDialogVisible">
       <PleaseEdit
-        :data="editData"
+        :data="pleaseData"
         @cancel="() => (pleaseEditDialogVisible = false)"
         @finish="(data) => addFinish(data)"
       />
     </ih-dialog>
     <ih-dialog :show="pleaseInfoDialogVisible">
       <PleaseInfo
-        :data="editData"
+        :data="pleaseData"
         @cancel="() => (pleaseInfoDialogVisible = false)"
       />
     </ih-dialog>
@@ -171,6 +171,7 @@ import {
   get_settleCondition_getPage__termId,
   post_settleCondition_cancelPlease,
   post_settleCondition_cancelMaking,
+  post_settleCondition_addMaking,
 } from "@/api/project/index.ts";
 @Component({
   components: {
@@ -186,9 +187,12 @@ export default class Close extends Vue {
   pleaseEditDialogVisible = false;
   pleaseInfoDialogVisible = false;
   viewDialogVisible = false;
-  info: any = [];
-  editData: any = {};
-  infoData: any = {};
+  info: any = {
+    settlePleaseVOS: [],
+    settleMakingVOS: [],
+  };
+  makingData: any = {};
+  pleaseData: any = {};
 
   created() {
     this.getInfo();
@@ -205,19 +209,38 @@ export default class Close extends Vue {
 
   add(type: any) {
     if (type === "making") {
+      this.makingData = {
+        id: "",
+        chargeEnum: this.info.chargeEnum,
+        padCommissionEnum: this.info.padCommissionEnum,
+      };
       this.makingEditDialogVisible = true;
     } else {
+      this.pleaseData = {
+        id: "",
+        chargeEnum: this.info.chargeEnum,
+        padCommissionEnum: this.info.padCommissionEnum,
+      };
       this.pleaseEditDialogVisible = true;
     }
   }
 
   edit(row: any, type: any) {
     if (type === "making") {
+      this.makingData = {
+        id: row.settleId,
+        chargeEnum: this.info.chargeEnum,
+        padCommissionEnum: this.info.padCommissionEnum,
+      };
       this.makingEditDialogVisible = true;
     } else {
+      this.pleaseData = {
+        id: row.settleId,
+        chargeEnum: this.info.chargeEnum,
+        padCommissionEnum: this.info.padCommissionEnum,
+      };
       this.pleaseEditDialogVisible = true;
     }
-    console.log(row, type);
   }
 
   view(row: any, type: any) {
@@ -228,11 +251,13 @@ export default class Close extends Vue {
     }
   }
 
-  makingEditFinish(data: any) {
-    // data.termId = this.$route.query.id;
+  async makingEditFinish(data: any) {
+    data.termId = this.$route.query.id;
     console.log(data);
-    // this.makingEditDialogVisible = false;
-    // this.getInfo();
+    await post_settleCondition_addMaking(data);
+    this.$message.success("新增成功");
+    this.makingEditDialogVisible = false;
+    this.getInfo();
   }
 
   async cancellation(data: any, type: any) {
