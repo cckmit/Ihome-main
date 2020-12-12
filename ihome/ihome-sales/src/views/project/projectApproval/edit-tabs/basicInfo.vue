@@ -4,7 +4,7 @@
  * @Author: wwq
  * @Date: 2020-11-27 17:17:06
  * @LastEditors: wwq
- * @LastEditTime: 2020-12-11 09:15:46
+ * @LastEditTime: 2020-12-12 18:22:13
 -->
 <template>
   <div>
@@ -710,11 +710,13 @@
     </div>
     <div>
       <br />
-      <el-button
+      <!-- <el-button
+        v-if="$route.name === 'projectApprovalAudit'"
         type="success"
         @click="submit()"
-      >提交审核</el-button>
+      >提交审核</el-button> -->
       <el-button
+        v-if="$route.name === 'projectApprovalEdit'"
         type="primary"
         @click="save()"
       >保存</el-button>

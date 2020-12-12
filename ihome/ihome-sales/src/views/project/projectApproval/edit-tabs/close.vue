@@ -4,7 +4,7 @@
  * @Author: wwq
  * @Date: 2020-11-27 17:26:20
  * @LastEditors: wwq
- * @LastEditTime: 2020-12-12 14:15:18
+ * @LastEditTime: 2020-12-12 17:58:13
 -->
 <template>
   <div>
@@ -150,7 +150,7 @@
       <PleaseEdit
         :data="pleaseData"
         @cancel="() => (pleaseEditDialogVisible = false)"
-        @finish="(data) => addFinish(data)"
+        @finish="(data) => pleaseEditFinish(data)"
       />
     </ih-dialog>
     <ih-dialog :show="pleaseInfoDialogVisible">
@@ -166,12 +166,15 @@ import { Component, Vue } from "vue-property-decorator";
 import MakingEdit from "../dialog/close-dialog/makingEdit.vue";
 import MakingInfo from "../dialog/close-dialog/makingInfo.vue";
 import PleaseEdit from "../dialog/close-dialog/pleaseEdit.vue";
-import PleaseInfo from "../dialog/close-dialog/pleaseEdit.vue";
+import PleaseInfo from "../dialog/close-dialog/pleaseInfo.vue";
 import {
   get_settleCondition_getPage__termId,
   post_settleCondition_cancelPlease,
   post_settleCondition_cancelMaking,
   post_settleCondition_addMaking,
+  post_settleCondition_updateMaking,
+  post_settleCondition_addPlease,
+  post_settleCondition_updatePlease,
 } from "@/api/project/index.ts";
 @Component({
   components: {
@@ -245,18 +248,47 @@ export default class Close extends Vue {
 
   view(row: any, type: any) {
     if (type === "making") {
-      this.makingEditDialogVisible = true;
+      this.makingData = {
+        id: row.settleId,
+        chargeEnum: this.info.chargeEnum,
+        padCommissionEnum: this.info.padCommissionEnum,
+      };
+      this.makingInfoDialogVisible = true;
     } else {
-      this.pleaseEditDialogVisible = true;
+      this.pleaseData = {
+        id: row.settleId,
+        chargeEnum: this.info.chargeEnum,
+        padCommissionEnum: this.info.padCommissionEnum,
+      };
+      this.pleaseInfoDialogVisible = true;
     }
   }
 
   async makingEditFinish(data: any) {
     data.termId = this.$route.query.id;
-    console.log(data);
-    await post_settleCondition_addMaking(data);
-    this.$message.success("新增成功");
+    if (!this.makingData.id) {
+      await post_settleCondition_addMaking(data);
+      this.$message.success("新增成功");
+    } else {
+      data.settleId = this.makingData.id;
+      await post_settleCondition_updateMaking(data);
+      this.$message.success("修改成功");
+    }
     this.makingEditDialogVisible = false;
+    this.getInfo();
+  }
+
+  async pleaseEditFinish(data: any) {
+    data.termId = this.$route.query.id;
+    if (!this.pleaseData.id) {
+      await post_settleCondition_addPlease(data);
+      this.$message.success("新增成功");
+    } else {
+      data.settleId = this.pleaseData.id;
+      await post_settleCondition_updatePlease(data);
+      this.$message.success("修改成功");
+    }
+    this.pleaseEditDialogVisible = false;
     this.getInfo();
   }
 

@@ -4,7 +4,7 @@
  * @Author: wwq
  * @Date: 2020-12-09 20:12:21
  * @LastEditors: wwq
- * @LastEditTime: 2020-12-12 15:02:48
+ * @LastEditTime: 2020-12-12 17:08:26
 -->
 <template>
   <el-dialog
@@ -16,7 +16,7 @@
     width="80%"
     class="condition text-left"
     :append-to-body="true"
-    title="结佣结算条件"
+    title="结佣结算详情"
   >
     <el-form
       ref="form"
@@ -215,11 +215,12 @@
                 <el-checkbox
                   :label="info.serviceFee"
                   v-model="info.serviceFee"
+                  :disabled="serviceFeeDisabled"
                 >服务费
                 </el-checkbox>
               </div>
               <div
-                class="flex"
+                class="flex margin-left-10"
                 v-if="info.serviceFee"
               >
                 <div style="width: 200px"> 垫佣周期
@@ -265,11 +266,12 @@
                 <el-checkbox
                   :label="info.agencyFee"
                   v-model="info.agencyFee"
+                  :disabled="agencyFeeDisabled"
                 >代理费
                 </el-checkbox>
               </div>
               <div
-                class="flex"
+                class="flex margin-left-10"
                 v-if="info.agencyFee"
               >
                 <div style="width: 200px"> 垫佣周期
@@ -325,7 +327,7 @@
   </el-dialog>
 </template>
 <script lang="ts">
-import { Component, Vue, Prop } from "vue-property-decorator";
+import { Component, Vue, Prop, Watch } from "vue-property-decorator";
 import {
   get_settleCondition_getMakingType,
   post_partyAContract_getBuilding__termId,
@@ -336,10 +338,12 @@ import { Form as ElForm } from "element-ui";
 @Component({
   components: {},
 })
-export default class CloseRules extends Vue {
+export default class MakingEdit extends Vue {
   @Prop({ default: null }) data: any;
   dialogVisible = true;
   isShow = false;
+  serviceFeeDisabled = false;
+  agencyFeeDisabled = false;
   info: any = {
     priorityEnum: null,
     settleName: null,
@@ -372,6 +376,20 @@ export default class CloseRules extends Vue {
     ],
   };
 
+  @Watch("data.chargeEnum", { immediate: true })
+  isDisabled(val: any) {
+    if (val === "Service") {
+      this.serviceFeeDisabled = false;
+      this.agencyFeeDisabled = true;
+    } else if (val === "Agent") {
+      this.serviceFeeDisabled = true;
+      this.agencyFeeDisabled = false;
+    } else {
+      this.serviceFeeDisabled = false;
+      this.agencyFeeDisabled = false;
+    }
+  }
+
   compareChange(data: any, i: number) {
     if (Object.keys(data).length) {
       if (data === "EQ") {
@@ -394,11 +412,15 @@ export default class CloseRules extends Vue {
 
   checkboxChange(val: any) {
     if (val.includes("Appoint") || val.includes("Strategic")) {
+      this.$alert("优先级已设置为最高级", {
+        type: "success",
+      });
+      this.info.priorityEnum = "E";
       this.isShow = true;
     } else {
       this.isShow = false;
       this.info.settleConditionMakingVOS.forEach((v: any) => {
-        v.settleConditionMakingVOS = [];
+        v.designatedAgency = [];
       });
     }
   }
@@ -433,11 +455,7 @@ export default class CloseRules extends Vue {
       this.info.serviceFee = this.info.serviceFee ? 1 : 0;
       this.info.agencyFee = this.info.agencyFee ? 1 : 0;
       let obj = { ...this.info, settleConditionMakingVOS: arr };
-      console.log(obj);
       this.$emit("finish", obj);
-    } else {
-      console.log("error submit!!");
-      return false;
     }
   }
 
@@ -490,21 +508,6 @@ export default class CloseRules extends Vue {
               })),
       };
     });
-    // this.info.settleConditionMakingVOS.forEach((v: any, i: number) => {
-    //   info.forEach((j: any) => {
-    //     if (v.conditionModel === j.conditionModel) {
-    //       this.$set(this.info.settleConditionMakingVOS, i, j);
-    //     }
-    //   });
-    // });
-    // console.log(info);
-    // this.info = {
-    //   ...item,
-    //   settleConditionMakingVOS: [
-    //     ...info,
-    //     ...this.info.settleConditionMakingVOS,
-    //   ],
-    // };
     this.info.settleConditionMakingVOS.forEach((v: any, i: number) => {
       info.forEach((j: any) => {
         if (j.conditionModel === v.conditionModel) {
@@ -512,7 +515,20 @@ export default class CloseRules extends Vue {
         }
       });
     });
-    console.log(this.info);
+    this.info = {
+      ...item,
+      settleConditionMakingVOS: this.info.settleConditionMakingVOS,
+    };
+    this.info.agencyFee = item.agencyFee ? true : false;
+    this.info.serviceFee = item.serviceFee ? true : false;
+    // 触发指定中介或战略合作方按钮事件
+    this.info.settleConditionMakingVOS.forEach((v: any) => {
+      if (v.conditionModel === "ChannelType") {
+        if (v.values.includes("Appoint") || v.values.includes("Strategic")) {
+          this.isShow = true;
+        }
+      }
+    });
   }
 
   // 获取栋座信息
