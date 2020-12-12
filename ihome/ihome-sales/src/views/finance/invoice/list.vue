@@ -4,7 +4,7 @@
  * @Author: ywl
  * @Date: 2020-12-08 17:45:05
  * @LastEditors: ywl
- * @LastEditTime: 2020-12-12 11:00:50
+ * @LastEditTime: 2020-12-12 15:13:39
 -->
 <template>
   <IhPage label-width="80px">
@@ -109,7 +109,7 @@
           type="info"
           @click="reset()"
         >重置</el-button>
-        <el-button>批量自动开票</el-button>
+        <el-button @click="handleAutoAll()">批量自动开票</el-button>
         <el-button>批量自动红冲</el-button>
         <el-button @click="redVisble = true">批量手工红冲</el-button>
         <el-button>批量下载发票</el-button>
@@ -121,6 +121,7 @@
         class="ih-table"
         :empty-text="emptyText"
         :data="resPageInfo.list"
+        @selection-change="handleSelectionChange"
       >
         <el-table-column
           fixed
@@ -235,7 +236,12 @@
     <IhDialog :show="autoVisble">
       <AutoInvoice
         :data="itemData"
+        :isAll="isAll"
         @cancel="() => (autoVisble = false)"
+        @finish="() => {
+          autoVisble = false;
+          getListMixin();
+        }"
       />
     </IhDialog>
     <IhDialog :show="redVisble">
@@ -274,11 +280,39 @@ export default class InvoiceList extends Vue {
   dialogVisible = false;
   autoVisble = false;
   redVisble = false;
-  itemData: any = {};
+  itemData: any = {
+    ids: [],
+  };
+  isAll = false;
+  private selection: any = [];
 
+  /**
+   * @description: 自动开票弹窗--批量
+   */
+  private handleAutoAll() {
+    if (
+      this.selection.length &&
+      !this.selection.map((i: any) => i.status).includes("Done")
+    ) {
+      this.itemData.ids = this.selection.map((i: any) => i.id);
+      this.isAll = true;
+      this.autoVisble = true;
+    } else {
+      this.$message.warning("请先勾选表格数据且开票状态为未开票");
+      return;
+    }
+  }
+  /**
+   * @description: 自动开票弹窗--单条
+   * @param {any} row
+   */
   private handleAutoItem(row: any) {
     this.itemData.ids = [row.id];
+    this.isAll = false;
     this.autoVisble = true;
+  }
+  private handleSelectionChange(val: any) {
+    this.selection = val;
   }
   private search() {
     let flag = this.timeList && this.timeList.length;

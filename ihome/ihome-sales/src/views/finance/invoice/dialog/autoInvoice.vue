@@ -4,7 +4,7 @@
  * @Author: ywl
  * @Date: 2020-12-09 15:49:33
  * @LastEditors: ywl
- * @LastEditTime: 2020-12-12 11:03:24
+ * @LastEditTime: 2020-12-12 14:24:13
 -->
 <template>
   <el-dialog
@@ -26,8 +26,14 @@
     >
       <!-- <el-form-item label="发票抬头">发票抬头</el-form-item>
       <el-form-item label="发票金额（含税）">发票金额（含税）</el-form-item> -->
-      <el-form-item label="发票类型">
-        <el-select v-model="form.xx">
+      <el-form-item
+        label="发票类型"
+        prop="operationType"
+      >
+        <el-select
+          v-model="form.operationType"
+          placeholder="请选择发票类型"
+        >
           <el-option
             v-for="(i, n) in $root.dictAllList('InvoiceType')"
             :key="n"
@@ -51,6 +57,7 @@
 import { Component, Vue, Prop } from "vue-property-decorator";
 import { NoRepeatHttp } from "ihome-common/util/aop/no-repeat-http";
 import { Form as ElForm } from "element-ui";
+import { post_invoice_autoZPInvoicing } from "@/api/finance/index";
 
 @Component({})
 export default class AutoInvoice extends Vue {
@@ -58,8 +65,15 @@ export default class AutoInvoice extends Vue {
   @Prop() data!: any;
 
   private dialogVisible = true;
-  private form: any = {};
-  private rules: any = {};
+  private form: any = {
+    operationType: null,
+    ids: [],
+  };
+  private rules: any = {
+    operationType: [
+      { required: true, message: "请选择发票类型", trigger: "change" },
+    ],
+  };
 
   cancel(): void {
     this.$emit("cancel", false);
@@ -70,10 +84,21 @@ export default class AutoInvoice extends Vue {
   @NoRepeatHttp()
   async submit(valid: any) {
     if (valid) {
-      //
+      try {
+        const res = await post_invoice_autoZPInvoicing(this.form);
+        this.$message.success(`开票成功${res}条`);
+        this.$emit("finish");
+      } catch (error) {
+        console.log(error);
+      }
     } else {
       return false;
     }
+  }
+
+  created() {
+    console.log(this.data);
+    this.form.ids = this.data.ids;
   }
 }
 </script>
