@@ -4,7 +4,7 @@
  * @Author: wwq
  * @Date: 2020-07-08 14:23:16
  * @LastEditors: wwq
- * @LastEditTime: 2020-12-11 09:25:13
+ * @LastEditTime: 2020-12-11 19:09:25
 --> 
 <template>
   <el-dialog
@@ -80,7 +80,7 @@
               placeholder="账号类型"
             >
               <el-option
-                v-for="item in $root.dictAllList('BankAccountType')"
+                v-for="item in $root.dictAllList('AccountType')"
                 :key="item.code"
                 :label="item.name"
                 :value="item.code"

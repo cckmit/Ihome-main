@@ -1,3 +1,11 @@
+<!--
+ * @Descripttion: 
+ * @version: 
+ * @Author: zyc
+ * @Date: 2020-11-24 10:49:09
+ * @LastEditors: zyc
+ * @LastEditTime: 2020-12-11 16:53:52
+-->
 
 <!--
  * @Descripttion: 
@@ -5,7 +13,7 @@
  * @Author: zyc
  * @Date: 2020-10-13 19:06:12
  * @LastEditors: zyc
- * @LastEditTime: 2020-12-11 15:21:31
+ * @LastEditTime: 2020-12-11 16:36:15
 -->
 <template>
   <el-dialog
@@ -23,19 +31,10 @@
       <el-row>
         <el-col :span="8">
           <el-form-item label="渠道商">
-            <el-select
+            <IhSelectPageByChannel
+              placeholder="渠道商"
               v-model="queryPageParameters.channelId"
-              clearable
-              placeholder="事业部"
-              class="width--100"
-            >
-              <el-option
-                v-for="item in channelList"
-                :key="item.value"
-                :label="item.label"
-                :value="item.value"
-              ></el-option>
-            </el-select>
+            ></IhSelectPageByChannel>
           </el-form-item>
         </el-col>
         <el-col :span="8">
@@ -74,10 +73,17 @@
         </el-col>
         <el-col :span="8">
           <el-form-item label="业务开展省市">
-            <el-input
+            <ih-cascader
+              placeholder="省市"
+              v-model="queryPageParameters.provinceCity"
+              :level="2"
+              :checkStrictly="true"
+              @change="handleChange"
+            ></ih-cascader>
+            <!-- <el-input
               v-model="queryPageParameters.city"
               placeholder="申请编号"
-            ></el-input>
+            ></el-input> -->
           </el-form-item>
         </el-col>
         <el-col :span="8">
@@ -236,10 +242,26 @@ export default class ChannelApprovalGradesList extends Vue {
     special: null,
     status: null,
     storageNum: null,
+    provinceCity: null,
   };
 
   cancel() {
     this.$emit("finish", true);
+  }
+  reset() {
+    this.queryPageParameters = {
+      channelGrade: null,
+      channelId: null,
+      city: null,
+      cityGrade: null,
+      departmentOrgId: null,
+      inputUser: null,
+      province: null,
+      special: null,
+      status: null,
+      storageNum: null,
+      provinceCity: null,
+    };
   }
 
   async finish() {
@@ -265,6 +287,21 @@ export default class ChannelApprovalGradesList extends Vue {
     this.resPageInfo = await post_channelGrade_getList(
       this.queryPageParameters
     );
+  }
+  handleChange(v: any) {
+    console.log(v);
+    if (v) {
+      if (v.length == 1) {
+        this.queryPageParameters.province = v[0];
+        this.queryPageParameters.city = null;
+      } else {
+        this.queryPageParameters.province = v[0];
+        this.queryPageParameters.city = v[1];
+      }
+    } else {
+      this.queryPageParameters.province = null;
+      this.queryPageParameters.city = null;
+    }
   }
 }
 </script>
