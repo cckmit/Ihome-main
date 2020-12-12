@@ -4,7 +4,7 @@
  * @Author: wwq
  * @Date: 2020-10-15 12:33:25
  * @LastEditors: wwq
- * @LastEditTime: 2020-12-12 15:15:33
+ * @LastEditTime: 2020-12-12 15:16:19
 -->
 <template>
   <div class="text-left">
@@ -199,7 +199,7 @@
           label="类型"
         >
           <template v-slot="{ row }">{{
-            $root.displayName("accessoryTpye", row.type)
+            $root.dictAllName(row.type, "AccessoryTpye")
           }}</template>
         </el-table-column>
         <el-table-column
