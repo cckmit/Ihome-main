@@ -1,6 +1,6 @@
 /* eslint-disable */
 /* 此脚本由swagger-ui的api-docs自动生成，请勿修改 */
-//2020-12-11 17:20:42
+//2020-12-11 16:04:07
 import { request } from '@/api/base'
 const basePath = "/sales-api/channel"
 /**添加渠道*/

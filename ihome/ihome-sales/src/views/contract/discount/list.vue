@@ -3,8 +3,8 @@
  * @version: 
  * @Author: ywl
  * @Date: 2020-09-27 16:27:36
- * @LastEditors: wwq
- * @LastEditTime: 2020-12-11 09:30:05
+ * @LastEditors: ywl
+ * @LastEditTime: 2020-12-11 09:52:49
 -->
 <template>
   <IhPage label-width="80px">
@@ -114,7 +114,7 @@
                     class="width--100"
                   >
                     <el-option
-                      v-for="item in $root.dictAllList('InformationStatus')"
+                      v-for="item in $root.dictAllList('NotificationStatus')"
                       :key="item.code"
                       :label="item.name"
                       :value="item.code"

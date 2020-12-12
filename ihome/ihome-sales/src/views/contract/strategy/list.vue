@@ -3,8 +3,8 @@
  * @version: 
  * @Author: ywl
  * @Date: 2020-09-27 11:13:15
- * @LastEditors: wwq
- * @LastEditTime: 2020-12-11 08:46:38
+ * @LastEditors: ywl
+ * @LastEditTime: 2020-12-11 10:18:45
 -->
 <template>
   <IhPage label-width="100px">
@@ -27,7 +27,7 @@
           <el-col :span="8">
             <el-form-item label="甲方">
               <el-select
-                v-model="queryPageParameters.partyA"
+                v-model="queryPageParameters.partyAId"
                 placeholder="甲方"
                 clearable
                 filterable
@@ -55,7 +55,7 @@
           <el-col :span="8">
             <el-form-item label="乙方">
               <el-select
-                v-model="queryPageParameters.partyB"
+                v-model="queryPageParameters.partyBId"
                 clearable
                 filterable
                 placeholder="乙方"
@@ -93,7 +93,7 @@
               <el-col :span="8">
                 <el-form-item label="协议编号">
                   <el-input
-                    v-model="queryPageParameters.strategyCode"
+                    v-model="queryPageParameters.agreementNo"
                     clearable
                     placeholder="协议编号"
                   ></el-input>
@@ -105,14 +105,14 @@
               <el-col :span="8">
                 <el-form-item label="归档状态">
                   <el-select
-                    v-model="queryPageParameters.fileState"
+                    v-model="queryPageParameters.archiveStatus"
                     clearable
                     placeholder="归档状态"
                     class="width--100"
                   >
                     <el-option
-                      v-for="item in $root.dictAllList('FileState')"
-                      :key="item.code"
+                      v-for="(item, i) in $root.dictAllList('ArchiveStatus')"
+                      :key="i"
                       :label="item.name"
                       :value="item.code"
                     ></el-option>
@@ -122,23 +122,23 @@
               <el-col :span="8">
                 <el-form-item label="归档编号">
                   <el-input
-                    v-model="queryPageParameters.fileCode"
+                    v-model="queryPageParameters.archiveNo"
                     clearable
                     placeholder="归档编号"
                   ></el-input>
                 </el-form-item>
               </el-col>
               <el-col :span="8">
-                <el-form-item label="协议状态">
+                <el-form-item label="审核状态">
                   <el-select
-                    v-model="queryPageParameters.state"
+                    v-model="queryPageParameters.approvalStatus"
                     clearable
-                    placeholder="请选择协议状态"
+                    placeholder="请选择审核状态"
                     class="width--100"
                   >
                     <el-option
-                      v-for="item in $root.dictAllList('StrategyState')"
-                      :key="item.code"
+                      v-for="(item, i) in $root.dictAllList('ApprovalStatus')"
+                      :key="i"
                       :label="item.name"
                       :value="item.code"
                     ></el-option>
@@ -225,12 +225,12 @@
         ></el-table-column>
         <el-table-column
           label="甲方"
-          prop="partyA"
+          prop="partyAName"
           min-width="150"
         ></el-table-column>
         <el-table-column
           label="乙方"
-          prop="partyB"
+          prop="partyBName"
           min-width="200"
         ></el-table-column>
         <el-table-column
@@ -245,21 +245,21 @@
         ></el-table-column>
         <el-table-column
           label="协议编号"
-          prop="strategyCode"
+          prop="agreementNo"
           width="275"
         ></el-table-column>
         <el-table-column
           label="归档状态"
-          prop="fileState"
+          prop="archiveState"
           width="100"
         >
           <template v-slot="{ row }">
-            {{$root.dictAllName(row.fileState, 'FileState')}}
+            {{$root.dictAllName(row.archiveStatus, 'ArchiveStatus')}}
           </template>
         </el-table-column>
         <el-table-column
           label="归档编号"
-          prop="fileCode"
+          prop="archiveNo"
           width="245"
         ></el-table-column>
         <el-table-column
@@ -333,16 +333,14 @@ import SelectPageByCycle from "@/components/SelectPageByCycle.vue";
 })
 export default class StrategyList extends Vue {
   public queryPageParameters: any = {
-    title: null,
-    partyA: null,
-    partyB: null,
-    projectId: null,
-    cycleId: null,
-    strategyCode: null,
-    fileState: null,
-    fileCode: null,
-    state: null,
+    agreementNo: null,
     agreementType: null,
+    approvalStatus: null,
+    archiveNo: null,
+    archiveStatus: null,
+    partyAId: null,
+    partyBId: null,
+    title: null,
   };
   private searchOpen = true;
   public resPageInfo: any = {
@@ -370,16 +368,14 @@ export default class StrategyList extends Vue {
   }
   private handleReact() {
     Object.assign(this.queryPageParameters, {
-      title: null,
-      partyA: null,
-      partyB: null,
-      projectId: null,
-      cycleId: null,
-      strategyCode: null,
-      fileState: null,
-      fileCode: null,
-      state: null,
+      agreementNo: null,
       agreementType: null,
+      approvalStatus: null,
+      archiveNo: null,
+      archiveStatus: null,
+      partyAId: null,
+      partyBId: null,
+      title: null,
     });
   }
   private handleSelectionChange(val: any): void {

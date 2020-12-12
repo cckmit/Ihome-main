@@ -4,7 +4,7 @@
  * @Author: wwq
  * @Date: 2020-09-25 17:59:09
  * @LastEditors: wwq
- * @LastEditTime: 2020-12-11 09:26:03
+ * @LastEditTime: 2020-12-12 15:12:39
 -->
 <template>
   <ih-page>
@@ -266,7 +266,7 @@
             label="账号类型"
           >
             <template v-slot="{ row }">{{
-              $root.dictAllName(row.type, "BankAccountType")
+              $root.dictAllName(row.type, "AccountType")
             }}</template>
           </el-table-column>
           <el-table-column
