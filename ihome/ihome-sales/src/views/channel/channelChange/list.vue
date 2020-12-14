@@ -4,7 +4,7 @@
  * @Author: ywl
  * @Date: 2020-06-30 09:21:17
  * @LastEditors: ywl
- * @LastEditTime: 2020-11-30 18:01:20
+ * @LastEditTime: 2020-12-14 19:43:21
 --> 
 <template>
   <IhPage label-width="100px">
@@ -59,7 +59,7 @@
                 class="width--100"
               >
                 <el-option
-                  v-for="item in $root.dictAllList('ChannelStatus')"
+                  v-for="item in $root.dictAllList('ChannelChangeStatus')"
                   :key="item.code"
                   :label="item.name"
                   :value="item.code"
@@ -139,10 +139,10 @@
         <el-table-column
           prop="status"
           label="状态"
-          width="115"
+          width="145"
         >
           <template v-slot="{ row }">
-            {{ $root.dictAllName(row.status, "ChannelStatus") }}
+            {{ $root.dictAllName(row.status, "ChannelChangeStatus") }}
           </template>
         </el-table-column>
         <el-table-column
@@ -182,7 +182,10 @@
                   @click.native.prevent="handleToPage(row, 'confirm')"
                   :disabled="row.status !== 'ToBeConfirmed'"
                 >确认</el-dropdown-item>
-                <el-dropdown-item @click.native.prevent="handleToPage(row, 'examine')">审核</el-dropdown-item>
+                <el-dropdown-item
+                  @click.native.prevent="handleToPage(row, 'examine')"
+                  :disabled="!['PTWYSH', 'FGSYGSH', 'ZBYGSH'].includes(row.status) "
+                >审核</el-dropdown-item>
                 <el-dropdown-item @click.native.prevent="handleToPage(row, 'revoke')">撤回</el-dropdown-item>
                 <el-dropdown-item @click.native.prevent="draft(row)">退回起草</el-dropdown-item>
               </el-dropdown-menu>

@@ -4,7 +4,7 @@
  * @Author: zyc
  * @Date: 2020-07-09 14:30:29
  * @LastEditors: zyc
- * @LastEditTime: 2020-08-04 14:25:56
+ * @LastEditTime: 2020-12-14 17:29:16
 --> 
 <template>
   <div>
@@ -14,6 +14,8 @@
         placeholder="名称 编码"
         class="input-with-select"
         v-model="queryPageParameters.key"
+        clearable
+        @keyup.enter.native="getListMixin()"
       >
         <el-button
           slot="append"

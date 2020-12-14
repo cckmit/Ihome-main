@@ -4,7 +4,7 @@
  * @Author: ywl
  * @Date: 2020-11-30 16:21:18
  * @LastEditors: ywl
- * @LastEditTime: 2020-12-01 11:29:20
+ * @LastEditTime: 2020-12-14 16:27:54
 -->
 <template>
   <el-dialog
@@ -178,3 +178,13 @@ export default class BankRecord extends Vue {
   }
 }
 </script>
+
+<style lang="scss" scoped>
+.ih-table {
+  /deep/ .el-table__header {
+    .el-checkbox {
+      display: none !important;
+    }
+  }
+}
+</style>

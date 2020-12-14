@@ -4,7 +4,7 @@
  * @Author: ywl
  * @Date: 2020-09-25 17:34:32
  * @LastEditors: ywl
- * @LastEditTime: 2020-12-11 10:23:10
+ * @LastEditTime: 2020-12-14 11:15:48
 -->
 <template>
   <IhPage label-width="100px">
@@ -312,7 +312,7 @@
         <el-table-column
           label="合同编号"
           prop="contractNo"
-          width="220"
+          width="265"
         ></el-table-column>
         <el-table-column
           label="审核状态"

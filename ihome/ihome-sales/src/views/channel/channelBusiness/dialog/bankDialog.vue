@@ -3,8 +3,8 @@
  * @version: 
  * @Author: ywl
  * @Date: 2020-10-12 10:38:48
- * @LastEditors: wwq
- * @LastEditTime: 2020-12-11 08:41:44
+ * @LastEditors: ywl
+ * @LastEditTime: 2020-12-14 16:32:56
 -->
 <template>
   <el-dialog
@@ -43,19 +43,29 @@
         <el-input
           v-model="Bankrule.branchName"
           readonly
-          @click.native="dialogFormVisible = true"
-        ></el-input>
+        >
+          <el-button
+            slot="append"
+            icon="el-icon-search"
+            @click.native="dialogFormVisible = true"
+          ></el-button>
+        </el-input>
       </el-form-item>
-      <el-form-item
+      <!-- <el-form-item
         label="联行号"
         prop="branchNo"
       >
         <el-input
           v-model="Bankrule.branchNo"
           readonly
-          @click.native="dialogFormVisible = true"
-        ></el-input>
-      </el-form-item>
+        >
+          <el-button
+            slot="append"
+            icon="el-icon-search"
+            @click.native="dialogFormVisible = true"
+          ></el-button>
+        </el-input>
+      </el-form-item> -->
       <el-form-item
         label="账户类型"
         prop="accountType"

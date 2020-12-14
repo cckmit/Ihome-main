@@ -4,7 +4,7 @@
  * @Author: zyc
  * @Date: 2020-06-22 11:10:43
  * @LastEditors: zyc
- * @LastEditTime: 2020-12-10 15:46:11
+ * @LastEditTime: 2020-12-14 16:50:22
  */
 import Vue from 'vue'
 import VueRouter, { RouteConfig } from 'vue-router'
@@ -69,7 +69,7 @@ const routes: Array<RouteConfig> = [
       title: '下拉框分页Demo'
     }
   },
-  
+
   {
     path: '/tableCheckBox',
     name: 'tableCheckBox',
@@ -84,6 +84,14 @@ const routes: Array<RouteConfig> = [
     component: () => import('../views/inputDigitsDemo.vue'),
     meta: {
       title: 'input输入框限制输入小数'
+    }
+  },
+  {
+    path: '/leftRightContainer',
+    name: 'leftRightContainer',
+    component: () => import('../views/leftRightContainer.vue'),
+    meta: {
+      title: '左右拖动'
     }
   }
 ]

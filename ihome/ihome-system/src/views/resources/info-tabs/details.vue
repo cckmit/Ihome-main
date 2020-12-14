@@ -4,7 +4,7 @@
  * @Author: zyc
  * @Date: 2020-07-07 15:42:42
  * @LastEditors: zyc
- * @LastEditTime: 2020-10-22 16:29:47
+ * @LastEditTime: 2020-12-14 15:42:02
 --> 
 <template>
   <div>
@@ -25,7 +25,7 @@
         <el-row>
           <el-col :span="6" class="ih-info-item-left">类型</el-col>
           <el-col :span="18" class="ih-info-item-right">{{
-            $root.displayName("modular", info.type)
+            $root.dictAllName(info.type, "ResourceType")
           }}</el-col>
         </el-row>
       </el-col>

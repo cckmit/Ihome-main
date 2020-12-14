@@ -22,6 +22,7 @@
               class="input-with-select"
               v-model="queryPageParameters.key"
               @keyup.enter.native="getListMixin"
+              clearable
             ></el-input>
             <el-button
               class="margin-left-20"

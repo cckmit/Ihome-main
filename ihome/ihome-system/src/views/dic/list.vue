@@ -4,7 +4,7 @@
  * @Author: zyc
  * @Date: 2020-11-24 10:49:12
  * @LastEditors: zyc
- * @LastEditTime: 2020-12-09 17:56:35
+ * @LastEditTime: 2020-12-14 11:17:01
 -->
 <!--
  * @Description: 数据字典列表
@@ -18,7 +18,7 @@
   <IhPage ref="ihPage">
     <template #container>
       <el-row>
-        <LeftRightContainer :leftHeight="pageHeight" :leftWidth="400">
+        <IhLeftRightContainer :leftHeight="pageHeight" :leftWidth="400">
           <template slot="left">
             <div class="dict-list-left">
               <el-row type="flex" justify="space-between" class="search-box">
@@ -194,7 +194,7 @@
               </el-row>
             </el-col>
           </template>
-        </LeftRightContainer>
+        </IhLeftRightContainer>
       </el-row>
     </template>
     <!-- 字典类型dialog -->
@@ -242,10 +242,10 @@ import {
 
 import DictType from "./dialog/dictType.vue";
 import DictItem from "./dialog/dictItem.vue";
-import LeftRightContainer from "../../components/LeftRightContainer.vue";
+// import LeftRightContainer from "../../components/LeftRightContainer.vue";
 
 @Component({
-  components: { DictType, DictItem, LeftRightContainer },
+  components: { DictType, DictItem },
 })
 export default class DicList extends Vue {
   list: any = [];

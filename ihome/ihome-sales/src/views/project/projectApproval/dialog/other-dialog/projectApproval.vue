@@ -4,7 +4,7 @@
  * @Author: wwq
  * @Date: 2020-12-08 19:26:43
  * @LastEditors: wwq
- * @LastEditTime: 2020-12-09 14:26:27
+ * @LastEditTime: 2020-12-12 18:14:38
 -->
 <template>
   <el-dialog
@@ -237,7 +237,7 @@ export default class ProjectApproval extends Vue {
     const item = this.$router.resolve({
       path: `/projectApproval/${type}`,
       query: {
-        id: row.id,
+        id: row.termId,
       },
     });
     window.open(item.href, "_blank");

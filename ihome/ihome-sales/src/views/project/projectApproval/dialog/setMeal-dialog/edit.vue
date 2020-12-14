@@ -4,7 +4,7 @@
  * @Author: wwq
  * @Date: 2020-12-04 09:40:47
  * @LastEditors: wwq
- * @LastEditTime: 2020-12-11 15:57:33
+ * @LastEditTime: 2020-12-11 16:14:37
 -->
 <template>
   <el-dialog
@@ -1351,7 +1351,7 @@ export default class SetMealEdit extends Vue {
   // 根据业务模式获取合同类型
   async queryContractType() {
     const item = await post_buModelContType_get({
-      modelName: this.info.busEnum,
+      modelCode: this.info.busEnum,
     });
     this.contractTypeOptions = item.contTypeList.map((v: any) => ({
       code: v,

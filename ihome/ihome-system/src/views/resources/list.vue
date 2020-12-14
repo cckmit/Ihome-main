@@ -4,89 +4,93 @@
  * @Author: zyc
  * @Date: 2020-07-06 09:41:43
  * @LastEditors: zyc
- * @LastEditTime: 2020-12-09 17:55:15
+ * @LastEditTime: 2020-12-14 15:23:32
 --> 
 <template>
   <ih-page>
     <template v-slot:container>
       <el-row>
-        <el-col
-          :span="6"
-          style="border-right: 1px solid #e6e6e6; padding-right: 20px"
-        >
-          <resourcesRadio ref="resourcesRadio" @select="selectResources" />
-        </el-col>
-        <el-col :span="18" class="padding-left-20">
-          <el-form ref="form" label-width="80px">
-            <el-row>
-              <el-col :span="2" class="text-left">
-                <el-button @click="add({})" type="success">添加</el-button>
-              </el-col>
-              <el-col :span="22" class="text-right">
-                <el-select
-                  style="width: 120px; margin-right: 20px"
-                  v-model="queryPageParameters.type"
-                  clearable
-                  placeholder="请选择类型"
-                  @change="search()"
-                >
-                  <el-option
-                    v-for="item in $root.dictAllList(
-                      'ResourceType',
-                      'AllowAdjust'
-                    )"
-                    :key="item.code"
-                    :label="item.name"
-                    :value="item.code"
-                  ></el-option>
-                </el-select>
-                <el-input
-                  style="width: 200px"
-                  placeholder="名称 编码 URL"
-                  class="input-with-select"
-                  @keyup.enter.native="search"
-                  v-model="queryPageParameters.key"
-                ></el-input>
-                <el-button
-                  class="margin-left-20"
-                  type="primary"
-                  @click="search()"
-                  >查询</el-button
-                >
-              </el-col>
-            </el-row>
-          </el-form>
-          <br />
-          <el-table
-            :data="resPageInfo.list"
-            width="100%"
-            class="ih-table"
-            :default-sort="{ prop: 'date', order: 'descending' }"
-          >
-            <!-- <el-table-column type="selection" width="50"></el-table-column> -->
-            <el-table-column
-              fixed
-              type="index"
-              label="序号"
-              width="50"
-            ></el-table-column>
-            <el-table-column
-              fixed
-              prop="name"
-              label="名称"
-              width="180"
-            ></el-table-column>
-            <el-table-column prop="code" label="编码" width="180">
-              <!-- <template slot="header">
+        <IhLeftRightContainer :leftHeight="pageHeight" :leftWidth="400">
+          <template slot="left">
+            <el-col
+              :span="24"
+            >
+              <resourcesRadio ref="resourcesRadio" @select="selectResources" />
+            </el-col>
+          </template>
+          <template slot="right">
+            <el-col :span="24" class="padding-left-20">
+              <el-form ref="form" label-width="80px">
+                <el-row>
+                  <el-col :span="2" class="text-left">
+                    <el-button @click="add({})" type="success">添加</el-button>
+                  </el-col>
+                  <el-col :span="22" class="text-right">
+                    <el-select
+                      style="width: 120px; margin-right: 20px"
+                      v-model="queryPageParameters.type"
+                      clearable
+                      placeholder="请选择类型"
+                      @change="search()"
+                    >
+                      <el-option
+                        v-for="item in $root.dictAllList(
+                          'ResourceType',
+                          'AllowAdjust'
+                        )"
+                        :key="item.code"
+                        :label="item.name"
+                        :value="item.code"
+                      ></el-option>
+                    </el-select>
+                    <el-input
+                      style="width: 200px"
+                      placeholder="名称 编码 URL"
+                      clearable
+                      class="input-with-select"
+                      @keyup.enter.native="search"
+                      v-model="queryPageParameters.key"
+                    ></el-input>
+                    <el-button
+                      class="margin-left-20"
+                      type="primary"
+                      @click="search()"
+                      >查询</el-button
+                    >
+                  </el-col>
+                </el-row>
+              </el-form>
+              <br />
+              <el-table
+                :data="resPageInfo.list"
+                width="100%"
+                class="ih-table"
+                :default-sort="{ prop: 'date', order: 'descending' }"
+              >
+                <!-- <el-table-column type="selection" width="50"></el-table-column> -->
+                <el-table-column
+                  fixed
+                  type="index"
+                  label="序号"
+                  width="50"
+                ></el-table-column>
+                <el-table-column
+                  fixed
+                  prop="name"
+                  label="名称"
+                  width="180"
+                ></el-table-column>
+                <el-table-column prop="code" label="编码" width="180">
+                  <!-- <template slot="header">
                 <span>编码</span>
                 <el-tooltip class="item" effect="light" content="编码" placement="top">
                   <i class="el-icon-question"></i>
                 </el-tooltip>
               </template>-->
-            </el-table-column>
+                </el-table-column>
 
-            <el-table-column prop="type" label="类型" width="90">
-              <!-- <template slot="header">
+                <el-table-column prop="type" label="类型" width="90">
+                  <!-- <template slot="header">
                 <span>类型</span>
                 <el-tooltip class="item" effect="light" placement="top">
                   <div slot="content">
@@ -96,83 +100,85 @@
                   <i class="el-icon-info"></i>
                 </el-tooltip>
               </template>-->
-              <template slot-scope="scope">
-                <span>{{
-                  $root.dictAllName(scope.row.type, "ResourceType")
-                }}</span>
-              </template>
-            </el-table-column>
-            <el-table-column prop="url" label="URL"></el-table-column>
-            <el-table-column prop="icon" label="ICON"></el-table-column>
-            <el-table-column
-              prop="parentName"
-              label="父资源"
-              width="180"
-            ></el-table-column>
+                  <template slot-scope="scope">
+                    <span>{{
+                      $root.dictAllName(scope.row.type, "ResourceType")
+                    }}</span>
+                  </template>
+                </el-table-column>
+                <el-table-column prop="url" label="URL"></el-table-column>
+                <el-table-column prop="icon" label="ICON"></el-table-column>
+                <el-table-column
+                  prop="parentName"
+                  label="父资源"
+                  width="180"
+                ></el-table-column>
 
-            <el-table-column
-              prop="createUserName"
-              label="创建人"
-              width="90"
-            ></el-table-column>
+                <el-table-column
+                  prop="createUserName"
+                  label="创建人"
+                  width="90"
+                ></el-table-column>
 
-            <el-table-column
-              prop="createTime"
-              label="创建时间"
-              width="180"
-            ></el-table-column>
+                <el-table-column
+                  prop="createTime"
+                  label="创建时间"
+                  width="180"
+                ></el-table-column>
 
-            <el-table-column
-              prop="updateUserName"
-              label="修改人"
-              width="90"
-            ></el-table-column>
+                <el-table-column
+                  prop="updateUserName"
+                  label="修改人"
+                  width="90"
+                ></el-table-column>
 
-            <el-table-column
-              prop="updateTime"
-              label="修改人时间"
-              width="180"
-            ></el-table-column>
+                <el-table-column
+                  prop="updateTime"
+                  label="修改人时间"
+                  width="180"
+                ></el-table-column>
 
-            <el-table-column fixed="right" label="操作" width="120">
-              <template slot-scope="scope">
-                <el-link type="primary" @click.native.prevent="info(scope)"
-                  >详情</el-link
-                >
-                <el-dropdown trigger="click" style="margin-left: 15px">
-                  <span class="el-dropdown-link" style>
-                    更多
-                    <i class="el-icon-arrow-down el-icon--right"></i>
-                  </span>
-                  <el-dropdown-menu slot="dropdown">
-                    <el-dropdown-item @click.native.prevent="edit(scope)"
-                      >修改</el-dropdown-item
+                <el-table-column fixed="right" label="操作" width="120">
+                  <template slot-scope="scope">
+                    <el-link type="primary" @click.native.prevent="info(scope)"
+                      >详情</el-link
                     >
-                    <el-dropdown-item @click.native.prevent="remove(scope)"
-                      >删除</el-dropdown-item
-                    >
-                    <el-dropdown-item
-                      @click.native.prevent="batchOperationRole(scope)"
-                      >批量分配角色</el-dropdown-item
-                    >
-                  </el-dropdown-menu>
-                </el-dropdown>
-              </template>
-            </el-table-column>
-          </el-table>
+                    <el-dropdown trigger="click" style="margin-left: 15px">
+                      <span class="el-dropdown-link" style>
+                        更多
+                        <i class="el-icon-arrow-down el-icon--right"></i>
+                      </span>
+                      <el-dropdown-menu slot="dropdown">
+                        <el-dropdown-item @click.native.prevent="edit(scope)"
+                          >修改</el-dropdown-item
+                        >
+                        <el-dropdown-item @click.native.prevent="remove(scope)"
+                          >删除</el-dropdown-item
+                        >
+                        <el-dropdown-item
+                          @click.native.prevent="batchOperationRole(scope)"
+                          >批量分配角色</el-dropdown-item
+                        >
+                      </el-dropdown-menu>
+                    </el-dropdown>
+                  </template>
+                </el-table-column>
+              </el-table>
 
-          <div class="text-right margin-top-20">
-            <el-pagination
-              @size-change="handleSizeChangeMixin"
-              @current-change="handleCurrentChangeMixin"
-              :current-page.sync="queryPageParameters.pageNum"
-              :page-sizes="$root.pageSizes"
-              :page-size="queryPageParameters.pageSize"
-              :layout="$root.paginationLayout"
-              :total="resPageInfo.total"
-            ></el-pagination>
-          </div>
-        </el-col>
+              <div class="text-right margin-top-20">
+                <el-pagination
+                  @size-change="handleSizeChangeMixin"
+                  @current-change="handleCurrentChangeMixin"
+                  :current-page.sync="queryPageParameters.pageNum"
+                  :page-sizes="$root.pageSizes"
+                  :page-size="queryPageParameters.pageSize"
+                  :layout="$root.paginationLayout"
+                  :total="resPageInfo.total"
+                ></el-pagination>
+              </div>
+            </el-col>
+          </template>
+        </IhLeftRightContainer>
       </el-row>
     </template>
     <ih-dialog :show="dialogVisible" desc="新增资源">
@@ -340,6 +346,13 @@ export default class ResourcesList extends Vue {
     this.resourcesAddData.parentName = item.name;
     this.resourcesAddData.parentCode = item.code;
     this.getListMixin();
+  }
+  private get pageHeight() {
+    let h =
+      (document.documentElement.clientHeight || document.body.clientHeight) -
+      (90 + 90) -
+      50;
+    return h;
   }
 }
 </script>

@@ -1,6 +1,6 @@
 /* eslint-disable */
 /* 此脚本由swagger-ui的api-docs自动生成，请勿修改 */
-//2020-12-11 3:14:16 ├F10: PM┤
+//2020-12-12 2:18:22 ├F10: PM┤
 import { request } from '@/api/base'
 const basePath = "/sales-api/project"
 /**index*/
@@ -459,9 +459,9 @@ export async function post_settleCondition_cancelMaking(d?: any) {
 export async function post_settleCondition_cancelPlease(d?: any) {
     return await request.post<number, number>(basePath + '/settleCondition/cancelPlease', d)
 }
-/**结算详情查询*/
-export async function get_settleCondition_get__termId(d?: any) {
-    return await request.get<SettleConditionAddVO, SettleConditionAddVO>(basePath + '/settleCondition/get/{termId}', { params: d })
+/**获取结佣详情*/
+export async function post_settleCondition_getMaking__settleId(d?: any) {
+    return await request.post<SettleMakingUpdateVO, SettleMakingUpdateVO>(basePath + '/settleCondition/getMaking/{settleId}', d)
 }
 /**查询结佣类型*/
 export async function get_settleCondition_getMakingType(d?: any) {
@@ -470,6 +470,22 @@ export async function get_settleCondition_getMakingType(d?: any) {
 /**结算条件列表页查询*/
 export async function get_settleCondition_getPage__termId(d?: any) {
     return await request.get<SettleConditionVO, SettleConditionVO>(basePath + '/settleCondition/getPage/{termId}', { params: d })
+}
+/**获取请佣详情*/
+export async function post_settleCondition_getPlease__settleId(d?: any) {
+    return await request.post<SettlePleaseUpdateVO, SettlePleaseUpdateVO>(basePath + '/settleCondition/getPlease/{settleId}', d)
+}
+/**查询请佣类型*/
+export async function get_settleCondition_getPleaseType(d?: any) {
+    return await request.get<SettlePleaseListVO[], SettlePleaseListVO[]>(basePath + '/settleCondition/getPleaseType', { params: d })
+}
+/**结佣-修改*/
+export async function post_settleCondition_updateMaking(d?: any) {
+    return await request.post<number, number>(basePath + '/settleCondition/updateMaking', d)
+}
+/**请佣-修改*/
+export async function post_settleCondition_updatePlease(d?: any) {
+    return await request.post<number, number>(basePath + '/settleCondition/updatePlease', d)
 }
 /**项目周期新增*/
 export async function post_term_add(d?: any) {
@@ -1469,7 +1485,7 @@ export interface DistributContractByTermVO {
     /**中介分销合同ID*/
     agencyContrictId: number;
     /**渠道类型 BIG-大行/大平台 MIDDLE-中行/中平台 SMALL-小行/小平台(BigPlatform-大平台、Big-大型中介/一级平台、Middle-中型中介/二级平台、Small-小型中介、Appoint-指定中介行、Strategic-战略合作方)*/
-    channelCustomerEnum: string;
+    channelEnum: string;
     /**合同主标题*/
     contractTitle: string;
     /**是否垫佣 VETO-否、 TREE-3个月 SIX-6个月 NINE-9个月 MORETEN 10个月以上(Veto-否、One-1个月、Two-2个月、Three-3个月、FOUR-4个月、Five-5个月、Six-6个月、Seven-7个月、Eight-8个月、Nine-9个月、Ten-10个月、Eleven-11个月、Twelve-12个月)*/
@@ -1484,7 +1500,7 @@ export interface DistributContractByTermVO {
 /**DistributContractCheckConditionVo*/
 export interface DistributContractCheckConditionVo {
     /**渠道类型(成交方式)(BigPlatform-大平台、Big-大型中介/一级平台、Middle-中型中介/二级平台、Small-小型中介、Appoint-指定中介行、Strategic-战略合作方)*/
-    channelCustomerEnum: string;
+    channelEnum: string;
     /**成交客户ID*/
     consumerId: number;
     /**客户名称*/
@@ -1499,7 +1515,7 @@ export interface DistributContractCheckConditionVo {
 /**DistributContractConditionVo*/
 export interface DistributContractConditionVo {
     /**渠道类型(成交方式)(BigPlatform-大平台、Big-大型中介/一级平台、Middle-中型中介/二级平台、Small-小型中介、Appoint-指定中介行、Strategic-战略合作方)*/
-    channelCustomerEnum: string;
+    channelEnum: string;
     /**成交客户ID*/
     consumerId: number;
     /**客户名称*/
@@ -1556,7 +1572,7 @@ export interface DistributContractQueryVO {
     /**中介分销合同ID*/
     agencyContrictId: number;
     /**渠道类型 BIG-大行/大平台 MIDDLE-中行/中平台 SMALL-小行/小平台(BigPlatform-大平台、Big-大型中介/一级平台、Middle-中型中介/二级平台、Small-小型中介、Appoint-指定中介行、Strategic-战略合作方)*/
-    channelCustomerEnum: string;
+    channelEnum: string;
     /**合同主标题*/
     contractTitle: string;
     /**派发佣金标准*/
@@ -1589,7 +1605,7 @@ export interface DistributContractUpdateVO {
     /**房屋未成交乙方退回代理费期限*/
     agencyFeeReturnTime: string;
     /**渠道类型 BigPlatform("大平台"),FirstPlatform("大型中介/一级平台"),MiddlePlatform("中型中介/二级平台"),SmallPlatform("小型中介"),Appoint("指定中介行");(BigPlatform-大平台、Big-大型中介/一级平台、Middle-中型中介/二级平台、Small-小型中介、Appoint-指定中介行、Strategic-战略合作方)*/
-    channelCustomerEnum: string;
+    channelEnum: string;
     /**客户成交以及确认*/
     consumerComplete: string;
     /**合作结束时间(yyyy-MM-dd)*/
@@ -1644,7 +1660,7 @@ export interface DistributContractVO {
     /**房屋未成交乙方退回代理费期限*/
     agencyFeeReturnTime: string;
     /**渠道类型 BigPlatform("大平台"),FirstPlatform("大型中介/一级平台"),MiddlePlatform("中型中介/二级平台"),SmallPlatform("小型中介"),Appoint("指定中介行");(BigPlatform-大平台、Big-大型中介/一级平台、Middle-中型中介/二级平台、Small-小型中介、Appoint-指定中介行、Strategic-战略合作方)*/
-    channelCustomerEnum: string;
+    channelEnum: string;
     /**客户成交以及确认*/
     consumerComplete: string;
     /**合作结束时间(yyyy-MM-dd)*/
@@ -2968,82 +2984,8 @@ export interface RoomVO {
     /**卫*/
     toilet: number;
 }
-/**SettleCompareVO*/
-export interface SettleCompareVO {
-    /**条件 <> <= >= ==*/
-    compare: string;
-    /**条件 <> <= >= ==*/
-    compareB: string;
-    /**条件 且*/
-    conditionAnd: number;
-    /**条件类型  HOUSETYPE-户型、AREA-面积、CONTRACTPRICE-签约价格、   SUBSCRIPPRICE-认购价格(HouseType-户型、Area-面积、ContractPrice-签约价格、SubscriPrice-认购价格、OtherMsg-其它条件)*/
-    conditionEnum: string;
-    /**条件依据 HOUSETYPE-户型、AREA-面积、CONTRACTPRICE-签约价格、   SUBSCRIPPRICE-认购价格*/
-    conditionModel: string;
-    /**值A*/
-    conditionNumA: number;
-    /**值B*/
-    conditionNumB: number;
-    /**条件ID*/
-    conditionSetId: number;
-    /**创建时间(yyyy-MM-dd HH:mm:ss)*/
-    createTime: string;
-    /**创建用户*/
-    createUser: number;
-    /**已删除*/
-    deleted: number;
-    /**收派套餐ID*/
-    settleId: number;
-    /**更新时间(yyyy-MM-dd HH:mm:ss)*/
-    updateTime: string;
-    /**更新用户*/
-    updateUser: number;
-}
-/**SettleConditionAddVO*/
-export interface SettleConditionAddVO {
-    /**代理费*/
-    agencyFee: number;
-    /**代理费结算金额*/
-    agencyFeeSettleAmount: number;
-    /**代理费设置比例*/
-    agencyFeeSettleRate: number;
-    /**代理费-垫佣类型*/
-    agencyPadCommisionType: number;
-    /**根据房款回笼比率-条件*/
-    conReturnRateByHouse: number;
-    /**合同类型(Normal-正常合同、TemPorary-临时合同、Other-其他)*/
-    contractTypeEnum: string;
-    /**是否备案*/
-    exRecord: number;
-    /**优先级(A-一级别、B-二级别、C-三级别、D-四级别、E-五级别)*/
-    priority: string;
-    /**结算后回款*/
-    returnAfterSettlement: number;
-    /**服务费*/
-    serviceFee: number;
-    /**服务费结算金额*/
-    serviceFeeSettleAmount: number;
-    /**服务费设置比例*/
-    serviceFeeSettleRate: number;
-    /**服务费-垫佣类型*/
-    servicePadCommisionType: number;
-    /**根据房款回笼比率-结算*/
-    setsReturnRateByHouse: number;
-    /**undefined*/
-    settleCompareVOS: SettleCompareVO[];
-    /**结算类型 （请佣、结佣）(SettleCommission-结佣、ApplyCommission-请拥)*/
-    settleEnum: string;
-    /**结算名称*/
-    settleName: string;
-    /**立项ID*/
-    termId: number;
-}
 /**SettleConditionCancelVO*/
 export interface SettleConditionCancelVO {
-    /**(必填)当前页*/
-    pageNum: number;
-    /**(必填)每页条数*/
-    pageSize: number;
     /**结算ID*/
     settleId: number;
     /**立项ID*/
@@ -3067,12 +3009,16 @@ export interface SettleConditionMakingVO {
     conditionSetId: number;
     /**指定中介行*/
     designatedAgency: number[];
+    /**多选值*/
+    mulitVal: number[];
     /**根据房款回笼比率*/
     returnRateByHouse: number;
+    /**单选值*/
+    simpleVal: string;
     /**类型(SingleDropDown-下拉单选、MultiDropDown-下拉多选、MultiSelet-复选框多选、RangeCalc-范围计算、MultiSelet2Drop-复选框兼下拉、Fixed-固定值)*/
     type: string;
     /**值*/
-    values: object[];
+    values: string[];
 }
 /**SettleConditionPleaseVO*/
 export interface SettleConditionPleaseVO {
@@ -3082,7 +3028,7 @@ export interface SettleConditionPleaseVO {
     compareB: string;
     /**undefined*/
     conditionAnd: boolean;
-    /**条件依据 HOUSETYPE-户型、AREA-面积、CONTRACTPRICE-签约价格、   SUBSCRIPPRICE-认购价格(Property-物业类型、HouseType-户型、Area-面积、DealTotalSets-成交总套数、DealTotalAmount-成交总金额、Building-栋座、ChannelType-中介性质、ContractType-签约类型、ExRecode-是否备案、PaymentReturnRate-回款比率)*/
+    /**条件依据 HOUSETYPE-户型、AREA-面积、CONTRACTPRICE-签约价格、   SUBSCRIPPRICE-认购价格(Property-物业类型、HouseType-户型、Area-面积、DealTotalSets-成交总套数、DealTotalAmount-成交总金额、Building-栋座、PartyACompany-指定甲方公司、ContractType-签约类型、ExRecode-是否备案、PaymentReturnRate-回款比率)*/
     conditionModel: string;
     /**值A*/
     conditionNumA: number;
@@ -3092,15 +3038,23 @@ export interface SettleConditionPleaseVO {
     conditionSetId: number;
     /**指定中介行*/
     designatedAgency: number[];
+    /**多选值*/
+    mulitVal: number[];
     /**根据房款回笼比率*/
     returnRateByHouse: number;
+    /**单选值*/
+    simpleVal: string;
     /**类型(SingleDropDown-下拉单选、MultiDropDown-下拉多选、MultiSelet-复选框多选、RangeCalc-范围计算、MultiSelet2Drop-复选框兼下拉、Fixed-固定值)*/
     type: string;
     /**值*/
-    values: object[];
+    values: string[];
 }
 /**SettleConditionVO*/
 export interface SettleConditionVO {
+    /**收费模式(Service-服务、Agent-代理、ServiceAndAgent-服务加代理)*/
+    chargeEnum: string;
+    /**是否垫佣(Veto-否、One-1个月、Two-2个月、Three-3个月、FOUR-4个月、Five-5个月、Six-6个月、Seven-7个月、Eight-8个月、Nine-9个月、Ten-10个月、Eleven-11个月、Twelve-12个月)*/
+    padCommissionEnum: string;
     /**请佣结算条件*/
     settleMakingVOS: SettleMakingVO[];
     /**结佣结算条件*/
@@ -3142,6 +3096,35 @@ export interface SettleMakingListVO {
     /**样式类型(SingleDropDown-下拉单选、MultiDropDown-下拉多选、MultiSelet-复选框多选、RangeCalc-范围计算、MultiSelet2Drop-复选框兼下拉、Fixed-固定值)*/
     fieldEnum: string;
 }
+/**SettleMakingUpdateVO*/
+export interface SettleMakingUpdateVO {
+    /**是否代理费*/
+    agencyFee: number;
+    /**代理费结算金额*/
+    agencyFeeSettleAmount: number;
+    /**代理费设置比例*/
+    agencyFeeSettleRate: number;
+    /**代理费-垫佣类型(Veto-否、One-1个月、Two-2个月、Three-3个月、FOUR-4个月、Five-5个月、Six-6个月、Seven-7个月、Eight-8个月、Nine-9个月、Ten-10个月、Eleven-11个月、Twelve-12个月)*/
+    agencyPadCommisionType: string;
+    /**(必填)优先级 A-一级别(最低) B-二级别 C-三级别 D-四级别 E-五级别（最高）(A-一级别、B-二级别、C-三级别、D-四级别、E-五级别)*/
+    priorityEnum: string;
+    /**是否服务费*/
+    serviceFee: number;
+    /**服务费结算金额*/
+    serviceFeeSettleAmount: number;
+    /**服务费设置比例*/
+    serviceFeeSettleRate: number;
+    /**服务费-垫佣类型(Veto-否、One-1个月、Two-2个月、Three-3个月、FOUR-4个月、Five-5个月、Six-6个月、Seven-7个月、Eight-8个月、Nine-9个月、Ten-10个月、Eleven-11个月、Twelve-12个月)*/
+    servicePadCommisionType: string;
+    /**结算条件*/
+    settleConditionMakingVOS: SettleConditionMakingVO[];
+    /**结算ID*/
+    settleId: number;
+    /**(必填)结算名称*/
+    settleName: string;
+    /**TERM_ID*/
+    termId: number;
+}
 /**SettleMakingVO*/
 export interface SettleMakingVO {
     /**优先级 A-一级别(最低) B-二级别 C-三级别 D-四级别 E-五级别（最高）(A-一级别、B-二级别、C-三级别、D-四级别、E-五级别)*/
@@ -3173,6 +3156,44 @@ export interface SettlePleaseAddVO {
     servicePadCommisionType: string;
     /**结算条件*/
     settleConditionPleaseVOS: SettleConditionPleaseVO[];
+    /**(必填)结算名称*/
+    settleName: string;
+    /**TERM_ID*/
+    termId: number;
+}
+/**SettlePleaseListVO*/
+export interface SettlePleaseListVO {
+    /**条件类型(Property-物业类型、HouseType-户型、Area-面积、DealTotalSets-成交总套数、DealTotalAmount-成交总金额、Building-栋座、PartyACompany-指定甲方公司、ContractType-签约类型、ExRecode-是否备案、PaymentReturnRate-回款比率)*/
+    conditionPleaseEnum: string;
+    /**枚举类型*/
+    enumType: string;
+    /**样式类型(SingleDropDown-下拉单选、MultiDropDown-下拉多选、MultiSelet-复选框多选、RangeCalc-范围计算、MultiSelet2Drop-复选框兼下拉、Fixed-固定值)*/
+    fieldEnum: string;
+}
+/**SettlePleaseUpdateVO*/
+export interface SettlePleaseUpdateVO {
+    /**是否代理费*/
+    agencyFee: number;
+    /**代理费结算金额*/
+    agencyFeeSettleAmount: number;
+    /**代理费设置比例*/
+    agencyFeeSettleRate: number;
+    /**代理费-垫佣类型(Veto-否、One-1个月、Two-2个月、Three-3个月、FOUR-4个月、Five-5个月、Six-6个月、Seven-7个月、Eight-8个月、Nine-9个月、Ten-10个月、Eleven-11个月、Twelve-12个月)*/
+    agencyPadCommisionType: string;
+    /**(必填)优先级 A-一级别(最低) B-二级别 C-三级别 D-四级别 E-五级别（最高）(A-一级别、B-二级别、C-三级别、D-四级别、E-五级别)*/
+    priorityEnum: string;
+    /**是否服务费*/
+    serviceFee: number;
+    /**服务费结算金额*/
+    serviceFeeSettleAmount: number;
+    /**服务费设置比例*/
+    serviceFeeSettleRate: number;
+    /**服务费-垫佣类型(Veto-否、One-1个月、Two-2个月、Three-3个月、FOUR-4个月、Five-5个月、Six-6个月、Seven-7个月、Eight-8个月、Nine-9个月、Ten-10个月、Eleven-11个月、Twelve-12个月)*/
+    servicePadCommisionType: string;
+    /**结算条件*/
+    settleConditionPleaseVOS: SettleConditionPleaseVO[];
+    /**结算ID*/
+    settleId: number;
     /**(必填)结算名称*/
     settleName: string;
     /**TERM_ID*/

@@ -3,8 +3,8 @@
  * @version: 
  * @Author: ywl
  * @Date: 2020-09-27 10:46:14
- * @LastEditors: wwq
- * @LastEditTime: 2020-12-11 08:44:30
+ * @LastEditors: ywl
+ * @LastEditTime: 2020-12-14 14:17:45
 -->
 <template>
   <IhPage class="text-left distribution-info">
@@ -218,7 +218,7 @@
         <el-row>
           <el-col :span="24">
             <el-form-item label="渠道类型">
-              {{$root.dictAllName(ruleForm.channelEnum, 'Channel')}}
+              {{$root.dictAllName(ruleForm.channelEnum, 'ChannelType')}}
             </el-form-item>
           </el-col>
         </el-row>
@@ -296,8 +296,10 @@
           <el-col :span="18">
             <el-form-item label="盖章版归档">
               <IhUpload
+                v-if="$route.name === 'DistributionDetail' ? true : fileList.length"
                 :file-list="fileList"
                 @newFileList="handleSealFile"
+                :limit="$route.name === 'DistributionDetail' ? 10 : fileList.length"
                 size="100px"
                 class="upload"
               ></IhUpload>
@@ -324,7 +326,7 @@
           type="primary"
           @click="archive()"
         >提交</el-button>
-        <el-button @click="$router.push(-1)">取消</el-button>
+        <el-button @click="$router.go(-1)">取消</el-button>
       </div>
     </template>
   </IhPage>
@@ -385,6 +387,10 @@ export default class DistributionDetail extends Vue {
     if (id) {
       let res = await get_distribution_detail__id({ id: id });
       this.ruleForm = { ...this.ruleForm, ...res };
+      this.fileList = res.annexList.map((i: any) => ({
+        name: i.attachmentSuffix,
+        fileId: i.fileNo,
+      }));
     }
   }
 

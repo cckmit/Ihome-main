@@ -4,7 +4,7 @@
  * @Author: zyc
  * @Date: 2020-08-04 15:23:09
  * @LastEditors: zyc
- * @LastEditTime: 2020-10-23 11:46:17
+ * @LastEditTime: 2020-12-14 15:12:20
 --> 
 <template>
   <div class="OrganizationTree">
@@ -71,10 +71,7 @@ export default class OrganizationTree extends Vue {
   selectType = false;
   value: any = null;
   filterText: any = null;
-  @Watch("filterText")
-  filterTextWatch(val: any) {
-    (this.$refs.tree as any).filter(val, this.selectType);
-  }
+
   list: any = [];
   getInvalid(node: any) {
     let item = null;
@@ -100,27 +97,40 @@ export default class OrganizationTree extends Vue {
     children: "children",
     label: "name",
   };
-  selectChange() {
-    (this.$refs.tree as any).filter(this.filterText, this.selectType);
+  @Watch("filterText")
+  filterTextWatch(val: string) {
+    (this.$refs.tree as any).filter(val);
   }
-  filterNode(value: any, data: any) {
-    if (!value && !this.selectType) {
-      return true;
-    } else {
-      if (this.selectType) {
-        if (value) {
-          let r =
-            data[this.defaultProps.label].indexOf(value) !== -1 &&
-            data.status == "Valid";
-          return r;
-        } else {
-          let r = data.status == "Valid";
-          return r;
-        }
-      } else {
-        return data[this.defaultProps.label].indexOf(value) !== -1;
-      }
-    }
+  selectChange() {
+    (this.$refs.tree as any).filter(this.filterText);
+  }
+  filterNode(value: string, data: any) {
+    let name: string = data[this.defaultProps.label];
+    if (!value) return true;
+    return name.indexOf(value) !== -1;
+
+    // if (!value && !this.selectType) {
+    //   return true;
+    // } else {
+    //   if (this.selectType) {
+    //     if (value) {
+    //       let r =
+    //         data[this.defaultProps.label].indexOf(value) !== -1 &&
+    //         data.status == "Valid";
+    //       return r;
+    //     } else {
+    //       let r = data.status == "Valid";
+    //       return r;
+    //     }
+    //   } else {
+    //     if (value) {
+    //       let r = data[this.defaultProps.label].indexOf(value) !== -1;
+    //       return r;
+    //     } else {
+    //       return false;
+    //     }
+    //   }
+    // }
   }
   currentChange(item: any) {
     this.$emit("select", item);
