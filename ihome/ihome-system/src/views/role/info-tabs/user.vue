@@ -4,7 +4,7 @@
  * @Author: zyc
  * @Date: 2020-07-09 14:30:56
  * @LastEditors: zyc
- * @LastEditTime: 2020-08-13 11:08:46
+ * @LastEditTime: 2020-12-14 17:29:24
 --> 
 <template>
   <div>
@@ -13,7 +13,9 @@
         style="width: 300px"
         placeholder="登录账号 姓名"
         class="input-with-select"
+        clearable
         v-model="queryPageParameters.key"
+        @keyup.enter.native="getListMixin()"
       >
         <el-button
           slot="append"

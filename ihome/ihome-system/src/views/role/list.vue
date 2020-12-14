@@ -4,7 +4,7 @@
  * @Author: zyc
  * @Date: 2020-07-09 10:21:50
  * @LastEditors: zyc
- * @LastEditTime: 2020-12-09 17:54:35
+ * @LastEditTime: 2020-12-14 17:31:52
 --> 
 <template>
   <ih-page>
@@ -21,6 +21,7 @@
               class="input-with-select"
               v-model="queryPageParameters.key"
               @keyup.enter.native="getListMixin"
+              clearable
             ></el-input>
             <el-button
               type="primary"

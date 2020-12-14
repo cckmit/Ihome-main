@@ -4,7 +4,7 @@
  * @Author: zyc
  * @Date: 2020-12-09 09:45:59
  * @LastEditors: zyc
- * @LastEditTime: 2020-12-14 15:14:43
+ * @LastEditTime: 2020-12-14 17:31:09
 -->
 <!--
  * @Descripttion: 
@@ -37,6 +37,7 @@
                       <el-input
                         v-model="queryPageParameters.name"
                         placeholder="名称"
+                        clearable
                       ></el-input>
                     </el-form-item>
                   </el-col>
