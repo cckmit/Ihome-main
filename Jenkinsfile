@@ -5,7 +5,7 @@ pipeline {
 	    NEXUS3_ADDRESS = 'docker.polyic.cn'
 		IMAGE_NAME_VERSION = '1.0.0'		
 		NODE_NPM_VERSION = '12.18.4-alpine'
-		
+		NEXUS3_DOCKER_CREDS = credentials('nexus3')
         CURR_MODULE = 'sales-web'
 			
     }
