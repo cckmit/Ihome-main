@@ -4,7 +4,7 @@
  * @Author: wwq
  * @Date: 2020-09-25 17:59:09
  * @LastEditors: wwq
- * @LastEditTime: 2020-12-12 15:12:39
+ * @LastEditTime: 2020-12-14 21:08:37
 -->
 <template>
   <ih-page>
@@ -296,21 +296,34 @@
       <div class="padding-left-20">
         <el-table
           class="ih-table"
-          :data="resPageInfo.attachmentList"
+          :data="fileListType"
           style="width: 100%"
         >
           <el-table-column
             prop="type"
+            width="180"
             label="类型"
+            align="center"
           >
-            <!-- <template v-slot="{ row }">{{
-            $root.displayName("accessoryTpye", row.type)
-          }}</template> -->
+            <template v-slot="{ row }">
+              <div><span
+                  style="color: red"
+                  v-if="row.subType"
+                >*</span>{{row.name}}
+              </div>
+            </template>
           </el-table-column>
-          <el-table-column
-            prop="fileId"
-            label="附件"
-          ></el-table-column>
+          <el-table-column label="附件">
+            <template v-slot="{ row }">
+              <IhUpload
+                :file-list.sync="row.fileList"
+                :file-size="10"
+                :file-type="row.code"
+                size="100px"
+                @newFileList="queryNew"
+              ></IhUpload>
+            </template>
+          </el-table-column>
         </el-table>
       </div>
       <br />
@@ -432,6 +445,8 @@ export default class Edit extends Vue {
     reason: null,
     provinceOption: [],
   };
+  fileListType: any = [];
+  submitFile: any = {};
   accountData: any = {};
   contactsData: any = {};
   contactsDialogType: any;
@@ -482,7 +497,36 @@ export default class Edit extends Vue {
       const res = await get_company_get__id({ id: this.developerId });
       this.resPageInfo = res;
       this.resPageInfo.provinceOption = [res.province, res.city, res.county];
+      this.getFileListType(res.attachmentList);
+    } else {
+      this.getFileListType([]);
     }
+  }
+
+  getFileListType(data: any) {
+    const list = (this.$root as any).dictAllList("AttachementType");
+    this.fileListType = list.map((v: any) => {
+      return {
+        ...v,
+        fileList: data
+          .filter((j: any) => j.type === v.code)
+          .map((h: any) => ({
+            ...h,
+            name: h.fileName,
+          })),
+      };
+    });
+    let obj: any = {};
+    this.fileListType.forEach((h: any) => {
+      obj[h.code] = h.fileList;
+    });
+    this.submitFile = { ...obj };
+  }
+
+  queryNew(data: any, type?: any) {
+    let obj: any = {};
+    obj[type] = data;
+    this.submitFile = { ...this.submitFile, ...obj };
   }
 
   // 联系人信息
@@ -562,6 +606,46 @@ export default class Edit extends Vue {
         this.resPageInfo.city = this.resPageInfo.provinceOption[1];
         this.resPageInfo.county = this.resPageInfo.provinceOption[2];
         this.resPageInfo.status = val;
+        // 校验提示
+        let arr: any = [];
+        Object.values(this.submitFile).forEach((v: any) => {
+          if (v.length) {
+            arr = arr.concat(v);
+          }
+        });
+        // 以下操作仅仅是为了校验必上传项
+        let submitList: any = this.fileListType.map((v: any) => {
+          return {
+            ...v,
+            fileList: arr
+              .filter((j: any) => j.type === v.code)
+              .map((h: any) => ({
+                ...h,
+                name: h.fileName,
+              })),
+          };
+        });
+        let isSubmit = true;
+        let msgList: any = [];
+        submitList.forEach((v: any) => {
+          if (v.subType && !v.fileList.length) {
+            msgList.push(v.name);
+            isSubmit = false;
+          }
+        });
+        if (isSubmit) {
+          this.resPageInfo.attachmentList = arr.map((v: any) => ({
+            fileId: v.fileId,
+            fileName: v.name,
+            type: v.type,
+          }));
+        } else {
+          this.$message({
+            type: "warning",
+            message: `${msgList.join(",")}项,请上传附件`,
+          });
+          return;
+        }
         switch (this.$route.name) {
           case "developerAdd":
             await post_company_add(this.resPageInfo);

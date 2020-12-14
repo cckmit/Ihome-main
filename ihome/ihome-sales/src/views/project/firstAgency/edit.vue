@@ -4,7 +4,7 @@
  * @Author: wwq
  * @Date: 2020-11-03 18:39:23
  * @LastEditors: wwq
- * @LastEditTime: 2020-12-11 08:55:11
+ * @LastEditTime: 2020-12-14 21:36:19
 -->
 <template>
   <IhPage>
@@ -288,33 +288,31 @@
     <div class="padding-left-20">
       <el-table
         style="width: 100%"
-        :data="info.attachAgencyVOS"
+        :data="fileListType"
       >
         <el-table-column
-          prop="firstAgencyAttachEnum"
+          prop="type"
           width="180"
           label="类型"
           align="center"
         >
-          <template v-slot="{ row }">{{
-            $root.dictAllName(
-              row.firstAgencyAttachEnum,
-              "FirstAgencyAttach"
-            )
-          }}</template>
+          <template v-slot="{ row }">
+            <div><span
+                style="color: red"
+                v-if="row.subType"
+              >*</span>{{row.name}}
+            </div>
+          </template>
         </el-table-column>
-        <el-table-column
-          label="附件"
-          align="center"
-        >
+        <el-table-column label="附件">
           <template v-slot="{ row }">
             <IhUpload
-              :file-list="row.fileList"
+              :file-list.sync="row.fileList"
+              :file-size="10"
+              :file-type="row.code"
               size="100px"
-              accept="image/*"
-              @newFileList="queryFiles"
-            >
-            </IhUpload>
+              @newFileList="queryNew"
+            ></IhUpload>
           </template>
         </el-table-column>
       </el-table>
@@ -404,7 +402,8 @@ export default class FirstAgencyEdit extends Vue {
     remark: "",
     timeList: [],
   };
-  accessoryFile: any = [];
+  fileListType: any = [];
+  submitFile: any = {};
   dialogFormVisible = false;
   Bankrule: any = {
     accountName: "",
@@ -481,7 +480,48 @@ export default class FirstAgencyEdit extends Vue {
   save() {
     (this.$refs["ruleForm"] as ElForm).validate(async (v: any) => {
       if (v) {
-        let infoObj = { ...this.info };
+        let infoObj: any = { ...this.info };
+        // 校验提示
+        let arr: any = [];
+        Object.values(this.submitFile).forEach((v: any) => {
+          if (v.length) {
+            arr = arr.concat(v);
+          }
+        });
+        // 以下操作仅仅是为了校验必上传项
+        let submitList: any = this.fileListType.map((v: any) => {
+          return {
+            ...v,
+            fileList: arr
+              .filter((j: any) => j.type === v.code)
+              .map((h: any) => ({
+                ...h,
+                name: h.fileName,
+              })),
+          };
+        });
+        let isSubmit = true;
+        let msgList: any = [];
+        submitList.forEach((v: any) => {
+          if (v.subType && !v.fileList.length) {
+            msgList.push(v.name);
+            isSubmit = false;
+          }
+        });
+        if (isSubmit) {
+          console.log(arr);
+          infoObj.attachAgencyVOS = arr.map((v: any) => ({
+            fileId: v.fileId,
+            fileName: v.name,
+            type: v.type,
+          }));
+        } else {
+          this.$message({
+            type: "warning",
+            message: `${msgList.join(",")}项,请上传附件`,
+          });
+          return;
+        }
         if (this.info.timeList.length) {
           infoObj.businessStart = this.info.timeList[0];
           infoObj.businessEnd = this.info.timeList[1];
@@ -499,22 +539,8 @@ export default class FirstAgencyEdit extends Vue {
             infoObj.agencyId = this.$route.query.id;
             break;
         }
-        let arr: any = [];
-        if (this.accessoryFile.length) {
-          infoObj.attachAgencyVOS = this.accessoryFile;
-        } else {
-          this.info.attachAgencyVOS.forEach((v: any) => {
-            arr = v.fileList.map((j: any) => ({
-              attachAddr: j.name,
-              attachId: j.fileId,
-              firstAgencyAttachEnum: j.firstAgencyAttachEnum,
-            }));
-          });
-          infoObj.attachAgencyVOS = arr;
-        }
         infoObj.followMan = "admin";
         infoObj.followManId = 1;
-        console.log(infoObj);
         await post_firstAgencyCompany_save(infoObj);
         this.$message.success("保存成功");
         this.$goto({ path: "/firstAgency/list" });
@@ -547,34 +573,40 @@ export default class FirstAgencyEdit extends Vue {
         agencyId: id,
       });
       res.timeList = [res.businessStart, res.businessEnd];
-      let arr: any = [];
-      res.attachAgencyVOS.forEach((v: any) => {
-        const item = arr.find(
-          (j: any) => j.firstAgencyAttachEnum === v.firstAgencyAttachEnum
-        );
-        if (!item) {
-          arr.push({
-            firstAgencyAttachEnum: v.firstAgencyAttachEnum,
-            fileList: [
-              {
-                name: v.attachAddr,
-                fileId: v.attachId,
-                firstAgencyAttachEnum: v.firstAgencyAttachEnum,
-              },
-            ],
-          });
-        } else {
-          item.fileList.push({
-            name: v.attachAddr,
-            fileId: v.attachId,
-            firstAgencyAttachEnum: v.firstAgencyAttachEnum,
-          });
-        }
-      });
-      this.info = { ...res, attachAgencyVOS: [...arr] };
+      this.info = { ...res };
       this.info.provinceList = [res.province, res.city, res.area];
+      this.getFileListType(res.attachAgencyVOS);
+    } else {
+      this.getFileListType([]);
     }
   }
+
+  getFileListType(data: any) {
+    const list = (this.$root as any).dictAllList("FirstAgencyAttach");
+    this.fileListType = list.map((v: any) => {
+      return {
+        ...v,
+        fileList: data
+          .filter((j: any) => j.type === v.code)
+          .map((h: any) => ({
+            ...h,
+            name: h.fileName,
+          })),
+      };
+    });
+    let obj: any = {};
+    this.fileListType.forEach((h: any) => {
+      obj[h.code] = h.fileList;
+    });
+    this.submitFile = { ...obj };
+  }
+
+  queryNew(data: any, type?: any) {
+    let obj: any = {};
+    obj[type] = data;
+    this.submitFile = { ...this.submitFile, ...obj };
+  }
+
   /**
    * @description: 编辑银行信息
    * @param {object} row 编辑当前行数据
@@ -604,14 +636,6 @@ export default class FirstAgencyEdit extends Vue {
 
   async created() {
     this.getInfo();
-  }
-
-  queryFiles(data: any) {
-    this.accessoryFile = data.map((v: any) => ({
-      attachAddr: v.name,
-      attachId: v.fileId,
-      firstAgencyAttachEnum: data[0].firstAgencyAttachEnum,
-    }));
   }
 }
 </script>

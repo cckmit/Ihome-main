@@ -4,7 +4,7 @@
  * @Author: ywl
  * @Date: 2020-09-16 14:05:21
  * @LastEditors: wwq
- * @LastEditTime: 2020-12-14 19:41:08
+ * @LastEditTime: 2020-12-14 21:09:48
 -->
 <template>
   <IhPage>
@@ -572,18 +572,15 @@ export default class ModifyThe extends Vue {
         });
         // 以下操作仅仅是为了校验必上传项
         let submitList: any = this.fileListType.map((v: any) => {
-          let item = arr.find((j: any) => j.type === v.code);
-          if (item) {
-            return {
-              ...v,
-              fileList: [{}],
-            };
-          } else {
-            return {
-              ...v,
-              fileList: [],
-            };
-          }
+          return {
+            ...v,
+            fileList: arr
+              .filter((j: any) => j.type === v.code)
+              .map((h: any) => ({
+                ...h,
+                name: h.fileName,
+              })),
+          };
         });
         let isSubmit = true;
         let msgList: any = [];
@@ -707,24 +704,15 @@ export default class ModifyThe extends Vue {
   getFileListType(data: any) {
     const list = (this.$root as any).dictAllList("ChannelAttachment");
     this.fileListType = list.map((v: any) => {
-      let item = data?.find((j: any) => j.type === v.code);
-      if (item) {
-        return {
-          ...v,
-          fileList: [
-            {
-              fileId: item.fileId,
-              name: item.fileName,
-              type: v.code,
-            },
-          ],
-        };
-      } else {
-        return {
-          ...v,
-          fileList: [],
-        };
-      }
+      return {
+        ...v,
+        fileList: data
+          .filter((j: any) => j.type === v.code)
+          .map((h: any) => ({
+            ...h,
+            name: h.fileName,
+          })),
+      };
     });
     let obj: any = {};
     this.fileListType.forEach((h: any) => {

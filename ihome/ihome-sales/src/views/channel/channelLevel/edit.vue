@@ -4,7 +4,7 @@
  * @Author: wwq
  * @Date: 2020-10-15 16:02:03
  * @LastEditors: wwq
- * @LastEditTime: 2020-12-14 20:20:59
+ * @LastEditTime: 2020-12-14 21:20:10
 -->
 <template>
   <IhPage>
@@ -233,26 +233,33 @@
         <div class="padding-left-20">
           <el-table
             class="ih-table"
-            :data="resPageInfo.channelGradeAttachments"
+            :data="fileListType"
             style="width: 100%"
           >
             <el-table-column
               prop="type"
+              width="180"
               label="类型"
-              width="200"
+              align="center"
             >
-              <template v-slot="{ row }">{{
-                $root.displayName("accessoryTpye", row.type)
-              }}</template>
+              <template v-slot="{ row }">
+                <div><span
+                    style="color: red"
+                    v-if="row.subType"
+                  >*</span>{{row.name}}
+                </div>
+              </template>
             </el-table-column>
-            <el-table-column
-              prop="fileId"
-              label="附件"
-            >
-              <IhUpload
-                size="100px"
-                :fileList="fileList"
-              />
+            <el-table-column label="附件">
+              <template v-slot="{ row }">
+                <IhUpload
+                  :file-list.sync="row.fileList"
+                  :file-size="10"
+                  :file-type="row.code"
+                  size="100px"
+                  @newFileList="queryNew"
+                ></IhUpload>
+              </template>
             </el-table-column>
           </el-table>
         </div>
@@ -311,6 +318,8 @@ export default class ChannelRates extends Vue {
   private fileList = [];
   private changeReason = "";
   channelOptions: any = [];
+  fileListType: any = [];
+  submitFile: any = {};
 
   resPageInfo: any = {
     channelId: "",
@@ -357,8 +366,38 @@ export default class ChannelRates extends Vue {
         this.resPageInfo.province,
         this.resPageInfo.city,
       ];
+      this.getFileListType(this.resPageInfo.channelGradeAttachments);
+    } else {
+      this.getFileListType([]);
     }
   }
+
+  getFileListType(data: any) {
+    const list = (this.$root as any).dictAllList("ChannelGradeAttachment");
+    this.fileListType = list.map((v: any) => {
+      return {
+        ...v,
+        fileList: data
+          .filter((j: any) => j.type === v.code)
+          .map((h: any) => ({
+            ...h,
+            name: h.fileName,
+          })),
+      };
+    });
+    let obj: any = {};
+    this.fileListType.forEach((h: any) => {
+      obj[h.code] = h.fileList;
+    });
+    this.submitFile = { ...obj };
+  }
+
+  queryNew(data: any, type?: any) {
+    let obj: any = {};
+    obj[type] = data;
+    this.submitFile = { ...this.submitFile, ...obj };
+  }
+
   // 获取评级信息数据
   async getTableData(val: any) {
     if (val instanceof Array && val.length) {
@@ -392,6 +431,46 @@ export default class ChannelRates extends Vue {
   pass(val: any) {
     (this.$refs["form"] as ElForm).validate(async (v: any) => {
       if (v) {
+        // 校验提示
+        let arr: any = [];
+        Object.values(this.submitFile).forEach((v: any) => {
+          if (v.length) {
+            arr = arr.concat(v);
+          }
+        });
+        // 以下操作仅仅是为了校验必上传项
+        let submitList: any = this.fileListType.map((v: any) => {
+          return {
+            ...v,
+            fileList: arr
+              .filter((j: any) => j.type === v.code)
+              .map((h: any) => ({
+                ...h,
+                name: h.fileName,
+              })),
+          };
+        });
+        let isSubmit = true;
+        let msgList: any = [];
+        submitList.forEach((v: any) => {
+          if (v.subType && !v.fileList.length) {
+            msgList.push(v.name);
+            isSubmit = false;
+          }
+        });
+        if (isSubmit) {
+          this.resPageInfo.channelGradeAttachments = arr.map((v: any) => ({
+            fileId: v.fileId,
+            fileName: v.name,
+            type: v.type,
+          }));
+        } else {
+          this.$message({
+            type: "warning",
+            message: `${msgList.join(",")}项,请上传附件`,
+          });
+          return;
+        }
         this.resPageInfo.operateType = val;
         switch (this.$route.name) {
           case "channelLevelEdit":
