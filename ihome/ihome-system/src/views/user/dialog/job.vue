@@ -4,31 +4,31 @@
  * @Author: zyc
  * @Date: 2020-07-14 14:34:44
  * @LastEditors: zyc
- * @LastEditTime: 2020-08-11 15:16:42
+ * @LastEditTime: 2020-12-14 16:09:16
 --> 
 <template>
   <el-dialog
     v-dialogDrag
-    :title="'分配角色('+data.name+data.account+')'"
+    :title="'分配角色(' + data.name + data.account + ')'"
     :visible.sync="dialogVisible"
     :close-on-click-modal="false"
     :close-on-press-escape="false"
     :before-close="cancel"
     width="1000px"
     top="20px"
-    style="text-align: left;"
+    style="text-align: left"
     class="dialog user-job-role-dialog"
   >
     <div>
       <p class="p-left-border">岗位</p>
-      <div style="text-align:right;">
+      <div style="text-align: right">
         <el-input
-          style="width:300px;"
+          style="width: 300px"
           placeholder="名称 编码"
           class="input-with-select"
           v-model="keyword"
         >
-          <el-button slot="append" icon="el-icon-search" @click="search()"></el-button>
+          <!-- <el-button slot="append" icon="el-icon-search" @click="search()"></el-button> -->
         </el-input>
       </div>
       <br />
@@ -42,7 +42,9 @@
       >
         <el-table-column property="selected" label width="30">
           <template slot-scope="scope">
-            <ih-table-radio :radio="scope.row.id==currentItem.id"></ih-table-radio>
+            <ih-table-radio
+              :radio="scope.row.id == currentItem.id"
+            ></ih-table-radio>
           </template>
         </el-table-column>
         <el-table-column prop="name" label="名称" width="180"></el-table-column>
@@ -97,7 +99,10 @@ export default class UserJobRole extends Vue {
   rightData: any = [];
 
   filterMethod(query: any, item: any) {
-    return item.code.indexOf(query) > -1 || item.name.indexOf(query) > -1;
+    return (
+      item.code.toLowerCase().indexOf(query.toLowerCase()) > -1 ||
+      item.name.toLowerCase().indexOf(query.toLowerCase()) > -1
+    );
   }
 
   cancel() {

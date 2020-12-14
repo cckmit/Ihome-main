@@ -4,7 +4,7 @@
  * @Author: zyc
  * @Date: 2020-07-09 16:53:27
  * @LastEditors: zyc
- * @LastEditTime: 2020-12-09 17:54:48
+ * @LastEditTime: 2020-12-14 15:17:53
 --> 
 <template>
   <el-dialog
@@ -140,7 +140,7 @@
                 clearable
                 placeholder="请选择用户类别"
                 class="width--100"
-                :disabled="true"
+                :disabled="false"
               >
                 <el-option
                   v-for="item in $root.dictAllList('UserType')"
@@ -235,10 +235,10 @@ export default class BatchOperationUser extends Vue {
   selectList: any = [];
   queryPageParameters: any = {
     account: null,
-    accountType: "Ihome",
+    accountType: null,
     employeeCode: null,
-    employeeStatus: "On",
-    employeeType: "Formal",
+    employeeStatus:null,
+    employeeType: null,
     employmentDateEnd: null,
     employmentDateStart: null,
     employmentDate: null,
@@ -249,9 +249,9 @@ export default class BatchOperationUser extends Vue {
     name: null,
     orgId: null,
     permissionOrgId: null,
-    status: "Valid",
+    status:null,
     workType: null,
-    userType: "Staff",
+    userType: null,
   };
   jobVisibleData: any = null;
   OrganizationJurisdictionData: any = null;

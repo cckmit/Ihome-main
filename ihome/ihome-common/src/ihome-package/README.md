@@ -2,6 +2,7 @@
 # ihome-common
 ## 日志
 ```
+v1.1.53 2020-12-14 11:15  左右拉动容器 IhLeftRightContainer
 v1.1.52 2020-12-11 16:39  下拉组件注册
 v1.1.51 2020-12-07 15:52  渠道商下拉框IhSelectPageByChannel&修改下拉框组件
 v1.1.50 2020-12-07 15:52  事业部下拉框IhSelectPageDivision

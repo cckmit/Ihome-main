@@ -4,7 +4,7 @@
  * @Author: zyc
  * @Date: 2020-06-30 09:21:17
  * @LastEditors: zyc
- * @LastEditTime: 2020-12-11 14:08:54
+ * @LastEditTime: 2020-12-14 15:53:24
 --> 
 <template>
   <ih-page>
@@ -638,7 +638,7 @@ export default class UserList extends Vue {
       confirmButtonText: "确定",
       cancelButtonText: "取消",
       inputPattern: /^[a-zA-Z0-9@#$%^&]{8,20}$/,
-      inputErrorMessage: "新密码8-20位，仅包含数字字母及@#$%^&",
+      inputErrorMessage: "密码必须包含大写字母、小写字母、数字、特殊字符（@#$%^&）,长度8-20位",
     })
       .then(async (obj: any) => {
         await post_user_resetPassword({
