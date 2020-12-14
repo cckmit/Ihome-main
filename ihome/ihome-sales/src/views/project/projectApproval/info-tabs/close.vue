@@ -4,7 +4,7 @@
  * @Author: wwq
  * @Date: 2020-11-27 17:26:20
  * @LastEditors: wwq
- * @LastEditTime: 2020-12-12 18:09:09
+ * @LastEditTime: 2020-12-14 09:41:08
 -->
 <template>
   <div>
@@ -164,12 +164,4 @@ export default class Close extends Vue {
 }
 </script>
 <style lang="scss" scoped>
-.setMeal {
-  display: flex;
-  flex-flow: row nowrap;
-  justify-content: flex-start;
-}
-.setMealButton {
-  margin: 5px 0 0 20px;
-}
 </style>
