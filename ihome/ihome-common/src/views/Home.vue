@@ -4,7 +4,7 @@
  * @Author: wwq
  * @Date: 2020-09-16 14:54:19
  * @LastEditors: zyc
- * @LastEditTime: 2020-12-10 15:45:37
+ * @LastEditTime: 2020-12-14 16:49:10
 -->
 <template>
   <div>
@@ -47,16 +47,16 @@ export default class Home extends Vue {
     },
     {
       key: "IhSelectPageUser",
-      name: "用户下拉分页",
-      desc: "用户下拉分页组件，支持多列，搜索，分页",
+      name: "下拉分页",
+      desc: "下拉分页组件，支持多列，搜索，分页",
       path: "/selectPage",
     },
-     {
-      key: "IhSelectPageDivision",
-      name: "事业部下拉分页",
-      desc: "事业部下拉分页组件，支持多列，搜索，分页",
-      path: "/SelectPageDivision",
-    },
+    //  {
+    //   key: "IhSelectPageDivision",
+    //   name: "事业部下拉分页",
+    //   desc: "事业部下拉分页组件，支持多列，搜索，分页",
+    //   path: "/SelectPageDivision",
+    // },
     {
       key: "IhTableCheckBox",
       name: "表格多选",
@@ -68,6 +68,12 @@ export default class Home extends Vue {
       name: "input输入数字限制小数位数",
       desc: "限制input框只能输入数字，支持小数位数限制",
       path: "/inputDigits",
+    },
+     {
+      key: "IhLeftRightContainer",
+      name: "左右拖拽大小容器",
+      desc: "鼠标经过分割线可拖拽左右宽度,参考字典页面",
+      path: "/leftRightContainer",
     },
   ];
   info(scope: any) {
