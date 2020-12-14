@@ -4,7 +4,7 @@
  * @Author: ywl
  * @Date: 2020-09-27 16:27:36
  * @LastEditors: ywl
- * @LastEditTime: 2020-12-11 09:52:49
+ * @LastEditTime: 2020-12-14 15:05:13
 -->
 <template>
   <IhPage label-width="80px">
@@ -93,6 +93,12 @@
                     placeholder="请选择甲方"
                     class="width--100"
                   >
+                    <el-option
+                      v-for="item in companyList"
+                      :key="item.id"
+                      :label="item.name"
+                      :value="item.id"
+                    ></el-option>
                   </el-select>
                 </el-form-item>
               </el-col>
@@ -165,8 +171,8 @@
             导出<i class="el-icon-arrow-down el-icon--right"></i>
           </el-button>
           <el-dropdown-menu slot="dropdown">
-            <el-dropdown-item>导出列表</el-dropdown-item>
-            <el-dropdown-item>导出附件</el-dropdown-item>
+            <el-dropdown-item @click.native.prevent="handleExport()">导出列表</el-dropdown-item>
+            <el-dropdown-item @click.native.prevent="handleExportFile()">导出附件</el-dropdown-item>
           </el-dropdown-menu>
         </el-dropdown>
         <el-link
@@ -185,6 +191,12 @@
         :empty-text="emptyText"
         @selection-change="handleSelectionChange"
       >
+        <el-table-column
+          fixed
+          type="selection"
+          width="50"
+          align="center"
+        ></el-table-column>
         <el-table-column
           fixed
           label="编号"
@@ -245,7 +257,7 @@
         <el-table-column
           label="客户电话"
           prop="ownerMobile"
-          width="120"
+          width="125"
         >
           <template v-slot="{ row }">
             <div
@@ -257,7 +269,7 @@
         <el-table-column
           label="状态"
           prop="notificationStatus"
-          width="120"
+          width="135"
         >
           <template v-slot="{ row }">
             {{$root.dictAllName(row.notificationStatus, 'NotificationStatus')}}
@@ -305,8 +317,11 @@ import SelectPageByProject from "@/components/SelectPageByProject.vue";
 import SelectPageByCycle from "@/components/SelectPageByCycle.vue";
 import SelectPageByBuild from "@/components/SelectPageByBuild.vue";
 import SelectPageByRoom from "@/components/selectPageByRoom.vue";
+import axios from "axios";
+import { getToken } from "ihome-common/util/cookies";
 
 import { post_notice_list } from "@/api/contract/index";
+import { post_company_getAll } from "@/api/system/index";
 
 @Component({
   components: {
@@ -332,24 +347,74 @@ export default class DiscountList extends Vue {
     buyUnit: null,
   };
   private timeList: any = [];
+  private companyList: any = [];
   private searchOpen = true;
   resPageInfo: any = {
     total: null,
     list: [],
   };
+  private selectionData: any = [];
 
+  private handleExport() {
+    if (!this.selectionData.length) {
+      this.$message.warning("请先勾选表格数据");
+      return;
+    }
+    const token: any = getToken();
+    axios({
+      method: "POST",
+      url: `/sales-api/contract/export/notice/list`,
+      xsrfHeaderName: "Authorization",
+      responseType: "blob",
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: "bearer " + token,
+      },
+      data: this.selectionData.map((i: any) => i.id),
+    }).then((res: any) => {
+      const href = window.URL.createObjectURL(res.data);
+      const $a = document.createElement("a");
+      $a.href = href;
+      $a.download = "告知书列表.xlsx";
+      $a.click();
+      $a.remove();
+    });
+  }
+  private handleExportFile() {
+    if (!this.selectionData.length) {
+      this.$message.warning("请先勾选表格数据");
+      return;
+    }
+    const token: any = getToken();
+    axios({
+      method: "POST",
+      url: `/sales-api/contract/export/notice/file`,
+      xsrfHeaderName: "Authorization",
+      responseType: "blob",
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: "bearer " + token,
+      },
+      data: this.selectionData.map((i: any) => i.id),
+    }).then((res: any) => {
+      const href = window.URL.createObjectURL(res.data);
+      const $a = document.createElement("a");
+      $a.href = href;
+      $a.download = "优惠告知书附件.zip";
+      $a.click();
+      $a.remove();
+    });
+  }
   private openToggle(): void {
     this.searchOpen = !this.searchOpen;
   }
   private preview(row: any) {
     window.open(
-      `/sales-api/sales-document-cover/file/browse/${
-        row.templateId || "5fc62269282f220001926755"
-      }`
+      `/sales-api/sales-document-cover/file/browse/${row.templateId}`
     );
   }
   private handleSelectionChange(val: any): void {
-    console.log(val);
+    this.selectionData = val;
   }
   private handleSearch() {
     // let sign = this.timeList && this.timeList.length;
@@ -382,16 +447,18 @@ export default class DiscountList extends Vue {
     if (this.queryPageParameters.notificationTypes) {
       notificationTypes = [this.queryPageParameters.notificationTypes];
     }
-    console.log(notificationStatuses, notificationTypes);
-
     this.resPageInfo = await post_notice_list({
       ...this.queryPageParameters,
       notificationStatuses,
       notificationTypes,
     });
   }
+  private async getCompanyList() {
+    this.companyList = await post_company_getAll({ name: "" });
+  }
 
   created() {
+    this.getCompanyList();
     this.getListMixin();
   }
 }

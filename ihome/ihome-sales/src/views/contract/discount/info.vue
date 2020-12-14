@@ -3,8 +3,8 @@
  * @version: 
  * @Author: ywl
  * @Date: 2020-09-27 17:27:00
- * @LastEditors: wwq
- * @LastEditTime: 2020-12-11 08:43:18
+ * @LastEditors: ywl
+ * @LastEditTime: 2020-12-14 14:45:37
 -->
 <template>
   <IhPage class="text-left">
@@ -73,7 +73,7 @@
         <el-row>
           <el-col :span="24">
             <el-form-item label="(拟)购买单位">
-              {{`${resInfo.buyUnit}栋-${resInfo.roomNumberId}`}}
+              {{`${resInfo.buyUnitName}栋-${resInfo.roomNumberName}`}}
             </el-form-item>
           </el-col>
         </el-row>
@@ -154,10 +154,7 @@
 <script lang="ts">
 import { Component, Vue } from "vue-property-decorator";
 
-import {
-  get_notice_detail__id,
-  post_notice_preview__noticeId,
-} from "@/api/contract/index";
+import { get_notice_detail__id } from "@/api/contract/index";
 
 @Component({})
 export default class DiscountDetail extends Vue {
@@ -180,10 +177,10 @@ export default class DiscountDetail extends Vue {
   }
 
   private async preview(): Promise<void> {
-    let id = this.$route.query.id;
     try {
-      let res = await post_notice_preview__noticeId({ noticeId: id });
-      console.log(res);
+      window.open(
+        `/sales-api/sales-document-cover/file/browse/${this.resInfo.templateId}`
+      );
     } catch (error) {
       console.log(error);
     }
