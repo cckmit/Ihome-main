@@ -3,8 +3,8 @@
  * @version: 
  * @Author: wwq
  * @Date: 2020-08-13 11:40:10
- * @LastEditors: ywl
- * @LastEditTime: 2020-11-30 17:49:55
+ * @LastEditors: wwq
+ * @LastEditTime: 2020-12-14 19:44:40
 -->
 <template>
   <IhPage label-width="100px">
@@ -78,19 +78,7 @@
           </el-col>
           <el-col :span="8">
             <el-form-item label="事业部">
-              <el-select
-                v-model="queryPageParameters.departmentOrgId"
-                clearable
-                placeholder="事业部"
-                class="width--100"
-              >
-                <el-option
-                  v-for="item in departmentOrgIdOptions"
-                  :key="item.code"
-                  :label="item.name"
-                  :value="item.code"
-                ></el-option>
-              </el-select>
+              <IhSelectPageDivision v-model="queryPageParameters.departmentOrgId"></IhSelectPageDivision>
             </el-form-item>
           </el-col>
           <el-col :span="8">
@@ -367,20 +355,6 @@ export default class UserList extends Vue {
   dialogVisible = false;
 
   channelOptions: any = [];
-  departmentOrgIdOptions: any = [
-    {
-      name: "人事部",
-      id: "111",
-    },
-    {
-      name: "产品研发部",
-      id: "222",
-    },
-    {
-      name: "技术部",
-      id: "333",
-    },
-  ];
 
   inputUserOptions: any = [
     {

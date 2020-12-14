@@ -4,7 +4,7 @@
  * @Author: ywl
  * @Date: 2020-09-18 09:14:40
  * @LastEditors: ywl
- * @LastEditTime: 2020-10-23 17:44:13
+ * @LastEditTime: 2020-12-14 15:32:34
 -->
 <template>
   <IhPage>
@@ -299,9 +299,10 @@ export default class Maintenance extends Vue {
     this.isAdd = false;
   }
   async getListMixin() {
-    this.resPageInfo = await post_channelAgent_getList(
-      this.queryPageParameters
-    );
+    this.resPageInfo = await post_channelAgent_getList({
+      ...this.queryPageParameters,
+      channelId: this.$route.query.id,
+    });
   }
 
   async created() {

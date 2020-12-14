@@ -4,7 +4,7 @@
  * @Author: zyc
  * @Date: 2020-07-01 10:32:40
  * @LastEditors: zyc
- * @LastEditTime: 2020-12-11 09:50:28
+ * @LastEditTime: 2020-12-14 16:25:10
 --> 
 
 <template>
@@ -27,7 +27,7 @@
           <el-form-item label="账号类型" prop="accountType">
             <el-select v-model="form.accountType" placeholder="请选择账号类型">
               <el-option
-                v-for="item in $root.dictAllList('UserAccountType')"
+                v-for="item in $root.dictAllList('UserAccountType','Staff')"
                 :key="item.code"
                 :label="item.name"
                 :value="item.code"

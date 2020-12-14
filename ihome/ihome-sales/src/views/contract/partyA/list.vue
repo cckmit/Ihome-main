@@ -4,7 +4,7 @@
  * @Author: ywl
  * @Date: 2020-09-25 11:53:51
  * @LastEditors: ywl
- * @LastEditTime: 2020-12-11 10:24:36
+ * @LastEditTime: 2020-12-14 10:00:10
 -->
 <template>
   <IhPage label-width="100px">
@@ -260,7 +260,7 @@
           fixed
           label="标题"
           prop="title"
-          min-width="235"
+          min-width="205"
         ></el-table-column>
         <el-table-column
           label="甲方"
@@ -279,7 +279,7 @@
         <el-table-column
           label="乙方"
           prop="partyBName"
-          min-width="150"
+          min-width="215"
         ></el-table-column>
         <el-table-column
           label="合作项目"
@@ -304,7 +304,7 @@
         <el-table-column
           label="合同编号"
           prop="contractNo"
-          width="200"
+          width="265"
         ></el-table-column>
         <el-table-column
           label="审核状态"
@@ -317,7 +317,7 @@
         <el-table-column
           label="归档状态"
           prop="archiveStatus"
-          width="100"
+          width="120"
         >
           <template v-slot="{ row }">
             {{ $root.dictAllName(row.archiveStatus, "ArchiveStatus") }}

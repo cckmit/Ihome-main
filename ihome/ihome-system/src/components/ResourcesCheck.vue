@@ -4,7 +4,7 @@
  * @Author: zyc
  * @Date: 2020-07-09 15:03:17
  * @LastEditors: zyc
- * @LastEditTime: 2020-12-09 14:56:17
+ * @LastEditTime: 2020-12-14 15:21:34
 --> 
 <template>
   <el-dialog
@@ -28,10 +28,10 @@
           placeholder="请选择"
         >
           <el-option
-            v-for="(item,index) in $root.dictAllList('Module')" 
+            v-for="(item,index) in $root.dictAllList('ResourceType','AllowAdjust')" 
             :key="index"
-            :label="item.label"
-            :value="item.value"
+            :label="item.name"
+            :value="item.code"
           ></el-option>
         </el-select>
       </div>

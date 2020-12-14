@@ -4,7 +4,7 @@
  * @Author: wwq
  * @Date: 2020-11-27 17:26:20
  * @LastEditors: wwq
- * @LastEditTime: 2020-12-11 15:43:45
+ * @LastEditTime: 2020-12-12 17:58:13
 -->
 <template>
   <div>
@@ -21,7 +21,7 @@
     <div class="padding-left-20">
       <el-table
         class="ih-table"
-        :data="info.settlePleaseVOS"
+        :data="info.settleMakingVOS"
         style="width: 100%"
       >
         <el-table-column
@@ -84,7 +84,7 @@
     <div class="padding-left-20">
       <el-table
         class="ih-table"
-        :data="info.settleMakingVOS"
+        :data="info.settlePleaseVOS"
         style="width: 100%"
       >
         <el-table-column
@@ -135,27 +135,27 @@
     </div>
     <ih-dialog :show="makingEditDialogVisible">
       <MakingEdit
-        :data="editData"
+        :data="makingData"
         @cancel="() => (makingEditDialogVisible = false)"
-        @finish="(data) => MakingEditFinish(data)"
+        @finish="(data) => makingEditFinish(data)"
       />
     </ih-dialog>
     <ih-dialog :show="makingInfoDialogVisible">
       <MakingInfo
-        :data="editData"
+        :data="makingData"
         @cancel="() => (makingInfoDialogVisible = false)"
       />
     </ih-dialog>
     <ih-dialog :show="pleaseEditDialogVisible">
       <PleaseEdit
-        :data="editData"
+        :data="pleaseData"
         @cancel="() => (pleaseEditDialogVisible = false)"
-        @finish="(data) => addFinish(data)"
+        @finish="(data) => pleaseEditFinish(data)"
       />
     </ih-dialog>
     <ih-dialog :show="pleaseInfoDialogVisible">
       <PleaseInfo
-        :data="editData"
+        :data="pleaseData"
         @cancel="() => (pleaseInfoDialogVisible = false)"
       />
     </ih-dialog>
@@ -166,13 +166,15 @@ import { Component, Vue } from "vue-property-decorator";
 import MakingEdit from "../dialog/close-dialog/makingEdit.vue";
 import MakingInfo from "../dialog/close-dialog/makingInfo.vue";
 import PleaseEdit from "../dialog/close-dialog/pleaseEdit.vue";
-import PleaseInfo from "../dialog/close-dialog/pleaseEdit.vue";
+import PleaseInfo from "../dialog/close-dialog/pleaseInfo.vue";
 import {
   get_settleCondition_getPage__termId,
   post_settleCondition_cancelPlease,
   post_settleCondition_cancelMaking,
-  post_collectandsend_add,
-  post_collectandsend_update,
+  post_settleCondition_addMaking,
+  post_settleCondition_updateMaking,
+  post_settleCondition_addPlease,
+  post_settleCondition_updatePlease,
 } from "@/api/project/index.ts";
 @Component({
   components: {
@@ -188,9 +190,12 @@ export default class Close extends Vue {
   pleaseEditDialogVisible = false;
   pleaseInfoDialogVisible = false;
   viewDialogVisible = false;
-  info: any = [];
-  editData: any = {};
-  infoData: any = {};
+  info: any = {
+    settlePleaseVOS: [],
+    settleMakingVOS: [],
+  };
+  makingData: any = {};
+  pleaseData: any = {};
 
   created() {
     this.getInfo();
@@ -207,40 +212,83 @@ export default class Close extends Vue {
 
   add(type: any) {
     if (type === "making") {
+      this.makingData = {
+        id: "",
+        chargeEnum: this.info.chargeEnum,
+        padCommissionEnum: this.info.padCommissionEnum,
+      };
       this.makingEditDialogVisible = true;
     } else {
+      this.pleaseData = {
+        id: "",
+        chargeEnum: this.info.chargeEnum,
+        padCommissionEnum: this.info.padCommissionEnum,
+      };
       this.pleaseEditDialogVisible = true;
     }
   }
 
   edit(row: any, type: any) {
     if (type === "making") {
+      this.makingData = {
+        id: row.settleId,
+        chargeEnum: this.info.chargeEnum,
+        padCommissionEnum: this.info.padCommissionEnum,
+      };
       this.makingEditDialogVisible = true;
     } else {
+      this.pleaseData = {
+        id: row.settleId,
+        chargeEnum: this.info.chargeEnum,
+        padCommissionEnum: this.info.padCommissionEnum,
+      };
       this.pleaseEditDialogVisible = true;
     }
-    console.log(row, type);
   }
 
   view(row: any, type: any) {
     if (type === "making") {
-      this.makingEditDialogVisible = true;
+      this.makingData = {
+        id: row.settleId,
+        chargeEnum: this.info.chargeEnum,
+        padCommissionEnum: this.info.padCommissionEnum,
+      };
+      this.makingInfoDialogVisible = true;
     } else {
-      this.pleaseEditDialogVisible = true;
+      this.pleaseData = {
+        id: row.settleId,
+        chargeEnum: this.info.chargeEnum,
+        padCommissionEnum: this.info.padCommissionEnum,
+      };
+      this.pleaseInfoDialogVisible = true;
     }
   }
 
-  async addFinish(data: any) {
+  async makingEditFinish(data: any) {
     data.termId = this.$route.query.id;
-    if (this.editData.id) {
-      data.packageId = this.editData.id;
-      await post_collectandsend_update(data);
-      this.$message.success("修改成功");
-    } else {
-      await post_collectandsend_add(data);
+    if (!this.makingData.id) {
+      await post_settleCondition_addMaking(data);
       this.$message.success("新增成功");
+    } else {
+      data.settleId = this.makingData.id;
+      await post_settleCondition_updateMaking(data);
+      this.$message.success("修改成功");
     }
-    // this.dialogVisible = false;
+    this.makingEditDialogVisible = false;
+    this.getInfo();
+  }
+
+  async pleaseEditFinish(data: any) {
+    data.termId = this.$route.query.id;
+    if (!this.pleaseData.id) {
+      await post_settleCondition_addPlease(data);
+      this.$message.success("新增成功");
+    } else {
+      data.settleId = this.pleaseData.id;
+      await post_settleCondition_updatePlease(data);
+      this.$message.success("修改成功");
+    }
+    this.pleaseEditDialogVisible = false;
     this.getInfo();
   }
 

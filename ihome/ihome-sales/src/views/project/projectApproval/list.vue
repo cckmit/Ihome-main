@@ -4,7 +4,7 @@
  * @Author: wwq
  * @Date: 2020-11-27 17:11:14
  * @LastEditors: wwq
- * @LastEditTime: 2020-12-11 08:57:56
+ * @LastEditTime: 2020-12-14 11:16:21
 -->
 <template>
   <IhPage label-width="100px">
@@ -129,6 +129,7 @@
         <el-table-column
           prop="proNo"
           label="项目盘编"
+          width="150"
         ></el-table-column>
         <el-table-column
           prop="termName"
@@ -179,9 +180,18 @@
                 <i class="el-icon-arrow-down el-icon--right"></i>
               </span>
               <el-dropdown-menu slot="dropdown">
-                <el-dropdown-item @click.native.prevent="routeTo(row, 'edit')">修改</el-dropdown-item>
-                <el-dropdown-item @click.native.prevent="routeTo(row, 'audit')">审核</el-dropdown-item>
-                <el-dropdown-item @click.native.prevent="remove(row)">删除</el-dropdown-item>
+                <el-dropdown-item
+                  @click.native.prevent="routeTo(row, 'edit')"
+                  :disabled="row.auditEnum !== 'Draft'"
+                >修改</el-dropdown-item>
+                <el-dropdown-item
+                  @click.native.prevent="routeTo(row, 'audit')"
+                  :disabled="!['Reject', 'Draft'].includes(row.auditEnum)"
+                >审核</el-dropdown-item>
+                <el-dropdown-item
+                  @click.native.prevent="remove(row)"
+                  :disabled="row.auditEnum !== 'Draft'"
+                >删除</el-dropdown-item>
                 <el-dropdown-item @click.native.prevent="routeTo(row, 'apply')">申领分销协议</el-dropdown-item>
                 <el-dropdown-item @click.native.prevent="routeTo(row, 'edit')">发起补充协议</el-dropdown-item>
               </el-dropdown-menu>
@@ -212,7 +222,7 @@
 </template>
 <script lang="ts">
 import { Component, Vue } from "vue-property-decorator";
-import { post_term_getList } from "@/api/project/index";
+import { post_term_getList, post_term_del } from "@/api/project/index";
 import PaginationMixin from "@/mixins/pagination";
 import Add from "./dialog/basicInfo-dialog/add.vue";
 
@@ -271,6 +281,20 @@ export default class ProjectApproval extends Vue {
         id: row.termId,
       },
     });
+  }
+
+  async remove(row: any) {
+    try {
+      await this.$confirm("是否确定删除?", "提示");
+      await post_term_del({ termId: row.termId });
+      this.getListMixin();
+      this.$message({
+        type: "success",
+        message: "删除成功!",
+      });
+    } catch (error) {
+      console.log(error);
+    }
   }
 
   search() {

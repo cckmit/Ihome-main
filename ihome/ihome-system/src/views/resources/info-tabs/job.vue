@@ -4,7 +4,7 @@
  * @Author: zyc
  * @Date: 2020-07-07 15:36:27
  * @LastEditors: zyc
- * @LastEditTime: 2020-12-09 17:55:35
+ * @LastEditTime: 2020-12-14 15:30:11
 --> 
 <template>
   <div>
@@ -13,7 +13,10 @@
         style="width: 300px"
         placeholder="名称 编码"
         class="input-with-select"
+        clearable
         v-model="queryPageParameters.key"
+         @keyup.enter.native="search"
+         
       >
         <el-button
           slot="append"
@@ -27,7 +30,7 @@
       <el-table-column type="index" label="序号" width="50"></el-table-column>
       <el-table-column prop="name" label="名称" width="180"></el-table-column>
       <el-table-column prop="code" label="编码" width="180"></el-table-column>
-      <el-table-column prop="describe" label="描述"></el-table-column>
+      <el-table-column prop="remark" label="描述"></el-table-column>
     </el-table>
     <el-pagination
       class="text-right margin-top-20"

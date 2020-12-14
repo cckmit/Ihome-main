@@ -4,7 +4,7 @@
  * @Author: zyc
  * @Date: 2020-06-22 16:44:13
  * @LastEditors: zyc
- * @LastEditTime: 2020-12-11 14:09:36
+ * @LastEditTime: 2020-12-14 17:24:43
 --> 
 <template >
   <div class="main">
@@ -25,10 +25,15 @@
     >
       <h3 style="text-align: center; margin: 10px">登录页面</h3>
       <el-form-item label="账号" prop="username">
-        <el-input v-model="ruleForm.username"></el-input>
+        <el-input placeholder="账号" v-model="ruleForm.username"></el-input>
       </el-form-item>
       <el-form-item label="密码" prop="password">
-        <el-input v-model="ruleForm.password" type="password"></el-input>
+        <el-input
+          placeholder="密码"
+          v-model="ruleForm.password"
+          type="password"
+          @keyup.enter.native="submitForm('ruleForm')"
+        ></el-input>
       </el-form-item>
 
       <el-form-item>
@@ -54,8 +59,8 @@ import { defaultMountApp } from "../setting";
 export default class Login extends Vue {
   loading: boolean = false;
   ruleForm: any = {
-    username: "admin",
-    password: "123456",
+    username: null,
+    password: null,
   };
   rules: any = {
     username: [{ required: true, message: "请输入账号", trigger: "blur" }, {}],

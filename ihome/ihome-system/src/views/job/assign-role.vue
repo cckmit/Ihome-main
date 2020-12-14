@@ -4,7 +4,7 @@
  * @Author: zyc
  * @Date: 2020-07-14 10:03:09
  * @LastEditors: zyc
- * @LastEditTime: 2020-12-10 18:21:55
+ * @LastEditTime: 2020-12-14 11:00:39
 --> 
 <template>
   <el-dialog
@@ -20,7 +20,7 @@
   >
     <div class="text-left dialog-transfer">
       <el-transfer
-        style="height: 500px"
+        style="max-height: 100%"
         class="width--100"
         :titles="['可选数据', '选中数据']"
         filterable
@@ -106,10 +106,18 @@ export default class JobAddEdit extends Vue {
   .el-transfer-panel__filter {
     text-align: left;
   }
-  .el-transfer-panel,
-  .el-transfer-panel__list,
-  .is-filterable {
-    min-height: 500px;
+  // .el-transfer-panel,
+  // .el-transfer-panel__list,
+  // .is-filterable {
+  //   min-height: 500px;
+  // }
+  .el-transfer-panel__list.is-filterable {
+  }
+  .el-transfer-panel__body {
+    height: 500px !important;
+  }
+  .el-transfer-panel__list.is-filterable {
+    height: 430px !important;
   }
 }
 </style>

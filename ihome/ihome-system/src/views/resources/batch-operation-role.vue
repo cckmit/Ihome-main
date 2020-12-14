@@ -4,7 +4,7 @@
  * @Author: zyc
  * @Date: 2020-07-07 16:13:53
  * @LastEditors: zyc
- * @LastEditTime: 2020-12-09 17:55:25
+ * @LastEditTime: 2020-12-14 16:09:01
 --> 
 <template>
   <el-dialog
@@ -26,6 +26,8 @@
           placeholder="名称 编码"
           class="input-with-select"
           v-model="queryPageParameters.key"
+          clearable
+          @keyup.enter.native="getListMixin"
         >
           <el-button
             slot="append"
@@ -67,8 +69,8 @@
 <script lang="ts">
 import { Component, Vue, Prop } from "vue-property-decorator";
 import {
-  post_role_getListByResourceId,
   post_resource_addResourceToRoleBatch,
+  post_role_getList,
 } from "../../api/system/index";
 import PaginationMixin from "../../mixins/pagination";
 // import { Form as ElForm } from "element-ui";
@@ -85,7 +87,6 @@ export default class BatchOperationRole extends Vue {
 
   queryPageParameters: any = {
     key: null,
-    resourceId: 0,
   };
   resPageInfo: any = {
     total: 0,
@@ -120,9 +121,7 @@ export default class BatchOperationRole extends Vue {
   }
 
   async getListMixin() {
-    this.resPageInfo = await post_role_getListByResourceId(
-      this.queryPageParameters
-    );
+    this.resPageInfo = await post_role_getList(this.queryPageParameters);
   }
   async created() {
     console.log(this.data);

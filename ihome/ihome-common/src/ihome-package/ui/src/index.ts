@@ -35,7 +35,7 @@ import {
 } from '../packages/select-page';
 // import { IhSelectPageDivision } from '../packages/select-page';
 import { IhTableCheckBox } from '../packages/table-checkbox'
-
+import { IhLeftRightContainer } from '../packages/left-right-container'
 
 export default (Vue: any) => {
   Vue.component("IhTree", IhTree);
@@ -54,4 +54,6 @@ export default (Vue: any) => {
   Vue.component("IhSelectPageUser", IhSelectPageUser);
   Vue.component("IhSelectPageBase", IhSelectPageBase);
   Vue.component("IhTableCheckBox", IhTableCheckBox);
+  Vue.component("IhLeftRightContainer", IhLeftRightContainer);
+  
 };
