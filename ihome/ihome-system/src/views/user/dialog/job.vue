@@ -4,7 +4,7 @@
  * @Author: zyc
  * @Date: 2020-07-14 14:34:44
  * @LastEditors: zyc
- * @LastEditTime: 2020-12-14 16:09:16
+ * @LastEditTime: 2020-12-14 20:48:25
 --> 
 <template>
   <el-dialog
@@ -20,8 +20,14 @@
     class="dialog user-job-role-dialog"
   >
     <div>
+      <h3>注意：此页面权限为岗位+角色，即选中岗位的所有角色和角色选中的总和</h3>
+      <hr />
+
       <p class="p-left-border">岗位</p>
       <div style="text-align: right">
+        <!-- <el-link @click="cancelClick()" style="float: left; margin-top: 20px"
+          >取消选择</el-link
+        > -->
         <el-input
           style="width: 300px"
           placeholder="名称 编码"
@@ -49,7 +55,17 @@
         </el-table-column>
         <el-table-column prop="name" label="名称" width="180"></el-table-column>
         <el-table-column prop="code" label="编号" width="180"></el-table-column>
-        <el-table-column prop="jobRoles" label="岗位权限"></el-table-column>
+        <el-table-column prop="jobRoleList" label="岗位权限">
+          <template slot-scope="scope">
+            <span
+              class="margin-left:10px;"
+              v-for="(item, index) in scope.row.jobRoleList"
+              :key="index"
+            >
+              【{{ item.name }}】
+            </span>
+          </template>
+        </el-table-column>
       </el-table>
     </div>
 
@@ -76,7 +92,7 @@
 import { Component, Vue, Prop } from "vue-property-decorator";
 import {
   post_job_getAll,
-  post_role_getAllByJobId__jobId,
+  // post_role_getAllByJobId__jobId,
   get_role_getAll,
   post_user_addJobAndRoleBatch,
   post_role_getAllByUserId__userId,
@@ -111,19 +127,15 @@ export default class UserJobRole extends Vue {
 
   async finish() {
     if (this.currentItem && this.currentItem.id > 0) {
-      if (this.rightData && this.rightData.length > 0) {
-        let p: any = {
-          id: this.data.id,
-          jobId: this.currentItem.id,
-          roleIds: this.rightData,
-        };
-        console.log(p);
-        const res = await post_user_addJobAndRoleBatch(p);
-        this.$message.success("操作成功");
-        this.$emit("finish", res);
-      } else {
-        this.$message.warning("选中的角色数据不能为空");
-      }
+      let p: any = {
+        id: this.data.id,
+        jobId: this.currentItem.id,
+        roleIds: this.rightData,
+      };
+      console.log(p);
+      const res = await post_user_addJobAndRoleBatch(p);
+      this.$message.success("操作成功");
+      this.$emit("finish", res);
     } else {
       this.$message.warning("请先选择岗位");
     }
@@ -170,21 +182,24 @@ export default class UserJobRole extends Vue {
       return item.id;
     });
   }
-
+  cancelClick() {
+    this.currentItem = { id: null };
+  }
   async currentChange(val: any) {
     console.log(val);
+
     this.currentItem = val;
-    const res = await post_role_getAllByJobId__jobId({
-      jobId: this.currentItem.id,
-    });
-    res.forEach((item: any) => {
-      item.key = item.id;
-      item.label = item.name + `（${item.code}）`;
-    });
-    this.rightData = res.map((item: any) => {
-      return item.id;
-    });
-    console.log(this.rightData);
+    // const res = await post_role_getAllByJobId__jobId({
+    //   jobId: this.currentItem.id,
+    // });
+    // res.forEach((item: any) => {
+    //   item.key = item.id;
+    //   item.label = item.name + `（${item.code}）`;
+    // });
+    // this.rightData = res.map((item: any) => {
+    //   return item.id;
+    // });
+    // console.log(this.rightData);
   }
 }
 </script>
