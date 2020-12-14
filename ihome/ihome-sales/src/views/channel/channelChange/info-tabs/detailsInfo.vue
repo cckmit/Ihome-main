@@ -4,7 +4,7 @@
  * @Author: lgf
  * @Date: 2020-09-16 14:05:21
  * @LastEditors: ywl
- * @LastEditTime: 2020-12-01 15:03:51
+ * @LastEditTime: 2020-12-14 19:11:02
 -->
 <template>
   <div class="text-left">
@@ -86,7 +86,7 @@
           <el-form-item
             label="状态"
             v-if="info.status"
-          >{{ $root.dictAllName(info.status, 'ChannelStatus') }}</el-form-item>
+          >{{ $root.dictAllName(info.status, 'ChannelChangeStatus') }}</el-form-item>
         </el-col>
       </el-row>
     </el-form>
@@ -182,7 +182,6 @@
       <p class="ih-info-title">确认意见</p>
       <el-input
         type="textarea"
-        placeholder="请输入确认意见"
         v-model="approveRecord.remark"
         :rows="5"
       ></el-input>
@@ -192,6 +191,7 @@
           type="success"
           @click="confirmChannel('Confirm')"
         >提交</el-button>
+        <el-button @click="confirmChannel('Reject')">驳回</el-button>
       </div>
     </template>
 
@@ -274,7 +274,7 @@ export default class DetailInfo extends Vue {
       ...this.approveRecord,
       id: this.$route.query.id,
     });
-    this.$message.success("成功");
+    this.$message.success(`${this.filterType(type).substring(0, 2)}成功`);
     this.$goto({ path: "/channelChange/list" });
   }
   private filterType(type: string): string {
@@ -282,8 +282,9 @@ export default class DetailInfo extends Vue {
       case "Confirm":
         return "确认意见";
       case "Pass":
-      case "Reject":
         return "审核意见";
+      case "Reject":
+        return "驳回意见";
       case "Revoke":
         return "撤回原因";
       default:
