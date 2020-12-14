@@ -4,7 +4,7 @@
  * @Author: wwq
  * @Date: 2020-11-27 17:11:14
  * @LastEditors: wwq
- * @LastEditTime: 2020-12-11 08:57:56
+ * @LastEditTime: 2020-12-12 18:12:48
 -->
 <template>
   <IhPage label-width="100px">
@@ -129,6 +129,7 @@
         <el-table-column
           prop="proNo"
           label="项目盘编"
+          width="150"
         ></el-table-column>
         <el-table-column
           prop="termName"
