@@ -49,7 +49,15 @@ pipeline {
 				echo 'docker build..'
 				sh 'docker build -f Dockerfile -t ${NEXUS3_ADDRESS}/${CURR_MODULE}:${IMAGE_NAME_VERSION} dockerdir/'
             }
-        }		
+        }	
+
+		stage('docker deploy') {
+            steps {
+                echo 'docker deploy..'
+				sh 'export TMP_NEXUS3_DOCKER_PWD="${NEXUS3_DOCKER_CREDS_PSW}" && echo "$TMP_NEXUS3_DOCKER_PWD" | docker login ${NEXUS3_ADDRESS} -u ${NEXUS3_DOCKER_CREDS_USR} --password-stdin'
+                sh 'docker push ${NEXUS3_ADDRESS}/${CURR_MODULE}:${IMAGE_NAME_VERSION}'
+            }
+        }	
     }
 	
 }
