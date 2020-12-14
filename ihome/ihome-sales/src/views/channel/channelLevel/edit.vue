@@ -3,8 +3,8 @@
  * @version: 
  * @Author: wwq
  * @Date: 2020-10-15 16:02:03
- * @LastEditors: ywl
- * @LastEditTime: 2020-11-11 11:44:23
+ * @LastEditors: wwq
+ * @LastEditTime: 2020-12-14 20:20:59
 -->
 <template>
   <IhPage>
@@ -149,19 +149,7 @@
                 label="事业部"
                 align="left"
               >
-                <el-select
-                  class="width--100"
-                  v-model="resPageInfo.departmentOrgId"
-                  clearable
-                  placeholder="请选择事业部"
-                >
-                  <el-option
-                    v-for="item in departmentOrgIdOptions"
-                    :key="item.id"
-                    :label="item.name"
-                    :value="item.id"
-                  ></el-option>
-                </el-select>
+                <IhSelectPageDivision v-model="resPageInfo.departmentOrgId"></IhSelectPageDivision>
               </el-form-item>
             </el-col>
           </el-row>
@@ -331,28 +319,13 @@ export default class ChannelRates extends Vue {
     province: "",
     city: "",
     cityGrade: "",
-    departmentOrgId: "1234",
+    departmentOrgId: "",
     special: "",
     storageNum: "",
     channelGradeItems: [],
     channelGradeAttachments: [],
     provinceOption: [],
   };
-
-  departmentOrgIdOptions: any = [
-    {
-      name: "人事部",
-      id: "111",
-    },
-    {
-      name: "产品研发部",
-      id: "222",
-    },
-    {
-      name: "技术部",
-      id: "333",
-    },
-  ];
 
   private rules: any = {
     channelId: [{ required: true, message: "请选择渠道商", trigger: "change" }],
