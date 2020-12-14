@@ -4,7 +4,7 @@
  * @Author: ywl
  * @Date: 2020-12-09 16:47:26
  * @LastEditors: ywl
- * @LastEditTime: 2020-12-09 17:09:54
+ * @LastEditTime: 2020-12-14 09:35:24
 -->
 <template>
   <el-dialog
@@ -14,21 +14,23 @@
     :close-on-press-escape="false"
     :before-close="cancel"
     width="460px"
-    title="红冲"
+    :title="`${this.isHandmade ? '手工' : '自动'}红冲`"
     class="text-left"
   >
     <div class="red-content">
-      <div class="item">
-        <el-checkbox v-model="form.checked">仅初始化开票信息</el-checkbox>
-      </div>
-      <div class="item">
-        <el-checkbox v-model="form.checked2">初始化开票信息并将请款单退回起草状态</el-checkbox>
-      </div>
+      <el-radio-group v-model="form.state">
+        <div class="item">
+          <el-radio :label="1">仅初始化开票信息</el-radio>
+        </div>
+        <div class="item">
+          <el-radio :label="2">初始化开票信息并将请款单退回起草状态</el-radio>
+        </div>
+      </el-radio-group>
       <div>
         <el-input
           type="textarea"
           :rows="4"
-          v-model="form.xx"
+          v-model="form.remark"
           placeholder="备注信息"
         ></el-input>
       </div>
@@ -44,21 +46,40 @@
 </template>
 
 <script lang="ts">
-import { Component, Vue } from "vue-property-decorator";
+import { Component, Vue, Prop } from "vue-property-decorator";
+import {
+  post_invoice_handHCInvoicing,
+  post_invoice_autoHCInvoicing,
+} from "../../../../api/finance/index";
 
 @Component({})
 export default class RedDashed extends Vue {
+  @Prop() isHandmade!: any;
+  @Prop() data!: any;
+
   private dialogVisible = true;
   private form: any = {
-    checked: true,
-    checked2: false,
+    state: 1,
+    remark: null,
+    ids: [],
   };
 
   cancel(): void {
     this.$emit("cancel", false);
   }
-  finish(): void {
+  async finish() {
+    let res = 0;
+    if (this.isHandmade) {
+      res = await post_invoice_handHCInvoicing(this.form);
+    } else {
+      res = await post_invoice_autoHCInvoicing(this.form);
+    }
+    this.$message.success(`${res}条数据红冲成功`);
     this.$emit("finish");
+  }
+
+  created() {
+    this.form.ids = this.data.ids;
   }
 }
 </script>

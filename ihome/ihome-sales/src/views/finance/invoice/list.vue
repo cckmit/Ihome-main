@@ -4,7 +4,7 @@
  * @Author: ywl
  * @Date: 2020-12-08 17:45:05
  * @LastEditors: ywl
- * @LastEditTime: 2020-12-12 16:52:30
+ * @LastEditTime: 2020-12-14 09:36:09
 -->
 <template>
   <IhPage label-width="80px">
@@ -110,8 +110,8 @@
           @click="reset()"
         >重置</el-button>
         <el-button @click="handleAutoAll()">批量自动开票</el-button>
-        <el-button>批量自动红冲</el-button>
-        <el-button @click="redVisble = true">批量手工红冲</el-button>
+        <el-button @click="handleHCByAuto()">批量自动红冲</el-button>
+        <el-button @click="handleHCByHandmade()">批量手工红冲</el-button>
         <el-button>批量下载发票</el-button>
       </el-row>
     </template>
@@ -234,6 +234,10 @@
       <HandmadelInvoice
         :data="itemData.data"
         @cancel="() => (dialogVisible = false)"
+        @finish="() => {
+          dialogVisible = false;
+          getListMixin();
+        }"
       />
     </IhDialog>
     <IhDialog :show="autoVisble">
@@ -248,7 +252,15 @@
       />
     </IhDialog>
     <IhDialog :show="redVisble">
-      <RedDashed @cancel="() => (redVisble = false)" />
+      <RedDashed
+        :data="itemData"
+        :isHandmade="isHandmade"
+        @cancel="() => (redVisble = false)"
+        @finish="() => {
+          redVisble = false;
+          getListMixin();
+        }"
+      />
     </IhDialog>
   </IhPage>
 </template>
@@ -288,8 +300,55 @@ export default class InvoiceList extends Vue {
     data: {},
   };
   isAll = false;
+  isHandmade = true;
   private selection: any = [];
 
+  /**
+   * @description: 自动红冲-批量
+   */
+  private handleHCByAuto() {
+    if (this.selection.length) {
+      if (
+        !this.selection.map((i: any) => i.status).includes("NotDone") &&
+        !this.selection.map((i: any) => i.operationType).includes("Hand")
+      ) {
+        this.isHandmade = false;
+        this.itemData.ids = this.selection.map((i: any) => i.id);
+        this.redVisble = true;
+      } else {
+        this.$message.warning(
+          "请勾选开票状态为已开票且开票类型为自动开票的数据"
+        );
+        return;
+      }
+    } else {
+      this.$message.warning("请先勾选表格数据");
+      return;
+    }
+  }
+  /**
+   * @description: 手工红冲-批量
+   */
+  private handleHCByHandmade() {
+    if (this.selection.length) {
+      if (
+        !this.selection.map((i: any) => i.status).includes("NotDone") &&
+        !this.selection.map((i: any) => i.operationType).includes("Auto")
+      ) {
+        this.isHandmade = true;
+        this.itemData.ids = this.selection.map((i: any) => i.id);
+        this.redVisble = true;
+      } else {
+        this.$message.warning(
+          "请勾选开票状态为已开票且开票类型为手工开票的数据"
+        );
+        return;
+      }
+    } else {
+      this.$message.warning("请先勾选表格数据");
+      return;
+    }
+  }
   private handleHand(row: any) {
     this.dialogVisible = true;
     this.itemData.data = { ...row };
@@ -298,15 +357,16 @@ export default class InvoiceList extends Vue {
    * @description: 自动开票弹窗--批量
    */
   private handleAutoAll() {
-    if (
-      this.selection.length &&
-      !this.selection.map((i: any) => i.status).includes("Done")
-    ) {
-      this.itemData.ids = this.selection.map((i: any) => i.id);
-      this.isAll = true;
-      this.autoVisble = true;
+    if (this.selection.length) {
+      if (!this.selection.map((i: any) => i.status).includes("Done")) {
+        this.itemData.ids = this.selection.map((i: any) => i.id);
+        this.isAll = true;
+        this.autoVisble = true;
+      } else {
+        this.$message.warning("请选择开票状态为未开票的数据");
+      }
     } else {
-      this.$message.warning("请先勾选表格数据且开票状态为未开票");
+      this.$message.warning("请先勾选表格数据");
       return;
     }
   }
