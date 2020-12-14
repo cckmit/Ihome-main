@@ -52,6 +52,8 @@ pipeline {
         }	
 
 		stage('docker deploy') {
+		    agent any
+		
             steps {
                 echo 'docker deploy..'
 				sh 'export TMP_NEXUS3_DOCKER_PWD="${NEXUS3_DOCKER_CREDS_PSW}" && echo "$TMP_NEXUS3_DOCKER_PWD" | docker login ${NEXUS3_ADDRESS} -u ${NEXUS3_DOCKER_CREDS_USR} --password-stdin'
