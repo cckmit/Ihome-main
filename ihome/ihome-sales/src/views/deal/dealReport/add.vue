@@ -4,7 +4,7 @@
  * @Author: lsj
  * @Date: 2020-10-30 16:38:23
  * @LastEditors: lsj
- * @LastEditTime: 2020-12-10 09:49:30
+ * @LastEditTime: 2020-12-14 20:10:10
 -->
 <template>
   <ih-page class="text-left">
@@ -50,27 +50,26 @@
         </el-col>
         <el-col :span="6">
           <el-form-item label="合同类型" prop="contType">
-            <div class="cont-type-wrapper">
-              <div>
-                <el-select
-                  v-model="postData.contType"
-                  clearable
-                  placeholder="请选择合同类型"
-                  @change="changeContType"
-                  class="width--100">
-                  <el-option
-                    v-for="item in $root.dictAllList('ContType')"
-                    :key="item.code"
-                    :label="item.name"
-                    :value="item.code"
-                  ></el-option>
-                </el-select>
-              </div>
-              <el-button
-                @click="selectReport"
-                v-if="postData.contType === 'DistriDeal'"
-                type="primary" icon="el-icon-plus" size="small">报备信息</el-button>
-            </div>
+            <el-select
+              v-model="postData.contType"
+              clearable
+              placeholder="请选择合同类型"
+              @change="changeContType"
+              class="width--100">
+              <el-option
+                v-for="item in $root.dictAllList('ContType')"
+                :key="item.code"
+                :label="item.name"
+                :value="item.code"
+              ></el-option>
+            </el-select>
+          </el-form-item>
+        </el-col>
+        <el-col :span="6" v-if="postData.contType === 'DistriDeal'">
+          <el-form-item label="报备信息" :prop="postData.contType === 'DistriDeal' ? 'reportId' : ''">
+            <el-input placeholder="请选择已成交的报备信息" readonly v-model="postData.reportName">
+              <el-button slot="append" icon="el-icon-search" @click.native.prevent="selectReport"></el-button>
+            </el-input>
           </el-form-item>
         </el-col>
         <el-col :span="6" v-if="postData.contType !== 'NaturalVisitDeal'">
@@ -108,7 +107,7 @@
           <el-form-item label="是否市场化项目" prop="isMarketProject">
             <el-select
               v-model="postData.isMarketProject"
-              clearable
+              disabled
               placeholder="请选择"
               class="width--100">
               <el-option label="是" value="yes"></el-option>
@@ -167,11 +166,11 @@
             </el-select>
           </el-form-item>
         </el-col>
-        <el-col :span="6">
+        <el-col :span="6" v-if="!!id">
           <el-form-item label="是否代销" prop="isMat">
             <el-select
               v-model="postData.isMat"
-              clearable
+              disabled
               placeholder="请选择是否垫佣"
               class="width--100">
               <el-option label="是" value="yes"></el-option>
@@ -292,7 +291,7 @@
               placeholder="请选择物业类型"
               class="width--100">
               <el-option
-                v-for="item in $root.dictAllList('PropertyEnum')"
+                v-for="item in $root.dictAllList('Property')"
                 :key="item.code"
                 :label="item.name"
                 :value="item.code"
@@ -375,14 +374,18 @@
     <el-row style="padding-left: 20px">
       <el-col>
         <div class="add-all-wrapper">
-          <el-button type="success">添加</el-button>
+          <el-button type="success" @click="handleAddNotice">添加</el-button>
         </div>
         <el-table
           class="ih-table"
           :data="postData.offerNoticeVO">
-          <el-table-column prop="offerNoticeName" label="名称" min-width="120"></el-table-column>
-          <el-table-column prop="offerNoticeCode" label="优惠告知书编号" min-width="120"></el-table-column>
-          <el-table-column prop="offerNoticeStatus" label="优惠告知书状态" min-width="120"></el-table-column>
+          <el-table-column prop="notificationType" label="名称" min-width="120">
+            <template v-slot="{ row }">
+              {{$root.dictAllName(row.notificationType, 'NotificationType')}}
+            </template>
+          </el-table-column>
+          <el-table-column prop="noticeNo" label="优惠告知书编号" min-width="120"></el-table-column>
+          <el-table-column prop="notificationStatusByName" label="优惠告知书状态" min-width="120"></el-table-column>
           <el-table-column fixed="right" label="操作" width="100">
             <template slot-scope="scope">
               <el-link
@@ -405,15 +408,15 @@
         <el-table
           class="ih-table"
           :data="postData.customerVO">
-          <el-table-column prop="customerNo" label="客户编号" min-width="120"></el-table-column>
-          <el-table-column prop="customerType" label="客户类型" min-width="120">
+          <el-table-column prop="custCode" label="客户编号" min-width="150"></el-table-column>
+          <el-table-column prop="custType" label="客户类型" min-width="120">
             <template slot-scope="scope">
               <el-select
-                v-model="scope.row.customerType"
+                v-model="scope.row.custType"
                 clearable
                 placeholder="客户类型">
                 <el-option
-                  v-for="item in $root.dictAllList('CommObjectType')"
+                  v-for="item in $root.dictAllList('CustType')"
                   :key="item.code"
                   :label="item.name"
                   :value="item.code"
@@ -421,17 +424,17 @@
               </el-select>
             </template>
           </el-table-column>
-          <el-table-column prop="customerName" label="客户名称" min-width="120">
+          <el-table-column prop="custName" label="客户名称" min-width="120">
             <template slot-scope="scope">
-              <el-input v-model="scope.row.customerName" clearable placeholder="客户名称" />
+              <el-input v-model="scope.row.custName" clearable placeholder="客户名称" />
             </template>
           </el-table-column>
-          <el-table-column prop="customerPhone" label="手机号码" min-width="120">
+          <el-table-column prop="custTel" label="手机号码" min-width="120">
             <template slot-scope="scope">
-              <el-input v-model="scope.row.customerPhone" clearable placeholder="手机号码" />
+              <el-input v-model="scope.row.custTel" clearable placeholder="手机号码" />
             </template>
           </el-table-column>
-          <el-table-column prop="cardType" label="证件类型" min-width="150">
+          <el-table-column prop="cardType" label="证件类型" min-width="120">
             <template slot-scope="scope">
               <el-select
                 v-model="scope.row.cardType"
@@ -446,12 +449,12 @@
               </el-select>
             </template>
           </el-table-column>
-          <el-table-column prop="cardNo" label="证件编号" min-width="150">
+          <el-table-column prop="certificateNumber" label="证件编号" min-width="150">
             <template slot-scope="scope">
-              <el-input v-model="scope.row.cardNo" clearable placeholder="证件编号" />
+              <el-input v-model="scope.row.certificateNumber" clearable placeholder="证件编号" />
             </template>
           </el-table-column>
-          <el-table-column prop="email" label="邮箱" min-width="150">
+          <el-table-column prop="email" label="邮箱" min-width="120">
             <template slot-scope="scope">
               <el-input v-model="scope.row.email" clearable placeholder="邮箱" />
             </template>
@@ -736,12 +739,17 @@
       </el-row>
     </div>
     <div class="text-center btn-top">
-      <el-button type="primary" @click="save()">保存</el-button>
-      <el-button type="success" @click="save()">提交</el-button>
+      <el-button type="primary" @click="handleSave('save')" v-if="currentType !== 'add'">保存</el-button>
+      <el-button type="success" @click="handleSave('submit')">提交</el-button>
       <el-button @click="cancel()">取消</el-button>
     </div>
     <div class="nav-box">
-      <div @click="goAnchor(item.id)" v-for="item in navList" :key="item.id" class="nav-item">{{item.name}}</div>
+      <div class="nav-icon" @click="navFlag = !navFlag " :title="navFlag ? '收起' : '展开'">
+        <i :class="navFlag ? 'el-icon-s-unfold' : 'el-icon-s-fold'"></i>
+      </div>
+      <div :class="navFlag ? 'nav-wrapper' : 'nav-wrapper nav-transition'">
+        <div @click="goAnchor(item.id)" v-for="item in navList" :key="item.id" class="nav-item">{{item.name}}</div>
+      </div>
     </div>
     <ih-dialog :show="dialogAddProjectCycle" desc="选择项目周期列表">
       <SelectProjectCycle
@@ -751,6 +759,16 @@
             (data) => {
               dialogAddProjectCycle = false;
               finishAddProjectCycle(data);
+            }
+          "
+      />
+    </ih-dialog>
+    <ih-dialog :show="dialogAddNotice" desc="选择优惠告知书列表">
+      <SelectNoticeList
+        @cancel="() => (dialogAddNotice = false)"
+        @finish="
+            (data) => {
+              finishAddNotice(data);
             }
           "
       />
@@ -795,7 +813,6 @@
         @cancel="() => (dialogAddCustomer = false)"
         @finish="
             (data) => {
-              dialogAddCustomer = false;
               finishAddCustomer(data);
             }
           "
@@ -828,6 +845,7 @@
 <script lang="ts">
   import {Component, Vue} from "vue-property-decorator";
   import SelectProjectCycle from "@/views/deal/dealReport/dialog/selectProjectCycle.vue";
+  import SelectNoticeList from "@/views/deal/dealReport/dialog/selectNoticeList.vue";
   import SelectReportInfo from "@/views/deal/dealReport/dialog/selectReportInfo.vue";
   import AgentCompanyList from "@/views/deal/dealReport/dialog/agentCompanyList.vue";
   import SelectRoom from "@/views/deal/dealReport/dialog/selectRoom.vue";
@@ -835,25 +853,36 @@
   import AddBroker from "@/views/deal/dealReport/dialog/addBroker.vue";
   import EditDealAchieve from "@/views/deal/dealReport/dialog/editDealAchieve.vue";
   import {
-    post_achieveScaleScheme_add,
-    get_achieveScaleScheme_get__id,
-    post_achieveScaleScheme_update
+    get_achieveScaleScheme_get__id, // 编辑功能
+    post_deal_entryDealBasicInf, // 案场岗 - 录入成交信息
+    post_deal_achieveAllotEntry, // 文员岗 - 录入成交信息
+    post_deal_updateDealBasicInf, // 案场岗 - 修改成交信息
+    post_deal_updateAchieveAllot, // 文员岗 - 修改成交信息
   } from "@/api/deal";
   import {Form as ElForm} from "element-ui";
   import {NoRepeatHttp} from "ihome-common/util/aop/no-repeat-http";
 
   @Component({
-    components: {AddCustomer, AddBroker, SelectProjectCycle, SelectRoom,
-      AgentCompanyList, SelectReportInfo, EditDealAchieve},
+    components: {
+      AddCustomer,
+      AddBroker,
+      SelectProjectCycle,
+      SelectNoticeList,
+      SelectRoom,
+      AgentCompanyList,
+      SelectReportInfo,
+      EditDealAchieve},
   })
   export default class DealReportAdd extends Vue {
     currentType: any = null; // 用来区别是文员岗(add)位还是案场岗位(declare)
     postData: any = {
       dealCode: null,
-      cycleId: null,
-      cycleName: null,
+      cycleId: null, // 接口用到的id
+      cycleName: null, // 只用于显示
       businessType: null,
       contType: null,
+      reportId: null, // 已成交的报备信息id
+      reportName: null, // 已成交的报备信息名称
       subdivisionType: null,
       channelId: null,
       channelName: null,
@@ -921,6 +950,9 @@
       contType: [
         {required: true, message: "合同类型必选", trigger: "change"},
       ],
+      reportId: [
+        {required: true, message: "已成交的报备信息必选", trigger: "change"},
+      ],
       subdivisionType: [
         {required: true, message: "细分模式必选", trigger: "blur"},
       ],
@@ -964,6 +996,7 @@
     dialogAddBroker: any = false;
     dialogAddProjectCycle: any = false;
     cycleCheckedData: any = [];
+    dialogAddNotice: any = false;
     dialogAddReportInfo: any = false;
     reportCheckedData: any = [];
     dialogAddAgentCompany: any = false;
@@ -1007,6 +1040,7 @@
         name: '平台费用'
       }
     ]; // 锚点列表
+    navFlag: any = true; // 是否折叠锚点
     navList: any = []; // 锚点列表
 
     async created() {
@@ -1029,7 +1063,6 @@
           return list.id !== 5
         })
       }
-      // debugger
       if (this.currentType === 'declare') {
         this.navList = this.navList.filter((list: any) => {
           return (list.id !== 8 && list.id !== 9)
@@ -1128,6 +1161,13 @@
         })
       } else {
         this.navList = (this as any).$tool.deepClone(this.defaultNavList);
+        if (value !== 'DistriDeal') {
+          // 不是分销成交，则删除已选择的报备信息
+          this.postData.reportId = null;
+          this.postData.reportName = null;
+          this.reportCheckedData = [];
+          (this as any).$refs["ruleForm"] && (this as any).$refs["ruleForm"].clearValidate('reportId');
+        }
       }
     }
 
@@ -1178,6 +1218,27 @@
       }
     }
 
+    // 确定选择优惠告知书
+    async finishAddNotice(data: any) {
+      console.log('data', data);
+      if (data.length === 0) return
+      if (this.postData.offerNoticeVO.length > 0) {
+        let flag = false;
+        flag = this.postData.offerNoticeVO.some((item: any) => {
+          return item.id === data[0].id;
+        })
+        if (flag) {
+          this.$message.error('已经存在相同的客户，请从新选择！');
+        } else {
+          this.postData.offerNoticeVO.push(...data);
+          this.dialogAddNotice = false;
+        }
+      } else {
+        this.postData.offerNoticeVO.push(...data);
+        this.dialogAddNotice = false;
+      }
+    }
+
     // 选择已成交的报备信息-分销成交模式下
     selectReport() {
       this.dialogAddReportInfo = true;
@@ -1204,10 +1265,10 @@
 
     // 确定选择渠道商
     finishAddAgentCompany(data: any) {
-      // console.log('data', data);
+      console.log('data', data);
       if (data && data.length > 0) {
-        this.postData.channelName = data[0].name;
-        this.postData.channelId = data[0].id;
+        this.postData.channelName = data[0].channelName;
+        this.postData.channelId = data[0].channelId;
         this.companyCheckedData = [...data];
       }
     }
@@ -1225,6 +1286,11 @@
     async finishAddRoom(data: any) {
       console.log('data', data);
       // this.addTotalPackageList = data;
+    }
+
+    // 添加优惠告知书
+    handleAddNotice() {
+      this.dialogAddNotice = true;
     }
 
     // 预览-优惠告知书
@@ -1246,6 +1312,22 @@
     async finishAddCustomer(data: any) {
       console.log('data', data);
       // this.addTotalPackageList = data;
+      if (data.length === 0) return
+      if (this.postData.customerVO.length > 0) {
+        let flag = false;
+        flag = this.postData.customerVO.some((item: any) => {
+          return item.id === data[0].id;
+        })
+        if (flag) {
+          this.$message.error('已经存在相同的客户，请从新选择！');
+        } else {
+          this.postData.customerVO.push(...data);
+          this.dialogAddCustomer = false;
+        }
+      } else {
+        this.postData.customerVO.push(...data);
+        this.dialogAddCustomer = false;
+      }
     }
 
     // 确定选择渠道经纪人
@@ -1260,7 +1342,9 @@
       console.log(type);
       if (type === 'customer') {
         // 删除客户信息逻辑
-        console.log(111);
+        this.postData.customerVO = this.postData.customerVO.filter((item: any) => {
+          return item.id !== scope.row.id;
+        });
       } else if (type === 'broker') {
         // 删除渠道经纪人逻辑
         console.log(222);
@@ -1360,7 +1444,9 @@
     }
 
     // 保存
-    async save() {
+    async handleSave(type: any) {
+      console.log('type', type);
+      // type: save --- 保存； submit --- 提交
       (this.$refs["ruleForm"] as ElForm).validate(this.addSave);
     }
 
@@ -1382,7 +1468,14 @@
               )
             })
           }
-          await post_achieveScaleScheme_update(postData);
+          // 区别案场岗和文员岗
+          if (this.currentType === 'add') {
+            // 文员岗
+            await post_deal_updateAchieveAllot(postData);
+          } else if (this.currentType === 'declare') {
+            // 案场岗
+            await post_deal_updateDealBasicInf(postData);
+          }
           this.$message.success("编辑成功");
           this.$goto({
             path: "/dealReport/list",
@@ -1401,7 +1494,14 @@
               )
             })
           }
-          await post_achieveScaleScheme_add(postData);
+          // 区别案场岗和文员岗
+          if (this.currentType === 'add') {
+            // 文员岗
+            await post_deal_achieveAllotEntry(postData);
+          } else if (this.currentType === 'declare') {
+            // 案场岗
+            await post_deal_entryDealBasicInf(postData);
+          }
           this.$message.success("新增成功");
           this.$goto({
             path: "/dealReport/list",
@@ -1449,17 +1549,6 @@
     }
   }
 
-  .cont-type-wrapper {
-    width: 100%;
-    display: flex;
-    flex-direction: row;
-    align-items: center;
-
-    div {
-      flex: 1;
-    }
-  }
-
   .ih-type-wrapper {
     width: 100%;
     box-sizing: border-box;
@@ -1485,24 +1574,55 @@
     top: 30%;
     box-sizing: border-box;
     display: flex;
-    flex-direction: column;
-    justify-content: center;
+    flex-direction: row;
+    //align-items: center;
     border: 1px solid #ffffff;
-    color: #ffffff;
-    background-color: #2B4558;
     z-index: 200;
 
-    .nav-item {
-      height: 45px;
-      line-height: 45px;
-      text-align: center;
-      box-sizing: border-box;
-      padding: 0px 20px;
+    .nav-icon {
+      height: 40px;
+      line-height: 42px;
       cursor: pointer;
+      background-color: #2B4558;
+      color: #ffffff;
+      font-size: 29px;
+    }
 
-      &:not(:last-child) {
+    .nav-wrapper {
+      width: 133px;
+      box-sizing: border-box;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      background-color: #2B4558;
+      color: #ffffff;
+      visibility: visible;
+      transform: scaleX(1);
+      transition: all 0.3s;
+      transform-origin: left bottom;
+
+      .nav-item {
+        height: 40px;
+        line-height: 40px;
+        text-align: center;
+        box-sizing: border-box;
+        padding: 0px 10px;
+        cursor: pointer;
+        border-left: 1px solid #ffffff;
         border-bottom: 1px solid #ffffff;
+
+        &:not(:last-child) {
+          border-bottom: 1px solid #ffffff;
+        }
       }
+    }
+
+    .nav-transition {
+      width: 0;
+      visibility: hidden;
+      transform: scaleX(0);
+      transition: all 0.3s;
+      transform-origin: left bottom;
     }
   }
 

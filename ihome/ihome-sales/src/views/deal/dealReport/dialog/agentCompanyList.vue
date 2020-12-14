@@ -24,7 +24,7 @@
           <el-input
             style="width: 30%; margin-right: 20px"
             clearable
-            v-model="queryPageParameters.name"
+            v-model="queryPageParameters.channelName"
             placeholder="渠道公司"
           ></el-input>
           <el-button type="primary" @click="getListMixin()">查询</el-button>
@@ -55,7 +55,7 @@
 <script lang="ts">
   import {Component, Vue, Prop} from "vue-property-decorator";
 
-  import {post_channel_getList} from "@/api/channel";
+  import {post_channelGrade_getChannelAndChannelGrade} from "@/api/channel";
   import PaginationMixin from "@/mixins/pagination";
 
   @Component({
@@ -71,46 +71,46 @@
     private tableMaxHeight: any = 350;
     private tableColumn = [
       {
-        prop: "name",
+        prop: "channelName",
         label: "渠道公司",
         align: "left",
-        minWidth: 200,
+        minWidth: 250,
       },
       {
         prop: "shortName",
         label: "简称",
         align: "left",
-        minWidth: 100,
+        minWidth: 130,
       },
       {
-        prop: "termStart",
+        prop: "channelGradeName",
         label: "渠道等级",
         align: "left",
-        minWidth: 140,
+        minWidth: 130,
       },
       {
-        prop: "province",
+        prop: "provinceName",
         label: "省份",
         align: "left",
-        minWidth: 140,
+        minWidth: 130,
       },
       {
-        prop: "city",
+        prop: "cityName",
         label: "城市",
         align: "left",
-        minWidth: 140,
+        minWidth: 130,
       },
       {
-        prop: "county",
+        prop: "countyName",
         label: "行政区",
         align: "left",
-        minWidth: 140,
+        minWidth: 130,
       },
       {
-        prop: "status",
+        prop: "statusName",
         label: "状态",
         align: "left",
-        minWidth: 140,
+        minWidth: 100,
       }
     ];
     private pageSize = 10;
@@ -128,7 +128,7 @@
     };
 
     queryPageParameters: any = {
-      name: null
+      channelName: null
     };
     currentSelection: any = []; // 当前选择的项
 
@@ -177,10 +177,26 @@
     }
 
     async getListMixin() {
-      const infoList = await post_channel_getList(this.queryPageParameters);
+      const infoList = await post_channelGrade_getChannelAndChannelGrade(this.queryPageParameters);
       if (infoList.list.length > 0) {
         infoList.list.forEach((item: any) => {
           item.checked = false;
+          // 修改显示 ChannelGradeStatus
+          if (item.channelGrade) {
+            item.channelGradeName = (this as any).$root.dictAllName(item.channelGrade, 'ChannelLevel');
+          }
+          if (item.province) {
+            item.provinceName = (this as any).$root.getAreaName(item.province);
+          }
+          if (item.city) {
+            item.cityName = (this as any).$root.getAreaName(item.city);
+          }
+          if (item.county) {
+            item.countyName = (this as any).$root.getAreaName(item.county);
+          }
+          if (item.status) {
+            item.statusName = (this as any).$root.dictAllName(item.status, 'ChannelGradeStatus');
+          }
         })
       }
       this.resPageInfo = JSON.parse(JSON.stringify(infoList));
@@ -195,14 +211,6 @@
           })
         })
       }
-    }
-
-    reset() {
-      this.queryPageParameters = {
-        name: null,
-        pageNum: 1,
-        pageSize: this.queryPageParameters.pageSize
-      };
     }
   }
 </script>
