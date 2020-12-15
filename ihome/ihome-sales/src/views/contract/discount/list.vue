@@ -4,7 +4,7 @@
  * @Author: ywl
  * @Date: 2020-09-27 16:27:36
  * @LastEditors: ywl
- * @LastEditTime: 2020-12-14 15:05:13
+ * @LastEditTime: 2020-12-15 17:27:05
 -->
 <template>
   <IhPage label-width="80px">
@@ -19,6 +19,7 @@
             <el-form-item label="编号">
               <el-input
                 v-model="queryPageParameters.noticeNo"
+                clearable
                 placeholder="请输入编号"
               ></el-input>
             </el-form-item>
@@ -44,6 +45,7 @@
             <el-form-item label="项目名称">
               <!-- @change="queryPageParameters.buyUnit='';queryPageParameters.buyUnit='';" -->
               <SelectPageByProject
+                clearable
                 v-model="queryPageParameters.projectId"
                 placeholder="请选择联动项目"
               ></SelectPageByProject>
@@ -56,6 +58,7 @@
               <el-col :span="8">
                 <el-form-item label="立项周期">
                   <SelectPageByCycle
+                    clearable
                     v-model="queryPageParameters.cycleId"
                     placeholder="请选择立项周期"
                   ></SelectPageByCycle>
@@ -68,6 +71,7 @@
                     v-model="queryPageParameters.buyUnit"
                     :proId="queryPageParameters.projectId"
                     placeholder="请选择栋座"
+                    clearable
                   ></SelectPageByBuild>
                 </el-form-item>
               </el-col>
@@ -79,6 +83,7 @@
                     :proId="queryPageParameters.projectId"
                     :buildingId="queryPageParameters.buyUnit"
                     placeholder="请选择房号"
+                    clearable
                   ></SelectPageByRoom>
                 </el-form-item>
               </el-col>
@@ -136,6 +141,7 @@
                   <el-input
                     v-model="queryPageParameters.ownerName"
                     placeholder="请输入客户"
+                    clearable
                   ></el-input>
                 </el-form-item>
               </el-col>
@@ -144,6 +150,7 @@
                   <el-input
                     v-model="queryPageParameters.ownerMobile"
                     placeholder="请输入客户电话"
+                    clearable
                   ></el-input>
                 </el-form-item>
               </el-col>
@@ -224,12 +231,12 @@
         ></el-table-column>
         <el-table-column
           label="栋座"
-          prop="buyUnit"
+          prop="buyUnitName"
           width="160"
         ></el-table-column>
         <el-table-column
           label="房号"
-          prop="roomNumberId"
+          prop="roomNumberName"
           min-width="160"
         ></el-table-column>
         <el-table-column

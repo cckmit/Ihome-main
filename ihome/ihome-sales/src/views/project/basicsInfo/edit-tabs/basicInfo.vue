@@ -4,7 +4,7 @@
  * @Author: wwq
  * @Date: 2020-11-03 11:52:41
  * @LastEditors: wwq
- * @LastEditTime: 2020-12-11 08:52:50
+ * @LastEditTime: 2020-12-15 09:06:12
 -->
 <template>
   <div>
@@ -493,22 +493,33 @@
         <div class="padding-left-20">
           <el-table
             class="ih-table"
-            :data="form.attachPics"
+            :data="fileListType"
             style="width: 100%"
           >
             <el-table-column
-              prop="proAttachEnum"
+              prop="type"
+              width="180"
               label="类型"
+              align="center"
             >
-              <template v-slot="{ row }">{{
-                $root.dictAllName(row.proAttachEnum, "ProAttach")
-              }}</template>
+              <template v-slot="{ row }">
+                <div><span
+                    style="color: red"
+                    v-if="row.subType"
+                  >*</span>{{row.name}}
+                </div>
+              </template>
             </el-table-column>
             <el-table-column label="附件">
-              <IhUpload
-                :file-list="accFileList"
-                size="100px"
-              ></IhUpload>
+              <template v-slot="{ row }">
+                <IhUpload
+                  :file-list.sync="row.fileList"
+                  :file-size="10"
+                  :file-type="row.code"
+                  size="100px"
+                  @newFileList="queryNew"
+                ></IhUpload>
+              </template>
             </el-table-column>
           </el-table>
         </div>
@@ -586,6 +597,9 @@ export default class EditBasicInfo extends Vue {
     provinceOption: [],
   };
 
+  fileListType: any = [];
+  submitFile: any = {};
+
   contantForm: any = {
     averPrice: null,
     propertyAge: null,
@@ -642,7 +656,6 @@ export default class EditBasicInfo extends Vue {
   houseFileList: any = [];
   radio = "";
   houseList: any = [];
-  accFileList: any = [];
   dialogVisible = false;
   checkBoxChangeList: any = [];
   center: any = { lng: 0, lat: 0 };
@@ -726,15 +739,44 @@ export default class EditBasicInfo extends Vue {
         this.checkBoxChangeList.push(JSON.parse(v));
       });
       this.houseFileList = this.form.proPics.map((v: any) => ({
-        name: v.attachName,
-        fileId: v.attachAddr,
+        name: v.fileName,
+        fileId: v.fileId,
         exIndex: v.exIndex,
         proAttachEnum: "ProPic",
       }));
       this.radio = this.houseFileList.filter(
         (item: any) => item.exIndex === 1
       )[0]?.fileId;
+      this.getFileListType(data.attachPics);
+    } else {
+      this.getFileListType([]);
     }
+  }
+
+  getFileListType(data: any) {
+    const list = (this.$root as any).dictAllList("ProAttach");
+    this.fileListType = list.map((v: any) => {
+      return {
+        ...v,
+        fileList: data
+          .filter((j: any) => j.type === v.code)
+          .map((h: any) => ({
+            ...h,
+            name: h.fileName,
+          })),
+      };
+    });
+    let obj: any = {};
+    this.fileListType.forEach((h: any) => {
+      obj[h.code] = h.fileList;
+    });
+    this.submitFile = { ...obj };
+  }
+
+  queryNew(data: any, type?: any) {
+    let obj: any = {};
+    obj[type] = data;
+    this.submitFile = { ...this.submitFile, ...obj };
   }
 
   async getDeveloper() {
@@ -750,7 +792,7 @@ export default class EditBasicInfo extends Vue {
   getRadio(data: any) {
     if (this.houseList.length) {
       this.houseList = this.houseList.map((v: any) => {
-        if (data === v.attachAddr) {
+        if (data === v.fileId) {
           return {
             ...v,
             exIndex: 1,
@@ -788,15 +830,15 @@ export default class EditBasicInfo extends Vue {
   houseFiles(data: any) {
     console.log(data);
     this.houseList = data.map((v: any) => ({
-      attachAddr: v.fileId,
-      attachName: v.name,
+      fileId: v.fileId,
+      fileName: v.name,
       attachId: null,
       proAttachEnum: "ProPic",
       exIndex: v.exIndex, // 是否设为主页
     }));
     // let arr = data.map((v: any) => ({
-    //   attachAddr: v.fileId,
-    //   attachName: v.name,
+    //   fileId: v.fileId,
+    //   fileName: v.name,
     //   attachId: v.null,
     //   proAttachEnum: "ProPic",
     //   exIndex: null, // 是否设为主页
@@ -887,13 +929,55 @@ export default class EditBasicInfo extends Vue {
           obj.proPics = this.houseList;
         } else {
           obj.proPics = this.houseFileList.map((v: any) => ({
-            attachName: v.name,
-            attachAddr: v.fileId,
+            fileName: v.name,
+            fileId: v.fileId,
             attachId: null,
             exIndex: v.exIndex,
             proAttachEnum: v.proAttachEnum,
           }));
         }
+
+        // 校验提示
+        let arr: any = [];
+        Object.values(this.submitFile).forEach((v: any) => {
+          if (v.length) {
+            arr = arr.concat(v);
+          }
+        });
+        // 以下操作仅仅是为了校验必上传项
+        let submitList: any = this.fileListType.map((v: any) => {
+          return {
+            ...v,
+            fileList: arr
+              .filter((j: any) => j.type === v.code)
+              .map((h: any) => ({
+                ...h,
+                name: h.fileName,
+              })),
+          };
+        });
+        let isSubmit = true;
+        let msgList: any = [];
+        submitList.forEach((v: any) => {
+          if (v.subType && !v.fileList.length) {
+            msgList.push(v.name);
+            isSubmit = false;
+          }
+        });
+        if (isSubmit) {
+          obj.attachPics = arr.map((v: any) => ({
+            fileId: v.fileId,
+            fileName: v.name,
+            type: v.type,
+          }));
+        } else {
+          this.$message({
+            type: "warning",
+            message: `${msgList.join(",")}项,请上传附件`,
+          });
+          return;
+        }
+
         if (this.$route.name === "projectChildAdd") {
           await post_project_add(obj);
         } else {

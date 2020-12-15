@@ -3,8 +3,8 @@
  * @version: 
  * @Author: zyc
  * @Date: 2020-06-30 09:21:17
- * @LastEditors: zyc
- * @LastEditTime: 2020-12-10 14:58:39
+ * @LastEditors: ywl
+ * @LastEditTime: 2020-12-15 16:31:48
 --> 
 <template>
   <IhPage label-width="100px">
@@ -16,19 +16,11 @@
         <el-row>
           <el-col :span="8">
             <el-form-item label="渠道商名称">
-              <el-select
+              <IhSelectPageByChannel
                 v-model="queryPageParameters.channelId"
                 clearable
-                placeholder="请选择"
-                class="width--100"
-              >
-                <el-option
-                  v-for="item in channelList"
-                  :key="item.id"
-                  :label="item.name"
-                  :value="item.id"
-                ></el-option>
-              </el-select>
+                placeholder="请选择渠道商"
+              ></IhSelectPageByChannel>
             </el-form-item>
           </el-col>
           <el-col :span="8">
@@ -93,19 +85,11 @@
           </el-col>
           <el-col :span="8">
             <el-form-item label="事业部">
-              <el-select
+              <IhSelectPageDivision
                 v-model="queryPageParameters.departmentOrgId"
                 clearable
-                placeholder="请选择"
-                class="width--100"
-              >
-                <el-option
-                  v-for="item in testList"
-                  :key="item.id"
-                  :label="item.value"
-                  :value="item.id"
-                ></el-option>
-              </el-select>
+                placeholder="请选择事业部"
+              ></IhSelectPageDivision>
             </el-form-item>
           </el-col>
         </el-row>
@@ -164,7 +148,7 @@
         <el-table-column
           prop="departmentName"
           label="事业部"
-          width="150"
+          min-width="225"
         >
         </el-table-column>
         <el-table-column
@@ -260,7 +244,6 @@ import { Component, Vue } from "vue-property-decorator";
 import {
   post_channelGradeChange_getList,
   post_channelGradeChange_delete__id,
-  get_channel_getAll,
   post_channelGradeChange_backToDraft__id,
 } from "@/api/channel/index";
 import UpdateUser from "./dialog/updateUser.vue";
@@ -287,14 +270,6 @@ export default class LevelChangeList extends Vue {
   };
   dialogVisible = false;
   selectionData = [];
-  private channelList: any = [];
-
-  // 测试数据
-  testList = [
-    { value: "管理员1", id: 1 },
-    { value: "管理员2", id: 2 },
-    { value: "管理员3", id: 3 },
-  ];
 
   reset() {
     Object.assign(this.queryPageParameters, {
@@ -380,9 +355,6 @@ export default class LevelChangeList extends Vue {
     }
     this.dialogVisible = true;
   }
-  private async getChannelList(): Promise<void> {
-    this.channelList = await get_channel_getAll();
-  }
   public async getListMixin(): Promise<void> {
     this.resPageInfo = await post_channelGradeChange_getList(
       this.queryPageParameters
@@ -391,7 +363,6 @@ export default class LevelChangeList extends Vue {
 
   async created() {
     this.getListMixin();
-    this.getChannelList();
   }
 }
 </script>

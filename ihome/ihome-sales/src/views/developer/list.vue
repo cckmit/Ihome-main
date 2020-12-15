@@ -4,7 +4,7 @@
  * @Author: wwq
  * @Date: 2020-09-25 17:59:09
  * @LastEditors: wwq
- * @LastEditTime: 2020-12-11 09:25:23
+ * @LastEditTime: 2020-12-15 14:46:13
 -->
 <template>
   <ih-page>
@@ -142,7 +142,7 @@
           }}</template>
         </el-table-column>
         <el-table-column
-          prop="inputUser"
+          prop="inputUserName"
           label="录入人"
         ></el-table-column>
         <el-table-column
@@ -174,7 +174,7 @@
               </span>
               <el-dropdown-menu slot="dropdown">
                 <el-dropdown-item
-                  :disabled="row.status === 'Audited'"
+                  :disabled="row.status !== 'Draft'"
                   @click.native.prevent="routeTo(row, 'edit')"
                 >修改</el-dropdown-item>
                 <el-dropdown-item

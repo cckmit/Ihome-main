@@ -1,6 +1,6 @@
 /* eslint-disable */
 /* 此脚本由swagger-ui的api-docs自动生成，请勿修改 */
-//2020-12-14 8:07:24 ├F10: PM┤
+//2020-12-15 3:42:49 ├F10: PM┤
 import { request } from '@/api/base'
 const basePath = "/sales-api/system"
 /**查询所有行政区划信息*/
@@ -334,6 +334,10 @@ return await request.post< LoginUserVO,LoginUserVO> (basePath+'/sessionUser/getU
 /**锁定用户*/
 export async function post_sessionUser_lockChannelUser__id (d?: any) {
 return await request.post< boolean,boolean> (basePath+'/sessionUser/lockChannelUser/{id}', d)
+}
+/**退出登录*/
+export async function get_sessionUser_logout (d?: any) {
+return await request.get<boolean,boolean>(basePath+'/sessionUser/logout', { params: d })
 }
 /**修改渠道用户*/
 export async function post_sessionUser_updateChannelUser (d?: any) {
@@ -697,8 +701,8 @@ dataLimit: string;
 deleted: number;
 /**id*/
 id: number;
-/**岗位角色id列表*/
-jobRoleIdList: number[];
+/**岗位角色列表*/
+jobRoleList: RoleVO[];
 /**名称*/
 name: string;
 /**备注*/
@@ -1375,7 +1379,7 @@ export interface UserJobRoleVO {
 id: number;
 /**(必填)岗位id*/
 jobId: number;
-/**(必填)角色id数组*/
+/**角色id数组*/
 roleIds: number[];
 }
 /**UserOrgVO*/

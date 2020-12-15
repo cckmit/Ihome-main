@@ -4,7 +4,7 @@
  * @Author: ywl
  * @Date: 2020-06-30 09:21:17
  * @LastEditors: ywl
- * @LastEditTime: 2020-12-14 19:43:21
+ * @LastEditTime: 2020-12-15 16:14:31
 --> 
 <template>
   <IhPage label-width="100px">
@@ -16,20 +16,11 @@
         <el-row>
           <el-col :span="8">
             <el-form-item label="渠道商名称">
-              <el-select
+              <IhSelectPageByChannel
                 v-model="queryPageParameters.oldChannelId"
                 clearable
-                placeholder="请选择"
-                class="width--100"
-                filterable
-              >
-                <el-option
-                  v-for="item in channelList"
-                  :key="item.id"
-                  :label="item.name"
-                  :value="item.id"
-                ></el-option>
-              </el-select>
+                placeholder="请选择渠道商"
+              ></IhSelectPageByChannel>
             </el-form-item>
           </el-col>
           <!-- <el-col :span="8">
@@ -230,7 +221,6 @@ import { Component, Vue } from "vue-property-decorator";
 
 import {
   post_channelChange_getList,
-  get_channel_getAll,
   post_channelChange_delete__id,
   post_channelChange_backToDraft__id,
 } from "@/api/channel/index";
@@ -254,7 +244,6 @@ export default class ChannelChangeList extends Vue {
   };
   selectionData = [];
   dialogVisible = false;
-  private channelList: any = [];
 
   reset() {
     Object.assign(this.queryPageParameters, {
@@ -330,13 +319,9 @@ export default class ChannelChangeList extends Vue {
       this.queryPageParameters
     );
   }
-  private async getChannelList(): Promise<void> {
-    this.channelList = await get_channel_getAll();
-  }
 
   async created() {
     this.getListMixin();
-    this.getChannelList();
   }
 }
 </script>

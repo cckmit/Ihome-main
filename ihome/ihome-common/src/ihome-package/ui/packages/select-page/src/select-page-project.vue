@@ -2,26 +2,30 @@
  * @Description: file content
  * @version: 
  * @Author: ywl
- * @Date: 2020-12-10 18:09:24
+ * @Date: 2020-12-15 11:14:37
  * @LastEditors: ywl
- * @LastEditTime: 2020-12-15 11:10:42
+ * @LastEditTime: 2020-12-15 11:17:22
 -->
 <script lang="ts">
 import { Component, Vue, Prop } from "vue-property-decorator";
 import IhSelectPageBase from "./select-page-base.vue";
 
-import { post_channel_getListByName } from "@/api/channel/index";
+import { post_project_getList } from "@/api/project/index";
 
 @Component({
   extends: IhSelectPageBase,
 })
-export default class SelectPageByChannel extends Vue {
+export default class SelectPageByProject extends Vue {
+  @Prop({
+    default: true,
+  })
+  switchHidePage?: boolean;
   @Prop({
     default: () => {
       return {
-        lable: "name",
-        value: "id",
-        key: "id",
+        lable: "proName",
+        value: "proId",
+        key: "proId",
         disabled: "disabled",
       };
     },
@@ -35,19 +39,16 @@ export default class SelectPageByChannel extends Vue {
     pageNum: 1,
     pageSize: 10,
   };
-  filterText = "";
-  searchLoad = false;
+  filterText = null;
 
   async getSelectList() {
-    this.searchLoad = true;
-    let res = await post_channel_getListByName({
-      name: this.filterText,
+    let res = await post_project_getList({
+      proName: this.filterText,
       pageSize: this.pageInfo.pageSize,
       pageNum: this.pageInfo.pageNum,
     });
     this.optionList = res.list;
     this.pageInfo = res;
-    this.searchLoad = false;
   }
 }
 </script>

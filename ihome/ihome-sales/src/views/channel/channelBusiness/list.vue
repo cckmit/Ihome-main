@@ -4,7 +4,7 @@
  * @Author: ywl
  * @Date: 2020-08-13 11:40:10
  * @LastEditors: ywl
- * @LastEditTime: 2020-11-30 17:43:53
+ * @LastEditTime: 2020-12-15 17:46:23
 -->
 <template>
   <IhPage label-width="100px">
@@ -237,7 +237,7 @@
                 >变更信息</el-dropdown-item>
                 <el-dropdown-item
                   @click.native.prevent="handleToPage(row, 'agent')"
-                  :disabled="row.status !== 'DRAFT'"
+                  :disabled="row.status === 'DRAFT' || row.status === 'ToBeConfirmed'"
                 >维护渠道经纪人</el-dropdown-item>
               </el-dropdown-menu>
             </el-dropdown>

@@ -4,11 +4,12 @@
  * @Author: wwq
  * @Date: 2020-09-09 16:17:16
  * @LastEditors: wwq
- * @LastEditTime: 2020-12-14 19:46:06
+ * @LastEditTime: 2020-12-15 10:27:44
 -->
 <template>
   <div class="upload">
     <el-upload
+      v-if="uploadShow"
       class="avatar-uploader"
       ref="upload"
       list-type="picture-card"
@@ -199,6 +200,11 @@ export default class IhUpload extends Vue {
     default: null,
   })
   fileType?: string;
+  @Prop({
+    type: Boolean,
+    default: true,
+  })
+  uploadShow?: boolean;
 
   private list: any[] = [];
   private srcList: any[] = [];
