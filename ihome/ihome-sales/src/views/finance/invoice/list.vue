@@ -4,7 +4,7 @@
  * @Author: ywl
  * @Date: 2020-12-08 17:45:05
  * @LastEditors: ywl
- * @LastEditTime: 2020-12-14 21:09:34
+ * @LastEditTime: 2020-12-15 18:57:10
 -->
 <template>
   <IhPage label-width="80px">
@@ -208,8 +208,14 @@
                 <i class="el-icon-arrow-down el-icon--right"></i>
               </span>
               <el-dropdown-menu slot="dropdown">
-                <el-dropdown-item @click.native.prevent="handleAutoItem(row)">自动开票</el-dropdown-item>
-                <el-dropdown-item @click.native.prevent="handleHand(row)">手工开票</el-dropdown-item>
+                <el-dropdown-item
+                  @click.native.prevent="handleAutoItem(row)"
+                  :disabled="row.status === 'Done'"
+                >自动开票</el-dropdown-item>
+                <el-dropdown-item
+                  :disabled="row.status === 'Done'"
+                  @click.native.prevent="handleHand(row)"
+                >手工开票</el-dropdown-item>
                 <el-dropdown-item @click.native.prevent="downloadFile(row)">下载发票</el-dropdown-item>
               </el-dropdown-menu>
             </el-dropdown>

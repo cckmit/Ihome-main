@@ -4,7 +4,7 @@
  * @Author: ywl
  * @Date: 2020-12-08 21:04:03
  * @LastEditors: ywl
- * @LastEditTime: 2020-12-12 17:32:21
+ * @LastEditTime: 2020-12-15 18:40:48
 -->
 <template>
   <el-dialog
@@ -122,7 +122,10 @@
               {required: true, message: '请输入发票号码', trigger: 'change'}
             ]"
           >
-            <el-input v-model="i.key"></el-input>
+            <el-input
+              v-model="i.key"
+              placeholder="请输入发票号码"
+            ></el-input>
           </el-form-item>
         </el-col>
         <el-col :span="12">
@@ -134,7 +137,10 @@
               {required: true, message: '请输入发票号码', trigger: 'change'}
             ]"
           >
-            <el-input v-model="i.value"></el-input>
+            <el-input
+              v-model="i.value"
+              placeholder="请输入发票代码"
+            ></el-input>
             <i
               :class="['add-icon', {'el-icon-circle-plus-outline': n === 0}]"
               @click="handleAdd()"
@@ -163,7 +169,8 @@
             <el-input
               type="textarea"
               :rows="4"
-              v-model="form.xx"
+              v-model="form.remark"
+              placeholder="备注"
             ></el-input>
           </el-form-item>
         </el-col>
