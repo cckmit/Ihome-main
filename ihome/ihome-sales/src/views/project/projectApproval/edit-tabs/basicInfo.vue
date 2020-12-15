@@ -4,7 +4,7 @@
  * @Author: wwq
  * @Date: 2020-11-27 17:17:06
  * @LastEditors: wwq
- * @LastEditTime: 2020-12-12 18:22:13
+ * @LastEditTime: 2020-12-15 09:55:43
 -->
 <template>
   <div>
@@ -678,8 +678,9 @@
     <p class="ih-info-title">附件信息</p>
     <div class="padding-left-20">
       <el-table
+        class="ih-table"
+        :data="fileListType"
         style="width: 100%"
-        :data="info.attachTermVOS"
       >
         <el-table-column
           prop="type"
@@ -687,24 +688,24 @@
           label="类型"
           align="center"
         >
-          <!-- <template v-slot="{ row }">{{
-            $root.dictAllName(
-              row.attachName,
-              "AttachName"
-            )
-          }}</template> -->
+          <template v-slot="{ row }">
+            <div><span
+                style="color: red"
+                v-if="row.subType"
+              >*</span>{{row.name}}
+            </div>
+          </template>
         </el-table-column>
-        <el-table-column
-          label="附件"
-          align="center"
-        >
-          <IhUpload
-            :file-list.sync="fileList"
-            size="100px"
-            accept="image/*"
-            @newFileList="queryFiles"
-          >
-          </IhUpload>
+        <el-table-column label="附件">
+          <template v-slot="{ row }">
+            <IhUpload
+              :file-list.sync="row.fileList"
+              :file-size="10"
+              :file-type="row.code"
+              size="100px"
+              @newFileList="queryNew"
+            ></IhUpload>
+          </template>
         </el-table-column>
       </el-table>
     </div>
@@ -794,7 +795,8 @@ export default class FirstAgencyEdit extends Vue {
     companyName: null,
     companyId: null,
   };
-  private fileList: any = [];
+  fileListType: any = [];
+  submitFile: any = {};
   attributeEnumOptions: any = [];
   private attachTermVOS: any = [];
   private rules: any = {
@@ -1041,20 +1043,46 @@ export default class FirstAgencyEdit extends Vue {
             infoObj.proId = this.$route.query.id;
             break;
         }
-        // let arr: any = [];
-        // if (this.attachTermVOS.length) {
-        //   infoObj.attachTermVOS = this.attachTermVOS;
-        // } else {
-        //   this.info.attachTermVOS.forEach((v: any) => {
-        //     arr = v.fileList.map((j: any) => ({
-        //       attachAddr: j.name,
-        //       attachId: j.fileId,
-        //       firstAgencyAttachEnum: j.firstAgencyAttachEnum,
-        //     }));
-        //   });
-        //   infoObj.attachTermVOS = arr;
-        // }
-        console.log(infoObj);
+        // 校验提示
+        let arr: any = [];
+        Object.values(this.submitFile).forEach((v: any) => {
+          if (v.length) {
+            arr = arr.concat(v);
+          }
+        });
+        // 以下操作仅仅是为了校验必上传项
+        let submitList: any = this.fileListType.map((v: any) => {
+          return {
+            ...v,
+            fileList: arr
+              .filter((j: any) => j.type === v.code)
+              .map((h: any) => ({
+                ...h,
+                name: h.fileName,
+              })),
+          };
+        });
+        let isSubmit = true;
+        let msgList: any = [];
+        submitList.forEach((v: any) => {
+          if (v.subType && !v.fileList.length) {
+            msgList.push(v.name);
+            isSubmit = false;
+          }
+        });
+        if (isSubmit) {
+          infoObj.attachTermVOS = arr.map((v: any) => ({
+            fileId: v.fileId,
+            fileName: v.name,
+            type: v.type,
+          }));
+        } else {
+          this.$message({
+            type: "warning",
+            message: `${msgList.join(",")}项,请上传附件`,
+          });
+          return;
+        }
         await post_term_update(infoObj);
         this.$message.success("保存成功");
         this.$goto({ path: "/projectApproval/list" });
@@ -1071,7 +1099,6 @@ export default class FirstAgencyEdit extends Vue {
       let res: any = await get_term_get__termId({
         termId: id,
       });
-      console.log((this.$root as any).userInfo);
       this.info = { ...res };
       this.info.startDivision = (this.$root as any).userInfo.account;
       this.info.timeList = [res.termStart, res.termEnd];
@@ -1082,11 +1109,36 @@ export default class FirstAgencyEdit extends Vue {
       if (this.info.chargeEnum && this.info.busEnum) {
         this.getAttributeEnumOptions();
       }
-      // this.fileList = res.attachTermVOS.map((v: any) => ({
-      //   name: v.attachName,
-      //   fileId: v.attachId,
-      // }));
+      this.getFileListType(res.attachTermVOS);
+    } else {
+      this.getFileListType([]);
     }
+  }
+
+  getFileListType(data: any) {
+    const list = (this.$root as any).dictAllList("TermAttach");
+    this.fileListType = list.map((v: any) => {
+      return {
+        ...v,
+        fileList: data
+          .filter((j: any) => j.type === v.code)
+          .map((h: any) => ({
+            ...h,
+            name: h.fileName,
+          })),
+      };
+    });
+    let obj: any = {};
+    this.fileListType.forEach((h: any) => {
+      obj[h.code] = h.fileList;
+    });
+    this.submitFile = { ...obj };
+  }
+
+  queryNew(data: any, type?: any) {
+    let obj: any = {};
+    obj[type] = data;
+    this.submitFile = { ...this.submitFile, ...obj };
   }
 
   queryFiles(data: any) {

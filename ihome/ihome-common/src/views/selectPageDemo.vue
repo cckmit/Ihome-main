@@ -80,6 +80,60 @@
     <el-form-item>
       <IhSelectPageByChannel v-model="form.testInput6"></IhSelectPageByChannel>
     </el-form-item>
+    <el-form-item label="项目">项目继承组件用法</el-form-item>
+    <el-form-item>
+      <IhSelectPageByProject
+        v-model="form.testInput7"
+        clearable
+      ></IhSelectPageByProject>
+    </el-form-item>
+    <el-form-item label="周期">周期继承组件用法</el-form-item>
+    <el-form-item>
+      <IhSelectPageByCycle
+        v-model="form.testInput8"
+        clearable
+      ></IhSelectPageByCycle>
+    </el-form-item>
+    <el-form-item label="栋座">栋座继承组件用法 (proId: 默认需要项目的id来请求接口, isBlur: 不做项目id的限制)</el-form-item>
+    <el-form-item label="限制">
+      <IhSelectPageByBuild
+        v-model="form.testInput9"
+        :proId="form.testInput7"
+        clearable
+      ></IhSelectPageByBuild>
+    </el-form-item>
+    <el-form-item label="没限制">
+      <IhSelectPageByBuild
+        v-model="form.testInput9"
+        :proId="form.testInput7"
+        :isBlur="false"
+        clearable
+      ></IhSelectPageByBuild>
+    </el-form-item>
+    <el-form-item label="房号">房号继承组件用法 (proId: 默认需要项目的id来请求接口, isBlur: 不做项目id的限制)</el-form-item>
+    <el-form-item label="限制">
+      <IhSelectPageByRoom
+        v-model="form.testInput10"
+        :proId="form.testInput7"
+        clearable
+      ></IhSelectPageByRoom>
+    </el-form-item>
+    <el-form-item label="没限制">
+      <IhSelectPageByRoom
+        v-model="form.testInput10"
+        :proId="form.testInput7"
+        :isBlur="false"
+        clearable
+      ></IhSelectPageByRoom>
+    </el-form-item>
+    <el-form-item label="我司">我司继承组件</el-form-item>
+    <el-form-item>
+      <IhSelectPageByCompany v-model="form.testInput11"></IhSelectPageByCompany>
+    </el-form-item>
+    <el-form-item label="开发商">开发商继承组件</el-form-item>
+    <el-form-item>
+      <IhSelectPageByDeveloper v-model="form.testInput12"></IhSelectPageByDeveloper>
+    </el-form-item>
   </el-form>
 </template>
 
@@ -93,6 +147,12 @@ import {
   IhSelectPageUser,
   IhSelectPageDivision,
   IhSelectPageByChannel,
+  IhSelectPageByProject,
+  IhSelectPageByCycle,
+  IhSelectPageByBuild,
+  IhSelectPageByRoom,
+  IhSelectPageByCompany,
+  IhSelectPageByDeveloper,
 } from "../ihome-package/ui/packages/select-page/index";
 
 @Component({
@@ -101,6 +161,12 @@ import {
     IhSelectPageUser,
     IhSelectPageDivision,
     IhSelectPageByChannel,
+    IhSelectPageByProject,
+    IhSelectPageByCycle,
+    IhSelectPageByBuild,
+    IhSelectPageByRoom,
+    IhSelectPageByCompany,
+    IhSelectPageByDeveloper,
   },
 })
 export default class SelectPageDemo extends Vue {
@@ -115,6 +181,12 @@ export default class SelectPageDemo extends Vue {
     testInput4: "",
     testInput5: "",
     testInput6: "",
+    testInput7: null,
+    testInput8: null,
+    testInput9: null,
+    testInput10: null,
+    testInput11: null,
+    testInput12: null,
     data: null,
   };
   private rules = {};

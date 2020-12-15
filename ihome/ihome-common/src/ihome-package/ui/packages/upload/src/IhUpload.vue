@@ -4,11 +4,12 @@
  * @Author: wwq
  * @Date: 2020-09-09 16:17:16
  * @LastEditors: wwq
- * @LastEditTime: 2020-12-02 10:53:11
+ * @LastEditTime: 2020-12-15 10:27:44
 -->
 <template>
   <div class="upload">
     <el-upload
+      v-if="uploadShow"
       class="avatar-uploader"
       ref="upload"
       list-type="picture-card"
@@ -189,6 +190,21 @@ export default class IhUpload extends Vue {
     default: false,
   })
   isMove?: boolean;
+  @Prop({
+    type: Boolean,
+    default: false,
+  })
+  delFileServer?: boolean;
+  @Prop({
+    type: String,
+    default: null,
+  })
+  fileType?: string;
+  @Prop({
+    type: Boolean,
+    default: true,
+  })
+  uploadShow?: boolean;
 
   private list: any[] = [];
   private srcList: any[] = [];
@@ -239,7 +255,7 @@ export default class IhUpload extends Vue {
   successHandler(response: any, file: any, fileList: any) {
     this.replaceUpload(file, fileList, fileList.length - 1, response[0].fileId);
     this.$message.success("上传成功");
-    this.$emit("newFileList", fileList);
+    this.$emit("newFileList", fileList, this.fileType);
   }
   errorHandler() {
     this.$message.error("上传失败");
@@ -308,11 +324,11 @@ export default class IhUpload extends Vue {
   }
   // 移除图片
   async handleRemove(file: any) {
-    await get_file_remove__fid({ fid: file.fileId });
+    if (this.delFileServer) await get_file_remove__fid({ fid: file.fileId });
     await (this.$refs.upload as any).handleRemove(file);
     let index = this.list.findIndex((v) => v.uid === file.uid);
     this.$delete(this.list, index);
-    this.$emit("newFileList", this.list);
+    this.$emit("newFileList", this.list, this.fileType);
   }
   // 点击图片预览按钮
   handlePictureCardPreview(file: any) {
@@ -375,6 +391,7 @@ export default class IhUpload extends Vue {
         break;
     }
     fileList[index].fileId = fileId;
+    fileList[index].type = this.fileType;
     this.list = [...fileList];
   }
 

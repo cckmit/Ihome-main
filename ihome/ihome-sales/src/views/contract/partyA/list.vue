@@ -4,7 +4,7 @@
  * @Author: ywl
  * @Date: 2020-09-25 11:53:51
  * @LastEditors: ywl
- * @LastEditTime: 2020-12-14 10:00:10
+ * @LastEditTime: 2020-12-15 17:58:53
 -->
 <template>
   <IhPage label-width="100px">
@@ -69,6 +69,7 @@
                   <el-input
                     v-model="queryPageParameters.cooperationProjectsName"
                     placeholder="请输入合作项目"
+                    clearable
                   ></el-input>
                 </el-form-item>
               </el-col>
@@ -104,6 +105,7 @@
                 <el-form-item label="关联项目">
                   <SelectPageByProject
                     v-model="queryPageParameters.projectsId"
+                    clearable
                     placeholder="请选择关联项目"
                   ></SelectPageByProject>
                 </el-form-item>
@@ -283,7 +285,7 @@
         ></el-table-column>
         <el-table-column
           label="合作项目"
-          prop="cooperativeProject"
+          prop="cooperationProjectsName"
           min-width="200"
         ></el-table-column>
         <el-table-column
@@ -293,13 +295,13 @@
         ></el-table-column>
         <el-table-column
           label="关联项目"
-          prop="projectsId"
+          prop="projectsName"
           width="200"
         ></el-table-column>
         <el-table-column
           label="归属组织"
-          prop="organizationId"
-          width="150"
+          prop="organizationName"
+          width="165"
         ></el-table-column>
         <el-table-column
           label="合同编号"
@@ -330,8 +332,8 @@
         ></el-table-column>
         <el-table-column
           label="合同跟进人"
-          prop="handlerId"
-          width="100"
+          prop="handlerName"
+          width="110"
         ></el-table-column>
         <el-table-column
           label="操作"
@@ -495,6 +497,7 @@ export default class PartyAList extends Vue {
       title: null,
     });
     this.timeList = [];
+    console.log(this.queryPageParameters);
   }
   private openToggle(): void {
     this.searchOpen = !this.searchOpen;

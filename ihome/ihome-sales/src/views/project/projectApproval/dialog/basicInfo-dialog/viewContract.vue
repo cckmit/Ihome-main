@@ -4,7 +4,7 @@
  * @Author: wwq
  * @Date: 2020-12-10 11:42:42
  * @LastEditors: wwq
- * @LastEditTime: 2020-12-11 08:59:38
+ * @LastEditTime: 2020-12-15 11:13:38
 -->
 <template>
   <el-dialog
@@ -18,8 +18,8 @@
     :title="`${info.termName} 合同呈批`"
   >
     <div class="title">
-      <div>发起人：陈健莹</div>
-      <div>发起时间：2020-4-30</div>
+      <div>发起人：{{info.inputConstractMan}}</div>
+      <div>发起时间：{{info.inputConstractTime}}</div>
       <div>{{`编号：（${info.approvalNo}）`}}</div>
     </div>
     <table

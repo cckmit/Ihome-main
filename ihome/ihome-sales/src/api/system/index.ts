@@ -1,6 +1,6 @@
 /* eslint-disable */
 /* 此脚本由swagger-ui的api-docs自动生成，请勿修改 */
-//2020-12-9 2:43:51 ├F10: PM┤
+//2020-12-15 3:42:49 ├F10: PM┤
 import { request } from '@/api/base'
 const basePath = "/sales-api/system"
 /**查询所有行政区划信息*/
@@ -14,6 +14,10 @@ return await request.get<AreaBaseVO[],AreaBaseVO[]>(basePath+'/area/getAllChildA
 /**查询所有省份信息*/
 export async function get_area_getAllProvince (d?: any) {
 return await request.get<AreaBaseVO[],AreaBaseVO[]>(basePath+'/area/getAllProvince', { params: d })
+}
+/**根据行政区划编码查询行政区划名称*/
+export async function get_area_getAreaNameByCode__code (d?: any) {
+return await request.get<string,string>(basePath+'/area/getAreaNameByCode/{code}', { params: d })
 }
 /**根据行政区划编码查询行政区划信息*/
 export async function get_area_getByCode__code (d?: any) {
@@ -63,6 +67,10 @@ return await request.post< string,string> (basePath+'/codeGenerate/getDealNo', d
 export async function post_codeGenerate_getDeveloperContractNo (d?: any) {
 return await request.post< string,string> (basePath+'/codeGenerate/getDeveloperContractNo', d)
 }
+/**获取OA呈批编号*/
+export async function post_codeGenerate_getOANo (d?: any) {
+return await request.post< string,string> (basePath+'/codeGenerate/getOANo', d)
+}
 /**获取收款编号*/
 export async function post_codeGenerate_getPaymentNo (d?: any) {
 return await request.post< string,string> (basePath+'/codeGenerate/getPaymentNo', d)
@@ -70,10 +78,6 @@ return await request.post< string,string> (basePath+'/codeGenerate/getPaymentNo'
 /**获取付款单编号*/
 export async function post_codeGenerate_getPayoffNo (d?: any) {
 return await request.post< string,string> (basePath+'/codeGenerate/getPayoffNo', d)
-}
-/**获取联动项目立项编号*/
-export async function post_codeGenerate_getProjectItemNo (d?: any) {
-return await request.post< string,string> (basePath+'/codeGenerate/getProjectItemNo', d)
 }
 /**获取联动项目编号*/
 export async function post_codeGenerate_getProjectNo (d?: any) {
@@ -203,9 +207,21 @@ return await request.post< PageModel<OrgVO>,PageModel<OrgVO>> (basePath+'/org/ge
 export async function post_org_getListRecursion (d?: any) {
 return await request.post< PageModel<OrgVO>,PageModel<OrgVO>> (basePath+'/org/getListRecursion', d)
 }
+/**查询用户可选事业部列表*/
+export async function get_org_getUserDepartmentList (d?: any) {
+return await request.get<Org[],Org[]>(basePath+'/org/getUserDepartmentList', { params: d })
+}
 /**修改组织*/
 export async function post_org_update (d?: any) {
 return await request.post< number,number> (basePath+'/org/update', d)
+}
+/**查询组织参数*/
+export async function post_paramDefine_getOrgParam (d?: any) {
+return await request.post< ParamDefineOrg,ParamDefineOrg> (basePath+'/paramDefine/getOrgParam', d)
+}
+/**查询参数*/
+export async function post_paramDefine_getParam (d?: any) {
+return await request.post< ParamDefine,ParamDefine> (basePath+'/paramDefine/getParam', d)
 }
 /**批量添加资源*/
 export async function post_resource_addBatch (d?: any) {
@@ -291,13 +307,37 @@ return await request.post< PageModel<RoleVO>,PageModel<RoleVO>> (basePath+'/role
 export async function post_role_update (d?: any) {
 return await request.post< number,number> (basePath+'/role/update', d)
 }
+/**激活用户*/
+export async function post_sessionUser_activateChannelUser__id (d?: any) {
+return await request.post< boolean,boolean> (basePath+'/sessionUser/activateChannelUser/{id}', d)
+}
 /**添加渠道用户*/
 export async function post_sessionUser_addChannelUser (d?: any) {
 return await request.post< number,number> (basePath+'/sessionUser/addChannelUser', d)
 }
+/**添加个人用户*/
+export async function post_sessionUser_addCustomerUser (d?: any) {
+return await request.post< number,number> (basePath+'/sessionUser/addCustomerUser', d)
+}
+/**删除用户*/
+export async function post_sessionUser_deleteChannelUser__id (d?: any) {
+return await request.post< number,number> (basePath+'/sessionUser/deleteChannelUser/{id}', d)
+}
+/**获取系统参数*/
+export async function get_sessionUser_getSystemParam (d?: any) {
+return await request.get<SystemParamVO,SystemParamVO>(basePath+'/sessionUser/getSystemParam', { params: d })
+}
 /**查询登录用户信息*/
 export async function post_sessionUser_getUserInfo (d?: any) {
 return await request.post< LoginUserVO,LoginUserVO> (basePath+'/sessionUser/getUserInfo', d)
+}
+/**锁定用户*/
+export async function post_sessionUser_lockChannelUser__id (d?: any) {
+return await request.post< boolean,boolean> (basePath+'/sessionUser/lockChannelUser/{id}', d)
+}
+/**退出登录*/
+export async function get_sessionUser_logout (d?: any) {
+return await request.get<boolean,boolean>(basePath+'/sessionUser/logout', { params: d })
 }
 /**修改渠道用户*/
 export async function post_sessionUser_updateChannelUser (d?: any) {
@@ -363,6 +403,18 @@ return await request.post< number,number> (basePath+'/user/resetPassword', d)
 export async function post_user_update (d?: any) {
 return await request.post< number,number> (basePath+'/user/update', d)
 }
+/**获取token*/
+export async function get_wx_getToken (d?: any) {
+return await request.get<string,string>(basePath+'/wx/getToken', { params: d })
+}
+/**获取小程序二维码*/
+export async function get_wx_getWxACodeUnLimit (d?: any) {
+return await request.get<SalesFileStream,SalesFileStream>(basePath+'/wx/getWxACodeUnLimit', { params: d })
+}
+/**刷新token*/
+export async function get_wx_refreshToken (d?: any) {
+return await request.get<string,string>(basePath+'/wx/refreshToken', { params: d })
+}
 //===============================================================================================
 /**ResModel模型*/
 export interface ResModel<T> {
@@ -401,14 +453,14 @@ channelId: number;
 channelUserType: string;
 /**email*/
 email: string;
-/**(必填)id*/
-id: number;
 /**(必填)手机号码*/
 mobilePhone: string;
 /**(必填)姓名*/
 name: string;
 /**密码*/
 password: string;
+/**(必填)userId*/
+userId: number;
 }
 /**ChannelUserVO*/
 export interface ChannelUserVO {
@@ -440,6 +492,17 @@ name: string;
 export interface CompanyQueryVO {
 /**公司名称*/
 name: string;
+}
+/**CustomerUserVO*/
+export interface CustomerUserVO {
+/**email*/
+email: string;
+/**(必填)手机号码*/
+mobilePhone: string;
+/**(必填)姓名*/
+name: string;
+/**密码*/
+password: string;
 }
 /**DepartmentVO*/
 export interface DepartmentVO {
@@ -638,8 +701,8 @@ dataLimit: string;
 deleted: number;
 /**id*/
 id: number;
-/**岗位角色信息*/
-jobRoles: string;
+/**岗位角色列表*/
+jobRoleList: RoleVO[];
 /**名称*/
 name: string;
 /**备注*/
@@ -705,6 +768,43 @@ menuList: Resource[];
 resourceList: Resource[];
 /**用户类别列表*/
 userTypeList: string[];
+}
+/**Org*/
+export interface Org {
+/**关闭日期(yyyy-MM-dd)*/
+closeDate: string;
+/**创建时间(yyyy-MM-dd HH:mm:ss)*/
+createTime: string;
+/**创建用户*/
+createUser: number;
+/**已删除*/
+deleted: number;
+/**部门分类(Business-营业线、Function-职能线)*/
+departmentType: string;
+/**id*/
+id: number;
+/**组织层级*/
+level: number;
+/**名称*/
+name: string;
+/**OA呈字*/
+oaChar: string;
+/**开业日期(yyyy-MM-dd)*/
+openDate: string;
+/**组织类型(Root-组织根节点、Company-公司、Department-事业部、Zone-战区、SmallZone-小战区、District-片区、Shop-门店、Group-店组)*/
+orgType: string;
+/**父组织id*/
+parentId: number;
+/**简称*/
+shortName: string;
+/**简称首字母*/
+shortNameAbbr: string;
+/**状态(Valid-有效、Invalid-无效)*/
+status: string;
+/**更新时间(yyyy-MM-dd HH:mm:ss)*/
+updateTime: string;
+/**更新用户*/
+updateUser: number;
 }
 /**OrgBaseVO*/
 export interface OrgBaseVO {
@@ -864,6 +964,8 @@ openDate: string;
 orgType: string;
 /**父组织id*/
 parentId: number;
+/**父组织名称*/
+parentOrgName: string;
 /**简称*/
 shortName: string;
 /**简称首字母*/
@@ -876,6 +978,72 @@ updateTime: string;
 updateUser: number;
 /**更新用户姓名*/
 updateUserName: string;
+}
+/**ParamDefine*/
+export interface ParamDefine {
+/**创建时间(yyyy-MM-dd HH:mm:ss)*/
+createTime: string;
+/**创建用户*/
+createUser: number;
+/**默认值*/
+defaultValue: string;
+/**已删除*/
+deleted: number;
+/**是否全局参数*/
+globalFlag: number;
+/**ID*/
+id: number;
+/**模块(System-系统管理、Customer-客户管理、Developer-开发商管理、Channel-渠道管理、Contract-合同管理、Project-项目管理、Deal-成交管理、Finance-财务管理、UnionPay-银联支付管理、Payoff-结佣付款管理、MyData-明源数据处理、MySync-明源数据同步)*/
+module: string;
+/**参数编码*/
+paramCode: string;
+/**参数名称*/
+paramName: string;
+/**描述*/
+remark: string;
+/**更新时间(yyyy-MM-dd HH:mm:ss)*/
+updateTime: string;
+/**更新用户*/
+updateUser: number;
+}
+/**ParamDefineCodeOrgQueryVO*/
+export interface ParamDefineCodeOrgQueryVO {
+/**模块(System-系统管理、Customer-客户管理、Developer-开发商管理、Channel-渠道管理、Contract-合同管理、Project-项目管理、Deal-成交管理、Finance-财务管理、UnionPay-银联支付管理、Payoff-结佣付款管理、MyData-明源数据处理、MySync-明源数据同步)*/
+module: string;
+/**组织id*/
+orgId: number;
+/**参数编码*/
+paramCode: string;
+/**是否使用全局参数值(默认为true)*/
+userGlobalValue: boolean;
+}
+/**ParamDefineCodeQueryVO*/
+export interface ParamDefineCodeQueryVO {
+/**模块(System-系统管理、Customer-客户管理、Developer-开发商管理、Channel-渠道管理、Contract-合同管理、Project-项目管理、Deal-成交管理、Finance-财务管理、UnionPay-银联支付管理、Payoff-结佣付款管理、MyData-明源数据处理、MySync-明源数据同步)*/
+module: string;
+/**参数编码*/
+paramCode: string;
+}
+/**ParamDefineOrg*/
+export interface ParamDefineOrg {
+/**创建时间(yyyy-MM-dd HH:mm:ss)*/
+createTime: string;
+/**创建用户*/
+createUser: number;
+/**参数定义ID*/
+defineId: number;
+/**已删除*/
+deleted: number;
+/**ID*/
+id: number;
+/**组织ID*/
+orgId: number;
+/**参数值*/
+paramValue: string;
+/**更新时间(yyyy-MM-dd HH:mm:ss)*/
+updateTime: string;
+/**更新用户*/
+updateUser: number;
 }
 /**ResetPasswordVO*/
 export interface ResetPasswordVO {
@@ -1134,6 +1302,28 @@ updateUser: number;
 /**更新用户姓名*/
 updateUserName: string;
 }
+/**SalesFileStream*/
+export interface SalesFileStream {
+/**字节*/
+bytes: string;
+/**文件名*/
+fileName: string;
+}
+/**SystemParamVO*/
+export interface SystemParamVO {
+/**api域名*/
+apiDomain: string;
+/**客户端ip*/
+clientIP: string;
+/**当前环境*/
+env: string;
+/**文件域名*/
+fileDomain: string;
+/**h5域名*/
+h5Domain: string;
+/**pc域名*/
+pcDomain: string;
+}
 /**UserBaseVO*/
 export interface UserBaseVO {
 /**登录账号*/
@@ -1189,7 +1379,7 @@ export interface UserJobRoleVO {
 id: number;
 /**(必填)岗位id*/
 jobId: number;
-/**(必填)角色id数组*/
+/**角色id数组*/
 roleIds: number[];
 }
 /**UserOrgVO*/
@@ -1233,6 +1423,8 @@ pageSize: number;
 permissionOrgId: number;
 /**状态(Valid-有效、Invalid-无效)*/
 status: string;
+/**用户类别(Staff-员工、Channel-渠道、Customer-客户)*/
+userType: string;
 /**职能类别(FrontLine-一线、NotFrontLine-非一线)*/
 workType: string;
 }

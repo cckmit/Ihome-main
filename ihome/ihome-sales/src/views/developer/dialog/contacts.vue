@@ -4,7 +4,7 @@
  * @Author: wwq
  * @Date: 2020-07-08 14:23:16
  * @LastEditors: wwq
- * @LastEditTime: 2020-11-11 11:45:14
+ * @LastEditTime: 2020-12-15 14:35:48
 --> 
 <template>
   <el-dialog
@@ -15,6 +15,7 @@
     :before-close="cancel"
     width="500px"
     class="dialog text-left"
+    title="联系人信息"
   >
     <el-form
       ref="form"

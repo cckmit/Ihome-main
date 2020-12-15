@@ -4,7 +4,7 @@
  * @Author: zyc
  * @Date: 2020-07-06 09:41:43
  * @LastEditors: zyc
- * @LastEditTime: 2020-12-14 15:23:32
+ * @LastEditTime: 2020-12-14 21:02:07
 --> 
 <template>
   <ih-page>
@@ -12,9 +12,7 @@
       <el-row>
         <IhLeftRightContainer :leftHeight="pageHeight" :leftWidth="400">
           <template slot="left">
-            <el-col
-              :span="24"
-            >
+            <el-col :span="24">
               <resourcesRadio ref="resourcesRadio" @select="selectResources" />
             </el-col>
           </template>
@@ -34,10 +32,7 @@
                       @change="search()"
                     >
                       <el-option
-                        v-for="item in $root.dictAllList(
-                          'ResourceType',
-                          'AllowAdjust'
-                        )"
+                        v-for="item in $root.dictAllList('ResourceType')"
                         :key="item.code"
                         :label="item.name"
                         :value="item.code"

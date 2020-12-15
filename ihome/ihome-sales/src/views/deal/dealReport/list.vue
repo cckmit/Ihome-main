@@ -150,35 +150,29 @@
           </el-col>
           <el-col :span="8">
             <el-form-item label="项目周期">
-              <SelectByCycle
-                v-model="queryPageParameters.projectCycle"
-                :isKeyUp="true"
-                :props="{
-                  value: 'id',
-                  key: 'id',
-                  lable: 'name'}"
-              />
+              <SelectPageByCycle
+                v-model="queryPageParameters.cycleId"
+                placeholder="请选择立项周期"
+              ></SelectPageByCycle>
             </el-form-item>
           </el-col>
           <el-col :span="8">
             <el-form-item label="栋座">
-              <SelectByTower
-                v-model="queryPageParameters.agencyName"
-                :isKeyUp="true"
-                :props="{
-                  value: 'id',
-                  key: 'id',
-                  lable: 'name'}"
-              />
+              <SelectPageByBuild
+                v-model="queryPageParameters.buyUnit"
+                :proId="queryPageParameters.cycleId"
+                placeholder="请选择栋座"
+              ></SelectPageByBuild>
             </el-form-item>
           </el-col>
           <el-col :span="8">
             <el-form-item label="房号">
-              <el-input
-                v-model="queryPageParameters.agencyName"
-                clearable
-                placeholder="房号"
-              ></el-input>
+              <SelectPageByRoom
+                v-model="queryPageParameters.roomNumberId"
+                :proId="queryPageParameters.cycleId"
+                :buildingId="queryPageParameters.buyUnit"
+                placeholder="请选择房号"
+              ></SelectPageByRoom>
             </el-form-item>
           </el-col>
           <el-col :span="8">
@@ -244,7 +238,7 @@
           <template slot-scope="scope">
             <div v-if="scope.row.contType">{{ $root.dictAllName(scope.row.contType, 'ContType') }}</div>
             <div v-if="scope.row.suppContType">{{ $root.dictAllName(scope.row.suppContType, 'SuppContType') }}</div>
-            <div>状态：{{ $root.dictAllName(scope.row.status, 'DealStatus') }}</div>
+            <div v-if="scope.row.status">状态：{{ $root.dictAllName(scope.row.status, 'DealStatus') }}</div>
           </template>
         </el-table-column>
         <el-table-column prop="actualAmount" label="应收实收金额" min-width="190">
@@ -360,8 +354,12 @@
   import {Component, Vue} from "vue-property-decorator";
   import SelectOrganizationTree from "@/components/select/SelectOrganizationTree.vue";
   import SelectByBroker from "@/components/select/SelectByBroker.vue";
-  import SelectByCycle from "@/components/select/SelectByCycle.vue";
-  import SelectByTower from "@/components/select/SelectByTower.vue";
+  // import SelectByCycle from "@/components/select/SelectByCycle.vue";
+  // import SelectByTower from "@/components/select/SelectByTower.vue";
+  // import SelectPageByProject from "@/components/SelectPageByProject.vue";
+  import SelectPageByCycle from "@/components/SelectPageByCycle.vue";
+  import SelectPageByBuild from "@/components/SelectPageByBuild.vue";
+  import SelectPageByRoom from "@/components/selectPageByRoom.vue";
 
   import {
     post_deal_getList,
@@ -373,7 +371,13 @@
   import PaginationMixin from "@/mixins/pagination";
 
   @Component({
-    components: {SelectOrganizationTree, SelectByBroker, SelectByCycle, SelectByTower},
+    components: {
+      SelectOrganizationTree,
+      SelectByBroker,
+      SelectPageByCycle,
+      SelectPageByBuild,
+      SelectPageByRoom
+    },
     mixins: [PaginationMixin],
   })
   export default class DealReportList extends Vue {

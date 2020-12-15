@@ -1,6 +1,6 @@
 /* eslint-disable */
 /* 此脚本由swagger-ui的api-docs自动生成，请勿修改 */
-//2020-12-11 15:37:57
+//2020-12-14 8:00:04
 import { request } from '@/api/base'
 const basePath = "/sales-api/deal"
 /**重新计算平台费用部分*/

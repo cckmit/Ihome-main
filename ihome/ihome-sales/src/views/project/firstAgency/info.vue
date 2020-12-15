@@ -4,7 +4,7 @@
  * @Author: wwq
  * @Date: 2020-11-03 18:39:23
  * @LastEditors: wwq
- * @LastEditTime: 2020-12-11 08:56:00
+ * @LastEditTime: 2020-12-15 09:38:16
 -->
 <template>
   <ih-page>
@@ -181,21 +181,37 @@
         </p>
         <div class="padding-left-20">
           <el-table
+            class="ih-table"
+            :data="fileListType"
             style="width: 100%"
-            :data="info.attachAgencyVOS"
           >
             <el-table-column
-              prop="firstAgencyAttachEnum"
+              prop="type"
               width="180"
               label="类型"
-            ><template v-slot="{ row }">{{
-                $root.dictAllName(
-                  row.firstAgencyAttachEnum,
-                  "FirstAgencyAttach"
-                )
-              }}</template>
+              align="center"
+            >
+              <template v-slot="{ row }">
+                <div><span
+                    style="color: red"
+                    v-if="row.subType"
+                  >*</span>{{row.name}}
+                </div>
+              </template>
             </el-table-column>
-            <el-table-column label="附件"></el-table-column>
+            <el-table-column label="附件">
+              <template v-slot="{ row }">
+                <IhUpload
+                  :file-list.sync="row.fileList"
+                  :file-size="10"
+                  :file-type="row.code"
+                  :limit="row.fileList.length"
+                  :upload-show="!!row.fileList.length"
+                  size="100px"
+                  :removePermi="false"
+                ></IhUpload>
+              </template>
+            </el-table-column>
           </el-table>
           <br />
         </div>
@@ -216,10 +232,27 @@ import { get_firstAgencyCompany_get__agencyId } from "@/api/project/index";
 })
 export default class FirstAgencyInfo extends Vue {
   info: any = {};
+  fileListType: any = [];
 
   async getInfo() {
     let id = this.$route.query.id;
     this.info = await get_firstAgencyCompany_get__agencyId({ agencyId: id });
+    this.getFileListType(this.info.attachAgencyVOS);
+  }
+
+  getFileListType(data: any) {
+    const list = (this.$root as any).dictAllList("FirstAgencyAttach");
+    this.fileListType = list.map((v: any) => {
+      return {
+        ...v,
+        fileList: data
+          .filter((j: any) => j.type === v.code)
+          .map((h: any) => ({
+            ...h,
+            name: h.fileName,
+          })),
+      };
+    });
   }
 
   async created() {

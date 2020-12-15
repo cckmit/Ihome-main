@@ -3,8 +3,8 @@
  * @version: 
  * @Author: wwq
  * @Date: 2020-07-08 14:23:16
- * @LastEditors: zyc
- * @LastEditTime: 2020-12-10 11:25:32
+ * @LastEditors: wwq
+ * @LastEditTime: 2020-12-15 14:49:27
 --> 
 <template>
   <el-dialog
@@ -15,6 +15,7 @@
     :before-close="cancel"
     width="500px"
     class="dialog text-left"
+    title="变更录入人"
   >
     <el-form
       ref="form"
@@ -24,7 +25,7 @@
       <el-row>
         <el-col :span="24">
           <el-form-item
-            label="已选渠道商"
+            label="已选开发商"
             prop="name"
           >
             <template v-for="(item, i) in data">

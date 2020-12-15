@@ -4,7 +4,7 @@
  * @Author: zyc
  * @Date: 2020-07-14 09:23:40
  * @LastEditors: zyc
- * @LastEditTime: 2020-12-11 14:46:59
+ * @LastEditTime: 2020-12-14 21:07:22
 --> 
 --> 
 <template>
@@ -243,7 +243,6 @@ import {
   post_channelApproval_getList,
   post_channelApproval_delete__id,
   post_channelApproval_backToDraft__id,
-  get_channelApproval_downloadML__id,
 } from "../../../api/channel/index";
 
 import PaginationMixin from "../../../mixins/pagination";
@@ -354,7 +353,7 @@ export default class InvitationCodeList extends Vue {
   async downloadSupplier() {
     // await get_channelApproval_downloadML__id({ id: scope.row.id });
     this.$message.warning("未实现");
-    get_channelApproval_downloadML__id;
+     
   }
 
   handleSelectionChange(val: any) {

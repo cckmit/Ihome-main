@@ -23,7 +23,7 @@
         <el-col :span="8">
           <el-form-item label="项目名称">
             <el-input
-              v-model="queryPageParameters.termName"
+              v-model="queryPageParameters.proName"
               placeholder="项目周期名称"
             ></el-input>
           </el-form-item>
@@ -31,7 +31,7 @@
         <el-col :span="8">
           <el-form-item label="渠道公司">
             <el-input
-              v-model="queryPageParameters.termName"
+              v-model="queryPageParameters.channelName"
               placeholder="渠道公司"
             ></el-input>
           </el-form-item>
@@ -39,7 +39,7 @@
         <el-col :span="8">
           <el-form-item label="报备人">
             <el-input
-              v-model="queryPageParameters.termName"
+              v-model="queryPageParameters.name"
               placeholder="报备人"
             ></el-input>
           </el-form-item>
@@ -47,7 +47,7 @@
         <el-col :span="8">
           <el-form-item label="报备时间">
             <el-date-picker
-              v-model="queryPageParameters.time"
+              v-model="queryPageParameters.reportDate"
               type="daterange"
               range-separator="至"
               start-placeholder="开始日期"
@@ -89,7 +89,7 @@
 <script lang="ts">
   import {Component, Vue, Prop} from "vue-property-decorator";
 
-  import {post_term_getList} from "@/api/project/index";
+  import {post_report_getList} from "@/api/customer/index";
   import PaginationMixin from "@/mixins/pagination";
 
   @Component({
@@ -106,37 +106,61 @@
     private tableColumn = [
       {
         prop: "termName",
-        label: "栋座",
+        label: "周期名称",
         align: "left",
         minWidth: 200,
       },
       {
         prop: "busTypeEnum",
-        label: "房号",
+        label: "报备项目",
         align: "left",
         minWidth: 100,
       },
       {
         prop: "termStart",
-        label: "户型",
+        label: "报备类型",
         align: "left",
         minWidth: 140,
       },
       {
         prop: "termEnd",
-        label: "房型",
+        label: "客户信息",
         align: "left",
         minWidth: 140,
       },
       {
         prop: "termEnd1",
-        label: "面积",
+        label: "客户号码",
         align: "left",
         minWidth: 140,
       },
       {
         prop: "termEnd2",
-        label: "朝向",
+        label: "报备人",
+        align: "left",
+        minWidth: 140,
+      },
+      {
+        prop: "termEnd2",
+        label: "所属公司",
+        align: "left",
+        minWidth: 140,
+      },
+      {
+        prop: "termEnd2",
+        label: "所属门店",
+        align: "left",
+        minWidth: 140,
+      },
+      {
+        prop: "termEnd2",
+        label: "报备时间",
+        align: "left",
+        minWidth: 140,
+      },
+      {
+        prop: "termEnd2",
+        label: "到访时间",
         align: "left",
         minWidth: 140,
       }
@@ -156,14 +180,17 @@
     };
 
     queryPageParameters: any = {
-      termName: null,
-      busTypeEnum: null,
-      time: null
+      proName: null,
+      channelName: null,
+      name: null,
+      reportDateStart: null,
+      reportDateEnd: null,
+      reportDate: []
     };
     currentSelection: any = []; // 当前选择的项
 
     created() {
-      // this.getListMixin();
+      this.getListMixin();
     }
 
     async beforeFinish() {
@@ -207,7 +234,14 @@
     }
 
     async getListMixin() {
-      const infoList = await post_term_getList(this.queryPageParameters);
+      if (this.queryPageParameters.reportDate.length > 0) {
+        this.queryPageParameters.reportDateStart = this.queryPageParameters.reportDate[0];
+        this.queryPageParameters.reportDateEnd = this.queryPageParameters.reportDate[1];
+      } else {
+        this.queryPageParameters.reportDateStart = null;
+        this.queryPageParameters.reportDateEnd = null;
+      }
+      const infoList = await post_report_getList(this.queryPageParameters);
       if (infoList.list.length > 0) {
         infoList.list.forEach((item: any) => {
           item.checked = false;
@@ -232,8 +266,12 @@
 
     reset() {
       this.queryPageParameters = {
-        termName: null,
-        busTypeEnum: null,
+        proName: null,
+        channelName: null,
+        name: null,
+        reportDateStart: null,
+        reportDateEnd: null,
+        reportDate: [],
         pageNum: 1,
         pageSize: this.queryPageParameters.pageSize
       };

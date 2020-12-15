@@ -4,13 +4,13 @@
  * @Author: ywl
  * @Date: 2020-12-10 18:09:24
  * @LastEditors: ywl
- * @LastEditTime: 2020-12-10 18:12:13
+ * @LastEditTime: 2020-12-15 11:10:42
 -->
 <script lang="ts">
 import { Component, Vue, Prop } from "vue-property-decorator";
 import IhSelectPageBase from "./select-page-base.vue";
 
-import { post_channel_getList } from "@/api/channel/index";
+import { post_channel_getListByName } from "@/api/channel/index";
 
 @Component({
   extends: IhSelectPageBase,
@@ -40,7 +40,7 @@ export default class SelectPageByChannel extends Vue {
 
   async getSelectList() {
     this.searchLoad = true;
-    let res = await post_channel_getList({
+    let res = await post_channel_getListByName({
       name: this.filterText,
       pageSize: this.pageInfo.pageSize,
       pageNum: this.pageInfo.pageNum,

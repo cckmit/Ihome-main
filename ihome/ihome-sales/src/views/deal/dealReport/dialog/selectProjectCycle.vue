@@ -71,37 +71,25 @@
     private tableColumn = [
       {
         prop: "termName",
-        label: "栋座",
+        label: "项目周期名称",
         align: "left",
         minWidth: 200,
       },
       {
         prop: "busTypeEnum",
-        label: "房号",
+        label: "业务类型",
         align: "left",
         minWidth: 100,
       },
       {
-        prop: "houseName",
-        label: "户型",
+        prop: "termStart",
+        label: "开始时间",
         align: "left",
         minWidth: 140,
       },
       {
-        prop: "house",
-        label: "房型",
-        align: "left",
-        minWidth: 140,
-      },
-      {
-        prop: "area",
-        label: "面积",
-        align: "left",
-        minWidth: 140,
-      },
-      {
-        prop: "positionEnum",
-        label: "朝向",
+        prop: "termEnd",
+        label: "结束时间",
         align: "left",
         minWidth: 140,
       }
@@ -121,8 +109,7 @@
     };
 
     queryPageParameters: any = {
-      termName: null,
-      busTypeEnum: null
+      termName: null
     };
     currentSelection: any = []; // 当前选择的项
 
@@ -175,6 +162,7 @@
       if (infoList.list.length > 0) {
         infoList.list.forEach((item: any) => {
           item.checked = false;
+          // 修改显示
           if (item.busTypeEnum) {
             item.busTypeEnum = (this as any).$root.dictAllName(item.busTypeEnum, 'BusTypeEnum');
           }
@@ -192,15 +180,6 @@
           })
         })
       }
-    }
-
-    reset() {
-      this.queryPageParameters = {
-        termName: null,
-        busTypeEnum: null,
-        pageNum: 1,
-        pageSize: this.queryPageParameters.pageSize
-      };
     }
   }
 </script>

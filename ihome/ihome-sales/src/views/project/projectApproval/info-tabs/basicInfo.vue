@@ -4,7 +4,7 @@
  * @Author: wwq
  * @Date: 2020-11-27 17:17:06
  * @LastEditors: wwq
- * @LastEditTime: 2020-12-14 09:54:04
+ * @LastEditTime: 2020-12-15 10:29:49
 -->
 <template>
   <IhPage>
@@ -397,8 +397,9 @@
     <p class="ih-info-title">附件信息</p>
     <div class="padding-left-20">
       <el-table
+        class="ih-table"
+        :data="fileListType"
         style="width: 100%"
-        :data="info.attachTermVOS"
       >
         <el-table-column
           prop="type"
@@ -406,25 +407,26 @@
           label="类型"
           align="center"
         >
-          <!-- <template v-slot="{ row }">{{
-            $root.dictAllName(
-              row.attachName,
-              "AttachName"
-            )
-          }}</template> -->
+          <template v-slot="{ row }">
+            <div><span
+                style="color: red"
+                v-if="row.subType"
+              >*</span>{{row.name}}
+            </div>
+          </template>
         </el-table-column>
-        <el-table-column
-          label="附件"
-          align="center"
-        >
-          <IhUpload
-            :file-list.sync="fileList"
-            size="100px"
-            accept="image/*"
-            :limit="fileList.length"
-            :removePermi="false"
-          >
-          </IhUpload>
+        <el-table-column label="附件">
+          <template v-slot="{ row }">
+            <IhUpload
+              :file-list.sync="row.fileList"
+              :file-size="10"
+              :file-type="row.code"
+              :limit="row.fileList.length"
+              :upload-show="!!row.fileList.length"
+              size="100px"
+              :removePermi="false"
+            ></IhUpload>
+          </template>
         </el-table-column>
       </el-table>
     </div>
@@ -514,7 +516,7 @@ export default class FirstAgencyEdit extends Vue {
     companyName: null,
     companyId: null,
   };
-  private fileList: any = [];
+  fileListType: any = [];
   private attachTermVOS: any = [];
   isShow: any = true;
   auditMsg = "";
@@ -549,11 +551,23 @@ export default class FirstAgencyEdit extends Vue {
       this.info.companyId = res.companyId;
       window.sessionStorage.setItem("proId", res.proId);
       window.sessionStorage.setItem("padCommissionEnum", res.padCommissionEnum);
-      this.fileList = res.attachTermVOS.map((v: any) => ({
-        name: v.attachName,
-        fileId: v.attachId,
-      }));
+      this.getFileListType(res.attachTermVOS);
     }
+  }
+
+  getFileListType(data: any) {
+    const list = (this.$root as any).dictAllList("TermAttach");
+    this.fileListType = list.map((v: any) => {
+      return {
+        ...v,
+        fileList: data
+          .filter((j: any) => j.type === v.code)
+          .map((h: any) => ({
+            ...h,
+            name: h.fileName,
+          })),
+      };
+    });
   }
 
   async pass(val: any) {

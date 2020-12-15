@@ -4,7 +4,7 @@
  * @Author: ywl
  * @Date: 2020-09-25 17:34:32
  * @LastEditors: ywl
- * @LastEditTime: 2020-12-14 11:15:48
+ * @LastEditTime: 2020-12-15 18:05:55
 -->
 <template>
   <IhPage label-width="100px">
@@ -67,6 +67,7 @@
                   <el-input
                     v-model="queryPageParameters.projectAddress"
                     placeholder="项目地址"
+                    clearable
                   ></el-input>
                 </el-form-item>
               </el-col>
@@ -91,6 +92,7 @@
                   <SelectPageByProject
                     v-model="queryPageParameters.projectId"
                     placeholder="请选择项目"
+                    clearable
                   ></SelectPageByProject>
                 </el-form-item>
               </el-col>
@@ -102,6 +104,7 @@
                   <SelectPageByCycle
                     v-model="queryPageParameters.cycleId"
                     placeholder="请选择周期"
+                    clearable
                   ></SelectPageByCycle>
                 </el-form-item>
               </el-col>
@@ -467,6 +470,7 @@ export default class DistributionList extends Vue {
       projectId: null,
       title: null,
     });
+    this.timeList = [];
   }
   private handleSelectionChange(val: any): void {
     this.selectionData = val;

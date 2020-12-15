@@ -4,7 +4,7 @@
  * @Author: wwq
  * @Date: 2020-08-13 11:40:10
  * @LastEditors: ywl
- * @LastEditTime: 2020-11-30 17:49:55
+ * @LastEditTime: 2020-12-15 16:05:50
 -->
 <template>
   <IhPage label-width="100px">
@@ -16,19 +16,11 @@
         <el-row>
           <el-col :span="8">
             <el-form-item label="渠道商名称">
-              <el-select
+              <IhSelectPageByChannel
                 v-model="queryPageParameters.channelId"
                 clearable
                 placeholder="渠道商名称"
-                class="width--100"
-              >
-                <el-option
-                  v-for="item in channelOptions"
-                  :key="item.id"
-                  :label="item.name"
-                  :value="item.id"
-                ></el-option>
-              </el-select>
+              ></IhSelectPageByChannel>
             </el-form-item>
           </el-col>
           <el-col :span="8">
@@ -78,19 +70,7 @@
           </el-col>
           <el-col :span="8">
             <el-form-item label="事业部">
-              <el-select
-                v-model="queryPageParameters.departmentOrgId"
-                clearable
-                placeholder="事业部"
-                class="width--100"
-              >
-                <el-option
-                  v-for="item in departmentOrgIdOptions"
-                  :key="item.code"
-                  :label="item.name"
-                  :value="item.code"
-                ></el-option>
-              </el-select>
+              <IhSelectPageDivision v-model="queryPageParameters.departmentOrgId"></IhSelectPageDivision>
             </el-form-item>
           </el-col>
           <el-col :span="8">
@@ -289,7 +269,10 @@
                   @click.native.prevent="remove(row)"
                   :disabled="row.status !== 'DRAFT'"
                 >删除</el-dropdown-item>
-                <el-dropdown-item @click.native.prevent="routerTo(row, 'recall')">撤回</el-dropdown-item>
+                <el-dropdown-item
+                  @click.native.prevent="routerTo(row, 'recall')"
+                  :disabled="row.status !== 'PASS'"
+                >撤回</el-dropdown-item>
                 <el-dropdown-item
                   @click.native.prevent="routerTo(row, 'audit')"
                   :disabled="row.status === 'DRAFT'"
@@ -338,7 +321,6 @@
 import { Component, Vue } from "vue-property-decorator";
 import {
   post_channelGrade_getList,
-  get_channel_getAll,
   post_channelGrade_delete__id,
   post_channelGrade_backToDraft__id,
 } from "../../../api/channel/index";
@@ -365,45 +347,6 @@ export default class UserList extends Vue {
   provinceOption: any = [];
   selection: any = [];
   dialogVisible = false;
-
-  channelOptions: any = [];
-  departmentOrgIdOptions: any = [
-    {
-      name: "人事部",
-      id: "111",
-    },
-    {
-      name: "产品研发部",
-      id: "222",
-    },
-    {
-      name: "技术部",
-      id: "333",
-    },
-  ];
-
-  inputUserOptions: any = [
-    {
-      name: "项目经理",
-      id: "111",
-    },
-    {
-      name: "产品经理",
-      id: "222",
-    },
-    {
-      name: "前端开发",
-      id: "333",
-    },
-    {
-      name: "java开发",
-      id: "444",
-    },
-    {
-      name: "测试",
-      id: "555",
-    },
-  ];
 
   resPageInfo: any = {
     total: null,
@@ -478,12 +421,6 @@ export default class UserList extends Vue {
 
   created() {
     this.getListMixin();
-    this.getChannelAll();
-  }
-
-  // 获取渠道商
-  async getChannelAll() {
-    this.channelOptions = await get_channel_getAll();
   }
 
   //获取数据

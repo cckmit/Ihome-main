@@ -4,7 +4,7 @@
  * @Author: lsj
  * @Date: 2020-11-03 13:20:35
  * @LastEditors: lsj
- * @LastEditTime: 2020-12-10 10:56:45
+ * @LastEditTime: 2020-12-14 16:26:33
 -->
 <template>
   <ih-page class="text-left">
@@ -376,7 +376,12 @@
       <el-button type="primary" @click="viewReviewDetails">查看审核详情</el-button>
     </div>
     <div class="nav-box">
-      <div @click="goAnchor(item.id)" v-for="item in navList" :key="item.id" class="nav-item">{{item.name}}</div>
+      <div class="nav-icon" @click="navFlag = !navFlag " :title="navFlag ? '收起' : '展开'">
+        <i :class="navFlag ? 'el-icon-s-unfold' : 'el-icon-s-fold'"></i>
+      </div>
+      <div :class="navFlag ? 'nav-wrapper' : 'nav-wrapper nav-transition'">
+        <div @click="goAnchor(item.id)" v-for="item in navList" :key="item.id" class="nav-item">{{item.name}}</div>
+      </div>
     </div>
     <ih-dialog :show="reviewDialog" desc="成交审核记录">
       <ReviewDetailsDialog
@@ -419,6 +424,7 @@
     reviewDialog: any = false;
     reviewData: any = {};
     dealId: any = null;
+    navFlag: any = true; // 是否折叠锚点
     navList: any = [
       {
         id: 1,
@@ -675,24 +681,55 @@
     top: 30%;
     box-sizing: border-box;
     display: flex;
-    flex-direction: column;
-    justify-content: center;
+    flex-direction: row;
+    //align-items: center;
     border: 1px solid #ffffff;
-    color: #ffffff;
-    background-color: #2B4558;
     z-index: 200;
 
-    .nav-item {
-      height: 45px;
-      line-height: 45px;
-      text-align: center;
-      box-sizing: border-box;
-      padding: 0px 20px;
+    .nav-icon {
+      height: 40px;
+      line-height: 42px;
       cursor: pointer;
+      background-color: #2B4558;
+      color: #ffffff;
+      font-size: 29px;
+    }
 
-      &:not(:last-child) {
+    .nav-wrapper {
+      width: 133px;
+      box-sizing: border-box;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      background-color: #2B4558;
+      color: #ffffff;
+      visibility: visible;
+      transform: scaleX(1);
+      transition: all 0.3s;
+      transform-origin: left bottom;
+
+      .nav-item {
+        height: 40px;
+        line-height: 40px;
+        text-align: center;
+        box-sizing: border-box;
+        padding: 0px 10px;
+        cursor: pointer;
+        border-left: 1px solid #ffffff;
         border-bottom: 1px solid #ffffff;
+
+        &:not(:last-child) {
+          border-bottom: 1px solid #ffffff;
+        }
       }
+    }
+
+    .nav-transition {
+      width: 0;
+      visibility: hidden;
+      transform: scaleX(0);
+      transition: all 0.3s;
+      transform-origin: left bottom;
     }
   }
 </style>
