@@ -3,8 +3,8 @@
  * @version: 
  * @Author: wwq
  * @Date: 2020-08-13 11:40:10
- * @LastEditors: wwq
- * @LastEditTime: 2020-12-15 15:01:11
+ * @LastEditors: ywl
+ * @LastEditTime: 2020-12-15 16:05:50
 -->
 <template>
   <IhPage label-width="100px">
@@ -16,19 +16,11 @@
         <el-row>
           <el-col :span="8">
             <el-form-item label="渠道商名称">
-              <el-select
+              <IhSelectPageByChannel
                 v-model="queryPageParameters.channelId"
                 clearable
                 placeholder="渠道商名称"
-                class="width--100"
-              >
-                <el-option
-                  v-for="item in channelOptions"
-                  :key="item.id"
-                  :label="item.name"
-                  :value="item.id"
-                ></el-option>
-              </el-select>
+              ></IhSelectPageByChannel>
             </el-form-item>
           </el-col>
           <el-col :span="8">
@@ -329,7 +321,6 @@
 import { Component, Vue } from "vue-property-decorator";
 import {
   post_channelGrade_getList,
-  get_channel_getAll,
   post_channelGrade_delete__id,
   post_channelGrade_backToDraft__id,
 } from "../../../api/channel/index";
@@ -356,8 +347,6 @@ export default class UserList extends Vue {
   provinceOption: any = [];
   selection: any = [];
   dialogVisible = false;
-
-  channelOptions: any = [];
 
   resPageInfo: any = {
     total: null,
@@ -432,12 +421,6 @@ export default class UserList extends Vue {
 
   created() {
     this.getListMixin();
-    this.getChannelAll();
-  }
-
-  // 获取渠道商
-  async getChannelAll() {
-    this.channelOptions = await get_channel_getAll();
   }
 
   //获取数据

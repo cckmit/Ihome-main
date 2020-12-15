@@ -3,8 +3,8 @@
  * @version: 
  * @Author: wwq
  * @Date: 2020-10-15 16:02:03
- * @LastEditors: wwq
- * @LastEditTime: 2020-12-15 08:41:26
+ * @LastEditors: ywl
+ * @LastEditTime: 2020-12-15 16:09:28
 -->
 <template>
   <IhPage>
@@ -25,20 +25,12 @@
                 prop="channelId"
               >
                 <div style="display: flex; justify-contant: flex-start">
-                  <el-select
-                    :disabled="$route.name === 'channelLevlChange'"
+                  <IhSelectPageByChannel
+                    :disabled="$route.name === 'channelLevelChange'"
                     v-model="resPageInfo.channelId"
                     clearable
-                    class="width--100"
                     placeholder="请选择渠道商"
-                  >
-                    <el-option
-                      v-for="item in channelOptions"
-                      :key="item.id"
-                      :label="item.name"
-                      :value="item.id"
-                    ></el-option>
-                  </el-select>
+                  ></IhSelectPageByChannel>
                   <el-link
                     style="margin-left: 10px; text-align: center; width: 50px"
                     :href="`/web-sales/channelBusiness/info?id=${resPageInfo.channelId}`"
@@ -299,7 +291,6 @@ import { Component, Vue } from "vue-property-decorator";
 //引入请求数据的api
 import {
   get_channelGrade_get__id,
-  get_channel_getAll,
   get_channelCityLevel_get__cityCode,
   post_channelGrade_add,
   post_channelGradeChange_add,
@@ -316,7 +307,6 @@ export default class ChannelRates extends Vue {
     return this.$route.query.id;
   }
   private changeReason = "";
-  channelOptions: any = [];
   fileListType: any = [];
   submitFile: any = {};
 
@@ -350,13 +340,7 @@ export default class ChannelRates extends Vue {
     this.getInfo();
   }
 
-  // 获取渠道商
-  async getChannelAll() {
-    this.channelOptions = await get_channel_getAll();
-  }
-
   async getInfo() {
-    this.getChannelAll();
     let id = this.$route.query.id;
     if (id) {
       this.resPageInfo = await get_channelGrade_get__id({ id: id });

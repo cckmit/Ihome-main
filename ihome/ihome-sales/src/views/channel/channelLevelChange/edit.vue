@@ -4,7 +4,7 @@
  * @Author: ywl
  * @Date: 2020-10-15 16:02:03
  * @LastEditors: ywl
- * @LastEditTime: 2020-12-15 10:51:50
+ * @LastEditTime: 2020-12-15 16:23:56
 -->
 <template>
   <IhPage>
@@ -25,20 +25,12 @@
                 prop="channelId"
               >
                 <div style="display: flex; justify-contant: flex-start">
-                  <el-select
-                    disabled
+                  <IhSelectPageByChannel
+                    :disabled="$route.name === 'channelLevelChange'"
                     v-model="resPageInfo.channelId"
                     clearable
-                    class="width--100"
                     placeholder="请选择渠道商"
-                  >
-                    <el-option
-                      v-for="item in channelOptions"
-                      :key="item.id"
-                      :label="item.name"
-                      :value="item.id"
-                    ></el-option>
-                  </el-select>
+                  ></IhSelectPageByChannel>
                   <el-link
                     style="margin-left: 10px; text-align: center; width: 50px"
                     :href="`/web-sales/channels/info?id=${resPageInfo.channelId}`"
@@ -282,7 +274,6 @@ import { Component, Vue } from "vue-property-decorator";
 //引入请求数据的api
 import {
   get_channelGradeChange_get__id,
-  get_channel_getAll,
   get_channelCityLevel_get__cityCode,
   post_channelGradeStandard_getAllByCityCodeAndChannelGrade,
   post_channelGradeChange_edit,
@@ -297,7 +288,6 @@ export default class ChannelRates extends Vue {
     return this.$route.query.id;
   }
   private changeReason = "";
-  channelOptions: any = [];
   fileListType: any = [];
   submitFile: any = {};
 
@@ -417,10 +407,6 @@ export default class ChannelRates extends Vue {
       }
     });
   }
-  // 获取渠道商
-  async getChannelAll() {
-    this.channelOptions = await get_channel_getAll();
-  }
 
   async getInfo() {
     let id = this.$route.query.id;
@@ -466,7 +452,6 @@ export default class ChannelRates extends Vue {
 
   async created() {
     this.getInfo();
-    this.getChannelAll();
   }
 }
 </script>
