@@ -4,7 +4,7 @@
  * @Author: ywl
  * @Date: 2020-12-08 17:45:05
  * @LastEditors: ywl
- * @LastEditTime: 2020-12-14 09:36:09
+ * @LastEditTime: 2020-12-14 21:09:34
 -->
 <template>
   <IhPage label-width="80px">
@@ -210,7 +210,7 @@
               <el-dropdown-menu slot="dropdown">
                 <el-dropdown-item @click.native.prevent="handleAutoItem(row)">自动开票</el-dropdown-item>
                 <el-dropdown-item @click.native.prevent="handleHand(row)">手工开票</el-dropdown-item>
-                <el-dropdown-item>下载发票</el-dropdown-item>
+                <el-dropdown-item @click.native.prevent="downloadFile(row)">下载发票</el-dropdown-item>
               </el-dropdown-menu>
             </el-dropdown>
           </template>
@@ -271,7 +271,12 @@ import PaginationMixin from "../../../mixins/pagination";
 import HandmadelInvoice from "./dialog/handmadeInvoice.vue";
 import AutoInvoice from "./dialog/autoInvoice.vue";
 import RedDashed from "./dialog/redDashed.vue";
-import { post_invoice_getList } from "../../../api/finance/index";
+import axios from "axios";
+import { getToken } from "ihome-common/util/cookies";
+import {
+  post_invoice_getList,
+  post_invoice_downloadFile,
+} from "../../../api/finance/index";
 
 @Component({
   components: { HandmadelInvoice, AutoInvoice, RedDashed },
@@ -303,6 +308,35 @@ export default class InvoiceList extends Vue {
   isHandmade = true;
   private selection: any = [];
 
+  private async downloadFile(row: any) {
+    try {
+      const res = await post_invoice_downloadFile({ ids: [row.id] });
+      console.log(res);
+      if (res.length) {
+        const token: any = getToken();
+        axios({
+          method: "POST",
+          url: `/sales-api/sales-document-cover/file/download/batch`,
+          xsrfHeaderName: "Authorization",
+          responseType: "blob",
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: "bearer " + token,
+          },
+          data: { fileIds: res },
+        }).then((res: any) => {
+          const href = window.URL.createObjectURL(res.data);
+          const $a = document.createElement("a");
+          $a.href = href;
+          $a.download = "发票附件.zip";
+          $a.click();
+          $a.remove();
+        });
+      }
+    } catch (error) {
+      console.log(error);
+    }
+  }
   /**
    * @description: 自动红冲-批量
    */
