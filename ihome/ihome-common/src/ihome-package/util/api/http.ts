@@ -4,7 +4,7 @@
  * @Author: zyc
  * @Date: 2020-10-22 09:00:11
  * @LastEditors: zyc
- * @LastEditTime: 2020-12-15 19:38:08
+ * @LastEditTime: 2020-12-15 19:49:19
  */
 import axios from 'axios'
 import { Message, MessageBox } from 'element-ui'
@@ -107,6 +107,7 @@ service.interceptors.response.use(
 
     },
     (error: any) => {
+        NProgress.done();
         // console.log(error);
         // console.log(error.response);
         // console.log(error.message);
