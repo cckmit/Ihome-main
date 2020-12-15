@@ -4,7 +4,7 @@
  * @Author: zyc
  * @Date: 2020-06-23 10:42:04
  * @LastEditors: zyc
- * @LastEditTime: 2020-11-24 11:24:59
+ * @LastEditTime: 2020-12-15 15:17:10
 --> 
 <template>
   <div class="header-container">
@@ -65,6 +65,7 @@ import { AppModule } from "../store/modules/app";
 import { headImg } from "../utils/base64-img";
 import { defaultIsCollapse } from "@/setting";
 import { allMenu } from "../api/users";
+import { get_sessionUser_logout } from "../api/system/index";
 @Component({
   components: {},
 })
@@ -81,10 +82,11 @@ export default class IhHeader extends Vue {
 
   async loginOut() {
     try {
+      await get_sessionUser_logout();
       await UserModule.LogOut();
-      this.$router.push("/login");
     } catch (error) {
-      console.log(error);
+      await UserModule.LogOut();
+    } finally {
       this.$router.push("/login");
     }
   }

@@ -4,7 +4,7 @@
  * @Author: zyc
  * @Date: 2020-11-24 10:49:09
  * @LastEditors: zyc
- * @LastEditTime: 2020-12-11 16:53:52
+ * @LastEditTime: 2020-12-15 11:25:48
 -->
 
 <!--
@@ -167,8 +167,8 @@
       <el-table-column prop="city" label="业务开展城市" width="180">
         <template slot-scope="scope">
           {{ $root.getAreaName(scope.row.city) }}
-        </template></el-table-column
-      >
+        </template>
+      </el-table-column>
       <el-table-column prop="cityGrade" label="城市等级" width="180">
         <template slot-scope="scope">
           {{ $root.dictAllName(scope.row.cityGrade, "CityLevel") }}
@@ -210,7 +210,10 @@
 <script lang="ts">
 import { Component, Vue, Prop } from "vue-property-decorator";
 
-import { post_channelGrade_getList } from "../../../../api/channel/index";
+import {
+  post_channelGrade_getList,
+  post_channelGradeChange_getList,
+} from "../../../../api/channel/index";
 import PaginationMixin from "../../../../mixins/pagination";
 @Component({
   components: {},
@@ -246,7 +249,7 @@ export default class ChannelApprovalGradesList extends Vue {
   };
 
   cancel() {
-    this.$emit("finish", true);
+    this.$emit("finish", false);
   }
   reset() {
     this.queryPageParameters = {
@@ -274,7 +277,7 @@ export default class ChannelApprovalGradesList extends Vue {
 
   created() {
     console.log(this.data);
-    if (this.data == "") {
+    if (this.data == "Change") {
       this.title = "渠道合作信息列表(变更信息)";
     }
     this.getListMixin();
@@ -284,9 +287,15 @@ export default class ChannelApprovalGradesList extends Vue {
     this.selectList = val;
   }
   async getListMixin() {
-    this.resPageInfo = await post_channelGrade_getList(
-      this.queryPageParameters
-    );
+    if (this.data == "Change") {
+      this.resPageInfo = await post_channelGradeChange_getList(
+        this.queryPageParameters
+      );
+    } else {
+      this.resPageInfo = await post_channelGrade_getList(
+        this.queryPageParameters
+      );
+    }
   }
   handleChange(v: any) {
     console.log(v);
