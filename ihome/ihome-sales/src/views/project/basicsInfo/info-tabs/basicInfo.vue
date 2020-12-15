@@ -4,7 +4,7 @@
  * @Author: wwq
  * @Date: 2020-11-03 11:52:41
  * @LastEditors: wwq
- * @LastEditTime: 2020-12-11 08:54:35
+ * @LastEditTime: 2020-12-15 09:43:12
 -->
 <template>
   <div>
@@ -319,23 +319,34 @@
         <div class="padding-left-20">
           <el-table
             class="ih-table"
-            :data="form.attachPics"
+            :data="fileListType"
             style="width: 100%"
           >
             <el-table-column
-              prop="proAttachEnum"
+              prop="type"
+              width="180"
               label="类型"
+              align="center"
             >
-              <template v-slot="{ row }">{{
-                $root.dictAllName(row.proAttachEnum, "ProAttach")
-              }}</template>
+              <template v-slot="{ row }">
+                <div><span
+                    style="color: red"
+                    v-if="row.subType"
+                  >*</span>{{row.name}}
+                </div>
+              </template>
             </el-table-column>
             <el-table-column label="附件">
-              <IhUpload
-                :file-list="accFileList"
-                :limit="accFileList.length"
-                size="100px"
-              ></IhUpload>
+              <template v-slot="{ row }">
+                <IhUpload
+                  :file-list.sync="row.fileList"
+                  :file-size="10"
+                  :file-type="row.code"
+                  :limit="row.fileList.length"
+                  size="100px"
+                  :removePermi="false"
+                ></IhUpload>
+              </template>
             </el-table-column>
           </el-table>
         </div>
@@ -410,6 +421,7 @@ export default class InfoBasicInfo extends Vue {
   };
   remark = "";
   contantList: any = [];
+  fileListType: any = [];
   checkBoxChangeList: any = [];
   YesOrNoType: any = [
     {
@@ -508,15 +520,31 @@ export default class InfoBasicInfo extends Vue {
         this.checkBoxChangeList.push(JSON.parse(v));
       });
       this.houseFileList = this.form.proPics.map((v: any) => ({
-        name: v.attachName,
-        fileId: v.attachAddr,
+        name: v.fileName,
+        fileId: v.fileId,
         exIndex: v.exIndex,
         proAttachEnum: "ProPic",
       }));
       this.radio = this.houseFileList.filter(
         (item: any) => item.exIndex === 1
       )[0]["fileId"];
+      this.getFileListType(data.attachPics);
     }
+  }
+
+  getFileListType(data: any) {
+    const list = (this.$root as any).dictAllList("ProAttach");
+    this.fileListType = list.map((v: any) => {
+      return {
+        ...v,
+        fileList: data
+          .filter((j: any) => j.type === v.code)
+          .map((h: any) => ({
+            ...h,
+            name: h.fileName,
+          })),
+      };
+    });
   }
 
   handler({ BMap }: any) {

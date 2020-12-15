@@ -4,7 +4,7 @@
  * @Author: wwq
  * @Date: 2020-10-15 16:02:03
  * @LastEditors: wwq
- * @LastEditTime: 2020-12-14 21:20:10
+ * @LastEditTime: 2020-12-15 08:41:26
 -->
 <template>
   <IhPage>
@@ -315,7 +315,6 @@ export default class ChannelRates extends Vue {
   private get Id() {
     return this.$route.query.id;
   }
-  private fileList = [];
   private changeReason = "";
   channelOptions: any = [];
   fileListType: any = [];
