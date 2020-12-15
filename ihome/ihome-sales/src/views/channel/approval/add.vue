@@ -4,7 +4,7 @@
  * @Author: zyc
  * @Date: 2020-07-09 14:31:23
  * @LastEditors: zyc
- * @LastEditTime: 2020-12-11 15:37:07
+ * @LastEditTime: 2020-12-15 14:49:52
 --> 
 <template>
   <ih-page>
@@ -48,7 +48,7 @@
               >
                 <IhSelectPageDivision
                   v-model="postData.departmentOrgId"
-                  :searchName="postData.departmentOrgName"
+                  :searchName="postData.departmentName"
                   clearable
                   value-key="id"
                 >
@@ -80,7 +80,7 @@
       </div>
 
       <el-table
-        :data="channelApprovalGrades"
+        :data="showChannelApprovalGrades"
         style="width: 100%; padding: 20px"
       >
         <el-table-column prop="storageNum" label="入库编号" width="180">
@@ -131,15 +131,25 @@
       </el-table>
       <p class="ih-info-title">附件信息</p>
       <el-table
-        :data="channelApprovalAttachmentsList"
+        :data="showChannelApprovalAttachments"
         style="width: 100%; padding: 20px"
       >
-        <el-table-column prop="date" label="类型" width="180">
+        <!-- <el-table-column prop="storageNum" label="编号" width="180">
+        </el-table-column> -->
+        <el-table-column prop="typeName" label="类型" width="180">
         </el-table-column>
-        <el-table-column prop="name" label="渠道商名称" width="180">
+        <el-table-column prop="channelName" label="渠道商名称" width="180">
         </el-table-column>
-        <el-table-column prop="name" label="业务开展城市"> </el-table-column>
-        <el-table-column prop="name" label="附件"> </el-table-column>
+        <el-table-column prop="city" label="业务开展城市">
+          <template slot-scope="scope">
+            {{ $root.getAreaName(scope.row.city) }}
+          </template>
+        </el-table-column>
+        <el-table-column prop="fileId" label="附件">
+          <template slot-scope="scope">
+            {{ $tool.getFileUrl(scope.row.fileId) }}
+          </template>
+        </el-table-column>
       </el-table>
       <p class="ih-info-title">呈批信息</p>
       <el-row class="ih-info-line">
@@ -172,7 +182,7 @@
           :data="dialogAddGradeType"
           @cancel="() => (dialogAdd = false)"
           @finish="
-            (data) => {
+            (data, gradeType) => {
               dialogAdd = false;
               finishAdd(data, gradeType);
             }
@@ -189,6 +199,7 @@ import {
   post_channelApproval_add,
   post_channelApproval_edit,
   get_channelApproval_get__id,
+  post_channelGrade_getChannelGradeAttachmentByType,
 } from "../../../api/channel/index";
 import { Form as ElForm } from "element-ui";
 import { NoRepeatHttp } from "ihome-common/util/aop/no-repeat-http";
@@ -196,16 +207,6 @@ import { NoRepeatHttp } from "ihome-common/util/aop/no-repeat-http";
   components: { ChannelApprovalGradesList },
 })
 export default class ApprovalAdd extends Vue {
-  divisionList: any = [
-    {
-      id: 1,
-      name: "测试1",
-    },
-    {
-      id: 2,
-      name: "测试2",
-    },
-  ];
   departmentOrgId: any = null;
   input: any = null;
   textarea: any = null;
@@ -223,53 +224,98 @@ export default class ApprovalAdd extends Vue {
       { required: true, message: "事业部必选", trigger: "change" },
     ],
   };
+
   postData: any = {
     approvalDesc: null,
     approvalTitle: null,
     channelApprovalAttachments: [],
     channelApprovalGrades: [],
     departmentOrgId: null,
-    departmentOrgName: null,
     operateType: null, //1保存2提交
   };
+
+  showChannelApprovalAttachments: any = []; //展示选择的渠道等级
+  showChannelApprovalGrades: any[] = []; //展示附件信息
 
   async created() {
     this.id = this.$route.query.id;
     if (this.id) {
       const res: any = await get_channelApproval_get__id({ id: this.id });
       this.postData = res;
-      this.channelApprovalGrades = res.channelApprovalGrades;
-      this.channelApprovalAttachmentsList = res.channelApprovalAttachments;
+      res.channelApprovalGrades.forEach((item: any) => {
+        this.showChannelApprovalGrades.push(item);
+        this.loadAttachments(item, item.gradeType);
+      });
     }
+  }
+  isExis(list: any[], item: any) {
+    let r = false;
+    for (let index = 0; index < list.length; index++) {
+      const element = list[index];
+      if (element.gradeId == item.id && element.gradeType == item.gradeType) {
+        r = true;
+        break;
+      }
+    }
+    return r;
+  }
+
+  async finishAdd(list: any, gradeType: string) {
+    list.forEach(async (item: any) => {
+      item.gradeType = gradeType;
+      if (!this.isExis(this.postData.channelApprovalGrades, item)) {
+        this.postData.channelApprovalGrades.push({
+          gradeId: item.id,
+          gradeType: gradeType,
+        });
+        this.showChannelApprovalGrades.push(item);
+        this.loadAttachments(item, gradeType);
+      }
+    });
+  }
+  async loadAttachments(item: any, gradeType: any) {
+    const res: any = await post_channelGrade_getChannelGradeAttachmentByType({
+      gradeId: item.id,
+      gradeType: gradeType,
+    });
+    res.forEach((element: any) => {
+      element.storageNum = item.storageNum;
+      this.showChannelApprovalAttachments.push(element);
+    });
   }
   addChannelApprovalGrades() {
     this.dialogAddGradeType = "Basic";
 
     this.dialogAdd = true;
   }
-  finishAdd(data: any) {
-    for (let index = 0; index < data.length; index++) {
-      const element = data[index];
-      let result = this.channelApprovalGrades.some((item: any) => {
-        return item.id == element.id;
-      });
-      if (!result) {
-        this.channelApprovalGrades.push(element);
-      }
-    }
-  }
   addChannelApprovalGradesChange() {
     this.dialogAddGradeType = "Change";
     this.dialogAdd = true;
   }
   remove(scope: any) {
-    this.channelApprovalGrades.splice(scope.$index, 1);
+    let tempList: any[] = [];
+    this.showChannelApprovalAttachments.forEach((item: any) => {
+      if (item.storageNum != scope.row.storageNum) {
+        tempList.push(item);
+      }
+    });
+    this.showChannelApprovalAttachments = tempList;
+    this.postData.channelApprovalGrades.splice(scope.$index, 1);
+
+    this.showChannelApprovalGrades.splice(scope.$index, 1);
   }
   async save() {
-    if (this.id) {
-      (this.$refs["ruleForm"] as ElForm).validate(this.editSave);
+    if (
+      this.postData.channelApprovalGrades &&
+      this.postData.channelApprovalGrades.length > 0
+    ) {
+      if (this.id) {
+        (this.$refs["ruleForm"] as ElForm).validate(this.editSave);
+      } else {
+        (this.$refs["ruleForm"] as ElForm).validate(this.addSave);
+      }
     } else {
-      (this.$refs["ruleForm"] as ElForm).validate(this.addSave);
+      this.$message.warning("请先添加渠道等级数据");
     }
   }
   @NoRepeatHttp()
@@ -281,7 +327,6 @@ export default class ApprovalAdd extends Vue {
         path: "/approval/list",
       });
     } else {
-      this.$message.warning("请先填好数据再保存");
       return false;
     }
   }
