@@ -4,7 +4,7 @@
  * @Author: wwq
  * @Date: 2020-10-15 12:33:25
  * @LastEditors: wwq
- * @LastEditTime: 2020-12-15 14:47:54
+ * @LastEditTime: 2020-12-15 15:09:45
 -->
 <template>
   <div class="text-left">
@@ -327,8 +327,6 @@ export default class Home extends Vue {
       this.resPageInfo = res;
       this.resPageInfo.provinceOption = [res.province, res.city, res.county];
       this.getFileListType(res.attachmentList);
-    } else {
-      this.getFileListType([]);
     }
   }
 
