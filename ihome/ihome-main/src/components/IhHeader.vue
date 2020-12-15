@@ -4,7 +4,7 @@
  * @Author: zyc
  * @Date: 2020-06-23 10:42:04
  * @LastEditors: zyc
- * @LastEditTime: 2020-12-15 15:17:10
+ * @LastEditTime: 2020-12-15 18:14:10
 --> 
 <template>
   <div class="header-container">
@@ -37,6 +37,7 @@
       </div>
     </div>
     <div class="right-item">
+      <span class="userinfo">{{ userInfo.name }}</span>
       <el-popover
         placement="top-start"
         width="120"
@@ -89,6 +90,9 @@ export default class IhHeader extends Vue {
     } finally {
       this.$router.push("/login");
     }
+  }
+  get userInfo() {
+    return (this.$root as any).userInfo || {};
   }
   private get isCollapse(): boolean {
     return AppModule.opened;
@@ -207,5 +211,12 @@ export default class IhHeader extends Vue {
   li:hover {
     color: #f90;
   }
+}
+.userinfo {
+  position: relative;
+  top: -12px;
+  right: 10px;
+  font-size: 14px;
+  color: #666;
 }
 </style>
