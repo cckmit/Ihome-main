@@ -144,14 +144,21 @@
         </el-col>
         <el-col :span="6">
           <el-form-item label="分销协议编号">
-            <el-select
-              v-model="postData.contNo"
-              clearable
-              placeholder="请选择分销协议编号"
-              class="width--100">
-              <el-option label="A" value="Has"></el-option>
-              <el-option label="B" value="No"></el-option>
-            </el-select>
+            <div class="contNo-wrapper">
+              <el-select
+                v-model="postData.contNo"
+                clearable
+                placeholder="请选择分销协议编号"
+                class="width--100">
+                <el-option label="A" value="Has"></el-option>
+                <el-option label="B" value="No"></el-option>
+              </el-select>
+              <el-button
+                @click="previewContNo"
+                type="primary"
+                size="small"
+                icon="el-icon-view">预览</el-button>
+            </div>
           </el-form-item>
         </el-col>
         <el-col :span="6">
@@ -520,7 +527,23 @@
         </el-table>
       </el-col>
     </el-row>
-    <p id="anchor-7" class="ih-info-title">收派金额</p>
+    <div class="receive-wrapper" id="anchor-7">
+      <p class="ih-info-title">收派金额</p>
+      <div>计算方式</div>
+      <div>
+        <el-select
+          v-model="postData.calculation"
+          placeholder="请选择计算方式"
+          class="width--100">
+          <el-option
+            v-for="item in $root.dictAllList('DealCalculateWay')"
+            :key="item.code"
+            :label="item.name"
+            :value="item.code"
+          ></el-option>
+        </el-select>
+      </div>
+    </div>
     <el-row style="padding-left: 20px">
       <el-col>
         <el-table
@@ -535,12 +558,64 @@
             </template>
           </el-table-column>
           <el-table-column prop="partyACustomerName" label="甲方/客户" min-width="120"></el-table-column>
-          <el-table-column prop="packageId" label="收派套餐" min-width="120"></el-table-column>
-          <el-table-column prop="receiveAmount" label="应收金额" min-width="120"></el-table-column>
-          <el-table-column prop="commAmount" label="派发佣金金额" min-width="150"></el-table-column>
-          <el-table-column prop="rewardAmount" label="派发内场奖励金额" min-width="150"></el-table-column>
-          <el-table-column prop="totalPackageAmount" label="总包业绩金额" min-width="150"></el-table-column>
-          <el-table-column prop="distributionAmount" label="分销业绩金额" min-width="150"></el-table-column>
+          <el-table-column prop="packageId" label="收派套餐" min-width="140">
+            <template slot-scope="scope">
+              <el-input
+                :disabled="postData.calculation === 'Manual'"
+                placeholder="请选择收派套餐"
+                v-model="scope.row.packageId">
+                <el-button
+                  slot="append"
+                  icon="el-icon-search"
+                  @click.native.prevent="selectPackage(scope)"></el-button>
+              </el-input>
+            </template>
+          </el-table-column>
+          <el-table-column prop="receiveAmount" label="应收金额" min-width="120">
+            <template slot-scope="scope">
+              <el-input
+                v-digits="2"
+                v-model="scope.row.receiveAmount"
+                :disabled="postData.calculation === 'Auto'"
+                placeholder="应收金额"></el-input>
+            </template>
+          </el-table-column>
+          <el-table-column prop="commAmount" label="派发佣金金额" min-width="150">
+            <template slot-scope="scope">
+              <el-input
+                v-digits="2"
+                v-model="scope.row.commAmount"
+                :disabled="postData.calculation === 'Auto'"
+                placeholder="应收金额"></el-input>
+            </template>
+          </el-table-column>
+          <el-table-column prop="rewardAmount" label="派发内场奖励金额" min-width="150">
+            <template slot-scope="scope">
+              <el-input
+                v-digits="2"
+                v-model="scope.row.rewardAmount"
+                :disabled="postData.calculation === 'Auto'"
+                placeholder="应收金额"></el-input>
+            </template>
+          </el-table-column>
+          <el-table-column prop="totalPackageAmount" label="总包业绩金额" min-width="150">
+            <template slot-scope="scope">
+              <el-input
+                v-digits="2"
+                v-model="scope.row.totalPackageAmount"
+                :disabled="postData.calculation === 'Auto'"
+                placeholder="应收金额"></el-input>
+            </template>
+          </el-table-column>
+          <el-table-column prop="distributionAmount" label="分销业绩金额" min-width="150">
+            <template slot-scope="scope">
+              <el-input
+                v-digits="2"
+                v-model="scope.row.distributionAmount"
+                :disabled="postData.calculation === 'Auto'"
+                placeholder="应收金额"></el-input>
+            </template>
+          </el-table-column>
           <el-table-column prop="otherChannelFees" label="其他渠道费用(正数为产生，负数为使用)" min-width="150"></el-table-column>
         </el-table>
       </el-col>
@@ -615,7 +690,7 @@
             </el-table-column>
             <el-table-column prop="amount" label="金额" min-width="120">
               <template slot-scope="scope">
-                <el-input v-model="scope.row.amount" clearable placeholder="金额"/>
+                <el-input v-digits="2" v-model="scope.row.amount" clearable placeholder="金额"/>
               </template>
             </el-table-column>
             <el-table-column prop="remarks" label="备注" min-width="120">
@@ -818,6 +893,17 @@
           "
       />
     </ih-dialog>
+    <ih-dialog :show="dialogAddReceivePackage" desc="选择收派套餐列表">
+      <SelectReceivePackage
+        @cancel="() => (dialogAddReceivePackage = false)"
+        @finish="
+            (data) => {
+              dialogAddReceivePackage = false;
+              finishAddReceivePackage(data);
+            }
+          "
+      />
+    </ih-dialog>
     <ih-dialog :show="dialogAddBroker" desc="选择渠道经纪人列表">
       <AddBroker
         @cancel="() => (dialogAddBroker = false)"
@@ -850,6 +936,7 @@
   import AgentCompanyList from "@/views/deal/dealReport/dialog/agentCompanyList.vue";
   import SelectRoom from "@/views/deal/dealReport/dialog/selectRoom.vue";
   import AddCustomer from "@/views/deal/dealReport/dialog/addCustomer.vue";
+  import SelectReceivePackage from "@/views/deal/dealReport/dialog/selectReceivePackage.vue";
   import AddBroker from "@/views/deal/dealReport/dialog/addBroker.vue";
   import EditDealAchieve from "@/views/deal/dealReport/dialog/editDealAchieve.vue";
   import {
@@ -865,6 +952,7 @@
   @Component({
     components: {
       AddCustomer,
+      SelectReceivePackage,
       AddBroker,
       SelectProjectCycle,
       SelectNoticeList,
@@ -917,7 +1005,7 @@
       offerNoticeVO: [], // 优惠告知书
       customerVO: [], // 客户信息
       agencyVO: [], // 渠道信息
-      receiveVO: [], // 收派金额
+      receiveVO: [{}], // 收派金额
       receiveAchieveVO: [], // 应收信息
       documentVO: [], // 附件信息
       commissionInfoList: [], // 对外拆佣
@@ -935,6 +1023,7 @@
           DirectorList: [],
         }
       ], // 平台费用 - 分销
+      calculation: 'Auto', // 计算方式 - 默认自动
     };
     DealDataFlag: any = []; // 数据来源
     rules: any = {
@@ -993,6 +1082,7 @@
     id: any = null;
     dialogAddRoom: any = false;
     dialogAddCustomer: any = false;
+    dialogAddReceivePackage: any = false;
     dialogAddBroker: any = false;
     dialogAddProjectCycle: any = false;
     cycleCheckedData: any = [];
@@ -1171,6 +1261,29 @@
       }
     }
 
+    // 预览分销协议
+    previewContNo() {
+      console.log('预览分销协议');
+      if (!this.postData.contNo) {
+        this.$message.error('请先选择需要预览的分销协议');
+        return;
+      } else {
+        // 预览
+        let routeData = this.$router.resolve({
+          path: "/distribution/info",
+          query:{id: '81'}
+        });
+        window.open(routeData.href, '_blank');
+      }
+    }
+
+    // 选择收派套餐
+    selectPackage(scope: any) {
+      console.log('选择收派套餐', scope);
+      if (this.postData.calculation === 'Manual') return;
+      this.dialogAddReceivePackage = true;
+    }
+
     // 计算收派金额总计
     getReceiveSummaries(param: any) {
       const {columns, data} = param;
@@ -1204,8 +1317,6 @@
     // 选择项目周期
     selectProject() {
       this.dialogAddProjectCycle = true;
-      // input失焦
-      // (this as any).$refs.inputCycle && (this as any).$refs.inputCycle.blur();
     }
 
     // 确定选择项目周期
@@ -1228,7 +1339,7 @@
           return item.id === data[0].id;
         })
         if (flag) {
-          this.$message.error('已经存在相同的客户，请从新选择！');
+          this.$message.error('已经存在相同的客户，请重新选择！');
         } else {
           this.postData.offerNoticeVO.push(...data);
           this.dialogAddNotice = false;
@@ -1319,7 +1430,7 @@
           return item.id === data[0].id;
         })
         if (flag) {
-          this.$message.error('已经存在相同的客户，请从新选择！');
+          this.$message.error('已经存在相同的客户，请重新选择！');
         } else {
           this.postData.customerVO.push(...data);
           this.dialogAddCustomer = false;
@@ -1327,6 +1438,28 @@
       } else {
         this.postData.customerVO.push(...data);
         this.dialogAddCustomer = false;
+      }
+    }
+
+    // 确定选择收派套餐
+    async finishAddReceivePackage(data: any) {
+      console.log('data', data);
+      // this.addTotalPackageList = data;
+      if (data.length === 0) return
+      if (this.postData.receiveVO.length > 0) {
+        let flag = false;
+        flag = this.postData.receiveVO.some((item: any) => {
+          return item.id === data[0].id;
+        })
+        if (flag) {
+          this.$message.error('已经存在相同的收派套餐，请重新选择！');
+        } else {
+          this.postData.receiveVO.push(...data);
+          this.dialogAddReceivePackage = false;
+        }
+      } else {
+        this.postData.receiveVO.push(...data);
+        this.dialogAddReceivePackage = false;
       }
     }
 
@@ -1360,7 +1493,7 @@
 
     // 选择拆佣名称
     selectCommName(scope: any) {
-      console.log('选择收派套餐', scope);
+      console.log('选择拆佣名称', scope);
       this.dialogAddAgentCompany = true;
     }
 
@@ -1519,6 +1652,32 @@
     width: 100%;
     box-sizing: border-box;
     margin-bottom: 10px;
+  }
+
+  .contNo-wrapper {
+    width: 100%;
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+  }
+
+  .receive-wrapper {
+    width: 100%;
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    box-sizing: border-box;
+    margin: 10px 0px;
+
+    p {
+      flex: 1;
+      display: inline-block;
+    }
+
+    div {
+      box-sizing: border-box;
+      margin-left: 5px;
+    }
   }
 
   .home-type-wrapper {
