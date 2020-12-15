@@ -3,8 +3,8 @@
  * @version: 
  * @Author: wwq
  * @Date: 2020-10-15 12:33:25
- * @LastEditors: ywl
- * @LastEditTime: 2020-11-03 17:19:50
+ * @LastEditors: wwq
+ * @LastEditTime: 2020-12-15 14:58:15
 -->
 <template>
   <div class="text-left">
@@ -22,7 +22,7 @@
             <span class="text-ellipsis">{{ resPageInfo.channelId
               }}<el-link
                 style="margin-left: 5px"
-                :href="`/web-sales/channels/info?id=${resPageInfo.channelId}`"
+                :href="`/web-sales/channelBusiness/info?id=${resPageInfo.channelId}`"
                 type="primary"
                 target="_blank"
               >详情</el-link></span>

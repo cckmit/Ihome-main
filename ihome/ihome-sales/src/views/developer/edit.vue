@@ -4,7 +4,7 @@
  * @Author: wwq
  * @Date: 2020-09-25 17:59:09
  * @LastEditors: wwq
- * @LastEditTime: 2020-12-14 21:08:37
+ * @LastEditTime: 2020-12-15 14:32:47
 -->
 <template>
   <ih-page>
@@ -169,14 +169,11 @@
             </el-form-item>
           </el-col>
           <el-col :span="8">
-            <el-form-item
-              label="录入人"
-              prop="inputUser"
-            >
+            <el-form-item label="录入人">
               <el-input
                 clearable
                 disabled
-                v-model="resPageInfo.inputUser"
+                v-model="resPageInfo.inputUserName"
                 placeholder="录入人"
               ></el-input>
             </el-form-item>
@@ -438,6 +435,7 @@ export default class Edit extends Vue {
     county: null,
     address: null,
     inputUser: null,
+    inputUserName: null,
     contactList: [],
     bankList: [],
     attachmentList: [],
@@ -499,6 +497,8 @@ export default class Edit extends Vue {
       this.resPageInfo.provinceOption = [res.province, res.city, res.county];
       this.getFileListType(res.attachmentList);
     } else {
+      this.resPageInfo.inputUserName = (this.$root as any).userInfo.name;
+      this.resPageInfo.inputUser = (this.$root as any).userInfo.id;
       this.getFileListType([]);
     }
   }

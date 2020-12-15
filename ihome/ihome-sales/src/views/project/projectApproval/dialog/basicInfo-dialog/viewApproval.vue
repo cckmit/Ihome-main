@@ -4,7 +4,7 @@
  * @Author: wwq
  * @Date: 2020-12-10 11:42:19
  * @LastEditors: wwq
- * @LastEditTime: 2020-12-11 08:59:08
+ * @LastEditTime: 2020-12-15 11:12:24
 -->
 <template>
   <el-dialog
@@ -18,8 +18,8 @@
     :title="`${info.termName} 立项呈批`"
   >
     <div class="title">
-      <div>发起人：陈健莹</div>
-      <div>发起时间：2020-4-30</div>
+      <div>发起人：{{info.inputMan}}</div>
+      <div>发起时间：{{info.inputTime}}</div>
       <div>{{`编号：（${info.approvalNo}）`}}</div>
     </div>
     <table
@@ -185,7 +185,7 @@
 </template>
 <script lang="ts">
 import { Component, Vue } from "vue-property-decorator";
-import { get_term_get__termId } from "@/api/project/index";
+import { get_term_getOATermFrom__termId } from "@/api/project/index";
 
 @Component({
   components: {},
@@ -210,7 +210,7 @@ export default class ViewApproval extends Vue {
   }
 
   async getInfo() {
-    const item = await get_term_get__termId({
+    const item = await get_term_getOATermFrom__termId({
       termId: this.$route.query.id,
     });
     this.info = item ? item : {};
