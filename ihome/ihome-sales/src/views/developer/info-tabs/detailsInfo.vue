@@ -4,7 +4,7 @@
  * @Author: wwq
  * @Date: 2020-10-15 12:33:25
  * @LastEditors: wwq
- * @LastEditTime: 2020-12-15 09:59:06
+ * @LastEditTime: 2020-12-15 15:09:45
 -->
 <template>
   <div class="text-left">
@@ -119,7 +119,7 @@
             label="录入人"
             align="left"
           >
-            <span>{{ resPageInfo.inputUser }}</span>
+            <span>{{ resPageInfo.inputUserName }}</span>
           </el-form-item>
         </el-col>
         <el-col :span="8">
@@ -217,6 +217,7 @@
               :limit="row.fileList.length"
               size="100px"
               :removePermi="false"
+              :upload-show="!!row.fileList.length"
             ></IhUpload>
           </template>
         </el-table-column>
@@ -326,8 +327,6 @@ export default class Home extends Vue {
       this.resPageInfo = res;
       this.resPageInfo.provinceOption = [res.province, res.city, res.county];
       this.getFileListType(res.attachmentList);
-    } else {
-      this.getFileListType([]);
     }
   }
 

@@ -4,7 +4,7 @@
  * @Author: wwq
  * @Date: 2020-11-27 17:29:09
  * @LastEditors: wwq
- * @LastEditTime: 2020-12-11 09:18:46
+ * @LastEditTime: 2020-12-15 10:30:12
 -->
 <template>
   <div>
@@ -128,6 +128,7 @@
               size="100px"
               :fileList="row.fileList"
               :limit="row.fileList.length"
+              :upload-show="!!row.fileList.length"
               :removePermi="false"
             />
           </template>

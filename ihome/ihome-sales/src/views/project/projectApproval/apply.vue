@@ -96,10 +96,11 @@
           <el-col :span="12">
             <el-form-item label="合同跟进人">
               <IhSelectPageUser
-                v-model="handler"
+                v-model="info.handlerId"
                 clearable
                 value-key="id"
                 style="width: 70%"
+                @changeOption="(data) => {handler = data}"
               >
                 <template v-slot="{ data }">
                   <span style="float: left">{{ data.name }}</span>
@@ -439,6 +440,7 @@
         <el-button
           type="primary"
           class="margin-left-20"
+          @click="viewElectronic"
         >预览电子版</el-button>
       </div>
       <div class="text-center">
@@ -481,6 +483,8 @@ import {
 } from "@/api/channel/index";
 import { post_distribution_create } from "@/api/contract/index";
 import ViewContract from "./dialog/notification-dialog/viewContract.vue";
+import axios from "axios";
+import { getToken } from "ihome-common/util/cookies";
 
 @Component({
   components: { TemplateDailog, ViewContract },
@@ -585,8 +589,32 @@ export default class Apply extends Vue {
     };
     let channelList: any = await post_channelGrade_getList(obj);
     this.info.channelLevel = channelList.channelGrade;
-    this.info.channelLevel = "BigPlatform"; // 假数据
-    this.info.organizationId = 1; // 假数据
+    this.info.organizationId = list.groupId;
+    // this.info.channelLevel = "BigPlatform"; // 假数据
+  }
+
+  // 预览电子版
+  async viewElectronic() {
+    const token: any = getToken();
+    axios({
+      method: "POST",
+      url: `/sales-api/contract/template/distribution/preview`,
+      xsrfHeaderName: "Authorization",
+      responseType: "blob",
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: "bearer " + token,
+      },
+      data: this.info,
+    }).then((res: any) => {
+      const href = window.URL.createObjectURL(res.data);
+      window.open(href);
+      // const $a = document.createElement("a");
+      // $a.href = href;
+      // $a.download = "列表.pdf";
+      // $a.click();
+      // $a.remove();
+    });
   }
 
   channelAccountChange(val: any) {
@@ -596,12 +624,13 @@ export default class Apply extends Vue {
     this.info.channelAccountName = item.accountName;
   }
   async submit() {
-    this.info.handlerId = this.handler.id;
-    await post_distribution_create(this.info);
-    this.$message.success("申领成功");
-    this.$goto({
-      path: "/projectApproval/list",
-    });
+    const res: any = await post_distribution_create(this.info);
+    if (res.data) {
+      this.$message.success("申领成功");
+      this.$goto({
+        path: "/projectApproval/list",
+      });
+    }
   }
 
   async created() {

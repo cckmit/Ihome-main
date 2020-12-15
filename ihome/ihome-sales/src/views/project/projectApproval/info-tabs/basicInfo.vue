@@ -4,7 +4,7 @@
  * @Author: wwq
  * @Date: 2020-11-27 17:17:06
  * @LastEditors: wwq
- * @LastEditTime: 2020-12-15 09:59:39
+ * @LastEditTime: 2020-12-15 10:29:49
 -->
 <template>
   <IhPage>
@@ -422,6 +422,7 @@
               :file-size="10"
               :file-type="row.code"
               :limit="row.fileList.length"
+              :upload-show="!!row.fileList.length"
               size="100px"
               :removePermi="false"
             ></IhUpload>

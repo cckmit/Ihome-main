@@ -1,6 +1,5 @@
 /* eslint-disable */
-/* 此脚本由swagger-ui的api-docs自动生成，请勿修改 */
-//2020-12-12 2:18:22 ├F10: PM┤
+/* 此脚本由swagger-ui的api-docs自动生成，请勿修改 *///2020-12-15 10:58:55 ├F10: AM┤
 import { request } from '@/api/base'
 const basePath = "/sales-api/project"
 /**index*/
@@ -535,9 +534,13 @@ export async function post_term_getListAccrossTerm(d?: any) {
 export async function get_term_getName__termId(d?: any) {
     return await request.get<string, string>(basePath + '/term/getName/{termId}', { params: d })
 }
-/**预览OA立项合同表单*/
+/**预览OA合同表单*/
 export async function get_term_getOAContractFrom__termId(d?: any) {
     return await request.get<TermOAContractVO, TermOAContractVO>(basePath + '/term/getOAContractFrom/{termId}', { params: d })
+}
+/**预览OA立项表单*/
+export async function get_term_getOATermFrom__termId(d?: any) {
+    return await request.get<TermRespVO, TermRespVO>(basePath + '/term/getOATermFrom/{termId}', { params: d })
 }
 /**根据周期id+栋座获取 甲方信息*/
 export async function post_term_getPartYAInfoByDeal(d?: any) {
@@ -562,6 +565,14 @@ export async function get_term_getTermIdByProId__proId(d?: any) {
 /**获取周期项目信息1-合同模块*/
 export async function post_term_getTermInfoByTermId__termId(d?: any) {
     return await request.post<TermInfoMsgVo, TermInfoMsgVo>(basePath + '/term/getTermInfoByTermId/{termId}', d)
+}
+/**推送立项OA*/
+export async function get_term_pushDistactOA__termId(d?: any) {
+    return await request.get<TermIdDepartmentIdVo, TermIdDepartmentIdVo>(basePath + '/term/pushDistactOA/{termId}', { params: d })
+}
+/**推送立项OA*/
+export async function get_term_pushTermOA__termId(d?: any) {
+    return await request.get<TermIdDepartmentIdVo, TermIdDepartmentIdVo>(basePath + '/term/pushTermOA/{termId}', { params: d })
 }
 /**项目周期-驳回*/
 export async function post_term_reject(d?: any) {
@@ -612,43 +623,45 @@ export interface AddSpecialId {
 /**AttachAgencyItemVO*/
 export interface AttachAgencyItemVO {
     /**(必填)文件地址*/
-    attachAddr: string;
+    fileId: string;
     /**(必填)文件名称*/
-    attachName: string;
+    fileName: string;
     /**(必填)文件类型     BusLicence("营业执照"),OpenAccount("开业许可证"),IdCardByLegal("法人身份证"),SigningConfirmation("签约授权确认函"),
         PowerByLegal("法人授权书"),IdCardByConsignee("被委托人身份证复印件"),QueryResultBYSEO("综合查询被执行人查询结果"),OtherFile("其他附件");(BusLicence-营业执照、OpenAccount-开业许可证、IdCardByLegal-法人身份证、SigningConfirmation-签约授权确认函、PowerByLegal-法人授权书、IdCardByConsignee-被委托人身份证复印件、QueryResultBYSEO-综合查询被执行人查询结果、OtherFile-其他附件)*/
-    firstAgencyAttachEnum: string;
+    type: string;
 }
 /**AttachItemLPVO*/
 export interface AttachItemLPVO {
-    /**(必填)图片地址*/
-    attachAddr: string;
     /**附件ID*/
     attachId: number;
-    /**(必填)图片名称*/
-    attachName: string;
     /**是否首页*/
     exIndex: number;
+    /**(必填)图片地址*/
+    fileId: string;
+    /**(必填)图片名称*/
+    fileName: string;
     /**(必填)文件类型(ProPic-楼盘图片、StateLandFile-国有土地使用证、ConstructLandFile-建设用地规划许可证、ConstructProFile-建设工程规划许可证、BuildConstructProFile-建设工程施工许可证、CommercialHousingFile-商品房预售许可证、RealEstateFile-房地产开发企业资质证书、OtherFile-其他附件)*/
-    proAttachEnum: string;
+    type: string;
 }
 /**AttachItemVO*/
 export interface AttachItemVO {
-    /**(必填)图片地址*/
-    attachAddr: string;
     /**附件ID*/
     attachId: number;
+    /**(必填)图片地址*/
+    fileId: string;
     /**(必填)图片名称*/
-    attachName: string;
+    fileName: string;
     /**(必填)文件类型(ProPic-楼盘图片、StateLandFile-国有土地使用证、ConstructLandFile-建设用地规划许可证、ConstructProFile-建设工程规划许可证、BuildConstructProFile-建设工程施工许可证、CommercialHousingFile-商品房预售许可证、RealEstateFile-房地产开发企业资质证书、OtherFile-其他附件)*/
-    proAttachEnum: string;
+    type: string;
 }
 /**AttachTermItemVO*/
 export interface AttachTermItemVO {
-    /**文件地址*/
-    attachAddr: string;
+    /**(必填)文件地址*/
+    fileId: string;
     /**(必填)文件名称*/
-    attachName: string;
+    fileName: string;
+    /**(必填)文件类型(PartyAConfirm-甲方确认函/授权函、IntermediaryLetter-中介启动函、CalcForm-立项测算表、PartyAContract-甲方合同、PaperNoticeTemplate-纸质告知书模板、IntermediaryDistribut-中介分销协议、SubscriptTemplate-认购书模板、DiscountNotice-优惠告知书、OtherFile-其他附件)*/
+    type: string;
 }
 /**BuildingAddVO*/
 export interface BuildingAddVO {
@@ -867,6 +880,21 @@ export interface CalcComplateExcelVO {
     /**(必填)周期ID*/
     termId: number;
 }
+/**CalcComplateExcelVO_1*/
+export interface CalcComplateExcelVO_1 {
+    /**项目代理费成交情况*/
+    agencyCalcComplateModelVOS: CalcComplateModelVO_1[];
+    /**项目代理费合计项*/
+    agencySum: CalcComplateMxTotalVO_1;
+    /**项目服务费成交情况*/
+    serviceCalcComplateModelVOS: CalcComplateModelVO_1[];
+    /**项目服务费合计项*/
+    serviceSum: CalcComplateMxTotalVO_1;
+    /**(必填)测算指标[表头]*/
+    termCalcVo: TermCalcVo;
+    /**(必填)周期ID*/
+    termId: number;
+}
 /**CalcComplateModelVO*/
 export interface CalcComplateModelVO {
     /**项目成交明细*/
@@ -874,8 +902,48 @@ export interface CalcComplateModelVO {
     /**项目成交表头*/
     calcComplateVO: CalcComplateVO;
 }
+/**CalcComplateModelVO_1*/
+export interface CalcComplateModelVO_1 {
+    /**项目成交明细*/
+    calcComplateMxVOS: object;
+    /**项目成交表头*/
+    calcComplateVO: CalcComplateVO_1;
+}
 /**CalcComplateMxTotalVO*/
 export interface CalcComplateMxTotalVO {
+    /**费用类型 SERVICE-服务、AGENT-代理(ServiceFee-服务费、AgencyFee-代理费)*/
+    costTypeEnum: string;
+    /**创建时间(yyyy-MM-dd HH:mm:ss)*/
+    createTime: string;
+    /**创建用户*/
+    createUser: number;
+    /**已删除*/
+    deleted: number;
+    /**预计成交套数*/
+    estimateComplateNum: number;
+    /**预计支付渠道佣金总额*/
+    estimatePayChannelAmount: number;
+    /**预计应收金额*/
+    estimateReceiveAmount: number;
+    /**其它渠道费用金额*/
+    otherChannelAmount: number;
+    /**其它外拆*/
+    otherDemolition: number;
+    /**平台留存率*/
+    plateRate: number;
+    /**备注*/
+    remark: string;
+    /**立项周期ID*/
+    termId: number;
+    /**汇总ID*/
+    totalId: number;
+    /**更新时间(yyyy-MM-dd HH:mm:ss)*/
+    updateTime: string;
+    /**更新用户*/
+    updateUser: number;
+}
+/**CalcComplateMxTotalVO_1*/
+export interface CalcComplateMxTotalVO_1 {
     /**费用类型 SERVICE-服务、AGENT-代理(ServiceFee-服务费、AgencyFee-代理费)*/
     costTypeEnum: string;
     /**创建时间(yyyy-MM-dd HH:mm:ss)*/
@@ -948,8 +1016,86 @@ export interface CalcComplateMxVO {
     /**更新用户*/
     updateUser: number;
 }
+/**CalcComplateMxVO_1*/
+export interface CalcComplateMxVO_1 {
+    /**成交ID*/
+    complateId: number;
+    /**成交明细ID*/
+    complateMxId: number;
+    /**成交客户ID*/
+    consumerId: number;
+    /**客户名称*/
+    consumerName: string;
+    /**创建时间(yyyy-MM-dd HH:mm:ss)*/
+    createTime: string;
+    /**创建用户*/
+    createUser: number;
+    /**已删除*/
+    deleted: number;
+    /**成交套数*/
+    estimateComplateNum: number;
+    /**预计支付渠道佣金总额*/
+    estimatePayChannelAmount: number;
+    /**预计应收金额*/
+    estimateReceiveAmount: number;
+    /**其它渠道费用金额*/
+    otherChannelAmount: number;
+    /**其它外拆*/
+    otherDemolition: number;
+    /**平台留存率*/
+    plateRate: number;
+    /**备注*/
+    remark: string;
+    /**细分业务(All-总包、District-分销)*/
+    subdivideEnum: string;
+    /**立项周期ID*/
+    termId: number;
+    /**客户类型(成交方式) NATIONALMARKET-全民营销 NATURAL-自然到访 SELF-自行成交 SELFCHANNEL-自渠 BIG-一级大行 MIDDLE-二级中行 SMALL-三级小行  APPOINT-指定中介行(NationalMarket-全民营销、Natural-自然到访、Self-自行成交、SelfChannel-自渠、BigPlatform-大平台、Big-大型中介/一级平台、Middle-中型中介/二级平台、Small-小型中介、Appoint-指定中介行、Strategic-战略合作方)*/
+    transactionEnum: string;
+    /**更新时间(yyyy-MM-dd HH:mm:ss)*/
+    updateTime: string;
+    /**更新用户*/
+    updateUser: number;
+}
 /**CalcComplateVO*/
 export interface CalcComplateVO {
+    /**成交ID*/
+    complateId: number;
+    /**成交总套数*/
+    complateNum: number;
+    /**费用类型 SERVICE-服务、AGENT-代理(ServiceFee-服务费、AgencyFee-代理费)*/
+    costTypeEnum: string;
+    /**创建时间(yyyy-MM-dd HH:mm:ss)*/
+    createTime: string;
+    /**创建用户*/
+    createUser: number;
+    /**已删除*/
+    deleted: number;
+    /**预计渠道派发*/
+    estimatedChannelSend: number;
+    /**垫佣金额预估*/
+    estimatedPadCommission: number;
+    /**垫佣预估比率*/
+    estimatedPadCommissionRate: number;
+    /**预计总收款*/
+    estimatedTotalReceipt: number;
+    /**假定成交价*/
+    estimatedTransactionPrice: number;
+    /**营销留存*/
+    marketingRetention: number;
+    /**其它渠道费用金额*/
+    otherChannelAmount: number;
+    /**物业类型(Residence-住宅、WorkShop-厂房、Apartment-公寓、Villa-别墅、Shop-商铺、Office-写字楼、Parking-车位、Other-其他)*/
+    propertyEnum: string;
+    /**立项周期ID*/
+    termId: number;
+    /**更新时间(yyyy-MM-dd HH:mm:ss)*/
+    updateTime: string;
+    /**更新用户*/
+    updateUser: number;
+}
+/**CalcComplateVO_1*/
+export interface CalcComplateVO_1 {
     /**成交ID*/
     complateId: number;
     /**成交总套数*/
@@ -1048,9 +1194,9 @@ export interface CollectandsendCalcDto {
 }
 /**CollectandsendConditionVO*/
 export interface CollectandsendConditionVO {
-    /**条件 <> <= >= ==(GT-null、GE-null、LT-null、LE-null、EQ-null、NE-null、IN-null)*/
+    /**条件 <> <= >= ==(GT-null、GE-null、LT-null、LE-null、EQ-null、NE-null)*/
     compare: string;
-    /**条件 <> <= >= ==(GT-null、GE-null、LT-null、LE-null、EQ-null、NE-null、IN-null)*/
+    /**条件 <> <= >= ==(GT-null、GE-null、LT-null、LE-null、EQ-null、NE-null)*/
     compareB: string;
     /**且*/
     conditionAnd: number;
@@ -2438,6 +2584,10 @@ export interface PreferentialMxVO {
 }
 /**ProTermVO*/
 export interface ProTermVO {
+    /**突破标准线期数*/
+    city: string;
+    /**城市名称*/
+    cityName: string;
     /**开发商ID*/
     developerIds: number[];
     /**开发商名称*/
@@ -2993,9 +3143,9 @@ export interface SettleConditionCancelVO {
 }
 /**SettleConditionMakingVO*/
 export interface SettleConditionMakingVO {
-    /**条件 <> <= >= ==(GT-null、GE-null、LT-null、LE-null、EQ-null、NE-null、IN-null)*/
+    /**条件 <> <= >= ==(GT-null、GE-null、LT-null、LE-null、EQ-null、NE-null)*/
     compare: string;
-    /**条件 <> <= >= ==(GT-null、GE-null、LT-null、LE-null、EQ-null、NE-null、IN-null)*/
+    /**条件 <> <= >= ==(GT-null、GE-null、LT-null、LE-null、EQ-null、NE-null)*/
     compareB: string;
     /**undefined*/
     conditionAnd: boolean;
@@ -3017,18 +3167,18 @@ export interface SettleConditionMakingVO {
     simpleVal: string;
     /**类型(SingleDropDown-下拉单选、MultiDropDown-下拉多选、MultiSelet-复选框多选、RangeCalc-范围计算、MultiSelet2Drop-复选框兼下拉、Fixed-固定值)*/
     type: string;
-    /**值*/
+    /**复选值*/
     values: string[];
 }
 /**SettleConditionPleaseVO*/
 export interface SettleConditionPleaseVO {
-    /**条件 <> <= >= ==(GT-null、GE-null、LT-null、LE-null、EQ-null、NE-null、IN-null)*/
+    /**条件 <> <= >= ==(GT-null、GE-null、LT-null、LE-null、EQ-null、NE-null)*/
     compare: string;
-    /**条件 <> <= >= ==(GT-null、GE-null、LT-null、LE-null、EQ-null、NE-null、IN-null)*/
+    /**条件 <> <= >= ==(GT-null、GE-null、LT-null、LE-null、EQ-null、NE-null)*/
     compareB: string;
     /**undefined*/
     conditionAnd: boolean;
-    /**条件依据 HOUSETYPE-户型、AREA-面积、CONTRACTPRICE-签约价格、   SUBSCRIPPRICE-认购价格(Property-物业类型、HouseType-户型、Area-面积、DealTotalSets-成交总套数、DealTotalAmount-成交总金额、Building-栋座、PartyACompany-指定甲方公司、ContractType-签约类型、ExRecode-是否备案、PaymentReturnRate-回款比率)*/
+    /**条件依据 HOUSETYPE-户型、AREA-面积、CONTRACTPRICE-签约价格、   SUBSCRIPPRICE-认购价格(Property-物业类型、HouseType-户型、Area-面积、DealTotalSets-成交总套数、DealTotalAmount-成交总金额、Building-栋座、PartyACompany-指定甲方公司、ContractType-签约类型、ExRecode-是否备案、PaymentReturnRate-房款回款比率)*/
     conditionModel: string;
     /**值A*/
     conditionNumA: number;
@@ -3163,7 +3313,7 @@ export interface SettlePleaseAddVO {
 }
 /**SettlePleaseListVO*/
 export interface SettlePleaseListVO {
-    /**条件类型(Property-物业类型、HouseType-户型、Area-面积、DealTotalSets-成交总套数、DealTotalAmount-成交总金额、Building-栋座、PartyACompany-指定甲方公司、ContractType-签约类型、ExRecode-是否备案、PaymentReturnRate-回款比率)*/
+    /**条件类型(Property-物业类型、HouseType-户型、Area-面积、DealTotalSets-成交总套数、DealTotalAmount-成交总金额、Building-栋座、PartyACompany-指定甲方公司、ContractType-签约类型、ExRecode-是否备案、PaymentReturnRate-房款回款比率)*/
     conditionPleaseEnum: string;
     /**枚举类型*/
     enumType: string;
@@ -3522,6 +3672,10 @@ export interface TermOAContractVO {
     busTypeEnum: string;
     /**(必填)收费模式(Service-服务、Agent-代理、ServiceAndAgent-服务加代理)*/
     chargeEnum: string;
+    /**突破标准线期数*/
+    city: string;
+    /**城市名称*/
+    cityName: string;
     /**(必填)收取佣金条件简述(推送到OA)*/
     collectCommissionConditionSketch: string;
     /**(必填)收取佣金标准简述(推送到OA)*/
@@ -3554,6 +3708,18 @@ export interface TermOAContractVO {
     exOver: number;
     /**(必填)项目房款/车位款加服务费大于备案价(NO-否、Yes-是、NotInvolved-不涉及)*/
     houseandcarGtRecordEnum: string;
+    /**OA合同发起人*/
+    inputConstractMan: string;
+    /**OA合同发起人*/
+    inputConstractManId: number;
+    /**OA合同发起时间(yyyy-MM-dd HH:mm:ss)*/
+    inputConstractTime: string;
+    /**OA发起人*/
+    inputMan: string;
+    /**OA发起人*/
+    inputManId: number;
+    /**OA发起时间(yyyy-MM-dd HH:mm:ss)*/
+    inputTime: string;
     /**甲方-客户成交及其确认*/
     jfCustomerConfirm: string;
     /**甲方-违约责任*/
@@ -3669,6 +3835,10 @@ export interface TermRespVO {
     busTypeEnum: string;
     /**(必填)收费模式(Service-服务、Agent-代理、ServiceAndAgent-服务加代理)*/
     chargeEnum: string;
+    /**突破标准线期数*/
+    city: string;
+    /**城市名称*/
+    cityName: string;
     /**(必填)收取佣金条件简述(推送到OA)*/
     collectCommissionConditionSketch: string;
     /**(必填)收取佣金标准简述(推送到OA)*/
@@ -3701,6 +3871,18 @@ export interface TermRespVO {
     exOver: number;
     /**(必填)项目房款/车位款加服务费大于备案价(NO-否、Yes-是、NotInvolved-不涉及)*/
     houseandcarGtRecordEnum: string;
+    /**OA合同发起人*/
+    inputConstractMan: string;
+    /**OA合同发起人*/
+    inputConstractManId: number;
+    /**OA合同发起时间(yyyy-MM-dd HH:mm:ss)*/
+    inputConstractTime: string;
+    /**OA发起人*/
+    inputMan: string;
+    /**OA发起人*/
+    inputManId: number;
+    /**OA发起时间(yyyy-MM-dd HH:mm:ss)*/
+    inputTime: string;
     /**优惠告知书折扣体现方式*/
     notificDiscountModel: string;
     /**立项其它说明*/
@@ -3811,6 +3993,192 @@ export interface TermUpdateVO {
     /**(必填)周期结束时间(yyyy-MM-dd)*/
     termEnd: string;
     /**(必填)周期ID*/
+    termId: number;
+    /**(必填)周期名称 合作项目名称(项目推广名)+周期时间*/
+    termName: string;
+    /**(必填)项目周期阶段 SUBSCRIPTION-认购(默认)、RECOGNIZE-认筹(Subscription-认购(默认)、Recognize-认筹)*/
+    termStageEnum: string;
+    /**(必填)周期起始时间(yyyy-MM-dd)*/
+    termStart: string;
+    /**联动业务总开展期数*/
+    totalCount: number;
+}
+/**TermVO*/
+export interface TermVO {
+    /**审核状态   CONDUCT-审核中 ADOPT-审核通过 REJECT-审核驳回(Draft-草稿、Conduct-审核中、Adopt-审核通过、Reject-审核驳回)*/
+    auditEnum: string;
+    /**业务类型 NEW-新房(默认)、FINISHED-产成品(New-新房、Finished-产成品)*/
+    busTypeEnum: string;
+    /**市*/
+    city: string;
+    /**我司ID*/
+    companyId: number;
+    /**区*/
+    district: string;
+    /**成交店组ID*/
+    groupId: number;
+    /**项目ID*/
+    proId: number;
+    /**(必填)项目名*/
+    proName: string;
+    /**项目编号*/
+    proNo: string;
+    /**省*/
+    province: string;
+    /**启动事业部ID*/
+    startDivisionId: number;
+    /**周期结束时间(yyyy-MM-dd)*/
+    termEnd: string;
+    /**立项ID*/
+    termId: number;
+    /**周期名称 合作项目名称(项目推广名)+周期时间*/
+    termName: string;
+    /**周期起始时间(yyyy-MM-dd)*/
+    termStart: string;
+}
+/**URI*/
+export interface URI {
+    /**undefined*/
+    absolute: boolean;
+    /**undefined*/
+    authority: string;
+    /**undefined*/
+    fragment: string;
+    /**undefined*/
+    host: string;
+    /**undefined*/
+    opaque: boolean;
+    /**undefined*/
+    path: string;
+    /**undefined*/
+    port: number;
+    /**undefined*/
+    query: string;
+    /**undefined*/
+    rawAuthority: string;
+    /**undefined*/
+    rawFragment: string;
+    /**undefined*/
+    rawPath: string;
+    /**undefined*/
+    rawQuery: string;
+    /**undefined*/
+    rawSchemeSpecificPart: string;
+    /**undefined*/
+    rawUserInfo: string;
+    /**undefined*/
+    scheme: string;
+    /**undefined*/
+    schemeSpecificPart: string;
+    /**undefined*/
+    userInfo: string;
+}
+/**URI_1*/
+export interface URI_1 {
+    /**undefined*/
+    absolute: boolean;
+    /**undefined*/
+    authority: string;
+    /**undefined*/
+    fragment: string;
+    /**undefined*/
+    host: string;
+    /**undefined*/
+    opaque: boolean;
+    /**undefined*/
+    path: string;
+    /**undefined*/
+    port: number;
+    /**undefined*/
+    query: string;
+    /**undefined*/
+    rawAuthority: string;
+    /**undefined*/
+    rawFragment: string;
+    /**undefined*/
+    rawPath: string;
+    /**undefined*/
+    rawQuery: string;
+    /**undefined*/
+    rawSchemeSpecificPart: string;
+    /**undefined*/
+    rawUserInfo: string;
+    /**undefined*/
+    scheme: string;
+    /**undefined*/
+    schemeSpecificPart: string;
+    /**undefined*/
+    userInfo: string;
+}
+/**URL*/
+export interface URL {
+    /**undefined*/
+    authority: string;
+    /**undefined*/
+    content: object;
+    /**undefined*/
+    defaultPort: number;
+    /**undefined*/
+    file: string;
+    /**undefined*/
+    host: string;
+    /**undefined*/
+    path: string;
+    /**undefined*/
+    port: number;
+    /**undefined*/
+    protocol: string;
+    /**undefined*/
+    query: string;
+    /**undefined*/
+    ref: string;
+    /**undefined*/
+    userInfo: string;
+}
+/**URL_1*/
+export interface URL_1 {
+    /**undefined*/
+    authority: string;
+    /**undefined*/
+    content: object;
+    /**undefined*/
+    defaultPort: number;
+    /**undefined*/
+    file: string;
+    /**undefined*/
+    host: string;
+    /**undefined*/
+    path: string;
+    /**undefined*/
+    port: number;
+    /**undefined*/
+    protocol: string;
+    /**undefined*/
+    query: string;
+    /**undefined*/
+    ref: string;
+    /**undefined*/
+    userInfo: string;
+}
+/**一手公司代理*/
+export interface 一手公司代理 {
+    /**一手公司代理ID*/
+    agencyId: number;
+    /**公司名称*/
+    agencyName: string;
+    /**区*/
+    area: string;
+    /**市*/
+    city: string;
+    /**信用代码*/
+    creditCode: string;
+    /**项目一手公司代理ID*/
+    proAgencyId: number;
+    /**省*/
+    province: string;
+    /**简称*/
+    simpleName: string;
+    /* (必填)周期ID * /
     termId: number;
     /**(必填)周期名称 合作项目名称(项目推广名)+周期时间*/
     termName: string;

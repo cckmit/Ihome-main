@@ -4,7 +4,7 @@
  * @Author: wwq
  * @Date: 2020-11-03 18:39:23
  * @LastEditors: wwq
- * @LastEditTime: 2020-12-14 21:36:19
+ * @LastEditTime: 2020-12-15 15:04:56
 -->
 <template>
   <IhPage>
@@ -457,7 +457,6 @@ export default class FirstAgencyEdit extends Vue {
       },
     ],
     mail: [
-      { required: true, message: "请填写邮箱", trigger: "change" },
       {
         type: "email",
         message: "请输入正确的邮箱地址",

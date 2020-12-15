@@ -4,7 +4,7 @@
  * @Author: wwq
  * @Date: 2020-08-13 11:40:10
  * @LastEditors: wwq
- * @LastEditTime: 2020-12-14 19:44:40
+ * @LastEditTime: 2020-12-15 15:01:11
 -->
 <template>
   <IhPage label-width="100px">
@@ -277,7 +277,10 @@
                   @click.native.prevent="remove(row)"
                   :disabled="row.status !== 'DRAFT'"
                 >删除</el-dropdown-item>
-                <el-dropdown-item @click.native.prevent="routerTo(row, 'recall')">撤回</el-dropdown-item>
+                <el-dropdown-item
+                  @click.native.prevent="routerTo(row, 'recall')"
+                  :disabled="row.status !== 'PASS'"
+                >撤回</el-dropdown-item>
                 <el-dropdown-item
                   @click.native.prevent="routerTo(row, 'audit')"
                   :disabled="row.status === 'DRAFT'"
@@ -355,29 +358,6 @@ export default class UserList extends Vue {
   dialogVisible = false;
 
   channelOptions: any = [];
-
-  inputUserOptions: any = [
-    {
-      name: "项目经理",
-      id: "111",
-    },
-    {
-      name: "产品经理",
-      id: "222",
-    },
-    {
-      name: "前端开发",
-      id: "333",
-    },
-    {
-      name: "java开发",
-      id: "444",
-    },
-    {
-      name: "测试",
-      id: "555",
-    },
-  ];
 
   resPageInfo: any = {
     total: null,
