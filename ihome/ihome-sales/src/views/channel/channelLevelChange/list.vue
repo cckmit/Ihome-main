@@ -4,7 +4,7 @@
  * @Author: zyc
  * @Date: 2020-06-30 09:21:17
  * @LastEditors: ywl
- * @LastEditTime: 2020-12-15 16:18:36
+ * @LastEditTime: 2020-12-15 16:31:48
 --> 
 <template>
   <IhPage label-width="100px">
@@ -148,7 +148,7 @@
         <el-table-column
           prop="departmentName"
           label="事业部"
-          width="150"
+          min-width="225"
         >
         </el-table-column>
         <el-table-column

@@ -4,7 +4,7 @@
  * @Author: lgf
  * @Date: 2020-09-16 14:05:21
  * @LastEditors: ywl
- * @LastEditTime: 2020-12-15 10:26:50
+ * @LastEditTime: 2020-12-15 16:56:25
 -->
 <template>
   <div class="text-left">
@@ -213,7 +213,7 @@
           type="success"
           @click="confirmChannel('Confirm')"
         >通过</el-button>
-        <el-button @click="confirmChannel('Reject')">退回</el-button>
+        <el-button @click="confirmChannel('Reject')">驳回</el-button>
       </div>
     </template>
 
