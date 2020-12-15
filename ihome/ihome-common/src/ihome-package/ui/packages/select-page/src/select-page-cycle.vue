@@ -1,27 +1,31 @@
 <!--
- * @Description: file content
+ * @Description: 周期分页下拉框
  * @version: 
  * @Author: ywl
- * @Date: 2020-12-10 18:09:24
+ * @Date: 2020-12-04 16:33:16
  * @LastEditors: ywl
- * @LastEditTime: 2020-12-15 11:10:42
+ * @LastEditTime: 2020-12-15 11:27:33
 -->
 <script lang="ts">
 import { Component, Vue, Prop } from "vue-property-decorator";
-import IhSelectPageBase from "./select-page-base.vue";
+import { IhSelectPageBase } from "ihome-common/ui/packages/select-page/index";
 
-import { post_channel_getListByName } from "@/api/channel/index";
+import { post_term_getList } from "@/api/project/index";
 
 @Component({
   extends: IhSelectPageBase,
 })
-export default class SelectPageByChannel extends Vue {
+export default class SelectPageByCycle extends Vue {
+  @Prop({
+    default: true,
+  })
+  switchHidePage?: boolean;
   @Prop({
     default: () => {
       return {
-        lable: "name",
-        value: "id",
-        key: "id",
+        lable: "termName",
+        value: "termId",
+        key: "termId",
         disabled: "disabled",
       };
     },
@@ -35,19 +39,16 @@ export default class SelectPageByChannel extends Vue {
     pageNum: 1,
     pageSize: 10,
   };
-  filterText = "";
-  searchLoad = false;
+  filterText = null;
 
   async getSelectList() {
-    this.searchLoad = true;
-    let res = await post_channel_getListByName({
-      name: this.filterText,
+    let res = await post_term_getList({
+      termName: this.filterText,
       pageSize: this.pageInfo.pageSize,
       pageNum: this.pageInfo.pageNum,
     });
     this.optionList = res.list;
     this.pageInfo = res;
-    this.searchLoad = false;
   }
 }
 </script>

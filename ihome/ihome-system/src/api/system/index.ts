@@ -1,6 +1,6 @@
 /* eslint-disable */
 /* 此脚本由swagger-ui的api-docs自动生成，请勿修改 */
-//2020-12-11 09:56:34
+//2020-12-15 3:39:07 ├F10: PM┤
 import { request } from '@/api/base'
 const basePath = "/sales-api/system"
 /**查询所有行政区划信息*/
@@ -14,6 +14,10 @@ return await request.get<AreaBaseVO[],AreaBaseVO[]>(basePath+'/area/getAllChildA
 /**查询所有省份信息*/
 export async function get_area_getAllProvince (d?: any) {
 return await request.get<AreaBaseVO[],AreaBaseVO[]>(basePath+'/area/getAllProvince', { params: d })
+}
+/**根据行政区划编码查询行政区划名称*/
+export async function get_area_getAreaNameByCode__code (d?: any) {
+return await request.get<string,string>(basePath+'/area/getAreaNameByCode/{code}', { params: d })
 }
 /**根据行政区划编码查询行政区划信息*/
 export async function get_area_getByCode__code (d?: any) {
@@ -203,6 +207,10 @@ return await request.post< PageModel<OrgVO>,PageModel<OrgVO>> (basePath+'/org/ge
 export async function post_org_getListRecursion (d?: any) {
 return await request.post< PageModel<OrgVO>,PageModel<OrgVO>> (basePath+'/org/getListRecursion', d)
 }
+/**查询用户可选事业部列表*/
+export async function get_org_getUserDepartmentList (d?: any) {
+return await request.get<Org[],Org[]>(basePath+'/org/getUserDepartmentList', { params: d })
+}
 /**修改组织*/
 export async function post_org_update (d?: any) {
 return await request.post< number,number> (basePath+'/org/update', d)
@@ -299,6 +307,10 @@ return await request.post< PageModel<RoleVO>,PageModel<RoleVO>> (basePath+'/role
 export async function post_role_update (d?: any) {
 return await request.post< number,number> (basePath+'/role/update', d)
 }
+/**激活用户*/
+export async function post_sessionUser_activateChannelUser__id (d?: any) {
+return await request.post< boolean,boolean> (basePath+'/sessionUser/activateChannelUser/{id}', d)
+}
 /**添加渠道用户*/
 export async function post_sessionUser_addChannelUser (d?: any) {
 return await request.post< number,number> (basePath+'/sessionUser/addChannelUser', d)
@@ -307,9 +319,25 @@ return await request.post< number,number> (basePath+'/sessionUser/addChannelUser
 export async function post_sessionUser_addCustomerUser (d?: any) {
 return await request.post< number,number> (basePath+'/sessionUser/addCustomerUser', d)
 }
+/**删除用户*/
+export async function post_sessionUser_deleteChannelUser__id (d?: any) {
+return await request.post< number,number> (basePath+'/sessionUser/deleteChannelUser/{id}', d)
+}
+/**获取系统参数*/
+export async function get_sessionUser_getSystemParam (d?: any) {
+return await request.get<SystemParamVO,SystemParamVO>(basePath+'/sessionUser/getSystemParam', { params: d })
+}
 /**查询登录用户信息*/
 export async function post_sessionUser_getUserInfo (d?: any) {
 return await request.post< LoginUserVO,LoginUserVO> (basePath+'/sessionUser/getUserInfo', d)
+}
+/**锁定用户*/
+export async function post_sessionUser_lockChannelUser__id (d?: any) {
+return await request.post< boolean,boolean> (basePath+'/sessionUser/lockChannelUser/{id}', d)
+}
+/**退出登录*/
+export async function get_sessionUser_logout (d?: any) {
+return await request.get<boolean,boolean>(basePath+'/sessionUser/logout', { params: d })
 }
 /**修改渠道用户*/
 export async function post_sessionUser_updateChannelUser (d?: any) {
@@ -425,14 +453,14 @@ channelId: number;
 channelUserType: string;
 /**email*/
 email: string;
-/**(必填)id*/
-id: number;
 /**(必填)手机号码*/
 mobilePhone: string;
 /**(必填)姓名*/
 name: string;
 /**密码*/
 password: string;
+/**(必填)userId*/
+userId: number;
 }
 /**ChannelUserVO*/
 export interface ChannelUserVO {
@@ -673,8 +701,8 @@ dataLimit: string;
 deleted: number;
 /**id*/
 id: number;
-/**岗位角色id列表*/
-jobRoleIdList: number[];
+/**岗位角色列表*/
+jobRoleList: RoleVO[];
 /**名称*/
 name: string;
 /**备注*/
@@ -740,6 +768,43 @@ menuList: Resource[];
 resourceList: Resource[];
 /**用户类别列表*/
 userTypeList: string[];
+}
+/**Org*/
+export interface Org {
+/**关闭日期(yyyy-MM-dd)*/
+closeDate: string;
+/**创建时间(yyyy-MM-dd HH:mm:ss)*/
+createTime: string;
+/**创建用户*/
+createUser: number;
+/**已删除*/
+deleted: number;
+/**部门分类(Business-营业线、Function-职能线)*/
+departmentType: string;
+/**id*/
+id: number;
+/**组织层级*/
+level: number;
+/**名称*/
+name: string;
+/**OA呈字*/
+oaChar: string;
+/**开业日期(yyyy-MM-dd)*/
+openDate: string;
+/**组织类型(Root-组织根节点、Company-公司、Department-事业部、Zone-战区、SmallZone-小战区、District-片区、Shop-门店、Group-店组)*/
+orgType: string;
+/**父组织id*/
+parentId: number;
+/**简称*/
+shortName: string;
+/**简称首字母*/
+shortNameAbbr: string;
+/**状态(Valid-有效、Invalid-无效)*/
+status: string;
+/**更新时间(yyyy-MM-dd HH:mm:ss)*/
+updateTime: string;
+/**更新用户*/
+updateUser: number;
 }
 /**OrgBaseVO*/
 export interface OrgBaseVO {
@@ -1244,6 +1309,21 @@ bytes: string;
 /**文件名*/
 fileName: string;
 }
+/**SystemParamVO*/
+export interface SystemParamVO {
+/**api域名*/
+apiDomain: string;
+/**客户端ip*/
+clientIP: string;
+/**当前环境*/
+env: string;
+/**文件域名*/
+fileDomain: string;
+/**h5域名*/
+h5Domain: string;
+/**pc域名*/
+pcDomain: string;
+}
 /**UserBaseVO*/
 export interface UserBaseVO {
 /**登录账号*/
@@ -1299,7 +1379,7 @@ export interface UserJobRoleVO {
 id: number;
 /**(必填)岗位id*/
 jobId: number;
-/**(必填)角色id数组*/
+/**角色id数组*/
 roleIds: number[];
 }
 /**UserOrgVO*/
