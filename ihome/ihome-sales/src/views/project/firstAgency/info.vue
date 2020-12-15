@@ -206,6 +206,7 @@
                   :file-size="10"
                   :file-type="row.code"
                   :limit="row.fileList.length"
+                  :upload-show="!!row.fileList.length"
                   size="100px"
                   :removePermi="false"
                 ></IhUpload>

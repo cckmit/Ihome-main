@@ -4,7 +4,7 @@
  * @Author: wwq
  * @Date: 2020-10-15 12:33:25
  * @LastEditors: wwq
- * @LastEditTime: 2020-12-15 09:59:06
+ * @LastEditTime: 2020-12-15 10:26:45
 -->
 <template>
   <div class="text-left">
@@ -217,6 +217,7 @@
               :limit="row.fileList.length"
               size="100px"
               :removePermi="false"
+              :upload-show="!!row.fileList.length"
             ></IhUpload>
           </template>
         </el-table-column>
