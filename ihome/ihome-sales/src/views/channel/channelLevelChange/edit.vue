@@ -3,8 +3,8 @@
  * @version: 
  * @Author: ywl
  * @Date: 2020-10-15 16:02:03
- * @LastEditors: wwq
- * @LastEditTime: 2020-12-15 08:47:39
+ * @LastEditors: ywl
+ * @LastEditTime: 2020-12-15 10:51:50
 -->
 <template>
   <IhPage>
@@ -26,7 +26,7 @@
               >
                 <div style="display: flex; justify-contant: flex-start">
                   <el-select
-                    :disabled="$route.name === 'channelLevlChange'"
+                    disabled
                     v-model="resPageInfo.channelId"
                     clearable
                     class="width--100"

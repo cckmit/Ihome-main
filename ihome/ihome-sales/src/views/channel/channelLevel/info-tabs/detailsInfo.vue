@@ -4,7 +4,7 @@
  * @Author: wwq
  * @Date: 2020-10-15 12:33:25
  * @LastEditors: ywl
- * @LastEditTime: 2020-11-03 17:19:50
+ * @LastEditTime: 2020-12-15 10:38:13
 -->
 <template>
   <div class="text-left">
@@ -167,7 +167,7 @@
     <div class="padding-left-20">
       <el-table
         class="ih-table"
-        :data="resPageInfo.channelGradeAttachments"
+        :data="fileListType"
         style="width: 100%"
       >
         <el-table-column
@@ -175,18 +175,29 @@
           label="类型"
           width="200"
         >
-          <template v-slot="{ row }">{{
-            $root.displayName("accessoryTpye", row.type)
-          }}</template>
+          <template v-slot="{ row }">
+            <div><span
+                style="color: red"
+                v-if="row.subType"
+              >*</span>{{row.name}}
+            </div>
+          </template>
         </el-table-column>
         <el-table-column
           prop="fileId"
           label="附件"
         >
-          <IhUpload
-            size="100px"
-            :fileList="fileList"
-          />
+          <template v-slot="{ row }">
+            <IhUpload
+              :file-list.sync="row.fileList"
+              :file-size="10"
+              :file-type="row.code"
+              :limit="row.fileList.length"
+              :upload-show="!!row.fileList.length"
+              size="100px"
+              :removePermi="false"
+            ></IhUpload>
+          </template>
         </el-table-column>
       </el-table>
     </div>
@@ -275,6 +286,7 @@ export default class Home extends Vue {
     channelGradeItems: [],
     channelGradeAttachments: [],
   };
+  fileListType: any = [];
 
   async created() {
     this.getInfo();
@@ -282,9 +294,25 @@ export default class Home extends Vue {
 
   async getInfo() {
     let id = this.$route.query.id;
-    if (id) this.resPageInfo = await get_channelGrade_get__id({ id: id });
+    if (id) {
+      this.resPageInfo = await get_channelGrade_get__id({ id: id });
+      this.getFileListType(this.resPageInfo.channelGradeAttachments);
+    }
   }
-
+  getFileListType(data: any) {
+    const list = (this.$root as any).dictAllList("ChannelGradeAttachment");
+    this.fileListType = list.map((v: any) => {
+      return {
+        ...v,
+        fileList: data
+          .filter((j: any) => j.type === v.code)
+          .map((h: any) => ({
+            ...h,
+            name: h.fileName,
+          })),
+      };
+    });
+  }
   async pass(val: any) {
     if (this.remark) {
       await post_channelGrade_approveRecord({

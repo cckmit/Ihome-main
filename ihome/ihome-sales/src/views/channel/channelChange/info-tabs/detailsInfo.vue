@@ -4,7 +4,7 @@
  * @Author: lgf
  * @Date: 2020-09-16 14:05:21
  * @LastEditors: ywl
- * @LastEditTime: 2020-12-14 19:11:02
+ * @LastEditTime: 2020-12-15 10:35:02
 -->
 <template>
   <div class="text-left">
@@ -160,13 +160,38 @@
       >综合查询被执行人</el-link>
     </p>
     <div class="padding-left-20">
-      <el-table style="width: 100%">
+      <el-table
+        style="width: 100%"
+        class="ih-table"
+        :data="fileListType"
+      >
         <el-table-column
           prop="type"
           width="180"
           label="类型"
-        ></el-table-column>
-        <el-table-column label="附件"></el-table-column>
+          align="center"
+        >
+          <template v-slot="{ row }">
+            <div><span
+                style="color: red"
+                v-if="row.subType"
+              >*</span>{{row.name}}
+            </div>
+          </template>
+        </el-table-column>
+        <el-table-column label="附件">
+          <template v-slot="{ row }">
+            <IhUpload
+              :file-list.sync="row.fileList"
+              :file-size="10"
+              :file-type="row.code"
+              :limit="row.fileList.length"
+              size="100px"
+              :upload-show="!!row.fileList.length"
+              :removePermi="false"
+            ></IhUpload>
+          </template>
+        </el-table-column>
       </el-table>
       <br />
     </div>
@@ -248,6 +273,7 @@ import {
 })
 export default class DetailInfo extends Vue {
   info: any = {};
+  fileListType: any = [];
   private channelPersons: object = {};
   private approveRecord: ConfirmObj = {
     remark: "",
@@ -259,10 +285,27 @@ export default class DetailInfo extends Vue {
 
   async getInfo() {
     let id = this.$route.query.id;
-    this.info = await get_channelChange_get__id({ id: id });
-    this.channelPersons =
-      this.info.channelPersonChanges.length &&
-      this.info.channelPersonChanges[0];
+    if (id) {
+      this.info = await get_channelChange_get__id({ id: id });
+      this.channelPersons =
+        this.info.channelPersonChanges.length &&
+        this.info.channelPersonChanges[0];
+      this.getFileListType(this.info.channelAttachmentChanges);
+    }
+  }
+  getFileListType(data: any) {
+    const list = (this.$root as any).dictAllList("ChannelAttachment");
+    this.fileListType = list.map((v: any) => {
+      return {
+        ...v,
+        fileList: data
+          .filter((j: any) => j.type === v.code)
+          .map((h: any) => ({
+            ...h,
+            name: h.fileName,
+          })),
+      };
+    });
   }
   private async confirmChannel(type: string): Promise<void> {
     if (!this.approveRecord.remark) {

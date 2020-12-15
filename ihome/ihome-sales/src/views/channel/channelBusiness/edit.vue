@@ -3,8 +3,8 @@
  * @version: 
  * @Author: ywl
  * @Date: 2020-09-16 14:05:21
- * @LastEditors: wwq
- * @LastEditTime: 2020-12-14 21:09:48
+ * @LastEditors: ywl
+ * @LastEditTime: 2020-12-15 09:59:47
 -->
 <template>
   <IhPage>
@@ -562,7 +562,7 @@ export default class ModifyThe extends Vue {
           this.$message.warning("账户信息中，基本存款账号必须录入");
           return;
         }
-        this.info.channelPersons.push(this.channelPersonsData);
+        // this.info.channelPersons = [{ ...this.channelPersonsData }];
         // 校验提示
         let arr: any = [];
         Object.values(this.submitFile).forEach((v: any) => {
