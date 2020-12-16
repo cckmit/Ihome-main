@@ -4,7 +4,7 @@
  * @Author: ywl
  * @Date: 2020-09-27 16:27:36
  * @LastEditors: ywl
- * @LastEditTime: 2020-12-15 17:27:05
+ * @LastEditTime: 2020-12-16 11:41:06
 -->
 <template>
   <IhPage label-width="80px">
@@ -44,11 +44,11 @@
           <el-col :span="8">
             <el-form-item label="项目名称">
               <!-- @change="queryPageParameters.buyUnit='';queryPageParameters.buyUnit='';" -->
-              <SelectPageByProject
+              <IhSelectPageByProject
                 clearable
                 v-model="queryPageParameters.projectId"
                 placeholder="请选择联动项目"
-              ></SelectPageByProject>
+              ></IhSelectPageByProject>
             </el-form-item>
           </el-col>
         </el-row>
@@ -57,34 +57,34 @@
             <el-row>
               <el-col :span="8">
                 <el-form-item label="立项周期">
-                  <SelectPageByCycle
+                  <IhSelectPageByCycle
                     clearable
                     v-model="queryPageParameters.cycleId"
                     placeholder="请选择立项周期"
-                  ></SelectPageByCycle>
+                  ></IhSelectPageByCycle>
                 </el-form-item>
               </el-col>
               <el-col :span="8">
                 <el-form-item label="栋座">
                   <!-- @change="queryPageParameters.roomNumberId = ''" -->
-                  <SelectPageByBuild
+                  <IhSelectPageByBuild
                     v-model="queryPageParameters.buyUnit"
                     :proId="queryPageParameters.projectId"
                     placeholder="请选择栋座"
                     clearable
-                  ></SelectPageByBuild>
+                  ></IhSelectPageByBuild>
                 </el-form-item>
               </el-col>
               <el-col :span="8">
                 <el-form-item label="房号">
                   <!-- projectId项目, buyUnit栋座 -->
-                  <SelectPageByRoom
+                  <IhSelectPageByRoom
                     v-model="queryPageParameters.roomNumberId"
                     :proId="queryPageParameters.projectId"
                     :buildingId="queryPageParameters.buyUnit"
                     placeholder="请选择房号"
                     clearable
-                  ></SelectPageByRoom>
+                  ></IhSelectPageByRoom>
                 </el-form-item>
               </el-col>
             </el-row>
@@ -92,19 +92,12 @@
             <el-row>
               <el-col :span="8">
                 <el-form-item label="甲方">
-                  <el-select
+                  <IhSelectPageByCompany
                     v-model="queryPageParameters.partyAId"
                     clearable
                     placeholder="请选择甲方"
                     class="width--100"
-                  >
-                    <el-option
-                      v-for="item in companyList"
-                      :key="item.id"
-                      :label="item.name"
-                      :value="item.id"
-                    ></el-option>
-                  </el-select>
+                  ></IhSelectPageByCompany>
                 </el-form-item>
               </el-col>
               <el-col :span="8">
@@ -320,23 +313,13 @@
 <script lang="ts">
 import { Component, Vue } from "vue-property-decorator";
 import PaginationMixin from "@/mixins/pagination";
-import SelectPageByProject from "@/components/SelectPageByProject.vue";
-import SelectPageByCycle from "@/components/SelectPageByCycle.vue";
-import SelectPageByBuild from "@/components/SelectPageByBuild.vue";
-import SelectPageByRoom from "@/components/selectPageByRoom.vue";
 import axios from "axios";
 import { getToken } from "ihome-common/util/cookies";
 
 import { post_notice_list } from "@/api/contract/index";
-import { post_company_getAll } from "@/api/system/index";
 
 @Component({
-  components: {
-    SelectPageByProject,
-    SelectPageByCycle,
-    SelectPageByBuild,
-    SelectPageByRoom,
-  },
+  components: {},
   mixins: [PaginationMixin],
 })
 export default class DiscountList extends Vue {
@@ -354,7 +337,6 @@ export default class DiscountList extends Vue {
     buyUnit: null,
   };
   private timeList: any = [];
-  private companyList: any = [];
   private searchOpen = true;
   resPageInfo: any = {
     total: null,
@@ -460,12 +442,8 @@ export default class DiscountList extends Vue {
       notificationTypes,
     });
   }
-  private async getCompanyList() {
-    this.companyList = await post_company_getAll({ name: "" });
-  }
 
   created() {
-    this.getCompanyList();
     this.getListMixin();
   }
 }

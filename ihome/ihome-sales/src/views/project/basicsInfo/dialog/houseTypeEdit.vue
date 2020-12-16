@@ -4,7 +4,7 @@
  * @Author: wwq
  * @Date: 2020-11-03 18:39:23
  * @LastEditors: wwq
- * @LastEditTime: 2020-12-11 08:50:44
+ * @LastEditTime: 2020-12-16 11:49:29
 -->
 <template>
   <el-dialog
@@ -26,10 +26,7 @@
     >
       <el-row>
         <el-col :span="16">
-          <el-form-item
-            label="户型图："
-            prop="fileList"
-          >
+          <el-form-item label="户型图：">
             <IhUpload
               :file-list="form.fileList"
               accept="image/*"
@@ -183,7 +180,6 @@ export default class HouseTypeEdit extends Vue {
     fileList: [],
   };
   rules: any = {
-    fileList: [{ required: true, message: "请上传户型图", trigger: "change" }],
     houseName: [
       { required: true, message: "请输入户型名称", trigger: "change" },
     ],

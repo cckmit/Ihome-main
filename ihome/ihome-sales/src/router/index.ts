@@ -3,13 +3,13 @@
  * @version: 
  * @Author: zyc
  * @Date: 2020-06-22 11:10:43
- * @LastEditors: wwq
- * @LastEditTime: 2020-10-27 08:53:44
+ * @LastEditors: zyc
+ * @LastEditTime: 2020-12-16 10:48:43
  */
 import Vue from 'vue'
 import VueRouter, { RouteConfig, Route } from 'vue-router'
-import Home from '../views/Home.vue'
-// import Layout from '../components/Layout.vue'
+// import Home from '../views/Home.vue'
+import Layout from '../components/Layout.vue'
 
 import NProgress from 'nprogress'
 import 'nprogress/nprogress.css'
@@ -29,11 +29,22 @@ import { dealRoutes } from './deal'
 let routes: Array<RouteConfig> = [
   {
     path: '/',
-    name: 'Home',
-    component: Home,
-    meta: {
-      title: '主页'
-    }
+    redirect: '/home/index',
+  },
+  {
+    path: '/home',
+    meta: { title: '主页', icon: null },
+    redirect: '/home/index',
+    component: Layout,
+    children: [
+      {
+        path: 'index',
+        name: 'HomeIndex',
+        component: () => import('../views/home/index.vue'),
+        meta: { title: '首页', icon: 'form', keepAlive: true }
+      },
+   
+    ]
   },
 ]
 

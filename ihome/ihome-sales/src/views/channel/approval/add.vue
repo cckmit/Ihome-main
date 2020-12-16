@@ -4,7 +4,7 @@
  * @Author: zyc
  * @Date: 2020-07-09 14:31:23
  * @LastEditors: zyc
- * @LastEditTime: 2020-12-15 14:49:52
+ * @LastEditTime: 2020-12-15 17:03:45
 --> 
 <template>
   <ih-page>
@@ -262,6 +262,7 @@ export default class ApprovalAdd extends Vue {
 
   async finishAdd(list: any, gradeType: string) {
     list.forEach(async (item: any) => {
+      item.gradeId = item.id;
       item.gradeType = gradeType;
       if (!this.isExis(this.postData.channelApprovalGrades, item)) {
         this.postData.channelApprovalGrades.push({
@@ -275,7 +276,7 @@ export default class ApprovalAdd extends Vue {
   }
   async loadAttachments(item: any, gradeType: any) {
     const res: any = await post_channelGrade_getChannelGradeAttachmentByType({
-      gradeId: item.id,
+      gradeId: item.gradeId,
       gradeType: gradeType,
     });
     res.forEach((element: any) => {
@@ -323,7 +324,7 @@ export default class ApprovalAdd extends Vue {
     if (valid) {
       await post_channelApproval_add(this.postData);
       this.$message.success("新增成功");
-      this.$router.push({
+      this.$goto({
         path: "/approval/list",
       });
     } else {
@@ -335,39 +336,39 @@ export default class ApprovalAdd extends Vue {
     if (valid) {
       this.postData.operateType = 1;
 
-      let editData = {
-        approvalDesc: this.postData.approvalDesc,
-        approvalTitle: this.postData.approvalTitle,
-        channelApprovalAttachments: this.channelApprovalAttachmentsList.map(
-          (item: any) => {
-            return {
-              approvalId: this.id,
-              channelId: item.channelId,
-              city: item.city,
-              fileId: item.fileId,
-              type: item.type,
-            };
-          }
-        ),
-        channelApprovalGrades: this.channelApprovalGrades.map((item: any) => {
-          return {
-            gradeId: item.id,
-            gradeType: "Basic",
-          };
-          // return {
-          //   approvalId: this.id,
-          //   channelId: item.channelId,
-          //   city: item.city,
-          //   fileId: item.fileId,
-          //   type: item.type,
-          // };
-        }),
-        departmentOrgId: this.postData.departmentOrgId,
-        id: this.postData.id,
-        operateType: this.postData.operateType,
-      };
-      console.log(editData);
-      await post_channelApproval_edit(editData);
+      // let editData = {
+      //   approvalDesc: this.postData.approvalDesc,
+      //   approvalTitle: this.postData.approvalTitle,
+      //   channelApprovalAttachments: this.channelApprovalAttachmentsList.map(
+      //     (item: any) => {
+      //       return {
+      //         approvalId: this.id,
+      //         channelId: item.channelId,
+      //         city: item.city,
+      //         fileId: item.fileId,
+      //         type: item.type,
+      //       };
+      //     }
+      //   ),
+      //   channelApprovalGrades: this.channelApprovalGrades.map((item: any) => {
+      //     return {
+      //       gradeId: item.id,
+      //       gradeType: "Basic",
+      //     };
+      //     // return {
+      //     //   approvalId: this.id,
+      //     //   channelId: item.channelId,
+      //     //   city: item.city,
+      //     //   fileId: item.fileId,
+      //     //   type: item.type,
+      //     // };
+      //   }),
+      //   departmentOrgId: this.postData.departmentOrgId,
+      //   id: this.postData.id,
+      //   operateType: this.postData.operateType,
+      // };
+      console.log(this.postData);
+      await post_channelApproval_edit(this.postData);
       this.$message.success("修改成功");
       this.$goto({
         path: "/approval/list",
@@ -384,11 +385,19 @@ export default class ApprovalAdd extends Vue {
   async submitApi(valid: any) {
     if (valid) {
       this.postData.operateType = 2;
-      await post_channelApproval_edit(this.postData);
-      this.$message.success("提交成功");
-      this.$goto({
-        path: "/approval/list",
-      });
+      if (this.id) {
+        await post_channelApproval_edit(this.postData);
+        this.$message.success("提交成功");
+        this.$goto({
+          path: "/approval/list",
+        });
+      } else {
+        await post_channelApproval_add(this.postData);
+        this.$message.success("提交成功");
+        this.$goto({
+          path: "/approval/list",
+        });
+      }
     } else {
       this.$message.warning("请先填好数据再保存");
       return false;

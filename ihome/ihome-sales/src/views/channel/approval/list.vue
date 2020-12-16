@@ -4,7 +4,7 @@
  * @Author: zyc
  * @Date: 2020-07-14 09:23:40
  * @LastEditors: zyc
- * @LastEditTime: 2020-12-14 21:07:22
+ * @LastEditTime: 2020-12-15 16:50:53
 --> 
 --> 
 <template>
@@ -145,6 +145,7 @@
           prop="approvalNo"
           label="申请编号"
           width="120"
+          fixed
         ></el-table-column>
         <el-table-column
           prop="approvalTitle"

@@ -4,16 +4,35 @@
  * @Author: wwq
  * @Date: 2020-09-27 11:52:41
  * @LastEditors: wwq
- * @LastEditTime: 2020-10-19 11:07:29
+ * @LastEditTime: 2020-12-16 14:59:26
 -->
 <template>
   <div>
-    <el-table class="ih-table" :data="companyLogInfo" style="width: 100%">
-      <el-table-column prop="operation" label="操作"></el-table-column>
-      <el-table-column prop="operator" label="处理人"></el-table-column>
-      <el-table-column prop="operateTime" label="处理时间"></el-table-column>
-      <el-table-column prop="operateResult" label="处理结果"></el-table-column>
-      <el-table-column prop="remark" label="备注"></el-table-column>
+    <el-table
+      class="ih-table"
+      :data="companyLogInfo"
+      style="width: 100%"
+    >
+      <el-table-column
+        prop="operation"
+        label="操作"
+      ></el-table-column>
+      <el-table-column
+        prop="operatorName"
+        label="处理人"
+      ></el-table-column>
+      <el-table-column
+        prop="operateTime"
+        label="处理时间"
+      ></el-table-column>
+      <el-table-column
+        prop="operateResult"
+        label="处理结果"
+      ></el-table-column>
+      <el-table-column
+        prop="remark"
+        label="备注"
+      ></el-table-column>
     </el-table>
   </div>
 </template>

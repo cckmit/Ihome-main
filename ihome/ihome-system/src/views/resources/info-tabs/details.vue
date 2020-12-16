@@ -4,7 +4,7 @@
  * @Author: zyc
  * @Date: 2020-07-07 15:42:42
  * @LastEditors: zyc
- * @LastEditTime: 2020-12-14 15:42:02
+ * @LastEditTime: 2020-12-16 14:59:12
 --> 
 <template>
   <div>
@@ -45,14 +45,20 @@
       </el-col>
       <el-col :span="8">
         <el-row>
+          <el-col :span="6" class="ih-info-item-left">排序</el-col>
+          <el-col :span="18" class="ih-info-item-right">{{ info.seq }}</el-col>
+        </el-row>
+      </el-col>
+    </el-row>
+    <el-row class="ih-info-line">
+      <el-col :span="8">
+        <el-row>
           <el-col :span="6" class="ih-info-item-left">父资源</el-col>
           <el-col :span="18" class="ih-info-item-right">{{
             info.parentCode
           }}</el-col>
         </el-row>
       </el-col>
-    </el-row>
-    <el-row class="ih-info-line">
       <el-col :span="8">
         <el-row>
           <el-col :span="6" class="ih-info-item-left">创建人</el-col>
@@ -69,6 +75,8 @@
           }}</el-col>
         </el-row>
       </el-col>
+    </el-row>
+    <el-row class="ih-info-line">
       <el-col :span="8">
         <el-row>
           <el-col :span="6" class="ih-info-item-left">修改人</el-col>
@@ -77,8 +85,6 @@
           }}</el-col>
         </el-row>
       </el-col>
-    </el-row>
-    <el-row class="ih-info-line">
       <el-col :span="8">
         <el-row>
           <el-col :span="6" class="ih-info-item-left">修改时间</el-col>

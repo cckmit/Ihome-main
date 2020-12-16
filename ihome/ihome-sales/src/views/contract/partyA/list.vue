@@ -4,7 +4,7 @@
  * @Author: ywl
  * @Date: 2020-09-25 11:53:51
  * @LastEditors: ywl
- * @LastEditTime: 2020-12-15 17:58:53
+ * @LastEditTime: 2020-12-16 10:56:45
 -->
 <template>
   <IhPage label-width="100px">
@@ -26,38 +26,20 @@
           </el-col>
           <el-col :span="8">
             <el-form-item label="甲方">
-              <el-select
+              <IhSelectPageByDeveloper
                 v-model="queryPageParameters.partyAId"
                 placeholder="请选择甲方"
                 clearable
-                filterable
-                class="width--100"
-              >
-                <el-option
-                  v-for="item in partyAList"
-                  :key="item.id"
-                  :label="item.name"
-                  :value="item.id"
-                ></el-option>
-              </el-select>
+              ></IhSelectPageByDeveloper>
             </el-form-item>
           </el-col>
           <el-col :span="8">
             <el-form-item label="乙方">
-              <el-select
+              <IhSelectPageByCompany
                 v-model="queryPageParameters.partyBId"
                 clearable
-                filterable
                 placeholder="请选择乙方"
-                class="width--100"
-              >
-                <el-option
-                  v-for="item in companyList"
-                  :key="item.id"
-                  :label="item.name"
-                  :value="item.id"
-                ></el-option>
-              </el-select>
+              ></IhSelectPageByCompany>
             </el-form-item>
           </el-col>
         </el-row>
@@ -103,11 +85,11 @@
               </el-col> -->
               <el-col :span="8">
                 <el-form-item label="关联项目">
-                  <SelectPageByProject
+                  <IhSelectPageByProject
                     v-model="queryPageParameters.projectsId"
                     clearable
                     placeholder="请选择关联项目"
-                  ></SelectPageByProject>
+                  ></IhSelectPageByProject>
                 </el-form-item>
               </el-col>
             </el-row>
@@ -378,9 +360,6 @@ import { Component, Vue } from "vue-property-decorator";
 import PaginationMixin from "@/mixins/pagination";
 import SelectOrganizationTree from "@/components/SelectOrganizationTree.vue";
 import SelectPageByProject from "@/components/SelectPageByProject.vue";
-import { post_term_getDropDown } from "@/api/project/index";
-import { post_company_listAll } from "@/api/developer/index";
-import { post_company_getAll } from "@/api/system/index";
 import axios from "axios";
 import { getToken } from "ihome-common/util/cookies";
 import {
@@ -410,9 +389,6 @@ export default class PartyAList extends Vue {
     title: null,
   };
   timeList = [];
-  private dropOption: any = [];
-  private companyList: any = [];
-  private partyAList: any = [];
   private selectTable: any = [];
   private searchOpen = true;
   public resPageInfo: any = {
@@ -497,7 +473,6 @@ export default class PartyAList extends Vue {
       title: null,
     });
     this.timeList = [];
-    console.log(this.queryPageParameters);
   }
   private openToggle(): void {
     this.searchOpen = !this.searchOpen;
@@ -520,24 +495,12 @@ export default class PartyAList extends Vue {
     this.$message.success("归档成功");
     this.getListMixin();
   }
-  private async getCompanyList() {
-    this.companyList = await post_company_getAll({ name: "" });
-  }
-  private async getPartyAList() {
-    this.partyAList = await post_company_listAll({ name: "" });
-  }
-  private async getDropDown(): Promise<void> {
-    this.dropOption = await post_term_getDropDown();
-  }
   public async getListMixin(): Promise<void> {
     this.resPageInfo = await post_contract_list(this.queryPageParameters);
   }
 
   created() {
     this.getListMixin();
-    this.getCompanyList();
-    this.getPartyAList();
-    this.getDropDown();
   }
 }
 </script>
