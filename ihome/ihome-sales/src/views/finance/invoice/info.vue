@@ -4,7 +4,7 @@
  * @Author: ywl
  * @Date: 2020-12-08 19:55:43
  * @LastEditors: ywl
- * @LastEditTime: 2020-12-14 21:16:27
+ * @LastEditTime: 2020-12-16 19:52:14
 -->
 <template>
   <IhPage class="text-left">
@@ -120,8 +120,10 @@
         <IhUpload
           :file-list="fileList"
           size="100px"
+          :upload-show="!!fileList.length"
           :limit="fileList.length"
           v-if="fileList.length"
+          :removePermi="false"
         ></IhUpload>
       </div>
       <p class="ih-info-title">开票历史记录</p>
@@ -174,6 +176,7 @@ import RedDashed from "./dialog/redDashed.vue";
 import {
   get_invoice_get__id,
   post_invoice_handHCInvoicing,
+  post_invoice_downloadFile,
 } from "../../../api/finance/index";
 
 @Component({
@@ -192,10 +195,11 @@ export default class InvoiceInfo extends Vue {
   private async getInfo() {
     let id = this.$route.query.id;
     if (id) {
+      await post_invoice_downloadFile({ ids: [id] });
       this.info = await get_invoice_get__id({ id });
       this.fileList = this.info.attachmentVOs.map((i: any) => ({
         fileId: i.fileId,
-        name: i.type,
+        name: `${i.name}.${i.type}`,
       }));
     }
   }

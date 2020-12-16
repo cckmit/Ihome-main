@@ -4,7 +4,7 @@
  * @Author: ywl
  * @Date: 2020-12-08 17:45:05
  * @LastEditors: ywl
- * @LastEditTime: 2020-12-15 18:57:10
+ * @LastEditTime: 2020-12-16 19:46:14
 -->
 <template>
   <IhPage label-width="80px">
@@ -112,7 +112,7 @@
         <el-button @click="handleAutoAll()">批量自动开票</el-button>
         <el-button @click="handleHCByAuto()">批量自动红冲</el-button>
         <el-button @click="handleHCByHandmade()">批量手工红冲</el-button>
-        <el-button>批量下载发票</el-button>
+        <el-button @click="handleDownload()">批量下载发票</el-button>
       </el-row>
     </template>
     <template v-slot:table>
@@ -216,7 +216,7 @@
                   :disabled="row.status === 'Done'"
                   @click.native.prevent="handleHand(row)"
                 >手工开票</el-dropdown-item>
-                <el-dropdown-item @click.native.prevent="downloadFile(row)">下载发票</el-dropdown-item>
+                <el-dropdown-item @click.native.prevent="downloadFile([row.id])">下载发票</el-dropdown-item>
               </el-dropdown-menu>
             </el-dropdown>
           </template>
@@ -314,9 +314,18 @@ export default class InvoiceList extends Vue {
   isHandmade = true;
   private selection: any = [];
 
-  private async downloadFile(row: any) {
+  private handleDownload() {
+    if (this.selection.length) {
+      let ids = this.selection.map((i: any) => i.id);
+      this.downloadFile(ids);
+    } else {
+      this.$message.warning("请先勾选表格数据");
+      return;
+    }
+  }
+  private async downloadFile(ids: any) {
     try {
-      const res = await post_invoice_downloadFile({ ids: [row.id] });
+      const res = await post_invoice_downloadFile({ ids: ids });
       console.log(res);
       if (res.length) {
         const token: any = getToken();

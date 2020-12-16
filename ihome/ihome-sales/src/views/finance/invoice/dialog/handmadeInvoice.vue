@@ -4,7 +4,7 @@
  * @Author: ywl
  * @Date: 2020-12-08 21:04:03
  * @LastEditors: ywl
- * @LastEditTime: 2020-12-15 18:40:48
+ * @LastEditTime: 2020-12-16 19:49:19
 -->
 <template>
   <el-dialog
@@ -225,10 +225,14 @@ export default class Handadel extends Vue {
     (this.$refs["ruleForm"] as ElForm).validate(this.submit);
   }
   private handleFile(list: any) {
-    this.form.attachments = list.map((i: any) => ({
-      fileId: i.fileId,
-      type: i.name,
-    }));
+    this.form.attachments = list.map((i: any) => {
+      let index = i.name.lastIndexOf(".");
+      return {
+        fileId: i.fileId,
+        fileName: i.name.substring(0, index),
+        type: i.name.substring(index + 1, i.name.length),
+      };
+    });
   }
   private handleAdd() {
     this.form.invoiceNoAndInvoiceCodeMap.push({ key: null, value: null });
@@ -259,7 +263,6 @@ export default class Handadel extends Vue {
   }
 
   created() {
-    console.log(this.data);
     this.form.tax = this.data.tax;
     this.form.invoiceId = this.data.id;
   }
