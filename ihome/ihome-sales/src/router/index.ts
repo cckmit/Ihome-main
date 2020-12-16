@@ -4,12 +4,12 @@
  * @Author: zyc
  * @Date: 2020-06-22 11:10:43
  * @LastEditors: ywl
- * @LastEditTime: 2020-12-01 15:55:38
+ * @LastEditTime: 2020-12-16 15:01:08
  */
 import Vue from 'vue'
 import VueRouter, { RouteConfig, Route } from 'vue-router'
-import Home from '../views/Home.vue'
-// import Layout from '../components/Layout.vue'
+// import Home from '../views/Home.vue'
+import Layout from '../components/Layout.vue'
 
 import NProgress from 'nprogress'
 import 'nprogress/nprogress.css'
@@ -30,11 +30,22 @@ import { financeRoutes } from './finance'
 let routes: Array<RouteConfig> = [
   {
     path: '/',
-    name: 'Home',
-    component: Home,
-    meta: {
-      title: '主页'
-    }
+    redirect: '/home/index',
+  },
+  {
+    path: '/home',
+    meta: { title: '主页', icon: null },
+    redirect: '/home/index',
+    component: Layout,
+    children: [
+      {
+        path: 'index',
+        name: 'HomeIndex',
+        component: () => import('../views/home/index.vue'),
+        meta: { title: '首页', icon: 'form', keepAlive: true }
+      },
+
+    ]
   },
 ]
 

@@ -4,7 +4,7 @@
  * @Author: ywl
  * @Date: 2020-09-27 10:46:14
  * @LastEditors: ywl
- * @LastEditTime: 2020-12-14 14:17:45
+ * @LastEditTime: 2020-12-15 20:53:27
 -->
 <template>
   <IhPage class="text-left distribution-info">
@@ -278,7 +278,10 @@
         <el-row>
           <el-col :span="12">
             <el-form-item label="合同电子版">
-              <el-button type="success">预览电子版</el-button>
+              <el-button
+                type="success"
+                @click="preview()"
+              >预览电子版</el-button>
             </el-form-item>
           </el-col>
           <el-col :span="12">
@@ -381,6 +384,11 @@ export default class DistributionDetail extends Vue {
       distributionId: this.ruleForm.id,
     });
     this.$message.success("扫描件归档成功");
+  }
+  private preview() {
+    window.open(
+      `/sales-api/sales-document-cover/file/browse/${this.ruleForm.electronicContractNo}`
+    );
   }
   private async getInfo(): Promise<void> {
     let id = this.$route.query.id;

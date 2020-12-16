@@ -607,13 +607,9 @@ export default class Apply extends Vue {
       },
       data: this.info,
     }).then((res: any) => {
-      const href = window.URL.createObjectURL(res.data);
+      const arr = new Blob([res.data], { type: "application/pdf" });
+      const href = window.URL.createObjectURL(arr);
       window.open(href);
-      // const $a = document.createElement("a");
-      // $a.href = href;
-      // $a.download = "列表.pdf";
-      // $a.click();
-      // $a.remove();
     });
   }
 

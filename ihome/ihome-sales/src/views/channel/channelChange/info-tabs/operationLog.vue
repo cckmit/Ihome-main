@@ -4,7 +4,7 @@
  * @Author: zyc
  * @Date: 2020-05-25 09:37:07
  * @LastEditors: ywl
- * @LastEditTime: 2020-11-16 10:37:28
+ * @LastEditTime: 2020-12-16 11:51:24
 --> 
 <template>
   <div>
@@ -43,7 +43,7 @@
 
 <script lang="ts">
 import { Component, Vue } from "vue-property-decorator";
-import { get_channelRecord_getAll__channelId } from "@/api/channel/index";
+import { get_channelRecordChange_getAll__channelId } from "@/api/channel/index";
 @Component({
   components: {},
 })
@@ -51,7 +51,9 @@ export default class ChannelLog extends Vue {
   private list: any = [];
 
   private async getLogList(id: any): Promise<void> {
-    this.list = await get_channelRecord_getAll__channelId({ channelId: id });
+    this.list = await get_channelRecordChange_getAll__channelId({
+      channelId: id,
+    });
   }
 
   created() {

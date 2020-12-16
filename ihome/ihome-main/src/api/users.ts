@@ -4,7 +4,7 @@
  * @Author: zyc
  * @Date: 2020-06-24 09:47:33
  * @LastEditors: ywl
- * @LastEditTime: 2020-12-11 16:36:20
+ * @LastEditTime: 2020-12-16 15:00:35
  */
 import { IRes } from "./users.d";
 // import request from '@/utils/http';
@@ -57,251 +57,259 @@ export function userMenu<T>(d?: any) {
  */
 export function allMenu<T>() {
     const menuList: any[] = [
-        // {
-        //     id: 7,
-        //     parentId: 0,
-        //     title: "系统管理首页",
-        //     icon: "el-icon-menu",
-        //     path: "/web-system/",
-        // },
+        {
+            id: 10001,
+            parentId: 0,
+            name: "主页",
+            icon: "el-icon-s-home",
+            url: null,
+        },
+        {
+            id: 10002,
+            parentId: 10001,
+            name: "首页",
+            icon: "el-icon-s-home",
+            url: "/web-sales/home/index",
+        },
+
         {
             id: 1,
             parentId: 0,
-            title: "系统管理",
+            name: "系统管理",
             icon: "el-icon-setting",
-            path: null,
+            url: null,
         },
         {
             id: 2,
             parentId: 1,
-            title: "用户列表",
+            name: "用户列表",
             icon: null,
-            path: "/web-system/user/list",
+            url: "/web-system/user/list",
         },
         {
             id: 3,
             parentId: 1,
-            title: "资源列表",
+            name: "资源列表",
             icon: null,
-            path: "/web-system/resources/list",
+            url: "/web-system/resources/list",
         },
         {
             id: 4,
             parentId: 1,
-            title: "角色列表",
+            name: "角色列表",
             icon: null,
-            path: "/web-system/role/list",
+            url: "/web-system/role/list",
         },
         {
             id: 5,
             parentId: 1,
-            title: "岗位列表",
+            name: "岗位列表",
             icon: null,
-            path: "/web-system/job/list",
+            url: "/web-system/job/list",
         },
         {
             id: 6,
             parentId: 1,
-            title: "组织架构",
+            name: "组织架构",
             icon: null,
-            path: "/web-system/organization/list",
+            url: "/web-system/organization/list",
         },
         {
             id: 7,
             parentId: 1,
-            title: "数据字典",
+            name: "数据字典",
             icon: null,
-            path: "/web-system/dic/list",
+            url: "/web-system/dic/list",
         },
         // {
         //     id: 101,
         //     parentId: 0,
-        //     title: "新房系统业务模块",
+        //     name: "新房系统业务模块",
         //     icon: "el-icon-setting",
-        //     path: null,
+        //     url: null,
         // },
         // {
         //     id: 102,
         //     parentId: 101,
-        //     title: "首页导航",
+        //     name: "首页导航",
         //     icon: null,
-        //     path: "/web-sales/",
+        //     url: "/web-sales/",
         // },
         {
 
             id: 201,
             parentId: 0,
-            title: "渠道管理",
+            name: "渠道管理",
             icon: "el-icon-setting",
-            path: null,
+            url: null,
         },
         {
             id: 208,
             parentId: 201,
-            title: "渠道邀请码列表",
+            name: "渠道邀请码列表",
             icon: "el-icon-setting",
-            path: "/web-sales/invitationCode/list",
+            url: "/web-sales/invitationCode/list",
         },
         {
             id: 209,
             parentId: 201,
-            title: "城市等级列表",
+            name: "城市等级列表",
             icon: "el-icon-setting",
-            path: "/web-sales/cityLevel/list",
+            url: "/web-sales/cityLevel/list",
         },
         {
             id: 204,
             parentId: 201,
-            title: "渠道评级标准列表",
+            name: "渠道评级标准列表",
             icon: null,
-            path: "/web-sales/channelRatings/list",
+            url: "/web-sales/channelRatings/list",
         },
         {
             id: 203,
             parentId: 201,
-            title: "渠道商列表",
+            name: "渠道商列表",
             icon: null,
-            path: "/web-sales/channelBusiness/list",
+            url: "/web-sales/channelBusiness/list",
         },
         {
             id: 205,
             parentId: 201,
-            title: "渠道等级信息列表",
+            name: "渠道等级信息列表",
             icon: "el-icon-setting",
-            path: "/web-sales/channelLevel/list",
+            url: "/web-sales/channelLevel/list",
         },
         {
             id: 206,
             parentId: 201,
-            title: "渠道呈批列表",
+            name: "渠道呈批列表",
             icon: "el-icon-setting",
-            path: "/web-sales/approval/list",
+            url: "/web-sales/approval/list",
         },
         {
             id: 207,
             parentId: 201,
-            title: "渠道基础信息变更列表",
+            name: "渠道基础信息变更列表",
             icon: "el-icon-setting",
-            path: "/web-sales/channelChange/list",
+            url: "/web-sales/channelChange/list",
         },
         {
             id: 202,
             parentId: 201,
-            title: "渠道等级信息变更列表",
+            name: "渠道等级信息变更列表",
             icon: null,
-            path: "/web-sales/channelLevelChange/list",
+            url: "/web-sales/channelLevelChange/list",
         },
         {
             id: 301,
             parentId: 0,
-            title: '开发商管理模块',
+            name: '开发商管理模块',
             icon: 'el-icon-setting',
-            path: null,
+            url: null,
         },
         {
             id: 302,
             parentId: 301,
-            title: "开发商列表",
+            name: "开发商列表",
             icon: null,
-            path: "/web-sales/developers/list"
+            url: "/web-sales/developers/list"
         },
         {
             id: 401,
             parentId: 0,
-            title: '合同管理',
+            name: '合同管理',
             icon: "el-icon-setting",
-            path: null,
+            url: null,
         },
         {
             id: 402,
             parentId: 401,
-            title: "甲方合同列表",
+            name: "甲方合同列表",
             icon: null,
-            path: "/web-sales/partyA/list"
+            url: "/web-sales/partyA/list"
         },
         {
             id: 403,
             parentId: 401,
-            title: "渠道分销协议列表",
+            name: "渠道分销协议列表",
             icon: null,
-            path: "/web-sales/distribution/list"
+            url: "/web-sales/distribution/list"
         },
         {
             id: 404,
             parentId: 401,
-            title: "甲方/渠道战略协议列表",
+            name: "甲方/渠道战略协议列表",
             icon: null,
-            path: "/web-sales/strategy/list"
+            url: "/web-sales/strategy/list"
         },
         {
             id: 405,
             parentId: 401,
-            title: "优惠告知书列表",
+            name: "优惠告知书列表",
             icon: null,
-            path: "/web-sales/discount/list"
+            url: "/web-sales/discount/list"
         },
         {
             id: 501,
             parentId: 0,
-            title: "项目基础信息管理",
+            name: "项目基础信息管理",
             icon: 'el-icon-setting',
-            path: null,
+            url: null,
         },
         {
             id: 502,
             parentId: 501,
-            title: "项目基础信息列表",
+            name: "项目基础信息列表",
             icon: null,
-            path: "/web-sales/projects/list",
+            url: "/web-sales/projects/list",
         },
         {
             id: 503,
             parentId: 501,
-            title: "一手代理公司列表",
+            name: "一手代理公司列表",
             icon: null,
-            path: "/web-sales/firstAgency/list",
+            url: "/web-sales/firstAgency/list",
         },
         {
             id: 601,
             parentId: 0,
-            title: "立项周期管理",
+            name: "立项周期管理",
             icon: 'el-icon-setting',
-            path: null,
+            url: null,
         },
         {
             id: 602,
             parentId: 601,
-            title: "立项周期列表",
+            name: "立项周期列表",
             icon: null,
-            path: "/web-sales/projectApproval/list",
+            url: "/web-sales/projectApproval/list",
         },
         {
             id: 701,
             parentId: 0,
-            title: '成交管理模块',
+            name: '成交管理模块',
             icon: 'el-icon-setting',
-            path: null,
+            url: null,
         },
         {
             id: 702,
             parentId: 701,
-            title: "业务模式列表",
+            name: "业务模式列表",
             icon: null,
-            path: "/web-sales/businessModel/list"
+            url: "/web-sales/businessModel/list"
         },
         {
             id: 703,
             parentId: 701,
-            title: "分公司方案列表",
+            name: "分公司方案列表",
             icon: null,
-            path: "/web-sales/achieveScaleScheme/companyList"
+            url: "/web-sales/achieveScaleScheme/companyList"
         },
         {
             id: 704,
             parentId: 701,
-            title: "成交报告列表",
+            name: "成交报告列表",
             icon: null,
-            path: "/web-sales/dealReport/list"
+            url: "/web-sales/dealReport/list"
         },
         {
             id: 801,

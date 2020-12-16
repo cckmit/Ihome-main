@@ -4,7 +4,7 @@
  * @Author: zyc
  * @Date: 2020-06-22 11:46:23
  * @LastEditors: zyc
- * @LastEditTime: 2020-11-03 10:57:57
+ * @LastEditTime: 2020-12-15 18:11:27
  */
 import Vue from 'vue'
 import App from './App.vue'
@@ -34,7 +34,7 @@ Vue.use(ElementUI);
 // 将action对象绑到Vue原型上，为了项目中其他地方使用方便
 Vue.prototype.$actions = actions
 let app: any = null;
-
+import { post_sessionUser_getUserInfo } from '@/api/system'
 
 import * as Sentry from "@sentry/browser";
 import { Vue as VueIntegration } from "@sentry/integrations";
@@ -58,28 +58,37 @@ if (process.env.NODE_ENV === 'production') {
 
 
 
-
+let userInfo: any = {};
 function render({ appContent, loading }: any = {}) {
   if (!app) {
-    app = new Vue({
-      el: "#container",
-      router,
-      store,
-      data() {
-        return {
-          content: appContent,
-          loading
-        };
-      },
-      render(h) {
-        return h(App, {
-          props: {
-            content: (<any>this).content,
-            loading: (<any>this).loading
-          }
-        });
-      }
-    });
+
+    Promise.all([post_sessionUser_getUserInfo()]).then((res: any) => {
+      userInfo = res[0];
+    }).catch((err: any) => {
+      console.error('系统初始化数据存在异常', err)
+    }).finally(() => {
+      app = new Vue({
+        el: "#container",
+        router,
+        store,
+        data() {
+          return {
+            content: appContent,
+            loading,
+            userInfo: userInfo
+          };
+        },
+        render(h) {
+          return h(App, {
+            props: {
+              content: (<any>this).content,
+              loading: (<any>this).loading
+            }
+          });
+        }
+      });
+    })
+
   } else {
     app.content = appContent;
     app.loading = loading;

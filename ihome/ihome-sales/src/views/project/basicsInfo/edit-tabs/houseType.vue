@@ -4,11 +4,15 @@
  * @Author: wwq
  * @Date: 2020-11-03 11:52:41
  * @LastEditors: wwq
- * @LastEditTime: 2020-11-10 16:38:08
+ * @LastEditTime: 2020-12-16 14:58:00
 -->
 <template>
   <div class="house-type text-left">
-    <div class="content" v-for="item in info" :key="item.houseTypeId">
+    <div
+      class="content"
+      v-for="item in info"
+      :key="item.houseTypeId"
+    >
       <img
         class="img"
         :src="`/sales-api/sales-document-cover/file/browse/${item.picAddr}`"
@@ -21,18 +25,28 @@
               ${item.toilet}卫 ${item.space}m²`
         }}
       </div>
-      <el-button size="small" type="success" @click="edit(item)"
-        >编辑</el-button
-      >
-      <el-button size="small" type="danger" @click="remove(item)"
-        >删除</el-button
-      >
+      <el-button
+        size="small"
+        type="success"
+        @click="edit(item)"
+      >编辑</el-button>
+      <el-button
+        size="small"
+        type="danger"
+        @click="remove(item)"
+      >删除</el-button>
     </div>
-    <div class="plus" @click="add()">
+    <div
+      class="plus"
+      @click="add()"
+    >
       <i class="el-icon-plus"></i>
       <div class="title">点击新增户型</div>
     </div>
-    <ih-dialog :show="dialogVisible" desc="编辑">
+    <ih-dialog
+      :show="dialogVisible"
+      desc="编辑"
+    >
       <HouseTypeEdit
         :data="editData"
         @cancel="() => (dialogVisible = false)"
@@ -85,7 +99,9 @@ export default class EditHouseType extends Vue {
   async finish(data: any) {
     let obj: any = {};
     obj = { ...data };
-    obj.picAddr = data.fileList[0].fileId;
+    if (data.fileList.length) {
+      obj.picAddr = data.fileList[0].fileId;
+    }
     obj.proId = this.proId;
     await post_houseType_add(obj);
     this.$message.success("保存成功");

@@ -4,7 +4,7 @@
  * @Author: zyc
  * @Date: 2020-06-23 10:42:04
  * @LastEditors: zyc
- * @LastEditTime: 2020-12-15 15:17:10
+ * @LastEditTime: 2020-12-16 10:53:11
 --> 
 <template>
   <div class="header-container">
@@ -23,13 +23,13 @@
         <i class="el-icon-arrow-left"></i>
         返回</el-link
       >
-      <div class="breadcrumb">
+      <div class="breadcrumb" v-show="true">
         <el-breadcrumb separator-class="el-icon-arrow-right">
           <!-- <el-breadcrumb-item :to="{ path: '/' }">首页</el-breadcrumb-item> -->
           <el-breadcrumb-item
             v-for="(item, index) in breadcrumbList"
             :key="index"
-            >{{ item && item.title }}</el-breadcrumb-item
+            >{{ item && item.name }}</el-breadcrumb-item
           >
           <!-- <el-breadcrumb-item>活动列表</el-breadcrumb-item>
           <el-breadcrumb-item>活动详情</el-breadcrumb-item>-->
@@ -37,6 +37,7 @@
       </div>
     </div>
     <div class="right-item">
+      <span class="userinfo">{{ userInfo.name }}</span>
       <el-popover
         placement="top-start"
         width="120"
@@ -90,6 +91,9 @@ export default class IhHeader extends Vue {
       this.$router.push("/login");
     }
   }
+  get userInfo() {
+    return (this.$root as any).userInfo || {};
+  }
   private get isCollapse(): boolean {
     return AppModule.opened;
   }
@@ -99,11 +103,14 @@ export default class IhHeader extends Vue {
 
   @Watch("$route")
   async getBreadcrumb(newVal: any) {
-    let menuList: any = await allMenu();
+    // let menuList: any = await allMenu();
+
+    let menuList = (this.$root as any).userInfo?.menuList || [];
+
     let arr = null;
     for (let index = 0; index < menuList.length; index++) {
       const element = menuList[index];
-      if (newVal.path == element.path) {
+      if (newVal.path == element.url) {
         arr = element;
         break;
       }
@@ -127,7 +134,7 @@ export default class IhHeader extends Vue {
         newVal.path != "/web-system"
       ) {
         this.breadcrumbList.push({
-          title: "子页面",
+          name: "--",
         });
       }
     }
@@ -207,5 +214,12 @@ export default class IhHeader extends Vue {
   li:hover {
     color: #f90;
   }
+}
+.userinfo {
+  position: relative;
+  top: -12px;
+  right: 10px;
+  font-size: 14px;
+  color: #666;
 }
 </style>

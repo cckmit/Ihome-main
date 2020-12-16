@@ -4,7 +4,7 @@
  * @Author: ywl
  * @Date: 2020-09-25 17:34:32
  * @LastEditors: ywl
- * @LastEditTime: 2020-12-15 18:05:55
+ * @LastEditTime: 2020-12-16 11:37:26
 -->
 <template>
   <IhPage label-width="100px">
@@ -26,36 +26,22 @@
           </el-col>
           <el-col :span="8">
             <el-form-item label="甲方公司">
-              <el-select
+              <IhSelectPageByCompany
                 v-model="queryPageParameters.partyACompanyId"
                 placeholder="甲方公司"
                 clearable
                 class="width--100"
-              >
-                <el-option
-                  v-for="item in companyList"
-                  :key="item.id"
-                  :label="item.name"
-                  :value="item.id"
-                ></el-option>
-              </el-select>
+              ></IhSelectPageByCompany>
             </el-form-item>
           </el-col>
           <el-col :span="8">
             <el-form-item label="乙方公司">
-              <el-select
+              <IhSelectPageByChannel
                 v-model="queryPageParameters.channelCompanyId"
                 clearable
                 placeholder="请选择乙方公司"
                 class="width--100"
-              >
-                <el-option
-                  v-for="item in channelList"
-                  :key="item.id"
-                  :label="item.name"
-                  :value="item.id"
-                ></el-option>
-              </el-select>
+              ></IhSelectPageByChannel>
             </el-form-item>
           </el-col>
         </el-row>
@@ -89,11 +75,11 @@
               </el-col>
               <el-col :span="8">
                 <el-form-item label="项目">
-                  <SelectPageByProject
+                  <IhSelectPageByProject
                     v-model="queryPageParameters.projectId"
                     placeholder="请选择项目"
                     clearable
-                  ></SelectPageByProject>
+                  ></IhSelectPageByProject>
                 </el-form-item>
               </el-col>
             </el-row>
@@ -101,11 +87,11 @@
             <el-row>
               <el-col :span="8">
                 <el-form-item label="周期">
-                  <SelectPageByCycle
+                  <IhSelectPageByCycle
                     v-model="queryPageParameters.cycleId"
                     placeholder="请选择周期"
                     clearable
-                  ></SelectPageByCycle>
+                  ></IhSelectPageByCycle>
                 </el-form-item>
               </el-col>
               <el-col :span="8">
@@ -386,15 +372,9 @@
 <script lang="ts">
 import { Component, Vue } from "vue-property-decorator";
 import PaginationMixin from "@/mixins/pagination";
-
-import SelectPageByProject from "@/components/SelectPageByProject.vue";
-import SelectPageByCycle from "@/components/SelectPageByCycle.vue";
-import SelectPageByChannle from "@/components/SelectPageByChannel.vue";
 import SelectOrganizationTree from "@/components/SelectOrganizationTree.vue";
 import axios from "axios";
 import { getToken } from "ihome-common/util/cookies";
-import { get_channel_getAll } from "@/api/channel/index";
-import { post_company_getAll } from "@/api/system/index";
 import {
   post_distribution_list,
   post_distribution_review,
@@ -407,9 +387,6 @@ import {
 @Component({
   components: {
     SelectOrganizationTree,
-    SelectPageByProject,
-    SelectPageByCycle,
-    SelectPageByChannle,
   },
   mixins: [PaginationMixin],
 })
@@ -433,8 +410,6 @@ export default class DistributionList extends Vue {
   };
   private timeList = [];
   private companyLoading = false;
-  private companyList: any = [];
-  private channelList: any = [];
   private searchOpen = true;
   private selectionData: any = [];
   resPageInfo: any = {
@@ -517,6 +492,28 @@ export default class DistributionList extends Vue {
       $a.click();
       $a.remove();
     });
+    // axios({
+    //   method: "POST",
+    //   url: "/sales-api/sales-document-cover/pdf/ftlToPdf/brow",
+    //   xsrfHeaderName: "Authorization",
+    //   responseType: "blob",
+    //   headers: {
+    //     "Content-Type": "application/json",
+    //     Authorization: "bearer " + token,
+    //   },
+    //   data: {
+    //     data: {},
+    //     fileId: "5fd960a1990e9d00015c5dc7",
+    //   },
+    // }).then((res: any) => {
+    //   let binaryData: any = [];
+    //   binaryData.push(res.data);
+    //   const href = window.URL.createObjectURL(
+    //     new Blob(binaryData, { type: "application/pdf" })
+    //   );
+    //   console.log(href);
+    //   window.open(href);
+    // });
   }
   private handleExportFile() {
     if (!this.selectionData.length) {
@@ -619,19 +616,11 @@ export default class DistributionList extends Vue {
       },
     });
   }
-  private async getCompanyList() {
-    this.companyList = await post_company_getAll({ name: "" });
-  }
-  private async getChannelList() {
-    this.channelList = await get_channel_getAll({ name: "" });
-  }
   public async getListMixin(): Promise<void> {
     this.resPageInfo = await post_distribution_list(this.queryPageParameters);
   }
 
   created() {
-    this.getChannelList();
-    this.getCompanyList();
     this.getListMixin();
   }
 }

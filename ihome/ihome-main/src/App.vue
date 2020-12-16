@@ -4,7 +4,7 @@
  * @Author: zyc
  * @Date: 2020-06-22 11:46:23
  * @LastEditors: zyc
- * @LastEditTime: 2020-11-11 14:21:04
+ * @LastEditTime: 2020-12-16 11:18:00
 --> 
 <template>
   <div>
@@ -51,17 +51,17 @@
               <el-menu-item
                 :index="item.id"
                 v-if="!item.children"
-                @click="goto(item.path)"
+                @click="goto(item.url)"
                 :key="item.id"
               >
-                <i :class="item.icon"></i>
-                <span>{{ item.title }}</span>
+                <i :class="item.icon || 'el-icon-folder'"></i>
+                <span>{{ item.name }}</span>
               </el-menu-item>
 
               <el-submenu :index="item.id" v-if="item.children" :key="item.id">
                 <template slot="title">
                   <i :class="item.icon"></i>
-                  <span>{{ item.title }}</span>
+                  <span>{{ item.name }}</span>
                 </template>
                 <template
                   v-for="(childrenItem, childrenIndex) in item.children"
@@ -71,20 +71,20 @@
                     :key="childrenIndex"
                     v-if="childrenItem.children"
                   >
-                    <template slot="title">{{ childrenItem.title }}</template>
+                    <template slot="title">{{ childrenItem.name }}</template>
                     <el-menu-item
                       :index="cItem.id"
                       v-for="(cItem, cIndex) in childrenItem.children"
                       :key="cIndex"
-                      >{{ cItem.title }}</el-menu-item
+                      >{{ cItem.name }}</el-menu-item
                     >
                   </el-submenu>
                   <el-menu-item
                     v-else
                     :key="childrenIndex"
-                    @click="goto(childrenItem.path)"
+                    @click="goto(childrenItem.url)"
                     :index="childrenItem.id"
-                    >{{ childrenItem.title }}</el-menu-item
+                    >{{ childrenItem.name }}</el-menu-item
                   >
                 </template>
               </el-submenu>
@@ -152,21 +152,31 @@ export default class App extends Vue {
   groupMenuList: any[] = [];
 
   async created() {
-    this.menuList = await allMenu();
+    // this.menuList = await allMenu();
+    this.menuList = (this.$root as any).userInfo?.menuList || [];
     this.setMenu();
   }
   setMenu() {
     let menuList = this.menuList;
+
     menuList.map((item: any) => {
+      if (item.type && item.type == "Service") {
+        item.parentId = 0;
+      }
       item.id = item.id.toString();
+      if (item.parentId === null) {
+        item.parentId = "0";
+      }
       item.parentId = item.parentId.toString();
       return item;
     });
 
     this.groupMenuList = this.listToGruop(menuList, { rootId: "0" });
+    console.log(this.groupMenuList);
+
     for (let index = 0; index < menuList.length; index++) {
       const element = menuList[index];
-      if (element.path == this.$route.path) {
+      if (element.url == this.$route.path) {
         this.defaultActive = element.id.toString(); //设置菜单选中
         this.defaultOpeneds = [element.parentId.toString()]; //设置当前菜单展开
         break;
@@ -236,10 +246,10 @@ export default class App extends Vue {
     // console.log(this.screenWidth, this.screenHeight);
   }
 
-  goto(path: string) {
-    if (window.location.pathname != path) {
+  goto(url: string) {
+    if (window.location.pathname != url) {
       this.$router.push({
-        path: path,
+        path: url,
       });
     }
   }

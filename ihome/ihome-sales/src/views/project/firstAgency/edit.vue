@@ -4,7 +4,7 @@
  * @Author: wwq
  * @Date: 2020-11-03 18:39:23
  * @LastEditors: wwq
- * @LastEditTime: 2020-12-15 15:04:56
+ * @LastEditTime: 2020-12-16 11:13:40
 -->
 <template>
   <IhPage>
@@ -571,7 +571,9 @@ export default class FirstAgencyEdit extends Vue {
       let res: any = await get_firstAgencyCompany_get__agencyId({
         agencyId: id,
       });
-      res.timeList = [res.businessStart, res.businessEnd];
+      if (res.businessStart && res.businessEnd) {
+        res.timeList = [res.businessStart, res.businessEnd];
+      }
       this.info = { ...res };
       this.info.provinceList = [res.province, res.city, res.area];
       this.getFileListType(res.attachAgencyVOS);
