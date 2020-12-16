@@ -4,7 +4,7 @@
  * @Author: ywl
  * @Date: 2020-09-16 14:05:21
  * @LastEditors: ywl
- * @LastEditTime: 2020-12-15 09:59:47
+ * @LastEditTime: 2020-12-16 14:43:33
 -->
 <template>
   <IhPage>
@@ -633,6 +633,7 @@ export default class ModifyThe extends Vue {
             await post_channelChange_add({
               ...this.info,
               operateType: type,
+              channelAttachmentChanges: [...this.info.channelAttachments],
               channelPersonChanges: [{ ...this.channelPersonsData }],
               channelBankChanges: this.info.channelBanks,
               changeReason: this.changeReason,
