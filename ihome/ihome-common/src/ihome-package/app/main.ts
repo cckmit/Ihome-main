@@ -4,7 +4,7 @@
  * @Author: zyc
  * @Date: 2020-11-24 10:49:02
  * @LastEditors: zyc
- * @LastEditTime: 2020-12-07 17:07:30
+ * @LastEditTime: 2020-12-16 17:21:42
  */
 /*
  * @Descripttion: 
@@ -68,20 +68,31 @@ if (process.env.NODE_ENV !== 'production') {
   }
   // require('@/mock/index')
 }
-let areaAll: any = {};//全部行政区数据
-let dictAll: any = [];//存在后端加载的所有字典数据
-let userInfo: any = {};//用户信息
-function render() {
 
+let areaAll: any = (window as any).polyihomeData?.areaAll || {};//全部行政区数据
+let dictAll: any = (window as any).polyihomeData?.dictAll || [];//存在后端加载的所有字典数据
+let userInfo: any = (window as any).polyihomeData?.userInfo || {};//用户信息
+function render() {
+  //window全局变量共享数据
+  (window as any).polyihomeData = {
+    userInfo: {},
+    areaAll: [],
+    dictAll: {}
+  };
 
   Promise.all([get_area_getAll(), get_dict_getAll(), post_sessionUser_getUserInfo()]).then((res: any) => {
     areaAll = res[0];
     dictAll = res[1];
     userInfo = res[2];
-
-
+    //window全局变量共享数据
+    (window as any).polyihomeData = {
+      userInfo: userInfo,
+      areaAll: areaAll,
+      dictAll: dictAll
+    };
   }).catch((err: any) => {
-    console.error('系统初始化数据存在异常', err)
+    console.error('子项目初始化数据异常', err)
+
   }).finally(() => {
     instance = new Vue({
       store,
@@ -287,11 +298,10 @@ function render() {
     }).$mount('#app');
 
 
+    directives(Vue, instance)
+    filters(Vue, instance)
   })
 
-
-  directives(Vue, instance)
-  filters(Vue, instance)
 }
 
 if (!(<any>window).__POWERED_BY_QIANKUN__) {

@@ -4,7 +4,7 @@
  * @Author: zyc
  * @Date: 2020-06-22 11:46:23
  * @LastEditors: zyc
- * @LastEditTime: 2020-12-15 18:11:27
+ * @LastEditTime: 2020-12-16 17:07:06
  */
 import Vue from 'vue'
 import App from './App.vue'
@@ -34,7 +34,7 @@ Vue.use(ElementUI);
 // 将action对象绑到Vue原型上，为了项目中其他地方使用方便
 Vue.prototype.$actions = actions
 let app: any = null;
-import { post_sessionUser_getUserInfo } from '@/api/system'
+import { get_dict_getAll, get_area_getAll, post_sessionUser_getUserInfo } from '@/api/system'
 
 import * as Sentry from "@sentry/browser";
 import { Vue as VueIntegration } from "@sentry/integrations";
@@ -58,41 +58,70 @@ if (process.env.NODE_ENV === 'production') {
 
 
 
-let userInfo: any = {};
-function render({ appContent, loading }: any = {}) {
-  if (!app) {
 
-    Promise.all([post_sessionUser_getUserInfo()]).then((res: any) => {
-      userInfo = res[0];
-    }).catch((err: any) => {
+//window全局变量共享数据
+(window as any).polyihomeData = {
+  userInfo: {},
+  areaAll: [],
+  dictAll: {}
+};
+
+
+function render({ appContent, loading }: any = {}) {
+
+  // Promise.all([post_sessionUser_getUserInfo()]).then((res: any) => {
+  //   userInfo = res[0];
+  //   (window as any).polyihomeData.userInfo = userInfo;
+  // })
+
+  Promise.all([get_area_getAll(), get_dict_getAll(), post_sessionUser_getUserInfo()]).then((res: any) => {
+    (window as any).polyihomeData.areaAll = res[0];
+    (window as any).polyihomeData.dictAll = res[1];
+    (window as any).polyihomeData.userInfo = res[2];
+    console.log((window as any).polyihomeData);
+
+
+  })
+    .catch((err: any) => {
       console.error('系统初始化数据存在异常', err)
     }).finally(() => {
-      app = new Vue({
-        el: "#container",
-        router,
-        store,
-        data() {
-          return {
-            content: appContent,
-            loading,
-            userInfo: userInfo
-          };
-        },
-        render(h) {
-          return h(App, {
-            props: {
-              content: (<any>this).content,
-              loading: (<any>this).loading
-            }
-          });
-        }
-      });
+      if (!app) {
+        app = new Vue({
+          el: "#container",
+          router,
+          store,
+          data() {
+            return {
+              content: appContent,
+              loading,
+              userInfo: (window as any).polyihomeData.userInfo
+            };
+          },
+          render(h) {
+            return h(App, {
+              props: {
+                content: (<any>this).content,
+                loading: (<any>this).loading
+              }
+            });
+          }
+        });
+      } else {
+        app.content = appContent;
+        app.loading = loading;
+      }
+      // 注册子应用
+      registerMicroApps(apps, lifeCycles);
+
+      // 设置默认子应用,与 genActiveRule中的参数保持一致
+      setDefaultMountApp(defaultMountApp);
+
+      // 启动
+      start();
+
     })
 
-  } else {
-    app.content = appContent;
-    app.loading = loading;
-  }
+
 }
 
 
@@ -104,12 +133,4 @@ initApp();
 
 
 
-// 注册子应用
-registerMicroApps(apps, lifeCycles);
-
-// 设置默认子应用,与 genActiveRule中的参数保持一致
-setDefaultMountApp(defaultMountApp);
-
-// 启动
-start();
 

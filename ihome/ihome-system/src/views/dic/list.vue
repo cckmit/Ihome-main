@@ -4,7 +4,7 @@
  * @Author: zyc
  * @Date: 2020-11-24 10:49:12
  * @LastEditors: zyc
- * @LastEditTime: 2020-12-14 11:17:01
+ * @LastEditTime: 2020-12-16 15:50:45
 -->
 <!--
  * @Description: 数据字典列表
@@ -28,6 +28,7 @@
                     size="small"
                     class="add-button"
                     @click="handleAddDicType()"
+                    v-has="'B.SALES.SYSTEM.DICTLIST.ADDTYPE'"
                     >添加</el-button
                   >
                 </el-col>
@@ -70,12 +71,14 @@
                           type="primary"
                           class="margin-left-10"
                           @click.stop="handleEditDicType(item)"
+                          v-has="'B.SALES.SYSTEM.DICTLIST.UPDATETYPE'"
                           >修改</el-link
                         >
                         <el-link
                           type="danger"
                           class="margin-left-10"
                           @click.stop="removeDicType(item, index)"
+                          v-has="'B.SALES.SYSTEM.DICTLIST.DELETETYPE'"
                           >删除</el-link
                         >
                       </div>
@@ -89,7 +92,10 @@
             <el-col :span="24" class="padding-left-10">
               <el-row>
                 <el-col :span="4" class="text-left">
-                  <el-button type="success" @click="handleAddDic()"
+                  <el-button
+                    type="success"
+                    @click="handleAddDic()"
+                    v-has="'B.SALES.SYSTEM.DICTLIST.ADD'"
                     >添加字典项</el-button
                   >
                 </el-col>
@@ -166,6 +172,7 @@
                         class="margin-right-10"
                         type="primary"
                         @click="handleEditDic(row)"
+                        v-has="'B.SALES.SYSTEM.DICTLIST.UPDATE'"
                         >修改</el-link
                       >
                       <el-dropdown trigger="click">
@@ -176,14 +183,17 @@
                         <el-dropdown-menu slot="dropdown">
                           <el-dropdown-item
                             @click.native.prevent="removeDict(row, $index)"
+                            v-has="'B.SALES.SYSTEM.DICTLIST.DELETE'"
                             >删除</el-dropdown-item
                           >
                           <el-dropdown-item
                             @click.native.prevent="switchDict(row, false)"
+                            v-has="'B.SALES.SYSTEM.DICTLIST.DISABLE'"
                             >停用</el-dropdown-item
                           >
                           <el-dropdown-item
                             @click.native.prevent="switchDict(row, true)"
+                            v-has="'B.SALES.SYSTEM.DICTLIST.ENABLE'"
                             >启用</el-dropdown-item
                           >
                         </el-dropdown-menu>
