@@ -4,7 +4,7 @@
  * @Author: ywl
  * @Date: 2020-09-25 17:34:32
  * @LastEditors: ywl
- * @LastEditTime: 2020-12-15 18:05:55
+ * @LastEditTime: 2020-12-16 09:47:40
 -->
 <template>
   <IhPage label-width="100px">
@@ -517,6 +517,28 @@ export default class DistributionList extends Vue {
       $a.click();
       $a.remove();
     });
+    // axios({
+    //   method: "POST",
+    //   url: "/sales-api/sales-document-cover/pdf/ftlToPdf/brow",
+    //   xsrfHeaderName: "Authorization",
+    //   responseType: "blob",
+    //   headers: {
+    //     "Content-Type": "application/json",
+    //     Authorization: "bearer " + token,
+    //   },
+    //   data: {
+    //     data: {},
+    //     fileId: "5fd960a1990e9d00015c5dc7",
+    //   },
+    // }).then((res: any) => {
+    //   let binaryData: any = [];
+    //   binaryData.push(res.data);
+    //   const href = window.URL.createObjectURL(
+    //     new Blob(binaryData, { type: "application/pdf" })
+    //   );
+    //   console.log(href);
+    //   window.open(href);
+    // });
   }
   private handleExportFile() {
     if (!this.selectionData.length) {
