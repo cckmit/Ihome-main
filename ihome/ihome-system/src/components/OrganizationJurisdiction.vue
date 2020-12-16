@@ -4,7 +4,7 @@
  * @Author: zyc
  * @Date: 2020-07-09 15:03:17
  * @LastEditors: zyc
- * @LastEditTime: 2020-08-13 11:04:14
+ * @LastEditTime: 2020-12-16 15:38:29
 --> 
 <template>
   <el-dialog
@@ -14,15 +14,19 @@
     :close-on-click-modal="false"
     :close-on-press-escape="false"
     :before-close="cancel"
-    width="1000px"
-    style="text-align: left;"
+    width="800px"
+    style="text-align: left"
     class="dialog"
   >
     <el-row>
-      <el-col :span="12">
+      <el-col :span="24">
         <el-row>
           <el-col :span="24">
-            <el-input clearable placeholder="输入关键字进行过滤" v-model="filterText"></el-input>
+            <el-input
+              clearable
+              placeholder="输入关键字进行过滤"
+              v-model="filterText"
+            ></el-input>
           </el-col>
         </el-row>
         <div>
@@ -30,6 +34,7 @@
           <div>
             <el-tree
               class="filter-tree"
+              :check-strictly="true"
               :data="dataTree"
               :props="defaultProps"
               :default-expand-all="true"
@@ -46,8 +51,8 @@
         </div>
       </el-col>
 
-      <el-col :span="12" class="padding-left-40">
-        <div style="height:56px;width:100%;text-align: center;">
+      <!-- <el-col :span="12" class="padding-left-40">
+        <div style="height: 56px; width: 100%; text-align: center">
           <b>预览</b>
         </div>
         <el-tree
@@ -58,7 +63,7 @@
           node-key="id"
           ref="preTree"
         ></el-tree>
-      </el-col>
+      </el-col> -->
     </el-row>
 
     <span slot="footer" class="dialog-footer">

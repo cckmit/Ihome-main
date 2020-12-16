@@ -4,31 +4,34 @@
  * @Author: zyc
  * @Date: 2020-07-09 15:03:17
  * @LastEditors: zyc
- * @LastEditTime: 2020-12-16 14:50:49
+ * @LastEditTime: 2020-12-16 16:29:04
 --> 
 <template>
   <el-dialog
     v-dialogDrag
-    :title="'分配权限('+data.name+')'"
+    :title="'分配权限(' + data.name + ')'"
     :visible.sync="dialogVisible"
     :close-on-click-modal="false"
     :close-on-press-escape="false"
     :before-close="cancel"
     width="800px"
-    style="text-align: left;"
+    style="text-align: left"
     class="dialog"
   >
     <div>
       <div>
         <el-select
-          style="width:100%;"
+          style="width: 100%"
           @change="selectChange()"
           v-model="selectType"
           clearable
           placeholder="请选择"
         >
           <el-option
-            v-for="(item,index) in $root.dictAllList('ResourceType','AllowAdjust')" 
+            v-for="(item, index) in $root.dictAllList(
+              'ResourceType',
+              'AllowAdjust'
+            )"
             :key="index"
             :label="item.name"
             :value="item.code"
@@ -37,12 +40,17 @@
       </div>
       <br />
       <div>
-        <el-input clearable placeholder="输入关键字进行过滤" v-model="filterText"></el-input>
+        <el-input
+          clearable
+          placeholder="输入关键字进行过滤"
+          v-model="filterText"
+        ></el-input>
       </div>
       <br />
       <div>
         <el-tree
           class="filter-tree"
+          :check-strictly="true"
           :data="dataTree"
           :props="defaultProps"
           :default-expand-all="true"
@@ -115,7 +123,7 @@ export default class ResourcesCheck extends Vue {
   currentChange(item: any) {
     console.log(item);
   }
-  
+
   async created() {
     console.log(this.data);
     let p: any = {
@@ -134,7 +142,6 @@ export default class ResourcesCheck extends Vue {
       }
     });
 
-    
     this.dataTree = this.$tool.listToGruop(res, { rootId: 0 });
 
     this.defaultCheckedKeys = list.map((item: any) => item.id);
