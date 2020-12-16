@@ -4,7 +4,7 @@
  * @Author: zyc
  * @Date: 2020-07-06 09:41:43
  * @LastEditors: zyc
- * @LastEditTime: 2020-12-14 21:02:07
+ * @LastEditTime: 2020-12-16 10:57:51
 --> 
 <template>
   <ih-page>
@@ -61,6 +61,7 @@
                 width="100%"
                 class="ih-table"
                 :default-sort="{ prop: 'date', order: 'descending' }"
+                :height="pageHeight-25"
               >
                 <!-- <el-table-column type="selection" width="50"></el-table-column> -->
                 <el-table-column
@@ -330,6 +331,7 @@ export default class ResourcesList extends Vue {
         type: "success",
         message: "删除成功!",
       });
+       (this.$refs as any).resourcesRadio.init();
     } catch (error) {
       console.log(error);
     }
