@@ -4,7 +4,7 @@
  * @Author: zyc
  * @Date: 2020-06-22 11:46:23
  * @LastEditors: zyc
- * @LastEditTime: 2020-12-16 11:18:00
+ * @LastEditTime: 2020-12-16 17:20:42
 --> 
 <template>
   <div>
@@ -132,7 +132,7 @@ import IhHeader from "@/components/IhHeader.vue";
 import { Component, Vue, Prop, Watch } from "vue-property-decorator";
 import { UserModule } from "./store/modules/user";
 import { AppModule } from "./store/modules/app";
-import { allMenu } from "./api/users";
+// import { allMenu } from "./api/users";
 import { normalAsideWidth, stretchAsideWidth } from "./setting";
 @Component({
   components: { IhHeader },
@@ -153,7 +153,8 @@ export default class App extends Vue {
 
   async created() {
     // this.menuList = await allMenu();
-    this.menuList = (this.$root as any).userInfo?.menuList || [];
+    // this.menuList = (this.$root as any).userInfo?.menuList || [];
+    this.menuList = (window as any).polyihomeData.userInfo?.menuList || [];
     this.setMenu();
   }
   setMenu() {
@@ -172,7 +173,6 @@ export default class App extends Vue {
     });
 
     this.groupMenuList = this.listToGruop(menuList, { rootId: "0" });
-    console.log(this.groupMenuList);
 
     for (let index = 0; index < menuList.length; index++) {
       const element = menuList[index];

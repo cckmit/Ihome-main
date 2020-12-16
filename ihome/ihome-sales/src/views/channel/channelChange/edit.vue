@@ -3,8 +3,8 @@
  * @version: 
  * @Author: ywl
  * @Date: 2020-09-16 14:05:21
- * @LastEditors: wwq
- * @LastEditTime: 2020-12-15 09:15:49
+ * @LastEditors: ywl
+ * @LastEditTime: 2020-12-16 16:24:01
 -->
 <template>
   <IhPage>
@@ -511,7 +511,7 @@ export default class ModifyThe extends Vue {
       { validator: validIdentityCard, trigger: "change" },
     ],
     email: [
-      { required: true, message: "请填写邮箱", trigger: "change" },
+      // { required: true, message: "请填写邮箱", trigger: "change" },
       { type: "email", message: "请输入正确的邮箱地址", trigger: "change" },
     ],
   };
