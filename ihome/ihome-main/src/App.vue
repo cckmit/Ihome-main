@@ -4,7 +4,7 @@
  * @Author: zyc
  * @Date: 2020-06-22 11:46:23
  * @LastEditors: zyc
- * @LastEditTime: 2020-12-16 10:58:57
+ * @LastEditTime: 2020-12-16 11:18:00
 --> 
 <template>
   <div>
@@ -54,7 +54,7 @@
                 @click="goto(item.url)"
                 :key="item.id"
               >
-                <i :class="item.icon"></i>
+                <i :class="item.icon || 'el-icon-folder'"></i>
                 <span>{{ item.name }}</span>
               </el-menu-item>
 
@@ -164,6 +164,9 @@ export default class App extends Vue {
         item.parentId = 0;
       }
       item.id = item.id.toString();
+      if (item.parentId === null) {
+        item.parentId = "0";
+      }
       item.parentId = item.parentId.toString();
       return item;
     });
