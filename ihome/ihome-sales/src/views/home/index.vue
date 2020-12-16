@@ -2,11 +2,10 @@
  * @Descripttion: 
  * @version: 
  * @Author: zyc
- * @Date: 2020-06-22 11:10:43
+ * @Date: 2020-12-16 10:26:34
  * @LastEditors: zyc
- * @LastEditTime: 2020-12-15 19:28:42
---> 
-
+ * @LastEditTime: 2020-12-16 10:28:38
+-->
 <template>
   <IhPage>
     <h2>
@@ -22,7 +21,7 @@ import { Component, Vue } from "vue-property-decorator";
 @Component({
   components: {},
 })
-export default class Home extends Vue {
+export default class HomeIndex extends Vue {
   get userInfo() {
     return (this as any).$root.userInfo || {};
   }
