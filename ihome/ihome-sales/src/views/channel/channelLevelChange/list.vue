@@ -4,7 +4,7 @@
  * @Author: zyc
  * @Date: 2020-06-30 09:21:17
  * @LastEditors: wwq
- * @LastEditTime: 2020-12-16 19:59:11
+ * @LastEditTime: 2020-12-16 20:33:14
 --> 
 <template>
   <IhPage label-width="100px">
@@ -106,7 +106,10 @@
           type="info"
           @click="reset()"
         >重置</el-button>
-        <el-button @click="handleOpen()">变更录入人</el-button>
+        <el-button
+          @click="handleOpen()"
+          v-has="'B.SALES.CHANNEL.LEVELCHANGELIST.UPDATEENTRY'"
+        >变更录入人</el-button>
       </el-row>
     </template>
 
