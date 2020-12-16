@@ -3,8 +3,8 @@
  * @version: 
  * @Author: ywl
  * @Date: 2020-06-30 09:21:17
- * @LastEditors: ywl
- * @LastEditTime: 2020-12-15 16:14:31
+ * @LastEditors: wwq
+ * @LastEditTime: 2020-12-16 20:00:19
 --> 
 <template>
   <IhPage label-width="100px">
@@ -164,21 +164,31 @@
                 <el-dropdown-item
                   @click.native.prevent="handleToPage(row, 'edit')"
                   :disabled="row.status !== 'DRAFT'"
+                  v-has="'B.SALES.CHANNEL.CHANGELIST.UPDATE'"
                 >修改</el-dropdown-item>
                 <el-dropdown-item
                   @click.native.prevent="remove(row)"
                   :disabled="row.status !== 'DRAFT'"
+                  v-has="'B.SALES.CHANNEL.CHANGELIST.DELETE'"
                 >删除</el-dropdown-item>
                 <el-dropdown-item
                   @click.native.prevent="handleToPage(row, 'confirm')"
                   :disabled="row.status !== 'ToBeConfirmed'"
+                  v-has="'B.SALES.CHANNEL.CHANGELIST.CONFIRM'"
                 >确认</el-dropdown-item>
                 <el-dropdown-item
                   @click.native.prevent="handleToPage(row, 'examine')"
-                  :disabled="!['PTWYSH', 'FGSYGSH', 'ZBYGSH'].includes(row.status) "
+                  :disabled="!['PTWYSH', 'FGSYGSH', 'ZBYGSH'].includes(row.status)"
+                  v-has="'B.SALES.CHANNEL.CHANGELIST.VERIFY'"
                 >审核</el-dropdown-item>
-                <el-dropdown-item @click.native.prevent="handleToPage(row, 'revoke')">撤回</el-dropdown-item>
-                <el-dropdown-item @click.native.prevent="draft(row)">退回起草</el-dropdown-item>
+                <el-dropdown-item
+                  @click.native.prevent="handleToPage(row, 'revoke')"
+                  v-has="'B.SALES.CHANNEL.CHANGELIST.REVOKE'"
+                >撤回</el-dropdown-item>
+                <el-dropdown-item
+                  @click.native.prevent="draft(row)"
+                  v-has="'B.SALES.CHANNEL.CHANGELIST.REVOKEDRAFT'"
+                >退回起草</el-dropdown-item>
               </el-dropdown-menu>
             </el-dropdown>
           </template>

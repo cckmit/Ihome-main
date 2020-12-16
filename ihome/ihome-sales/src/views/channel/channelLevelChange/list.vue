@@ -3,8 +3,8 @@
  * @version: 
  * @Author: zyc
  * @Date: 2020-06-30 09:21:17
- * @LastEditors: ywl
- * @LastEditTime: 2020-12-15 16:31:48
+ * @LastEditors: wwq
+ * @LastEditTime: 2020-12-16 19:59:11
 --> 
 <template>
   <IhPage label-width="100px">
@@ -187,19 +187,26 @@
                 <el-dropdown-item
                   @click.native.prevent="handleToPage(row, 'edit')"
                   :disabled="row.status !== 'DRAFT'"
+                  v-has="'B.SALES.CHANNEL.LEVELCHANGELIST.UPDATE'"
                 >修改</el-dropdown-item>
                 <el-dropdown-item
                   @click.native.prevent="remove(row)"
                   :disabled="row.status !== 'DRAFT'"
+                  v-has="'B.SALES.CHANNEL.LEVELCHANGELIST.DELETE'"
                 >删除</el-dropdown-item>
                 <el-dropdown-item
                   @click.native.prevent="handleToPage(row, 'revoke')"
                   :disabled="row.status !== 'PTWYSH'"
+                  v-has="'B.SALES.CHANNEL.LEVELCHANGELIST.REVOKE'"
                 >撤回</el-dropdown-item>
-                <el-dropdown-item @click.native.prevent="handleToPage(row, 'examine')">审核</el-dropdown-item>
+                <el-dropdown-item
+                  @click.native.prevent="handleToPage(row, 'examine')"
+                  v-has="'B.SALES.CHANNEL.LEVELCHANGELIST.VERIFY'"
+                >审核</el-dropdown-item>
                 <el-dropdown-item
                   @click.native.prevent="backDraft(row)"
                   :disabled="row.status !== 'PASS'"
+                  v-has="'B.SALES.CHANNEL.LEVELCHANGELIST.REVOKEDRAFT'"
                 >退回起草</el-dropdown-item>
               </el-dropdown-menu>
             </el-dropdown>
