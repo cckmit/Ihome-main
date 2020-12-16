@@ -4,7 +4,7 @@
  * @Author: zyc
  * @Date: 2020-06-30 09:21:17
  * @LastEditors: zyc
- * @LastEditTime: 2020-12-14 15:53:24
+ * @LastEditTime: 2020-12-16 14:44:09
 --> 
 <template>
   <ih-page>
@@ -637,8 +637,8 @@ export default class UserList extends Vue {
     this.$prompt("请输入新密码", "提示", {
       confirmButtonText: "确定",
       cancelButtonText: "取消",
-      inputPattern: /^[a-zA-Z0-9@#$%^&]{8,20}$/,
-      inputErrorMessage: "密码必须包含大写字母、小写字母、数字、特殊字符（@#$%^&）,长度8-20位",
+      inputPattern: /^(?=.*[0-9])(?=.*[a-z])(?=.*[A-Z])(?=.*[@#$%^&.]).{8,20}$/,
+      inputErrorMessage: "密码必须包含大写字母、小写字母、数字、特殊字符（.@#$%^&）,长度8-20位",
     })
       .then(async (obj: any) => {
         await post_user_resetPassword({

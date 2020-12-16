@@ -4,7 +4,7 @@
  * @Author: zyc
  * @Date: 2020-07-09 15:03:17
  * @LastEditors: zyc
- * @LastEditTime: 2020-12-14 15:21:34
+ * @LastEditTime: 2020-12-16 14:50:49
 --> 
 <template>
   <el-dialog
@@ -128,7 +128,13 @@ export default class ResourcesCheck extends Vue {
       post_resource_getAllByRoleId(p),
     ]);
 
-    res[0].parentId = 0;
+    res.forEach((item: any) => {
+      if (item.id == item.parentId) {
+        item.parentId = 0;
+      }
+    });
+
+    
     this.dataTree = this.$tool.listToGruop(res, { rootId: 0 });
 
     this.defaultCheckedKeys = list.map((item: any) => item.id);

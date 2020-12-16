@@ -4,7 +4,7 @@
  * @Author: zyc
  * @Date: 2020-07-06 17:16:31
  * @LastEditors: zyc
- * @LastEditTime: 2020-12-09 10:07:11
+ * @LastEditTime: 2020-12-16 15:03:51
 --> 
 <template>
   <el-dialog
@@ -14,7 +14,7 @@
     :close-on-click-modal="false"
     :close-on-press-escape="false"
     :before-close="cancel"
-    width="1000px"
+    width="1200px"
     style="text-align: left"
     class="dialog resources-list-add"
   >
@@ -31,7 +31,7 @@
             ></i>
           </template>
         </el-table-column>
-        <el-table-column label="类型" width="130">
+        <el-table-column label="类型" width="150">
           <template slot-scope="scope">
             <span>
               <el-form-item
@@ -69,7 +69,7 @@
             <span>{{pageData.parentCode}}</span>
           </template>
         </el-table-column>-->
-        <el-table-column prop="name" label="编码">
+        <el-table-column prop="code" label="编码">
           <template slot-scope="scope">
             <el-form-item
               :prop="'tableData.' + scope.$index + '.code'"
@@ -79,17 +79,24 @@
             </el-form-item>
           </template>
         </el-table-column>
-        <el-table-column prop="name" label="URL" width="300">
+        <el-table-column prop="url" label="URL" width="250">
           <template slot-scope="scope">
             <el-form-item :prop="'tableData.' + scope.$index + '.url'">
               <el-input v-model="scope.row.url"></el-input>
             </el-form-item>
           </template>
         </el-table-column>
-        <el-table-column prop="name" label="ICON" width="150">
+        <el-table-column prop="icon" label="ICON" width="200">
           <template slot-scope="scope">
             <el-form-item :prop="'tableData.' + scope.$index + '.icon'">
               <el-input v-model="scope.row.icon"></el-input>
+            </el-form-item>
+          </template>
+        </el-table-column>
+        <el-table-column prop="seq" label="排序" width="150">
+          <template slot-scope="scope">
+            <el-form-item :prop="'tableData.' + scope.$index + '.icon'">
+              <el-input v-model="scope.row.seq"></el-input>
             </el-form-item>
           </template>
         </el-table-column>
@@ -177,6 +184,7 @@ export default class ResourcesAdd extends Vue {
       type: null,
       url: null,
       icon: null,
+      seq:null
     });
   }
 

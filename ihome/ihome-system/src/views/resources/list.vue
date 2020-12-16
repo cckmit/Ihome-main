@@ -4,7 +4,7 @@
  * @Author: zyc
  * @Date: 2020-07-06 09:41:43
  * @LastEditors: zyc
- * @LastEditTime: 2020-12-16 10:57:51
+ * @LastEditTime: 2020-12-16 14:58:35
 --> 
 <template>
   <ih-page>
@@ -104,6 +104,11 @@
                 </el-table-column>
                 <el-table-column prop="url" label="URL"></el-table-column>
                 <el-table-column prop="icon" label="ICON"></el-table-column>
+                <el-table-column
+                  prop="seq"
+                  label="排序"
+                  width="180"
+                ></el-table-column>
                 <el-table-column
                   prop="parentName"
                   label="父资源"

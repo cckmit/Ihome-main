@@ -4,30 +4,33 @@
  * @Author: zyc
  * @Date: 2020-07-09 15:03:17
  * @LastEditors: zyc
- * @LastEditTime: 2020-12-09 14:37:36
+ * @LastEditTime: 2020-12-16 14:47:33
 --> 
 <template>
   <div>
     <div>
       <el-select
-        style="width:100%;"
+        style="width: 100%"
         @change="selectChange()"
         v-model="selectType"
         clearable
         placeholder="请选择"
       >
         <el-option
-         
-           v-for="item in $root.dictAllList('ResourceType','AllowAdjust')"
-                    :key="item.code"
-                    :label="item.name"
-                    :value="item.code"
+          v-for="item in $root.dictAllList('ResourceType', 'AllowAdjust')"
+          :key="item.code"
+          :label="item.name"
+          :value="item.code"
         ></el-option>
       </el-select>
     </div>
     <br />
     <div>
-      <el-input clearable placeholder="输入关键字进行过滤" v-model="filterText"></el-input>
+      <el-input
+        clearable
+        placeholder="输入关键字进行过滤"
+        v-model="filterText"
+      ></el-input>
     </div>
     <br />
     <div>
@@ -91,13 +94,17 @@ export default class ResourcesRadio extends Vue {
   currentChange(item: any) {
     this.$emit("select", item);
   }
-   
+
   async created() {
     this.init();
   }
   async init() {
     const res = await get_resource_getAll();
-    res[0].parentId = 0;
+    res.forEach((item: any) => {
+      if (item.id == item.parentId) {
+        item.parentId = 0;
+      }
+    });
     this.dataTree = this.$tool.listToGruop(res, { rootId: 0 });
   }
 }
