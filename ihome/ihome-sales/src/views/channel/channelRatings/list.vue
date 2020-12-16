@@ -3,8 +3,8 @@
  * @version: 
  * @Author: wwq
  * @Date: 2020-08-13 11:40:10
- * @LastEditors: zyc
- * @LastEditTime: 2020-11-11 15:05:11
+ * @LastEditors: wwq
+ * @LastEditTime: 2020-12-16 19:15:39
 -->
 <template>
   <IhPage label-width="100px">
@@ -61,13 +61,20 @@
         <el-button
           type="success"
           @click="addMsg()"
+          v-has="'B.SALES.CHANNEL.RATLIST.ADD'"
         >添加</el-button>
         <el-button
           type="info"
           @click="empty()"
         >重置</el-button>
-        <el-button @click="upMethods">上传供应商管理办法</el-button>
-        <el-button @click="viewMethods">查看供应商管理办法</el-button>
+        <el-button
+          @click="upMethods"
+          v-has="'B.SALES.CHANNEL.RATLIST.UPLOADSUPPLIER'"
+        >上传供应商管理办法</el-button>
+        <el-button
+          @click="viewMethods"
+          v-has="'B.SALES.CHANNEL.RATLIST.VIEWSUPPLIER'"
+        >查看供应商管理办法</el-button>
       </el-row>
     </template>
 
@@ -122,8 +129,14 @@
                 <i class="el-icon-arrow-down el-icon--right"></i>
               </span>
               <el-dropdown-menu slot="dropdown">
-                <el-dropdown-item @click.native.prevent="editMsg(row)">修改</el-dropdown-item>
-                <el-dropdown-item @click.native.prevent="delMsg(row)">删除</el-dropdown-item>
+                <el-dropdown-item
+                  @click.native.prevent="editMsg(row)"
+                  v-has="'B.SALES.CHANNEL.RATLIST.UPDATE'"
+                >修改</el-dropdown-item>
+                <el-dropdown-item
+                  @click.native.prevent="delMsg(row)"
+                  v-has="'B.SALES.CHANNEL.RATLIST.DELETE'"
+                >删除</el-dropdown-item>
               </el-dropdown-menu>
             </el-dropdown>
           </template>

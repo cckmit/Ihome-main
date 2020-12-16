@@ -3,8 +3,8 @@
  * @version: 
  * @Author: wwq
  * @Date: 2020-08-13 11:40:10
- * @LastEditors: ywl
- * @LastEditTime: 2020-12-15 16:05:50
+ * @LastEditors: wwq
+ * @LastEditTime: 2020-12-16 19:19:15
 -->
 <template>
   <IhPage label-width="100px">
@@ -151,8 +151,12 @@
         <el-button
           type="success"
           @click="add()"
+          v-has="'B.SALES.CHANNEL.LEVELLIST.ADD'"
         >添加</el-button>
-        <el-button @click="update()">变更录入人</el-button>
+        <el-button
+          @click="update()"
+          v-has="'B.SALES.CHANNEL.LEVELLIST.UPDATEENTRY'"
+        >变更录入人</el-button>
       </el-row>
     </template>
 
@@ -179,7 +183,7 @@
         ></el-table-column>
         <el-table-column
           fixed
-          prop="channelId"
+          prop="channelName"
           label="渠道商名称"
           width="100"
         ></el-table-column>
@@ -264,24 +268,32 @@
                 <el-dropdown-item
                   @click.native.prevent="routerTo(row, 'edit')"
                   :disabled="row.status !== 'DRAFT'"
+                  v-has="'B.SALES.CHANNEL.LEVELLIST.UPDATE'"
                 >修改</el-dropdown-item>
                 <el-dropdown-item
                   @click.native.prevent="remove(row)"
                   :disabled="row.status !== 'DRAFT'"
+                  v-has="'B.SALES.CHANNEL.LEVELLIST.DELETE'"
                 >删除</el-dropdown-item>
                 <el-dropdown-item
                   @click.native.prevent="routerTo(row, 'recall')"
                   :disabled="row.status !== 'PASS'"
+                  v-has="'B.SALES.CHANNEL.LEVELLIST.REVOKE'"
                 >撤回</el-dropdown-item>
                 <el-dropdown-item
                   @click.native.prevent="routerTo(row, 'audit')"
-                  :disabled="row.status === 'DRAFT'"
+                  :disabled="!['PTWYSH', 'FGSYGSH', 'ZBYGSH'].includes(row.status)"
+                  v-has="'B.SALES.CHANNEL.LEVELLIST.VERIFY'"
                 >审核</el-dropdown-item>
                 <el-dropdown-item
                   @click.native.prevent="returnStatus(row)"
                   :disabled="row.status === 'DRAFT'"
+                  v-has="'B.SALES.CHANNEL.LEVELLIST.REVOKEDRAFT'"
                 >退回起草</el-dropdown-item>
-                <el-dropdown-item @click.native.prevent="routerTo(row, 'change')">变更信息</el-dropdown-item>
+                <el-dropdown-item
+                  @click.native.prevent="routerTo(row, 'change')"
+                  v-has="'B.SALES.CHANNEL.LEVELLIST.UPDATEINFO'"
+                >变更信息</el-dropdown-item>
               </el-dropdown-menu>
             </el-dropdown>
           </template>

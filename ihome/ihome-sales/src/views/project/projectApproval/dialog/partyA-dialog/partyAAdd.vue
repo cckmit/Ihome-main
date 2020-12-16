@@ -4,7 +4,7 @@
  * @Author: wwq
  * @Date: 2020-12-01 14:49:06
  * @LastEditors: wwq
- * @LastEditTime: 2020-12-09 17:50:19
+ * @LastEditTime: 2020-12-16 17:11:21
 -->
 <template>
   <el-dialog
@@ -305,7 +305,7 @@ export default class PartyAAdd extends Vue {
     this.getPartyA();
     this.getPartyB();
     this.form.tesHhandlerId = {
-      name: (this.$root as any).userInfo.account,
+      name: (this.$root as any).userInfo.name,
       id: (this.$root as any).userInfo.id,
     };
   }

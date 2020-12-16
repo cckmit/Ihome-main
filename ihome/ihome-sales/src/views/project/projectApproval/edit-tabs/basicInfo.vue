@@ -4,7 +4,7 @@
  * @Author: wwq
  * @Date: 2020-11-27 17:17:06
  * @LastEditors: wwq
- * @LastEditTime: 2020-12-15 09:55:43
+ * @LastEditTime: 2020-12-16 19:04:30
 -->
 <template>
   <div>
@@ -1100,8 +1100,12 @@ export default class FirstAgencyEdit extends Vue {
         termId: id,
       });
       this.info = { ...res };
-      this.info.startDivision = (this.$root as any).userInfo.account;
-      this.info.timeList = [res.termStart, res.termEnd];
+      this.info.startDivision = (this.$root as any).userInfo.name;
+      if (res.termStart && res.termEnd) {
+        this.info.timeList = [res.termStart, res.termEnd];
+      } else {
+        this.info.timeList = [];
+      }
       this.info.termStageEnum = "Subscription";
       this.info.companyId = res.companyId;
       window.sessionStorage.setItem("proId", res.proId);

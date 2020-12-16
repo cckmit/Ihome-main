@@ -4,7 +4,7 @@
  * @Author: wwq
  * @Date: 2020-11-27 17:11:14
  * @LastEditors: wwq
- * @LastEditTime: 2020-12-14 11:16:21
+ * @LastEditTime: 2020-12-16 19:36:22
 -->
 <template>
   <IhPage label-width="100px">
@@ -83,6 +83,7 @@
         <el-button
           type="success"
           @click="dialogVisible = true"
+          v-has="'B.SALES.PROJECT.TERMLIST.ADD'"
         >添加</el-button>
         <el-button
           type="info"
@@ -183,17 +184,26 @@
                 <el-dropdown-item
                   @click.native.prevent="routeTo(row, 'edit')"
                   :disabled="row.auditEnum !== 'Draft'"
+                  v-has="'B.SALES.PROJECT.TERMLIST.UPDATE'"
                 >修改</el-dropdown-item>
                 <el-dropdown-item
                   @click.native.prevent="routeTo(row, 'audit')"
                   :disabled="!['Reject', 'Draft'].includes(row.auditEnum)"
+                  v-has="'B.SALES.PROJECT.TERMLIST.VERIFY'"
                 >审核</el-dropdown-item>
                 <el-dropdown-item
                   @click.native.prevent="remove(row)"
                   :disabled="row.auditEnum !== 'Draft'"
+                  v-has="'B.SALES.PROJECT.TERMLIST.DELETE'"
                 >删除</el-dropdown-item>
-                <el-dropdown-item @click.native.prevent="routeTo(row, 'apply')">申领分销协议</el-dropdown-item>
-                <el-dropdown-item @click.native.prevent="routeTo(row, 'edit')">发起补充协议</el-dropdown-item>
+                <el-dropdown-item
+                  @click.native.prevent="routeTo(row, 'apply')"
+                  v-has="'B.SALES.PROJECT.TERMLIST.APPLYDISTRIBUT'"
+                >申领分销协议</el-dropdown-item>
+                <el-dropdown-item
+                  @click.native.prevent="routeTo(row, 'edit')"
+                  v-has="'B.SALES.PROJECT.TERMLIST.EDITDISTRIBUT'"
+                >发起补充协议</el-dropdown-item>
               </el-dropdown-menu>
             </el-dropdown>
           </template>
