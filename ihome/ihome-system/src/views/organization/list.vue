@@ -4,7 +4,7 @@
  * @Author: zyc
  * @Date: 2020-12-09 09:45:59
  * @LastEditors: zyc
- * @LastEditTime: 2020-12-14 17:31:09
+ * @LastEditTime: 2020-12-17 09:30:23
 -->
 <!--
  * @Descripttion: 
@@ -122,7 +122,7 @@
 
                 <el-row class="btn-list">
                   <el-button type="primary" @click="search()">查询</el-button>
-                  <el-button type="success" @click="add({})">添加</el-button>
+                  <el-button type="success" @click="add({})" v-has="'B.SALES.SYSTEM.ORGLIST.ADD'">添加</el-button>
                 </el-row>
               </el-form>
               <br />
@@ -192,11 +192,13 @@
                       class="margin-right-10"
                       type="primary"
                       @click.native.prevent="edit(scope)"
+                      v-has="'B.SALES.SYSTEM.ORGLIST.UPDATE'"
                       >修改</el-link
                     >
                     <el-link
                       style="color: #f66"
                       type="primary"
+                      v-has="'B.SALES.SYSTEM.ORGLIST.ADD'"
                       @click.native.prevent="remove(scope)"
                       >删除</el-link
                     >

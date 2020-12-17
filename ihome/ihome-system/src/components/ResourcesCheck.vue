@@ -4,7 +4,7 @@
  * @Author: zyc
  * @Date: 2020-07-09 15:03:17
  * @LastEditors: zyc
- * @LastEditTime: 2020-12-16 16:29:04
+ * @LastEditTime: 2020-12-17 10:20:15
 --> 
 <template>
   <el-dialog
@@ -50,7 +50,7 @@
       <div>
         <el-tree
           class="filter-tree"
-          :check-strictly="true"
+          :check-strictly="false"
           :data="dataTree"
           :props="defaultProps"
           :default-expand-all="true"
@@ -90,6 +90,8 @@ export default class ResourcesCheck extends Vue {
   value: any = null;
   selectType: any = null;
   filterText: any = "";
+  resList: any = [];
+  preData: any = [];
   @Watch("filterText")
   filterTextWatch(val: any) {
     (this.$refs.tree as any).filter(val, this.selectType);
@@ -122,6 +124,17 @@ export default class ResourcesCheck extends Vue {
   }
   currentChange(item: any) {
     console.log(item);
+    const tree: any = this.$refs.tree;
+    let list = tree.getCheckedKeys().concat(tree.getHalfCheckedKeys());
+    let all: any = [];
+    this.resList.forEach((item: any) => {
+      list.forEach((element: any) => {
+        if (item.id == element) {
+          all.push(item);
+        }
+      });
+    });
+    this.preData = this.$tool.listToGruop(all, { rootId: 0 });
   }
 
   async created() {
@@ -151,6 +164,13 @@ export default class ResourcesCheck extends Vue {
   }
 
   async finish() {
+    //  const tree: any = this.$refs.tree;
+    // let list = tree.getCheckedKeys().concat(tree.getHalfCheckedKeys());
+    // console.log(list);
+    // let p = {
+    //   resourceIds: list,
+    //   roleId: this.data.id,
+    // };
     let list = (this.$refs.tree as any).getCheckedNodes() || [];
     let p = {
       resourceIds: list.map((item: any) => item.id),

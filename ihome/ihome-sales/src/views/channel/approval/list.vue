@@ -4,7 +4,7 @@
  * @Author: zyc
  * @Date: 2020-07-14 09:23:40
  * @LastEditors: zyc
- * @LastEditTime: 2020-12-15 16:50:53
+ * @LastEditTime: 2020-12-17 09:51:56
 --> 
 --> 
 <template>
@@ -123,9 +123,14 @@
     <template v-slot:btn>
       <el-row>
         <el-button type="primary" @click="getListMixin()">查询</el-button>
-        <el-button type="success" @click="add()">添加</el-button>
+        <el-button
+          type="success"
+          @click="add()"
+          v-has="'B.SALES.CHANNEL.APPROVALLIST.ADD'"
+          >添加</el-button
+        >
         <el-button type="info" @click="reset()">重置</el-button>
-        <el-button type="default" @click="approvalUserChange()"
+        <el-button type="default" @click="approvalUserChange()" v-has="'B.SALES.CHANNEL.APPROVALLIST.UPDATEMANAGER'"
           >变更经办人</el-button
         >
       </el-row>
@@ -192,17 +197,24 @@
                 <i class="el-icon-arrow-down el-icon--right"></i>
               </span>
               <el-dropdown-menu slot="dropdown">
-                <el-dropdown-item @click.native.prevent="edit(scope)"
+                <el-dropdown-item
+                  @click.native.prevent="edit(scope)"
+                  v-has="'B.SALES.CHANNEL.APPROVALLIST.UPDATE'"
                   >修改</el-dropdown-item
                 >
-                <el-dropdown-item @click.native.prevent="remove(scope)"
+                <el-dropdown-item
+                  @click.native.prevent="remove(scope)"
+                  v-has="'B.SALES.CHANNEL.APPROVALLIST.DELETE'"
                   >删除</el-dropdown-item
                 >
-                <el-dropdown-item @click.native.prevent="withdraw(scope)"
+                <el-dropdown-item
+                  @click.native.prevent="withdraw(scope)"
+                  v-has="'B.SALES.CHANNEL.APPROVALLIST.RETURNRESEND'"
                   >撤回重发</el-dropdown-item
                 >
                 <el-dropdown-item
                   @click.native.prevent="downloadSupplier(scope)"
+                  v-has="'B.SALES.CHANNEL.APPROVALLIST.DOWNSUPPLIER'"
                   >下载供应商名录</el-dropdown-item
                 >
               </el-dropdown-menu>
@@ -354,7 +366,6 @@ export default class InvitationCodeList extends Vue {
   async downloadSupplier() {
     // await get_channelApproval_downloadML__id({ id: scope.row.id });
     this.$message.warning("未实现");
-     
   }
 
   handleSelectionChange(val: any) {
