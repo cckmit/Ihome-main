@@ -4,7 +4,7 @@
  * @Author: zyc
  * @Date: 2020-07-09 15:03:17
  * @LastEditors: zyc
- * @LastEditTime: 2020-12-17 10:20:15
+ * @LastEditTime: 2020-12-17 10:30:08
 --> 
 <template>
   <el-dialog
@@ -50,7 +50,7 @@
       <div>
         <el-tree
           class="filter-tree"
-          :check-strictly="false"
+          :check-strictly="true"
           :data="dataTree"
           :props="defaultProps"
           :default-expand-all="true"
