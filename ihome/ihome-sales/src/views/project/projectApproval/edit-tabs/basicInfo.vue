@@ -4,7 +4,7 @@
  * @Author: wwq
  * @Date: 2020-11-27 17:17:06
  * @LastEditors: wwq
- * @LastEditTime: 2020-12-16 19:04:30
+ * @LastEditTime: 2020-12-17 10:05:48
 -->
 <template>
   <div>
@@ -1099,17 +1099,17 @@ export default class FirstAgencyEdit extends Vue {
       let res: any = await get_term_get__termId({
         termId: id,
       });
-      this.info = { ...res };
-      this.info.startDivision = (this.$root as any).userInfo.name;
       if (res.termStart && res.termEnd) {
-        this.info.timeList = [res.termStart, res.termEnd];
+        res.timeList = [res.termStart, res.termEnd];
       } else {
-        this.info.timeList = [];
+        res.timeList = [];
       }
+      this.info = { ...res };
       this.info.termStageEnum = "Subscription";
       this.info.companyId = res.companyId;
       window.sessionStorage.setItem("proId", res.proId);
       window.sessionStorage.setItem("padCommission", res.padCommissionEnum);
+      console.log(this.info);
       if (this.info.chargeEnum && this.info.busEnum) {
         this.getAttributeEnumOptions();
       }
