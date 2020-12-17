@@ -4,7 +4,7 @@
  * @Author: wwq
  * @Date: 2020-11-27 17:27:01
  * @LastEditors: wwq
- * @LastEditTime: 2020-12-11 10:27:04
+ * @LastEditTime: 2020-12-17 14:40:33
 -->
 <template>
   <div>
@@ -79,7 +79,7 @@
             <el-button
               size="small"
               type="success"
-              @click="preview(row)"
+              @click="previewTop(row)"
             >预览</el-button>
             <el-button
               size="small"
@@ -205,7 +205,7 @@
             <el-button
               size="small"
               type="primary"
-              @click="preview(row)"
+              @click="previewBottom(row)"
             >预览</el-button>
             <el-button
               size="small"
@@ -361,8 +361,78 @@ export default class Notification extends Vue {
     }
   }
 
-  async preview(row: any) {
-    console.log(row);
+  async previewTop(row: any) {
+    const token: any = getToken();
+    axios({
+      method: "POST",
+      url: `/sales-api/project/distributContract/getPreViewOut/${row.agencyContrictId}`,
+      xsrfHeaderName: "Authorization",
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: "bearer " + token,
+      },
+    }).then((res: any) => {
+      if (res?.data?.fileId) {
+        axios({
+          method: "POST",
+          url: `/sales-api/sales-document-cover/pdf/ftlToPdf/brow`,
+          xsrfHeaderName: "Authorization",
+          responseType: "blob",
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: "bearer " + token,
+          },
+          data: {
+            data: res.data.parmas,
+            fileId: res.data.fileId,
+          },
+        }).then((item: any) => {
+          const arr = new Blob([item.data], { type: "application/pdf" });
+          const href = window.URL.createObjectURL(arr);
+          window.open(href);
+        });
+      }
+    });
+  }
+
+  async previewBottom(row: any) {
+    const token: any = getToken();
+    axios({
+      method: "POST",
+      url: `/sales-api/project/preferential/getPreView`,
+      xsrfHeaderName: "Authorization",
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: "bearer " + token,
+      },
+      data: {
+        premiumReceived: row.premiumReceived,
+        modeDescription: row.modeDescription,
+        partyARefundDays: row.partyARefundDays,
+        termId: row.termId,
+      },
+    }).then((res: any) => {
+      if (res?.data?.fileId) {
+        axios({
+          method: "POST",
+          url: `/sales-api/sales-document-cover/pdf/ftlToPdf/brow`,
+          xsrfHeaderName: "Authorization",
+          responseType: "blob",
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: "bearer " + token,
+          },
+          data: {
+            data: res.data.parmas,
+            fileId: res.data.fileId,
+          },
+        }).then((item: any) => {
+          const arr = new Blob([item.data], { type: "application/pdf" });
+          const href = window.URL.createObjectURL(arr);
+          window.open(href);
+        });
+      }
+    });
   }
 
   addTemplate() {

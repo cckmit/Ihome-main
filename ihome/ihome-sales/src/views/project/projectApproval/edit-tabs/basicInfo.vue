@@ -159,7 +159,7 @@
               @change="busEnumChange"
             >
               <el-option
-                v-for="item in $root.dictAllList('Bus')"
+                v-for="item in $root.dictAllList('BusinessModel')"
                 :key="item.code"
                 :label="item.name"
                 :value="item.code"
