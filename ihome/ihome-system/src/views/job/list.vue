@@ -4,7 +4,7 @@
  * @Author: zyc
  * @Date: 2020-07-14 09:23:40
  * @LastEditors: zyc
- * @LastEditTime: 2020-12-10 18:22:35
+ * @LastEditTime: 2020-12-17 08:55:21
 --> 
 --> 
 <template>
@@ -13,7 +13,7 @@
       <el-form ref="form" label-width="80px" @submit.native.prevent>
         <el-row>
           <el-col :span="2" class="text-left">
-            <el-button @click="add({})" type="success">添加</el-button>
+            <el-button @click="add({})" type="success" v-has="'B.SALES.SYSTEM.JOBLIST.ADD'">添加</el-button>
           </el-col>
           <el-col :span="22" class="text-right">
             <el-input
@@ -81,13 +81,13 @@
                 <i class="el-icon-arrow-down el-icon--right"></i>
               </span>
               <el-dropdown-menu slot="dropdown">
-                <el-dropdown-item @click.native.prevent="edit(scope)"
+                <el-dropdown-item v-has="'B.SALES.SYSTEM.JOBLIST.UPDATE'" @click.native.prevent="edit(scope)"
                   >修改</el-dropdown-item
                 >
-                <el-dropdown-item @click.native.prevent="remove(scope)"
+                <el-dropdown-item v-has="'B.SALES.SYSTEM.JOBLIST.DELETE'" @click.native.prevent="remove(scope)"
                   >删除</el-dropdown-item
                 >
-                <el-dropdown-item @click.native.prevent="assignRole(scope)"
+                <el-dropdown-item v-has="'B.SALES.SYSTEM.JOBLIST.ADDAUTH'" @click.native.prevent="assignRole(scope)"
                   >分配角色</el-dropdown-item
                 >
               </el-dropdown-menu>

@@ -14,7 +14,10 @@
       ref="ruleForm"
       label-width="160px"
       class="demo-ruleForm">
-      <p id="anchor-1" ref="#anchor-1" class="ih-info-title">成交信息</p>
+      <p id="anchor-1" class="ih-info-title">成交信息</p>
+      <div class="add-all-wrapper padding-left-20">
+        <el-button type="success">更新明源数据</el-button>
+      </div>
       <el-row>
         <el-col :span="6" v-if="!!postData.dealCode">
           <el-form-item label="成交报告编号" :prop="!!postData.dealCode ? 'dealCode' : ''">
@@ -35,9 +38,8 @@
           <el-form-item label="业务模式" prop="businessType">
             <el-select
               v-model="postData.businessType"
-              clearable
-              @change="changeBusinessType"
-              placeholder="请选择业务模式"
+              disabled
+              placeholder="项目周期自动带出"
               class="width--100">
               <el-option
                 v-for="item in $root.dictAllList('BusinessModel')"
@@ -45,6 +47,58 @@
                 :label="item.name"
                 :value="item.code"
               ></el-option>
+            </el-select>
+          </el-form-item>
+        </el-col>
+        <el-col :span="6">
+          <el-form-item label="细分业务模式" prop="subdivisionType">
+            <el-select
+              v-model="postData.subdivisionType"
+              :disabled="['TotalBagModel', 'DistriModel'].includes(postData.businessType)"
+              placeholder="请选择细分业务模式"
+              class="width--100">
+              <el-option
+                v-for="item in subdivisionTypeList"
+                :key="item.code"
+                :label="item.name"
+                :value="item.code"
+              ></el-option>
+            </el-select>
+          </el-form-item>
+        </el-col>
+        <el-col :span="6">
+          <el-form-item label="是否垫佣" prop="isMat">
+            <el-select
+              v-model="postData.isMat"
+              clearable
+              placeholder="请选择是否垫佣"
+              class="width--100">
+              <el-option label="是" value="Yes"></el-option>
+              <el-option label="否" value="No"></el-option>
+            </el-select>
+          </el-form-item>
+        </el-col>
+        <el-col :span="6">
+          <el-form-item label="是否代销" prop="isConsign">
+            <el-select
+              v-model="postData.isConsign"
+              disabled
+              placeholder="请选择是否垫佣"
+              class="width--100">
+              <el-option label="是" value="Yes"></el-option>
+              <el-option label="否" value="No"></el-option>
+            </el-select>
+          </el-form-item>
+        </el-col>
+        <el-col :span="6">
+          <el-form-item label="是否市场化项目" prop="isMarketProject">
+            <el-select
+              v-model="postData.isMarketProject"
+              disabled
+              placeholder="请选择"
+              class="width--100">
+              <el-option label="是" value="Yes"></el-option>
+              <el-option label="否" value="No"></el-option>
             </el-select>
           </el-form-item>
         </el-col>
@@ -57,7 +111,7 @@
               @change="changeContType"
               class="width--100">
               <el-option
-                v-for="item in $root.dictAllList('ContType')"
+                v-for="item in contTypeList"
                 :key="item.code"
                 :label="item.name"
                 :value="item.code"
@@ -66,29 +120,35 @@
           </el-form-item>
         </el-col>
         <el-col :span="6" v-if="postData.contType === 'DistriDeal'">
-          <el-form-item label="报备信息" :prop="postData.contType === 'DistriDeal' ? 'reportId' : ''">
-            <el-input placeholder="请选择已成交的报备信息" readonly v-model="postData.reportName">
-              <el-button slot="append" icon="el-icon-search" @click.native.prevent="selectReport"></el-button>
-            </el-input>
+          <el-form-item label="分销协议编号">
+            <div class="contNo-wrapper">
+              <el-select
+                v-model="postData.contNo"
+                clearable
+                placeholder="请选择分销协议编号"
+                class="width--100">
+                <el-option label="A" value="Has"></el-option>
+                <el-option label="B" value="No"></el-option>
+              </el-select>
+              <div class="link-wrapper" v-if="!!postData.contNo">
+                <el-link type="primary" @click.native.prevent="previewContNo">详情</el-link>
+              </div>
+            </div>
           </el-form-item>
         </el-col>
-        <el-col :span="6" v-if="postData.contType !== 'NaturalVisitDeal'">
-          <el-form-item label="渠道商">
-            <el-input placeholder="请选择渠道商" readonly v-model="postData.channelName">
-              <el-button slot="append" icon="el-icon-search" @click.native.prevent="selectCompany"></el-button>
-            </el-input>
+        <el-col :span="6" v-if="postData.contType === 'DistriDeal'">
+          <el-form-item label="渠道公司">
+            <el-input v-model="postData.channelName" disabled placeholder="选成交报备自动带出"></el-input>
           </el-form-item>
         </el-col>
-        <el-col :span="6">
-          <el-form-item label="细分业务模式" prop="subdivisionType">
-            <el-select
-              v-model="postData.subdivisionType"
-              :disabled="['TotalBagModel', 'DistriModel'].includes(postData.businessType)"
-              placeholder="请选择细分业务模式"
-              class="width--100">
-              <el-option label="总包" value="All"></el-option>
-              <el-option label="分销" value="District"></el-option>
-            </el-select>
+        <el-col :span="6" v-if="postData.contType === 'DistriDeal'">
+          <el-form-item label="渠道等级">
+            <el-input v-model="postData.channelName" disabled placeholder="选成交报备自动带出"></el-input>
+          </el-form-item>
+        </el-col>
+        <el-col :span="6" v-if="postData.contType === 'DistriDeal'">
+          <el-form-item label="经纪人">
+            <el-input v-model="postData.channelName" disabled placeholder="选成交报备自动带出"></el-input>
           </el-form-item>
         </el-col>
         <el-col :span="6">
@@ -98,26 +158,40 @@
               clearable
               placeholder="请选择一手代理团队"
               class="width--100">
-              <el-option label="是" value="yes"></el-option>
-              <el-option label="否" value="no"></el-option>
+              <el-option
+                v-for="item in firstAgencyCompanyList"
+                :key="item.agencyId"
+                :label="item.agencyName"
+                :value="item.agencyId"></el-option>
             </el-select>
           </el-form-item>
         </el-col>
         <el-col :span="6">
-          <el-form-item label="是否市场化项目" prop="isMarketProject">
+          <el-form-item label="物业类型" prop="propertyType">
             <el-select
-              v-model="postData.isMarketProject"
-              disabled
-              placeholder="请选择"
+              v-model="postData.propertyType"
+              clearable
+              placeholder="请选择物业类型"
               class="width--100">
-              <el-option label="是" value="yes"></el-option>
-              <el-option label="否" value="no"></el-option>
+              <el-option
+                v-for="item in $root.dictAllList('Property')"
+                :key="item.code"
+                :label="item.name"
+                :value="item.code"
+              ></el-option>
             </el-select>
           </el-form-item>
         </el-col>
         <el-col :span="6">
-          <el-form-item label="成交组织" prop="dealOrgId">
-            <el-input v-model="postData.dealOrgId" disabled placeholder="请选择成交组织"></el-input>
+          <el-form-item label="栋座">
+            <el-input v-model="postData.buildingId" disabled placeholder="房号自动带出"></el-input>
+          </el-form-item>
+        </el-col>
+        <el-col :span="6">
+          <el-form-item label="房号">
+            <el-input placeholder="请选择房号" readonly v-model="postData.roomNo">
+              <el-button slot="append" icon="el-icon-search" @click.native.prevent="selectRoom"></el-button>
+            </el-input>
           </el-form-item>
         </el-col>
         <el-col :span="6">
@@ -133,49 +207,65 @@
           </el-form-item>
         </el-col>
         <el-col :span="6">
-          <el-form-item label="明源房款回笼比例">
-            <el-input v-model="postData.returnRatio" clearable placeholder="请输入明源房款回笼比例"></el-input>
+          <el-form-item label="建筑面积" prop="area">
+            <el-input v-model="postData.area" clearable placeholder="请输入建筑面积"></el-input>
+          </el-form-item>
+        </el-col>
+        <el-col :span="12">
+          <el-form-item label="户型">
+            <div class="home-type-wrapper">
+              <div>
+                <el-input-number
+                  v-digits="0"
+                  v-model="postData.room"
+                  :min="0"
+                  :step="1"
+                  size="small"
+                  :step-strictly="true"></el-input-number>室
+              </div>
+              <div>
+                <el-input-number
+                  v-digits="0"
+                  v-model="postData.hall"
+                  :min="0"
+                  :step="1"
+                  size="small"
+                  :step-strictly="true"></el-input-number>厅
+              </div>
+              <div>
+                <el-input-number
+                  v-digits="0"
+                  v-model="postData.kitchen"
+                  :min="0"
+                  :step="1"
+                  size="small"
+                  :step-strictly="true"></el-input-number>厨
+              </div>
+              <div>
+                <el-input-number
+                  v-digits="0"
+                  v-model="postData.toilet"
+                  :min="0"
+                  :step="1"
+                  size="small"
+                  :step-strictly="true"></el-input-number>卫
+              </div>
+            </div>
           </el-form-item>
         </el-col>
         <el-col :span="6">
-          <el-form-item label="数据标志" prop="dataSign">
-            <el-input v-model="postData.dataSign" readonly placeholder="请输入数据标志"></el-input>
+          <el-form-item label="房产证/预售合同编号">
+            <el-input v-model="postData.propertyNo" clearable placeholder="请输入房产证/预售合同编号"></el-input>
+          </el-form-item>
+        </el-col>
+        <el-col :span="12">
+          <el-form-item label="房产证地址">
+            <el-input v-model="postData.address" clearable placeholder="请输入房产证地址"></el-input>
           </el-form-item>
         </el-col>
         <el-col :span="6">
-          <el-form-item label="分销协议编号">
-            <el-select
-              v-model="postData.contNo"
-              clearable
-              placeholder="请选择分销协议编号"
-              class="width--100">
-              <el-option label="A" value="Has"></el-option>
-              <el-option label="B" value="No"></el-option>
-            </el-select>
-          </el-form-item>
-        </el-col>
-        <el-col :span="6">
-          <el-form-item label="是否垫佣" prop="isMat">
-            <el-select
-              v-model="postData.isMat"
-              clearable
-              placeholder="请选择是否垫佣"
-              class="width--100">
-              <el-option label="是" value="yes"></el-option>
-              <el-option label="否" value="no"></el-option>
-            </el-select>
-          </el-form-item>
-        </el-col>
-        <el-col :span="6" v-if="!!id">
-          <el-form-item label="是否代销" prop="isMat">
-            <el-select
-              v-model="postData.isMat"
-              disabled
-              placeholder="请选择是否垫佣"
-              class="width--100">
-              <el-option label="是" value="yes"></el-option>
-              <el-option label="否" value="no"></el-option>
-            </el-select>
+          <el-form-item label="现场销售">
+            <el-input v-model="postData.remarks" clearable placeholder="请输入现场销售"></el-input>
           </el-form-item>
         </el-col>
         <el-col :span="6">
@@ -192,6 +282,30 @@
                 :value="item.code"
               ></el-option>
             </el-select>
+          </el-form-item>
+        </el-col>
+        <el-col :span="6">
+          <el-form-item label="成交阶段" prop="stage">
+            <el-select
+              v-model="postData.stage"
+              clearable
+              no-data-text="请先选择项目周期"
+              placeholder="请选择成交阶段"
+              class="width--100">
+              <el-option
+                v-for="item in dealStageList"
+                :key="item.code"
+                :label="item.name"
+                :value="item.code"
+              ></el-option>
+            </el-select>
+          </el-form-item>
+        </el-col>
+        <el-col :span="6">
+          <el-form-item label="明源房款回笼比例">
+            <el-input
+              v-model="postData.returnRatio"
+              clearable placeholder="请输入明源房款回笼比例"></el-input>
           </el-form-item>
         </el-col>
         <el-col :span="6">
@@ -224,6 +338,16 @@
             </el-date-picker>
           </el-form-item>
         </el-col>
+        <el-col :span="6">
+          <el-form-item label="成交组织" prop="dealOrgId">
+            <el-input v-model="postData.dealOrgId" disabled placeholder="项目周期自动带出"></el-input>
+          </el-form-item>
+        </el-col>
+        <el-col :span="6" v-if="!!id">
+          <el-form-item label="录入人" prop="entryPerson">
+            <el-input v-model="postData.entryPerson" readonly placeholder="录入人"></el-input>
+          </el-form-item>
+        </el-col>
         <el-col :span="6" v-if="!!id">
           <el-form-item label="录入日期" prop="entryDate">
             <el-date-picker
@@ -235,25 +359,9 @@
             </el-date-picker>
           </el-form-item>
         </el-col>
-        <el-col :span="6" v-if="!!id">
-          <el-form-item label="录入人" prop="entryPerson">
-            <el-input v-model="postData.entryPerson" readonly placeholder="录入人"></el-input>
-          </el-form-item>
-        </el-col>
         <el-col :span="6">
-          <el-form-item label="成交阶段" prop="stage">
-            <el-select
-              v-model="postData.stage"
-              clearable
-              placeholder="请选择成交阶段"
-              class="width--100">
-              <el-option
-                v-for="item in $root.dictAllList('DealStage')"
-                :key="item.code"
-                :label="item.name"
-                :value="item.code"
-              ></el-option>
-            </el-select>
+          <el-form-item label="数据标志" prop="dataSign">
+            <el-input v-model="postData.dataSign" disabled placeholder="自动判断"></el-input>
           </el-form-item>
         </el-col>
         <el-col :span="6" v-if="!!id">
@@ -261,23 +369,9 @@
             <el-input v-model="postData.status" disabled placeholder="成交状态"></el-input>
           </el-form-item>
         </el-col>
-        <el-col :span="16">
-          <el-form-item label="备注">
-            <el-input
-              type="textarea"
-              :rows="3"
-              v-model="postData.remarks"
-              placeholder="请输入备注说明"></el-input>
-          </el-form-item>
-        </el-col>
-        <el-col :span="8">
-          <el-form-item label="现场销售">
-            <el-input v-model="postData.remarks" placeholder="请输入现场销售"></el-input>
-          </el-form-item>
-        </el-col>
       </el-row>
-      <p id="anchor-2" ref="#anchor-2" class="ih-info-title">房产信息</p>
-      <el-row>
+      <p id="anchor-2" class="ih-info-title" v-if="false">房产信息</p>
+      <el-row v-if="false">
         <el-col :span="24">
           <div class="add-all-wrapper padding-left-20">
             <el-button type="success">更新明源数据</el-button>
@@ -472,8 +566,8 @@
         </el-table>
       </el-col>
     </el-row>
-    <p id="anchor-5" ref="#anchor-5" class="ih-info-title" v-if="postData.contType !== 'NaturalVisitDeal'">渠道信息</p>
-    <el-row style="padding-left: 20px" v-if="postData.contType !== 'NaturalVisitDeal'">
+    <p id="anchor-5" class="ih-info-title" v-if="false">渠道信息</p>
+    <el-row style="padding-left: 20px" v-if="false">
       <el-col>
         <div class="add-all-wrapper">
           <el-button type="success" @click="handleAddBroker">添加渠道经纪人</el-button>
@@ -520,7 +614,23 @@
         </el-table>
       </el-col>
     </el-row>
-    <p id="anchor-7" class="ih-info-title">收派金额</p>
+    <div class="receive-wrapper" id="anchor-7">
+      <p class="ih-info-title">收派金额</p>
+      <div v-if="currentType !== 'declare'">计算方式</div>
+      <div v-if="currentType !== 'declare'">
+        <el-select
+          v-model="postData.calculation"
+          placeholder="请选择计算方式"
+          class="width--100">
+          <el-option
+            v-for="item in $root.dictAllList('DealCalculateWay')"
+            :key="item.code"
+            :label="item.name"
+            :value="item.code"
+          ></el-option>
+        </el-select>
+      </div>
+    </div>
     <el-row style="padding-left: 20px">
       <el-col>
         <el-table
@@ -535,12 +645,68 @@
             </template>
           </el-table-column>
           <el-table-column prop="partyACustomerName" label="甲方/客户" min-width="120"></el-table-column>
-          <el-table-column prop="packageId" label="收派套餐" min-width="120"></el-table-column>
-          <el-table-column prop="receiveAmount" label="应收金额" min-width="120"></el-table-column>
-          <el-table-column prop="commAmount" label="派发佣金金额" min-width="150"></el-table-column>
-          <el-table-column prop="rewardAmount" label="派发内场奖励金额" min-width="150"></el-table-column>
-          <el-table-column prop="totalPackageAmount" label="总包业绩金额" min-width="150"></el-table-column>
-          <el-table-column prop="distributionAmount" label="分销业绩金额" min-width="150"></el-table-column>
+          <el-table-column prop="packageId" label="收派套餐" min-width="140">
+            <template slot-scope="scope">
+              <div v-if="postData.calculation === 'Auto'">
+                <el-input
+                  readonly
+                  :disabled="postData.calculation === 'Manual'"
+                  placeholder="请选择收派套餐"
+                  v-model="scope.row.packageId">
+                  <el-button
+                    slot="append"
+                    icon="el-icon-search"
+                    @click.native.prevent="selectPackage(scope)"></el-button>
+                </el-input>
+              </div>
+              <div v-else>---</div>
+            </template>
+          </el-table-column>
+          <el-table-column prop="receiveAmount" label="应收金额" min-width="120">
+            <template slot-scope="scope">
+              <el-input
+                v-digits="2"
+                v-model="scope.row.receiveAmount"
+                :disabled="postData.calculation === 'Auto'"
+                placeholder="应收金额"></el-input>
+            </template>
+          </el-table-column>
+          <el-table-column prop="commAmount" label="派发佣金金额" min-width="150">
+            <template slot-scope="scope">
+              <el-input
+                v-digits="2"
+                v-model="scope.row.commAmount"
+                :disabled="postData.calculation === 'Auto'"
+                placeholder="应收金额"></el-input>
+            </template>
+          </el-table-column>
+          <el-table-column prop="rewardAmount" label="派发内场奖励金额" min-width="150">
+            <template slot-scope="scope">
+              <el-input
+                v-digits="2"
+                v-model="scope.row.rewardAmount"
+                :disabled="postData.calculation === 'Auto'"
+                placeholder="应收金额"></el-input>
+            </template>
+          </el-table-column>
+          <el-table-column prop="totalPackageAmount" label="总包业绩金额" min-width="150">
+            <template slot-scope="scope">
+              <el-input
+                v-digits="2"
+                v-model="scope.row.totalPackageAmount"
+                :disabled="postData.calculation === 'Auto'"
+                placeholder="应收金额"></el-input>
+            </template>
+          </el-table-column>
+          <el-table-column prop="distributionAmount" label="分销业绩金额" min-width="150">
+            <template slot-scope="scope">
+              <el-input
+                v-digits="2"
+                v-model="scope.row.distributionAmount"
+                :disabled="postData.calculation === 'Auto'"
+                placeholder="应收金额"></el-input>
+            </template>
+          </el-table-column>
           <el-table-column prop="otherChannelFees" label="其他渠道费用(正数为产生，负数为使用)" min-width="150"></el-table-column>
         </el-table>
       </el-col>
@@ -574,7 +740,10 @@
             :data="postData.commissionInfoList">
             <el-table-column prop="target" label="拆佣对象" min-width="120">
               <template slot-scope="scope">
-                <el-select v-model="scope.row.target" placeholder="请选择">
+                <el-select
+                  :disabled="postData.calculation === 'Auto'"
+                  v-model="scope.row.target"
+                  placeholder="请选择">
                   <el-option label="公司" value="Company"></el-option>
                   <el-option label="个人" value="Personal"></el-option>
                 </el-select>
@@ -591,7 +760,7 @@
               <template slot-scope="scope">
                 <el-select
                   v-model="scope.row.feeType"
-                  clearable
+                  :disabled="postData.calculation === 'Auto'"
                   placeholder="费用类型"
                   class="width--100">
                   <el-option
@@ -605,7 +774,10 @@
             </el-table-column>
             <el-table-column prop="partyACustomer" label="费用来源(客户/甲方)" min-width="120">
               <template slot-scope="scope">
-                <el-select v-model="scope.row.partyACustomer" placeholder="请选择">
+                <el-select
+                  :disabled="postData.calculation === 'Auto'"
+                  v-model="scope.row.partyACustomer"
+                  placeholder="请选择">
                   <el-option label="客户A" value="AA"></el-option>
                   <el-option label="客户B" value="BB"></el-option>
                   <el-option label="甲方A" value="CC"></el-option>
@@ -615,7 +787,11 @@
             </el-table-column>
             <el-table-column prop="amount" label="金额" min-width="120">
               <template slot-scope="scope">
-                <el-input v-model="scope.row.amount" clearable placeholder="金额"/>
+                <el-input
+                  v-digits="2"
+                  v-model="scope.row.amount"
+                  :disabled="postData.calculation === 'Auto'"
+                  placeholder="金额"/>
               </template>
             </el-table-column>
             <el-table-column prop="remarks" label="备注" min-width="120">
@@ -623,7 +799,7 @@
                 <el-input v-model="scope.row.remarks" clearable placeholder="备注"/>
               </template>
             </el-table-column>
-            <el-table-column fixed="right" label="操作" width="100">
+            <el-table-column fixed="right" label="操作" width="100" v-if="postData.calculation !== 'Auto'">
               <template slot-scope="scope">
                 <el-link
                   class="margin-right-10"
@@ -788,6 +964,7 @@
     <ih-dialog :show="dialogAddReportInfo" desc="选择已成交报备信息列表">
       <SelectReportInfo
         :hasCheckedData="reportCheckedData"
+        :data="baseInfoByTerm.proId"
         @cancel="() => (dialogAddReportInfo = false)"
         @finish="
             (data) => {
@@ -799,6 +976,7 @@
     </ih-dialog>
     <ih-dialog :show="dialogAddRoom" desc="选择房号列表">
       <SelectRoom
+        :data="baseInfoByTerm.proId"
         @cancel="() => (dialogAddRoom = false)"
         @finish="
             (data) => {
@@ -814,6 +992,17 @@
         @finish="
             (data) => {
               finishAddCustomer(data);
+            }
+          "
+      />
+    </ih-dialog>
+    <ih-dialog :show="dialogAddReceivePackage" desc="选择服务费收派套餐标准">
+      <SelectReceivePackage
+        @cancel="() => (dialogAddReceivePackage = false)"
+        @finish="
+            (data) => {
+              dialogAddReceivePackage = false;
+              finishAddReceivePackage(data);
             }
           "
       />
@@ -850,21 +1039,28 @@
   import AgentCompanyList from "@/views/deal/dealReport/dialog/agentCompanyList.vue";
   import SelectRoom from "@/views/deal/dealReport/dialog/selectRoom.vue";
   import AddCustomer from "@/views/deal/dealReport/dialog/addCustomer.vue";
+  import SelectReceivePackage from "@/views/deal/dealReport/dialog/selectReceivePackage.vue";
   import AddBroker from "@/views/deal/dealReport/dialog/addBroker.vue";
   import EditDealAchieve from "@/views/deal/dealReport/dialog/editDealAchieve.vue";
   import {
-    get_achieveScaleScheme_get__id, // 编辑功能
+    post_buModelContType_getList, // 根据业务模式获取可选的合同类型
+    post_buModelContType_subList, // 根据业务模式获取可选的细分业务模式
+    get_deal_get__id, // 编辑功能
     post_deal_entryDealBasicInf, // 案场岗 - 录入成交信息
     post_deal_achieveAllotEntry, // 文员岗 - 录入成交信息
     post_deal_updateDealBasicInf, // 案场岗 - 修改成交信息
     post_deal_updateAchieveAllot, // 文员岗 - 修改成交信息
   } from "@/api/deal";
+  import {
+    get_term_getProBaseByTermId__termId, // 通过项目周期获取成交基础信息
+  } from "@/api/project";
   import {Form as ElForm} from "element-ui";
   import {NoRepeatHttp} from "ihome-common/util/aop/no-repeat-http";
 
   @Component({
     components: {
       AddCustomer,
+      SelectReceivePackage,
       AddBroker,
       SelectProjectCycle,
       SelectNoticeList,
@@ -874,15 +1070,25 @@
       EditDealAchieve},
   })
   export default class DealReportAdd extends Vue {
+    contTypeList: any = []; // 合同类型选项
+    subdivisionTypeList: any = []; // 细分业务模式选项
+    dealStageList: any = []; // 成交阶段选项
+    firstAgencyCompanyList: any = []; // 一手代理团队选项
     currentType: any = null; // 用来区别是文员岗(add)位还是案场岗位(declare)
+    baseInfoByTerm: any = {
+      proId: null
+    }; // 通过项目周期id获取到的初始化成交基础信息
     postData: any = {
+      baseProId: null, // 记录，当合同类型=分销成交时，需要用项目Id作为参数查报备列表
+      isNeedUpdate: false, // 是否需要更新明源数据的标志
+      isOver: false, // 是否穿底 --- 用来校验收派金额，其他渠道费
+      isOtherProUse: false, // 是否允许跨项目使用其他渠道费用 --- 用来校验收派金额，其他渠道费
+      chargeMode: null, // 收费模式 --- 初始化收派金额，有无服务费、代理费
       dealCode: null,
       cycleId: null, // 接口用到的id
       cycleName: null, // 只用于显示
       businessType: null,
       contType: null,
-      reportId: null, // 已成交的报备信息id
-      reportName: null, // 已成交的报备信息名称
       subdivisionType: null,
       channelId: null,
       channelName: null,
@@ -894,6 +1100,7 @@
       dataSign: null,
       contNo: null,
       isMat: null,
+      isConsign: null,
       stage: null,
       signType: null,
       subscribePrice: null,
@@ -917,10 +1124,10 @@
       offerNoticeVO: [], // 优惠告知书
       customerVO: [], // 客户信息
       agencyVO: [], // 渠道信息
-      receiveVO: [], // 收派金额
+      receiveVO: [{}], // 收派金额
       receiveAchieveVO: [], // 应收信息
       documentVO: [], // 附件信息
-      commissionInfoList: [], // 对外拆佣
+      commissionInfoList: [{}], // 对外拆佣
       achieveTotalBagList: [
         {
           SupervisorList: [],
@@ -935,6 +1142,7 @@
           DirectorList: [],
         }
       ], // 平台费用 - 分销
+      calculation: 'Auto', // 计算方式 - 默认自动
     };
     DealDataFlag: any = []; // 数据来源
     rules: any = {
@@ -949,9 +1157,6 @@
       ],
       contType: [
         {required: true, message: "合同类型必选", trigger: "change"},
-      ],
-      reportId: [
-        {required: true, message: "已成交的报备信息必选", trigger: "change"},
       ],
       subdivisionType: [
         {required: true, message: "细分模式必选", trigger: "blur"},
@@ -993,6 +1198,7 @@
     id: any = null;
     dialogAddRoom: any = false;
     dialogAddCustomer: any = false;
+    dialogAddReceivePackage: any = false;
     dialogAddBroker: any = false;
     dialogAddProjectCycle: any = false;
     cycleCheckedData: any = [];
@@ -1007,10 +1213,10 @@
         id: 1,
         name: '成交信息'
       },
-      {
-        id: 2,
-        name: '房产信息'
-      },
+      // {
+      //   id: 2,
+      //   name: '房产信息'
+      // },
       {
         id: 3,
         name: '优惠告知书信息'
@@ -1019,10 +1225,10 @@
         id: 4,
         name: '客户信息'
       },
-      {
-        id: 5,
-        name: '渠道信息'
-      },
+      // {
+      //   id: 5,
+      //   name: '渠道信息'
+      // },
       {
         id: 6,
         name: '上传附件'
@@ -1040,7 +1246,7 @@
         name: '平台费用'
       }
     ]; // 锚点列表
-    navFlag: any = true; // 是否折叠锚点
+    navFlag: any = false; // 是否展开锚点
     navList: any = []; // 锚点列表
 
     async created() {
@@ -1070,11 +1276,49 @@
       }
       this.id = this.$route.query.id;
       if (this.id) {
-        const res: any = await get_achieveScaleScheme_get__id({id: this.id});
+        const res: any = await get_deal_get__id({id: this.id});
         this.postData = res;
       } else {
         // 录入日期
         this.postData.entryDate = new Date();
+      }
+    }
+
+    // 根据业务模式获取合同类型选项
+    async getContTypeList(code: any) {
+      if (!code) return;
+      let self = this;
+      let ContType: any = (this as any).$root.dictAllList('ContType');
+      let list: any = await post_buModelContType_getList({modelCode: code});
+      self.contTypeList = []; // 初始化
+      if (list && list.length > 0 && ContType && ContType.length > 0) {
+        if (list[0].contTypeList && list[0].contTypeList.length > 0) {
+          list[0].contTypeList.forEach((list: any) => {
+            ContType.forEach((item: any) => {
+              if (list === item.code) {
+                self.contTypeList.push(item);
+              }
+            });
+          });
+        }
+      }
+    }
+
+    // 根据业务模式获取细分业务模式选项
+    async getSubdivisionTypeList(code: any) {
+      if (!code) return;
+      let self = this;
+      let Subdivide: any = (this as any).$root.dictAllList('Subdivide'); // 细分业务类型字典
+      let list: any = await post_buModelContType_subList({modelCode: code});
+      this.subdivisionTypeList = [];
+      if (list && list.length > 0 && Subdivide && Subdivide.length > 0) {
+        list.forEach((list: any) => {
+          Subdivide.forEach((item: any) => {
+            if (list === item.code) {
+              self.subdivisionTypeList.push(item);
+            }
+          });
+        });
       }
     }
 
@@ -1131,7 +1375,79 @@
       })
     }
 
-    // 修改业务模式逻辑
+    // 选择项目周期
+    selectProject() {
+      this.dialogAddProjectCycle = true;
+    }
+
+    // 确定选择项目周期
+    async finishAddProjectCycle(data: any) {
+      // console.log('data', data);
+      if (data && data.length > 0) {
+        this.postData.cycleName = data[0].termName;
+        this.postData.cycleId = data[0].termId;
+        this.cycleCheckedData = [...data];
+        await this.getBaseDealInfo(this.postData.cycleId);
+      }
+    }
+
+    // 通过项目周期id获取基础信息
+    async getBaseDealInfo(id: any) {
+      if (!id) return;
+      let baseInfo: any = await get_term_getProBaseByTermId__termId({termId: id});
+      this.baseInfoByTerm = JSON.parse(JSON.stringify(baseInfo));
+      // 给postData赋值对应数据
+      if (baseInfo) {
+        // 1.proId
+        // this.postData.baseProId = baseInfo.proId;
+        // 2.业务模式
+        this.postData.businessType = baseInfo.busEnum;
+        await this.getContTypeList(this.postData.businessType); // 获取合同类型
+        await this.getSubdivisionTypeList(this.postData.businessType); // 获取细分业务模式
+        // 3.是否市场化项目
+        this.postData.isMarketProject = baseInfo.exMarket === 1 ? 'Yes' : 'No';
+        // 4.是否需要更新明源数据的标志
+        // this.postData.isNeedUpdate = baseInfo.exMinyuan === 1;
+        // 5.是否代销
+        this.postData.isConsign = baseInfo.exConsignment === 1 ? 'Yes' : 'No';
+        // 6.是否穿底
+        // this.postData.isOver = baseInfo.exOver === 1;
+        // 7.收费模式 --- 初始化收派金额，有无服务费、代理费
+        // this.postData.chargeMode = baseInfo.exOver === 1;
+        // 8.是否允许跨项目使用其他渠道费用 --- 用来校验收派金额，其他渠道费
+        // this.postData.isOtherProUse = baseInfo.exOver === 1;
+        // 9. 细分业务模式
+        this.changeBusinessType(this.postData.businessType);
+        // 10. 成交阶段的选项
+        this.dealStageList = [];
+        if (baseInfo.termStageEnum) {
+          let DealStageList: any = (this as any).$root.dictAllList('DealStage');
+          if (DealStageList && DealStageList.length > 0) {
+            switch(baseInfo.termStageEnum){
+              case 'Subscription':
+                // 认购
+                this.dealStageList = DealStageList.filter((item: any) => {
+                  return item.code !== 'SignUp';
+                })
+                break;
+              case 'Recognize':
+                // 认筹
+                this.dealStageList = DealStageList.filter((item: any) => {
+                  return item.code === 'Recognize';
+                })
+                break;
+            }
+          }
+        }
+        // 11. 一手代理团队的选项
+        this.firstAgencyCompanyList = [];
+        if (baseInfo.firstAgencyCompanys && baseInfo.firstAgencyCompanys.length > 0) {
+          this.firstAgencyCompanyList = JSON.parse(JSON.stringify(baseInfo.firstAgencyCompanys));
+        }
+      }
+    }
+
+    // 改变细分业务模式
     changeBusinessType(value: any) {
       // console.log(value);
       switch(value){
@@ -1154,21 +1470,37 @@
 
     // 修改合同类型
     changeContType(value: any) {
-      if (value === 'NaturalVisitDeal') {
-        // 自然来访
-        this.navList = this.navList.filter((list: any) => {
-          return list.id !== 5
-        })
+      if (value === 'DistriDeal') {
+        // 分销成交
+        this.selectReport(); // 选择已成交的报备信息
       } else {
-        this.navList = (this as any).$tool.deepClone(this.defaultNavList);
-        if (value !== 'DistriDeal') {
-          // 不是分销成交，则删除已选择的报备信息
-          this.postData.reportId = null;
-          this.postData.reportName = null;
-          this.reportCheckedData = [];
-          (this as any).$refs["ruleForm"] && (this as any).$refs["ruleForm"].clearValidate('reportId');
-        }
+        // 不是分销成交
+        // 1.清空数据
+        // 2.请求接口获取数据
       }
+    }
+
+    // 预览分销协议
+    previewContNo() {
+      // console.log('预览分销协议');
+      if (!this.postData.contNo) {
+        this.$message.error('请先选择需要预览的分销协议');
+        return;
+      } else {
+        // 预览
+        let routeData = this.$router.resolve({
+          path: "/distribution/info",
+          query:{id: '81'}
+        });
+        window.open(routeData.href, '_blank');
+      }
+    }
+
+    // 选择收派套餐
+    selectPackage(scope: any) {
+      console.log('选择收派套餐', scope);
+      if (this.postData.calculation === 'Manual') return;
+      this.dialogAddReceivePackage = true;
     }
 
     // 计算收派金额总计
@@ -1201,23 +1533,6 @@
       return sums;
     }
 
-    // 选择项目周期
-    selectProject() {
-      this.dialogAddProjectCycle = true;
-      // input失焦
-      // (this as any).$refs.inputCycle && (this as any).$refs.inputCycle.blur();
-    }
-
-    // 确定选择项目周期
-    async finishAddProjectCycle(data: any) {
-      console.log('data', data);
-      if (data && data.length > 0) {
-        this.postData.cycleName = data[0].termName;
-        this.postData.cycleId = data[0].termId;
-        this.cycleCheckedData = [...data];
-      }
-    }
-
     // 确定选择优惠告知书
     async finishAddNotice(data: any) {
       console.log('data', data);
@@ -1228,7 +1543,7 @@
           return item.id === data[0].id;
         })
         if (flag) {
-          this.$message.error('已经存在相同的客户，请从新选择！');
+          this.$message.error('已经存在相同的客户，请重新选择！');
         } else {
           this.postData.offerNoticeVO.push(...data);
           this.dialogAddNotice = false;
@@ -1242,8 +1557,6 @@
     // 选择已成交的报备信息-分销成交模式下
     selectReport() {
       this.dialogAddReportInfo = true;
-      // input失焦
-      // (this as any).$refs.inputCompany && (this as any).$refs.inputCompany.blur();
     }
 
     // 确定选择已成交的报备信息-分销成交模式下
@@ -1259,13 +1572,11 @@
     // 选择渠道商
     selectCompany() {
       this.dialogAddAgentCompany = true;
-      // input失焦
-      // (this as any).$refs.inputCompany && (this as any).$refs.inputCompany.blur();
     }
 
     // 确定选择渠道商
     finishAddAgentCompany(data: any) {
-      console.log('data', data);
+      // console.log('data', data);
       if (data && data.length > 0) {
         this.postData.channelName = data[0].channelName;
         this.postData.channelId = data[0].channelId;
@@ -1275,11 +1586,9 @@
 
     // 选择房号
     selectRoom() {
-      // 分销成交模式下不能选择房号，房号是不可编辑的
-      if (this.postData.contType === 'DistriDeal') return
+      // 没有项目周期ID或分销成交模式下不能选择房号，房号是不可编辑的
+      if (this.postData.contType === 'DistriDeal' || !this.baseInfoByTerm.proId) return
       this.dialogAddRoom = true;
-      // input失焦
-      // (this as any).$refs.inputRoom && (this as any).$refs.inputRoom.blur();
     }
 
     // 确定选择房号
@@ -1319,7 +1628,7 @@
           return item.id === data[0].id;
         })
         if (flag) {
-          this.$message.error('已经存在相同的客户，请从新选择！');
+          this.$message.error('已经存在相同的客户，请重新选择！');
         } else {
           this.postData.customerVO.push(...data);
           this.dialogAddCustomer = false;
@@ -1327,6 +1636,28 @@
       } else {
         this.postData.customerVO.push(...data);
         this.dialogAddCustomer = false;
+      }
+    }
+
+    // 确定选择收派套餐
+    async finishAddReceivePackage(data: any) {
+      console.log('data', data);
+      // this.addTotalPackageList = data;
+      if (data.length === 0) return
+      if (this.postData.receiveVO.length > 0) {
+        let flag = false;
+        flag = this.postData.receiveVO.some((item: any) => {
+          return item.id === data[0].id;
+        })
+        if (flag) {
+          this.$message.error('已经存在相同的收派套餐，请重新选择！');
+        } else {
+          this.postData.receiveVO.push(...data);
+          this.dialogAddReceivePackage = false;
+        }
+      } else {
+        this.postData.receiveVO.push(...data);
+        this.dialogAddReceivePackage = false;
       }
     }
 
@@ -1360,7 +1691,8 @@
 
     // 选择拆佣名称
     selectCommName(scope: any) {
-      console.log('选择收派套餐', scope);
+      console.log('选择拆佣名称', scope);
+      if (this.postData.calculation === 'Auto') return;
       this.dialogAddAgentCompany = true;
     }
 
@@ -1519,6 +1851,39 @@
     width: 100%;
     box-sizing: border-box;
     margin-bottom: 10px;
+  }
+
+  .contNo-wrapper {
+    width: 100%;
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+
+    .link-wrapper {
+      width: 15%;
+      margin-left: 5px;
+      box-sizing: border-box;
+      font-size: 0px;
+    }
+  }
+
+  .receive-wrapper {
+    width: 100%;
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    box-sizing: border-box;
+    margin: 10px 0px;
+
+    p {
+      flex: 1;
+      display: inline-block;
+    }
+
+    div {
+      box-sizing: border-box;
+      margin-left: 5px;
+    }
   }
 
   .home-type-wrapper {

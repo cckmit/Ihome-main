@@ -3,8 +3,8 @@
  * @version: 
  * @Author: ywl
  * @Date: 2020-08-13 11:40:10
- * @LastEditors: ywl
- * @LastEditTime: 2020-12-15 17:46:23
+ * @LastEditors: wwq
+ * @LastEditTime: 2020-12-16 20:02:55
 -->
 <template>
   <IhPage label-width="100px">
@@ -110,12 +110,16 @@
         <el-button
           type="success"
           @click="$router.push('/channelBusiness/add')"
+          v-has="'B.SALES.CHANNEL.BASELIST.ADD'"
         >添加</el-button>
         <el-button
           type="info"
           @click="reset()"
         >重置</el-button>
-        <el-button @click="changeFollower()">变更跟进人</el-button>
+        <el-button
+          @click="changeFollower()"
+          v-has="'B.SALES.CHANNEL.BASELIST.UPDATEFOLLOWER'"
+        >变更跟进人</el-button>
         <!-- <el-button @click="changeInputPerson()">变更录入人</el-button> -->
       </el-row>
     </template>
@@ -214,14 +218,17 @@
                 <el-dropdown-item
                   @click.native.prevent="handleToPage(row, 'edit')"
                   :disabled="row.status !== 'DRAFT'"
+                  v-has="'B.SALES.CHANNEL.BASELIST.UPDATE'"
                 >修改</el-dropdown-item>
                 <el-dropdown-item
                   @click.native.prevent="remove(row)"
                   :disabled="row.status !== 'DRAFT'"
+                  v-has="'B.SALES.CHANNEL.BASELIST.DELETE'"
                 >删除</el-dropdown-item>
                 <el-dropdown-item
                   @click.native.prevent="handleToPage(row, 'confirm')"
                   :disabled="row.status !== 'ToBeConfirmed'"
+                  v-has="'B.SALES.CHANNEL.BASELIST.CONFIRM'"
                 >确认</el-dropdown-item>
                 <!-- <el-dropdown-item
                   @click.native.prevent="handleToPage(row, 'revoke')"
@@ -230,14 +237,17 @@
                 <el-dropdown-item
                   @click.native.prevent="backDraft(row, 'revoke')"
                   :disabled="row.status === 'DRAFT'"
+                  v-has="'B.SALES.CHANNEL.BASELIST.REVOKEDRAFT'"
                 >撤回起草</el-dropdown-item>
                 <el-dropdown-item
                   @click.native.prevent="handleToPage(row, 'change')"
                   :disabled="row.status !== 'PASS'"
+                  v-has="'B.SALES.CHANNEL.BASELIST.UPDATEINFO'"
                 >变更信息</el-dropdown-item>
                 <el-dropdown-item
                   @click.native.prevent="handleToPage(row, 'agent')"
                   :disabled="row.status === 'DRAFT' || row.status === 'ToBeConfirmed'"
+                  v-has="'B.SALES.CHANNEL.BASELIST.MAINTAINAGENT'"
                 >维护渠道经纪人</el-dropdown-item>
               </el-dropdown-menu>
             </el-dropdown>

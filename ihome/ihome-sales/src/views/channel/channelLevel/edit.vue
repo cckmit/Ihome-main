@@ -3,8 +3,8 @@
  * @version: 
  * @Author: wwq
  * @Date: 2020-10-15 16:02:03
- * @LastEditors: ywl
- * @LastEditTime: 2020-12-16 14:45:17
+ * @LastEditors: wwq
+ * @LastEditTime: 2020-12-16 20:25:34
 -->
 <template>
   <IhPage>
@@ -201,6 +201,7 @@
                 <el-form-item>
                   <el-input
                     clearable
+                    :maxlength="8"
                     v-model="row.inputValue"
                   ></el-input>
                 </el-form-item>

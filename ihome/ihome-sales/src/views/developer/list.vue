@@ -4,7 +4,7 @@
  * @Author: wwq
  * @Date: 2020-09-25 17:59:09
  * @LastEditors: wwq
- * @LastEditTime: 2020-12-15 14:46:13
+ * @LastEditTime: 2020-12-16 19:28:03
 -->
 <template>
   <ih-page>
@@ -85,12 +85,16 @@
         <el-button
           type="success"
           @click="add()"
+          v-has="'B.SALES.DEVELOPER.LIST.ADD'"
         >添加</el-button>
         <el-button
           type="info"
           @click="reset()"
         >重置</el-button>
-        <el-button @click="updata()">变更录入人</el-button>
+        <el-button
+          @click="updata()"
+          v-has="'B.SALES.DEVELOPER.LIST.UPDATEENTRY'"
+        >变更录入人</el-button>
       </el-row>
     </template>
 
@@ -176,23 +180,28 @@
                 <el-dropdown-item
                   :disabled="row.status !== 'Draft'"
                   @click.native.prevent="routeTo(row, 'edit')"
+                  v-has="'B.SALES.DEVELOPER.LIST.UPDATE'"
                 >修改</el-dropdown-item>
                 <el-dropdown-item
                   :disabled="row.status !== 'Draft'"
                   @click.native.prevent="remove(row)"
+                  v-has="'B.SALES.DEVELOPER.LIST.DELETE'"
                 >删除</el-dropdown-item>
                 <el-dropdown-item
                   :disabled="row.status !== 'WaitAuditByBranchHead'"
                   @click.native.prevent="routeTo(row, 'revocation')"
+                  v-has="'B.SALES.DEVELOPER.LIST.REVOKE'"
                 >撤回
                 </el-dropdown-item>
                 <el-dropdown-item
                   :disabled="row.status !== 'WaitAuditByBranchHead'"
                   @click.native.prevent="routeTo(row, 'check')"
+                  v-has="'B.SALES.DEVELOPER.LIST.VERIFY'"
                 >审核</el-dropdown-item>
                 <el-dropdown-item
                   :disabled="row.status !== 'Audited'"
                   @click.native.prevent="routeTo(row, 'change')"
+                  v-has="'B.SALES.DEVELOPER.LIST.UPDATEINFO'"
                 >变更信息</el-dropdown-item>
               </el-dropdown-menu>
             </el-dropdown>

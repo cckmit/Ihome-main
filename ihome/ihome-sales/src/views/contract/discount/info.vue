@@ -4,10 +4,10 @@
  * @Author: ywl
  * @Date: 2020-09-27 17:27:00
  * @LastEditors: ywl
- * @LastEditTime: 2020-12-14 14:45:37
+ * @LastEditTime: 2020-12-17 14:20:46
 -->
 <template>
-  <IhPage class="text-left">
+  <IhPage class="text-left discount-info">
     <template #info>
       <p class="ih-info-title">基础信息</p>
       <el-form
@@ -22,15 +22,20 @@
             </el-form-item>
           </el-col>
           <el-col :span="12">
-            <el-form-item label="模板类型">
-              {{$root.dictAllName(resInfo.templateType, 'TemplateType')}}
+            <el-form-item label="类型">
+              {{$root.dictAllName(resInfo.notificationType, 'NotificationType')}}
             </el-form-item>
           </el-col>
         </el-row>
         <el-row>
-          <el-col :span="24">
+          <el-col :span="12">
             <el-form-item label="甲方">
               {{resInfo.partyAName}}
+            </el-form-item>
+          </el-col>
+          <el-col :span="12">
+            <el-form-item label="模板类型">
+              {{$root.dictAllName(resInfo.templateType, 'TemplateType')}}
             </el-form-item>
           </el-col>
         </el-row>
@@ -70,10 +75,22 @@
             </el-form-item>
           </el-col>
         </el-row>
-        <el-row>
+        <el-row v-if="resInfo.notificationType === 'SupplementaryAgreement'">
+          <el-col :span="12">
+            <el-form-item label="原购买单位">
+              {{`${resInfo.oldBuyUnitName}-${resInfo.oldRoomNumberName}`}}
+            </el-form-item>
+          </el-col>
+          <el-col :span="12">
+            <el-form-item label="现购买单位">
+              {{`${resInfo.buyUnitName}-${resInfo.roomNumberName}`}}
+            </el-form-item>
+          </el-col>
+        </el-row>
+        <el-row v-else>
           <el-col :span="24">
             <el-form-item label="(拟)购买单位">
-              {{`${resInfo.buyUnitName}栋-${resInfo.roomNumberName}`}}
+              {{`${resInfo.buyUnitName}-${resInfo.roomNumberName}`}}
             </el-form-item>
           </el-col>
         </el-row>
@@ -98,9 +115,14 @@
           </el-col>
         </el-row>
         <el-row>
-          <el-col :span="24">
+          <el-col :span="12">
             <el-form-item label="优惠期限">
               {{resInfo.beginTime}} ~ {{resInfo.endTime}}
+            </el-form-item>
+          </el-col>
+          <el-col :span="12">
+            <el-form-item label="归属周期">
+              {{resInfo.cycleName}}
             </el-form-item>
           </el-col>
         </el-row>
@@ -124,7 +146,7 @@
             </el-form-item>
           </el-col>
         </el-row>
-        <el-row>
+        <el-row v-if="!isPaper">
           <el-col :span="24">
             <el-form-item label="告知书电子版">
               <el-button
@@ -134,17 +156,22 @@
             </el-form-item>
           </el-col>
         </el-row>
-        <el-row>
+        <el-row v-else>
           <el-col :span="24">
             <el-form-item label="告知书扫描件">
               <IhUpload
-                v-if="fileList.length"
                 :file-list="fileList"
+                class="upload"
                 size="100px"
-                :limit="1"
               ></IhUpload>
+              <el-button
+                type="primary"
+                class="upload-button"
+                @click="submit()"
+              >提交</el-button>
             </el-form-item>
           </el-col>
+          <div class="annotation padding-left-20">*注：上传附件后请点击提交按钮保存</div>
         </el-row>
       </el-form>
     </template>
@@ -160,6 +187,10 @@ import { get_notice_detail__id } from "@/api/contract/index";
 export default class DiscountDetail extends Vue {
   private fileList: Array<object> = [];
   private resInfo: any = {};
+
+  private get isPaper(): boolean {
+    return this.resInfo.templateType === "PaperTemplate";
+  }
 
   private async getInfo(): Promise<void> {
     let id = this.$route.query.id;
@@ -191,3 +222,21 @@ export default class DiscountDetail extends Vue {
   }
 }
 </script>
+
+<style lang="scss" scoped>
+.discount-info {
+  /deep/ .upload {
+    display: inline-block;
+    line-height: normal;
+  }
+  .upload-button {
+    position: absolute;
+    bottom: 0px;
+    margin-left: 15px;
+  }
+  .annotation {
+    color: #d9001b;
+    font-size: 14px;
+  }
+}
+</style>

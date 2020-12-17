@@ -4,7 +4,7 @@
  * @Author: zyc
  * @Date: 2020-07-09 10:21:50
  * @LastEditors: zyc
- * @LastEditTime: 2020-12-14 17:31:52
+ * @LastEditTime: 2020-12-17 08:53:34
 --> 
 <template>
   <ih-page>
@@ -12,7 +12,7 @@
       <el-form ref="form" label-width="80px" @submit.native.prevent>
         <el-row>
           <el-col :span="2" class="text-left">
-            <el-button @click="add({})" type="success">添加</el-button>
+            <el-button @click="add({})" type="success" v-has="'B.SALES.SYSTEM.ROLELIST.ADD'">添加</el-button>
           </el-col>
           <el-col :span="22" class="text-right">
             <el-input
@@ -68,20 +68,20 @@
                 <i class="el-icon-arrow-down el-icon--right"></i>
               </span>
               <el-dropdown-menu slot="dropdown">
-                <el-dropdown-item @click.native.prevent="edit(scope)"
+                <el-dropdown-item v-has="'B.SALES.SYSTEM.ROLELIST.UPDATE'" @click.native.prevent="edit(scope)"
                   >修改</el-dropdown-item
                 >
-                <el-dropdown-item @click.native.prevent="remove(scope)"
-                  >删除角色</el-dropdown-item
+                <el-dropdown-item v-has="'B.SALES.SYSTEM.ROLELIST.DELETE'" @click.native.prevent="remove(scope)"
+                  >删除</el-dropdown-item
                 >
-                <el-dropdown-item @click.native.prevent="setJurisdiction(scope)"
+                <el-dropdown-item v-has="'B.SALES.SYSTEM.ROLELIST.ADDAUTH'" @click.native.prevent="setJurisdiction(scope)"
                   >分配权限</el-dropdown-item
                 >
-                <el-dropdown-item
+                <el-dropdown-item v-has="'B.SALES.SYSTEM.ROLELIST.ADDTOJOB'"
                   @click.native.prevent="batchOperationJob(scope)"
                   >批量分配岗位</el-dropdown-item
                 >
-                <el-dropdown-item
+                <el-dropdown-item v-has="'B.SALES.SYSTEM.ROLELIST.ADDTOUSER'"
                   @click.native.prevent="batchOperationUser(scope)"
                   >批量分配用户</el-dropdown-item
                 >

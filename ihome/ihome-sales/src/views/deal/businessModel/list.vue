@@ -4,7 +4,7 @@
  * @Author: lsj
  * @Date: 2020-10-29 13:53:20
  * @LastEditors: lsj
- * @LastEditTime: 2020-10-30 14:34:50
+ * @LastEditTime: 2020-12-16 11:25:50
 -->
 <template>
   <ih-page label-width="100px">
@@ -16,7 +16,7 @@
           </el-col>
           <el-col :span="22" class="text-right">
             <el-select
-              v-model="queryPageParameters.modelName"
+              v-model="queryPageParameters.modelCode"
               clearable
               placeholder="请选择业务模式">
               <el-option
@@ -103,7 +103,7 @@
   })
   export default class BusinessModelList extends Vue {
     queryPageParameters: any = {
-      modelName: null
+      modelCode: null
     };
 
     resPageInfo: any = {

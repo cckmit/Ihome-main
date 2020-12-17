@@ -3,8 +3,8 @@
  * @version: 
  * @Author: ywl
  * @Date: 2020-10-15 16:02:03
- * @LastEditors: ywl
- * @LastEditTime: 2020-12-15 16:23:56
+ * @LastEditors: wwq
+ * @LastEditTime: 2020-12-16 20:24:47
 -->
 <template>
   <IhPage>
@@ -186,7 +186,10 @@
               >
                 <template v-slot="{ row }">
                   <el-form-item>
-                    <el-input v-model="row.inputValue"></el-input>
+                    <el-input
+                      v-model="row.inputValue"
+                      :maxlength="8"
+                    ></el-input>
                   </el-form-item>
                 </template>
               </el-table-column>

@@ -4,7 +4,7 @@
  * @Author: lsj
  * @Date: 2020-11-03 15:28:12
  * @LastEditors: lsj
- * @LastEditTime: 2020-12-09 17:28:20
+ * @LastEditTime: 2020-12-15 20:08:10
 -->
 <template>
   <el-dialog
@@ -31,7 +31,7 @@
             <el-select
               v-model="postData.modelCode"
               @change="handleChange"
-              clearable
+              :disabled="!!modelCode"
               placeholder="业务模式"
               class="width--100">
               <el-option
@@ -69,7 +69,8 @@
   import {
     post_buModelContType_add,
     post_buModelContType_get,
-    post_buModelContType_update
+    post_buModelContType_update,
+    get_buModelContType_chooseAble__modelName
   } from "@/api/deal";
   import {Form as ElForm} from "element-ui";
   import {NoRepeatHttp} from "ihome-common/util/aop/no-repeat-http";
@@ -118,9 +119,9 @@
 
     // 根据业务模式名称，获取对应的合同类型列表
     async getModelContTypeList() {
-      const res: any = await post_buModelContType_get({modelCode: this.postData.modelCode});
-      console.log('getModelContTypeList', res);
-      this.getByNameList = res.contTypeList;
+      const res: any = await get_buModelContType_chooseAble__modelName({modelName: this.postData.modelCode});
+      // console.log('getModelContTypeList', res);
+      this.getByNameList = res;
     }
 
     // 改变业务模式

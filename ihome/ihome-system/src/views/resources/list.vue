@@ -4,7 +4,7 @@
  * @Author: zyc
  * @Date: 2020-07-06 09:41:43
  * @LastEditors: zyc
- * @LastEditTime: 2020-12-16 14:58:35
+ * @LastEditTime: 2020-12-17 09:51:19
 --> 
 <template>
   <ih-page>
@@ -21,7 +21,7 @@
               <el-form ref="form" label-width="80px">
                 <el-row>
                   <el-col :span="2" class="text-left">
-                    <el-button @click="add({})" type="success">添加</el-button>
+                    <el-button @click="add({})" type="success" v-has="'B.SALES.SYSTEM.RESOURCELIST.ADD'">添加</el-button>
                   </el-col>
                   <el-col :span="22" class="text-right">
                     <el-select
@@ -150,13 +150,13 @@
                         <i class="el-icon-arrow-down el-icon--right"></i>
                       </span>
                       <el-dropdown-menu slot="dropdown">
-                        <el-dropdown-item @click.native.prevent="edit(scope)"
+                        <el-dropdown-item v-has="'B.SALES.SYSTEM.RESOURCELIST.UPDATE'" @click.native.prevent="edit(scope)"
                           >修改</el-dropdown-item
                         >
-                        <el-dropdown-item @click.native.prevent="remove(scope)"
+                        <el-dropdown-item v-has="'B.SALES.SYSTEM.RESOURCELIST.DELETE'" @click.native.prevent="remove(scope)"
                           >删除</el-dropdown-item
                         >
-                        <el-dropdown-item
+                        <el-dropdown-item v-has="'B.SALES.SYSTEM.RESOURCELIST.ADDTOROLE'"
                           @click.native.prevent="batchOperationRole(scope)"
                           >批量分配角色</el-dropdown-item
                         >

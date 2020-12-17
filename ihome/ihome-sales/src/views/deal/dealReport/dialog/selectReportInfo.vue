@@ -4,7 +4,7 @@
  * @Author: lsj
  * @Date: 2020-11-03 15:28:12
  * @LastEditors: lsj
- * @LastEditTime: 2020-12-09 17:28:20
+ * @LastEditTime: 2020-12-16 10:50:50
 -->
 <template>
   <el-dialog
@@ -13,11 +13,13 @@
     :visible.sync="dialogVisible"
     :close-on-click-modal="false"
     :close-on-press-escape="false"
+    :show-close="false"
     :before-close="beforeFinish"
     append-to-body
     width="1000px"
     style="text-align: left"
-    class="dialog">
+    class="dialog dialog-wrapper">
+    <div slot="title" class="title">选择已成交报备信息列表(分销模式下必选)</div>
     <el-form ref="form" label-width="100px">
       <el-row>
         <el-col :span="8">
@@ -81,7 +83,7 @@
       @size-change="sizeChange">
     </IhTableCheckBox>
     <span slot="footer" class="dialog-footer">
-      <el-button @click="cancel()">取 消</el-button>
+      <!-- <el-button @click="cancel()">取 消</el-button>-->
       <el-button type="primary" @click="finish">确 定</el-button>
     </span>
   </el-dialog>
@@ -89,7 +91,7 @@
 <script lang="ts">
   import {Component, Vue, Prop} from "vue-property-decorator";
 
-  import {post_report_getList} from "@/api/customer/index";
+  import {post_report_getDealList} from "@/api/customer/index";
   import PaginationMixin from "@/mixins/pagination";
 
   @Component({
@@ -105,61 +107,55 @@
     private tableMaxHeight: any = 350;
     private tableColumn = [
       {
-        prop: "termName",
+        prop: "proCycle",
         label: "周期名称",
         align: "left",
         minWidth: 200,
       },
       {
-        prop: "busTypeEnum",
+        prop: "proName",
         label: "报备项目",
         align: "left",
         minWidth: 100,
       },
       {
-        prop: "termStart",
+        prop: "reportType",
         label: "报备类型",
         align: "left",
         minWidth: 140,
       },
       {
-        prop: "termEnd",
+        prop: "name",
         label: "客户信息",
         align: "left",
         minWidth: 140,
       },
       {
-        prop: "termEnd1",
+        prop: "mobile",
         label: "客户号码",
         align: "left",
         minWidth: 140,
       },
       {
-        prop: "termEnd2",
+        prop: "reportUser",
         label: "报备人",
         align: "left",
         minWidth: 140,
       },
       {
-        prop: "termEnd2",
+        prop: "channelName",
         label: "所属公司",
         align: "left",
         minWidth: 140,
       },
       {
-        prop: "termEnd2",
-        label: "所属门店",
-        align: "left",
-        minWidth: 140,
-      },
-      {
-        prop: "termEnd2",
+        prop: "reportDate",
         label: "报备时间",
         align: "left",
         minWidth: 140,
       },
       {
-        prop: "termEnd2",
+        prop: "visitDate",
         label: "到访时间",
         align: "left",
         minWidth: 140,
@@ -180,6 +176,7 @@
     };
 
     queryPageParameters: any = {
+      dealStatus: 'ValidDeal',
       proName: null,
       channelName: null,
       name: null,
@@ -190,6 +187,7 @@
     currentSelection: any = []; // 当前选择的项
 
     created() {
+      // console.log('proId', this.data);
       this.getListMixin();
     }
 
@@ -215,7 +213,7 @@
 
     // 获取选中项 --- 最后需要获取的数据
     private selectionChange(selection: any) {
-      console.log(selection, "selectionChange");
+      // console.log(selection, "selectionChange");
       this.currentSelection = selection;
     }
 
@@ -234,6 +232,7 @@
     }
 
     async getListMixin() {
+      this.queryPageParameters.proId = this.data; // 关联的项目周期id
       if (this.queryPageParameters.reportDate.length > 0) {
         this.queryPageParameters.reportDateStart = this.queryPageParameters.reportDate[0];
         this.queryPageParameters.reportDateEnd = this.queryPageParameters.reportDate[1];
@@ -241,7 +240,7 @@
         this.queryPageParameters.reportDateStart = null;
         this.queryPageParameters.reportDateEnd = null;
       }
-      const infoList = await post_report_getList(this.queryPageParameters);
+      const infoList = await post_report_getDealList(this.queryPageParameters);
       if (infoList.list.length > 0) {
         infoList.list.forEach((item: any) => {
           item.checked = false;
@@ -266,6 +265,8 @@
 
     reset() {
       this.queryPageParameters = {
+        proId: this.data,
+        dealStatus: 'ValidDeal',
         proName: null,
         channelName: null,
         name: null,
@@ -279,4 +280,14 @@
   }
 </script>
 <style lang="scss" scoped>
+  .title {
+    color: red;
+    font-size: 22px;
+  }
+
+  .dialog-wrapper {
+    /deep/.el-dialog__body {
+      padding: 10px 20px !important;
+    }
+  }
 </style>

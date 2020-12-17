@@ -4,7 +4,7 @@
  * @Author: wwq
  * @Date: 2020-10-28 15:34:27
  * @LastEditors: wwq
- * @LastEditTime: 2020-12-11 08:56:12
+ * @LastEditTime: 2020-12-16 19:29:32
 -->
 <template>
   <ih-page>
@@ -83,6 +83,7 @@
         <el-button
           type="success"
           @click="add()"
+          v-has="'B.SALES.PROJECT.AGENCYLIST.ADD'"
         >添加</el-button>
         <el-button
           type="info"
@@ -171,10 +172,13 @@
                 <el-dropdown-item
                   :disabled="row.status === 'Audited'"
                   @click.native.prevent="routeTo(row, 'edit')"
+                  v-has="'B.SALES.PROJECT.AGENCYLIST.UPDATE'"
                 >修改</el-dropdown-item>
-                <el-dropdown-item @click.native.prevent="
-                    $message.warning('接口未提供,功能未实现')
-                  ">审核</el-dropdown-item>
+                <el-dropdown-item
+                  @click.native.prevent="
+                  $message.warning('接口未提供,功能未实现')"
+                  v-has="'B.SALES.PROJECT.AGENCYLIST.VERIFY'"
+                >审核</el-dropdown-item>
               </el-dropdown-menu>
             </el-dropdown>
           </template>

@@ -4,7 +4,7 @@
  * @Author: lsj
  * @Date: 2020-11-03 09:10:20
  * @LastEditors: lsj
- * @LastEditTime: 2020-12-09 17:28:20
+ * @LastEditTime: 2020-12-16 15:21:20
 -->
 <template>
   <ih-page label-width="100px">
@@ -52,164 +52,170 @@
               </el-select>
             </el-form-item>
           </el-col>
-          <el-col :span="8">
-            <el-form-item label="补充类型">
-              <el-select
-                v-model="queryPageParameters.suppContType"
-                clearable
-                placeholder="补充类型"
-                class="width--100">
-                <el-option
-                  v-for="item in $root.dictAllList('SuppContType')"
-                  :key="item.code"
-                  :label="item.name"
-                  :value="item.code"
-                ></el-option>
-              </el-select>
-            </el-form-item>
-          </el-col>
-          <el-col :span="8">
-            <el-form-item label="组织">
-              <SelectOrganizationTree
-                :orgId="queryPageParameters.dealOrg"
-                @callback="(id) => (queryPageParameters.dealOrg = id)"
-              />
-            </el-form-item>
-          </el-col>
-          <el-col :span="8">
-            <el-form-item label="录入人">
-              <IhSelectPageUser
-                v-model="queryPageParameters.entryPerson"
-                clearable>
-                <template v-slot="{ data }">
-                  <span style="float: left">{{ data.name }}</span>
-                  <span style="
-                      margin-left: 20px;
-                      float: right;
-                      color: #8492a6;
-                      font-size: 13px;
-                    ">{{ data.account }}</span>
-                </template>
-              </IhSelectPageUser>
-            </el-form-item>
-          </el-col>
-          <el-col :span="8">
-            <el-form-item label="客户姓名">
-              <el-input
-                v-model="queryPageParameters.customerName"
-                clearable
-                placeholder="客户姓名"
-              ></el-input>
-            </el-form-item>
-          </el-col>
-          <el-col :span="8">
-            <el-form-item label="客户电话">
-              <el-input
-                v-model="queryPageParameters.customerPhone"
-                clearable
-                placeholder="客户电话"
-              ></el-input>
-            </el-form-item>
-          </el-col>
-          <el-col :span="8">
-            <el-form-item label="渠道公司">
-              <el-input
-                v-model="queryPageParameters.agencyName"
-                clearable
-                placeholder="渠道公司"
-              ></el-input>
-            </el-form-item>
-          </el-col>
-          <el-col :span="8">
-            <el-form-item label="经纪人">
-              <SelectByBroker
-                v-model="queryPageParameters.broker"
-                :isKeyUp="true"
-                :props="{
-                  value: 'id',
-                  key: 'id',
-                  lable: 'name'}"
-              />
-            </el-form-item>
-          </el-col>
-          <el-col :span="8">
-            <el-form-item label="成交阶段">
-              <el-select
-                v-model="queryPageParameters.stage"
-                clearable
-                placeholder="成交阶段"
-                class="width--100">
-                <el-option
-                  v-for="item in $root.dictAllList('DealStage')"
-                  :key="item.code"
-                  :label="item.name"
-                  :value="item.code"
-                ></el-option>
-              </el-select>
-            </el-form-item>
-          </el-col>
-          <el-col :span="8">
-            <el-form-item label="项目周期">
-              <SelectPageByCycle
-                v-model="queryPageParameters.cycleId"
-                placeholder="请选择立项周期"
-              ></SelectPageByCycle>
-            </el-form-item>
-          </el-col>
-          <el-col :span="8">
-            <el-form-item label="栋座">
-              <SelectPageByBuild
-                v-model="queryPageParameters.buyUnit"
-                :proId="queryPageParameters.cycleId"
-                placeholder="请选择栋座"
-              ></SelectPageByBuild>
-            </el-form-item>
-          </el-col>
-          <el-col :span="8">
-            <el-form-item label="房号">
-              <SelectPageByRoom
-                v-model="queryPageParameters.roomNumberId"
-                :proId="queryPageParameters.cycleId"
-                :buildingId="queryPageParameters.buyUnit"
-                placeholder="请选择房号"
-              ></SelectPageByRoom>
-            </el-form-item>
-          </el-col>
-          <el-col :span="8">
-            <el-form-item label="查询时间">
-              <div class="search-time-wrapper">
-                <div class="time-type">
+        </el-row>
+        <el-collapse-transition>
+          <div v-show="searchOpen">
+            <el-row>
+              <el-col :span="8">
+                <el-form-item label="补充类型">
                   <el-select
-                    v-model="queryPageParameters.timeType"
-                    placeholder="请选择"
+                    v-model="queryPageParameters.suppContType"
                     clearable
+                    placeholder="补充类型"
                     class="width--100">
                     <el-option
-                      v-for="item in $root.dictAllList('DealTimeType')"
+                      v-for="item in $root.dictAllList('SuppContType')"
                       :key="item.code"
                       :label="item.name"
                       :value="item.code"
                     ></el-option>
                   </el-select>
-                </div>
-                <div class="time-range">
-                  <el-date-picker
-                    v-model="selectTimeRange"
-                    type="daterange"
-                    align="left"
-                    unlink-panels
-                    range-separator="至"
-                    start-placeholder="开始日期"
-                    end-placeholder="结束日期"
-                    :picker-options="$root.pickerOptions"
-                    value-format="yyyy-MM-dd"
-                    @change="inputTimeChange"
-                  ></el-date-picker>
-                </div>
-              </div>
-            </el-form-item>
-          </el-col>
-        </el-row>
+                </el-form-item>
+              </el-col>
+              <el-col :span="8">
+                <el-form-item label="组织">
+                  <SelectOrganizationTree
+                    :orgId="queryPageParameters.dealOrg"
+                    @callback="(id) => (queryPageParameters.dealOrg = id)"
+                  />
+                </el-form-item>
+              </el-col>
+              <el-col :span="8">
+                <el-form-item label="录入人">
+                  <IhSelectPageUser
+                    v-model="queryPageParameters.entryPerson"
+                    clearable>
+                    <template v-slot="{ data }">
+                      <span style="float: left">{{ data.name }}</span>
+                      <span style="
+                      margin-left: 20px;
+                      float: right;
+                      color: #8492a6;
+                      font-size: 13px;
+                    ">{{ data.account }}</span>
+                    </template>
+                  </IhSelectPageUser>
+                </el-form-item>
+              </el-col>
+              <el-col :span="8">
+                <el-form-item label="客户姓名">
+                  <el-input
+                    v-model="queryPageParameters.customerName"
+                    clearable
+                    placeholder="客户姓名"
+                  ></el-input>
+                </el-form-item>
+              </el-col>
+              <el-col :span="8">
+                <el-form-item label="客户电话">
+                  <el-input
+                    v-model="queryPageParameters.customerPhone"
+                    clearable
+                    placeholder="客户电话"
+                  ></el-input>
+                </el-form-item>
+              </el-col>
+              <el-col :span="8">
+                <el-form-item label="渠道公司">
+                  <el-input
+                    v-model="queryPageParameters.agencyName"
+                    clearable
+                    placeholder="渠道公司"
+                  ></el-input>
+                </el-form-item>
+              </el-col>
+              <el-col :span="8">
+                <el-form-item label="经纪人">
+                  <SelectByBroker
+                    v-model="queryPageParameters.broker"
+                    :isKeyUp="true"
+                    :props="{
+                  value: 'id',
+                  key: 'id',
+                  lable: 'name'}"
+                  />
+                </el-form-item>
+              </el-col>
+              <el-col :span="8">
+                <el-form-item label="成交阶段">
+                  <el-select
+                    v-model="queryPageParameters.stage"
+                    clearable
+                    placeholder="成交阶段"
+                    class="width--100">
+                    <el-option
+                      v-for="item in $root.dictAllList('DealStage')"
+                      :key="item.code"
+                      :label="item.name"
+                      :value="item.code"
+                    ></el-option>
+                  </el-select>
+                </el-form-item>
+              </el-col>
+              <el-col :span="8">
+                <el-form-item label="项目周期">
+                  <SelectPageByCycle
+                    v-model="queryPageParameters.cycleId"
+                    placeholder="请选择立项周期"
+                  ></SelectPageByCycle>
+                </el-form-item>
+              </el-col>
+              <el-col :span="8">
+                <el-form-item label="栋座">
+                  <SelectPageByBuild
+                    v-model="queryPageParameters.buyUnit"
+                    :proId="queryPageParameters.cycleId"
+                    placeholder="请选择栋座"
+                  ></SelectPageByBuild>
+                </el-form-item>
+              </el-col>
+              <el-col :span="8">
+                <el-form-item label="房号">
+                  <SelectPageByRoom
+                    v-model="queryPageParameters.roomNumberId"
+                    :proId="queryPageParameters.cycleId"
+                    :buildingId="queryPageParameters.buyUnit"
+                    placeholder="请选择房号"
+                  ></SelectPageByRoom>
+                </el-form-item>
+              </el-col>
+              <el-col :span="8">
+                <el-form-item label="查询时间">
+                  <div class="search-time-wrapper">
+                    <div class="time-type">
+                      <el-select
+                        v-model="queryPageParameters.timeType"
+                        placeholder="请选择"
+                        clearable
+                        class="width--100">
+                        <el-option
+                          v-for="item in $root.dictAllList('DealTimeType')"
+                          :key="item.code"
+                          :label="item.name"
+                          :value="item.code"
+                        ></el-option>
+                      </el-select>
+                    </div>
+                    <div class="time-range">
+                      <el-date-picker
+                        v-model="selectTimeRange"
+                        type="daterange"
+                        align="left"
+                        unlink-panels
+                        range-separator="至"
+                        start-placeholder="开始日期"
+                        end-placeholder="结束日期"
+                        :picker-options="$root.pickerOptions"
+                        value-format="yyyy-MM-dd"
+                        @change="inputTimeChange"
+                      ></el-date-picker>
+                    </div>
+                  </div>
+                </el-form-item>
+              </el-col>
+            </el-row>
+          </div>
+        </el-collapse-transition>
       </el-form>
     </template>
     <template v-slot:btn>
@@ -218,6 +224,11 @@
         <el-button type="info" @click="handleReset()">重置</el-button>
         <el-button type="success" @click="handleAdd('declare')">业绩申报</el-button>
         <el-button type="success" @click="handleAdd('add')">新增</el-button>
+        <el-link
+          type="primary"
+          class="float-right margin-right-40"
+          @click="openToggle()"
+        >{{searchOpen?'收起':'展开'}}</el-link>
       </el-row>
     </template>
     <template v-slot:table>
@@ -381,6 +392,7 @@
     mixins: [PaginationMixin],
   })
   export default class DealReportList extends Vue {
+    private searchOpen = true;
     queryPageParameters: any = {
       dealCode: null,
       contType: null,
@@ -407,6 +419,11 @@
 
     async created() {
       await this.getListMixin();
+    }
+
+    // 查询条件折叠/展开
+    private openToggle(): void {
+      this.searchOpen = !this.searchOpen;
     }
 
     // 改变查询时间

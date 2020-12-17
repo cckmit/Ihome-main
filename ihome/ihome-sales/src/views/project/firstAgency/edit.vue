@@ -4,7 +4,7 @@
  * @Author: wwq
  * @Date: 2020-11-03 18:39:23
  * @LastEditors: wwq
- * @LastEditTime: 2020-12-16 11:13:40
+ * @LastEditTime: 2020-12-16 17:15:59
 -->
 <template>
   <IhPage>
@@ -521,6 +521,7 @@ export default class FirstAgencyEdit extends Vue {
           });
           return;
         }
+        console.log(this.info.timeList, "this.info.timeList");
         if (this.info.timeList.length) {
           infoObj.businessStart = this.info.timeList[0];
           infoObj.businessEnd = this.info.timeList[1];
@@ -538,8 +539,8 @@ export default class FirstAgencyEdit extends Vue {
             infoObj.agencyId = this.$route.query.id;
             break;
         }
-        infoObj.followMan = "admin";
-        infoObj.followManId = 1;
+        infoObj.followMan = (this.$root as any).userInfo.name;
+        infoObj.followManId = (this.$root as any).userInfo.id;
         await post_firstAgencyCompany_save(infoObj);
         this.$message.success("保存成功");
         this.$goto({ path: "/firstAgency/list" });
@@ -573,6 +574,8 @@ export default class FirstAgencyEdit extends Vue {
       });
       if (res.businessStart && res.businessEnd) {
         res.timeList = [res.businessStart, res.businessEnd];
+      } else {
+        res.timeList = [];
       }
       this.info = { ...res };
       this.info.provinceList = [res.province, res.city, res.area];

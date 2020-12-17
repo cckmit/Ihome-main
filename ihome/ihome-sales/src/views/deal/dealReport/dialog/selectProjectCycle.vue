@@ -4,7 +4,7 @@
  * @Author: lsj
  * @Date: 2020-11-03 15:28:12
  * @LastEditors: lsj
- * @LastEditTime: 2020-12-09 17:28:20
+ * @LastEditTime: 2020-12-15 20:25:33
 -->
 <template>
   <el-dialog
@@ -66,7 +66,7 @@
       super();
     }
 
-    private rowKey: any = 'id'; // 选择项的标识
+    private rowKey: any = 'termId'; // 选择项的标识
     private tableMaxHeight: any = 350;
     private tableColumn = [
       {
@@ -139,7 +139,7 @@
 
     // 获取选中项 --- 最后需要获取的数据
     private selectionChange(selection: any) {
-      console.log(selection, "selectionChange");
+      // console.log(selection, "selectionChange");
       this.currentSelection = selection;
     }
 
@@ -158,24 +158,26 @@
     }
 
     async getListMixin() {
+      let self = this;
+      self.currentSelection = [];
       const infoList = await post_term_getList(this.queryPageParameters);
       if (infoList.list.length > 0) {
         infoList.list.forEach((item: any) => {
           item.checked = false;
           // 修改显示
           if (item.busTypeEnum) {
-            item.busTypeEnum = (this as any).$root.dictAllName(item.busTypeEnum, 'BusTypeEnum');
+            item.busTypeEnum = (this as any).$root.dictAllName(item.busTypeEnum, 'BusType');
           }
         })
       }
-      this.resPageInfo = JSON.parse(JSON.stringify(infoList));
+      self.resPageInfo = JSON.parse(JSON.stringify(infoList));
       // 勾选回显
-      if (this.resPageInfo.list.length > 0 && this.hasCheckedData.length > 0) {
-        this.hasCheckedData.forEach((data: any) => {
-          this.resPageInfo.list.forEach((list: any) => {
-            if (list[this.rowKey] === data[this.rowKey]) {
+      if (self.resPageInfo.list.length > 0 && self.hasCheckedData.length > 0) {
+        self.hasCheckedData.forEach((data: any) => {
+          self.resPageInfo.list.forEach((list: any) => {
+            if (list[self.rowKey] === data[self.rowKey]) {
               list.checked = true;
-              this.currentSelection = [...list];
+              self.currentSelection.push(list);
             }
           })
         })
