@@ -4,7 +4,7 @@
  * @Author: ywl
  * @Date: 2020-12-09 19:24:59
  * @LastEditors: ywl
- * @LastEditTime: 2020-12-17 14:53:09
+ * @LastEditTime: 2020-12-17 20:47:07
 -->
 <template>
   <IhPage label-width="80px">
@@ -19,24 +19,41 @@
               <el-input
                 v-model="queryPageParameters.payNo"
                 placeholder="请输入收款编号"
+                clearable
               ></el-input>
             </el-form-item>
           </el-col>
           <el-col :span="8">
             <el-form-item label="收款日期">
-              <el-input
-                v-model="queryPageParameters.companyName"
-                placeholder="请输入收款编号"
-              ></el-input>
+              <el-date-picker
+                style="width:100%;"
+                v-model="payDate"
+                type="daterange"
+                align="left"
+                unlink-panels
+                range-separator="至"
+                start-placeholder="开始日期"
+                end-placeholder="结束日期"
+                :picker-options="$root.pickerOptions"
+                value-format="yyyy-MM-dd"
+              ></el-date-picker>
             </el-form-item>
           </el-col>
           <el-col :span="8">
             <el-form-item label="状态">
               <el-select
-                v-model="queryPageParameters.companyName"
+                v-model="queryPageParameters.status"
                 placeholder="请选择状态"
                 class="width--100"
-              ></el-select>
+                clearable
+              >
+                <el-option
+                  v-for="(i, n) in $root.dictAllList('PaymentStatus')"
+                  :key="n"
+                  :value="i.code"
+                  :label="i.name"
+                ></el-option>
+              </el-select>
             </el-form-item>
           </el-col>
         </el-row>
@@ -46,25 +63,42 @@
               <el-col :span="8">
                 <el-form-item label="款项类型">
                   <el-select
-                    v-model="queryPageParameters.companyName"
+                    v-model="queryPageParameters.foundType"
                     placeholder="请选择款项类型"
                     class="width--100"
-                  ></el-select>
+                    clearable
+                  >
+                    <el-option
+                      v-for="(i, n) in $root.dictAllList('FeeType')"
+                      :key="n"
+                      :value="i.code"
+                      :label="i.name"
+                    ></el-option>
+                  </el-select>
                 </el-form-item>
               </el-col>
               <el-col :span="8">
                 <el-form-item label="支付时间">
-                  <el-select
-                    v-model="queryPageParameters.companyName"
-                    placeholder="请选择款项类型"
-                  ></el-select>
+                  <el-date-picker
+                    style="width:100%;"
+                    v-model="payTime"
+                    type="daterange"
+                    align="left"
+                    unlink-panels
+                    range-separator="至"
+                    start-placeholder="开始日期"
+                    end-placeholder="结束日期"
+                    :picker-options="$root.pickerOptions"
+                    value-format="yyyy-MM-dd HH:mm:ss"
+                  ></el-date-picker>
                 </el-form-item>
               </el-col>
               <el-col :span="8">
                 <el-form-item label="经办人">
                   <el-input
-                    v-model="queryPageParameters.companyName"
+                    v-model="queryPageParameters.operator"
                     placeholder="请输入经办人"
+                    clearable
                   ></el-input>
                 </el-form-item>
               </el-col>
@@ -73,24 +107,27 @@
               <el-col :span="8">
                 <el-form-item label="联动项目">
                   <el-input
-                    v-model="queryPageParameters.companyName"
+                    v-model="queryPageParameters.proId"
                     placeholder="请选择联动项目"
+                    clearable
                   ></el-input>
                 </el-form-item>
               </el-col>
               <el-col :span="8">
                 <el-form-item label="房号">
                   <el-input
-                    v-model="queryPageParameters.companyName"
+                    v-model="queryPageParameters.roomId"
                     placeholder="请选择房号"
+                    clearable
                   ></el-input>
                 </el-form-item>
               </el-col>
               <el-col :span="8">
                 <el-form-item label="立项周期">
                   <el-input
-                    v-model="queryPageParameters.companyName"
+                    v-model="queryPageParameters.termId"
                     placeholder="请选择立项周期"
+                    clearable
                   ></el-input>
                 </el-form-item>
               </el-col>
@@ -99,24 +136,35 @@
               <el-col :span="8">
                 <el-form-item label="业主姓名">
                   <el-input
-                    v-model="queryPageParameters.companyName"
+                    v-model="queryPageParameters.customerName"
                     placeholder="请输入业主姓名"
+                    clearable
                   ></el-input>
                 </el-form-item>
               </el-col>
               <el-col :span="8">
                 <el-form-item label="付款方">
                   <el-select
-                    v-model="queryPageParameters.companyName"
+                    v-model="queryPageParameters.payer"
                     placeholder="请选择付款方"
-                  ></el-select>
+                    class="width--100"
+                    clearable
+                  >
+                    <el-option
+                      v-for="(i, n) in $root.dictAllList('PaymentPayer')"
+                      :key="n"
+                      :value="i.code"
+                      :label="i.name"
+                    ></el-option>
+                  </el-select>
                 </el-form-item>
               </el-col>
               <el-col :span="8">
                 <el-form-item label="业务编号">
                   <el-input
-                    v-model="queryPageParameters.companyName"
+                    v-model="queryPageParameters.businessId"
                     placeholder="请输入业务编号"
+                    clearable
                   ></el-input>
                 </el-form-item>
               </el-col>
@@ -125,25 +173,42 @@
               <el-col :span="8">
                 <el-form-item label="组织">
                   <el-input
-                    v-model="queryPageParameters.companyName"
-                    placeholder="请输入业务编号"
+                    v-model="queryPageParameters.groupId"
+                    placeholder="请输入组织"
+                    clearable
                   ></el-input>
                 </el-form-item>
               </el-col>
               <el-col :span="8">
                 <el-form-item label="对账时间">
-                  <el-input
-                    v-model="queryPageParameters.companyName"
-                    placeholder="请输入业务编号"
-                  ></el-input>
+                  <el-date-picker
+                    style="width:100%;"
+                    v-model="checkTime"
+                    type="daterange"
+                    align="left"
+                    unlink-panels
+                    range-separator="至"
+                    start-placeholder="开始日期"
+                    end-placeholder="结束日期"
+                    :picker-options="$root.pickerOptions"
+                    value-format="yyyy-MM-dd"
+                  ></el-date-picker>
                 </el-form-item>
               </el-col>
               <el-col :span="8">
                 <el-form-item label="确认时间">
-                  <el-input
-                    v-model="queryPageParameters.companyName"
-                    placeholder="请输入业务编号"
-                  ></el-input>
+                  <el-date-picker
+                    style="width:100%;"
+                    v-model="confirmTime"
+                    type="daterange"
+                    align="left"
+                    unlink-panels
+                    range-separator="至"
+                    start-placeholder="开始日期"
+                    end-placeholder="结束日期"
+                    :picker-options="$root.pickerOptions"
+                    value-format="yyyy-MM-dd"
+                  ></el-date-picker>
                 </el-form-item>
               </el-col>
             </el-row>
@@ -153,8 +218,14 @@
     </template>
     <template #btn>
       <el-row>
-        <el-button type="primary">查询</el-button>
-        <el-button type="info">重置</el-button>
+        <el-button
+          type="primary"
+          @click="search()"
+        >查询</el-button>
+        <el-button
+          type="info"
+          @click="reset()"
+        >重置</el-button>
         <el-button>批量解除关联</el-button>
         <el-link
           type="primary"
@@ -177,48 +248,92 @@
           width="50"
           align="center"
         ></el-table-column>
-        <el-table-column fixed>
+        <el-table-column
+          fixed
+          width="185"
+        >
           <template #header>
             <div>收款编号</div>
             <div>收款日期</div>
           </template>
+          <template v-slot="{ row }">
+            <div>{{row.payNo || '-'}}</div>
+            <div>{{row.payDate || '-'}}</div>
+          </template>
         </el-table-column>
-        <el-table-column>
+        <el-table-column width="120">
           <template #header>
             <div>收款金额</div>
             <div>款项类型</div>
           </template>
+          <template v-slot="{ row }">
+            <div>{{row.amount || '-'}}</div>
+            <div>{{$root.dictAllName(row.foundType, 'FeeType') || '-'}}</div>
+          </template>
         </el-table-column>
-        <el-table-column>
+        <el-table-column width="120">
           <template #header>
             <div>联动项目</div>
             <div>房号</div>
           </template>
+          <template v-slot="{ row }">
+            <div>{{row.projectName || '-'}}</div>
+            <div>{{row.roomNo || '-'}}</div>
+          </template>
         </el-table-column>
-        <el-table-column label="立项周期">
+        <el-table-column
+          label="立项周期"
+          prop="termName"
+          width="255"
+        >
         </el-table-column>
-        <el-table-column label="状态">
+        <el-table-column
+          label="状态"
+          prop="status"
+        >
+          <template v-slot="{ row }">
+            {{$root.dictAllName(row.status, 'PaymentStatus')}}
+          </template>
         </el-table-column>
-        <el-table-column label="经办人">
+        <el-table-column
+          label="经办人"
+          prop="operatorName"
+        >
         </el-table-column>
-        <el-table-column label="店组">
+        <el-table-column
+          label="店组"
+          prop="groupName"
+          width="185"
+        >
         </el-table-column>
-        <el-table-column>
+        <el-table-column width="100">
           <template #header>
             <div>付款方</div>
             <div>业务编号</div>
           </template>
+          <template v-slot="{ row }">
+            <div>{{$root.dictAllName(row.payer, 'PaymentPayer') || '-'}}</div>
+            <div>{{row.businessId || '-'}}</div>
+          </template>
         </el-table-column>
-        <el-table-column>
+        <el-table-column min-width="155">
           <template #header>
             <div>凭证号</div>
             <div>支付时间</div>
           </template>
+          <template v-slot="{ row }">
+            <div>{{row.payCode || '-'}}</div>
+            <div>{{row.payTime || '-'}}</div>
+          </template>
         </el-table-column>
-        <el-table-column>
+        <el-table-column min-width="155">
           <template #header>
             <div>对账时间</div>
             <div>确认时间</div>
+          </template>
+          <template v-slot="{ row }">
+            <div>{{row.checkTime|| '-'}}</div>
+            <div>{{row.confirmTime || '-'}}</div>
           </template>
         </el-table-column>
         <el-table-column
@@ -226,8 +341,11 @@
           label="操作"
           width="120"
         >
-          <template v-slot="{  }">
-            <el-link type="primary">详情</el-link>
+          <template v-slot="{ row }">
+            <el-link
+              type="primary"
+              @click.native.prevent="$router.push(`/receipt/info?id=${row.id}`)"
+            >详情</el-link>
             <el-dropdown
               trigger="click"
               class="margin-left-15"
@@ -266,6 +384,8 @@
 import { Component, Vue } from "vue-property-decorator";
 import PaginationMixin from "../../../mixins/pagination";
 
+import { post_payment_getList } from "../../../api/finance/index";
+
 @Component({
   mixins: [PaginationMixin],
 })
@@ -296,10 +416,72 @@ export default class ReceiptList extends Vue {
     total: null,
     list: [],
   };
+  private payDate: any = []; // 支付日期
+  private payTime: any = []; // 支付时间
+  private checkTime: any = []; // 对账时间
+  private confirmTime: any = []; // 确认时间
   private searchOpen = true;
 
+  private search() {
+    let payDFlog = this.payDate && this.payDate.length;
+    let payTFlog = this.payTime && this.payTime.length;
+    let checkFlog = this.checkTime && this.checkTime.length;
+    let confirmFlog = this.confirmTime && this.confirmTime.length;
+    this.queryPageParameters.startPayDate = payDFlog ? this.payDate[0] : null;
+    this.queryPageParameters.endPayDate = payDFlog ? this.payDate[1] : null;
+    this.queryPageParameters.startPayTime = payTFlog ? this.payTime[0] : null;
+    this.queryPageParameters.endPayTime = payTFlog ? this.payTime[1] : null;
+    this.queryPageParameters.startCheckTime = checkFlog
+      ? this.checkTime[0]
+      : null;
+    this.queryPageParameters.endCheckTime = checkFlog
+      ? this.checkTime[1]
+      : null;
+    this.queryPageParameters.startConfirmTime = confirmFlog
+      ? this.confirmTime[0]
+      : null;
+    this.queryPageParameters.endConfirmTime = confirmFlog
+      ? this.confirmTime[1]
+      : null;
+    this.getListMixin();
+  }
+  private reset() {
+    Object.assign(this.queryPageParameters, {
+      businessId: null,
+      customerName: null,
+      endCheckTime: null,
+      endConfirmTime: null,
+      endPayDate: null,
+      endPayTime: null,
+      foundType: null,
+      groupId: null,
+      operator: null,
+      payNo: null,
+      payType: null,
+      payer: null,
+      proId: null,
+      roomId: null,
+      startCheckTime: null,
+      startConfirmTime: null,
+      startPayDate: null,
+      startPayTime: null,
+      status: null,
+      termId: null,
+    });
+    this.payDate = [];
+    this.payTime = [];
+    this.checkTime = [];
+    this.confirmTime = [];
+  }
   handleSelectionChange(val: any) {
     console.log(val);
+  }
+  async getListMixin() {
+    this.resPageInfo = await post_payment_getList(this.queryPageParameters);
+  }
+
+  created() {
+    this.getListMixin();
   }
 }
 </script>

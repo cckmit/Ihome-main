@@ -4,7 +4,7 @@
  * @Author: ywl
  * @Date: 2020-12-08 19:55:43
  * @LastEditors: ywl
- * @LastEditTime: 2020-12-17 15:29:16
+ * @LastEditTime: 2020-12-17 20:43:28
 -->
 <template>
   <IhPage class="text-left">
@@ -248,7 +248,7 @@ export default class InvoiceInfo extends Vue {
 
 <style lang="scss" scoped>
 .text-ellipsis {
-  display: inline-block;
+  display: block;
   width: 100%;
   overflow: hidden;
   text-overflow: ellipsis;

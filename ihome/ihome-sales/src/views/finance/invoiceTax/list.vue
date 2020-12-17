@@ -4,7 +4,7 @@
  * @Author: ywl
  * @Date: 2020-12-01 10:38:45
  * @LastEditors: ywl
- * @LastEditTime: 2020-12-09 10:24:58
+ * @LastEditTime: 2020-12-17 16:26:00
 -->
 <template>
   <IhPage label-width="100px">
@@ -19,6 +19,7 @@
               <el-input
                 v-model="queryPageParameters.companyName"
                 placeholder="名称"
+                clearable
               ></el-input>
             </el-form-item>
           </el-col>
@@ -27,6 +28,7 @@
               <el-input
                 v-model="queryPageParameters.taxpayerNo"
                 placeholder="纳税人识别号"
+                clearable
               ></el-input>
             </el-form-item>
           </el-col>
@@ -36,6 +38,7 @@
                 v-model="queryPageParameters.taxScale"
                 placeholder="请选择纳税人规模"
                 class="width--100"
+                clearable
               >
                 <el-option
                   v-for="i in $root.dictAllList('TaxScale')"

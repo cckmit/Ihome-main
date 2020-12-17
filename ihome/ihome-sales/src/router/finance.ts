@@ -4,7 +4,7 @@
  * @Author: ywl
  * @Date: 2020-12-01 15:49:07
  * @LastEditors: ywl
- * @LastEditTime: 2020-12-17 15:45:12
+ * @LastEditTime: 2020-12-17 20:03:02
  */
 import { RouteConfig } from 'vue-router'
 
@@ -108,6 +108,12 @@ const financeRoutes: Array<RouteConfig> = [
         name: 'receiptList',
         component: () => import('../views/finance/receipt/list.vue'),
         meta: { title: '收款列表', icon: 'form', keepAlive: true }
+      },
+      {
+        path: 'info',
+        name: 'receiptInfo',
+        component: () => import('../views/finance/receipt/info.vue'),
+        meta: { title: '收款详情', icon: 'form' }
       },
     ]
   }
