@@ -3,8 +3,8 @@
  * @version: 
  * @Author: ywl
  * @Date: 2020-06-30 09:21:17
- * @LastEditors: wwq
- * @LastEditTime: 2020-12-16 20:00:19
+ * @LastEditors: ywl
+ * @LastEditTime: 2020-12-17 14:43:39
 --> 
 <template>
   <IhPage label-width="100px">
@@ -185,10 +185,10 @@
                   @click.native.prevent="handleToPage(row, 'revoke')"
                   v-has="'B.SALES.CHANNEL.CHANGELIST.REVOKE'"
                 >撤回</el-dropdown-item>
-                <el-dropdown-item
+                <!-- <el-dropdown-item
                   @click.native.prevent="draft(row)"
                   v-has="'B.SALES.CHANNEL.CHANGELIST.REVOKEDRAFT'"
-                >退回起草</el-dropdown-item>
+                >退回起草</el-dropdown-item> -->
               </el-dropdown-menu>
             </el-dropdown>
           </template>
