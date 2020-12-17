@@ -4,7 +4,7 @@
  * @Author: ywl
  * @Date: 2020-12-08 17:45:05
  * @LastEditors: ywl
- * @LastEditTime: 2020-12-16 19:46:14
+ * @LastEditTime: 2020-12-17 08:54:19
 -->
 <template>
   <IhPage label-width="80px">
@@ -282,6 +282,8 @@ import { getToken } from "ihome-common/util/cookies";
 import {
   post_invoice_getList,
   post_invoice_downloadFile,
+  post_invoice_handHCInvoicing,
+  post_invoice_autoHCInvoicing,
 } from "../../../api/finance/index";
 
 @Component({
@@ -355,15 +357,41 @@ export default class InvoiceList extends Vue {
   /**
    * @description: 自动红冲-批量
    */
-  private handleHCByAuto() {
+  private async handleHCByAuto() {
     if (this.selection.length) {
+      // 判断已开票且开票类型为自动开票的数据
       if (
         !this.selection.map((i: any) => i.status).includes("NotDone") &&
         !this.selection.map((i: any) => i.operationType).includes("Hand")
       ) {
-        this.isHandmade = false;
         this.itemData.ids = this.selection.map((i: any) => i.id);
-        this.redVisble = true;
+        this.isHandmade = false;
+        // 判断费用类型
+        if (
+          this.selection
+            .map((i: any) => i.feeType)
+            .every((item: any) => item === "AgencyFee")
+        ) {
+          // 代理费批量红冲
+          this.redVisble = true;
+        } else if (
+          this.selection
+            .map((i: any) => i.feeType)
+            .every((item: any) => item === "ServiceFee")
+        ) {
+          // 服务费批量红冲
+          try {
+            await this.$confirm("是否确定红冲?", "提示");
+            const res = await post_invoice_autoHCInvoicing({
+              ids: this.itemData.ids,
+            });
+            this.$message.success(`服务费红冲成功${res}条`);
+          } catch (error) {
+            console.log(error);
+          }
+        } else {
+          this.$message.warning("请筛选一致的费用类型");
+        }
       } else {
         this.$message.warning(
           "请勾选开票状态为已开票且开票类型为自动开票的数据"
@@ -378,7 +406,7 @@ export default class InvoiceList extends Vue {
   /**
    * @description: 手工红冲-批量
    */
-  private handleHCByHandmade() {
+  private async handleHCByHandmade() {
     if (this.selection.length) {
       if (
         !this.selection.map((i: any) => i.status).includes("NotDone") &&
@@ -386,12 +414,36 @@ export default class InvoiceList extends Vue {
       ) {
         this.isHandmade = true;
         this.itemData.ids = this.selection.map((i: any) => i.id);
-        this.redVisble = true;
+        // 判断费用类型
+        if (
+          this.selection
+            .map((i: any) => i.feeType)
+            .every((item: any) => item === "AgencyFee")
+        ) {
+          // 代理费批量红冲
+          this.redVisble = true;
+        } else if (
+          this.selection
+            .map((i: any) => i.feeType)
+            .every((item: any) => item === "ServiceFee")
+        ) {
+          // 服务费批量红冲
+          try {
+            await this.$confirm("是否确定红冲?", "提示");
+            const res = await post_invoice_handHCInvoicing({
+              ids: this.itemData.ids,
+            });
+            this.$message.success(`服务费红冲成功${res}条`);
+          } catch (error) {
+            console.log(error);
+          }
+        } else {
+          this.$message.warning("请筛选一致的费用类型");
+        }
       } else {
         this.$message.warning(
           "请勾选开票状态为已开票且开票类型为手工开票的数据"
         );
-        return;
       }
     } else {
       this.$message.warning("请先勾选表格数据");

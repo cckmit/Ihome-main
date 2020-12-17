@@ -4,7 +4,7 @@
  * @Author: ywl
  * @Date: 2020-12-08 19:55:43
  * @LastEditors: ywl
- * @LastEditTime: 2020-12-16 19:52:14
+ * @LastEditTime: 2020-12-16 21:07:36
 -->
 <template>
   <IhPage class="text-left">
@@ -165,7 +165,14 @@
     </template>
     <!-- 弹窗 -->
     <IhDialog :show="redVisble">
-      <RedDashed @cancel="() => (redVisble = false)" />
+      <RedDashed
+        :isHandmade="isHandmade"
+        @cancel="() => (redVisble = false)"
+        @finish="() => {
+          redVisble = false;
+          getInfo();
+        }"
+      />
     </IhDialog>
   </IhPage>
 </template>
@@ -176,6 +183,7 @@ import RedDashed from "./dialog/redDashed.vue";
 import {
   get_invoice_get__id,
   post_invoice_handHCInvoicing,
+  post_invoice_autoHCInvoicing,
   post_invoice_downloadFile,
 } from "../../../api/finance/index";
 
@@ -190,6 +198,7 @@ export default class InvoiceInfo extends Vue {
     invoiceRecords: [],
     attachmentVOs: [],
   };
+  private isHandmade = true;
   private redVisble = false;
 
   private async getInfo() {
@@ -204,11 +213,18 @@ export default class InvoiceInfo extends Vue {
     }
   }
   private async handHInvoice(type: any) {
+    let flag = this.info.invoiceInfo.operationType === "Auto";
+    flag ? (this.isHandmade = false) : (this.isHandmade = true);
     if (type === "ServiceFee") {
-      console.log(type);
       try {
         await this.$confirm("是否确定红冲?", "提示");
-        await post_invoice_handHCInvoicing({ ids: [this.info.invoiceInfo.id] });
+        !flag
+          ? await post_invoice_handHCInvoicing({
+              ids: [this.info.invoiceInfo.id],
+            })
+          : await post_invoice_autoHCInvoicing({
+              ids: [this.info.invoiceInfo.id],
+            });
         this.$message.success("红冲成功");
         this.getInfo();
       } catch (error) {
