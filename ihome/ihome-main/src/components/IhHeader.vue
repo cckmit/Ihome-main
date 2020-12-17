@@ -4,7 +4,7 @@
  * @Author: zyc
  * @Date: 2020-06-23 10:42:04
  * @LastEditors: zyc
- * @LastEditTime: 2020-12-16 10:53:11
+ * @LastEditTime: 2020-12-16 16:51:06
 --> 
 <template>
   <div class="header-container">
@@ -65,7 +65,7 @@ import { UserModule } from "../store/modules/user";
 import { AppModule } from "../store/modules/app";
 import { headImg } from "../utils/base64-img";
 import { defaultIsCollapse } from "@/setting";
-import { allMenu } from "../api/users";
+// import { allMenu } from "../api/users";
 import { get_sessionUser_logout } from "../api/system/index";
 @Component({
   components: {},

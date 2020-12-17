@@ -4,7 +4,7 @@
  * @Author: wwq
  * @Date: 2020-10-15 12:33:25
  * @LastEditors: wwq
- * @LastEditTime: 2020-12-15 15:09:37
+ * @LastEditTime: 2020-12-16 20:22:14
 -->
 <template>
   <div class="text-left">
@@ -19,7 +19,7 @@
             label="渠道商"
             align="left"
           >
-            <span class="text-ellipsis">{{ resPageInfo.channelId
+            <span class="text-ellipsis">{{ resPageInfo.channelName
               }}<el-link
                 style="margin-left: 5px"
                 :href="`/web-sales/channelBusiness/info?id=${resPageInfo.channelId}`"

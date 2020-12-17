@@ -4,7 +4,7 @@
  * @Author: wwq
  * @Date: 2020-08-13 11:40:10
  * @LastEditors: wwq
- * @LastEditTime: 2020-12-11 08:50:09
+ * @LastEditTime: 2020-12-16 19:34:37
 -->
 <template>
   <IhPage label-width="100px">
@@ -102,6 +102,7 @@
         <el-button
           type="success"
           @click="add()"
+          v-has="'B.SALES.PROJECT.BASICLIST.ADD'"
         >添加</el-button>
       </el-row>
     </template>
@@ -183,14 +184,17 @@
                 <el-dropdown-item
                   :disabled="row.auditEnum !== 'Draft'"
                   @click.native.prevent="routerTo(row, 'edit')"
+                  v-has="'B.SALES.PROJECT.BASICLIST.UPDATE'"
                 >编辑</el-dropdown-item>
                 <el-dropdown-item
                   :disabled="row.auditEnum !== 'Draft'"
                   @click.native.prevent="remove(row)"
+                  v-has="'B.SALES.PROJECT.BASICLIST.DELETE'"
                 >删除</el-dropdown-item>
                 <el-dropdown-item
                   @click.native.prevent="routerTo(row, 'audit')"
                   :disabled="row.status !== 'Conduct'"
+                  v-has="'B.SALES.PROJECT.BASICLIST.VERIFY'"
                 >审核</el-dropdown-item>
               </el-dropdown-menu>
             </el-dropdown>
