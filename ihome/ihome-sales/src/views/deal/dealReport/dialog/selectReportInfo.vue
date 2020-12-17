@@ -91,7 +91,7 @@
 <script lang="ts">
   import {Component, Vue, Prop} from "vue-property-decorator";
 
-  import {post_report_getList} from "@/api/customer/index";
+  import {post_report_getDealList} from "@/api/customer/index";
   import PaginationMixin from "@/mixins/pagination";
 
   @Component({
@@ -240,7 +240,7 @@
         this.queryPageParameters.reportDateStart = null;
         this.queryPageParameters.reportDateEnd = null;
       }
-      const infoList = await post_report_getList(this.queryPageParameters);
+      const infoList = await post_report_getDealList(this.queryPageParameters);
       if (infoList.list.length > 0) {
         infoList.list.forEach((item: any) => {
           item.checked = false;

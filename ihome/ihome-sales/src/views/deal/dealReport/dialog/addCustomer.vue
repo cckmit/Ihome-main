@@ -227,7 +227,7 @@
           this.resPageInfo.list.forEach((list: any) => {
             if (list[this.rowKey] === data[this.rowKey]) {
               list.checked = true;
-              this.currentSelection = [...list];
+              this.currentSelection.push(list);
             }
           })
         })

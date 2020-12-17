@@ -66,7 +66,7 @@
       super();
     }
 
-    private rowKey: any = 'proId'; // 选择项的标识
+    private rowKey: any = 'termId'; // 选择项的标识
     private tableMaxHeight: any = 350;
     private tableColumn = [
       {
@@ -139,7 +139,7 @@
 
     // 获取选中项 --- 最后需要获取的数据
     private selectionChange(selection: any) {
-      console.log(selection, "selectionChange");
+      // console.log(selection, "selectionChange");
       this.currentSelection = selection;
     }
 
@@ -173,7 +173,6 @@
       self.resPageInfo = JSON.parse(JSON.stringify(infoList));
       // 勾选回显
       if (self.resPageInfo.list.length > 0 && self.hasCheckedData.length > 0) {
-        // debugger
         self.hasCheckedData.forEach((data: any) => {
           self.resPageInfo.list.forEach((list: any) => {
             if (list[self.rowKey] === data[self.rowKey]) {

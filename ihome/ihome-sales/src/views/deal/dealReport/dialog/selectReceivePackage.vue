@@ -4,12 +4,12 @@
  * @Author: lsj
  * @Date: 2020-11-03 15:28:12
  * @LastEditors: lsj
- * @LastEditTime: 2020-12-09 17:28:20
+ * @LastEditTime: 2020-12-16 20:57:56
 -->
 <template>
   <el-dialog
     v-dialogDrag
-    title="选择收派套餐列表"
+    title="选择服务费收派套餐标准"
     :visible.sync="dialogVisible"
     :close-on-click-modal="false"
     :close-on-press-escape="false"
