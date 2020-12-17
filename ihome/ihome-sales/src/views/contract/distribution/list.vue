@@ -4,7 +4,7 @@
  * @Author: ywl
  * @Date: 2020-09-25 17:34:32
  * @LastEditors: ywl
- * @LastEditTime: 2020-12-16 11:37:26
+ * @LastEditTime: 2020-12-17 09:33:24
 -->
 <template>
   <IhPage label-width="100px">
@@ -205,18 +205,22 @@
         <el-button
           type="success"
           @click="review()"
+          v-has="'B.SALES.CONTRACT.DISTLIST.VERIFY'"
         >审核</el-button>
         <el-button
           type="success"
           @click="distribute()"
+          v-has="'B.SALES.CONTRACT.DISTLIST.DISTRIBUTE'"
         >派发</el-button>
         <el-button
           type="danger"
           @click="disallowance()"
+          v-has="'B.SALES.CONTRACT.DISTLIST.REJECT'"
         >驳回</el-button>
         <el-button
           type="danger"
           @click="withdraw()"
+          v-has="'B.SALES.CONTRACT.DISTLIST.REVOKE'"
         >撤回</el-button>
         <el-dropdown
           class="margin-left-10"
@@ -226,8 +230,14 @@
             导出<i class="el-icon-arrow-down el-icon--right"></i>
           </el-button>
           <el-dropdown-menu slot="dropdown">
-            <el-dropdown-item @click.native.prevent="handleExport()">导出列表</el-dropdown-item>
-            <el-dropdown-item @click.native.prevent="handleExportFile()">导出附件</el-dropdown-item>
+            <el-dropdown-item
+              @click.native.prevent="handleExport()"
+              v-has="'B.SALES.CONTRACT.DISTLIST.EXPORTLIST'"
+            >导出列表</el-dropdown-item>
+            <el-dropdown-item
+              @click.native.prevent="handleExportFile()"
+              v-has="'B.SALES.CONTRACT.DISTLIST.EXPRORTATTCH'"
+            >导出附件</el-dropdown-item>
           </el-dropdown-menu>
         </el-dropdown>
         <el-link
@@ -343,10 +353,12 @@
             >详情</el-link>
             <el-link
               type="primary"
+              v-has="'B.SALES.CONTRACT.DISTLIST.STAMPFILE'"
               @click="duplicate(row)"
             >盖章版归档</el-link>
             <el-link
               type="primary"
+              v-has="'B.SALES.CONTRACT.DISTLIST.ORIGINALFILE'"
               @click="handleTo(row, 'original')"
             >原件归档</el-link>
           </template>

@@ -4,7 +4,7 @@
  * @Author: ywl
  * @Date: 2020-09-25 11:53:51
  * @LastEditors: ywl
- * @LastEditTime: 2020-12-16 10:56:45
+ * @LastEditTime: 2020-12-17 09:40:26
 -->
 <template>
   <IhPage label-width="100px">
@@ -214,8 +214,14 @@
             导出<i class="el-icon-arrow-down el-icon--right"></i>
           </el-button>
           <el-dropdown-menu slot="dropdown">
-            <el-dropdown-item @click.native.prevent="handleExport()">导出列表</el-dropdown-item>
-            <el-dropdown-item @click.native.prevent="handleExportFile()">导出附件</el-dropdown-item>
+            <el-dropdown-item
+              @click.native.prevent="handleExport()"
+              v-has="'B.SALES.CONTRACT.PARTYALIST.EXPORTLIST'"
+            >导出列表</el-dropdown-item>
+            <el-dropdown-item
+              @click.native.prevent="handleExportFile()"
+              v-has="'B.SALES.CONTRACT.PARTYALIST.EXPRORTATTCH'"
+            >导出附件</el-dropdown-item>
           </el-dropdown-menu>
         </el-dropdown>
         <el-link
@@ -330,10 +336,12 @@
             <el-link
               type="primary"
               @click="duplicate(row)"
+              v-has="'B.SALES.CONTRACT.PARTYALIST.SCANFILE'"
             >扫描件归档</el-link>
             <el-link
               type="primary"
               @click="handleToPage(row, '/partyA/edit')"
+              v-has="'B.SALES.CONTRACT.PARTYALIST.ORIGINALFILE'"
             >原件归档</el-link>
           </template>
         </el-table-column>

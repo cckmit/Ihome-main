@@ -4,7 +4,7 @@
  * @Author: ywl
  * @Date: 2020-09-27 16:27:36
  * @LastEditors: ywl
- * @LastEditTime: 2020-12-16 11:41:06
+ * @LastEditTime: 2020-12-17 09:00:11
 -->
 <template>
   <IhPage label-width="80px">
@@ -171,8 +171,14 @@
             导出<i class="el-icon-arrow-down el-icon--right"></i>
           </el-button>
           <el-dropdown-menu slot="dropdown">
-            <el-dropdown-item @click.native.prevent="handleExport()">导出列表</el-dropdown-item>
-            <el-dropdown-item @click.native.prevent="handleExportFile()">导出附件</el-dropdown-item>
+            <el-dropdown-item
+              @click.native.prevent="handleExport()"
+              v-has="'B.SALES.CONTRACT.DISCOUNTLIST.EXPORTLIST'"
+            >导出列表</el-dropdown-item>
+            <el-dropdown-item
+              @click.native.prevent="handleExportFile()"
+              v-has="'B.SALES.CONTRACT.DISCOUNTLIST.EXPRORTATTCH'"
+            >导出附件</el-dropdown-item>
           </el-dropdown-menu>
         </el-dropdown>
         <el-link
@@ -287,6 +293,7 @@
             >详情</el-link>
             <el-link
               type="success"
+              v-has="'B.SALES.CONTRACT.DISCOUNTLIST.PREVIEW'"
               class="margin-left-10"
               @click="preview(row)"
             >预览</el-link>
