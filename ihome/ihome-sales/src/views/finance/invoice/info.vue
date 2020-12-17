@@ -4,7 +4,7 @@
  * @Author: ywl
  * @Date: 2020-12-08 19:55:43
  * @LastEditors: ywl
- * @LastEditTime: 2020-12-16 21:07:36
+ * @LastEditTime: 2020-12-17 15:29:16
 -->
 <template>
   <IhPage class="text-left">
@@ -166,11 +166,12 @@
     <!-- 弹窗 -->
     <IhDialog :show="redVisble">
       <RedDashed
+        :data="itemData"
         :isHandmade="isHandmade"
         @cancel="() => (redVisble = false)"
         @finish="() => {
           redVisble = false;
-          getInfo();
+          $goto('/invoice/list');
         }"
       />
     </IhDialog>
@@ -200,6 +201,9 @@ export default class InvoiceInfo extends Vue {
   };
   private isHandmade = true;
   private redVisble = false;
+  private itemData: any = {
+    ids: [],
+  };
 
   private async getInfo() {
     let id = this.$route.query.id;
@@ -226,11 +230,12 @@ export default class InvoiceInfo extends Vue {
               ids: [this.info.invoiceInfo.id],
             });
         this.$message.success("红冲成功");
-        this.getInfo();
+        this.$goto("/invoice/list");
       } catch (error) {
         console.log(error);
       }
     } else {
+      this.itemData.ids = [this.info.invoiceInfo.id];
       this.redVisble = true;
     }
   }

@@ -4,7 +4,7 @@
  * @Author: ywl
  * @Date: 2020-12-01 15:49:07
  * @LastEditors: ywl
- * @LastEditTime: 2020-12-09 20:12:17
+ * @LastEditTime: 2020-12-17 15:45:12
  */
 import { RouteConfig } from 'vue-router'
 
@@ -24,7 +24,7 @@ const financeRoutes: Array<RouteConfig> = [
         path: 'list',
         name: 'bankBranchList',
         component: () => import('../views/finance/bankBranch/list.vue'),
-        meta: { title: '邀请码列表', icon: 'form', keepAlive: true }
+        meta: { title: '银行网点列表', icon: 'form', keepAlive: true }
       }
     ]
   },
