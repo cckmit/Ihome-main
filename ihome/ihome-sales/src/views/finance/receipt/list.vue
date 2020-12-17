@@ -4,7 +4,7 @@
  * @Author: ywl
  * @Date: 2020-12-09 19:24:59
  * @LastEditors: ywl
- * @LastEditTime: 2020-12-09 20:38:22
+ * @LastEditTime: 2020-12-17 14:53:09
 -->
 <template>
   <IhPage label-width="80px">
@@ -17,7 +17,7 @@
           <el-col :span="8">
             <el-form-item label="收款编号">
               <el-input
-                v-model="queryPageParameters.companyName"
+                v-model="queryPageParameters.payNo"
                 placeholder="请输入收款编号"
               ></el-input>
             </el-form-item>
@@ -35,6 +35,7 @@
               <el-select
                 v-model="queryPageParameters.companyName"
                 placeholder="请选择状态"
+                class="width--100"
               ></el-select>
             </el-form-item>
           </el-col>
@@ -47,6 +48,7 @@
                   <el-select
                     v-model="queryPageParameters.companyName"
                     placeholder="请选择款项类型"
+                    class="width--100"
                   ></el-select>
                 </el-form-item>
               </el-col>
@@ -268,7 +270,28 @@ import PaginationMixin from "../../../mixins/pagination";
   mixins: [PaginationMixin],
 })
 export default class ReceiptList extends Vue {
-  queryPageParameters: any = {};
+  queryPageParameters: any = {
+    businessId: null,
+    customerName: null,
+    endCheckTime: null,
+    endConfirmTime: null,
+    endPayDate: null,
+    endPayTime: null,
+    foundType: null,
+    groupId: null,
+    operator: null,
+    payNo: null,
+    payType: null,
+    payer: null,
+    proId: null,
+    roomId: null,
+    startCheckTime: null,
+    startConfirmTime: null,
+    startPayDate: null,
+    startPayTime: null,
+    status: null,
+    termId: null,
+  };
   resPageInfo: any = {
     total: null,
     list: [],
