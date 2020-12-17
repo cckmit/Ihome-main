@@ -3,8 +3,8 @@
  * @version: 
  * @Author: zyc
  * @Date: 2020-06-24 09:47:33
- * @LastEditors: zyc
- * @LastEditTime: 2020-12-16 10:48:13
+ * @LastEditors: ywl
+ * @LastEditTime: 2020-12-16 15:00:35
  */
 import { IRes } from "./users.d";
 // import request from '@/utils/http';
@@ -311,6 +311,55 @@ export function allMenu<T>() {
             icon: null,
             url: "/web-sales/dealReport/list"
         },
+        {
+            id: 801,
+            parentId: 0,
+            title: '财务管理模块',
+            icon: 'el-icon-setting',
+            path: null,
+        },
+        {
+            id: 802,
+            parentId: 801,
+            title: "银行网点列表",
+            icon: null,
+            path: "/web-sales/bankBranch/list"
+        },
+        {
+            id: 803,
+            parentId: 801,
+            title: "收款账号列表",
+            icon: null,
+            path: "/web-sales/receiptAccount/list"
+        },
+        {
+            id: 804,
+            parentId: 801,
+            title: "发票税率维护",
+            icon: null,
+            path: "/web-sales/invoiceTax/list"
+        },
+        {
+            id: 805,
+            parentId: 801,
+            title: "POS机管理列表",
+            icon: null,
+            path: "/web-sales/pos/list"
+        },
+        {
+            id: 806,
+            parentId: 801,
+            title: '开票列表',
+            icon: null,
+            path: '/web-sales/invoice/list'
+        },
+        {
+            id: 807,
+            parentId: 801,
+            title: '收款列表',
+            icon: null,
+            path: '/web-sales/receipt/list'
+        }
     ];
     return menuList;
 }

@@ -4,7 +4,7 @@
  * @Author: zyc
  * @Date: 2020-07-08 14:23:49
  * @LastEditors: zyc
- * @LastEditTime: 2020-12-17 09:53:50
+ * @LastEditTime: 2020-12-17 15:56:45
 --> 
 <template>
   <div>
@@ -35,7 +35,7 @@
 </template>
 <script lang="ts">
 import { Component, Vue, Watch } from "vue-property-decorator";
-import { get_resource_getAll } from "../../../api/system/index";
+import { post_resource_getAllByUserId } from "../../../api/system/index";
 @Component({
   components: {},
 })
@@ -60,7 +60,11 @@ export default class UserResources extends Vue {
     console.log(item);
   }
   async created() {
-    const res: any = await get_resource_getAll();
+    let id = this.$route.query.id;
+    const res: any = await post_resource_getAllByUserId({
+      key: null,
+      userId: id,
+    });
     res.forEach((item: any) => {
       if (item.id == item.parentId) {
         item.parentId = 0;

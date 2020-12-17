@@ -3,8 +3,8 @@
  * @version: 
  * @Author: zyc
  * @Date: 2020-06-22 11:10:43
- * @LastEditors: zyc
- * @LastEditTime: 2020-12-16 10:48:43
+ * @LastEditors: ywl
+ * @LastEditTime: 2020-12-16 15:01:08
  */
 import Vue from 'vue'
 import VueRouter, { RouteConfig, Route } from 'vue-router'
@@ -22,9 +22,10 @@ Vue.use(VueRouter);
 
 import { channelRoutes } from './channel';
 import { developerRoutes } from './developer';
-import { contractRoutes } from './contract'
-import { projectRoutes } from './project'
-import { dealRoutes } from './deal'
+import { contractRoutes } from './contract';
+import { projectRoutes } from './project';
+import { dealRoutes } from './deal';
+import { financeRoutes } from './finance'
 
 let routes: Array<RouteConfig> = [
   {
@@ -43,12 +44,12 @@ let routes: Array<RouteConfig> = [
         component: () => import('../views/home/index.vue'),
         meta: { title: '首页', icon: 'form', keepAlive: true }
       },
-   
+
     ]
   },
 ]
 
-routes = routes.concat(channelRoutes, developerRoutes, contractRoutes, projectRoutes, dealRoutes);
+routes = routes.concat(channelRoutes, developerRoutes, contractRoutes, projectRoutes, dealRoutes, financeRoutes);
 
 const router = new VueRouter({
   mode: 'history',
