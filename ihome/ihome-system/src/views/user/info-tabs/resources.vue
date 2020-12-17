@@ -4,7 +4,7 @@
  * @Author: zyc
  * @Date: 2020-07-08 14:23:49
  * @LastEditors: zyc
- * @LastEditTime: 2020-12-09 17:53:23
+ * @LastEditTime: 2020-12-17 09:53:50
 --> 
 <template>
   <div>
@@ -61,10 +61,11 @@ export default class UserResources extends Vue {
   }
   async created() {
     const res: any = await get_resource_getAll();
-    console.log(res);
-    if (res && res.length > 0) {
-      res[0].parentId = 0;
-    }
+    res.forEach((item: any) => {
+      if (item.id == item.parentId) {
+        item.parentId = 0;
+      }
+    });
     this.dataTree = this.$tool.listToGruop(res, { rootId: 0 });
   }
 }

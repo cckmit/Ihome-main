@@ -4,7 +4,7 @@
  * @Author: zyc
  * @Date: 2020-06-30 09:21:17
  * @LastEditors: zyc
- * @LastEditTime: 2020-12-16 14:44:09
+ * @LastEditTime: 2020-12-17 09:34:16
 --> 
 <template>
   <ih-page>
@@ -228,9 +228,9 @@
     <template v-slot:btn>
       <el-row>
         <el-button type="primary" @click="search()">查询</el-button>
-        <el-button type="success" @click="add()">添加</el-button>
+        <el-button v-has="'B.SALES.SYSTEM.USERLIST.ADD'" type="success" @click="add()">添加</el-button>
         <el-button type="info" @click="reset()">重置</el-button>
-        <el-button @click="copyUser()">复制用户岗位角色组织权限</el-button>
+        <el-button @click="copyUser()" v-has="'B.SALES.SYSTEM.USERLIST.COPYAUTH'">复制用户岗位角色组织权限</el-button>
         <el-link
           type="primary"
           class="float-right margin-right-40"
@@ -341,25 +341,25 @@
                 <i class="el-icon-arrow-down el-icon--right"></i>
               </span>
               <el-dropdown-menu slot="dropdown">
-                <el-dropdown-item @click.native.prevent="edit(scope)"
+                <el-dropdown-item @click.native.prevent="edit(scope)" v-has="'B.SALES.SYSTEM.USERLIST.UPDATE'"
                   >修改</el-dropdown-item
                 >
-                <el-dropdown-item @click.native.prevent="remove(scope)"
+                <el-dropdown-item @click.native.prevent="remove(scope)" v-has="'B.SALES.SYSTEM.USERLIST.DELETE'"
                   >删除</el-dropdown-item
                 >
-                <el-dropdown-item @click.native.prevent="locking(scope)"
+                <el-dropdown-item @click.native.prevent="locking(scope)" v-has="'B.SALES.SYSTEM.USERLIST.LOCK'"
                   >锁定用户</el-dropdown-item
                 >
-                <el-dropdown-item @click.native.prevent="activation(scope)"
+                <el-dropdown-item @click.native.prevent="activation(scope)" v-has="'B.SALES.SYSTEM.USERLIST.ACTIVE'"
                   >激活用户</el-dropdown-item
                 >
-                <el-dropdown-item @click.native.prevent="resetPassword(scope)"
+                <el-dropdown-item @click.native.prevent="resetPassword(scope)" v-has="'B.SALES.SYSTEM.USERLIST.RESET'"
                   >重置密码</el-dropdown-item
                 >
-                <el-dropdown-item @click.native.prevent="jobRole(scope)"
+                <el-dropdown-item @click.native.prevent="jobRole(scope)" v-has="'B.SALES.SYSTEM.USERLIST.ADDROLE'"
                   >分配岗位角色</el-dropdown-item
                 >
-                <el-dropdown-item @click.native.prevent="pOrganization(scope)"
+                <el-dropdown-item @click.native.prevent="pOrganization(scope)" v-has="'B.SALES.SYSTEM.USERLIST.ADDAUTH'"
                   >分配组织权限</el-dropdown-item
                 >
               </el-dropdown-menu>

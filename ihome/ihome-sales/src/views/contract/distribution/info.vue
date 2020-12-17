@@ -4,7 +4,7 @@
  * @Author: ywl
  * @Date: 2020-09-27 10:46:14
  * @LastEditors: ywl
- * @LastEditTime: 2020-12-15 20:53:27
+ * @LastEditTime: 2020-12-17 10:22:09
 -->
 <template>
   <IhPage class="text-left distribution-info">
@@ -272,6 +272,7 @@
           </el-col>
           <el-col :span="12">
             <el-form-item label="审核状态">
+              {{$root.dictAllName(ruleForm.distributionState, 'DistributionState')}}
             </el-form-item>
           </el-col>
         </el-row>

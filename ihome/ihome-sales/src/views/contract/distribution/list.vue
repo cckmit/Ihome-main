@@ -4,7 +4,7 @@
  * @Author: ywl
  * @Date: 2020-09-25 17:34:32
  * @LastEditors: ywl
- * @LastEditTime: 2020-12-17 09:33:24
+ * @LastEditTime: 2020-12-17 10:07:15
 -->
 <template>
   <IhPage label-width="100px">
@@ -343,7 +343,7 @@
         ></el-table-column>
         <el-table-column
           label="操作"
-          width="200"
+          min-width="120"
           fixed="right"
         >
           <template v-slot="{ row }">
@@ -351,16 +351,25 @@
               type="primary"
               @click="handleTo(row, 'info')"
             >详情</el-link>
-            <el-link
-              type="primary"
-              v-has="'B.SALES.CONTRACT.DISTLIST.STAMPFILE'"
-              @click="duplicate(row)"
-            >盖章版归档</el-link>
-            <el-link
-              type="primary"
-              v-has="'B.SALES.CONTRACT.DISTLIST.ORIGINALFILE'"
-              @click="handleTo(row, 'original')"
-            >原件归档</el-link>
+            <el-dropdown
+              trigger="click"
+              style="margin-left: 15px"
+            >
+              <span class="el-dropdown-link">
+                更多
+                <i class="el-icon-arrow-down el-icon--right"></i>
+              </span>
+              <el-dropdown-menu slot="dropdown">
+                <el-dropdown-item
+                  @click.native.prevent="duplicate(row)"
+                  v-has="'B.SALES.CONTRACT.PARTYALIST.SCANFILE'"
+                >盖章版归档</el-dropdown-item>
+                <el-dropdown-item
+                  @click.native.prevent="handleTo(row, 'original')"
+                  v-has="'B.SALES.CONTRACT.DISTLIST.ORIGINALFILE'"
+                >原件归档</el-dropdown-item>
+              </el-dropdown-menu>
+            </el-dropdown>
           </template>
         </el-table-column>
       </el-table>
