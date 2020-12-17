@@ -107,7 +107,7 @@
             <span
               class="text-ellipsis"
               :title="info.busEnum"
-            >{{$root.dictAllName(info.busEnum, 'Bus')}}</span>
+            >{{$root.dictAllName(info.busEnum, 'BusinessModel')}}</span>
           </el-form-item>
         </el-col>
         <el-col :span="12">

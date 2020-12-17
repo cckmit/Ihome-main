@@ -4,7 +4,7 @@
  * @Author: wwq
  * @Date: 2020-12-03 10:50:26
  * @LastEditors: wwq
- * @LastEditTime: 2020-12-11 09:00:45
+ * @LastEditTime: 2020-12-17 15:17:56
 -->
 <template>
   <el-dialog
@@ -38,7 +38,7 @@
         <td class="bold">是否市场化项目</td>
         <td colspan="2">{{form && form.termCalcVo && form.termCalcVo.exMarket}}</td>
         <td class="bold">业务模式</td>
-        <td colspan="2">{{form && form.termCalcVo && $root.dictAllName(form.termCalcVo.busEnum, 'Bus')}}</td>
+        <td colspan="2">{{form && form.termCalcVo && $root.dictAllName(form.termCalcVo.busEnum, 'BusinessModel')}}</td>
         <td class="bold">收费类型</td>
         <td colspan="3">{{form && form.termCalcVo && $root.dictAllName(form.termCalcVo.chargeEnum, 'Charge')}}</td>
       </tr>

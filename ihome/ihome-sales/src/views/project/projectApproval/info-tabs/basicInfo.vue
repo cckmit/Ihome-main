@@ -4,7 +4,7 @@
  * @Author: wwq
  * @Date: 2020-11-27 17:17:06
  * @LastEditors: wwq
- * @LastEditTime: 2020-12-16 17:11:43
+ * @LastEditTime: 2020-12-17 15:18:04
 -->
 <template>
   <IhPage>
@@ -100,7 +100,7 @@
               label="业务模式"
               prop="busEnum"
             >
-              <span class="text-ellipsis">{{ $root.dictAllName(info.busEnumChange, "Bus") }}</span>
+              <span class="text-ellipsis">{{ $root.dictAllName(info.busEnumChange, "BusinessModel") }}</span>
             </el-form-item>
           </el-col>
           <el-col :span="8">
