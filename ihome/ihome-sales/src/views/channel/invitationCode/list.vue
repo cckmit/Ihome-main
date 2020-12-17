@@ -3,8 +3,8 @@
  * @version: 
  * @Author: zyc
  * @Date: 2020-07-14 09:23:40
- * @LastEditors: ywl
- * @LastEditTime: 2020-11-30 17:47:11
+ * @LastEditors: zyc
+ * @LastEditTime: 2020-12-17 09:40:00
 --> 
 --> 
 <template>
@@ -104,6 +104,7 @@
         <el-button
           type="success"
           @click="add()"
+          v-has="'B.SALES.CHANNEL.CODELIST.ADD'"
         >添加</el-button>
         <el-button
           type="info"
@@ -112,6 +113,7 @@
         <el-button
           type="default"
           @click="toVoid()"
+          v-has="'B.SALES.CHANNEL.CODELIST.INVALID'"
         >作废</el-button>
       </el-row>
     </template>
@@ -188,6 +190,7 @@
               style="color: #f66"
               type="primary"
               @click.native.prevent="remove(scope)"
+              v-has="'B.SALES.CHANNEL.CODELIST.DELETE'"
             >删除</el-link>
           </template>
         </el-table-column>
