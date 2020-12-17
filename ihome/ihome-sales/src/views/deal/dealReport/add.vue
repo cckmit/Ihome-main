@@ -4,7 +4,7 @@
  * @Author: lsj
  * @Date: 2020-10-30 16:38:23
  * @LastEditors: lsj
- * @LastEditTime: 2020-12-14 20:10:10
+ * @LastEditTime: 2020-12-17 11:12:10
 -->
 <template>
   <ih-page class="text-left">
@@ -67,18 +67,6 @@
           </el-form-item>
         </el-col>
         <el-col :span="6">
-          <el-form-item label="是否垫佣" prop="isMat">
-            <el-select
-              v-model="postData.isMat"
-              clearable
-              placeholder="请选择是否垫佣"
-              class="width--100">
-              <el-option label="是" value="Yes"></el-option>
-              <el-option label="否" value="No"></el-option>
-            </el-select>
-          </el-form-item>
-        </el-col>
-        <el-col :span="6">
           <el-form-item label="是否代销" prop="isConsign">
             <el-select
               v-model="postData.isConsign"
@@ -120,7 +108,7 @@
           </el-form-item>
         </el-col>
         <el-col :span="6" v-if="postData.contType === 'DistriDeal'">
-          <el-form-item label="分销协议编号">
+          <el-form-item label="分销协议编号" :prop="postData.contType === 'DistriDeal' ? 'contNo' : ''">
             <div class="contNo-wrapper">
               <el-select
                 v-model="postData.contNo"
@@ -137,26 +125,38 @@
           </el-form-item>
         </el-col>
         <el-col :span="6" v-if="postData.contType === 'DistriDeal'">
-          <el-form-item label="渠道公司">
+          <el-form-item label="是否垫佣" :prop="postData.contType === 'DistriDeal' ? 'isMat' : ''">
+            <el-select
+              v-model="postData.isMat"
+              disabled
+              placeholder="请选择是否垫佣"
+              class="width--100">
+              <el-option label="是" value="Yes"></el-option>
+              <el-option label="否" value="No"></el-option>
+            </el-select>
+          </el-form-item>
+        </el-col>
+        <el-col :span="6" v-if="postData.contType === 'DistriDeal'">
+          <el-form-item label="渠道公司" :prop="postData.contType === 'DistriDeal' ? 'channelName' : ''">
             <el-input v-model="postData.channelName" disabled placeholder="选成交报备自动带出"></el-input>
           </el-form-item>
         </el-col>
         <el-col :span="6" v-if="postData.contType === 'DistriDeal'">
-          <el-form-item label="渠道等级">
-            <el-input v-model="postData.channelName" disabled placeholder="选成交报备自动带出"></el-input>
+          <el-form-item label="渠道等级" :prop="postData.contType === 'DistriDeal' ? 'channelLevel' : ''">
+            <el-input v-model="postData.channelLevel" disabled placeholder="选成交报备自动带出"></el-input>
           </el-form-item>
         </el-col>
         <el-col :span="6" v-if="postData.contType === 'DistriDeal'">
-          <el-form-item label="经纪人">
-            <el-input v-model="postData.channelName" disabled placeholder="选成交报备自动带出"></el-input>
+          <el-form-item label="经纪人" :prop="postData.contType === 'DistriDeal' ? 'channelId' : ''">
+            <el-input v-model="postData.channelId" disabled placeholder="选成交报备自动带出"></el-input>
           </el-form-item>
         </el-col>
         <el-col :span="6">
-          <el-form-item label="一手代理团队" prop="oneAgentTeamId">
+          <el-form-item label="一手代理公司" prop="oneAgentTeamId">
             <el-select
               v-model="postData.oneAgentTeamId"
               clearable
-              placeholder="请选择一手代理团队"
+              placeholder="请选择一手代理公司"
               class="width--100">
               <el-option
                 v-for="item in firstAgencyCompanyList"
@@ -195,7 +195,7 @@
           </el-form-item>
         </el-col>
         <el-col :span="6">
-          <el-form-item label="备案情况">
+          <el-form-item label="备案情况" prop="recordState">
             <el-select
               v-model="postData.recordState"
               clearable
@@ -269,7 +269,7 @@
           </el-form-item>
         </el-col>
         <el-col :span="6">
-          <el-form-item label="签约类型">
+          <el-form-item label="签约类型" prop="signType">
             <el-select
               v-model="postData.signType"
               clearable
@@ -344,17 +344,17 @@
           </el-form-item>
         </el-col>
         <el-col :span="6" v-if="!!id">
-          <el-form-item label="录入人" prop="entryPerson">
-            <el-input v-model="postData.entryPerson" readonly placeholder="录入人"></el-input>
+          <el-form-item label="录入人" :prop="!!id ? 'entryPerson' : ''">
+            <el-input v-model="postData.entryPerson" disabled placeholder="录入人"></el-input>
           </el-form-item>
         </el-col>
         <el-col :span="6" v-if="!!id">
-          <el-form-item label="录入日期" prop="entryDate">
+          <el-form-item label="录入日期" :prop="!!id ? 'entryDate' : ''">
             <el-date-picker
               style="width: 100%"
               v-model="postData.entryDate"
               type="datetime"
-              readonly
+              disabled
               placeholder="请选择录入日期">
             </el-date-picker>
           </el-form-item>
@@ -365,101 +365,8 @@
           </el-form-item>
         </el-col>
         <el-col :span="6" v-if="!!id">
-          <el-form-item label="成交状态" prop="status">
+          <el-form-item label="成交状态" :prop="!!id ? 'status' : ''">
             <el-input v-model="postData.status" disabled placeholder="成交状态"></el-input>
-          </el-form-item>
-        </el-col>
-      </el-row>
-      <p id="anchor-2" class="ih-info-title" v-if="false">房产信息</p>
-      <el-row v-if="false">
-        <el-col :span="24">
-          <div class="add-all-wrapper padding-left-20">
-            <el-button type="success">更新明源数据</el-button>
-          </div>
-        </el-col>
-        <el-col :span="8">
-          <el-form-item label="物业类型" prop="propertyType">
-            <el-select
-              v-model="postData.propertyType"
-              clearable
-              placeholder="请选择物业类型"
-              class="width--100">
-              <el-option
-                v-for="item in $root.dictAllList('Property')"
-                :key="item.code"
-                :label="item.name"
-                :value="item.code"
-              ></el-option>
-            </el-select>
-          </el-form-item>
-        </el-col>
-        <el-col :span="8">
-          <el-form-item label="栋座">
-            <el-input v-model="postData.buildingId" disabled placeholder="请输入栋座"></el-input>
-          </el-form-item>
-        </el-col>
-        <el-col :span="8">
-          <el-form-item label="房号">
-            <el-input placeholder="请选择房号" readonly v-model="postData.roomNo">
-              <el-button slot="append" icon="el-icon-search" @click.native.prevent="selectRoom"></el-button>
-            </el-input>
-          </el-form-item>
-        </el-col>
-        <el-col :span="12">
-          <el-form-item label="房产证/预售合同编号">
-            <el-input v-model="postData.propertyNo" clearable placeholder="请输入房产证/预售合同编号"></el-input>
-          </el-form-item>
-        </el-col>
-        <el-col :span="12">
-          <el-form-item label="房产证地址">
-            <el-input v-model="postData.address" clearable placeholder="请输入房产证地址"></el-input>
-          </el-form-item>
-        </el-col>
-        <el-col :span="8">
-          <el-form-item label="建筑面积" prop="area">
-            <el-input v-model="postData.area" clearable placeholder="请输入建筑面积"></el-input>
-          </el-form-item>
-        </el-col>
-        <el-col :span="16">
-          <el-form-item label="户型">
-            <div class="home-type-wrapper">
-              <div>
-                <el-input-number
-                  v-digits="0"
-                  v-model="postData.room"
-                  :min="0"
-                  :step="1"
-                  size="small"
-                  :step-strictly="true"></el-input-number>室
-              </div>
-              <div>
-                <el-input-number
-                  v-digits="0"
-                  v-model="postData.hall"
-                  :min="0"
-                  :step="1"
-                  size="small"
-                  :step-strictly="true"></el-input-number>厅
-              </div>
-              <div>
-                <el-input-number
-                  v-digits="0"
-                  v-model="postData.kitchen"
-                  :min="0"
-                  :step="1"
-                  size="small"
-                  :step-strictly="true"></el-input-number>厨
-              </div>
-              <div>
-                <el-input-number
-                  v-digits="0"
-                  v-model="postData.toilet"
-                  :min="0"
-                  :step="1"
-                  size="small"
-                  :step-strictly="true"></el-input-number>卫
-              </div>
-            </div>
           </el-form-item>
         </el-col>
       </el-row>
@@ -468,7 +375,9 @@
     <el-row style="padding-left: 20px">
       <el-col>
         <div class="add-all-wrapper">
-          <el-button type="success" @click="handleAddNotice">添加</el-button>
+          <el-button
+            v-if="baseInfoByTerm.termStageEnum === 'Recognize'"
+            type="success" @click="handleAddNotice">添加</el-button>
         </div>
         <el-table
           class="ih-table"
@@ -559,31 +468,6 @@
                 class="margin-right-10"
                 type="primary"
                 @click.native.prevent="deleteAdd(scope, 'customer')"
-              >删除
-              </el-link>
-            </template>
-          </el-table-column>
-        </el-table>
-      </el-col>
-    </el-row>
-    <p id="anchor-5" class="ih-info-title" v-if="false">渠道信息</p>
-    <el-row style="padding-left: 20px" v-if="false">
-      <el-col>
-        <div class="add-all-wrapper">
-          <el-button type="success" @click="handleAddBroker">添加渠道经纪人</el-button>
-        </div>
-        <el-table
-          class="ih-table"
-          :data="postData.agencyVO">
-          <el-table-column prop="agencyName" label="渠道公司名称" min-width="120"></el-table-column>
-          <el-table-column prop="channelLevel" label="渠道等级" min-width="120"></el-table-column>
-          <el-table-column prop="broker" label="经纪人" min-width="120"></el-table-column>
-          <el-table-column fixed="right" label="操作" width="100">
-            <template slot-scope="scope">
-              <el-link
-                class="margin-right-10"
-                type="primary"
-                @click.native.prevent="deleteAdd(scope, 'broker')"
               >删除
               </el-link>
             </template>
@@ -1076,7 +960,9 @@
     firstAgencyCompanyList: any = []; // 一手代理团队选项
     currentType: any = null; // 用来区别是文员岗(add)位还是案场岗位(declare)
     baseInfoByTerm: any = {
-      proId: null
+      proId: null, // 项目id --- 用于查询分销协议列表
+      termId: null, // 项目周期id
+      termStageEnum: null, // 判断优惠告知书是否有添加按钮
     }; // 通过项目周期id获取到的初始化成交基础信息
     postData: any = {
       baseProId: null, // 记录，当合同类型=分销成交时，需要用项目Id作为参数查报备列表
@@ -1113,7 +999,8 @@
       remarks: null,
       propertyType: null,
       buildingId: null,
-      roomNo: null,
+      roomNo: null, // 房号
+      roomId: null, // 房号ID
       propertyNo: null,
       address: null,
       area: null,
@@ -1190,6 +1077,12 @@
       ],
       propertyType: [
         {required: true, message: "物业类型必选", trigger: "change"},
+      ],
+      recordState: [
+        {required: true, message: "备案情况必选", trigger: "change"},
+      ],
+      signType: [
+        {required: true, message: "签约类型必选", trigger: "change"},
       ],
       area: [
         {required: true, message: "建筑面积必填", trigger: "change"},
@@ -1428,13 +1321,15 @@
                 // 认购
                 this.dealStageList = DealStageList.filter((item: any) => {
                   return item.code !== 'SignUp';
-                })
+                });
                 break;
               case 'Recognize':
                 // 认筹
+                // 清空优惠告知书 --- 认筹周期需要自己手动添加
+                this.postData.offerNoticeVO = [];
                 this.dealStageList = DealStageList.filter((item: any) => {
                   return item.code === 'Recognize';
-                })
+                });
                 break;
             }
           }
@@ -1594,7 +1489,8 @@
     // 确定选择房号
     async finishAddRoom(data: any) {
       console.log('data', data);
-      // this.addTotalPackageList = data;
+      this.postData.roomNo = data.roomNo;
+      this.postData.roomId = data.roomId;
     }
 
     // 添加优惠告知书
