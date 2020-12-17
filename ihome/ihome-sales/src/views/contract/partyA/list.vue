@@ -4,7 +4,7 @@
  * @Author: ywl
  * @Date: 2020-09-25 11:53:51
  * @LastEditors: ywl
- * @LastEditTime: 2020-12-17 09:40:26
+ * @LastEditTime: 2020-12-17 10:04:01
 -->
 <template>
   <IhPage label-width="100px">
@@ -325,7 +325,7 @@
         ></el-table-column>
         <el-table-column
           label="操作"
-          width="210"
+          min-width="120"
           fixed="right"
         >
           <template v-slot="{ row }">
@@ -333,16 +333,25 @@
               type="primary"
               @click="handleToPage(row, 'info')"
             >详情</el-link>
-            <el-link
-              type="primary"
-              @click="duplicate(row)"
-              v-has="'B.SALES.CONTRACT.PARTYALIST.SCANFILE'"
-            >扫描件归档</el-link>
-            <el-link
-              type="primary"
-              @click="handleToPage(row, '/partyA/edit')"
-              v-has="'B.SALES.CONTRACT.PARTYALIST.ORIGINALFILE'"
-            >原件归档</el-link>
+            <el-dropdown
+              trigger="click"
+              style="margin-left: 15px"
+            >
+              <span class="el-dropdown-link">
+                更多
+                <i class="el-icon-arrow-down el-icon--right"></i>
+              </span>
+              <el-dropdown-menu slot="dropdown">
+                <el-dropdown-item
+                  @click.native.prevent="duplicate(row)"
+                  v-has="'B.SALES.CONTRACT.PARTYALIST.SCANFILE'"
+                >扫描件归档</el-dropdown-item>
+                <el-dropdown-item
+                  @click.native.prevent="handleToPage(row, '/partyA/edit')"
+                  v-has="'B.SALES.CONTRACT.PARTYALIST.ORIGINALFILE'"
+                >原件归档</el-dropdown-item>
+              </el-dropdown-menu>
+            </el-dropdown>
           </template>
         </el-table-column>
       </el-table>

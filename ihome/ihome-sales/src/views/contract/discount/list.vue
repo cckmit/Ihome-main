@@ -4,7 +4,7 @@
  * @Author: ywl
  * @Date: 2020-09-27 16:27:36
  * @LastEditors: ywl
- * @LastEditTime: 2020-12-17 09:00:11
+ * @LastEditTime: 2020-12-17 09:53:52
 -->
 <template>
   <IhPage label-width="80px">
@@ -284,7 +284,7 @@
         <el-table-column
           fixed="right"
           label="操作"
-          width="100"
+          min-width="100"
         >
           <template v-slot="{ row }">
             <el-link
