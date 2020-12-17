@@ -4,7 +4,7 @@
  * @Author: lgf
  * @Date: 2020-09-16 14:05:21
  * @LastEditors: ywl
- * @LastEditTime: 2020-12-15 10:35:02
+ * @LastEditTime: 2020-12-17 21:05:23
 -->
 <template>
   <div class="text-left">
@@ -204,7 +204,7 @@
     <div class="padding-left-20">{{info.changeReason}}</div>
 
     <template v-if="pageName === 'ChannelChangeConfirm'">
-      <p class="ih-info-title">确认意见</p>
+      <p class="ih-info-title">确认意见/驳回意见</p>
       <el-input
         type="textarea"
         v-model="approveRecord.remark"
