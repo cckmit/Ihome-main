@@ -3,8 +3,8 @@
  * @version: 
  * @Author: wwq
  * @Date: 2020-10-15 12:33:25
- * @LastEditors: wwq
- * @LastEditTime: 2020-12-16 20:22:14
+ * @LastEditors: ywl
+ * @LastEditTime: 2020-12-18 20:07:53
 -->
 <template>
   <div class="text-left">
@@ -100,7 +100,7 @@
             align="left"
           >
             <span>{{
-              $root.dictAllName(resPageInfo.status, "ChannelStatus")
+              $root.dictAllName(resPageInfo.status, "ChannelGradeStatus")
             }}</span>
           </el-form-item>
         </el-col>
