@@ -414,7 +414,7 @@
 
     resPageInfo: any = {
       total: null,
-      list: [{},{}],
+      list: [],
     };
 
     async created() {

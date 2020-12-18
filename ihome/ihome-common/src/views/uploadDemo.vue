@@ -4,7 +4,7 @@
  * @Author: wwq
  * @Date: 2020-09-16 14:54:19
  * @LastEditors: wwq
- * @LastEditTime: 2020-11-10 09:38:00
+ * @LastEditTime: 2020-12-18 11:50:52
 -->
 <template>
   <div>
@@ -20,10 +20,13 @@
         label="类型"
         width="150"
       ></el-table-column>
-      <el-table-column prop="accessory" label="附件">
+      <el-table-column
+        prop="accessory"
+        label="附件"
+      >
         <template v-slot="{ row }">
           <IhUpload
-            isCrop
+            :isCrop="isCrop"
             :file-list.sync="row.fileList"
             :size="size"
             :limit="limit"
@@ -43,9 +46,9 @@ import { Component, Vue } from "vue-property-decorator";
 export default class UploadDemo extends Vue {
   private tableData: any = [];
   private fileList: any = [];
-  private isCrop = true; // 上传前是否开启图片裁剪(只针对于图片上传)
+  private isCrop = false; // 上传前是否开启图片裁剪(只针对于图片上传)
   private size = "100px"; // 上传框的长宽为100px
-  private limit = 3; // 上传文件的个数
+  private limit = 5; // 上传文件的个数
   private fileSize = 10; // 限制上传文件大小为10M
   private isMove = true; // 是否开启左右切换功能
   private getImage() {

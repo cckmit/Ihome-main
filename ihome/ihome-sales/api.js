@@ -3,8 +3,8 @@
  * @version: 
  * @Author: zyc
  * @Date: 2020-08-04 17:43:48
- * @LastEditors: ywl
- * @LastEditTime: 2020-12-17 16:31:17
+ * @LastEditors: zyc
+ * @LastEditTime: 2020-12-18 09:03:48
  */
 let handleSwagger = require('./node_modules/ihome-common/util/api/api-hangle');
 function doneApi() {
@@ -13,11 +13,8 @@ function doneApi() {
     // handleSwagger('channel');
     // handleSwagger('contract');
     // handleSwagger('developer');
-    // handleSwagger('project');
-    // handleSwagger('deal');
+    handleSwagger('channel');
     // handleSwagger('customer');
-    handleSwagger('finance');
-    // handleSwagger('sales-document-cover');
 }
 module.exports = (api, projectOptions) => {
     api.registerCommand('api', {
@@ -32,3 +29,4 @@ module.exports = (api, projectOptions) => {
         doneApi();
     })
 }
+

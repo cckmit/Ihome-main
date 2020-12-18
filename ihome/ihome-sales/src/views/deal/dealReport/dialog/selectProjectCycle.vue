@@ -32,6 +32,7 @@
     </el-form>
     <IhTableCheckBox
       :isSingle="true"
+      :isSelection="false"
       :valueKey="rowKey"
       :data="resPageInfo.list"
       :hasCheckedData="hasCheckedData"

@@ -4,7 +4,7 @@
  * @Author: wwq
  * @Date: 2020-09-09 16:17:16
  * @LastEditors: wwq
- * @LastEditTime: 2020-12-15 10:27:44
+ * @LastEditTime: 2020-12-18 11:51:55
 -->
 <template>
   <div class="upload">
@@ -36,64 +36,71 @@
           name="extend"
           :data="file"
         />
-        <span
-          class="el-upload-list__item-actions uploadbutton"
-          :style="{
+        <el-tooltip
+          class="item"
+          effect="light"
+          :content="file.name"
+          placement="top"
+        >
+          <span
+            class="el-upload-list__item-actions uploadbutton"
+            :style="{
             width: size,
             height: Object.keys($scopedSlots).length ? size : '',
           }"
-        >
-          <span class="operation">
-            <span
-              class="el-upload-list__item-preview"
-              v-if="previewPermi"
-              @click="handlePictureCardPreview(file)"
-            >
-              <i
-                class="el-icon-zoom-in"
-                title="预览"
-              ></i>
-            </span>
-            <span
-              class="el-upload-list__item-delete"
-              v-if="loadPermi"
-              @click="handleDownload(file)"
-            >
-              <i
-                class="el-icon-download"
-                title="下载"
-              ></i>
-            </span>
-            <span
-              class="el-upload-list__item-delete"
-              v-if="removePermi"
-              @click="handleRemove(file)"
-            >
-              <i
-                class="el-icon-delete"
-                title="删除"
-              ></i>
-            </span>
-          </span>
-          <span
-            class="move"
-            v-if="isMove"
-            ref="move"
           >
-            <span @click="leftShift(file)">
-              <i
-                class="el-icon-back"
-                title="左移"
-              ></i>
+            <span class="operation">
+              <span
+                class="el-upload-list__item-preview"
+                v-if="previewPermi"
+                @click="handlePictureCardPreview(file)"
+              >
+                <i
+                  class="el-icon-zoom-in"
+                  title="预览"
+                ></i>
+              </span>
+              <span
+                class="el-upload-list__item-delete"
+                v-if="loadPermi"
+                @click="handleDownload(file)"
+              >
+                <i
+                  class="el-icon-download"
+                  title="下载"
+                ></i>
+              </span>
+              <span
+                class="el-upload-list__item-delete"
+                v-if="removePermi"
+                @click="handleRemove(file)"
+              >
+                <i
+                  class="el-icon-delete"
+                  title="删除"
+                ></i>
+              </span>
             </span>
-            <span @click="rightShift(file)">
-              <i
-                class="el-icon-right"
-                title="右移"
-              ></i>
+            <span
+              class="move"
+              v-if="isMove"
+              ref="move"
+            >
+              <span @click="leftShift(file)">
+                <i
+                  class="el-icon-back"
+                  title="左移"
+                ></i>
+              </span>
+              <span @click="rightShift(file)">
+                <i
+                  class="el-icon-right"
+                  title="右移"
+                ></i>
+              </span>
             </span>
           </span>
-        </span>
+        </el-tooltip>
       </template>
       <i
         class="el-icon-plus avatar-uploader-icon"
@@ -253,7 +260,13 @@ export default class IhUpload extends Vue {
     return await post_file_upload(fd);
   }
   successHandler(response: any, file: any, fileList: any) {
-    this.replaceUpload(file, fileList, fileList.length - 1, response[0].fileId);
+    fileList.forEach((v: any, index: number) => {
+      if (v?.response?.length) {
+        this.replaceUpload(v, fileList, index, v.response[0].fileId);
+      } else {
+        this.replaceUpload(v, fileList, index, v.fileId);
+      }
+    });
     this.$message.success("上传成功");
     this.$emit("newFileList", fileList, this.fileType);
   }

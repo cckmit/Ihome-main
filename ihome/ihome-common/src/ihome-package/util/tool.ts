@@ -4,7 +4,7 @@
  * @Author: zyc
  * @Date: 2020-12-09 09:45:58
  * @LastEditors: zyc
- * @LastEditTime: 2020-12-15 10:38:39
+ * @LastEditTime: 2020-12-18 09:35:23
  */
 /*
  * @Descripttion: 
@@ -115,11 +115,11 @@ export class Tool implements ToolInterface {
     getFileUrl(fid: string | number, width?: string | number, height?: string | number): string {
         if (width && height) {
             //缩略图
-            let url = `/sales-document-cover/image/thumbnail/${fid}/${width}/${height}`;
+            let url = `/sales-api/sales-document-cover/image/thumbnail/${fid}/${width}/${height}`;
             return url;
         } else {
             //文件路径
-            let url = `/sales-document-cover/file/browse/${fid}`;
+            let url = `/sales-api/sales-document-cover/file/browse/${fid}`;
             return url;
         }
     }
@@ -130,11 +130,11 @@ export class Tool implements ToolInterface {
     getLongFileUrl(fid: string | number, width?: string | number, height?: string | number): string {
         if (width && height) {
             //缩略图
-            let url = `/sales-document-cover/image/thumbnail/${fid}/${width}/${height}`;
+            let url = `/sales-api/sales-document-cover/image/thumbnail/${fid}/${width}/${height}`;
             return window.location.origin + url;
         } else {
             //文件路径
-            let url = `/sales-document-cover/file/browse/${fid}`;
+            let url = `/sales-api/sales-document-cover/file/browse/${fid}`;
             return window.location.origin + url;
         }
     }

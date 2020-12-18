@@ -1,6 +1,6 @@
 /* eslint-disable */
 /* 此脚本由swagger-ui的api-docs自动生成，请勿修改 */
-//2020-12-17 20:11:18
+//2020-12-15 3:42:49 ├F10: PM┤
 import { request } from '@/api/base'
 const basePath = "/sales-api/system"
 /**查询所有行政区划信息*/
@@ -165,15 +165,15 @@ return await request.post< JobVO[],JobVO[]> (basePath+'/job/getAll', d)
 }
 /**查询岗位列表*/
 export async function post_job_getList (d?: any) {
-return await request.post< any,any> (basePath+'/job/getList', d)
+return await request.post< PageModel<JobVO>,PageModel<JobVO>> (basePath+'/job/getList', d)
 }
 /**查询拥有指定资源的岗位列表*/
 export async function post_job_getListByResourceId (d?: any) {
-return await request.post< any,any> (basePath+'/job/getListByResourceId', d)
+return await request.post< PageModel<JobVO>,PageModel<JobVO>> (basePath+'/job/getListByResourceId', d)
 }
 /**查询拥有指定角色的岗位列表*/
 export async function post_job_getListByRoleId (d?: any) {
-return await request.post< any,any> (basePath+'/job/getListByRoleId', d)
+return await request.post< PageModel<JobVO>,PageModel<JobVO>> (basePath+'/job/getListByRoleId', d)
 }
 /**修改岗位*/
 export async function post_job_update (d?: any) {
@@ -201,11 +201,11 @@ return await request.get<OrgLevelTreeVO,OrgLevelTreeVO>(basePath+'/org/getLevelT
 }
 /**查询组织列表*/
 export async function post_org_getList (d?: any) {
-return await request.post< any,any> (basePath+'/org/getList', d)
+return await request.post< PageModel<OrgVO>,PageModel<OrgVO>> (basePath+'/org/getList', d)
 }
 /**递归查询组织列表*/
 export async function post_org_getListRecursion (d?: any) {
-return await request.post< any,any> (basePath+'/org/getListRecursion', d)
+return await request.post< PageModel<OrgVO>,PageModel<OrgVO>> (basePath+'/org/getListRecursion', d)
 }
 /**查询用户可选事业部列表*/
 export async function get_org_getUserDepartmentList (d?: any) {
@@ -253,7 +253,7 @@ return await request.post< ResourceMinVO[],ResourceMinVO[]> (basePath+'/resource
 }
 /**查询资源列表*/
 export async function post_resource_getList (d?: any) {
-return await request.post< any,any> (basePath+'/resource/getList', d)
+return await request.post< PageModel<ResourceVO>,PageModel<ResourceVO>> (basePath+'/resource/getList', d)
 }
 /**修改资源*/
 export async function post_resource_update (d?: any) {
@@ -297,11 +297,11 @@ return await request.post< RoleVO[],RoleVO[]> (basePath+'/role/getAllByUserId/{u
 }
 /**查询角色列表*/
 export async function post_role_getList (d?: any) {
-return await request.post< any,any> (basePath+'/role/getList', d)
+return await request.post< PageModel<RoleVO>,PageModel<RoleVO>> (basePath+'/role/getList', d)
 }
 /**查询拥有指定资源的角色列表*/
 export async function post_role_getListByResourceId (d?: any) {
-return await request.post< any,any> (basePath+'/role/getListByResourceId', d)
+return await request.post< PageModel<RoleVO>,PageModel<RoleVO>> (basePath+'/role/getListByResourceId', d)
 }
 /**修改角色*/
 export async function post_role_update (d?: any) {
@@ -377,19 +377,19 @@ return await request.post< OrgMinVO[],OrgMinVO[]> (basePath+'/user/getAllUserOrg
 }
 /**查询用户列表*/
 export async function post_user_getList (d?: any) {
-return await request.post< any,any> (basePath+'/user/getList', d)
+return await request.post< PageModel<UserVO>,PageModel<UserVO>> (basePath+'/user/getList', d)
 }
 /**查询拥有指定岗位的用户列表*/
 export async function post_user_getListByJobId (d?: any) {
-return await request.post< any,any> (basePath+'/user/getListByJobId', d)
+return await request.post< PageModel<UserVO>,PageModel<UserVO>> (basePath+'/user/getListByJobId', d)
 }
 /**查询拥有指定资源的用户列表*/
 export async function post_user_getListByResourceId (d?: any) {
-return await request.post< any,any> (basePath+'/user/getListByResourceId', d)
+return await request.post< PageModel<UserVO>,PageModel<UserVO>> (basePath+'/user/getListByResourceId', d)
 }
 /**查询拥有指定角色的用户列表*/
 export async function post_user_getListByRoleId (d?: any) {
-return await request.post< any,any> (basePath+'/user/getListByRoleId', d)
+return await request.post< PageModel<UserVO>,PageModel<UserVO>> (basePath+'/user/getListByRoleId', d)
 }
 /**锁定用户*/
 export async function post_user_lock__id (d?: any) {
@@ -402,10 +402,6 @@ return await request.post< number,number> (basePath+'/user/resetPassword', d)
 /**修改用户*/
 export async function post_user_update (d?: any) {
 return await request.post< number,number> (basePath+'/user/update', d)
-}
-/**根据code获取OpendId*/
-export async function get_wx_getOpenid__code (d?: any) {
-return await request.get<WxCodeVo,WxCodeVo>(basePath+'/wx/getOpenid/{code}', { params: d })
 }
 /**获取token*/
 export async function get_wx_getToken (d?: any) {
@@ -730,8 +726,6 @@ accountType: string;
 createTime: string;
 /**创建用户*/
 createUser: number;
-/**创建用户姓名*/
-createUserName: string;
 /**数据权限(OrgLimit-组织数据权限、SelfLimit-个人数据权限、ChannelLimit-渠道数据权限、CustomerLimit-客户数据权限)*/
 dataLimit: string;
 /**已删除*/
@@ -748,10 +742,6 @@ employeeType: string;
 employmentDate: string;
 /**id*/
 id: number;
-/**岗位id*/
-jobId: number;
-/**岗位名称*/
-jobName: string;
 /**离职日期(yyyy-MM-dd)*/
 leaveDate: string;
 /**手机号码*/
@@ -760,8 +750,6 @@ mobilePhone: string;
 name: string;
 /**归属组织id*/
 orgId: number;
-/**归属组织名称*/
-orgName: string;
 /**密码*/
 password: string;
 /**状态(Valid-有效、Invalid-无效)*/
@@ -770,8 +758,6 @@ status: string;
 updateTime: string;
 /**更新用户*/
 updateUser: number;
-/**更新用户姓名*/
-updateUserName: string;
 /**用户类别(Staff-员工、Channel-渠道、Customer-客户)*/
 userType: string;
 /**职能类别(FrontLine-一线、NotFrontLine-非一线)*/
@@ -780,8 +766,6 @@ workType: string;
 menuList: Resource[];
 /**资源列表*/
 resourceList: Resource[];
-/**角色列表*/
-roleList: Role[];
 /**用户类别列表*/
 userTypeList: string[];
 }
@@ -849,18 +833,10 @@ export interface OrgLevelTreeVO {
 companyId: number;
 /**公司名称*/
 companyName: string;
-/**公司简称*/
-companyShortName: string;
-/**公司简称首字母*/
-companyShortNameAbbr: string;
 /**事业部id*/
 departmentId: number;
 /**事业部名称*/
 departmentName: string;
-/**事业部简称*/
-departmentShortName: string;
-/**事业部简称首字母*/
-departmentShortNameAbbr: string;
 /**片区id*/
 districtId: number;
 /**片区名称*/
@@ -1094,8 +1070,6 @@ id: number;
 name: string;
 /**父ID*/
 parentId: number;
-/**顺序*/
-seq: number;
 /**终端类型(Pc-Pc端、WechatApp-微信小程序)*/
 terminalType: string;
 /**类型(Root-资源根节点、System-系统、Service-服务模块、Menu-功能菜单、Api-API、Button-按钮、Element-元素)*/
@@ -1117,8 +1091,6 @@ icon: string;
 name: string;
 /**(必填)父资源id*/
 parentId: number;
-/**顺序*/
-seq: number;
 /**(必填)类型(Root-资源根节点、System-系统、Service-服务模块、Menu-功能菜单、Api-API、Button-按钮、Element-元素)*/
 type: string;
 /**url*/
@@ -1128,20 +1100,14 @@ url: string;
 export interface ResourceMinVO {
 /**编码*/
 code: string;
-/**图标*/
-icon: string;
 /**id*/
 id: number;
 /**名称*/
 name: string;
 /**父资源id*/
 parentId: number;
-/**顺序*/
-seq: number;
 /**类型(Root-资源根节点、System-系统、Service-服务模块、Menu-功能菜单、Api-API、Button-按钮、Element-元素)*/
 type: string;
-/**URL*/
-url: string;
 }
 /**ResourceQueryVO*/
 export interface ResourceQueryVO {
@@ -1182,8 +1148,6 @@ id: number;
 name: string;
 /**(必填)父资源id*/
 parentId: number;
-/**顺序*/
-seq: number;
 /**(必填)类型(Root-资源根节点、System-系统、Service-服务模块、Menu-功能菜单、Api-API、Button-按钮、Element-元素)*/
 type: string;
 /**url*/
@@ -1222,8 +1186,6 @@ parentCode: string;
 parentId: number;
 /**父资源名称*/
 parentName: string;
-/**顺序*/
-seq: number;
 /**终端类型(Pc-Pc端、WechatApp-微信小程序)*/
 terminalType: string;
 /**类型(Root-资源根节点、System-系统、Service-服务模块、Menu-功能菜单、Api-API、Button-按钮、Element-元素)*/
@@ -1573,11 +1535,4 @@ updateUserName: string;
 userType: string;
 /**职能类别(FrontLine-一线、NotFrontLine-非一线)*/
 workType: string;
-}
-/**WxCodeVo*/
-export interface WxCodeVo {
-/**undefined*/
-openId: string;
-/**undefined*/
-sessionKey: string;
 }
