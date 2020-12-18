@@ -4,7 +4,7 @@
  * @Author: zyc
  * @Date: 2020-07-09 15:03:17
  * @LastEditors: zyc
- * @LastEditTime: 2020-12-17 10:30:08
+ * @LastEditTime: 2020-12-18 21:00:54
 --> 
 <template>
   <el-dialog
@@ -19,6 +19,12 @@
     class="dialog"
   >
     <div>
+      <div style="margin-bottom: 40px">
+        <el-checkbox v-model="config.selectParent">选中-关联父级</el-checkbox>
+        <el-checkbox v-model="config.selectChildren">选中-关联子级</el-checkbox>
+        <el-checkbox v-model="config.cancelParent">取消-关联父级</el-checkbox>
+        <el-checkbox v-model="config.cancelChildren">取消-关联子级</el-checkbox>
+      </div>
       <div>
         <el-select
           style="width: 100%"
@@ -60,6 +66,7 @@
           node-key="id"
           show-checkbox
           @current-change="currentChange"
+          @check="handleCheck"
           ref="tree"
         ></el-tree>
       </div>
@@ -91,6 +98,14 @@ export default class ResourcesCheck extends Vue {
   selectType: any = null;
   filterText: any = "";
   resList: any = [];
+
+  config: any = {
+    selectParent: false,
+    selectChildren: false,
+    cancelParent: false,
+    cancelChildren: false,
+  };
+  cusChecked: any = [];
   preData: any = [];
   @Watch("filterText")
   filterTextWatch(val: any) {
@@ -135,6 +150,82 @@ export default class ResourcesCheck extends Vue {
       });
     });
     this.preData = this.$tool.listToGruop(all, { rootId: 0 });
+  }
+  handleCheck(currentNode: any, treeStatus: any) {
+    // console.log(currentNode, treeStatus);
+    const tree: any = this.$refs.tree;
+    /**
+     * @des 根据父元素的勾选或取消勾选，将所有子级处理为选择或非选中状态
+     * @param { node: Object }  当前节点
+     * @param { status: Boolean } （true ： 处理为勾选状态 ； false： 处理非选中）
+     */
+    const setChildStatus = (node: any, status: any) => {
+      /* 这里的 id children 也可以是其它字段，根据实际的业务更改 */
+      tree.setChecked(node.id, status);
+      if (node.children) {
+        /* 循环递归处理子节点 */
+        for (let i = 0; i < node.children.length; i++) {
+          setChildStatus(node.children[i], status);
+        }
+      }
+    };
+    /* 设置父节点为选中状态 */
+    const setParentStatus = (nodeObj: any, status: boolean) => {
+      /* 拿到tree组件中的node,使用该方法的原因是第一次传入的 node 没有 parent */
+      const node = tree.getNode(nodeObj);
+      if (node.parent.key) {
+        tree.setChecked(node.parent, status);
+        setParentStatus(node.parent, status);
+      }
+    };
+
+    /* 判断当前点击是选中还是取消选中操作 */
+    if (treeStatus.checkedKeys.includes(currentNode.id)) {
+      if (this.config.selectParent) {
+        setParentStatus(currentNode, true);
+      }
+      if (this.config.selectChildren) {
+        setChildStatus(currentNode, true);
+      }
+    } else {
+      /* 取消选中 */
+      if (this.config.cancelParent) {
+        //取消父级
+        setParentStatus(currentNode, false);
+      }
+      if (this.config.cancelChildren) {
+        setChildStatus(currentNode, false);
+      }
+    }
+
+    this.cusChecked = [...tree.getCheckedKeys()];
+  }
+  checkChange1(item: any, node: any) {
+    const tree: any = this.$refs.tree;
+    console.log(item, node);
+    if (node) {
+      //选中
+      if (this.config.selectParent) {
+        //选中，父级选上
+        if (item.parentId) {
+          console.log(item.parentId);
+          let list = (this.$refs.tree as any).getCheckedNodes() || [];
+          list.push(item.parentId);
+          tree.setCheckedNodes(list);
+        }
+      }
+      if (this.config.selectChildren) {
+        //选中，子级选上
+      }
+    } else {
+      //取消
+      if (this.config.cancelParent) {
+        //取消，父级取消
+      }
+      if (this.config.cancelChildren) {
+        //取消，子级取消
+      }
+    }
   }
 
   async created() {
