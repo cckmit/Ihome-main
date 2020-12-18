@@ -4,7 +4,7 @@
  * @Author: ywl
  * @Date: 2020-12-09 19:24:59
  * @LastEditors: ywl
- * @LastEditTime: 2020-12-18 15:45:13
+ * @LastEditTime: 2020-12-18 19:00:39
 -->
 <template>
   <IhPage label-width="100px">
@@ -216,7 +216,7 @@
               <el-col :span="8">
                 <el-form-item label="成交报告编号">
                   <el-input
-                    v-model="queryPageParameters.groupId"
+                    v-model="queryPageParameters.dealCode"
                     placeholder="请输入成交报告编号"
                     clearable
                   ></el-input>
@@ -225,9 +225,18 @@
               <el-col :span="8">
                 <el-form-item label="已关联成交">
                   <el-select
-                    v-model="queryPageParameters.groupId"
+                    v-model="queryPageParameters.isRelation"
                     clearable
-                  ></el-select>
+                  >
+                    <el-option
+                      :value="0"
+                      label="否"
+                    ></el-option>
+                    <el-option
+                      :value="1"
+                      label="是"
+                    ></el-option>
+                  </el-select>
                 </el-form-item>
               </el-col>
             </el-row>
@@ -443,6 +452,8 @@ export default class ReceiptList extends Vue {
     startPayTime: null,
     status: null,
     termId: null,
+    isRelation: null,
+    dealCode: null,
   };
   resPageInfo: any = {
     total: null,
@@ -459,7 +470,12 @@ export default class ReceiptList extends Vue {
   private async batchRelieve() {
     if (this.selection.length) {
       if (
-        this.selection.map((i: any) => i.status).every((v: any) => v === "Paid")
+        this.selection
+          .map((i: any) => i.status)
+          .every((v: any) => v === "Paid") &&
+        !this.selection
+          .map((i: any) => i.dealCode || "")
+          .every((v: any) => v === "")
       ) {
         try {
           let ids = this.selection.map((i: any) => i.id);
@@ -474,7 +490,7 @@ export default class ReceiptList extends Vue {
           console.log(error);
         }
       } else {
-        this.$message.warning("请选择状态为已支付的数据");
+        this.$message.warning("请选择状态为已支付且关联成交报告的数据");
         return;
       }
     } else {
@@ -567,6 +583,8 @@ export default class ReceiptList extends Vue {
       startPayTime: null,
       status: null,
       termId: null,
+      isRelation: null,
+      dealCode: null,
     });
     this.payDate = [];
     this.payTime = [];
