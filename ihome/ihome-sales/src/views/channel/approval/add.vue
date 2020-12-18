@@ -4,7 +4,7 @@
  * @Author: zyc
  * @Date: 2020-07-09 14:31:23
  * @LastEditors: zyc
- * @LastEditTime: 2020-12-18 10:58:32
+ * @LastEditTime: 2020-12-18 14:53:49
 --> 
 <template>
   <ih-page>
@@ -157,24 +157,19 @@
         </el-table-column>
         <el-table-column prop="channelName" label="渠道商名称" width="180">
         </el-table-column>
-        <el-table-column prop="city" label="业务开展城市"  width="180">
+        <el-table-column prop="city" label="业务开展城市" width="180">
           <template slot-scope="scope">
             {{ $root.getAreaName(scope.row.city) }}
           </template>
         </el-table-column>
         <el-table-column prop="attachmentDetails" label="附件">
           <template slot-scope="scope">
-            <div
+            <span
               v-for="(cItem, cIndex) in scope.row.attachmentDetails"
               :key="cIndex"
             >
-              <el-image
-                style="width: 100px"
-                :src="$tool.getLongFileUrl(cItem.fileId)"
-                fit="fit"
-              ></el-image>
-              <!-- {{ $tool.getLongFileUrl(cItem.fileId) }} -->
-            </div>
+              <IhFilePreview :data="cItem"></IhFilePreview>
+            </span>
           </template>
         </el-table-column>
       </el-table>
@@ -223,6 +218,7 @@
 <script lang="ts">
 import { Component, Vue } from "vue-property-decorator";
 import ChannelApprovalGradesList from "@/views/channel/approval/channel-approval-grades/list.vue";
+
 import {
   post_channelApproval_add,
   post_channelApproval_edit,

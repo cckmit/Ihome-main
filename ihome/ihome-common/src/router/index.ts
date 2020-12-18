@@ -4,7 +4,7 @@
  * @Author: zyc
  * @Date: 2020-06-22 11:10:43
  * @LastEditors: zyc
- * @LastEditTime: 2020-12-14 16:50:22
+ * @LastEditTime: 2020-12-18 14:12:51
  */
 import Vue from 'vue'
 import VueRouter, { RouteConfig } from 'vue-router'
@@ -93,7 +93,16 @@ const routes: Array<RouteConfig> = [
     meta: {
       title: '左右拖动'
     }
-  }
+  },
+  {
+    path: '/filePreview',
+    name: 'filePreview',
+    component: () => import('../views/filePreviewPage.vue'),
+    meta: {
+      title: '文件预览'
+    }
+  },
+
 ]
 const router = new VueRouter({
   mode: 'history',

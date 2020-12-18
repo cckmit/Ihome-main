@@ -4,7 +4,7 @@
  * @Author: zyc
  * @Date: 2020-11-24 10:49:02
  * @LastEditors: zyc
- * @LastEditTime: 2020-12-16 17:21:42
+ * @LastEditTime: 2020-12-18 14:10:56
  */
 /*
  * @Descripttion: 
@@ -298,7 +298,7 @@ function render() {
     }).$mount('#app');
 
 
-    directives(Vue, instance)
+    directives(Vue)
     filters(Vue, instance)
   })
 
@@ -307,7 +307,7 @@ function render() {
 if (!(<any>window).__POWERED_BY_QIANKUN__) {
   render();
 } else {
-  directives(Vue, instance)
+  directives(Vue)
   filters(Vue, instance)
 }
 
