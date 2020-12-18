@@ -4,7 +4,7 @@
  * @Author: wwq
  * @Date: 2020-12-04 09:40:47
  * @LastEditors: wwq
- * @LastEditTime: 2020-12-11 16:14:37
+ * @LastEditTime: 2020-12-18 21:14:51
 -->
 <template>
   <el-dialog
@@ -235,6 +235,7 @@
                     v-model="row.transactionEnum"
                     clearable
                     placeholder="请选择"
+                    @change="transactionEnumChange(row)"
                   >
                     <el-option
                       v-for="item in row.transactionEnumOptions"
@@ -316,6 +317,7 @@
                   <div>
                     金额:
                     <el-input
+                      :disabled="(row.transactionEnum === 'Natural' || row.transactionEnum === 'SelfChannel') ? true : false"
                       v-model.number="row.sendAmount"
                       v-digits="2"
                       clearable
@@ -325,6 +327,7 @@
                   <div class="margin-top-5">
                     点数:
                     <el-input
+                      :disabled="(row.transactionEnum === 'Natural' || row.transactionEnum === 'SelfChannel') ? true : false"
                       v-model.number="row.sendPoint"
                       v-digits="2"
                       clearable
@@ -611,6 +614,7 @@
                     v-model="row.transactionEnum"
                     clearable
                     placeholder="请选择"
+                    @change="transactionEnumChange(row)"
                   >
                     <el-option
                       v-for="item in row.transactionEnumOptions"
@@ -714,6 +718,7 @@
                   <div>
                     金额:
                     <el-input
+                      :disabled="(row.transactionEnum === 'Natural' || row.transactionEnum === 'SelfChannel') ? true : false"
                       v-model.number="row.sendAmount"
                       v-digits="2"
                       clearable
@@ -723,6 +728,7 @@
                   <div class="margin-top-5">
                     点数:
                     <el-input
+                      :disabled="(row.transactionEnum === 'Natural' || row.transactionEnum === 'SelfChannel') ? true : false"
                       v-model.number="row.sendPoint"
                       v-digits="2"
                       clearable
@@ -1345,6 +1351,17 @@ export default class SetMealEdit extends Vue {
     if (data.subdivideEnum === "All") {
       data.distributeAchieveAmount = 0;
       data.distributeAchievePoint = 0;
+    }
+  }
+
+  // 选择客户类型为自渠或自然到访时
+  transactionEnumChange(data: any) {
+    if (
+      data.transactionEnum === "Natural" ||
+      data.transactionEnum === "SelfChannel"
+    ) {
+      data.sendAmount = 0;
+      data.sendPoint = 0;
     }
   }
 
