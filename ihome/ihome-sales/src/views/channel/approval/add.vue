@@ -4,7 +4,7 @@
  * @Author: zyc
  * @Date: 2020-07-09 14:31:23
  * @LastEditors: zyc
- * @LastEditTime: 2020-12-17 21:10:42
+ * @LastEditTime: 2020-12-18 10:54:13
 --> 
 <template>
   <ih-page>
@@ -164,8 +164,16 @@
         </el-table-column>
         <el-table-column prop="attachmentDetails" label="附件">
           <template slot-scope="scope">
-            <div v-for="(cItem, cIndex) in scope.row.attachmentDetails" :key="cIndex">
-              {{ $tool.getFileUrl(cItem.fileId) }}
+            <div
+              v-for="(cItem, cIndex) in scope.row.attachmentDetails"
+              :key="cIndex"
+            >
+              <el-image
+                style="width: 100px"
+                :src="$tool.getLongFileUrl(cItem.fileId)"
+                fit="fit"
+              ></el-image>
+              <!-- {{ $tool.getLongFileUrl(cItem.fileId) }} -->
             </div>
           </template>
         </el-table-column>
@@ -362,6 +370,7 @@ export default class ApprovalAdd extends Vue {
   @NoRepeatHttp()
   async addSave(valid: any) {
     if (valid) {
+      this.postData.operateType = 1;
       await post_channelApproval_add(this.postData);
       this.$message.success("新增成功");
       this.$goto({
