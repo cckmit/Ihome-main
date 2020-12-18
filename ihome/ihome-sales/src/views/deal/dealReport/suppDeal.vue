@@ -9,7 +9,7 @@
 <template>
   <ih-page class="text-left">
     <div class="supp-deal-wrapper">
-      <el-steps :active="currentActiveIndex" align-center>
+      <el-steps :active="currentActiveIndex" align-center finish-status="success">
         <el-step
           v-for="(item, index) in currentStepsList"
           :key="index"
@@ -25,7 +25,9 @@
             v-bind:is="currentComponent"></component>
         </keep-alive>
       </div>
-      <div class="btn" v-if="currentActiveIndex === 0">
+      <div
+        v-if="currentActiveIndex === 0"
+        class="btn">
         <el-button
           v-if="type === 'staffAchieveInfo'"
           type="success"
@@ -33,11 +35,9 @@
         <el-button v-else type="primary" @click="changeStep('next')">下一步</el-button>
         <el-button @click="backToList">取消</el-button>
       </div>
-<!--      <div class="btn" v-if="currentActiveIndex === 1 && type !== 'staffAchieveInfo'">-->
-<!--        <el-button type="primary" @click="changeStep('up')">上一步</el-button>-->
-<!--        <el-button type="success" @click="changeStep('next')">预览变更</el-button>-->
-<!--      </div>-->
-      <div class="btn" v-if="currentActiveIndex === 2 || (currentActiveIndex === 1 && type === 'staffAchieveInfo')">
+      <div
+        v-if="currentActiveIndex === 2 || (currentActiveIndex === 1 && type === 'staffAchieveInfo')"
+        class="btn">
         <el-button type="primary">保存</el-button>
         <el-button type="success">提交</el-button>
         <el-button @click="changeStep('up')">返回</el-button>
@@ -236,6 +236,16 @@
 <style lang="scss" scoped>
   .supp-deal-wrapper {
     width: 100%;
+
+    /deep/.el-step__head.is-process {
+      color: #409EFF;
+      border-color: #409EFF;
+    }
+
+    /deep/.is-process .el-step__icon {
+      color: #ffffff;
+      background-color: #409EFF;
+    }
 
     .btn {
       text-align: center;

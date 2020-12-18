@@ -238,7 +238,7 @@
     async created() {
       console.log('info:');
       console.log('$root.dictAllList():', (this as any).$root.dictAllList('TemplateType'));
-      await this.getPreferentialList();
+      // await this.getPreferentialList();
     }
 
     // 根据周期id获取到优惠方式

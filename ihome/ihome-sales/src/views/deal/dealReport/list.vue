@@ -414,11 +414,11 @@
 
     resPageInfo: any = {
       total: null,
-      list: [],
+      list: [{}],
     };
 
     async created() {
-      await this.getListMixin();
+      // await this.getListMixin();
     }
 
     // 查询条件折叠/展开
@@ -553,7 +553,7 @@
     * staffAchieveInfo --- 内部员工业绩变更
     * */
     async handleChangeDealInfo(scope: any, type: any) {
-      console.log(scope);
+      // console.log(scope);
       this.$router.push({
         path: "/dealReport/changeDealInfo",
         query: {
