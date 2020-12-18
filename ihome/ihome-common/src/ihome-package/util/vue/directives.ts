@@ -4,9 +4,9 @@
  * @Author: zyc
  * @Date: 2020-05-26 17:02:03
  * @LastEditors: zyc
- * @LastEditTime: 2020-12-16 17:21:21
+ * @LastEditTime: 2020-12-18 14:10:11
  */
-export default (Vue: any, vm: any) => {
+export default (Vue: any) => {
     function has(el: any, binding: any) {
         let d = ((window as any).polyihomeData.userInfo.resourceList || []).filter((item: any) => {
             return item.type == 'Button';

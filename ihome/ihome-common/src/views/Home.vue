@@ -4,7 +4,7 @@
  * @Author: wwq
  * @Date: 2020-09-16 14:54:19
  * @LastEditors: zyc
- * @LastEditTime: 2020-12-14 16:49:10
+ * @LastEditTime: 2020-12-18 14:12:06
 -->
 <template>
   <div>
@@ -74,6 +74,12 @@ export default class Home extends Vue {
       name: "左右拖拽大小容器",
       desc: "鼠标经过分割线可拖拽左右宽度,参考字典页面",
       path: "/leftRightContainer",
+    },
+     {
+      key: "IhFilePreview",
+      name: "文件预览组件",
+      desc: "图片，pdf，其他",
+      path: "/filePreview",
     },
   ];
   info(scope: any) {

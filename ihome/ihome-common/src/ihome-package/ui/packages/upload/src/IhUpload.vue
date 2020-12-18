@@ -4,7 +4,7 @@
  * @Author: wwq
  * @Date: 2020-09-09 16:17:16
  * @LastEditors: wwq
- * @LastEditTime: 2020-12-18 11:51:55
+ * @LastEditTime: 2020-12-18 15:08:23
 -->
 <template>
   <div class="upload">
@@ -333,6 +333,8 @@ export default class IhUpload extends Vue {
       case "potx":
       case "pptx":
         return require("../../../img/ppt.png");
+      default:
+        return require("../../../img/file.jpg");
     }
   }
   // 移除图片
@@ -402,6 +404,8 @@ export default class IhUpload extends Vue {
       case "pptx":
         fileList[index].img_url = require("../../../img/ppt.png");
         break;
+      default:
+        fileList[index].img_url = require("../../../img/file.jpg");
     }
     fileList[index].fileId = fileId;
     fileList[index].type = this.fileType;
