@@ -4,7 +4,7 @@
  * @Author: ywl
  * @Date: 2020-12-09 19:24:59
  * @LastEditors: ywl
- * @LastEditTime: 2020-12-17 20:47:07
+ * @LastEditTime: 2020-12-17 21:01:43
 -->
 <template>
   <IhPage label-width="80px">
@@ -344,7 +344,7 @@
           <template v-slot="{ row }">
             <el-link
               type="primary"
-              @click.native.prevent="$router.push(`/receipt/info?id=${row.id}`)"
+              @click.native.prevent="$router.push(`/payment/info?id=${row.id}`)"
             >详情</el-link>
             <el-dropdown
               trigger="click"
