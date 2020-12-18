@@ -15,7 +15,7 @@
     :close-on-press-escape="false"
     :before-close="beforeFinish"
     append-to-body
-    width="1000px"
+    width="1100px"
     style="text-align: left"
     class="dialog">
     <el-form ref="form" label-width="80px">
@@ -157,6 +157,7 @@
     </el-form>
     <IhTableCheckBox
       :isSingle="true"
+      :isSelection="false"
       :valueKey="rowKey"
       :data="resPageInfo.list"
       :hasCheckedData="hasCheckedData"
@@ -183,7 +184,7 @@
   import SelectPageByBuild from "@/components/SelectPageByBuild.vue";
   import SelectPageByRoom from "@/components/selectPageByRoom.vue";
 
-  import { post_notice_list } from "@/api/contract/index";
+  import { post_notice_deal_list } from "@/api/contract/index";
   import PaginationMixin from "@/mixins/pagination";
 
   @Component({
@@ -286,21 +287,24 @@
     };
 
     queryPageParameters: any = {
-      area: null,
-      cycleId: null,
-      notificationStatuses: null,
-      noticeNo: null,
-      ownerMobile: null,
-      ownerName: null,
-      partyAId: null,
-      projectId: null,
-      roomNumberId: null,
-      notificationTypes: null,
-      buyUnit: null
+      noticeNo: null, // 编号
+      notificationTypes: null, // 类型 array
+      projectId: null, // 项目名称
+      cycleId: null, // 项目周期
+      buyUnit: null, // 栋座
+      roomNumberId: null, // 房号
+      partyAId: null, // 甲方
+      area: null, // 区域
+      notificationStatuses: null, // 状态 array
+      ownerName: null, // 客户
+      ownerMobile: null // 客户电话
     };
     currentSelection: any = []; // 当前选择的项
 
     created() {
+      console.log('notice data', this.data);
+      this.queryPageParameters.cycleId = this.data.termId;
+      this.queryPageParameters.projectId = this.data.proId;
       this.getListMixin();
     }
 
@@ -349,7 +353,12 @@
     }
 
     async getListMixin() {
-      const infoList = await post_notice_list(this.queryPageParameters);
+      let postData: any = {
+        ...this.queryPageParameters,
+        notificationTypes: this.queryPageParameters.notificationTypes ? [this.queryPageParameters.notificationTypes] : [],
+        notificationStatuses: this.queryPageParameters.notificationStatuses ? [this.queryPageParameters.notificationStatuses] : [],
+      }
+      const infoList = await post_notice_deal_list(postData);
       if (infoList.list.length > 0) {
         infoList.list.forEach((item: any) => {
           item.checked = false;
