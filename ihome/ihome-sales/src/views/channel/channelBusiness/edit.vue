@@ -4,7 +4,7 @@
  * @Author: ywl
  * @Date: 2020-09-16 14:05:21
  * @LastEditors: ywl
- * @LastEditTime: 2020-12-16 15:52:07
+ * @LastEditTime: 2020-12-18 19:30:27
 -->
 <template>
   <IhPage>
@@ -163,6 +163,12 @@
           <el-col :span="8">
             <el-form-item label="跟进人">
               <el-input
+                disabled
+                :value="$root.userInfo.name || '自动带出'"
+                v-if="$route.name === 'AddChannel'"
+              />
+              <el-input
+                v-else
                 v-model="info.followUserName"
                 placeholder="跟进人"
                 disabled

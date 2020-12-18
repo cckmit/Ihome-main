@@ -3,8 +3,8 @@
  * @version: 
  * @Author: ywl
  * @Date: 2020-09-25 16:00:37
- * @LastEditors: wwq
- * @LastEditTime: 2020-12-11 08:45:36
+ * @LastEditors: ywl
+ * @LastEditTime: 2020-12-18 17:08:14
 -->
 <template>
   <IhPage class="text-left partyA-info">
@@ -36,9 +36,14 @@
           </el-col>
         </el-row>
         <el-row>
-          <el-col :span="24">
+          <el-col :span="12">
             <el-form-item label="乙方">
               {{formData.partyBName}}
+            </el-form-item>
+          </el-col>
+          <el-col :span="12">
+            <el-form-item label="乙方收款账号">
+              {{formData.receivingAccount}}
             </el-form-item>
           </el-col>
         </el-row>
@@ -278,10 +283,11 @@ export default class PartyAadd extends Vue {
 .partyA-info {
   /deep/ .upload {
     display: inline-block;
+    line-height: normal;
   }
   .upload-button {
     position: absolute;
-    bottom: 25px;
+    bottom: 0;
     margin-left: 15px;
   }
   .annotation {

@@ -4,14 +4,14 @@
  * @Author: ywl
  * @Date: 2020-12-09 19:24:59
  * @LastEditors: ywl
- * @LastEditTime: 2020-12-17 21:01:43
+ * @LastEditTime: 2020-12-18 19:00:39
 -->
 <template>
-  <IhPage label-width="80px">
+  <IhPage label-width="100px">
     <template v-slot:form>
       <el-form
         ref="form"
-        label-width="80px"
+        label-width="100px"
       >
         <el-row>
           <el-col :span="8">
@@ -212,6 +212,34 @@
                 </el-form-item>
               </el-col>
             </el-row>
+            <el-row>
+              <el-col :span="8">
+                <el-form-item label="成交报告编号">
+                  <el-input
+                    v-model="queryPageParameters.dealCode"
+                    placeholder="请输入成交报告编号"
+                    clearable
+                  ></el-input>
+                </el-form-item>
+              </el-col>
+              <el-col :span="8">
+                <el-form-item label="已关联成交">
+                  <el-select
+                    v-model="queryPageParameters.isRelation"
+                    clearable
+                  >
+                    <el-option
+                      :value="0"
+                      label="否"
+                    ></el-option>
+                    <el-option
+                      :value="1"
+                      label="是"
+                    ></el-option>
+                  </el-select>
+                </el-form-item>
+              </el-col>
+            </el-row>
           </div>
         </el-collapse-transition>
       </el-form>
@@ -226,7 +254,7 @@
           type="info"
           @click="reset()"
         >重置</el-button>
-        <el-button>批量解除关联</el-button>
+        <el-button @click="batchRelieve()">批量解除关联</el-button>
         <el-link
           type="primary"
           class="float-right margin-right-40"
@@ -300,11 +328,15 @@
           prop="operatorName"
         >
         </el-table-column>
-        <el-table-column
-          label="店组"
-          prop="groupName"
-          width="185"
-        >
+        <el-table-column width="185">
+          <template #header>
+            <div>店组</div>
+            <div>成交报告编号</div>
+          </template>
+          <template v-slot="{ row }">
+            <div>{{row.groupName || '-'}}</div>
+            <div>{{ '-'}}</div>
+          </template>
         </el-table-column>
         <el-table-column width="100">
           <template #header>
@@ -355,10 +387,10 @@
                 <i class="el-icon-arrow-down el-icon--right"></i>
               </span>
               <el-dropdown-menu slot="dropdown">
-                <el-dropdown-item>对账</el-dropdown-item>
-                <el-dropdown-item>删除</el-dropdown-item>
-                <el-dropdown-item>关联成交</el-dropdown-item>
-                <el-dropdown-item>解除关联</el-dropdown-item>
+                <el-dropdown-item @click.native.prevent="checkPay(row)">对账</el-dropdown-item>
+                <el-dropdown-item @click.native.prevent="remove(row)">删除</el-dropdown-item>
+                <el-dropdown-item @click.native.prevent="handleRele(row)">关联成交</el-dropdown-item>
+                <el-dropdown-item @click.native.prevent="relieve(row)">解除关联</el-dropdown-item>
               </el-dropdown-menu>
             </el-dropdown>
           </template>
@@ -377,16 +409,25 @@
         :total="resPageInfo.total"
       ></el-pagination>
     </template>
+    <IhDialog :show="dialogVisible">
+      <DealDialog @cancel="() => (dialogVisible = false)" />
+    </IhDialog>
   </IhPage>
 </template>
 
 <script lang="ts">
 import { Component, Vue } from "vue-property-decorator";
 import PaginationMixin from "../../../mixins/pagination";
-
-import { post_payment_getList } from "../../../api/finance/index";
+import DealDialog from "./dialog/dealDialog.vue";
+import {
+  post_payment_getList,
+  post_payment_delete__id,
+  post_payment_checkPayment__id,
+  post_payment_batchRelieveDeal,
+} from "../../../api/finance/index";
 
 @Component({
+  components: { DealDialog },
   mixins: [PaginationMixin],
 })
 export default class ReceiptList extends Vue {
@@ -411,6 +452,8 @@ export default class ReceiptList extends Vue {
     startPayTime: null,
     status: null,
     termId: null,
+    isRelation: null,
+    dealCode: null,
   };
   resPageInfo: any = {
     total: null,
@@ -421,7 +464,80 @@ export default class ReceiptList extends Vue {
   private checkTime: any = []; // 对账时间
   private confirmTime: any = []; // 确认时间
   private searchOpen = true;
+  private dialogVisible = false;
+  private selection: any = [];
 
+  private async batchRelieve() {
+    if (this.selection.length) {
+      if (
+        this.selection
+          .map((i: any) => i.status)
+          .every((v: any) => v === "Paid") &&
+        !this.selection
+          .map((i: any) => i.dealCode || "")
+          .every((v: any) => v === "")
+      ) {
+        try {
+          let ids = this.selection.map((i: any) => i.id);
+          await this.$confirm(
+            `确认批量解除${this.selection.length}条付款记录的成交报告?`,
+            "提示"
+          );
+          await post_payment_batchRelieveDeal({ ids });
+          this.getListMixin();
+          this.$message.success("解除成功");
+        } catch (error) {
+          console.log(error);
+        }
+      } else {
+        this.$message.warning("请选择状态为已支付且关联成交报告的数据");
+        return;
+      }
+    } else {
+      this.$message.warning("请先勾选表格数据");
+      return;
+    }
+  }
+  private async relieve(row: any) {
+    try {
+      await this.$confirm("确认解除该条付款记录的成交报告?", "提示");
+      await post_payment_batchRelieveDeal({ ids: [row.id] });
+      this.getListMixin();
+      this.$message.success("解除成功");
+    } catch (error) {
+      console.log(error);
+    }
+  }
+  private handleRele(row: any) {
+    console.log(row);
+    this.dialogVisible = true;
+  }
+  private async checkPay(row: any) {
+    try {
+      await this.$confirm("确认是否对该付款记录进行对账?", "提示");
+      await post_payment_checkPayment__id({ id: row.id });
+      this.getListMixin();
+      this.$message.success("对账成功");
+    } catch (error) {
+      console.log(error);
+    }
+  }
+  private async remove(row: any) {
+    try {
+      await this.$confirm("确认要删除该付款记录?", "提示");
+      await post_payment_delete__id({ id: row.id });
+      // 删除list最后一条数据 返回前一页面
+      if (this.resPageInfo.list.length === 1) {
+        this.queryPageParameters.pageNum === 1
+          ? (this.queryPageParameters.pageNum = 1)
+          : this.queryPageParameters.pageNum--;
+      }
+      this.getListMixin();
+      this.$message.success("删除成功");
+    } catch (error) {
+      console.log(error);
+    }
+  }
   private search() {
     let payDFlog = this.payDate && this.payDate.length;
     let payTFlog = this.payTime && this.payTime.length;
@@ -467,6 +583,8 @@ export default class ReceiptList extends Vue {
       startPayTime: null,
       status: null,
       termId: null,
+      isRelation: null,
+      dealCode: null,
     });
     this.payDate = [];
     this.payTime = [];
@@ -474,7 +592,7 @@ export default class ReceiptList extends Vue {
     this.confirmTime = [];
   }
   handleSelectionChange(val: any) {
-    console.log(val);
+    this.selection = val;
   }
   async getListMixin() {
     this.resPageInfo = await post_payment_getList(this.queryPageParameters);

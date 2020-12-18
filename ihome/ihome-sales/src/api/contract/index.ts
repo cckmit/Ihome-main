@@ -1,6 +1,6 @@
 /* eslint-disable */
 /* 此脚本由swagger-ui的api-docs自动生成，请勿修改 */
-//2020-12-14 19:14:29
+//2020-12-18 5:16:42 ├F10: PM┤
 import { request } from '@/api/base'
 const basePath = "/sales-api/contract"
 /**附件上传*/
@@ -43,9 +43,9 @@ return await request.post< PageModel<ContractListVO>,PageModel<ContractListVO>> 
 export async function post_contract_original_archive (d?: any) {
 return await request.post< boolean,boolean> (basePath+'/contract/original/archive', d)
 }
-/**推送OA审核*/
-export async function post_contract_push_oa__id (d?: any) {
-return await request.post< boolean,boolean> (basePath+'/contract/push/oa/{id}', d)
+/**结佣查询合同信息吗*/
+export async function post_contract_please_help (d?: any) {
+return await request.post< ContractPleaseHelpResponse[],ContractPleaseHelpResponse[]> (basePath+'/contract/please/help', d)
 }
 /**立项关联甲方合同*/
 export async function post_contract_related_cycle (d?: any) {
@@ -79,6 +79,10 @@ return await request.post< number,number> (basePath+'/distribution/create', d)
 export async function post_distribution_deal_channels (d?: any) {
 return await request.post< DistributionChannelResponse[],DistributionChannelResponse[]> (basePath+'/distribution/deal/channels', d)
 }
+/**成交通过编号预览渠道合同详情*/
+export async function get_distribution_deal_detail__contractNo (d?: any) {
+return await request.get<DistributionDetailVO,DistributionDetailVO>(basePath+'/distribution/deal/detail/{contractNo}', { params: d })
+}
 /**中介分销合同详情*/
 export async function get_distribution_detail__id (d?: any) {
 return await request.get<DistributionDetailVO,DistributionDetailVO>(basePath+'/distribution/detail/{id}', { params: d })
@@ -106,6 +110,10 @@ return await request.post< PageModel<DistributionQueryResponseVO>,PageModel<Dist
 /**中介分销合同原件归档*/
 export async function post_distribution_original_archive (d?: any) {
 return await request.post< boolean,boolean> (basePath+'/distribution/original/archive', d)
+}
+/**结佣通过编号查询渠道合同附件*/
+export async function post_distribution_pay_annex (d?: any) {
+return await request.post< AnnexListVO[],AnnexListVO[]> (basePath+'/distribution/pay/annex', d)
 }
 /**中介分销合同审核*/
 export async function post_distribution_review (d?: any) {
@@ -163,6 +171,14 @@ return await request.post< boolean,boolean> (basePath+'/notice/Information/statu
 export async function post_notice_accounts_certification_check (d?: any) {
 return await request.post< boolean,boolean> (basePath+'/notice/accounts/certification/check', d)
 }
+/**增加附件*/
+export async function post_notice_annex (d?: any) {
+return await request.post< boolean,boolean> (basePath+'/notice/annex', d)
+}
+/**删除附件*/
+export async function delete_notice_annex__fileNo (d?: any) {
+return await request.post< boolean,boolean> (basePath+'/notice/annex/{fileNo}', d)
+}
 /**房号确认书*/
 export async function post_notice_confirmation (d?: any) {
 return await request.post< number,number> (basePath+'/notice/confirmation', d)
@@ -190,6 +206,10 @@ return await request.post< boolean,boolean> (basePath+'/notice/deal/replace/noti
 /**优惠告知书明细*/
 export async function get_notice_detail__id (d?: any) {
 return await request.get<NoticeDetailResponseVO,NoticeDetailResponseVO>(basePath+'/notice/detail/{id}', { params: d })
+}
+/**财务通过客户名字获取优惠告知书ID*/
+export async function get_notice_ids (d?: any) {
+return await request.get<number[],number[]>(basePath+'/notice/ids', { params: d })
 }
 /**优惠告知书列表*/
 export async function post_notice_list (d?: any) {
@@ -384,10 +404,40 @@ proName: string;
 province: string;
 /**周期结束时间(yyyy-MM-dd)*/
 termEnd: string;
+/**周期id*/
+termId: number;
 /**周期名称*/
 termName: string;
 /**周期起始时间(yyyy-MM-dd)*/
 termStart: string;
+}
+/**ContractCycleVO*/
+export interface ContractCycleVO {
+/**甲方合同(外键)*/
+contractId: number;
+/**创建时间(yyyy-MM-dd HH:mm:ss)*/
+createTime: string;
+/**创建用户*/
+createUser: number;
+/**周期ID*/
+cycleId: number;
+/**关联周期名字*/
+cycleName: string;
+/**已删除*/
+deleted: number;
+/**主键*/
+id: number;
+/**更新时间(yyyy-MM-dd HH:mm:ss)*/
+updateTime: string;
+/**更新用户*/
+updateUser: number;
+}
+/**ContractDeleteRelatedCycleRequest*/
+export interface ContractDeleteRelatedCycleRequest {
+/**合同ID*/
+contractId: number;
+/**周期ID*/
+cycleId: number;
 }
 /**ContractDetailVO*/
 export interface ContractDetailVO {
@@ -423,6 +473,10 @@ partyA: ContractPartyListVO[];
 partyBId: number;
 /**乙方名字*/
 partyBName: string;
+/**乙方收款账号*/
+receivingAccount: string;
+/**乙方收款账号ID*/
+receivingAccountId: number;
 /**标题*/
 title: string;
 }
@@ -454,8 +508,8 @@ originalList: AnnexEditVO[];
 partyA: ContractPartyEditVO[];
 /**乙方*/
 partyBId: number;
-/**项目ID*/
-projectsId: number;
+/**乙方收款账号*/
+receivingAccountId: number;
 /**合同标题*/
 title: string;
 }
@@ -473,10 +527,6 @@ contractNo: string;
 cooperationProjectsName: string;
 /**合作开始时间(yyyy-MM-dd)*/
 cooperationTime: string;
-/**关联周期ID*/
-cycleId: number;
-/**关联周期名字*/
-cycleName: string;
 /**合同跟进人ID*/
 handlerId: number;
 /**合同跟进人名字*/
@@ -493,10 +543,6 @@ partyBId: number;
 partyBName: string;
 /**甲方信息*/
 partyList: ContractPartyListVO[];
-/**关联项目ID*/
-projectsId: number;
-/**关联项目名字*/
-projectsName: string;
 /**合同标题*/
 title: string;
 }
@@ -599,8 +645,6 @@ pageSize: number;
 partyAId: number;
 /**乙方*/
 partyBId: number;
-/**关联项目ID*/
-projectsId: number;
 /**标题*/
 title: string;
 }
@@ -608,6 +652,15 @@ title: string;
 export interface ContractPartyEditVO {
 /**甲方合同ID*/
 contractId: number;
+/**甲方ID*/
+userId: number;
+}
+/**ContractPartyListQueryVO*/
+export interface ContractPartyListQueryVO {
+/**甲方合同ID*/
+contractId: number;
+/**ID*/
+id: number;
 /**甲方ID*/
 userId: number;
 }
@@ -622,14 +675,40 @@ userId: number;
 /**甲方名字*/
 userName: string;
 }
+/**ContractPleaseHelpRequest*/
+export interface ContractPleaseHelpRequest {
+/**周期ID*/
+cycleId: number;
+/**甲方ID*/
+partyAId: number;
+/**乙方ID*/
+partyBId: number;
+/**乙方收款账号ID*/
+receivingAccountId: number;
+}
+/**ContractPleaseHelpResponse*/
+export interface ContractPleaseHelpResponse {
+/**合同编号*/
+contractNo: string;
+/**关联周期ID*/
+cycleDetails: ContractCycleVO[];
+/**甲方合同ID*/
+id: number;
+/**甲方*/
+partyAs: ContractPartyListQueryVO[];
+/**乙方ID*/
+partyBId: number;
+/**乙方收款账号ID*/
+receivingAccountId: number;
+/**标题*/
+title: string;
+}
 /**ContractRelatedCycleRequestVO*/
 export interface ContractRelatedCycleRequestVO {
 /**合同ID*/
 contractIds: number[];
 /**周期ID*/
 cycleId: number;
-/**项目ID*/
-projectsId: number;
 }
 /**ContractRelatedCycleResponseVO*/
 export interface ContractRelatedCycleResponseVO {
@@ -1000,6 +1079,8 @@ export interface DistributionMxQueryRequestVO {
 channelCompanyId: number;
 /**周期ID*/
 cycleId: number;
+/**渠道合同编号*/
+distributionNo: string;
 }
 /**DistributionMxQueryResponseVO*/
 export interface DistributionMxQueryResponseVO {
@@ -1174,7 +1255,7 @@ beginTime: string;
 /**乙方公司*/
 channelCompanyId: number;
 /**乙方公司名字*/
-channelCompanyName: number;
+channelCompanyName: string;
 /**合同编号*/
 contractNo: string;
 /**创建时间(yyyy-MM-dd HH:mm:ss)*/
@@ -1184,7 +1265,7 @@ createUser: number;
 /**周期*/
 cycleId: number;
 /**周期名字*/
-cycleName: number;
+cycleName: string;
 /**已删除*/
 deleted: number;
 /**审核状态(Distributed-已派发、NotDistributed-待派发、Pending-待审核、Drafting-起草、Disallowance-驳回)*/
@@ -1194,23 +1275,23 @@ endTime: string;
 /**合同跟进人*/
 handler: number;
 /**合同跟进人名字*/
-handlerName: number;
+handlerName: string;
 /**主键*/
 id: number;
 /**归属组织*/
 organizationId: number;
 /**归属组织名字*/
-organizationName: number;
+organizationName: string;
 /**甲方公司*/
 partyACompanyId: number;
 /**甲方公司名字*/
-partyACompanyName: number;
+partyACompanyName: string;
 /**项目地址*/
 projectAddress: string;
 /**项目*/
 projectId: number;
 /**项目名字*/
-projectName: number;
+projectName: string;
 /**标题*/
 title: string;
 /**更新时间(yyyy-MM-dd HH:mm:ss)*/
@@ -1365,6 +1446,10 @@ beginTime: string;
 buyUnit: number;
 /**栋座名字*/
 buyUnitName: string;
+/**周期Id*/
+cycleId: number;
+/**周期名称*/
+cycleName: string;
 /**优惠期限结束时间(yyyy-MM-dd)*/
 endTime: string;
 /**优惠方式说明*/
@@ -1375,6 +1460,16 @@ id: number;
 noticeAttachmentList: AnnexListVO[];
 /**告知书编号*/
 noticeNo: string;
+/**告知书类型(Notification-优惠告知书、SupplementaryAgreement-补充协议、TerminationAgreement-终止协议、Confirmation-房号确定书、RefundApplication-退款申请书)*/
+notificationType: string;
+/**旧栋座*/
+oldBuyUnit: number;
+/**旧栋座名字*/
+oldBuyUnitName: string;
+/**旧房号*/
+oldRoomNumberId: number;
+/**旧房号名字*/
+oldRoomNumberName: string;
 /**乙方信息列表*/
 ownerList: NoticeOwnerVO[];
 /**甲方ID*/
@@ -1404,10 +1499,14 @@ export interface NoticeDiscountInformationResponseVo {
 agentId: number;
 /**栋座*/
 buyUnit: number;
+/**栋座名字*/
+buyUnitName: string;
 /**立项周期主键*/
 cycleId: number;
 /**优惠描述说明*/
 explain: string;
+/**店组ID*/
+groupId: number;
 /**已付*/
 paid: number;
 /**甲方*/
@@ -1418,6 +1517,8 @@ paymentAmount: number;
 projectId: number;
 /**房号*/
 roomNumberId: number;
+/**房号名字*/
+roomNumberName: number;
 /**未付*/
 unpaid: number;
 }
@@ -1600,7 +1701,9 @@ export interface NoticePageResponseVO {
 /**区域*/
 area: string;
 /**栋座*/
-buyUnit: string;
+buyUnit: number;
+/**栋座名字*/
+buyUnitName: string;
 /**创建时间(yyyy-MM-dd HH:mm:ss)*/
 createTime: string;
 /**创建用户*/
@@ -1624,13 +1727,15 @@ ownerList: NoticeOwnerEditVO[];
 /**甲方ID*/
 partyAId: number;
 /**甲方名字*/
-partyAName: number;
+partyAName: string;
 /**项目ID*/
 projectId: number;
 /**项目名称*/
 projectName: string;
 /**房号*/
 roomNumberId: number;
+/**房号名字*/
+roomNumberName: string;
 /**附件编号*/
 templateId: string;
 /**更新时间(yyyy-MM-dd HH:mm:ss)*/
@@ -1854,6 +1959,8 @@ purchaseInformation: NoticePurchaseInformationResponseVo;
 export interface NoticeWeChatQueryResponseVo {
 /**栋座*/
 buyUnit: number;
+/**栋座名字*/
+buyUnitName: string;
 /**优惠描述说明*/
 explain: string;
 /**优惠告知书ID*/

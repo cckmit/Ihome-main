@@ -100,7 +100,7 @@
             align="left"
           >
             <span>{{
-              $root.dictAllName(resPageInfo.status, "ChannelStatus")
+              $root.dictAllName(resPageInfo.status, "ChannelGradeStatus")
             }}</span>
           </el-form-item>
         </el-col>

@@ -4,7 +4,7 @@
  * @Author: wwq
  * @Date: 2020-11-03 17:00:29
  * @LastEditors: wwq
- * @LastEditTime: 2020-11-06 17:41:49
+ * @LastEditTime: 2020-12-18 12:04:26
 -->
 <template>
   <el-dialog
@@ -28,14 +28,17 @@
       :http-request="httpRequest"
       :on-success="successHandler"
     >
-      <el-button slot="trigger" size="small" type="primary">导入房号</el-button>
+      <el-button
+        slot="trigger"
+        size="small"
+        type="primary"
+      >导入房号</el-button>
       <el-button
         class="margin-left-20"
         size="small"
         type="primary"
         @click="download()"
-        >下载模板</el-button
-      >
+      >下载模板</el-button>
     </el-upload>
   </el-dialog>
 </template>
@@ -68,7 +71,7 @@ export default class ImportDialog extends Vue {
       const href = window.URL.createObjectURL(res.data);
       const $a = document.createElement("a");
       $a.href = href;
-      $a.download = "导入房号模版.xls";
+      $a.download = "导入房号模版.xlsx";
       $a.click();
       $a.remove();
     });

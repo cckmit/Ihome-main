@@ -4,7 +4,7 @@
  * @Author: ywl
  * @Date: 2020-09-27 17:27:00
  * @LastEditors: ywl
- * @LastEditTime: 2020-12-17 14:20:46
+ * @LastEditTime: 2020-12-18 16:41:49
 -->
 <template>
   <IhPage class="text-left discount-info">
@@ -161,6 +161,7 @@
             <el-form-item label="告知书扫描件">
               <IhUpload
                 :file-list="fileList"
+                @newFileList="handleFile"
                 class="upload"
                 size="100px"
               ></IhUpload>
@@ -181,17 +182,30 @@
 <script lang="ts">
 import { Component, Vue } from "vue-property-decorator";
 
-import { get_notice_detail__id } from "@/api/contract/index";
+import { get_notice_detail__id, post_notice_annex } from "@/api/contract/index";
 
 @Component({})
 export default class DiscountDetail extends Vue {
   private fileList: Array<object> = [];
   private resInfo: any = {};
+  private addFile: any = [];
 
   private get isPaper(): boolean {
     return this.resInfo.templateType === "PaperTemplate";
   }
 
+  private handleFile(list: any) {
+    this.addFile = list
+      .filter((i: any) => {
+        return i.response;
+      })
+      .map((v: any) => ({
+        attachmentSuffix: v.name,
+        fileNo: v.fileId,
+        type: "NoticeAttachment",
+        contractId: this.resInfo.id,
+      }));
+  }
   private async getInfo(): Promise<void> {
     let id = this.$route.query.id;
     if (id) {
@@ -206,7 +220,18 @@ export default class DiscountDetail extends Vue {
         }));
     }
   }
-
+  private async submit() {
+    if (this.addFile.length) {
+      try {
+        await post_notice_annex(this.addFile);
+        this.$message.success("提交成功");
+      } catch (error) {
+        console.log(error);
+      }
+    } else {
+      this.$message.warning("请先添加附件");
+    }
+  }
   private async preview(): Promise<void> {
     try {
       window.open(

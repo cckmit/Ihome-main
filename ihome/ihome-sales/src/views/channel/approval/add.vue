@@ -4,7 +4,7 @@
  * @Author: zyc
  * @Date: 2020-07-09 14:31:23
  * @LastEditors: zyc
- * @LastEditTime: 2020-12-17 21:10:42
+ * @LastEditTime: 2020-12-18 14:53:49
 --> 
 <template>
   <ih-page>
@@ -157,16 +157,19 @@
         </el-table-column>
         <el-table-column prop="channelName" label="渠道商名称" width="180">
         </el-table-column>
-        <el-table-column prop="city" label="业务开展城市">
+        <el-table-column prop="city" label="业务开展城市" width="180">
           <template slot-scope="scope">
             {{ $root.getAreaName(scope.row.city) }}
           </template>
         </el-table-column>
         <el-table-column prop="attachmentDetails" label="附件">
           <template slot-scope="scope">
-            <div v-for="(cItem, cIndex) in scope.row.attachmentDetails" :key="cIndex">
-              {{ $tool.getFileUrl(cItem.fileId) }}
-            </div>
+            <span
+              v-for="(cItem, cIndex) in scope.row.attachmentDetails"
+              :key="cIndex"
+            >
+              <IhFilePreview :data="cItem"></IhFilePreview>
+            </span>
           </template>
         </el-table-column>
       </el-table>
@@ -215,6 +218,7 @@
 <script lang="ts">
 import { Component, Vue } from "vue-property-decorator";
 import ChannelApprovalGradesList from "@/views/channel/approval/channel-approval-grades/list.vue";
+
 import {
   post_channelApproval_add,
   post_channelApproval_edit,
@@ -362,6 +366,7 @@ export default class ApprovalAdd extends Vue {
   @NoRepeatHttp()
   async addSave(valid: any) {
     if (valid) {
+      this.postData.operateType = 1;
       await post_channelApproval_add(this.postData);
       this.$message.success("新增成功");
       this.$goto({
