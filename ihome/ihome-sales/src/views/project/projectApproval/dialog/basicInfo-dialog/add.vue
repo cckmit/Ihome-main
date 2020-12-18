@@ -4,7 +4,7 @@
  * @Author: wwq
  * @Date: 2020-11-27 18:41:30
  * @LastEditors: wwq
- * @LastEditTime: 2020-12-02 17:19:26
+ * @LastEditTime: 2020-12-18 08:55:22
 -->
 <template>
   <el-dialog
@@ -46,11 +46,21 @@
       </el-row>
       <el-row>
         <el-col :span="20">
-          <el-form-item label="归属组织">
-            <SelectOrganizationTree
-              :orgId="form.companyId"
-              @callback="(id) => (form.companyId = id)"
-            />
+          <el-form-item
+            label="启动事业部"
+            prop="startDivisionId"
+          >
+            <IhSelectPageDivision v-model="form.startDivisionId"></IhSelectPageDivision>
+          </el-form-item>
+        </el-col>
+      </el-row>
+      <el-row>
+        <el-col :span="20">
+          <el-form-item
+            label="公司主体"
+            prop="companyId"
+          >
+            <IhSelectPageByCompany v-model="form.companyId"></IhSelectPageByCompany>
           </el-form-item>
         </el-col>
       </el-row>
@@ -112,6 +122,7 @@ export default class AddDialog extends Vue {
     termEnd: null,
     proId: null,
     proName: null,
+    startDivisionId: null,
     companyId: null,
     timeList: [],
   };
@@ -120,6 +131,20 @@ export default class AddDialog extends Vue {
     proName: [{ required: true, message: "请选择合作项目", trigger: "change" }],
     timeList: [
       { required: true, message: "请选择周期时间", trigger: "change" },
+    ],
+    startDivisionId: [
+      {
+        required: true,
+        message: "请选择启动事业部",
+        trigger: "change",
+      },
+    ],
+    companyId: [
+      {
+        required: true,
+        message: "请选择公司主体",
+        trigger: "change",
+      },
     ],
   };
 
@@ -137,7 +162,6 @@ export default class AddDialog extends Vue {
   }
   @NoRepeatHttp()
   async submit(valid: any) {
-    console.log(this.form);
     if (valid) {
       delete this.form.proName;
       delete this.form.timeList;

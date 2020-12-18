@@ -4,7 +4,7 @@
  * @Author: wwq
  * @Date: 2020-11-27 17:11:14
  * @LastEditors: wwq
- * @LastEditTime: 2020-12-16 19:36:22
+ * @LastEditTime: 2020-12-18 08:46:42
 -->
 <template>
   <IhPage label-width="100px">
@@ -232,7 +232,7 @@
 </template>
 <script lang="ts">
 import { Component, Vue } from "vue-property-decorator";
-import { post_term_getList, post_term_del } from "@/api/project/index";
+import { post_term_getList, post_term_del__termId } from "@/api/project/index";
 import PaginationMixin from "@/mixins/pagination";
 import Add from "./dialog/basicInfo-dialog/add.vue";
 
@@ -296,7 +296,7 @@ export default class ProjectApproval extends Vue {
   async remove(row: any) {
     try {
       await this.$confirm("是否确定删除?", "提示");
-      await post_term_del({ termId: row.termId });
+      await post_term_del__termId({ termId: row.termId });
       this.getListMixin();
       this.$message({
         type: "success",

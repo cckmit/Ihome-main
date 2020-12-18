@@ -4,7 +4,7 @@
  * @Author: wwq
  * @Date: 2020-11-27 17:17:06
  * @LastEditors: wwq
- * @LastEditTime: 2020-12-17 10:05:48
+ * @LastEditTime: 2020-12-18 08:56:55
 -->
 <template>
   <div>
@@ -1109,7 +1109,6 @@ export default class FirstAgencyEdit extends Vue {
       this.info.companyId = res.companyId;
       window.sessionStorage.setItem("proId", res.proId);
       window.sessionStorage.setItem("padCommission", res.padCommissionEnum);
-      console.log(this.info);
       if (this.info.chargeEnum && this.info.busEnum) {
         this.getAttributeEnumOptions();
       }

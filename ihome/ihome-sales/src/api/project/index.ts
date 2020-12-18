@@ -1,6 +1,6 @@
 /* eslint-disable */
 /* 此脚本由swagger-ui的api-docs自动生成，请勿修改 */
-//2020-12-17 2:35:42 ├F10: PM┤
+//2020-12-18 8:43:46 ├F10: AM┤
 import { request } from '@/api/base'
 const basePath = "/sales-api/project"
 /**index*/
@@ -170,6 +170,10 @@ return await request.get<FirstAgencyCompanyDetail,FirstAgencyCompanyDetail>(base
 /**查询列表*/
 export async function post_firstAgencyCompany_getList (d?: any) {
 return await request.post< any,any> (basePath+'/firstAgencyCompany/getList', d)
+}
+/**一手代理商公司名称*/
+export async function get_firstAgencyCompany_getName__agencyId (d?: any) {
+return await request.get<string,string>(basePath+'/firstAgencyCompany/getName/{agencyId}', { params: d })
 }
 /**新增or修改*/
 export async function post_firstAgencyCompany_save (d?: any) {
@@ -453,7 +457,7 @@ return await request.post< any,any> (basePath+'/room/getListByBuildingId', d)
 }
 /**通过房间ID获取明源房间ID*/
 export async function get_room_getMYIdByRoomId__roomId (d?: any) {
-return await request.get<string,string>(basePath+'/room/getMYIdByRoomId/{roomId}', { params: d })
+return await request.get<MYRoomItemVo,MYRoomItemVo>(basePath+'/room/getMYIdByRoomId/{roomId}', { params: d })
 }
 /**获取房间号*/
 export async function get_room_getName__roomId (d?: any) {
@@ -520,8 +524,8 @@ export async function post_term_audit (d?: any) {
 return await request.post< number,number> (basePath+'/term/audit', d)
 }
 /**项目周期-删除*/
-export async function post_term_del (d?: any) {
-return await request.post< number,number> (basePath+'/term/del', d)
+export async function post_term_del__termId (d?: any) {
+return await request.post< number,number> (basePath+'/term/del/{termId}', d)
 }
 /**获取立项基础详情*/
 export async function get_term_get__termId (d?: any) {
@@ -1063,9 +1067,9 @@ termOverallRate: number;
 }
 /**CollectPackageVo*/
 export interface CollectPackageVo {
-/**业务模式(TotalBagModel-纯总包模式、DistriModel-纯分销模式、TotalBagDistriModel-总包+分销下的分销模式)*/
+/**业务模式(TotalBagModel-纯总包模式、DistriModel-纯分销模式、TotalBagDistrModel-总包+分销下的分销模式)*/
 busEnum: string;
-/**收费模式(Service-服务、Agent-代理、ServiceAndAgent-服务加代理)*/
+/**收费模式(Service-服务费、Agent-代理费、ServiAndAgen-服务费+代理费)*/
 chargeEnum: string;
 /**是否垫佣 (Veto-否、One-1个月、Two-2个月、Three-3个月、FOUR-4个月、Five-5个月、Six-6个月、Seven-7个月、Eight-8个月、Nine-9个月、Ten-10个月、Eleven-11个月、Twelve-12个月)*/
 padCommissionEnum: string;
@@ -1239,9 +1243,9 @@ transactionEnum: string;
 export interface CollectandsendDetailVO_1 {
 /**基准费用   Contract("按签约价"),Subscription("按认购价")(Contract-按签约价、Subscription-按认购价)*/
 baseCostEnum: string;
-/**业务模式(TotalBagModel-纯总包模式、DistriModel-纯分销模式、TotalBagDistriModel-总包+分销下的分销模式)*/
+/**业务模式(TotalBagModel-纯总包模式、DistriModel-纯分销模式、TotalBagDistrModel-总包+分销下的分销模式)*/
 busEnum: string;
-/**收费模式(Service-服务、Agent-代理、ServiceAndAgent-服务加代理)*/
+/**收费模式(Service-服务费、Agent-代理费、ServiAndAgen-服务费+代理费)*/
 chargeEnum: string;
 /**收派套餐明细*/
 colletionandsendMxs: CollectandsendCustomerVO[];
@@ -1369,6 +1373,8 @@ proName: string;
 province: string;
 /**周期结束时间(yyyy-MM-dd)*/
 termEnd: string;
+/**周期id*/
+termId: number;
 /**周期名称*/
 termName: string;
 /**周期起始时间(yyyy-MM-dd)*/
@@ -1580,7 +1586,7 @@ termId: number;
 export interface DistributContractMO {
 /**纸质告知书模板*/
 attachTermVOS: AttachTermItemVO[];
-/**业务模式 SERVICE-服务、AGENT-代理、SERVICEANDAGENT-服务加代理(TotalBagModel-纯总包模式、DistriModel-纯分销模式、TotalBagDistriModel-总包+分销下的分销模式)*/
+/**业务模式 SERVICE-服务、AGENT-代理、SERVICEANDAGENT-服务加代理(TotalBagModel-纯总包模式、DistriModel-纯分销模式、TotalBagDistrModel-总包+分销下的分销模式)*/
 busEnum: string;
 /**OA合同呈批*/
 constractOaVO: ConstractOaVO;
@@ -2156,6 +2162,21 @@ oafyVOS: CycleOafyVO[];
 snapshotVOS: SnapshotVO[];
 /**操作日志列表*/
 termLogVOS: TermLogVO[];
+}
+/**MYRoomItemVo*/
+export interface MYRoomItemVo {
+/**栋数ID*/
+buildingId: number;
+/**栋数名称*/
+buildingName: string;
+/**proId*/
+proId: number;
+/**明源room_guid*/
+roomGuid: string;
+/**id*/
+roomId: number;
+/**房间号*/
+roomNo: string;
 }
 /**OaUser*/
 export interface OaUser {
@@ -3041,7 +3062,7 @@ values: string[];
 }
 /**SettleConditionVO*/
 export interface SettleConditionVO {
-/**收费模式(Service-服务、Agent-代理、ServiceAndAgent-服务加代理)*/
+/**收费模式(Service-服务费、Agent-代理费、ServiAndAgen-服务费+代理费)*/
 chargeEnum: string;
 /**是否垫佣(Veto-否、One-1个月、Two-2个月、Three-3个月、FOUR-4个月、Five-5个月、Six-6个月、Seven-7个月、Eight-8个月、Nine-9个月、Ten-10个月、Eleven-11个月、Twelve-12个月)*/
 padCommissionEnum: string;
@@ -3268,6 +3289,8 @@ export interface TermAddVO {
 companyId: number;
 /**(必填)项目ID*/
 proId: number;
+/**启动事业部ID*/
+startDivisionId: number;
 /**(必填)周期结束时间(yyyy-MM-dd)*/
 termEnd: string;
 /**(必填)周期起始时间(yyyy-MM-dd)*/
@@ -3332,9 +3355,9 @@ agencyFeeTotalByTotalRate: number;
     All("服务费总包+代理费总包+服务费分销+代理费分销"),AllAAgenByServAAgenDist("服务费总包+服务费分销+代理费分销"),
     ServiAllAAgenDist("服务费总包+代理费分销")(SeriAll-服务费纯总包模式、AgenAll-代理费纯总包模式、SeriAllAgenAll-服务费纯总包+代理费纯总包模式、ServiDist-服务费纯分销模式、AgencyDist-代理费纯分销模式、AllAndDistBySeri-服务费总包+服务费分销模式、AllAndDistByAgen-代理费总包+代理费分销模式、All-服务费总包+代理费总包+服务费分销+代理费分销模式、ServiAllAServDistAAgenDist-服务费总包+服务费分销+代理费分销模式、ServiAllAAgenDist-服务费总包+代理费分销模式)*/
 attributeEnum: string;
-/**业务模式(TotalBagModel-纯总包模式、DistriModel-纯分销模式、TotalBagDistriModel-总包+分销下的分销模式)*/
+/**业务模式(TotalBagModel-纯总包模式、DistriModel-纯分销模式、TotalBagDistrModel-总包+分销下的分销模式)*/
 busEnum: string;
-/**收费模式(Service-服务、Agent-代理、ServiceAndAgent-服务加代理)*/
+/**收费模式(Service-服务费、Agent-代理费、ServiAndAgen-服务费+代理费)*/
 chargeEnum: string;
 /**收取佣金标准简述(推送到OA)*/
 collectCommissionStandardSketch: string;
@@ -3375,9 +3398,9 @@ termStart: string;
 }
 /**TermDealVO*/
 export interface TermDealVO {
-/**业务模式(TotalBagModel-纯总包模式、DistriModel-纯分销模式、TotalBagDistriModel-总包+分销下的分销模式)*/
+/**业务模式(TotalBagModel-纯总包模式、DistriModel-纯分销模式、TotalBagDistrModel-总包+分销下的分销模式)*/
 busEnum: string;
-/**收费模式(Service-服务、Agent-代理、ServiceAndAgent-服务加代理)*/
+/**收费模式(Service-服务费、Agent-代理费、ServiAndAgen-服务费+代理费)*/
 chargeEnum: string;
 /**市*/
 city: string;
@@ -3441,6 +3464,8 @@ termName: string;
 }
 /**TermItemDto*/
 export interface TermItemDto {
+/**属性模式(SeriAll-服务费纯总包模式、AgenAll-代理费纯总包模式、SeriAllAgenAll-服务费纯总包+代理费纯总包模式、ServiDist-服务费纯分销模式、AgencyDist-代理费纯分销模式、AllAndDistBySeri-服务费总包+服务费分销模式、AllAndDistByAgen-代理费总包+代理费分销模式、All-服务费总包+代理费总包+服务费分销+代理费分销模式、ServiAllAServDistAAgenDist-服务费总包+服务费分销+代理费分销模式、ServiAllAAgenDist-服务费总包+代理费分销模式)*/
+attributeEnum: string;
 /**我司ID*/
 companyId: number;
 /**店组ID*/
@@ -3512,11 +3537,11 @@ attachTermVOS: AttachTermItemVO[];
 attributeEnum: string;
 /**业务背景*/
 busBackground: string;
-/**(必填)业务模式(TotalBagModel-纯总包模式、DistriModel-纯分销模式、TotalBagDistriModel-总包+分销下的分销模式)*/
+/**(必填)业务模式(TotalBagModel-纯总包模式、DistriModel-纯分销模式、TotalBagDistrModel-总包+分销下的分销模式)*/
 busEnum: string;
 /**(必填)业务类型 NEW-新房(默认)、FINISHED-产成品(New-新房、Finished-产成品)*/
 busTypeEnum: string;
-/**(必填)收费模式(Service-服务、Agent-代理、ServiceAndAgent-服务加代理)*/
+/**(必填)收费模式(Service-服务费、Agent-代理费、ServiAndAgen-服务费+代理费)*/
 chargeEnum: string;
 /**突破标准线期数*/
 city: string;
@@ -3675,11 +3700,11 @@ attachTermVOS: AttachTermItemVO[];
 attributeEnum: string;
 /**业务背景*/
 busBackground: string;
-/**(必填)业务模式(TotalBagModel-纯总包模式、DistriModel-纯分销模式、TotalBagDistriModel-总包+分销下的分销模式)*/
+/**(必填)业务模式(TotalBagModel-纯总包模式、DistriModel-纯分销模式、TotalBagDistrModel-总包+分销下的分销模式)*/
 busEnum: string;
 /**(必填)业务类型 NEW-新房(默认)、FINISHED-产成品(New-新房、Finished-产成品)*/
 busTypeEnum: string;
-/**(必填)收费模式(Service-服务、Agent-代理、ServiceAndAgent-服务加代理)*/
+/**(必填)收费模式(Service-服务费、Agent-代理费、ServiAndAgen-服务费+代理费)*/
 chargeEnum: string;
 /**突破标准线期数*/
 city: string;
@@ -3792,11 +3817,11 @@ attachTermVOS: AttachTermItemVO[];
 attributeEnum: string;
 /**业务背景*/
 busBackground: string;
-/**(必填)业务模式(TotalBagModel-纯总包模式、DistriModel-纯分销模式、TotalBagDistriModel-总包+分销下的分销模式)*/
+/**(必填)业务模式(TotalBagModel-纯总包模式、DistriModel-纯分销模式、TotalBagDistrModel-总包+分销下的分销模式)*/
 busEnum: string;
 /**(必填)业务类型 NEW-新房(默认)、FINISHED-产成品(New-新房、Finished-产成品)*/
 busTypeEnum: string;
-/**(必填)收费模式(Service-服务、Agent-代理、ServiceAndAgent-服务加代理)*/
+/**(必填)收费模式(Service-服务费、Agent-代理费、ServiAndAgen-服务费+代理费)*/
 chargeEnum: string;
 /**(必填)收取佣金条件简述(推送到OA)*/
 collectCommissionConditionSketch: string;
@@ -3806,12 +3831,8 @@ collectCommissionStandardSketch: string;
 customerReportingRequire: string;
 /**(必填)是否代销*/
 exConsignment: number;
-/**(必填)是否直签开发商*/
-exDirectDevelop: number;
 /**(必填)认购书是否体现优惠折扣*/
 exDiscount: number;
-/**是否允许跨项目使用其他渠道费用*/
-exOtherProChannelUse: number;
 /**(必填)项目房款/车位款加服务费大于备案价(NO-否、Yes-是、NotInvolved-不涉及)*/
 houseandcarGtRecordEnum: string;
 /**优惠告知书折扣体现方式*/
@@ -3822,10 +3843,6 @@ otherRemark: string;
 overStandardCount: number;
 /**是否垫佣 (Veto-否、One-1个月、Two-2个月、Three-3个月、FOUR-4个月、Five-5个月、Six-6个月、Seven-7个月、Eight-8个月、Nine-9个月、Ten-10个月、Eleven-11个月、Twelve-12个月)*/
 padCommissionEnum: string;
-/**(必填)往期业绩金额*/
-preBusAmount: number;
-/**项目委托方*/
-proClient: string;
 /**(必填)联动项目ID*/
 proId: number;
 /**(必填)派发佣金条件简述(推送到OA)*/
