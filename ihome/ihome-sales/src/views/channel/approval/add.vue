@@ -4,7 +4,7 @@
  * @Author: zyc
  * @Date: 2020-07-09 14:31:23
  * @LastEditors: zyc
- * @LastEditTime: 2020-12-18 10:54:13
+ * @LastEditTime: 2020-12-18 10:58:32
 --> 
 <template>
   <ih-page>
@@ -157,7 +157,7 @@
         </el-table-column>
         <el-table-column prop="channelName" label="渠道商名称" width="180">
         </el-table-column>
-        <el-table-column prop="city" label="业务开展城市">
+        <el-table-column prop="city" label="业务开展城市"  width="180">
           <template slot-scope="scope">
             {{ $root.getAreaName(scope.row.city) }}
           </template>
