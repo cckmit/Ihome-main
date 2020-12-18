@@ -4,7 +4,7 @@
  * @Author: ywl
  * @Date: 2020-09-25 11:53:51
  * @LastEditors: ywl
- * @LastEditTime: 2020-12-17 10:04:01
+ * @LastEditTime: 2020-12-18 17:01:12
 -->
 <template>
   <IhPage label-width="100px">
@@ -83,7 +83,7 @@
                   ></el-date-picker>
                 </el-form-item>
               </el-col> -->
-              <el-col :span="8">
+              <!-- <el-col :span="8">
                 <el-form-item label="关联项目">
                   <IhSelectPageByProject
                     v-model="queryPageParameters.projectsId"
@@ -91,7 +91,7 @@
                     placeholder="请选择关联项目"
                   ></IhSelectPageByProject>
                 </el-form-item>
-              </el-col>
+              </el-col> -->
             </el-row>
 
             <el-row>
@@ -281,11 +281,11 @@
           prop="cooperationTime"
           width="200"
         ></el-table-column>
-        <el-table-column
+        <!-- <el-table-column
           label="关联项目"
           prop="projectsName"
           width="200"
-        ></el-table-column>
+        ></el-table-column> -->
         <el-table-column
           label="归属组织"
           prop="organizationName"

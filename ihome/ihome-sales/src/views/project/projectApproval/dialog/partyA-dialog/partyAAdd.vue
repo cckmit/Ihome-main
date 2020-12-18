@@ -3,8 +3,8 @@
  * @version: 
  * @Author: wwq
  * @Date: 2020-12-01 14:49:06
- * @LastEditors: wwq
- * @LastEditTime: 2020-12-17 21:05:58
+ * @LastEditors: ywl
+ * @LastEditTime: 2020-12-18 18:03:04
 -->
 <template>
   <el-dialog
@@ -13,7 +13,7 @@
     :close-on-click-modal="false"
     :close-on-press-escape="false"
     :before-close="cancel"
-    width="700px"
+    width="750px"
     class="dialog text-left"
     title="甲方合同信息"
   >
@@ -21,7 +21,7 @@
       :model="form"
       ref="form"
       :rules="rules"
-      label-width="100px"
+      label-width="110px"
       class="demo-form"
     >
       <el-row>
@@ -71,11 +71,34 @@
               clearable
               placeholder="乙方"
               class="width--100"
+              @change="changePartyB"
             >
               <el-option
                 v-for="item in partyBOptions"
                 :key="item.id"
                 :label="item.name"
+                :value="item.id"
+              ></el-option>
+            </el-select>
+          </el-form-item>
+        </el-col>
+        <el-col :span="12">
+          <el-form-item
+            label="乙方收款账号"
+            prop="receivingAccountId"
+          >
+            <el-select
+              v-model="form.receivingAccountId"
+              clearable
+              placeholder="请选择乙方收款账号"
+              class="width--100"
+              ref="branch"
+              @visible-change="handleVisible"
+            >
+              <el-option
+                v-for="item in branchOption"
+                :key="item.id"
+                :label="item.accountNo"
                 :value="item.id"
               ></el-option>
             </el-select>
@@ -110,10 +133,10 @@
         <el-col :span="12">
           <el-form-item
             label="合同跟进人"
-            prop="tesHhandlerId"
+            prop="handlerId"
           >
             <IhSelectPageUser
-              v-model="form.tesHhandlerId"
+              v-model="form.handlerId"
               clearable
               value-key="id"
             >
@@ -191,6 +214,7 @@ import { Form as ElForm } from "element-ui";
 import { NoRepeatHttp } from "ihome-common/util/aop/no-repeat-http";
 import { post_company_listAll } from "@/api/developer/index";
 import { post_company_getAll } from "@/api/system/index";
+import { get_bankAccount_get__companyId } from "@/api/finance/index";
 
 @Component({
   components: {},
@@ -203,15 +227,16 @@ export default class PartyAAdd extends Vue {
     title: null,
     partyA: [],
     partyBId: null,
+    receivingAccountId: null,
     cooperationProjectsName: null,
     cooperationTime: null,
     handlerId: null,
-    tesHhandlerId: null,
     confirmer: null,
     confirmerContact: null,
   };
   partyAOptions: any = [];
   partyBOptions: any = [];
+  branchOption: any = [];
   partyList: any = [];
   stampList: any = [];
   rules: any = {
@@ -236,10 +261,17 @@ export default class PartyAAdd extends Vue {
         trigger: "change",
       },
     ],
-    tesHhandlerId: [
+    handlerId: [
       {
         required: true,
         message: "请选择合同跟进人",
+        trigger: "change",
+      },
+    ],
+    receivingAccountId: [
+      {
+        required: true,
+        message: "请选择乙方收款账号",
         trigger: "change",
       },
     ],
@@ -276,7 +308,6 @@ export default class PartyAAdd extends Vue {
   @NoRepeatHttp()
   async submit(valid: any) {
     if (valid) {
-      this.form.handlerId = this.form.tesHhandlerId.id;
       let arr: any = [];
       arr = this.form.partyA.map((v: any) => ({
         userId: v,
@@ -291,7 +322,19 @@ export default class PartyAAdd extends Vue {
       return false;
     }
   }
-
+  handleVisible(val: any) {
+    if (val) {
+      if (!this.form.partyBId) {
+        (this.$refs.branch as any).blur();
+        this.$message.warning("请先选择乙方信息");
+      }
+    }
+  }
+  async changePartyB(val: any) {
+    this.branchOption = await get_bankAccount_get__companyId({
+      companyId: val,
+    });
+  }
   async getPartyA() {
     this.partyAOptions = await post_company_listAll({ name: "" });
   }
@@ -303,10 +346,6 @@ export default class PartyAAdd extends Vue {
   created() {
     this.getPartyA();
     this.getPartyB();
-    this.form.tesHhandlerId = {
-      name: (this.$root as any).userInfo.name,
-      id: (this.$root as any).userInfo.id,
-    };
   }
 }
 </script>
