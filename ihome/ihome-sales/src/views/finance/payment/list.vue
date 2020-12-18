@@ -4,14 +4,14 @@
  * @Author: ywl
  * @Date: 2020-12-09 19:24:59
  * @LastEditors: ywl
- * @LastEditTime: 2020-12-18 14:27:26
+ * @LastEditTime: 2020-12-18 15:45:13
 -->
 <template>
-  <IhPage label-width="80px">
+  <IhPage label-width="100px">
     <template v-slot:form>
       <el-form
         ref="form"
-        label-width="80px"
+        label-width="100px"
       >
         <el-row>
           <el-col :span="8">
@@ -212,6 +212,25 @@
                 </el-form-item>
               </el-col>
             </el-row>
+            <el-row>
+              <el-col :span="8">
+                <el-form-item label="成交报告编号">
+                  <el-input
+                    v-model="queryPageParameters.groupId"
+                    placeholder="请输入成交报告编号"
+                    clearable
+                  ></el-input>
+                </el-form-item>
+              </el-col>
+              <el-col :span="8">
+                <el-form-item label="已关联成交">
+                  <el-select
+                    v-model="queryPageParameters.groupId"
+                    clearable
+                  ></el-select>
+                </el-form-item>
+              </el-col>
+            </el-row>
           </div>
         </el-collapse-transition>
       </el-form>
@@ -300,11 +319,15 @@
           prop="operatorName"
         >
         </el-table-column>
-        <el-table-column
-          label="店组"
-          prop="groupName"
-          width="185"
-        >
+        <el-table-column width="185">
+          <template #header>
+            <div>店组</div>
+            <div>成交报告编号</div>
+          </template>
+          <template v-slot="{ row }">
+            <div>{{row.groupName || '-'}}</div>
+            <div>{{ '-'}}</div>
+          </template>
         </el-table-column>
         <el-table-column width="100">
           <template #header>
