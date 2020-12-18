@@ -3,8 +3,8 @@
  * @version: 
  * @Author: zyc
  * @Date: 2020-08-04 17:43:48
- * @LastEditors: ywl
- * @LastEditTime: 2020-12-17 16:09:04
+ * @LastEditors: zyc
+ * @LastEditTime: 2020-12-17 20:11:01
  */
 let handleSwagger = require('./node_modules/ihome-common/util/api/api-hangle');
 function doneApi() {
@@ -13,7 +13,7 @@ function doneApi() {
     // handleSwagger('channel');
     // handleSwagger('contract');
     // handleSwagger('developer');
-    handleSwagger('project');
+    handleSwagger('system');
     // handleSwagger('deal');
     // handleSwagger('customer');
     // handleSwagger('finance');
