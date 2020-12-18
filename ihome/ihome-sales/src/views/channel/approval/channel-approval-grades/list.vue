@@ -4,7 +4,7 @@
  * @Author: zyc
  * @Date: 2020-11-24 10:49:09
  * @LastEditors: zyc
- * @LastEditTime: 2020-12-15 11:25:48
+ * @LastEditTime: 2020-12-17 20:19:31
 -->
 
 <!--
@@ -224,6 +224,7 @@ export default class ChannelApprovalGradesList extends Vue {
     super();
   }
   @Prop({ default: null }) data: any;
+  @Prop({ default: null }) departmentOrgId: any;
   dialogVisible = true;
   title = "渠道合作信息列表";
   resPageInfo: any = {
@@ -261,7 +262,7 @@ export default class ChannelApprovalGradesList extends Vue {
       inputUser: null,
       province: null,
       special: null,
-      status: null,
+      status: "PASS",
       storageNum: null,
       provinceCity: null,
     };
@@ -287,6 +288,7 @@ export default class ChannelApprovalGradesList extends Vue {
     this.selectList = val;
   }
   async getListMixin() {
+    this.queryPageParameters.departmentOrgId = this.departmentOrgId;
     if (this.data == "Change") {
       this.resPageInfo = await post_channelGradeChange_getList(
         this.queryPageParameters

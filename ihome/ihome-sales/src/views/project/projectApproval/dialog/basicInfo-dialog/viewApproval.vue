@@ -4,7 +4,7 @@
  * @Author: wwq
  * @Date: 2020-12-10 11:42:19
  * @LastEditors: wwq
- * @LastEditTime: 2020-12-15 11:12:24
+ * @LastEditTime: 2020-12-17 15:17:49
 -->
 <template>
   <el-dialog
@@ -46,7 +46,7 @@
         <td>周期名称</td>
         <td>{{info.termName}}</td>
         <td>业务模式</td>
-        <td>{{$root.dictAllName(info.busEnum, 'Bus')}}</td>
+        <td>{{$root.dictAllName(info.busEnum, 'BusinessModel')}}</td>
         <td>收费类型</td>
         <td>{{$root.dictAllName(info.chargeEnum, 'Charge')}}</td>
       </tr>

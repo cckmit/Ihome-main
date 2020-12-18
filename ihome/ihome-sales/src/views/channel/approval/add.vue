@@ -4,7 +4,7 @@
  * @Author: zyc
  * @Date: 2020-07-09 14:31:23
  * @LastEditors: zyc
- * @LastEditTime: 2020-12-15 17:03:45
+ * @LastEditTime: 2020-12-17 21:10:42
 --> 
 <template>
   <ih-page>
@@ -46,13 +46,27 @@
                 prop="departmentOrgId"
                 class="width--100"
               >
-                <IhSelectPageDivision
+                <el-select
+                  v-model="postData.departmentOrgId"
+                  @change="changeDepartment()"
+                  filterable
+                  placeholder="请选择事业部"
+                >
+                  <el-option
+                    v-for="item in departmentList"
+                    :key="item.id"
+                    :label="item.name"
+                    :value="item.id"
+                  >
+                  </el-option>
+                </el-select>
+                <!-- <IhSelectPageDivision
                   v-model="postData.departmentOrgId"
                   :searchName="postData.departmentName"
                   clearable
                   value-key="id"
                 >
-                </IhSelectPageDivision>
+                </IhSelectPageDivision> -->
               </el-form-item>
             </el-col>
           </el-row>
@@ -136,7 +150,10 @@
       >
         <!-- <el-table-column prop="storageNum" label="编号" width="180">
         </el-table-column> -->
-        <el-table-column prop="typeName" label="类型" width="180">
+        <el-table-column prop="type" label="类型" width="180">
+          <template slot-scope="scope">
+            {{ $root.dictAllName(scope.row.type, "ChannelGradeAttachment") }}
+          </template>
         </el-table-column>
         <el-table-column prop="channelName" label="渠道商名称" width="180">
         </el-table-column>
@@ -145,9 +162,11 @@
             {{ $root.getAreaName(scope.row.city) }}
           </template>
         </el-table-column>
-        <el-table-column prop="fileId" label="附件">
+        <el-table-column prop="attachmentDetails" label="附件">
           <template slot-scope="scope">
-            {{ $tool.getFileUrl(scope.row.fileId) }}
+            <div v-for="(cItem, cIndex) in scope.row.attachmentDetails" :key="cIndex">
+              {{ $tool.getFileUrl(cItem.fileId) }}
+            </div>
           </template>
         </el-table-column>
       </el-table>
@@ -180,6 +199,7 @@
       <ih-dialog :show="dialogAdd" desc="渠道合作信息列表">
         <ChannelApprovalGradesList
           :data="dialogAddGradeType"
+          :departmentOrgId="postData.departmentOrgId"
           @cancel="() => (dialogAdd = false)"
           @finish="
             (data, gradeType) => {
@@ -201,6 +221,7 @@ import {
   get_channelApproval_get__id,
   post_channelGrade_getChannelGradeAttachmentByType,
 } from "../../../api/channel/index";
+import { get_org_getUserDepartmentList } from "../../../api/system/index";
 import { Form as ElForm } from "element-ui";
 import { NoRepeatHttp } from "ihome-common/util/aop/no-repeat-http";
 @Component({
@@ -214,6 +235,7 @@ export default class ApprovalAdd extends Vue {
   dialogAddGradeType: any = null;
   channelApprovalGrades: any[] = []; //渠道等级信息列表,页面显示字段
   channelApprovalAttachmentsList: any = []; //附件信息
+  departmentList: any = []; //事业部下拉框
   id: any = null;
 
   rules: any = {
@@ -239,6 +261,7 @@ export default class ApprovalAdd extends Vue {
 
   async created() {
     this.id = this.$route.query.id;
+    this.departmentList = await get_org_getUserDepartmentList();
     if (this.id) {
       const res: any = await get_channelApproval_get__id({ id: this.id });
       this.postData = res;
@@ -247,6 +270,11 @@ export default class ApprovalAdd extends Vue {
         this.loadAttachments(item, item.gradeType);
       });
     }
+  }
+  changeDepartment() {
+    this.postData.channelApprovalGrades = [];
+    this.showChannelApprovalGrades = [];
+    this.showChannelApprovalAttachments = [];
   }
   isExis(list: any[], item: any) {
     let r = false;
@@ -279,19 +307,31 @@ export default class ApprovalAdd extends Vue {
       gradeId: item.gradeId,
       gradeType: gradeType,
     });
-    res.forEach((element: any) => {
-      element.storageNum = item.storageNum;
-      this.showChannelApprovalAttachments.push(element);
-    });
+    console.log(res);
+    if (res.channelId) {
+      this.showChannelApprovalAttachments.push(res);
+    }
+
+    // res.forEach((element: any) => {
+    //   element.storageNum = item.storageNum;
+
+    // });
   }
   addChannelApprovalGrades() {
-    this.dialogAddGradeType = "Basic";
-
-    this.dialogAdd = true;
+    if (this.postData.departmentOrgId) {
+      this.dialogAddGradeType = "Basic";
+      this.dialogAdd = true;
+    } else {
+      this.$message.warning("请先选择事业部");
+    }
   }
   addChannelApprovalGradesChange() {
-    this.dialogAddGradeType = "Change";
-    this.dialogAdd = true;
+    if (this.postData.departmentOrgId) {
+      this.dialogAddGradeType = "Change";
+      this.dialogAdd = true;
+    } else {
+      this.$message.warning("请先选择事业部");
+    }
   }
   remove(scope: any) {
     let tempList: any[] = [];

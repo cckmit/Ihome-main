@@ -4,7 +4,7 @@
  * @Author: wwq
  * @Date: 2020-12-02 15:37:31
  * @LastEditors: wwq
- * @LastEditTime: 2020-12-11 16:34:38
+ * @LastEditTime: 2020-12-17 14:41:11
 -->
 <template>
   <el-dialog
@@ -363,6 +363,7 @@
       <el-button
         type="primary"
         class="margin-left-20"
+        @click="viewElectronic"
       >预览电子版</el-button>
     </div>
     <span
@@ -400,6 +401,8 @@ import { Form as ElForm } from "element-ui";
 import { NoRepeatHttp } from "ihome-common/util/aop/no-repeat-http";
 import Business from "../notification-dialog/channelBusiness.vue";
 import SetMealDialog from "./setMealDialog.vue";
+import axios from "axios";
+import { getToken } from "ihome-common/util/cookies";
 
 @Component({
   components: {
@@ -544,6 +547,42 @@ export default class AddContract extends Vue {
         ),
       },
     ];
+  }
+
+  // 预览电子版
+  viewElectronic() {
+    const token: any = getToken();
+    axios({
+      method: "POST",
+      url: `/sales-api/project/distributContract/getPreView`,
+      xsrfHeaderName: "Authorization",
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: "bearer " + token,
+      },
+      data: this.info,
+    }).then((res: any) => {
+      if (res?.data?.fileId) {
+        axios({
+          method: "POST",
+          url: `/sales-api/sales-document-cover/pdf/ftlToPdf/brow`,
+          xsrfHeaderName: "Authorization",
+          responseType: "blob",
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: "bearer " + token,
+          },
+          data: {
+            data: res.data.parmas,
+            fileId: res.data.fileId,
+          },
+        }).then((item: any) => {
+          const arr = new Blob([item.data], { type: "application/pdf" });
+          const href = window.URL.createObjectURL(arr);
+          window.open(href);
+        });
+      }
+    });
   }
 
   cancel() {

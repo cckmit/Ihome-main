@@ -4,7 +4,7 @@
  * @Author: zyc
  * @Date: 2020-05-25 09:37:07
  * @LastEditors: ywl
- * @LastEditTime: 2020-11-16 10:37:11
+ * @LastEditTime: 2020-12-17 14:57:20
 --> 
 <template>
   <div>
@@ -17,7 +17,7 @@
         label="操作"
       ></el-table-column>
       <el-table-column
-        prop="operator"
+        prop="operatorName"
         label="处理人"
       ></el-table-column>
       <el-table-column
@@ -30,7 +30,7 @@
         width="100"
       >
         <template v-slot="{ row }">
-          {{ $root.dictAllName(row.result, 'ApproveResult') }}
+          {{ $root.dictAllName(row.result, 'ApproveResult') || '-' }}
         </template>
       </el-table-column>
       <el-table-column
