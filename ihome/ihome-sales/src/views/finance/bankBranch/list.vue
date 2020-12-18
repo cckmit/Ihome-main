@@ -4,7 +4,7 @@
  * @Author: ywl
  * @Date: 2020-12-01 10:29:31
  * @LastEditors: ywl
- * @LastEditTime: 2020-12-08 15:45:52
+ * @LastEditTime: 2020-12-17 16:25:45
 -->
 <template>
   <IhPage label-width="80px">
@@ -19,6 +19,7 @@
               <el-input
                 v-model="queryPageParameters.branchName"
                 placeholder="开户行"
+                clearable
               ></el-input>
             </el-form-item>
           </el-col>
@@ -27,6 +28,7 @@
               <el-input
                 v-model="queryPageParameters.bankName"
                 placeholder="所属银行"
+                clearable
               ></el-input>
             </el-form-item>
           </el-col>
@@ -35,6 +37,7 @@
               <el-input
                 v-model="queryPageParameters.branchNo"
                 placeholder="联行号"
+                clearable
               ></el-input>
             </el-form-item>
           </el-col>
@@ -45,6 +48,7 @@
               <el-input
                 v-model="queryPageParameters.provinceName"
                 placeholder="省份"
+                clearable
               ></el-input>
             </el-form-item>
           </el-col>
@@ -53,6 +57,7 @@
               <el-input
                 v-model="queryPageParameters.cityName"
                 placeholder="城市"
+                clearable
               ></el-input>
             </el-form-item>
           </el-col>

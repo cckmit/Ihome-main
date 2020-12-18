@@ -4,7 +4,7 @@
  * @Author: zyc
  * @Date: 2020-08-04 17:43:48
  * @LastEditors: zyc
- * @LastEditTime: 2020-12-17 20:11:01
+ * @LastEditTime: 2020-12-18 08:58:37
  */
 let handleSwagger = require('./node_modules/ihome-common/util/api/api-hangle');
 function doneApi() {
@@ -14,11 +14,7 @@ function doneApi() {
     // handleSwagger('contract');
     // handleSwagger('developer');
     handleSwagger('system');
-    // handleSwagger('deal');
     // handleSwagger('customer');
-    // handleSwagger('finance');
-    // handleSwagger('sales-document-cover');
-}
 module.exports = (api, projectOptions) => {
     api.registerCommand('api', {
         description: 'api plugin for vue cli 3',

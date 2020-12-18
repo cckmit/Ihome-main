@@ -4,7 +4,7 @@
  * @Author: ywl
  * @Date: 2020-12-08 17:45:05
  * @LastEditors: ywl
- * @LastEditTime: 2020-12-17 08:54:19
+ * @LastEditTime: 2020-12-17 16:25:25
 -->
 <template>
   <IhPage label-width="80px">
@@ -19,6 +19,7 @@
               <el-input
                 v-model="queryPageParameters.businessNo"
                 placeholder="请输入业务单号"
+                clearable
               ></el-input>
             </el-form-item>
           </el-col>
@@ -27,6 +28,7 @@
               <el-input
                 v-model="queryPageParameters.invoiceTitle"
                 placeholder="请输入发票抬头"
+                clearable
               ></el-input>
             </el-form-item>
           </el-col>
@@ -36,6 +38,7 @@
                 v-model="queryPageParameters.feeType"
                 class="width--100"
                 placeholder="请选择费用类型"
+                clearable
               >
                 <el-option
                   v-for="(i, n) in $root.dictAllList('FeeType')"
@@ -54,6 +57,7 @@
                 v-model="queryPageParameters.status"
                 class="width--100"
                 placeholder="请选择开票状态"
+                clearable
               >
                 <el-option
                   v-for="(i, n) in $root.dictAllList('InvoiceOperationStatus')"
@@ -86,6 +90,7 @@
                 v-model="queryPageParameters.operationType"
                 class="width--100"
                 placeholder="请选择开票类型"
+                clearable
               >
                 <el-option
                   v-for="(i, n) in $root.dictAllList('InvoiceOperationType')"

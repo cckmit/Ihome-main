@@ -4,7 +4,7 @@
  * @Author: wwq
  * @Date: 2020-12-01 14:49:06
  * @LastEditors: wwq
- * @LastEditTime: 2020-12-16 17:11:21
+ * @LastEditTime: 2020-12-17 21:05:58
 -->
 <template>
   <el-dialog
@@ -103,7 +103,6 @@
               type="date"
               align="left"
               placeholder="年/月/日"
-              :picker-options="$root.pickerOptions"
               value-format="yyyy-MM-dd"
             ></el-date-picker>
           </el-form-item>
