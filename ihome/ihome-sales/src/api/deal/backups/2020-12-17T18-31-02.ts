@@ -1,6 +1,6 @@
 /* eslint-disable */
 /* 此脚本由swagger-ui的api-docs自动生成，请勿修改 */
-//2020-12-17 18:31:02
+//2020-12-16 15:50:39
 import { request } from '@/api/base'
 const basePath = "/sales-api/deal"
 /**重新计算平台费用部分*/
@@ -39,7 +39,7 @@ return await request.post< number,number> (basePath+'/achieveScaleScheme/update'
 export async function post_buModelContType_add (d?: any) {
 return await request.post< number,number> (basePath+'/buModelContType/add', d)
 }
-/**查询可配置的【业务模式——合同类型】对应关系列表*/
+/**查询业务模式——合同类型对应关系列表*/
 export async function get_buModelContType_chooseAble__modelName (d?: any) {
 return await request.get<string[],string[]>(basePath+'/buModelContType/chooseAble/{modelName}', { params: d })
 }
@@ -51,7 +51,7 @@ return await request.post< number,number> (basePath+'/buModelContType/delete', d
 export async function post_buModelContType_get (d?: any) {
 return await request.post< BuModelContTypeListVO,BuModelContTypeListVO> (basePath+'/buModelContType/get', d)
 }
-/**查询已配置的【业务模式——合同类型】对应关系列表*/
+/**查询业务模式——合同类型对应关系列表*/
 export async function post_buModelContType_getList (d?: any) {
 return await request.post< BuModelContTypeListVO[],BuModelContTypeListVO[]> (basePath+'/buModelContType/getList', d)
 }
@@ -98,10 +98,6 @@ return await request.post< MingYuanQueryReturnVO,MingYuanQueryReturnVO> (basePat
 /**查询成交列表*/
 export async function post_deal_getList (d?: any) {
 return await request.post< any,any> (basePath+'/deal/getList', d)
-}
-/**选择周期id、房号之后，初始化页面*/
-export async function post_deal_initPage (d?: any) {
-return await request.post< DealInitPageResponseVO,DealInitPageResponseVO> (basePath+'/deal/initPage', d)
 }
 /**去修改主成交*/
 export async function get_deal_toUpdateMainDeal__id (d?: any) {
@@ -198,10 +194,6 @@ return await request.get<any,any>(basePath+'/suppDeal/toGetSuppDealList', { para
 /**去修改补充成交*/
 export async function get_suppDeal_toUpdateSuppDeal__id (d?: any) {
 return await request.get<DealDetailVO,DealDetailVO>(basePath+'/suppDeal/toUpdateSuppDeal/{id}', { params: d })
-}
-/**审核基础信息变更时 返回数据信息*/
-export async function get_suppDeal_toauditBasicInfChang (d?: any) {
-return await request.get<DealDetailVO,DealDetailVO>(basePath+'/suppDeal/toauditBasicInfChang', { params: d })
 }
 /**修改业绩信息变更*/
 export async function post_suppDeal_updateAchieveInfChangeVO (d?: any) {
@@ -401,7 +393,7 @@ isMarketProject: string;
 isSame: string;
 /**是否特殊方案(Yes-是、No-否)*/
 isSpecial: string;
-/**业务模式(TotalBagModel-纯总包模式、DistriModel-纯分销模式、TotalBagDistriModel-总包+分销下的分销模式)*/
+/**业务模式(TotalBagModel-总包模式、DistriModel-分销模式、TotalBagDistriModel-总包+分销模式、Other-其他)*/
 modelCode: string;
 /**备注说明*/
 remarks: string;
@@ -438,7 +430,7 @@ isSpecial: string;
 jobId: number;
 /**岗位名称*/
 jobName: string;
-/**业务模式(TotalBagModel-纯总包模式、DistriModel-纯分销模式、TotalBagDistriModel-总包+分销下的分销模式)*/
+/**业务模式(TotalBagModel-总包模式、DistriModel-分销模式、TotalBagDistriModel-总包+分销模式、Other-其他)*/
 modelCode: string;
 /**归属组织名称*/
 orgName: string;
@@ -465,7 +457,7 @@ isMarketProject: string;
 isSame: string;
 /**是否特殊方案(Yes-是、No-否)*/
 isSpecial: string;
-/**业务模式(TotalBagModel-纯总包模式、DistriModel-纯分销模式、TotalBagDistriModel-总包+分销下的分销模式)*/
+/**业务模式(TotalBagModel-总包模式、DistriModel-分销模式、TotalBagDistriModel-总包+分销模式、Other-其他)*/
 modelCode: string;
 /**(必填)当前页*/
 pageNum: number;
@@ -488,7 +480,7 @@ isMarketProject: string;
 isSame: string;
 /**是否特殊方案(Yes-是、No-否)*/
 isSpecial: string;
-/**业务模式(TotalBagModel-纯总包模式、DistriModel-纯分销模式、TotalBagDistriModel-总包+分销下的分销模式)*/
+/**业务模式(TotalBagModel-总包模式、DistriModel-分销模式、TotalBagDistriModel-总包+分销模式、Other-其他)*/
 modelCode: string;
 /**备注说明*/
 remarks: string;
@@ -519,7 +511,7 @@ isMarketProject: string;
 isSame: string;
 /**是否特殊方案(Yes-是、No-否)*/
 isSpecial: string;
-/**业务模式(TotalBagModel-纯总包模式、DistriModel-纯分销模式、TotalBagDistriModel-总包+分销下的分销模式)*/
+/**业务模式(TotalBagModel-总包模式、DistriModel-分销模式、TotalBagDistriModel-总包+分销模式、Other-其他)*/
 modelCode: string;
 /**备注说明*/
 remarks: string;
@@ -544,7 +536,7 @@ contType: string;
 isMarketProject: string;
 /**分销同步总包(Yes-是、No-否)*/
 isSame: string;
-/**业务模式(TotalBagModel-纯总包模式、DistriModel-纯分销模式、TotalBagDistriModel-总包+分销下的分销模式)*/
+/**业务模式(TotalBagModel-总包模式、DistriModel-分销模式、TotalBagDistriModel-总包+分销模式、Other-其他)*/
 modelCode: string;
 /**(必填)当前页*/
 pageNum: number;
@@ -561,7 +553,7 @@ cycleId: number;
 dealOrgId: number;
 /**是否市场化项目(Yes-是、No-否)*/
 isMarketProject: string;
-/**业务模式(TotalBagModel-纯总包模式、DistriModel-纯分销模式、TotalBagDistriModel-总包+分销下的分销模式)*/
+/**业务模式(TotalBagModel-总包模式、DistriModel-分销模式、TotalBagDistriModel-总包+分销模式、Other-其他)*/
 modelCode: string;
 /**物业类型(Residence-住宅、WorkShop-厂房、Apartment-公寓、Villa-别墅、Shop-商铺、Office-写字楼、Parking-车位、Other-其他)*/
 propertyType: string;
@@ -679,24 +671,24 @@ type: string;
 export interface BuModelContTypeAddVO {
 /**合同类型*/
 contTypeList: string[];
-/**业务模式(TotalBagModel-纯总包模式、DistriModel-纯分销模式、TotalBagDistriModel-总包+分销下的分销模式)*/
+/**业务模式(TotalBagModel-总包模式、DistriModel-分销模式、TotalBagDistriModel-总包+分销模式、Other-其他)*/
 modelCode: string;
 }
 /**BuModelContTypeListVO*/
 export interface BuModelContTypeListVO {
 /**合同类型*/
 contTypeList: string[];
-/**业务模式(TotalBagModel-纯总包模式、DistriModel-纯分销模式、TotalBagDistriModel-总包+分销下的分销模式)*/
+/**业务模式(TotalBagModel-总包模式、DistriModel-分销模式、TotalBagDistriModel-总包+分销模式、Other-其他)*/
 modelCode: string;
 }
 /**BuModelContTypeQueryByNameVO*/
 export interface BuModelContTypeQueryByNameVO {
-/**业务模式(TotalBagModel-纯总包模式、DistriModel-纯分销模式、TotalBagDistriModel-总包+分销下的分销模式)*/
+/**业务模式(TotalBagModel-总包模式、DistriModel-分销模式、TotalBagDistriModel-总包+分销模式、Other-其他)*/
 modelCode: string;
 }
 /**BuModelContTypeQueryVO*/
 export interface BuModelContTypeQueryVO {
-/**业务模式(TotalBagModel-纯总包模式、DistriModel-纯分销模式、TotalBagDistriModel-总包+分销下的分销模式)*/
+/**业务模式(TotalBagModel-总包模式、DistriModel-分销模式、TotalBagDistriModel-总包+分销模式、Other-其他)*/
 modelCode: string;
 }
 /**ChannelCommAddVO*/
@@ -715,7 +707,7 @@ packageId: number;
 partyACustomer: number;
 /**备注*/
 remarks: string;
-/**拆佣对象(Personal-个人、AgentCompany-代理公司、ChannelCompany-渠道公司)*/
+/**拆佣对象(Personal-个人、Company-公司)*/
 target: string;
 }
 /**ChannelCommVO*/
@@ -752,7 +744,7 @@ partyACustomerName: string;
 receiveAchieveId: number;
 /**备注*/
 remarks: string;
-/**拆佣对象(Personal-个人、AgentCompany-代理公司、ChannelCompany-渠道公司)*/
+/**拆佣对象(Personal-个人、Company-公司)*/
 target: string;
 /**更新时间(yyyy-MM-dd HH:mm:ss)*/
 updateTime: string;
@@ -777,17 +769,6 @@ customerType: string;
 email: string;
 /**客户标志(Yes-是、No-否)*/
 isCustomer: string;
-}
-/**CustomerInformation*/
-export interface CustomerInformation {
-/**(必填)业主证件号码*/
-ownerCertificateNo: string;
-/**(必填)业主联系电话*/
-ownerMobile: string;
-/**(必填)业主名字*/
-ownerName: string;
-/**(必填)签署标示: 默认第一条数据时Yes(Yes-是、No-否)*/
-signingStatus: string;
 }
 /**CustomerUpdateVO*/
 export interface CustomerUpdateVO {
@@ -885,7 +866,7 @@ isConsign: string;
 isMarketProject: string;
 /**是否垫佣(Yes-是、No-否)*/
 isMat: string;
-/**业务模式(TotalBagModel-纯总包模式、DistriModel-纯分销模式、TotalBagDistriModel-总包+分销下的分销模式)*/
+/**业务模式(TotalBagModel-总包模式、DistriModel-分销模式、TotalBagDistriModel-总包+分销模式、Other-其他)*/
 modelCode: string;
 /**一手代理团队ID*/
 oneAgentTeamId: number;
@@ -948,7 +929,7 @@ isConsign: string;
 isMarketProject: string;
 /**是否垫佣(Yes-是、No-否)*/
 isMat: string;
-/**业务模式(TotalBagModel-纯总包模式、DistriModel-纯分销模式、TotalBagDistriModel-总包+分销下的分销模式)*/
+/**业务模式(TotalBagModel-总包模式、DistriModel-分销模式、TotalBagDistriModel-总包+分销模式、Other-其他)*/
 modelCode: string;
 /**一手代理团队ID*/
 oneAgentTeamId: number;
@@ -1027,7 +1008,7 @@ isConsign: string;
 isMarketProject: string;
 /**是否垫佣(Yes-是、No-否)*/
 isMat: string;
-/**业务模式(TotalBagModel-纯总包模式、DistriModel-纯分销模式、TotalBagDistriModel-总包+分销下的分销模式)*/
+/**业务模式(TotalBagModel-总包模式、DistriModel-分销模式、TotalBagDistriModel-总包+分销模式、Other-其他)*/
 modelCode: string;
 /**一手代理团队*/
 oneAgentTeam: string;
@@ -1102,37 +1083,6 @@ deal: Deal;
 /**成交房产*/
 house: House;
 }
-/**DealInitPageDistributionVO*/
-export interface DealInitPageDistributionVO {
-/**垫佣情况：Yes 垫佣，No 未垫佣*/
-advancementSituation: string;
-/**渠道合同编号*/
-contractNo: string;
-}
-/**DealInitPageRequestVO*/
-export interface DealInitPageRequestVO {
-/**undefined*/
-cycleId: number;
-/**undefined*/
-roomId: number;
-}
-/**DealInitPageResponseVO*/
-export interface DealInitPageResponseVO {
-/**渠道商*/
-agencyVOs: AgencyAddVO[];
-/**栋数名称*/
-buildingName: string;
-/**分销协议编号*/
-contracts: DealInitPageDistributionVO[];
-/**是否有成交报备*/
-hasRecord: boolean;
-/**明源返回数据*/
-myReturnVO: MingYuanQueryReturnVO;
-/**undefined*/
-notice: NoticeCustomerInformationResponse[];
-/**undefined*/
-visitConfirForms: DocumentAddVO[];
-}
 /**DealListVO*/
 export interface DealListVO {
 /**业绩日期(yyyy-MM-dd HH:mm:ss)*/
@@ -1191,7 +1141,7 @@ isConsign: string;
 isMarketProject: string;
 /**是否垫佣(Yes-是、No-否)*/
 isMat: string;
-/**业务模式(TotalBagModel-纯总包模式、DistriModel-纯分销模式、TotalBagDistriModel-总包+分销下的分销模式)*/
+/**业务模式(TotalBagModel-总包模式、DistriModel-分销模式、TotalBagDistriModel-总包+分销模式、Other-其他)*/
 modelCode: string;
 /**一手代理团队ID*/
 oneAgentTeamId: number;
@@ -1314,7 +1264,7 @@ isConsign: string;
 isMarketProject: string;
 /**是否垫佣(Yes-是、No-否)*/
 isMat: string;
-/**业务模式(TotalBagModel-纯总包模式、DistriModel-纯分销模式、TotalBagDistriModel-总包+分销下的分销模式)*/
+/**业务模式(TotalBagModel-总包模式、DistriModel-分销模式、TotalBagDistriModel-总包+分销模式、Other-其他)*/
 modelCode: string;
 /**一手代理团队ID*/
 oneAgentTeamId: number;
@@ -1730,23 +1680,6 @@ refundableAmount: number;
 supplementDealId: number;
 /**(必填)补充报告状态(Create-创建、Update-更新)*/
 supplementalReportStatus: string;
-}
-/**NoticeCustomerInformationResponse*/
-export interface NoticeCustomerInformationResponse {
-/**客户信息*/
-customerInformationList: CustomerInformation[];
-/**告知书ID*/
-noticeId: number;
-/**告知书编号*/
-noticeNo: string;
-/**告知书状态(WaitDetermine-信息待确认、WaitBeSigned-客户待签署、WaitPay-客户待支付、WaitReview-分公司业管待审核、BecomeEffective-已生效、Invalidation-失效)*/
-notificationStatus: string;
-/**告知书类型(Notification-优惠告知书、SupplementaryAgreement-补充协议、TerminationAgreement-终止协议、Confirmation-房号确定书、RefundApplication-退款申请书)*/
-notificationType: string;
-/**客户类型(Personal-个人、Enterprise-企业)*/
-ownerType: string;
-/**预览编号*/
-templateId: string;
 }
 /**NoticeDealCreate*/
 export interface NoticeDealCreate {

@@ -33,7 +33,7 @@ const dealRoutes: Array<RouteConfig> = [
   // 业绩比例方案-分公司方案列表路由
   {
     path: '/achieveScaleScheme',
-    meta: { title: '业务模式', icon: 'form' },
+    meta: { title: '业绩比例方案', icon: 'form' },
     redirect: '/achieveScaleScheme/companyList',
     component: Layout,
     children: [
