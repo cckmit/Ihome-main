@@ -4,7 +4,7 @@
  * @Author: ywl
  * @Date: 2020-12-01 10:39:24
  * @LastEditors: ywl
- * @LastEditTime: 2020-12-18 21:06:46
+ * @LastEditTime: 2020-12-18 21:11:32
 -->
 <template>
   <IhPage label-width="90px">
@@ -148,12 +148,12 @@
         <el-table-column
           prop="accountNo"
           label="账号"
-          min-width="150"
+          min-width="165"
         ></el-table-column>
         <el-table-column
           prop="productModel"
           label="产品型号"
-          min-width="145"
+          min-width="155"
         ></el-table-column>
         <el-table-column
           prop="serialNo"
