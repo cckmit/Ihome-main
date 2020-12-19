@@ -4,7 +4,7 @@
  * @Author: wwq
  * @Date: 2020-11-03 11:52:41
  * @LastEditors: wwq
- * @LastEditTime: 2020-12-16 14:58:00
+ * @LastEditTime: 2020-12-19 17:55:05
 -->
 <template>
   <div class="house-type text-left">
@@ -61,6 +61,7 @@ import HouseTypeEdit from "../dialog/houseTypeEdit.vue";
 import {
   get_houseType_getTabItem__proId,
   post_houseType_add,
+  post_houseType_update,
   post_houseType_delete__houseTypeId,
 } from "@/api/project/index";
 
@@ -72,6 +73,7 @@ export default class EditHouseType extends Vue {
   info: any = {};
   dialogVisible = false;
   editData: any = {};
+  dialogType = "";
 
   private get proId() {
     return this.$route.query.id;
@@ -87,11 +89,13 @@ export default class EditHouseType extends Vue {
   }
 
   add() {
+    this.dialogType = "add";
     this.editData = {};
     this.dialogVisible = true;
   }
 
   edit(data: any) {
+    this.dialogType = "edit";
     this.editData = { ...data };
     this.dialogVisible = true;
   }
@@ -103,7 +107,11 @@ export default class EditHouseType extends Vue {
       obj.picAddr = data.fileList[0].fileId;
     }
     obj.proId = this.proId;
-    await post_houseType_add(obj);
+    if (this.dialogType === "add") {
+      await post_houseType_add(obj);
+    } else {
+      await post_houseType_update(obj);
+    }
     this.$message.success("保存成功");
     this.dialogVisible = false;
     this.getInfo();
