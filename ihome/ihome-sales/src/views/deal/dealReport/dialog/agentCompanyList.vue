@@ -4,7 +4,7 @@
  * @Author: lsj
  * @Date: 2020-11-03 15:28:12
  * @LastEditors: lsj
- * @LastEditTime: 2020-12-09 17:28:20
+ * @LastEditTime: 2020-12-19 11:01:30
 -->
 <template>
   <el-dialog
@@ -33,6 +33,7 @@
     </el-form>
     <IhTableCheckBox
       :isSingle="true"
+      :isSelection="false"
       :valueKey="rowKey"
       :data="resPageInfo.list"
       :hasCheckedData="hasCheckedData"
@@ -67,7 +68,7 @@
       super();
     }
 
-    private rowKey: any = 'id'; // 选择项的标识
+    private rowKey: any = 'channelGradeId'; // 选择项的标识
     private tableMaxHeight: any = 350;
     private tableColumn = [
       {
@@ -149,7 +150,7 @@
       if (this.currentSelection.length === 0) {
         this.$message({
           type: "error",
-          message: "请选择渠道商",
+          message: "请选择渠道公司",
         });
         return
       }
@@ -158,7 +159,7 @@
 
     // 获取选中项 --- 最后需要获取的数据
     private selectionChange(selection: any) {
-      console.log(selection, "selectionChange");
+      // console.log(selection, "selectionChange");
       this.currentSelection = selection;
     }
 
@@ -217,5 +218,11 @@
 <style lang="scss" scoped>
   .col-bottom-20 {
     margin-bottom: 20px;
+  }
+
+  .dialog {
+    /deep/.el-dialog__body {
+      padding: 10px 20px 20px 20px;
+    }
   }
 </style>
