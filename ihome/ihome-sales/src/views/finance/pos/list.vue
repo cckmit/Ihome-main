@@ -4,7 +4,7 @@
  * @Author: ywl
  * @Date: 2020-12-01 10:39:24
  * @LastEditors: ywl
- * @LastEditTime: 2020-12-18 21:11:32
+ * @LastEditTime: 2020-12-19 09:40:01
 -->
 <template>
   <IhPage label-width="90px">
@@ -192,8 +192,11 @@
           width="115"
           fixed="right"
         >
-          <template v-slot="{  }">
-            <el-link type="primary">详情</el-link>
+          <template v-slot="{ row }">
+            <el-link
+              type="primary"
+              @click.native.prevent="$router.push(`/pos/info?id=${row.id}`)"
+            >详情</el-link>
             <el-dropdown
               trigger="click"
               class="margin-left-15"
