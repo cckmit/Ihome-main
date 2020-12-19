@@ -4,7 +4,7 @@
  * @Author: ywl
  * @Date: 2020-12-01 10:39:24
  * @LastEditors: ywl
- * @LastEditTime: 2020-12-19 09:40:01
+ * @LastEditTime: 2020-12-19 17:22:51
 -->
 <template>
   <IhPage label-width="90px">
@@ -124,7 +124,10 @@
           type="info"
           @click="reset()"
         >重置</el-button>
-        <el-button type="success">添加</el-button>
+        <el-button
+          type="success"
+          @click="handleAdd()"
+        >添加</el-button>
         <el-link
           type="primary"
           class="float-right margin-right-40"
@@ -224,6 +227,16 @@
         :total="resPageInfo.total"
       ></el-pagination>
     </template>
+    <IhDialog :show="dialogVisible">
+      <AddPos
+        :isAdd="isAdd"
+        @cancel="() => (dialogVisible = false)"
+        @finish="() => {
+          queryPageParameters.pageNum = 1;
+          getListMixin();
+        }"
+      />
+    </IhDialog>
   </IhPage>
 </template>
 
@@ -231,8 +244,10 @@
 import { Component, Vue } from "vue-property-decorator";
 import PaginationMixin from "../../../mixins/pagination";
 import { post_posTerminal_getList } from "../../../api/finance/index";
+import AddPos from "./dialog/addPos.vue";
 
 @Component({
+  components: { AddPos },
   mixins: [PaginationMixin],
 })
 export default class POSList extends Vue {
@@ -252,7 +267,13 @@ export default class POSList extends Vue {
     list: [],
   };
   private searchOpen = true;
+  private dialogVisible = false;
+  private isAdd = true;
 
+  private handleAdd() {
+    this.isAdd = true;
+    this.dialogVisible = true;
+  }
   private search() {
     this.queryPageParameters.pageNum = 1;
     this.getListMixin();

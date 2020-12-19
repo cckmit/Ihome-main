@@ -4,7 +4,7 @@
  * @Author: ywl
  * @Date: 2020-12-01 15:49:07
  * @LastEditors: ywl
- * @LastEditTime: 2020-12-19 09:38:40
+ * @LastEditTime: 2020-12-19 17:12:11
  */
 import { RouteConfig } from 'vue-router'
 
@@ -81,7 +81,7 @@ const financeRoutes: Array<RouteConfig> = [
         path: 'info',
         name: 'POSInfo',
         component: () => import('../views/finance/pos/info.vue'),
-        meta: { title: 'POS机详情', icon: 'form', keepAlive: true }
+        meta: { title: 'POS机详情', icon: 'form' }
       },
     ]
   },

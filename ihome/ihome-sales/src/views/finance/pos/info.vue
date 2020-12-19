@@ -4,7 +4,7 @@
  * @Author: ywl
  * @Date: 2020-12-19 08:39:59
  * @LastEditors: ywl
- * @LastEditTime: 2020-12-19 11:04:16
+ * @LastEditTime: 2020-12-19 18:00:33
 -->
 <template>
   <IhPage class="text-left">
@@ -46,7 +46,7 @@
           ref="ruleForm"
           label-width="100px"
           class="demo-ruleForm"
-          :key="n"
+          :key="n + i.type"
         >
           <el-row>
             <el-col :span="8">
@@ -130,7 +130,7 @@
 
 <script lang="ts">
 import { Component, Vue } from "vue-property-decorator";
-import { get_posTerminal_get__id } from "../../../api/finance/index";
+import { get_posTerminal_getDetail__id } from "../../../api/finance/index";
 
 @Component({})
 export default class POSInfo extends Vue {
@@ -142,7 +142,7 @@ export default class POSInfo extends Vue {
   private async getInfo() {
     let id = this.$route.query.id;
     if (id) {
-      this.info = await get_posTerminal_get__id({ id });
+      this.info = await get_posTerminal_getDetail__id({ id });
     }
   }
 

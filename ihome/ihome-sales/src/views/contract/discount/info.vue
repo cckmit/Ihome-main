@@ -4,7 +4,7 @@
  * @Author: ywl
  * @Date: 2020-09-27 17:27:00
  * @LastEditors: ywl
- * @LastEditTime: 2020-12-18 16:41:49
+ * @LastEditTime: 2020-12-19 15:38:55
 -->
 <template>
   <IhPage class="text-left discount-info">
@@ -148,7 +148,7 @@
         </el-row>
         <el-row v-if="!isPaper">
           <el-col :span="24">
-            <el-form-item label="告知书电子版">
+            <el-form-item label="电子版">
               <el-button
                 type="success"
                 @click="preview()"
@@ -158,7 +158,7 @@
         </el-row>
         <el-row v-else>
           <el-col :span="24">
-            <el-form-item label="告知书扫描件">
+            <el-form-item label="附件">
               <IhUpload
                 :file-list="fileList"
                 @newFileList="handleFile"
