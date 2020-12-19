@@ -4,7 +4,7 @@
  * @Author: zyc
  * @Date: 2020-07-09 15:03:17
  * @LastEditors: zyc
- * @LastEditTime: 2020-12-19 10:12:28
+ * @LastEditTime: 2020-12-19 16:34:19
 --> 
 <template>
   <el-dialog
@@ -19,7 +19,7 @@
     class="dialog OrganizationJurisdiction"
   >
     <el-row>
-      <div style="margin-bottom: 30px">
+      <div style="margin-bottom: 30px" v-show="false">
         <b class="padding-right-20">操作关联选项：</b>
         <el-checkbox v-model="config.selectParent">选中-关联父级</el-checkbox>
         <el-checkbox v-model="config.selectChildren">选中-关联子级</el-checkbox>
@@ -52,6 +52,7 @@
             <el-tree
               class="filter-tree"
               :check-strictly="true"
+              :expand-on-click-node="false"
               :data="dataTree"
               :props="defaultProps"
               :default-expand-all="true"
@@ -111,9 +112,9 @@ export default class OrganizationJurisdiction extends Vue {
   }
   config: any = {
     selectParent: false,
-    selectChildren: false,
+    selectChildren: true,
     cancelParent: false,
-    cancelChildren: false,
+    cancelChildren: true,
   };
   @Prop({ default: null }) data: any;
   dialogVisible = true;
