@@ -4,7 +4,7 @@
  * @Author: wwq
  * @Date: 2020-10-28 15:34:27
  * @LastEditors: wwq
- * @LastEditTime: 2020-12-16 19:29:32
+ * @LastEditTime: 2020-12-19 14:23:53
 -->
 <template>
   <ih-page>
@@ -170,7 +170,7 @@
               </span>
               <el-dropdown-menu slot="dropdown">
                 <el-dropdown-item
-                  :disabled="row.status === 'Audited'"
+                  :class="{'is-disabled': row.status === 'Audited'}"
                   @click.native.prevent="routeTo(row, 'edit')"
                   v-has="'B.SALES.PROJECT.AGENCYLIST.UPDATE'"
                 >修改</el-dropdown-item>

@@ -4,7 +4,7 @@
  * @Author: zyc
  * @Date: 2020-08-04 15:23:09
  * @LastEditors: zyc
- * @LastEditTime: 2020-12-14 15:12:20
+ * @LastEditTime: 2020-12-19 09:41:15
 --> 
 <template>
   <div class="OrganizationTree">
@@ -102,35 +102,27 @@ export default class OrganizationTree extends Vue {
     (this.$refs.tree as any).filter(val);
   }
   selectChange() {
-    (this.$refs.tree as any).filter(this.filterText);
+    (this.$refs.tree as any).filter(this.filterText, this.selectType);
   }
   filterNode(value: string, data: any) {
-    let name: string = data[this.defaultProps.label];
-    if (!value) return true;
-    return name.indexOf(value) !== -1;
-
-    // if (!value && !this.selectType) {
-    //   return true;
-    // } else {
-    //   if (this.selectType) {
-    //     if (value) {
-    //       let r =
-    //         data[this.defaultProps.label].indexOf(value) !== -1 &&
-    //         data.status == "Valid";
-    //       return r;
-    //     } else {
-    //       let r = data.status == "Valid";
-    //       return r;
-    //     }
-    //   } else {
-    //     if (value) {
-    //       let r = data[this.defaultProps.label].indexOf(value) !== -1;
-    //       return r;
-    //     } else {
-    //       return false;
-    //     }
-    //   }
-    // }
+   
+    if (!value && !this.selectType) {
+      return true;
+    } else {
+      if (value && this.selectType) {
+        return (
+          data[this.defaultProps.label].indexOf(value) !== -1 &&
+          data.status == (this.selectType ? "Valid" : "Invalid")
+        );
+      } else {
+        if (value) {
+          return data[this.defaultProps.label].indexOf(value) !== -1;
+        } else {
+          return data.status == (this.selectType ? "Valid" : "Invalid");
+        }
+      }
+    }
+ 
   }
   currentChange(item: any) {
     this.$emit("select", item);

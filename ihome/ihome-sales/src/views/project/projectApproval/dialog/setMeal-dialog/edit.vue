@@ -4,7 +4,7 @@
  * @Author: wwq
  * @Date: 2020-12-04 09:40:47
  * @LastEditors: wwq
- * @LastEditTime: 2020-12-18 21:14:51
+ * @LastEditTime: 2020-12-19 16:55:30
 -->
 <template>
   <el-dialog
@@ -151,7 +151,7 @@
           <!-- 服务费 -->
           <div
             :key="i"
-            v-if="(info.chargeEnum === 'Service' || info.chargeEnum === 'ServiceAndAgent') && item.costTypeEnum === 'ServiceFee'"
+            v-if="(info.chargeEnum === 'Service' || info.chargeEnum === 'ServiAndAgen') && item.costTypeEnum === 'ServiceFee'"
           >
             <!-- 表头行选择 -->
             <div class="top-select">
@@ -514,7 +514,7 @@
           <!-- 代理费 -->
           <div
             :key="i"
-            v-if="(info.chargeEnum === 'Agent' || info.chargeEnum === 'ServiceAndAgent') && item.costTypeEnum === 'AgencyFee'"
+            v-if="(info.chargeEnum === 'Agent' || info.chargeEnum === 'ServiAndAgen') && item.costTypeEnum === 'AgencyFee'"
           >
             <br />
             <!-- 表头行选择 -->
@@ -1151,6 +1151,11 @@ export default class SetMealEdit extends Vue {
       ];
       this.info.busEnum = item.busEnum;
       this.info.chargeEnum = item.chargeEnum;
+      if (item.termStart && item.termEnd) {
+        this.info.timeList = [item.termStart, item.termEnd];
+      } else {
+        this.info.timeList = [];
+      }
       // this.info.busEnum = "TotalBagModel";
       // this.info.busEnum = "DistriModel";
       // 假数据
@@ -1225,9 +1230,9 @@ export default class SetMealEdit extends Vue {
   async addTemplate() {
     let arr: any = [];
     arr = this.info.colletionandsendMxs.map((v: any) => v.costTypeEnum);
-    // let serviceArr = arr.filter((v: any) => v === "ServiceFee");
+    // let serviceArr = arr.filter((v: any) => v === "Service");
     let agentArr = arr.filter((v: any) => v === "AgencyFee");
-    if (this.info.chargeEnum === "ServiceAndAgent") {
+    if (this.info.chargeEnum === "ServiAndAgen") {
       this.$confirm("请选择增加模板类型?", "提示", {
         confirmButtonText: "代理费模板",
         cancelButtonText: "服务费模板",
@@ -1238,7 +1243,7 @@ export default class SetMealEdit extends Vue {
         center: true,
         callback: (action) => {
           if (action === "cancel") {
-            if (arr.includes("ServiceFee")) {
+            if (arr.includes("Service")) {
               this.$message.warning("服务费已存在,无需再增加");
               return;
             } else {
@@ -1271,7 +1276,7 @@ export default class SetMealEdit extends Vue {
       });
     } else if (this.info.chargeEnum === "Service") {
       let item = this.info.colletionandsendMxs.map((v: any) => v.costTypeEnum);
-      if (item.includes("ServiceFee")) {
+      if (item.includes("Service")) {
         this.$message.warning("服务费已存在,无需再增加");
         return;
       } else {

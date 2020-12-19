@@ -4,7 +4,7 @@
  * @Author: wwq
  * @Date: 2020-12-07 14:32:16
  * @LastEditors: wwq
- * @LastEditTime: 2020-12-11 09:12:45
+ * @LastEditTime: 2020-12-19 16:56:08
 -->
 <template>
   <el-dialog
@@ -105,7 +105,7 @@
           <!-- 服务费 -->
           <div
             :key="i"
-            v-if="(info.chargeEnum === 'Service' || info.chargeEnum === 'ServiceAndAgent') && item.costTypeEnum === 'ServiceFee'"
+            v-if="(info.chargeEnum === 'Service' || info.chargeEnum === 'ServiAndAgen') && item.costTypeEnum === 'ServiceFee'"
           >
             <!-- 表头行选择 -->
             <div class="top-select">
@@ -266,7 +266,7 @@
           <!-- 代理费 -->
           <div
             :key="i"
-            v-if="(info.chargeEnum === 'Agent' || info.chargeEnum === 'ServiceAndAgent') && item.costTypeEnum === 'AgencyFee'"
+            v-if="(info.chargeEnum === 'Agent' || info.chargeEnum === 'ServiAndAgen') && item.costTypeEnum === 'AgencyFee'"
           >
             <br />
             <!-- 表头行选择 -->

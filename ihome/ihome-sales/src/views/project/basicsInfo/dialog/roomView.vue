@@ -4,7 +4,7 @@
  * @Author: wwq
  * @Date: 2020-11-03 18:39:23
  * @LastEditors: wwq
- * @LastEditTime: 2020-12-11 08:51:35
+ * @LastEditTime: 2020-12-19 17:37:56
 -->
 <template>
   <el-dialog
@@ -181,9 +181,10 @@ import { Component, Vue, Prop } from "vue-property-decorator";
 import PaginationMixin from "@/mixins/pagination";
 import RoomViewEdit from "./roomViewEdit.vue";
 import {
-  post_room_getList,
+  post_room_getListByBuildingId,
   get_houseType_getItemsByProperty__proId,
   post_room_add,
+  post_room_update,
   post_room_del__id,
 } from "@/api/project/index";
 
@@ -200,6 +201,7 @@ export default class RoomView extends Vue {
     houseTypeName: null,
     positionEnum: null,
     proId: this.$route.query.id,
+    buildingId: this.data.buildingId,
   };
   houseTypeOptions: any = [];
   editData: any = {};
@@ -219,7 +221,9 @@ export default class RoomView extends Vue {
     this.getHouseType();
   }
   async getListMixin() {
-    this.resPageInfo = await post_room_getList(this.queryPageParameters);
+    this.resPageInfo = await post_room_getListByBuildingId(
+      this.queryPageParameters
+    );
   }
 
   async getHouseType() {
@@ -263,7 +267,11 @@ export default class RoomView extends Vue {
   async editFinish(data: any) {
     let obj = { ...data };
     obj.proId = this.proId;
-    await post_room_add(obj);
+    if (this.roomViewType === "add") {
+      await post_room_add(obj);
+    } else {
+      await post_room_update(obj);
+    }
     this.$message.success("保存成功");
     this.viewEditDialogVisible = false;
     this.getListMixin();
