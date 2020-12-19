@@ -4,7 +4,7 @@
  * @Author: zyc
  * @Date: 2020-07-09 15:03:17
  * @LastEditors: zyc
- * @LastEditTime: 2020-12-19 10:16:14
+ * @LastEditTime: 2020-12-19 16:33:48
 --> 
 <template>
   <el-dialog
@@ -62,6 +62,7 @@
         <el-tree
           class="filter-tree"
           :check-strictly="true"
+          :expand-on-click-node="false"
           :data="dataTree"
           :props="defaultProps"
           :default-expand-all="true"
@@ -105,10 +106,10 @@ export default class ResourcesCheck extends Vue {
   resList: any = [];
 
   config: any = {
-    selectParent: false,
+    selectParent: true,
     selectChildren: false,
-    cancelParent: false,
-    cancelChildren: false,
+    cancelParent: true,
+    cancelChildren: true,
   };
   preData: any = [];
   @Watch("filterText")
