@@ -4,7 +4,7 @@
  * @Author: wwq
  * @Date: 2020-11-27 17:11:14
  * @LastEditors: wwq
- * @LastEditTime: 2020-12-18 08:46:42
+ * @LastEditTime: 2020-12-19 14:24:58
 -->
 <template>
   <IhPage label-width="100px">
@@ -183,17 +183,17 @@
               <el-dropdown-menu slot="dropdown">
                 <el-dropdown-item
                   @click.native.prevent="routeTo(row, 'edit')"
-                  :disabled="row.auditEnum !== 'Draft'"
+                  :class="{'is-disabled': row.auditEnum !== 'Draft'}"
                   v-has="'B.SALES.PROJECT.TERMLIST.UPDATE'"
                 >修改</el-dropdown-item>
                 <el-dropdown-item
                   @click.native.prevent="routeTo(row, 'audit')"
-                  :disabled="!['Reject', 'Draft'].includes(row.auditEnum)"
+                  :class="{'is-disabled': !['Reject', 'Draft'].includes(row.auditEnum)}"
                   v-has="'B.SALES.PROJECT.TERMLIST.VERIFY'"
                 >审核</el-dropdown-item>
                 <el-dropdown-item
                   @click.native.prevent="remove(row)"
-                  :disabled="row.auditEnum !== 'Draft'"
+                  :class="{'is-disabled': row.auditEnum !== 'Draft'}"
                   v-has="'B.SALES.PROJECT.TERMLIST.DELETE'"
                 >删除</el-dropdown-item>
                 <el-dropdown-item
