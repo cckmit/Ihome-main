@@ -4,7 +4,7 @@
  * @Author: zyc
  * @Date: 2020-07-09 15:03:17
  * @LastEditors: zyc
- * @LastEditTime: 2020-12-18 21:00:54
+ * @LastEditTime: 2020-12-19 10:16:14
 --> 
 <template>
   <el-dialog
@@ -19,39 +19,44 @@
     class="dialog"
   >
     <div>
-      <div style="margin-bottom: 40px">
+      <div style="margin-bottom: 30px">
+        <b class="padding-right-20">操作关联选项：</b>
         <el-checkbox v-model="config.selectParent">选中-关联父级</el-checkbox>
         <el-checkbox v-model="config.selectChildren">选中-关联子级</el-checkbox>
         <el-checkbox v-model="config.cancelParent">取消-关联父级</el-checkbox>
         <el-checkbox v-model="config.cancelChildren">取消-关联子级</el-checkbox>
       </div>
       <div>
-        <el-select
-          style="width: 100%"
-          @change="selectChange()"
-          v-model="selectType"
-          clearable
-          placeholder="请选择"
-        >
-          <el-option
-            v-for="(item, index) in $root.dictAllList(
-              'ResourceType',
-              'AllowAdjust'
-            )"
-            :key="index"
-            :label="item.name"
-            :value="item.code"
-          ></el-option>
-        </el-select>
+        <el-row>
+          <el-col :span="12" class="padding-right-40">
+            <el-select
+              style="width: 100%"
+              @change="selectChange()"
+              v-model="selectType"
+              clearable
+              placeholder="请选择资源类型"
+            >
+              <el-option
+                v-for="(item, index) in $root.dictAllList(
+                  'ResourceType',
+                  'AllowAdjust'
+                )"
+                :key="index"
+                :label="item.name"
+                :value="item.code"
+              ></el-option>
+            </el-select>
+          </el-col>
+          <el-col :span="12" class="padding-right-40">
+            <el-input
+              clearable
+              placeholder="输入关键字进行过滤"
+              v-model="filterText"
+            ></el-input>
+          </el-col>
+        </el-row>
       </div>
-      <br />
-      <div>
-        <el-input
-          clearable
-          placeholder="输入关键字进行过滤"
-          v-model="filterText"
-        ></el-input>
-      </div>
+
       <br />
       <div>
         <el-tree
@@ -105,7 +110,6 @@ export default class ResourcesCheck extends Vue {
     cancelParent: false,
     cancelChildren: false,
   };
-  cusChecked: any = [];
   preData: any = [];
   @Watch("filterText")
   filterTextWatch(val: any) {
@@ -197,8 +201,6 @@ export default class ResourcesCheck extends Vue {
         setChildStatus(currentNode, false);
       }
     }
-
-    this.cusChecked = [...tree.getCheckedKeys()];
   }
   checkChange1(item: any, node: any) {
     const tree: any = this.$refs.tree;
