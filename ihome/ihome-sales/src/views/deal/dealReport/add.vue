@@ -395,10 +395,8 @@
       <p class="ih-info-title">优惠告知书信息</p>
       <el-row style="padding-left: 20px">
         <el-col>
-          <div class="add-all-wrapper">
-            <el-button
-              v-if="baseInfoByTerm.termStageEnum === 'Recognize'"
-              type="success" @click="handleAddNotice">添加</el-button>
+          <div class="add-all-wrapper" v-if="baseInfoByTerm.termStageEnum === 'Recognize'">
+            <el-button type="success" @click="handleAddNotice">添加</el-button>
           </div>
           <el-table
             class="ih-table"
@@ -427,7 +425,7 @@
     <p id="anchor-4" class="ih-info-title">客户信息</p>
     <el-row style="padding-left: 20px">
       <el-col>
-        <div class="add-all-wrapper">
+        <div class="add-all-wrapper" v-if="baseInfoByTerm.termStageEnum === 'Recognize'">
           <el-button type="success" @click="handleAddCustomer">添加客户</el-button>
         </div>
         <el-table
@@ -436,55 +434,21 @@
           <el-table-column prop="custCode" label="客户编号" min-width="150"></el-table-column>
           <el-table-column prop="custType" label="客户类型" min-width="120">
             <template slot-scope="scope">
-              <el-select
-                v-model="scope.row.custType"
-                clearable
-                placeholder="客户类型">
-                <el-option
-                  v-for="item in $root.dictAllList('CustType')"
-                  :key="item.code"
-                  :label="item.name"
-                  :value="item.code"
-                ></el-option>
-              </el-select>
+              <div>{{$root.dictAllName(scope.row.custType, 'CustType')}}</div>
             </template>
           </el-table-column>
-          <el-table-column prop="custName" label="客户名称" min-width="120">
-            <template slot-scope="scope">
-              <el-input v-model="scope.row.custName" clearable placeholder="客户名称" />
-            </template>
-          </el-table-column>
-          <el-table-column prop="custTel" label="手机号码" min-width="120">
-            <template slot-scope="scope">
-              <el-input v-model="scope.row.custTel" clearable placeholder="手机号码" />
-            </template>
-          </el-table-column>
+          <el-table-column prop="custName" label="客户名称" min-width="120"></el-table-column>
+          <el-table-column prop="custTel" label="手机号码" min-width="120"></el-table-column>
           <el-table-column prop="cardType" label="证件类型" min-width="120">
             <template slot-scope="scope">
-              <el-select
-                v-model="scope.row.cardType"
-                clearable
-                placeholder="证件类型">
-                <el-option
-                  v-for="item in $root.dictAllList('CommObjectType')"
-                  :key="item.code"
-                  :label="item.name"
-                  :value="item.code"
-                ></el-option>
-              </el-select>
+              <div>{{$root.dictAllName(scope.row.cardType, 'CommObjectType')}}</div>
             </template>
           </el-table-column>
-          <el-table-column prop="certificateNumber" label="证件编号" min-width="150">
-            <template slot-scope="scope">
-              <el-input v-model="scope.row.certificateNumber" clearable placeholder="证件编号" />
-            </template>
-          </el-table-column>
-          <el-table-column prop="email" label="邮箱" min-width="120">
-            <template slot-scope="scope">
-              <el-input v-model="scope.row.email" clearable placeholder="邮箱" />
-            </template>
-          </el-table-column>
-          <el-table-column fixed="right" label="操作" width="100">
+          <el-table-column prop="certificateNumber" label="证件编号" min-width="150"></el-table-column>
+          <el-table-column prop="email" label="邮箱" min-width="120"></el-table-column>
+          <el-table-column
+            v-if="baseInfoByTerm.termStageEnum === 'Recognize'"
+            fixed="right" label="操作" width="100">
             <template slot-scope="scope">
               <el-link
                 class="margin-right-10"
@@ -845,6 +809,7 @@
     </ih-dialog>
     <ih-dialog :show="dialogAddNotice" desc="选择优惠告知书列表">
       <SelectNoticeList
+        :data="baseInfoByTerm"
         @cancel="() => (dialogAddNotice = false)"
         @finish="
             (data) => {
@@ -1544,8 +1509,8 @@
 
     // 确定选择优惠告知书
     async finishAddNotice(data: any) {
-      console.log('data', data);
-      if (data.length === 0) return
+      // console.log('data', data);
+      if (data.length === 0) return;
       if (this.postData.offerNoticeVO.length > 0) {
         let flag = false;
         flag = this.postData.offerNoticeVO.some((item: any) => {
