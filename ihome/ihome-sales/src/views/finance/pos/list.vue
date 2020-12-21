@@ -4,7 +4,7 @@
  * @Author: ywl
  * @Date: 2020-12-01 10:39:24
  * @LastEditors: ywl
- * @LastEditTime: 2020-12-19 17:22:51
+ * @LastEditTime: 2020-12-21 15:35:52
 -->
 <template>
   <IhPage label-width="90px">
@@ -73,22 +73,22 @@
               </el-col>
               <el-col :span="8">
                 <el-form-item label="联动项目">
-                  <el-input
+                  <IhSelectPageByProject
                     v-model="queryPageParameters.proId"
                     placeholder="请选择联动项目"
                     clearable
-                  ></el-input>
+                  ></IhSelectPageByProject>
                 </el-form-item>
               </el-col>
             </el-row>
             <el-row>
               <el-col :span="8">
                 <el-form-item label="所在事业部">
-                  <el-input
+                  <IhSelectPageDivision
                     v-model="queryPageParameters.departmentId"
                     placeholder="请选择所在事业部"
                     clearable
-                  ></el-input>
+                  ></IhSelectPageDivision>
                 </el-form-item>
               </el-col>
               <el-col :span="8">
@@ -127,7 +127,9 @@
         <el-button
           type="success"
           @click="handleAdd()"
-        >添加</el-button>
+        >入库</el-button>
+        <el-button type="success">入库导入</el-button>
+        <el-button @click="revoke()">撤机</el-button>
         <el-link
           type="primary"
           class="float-right margin-right-40"
@@ -141,7 +143,14 @@
         class="ih-table"
         :empty-text="emptyText"
         :data="resPageInfo.list"
+        @selection-change="handleSelectionChange"
       >
+        <el-table-column
+          type="selection"
+          width="50"
+          align="center"
+          fixed
+        ></el-table-column>
         <el-table-column
           fixed
           prop="accountName"
@@ -151,7 +160,7 @@
         <el-table-column
           prop="accountNo"
           label="账号"
-          min-width="165"
+          min-width="195"
         ></el-table-column>
         <el-table-column
           prop="productModel"
@@ -209,6 +218,14 @@
                 <i class="el-icon-arrow-down el-icon--right"></i>
               </span>
               <el-dropdown-menu slot="dropdown">
+                <el-dropdown-item
+                  :class="{'is-disabled': row.status !== 'Stop'}"
+                  @click.native.prevent="remove(row)"
+                >删除</el-dropdown-item>
+                <el-dropdown-item
+                  :class="{'is-disabled': row.status !== 'CentralStock' && row.status !== 'BranchStock'}"
+                  @click.native.prevent="handleEdit(row)"
+                >修改</el-dropdown-item>
               </el-dropdown-menu>
             </el-dropdown>
           </template>
@@ -230,8 +247,10 @@
     <IhDialog :show="dialogVisible">
       <AddPos
         :isAdd="isAdd"
+        :data="rowData"
         @cancel="() => (dialogVisible = false)"
         @finish="() => {
+          dialogVisible = false;
           queryPageParameters.pageNum = 1;
           getListMixin();
         }"
@@ -243,7 +262,11 @@
 <script lang="ts">
 import { Component, Vue } from "vue-property-decorator";
 import PaginationMixin from "../../../mixins/pagination";
-import { post_posTerminal_getList } from "../../../api/finance/index";
+import {
+  post_posTerminal_getList,
+  post_posTerminal_delete__id,
+  post_posTerminal_revoke,
+} from "../../../api/finance/index";
 import AddPos from "./dialog/addPos.vue";
 
 @Component({
@@ -266,11 +289,66 @@ export default class POSList extends Vue {
     total: null,
     list: [],
   };
+  rowData: any = null;
+  private selection: any = [];
   private searchOpen = true;
   private dialogVisible = false;
   private isAdd = true;
 
+  private async revoke() {
+    if (this.selection.length) {
+      if (
+        this.selection
+          .map((i: any) => i.status)
+          .every((v: any) => v === "CentralStock")
+      ) {
+        try {
+          await this.$confirm(
+            `确认对${this.selection.length}条POS机数据进行撤机操作`,
+            "提示"
+          );
+          const res = await post_posTerminal_revoke(
+            this.selection.map((i: any) => i.id)
+          );
+          this.$message.success(`成功撤机${res}条数据`);
+          this.getListMixin();
+        } catch (error) {
+          console.log(error);
+        }
+      } else {
+        this.$message.warning("请选择状态为总部库存的数据");
+      }
+    } else {
+      this.$message.warning("请先勾选表格数据");
+      return;
+    }
+  }
+  private handleSelectionChange(val: any) {
+    this.selection = val;
+  }
+  private async remove(row: any) {
+    try {
+      await this.$confirm("确认删除该POS机信息吗?", "提示");
+      await post_posTerminal_delete__id({ id: row.id });
+      // 删除list最后一条数据 返回前一页面
+      if (this.resPageInfo.list.length === 1) {
+        this.queryPageParameters.pageNum === 1
+          ? (this.queryPageParameters.pageNum = 1)
+          : this.queryPageParameters.pageNum--;
+      }
+      this.getListMixin();
+      this.$message.success("删除成功");
+    } catch (error) {
+      console.log(error);
+    }
+  }
+  private handleEdit(row: any) {
+    this.rowData = { ...row };
+    this.isAdd = false;
+    this.dialogVisible = true;
+  }
   private handleAdd() {
+    this.rowData = null;
     this.isAdd = true;
     this.dialogVisible = true;
   }

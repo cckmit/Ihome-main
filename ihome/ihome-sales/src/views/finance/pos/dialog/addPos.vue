@@ -4,7 +4,7 @@
  * @Author: ywl
  * @Date: 2020-12-19 11:19:23
  * @LastEditors: ywl
- * @LastEditTime: 2020-12-19 17:23:50
+ * @LastEditTime: 2020-12-21 10:20:50
 -->
 <template>
   <el-dialog
@@ -34,7 +34,16 @@
             <el-select
               v-model="form.account"
               placeholder="请选择收款账户"
-            ></el-select>
+              value-key="accountNo"
+              @change="bankChange"
+            >
+              <el-option
+                v-for="(i, n) in bankOption"
+                :key="n"
+                :label="i.accountName"
+                :value="i"
+              ></el-option>
+            </el-select>
           </el-form-item>
         </el-col>
         <el-col :span="12">
@@ -45,6 +54,7 @@
             <el-input
               v-model="form.accountNo"
               placeholder="请输入账号"
+              disabled
             ></el-input>
           </el-form-item>
         </el-col>
@@ -77,7 +87,7 @@
         <p
           class="ih-info-title"
           :key="n"
-        >{{i.type === 'Card' ? '银行卡收款信息' : 'POS通信息'}}</p>
+        >{{$root.dictAllName(i.type, 'PosMerchantType')}}</p>
         <el-row :key="n + i.type">
           <el-col :span="12">
             <el-form-item
@@ -124,11 +134,18 @@
 import { Component, Vue, Prop } from "vue-property-decorator";
 import { NoRepeatHttp } from "ihome-common/util/aop/no-repeat-http";
 import { Form as ElForm } from "element-ui";
-import { post_posTerminal_add } from "../../../../api/finance/index";
+import {
+  post_posTerminal_add,
+  post_posTerminal_update,
+  get_bankAccount_getAll,
+  get_posTerminal_get__id,
+} from "../../../../api/finance/index";
 
 @Component({})
 export default class POSAdd extends Vue {
   @Prop({ default: true }) isAdd!: boolean;
+  @Prop() data!: any;
+
   private form: any = {
     account: null,
     accountName: null,
@@ -159,6 +176,7 @@ export default class POSAdd extends Vue {
     serialNo: [{ required: true, message: "请输入序列号", trigger: "change" }],
   };
   private dialogVisible = true;
+  private bankOption: any = [];
 
   cancel(): void {
     this.$emit("cancel", false);
@@ -170,14 +188,43 @@ export default class POSAdd extends Vue {
   async submit(valid: any) {
     if (valid) {
       try {
-        await post_posTerminal_add(this.form);
-        this.$message.success("添加成功");
+        this.isAdd
+          ? await post_posTerminal_add(this.form)
+          : await post_posTerminal_update(this.form);
+        this.$message.success(`${this.isAdd ? "添加" : "修改"}成功`);
       } catch (error) {
         console.log(error);
       }
       this.$emit("finish");
     } else {
       return false;
+    }
+  }
+  private bankChange(val: any) {
+    this.form.accountName = val.accountName;
+    this.form.accountNo = val.accountNo;
+  }
+  async getAllBank() {
+    this.bankOption = await get_bankAccount_getAll();
+  }
+  async getPosInfo(id: any) {
+    const res = await get_posTerminal_get__id({ id });
+    this.form.merchants = res;
+  }
+
+  created() {
+    this.getAllBank();
+    if (!this.isAdd) {
+      this.form.account = {
+        accountName: this.data.accountName,
+        accountNo: this.data.accountNo,
+      };
+      this.form.accountName = this.data.accountName;
+      this.form.accountNo = this.data.accountNo;
+      this.form.productModel = this.data.productModel;
+      this.form.serialNo = this.data.serialNo;
+      this.form.id = this.data.id;
+      this.getPosInfo(this.data.id);
     }
   }
 }

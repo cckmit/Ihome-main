@@ -1,6 +1,6 @@
 /* eslint-disable */
 /* 此脚本由swagger-ui的api-docs自动生成，请勿修改 */
-//2020-12-19 5:59:47 ├F10: PM┤
+//2020-12-21 11:31:55 ├F10: AM┤
 import { request } from '@/api/base'
 const basePath = "/sales-api/finance"
 /**新增收款账号在线支付信息*/
@@ -35,9 +35,9 @@ return await request.get<BankAccountVO[],BankAccountVO[]>(basePath+'/bankAccount
 export async function get_bankAccount_getAll (d?: any) {
 return await request.get<BankAccountAllVO[],BankAccountAllVO[]>(basePath+'/bankAccount/getAll', { params: d })
 }
-/**根据公司主体ID获取银行信息*/
-export async function get_bankAccount_getBankInfoByCompanyId__companyId (d?: any) {
-return await request.get<BankAccountBackInfoVO,BankAccountBackInfoVO>(basePath+'/bankAccount/getBankInfoByCompanyId/{companyId}', { params: d })
+/**根据公司收款账户ID获取银行信息*/
+export async function get_bankAccount_getBankInfoByAccountId__accountId (d?: any) {
+return await request.get<BankAccountBackInfoVO,BankAccountBackInfoVO>(basePath+'/bankAccount/getBankInfoByAccountId/{accountId}', { params: d })
 }
 /**查询公司收款账户信息详情*/
 export async function get_bankAccount_getById__id (d?: any) {
@@ -267,9 +267,13 @@ return await request.get<PaymentPCDetailVO,PaymentPCDetailVO>(basePath+'/payment
 export async function post_payment_getList (d?: any) {
 return await request.post< any,any> (basePath+'/payment/getList', d)
 }
-/**查询收款信息列表数据*/
+/**查询待审核数列表数据*/
 export async function get_payment_getNotCheckList__businessId (d?: any) {
 return await request.get<PaymentVO[],PaymentVO[]>(basePath+'/payment/getNotCheckList/{businessId}', { params: d })
+}
+/**查询待审核数据数量*/
+export async function get_payment_getNotCheckNum__businessId (d?: any) {
+return await request.get<number,number>(basePath+'/payment/getNotCheckNum/{businessId}', { params: d })
 }
 /**获取二维码信息*/
 export async function get_payment_getPaymentQRCodeInfo__id (d?: any) {
@@ -303,6 +307,10 @@ return await request.post< number,number> (basePath+'/payment/relevanceDeal', d)
 export async function post_payment_update (d?: any) {
 return await request.post< number,number> (basePath+'/payment/update', d)
 }
+/**申领POS机*/
+export async function post_posApplyItem_posOperate (d?: any) {
+return await request.post< number,number> (basePath+'/posApplyItem/posOperate', d)
+}
 /**添加POS机终端信息*/
 export async function post_posTerminal_add (d?: any) {
 return await request.post< number,number> (basePath+'/posTerminal/add', d)
@@ -324,8 +332,8 @@ export async function post_posTerminal_getList (d?: any) {
 return await request.post< any,any> (basePath+'/posTerminal/getList', d)
 }
 /**POS机终端撤机*/
-export async function post_posTerminal_revoke__id (d?: any) {
-return await request.post< number,number> (basePath+'/posTerminal/revoke/{id}', d)
+export async function post_posTerminal_revoke (d?: any) {
+return await request.post< number,number> (basePath+'/posTerminal/revoke', d)
 }
 /**修改POS机终端*/
 export async function post_posTerminal_update (d?: any) {
@@ -1565,6 +1573,8 @@ export interface PaymentVO {
 amount: number;
 /**业务编号*/
 businessId: number;
+/**附件ID*/
+fileId: string;
 /**ID*/
 id: number;
 /**收款日期(yyyy-MM-dd)*/
@@ -1575,6 +1585,21 @@ payNo: string;
 payType: string;
 /**状态(NotPaid-待支付、Paid-已支付、NotCheck-待对账、Revoked-已撤销、Flushed-已冲正)*/
 status: string;
+}
+/**PosApplyOperateVO*/
+export interface PosApplyOperateVO {
+/**申请人*/
+applyUser: number;
+/**所在事业部*/
+departmentId: number;
+/**所在店组*/
+groupId: number;
+/**事项类别(Use-领用、Apply-申领、Move-调动、Return-退还、GiveBack-归还)*/
+itemType: string;
+/**pos机终端ID*/
+posTerminalId: number;
+/**所在项目*/
+proId: number;
 }
 /**PosPayResultVO*/
 export interface PosPayResultVO {

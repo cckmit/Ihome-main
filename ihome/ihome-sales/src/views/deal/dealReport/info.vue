@@ -311,21 +311,21 @@
               <div>{{$root.dictAllName(scope.row.roleType, 'DealRole')}}</div>
             </template>
           </el-table-column>
-          <el-table-column prop="roleAchieveCap" label="角色业绩上限" min-width="120"></el-table-column>
-          <el-table-column prop="corporateAchieve" label="公司业绩" min-width="120"></el-table-column>
-          <el-table-column prop="corporateAchieveRatio" label="角色业绩比例（%）" min-width="120"></el-table-column>
-          <el-table-column prop="commFees" label="拆佣金额" min-width="150"></el-table-column>
-          <el-table-column prop="commFeesRatio" label="拆佣比例（%）" min-width="150"></el-table-column>
+          <el-table-column prop="roleAchieveCap" label="角色业绩上限" min-width="150"></el-table-column>
           <el-table-column prop="rolerName" label="角色人" min-width="150">
             <template slot-scope="scope">
               <div>{{scope.row.rolerName}}</div>
               <div>{{scope.row.rolerPosition}}</div>
             </template>
           </el-table-column>
+          <el-table-column prop="corporateAchieve" label="角色人业绩" min-width="120"></el-table-column>
+          <el-table-column prop="corporateAchieveRatio" label="角色业绩比例（%）" min-width="120"></el-table-column>
+          <el-table-column prop="commFees" label="拆佣金额" min-width="150"></el-table-column>
+          <el-table-column prop="commFeesRatio" label="拆佣比例（%）" min-width="150"></el-table-column>
           <el-table-column prop="belongOrgName" label="店组" min-width="150"></el-table-column>
           <el-table-column prop="managerAchieveList" label="管理岗" min-width="150">
             <template slot-scope="scope">
-              <div v-for="(item, index) in scope.row.managerAchieveList" :key="index">
+              <div class="manager-list" v-for="(item, index) in scope.row.managerAchieveList" :key="index">
                 <div>{{item.achieveFees}}</div>
                 <div>{{item.ratio}}</div>
                 <div>{{item.manager}}({{$root.dictAllName(item.type, 'ManagerType')}})</div>
@@ -349,21 +349,21 @@
               <div>{{$root.dictAllName(scope.row.roleType, 'DealRole')}}</div>
             </template>
           </el-table-column>
-          <el-table-column prop="roleAchieveCap" label="角色业绩上限" min-width="120"></el-table-column>
-          <el-table-column prop="corporateAchieve" label="公司业绩" min-width="120"></el-table-column>
-          <el-table-column prop="corporateAchieveRatio" label="角色业绩比例（%）" min-width="120"></el-table-column>
-          <el-table-column prop="commFees" label="拆佣金额" min-width="150"></el-table-column>
-          <el-table-column prop="commFeesRatio" label="拆佣比例（%）" min-width="150"></el-table-column>
+          <el-table-column prop="roleAchieveCap" label="角色业绩上限" min-width="150"></el-table-column>
           <el-table-column prop="rolerName" label="角色人" min-width="150">
             <template slot-scope="scope">
               <div>{{scope.row.rolerName}}</div>
               <div>{{scope.row.rolerPosition}}</div>
             </template>
           </el-table-column>
+          <el-table-column prop="corporateAchieve" label="角色人业绩" min-width="120"></el-table-column>
+          <el-table-column prop="corporateAchieveRatio" label="角色业绩比例（%）" min-width="120"></el-table-column>
+          <el-table-column prop="commFees" label="拆佣金额" min-width="150"></el-table-column>
+          <el-table-column prop="commFeesRatio" label="拆佣比例（%）" min-width="150"></el-table-column>
           <el-table-column prop="belongOrgName" label="店组" min-width="150"></el-table-column>
           <el-table-column prop="managerAchieveList" label="管理岗" min-width="150">
             <template slot-scope="scope">
-              <div v-for="(item, index) in scope.row.managerAchieveList" :key="index">
+              <div class="manager-list" v-for="(item, index) in scope.row.managerAchieveList" :key="index">
                 <div>{{item.achieveFees}}</div>
                 <div>{{item.ratio}}</div>
                 <div>{{item.manager}}({{$root.dictAllName(item.type, 'ManagerType')}})</div>
@@ -698,6 +698,17 @@
     div {
       flex: 1;
       text-align: center;
+    }
+  }
+
+  .manager-list {
+    width: 100%;
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+
+    div {
+      flex: 1;
     }
   }
 

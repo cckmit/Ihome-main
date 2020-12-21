@@ -4,7 +4,7 @@
  * @Author: lsj
  * @Date: 2020-11-03 15:28:12
  * @LastEditors: lsj
- * @LastEditTime: 2020-12-16 20:57:56
+ * @LastEditTime: 2020-12-19 15:55:33
 -->
 <template>
   <el-dialog
@@ -133,8 +133,8 @@
     }
 
     created() {
-      // this.getListMixin();
-      console.log('datadata', this.data);
+      this.getListMixin();
+      // console.log('datadata', this.data);
     }
 
     handleSelectionChange(val: any) {
@@ -155,5 +155,11 @@
     color: #f90;
     box-sizing: border-box;
     margin-bottom: 10px;
+  }
+
+  .dialog {
+    /deep/.el-dialog__body {
+      padding: 10px 20px 20px 20px;
+    }
   }
 </style>

@@ -4,12 +4,12 @@
  * @Author: lsj
  * @Date: 2020-11-03 15:28:12
  * @LastEditors: lsj
- * @LastEditTime: 2020-12-09 17:28:20
+ * @LastEditTime: 2020-12-19 16:40:50
 -->
 <template>
   <el-dialog
     v-dialogDrag
-    title="选择角色用户列表"
+    title="选择角色列表"
     :visible.sync="dialogVisible"
     :close-on-click-modal="false"
     :close-on-press-escape="false"
