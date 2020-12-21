@@ -4,7 +4,7 @@
  * @Author: ywl
  * @Date: 2020-12-19 08:39:59
  * @LastEditors: ywl
- * @LastEditTime: 2020-12-19 18:00:33
+ * @LastEditTime: 2020-12-21 10:24:47
 -->
 <template>
   <IhPage class="text-left">
@@ -41,7 +41,7 @@
         <p
           class="ih-info-title"
           :key="n"
-        >{{i.type === 'Card' ? '银行卡收款信息' : 'POS通信息'}}</p>
+        >{{$root.dictAllName(i.type, 'PosMerchantType')}}</p>
         <el-form
           ref="ruleForm"
           label-width="100px"
@@ -58,21 +58,6 @@
           </el-row>
         </el-form>
       </template>
-      <!-- <p class="ih-info-title">POS通信息</p>
-      <el-form
-        ref="ruleForm"
-        label-width="100px"
-        class="demo-ruleForm"
-      >
-        <el-row>
-          <el-col :span="8">
-            <el-form-item label="商户号">xxxx</el-form-item>
-          </el-col>
-          <el-col :span="8">
-            <el-form-item label="终端号">xxxx</el-form-item>
-          </el-col>
-        </el-row>
-      </el-form> -->
       <p class="ih-info-title">使用信息</p>
       <el-form
         ref="ruleForm"
@@ -105,7 +90,11 @@
           <el-table-column
             prop="operation"
             label="操作"
-          ></el-table-column>
+          >
+            <template v-slot="{ row }">
+              {{$root.dictAllName(row.operation, 'PosOperate')}}
+            </template>
+          </el-table-column>
           <el-table-column
             prop="operator"
             label="操作人"

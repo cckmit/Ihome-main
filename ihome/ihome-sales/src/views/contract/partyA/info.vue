@@ -4,7 +4,7 @@
  * @Author: ywl
  * @Date: 2020-09-25 16:00:37
  * @LastEditors: ywl
- * @LastEditTime: 2020-12-18 17:08:14
+ * @LastEditTime: 2020-12-21 11:30:41
 -->
 <template>
   <IhPage class="text-left partyA-info">
@@ -162,20 +162,33 @@
           <el-table-column
             label="周期名称"
             prop="termName"
+            min-width="250"
           ></el-table-column>
-          <el-table-column label="周期时间">
+          <el-table-column
+            label="周期时间"
+            width="185"
+          >
             <template v-slot="{row}">
-              <span>{{`${row.termStart}-${row.termEnd}`}}</span>
+              <span>{{`${row.termStart} ~ ${row.termEnd}`}}</span>
             </template>
           </el-table-column>
           <el-table-column
             label="周期审核状态"
             prop="auditEnum"
-          ></el-table-column>
+            width="120"
+          >
+            <template v-slot="{ row }">
+              {{ $root.dictAllName(row.auditEnum, "Audit") }}
+            </template>
+          </el-table-column>
           <el-table-column
             label="业务类型"
             prop="busTypeEnum"
-          ></el-table-column>
+          >
+            <template v-slot="{ row }">
+              {{ $root.dictAllName(row.busTypeEnum, "BusType") }}
+            </template>
+          </el-table-column>
           <el-table-column
             label="归属项目"
             prop="proName"
@@ -183,15 +196,27 @@
           <el-table-column
             label="省份"
             prop="province"
-          ></el-table-column>
+          >
+            <template v-slot="{ row }">
+              {{$root.getAreaName(row.province)}}
+            </template>
+          </el-table-column>
           <el-table-column
             label="城市"
             prop="city"
-          ></el-table-column>
+          >
+            <template v-slot="{ row }">
+              {{$root.getAreaName(row.city)}}
+            </template>
+          </el-table-column>
           <el-table-column
             label="行政区"
             prop="district"
-          ></el-table-column>
+          >
+            <template v-slot="{ row }">
+              {{$root.getAreaName(row.district)}}
+            </template>
+          </el-table-column>
         </el-table>
       </div>
     </template>
