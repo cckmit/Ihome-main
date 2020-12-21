@@ -4,7 +4,7 @@
  * @Author: ywl
  * @Date: 2020-10-20 15:03:13
  * @LastEditors: ywl
- * @LastEditTime: 2020-12-10 17:34:04
+ * @LastEditTime: 2020-12-21 18:13:57
 -->
 <template>
   <el-select
@@ -39,17 +39,20 @@
     </div>
     <!-- 下拉部分 -->
     <el-option
-      v-for="(item, index) in optionList"
+      v-for="(item) in optionList"
       :key="item[keyProp]"
       :label="item[labelProp]"
       :value="item[valueProp]"
       :disabled="item[disabledProp]"
       @click.native="handleClickOption(item)"
     >
-      <slot
-        :data="item"
-        :index="index"
-      ></slot>
+      <template v-if="isTempOption">
+        <span style="float: left">{{ item[optionProps.label] }}</span>
+        <span
+          class="margin-left-30"
+          style="float: right; color: #8492a6; font-size: 13px"
+        >{{ item[optionProps.value] }}</span>
+      </template>
     </el-option>
     <!-- 分页 -->
     <div style="bottom: 0;width: 100%;background: #fff">
@@ -93,6 +96,10 @@ export default class IhSelectPage extends Vue {
   @Prop({
     default: false,
   })
+  isTempOption?: boolean;
+  @Prop({
+    default: false,
+  })
   isBlur?: boolean;
   @Prop({
     default: true,
@@ -116,7 +123,16 @@ export default class IhSelectPage extends Vue {
       };
     },
   })
-  props?: PropsType;
+  props?: any;
+  @Prop({
+    default: () => {
+      return {
+        label: "label",
+        value: "value",
+      };
+    },
+  })
+  optionProps?: any;
 
   private filterText = "";
   // 下拉列表
@@ -149,16 +165,17 @@ export default class IhSelectPage extends Vue {
   }
 
   private get labelProp(): string {
-    return (this.props as PropsType).lable || "label";
+    console.log(this.props);
+    return (this.props as any).lable || "label";
   }
   private get valueProp(): string {
-    return (this.props as PropsType).value || "value";
+    return (this.props as any).value || "value";
   }
   private get keyProp(): string {
-    return (this.props as PropsType).key || "key";
+    return (this.props as any).key || "key";
   }
   private get disabledProp(): string {
-    return (this.props as PropsType).disabled || "disabled";
+    return (this.props as any).disabled || "disabled";
   }
 
   handleVisible(val: any): void {
@@ -199,12 +216,6 @@ export default class IhSelectPage extends Vue {
   mounted() {
     this.getSelectList();
   }
-}
-interface PropsType {
-  lable: string;
-  key: string;
-  value: string;
-  disabled: string;
 }
 </script>
 

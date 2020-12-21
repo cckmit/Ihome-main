@@ -4,7 +4,7 @@
  * @Author: ywl
  * @Date: 2020-12-17 19:43:20
  * @LastEditors: ywl
- * @LastEditTime: 2020-12-17 20:52:13
+ * @LastEditTime: 2020-12-21 17:20:48
 -->
 <template>
   <IhPage class="text-left">
@@ -19,7 +19,7 @@
             <el-form-item label="收款日期">{{info.payment.payDate}}</el-form-item>
           </el-col>
           <el-col :span="8">
-            <el-form-item label="经办人">{{info.payment.operator}}</el-form-item>
+            <el-form-item label="经办人">{{info.payment.operatorName}}</el-form-item>
           </el-col>
         </el-row>
         <el-row>
@@ -96,6 +96,9 @@
           </el-col>
         </el-row>
       </el-form>
+      <p class="ih-info-title">附件</p>
+      <el-table style="width: 100%">
+      </el-table>
       <p class="ih-info-title">操作日志</p>
       <div class="padding-left-20">
         <el-table
@@ -138,6 +141,7 @@ export default class ReceiptInfo extends Vue {
     payment: {},
     recordVOs: [],
   };
+  private file: any = [];
 
   private async getInfo() {
     let id = this.$route.query.id;

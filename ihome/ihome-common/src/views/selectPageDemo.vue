@@ -22,22 +22,13 @@
       </IhSelectPageUser>
     </el-form-item>
     <el-form-item label="自定义模板使用:">
-      自定义模板使用 v-slot返回来的data：当前每条的数据；index：每一条数据的下标
+      自定义模板使用 isTempOption开启自定义模板, optionProps自定义左右两边的值label, value
     </el-form-item>
     <el-form-item>
       <IhSelectPageUser
         v-model="form.testInput1"
         clearable
-      >
-
-        <template v-slot="{ data }">
-          <span style="float: left">{{ data.name }}</span>
-          <span
-            class="margin-left-30"
-            style="float: right; color: #8492a6; font-size: 13px"
-          >{{ data.employeeCode }}</span>
-        </template>
-      </IhSelectPageUser>
+      ></IhSelectPageUser>
     </el-form-item>
     <el-form-item label="绑定值为对象">
       如果需要绑定值为对象,value-key必须传,searchName是指定的搜索值,changeOption是选中值的回调
@@ -66,7 +57,7 @@
         :props="{
           value: 'id',
           key: 'id',
-          lable: 'name'
+          label: 'name'
         }"
         :searchPlaceholder="'2020-10-27 10:10:00' | timestampToDate('YYYY-MM-DD')"
       >
