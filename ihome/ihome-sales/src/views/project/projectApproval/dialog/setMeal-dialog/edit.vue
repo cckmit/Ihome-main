@@ -4,7 +4,7 @@
  * @Author: wwq
  * @Date: 2020-12-04 09:40:47
  * @LastEditors: wwq
- * @LastEditTime: 2020-12-21 17:50:28
+ * @LastEditTime: 2020-12-21 18:17:03
 -->
 <template>
   <el-dialog
@@ -69,7 +69,7 @@
               style="width: 100%"
               v-model="info.baseCostEnum"
               clearable
-              placeholder="物业类型"
+              placeholder="请选择基准费用"
             >
               <el-option
                 v-for="item in $root.dictAllList('BaseCost')"
