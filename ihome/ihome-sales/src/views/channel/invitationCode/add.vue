@@ -4,7 +4,7 @@
  * @Author: zyc
  * @Date: 2020-10-13 19:06:12
  * @LastEditors: zyc
- * @LastEditTime: 2020-11-16 10:15:47
+ * @LastEditTime: 2020-12-21 14:17:08
 -->
 <template>
   <el-dialog
@@ -36,19 +36,14 @@
       </el-form-item>
 
       <el-form-item label="事业部" prop="departmentOrgId">
-        <el-select
-          v-model="form.departmentOrgId"
-          clearable
+        <IhSelectPageDivision
           placeholder="事业部"
-          class="width--100"
-        >
-          <el-option
-            v-for="item in divisionList"
-            :key="item.value"
-            :label="item.label"
-            :value="item.value"
-          ></el-option>
-        </el-select>
+          v-model="form.departmentOrgId"
+          :searchName="form.departmentName"
+          clearable
+          value-key="id"
+        ></IhSelectPageDivision>
+       
       </el-form-item>
       <el-form-item label="" prop="">
         <el-button type="primary" @click="finish('ruleForm')">创建</el-button>
