@@ -4,7 +4,7 @@
  * @Author: wwq
  * @Date: 2020-08-13 11:40:10
  * @LastEditors: wwq
- * @LastEditTime: 2020-12-16 19:34:37
+ * @LastEditTime: 2020-12-21 10:00:09
 -->
 <template>
   <IhPage label-width="100px">
@@ -182,18 +182,18 @@
               </span>
               <el-dropdown-menu slot="dropdown">
                 <el-dropdown-item
-                  :disabled="row.auditEnum !== 'Draft'"
+                  :class="{'ih-data-disabled': row.auditEnum !== 'Draft'}"
                   @click.native.prevent="routerTo(row, 'edit')"
                   v-has="'B.SALES.PROJECT.BASICLIST.UPDATE'"
                 >编辑</el-dropdown-item>
                 <el-dropdown-item
-                  :disabled="row.auditEnum !== 'Draft'"
+                  :class="{'ih-data-disabled': row.auditEnum !== 'Draft'}"
                   @click.native.prevent="remove(row)"
                   v-has="'B.SALES.PROJECT.BASICLIST.DELETE'"
                 >删除</el-dropdown-item>
                 <el-dropdown-item
                   @click.native.prevent="routerTo(row, 'audit')"
-                  :disabled="row.status !== 'Conduct'"
+                  :class="{'ih-data-disabled': row.auditEnum !== 'Conduct'}"
                   v-has="'B.SALES.PROJECT.BASICLIST.VERIFY'"
                 >审核</el-dropdown-item>
               </el-dropdown-menu>

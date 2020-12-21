@@ -97,7 +97,7 @@
             <!-- 服务费 -->
             <div
               :key="i"
-              v-if="(info.chargeEnum === 'Service' || info.chargeEnum === 'ServiceAndAgent') && item.costTypeEnum === 'ServiceFee'"
+              v-if="(info.chargeEnum === 'Service' || info.chargeEnum === 'ServiAndAgen') && item.costTypeEnum === 'ServiceFee'"
             >
               <!-- 表头行选择 -->
               <div class="top-select">
@@ -265,7 +265,7 @@
             <!-- 代理费 -->
             <div
               :key="i"
-              v-if="(info.chargeEnum === 'Agent' || info.chargeEnum === 'ServiceAndAgent') && item.costTypeEnum === 'AgencyFee'"
+              v-if="(info.chargeEnum === 'Agent' || info.chargeEnum === 'ServiAndAgen') && item.costTypeEnum === 'AgencyFee'"
             >
               <br />
               <!-- 表头行选择 -->

@@ -4,7 +4,7 @@
  * @Author: ywl
  * @Date: 2020-09-25 11:53:51
  * @LastEditors: ywl
- * @LastEditTime: 2020-12-18 17:01:12
+ * @LastEditTime: 2020-12-19 09:20:06
 -->
 <template>
   <IhPage label-width="100px">
@@ -92,9 +92,6 @@
                   ></IhSelectPageByProject>
                 </el-form-item>
               </el-col> -->
-            </el-row>
-
-            <el-row>
               <el-col :span="8">
                 <el-form-item label="归属组织">
                   <SelectOrganizationTree
@@ -103,6 +100,9 @@
                   />
                 </el-form-item>
               </el-col>
+            </el-row>
+
+            <el-row>
               <el-col :span="8">
                 <el-form-item label="合同编号">
                   <el-input
@@ -129,9 +129,6 @@
                   </el-select>
                 </el-form-item>
               </el-col>
-            </el-row>
-
-            <el-row>
               <el-col :span="8">
                 <el-form-item label="归档状态">
                   <el-select
@@ -149,6 +146,9 @@
                   </el-select>
                 </el-form-item>
               </el-col>
+            </el-row>
+
+            <el-row>
               <el-col :span="8">
                 <el-form-item label="归档编号">
                   <el-input
@@ -173,9 +173,6 @@
                   </IhSelectPageUser>
                 </el-form-item>
               </el-col>
-            </el-row>
-
-            <el-row>
               <el-col :span="8">
                 <el-form-item label="合同跟进人">
                   <IhSelectPageUser

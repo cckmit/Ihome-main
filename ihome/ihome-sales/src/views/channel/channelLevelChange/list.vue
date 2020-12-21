@@ -4,7 +4,7 @@
  * @Author: zyc
  * @Date: 2020-06-30 09:21:17
  * @LastEditors: wwq
- * @LastEditTime: 2020-12-16 20:33:14
+ * @LastEditTime: 2020-12-19 15:14:29
 --> 
 <template>
   <IhPage label-width="100px">
@@ -189,26 +189,27 @@
               <el-dropdown-menu slot="dropdown">
                 <el-dropdown-item
                   @click.native.prevent="handleToPage(row, 'edit')"
-                  :disabled="row.status !== 'DRAFT'"
+                  :class="{ 'ih-data-disabled': !editChange(row) }"
                   v-has="'B.SALES.CHANNEL.LEVELCHANGELIST.UPDATE'"
                 >修改</el-dropdown-item>
                 <el-dropdown-item
                   @click.native.prevent="remove(row)"
-                  :disabled="row.status !== 'DRAFT'"
+                  :class="{ 'ih-data-disabled': !editChange(row) }"
                   v-has="'B.SALES.CHANNEL.LEVELCHANGELIST.DELETE'"
                 >删除</el-dropdown-item>
                 <el-dropdown-item
                   @click.native.prevent="handleToPage(row, 'revoke')"
-                  :disabled="row.status !== 'PTWYSH'"
+                  :class="{ 'ih-data-disabled': !recallChange(row) }"
                   v-has="'B.SALES.CHANNEL.LEVELCHANGELIST.REVOKE'"
                 >撤回</el-dropdown-item>
                 <el-dropdown-item
+                  :class="{ 'ih-data-disabled': !auditChange(row) }"
                   @click.native.prevent="handleToPage(row, 'examine')"
                   v-has="'B.SALES.CHANNEL.LEVELCHANGELIST.VERIFY'"
                 >审核</el-dropdown-item>
                 <el-dropdown-item
                   @click.native.prevent="backDraft(row)"
-                  :disabled="row.status !== 'PASS'"
+                  :class="{'ih-data-disabled': row.status !== 'PASS'}"
                   v-has="'B.SALES.CHANNEL.LEVELCHANGELIST.REVOKEDRAFT'"
                 >退回起草</el-dropdown-item>
               </el-dropdown-menu>
@@ -280,6 +281,45 @@ export default class LevelChangeList extends Vue {
   };
   dialogVisible = false;
   selectionData = [];
+
+  editChange(row: any) {
+    const DRAFT = row.status === "DRAFT";
+    const dangqian = (this.$root as any).userInfo.id === row.inputUser;
+    return DRAFT && dangqian;
+  }
+
+  auditChange(row: any) {
+    const PTWYSH = row.status === "PTWYSH";
+    const FGSYGSH = row.status === "FGSYGSH";
+    const ZBYGSH = row.status === "ZBYGSH";
+    const roleList = (this.$root as any).userInfo.roleList.map(
+      (v: any) => v.code
+    );
+    const pingtai = roleList.includes("RPlatformClerk");
+    const fen = roleList.includes("BusinessManagement");
+    const zong = roleList.includes("HeadBusinessManagement");
+    return (PTWYSH && pingtai) || (FGSYGSH && fen) || (ZBYGSH && zong);
+  }
+
+  recallChange(row: any) {
+    const PTWYSH = row.status === "PTWYSH";
+    const FGSYGSH = row.status === "FGSYGSH";
+    const ZBYGSH = row.status === "ZBYGSH";
+    const roleList = (this.$root as any).userInfo.roleList.map(
+      (v: any) => v.code
+    );
+    const pingtai = roleList.includes("RPlatformClerk");
+    const fen = roleList.includes("BusinessManagement");
+    const qudao = roleList.includes("RChannelStaff");
+    const dangqian = (this.$root as any).userInfo.id === row.inputUser;
+    const skipPlatformClerk = row.skipPlatformClerk === "true" ? true : false;
+    return (
+      (PTWYSH && dangqian && !skipPlatformClerk && qudao) ||
+      (FGSYGSH && dangqian && skipPlatformClerk && qudao) ||
+      (FGSYGSH && pingtai) ||
+      (ZBYGSH && fen)
+    );
+  }
 
   reset() {
     Object.assign(this.queryPageParameters, {

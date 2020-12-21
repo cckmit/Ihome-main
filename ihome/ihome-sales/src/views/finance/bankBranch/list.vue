@@ -4,7 +4,7 @@
  * @Author: ywl
  * @Date: 2020-12-01 10:29:31
  * @LastEditors: ywl
- * @LastEditTime: 2020-12-17 16:25:45
+ * @LastEditTime: 2020-12-19 11:27:23
 -->
 <template>
   <IhPage label-width="80px">
@@ -93,14 +93,17 @@
         <el-table-column
           prop="bankName"
           label="所属银行"
+          min-width="150"
         ></el-table-column>
         <el-table-column
           prop="provinceName"
           label="省份"
+          width="100"
         ></el-table-column>
         <el-table-column
           prop="cityName"
           label="城市"
+          width="100"
         ></el-table-column>
         <el-table-column
           prop="branchNo"

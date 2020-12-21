@@ -4,7 +4,7 @@
  * @Author: wwq
  * @Date: 2020-08-13 11:40:10
  * @LastEditors: wwq
- * @LastEditTime: 2020-12-16 19:19:15
+ * @LastEditTime: 2020-12-21 09:59:28
 -->
 <template>
   <IhPage label-width="100px">
@@ -267,30 +267,31 @@
               <el-dropdown-menu slot="dropdown">
                 <el-dropdown-item
                   @click.native.prevent="routerTo(row, 'edit')"
-                  :disabled="row.status !== 'DRAFT'"
+                  :class="{ 'ih-data-disabled': !editChange(row) }"
                   v-has="'B.SALES.CHANNEL.LEVELLIST.UPDATE'"
                 >修改</el-dropdown-item>
                 <el-dropdown-item
                   @click.native.prevent="remove(row)"
-                  :disabled="row.status !== 'DRAFT'"
+                  :class="{ 'ih-data-disabled': !editChange(row) }"
                   v-has="'B.SALES.CHANNEL.LEVELLIST.DELETE'"
                 >删除</el-dropdown-item>
                 <el-dropdown-item
                   @click.native.prevent="routerTo(row, 'recall')"
-                  :disabled="row.status !== 'PASS'"
+                  :class="{ 'ih-data-disabled': !recallChange(row) }"
                   v-has="'B.SALES.CHANNEL.LEVELLIST.REVOKE'"
                 >撤回</el-dropdown-item>
                 <el-dropdown-item
                   @click.native.prevent="routerTo(row, 'audit')"
-                  :disabled="!['PTWYSH', 'FGSYGSH', 'ZBYGSH'].includes(row.status)"
+                  :class="{ 'ih-data-disabled': !auditChange(row) }"
                   v-has="'B.SALES.CHANNEL.LEVELLIST.VERIFY'"
                 >审核</el-dropdown-item>
                 <el-dropdown-item
                   @click.native.prevent="returnStatus(row)"
-                  :disabled="row.status === 'DRAFT'"
+                  :class="{'ih-data-disabled': row.status !== 'PASS'}"
                   v-has="'B.SALES.CHANNEL.LEVELLIST.REVOKEDRAFT'"
                 >退回起草</el-dropdown-item>
                 <el-dropdown-item
+                  :class="{ 'ih-data-disabled': !changeButton(row) }"
                   @click.native.prevent="routerTo(row, 'change')"
                   v-has="'B.SALES.CHANNEL.LEVELLIST.UPDATEINFO'"
                 >变更信息</el-dropdown-item>
@@ -364,6 +365,56 @@ export default class UserList extends Vue {
     total: null,
     list: [],
   };
+
+  editChange(row: any) {
+    const DRAFT = row.status === "DRAFT";
+    const dangqian = (this.$root as any).userInfo.id === row.inputUser;
+    return DRAFT && dangqian;
+  }
+
+  auditChange(row: any) {
+    const PTWYSH = row.status === "PTWYSH";
+    const FGSYGSH = row.status === "FGSYGSH";
+    const ZBYGSH = row.status === "ZBYGSH";
+    const roleList = (this.$root as any).userInfo.roleList.map(
+      (v: any) => v.code
+    );
+    const pingtai = roleList.includes("RPlatformClerk");
+    const fen = roleList.includes("BusinessManagement");
+    const zong = roleList.includes("HeadBusinessManagement");
+    const skipPlatformClerk = row.skipPlatformClerk === "true" ? true : false;
+    return (
+      (PTWYSH && pingtai && !skipPlatformClerk) ||
+      (FGSYGSH && fen) ||
+      (ZBYGSH && zong)
+    );
+  }
+
+  recallChange(row: any) {
+    const PTWYSH = row.status === "PTWYSH";
+    const FGSYGSH = row.status === "FGSYGSH";
+    const ZBYGSH = row.status === "ZBYGSH";
+    const roleList = (this.$root as any).userInfo.roleList.map(
+      (v: any) => v.code
+    );
+    const pingtai = roleList.includes("RPlatformClerk");
+    const fen = roleList.includes("BusinessManagement");
+    const qudao = roleList.includes("RChannelStaff");
+    const dangqian = (this.$root as any).userInfo.id === row.inputUser;
+    const skipPlatformClerk = row.skipPlatformClerk === "true" ? true : false;
+    return (
+      (PTWYSH && dangqian && !skipPlatformClerk && qudao) ||
+      (FGSYGSH && dangqian && skipPlatformClerk && qudao) ||
+      (FGSYGSH && pingtai) ||
+      (ZBYGSH && fen)
+    );
+  }
+
+  changeButton(row: any) {
+    const Approved = row.status === "Approved";
+    const dangqian = (this.$root as any).userInfo.id === row.inputUser;
+    return Approved && dangqian;
+  }
 
   search() {
     this.queryPageParameters.province = this.provinceOption[0];

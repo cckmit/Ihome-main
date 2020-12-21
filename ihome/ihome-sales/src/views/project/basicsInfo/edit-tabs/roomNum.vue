@@ -4,31 +4,33 @@
  * @Author: wwq
  * @Date: 2020-09-27 11:52:41
  * @LastEditors: wwq
- * @LastEditTime: 2020-12-11 08:53:17
+ * @LastEditTime: 2020-12-19 17:46:32
 -->
 <template>
   <div>
     <el-form
       ref="form"
       label-width="100px"
+      class="text-left"
     >
       <el-row>
-        <el-col :span="6">
+        <el-col :span="8">
           <el-form-item label="项目盘编">
             <el-input
+              style="width: 100%"
               clearable
               v-model="queryPageParameters.buildingName"
               placeholder="项目盘编"
             ></el-input>
           </el-form-item>
         </el-col>
-        <el-col :span="6">
+        <el-col :span="8">
           <el-form-item label="物业类型">
             <el-select
               v-model="queryPageParameters.propertyEnum"
               clearable
               placeholder="物业类型"
-              class="width--100"
+              style="width: 100%"
             >
               <el-option
                 v-for="item in $root.dictAllList('Property')"
@@ -39,6 +41,25 @@
             </el-select>
           </el-form-item>
         </el-col>
+        <el-col :span="8">
+          <el-form-item label="装修级别">
+            <el-select
+              v-model="queryPageParameters.renovatLevelEnum"
+              clearable
+              placeholder="物业类型"
+              style="width: 100%"
+            >
+              <el-option
+                v-for="item in $root.dictAllList('RenovatLevel')"
+                :key="item.code"
+                :label="item.name"
+                :value="item.code"
+              ></el-option>
+            </el-select>
+          </el-form-item>
+        </el-col>
+      </el-row>
+      <el-row>
         <el-col
           :span="12"
           class="text-left"
@@ -187,6 +208,7 @@ export default class EidtRoomNum extends Vue {
   queryPageParameters: any = {
     buildingName: null,
     propertyEnum: null,
+    renovatLevelEnum: null,
     proId: this.$route.query.id,
   };
 

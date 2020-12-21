@@ -3,8 +3,8 @@
  * @version: 
  * @Author: ywl
  * @Date: 2020-10-15 16:02:03
- * @LastEditors: wwq
- * @LastEditTime: 2020-12-16 20:24:47
+ * @LastEditors: ywl
+ * @LastEditTime: 2020-12-21 09:51:20
 -->
 <template>
   <IhPage>
@@ -402,6 +402,7 @@ export default class ChannelRates extends Vue {
           this.$goto({ path: "/channelLevelChange/list" });
         } else {
           this.$message.warning("请填写变更原因");
+          return;
         }
         this.$message({
           type: "success",

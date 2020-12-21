@@ -4,7 +4,7 @@
  * @Author: wwq
  * @Date: 2020-12-11 15:36:42
  * @LastEditors: wwq
- * @LastEditTime: 2020-12-12 17:45:19
+ * @LastEditTime: 2020-12-21 09:57:00
 -->
 <template>
   <el-dialog
@@ -36,23 +36,6 @@
                 v-model="info.settleName"
               ></el-input>
             </el-form-item>
-            <el-form-item
-              label="优先级"
-              prop="priorityEnum"
-            >
-              <el-select
-                v-model="info.priorityEnum"
-                clearable
-                placeholder="请选择"
-              >
-                <el-option
-                  v-for="item in $root.dictAllList('Priority')"
-                  :key="item.code"
-                  :label="item.name"
-                  :value="item.code"
-                ></el-option>
-              </el-select>
-            </el-form-item>
           </div>
         </el-col>
       </el-row>
@@ -70,7 +53,7 @@
                   </el-checkbox>
                 </div>
                 <div
-                  v-if="item.checkboxed && item.enumType && !['ContractType', 'ExRecode'].includes(item.conditionModel)"
+                  v-if="item.checkboxed && item.enumType && !['ContractType', 'ExRecode', 'PadCommission'].includes(item.conditionModel)"
                   class="condition-list"
                 >
                   <el-checkbox-group v-model="item.values">
@@ -186,6 +169,24 @@
                     ></el-option>
                   </el-select>
                 </span>
+                <span v-if="item.checkboxed && (item.conditionModel === 'PadCommission')">
+                  <el-select
+                    class="margin-left-20"
+                    style="width: 15%"
+                    v-model="item.simpleVal"
+                    clearable
+                    placeholder="请选择"
+                    :disabled="agencyDisabled"
+                  >
+                    <el-option
+                      v-for="item in padCommissionEnumOptions"
+                      :key="item.code"
+                      :label="item.name"
+                      :value="item.code"
+                    ></el-option>
+                  </el-select>
+                  <span style="color: red;margin-left:50px">注：结算方式没有勾选代理费时不可选择此项</span>
+                </span>
                 <span v-if="item.checkboxed && item.conditionModel === 'PaymentReturnRate'">
                   <el-input
                     class="margin-left-20"
@@ -207,57 +208,6 @@
             <div class="condition-item flex">
               <div style="width: 100px;display: inline-block">
                 <el-checkbox
-                  :label="info.serviceFee"
-                  v-model="info.serviceFee"
-                  :disabled="serviceFeeDisabled"
-                >服务费
-                </el-checkbox>
-              </div>
-              <div
-                class="flex margin-left-10"
-                v-if="info.serviceFee"
-              >
-                <div style="width: 200px"> 垫佣周期
-                  <el-select
-                    v-model="info.servicePadCommisionType"
-                    clearable
-                    placeholder="请选择"
-                    style="width: 60%"
-                  >
-                    <el-option
-                      v-for="item in padCommissionEnumOptions"
-                      :key="item.code"
-                      :label="item.name"
-                      :value="item.code"
-                    ></el-option>
-                  </el-select>
-                </div>
-                <div style="width: 300px">服务费结算比例
-                  <el-input
-                    class="margin-left-20"
-                    style="width: 50%"
-                    v-digits="2"
-                    v-model="info.serviceFeeSettleRate"
-                  ><template slot="append">%</template>
-                  </el-input>
-                </div>
-                <div style="width: 300px">服务费结算金额
-                  <el-input
-                    class="margin-left-20"
-                    style="width: 40%"
-                    v-digits="2"
-                    v-model="info.serviceFeeSettleAmount"
-                  ></el-input>
-                </div>
-              </div>
-            </div>
-          </el-col>
-        </el-row>
-        <el-row>
-          <el-col :span="24">
-            <div class="condition-item flex">
-              <div style="width: 100px;display: inline-block">
-                <el-checkbox
                   :label="info.agencyFee"
                   v-model="info.agencyFee"
                   :disabled="agencyFeeDisabled"
@@ -268,21 +218,6 @@
                 class="flex margin-left-10"
                 v-if="info.agencyFee"
               >
-                <div style="width: 200px"> 垫佣周期
-                  <el-select
-                    v-model="info.agencyPadCommisionType"
-                    clearable
-                    placeholder="请选择"
-                    style="width: 60%"
-                  >
-                    <el-option
-                      v-for="item in padCommissionEnumOptions"
-                      :key="item.code"
-                      :label="item.name"
-                      :value="item.code"
-                    ></el-option>
-                  </el-select>
-                </div>
                 <div style="width: 300px">代理费结算比例
                   <el-input
                     class="margin-left-20"
@@ -338,16 +273,11 @@ export default class PleaseEdit extends Vue {
   serviceFeeDisabled = false;
   agencyFeeDisabled = false;
   info: any = {
-    priorityEnum: null,
     settleName: null,
     agencyFee: 0,
     agencyFeeSettleAmount: null,
     agencyFeeSettleRate: null,
     agencyPadCommisionType: null,
-    serviceFee: 0,
-    serviceFeeSettleAmount: null,
-    serviceFeeSettleRate: null,
-    servicePadCommisionType: null,
     settleConditionPleaseVOS: [],
   };
   budingList: any = [];
@@ -360,14 +290,8 @@ export default class PleaseEdit extends Vue {
         trigger: "change",
       },
     ],
-    priorityEnum: [
-      {
-        required: true,
-        message: "请选择优先级",
-        trigger: "change",
-      },
-    ],
   };
+  agencyDisabled: any = true;
 
   @Watch("data.chargeEnum", { immediate: true })
   isDisabled(val: any) {
@@ -380,6 +304,15 @@ export default class PleaseEdit extends Vue {
     } else {
       this.serviceFeeDisabled = false;
       this.agencyFeeDisabled = false;
+    }
+  }
+
+  @Watch("info.agencyFee", { immediate: true })
+  agencDisabled(val: any) {
+    if (val) {
+      this.agencyDisabled = false;
+    } else {
+      this.agencyDisabled = true;
     }
   }
 
@@ -430,9 +363,11 @@ export default class PleaseEdit extends Vue {
         delete v.conditionAndCheckboxed;
         delete v.isConditionAndShow;
       });
-      this.info.serviceFee = this.info.serviceFee ? 1 : 0;
-      this.info.agencyFee = this.info.agencyFee ? 1 : 0;
-      let obj = { ...this.info, settleConditionPleaseVOS: arr };
+      let obj = {
+        ...this.info,
+        settleConditionPleaseVOS: arr,
+        agencyFee: this.info.agencyFee ? 1 : 0,
+      };
       this.$emit("finish", obj);
     }
   }
@@ -498,7 +433,6 @@ export default class PleaseEdit extends Vue {
       settleConditionPleaseVOS: this.info.settleConditionPleaseVOS,
     };
     this.info.agencyFee = item.agencyFee ? true : false;
-    this.info.serviceFee = item.serviceFee ? true : false;
   }
 
   // 获取栋座信息
