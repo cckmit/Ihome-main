@@ -3,8 +3,8 @@
  * @version: 
  * @Author: wwq
  * @Date: 2020-12-01 14:49:06
- * @LastEditors: ywl
- * @LastEditTime: 2020-12-18 18:03:04
+ * @LastEditors: wwq
+ * @LastEditTime: 2020-12-21 17:57:29
 -->
 <template>
   <el-dialog
@@ -43,20 +43,11 @@
             label="甲方"
             prop="partyA"
           >
-            <el-select
-              multiple
+            <IhSelectPageByDeveloper
               v-model="form.partyA"
-              placeholder="甲方"
+              placeholder="请选择甲方"
               clearable
-              class="width--100"
-            >
-              <el-option
-                v-for="item in partyAOptions"
-                :key="item.id"
-                :label="item.name"
-                :value="item.id"
-              ></el-option>
-            </el-select>
+            ></IhSelectPageByDeveloper>
           </el-form-item>
         </el-col>
       </el-row>
@@ -109,7 +100,7 @@
         <el-col :span="12">
           <el-form-item label="合作项目">
             <el-input
-              placeholder="请选择合作项目"
+              placeholder="请填写合作项目"
               v-model="form.cooperationProjectsName"
               class="input-with-select"
             >
@@ -212,7 +203,6 @@
 import { Component, Vue } from "vue-property-decorator";
 import { Form as ElForm } from "element-ui";
 import { NoRepeatHttp } from "ihome-common/util/aop/no-repeat-http";
-import { post_company_listAll } from "@/api/developer/index";
 import { post_company_getAll } from "@/api/system/index";
 import { get_bankAccount_get__companyId } from "@/api/finance/index";
 
@@ -225,7 +215,7 @@ export default class PartyAAdd extends Vue {
   stampFileList: any = [];
   form: any = {
     title: null,
-    partyA: [],
+    partyA: null,
     partyBId: null,
     receivingAccountId: null,
     cooperationProjectsName: null,
@@ -234,7 +224,6 @@ export default class PartyAAdd extends Vue {
     confirmer: null,
     confirmerContact: null,
   };
-  partyAOptions: any = [];
   partyBOptions: any = [];
   branchOption: any = [];
   partyList: any = [];
@@ -335,16 +324,12 @@ export default class PartyAAdd extends Vue {
       companyId: val,
     });
   }
-  async getPartyA() {
-    this.partyAOptions = await post_company_listAll({ name: "" });
-  }
 
   async getPartyB() {
     this.partyBOptions = await post_company_getAll({ name: "" });
   }
 
   created() {
-    this.getPartyA();
     this.getPartyB();
   }
 }

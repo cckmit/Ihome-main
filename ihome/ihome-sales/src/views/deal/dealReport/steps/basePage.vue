@@ -629,9 +629,15 @@
           :data="postData.commissionInfoList">
           <el-table-column prop="target" label="拆佣对象" min-width="120">
             <template slot-scope="scope">
-              <el-select v-model="scope.row.target" placeholder="请选择">
-                <el-option label="公司" value="Company"></el-option>
-                <el-option label="个人" value="Personal"></el-option>
+              <el-select
+                v-model="scope.row.target"
+                placeholder="请选择">
+                <el-option
+                  v-for="item in $root.dictAllList('CommObjectType')"
+                  :key="item.code"
+                  :label="item.name"
+                  :value="item.code"
+                ></el-option>
               </el-select>
             </template>
           </el-table-column>

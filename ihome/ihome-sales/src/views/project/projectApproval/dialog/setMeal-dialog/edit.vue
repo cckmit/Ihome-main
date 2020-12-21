@@ -4,7 +4,7 @@
  * @Author: wwq
  * @Date: 2020-12-04 09:40:47
  * @LastEditors: wwq
- * @LastEditTime: 2020-12-19 16:55:30
+ * @LastEditTime: 2020-12-21 18:17:03
 -->
 <template>
   <el-dialog
@@ -69,7 +69,7 @@
               style="width: 100%"
               v-model="info.baseCostEnum"
               clearable
-              placeholder="物业类型"
+              placeholder="请选择基准费用"
             >
               <el-option
                 v-for="item in $root.dictAllList('BaseCost')"
@@ -291,8 +291,8 @@
                   <div>
                     金额:
                     <el-input
-                      v-model.number="row.receivableAmout"
-                      v-digits="2"
+                      v-model="row.receivableAmout"
+                      v-digits="4"
                       clearable
                       style="width: 70%"
                     />
@@ -300,8 +300,8 @@
                   <div class="margin-top-5">
                     点数:
                     <el-input
-                      v-model.number="row.receivablePoint"
-                      v-digits="2"
+                      v-model="row.receivablePoint"
+                      v-digits="4"
                       clearable
                       style="width: 70%"
                     />
@@ -318,8 +318,8 @@
                     金额:
                     <el-input
                       :disabled="(row.transactionEnum === 'Natural' || row.transactionEnum === 'SelfChannel') ? true : false"
-                      v-model.number="row.sendAmount"
-                      v-digits="2"
+                      v-model="row.sendAmount"
+                      v-digits="4"
                       clearable
                       style="width: 70%"
                     />
@@ -328,8 +328,8 @@
                     点数:
                     <el-input
                       :disabled="(row.transactionEnum === 'Natural' || row.transactionEnum === 'SelfChannel') ? true : false"
-                      v-model.number="row.sendPoint"
-                      v-digits="2"
+                      v-model="row.sendPoint"
+                      v-digits="4"
                       clearable
                       style="width: 70%"
                     />
@@ -345,8 +345,8 @@
                   <div>
                     金额:
                     <el-input
-                      v-model.number="row.sendInAmount"
-                      v-digits="2"
+                      v-model="row.sendInAmount"
+                      v-digits="4"
                       clearable
                       style="width: 70%"
                     />
@@ -354,8 +354,8 @@
                   <div class="margin-top-5">
                     点数:
                     <el-input
-                      v-model.number="row.sendInPoint"
-                      v-digits="2"
+                      v-model="row.sendInPoint"
+                      v-digits="4"
                       clearable
                       style="width: 70%"
                     />
@@ -371,8 +371,8 @@
                   <div>
                     金额:
                     <el-input
-                      v-model.number="row.generalAchieveAmount"
-                      v-digits="2"
+                      v-model="row.generalAchieveAmount"
+                      v-digits="4"
                       clearable
                       :disabled="(info.busEnum === 'TotalBagDistriModel' || row.subdivideEnum === 'All') ? false : true"
                       style="width: 70%"
@@ -381,8 +381,8 @@
                   <div class="margin-top-5">
                     点数:
                     <el-input
-                      v-model.number="row.generalAchievePoint"
-                      v-digits="2"
+                      v-model="row.generalAchievePoint"
+                      v-digits="4"
                       clearable
                       :disabled="(info.busEnum === 'TotalBagDistriModel' || row.subdivideEnum === 'All') ? false : true"
                       style="width: 70%"
@@ -399,8 +399,8 @@
                   <div>
                     金额:
                     <el-input
-                      v-model.number="row.distributeAchieveAmount"
-                      v-digits="2"
+                      v-model="row.distributeAchieveAmount"
+                      v-digits="4"
                       clearable
                       :disabled="row.subdivideEnum === 'All' ? true : false"
                       style="width: 70%"
@@ -409,8 +409,8 @@
                   <div class="margin-top-5">
                     点数:
                     <el-input
-                      v-model.number="row.distributeAchievePoint"
-                      v-digits="2"
+                      v-model="row.distributeAchievePoint"
+                      v-digits="4"
                       clearable
                       :disabled="row.subdivideEnum === 'All' ? true : false"
                       style="width: 70%"
@@ -428,7 +428,7 @@
                     金额:
                     <el-input
                       :value="otherChannelAmount(row)"
-                      v-digits="2"
+                      v-digits="4"
                       disabled
                       style="width: 70%"
                     />
@@ -442,7 +442,7 @@
               >
                 <template v-slot="{ row }">
                   <el-input
-                    v-model.number="row.estimateComplateNum"
+                    v-model="row.estimateComplateNum"
                     v-digits="0"
                     style="width: 80%"
                     placeholder="套数"
@@ -692,8 +692,8 @@
                   <div>
                     金额:
                     <el-input
-                      v-model.number="row.receivableAmout"
-                      v-digits="2"
+                      v-model="row.receivableAmout"
+                      v-digits="4"
                       clearable
                       style="width: 70%"
                     />
@@ -701,8 +701,8 @@
                   <div class="margin-top-5">
                     点数:
                     <el-input
-                      v-model.number="row.receivablePoint"
-                      v-digits="2"
+                      v-model="row.receivablePoint"
+                      v-digits="4"
                       clearable
                       style="width: 70%"
                     />
@@ -719,8 +719,8 @@
                     金额:
                     <el-input
                       :disabled="(row.transactionEnum === 'Natural' || row.transactionEnum === 'SelfChannel') ? true : false"
-                      v-model.number="row.sendAmount"
-                      v-digits="2"
+                      v-model="row.sendAmount"
+                      v-digits="4"
                       clearable
                       style="width: 70%"
                     />
@@ -729,8 +729,8 @@
                     点数:
                     <el-input
                       :disabled="(row.transactionEnum === 'Natural' || row.transactionEnum === 'SelfChannel') ? true : false"
-                      v-model.number="row.sendPoint"
-                      v-digits="2"
+                      v-model="row.sendPoint"
+                      v-digits="4"
                       clearable
                       style="width: 70%"
                     />
@@ -746,8 +746,8 @@
                   <div>
                     金额:
                     <el-input
-                      v-model.number="row.sendInAmount"
-                      v-digits="2"
+                      v-model="row.sendInAmount"
+                      v-digits="4"
                       clearable
                       style="width: 70%"
                     />
@@ -755,8 +755,8 @@
                   <div class="margin-top-5">
                     点数:
                     <el-input
-                      v-model.number="row.sendInPoint"
-                      v-digits="2"
+                      v-model="row.sendInPoint"
+                      v-digits="4"
                       clearable
                       style="width: 70%"
                     />
@@ -772,8 +772,8 @@
                   <div>
                     金额:
                     <el-input
-                      v-model.number="row.generalAchieveAmount"
-                      v-digits="2"
+                      v-model="row.generalAchieveAmount"
+                      v-digits="4"
                       clearable
                       :disabled="(info.busEnum === 'TotalBagDistriModel' || row.subdivideEnum === 'All') ? false : true"
                       style="width: 70%"
@@ -782,8 +782,8 @@
                   <div class="margin-top-5">
                     点数:
                     <el-input
-                      v-model.number="row.generalAchievePoint"
-                      v-digits="2"
+                      v-model="row.generalAchievePoint"
+                      v-digits="4"
                       clearable
                       :disabled="(info.busEnum === 'TotalBagDistriModel' || row.subdivideEnum === 'All') ? false : true"
                       style="width: 70%"
@@ -800,8 +800,8 @@
                   <div>
                     金额:
                     <el-input
-                      v-model.number="row.distributeAchieveAmount"
-                      v-digits="2"
+                      v-model="row.distributeAchieveAmount"
+                      v-digits="4"
                       clearable
                       :disabled="row.subdivideEnum === 'All' ? true : false"
                       style="width: 70%"
@@ -810,8 +810,8 @@
                   <div class="margin-top-5">
                     点数:
                     <el-input
-                      v-model.number="row.distributeAchievePoint"
-                      v-digits="2"
+                      v-model="row.distributeAchievePoint"
+                      v-digits="4"
                       clearable
                       :disabled="row.subdivideEnum === 'All' ? true : false"
                       style="width: 70%"
@@ -826,7 +826,7 @@
               >
                 <template v-slot="{ row }">
                   <el-input
-                    v-model.number="row.estimateComplateNum"
+                    v-model="row.estimateComplateNum"
                     v-digits="0"
                     style="width: 80%"
                     placeholder="套数"
@@ -1327,23 +1327,23 @@ export default class SetMealEdit extends Vue {
       collectandsendConditionVOS: [],
       condition: "",
       contractEnum: "",
-      distributeAchieveAmount: "",
-      distributeAchievePoint: "",
-      estimateComplateAmount: "",
-      estimateComplateNum: "",
-      estimateReceiveAmount: "",
-      generalAchieveAmount: "",
-      generalAchievePoint: "",
-      otherChannelAmount: "",
-      otherChannelPoint: "",
+      distributeAchieveAmount: 0,
+      distributeAchievePoint: 0,
+      estimateComplateAmount: 0,
+      estimateComplateNum: 0,
+      estimateReceiveAmount: 0,
+      generalAchieveAmount: 0,
+      generalAchievePoint: 0,
+      otherChannelAmount: 0,
+      otherChannelPoint: 0,
       padCommissionEnum: "",
-      receivableAmout: "",
-      receivablePoint: "",
+      receivableAmout: 0,
+      receivablePoint: 0,
       remark: "",
-      sendAmount: "",
-      sendInAmount: "",
-      sendInPoint: "",
-      sendPoint: "",
+      sendAmount: 0,
+      sendInAmount: 0,
+      sendInPoint: 0,
+      sendPoint: 0,
       sort: "",
       subdivideEnum: this.busEnumType,
       transactionEnum: "",
