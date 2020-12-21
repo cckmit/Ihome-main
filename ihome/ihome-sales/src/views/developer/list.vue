@@ -4,7 +4,7 @@
  * @Author: wwq
  * @Date: 2020-09-25 17:59:09
  * @LastEditors: wwq
- * @LastEditTime: 2020-12-19 14:21:54
+ * @LastEditTime: 2020-12-21 10:00:02
 -->
 <template>
   <ih-page>
@@ -188,18 +188,18 @@
                   v-has="'B.SALES.DEVELOPER.LIST.DELETE'"
                 >删除</el-dropdown-item>
                 <el-dropdown-item
-                  :class="{'is-disabled': row.status !== 'WaitAuditByBranchHead'}"
+                  :class="{'ih-data-disabled': row.status !== 'WaitAuditByBranchHead'}"
                   @click.native.prevent="routeTo(row, 'revocation')"
                   v-has="'B.SALES.DEVELOPER.LIST.REVOKE'"
                 >撤回
                 </el-dropdown-item>
                 <el-dropdown-item
-                  :class="{'is-disabled': row.status !== 'WaitAuditByBranchHead'}"
+                  :class="{'ih-data-disabled': row.status !== 'WaitAuditByBranchHead'}"
                   @click.native.prevent="routeTo(row, 'check')"
                   v-has="'B.SALES.DEVELOPER.LIST.VERIFY'"
                 >审核</el-dropdown-item>
                 <el-dropdown-item
-                  :class="{'is-disabled': row.status !== 'Audited'}"
+                  :class="{'ih-data-disabled': row.status !== 'Audited'}"
                   @click.native.prevent="routeTo(row, 'change')"
                   v-has="'B.SALES.DEVELOPER.LIST.UPDATEINFO'"
                 >变更信息</el-dropdown-item>

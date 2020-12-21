@@ -4,7 +4,7 @@
  * @Author: ywl
  * @Date: 2020-06-30 09:21:17
  * @LastEditors: wwq
- * @LastEditTime: 2020-12-19 15:14:05
+ * @LastEditTime: 2020-12-21 09:59:39
 --> 
 <template>
   <IhPage label-width="100px">
@@ -173,7 +173,7 @@
                 >删除</el-dropdown-item>
                 <el-dropdown-item
                   @click.native.prevent="handleToPage(row, 'confirm')"
-                  :class="{'is-disabled': row.status !== 'ToBeConfirmed'}"
+                  :class="{'ih-data-disabled': row.status !== 'ToBeConfirmed'}"
                   v-has="'B.SALES.CHANNEL.CHANGELIST.CONFIRM'"
                 >确认</el-dropdown-item>
                 <el-dropdown-item

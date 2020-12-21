@@ -4,7 +4,7 @@
  * @Author: wwq
  * @Date: 2020-12-09 20:13:35
  * @LastEditors: wwq
- * @LastEditTime: 2020-12-12 18:05:25
+ * @LastEditTime: 2020-12-21 09:36:25
 -->
 <template>
   <el-dialog
@@ -29,12 +29,6 @@
             <el-form-item label="名称">
               <span class="text-ellipsis">{{ info.settleName }}</span>
             </el-form-item>
-            <el-form-item
-              label="优先级"
-              class="margin-left-20"
-            >
-              <span class="text-ellipsis">{{ $root.dictAllName(info.priorityEnum, "Priority") }}</span>
-            </el-form-item>
           </div>
         </el-col>
       </el-row>
@@ -56,7 +50,7 @@
                   </el-checkbox>
                 </div>
                 <div
-                  v-if="item.checkboxed && item.enumType && !['ContractType', 'ExRecode'].includes(item.conditionModel)"
+                  v-if="item.checkboxed && item.enumType && !['ContractType', 'ExRecode', 'PadCommission'].includes(item.conditionModel)"
                   class="condition-list"
                 >
                   <div>
@@ -175,6 +169,24 @@
                     ></el-option>
                   </el-select>
                 </span>
+                <span v-if="item.checkboxed && (item.conditionModel === 'PadCommission')">
+                  <el-select
+                    class="margin-left-20"
+                    style="width: 15%"
+                    v-model="item.simpleVal"
+                    clearable
+                    placeholder="请选择"
+                    disabled
+                  >
+                    <el-option
+                      v-for="item in padCommissionEnumOptions"
+                      :key="item.code"
+                      :label="item.name"
+                      :value="item.code"
+                    ></el-option>
+                  </el-select>
+                  <span style="color: red;margin-left:50px">注：结算方式没有勾选代理费时不可选择此项</span>
+                </span>
                 <span v-if="item.checkboxed && item.conditionModel === 'PaymentReturnRate'">
                   <el-input
                     class="margin-left-20"
@@ -206,21 +218,6 @@
                 class="flex margin-left-10"
                 v-if="info.serviceFee"
               >
-                <div style="width: 200px"> 垫佣周期
-                  <el-select
-                    v-model="info.servicePadCommisionType"
-                    disabled
-                    placeholder="请选择"
-                    style="width: 60%"
-                  >
-                    <el-option
-                      v-for="item in padCommissionEnumOptions"
-                      :key="item.code"
-                      :label="item.name"
-                      :value="item.code"
-                    ></el-option>
-                  </el-select>
-                </div>
                 <div style="width: 300px">服务费结算比例
                   <el-input
                     class="margin-left-20"
@@ -257,21 +254,6 @@
                 class="flex margin-left-10"
                 v-if="info.agencyFee"
               >
-                <div style="width: 200px"> 垫佣周期
-                  <el-select
-                    v-model="info.agencyPadCommisionType"
-                    disabled
-                    placeholder="请选择"
-                    style="width: 60%"
-                  >
-                    <el-option
-                      v-for="item in padCommissionEnumOptions"
-                      :key="item.code"
-                      :label="item.name"
-                      :value="item.code"
-                    ></el-option>
-                  </el-select>
-                </div>
                 <div style="width: 300px">代理费结算比例
                   <el-input
                     class="margin-left-20"
@@ -320,7 +302,6 @@ export default class MakingInfo extends Vue {
   dialogVisible = true;
   isShow = false;
   info: any = {
-    priorityEnum: null,
     settleName: null,
     agencyFee: 0,
     agencyFeeSettleAmount: null,
@@ -334,6 +315,7 @@ export default class MakingInfo extends Vue {
   };
   budingList: any = [];
   padCommissionEnumOptions: any = [];
+  agencyDisabled: any = true;
   cancel() {
     this.$emit("cancel", false);
   }

@@ -209,7 +209,7 @@
                 >审核</el-dropdown-item>
                 <el-dropdown-item
                   @click.native.prevent="backDraft(row)"
-                  :class="{'is-disabled': row.status !== 'PASS'}"
+                  :class="{'ih-data-disabled': row.status !== 'PASS'}"
                   v-has="'B.SALES.CHANNEL.LEVELCHANGELIST.REVOKEDRAFT'"
                 >退回起草</el-dropdown-item>
               </el-dropdown-menu>

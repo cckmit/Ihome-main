@@ -170,7 +170,7 @@
               </span>
               <el-dropdown-menu slot="dropdown">
                 <el-dropdown-item
-                  :class="{'is-disabled': row.status === 'Audited'}"
+                  :class="{'ih-data-disabled': row.status === 'Audited'}"
                   @click.native.prevent="routeTo(row, 'edit')"
                   v-has="'B.SALES.PROJECT.AGENCYLIST.UPDATE'"
                 >修改</el-dropdown-item>

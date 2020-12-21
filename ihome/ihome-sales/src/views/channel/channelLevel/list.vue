@@ -4,7 +4,7 @@
  * @Author: wwq
  * @Date: 2020-08-13 11:40:10
  * @LastEditors: wwq
- * @LastEditTime: 2020-12-19 14:56:20
+ * @LastEditTime: 2020-12-21 09:59:28
 -->
 <template>
   <IhPage label-width="100px">
@@ -287,7 +287,7 @@
                 >审核</el-dropdown-item>
                 <el-dropdown-item
                   @click.native.prevent="returnStatus(row)"
-                  :class="{'is-disabled': row.status !== 'PASS'}"
+                  :class="{'ih-data-disabled': row.status !== 'PASS'}"
                   v-has="'B.SALES.CHANNEL.LEVELLIST.REVOKEDRAFT'"
                 >退回起草</el-dropdown-item>
                 <el-dropdown-item

@@ -233,7 +233,7 @@
                 >确认</el-dropdown-item>
                 <el-dropdown-item
                   @click.native.prevent="backDraft(row, 'revoke')"
-                  :class="{'is-disabled': row.status !== 'Confirmed'}"
+                  :class="{'ih-data-disabled': row.status !== 'Confirmed'}"
                   v-has="'B.SALES.CHANNEL.BASELIST.REVOKEDRAFT'"
                 >退回起草</el-dropdown-item>
                 <el-dropdown-item
