@@ -4,7 +4,7 @@
  * @Author: zyc
  * @Date: 2020-11-24 10:49:09
  * @LastEditors: zyc
- * @LastEditTime: 2020-12-17 20:19:31
+ * @LastEditTime: 2020-12-22 17:47:49
 -->
 
 <!--
@@ -244,7 +244,7 @@ export default class ChannelApprovalGradesList extends Vue {
 
     province: null,
     special: null,
-    status: null,
+    status: "PASS",
     storageNum: null,
     provinceCity: null,
   };
