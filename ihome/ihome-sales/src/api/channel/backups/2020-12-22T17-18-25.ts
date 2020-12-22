@@ -1,6 +1,6 @@
 /* eslint-disable */
 /* 此脚本由swagger-ui的api-docs自动生成，请勿修改 */
-//2020-12-22 17:18:25
+//2020-12-22 10:10:43
 import { request } from '@/api/base'
 const basePath = "/sales-api/channel"
 /**添加渠道*/
@@ -99,7 +99,7 @@ return await request.post< any,any> (basePath+'/channelAgent/getListByName', d)
 export async function post_channelApproval_add (d?: any) {
 return await request.post< number,number> (basePath+'/channelApproval/add', d)
 }
-/**撤回重发*/
+/**退回起草*/
 export async function post_channelApproval_backToDraft__id (d?: any) {
 return await request.post< number,number> (basePath+'/channelApproval/backToDraft/{id}', d)
 }
@@ -126,10 +126,6 @@ return await request.get<ChannelApprovalDetail,ChannelApprovalDetail>(basePath+'
 /**查询OA审批日志*/
 export async function post_channelApproval_getFlowCommentList__id (d?: any) {
 return await request.post< ChannelApprovalRecord[],ChannelApprovalRecord[]> (basePath+'/channelApproval/getFlowCommentList/{id}', d)
-}
-/**查询当前OA审批状态*/
-export async function post_channelApproval_getFlowState__id (d?: any) {
-return await request.post< number,number> (basePath+'/channelApproval/getFlowState/{id}', d)
 }
 /**查询渠道呈批列表*/
 export async function post_channelApproval_getList (d?: any) {
@@ -378,10 +374,6 @@ return await request.get<string,string>(basePath+'/channelInvitationCode/create'
 /**删除邀请码*/
 export async function get_channelInvitationCode_delete__invitationCode (d?: any) {
 return await request.get<number,number>(basePath+'/channelInvitationCode/delete/{invitationCode}', { params: d })
-}
-/**查询邀请码详情*/
-export async function get_channelInvitationCode_get__id (d?: any) {
-return await request.get<ChannelInvitationCodeDetail,ChannelInvitationCodeDetail>(basePath+'/channelInvitationCode/get/{id}', { params: d })
 }
 /**查询渠道邀请码列表*/
 export async function post_channelInvitationCode_getList (d?: any) {
@@ -2282,31 +2274,6 @@ export interface ChannelIdAndCityCodeQueryVO {
 channelId: number;
 /**城市编号*/
 cityCode: string;
-}
-/**ChannelInvitationCodeDetail*/
-export interface ChannelInvitationCodeDetail {
-/**创建时间(yyyy-MM-dd HH:mm:ss)*/
-createTime: string;
-/**创建用户*/
-createUser: number;
-/**已删除*/
-deleted: number;
-/**事业部*/
-departmentOrgId: number;
-/**失效时间(yyyy-MM-dd HH:mm:ss)*/
-expiresTime: string;
-/**二维码文件ID*/
-fileId: string;
-/**ID*/
-id: number;
-/**邀请码*/
-invitationCode: string;
-/**邀请人ID/创建人*/
-invitationUserId: number;
-/**更新时间(yyyy-MM-dd HH:mm:ss)*/
-updateTime: string;
-/**更新用户*/
-updateUser: number;
 }
 /**ChannelInvitationCodeQueryVO*/
 export interface ChannelInvitationCodeQueryVO {
