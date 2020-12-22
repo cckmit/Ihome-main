@@ -270,7 +270,7 @@ export default class ChannelChangeList extends Vue {
       (v: any) => v.code
     );
     const pingtai = roleList.includes("RPlatformClerk");
-    const fen = roleList.includes("BusinessManagement");
+    const fen = roleList.includes("RBusinessManagement");
     const qudao = roleList.includes("RChannelStaff");
     const dangqian = (this.$root as any).userInfo.id === row.followUserId;
     const skipPlatformClerk = row.skipPlatformClerk === "true" ? true : false;
@@ -290,8 +290,8 @@ export default class ChannelChangeList extends Vue {
       (v: any) => v.code
     );
     const pingtai = roleList.includes("RPlatformClerk");
-    const fen = roleList.includes("BusinessManagement");
-    const zong = roleList.includes("HeadBusinessManagement");
+    const fen = roleList.includes("RBusinessManagement");
+    const zong = roleList.includes("RHeadBusinessManagement");
     return (PTWYSH && pingtai) || (FGSYGSH && fen) || (ZBYGSH && zong);
   }
 
