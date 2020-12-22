@@ -4,7 +4,7 @@
  * @Author: zyc
  * @Date: 2020-12-22 11:00:59
  * @LastEditors: zyc
- * @LastEditTime: 2020-12-22 11:41:29
+ * @LastEditTime: 2020-12-22 14:48:38
 -->
 <template>
   <el-dialog
@@ -18,8 +18,9 @@
     style="text-align: left"
     class="dialog user-job-role-dialog"
   >
+    <div>本次呈批推送OA附件如下:</div>
     <div
-      class="text-left margin-left-30 margin-top-20"
+      class="text-left margin-top-20"
       v-for="(item, index) in fileList"
       :key="index"
       @click="down(item)"

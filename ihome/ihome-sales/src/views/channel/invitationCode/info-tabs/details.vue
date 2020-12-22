@@ -4,13 +4,14 @@
  * @Author: zyc
  * @Date: 2020-07-09 14:31:23
  * @LastEditors: zyc
- * @LastEditTime: 2020-10-23 16:19:46
+ * @LastEditTime: 2020-12-22 17:21:04
 --> 
 <template>
   <div>
     <p class="ih-info-title">邀请码信息</p>
     <el-row class="ih-info-line text-left">
       <el-image
+        v-if="url"
         style="width: 300px; height: 300px"
         :src="url"
         fit="fill"
@@ -30,6 +31,7 @@
 </template>
 <script lang="ts">
 import { Component, Vue } from "vue-property-decorator";
+import { get_channelInvitationCode_get__id } from "../../../../api/channel/index";
 
 @Component({
   components: {},
@@ -39,10 +41,12 @@ export default class InvitationCodeDetails extends Vue {
   url: any = null;
   async created() {
     let id = this.$route.query.id;
-    this.url = id;
+
+    const res: any = await get_channelInvitationCode_get__id({ id: id });
+    this.url = this.$tool.downloadLongFileUrl(res.fileId);
   }
   download() {
-    console.log("下载,未实现");
+    window.open(this.url);
   }
   // goto() {
   //   this.$goto({
