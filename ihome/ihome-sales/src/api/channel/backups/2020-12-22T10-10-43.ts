@@ -1,6 +1,6 @@
 /* eslint-disable */
 /* 此脚本由swagger-ui的api-docs自动生成，请勿修改 */
-//2020-12-22 10:10:43
+//2020-12-17 15:16:32
 import { request } from '@/api/base'
 const basePath = "/sales-api/channel"
 /**添加渠道*/
@@ -34,10 +34,6 @@ return await request.get<ChannelDetail,ChannelDetail>(basePath+'/channel/get/{id
 /**查询所有渠道商*/
 export async function get_channel_getAll (d?: any) {
 return await request.get<ChannelVO[],ChannelVO[]>(basePath+'/channel/getAll', { params: d })
-}
-/**根据渠道商id返回营业执照附件*/
-export async function get_channel_getChannelBusinessLicense__channelId (d?: any) {
-return await request.get<string[],string[]>(basePath+'/channel/getChannelBusinessLicense/{channelId}', { params: d })
 }
 /**查询渠道列表*/
 export async function post_channel_getList (d?: any) {
@@ -107,14 +103,6 @@ return await request.post< number,number> (basePath+'/channelApproval/backToDraf
 export async function post_channelApproval_delete__id (d?: any) {
 return await request.post< number,number> (basePath+'/channelApproval/delete/{id}', d)
 }
-/**下载供应商名录*/
-export async function post_channelApproval_downloadDirectoryFile__id (d?: any) {
-return await request.post< string,string> (basePath+'/channelApproval/downloadDirectoryFile/{id}', d)
-}
-/**下载OA附件*/
-export async function post_channelApproval_downloadOaAttachment__id (d?: any) {
-return await request.post< OaAttachmentVO[],OaAttachmentVO[]> (basePath+'/channelApproval/downloadOaAttachment/{id}', d)
-}
 /**修改渠道呈批*/
 export async function post_channelApproval_edit (d?: any) {
 return await request.post< number,number> (basePath+'/channelApproval/edit', d)
@@ -139,9 +127,17 @@ return await request.post< number,number> (basePath+'/channelApproval/modifyAppr
 export async function post_channelApproval_previewDirectoryFile (d?: any) {
 return await request.post< string,string> (basePath+'/channelApproval/previewDirectoryFile', d)
 }
+/**预览供应商名录*/
+export async function post_channelApproval_previewDirectoryFile__id (d?: any) {
+return await request.post< string,string> (basePath+'/channelApproval/previewDirectoryFile/{id}', d)
+}
 /**预览OA附件*/
 export async function post_channelApproval_previewOaAttachment (d?: any) {
 return await request.post< OaAttachmentVO[],OaAttachmentVO[]> (basePath+'/channelApproval/previewOaAttachment', d)
+}
+/**预览OA附件*/
+export async function post_channelApproval_previewOaAttachment__id (d?: any) {
+return await request.post< OaAttachmentVO[],OaAttachmentVO[]> (basePath+'/channelApproval/previewOaAttachment/{id}', d)
 }
 /**查询当前OA待办人*/
 export async function post_channelApproval_queryOaApprovalUser__id (d?: any) {
@@ -269,7 +265,7 @@ return await request.post< any,any> (basePath+'/channelGrade/getChannelAndChanne
 }
 /**根据渠道等级类型查询附件*/
 export async function post_channelGrade_getChannelGradeAttachmentByType (d?: any) {
-return await request.post< ChannelGradeAttachmentVO,ChannelGradeAttachmentVO> (basePath+'/channelGrade/getChannelGradeAttachmentByType', d)
+return await request.post< any,any> (basePath+'/channelGrade/getChannelGradeAttachmentByType', d)
 }
 /**根据渠道商id，城市编号，查找一个渠道等级*/
 export async function post_channelGrade_getChannelGradeByChannelIdAndCityCode (d?: any) {
@@ -401,15 +397,11 @@ return await request.post< any,any> (basePath+'/channelRegistUser/getList', d)
 }
 /**渠道用户注册*/
 export async function post_channelRegistUser_regist (d?: any) {
-return await request.post< number,number> (basePath+'/channelRegistUser/regist', d)
+return await request.post< string,string> (basePath+'/channelRegistUser/regist', d)
 }
 /**发送短信*/
 export async function get_channelRegistUser_sendMessage (d?: any) {
 return await request.get<string,string>(basePath+'/channelRegistUser/sendMessage', { params: d })
-}
-/**渠道用户更新公司信息*/
-export async function post_channelRegistUser_updateCompany (d?: any) {
-return await request.post< number,number> (basePath+'/channelRegistUser/updateCompany', d)
 }
 //===============================================================================================
 /**ResModel模型*/
@@ -603,8 +595,6 @@ deleted: number;
 fileId: string;
 /**文件名称*/
 fileName: string;
-/**文件类型(ChannelGrade-ChannelGrade、Specially-Specially、OA-OA)*/
-fileType: string;
 /**ID*/
 id: number;
 /**入库编号*/
@@ -655,12 +645,14 @@ deleted: number;
 departmentName: string;
 /**事业部*/
 departmentOrgId: number;
+/**名录文件ID*/
+directoryFileId: string;
+/**名录文件名称*/
+directoryFileName: string;
 /**ID*/
 id: number;
 /**发起日期(yyyy-MM-dd)*/
 inputTime: string;
-/**OA附件信息*/
-oaAttachmentVOs: OaAttachmentVO[];
 /**状态(Draft-草稿、SubmittedForApproval-已发起呈批、Approved-审批通过、ApprovalFailed-审批不通过)*/
 status: string;
 /**呈批OA流程ID*/
@@ -840,6 +832,10 @@ deleted: number;
 departmentName: string;
 /**事业部*/
 departmentOrgId: number;
+/**名录文件ID*/
+directoryFileId: string;
+/**名录文件名称*/
+directoryFileName: string;
 /**ID*/
 id: number;
 /**发起日期(yyyy-MM-dd)*/
@@ -848,6 +844,29 @@ inputTime: string;
 status: string;
 /**呈批OA流程ID*/
 summaryId: number;
+/**更新时间(yyyy-MM-dd HH:mm:ss)*/
+updateTime: string;
+/**更新用户*/
+updateUser: number;
+}
+/**ChannelAttachment*/
+export interface ChannelAttachment {
+/**渠道ID*/
+channelId: number;
+/**创建时间(yyyy-MM-dd HH:mm:ss)*/
+createTime: string;
+/**创建用户*/
+createUser: number;
+/**已删除*/
+deleted: number;
+/**文件ID*/
+fileId: string;
+/**文件名称*/
+fileName: string;
+/**ID*/
+id: number;
+/**类型*/
+type: string;
 /**更新时间(yyyy-MM-dd HH:mm:ss)*/
 updateTime: string;
 /**更新用户*/
@@ -893,31 +912,6 @@ fileId: string;
 fileName: string;
 /**类型*/
 type: string;
-}
-/**ChannelAttachmentVO*/
-export interface ChannelAttachmentVO {
-/**渠道ID*/
-channelId: number;
-/**创建时间(yyyy-MM-dd HH:mm:ss)*/
-createTime: string;
-/**创建用户*/
-createUser: number;
-/**已删除*/
-deleted: number;
-/**文件ID*/
-fileId: string;
-/**文件名称*/
-fileName: string;
-/**ID*/
-id: number;
-/**文件名后缀*/
-suffix: string;
-/**类型*/
-type: string;
-/**更新时间(yyyy-MM-dd HH:mm:ss)*/
-updateTime: string;
-/**更新用户*/
-updateUser: number;
 }
 /**ChannelBank*/
 export interface ChannelBank {
@@ -1378,8 +1372,6 @@ remark: string;
 setupTime: string;
 /**简称*/
 shortName: string;
-/**是否跳过平台文员审核*/
-skipPlatformClerk: string;
 /**状态(DRAFT-草稿、ToBeConfirmed-待确认、PTWYSH-待平台文员审核、FGSYGSH-待分公司业管审核、ZBYGSH-待总部业管审核、PASS-已审核)*/
 status: string;
 /**公司类型(limitedLiabilityCompany-有限责任公司（自然人投资或控股）)*/
@@ -1464,7 +1456,7 @@ businessTime: string;
 /**注册资本*/
 capital: string;
 /**附件信息*/
-channelAttachments: ChannelAttachmentVO[];
+channelAttachments: ChannelAttachment[];
 /**银行账户信息*/
 channelBanks: ChannelBank[];
 /**负责人信息*/
@@ -1587,6 +1579,29 @@ shortName: string;
 /**渠道等级状态(DRAFT-草稿、PTWYSH-待平台文员审核、FGSYGSH-待分公司业管审核、ZBYGSH-待总部业管审核、PASS-已审核、Changing-变更中、SubmittedForApproval-已发起呈批、Approved-已审批)*/
 status: string;
 }
+/**ChannelGradeAttachment*/
+export interface ChannelGradeAttachment {
+/**创建时间(yyyy-MM-dd HH:mm:ss)*/
+createTime: string;
+/**创建用户*/
+createUser: number;
+/**已删除*/
+deleted: number;
+/**文件ID*/
+fileId: string;
+/**文件名称*/
+fileName: string;
+/**渠道等级ID*/
+gradeId: number;
+/**ID*/
+id: number;
+/**类型*/
+type: string;
+/**更新时间(yyyy-MM-dd HH:mm:ss)*/
+updateTime: string;
+/**更新用户*/
+updateUser: number;
+}
 /**ChannelGradeAttachmentBaseVO*/
 export interface ChannelGradeAttachmentBaseVO {
 /**文件ID*/
@@ -1628,56 +1643,22 @@ fileName: string;
 /**类型*/
 type: string;
 }
-/**ChannelGradeAttachmentDetailVO*/
-export interface ChannelGradeAttachmentDetailVO {
-/**文件ID*/
-fileId: string;
-/**文件名称*/
-fileName: string;
-/**文件名后缀*/
-suffix: string;
-}
 /**ChannelGradeAttachmentVO*/
 export interface ChannelGradeAttachmentVO {
-/**文件集合*/
-attachmentDetails: ChannelGradeAttachmentDetailVO[];
 /**渠道商ID*/
 channelId: number;
 /**渠道商名称*/
 channelName: string;
 /**业务开展城市*/
 city: string;
+/**文件ID*/
+fileId: string;
 /**渠道等级ID*/
 gradeId: number;
 /**入库编号*/
 storageNum: string;
 /**文件类型*/
 type: string;
-}
-/**ChannelGradeAttachmentVO_1*/
-export interface ChannelGradeAttachmentVO_1 {
-/**创建时间(yyyy-MM-dd HH:mm:ss)*/
-createTime: string;
-/**创建用户*/
-createUser: number;
-/**已删除*/
-deleted: number;
-/**文件ID*/
-fileId: string;
-/**文件名称*/
-fileName: string;
-/**渠道等级ID*/
-gradeId: number;
-/**ID*/
-id: number;
-/**文件名后缀*/
-suffix: string;
-/**类型*/
-type: string;
-/**更新时间(yyyy-MM-dd HH:mm:ss)*/
-updateTime: string;
-/**更新用户*/
-updateUser: number;
 }
 /**ChannelGradeBaseVO*/
 export interface ChannelGradeBaseVO {
@@ -1897,8 +1878,6 @@ inputUserName: string;
 oldGradeId: number;
 /**营业住所*/
 province: string;
-/**是否跳过平台文员审核*/
-skipPlatformClerk: string;
 /**是否特批入库(Yes-是、No-否)*/
 special: string;
 /**状态(DRAFT-草稿、PTWYSH-待平台文员审核、FGSYGSH-待分公司业管审核、ZBYGSH-待总部业管审核、PASS-已审核、Changing-变更中、SubmittedForApproval-已发起呈批、Approved-已审批)*/
@@ -1915,7 +1894,7 @@ export interface ChannelGradeDetail {
 /**渠道等级(BigPlatform-大平台、LargeIntermediary-大型中介、FirstPlatform-一级平台、MediumIntermediary-中型中介、SecondPlatform-二级平台、SmallIntermediary-小型中介)*/
 channelGrade: string;
 /**附件信息*/
-channelGradeAttachments: ChannelGradeAttachmentVO_1[];
+channelGradeAttachments: ChannelGradeAttachment[];
 /**渠道评级标准信息*/
 channelGradeItems: ChannelGradeItemVO[];
 /**渠道ID*/
@@ -2255,8 +2234,6 @@ inputUser: number;
 inputUserName: string;
 /**业务开展省份*/
 province: string;
-/**是否跳过平台文员审核*/
-skipPlatformClerk: string;
 /**是否特批入库(Yes-是、No-否)*/
 special: string;
 /**状态(DRAFT-草稿、PTWYSH-待平台文员审核、FGSYGSH-待分公司业管审核、ZBYGSH-待总部业管审核、PASS-已审核、Changing-变更中、SubmittedForApproval-已发起呈批、Approved-已审批)*/
@@ -2291,6 +2268,8 @@ invitationUserId: number;
 pageNum: number;
 /**(必填)每页条数*/
 pageSize: number;
+/**状态(Valid-有效、Invalid-无效)*/
+status: string;
 }
 /**ChannelInvitationCodeVO*/
 export interface ChannelInvitationCodeVO {
@@ -2306,7 +2285,7 @@ deleted: number;
 departmentName: string;
 /**事业部*/
 departmentOrgId: number;
-/**失效时间(yyyy-MM-dd HH:mm:ss)*/
+/**失效时间(yyyy-MM-dd)*/
 expiresTime: string;
 /**二维码文件ID*/
 fileId: string;
@@ -2316,6 +2295,8 @@ id: number;
 invitationCode: string;
 /**邀请人ID/创建人*/
 invitationUserId: number;
+/**状态(Valid-有效、Invalid-无效)*/
+status: string;
 /**更新时间(yyyy-MM-dd HH:mm:ss)*/
 updateTime: string;
 /**更新用户*/
@@ -2521,50 +2502,22 @@ updateUser: number;
 }
 /**ChannelRegistUserBaseVO*/
 export interface ChannelRegistUserBaseVO {
-/**营业住所*/
-address: string;
-/**营业期限*/
-businessTime: string;
-/**注册资本*/
-capital: string;
-/**附件信息*/
-channelAttachments: ChannelAttachmentBaseVO[];
-/**渠道银行账号信息*/
-channelBanks: ChannelBankBaseVO[];
-/**渠道所在城市*/
-city: string;
 /**公司名称*/
 companyName: string;
-/**渠道所在行政区*/
-county: string;
 /**信用代码*/
 creditCode: string;
 /**电子邮箱*/
 email: string;
-/**undefined*/
-followUserId: number;
 /**身份证号码*/
 identityCode: string;
 /**邀请码*/
 invitationCode: string;
-/**法人身份证号码*/
-legalIdentityCode: string;
-/**法人代表*/
-legalPerson: string;
 /**手机号码*/
 mobile: string;
 /**密码*/
 password: string;
-/**渠道所在省份*/
-province: string;
 /**确认密码*/
 rePassword: string;
-/**成立日期(yyyy-MM-dd)*/
-setupTime: string;
-/**简称*/
-shortName: string;
-/**公司类型(limitedLiabilityCompany-有限责任公司（自然人投资或控股）)*/
-type: string;
 /**姓名*/
 username: string;
 /**短信验证码*/
@@ -2587,8 +2540,6 @@ username: string;
 }
 /**ChannelRegistUserVO*/
 export interface ChannelRegistUserVO {
-/**渠道商ID*/
-channelId: number;
 /**公司名称*/
 companyName: string;
 /**创建时间(yyyy-MM-dd HH:mm:ss)*/
@@ -2745,8 +2696,6 @@ remark: string;
 setupTime: string;
 /**简称*/
 shortName: string;
-/**是否跳过平台文员审核*/
-skipPlatformClerk: string;
 /**状态(DRAFT-草稿、ToBeConfirmed-待确认、Confirmed-已确认、PASS-已审核、Changing-变更中)*/
 status: string;
 /**公司类型(limitedLiabilityCompany-有限责任公司（自然人投资或控股）)*/
@@ -2762,37 +2711,4 @@ export interface OaAttachmentVO {
 fileId: string;
 /**文件名称*/
 fileName: string;
-/**文件类型*/
-type: string;
-}
-/**RegistUserUpdateChannelVO*/
-export interface RegistUserUpdateChannelVO {
-/**营业住所*/
-address: string;
-/**营业期限*/
-businessTime: string;
-/**注册资本*/
-capital: string;
-/**附件信息*/
-channelAttachments: ChannelAttachmentBaseVO[];
-/**渠道银行账号信息*/
-channelBanks: ChannelBankBaseVO[];
-/**渠道商ID*/
-channelId: number;
-/**渠道所在城市*/
-city: string;
-/**渠道所在行政区*/
-county: string;
-/**法人身份证号码*/
-legalIdentityCode: string;
-/**法人代表*/
-legalPerson: string;
-/**渠道所在省份*/
-province: string;
-/**成立日期(yyyy-MM-dd)*/
-setupTime: string;
-/**简称*/
-shortName: string;
-/**公司类型(limitedLiabilityCompany-有限责任公司（自然人投资或控股）)*/
-type: string;
 }

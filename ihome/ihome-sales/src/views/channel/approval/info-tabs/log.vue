@@ -4,16 +4,14 @@
  * @Author: zyc
  * @Date: 2020-08-13 11:40:10
  * @LastEditors: zyc
- * @LastEditTime: 2020-12-17 15:48:39
+ * @LastEditTime: 2020-12-22 11:37:23
 -->
 <template>
   <div>
     <div class="text-left">
-      <el-button type="primary" @click="selectOaBtn()"
-        >查询OA审批日志</el-button
-      >
+      <el-button type="primary" @click="selectOaBtn()">查询审批日志</el-button>
       <el-button type="success" @click="currentUserBtn()"
-        >查询OA当前待办人</el-button
+        >查询当前待办人</el-button
       >
     </div>
 
@@ -55,7 +53,7 @@ export default class ApprovalInfoLog extends Vue {
     const res: any = await post_channelApproval_queryOaApprovalUser__id({
       id: this.id,
     });
-    this.$alert(res, "OA当前待办人", {
+    this.$alert(res, "当前待办人", {
       confirmButtonText: "确定",
     });
   }
@@ -63,7 +61,7 @@ export default class ApprovalInfoLog extends Vue {
     this.logList = await post_channelApproval_getFlowCommentList__id({
       id: this.id,
     });
-    this.$message.success("OA日志更新成功");
+    this.$message.success("日志更新成功");
   }
 }
 </script>

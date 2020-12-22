@@ -4,7 +4,7 @@
  * @Author: zyc
  * @Date: 2020-12-09 09:45:58
  * @LastEditors: zyc
- * @LastEditTime: 2020-12-18 09:35:23
+ * @LastEditTime: 2020-12-22 09:36:02
  */
 /*
  * @Descripttion: 
@@ -97,7 +97,7 @@ export class Tool implements ToolInterface {
      * @return {type} 
      */
     downloadFileUrl(fid: string | number): string {
-        let url = `/sales-document-cover/file/download/{${fid}}`;
+        let url = `/sales-api/sales-document-cover/file/download/${fid}`;
         return url;
     }
     /**（全路径）获取下载的文件路径
@@ -105,8 +105,8 @@ export class Tool implements ToolInterface {
      * @return {type} 
      */
     downloadLongFileUrl(fid: string | number): string {
-        let url = `/sales-document-cover/file/download/{${fid}}`;
-        return url;
+        let url = `/sales-api/sales-document-cover/file/download/${fid}`;
+        return window.location.origin + url;
     }
     /**（根路径）获取预览文件路径(fid,width?,height?)
    * @param {type} 
