@@ -4,7 +4,7 @@
  * @Author: zyc
  * @Date: 2020-07-14 09:23:40
  * @LastEditors: zyc
- * @LastEditTime: 2020-12-17 09:51:56
+ * @LastEditTime: 2020-12-22 10:14:20
 --> 
 --> 
 <template>
@@ -130,7 +130,10 @@
           >添加</el-button
         >
         <el-button type="info" @click="reset()">重置</el-button>
-        <el-button type="default" @click="approvalUserChange()" v-has="'B.SALES.CHANNEL.APPROVALLIST.UPDATEMANAGER'"
+        <el-button
+          type="default"
+          @click="approvalUserChange()"
+          v-has="'B.SALES.CHANNEL.APPROVALLIST.UPDATEMANAGER'"
           >变更经办人</el-button
         >
       </el-row>
@@ -256,6 +259,7 @@ import {
   post_channelApproval_getList,
   post_channelApproval_delete__id,
   post_channelApproval_backToDraft__id,
+  post_channelApproval_downloadDirectoryFile__id,
 } from "../../../api/channel/index";
 
 import PaginationMixin from "../../../mixins/pagination";
@@ -363,9 +367,18 @@ export default class InvitationCodeList extends Vue {
       console.log(error);
     }
   }
-  async downloadSupplier() {
+  async downloadSupplier(scope: any) {
     // await get_channelApproval_downloadML__id({ id: scope.row.id });
-    this.$message.warning("未实现");
+    const res: any = await post_channelApproval_downloadDirectoryFile__id({
+      id: scope.row.id,
+    });
+    if (res) {
+      let url = this.$tool.downloadLongFileUrl(res);
+      console.log(url);
+      (window as any).open(url);
+    } else {
+      this.$message.warning("无供应商目录");
+    }
   }
 
   handleSelectionChange(val: any) {
