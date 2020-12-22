@@ -4,7 +4,7 @@
  * @Author: wwq
  * @Date: 2020-12-04 09:40:47
  * @LastEditors: wwq
- * @LastEditTime: 2020-12-22 11:56:06
+ * @LastEditTime: 2020-12-22 21:16:41
 -->
 <template>
   <el-dialog
@@ -523,16 +523,17 @@
               <div class="msg-left">
                 <div class="title">代理费</div>
                 <el-select
-                  v-model="item.partyCompany"
+                  v-model="item.partyCompanyId"
                   clearable
                   placeholder="请选择"
-                  @change="selectCompany(item.partyCompany, i)"
+                  @change="selectCompany(item.partyCompanyId, i)"
                 >
                   <el-option
                     v-for="item in info.partyAInfoList"
                     :key="item.companyId"
                     :label="item.companyName"
                     :value="item.companyId"
+                    :disabled="item.disabled"
                   ></el-option>
                 </el-select>
               </div>
@@ -673,6 +674,7 @@
                     v-model="row.padCommissionEnum"
                     clearable
                     placeholder="请选择"
+                    :disabled="padCommissionEnumOptions.length === 1"
                   >
                     <el-option
                       v-for="item in padCommissionEnumOptions"
@@ -1079,15 +1081,40 @@ export default class SetMealEdit extends Vue {
     if (this.info.busEnum) this.queryContractType();
   }
 
+  @Watch("padCommissionEnumOptions", { immediate: true })
+  isPadCommissionEnum(v: any) {
+    if (v.length === 1) {
+      this.info.colletionandsendMxs.forEach((v: any) => {
+        v.colletionandsendDetails.forEach((j: any) => {
+          j.padCommissionEnum = "Veto";
+        });
+      });
+    }
+  }
+
   selectCompany(v: any, i: number) {
-    this.info.colletionandsendMxs[i].partyCompanyId = v;
-    let arr: any = [];
-    this.info.colletionandsendMxs.forEach((j: any) => {
-      if (j.partyCompanyId) arr.push(j.partyCompanyId);
-    });
-    this.info.partyAInfoList = this.partyAInfoList.filter((h: any) => {
-      return !arr.includes(h.companyId);
-    });
+    if (v) {
+      const item = this.info.partyAInfoList.find((j: any) => j.companyId === v);
+      this.info.colletionandsendMxs[i].partyCompanyId = v;
+      this.info.colletionandsendMxs[i].partyCompany = item.companyName;
+      let arr: any = [];
+      this.info.colletionandsendMxs.forEach((j: any) => {
+        if (j.partyCompanyId) arr.push(j.partyCompanyId);
+      });
+      this.info.partyAInfoList = this.partyAInfoList.map((h: any) => {
+        if (arr.includes(h.companyId)) {
+          return {
+            ...h,
+            disabled: true,
+          };
+        } else {
+          return {
+            ...h,
+            disabled: false,
+          };
+        }
+      });
+    }
   }
 
   cancel() {
@@ -1109,7 +1136,17 @@ export default class SetMealEdit extends Vue {
           })
         );
       });
-      this.$emit("finish", this.info);
+      let obj = this.$tool.deepClone(this.info);
+      if (obj.chargeEnum === "Service") {
+        obj.colletionandsendMxs = this.info.colletionandsendMxs.filter(
+          (v: any) => v.costTypeEnum === "ServiceFee"
+        );
+      } else if (obj.chargeEnum === "Agent") {
+        obj.colletionandsendMxs = this.info.colletionandsendMxs.filter(
+          (v: any) => v.costTypeEnum === "AgencyFee"
+        );
+      }
+      this.$emit("finish", obj);
     } else {
       console.log("error submit!!");
       return false;
@@ -1125,28 +1162,52 @@ export default class SetMealEdit extends Vue {
       const res: any = await get_collectandsend_get__packageId({
         packageId: id,
       });
-      this.padCommissionEnumOptions = [
-        {
-          code: "Veto",
-          name: "否",
-        },
-        {
-          code: res.padCommissionEnum,
-          name: (this.$root as any).dictAllName(
-            res.padCommissionEnum,
-            "PadCommission"
-          ),
-        },
-      ];
+      if (res.padCommissionEnum !== "Veto") {
+        this.padCommissionEnumOptions = [
+          {
+            code: "Veto",
+            name: "否",
+          },
+          {
+            code: res.padCommissionEnum,
+            name: (this.$root as any).dictAllName(
+              res.padCommissionEnum,
+              "PadCommission"
+            ),
+          },
+        ];
+      } else {
+        this.padCommissionEnumOptions = [
+          {
+            code: "Veto",
+            name: "否",
+          },
+        ];
+      }
       this.info = (this.$tool as any).deepClone(res);
       this.info.timeList = [this.info.startTime, this.info.endTime];
       this.info.partyAInfoList = [...res.partyAInfoList];
       this.partyAInfoList = [...res.partyAInfoList];
+      let arr: any = [];
       this.info.colletionandsendMxs.forEach((v: any) => {
+        if (v.partyCompanyId) arr.push(v.partyCompanyId);
         v.colletionandsendDetails = v.colletionandsendDetails.map((j: any) => ({
           ...j,
           transactionEnumOptions: JSON.parse(j.transactionEnumOptions),
         }));
+      });
+      this.info.partyAInfoList = this.partyAInfoList.map((h: any) => {
+        if (arr.includes(h.companyId)) {
+          return {
+            ...h,
+            disabled: true,
+          };
+        } else {
+          return {
+            ...h,
+            disabled: false,
+          };
+        }
       });
     } else {
       const item = await get_collectandsend_getBaseTermByTermId__termId({
@@ -1154,19 +1215,28 @@ export default class SetMealEdit extends Vue {
       });
       this.info.partyAInfoList = [...item.partyAInfoList];
       this.partyAInfoList = [...item.partyAInfoList];
-      this.padCommissionEnumOptions = [
-        {
-          code: "Veto",
-          name: "否",
-        },
-        {
-          code: item.padCommissionEnum,
-          name: (this.$root as any).dictAllName(
-            item.padCommissionEnum,
-            "PadCommission"
-          ),
-        },
-      ];
+      if (item.padCommissionEnum !== "Veto") {
+        this.padCommissionEnumOptions = [
+          {
+            code: "Veto",
+            name: "否",
+          },
+          {
+            code: item.padCommissionEnum,
+            name: (this.$root as any).dictAllName(
+              item.padCommissionEnum,
+              "PadCommission"
+            ),
+          },
+        ];
+      } else {
+        this.padCommissionEnumOptions = [
+          {
+            code: "Veto",
+            name: "否",
+          },
+        ];
+      }
       this.info.busEnum = item.busEnum;
       this.info.chargeEnum = item.chargeEnum;
       if (item.termStart && item.termEnd) {
@@ -1196,7 +1266,6 @@ export default class SetMealEdit extends Vue {
               generalAchievePoint: 0,
               otherChannelAmount: 0,
               otherChannelPoint: 0,
-              padCommissionEnum: "",
               receivableAmout: 0,
               receivablePoint: 0,
               remark: "",
@@ -1227,7 +1296,8 @@ export default class SetMealEdit extends Vue {
               generalAchievePoint: 0,
               otherChannelAmount: 0,
               otherChannelPoint: 0,
-              padCommissionEnum: "",
+              padCommissionEnum:
+                this.padCommissionEnumOptions.length === 1 ? "Veto" : "",
               receivableAmout: 0,
               receivablePoint: 0,
               remark: "",
@@ -1307,7 +1377,7 @@ export default class SetMealEdit extends Vue {
         center: true,
         callback: (action) => {
           if (action === "cancel") {
-            if (arr.includes("Service")) {
+            if (arr.includes("ServiceFee")) {
               this.$message.warning("服务费已存在,无需再增加");
               return;
             } else {
@@ -1328,7 +1398,6 @@ export default class SetMealEdit extends Vue {
                     generalAchievePoint: 0,
                     otherChannelAmount: 0,
                     otherChannelPoint: 0,
-                    padCommissionEnum: "",
                     receivableAmout: 0,
                     receivablePoint: 0,
                     remark: "",
@@ -1362,7 +1431,8 @@ export default class SetMealEdit extends Vue {
                     generalAchievePoint: 0,
                     otherChannelAmount: 0,
                     otherChannelPoint: 0,
-                    padCommissionEnum: "",
+                    padCommissionEnum:
+                      this.padCommissionEnumOptions.length === 1 ? "Veto" : "",
                     receivableAmout: 0,
                     receivablePoint: 0,
                     remark: "",
@@ -1405,7 +1475,6 @@ export default class SetMealEdit extends Vue {
               generalAchievePoint: 0,
               otherChannelAmount: 0,
               otherChannelPoint: 0,
-              padCommissionEnum: "",
               receivableAmout: 0,
               receivablePoint: 0,
               remark: "",
@@ -1439,7 +1508,8 @@ export default class SetMealEdit extends Vue {
               generalAchievePoint: 0,
               otherChannelAmount: 0,
               otherChannelPoint: 0,
-              padCommissionEnum: "",
+              padCommissionEnum:
+                this.padCommissionEnumOptions.length === 1 ? "Veto" : "",
               receivableAmout: 0,
               receivablePoint: 0,
               remark: "",
@@ -1488,7 +1558,8 @@ export default class SetMealEdit extends Vue {
       generalAchievePoint: 0,
       otherChannelAmount: 0,
       otherChannelPoint: 0,
-      padCommissionEnum: "",
+      padCommissionEnum:
+        this.padCommissionEnumOptions.length === 1 ? "Veto" : "",
       receivableAmout: 0,
       receivablePoint: 0,
       remark: "",
@@ -1513,7 +1584,6 @@ export default class SetMealEdit extends Vue {
 
   // 选择客户类型为自渠或自然到访时
   transactionEnumChange(data: any) {
-    console.log(data);
     if (
       data.transactionEnum === "Natural" ||
       data.transactionEnum === "SelfChannel"

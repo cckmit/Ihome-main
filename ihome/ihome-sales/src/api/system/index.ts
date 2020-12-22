@@ -1,6 +1,6 @@
 /* eslint-disable */
 /* 此脚本由swagger-ui的api-docs自动生成，请勿修改 */
-//2020-12-17 20:11:18
+//2020-12-22 8:47:41 ├F10: PM┤
 import { request } from '@/api/base'
 const basePath = "/sales-api/system"
 /**查询所有行政区划信息*/
@@ -79,6 +79,10 @@ return await request.post< string,string> (basePath+'/codeGenerate/getPaymentNo'
 export async function post_codeGenerate_getPayoffNo (d?: any) {
 return await request.post< string,string> (basePath+'/codeGenerate/getPayoffNo', d)
 }
+/**获取POS机申请事项编号*/
+export async function post_codeGenerate_getPosApplyNo (d?: any) {
+return await request.post< string,string> (basePath+'/codeGenerate/getPosApplyNo', d)
+}
 /**获取联动项目编号*/
 export async function post_codeGenerate_getProjectNo (d?: any) {
 return await request.post< string,string> (basePath+'/codeGenerate/getProjectNo', d)
@@ -86,6 +90,10 @@ return await request.post< string,string> (basePath+'/codeGenerate/getProjectNo'
 /**获取退款编号*/
 export async function post_codeGenerate_getRefundNo (d?: any) {
 return await request.post< string,string> (basePath+'/codeGenerate/getRefundNo', d)
+}
+/**查询公司主体详情*/
+export async function get_company_get__id (d?: any) {
+return await request.get<Company,Company>(basePath+'/company/get/{id}', { params: d })
 }
 /**查询所有公司信息*/
 export async function post_company_getAll (d?: any) {
@@ -403,19 +411,23 @@ return await request.post< number,number> (basePath+'/user/resetPassword', d)
 export async function post_user_update (d?: any) {
 return await request.post< number,number> (basePath+'/user/update', d)
 }
-/**根据code获取OpendId*/
+/**微信获取用户手机号*/
+export async function post_wx_getNumberInfo (d?: any) {
+return await request.post< object,object> (basePath+'/wx/getNumberInfo', d)
+}
+/**微信根据code获取OpendId*/
 export async function get_wx_getOpenid__code (d?: any) {
 return await request.get<WxCodeVo,WxCodeVo>(basePath+'/wx/getOpenid/{code}', { params: d })
 }
-/**获取token*/
+/**微信获取token*/
 export async function get_wx_getToken (d?: any) {
 return await request.get<string,string>(basePath+'/wx/getToken', { params: d })
 }
-/**获取小程序二维码*/
+/**微信获取小程序二维码*/
 export async function get_wx_getWxACodeUnLimit (d?: any) {
 return await request.get<SalesFileStream,SalesFileStream>(basePath+'/wx/getWxACodeUnLimit', { params: d })
 }
-/**刷新token*/
+/**微信刷新token*/
 export async function get_wx_refreshToken (d?: any) {
 return await request.get<string,string>(basePath+'/wx/refreshToken', { params: d })
 }
@@ -480,6 +492,41 @@ mobilePhone: string;
 name: string;
 /**密码*/
 password: string;
+}
+/**Company*/
+export interface Company {
+/**营业住所*/
+address: string;
+/**城市*/
+city: string;
+/**行政区*/
+county: string;
+/**创建时间(yyyy-MM-dd HH:mm:ss)*/
+createTime: string;
+/**创建用户*/
+createUser: number;
+/**统一社会信用代码*/
+creditCode: string;
+/**已删除*/
+deleted: number;
+/**ID*/
+id: number;
+/**法定代表人*/
+legalPerson: string;
+/**法人身份证号码*/
+legalPersonNo: string;
+/**名称*/
+name: string;
+/**省份*/
+province: string;
+/**成立日期(yyyy-MM-dd)*/
+setupDate: string;
+/**状态(Valid-有效、Invalid-无效)*/
+status: string;
+/**更新时间(yyyy-MM-dd HH:mm:ss)*/
+updateTime: string;
+/**更新用户*/
+updateUser: number;
 }
 /**CompanyBaseVO*/
 export interface CompanyBaseVO {
@@ -631,7 +678,7 @@ type: string;
 export interface JobBaseVO {
 /**(必填)编码*/
 code: string;
-/**数据权限(OrgLimit-组织数据权限、SelfLimit-个人数据权限、ChannelLimit-渠道数据权限、CustomerLimit-客户数据权限)*/
+/**数据权限(OrgLimit-员工组织数据权限、SelfLimit-员工个人数据权限、ChannelLimit-渠道数据权限、CustomerLimit-客户数据权限)*/
 dataLimit: string;
 /**(必填)名称*/
 name: string;
@@ -680,7 +727,7 @@ roleIds: number[];
 export interface JobUpdateVO {
 /**(必填)编码*/
 code: string;
-/**数据权限(OrgLimit-组织数据权限、SelfLimit-个人数据权限、ChannelLimit-渠道数据权限、CustomerLimit-客户数据权限)*/
+/**数据权限(OrgLimit-员工组织数据权限、SelfLimit-员工个人数据权限、ChannelLimit-渠道数据权限、CustomerLimit-客户数据权限)*/
 dataLimit: string;
 /**(必填)id*/
 id: number;
@@ -699,7 +746,7 @@ createTime: string;
 createUser: number;
 /**创建用户姓名*/
 createUserName: string;
-/**数据权限(OrgLimit-组织数据权限、SelfLimit-个人数据权限、ChannelLimit-渠道数据权限、CustomerLimit-客户数据权限)*/
+/**数据权限(OrgLimit-员工组织数据权限、SelfLimit-员工个人数据权限、ChannelLimit-渠道数据权限、CustomerLimit-客户数据权限)*/
 dataLimit: string;
 /**已删除*/
 deleted: number;
@@ -732,7 +779,7 @@ createTime: string;
 createUser: number;
 /**创建用户姓名*/
 createUserName: string;
-/**数据权限(OrgLimit-组织数据权限、SelfLimit-个人数据权限、ChannelLimit-渠道数据权限、CustomerLimit-客户数据权限)*/
+/**数据权限(OrgLimit-员工组织数据权限、SelfLimit-员工个人数据权限、ChannelLimit-渠道数据权限、CustomerLimit-客户数据权限)*/
 dataLimit: string;
 /**已删除*/
 deleted: number;
@@ -849,6 +896,8 @@ export interface OrgLevelTreeVO {
 companyId: number;
 /**公司名称*/
 companyName: string;
+/**公司OA呈字*/
+companyOaChar: string;
 /**公司简称*/
 companyShortName: string;
 /**公司简称首字母*/
@@ -857,6 +906,8 @@ companyShortNameAbbr: string;
 departmentId: number;
 /**事业部名称*/
 departmentName: string;
+/**事业部OA呈字*/
+departmentOaChar: string;
 /**事业部简称*/
 departmentShortName: string;
 /**事业部简称首字母*/
@@ -1361,6 +1412,8 @@ fileDomain: string;
 h5Domain: string;
 /**pc域名*/
 pcDomain: string;
+/**协议*/
+protocol: string;
 }
 /**UserBaseVO*/
 export interface UserBaseVO {
@@ -1529,7 +1582,7 @@ createTime: string;
 createUser: number;
 /**创建用户姓名*/
 createUserName: string;
-/**数据权限(OrgLimit-组织数据权限、SelfLimit-个人数据权限、ChannelLimit-渠道数据权限、CustomerLimit-客户数据权限)*/
+/**数据权限(OrgLimit-员工组织数据权限、SelfLimit-员工个人数据权限、ChannelLimit-渠道数据权限、CustomerLimit-客户数据权限)*/
 dataLimit: string;
 /**已删除*/
 deleted: number;

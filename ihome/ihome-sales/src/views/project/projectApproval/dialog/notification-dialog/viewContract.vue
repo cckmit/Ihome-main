@@ -4,7 +4,7 @@
  * @Author: wwq
  * @Date: 2020-12-02 20:13:07
  * @LastEditors: wwq
- * @LastEditTime: 2020-12-11 10:26:57
+ * @LastEditTime: 2020-12-22 20:55:58
 -->
 <template>
   <el-dialog
@@ -74,6 +74,24 @@
               class="text-ellipsis"
               :title="info.partyaTel"
             >{{info.partyaTel}}</span>
+          </el-form-item>
+        </el-col>
+      </el-row>
+      <el-row>
+        <el-col :span="12">
+          <el-form-item label="负责人">
+            <span
+              class="text-ellipsis"
+              :title="info.dealMan"
+            >{{info.dealMan}}</span>
+          </el-form-item>
+        </el-col>
+        <el-col :span="12">
+          <el-form-item label="负责人电话">
+            <span
+              class="text-ellipsis"
+              :title="info.dealTel"
+            >{{info.dealTel}}</span>
           </el-form-item>
         </el-col>
       </el-row>
@@ -240,6 +258,7 @@
       <el-button
         type="primary"
         class="margin-left-20"
+        @click="viewElectronic"
       >预览电子版</el-button>
     </div>
     <span
@@ -253,6 +272,8 @@
 <script lang="ts">
 import { Component, Vue, Prop, Watch } from "vue-property-decorator";
 import { get_distributContract_getDistri__agencyContrictId } from "@/api/project/index";
+import axios from "axios";
+import { getToken } from "ihome-common/util/cookies";
 
 @Component({
   components: {},
@@ -279,9 +300,12 @@ export default class AddContract extends Vue {
     agencyFeeReturnTime: null,
     agencyFeeReturnRate: null,
     channelEnum: null,
+    dealMan: null,
+    dealTel: null,
     designatedAgency: null,
     padCommissionEnum: null,
     contractMxVOList: [],
+    termId: this.termId,
   };
   isShow: any = false;
   unContractDisabled: any = true;
@@ -313,6 +337,42 @@ export default class AddContract extends Vue {
 
   cancel() {
     this.$emit("cancel");
+  }
+
+  // 预览电子版
+  viewElectronic() {
+    const token: any = getToken();
+    axios({
+      method: "POST",
+      url: `/sales-api/project/distributContract/getPreView`,
+      xsrfHeaderName: "Authorization",
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: "bearer " + token,
+      },
+      data: this.info,
+    }).then((res: any) => {
+      if (res?.data?.fileId) {
+        axios({
+          method: "POST",
+          url: `/sales-api/sales-document-cover/pdf/ftlToPdf/brow`,
+          xsrfHeaderName: "Authorization",
+          responseType: "blob",
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: "bearer " + token,
+          },
+          data: {
+            data: res.data.parmas,
+            fileId: res.data.fileId,
+          },
+        }).then((item: any) => {
+          const arr = new Blob([item.data], { type: "application/pdf" });
+          const href = window.URL.createObjectURL(arr);
+          window.open(href);
+        });
+      }
+    });
   }
 }
 </script>

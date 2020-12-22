@@ -4,7 +4,7 @@
  * @Author: wwq
  * @Date: 2020-12-02 15:37:31
  * @LastEditors: wwq
- * @LastEditTime: 2020-12-17 14:41:11
+ * @LastEditTime: 2020-12-22 20:52:07
 -->
 <template>
   <el-dialog
@@ -60,6 +60,7 @@
           >
             <el-input
               v-model="info.partyCompany"
+              disabled
               class="width--100"
             ></el-input>
           </el-form-item>
@@ -72,6 +73,25 @@
             <el-input
               v-model="info.partyaAddr"
               class="width--100"
+              disabled
+            ></el-input>
+          </el-form-item>
+        </el-col>
+      </el-row>
+      <el-row>
+        <el-col :span="12">
+          <el-form-item label="负责人">
+            <el-input
+              v-model="info.dealMan"
+              placeholder="请输入负责人"
+            ></el-input>
+          </el-form-item>
+        </el-col>
+        <el-col :span="12">
+          <el-form-item label="负责人电话">
+            <el-input
+              v-model="info.dealTel"
+              placeholder="请输入负责人电话"
             ></el-input>
           </el-form-item>
         </el-col>
@@ -397,12 +417,14 @@ import {
   post_distributContract_getCollectByCondition,
   post_distributContract_getCheckCollectByCondition,
 } from "@/api/project/index";
+import { get_company_get__id } from "@/api/system/index";
 import { Form as ElForm } from "element-ui";
 import { NoRepeatHttp } from "ihome-common/util/aop/no-repeat-http";
 import Business from "../notification-dialog/channelBusiness.vue";
 import SetMealDialog from "./setMealDialog.vue";
 import axios from "axios";
 import { getToken } from "ihome-common/util/cookies";
+import { phoneValidator } from "ihome-common/util/base/form-ui";
 
 @Component({
   components: {
@@ -437,9 +459,13 @@ export default class AddContract extends Vue {
     channelEnum: null,
     designatedAgency: null,
     padCommissionEnum: null,
+    dealMan: null,
+    dealTel: null,
     contractMxVOList: [],
+    termId: this.termId,
   };
   rules: any = {
+    mobile: [{ validator: phoneValidator, trigger: "change" }],
     contractTitle: [
       { required: true, message: "请输入合同主标题", trigger: "change" },
     ],
@@ -497,21 +523,33 @@ export default class AddContract extends Vue {
     if (this.data.agencyContrictId) {
       this.getListMixin();
     } else {
-      this.info.partyCompany = this.data.preferentialPartyA;
-      this.info.partyaAddr = this.data.preferentialPartyAddr;
-      this.padCommissionEnumOptions = [
-        {
-          code: "Veto",
-          name: "否",
-        },
-        {
-          code: this.data.padCommissionEnum,
-          name: (this.$root as any).dictAllName(
-            this.data.padCommissionEnum,
-            "PadCommission"
-          ),
-        },
-      ];
+      const item = await get_company_get__id({
+        id: this.data.id,
+      });
+      this.info.partyCompany = item.name;
+      this.info.partyaAddr = item.address;
+      if (this.data.padCommissionEnum !== "Veto") {
+        this.padCommissionEnumOptions = [
+          {
+            code: "Veto",
+            name: "否",
+          },
+          {
+            code: this.data.padCommissionEnum,
+            name: (this.$root as any).dictAllName(
+              this.data.padCommissionEnum,
+              "PadCommission"
+            ),
+          },
+        ];
+      } else {
+        this.padCommissionEnumOptions = [
+          {
+            code: "Veto",
+            name: "否",
+          },
+        ];
+      }
       // this.info.padCommissionEnum = this.data.padCommissionEnum;
       this.info.unContractLiability = `乙方在销售过程中有下列行为之一时，甲方有权解除本协议，乙方需向甲方赔偿因此行为对甲方造成的
         所有损失（包括但不限于律师费、诉讼费、公证费、差旅费等费用），并向甲方支付实际应付代理费总额的20%作为违约金：
@@ -631,7 +669,7 @@ export default class AddContract extends Vue {
   queryUnderData(data: any, type: any) {
     this.queryObj = {
       padCommissionEnum: this.info.padCommissionEnum,
-      termId: this.$route.query.id,
+      termId: this.termId,
       channelEnum: this.info.channelEnum,
       consumerName: null,
       consumerId: null,
@@ -679,7 +717,7 @@ export default class AddContract extends Vue {
           arr.concat(this.info.contractMxVOList.map((v: any) => v.conditionId))
         ),
       ];
-      this.queryObj.termId = this.$route.query.id;
+      this.queryObj.termId = this.termId;
       const item = await post_distributContract_getCheckCollectByCondition(
         this.queryObj
       );
