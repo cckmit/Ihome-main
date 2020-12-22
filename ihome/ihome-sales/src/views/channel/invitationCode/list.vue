@@ -4,7 +4,7 @@
  * @Author: zyc
  * @Date: 2020-07-14 09:23:40
  * @LastEditors: zyc
- * @LastEditTime: 2020-12-21 14:33:30
+ * @LastEditTime: 2020-12-22 16:21:52
 --> 
 --> 
 <template>
@@ -57,7 +57,7 @@
               ></IhSelectPageDivision>
             </el-form-item>
           </el-col>
-          <el-col :span="8">
+          <!-- <el-col :span="8">
             <el-form-item label="状态">
               <el-select
                 v-model="queryPageParameters.status"
@@ -73,7 +73,7 @@
                 ></el-option>
               </el-select>
             </el-form-item>
-          </el-col>
+          </el-col> -->
         </el-row>
       </el-form>
     </template>
@@ -118,11 +118,11 @@
           label="状态"
           width="180"
         ></el-table-column> -->
-        <el-table-column label="状态" width="120">
+        <!-- <el-table-column label="状态" width="120">
           <template slot-scope="scope">{{
             $root.dictAllName(scope.row.status, "ValidType")
           }}</template>
-        </el-table-column>
+        </el-table-column> -->
         <el-table-column
           prop="expiresTime"
           label="失效日期"

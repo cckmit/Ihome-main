@@ -4,7 +4,7 @@
  * @Author: ywl
  * @Date: 2020-09-27 16:27:36
  * @LastEditors: ywl
- * @LastEditTime: 2020-12-17 10:32:07
+ * @LastEditTime: 2020-12-22 18:54:49
 -->
 <template>
   <IhPage label-width="80px">
@@ -178,6 +178,7 @@
             <el-dropdown-item
               @click.native.prevent="handleExportFile()"
               v-has="'B.SALES.CONTRACT.DISCOUNTLIST.EXPRORTATTCH'"
+              :class="{ 'ih-data-disabled': !exportChange()}"
             >导出附件</el-dropdown-item>
           </el-dropdown-menu>
         </el-dropdown>
@@ -350,6 +351,14 @@ export default class DiscountList extends Vue {
     list: [],
   };
   private selectionData: any = [];
+
+  private exportChange() {
+    const roleList = (this.$root as any).userInfo.roleList.map(
+      (v: any) => v.code
+    );
+    const isBusines = roleList.includes("RBusinessManagement");
+    return isBusines;
+  }
 
   private handleExport() {
     if (!this.selectionData.length) {

@@ -4,7 +4,7 @@
  * @Author: wwq
  * @Date: 2020-12-01 09:05:50
  * @LastEditors: wwq
- * @LastEditTime: 2020-12-11 10:21:58
+ * @LastEditTime: 2020-12-22 11:50:21
 -->
 <template>
   <el-dialog
@@ -35,36 +35,20 @@
         </el-col>
         <el-col :span="8">
           <el-form-item label="甲方">
-            <el-select
+            <IhSelectPageByDeveloper
               v-model="queryPageParameters.partyAId"
               placeholder="请选择甲方"
               clearable
-              class="width--100"
-            >
-              <el-option
-                v-for="item in partyAOptions"
-                :key="item.id"
-                :label="item.name"
-                :value="item.id"
-              ></el-option>
-            </el-select>
+            ></IhSelectPageByDeveloper>
           </el-form-item>
         </el-col>
         <el-col :span="8">
           <el-form-item label="乙方">
-            <el-select
+            <IhSelectPageByCompany
               v-model="queryPageParameters.partyBId"
               clearable
               placeholder="请选择乙方"
-              class="width--100"
-            >
-              <el-option
-                v-for="item in partyBOptions"
-                :key="item.id"
-                :label="item.name"
-                :value="item.id"
-              ></el-option>
-            </el-select>
+            ></IhSelectPageByCompany>
           </el-form-item>
         </el-col>
       </el-row>
@@ -75,6 +59,7 @@
               <el-form-item label="合作项目">
                 <el-input
                   v-model="queryPageParameters.cooperationProjectsName"
+                  clearable
                   placeholder="请输入合作项目"
                 ></el-input>
               </el-form-item>
@@ -110,19 +95,10 @@
             </el-col>
             <el-col :span="8">
               <el-form-item label="归属组织">
-                <el-select
-                  v-model="queryPageParameters.organizationId"
-                  clearable
-                  placeholder="请选择归属组织"
-                  class="width--100"
-                >
-                  <!-- <el-option
-                    v-for="item in $root.dictAllList('employeeStatus')"
-                    :key="item.value"
-                    :label="item.label"
-                    :value="item.value"
-                  ></el-option> -->
-                </el-select>
+                <SelectOrganizationTree
+                  :orgId="queryPageParameters.organizationId"
+                  @callback="(id) => (queryPageParameters.organizationId = id)"
+                />
               </el-form-item>
             </el-col>
           </el-row>
@@ -180,15 +156,6 @@
                   v-model="queryPageParameters.enteringPersonId"
                   clearable
                 >
-                  <template v-slot="{ data }">
-                    <span style="float: left">{{ data.name }}</span>
-                    <span style="
-                      margin-left: 20px;
-                      float: right;
-                      color: #8492a6;
-                      font-size: 13px;
-                    ">{{ data.account }}</span>
-                  </template>
                 </IhSelectPageUser>
               </el-form-item>
             </el-col>
@@ -198,15 +165,6 @@
                   v-model="queryPageParameters.handlerId"
                   clearable
                 >
-                  <template v-slot="{ data }">
-                    <span style="float: left">{{ data.name }}</span>
-                    <span style="
-                      margin-left: 20px;
-                      float: right;
-                      color: #8492a6;
-                      font-size: 13px;
-                    ">{{ data.account }}</span>
-                  </template>
                 </IhSelectPageUser>
               </el-form-item>
             </el-col>
@@ -290,13 +248,8 @@
       >
       </el-table-column>
       <el-table-column
-        label="关联项目"
-        prop="projectsId"
-        width="200"
-      ></el-table-column>
-      <el-table-column
         label="归属组织"
-        prop="organizationId"
+        prop="organizationName"
         width="200"
       ></el-table-column>
       <el-table-column
@@ -330,7 +283,7 @@
       </el-table-column>
       <el-table-column
         label="合同跟进人"
-        prop="handlerId"
+        prop="handlerName"
         width="100"
       ></el-table-column>
       <el-table-column
@@ -376,28 +329,31 @@ import PaginationMixin from "@/mixins/pagination";
 import { post_contract_list } from "@/api/contract/index";
 import { post_company_listAll } from "@/api/developer/index";
 import { post_company_getAll } from "@/api/system/index";
+import SelectOrganizationTree from "@/components/SelectOrganizationTree.vue";
 
 @Component({
-  components: {},
+  components: { SelectOrganizationTree },
   mixins: [PaginationMixin],
 })
 export default class PartyAList extends Vue {
   dialogVisible = true;
   viewEditDialogVisible = false;
   queryPageParameters: any = {
-    title: null,
-    partyAId: null,
-    partyBId: null,
-    cooperationProjectsId: null,
-    timeList: [],
-    projectsId: null,
-    organizationId: null,
-    contractNo: null,
     approvalStatus: null,
+    archiveNo: null,
     archiveStatus: null,
+    contractNo: null,
+    cooperationBeginTime: null,
+    cooperationEndTime: null,
+    cooperationProjectsName: null,
     enteringPersonId: null,
     handlerId: null,
-    archiveNo: null,
+    organizationId: null,
+    partyAId: null,
+    partyBId: null,
+    projectsId: null,
+    title: null,
+    timeList: [],
   };
   provinceOption: any = [];
   private searchOpen = true;
@@ -438,19 +394,21 @@ export default class PartyAList extends Vue {
 
   reset() {
     Object.assign(this.queryPageParameters, {
-      title: null,
-      partyAId: null,
-      partyBId: null,
-      cooperationProjectsId: null,
-      timeList: [],
-      projectsId: null,
-      organizationId: null,
-      contractNo: null,
       approvalStatus: null,
+      archiveNo: null,
       archiveStatus: null,
+      contractNo: null,
+      cooperationBeginTime: null,
+      cooperationEndTime: null,
+      cooperationProjectsName: null,
       enteringPersonId: null,
       handlerId: null,
-      archiveNo: null,
+      organizationId: null,
+      partyAId: null,
+      partyBId: null,
+      projectsId: null,
+      title: null,
+      timeList: [],
     });
   }
 

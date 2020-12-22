@@ -4,7 +4,7 @@
  * @Author: ywl
  * @Date: 2020-10-20 15:03:13
  * @LastEditors: ywl
- * @LastEditTime: 2020-12-22 08:57:53
+ * @LastEditTime: 2020-12-22 11:46:01
 -->
 <template>
   <el-select
@@ -166,7 +166,6 @@ export default class IhSelectPage extends Vue {
   }
 
   private get labelProp(): string {
-    console.log(this.props);
     return (this.props as any).lable || "label";
   }
   private get valueProp(): string {

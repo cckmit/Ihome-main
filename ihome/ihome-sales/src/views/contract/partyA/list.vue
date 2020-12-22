@@ -4,7 +4,7 @@
  * @Author: ywl
  * @Date: 2020-09-25 11:53:51
  * @LastEditors: ywl
- * @LastEditTime: 2020-12-19 09:20:06
+ * @LastEditTime: 2020-12-22 17:53:30
 -->
 <template>
   <IhPage label-width="100px">
@@ -218,6 +218,7 @@
             <el-dropdown-item
               @click.native.prevent="handleExportFile()"
               v-has="'B.SALES.CONTRACT.PARTYALIST.EXPRORTATTCH'"
+              :class="{ 'ih-data-disabled': !exportChange() }"
             >导出附件</el-dropdown-item>
           </el-dropdown-menu>
         </el-dropdown>
@@ -328,7 +329,7 @@
           <template v-slot="{ row }">
             <el-link
               type="primary"
-              @click="handleToPage(row, 'info')"
+              @click="handleToPage(row, '/partyA/info')"
             >详情</el-link>
             <el-dropdown
               trigger="click"
@@ -340,12 +341,18 @@
               </span>
               <el-dropdown-menu slot="dropdown">
                 <el-dropdown-item
+                  :class="{ 'ih-data-disabled': !removeChange(row) }"
+                  @click.native.prevent="remove(row)"
+                >删除</el-dropdown-item>
+                <el-dropdown-item
                   @click.native.prevent="duplicate(row)"
                   v-has="'B.SALES.CONTRACT.PARTYALIST.SCANFILE'"
+                  :class="{ 'ih-data-disabled': !duplicateChange(row) }"
                 >扫描件归档</el-dropdown-item>
                 <el-dropdown-item
                   @click.native.prevent="handleToPage(row, '/partyA/edit')"
                   v-has="'B.SALES.CONTRACT.PARTYALIST.ORIGINALFILE'"
+                  :class="{ 'ih-data-disabled': !masterChange(row) }"
                 >原件归档</el-dropdown-item>
               </el-dropdown-menu>
             </el-dropdown>
@@ -379,6 +386,7 @@ import { getToken } from "ihome-common/util/cookies";
 import {
   post_contract_list,
   post_contract_duplicate__id,
+  post_contract__contactId,
 } from "@/api/contract/index";
 
 @Component({
@@ -410,6 +418,58 @@ export default class PartyAList extends Vue {
     list: [],
   };
 
+  private masterChange(row: any) {
+    const roleList = (this.$root as any).userInfo.roleList.map(
+      (v: any) => v.code
+    );
+    const isOffice = roleList.includes("ROffice");
+    const isStatus = row.approvalStatus === "OAAudited";
+    // const isArchiveStatus = row.archiveStatus === "ScansAreArchived";
+    return isOffice && isStatus;
+  }
+  private removeChange(row: any) {
+    const roleList = (this.$root as any).userInfo.roleList.map(
+      (v: any) => v.code
+    );
+    const isPlatform = roleList.includes("RPlatformClerk");
+    const isStatus =
+      row.approvalStatus === "Drafting" ||
+      row.approvalStatus === "OAReviewRejected";
+    return isPlatform && isStatus;
+  }
+  private duplicateChange(row: any) {
+    const roleList = (this.$root as any).userInfo.roleList.map(
+      (v: any) => v.code
+    );
+    const isPlatform = roleList.includes("RPlatformClerk");
+    const isStatus = row.approvalStatus === "OAAudited";
+    // const isArchiveStatus = row.archiveStatus === "ScansAreNotArchived";
+    return isPlatform && isStatus;
+  }
+  private exportChange() {
+    const roleList = (this.$root as any).userInfo.roleList.map(
+      (v: any) => v.code
+    );
+    const isBusines = roleList.includes("RBusinessManagement");
+    return isBusines;
+  }
+
+  private async remove(row: any) {
+    try {
+      await this.$confirm("确认删除该合同数据吗?", "提示");
+      await post_contract__contactId({ contactId: row.id });
+      // 删除list最后一条数据 返回前一页面
+      if (this.resPageInfo.list.length === 1) {
+        this.queryPageParameters.pageNum === 1
+          ? (this.queryPageParameters.pageNum = 1)
+          : this.queryPageParameters.pageNum--;
+      }
+      this.getListMixin();
+      this.$message.success("删除成功");
+    } catch (error) {
+      console.log(error);
+    }
+  }
   private handleExport() {
     if (!this.selectTable.length) {
       this.$message.warning("请先勾选表格数据");

@@ -4,7 +4,7 @@
  * @Author: wwq
  * @Date: 2020-12-04 09:40:47
  * @LastEditors: wwq
- * @LastEditTime: 2020-12-21 18:17:03
+ * @LastEditTime: 2020-12-22 11:56:06
 -->
 <template>
   <el-dialog
@@ -585,13 +585,13 @@
                 width="150"
                 align="center"
               >
-                <template v-slot="{ row, $index }">
+                <template v-slot="{ row }">
                   <el-select
                     style="width: 100%"
                     v-model="row.contractEnum"
                     clearable
                     placeholder="请选择"
-                    @change="contractEnumChange(row, i, $index)"
+                    @change="contractEnumChange(row)"
                   >
                     <el-option
                       v-for="item in contractTypeOptions"
@@ -930,6 +930,7 @@ import { NoRepeatHttp } from "ihome-common/util/aop/no-repeat-http";
 import {
   get_collectandsend_get__packageId,
   get_collectandsend_getBaseTermByTermId__termId,
+  post_collectandsend_createConditionDescribe,
 } from "@/api/project/index";
 import { post_buModelContType_get } from "@/api/deal/index";
 import { post_dict_getAllByType } from "@/api/system/index";
@@ -1010,30 +1011,47 @@ export default class SetMealEdit extends Vue {
       Number(row.distributeAchievePoint / 100) *
         Number(this.info.estimatedTransactionPrice) *
         10000;
-    let computed = total - (num1 + num2 + num3 + num4);
+    let computed =
+      (isNaN(total) ? 0 : total) -
+      ((isNaN(num1) ? 0 : num1) +
+        (isNaN(num2) ? 0 : num2) +
+        (isNaN(num3) ? 0 : num3) +
+        (isNaN(num4) ? 0 : num4));
     row.otherChannelAmount = computed;
-    return isNaN(computed) ? 0 : computed;
+    return isNaN(computed) ? 0 : this.strip(computed);
   }
 
   estimateComplateAmount(row: any) {
     let total = 0;
     total =
-      Number(this.info.estimatedTransactionPrice) *
+      Number(
+        isNaN(this.info.estimatedTransactionPrice)
+          ? 0
+          : this.info.estimatedTransactionPrice
+      ) *
       10000 *
-      Number(row.estimateComplateNum);
+      Number(isNaN(row.estimateComplateNum) ? 0 : row.estimateComplateNum);
     row.estimateComplateAmount = total;
-    return isNaN(total) ? 0 : total;
+    return isNaN(total) ? 0 : this.strip(total);
   }
 
   estimateReceiveAmount(row: any) {
     let total = 0;
     total =
-      Number(row.receivableAmout) +
-      Number(row.receivablePoint / 100) *
-        Number(this.info.estimatedTransactionPrice) *
+      Number(isNaN(row.receivableAmout) ? 0 : row.receivableAmout) +
+      Number((isNaN(row.receivablePoint) ? 0 : row.receivablePoint) / 100) *
+        Number(
+          isNaN(this.info.estimatedTransactionPrice)
+            ? 0
+            : this.info.estimatedTransactionPrice
+        ) *
         10000;
     row.estimateReceiveAmount = total;
-    return isNaN(total) ? 0 : total;
+    return isNaN(total) ? 0 : this.strip(total);
+  }
+
+  strip(number: number, precision = 12) {
+    return Number(parseFloat(number.toPrecision(precision)));
   }
 
   @Watch("info.busEnum", { immediate: true })
@@ -1166,6 +1184,29 @@ export default class SetMealEdit extends Vue {
           colletionandsendDetails: [
             {
               transactionEnumOptions: [],
+              collectandsendConditionVOS: [],
+              condition: "",
+              contractEnum: "",
+              distributeAchieveAmount: 0,
+              distributeAchievePoint: 0,
+              estimateComplateAmount: 0,
+              estimateComplateNum: 0,
+              estimateReceiveAmount: 0,
+              generalAchieveAmount: 0,
+              generalAchievePoint: 0,
+              otherChannelAmount: 0,
+              otherChannelPoint: 0,
+              padCommissionEnum: "",
+              receivableAmout: 0,
+              receivablePoint: 0,
+              remark: "",
+              sendAmount: 0,
+              sendInAmount: 0,
+              sendInPoint: 0,
+              sendPoint: 0,
+              sort: "",
+              subdivideEnum: this.busEnumType,
+              transactionEnum: "",
             },
           ],
           costTypeEnum: "ServiceFee",
@@ -1174,6 +1215,29 @@ export default class SetMealEdit extends Vue {
           colletionandsendDetails: [
             {
               transactionEnumOptions: [],
+              collectandsendConditionVOS: [],
+              condition: "",
+              contractEnum: "",
+              distributeAchieveAmount: 0,
+              distributeAchievePoint: 0,
+              estimateComplateAmount: 0,
+              estimateComplateNum: 0,
+              estimateReceiveAmount: 0,
+              generalAchieveAmount: 0,
+              generalAchievePoint: 0,
+              otherChannelAmount: 0,
+              otherChannelPoint: 0,
+              padCommissionEnum: "",
+              receivableAmout: 0,
+              receivablePoint: 0,
+              remark: "",
+              sendAmount: 0,
+              sendInAmount: 0,
+              sendInPoint: 0,
+              sendPoint: 0,
+              sort: "",
+              subdivideEnum: this.busEnumType,
+              transactionEnum: "",
             },
           ],
           costTypeEnum: "AgencyFee",
@@ -1252,6 +1316,28 @@ export default class SetMealEdit extends Vue {
                   {
                     subdivideEnum: this.busEnumType,
                     transactionEnumOptions: [],
+                    collectandsendConditionVOS: [],
+                    condition: "",
+                    contractEnum: "",
+                    distributeAchieveAmount: 0,
+                    distributeAchievePoint: 0,
+                    estimateComplateAmount: 0,
+                    estimateComplateNum: 0,
+                    estimateReceiveAmount: 0,
+                    generalAchieveAmount: 0,
+                    generalAchievePoint: 0,
+                    otherChannelAmount: 0,
+                    otherChannelPoint: 0,
+                    padCommissionEnum: "",
+                    receivableAmout: 0,
+                    receivablePoint: 0,
+                    remark: "",
+                    sendAmount: 0,
+                    sendInAmount: 0,
+                    sendInPoint: 0,
+                    sendPoint: 0,
+                    sort: "",
+                    transactionEnum: "",
                   },
                 ],
                 costTypeEnum: "ServiceFee",
@@ -1264,6 +1350,28 @@ export default class SetMealEdit extends Vue {
                   {
                     subdivideEnum: this.busEnumType,
                     transactionEnumOptions: [],
+                    collectandsendConditionVOS: [],
+                    condition: "",
+                    contractEnum: "",
+                    distributeAchieveAmount: 0,
+                    distributeAchievePoint: 0,
+                    estimateComplateAmount: 0,
+                    estimateComplateNum: 0,
+                    estimateReceiveAmount: 0,
+                    generalAchieveAmount: 0,
+                    generalAchievePoint: 0,
+                    otherChannelAmount: 0,
+                    otherChannelPoint: 0,
+                    padCommissionEnum: "",
+                    receivableAmout: 0,
+                    receivablePoint: 0,
+                    remark: "",
+                    sendAmount: 0,
+                    sendInAmount: 0,
+                    sendInPoint: 0,
+                    sendPoint: 0,
+                    sort: "",
+                    transactionEnum: "",
                   },
                 ],
                 costTypeEnum: "AgencyFee",
@@ -1285,6 +1393,28 @@ export default class SetMealEdit extends Vue {
             {
               subdivideEnum: this.busEnumType,
               transactionEnumOptions: [],
+              collectandsendConditionVOS: [],
+              condition: "",
+              contractEnum: "",
+              distributeAchieveAmount: 0,
+              distributeAchievePoint: 0,
+              estimateComplateAmount: 0,
+              estimateComplateNum: 0,
+              estimateReceiveAmount: 0,
+              generalAchieveAmount: 0,
+              generalAchievePoint: 0,
+              otherChannelAmount: 0,
+              otherChannelPoint: 0,
+              padCommissionEnum: "",
+              receivableAmout: 0,
+              receivablePoint: 0,
+              remark: "",
+              sendAmount: 0,
+              sendInAmount: 0,
+              sendInPoint: 0,
+              sendPoint: 0,
+              sort: "",
+              transactionEnum: "",
             },
           ],
           costTypeEnum: "ServiceFee",
@@ -1297,6 +1427,28 @@ export default class SetMealEdit extends Vue {
             {
               subdivideEnum: this.busEnumType,
               transactionEnumOptions: [],
+              collectandsendConditionVOS: [],
+              condition: "",
+              contractEnum: "",
+              distributeAchieveAmount: 0,
+              distributeAchievePoint: 0,
+              estimateComplateAmount: 0,
+              estimateComplateNum: 0,
+              estimateReceiveAmount: 0,
+              generalAchieveAmount: 0,
+              generalAchievePoint: 0,
+              otherChannelAmount: 0,
+              otherChannelPoint: 0,
+              padCommissionEnum: "",
+              receivableAmout: 0,
+              receivablePoint: 0,
+              remark: "",
+              sendAmount: 0,
+              sendInAmount: 0,
+              sendInPoint: 0,
+              sendPoint: 0,
+              sort: "",
+              transactionEnum: "",
             },
           ],
           costTypeEnum: "AgencyFee",
@@ -1361,10 +1513,14 @@ export default class SetMealEdit extends Vue {
 
   // 选择客户类型为自渠或自然到访时
   transactionEnumChange(data: any) {
+    console.log(data);
     if (
       data.transactionEnum === "Natural" ||
       data.transactionEnum === "SelfChannel"
     ) {
+      data.sendAmount = 0;
+      data.sendPoint = 0;
+    } else {
       data.sendAmount = 0;
       data.sendPoint = 0;
     }
@@ -1431,14 +1587,15 @@ export default class SetMealEdit extends Vue {
   }
 
   // 编辑条件完成
-  rulesFinish(data: any) {
+  async rulesFinish(data: any) {
     this.info.colletionandsendMxs[this.conditionIndex].colletionandsendDetails[
       this.conditionRowIndex
     ].collectandsendConditionVOS = data;
     // 条件文本信息
+    const item = await post_collectandsend_createConditionDescribe(data);
     this.info.colletionandsendMxs[this.conditionIndex].colletionandsendDetails[
       this.conditionRowIndex
-    ].condition = "";
+    ].condition = item;
     this.rulesDialogVisible = false;
   }
 }

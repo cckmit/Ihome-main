@@ -4,7 +4,7 @@
  * @Author: ywl
  * @Date: 2020-09-25 17:34:32
  * @LastEditors: ywl
- * @LastEditTime: 2020-12-17 10:07:15
+ * @LastEditTime: 2020-12-22 18:37:54
 -->
 <template>
   <IhPage label-width="100px">
@@ -205,21 +205,25 @@
         <el-button
           type="success"
           @click="review()"
+          :class="{ 'ih-data-disabled': !contractChange() }"
           v-has="'B.SALES.CONTRACT.DISTLIST.VERIFY'"
         >审核</el-button>
         <el-button
           type="success"
           @click="distribute()"
+          :class="{ 'ih-data-disabled': !channelChange() }"
           v-has="'B.SALES.CONTRACT.DISTLIST.DISTRIBUTE'"
         >派发</el-button>
         <el-button
           type="danger"
           @click="disallowance()"
+          :class="{ 'ih-data-disabled': !channelChange() && !contractChange() }"
           v-has="'B.SALES.CONTRACT.DISTLIST.REJECT'"
         >驳回</el-button>
         <el-button
           type="danger"
           @click="withdraw()"
+          :class="{ 'ih-data-disabled': !channelChange() && !contractChange() }"
           v-has="'B.SALES.CONTRACT.DISTLIST.REVOKE'"
         >撤回</el-button>
         <el-dropdown
@@ -237,6 +241,7 @@
             <el-dropdown-item
               @click.native.prevent="handleExportFile()"
               v-has="'B.SALES.CONTRACT.DISTLIST.EXPRORTATTCH'"
+              :class="{ 'ih-data-disabled': !exportChange()}"
             >导出附件</el-dropdown-item>
           </el-dropdown-menu>
         </el-dropdown>
@@ -362,10 +367,12 @@
               <el-dropdown-menu slot="dropdown">
                 <el-dropdown-item
                   @click.native.prevent="duplicate(row)"
+                  :class="{ 'ih-data-disabled': !duplicateChange(row) }"
                   v-has="'B.SALES.CONTRACT.PARTYALIST.SCANFILE'"
                 >盖章版归档</el-dropdown-item>
                 <el-dropdown-item
                   @click.native.prevent="handleTo(row, 'original')"
+                  :class="{ 'ih-data-disabled': !originalChange(row) }"
                   v-has="'B.SALES.CONTRACT.DISTLIST.ORIGINALFILE'"
                 >原件归档</el-dropdown-item>
               </el-dropdown-menu>
@@ -438,6 +445,45 @@ export default class DistributionList extends Vue {
     list: [],
   };
 
+  private originalChange(row: any) {
+    const isDis = row.distributionState === "Distributed";
+    const roleList = (this.$root as any).userInfo.roleList.map(
+      (v: any) => v.code
+    );
+    const isXZ = roleList.includes("ROffice");
+    return isDis && isXZ;
+  }
+  private duplicateChange(row: any) {
+    const isDis = row.distributionState === "Distributed";
+    // const isStatus = row.archiveStatus === "ScansAreNotArchived";
+    const roleList = (this.$root as any).userInfo.roleList.map(
+      (v: any) => v.code
+    );
+    const isPTWY = roleList.includes("RPlatformClerk");
+    return isDis && isPTWY;
+  }
+  private contractChange() {
+    const roleList = (this.$root as any).userInfo.roleList.map(
+      (v: any) => v.code
+    );
+    const isContract = roleList.includes("RContractManager");
+    return isContract;
+  }
+  private channelChange() {
+    const roleList = (this.$root as any).userInfo.roleList.map(
+      (v: any) => v.code
+    );
+    const isChannel = roleList.includes("RChannelStaff");
+    return isChannel;
+  }
+  private exportChange() {
+    const roleList = (this.$root as any).userInfo.roleList.map(
+      (v: any) => v.code
+    );
+    const isBusines = roleList.includes("RBusinessManagement");
+    return isBusines;
+  }
+
   private openToggle(): void {
     this.searchOpen = !this.searchOpen;
   }
@@ -475,18 +521,27 @@ export default class DistributionList extends Vue {
    * @description: 渠道分销合同撤回
    */
   private async withdraw() {
-    if (!this.selectionData.length) {
+    if (this.selectionData.length) {
+      let isFlag = this.selectionData
+        .map((i: any) => i.distributionState)
+        .every((v: any) => v === "Pending" || v === "NotDistributed");
+      if (isFlag) {
+        try {
+          await post_distribution_withdraw({
+            ids: this.selectionData.map((i: any) => i.id),
+          });
+          this.$message.success("撤回成功");
+          this.getListMixin();
+        } catch (error) {
+          console.log(error);
+        }
+      } else {
+        this.$message.warning("请筛选待派发或待审核的合同数据");
+        return;
+      }
+    } else {
       this.$message.warning("请先勾选表格数据");
       return;
-    }
-    try {
-      await post_distribution_withdraw({
-        ids: this.selectionData.map((i: any) => i.id),
-      });
-      this.$message.success("撤回成功");
-      this.getListMixin();
-    } catch (error) {
-      console.log(error);
     }
   }
   private handleExport() {
@@ -565,36 +620,54 @@ export default class DistributionList extends Vue {
    * @description: 渠道分销合同驳回
    */
   private async disallowance() {
-    if (!this.selectionData.length) {
+    if (this.selectionData.length) {
+      let isFlag = this.selectionData
+        .map((i: any) => i.distributionState)
+        .every((v: any) => v === "Pending" || v === "NotDistributed");
+      if (isFlag) {
+        try {
+          await post_distribution_disallowance({
+            ids: this.selectionData.map((i: any) => i.id),
+          });
+          this.$message.success("驳回成功");
+          this.getListMixin();
+        } catch (error) {
+          console.log(error);
+        }
+      } else {
+        this.$message.warning("请筛选待派发或待审核的合同数据");
+        return;
+      }
+    } else {
       this.$message.warning("请先勾选表格数据");
       return;
-    }
-    try {
-      await post_distribution_disallowance({
-        ids: this.selectionData.map((i: any) => i.id),
-      });
-      this.$message.success("驳回成功");
-      this.getListMixin();
-    } catch (error) {
-      console.log(error);
     }
   }
   /**
    * @description: 渠道分销合同审核
    */
   private async review() {
-    if (!this.selectionData.length) {
+    if (this.selectionData.length) {
+      const isPend = this.selectionData
+        .map((i: any) => i.distributionState)
+        .every((v: any) => v === "Pending");
+      if (isPend) {
+        try {
+          await post_distribution_review({
+            ids: this.selectionData.map((i: any) => i.id),
+          });
+          this.$message.success("审核成功");
+          this.getListMixin();
+        } catch (err) {
+          console.log(err);
+        }
+      } else {
+        this.$message.warning("请选择待审核状态的合同数据");
+        return;
+      }
+    } else {
       this.$message.warning("请先勾选表格数据");
       return;
-    }
-    try {
-      await post_distribution_review({
-        ids: this.selectionData.map((i: any) => i.id),
-      });
-      this.$message.success("审核成功");
-      this.getListMixin();
-    } catch (err) {
-      console.log(err);
     }
   }
   /**
@@ -602,18 +675,27 @@ export default class DistributionList extends Vue {
    * @param {*}
    */
   private async distribute() {
-    if (!this.selectionData.length) {
+    if (this.selectionData.length) {
+      const isPend = this.selectionData
+        .map((i: any) => i.distributionState)
+        .every((v: any) => v === "NotDistributed");
+      if (isPend) {
+        try {
+          await post_distribution_distribute({
+            ids: this.selectionData.map((i: any) => i.id),
+          });
+          this.$message.success("派发成功");
+          this.getListMixin();
+        } catch (error) {
+          console.log(error);
+        }
+      } else {
+        this.$message.warning("请选择待派发状态的合同数据");
+        return;
+      }
+    } else {
       this.$message.warning("请先勾选表格数据");
       return;
-    }
-    try {
-      await post_distribution_distribute({
-        ids: this.selectionData.map((i: any) => i.id),
-      });
-      this.$message.success("派发成功");
-      this.getListMixin();
-    } catch (error) {
-      console.log(error);
     }
   }
   /**

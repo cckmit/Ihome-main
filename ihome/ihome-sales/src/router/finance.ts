@@ -4,7 +4,7 @@
  * @Author: ywl
  * @Date: 2020-12-01 15:49:07
  * @LastEditors: ywl
- * @LastEditTime: 2020-12-19 17:12:11
+ * @LastEditTime: 2020-12-22 20:02:22
  */
 import { RouteConfig } from 'vue-router'
 
@@ -82,6 +82,19 @@ const financeRoutes: Array<RouteConfig> = [
         name: 'POSInfo',
         component: () => import('../views/finance/pos/info.vue'),
         meta: { title: 'POS机详情', icon: 'form' }
+      },
+    ]
+  },
+  {
+    path: '/posApply',
+    meta: { title: 'POS申请事项', icon: null },
+    component: Layout,
+    children: [
+      {
+        path: 'list',
+        name: 'POSApplyList',
+        component: () => import('../views/finance/posApply/list.vue'),
+        meta: { title: 'POS申请事项列表', icon: 'form', keepAlive: true }
       },
     ]
   },

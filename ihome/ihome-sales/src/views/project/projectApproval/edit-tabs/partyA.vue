@@ -4,7 +4,7 @@
  * @Author: wwq
  * @Date: 2020-11-27 17:20:24
  * @LastEditors: wwq
- * @LastEditTime: 2020-12-09 20:04:27
+ * @LastEditTime: 2020-12-22 14:20:16
 -->
 <template>
   <div>
@@ -216,6 +216,9 @@ export default class PartyA extends Vue {
       customerConfirm: null,
       responsibiltity: null,
     },
+    startDivisionId: null,
+    companyId: null,
+    companyName: null,
   };
   editData: any = {};
   editType: any = "";
@@ -275,8 +278,10 @@ export default class PartyA extends Vue {
   }
 
   async addFinish(data: any) {
+    console.log(data);
     data.projectsId = window.sessionStorage.getItem("proId");
     data.cycleId = this.$route.query.id;
+    data.organizationId = this.info.startDivisionId;
     await post_contract_create(data);
     this.$message.success("录入成功");
     this.getInfo();
