@@ -1,6 +1,6 @@
 /* eslint-disable */
 /* 此脚本由swagger-ui的api-docs自动生成，请勿修改 */
-//2020-12-21 11:31:55 ├F10: AM┤
+//2020-12-22 8:34:14 ├F10: PM┤
 import { request } from '@/api/base'
 const basePath = "/sales-api/finance"
 /**新增收款账号在线支付信息*/
@@ -255,6 +255,10 @@ return await request.get<number,number>(basePath+'/payment/getAmountPaidByDealId
 export async function get_payment_getAppList__businessId (d?: any) {
 return await request.get<PaymentVO[],PaymentVO[]>(basePath+'/payment/getAppList/{businessId}', { params: d })
 }
+/**根据立项周期ID查询付款银行基本信息*/
+export async function get_payment_getBankInfo__termId (d?: any) {
+return await request.get<PaymentBankInfoVO,PaymentBankInfoVO>(basePath+'/payment/getBankInfo/{termId}', { params: d })
+}
 /**获取待付款记录ID*/
 export async function get_payment_getBusinessId__businessId (d?: any) {
 return await request.get<number,number>(basePath+'/payment/getBusinessId/{businessId}', { params: d })
@@ -307,7 +311,19 @@ return await request.post< number,number> (basePath+'/payment/relevanceDeal', d)
 export async function post_payment_update (d?: any) {
 return await request.post< number,number> (basePath+'/payment/update', d)
 }
-/**申领POS机*/
+/**查询POS机申请事项*/
+export async function get_posApplyItem_get__id (d?: any) {
+return await request.get<PosApplyVO,PosApplyVO>(basePath+'/posApplyItem/get/{id}', { params: d })
+}
+/**查询POS机申请事项详情*/
+export async function get_posApplyItem_getDetail__id (d?: any) {
+return await request.get<PosApplyDetailVO,PosApplyDetailVO>(basePath+'/posApplyItem/getDetail/{id}', { params: d })
+}
+/**查询POS机申请事项信息列表数据*/
+export async function post_posApplyItem_getList (d?: any) {
+return await request.post< any,any> (basePath+'/posApplyItem/getList', d)
+}
+/**POS机操作[领用,申领,调动,退还,归还]*/
 export async function post_posApplyItem_posOperate (d?: any) {
 return await request.post< number,number> (basePath+'/posApplyItem/posOperate', d)
 }
@@ -1242,6 +1258,8 @@ invoiceTitle: string;
 invoiceType: string;
 /**NC凭证号*/
 ncCode: string;
+/**确认主营（不含税）*/
+noTax: number;
 /**开票日期(yyyy-MM-dd)*/
 operationDate: string;
 /**开票类型(Hand-手工开票、Auto-自动开票)*/
@@ -1254,6 +1272,8 @@ payeeAccountNo: string;
 status: string;
 /**税额*/
 tax: number;
+/**税率*/
+taxRate: number;
 }
 /**Merchant*/
 export interface Merchant {
@@ -1308,16 +1328,20 @@ systemSSN: string;
 export interface PaymentAddVO {
 /**(必填)支付金额*/
 amount: number;
+/**文件ID集合[银行转账方式才必填,其他方式不填]*/
+attachments: PaymentAttachmentDetailVO[];
 /**(必填)优惠告知书I*/
 businessId: number;
-/**文件ID-转账方式才传*/
-fileId: string;
 /**(必填)店组ID*/
 groupId: number;
 /**(必填)经办人*/
 operator: number;
 /**(必填)支付方式(Pos-POS刷卡、WeChatPay-微信支付、UnionPay-银联支付、Alipay-支付宝支付、Transfer-银行转账、PosNoOrder-无订单刷卡)*/
 payType: string;
+/**收款账号[银行转账方式才必填,其他方式不填]*/
+payeeAccount: string;
+/**收款账户[银行转账方式才必填,其他方式不填]*/
+payeeName: string;
 /**(必填)付款方(Customer-客户、PartyA-甲方)*/
 payer: string;
 /**(必填)项目ID*/
@@ -1363,6 +1387,24 @@ termId: number;
 /**(必填)操作人*/
 userId: number;
 }
+/**PaymentAttachmentDetailVO*/
+export interface PaymentAttachmentDetailVO {
+/**文件ID*/
+fileId: string;
+/**文件名称*/
+fileName: string;
+/**类型[新增时候不传](Evidence-收款凭证、ElectronicReceipt-电子回单)*/
+type: string;
+}
+/**PaymentBankInfoVO*/
+export interface PaymentBankInfoVO {
+/**公司收款账号ID*/
+accountId: number;
+/**收款账号*/
+payeeAccount: string;
+/**收款账户*/
+payeeName: string;
+}
 /**PaymentBatchRelieveDealVO*/
 export interface PaymentBatchRelieveDealVO {
 /**undefined*/
@@ -1380,6 +1422,8 @@ openId: string;
 }
 /**PaymentPCDetailVO*/
 export interface PaymentPCDetailVO {
+/**收款信息*/
+attachments: PaymentAttachmentDetailVO[];
 /**收款信息*/
 payment: PaymentPCVO;
 /**undefined*/
@@ -1459,13 +1503,13 @@ export interface PaymentQRCodeVO {
 /**订单编码*/
 billNo: string;
 /**商户号集合*/
-merchantNoList: string[];
+merchantNo: string[];
 /**状态(NotPaid-待支付、Paid-已支付、NotCheck-待对账、Revoked-已撤销、Flushed-已冲正)*/
 status: string;
 /**终端号集合*/
 terminalNoList: string[];
-/**交易金额*/
-transAmount: number;
+/**交易金额[以分为单位]*/
+transAmount: string;
 }
 /**PaymentQueryVO*/
 export interface PaymentQueryVO {
@@ -1573,8 +1617,8 @@ export interface PaymentVO {
 amount: number;
 /**业务编号*/
 businessId: number;
-/**附件ID*/
-fileId: string;
+/**附件ID集合*/
+fileIds: string[];
 /**ID*/
 id: number;
 /**收款日期(yyyy-MM-dd)*/
@@ -1586,8 +1630,8 @@ payType: string;
 /**状态(NotPaid-待支付、Paid-已支付、NotCheck-待对账、Revoked-已撤销、Flushed-已冲正)*/
 status: string;
 }
-/**PosApplyOperateVO*/
-export interface PosApplyOperateVO {
+/**PosApplyDetailVO*/
+export interface PosApplyDetailVO {
 /**申请人*/
 applyUser: number;
 /**所在事业部*/
@@ -1596,8 +1640,103 @@ departmentId: number;
 groupId: number;
 /**事项类别(Use-领用、Apply-申领、Move-调动、Return-退还、GiveBack-归还)*/
 itemType: string;
+/**undefined*/
+posTerminals: PosTerminalVO[];
+/**所在项目*/
+proId: number;
+/**undefined*/
+records: PosApplyItemRecordVO[];
+}
+/**PosApplyItemQueryVO*/
+export interface PosApplyItemQueryVO {
+/**申请人*/
+applyUser: number;
+/**事项编号*/
+itemNo: string;
+/**事项类别(Use-领用、Apply-申领、Move-调动、Return-退还、GiveBack-归还)*/
+itemType: string;
+/**(必填)当前页*/
+pageNum: number;
+/**(必填)每页条数*/
+pageSize: number;
+/**所在项目*/
+proId: number;
+/**状态(PutIn-入库、Revocation-撤机、Modify-修改、Use-领用、UseApprove-领用审核、UseSend-领用寄出、UseSign-领用签收、Return-退还、ReturnConfirm-确认退还、Apply-申领、ApplyApprove-申领审核、ApplySend-申领寄出、ApplySign-申领签收、GiveBack-归还、GiveBackConfirm-确认归还、Move-调动、MoveApprove-调动审核、MoveSend-调动寄出、MoveSign-调动签收)*/
+status: string;
+}
+/**PosApplyItemRecordVO*/
+export interface PosApplyItemRecordVO {
+/**事项ID*/
+applyItemId: number;
+/**ID*/
+id: number;
+/**操作时间(yyyy-MM-dd HH:mm:ss)*/
+operateTime: string;
+/**操作(PutIn-入库、Revocation-撤机、Modify-修改、Use-领用、UseApprove-领用审核、UseSend-领用寄出、UseSign-领用签收、Return-退还、ReturnConfirm-确认退还、Apply-申领、ApplyApprove-申领审核、ApplySend-申领寄出、ApplySign-申领签收、GiveBack-归还、GiveBackConfirm-确认归还、Move-调动、MoveApprove-调动审核、MoveSend-调动寄出、MoveSign-调动签收)*/
+operation: string;
+/**操作人*/
+operator: number;
+/**备注*/
+remark: string;
+/**操作结果*/
+result: string;
+}
+/**PosApplyItemVO*/
+export interface PosApplyItemVO {
+/**申请人*/
+applyUser: number;
+/**所在事业部*/
+departmentId: number;
+/**事业部名称*/
+departmentName: string;
+/**所在店组*/
+groupId: number;
+/**店组名称*/
+groupName: string;
+/**ID*/
+id: number;
+/**事项编号*/
+itemNo: string;
+/**事项类别(Use-领用、Apply-申领、Move-调动、Return-退还、GiveBack-归还)*/
+itemType: string;
+/**所在项目*/
+proId: number;
+/**项目推广名称*/
+proName: string;
+/**状态(PutIn-入库、Revocation-撤机、Modify-修改、Use-领用、UseApprove-领用审核、UseSend-领用寄出、UseSign-领用签收、Return-退还、ReturnConfirm-确认退还、Apply-申领、ApplyApprove-申领审核、ApplySend-申领寄出、ApplySign-申领签收、GiveBack-归还、GiveBackConfirm-确认归还、Move-调动、MoveApprove-调动审核、MoveSend-调动寄出、MoveSign-调动签收)*/
+status: string;
+}
+/**PosApplyOperateAddVO*/
+export interface PosApplyOperateAddVO {
+/**申请人*/
+applyUser: number;
+/**所在事业部*/
+departmentId: number;
+/**所在店组*/
+groupId: number;
+/**事项ID[只有修改时候才填ID]*/
+id: number;
+/**事项类别(Use-领用、Apply-申领、Move-调动、Return-退还、GiveBack-归还)*/
+itemType: string;
 /**pos机终端ID*/
-posTerminalId: number;
+posTerminalIds: number[];
+/**所在项目*/
+proId: number;
+/**报错OR提交[0-保存 1-提交]*/
+type: number;
+}
+/**PosApplyVO*/
+export interface PosApplyVO {
+/**申请人*/
+applyUser: number;
+/**所在事业部*/
+departmentId: number;
+/**所在店组*/
+groupId: number;
+/**事项类别(Use-领用、Apply-申领、Move-调动、Return-退还、GiveBack-归还)*/
+itemType: string;
+/**undefined*/
+posTerminals: PosTerminalVO[];
 /**所在项目*/
 proId: number;
 }
@@ -1763,6 +1902,21 @@ serialNo: string;
 }
 /**PosTerminalVO*/
 export interface PosTerminalVO {
+/**账户名称*/
+accountName: string;
+/**账号*/
+accountNo: string;
+/**账户名称*/
+id: number;
+/**产品型号*/
+productModel: string;
+/**序列号*/
+serialNo: string;
+/**状态(CentralStock-总部库存、UseWaitApprove-领用待审、UseWaitSend-领用待寄、UseOneTheWay-领用在途、ReturnOnTheWay-退还在途、BranchStock-分公司库存、ApplyWaitApprove-申领待审、ApplyWaitSend-申领待寄、ApplyOnTheWay-申领在途、Using-项目在用、GiveBackOnTheWay-归还在途、MoveWaitApprove-调动待审、MoveWaitSend-调动待寄、MoveOnTheWay-调动在途、Stop-停用、Draft-草稿、Finished-已结束)*/
+status: string;
+}
+/**PosTerminalVO_1*/
+export interface PosTerminalVO_1 {
 /**账户名称*/
 accountName: string;
 /**账号*/
