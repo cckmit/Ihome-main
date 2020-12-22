@@ -4,7 +4,7 @@
  * @Author: lsj
  * @Date: 2020-11-03 13:20:35
  * @LastEditors: lsj
- * @LastEditTime: 2020-12-22 8:55:35
+ * @LastEditTime: 2020-12-22 18:45:20
 -->
 <template>
   <ih-page class="text-left">
@@ -414,8 +414,8 @@
             </template>
           </el-table-column>
           <el-table-column prop="amount" label="发票金额（含税）" min-width="150"></el-table-column>
-          <el-table-column prop="contType" label="税率" min-width="120"></el-table-column>
-          <el-table-column prop="contType" label="确认主营（不含税）" min-width="150"></el-table-column>
+          <el-table-column prop="taxRate" label="税率" min-width="120"></el-table-column>
+          <el-table-column prop="noTax" label="确认主营（不含税）" min-width="150"></el-table-column>
           <el-table-column prop="tax" label="税额" min-width="120"></el-table-column>
           <el-table-column prop="payee" label="收款方" min-width="120"></el-table-column>
           <el-table-column prop="ncCode" label="NC凭证号" min-width="120"></el-table-column>

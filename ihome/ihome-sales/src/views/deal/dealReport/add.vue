@@ -423,11 +423,13 @@
         </el-col>
       </el-row>
     </el-form>
-    <div id="anchor-3" v-if="baseInfoByTerm.chargeEnum !== 'Agent'">
+    <div id="anchor-3" v-if="baseInfoByTerm.chargeEnum !== 'Agent' && !baseInfoInDeal.notice.length">
       <p class="ih-info-title">优惠告知书信息</p>
       <el-row style="padding-left: 20px">
         <el-col>
-          <div class="add-all-wrapper" v-if="baseInfoByTerm.termStageEnum === 'Recognize'">
+          <div
+            v-if="baseInfoByTerm.termStageEnum === 'Recognize' && !baseInfoInDeal.notice.length"
+            class="add-all-wrapper">
             <el-button type="success" @click="handleAddNotice">添加</el-button>
           </div>
           <el-table
@@ -439,13 +441,24 @@
               </template>
             </el-table-column>
             <el-table-column prop="noticeNo" label="优惠告知书编号" min-width="120"></el-table-column>
-            <el-table-column prop="notificationStatusByName" label="优惠告知书状态" min-width="120"></el-table-column>
+            <el-table-column prop="notificationStatus" label="优惠告知书状态" min-width="120">
+              <template v-slot="{ row }">
+                {{$root.dictAllName(row.notificationStatus, 'NotificationStatus')}}
+              </template>
+            </el-table-column>
             <el-table-column fixed="right" label="操作" width="100">
               <template slot-scope="scope">
                 <el-link
+                  v-if="!!scope.row.addType"
                   class="margin-right-10"
                   type="primary"
-                  @click.native.prevent="preview(scope)"
+                  @click.native.prevent="removeNotice(scope)"
+                >删除
+                </el-link>
+                <el-link
+                  class="margin-right-10"
+                  type="success"
+                  @click.native.prevent="previewNotice(scope)"
                 >预览
                 </el-link>
               </template>
@@ -457,7 +470,9 @@
     <p id="anchor-4" class="ih-info-title">客户信息</p>
     <el-row style="padding-left: 20px">
       <el-col>
-        <div class="add-all-wrapper" v-if="baseInfoByTerm.termStageEnum === 'Recognize'">
+        <div
+          v-if="!baseInfoInDeal.myReturnVO.customerVOS.length"
+          class="add-all-wrapper">
           <el-button type="success" @click="handleAddCustomer">添加客户</el-button>
         </div>
         <el-table
@@ -479,7 +494,7 @@
           <el-table-column prop="certificateNumber" label="证件编号" min-width="150"></el-table-column>
           <el-table-column prop="email" label="邮箱" min-width="120"></el-table-column>
           <el-table-column
-            v-if="baseInfoByTerm.termStageEnum === 'Recognize'"
+            v-if="!baseInfoInDeal.myReturnVO.customerVOS.length"
             fixed="right" label="操作" width="100">
             <template slot-scope="scope">
               <el-link
@@ -488,29 +503,6 @@
                 @click.native.prevent="deleteAdd(scope, 'customer')"
               >删除
               </el-link>
-            </template>
-          </el-table-column>
-        </el-table>
-      </el-col>
-    </el-row>
-    <p id="anchor-6" class="ih-info-title">上传附件</p>
-    <el-row style="padding-left: 20px">
-      <el-col>
-        <el-table
-          class="ih-table"
-          :data="postData.documentVO">
-          <el-table-column prop="name" label="类型" min-width="80"></el-table-column>
-          <el-table-column prop="fileName" label="附件" min-width="120">
-            <template slot-scope="scope">
-              <IhUpload
-                :isCrop="false"
-                :file-list.sync="scope.row.fileList"
-                size="100px"
-                :limit="5"
-                :file-size="10"
-                :isMove="false"
-                @newFileList="getNewFile"
-              ></IhUpload>
             </template>
           </el-table-column>
         </el-table>
@@ -843,6 +835,32 @@
         </el-row>
       </div>
     </div>
+    <p id="anchor-6" class="ih-info-title">上传附件</p>
+    <el-row style="padding-left: 20px">
+      <el-col>
+        <div class="add-all-wrapper" v-if="baseInfoByTerm.exMinyuan">
+          <el-button type="success" @click="dialogViewInfo = true">查看来访/成交确认信息</el-button>
+        </div>
+        <el-table
+          class="ih-table"
+          :data="postData.documentVO">
+          <el-table-column prop="name" label="类型" width="200"></el-table-column>
+          <el-table-column prop="fileName" label="附件" min-width="120">
+            <template slot-scope="scope">
+              <IhUpload
+                :isCrop="false"
+                :file-list.sync="scope.row.fileList"
+                size="100px"
+                :limit="100"
+                :file-size="10"
+                :isMove="false"
+                @newFileList="getNewFile"
+              ></IhUpload>
+            </template>
+          </el-table-column>
+        </el-table>
+      </el-col>
+    </el-row>
     <div class="text-center btn-top">
       <el-button type="primary" @click="handleSave('save')" v-if="currentType !== 'add'">保存</el-button>
       <el-button type="success" @click="handleSave('submit')">提交</el-button>
@@ -956,6 +974,16 @@
           "
       />
     </ih-dialog>
+    <ih-dialog :show="dialogViewInfo" desc="来访/成交信息">
+      <DealInfo
+        @cancel="() => (dialogViewInfo = false)"
+        @finish="
+            () => {
+              dialogViewInfo = false;
+            }
+          "
+      />
+    </ih-dialog>
   </ih-page>
 </template>
 <script lang="ts">
@@ -969,6 +997,7 @@
   import SelectReceivePackage from "@/views/deal/dealReport/dialog/selectReceivePackage.vue";
   import AddBroker from "@/views/deal/dealReport/dialog/addBroker.vue";
   import EditDealAchieve from "@/views/deal/dealReport/dialog/editDealAchieve.vue";
+  import DealInfo from "@/views/deal/dealReport/dialog/dealInfo.vue";
   import {
     post_buModelContType_getList, // 根据业务模式获取可选的合同类型
     post_buModelContType_subList, // 根据业务模式获取可选的细分业务模式
@@ -995,7 +1024,9 @@
       SelectRoom,
       AgentCompanyList,
       SelectReportInfo,
-      EditDealAchieve},
+      EditDealAchieve,
+      DealInfo
+    }
   })
   export default class DealReportAdd extends Vue {
     contTypeList: any = []; // 合同类型选项
@@ -1011,6 +1042,7 @@
       termStageEnum: null, // 判断优惠告知书是否有添加按钮
     }; // 通过项目周期id获取到的初始化成交基础信息
     baseInfoInDeal: any = {
+      notice: [], // 优惠告知书
       myReturnVO: {
         houseVO: {},
         customerVOS: {},
@@ -1194,6 +1226,7 @@
     dialogAddAgentCompany: any = false;
     companyCheckedData: any = [];
     dialogEditDealAchieve: any = false;
+    dialogViewInfo: any = false; // 来访/成交信息弹窗
     defaultNavList: any = [
       {
         id: 1,
@@ -1208,10 +1241,6 @@
         name: '客户信息'
       },
       {
-        id: 6,
-        name: '上传附件'
-      },
-      {
         id: 7,
         name: '收派金额'
       },
@@ -1222,7 +1251,11 @@
       {
         id: 9,
         name: '平台费用'
-      }
+      },
+      {
+        id: 6,
+        name: '上传附件'
+      },
     ]; // 锚点列表
     navFlag: any = false; // 是否展开锚点
     navList: any = []; // 锚点列表
@@ -1287,11 +1320,12 @@
     * params: type: string --- 该字段在明源Vo中的类型：houseVO、customerVOS、dealVO
     * */
     isDisabled(key: any = '', type: any = '') {
-      if (!key || !type) return true;
-      let flag = true;
       const data: any = this.baseInfoInDeal.myReturnVO;
+      if (!key || !type || !data[type]?.[key]) return false;
+      let flag = true;
       // 1.是否明源数据标志
-      let signFlag = ['WholeMingYuan', 'NoWholeMingYuan'].includes(data.dataSign);
+      // let signFlag = ['WholeMingYuan', 'NoWholeMingYuan'].includes(data.dataSign);
+      let signFlag = this.baseInfoByTerm.exMinyuan;
       // 2.对应明源字段是否有值
       if (data[type][key] && signFlag) {
         flag = false;
@@ -1494,22 +1528,40 @@
           this.firstAgencyCompanyList = JSON.parse(JSON.stringify(baseInfo.firstAgencyCompanys));
         }
         // 处理优惠告知书的nav
+        this.postData.offerNoticeVO = []; // 先重置优惠告知书的数据
         if (baseInfo.chargeEnum === 'Agent') {
           this.navList = this.navList.filter((item: any) => {
             return item.id !== 3;
           });
+        } else {
+          this.navList = (this as any).$tool.deepClone(this.defaultNavList);
         }
       }
     }
 
     // 改变栋座
     changeBuild(value: any) {
-      console.log('改变栋座', value);
+      // console.log('改变栋座', value);
+      // 清空房间号 + 下面的所有信息
       this.postData.roomId = null;
+      this.resetData();
     }
+
+    // 清空数据 - 主要是和初始化数据有关的数据
+    resetData() {
+      this.contNoList = []; // 分销协议编号
+      this.postData.customerVO = []; // 客户信息
+      this.postData.offerNoticeVO = []; // 优惠告知书
+      let list: any = ['contType', 'contNo', 'recordState', 'recordStr', 'area', 'room', 'hall', 'kitchen',
+        'toilet', 'propertyNo', 'signType', 'stage', 'returnRatio', 'subscribePrice', 'subscribeDate',
+        'signPrice', 'signDate', 'dataSign', 'agencyId', 'agencyName', 'channelLevel', 'channelLevelName']
+      this.resetObject('postData', list);
+    }
+
     // 改变房号
     changeRoom(value: any) {
-      console.log('改变房号', value);
+      // console.log('改变房号', value);
+      this.resetData(); // 重置数据
       if (value) {
         this.initPageById(this.baseInfoByTerm.termId, value);
       }
@@ -1540,11 +1592,7 @@
         this.contNoList = [];
       }
       // 备案情况
-      if (!['NoMingYuan'].includes(baseInfo.myReturnVO.dataSign)) {
-        this.postData.recordState = baseInfo.myReturnVO.dealVO.recordState;
-      } else {
-        this.postData.recordState = null;
-      }
+      this.postData.recordState = baseInfo.myReturnVO.dealVO?.recordState;
       // 报备信息
       this.postData.recordStr = baseInfo.recordStr;
       // 建筑面积
@@ -1567,7 +1615,7 @@
       // 认购日期
       this.postData.subscribeDate = baseInfo.myReturnVO.dealVO?.subscribeDate;
       // 签约价格
-      this.postData.sign = baseInfo.myReturnVO.dealVO?.signPrice;
+      this.postData.signPrice = baseInfo.myReturnVO.dealVO?.signPrice;
       // 签约日期
       this.postData.signDate = baseInfo.myReturnVO.dealVO?.signDate;
       // 数据标志
@@ -1589,6 +1637,10 @@
         // 非分销成交模式 --- 自然来访 / 自渠成交
         this.initAgency(baseInfo.agencyVOs, false);
       }
+      // 优惠告知书
+      this.postData.offerNoticeVO = baseInfo.notice ? baseInfo.notice : [];
+      // 客户信息
+      this.postData.customerVO = baseInfo.myReturnVO.customerVOS ? baseInfo.myReturnVO.customerVOS : [];
     }
 
     // 初始化渠道商(渠道公司) --- 分销成交模式才有渠道商
@@ -1723,27 +1775,6 @@
       return sums;
     }
 
-    // 确定选择优惠告知书
-    async finishAddNotice(data: any) {
-      // console.log('data', data);
-      if (data.length === 0) return;
-      if (this.postData.offerNoticeVO.length > 0) {
-        let flag = false;
-        flag = this.postData.offerNoticeVO.some((item: any) => {
-          return item.id === data[0].id;
-        })
-        if (flag) {
-          this.$message.error('已经存在相同的客户，请重新选择！');
-        } else {
-          this.postData.offerNoticeVO.push(...data);
-          this.dialogAddNotice = false;
-        }
-      } else {
-        this.postData.offerNoticeVO.push(...data);
-        this.dialogAddNotice = false;
-      }
-    }
-
     // 选择已成交的报备信息-分销成交模式下
     selectReport() {
       this.dialogAddReportInfo = true;
@@ -1796,8 +1827,47 @@
       this.dialogAddNotice = true;
     }
 
+    // 确定选择优惠告知书
+    async finishAddNotice(data: any) {
+      // console.log('data', data);
+      if (data.length === 0) return;
+      if (this.postData.offerNoticeVO.length > 0) {
+        let flag = false;
+        flag = this.postData.offerNoticeVO.some((item: any) => {
+          return item.id === data[0].id;
+        })
+        if (flag) {
+          this.$message.error('已经存在相同的客户，请重新选择！');
+        } else {
+          this.postData.offerNoticeVO.push(
+            {
+              ...data,
+              addType: 'manual'
+            }
+          );
+          this.dialogAddNotice = false;
+        }
+      } else {
+        this.postData.offerNoticeVO.push(
+          {
+            ...data,
+            addType: 'manual'
+          }
+        );
+        this.dialogAddNotice = false;
+      }
+    }
+
+    // 删除优惠告知书
+    removeNotice(scope: any) {
+      // console.log(scope);
+      this.postData.offerNoticeVO = this.postData.offerNoticeVO.filter((item: any) => {
+        return item.id !== scope.row.id;
+      })
+    }
+
     // 预览-优惠告知书
-    preview(scope: any) {
+    previewNotice(scope: any) {
       console.log(scope);
     }
 
