@@ -4,7 +4,7 @@
  * @Author: wwq
  * @Date: 2020-12-01 14:49:06
  * @LastEditors: wwq
- * @LastEditTime: 2020-12-21 17:57:29
+ * @LastEditTime: 2020-12-22 14:19:03
 -->
 <template>
   <el-dialog
@@ -47,6 +47,7 @@
               v-model="form.partyA"
               placeholder="请选择甲方"
               clearable
+              multiple
             ></IhSelectPageByDeveloper>
           </el-form-item>
         </el-col>
@@ -215,7 +216,7 @@ export default class PartyAAdd extends Vue {
   stampFileList: any = [];
   form: any = {
     title: null,
-    partyA: null,
+    partyA: [],
     partyBId: null,
     receivingAccountId: null,
     cooperationProjectsName: null,
