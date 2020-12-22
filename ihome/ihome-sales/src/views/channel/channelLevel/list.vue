@@ -380,8 +380,8 @@ export default class UserList extends Vue {
       (v: any) => v.code
     );
     const pingtai = roleList.includes("RPlatformClerk");
-    const fen = roleList.includes("BusinessManagement");
-    const zong = roleList.includes("HeadBusinessManagement");
+    const fen = roleList.includes("RBusinessManagement");
+    const zong = roleList.includes("RHeadBusinessManagement");
     const skipPlatformClerk = row.skipPlatformClerk === "true" ? true : false;
     return (
       (PTWYSH && pingtai && !skipPlatformClerk) ||
@@ -398,7 +398,7 @@ export default class UserList extends Vue {
       (v: any) => v.code
     );
     const pingtai = roleList.includes("RPlatformClerk");
-    const fen = roleList.includes("BusinessManagement");
+    const fen = roleList.includes("RBusinessManagement");
     const qudao = roleList.includes("RChannelStaff");
     const dangqian = (this.$root as any).userInfo.id === row.inputUser;
     const skipPlatformClerk = row.skipPlatformClerk === "true" ? true : false;

@@ -4,7 +4,7 @@
  * @Author: zyc
  * @Date: 2020-06-30 09:21:17
  * @LastEditors: wwq
- * @LastEditTime: 2020-12-19 15:14:29
+ * @LastEditTime: 2020-12-22 09:18:28
 --> 
 <template>
   <IhPage label-width="100px">
@@ -296,8 +296,8 @@ export default class LevelChangeList extends Vue {
       (v: any) => v.code
     );
     const pingtai = roleList.includes("RPlatformClerk");
-    const fen = roleList.includes("BusinessManagement");
-    const zong = roleList.includes("HeadBusinessManagement");
+    const fen = roleList.includes("RBusinessManagement");
+    const zong = roleList.includes("RHeadBusinessManagement");
     return (PTWYSH && pingtai) || (FGSYGSH && fen) || (ZBYGSH && zong);
   }
 
@@ -309,7 +309,7 @@ export default class LevelChangeList extends Vue {
       (v: any) => v.code
     );
     const pingtai = roleList.includes("RPlatformClerk");
-    const fen = roleList.includes("BusinessManagement");
+    const fen = roleList.includes("RBusinessManagement");
     const qudao = roleList.includes("RChannelStaff");
     const dangqian = (this.$root as any).userInfo.id === row.inputUser;
     const skipPlatformClerk = row.skipPlatformClerk === "true" ? true : false;
