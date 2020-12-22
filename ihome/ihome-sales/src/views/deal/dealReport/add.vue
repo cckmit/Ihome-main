@@ -4,7 +4,7 @@
  * @Author: lsj
  * @Date: 2020-10-30 16:38:23
  * @LastEditors: lsj
- * @LastEditTime: 2020-12-19 15:23:16
+ * @LastEditTime: 2020-12-22 12:12:20
 -->
 <template>
   <ih-page class="text-left">
@@ -157,7 +157,7 @@
           <el-form-item label="合同类型" prop="contType">
             <el-select
               v-model="postData.contType"
-              :clearable="baseInfoInDeal.contType !== 'DistriDeal'"
+              :clearable="!baseInfoInDeal.hasRecord"
               :disabled="baseInfoInDeal.contType === 'DistriDeal' && baseInfoInDeal.hasRecord"
               placeholder="请选择合同类型"
               @change="changeContType"
@@ -171,8 +171,8 @@
             </el-select>
           </el-form-item>
         </el-col>
-        <el-col :span="6" v-if="postData.contType === 'DistriDeal'">
-          <el-form-item label="分销协议编号" :prop="postData.contType === 'DistriDeal' ? 'contNo' : ''">
+        <el-col :span="6" v-if="baseInfoInDeal.hasRecord">
+          <el-form-item label="分销协议编号" :prop="baseInfoInDeal.hasRecord ? 'contNo' : ''">
             <div class="contNo-wrapper">
               <el-select
                 v-model="postData.contNo"
@@ -191,8 +191,8 @@
             </div>
           </el-form-item>
         </el-col>
-        <el-col :span="6" v-if="postData.contType === 'DistriDeal'">
-          <el-form-item label="是否垫佣" :prop="postData.contType === 'DistriDeal' ? 'isMat' : ''">
+        <el-col :span="6" v-if="baseInfoInDeal.hasRecord">
+          <el-form-item label="是否垫佣" :prop="baseInfoInDeal.hasRecord ? 'isMat' : ''">
             <el-select
               v-model="postData.isMat"
               disabled
@@ -207,23 +207,23 @@
             </el-select>
           </el-form-item>
         </el-col>
-        <el-col :span="6" v-if="!!postData.reportName">
-          <el-form-item label="报备信息" :prop="postData.contType === 'DistriDeal' ? 'recordStr' : ''">
+        <el-col :span="6" v-if="baseInfoInDeal.hasRecord">
+          <el-form-item label="报备信息" :prop="baseInfoInDeal.hasRecord ? 'recordStr' : ''">
             <el-input v-model="postData.recordStr" disabled placeholder="房号自动带出"></el-input>
           </el-form-item>
         </el-col>
-        <el-col :span="6" v-if="postData.contType === 'DistriDeal'">
-          <el-form-item label="渠道公司" :prop="postData.contType === 'DistriDeal' ? 'agencyName' : ''">
+        <el-col :span="6" v-if="baseInfoInDeal.hasRecord">
+          <el-form-item label="渠道公司" :prop="baseInfoInDeal.hasRecord ? 'agencyName' : ''">
             <el-input v-model="postData.agencyName" disabled placeholder="选成交报备自动带出"></el-input>
           </el-form-item>
         </el-col>
-        <el-col :span="6" v-if="postData.contType === 'DistriDeal'">
-          <el-form-item label="渠道等级" :prop="postData.contType === 'DistriDeal' ? 'channelLevelName' : ''">
+        <el-col :span="6" v-if="baseInfoInDeal.hasRecord">
+          <el-form-item label="渠道等级" :prop="baseInfoInDeal.hasRecord ? 'channelLevelName' : ''">
             <el-input v-model="postData.channelLevelName" disabled placeholder="选成交报备自动带出"></el-input>
           </el-form-item>
         </el-col>
-        <el-col :span="6" v-if="postData.contType === 'DistriDeal'">
-          <el-form-item label="经纪人" :prop="postData.contType === 'DistriDeal' ? 'brokerName' : ''">
+        <el-col :span="6" v-if="baseInfoInDeal.hasRecord">
+          <el-form-item label="经纪人" :prop="baseInfoInDeal.hasRecord ? 'brokerName' : ''">
             <el-input v-model="postData.brokerName" disabled placeholder="选成交报备自动带出"></el-input>
           </el-form-item>
         </el-col>
@@ -245,7 +245,10 @@
         </el-col>
         <el-col :span="6">
           <el-form-item label="建筑面积" prop="area">
-            <el-input v-model="postData.area" clearable placeholder="请输入建筑面积"></el-input>
+            <el-input
+              :disabled="isDisabled('area', 'houseVO')"
+              v-model="postData.area"
+              placeholder="请输入建筑面积"></el-input>
           </el-form-item>
         </el-col>
         <el-col :span="12">
@@ -254,6 +257,7 @@
               <div>
                 <el-input-number
                   v-digits="0"
+                  :disabled="isDisabled('room', 'houseVO')"
                   v-model="postData.room"
                   :min="0"
                   :step="1"
@@ -263,6 +267,7 @@
               <div>
                 <el-input-number
                   v-digits="0"
+                  :disabled="isDisabled('hall', 'houseVO')"
                   v-model="postData.hall"
                   :min="0"
                   :step="1"
@@ -272,6 +277,7 @@
               <div>
                 <el-input-number
                   v-digits="0"
+                  :disabled="isDisabled('kitchen', 'houseVO')"
                   v-model="postData.kitchen"
                   :min="0"
                   :step="1"
@@ -281,6 +287,7 @@
               <div>
                 <el-input-number
                   v-digits="0"
+                  :disabled="isDisabled('toilet', 'houseVO')"
                   v-model="postData.toilet"
                   :min="0"
                   :step="1"
@@ -309,7 +316,7 @@
           <el-form-item label="签约类型" prop="signType">
             <el-select
               v-model="postData.signType"
-              clearable
+              :disabled="isDisabled('signType', 'dealVO')"
               placeholder="请选择签约类型"
               class="width--100">
               <el-option
@@ -325,7 +332,7 @@
           <el-form-item label="成交阶段" prop="stage">
             <el-select
               v-model="postData.stage"
-              clearable
+              :disabled="isDisabled('dealStage', 'dealVO')"
               no-data-text="请先选择项目周期"
               placeholder="请选择成交阶段"
               class="width--100">
@@ -338,7 +345,7 @@
             </el-select>
           </el-form-item>
         </el-col>
-        <el-col :span="6">
+        <el-col :span="6" v-if="isDisabled('returnRatio', 'dealVO')">
           <el-form-item label="明源房款回笼比例">
             <el-input
               v-model="postData.returnRatio"
@@ -346,14 +353,18 @@
           </el-form-item>
         </el-col>
         <el-col :span="6">
-          <el-form-item label="认购价格">
-            <el-input v-model="postData.subscribePrice" clearable placeholder="请输入认购价格"></el-input>
+          <el-form-item label="认购价格" :prop="['Subscribe', 'SignUp'].includes(postData.stage) ? 'subscribePrice' : ''">
+            <el-input
+              :disabled="isDisabled('subscribePrice', 'dealVO')"
+              v-model="postData.subscribePrice"
+              placeholder="请输入认购价格"></el-input>
           </el-form-item>
         </el-col>
         <el-col :span="6">
-          <el-form-item label="认购日期">
+          <el-form-item label="认购日期" :prop="['Subscribe', 'SignUp'].includes(postData.stage) ? 'subscribeDate' : ''">
             <el-date-picker
               style="width: 100%"
+              :disabled="isDisabled('subscribeDate', 'dealVO')"
               v-model="postData.subscribeDate"
               type="datetime"
               placeholder="请选择认购日期">
@@ -361,14 +372,18 @@
           </el-form-item>
         </el-col>
         <el-col :span="6">
-          <el-form-item label="签约价格">
-            <el-input v-model="postData.signPrice" clearable placeholder="请输入签约价格"></el-input>
+          <el-form-item label="签约价格" :prop="['Subscribe', 'SignUp'].includes(postData.stage) ? 'signPrice' : ''">
+            <el-input
+              :disabled="isDisabled('signPrice', 'dealVO')"
+              v-model="postData.signPrice"
+              placeholder="请输入签约价格"></el-input>
           </el-form-item>
         </el-col>
         <el-col :span="6">
-          <el-form-item label="签约日期">
+          <el-form-item label="签约日期" :prop="['Subscribe', 'SignUp'].includes(postData.stage) ? 'signDate' : ''">
             <el-date-picker
               style="width: 100%"
+              :disabled="isDisabled('signDate', 'dealVO')"
               v-model="postData.signDate"
               type="datetime"
               placeholder="请选择签约日期">
@@ -995,7 +1010,14 @@
       termId: null, // 项目周期id
       termStageEnum: null, // 判断优惠告知书是否有添加按钮
     }; // 通过项目周期id获取到的初始化成交基础信息
-    baseInfoInDeal: any = {}; // 通过initPage接口获取到的成交信息(项目周期 + 房号)
+    baseInfoInDeal: any = {
+      myReturnVO: {
+        houseVO: {},
+        customerVOS: {},
+        dealVO: {},
+        dataSign: ''
+      }
+    }; // 通过initPage接口获取到的成交信息(项目周期 + 房号)
     formLoading: any = false; // 表格loading状态
     postData: any = {
       baseProId: null, // 记录，当合同类型=分销成交时，需要用项目Id作为参数查报备列表
@@ -1029,10 +1051,10 @@
       isConsign: null,
       stage: null, // 成交阶段
       signType: null, // 签约类型
-      subscribePrice: null,
-      subscribeDate: null,
-      signPrice: null,
-      signDate: null,
+      subscribePrice: null, // 认购价格
+      subscribeDate: null, // 认购日期
+      signPrice: null, // 签约日期
+      signDate: null, // 签约价格
       entryDate: null,
       entryPerson: null,
       status: null,
@@ -1146,6 +1168,18 @@
       brokerName: [
         {required: true, message: "渠道经纪人不能为空", trigger: "change"},
       ],
+      subscribePrice: [
+        {required: true, message: "认购价格不能为空", trigger: "change"},
+      ],
+      subscribeDate: [
+        {required: true, message: "认购日期不能为空", trigger: "change"},
+      ],
+      signPrice: [
+        {required: true, message: "签约价格不能为空", trigger: "change"},
+      ],
+      signDate: [
+        {required: true, message: "签约日期不能为空", trigger: "change"},
+      ],
     };
     id: any = null;
     dialogAddRoom: any = false;
@@ -1244,6 +1278,27 @@
           (this as any)[objName][keys] = null;
         }
       }
+    }
+
+    /*
+    * 判断字段是否禁用
+    * 条件(both)：1.关联明源数据（全部、部分）； 2.数据是明源带出来的（有值）。
+    * params: key: string --- 需要判断的字段
+    * params: type: string --- 该字段在明源Vo中的类型：houseVO、customerVOS、dealVO
+    * */
+    isDisabled(key: any = '', type: any = '') {
+      if (!key || !type) return true;
+      let flag = true;
+      const data: any = this.baseInfoInDeal.myReturnVO;
+      // 1.是否明源数据标志
+      let signFlag = ['WholeMingYuan', 'NoWholeMingYuan'].includes(data.dataSign);
+      // 2.对应明源字段是否有值
+      if (data[type][key] && signFlag) {
+        flag = false;
+      } else {
+        flag = true;
+      }
+      return flag;
     }
 
     // 根据业务模式获取合同类型选项
@@ -1587,9 +1642,14 @@
     changeContType(value: any) {
       if (!value) return;
       if (value === 'DistriDeal') {
-        // 分销成交
+        // 如果查询不到此房号的已成交报备信息，用户又选择分销成交
         this.postData.contType = '';
-        // this.selectReport(); // 选择已成交的报备信息
+        if (!this.baseInfoInDeal.hasRecord) {
+          this.$alert('系统查询不到此房号的已成交报备信息，请先维护报备信息！', '提示', {
+            confirmButtonText: '确定'
+          });
+          return;
+        }
       } else {
         // 不是分销成交
         // 1.清空数据
