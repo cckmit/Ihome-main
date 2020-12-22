@@ -4,7 +4,7 @@
  * @Author: zyc
  * @Date: 2020-11-24 10:49:09
  * @LastEditors: zyc
- * @LastEditTime: 2020-12-22 17:47:49
+ * @LastEditTime: 2020-12-22 17:55:26
 -->
 
 <!--
@@ -253,7 +253,7 @@ export default class ChannelApprovalGradesList extends Vue {
     this.$emit("finish", false);
   }
   reset() {
-    this.queryPageParameters = {
+    Object.assign(this.queryPageParameters, {
       channelGrade: null,
       channelId: null,
       city: null,
@@ -265,7 +265,7 @@ export default class ChannelApprovalGradesList extends Vue {
       status: "PASS",
       storageNum: null,
       provinceCity: null,
-    };
+    });
   }
 
   async finish() {
