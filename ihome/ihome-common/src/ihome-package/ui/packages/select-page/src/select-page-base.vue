@@ -4,7 +4,7 @@
  * @Author: ywl
  * @Date: 2020-10-20 15:03:13
  * @LastEditors: ywl
- * @LastEditTime: 2020-12-21 18:13:57
+ * @LastEditTime: 2020-12-22 08:57:53
 -->
 <template>
   <el-select
@@ -20,6 +20,7 @@
     :collapse-tags="collapseTags"
     popper-class="ih-select-page"
     class="width--100"
+    :loading="searchLoad"
   >
     <!-- 搜索 -->
     <div class="selectInput">
