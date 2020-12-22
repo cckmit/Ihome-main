@@ -4,7 +4,7 @@
  * @Author: lsj
  * @Date: 2020-11-03 13:20:35
  * @LastEditors: lsj
- * @LastEditTime: 2020-12-18 10:11:20
+ * @LastEditTime: 2020-12-22 8:55:35
 -->
 <template>
   <ih-page class="text-left">
@@ -61,7 +61,19 @@
           </el-form-item>
         </el-col>
         <el-col :span="8">
-          <el-form-item label="分销协议编号">{{infoForm.contNo}}</el-form-item>
+          <el-form-item label="分销协议编号">
+            <div class="contNo-wrapper">
+              <div class="no">{{infoForm.contNo}}</div>
+              <div>
+                <el-link
+                  class="margin-left-10"
+                  type="primary"
+                  @click.native.prevent="viewContNoDetail(infoForm.contNo)"
+                >查看
+                </el-link>
+              </div>
+            </div>
+          </el-form-item>
         </el-col>
         <el-col :span="8">
           <el-form-item label="是否垫佣">
@@ -394,17 +406,35 @@
         <el-table
           class="ih-table"
           :data="infoForm.invoiceList">
-          <el-table-column prop="modelName" label="开票日期" min-width="120"></el-table-column>
-          <el-table-column prop="contType" label="发票类型" min-width="120"></el-table-column>
-          <el-table-column prop="contType" label="发票代码" min-width="120"></el-table-column>
-          <el-table-column prop="contType" label="发票号码" min-width="120"></el-table-column>
-          <el-table-column prop="contType" label="抬头" min-width="150"></el-table-column>
-          <el-table-column prop="contType" label="发票金额（含税）" min-width="150"></el-table-column>
+          <el-table-column prop="businessNo" label="业务单号" min-width="120"></el-table-column>
+          <el-table-column prop="invoiceTitle" label="发票抬头" min-width="100"></el-table-column>
+          <el-table-column prop="invoiceType" label="发票类型" min-width="100">
+            <template slot-scope="scope">
+              {{$root.dictAllName(scope.row.invoiceType, 'InvoiceType')}}
+            </template>
+          </el-table-column>
+          <el-table-column prop="amount" label="发票金额（含税）" min-width="150"></el-table-column>
+          <el-table-column prop="contType" label="税率" min-width="120"></el-table-column>
           <el-table-column prop="contType" label="确认主营（不含税）" min-width="150"></el-table-column>
-          <el-table-column prop="contType" label="税额（公式）" min-width="150"></el-table-column>
-          <el-table-column prop="contType" label="NC凭证号" min-width="150"></el-table-column>
-          <el-table-column prop="contType" label="备注" min-width="150"></el-table-column>
-          <el-table-column prop="contType" label="附件" min-width="150"></el-table-column>
+          <el-table-column prop="tax" label="税额" min-width="120"></el-table-column>
+          <el-table-column prop="payee" label="收款方" min-width="120"></el-table-column>
+          <el-table-column prop="ncCode" label="NC凭证号" min-width="120"></el-table-column>
+          <el-table-column prop="status" label="开票状态" min-width="100">
+            <template slot-scope="scope">
+              {{$root.dictAllName(scope.row.invoiceType, 'InvoiceOperationStatus')}}
+            </template>
+          </el-table-column>
+          <el-table-column prop="operationDate" label="开票日期" min-width="150"></el-table-column>
+          <el-table-column fixed="right" label="操作" width="90">
+            <template slot-scope="scope">
+              <el-link
+                class="margin-right-10"
+                type="primary"
+                @click.native.prevent="viewInvoiceDetail(scope)"
+              >查看详情
+              </el-link>
+            </template>
+          </el-table-column>
         </el-table>
       </el-col>
     </el-row>
@@ -438,6 +468,7 @@
   import ReviewDetailsDialog from "@/views/deal/dealReport/dialog/reviewDetailsDialog.vue";
   import {get_deal_get__id} from "@/api/deal";
   import {post_notice_customer_information} from "@/api/contract";
+  import {get_invoice_getInvoiceInfo__businessId} from "@/api/finance";
 
   @Component({
     components: {ReviewDetailsDialog},
@@ -496,9 +527,11 @@
 
     async created() {
       this.dealId = this.$route.query.id;
+      this.dealId = 2;
       if (this.dealId) {
-        await this.init();
-        await this.getInformation();
+        await this.init(); // 基础数据
+        await this.getInformation(); // 优惠告知书
+        await this.getInvoiceInfo(); // 开票信息
       }
     }
 
@@ -517,6 +550,17 @@
             this.infoForm.achieveDistriList.push(list);
           }
         })
+      }
+    }
+
+    // 获取开票信息
+    async getInvoiceInfo() {
+      let info: any = await get_invoice_getInvoiceInfo__businessId({businessId: this.dealId});
+      console.log(info);
+      if (info.id) {
+        this.infoForm.invoiceList.push(info);
+      } else {
+        this.infoForm.invoiceList = [];
       }
     }
 
@@ -674,9 +718,32 @@
       return sums;
     }
 
+    // 查看分销协议
+    viewContNoDetail(contractNo: any) {
+      let router = this.$router.resolve({
+        path: `/distribution/info`,
+        query: {
+          contractNo: contractNo
+        },
+      });
+      window.open(router.href, "_blank");
+    }
+
     // 预览
     preview(scope: any) {
       console.log('预览scope', scope);
+    }
+
+    // 查看开票详情
+    viewInvoiceDetail(scope: any) {
+      // console.log(scope);
+      let router = this.$router.resolve({
+        path: `/invoice/info`,
+        query: {
+          id: scope.row.id
+        },
+      });
+      window.open(router.href, "_blank");
     }
 
     // 查看审核详情
@@ -698,6 +765,17 @@
     div {
       flex: 1;
       text-align: center;
+    }
+  }
+
+  .contNo-wrapper {
+    width: 100%;
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+
+    .no {
+      flex: 1;
     }
   }
 
