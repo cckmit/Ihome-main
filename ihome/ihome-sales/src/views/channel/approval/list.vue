@@ -4,7 +4,7 @@
  * @Author: zyc
  * @Date: 2020-07-14 09:23:40
  * @LastEditors: zyc
- * @LastEditTime: 2020-12-22 10:14:20
+ * @LastEditTime: 2020-12-22 16:20:40
 --> 
 --> 
 <template>
@@ -108,14 +108,14 @@
               </el-select>
             </el-form-item>
           </el-col>
-          <el-col :span="8">
+          <!-- <el-col :span="8">
             <el-form-item label="OA发文文号">
               <el-input
                 v-model="queryPageParameters.oaNo"
                 placeholder="OA发文文号"
               ></el-input>
             </el-form-item>
-          </el-col>
+          </el-col> -->
         </el-row>
       </el-form>
     </template>
@@ -180,11 +180,11 @@
             $root.dictAllName(scope.row.status, "ChannelApprovalStatus")
           }}</template>
         </el-table-column>
-        <el-table-column
+        <!-- <el-table-column
           prop="oaNo"
           label="OA发文文号"
           width="180"
-        ></el-table-column>
+        ></el-table-column> -->
 
         <el-table-column fixed="right" label="操作" width="130">
           <template slot-scope="scope">
