@@ -4,7 +4,7 @@
  * @Author: ywl
  * @Date: 2020-12-17 19:43:20
  * @LastEditors: ywl
- * @LastEditTime: 2020-12-21 17:20:48
+ * @LastEditTime: 2020-12-22 11:23:29
 -->
 <template>
   <IhPage class="text-left">
@@ -97,8 +97,35 @@
         </el-row>
       </el-form>
       <p class="ih-info-title">附件</p>
-      <el-table style="width: 100%">
-      </el-table>
+      <div class="padding-left-20">
+        <el-table
+          style="width: 100%"
+          :data="file"
+        >
+          <el-table-column
+            label="类型"
+            prop="type"
+            width="150"
+          >
+            <template v-slot="{ row }">
+              {{$root.dictAllName(row.type, 'PaymentAttachmentType')}}
+            </template>
+          </el-table-column>
+          <el-table-column label="附件">
+            <template v-slot="{ row }">
+              <IhUpload
+                :file-list.sync="row.fileList"
+                :file-size="10"
+                :file-type="row.code"
+                :limit="row.fileList.length"
+                :upload-show="!!row.fileList.length"
+                size="100px"
+                :removePermi="false"
+              ></IhUpload>
+            </template>
+          </el-table-column>
+        </el-table>
+      </div>
       <p class="ih-info-title">操作日志</p>
       <div class="padding-left-20">
         <el-table
@@ -147,6 +174,17 @@ export default class ReceiptInfo extends Vue {
     let id = this.$route.query.id;
     if (id) {
       this.info = await get_payment_getDetail__id({ id });
+      let arr: any = this.info.attachments.map((i: any) => i.type);
+      let resArr: any = Array.from(new Set(arr));
+      this.file = resArr.map((v: any) => ({
+        type: v,
+        fileList: this.info.attachments
+          .filter((item: any) => item.type === v)
+          .map((val: any) => ({
+            fileId: val.fileId,
+            name: val.fileName,
+          })),
+      }));
     }
   }
   created() {

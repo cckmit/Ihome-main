@@ -4,7 +4,7 @@
  * @Author: zyc
  * @Date: 2020-07-09 14:31:23
  * @LastEditors: zyc
- * @LastEditTime: 2020-12-18 14:53:49
+ * @LastEditTime: 2020-12-22 11:40:29
 --> 
 <template>
   <ih-page>
@@ -87,7 +87,7 @@
             @click="addChannelApprovalGradesChange()"
             >添加变更信息</el-button
           >
-          <span class="padding-left-20"
+          <span v-if="false" class="padding-left-20" @click="preFileName()"
             ><el-link type="success">预览供应商名录</el-link></span
           >
         </div>
@@ -184,20 +184,39 @@
         </el-form-item>
       </el-row>
       <el-row class="ih-info-line text-left">
-        <span style="padding: 10px; line-height: 40px"> 呈批说明 </span>
+        <el-form-item label="呈批说明" prop="approvalDesc">
+          <el-input
+            type="textarea"
+            :rows="10"
+            placeholder="呈批说明"
+            v-model="postData.approvalDesc"
+            maxlength="512"
+            show-word-limit
+          ></el-input>
+        </el-form-item>
+
+        <!-- <span style="padding: 10px; line-height: 40px" prop="approvalDesc">
+          呈批说明
+        </span>
         <span>
           <el-input
             type="textarea"
             :rows="10"
             placeholder="呈批说明"
             v-model="postData.approvalDesc"
+            maxlength="512"
+            show-word-limit
           >
           </el-input>
-        </span>
+        </span> -->
       </el-row>
       <div>
-        <el-button type="primary" @click="save()">保存为草稿</el-button>
-        <el-button type="success" @click="submit()">提交呈批</el-button>
+        <el-button type="primary" @click="save()" :disabled="infoFinish"
+          >保存为草稿</el-button
+        >
+        <el-button type="success" @click="submit()" :disabled="infoFinish"
+          >提交呈批</el-button
+        >
       </div>
       <ih-dialog :show="dialogAdd" desc="渠道合作信息列表">
         <ChannelApprovalGradesList
@@ -212,24 +231,33 @@
           "
         />
       </ih-dialog>
+      <ih-dialog
+        v-if="showOaSubmit"
+        :show="showOaSubmit"
+        desc="提交呈批确认信息"
+      >
+        <OaSubmit :data="postData" @cancel="() => (showOaSubmit = false)" />
+      </ih-dialog>
     </el-form>
   </ih-page>
 </template>
 <script lang="ts">
 import { Component, Vue } from "vue-property-decorator";
 import ChannelApprovalGradesList from "@/views/channel/approval/channel-approval-grades/list.vue";
+import OaSubmit from "./dialog/oa-submit.vue";
 
 import {
   post_channelApproval_add,
   post_channelApproval_edit,
   get_channelApproval_get__id,
   post_channelGrade_getChannelGradeAttachmentByType,
+  post_channelApproval_previewDirectoryFile,
 } from "../../../api/channel/index";
 import { get_org_getUserDepartmentList } from "../../../api/system/index";
 import { Form as ElForm } from "element-ui";
 import { NoRepeatHttp } from "ihome-common/util/aop/no-repeat-http";
 @Component({
-  components: { ChannelApprovalGradesList },
+  components: { ChannelApprovalGradesList, OaSubmit },
 })
 export default class ApprovalAdd extends Vue {
   departmentOrgId: any = null;
@@ -241,6 +269,8 @@ export default class ApprovalAdd extends Vue {
   channelApprovalAttachmentsList: any = []; //附件信息
   departmentList: any = []; //事业部下拉框
   id: any = null;
+  showOaSubmit = false;
+  infoFinish = false;
 
   rules: any = {
     approvalTitle: [
@@ -248,6 +278,9 @@ export default class ApprovalAdd extends Vue {
     ],
     departmentOrgId: [
       { required: true, message: "事业部必选", trigger: "change" },
+    ],
+    approvalDesc: [
+      { required: true, message: "呈批说明必填", trigger: "change" },
     ],
   };
 
@@ -267,12 +300,20 @@ export default class ApprovalAdd extends Vue {
     this.id = this.$route.query.id;
     this.departmentList = await get_org_getUserDepartmentList();
     if (this.id) {
-      const res: any = await get_channelApproval_get__id({ id: this.id });
-      this.postData = res;
-      res.channelApprovalGrades.forEach((item: any) => {
-        this.showChannelApprovalGrades.push(item);
-        this.loadAttachments(item, item.gradeType);
-      });
+      try {
+        const res: any = await get_channelApproval_get__id({ id: this.id });
+        this.infoFinish = false;
+        this.postData = res;
+
+        res.channelApprovalGrades.forEach((item: any) => {
+          this.showChannelApprovalGrades.push(item);
+          this.loadAttachments(item, item.gradeType);
+        });
+      } catch (error) {
+        this.infoFinish = false;
+      }
+    } else {
+      this.infoFinish = false;
     }
   }
   changeDepartment() {
@@ -381,37 +422,6 @@ export default class ApprovalAdd extends Vue {
     if (valid) {
       this.postData.operateType = 1;
 
-      // let editData = {
-      //   approvalDesc: this.postData.approvalDesc,
-      //   approvalTitle: this.postData.approvalTitle,
-      //   channelApprovalAttachments: this.channelApprovalAttachmentsList.map(
-      //     (item: any) => {
-      //       return {
-      //         approvalId: this.id,
-      //         channelId: item.channelId,
-      //         city: item.city,
-      //         fileId: item.fileId,
-      //         type: item.type,
-      //       };
-      //     }
-      //   ),
-      //   channelApprovalGrades: this.channelApprovalGrades.map((item: any) => {
-      //     return {
-      //       gradeId: item.id,
-      //       gradeType: "Basic",
-      //     };
-      //     // return {
-      //     //   approvalId: this.id,
-      //     //   channelId: item.channelId,
-      //     //   city: item.city,
-      //     //   fileId: item.fileId,
-      //     //   type: item.type,
-      //     // };
-      //   }),
-      //   departmentOrgId: this.postData.departmentOrgId,
-      //   id: this.postData.id,
-      //   operateType: this.postData.operateType,
-      // };
       console.log(this.postData);
       await post_channelApproval_edit(this.postData);
       this.$message.success("修改成功");
@@ -424,7 +434,18 @@ export default class ApprovalAdd extends Vue {
     }
   }
   async submit() {
-    (this.$refs["ruleForm"] as ElForm).validate(this.submitApi);
+    if (
+      this.postData.channelApprovalGrades &&
+      this.postData.channelApprovalGrades.length > 0
+    ) {
+      (this.$refs["ruleForm"] as ElForm).validate((valid: any) => {
+        if (valid) {
+          this.showOaSubmit = true;
+        }
+      });
+    } else {
+      this.$message.warning("请先添加渠道等级数据");
+    }
   }
   @NoRepeatHttp()
   async submitApi(valid: any) {
@@ -443,13 +464,19 @@ export default class ApprovalAdd extends Vue {
           path: "/approval/list",
         });
       }
-    } else {
-      this.$message.warning("请先填好数据再保存");
-      return false;
     }
   }
   goInfo(scope: any) {
     window.open(`/web-sales/channelLevel/info?id=${scope.row.id}`);
+  }
+  async preFileName() {
+    const res: any = await post_channelApproval_previewDirectoryFile(
+      this.postData
+    );
+
+    let url = this.$tool.downloadLongFileUrl(res);
+    console.log(url);
+    (window as any).open(url);
   }
 }
 </script>

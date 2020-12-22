@@ -4,7 +4,7 @@
  * @Author: ywl
  * @Date: 2020-09-27 10:46:14
  * @LastEditors: ywl
- * @LastEditTime: 2020-12-17 10:22:09
+ * @LastEditTime: 2020-12-22 09:45:53
 -->
 <template>
   <IhPage class="text-left distribution-info">
@@ -341,6 +341,7 @@ import { Component, Vue } from "vue-property-decorator";
 
 import {
   get_distribution_detail__id,
+  get_distribution_deal_detail__contractNo,
   post_distribution_original_archive,
   post_distribution_annex,
 } from "@/api/contract/index";
@@ -395,6 +396,15 @@ export default class DistributionDetail extends Vue {
     let id = this.$route.query.id;
     if (id) {
       let res = await get_distribution_detail__id({ id: id });
+      this.ruleForm = { ...this.ruleForm, ...res };
+      this.fileList = res.annexList.map((i: any) => ({
+        name: i.attachmentSuffix,
+        fileId: i.fileNo,
+      }));
+    }
+    let contractNo = this.$route.query.contractNo;
+    if (contractNo) {
+      let res = await get_distribution_deal_detail__contractNo({ contractNo });
       this.ruleForm = { ...this.ruleForm, ...res };
       this.fileList = res.annexList.map((i: any) => ({
         name: i.attachmentSuffix,
