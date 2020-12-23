@@ -4,7 +4,7 @@
  * @Author: ywl
  * @Date: 2020-12-08 21:04:03
  * @LastEditors: ywl
- * @LastEditTime: 2020-12-23 14:46:38
+ * @LastEditTime: 2020-12-23 17:14:50
 -->
 <template>
   <el-dialog
@@ -16,6 +16,7 @@
     width="860px"
     title="手工开票"
     class="text-left invoice-dialog"
+    top="5vh"
   >
     <el-form
       :model="form"
@@ -271,9 +272,6 @@ export default class Handadel extends Vue {
 
 <style lang="scss" scoped>
 .invoice-dialog {
-  /deep/ .el-dialog {
-    margin-top: 5vh !important;
-  }
   .code-item {
     position: relative;
   }
