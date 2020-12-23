@@ -4,7 +4,7 @@
  * @Author: ywl
  * @Date: 2020-12-22 19:30:19
  * @LastEditors: ywl
- * @LastEditTime: 2020-12-22 20:53:23
+ * @LastEditTime: 2020-12-22 21:07:13
 -->
 <template>
   <IhPage label-width="80px">
@@ -153,8 +153,11 @@
           label="操作"
           width="120"
         >
-          <template v-slot="{  }">
-            <el-link type="primary">详情</el-link>
+          <template v-slot="{ row }">
+            <el-link
+              type="primary"
+              @click="$router.push(`/posApply/info?id=${row.id}`)"
+            >详情</el-link>
             <el-dropdown
               trigger="click"
               class="margin-left-15"
