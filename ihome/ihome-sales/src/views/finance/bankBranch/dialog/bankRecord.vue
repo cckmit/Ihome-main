@@ -4,7 +4,7 @@
  * @Author: ywl
  * @Date: 2020-11-30 16:21:18
  * @LastEditors: ywl
- * @LastEditTime: 2020-12-02 09:59:07
+ * @LastEditTime: 2020-12-23 17:14:06
 -->
 <template>
   <el-dialog
@@ -16,6 +16,8 @@
     append-to-body
     width="80%"
     title="银行网点档案库"
+    class="back-record-dialog"
+    top="5vh"
   >
     <el-form label-width="80px">
       <el-row>

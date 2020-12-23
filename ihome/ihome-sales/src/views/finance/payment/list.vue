@@ -4,7 +4,7 @@
  * @Author: ywl
  * @Date: 2020-12-09 19:24:59
  * @LastEditors: ywl
- * @LastEditTime: 2020-12-18 19:00:39
+ * @LastEditTime: 2020-12-23 19:48:53
 -->
 <template>
   <IhPage label-width="100px">
@@ -106,29 +106,30 @@
             <el-row>
               <el-col :span="8">
                 <el-form-item label="联动项目">
-                  <el-input
+                  <IhSelectPageByProject
+                    clearable
                     v-model="queryPageParameters.proId"
                     placeholder="请选择联动项目"
-                    clearable
-                  ></el-input>
+                  ></IhSelectPageByProject>
                 </el-form-item>
               </el-col>
               <el-col :span="8">
                 <el-form-item label="房号">
-                  <el-input
+                  <IhSelectPageByRoom
                     v-model="queryPageParameters.roomId"
+                    :proId="queryPageParameters.proId"
                     placeholder="请选择房号"
                     clearable
-                  ></el-input>
+                  ></IhSelectPageByRoom>
                 </el-form-item>
               </el-col>
               <el-col :span="8">
                 <el-form-item label="立项周期">
-                  <el-input
+                  <IhSelectPageByCycle
+                    clearable
                     v-model="queryPageParameters.termId"
                     placeholder="请选择立项周期"
-                    clearable
-                  ></el-input>
+                  ></IhSelectPageByCycle>
                 </el-form-item>
               </el-col>
             </el-row>

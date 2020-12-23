@@ -4,7 +4,7 @@
  * @Author: wwq
  * @Date: 2020-12-01 09:05:50
  * @LastEditors: wwq
- * @LastEditTime: 2020-12-22 11:50:21
+ * @LastEditTime: 2020-12-23 09:33:50
 -->
 <template>
   <el-dialog
@@ -78,19 +78,6 @@
                   :picker-options="$root.pickerOptions"
                   value-format="yyyy-MM-dd"
                 ></el-date-picker>
-              </el-form-item>
-            </el-col>
-          </el-row>
-          <el-row>
-            <el-col :span="8">
-              <el-form-item label="关联项目">
-                <el-input
-                  v-model="queryPageParameters.projectsId"
-                  clearable
-                  placeholder="请输入关联项目"
-                  class="width--100"
-                >
-                </el-input>
               </el-form-item>
             </el-col>
             <el-col :span="8">
@@ -351,7 +338,6 @@ export default class PartyAList extends Vue {
     organizationId: null,
     partyAId: null,
     partyBId: null,
-    projectsId: null,
     title: null,
     timeList: [],
   };
@@ -406,7 +392,6 @@ export default class PartyAList extends Vue {
       organizationId: null,
       partyAId: null,
       partyBId: null,
-      projectsId: null,
       title: null,
       timeList: [],
     });

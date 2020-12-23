@@ -4,7 +4,7 @@
  * @Author: ywl
  * @Date: 2020-12-08 21:04:03
  * @LastEditors: ywl
- * @LastEditTime: 2020-12-16 19:49:19
+ * @LastEditTime: 2020-12-23 17:14:50
 -->
 <template>
   <el-dialog
@@ -16,6 +16,7 @@
     width="860px"
     title="手工开票"
     class="text-left invoice-dialog"
+    top="5vh"
   >
     <el-form
       :model="form"
@@ -229,7 +230,7 @@ export default class Handadel extends Vue {
       let index = i.name.lastIndexOf(".");
       return {
         fileId: i.fileId,
-        fileName: i.name.substring(0, index),
+        fileName: i.name,
         type: i.name.substring(index + 1, i.name.length),
       };
     });
@@ -271,9 +272,6 @@ export default class Handadel extends Vue {
 
 <style lang="scss" scoped>
 .invoice-dialog {
-  /deep/ .el-dialog {
-    margin-top: 5vh !important;
-  }
   .code-item {
     position: relative;
   }

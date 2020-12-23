@@ -4,7 +4,7 @@
  * @Author: ywl
  * @Date: 2020-12-15 11:14:37
  * @LastEditors: ywl
- * @LastEditTime: 2020-12-15 11:17:22
+ * @LastEditTime: 2020-12-23 20:23:17
 -->
 <script lang="ts">
 import { Component, Vue, Prop } from "vue-property-decorator";
@@ -40,8 +40,10 @@ export default class SelectPageByProject extends Vue {
     pageSize: 10,
   };
   filterText = null;
+  searchLoad = false;
 
   async getSelectList() {
+    this.searchLoad = true;
     let res = await post_project_getList({
       proName: this.filterText,
       pageSize: this.pageInfo.pageSize,
@@ -49,6 +51,7 @@ export default class SelectPageByProject extends Vue {
     });
     this.optionList = res.list;
     this.pageInfo = res;
+    this.searchLoad = false;
   }
 }
 </script>

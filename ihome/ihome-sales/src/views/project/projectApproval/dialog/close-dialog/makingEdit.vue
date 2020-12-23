@@ -4,7 +4,7 @@
  * @Author: wwq
  * @Date: 2020-12-09 20:12:21
  * @LastEditors: wwq
- * @LastEditTime: 2020-12-21 09:56:23
+ * @LastEditTime: 2020-12-23 15:41:58
 -->
 <template>
   <el-dialog
@@ -516,19 +516,28 @@ export default class MakingEdit extends Vue {
       this.getMakingInfo();
     }
     this.getBuding();
-    this.padCommissionEnumOptions = [
-      {
-        code: "Veto",
-        name: "否",
-      },
-      {
-        code: this.data.padCommissionEnum,
-        name: (this.$root as any).dictAllName(
-          this.data.padCommissionEnum,
-          "PadCommission"
-        ),
-      },
-    ];
+    if (this.data.padCommissionEnum !== "Veto") {
+      this.padCommissionEnumOptions = [
+        {
+          code: "Veto",
+          name: "否",
+        },
+        {
+          code: this.data.padCommissionEnum,
+          name: (this.$root as any).dictAllName(
+            this.data.padCommissionEnum,
+            "PadCommission"
+          ),
+        },
+      ];
+    } else {
+      this.padCommissionEnumOptions = [
+        {
+          code: "Veto",
+          name: "否",
+        },
+      ];
+    }
   }
 }
 </script>

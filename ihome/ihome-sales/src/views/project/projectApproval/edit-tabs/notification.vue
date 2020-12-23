@@ -4,7 +4,7 @@
  * @Author: wwq
  * @Date: 2020-11-27 17:27:01
  * @LastEditors: wwq
- * @LastEditTime: 2020-12-22 17:53:40
+ * @LastEditTime: 2020-12-23 19:54:19
 -->
 <template>
   <div>
@@ -160,91 +160,93 @@
       </el-row>
     </el-form>
     <br />
-    <div class="notification">
-      <p class="ih-info-title">优惠告知书模板</p>
-      <div class="notificationButton">
-        <el-button
-          size="small"
-          type="success"
-          @click="addNotification"
-        >+增加电子优惠告知书
-        </el-button>
+    <div v-if="info.chargeEnum && (info.chargeEnum === 'Service' || info.chargeEnum === 'ServiAndAgen')">
+      <div class="notification">
+        <p class="ih-info-title">优惠告知书模板</p>
+        <div class="notificationButton">
+          <el-button
+            size="small"
+            type="success"
+            @click="addNotification"
+          >+增加电子优惠告知书
+          </el-button>
+        </div>
       </div>
-    </div>
-    <div class="hint">(注: 当 立项周期信息里的 启动模式设置为 服务费模式 或 服务费加代理费模式 时，表示 收取服务费。 才会显示 优惠告知书信息 模块内容. )</div>
-    <div class="padding-left-20">
-      <el-table
-        class="ih-table"
-        :data="info.preferentialMxVOS"
-        style="width: 100%"
-      >
-        <el-table-column
-          prop="premiumReceived"
-          label="优惠服务费缴纳金额"
-        ></el-table-column>
-        <el-table-column
-          label="优惠方式说明"
-          prop="modeDescription"
-        ></el-table-column>
-        <el-table-column
-          prop="partyARefundDays"
-          label="甲方退款天数"
-        ></el-table-column>
-        <el-table-column
-          label="操作"
-          width="320"
-          fixed="right"
-          align="center"
+      <div class="hint">(注: 当 立项周期信息里的 启动模式设置为 服务费模式 或 服务费加代理费模式 时，表示 收取服务费。 才会显示 优惠告知书信息 模块内容. )</div>
+      <div class="padding-left-20">
+        <el-table
+          class="ih-table"
+          :data="info.preferentialMxVOS"
+          style="width: 100%"
         >
-          <template v-slot="{ row }">
-            <el-button
-              size="small"
-              type="success"
-              @click="editNotification(row)"
-            >编辑</el-button>
-            <el-button
-              size="small"
-              type="primary"
-              @click="previewBottom(row)"
-            >预览</el-button>
-            <el-button
-              size="small"
-              type="success"
-              @click="uploadQRcode(row)"
-            >下载二维码</el-button>
-            <el-button
-              size="small"
-              type="danger"
-              @click="cancellation(row)"
-            >作废</el-button>
-          </template>
-        </el-table-column>
-      </el-table>
-    </div>
-    <div class="file text-left">
-      <el-form>
-        <el-row>
-          <el-col :span="24">
-            <el-form-item
-              label="纸质告知书模板"
-              class="file-item"
-            >
-              <IhUpload
-                :file-list="fileList"
-                size="100px"
-                @newFileList="newFileList"
-              ></IhUpload>
+          <el-table-column
+            prop="premiumReceived"
+            label="优惠服务费缴纳金额"
+          ></el-table-column>
+          <el-table-column
+            label="优惠方式说明"
+            prop="modeDescription"
+          ></el-table-column>
+          <el-table-column
+            prop="partyARefundDays"
+            label="甲方退款天数"
+          ></el-table-column>
+          <el-table-column
+            label="操作"
+            width="320"
+            fixed="right"
+            align="center"
+          >
+            <template v-slot="{ row }">
               <el-button
-                class="file-button"
                 size="small"
                 type="success"
-                @click="uploadAdd"
-              >保存</el-button>
-            </el-form-item>
-          </el-col>
-        </el-row>
-      </el-form>
-      <div class="file-hint">特殊情况无法使用电子优惠告知书模板，请上传纸质版优惠告知书附件</div>
+                @click="editNotification(row)"
+              >编辑</el-button>
+              <el-button
+                size="small"
+                type="primary"
+                @click="previewBottom(row)"
+              >预览</el-button>
+              <el-button
+                size="small"
+                type="success"
+                @click="uploadQRcode(row)"
+              >下载二维码</el-button>
+              <el-button
+                size="small"
+                type="danger"
+                @click="cancellation(row)"
+              >作废</el-button>
+            </template>
+          </el-table-column>
+        </el-table>
+      </div>
+      <div class="file text-left">
+        <el-form>
+          <el-row>
+            <el-col :span="24">
+              <el-form-item
+                label="纸质告知书模板"
+                class="file-item"
+              >
+                <IhUpload
+                  :file-list="fileList"
+                  size="100px"
+                  @newFileList="newFileList"
+                ></IhUpload>
+                <el-button
+                  class="file-button"
+                  size="small"
+                  type="success"
+                  @click="uploadAdd"
+                >保存</el-button>
+              </el-form-item>
+            </el-col>
+          </el-row>
+        </el-form>
+        <div class="file-hint">特殊情况无法使用电子优惠告知书模板，请上传纸质版优惠告知书附件</div>
+      </div>
     </div>
     <ih-dialog :show="dialogVisible">
       <AddContract
@@ -310,6 +312,7 @@ export default class Notification extends Vue {
   info: any = {
     distributContractVOS: [],
     preferentialMxVOS: [],
+    chargeEnum: null,
     constractOaVO: {
       customerConfirm: null,
       responsibiltity: null,
@@ -330,14 +333,14 @@ export default class Notification extends Vue {
   geiFileList(val: any, oldVal: any) {
     if (oldVal === undefined) {
       this.fileList = val.map((v: any) => ({
-        name: v.attachName,
-        fileId: v.attachAddr,
+        name: v.fileName,
+        fileId: v.fileId,
       }));
     } else {
       if (val.length !== oldVal.length) {
         this.fileList = val.map((v: any) => ({
-          name: v.attachName,
-          fileId: v.attachAddr,
+          name: v.fileName,
+          fileId: v.fileId,
         }));
       }
     }
@@ -361,7 +364,7 @@ export default class Notification extends Vue {
     }
   }
 
-  async previewTop(row: any) {
+  previewTop(row: any) {
     const token: any = getToken();
     axios({
       method: "POST",
@@ -577,8 +580,8 @@ export default class Notification extends Vue {
 
   newFileList(data: any) {
     let arr = data.map((v: any) => ({
-      attachAddr: v.fileId,
-      attachName: v.name,
+      fileId: v.fileId,
+      fileName: v.name,
     }));
     arr.forEach((v: any, i: number) => {
       this.$set(this.uploadList, i, arr[i]);
@@ -622,9 +625,6 @@ export default class Notification extends Vue {
 
 .file {
   margin: 20px 0 0 20px;
-  &-button {
-    margin-left: 20px;
-  }
   &-hint {
     color: #ff0000;
     font-size: 14px;
@@ -634,13 +634,14 @@ export default class Notification extends Vue {
   &-item {
     /deep/ .upload {
       display: inline-block;
+      line-height: normal;
     }
   }
 
   &-button {
     margin-left: 10px;
     position: absolute;
-    bottom: 25px;
+    bottom: 0;
   }
 }
 </style>

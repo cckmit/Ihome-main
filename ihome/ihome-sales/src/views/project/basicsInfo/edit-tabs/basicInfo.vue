@@ -4,7 +4,7 @@
  * @Author: wwq
  * @Date: 2020-11-03 11:52:41
  * @LastEditors: wwq
- * @LastEditTime: 2020-12-15 09:06:12
+ * @LastEditTime: 2020-12-23 09:31:58
 -->
 <template>
   <div>
@@ -419,10 +419,10 @@
               width="120"
               fixed="right"
             >
-              <template>
+              <template v-slot="{ row }">
                 <el-button
                   size="small"
-                  @click="viewCycleData"
+                  @click="viewCycleData(row)"
                 >查看</el-button>
               </template>
             </el-table-column>
@@ -848,8 +848,14 @@ export default class EditBasicInfo extends Vue {
     // });
   }
 
-  viewCycleData() {
-    console.log(111);
+  viewCycleData(data: any) {
+    const item = this.$router.resolve({
+      path: `/projectApproval/info`,
+      query: {
+        id: data.termId,
+      },
+    });
+    window.open(item.href, "_blank");
   }
   async delFirstAgencyCompanys(index: number) {
     try {

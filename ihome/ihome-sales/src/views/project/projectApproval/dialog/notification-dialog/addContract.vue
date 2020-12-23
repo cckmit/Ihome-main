@@ -4,7 +4,7 @@
  * @Author: wwq
  * @Date: 2020-12-02 15:37:31
  * @LastEditors: wwq
- * @LastEditTime: 2020-12-22 20:52:07
+ * @LastEditTime: 2020-12-23 19:09:13
 -->
 <template>
   <el-dialog
@@ -314,6 +314,7 @@
               clearable
               placeholder="请选择垫佣周期"
               class="width--100"
+              :disabled="padCommissionEnumOptions.length === 1"
               @change="queryUnderData(info.padCommissionEnum, 'padCommission')"
             >
               <el-option
@@ -528,7 +529,7 @@ export default class AddContract extends Vue {
       });
       this.info.partyCompany = item.name;
       this.info.partyaAddr = item.address;
-      if (this.data.padCommissionEnum !== "Veto") {
+      if (this.data?.padCommissionEnum !== "Veto") {
         this.padCommissionEnumOptions = [
           {
             code: "Veto",
@@ -543,6 +544,7 @@ export default class AddContract extends Vue {
           },
         ];
       } else {
+        this.info.padCommissionEnum = "Veto";
         this.padCommissionEnumOptions = [
           {
             code: "Veto",
@@ -572,19 +574,29 @@ export default class AddContract extends Vue {
       ...item,
       timeList: [item.contractStartTime, item.contractEndTime],
     };
-    this.padCommissionEnumOptions = [
-      {
-        code: "Veto",
-        name: "否",
-      },
-      {
-        code: item.padCommissionEnum,
-        name: (this.$root as any).dictAllName(
-          item.padCommissionEnum,
-          "PadCommission"
-        ),
-      },
-    ];
+    if (item.padCommissionEnum !== "Veto") {
+      this.padCommissionEnumOptions = [
+        {
+          code: "Veto",
+          name: "否",
+        },
+        {
+          code: item.padCommissionEnum,
+          name: (this.$root as any).dictAllName(
+            item.padCommissionEnum,
+            "PadCommission"
+          ),
+        },
+      ];
+    } else {
+      this.info.padCommissionEnum = "Veto";
+      this.padCommissionEnumOptions = [
+        {
+          code: "Veto",
+          name: "否",
+        },
+      ];
+    }
   }
 
   // 预览电子版
@@ -718,6 +730,12 @@ export default class AddContract extends Vue {
         ),
       ];
       this.queryObj.termId = this.termId;
+      this.queryObj.channelEnum = this.info.channelEnum;
+      this.queryObj.padCommissionEnum = this.info.padCommissionEnum;
+      if (this.isShow) {
+        this.queryObj.consumerId = this.info.designatedAgencyId;
+        this.queryObj.consumerName = this.info.designatedAgency;
+      }
       const item = await post_distributContract_getCheckCollectByCondition(
         this.queryObj
       );

@@ -85,7 +85,10 @@
                     class="margin-right-15"
                     @click="viewTemplate(row)"
                   >查看参数</el-link>
-                  <el-link type="primary">预览合同</el-link>
+                  <el-link
+                    type="primary"
+                    @click="previewTop(row)"
+                  >预览合同</el-link>
                 </template>
               </el-table-column>
             </el-table>
@@ -168,22 +171,13 @@
         <el-row>
           <el-col :span="12">
             <el-form-item label="乙方(渠道)公司">
-              <el-select
-                v-model="channelData"
-                placeholder="乙方(渠道)公司"
+              <IhSelectPageByChannel
+                v-model="info.channelCompanyId"
                 clearable
-                filterable
                 style="width: 70%"
-                value-key="id"
-                @change="getChannelInfo"
-              >
-                <el-option
-                  v-for="item in channelList"
-                  :key="item.id"
-                  :label="item.name"
-                  :value="item"
-                ></el-option>
-              </el-select>
+                placeholder="渠道商名称"
+                @changeOption="getChannelInfo"
+              ></IhSelectPageByChannel>
             </el-form-item>
           </el-col>
           <el-col :span="12">
@@ -477,7 +471,6 @@ import {
   get_distributContract_getDistri__agencyContrictId,
 } from "@/api/project/index";
 import {
-  get_channel_getAll,
   get_channel_get__id,
   post_channelGrade_getList,
 } from "@/api/channel/index";
@@ -494,7 +487,6 @@ export default class Apply extends Vue {
   viewDialogVisible = false;
   viewData: any = {};
   dropOption: any = [];
-  channelList: any = [];
   channelData: any = null;
   handler: any = null;
   templateData: any = [];
@@ -523,6 +515,7 @@ export default class Apply extends Vue {
     padCommissionEnum: null,
     handlerId: null,
     contractMxVOList: [],
+    channelLevel: null,
   };
   channelAccountName = "";
   isShow = false;
@@ -569,9 +562,6 @@ export default class Apply extends Vue {
   private async getDropDown(): Promise<void> {
     this.dropOption = await post_term_getDropDown();
   }
-  private async getChannelAll(): Promise<void> {
-    this.channelList = await get_channel_getAll();
-  }
   private async getChannelInfo(item: any) {
     let res = await get_channel_get__id({ id: item.id });
     this.channelAccountOptions = res.channelBanks;
@@ -588,8 +578,8 @@ export default class Apply extends Vue {
       city: list.city,
     };
     let channelList: any = await post_channelGrade_getList(obj);
-    this.info.channelLevel = channelList.channelGrade;
-    this.info.organizationId = list.groupId;
+    this.info.channelLevel = channelList?.list[0]?.channelGrade;
+    this.info.organizationId = window.sessionStorage.getItem("groupId");
     // this.info.channelLevel = "BigPlatform"; // 假数据
   }
 
@@ -613,6 +603,40 @@ export default class Apply extends Vue {
     });
   }
 
+  previewTop(row: any) {
+    const token: any = getToken();
+    axios({
+      method: "POST",
+      url: `/sales-api/project/distributContract/getPreViewOut/${row.agencyContrictId}`,
+      xsrfHeaderName: "Authorization",
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: "bearer " + token,
+      },
+    }).then((res: any) => {
+      if (res?.data?.fileId) {
+        axios({
+          method: "POST",
+          url: `/sales-api/sales-document-cover/pdf/ftlToPdf/brow`,
+          xsrfHeaderName: "Authorization",
+          responseType: "blob",
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: "bearer " + token,
+          },
+          data: {
+            data: res.data.parmas,
+            fileId: res.data.fileId,
+          },
+        }).then((item: any) => {
+          const arr = new Blob([item.data], { type: "application/pdf" });
+          const href = window.URL.createObjectURL(arr);
+          window.open(href);
+        });
+      }
+    });
+  }
+
   channelAccountChange(val: any) {
     const item = this.channelAccountOptions.find((v: any) => v.id === val);
     this.info.channelAccount = item.accountNo;
@@ -621,7 +645,7 @@ export default class Apply extends Vue {
   }
   async submit() {
     const res: any = await post_distribution_create(this.info);
-    if (res.data) {
+    if (res) {
       this.$message.success("申领成功");
       this.$goto({
         path: "/projectApproval/list",
@@ -632,7 +656,6 @@ export default class Apply extends Vue {
   async created() {
     await this.getDropDown();
     this.info.cycleId = Number(this.$route.query.id);
-    this.getChannelAll();
   }
 
   cancel() {

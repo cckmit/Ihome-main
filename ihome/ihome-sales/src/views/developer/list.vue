@@ -4,7 +4,7 @@
  * @Author: wwq
  * @Date: 2020-09-25 17:59:09
  * @LastEditors: wwq
- * @LastEditTime: 2020-12-21 10:00:02
+ * @LastEditTime: 2020-12-23 19:24:14
 -->
 <template>
   <ih-page>
@@ -188,18 +188,18 @@
                   v-has="'B.SALES.DEVELOPER.LIST.DELETE'"
                 >删除</el-dropdown-item>
                 <el-dropdown-item
-                  :class="{'ih-data-disabled': row.status !== 'WaitAuditByBranchHead'}"
+                  :class="{'ih-data-disabled': !revocationChange(row)}"
                   @click.native.prevent="routeTo(row, 'revocation')"
                   v-has="'B.SALES.DEVELOPER.LIST.REVOKE'"
                 >撤回
                 </el-dropdown-item>
                 <el-dropdown-item
-                  :class="{'ih-data-disabled': row.status !== 'WaitAuditByBranchHead'}"
+                  :class="{'ih-data-disabled': !checkChange(row)}"
                   @click.native.prevent="routeTo(row, 'check')"
                   v-has="'B.SALES.DEVELOPER.LIST.VERIFY'"
                 >审核</el-dropdown-item>
                 <el-dropdown-item
-                  :class="{'ih-data-disabled': row.status !== 'Audited'}"
+                  :class="{'ih-data-disabled': !changeInfo(row)}"
                   @click.native.prevent="routeTo(row, 'change')"
                   v-has="'B.SALES.DEVELOPER.LIST.UPDATEINFO'"
                 >变更信息</el-dropdown-item>
@@ -271,7 +271,39 @@ export default class DeveloperList extends Vue {
   editChange(row: any) {
     const status = row.status === "Draft";
     const dangqian = (this.$root as any).userInfo.id === row.inputUser;
-    return status && dangqian;
+    const roleList = (this.$root as any).userInfo.roleList.map(
+      (v: any) => v.code
+    );
+    const qudao = roleList.includes("RChannelStaff");
+    return status && dangqian && qudao;
+  }
+  revocationChange(row: any) {
+    const status = row.status === "WaitAuditByBranchHead";
+    const roleList = (this.$root as any).userInfo.roleList.map(
+      (v: any) => v.code
+    );
+    const qudao = roleList.includes("RChannelStaff");
+    return status && qudao;
+  }
+
+  checkChange(row: any) {
+    const status = row.status === "WaitAuditByBranchHead";
+    const roleList = (this.$root as any).userInfo.roleList.map(
+      (v: any) => v.code
+    );
+    const fen = roleList.includes("RBusinessManagement");
+    const zong = roleList.includes("RHeadBusinessManagement");
+    return (fen || zong) && status;
+  }
+
+  changeInfo(row: any) {
+    const status = row.status === "Audited";
+    const roleList = (this.$root as any).userInfo.roleList.map(
+      (v: any) => v.code
+    );
+    const fen = roleList.includes("RBusinessManagement");
+    const zong = roleList.includes("RHeadBusinessManagement");
+    return (fen || zong) && status;
   }
 
   get emptyText() {

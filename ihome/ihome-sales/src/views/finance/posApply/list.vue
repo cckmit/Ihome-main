@@ -4,7 +4,7 @@
  * @Author: ywl
  * @Date: 2020-12-22 19:30:19
  * @LastEditors: ywl
- * @LastEditTime: 2020-12-22 20:53:23
+ * @LastEditTime: 2020-12-23 19:22:56
 -->
 <template>
   <IhPage label-width="80px">
@@ -60,7 +60,7 @@
                 class="width--100"
               >
                 <el-option
-                  v-for="(i, n) in $root.dictAllList('PosOperate')"
+                  v-for="(i, n) in $root.dictAllList('PosTerminalStatus')"
                   :key="n"
                   :value="i.code"
                   :label="i.name"
@@ -90,11 +90,21 @@
           type="info"
           @click="reset()"
         >重置</el-button>
-        <el-button>领用</el-button>
-        <el-button>申领</el-button>
-        <el-button>调动</el-button>
-        <el-button>退还</el-button>
-        <el-button>归还</el-button>
+        <el-dropdown
+          trigger="click"
+          class="margin-left-15"
+        >
+          <el-button type="success">
+            申请操作<i class="el-icon-arrow-down el-icon--right"></i>
+          </el-button>
+          <el-dropdown-menu slot="dropdown">
+            <el-dropdown-item @click.native.prevent="handleApply('Use')">领用</el-dropdown-item>
+            <el-dropdown-item @click.native.prevent="handleApply('Apply')">申领</el-dropdown-item>
+            <el-dropdown-item @click.native.prevent="handleApply('Move')">调动</el-dropdown-item>
+            <el-dropdown-item @click.native.prevent="handleApply('Return')">退还</el-dropdown-item>
+            <el-dropdown-item @click.native.prevent="handleApply('GiveBack')">归还</el-dropdown-item>
+          </el-dropdown-menu>
+        </el-dropdown>
       </el-row>
     </template>
     <template #table>
@@ -133,7 +143,7 @@
           prop="status"
         >
           <template v-slot="{ row }">
-            {{$root.dictAllName(row.status, 'PosOperate')}}
+            {{$root.dictAllName(row.status, 'PosTerminalStatus')}}
           </template>
         </el-table-column>
         <el-table-column
@@ -153,8 +163,11 @@
           label="操作"
           width="120"
         >
-          <template v-slot="{  }">
-            <el-link type="primary">详情</el-link>
+          <template v-slot="{ row }">
+            <el-link
+              type="primary"
+              @click="$router.push(`/posApply/info?id=${row.id}`)"
+            >详情</el-link>
             <el-dropdown
               trigger="click"
               class="margin-left-15"
@@ -198,6 +211,14 @@
         :total="resPageInfo.total"
       ></el-pagination>
     </template>
+    <!-- 弹窗 -->
+    <IhDialog :show="dialogVisible">
+      <Apply
+        :isAdd="isAdd"
+        :type="applyType"
+        @cancel="() => (dialogVisible = false)"
+      />
+    </IhDialog>
   </IhPage>
 </template>
 
@@ -205,8 +226,10 @@
 import { Component, Vue } from "vue-property-decorator";
 import PaginationMixin from "../../../mixins/pagination";
 import { post_posApplyItem_getList } from "../../../api/finance/index";
+import Apply from "./dialog/apply.vue";
 
 @Component({
+  components: { Apply },
   mixins: [PaginationMixin],
 })
 export default class POSApplyList extends Vue {
@@ -221,7 +244,15 @@ export default class POSApplyList extends Vue {
     total: null,
     list: [],
   };
+  private dialogVisible = false;
+  private applyType: any = null;
+  private isAdd = true;
 
+  private handleApply(type: string) {
+    this.applyType = type;
+    this.isAdd = true;
+    this.dialogVisible = true;
+  }
   private search() {
     this.queryPageParameters.pageNum = 1;
     this.getListMixin();
