@@ -4,7 +4,7 @@
  * @Author: wwq
  * @Date: 2020-09-27 11:52:41
  * @LastEditors: wwq
- * @LastEditTime: 2020-12-19 17:46:32
+ * @LastEditTime: 2020-12-23 20:54:48
 -->
 <template>
   <div>
@@ -15,7 +15,7 @@
     >
       <el-row>
         <el-col :span="8">
-          <el-form-item label="项目盘编">
+          <el-form-item label="栋座名称">
             <el-input
               style="width: 100%"
               clearable

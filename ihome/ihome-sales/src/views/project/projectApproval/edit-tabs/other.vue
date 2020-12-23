@@ -4,7 +4,7 @@
  * @Author: wwq
  * @Date: 2020-11-27 17:28:28
  * @LastEditors: wwq
- * @LastEditTime: 2020-12-23 09:13:03
+ * @LastEditTime: 2020-12-23 20:50:14
 -->
 <template>
   <div>
@@ -384,6 +384,7 @@ export default class Other extends Vue {
   }
 
   async exOverChange(val: any) {
+    this.info.exOver = val;
     await post_other_changOver({
       termId: this.$route.query.id,
       type: val ? 1 : 0,
@@ -391,6 +392,7 @@ export default class Other extends Vue {
   }
 
   async exOtherProChannelUseChange(val: any) {
+    this.info.exOtherProChannelUse = val;
     await post_other_changOtherProChannelUse({
       termId: this.$route.query.id,
       type: val ? 1 : 0,
@@ -432,7 +434,7 @@ export default class Other extends Vue {
 
   add() {
     this.approvalDialogVisible = true;
-    this.approvalData.exOver = this.info.exOver ? 1 : 0;
+    this.approvalData.exOver = this.info.exOtherProChannelUse ? 1 : 0;
     this.approvalData.proId = this.info.proId;
   }
 
