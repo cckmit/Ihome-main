@@ -4,7 +4,7 @@
  * @Author: ywl
  * @Date: 2020-12-22 20:57:20
  * @LastEditors: ywl
- * @LastEditTime: 2020-12-23 09:35:06
+ * @LastEditTime: 2020-12-23 10:46:49
 -->
 <template>
   <IhPage class="text-left">
@@ -13,7 +13,7 @@
       <el-form label-width="100px">
         <el-row>
           <el-col :span="8">
-            <el-form-item label="事项编号">xx</el-form-item>
+            <el-form-item label="事项编号">{{info.itemNo}}</el-form-item>
           </el-col>
           <el-col :span="8">
             <el-form-item label="申请人">{{info.applyUser}}</el-form-item>
@@ -24,7 +24,7 @@
         </el-row>
         <el-row>
           <el-col :span="8">
-            <el-form-item label="状态">xx</el-form-item>
+            <el-form-item label="状态">{{$root.dictAllName(info.status, 'PosTerminalStatus')}}</el-form-item>
           </el-col>
           <el-col :span="8">
             <el-form-item label="立项周期">{{info.proId}}</el-form-item>

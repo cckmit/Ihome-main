@@ -4,7 +4,7 @@
  * @Author: ywl
  * @Date: 2020-12-08 19:55:43
  * @LastEditors: ywl
- * @LastEditTime: 2020-12-17 20:43:28
+ * @LastEditTime: 2020-12-23 14:45:53
 -->
 <template>
   <IhPage class="text-left">
@@ -212,7 +212,7 @@ export default class InvoiceInfo extends Vue {
       this.info = await get_invoice_get__id({ id });
       this.fileList = this.info.attachmentVOs.map((i: any) => ({
         fileId: i.fileId,
-        name: `${i.name}.${i.type}`,
+        name: i.fileName,
       }));
     }
   }

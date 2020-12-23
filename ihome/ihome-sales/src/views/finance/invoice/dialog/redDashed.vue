@@ -4,7 +4,7 @@
  * @Author: ywl
  * @Date: 2020-12-09 16:47:26
  * @LastEditors: ywl
- * @LastEditTime: 2020-12-17 15:30:43
+ * @LastEditTime: 2020-12-23 14:34:25
 -->
 <template>
   <el-dialog
@@ -32,6 +32,8 @@
           :rows="4"
           v-model="form.remark"
           placeholder="备注信息"
+          maxlength="256"
+          show-word-limit
         ></el-input>
       </div>
     </div>
