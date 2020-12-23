@@ -2,9 +2,9 @@
  * @Descripttion: 
  * @version: 
  * @Author: lsj
- * @Date: 2020-10-30 16:38:23
+ * @Date: 2020-12-23 14:20:40
  * @LastEditors: lsj
- * @LastEditTime: 2020-12-22 12:12:20
+ * @LastEditTime: 2020-12-23 18:50:50
 -->
 <template>
   <ih-page class="text-left">
@@ -488,7 +488,7 @@
           <el-table-column prop="custTel" label="手机号码" min-width="120"></el-table-column>
           <el-table-column prop="cardType" label="证件类型" min-width="120">
             <template slot-scope="scope">
-              <div>{{$root.dictAllName(scope.row.cardType, 'CommObjectType')}}</div>
+              <div>{{$root.dictAllName(scope.row.cardType, 'CardType')}}</div>
             </template>
           </el-table-column>
           <el-table-column prop="certificateNumber" label="证件编号" min-width="150"></el-table-column>
@@ -519,72 +519,28 @@
           :data="postData.receiveVO">
           <el-table-column prop="type" label="类型" min-width="120">
             <template slot-scope="scope">
-              <div>{{scope.row.type === 'ServiceFee' ? '服务费' : '代理费'}}</div>
+              <div>{{$root.dictAllName(scope.row.type, 'FeeType')}}</div>
             </template>
           </el-table-column>
           <el-table-column prop="partyACustomerName" label="甲方/客户" min-width="120"></el-table-column>
           <el-table-column prop="packageId" label="收派套餐" min-width="140">
             <template slot-scope="scope">
-              <div v-if="postData.calculation === 'Auto'">
-                <el-input
-                  readonly
-                  :disabled="postData.calculation === 'Manual'"
-                  placeholder="请选择收派套餐"
-                  v-model="scope.row.packageId">
-                  <el-button
-                    slot="append"
-                    icon="el-icon-search"
-                    @click.native.prevent="selectPackage(scope)"></el-button>
-                </el-input>
-              </div>
-              <div v-else>---</div>
-            </template>
-          </el-table-column>
-          <el-table-column prop="receiveAmount" label="应收金额" min-width="120">
-            <template slot-scope="scope">
               <el-input
-                v-digits="2"
-                v-model="scope.row.receiveAmount"
-                :disabled="postData.calculation === 'Auto'"
-                placeholder="应收金额"></el-input>
+                readonly
+                placeholder="请选择收派套餐"
+                v-model="scope.row.packageId">
+                <el-button
+                  slot="append"
+                  icon="el-icon-search"
+                  @click.native.prevent="selectPackage(scope)"></el-button>
+              </el-input>
             </template>
           </el-table-column>
-          <el-table-column prop="commAmount" label="派发佣金金额" min-width="150">
-            <template slot-scope="scope">
-              <el-input
-                v-digits="2"
-                v-model="scope.row.commAmount"
-                :disabled="postData.calculation === 'Auto'"
-                placeholder="应收金额"></el-input>
-            </template>
-          </el-table-column>
-          <el-table-column prop="rewardAmount" label="派发内场奖励金额" min-width="150">
-            <template slot-scope="scope">
-              <el-input
-                v-digits="2"
-                v-model="scope.row.rewardAmount"
-                :disabled="postData.calculation === 'Auto'"
-                placeholder="应收金额"></el-input>
-            </template>
-          </el-table-column>
-          <el-table-column prop="totalPackageAmount" label="总包业绩金额" min-width="150">
-            <template slot-scope="scope">
-              <el-input
-                v-digits="2"
-                v-model="scope.row.totalPackageAmount"
-                :disabled="postData.calculation === 'Auto'"
-                placeholder="应收金额"></el-input>
-            </template>
-          </el-table-column>
-          <el-table-column prop="distributionAmount" label="分销业绩金额" min-width="150">
-            <template slot-scope="scope">
-              <el-input
-                v-digits="2"
-                v-model="scope.row.distributionAmount"
-                :disabled="postData.calculation === 'Auto'"
-                placeholder="应收金额"></el-input>
-            </template>
-          </el-table-column>
+          <el-table-column prop="receiveAmount" label="应收金额" min-width="120"></el-table-column>
+          <el-table-column prop="commAmount" label="派发佣金金额" min-width="150"></el-table-column>
+          <el-table-column prop="rewardAmount" label="派发内场奖励金额" min-width="150"></el-table-column>
+          <el-table-column prop="totalPackageAmount" label="总包业绩金额" min-width="150"></el-table-column>
+          <el-table-column prop="distributionAmount" label="分销业绩金额" min-width="150"></el-table-column>
           <el-table-column prop="otherChannelFees" label="其他渠道费用(正数为产生，负数为使用)" min-width="150"></el-table-column>
         </el-table>
       </el-col>
@@ -604,7 +560,7 @@
     <el-row style="padding-left: 20px">
       <el-col>
         <div class="add-all-wrapper" v-if="baseInfoByTerm.exMinyuan">
-          <el-button type="success" @click="dialogViewInfo = true">查看来访/成交确认信息</el-button>
+          <el-button type="success" @click="handleViewDealInfo">查看来访/成交确认信息</el-button>
         </div>
         <el-table
           class="ih-table"
@@ -638,120 +594,10 @@
         <div @click="goAnchor(item.id)" v-for="item in navList" :key="item.id" class="nav-item">{{item.name}}</div>
       </div>
     </div>
-    <ih-dialog :show="dialogAddNotice" desc="选择优惠告知书列表">
-      <SelectNoticeList
-        :data="baseInfoByTerm"
-        @cancel="() => (dialogAddNotice = false)"
-        @finish="
-            (data) => {
-              finishAddNotice(data);
-            }
-          "
-      />
-    </ih-dialog>
-    <ih-dialog :show="dialogAddAgentCompany" desc="选择渠道公司列表">
-      <AgentCompanyList
-        @cancel="() => (dialogAddAgentCompany = false)"
-        @finish="
-            (data) => {
-              finishAddAgentCompany(data);
-            }
-          "
-      />
-    </ih-dialog>
-    <ih-dialog :show="dialogAddReportInfo" desc="选择已成交报备信息列表">
-      <SelectReportInfo
-        :hasCheckedData="reportCheckedData"
-        :data="baseInfoByTerm.proId"
-        @cancel="() => (dialogAddReportInfo = false)"
-        @finish="
-            (data) => {
-              dialogAddReportInfo = false;
-              finishAddReportInfo(data);
-            }
-          "
-      />
-    </ih-dialog>
-    <ih-dialog :show="dialogAddRoom" desc="选择房号列表">
-      <SelectRoom
-        :data="baseInfoByTerm.proId"
-        @cancel="() => (dialogAddRoom = false)"
-        @finish="
-            (data) => {
-              dialogAddRoom = false;
-              finishAddRoom(data);
-            }
-          "
-      />
-    </ih-dialog>
-    <ih-dialog :show="dialogAddCustomer" desc="选择客户列表">
-      <AddCustomer
-        @cancel="() => (dialogAddCustomer = false)"
-        @finish="
-            (data) => {
-              finishAddCustomer(data);
-            }
-          "
-      />
-    </ih-dialog>
-    <ih-dialog :show="dialogAddReceivePackage" desc="选择服务费收派套餐标准">
-      <SelectReceivePackage
-        :data="{type: 'service'}"
-        @cancel="() => (dialogAddReceivePackage = false)"
-        @finish="
-            (data) => {
-              dialogAddReceivePackage = false;
-              finishAddReceivePackage(data);
-            }
-          "
-      />
-    </ih-dialog>
-    <ih-dialog :show="dialogAddBroker" desc="选择渠道经纪人列表">
-      <AddBroker
-        @cancel="() => (dialogAddBroker = false)"
-        @finish="
-            (data) => {
-              dialogAddBroker = false;
-              finishAddBroker(data);
-            }
-          "
-      />
-    </ih-dialog>
-    <ih-dialog :show="dialogEditDealAchieve" desc="新增/修改角色业绩">
-      <EditDealAchieve
-        @cancel="() => (dialogEditDealAchieve = false)"
-        @finish="
-            (data) => {
-              dialogEditDealAchieve = false;
-              finishAddProjectCycle(data);
-            }
-          "
-      />
-    </ih-dialog>
-    <ih-dialog :show="dialogViewInfo" desc="来访/成交信息">
-      <DealInfo
-        @cancel="() => (dialogViewInfo = false)"
-        @finish="
-            () => {
-              dialogViewInfo = false;
-            }
-          "
-      />
-    </ih-dialog>
   </ih-page>
 </template>
 <script lang="ts">
   import {Component, Vue, Prop} from "vue-property-decorator";
-
-  import SelectNoticeList from "@/views/deal/dealReport/dialog/selectNoticeList.vue";
-  import SelectReportInfo from "@/views/deal/dealReport/dialog/selectReportInfo.vue";
-  import AgentCompanyList from "@/views/deal/dealReport/dialog/agentCompanyList.vue";
-  import SelectRoom from "@/views/deal/dealReport/dialog/selectRoom.vue";
-  import AddCustomer from "@/views/deal/dealReport/dialog/addCustomer.vue";
-  import SelectReceivePackage from "@/views/deal/dealReport/dialog/selectReceivePackage.vue";
-  import AddBroker from "@/views/deal/dealReport/dialog/addBroker.vue";
-  import EditDealAchieve from "@/views/deal/dealReport/dialog/editDealAchieve.vue";
-  import DealInfo from "@/views/deal/dealReport/dialog/dealInfo.vue";
   import {
     post_deal_initPage, // 选择周期、房号后初始化页面
     get_deal_get__id, // 编辑功能
@@ -765,17 +611,7 @@
   import {NoRepeatHttp} from "ihome-common/util/aop/no-repeat-http";
 
   @Component({
-    components: {
-      AddCustomer,
-      SelectReceivePackage,
-      AddBroker,
-      SelectNoticeList,
-      SelectRoom,
-      AgentCompanyList,
-      SelectReportInfo,
-      EditDealAchieve,
-      DealInfo
-    }
+    components: {}
   })
   export default class EntryDealInfo extends Vue {
     @Prop({
@@ -966,18 +802,7 @@
       ],
     };
     id: any = null;
-    dialogAddRoom: any = false;
-    dialogAddCustomer: any = false;
-    dialogAddReceivePackage: any = false;
-    dialogAddBroker: any = false;
     cycleCheckedData: any = [];
-    dialogAddNotice: any = false;
-    dialogAddReportInfo: any = false;
-    reportCheckedData: any = [];
-    dialogAddAgentCompany: any = false;
-    companyCheckedData: any = [];
-    dialogEditDealAchieve: any = false;
-    dialogViewInfo: any = false; // 来访/成交信息弹窗
     defaultNavList: any = [
       {
         id: 1,
@@ -1363,8 +1188,17 @@
     // 选择收派套餐
     selectPackage(scope: any) {
       console.log('选择收派套餐', scope);
-      if (this.postData.calculation === 'Manual') return;
-      this.dialogAddReceivePackage = true;
+      let obj: any = {
+        type: '',
+        idList: []
+      }
+      // 判断费用类型
+      if(scope.row.type === '') {
+        obj.type = 'service'; // 服务费
+      } else {
+        obj.type = 'agency'; // 代理费
+      }
+      (this as any).$parent.selectPackage(obj);
     }
 
     // 计算收派金额总计
@@ -1397,61 +1231,15 @@
       return sums;
     }
 
-    // 选择已成交的报备信息-分销成交模式下
-    selectReport() {
-      this.dialogAddReportInfo = true;
-    }
-
-    // 确定选择已成交的报备信息-分销成交模式下
-    finishAddReportInfo(data: any) {
-      // console.log('data', data);
-      if (data && data.length > 0) {
-        this.postData.agencyName = data[0].name;
-        this.postData.channelId = data[0].id;
-        this.reportCheckedData = [...data];
-      }
-    }
-
-    // 选择拆佣 - 收款方
-    selectCommName(scope: any) {
-      console.log('选择收款方', scope);
-      if (this.postData.calculation === 'Auto') return;
-      this.dialogAddAgentCompany = true;
-    }
-
-    // 确定选择渠道公司
-    finishAddAgentCompany(data: any) {
-      // console.log('data', data);
-      if (data && data.length > 0) {
-        // this.postData.agencyName = data[0].channelName;
-        // this.postData.channelId = data[0].channelId;
-        this.companyCheckedData = [...data];
-      }
-      this.dialogAddAgentCompany = false;
-    }
-
-    // 选择房号
-    selectRoom() {
-      // 没有项目周期ID或分销成交模式下不能选择房号，房号是不可编辑的
-      if (this.postData.contType === 'DistriDeal' || !this.baseInfoByTerm.proId) return
-      this.dialogAddRoom = true;
-    }
-
-    // 确定选择房号
-    async finishAddRoom(data: any) {
-      console.log('data', data);
-      this.postData.roomNo = data.roomNo;
-      this.postData.roomId = data.roomId;
-    }
-
     // 添加优惠告知书
     handleAddNotice() {
-      this.dialogAddNotice = true;
+      if(this.baseInfoByTerm.termId) {
+        (this as any).$parent.handleAddNotice(this.baseInfoByTerm);
+      }
     }
 
     // 确定选择优惠告知书
     async finishAddNotice(data: any) {
-      // console.log('data', data);
       if (data.length === 0) return;
       if (this.postData.offerNoticeVO.length > 0) {
         let flag = false;
@@ -1459,7 +1247,8 @@
           return item.id === data[0].id;
         })
         if (flag) {
-          this.$message.error('已经存在相同的客户，请重新选择！');
+          this.$message.error('已经存在相同的优惠告知书，请重新选择！');
+          return;
         } else {
           this.postData.offerNoticeVO.push(
             {
@@ -1467,7 +1256,6 @@
               addType: 'manual'
             }
           );
-          this.dialogAddNotice = false;
         }
       } else {
         this.postData.offerNoticeVO.push(
@@ -1476,8 +1264,8 @@
             addType: 'manual'
           }
         );
-        this.dialogAddNotice = false;
       }
+      (this as any).$parent.handleAddNotice(this.baseInfoByTerm);
     }
 
     // 删除优惠告知书
@@ -1495,18 +1283,12 @@
 
     // 添加客户
     handleAddCustomer() {
-      this.dialogAddCustomer = true;
-    }
-
-    // 添加渠道经纪人
-    handleAddBroker() {
-      this.dialogAddBroker = true;
+      (this as any).$parent.handleAddCustomer();
     }
 
     // 确定选择客户
     async finishAddCustomer(data: any) {
-      console.log('data', data);
-      // this.addTotalPackageList = data;
+      // console.log('data', data);
       if (data.length === 0) return
       if (this.postData.customerVO.length > 0) {
         let flag = false;
@@ -1515,21 +1297,20 @@
         })
         if (flag) {
           this.$message.error('已经存在相同的客户，请重新选择！');
+          return;
         } else {
           this.postData.customerVO.push(...data);
-          this.dialogAddCustomer = false;
         }
       } else {
         this.postData.customerVO.push(...data);
-        this.dialogAddCustomer = false;
       }
+      (this as any).$parent.handleAddCustomer();
     }
 
     // 确定选择收派套餐
     async finishAddReceivePackage(data: any) {
-      console.log('data', data);
-      // this.addTotalPackageList = data;
-      if (data.length === 0) return
+      // console.log('data', data);
+      if (data.length === 0) return;
       if (this.postData.receiveVO.length > 0) {
         let flag = false;
         flag = this.postData.receiveVO.some((item: any) => {
@@ -1537,14 +1318,14 @@
         })
         if (flag) {
           this.$message.error('已经存在相同的收派套餐，请重新选择！');
+          return;
         } else {
           this.postData.receiveVO.push(...data);
-          this.dialogAddReceivePackage = false;
         }
       } else {
         this.postData.receiveVO.push(...data);
-        this.dialogAddReceivePackage = false;
       }
+      (this as any).$parent.selectPackage();
     }
 
     // 确定选择渠道经纪人
@@ -1633,6 +1414,11 @@
         this.$message.warning("请先填好数据再保存");
         return false;
       }
+    }
+
+    // 查看来访/成交确认信息
+    handleViewDealInfo() {
+      (this as any).$parent.handleViewDealInfo();
     }
   }
 </script>

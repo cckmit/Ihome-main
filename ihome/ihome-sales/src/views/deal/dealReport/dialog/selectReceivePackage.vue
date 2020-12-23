@@ -4,70 +4,78 @@
  * @Author: lsj
  * @Date: 2020-11-03 15:28:12
  * @LastEditors: lsj
- * @LastEditTime: 2020-12-19 15:55:33
+ * @LastEditTime: 2020-12-23 20:18:09
 -->
 <template>
   <el-dialog
     v-dialogDrag
-    title="选择服务费收派套餐标准"
+    :title="dialogTitle"
     :visible.sync="dialogVisible"
     :close-on-click-modal="false"
     :close-on-press-escape="false"
     :before-close="beforeFinish"
     append-to-body
-    width="1000px"
+    width="80%"
     style="text-align: left"
     class="dialog">
-    <div>
-      <div v-if="data.type === 'service'" class="title">服务费收派套餐</div>
-      <div v-else class="title">代理费收派套餐</div>
-      <el-table
-        class="ih-table"
-        :empty-text="emptyText"
-        :data="resPageInfo.list"
-        @selection-change="handleSelectionChange">
-        <el-table-column type="selection" width="55"></el-table-column>
-        <el-table-column prop="storageNum" label="类型" min-width="180"></el-table-column>
-        <el-table-column prop="channelName" label="合同类型" min-width="180"></el-table-column>
-        <el-table-column prop="province" label="客户类型" min-width="180"></el-table-column>
-        <el-table-column prop="province" label="条件" min-width="180"></el-table-column>
-        <el-table-column prop="province" label="应收金额" min-width="180">
-          <template slot-scope="scope">
-            <div>金额：{{scope}}</div>
-            <div>点数：{{scope}}</div>
-          </template>
-        </el-table-column>
-        <el-table-column prop="province" label="派发佣金" min-width="180">
-          <template slot-scope="scope">
-            <div>金额：{{scope}}</div>
-            <div>点数：{{scope}}</div>
-          </template>
-        </el-table-column>
-        <el-table-column prop="province" label="派发内场奖励" min-width="180">
-          <template slot-scope="scope">
-            <div>金额：{{scope}}</div>
-            <div>点数：{{scope}}</div>
-          </template>
-        </el-table-column>
-        <el-table-column prop="province" label="总包业绩" min-width="180">
-          <template slot-scope="scope">
-            <div>金额：{{scope}}</div>
-            <div>点数：{{scope}}</div>
-          </template>
-        </el-table-column>
-        <el-table-column prop="province" label="分销业绩" min-width="180">
-          <template slot-scope="scope">
-            <div>金额：{{scope}}</div>
-            <div>点数：{{scope}}</div>
-          </template>
-        </el-table-column>
-        <el-table-column prop="province" label="其他渠道费用" min-width="180" v-if="data.type === 'service'">
-          <template slot-scope="scope">
-            <div>金额：{{scope}}</div>
-            <div>点数：{{scope}}</div>
-          </template>
-        </el-table-column>
-      </el-table>
+    <el-table
+      ref="table"
+      :max-height="350"
+      class="ih-table table-dialog"
+      :data="resPageInfo.list"
+      @selection-change="handleSelectionChange"
+      @select="handleSelect"
+      @select-all="handleSelectAll">
+      <el-table-column fixed type="selection" width="50" align="center"></el-table-column>
+      <el-table-column label="类型" prop="type" min-width="100">
+        <template slot-scope="scope">
+          <div>{{$root.dictAllName(scope.row.branchName, 'CardType')}}</div>
+        </template>
+      </el-table-column>
+      <el-table-column label="合同类型" prop="contractEnum" min-width="100">
+        <template slot-scope="scope">
+          <div>{{$root.dictAllName(scope.row.contractEnum, 'Contract')}}</div>
+        </template>
+      </el-table-column>
+      <el-table-column label="客户类型" prop="transactionEnum" min-width="100">
+        <template slot-scope="scope">
+          <div>{{$root.dictAllName(scope.row.transactionEnum, 'Transaction')}}</div>
+        </template>
+      </el-table-column>
+      <el-table-column label="条件" prop="condition" min-width="200"></el-table-column>
+      <el-table-column label="应收金额" prop="receivableAmout" min-width="100">
+        <template slot-scope="scope">
+          <div>金额：{{scope.row.receivableAmout}}</div>
+          <div>点数：{{scope.row.receivablePoint}}</div>
+        </template>
+      </el-table-column>
+      <el-table-column label="派发佣金" prop="sendAmount" min-width="100">
+        <template slot-scope="scope">
+          <div>金额：{{scope.row.sendAmount}}</div>
+          <div>点数：{{scope.row.sendPoint}}</div>
+        </template>
+      </el-table-column>
+      <el-table-column label="派发内场奖励" prop="sendInAmount" min-width="100">
+        <template slot-scope="scope">
+          <div>金额：{{scope.row.sendInAmount}}</div>
+          <div>点数：{{scope.row.sendInPoint}}</div>
+        </template>
+      </el-table-column>
+      <el-table-column label="总包业绩" prop="generalAchieveAmount" min-width="100">
+        <template slot-scope="scope">
+          <div>金额：{{scope.row.generalAchieveAmount}}</div>
+          <div>点数：{{scope.row.generalAchievePoint}}</div>
+        </template>
+      </el-table-column>
+      <el-table-column label="分销业绩" prop="distributeAchieveAmount" min-width="100">
+        <template slot-scope="scope">
+          <div>金额：{{scope.row.distributeAchieveAmount}}</div>
+          <div>点数：{{scope.row.distributeAchievePoint}}</div>
+        </template>
+      </el-table-column>
+    </el-table>
+    <div class="text-right">
+      <br />
       <el-pagination
         @size-change="handleSizeChangeMixin"
         @current-change="handleCurrentChangeMixin"
@@ -86,43 +94,70 @@
 </template>
 <script lang="ts">
   import {Component, Vue, Prop} from "vue-property-decorator";
-
-  import {post_channelGrade_getList} from "@/api/channel";
   import PaginationMixin from "@/mixins/pagination";
+  import {post_collectandsend_getCollectadnsendMxByIds} from "@/api/project"; // 根据可选IDS获取收派套餐
 
   @Component({
-    components: {},
-    mixins: [PaginationMixin],
+    mixins: [PaginationMixin]
   })
   export default class SelectReceivePackage extends Vue {
     constructor() {
       super();
     }
-
-    @Prop({default: null}) data: any;
-    dialogVisible = true;
-    resPageInfo: any = {
+    private dialogVisible = true;
+    private selection = [];
+    public queryPageParameters: any = {
+      packageMxIds: []
+    };
+    public resPageInfo: any = {
       total: null,
       list: [],
     };
+    @Prop({default: null}) data: any;
+    dialogTitle: any = null; // 弹窗标题
 
-    queryPageParameters: any = {
-      channelGrade: null,
-      channelId: null,
-      city: null,
-      cityGrade: null,
-      departmentOrgId: null,
-      inputUser: null,
-      province: null,
-      special: null,
-      status: null,
-      storageNum: null,
-    };
-
-    async finish() {
-      this.$emit("finish", true);
+    created() {
+      // console.log('data', this.data);
+      // 判断套餐类型
+      if (this.data && this.data.type === 'service') {
+        this.dialogTitle = '选择服务费收派套餐标准';
+      } else {
+        this.dialogTitle = '选择代理费收派套餐标准';
+      }
+      if (this.data && this.data.idList && this.data.idList.length > 0) {
+        this.queryPageParameters.packageMxIds = this.data.idList;
+        // this.getListMixin();
+      }
     }
 
+    private handleSelectionChange(val: any) {
+      this.selection = val;
+    }
+
+    private handleSelect(selection: any) {
+      if (selection.length > 1) {
+        let del_row = selection.shift();
+        (this.$refs.table as any).toggleRowSelection(del_row, false);
+      }
+    }
+
+    private handleSelectAll() {
+      (this.$refs.table as any).clearSelection();
+    }
+
+    async getListMixin() {
+      this.resPageInfo = await post_collectandsend_getCollectadnsendMxByIds(this.queryPageParameters);
+    }
+
+    async finish() {
+      if (this.selection.length) {
+        this.$emit("finish", this.selection[0]);
+      } else {
+        this.$message.warning("请先勾选表格数据");
+      }
+    }
+
+    // 取消之前
     async beforeFinish() {
       this.$emit("cancel", false);
     }
@@ -130,20 +165,6 @@
     // 取消
     cancel() {
       this.$emit("cancel", false);
-    }
-
-    created() {
-      this.getListMixin();
-      // console.log('datadata', this.data);
-    }
-
-    handleSelectionChange(val: any) {
-      console.log(val);
-      // this.selectList = val;
-    }
-
-    async getListMixin() {
-      this.resPageInfo = await post_channelGrade_getList(this.queryPageParameters);
     }
   }
 </script>
@@ -162,4 +183,13 @@
       padding: 10px 20px 20px 20px;
     }
   }
+</style>
+<style lang="scss">
+.ih-table.table-dialog {
+  .el-table__header {
+    .el-checkbox {
+      display: none !important;
+    }
+  }
+}
 </style>

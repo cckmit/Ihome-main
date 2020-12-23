@@ -4,7 +4,7 @@
  * @Author: lsj
  * @Date: 2020-12-14 18:40:10
  * @LastEditors: lsj
- * @LastEditTime: 2020-12-14 19:20:30
+ * @LastEditTime: 2020-12-23 20:11:12
 -->
 <template>
   <el-dialog
@@ -155,22 +155,47 @@
         </el-col>
       </el-row>
     </el-form>
-    <IhTableCheckBox
-      :isSingle="true"
-      :isSelection="false"
-      :valueKey="rowKey"
+    <el-table
+      ref="table"
+      :max-height="350"
+      class="ih-table table-dialog"
       :data="resPageInfo.list"
-      :hasCheckedData="hasCheckedData"
-      :rowKey="rowKey"
-      :column="tableColumn"
-      :maxHeight="tableMaxHeight"
-      @selection-change="selectionChange"
-      :pageSize="pageSize"
-      :pageCurrent="currentPage"
-      :pageTotal="resPageInfo.total"
-      @page-change="pageChange"
-      @size-change="sizeChange">
-    </IhTableCheckBox>
+      @selection-change="handleSelectionChange"
+      @select="handleSelect"
+      @select-all="handleSelectAll">
+      <el-table-column fixed type="selection" width="50" align="center"></el-table-column>
+      <el-table-column label="编号" prop="noticeNo" min-width="210"></el-table-column>
+      <el-table-column label="类型" prop="notificationType" min-width="130">
+        <template slot-scope="scope">
+          <div>{{$root.dictAllName(scope.row.notificationType, 'NotificationType')}}</div>
+        </template>
+      </el-table-column>
+      <el-table-column label="项目名称" prop="projectName" min-width="180"></el-table-column>
+      <el-table-column label="联动周期" prop="cycleName" min-width="130"></el-table-column>
+      <el-table-column label="栋座" prop="buyUnit" min-width="100"></el-table-column>
+      <el-table-column label="房号" prop="roomNumberId" min-width="100"></el-table-column>
+      <el-table-column label="甲方名称" prop="partyAName" min-width="120"></el-table-column>
+      <el-table-column label="区域" prop="area" min-width="120"></el-table-column>
+      <el-table-column label="客户名称" prop="ownerName" min-width="150"></el-table-column>
+      <el-table-column label="客户电话" prop="ownerMobile" min-width="150"></el-table-column>
+      <el-table-column label="状态" prop="notificationStatus" min-width="100">
+        <template slot-scope="scope">
+          <div>{{$root.dictAllName(scope.row.notificationStatus, 'NotificationStatus')}}</div>
+        </template>
+      </el-table-column>
+    </el-table>
+    <div class="text-right">
+      <br />
+      <el-pagination
+        @size-change="handleSizeChangeMixin"
+        @current-change="handleCurrentChangeMixin"
+        :current-page.sync="queryPageParameters.pageNum"
+        :page-sizes="$root.pageSizes"
+        :page-size="queryPageParameters.pageSize"
+        :layout="$root.paginationLayout"
+        :total="resPageInfo.total"
+      ></el-pagination>
+    </div>
     <span slot="footer" class="dialog-footer">
       <el-button @click="cancel()">取 消</el-button>
       <el-button type="primary" @click="finish()">确 定</el-button>
@@ -200,93 +225,10 @@
     constructor() {
       super();
     }
-
-    private rowKey: any = 'id'; // 选择项的标识
-    private tableMaxHeight: any = 350;
-    private tableColumn = [
-      {
-        prop: "noticeNo",
-        label: "编号",
-        align: "left",
-        minWidth: 210,
-      },
-      {
-        prop: "notificationTypeByName",
-        label: "类型",
-        align: "left",
-        minWidth: 130,
-      },
-      {
-        prop: "projectName",
-        label: "项目名称",
-        align: "left",
-        minWidth: 180,
-      },
-      {
-        prop: "cycleName",
-        label: "联动周期",
-        align: "left",
-        minWidth: 130,
-      },
-      {
-        prop: "buyUnit",
-        label: "栋座",
-        align: "left",
-        minWidth: 100,
-      },
-      {
-        prop: "roomNumberId",
-        label: "房号",
-        align: "left",
-        minWidth: 100,
-      },
-      {
-        prop: "partyAName",
-        label: "甲方名称",
-        align: "left",
-        minWidth: 120,
-      },
-      {
-        prop: "area",
-        label: "区域",
-        align: "left",
-        minWidth: 120,
-      },
-      {
-        prop: "ownerName",
-        label: "客户名称",
-        align: "left",
-        minWidth: 150,
-      },
-      {
-        prop: "ownerMobile",
-        label: "客户电话",
-        align: "left",
-        minWidth: 150,
-      },
-      {
-        prop: "notificationStatusByName",
-        label: "状态",
-        align: "left",
-        minWidth: 100,
-      }
-    ];
-    private pageSize = 10;
-    private currentPage = 1;
     private searchOpen = true;
-
-    @Prop({default: null}) data: any;
-    @Prop({
-      default: ()=>[]
-    })
-    hasCheckedData!: any;
-    dialogVisible = true;
-    resPageInfo: any = {
-      total: null,
-      list: [],
-    };
-
-    queryPageParameters: any = {
+    private dialogVisible = true;
+    private selection = [];
+    public queryPageParameters: any = {
       noticeNo: null, // 编号
       notificationTypes: null, // 类型 array
       projectId: null, // 项目名称
@@ -299,7 +241,11 @@
       ownerName: null, // 客户
       ownerMobile: null // 客户电话
     };
-    currentSelection: any = []; // 当前选择的项
+    public resPageInfo: any = {
+      total: null,
+      list: [],
+    };
+    @Prop({default: null}) data: any;
 
     created() {
       console.log('notice data', this.data);
@@ -322,34 +268,29 @@
     }
 
     async finish() {
-      if (this.currentSelection.length === 0) {
+      if (this.selection.length === 0) {
         this.$message({
           type: "error",
           message: "请选择优惠告知书",
         });
         return
       }
-      this.$emit("finish", this.currentSelection);
+      this.$emit("finish", this.selection);
     }
 
-    // 获取选中项 --- 最后需要获取的数据
-    private selectionChange(selection: any) {
-      console.log(selection, "selectionChange");
-      this.currentSelection = selection;
+    private handleSelectionChange(val: any) {
+      this.selection = val;
     }
 
-    private pageChange(index: number) {
-      this.currentPage = index;
-      this.queryPageParameters.pageNum = index;
-      this.getListMixin();
+    private handleSelect(selection: any) {
+      if (selection.length > 1) {
+        let del_row = selection.shift();
+        (this.$refs.table as any).toggleRowSelection(del_row, false);
+      }
     }
 
-    private sizeChange(val: any) {
-      this.currentPage = 1;
-      this.pageSize = val;
-      this.queryPageParameters.pageNum = 1;
-      this.queryPageParameters.pageSize = val;
-      this.getListMixin();
+    private handleSelectAll() {
+      (this.$refs.table as any).clearSelection();
     }
 
     async getListMixin() {
@@ -361,14 +302,6 @@
       const infoList = await post_notice_deal_list(postData);
       if (infoList.list.length > 0) {
         infoList.list.forEach((item: any) => {
-          item.checked = false;
-          // 修改显示 ChannelGradeStatus
-          if (item.notificationType) {
-            item.notificationTypeByName = (this as any).$root.dictAllName(item.notificationType, 'NotificationType');
-          }
-          if (item.notificationStatus) {
-            item.notificationStatusByName = (this as any).$root.dictAllName(item.notificationStatus, 'NotificationStatus');
-          }
           // 客户姓名
           if (item.ownerList && item.ownerList.length > 0) {
             let nameList: any = [];
@@ -390,36 +323,22 @@
         })
       }
       this.resPageInfo = JSON.parse(JSON.stringify(infoList));
-      // 勾选回显
-      if (this.resPageInfo.list.length > 0 && this.hasCheckedData.length > 0) {
-        this.hasCheckedData.forEach((data: any) => {
-          this.resPageInfo.list.forEach((list: any) => {
-            if (list[this.rowKey] === data[this.rowKey]) {
-              list.checked = true;
-              this.currentSelection = [...list];
-            }
-          })
-        })
-      }
     }
 
-    // 重置
-    reset() {
-      this.queryPageParameters = {
-        area: null,
-        cycleId: null,
-        notificationStatuses: null,
-        noticeNo: null,
-        ownerMobile: null,
-        ownerName: null,
-        partyAId: null,
-        projectId: null,
-        roomNumberId: null,
-        notificationTypes: null,
-        buyUnit: null,
-        pageNum: 1,
-        pageSize: this.queryPageParameters.pageSize
-      }
+    private reset() {
+      Object.assign(this.queryPageParameters, {
+        noticeNo: null, // 编号
+        notificationTypes: null, // 类型 array
+        projectId: null, // 项目名称
+        cycleId: null, // 项目周期
+        buyUnit: null, // 栋座
+        roomNumberId: null, // 房号
+        partyAId: null, // 甲方
+        area: null, // 区域
+        notificationStatuses: null, // 状态 array
+        ownerName: null, // 客户
+        ownerMobile: null // 客户电话
+      });
     }
   }
 </script>

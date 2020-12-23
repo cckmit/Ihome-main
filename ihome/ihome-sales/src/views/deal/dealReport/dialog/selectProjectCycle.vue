@@ -4,7 +4,7 @@
  * @Author: lsj
  * @Date: 2020-11-03 15:28:12
  * @LastEditors: lsj
- * @LastEditTime: 2020-12-15 20:25:33
+ * @LastEditTime: 2020-12-23 20:32:22
 -->
 <template>
   <el-dialog
@@ -30,22 +30,36 @@
         </el-col>
       </el-row>
     </el-form>
-    <IhTableCheckBox
-      :isSingle="true"
-      :isSelection="false"
-      :valueKey="rowKey"
+    <el-table
+      ref="table"
+      :max-height="350"
+      class="ih-table table-dialog"
       :data="resPageInfo.list"
-      :hasCheckedData="hasCheckedData"
-      :rowKey="rowKey"
-      :column="tableColumn"
-      :maxHeight="tableMaxHeight"
-      @selection-change="selectionChange"
-      :pageSize="pageSize"
-      :pageCurrent="currentPage"
-      :pageTotal="resPageInfo.total"
-      @page-change="pageChange"
-      @size-change="sizeChange">
-    </IhTableCheckBox>
+      @selection-change="handleSelectionChange"
+      @select="handleSelect"
+      @select-all="handleSelectAll">
+      <el-table-column fixed type="selection" width="50" align="center"></el-table-column>
+      <el-table-column label="项目周期名称" prop="termName" min-width="250"></el-table-column>
+      <el-table-column label="业务类型" prop="busTypeEnum" min-width="100">
+        <template slot-scope="scope">
+          <div>{{$root.dictAllName(scope.row.busTypeEnum, 'BusType')}}</div>
+        </template>
+      </el-table-column>
+      <el-table-column label="开始时间" prop="termStart" min-width="150"></el-table-column>
+      <el-table-column label="结束时间" prop="termEnd" min-width="150"></el-table-column>
+    </el-table>
+    <div class="text-right">
+      <br />
+      <el-pagination
+        @size-change="handleSizeChangeMixin"
+        @current-change="handleCurrentChangeMixin"
+        :current-page.sync="queryPageParameters.pageNum"
+        :page-sizes="$root.pageSizes"
+        :page-size="queryPageParameters.pageSize"
+        :layout="$root.paginationLayout"
+        :total="resPageInfo.total"
+      ></el-pagination>
+    </div>
     <span slot="footer" class="dialog-footer">
       <el-button @click="cancel()">取 消</el-button>
       <el-button type="primary" @click="finish">确 定</el-button>
@@ -66,53 +80,16 @@
     constructor() {
       super();
     }
-
-    private rowKey: any = 'termId'; // 选择项的标识
-    private tableMaxHeight: any = 350;
-    private tableColumn = [
-      {
-        prop: "termName",
-        label: "项目周期名称",
-        align: "left",
-        minWidth: 200,
-      },
-      {
-        prop: "busTypeEnum",
-        label: "业务类型",
-        align: "left",
-        minWidth: 100,
-      },
-      {
-        prop: "termStart",
-        label: "开始时间",
-        align: "left",
-        minWidth: 140,
-      },
-      {
-        prop: "termEnd",
-        label: "结束时间",
-        align: "left",
-        minWidth: 140,
-      }
-    ];
-    private pageSize = 10;
-    private currentPage = 1;
-
-    @Prop({default: null}) data: any;
-    @Prop({
-      default: ()=>[]
-    })
-    hasCheckedData!: any;
-    dialogVisible = true;
-    resPageInfo: any = {
+    private dialogVisible = true;
+    private selection = [];
+    public queryPageParameters: any = {
+      termName: null
+    };
+    public resPageInfo: any = {
       total: null,
       list: [],
     };
-
-    queryPageParameters: any = {
-      termName: null
-    };
-    currentSelection: any = []; // 当前选择的项
+    @Prop({default: null}) data: any;
 
     created() {
       this.getListMixin();
@@ -128,61 +105,33 @@
     }
 
     async finish() {
-      if (this.currentSelection.length === 0) {
+      if (this.selection.length === 0) {
         this.$message({
           type: "error",
           message: "请选择项目",
         });
         return
       }
-      this.$emit("finish", this.currentSelection);
+      this.$emit("finish", this.selection);
     }
 
-    // 获取选中项 --- 最后需要获取的数据
-    private selectionChange(selection: any) {
-      // console.log(selection, "selectionChange");
-      this.currentSelection = selection;
+    private handleSelectionChange(val: any) {
+      this.selection = val;
     }
 
-    private pageChange(index: number) {
-      this.currentPage = index;
-      this.queryPageParameters.pageNum = index;
-      this.getListMixin();
+    private handleSelect(selection: any) {
+      if (selection.length > 1) {
+        let del_row = selection.shift();
+        (this.$refs.table as any).toggleRowSelection(del_row, false);
+      }
     }
 
-    private sizeChange(val: any) {
-      this.currentPage = 1;
-      this.pageSize = val;
-      this.queryPageParameters.pageNum = 1;
-      this.queryPageParameters.pageSize = val;
-      this.getListMixin();
+    private handleSelectAll() {
+      (this.$refs.table as any).clearSelection();
     }
 
     async getListMixin() {
-      let self = this;
-      self.currentSelection = [];
-      const infoList = await post_term_getList(this.queryPageParameters);
-      if (infoList.list.length > 0) {
-        infoList.list.forEach((item: any) => {
-          item.checked = false;
-          // 修改显示
-          if (item.busTypeEnum) {
-            item.busTypeEnum = (this as any).$root.dictAllName(item.busTypeEnum, 'BusType');
-          }
-        })
-      }
-      self.resPageInfo = JSON.parse(JSON.stringify(infoList));
-      // 勾选回显
-      if (self.resPageInfo.list.length > 0 && self.hasCheckedData.length > 0) {
-        self.hasCheckedData.forEach((data: any) => {
-          self.resPageInfo.list.forEach((list: any) => {
-            if (list[self.rowKey] === data[self.rowKey]) {
-              list.checked = true;
-              self.currentSelection.push(list);
-            }
-          })
-        })
-      }
+      this.resPageInfo = await post_term_getList(this.queryPageParameters);
     }
   }
 </script>
@@ -192,4 +141,13 @@
     align-items: center;
     margin-bottom: 20px;
   }
+</style>
+<style lang="scss">
+.ih-table.table-dialog {
+  .el-table__header {
+    .el-checkbox {
+      display: none !important;
+    }
+  }
+}
 </style>

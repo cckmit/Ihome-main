@@ -25,6 +25,48 @@
           "
       />
     </ih-dialog>
+    <ih-dialog :show="dialogAddNotice" desc="选择优惠告知书列表">
+      <SelectNoticeList
+        :data="baseInfoByTerm"
+        @cancel="() => (dialogAddNotice = false)"
+        @finish="
+            (data) => {
+              finishAddNotice(data);
+            }
+          "
+      />
+    </ih-dialog>
+    <ih-dialog :show="dialogAddCustomer" desc="选择客户列表">
+      <AddCustomer
+        @cancel="() => (dialogAddCustomer = false)"
+        @finish="
+            (data) => {
+              finishAddCustomer(data);
+            }
+          "
+      />
+    </ih-dialog>
+    <ih-dialog :show="dialogAddReceivePackage" desc="选择收派套餐标准">
+      <SelectReceivePackage
+        :data="receivePackageData"
+        @cancel="() => (dialogAddReceivePackage = false)"
+        @finish="
+            (data) => {
+              finishAddReceivePackage(data);
+            }
+          "
+      />
+    </ih-dialog>
+    <ih-dialog :show="dialogViewInfo" desc="来访/成交信息">
+      <DealInfo
+        @cancel="() => (dialogViewInfo = false)"
+        @finish="
+            () => {
+              dialogViewInfo = false;
+            }
+          "
+      />
+    </ih-dialog>
   </div>
 </template>
 <script lang="ts">
@@ -32,6 +74,9 @@
   import EntryDealInfo from "@/views/deal/dealReport/add/entryDealInfo.vue"; // 案场岗 - 录入成交信息
   import EntryAchieveAllot from "@/views/deal/dealReport/add/entryAchieveAllot.vue";  // 文员岗 - 录入成交信息
   import SelectProjectCycle from "@/views/deal/dealReport/dialog/selectProjectCycle.vue";
+  import SelectNoticeList from "@/views/deal/dealReport/dialog/selectNoticeList.vue";
+  import AddCustomer from "@/views/deal/dealReport/dialog/addCustomer.vue";
+  import SelectReceivePackage from "@/views/deal/dealReport/dialog/selectReceivePackage.vue";
   import {
     post_buModelContType_getList,
     post_buModelContType_subList
@@ -41,7 +86,10 @@
     components: {
       EntryDealInfo,
       EntryAchieveAllot,
-      SelectProjectCycle
+      SelectProjectCycle,
+      SelectNoticeList,
+      AddCustomer,
+      SelectReceivePackage,
     }
   })
   export default class DealReportEntry extends Vue {
@@ -49,6 +97,15 @@
     private currentBtnType: any = null;
 
     dialogAddProjectCycle: any = false; // 选择项目周期弹窗标识
+    dialogAddNotice: any = false; // 选择优惠告知书弹窗标识
+    baseInfoByTerm: any = null; // 项目周期数据 - 初始化优惠告知书需要
+    dialogAddCustomer: any = false; // 选择客户弹窗标识
+    dialogAddReceivePackage: any = false; // 选择收派套餐弹窗标识
+    receivePackageData: any = {
+      type: '', // 费用类型
+      idList: [] // 可选的收派套餐ids
+    }; // 收派套餐data数据
+    dialogViewInfo: any = false; // 来访/成交信息弹窗标识
 
     async created() {
       this.currentBtnType = this.$route.query.btnType;
@@ -74,6 +131,48 @@
         await (this as any).$refs.child.finishAddProjectCycle(data);
       }
       this.dialogAddProjectCycle = false;
+    }
+
+    // 添加优惠告知书
+    handleAddNotice(data: any) {
+      this.baseInfoByTerm = data;
+      this.dialogAddNotice = !this.dialogAddNotice;
+    }
+
+    // 确定选择优惠告知书
+    async finishAddNotice(data: any) {
+      if (data && data.length > 0) {
+        await (this as any).$refs.child.finishAddNotice(data);
+      }
+      this.dialogAddNotice = false;
+    }
+
+    // 添加客户
+    handleAddCustomer() {
+      this.dialogAddCustomer = !this.dialogAddCustomer;
+    }
+
+    // 确定选择客户
+    async finishAddCustomer(data: any) {
+      if (data.length === 0) return
+      await (this as any).$refs.child.finishAddCustomer(data);
+    }
+
+    // 选择收派套餐
+    selectPackage(data: any) {
+      this.receivePackageData = data;
+      this.dialogAddReceivePackage = !this.dialogAddReceivePackage;
+    }
+
+    // 确定选择收派套餐
+    async finishAddReceivePackage(data: any) {
+      if (data.length === 0) return;
+      await (this as any).$refs.child.finishAddReceivePackage(data);
+    }
+
+    // 查看来访/成交确认信息
+    handleViewDealInfo() {
+      this.dialogViewInfo = !this.dialogViewInfo;
     }
 
     // 根据业务模式获取合同类型选项
