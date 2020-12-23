@@ -4,7 +4,7 @@
  * @Author: wwq
  * @Date: 2020-12-04 09:40:47
  * @LastEditors: wwq
- * @LastEditTime: 2020-12-22 21:16:41
+ * @LastEditTime: 2020-12-23 10:59:52
 -->
 <template>
   <el-dialog
@@ -374,7 +374,7 @@
                       v-model="row.generalAchieveAmount"
                       v-digits="4"
                       clearable
-                      :disabled="(info.busEnum === 'TotalBagDistriModel' || row.subdivideEnum === 'All') ? false : true"
+                      :class="{'is-disabled': generalAchieveAmountDisabled(row)}"
                       style="width: 70%"
                     />
                   </div>
@@ -384,7 +384,7 @@
                       v-model="row.generalAchievePoint"
                       v-digits="4"
                       clearable
-                      :disabled="(info.busEnum === 'TotalBagDistriModel' || row.subdivideEnum === 'All') ? false : true"
+                      :class="{'is-disabled': generalAchieveAmountDisabled(row)}"
                       style="width: 70%"
                     />
                   </div>
@@ -402,7 +402,7 @@
                       v-model="row.distributeAchieveAmount"
                       v-digits="4"
                       clearable
-                      :disabled="row.subdivideEnum === 'All' ? true : false"
+                      :class="{'is-disabled': distributeAchieveAmountDisabled(row)}"
                       style="width: 70%"
                     />
                   </div>
@@ -412,7 +412,7 @@
                       v-model="row.distributeAchievePoint"
                       v-digits="4"
                       clearable
-                      :disabled="row.subdivideEnum === 'All' ? true : false"
+                      :class="{'is-disabled': distributeAchieveAmountDisabled(row)}"
                       style="width: 70%"
                     />
                   </div>
@@ -777,7 +777,7 @@
                       v-model="row.generalAchieveAmount"
                       v-digits="4"
                       clearable
-                      :disabled="(info.busEnum === 'TotalBagDistriModel' || row.subdivideEnum === 'All') ? false : true"
+                      :class="{'is-disabled': generalAchieveAmountDisabled(row)}"
                       style="width: 70%"
                     />
                   </div>
@@ -787,7 +787,7 @@
                       v-model="row.generalAchievePoint"
                       v-digits="4"
                       clearable
-                      :disabled="(info.busEnum === 'TotalBagDistriModel' || row.subdivideEnum === 'All') ? false : true"
+                      :class="{'is-disabled': generalAchieveAmountDisabled(row)}"
                       style="width: 70%"
                     />
                   </div>
@@ -805,7 +805,7 @@
                       v-model="row.distributeAchieveAmount"
                       v-digits="4"
                       clearable
-                      :disabled="row.subdivideEnum === 'All' ? true : false"
+                      :class="{'is-disabled': distributeAchieveAmountDisabled(row)}"
                       style="width: 70%"
                     />
                   </div>
@@ -815,7 +815,7 @@
                       v-model="row.distributeAchievePoint"
                       v-digits="4"
                       clearable
-                      :disabled="row.subdivideEnum === 'All' ? true : false"
+                      :class="{'is-disabled': distributeAchieveAmountDisabled(row)}"
                       style="width: 70%"
                     />
                   </div>
@@ -1092,6 +1092,36 @@ export default class SetMealEdit extends Vue {
     }
   }
 
+  // 总包业绩
+  generalAchieveAmountDisabled(row: any) {
+    const TotalBagModel = this.info.busEnum === "TotalBagModel"; // 周期模式总包
+    const DistriModel = this.info.busEnum === "DistriModel"; // 周期模式分销
+    const TotalBagDistrModel = this.info.busEnum === "TotalBagDistrModel"; // 周期模式总包+分销
+    const All = row.subdivideEnum === "All"; // 细分模式为总包
+    const District = row.subdivideEnum === "District"; // 细分模式为分销
+    return (
+      !((TotalBagModel || TotalBagDistrModel) && All) &&
+      DistriModel &&
+      District &&
+      !(TotalBagDistrModel && District)
+    );
+  }
+
+  // 分销业绩
+  distributeAchieveAmountDisabled(row: any) {
+    const TotalBagModel = this.info.busEnum === "TotalBagModel"; // 周期模式总包
+    const DistriModel = this.info.busEnum === "DistriModel"; // 周期模式分销
+    const TotalBagDistrModel = this.info.busEnum === "TotalBagDistrModel"; // 周期模式总包+分销
+    const All = row.subdivideEnum === "All"; // 细分模式为总包
+    const District = row.subdivideEnum === "District"; // 细分模式为分销
+    return (
+      (TotalBagModel || TotalBagDistrModel) &&
+      All &&
+      !(DistriModel && District) &&
+      !(TotalBagDistrModel && District)
+    );
+  }
+
   selectCompany(v: any, i: number) {
     if (v) {
       const item = this.info.partyAInfoList.find((j: any) => j.companyId === v);
@@ -1244,11 +1274,15 @@ export default class SetMealEdit extends Vue {
       } else {
         this.info.timeList = [];
       }
+      // 假数据
+      // 周期业务模式
       // this.info.busEnum = "TotalBagModel";
       // this.info.busEnum = "DistriModel";
-      // 假数据
+      // this.info.busEnum = "TotalBagDistrModel";
+      // 收费类型
       // this.info.chargeEnum = "Service";
       // this.info.chargeEnum = "Agent";
+      // this.info.chargeEnum = "ServiAndAgen";
       this.info.colletionandsendMxs = [
         {
           colletionandsendDetails: [
@@ -1590,9 +1624,6 @@ export default class SetMealEdit extends Vue {
     ) {
       data.sendAmount = 0;
       data.sendPoint = 0;
-    } else {
-      data.sendAmount = 0;
-      data.sendPoint = 0;
     }
   }
 
@@ -1731,6 +1762,11 @@ export default class SetMealEdit extends Vue {
     text-align: center;
     line-height: 40px;
   }
+}
+.is-disabled {
+  cursor: not-allowed !important;
+  pointer-events: none;
+  opacity: 0.5;
 }
 </style>
 <style lang="scss">

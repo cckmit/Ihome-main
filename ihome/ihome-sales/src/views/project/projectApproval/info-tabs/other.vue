@@ -4,7 +4,7 @@
  * @Author: wwq
  * @Date: 2020-11-27 17:28:28
  * @LastEditors: wwq
- * @LastEditTime: 2020-12-11 09:19:07
+ * @LastEditTime: 2020-12-23 14:36:03
 -->
 <template>
   <div>
@@ -42,9 +42,6 @@
           label="分公司"
           prop="startDivisionName"
         >
-          <template v-slot="{ row }">{{
-            $root.dictAllName(row.baseCostEnum, "BaseCost")
-          }}</template>
         </el-table-column>
       </el-table>
     </div>

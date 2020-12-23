@@ -168,22 +168,12 @@
         <el-row>
           <el-col :span="12">
             <el-form-item label="乙方(渠道)公司">
-              <el-select
-                v-model="channelData"
-                placeholder="乙方(渠道)公司"
+              <IhSelectPageByChannel
+                v-model="info.channelCompanyId"
                 clearable
-                filterable
-                style="width: 70%"
-                value-key="id"
-                @change="getChannelInfo"
-              >
-                <el-option
-                  v-for="item in channelList"
-                  :key="item.id"
-                  :label="item.name"
-                  :value="item"
-                ></el-option>
-              </el-select>
+                placeholder="渠道商名称"
+                @changeOption="getChannelInfo"
+              ></IhSelectPageByChannel>
             </el-form-item>
           </el-col>
           <el-col :span="12">
@@ -477,7 +467,6 @@ import {
   get_distributContract_getDistri__agencyContrictId,
 } from "@/api/project/index";
 import {
-  get_channel_getAll,
   get_channel_get__id,
   post_channelGrade_getList,
 } from "@/api/channel/index";
@@ -494,7 +483,6 @@ export default class Apply extends Vue {
   viewDialogVisible = false;
   viewData: any = {};
   dropOption: any = [];
-  channelList: any = [];
   channelData: any = null;
   handler: any = null;
   templateData: any = [];
@@ -569,9 +557,6 @@ export default class Apply extends Vue {
   private async getDropDown(): Promise<void> {
     this.dropOption = await post_term_getDropDown();
   }
-  private async getChannelAll(): Promise<void> {
-    this.channelList = await get_channel_getAll();
-  }
   private async getChannelInfo(item: any) {
     let res = await get_channel_get__id({ id: item.id });
     this.channelAccountOptions = res.channelBanks;
@@ -632,7 +617,6 @@ export default class Apply extends Vue {
   async created() {
     await this.getDropDown();
     this.info.cycleId = Number(this.$route.query.id);
-    this.getChannelAll();
   }
 
   cancel() {
