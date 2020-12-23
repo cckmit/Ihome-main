@@ -4,7 +4,7 @@
  * @Author: lsj
  * @Date: 2020-11-03 15:28:12
  * @LastEditors: lsj
- * @LastEditTime: 2020-12-09 17:28:20
+ * @LastEditTime: 2020-12-23 18:10:20
 -->
 <template>
   <el-dialog
@@ -62,21 +62,42 @@
         </el-col>
       </el-row>
     </el-form>
-    <IhTableCheckBox
-      :isSingle="true"
-      :valueKey="rowKey"
+    <el-table
+      ref="table"
+      :max-height="350"
+      class="ih-table table-dialog"
       :data="resPageInfo.list"
-      :hasCheckedData="hasCheckedData"
-      :rowKey="rowKey"
-      :column="tableColumn"
-      :maxHeight="tableMaxHeight"
-      @selection-change="selectionChange"
-      :pageSize="pageSize"
-      :pageCurrent="currentPage"
-      :pageTotal="resPageInfo.total"
-      @page-change="pageChange"
-      @size-change="sizeChange">
-    </IhTableCheckBox>
+      @selection-change="handleSelectionChange"
+      @select="handleSelect"
+      @select-all="handleSelectAll">
+      <el-table-column fixed type="selection" width="50" align="center"></el-table-column>
+      <el-table-column label="客户编号" prop="custCode" min-width="250"></el-table-column>
+      <el-table-column label="客户姓名" prop="custName" min-width="110"></el-table-column>
+      <el-table-column label="客户类型" prop="custType" min-width="110">
+        <template slot-scope="scope">
+          <div>{{$root.dictAllName(scope.row.custType, 'CustType')}}</div>
+        </template>
+      </el-table-column>
+      <el-table-column label="手机号码" prop="custTel" min-width="160"></el-table-column>
+      <el-table-column label="证件类型" prop="cardType" min-width="120">
+        <template slot-scope="scope">
+          <div>{{$root.dictAllName(scope.row.cardType, 'CardType')}}</div>
+        </template>
+      </el-table-column>
+      <el-table-column label="证件号码" prop="certificateNumber" min-width="180"></el-table-column>
+    </el-table>
+    <div class="text-right">
+      <br />
+      <el-pagination
+        @size-change="handleSizeChangeMixin"
+        @current-change="handleCurrentChangeMixin"
+        :current-page.sync="queryPageParameters.pageNum"
+        :page-sizes="$root.pageSizes"
+        :page-size="queryPageParameters.pageSize"
+        :layout="$root.paginationLayout"
+        :total="resPageInfo.total"
+      ></el-pagination>
+    </div>
     <span slot="footer" class="dialog-footer">
       <el-button @click="cancel()">取 消</el-button>
       <el-button type="primary" @click="finish()">确 定</el-button>
@@ -97,71 +118,37 @@
     constructor() {
       super();
     }
-
-    private rowKey: any = 'id'; // 选择项的标识
-    private tableMaxHeight: any = 350;
-    private tableColumn = [
-      {
-        prop: "custCode",
-        label: "客户编号",
-        align: "left",
-        minWidth: 250,
-      },
-      {
-        prop: "custName",
-        label: "客户姓名",
-        align: "left",
-        minWidth: 110,
-      },
-      {
-        prop: "custTypeByName",
-        label: "客户类型",
-        align: "left",
-        minWidth: 110,
-      },
-      {
-        prop: "custTel",
-        label: "手机号码",
-        align: "left",
-        minWidth: 160,
-      },
-      {
-        prop: "cardTypeByName",
-        label: "证件类型",
-        align: "left",
-        minWidth: 120,
-      },
-      {
-        prop: "certificateNumber",
-        label: "证件号码",
-        align: "left",
-        minWidth: 180,
-      }
-    ];
-    private pageSize = 10;
-    private currentPage = 1;
-
-    @Prop({default: null}) data: any;
-    @Prop({
-      default: ()=>[]
-    })
-    hasCheckedData!: any;
-    dialogVisible = true;
-    resPageInfo: any = {
-      total: null,
-      list: [],
-    };
-
-    queryPageParameters: any = {
+    private dialogVisible = true;
+    private selection = [];
+    public queryPageParameters: any = {
       custName: null,
       custType: null,
       custCode: null,
       custTel: null
     };
-    currentSelection: any = []; // 当前选择的项
+    public resPageInfo: any = {
+      total: null,
+      list: [],
+    };
+    @Prop({default: null}) data: any;
 
     created() {
       this.getListMixin();
+    }
+
+    private handleSelectionChange(val: any) {
+      this.selection = val;
+    }
+
+    private handleSelect(selection: any) {
+      if (selection.length > 1) {
+        let del_row = selection.shift();
+        (this.$refs.table as any).toggleRowSelection(del_row, false);
+      }
+    }
+
+    private handleSelectAll() {
+      (this.$refs.table as any).clearSelection();
     }
 
     async beforeFinish() {
@@ -174,75 +161,27 @@
     }
 
     async finish() {
-      if (this.currentSelection.length === 0) {
+      if (this.selection.length === 0) {
         this.$message({
           type: "error",
-          message: "请选择渠道商",
+          message: "请选择客户",
         });
         return
       }
-      this.$emit("finish", this.currentSelection);
-    }
-
-    // 获取选中项 --- 最后需要获取的数据
-    private selectionChange(selection: any) {
-      console.log(selection, "selectionChange");
-      this.currentSelection = selection;
-    }
-
-    private pageChange(index: number) {
-      this.currentPage = index;
-      this.queryPageParameters.pageNum = index;
-      this.getListMixin();
-    }
-
-    private sizeChange(val: any) {
-      this.currentPage = 1;
-      this.pageSize = val;
-      this.queryPageParameters.pageNum = 1;
-      this.queryPageParameters.pageSize = val;
-      this.getListMixin();
+      this.$emit("finish", this.selection);
     }
 
     async getListMixin() {
-      const infoList = await post_customer_getCustList(this.queryPageParameters);
-      // 原始数据处理
-      if (infoList.list.length > 0) {
-        infoList.list.forEach((item: any) => {
-          item.checked = false; // 勾选标志
-          // 客户类型
-          if (item.custType) {
-            item.custTypeByName = (this as any).$root.dictAllName(item.custType, 'CustType');
-          }
-          // 证件类型
-          if (item.cardType) {
-            item.cardTypeByName = (this as any).$root.dictAllName(item.cardType, 'CardType');
-          }
-        })
-      }
-      this.resPageInfo = JSON.parse(JSON.stringify(infoList));
-      // 勾选回显
-      if (this.resPageInfo.list.length > 0 && this.hasCheckedData.length > 0) {
-        this.hasCheckedData.forEach((data: any) => {
-          this.resPageInfo.list.forEach((list: any) => {
-            if (list[this.rowKey] === data[this.rowKey]) {
-              list.checked = true;
-              this.currentSelection.push(list);
-            }
-          })
-        })
-      }
+      this.resPageInfo = await post_customer_getCustList(this.queryPageParameters);
     }
 
-    reset() {
-      this.queryPageParameters = {
+    private reset() {
+      Object.assign(this.queryPageParameters, {
         custName: null,
         custType: null,
         custCode: null,
         custTel: null,
-        pageNum: 1,
-        pageSize: this.queryPageParameters.pageSize
-      };
+      });
     }
   }
 </script>

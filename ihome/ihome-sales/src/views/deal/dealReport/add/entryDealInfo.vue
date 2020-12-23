@@ -2,9 +2,9 @@
  * @Descripttion: 
  * @version: 
  * @Author: lsj
- * @Date: 2020-10-30 16:38:23
+ * @Date: 2020-12-23 14:20:40
  * @LastEditors: lsj
- * @LastEditTime: 2020-12-22 12:12:20
+ * @LastEditTime: 2020-12-23 18:50:50
 -->
 <template>
   <ih-page class="text-left">
@@ -186,7 +186,7 @@
                   :label="item.contractNo" :value="item.contractNo"></el-option>
               </el-select>
               <div class="link-wrapper" v-if="!!postData.contNo">
-                <el-link type="primary" @click.native.prevent="previewContNo">详情</el-link>
+                <el-link type="primary" @click.native.prevent="previewContNo(postData.contNo)">详情</el-link>
               </div>
             </div>
           </el-form-item>
@@ -423,7 +423,7 @@
         </el-col>
       </el-row>
     </el-form>
-    <div id="anchor-3" v-if="baseInfoByTerm.chargeEnum !== 'Agent' && !baseInfoInDeal.notice.length">
+    <div id="anchor-2" v-if="baseInfoByTerm.chargeEnum !== 'Agent' && !baseInfoInDeal.notice.length">
       <p class="ih-info-title">优惠告知书信息</p>
       <el-row style="padding-left: 20px">
         <el-col>
@@ -467,7 +467,7 @@
         </el-col>
       </el-row>
     </div>
-    <p id="anchor-4" class="ih-info-title">客户信息</p>
+    <p id="anchor-3" class="ih-info-title">客户信息</p>
     <el-row style="padding-left: 20px">
       <el-col>
         <div
@@ -488,7 +488,7 @@
           <el-table-column prop="custTel" label="手机号码" min-width="120"></el-table-column>
           <el-table-column prop="cardType" label="证件类型" min-width="120">
             <template slot-scope="scope">
-              <div>{{$root.dictAllName(scope.row.cardType, 'CommObjectType')}}</div>
+              <div>{{$root.dictAllName(scope.row.cardType, 'CardType')}}</div>
             </template>
           </el-table-column>
           <el-table-column prop="certificateNumber" label="证件编号" min-width="150"></el-table-column>
@@ -508,23 +508,7 @@
         </el-table>
       </el-col>
     </el-row>
-    <div class="receive-wrapper" id="anchor-7">
-      <p class="ih-info-title">收派金额</p>
-      <div v-if="currentType !== 'declare'">计算方式</div>
-      <div v-if="currentType !== 'declare'">
-        <el-select
-          v-model="postData.calculation"
-          placeholder="请选择计算方式"
-          class="width--100">
-          <el-option
-            v-for="item in $root.dictAllList('DealCalculateWay')"
-            :key="item.code"
-            :label="item.name"
-            :value="item.code"
-          ></el-option>
-        </el-select>
-      </div>
-    </div>
+    <p id="anchor-4" class="ih-info-title">收派金额</p>
     <el-row style="padding-left: 20px">
       <el-col>
         <el-table
@@ -535,72 +519,28 @@
           :data="postData.receiveVO">
           <el-table-column prop="type" label="类型" min-width="120">
             <template slot-scope="scope">
-              <div>{{scope.row.type === 'ServiceFee' ? '服务费' : '代理费'}}</div>
+              <div>{{$root.dictAllName(scope.row.type, 'FeeType')}}</div>
             </template>
           </el-table-column>
           <el-table-column prop="partyACustomerName" label="甲方/客户" min-width="120"></el-table-column>
           <el-table-column prop="packageId" label="收派套餐" min-width="140">
             <template slot-scope="scope">
-              <div v-if="postData.calculation === 'Auto'">
-                <el-input
-                  readonly
-                  :disabled="postData.calculation === 'Manual'"
-                  placeholder="请选择收派套餐"
-                  v-model="scope.row.packageId">
-                  <el-button
-                    slot="append"
-                    icon="el-icon-search"
-                    @click.native.prevent="selectPackage(scope)"></el-button>
-                </el-input>
-              </div>
-              <div v-else>---</div>
-            </template>
-          </el-table-column>
-          <el-table-column prop="receiveAmount" label="应收金额" min-width="120">
-            <template slot-scope="scope">
               <el-input
-                v-digits="2"
-                v-model="scope.row.receiveAmount"
-                :disabled="postData.calculation === 'Auto'"
-                placeholder="应收金额"></el-input>
+                readonly
+                placeholder="请选择收派套餐"
+                v-model="scope.row.packageId">
+                <el-button
+                  slot="append"
+                  icon="el-icon-search"
+                  @click.native.prevent="selectPackage(scope)"></el-button>
+              </el-input>
             </template>
           </el-table-column>
-          <el-table-column prop="commAmount" label="派发佣金金额" min-width="150">
-            <template slot-scope="scope">
-              <el-input
-                v-digits="2"
-                v-model="scope.row.commAmount"
-                :disabled="postData.calculation === 'Auto'"
-                placeholder="应收金额"></el-input>
-            </template>
-          </el-table-column>
-          <el-table-column prop="rewardAmount" label="派发内场奖励金额" min-width="150">
-            <template slot-scope="scope">
-              <el-input
-                v-digits="2"
-                v-model="scope.row.rewardAmount"
-                :disabled="postData.calculation === 'Auto'"
-                placeholder="应收金额"></el-input>
-            </template>
-          </el-table-column>
-          <el-table-column prop="totalPackageAmount" label="总包业绩金额" min-width="150">
-            <template slot-scope="scope">
-              <el-input
-                v-digits="2"
-                v-model="scope.row.totalPackageAmount"
-                :disabled="postData.calculation === 'Auto'"
-                placeholder="应收金额"></el-input>
-            </template>
-          </el-table-column>
-          <el-table-column prop="distributionAmount" label="分销业绩金额" min-width="150">
-            <template slot-scope="scope">
-              <el-input
-                v-digits="2"
-                v-model="scope.row.distributionAmount"
-                :disabled="postData.calculation === 'Auto'"
-                placeholder="应收金额"></el-input>
-            </template>
-          </el-table-column>
+          <el-table-column prop="receiveAmount" label="应收金额" min-width="120"></el-table-column>
+          <el-table-column prop="commAmount" label="派发佣金金额" min-width="150"></el-table-column>
+          <el-table-column prop="rewardAmount" label="派发内场奖励金额" min-width="150"></el-table-column>
+          <el-table-column prop="totalPackageAmount" label="总包业绩金额" min-width="150"></el-table-column>
+          <el-table-column prop="distributionAmount" label="分销业绩金额" min-width="150"></el-table-column>
           <el-table-column prop="otherChannelFees" label="其他渠道费用(正数为产生，负数为使用)" min-width="150"></el-table-column>
         </el-table>
       </el-col>
@@ -616,230 +556,11 @@
         </el-table>
       </el-col>
     </el-row>
-    <div v-if="currentType !== 'declare'">
-      <div class="divider-padding">
-        <el-divider>业绩分配</el-divider>
-      </div>
-      <p id="anchor-8" class="ih-info-title">对外拆佣</p>
-      <el-row style="padding-left: 20px">
-        <el-col>
-          <div class="add-all-wrapper" v-if="postData.calculation === 'Manual'">
-            <el-button type="success" @click="handleAddCommission">增加拆佣项</el-button>
-          </div>
-          <el-table
-            class="ih-table"
-            show-summary
-            sum-text="合计金额"
-            :summary-method="getCommissionSummaries"
-            :data="postData.commissionInfoList">
-            <el-table-column prop="target" label="拆佣对象" min-width="120">
-              <template slot-scope="scope">
-                <el-select
-                  :disabled="postData.calculation === 'Auto'"
-                  v-model="scope.row.target"
-                  placeholder="请选择">
-                  <el-option
-                    v-for="item in $root.dictAllList('CommObjectType')"
-                    :key="item.code"
-                    :label="item.name"
-                    :value="item.code"
-                  ></el-option>
-                </el-select>
-              </template>
-            </el-table-column>
-            <el-table-column prop="commName" label="收款方" min-width="120">
-              <template slot-scope="scope">
-                <div v-if="postData.calculation === 'Auto'">
-                  <el-input placeholder="收款方" disabled v-model="scope.row.commName"></el-input>
-                </div>
-                <div v-else>
-                  <div v-if="scope.row.target === 'Personal'">
-                    <el-input placeholder="请输入收款方" v-model="scope.row.commName"></el-input>
-                  </div>
-                  <div v-if="scope.row.target === 'AgentCompany'">
-                    <el-input placeholder="" disabled v-model="scope.row.commName"></el-input>
-                  </div>
-                  <div v-if="scope.row.target === 'ChannelCompany'">
-                    <el-input placeholder="请选择收款方" readonly v-model="scope.row.commName">
-                      <el-button slot="append" icon="el-icon-search" @click.native.prevent="selectCommName"></el-button>
-                    </el-input>
-                  </div>
-                </div>
-              </template>
-            </el-table-column>
-            <el-table-column prop="feeType" label="费用类型" min-width="120">
-              <template slot-scope="scope">
-                <el-select
-                  v-model="scope.row.feeType"
-                  :disabled="postData.calculation === 'Auto'"
-                  placeholder="费用类型"
-                  class="width--100">
-                  <el-option
-                    v-for="item in $root.dictAllList('FeeType')"
-                    :key="item.code"
-                    :label="item.name"
-                    :value="item.code"
-                  ></el-option>
-                </el-select>
-              </template>
-            </el-table-column>
-            <el-table-column prop="partyACustomer" label="费用来源(客户/甲方)" min-width="120">
-              <template slot-scope="scope">
-                <div v-if="postData.calculation === 'Auto'">
-                  <el-input placeholder="" disabled v-model="scope.row.partyACustomer"></el-input>
-                </div>
-                <div v-else>
-                  <div v-if="scope.row.feeType === 'ServiceFee'">
-                    <el-input placeholder="" disabled v-model="scope.row.partyACustomer"></el-input>
-                  </div>
-                  <div v-if="scope.row.feeType === 'AgencyFee'">
-                    <el-select
-                      :disabled="postData.calculation === 'Auto'"
-                      v-model="scope.row.partyACustomer"
-                      placeholder="请选择">
-                      <el-option label="客户A" value="AA"></el-option>
-                      <el-option label="客户B" value="BB"></el-option>
-                      <el-option label="甲方A" value="CC"></el-option>
-                      <el-option label="甲方B" value="DD"></el-option>
-                    </el-select>
-                  </div>
-                </div>
-              </template>
-            </el-table-column>
-            <el-table-column prop="amount" label="金额" min-width="120"></el-table-column>
-            <el-table-column prop="remarks" label="备注" min-width="120">
-              <template slot-scope="scope">
-                <el-input v-model="scope.row.remarks" clearable placeholder="备注"/>
-              </template>
-            </el-table-column>
-            <el-table-column fixed="right" label="操作" width="100" v-if="postData.calculation !== 'Auto'">
-              <template slot-scope="scope">
-                <el-link
-                  class="margin-right-10"
-                  type="primary"
-                  @click.native.prevent="deleteAdd(scope, 'broker')"
-                >删除
-                </el-link>
-              </template>
-            </el-table-column>
-          </el-table>
-        </el-col>
-      </el-row>
-      <p id="anchor-9" class="ih-info-title">平台费用</p>
-      <div v-if="postData.businessType !== 'DistriModel'">
-        <div class="ih-type-wrapper">
-          <div class="title">总包</div>
-          <el-button type="success" @click="handleAddAchieve('total')">新增角色</el-button>
-        </div>
-        <el-row style="padding-left: 20px">
-          <el-col>
-            <el-table
-              class="ih-table"
-              show-summary
-              sum-text="合计金额"
-              :summary-method="getAchieveSummaries"
-              :data="postData.achieveTotalBagList">
-              <el-table-column prop="roleType" label="角色类型" min-width="120">
-                <template slot-scope="scope">
-                  <div>{{$root.dictAllName(scope.row.roleType, 'roleType')}}</div>
-                </template>
-              </el-table-column>
-              <el-table-column prop="roleAchieveCap" label="角色业绩上限" min-width="150"></el-table-column>
-              <el-table-column prop="rolerName" label="角色人" min-width="150"></el-table-column>
-              <el-table-column prop="corporateAchieve" label="角色人业绩" min-width="150"></el-table-column>
-              <el-table-column prop="corporateAchieveRatio" label="角色人业绩比例（%）" min-width="150"></el-table-column>
-              <el-table-column prop="commFees" label="拆佣金额" min-width="150"></el-table-column>
-              <el-table-column prop="commFeesRatio" label="拆佣比例（%）" min-width="150"></el-table-column>
-              <el-table-column prop="belongOrgName" label="店组" min-width="130"></el-table-column>
-              <el-table-column prop="managerAchieveList" label="管理岗" min-width="150">
-                <template slot-scope="scope">
-                  <div class="manager-list" v-for="(item, index) in scope.row.managerAchieveList" :key="index">
-                    <div>{{item.achieveFees}}</div>
-                    <div>{{item.ratio}}</div>
-                    <div>{{item.manager}}({{$root.dictAllName(item.type, 'ManagerType')}})</div>
-                  </div>
-                </template>
-              </el-table-column>
-              <el-table-column fixed="right" label="操作" width="130">
-                <template slot-scope="scope">
-                  <el-link
-                    class="margin-right-10"
-                    type="error"
-                    @click.native.prevent="deleteAchieveTotalBag(scope)"
-                  >删除
-                  </el-link>
-                  <el-link
-                    class="margin-right-10"
-                    type="primary"
-                    @click.native.prevent="editAchieveTotalBag(scope)"
-                  >修改
-                  </el-link>
-                </template>
-              </el-table-column>
-            </el-table>
-          </el-col>
-        </el-row>
-      </div>
-      <div v-if="postData.businessType !== 'TotalBagModel'">
-        <div class="ih-type-wrapper">
-          <div class="title">分销</div>
-          <el-button type="success" @click="handleAddAchieve('distri')">新增角色</el-button>
-        </div>
-        <el-row style="padding-left: 20px">
-          <el-col>
-            <el-table
-              class="ih-table"
-              show-summary
-              sum-text="合计金额"
-              :summary-method="getAchieveSummaries"
-              :data="postData.achieveDistriList">
-              <el-table-column prop="roleType" label="角色类型" min-width="120">
-                <template slot-scope="scope">
-                  <div>{{$root.dictAllName(scope.row.roleType, 'roleType')}}</div>
-                </template>
-              </el-table-column>
-              <el-table-column prop="roleAchieveCap" label="角色业绩上限" min-width="150"></el-table-column>
-              <el-table-column prop="rolerName" label="角色人" min-width="150"></el-table-column>
-              <el-table-column prop="corporateAchieve" label="角色人业绩" min-width="150"></el-table-column>
-              <el-table-column prop="corporateAchieveRatio" label="角色人业绩比例（%）" min-width="150"></el-table-column>
-              <el-table-column prop="commFees" label="拆佣金额" min-width="150"></el-table-column>
-              <el-table-column prop="commFeesRatio" label="拆佣比例（%）" min-width="150"></el-table-column>
-              <el-table-column prop="belongOrgName" label="店组" min-width="130"></el-table-column>
-              <el-table-column prop="managerAchieveList" label="管理岗" min-width="150">
-                <template slot-scope="scope">
-                  <div class="manager-list" v-for="(item, index) in scope.row.managerAchieveList" :key="index">
-                    <div>{{item.achieveFees}}</div>
-                    <div>{{item.ratio}}</div>
-                    <div>{{item.manager}}({{$root.dictAllName(item.type, 'ManagerType')}})</div>
-                  </div>
-                </template>
-              </el-table-column>
-              <el-table-column fixed="right" label="操作" width="130">
-                <template slot-scope="scope">
-                  <el-link
-                    class="margin-right-10"
-                    type="error"
-                    @click.native.prevent="deleteAchieveTotalBag(scope)"
-                  >删除
-                  </el-link>
-                  <el-link
-                    class="margin-right-10"
-                    type="primary"
-                    @click.native.prevent="editAchieveTotalBag(scope)"
-                  >修改
-                  </el-link>
-                </template>
-              </el-table-column>
-            </el-table>
-          </el-col>
-        </el-row>
-      </div>
-    </div>
-    <p id="anchor-6" class="ih-info-title">上传附件</p>
+    <p id="anchor-5" class="ih-info-title">上传附件</p>
     <el-row style="padding-left: 20px">
       <el-col>
         <div class="add-all-wrapper" v-if="baseInfoByTerm.exMinyuan">
-          <el-button type="success" @click="dialogViewInfo = true">查看来访/成交确认信息</el-button>
+          <el-button type="success" @click="handleViewDealInfo">查看来访/成交确认信息</el-button>
         </div>
         <el-table
           class="ih-table"
@@ -862,7 +583,6 @@
       </el-col>
     </el-row>
     <div class="text-center btn-top">
-      <el-button type="primary" @click="handleSave('save')" v-if="currentType !== 'add'">保存</el-button>
       <el-button type="success" @click="handleSave('submit')">提交</el-button>
       <el-button @click="cancel()">取消</el-button>
     </div>
@@ -874,139 +594,15 @@
         <div @click="goAnchor(item.id)" v-for="item in navList" :key="item.id" class="nav-item">{{item.name}}</div>
       </div>
     </div>
-    <ih-dialog :show="dialogAddProjectCycle" desc="选择项目周期列表">
-      <SelectProjectCycle
-        @cancel="() => (dialogAddProjectCycle = false)"
-        @finish="
-            (data) => {
-              finishAddProjectCycle(data);
-            }
-          "
-      />
-    </ih-dialog>
-    <ih-dialog :show="dialogAddNotice" desc="选择优惠告知书列表">
-      <SelectNoticeList
-        :data="baseInfoByTerm"
-        @cancel="() => (dialogAddNotice = false)"
-        @finish="
-            (data) => {
-              finishAddNotice(data);
-            }
-          "
-      />
-    </ih-dialog>
-    <ih-dialog :show="dialogAddAgentCompany" desc="选择渠道公司列表">
-      <AgentCompanyList
-        @cancel="() => (dialogAddAgentCompany = false)"
-        @finish="
-            (data) => {
-              finishAddAgentCompany(data);
-            }
-          "
-      />
-    </ih-dialog>
-    <ih-dialog :show="dialogAddReportInfo" desc="选择已成交报备信息列表">
-      <SelectReportInfo
-        :hasCheckedData="reportCheckedData"
-        :data="baseInfoByTerm.proId"
-        @cancel="() => (dialogAddReportInfo = false)"
-        @finish="
-            (data) => {
-              dialogAddReportInfo = false;
-              finishAddReportInfo(data);
-            }
-          "
-      />
-    </ih-dialog>
-    <ih-dialog :show="dialogAddRoom" desc="选择房号列表">
-      <SelectRoom
-        :data="baseInfoByTerm.proId"
-        @cancel="() => (dialogAddRoom = false)"
-        @finish="
-            (data) => {
-              dialogAddRoom = false;
-              finishAddRoom(data);
-            }
-          "
-      />
-    </ih-dialog>
-    <ih-dialog :show="dialogAddCustomer" desc="选择客户列表">
-      <AddCustomer
-        @cancel="() => (dialogAddCustomer = false)"
-        @finish="
-            (data) => {
-              finishAddCustomer(data);
-            }
-          "
-      />
-    </ih-dialog>
-    <ih-dialog :show="dialogAddReceivePackage" desc="选择服务费收派套餐标准">
-      <SelectReceivePackage
-        :data="{type: 'service'}"
-        @cancel="() => (dialogAddReceivePackage = false)"
-        @finish="
-            (data) => {
-              dialogAddReceivePackage = false;
-              finishAddReceivePackage(data);
-            }
-          "
-      />
-    </ih-dialog>
-    <ih-dialog :show="dialogAddBroker" desc="选择渠道经纪人列表">
-      <AddBroker
-        @cancel="() => (dialogAddBroker = false)"
-        @finish="
-            (data) => {
-              dialogAddBroker = false;
-              finishAddBroker(data);
-            }
-          "
-      />
-    </ih-dialog>
-    <ih-dialog :show="dialogEditDealAchieve" desc="新增/修改角色业绩">
-      <EditDealAchieve
-        @cancel="() => (dialogEditDealAchieve = false)"
-        @finish="
-            (data) => {
-              dialogEditDealAchieve = false;
-              finishAddProjectCycle(data);
-            }
-          "
-      />
-    </ih-dialog>
-    <ih-dialog :show="dialogViewInfo" desc="来访/成交信息">
-      <DealInfo
-        @cancel="() => (dialogViewInfo = false)"
-        @finish="
-            () => {
-              dialogViewInfo = false;
-            }
-          "
-      />
-    </ih-dialog>
   </ih-page>
 </template>
 <script lang="ts">
-  import {Component, Vue} from "vue-property-decorator";
-  import SelectProjectCycle from "@/views/deal/dealReport/dialog/selectProjectCycle.vue";
-  import SelectNoticeList from "@/views/deal/dealReport/dialog/selectNoticeList.vue";
-  import SelectReportInfo from "@/views/deal/dealReport/dialog/selectReportInfo.vue";
-  import AgentCompanyList from "@/views/deal/dealReport/dialog/agentCompanyList.vue";
-  import SelectRoom from "@/views/deal/dealReport/dialog/selectRoom.vue";
-  import AddCustomer from "@/views/deal/dealReport/dialog/addCustomer.vue";
-  import SelectReceivePackage from "@/views/deal/dealReport/dialog/selectReceivePackage.vue";
-  import AddBroker from "@/views/deal/dealReport/dialog/addBroker.vue";
-  import EditDealAchieve from "@/views/deal/dealReport/dialog/editDealAchieve.vue";
-  import DealInfo from "@/views/deal/dealReport/dialog/dealInfo.vue";
+  import {Component, Vue, Prop} from "vue-property-decorator";
   import {
-    post_buModelContType_getList, // 根据业务模式获取可选的合同类型
-    post_buModelContType_subList, // 根据业务模式获取可选的细分业务模式
     post_deal_initPage, // 选择周期、房号后初始化页面
     get_deal_get__id, // 编辑功能
     post_deal_entryDealBasicInf, // 案场岗 - 录入成交信息
-    post_deal_achieveAllotEntry, // 文员岗 - 录入成交信息
-    post_deal_updateDealBasicInf, // 案场岗 - 修改成交信息
-    post_deal_updateAchieveAllot, // 文员岗 - 修改成交信息
+    post_deal_updateDealBasicInf // 案场岗 - 修改成交信息
   } from "@/api/deal";
   import {
     get_term_getProBaseByTermId__termId, // 通过项目周期获取成交基础信息
@@ -1015,27 +611,36 @@
   import {NoRepeatHttp} from "ihome-common/util/aop/no-repeat-http";
 
   @Component({
-    components: {
-      AddCustomer,
-      SelectReceivePackage,
-      AddBroker,
-      SelectProjectCycle,
-      SelectNoticeList,
-      SelectRoom,
-      AgentCompanyList,
-      SelectReportInfo,
-      EditDealAchieve,
-      DealInfo
-    }
+    components: {}
   })
-  export default class DealReportAdd extends Vue {
+  export default class EntryDealInfo extends Vue {
+    @Prop({
+      type: Function,
+      default: null,
+    })
+    goAnchor!: any; // 锚点跳转方法
+    @Prop({
+      type: Function,
+      default: null,
+    })
+    previewContNo!: any; // 预览分销协议方法
+    @Prop({
+      type: Function,
+      default: null,
+    })
+    getContTypeList!: any; // 根据业务模式获取合同类型选项
+    @Prop({
+      type: Function,
+      default: null,
+    })
+    getRefineModelList!: any; // 根据业务模式获取细分业务模式选项
+
     contTypeList: any = []; // 合同类型选项
     refineModelList: any = []; // 细分业务模式选项
     dealStageList: any = []; // 成交阶段选项
     firstAgencyCompanyList: any = []; // 一手代理团队选项
     propertyTypeList: any = []; // 物业类型选项
     contNoList: any = []; // 分销协议列表---initPage接口
-    currentType: any = null; // 用来区别是文员岗(add)位还是案场岗位(declare)
     baseInfoByTerm: any = {
       proId: null, // 项目id --- 用于查询分销协议列表
       termId: null, // 项目周期id
@@ -1109,24 +714,7 @@
       receiveVO: [{}], // 收派金额
       receiveAchieveVO: [], // 应收信息
       documentVO: [], // 附件信息
-      commissionInfoList: [{}], // 对外拆佣
-      achieveTotalBagList: [
-        {
-          SupervisorList: [],
-          ManagerList: [],
-          DirectorList: [],
-        }
-      ], // 平台费用 - 总包
-      achieveDistriList: [
-        {
-          SupervisorList: [],
-          ManagerList: [],
-          DirectorList: [],
-        }
-      ], // 平台费用 - 分销
-      calculation: 'Auto', // 计算方式 - 默认自动
     };
-    DealDataFlag: any = []; // 数据来源
     rules: any = {
       dealCode: [
         {required: true, message: "成交报告编号不能为空", trigger: "change"},
@@ -1214,46 +802,26 @@
       ],
     };
     id: any = null;
-    dialogAddRoom: any = false;
-    dialogAddCustomer: any = false;
-    dialogAddReceivePackage: any = false;
-    dialogAddBroker: any = false;
-    dialogAddProjectCycle: any = false;
     cycleCheckedData: any = [];
-    dialogAddNotice: any = false;
-    dialogAddReportInfo: any = false;
-    reportCheckedData: any = [];
-    dialogAddAgentCompany: any = false;
-    companyCheckedData: any = [];
-    dialogEditDealAchieve: any = false;
-    dialogViewInfo: any = false; // 来访/成交信息弹窗
     defaultNavList: any = [
       {
         id: 1,
         name: '成交信息'
       },
       {
-        id: 3,
+        id: 2,
         name: '优惠告知书信息'
       },
       {
-        id: 4,
+        id: 3,
         name: '客户信息'
       },
       {
-        id: 7,
+        id: 4,
         name: '收派金额'
       },
       {
-        id: 8,
-        name: '对外拆佣'
-      },
-      {
-        id: 9,
-        name: '平台费用'
-      },
-      {
-        id: 6,
+        id: 5,
         name: '上传附件'
       },
     ]; // 锚点列表
@@ -1261,17 +829,12 @@
     navList: any = []; // 锚点列表
 
     async created() {
-      this.DealDataFlag = (this as any).$root.dictAllList('DealDataFlag'); // 数据来源
       this.postData.documentVO = (this as any).$root.dictAllList('DealFileType'); // 附件类型
       // 附件类型增加key
       if (this.postData.documentVO.length > 0) {
         this.postData.documentVO.forEach((vo: any) => {
           vo.fileList = []
         })
-      }
-      // 根据岗位来判断显示的新增页面
-      if (this.$route.query.btnType) {
-        this.currentType = this.$route.query.btnType;
       }
       // 锚点设置默认值
       this.navList = (this as any).$tool.deepClone(this.defaultNavList);
@@ -1280,18 +843,10 @@
           return list.id !== 5
         })
       }
-      if (this.currentType === 'declare') {
-        this.navList = this.navList.filter((list: any) => {
-          return (list.id !== 8 && list.id !== 9)
-        })
-      }
       this.id = this.$route.query.id;
       if (this.id) {
         const res: any = await get_deal_get__id({id: this.id});
         this.postData = res;
-      } else {
-        // 录入日期
-        this.postData.entryDate = new Date();
       }
     }
 
@@ -1335,100 +890,9 @@
       return flag;
     }
 
-    // 根据业务模式获取合同类型选项
-    async getContTypeList(code: any) {
-      if (!code) return;
-      let self = this;
-      let ContType: any = (this as any).$root.dictAllList('ContType');
-      let list: any = await post_buModelContType_getList({modelCode: code});
-      self.contTypeList = []; // 初始化
-      if (list && list.length > 0 && ContType && ContType.length > 0) {
-        if (list[0].contTypeList && list[0].contTypeList.length > 0) {
-          list[0].contTypeList.forEach((list: any) => {
-            ContType.forEach((item: any) => {
-              if (list === item.code) {
-                self.contTypeList.push(item);
-              }
-            });
-          });
-        }
-      }
-    }
-
-    // 根据业务模式获取细分业务模式选项
-    async getRefineModelList(code: any) {
-      if (!code) return;
-      let self = this;
-      let Subdivide: any = (this as any).$root.dictAllList('Subdivide'); // 细分业务类型字典
-      let list: any = await post_buModelContType_subList({modelCode: code});
-      this.refineModelList = [];
-      if (list && list.length > 0 && Subdivide && Subdivide.length > 0) {
-        list.forEach((list: any) => {
-          Subdivide.forEach((item: any) => {
-            if (list === item.code) {
-              self.refineModelList.push(item);
-            }
-          });
-        });
-      }
-    }
-
-    // 跳转到指定索引的元素
-    goAnchor(id: any) {
-      this.$nextTick(() => {
-        // 获取目标的 offsetTop
-        let selector = `#anchor-${id}`;
-        let dom = document.querySelector(selector) as any;
-        const targetOffsetTop = dom ? dom.offsetTop - 60 : 0;
-        // console.log('targetOffsetTop:', targetOffsetTop);
-        // 获取当前 offsetTop
-        let mainDom =  document.querySelector('.el-main') as any;
-        let scrollTop = mainDom ? mainDom.scrollTop : 0;
-        // console.log('scrollTop:', scrollTop);
-        // 定义一次跳 50 个像素，数字越大跳得越快，但是会有掉帧得感觉，步子迈大了会扯到蛋
-        const STEP = 50;
-        // 定义往下滑函数
-        function smoothDown() {
-          // 如果当前 scrollTop 小于 targetOffsetTop 说明视口还没滑到指定位置
-          if (scrollTop < targetOffsetTop) {
-            // 如果和目标相差距离大于等于 STEP 就跳 STEP
-            // 否则直接跳到目标点，目标是为了防止跳过了。
-            if (targetOffsetTop - scrollTop >= STEP) {
-              scrollTop += STEP;
-            } else {
-              scrollTop = targetOffsetTop;
-            }
-            mainDom.scrollTop = scrollTop;
-            // 关于 requestAnimationFrame 可以自己查一下，在这种场景下，相比 setInterval 性价比更高
-            window.requestAnimationFrame(smoothDown);
-          }
-        }
-        // 定义往上滑函数
-        function smoothUp() {
-          if (scrollTop > targetOffsetTop) {
-            if (scrollTop - targetOffsetTop >= STEP) {
-              scrollTop -= STEP;
-            } else {
-              scrollTop = targetOffsetTop;
-            }
-            mainDom.scrollTop = scrollTop;
-            window.requestAnimationFrame(smoothUp);
-          }
-        }
-        // 判断是往下滑还是往上滑
-        if (scrollTop > targetOffsetTop) {
-          // 往上滑
-          smoothUp();
-        } else {
-          // 往下滑
-          smoothDown();
-        }
-      })
-    }
-
     // 选择项目周期
     selectProject() {
-      this.dialogAddProjectCycle = true;
+      (this as any).$parent.selectProject();
     }
 
     // 确定选择项目周期
@@ -1468,7 +932,6 @@
           await this.getBaseDealInfo(this.postData.cycleId);
         }
       }
-      this.dialogAddProjectCycle = false;
     }
 
     // 通过项目周期id获取基础信息
@@ -1480,8 +943,8 @@
       if (baseInfo) {
         // 业务模式
         this.postData.businessType = baseInfo.busEnum;
-        await this.getContTypeList(this.postData.businessType); // 获取合同类型
-        await this.getRefineModelList(this.postData.businessType); // 获取细分业务模式下拉项
+        this.contTypeList = await this.getContTypeList(this.postData.businessType); // 获取合同类型
+        this.refineModelList =await this.getRefineModelList(this.postData.businessType); // 获取细分业务模式下拉项
         this.changeBusinessType(this.postData.businessType); // 赋值细分业务模式
         // 是否市场化项目
         this.postData.isMarketProject = baseInfo.exMarket === 1 ? 'Yes' : 'No';
@@ -1541,7 +1004,7 @@
 
     // 改变栋座
     changeBuild(value: any) {
-      // console.log('改变栋座', value);
+      console.log('改变栋座', value);
       // 清空房间号 + 下面的所有信息
       this.postData.roomId = null;
       this.resetData();
@@ -1722,27 +1185,20 @@
       }
     }
 
-    // 预览分销协议
-    previewContNo() {
-      // console.log('预览分销协议');
-      if (!this.postData.contNo) {
-        this.$message.error('请先选择需要预览的分销协议');
-        return;
-      } else {
-        // 预览
-        let routeData = this.$router.resolve({
-          path: "/distribution/info",
-          query:{id: '81'}
-        });
-        window.open(routeData.href, '_blank');
-      }
-    }
-
     // 选择收派套餐
     selectPackage(scope: any) {
       console.log('选择收派套餐', scope);
-      if (this.postData.calculation === 'Manual') return;
-      this.dialogAddReceivePackage = true;
+      let obj: any = {
+        type: '',
+        idList: []
+      }
+      // 判断费用类型
+      if(scope.row.type === '') {
+        obj.type = 'service'; // 服务费
+      } else {
+        obj.type = 'agency'; // 代理费
+      }
+      (this as any).$parent.selectPackage(obj);
     }
 
     // 计算收派金额总计
@@ -1775,61 +1231,15 @@
       return sums;
     }
 
-    // 选择已成交的报备信息-分销成交模式下
-    selectReport() {
-      this.dialogAddReportInfo = true;
-    }
-
-    // 确定选择已成交的报备信息-分销成交模式下
-    finishAddReportInfo(data: any) {
-      // console.log('data', data);
-      if (data && data.length > 0) {
-        this.postData.agencyName = data[0].name;
-        this.postData.channelId = data[0].id;
-        this.reportCheckedData = [...data];
-      }
-    }
-
-    // 选择拆佣 - 收款方
-    selectCommName(scope: any) {
-      console.log('选择收款方', scope);
-      if (this.postData.calculation === 'Auto') return;
-      this.dialogAddAgentCompany = true;
-    }
-
-    // 确定选择渠道公司
-    finishAddAgentCompany(data: any) {
-      // console.log('data', data);
-      if (data && data.length > 0) {
-        // this.postData.agencyName = data[0].channelName;
-        // this.postData.channelId = data[0].channelId;
-        this.companyCheckedData = [...data];
-      }
-      this.dialogAddAgentCompany = false;
-    }
-
-    // 选择房号
-    selectRoom() {
-      // 没有项目周期ID或分销成交模式下不能选择房号，房号是不可编辑的
-      if (this.postData.contType === 'DistriDeal' || !this.baseInfoByTerm.proId) return
-      this.dialogAddRoom = true;
-    }
-
-    // 确定选择房号
-    async finishAddRoom(data: any) {
-      console.log('data', data);
-      this.postData.roomNo = data.roomNo;
-      this.postData.roomId = data.roomId;
-    }
-
     // 添加优惠告知书
     handleAddNotice() {
-      this.dialogAddNotice = true;
+      if(this.baseInfoByTerm.termId) {
+        (this as any).$parent.handleAddNotice(this.baseInfoByTerm);
+      }
     }
 
     // 确定选择优惠告知书
     async finishAddNotice(data: any) {
-      // console.log('data', data);
       if (data.length === 0) return;
       if (this.postData.offerNoticeVO.length > 0) {
         let flag = false;
@@ -1837,7 +1247,8 @@
           return item.id === data[0].id;
         })
         if (flag) {
-          this.$message.error('已经存在相同的客户，请重新选择！');
+          this.$message.error('已经存在相同的优惠告知书，请重新选择！');
+          return;
         } else {
           this.postData.offerNoticeVO.push(
             {
@@ -1845,7 +1256,6 @@
               addType: 'manual'
             }
           );
-          this.dialogAddNotice = false;
         }
       } else {
         this.postData.offerNoticeVO.push(
@@ -1854,8 +1264,8 @@
             addType: 'manual'
           }
         );
-        this.dialogAddNotice = false;
       }
+      (this as any).$parent.handleAddNotice(this.baseInfoByTerm);
     }
 
     // 删除优惠告知书
@@ -1873,18 +1283,12 @@
 
     // 添加客户
     handleAddCustomer() {
-      this.dialogAddCustomer = true;
-    }
-
-    // 添加渠道经纪人
-    handleAddBroker() {
-      this.dialogAddBroker = true;
+      (this as any).$parent.handleAddCustomer();
     }
 
     // 确定选择客户
     async finishAddCustomer(data: any) {
-      console.log('data', data);
-      // this.addTotalPackageList = data;
+      // console.log('data', data);
       if (data.length === 0) return
       if (this.postData.customerVO.length > 0) {
         let flag = false;
@@ -1893,21 +1297,20 @@
         })
         if (flag) {
           this.$message.error('已经存在相同的客户，请重新选择！');
+          return;
         } else {
           this.postData.customerVO.push(...data);
-          this.dialogAddCustomer = false;
         }
       } else {
         this.postData.customerVO.push(...data);
-        this.dialogAddCustomer = false;
       }
+      (this as any).$parent.handleAddCustomer();
     }
 
     // 确定选择收派套餐
     async finishAddReceivePackage(data: any) {
-      console.log('data', data);
-      // this.addTotalPackageList = data;
-      if (data.length === 0) return
+      // console.log('data', data);
+      if (data.length === 0) return;
       if (this.postData.receiveVO.length > 0) {
         let flag = false;
         flag = this.postData.receiveVO.some((item: any) => {
@@ -1915,14 +1318,14 @@
         })
         if (flag) {
           this.$message.error('已经存在相同的收派套餐，请重新选择！');
+          return;
         } else {
           this.postData.receiveVO.push(...data);
-          this.dialogAddReceivePackage = false;
         }
       } else {
         this.postData.receiveVO.push(...data);
-        this.dialogAddReceivePackage = false;
       }
+      (this as any).$parent.selectPackage();
     }
 
     // 确定选择渠道经纪人
@@ -1944,103 +1347,6 @@
         // 删除渠道经纪人逻辑
         console.log(222);
       }
-    }
-
-    // 增加拆佣项
-    handleAddCommission() {
-      console.log('增加拆佣项');
-      let obj = {};
-      this.postData.commissionInfoList.push(obj);
-    }
-
-    // 计算对外拆佣合计
-    getCommissionSummaries(param: any) {
-      const {columns, data} = param;
-      const sums: any = [];
-      columns.forEach((column: any, index: any) => {
-        if (index === 0) {
-          sums[index] = '合计';
-          return;
-        }
-        if ([4].includes(index)) {
-          const values = data.map((item: any) => Number(item[column.property]));
-          if (!values.every((value: any) => isNaN(value))) {
-            sums[index] = values.reduce((prev: any, curr: any) => {
-              const value = Number(curr);
-              if (!isNaN(value)) {
-                return prev + curr;
-              } else {
-                return prev;
-              }
-            }, 0);
-          } else {
-            sums[index] = '';
-          }
-        } else {
-          sums[index] = '';
-        }
-      });
-      return sums;
-    }
-
-    // 新增总包/分销业绩
-    handleAddAchieve(type: any) {
-      console.log('type', type);
-      // this.dialogAddRole = true;
-      this.dialogEditDealAchieve = true;
-      // total - 总包； distri - 分销
-    }
-
-    // 删除总包平台费用
-    deleteAchieveTotalBag(scope: any) {
-      console.log('data', scope);
-    }
-
-    // 修改总包平台费用
-    editAchieveTotalBag(scope: any) {
-      console.log('data', scope);
-      this.dialogEditDealAchieve = true;
-    }
-
-    // 删除分销平台费用
-    deleteAchieveDistri(scope: any) {
-      console.log('data', scope);
-    }
-
-    // 修改分销平台费用
-    editAchieveDistri(scope: any) {
-      console.log('data', scope);
-      this.dialogEditDealAchieve = true;
-    }
-
-    // 计算平台费用-总包/分销合计
-    getAchieveSummaries(param: any) {
-      const {columns, data} = param;
-      const sums: any = [];
-      columns.forEach((column: any, index: any) => {
-        if (index === 0) {
-          sums[index] = '合计';
-          return;
-        }
-        if ([1, 2, 3, 4, 5].includes(index)) {
-          const values = data.map((item: any) => Number(item[column.property]));
-          if (!values.every((value: any) => isNaN(value))) {
-            sums[index] = values.reduce((prev: any, curr: any) => {
-              const value = Number(curr);
-              if (!isNaN(value)) {
-                return prev + curr;
-              } else {
-                return prev;
-              }
-            }, 0);
-          } else {
-            sums[index] = '';
-          }
-        } else {
-          sums[index] = '';
-        }
-      });
-      return sums;
     }
 
     getNewFile(val: any) {
@@ -2079,14 +1385,7 @@
               )
             })
           }
-          // 区别案场岗和文员岗
-          if (this.currentType === 'add') {
-            // 文员岗
-            await post_deal_updateAchieveAllot(postData);
-          } else if (this.currentType === 'declare') {
-            // 案场岗
-            await post_deal_updateDealBasicInf(postData);
-          }
+          await post_deal_updateDealBasicInf(postData);
           this.$message.success("编辑成功");
           this.$goto({
             path: "/dealReport/list",
@@ -2105,14 +1404,7 @@
               )
             })
           }
-          // 区别案场岗和文员岗
-          if (this.currentType === 'add') {
-            // 文员岗
-            await post_deal_achieveAllotEntry(postData);
-          } else if (this.currentType === 'declare') {
-            // 案场岗
-            await post_deal_entryDealBasicInf(postData);
-          }
+          await post_deal_entryDealBasicInf(postData);
           this.$message.success("新增成功");
           this.$goto({
             path: "/dealReport/list",
@@ -2122,6 +1414,11 @@
         this.$message.warning("请先填好数据再保存");
         return false;
       }
+    }
+
+    // 查看来访/成交确认信息
+    handleViewDealInfo() {
+      (this as any).$parent.handleViewDealInfo();
     }
   }
 </script>

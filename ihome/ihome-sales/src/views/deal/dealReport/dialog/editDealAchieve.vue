@@ -128,8 +128,6 @@
 <script lang="ts">
   import {Component, Vue, Prop} from "vue-property-decorator";
   import SelectRole from "@/views/deal/dealReport/dialog/selectRole.vue";
-
-  // import {post_channelGrade_getList} from "@/api/channel";
   import PaginationMixin from "@/mixins/pagination";
 
   @Component({
