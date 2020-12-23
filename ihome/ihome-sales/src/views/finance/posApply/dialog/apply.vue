@@ -4,7 +4,7 @@
  * @Author: ywl
  * @Date: 2020-12-23 09:57:33
  * @LastEditors: ywl
- * @LastEditTime: 2020-12-23 11:15:30
+ * @LastEditTime: 2020-12-23 19:36:05
 -->
 <template>
   <el-dialog
@@ -13,9 +13,10 @@
     :close-on-click-modal="false"
     :close-on-press-escape="false"
     :before-close="cancel"
-    append-to-body
     width="80%"
-    title="POS机申领事项"
+    :title="`POS机申领事项${isAdd ? '录入':'修改'}`"
+    class="text-left"
+    top="5vh"
   >
     <div>
       <p class="ih-info-title">POS申请事项信息</p>
@@ -30,28 +31,39 @@
           <el-col :span="8">
             <el-form-item
               label="事项类别"
-              prop="account"
+              prop="itemType"
             >
               <el-select
-                v-model="form.xx"
+                v-model="form.itemType"
                 class="width--100"
-              ></el-select>
+                disabled
+              >
+                <el-option
+                  v-for="(i, n) in $root.dictAllList('PosItemType')"
+                  :key="n"
+                  :value="i.code"
+                  :label="i.name"
+                ></el-option>
+              </el-select>
             </el-form-item>
           </el-col>
           <el-col :span="8">
             <el-form-item
               label="申请人"
-              prop="account"
+              prop="applyUser"
             >
-              <el-input v-model="form.xx"></el-input>
+              <el-input
+                :value="$root.userInfo.name"
+                disabled
+              ></el-input>
             </el-form-item>
           </el-col>
           <el-col :span="8">
             <el-form-item
               label="店组"
-              prop="account"
+              prop="groupId"
             >
-              <el-input v-model="form.xx"></el-input>
+              <el-input v-model="form.groupId"></el-input>
             </el-form-item>
           </el-col>
         </el-row>
@@ -59,17 +71,20 @@
           <el-col :span="8">
             <el-form-item
               label="事业部"
-              prop="account"
+              prop="departmentId"
             >
-              <el-input v-model="form.xx"></el-input>
+              <el-input v-model="form.departmentId"></el-input>
             </el-form-item>
           </el-col>
           <el-col :span="8">
             <el-form-item
               label="联动项目"
-              prop="account"
+              prop="proId"
             >
-              <el-input v-model="form.xx"></el-input>
+              <el-input
+                v-model="form.proId"
+                placeholder="请选择项目"
+              ></el-input>
             </el-form-item>
           </el-col>
         </el-row>
@@ -80,6 +95,7 @@
           type="primary"
           class="add"
           size="small"
+          @click="handleAddPos()"
         >添加</el-button>
       </p>
       <div class="padding-left-20">
@@ -112,20 +128,47 @@
       <el-button @click="cancel()">取 消</el-button>
       <el-button type="primary">保 存</el-button>
     </template>
+    <IhDialog :show="selectVisible">
+      <SelectPos />
+    </IhDialog>
   </el-dialog>
 </template>
 
 <script lang="ts">
-import { Component, Vue } from "vue-property-decorator";
+import { Component, Vue, Prop } from "vue-property-decorator";
+import SelectPos from "./selectPOS.vue";
 
-@Component({})
+@Component({
+  components: { SelectPos },
+})
 export default class ApplyDialog extends Vue {
+  @Prop({ default: true }) isAdd!: boolean;
+  @Prop() type!: any;
+
+  private selectVisible = false;
   private dialogVisible = true;
-  private form: any = {};
+  private form: any = {
+    applyUser: null,
+    departmentId: null,
+    groupId: null,
+    itemType: null,
+    posTerminalIds: [],
+    proId: null,
+  };
   private rules: any = {};
 
   cancel(): void {
     this.$emit("cancel", false);
+  }
+  private handleAddPos() {
+    this.selectVisible = true;
+  }
+
+  created() {
+    if (this.isAdd) {
+      this.form.itemType = this.type;
+      this.form.applyUser = (this.$root as any).userInfo.id;
+    }
   }
 }
 </script>
