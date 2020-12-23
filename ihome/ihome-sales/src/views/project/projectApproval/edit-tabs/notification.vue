@@ -4,7 +4,7 @@
  * @Author: wwq
  * @Date: 2020-11-27 17:27:01
  * @LastEditors: wwq
- * @LastEditTime: 2020-12-17 14:40:33
+ * @LastEditTime: 2020-12-22 17:53:40
 -->
 <template>
   <div>
@@ -354,8 +354,8 @@ export default class Notification extends Vue {
         termId: id,
       });
       this.contractData = {
-        preferentialPartyA: this.info.preferentialPartyA,
-        preferentialPartyAddr: this.info.preferentialPartyAddr,
+        // preferentialPartyA: this.info.preferentialPartyA,
+        // preferentialPartyAddr: this.info.preferentialPartyAddr,
         padCommissionEnum: this.info.padCommissionEnum,
       };
     }
@@ -437,6 +437,7 @@ export default class Notification extends Vue {
 
   addTemplate() {
     this.contractData.agencyContrictId = "";
+    this.contractData.id = this.info.preferentialPartyAId;
     this.dialogVisible = true;
   }
 
