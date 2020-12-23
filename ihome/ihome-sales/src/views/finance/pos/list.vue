@@ -4,7 +4,7 @@
  * @Author: ywl
  * @Date: 2020-12-01 10:39:24
  * @LastEditors: ywl
- * @LastEditTime: 2020-12-21 15:35:52
+ * @LastEditTime: 2020-12-23 10:51:22
 -->
 <template>
   <IhPage label-width="90px">
@@ -36,7 +36,7 @@
             <el-form-item label="状态">
               <el-select
                 v-model="queryPageParameters.status"
-                placeholder="请选择账户名称"
+                placeholder="请选择状态"
                 clearable
                 class="width--100"
               >

@@ -4,7 +4,7 @@
  * @Author: ywl
  * @Date: 2020-12-22 19:30:19
  * @LastEditors: ywl
- * @LastEditTime: 2020-12-22 20:53:23
+ * @LastEditTime: 2020-12-23 11:06:35
 -->
 <template>
   <IhPage label-width="80px">
@@ -60,7 +60,7 @@
                 class="width--100"
               >
                 <el-option
-                  v-for="(i, n) in $root.dictAllList('PosOperate')"
+                  v-for="(i, n) in $root.dictAllList('PosTerminalStatus')"
                   :key="n"
                   :value="i.code"
                   :label="i.name"
@@ -133,7 +133,7 @@
           prop="status"
         >
           <template v-slot="{ row }">
-            {{$root.dictAllName(row.status, 'PosOperate')}}
+            {{$root.dictAllName(row.status, 'PosTerminalStatus')}}
           </template>
         </el-table-column>
         <el-table-column
@@ -153,8 +153,11 @@
           label="操作"
           width="120"
         >
-          <template v-slot="{  }">
-            <el-link type="primary">详情</el-link>
+          <template v-slot="{ row }">
+            <el-link
+              type="primary"
+              @click="$router.push(`/posApply/info?id=${row.id}`)"
+            >详情</el-link>
             <el-dropdown
               trigger="click"
               class="margin-left-15"
@@ -198,6 +201,10 @@
         :total="resPageInfo.total"
       ></el-pagination>
     </template>
+    <!-- 弹窗 -->
+    <IhDialog :show="dialogVisible">
+      <Apply @cancel="() => (dialogVisible = false)" />
+    </IhDialog>
   </IhPage>
 </template>
 
@@ -205,8 +212,10 @@
 import { Component, Vue } from "vue-property-decorator";
 import PaginationMixin from "../../../mixins/pagination";
 import { post_posApplyItem_getList } from "../../../api/finance/index";
+import Apply from "./dialog/apply.vue";
 
 @Component({
+  components: { Apply },
   mixins: [PaginationMixin],
 })
 export default class POSApplyList extends Vue {
@@ -221,6 +230,7 @@ export default class POSApplyList extends Vue {
     total: null,
     list: [],
   };
+  private dialogVisible = true;
 
   private search() {
     this.queryPageParameters.pageNum = 1;

@@ -4,7 +4,7 @@
  * @Author: ywl
  * @Date: 2020-12-08 21:04:03
  * @LastEditors: ywl
- * @LastEditTime: 2020-12-16 19:49:19
+ * @LastEditTime: 2020-12-23 14:46:38
 -->
 <template>
   <el-dialog
@@ -229,7 +229,7 @@ export default class Handadel extends Vue {
       let index = i.name.lastIndexOf(".");
       return {
         fileId: i.fileId,
-        fileName: i.name.substring(0, index),
+        fileName: i.name,
         type: i.name.substring(index + 1, i.name.length),
       };
     });
