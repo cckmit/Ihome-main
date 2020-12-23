@@ -78,8 +78,8 @@ const dealRoutes: Array<RouteConfig> = [
       },
       {
         path: 'add',
-        name: 'DealReportAdd',
-        component: () => import('@/views/deal/dealReport/add.vue'),
+        name: 'DealReportEntry',
+        component: () => import('@/views/deal/dealReport/add/index.vue'),
         meta: { title: '成交报告新增/修改', icon: 'form' }
       },
       {
