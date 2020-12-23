@@ -4,7 +4,7 @@
  * @Author: wwq
  * @Date: 2020-12-02 15:37:31
  * @LastEditors: wwq
- * @LastEditTime: 2020-12-23 15:45:00
+ * @LastEditTime: 2020-12-23 19:09:13
 -->
 <template>
   <el-dialog
@@ -730,6 +730,12 @@ export default class AddContract extends Vue {
         ),
       ];
       this.queryObj.termId = this.termId;
+      this.queryObj.channelEnum = this.info.channelEnum;
+      this.queryObj.padCommissionEnum = this.info.padCommissionEnum;
+      if (this.isShow) {
+        this.queryObj.consumerId = this.info.designatedAgencyId;
+        this.queryObj.consumerName = this.info.designatedAgency;
+      }
       const item = await post_distributContract_getCheckCollectByCondition(
         this.queryObj
       );

@@ -4,7 +4,7 @@
  * @Author: wwq
  * @Date: 2020-12-01 14:49:06
  * @LastEditors: wwq
- * @LastEditTime: 2020-12-22 14:19:03
+ * @LastEditTime: 2020-12-23 20:10:11
 -->
 <template>
   <el-dialog
@@ -108,6 +108,11 @@
             </el-input>
           </el-form-item>
         </el-col>
+        <el-col :span="12">
+          <el-form-item label="归属组织">
+            <span :title="data.startDivisionName">{{data.startDivisionName}}</span>
+          </el-form-item>
+        </el-col>
       </el-row>
       <el-row>
         <el-col :span="12">
@@ -201,7 +206,7 @@
 </template>
 
 <script lang="ts">
-import { Component, Vue } from "vue-property-decorator";
+import { Component, Vue, Prop } from "vue-property-decorator";
 import { Form as ElForm } from "element-ui";
 import { NoRepeatHttp } from "ihome-common/util/aop/no-repeat-http";
 import { post_company_getAll } from "@/api/system/index";
@@ -211,6 +216,7 @@ import { get_bankAccount_get__companyId } from "@/api/finance/index";
   components: {},
 })
 export default class PartyAAdd extends Vue {
+  @Prop({ default: null }) data: any;
   dialogVisible = true;
   partyFileList: any = [];
   stampFileList: any = [];

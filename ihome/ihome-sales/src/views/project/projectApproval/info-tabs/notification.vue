@@ -4,7 +4,7 @@
  * @Author: wwq
  * @Date: 2020-11-27 17:27:01
  * @LastEditors: wwq
- * @LastEditTime: 2020-12-11 09:18:57
+ * @LastEditTime: 2020-12-23 19:55:51
 -->
 <template>
   <div>
@@ -124,61 +124,63 @@
       </el-row>
     </el-form>
     <br />
-    <p class="ih-info-title">优惠告知书模板</p>
-    <div class="hint">(注: 当 立项周期信息里的 启动模式设置为 服务费模式 或 服务费加代理费模式 时，表示 收取服务费。 才会显示 优惠告知书信息 模块内容. )</div>
-    <div class="padding-left-20">
-      <el-table
-        class="ih-table"
-        :data="info.preferentialMxVOS"
-        style="width: 100%"
-      >
-        <el-table-column
-          prop="premiumReceived"
-          label="优惠服务费缴纳金额"
-        ></el-table-column>
-        <el-table-column
-          label="优惠方式说明"
-          prop="modeDescription"
-        ></el-table-column>
-        <el-table-column
-          prop="partyARefundDays"
-          label="甲方退款天数"
-        ></el-table-column>
-        <el-table-column
-          label="操作"
-          width="120"
-          fixed="right"
-          align="center"
+    <div v-if="info.chargeEnum && (info.chargeEnum === 'Service' || info.chargeEnum === 'ServiAndAgen')">
+      <p class="ih-info-title">优惠告知书模板</p>
+      <div class="hint">(注: 当 立项周期信息里的 启动模式设置为 服务费模式 或 服务费加代理费模式 时，表示 收取服务费。 才会显示 优惠告知书信息 模块内容. )</div>
+      <div class="padding-left-20">
+        <el-table
+          class="ih-table"
+          :data="info.preferentialMxVOS"
+          style="width: 100%"
         >
-          <template v-slot="{ row }">
-            <el-button
-              size="small"
-              type="success"
-              @click="uploadQRcode(row)"
-            >下载二维码</el-button>
-          </template>
-        </el-table-column>
-      </el-table>
-    </div>
-    <div class="file text-left">
-      <el-form>
-        <el-row>
-          <el-col :span="24">
-            <el-form-item
-              label="纸质告知书模板"
-              class="file-item"
-            >
-              <IhUpload
-                :file-list.sync="fileList"
-                size="100px"
-                :limit="fileList.length"
-                :removePermi="false"
-              ></IhUpload>
-            </el-form-item>
-          </el-col>
-        </el-row>
-      </el-form>
-      <div class="file-hint">特殊情况无法使用电子优惠告知书模板，请上传纸质版优惠告知书附件</div>
+          <el-table-column
+            prop="premiumReceived"
+            label="优惠服务费缴纳金额"
+          ></el-table-column>
+          <el-table-column
+            label="优惠方式说明"
+            prop="modeDescription"
+          ></el-table-column>
+          <el-table-column
+            prop="partyARefundDays"
+            label="甲方退款天数"
+          ></el-table-column>
+          <el-table-column
+            label="操作"
+            width="120"
+            fixed="right"
+            align="center"
+          >
+            <template v-slot="{ row }">
+              <el-button
+                size="small"
+                type="success"
+                @click="uploadQRcode(row)"
+              >下载二维码</el-button>
+            </template>
+          </el-table-column>
+        </el-table>
+      </div>
+      <div class="file text-left">
+        <el-form>
+          <el-row>
+            <el-col :span="24">
+              <el-form-item
+                label="纸质告知书模板"
+                class="file-item"
+              >
+                <IhUpload
+                  :file-list.sync="fileList"
+                  size="100px"
+                  :limit="fileList.length"
+                  :removePermi="false"
+                ></IhUpload>
+              </el-form-item>
+            </el-col>
+          </el-row>
+        </el-form>
+        <div class="file-hint">特殊情况无法使用电子优惠告知书模板，请上传纸质版优惠告知书附件</div>
+      </div>
     </div>
     <ih-dialog :show="viewDialogVisible">
       <ViewContract
@@ -204,6 +206,7 @@ export default class Notification extends Vue {
   info: any = {
     distributContractVOS: [],
     preferentialMxVOS: [],
+    chargeEnum: null,
     constractOaVO: {
       customerConfirm: null,
       responsibiltity: null,

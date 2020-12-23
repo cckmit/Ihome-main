@@ -4,7 +4,7 @@
  * @Author: wwq
  * @Date: 2020-11-27 17:20:24
  * @LastEditors: wwq
- * @LastEditTime: 2020-12-22 14:20:16
+ * @LastEditTime: 2020-12-23 20:07:31
 -->
 <template>
   <div>
@@ -176,6 +176,7 @@
     </ih-dialog>
     <ih-dialog :show="addDialogVisible">
       <PartyAAdd
+        :data="partyAddData"
         @cancel="() => (addDialogVisible = false)"
         @finish="(data) => addFinish(data)"
       />
@@ -209,6 +210,7 @@ export default class PartyA extends Vue {
   editDialogVisible = false;
   budingEditDialogVisible = false;
   addDialogVisible = false;
+  partyAddData: any = {};
   info: any = {
     partyAContractInfos: [],
     partyAInfoMesgVOS: [],
@@ -275,6 +277,7 @@ export default class PartyA extends Vue {
 
   addParty() {
     this.addDialogVisible = true;
+    this.partyAddData.startDivisionName = this.info.startDivisionName;
   }
 
   async addFinish(data: any) {
