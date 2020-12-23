@@ -4,7 +4,7 @@
  * @Author: ywl
  * @Date: 2020-12-04 16:33:16
  * @LastEditors: ywl
- * @LastEditTime: 2020-12-15 11:27:33
+ * @LastEditTime: 2020-12-23 20:24:11
 -->
 <script lang="ts">
 import { Component, Vue, Prop } from "vue-property-decorator";
@@ -40,8 +40,10 @@ export default class SelectPageByCycle extends Vue {
     pageSize: 10,
   };
   filterText = null;
+  searchLoad = false;
 
   async getSelectList() {
+    this.searchLoad = true;
     let res = await post_term_getList({
       termName: this.filterText,
       pageSize: this.pageInfo.pageSize,
@@ -49,6 +51,7 @@ export default class SelectPageByCycle extends Vue {
     });
     this.optionList = res.list;
     this.pageInfo = res;
+    this.searchLoad = false;
   }
 }
 </script>

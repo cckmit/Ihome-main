@@ -4,7 +4,7 @@
  * @Author: ywl
  * @Date: 2020-12-05 10:52:22
  * @LastEditors: ywl
- * @LastEditTime: 2020-12-15 14:31:07
+ * @LastEditTime: 2020-12-23 20:22:35
 -->
 <script lang="ts">
 import { Component, Vue, Prop, Watch } from "vue-property-decorator";
@@ -49,17 +49,20 @@ export default class SelectPageByBuild extends Vue {
 
   optionList: any = [];
   filterText = null;
+  searchLoad = false;
 
   handleMessage() {
     this.$message.warning("请先选择项目");
   }
   async getSelectList() {
     if (this.proId || !this.isBlur) {
+      this.searchLoad = true;
       this.optionList = await post_room_getFuzzySearch({
         roomNo: this.filterText,
         proId: this.proId,
         buildingId: this.buildingId,
       });
+      this.searchLoad = false;
     }
   }
 }

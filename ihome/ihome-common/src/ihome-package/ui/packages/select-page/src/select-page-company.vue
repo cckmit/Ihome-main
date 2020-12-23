@@ -4,7 +4,7 @@
  * @Author: ywl
  * @Date: 2020-12-15 14:42:05
  * @LastEditors: ywl
- * @LastEditTime: 2020-12-15 14:54:51
+ * @LastEditTime: 2020-12-23 20:24:32
 -->
 <script lang="ts">
 import { Component, Vue, Prop } from "vue-property-decorator";
@@ -30,10 +30,14 @@ export default class IhSelectPageByCompany extends Vue {
 
   optionList: any = [];
   filterText = "";
+  searchLoad = false;
+
   async getSelectList() {
+    this.searchLoad = true;
     this.optionList = await post_company_getAll({
       name: this.filterText,
     });
+    this.searchLoad = false;
   }
 }
 </script>
