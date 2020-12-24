@@ -4,10 +4,10 @@
  * @Author: wwq
  * @Date: 2020-11-27 17:27:57
  * @LastEditors: wwq
- * @LastEditTime: 2020-12-03 18:55:51
+ * @LastEditTime: 2020-12-24 09:21:59
 -->
 <template>
-  <div>
+  <div class="calculation-box">
     <div class="calculation">
       <p class="ih-info-title">立项测算信息</p>
       <div class="calculationButton">
@@ -25,7 +25,10 @@
     >
       <el-row>
         <el-col :span="8">
-          <el-form-item label="服务费总包模式-总包成交留存率">
+          <el-form-item
+            label="服务费总包模式-总包成交留存率"
+            class="formItem"
+          >
             <el-input
               v-model="info.serviceFeeTotalByTotalRate"
               disabled
@@ -34,7 +37,10 @@
           </el-form-item>
         </el-col>
         <el-col :span="8">
-          <el-form-item label="代理费总包模式-总包成交留存率">
+          <el-form-item
+            label="代理费总包模式-总包成交留存率"
+            class="formItem"
+          >
             <el-input
               v-model="info.agencyFeeTotalByTotalRate"
               disabled
@@ -43,7 +49,10 @@
           </el-form-item>
         </el-col>
         <el-col :span="8">
-          <el-form-item label="纯分销模式-代理费留存率">
+          <el-form-item
+            label="纯分销模式-代理费留存率"
+            class="formItem"
+          >
             <el-input
               v-model="info.distributeAgencyRate"
               disabled
@@ -54,7 +63,10 @@
       </el-row>
       <el-row>
         <el-col :span="8">
-          <el-form-item label="服务费总包模式-分销成交留存率">
+          <el-form-item
+            label="服务费总包模式-分销成交留存率"
+            class="formItem"
+          >
             <el-input
               v-model="info.serviceFeeTotalByDistrictbuteRate"
               disabled
@@ -63,7 +75,10 @@
           </el-form-item>
         </el-col>
         <el-col :span="8">
-          <el-form-item label="代理费总包模式-分销成交留存率">
+          <el-form-item
+            label="代理费总包模式-分销成交留存率"
+            class="formItem"
+          >
             <el-input
               v-model="info.agencyFeeTotalByDistrictbuteRate"
               disabled
@@ -72,7 +87,10 @@
           </el-form-item>
         </el-col>
         <el-col :span="8">
-          <el-form-item label="纯分销模式-服务费留存率">
+          <el-form-item
+            label="纯分销模式-服务费留存率"
+            class="formItem"
+          >
             <el-input
               v-model="info.distributeServiceRate"
               disabled
@@ -161,5 +179,11 @@ export default class Calculation extends Vue {
 
 .calculationButton {
   margin: 5px 0 0 20px;
+}
+
+.formItem {
+  /deep/ .el-form-item__label {
+    line-height: 20px;
+  }
 }
 </style>

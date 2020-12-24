@@ -4,17 +4,17 @@
  * @Author: wwq
  * @Date: 2020-11-27 17:17:06
  * @LastEditors: wwq
- * @LastEditTime: 2020-12-18 08:56:55
+ * @LastEditTime: 2020-12-24 09:48:56
 -->
 <template>
-  <div>
+  <div class="project-approval-box">
     <p class="ih-info-title">合作项目信息</p>
     <el-form
       :model="info"
       :rules="rules"
       ref="ruleForm"
       label-width="140px"
-      class="demo-ruleForm"
+      class="box-form"
     >
       <el-row>
         <el-col :span="8">
@@ -180,7 +180,7 @@
               @change="chargeEnumChange"
             >
               <el-option
-                v-for="item in $root.dictAllList('Charge')"
+                v-for="item in chargeEnumOptions"
                 :key="item.code"
                 :label="item.name"
                 :value="item.code"
@@ -340,7 +340,10 @@
           </el-form-item>
         </el-col>
         <el-col :span="8">
-          <el-form-item label="允许其他渠道费用临时穿底">
+          <el-form-item
+            label="允许其他渠道费用临时穿底"
+            class="formItem"
+          >
             <el-select
               v-model="info.exOver"
               clearable
@@ -363,6 +366,7 @@
           <el-form-item
             label="往期业绩金额（万元）"
             prop="preBusAmount"
+            class="formItem"
           >
             <el-input
               v-model="info.preBusAmount"
@@ -375,6 +379,7 @@
           <el-form-item
             label="服务费可用其他渠道费用"
             prop="serviceBalance"
+            class="formItem"
           >
             <el-input
               v-model="info.serviceBalance"
@@ -384,7 +389,10 @@
           </el-form-item>
         </el-col>
         <el-col :span="8">
-          <el-form-item label="允许跨项目使用其他渠道费用">
+          <el-form-item
+            label="允许跨项目使用其他渠道费用"
+            class="formItem"
+          >
             <el-select
               v-model="info.exOtherProChannelUse"
               clearable
@@ -433,6 +441,7 @@
           <el-form-item
             label="认购书是否体现优惠折扣"
             prop="exDiscount"
+            class="formItem"
           >
             <el-select
               v-model="info.exDiscount"
@@ -453,6 +462,7 @@
           <el-form-item
             label="认购书优惠折扣体现方式"
             prop="subscriDiscountModel"
+            class="formItem"
           >
             <el-input
               v-model="info.subscriDiscountModel"
@@ -464,6 +474,7 @@
           <el-form-item
             label="优惠告知书折扣体现方式"
             prop="notificDiscountModel"
+            class="formItem"
           >
             <el-input
               v-model="info.notificDiscountModel"
@@ -491,6 +502,7 @@
           <el-form-item
             label="【项目房款/车位款+服务费】>备案价"
             prop="houseandcarGtRecordEnum"
+            class="formItem"
           >
             <el-select
               v-model="info.houseandcarGtRecordEnum"
@@ -588,6 +600,7 @@
           <el-form-item
             label="服务费总包模式-总包成交留存率"
             prop="serviceFeeTotalByTotalRate"
+            class="formItem"
           >
             <el-input
               v-model="info.serviceFeeTotalByTotalRate"
@@ -600,6 +613,7 @@
           <el-form-item
             label="代理费总包模式-总包成交留存率"
             prop="agencyFeeTotalByTotalRate"
+            class="formItem"
           >
             <el-input
               v-model="info.agencyFeeTotalByTotalRate"
@@ -612,6 +626,7 @@
           <el-form-item
             label="纯分销模式-代理费留存率"
             prop="distributeAgencyRate"
+            class="formItem"
           >
             <el-input
               v-model="info.distributeAgencyRate"
@@ -626,6 +641,7 @@
           <el-form-item
             label="服务费总包模式-分销成交留存率"
             prop="serviceFeeTotalByDistrictbuteRate"
+            class="formItem"
           >
             <el-input
               v-model="info.serviceFeeTotalByDistrictbuteRate"
@@ -638,6 +654,7 @@
           <el-form-item
             label="代理费总包模式-分销成交留存率"
             prop="agencyFeeTotalByDistrictbuteRate"
+            class="formItem"
           >
             <el-input
               v-model="info.agencyFeeTotalByDistrictbuteRate"
@@ -650,6 +667,7 @@
           <el-form-item
             label="纯分销模式-服务费留存率"
             prop="distributeServiceRate"
+            class="formItem"
           >
             <el-input
               v-model="info.distributeServiceRate"
@@ -798,6 +816,7 @@ export default class FirstAgencyEdit extends Vue {
   fileListType: any = [];
   submitFile: any = {};
   attributeEnumOptions: any = [];
+  chargeEnumOptions: any = [];
   private attachTermVOS: any = [];
   private rules: any = {
     proName: [
@@ -1006,8 +1025,9 @@ export default class FirstAgencyEdit extends Vue {
 
   busEnumChange(val: any) {
     this.info.attributeEnum = null;
-    if (val && this.info.chargeEnum) {
-      this.getAttributeEnumOptions();
+    this.info.chargeEnum = null;
+    if (val) {
+      this.getchargeEnumOptions();
     }
   }
 
@@ -1016,6 +1036,14 @@ export default class FirstAgencyEdit extends Vue {
     if (val && this.info.busEnum) {
       this.getAttributeEnumOptions();
     }
+  }
+
+  async getchargeEnumOptions() {
+    this.chargeEnumOptions = await post_dict_getAllByType({
+      type: "Charge",
+      tag: `${this.info.busEnum}`,
+      valid: "Valid",
+    });
   }
 
   async getAttributeEnumOptions() {
@@ -1108,7 +1136,9 @@ export default class FirstAgencyEdit extends Vue {
       this.info.termStageEnum = "Subscription";
       this.info.companyId = res.companyId;
       window.sessionStorage.setItem("proId", res.proId);
-      window.sessionStorage.setItem("padCommission", res.padCommissionEnum);
+      if (this.info.chargeEnum) {
+        this.getchargeEnumOptions();
+      }
       if (this.info.chargeEnum && this.info.busEnum) {
         this.getAttributeEnumOptions();
       }
@@ -1153,3 +1183,10 @@ export default class FirstAgencyEdit extends Vue {
   }
 }
 </script>
+<style lang="scss" scoped>
+.formItem {
+  /deep/ .el-form-item__label {
+    line-height: 20px;
+  }
+}
+</style>
