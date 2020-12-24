@@ -4,7 +4,7 @@
  * @Author: zyc
  * @Date: 2020-07-31 15:21:06
  * @LastEditors: zyc
- * @LastEditTime: 2020-12-16 11:41:57
+ * @LastEditTime: 2020-12-24 11:01:38
  */
 let http = require('http');
 let fs = require("fs");
@@ -114,6 +114,8 @@ function handleBody(body) {
             if (originalRef.startsWith('Map<')) {
                 originalRef = "any"
             }
+ 
+            console.log(originalRef)
             let res = 'any'
             let parameters = paths[k]["get"].parameters;
             if (parameters && parameters.length > 0) {
@@ -134,7 +136,10 @@ function handleBody(body) {
             if (originalRef.includes('>') || originalRef.includes('<')) {
                 originalRef = "any"
             }
-            writeLine(`return await request.get<${originalRef},${originalRef}>(basePath+'${k}', { params: d })`)
+            let excludeList = ['LocalDateTime'];//排除的类型，做为any
+            let typeStr = excludeList.includes(originalRef) ? 'any' : originalRef;
+
+            writeLine(`return await request.get<${typeStr},${typeStr}>(basePath+'${k}', { params: d })`)
             writeLine(`}`)
 
         } else {
@@ -207,8 +212,10 @@ function handleBody(body) {
             if (originalRef.includes('>') || originalRef.includes('<')) {
                 originalRef = "any"
             }
+            let excludeList = ['LocalDateTime'];//排除的类型，做为any
+            let typeStr = excludeList.includes(originalRef) ? 'any' : originalRef;
 
-            writeLine(`return await request.post< ${originalRef},${originalRef}> (basePath+'${k}', d)`)
+            writeLine(`return await request.post< ${typeStr},${typeStr}> (basePath+'${k}', d)`)
             writeLine(`}`)
 
         }
