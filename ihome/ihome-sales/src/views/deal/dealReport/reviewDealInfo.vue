@@ -47,7 +47,7 @@
           </el-col>
           <el-col :span="8">
             <el-form-item label="物业类型">
-              {{$root.dictAllName(postData.house.propertyType, 'PropertyEnum')}}
+              {{$root.dictAllName(postData.house.propertyType, 'Property')}}
             </el-form-item>
           </el-col>
           <el-col :span="8">

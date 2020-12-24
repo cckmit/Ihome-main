@@ -160,6 +160,7 @@
               :clearable="!baseInfoInDeal.hasRecord"
               :disabled="baseInfoInDeal.contType === 'DistriDeal' && baseInfoInDeal.hasRecord"
               placeholder="请选择合同类型"
+              @change="changeContType"
               class="width--100">
               <el-option
                 v-for="item in contTypeList"
@@ -371,7 +372,7 @@
           </el-form-item>
         </el-col>
         <el-col :span="6">
-          <el-form-item label="签约价格" :prop="['Subscribe', 'SignUp'].includes(postData.stage) ? 'signPrice' : ''">
+          <el-form-item label="签约价格" :prop="['SignUp'].includes(postData.stage) ? 'signPrice' : ''">
             <el-input
               :disabled="isDisabled('signPrice', 'dealVO')"
               v-model="postData.signPrice"
@@ -379,7 +380,7 @@
           </el-form-item>
         </el-col>
         <el-col :span="6">
-          <el-form-item label="签约日期" :prop="['Subscribe', 'SignUp'].includes(postData.stage) ? 'signDate' : ''">
+          <el-form-item label="签约日期" :prop="['SignUp'].includes(postData.stage) ? 'signDate' : ''">
             <el-date-picker
               style="width: 100%"
               :disabled="isDisabled('signDate', 'dealVO')"
@@ -422,7 +423,7 @@
         </el-col>
       </el-row>
     </el-form>
-    <div id="anchor-3" v-if="baseInfoByTerm.chargeEnum !== 'Agent' && !baseInfoInDeal.notice.length">
+    <div id="anchor-3" v-if="baseInfoByTerm.chargeEnum !== 'Agent'">
       <p class="ih-info-title">优惠告知书信息</p>
       <el-row style="padding-left: 20px">
         <el-col>
@@ -1479,6 +1480,25 @@
           break;
         default:
           this.postData.refineModel = '';
+      }
+    }
+
+    // 修改合同类型
+    changeContType(value: any) {
+      if (!value) return;
+      if (value === 'DistriDeal') {
+        // 如果查询不到此房号的已成交报备信息，用户又选择分销成交
+        this.postData.contType = '';
+        if (!this.baseInfoInDeal.hasRecord) {
+          this.$alert('系统查询不到此房号的已成交报备信息，请先维护报备信息！', '提示', {
+            confirmButtonText: '确定'
+          });
+          return;
+        }
+      } else {
+        // 不是分销成交
+        // 1.清空数据
+        // 2.请求接口获取数据
       }
     }
 

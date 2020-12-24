@@ -15,7 +15,7 @@
           <el-col :span="8">
             <el-form-item label="业务模式">
               <el-select
-              v-model="queryPageParameters.modelName"
+              v-model="queryPageParameters.modelCode"
               clearable
               placeholder="请选择业务模式"
               class="width--100">
@@ -54,7 +54,7 @@
                 placeholder="请选择物业类型"
                 class="width--100">
                 <el-option
-                  v-for="item in $root.dictAllList('PropertyEnum')"
+                  v-for="item in $root.dictAllList('Property')"
                   :key="item.code"
                   :label="item.name"
                   :value="item.code"
@@ -117,7 +117,7 @@
         <el-table-column prop="branchCompany" label="分公司" min-width="120"></el-table-column>
         <el-table-column prop="contType" label="合同类型" min-width="120"></el-table-column>
         <el-table-column prop="propertyTypeStr" label="物业类型" min-width="120"></el-table-column>
-        <el-table-column prop="modelName" label="业务模式" min-width="120"></el-table-column>
+        <el-table-column prop="modelCode" label="业务模式" min-width="120"></el-table-column>
         <el-table-column prop="isMarketProject" label="是否市场化项目" min-width="120">
           <template slot-scope="scope">
             <div v-if="scope.row.isMarketProject">{{scope.row.isMarketProject === 'Yes' ? '是' : '否'}}</div>
@@ -194,7 +194,7 @@
   export default class AchieveScaleSchemeList extends Vue {
     branchCompanyName: any = null; // 分公司名称
     queryPageParameters: any = {
-      modelName: null,
+      modelCode: null,
       contType: null,
       property: null,
       isMarketProject: null,
@@ -209,7 +209,7 @@
     companyId: any = null; // 分公司id
 
     async created() {
-      // console.log('物业类型', (this as any).$root.dictAllList('PropertyEnum'));
+      // console.log('物业类型', (this as any).$root.dictAllList('Property'));
       this.companyId = localStorage.getItem('companyId');
       if (this.companyId) {
         await this.getListMixin();
@@ -221,7 +221,7 @@
       let self = this;
       if (!self.companyId) return;
       let contTypeList = (self as any).$root.dictAllList('ContType'); // 合同类型
-      let propertyEnumList = (self as any).$root.dictAllList('PropertyEnum'); // 物业类型
+      let propertyList = (self as any).$root.dictAllList('Property'); // 物业类型
       let businessModelList = (self as any).$root.dictAllList('BusinessModel'); // 业务类型
       self.queryPageParameters.branchCompanyId = self.companyId; // 分公司id
       self.resPageInfo = await post_achieveScaleScheme_getList(self.queryPageParameters);
@@ -255,8 +255,8 @@
             let propertyNameType: any = [];
             if (typeArr.length > 0) {
               typeArr.forEach((typeItem: any) => {
-                if (propertyEnumList && propertyEnumList.length > 0) {
-                  propertyEnumList.forEach((propertyItem: any) => {
+                if (propertyList && propertyList.length > 0) {
+                  propertyList.forEach((propertyItem: any) => {
                     if (typeItem === propertyItem.code) {
                       propertyNameType.push(propertyItem.name);
                     }
@@ -271,15 +271,15 @@
             }
           }
           // 业务模式
-          if (listItem.modelName) {
+          if (listItem.modelCode) {
             if (businessModelList && businessModelList.length > 0) {
               businessModelList.forEach((businessItem: any) => {
-                if (listItem.modelName === businessItem.code) {
-                  listItem.modelName = businessItem.name;
+                if (listItem.modelCode === businessItem.code) {
+                  listItem.modelCode = businessItem.name;
                 }
               })
             } else {
-              listItem.modelName = "";
+              listItem.modelCode = "";
             }
           }
         })
@@ -312,7 +312,7 @@
     // 重置
     reset() {
       this.queryPageParameters = {
-        modelName: null,
+        modelCode: null,
         contType: null,
         achievePropertyTypeList: null,
         isMarketProject: null,

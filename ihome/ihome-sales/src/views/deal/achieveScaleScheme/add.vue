@@ -72,7 +72,7 @@
               placeholder="请选择物业类型"
               class="width--100">
               <el-option
-                v-for="item in $root.dictAllList('PropertyEnum')"
+                v-for="item in $root.dictAllList('Property')"
                 :key="item.code"
                 :label="item.name"
                 :value="item.code"
@@ -151,7 +151,7 @@
                 placeholder="请选择角色"
                 class="width--100">
                 <el-option
-                  v-for="item in $root.dictAllList('DealRole')"
+                  v-for="item in dealRoleList"
                   :key="item.code"
                   :label="item.name"
                   :value="item.code"
@@ -360,8 +360,17 @@
     getByNameList: any = []; // 合同类型
     totalPackageList: any = []; // 总包
     distributionList: any = []; // 分销
+    dealRoleList: any = []; // 角色下拉项
 
     async created() {
+      const list: any = (this as any).$root.dictAllList('DealRole'); // 角色下拉选项
+      if (list && list.length > 0) {
+        this.dealRoleList = list.filter((item: any) => {
+          return item.code !== 'BranchOffice';
+        });
+      } else {
+        this.dealRoleList = [];
+      }
       await this.getBusinessModelList();
       this.companyId = this.$route.query.companyId; // 分公司id
       this.id = this.$route.query.id; // 具体业绩比例方案---详情用
