@@ -4,7 +4,7 @@
  * @Author: wwq
  * @Date: 2020-12-04 09:40:47
  * @LastEditors: wwq
- * @LastEditTime: 2020-12-23 10:59:52
+ * @LastEditTime: 2020-12-24 09:54:42
 -->
 <template>
   <el-dialog
@@ -1560,6 +1560,8 @@ export default class SetMealEdit extends Vue {
       } else {
         this.$message.warning("代理费模板已超过甲方个数,无法新增");
       }
+    } else {
+      this.$message.warning("请先完善基础信息");
     }
   }
 
