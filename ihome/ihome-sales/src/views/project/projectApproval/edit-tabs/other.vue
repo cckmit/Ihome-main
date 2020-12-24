@@ -4,7 +4,7 @@
  * @Author: wwq
  * @Date: 2020-11-27 17:28:28
  * @LastEditors: wwq
- * @LastEditTime: 2020-12-23 20:50:14
+ * @LastEditTime: 2020-12-24 09:35:16
 -->
 <template>
   <div>
@@ -201,7 +201,7 @@
           prop="shareStateEnum"
         >
           <template v-slot="{ row }">{{
-            $root.dictAllName(row.shareStateEnum, "ShareState")
+            $root.dictAllName(row.shareStateEnum, "Oper")
           }}</template>
         </el-table-column>
         <el-table-column
@@ -212,13 +212,13 @@
         >
           <template v-slot="{ row }">
             <el-button
-              v-if="row.shareStateEnum === 'Enable'"
+              v-if="row.shareStateEnum === 'Start'"
               size="small"
               type="info"
               @click="forbidden(row)"
             >禁用</el-button>
             <el-button
-              v-if="row.shareStateEnum === 'Disable'"
+              v-if="row.shareStateEnum === 'Stop'"
               size="small"
               type="success"
               @click="start(row)"

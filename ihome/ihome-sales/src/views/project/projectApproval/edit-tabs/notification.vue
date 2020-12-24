@@ -4,7 +4,7 @@
  * @Author: wwq
  * @Date: 2020-11-27 17:27:01
  * @LastEditors: wwq
- * @LastEditTime: 2020-12-23 19:54:19
+ * @LastEditTime: 2020-12-24 09:06:34
 -->
 <template>
   <div>
@@ -205,7 +205,7 @@
               >编辑</el-button>
               <el-button
                 size="small"
-                type="primary"
+                type="success"
                 @click="previewBottom(row)"
               >预览</el-button>
               <el-button
