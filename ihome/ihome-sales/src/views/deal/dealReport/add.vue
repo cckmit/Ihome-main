@@ -1001,7 +1001,7 @@
   import {
     post_buModelContType_getList, // 根据业务模式获取可选的合同类型
     post_buModelContType_subList, // 根据业务模式获取可选的细分业务模式
-    post_deal_initPage, // 选择周期、房号后初始化页面
+    post_pageData_initBasic, // 选择周期、房号后初始化页面
     get_deal_get__id, // 编辑功能
     post_deal_entryDealBasicInf, // 案场岗 - 录入成交信息
     post_deal_achieveAllotEntry, // 文员岗 - 录入成交信息
@@ -1574,7 +1574,7 @@
         cycleId: cycleId,
         roomId: roomId
       };
-      let baseInfo: any = await post_deal_initPage(params);
+      let baseInfo: any = await post_pageData_initBasic(params);
       this.baseInfoInDeal = JSON.parse(JSON.stringify(baseInfo || '{}'));
       // console.log('baseInfobaseInfo', this.baseInfoInDeal);
       // 处理数据

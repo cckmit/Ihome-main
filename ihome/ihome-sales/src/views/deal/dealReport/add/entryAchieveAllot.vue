@@ -372,7 +372,7 @@
           </el-form-item>
         </el-col>
         <el-col :span="6">
-          <el-form-item label="签约价格" :prop="['Subscribe', 'SignUp'].includes(postData.stage) ? 'signPrice' : ''">
+          <el-form-item label="签约价格" :prop="['SignUp'].includes(postData.stage) ? 'signPrice' : ''">
             <el-input
               :disabled="isDisabled('signPrice', 'dealVO')"
               v-model="postData.signPrice"
@@ -380,7 +380,7 @@
           </el-form-item>
         </el-col>
         <el-col :span="6">
-          <el-form-item label="签约日期" :prop="['Subscribe', 'SignUp'].includes(postData.stage) ? 'signDate' : ''">
+          <el-form-item label="签约日期" :prop="['SignUp'].includes(postData.stage) ? 'signDate' : ''">
             <el-date-picker
               style="width: 100%"
               :disabled="isDisabled('signDate', 'dealVO')"
@@ -423,7 +423,7 @@
         </el-col>
       </el-row>
     </el-form>
-    <div id="anchor-3" v-if="baseInfoByTerm.chargeEnum !== 'Agent' && !baseInfoInDeal.notice.length">
+    <div id="anchor-3" v-if="baseInfoByTerm.chargeEnum !== 'Agent'">
       <p class="ih-info-title">优惠告知书信息</p>
       <el-row style="padding-left: 20px">
         <el-col>
@@ -900,7 +900,7 @@
   import AgentCompanyList from "@/views/deal/dealReport/dialog/agentCompanyList.vue";
   import EditDealAchieve from "@/views/deal/dealReport/dialog/editDealAchieve.vue";
   import {
-    post_deal_initPage, // 选择周期、房号后初始化页面
+    post_pageData_initBasic, // 选择周期、房号后初始化页面
     get_deal_get__id, // 编辑功能
     post_deal_achieveAllotEntry, // 文员岗 - 录入成交信息
     post_deal_updateAchieveAllot, // 文员岗 - 修改成交信息
@@ -1367,7 +1367,7 @@
         cycleId: cycleId,
         roomId: roomId
       };
-      let baseInfo: any = await post_deal_initPage(params);
+      let baseInfo: any = await post_pageData_initBasic(params);
       this.baseInfoInDeal = JSON.parse(JSON.stringify(baseInfo || '{}'));
       // console.log('baseInfobaseInfo', this.baseInfoInDeal);
       // 处理数据

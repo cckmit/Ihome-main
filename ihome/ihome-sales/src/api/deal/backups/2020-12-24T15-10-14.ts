@@ -1,6 +1,6 @@
 /* eslint-disable */
 /* 此脚本由swagger-ui的api-docs自动生成，请勿修改 */
-//2020-12-24 11:01:48
+//2020-12-24 11:17:39
 import { request } from '@/api/base'
 const basePath = "/sales-api/deal"
 /**添加业绩比例方案信息*/
@@ -127,7 +127,7 @@ return await request.post< number,number> (basePath+'/deal/withdrawDeal', d)
 export async function post_pageData_initAchieve (d?: any) {
 return await request.post< AchieveRefreshDataDetailVO[],AchieveRefreshDataDetailVO[]> (basePath+'/pageData/initAchieve', d)
 }
-/**选择周期id、房号之后，初始化页面(返回部分基础成交信息、房产、客户、优惠告知书、是否分销成交)*/
+/**初始化页面，选择周期、房号之后，带出成交基础、房产、渠道、客户、优惠告知书、收派金额、部分附件*/
 export async function post_pageData_initBasic (d?: any) {
 return await request.post< DealInitPageResponseVO,DealInitPageResponseVO> (basePath+'/pageData/initBasic', d)
 }

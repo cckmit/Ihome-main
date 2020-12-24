@@ -4,7 +4,7 @@
  * @Author: lsj
  * @Date: 2020-11-03 09:10:20
  * @LastEditors: lsj
- * @LastEditTime: 2020-12-16 15:21:20
+ * @LastEditTime: 2020-12-24 09:43:58
 -->
 <template>
   <ih-page label-width="100px">
@@ -16,7 +16,7 @@
               <el-input
                 v-model="queryPageParameters.dealCode"
                 clearable
-                placeholder="成交报告编号"
+                placeholder="请输入成交报告编号"
               ></el-input>
             </el-form-item>
           </el-col>
@@ -25,7 +25,7 @@
               <el-select
                 v-model="queryPageParameters.contType"
                 clearable
-                placeholder="合同类型"
+                placeholder="请选择"
                 class="width--100">
                 <el-option
                   v-for="item in $root.dictAllList('ContType')"
@@ -41,7 +41,7 @@
               <el-select
                 v-model="queryPageParameters.status"
                 clearable
-                placeholder="成交状态"
+                placeholder="请选择"
                 class="width--100">
                 <el-option
                   v-for="item in $root.dictAllList('DealStatus')"
@@ -61,7 +61,7 @@
                   <el-select
                     v-model="queryPageParameters.suppContType"
                     clearable
-                    placeholder="补充类型"
+                    placeholder="请选择"
                     class="width--100">
                     <el-option
                       v-for="item in $root.dictAllList('SuppContType')"
@@ -117,23 +117,21 @@
               </el-col>
               <el-col :span="8">
                 <el-form-item label="渠道公司">
-                  <el-input
-                    v-model="queryPageParameters.agencyName"
+                  <IhSelectPageByChannel
+                    v-model="queryPageParameters.agencyId"
                     clearable
-                    placeholder="渠道公司"
-                  ></el-input>
+                    placeholder="请选择渠道公司"
+                    class="width--100"
+                  ></IhSelectPageByChannel>
                 </el-form-item>
               </el-col>
               <el-col :span="8">
                 <el-form-item label="经纪人">
                   <SelectByBroker
-                    v-model="queryPageParameters.broker"
-                    :isKeyUp="true"
-                    :props="{
-                  value: 'id',
-                  key: 'id',
-                  lable: 'name'}"
-                  />
+                    v-model="queryPageParameters.brokerId"
+                    :proId="queryPageParameters.agencyId"
+                    clearable
+                    placeholder="经纪人"/>
                 </el-form-item>
               </el-col>
               <el-col :span="8">
@@ -141,7 +139,7 @@
                   <el-select
                     v-model="queryPageParameters.stage"
                     clearable
-                    placeholder="成交阶段"
+                    placeholder="请选择"
                     class="width--100">
                     <el-option
                       v-for="item in $root.dictAllList('DealStage')"
@@ -154,29 +152,32 @@
               </el-col>
               <el-col :span="8">
                 <el-form-item label="项目周期">
-                  <SelectPageByCycle
+                  <IhSelectPageByCycle
+                    clearable
                     v-model="queryPageParameters.cycleId"
                     placeholder="请选择立项周期"
-                  ></SelectPageByCycle>
+                  ></IhSelectPageByCycle>
                 </el-form-item>
               </el-col>
               <el-col :span="8">
                 <el-form-item label="栋座">
-                  <SelectPageByBuild
+                  <IhSelectPageByBuild
                     v-model="queryPageParameters.buyUnit"
                     :proId="queryPageParameters.cycleId"
                     placeholder="请选择栋座"
-                  ></SelectPageByBuild>
+                    clearable
+                  ></IhSelectPageByBuild>
                 </el-form-item>
               </el-col>
               <el-col :span="8">
                 <el-form-item label="房号">
-                  <SelectPageByRoom
+                  <IhSelectPageByRoom
                     v-model="queryPageParameters.roomNumberId"
                     :proId="queryPageParameters.cycleId"
                     :buildingId="queryPageParameters.buyUnit"
                     placeholder="请选择房号"
-                  ></SelectPageByRoom>
+                    clearable
+                  ></IhSelectPageByRoom>
                 </el-form-item>
               </el-col>
               <el-col :span="8">
@@ -365,13 +366,6 @@
   import {Component, Vue} from "vue-property-decorator";
   import SelectOrganizationTree from "@/components/select/SelectOrganizationTree.vue";
   import SelectByBroker from "@/components/select/SelectByBroker.vue";
-  // import SelectByCycle from "@/components/select/SelectByCycle.vue";
-  // import SelectByTower from "@/components/select/SelectByTower.vue";
-  // import SelectPageByProject from "@/components/SelectPageByProject.vue";
-  import SelectPageByCycle from "@/components/SelectPageByCycle.vue";
-  import SelectPageByBuild from "@/components/SelectPageByBuild.vue";
-  import SelectPageByRoom from "@/components/selectPageByRoom.vue";
-
   import {
     post_deal_getList,
     post_deal_delete__id,
@@ -384,10 +378,7 @@
   @Component({
     components: {
       SelectOrganizationTree,
-      SelectByBroker,
-      SelectPageByCycle,
-      SelectPageByBuild,
-      SelectPageByRoom
+      SelectByBroker
     },
     mixins: [PaginationMixin],
   })
@@ -402,10 +393,10 @@
       entryPerson: null,
       customerName: null,
       customerPhone: null,
-      agencyName: null,
+      agencyId: null, // 渠道商id
       stage: null,
       projectCycle: null,
-      broker: null,
+      brokerId: null,
       timeType: null,
       beginTime: null,
       endTime: null
@@ -461,10 +452,10 @@
         entryPerson: null,
         customerName: null,
         customerPhone: null,
-        agencyName: null,
+        agencyId: null,
         stage: null,
         projectCycle: null,
-        broker: null,
+        brokerId: null,
         timeType: null,
         beginTime: null,
         endTime: null,

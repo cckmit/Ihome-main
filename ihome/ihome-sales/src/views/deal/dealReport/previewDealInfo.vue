@@ -263,7 +263,7 @@
                 placeholder="物业类型"
                 class="width--100">
                 <el-option
-                  v-for="item in $root.dictAllList('PropertyEnum')"
+                  v-for="item in $root.dictAllList('Property')"
                   :key="item.code"
                   :label="item.name"
                   :value="item.code"
