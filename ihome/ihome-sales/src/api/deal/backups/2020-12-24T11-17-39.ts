@@ -1,6 +1,6 @@
 /* eslint-disable */
 /* 此脚本由swagger-ui的api-docs自动生成，请勿修改 */
-//2020-12-24 11:17:39
+//2020-12-24 10:28:55
 import { request } from '@/api/base'
 const basePath = "/sales-api/deal"
 /**添加业绩比例方案信息*/
@@ -101,7 +101,7 @@ return await request.post< any,any> (basePath+'/deal/getList', d)
 }
 /**根据主成交报告Id，查询是否有审核完成的成交报告，有则返回成交报告的业绩确认时间；*/
 export async function get_deal_getReviewPassed__id (d?: any) {
-return await request.get<any,any>(basePath+'/deal/getReviewPassed/{id}', { params: d })
+return await request.get<LocalDateTime,LocalDateTime>(basePath+'/deal/getReviewPassed/{id}', { params: d })
 }
 /**去修改主成交*/
 export async function get_deal_toUpdateMainDeal__id (d?: any) {
@@ -127,7 +127,7 @@ return await request.post< number,number> (basePath+'/deal/withdrawDeal', d)
 export async function post_pageData_initAchieve (d?: any) {
 return await request.post< AchieveRefreshDataDetailVO[],AchieveRefreshDataDetailVO[]> (basePath+'/pageData/initAchieve', d)
 }
-/**初始化页面，选择周期、房号之后，带出成交基础、房产、渠道、客户、优惠告知书、收派金额、部分附件*/
+/**选择周期id、房号之后，初始化页面(返回部分基础成交信息、房产、客户、优惠告知书、是否分销成交)*/
 export async function post_pageData_initBasic (d?: any) {
 return await request.post< DealInitPageResponseVO,DealInitPageResponseVO> (basePath+'/pageData/initBasic', d)
 }
