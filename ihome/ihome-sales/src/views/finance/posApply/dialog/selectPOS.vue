@@ -4,7 +4,7 @@
  * @Author: ywl
  * @Date: 2020-12-23 11:50:23
  * @LastEditors: ywl
- * @LastEditTime: 2020-12-23 18:16:17
+ * @LastEditTime: 2020-12-24 14:31:47
 -->
 <template>
   <el-dialog
@@ -42,6 +42,7 @@
               v-model="queryPageParameters.status"
               placeholder="请选择状态"
               clearable
+              disabled
               class="width--100"
             >
               <el-option
@@ -99,7 +100,10 @@
     ></IhTableCheckBox>
     <template #footer>
       <el-button @click="cancel()">取 消</el-button>
-      <el-button type="primary">确 定</el-button>
+      <el-button
+        type="primary"
+        @click="finish()"
+      >确 定</el-button>
     </template>
   </el-dialog>
 </template>
@@ -114,6 +118,7 @@ export default class SelectPOS extends Vue {
     default: () => [],
   })
   hasCheckedData!: any;
+  @Prop() query!: any;
 
   queryPageParameters: any = {
     serialNo: null,
@@ -126,6 +131,7 @@ export default class SelectPOS extends Vue {
     total: null,
     list: [],
   };
+  selection: any = [];
   private dialogVisible = true;
   private pageSize = 10;
   private pageNum = 1;
@@ -180,9 +186,17 @@ export default class SelectPOS extends Vue {
   private cancel(): void {
     this.$emit("cancel", false);
   }
+  private finish(): void {
+    if (this.selection.length) {
+      this.$emit("finish", this.selection);
+    } else {
+      this.$message.warning("请先勾选表格数据");
+    }
+  }
   // 获取选中项 --- 最后需要获取的数据
   private selectionChange(selection: any) {
     console.log(selection, "selectionChange");
+    this.selection = selection;
   }
   private pageChange(index: number) {
     this.pageNum = index;
@@ -200,6 +214,7 @@ export default class SelectPOS extends Vue {
   }
 
   created() {
+    this.queryPageParameters.status = this.query.status;
     this.getList();
   }
 }

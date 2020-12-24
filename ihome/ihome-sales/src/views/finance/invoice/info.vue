@@ -4,7 +4,7 @@
  * @Author: ywl
  * @Date: 2020-12-08 19:55:43
  * @LastEditors: ywl
- * @LastEditTime: 2020-12-23 14:45:53
+ * @LastEditTime: 2020-12-24 14:09:12
 -->
 <template>
   <IhPage class="text-left">
@@ -137,7 +137,7 @@
             label="开票时间"
           ></el-table-column>
           <el-table-column
-            prop="operator"
+            prop="operatorName"
             label="开票人"
           > </el-table-column>
           <el-table-column

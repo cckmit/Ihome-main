@@ -4,7 +4,7 @@
  * @Author: ywl
  * @Date: 2020-12-23 09:57:33
  * @LastEditors: ywl
- * @LastEditTime: 2020-12-23 19:36:05
+ * @LastEditTime: 2020-12-24 14:34:12
 -->
 <template>
   <el-dialog
@@ -73,7 +73,7 @@
               label="事业部"
               prop="departmentId"
             >
-              <el-input v-model="form.departmentId"></el-input>
+              <IhSelectPageDivision v-model="form.departmentId"></IhSelectPageDivision>
             </el-form-item>
           </el-col>
           <el-col :span="8">
@@ -129,7 +129,14 @@
       <el-button type="primary">保 存</el-button>
     </template>
     <IhDialog :show="selectVisible">
-      <SelectPos />
+      <SelectPos
+        :query="query"
+        @cancel="() => (selectVisible = false)"
+        @finish="(list) => {
+          selectVisible = false
+          form.posTerminalIds = list
+        }"
+      />
     </IhDialog>
   </el-dialog>
 </template>
@@ -156,12 +163,26 @@ export default class ApplyDialog extends Vue {
     proId: null,
   };
   private rules: any = {};
+  private query: any = null;
 
   cancel(): void {
     this.$emit("cancel", false);
   }
   private handleAddPos() {
-    this.selectVisible = true;
+    console.log(this.type);
+
+    switch (this.type) {
+      case "Use":
+        // 领用
+        this.query = {
+          status: "CentralStock",
+        };
+        this.selectVisible = true;
+        break;
+
+      default:
+        break;
+    }
   }
 
   created() {

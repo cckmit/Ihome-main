@@ -4,11 +4,12 @@
  * @Author: ywl
  * @Date: 2020-10-20 15:03:23
  * @LastEditors: ywl
- * @LastEditTime: 2020-12-15 15:06:12
+ * @LastEditTime: 2020-12-24 11:28:19
  */
+import IhSelectPageBase from './src/select-page-base.vue'
+import IhSelectPageOrg from './src/select-page-org.vue'
 import IhSelectPageUser from './src/select-page-user.vue'
 import IhSelectPageDivision from './src/select-page-division.vue'
-import IhSelectPageBase from './src/select-page-base.vue'
 import IhSelectPageByChannel from './src/select-page-channel.vue'
 import IhSelectPageByProject from './src/select-page-project.vue'
 import IhSelectPageByCycle from './src/select-page-cycle.vue'
@@ -27,5 +28,6 @@ export {
   IhSelectPageByBuild,
   IhSelectPageByRoom,
   IhSelectPageUser,
+  IhSelectPageOrg,
   IhSelectPageBase,
 }
