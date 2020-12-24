@@ -1,6 +1,6 @@
 /* eslint-disable */
 /* 此脚本由swagger-ui的api-docs自动生成，请勿修改 */
-//2020-12-24 15:10:14
+//2020-12-24 11:17:39
 import { request } from '@/api/base'
 const basePath = "/sales-api/deal"
 /**添加业绩比例方案信息*/
@@ -1464,8 +1464,6 @@ dealOrgId: number;
 endTime: string;
 /**录入人*/
 entryPerson: number;
-/**是否主成交报告*/
-isMain: boolean;
 /**(必填)当前页*/
 pageNum: number;
 /**(必填)每页条数*/

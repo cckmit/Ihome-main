@@ -89,7 +89,7 @@
         this.infoForm = await get_achieveScaleScheme_get__id({id: id});
         let businessModelList = (this as any).$root.dictAllList('BusinessModel'); // 业务模式
         let contTypeList = (this as any).$root.dictAllList('ContType'); // 合同类型
-        let propertyEnumList = (this as any).$root.dictAllList('PropertyEnum'); // 物业类型
+        let propertyList = (this as any).$root.dictAllList('Property'); // 物业类型
         // 处理数据
         // 1.业务模式
         if (this.infoForm.modelName) {
@@ -115,8 +115,8 @@
         if (this.infoForm.achievePropertyTypeList && this.infoForm.achievePropertyTypeList.length > 0) {
           let achieveNameArr: any = [];
           this.infoForm.achievePropertyTypeList.forEach((list: any) => {
-            if (propertyEnumList && propertyEnumList.length > 0) {
-              propertyEnumList.forEach((propertyItem: any) => {
+            if (propertyList && propertyList.length > 0) {
+              propertyList.forEach((propertyItem: any) => {
                 if (list.propertyType === propertyItem.code) {
                   achieveNameArr.push(propertyItem.name);
                 }

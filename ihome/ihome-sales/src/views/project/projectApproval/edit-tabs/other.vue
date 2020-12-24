@@ -4,7 +4,7 @@
  * @Author: wwq
  * @Date: 2020-11-27 17:28:28
  * @LastEditors: wwq
- * @LastEditTime: 2020-12-24 09:35:16
+ * @LastEditTime: 2020-12-24 18:49:50
 -->
 <template>
   <div>
@@ -326,11 +326,14 @@ export default class Other extends Vue {
     this.getInfo();
   }
 
+  get termId() {
+    return this.$route.query.id;
+  }
+
   async getInfo() {
-    const id = this.$route.query.id;
-    if (id) {
+    if (this.termId) {
       this.info = await get_other_get__termId({
-        termId: id,
+        termId: this.termId,
       });
       this.info.exOver = this.info.exOver ? true : false;
       this.info.exOtherProChannelUse = this.info.exOtherProChannelUse
@@ -377,7 +380,7 @@ export default class Other extends Vue {
   async organFinish(data: any) {
     await post_other_saveGroup({
       groupId: data[0].id,
-      termId: this.$route.query.id,
+      termId: this.termId,
     });
     this.getInfo();
     this.organDialogVisible = false;
@@ -386,7 +389,7 @@ export default class Other extends Vue {
   async exOverChange(val: any) {
     this.info.exOver = val;
     await post_other_changOver({
-      termId: this.$route.query.id,
+      termId: this.termId,
       type: val ? 1 : 0,
     });
   }
@@ -394,7 +397,7 @@ export default class Other extends Vue {
   async exOtherProChannelUseChange(val: any) {
     this.info.exOtherProChannelUse = val;
     await post_other_changOtherProChannelUse({
-      termId: this.$route.query.id,
+      termId: this.termId,
       type: val ? 1 : 0,
     });
   }
@@ -435,7 +438,7 @@ export default class Other extends Vue {
   add() {
     this.approvalDialogVisible = true;
     this.approvalData.exOver = this.info.exOtherProChannelUse ? 1 : 0;
-    this.approvalData.proId = this.info.proId;
+    this.approvalData.termId = this.termId;
   }
 
   async approvalFinish(data: any) {

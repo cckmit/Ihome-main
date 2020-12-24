@@ -4,7 +4,7 @@
  * @Author: wwq
  * @Date: 2020-08-13 11:40:10
  * @LastEditors: wwq
- * @LastEditTime: 2020-12-21 10:00:09
+ * @LastEditTime: 2020-12-24 18:21:27
 -->
 <template>
   <IhPage label-width="100px">
@@ -60,7 +60,7 @@
                 class="width--100"
               >
                 <el-option
-                  v-for="item in $root.dictAllList('BusType')"
+                  v-for="item in $root.dictAllList('ProAudit')"
                   :key="item.code"
                   :label="item.name"
                   :value="item.code"
@@ -159,7 +159,7 @@
           label="项目审核状态"
         >
           <template v-slot="{ row }">{{
-            $root.dictAllName(row.auditEnum, "Audit")
+            $root.dictAllName(row.auditEnum, "ProAudit")
           }}</template>
         </el-table-column>
         <el-table-column
@@ -182,18 +182,18 @@
               </span>
               <el-dropdown-menu slot="dropdown">
                 <el-dropdown-item
-                  :class="{'ih-data-disabled': row.auditEnum !== 'Draft'}"
+                  :class="{'ih-data-disabled': !editChange(row)}"
                   @click.native.prevent="routerTo(row, 'edit')"
                   v-has="'B.SALES.PROJECT.BASICLIST.UPDATE'"
                 >编辑</el-dropdown-item>
                 <el-dropdown-item
-                  :class="{'ih-data-disabled': row.auditEnum !== 'Draft'}"
+                  :class="{'ih-data-disabled': !editChange(row)}"
                   @click.native.prevent="remove(row)"
                   v-has="'B.SALES.PROJECT.BASICLIST.DELETE'"
                 >删除</el-dropdown-item>
                 <el-dropdown-item
                   @click.native.prevent="routerTo(row, 'audit')"
-                  :class="{'ih-data-disabled': row.auditEnum !== 'Conduct'}"
+                  :class="{'ih-data-disabled': !auditChange(row)}"
                   v-has="'B.SALES.PROJECT.BASICLIST.VERIFY'"
                 >审核</el-dropdown-item>
               </el-dropdown-menu>
@@ -239,9 +239,28 @@ export default class ProjectList extends Vue {
   };
   provinceOption: any = [];
   resPageInfo: any = {
-    total: null,
+    total: 0,
     list: [],
   };
+
+  editChange(row: any) {
+    const Draft = row.auditEnum === "Draft";
+    const roleList = (this.$root as any).userInfo.roleList.map(
+      (v: any) => v.code
+    );
+    const wenyuan = roleList.includes("RPlatformClerk");
+    return Draft && wenyuan;
+  }
+
+  auditChange(row: any) {
+    const Conduct = row.auditEnum === "Conduct";
+    const roleList = (this.$root as any).userInfo.roleList.map(
+      (v: any) => v.code
+    );
+    const fen = roleList.includes("RBusinessManagement");
+    const zong = roleList.includes("RHeadBusinessManagement");
+    return (fen || zong) && Conduct;
+  }
 
   get emptyText() {
     return this.resPageInfo.total === null ? "正在加载数据..." : "暂无数据";
@@ -335,7 +354,7 @@ export default class ProjectList extends Vue {
   }
 
   created() {
-    this.getListMixin();
+    // this.getListMixin();
   }
 
   //获取数据

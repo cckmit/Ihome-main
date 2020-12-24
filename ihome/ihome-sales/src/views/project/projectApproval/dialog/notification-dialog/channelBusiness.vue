@@ -4,7 +4,7 @@
  * @Author: wwq
  * @Date: 2020-11-30 19:24:37
  * @LastEditors: wwq
- * @LastEditTime: 2020-12-02 19:42:46
+ * @LastEditTime: 2020-12-24 16:31:09
 -->
 <template>
   <el-dialog
@@ -51,19 +51,20 @@
       <el-row>
         <el-col :span="8">
           <el-form-item label="渠道跟进人">
-            <el-select
+            <IhSelectPageUser
               v-model="queryPageParameters.followUserId"
               clearable
-              placeholder="渠道跟进人"
-              class="width--100"
             >
-              <el-option
-                v-for="item in testList"
-                :key="item.id"
-                :label="item.value"
-                :value="item.id"
-              ></el-option>
-            </el-select>
+              <template v-slot="{ data }">
+                <span style="float: left">{{ data.name }}</span>
+                <span style="
+                  margin-left: 20px;
+                  float: right;
+                  color: #8492a6;
+                  font-size: 13px;
+                ">{{ data.account }}</span>
+              </template>
+            </IhSelectPageUser>
           </el-form-item>
         </el-col>
         <el-col :span="8">
@@ -111,7 +112,7 @@
         </el-col>
       </el-row>
     </el-form>
-    <div class="margin-left-80">
+    <div class="margin-left-100">
       <el-button
         type="primary"
         @click="search()"
@@ -252,20 +253,14 @@ export default class ProjectApprovalDialog extends Vue {
     inputUser: null,
     status: null,
     followUserId: null,
+    cycleCity: window.sessionStorage.getItem("shengshiqu"),
   };
   provinceOption: any = [];
   resPageInfo: any = {
-    list: [{}],
+    list: [],
     total: 0,
   };
   selection: any = [];
-  // 测试数据
-  testList = [
-    { value: "管理员1", id: 1 },
-    { value: "管理员2", id: 2 },
-    { value: "管理员3", id: 3 },
-  ];
-
   get emptyText() {
     return this.resPageInfo.total === null ? "正在加载数据..." : "暂无数据";
   }
