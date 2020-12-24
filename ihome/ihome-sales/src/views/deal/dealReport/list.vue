@@ -118,7 +118,7 @@
               <el-col :span="8">
                 <el-form-item label="渠道公司">
                   <IhSelectPageByChannel
-                    v-model="queryPageParameters.agencyName"
+                    v-model="queryPageParameters.agencyId"
                     clearable
                     placeholder="请选择渠道公司"
                     class="width--100"
@@ -127,11 +127,11 @@
               </el-col>
               <el-col :span="8">
                 <el-form-item label="经纪人">
-                  <el-input
-                    v-model="queryPageParameters.broker"
+                  <SelectByBroker
+                    v-model="queryPageParameters.brokerId"
+                    :proId="queryPageParameters.agencyId"
                     clearable
-                    placeholder="经纪人"
-                  ></el-input>
+                    placeholder="经纪人"/>
                 </el-form-item>
               </el-col>
               <el-col :span="8">
@@ -393,10 +393,10 @@
       entryPerson: null,
       customerName: null,
       customerPhone: null,
-      agencyName: null,
+      agencyId: null, // 渠道商id
       stage: null,
       projectCycle: null,
-      broker: null,
+      brokerId: null,
       timeType: null,
       beginTime: null,
       endTime: null
@@ -452,10 +452,10 @@
         entryPerson: null,
         customerName: null,
         customerPhone: null,
-        agencyName: null,
+        agencyId: null,
         stage: null,
         projectCycle: null,
-        broker: null,
+        brokerId: null,
         timeType: null,
         beginTime: null,
         endTime: null,
