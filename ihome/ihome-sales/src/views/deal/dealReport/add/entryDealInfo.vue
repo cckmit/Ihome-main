@@ -160,7 +160,6 @@
               :clearable="!baseInfoInDeal.hasRecord"
               :disabled="baseInfoInDeal.contType === 'DistriDeal' && baseInfoInDeal.hasRecord"
               placeholder="请选择合同类型"
-              @change="changeContType"
               class="width--100">
               <el-option
                 v-for="item in contTypeList"
@@ -599,7 +598,7 @@
 <script lang="ts">
   import {Component, Vue, Prop} from "vue-property-decorator";
   import {
-    post_deal_initPage, // 选择周期、房号后初始化页面
+    post_pageData_initBasic, // 选择周期、房号后初始化页面
     get_deal_get__id, // 编辑功能
     post_deal_entryDealBasicInf, // 案场岗 - 录入成交信息
     post_deal_updateDealBasicInf // 案场岗 - 修改成交信息
@@ -634,7 +633,6 @@
       default: null,
     })
     getRefineModelList!: any; // 根据业务模式获取细分业务模式选项
-
     contTypeList: any = []; // 合同类型选项
     refineModelList: any = []; // 细分业务模式选项
     dealStageList: any = []; // 成交阶段选项
@@ -1037,7 +1035,7 @@
         cycleId: cycleId,
         roomId: roomId
       };
-      let baseInfo: any = await post_deal_initPage(params);
+      let baseInfo: any = await post_pageData_initBasic(params);
       this.baseInfoInDeal = JSON.parse(JSON.stringify(baseInfo || '{}'));
       // console.log('baseInfobaseInfo', this.baseInfoInDeal);
       // 处理数据
@@ -1150,25 +1148,6 @@
           break;
         default:
           this.postData.refineModel = '';
-      }
-    }
-
-    // 修改合同类型
-    changeContType(value: any) {
-      if (!value) return;
-      if (value === 'DistriDeal') {
-        // 如果查询不到此房号的已成交报备信息，用户又选择分销成交
-        this.postData.contType = '';
-        if (!this.baseInfoInDeal.hasRecord) {
-          this.$alert('系统查询不到此房号的已成交报备信息，请先维护报备信息！', '提示', {
-            confirmButtonText: '确定'
-          });
-          return;
-        }
-      } else {
-        // 不是分销成交
-        // 1.清空数据
-        // 2.请求接口获取数据
       }
     }
 
