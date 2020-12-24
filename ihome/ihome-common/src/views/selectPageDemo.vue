@@ -125,6 +125,10 @@
     <el-form-item>
       <IhSelectPageByDeveloper v-model="form.testInput12"></IhSelectPageByDeveloper>
     </el-form-item>
+    <el-form-item label="组织">查询店组</el-form-item>
+    <el-form-item>
+      <IhSelectPageOrg v-model="form.testInput13"></IhSelectPageOrg>
+    </el-form-item>
   </el-form>
 </template>
 
@@ -135,6 +139,7 @@ import { post_company_getAll } from "@/api/system/index";
 
 import SelectPageByOther from "./components/SelectPageByOther.vue";
 import {
+  IhSelectPageOrg,
   IhSelectPageUser,
   IhSelectPageDivision,
   IhSelectPageByChannel,
@@ -158,6 +163,7 @@ import {
     IhSelectPageByRoom,
     IhSelectPageByCompany,
     IhSelectPageByDeveloper,
+    IhSelectPageOrg,
   },
 })
 export default class SelectPageDemo extends Vue {
@@ -178,6 +184,7 @@ export default class SelectPageDemo extends Vue {
     testInput10: null,
     testInput11: null,
     testInput12: null,
+    testInput13: null,
     data: null,
   };
   private rules = {};
