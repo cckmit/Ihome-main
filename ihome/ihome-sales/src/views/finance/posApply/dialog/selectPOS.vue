@@ -4,7 +4,7 @@
  * @Author: ywl
  * @Date: 2020-12-23 11:50:23
  * @LastEditors: ywl
- * @LastEditTime: 2020-12-24 14:31:47
+ * @LastEditTime: 2020-12-24 17:09:29
 -->
 <template>
   <el-dialog
@@ -85,6 +85,11 @@
         </el-col>
       </el-row>
     </el-form>
+    <div class="padding-left-80">
+      <el-button type="primary">查询</el-button>
+      <el-button type="info">重置</el-button>
+    </div>
+    <br />
     <IhTableCheckBox
       :data="resPageInfo.list"
       :hasCheckedData="hasCheckedData"
@@ -118,7 +123,7 @@ export default class SelectPOS extends Vue {
     default: () => [],
   })
   hasCheckedData!: any;
-  @Prop() query!: any;
+  @Prop() params!: any;
 
   queryPageParameters: any = {
     serialNo: null,
@@ -208,13 +213,14 @@ export default class SelectPOS extends Vue {
   private async getList() {
     this.resPageInfo = await post_posTerminal_getList({
       ...this.queryPageParameters,
+      ...this.params,
       pageNum: this.pageNum,
       pageSize: this.pageSize,
     });
   }
 
   created() {
-    this.queryPageParameters.status = this.query.status;
+    this.queryPageParameters.status = this.params.status;
     this.getList();
   }
 }

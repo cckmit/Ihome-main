@@ -4,7 +4,7 @@
  * @Author: ywl
  * @Date: 2020-12-22 19:30:19
  * @LastEditors: ywl
- * @LastEditTime: 2020-12-23 19:22:56
+ * @LastEditTime: 2020-12-24 18:53:13
 -->
 <template>
   <IhPage label-width="80px">
@@ -125,6 +125,7 @@
           fixed
           label="事项编号"
           prop="itemNo"
+          min-width="100"
         ></el-table-column>
         <el-table-column
           label="申请人"
@@ -149,6 +150,7 @@
         <el-table-column
           label="事业部"
           prop="departmentName"
+          min-width="150"
         ></el-table-column>
         <el-table-column
           label="店组"

@@ -1,6 +1,6 @@
 /* eslint-disable */
 /* 此脚本由swagger-ui的api-docs自动生成，请勿修改 */
-//2020-12-22 8:34:14 ├F10: PM┤
+//2020-12-24 6:27:40 ├F10: PM┤
 import { request } from '@/api/base'
 const basePath = "/sales-api/finance"
 /**新增收款账号在线支付信息*/
@@ -199,9 +199,13 @@ return await request.post< InvoiceInfoVO,InvoiceInfoVO> (basePath+'/invoiceOld/q
 export async function post_invoiceOld_test (d?: any) {
 return await request.post< number,number> (basePath+'/invoiceOld/test', d)
 }
-/**保存无订单POS机支付 银联账单*/
-export async function post_payBill_addNoOrderPayBill (d?: any) {
-return await request.post< number,number> (basePath+'/payBill/addNoOrderPayBill', d)
+/**保存在线支付银联账单*/
+export async function post_payBill_addOnlinePayBill (d?: any) {
+return await request.post< number,number> (basePath+'/payBill/addOnlinePayBill', d)
+}
+/**保存POS机支付银联账单*/
+export async function post_payBill_addPOSPayBill (d?: any) {
+return await request.post< number,number> (basePath+'/payBill/addPOSPayBill', d)
 }
 /**检验是否已有银联支付账单*/
 export async function post_payBill_checkExistBill (d?: any) {
@@ -279,6 +283,10 @@ return await request.get<PaymentVO[],PaymentVO[]>(basePath+'/payment/getNotCheck
 export async function get_payment_getNotCheckNum__businessId (d?: any) {
 return await request.get<number,number>(basePath+'/payment/getNotCheckNum/{businessId}', { params: d })
 }
+/**获取订单支付状态*/
+export async function get_payment_getPayStatus__id (d?: any) {
+return await request.get<any,any>(basePath+'/payment/getPayStatus/{id}', { params: d })
+}
 /**获取二维码信息*/
 export async function get_payment_getPaymentQRCodeInfo__id (d?: any) {
 return await request.get<PaymentQRCodeVO,PaymentQRCodeVO>(basePath+'/payment/getPaymentQRCodeInfo/{id}', { params: d })
@@ -324,6 +332,10 @@ export async function post_posApplyItem_getList (d?: any) {
 return await request.post< any,any> (basePath+'/posApplyItem/getList', d)
 }
 /**POS机操作[领用,申领,调动,退还,归还]*/
+export async function post_posApplyItem_posApply (d?: any) {
+return await request.post< number,number> (basePath+'/posApplyItem/posApply', d)
+}
+/**POS机操作[多种操作]*/
 export async function post_posApplyItem_posOperate (d?: any) {
 return await request.post< number,number> (basePath+'/posApplyItem/posOperate', d)
 }
@@ -1184,6 +1196,8 @@ operateTime: string;
 operation: string;
 /**操作人*/
 operator: number;
+/**操作人姓名*/
+operatorName: string;
 /**备注*/
 remark: string;
 }
@@ -1636,16 +1650,26 @@ export interface PosApplyDetailVO {
 applyUser: number;
 /**所在事业部*/
 departmentId: number;
+/**事业部名称*/
+departmentName: string;
 /**所在店组*/
 groupId: number;
+/**店组名称*/
+groupName: string;
+/**事项编号*/
+itemNo: string;
 /**事项类别(Use-领用、Apply-申领、Move-调动、Return-退还、GiveBack-归还)*/
 itemType: string;
 /**undefined*/
 posTerminals: PosTerminalVO[];
 /**所在项目*/
 proId: number;
+/**项目推广名称*/
+proName: string;
 /**undefined*/
 records: PosApplyItemRecordVO[];
+/**状态(CentralStock-总部库存、UseWaitApprove-领用待审、UseWaitSend-领用待寄、UseOneTheWay-领用在途、ReturnOnTheWay-退还在途、BranchStock-分公司库存、ApplyWaitApprove-申领待审、ApplyWaitSend-申领待寄、ApplyOnTheWay-申领在途、Using-项目在用、GiveBackOnTheWay-归还在途、MoveWaitApprove-调动待审、MoveWaitSend-调动待寄、MoveOnTheWay-调动在途、Stop-停用、Draft-草稿、Finished-已结束)*/
+status: string;
 }
 /**PosApplyItemQueryVO*/
 export interface PosApplyItemQueryVO {
@@ -1661,7 +1685,7 @@ pageNum: number;
 pageSize: number;
 /**所在项目*/
 proId: number;
-/**状态(PutIn-入库、Revocation-撤机、Modify-修改、Use-领用、UseApprove-领用审核、UseSend-领用寄出、UseSign-领用签收、Return-退还、ReturnConfirm-确认退还、Apply-申领、ApplyApprove-申领审核、ApplySend-申领寄出、ApplySign-申领签收、GiveBack-归还、GiveBackConfirm-确认归还、Move-调动、MoveApprove-调动审核、MoveSend-调动寄出、MoveSign-调动签收)*/
+/**状态(CentralStock-总部库存、UseWaitApprove-领用待审、UseWaitSend-领用待寄、UseOneTheWay-领用在途、ReturnOnTheWay-退还在途、BranchStock-分公司库存、ApplyWaitApprove-申领待审、ApplyWaitSend-申领待寄、ApplyOnTheWay-申领在途、Using-项目在用、GiveBackOnTheWay-归还在途、MoveWaitApprove-调动待审、MoveWaitSend-调动待寄、MoveOnTheWay-调动在途、Stop-停用、Draft-草稿、Finished-已结束)*/
 status: string;
 }
 /**PosApplyItemRecordVO*/
@@ -1672,7 +1696,7 @@ applyItemId: number;
 id: number;
 /**操作时间(yyyy-MM-dd HH:mm:ss)*/
 operateTime: string;
-/**操作(PutIn-入库、Revocation-撤机、Modify-修改、Use-领用、UseApprove-领用审核、UseSend-领用寄出、UseSign-领用签收、Return-退还、ReturnConfirm-确认退还、Apply-申领、ApplyApprove-申领审核、ApplySend-申领寄出、ApplySign-申领签收、GiveBack-归还、GiveBackConfirm-确认归还、Move-调动、MoveApprove-调动审核、MoveSend-调动寄出、MoveSign-调动签收)*/
+/**操作(CentralStock-总部库存、UseWaitApprove-领用待审、UseWaitSend-领用待寄、UseOneTheWay-领用在途、ReturnOnTheWay-退还在途、BranchStock-分公司库存、ApplyWaitApprove-申领待审、ApplyWaitSend-申领待寄、ApplyOnTheWay-申领在途、Using-项目在用、GiveBackOnTheWay-归还在途、MoveWaitApprove-调动待审、MoveWaitSend-调动待寄、MoveOnTheWay-调动在途、Stop-停用、Draft-草稿、Finished-已结束)*/
 operation: string;
 /**操作人*/
 operator: number;
@@ -1703,7 +1727,7 @@ itemType: string;
 proId: number;
 /**项目推广名称*/
 proName: string;
-/**状态(PutIn-入库、Revocation-撤机、Modify-修改、Use-领用、UseApprove-领用审核、UseSend-领用寄出、UseSign-领用签收、Return-退还、ReturnConfirm-确认退还、Apply-申领、ApplyApprove-申领审核、ApplySend-申领寄出、ApplySign-申领签收、GiveBack-归还、GiveBackConfirm-确认归还、Move-调动、MoveApprove-调动审核、MoveSend-调动寄出、MoveSign-调动签收)*/
+/**状态(CentralStock-总部库存、UseWaitApprove-领用待审、UseWaitSend-领用待寄、UseOneTheWay-领用在途、ReturnOnTheWay-退还在途、BranchStock-分公司库存、ApplyWaitApprove-申领待审、ApplyWaitSend-申领待寄、ApplyOnTheWay-申领在途、Using-项目在用、GiveBackOnTheWay-归还在途、MoveWaitApprove-调动待审、MoveWaitSend-调动待寄、MoveOnTheWay-调动在途、Stop-停用、Draft-草稿、Finished-已结束)*/
 status: string;
 }
 /**PosApplyOperateAddVO*/
@@ -1714,7 +1738,7 @@ applyUser: number;
 departmentId: number;
 /**所在店组*/
 groupId: number;
-/**事项ID[只有修改时候才填ID]*/
+/**事项ID[只有修改时候才传ID]*/
 id: number;
 /**事项类别(Use-领用、Apply-申领、Move-调动、Return-退还、GiveBack-归还)*/
 itemType: string;
@@ -1722,8 +1746,19 @@ itemType: string;
 posTerminalIds: number[];
 /**所在项目*/
 proId: number;
-/**报错OR提交[0-保存 1-提交]*/
+/**报存OR提交[0-保存 1-提交]*/
 type: number;
+}
+/**PosApplyOperateVO*/
+export interface PosApplyOperateVO {
+/**事项ID*/
+id: number;
+/**事项操作类型(PutIn-入库、Revocation-撤机、Modify-修改、Use-领用、UseApprove-领用审核、UseSend-领用寄出、UseSign-领用签收、Return-退还、ReturnConfirm-确认退还、Apply-申领、ApplyApprove-申领审核、ApplySend-申领寄出、ApplySign-申领签收、GiveBack-归还、GiveBackConfirm-确认归还、Move-调动、MoveApprove-调动审核、MoveSend-调动寄出、MoveSign-调动签收)*/
+operateType: string;
+/**审核意见Or快递单号[审核和寄出时候必填]*/
+remark: string;
+/**审核状态[审核时候必填](Pass-通过、NoPass-不通过)*/
+type: string;
 }
 /**PosApplyVO*/
 export interface PosApplyVO {
@@ -1731,14 +1766,24 @@ export interface PosApplyVO {
 applyUser: number;
 /**所在事业部*/
 departmentId: number;
+/**事业部名称*/
+departmentName: string;
 /**所在店组*/
 groupId: number;
+/**店组名称*/
+groupName: string;
+/**事项编号*/
+itemNo: string;
 /**事项类别(Use-领用、Apply-申领、Move-调动、Return-退还、GiveBack-归还)*/
 itemType: string;
 /**undefined*/
 posTerminals: PosTerminalVO[];
 /**所在项目*/
 proId: number;
+/**项目推广名称*/
+proName: string;
+/**状态(CentralStock-总部库存、UseWaitApprove-领用待审、UseWaitSend-领用待寄、UseOneTheWay-领用在途、ReturnOnTheWay-退还在途、BranchStock-分公司库存、ApplyWaitApprove-申领待审、ApplyWaitSend-申领待寄、ApplyOnTheWay-申领在途、Using-项目在用、GiveBackOnTheWay-归还在途、MoveWaitApprove-调动待审、MoveWaitSend-调动待寄、MoveOnTheWay-调动在途、Stop-停用、Draft-草稿、Finished-已结束)*/
+status: string;
 }
 /**PosPayResultVO*/
 export interface PosPayResultVO {
@@ -1837,6 +1882,8 @@ updateUser: number;
 export interface PosTerminalQueryVO {
 /**账户名称*/
 accountName: string;
+/**账号*/
+accountNo: string;
 /**所在事业部*/
 departmentId: number;
 /**所在店组*/
