@@ -4,7 +4,7 @@
  * @Author: ywl
  * @Date: 2020-12-23 09:57:33
  * @LastEditors: ywl
- * @LastEditTime: 2020-12-24 14:34:12
+ * @LastEditTime: 2020-12-24 14:48:18
 -->
 <template>
   <el-dialog
@@ -63,7 +63,10 @@
               label="店组"
               prop="groupId"
             >
-              <el-input v-model="form.groupId"></el-input>
+              <IhSelectPageOrg
+                v-model="form.groupId"
+                @change="handleChangeByGroup"
+              ></IhSelectPageOrg>
             </el-form-item>
           </el-col>
         </el-row>
@@ -167,6 +170,9 @@ export default class ApplyDialog extends Vue {
 
   cancel(): void {
     this.$emit("cancel", false);
+  }
+  private handleChangeByGroup(val: any) {
+    console.log(val);
   }
   private handleAddPos() {
     console.log(this.type);
