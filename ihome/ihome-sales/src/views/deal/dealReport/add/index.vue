@@ -159,7 +159,35 @@
     }
 
     // 选择收派套餐
-    selectPackage(data: any) {
+    selectPackage(data: any = {}) {
+      if (!data.type) return;
+      if (data.hasRecord) {
+        // 分销模式
+        if (!data.contNo) {
+          this.$message.error('请先选择分销协议编号！');
+          return;
+        }
+      } else {
+        // 非分销模式
+        // 合同类型contType + 物业类型propertyType + 细分业务类型refineModel + 立项周期cycleId，这几个条件必须满足
+        let tips: any = [];
+        if (!data.cycleId) {
+          tips.push('项目周期');
+        }
+        if (!data.refineModel) {
+          tips.push('细分业务模式');
+        }
+        if (!data.propertyType) {
+          tips.push('物业类型');
+        }
+        if (!data.contType) {
+          tips.push('合同类型');
+        }
+        if (!tips.length) {
+          this.$message.error(`请先选择${tips.join('，')}`);
+          return;
+        }
+      }
       this.receivePackageData = data;
       this.dialogAddReceivePackage = !this.dialogAddReceivePackage;
     }
