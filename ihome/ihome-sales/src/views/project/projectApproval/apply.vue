@@ -172,7 +172,7 @@
           <el-col :span="12">
             <el-form-item label="乙方(渠道)公司">
               <SelectPageByCondition
-                v-if="!(searchConditon.searchChannelEnum === 'Appoint' || searchConditon.searchChannelEnum === 'Strategic')"
+                v-if="!(searchConditon.channelEnum === 'Appoint' || searchConditon.channelEnum === 'Strategic')"
                 v-model="info.channelCompanyId"
                 clearable
                 style="width: 70%"
@@ -185,7 +185,7 @@
           </el-col>
           <el-col :span="12">
             <el-form-item label="乙方渠道等级">
-              <span v-if="!(searchConditon.searchChannelEnum === 'Appoint' || searchConditon.searchChannelEnum === 'Strategic')">
+              <span v-if="!(searchConditon.channelEnum === 'Appoint' || searchConditon.channelEnum === 'Strategic')">
                 {{$root.dictAllName(info.channelLevel, 'ChannelLevel')}}
               </span>
               <span v-else>{{$root.dictAllName(info.channelLevel, 'ChannelCustomer')}}</span>
@@ -556,8 +556,8 @@ export default class Apply extends Vue {
 
   templateFinish(data: any) {
     this.searchConditon = {
-      searchCycleCity: data.city,
-      searchChannelEnum: data.channelEnum,
+      cycleCity: data.city,
+      channelEnum: data.channelEnum,
       departmentOrgId: data.departmentOrgId,
     };
     this.getApplyInfo(data.agencyContrictId);

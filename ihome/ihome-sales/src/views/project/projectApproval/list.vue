@@ -4,7 +4,7 @@
  * @Author: wwq
  * @Date: 2020-11-27 17:11:14
  * @LastEditors: wwq
- * @LastEditTime: 2020-12-23 16:11:54
+ * @LastEditTime: 2020-12-25 15:01:18
 -->
 <template>
   <IhPage label-width="100px">
@@ -62,7 +62,7 @@
                 placeholder="请选择"
               >
                 <el-option
-                  v-for="item in $root.dictAllList('AgencyAudit')"
+                  v-for="item in $root.dictAllList('Audit')"
                   :key="item.code"
                   :label="item.name"
                   :value="item.code"
@@ -183,17 +183,12 @@
               <el-dropdown-menu slot="dropdown">
                 <el-dropdown-item
                   @click.native.prevent="routeTo(row, 'edit')"
-                  :class="{'ih-data-disabled': row.auditEnum !== 'Draft'}"
+                  :class="{'ih-data-disabled': !editChange(row)}"
                   v-has="'B.SALES.PROJECT.TERMLIST.UPDATE'"
                 >修改</el-dropdown-item>
                 <el-dropdown-item
-                  @click.native.prevent="routeTo(row, 'audit')"
-                  :class="{'ih-data-disabled': !['Reject', 'Draft'].includes(row.auditEnum)}"
-                  v-has="'B.SALES.PROJECT.TERMLIST.VERIFY'"
-                >审核</el-dropdown-item>
-                <el-dropdown-item
                   @click.native.prevent="remove(row)"
-                  :class="{'ih-data-disabled': row.auditEnum !== 'Draft'}"
+                  :class="{'ih-data-disabled': !delChange(row)}"
                   v-has="'B.SALES.PROJECT.TERMLIST.DELETE'"
                 >删除</el-dropdown-item>
                 <el-dropdown-item
@@ -201,7 +196,8 @@
                   v-has="'B.SALES.PROJECT.TERMLIST.APPLYDISTRIBUT'"
                 >申领分销协议</el-dropdown-item>
                 <el-dropdown-item
-                  @click.native.prevent="routeTo(row, 'edit')"
+                  :class="{'ih-data-disabled': !replenishChange(row)}"
+                  @click.native.prevent="routeTo(row, 'replenish')"
                   v-has="'B.SALES.PROJECT.TERMLIST.EDITDISTRIBUT'"
                 >发起补充协议</el-dropdown-item>
               </el-dropdown-menu>
@@ -258,6 +254,46 @@ export default class ProjectApproval extends Vue {
     list: [],
   };
   dialogVisible = false;
+
+  get roleList() {
+    return (this.$root as any).userInfo.roleList.map((v: any) => v.code);
+  }
+
+  // 权限控制
+  editChange(row: any) {
+    const Draft = row.auditEnum === "Draft";
+    const TermReject = row.auditEnum === "TermReject";
+    const ConstractAdopt = row.auditEnum === "ConstractAdopt";
+    const ConstractReject = row.auditEnum === "ConstractReject";
+    const wenyuan = this.roleList.includes("RPlatformClerk");
+    const fen = this.roleList.includes("RBusinessManagement");
+    const zong = this.roleList.includes("RHeadBusinessManagement");
+    return (
+      (Draft && wenyuan) ||
+      (TermReject && wenyuan) ||
+      (ConstractAdopt && (fen || zong)) ||
+      (ConstractReject && wenyuan)
+    );
+  }
+
+  delChange(row: any) {
+    const Draft = row.auditEnum === "Draft";
+    const TermReject = row.auditEnum === "TermReject";
+    const wenyuan = this.roleList.includes("RPlatformClerk");
+    return (Draft && wenyuan) || (TermReject && wenyuan);
+  }
+
+  applyChange(row: any) {
+    const ConstractAdopt = row.auditEnum === "ConstractAdopt";
+    const qudao = this.roleList.includes("RChannelStaff");
+    return ConstractAdopt && qudao;
+  }
+
+  replenishChange(row: any) {
+    const ConstractAdopt = row.auditEnum === "ConstractAdopt";
+    const wenyuan = this.roleList.includes("RPlatformClerk");
+    return ConstractAdopt && wenyuan;
+  }
 
   get emptyText() {
     return this.resPageInfo.total === null ? "正在加载数据..." : "暂无数据";

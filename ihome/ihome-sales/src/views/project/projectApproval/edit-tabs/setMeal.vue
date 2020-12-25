@@ -4,7 +4,7 @@
  * @Author: wwq
  * @Date: 2020-11-27 17:22:45
  * @LastEditors: wwq
- * @LastEditTime: 2020-12-11 09:17:23
+ * @LastEditTime: 2020-12-25 14:13:36
 -->
 <template>
   <div>
@@ -170,7 +170,6 @@ export default class SetMeal extends Vue {
         transactionEnumOptions: JSON.stringify(j.transactionEnumOptions),
       }));
     });
-    console.log(data);
     if (this.editData.id) {
       data.packageId = this.editData.id;
       await post_collectandsend_update(data);
