@@ -4,7 +4,7 @@
  * @Author: ywl
  * @Date: 2020-12-23 09:57:33
  * @LastEditors: ywl
- * @LastEditTime: 2020-12-24 18:51:46
+ * @LastEditTime: 2020-12-25 17:21:32
 -->
 <template>
   <el-dialog
@@ -14,7 +14,7 @@
     :close-on-press-escape="false"
     :before-close="cancel"
     width="80%"
-    :title="`POS机申领事项${isAdd ? '录入':'修改'}`"
+    :title="`POS机申请事项${isAdd ? '录入':'修改'} - ${$root.dictAllName(type, 'PosItemType')}`"
     class="text-left"
     top="5vh"
   >
@@ -27,7 +27,7 @@
         label-width="100px"
         class="demo-ruleForm"
       >
-        <el-row>
+        <div style="overflow: hidden;">
           <el-col :span="8">
             <el-form-item
               label="事项类别"
@@ -53,12 +53,15 @@
               prop="applyUser"
             >
               <el-input
-                :value="$root.userInfo.name"
+                :value="applyUserName"
                 disabled
               ></el-input>
             </el-form-item>
           </el-col>
-          <el-col :span="8">
+          <el-col
+            :span="8"
+            v-if="type === 'Apply' || type === 'Move' || type === 'GiveBack'"
+          >
             <el-form-item
               label="店组"
               prop="groupId"
@@ -69,8 +72,6 @@
               ></IhSelectPageOrg>
             </el-form-item>
           </el-col>
-        </el-row>
-        <el-row>
           <el-col :span="8">
             <el-form-item
               label="事业部"
@@ -82,7 +83,10 @@
               ></IhSelectPageDivision>
             </el-form-item>
           </el-col>
-          <el-col :span="8">
+          <el-col
+            :span="8"
+            v-if="type === 'Apply' || type === 'Move'"
+          >
             <el-form-item
               label="联动项目"
               prop="proId"
@@ -90,7 +94,7 @@
               <IhSelectPageByProject v-model="form.proId"></IhSelectPageByProject>
             </el-form-item>
           </el-col>
-        </el-row>
+        </div>
       </el-form>
       <p class="ih-info-title">
         <span>POS机列表</span>
@@ -137,8 +141,11 @@
             fixed="right"
             width="80"
           >
-            <template>
-              <el-link type="danger">移除</el-link>
+            <template v-slot="{ $index }">
+              <el-link
+                type="danger"
+                @click="remove($index)"
+              >移除</el-link>
             </template>
           </el-table-column>
         </el-table>
@@ -146,6 +153,7 @@
       <p class="ih-info-title">备注</p>
       <div class="padding-left-20">
         <el-input
+          v-model="form.remark"
           type="textarea"
           placeholder="请填写备注信息"
           :rows="5"
@@ -159,7 +167,10 @@
         type="success"
         @click="submit(0)"
       >保 存</el-button>
-      <el-button type="primary">提 交</el-button>
+      <el-button
+        type="primary"
+        @click="submit(1)"
+      >提 交</el-button>
     </template>
     <IhDialog :show="selectVisible">
       <SelectPos
@@ -181,7 +192,10 @@ import { NoRepeatHttp } from "ihome-common/util/aop/no-repeat-http";
 import { Form as ElForm } from "element-ui";
 import SelectPos from "./selectPOS.vue";
 import { get_org_getLevelTree__id } from "../../../../api/system/index";
-import { post_posApplyItem_posApply } from "../../../../api/finance/index";
+import {
+  post_posApplyItem_posApply,
+  get_posApplyItem_get__id,
+} from "../../../../api/finance/index";
 
 @Component({
   components: { SelectPos },
@@ -189,9 +203,11 @@ import { post_posApplyItem_posApply } from "../../../../api/finance/index";
 export default class ApplyDialog extends Vue {
   @Prop({ default: true }) isAdd!: boolean;
   @Prop() type!: any;
+  @Prop() itemId?: any;
 
   private selectVisible = false;
   private dialogVisible = true;
+  private applyUserName: any = null;
   private posTerminal: any = [];
   private form: any = {
     applyUser: null,
@@ -200,6 +216,7 @@ export default class ApplyDialog extends Vue {
     itemType: null,
     posTerminalIds: [],
     proId: null,
+    remark: null,
   };
   private rules: any = {
     itemType: [
@@ -244,7 +261,8 @@ export default class ApplyDialog extends Vue {
             posTerminalIds: this.posTerminal.map((i: any) => i.id),
             type,
           });
-          this.$message.success("success");
+          this.$message.success("操作成功");
+          this.$emit("finish");
         } catch (error) {
           console.log(error);
         }
@@ -263,6 +281,9 @@ export default class ApplyDialog extends Vue {
       const { departmentId } = await get_org_getLevelTree__id({ id: val });
       this.form.departmentId = departmentId;
     }
+  }
+  private remove(index: number) {
+    this.posTerminal.splice(index, 1);
   }
   private handleAddPos() {
     switch (this.type) {
@@ -327,10 +348,16 @@ export default class ApplyDialog extends Vue {
     }
   }
 
-  created() {
+  async created() {
     if (this.isAdd) {
       this.form.itemType = this.type;
       this.form.applyUser = (this.$root as any).userInfo.id;
+      this.applyUserName = (this.$root as any).userInfo.name;
+    } else {
+      let res = await get_posApplyItem_get__id({ id: this.itemId });
+      console.log(res);
+      Object.assign(this.form, res);
+      this.posTerminal = res.posTerminals;
     }
   }
 }

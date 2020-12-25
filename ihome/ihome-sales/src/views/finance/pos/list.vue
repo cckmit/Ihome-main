@@ -4,7 +4,7 @@
  * @Author: ywl
  * @Date: 2020-12-01 10:39:24
  * @LastEditors: ywl
- * @LastEditTime: 2020-12-23 10:51:22
+ * @LastEditTime: 2020-12-25 18:59:06
 -->
 <template>
   <IhPage label-width="90px">
@@ -189,15 +189,17 @@
         <el-table-column
           prop="departmentName"
           label="所在事业部"
-          min-width="165"
+          min-width="215"
         ></el-table-column>
         <el-table-column
           prop="groupName"
           label="所在店组"
+          min-width="180"
         ></el-table-column>
         <el-table-column
           prop="proName"
           label="联动项目"
+          min-width="180"
         ></el-table-column>
         <el-table-column
           label="操作"

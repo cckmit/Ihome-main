@@ -4,7 +4,7 @@
  * @Author: ywl
  * @Date: 2020-12-22 19:30:19
  * @LastEditors: ywl
- * @LastEditTime: 2020-12-24 18:53:13
+ * @LastEditTime: 2020-12-25 20:06:37
 -->
 <template>
   <IhPage label-width="80px">
@@ -125,7 +125,7 @@
           fixed
           label="事项编号"
           prop="itemNo"
-          min-width="100"
+          min-width="120"
         ></el-table-column>
         <el-table-column
           label="申请人"
@@ -150,15 +150,17 @@
         <el-table-column
           label="事业部"
           prop="departmentName"
-          min-width="150"
+          min-width="195"
         ></el-table-column>
         <el-table-column
           label="店组"
           prop="groupName"
+          min-width="185"
         ></el-table-column>
         <el-table-column
           label="联动项目"
           prop="proName"
+          min-width="150"
         ></el-table-column>
         <el-table-column
           fixed="right"
@@ -179,22 +181,28 @@
                 <i class="el-icon-arrow-down el-icon--right"></i>
               </span>
               <el-dropdown-menu slot="dropdown">
-                <el-dropdown-item>领用</el-dropdown-item>
-                <el-dropdown-item>领用审核</el-dropdown-item>
-                <el-dropdown-item>领用寄出</el-dropdown-item>
-                <el-dropdown-item>领用签收</el-dropdown-item>
-                <el-dropdown-item>退还</el-dropdown-item>
-                <el-dropdown-item>确认退还</el-dropdown-item>
-                <el-dropdown-item>申领</el-dropdown-item>
-                <el-dropdown-item>申领审核</el-dropdown-item>
-                <el-dropdown-item>申领寄出</el-dropdown-item>
-                <el-dropdown-item>申领签收</el-dropdown-item>
-                <el-dropdown-item>归还</el-dropdown-item>
-                <el-dropdown-item>确认归还</el-dropdown-item>
-                <el-dropdown-item>调动</el-dropdown-item>
-                <el-dropdown-item>调动审核</el-dropdown-item>
-                <el-dropdown-item>调动寄出</el-dropdown-item>
-                <el-dropdown-item>调动签收</el-dropdown-item>
+                <el-dropdown-item @click.native.prevent="handleEdit(row)">修改</el-dropdown-item>
+                <template v-if="row.itemType === 'Use'">
+                  <el-dropdown-item @click.native.prevent="posOperate(row, 'UseApprove')">领用审核</el-dropdown-item>
+                  <el-dropdown-item @click.native.prevent="posOperate(row, 'UseSend')">领用寄出</el-dropdown-item>
+                  <el-dropdown-item @click.native.prevent="posOperate(row, 'UseSign')">领用签收</el-dropdown-item>
+                </template>
+                <template v-if="row.itemType === 'Return'">
+                  <el-dropdown-item @click.native.prevent="posOperate(row, 'ReturnConfirm')">确认退还</el-dropdown-item>
+                </template>
+                <template v-if="row.itemType === 'Apply'">
+                  <el-dropdown-item @click.native.prevent="posOperate(row, 'ApplyApprove')">申领审核</el-dropdown-item>
+                  <el-dropdown-item @click.native.prevent="posOperate(row, 'ApplySend')">申领寄出</el-dropdown-item>
+                  <el-dropdown-item @click.native.prevent="posOperate(row, 'ApplySign')">申领签收</el-dropdown-item>
+                </template>
+                <template v-if="row.itemType === 'GiveBack'">
+                  <el-dropdown-item @click.native.prevent="posOperate(row, 'GiveBackConfirm')">确认归还</el-dropdown-item>
+                </template>
+                <template v-if="row.itemType === 'Move'">
+                  <el-dropdown-item @click.native.prevent="posOperate(row, 'MoveApprove')">调动审核</el-dropdown-item>
+                  <el-dropdown-item @click.native.prevent="posOperate(row, 'MoveSend')">调动寄出</el-dropdown-item>
+                  <el-dropdown-item @click.native.prevent="posOperate(row, 'MoveSign')">调动签收</el-dropdown-item>
+                </template>
               </el-dropdown-menu>
             </el-dropdown>
           </template>
@@ -218,7 +226,34 @@
       <Apply
         :isAdd="isAdd"
         :type="applyType"
+        :itemId="itemId"
         @cancel="() => (dialogVisible = false)"
+        @finish="() => {
+          dialogVisible = false;
+          getListMixin();
+        }"
+      />
+    </IhDialog>
+    <IhDialog :show="checkVisible">
+      <CheckPos
+        :applyType="applyItemType"
+        :data="rowData"
+        @cancel="() => (checkVisible = false)"
+        @finish="() => {
+          checkVisible = false;
+          getListMixin();
+        }"
+      />
+    </IhDialog>
+    <IhDialog :show="sendVisible">
+      <SendPos
+        :applyType="applyItemType"
+        :data="rowData"
+        @cancel="() => (sendVisible = false)"
+        @finish="() => {
+          sendVisible = false;
+          getListMixin();
+        }"
       />
     </IhDialog>
   </IhPage>
@@ -227,11 +262,16 @@
 <script lang="ts">
 import { Component, Vue } from "vue-property-decorator";
 import PaginationMixin from "../../../mixins/pagination";
-import { post_posApplyItem_getList } from "../../../api/finance/index";
 import Apply from "./dialog/apply.vue";
+import CheckPos from "./dialog/checkPos.vue";
+import SendPos from "./dialog/sendPos.vue";
+import {
+  post_posApplyItem_getList,
+  post_posApplyItem_posOperate,
+} from "../../../api/finance/index";
 
 @Component({
-  components: { Apply },
+  components: { Apply, CheckPos, SendPos },
   mixins: [PaginationMixin],
 })
 export default class POSApplyList extends Vue {
@@ -249,7 +289,55 @@ export default class POSApplyList extends Vue {
   private dialogVisible = false;
   private applyType: any = null;
   private isAdd = true;
+  private itemId: any = null;
+  private checkVisible = false;
+  private sendVisible = false;
+  private rowData: any = null;
+  private applyItemType: any = null;
 
+  private async posOperate(row: any, type: string) {
+    switch (type) {
+      case "UseApprove":
+      case "ApplyApprove":
+      case "MoveApprove":
+        this.rowData = { ...row };
+        this.applyItemType = type;
+        this.checkVisible = true;
+        break;
+      case "UseSend":
+      case "ApplySend":
+      case "MoveSend":
+        this.rowData = { ...row };
+        this.applyItemType = type;
+        this.sendVisible = true;
+        break;
+      case "UseSign":
+      case "ApplySign":
+      case "MoveSign":
+      case "GiveBackConfirm":
+        await this.$confirm(
+          `是否确认${(this.$root as any).dictAllName(type, "PosOperate")}?`,
+          "提示"
+        );
+        await post_posApplyItem_posOperate({
+          id: row.id,
+          operateType: type,
+        });
+        this.$message.success(
+          `${(this.$root as any).dictAllName(type, "PosOperate")}成功`
+        );
+        this.getListMixin();
+        break;
+      default:
+        break;
+    }
+  }
+  private handleEdit(row: any) {
+    this.isAdd = false;
+    this.applyType = row.itemType;
+    this.itemId = row.id;
+    this.dialogVisible = true;
+  }
   private handleApply(type: string) {
     this.applyType = type;
     this.isAdd = true;
