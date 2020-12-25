@@ -4,7 +4,7 @@
  * @Author: wwq
  * @Date: 2020-11-27 17:17:06
  * @LastEditors: wwq
- * @LastEditTime: 2020-12-24 09:48:56
+ * @LastEditTime: 2020-12-25 19:57:53
 -->
 <template>
   <div class="project-approval-box">
@@ -729,16 +729,21 @@
     </div>
     <div>
       <br />
-      <!-- <el-button
-        v-if="$route.name === 'projectApprovalAudit'"
-        type="success"
-        @click="submit()"
-      >提交审核</el-button> -->
       <el-button
         v-if="$route.name === 'projectApprovalEdit'"
         type="primary"
         @click="save()"
       >保存</el-button>
+      <el-button
+        v-if="info.auditEnum === 'Draft'"
+        type="success"
+        @click="submitProjectApproval()"
+      >提交立项审核</el-button>
+      <el-button
+        v-if="info.auditEnum === 'TermAdopt'"
+        type="success"
+        @click="submitContract()"
+      >提交合同审核</el-button>
       <el-button @click="viewApprovalDialogVisible = true">预览OA立项表单</el-button>
       <el-button @click="viewContractDialogVisible = true">预览OA合同表单</el-button>
     </div>
@@ -753,7 +758,12 @@
 <script lang="ts">
 import { Component, Vue, Watch } from "vue-property-decorator";
 import { Form as ElForm } from "element-ui";
-import { get_term_get__termId, post_term_update } from "@/api/project/index";
+import {
+  get_term_get__termId,
+  post_term_update,
+  post_term_audit,
+  post_term_constractAudit,
+} from "@/api/project/index";
 import { post_dict_getAllByType } from "@/api/system/index";
 import ViewApproval from "../dialog/basicInfo-dialog/viewApproval.vue";
 import ViewContract from "../dialog/basicInfo-dialog/viewContract.vue";
@@ -767,6 +777,7 @@ export default class FirstAgencyEdit extends Vue {
   viewApprovalDialogVisible = false;
   viewContractDialogVisible = false;
   info: any = {
+    auditEnum: null,
     proName: null,
     proAddr: null,
     proRecord: null,
@@ -812,6 +823,7 @@ export default class FirstAgencyEdit extends Vue {
     attachTermVOS: [],
     companyName: null,
     companyId: null,
+    termId: null,
   };
   fileListType: any = [];
   submitFile: any = {};
@@ -1056,6 +1068,28 @@ export default class FirstAgencyEdit extends Vue {
 
   padCommissionEnumChange(val: any) {
     window.sessionStorage.setItem("padCommissionEnum", val);
+  }
+
+  async submitProjectApproval() {
+    await post_term_audit({
+      termId: this.info.termId,
+    });
+    this.$message({
+      type: "success",
+      message: "审核成功",
+    });
+    this.$goto({ path: `/projectApproval/list` });
+  }
+
+  async submitContract() {
+    await post_term_constractAudit({
+      termId: this.info.termId,
+    });
+    this.$message({
+      type: "success",
+      message: "审核成功",
+    });
+    this.$goto({ path: `/projectApproval/list` });
   }
 
   save() {
