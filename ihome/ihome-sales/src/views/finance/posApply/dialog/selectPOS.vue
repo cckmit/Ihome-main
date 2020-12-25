@@ -4,7 +4,7 @@
  * @Author: ywl
  * @Date: 2020-12-23 11:50:23
  * @LastEditors: ywl
- * @LastEditTime: 2020-12-24 17:09:29
+ * @LastEditTime: 2020-12-25 11:01:25
 -->
 <template>
   <el-dialog
@@ -77,7 +77,7 @@
         <el-col :span="8">
           <el-form-item label="账号">
             <el-input
-              v-model="queryPageParameters.terminalNo"
+              v-model="queryPageParameters.accountNo"
               placeholder="请输入账号"
               clearable
             ></el-input>
@@ -131,6 +131,7 @@ export default class SelectPOS extends Vue {
     status: null,
     merchantNo: null,
     terminalNo: null,
+    accountNo: null,
   };
   resPageInfo: any = {
     total: null,

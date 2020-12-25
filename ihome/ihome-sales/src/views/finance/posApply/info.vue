@@ -4,7 +4,7 @@
  * @Author: ywl
  * @Date: 2020-12-22 20:57:20
  * @LastEditors: ywl
- * @LastEditTime: 2020-12-23 19:10:29
+ * @LastEditTime: 2020-12-25 19:37:50
 -->
 <template>
   <IhPage class="text-left">
@@ -30,7 +30,7 @@
             <el-form-item label="所在项目">{{info.proName}}</el-form-item>
           </el-col>
           <el-col :span="8">
-            <el-form-item label="事业部">{{info.departmentId}}</el-form-item>
+            <el-form-item label="事业部">{{info.departmentName}}</el-form-item>
           </el-col>
         </el-row>
       </el-form>
