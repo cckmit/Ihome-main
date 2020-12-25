@@ -4,7 +4,7 @@
  * @Author: wwq
  * @Date: 2020-11-27 17:27:01
  * @LastEditors: wwq
- * @LastEditTime: 2020-12-24 16:30:56
+ * @LastEditTime: 2020-12-25 09:39:39
 -->
 <template>
   <div>
@@ -361,9 +361,12 @@ export default class Notification extends Vue {
         // preferentialPartyA: this.info.preferentialPartyA,
         // preferentialPartyAddr: this.info.preferentialPartyAddr,
         padCommissionEnum: this.info.padCommissionEnum,
-        city: this.info.city,
       };
       window.sessionStorage.setItem("shengshiqu", this.info.city);
+      window.sessionStorage.setItem(
+        "departmentOrgId",
+        this.info.startDivisionId
+      );
     }
   }
 

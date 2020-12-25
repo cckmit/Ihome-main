@@ -4,7 +4,7 @@
  * @Author: wwq
  * @Date: 2020-11-30 19:24:37
  * @LastEditors: wwq
- * @LastEditTime: 2020-12-24 16:31:09
+ * @LastEditTime: 2020-12-25 09:39:52
 -->
 <template>
   <el-dialog
@@ -254,6 +254,7 @@ export default class ProjectApprovalDialog extends Vue {
     status: null,
     followUserId: null,
     cycleCity: window.sessionStorage.getItem("shengshiqu"),
+    departmentOrgId: window.sessionStorage.getItem("departmentOrgId"),
   };
   provinceOption: any = [];
   resPageInfo: any = {

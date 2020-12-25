@@ -4,7 +4,7 @@
  * @Author: wwq
  * @Date: 2020-12-03 10:50:26
  * @LastEditors: wwq
- * @LastEditTime: 2020-12-17 15:17:56
+ * @LastEditTime: 2020-12-25 09:01:50
 -->
 <template>
   <el-dialog
@@ -315,9 +315,9 @@ export default class CalculationDialog extends Vue {
   form: any = {
     termCalcVo: {}, //测算指标
     agencyCalcComplateModelVOS: [], //代理费
-    agencySum: [], //代理费合计
+    agencySum: {}, //代理费合计
     serviceCalcComplateModelVOS: [], //服务费
-    serviceSum: [], // 服务费合计
+    serviceSum: {}, // 服务费合计
   };
 
   yesOrNo(data: string) {

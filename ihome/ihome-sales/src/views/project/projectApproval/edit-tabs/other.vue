@@ -4,7 +4,7 @@
  * @Author: wwq
  * @Date: 2020-11-27 17:28:28
  * @LastEditors: wwq
- * @LastEditTime: 2020-12-24 18:49:50
+ * @LastEditTime: 2020-12-25 14:00:03
 -->
 <template>
   <div>
@@ -195,7 +195,11 @@
         <el-table-column
           label="已用其他渠道费金额"
           prop="amount"
-        ></el-table-column>
+        >
+          <template v-slot="{ row }">
+            {{row.amount? row.amount : 0}}
+          </template>
+        </el-table-column>
         <el-table-column
           label="状态"
           prop="shareStateEnum"
@@ -206,7 +210,7 @@
         </el-table-column>
         <el-table-column
           label="操作"
-          width="120"
+          width="auto"
           fixed="right"
           align="center"
         >
@@ -224,7 +228,7 @@
               @click="start(row)"
             >启用</el-button>
             <el-button
-              v-if="row.shareStateEnum === 'New'"
+              v-if="Number(row.amount) === 0"
               size="small"
               type="danger"
               @click="remove(row)"
@@ -255,7 +259,7 @@
       />
     </ih-dialog>
     <ih-dialog :show="organDialogVisible">
-      <Organization
+      <OrganizationJurisdiction
         :data="organData"
         @cancel="() => (organDialogVisible = false)"
         @finish="(data) => organFinish(data)"
@@ -268,7 +272,7 @@ import { Component, Vue } from "vue-property-decorator";
 import BankAccount from "../dialog/other-dialog/bankAccount.vue";
 import ProjectApproval from "../dialog/other-dialog/projectApproval.vue";
 import AchieveScaleScheme from "../dialog/other-dialog/achieveScaleScheme.vue";
-import Organization from "../dialog/other-dialog/organization.vue";
+import OrganizationJurisdiction from "../dialog/other-dialog/organization.vue";
 import {
   get_other_get__termId,
   post_other_changOver,
@@ -287,7 +291,7 @@ import {
     ProjectApproval,
     BankAccount,
     AchieveScaleScheme,
-    Organization,
+    OrganizationJurisdiction,
   },
 })
 export default class Other extends Vue {
@@ -312,11 +316,11 @@ export default class Other extends Vue {
       name: "全部",
     },
     {
-      code: "Enable",
+      code: "Start",
       name: "已启用",
     },
     {
-      code: "Disable",
+      code: "Stop",
       name: "已禁用",
     },
   ];
@@ -404,14 +408,14 @@ export default class Other extends Vue {
 
   screenChange(val: any) {
     switch (val) {
-      case "Enable":
+      case "Start":
         this.info.shareChannelFeeVOS = this.info.shareChannelFeeVOS.filter(
-          (v: any) => v.shareStateEnum === "Enable"
+          (v: any) => v.shareStateEnum === "Start"
         );
         break;
-      case "Disable":
+      case "Stop":
         this.info.shareChannelFeeVOS = this.info.shareChannelFeeVOS.filter(
-          (v: any) => v.shareStateEnum === "Disable"
+          (v: any) => v.shareStateEnum === "Stop"
         );
         break;
       case "all":
@@ -439,6 +443,7 @@ export default class Other extends Vue {
     this.approvalDialogVisible = true;
     this.approvalData.exOver = this.info.exOtherProChannelUse ? 1 : 0;
     this.approvalData.termId = this.termId;
+    this.approvalData.proId = window.sessionStorage.getItem("proId");
   }
 
   async approvalFinish(data: any) {
@@ -455,6 +460,7 @@ export default class Other extends Vue {
   async forbidden(row: any) {
     await post_other_stop({
       shareId: row.shareId,
+      termId: row.termId,
     });
     this.$message({
       type: "success",
@@ -466,6 +472,7 @@ export default class Other extends Vue {
   async start(row: any) {
     await post_other_start({
       shareId: row.shareId,
+      termId: row.termId,
     });
     this.$message({
       type: "success",
@@ -477,7 +484,10 @@ export default class Other extends Vue {
   async remove(row: any) {
     try {
       await this.$confirm("是否确定移除?", "提示");
-      await post_other_del({ shareId: row.shareId });
+      await post_other_del({
+        shareId: row.shareId,
+        termId: row.termId,
+      });
       this.$message({
         type: "success",
         message: "移除成功",

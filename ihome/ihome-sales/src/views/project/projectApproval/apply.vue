@@ -172,15 +172,12 @@
           <el-col :span="12">
             <el-form-item label="乙方(渠道)公司">
               <SelectPageByCondition
-                v-if="!(searchChannelEnum === 'Appoint' || searchChannelEnum === 'Strategic')"
+                v-if="!(searchConditon.searchChannelEnum === 'Appoint' || searchConditon.searchChannelEnum === 'Strategic')"
                 v-model="info.channelCompanyId"
                 clearable
                 style="width: 70%"
                 placeholder="渠道商名称"
-                :params="{
-                  cycleCity: searchCycleCity,
-                  channelEnum: searchChannelEnum,
-                }"
+                :params="searchConditon"
                 @changeOption="getChannelInfo"
               ></SelectPageByCondition>
               <span v-else>{{info.channelCompanyName}}</span>
@@ -188,7 +185,7 @@
           </el-col>
           <el-col :span="12">
             <el-form-item label="乙方渠道等级">
-              <span v-if="!(searchChannelEnum === 'Appoint' || searchChannelEnum === 'Strategic')">
+              <span v-if="!(searchConditon.searchChannelEnum === 'Appoint' || searchConditon.searchChannelEnum === 'Strategic')">
                 {{$root.dictAllName(info.channelLevel, 'ChannelLevel')}}
               </span>
               <span v-else>{{$root.dictAllName(info.channelLevel, 'ChannelCustomer')}}</span>
@@ -532,8 +529,7 @@ export default class Apply extends Vue {
   channelAccountName = "";
   isShow = false;
   channelAccountOptions: any = [];
-  searchChannelEnum: any = "";
-  searchCycleCity: any = "";
+  searchConditon: any = {};
 
   @Watch("info.channelEnum", { immediate: true })
   getIsShow(val: any) {
@@ -559,8 +555,11 @@ export default class Apply extends Vue {
   }
 
   templateFinish(data: any) {
-    this.searchCycleCity = data.city;
-    this.searchChannelEnum = data.channelEnum;
+    this.searchConditon = {
+      searchCycleCity: data.city,
+      searchChannelEnum: data.channelEnum,
+      departmentOrgId: data.departmentOrgId,
+    };
     this.getApplyInfo(data.agencyContrictId);
     this.dialogFormVisible = false;
     this.info.agencyId = data.agencyContrictId;

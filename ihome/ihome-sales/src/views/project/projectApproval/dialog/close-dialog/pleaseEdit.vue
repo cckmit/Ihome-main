@@ -4,7 +4,7 @@
  * @Author: wwq
  * @Date: 2020-12-11 15:36:42
  * @LastEditors: wwq
- * @LastEditTime: 2020-12-23 15:42:23
+ * @LastEditTime: 2020-12-25 08:49:19
 -->
 <template>
   <el-dialog
@@ -146,11 +146,11 @@
                     class="margin-left-20"
                     style="display: inline-block;width: 70%"
                   >
-                    <IhSelectPageByChannel
+                    <IhSelectPageByDeveloper
                       multiple
                       value-key="id"
                       v-model="item.mulitVal"
-                    ></IhSelectPageByChannel>
+                    ></IhSelectPageByDeveloper>
                   </div>
                 </span>
                 <span v-if="item.checkboxed && (item.conditionModel === 'ContractType' || item.conditionModel === 'ExRecode')">

@@ -4,7 +4,7 @@
  * @Author: wwq
  * @Date: 2020-12-24 18:16:33
  * @LastEditors: wwq
- * @LastEditTime: 2020-12-24 18:30:45
+ * @LastEditTime: 2020-12-25 09:58:15
 -->
 <script lang="ts">
 import { Component, Vue, Prop, Watch } from "vue-property-decorator";
@@ -38,7 +38,7 @@ export default class SelectPageByChannel extends Vue {
 
   @Watch("params")
   watchparams(val: any) {
-    if (!Object.values(val).includes("")) {
+    if (!Object.keys(val).includes("")) {
       this.getSelectList();
     }
   }
