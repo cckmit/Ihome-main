@@ -4,12 +4,12 @@
  * @Author: wwq
  * @Date: 2020-10-22 14:45:15
  * @LastEditors: wwq
- * @LastEditTime: 2020-12-10 17:08:02
+ * @LastEditTime: 2020-12-26 11:20:00
  */
 import { RouteConfig } from 'vue-router'
 
 import Layout from '../components/Layout.vue';
-/**开发商路由
+/**项目管理路由
  * @param {type} 
  * @return {type} 
  */
