@@ -4,7 +4,7 @@
  * @Author: ywl
  * @Date: 2020-09-27 16:27:36
  * @LastEditors: ywl
- * @LastEditTime: 2020-12-26 11:51:18
+ * @LastEditTime: 2020-12-26 11:56:37
 -->
 <template>
   <IhPage label-width="80px">
@@ -289,7 +289,7 @@
         >
           <template v-slot="{ row }">
             <el-link
-              :class="{'is-disabled':row.notificationType !== 'Notification'}"
+              :class="{'ih-data-disabled':row.notificationType !== 'Notification'}"
               type="primary"
               class="margin-right-10"
               @click.native.prevent="$router.push(`/discount/info?id=${row.id}`)"
