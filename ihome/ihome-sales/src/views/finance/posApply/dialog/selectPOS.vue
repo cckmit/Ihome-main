@@ -4,7 +4,7 @@
  * @Author: ywl
  * @Date: 2020-12-23 11:50:23
  * @LastEditors: ywl
- * @LastEditTime: 2020-12-25 11:01:25
+ * @LastEditTime: 2020-12-26 15:17:42
 -->
 <template>
   <el-dialog
@@ -86,7 +86,10 @@
       </el-row>
     </el-form>
     <div class="padding-left-80">
-      <el-button type="primary">查询</el-button>
+      <el-button
+        type="primary"
+        @click="search()"
+      >查询</el-button>
       <el-button type="info">重置</el-button>
     </div>
     <br />
@@ -199,17 +202,31 @@ export default class SelectPOS extends Vue {
       this.$message.warning("请先勾选表格数据");
     }
   }
+  private reset() {
+    Object.assign(this.queryPageParameters, {
+      serialNo: null,
+      accountName: null,
+      merchantNo: null,
+      terminalNo: null,
+      accountNo: null,
+    });
+  }
+  private search() {
+    this.pageNum = 1;
+    this.getList();
+  }
   // 获取选中项 --- 最后需要获取的数据
   private selectionChange(selection: any) {
     console.log(selection, "selectionChange");
     this.selection = selection;
   }
-  private pageChange(index: number) {
-    this.pageNum = index;
+  private pageChange(val: number) {
+    this.pageNum = val;
     this.getList();
   }
   private sizeChange(val: any) {
     this.pageSize = val;
+    this.getList();
   }
   private async getList() {
     this.resPageInfo = await post_posTerminal_getList({

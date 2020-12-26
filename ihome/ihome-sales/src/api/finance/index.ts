@@ -1,6 +1,6 @@
 /* eslint-disable */
 /* 此脚本由swagger-ui的api-docs自动生成，请勿修改 */
-//2020-12-24 6:27:40 ├F10: PM┤
+//2020-12-26 5:39:19 ├F10: PM┤
 import { request } from '@/api/base'
 const basePath = "/sales-api/finance"
 /**新增收款账号在线支付信息*/
@@ -299,9 +299,17 @@ return await request.post< PaymentOnlinePayParamVO,PaymentOnlinePayParamVO> (bas
 export async function post_payment_getUnionPayUrl (d?: any) {
 return await request.post< string,string> (basePath+'/payment/getUnionPayUrl', d)
 }
+/**index*/
+export async function get_payment_index__id (d?: any) {
+return await request.get<object,object>(basePath+'/payment/index/{id}', { params: d })
+}
 /**在线支付支付成功 业务处理*/
 export async function post_payment_onlinePayBusinessDeal (d?: any) {
 return await request.post< number,number> (basePath+'/payment/onlinePayBusinessDeal', d)
+}
+/**电子回单签署回调*/
+export async function post_payment_payment_signCallback (d?: any) {
+return await request.post< boolean,boolean> (basePath+'/payment/payment/signCallback', d)
 }
 /**POS机支付 业务处理*/
 export async function post_payment_posPayBusinessDeal (d?: any) {
@@ -318,6 +326,10 @@ return await request.post< number,number> (basePath+'/payment/relevanceDeal', d)
 /**修改付款记录*/
 export async function post_payment_update (d?: any) {
 return await request.post< number,number> (basePath+'/payment/update', d)
+}
+/**删除草稿状态的POS机事项*/
+export async function post_posApplyItem_delete__id (d?: any) {
+return await request.post< number,number> (basePath+'/posApplyItem/delete/{id}', d)
 }
 /**查询POS机申请事项*/
 export async function get_posApplyItem_get__id (d?: any) {
@@ -554,6 +566,35 @@ cityName: string;
 id: number;
 /**省份*/
 provinceName: string;
+}
+/**EqianbaoNoticeDeveloperParam*/
+export interface EqianbaoNoticeDeveloperParam {
+/**签署人账号ID*/
+accountId: string;
+/**业务类型 SIGN_FLOW_UPDATE(签署完成通知) SIGN_FLOW_FINISH(流程结束通知)*/
+action: string;
+/**签署任务发起时间 格式yyyy-MM-dd HH:mm:ss(yyyy-MM-dd HH:mm:ss)*/
+createTime: string;
+/**签署任务结束时间 格式yyyy-MM-dd HH:mm:ss(yyyy-MM-dd HH:mm:ss)*/
+endTime: string;
+/**流程ID*/
+flowId: string;
+/**任务状态 2-已完成: 所有签署人完成签署；3-已撤销: 发起方撤销签署任务；5-已过期: 签署截止日到期后触发；7-已拒签*/
+flowStatus: string;
+/**签署人顺序*/
+order: number;
+/**拒签或失败时，附加的原因描述*/
+resultDescription: string;
+/**签署结果 2:签署完成 3:失败 4:拒签*/
+signResult: number;
+/**签署时间或拒签时间 格式yyyy-MM-dd HH:MM:SS(yyyy-MM-dd HH:mm:ss)*/
+signTime: string;
+/**当流程异常结束时，附加终止原因描述*/
+statusDescription: string;
+/**订单号*/
+thirdOrderNo: string;
+/**时间戳*/
+timestamp: number;
 }
 /**HandInvoiceBillVO*/
 export interface HandInvoiceBillVO {
@@ -1390,6 +1431,8 @@ dealId: number;
 groupId: number;
 /**(必填)经办人*/
 operator: number;
+/**(必填)甲方公司ID*/
+partyAId: number;
 /**(必填)每份代理费回款时间(yyyy-MM-dd HH:mm:ss)*/
 payTime: string;
 /**(必填)项目ID*/
@@ -1656,6 +1699,8 @@ departmentName: string;
 groupId: number;
 /**店组名称*/
 groupName: string;
+/**事项ID*/
+id: number;
 /**事项编号*/
 itemNo: string;
 /**事项类别(Use-领用、Apply-申领、Move-调动、Return-退还、GiveBack-归还)*/
@@ -1668,7 +1713,7 @@ proId: number;
 proName: string;
 /**undefined*/
 records: PosApplyItemRecordVO[];
-/**状态(CentralStock-总部库存、UseWaitApprove-领用待审、UseWaitSend-领用待寄、UseOneTheWay-领用在途、ReturnOnTheWay-退还在途、BranchStock-分公司库存、ApplyWaitApprove-申领待审、ApplyWaitSend-申领待寄、ApplyOnTheWay-申领在途、Using-项目在用、GiveBackOnTheWay-归还在途、MoveWaitApprove-调动待审、MoveWaitSend-调动待寄、MoveOnTheWay-调动在途、Stop-停用、Draft-草稿、Finished-已结束)*/
+/**状态(CentralStock-总部库存、UseWaitApprove-领用待审、UseWaitSend-领用待寄、UseOneTheWay-领用在途、ReturnOnTheWay-退还在途、BranchStock-分公司库存、ApplyWaitApprove-申领待审、ApplyWaitSend-申领待寄、ApplyOnTheWay-申领在途、Using-项目在用、GiveBackOnTheWay-归还在途、MoveWaitApprove-调动待审、MoveWaitSend-调动待寄、MoveOnTheWay-调动在途、Stop-停用、Draft-草稿、Finished-已结束、Terminated-已终止)*/
 status: string;
 }
 /**PosApplyItemQueryVO*/
@@ -1685,7 +1730,7 @@ pageNum: number;
 pageSize: number;
 /**所在项目*/
 proId: number;
-/**状态(CentralStock-总部库存、UseWaitApprove-领用待审、UseWaitSend-领用待寄、UseOneTheWay-领用在途、ReturnOnTheWay-退还在途、BranchStock-分公司库存、ApplyWaitApprove-申领待审、ApplyWaitSend-申领待寄、ApplyOnTheWay-申领在途、Using-项目在用、GiveBackOnTheWay-归还在途、MoveWaitApprove-调动待审、MoveWaitSend-调动待寄、MoveOnTheWay-调动在途、Stop-停用、Draft-草稿、Finished-已结束)*/
+/**状态(CentralStock-总部库存、UseWaitApprove-领用待审、UseWaitSend-领用待寄、UseOneTheWay-领用在途、ReturnOnTheWay-退还在途、BranchStock-分公司库存、ApplyWaitApprove-申领待审、ApplyWaitSend-申领待寄、ApplyOnTheWay-申领在途、Using-项目在用、GiveBackOnTheWay-归还在途、MoveWaitApprove-调动待审、MoveWaitSend-调动待寄、MoveOnTheWay-调动在途、Stop-停用、Draft-草稿、Finished-已结束、Terminated-已终止)*/
 status: string;
 }
 /**PosApplyItemRecordVO*/
@@ -1696,13 +1741,15 @@ applyItemId: number;
 id: number;
 /**操作时间(yyyy-MM-dd HH:mm:ss)*/
 operateTime: string;
-/**操作(CentralStock-总部库存、UseWaitApprove-领用待审、UseWaitSend-领用待寄、UseOneTheWay-领用在途、ReturnOnTheWay-退还在途、BranchStock-分公司库存、ApplyWaitApprove-申领待审、ApplyWaitSend-申领待寄、ApplyOnTheWay-申领在途、Using-项目在用、GiveBackOnTheWay-归还在途、MoveWaitApprove-调动待审、MoveWaitSend-调动待寄、MoveOnTheWay-调动在途、Stop-停用、Draft-草稿、Finished-已结束)*/
+/**操作(PutIn-入库、Revocation-撤机、Modify-修改、Use-领用、UseApprove-领用审核、UseSend-领用寄出、UseSign-领用签收、Return-退还、ReturnConfirm-确认退还、Apply-申领、ApplyApprove-申领审核、ApplySend-申领寄出、ApplySign-申领签收、GiveBack-归还、GiveBackConfirm-确认归还、Move-调动、MoveApprove-调动审核、MoveSend-调动寄出、MoveSign-调动签收)*/
 operation: string;
 /**操作人*/
 operator: number;
+/**操作人*/
+operatorName: string;
 /**备注*/
 remark: string;
-/**操作结果*/
+/**操作结果(Pass-通过、NoPass-不通过)*/
 result: string;
 }
 /**PosApplyItemVO*/
@@ -1727,7 +1774,7 @@ itemType: string;
 proId: number;
 /**项目推广名称*/
 proName: string;
-/**状态(CentralStock-总部库存、UseWaitApprove-领用待审、UseWaitSend-领用待寄、UseOneTheWay-领用在途、ReturnOnTheWay-退还在途、BranchStock-分公司库存、ApplyWaitApprove-申领待审、ApplyWaitSend-申领待寄、ApplyOnTheWay-申领在途、Using-项目在用、GiveBackOnTheWay-归还在途、MoveWaitApprove-调动待审、MoveWaitSend-调动待寄、MoveOnTheWay-调动在途、Stop-停用、Draft-草稿、Finished-已结束)*/
+/**状态(CentralStock-总部库存、UseWaitApprove-领用待审、UseWaitSend-领用待寄、UseOneTheWay-领用在途、ReturnOnTheWay-退还在途、BranchStock-分公司库存、ApplyWaitApprove-申领待审、ApplyWaitSend-申领待寄、ApplyOnTheWay-申领在途、Using-项目在用、GiveBackOnTheWay-归还在途、MoveWaitApprove-调动待审、MoveWaitSend-调动待寄、MoveOnTheWay-调动在途、Stop-停用、Draft-草稿、Finished-已结束、Terminated-已终止)*/
 status: string;
 }
 /**PosApplyOperateAddVO*/
@@ -1746,6 +1793,8 @@ itemType: string;
 posTerminalIds: number[];
 /**所在项目*/
 proId: number;
+/**事项备注[非必填]*/
+remark: string;
 /**报存OR提交[0-保存 1-提交]*/
 type: number;
 }
@@ -1772,6 +1821,8 @@ departmentName: string;
 groupId: number;
 /**店组名称*/
 groupName: string;
+/**事项ID*/
+id: number;
 /**事项编号*/
 itemNo: string;
 /**事项类别(Use-领用、Apply-申领、Move-调动、Return-退还、GiveBack-归还)*/
@@ -1782,7 +1833,7 @@ posTerminals: PosTerminalVO[];
 proId: number;
 /**项目推广名称*/
 proName: string;
-/**状态(CentralStock-总部库存、UseWaitApprove-领用待审、UseWaitSend-领用待寄、UseOneTheWay-领用在途、ReturnOnTheWay-退还在途、BranchStock-分公司库存、ApplyWaitApprove-申领待审、ApplyWaitSend-申领待寄、ApplyOnTheWay-申领在途、Using-项目在用、GiveBackOnTheWay-归还在途、MoveWaitApprove-调动待审、MoveWaitSend-调动待寄、MoveOnTheWay-调动在途、Stop-停用、Draft-草稿、Finished-已结束)*/
+/**状态(CentralStock-总部库存、UseWaitApprove-领用待审、UseWaitSend-领用待寄、UseOneTheWay-领用在途、ReturnOnTheWay-退还在途、BranchStock-分公司库存、ApplyWaitApprove-申领待审、ApplyWaitSend-申领待寄、ApplyOnTheWay-申领在途、Using-项目在用、GiveBackOnTheWay-归还在途、MoveWaitApprove-调动待审、MoveWaitSend-调动待寄、MoveOnTheWay-调动在途、Stop-停用、Draft-草稿、Finished-已结束、Terminated-已终止)*/
 status: string;
 }
 /**PosPayResultVO*/
@@ -1871,7 +1922,7 @@ productModel: string;
 records: PosTerminalRecordVO[];
 /**序列号*/
 serialNo: string;
-/**状态(CentralStock-总部库存、UseWaitApprove-领用待审、UseWaitSend-领用待寄、UseOneTheWay-领用在途、ReturnOnTheWay-退还在途、BranchStock-分公司库存、ApplyWaitApprove-申领待审、ApplyWaitSend-申领待寄、ApplyOnTheWay-申领在途、Using-项目在用、GiveBackOnTheWay-归还在途、MoveWaitApprove-调动待审、MoveWaitSend-调动待寄、MoveOnTheWay-调动在途、Stop-停用、Draft-草稿、Finished-已结束)*/
+/**状态(CentralStock-总部库存、UseWaitApprove-领用待审、UseWaitSend-领用待寄、UseOneTheWay-领用在途、ReturnOnTheWay-退还在途、BranchStock-分公司库存、ApplyWaitApprove-申领待审、ApplyWaitSend-申领待寄、ApplyOnTheWay-申领在途、Using-项目在用、GiveBackOnTheWay-归还在途、MoveWaitApprove-调动待审、MoveWaitSend-调动待寄、MoveOnTheWay-调动在途、Stop-停用、Draft-草稿、Finished-已结束、Terminated-已终止)*/
 status: string;
 /**更新时间(yyyy-MM-dd HH:mm:ss)*/
 updateTime: string;
@@ -1900,7 +1951,7 @@ pageSize: number;
 proId: number;
 /**序列号*/
 serialNo: string;
-/**状态(CentralStock-总部库存、UseWaitApprove-领用待审、UseWaitSend-领用待寄、UseOneTheWay-领用在途、ReturnOnTheWay-退还在途、BranchStock-分公司库存、ApplyWaitApprove-申领待审、ApplyWaitSend-申领待寄、ApplyOnTheWay-申领在途、Using-项目在用、GiveBackOnTheWay-归还在途、MoveWaitApprove-调动待审、MoveWaitSend-调动待寄、MoveOnTheWay-调动在途、Stop-停用、Draft-草稿、Finished-已结束)*/
+/**状态(CentralStock-总部库存、UseWaitApprove-领用待审、UseWaitSend-领用待寄、UseOneTheWay-领用在途、ReturnOnTheWay-退还在途、BranchStock-分公司库存、ApplyWaitApprove-申领待审、ApplyWaitSend-申领待寄、ApplyOnTheWay-申领在途、Using-项目在用、GiveBackOnTheWay-归还在途、MoveWaitApprove-调动待审、MoveWaitSend-调动待寄、MoveOnTheWay-调动在途、Stop-停用、Draft-草稿、Finished-已结束、Terminated-已终止)*/
 status: string;
 /**终端号*/
 terminalNo: string;
@@ -1959,7 +2010,7 @@ id: number;
 productModel: string;
 /**序列号*/
 serialNo: string;
-/**状态(CentralStock-总部库存、UseWaitApprove-领用待审、UseWaitSend-领用待寄、UseOneTheWay-领用在途、ReturnOnTheWay-退还在途、BranchStock-分公司库存、ApplyWaitApprove-申领待审、ApplyWaitSend-申领待寄、ApplyOnTheWay-申领在途、Using-项目在用、GiveBackOnTheWay-归还在途、MoveWaitApprove-调动待审、MoveWaitSend-调动待寄、MoveOnTheWay-调动在途、Stop-停用、Draft-草稿、Finished-已结束)*/
+/**状态(CentralStock-总部库存、UseWaitApprove-领用待审、UseWaitSend-领用待寄、UseOneTheWay-领用在途、ReturnOnTheWay-退还在途、BranchStock-分公司库存、ApplyWaitApprove-申领待审、ApplyWaitSend-申领待寄、ApplyOnTheWay-申领在途、Using-项目在用、GiveBackOnTheWay-归还在途、MoveWaitApprove-调动待审、MoveWaitSend-调动待寄、MoveOnTheWay-调动在途、Stop-停用、Draft-草稿、Finished-已结束、Terminated-已终止)*/
 status: string;
 }
 /**PosTerminalVO_1*/
@@ -1996,7 +2047,7 @@ proName: string;
 productModel: string;
 /**序列号*/
 serialNo: string;
-/**状态(CentralStock-总部库存、UseWaitApprove-领用待审、UseWaitSend-领用待寄、UseOneTheWay-领用在途、ReturnOnTheWay-退还在途、BranchStock-分公司库存、ApplyWaitApprove-申领待审、ApplyWaitSend-申领待寄、ApplyOnTheWay-申领在途、Using-项目在用、GiveBackOnTheWay-归还在途、MoveWaitApprove-调动待审、MoveWaitSend-调动待寄、MoveOnTheWay-调动在途、Stop-停用、Draft-草稿、Finished-已结束)*/
+/**状态(CentralStock-总部库存、UseWaitApprove-领用待审、UseWaitSend-领用待寄、UseOneTheWay-领用在途、ReturnOnTheWay-退还在途、BranchStock-分公司库存、ApplyWaitApprove-申领待审、ApplyWaitSend-申领待寄、ApplyOnTheWay-申领在途、Using-项目在用、GiveBackOnTheWay-归还在途、MoveWaitApprove-调动待审、MoveWaitSend-调动待寄、MoveOnTheWay-调动在途、Stop-停用、Draft-草稿、Finished-已结束、Terminated-已终止)*/
 status: string;
 /**更新时间(yyyy-MM-dd HH:mm:ss)*/
 updateTime: string;

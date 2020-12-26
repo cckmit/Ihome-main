@@ -4,7 +4,7 @@
  * @Author: ywl
  * @Date: 2020-12-22 20:57:20
  * @LastEditors: ywl
- * @LastEditTime: 2020-12-25 19:37:50
+ * @LastEditTime: 2020-12-26 17:46:49
 -->
 <template>
   <IhPage class="text-left">
@@ -16,7 +16,7 @@
             <el-form-item label="事项编号">{{info.itemNo}}</el-form-item>
           </el-col>
           <el-col :span="8">
-            <el-form-item label="申请人">{{info.applyUser}}</el-form-item>
+            <el-form-item label="申请人">{{info.applyUserName}}</el-form-item>
           </el-col>
           <el-col :span="8">
             <el-form-item label="事项类别">{{$root.dictAllName(info.itemType, 'PosItemType')}}</el-form-item>
@@ -84,7 +84,7 @@
           </el-table-column>
           <el-table-column
             label="操作人"
-            prop="operator"
+            prop="operatorName"
           ></el-table-column>
           <el-table-column
             label="操作时间"
@@ -93,7 +93,11 @@
           <el-table-column
             label="处理结果"
             prop="result"
-          ></el-table-column>
+          >
+            <template v-slot="{ row }">
+              {{ row.result ? `${row.result === 'Poss' ? '通过' : '不通过'}` : '' }}
+            </template>
+          </el-table-column>
           <el-table-column
             label="备注"
             prop="remark"

@@ -4,7 +4,7 @@
  * @Author: ywl
  * @Date: 2020-09-25 16:00:37
  * @LastEditors: ywl
- * @LastEditTime: 2020-12-21 11:30:41
+ * @LastEditTime: 2020-12-26 10:49:27
 -->
 <template>
   <IhPage class="text-left partyA-info">
@@ -48,9 +48,14 @@
           </el-col>
         </el-row>
         <el-row>
-          <el-col :span="24">
+          <el-col :span="12">
             <el-form-item label="合作项目">
               {{formData.cooperationProjectsName}}
+            </el-form-item>
+          </el-col>
+          <el-col :span="12">
+            <el-form-item label="归属组织">
+              {{formData.organizationName}}
             </el-form-item>
           </el-col>
         </el-row>
