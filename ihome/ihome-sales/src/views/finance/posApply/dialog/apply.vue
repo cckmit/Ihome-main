@@ -4,7 +4,7 @@
  * @Author: ywl
  * @Date: 2020-12-23 09:57:33
  * @LastEditors: ywl
- * @LastEditTime: 2020-12-25 17:21:32
+ * @LastEditTime: 2020-12-26 17:46:23
 -->
 <template>
   <el-dialog
@@ -14,7 +14,7 @@
     :close-on-press-escape="false"
     :before-close="cancel"
     width="80%"
-    :title="`POS机申请事项${isAdd ? '录入':'修改'} - ${$root.dictAllName(type, 'PosItemType')}`"
+    :title="`POS机申请事项${isAdd ? '录入':'修改'}(${$root.dictAllName(type, 'PosItemType')})`"
     class="text-left"
     top="5vh"
   >
@@ -354,10 +354,11 @@ export default class ApplyDialog extends Vue {
       this.form.applyUser = (this.$root as any).userInfo.id;
       this.applyUserName = (this.$root as any).userInfo.name;
     } else {
-      let res = await get_posApplyItem_get__id({ id: this.itemId });
+      let res: any = await get_posApplyItem_get__id({ id: this.itemId });
       console.log(res);
       Object.assign(this.form, res);
       this.posTerminal = res.posTerminals;
+      this.applyUserName = res.applyUserName;
     }
   }
 }

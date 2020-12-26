@@ -4,7 +4,7 @@
  * @Author: ywl
  * @Date: 2020-12-09 19:24:59
  * @LastEditors: ywl
- * @LastEditTime: 2020-12-23 19:48:53
+ * @LastEditTime: 2020-12-26 17:49:06
 -->
 <template>
   <IhPage label-width="100px">
@@ -228,6 +228,7 @@
                   <el-select
                     v-model="queryPageParameters.isRelation"
                     clearable
+                    class="width--100"
                   >
                     <el-option
                       :value="0"

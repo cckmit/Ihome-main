@@ -4,7 +4,7 @@
  * @Author: ywl
  * @Date: 2020-09-25 17:34:32
  * @LastEditors: ywl
- * @LastEditTime: 2020-12-26 11:08:37
+ * @LastEditTime: 2020-12-26 15:01:16
 -->
 <template>
   <IhPage label-width="100px">
@@ -165,12 +165,7 @@
                   <IhSelectPageUser
                     v-model="queryPageParameters.entryPerson"
                     clearable
-                  >
-                    <template v-slot="{ data }">
-                      <span style="float: left">{{ data.name }}</span>
-                      <span style="margin-left: 20px;float: right; color: #8492a6; font-size: 13px">{{ data.account }}</span>
-                    </template>
-                  </IhSelectPageUser>
+                  ></IhSelectPageUser>
                 </el-form-item>
               </el-col>
               <el-col :span="8">

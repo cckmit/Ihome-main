@@ -4,7 +4,7 @@
  * @Author: ywl
  * @Date: 2020-12-19 08:39:59
  * @LastEditors: ywl
- * @LastEditTime: 2020-12-23 10:51:01
+ * @LastEditTime: 2020-12-26 17:52:41
 -->
 <template>
   <IhPage class="text-left">
@@ -92,11 +92,11 @@
             label="操作"
           >
             <template v-slot="{ row }">
-              {{$root.dictAllName(row.operation, 'PosTerminalStatus')}}
+              {{$root.dictAllName(row.operation, 'PosOperate')}}
             </template>
           </el-table-column>
           <el-table-column
-            prop="operator"
+            prop="operatorName"
             label="操作人"
           ></el-table-column>
           <el-table-column
