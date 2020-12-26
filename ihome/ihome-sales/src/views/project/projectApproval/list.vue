@@ -4,7 +4,7 @@
  * @Author: wwq
  * @Date: 2020-11-27 17:11:14
  * @LastEditors: wwq
- * @LastEditTime: 2020-12-25 20:09:39
+ * @LastEditTime: 2020-12-26 10:29:49
 -->
 <template>
   <IhPage label-width="100px">
@@ -42,10 +42,19 @@
         <el-row>
           <el-col :span="8">
             <el-form-item label="业务类型">
-              <el-input
+              <el-select
+                style="width: 100%"
                 v-model="queryPageParameters.busTypeEnum"
                 clearable
-              ></el-input>
+                placeholder="请选择"
+              >
+                <el-option
+                  v-for="item in $root.dictAllList('BusType')"
+                  :key="item.code"
+                  :label="item.name"
+                  :value="item.code"
+                ></el-option>
+              </el-select>
             </el-form-item>
           </el-col>
           <el-col :span="8">
