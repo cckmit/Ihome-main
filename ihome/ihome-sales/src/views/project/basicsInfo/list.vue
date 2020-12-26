@@ -4,7 +4,7 @@
  * @Author: wwq
  * @Date: 2020-08-13 11:40:10
  * @LastEditors: wwq
- * @LastEditTime: 2020-12-25 19:39:34
+ * @LastEditTime: 2020-12-26 18:41:49
 -->
 <template>
   <IhPage label-width="100px">
@@ -34,11 +34,15 @@
           </el-col>
           <el-col :span="8">
             <el-form-item label="周期名称">
-              <el-input
+              <IhSelectPageByCycle
+                v-model="queryPageParameters.termId"
                 clearable
-                v-model="queryPageParameters.termName"
-                placeholder="周期名称"
-              ></el-input>
+                :props="{
+                  value: 'termId',
+                  key: 'termId',
+                  lable: 'termName'
+                }"
+              ></IhSelectPageByCycle>
             </el-form-item>
           </el-col>
           <el-col :span="8">
