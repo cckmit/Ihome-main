@@ -4,7 +4,7 @@
  * @Author: wwq
  * @Date: 2020-11-27 17:17:06
  * @LastEditors: wwq
- * @LastEditTime: 2020-12-17 15:18:04
+ * @LastEditTime: 2020-12-25 19:52:33
 -->
 <template>
   <IhPage>
@@ -430,41 +430,11 @@
         </el-table-column>
       </el-table>
     </div>
-    <div
-      v-if="$route.name === 'projectApprovalAudit'"
-      class="text-left"
-    >
-      <p class="ih-info-title">审核信息</p>
-      <p class="msg-title">审核意见</p>
-      <el-input
-        class="padding-left-20"
-        style="box-sizing: border-box"
-        type="textarea"
-        :autosize="{ minRows: 5, maxRows: 10 }"
-        placeholder="请输入内容"
-        v-model="auditMsg"
-      >
-      </el-input>
-      <div class="margin-top-30 text-center">
-        <el-button
-          @click="pass(true)"
-          type="primary"
-        >通过</el-button>
-        <el-button
-          @click="pass(false)"
-          type="primary"
-        >驳回</el-button>
-      </div>
-    </div>
   </IhPage>
 </template>
 <script lang="ts">
 import { Component, Vue, Watch } from "vue-property-decorator";
-import {
-  get_term_get__termId,
-  post_term_audit,
-  post_term_reject,
-} from "@/api/project/index";
+import { get_term_get__termId } from "@/api/project/index";
 @Component({
   components: {},
 })
@@ -568,35 +538,6 @@ export default class FirstAgencyEdit extends Vue {
           })),
       };
     });
-  }
-
-  async pass(val: any) {
-    if (val) {
-      if (!this.auditMsg) {
-        this.$message.warning("请填写审核意见");
-        return;
-      } else {
-        await post_term_audit({
-          auditOption: this.auditMsg,
-          termId: this.termId,
-        });
-      }
-    } else {
-      if (!this.auditMsg) {
-        this.$message.warning("请填写驳回意见");
-        return;
-      } else {
-        await post_term_reject({
-          rejectOption: this.auditMsg,
-          termId: this.termId,
-        });
-      }
-    }
-    this.$message({
-      type: "success",
-      message: val ? "审核通过!" : "驳回成功!",
-    });
-    this.$goto({ path: `/projectApproval/list` });
   }
 }
 </script>

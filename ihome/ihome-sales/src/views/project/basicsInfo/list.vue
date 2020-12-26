@@ -4,7 +4,7 @@
  * @Author: wwq
  * @Date: 2020-08-13 11:40:10
  * @LastEditors: wwq
- * @LastEditTime: 2020-12-24 18:21:27
+ * @LastEditTime: 2020-12-25 19:39:34
 -->
 <template>
   <IhPage label-width="100px">
@@ -182,12 +182,12 @@
               </span>
               <el-dropdown-menu slot="dropdown">
                 <el-dropdown-item
-                  :class="{'ih-data-disabled': !editChange(row)}"
+                  :class="{'ih-data-disabled': row.auditEnum !== 'Draft'}"
                   @click.native.prevent="routerTo(row, 'edit')"
                   v-has="'B.SALES.PROJECT.BASICLIST.UPDATE'"
                 >编辑</el-dropdown-item>
                 <el-dropdown-item
-                  :class="{'ih-data-disabled': !editChange(row)}"
+                  :class="{'ih-data-disabled': row.auditEnum !== 'Draft'}"
                   @click.native.prevent="remove(row)"
                   v-has="'B.SALES.PROJECT.BASICLIST.DELETE'"
                 >删除</el-dropdown-item>
@@ -242,15 +242,6 @@ export default class ProjectList extends Vue {
     total: 0,
     list: [],
   };
-
-  editChange(row: any) {
-    const Draft = row.auditEnum === "Draft";
-    const roleList = (this.$root as any).userInfo.roleList.map(
-      (v: any) => v.code
-    );
-    const wenyuan = roleList.includes("RPlatformClerk");
-    return Draft && wenyuan;
-  }
 
   auditChange(row: any) {
     const Conduct = row.auditEnum === "Conduct";

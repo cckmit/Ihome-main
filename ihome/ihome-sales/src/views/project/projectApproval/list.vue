@@ -4,7 +4,7 @@
  * @Author: wwq
  * @Date: 2020-11-27 17:11:14
  * @LastEditors: wwq
- * @LastEditTime: 2020-12-25 15:01:18
+ * @LastEditTime: 2020-12-26 10:29:49
 -->
 <template>
   <IhPage label-width="100px">
@@ -42,10 +42,19 @@
         <el-row>
           <el-col :span="8">
             <el-form-item label="业务类型">
-              <el-input
+              <el-select
+                style="width: 100%"
                 v-model="queryPageParameters.busTypeEnum"
                 clearable
-              ></el-input>
+                placeholder="请选择"
+              >
+                <el-option
+                  v-for="item in $root.dictAllList('BusType')"
+                  :key="item.code"
+                  :label="item.name"
+                  :value="item.code"
+                ></el-option>
+              </el-select>
             </el-form-item>
           </el-col>
           <el-col :span="8">
@@ -192,11 +201,12 @@
                   v-has="'B.SALES.PROJECT.TERMLIST.DELETE'"
                 >删除</el-dropdown-item>
                 <el-dropdown-item
+                  :class="{'ih-data-disabled': row.auditEnum !== 'ConstractAdopt'}"
                   @click.native.prevent="routeTo(row, 'apply')"
                   v-has="'B.SALES.PROJECT.TERMLIST.APPLYDISTRIBUT'"
                 >申领分销协议</el-dropdown-item>
                 <el-dropdown-item
-                  :class="{'ih-data-disabled': !replenishChange(row)}"
+                  :class="{'ih-data-disabled': row.auditEnum !== 'ConstractAdopt'}"
                   @click.native.prevent="routeTo(row, 'replenish')"
                   v-has="'B.SALES.PROJECT.TERMLIST.EDITDISTRIBUT'"
                 >发起补充协议</el-dropdown-item>
@@ -228,7 +238,11 @@
 </template>
 <script lang="ts">
 import { Component, Vue } from "vue-property-decorator";
-import { post_term_getList, post_term_del__termId } from "@/api/project/index";
+import {
+  post_term_getList,
+  post_term_del__termId,
+  get_term_applyTerm__termId,
+} from "@/api/project/index";
 import PaginationMixin from "@/mixins/pagination";
 import Add from "./dialog/basicInfo-dialog/add.vue";
 
@@ -255,44 +269,19 @@ export default class ProjectApproval extends Vue {
   };
   dialogVisible = false;
 
-  get roleList() {
-    return (this.$root as any).userInfo.roleList.map((v: any) => v.code);
-  }
-
   // 权限控制
   editChange(row: any) {
     const Draft = row.auditEnum === "Draft";
     const TermReject = row.auditEnum === "TermReject";
     const ConstractAdopt = row.auditEnum === "ConstractAdopt";
     const ConstractReject = row.auditEnum === "ConstractReject";
-    const wenyuan = this.roleList.includes("RPlatformClerk");
-    const fen = this.roleList.includes("RBusinessManagement");
-    const zong = this.roleList.includes("RHeadBusinessManagement");
-    return (
-      (Draft && wenyuan) ||
-      (TermReject && wenyuan) ||
-      (ConstractAdopt && (fen || zong)) ||
-      (ConstractReject && wenyuan)
-    );
+    return Draft || TermReject || ConstractAdopt || ConstractReject;
   }
 
   delChange(row: any) {
     const Draft = row.auditEnum === "Draft";
     const TermReject = row.auditEnum === "TermReject";
-    const wenyuan = this.roleList.includes("RPlatformClerk");
-    return (Draft && wenyuan) || (TermReject && wenyuan);
-  }
-
-  applyChange(row: any) {
-    const ConstractAdopt = row.auditEnum === "ConstractAdopt";
-    const qudao = this.roleList.includes("RChannelStaff");
-    return ConstractAdopt && qudao;
-  }
-
-  replenishChange(row: any) {
-    const ConstractAdopt = row.auditEnum === "ConstractAdopt";
-    const wenyuan = this.roleList.includes("RPlatformClerk");
-    return ConstractAdopt && wenyuan;
+    return Draft || TermReject;
   }
 
   get emptyText() {
@@ -359,6 +348,17 @@ export default class ProjectApproval extends Vue {
       path: `/projectApproval/edit`,
       query: {
         id: data.termId,
+      },
+    });
+  }
+  async replenish(data: any) {
+    const item = await get_term_applyTerm__termId({
+      termId: data.termId,
+    });
+    this.$router.push({
+      path: `/projectApproval/edit`,
+      query: {
+        id: item.toString(),
       },
     });
   }
