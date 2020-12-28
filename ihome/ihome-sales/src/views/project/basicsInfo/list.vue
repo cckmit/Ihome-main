@@ -4,7 +4,7 @@
  * @Author: wwq
  * @Date: 2020-08-13 11:40:10
  * @LastEditors: wwq
- * @LastEditTime: 2020-12-25 19:39:34
+ * @LastEditTime: 2020-12-28 10:39:39
 -->
 <template>
   <IhPage label-width="100px">
@@ -34,11 +34,15 @@
           </el-col>
           <el-col :span="8">
             <el-form-item label="周期名称">
-              <el-input
+              <IhSelectPageByCycle
+                v-model="queryPageParameters.termId"
                 clearable
-                v-model="queryPageParameters.termName"
-                placeholder="周期名称"
-              ></el-input>
+                :props="{
+                  value: 'termId',
+                  key: 'termId',
+                  lable: 'termName'
+                }"
+              ></IhSelectPageByCycle>
             </el-form-item>
           </el-col>
           <el-col :span="8">
@@ -60,7 +64,7 @@
                 class="width--100"
               >
                 <el-option
-                  v-for="item in $root.dictAllList('ProAudit')"
+                  v-for="item in $root.dictAllList('BusType')"
                   :key="item.code"
                   :label="item.name"
                   :value="item.code"
@@ -77,7 +81,7 @@
                 class="width--100"
               >
                 <el-option
-                  v-for="item in $root.dictAllList('Audit')"
+                  v-for="item in $root.dictAllList('ProAudit')"
                   :key="item.code"
                   :label="item.name"
                   :value="item.code"

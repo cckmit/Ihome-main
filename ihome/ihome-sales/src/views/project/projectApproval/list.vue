@@ -4,7 +4,7 @@
  * @Author: wwq
  * @Date: 2020-11-27 17:11:14
  * @LastEditors: wwq
- * @LastEditTime: 2020-12-26 10:29:49
+ * @LastEditTime: 2020-12-28 10:14:40
 -->
 <template>
   <IhPage label-width="100px">
@@ -19,15 +19,21 @@
               <el-input
                 v-model="queryPageParameters.proNo"
                 clearable
+                placeholder="请输入项目盘编"
               ></el-input>
             </el-form-item>
           </el-col>
           <el-col :span="8">
             <el-form-item label="项目名称">
-              <el-input
-                v-model="queryPageParameters.proName"
+              <IhSelectPageByProject
+                v-model="queryPageParameters.proId"
                 clearable
-              ></el-input>
+                :props="{
+                  value: 'proId',
+                  key: 'proId',
+                  lable: 'proName'
+                }"
+              ></IhSelectPageByProject>
             </el-form-item>
           </el-col>
           <el-col :span="8">
@@ -35,6 +41,7 @@
               <el-input
                 v-model="queryPageParameters.termName"
                 clearable
+                placeholder="请输入周期名称"
               ></el-input>
             </el-form-item>
           </el-col>
@@ -272,10 +279,13 @@ export default class ProjectApproval extends Vue {
   // 权限控制
   editChange(row: any) {
     const Draft = row.auditEnum === "Draft";
+    const TermAdopt = row.auditEnum === "TermAdopt";
     const TermReject = row.auditEnum === "TermReject";
     const ConstractAdopt = row.auditEnum === "ConstractAdopt";
     const ConstractReject = row.auditEnum === "ConstractReject";
-    return Draft || TermReject || ConstractAdopt || ConstractReject;
+    return (
+      Draft || TermAdopt || TermReject || ConstractAdopt || ConstractReject
+    );
   }
 
   delChange(row: any) {
