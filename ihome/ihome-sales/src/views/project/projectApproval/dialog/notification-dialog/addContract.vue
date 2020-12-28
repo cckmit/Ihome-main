@@ -4,7 +4,7 @@
  * @Author: wwq
  * @Date: 2020-12-02 15:37:31
  * @LastEditors: wwq
- * @LastEditTime: 2020-12-28 10:30:08
+ * @LastEditTime: 2020-12-28 12:36:12
 -->
 <template>
   <el-dialog
@@ -529,39 +529,6 @@ export default class AddContract extends Vue {
       });
       this.info.partyCompany = item.name;
       this.info.partyaAddr = item.address;
-      if (this.data?.padCommissionEnum) {
-        if (this.data?.padCommissionEnum !== "Veto") {
-          this.padCommissionEnumOptions = [
-            {
-              code: "Veto",
-              name: "否",
-            },
-            {
-              code: this.data.padCommissionEnum,
-              name: (this.$root as any).dictAllName(
-                this.data.padCommissionEnum,
-                "PadCommission"
-              ),
-            },
-          ];
-        } else {
-          this.info.padCommissionEnum = "Veto";
-          this.padCommissionEnumOptions = [
-            {
-              code: "Veto",
-              name: "否",
-            },
-          ];
-        }
-      } else {
-        this.info.padCommissionEnum = "Veto";
-        this.padCommissionEnumOptions = [
-          {
-            code: "Veto",
-            name: "否",
-          },
-        ];
-      }
       // this.info.padCommissionEnum = this.data.padCommissionEnum;
       this.info.unContractLiability = `乙方在销售过程中有下列行为之一时，甲方有权解除本协议，乙方需向甲方赔偿因此行为对甲方造成的
         所有损失（包括但不限于律师费、诉讼费、公证费、差旅费等费用），并向甲方支付实际应付代理费总额的20%作为违约金：
@@ -574,16 +541,6 @@ export default class AddContract extends Vue {
         8.1.7 擅自将甲方提供的资料及在工作过程中知悉的甲方商业秘密对外披露、提供、发布等；
         8.1.8 其他有损害甲方及其关联公司合法权益和声誉的行为。`;
     }
-  }
-
-  async getListMixin() {
-    const item = await get_distributContract_getDistri__agencyContrictId({
-      agencyContrictId: this.data.agencyContrictId,
-    });
-    this.info = {
-      ...item,
-      timeList: [item.contractStartTime, item.contractEndTime],
-    };
     if (this.data?.padCommissionEnum) {
       if (this.data?.padCommissionEnum !== "Veto") {
         this.padCommissionEnumOptions = [
@@ -617,6 +574,16 @@ export default class AddContract extends Vue {
         },
       ];
     }
+  }
+
+  async getListMixin() {
+    const item = await get_distributContract_getDistri__agencyContrictId({
+      agencyContrictId: this.data.agencyContrictId,
+    });
+    this.info = {
+      ...item,
+      timeList: [item.contractStartTime, item.contractEndTime],
+    };
   }
 
   // 预览电子版
