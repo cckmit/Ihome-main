@@ -4,7 +4,7 @@
  * @Author: ywl
  * @Date: 2020-09-25 17:34:32
  * @LastEditors: ywl
- * @LastEditTime: 2020-12-26 15:01:16
+ * @LastEditTime: 2020-12-28 20:15:14
 -->
 <template>
   <IhPage label-width="100px">
@@ -349,7 +349,7 @@
           <template v-slot="{ row }">
             <el-link
               type="primary"
-              @click="handleTo(row, '/distribution/info')"
+              @click="handleTo(row, 'info')"
             >详情</el-link>
             <el-dropdown
               trigger="click"
