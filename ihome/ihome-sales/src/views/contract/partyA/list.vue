@@ -4,7 +4,7 @@
  * @Author: ywl
  * @Date: 2020-09-25 11:53:51
  * @LastEditors: ywl
- * @LastEditTime: 2020-12-22 17:53:30
+ * @LastEditTime: 2020-12-26 10:59:15
 -->
 <template>
   <IhPage label-width="100px">
@@ -343,6 +343,7 @@
                 <el-dropdown-item
                   :class="{ 'ih-data-disabled': !removeChange(row) }"
                   @click.native.prevent="remove(row)"
+                  v-has="'B.SALES.CONTRACT.PARTYALIST.DELETE'"
                 >删除</el-dropdown-item>
                 <el-dropdown-item
                   @click.native.prevent="duplicate(row)"
@@ -386,7 +387,7 @@ import { getToken } from "ihome-common/util/cookies";
 import {
   post_contract_list,
   post_contract_duplicate__id,
-  post_contract__contactId,
+  post_contract_delete,
 } from "@/api/contract/index";
 
 @Component({
@@ -419,32 +420,32 @@ export default class PartyAList extends Vue {
   };
 
   private masterChange(row: any) {
-    const roleList = (this.$root as any).userInfo.roleList.map(
-      (v: any) => v.code
-    );
-    const isOffice = roleList.includes("ROffice");
+    // const roleList = (this.$root as any).userInfo.roleList.map(
+    //   (v: any) => v.code
+    // );
+    // const isOffice = roleList.includes("ROffice");
     const isStatus = row.approvalStatus === "OAAudited";
     // const isArchiveStatus = row.archiveStatus === "ScansAreArchived";
-    return isOffice && isStatus;
+    return isStatus;
   }
   private removeChange(row: any) {
-    const roleList = (this.$root as any).userInfo.roleList.map(
-      (v: any) => v.code
-    );
-    const isPlatform = roleList.includes("RPlatformClerk");
+    // const roleList = (this.$root as any).userInfo.roleList.map(
+    //   (v: any) => v.code
+    // );
+    // const isPlatform = roleList.includes("RPlatformClerk");
     const isStatus =
       row.approvalStatus === "Drafting" ||
       row.approvalStatus === "OAReviewRejected";
-    return isPlatform && isStatus;
+    return isStatus;
   }
   private duplicateChange(row: any) {
-    const roleList = (this.$root as any).userInfo.roleList.map(
-      (v: any) => v.code
-    );
-    const isPlatform = roleList.includes("RPlatformClerk");
+    // const roleList = (this.$root as any).userInfo.roleList.map(
+    //   (v: any) => v.code
+    // );
+    // const isPlatform = roleList.includes("RPlatformClerk");
     const isStatus = row.approvalStatus === "OAAudited";
     // const isArchiveStatus = row.archiveStatus === "ScansAreNotArchived";
-    return isPlatform && isStatus;
+    return isStatus;
   }
   private exportChange() {
     const roleList = (this.$root as any).userInfo.roleList.map(
@@ -457,7 +458,7 @@ export default class PartyAList extends Vue {
   private async remove(row: any) {
     try {
       await this.$confirm("确认删除该合同数据吗?", "提示");
-      await post_contract__contactId({ contactId: row.id });
+      await post_contract_delete([row.id]);
       // 删除list最后一条数据 返回前一页面
       if (this.resPageInfo.list.length === 1) {
         this.queryPageParameters.pageNum === 1

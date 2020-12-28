@@ -4,7 +4,7 @@
  * @Author: ywl
  * @Date: 2020-10-30 09:53:42
  * @LastEditors: wwq
- * @LastEditTime: 2020-12-11 08:58:14
+ * @LastEditTime: 2020-12-25 10:02:31
 -->
 <template>
   <el-dialog
@@ -84,6 +84,8 @@ export default class TemplateDialog extends Vue {
     this.$emit("cancel", false);
   }
   handleOption(row: any) {
+    row.city = this.resInfo.city;
+    row.departmentOrgId = this.resInfo.startDivisionId;
     this.$emit("finish", row);
   }
 

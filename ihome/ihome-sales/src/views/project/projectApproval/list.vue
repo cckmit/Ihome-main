@@ -4,7 +4,7 @@
  * @Author: wwq
  * @Date: 2020-11-27 17:11:14
  * @LastEditors: wwq
- * @LastEditTime: 2020-12-23 16:11:54
+ * @LastEditTime: 2020-12-28 10:14:40
 -->
 <template>
   <IhPage label-width="100px">
@@ -19,15 +19,21 @@
               <el-input
                 v-model="queryPageParameters.proNo"
                 clearable
+                placeholder="请输入项目盘编"
               ></el-input>
             </el-form-item>
           </el-col>
           <el-col :span="8">
             <el-form-item label="项目名称">
-              <el-input
-                v-model="queryPageParameters.proName"
+              <IhSelectPageByProject
+                v-model="queryPageParameters.proId"
                 clearable
-              ></el-input>
+                :props="{
+                  value: 'proId',
+                  key: 'proId',
+                  lable: 'proName'
+                }"
+              ></IhSelectPageByProject>
             </el-form-item>
           </el-col>
           <el-col :span="8">
@@ -35,6 +41,7 @@
               <el-input
                 v-model="queryPageParameters.termName"
                 clearable
+                placeholder="请输入周期名称"
               ></el-input>
             </el-form-item>
           </el-col>
@@ -42,10 +49,19 @@
         <el-row>
           <el-col :span="8">
             <el-form-item label="业务类型">
-              <el-input
+              <el-select
+                style="width: 100%"
                 v-model="queryPageParameters.busTypeEnum"
                 clearable
-              ></el-input>
+                placeholder="请选择"
+              >
+                <el-option
+                  v-for="item in $root.dictAllList('BusType')"
+                  :key="item.code"
+                  :label="item.name"
+                  :value="item.code"
+                ></el-option>
+              </el-select>
             </el-form-item>
           </el-col>
           <el-col :span="8">
@@ -62,7 +78,7 @@
                 placeholder="请选择"
               >
                 <el-option
-                  v-for="item in $root.dictAllList('AgencyAudit')"
+                  v-for="item in $root.dictAllList('Audit')"
                   :key="item.code"
                   :label="item.name"
                   :value="item.code"
@@ -183,25 +199,22 @@
               <el-dropdown-menu slot="dropdown">
                 <el-dropdown-item
                   @click.native.prevent="routeTo(row, 'edit')"
-                  :class="{'ih-data-disabled': row.auditEnum !== 'Draft'}"
+                  :class="{'ih-data-disabled': !editChange(row)}"
                   v-has="'B.SALES.PROJECT.TERMLIST.UPDATE'"
                 >修改</el-dropdown-item>
                 <el-dropdown-item
-                  @click.native.prevent="routeTo(row, 'audit')"
-                  :class="{'ih-data-disabled': !['Reject', 'Draft'].includes(row.auditEnum)}"
-                  v-has="'B.SALES.PROJECT.TERMLIST.VERIFY'"
-                >审核</el-dropdown-item>
-                <el-dropdown-item
                   @click.native.prevent="remove(row)"
-                  :class="{'ih-data-disabled': row.auditEnum !== 'Draft'}"
+                  :class="{'ih-data-disabled': !delChange(row)}"
                   v-has="'B.SALES.PROJECT.TERMLIST.DELETE'"
                 >删除</el-dropdown-item>
                 <el-dropdown-item
+                  :class="{'ih-data-disabled': row.auditEnum !== 'ConstractAdopt'}"
                   @click.native.prevent="routeTo(row, 'apply')"
                   v-has="'B.SALES.PROJECT.TERMLIST.APPLYDISTRIBUT'"
                 >申领分销协议</el-dropdown-item>
                 <el-dropdown-item
-                  @click.native.prevent="routeTo(row, 'edit')"
+                  :class="{'ih-data-disabled': row.auditEnum !== 'ConstractAdopt'}"
+                  @click.native.prevent="routeTo(row, 'replenish')"
                   v-has="'B.SALES.PROJECT.TERMLIST.EDITDISTRIBUT'"
                 >发起补充协议</el-dropdown-item>
               </el-dropdown-menu>
@@ -232,7 +245,11 @@
 </template>
 <script lang="ts">
 import { Component, Vue } from "vue-property-decorator";
-import { post_term_getList, post_term_del__termId } from "@/api/project/index";
+import {
+  post_term_getList,
+  post_term_del__termId,
+  get_term_applyTerm__termId,
+} from "@/api/project/index";
 import PaginationMixin from "@/mixins/pagination";
 import Add from "./dialog/basicInfo-dialog/add.vue";
 
@@ -258,6 +275,24 @@ export default class ProjectApproval extends Vue {
     list: [],
   };
   dialogVisible = false;
+
+  // 权限控制
+  editChange(row: any) {
+    const Draft = row.auditEnum === "Draft";
+    const TermAdopt = row.auditEnum === "TermAdopt";
+    const TermReject = row.auditEnum === "TermReject";
+    const ConstractAdopt = row.auditEnum === "ConstractAdopt";
+    const ConstractReject = row.auditEnum === "ConstractReject";
+    return (
+      Draft || TermAdopt || TermReject || ConstractAdopt || ConstractReject
+    );
+  }
+
+  delChange(row: any) {
+    const Draft = row.auditEnum === "Draft";
+    const TermReject = row.auditEnum === "TermReject";
+    return Draft || TermReject;
+  }
 
   get emptyText() {
     return this.resPageInfo.total === null ? "正在加载数据..." : "暂无数据";
@@ -323,6 +358,17 @@ export default class ProjectApproval extends Vue {
       path: `/projectApproval/edit`,
       query: {
         id: data.termId,
+      },
+    });
+  }
+  async replenish(data: any) {
+    const item = await get_term_applyTerm__termId({
+      termId: data.termId,
+    });
+    this.$router.push({
+      path: `/projectApproval/edit`,
+      query: {
+        id: item.toString(),
       },
     });
   }

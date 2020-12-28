@@ -4,7 +4,7 @@
  * @Author: ywl
  * @Date: 2020-12-23 11:50:23
  * @LastEditors: ywl
- * @LastEditTime: 2020-12-24 14:31:47
+ * @LastEditTime: 2020-12-28 09:35:42
 -->
 <template>
   <el-dialog
@@ -77,7 +77,7 @@
         <el-col :span="8">
           <el-form-item label="账号">
             <el-input
-              v-model="queryPageParameters.terminalNo"
+              v-model="queryPageParameters.accountNo"
               placeholder="请输入账号"
               clearable
             ></el-input>
@@ -85,6 +85,17 @@
         </el-col>
       </el-row>
     </el-form>
+    <div class="padding-left-80">
+      <el-button
+        type="primary"
+        @click="search()"
+      >查询</el-button>
+      <el-button
+        type="info"
+        @click="reset()"
+      >重置</el-button>
+    </div>
+    <br />
     <IhTableCheckBox
       :data="resPageInfo.list"
       :hasCheckedData="hasCheckedData"
@@ -118,7 +129,7 @@ export default class SelectPOS extends Vue {
     default: () => [],
   })
   hasCheckedData!: any;
-  @Prop() query!: any;
+  @Prop() params!: any;
 
   queryPageParameters: any = {
     serialNo: null,
@@ -126,6 +137,7 @@ export default class SelectPOS extends Vue {
     status: null,
     merchantNo: null,
     terminalNo: null,
+    accountNo: null,
   };
   resPageInfo: any = {
     total: null,
@@ -193,28 +205,43 @@ export default class SelectPOS extends Vue {
       this.$message.warning("请先勾选表格数据");
     }
   }
+  private reset() {
+    Object.assign(this.queryPageParameters, {
+      serialNo: null,
+      accountName: null,
+      merchantNo: null,
+      terminalNo: null,
+      accountNo: null,
+    });
+  }
+  private search() {
+    this.pageNum = 1;
+    this.getList();
+  }
   // 获取选中项 --- 最后需要获取的数据
   private selectionChange(selection: any) {
     console.log(selection, "selectionChange");
     this.selection = selection;
   }
-  private pageChange(index: number) {
-    this.pageNum = index;
+  private pageChange(val: number) {
+    this.pageNum = val;
     this.getList();
   }
   private sizeChange(val: any) {
     this.pageSize = val;
+    this.getList();
   }
   private async getList() {
     this.resPageInfo = await post_posTerminal_getList({
       ...this.queryPageParameters,
+      ...this.params,
       pageNum: this.pageNum,
       pageSize: this.pageSize,
     });
   }
 
   created() {
-    this.queryPageParameters.status = this.query.status;
+    this.queryPageParameters.status = this.params.status;
     this.getList();
   }
 }

@@ -4,7 +4,7 @@
  * @Author: ywl
  * @Date: 2020-12-01 10:39:24
  * @LastEditors: ywl
- * @LastEditTime: 2020-12-23 10:51:22
+ * @LastEditTime: 2020-12-26 15:09:55
 -->
 <template>
   <IhPage label-width="90px">
@@ -93,20 +93,19 @@
               </el-col>
               <el-col :span="8">
                 <el-form-item label="所在店组">
-                  <el-input
+                  <IhSelectPageOrg
                     v-model="queryPageParameters.groupId"
                     placeholder="请选择所在店组"
                     clearable
-                  ></el-input>
+                  ></IhSelectPageOrg>
                 </el-form-item>
               </el-col>
               <el-col :span="8">
                 <el-form-item label="当前保管人">
-                  <el-input
+                  <IhSelectPageUser
                     v-model="queryPageParameters.holder"
-                    placeholder="请输入当前保管人"
                     clearable
-                  ></el-input>
+                  ></IhSelectPageUser>
                 </el-form-item>
               </el-col>
             </el-row>
@@ -155,7 +154,7 @@
           fixed
           prop="accountName"
           label="账户名称"
-          min-width="250"
+          min-width="270"
         ></el-table-column>
         <el-table-column
           prop="accountNo"
@@ -189,15 +188,17 @@
         <el-table-column
           prop="departmentName"
           label="所在事业部"
-          min-width="165"
+          min-width="215"
         ></el-table-column>
         <el-table-column
           prop="groupName"
           label="所在店组"
+          min-width="180"
         ></el-table-column>
         <el-table-column
           prop="proName"
           label="联动项目"
+          min-width="180"
         ></el-table-column>
         <el-table-column
           label="操作"

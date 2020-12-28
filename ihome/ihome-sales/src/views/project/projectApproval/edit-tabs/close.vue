@@ -4,7 +4,7 @@
  * @Author: wwq
  * @Date: 2020-11-27 17:26:20
  * @LastEditors: wwq
- * @LastEditTime: 2020-12-12 17:58:13
+ * @LastEditTime: 2020-12-25 08:46:16
 -->
 <template>
   <div>
@@ -30,19 +30,8 @@
         ></el-table-column>
         <el-table-column
           label="中介性质"
-          prop="propertyEnum"
+          prop="agencyText"
         >
-          <template v-slot="{ row }">{{
-            $root.dictAllName(row.propertyEnum, "Property")
-          }}</template>
-        </el-table-column>
-        <el-table-column
-          label="优先级"
-          prop="priorityEnum"
-        >
-          <template v-slot="{ row }">{{
-            $root.dictAllName(row.priorityEnum, "Priority")
-          }}</template>
         </el-table-column>
         <el-table-column
           label="操作"
@@ -93,19 +82,8 @@
         ></el-table-column>
         <el-table-column
           label="甲方名称"
-          prop="propertyEnum"
+          prop="partyAText"
         >
-          <template v-slot="{ row }">{{
-            $root.dictAllName(row.propertyEnum, "Property")
-          }}</template>
-        </el-table-column>
-        <el-table-column
-          label="优先级"
-          prop="priorityEnum"
-        >
-          <template v-slot="{ row }">{{
-            $root.dictAllName(row.priorityEnum, "Priority")
-          }}</template>
         </el-table-column>
         <el-table-column
           label="操作"

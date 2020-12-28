@@ -4,7 +4,7 @@
  * @Author: wwq
  * @Date: 2020-08-13 11:40:10
  * @LastEditors: wwq
- * @LastEditTime: 2020-12-21 10:00:09
+ * @LastEditTime: 2020-12-28 10:39:39
 -->
 <template>
   <IhPage label-width="100px">
@@ -34,11 +34,15 @@
           </el-col>
           <el-col :span="8">
             <el-form-item label="周期名称">
-              <el-input
+              <IhSelectPageByCycle
+                v-model="queryPageParameters.termId"
                 clearable
-                v-model="queryPageParameters.termName"
-                placeholder="周期名称"
-              ></el-input>
+                :props="{
+                  value: 'termId',
+                  key: 'termId',
+                  lable: 'termName'
+                }"
+              ></IhSelectPageByCycle>
             </el-form-item>
           </el-col>
           <el-col :span="8">
@@ -77,7 +81,7 @@
                 class="width--100"
               >
                 <el-option
-                  v-for="item in $root.dictAllList('Audit')"
+                  v-for="item in $root.dictAllList('ProAudit')"
                   :key="item.code"
                   :label="item.name"
                   :value="item.code"
@@ -159,7 +163,7 @@
           label="项目审核状态"
         >
           <template v-slot="{ row }">{{
-            $root.dictAllName(row.auditEnum, "Audit")
+            $root.dictAllName(row.auditEnum, "ProAudit")
           }}</template>
         </el-table-column>
         <el-table-column
@@ -193,7 +197,7 @@
                 >删除</el-dropdown-item>
                 <el-dropdown-item
                   @click.native.prevent="routerTo(row, 'audit')"
-                  :class="{'ih-data-disabled': row.auditEnum !== 'Conduct'}"
+                  :class="{'ih-data-disabled': !auditChange(row)}"
                   v-has="'B.SALES.PROJECT.BASICLIST.VERIFY'"
                 >审核</el-dropdown-item>
               </el-dropdown-menu>
@@ -239,9 +243,19 @@ export default class ProjectList extends Vue {
   };
   provinceOption: any = [];
   resPageInfo: any = {
-    total: null,
+    total: 0,
     list: [],
   };
+
+  auditChange(row: any) {
+    const Conduct = row.auditEnum === "Conduct";
+    const roleList = (this.$root as any).userInfo.roleList.map(
+      (v: any) => v.code
+    );
+    const fen = roleList.includes("RBusinessManagement");
+    const zong = roleList.includes("RHeadBusinessManagement");
+    return (fen || zong) && Conduct;
+  }
 
   get emptyText() {
     return this.resPageInfo.total === null ? "正在加载数据..." : "暂无数据";
@@ -335,7 +349,7 @@ export default class ProjectList extends Vue {
   }
 
   created() {
-    this.getListMixin();
+    // this.getListMixin();
   }
 
   //获取数据

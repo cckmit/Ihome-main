@@ -171,18 +171,24 @@
         <el-row>
           <el-col :span="12">
             <el-form-item label="乙方(渠道)公司">
-              <IhSelectPageByChannel
+              <SelectPageByCondition
+                v-if="!(searchConditon.channelEnum === 'Appoint' || searchConditon.channelEnum === 'Strategic')"
                 v-model="info.channelCompanyId"
                 clearable
                 style="width: 70%"
                 placeholder="渠道商名称"
+                :params="searchConditon"
                 @changeOption="getChannelInfo"
-              ></IhSelectPageByChannel>
+              ></SelectPageByCondition>
+              <span v-else>{{info.channelCompanyName}}</span>
             </el-form-item>
           </el-col>
           <el-col :span="12">
             <el-form-item label="乙方渠道等级">
-              {{$root.dictAllName(info.channelLevel, 'ChannelLevel')}}
+              <span v-if="!(searchConditon.channelEnum === 'Appoint' || searchConditon.channelEnum === 'Strategic')">
+                {{$root.dictAllName(info.channelLevel, 'ChannelLevel')}}
+              </span>
+              <span v-else>{{$root.dictAllName(info.channelLevel, 'ChannelCustomer')}}</span>
             </el-form-item>
           </el-col>
         </el-row>
@@ -478,9 +484,10 @@ import { post_distribution_create } from "@/api/contract/index";
 import ViewContract from "./dialog/notification-dialog/viewContract.vue";
 import axios from "axios";
 import { getToken } from "ihome-common/util/cookies";
+import SelectPageByCondition from "@/components/SelectPageByCondition.vue";
 
 @Component({
-  components: { TemplateDailog, ViewContract },
+  components: { TemplateDailog, ViewContract, SelectPageByCondition },
 })
 export default class Apply extends Vue {
   dialogFormVisible = false;
@@ -516,10 +523,13 @@ export default class Apply extends Vue {
     handlerId: null,
     contractMxVOList: [],
     channelLevel: null,
+    channelCompanyId: null,
+    channelCompanyName: null,
   };
   channelAccountName = "";
   isShow = false;
   channelAccountOptions: any = [];
+  searchConditon: any = {};
 
   @Watch("info.channelEnum", { immediate: true })
   getIsShow(val: any) {
@@ -545,6 +555,11 @@ export default class Apply extends Vue {
   }
 
   templateFinish(data: any) {
+    this.searchConditon = {
+      cycleCity: data.city,
+      channelEnum: data.channelEnum,
+      departmentOrgId: data.departmentOrgId,
+    };
     this.getApplyInfo(data.agencyContrictId);
     this.dialogFormVisible = false;
     this.info.agencyId = data.agencyContrictId;
@@ -556,7 +571,24 @@ export default class Apply extends Vue {
     const item = await get_distributContract_getDistri__agencyContrictId({
       agencyContrictId: id,
     });
-    this.info = { ...this.info, ...item };
+    if (item.designatedAgencyId && item.designatedAgency) {
+      this.info = {
+        ...this.info,
+        ...item,
+        channelCompanyId: item.designatedAgencyId,
+        channelCompanyName: item.designatedAgency,
+        // channelLevel: item.channelEnum,
+      };
+      this.getChannelInfo({
+        id: item.designatedAgencyId,
+        name: item.designatedAgency,
+      });
+    } else {
+      this.info = {
+        ...this.info,
+        ...item,
+      };
+    }
   }
 
   private async getDropDown(): Promise<void> {
@@ -566,7 +598,7 @@ export default class Apply extends Vue {
     let res = await get_channel_get__id({ id: item.id });
     this.channelAccountOptions = res.channelBanks;
     this.info.channelAddress = res.address;
-    this.info.channelAccountName = "";
+    // this.info.channelAccountName = "";
     this.info.channelCompanyId = item.id;
     // 以下操作仅仅是为了获取渠道等级
     let list = this.dropOption.find((v: any) => v.termId === this.info.cycleId);
@@ -580,7 +612,6 @@ export default class Apply extends Vue {
     let channelList: any = await post_channelGrade_getList(obj);
     this.info.channelLevel = channelList?.list[0]?.channelGrade;
     this.info.organizationId = window.sessionStorage.getItem("groupId");
-    // this.info.channelLevel = "BigPlatform"; // 假数据
   }
 
   // 预览电子版

@@ -4,7 +4,7 @@
  * @Author: wwq
  * @Date: 2020-12-08 19:26:43
  * @LastEditors: wwq
- * @LastEditTime: 2020-12-23 20:52:45
+ * @LastEditTime: 2020-12-25 10:21:58
 -->
 <template>
   <el-dialog
@@ -192,6 +192,7 @@ export default class ProjectApproval extends Vue {
   async getListMixin() {
     this.queryPageParameters.exOver = this.data.exOver;
     this.queryPageParameters.proId = this.data.proId;
+    this.queryPageParameters.termId = this.data.termId;
     this.resPageInfo = await post_term_getListAccrossTerm(
       this.queryPageParameters
     );

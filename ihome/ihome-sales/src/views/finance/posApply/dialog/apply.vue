@@ -4,7 +4,7 @@
  * @Author: ywl
  * @Date: 2020-12-23 09:57:33
  * @LastEditors: ywl
- * @LastEditTime: 2020-12-24 14:48:18
+ * @LastEditTime: 2020-12-26 17:46:23
 -->
 <template>
   <el-dialog
@@ -14,7 +14,7 @@
     :close-on-press-escape="false"
     :before-close="cancel"
     width="80%"
-    :title="`POS机申领事项${isAdd ? '录入':'修改'}`"
+    :title="`POS机申请事项${isAdd ? '录入':'修改'}(${$root.dictAllName(type, 'PosItemType')})`"
     class="text-left"
     top="5vh"
   >
@@ -24,10 +24,10 @@
         :model="form"
         :rules="rules"
         ref="ruleForm"
-        label-width="90px"
+        label-width="100px"
         class="demo-ruleForm"
       >
-        <el-row>
+        <div style="overflow: hidden;">
           <el-col :span="8">
             <el-form-item
               label="事项类别"
@@ -53,12 +53,15 @@
               prop="applyUser"
             >
               <el-input
-                :value="$root.userInfo.name"
+                :value="applyUserName"
                 disabled
               ></el-input>
             </el-form-item>
           </el-col>
-          <el-col :span="8">
+          <el-col
+            :span="8"
+            v-if="type === 'Apply' || type === 'Move' || type === 'GiveBack'"
+          >
             <el-form-item
               label="店组"
               prop="groupId"
@@ -69,28 +72,29 @@
               ></IhSelectPageOrg>
             </el-form-item>
           </el-col>
-        </el-row>
-        <el-row>
           <el-col :span="8">
             <el-form-item
               label="事业部"
               prop="departmentId"
             >
-              <IhSelectPageDivision v-model="form.departmentId"></IhSelectPageDivision>
+              <IhSelectPageDivision
+                v-model="form.departmentId"
+                :disabled="type === 'Apply' || type === 'Move' || type === 'GiveBack'"
+              ></IhSelectPageDivision>
             </el-form-item>
           </el-col>
-          <el-col :span="8">
+          <el-col
+            :span="8"
+            v-if="type === 'Apply' || type === 'Move'"
+          >
             <el-form-item
               label="联动项目"
               prop="proId"
             >
-              <el-input
-                v-model="form.proId"
-                placeholder="请选择项目"
-              ></el-input>
+              <IhSelectPageByProject v-model="form.proId"></IhSelectPageByProject>
             </el-form-item>
           </el-col>
-        </el-row>
+        </div>
       </el-form>
       <p class="ih-info-title">
         <span>POS机列表</span>
@@ -103,41 +107,79 @@
       </p>
       <div class="padding-left-20">
         <br />
-        <el-table class="ih-table width--100">
+        <el-table
+          class="ih-table width--100"
+          :data="posTerminal"
+        >
           <el-table-column
             label="账户名称"
             fixed
+            prop="accountName"
           ></el-table-column>
-          <el-table-column label="账号"></el-table-column>
-          <el-table-column label="产品型号"></el-table-column>
-          <el-table-column label="序列号"></el-table-column>
-          <el-table-column label="状态"></el-table-column>
+          <el-table-column
+            label="账号"
+            prop="accountNo"
+          ></el-table-column>
+          <el-table-column
+            label="产品型号"
+            prop="productModel"
+          ></el-table-column>
+          <el-table-column
+            label="序列号"
+            prop="serialNo"
+          ></el-table-column>
+          <el-table-column
+            label="状态"
+            width="120"
+          >
+            <template v-slot="{ row }">
+              {{$root.dictAllName(row.status, 'PosTerminalStatus')}}
+            </template>
+          </el-table-column>
           <el-table-column
             label="操作"
             fixed="right"
-          ></el-table-column>
+            width="80"
+          >
+            <template v-slot="{ $index }">
+              <el-link
+                type="danger"
+                @click="remove($index)"
+              >移除</el-link>
+            </template>
+          </el-table-column>
         </el-table>
       </div>
       <p class="ih-info-title">备注</p>
       <div class="padding-left-20">
         <el-input
+          v-model="form.remark"
           type="textarea"
           placeholder="请填写备注信息"
           :rows="5"
+          maxlength="256"
+          show-word-limit
         ></el-input>
       </div>
     </div>
     <template #footer>
-      <el-button @click="cancel()">取 消</el-button>
-      <el-button type="primary">保 存</el-button>
+      <el-button
+        type="success"
+        @click="submit(0)"
+      >保 存</el-button>
+      <el-button
+        type="primary"
+        @click="submit(1)"
+      >提 交</el-button>
     </template>
     <IhDialog :show="selectVisible">
       <SelectPos
-        :query="query"
+        :hasCheckedData="form.posTerminalIds"
+        :params="params"
         @cancel="() => (selectVisible = false)"
         @finish="(list) => {
           selectVisible = false
-          form.posTerminalIds = list
+          posTerminal = list
         }"
       />
     </IhDialog>
@@ -146,7 +188,14 @@
 
 <script lang="ts">
 import { Component, Vue, Prop } from "vue-property-decorator";
+import { NoRepeatHttp } from "ihome-common/util/aop/no-repeat-http";
+import { Form as ElForm } from "element-ui";
 import SelectPos from "./selectPOS.vue";
+import { get_org_getLevelTree__id } from "../../../../api/system/index";
+import {
+  post_posApplyItem_posApply,
+  get_posApplyItem_get__id,
+} from "../../../../api/finance/index";
 
 @Component({
   components: { SelectPos },
@@ -154,9 +203,12 @@ import SelectPos from "./selectPOS.vue";
 export default class ApplyDialog extends Vue {
   @Prop({ default: true }) isAdd!: boolean;
   @Prop() type!: any;
+  @Prop() itemId?: any;
 
   private selectVisible = false;
   private dialogVisible = true;
+  private applyUserName: any = null;
+  private posTerminal: any = [];
   private form: any = {
     applyUser: null,
     departmentId: null,
@@ -164,37 +216,149 @@ export default class ApplyDialog extends Vue {
     itemType: null,
     posTerminalIds: [],
     proId: null,
+    remark: null,
   };
-  private rules: any = {};
-  private query: any = null;
+  private rules: any = {
+    itemType: [
+      { required: true, message: "事项类别不能为空", trigger: "change" },
+    ],
+    applyUser: [
+      { required: true, message: "申请人不能为空", trigger: "change" },
+    ],
+    departmentId: [
+      { required: true, message: "事业部不能为空", trigger: "change" },
+    ],
+    groupId: [
+      {
+        required:
+          this.type === "Apply" ||
+          this.type === "Move" ||
+          this.type === "GiveBack",
+        message: "店组不能为空",
+        trigger: "change",
+      },
+    ],
+    proId: [
+      {
+        required: this.type === "Apply" || this.type === "Move",
+        message: "项目不能为空",
+        trigger: "change",
+      },
+    ],
+  };
+  private params: any = null;
 
   cancel(): void {
     this.$emit("cancel", false);
   }
-  private handleChangeByGroup(val: any) {
+  @NoRepeatHttp()
+  submit(type: number) {
+    (this.$refs["ruleForm"] as ElForm).validate(async (val) => {
+      if (val) {
+        try {
+          await post_posApplyItem_posApply({
+            ...this.form,
+            posTerminalIds: this.posTerminal.map((i: any) => i.id),
+            type,
+          });
+          this.$message.success("操作成功");
+          this.$emit("finish");
+        } catch (error) {
+          console.log(error);
+        }
+      } else {
+        return;
+      }
+    });
+  }
+  private async handleChangeByGroup(val: any) {
     console.log(val);
+    if (
+      this.type === "Apply" ||
+      this.type === "Move" ||
+      this.type === "GiveBack"
+    ) {
+      const { departmentId } = await get_org_getLevelTree__id({ id: val });
+      this.form.departmentId = departmentId;
+    }
+  }
+  private remove(index: number) {
+    this.posTerminal.splice(index, 1);
   }
   private handleAddPos() {
-    console.log(this.type);
-
     switch (this.type) {
       case "Use":
         // 领用
-        this.query = {
+        this.params = {
           status: "CentralStock",
         };
         this.selectVisible = true;
         break;
-
+      case "Apply":
+        // 申领
+        if (!this.form.departmentId) {
+          this.$message.warning("请先选择店组");
+          return;
+        }
+        this.params = {
+          status: "BranchStock",
+          departmentId: this.form.departmentId,
+        };
+        this.selectVisible = true;
+        break;
+      case "Move":
+        // 调用
+        if (!this.form.departmentId) {
+          this.$message.warning("请先选择店组");
+          return;
+        }
+        this.params = {
+          status: "Using",
+          departmentId: this.form.departmentId,
+        };
+        this.selectVisible = true;
+        break;
+      case "GiveBack":
+        // 归还
+        if (!this.form.departmentId) {
+          this.$message.warning("请先选择店组");
+          return;
+        }
+        this.params = {
+          groupId: this.form.groupId,
+          holder: this.form.applyUser,
+          status: "Using",
+        };
+        this.selectVisible = true;
+        break;
+      case "Return":
+        // 退还
+        if (!this.form.departmentId) {
+          this.$message.warning("请选择事业部");
+          return;
+        }
+        this.params = {
+          departmentId: this.form.departmentId,
+          status: "BranchStock",
+        };
+        this.selectVisible = true;
+        break;
       default:
         break;
     }
   }
 
-  created() {
+  async created() {
     if (this.isAdd) {
       this.form.itemType = this.type;
       this.form.applyUser = (this.$root as any).userInfo.id;
+      this.applyUserName = (this.$root as any).userInfo.name;
+    } else {
+      let res: any = await get_posApplyItem_get__id({ id: this.itemId });
+      console.log(res);
+      Object.assign(this.form, res);
+      this.posTerminal = res.posTerminals;
+      this.applyUserName = res.applyUserName;
     }
   }
 }
