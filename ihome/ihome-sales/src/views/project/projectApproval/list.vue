@@ -4,7 +4,7 @@
  * @Author: wwq
  * @Date: 2020-11-27 17:11:14
  * @LastEditors: wwq
- * @LastEditTime: 2020-12-26 18:55:00
+ * @LastEditTime: 2020-12-28 10:14:40
 -->
 <template>
   <IhPage label-width="100px">
@@ -279,10 +279,13 @@ export default class ProjectApproval extends Vue {
   // 权限控制
   editChange(row: any) {
     const Draft = row.auditEnum === "Draft";
+    const TermAdopt = row.auditEnum === "TermAdopt";
     const TermReject = row.auditEnum === "TermReject";
     const ConstractAdopt = row.auditEnum === "ConstractAdopt";
     const ConstractReject = row.auditEnum === "ConstractReject";
-    return Draft || TermReject || ConstractAdopt || ConstractReject;
+    return (
+      Draft || TermAdopt || TermReject || ConstractAdopt || ConstractReject
+    );
   }
 
   delChange(row: any) {

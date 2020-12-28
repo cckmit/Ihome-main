@@ -4,7 +4,7 @@
  * @Author: wwq
  * @Date: 2020-12-02 15:37:31
  * @LastEditors: wwq
- * @LastEditTime: 2020-12-23 19:09:13
+ * @LastEditTime: 2020-12-28 10:30:08
 -->
 <template>
   <el-dialog
@@ -529,20 +529,30 @@ export default class AddContract extends Vue {
       });
       this.info.partyCompany = item.name;
       this.info.partyaAddr = item.address;
-      if (this.data?.padCommissionEnum !== "Veto") {
-        this.padCommissionEnumOptions = [
-          {
-            code: "Veto",
-            name: "否",
-          },
-          {
-            code: this.data.padCommissionEnum,
-            name: (this.$root as any).dictAllName(
-              this.data.padCommissionEnum,
-              "PadCommission"
-            ),
-          },
-        ];
+      if (this.data?.padCommissionEnum) {
+        if (this.data?.padCommissionEnum !== "Veto") {
+          this.padCommissionEnumOptions = [
+            {
+              code: "Veto",
+              name: "否",
+            },
+            {
+              code: this.data.padCommissionEnum,
+              name: (this.$root as any).dictAllName(
+                this.data.padCommissionEnum,
+                "PadCommission"
+              ),
+            },
+          ];
+        } else {
+          this.info.padCommissionEnum = "Veto";
+          this.padCommissionEnumOptions = [
+            {
+              code: "Veto",
+              name: "否",
+            },
+          ];
+        }
       } else {
         this.info.padCommissionEnum = "Veto";
         this.padCommissionEnumOptions = [
@@ -574,20 +584,30 @@ export default class AddContract extends Vue {
       ...item,
       timeList: [item.contractStartTime, item.contractEndTime],
     };
-    if (item.padCommissionEnum !== "Veto") {
-      this.padCommissionEnumOptions = [
-        {
-          code: "Veto",
-          name: "否",
-        },
-        {
-          code: item.padCommissionEnum,
-          name: (this.$root as any).dictAllName(
-            item.padCommissionEnum,
-            "PadCommission"
-          ),
-        },
-      ];
+    if (this.data?.padCommissionEnum) {
+      if (this.data?.padCommissionEnum !== "Veto") {
+        this.padCommissionEnumOptions = [
+          {
+            code: "Veto",
+            name: "否",
+          },
+          {
+            code: this.data.padCommissionEnum,
+            name: (this.$root as any).dictAllName(
+              this.data.padCommissionEnum,
+              "PadCommission"
+            ),
+          },
+        ];
+      } else {
+        this.info.padCommissionEnum = "Veto";
+        this.padCommissionEnumOptions = [
+          {
+            code: "Veto",
+            name: "否",
+          },
+        ];
+      }
     } else {
       this.info.padCommissionEnum = "Veto";
       this.padCommissionEnumOptions = [

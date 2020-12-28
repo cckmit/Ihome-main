@@ -4,7 +4,7 @@
  * @Author: wwq
  * @Date: 2020-12-11 15:36:42
  * @LastEditors: wwq
- * @LastEditTime: 2020-12-25 08:49:19
+ * @LastEditTime: 2020-12-28 10:24:23
 -->
 <template>
   <el-dialog
@@ -448,20 +448,29 @@ export default class PleaseEdit extends Vue {
       this.getMakingInfo();
     }
     this.getBuding();
-    if (this.data.padCommissionEnum !== "Veto") {
-      this.padCommissionEnumOptions = [
-        {
-          code: "Veto",
-          name: "否",
-        },
-        {
-          code: this.data.padCommissionEnum,
-          name: (this.$root as any).dictAllName(
-            this.data.padCommissionEnum,
-            "PadCommission"
-          ),
-        },
-      ];
+    if (this.data.padCommissionEnum) {
+      if (this.data.padCommissionEnum !== "Veto") {
+        this.padCommissionEnumOptions = [
+          {
+            code: "Veto",
+            name: "否",
+          },
+          {
+            code: this.data.padCommissionEnum,
+            name: (this.$root as any).dictAllName(
+              this.data.padCommissionEnum,
+              "PadCommission"
+            ),
+          },
+        ];
+      } else {
+        this.padCommissionEnumOptions = [
+          {
+            code: "Veto",
+            name: "否",
+          },
+        ];
+      }
     } else {
       this.padCommissionEnumOptions = [
         {
