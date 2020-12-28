@@ -4,7 +4,7 @@
  * @Author: ywl
  * @Date: 2020-12-09 19:24:59
  * @LastEditors: ywl
- * @LastEditTime: 2020-12-26 17:49:06
+ * @LastEditTime: 2020-12-28 12:01:14
 -->
 <template>
   <IhPage label-width="100px">
@@ -337,7 +337,7 @@
           </template>
           <template v-slot="{ row }">
             <div>{{row.groupName || '-'}}</div>
-            <div>{{ '-'}}</div>
+            <div>{{row.dealCode || '-'}}</div>
           </template>
         </el-table-column>
         <el-table-column width="100">
@@ -389,10 +389,22 @@
                 <i class="el-icon-arrow-down el-icon--right"></i>
               </span>
               <el-dropdown-menu slot="dropdown">
-                <el-dropdown-item @click.native.prevent="checkPay(row)">对账</el-dropdown-item>
-                <el-dropdown-item @click.native.prevent="remove(row)">删除</el-dropdown-item>
-                <el-dropdown-item @click.native.prevent="handleRele(row)">关联成交</el-dropdown-item>
-                <el-dropdown-item @click.native.prevent="relieve(row)">解除关联</el-dropdown-item>
+                <el-dropdown-item
+                  :class="{'ih-data-disabled': row.status !== 'NotCheck'}"
+                  @click.native.prevent="checkPay(row)"
+                >对账</el-dropdown-item>
+                <el-dropdown-item
+                  :class="{'ih-data-disabled': row.status !== 'NotPaid'}"
+                  @click.native.prevent="remove(row)"
+                >删除</el-dropdown-item>
+                <el-dropdown-item
+                  :class="{'ih-data-disabled': row.status !== 'Paid'}"
+                  @click.native.prevent="handleRele(row)"
+                >关联成交</el-dropdown-item>
+                <el-dropdown-item
+                  :class="{'ih-data-disabled': row.status !== 'Paid'}"
+                  @click.native.prevent="relieve(row)"
+                >解除关联</el-dropdown-item>
               </el-dropdown-menu>
             </el-dropdown>
           </template>
@@ -412,7 +424,14 @@
       ></el-pagination>
     </template>
     <IhDialog :show="dialogVisible">
-      <DealDialog @cancel="() => (dialogVisible = false)" />
+      <DealDialog
+        :id="payId"
+        @cancel="() => (dialogVisible = false)"
+        @finish="() => {
+          dialogVisible = false;
+          getListMixin();
+        }"
+      />
     </IhDialog>
   </IhPage>
 </template>
@@ -468,6 +487,7 @@ export default class ReceiptList extends Vue {
   private searchOpen = true;
   private dialogVisible = false;
   private selection: any = [];
+  private payId: any = null;
 
   private async batchRelieve() {
     if (this.selection.length) {
@@ -511,7 +531,7 @@ export default class ReceiptList extends Vue {
     }
   }
   private handleRele(row: any) {
-    console.log(row);
+    this.payId = row.id;
     this.dialogVisible = true;
   }
   private async checkPay(row: any) {

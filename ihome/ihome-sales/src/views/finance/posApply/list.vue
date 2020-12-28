@@ -4,7 +4,7 @@
  * @Author: ywl
  * @Date: 2020-12-22 19:30:19
  * @LastEditors: ywl
- * @LastEditTime: 2020-12-26 17:47:44
+ * @LastEditTime: 2020-12-28 14:50:22
 -->
 <template>
   <IhPage label-width="80px">
@@ -355,6 +355,7 @@ export default class POSApplyList extends Vue {
       case "ApplySign":
       case "MoveSign":
       case "GiveBackConfirm":
+      case "ReturnConfirm":
         await this.$confirm(
           `是否确认${(this.$root as any).dictAllName(type, "PosOperate")}?`,
           "提示"
