@@ -4,7 +4,7 @@
  * @Author: wwq
  * @Date: 2020-12-08 14:28:17
  * @LastEditors: wwq
- * @LastEditTime: 2020-12-11 09:04:50
+ * @LastEditTime: 2020-12-28 16:18:05
 -->
 <template>
   <el-dialog
@@ -467,7 +467,7 @@
 import { Component, Vue } from "vue-property-decorator";
 import {
   post_collectandsend_getAllByTerm,
-  get_collectandsend_get__packageId,
+  post_distributContract_getItemByCondition,
 } from "@/api/project/index.ts";
 import SetMealInfo from "../setMeal-dialog/info.vue";
 @Component({
@@ -497,9 +497,11 @@ export default class SetMealDialog extends Vue {
   }
   finish() {
     let arr: any = [];
-    Object.keys(this.map).forEach((i: any) => {
-      arr = arr.concat(this.map[i]);
-    });
+    if (Object.keys(this.map).length) {
+      Object.keys(this.map).forEach((i: any) => {
+        arr = arr.concat(this.map[i]);
+      });
+    }
     this.$emit("finish", arr);
   }
 
@@ -574,13 +576,15 @@ export default class SetMealDialog extends Vue {
   }
 
   async rowClick(row: any) {
-    const res = await get_collectandsend_get__packageId({
+    const res = await post_distributContract_getItemByCondition({
       packageId: row.packageId,
     });
     this.info = (this.$tool as any).deepClone(res);
-    this.info.colletionandsendMxs.forEach(
-      (i: any, n: number) => (this.map[n] = [])
-    );
+    if (this.info.colletionandsendMxs.length) {
+      this.info.colletionandsendMxs.forEach(
+        (i: any, n: number) => (this.map[n] = [])
+      );
+    }
   }
 }
 </script>

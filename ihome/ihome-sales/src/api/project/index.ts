@@ -1,6 +1,6 @@
 /* eslint-disable */
 /* 此脚本由swagger-ui的api-docs自动生成，请勿修改 */
-//2020-12-25 7:50:58 ├F10: PM┤
+//2020-12-28 12:37:46 ├F10: PM┤
 import { request } from '@/api/base'
 const basePath = "/sales-api/project"
 /**index*/
@@ -54,6 +54,10 @@ return await request.post< number,number> (basePath+'/calc/save', d)
 /**distribute*/
 export async function get_calcTermplate__termId (d?: any) {
 return await request.get<any,any>(basePath+'/calcTermplate/{termId}', { params: d })
+}
+/**其它渠道费用明细*/
+export async function post_capitalPoolFlow_detail (d?: any) {
+return await request.post< any,any> (basePath+'/capitalPoolFlow/detail', d)
 }
 /**立項資金池操作*/
 export async function post_capitalPoolFlow_poolOpera (d?: any) {
@@ -150,6 +154,14 @@ return await request.post< DistributContractMxVO[],DistributContractMxVO[]> (bas
 /**中介分销合同-查看详情*/
 export async function get_distributContract_getDistri__agencyContrictId (d?: any) {
 return await request.get<DistributContractVO,DistributContractVO>(basePath+'/distributContract/getDistri/{agencyContrictId}', { params: d })
+}
+/**查询立项所属的优惠告知书*/
+export async function get_distributContract_getDistributs__termId (d?: any) {
+return await request.get<PreferentialMxVO[],PreferentialMxVO[]>(basePath+'/distributContract/getDistributs/{termId}', { params: d })
+}
+/**获取派发套餐详情【分销合同筛选派发明细】*/
+export async function post_distributContract_getItemByCondition (d?: any) {
+return await request.post< CollectandsendCustomerVO[],CollectandsendCustomerVO[]> (basePath+'/distributContract/getItemByCondition', d)
 }
 /**中介分销合同-预览【里面】*/
 export async function post_distributContract_getPreView (d?: any) {
@@ -355,9 +367,13 @@ return await request.post< ProjectUpdateArgs,ProjectUpdateArgs> (basePath+'/proj
 export async function post_project_addParent (d?: any) {
 return await request.post< ParentProjectUpdateArgs,ParentProjectUpdateArgs> (basePath+'/project/addParent', d)
 }
-/**联动项目-审核*/
+/**联动项目-审核通过*/
 export async function post_project_audit (d?: any) {
 return await request.post< number,number> (basePath+'/project/audit', d)
+}
+/**联动项目-审核通过*/
+export async function post_project_auditSuncess (d?: any) {
+return await request.post< number,number> (basePath+'/project/auditSuncess', d)
 }
 /**创建明源项目房间*/
 export async function post_project_createMYHouse (d?: any) {
@@ -406,6 +422,10 @@ return await request.get<string,string>(basePath+'/project/getName/{id}', { para
 /**获取联动项目-父项目基础信息*/
 export async function get_project_getParent__proId (d?: any) {
 return await request.get<ParentProjectUpdateArgs,ParentProjectUpdateArgs>(basePath+'/project/getParent/{proId}', { params: d })
+}
+/**项目楼盘基础信息*/
+export async function get_project_getProBase__proId (d?: any) {
+return await request.get<ProBaseVO,ProBaseVO>(basePath+'/project/getProBase/{proId}', { params: d })
 }
 /**项目项目-客户报备*/
 export async function get_project_getProDetail__proId (d?: any) {
@@ -1108,6 +1128,29 @@ serviceFeeTotalByTotalRate: number;
 /**项目综合留存率*/
 termOverallRate: number;
 }
+/**CapitalPoolFlowDetailVo*/
+export interface CapitalPoolFlowDetailVo {
+/**操作时间(yyyy-MM-dd HH:mm:ss)*/
+createTime: string;
+/**成交报告编号*/
+dealCode: string;
+/**周期所属事业部*/
+departmentName: string;
+/**使用的其他渠道费用归属项目*/
+otherProName: string;
+/**使用的其他渠道费用归属周期*/
+otherTermName: string;
+/**产生/使用 其他渠道费金额*/
+postAmount: number;
+/**使用类别 Samecycle、Interycle、Interproject*/
+postCategory: string;
+/**周期所属项目*/
+proName: string;
+/**周期所属店组*/
+shopGroup: string;
+/**成交周期*/
+termName: string;
+}
 /**CapitalPoolFlowOperaVO*/
 export interface CapitalPoolFlowOperaVO {
 /**(必填)成交ID*/
@@ -1118,6 +1161,21 @@ dealTeamId: number;
 postAmount: number;
 /**来源(feecost成交服务费、activecost活动经费)(Feecost-成交服务费、Activecost-活动经费)*/
 sce: string;
+}
+/**CapitalPoolFlowQueryVO*/
+export interface CapitalPoolFlowQueryVO {
+/**记录时间(yyyy-MM-dd HH:mm:ss)*/
+createTimeBegin: string;
+/**记录时间(yyyy-MM-dd HH:mm:ss)*/
+createTimeEnd: string;
+/**(必填)当前页*/
+pageNum: number;
+/**(必填)每页条数*/
+pageSize: number;
+/**项目名称*/
+proName: string;
+/**周期名称*/
+termName: string;
 }
 /**CollectPackageVo*/
 export interface CollectPackageVo {
@@ -1625,6 +1683,21 @@ padCommissionEnum: string;
 /**立项ID*/
 termId: number;
 }
+/**DistributContractConditionChooseVo*/
+export interface DistributContractConditionChooseVo {
+/**渠道类型(成交方式)(BigPlatform-大平台、Big-大型中介/一级平台、Middle-中型中介/二级平台、Small-小型中介、Appoint-指定中介行、Strategic-战略合作方)*/
+channelEnum: string;
+/**成交客户ID*/
+consumerId: number;
+/**客户名称*/
+consumerName: string;
+/**收派ID*/
+packageId: number;
+/**是否垫佣  Veto("否"),Tree("3个月"),Six("6个月"),Nine("9个月"),MoreTen("10个月以上");(Veto-否、One-1个月、Two-2个月、Three-3个月、FOUR-4个月、Five-5个月、Six-6个月、Seven-7个月、Eight-8个月、Nine-9个月、Ten-10个月、Eleven-11个月、Twelve-12个月)*/
+padCommissionEnum: string;
+/**立项ID*/
+termId: number;
+}
 /**DistributContractConditionVo*/
 export interface DistributContractConditionVo {
 /**渠道类型(成交方式)(BigPlatform-大平台、Big-大型中介/一级平台、Middle-中型中介/二级平台、Small-小型中介、Appoint-指定中介行、Strategic-战略合作方)*/
@@ -1800,9 +1873,9 @@ contractStartTime: string;
 contractSubtitle: string;
 /**合同主标题*/
 contractTitle: string;
-/**成交确认人,从甲方合同带过来*/
+/**负责人*/
 dealMan: string;
-/**负责人联系电话,从甲方合同带过来*/
+/**负责人联系电话*/
 dealTel: string;
 /**指定中介行*/
 designatedAgency: string;
@@ -1843,6 +1916,8 @@ proId: number;
 proName: string;
 /**启动事业部ID[区域]*/
 startDivisionId: number;
+/**启动事业部名称[区域]*/
+startDivisionName: string;
 /**周期结束时间(yyyy-MM-dd)*/
 termEnd: string;
 /**周期名称*/
@@ -2545,6 +2620,39 @@ premiumReceived: number;
 /**立项ID*/
 termId: number;
 }
+/**ProBaseVO*/
+export interface ProBaseVO {
+/**审核状态   CONDUCT-审核中 ADOPT-审核通过 REJECT-审核驳回(Draft-草稿、Conduct-审核中、Adopt-审核通过、Reject-审核驳回)*/
+auditEnum: string;
+/**明源楼盘ID*/
+buildingGuid: string;
+/**明源楼盘父ID*/
+buildingParentGuid: string;
+/**市*/
+city: string;
+/**开发商ID*/
+developerId: number;
+/**区*/
+district: string;
+/**是否市场化*/
+exMarket: number;
+/**是否明远源*/
+exMinyuan: number;
+/**父项目ID*/
+parentId: number;
+/**项目地址*/
+proAddr: string;
+/**id*/
+proId: number;
+/**项目推广名*/
+proName: string;
+/**项目编号*/
+proNo: string;
+/**项目备案名*/
+proRecord: string;
+/**省*/
+province: string;
+}
 /**ProTermVO*/
 export interface ProTermVO {
 /**突破标准线期数*/
@@ -2695,12 +2803,16 @@ district: string;
 pageNum: number;
 /**(必填)每页条数*/
 pageSize: number;
+/**项目id*/
+proId: number;
 /**项目名称*/
 proName: string;
 /**项目编号*/
 proNo: string;
 /**省*/
 province: string;
+/**周期Id*/
+termId: number;
 /**周期名称 合作项目名称(项目推广名)+周期时间*/
 termName: string;
 }
@@ -3833,12 +3945,16 @@ district: string;
 pageNum: number;
 /**(必填)每页条数*/
 pageSize: number;
+/**项目Id*/
+proId: number;
 /**项目推广名*/
 proName: string;
 /**项目编号*/
 proNo: string;
 /**省*/
 province: string;
+/**立项ID*/
+termId: number;
 /**周期名称 合作项目名称(项目推广名)+周期时间*/
 termName: string;
 }
