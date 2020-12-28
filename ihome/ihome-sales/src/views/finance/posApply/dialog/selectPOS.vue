@@ -4,7 +4,7 @@
  * @Author: ywl
  * @Date: 2020-12-23 11:50:23
  * @LastEditors: ywl
- * @LastEditTime: 2020-12-26 15:17:42
+ * @LastEditTime: 2020-12-28 09:35:42
 -->
 <template>
   <el-dialog
@@ -90,7 +90,10 @@
         type="primary"
         @click="search()"
       >查询</el-button>
-      <el-button type="info">重置</el-button>
+      <el-button
+        type="info"
+        @click="reset()"
+      >重置</el-button>
     </div>
     <br />
     <IhTableCheckBox

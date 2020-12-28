@@ -4,7 +4,7 @@
  * @Author: ywl
  * @Date: 2020-12-22 20:57:20
  * @LastEditors: ywl
- * @LastEditTime: 2020-12-26 17:46:49
+ * @LastEditTime: 2020-12-28 09:38:17
 -->
 <template>
   <IhPage class="text-left">
@@ -95,7 +95,7 @@
             prop="result"
           >
             <template v-slot="{ row }">
-              {{ row.result ? `${row.result === 'Poss' ? '通过' : '不通过'}` : '' }}
+              {{ row.result ? `${row.result === 'Pass' ? '通过' : '不通过'}` : '' }}
             </template>
           </el-table-column>
           <el-table-column
