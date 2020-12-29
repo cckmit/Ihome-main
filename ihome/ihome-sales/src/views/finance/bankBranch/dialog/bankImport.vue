@@ -4,7 +4,7 @@
  * @Author: ywl
  * @Date: 2020-12-28 15:05:47
  * @LastEditors: ywl
- * @LastEditTime: 2020-12-28 15:55:16
+ * @LastEditTime: 2020-12-28 16:21:52
 -->
 <template>
   <el-dialog
@@ -48,17 +48,25 @@ import { Component, Vue } from "vue-property-decorator";
 import axios from "axios";
 import { getToken } from "ihome-common/util/cookies";
 import { post_bankBranch_importData } from "../../../../api/finance/index";
+import { post_fileTemplate_list } from "../../../../api/sales-document-cover/index";
 
 @Component({})
 export default class BankImport extends Vue {
   dialogVisible = true;
   fileList: any = [];
 
-  private download() {
+  private async download() {
     const token: any = getToken();
+    let { list } = await post_fileTemplate_list({
+      moduleName: "Finance",
+      pageNum: 1,
+      pageSize: 10,
+      templateName: "全国开户网点.xlsx",
+    });
+    const fileId = list[0].fileId;
     axios({
       method: "GET",
-      url: `/sales-api/sales-document-cover/file/download/${"5fe97fab4159110001b75408"}`,
+      url: `/sales-api/sales-document-cover/file/download/${fileId}`,
       xsrfHeaderName: "Authorization",
       responseType: "blob",
       headers: {
