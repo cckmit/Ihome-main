@@ -4,7 +4,7 @@
  * @Author: wwq
  * @Date: 2020-12-26 11:11:28
  * @LastEditors: wwq
- * @LastEditTime: 2020-12-26 15:01:12
+ * @LastEditTime: 2020-12-29 10:11:06
 -->
 <template>
   <IhPage label-width="100px">
@@ -40,7 +40,7 @@
                 placeholder="请选择"
               >
                 <el-option
-                  v-for="item in $root.dictAllList('CompanyStatus')"
+                  v-for="item in $root.dictAllList('PayoffStatus')"
                   :key="item.code"
                   :label="item.name"
                   :value="item.code"
@@ -179,7 +179,7 @@
           prop="status"
         >
           <template v-slot="{ row }">{{
-            $root.dictAllName(row.status, "CompanyStatus")
+            $root.dictAllName(row.status, "PayoffStatus")
           }}</template>
         </el-table-column>
         <el-table-column
@@ -370,7 +370,7 @@ export default class PayoffList extends Vue {
 
   routeTo(row: any, where: string) {
     this.$router.push({
-      path: `/developers/${where}`,
+      path: `/payoff/${where}`,
       query: {
         id: row.id,
       },
@@ -389,6 +389,10 @@ export default class PayoffList extends Vue {
   }
 
   search() {
+    if (this.queryPageParameters.timeList.length) {
+      this.queryPageParameters.beginMakerTime = this.queryPageParameters.timeList[0];
+      this.queryPageParameters.endMakerTime = this.queryPageParameters.timeList[1];
+    }
     this.queryPageParameters.pageNum = 1;
     this.getListMixin();
   }

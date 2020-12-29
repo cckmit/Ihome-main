@@ -4,7 +4,7 @@
  * @Author: wwq
  * @Date: 2020-12-26 11:11:23
  * @LastEditors: wwq
- * @LastEditTime: 2020-12-26 18:14:06
+ * @LastEditTime: 2020-12-29 17:54:28
 -->
 <template>
   <ih-page>
@@ -49,6 +49,8 @@
               <IhSelectPageByChannel
                 placeholder="请选择渠道商"
                 v-model="info.agencyId"
+                :search-name="info.agencyName"
+                @changeOption="getChannelInfo"
               ></IhSelectPageByChannel>
             </el-form-item>
           </el-col>
@@ -66,10 +68,10 @@
                 class="width--100"
               >
                 <el-option
-                  v-for="item in $root.dictAllList('ChannelCompanyType')"
-                  :key="item.code"
-                  :label="item.name"
-                  :value="item.code"
+                  v-for="item in channelAccountOptions"
+                  :key="item.id"
+                  :label="item.accountName"
+                  :value="item.id"
                 ></el-option>
               </el-select>
             </el-form-item>
@@ -87,7 +89,7 @@
                 class="width--100"
               >
                 <el-option
-                  v-for="item in $root.dictAllList('ChannelCompanyType')"
+                  v-for="item in $root.dictAllList('InvoiceType')"
                   :key="item.code"
                   :label="item.name"
                   :value="item.code"
@@ -104,6 +106,7 @@
                 v-model="info.taxRate"
                 clearable
                 placeholder="请选择发票税率"
+                class="width--100"
               >
                 <el-option
                   v-for="item in $root.dictAllList('ChannelCompanyType')"
@@ -155,21 +158,26 @@
       <div class="text-left margin-left-20 zhouqi">
         <div>归属周期</div>
         <el-radio-group
-          v-model="radio1"
+          v-model="radio"
           class="margin-left-20"
+          @change="radioChange"
         >
-          <el-radio-button label="上海"></el-radio-button>
-          <el-radio-button label="北京"></el-radio-button>
-          <el-radio-button label="广州"></el-radio-button>
-          <el-radio-button label="深圳"></el-radio-button>
+          <template v-for="(item, i) in radioList">
+            <el-radio-button
+              :label="item.value"
+              :key="i"
+            >{{item.label}}</el-radio-button>
+          </template>
         </el-radio-group>
       </div>
       <br />
       <div class="padding-left-20">
         <el-table
           class="ih-table"
-          :data="info.payApplyDetailList"
+          :data="showTable"
           style="width: 100%"
+          show-summary
+          :summary-method="getSummaries"
         >
           <el-table-column
             type="index"
@@ -178,24 +186,43 @@
           ></el-table-column>
           <el-table-column
             label="成交信息"
-            width="200"
+            width="250"
+            prop="1"
           >
             <template v-slot="{ row }">
-              <div>客户姓名: {{row.customer}}</div>
-              <div>成交编号: {{row.dealCode}}</div>
-              <div>地址: {{row.address}}</div>
-              <div>业务模式: {{$root.dictAllName(row.busModel, 'busModel')}}</div>
+              <div
+                class="text-ellipsis"
+                :title="row.customer"
+              >客户姓名: {{row.customer}}</div>
+              <div
+                class="text-ellipsis"
+                :title="row.dealCode"
+              >成交编号: {{row.dealCode}}</div>
+              <div
+                class="text-ellipsis"
+                :title="row.address"
+              >地址: {{row.address}}</div>
+              <div
+                class="text-ellipsis"
+                :title="$root.dictAllName(row.busModel, 'BusinessModel')"
+              >业务模式: {{$root.dictAllName(row.busModel, 'BusinessModel')}}</div>
             </template>
           </el-table-column>
           <el-table-column
             label="周期合同信息"
-            prop="contactNum"
-            width="200"
+            width="250"
+            prop="2"
           >
             <template v-slot="{ row }">
-              <div>周期名称: {{row.customer}}</div>
-              <div>是否垫佣: {{$root.dictAllName(row.isMat, 'YesOrNoType')}}</div>
-              <div>分销协议编号: {{row.contNo}}</div>
+              <div
+                class="text-ellipsis"
+                :title="row.cycleName"
+              >周期名称: {{row.cycleName}}</div>
+              <div class="text-ellipsis">是否垫佣: {{$root.dictAllName(row.isMat, 'YesOrNoType')}}</div>
+              <div
+                class="text-ellipsis"
+                :title="row.contNo"
+              >分销协议编号: {{row.contNo}}</div>
             </template>
           </el-table-column>
           <el-table-column
@@ -205,10 +232,12 @@
           <el-table-column
             label="签约日期"
             prop="signDate"
+            width="150"
           ></el-table-column>
           <el-table-column
             label="服务费情况"
             width="150"
+            prop="5"
           >
             <template v-slot="{ row }">
               <div>应收: {{row.serReceiveFees}}</div>
@@ -219,6 +248,7 @@
           <el-table-column
             label="代理费情况"
             width="150"
+            prop="6"
           >
             <template v-slot="{ row }">
               <div>应收: {{row.ageReceiveFees}}</div>
@@ -229,6 +259,7 @@
           <el-table-column
             label="拆佣金额"
             width="150"
+            prop="7"
           >
             <template v-slot="{ row }">
               <div>服务费: {{row.serCommFees}}</div>
@@ -239,6 +270,7 @@
           <el-table-column
             label="已结佣付款金额"
             width="150"
+            prop="8"
           >
             <template v-slot="{ row }">
               <div>服务费: {{row.serSettledCommFees}}</div>
@@ -248,6 +280,7 @@
           <el-table-column
             label="未结佣付款金额"
             width="150"
+            prop="9"
           >
             <template v-slot="{ row }">
               <div>服务费: {{row.serUnsetCommFees}}</div>
@@ -256,7 +289,7 @@
           </el-table-column>
           <el-table-column
             label="本次付款金额"
-            prop="email"
+            prop="10"
             width="200"
           >
             <template v-slot="{ row }">
@@ -287,6 +320,7 @@
           <el-table-column
             label="不含税金额"
             width="150"
+            prop="11"
           >
             <template v-slot="{ row }">
               <div>不含税金额: {{row.noTaxAmount}}</div>
@@ -296,6 +330,7 @@
           <el-table-column
             label="付款限额"
             width="150"
+            prop="12"
           >
             <template v-slot="{ row }">
               <div>服务费: {{row.serLimitFees}}</div>
@@ -315,7 +350,7 @@
                 style="width: 70%"
               >
                 <el-option
-                  v-for="item in $root.dictAllList('deductType')"
+                  v-for="item in $root.dictAllList('DeductStatus')"
                   :key="item.code"
                   :label="item.name"
                   :value="item.code"
@@ -326,6 +361,7 @@
           <el-table-column
             label="本次应扣"
             width="150"
+            prop="14"
           >
             <template v-slot="{ row }">
               <el-input
@@ -349,6 +385,7 @@
             <template v-slot="{ $index }">
               <el-button
                 type="danger"
+                size="small"
                 @click="delContacts($index)"
               > 移除
               </el-button>
@@ -362,44 +399,45 @@
       <div class="padding-left-20">
         <el-table
           class="ih-table"
-          :data="info.payDeductDetailList"
+          :data="info.paySummaryList"
           style="width: 100%"
+          show-summary
         >
           <el-table-column
             label="周期名称"
-            prop="name"
+            prop="cycleName"
           ></el-table-column>
           <el-table-column
             label="所属项目"
-            prop="number"
+            prop="projectName"
           ></el-table-column>
           <el-table-column
             label="累计结佣次数"
-            prop="bank"
+            prop="num"
           ></el-table-column>
           <el-table-column
             label="历史累计发生金额"
-            prop="type"
+            prop="historyTotalPayFees"
           ></el-table-column>
           <el-table-column
             label="历史累计扣除金额"
-            prop="type"
+            prop="historyTotalPdeductFees"
           ></el-table-column>
           <el-table-column
             label="本期实际付款金额"
-            prop="type"
+            prop="actualAmount"
           ></el-table-column>
           <el-table-column
             label="本期扣除金额"
-            prop="type"
+            prop="deductAmount"
           ></el-table-column>
           <el-table-column
             label="累计发生金额（含本期）"
-            prop="type"
+            prop="totalPayFees"
           ></el-table-column>
           <el-table-column
             label="累计扣除金额（含本期）"
-            prop="type"
+            prop="totalPdeductFees"
           ></el-table-column>
         </el-table>
       </div>
@@ -410,6 +448,7 @@
           class="ih-table"
           :data="info.costApportionList"
           style="width: 100%"
+          show-summary
         >
           <el-table-column
             label="周期名称"
@@ -561,37 +600,28 @@
         <el-button @click="cancel">取消</el-button>
       </div>
     </template>
-    <ih-dialog
-      :show="contactsDialogVisible"
-      desc="联系人信息"
-    >
-      <Contacts
+    <ih-dialog :show="contactsDialogVisible">
+      <Obligation
         :data="contactsData"
         @cancel="() => (contactsDialogVisible = false)"
-        @finish="
-          (data) => {
-            contactsDialogVisible = false;
-            contactsFinish(data);
-          }
-        "
+        @finish=" (data) => contactsFinish(data)"
       />
     </ih-dialog>
   </ih-page>
 </template>
 <script lang="ts">
-import { Component, Vue } from "vue-property-decorator";
-import {
-  get_company_get__id,
-  post_company_add,
-  post_company_updateDraft,
-  post_company_update,
-} from "@/api/developer/index";
+import { Component, Vue, Watch } from "vue-property-decorator";
+import { get_payApply_get__id } from "@/api/payoff/index";
+import { get_channel_get__id } from "@/api/channel/index";
 import { Form as ElForm } from "element-ui";
+import Obligation from "./dialog/obligation.vue";
 
 @Component({
-  components: {},
+  components: {
+    Obligation,
+  },
 })
-export default class Edit extends Vue {
+export default class PayoffEdit extends Vue {
   private fileList: Array<object> = [];
   info: any = {
     applyCode: null,
@@ -606,18 +636,17 @@ export default class Edit extends Vue {
     payDeductDetailList: [{}],
     costApportionList: [{}],
     documentList: [{}],
+    paySummaryList: [{}],
   };
-  radio1: any = "";
+  channelAccountOptions: any = [];
+  showTable: any = [];
+  radio: any = null;
+  radioList: any = [];
   fileListType: any = [];
   submitFile: any = {};
-  accountData: any = {};
   contactsData: any = {};
-  contactsDialogType: any;
   contactsIndex: any;
-  accountDialogType: any;
-  accountIndex: any;
   contactsDialogVisible = false;
-  accountDialogVisible = false;
 
   private rules: any = {
     name: [{ required: true, message: "请填写名称", trigger: "change" }],
@@ -626,30 +655,42 @@ export default class Edit extends Vue {
     ],
     shortName: [{ required: true, message: "请填写简称", trigger: "change" }],
     type: [{ required: true, message: "请选择类型", trigger: "change" }],
-    legalPersonId: [
-      { required: true, message: "请填写法人身份证号码", trigger: "change" },
-      {
-        pattern: /(^[1-9]\d{5}(18|19|([23]\d))\d{2}((0[1-9])|(10|11|12))(([0-2][1-9])|10|20|30|31)\d{3}[0-9Xx]$)|(^[1-9]\d{5}\d{2}((0[1-9])|(10|11|12))(([0-2][1-9])|10|20|30|31)\d{2}$)/,
-        message: "证件号码格式有误！",
-        trigger: "change",
-      },
-    ],
     setupTime: [
       { required: true, message: "请选择成立日期", trigger: "change" },
     ],
     capital: [{ required: true, message: "请填写注册资本", trigger: "change" }],
-    provinceOption: [
-      { required: true, message: "请选择省市区", trigger: "change" },
-    ],
     address: [{ required: true, message: "请填写住所", trigger: "change" }],
     legalPerson: [
       { required: true, message: "请填法定代表人", trigger: "change" },
     ],
   };
 
+  @Watch("info.payApplyDetailList")
+  getPayApplyDetailList(val: any) {
+    let obj: any = {};
+    let arr: any = val.map((v: any) => ({
+      label: v.cycleName,
+      value: v.cycleId,
+    }));
+    this.radioList = arr.reduce((preVal: any, curVal: any) => {
+      obj[curVal.value] ? "" : (obj[curVal.value] = preVal.push(curVal));
+      return preVal;
+    }, []);
+    this.radio = this.radioList[0].value;
+    this.showTable = this.info.payApplyDetailList.filter(
+      (v: any) => v.cycleId === this.radio
+    );
+  }
+
   searchOpen = true;
-  private get developerId() {
+  private get payoffId() {
     return this.$route.query.id;
+  }
+
+  radioChange(val: any) {
+    this.showTable = this.info.payApplyDetailList.filter(
+      (v: any) => v.cycleId === val
+    );
   }
 
   cancel() {
@@ -660,20 +701,52 @@ export default class Edit extends Vue {
     this.getInfo();
   }
   async getInfo() {
-    if (this.developerId) {
-      const res = await get_company_get__id({ id: this.developerId });
-      this.info = res;
-      this.info.provinceOption = [res.province, res.city, res.county];
-      this.getFileListType(res.attachmentList);
+    if (this.payoffId) {
+      const res = await get_payApply_get__id({ id: this.payoffId });
+      this.info = { ...res };
+      this.getFileListType(res.documentList);
+      this.getChannelInfo({
+        id: res.agencyId,
+        name: res.agencyName,
+      });
+      // 假数据
+      // this.info.payApplyDetailList = [
+      //   {
+      //     cycleId: 1,
+      //     cycleName: "皮小强1",
+      //   },
+      //   {
+      //     cycleId: 2,
+      //     cycleName: "皮小强2",
+      //   },
+      //   {
+      //     cycleId: 3,
+      //     cycleName: "皮小强3",
+      //   },
+      //   {
+      //     cycleId: 4,
+      //     cycleName: "皮小强4",
+      //   },
+      //   {
+      //     cycleId: 5,
+      //     cycleName: "皮小强5",
+      //   },
+      //   {
+      //     cycleId: 6,
+      //     cycleName: "皮小强6",
+      //   },
+      //   {
+      //     cycleId: 1,
+      //     cycleName: "皮小强1",
+      //   },
+      // ];
     } else {
-      this.info.inputUserName = (this.$root as any).userInfo.name;
-      this.info.inputUser = (this.$root as any).userInfo.id;
       this.getFileListType([]);
     }
   }
 
   getFileListType(data: any) {
-    const list = (this.$root as any).dictAllList("AttachementType");
+    const list = (this.$root as any).dictAllList("PayoffFileType");
     this.fileListType = list.map((v: any) => {
       return {
         ...v,
@@ -698,18 +771,40 @@ export default class Edit extends Vue {
     this.submitFile = { ...this.submitFile, ...obj };
   }
 
-  // 联系人信息
-  addContacts() {
-    this.contactsDialogVisible = true;
-    this.contactsData = {};
-    this.contactsDialogType = "add";
+  // 合计
+  getSummaries(param: any) {
+    console.log(param);
+    const { columns, data } = param;
+    let sums: any = [];
+    columns.forEach((column: any, index: number) => {
+      if (index === 0) {
+        sums[index] = "合计";
+        return;
+      }
+      const values = data.map((item: any) => Number(item[column.property]));
+      if (!values.every((value: any) => isNaN(value))) {
+        sums[index] = values.reduce((prev: number, curr: number) => {
+          const value = Number(curr);
+          if (!isNaN(value)) {
+            return prev + curr;
+          } else {
+            return prev;
+          }
+        }, 0);
+      } else {
+        sums[index] = "--";
+      }
+    });
+    return sums;
   }
 
-  editContacts(row: any, index: number) {
-    this.contactsData = row;
-    this.contactsIndex = index;
-    this.contactsDialogType = "edit";
-    this.contactsDialogVisible = true;
+  addContacts() {
+    if (this.info.agencyId) {
+      this.contactsDialogVisible = true;
+      this.contactsData.agencyId = this.info.agencyId;
+    } else {
+      this.$message.warning("请选择渠道商");
+    }
   }
 
   async delContacts(index: number) {
@@ -726,54 +821,20 @@ export default class Edit extends Vue {
   }
 
   contactsFinish(data: any) {
-    if (this.contactsDialogType === "add") {
-      this.info.contactList.push(data);
-    } else {
-      this.$set(this.info.contactList, this.contactsIndex, data);
-    }
+    console.log(data);
+    // this.info.contactList.push(data);
+    // this.$set(this.info.contactList, this.contactsIndex, data);
   }
 
-  //账户信息
-  addAccount() {
-    this.accountDialogVisible = true;
-    this.accountData = {};
-    this.accountDialogType = "add";
-  }
-
-  editAccount(row: any, index: number) {
-    this.accountData = row;
-    this.contactsIndex = index;
-    this.accountDialogType = "edit";
-    this.accountDialogVisible = true;
-  }
-
-  async delAccount(index: number) {
-    try {
-      await this.$confirm("是否确定移除?", "提示");
-      this.info.bankList.splice(index, 1);
-      this.$message({
-        type: "success",
-        message: "移除成功!",
-      });
-    } catch (error) {
-      console.log(error);
-    }
-  }
-
-  accountFinish(data: any) {
-    if (this.accountDialogType === "add") {
-      this.info.bankList.push(data);
-    } else {
-      this.$set(this.info.bankList, this.contactsIndex, data);
-    }
+  async getChannelInfo(item: any) {
+    let res = await get_channel_get__id({ id: item.id });
+    this.channelAccountOptions = res.channelBanks;
+    this.info.receiveAccount = "";
   }
 
   submit(val: string) {
     (this.$refs["form"] as ElForm).validate(async (v: any) => {
       if (v) {
-        this.info.province = this.info.provinceOption[0];
-        this.info.city = this.info.provinceOption[1];
-        this.info.county = this.info.provinceOption[2];
         this.info.status = val;
         // 校验提示
         let arr: any = [];
@@ -817,13 +878,13 @@ export default class Edit extends Vue {
         }
         switch (this.$route.name) {
           case "developerAdd":
-            await post_company_add(this.info);
+            // await post_company_add(this.info);
             break;
           case "developerEdit":
-            await post_company_updateDraft(this.info);
+            // await post_company_updateDraft(this.info);
             break;
           case "developerChange":
-            await post_company_update(this.info);
+            // await post_company_update(this.info);
             break;
         }
         this.$goto({ path: `/developers/list` });
@@ -853,5 +914,13 @@ export default class Edit extends Vue {
   display: flex;
   flex-direction: row;
   align-items: center;
+}
+
+.text-ellipsis {
+  width: 100%;
+  display: inline-block;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
 }
 </style>

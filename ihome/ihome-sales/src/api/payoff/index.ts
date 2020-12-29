@@ -1,6 +1,6 @@
 /* eslint-disable */
 /* 此脚本由swagger-ui的api-docs自动生成，请勿修改 */
-//2020-12-26 11:49:01 ├F10: AM┤
+//2020-12-29 9:23:48 ├F10: AM┤
 import { request } from '@/api/base'
 const basePath = "/sales-api/payoff"
 /**计算成本归属*/
@@ -38,6 +38,10 @@ return await request.get<ShowPayApplyDetailVO,ShowPayApplyDetailVO>(basePath+'/p
 /**查询付款列表*/
 export async function post_payApply_getList (d?: any) {
 return await request.post< any,any> (basePath+'/payApply/getList', d)
+}
+/**非分公司财务审核*/
+export async function post_payApply_notFinanceReviewApply (d?: any) {
+return await request.post< number,number> (basePath+'/payApply/notFinanceReviewApply', d)
 }
 /**付款申请单补充附件*/
 export async function post_payApply_payApplySuppFile (d?: any) {
@@ -88,12 +92,16 @@ export async function post_payDeductDetail_update (d?: any) {
 return await request.post< boolean,boolean> (basePath+'/payDeductDetail/update', d)
 }
 /**查询付款审核日志*/
-export async function get_processRecord_getProcessRecordList (d?: any) {
-return await request.get<ProcessRecordVO[],ProcessRecordVO[]>(basePath+'/processRecord/getProcessRecordList', { params: d })
+export async function get_processRecord_getProcessRecordList__applyId (d?: any) {
+return await request.get<ProcessRecordVO[],ProcessRecordVO[]>(basePath+'/processRecord/getProcessRecordList/{applyId}', { params: d })
 }
-/**非分公司财务审核付款单*/
-export async function post_processRecord_noFinanceReviewApply (d?: any) {
-return await request.post< number,number> (basePath+'/processRecord/noFinanceReviewApply', d)
+/**获取OA审核日志*/
+export async function get_processRecord_oa_review_log__applyId (d?: any) {
+return await request.get<ProcessRecordVO[],ProcessRecordVO[]>(basePath+'/processRecord/oa/review/log/{applyId}', { params: d })
+}
+/**获取oa当前待办人*/
+export async function get_processRecord_oa_review_person__applyId (d?: any) {
+return await request.get<OaAttorneysResponse,OaAttorneysResponse>(basePath+'/processRecord/oa/review/person/{applyId}', { params: d })
 }
 /**设置已付款*/
 export async function post_processRecord_setUpPaid (d?: any) {
@@ -281,8 +289,6 @@ payApplyDetailList: PayApplyDetailAddVO[];
 export interface FinanceReviewApplyVO {
 /**付款单主体信息*/
 payApplyVO: PayApplyAddVO;
-/**(必填)本期实际支付金额*/
-actualAmount: number;
 /**(必填)审核意见*/
 auditOpinion: string;
 /**附件信息*/
@@ -292,14 +298,21 @@ payApplyDetailList: PayApplyDetailAddVO[];
 /**(必填)操作状态(TemporaryStorage-暂存、Through-通过、Reject-驳回、Saving-保存)*/
 payoffApproval: string;
 }
-/**NoFinanceReviewApplyVO*/
-export interface NoFinanceReviewApplyVO {
-/**ID*/
+/**NotFinanceReviewApplyVO*/
+export interface NotFinanceReviewApplyVO {
+/**(必填)ID*/
 id: number;
-/**状态(Unconfirm-附件待确认、PlatformClerkUnreview-待平台文员审核、OneLineUnreview-待一线业务审核、BranchBusinessManageUnreview-待分公司业管审核、BranchFinanceUnreview-待分公司财务审核、OAUnreview-待OA审批、OAReviewing-OA流程审批中、ReviewPass-终审通过、CompletePay-完成支付、ReviewReject-终审驳回、ReviewEnd-审批终止)*/
-status: string;
-/**付款操作记录信息*/
-processRecord: ProcessRecordAddVO;
+/**(必填)审核意见*/
+auditOpinion: string;
+/**(必填)操作(TemporaryStorage-暂存、Through-通过、Reject-驳回、Saving-保存)*/
+payoffApproval: string;
+}
+/**OaAttorneysResponse*/
+export interface OaAttorneysResponse {
+/**名字*/
+name: string;
+/**岗位*/
+orgPostName: string;
 }
 /**PayApplyAddVO*/
 export interface PayApplyAddVO {
@@ -417,8 +430,6 @@ ageActualFees: number;
 ageCommFees: number;
 /**代理费付款限额*/
 ageLimitFees: number;
-/**代理费未结佣*/
-ageNoCommFees: number;
 /**代理费未收*/
 ageNoFees: number;
 /**代理费应收*/
@@ -471,8 +482,6 @@ serActualFees: number;
 serCommFees: number;
 /**服务费付款限额*/
 serLimitFees: number;
-/**服务费未结佣*/
-serNoCommFees: number;
 /**服务费未收*/
 serNoFees: number;
 /**服务费应收*/
@@ -926,6 +935,47 @@ updateTime: string;
 /**更新用户*/
 updateUser: number;
 }
+/**PaySummaryVO*/
+export interface PaySummaryVO {
+/**本期实际支付金额*/
+actualAmount: number;
+/**渠道商ID*/
+agencyId: number;
+/**渠道商名称*/
+agencyName: string;
+/**付款单ID*/
+applyId: number;
+/**创建时间(yyyy-MM-dd HH:mm:ss)*/
+createTime: string;
+/**创建用户*/
+createUser: number;
+/**周期ID*/
+cycleId: number;
+/**周期名称*/
+cycleName: string;
+/**本期扣除金额*/
+deductAmount: number;
+/**已删除*/
+deleted: number;
+/**历史累计发生金额*/
+historyTotalPayFees: number;
+/**历史累计扣除金额*/
+historyTotalPdeductFees: number;
+/**ID*/
+id: number;
+/**累计结佣次数*/
+num: number;
+/**所属项目*/
+projectName: string;
+/**累计发生金额(含本次)*/
+totalPayFees: number;
+/**累计扣除金额(含本次)*/
+totalPdeductFees: number;
+/**更新时间(yyyy-MM-dd HH:mm:ss)*/
+updateTime: string;
+/**更新用户*/
+updateUser: number;
+}
 /**ProcessRecordAddVO*/
 export interface ProcessRecordAddVO {
 /**操作后状态(Reject-驳回、Draft-草稿、AchieveDeclareUnconfirm-业绩申报待确认、PlatformClerkUnreview-平台文员待审核、HeadDepartUnreview-事业部负责人待审核、BranchBusinessManageUnreview-分公司业管待审核、NotSigned-待签署生效、ReviewPassed-已审核)*/
@@ -1046,8 +1096,10 @@ makerId: number;
 makerTime: string;
 /**不含税金额*/
 noTaxAmount: number;
-/**累计抵扣*/
-payDeductDetailList: PayDeductDetailVO[];
+/**OA流程ID*/
+oaFlowId: number;
+/**累计抵扣信息*/
+paySummaryList: PaySummaryVO[];
 /**项目*/
 projectName: string;
 /**渠道收款账号*/
@@ -1079,6 +1131,8 @@ processRecordList: ProcessRecordVO[];
 }
 /**UpdateApplyVO*/
 export interface UpdateApplyVO {
+/**本期实际支付金额:  修改不用传*/
+actualAmount: number;
 /**付款单主体信息*/
 payApplyVO: PayApplyAddVO;
 /**附件信息*/
