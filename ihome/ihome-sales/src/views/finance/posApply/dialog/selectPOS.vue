@@ -4,7 +4,7 @@
  * @Author: ywl
  * @Date: 2020-12-23 11:50:23
  * @LastEditors: ywl
- * @LastEditTime: 2020-12-29 09:53:47
+ * @LastEditTime: 2020-12-29 09:55:44
 -->
 <template>
   <el-dialog
@@ -192,17 +192,17 @@ export default class SelectPOS extends Vue {
     {
       prop: "departmentName",
       label: "所在事业部",
-      minWidth: 170,
+      minWidth: 220,
     },
     {
       prop: "groupName",
       label: "所在店组",
-      minWidth: 170,
+      minWidth: 220,
     },
     {
       prop: "proName",
       label: "联动项目",
-      minWidth: 150,
+      minWidth: 190,
     },
   ];
 
