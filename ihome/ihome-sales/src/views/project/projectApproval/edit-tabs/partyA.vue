@@ -4,7 +4,7 @@
  * @Author: wwq
  * @Date: 2020-11-27 17:20:24
  * @LastEditors: wwq
- * @LastEditTime: 2020-12-23 20:07:31
+ * @LastEditTime: 2020-12-29 09:21:34
 -->
 <template>
   <div>
@@ -59,6 +59,7 @@
         <el-table-column
           label="操作"
           width="120"
+          align="center"
           fixed="right"
         >
           <template v-slot="{ row }">
@@ -66,7 +67,7 @@
               size="small"
               type="danger"
               @click="delPartyA(row)"
-            >删除</el-button>
+            >取消关联</el-button>
           </template>
         </el-table-column>
       </el-table>
@@ -241,7 +242,7 @@ export default class PartyA extends Vue {
 
   async delPartyA(row: any) {
     try {
-      await this.$confirm("是否确定删除?", "提示");
+      await this.$confirm("是否取消关联?", "提示");
       let partyAIds = row.partyList.map((v: any) => v.userId);
       await post_partyAContract_del({
         termId: this.$route.query.id,
@@ -250,7 +251,7 @@ export default class PartyA extends Vue {
       });
       this.$message({
         type: "success",
-        message: "删除成功!",
+        message: "取消关联成功!",
       });
       this.getInfo();
     } catch (error) {
