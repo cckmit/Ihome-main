@@ -4,7 +4,7 @@
  * @Author: zyc
  * @Date: 2020-06-28 11:42:52
  * @LastEditors: zyc
- * @LastEditTime: 2020-10-21 14:05:36
+ * @LastEditTime: 2020-12-29 15:13:01
  */
 import { RegistrableApp, LoadableApp, FrameworkLifeCycles } from "qiankun"
 import { IRegisterApp, IProps, IPropsData } from './qiankun.d'
@@ -41,7 +41,15 @@ const baseProps: IProps<IPropsData> = {
         },
         loginOut(data: any) {
             console.log(`loginOut父应用返回信息${data}`);
-        }
+        },
+        /**接收子应用路由列表，用于面包屑展示
+         * @param {any} data
+         * @return {*}
+         */
+        appRoutes(crumbs: any[], route: any[]) {
+            (route);
+            UserModule.setCrumbs(crumbs);
+        },
     }
 };
 
@@ -75,27 +83,27 @@ const devArray: Array<IRegisterApp<IProps<IPropsData>>> = [{
 const proIp = window.location.hostname;
 const proPort = 18080;
 const proArray: Array<IRegisterApp<IProps<IPropsData>>> = [
-//     {
-//     routerPrefix: 'web-common',
-//     publicPath: '/web-common/',
-//     port: proPort,
-//     ip: proIp,
-//     props: props
-// },
-{
-    routerPrefix: 'web-system',
-    publicPath: '/web-system/',
-    port: proPort,
-    ip: proIp,
-    props: props
-},
-{
-    routerPrefix: 'web-sales',
-    publicPath: '/web-sales/',
-    port: proPort,
-    ip: proIp,
-    props: props
-}];
+    //     {
+    //     routerPrefix: 'web-common',
+    //     publicPath: '/web-common/',
+    //     port: proPort,
+    //     ip: proIp,
+    //     props: props
+    // },
+    {
+        routerPrefix: 'web-system',
+        publicPath: '/web-system/',
+        port: proPort,
+        ip: proIp,
+        props: props
+    },
+    {
+        routerPrefix: 'web-sales',
+        publicPath: '/web-sales/',
+        port: proPort,
+        ip: proIp,
+        props: props
+    }];
 
 const apps: Array<RegistrableApp<any>> = (process.env.NODE_ENV === 'production' ? proArray : devArray).map((item) => {
     let r: RegistrableApp<any> = {

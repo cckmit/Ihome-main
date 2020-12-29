@@ -4,7 +4,7 @@
  * @Author: zyc
  * @Date: 2020-06-22 11:10:43
  * @LastEditors: zyc
- * @LastEditTime: 2020-11-11 09:10:16
+ * @LastEditTime: 2020-12-29 14:35:10
  */
 import Vue from 'vue'
 import VueRouter, { RouteConfig, Route } from 'vue-router'
@@ -31,7 +31,7 @@ const routes: Array<RouteConfig> = [
 
   {
     path: '/user',
-    meta: { title: '用户', icon: 'form' },
+    meta: { title: '用户列表', icon: 'form' },
     redirect: '/user/list',
     component: Layout,
     children: [
@@ -51,7 +51,7 @@ const routes: Array<RouteConfig> = [
   },
   {
     path: '/resources',
-    meta: { title: '资源', icon: 'form' },
+    meta: { title: '资源列表', icon: 'form' },
     redirect: '/resources/list',
     component: Layout,
     children: [
@@ -71,7 +71,7 @@ const routes: Array<RouteConfig> = [
   },
   {
     path: '/role',
-    meta: { title: '资源', icon: 'form' },
+    meta: { title: '角色列表', icon: 'form' },
     redirect: '/role/list',
     component: Layout,
     children: [
@@ -91,7 +91,7 @@ const routes: Array<RouteConfig> = [
   },
   {
     path: '/job',
-    meta: { title: '岗位', icon: 'form' },
+    meta: { title: '岗位列表', icon: 'form' },
     redirect: '/job/list',
     component: Layout,
     children: [
@@ -111,7 +111,7 @@ const routes: Array<RouteConfig> = [
   },
   {
     path: '/organization',
-    meta: { title: '组织架构', icon: 'form' },
+    meta: { title: '组织列表', icon: 'form' },
     redirect: '/organization/list',
     component: Layout,
     children: [
@@ -119,14 +119,14 @@ const routes: Array<RouteConfig> = [
         path: 'list',
         name: 'OrganizationList',
         component: () => import('../views/organization/list.vue'),
-        meta: { title: '组织架构列表', icon: 'form', keepAlive: true }
+        meta: { title: '组织列表', icon: 'form', keepAlive: true }
       },
 
     ]
   },
   {
     path: '/other',
-    meta: { title: '其他', icon: 'form' },
+    meta: { title: '新手引导', icon: 'form' },
     redirect: '/other/driver',
     component: Layout,
     children: [
