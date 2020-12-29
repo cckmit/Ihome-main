@@ -4,7 +4,7 @@
  * @Author: wwq
  * @Date: 2020-08-13 11:40:10
  * @LastEditors: wwq
- * @LastEditTime: 2020-12-28 10:39:39
+ * @LastEditTime: 2020-12-29 18:37:37
 -->
 <template>
   <IhPage label-width="100px">
@@ -32,7 +32,7 @@
               ></el-input>
             </el-form-item>
           </el-col>
-          <el-col :span="8">
+          <!-- <el-col :span="8">
             <el-form-item label="周期名称">
               <IhSelectPageByCycle
                 v-model="queryPageParameters.termId"
@@ -44,7 +44,7 @@
                 }"
               ></IhSelectPageByCycle>
             </el-form-item>
-          </el-col>
+          </el-col> -->
           <el-col :span="8">
             <el-form-item label="省市区">
               <IhCascader
@@ -55,7 +55,7 @@
               />
             </el-form-item>
           </el-col>
-          <el-col :span="8">
+          <!-- <el-col :span="8">
             <el-form-item label="业务类型">
               <el-select
                 v-model="queryPageParameters.busTypeEnum"
@@ -71,7 +71,7 @@
                 ></el-option>
               </el-select>
             </el-form-item>
-          </el-col>
+          </el-col> -->
           <el-col :span="8">
             <el-form-item label="项目审核状态">
               <el-select

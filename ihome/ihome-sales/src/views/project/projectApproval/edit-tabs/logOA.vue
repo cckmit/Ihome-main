@@ -4,7 +4,7 @@
  * @Author: wwq
  * @Date: 2020-11-27 17:29:09
  * @LastEditors: wwq
- * @LastEditTime: 2020-12-11 09:16:23
+ * @LastEditTime: 2020-12-29 18:28:48
 -->
 <template>
   <div>
@@ -12,7 +12,7 @@
     <div class="padding-left-20">
       <el-table
         class="ih-table"
-        :data="info.snapshotVOS"
+        :data="info.termHisVOS"
         style="width: 100%"
       >
         <el-table-column
@@ -69,8 +69,8 @@
         class="operator"
         v-if="isShow"
       >
-        <span>姓名: {{123 + ','}}</span>
-        <span style="margin-left: 10px">岗位: {{456}}</span>
+        <span>姓名: {{name + ','}}</span>
+        <span style="margin-left: 10px">岗位: {{orgPostName}}</span>
       </div>
     </div>
     <div class="padding-left-20">
@@ -80,13 +80,9 @@
         style="width: 100%"
       >
         <el-table-column
-          prop="operatorType"
+          prop="node"
           label="操作"
-        >
-          <template v-slot="{ row }">{{
-            $root.dictAllName(row.operatorType, "OperatorType")
-          }}</template>
-        </el-table-column>
+        ></el-table-column>
         <el-table-column
           label="操作人"
           prop="operatorMan"
@@ -117,7 +113,7 @@
       </el-table>
     </div>
 
-    <br />
+    <!-- <br />
     <p class="ih-info-title">OA附言信息</p>
     <div class="padding-left-20">
       <el-table
@@ -152,49 +148,63 @@
           </template>
         </el-table-column>
       </el-table>
-    </div>
+    </div> -->
   </div>
 </template>
 <script lang="ts">
 import { Component, Vue } from "vue-property-decorator";
-import { get_logAndOA_get__termId } from "@/api/project/index.ts";
+import {
+  get_logAndOA_get__termId,
+  post_logAndOA_getTermLog__termId,
+  get_logAndOA_getOALog__termId,
+} from "@/api/project/index.ts";
 @Component({
   components: {},
 })
 export default class SetMeal extends Vue {
-  info: any = [];
+  info: any = {
+    termHisVOS: [],
+    termLogVOS: [],
+  };
   isShow = false;
+  name: any = "";
+  orgPostName: any = "";
+
+  get termId() {
+    return this.$route.query.id;
+  }
 
   created() {
     this.getInfo();
   }
 
   async getInfo() {
-    const id = this.$route.query.id;
-    if (id) {
+    if (this.termId) {
       const item = await get_logAndOA_get__termId({
-        termId: id,
+        termId: this.termId,
       });
-      let arr: any = [];
-      arr = item.oafyVOS.map((v: any) => ({
-        ...v,
-        fileList: [
-          {
-            name: v.picAddrs,
-            fileId: v.picAddrs,
-          },
-        ],
-      }));
-      this.info = { ...arr, oafyVOS: arr };
+      this.info = { ...item };
     }
   }
 
-  queryLog() {
-    this.getInfo();
+  async queryLog() {
+    const res = await post_logAndOA_getTermLog__termId({
+      termId: this.termId,
+    });
+    this.info.termLogVOS = res;
   }
 
-  queryCurrent() {
+  async queryCurrent() {
+    const res = await get_logAndOA_getOALog__termId({
+      termId: this.termId,
+    });
     this.isShow = true;
+    this.name = res.name;
+    this.orgPostName = res.orgPostName;
+  }
+
+  view() {
+    this.$message.warning("接口未提供");
   }
 }
 </script>

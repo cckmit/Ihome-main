@@ -10,6 +10,7 @@
       class="selectInput"
       :placeholder="placeholder"
       v-model="filterText"
+      :clearable="clearableInput"
     ></el-input>
 
     <el-option
@@ -73,6 +74,12 @@ export default {
     },
     /* 可清空选项 */
     clearable: {
+      type: Boolean,
+      default: () => {
+        return true;
+      },
+    },
+    clearableInput: {
       type: Boolean,
       default: () => {
         return true;
