@@ -4,7 +4,7 @@
  * @Author: ywl
  * @Date: 2020-12-23 11:50:23
  * @LastEditors: ywl
- * @LastEditTime: 2020-12-28 09:35:42
+ * @LastEditTime: 2020-12-29 09:53:47
 -->
 <template>
   <el-dialog
@@ -108,7 +108,18 @@
       :pageTotal="resPageInfo.total"
       @page-change="pageChange"
       @size-change="sizeChange"
-    ></IhTableCheckBox>
+    >
+      <template #status>
+        <el-table-column
+          label="状态"
+          width="90"
+        >
+          <template v-slot="{ row }">
+            {{$root.dictAllName(row.status, 'PosTerminalStatus')}}
+          </template>
+        </el-table-column>
+      </template>
+    </IhTableCheckBox>
     <template #footer>
       <el-button @click="cancel()">取 消</el-button>
       <el-button
@@ -176,9 +187,7 @@ export default class SelectPOS extends Vue {
       minWidth: 120,
     },
     {
-      prop: "status",
-      label: "状态",
-      minWidth: 120,
+      slot: "status",
     },
     {
       prop: "departmentName",
@@ -188,10 +197,12 @@ export default class SelectPOS extends Vue {
     {
       prop: "groupName",
       label: "所在店组",
+      minWidth: 170,
     },
     {
       prop: "proName",
       label: "联动项目",
+      minWidth: 150,
     },
   ];
 

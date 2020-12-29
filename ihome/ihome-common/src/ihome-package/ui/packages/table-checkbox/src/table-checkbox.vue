@@ -4,7 +4,7 @@
  * @Author: lsj
  * @Date: 2020-11-09 16:05:00
  * @LastEditors: ywl
- * @LastEditTime: 2020-12-29 09:14:54
+ * @LastEditTime: 2020-12-29 09:38:52
 -->
 <template>
   <div class="ih-table-checkBox">
@@ -55,6 +55,7 @@
                 :name="item.slot"
               ></slot>
               <el-table-column
+                v-else
                 :key="index"
                 :prop="item.prop"
                 :label="item.label"
@@ -87,14 +88,20 @@
           :data="checkedData"
           :border="border"
         >
-          <el-table-column
-            v-for="item in column"
-            :key="item.prop"
-            :prop="item.prop"
-            :label="item.label"
-            :min-width="item.minWidth"
-            :align="item.align"
-          ></el-table-column>
+          <template v-for="(item, index) in column">
+            <slot
+              v-if="item.slot"
+              :name="item.slot"
+            ></slot>
+            <el-table-column
+              v-else
+              :key="index"
+              :prop="item.prop"
+              :label="item.label"
+              :min-width="item.minWidth"
+              :align="item.align"
+            ></el-table-column>
+          </template>
           <el-table-column
             fixed="right"
             label="操作"
