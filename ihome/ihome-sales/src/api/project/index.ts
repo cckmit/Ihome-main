@@ -1,6 +1,6 @@
 /* eslint-disable */
 /* 此脚本由swagger-ui的api-docs自动生成，请勿修改 */
-//2020-12-28 12:37:46 ├F10: PM┤
+//2020-12-29 9:11:30 ├F10: AM┤
 import { request } from '@/api/base'
 const basePath = "/sales-api/project"
 /**index*/
@@ -131,7 +131,7 @@ return await request.post< number,number> (basePath+'/customerReportRule/update'
 export async function post_distributContract_add (d?: any) {
 return await request.post< DistributContractUpdateVO,DistributContractUpdateVO> (basePath+'/distributContract/add', d)
 }
-/**中介分销合同-作废*/
+/**中介分销合同-禁用*/
 export async function post_distributContract_cancel__agencyContrictId (d?: any) {
 return await request.post< number,number> (basePath+'/distributContract/cancel/{agencyContrictId}', d)
 }
@@ -139,7 +139,7 @@ return await request.post< number,number> (basePath+'/distributContract/cancel/{
 export async function get_distributContract_get__termId (d?: any) {
 return await request.get<DistributContractMO,DistributContractMO>(basePath+'/distributContract/get/{termId}', { params: d })
 }
-/**根据立项查询分销合同信息*/
+/**根据立项查询分销合同信息[过滤了禁用]*/
 export async function get_distributContract_getByTerm__termId (d?: any) {
 return await request.get<DistributContractByTermVO[],DistributContractByTermVO[]>(basePath+'/distributContract/getByTerm/{termId}', { params: d })
 }
@@ -155,13 +155,9 @@ return await request.post< DistributContractMxVO[],DistributContractMxVO[]> (bas
 export async function get_distributContract_getDistri__agencyContrictId (d?: any) {
 return await request.get<DistributContractVO,DistributContractVO>(basePath+'/distributContract/getDistri/{agencyContrictId}', { params: d })
 }
-/**查询立项所属的优惠告知书*/
-export async function get_distributContract_getDistributs__termId (d?: any) {
-return await request.get<PreferentialMxVO[],PreferentialMxVO[]>(basePath+'/distributContract/getDistributs/{termId}', { params: d })
-}
 /**获取派发套餐详情【分销合同筛选派发明细】*/
 export async function post_distributContract_getItemByCondition (d?: any) {
-return await request.post< CollectandsendCustomerVO[],CollectandsendCustomerVO[]> (basePath+'/distributContract/getItemByCondition', d)
+return await request.post< CollectandsendDetailVO,CollectandsendDetailVO> (basePath+'/distributContract/getItemByCondition', d)
 }
 /**中介分销合同-预览【里面】*/
 export async function post_distributContract_getPreView (d?: any) {
@@ -174,6 +170,10 @@ return await request.post< PreViewVO,PreViewVO> (basePath+'/distributContract/ge
 /**甲方合同OA呈批备注-save*/
 export async function post_distributContract_saveOaRemark (d?: any) {
 return await request.post< number,number> (basePath+'/distributContract/saveOaRemark', d)
+}
+/**中介分销合同-启用*/
+export async function post_distributContract_start__agencyContrictId (d?: any) {
+return await request.post< number,number> (basePath+'/distributContract/start/{agencyContrictId}', d)
 }
 /**中介分销合同-更新*/
 export async function post_distributContract_update (d?: any) {
@@ -210,6 +210,46 @@ return await request.post< FirstAgencyCompanyAddArgs,FirstAgencyCompanyAddArgs> 
 /**修改代理公司*/
 export async function post_firstAgencyCompany_update (d?: any) {
 return await request.post< FirstAgencyCompanyAddArgs,FirstAgencyCompanyAddArgs> (basePath+'/firstAgencyCompany/update', d)
+}
+/**获取派发套餐详情*/
+export async function get_his_collectandsend_get__packageId (d?: any) {
+return await request.get<CollectandsendDetailVO,CollectandsendDetailVO>(basePath+'/his/collectandsend/get/{packageId}', { params: d })
+}
+/**获取派发套餐列表*/
+export async function post_his_collectandsend_getAllByTerm (d?: any) {
+return await request.post< CollectandsendVO[],CollectandsendVO[]> (basePath+'/his/collectandsend/getAllByTerm', d)
+}
+/**查询立项报备规则*/
+export async function get_his_customerReportRule_get__termId (d?: any) {
+return await request.get<CustomerReportRuleVO,CustomerReportRuleVO>(basePath+'/his/customerReportRule/get/{termId}', { params: d })
+}
+/**甲方合同页面查询*/
+export async function get_his_partyAContract_get__termId (d?: any) {
+return await request.get<PartyAContractPageVO,PartyAContractPageVO>(basePath+'/his/partyAContract/get/{termId}', { params: d })
+}
+/**获取结佣详情*/
+export async function post_his_settleCondition_getMaking__settleId (d?: any) {
+return await request.post< SettleMakingUpdateVO,SettleMakingUpdateVO> (basePath+'/his/settleCondition/getMaking/{settleId}', d)
+}
+/**查询结佣类型*/
+export async function get_his_settleCondition_getMakingType (d?: any) {
+return await request.get<SettleMakingListVO[],SettleMakingListVO[]>(basePath+'/his/settleCondition/getMakingType', { params: d })
+}
+/**结算条件列表页查询*/
+export async function get_his_settleCondition_getPage__termId (d?: any) {
+return await request.get<SettleConditionVO,SettleConditionVO>(basePath+'/his/settleCondition/getPage/{termId}', { params: d })
+}
+/**获取请佣详情*/
+export async function post_his_settleCondition_getPlease__settleId (d?: any) {
+return await request.post< SettlePleaseUpdateVO,SettlePleaseUpdateVO> (basePath+'/his/settleCondition/getPlease/{settleId}', d)
+}
+/**查询请佣类型*/
+export async function get_his_settleCondition_getPleaseType (d?: any) {
+return await request.get<SettlePleaseListVO[],SettlePleaseListVO[]>(basePath+'/his/settleCondition/getPleaseType', { params: d })
+}
+/**获取立项基础详情*/
+export async function get_his_term_get__termId (d?: any) {
+return await request.get<TermRespVO,TermRespVO>(basePath+'/his/term/get/{termId}', { params: d })
 }
 /**楼盘项目的户型-新增*/
 export async function post_houseType_add (d?: any) {
@@ -333,9 +373,9 @@ return await request.post< number,number> (basePath+'/payment/update', d)
 }
 /**优惠告知书-新增*/
 export async function post_preferential_add (d?: any) {
-return await request.post< PreferentialMxVO,PreferentialMxVO> (basePath+'/preferential/add', d)
+return await request.post< number,number> (basePath+'/preferential/add', d)
 }
-/**优惠告知书-作废*/
+/**优惠告知书-禁用*/
 export async function post_preferential_cancel__preferentialMxId (d?: any) {
 return await request.post< number,number> (basePath+'/preferential/cancel/{preferentialMxId}', d)
 }
@@ -350,6 +390,10 @@ return await request.post< PreViewVO,PreViewVO> (basePath+'/preferential/getPreV
 /**优惠告知数-下载二维码*/
 export async function get_preferential_getQRCodeImage__preferentialMxId (d?: any) {
 return await request.get<any,any>(basePath+'/preferential/getQRCodeImage/{preferentialMxId}', { params: d })
+}
+/**优惠告知书-启用*/
+export async function post_preferential_start__preferentialMxId (d?: any) {
+return await request.post< number,number> (basePath+'/preferential/start/{preferentialMxId}', d)
 }
 /**优惠告知书-修改*/
 export async function post_preferential_update (d?: any) {
@@ -1816,9 +1860,9 @@ contractStartTime: string;
 contractSubtitle: string;
 /**合同主标题*/
 contractTitle: string;
-/**成交确认人,从甲方合同带过来*/
+/**负责人*/
 dealMan: string;
-/**成交确认人联系电话,从甲方合同带过来*/
+/**负责人联系电话*/
 dealTel: string;
 /**指定中介行*/
 designatedAgency: string;
@@ -2300,7 +2344,7 @@ export interface LogAndOAVo {
 /**OA附言列表*/
 oafyVOS: CycleOafyVO[];
 /**快照列表*/
-snapshotVOS: SnapshotVO[];
+termHisVOS: TermHisVO[];
 /**操作日志列表*/
 termLogVOS: TermLogVO[];
 }
@@ -2596,6 +2640,17 @@ attachTermItemVOS: AttachTermItemVO[];
 /**立项ID*/
 termId: number;
 }
+/**PreferentialMxAddVO*/
+export interface PreferentialMxAddVO {
+/**优惠方式说明*/
+modeDescription: string;
+/**甲方退款天数*/
+partyARefundDays: number;
+/**缴纳金额*/
+premiumReceived: number;
+/**立项ID*/
+termId: number;
+}
 /**PreferentialMxUpdateVO*/
 export interface PreferentialMxUpdateVO {
 /**优惠方式说明*/
@@ -2617,6 +2672,8 @@ modeDescription: string;
 partyARefundDays: number;
 /**缴纳金额*/
 premiumReceived: number;
+/**状态(New-新增、Update-修改、Delete-删除、Stop-停用、Start-启用、Cancel-作废、Audit-审核、Reject-驳回)*/
+state: string;
 /**立项ID*/
 termId: number;
 }
@@ -3484,33 +3541,6 @@ shareId: number;
 /**立项周期ID*/
 termId: number;
 }
-/**SnapshotVO*/
-export interface SnapshotVO {
-/**终审时间*/
-auditTime: string;
-/**副本*/
-copy: string;
-/**COPY_TERM_ID*/
-copyTermId: number;
-/**创建时间(yyyy-MM-dd HH:mm:ss)*/
-createTime: string;
-/**创建用户*/
-createUser: number;
-/**已删除*/
-deleted: number;
-/**快照类型(First-首次立项、Supplement-补充协议、Hander-手动修改、Canel-作废)*/
-snapshotEnum: string;
-/**快照ID*/
-snapshotId: number;
-/**发起人*/
-startMan: string;
-/**立项周期ID*/
-termId: number;
-/**更新时间(yyyy-MM-dd HH:mm:ss)*/
-updateTime: string;
-/**更新用户*/
-updateUser: number;
-}
 /**TermAddVO*/
 export interface TermAddVO {
 /**我司ID*/
@@ -3679,6 +3709,21 @@ startDivisionId: number;
 termId: number;
 /**周期名称 合作项目名称(项目推广名)+周期时间*/
 termName: string;
+}
+/**TermHisVO*/
+export interface TermHisVO {
+/**审核时间(yyyy-MM-dd HH:mm:ss)*/
+auditTime: string;
+/**原立项周期ID*/
+originalTermId: number;
+/**快照类型(First-首次立项、Supplement-补充协议、Hander-手动修改、Canel-作废)*/
+snapshotEnum: string;
+/**发起人ID*/
+startMan: string;
+/**发起人ID*/
+startManId: number;
+/**周期ID*/
+termId: number;
 }
 /**TermIdDepartmentIdVo*/
 export interface TermIdDepartmentIdVo {
