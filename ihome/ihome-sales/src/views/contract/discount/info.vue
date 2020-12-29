@@ -4,7 +4,7 @@
  * @Author: ywl
  * @Date: 2020-09-27 17:27:00
  * @LastEditors: ywl
- * @LastEditTime: 2020-12-19 15:38:55
+ * @LastEditTime: 2020-12-26 14:35:34
 -->
 <template>
   <IhPage class="text-left discount-info">
@@ -168,6 +168,7 @@
               <el-button
                 type="primary"
                 class="upload-button"
+                v-has="'B.SALES.CONTRACT.DISCOUNTLIST.ORIGINALFILE'"
                 @click="submit()"
               >提交</el-button>
             </el-form-item>

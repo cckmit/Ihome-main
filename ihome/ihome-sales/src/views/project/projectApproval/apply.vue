@@ -446,6 +446,7 @@
       <div class="text-center">
         <el-button
           type="primary"
+          :loading="submitLoading"
           @click="submit()"
         >提交</el-button>
         <el-button @click="cancel">取消</el-button>
@@ -530,6 +531,7 @@ export default class Apply extends Vue {
   isShow = false;
   channelAccountOptions: any = [];
   searchConditon: any = {};
+  submitLoading: any = false;
 
   @Watch("info.channelEnum", { immediate: true })
   getIsShow(val: any) {
@@ -675,8 +677,10 @@ export default class Apply extends Vue {
     this.info.channelAccountName = item.accountName;
   }
   async submit() {
+    this.submitLoading = true;
     const res: any = await post_distribution_create(this.info);
     if (res) {
+      this.submitLoading = false;
       this.$message.success("申领成功");
       this.$goto({
         path: "/projectApproval/list",

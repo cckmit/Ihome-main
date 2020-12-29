@@ -4,7 +4,7 @@
  * @Author: ywl
  * @Date: 2020-12-23 11:50:23
  * @LastEditors: ywl
- * @LastEditTime: 2020-12-25 11:01:25
+ * @LastEditTime: 2020-12-29 09:55:44
 -->
 <template>
   <el-dialog
@@ -86,8 +86,14 @@
       </el-row>
     </el-form>
     <div class="padding-left-80">
-      <el-button type="primary">查询</el-button>
-      <el-button type="info">重置</el-button>
+      <el-button
+        type="primary"
+        @click="search()"
+      >查询</el-button>
+      <el-button
+        type="info"
+        @click="reset()"
+      >重置</el-button>
     </div>
     <br />
     <IhTableCheckBox
@@ -102,7 +108,18 @@
       :pageTotal="resPageInfo.total"
       @page-change="pageChange"
       @size-change="sizeChange"
-    ></IhTableCheckBox>
+    >
+      <template #status>
+        <el-table-column
+          label="状态"
+          width="90"
+        >
+          <template v-slot="{ row }">
+            {{$root.dictAllName(row.status, 'PosTerminalStatus')}}
+          </template>
+        </el-table-column>
+      </template>
+    </IhTableCheckBox>
     <template #footer>
       <el-button @click="cancel()">取 消</el-button>
       <el-button
@@ -170,22 +187,22 @@ export default class SelectPOS extends Vue {
       minWidth: 120,
     },
     {
-      prop: "status",
-      label: "状态",
-      minWidth: 120,
+      slot: "status",
     },
     {
       prop: "departmentName",
       label: "所在事业部",
-      minWidth: 170,
+      minWidth: 220,
     },
     {
       prop: "groupName",
       label: "所在店组",
+      minWidth: 220,
     },
     {
       prop: "proName",
       label: "联动项目",
+      minWidth: 190,
     },
   ];
 
@@ -199,17 +216,31 @@ export default class SelectPOS extends Vue {
       this.$message.warning("请先勾选表格数据");
     }
   }
+  private reset() {
+    Object.assign(this.queryPageParameters, {
+      serialNo: null,
+      accountName: null,
+      merchantNo: null,
+      terminalNo: null,
+      accountNo: null,
+    });
+  }
+  private search() {
+    this.pageNum = 1;
+    this.getList();
+  }
   // 获取选中项 --- 最后需要获取的数据
   private selectionChange(selection: any) {
     console.log(selection, "selectionChange");
     this.selection = selection;
   }
-  private pageChange(index: number) {
-    this.pageNum = index;
+  private pageChange(val: number) {
+    this.pageNum = val;
     this.getList();
   }
   private sizeChange(val: any) {
     this.pageSize = val;
+    this.getList();
   }
   private async getList() {
     this.resPageInfo = await post_posTerminal_getList({

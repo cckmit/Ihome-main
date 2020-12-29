@@ -4,7 +4,7 @@
  * @Author: ywl
  * @Date: 2020-09-27 16:27:36
  * @LastEditors: ywl
- * @LastEditTime: 2020-12-22 18:54:49
+ * @LastEditTime: 2020-12-26 11:56:37
 -->
 <template>
   <IhPage label-width="80px">
@@ -289,13 +289,14 @@
         >
           <template v-slot="{ row }">
             <el-link
+              :class="{'ih-data-disabled':row.notificationType !== 'Notification'}"
               type="primary"
+              class="margin-right-10"
               @click.native.prevent="$router.push(`/discount/info?id=${row.id}`)"
             >详情</el-link>
             <el-link
               type="success"
               v-has="'B.SALES.CONTRACT.DISCOUNTLIST.PREVIEW'"
-              class="margin-left-10"
               @click="preview(row)"
             >预览</el-link>
           </template>

@@ -55,7 +55,7 @@
           <div>点数：{{scope.row.sendPoint}}</div>
         </template>
       </el-table-column>
-      <el-table-column label="派发内场奖励" prop="sendInAmount" min-width="100">
+      <el-table-column label="派发内场奖励" prop="sendInAmount" min-width="150">
         <template slot-scope="scope">
           <div>金额：{{scope.row.sendInAmount}}</div>
           <div>点数：{{scope.row.sendInPoint}}</div>
@@ -95,7 +95,10 @@
 <script lang="ts">
   import {Component, Vue, Prop} from "vue-property-decorator";
   import PaginationMixin from "@/mixins/pagination";
-  import {post_collectandsend_getCollectadnsendMxByIds} from "@/api/project"; // 根据可选IDS获取收派套餐
+  import {
+    post_collectandsend_getCollectadnsendMxByIds,
+    post_term_getCollectPackageByDeal
+  } from "@/api/project"; // 根据可选IDS获取收派套餐
 
   @Component({
     mixins: [PaginationMixin]
@@ -116,17 +119,17 @@
     @Prop({default: null}) data: any;
     dialogTitle: any = null; // 弹窗标题
 
-    created() {
-      // console.log('data', this.data);
+    async created() {
+      console.log('data', this.data);
       // 判断套餐类型
-      if (this.data && this.data.type === 'service') {
-        this.dialogTitle = '选择服务费收派套餐标准';
-      } else {
-        this.dialogTitle = '选择代理费收派套餐标准';
-      }
-      if (this.data && this.data.idList && this.data.idList.length > 0) {
+      this.dialogTitle = `选择${(this as any).$root.dictAllName(this.data.type, 'FeeType')}收派套餐标准`;
+      if (this.data.hasRecord) {
+        // 分销模式
         this.queryPageParameters.packageMxIds = this.data.idList;
-        // this.getListMixin();
+        await this.getListMixin();
+      } else {
+        // 非分销模式
+        await this.getPackageIds(this.data.postObj);
       }
     }
 
@@ -143,6 +146,19 @@
 
     private handleSelectAll() {
       (this.$refs.table as any).clearSelection();
+    }
+
+    async getPackageIds(postData: any = {}) {
+      const list: any = await post_term_getCollectPackageByDeal(postData);
+      // console.log(list);
+      let idsList: any = [];
+      if (list && list.length) {
+        list.forEach((item: any) => {
+          idsList.push(item.packageMxId);
+        })
+      }
+      this.queryPageParameters.packageMxIds = idsList;
+      await this.getListMixin();
     }
 
     async getListMixin() {

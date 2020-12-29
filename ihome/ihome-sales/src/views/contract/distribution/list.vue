@@ -4,7 +4,7 @@
  * @Author: ywl
  * @Date: 2020-09-25 17:34:32
  * @LastEditors: ywl
- * @LastEditTime: 2020-12-22 18:37:54
+ * @LastEditTime: 2020-12-28 20:15:14
 -->
 <template>
   <IhPage label-width="100px">
@@ -165,12 +165,7 @@
                   <IhSelectPageUser
                     v-model="queryPageParameters.entryPerson"
                     clearable
-                  >
-                    <template v-slot="{ data }">
-                      <span style="float: left">{{ data.name }}</span>
-                      <span style="margin-left: 20px;float: right; color: #8492a6; font-size: 13px">{{ data.account }}</span>
-                    </template>
-                  </IhSelectPageUser>
+                  ></IhSelectPageUser>
                 </el-form-item>
               </el-col>
               <el-col :span="8">
@@ -216,13 +211,13 @@
         >派发</el-button>
         <el-button
           type="danger"
-          @click="disallowance()"
+          @click="handleDis()"
           :class="{ 'ih-data-disabled': !channelChange() && !contractChange() }"
           v-has="'B.SALES.CONTRACT.DISTLIST.REJECT'"
         >驳回</el-button>
         <el-button
           type="danger"
-          @click="withdraw()"
+          @click="handleWith()"
           :class="{ 'ih-data-disabled': !channelChange() && !contractChange() }"
           v-has="'B.SALES.CONTRACT.DISTLIST.REVOKE'"
         >撤回</el-button>
@@ -366,6 +361,11 @@
               </span>
               <el-dropdown-menu slot="dropdown">
                 <el-dropdown-item
+                  :class="{ 'ih-data-disabled': row.distributionState !== 'Drafting' && row.distributionState !== 'Disallowance' }"
+                  @click.native.prevent="remove(row)"
+                  v-has="'E.SALES.CONTRACT.DISTLIST.DELETE'"
+                >删除</el-dropdown-item>
+                <el-dropdown-item
                   @click.native.prevent="duplicate(row)"
                   :class="{ 'ih-data-disabled': !duplicateChange(row) }"
                   v-has="'B.SALES.CONTRACT.PARTYALIST.SCANFILE'"
@@ -410,6 +410,7 @@ import {
   post_distribution_disallowance,
   post_distribution_withdraw,
   post_distribution_duplicate,
+  post_distribution_delete,
 } from "@/api/contract/index";
 
 @Component({
@@ -487,6 +488,22 @@ export default class DistributionList extends Vue {
   private openToggle(): void {
     this.searchOpen = !this.searchOpen;
   }
+  private async remove(row: any) {
+    try {
+      await this.$confirm("确认删除该合同数据?", "提示");
+      await post_distribution_delete([row.id]);
+      // 删除list最后一条数据 返回前一页面
+      if (this.resPageInfo.list.length === 1) {
+        this.queryPageParameters.pageNum === 1
+          ? (this.queryPageParameters.pageNum = 1)
+          : this.queryPageParameters.pageNum--;
+      }
+      this.getListMixin();
+      this.$message.success("删除成功");
+    } catch (error) {
+      console.log(error);
+    }
+  }
   private handleSearch(): void {
     let sign = this.timeList && this.timeList.length;
     this.queryPageParameters.beginTime = sign ? this.timeList[0] : "";
@@ -517,31 +534,44 @@ export default class DistributionList extends Vue {
   private handleSelectionChange(val: any): void {
     this.selectionData = val;
   }
-  /**
-   * @description: 渠道分销合同撤回
-   */
-  private async withdraw() {
+  // 根据角色来驳回
+  private handleWith() {
     if (this.selectionData.length) {
-      let isFlag = this.selectionData
-        .map((i: any) => i.distributionState)
-        .every((v: any) => v === "Pending" || v === "NotDistributed");
-      if (isFlag) {
-        try {
-          await post_distribution_withdraw({
-            ids: this.selectionData.map((i: any) => i.id),
-          });
-          this.$message.success("撤回成功");
-          this.getListMixin();
-        } catch (error) {
-          console.log(error);
-        }
+      if (
+        this.channelChange() &&
+        this.selectionData
+          .map((i: any) => i.distributionState)
+          .every((v: any) => v === "Pending")
+      ) {
+        this.withdraw();
+      } else if (
+        this.contractChange() &&
+        this.selectionData
+          .map((i: any) => i.distributionState)
+          .every((v: any) => v === "NotDistributed")
+      ) {
+        this.withdraw();
       } else {
-        this.$message.warning("请筛选待派发或待审核的合同数据");
+        this.$message.warning("请筛选一致的待审核的合同数据或待派发的合同数据");
         return;
       }
     } else {
       this.$message.warning("请先勾选表格数据");
       return;
+    }
+  }
+  /**
+   * @description: 渠道分销合同撤回
+   */
+  private async withdraw() {
+    try {
+      await post_distribution_withdraw({
+        ids: this.selectionData.map((i: any) => i.id),
+      });
+      this.$message.success("撤回成功");
+      this.getListMixin();
+    } catch (error) {
+      console.log(error);
     }
   }
   private handleExport() {
@@ -616,31 +646,44 @@ export default class DistributionList extends Vue {
       $a.remove();
     });
   }
-  /**
-   * @description: 渠道分销合同驳回
-   */
-  private async disallowance() {
+  // 根据角色驳回不同的操作
+  private handleDis() {
     if (this.selectionData.length) {
-      let isFlag = this.selectionData
-        .map((i: any) => i.distributionState)
-        .every((v: any) => v === "Pending" || v === "NotDistributed");
-      if (isFlag) {
-        try {
-          await post_distribution_disallowance({
-            ids: this.selectionData.map((i: any) => i.id),
-          });
-          this.$message.success("驳回成功");
-          this.getListMixin();
-        } catch (error) {
-          console.log(error);
-        }
+      if (
+        this.contractChange() &&
+        this.selectionData
+          .map((i: any) => i.distributionState)
+          .every((v: any) => v === "Pending")
+      ) {
+        this.disallowance();
+      } else if (
+        this.channelChange() &&
+        this.selectionData
+          .map((i: any) => i.distributionState)
+          .every((v: any) => v === "NotDistributed")
+      ) {
+        this.disallowance();
       } else {
-        this.$message.warning("请筛选待派发或待审核的合同数据");
+        this.$message.warning("请筛选一致的待审核的合同数据或待派发的合同数据");
         return;
       }
     } else {
       this.$message.warning("请先勾选表格数据");
       return;
+    }
+  }
+  /**
+   * @description: 渠道分销合同驳回
+   */
+  private async disallowance() {
+    try {
+      await post_distribution_disallowance({
+        ids: this.selectionData.map((i: any) => i.id),
+      });
+      this.$message.success("驳回成功");
+      this.getListMixin();
+    } catch (error) {
+      console.log(error);
     }
   }
   /**

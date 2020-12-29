@@ -4,7 +4,7 @@
  * @Author: zyc
  * @Date: 2020-07-09 15:03:17
  * @LastEditors: zyc
- * @LastEditTime: 2020-12-19 16:33:48
+ * @LastEditTime: 2020-12-29 10:30:01
 --> 
 <template>
   <el-dialog
@@ -19,7 +19,7 @@
     class="dialog"
   >
     <div>
-      <div style="margin-bottom: 30px">
+      <div style="margin-bottom: 30px" v-show="false">
         <b class="padding-right-20">操作关联选项：</b>
         <el-checkbox v-model="config.selectParent">选中-关联父级</el-checkbox>
         <el-checkbox v-model="config.selectChildren">选中-关联子级</el-checkbox>

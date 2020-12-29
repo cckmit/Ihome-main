@@ -4,7 +4,7 @@
  * @Author: ywl
  * @Date: 2020-12-01 10:29:31
  * @LastEditors: ywl
- * @LastEditTime: 2020-12-19 11:27:23
+ * @LastEditTime: 2020-12-28 15:56:00
 -->
 <template>
   <IhPage label-width="80px">
@@ -74,7 +74,10 @@
           type="info"
           @click="reset()"
         >重置</el-button>
-        <el-button type="success">导入</el-button>
+        <el-button
+          type="success"
+          @click="importVisible = true"
+        >导入</el-button>
       </el-row>
     </template>
     <template v-slot:table>
@@ -135,19 +138,30 @@
         :total="resPageInfo.total"
       ></el-pagination>
     </template>
+    <!-- 弹窗 -->
+    <IhDialog :show="importVisible">
+      <BankImport
+        @cancel="() => (importVisible = false)"
+        @finish="() => {
+          importVisible = false;
+          getListMixin()
+        }"
+      ></BankImport>
+    </IhDialog>
   </IhPage>
 </template>
 
 <script lang="ts">
 import { Component, Vue } from "vue-property-decorator";
+import PaginationMixin from "../../../mixins/pagination";
+import BankImport from "./dialog/bankImport.vue";
 import {
   post_bankBranch_getList,
   post_bankBranch_delete__id,
 } from "@/api/finance/index";
 
-import PaginationMixin from "../../../mixins/pagination";
-
 @Component({
+  components: { BankImport },
   mixins: [PaginationMixin],
 })
 export default class BankBranchList extends Vue {
@@ -162,6 +176,7 @@ export default class BankBranchList extends Vue {
     total: null,
     list: [],
   };
+  private importVisible = false;
 
   private search() {
     this.queryPageParameters.pageNum = 1;

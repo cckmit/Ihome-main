@@ -4,7 +4,7 @@
  * @Author: ywl
  * @Date: 2020-09-25 11:53:51
  * @LastEditors: ywl
- * @LastEditTime: 2020-12-25 16:05:12
+ * @LastEditTime: 2020-12-26 10:59:15
 -->
 <template>
   <IhPage label-width="100px">
@@ -343,6 +343,7 @@
                 <el-dropdown-item
                   :class="{ 'ih-data-disabled': !removeChange(row) }"
                   @click.native.prevent="remove(row)"
+                  v-has="'B.SALES.CONTRACT.PARTYALIST.DELETE'"
                 >删除</el-dropdown-item>
                 <el-dropdown-item
                   @click.native.prevent="duplicate(row)"
@@ -419,32 +420,32 @@ export default class PartyAList extends Vue {
   };
 
   private masterChange(row: any) {
-    const roleList = (this.$root as any).userInfo.roleList.map(
-      (v: any) => v.code
-    );
-    const isOffice = roleList.includes("ROffice");
+    // const roleList = (this.$root as any).userInfo.roleList.map(
+    //   (v: any) => v.code
+    // );
+    // const isOffice = roleList.includes("ROffice");
     const isStatus = row.approvalStatus === "OAAudited";
     // const isArchiveStatus = row.archiveStatus === "ScansAreArchived";
-    return isOffice && isStatus;
+    return isStatus;
   }
   private removeChange(row: any) {
-    const roleList = (this.$root as any).userInfo.roleList.map(
-      (v: any) => v.code
-    );
-    const isPlatform = roleList.includes("RPlatformClerk");
+    // const roleList = (this.$root as any).userInfo.roleList.map(
+    //   (v: any) => v.code
+    // );
+    // const isPlatform = roleList.includes("RPlatformClerk");
     const isStatus =
       row.approvalStatus === "Drafting" ||
       row.approvalStatus === "OAReviewRejected";
-    return isPlatform && isStatus;
+    return isStatus;
   }
   private duplicateChange(row: any) {
-    const roleList = (this.$root as any).userInfo.roleList.map(
-      (v: any) => v.code
-    );
-    const isPlatform = roleList.includes("RPlatformClerk");
+    // const roleList = (this.$root as any).userInfo.roleList.map(
+    //   (v: any) => v.code
+    // );
+    // const isPlatform = roleList.includes("RPlatformClerk");
     const isStatus = row.approvalStatus === "OAAudited";
     // const isArchiveStatus = row.archiveStatus === "ScansAreNotArchived";
-    return isPlatform && isStatus;
+    return isStatus;
   }
   private exportChange() {
     const roleList = (this.$root as any).userInfo.roleList.map(

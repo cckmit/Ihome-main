@@ -262,6 +262,7 @@
                   :min="0"
                   :step="1"
                   size="small"
+                  :controls="false"
                   :step-strictly="true"></el-input-number>室
               </div>
               <div>
@@ -272,6 +273,7 @@
                   :min="0"
                   :step="1"
                   size="small"
+                  :controls="false"
                   :step-strictly="true"></el-input-number>厅
               </div>
               <div>
@@ -282,6 +284,7 @@
                   :min="0"
                   :step="1"
                   size="small"
+                  :controls="false"
                   :step-strictly="true"></el-input-number>厨
               </div>
               <div>
@@ -292,6 +295,7 @@
                   :min="0"
                   :step="1"
                   size="small"
+                  :controls="false"
                   :step-strictly="true"></el-input-number>卫
               </div>
             </div>
@@ -525,15 +529,77 @@
           <el-table-column prop="partyACustomerName" label="甲方/客户" min-width="120"></el-table-column>
           <el-table-column prop="packageId" label="收派套餐" min-width="140">
             <template slot-scope="scope">
-              <el-input
-                readonly
-                placeholder="请选择收派套餐"
-                v-model="scope.row.packageId">
-                <el-button
-                  slot="append"
-                  icon="el-icon-search"
-                  @click.native.prevent="selectPackage(scope)"></el-button>
-              </el-input>
+              <div v-if="!scope.row.packageId">
+                <el-input
+                  readonly
+                  placeholder="请选择收派套餐"
+                  v-model="scope.row.packageId">
+                  <el-button
+                    slot="append"
+                    icon="el-icon-search"
+                    @click.native.prevent="selectPackage(scope)"></el-button>
+                </el-input>
+              </div>
+              <div v-else>
+                <el-tooltip placement="top" effect="light">
+                  <div slot="content">
+                    <el-table :data="scope.row.showData" style="width: 100%">
+                      <el-table-column label="类型" prop="type" min-width="100">
+                        <template slot-scope="scope">
+                          <div>{{$root.dictAllName(scope.row.branchName, 'CardType')}}</div>
+                        </template>
+                      </el-table-column>
+                      <el-table-column label="合同类型" prop="contractEnum" min-width="100">
+                        <template slot-scope="scope">
+                          <div>{{$root.dictAllName(scope.row.contractEnum, 'Contract')}}</div>
+                        </template>
+                      </el-table-column>
+                      <el-table-column label="客户类型" prop="transactionEnum" min-width="100">
+                        <template slot-scope="scope">
+                          <div>{{$root.dictAllName(scope.row.transactionEnum, 'Transaction')}}</div>
+                        </template>
+                      </el-table-column>
+                      <el-table-column label="条件" prop="condition" min-width="200"></el-table-column>
+                      <el-table-column label="应收金额" prop="receivableAmout" min-width="100">
+                        <template slot-scope="scope">
+                          <div>金额：{{scope.row.receivableAmout}}</div>
+                          <div>点数：{{scope.row.receivablePoint}}</div>
+                        </template>
+                      </el-table-column>
+                      <el-table-column label="派发佣金" prop="sendAmount" min-width="100">
+                        <template slot-scope="scope">
+                          <div>金额：{{scope.row.sendAmount}}</div>
+                          <div>点数：{{scope.row.sendPoint}}</div>
+                        </template>
+                      </el-table-column>
+                      <el-table-column label="派发内场奖励" prop="sendInAmount" min-width="150">
+                        <template slot-scope="scope">
+                          <div>金额：{{scope.row.sendInAmount}}</div>
+                          <div>点数：{{scope.row.sendInPoint}}</div>
+                        </template>
+                      </el-table-column>
+                      <el-table-column label="总包业绩" prop="generalAchieveAmount" min-width="100">
+                        <template slot-scope="scope">
+                          <div>金额：{{scope.row.generalAchieveAmount}}</div>
+                          <div>点数：{{scope.row.generalAchievePoint}}</div>
+                        </template>
+                      </el-table-column>
+                      <el-table-column label="分销业绩" prop="distributeAchieveAmount" min-width="100">
+                        <template slot-scope="scope">
+                          <div>金额：{{scope.row.distributeAchieveAmount}}</div>
+                          <div>点数：{{scope.row.distributeAchievePoint}}</div>
+                        </template>
+                      </el-table-column>
+                    </el-table>
+                  </div>
+                  <el-input
+                    readonly
+                    placeholder="收派标准">
+                    <el-button slot="append" icon="el-icon-search"
+                      @click.native.prevent="selectPackage(scope)"></el-button>
+                  </el-input>
+                </el-tooltip>
+              </div>
             </template>
           </el-table-column>
           <el-table-column prop="receiveAmount" label="应收金额" min-width="120"></el-table-column>
@@ -549,7 +615,7 @@
       <el-col>
         <el-table
           class="ih-table"
-          :data="postData.receiveAchieveVO">
+          :data="receiveAchieveVO">
           <el-table-column prop="receiveAmount" label="本单应收" min-width="120"></el-table-column>
           <el-table-column prop="achieveAmount" label="本单业绩" min-width="120"></el-table-column>
           <el-table-column prop="otherChannelFees" label="其他渠道费用(正数为产生，负数为使用)" min-width="150"></el-table-column>
@@ -640,6 +706,7 @@
     firstAgencyCompanyList: any = []; // 一手代理团队选项
     propertyTypeList: any = []; // 物业类型选项
     contNoList: any = []; // 分销协议列表---initPage接口
+    packageIdsList: any = []; // 收派套餐ids：分销模式---选择分销协议后获取；非分销协议---请求接口获取
     baseInfoByTerm: any = {
       proId: null, // 项目id --- 用于查询分销协议列表
       termId: null, // 项目周期id
@@ -827,6 +894,29 @@
     navFlag: any = false; // 是否展开锚点
     navList: any = []; // 锚点列表
 
+    // 应收信息表格
+    get receiveAchieveVO() {
+      let arr: any = []
+      if (this.postData.receiveVO.length > 0) {
+        let obj = {
+          receiveAmount: 0,
+          achieveAmount: 0,
+          otherChannelFees: 0,
+        }
+        this.postData.receiveVO.forEach((item: any) => {
+          obj.receiveAmount = obj.receiveAmount + parseFloat(item.receiveAmount ? item.receiveAmount : 0);
+          obj.achieveAmount = obj.achieveAmount + parseFloat(item.commAmount ? item.commAmount : 0)
+            + parseFloat(item.rewardAmount ? item.rewardAmount : 0)
+            + parseFloat(item.totalPackageAmount ? item.totalPackageAmount : 0)
+            + parseFloat(item.distributionAmount ? item.distributionAmount : 0);
+          obj.otherChannelFees = obj.otherChannelFees
+            + parseFloat(item.otherChannelFees ? item.otherChannelFees : 0);
+        })
+        arr.push(obj);
+      }
+      return arr;
+    }
+
     async created() {
       this.postData.documentVO = (this as any).$root.dictAllList('DealFileType'); // 附件类型
       // 附件类型增加key
@@ -925,6 +1015,7 @@
             ];
             await this.resetObject('postData', list);
           }
+          this.packageIdsList = []; // ids
           this.postData.cycleName = data[0].termName;
           this.postData.cycleId = data[0].termId;
           this.cycleCheckedData = [...data];
@@ -1012,6 +1103,7 @@
     // 清空数据 - 主要是和初始化数据有关的数据
     resetData() {
       this.contNoList = []; // 分销协议编号
+      this.packageIdsList = []; // ids
       this.postData.customerVO = []; // 客户信息
       this.postData.offerNoticeVO = []; // 优惠告知书
       let list: any = ['contType', 'contNo', 'recordState', 'recordStr', 'area', 'room', 'hall', 'kitchen',
@@ -1040,6 +1132,14 @@
       this.baseInfoInDeal = JSON.parse(JSON.stringify(baseInfo || '{}'));
       // console.log('baseInfobaseInfo', this.baseInfoInDeal);
       // 处理数据
+      // 纯提示
+      if (baseInfo.customerIsDifferent) {
+        this.$notify({
+          title: '提示',
+          message: '明源客户与优惠告知书客户有差异',
+          duration: 0
+        });
+      }
       // 栋座
       if (baseInfo.buildingId && !this.postData.buildingId) {
         this.postData.buildingId = baseInfo.buildingId;
@@ -1102,7 +1202,20 @@
       // 优惠告知书
       this.postData.offerNoticeVO = baseInfo.notice ? baseInfo.notice : [];
       // 客户信息
-      this.postData.customerVO = baseInfo.myReturnVO.customerVOS ? baseInfo.myReturnVO.customerVOS : [];
+      this.postData.customerVO = baseInfo.myReturnVO && baseInfo.myReturnVO.customerVOS && baseInfo.myReturnVO.customerVOS.length ? baseInfo.myReturnVO.customerVOS : [];
+      // 收派金额
+      // this.postData.receiveVO = baseInfo.receiveVOS && baseInfo.receiveVOS.length ? baseInfo.receiveVOS : [];
+      let obj = {
+        receiveAmount: 200,
+        commAmount: 10,
+        rewardAmount: 5,
+        totalPackageAmount: 2,
+        distributionAmount: 1,
+      }
+      this.postData.receiveVO = [];
+      for (let i = 0; i <= 3; i++) {
+        this.postData.receiveVO.push(obj);
+      }
     }
 
     // 初始化渠道商(渠道公司) --- 分销成交模式才有渠道商
@@ -1174,11 +1287,15 @@
     // 是否垫佣是根据对应的分销协议来判断
     changeContNo(value: any) {
       this.postData.isMat = null;
+      this.packageIdsList = [];
       if (!value) return;
       if (this.contNoList.length > 0) {
         this.contNoList.forEach((item: any) => {
           if (item.contractNo === value) {
+            // 是否垫佣
             this.postData.isMat = item.advancementSituation;
+            // 分销模式下获取分销协议返回的收派套餐id
+            this.packageIdsList = item.packageMxIds && item.packageMxIds.length ? item.packageMxIds : [];
           }
         })
       }
@@ -1186,18 +1303,20 @@
 
     // 选择收派套餐
     selectPackage(scope: any) {
-      console.log('选择收派套餐', scope);
-      let obj: any = {
-        type: '',
-        idList: []
-      }
-      // 判断费用类型
-      if(scope.row.type === '') {
-        obj.type = 'service'; // 服务费
-      } else {
-        obj.type = 'agency'; // 代理费
-      }
-      (this as any).$parent.selectPackage(obj);
+      // console.log('选择收派套餐', scope);
+      let params: any = {
+        hasRecord: this.baseInfoInDeal.hasRecord, // 是否有成交报备(是否分销成交)
+        idList: this.packageIdsList, // 分销成交 --- 选择分销协议后的ids
+        contNo: this.postData.contNo, // 分销协议编号
+        type: scope.row.type, // 标题类型
+        postObj: {
+          contractEnum: this.postData.contType, // 合同类型
+          propertyEnum: this.postData.propertyType, // 物业类型
+          subdivideEnum: this.postData.refineModel, // 细分业务
+          termId: this.postData.cycleId, // 立项周期ID
+        }, // 非分销需要获取id的参数
+      };
+      (this as any).$parent.selectPackage(params);
     }
 
     // 计算收派金额总计

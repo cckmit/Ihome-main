@@ -4,7 +4,7 @@
  * @Author: ywl
  * @Date: 2020-12-18 10:12:10
  * @LastEditors: ywl
- * @LastEditTime: 2020-12-18 14:20:41
+ * @LastEditTime: 2020-12-28 11:08:09
 -->
 <template>
   <el-dialog
@@ -15,13 +15,14 @@
     :before-close="cancel"
     append-to-body
     width="80%"
+    top="5vh"
     title="关联成交报告"
   >
     <el-form label-width="100px">
       <el-row>
         <el-col :span="8">
           <el-form-item label="成交报告编号">
-            <el-input v-model="queryPageParameters.branchName"></el-input>
+            <el-input v-model="queryPageParameters.dealCode"></el-input>
           </el-form-item>
         </el-col>
         <el-col :span="8">
@@ -31,7 +32,7 @@
         </el-col>
         <el-col :span="8">
           <el-form-item label="录入人">
-            <el-input v-model="queryPageParameters.branchNo"></el-input>
+            <el-input v-model="queryPageParameters.entryPerson"></el-input>
           </el-form-item>
         </el-col>
       </el-row>
@@ -43,24 +44,24 @@
         </el-col>
         <el-col :span="8">
           <el-form-item label="房号">
-            <el-input v-model="queryPageParameters.cityName"></el-input>
+            <el-input v-model="queryPageParameters.roomNo"></el-input>
           </el-form-item>
         </el-col>
         <el-col :span="8">
           <el-form-item label="立项周期">
-            <el-input v-model="queryPageParameters.cityName"></el-input>
+            <el-input v-model="queryPageParameters.projectCycle"></el-input>
           </el-form-item>
         </el-col>
       </el-row>
       <el-row>
         <el-col :span="8">
           <el-form-item label="组织">
-            <el-input v-model="queryPageParameters.cityName"></el-input>
+            <el-input v-model="queryPageParameters.dealOrgId"></el-input>
           </el-form-item>
         </el-col>
         <el-col :span="8">
           <el-form-item label="业主姓名">
-            <el-input v-model="queryPageParameters.cityName"></el-input>
+            <el-input v-model="queryPageParameters.customerName                      "></el-input>
           </el-form-item>
         </el-col>
       </el-row>
@@ -91,31 +92,31 @@
       ></el-table-column>
       <el-table-column
         label="成交报告编号"
-        prop="branchName"
+        prop="dealCode"
       ></el-table-column>
       <el-table-column
         label="成交日期"
-        prop="bankName"
+        prop="signDate"
       ></el-table-column>
       <el-table-column
         label="录入人"
-        prop="provinceName"
+        prop="entryPerson"
       ></el-table-column>
       <el-table-column
         label="联动项目"
-        prop="cityName"
+        prop="projectName"
       ></el-table-column>
       <el-table-column
         label="房号"
-        prop="branchNo"
+        prop="roomNo"
       ></el-table-column>
       <el-table-column
         label="立项周期"
-        prop="branchNo"
+        prop="cycleId"
       ></el-table-column>
       <el-table-column
         label="店组"
-        prop="branchNo"
+        prop="dealOrg"
       ></el-table-column>
     </el-table>
     <div class="text-right">
@@ -141,7 +142,7 @@
 </template>
 
 <script lang="ts">
-import { Component, Vue } from "vue-property-decorator";
+import { Component, Vue, Prop } from "vue-property-decorator";
 import PaginationMixin from "../../../../mixins/pagination";
 import { post_deal_getList } from "../../../../api/deal/index";
 import { post_payment_relevanceDeal } from "../../../../api/finance/index";
@@ -150,6 +151,7 @@ import { post_payment_relevanceDeal } from "../../../../api/finance/index";
   mixins: [PaginationMixin],
 })
 export default class DealDialog extends Vue {
+  @Prop() id!: any;
   private dialogVisible = true;
   private selection = [];
   public queryPageParameters: any = {};
@@ -163,7 +165,12 @@ export default class DealDialog extends Vue {
   }
   async finish() {
     if (this.selection.length) {
-      await post_payment_relevanceDeal();
+      let dealItem: any = this.selection[0];
+      await post_payment_relevanceDeal({
+        dealCode: dealItem.dealCode,
+        dealId: dealItem.id,
+        id: this.id,
+      });
       this.$emit("finish");
     } else {
       this.$message.warning("请先勾选表格数据");
