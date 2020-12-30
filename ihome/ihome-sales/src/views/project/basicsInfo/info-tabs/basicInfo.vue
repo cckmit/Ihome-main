@@ -4,7 +4,7 @@
  * @Author: wwq
  * @Date: 2020-11-03 11:52:41
  * @LastEditors: wwq
- * @LastEditTime: 2020-12-15 10:29:37
+ * @LastEditTime: 2020-12-30 15:35:50
 -->
 <template>
   <div>
@@ -16,93 +16,105 @@
     >
       <el-row>
         <el-col :span="8">
-          <el-form-item label="盘编">
-            <span
-              class="text-ellipsis"
-              :title="form.proNo"
-            >{{
-              form.proNo
-            }}</span>
+          <el-form-item
+            label="项目推广名"
+            :title="form.proName"
+          >
+            <span class="text-ellipsis">{{ form.proName }}</span>
           </el-form-item>
         </el-col>
         <el-col :span="8">
-          <el-form-item label="项目推广名">
-            <span>{{ form.proName }}</span>
+          <el-form-item
+            label="项目备案名"
+            :title="form.proRecord"
+          >
+            <span class="text-ellipsis">{{ form.proRecord }}</span>
           </el-form-item>
         </el-col>
         <el-col :span="8">
-          <el-form-item label="项目备案名">
-            <span>{{ form.proRecord }}</span>
-          </el-form-item>
-        </el-col>
-      </el-row>
-      <el-row>
-        <el-col :span="8">
-          <el-form-item label="开发商名称">
-            <span>{{ form.developerId }}</span>
+          <el-form-item
+            label="开发商名称"
+            :title="form.developerName"
+          >
+            <span class="text-ellipsis">{{ form.developerName }}</span>
           </el-form-item>
         </el-col>
         <el-col :span="8">
           <el-form-item label="市场化项目">
-            <span>{{ filterExMarket(form.exMarket) }}</span>
+            <span class="text-ellipsis">{{ filterExMarket(form.exMarket) }}</span>
           </el-form-item>
         </el-col>
         <el-col :span="8">
           <el-form-item label="关联明源">
-            <span>{{ filterExMarket(form.exMinyuan) }}</span>
+            <span class="text-ellipsis">{{ filterExMarket(form.exMinyuan) }}</span>
           </el-form-item>
         </el-col>
       </el-row>
       <el-row v-if="isShow">
         <el-col :span="8">
-          <el-form-item label="爱家父项目推广名">
-            <span>{{ form.parentName }}</span>
+          <el-form-item
+            label="爱家父项目推广名"
+            :title="form.parentName"
+          >
+            <span class="text-ellipsis">{{ form.parentName }}</span>
           </el-form-item>
         </el-col>
         <el-col :span="8">
-          <el-form-item label="明源楼盘名">
-            <span>{{ form.buildingGuidName }}</span>
+          <el-form-item
+            label="明源楼盘名"
+            :title="form.buildingGuidName"
+          >
+            <span class="text-ellipsis">{{ form.buildingGuidName }}</span>
           </el-form-item>
         </el-col>
         <el-col :span="8">
           <el-form-item label="同步明源房号数据">
-            <span>{{ filterExMarket(form.exSyncRoom) }}</span>
+            <span class="text-ellipsis">{{ filterExMarket(form.exSyncRoom) }}</span>
           </el-form-item>
         </el-col>
       </el-row>
       <el-row>
         <el-col :span="8">
           <el-form-item label="省份">
-            <span>{{ $root.getAreaName(form.province) }}</span>
+            <span class="text-ellipsis">{{ $root.getAreaName(form.province) }}</span>
           </el-form-item>
         </el-col>
         <el-col :span="8">
           <el-form-item label="城市">
-            <span>{{ $root.getAreaName(form.city) }}</span>
+            <span class="text-ellipsis">{{ $root.getAreaName(form.city) }}</span>
           </el-form-item>
         </el-col>
         <el-col :span="8">
           <el-form-item label="行政区">
-            <span>{{ $root.getAreaName(form.district) }}</span>
+            <span class="text-ellipsis">{{ $root.getAreaName(form.district) }}</span>
           </el-form-item>
         </el-col>
       </el-row>
       <el-row>
         <el-col :span="24">
-          <el-form-item label="项目地址">
-            <span>{{ form.proAddr }}</span>
+          <el-form-item
+            label="项目地址"
+            :title="form.proAddr"
+          >
+            <span class="text-ellipsis">{{ form.proAddr }}</span>
           </el-form-item>
         </el-col>
       </el-row>
       <el-row>
         <el-col :span="8">
-          <el-form-item label="经纬度">
-            <span>{{ form.jingwei }}</span>
+          <el-form-item
+            label="经纬度"
+            :title="form.jingwei"
+          >
+            <span class="text-ellipsis">{{ form.jingwei }}</span>
           </el-form-item>
         </el-col>
-        <el-col :span="8">
-          <el-form-item label="详细地址">
-            <span>{{ form.searchAddr }}</span>
+        <el-col :span="16">
+          <el-form-item
+            label="详细地址"
+            :title="form.searchAddr"
+          >
+            <span class="text-ellipsis">{{ form.searchAddr }}</span>
           </el-form-item>
         </el-col>
       </el-row>
@@ -528,7 +540,7 @@ export default class InfoBasicInfo extends Vue {
       }));
       this.radio = this.houseFileList.filter(
         (item: any) => item.exIndex === 1
-      )[0]["fileId"];
+      )[0]?.fileId;
       this.getFileListType(data.attachPics);
     }
   }

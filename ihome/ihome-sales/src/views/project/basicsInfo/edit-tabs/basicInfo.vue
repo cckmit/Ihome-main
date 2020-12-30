@@ -4,7 +4,7 @@
  * @Author: wwq
  * @Date: 2020-11-03 11:52:41
  * @LastEditors: wwq
- * @LastEditTime: 2020-12-30 09:03:45
+ * @LastEditTime: 2020-12-30 15:47:39
 -->
 <template>
   <div>
@@ -506,8 +506,12 @@
     <div class="margin-top-20">
       <el-button
         type="primary"
-        @click="save"
+        @click="submit('save')"
       >保存</el-button>
+      <el-button
+        type="primary"
+        @click="submit('submit')"
+      >提交</el-button>
       <el-button @click="$goto({ path: '/projects/list' })">关闭</el-button>
     </div>
     <ih-dialog :show="dialogVisible">
@@ -524,6 +528,7 @@ import {
   get_project_get__proId,
   post_project_add,
   post_project_update,
+  post_project_auditWait,
 } from "@/api/project/index";
 import FirstAgencyDialog from "../dialog/firstAgency.vue";
 import { Form as ElForm } from "element-ui";
@@ -874,7 +879,7 @@ export default class EditBasicInfo extends Vue {
     });
   }
 
-  async save() {
+  async submit(submittype: any) {
     (this.$refs["form"] as ElForm).validate(async (v: any) => {
       if (v) {
         let obj = { ...this.form };
@@ -953,10 +958,14 @@ export default class EditBasicInfo extends Vue {
           await post_project_add(obj);
         } else {
           obj.proId = this.projectId;
-          await post_project_update(obj);
+          if (submittype === "save") {
+            await post_project_update(obj);
+          } else if (submittype === "submit") {
+            await post_project_auditWait(obj);
+          }
         }
         this.houseList = [];
-        this.$message.success("保存成功");
+        this.$message.success("提交成功");
         this.$goto({ path: "/projects/list" });
       }
     });

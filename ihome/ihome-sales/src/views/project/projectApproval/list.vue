@@ -4,7 +4,7 @@
  * @Author: wwq
  * @Date: 2020-11-27 17:11:14
  * @LastEditors: wwq
- * @LastEditTime: 2020-12-28 10:14:40
+ * @LastEditTime: 2020-12-30 16:35:39
 -->
 <template>
   <IhPage label-width="100px">
@@ -260,7 +260,7 @@ import Add from "./dialog/basicInfo-dialog/add.vue";
 export default class ProjectApproval extends Vue {
   queryPageParameters: any = {
     proNo: null,
-    proName: null,
+    proId: null,
     termName: null,
     busTypeEnum: null,
     province: null,
@@ -308,7 +308,7 @@ export default class ProjectApproval extends Vue {
   reset() {
     Object.assign(this.queryPageParameters, {
       proNo: null,
-      proName: null,
+      proId: null,
       termName: null,
       busTypeEnum: null,
       province: null,

@@ -4,7 +4,7 @@
  * @Author: wwq
  * @Date: 2020-12-01 09:05:50
  * @LastEditors: wwq
- * @LastEditTime: 2020-12-29 18:29:58
+ * @LastEditTime: 2020-12-30 15:37:56
 -->
 <template>
   <el-dialog
@@ -138,15 +138,6 @@
             </el-col>
           </el-row>
           <el-row>
-            <el-col :span="8">
-              <el-form-item label="合同录入人">
-                <IhSelectPageUser
-                  v-model="queryPageParameters.enteringPersonId"
-                  clearable
-                >
-                </IhSelectPageUser>
-              </el-form-item>
-            </el-col>
             <el-col :span="8">
               <el-form-item label="合同跟进人">
                 <IhSelectPageUser
@@ -334,7 +325,6 @@ export default class PartyAList extends Vue {
     cooperationBeginTime: null,
     cooperationEndTime: null,
     cooperationProjectsName: null,
-    enteringPersonId: null,
     handlerId: null,
     organizationId: null,
     partyAId: null,
@@ -388,7 +378,6 @@ export default class PartyAList extends Vue {
       cooperationBeginTime: null,
       cooperationEndTime: null,
       cooperationProjectsName: null,
-      enteringPersonId: null,
       handlerId: null,
       organizationId: null,
       partyAId: null,
