@@ -4,7 +4,7 @@
  * @Author: wwq
  * @Date: 2020-11-27 17:17:06
  * @LastEditors: wwq
- * @LastEditTime: 2020-12-25 19:57:53
+ * @LastEditTime: 2020-12-30 19:11:19
 -->
 <template>
   <div class="project-approval-box">
@@ -511,7 +511,7 @@
               class="width--100"
             >
               <el-option
-                v-for="item in $root.dictAllList('YesOrNoType')"
+                v-for="item in $root.dictAllList('HouseandcarGtRecord')"
                 :key="item.code"
                 :label="item.name"
                 :value="item.code"
