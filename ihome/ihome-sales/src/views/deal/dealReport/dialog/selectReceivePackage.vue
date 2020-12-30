@@ -27,14 +27,10 @@
       @select="handleSelect"
       @select-all="handleSelectAll">
       <el-table-column fixed type="selection" width="50" align="center"></el-table-column>
-      <el-table-column label="类型" prop="type" min-width="100">
-        <template slot-scope="scope">
-          <div>{{$root.dictAllName(scope.row.branchName, 'CardType')}}</div>
-        </template>
-      </el-table-column>
+      <el-table-column label="类型" prop="typeName" min-width="100"></el-table-column>
       <el-table-column label="合同类型" prop="contractEnum" min-width="100">
         <template slot-scope="scope">
-          <div>{{$root.dictAllName(scope.row.contractEnum, 'Contract')}}</div>
+          <div>{{$root.dictAllName(scope.row.contractEnum, 'ContType')}}</div>
         </template>
       </el-table-column>
       <el-table-column label="客户类型" prop="transactionEnum" min-width="100">
@@ -162,12 +158,20 @@
     }
 
     async getListMixin() {
-      this.resPageInfo = await post_collectandsend_getCollectadnsendMxByIds(this.queryPageParameters);
+      let self = this;
+      let infoList: any = await post_collectandsend_getCollectadnsendMxByIds(this.queryPageParameters);
+      if (infoList && infoList.list && infoList.list.length) {
+        infoList.list.forEach((item: any) => {
+          // 类型
+          item.typeName = (self as any).$root.dictAllName(self.data.type, 'FeeType');
+        })
+      }
+      this.resPageInfo = infoList;
     }
 
     async finish() {
       if (this.selection.length) {
-        this.$emit("finish", this.selection[0]);
+        this.$emit("finish", this.selection);
       } else {
         this.$message.warning("请先勾选表格数据");
       }
