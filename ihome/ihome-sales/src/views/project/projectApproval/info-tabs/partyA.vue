@@ -3,8 +3,8 @@
  * @version: 
  * @Author: wwq
  * @Date: 2020-11-27 17:20:24
- * @LastEditors: wwq
- * @LastEditTime: 2020-12-10 11:10:24
+ * @LastEditors: ywl
+ * @LastEditTime: 2020-12-30 19:19:40
 -->
 <template>
   <div>
@@ -37,7 +37,11 @@
         <el-table-column
           prop="cooperationTime"
           label="执行时间"
-        ></el-table-column>
+        >
+          <template v-slot="{ row }">
+            {{ row.cooperationTime && row.cooperationEnd ? `${row.cooperationTime} ~ ${row.cooperationEnd}` : '' }}
+          </template>
+        </el-table-column>
         <el-table-column
           prop="handlerName"
           label="合同跟进人"

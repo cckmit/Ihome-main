@@ -4,7 +4,7 @@
  * @Author: ywl
  * @Date: 2020-09-25 16:00:37
  * @LastEditors: ywl
- * @LastEditTime: 2020-12-30 14:28:59
+ * @LastEditTime: 2020-12-30 19:12:36
 -->
 <template>
   <IhPage class="text-left partyA-info">
@@ -62,7 +62,7 @@
         <el-row>
           <el-col :span="12">
             <el-form-item label="合作时间">
-              {{formData.cooperationTime}}
+              {{ formData.cooperationTime && formData.cooperationEnd ? `${formData.cooperationTime} ~ ${formData.cooperationEnd}` : '' }}
             </el-form-item>
           </el-col>
           <el-col :span="12">

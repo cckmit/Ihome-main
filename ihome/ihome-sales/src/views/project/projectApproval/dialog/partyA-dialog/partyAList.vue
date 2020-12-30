@@ -3,8 +3,8 @@
  * @version: 
  * @Author: wwq
  * @Date: 2020-12-01 09:05:50
- * @LastEditors: wwq
- * @LastEditTime: 2020-12-30 15:37:56
+ * @LastEditors: ywl
+ * @LastEditTime: 2020-12-30 19:20:29
 -->
 <template>
   <el-dialog
@@ -225,6 +225,9 @@
         prop="cooperationTime"
         width="200"
       >
+        <template v-slot="{ row }">
+          {{ row.cooperationTime && row.cooperationEnd ? `${row.cooperationTime} ~ ${row.cooperationEnd}` : '' }}
+        </template>
       </el-table-column>
       <el-table-column
         label="归属组织"
