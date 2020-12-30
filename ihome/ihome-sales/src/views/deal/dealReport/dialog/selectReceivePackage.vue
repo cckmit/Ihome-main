@@ -92,9 +92,12 @@
   import {Component, Vue, Prop} from "vue-property-decorator";
   import PaginationMixin from "@/mixins/pagination";
   import {
-    post_collectandsend_getCollectadnsendMxByIds,
+    // post_collectandsend_getCollectadnsendMxByIds,
     post_term_getCollectPackageByDeal
   } from "@/api/project"; // 根据可选IDS获取收派套餐
+  import {
+    post_pageData_initSelectablePackage
+  } from "@/api/deal"; // 获取收派套餐
 
   @Component({
     mixins: [PaginationMixin]
@@ -105,9 +108,7 @@
     }
     private dialogVisible = true;
     private selection = [];
-    public queryPageParameters: any = {
-      packageMxIds: []
-    };
+    public queryPageParameters: any = {};
     public resPageInfo: any = {
       total: null,
       list: [],
@@ -117,16 +118,17 @@
 
     async created() {
       console.log('data', this.data);
+      await this.getListMixin();
       // 判断套餐类型
-      this.dialogTitle = `选择${(this as any).$root.dictAllName(this.data.type, 'FeeType')}收派套餐标准`;
-      if (this.data.hasRecord) {
-        // 分销模式
-        this.queryPageParameters.packageMxIds = this.data.idList;
-        await this.getListMixin();
-      } else {
-        // 非分销模式
-        await this.getPackageIds(this.data.postObj);
-      }
+      this.dialogTitle = `选择${(this as any).$root.dictAllName(this.data.feeType, 'FeeType')}收派套餐标准`;
+      // if (this.data.hasRecord) {
+      //   // 分销模式
+      //   this.queryPageParameters.packageMxIds = this.data.idList;
+      //   await this.getListMixin();
+      // } else {
+      //   // 非分销模式
+      //   await this.getPackageIds(this.data.postObj);
+      // }
     }
 
     private handleSelectionChange(val: any) {
@@ -159,7 +161,12 @@
 
     async getListMixin() {
       let self = this;
-      let infoList: any = await post_collectandsend_getCollectadnsendMxByIds(this.queryPageParameters);
+      this.queryPageParameters = {
+        ...this.queryPageParameters,
+        ...this.data
+      }
+      // let infoList: any = await post_collectandsend_getCollectadnsendMxByIds(this.queryPageParameters);
+      let infoList: any = await post_pageData_initSelectablePackage(this.queryPageParameters);
       if (infoList && infoList.list && infoList.list.length) {
         infoList.list.forEach((item: any) => {
           // 类型

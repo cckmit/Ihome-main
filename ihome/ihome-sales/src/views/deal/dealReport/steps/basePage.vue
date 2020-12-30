@@ -292,16 +292,6 @@
                 <el-input-number
                   :disabled="['staffAchieveInfo'].includes(changeType)"
                   v-digits="0"
-                  v-model="postData.kitchen"
-                  :min="0"
-                  :step="1"
-                  size="small"
-                  :step-strictly="true"></el-input-number>厨
-              </div>
-              <div>
-                <el-input-number
-                  :disabled="['staffAchieveInfo'].includes(changeType)"
-                  v-digits="0"
                   v-model="postData.toilet"
                   :min="0"
                   :step="1"
@@ -973,7 +963,6 @@
       area: null,
       room: null,
       hall: null,
-      kitchen: null,
       toilet: null,
       offerNoticeVO: [], // 优惠告知书
       customerVO: [], // 客户信息

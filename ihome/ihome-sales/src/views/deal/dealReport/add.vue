@@ -277,16 +277,6 @@
               <div>
                 <el-input-number
                   v-digits="0"
-                  :disabled="isDisabled('kitchen', 'houseVO')"
-                  v-model="postData.kitchen"
-                  :min="0"
-                  :step="1"
-                  size="small"
-                  :step-strictly="true"></el-input-number>厨
-              </div>
-              <div>
-                <el-input-number
-                  v-digits="0"
                   :disabled="isDisabled('toilet', 'houseVO')"
                   v-model="postData.toilet"
                   :min="0"
@@ -1100,7 +1090,6 @@
       area: null,
       room: null,
       hall: null,
-      kitchen: null,
       toilet: null,
       sceneSales: null, // 现场销售
       offerNoticeVO: [], // 优惠告知书
@@ -1452,7 +1441,6 @@
               'area',
               'room',
               'hall',
-              'kitchen',
               'toilet',
               'propertyNo',
               'sceneSales',
@@ -1552,7 +1540,7 @@
       this.contNoList = []; // 分销协议编号
       this.postData.customerVO = []; // 客户信息
       this.postData.offerNoticeVO = []; // 优惠告知书
-      let list: any = ['contType', 'contNo', 'recordState', 'recordStr', 'area', 'room', 'hall', 'kitchen',
+      let list: any = ['contType', 'contNo', 'recordState', 'recordStr', 'area', 'room', 'hall',
         'toilet', 'propertyNo', 'signType', 'stage', 'returnRatio', 'subscribePrice', 'subscribeDate',
         'signPrice', 'signDate', 'dataSign', 'agencyId', 'agencyName', 'channelLevel', 'channelLevelName']
       this.resetObject('postData', list);
@@ -1600,7 +1588,6 @@
       // 户型
       this.postData.room = baseInfo.myReturnVO.houseVO?.room;
       this.postData.hall = baseInfo.myReturnVO.houseVO?.hall;
-      this.postData.kitchen = baseInfo.myReturnVO.houseVO?.kitchen;
       this.postData.toilet = baseInfo.myReturnVO.houseVO?.toilet;
       // 预售合同编号
       this.postData.propertyNo = baseInfo.myReturnVO.houseVO?.propertyNo;
