@@ -4,14 +4,14 @@
  * @Author: zyc
  * @Date: 2020-06-23 10:42:04
  * @LastEditors: zyc
- * @LastEditTime: 2020-12-29 15:09:37
+ * @LastEditTime: 2020-12-30 09:34:45
 --> 
 <template>
   <div class="header-container">
     <div class="left-item">
       <i
         class="el-icon-s-fold close-btn"
-        style="font-size: 20px; cursor: pointer"
+        style="font-size: 20px; cursor: pointer; color: #606266"
         :class="isCollapse ? 'is-active' : ''"
         @click="clickAside()"
       ></i>
