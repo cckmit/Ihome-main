@@ -4,7 +4,7 @@
  * @Author: ywl
  * @Date: 2020-12-17 19:43:20
  * @LastEditors: ywl
- * @LastEditTime: 2020-12-22 11:23:29
+ * @LastEditTime: 2020-12-30 11:49:25
 -->
 <template>
   <IhPage class="text-left">
@@ -41,7 +41,7 @@
             <el-form-item label="付款方">{{$root.dictAllName(info.payment.payer, 'PaymentPayer')}}</el-form-item>
           </el-col>
           <el-col :span="8">
-            <el-form-item label="业务编号">{{info.payment.businessId}}</el-form-item>
+            <el-form-item label="业务编号">{{info.payment.businessCode}}</el-form-item>
           </el-col>
         </el-row>
         <el-row>

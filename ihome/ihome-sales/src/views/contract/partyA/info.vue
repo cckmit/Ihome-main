@@ -4,7 +4,7 @@
  * @Author: ywl
  * @Date: 2020-09-25 16:00:37
  * @LastEditors: ywl
- * @LastEditTime: 2020-12-26 10:49:27
+ * @LastEditTime: 2020-12-30 14:28:59
 -->
 <template>
   <IhPage class="text-left partyA-info">
@@ -163,7 +163,11 @@
           class="ih-table partyA-table"
           :data="formData.cycleList"
         >
-          <el-table-column label="周期编号"></el-table-column>
+          <el-table-column
+            label="周期编号"
+            prop="approvalNo"
+            min-width="180"
+          ></el-table-column>
           <el-table-column
             label="周期名称"
             prop="termName"

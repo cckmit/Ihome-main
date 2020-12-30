@@ -4,7 +4,7 @@
  * @Author: zyc
  * @Date: 2020-11-24 10:49:02
  * @LastEditors: zyc
- * @LastEditTime: 2020-12-18 14:10:56
+ * @LastEditTime: 2020-12-30 09:43:33
  */
 /*
  * @Descripttion: 
@@ -80,7 +80,7 @@ function render() {
     dictAll: {}
   };
 
-  Promise.all([get_area_getAll(), get_dict_getAll(), post_sessionUser_getUserInfo()]).then((res: any) => {
+  Promise.all([get_area_getAll(), get_dict_getAll(), post_sessionUser_getUserInfo({ terminalType: "Pc" })]).then((res: any) => {
     areaAll = res[0];
     dictAll = res[1];
     userInfo = res[2];
