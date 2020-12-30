@@ -4,7 +4,7 @@
  * @Author: zyc
  * @Date: 2020-10-16 14:16:23
  * @LastEditors: zyc
- * @LastEditTime: 2020-11-11 09:06:18
+ * @LastEditTime: 2020-12-29 15:02:47
  */
 
 import { RouteConfig } from 'vue-router'
@@ -17,14 +17,15 @@ import Layout from '../components/Layout.vue';
 const channelRoutes: Array<RouteConfig> = [
     {
         path: '/invitationCode',
-        meta: { title: '邀请码', icon: null },
+        meta: { title: '渠道邀请码列表', icon: null },
+        redirect: '/invitationCode/list',
         component: Layout,
         children: [
             {
                 path: 'list',
                 name: 'invitationCodeList',
                 component: () => import('../views/channel/invitationCode/list.vue'),
-                meta: { title: '邀请码列表', icon: 'form', keepAlive: true }
+                meta: { title: '渠道邀请码列表', icon: 'form', keepAlive: true }
             },
             {
                 path: 'info',
@@ -36,7 +37,8 @@ const channelRoutes: Array<RouteConfig> = [
     },
     {
         path: '/approval',
-        meta: { title: '渠道呈批', icon: null },
+        meta: { title: '渠道呈批列表', icon: null },
+        redirect: '/approval/list',
         component: Layout,
         children: [
             {

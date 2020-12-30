@@ -4,14 +4,14 @@
  * @Author: zyc
  * @Date: 2020-06-23 10:42:04
  * @LastEditors: zyc
- * @LastEditTime: 2020-12-16 16:51:06
+ * @LastEditTime: 2020-12-30 09:34:45
 --> 
 <template>
   <div class="header-container">
     <div class="left-item">
       <i
         class="el-icon-s-fold close-btn"
-        style="font-size: 20px; cursor: pointer"
+        style="font-size: 20px; cursor: pointer; color: #606266"
         :class="isCollapse ? 'is-active' : ''"
         @click="clickAside()"
       ></i>
@@ -26,11 +26,9 @@
       <div class="breadcrumb" v-show="true">
         <el-breadcrumb separator-class="el-icon-arrow-right">
           <!-- <el-breadcrumb-item :to="{ path: '/' }">首页</el-breadcrumb-item> -->
-          <el-breadcrumb-item
-            v-for="(item, index) in breadcrumbList"
-            :key="index"
-            >{{ item && item.name }}</el-breadcrumb-item
-          >
+          <el-breadcrumb-item v-for="(item, index) in crumbs" :key="index">{{
+            item && item.name
+          }}</el-breadcrumb-item>
           <!-- <el-breadcrumb-item>活动列表</el-breadcrumb-item>
           <el-breadcrumb-item>活动详情</el-breadcrumb-item>-->
         </el-breadcrumb>
@@ -60,11 +58,11 @@
   </div>
 </template>
 <script lang="ts">
-import { Component, Vue, Watch } from "vue-property-decorator";
+import { Component, Vue } from "vue-property-decorator";
 import { UserModule } from "../store/modules/user";
 import { AppModule } from "../store/modules/app";
 import { headImg } from "../utils/base64-img";
-import { defaultIsCollapse } from "@/setting";
+import { defaultIsCollapse } from "../setting";
 // import { allMenu } from "../api/users";
 import { get_sessionUser_logout } from "../api/system/index";
 @Component({
@@ -78,6 +76,10 @@ export default class IhHeader extends Vue {
 
   breadcrumbList: any = [];
   circleUrl = headImg;
+
+  get crumbs() {
+    return UserModule.crumbs;
+  }
   private isAside: boolean = defaultIsCollapse;
   // created() {}
 
@@ -101,51 +103,55 @@ export default class IhHeader extends Vue {
     AppModule.toggleSideBar();
   }
 
-  @Watch("$route")
-  async getBreadcrumb(newVal: any) {
-    // let menuList: any = await allMenu();
+  // @Watch("$route")
+  // async getBreadcrumb(newVal: any) {
+  //   // let menuList: any = await allMenu();
+  //   //  console.log((window as any).polyihomeData);
+  //   let menuList: any[] =
+  //     (window as any).polyihomeData?.userInfo.menuList || [];
+  //   console.log("menuList", menuList);
 
-    let menuList = (this.$root as any).userInfo?.menuList || [];
+  //   // let menuList = (this.$root as any).userInfo?.menuList || [];
 
-    let arr = null;
-    for (let index = 0; index < menuList.length; index++) {
-      const element = menuList[index];
-      if (newVal.path == element.url) {
-        arr = element;
-        break;
-      }
-    }
-    let data = null;
-    for (let index = 0; index < menuList.length; index++) {
-      const element = menuList[index];
-      if (arr?.parentId == element.id) {
-        data = element;
-        break;
-      }
-    }
+  //   let arr = null;
+  //   for (let index = 0; index < menuList.length; index++) {
+  //     const element = menuList[index];
+  //     if (newVal.path == element.url) {
+  //       arr = element;
+  //       break;
+  //     }
+  //   }
+  //   let data = null;
+  //   for (let index = 0; index < menuList.length; index++) {
+  //     const element = menuList[index];
+  //     if (arr?.parentId == element.id) {
+  //       data = element;
+  //       break;
+  //     }
+  //   }
 
-    if (data && arr) {
-      this.breadcrumbList = [data, arr];
-    } else {
-      if (
-        newVal.path != "/web-sales/" &&
-        newVal.path != "/web-sales" &&
-        newVal.path != "/web-system/" &&
-        newVal.path != "/web-system"
-      ) {
-        this.breadcrumbList.push({
-          name: "--",
-        });
-      }
-    }
+  //   if (data && arr) {
+  //     this.breadcrumbList = [data, arr];
+  //   } else {
+  //     if (
+  //       newVal.path != "/web-sales/" &&
+  //       newVal.path != "/web-sales" &&
+  //       newVal.path != "/web-system/" &&
+  //       newVal.path != "/web-system"
+  //     ) {
+  //       this.breadcrumbList.push({
+  //         name: "--",
+  //       });
+  //     }
+  //   }
 
-    // newVal.matched.forEach((item: any) => {
-    //   this.breadcrumbList.push({
-    //     title: item.meta?.title,
-    //     path: item.path,
-    //   });
-    // });
-  }
+  //   // newVal.matched.forEach((item: any) => {
+  //   //   this.breadcrumbList.push({
+  //   //     title: item.meta?.title,
+  //   //     path: item.path,
+  //   //   });
+  //   // });
+  // }
   doc() {
     console.log("开发规范文档");
     window.open(
@@ -160,7 +166,7 @@ export default class IhHeader extends Vue {
     //     path: item.path,
     //   });
     // });
-    this.getBreadcrumb(this.$route);
+    // this.getBreadcrumb(this.$route);
   }
 }
 </script>

@@ -169,6 +169,20 @@
           </el-col>
         </el-row>
         <el-row>
+          <el-row>
+            <el-col :span="12">
+              <el-form-item label="负责人">
+                <span :title="info.dealMan">{{info.dealMan}}</span>
+              </el-form-item>
+            </el-col>
+            <el-col :span="12">
+              <el-form-item label="负责人电话">
+                <span :title="info.dealTel">{{info.dealTel}}</span>
+              </el-form-item>
+            </el-col>
+          </el-row>
+        </el-row>
+        <el-row>
           <el-col :span="12">
             <el-form-item label="乙方(渠道)公司">
               <SelectPageByCondition

@@ -124,6 +124,29 @@
       this.dialogAddProjectCycle = true;
     }
 
+    // 获取细分业务模式的值
+    getRefineModel(value: any = '') {
+      let returnValue = '';
+      switch(value){
+        case 'TotalBagModel' :
+          // 总包
+          returnValue = 'All';
+          break;
+        case 'DistriModel' :
+          // 分销
+          returnValue = 'District';
+          break;
+        case 'TotalBagDistriModel' :
+          // 总包+分销
+          returnValue = '';
+          break;
+        default:
+          returnValue = '';
+          break;
+      }
+      return returnValue;
+    }
+
     // 确定选择项目周期
     async finishAddProjectCycle(data: any) {
       // console.log('data', data);
@@ -145,6 +168,13 @@
         await (this as any).$refs.child.finishAddNotice(data);
       }
       this.dialogAddNotice = false;
+    }
+
+    // 预览-优惠告知书
+    previewNotice(scope: any) {
+      window.open(
+        `/sales-api/sales-document-cover/file/browse/${scope.row.templateId}`
+      );
     }
 
     // 添加客户
@@ -171,19 +201,19 @@
         // 非分销模式
         // 合同类型contType + 物业类型propertyType + 细分业务类型refineModel + 立项周期cycleId，这几个条件必须满足
         let tips: any = [];
-        if (!data.cycleId) {
+        if (!data.postObj.termId) {
           tips.push('项目周期');
         }
-        if (!data.refineModel) {
+        if (!data.postObj.subdivideEnum) {
           tips.push('细分业务模式');
         }
-        if (!data.propertyType) {
+        if (!data.postObj.propertyEnum) {
           tips.push('物业类型');
         }
-        if (!data.contType) {
+        if (!data.postObj.contractEnum) {
           tips.push('合同类型');
         }
-        if (!tips.length) {
+        if (tips.length) {
           this.$message.error(`请先选择${tips.join('，')}`);
           return;
         }
@@ -192,10 +222,41 @@
       this.dialogAddReceivePackage = !this.dialogAddReceivePackage;
     }
 
+    // 计算收派金额总计
+    getReceiveSummaries(param: any) {
+      const {columns, data} = param;
+      const sums: any = [];
+      columns.forEach((column: any, index: any) => {
+        if (index === 0) {
+          sums[index] = '合计金额';
+          return;
+        }
+        if (![0, 1, 2].includes(index)) {
+          const values = data.map((item: any) => Number(item[column.property]));
+          if (!values.every((value: any) => isNaN(value))) {
+            sums[index] = values.reduce((prev: any, curr: any) => {
+              const value = Number(curr);
+              if (!isNaN(value)) {
+                return prev + curr;
+              } else {
+                return prev;
+              }
+            }, 0);
+          } else {
+            sums[index] = '';
+          }
+        } else {
+          sums[index] = '';
+        }
+      });
+      return sums;
+    }
+
     // 确定选择收派套餐
     async finishAddReceivePackage(data: any) {
       if (data.length === 0) return;
       await (this as any).$refs.child.finishAddReceivePackage(data);
+      this.dialogAddReceivePackage = !this.dialogAddReceivePackage;
     }
 
     // 查看来访/成交确认信息
