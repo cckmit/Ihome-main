@@ -4,7 +4,7 @@
  * @Author: zyc
  * @Date: 2020-12-09 09:45:59
  * @LastEditors: zyc
- * @LastEditTime: 2020-12-17 09:30:23
+ * @LastEditTime: 2020-12-30 11:27:57
 -->
 <!--
  * @Descripttion: 
@@ -122,7 +122,12 @@
 
                 <el-row class="btn-list">
                   <el-button type="primary" @click="search()">查询</el-button>
-                  <el-button type="success" @click="add({})" v-has="'B.SALES.SYSTEM.ORGLIST.ADD'">添加</el-button>
+                  <el-button
+                    type="success"
+                    @click="add({})"
+                    v-has="'B.SALES.SYSTEM.ORGLIST.ADD'"
+                    >添加</el-button
+                  >
                 </el-row>
               </el-form>
               <br />
@@ -247,7 +252,6 @@ import PaginationMixin from "../../mixins/pagination";
   components: {
     OrganizationAdd,
     OrganizationTree,
-    
   },
   mixins: [PaginationMixin],
   // filters: {
