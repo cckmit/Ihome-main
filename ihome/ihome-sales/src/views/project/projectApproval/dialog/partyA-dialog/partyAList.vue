@@ -4,7 +4,7 @@
  * @Author: wwq
  * @Date: 2020-12-01 09:05:50
  * @LastEditors: wwq
- * @LastEditTime: 2020-12-23 09:33:50
+ * @LastEditTime: 2020-12-29 18:29:58
 -->
 <template>
   <el-dialog
@@ -83,6 +83,7 @@
             <el-col :span="8">
               <el-form-item label="归属组织">
                 <SelectOrganizationTree
+                  clearable
                   :orgId="queryPageParameters.organizationId"
                   @callback="(id) => (queryPageParameters.organizationId = id)"
                 />

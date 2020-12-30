@@ -4,7 +4,7 @@
  * @Author: zyc
  * @Date: 2020-06-22 11:46:23
  * @LastEditors: zyc
- * @LastEditTime: 2020-12-26 10:31:28
+ * @LastEditTime: 2020-12-29 11:07:34
  */
 import Vue from 'vue'
 import App from './App.vue'
@@ -97,7 +97,8 @@ function render({ appContent, loading }: any = {}) {
             return {
               content: appContent,
               loading,
-              userInfo: (window as any).polyihomeData.userInfo
+              userInfo: (window as any).polyihomeData.userInfo,
+              crumbs:[{name:'xxxxx'}]
             };
           },
           render(h) {

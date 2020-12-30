@@ -4,7 +4,7 @@
  * @Author: wwq
  * @Date: 2020-11-27 17:27:01
  * @LastEditors: wwq
- * @LastEditTime: 2020-12-25 09:39:39
+ * @LastEditTime: 2020-12-29 09:18:39
 -->
 <template>
   <div>
@@ -60,6 +60,14 @@
           }}</template>
         </el-table-column>
         <el-table-column
+          prop="state"
+          label="状态"
+        >
+          <template v-slot="{ row }">
+            {{$root.dictAllName(row.state, 'Oper')}}
+          </template>
+        </el-table-column>
+        <el-table-column
           label="操作"
           width="280"
           fixed="right"
@@ -83,9 +91,16 @@
             >预览</el-button>
             <el-button
               size="small"
+              type="success"
+              v-if="row.state === 'Stop'"
+              @click="start(row)"
+            >启用</el-button>
+            <el-button
+              size="small"
               type="danger"
-              @click="cancellationTemplate(row)"
-            >作废</el-button>
+              v-if="row.state === 'Start'"
+              @click="stop(row)"
+            >禁用</el-button>
           </template>
         </el-table-column>
       </el-table>
@@ -192,6 +207,14 @@
             label="甲方退款天数"
           ></el-table-column>
           <el-table-column
+            prop="state"
+            label="状态"
+          >
+            <template v-slot="{ row }">
+              {{$root.dictAllName(row.state, 'Oper')}}
+            </template>
+          </el-table-column>
+          <el-table-column
             label="操作"
             width="320"
             fixed="right"
@@ -215,9 +238,16 @@
               >下载二维码</el-button>
               <el-button
                 size="small"
+                type="success"
+                v-if="row.state === 'Stop'"
+                @click="startlation(row)"
+              >启用</el-button>
+              <el-button
+                size="small"
                 type="danger"
-                @click="cancellation(row)"
-              >作废</el-button>
+                v-if="row.state === 'Start'"
+                @click="stoplation(row)"
+              >禁用</el-button>
             </template>
           </el-table-column>
         </el-table>
@@ -288,10 +318,12 @@ import {
   post_distributContract_add,
   post_distributContract_update,
   post_distributContract_saveOaRemark,
-  post_distributContract_cancel__agencyContrictId,
   post_preferential_uploadTemplate,
   post_preferential_add,
   post_preferential_update,
+  post_distributContract_start__agencyContrictId,
+  post_distributContract_cancel__agencyContrictId,
+  post_preferential_start__preferentialMxId,
   post_preferential_cancel__preferentialMxId,
 } from "@/api/project/index.ts";
 import axios from "axios";
@@ -475,12 +507,20 @@ export default class Notification extends Vue {
     this.getInfo();
   }
 
-  // 中介分销合同作废
-  async cancellationTemplate(data: any) {
+  // 中介分销合同启用
+  async start(data: any) {
+    await post_distributContract_start__agencyContrictId({
+      agencyContrictId: data.agencyContrictId,
+    });
+    this.$message.success("启用成功");
+    this.getInfo();
+  }
+
+  async stop(data: any) {
     await post_distributContract_cancel__agencyContrictId({
       agencyContrictId: data.agencyContrictId,
     });
-    this.$message.success("作废成功");
+    this.$message.success("禁用成功");
     this.getInfo();
   }
 
@@ -561,12 +601,21 @@ export default class Notification extends Vue {
     });
   }
 
+  //优惠告知书启用
+  async startlation(data: any) {
+    await post_preferential_start__preferentialMxId({
+      preferentialMxId: data.preferentialMxId,
+    });
+    this.$message.success("启用成功");
+    this.getInfo();
+  }
+
   //优惠告知书作废
-  async cancellation(data: any) {
+  async stoplation(data: any) {
     await post_preferential_cancel__preferentialMxId({
       preferentialMxId: data.preferentialMxId,
     });
-    this.$message.success("作废成功");
+    this.$message.success("禁用成功");
     this.getInfo();
   }
 

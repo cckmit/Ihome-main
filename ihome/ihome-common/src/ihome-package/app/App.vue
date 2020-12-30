@@ -4,7 +4,7 @@
  * @Author: zyc
  * @Date: 2020-06-29 16:35:32
  * @LastEditors: zyc
- * @LastEditTime: 2020-10-23 15:41:57
+ * @LastEditTime: 2020-12-29 15:12:32
 --> 
 <!--
  * @Descripttion: 
@@ -30,11 +30,119 @@
   </div>
 </template>
 <script lang="ts">
-import { Component, Vue } from "vue-property-decorator";
+function getCrumbs(curruntUrl: any, menuList: any[]) {
+  let crumbs: any[] = [];
+  for (let index = 0; index < menuList.length; index++) {
+    const element: any = menuList[index];
+    if (element?.url?.toLocaleLowerCase() == curruntUrl?.toLocaleLowerCase()) {
+      if (element.parentId == "0") {
+        crumbs = [{ name: element.name }];
+      } else {
+        for (let i = 0; i < menuList.length; i++) {
+          const item = menuList[i];
+          if (item.id == element.parentId) {
+            crumbs = [{ name: item.name }, { name: element.name }];
+            break;
+          }
+        }
+      }
+    }
+  }
+  return crumbs;
+}
+
+function getTopCrumb(curruntUrl: any, menuList: any[]) {
+  let crumbs: any = null;
+  for (let index = 0; index < menuList.length; index++) {
+    const element: any = menuList[index];
+    if (element?.url?.toLocaleLowerCase() == curruntUrl?.toLocaleLowerCase()) {
+      if (element.parentId == "0") {
+        crumbs = { name: element.name };
+      } else {
+        for (let i = 0; i < menuList.length; i++) {
+          const item = menuList[i];
+          if (item.id == element.parentId) {
+            crumbs = { name: item.name };
+            break;
+          }
+        }
+      }
+    }
+  }
+  return crumbs;
+}
+
+import { Component, Vue, Watch } from "vue-property-decorator";
+import { routes } from "@/router/index";
 @Component({
   components: {},
 })
-export default class App extends Vue {}
+export default class App extends Vue {
+  created() {
+    //向主应用发送路由信息，用于面包屑展示
+  }
+  @Watch("$route")
+  async route(newVal: any) {
+    let menuList: any[] =
+      (window as any).polyihomeData?.userInfo.menuList || [];
+
+    let curruntUrl = "";
+    if (process.env.BASE_URL.endsWith("/")) {
+      curruntUrl =
+        process.env.BASE_URL.substring(0, process.env.BASE_URL.length - 1) +
+        newVal.path;
+    } else {
+      curruntUrl = process.env.BASE_URL + newVal.path;
+    }
+    let crumbs: any[] = getCrumbs(curruntUrl, menuList);
+
+    if (crumbs.length == 0) {
+      //子页面，非后端返回菜单页面
+      for (let index = 0; index < routes.length; index++) {
+        const element = routes[index];
+        let children: any[] = element.children || [];
+        for (let i = 0; i < children.length; i++) {
+          const item = children[i];
+          const path = element.path + "/" + item.path;
+          if (newVal.path == path) {
+            if (element?.redirect) {
+              let curruntUrl = element?.redirect;
+              if (process.env.BASE_URL.endsWith("/")) {
+                curruntUrl =
+                  process.env.BASE_URL.substring(
+                    0,
+                    process.env.BASE_URL.length - 1
+                  ) + element?.redirect;
+              } else {
+                curruntUrl = process.env.BASE_URL + element?.redirect;
+              }
+              let topCrumb: any = getTopCrumb(curruntUrl, menuList);
+              if (topCrumb) {
+                crumbs = [
+                  { name: topCrumb.name },
+                  { name: element?.meta?.title },
+                  { name: item?.meta?.title },
+                ];
+              } else {
+                crumbs = [
+                  { name: element?.meta?.title },
+                  { name: item?.meta?.title },
+                ];
+              }
+            } else {
+              crumbs = [
+                { name: element?.meta?.title },
+                { name: item?.meta?.title },
+              ];
+            }
+          }
+        }
+      }
+    }
+
+    (this as any).$qiankun["appRoutes"](crumbs, routes);
+  }
+}
 </script>
 
 <style lang="scss">
