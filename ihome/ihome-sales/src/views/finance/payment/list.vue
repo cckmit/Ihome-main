@@ -4,7 +4,7 @@
  * @Author: ywl
  * @Date: 2020-12-09 19:24:59
  * @LastEditors: ywl
- * @LastEditTime: 2020-12-28 12:01:14
+ * @LastEditTime: 2020-12-30 11:47:07
 -->
 <template>
   <IhPage label-width="100px">
@@ -163,7 +163,7 @@
               <el-col :span="8">
                 <el-form-item label="业务编号">
                   <el-input
-                    v-model="queryPageParameters.businessId"
+                    v-model="queryPageParameters.businessCode"
                     placeholder="请输入业务编号"
                     clearable
                   ></el-input>
@@ -347,7 +347,7 @@
           </template>
           <template v-slot="{ row }">
             <div>{{$root.dictAllName(row.payer, 'PaymentPayer') || '-'}}</div>
-            <div>{{row.businessId || '-'}}</div>
+            <div>{{row.businessCode || '-'}}</div>
           </template>
         </el-table-column>
         <el-table-column min-width="155">
@@ -453,7 +453,7 @@ import {
 })
 export default class ReceiptList extends Vue {
   queryPageParameters: any = {
-    businessId: null,
+    businessCode: null,
     customerName: null,
     endCheckTime: null,
     endConfirmTime: null,
@@ -585,7 +585,7 @@ export default class ReceiptList extends Vue {
   }
   private reset() {
     Object.assign(this.queryPageParameters, {
-      businessId: null,
+      businessCode: null,
       customerName: null,
       endCheckTime: null,
       endConfirmTime: null,

@@ -4,7 +4,7 @@
  * @Author: ywl
  * @Date: 2020-09-25 16:00:37
  * @LastEditors: ywl
- * @LastEditTime: 2020-12-26 10:49:27
+ * @LastEditTime: 2020-12-30 19:12:36
 -->
 <template>
   <IhPage class="text-left partyA-info">
@@ -62,7 +62,7 @@
         <el-row>
           <el-col :span="12">
             <el-form-item label="合作时间">
-              {{formData.cooperationTime}}
+              {{ formData.cooperationTime && formData.cooperationEnd ? `${formData.cooperationTime} ~ ${formData.cooperationEnd}` : '' }}
             </el-form-item>
           </el-col>
           <el-col :span="12">
@@ -163,7 +163,11 @@
           class="ih-table partyA-table"
           :data="formData.cycleList"
         >
-          <el-table-column label="周期编号"></el-table-column>
+          <el-table-column
+            label="周期编号"
+            prop="approvalNo"
+            min-width="180"
+          ></el-table-column>
           <el-table-column
             label="周期名称"
             prop="termName"

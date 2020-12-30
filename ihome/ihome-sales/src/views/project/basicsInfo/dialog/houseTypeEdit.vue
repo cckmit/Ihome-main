@@ -4,7 +4,7 @@
  * @Author: wwq
  * @Date: 2020-11-03 18:39:23
  * @LastEditors: wwq
- * @LastEditTime: 2020-12-16 11:49:29
+ * @LastEditTime: 2020-12-30 15:20:38
 -->
 <template>
   <el-dialog
@@ -60,9 +60,9 @@
             <div style="display: flex; justify-contant: flex-start">
               <el-input
                 v-model.number="form.space"
-                onkeyup="this.value = this.value.replace(/[^\d.]/g,'');"
                 placeholder="户型面积"
                 maxlength="50"
+                v-digits="2"
               ></el-input>
               <span style="width: 30px; margin-left: 10px">m²</span>
             </div>

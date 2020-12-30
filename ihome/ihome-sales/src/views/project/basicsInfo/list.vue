@@ -4,7 +4,7 @@
  * @Author: wwq
  * @Date: 2020-08-13 11:40:10
  * @LastEditors: wwq
- * @LastEditTime: 2020-12-29 18:37:37
+ * @LastEditTime: 2020-12-30 08:52:05
 -->
 <template>
   <IhPage label-width="100px">
@@ -25,11 +25,15 @@
           </el-col>
           <el-col :span="8">
             <el-form-item label="项目名称">
-              <el-input
+              <IhSelectPageByProject
+                v-model="queryPageParameters.proId"
                 clearable
-                v-model="queryPageParameters.proName"
-                placeholder="项目名称"
-              ></el-input>
+                :props="{
+                  value: 'proId',
+                  key: 'proId',
+                  lable: 'proName'
+                }"
+              ></IhSelectPageByProject>
             </el-form-item>
           </el-col>
           <!-- <el-col :span="8">
@@ -233,7 +237,7 @@ import PaginationMixin from "@/mixins/pagination";
 export default class ProjectList extends Vue {
   queryPageParameters: any = {
     proNo: null,
-    proName: null,
+    proId: null,
     termName: null,
     province: null,
     city: null,
@@ -271,7 +275,7 @@ export default class ProjectList extends Vue {
   reset() {
     Object.assign(this.queryPageParameters, {
       proNo: null,
-      proName: null,
+      proId: null,
       termName: null,
       province: null,
       city: null,

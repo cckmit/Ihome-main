@@ -3,8 +3,8 @@
  * @version: 
  * @Author: wwq
  * @Date: 2020-12-01 14:49:06
- * @LastEditors: wwq
- * @LastEditTime: 2020-12-23 20:10:11
+ * @LastEditors: ywl
+ * @LastEditTime: 2020-12-30 19:17:54
 -->
 <template>
   <el-dialog
@@ -119,10 +119,14 @@
           <el-form-item label="合作时间">
             <el-date-picker
               style="width:100%;"
-              v-model="form.cooperationTime"
-              type="date"
+              v-model="timeList"
+              type="daterange"
               align="left"
-              placeholder="年/月/日"
+              unlink-panels
+              range-separator="至"
+              start-placeholder="开始日期"
+              end-placeholder="结束日期"
+              :picker-options="$root.pickerOptions"
               value-format="yyyy-MM-dd"
             ></el-date-picker>
           </el-form-item>
@@ -220,6 +224,7 @@ export default class PartyAAdd extends Vue {
   dialogVisible = true;
   partyFileList: any = [];
   stampFileList: any = [];
+  timeList: any = [];
   form: any = {
     title: null,
     partyA: [],
@@ -227,6 +232,7 @@ export default class PartyAAdd extends Vue {
     receivingAccountId: null,
     cooperationProjectsName: null,
     cooperationTime: null,
+    cooperationEnd: null,
     handlerId: null,
     confirmer: null,
     confirmerContact: null,
@@ -308,6 +314,10 @@ export default class PartyAAdd extends Vue {
       arr = this.form.partyA.map((v: any) => ({
         userId: v,
       }));
+
+      let flag = this.timeList && this.timeList.length;
+      this.form.cooperationTime = flag ? this.timeList[0] : null;
+      this.form.cooperationEnd = flag ? this.timeList[1] : null;
       this.$emit("finish", {
         ...this.form,
         partyA: arr,

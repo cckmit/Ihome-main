@@ -4,7 +4,7 @@
  * @Author: ywl
  * @Date: 2020-09-25 11:53:51
  * @LastEditors: ywl
- * @LastEditTime: 2020-12-26 10:59:15
+ * @LastEditTime: 2020-12-30 19:11:11
 -->
 <template>
   <IhPage label-width="100px">
@@ -159,7 +159,7 @@
                   ></el-input>
                 </el-form-item>
               </el-col>
-              <el-col :span="8">
+              <!-- <el-col :span="8">
                 <el-form-item label="合同录入人">
                   <IhSelectPageUser
                     v-model="queryPageParameters.enteringPersonId"
@@ -172,7 +172,7 @@
                     </template>
                   </IhSelectPageUser>
                 </el-form-item>
-              </el-col>
+              </el-col> -->
               <el-col :span="8">
                 <el-form-item label="合同跟进人">
                   <IhSelectPageUser
@@ -278,7 +278,11 @@
           label="合作时间"
           prop="cooperationTime"
           width="200"
-        ></el-table-column>
+        >
+          <template v-slot="{ row }">
+            {{ row.cooperationTime && row.cooperationEnd ? `${row.cooperationTime} ~ ${row.cooperationEnd}` : '' }}
+          </template>
+        </el-table-column>
         <!-- <el-table-column
           label="关联项目"
           prop="projectsName"

@@ -4,7 +4,7 @@
  * @Author: zyc
  * @Date: 2020-06-22 11:46:23
  * @LastEditors: zyc
- * @LastEditTime: 2020-12-29 11:07:34
+ * @LastEditTime: 2020-12-30 09:39:18
  */
 import Vue from 'vue'
 import App from './App.vue'
@@ -77,7 +77,7 @@ function render({ appContent, loading }: any = {}) {
   //   (window as any).polyihomeData.userInfo = userInfo;
   // })
 
-  Promise.all([get_area_getAll(), get_dict_getAll(), post_sessionUser_getUserInfo()]).then((res: any) => {
+  Promise.all([get_area_getAll(), get_dict_getAll(), post_sessionUser_getUserInfo({terminalType:"Pc"})]).then((res: any) => {
     (window as any).polyihomeData.areaAll = res[0];
     (window as any).polyihomeData.dictAll = res[1];
     (window as any).polyihomeData.userInfo = res[2];
