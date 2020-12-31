@@ -1497,7 +1497,6 @@
     async addSave(valid: any) {
       // 1.校验收派金额是都有收派套餐
       let flag = this.validReceive(this.postData.receiveVO);
-      valid = false;
       if (valid && flag) {
         // 整合数据
         let postData: any = this.getPostData();
@@ -1664,7 +1663,7 @@
 
     // 校验收派金额信息模块 --- 是否都有收派套餐
     validReceive(data = []) {
-      if (data.length) return false;
+      if (data.length.length === 0) return false;
       let flag = data.every((item: any) => {
         return (item.showData && item.showData.length > 0);
       });
