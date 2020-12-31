@@ -4,7 +4,7 @@
  * @Author: wwq
  * @Date: 2020-11-03 18:39:23
  * @LastEditors: wwq
- * @LastEditTime: 2020-12-30 15:20:38
+ * @LastEditTime: 2020-12-31 09:31:14
 -->
 <template>
   <el-dialog
@@ -59,7 +59,7 @@
           >
             <div style="display: flex; justify-contant: flex-start">
               <el-input
-                v-model.number="form.space"
+                v-model="form.space"
                 placeholder="户型面积"
                 maxlength="50"
                 v-digits="2"

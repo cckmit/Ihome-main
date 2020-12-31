@@ -4,11 +4,14 @@
  * @Author: wwq
  * @Date: 2020-11-27 17:17:06
  * @LastEditors: wwq
- * @LastEditTime: 2020-12-30 19:11:19
+ * @LastEditTime: 2020-12-31 09:51:54
 -->
 <template>
   <div class="project-approval-box">
-    <p class="ih-info-title">合作项目信息</p>
+    <div class="title-init">
+      <p class="ih-info-title">合作项目信息</p>
+      <div class="init">备注：立项信息仅首页的内容会推送至OA审核</div>
+    </div>
     <el-form
       :model="info"
       :rules="rules"
@@ -448,6 +451,7 @@
               clearable
               placeholder="请选择"
               class="width--100"
+              @change="exDiscountChange"
             >
               <el-option
                 v-for="item in YesOrNoType"
@@ -594,7 +598,7 @@
           </el-form-item>
         </el-col>
       </el-row>
-      <p class="ih-info-title">联动周期信息</p>
+      <p class="ih-info-title">测算结果</p>
       <el-row>
         <el-col :span="8">
           <el-form-item
@@ -1092,6 +1096,13 @@ export default class FirstAgencyEdit extends Vue {
     this.$goto({ path: `/projectApproval/list` });
   }
 
+  exDiscountChange(val: any) {
+    if (!Number(val)) {
+      this.info.subscriDiscountModel = null;
+      this.info.notificDiscountModel = null;
+    }
+  }
+
   save() {
     (this.$refs["ruleForm"] as ElForm).validate(async (v: any) => {
       if (v) {
@@ -1221,6 +1232,17 @@ export default class FirstAgencyEdit extends Vue {
 .formItem {
   /deep/ .el-form-item__label {
     line-height: 20px;
+  }
+}
+.title-init {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+
+  .init {
+    font-size: 14px;
+    margin-left: 10px;
+    color: red;
   }
 }
 </style>

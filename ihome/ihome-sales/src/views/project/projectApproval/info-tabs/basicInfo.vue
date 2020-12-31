@@ -4,7 +4,7 @@
  * @Author: wwq
  * @Date: 2020-11-27 17:17:06
  * @LastEditors: wwq
- * @LastEditTime: 2020-12-25 19:52:33
+ * @LastEditTime: 2020-12-31 10:12:26
 -->
 <template>
   <IhPage>
@@ -328,7 +328,7 @@
             </el-form-item>
           </el-col>
         </el-row>
-        <p class="ih-info-title">联动周期信息</p>
+        <p class="ih-info-title">测算结果</p>
         <el-row>
           <el-col :span="8">
             <el-form-item

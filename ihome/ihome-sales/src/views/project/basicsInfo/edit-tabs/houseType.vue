@@ -4,60 +4,84 @@
  * @Author: wwq
  * @Date: 2020-11-03 11:52:41
  * @LastEditors: wwq
- * @LastEditTime: 2020-12-19 17:55:05
+ * @LastEditTime: 2020-12-31 09:47:27
 -->
 <template>
-  <div class="house-type text-left">
+  <div>
+    <div class="text-left margin-left-25">
+      <el-button
+        type="success"
+        v-if="$route.name !== 'projectChildAdd'"
+        @click="fastImport"
+        size="mini"
+      >快捷导入房号</el-button>
+      <div class="init">温馨提示：推荐使用快捷导入房号功能，导入成功后将自动生成户型信息、栋座信息、房间信息</div>
+    </div>
     <div
-      class="content"
-      v-for="item in info"
-      :key="item.houseTypeId"
+      class="house-type text-left"
+      :style="{ height: info.length ? '100%' : '200px' }"
     >
-      <img
-        class="img"
-        :src="`/sales-api/sales-document-cover/file/browse/${item.picAddr}`"
-        alt=""
-      />
-      <div class="title">
-        {{ `${item.houseName} ${item.space}m²` }}<br />
-        {{
+      <div
+        class="content"
+        v-for="item in info"
+        :key="item.houseTypeId"
+      >
+        <img
+          class="img"
+          :src="`/sales-api/sales-document-cover/file/browse/${item.picAddr}`"
+          alt=""
+        />
+        <div class="title">
+          {{ `${item.houseName} ${item.space}m²` }}<br />
+          {{
           `${item.room}室${item.hall}厅 ${item.kitchen}厨
               ${item.toilet}卫 ${item.space}m²`
         }}
+        </div>
+        <el-button
+          size="small"
+          type="success"
+          @click="edit(item)"
+        >编辑</el-button>
+        <el-button
+          size="small"
+          type="danger"
+          @click="remove(item)"
+        >删除</el-button>
       </div>
-      <el-button
-        size="small"
-        type="success"
-        @click="edit(item)"
-      >编辑</el-button>
-      <el-button
-        size="small"
-        type="danger"
-        @click="remove(item)"
-      >删除</el-button>
+      <div
+        class="plus"
+        @click="add()"
+      >
+        <i class="el-icon-plus"></i>
+        <div class="title">点击新增户型</div>
+      </div>
+      <ih-dialog
+        :show="dialogVisible"
+        desc="编辑"
+      >
+        <HouseTypeEdit
+          :data="editData"
+          @cancel="() => (dialogVisible = false)"
+          @finish="(data) => finish(data)"
+        />
+      </ih-dialog>
+      <ih-dialog
+        :show="importDialogVisible"
+        desc="快捷导入房号"
+      >
+        <Import
+          :data="inportData"
+          @cancel="cancel"
+        />
+      </ih-dialog>
     </div>
-    <div
-      class="plus"
-      @click="add()"
-    >
-      <i class="el-icon-plus"></i>
-      <div class="title">点击新增户型</div>
-    </div>
-    <ih-dialog
-      :show="dialogVisible"
-      desc="编辑"
-    >
-      <HouseTypeEdit
-        :data="editData"
-        @cancel="() => (dialogVisible = false)"
-        @finish="(data) => finish(data)"
-      />
-    </ih-dialog>
   </div>
 </template>
 <script lang="ts">
 import { Component, Vue } from "vue-property-decorator";
 import HouseTypeEdit from "../dialog/houseTypeEdit.vue";
+import Import from "../dialog/import.vue";
 import {
   get_houseType_getTabItem__proId,
   post_houseType_add,
@@ -66,14 +90,16 @@ import {
 } from "@/api/project/index";
 
 @Component({
-  components: { HouseTypeEdit },
+  components: { HouseTypeEdit, Import },
 })
 export default class EditHouseType extends Vue {
   searchOpen = true;
-  info: any = {};
+  info: any = [];
   dialogVisible = false;
   editData: any = {};
   dialogType = "";
+  importDialogVisible = false;
+  inportData: any = {};
 
   private get proId() {
     return this.$route.query.id;
@@ -132,6 +158,15 @@ export default class EditHouseType extends Vue {
       console.log(error);
     }
   }
+
+  fastImport() {
+    this.importDialogVisible = true;
+  }
+
+  cancel() {
+    this.importDialogVisible = false;
+    this.getInfo();
+  }
 }
 </script>
 <style lang="scss" scoped>
@@ -139,7 +174,7 @@ export default class EditHouseType extends Vue {
   display: flex;
   overflow: auto;
   width: 100%;
-  height: 260px;
+  margin-top: 20px;
   .content {
     display: inline-block;
     margin-left: 20px;
@@ -175,5 +210,10 @@ export default class EditHouseType extends Vue {
   width: 150px;
   padding: 5px 0;
   font-size: 14px;
+}
+.init {
+  margin-top: 15px;
+  font-size: 14px;
+  color: red;
 }
 </style>
