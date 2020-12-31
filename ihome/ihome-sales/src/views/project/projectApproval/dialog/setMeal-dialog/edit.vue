@@ -4,7 +4,7 @@
  * @Author: wwq
  * @Date: 2020-12-04 09:40:47
  * @LastEditors: wwq
- * @LastEditTime: 2020-12-28 10:25:24
+ * @LastEditTime: 2020-12-31 17:13:05
 -->
 <template>
   <el-dialog
@@ -49,10 +49,10 @@
               placeholder="物业类型"
             >
               <el-option
-                v-for="item in $root.dictAllList('Property')"
-                :key="item.code"
-                :label="item.name"
-                :value="item.code"
+                v-for="item in propertyEnumOptions"
+                :key="item.propertyEnum"
+                :label="item.propertyName"
+                :value="item.propertyEnum"
               ></el-option>
             </el-select>
           </el-form-item>
@@ -283,6 +283,29 @@
                 </template>
               </el-table-column>
               <el-table-column
+                prop="exVoidService"
+                label="是否免收服务费"
+                width="150"
+                align="center"
+              >
+                <template v-slot="{ row }">
+                  <el-select
+                    style="width: 100%"
+                    v-model="row.exVoidService"
+                    clearable
+                    placeholder="请选择"
+                    @change="exVoidServiceChange(row)"
+                  >
+                    <el-option
+                      v-for="item in YesOrNoType"
+                      :key="item.code"
+                      :label="item.name"
+                      :value="item.code"
+                    ></el-option>
+                  </el-select>
+                </template>
+              </el-table-column>
+              <el-table-column
                 label="应收金额(元)"
                 width="150"
                 align="center"
@@ -294,6 +317,7 @@
                       v-model="row.receivableAmout"
                       v-digits="4"
                       clearable
+                      :class="{'is-disabled': receivableAmoutDisabled(row)}"
                       style="width: 70%"
                     />
                   </div>
@@ -303,6 +327,7 @@
                       v-model="row.receivablePoint"
                       v-digits="4"
                       clearable
+                      :class="{'is-disabled': receivableAmoutDisabled(row)}"
                       style="width: 70%"
                     />
                   </div>
@@ -972,6 +997,7 @@ export default class SetMealEdit extends Vue {
   channelRowIndex = 0;
   padCommissionEnumOptions: any = [];
   contractTypeOptions: any = [];
+  propertyEnumOptions: any = [];
   rules: any = {
     packageName: [
       { required: true, message: "请输入套餐名称", trigger: "change" },
@@ -986,6 +1012,17 @@ export default class SetMealEdit extends Vue {
       { required: true, message: "请选择有效时间", trigger: "change" },
     ],
   };
+
+  YesOrNoType = [
+    {
+      code: 1,
+      name: "是",
+    },
+    {
+      code: 0,
+      name: "否",
+    },
+  ];
 
   otherChannelAmount(row: any) {
     let total =
@@ -1122,6 +1159,19 @@ export default class SetMealEdit extends Vue {
     );
   }
 
+  // 应收金额
+  receivableAmoutDisabled(row: any) {
+    const yes = Number(row.exVoidService) === 1;
+    return yes;
+  }
+
+  exVoidServiceChange(row: any) {
+    if (row.exVoidService) {
+      row.receivableAmout = 0;
+      row.receivablePoint = 0;
+    }
+  }
+
   selectCompany(v: any, i: number) {
     if (v) {
       const item = this.info.partyAInfoList.find((j: any) => j.companyId === v);
@@ -1214,6 +1264,7 @@ export default class SetMealEdit extends Vue {
           },
         ];
       }
+      this.propertyEnumOptions = res.propertyDropDowm;
       this.info = (this.$tool as any).deepClone(res);
       this.info.timeList = [this.info.startTime, this.info.endTime];
       this.info.partyAInfoList = [...res.partyAInfoList];
@@ -1240,9 +1291,10 @@ export default class SetMealEdit extends Vue {
         }
       });
     } else {
-      const item = await get_collectandsend_getBaseTermByTermId__termId({
+      const item: any = await get_collectandsend_getBaseTermByTermId__termId({
         termId: this.$route.query.id,
       });
+      this.propertyEnumOptions = item.propertyDropDowm;
       this.info.partyAInfoList = [...item.partyAInfoList];
       this.partyAInfoList = [...item.partyAInfoList];
       if (item.padCommissionEnum !== "Veto") {
@@ -1310,6 +1362,7 @@ export default class SetMealEdit extends Vue {
               sort: "",
               subdivideEnum: this.busEnumType,
               transactionEnum: "",
+              exVoidService: null,
             },
           ],
           costTypeEnum: "ServiceFee",
@@ -1441,6 +1494,7 @@ export default class SetMealEdit extends Vue {
                     sendPoint: 0,
                     sort: "",
                     transactionEnum: "",
+                    exVoidService: null,
                   },
                 ],
                 costTypeEnum: "ServiceFee",
@@ -1518,6 +1572,7 @@ export default class SetMealEdit extends Vue {
               sendPoint: 0,
               sort: "",
               transactionEnum: "",
+              exVoidService: null,
             },
           ],
           costTypeEnum: "ServiceFee",
@@ -1606,6 +1661,7 @@ export default class SetMealEdit extends Vue {
       sort: "",
       subdivideEnum: this.busEnumType,
       transactionEnum: "",
+      exVoidService: null,
       transactionEnumOptions: [],
     });
   }

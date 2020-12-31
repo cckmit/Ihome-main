@@ -4,7 +4,7 @@
  * @Author: wwq
  * @Date: 2020-11-27 17:26:20
  * @LastEditors: wwq
- * @LastEditTime: 2020-12-25 08:46:16
+ * @LastEditTime: 2020-12-31 17:20:32
 -->
 <template>
   <div>
@@ -194,6 +194,7 @@ export default class Close extends Vue {
         id: "",
         chargeEnum: this.info.chargeEnum,
         padCommissionEnum: this.info.padCommissionEnum,
+        proId: this.info.proId,
       };
       this.makingEditDialogVisible = true;
     } else {
@@ -201,6 +202,7 @@ export default class Close extends Vue {
         id: "",
         chargeEnum: this.info.chargeEnum,
         padCommissionEnum: this.info.padCommissionEnum,
+        proId: this.info.proId,
       };
       this.pleaseEditDialogVisible = true;
     }
@@ -212,6 +214,7 @@ export default class Close extends Vue {
         id: row.settleId,
         chargeEnum: this.info.chargeEnum,
         padCommissionEnum: this.info.padCommissionEnum,
+        proId: this.info.proId,
       };
       this.makingEditDialogVisible = true;
     } else {
@@ -219,6 +222,7 @@ export default class Close extends Vue {
         id: row.settleId,
         chargeEnum: this.info.chargeEnum,
         padCommissionEnum: this.info.padCommissionEnum,
+        proId: this.info.proId,
       };
       this.pleaseEditDialogVisible = true;
     }
@@ -230,6 +234,7 @@ export default class Close extends Vue {
         id: row.settleId,
         chargeEnum: this.info.chargeEnum,
         padCommissionEnum: this.info.padCommissionEnum,
+        proId: this.info.proId,
       };
       this.makingInfoDialogVisible = true;
     } else {
@@ -237,6 +242,7 @@ export default class Close extends Vue {
         id: row.settleId,
         chargeEnum: this.info.chargeEnum,
         padCommissionEnum: this.info.padCommissionEnum,
+        proId: this.info.proId,
       };
       this.pleaseInfoDialogVisible = true;
     }

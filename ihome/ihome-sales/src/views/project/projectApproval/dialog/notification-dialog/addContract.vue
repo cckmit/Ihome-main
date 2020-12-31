@@ -4,7 +4,7 @@
  * @Author: wwq
  * @Date: 2020-12-02 15:37:31
  * @LastEditors: wwq
- * @LastEditTime: 2020-12-28 12:36:12
+ * @LastEditTime: 2020-12-31 15:54:34
 -->
 <template>
   <el-dialog
@@ -597,7 +597,11 @@ export default class AddContract extends Vue {
         "Content-Type": "application/json",
         Authorization: "bearer " + token,
       },
-      data: this.info,
+      data: {
+        ...this.info,
+        contractStartTime: this.info.timeList[0],
+        contractEndTime: this.info.timeList[1],
+      },
     }).then((res: any) => {
       if (res?.data?.fileId) {
         axios({

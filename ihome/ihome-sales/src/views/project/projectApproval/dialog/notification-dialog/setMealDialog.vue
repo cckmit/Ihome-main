@@ -4,7 +4,7 @@
  * @Author: wwq
  * @Date: 2020-12-08 14:28:17
  * @LastEditors: wwq
- * @LastEditTime: 2020-12-28 16:18:05
+ * @LastEditTime: 2020-12-31 18:06:19
 -->
 <template>
   <el-dialog
@@ -576,9 +576,11 @@ export default class SetMealDialog extends Vue {
   }
 
   async rowClick(row: any) {
-    const res = await post_distributContract_getItemByCondition({
-      packageId: row.packageId,
-    });
+    let obj: any = {};
+    obj.packageId = row.packageId;
+    // obj.padCommissionEnum = row.padCommissionEnum;
+    // obj.termId = row.termId;
+    const res = await post_distributContract_getItemByCondition(obj);
     this.info = (this.$tool as any).deepClone(res);
     if (this.info.colletionandsendMxs.length) {
       this.info.colletionandsendMxs.forEach(

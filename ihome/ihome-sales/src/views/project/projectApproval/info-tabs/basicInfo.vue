@@ -4,7 +4,7 @@
  * @Author: wwq
  * @Date: 2020-11-27 17:17:06
  * @LastEditors: wwq
- * @LastEditTime: 2020-12-31 10:12:26
+ * @LastEditTime: 2020-12-31 16:29:19
 -->
 <template>
   <IhPage>
@@ -222,6 +222,17 @@
               prop="overStandardCount"
             >
               <span class="text-ellipsis">{{ info.overStandardCount }}</span>
+            </el-form-item>
+          </el-col>
+          <el-col
+            :span="8"
+            v-if="isShow"
+          >
+            <el-form-item
+              label="是否免收服务费"
+              prop="exVoidService"
+            >
+              <span class="text-ellipsis">{{ info.exVoidService?'是':'否' }}</span>
             </el-form-item>
           </el-col>
         </el-row>
@@ -485,16 +496,19 @@ export default class FirstAgencyEdit extends Vue {
     attachTermVOS: [],
     companyName: null,
     companyId: null,
+    exVoidService: null,
   };
   fileListType: any = [];
   private attachTermVOS: any = [];
   isShow: any = true;
   auditMsg = "";
+  exVoidServiceShow: any = true;
 
   @Watch("info.chargeEnum", { immediate: true })
   getIsShow(val: any) {
     if (val === "Agent") {
       this.isShow = false;
+      this.info.exVoidService = null;
     } else {
       this.isShow = true;
     }
