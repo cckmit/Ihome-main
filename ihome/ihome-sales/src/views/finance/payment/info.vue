@@ -4,7 +4,7 @@
  * @Author: ywl
  * @Date: 2020-12-17 19:43:20
  * @LastEditors: ywl
- * @LastEditTime: 2020-12-30 11:49:25
+ * @LastEditTime: 2020-12-31 14:26:45
 -->
 <template>
   <IhPage class="text-left">
@@ -87,7 +87,7 @@
             <el-form-item label="录入终端">{{$root.dictAllName(info.payment.terminal, 'PaymentTerminal')}}</el-form-item>
           </el-col>
           <el-col :span="8">
-            <el-form-item label="成交报告编号">{{info.payment.operator}}</el-form-item>
+            <el-form-item label="成交报告编号">{{info.payment.dealCode}}</el-form-item>
           </el-col>
         </el-row>
         <el-row>

@@ -4,7 +4,7 @@
  * @Author: ywl
  * @Date: 2020-09-27 10:46:14
  * @LastEditors: ywl
- * @LastEditTime: 2020-12-22 09:45:53
+ * @LastEditTime: 2020-12-31 14:45:57
 -->
 <template>
   <IhPage class="text-left distribution-info">
@@ -218,7 +218,7 @@
         <el-row>
           <el-col :span="24">
             <el-form-item label="渠道类型">
-              {{$root.dictAllName(ruleForm.channelEnum, 'ChannelType')}}
+              {{$root.dictAllName(ruleForm.channelEnum, 'ChannelCustomer')}}
             </el-form-item>
           </el-col>
         </el-row>
