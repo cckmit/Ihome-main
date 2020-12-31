@@ -4,7 +4,7 @@
  * @Author: wwq
  * @Date: 2020-12-02 15:37:31
  * @LastEditors: wwq
- * @LastEditTime: 2020-12-31 15:54:34
+ * @LastEditTime: 2020-12-31 18:13:01
 -->
 <template>
   <el-dialog
@@ -405,6 +405,7 @@
     </ih-dialog>
     <ih-dialog :show="setmealDialogVisible">
       <SetMealDialog
+        :searchdata="setMealDialogData"
         @cancel="() => (setmealDialogVisible = false)"
         @finish="(data) => setMealFinish(data)"
       />
@@ -439,6 +440,7 @@ export default class AddContract extends Vue {
   businessDialogVisible = false;
   setmealDialogVisible = false;
   queryObj: any = {};
+  setMealDialogData: any = {};
   info: any = {
     contractTitle: null,
     contractSubtitle: null,
@@ -708,6 +710,8 @@ export default class AddContract extends Vue {
   }
 
   add() {
+    this.setMealDialogData.channelEnum = this.info.channelEnum;
+    this.setMealDialogData.padCommissionEnum = this.info.padCommissionEnum;
     this.setmealDialogVisible = true;
   }
 

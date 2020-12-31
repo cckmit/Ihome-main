@@ -4,7 +4,7 @@
  * @Author: wwq
  * @Date: 2020-12-08 14:28:17
  * @LastEditors: wwq
- * @LastEditTime: 2020-12-31 18:06:19
+ * @LastEditTime: 2020-12-31 18:13:33
 -->
 <template>
   <el-dialog
@@ -464,7 +464,7 @@
   </el-dialog>
 </template>
 <script lang="ts">
-import { Component, Vue } from "vue-property-decorator";
+import { Component, Vue, Prop } from "vue-property-decorator";
 import {
   post_collectandsend_getAllByTerm,
   post_distributContract_getItemByCondition,
@@ -476,6 +476,8 @@ import SetMealInfo from "../setMeal-dialog/info.vue";
   },
 })
 export default class SetMealDialog extends Vue {
+  @Prop()
+  searchdata!: any;
   dialogVisible = true;
   infoDialogVisible = false;
   info: any = {
@@ -578,8 +580,8 @@ export default class SetMealDialog extends Vue {
   async rowClick(row: any) {
     let obj: any = {};
     obj.packageId = row.packageId;
-    // obj.padCommissionEnum = row.padCommissionEnum;
-    // obj.termId = row.termId;
+    obj.padCommissionEnum = this.searchdata.padCommissionEnum;
+    obj.channelEnum = this.searchdata.channelEnum;
     const res = await post_distributContract_getItemByCondition(obj);
     this.info = (this.$tool as any).deepClone(res);
     if (this.info.colletionandsendMxs.length) {
