@@ -4,7 +4,7 @@
  * @Author: ywl
  * @Date: 2020-12-01 10:39:24
  * @LastEditors: ywl
- * @LastEditTime: 2020-12-26 15:09:55
+ * @LastEditTime: 2020-12-31 17:29:36
 -->
 <template>
   <IhPage label-width="90px">
@@ -127,7 +127,10 @@
           type="success"
           @click="handleAdd()"
         >入库</el-button>
-        <el-button type="success">入库导入</el-button>
+        <el-button
+          type="success"
+          @click="importVisble = true"
+        >入库导入</el-button>
         <el-button @click="revoke()">撤机</el-button>
         <el-link
           type="primary"
@@ -257,21 +260,31 @@
         }"
       />
     </IhDialog>
+    <IhDialog :show="importVisble">
+      <ImportPos
+        @cancel="() => (importVisble = false)"
+        @finish="() => {
+          importVisble = false;
+          getListMixin();
+        }"
+      />
+    </IhDialog>
   </IhPage>
 </template>
 
 <script lang="ts">
 import { Component, Vue } from "vue-property-decorator";
 import PaginationMixin from "../../../mixins/pagination";
+import AddPos from "./dialog/addPos.vue";
+import ImportPos from "./dialog/importPos.vue";
 import {
   post_posTerminal_getList,
   post_posTerminal_delete__id,
   post_posTerminal_revoke,
 } from "../../../api/finance/index";
-import AddPos from "./dialog/addPos.vue";
 
 @Component({
-  components: { AddPos },
+  components: { AddPos, ImportPos },
   mixins: [PaginationMixin],
 })
 export default class POSList extends Vue {
@@ -294,6 +307,7 @@ export default class POSList extends Vue {
   private selection: any = [];
   private searchOpen = true;
   private dialogVisible = false;
+  private importVisble = false;
   private isAdd = true;
 
   private async revoke() {

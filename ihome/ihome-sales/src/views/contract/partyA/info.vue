@@ -4,7 +4,7 @@
  * @Author: ywl
  * @Date: 2020-09-25 16:00:37
  * @LastEditors: ywl
- * @LastEditTime: 2020-12-30 19:12:36
+ * @LastEditTime: 2020-12-31 17:47:44
 -->
 <template>
   <IhPage class="text-left partyA-info">
@@ -278,6 +278,8 @@ export default class PartyAadd extends Vue {
           contractId: this.formData.id,
           annexList: this.addContract.concat(this.addArchive),
         });
+        this.addContract = [];
+        this.addArchive = [];
         this.$message.success("提交附件成功");
       } catch (err) {
         console.log(err);

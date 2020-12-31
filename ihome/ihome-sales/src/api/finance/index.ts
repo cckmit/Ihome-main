@@ -1,6 +1,6 @@
 /* eslint-disable */
 /* 此脚本由swagger-ui的api-docs自动生成，请勿修改 */
-//2020-12-26 5:39:19 ├F10: PM┤
+//2020-12-31 5:24:03 ├F10: PM┤
 import { request } from '@/api/base'
 const basePath = "/sales-api/finance"
 /**新增收款账号在线支付信息*/
@@ -135,7 +135,7 @@ return await request.post< number,number> (basePath+'/invoiceConfig/delete/{id}'
 export async function get_invoiceConfig_get__id (d?: any) {
 return await request.get<InvoiceConfigVO,InvoiceConfigVO>(basePath+'/invoiceConfig/get/{id}', { params: d })
 }
-/**查询公司收款账户信息列表数据*/
+/**查询发票税率配置信息列表数据*/
 export async function post_invoiceConfig_getList (d?: any) {
 return await request.post< any,any> (basePath+'/invoiceConfig/getList', d)
 }
@@ -291,6 +291,10 @@ return await request.get<any,any>(basePath+'/payment/getPayStatus/{id}', { param
 export async function get_payment_getPaymentQRCodeInfo__id (d?: any) {
 return await request.get<PaymentQRCodeVO,PaymentQRCodeVO>(basePath+'/payment/getPaymentQRCodeInfo/{id}', { params: d })
 }
+/**根据付款编号查询在线支付信息*/
+export async function get_payment_getSecretKeyByPayNo__payNo (d?: any) {
+return await request.get<AccountOnlinePayVO,AccountOnlinePayVO>(basePath+'/payment/getSecretKeyByPayNo/{payNo}', { params: d })
+}
 /**获取银联支付接口参数*/
 export async function post_payment_getUnionPayParameter (d?: any) {
 return await request.post< PaymentOnlinePayParamVO,PaymentOnlinePayParamVO> (basePath+'/payment/getUnionPayParameter', d)
@@ -370,6 +374,10 @@ return await request.get<PosTerminalDetailVO,PosTerminalDetailVO>(basePath+'/pos
 /**查询POS机终端信息列表数据*/
 export async function post_posTerminal_getList (d?: any) {
 return await request.post< any,any> (basePath+'/posTerminal/getList', d)
+}
+/**Excel导入Pos机信息*/
+export async function post_posTerminal_importData (d?: any) {
+return await request.post< number,number> (basePath+'/posTerminal/importData', d)
 }
 /**POS机终端撤机*/
 export async function post_posTerminal_revoke (d?: any) {
@@ -1385,7 +1393,9 @@ export interface PaymentAddVO {
 amount: number;
 /**文件ID集合[银行转账方式才必填,其他方式不填]*/
 attachments: PaymentAttachmentDetailVO[];
-/**(必填)优惠告知书I*/
+/**(必填)优惠告知书编号*/
+businessCode: string;
+/**(必填)优惠告知书ID*/
 businessId: number;
 /**(必填)店组ID*/
 groupId: number;
@@ -1423,6 +1433,8 @@ list: PaymentAgencyVO[];
 export interface PaymentAgencyVO {
 /**(必填)支付金额*/
 amount: number;
+/**(必填)请款单号*/
+businessCode: string;
 /**(必填)请款单ID*/
 businessId: number;
 /**(必填)成交ID*/
@@ -1490,6 +1502,8 @@ recordVOs: PaymentRecordVO[];
 export interface PaymentPCVO {
 /**支付金额*/
 amount: number;
+/**=业务编号[优惠告知书和请款单号]*/
+businessCode: string;
 /**业务编号*/
 businessId: number;
 /**对账时间(yyyy-MM-dd HH:mm:ss)*/
@@ -1571,6 +1585,8 @@ transAmount: string;
 /**PaymentQueryVO*/
 export interface PaymentQueryVO {
 /**业务编号*/
+businessCode: string;
+/**业务ID*/
 businessId: number;
 /**业主姓名*/
 customerName: string;
@@ -1691,6 +1707,8 @@ status: string;
 export interface PosApplyDetailVO {
 /**申请人*/
 applyUser: number;
+/**申请人名称*/
+applyUserName: string;
 /**所在事业部*/
 departmentId: number;
 /**事业部名称*/
@@ -1756,6 +1774,8 @@ result: string;
 export interface PosApplyItemVO {
 /**申请人*/
 applyUser: number;
+/**申请人名称*/
+applyUserName: string;
 /**所在事业部*/
 departmentId: number;
 /**事业部名称*/
@@ -1813,6 +1833,8 @@ type: string;
 export interface PosApplyVO {
 /**申请人*/
 applyUser: number;
+/**申请人名称*/
+applyUserName: string;
 /**所在事业部*/
 departmentId: number;
 /**事业部名称*/
@@ -1958,12 +1980,6 @@ terminalNo: string;
 }
 /**PosTerminalRecordVO*/
 export interface PosTerminalRecordVO {
-/**创建时间(yyyy-MM-dd HH:mm:ss)*/
-createTime: string;
-/**创建用户*/
-createUser: number;
-/**已删除*/
-deleted: number;
 /**ID*/
 id: number;
 /**操作时间(yyyy-MM-dd HH:mm:ss)*/
@@ -1972,16 +1988,14 @@ operateTime: string;
 operation: string;
 /**操作人*/
 operator: number;
+/**操作人名称*/
+operatorName: string;
 /**备注*/
 remark: string;
 /**操作结果*/
 result: string;
 /**POS终端ID*/
 terminalId: number;
-/**更新时间(yyyy-MM-dd HH:mm:ss)*/
-updateTime: string;
-/**更新用户*/
-updateUser: number;
 }
 /**PosTerminalUpdateVO*/
 export interface PosTerminalUpdateVO {

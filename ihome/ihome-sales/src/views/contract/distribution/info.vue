@@ -4,7 +4,7 @@
  * @Author: ywl
  * @Date: 2020-09-27 10:46:14
  * @LastEditors: ywl
- * @LastEditTime: 2020-12-31 14:45:57
+ * @LastEditTime: 2020-12-31 17:50:03
 -->
 <template>
   <IhPage class="text-left distribution-info">
@@ -385,6 +385,7 @@ export default class DistributionDetail extends Vue {
       annexCreateListList: this.sealFile,
       distributionId: this.ruleForm.id,
     });
+    this.sealFile = [];
     this.$message.success("扫描件归档成功");
   }
   private preview() {
