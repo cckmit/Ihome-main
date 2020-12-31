@@ -4,7 +4,7 @@
  * @Author: zyc
  * @Date: 2020-07-09 14:31:23
  * @LastEditors: zyc
- * @LastEditTime: 2020-12-22 09:42:40
+ * @LastEditTime: 2020-12-31 10:04:11
 --> 
 <template>
   <div>
@@ -53,12 +53,12 @@
           </el-col>
         </el-row>
       </el-col>
-      <el-col :span="8">
+      <!-- <el-col :span="8">
         <el-row>
           <el-col :span="6" class="ih-info-item-left">OA发文文号</el-col>
           <el-col :span="18" class="ih-info-item-right">{{ info.oaNo }}</el-col>
         </el-row>
-      </el-col>
+      </el-col> -->
     </el-row>
     <p class="ih-info-title">渠道等级信息列表</p>
     <el-table
@@ -71,7 +71,11 @@
       </el-table-column>
       <!-- <el-table-column prop="name" label="信用代码"> </el-table-column>
       <el-table-column prop="name" label="法定代表人"> </el-table-column> -->
-      <el-table-column prop="special" label="特批入库"> </el-table-column>
+      <el-table-column prop="special" label="特批入库">
+         <template slot-scope="scope">{{
+          $root.dictAllName(scope.row.special, "YesOrNoType")
+        }}</template>
+         </el-table-column>
       <el-table-column prop="city" label="业务开展城市">
         <template v-slot="{ row }">
           {{ $root.getAreaName(row.city) }}

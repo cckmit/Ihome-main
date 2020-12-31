@@ -409,7 +409,7 @@
     };
 
     async created() {
-      // await this.getListMixin();
+      await this.getListMixin();
     }
 
     // 查询条件折叠/展开

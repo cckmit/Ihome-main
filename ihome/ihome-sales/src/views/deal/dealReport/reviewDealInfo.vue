@@ -107,7 +107,6 @@
               <div class="home-type-wrapper">
                 <div>{{postData.house.room}}室</div>
                 <div>{{postData.house.hall}}厅</div>
-                <div>{{postData.house.kitchen}}厨</div>
                 <div>{{postData.house.toilet}}卫</div>
               </div>
             </el-form-item>

@@ -77,6 +77,7 @@
   import SelectNoticeList from "@/views/deal/dealReport/dialog/selectNoticeList.vue";
   import AddCustomer from "@/views/deal/dealReport/dialog/addCustomer.vue";
   import SelectReceivePackage from "@/views/deal/dealReport/dialog/selectReceivePackage.vue";
+  import DealInfo from "@/views/deal/dealReport/dialog/dealInfo.vue";
   import {
     post_buModelContType_getList,
     post_buModelContType_subList
@@ -90,6 +91,7 @@
       SelectNoticeList,
       AddCustomer,
       SelectReceivePackage,
+      DealInfo
     }
   })
   export default class DealReportEntry extends Vue {
@@ -190,7 +192,7 @@
 
     // 选择收派套餐
     selectPackage(data: any = {}) {
-      if (!data.type) return;
+      if (!data.feeType) return;
       if (data.hasRecord) {
         // 分销模式
         if (!data.contNo) {
@@ -201,16 +203,16 @@
         // 非分销模式
         // 合同类型contType + 物业类型propertyType + 细分业务类型refineModel + 立项周期cycleId，这几个条件必须满足
         let tips: any = [];
-        if (!data.postObj.termId) {
+        if (!data.termId) {
           tips.push('项目周期');
         }
-        if (!data.postObj.subdivideEnum) {
+        if (!data.subdivide) {
           tips.push('细分业务模式');
         }
-        if (!data.postObj.propertyEnum) {
+        if (!data.property) {
           tips.push('物业类型');
         }
-        if (!data.postObj.contractEnum) {
+        if (!data.contType) {
           tips.push('合同类型');
         }
         if (tips.length) {

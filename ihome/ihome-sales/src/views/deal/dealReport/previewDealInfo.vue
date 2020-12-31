@@ -347,18 +347,6 @@
                 </div>
                 <div>
                   <el-input-number
-                    v-model="postData.kitchen"
-                    disabled
-                    :min="0"
-                    :step="1"
-                    size="small"
-                    :step-strictly="true"
-                    :controls="false"
-                    abel="描述文字"></el-input-number>
-                  厨
-                </div>
-                <div>
-                  <el-input-number
                     v-model="postData.toilet"
                     disabled
                     :min="0"

@@ -111,7 +111,6 @@
             <div class="home-type-wrapper">
               <div>{{infoForm.house.room}}室</div>
               <div>{{infoForm.house.hall}}厅</div>
-              <div>{{infoForm.house.kitchen}}厨</div>
               <div>{{infoForm.house.toilet}}卫</div>
             </div>
           </el-form-item>

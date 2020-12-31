@@ -21,7 +21,7 @@
       </div>
       <el-row>
         <el-col :span="6" v-if="!!postData.dealCode">
-          <el-form-item label="成交报告编号" :prop="!!postData.dealCode ? 'dealCode' : ''">
+          <el-form-item label="成交报告编号" :prop="!!postData.dealCode ? 'dealCode' : ' '">
             <el-input
               disabled
               placeholder="成交报告编号"
@@ -172,7 +172,7 @@
           </el-form-item>
         </el-col>
         <el-col :span="6" v-if="baseInfoInDeal.hasRecord">
-          <el-form-item label="分销协议编号" :prop="baseInfoInDeal.hasRecord ? 'contNo' : ''">
+          <el-form-item label="分销协议编号" :prop="baseInfoInDeal.hasRecord ? 'contNo' : ' '">
             <div class="contNo-wrapper">
               <el-select
                 v-model="postData.contNo"
@@ -192,7 +192,7 @@
           </el-form-item>
         </el-col>
         <el-col :span="6" v-if="baseInfoInDeal.hasRecord">
-          <el-form-item label="是否垫佣" :prop="baseInfoInDeal.hasRecord ? 'isMat' : ''">
+          <el-form-item label="是否垫佣" :prop="baseInfoInDeal.hasRecord ? 'isMat' : ' '">
             <el-select
               v-model="postData.isMat"
               disabled
@@ -208,22 +208,22 @@
           </el-form-item>
         </el-col>
         <el-col :span="6" v-if="baseInfoInDeal.hasRecord">
-          <el-form-item label="报备信息" :prop="baseInfoInDeal.hasRecord ? 'recordStr' : ''">
+          <el-form-item label="报备信息" :prop="baseInfoInDeal.hasRecord ? 'recordStr' : ' '">
             <el-input v-model="postData.recordStr" disabled placeholder="房号自动带出"></el-input>
           </el-form-item>
         </el-col>
         <el-col :span="6" v-if="baseInfoInDeal.hasRecord">
-          <el-form-item label="渠道公司" :prop="baseInfoInDeal.hasRecord ? 'agencyName' : ''">
+          <el-form-item label="渠道公司" :prop="baseInfoInDeal.hasRecord ? 'agencyName' : ' '">
             <el-input v-model="postData.agencyName" disabled placeholder="选成交报备自动带出"></el-input>
           </el-form-item>
         </el-col>
         <el-col :span="6" v-if="baseInfoInDeal.hasRecord">
-          <el-form-item label="渠道等级" :prop="baseInfoInDeal.hasRecord ? 'channelLevelName' : ''">
+          <el-form-item label="渠道等级" :prop="baseInfoInDeal.hasRecord ? 'channelLevelName' : ' '">
             <el-input v-model="postData.channelLevelName" disabled placeholder="选成交报备自动带出"></el-input>
           </el-form-item>
         </el-col>
         <el-col :span="6" v-if="baseInfoInDeal.hasRecord">
-          <el-form-item label="经纪人" :prop="baseInfoInDeal.hasRecord ? 'brokerName' : ''">
+          <el-form-item label="经纪人" :prop="baseInfoInDeal.hasRecord ? 'brokerName' : ' '">
             <el-input v-model="postData.brokerName" disabled placeholder="选成交报备自动带出"></el-input>
           </el-form-item>
         </el-col>
@@ -275,17 +275,6 @@
                   size="small"
                   :controls="false"
                   :step-strictly="true"></el-input-number>厅
-              </div>
-              <div>
-                <el-input-number
-                  v-digits="0"
-                  :disabled="isDisabled('kitchen', 'houseVO')"
-                  v-model="postData.kitchen"
-                  :min="0"
-                  :step="1"
-                  size="small"
-                  :controls="false"
-                  :step-strictly="true"></el-input-number>厨
               </div>
               <div>
                 <el-input-number
@@ -357,7 +346,7 @@
           </el-form-item>
         </el-col>
         <el-col :span="6">
-          <el-form-item label="认购价格" :prop="['Subscribe', 'SignUp'].includes(postData.stage) ? 'subscribePrice' : ''">
+          <el-form-item label="认购价格" :prop="['Subscribe', 'SignUp'].includes(postData.stage) ? 'subscribePrice' : ' '">
             <el-input
               :disabled="isDisabled('subscribePrice', 'dealVO')"
               v-model="postData.subscribePrice"
@@ -365,7 +354,7 @@
           </el-form-item>
         </el-col>
         <el-col :span="6">
-          <el-form-item label="认购日期" :prop="['Subscribe', 'SignUp'].includes(postData.stage) ? 'subscribeDate' : ''">
+          <el-form-item label="认购日期" :prop="['Subscribe', 'SignUp'].includes(postData.stage) ? 'subscribeDate' : ' '">
             <el-date-picker
               style="width: 100%"
               :disabled="isDisabled('subscribeDate', 'dealVO')"
@@ -376,7 +365,7 @@
           </el-form-item>
         </el-col>
         <el-col :span="6">
-          <el-form-item label="签约价格" :prop="['SignUp'].includes(postData.stage) ? 'signPrice' : ''">
+          <el-form-item label="签约价格" :prop="['SignUp'].includes(postData.stage) ? 'signPrice' : ' '">
             <el-input
               :disabled="isDisabled('signPrice', 'dealVO')"
               v-model="postData.signPrice"
@@ -384,7 +373,7 @@
           </el-form-item>
         </el-col>
         <el-col :span="6">
-          <el-form-item label="签约日期" :prop="['SignUp'].includes(postData.stage) ? 'signDate' : ''">
+          <el-form-item label="签约日期" :prop="['SignUp'].includes(postData.stage) ? 'signDate' : ' '">
             <el-date-picker
               style="width: 100%"
               :disabled="isDisabled('signDate', 'dealVO')"
@@ -400,12 +389,12 @@
           </el-form-item>
         </el-col>
         <el-col :span="6" v-if="!!id">
-          <el-form-item label="录入人" :prop="!!id ? 'entryPerson' : ''">
+          <el-form-item label="录入人" :prop="!!id ? 'entryPerson' : ' '">
             <el-input v-model="postData.entryPerson" disabled placeholder="录入人"></el-input>
           </el-form-item>
         </el-col>
         <el-col :span="6" v-if="!!id">
-          <el-form-item label="录入日期" :prop="!!id ? 'entryDate' : ''">
+          <el-form-item label="录入日期" :prop="!!id ? 'entryDate' : ' '">
             <el-date-picker
               style="width: 100%"
               v-model="postData.entryDate"
@@ -421,7 +410,7 @@
           </el-form-item>
         </el-col>
         <el-col :span="6" v-if="!!id">
-          <el-form-item label="成交状态" :prop="!!id ? 'status' : ''">
+          <el-form-item label="成交状态" :prop="!!id ? 'status' : ' '">
             <el-input v-model="postData.status" disabled placeholder="成交状态"></el-input>
           </el-form-item>
         </el-col>
@@ -646,7 +635,7 @@
       </el-col>
     </el-row>
     <div class="text-center btn-top">
-      <el-button type="success" @click="handleSave('submit')">提交</el-button>
+      <el-button type="success" @click="handleSave">提交</el-button>
       <el-button @click="cancel()">取消</el-button>
     </div>
     <div class="nav-box">
@@ -773,7 +762,6 @@
       area: null,
       room: null,
       hall: null,
-      kitchen: null,
       toilet: null,
       sceneSales: null, // 现场销售
       offerNoticeVO: [], // 优惠告知书
@@ -1006,7 +994,6 @@
               'area',
               'room',
               'hall',
-              'kitchen',
               'toilet',
               'propertyNo',
               'sceneSales',
@@ -1119,7 +1106,7 @@
       this.postData.customerVO = []; // 客户信息
       this.postData.offerNoticeVO = []; // 优惠告知书
       this.postData.documentVO = []; // 上传附件
-      let list: any = ['contType', 'contNo', 'recordState', 'recordStr', 'area', 'room', 'hall', 'kitchen',
+      let list: any = ['contType', 'contNo', 'recordState', 'recordStr', 'area', 'room', 'hall',
         'toilet', 'propertyNo', 'signType', 'stage', 'returnRatio', 'subscribePrice', 'subscribeDate',
         'signPrice', 'signDate', 'dataSign', 'agencyId', 'agencyName', 'channelLevel', 'channelLevelName']
       this.resetObject('postData', list);
@@ -1175,7 +1162,6 @@
       // 户型
       this.postData.room = baseInfo.myReturnVO.houseVO?.room;
       this.postData.hall = baseInfo.myReturnVO.houseVO?.hall;
-      this.postData.kitchen = baseInfo.myReturnVO.houseVO?.kitchen;
       this.postData.toilet = baseInfo.myReturnVO.houseVO?.toilet;
       // 预售合同编号
       this.postData.propertyNo = baseInfo.myReturnVO.houseVO?.propertyNo;
@@ -1341,17 +1327,28 @@
     selectPackage(scope: any) {
       console.log('选择收派套餐', scope);
       this.currentReceiveIndex = scope.$index;
+      // let params: any = {
+      //   hasRecord: this.baseInfoInDeal.hasRecord, // 是否有成交报备(是否分销成交)
+      //   idList: this.packageIdsList, // 分销成交 --- 选择分销协议后的ids
+      //   contNo: this.postData.contNo, // 分销协议编号
+      //   type: scope.row.type, // 标题类型
+      //   postObj: {
+      //     contractEnum: this.postData.contType, // 合同类型
+      //     propertyEnum: this.postData.propertyType, // 物业类型
+      //     subdivideEnum: this.postData.refineModel, // 细分业务
+      //     termId: this.postData.cycleId, // 立项周期ID
+      //   }, // 非分销需要获取id的参数
+      // };
       let params: any = {
-        hasRecord: this.baseInfoInDeal.hasRecord, // 是否有成交报备(是否分销成交)
-        idList: this.packageIdsList, // 分销成交 --- 选择分销协议后的ids
+        termId: this.baseInfoByTerm.termId, // 项目周期id
+        contType: this.postData.contType, // 合同类型
+        hasRecord: this.postData.hasRecord, // 是否有成交报备(是否分销成交)
         contNo: this.postData.contNo, // 分销协议编号
-        type: scope.row.type, // 标题类型
-        postObj: {
-          contractEnum: this.postData.contType, // 合同类型
-          propertyEnum: this.postData.propertyType, // 物业类型
-          subdivideEnum: this.postData.refineModel, // 细分业务
-          termId: this.postData.cycleId, // 立项周期ID
-        }, // 非分销需要获取id的参数
+        distributionIds: this.packageIdsList, // 分销成交 --- 选择分销协议后的ids
+        feeType: scope.row.type, // 费用类型
+        partyACustomerId: scope.row.partyACustomer, // 甲方或客户
+        property: this.postData.propertyType, // 物业类型
+        subdivide: this.postData.refineModel, // 细分业务模式
       };
       (this as any).$parent.selectPackage(params);
     }
@@ -1482,14 +1479,24 @@
     }
 
     // 保存
-    async handleSave(type: any) {
-      console.log('type', type);
-      // type: save --- 保存； submit --- 提交
-      (this.$refs["ruleForm"] as ElForm).validate(this.addSave);
+    async handleSave() {
+      console.log(this.postData)
+      if (this.postData.stage === 'SignUp') {
+        try {
+          await this.$confirm("签约阶段的业绩申报将提交给文员，如需修改信息请联系文员", "提示");
+          (this.$refs["ruleForm"] as ElForm).validate(this.addSave);
+        } catch (error) {
+          console.log(error);
+        }
+      } else {
+        (this.$refs["ruleForm"] as ElForm).validate(this.addSave);
+      }
     }
 
     @NoRepeatHttp()
     async addSave(valid: any) {
+      console.log(valid);
+      valid = false;
       if (valid) {
         if (this.id) {
           let postData: any = {
