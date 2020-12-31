@@ -1663,7 +1663,7 @@
 
     // 校验收派金额信息模块 --- 是否都有收派套餐
     validReceive(data = []) {
-      if (data.length.length === 0) return false;
+      if (data.length === 0) return false;
       let flag = data.every((item: any) => {
         return (item.showData && item.showData.length > 0);
       });
