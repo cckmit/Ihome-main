@@ -1525,7 +1525,7 @@
 
     // 构建参数
     getPostData() {
-      let obj = {
+      let obj: any = {
         agencyVO: [], // 渠道商信息
         customerVO: [], // 客户信息
         dealVO: {
