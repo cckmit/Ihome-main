@@ -4,7 +4,7 @@
  * @Author: zyc
  * @Date: 2020-07-09 14:31:23
  * @LastEditors: zyc
- * @LastEditTime: 2020-12-31 09:14:16
+ * @LastEditTime: 2020-12-31 10:04:11
 --> 
 <template>
   <div>
@@ -71,7 +71,11 @@
       </el-table-column>
       <!-- <el-table-column prop="name" label="信用代码"> </el-table-column>
       <el-table-column prop="name" label="法定代表人"> </el-table-column> -->
-      <!-- <el-table-column prop="special" label="特批入库"> </el-table-column> -->
+      <el-table-column prop="special" label="特批入库">
+         <template slot-scope="scope">{{
+          $root.dictAllName(scope.row.special, "YesOrNoType")
+        }}</template>
+         </el-table-column>
       <el-table-column prop="city" label="业务开展城市">
         <template v-slot="{ row }">
           {{ $root.getAreaName(row.city) }}
