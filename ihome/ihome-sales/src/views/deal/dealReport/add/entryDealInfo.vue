@@ -1495,43 +1495,22 @@
 
     @NoRepeatHttp()
     async addSave(valid: any) {
-      console.log(valid);
+      // 1.校验收派金额是都有收派套餐
+      let flag = this.validReceive(this.postData.receiveVO);
       valid = false;
-      if (valid) {
+      if (valid && flag) {
+        // 整合数据
+        let postData: any = this.getPostData();
         if (this.id) {
-          let postData: any = {
-            id: this.id,
-            modelName: this.postData.modelName,
-            buModelContTypeList: []
-          };
-          if (this.postData.buModelContTypeList.length > 0) {
-            this.postData.buModelContTypeList.forEach((list: any) => {
-              postData.buModelContTypeList.push(
-                {
-                  contType: list
-                }
-              )
-            })
-          }
+          postData.dealVO.dealCode = this.postData.dealCode;
+          postData.dealVO.id = this.postData.id;
+          postData.dealVO.parentId = this.postData.parentId;
           await post_deal_updateDealBasicInf(postData);
           this.$message.success("编辑成功");
           this.$goto({
             path: "/dealReport/list",
           });
         } else {
-          let postData: any = {
-            modelName: this.postData.modelName,
-            buModelContTypeList: []
-          };
-          if (this.postData.buModelContTypeList.length > 0) {
-            this.postData.buModelContTypeList.forEach((list: any) => {
-              postData.buModelContTypeList.push(
-                {
-                  contType: list
-                }
-              )
-            })
-          }
           await post_deal_entryDealBasicInf(postData);
           this.$message.success("新增成功");
           this.$goto({
@@ -1542,6 +1521,154 @@
         this.$message.warning("请先填好数据再保存");
         return false;
       }
+    }
+
+    // 构建参数
+    getPostData() {
+      let obj = {
+        agencyVO: [], // 渠道商信息
+        customerVO: [], // 客户信息
+        dealVO: {
+          "businessType": "",
+          "charge": "",
+          "contNo": "",
+          "contType": "",
+          "cycleId": '',
+          "dataSign": "",
+          "dealOrgId": '',
+          "isConsign": "",
+          "isMarketProject": "",
+          "isMat": "",
+          "modelCode": "",
+          "noticeIds": [],
+          "oneAgentTeamId": "",
+          "recordState": "",
+          "refineModel": "",
+          "reportId": '',
+          "sceneSales": "",
+          "signDate": "",
+          "signPrice": '',
+          "signType": "",
+          "stage": "",
+          "subscribeDate": "",
+          "subscribePrice": ""
+        }, // 成交基础信息
+        documentVO: [], // 上传附件
+        houseVO: {
+          address: "",
+          area: "",
+          buildingId: "",
+          hall: "",
+          propertyNo: "",
+          propertyType: "",
+          room: "",
+          roomId: "",
+          roomNo: "",
+          toilet: ""
+        }, // 房屋信息
+        receiveAchieveVO: [], // 收派金额 --- 汇总
+        receiveVO: [] // 收派金额
+      }
+      // 1. 渠道商信息 --- 分销成交才会有
+      if (this.baseInfoInDeal.contType === 'DistriDeal') {
+        obj.agencyVO.push(
+          {
+            agencyId: this.postData.agencyId,
+            brokerId: this.postData.brokerId,
+            channelLevel: this.postData.channelLevel,
+          }
+        )
+        obj.dealVO.contNo = this.postData.contNo;
+        obj.dealVO.isMat = this.postData.isMat;
+      }
+      // 2. 客户信息
+      if (this.postData.customerVO.length > 0) {
+        this.postData.customerVO.forEach((item: any, index: any) => {
+          if (index === 0) {
+            item.isCustomer = 'Yes';
+          } else {
+            item.isCustomer = 'No';
+          }
+        });
+        obj.customerVO = this.postData.customerVO;
+      }
+      // 3.基础信息
+      obj.dealVO.businessType = this.baseInfoByTerm.busTypeEnum;
+      obj.dealVO.charge = this.baseInfoByTerm.chargeEnum;
+      obj.dealVO.contType = this.postData.contType;
+      obj.dealVO.cycleId = this.postData.cycleId;
+      obj.dealVO.dataSign = this.baseInfoInDeal.myReturnVO.dataSign;
+      obj.dealVO.dealOrgId = this.postData.dealOrgId;
+      obj.dealVO.isConsign = this.postData.isConsign;
+      obj.dealVO.isMarketProject = this.postData.isMarketProject;
+      obj.dealVO.modelCode = this.postData.businessType;
+      if (this.postData.offerNoticeVO.length > 0) {
+        this.postData.offerNoticeVO.forEach((vo: any) => {
+          obj.dealVO.noticeIds.push(vo.id);
+        })
+      }
+      obj.dealVO.oneAgentTeamId = this.postData.oneAgentTeamId;
+      obj.dealVO.recordState = this.postData.recordState;
+      obj.dealVO.refineModel = this.postData.refineModel;
+      obj.dealVO.reportId = this.baseInfoInDeal.recordId;
+      obj.dealVO.sceneSales = this.postData.sceneSales;
+      obj.dealVO.signDate = this.postData.signDate;
+      obj.dealVO.signPrice = this.postData.signPrice;
+      obj.dealVO.signType = this.postData.signType;
+      obj.dealVO.stage = this.postData.stage;
+      obj.dealVO.subscribeDate = this.postData.subscribeDate;
+      obj.dealVO.subscribePrice = this.postData.subscribePrice;
+      obj.houseVO.address = this.postData.address;
+      obj.houseVO.area = this.postData.area;
+      obj.houseVO.buildingId = this.postData.buildingId;
+      obj.houseVO.hall = this.postData.hall;
+      obj.houseVO.hall = this.postData.hall;
+      obj.houseVO.propertyNo = this.postData.propertyNo;
+      obj.houseVO.propertyType = this.postData.propertyType;
+      obj.houseVO.room = this.postData.room;
+      obj.houseVO.roomId = this.postData.roomId;
+      obj.houseVO.roomNo = this.baseInfoInDeal.roomNo;
+      obj.houseVO.toilet = this.postData.toilet;
+      // 附件信息
+      if (this.postData.documentVO.length > 0) {
+        this.postData.documentVO.forEach((item: any) => {
+          if (item.fileList.length > 0) {
+            item.fileList.forEach((list: any) => {
+              obj.documentVO.push(
+                {
+                  fileId: list.fileId,
+                  fileName: list.fileName,
+                  fileType: item.code
+                }
+              )
+            })
+          }
+        })
+      }
+      // 派发金额合计
+      if (this.receiveAchieveVO.length > 0) {
+        this.receiveAchieveVO.forEach((vo: any) => {
+          obj.receiveAchieveVO.push(
+            {
+              achieveAmount: vo.achieveAmount,
+              otherChannelFees: vo.otherChannelFees,
+              receiveAmount: vo.receiveAmount
+            }
+          )
+        });
+      }
+      // 派发金额
+      obj.receiveVO = this.postData.receiveVO;
+      return obj;
+    }
+
+    // 校验收派金额信息模块 --- 是否都有收派套餐
+    validReceive(data = []) {
+      if (data.length) return false;
+      let flag = data.every((item: any) => {
+        return (item.showData && item.showData.length > 0);
+      });
+      return flag;
     }
 
     // 查看来访/成交确认信息
