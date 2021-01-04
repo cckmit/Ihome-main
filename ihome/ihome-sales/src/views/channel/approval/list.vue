@@ -4,7 +4,7 @@
  * @Author: zyc
  * @Date: 2020-07-14 09:23:40
  * @LastEditors: zyc
- * @LastEditTime: 2020-12-22 16:20:40
+ * @LastEditTime: 2021-01-06 11:20:39
 --> 
 --> 
 <template>
@@ -300,8 +300,13 @@ export default class InvitationCodeList extends Vue {
     this.getListMixin();
   }
   inputTimeChange(dateArray: any) {
-    this.queryPageParameters.inputTimeStart = dateArray[0];
-    this.queryPageParameters.inputTimeEnd = dateArray[1];
+    if (dateArray) {
+      this.queryPageParameters.inputTimeStart = dateArray[0];
+      this.queryPageParameters.inputTimeEnd = dateArray[1];
+    } else {
+      this.queryPageParameters.inputTimeStart = null;
+      this.queryPageParameters.inputTimeEnd = null;
+    }
   }
   async remove(scope: any) {
     try {

@@ -4,7 +4,7 @@
  * @Author: zyc
  * @Date: 2020-06-22 11:46:23
  * @LastEditors: zyc
- * @LastEditTime: 2021-01-05 11:01:22
+ * @LastEditTime: 2021-01-06 10:42:07
 --> 
 <template>
   <div class="app">
@@ -15,20 +15,12 @@
         class="ih-aside"
       >
         <div class="container-logo" v-show="!isCollapsed">
-          <img
-            src="./assets/layout/logo-text.png"
-            style="width: 165px"
-            alt
-            srcset
-          />
+          <img class="logo-img" src="./assets/layout/logo-home.png" />
+          <img src="./assets/layout/logo-text.png" style="width: 135px" />
+          <!-- <span class="logo-title">新房分销系统</span> -->
         </div>
         <div class="container-logo-lm" v-show="isCollapsed">
-          <img
-            src="./assets/layout/logo-icon.png"
-            style="width: 100%"
-            alt
-            srcset
-          />
+          <img src="./assets/layout/logo-icon.png" style="width: 100%" />
         </div>
 
         <el-scrollbar
@@ -73,10 +65,12 @@
                       :index="cItem.id"
                       v-for="(cItem, cIndex) in childrenItem.children"
                       :key="cIndex"
-                      >{{ cItem.name }}</el-menu-item
+                    >
+                      {{ cItem.name }}</el-menu-item
                     >
                   </el-submenu>
                   <el-menu-item
+                    style="padding-left: 50px"
                     v-else
                     :key="childrenIndex"
                     @click="goto(childrenItem.url)"
@@ -295,16 +289,17 @@ export default class App extends Vue {
   line-height: 66px;
   height: 28px;
   width: 100%;
+  color: #d1defb;
 }
-$asideBg: #4881f9;
-$asideFontColor: #9de5fc;
-$asideActive: #003894;
+$asideBg: #003894;
+$asideFontColor: #d1defb;
+$asideActive: #4881f9;
 
 .el-submenu.is-active.is-opened > div {
-  background: $asideActive !important;
+  background: #4881f9 !important;
 }
 .el-submenu.is-active.is-opened > ul > li {
-  background: #3c6bcf !important;
+  background: #002f7b !important;
 }
 .el-submenu.is-active {
   background: $asideActive !important;
@@ -312,9 +307,10 @@ $asideActive: #003894;
 .el-menu-item {
   background: #fff !important;
 }
-.el-menu-item.is-active {
-  color: #9de5fc !important;
-}
+// .el-menu-item.is-active {
+//   color: #9DE5FC !important;
+// }
+
 body {
   margin: 0;
   padding: 0;
@@ -372,8 +368,10 @@ body {
 .el-menu .el-submenu div,
 .el-submenu i,
 .el-menu-item {
-  color: #fff !important;
+  color: #d1defb !important;
+  font-family: Source Han Sans CN;
 }
+
 .el-menu {
   border-right: solid 1px $asideBg !important;
   &.is-collapse {
@@ -382,7 +380,6 @@ body {
 }
 
 .el-menu-item.is-active {
-  color: $asideFontColor !important;
   background: $asideActive !important;
 }
 .el-menu-vertical-demo:not(.el-menu--collapse) {
@@ -391,9 +388,9 @@ body {
 }
 </style>
 <style scoped lang="scss">
-$asideFontColor: #f5eed4;
-$asideActive: #003894;
-$asideBg: #4881f9;
+$asideFontColor: #d1defb;
+$asideActive: #4881f9;
+$asideBg: #003894;
 .right-container-header {
   height: 50px;
   line-height: 50px;
@@ -417,14 +414,12 @@ $asideBg: #4881f9;
 //   margin-top: 50px;
 // }
 .container-logo {
-  width: 200px;
+  width: 220px;
   height: 50px;
   line-height: 50px;
-  padding: 10px;
   box-sizing: border-box;
   margin: 0 auto;
   text-align: center;
-  // border-bottom: 1px solid #2c4e5a;
 }
 .container-logo-lm {
   width: 64px;
@@ -453,7 +448,25 @@ $asideBg: #4881f9;
   color: $asideFontColor !important;
 }
 .el-submenu :hover {
+  background: #255dc7 !important;
+}
+.el-menu-item.is-active {
   color: #9de5fc !important;
-  background: #003894 !important;
+}
+.logo-title {
+  font-size: 20px;
+  height: 50px;
+  line-height: 50px;
+  display: inline-block;
+  width: 134px;
+  color: #fff;
+}
+.logo-img {
+  position: relative;
+  top: 4px;
+}
+.is-opened .el-menu-item {
+  height: 45px;
+  line-height: 45px;
 }
 </style>
