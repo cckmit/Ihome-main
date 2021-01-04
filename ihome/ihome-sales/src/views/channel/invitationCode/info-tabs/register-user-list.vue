@@ -4,7 +4,7 @@
  * @Author: zyc
  * @Date: 2020-10-13 19:51:15
  * @LastEditors: zyc
- * @LastEditTime: 2020-12-31 09:50:06
+ * @LastEditTime: 2021-01-04 16:09:43
 -->
 <template>
   <div>
@@ -67,7 +67,7 @@
         label="手机号码"
         width="180"
       ></el-table-column>
-      <el-table-column prop="channelId" label="渠道商名称">
+      <el-table-column prop="channelName" label="渠道商名称">
         <!-- <template slot-scope="scope">{{
           $root.displayName("accountType", scope.row.accountType)
         }}</template> -->
