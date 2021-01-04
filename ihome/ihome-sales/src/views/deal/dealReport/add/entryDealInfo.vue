@@ -360,6 +360,7 @@
               :disabled="isDisabled('subscribeDate', 'dealVO')"
               v-model="postData.subscribeDate"
               type="datetime"
+              value-format="yyyy-MM-dd HH:mm:ss"
               placeholder="请选择认购日期">
             </el-date-picker>
           </el-form-item>
@@ -379,6 +380,7 @@
               :disabled="isDisabled('signDate', 'dealVO')"
               v-model="postData.signDate"
               type="datetime"
+              value-format="yyyy-MM-dd HH:mm:ss"
               placeholder="请选择签约日期">
             </el-date-picker>
           </el-form-item>
@@ -400,6 +402,7 @@
               v-model="postData.entryDate"
               type="datetime"
               disabled
+              value-format="yyyy-MM-dd HH:mm:ss"
               placeholder="请选择录入日期">
             </el-date-picker>
           </el-form-item>
@@ -580,7 +583,7 @@
                   <el-input
                     readonly
                     placeholder="收派标准">
-                    <el-button slot="append" icon="el-icon-search"
+                    <el-button slot="append" icon="el-icon-edit-outline"
                       @click.native.prevent="selectPackage(scope)"></el-button>
                   </el-input>
                 </el-tooltip>
@@ -1104,6 +1107,7 @@
       this.contNoList = []; // 分销协议编号
       this.packageIdsList = []; // ids
       this.postData.customerVO = []; // 客户信息
+      this.postData.receiveVO = []; // 收派金额
       this.postData.offerNoticeVO = []; // 优惠告知书
       this.postData.documentVO = []; // 上传附件
       let list: any = ['contType', 'contNo', 'recordState', 'recordStr', 'area', 'room', 'hall',
@@ -1203,13 +1207,8 @@
       // 客户信息
       this.postData.customerVO = baseInfo.customerAddVOS && baseInfo.customerAddVOS.length ? baseInfo.customerAddVOS : [];
       // 收派金额
-      this.postData.receiveVO = baseInfo.receiveVOS && baseInfo.receiveVOS.length ? baseInfo.receiveVOS : [];
-      // 构建收派金额的收派套餐列表
-      if (this.postData.receiveVO.length) {
-        this.postData.receiveVO.forEach((vo: any) => {
-          this.$set(vo, 'showData', []);
-        });
-      }
+      // this.postData.receiveVO = baseInfo.receiveVOS && baseInfo.receiveVOS.length ? baseInfo.receiveVOS : [];
+      this.postData.receiveVO = (this as any).$parent.initReceiveVOS(baseInfo.receiveVOS);
       // 附件信息
       this.initDocument(baseInfo.contType, baseInfo);
     }
@@ -1426,7 +1425,7 @@
 
     // 确定选择收派套餐
     async finishAddReceivePackage(data: any) {
-      console.log('确定选择收派套餐', data);
+      // console.log('确定选择收派套餐', data);
       if (data.length === 0) return;
       if (this.postData.receiveVO.length > 0) {
         this.postData.receiveVO.forEach((vo: any, index: any) => {
@@ -1455,9 +1454,8 @@
 
     // 上传图片/文件
     getNewFile(data: any, type?: any) {
-      console.log(data);
-      console.log(type);
-      console.log('postData.documentVO', this.postData.documentVO);
+      // console.log(data);
+      // console.log(type);
       if (this.postData.documentVO.length > 0) {
         this.postData.documentVO.forEach((vo: any) => {
           if (vo.code === type) {
@@ -1469,6 +1467,7 @@
           }
         });
       }
+      console.log('postData.documentVO', this.postData.documentVO);
     }
 
     // 取消
@@ -1480,7 +1479,7 @@
 
     // 保存
     async handleSave() {
-      console.log(this.postData)
+      // console.log(this.postData);
       if (this.postData.stage === 'SignUp') {
         try {
           await this.$confirm("签约阶段的业绩申报将提交给文员，如需修改信息请联系文员", "提示");
@@ -1496,7 +1495,7 @@
     @NoRepeatHttp()
     async addSave(valid: any) {
       // 1.校验收派金额是都有收派套餐
-      let flag = this.validReceive(this.postData.receiveVO);
+      let flag = (this as any).$parent.validReceiveData(this.postData.receiveVO);
       if (valid && flag) {
         // 整合数据
         let postData: any = this.getPostData();
@@ -1636,7 +1635,7 @@
               obj.documentVO.push(
                 {
                   fileId: list.fileId,
-                  fileName: list.fileName,
+                  fileName: list.name,
                   fileType: item.code
                 }
               )
@@ -1659,15 +1658,6 @@
       // 派发金额
       obj.receiveVO = this.postData.receiveVO;
       return obj;
-    }
-
-    // 校验收派金额信息模块 --- 是否都有收派套餐
-    validReceive(data = []) {
-      if (data.length === 0) return false;
-      let flag = data.every((item: any) => {
-        return (item.showData && item.showData.length > 0);
-      });
-      return flag;
     }
 
     // 查看来访/成交确认信息
@@ -1697,36 +1687,6 @@
     }
   }
 
-  .manager-list {
-    width: 100%;
-    display: flex;
-    flex-direction: row;
-    align-items: center;
-
-    div {
-      flex: 1;
-    }
-  }
-
-  .receive-wrapper {
-    width: 100%;
-    display: flex;
-    flex-direction: row;
-    align-items: center;
-    box-sizing: border-box;
-    margin: 10px 0px;
-
-    p {
-      flex: 1;
-      display: inline-block;
-    }
-
-    div {
-      box-sizing: border-box;
-      margin-left: 5px;
-    }
-  }
-
   .home-type-wrapper {
     width: 100%;
     display: flex;
@@ -1745,25 +1705,6 @@
   .btn-top {
     box-sizing: border-box;
     margin-top: 20px;
-  }
-
-  .ih-type-wrapper {
-    width: 100%;
-    box-sizing: border-box;
-    padding-left: 20px;
-    margin: 15px 0px;
-    text-align: left;
-    display: flex;
-    align-items: center;
-
-    .title {
-      margin-right: 20px;
-      box-sizing: border-box;
-      border-left: 5px solid #F90;
-      padding-left: 5px;
-      color: #f90;
-      margin-left: 20px;
-    }
   }
 
   .nav-box {
@@ -1821,22 +1762,6 @@
       transform: scaleX(0);
       transition: all 0.3s;
       transform-origin: left bottom;
-    }
-  }
-
-  .divider-padding {
-    padding: 20px 20px;
-    box-sizing: border-box;
-    margin: 10px 0px;
-
-    /deep/.el-divider {
-      background-color: #409EFF;
-    }
-
-    /deep/.el-divider__text {
-      color: #409EFF;
-      font-size: 18px;
-      font-weight: bold;
     }
   }
 </style>

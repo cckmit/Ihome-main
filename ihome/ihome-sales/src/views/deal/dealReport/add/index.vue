@@ -261,6 +261,60 @@
       this.dialogAddReceivePackage = !this.dialogAddReceivePackage;
     }
 
+    /*
+    * 校验收派金额信息模块
+    * 自动---是否都有收派套餐
+    * 手动---除了其他渠道费用外是否都大于等于0
+    * params: data: Array --- 需要判断的收派金额数组
+    * params: way: string --- 计算方式---auto:自动；Manual:手动
+    * */
+    validReceiveData(data: any = [], way: any = "Auto") {
+      if (data.length === 0) return false;
+      let flag: any = false;
+      if (way === 'Auto') {
+        // 自动
+        flag = data.every((item: any) => {
+          return (item.showData && item.showData.length > 0);
+        });
+      } else {
+        // 手动
+        data.forEach((item: any) => {
+          if ([null, undefined].includes(item.receiveAmount)) {
+            flag = false;
+          }
+          if ([null, undefined].includes(item.commAmount)) {
+            flag = false;
+          }
+          if ([null, undefined].includes(item.rewardAmount)) {
+            flag = false;
+          }
+          if ([null, undefined].includes(item.totalPackageAmount)) {
+            flag = false;
+          }
+          if ([null, undefined].includes(item.distributionAmount)) {
+            flag = false;
+          }
+        })
+      }
+      return flag;
+    }
+
+    // 初始化收派金额信息，置为0
+    initReceiveVOS(data: any = []) {
+      if (data && data.length > 0) {
+        data.forEach((item: any) => {
+          this.$set(item, 'showData', []);
+          item.receiveAmount = item.receiveAmount ? item.receiveAmount : 0;
+          item.commAmount = item.commAmount ? item.commAmount : 0;
+          item.rewardAmount = item.rewardAmount ? item.rewardAmount : 0;
+          item.totalPackageAmount = item.totalPackageAmount ? item.totalPackageAmount : 0;
+          item.distributionAmount = item.distributionAmount ? item.distributionAmount : 0;
+          item.otherChannelFees = item.otherChannelFees ? item.otherChannelFees : 0;
+        })
+      }
+      return data;
+    }
+
     // 查看来访/成交确认信息
     handleViewDealInfo() {
       this.dialogViewInfo = !this.dialogViewInfo;
