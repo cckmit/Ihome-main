@@ -4,7 +4,7 @@
  * @Author: wwq
  * @Date: 2020-11-27 17:15:36
  * @LastEditors: wwq
- * @LastEditTime: 2020-12-10 10:27:36
+ * @LastEditTime: 2021-01-04 18:51:28
 -->
 <template>
   <ih-page>
@@ -52,17 +52,18 @@
             <Notification v-if="componetName === 'Notification'" />
           </el-tab-pane>
           <el-tab-pane
-            label="立项测算表"
-            name="Calculation"
-          >
-            <Calculation v-if="componetName === 'Calculation'" />
-          </el-tab-pane>
-          <el-tab-pane
             label="其他配置"
             name="Other"
           >
             <Other v-if="componetName === 'Other'" />
           </el-tab-pane>
+          <el-tab-pane
+            label="立项测算表"
+            name="Calculation"
+          >
+            <Calculation v-if="componetName === 'Calculation'" />
+          </el-tab-pane>
+
           <el-tab-pane
             label="日志及OA附言"
             name="LogOA"

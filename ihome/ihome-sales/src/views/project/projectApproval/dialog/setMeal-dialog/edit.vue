@@ -4,7 +4,7 @@
  * @Author: wwq
  * @Date: 2020-12-04 09:40:47
  * @LastEditors: wwq
- * @LastEditTime: 2020-12-31 17:13:05
+ * @LastEditTime: 2021-01-04 19:34:27
 -->
 <template>
   <el-dialog
@@ -156,7 +156,29 @@
             <!-- 表头行选择 -->
             <div class="top-select">
               <!-- 服务费代理费 -->
-              <div class="title">服务费</div>
+              <div
+                class="msg-left"
+                style="width: 400px"
+              >
+                <div class="title">服务费</div>
+                <div style="display: flex;align-items: center">
+                  <div style="width: 160px">是否免收服务费</div>
+                  <el-select
+                    style="margin-left: 10px"
+                    v-model="item.exVoidService"
+                    clearable
+                    placeholder="请选择"
+                    @change="exVoidServiceChange(item.exVoidService, i)"
+                  >
+                    <el-option
+                      v-for="item in YesOrNoType"
+                      :key="item.code"
+                      :label="item.name"
+                      :value="item.code"
+                    ></el-option>
+                  </el-select>
+                </div>
+              </div>
               <!-- 删除模板,新增行 -->
               <div class="right-button">
                 <el-button
@@ -283,29 +305,6 @@
                 </template>
               </el-table-column>
               <el-table-column
-                prop="exVoidService"
-                label="是否免收服务费"
-                width="150"
-                align="center"
-              >
-                <template v-slot="{ row }">
-                  <el-select
-                    style="width: 100%"
-                    v-model="row.exVoidService"
-                    clearable
-                    placeholder="请选择"
-                    @change="exVoidServiceChange(row)"
-                  >
-                    <el-option
-                      v-for="item in YesOrNoType"
-                      :key="item.code"
-                      :label="item.name"
-                      :value="item.code"
-                    ></el-option>
-                  </el-select>
-                </template>
-              </el-table-column>
-              <el-table-column
                 label="应收金额(元)"
                 width="150"
                 align="center"
@@ -317,7 +316,7 @@
                       v-model="row.receivableAmout"
                       v-digits="4"
                       clearable
-                      :class="{'is-disabled': receivableAmoutDisabled(row)}"
+                      :disabled="item.exVoidService ? true: false"
                       style="width: 70%"
                     />
                   </div>
@@ -327,7 +326,7 @@
                       v-model="row.receivablePoint"
                       v-digits="4"
                       clearable
-                      :class="{'is-disabled': receivableAmoutDisabled(row)}"
+                      :disabled="item.exVoidService ? true: false"
                       style="width: 70%"
                     />
                   </div>
@@ -1159,16 +1158,14 @@ export default class SetMealEdit extends Vue {
     );
   }
 
-  // 应收金额
-  receivableAmoutDisabled(row: any) {
-    const yes = Number(row.exVoidService) === 1;
-    return yes;
-  }
-
-  exVoidServiceChange(row: any) {
-    if (row.exVoidService) {
-      row.receivableAmout = 0;
-      row.receivablePoint = 0;
+  exVoidServiceChange(data: any, index: number) {
+    if (data) {
+      this.info.colletionandsendMxs[index].colletionandsendDetails.forEach(
+        (v: any) => {
+          v.receivablePoint = 0;
+          v.receivableAmout = 0;
+        }
+      );
     }
   }
 
@@ -1362,10 +1359,10 @@ export default class SetMealEdit extends Vue {
               sort: "",
               subdivideEnum: this.busEnumType,
               transactionEnum: "",
-              exVoidService: null,
             },
           ],
           costTypeEnum: "ServiceFee",
+          exVoidService: "",
         },
         {
           colletionandsendDetails: [
@@ -1494,10 +1491,10 @@ export default class SetMealEdit extends Vue {
                     sendPoint: 0,
                     sort: "",
                     transactionEnum: "",
-                    exVoidService: null,
                   },
                 ],
                 costTypeEnum: "ServiceFee",
+                exVoidService: "",
               });
             }
           } else if (action === "confirm") {
@@ -1542,7 +1539,7 @@ export default class SetMealEdit extends Vue {
       });
     } else if (this.info.chargeEnum === "Service") {
       let item = this.info.colletionandsendMxs.map((v: any) => v.costTypeEnum);
-      if (item.includes("Service")) {
+      if (item.includes("ServiceFee")) {
         this.$message.warning("服务费已存在,无需再增加");
         return;
       } else {
@@ -1572,10 +1569,10 @@ export default class SetMealEdit extends Vue {
               sendPoint: 0,
               sort: "",
               transactionEnum: "",
-              exVoidService: null,
             },
           ],
           costTypeEnum: "ServiceFee",
+          exVoidService: "",
         });
       }
     } else if (this.info.chargeEnum === "Agent") {
@@ -1661,7 +1658,6 @@ export default class SetMealEdit extends Vue {
       sort: "",
       subdivideEnum: this.busEnumType,
       transactionEnum: "",
-      exVoidService: null,
       transactionEnumOptions: [],
     });
   }
