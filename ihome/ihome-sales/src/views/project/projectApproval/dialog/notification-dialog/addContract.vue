@@ -4,7 +4,7 @@
  * @Author: wwq
  * @Date: 2020-12-02 15:37:31
  * @LastEditors: wwq
- * @LastEditTime: 2020-12-31 18:13:01
+ * @LastEditTime: 2021-01-06 11:53:19
 -->
 <template>
   <el-dialog
@@ -80,7 +80,10 @@
       </el-row>
       <el-row>
         <el-col :span="12">
-          <el-form-item label="负责人">
+          <el-form-item
+            label="负责人"
+            prop="dealMan"
+          >
             <el-input
               v-model="info.dealMan"
               placeholder="请输入负责人"
@@ -88,7 +91,10 @@
           </el-form-item>
         </el-col>
         <el-col :span="12">
-          <el-form-item label="负责人电话">
+          <el-form-item
+            label="负责人电话"
+            prop="dealTel"
+          >
             <el-input
               v-model="info.dealTel"
               placeholder="请输入负责人电话"
@@ -98,7 +104,10 @@
       </el-row>
       <el-row>
         <el-col :span="12">
-          <el-form-item label="甲方联系人">
+          <el-form-item
+            label="甲方联系人"
+            prop="partyaMan"
+          >
             <el-input
               v-model="info.partyaMan"
               placeholder="请输入甲方联系人"
@@ -106,7 +115,10 @@
           </el-form-item>
         </el-col>
         <el-col :span="12">
-          <el-form-item label="甲方联系人电话">
+          <el-form-item
+            label="甲方联系人电话"
+            prop="partyaTel"
+          >
             <el-input
               v-model="info.partyaTel"
               placeholder="请输入甲方联系人电话"
@@ -116,7 +128,10 @@
       </el-row>
       <el-row>
         <el-col :span="12">
-          <el-form-item label="合作时间">
+          <el-form-item
+            label="合作时间"
+            prop="timeList"
+          >
             <el-date-picker
               style="width:100%;"
               v-model="info.timeList"
@@ -240,6 +255,7 @@
           <el-form-item
             label="房屋未成交乙方退回代理费期限"
             prop="agencyFeeReturnTime"
+            class="formItem"
           >
             <el-input
               v-model="info.agencyFeeReturnTime"
@@ -254,6 +270,7 @@
           <el-form-item
             label="房屋未成交乙方退回代理费逾期违约金比例"
             prop="agencyFeeReturnRate"
+            class="formItem"
           >
             <el-input
               v-model="info.agencyFeeReturnRate"
@@ -267,7 +284,10 @@
       </el-row>
       <el-row>
         <el-col :span="12">
-          <el-form-item label="渠道类型">
+          <el-form-item
+            label="渠道类型"
+            prop="channelEnum"
+          >
             <el-select
               v-model="info.channelEnum"
               clearable
@@ -468,7 +488,6 @@ export default class AddContract extends Vue {
     termId: this.termId,
   };
   rules: any = {
-    mobile: [{ validator: phoneValidator, trigger: "change" }],
     contractTitle: [
       { required: true, message: "请输入合同主标题", trigger: "change" },
     ],
@@ -492,6 +511,28 @@ export default class AddContract extends Vue {
     ],
     unContractLiability: [
       { required: true, message: "请输入违约责任", trigger: "change" },
+    ],
+    dealMan: [{ required: true, message: "请输入负责人", trigger: "change" }],
+    dealTel: [
+      { required: true, message: "请输入负责人电话", trigger: "change" },
+      { validator: phoneValidator, trigger: "change" },
+    ],
+    partyaMan: [
+      { required: true, message: "请输入甲方联系人", trigger: "change" },
+    ],
+    partyaTel: [
+      { required: true, message: "请输入甲方联系人电话", trigger: "change" },
+      { validator: phoneValidator, trigger: "change" },
+    ],
+    timeList: [
+      { required: true, message: "请选择合作时间", trigger: "change" },
+    ],
+    channelEnum: [
+      {
+        required: true,
+        message: "请选择渠道类型",
+        trigger: "change",
+      },
     ],
     agencyFeeReturnTime: [
       {
@@ -765,6 +806,11 @@ export default class AddContract extends Vue {
     right: 25px;
     font-size: 24px;
     cursor: pointer;
+  }
+}
+.formItem {
+  /deep/ .el-form-item__label {
+    line-height: 20px;
   }
 }
 </style>

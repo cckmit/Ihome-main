@@ -104,14 +104,14 @@
           @click="search()"
         >查询</el-button>
         <el-button
-          type="info"
-          @click="reset()"
-        >重置</el-button>
-        <el-button
           type="success"
           @click="add()"
           v-has="'B.SALES.PROJECT.BASICLIST.ADD'"
         >添加</el-button>
+        <el-button
+          type="info"
+          @click="reset()"
+        >重置</el-button>
       </el-row>
     </template>
 
