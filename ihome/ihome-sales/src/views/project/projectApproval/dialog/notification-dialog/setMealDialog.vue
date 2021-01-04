@@ -4,7 +4,7 @@
  * @Author: wwq
  * @Date: 2020-12-08 14:28:17
  * @LastEditors: wwq
- * @LastEditTime: 2021-01-04 19:41:33
+ * @LastEditTime: 2021-01-04 19:48:09
 -->
 <template>
   <el-dialog
@@ -585,7 +585,6 @@ export default class SetMealDialog extends Vue {
     const res = await post_distributContract_getItemByCondition(obj);
     if (res) {
       this.info = (this.$tool as any).deepClone(res);
-      debugger;
       if (this.info.colletionandsendMxs.length) {
         this.info.colletionandsendMxs.forEach(
           (i: any, n: number) => (this.map[n] = [])
