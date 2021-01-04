@@ -4,7 +4,7 @@
  * @Author: wwq
  * @Date: 2020-10-09 09:35:09
  * @LastEditors: wwq
- * @LastEditTime: 2021-01-06 10:10:45
+ * @LastEditTime: 2021-01-06 10:39:43
 -->
 
 <template>
@@ -72,7 +72,7 @@ export default class Edit extends Vue {
     const data = await get_channelGradeStandard_getSupplierManagementAttachments().then(
       (res: any) => {
         return res.map((v: any) => ({
-          name: v.fileName,
+          fileName: v.fileName,
           url: `/sales-document-cover-local/file/browse/${v.fileId}`,
           fileId: v.fileId,
         }));
