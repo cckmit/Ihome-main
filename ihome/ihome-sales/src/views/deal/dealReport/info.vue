@@ -15,52 +15,52 @@
       label-width="150px"
       class="demo-ruleForm">
       <el-row>
-        <el-col :span="8">
+        <el-col :span="6">
           <el-form-item label="成交报告编号">{{infoForm.dealCode}}</el-form-item>
         </el-col>
-        <el-col :span="8">
+        <el-col :span="6">
           <el-form-item label="项目周期">{{infoForm.projectCycle}}</el-form-item>
         </el-col>
-        <el-col :span="8">
+        <el-col :span="6">
           <el-form-item label="业务模式">
             {{$root.dictAllName(infoForm.modelCode, 'BusinessModel')}}
           </el-form-item>
         </el-col>
-        <el-col :span="8">
+        <el-col :span="6">
           <el-form-item label="细分业务模式">
             {{$root.dictAllName(infoForm.refineModel, 'Subdivide')}}
           </el-form-item>
         </el-col>
-        <el-col :span="8">
+        <el-col :span="6">
           <el-form-item label="是否代销">
             {{!!infoForm.isConsign ? infoForm.isConsign === 'Yes' ? '是' : '否' : ''}}
           </el-form-item>
         </el-col>
-        <el-col :span="8">
+        <el-col :span="6">
           <el-form-item label="是否市场化项目">
             {{!!infoForm.isMarketProject ? infoForm.isMarketProject === 'Yes' ? '是' : '否' : ''}}
           </el-form-item>
         </el-col>
-        <el-col :span="8">
+        <el-col :span="6">
           <el-form-item label="一手代理公司">{{infoForm.oneAgentTeam}}</el-form-item>
         </el-col>
-        <el-col :span="8">
+        <el-col :span="6">
           <el-form-item label="物业类型">
             {{$root.dictAllName(infoForm.house.propertyType, 'Property')}}
           </el-form-item>
         </el-col>
-        <el-col :span="8">
+        <el-col :span="6">
           <el-form-item label="栋座">{{infoForm.house.buildingName}}</el-form-item>
         </el-col>
-        <el-col :span="8">
+        <el-col :span="6">
           <el-form-item label="房号">{{infoForm.house.roomNo}}</el-form-item>
         </el-col>
-        <el-col :span="8">
+        <el-col :span="6">
           <el-form-item label="合同类型">
             {{$root.dictAllName(infoForm.contType, 'ContType')}}
           </el-form-item>
         </el-col>
-        <el-col :span="8">
+        <el-col :span="6">
           <el-form-item label="分销协议编号">
             <div class="contNo-wrapper">
               <div class="no">{{infoForm.contNo}}</div>
@@ -75,38 +75,38 @@
             </div>
           </el-form-item>
         </el-col>
-        <el-col :span="8">
+        <el-col :span="6">
           <el-form-item label="是否垫佣">
             {{!!infoForm.isMat ? infoForm.isMat === 'Yes' ? '是' : '否' : ''}}
           </el-form-item>
         </el-col>
-        <el-col :span="8">
+        <el-col :span="6">
           <el-form-item label="报备信息">{{infoForm.projectCycle}}</el-form-item>
         </el-col>
-        <el-col :span="8">
+        <el-col :span="6">
           <el-form-item label="渠道公司">
             {{infoForm.agencyList && infoForm.agencyList.length ? infoForm.agencyList[0].agencyName : ''}}
           </el-form-item>
         </el-col>
-        <el-col :span="8">
+        <el-col :span="6">
           <el-form-item label="渠道等级">
             {{infoForm.agencyList && infoForm.agencyList.length ? $root.dictAllName(infoForm.agencyList[0].channelLevel, 'ChannelLevel') : ''}}
           </el-form-item>
         </el-col>
-        <el-col :span="8">
+        <el-col :span="6">
           <el-form-item label="经纪人">
             {{infoForm.agencyList && infoForm.agencyList.length ? infoForm.agencyList[0].broker : ''}}
           </el-form-item>
         </el-col>
-        <el-col :span="8">
+        <el-col :span="6">
           <el-form-item label="备案情况">
             {{!!infoForm.recordState ? infoForm.recordState === 'Has' ? '有' : '无' : ''}}
           </el-form-item>
         </el-col>
-        <el-col :span="8">
+        <el-col :span="6">
           <el-form-item label="建筑面积">{{infoForm.house.area}}</el-form-item>
         </el-col>
-        <el-col :span="8">
+        <el-col :span="6">
           <el-form-item label="户型">
             <div class="home-type-wrapper">
               <div>{{infoForm.house.room}}室</div>
@@ -115,66 +115,66 @@
             </div>
           </el-form-item>
         </el-col>
-        <el-col :span="8">
+        <el-col :span="6">
           <el-form-item label="房产证/预售合同编号">{{infoForm.house.propertyNo}}</el-form-item>
         </el-col>
-        <el-col :span="16">
+        <el-col :span="12">
           <el-form-item label="房产证地址">{{infoForm.house.address}}</el-form-item>
         </el-col>
-        <el-col :span="8">
+        <el-col :span="6">
           <el-form-item label="现场销售">{{infoForm.sceneSales}}</el-form-item>
         </el-col>
-        <el-col :span="8">
+        <el-col :span="6">
           <el-form-item label="签约类型">
             {{$root.dictAllName(infoForm.signType, 'SignUp')}}
           </el-form-item>
         </el-col>
-        <el-col :span="8">
+        <el-col :span="6">
           <el-form-item label="成交阶段">
             {{$root.dictAllName(infoForm.stage, 'DealStage')}}
           </el-form-item>
         </el-col>
-        <el-col :span="8">
+        <el-col :span="6">
           <el-form-item label="明源房款回笼比例">{{infoForm.returnRatio ? infoForm.returnRatio : 0}}%</el-form-item>
         </el-col>
-        <el-col :span="8">
+        <el-col :span="6">
           <el-form-item label="认购价格">{{infoForm.subscribePrice}}</el-form-item>
         </el-col>
-        <el-col :span="8">
+        <el-col :span="6">
           <el-form-item label="认购日期">{{infoForm.subscribeDate}}</el-form-item>
         </el-col>
-        <el-col :span="8">
+        <el-col :span="6">
           <el-form-item label="签约价格">{{infoForm.signPrice}}</el-form-item>
         </el-col>
-        <el-col :span="8">
+        <el-col :span="6">
           <el-form-item label="签约日期">{{infoForm.signDate}}</el-form-item>
         </el-col>
-        <el-col :span="8">
+        <el-col :span="6">
           <el-form-item label="成交组织">{{infoForm.dealOrgId}}</el-form-item>
         </el-col>
-        <el-col :span="8">
+        <el-col :span="6">
           <el-form-item label="录入人">{{infoForm.entryPerson}}</el-form-item>
         </el-col>
-        <el-col :span="8">
+        <el-col :span="6">
           <el-form-item label="录入日期">{{infoForm.entryDate}}</el-form-item>
         </el-col>
-        <el-col :span="8">
+        <el-col :span="6">
           <el-form-item label="数据标志">
             {{$root.dictAllName(infoForm.dataSign, 'DealDataFlag')}}
           </el-form-item>
         </el-col>
-        <el-col :span="8">
+        <el-col :span="6">
           <el-form-item label="成交状态">
             {{$root.dictAllName(infoForm.status, 'DealStatus')}}
           </el-form-item>
         </el-col>
-        <el-col :span="8">
+        <el-col :span="6">
           <el-form-item label="业绩分配人">{{infoForm.alloter}}</el-form-item>
         </el-col>
-        <el-col :span="8">
+        <el-col :span="6">
           <el-form-item label="业绩分配日期">{{infoForm.allotDate}}</el-form-item>
         </el-col>
-        <el-col :span="8">
+        <el-col :span="6">
           <el-form-item label="计算方式">
             {{$root.dictAllName(infoForm.calculation, 'DealCalculateWay')}}
           </el-form-item>
@@ -252,13 +252,58 @@
           <el-table-column prop="partyACustomerName" label="甲方/客户" min-width="120"></el-table-column>
           <el-table-column prop="packageId" label="收派套餐" min-width="120">
             <template slot-scope="scope">
-              <el-tooltip placement="right" effect="light">
-                <div slot="content">
-                  <div>123{{scope.row.name}}</div>
-                  <div>456</div>
-                </div>
-                <el-tag effect="plain">收派标准</el-tag>
-              </el-tooltip>
+              <div v-if="infoForm.calculation === 'Auto'">
+                <el-tooltip placement="top" effect="light">
+                  <div slot="content">
+                    <el-table :data="scope.row.showData" style="width: 100%">
+                      <el-table-column label="类型" prop="typeName" min-width="100"></el-table-column>
+                      <el-table-column label="合同类型" prop="contractEnum" min-width="100">
+                        <template slot-scope="scope">
+                          <div>{{$root.dictAllName(scope.row.contractEnum, 'ContType')}}</div>
+                        </template>
+                      </el-table-column>
+                      <el-table-column label="客户类型" prop="transactionEnum" min-width="100">
+                        <template slot-scope="scope">
+                          <div>{{$root.dictAllName(scope.row.transactionEnum, 'Transaction')}}</div>
+                        </template>
+                      </el-table-column>
+                      <el-table-column label="条件" prop="condition" min-width="200"></el-table-column>
+                      <el-table-column label="应收金额" prop="receivableAmout" min-width="100">
+                        <template slot-scope="scope">
+                          <div>金额：{{scope.row.receivableAmout}}</div>
+                          <div>点数：{{scope.row.receivablePoint}}</div>
+                        </template>
+                      </el-table-column>
+                      <el-table-column label="派发佣金" prop="sendAmount" min-width="100">
+                        <template slot-scope="scope">
+                          <div>金额：{{scope.row.sendAmount}}</div>
+                          <div>点数：{{scope.row.sendPoint}}</div>
+                        </template>
+                      </el-table-column>
+                      <el-table-column label="派发内场奖励" prop="sendInAmount" min-width="150">
+                        <template slot-scope="scope">
+                          <div>金额：{{scope.row.sendInAmount}}</div>
+                          <div>点数：{{scope.row.sendInPoint}}</div>
+                        </template>
+                      </el-table-column>
+                      <el-table-column label="总包业绩" prop="generalAchieveAmount" min-width="100">
+                        <template slot-scope="scope">
+                          <div>金额：{{scope.row.generalAchieveAmount}}</div>
+                          <div>点数：{{scope.row.generalAchievePoint}}</div>
+                        </template>
+                      </el-table-column>
+                      <el-table-column label="分销业绩" prop="distributeAchieveAmount" min-width="100">
+                        <template slot-scope="scope">
+                          <div>金额：{{scope.row.distributeAchieveAmount}}</div>
+                          <div>点数：{{scope.row.distributeAchievePoint}}</div>
+                        </template>
+                      </el-table-column>
+                    </el-table>
+                  </div>
+                  <el-input readonly placeholder="收派标准"></el-input>
+                </el-tooltip>
+              </div>
+              <div v-else>---</div>
             </template>
           </el-table-column>
           <el-table-column prop="receiveAmount" label="应收金额" min-width="120"></el-table-column>
@@ -438,7 +483,7 @@
       </el-col>
     </el-row>
     <div class="btn-wrapper">
-      <el-button>关闭</el-button>
+      <el-button @click="handleBack">返回</el-button>
       <el-button type="primary" @click="viewReviewDetails">查看审核详情</el-button>
     </div>
     <div class="nav-box">
@@ -479,7 +524,7 @@
       offerNoticeList: [], // 优惠告知书
       customerList: [], // 客户信息
       agencyList: [], // 渠道信息
-      receiveList: [{}], // 收派金额
+      receiveList: [], // 收派金额
       receiveAchieveList: [], // 应收业绩 - 收派信息下
       channelCommList: [], // 对外拆佣信息
       achieveList: [], // 平台费用 - 包含总包和分销
@@ -719,6 +764,7 @@
 
     // 查看分销协议
     viewContNoDetail(contractNo: any) {
+      if (!contractNo) return;
       let router = this.$router.resolve({
         path: `/distribution/info`,
         query: {
@@ -743,6 +789,13 @@
         },
       });
       window.open(router.href, "_blank");
+    }
+
+    // 返回
+    handleBack() {
+      this.$router.push({
+        path: "/dealReport/list"
+      });
     }
 
     // 查看审核详情

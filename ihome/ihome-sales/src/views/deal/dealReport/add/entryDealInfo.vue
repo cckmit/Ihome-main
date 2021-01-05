@@ -1255,8 +1255,8 @@
               vo.defaultFileList = initData.visitConfirmForms && initData.visitConfirmForms.length ? initData.visitConfirmForms : [];
               vo.fileList = initData.visitConfirmForms && initData.visitConfirmForms.length ? initData.visitConfirmForms : [];
               break;
-            case "DealConfirForm":
-              // 成交确认单
+            case "Notice":
+              // 优惠告知书PDF
               vo.defaultFileList = initData.noticePDF && initData.noticePDF.length  ? initData.noticePDF : [];
               vo.fileList = initData.noticePDF && initData.noticePDF.length  ? initData.noticePDF : [];
               break;
@@ -1264,6 +1264,11 @@
               // 业主身份证
               vo.defaultFileList = initData.customerIds && initData.customerIds.length ? initData.customerIds : [];
               vo.fileList = initData.customerIds && initData.customerIds.length ? initData.customerIds : [];
+              break;
+            case "DealConfirForm":
+              // 成交确认书
+              vo.defaultFileList = initData.dealConfirmForms && initData.dealConfirmForms.length ? initData.dealConfirmForms : [];
+              vo.fileList = initData.dealConfirmForms && initData.dealConfirmForms.length ? initData.dealConfirmForms : [];
               break;
           }
         })
@@ -1283,7 +1288,7 @@
           return item.code !== "Notice";
         });
       }
-      console.log('附件信息表格：', this.postData.documentVO);
+      // console.log('附件信息表格：', this.postData.documentVO);
     }
 
     // 修改合同类型
