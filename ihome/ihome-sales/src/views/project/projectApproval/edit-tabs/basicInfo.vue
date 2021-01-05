@@ -4,7 +4,7 @@
  * @Author: wwq
  * @Date: 2020-11-27 17:17:06
  * @LastEditors: wwq
- * @LastEditTime: 2020-12-31 16:28:28
+ * @LastEditTime: 2021-01-04 18:59:11
 -->
 <template>
   <div class="project-approval-box">
@@ -762,12 +762,12 @@
         @click="save()"
       >保存</el-button>
       <el-button
-        v-if="info.auditEnum === 'Draft'"
+        v-if="['Draft', 'TermReject'].includes(info.auditEnum)"
         type="success"
         @click="submitProjectApproval()"
       >提交立项审核</el-button>
       <el-button
-        v-if="info.auditEnum === 'TermAdopt'"
+        v-if="['TermAdopt', 'ConstractReject'].includes(info.auditEnum)"
         type="success"
         @click="submitContract()"
       >提交合同审核</el-button>
@@ -1112,7 +1112,7 @@ export default class FirstAgencyEdit extends Vue {
     });
     this.$message({
       type: "success",
-      message: "审核成功",
+      message: "提交立项审核成功",
     });
     this.$goto({ path: `/projectApproval/list` });
   }
@@ -1123,7 +1123,7 @@ export default class FirstAgencyEdit extends Vue {
     });
     this.$message({
       type: "success",
-      message: "审核成功",
+      message: "提交合同审核成功",
     });
     this.$goto({ path: `/projectApproval/list` });
   }

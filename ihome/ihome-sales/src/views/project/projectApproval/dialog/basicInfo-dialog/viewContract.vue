@@ -4,7 +4,7 @@
  * @Author: wwq
  * @Date: 2020-12-10 11:42:42
  * @LastEditors: wwq
- * @LastEditTime: 2020-12-15 11:13:38
+ * @LastEditTime: 2021-01-04 18:41:53
 -->
 <template>
   <el-dialog
@@ -20,7 +20,7 @@
     <div class="title">
       <div>发起人：{{info.inputConstractMan}}</div>
       <div>发起时间：{{info.inputConstractTime}}</div>
-      <div>{{`编号：（${info.approvalNo}）`}}</div>
+      <div>{{`编号：（${info.approvalContractOaNo}）`}}</div>
     </div>
     <table
       border="1"
@@ -38,7 +38,7 @@
         <td>启动事业部</td>
         <td>{{info.startDivision}}</td>
         <td>启动城市</td>
-        <td>{{info.city}}</td>
+        <td>{{info.cityName}}</td>
         <td>开展周期</td>
         <td>{{info.termStart + '~' + info.termEnd}}</td>
       </tr>
@@ -151,7 +151,7 @@
         <td>合同其他说明</td>
         <td colspan="6">{{info.otherRemark}}</td>
       </tr>
-      <tr>
+      <!-- <tr>
         <td rowspan="2">审核情况</td>
         <td
           colspan="2"
@@ -183,7 +183,7 @@
             <div class="text-right">[马碧莹 2019-11-07 11:25]</div>
           </div>
         </td>
-      </tr>
+      </tr> -->
     </table>
     <span
       slot="footer"
