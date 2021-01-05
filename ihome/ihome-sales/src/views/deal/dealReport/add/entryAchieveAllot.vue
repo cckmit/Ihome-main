@@ -1941,7 +1941,7 @@
 
     // 选择拆佣 - 收款方
     selectAgencyName(scope: any) {
-      // console.log('选择收款方', scope);
+      console.log('选择收款方', scope);
       if (this.postData.calculation === 'Auto') return;
       this.dialogAddAgentCompany = true;
     }
