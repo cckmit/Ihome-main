@@ -4,7 +4,7 @@
  * @Author: wwq
  * @Date: 2020-07-08 14:23:16
  * @LastEditors: ywl
- * @LastEditTime: 2020-11-11 11:47:12
+ * @LastEditTime: 2021-01-05 18:24:37
 --> 
 <template>
   <el-dialog
@@ -30,7 +30,7 @@
           >
             <template v-for="(item, i) in data">
               <span :key="item.id">
-                <span>{{ `${item.channelId}` }}</span>
+                <span>{{ `${item.name}` }}</span>
                 <span v-if="i !== data.length - 1">、</span>
               </span>
             </template>
@@ -44,17 +44,7 @@
             <IhSelectPageUser
               v-model="form.userId"
               clearable
-            >
-              <template v-slot="{ data }">
-                <span style="float: left">{{ data.name }}</span>
-                <span style="
-                    margin-left: 20px;
-                    float: right;
-                    color: #8492a6;
-                    font-size: 13px;
-                  ">{{ data.account }}</span>
-              </template>
-            </IhSelectPageUser>
+            ></IhSelectPageUser>
           </el-form-item>
         </el-col>
       </el-row>
