@@ -4,7 +4,7 @@
  * @Author: zyc
  * @Date: 2020-06-23 10:42:04
  * @LastEditors: zyc
- * @LastEditTime: 2021-01-05 11:50:07
+ * @LastEditTime: 2021-01-05 14:08:46
 --> 
 <template>
   <div class="header-container">
@@ -36,7 +36,7 @@
         <li class="right-li">
           <span class="userinfo">欢迎你～ {{ userInfo.name }}</span>
         </li>
-        <li class="right-li right-li-icon">
+        <!-- <li class="right-li right-li-icon">
           <el-badge
             :value="12"
             class="item"
@@ -47,7 +47,7 @@
         </li>
         <li class="right-li right-li-icon">
           <img style="width: 20px" src="../assets/layout/user.png" alt="" />
-        </li>
+        </li> -->
         <li class="right-li right-li-icon" @click="loginOut()" title="退出">
           <img style="width: 20px" src="../assets/layout/loginout.png" alt="" />
         </li>
