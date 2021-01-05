@@ -104,6 +104,7 @@
             <el-select
               v-model="postData.oneAgentTeamId"
               clearable
+              @change="changeSelectAgent"
               placeholder="请选择一手代理公司"
               class="width--100">
               <el-option
@@ -348,6 +349,7 @@
         <el-col :span="6">
           <el-form-item label="认购价格" :prop="['Subscribe', 'SignUp'].includes(postData.stage) ? 'subscribePrice' : ' '">
             <el-input
+              v-digits="2"
               :disabled="isDisabled('subscribePrice', 'dealVO')"
               v-model="postData.subscribePrice"
               placeholder="请输入认购价格"></el-input>
@@ -360,6 +362,7 @@
               :disabled="isDisabled('subscribeDate', 'dealVO')"
               v-model="postData.subscribeDate"
               type="datetime"
+              value-format="yyyy-MM-dd HH:mm:ss"
               placeholder="请选择认购日期">
             </el-date-picker>
           </el-form-item>
@@ -367,6 +370,7 @@
         <el-col :span="6">
           <el-form-item label="签约价格" :prop="['SignUp'].includes(postData.stage) ? 'signPrice' : ' '">
             <el-input
+              v-digits="2"
               :disabled="isDisabled('signPrice', 'dealVO')"
               v-model="postData.signPrice"
               placeholder="请输入签约价格"></el-input>
@@ -379,6 +383,7 @@
               :disabled="isDisabled('signDate', 'dealVO')"
               v-model="postData.signDate"
               type="datetime"
+              value-format="yyyy-MM-dd HH:mm:ss"
               placeholder="请选择签约日期">
             </el-date-picker>
           </el-form-item>
@@ -400,6 +405,7 @@
               v-model="postData.entryDate"
               type="datetime"
               disabled
+              value-format="yyyy-MM-dd HH:mm:ss"
               placeholder="请选择录入日期">
             </el-date-picker>
           </el-form-item>
@@ -507,6 +513,7 @@
       <div>
         <el-select
           v-model="postData.calculation"
+          @change="changeCalculation"
           placeholder="请选择计算方式"
           class="width--100">
           <el-option
@@ -553,7 +560,7 @@
                         <el-table-column label="类型" prop="typeName" min-width="100"></el-table-column>
                         <el-table-column label="合同类型" prop="contractEnum" min-width="100">
                           <template slot-scope="scope">
-                            <div>{{$root.dictAllName(scope.row.contractEnum, 'Contract')}}</div>
+                            <div>{{$root.dictAllName(scope.row.contractEnum, 'ContType')}}</div>
                           </template>
                         </el-table-column>
                         <el-table-column label="客户类型" prop="transactionEnum" min-width="100">
@@ -597,7 +604,7 @@
                     <el-input
                       readonly
                       placeholder="收派标准">
-                      <el-button slot="append" icon="el-icon-search"
+                      <el-button slot="append" icon="el-icon-edit-outline"
                                  @click.native.prevent="selectPackage(scope)"></el-button>
                     </el-input>
                   </el-tooltip>
@@ -610,6 +617,7 @@
             <template slot-scope="scope">
               <el-input
                 v-digits="2"
+                @input="changeReceiveItem($event, scope.row, 'receiveAmount')"
                 v-model="scope.row.receiveAmount"
                 :disabled="postData.calculation === 'Auto'"
                 placeholder="应收金额"></el-input>
@@ -619,36 +627,40 @@
             <template slot-scope="scope">
               <el-input
                 v-digits="2"
+                @input="changeReceiveItem($event, scope.row, 'commAmount')"
                 v-model="scope.row.commAmount"
                 :disabled="postData.calculation === 'Auto'"
-                placeholder="应收金额"></el-input>
+                placeholder="派发佣金金额"></el-input>
             </template>
           </el-table-column>
           <el-table-column prop="rewardAmount" label="派发内场奖励金额" min-width="150">
             <template slot-scope="scope">
               <el-input
                 v-digits="2"
+                @input="changeReceiveItem($event, scope.row, 'rewardAmount')"
                 v-model="scope.row.rewardAmount"
                 :disabled="postData.calculation === 'Auto'"
-                placeholder="应收金额"></el-input>
+                placeholder="派发内场奖励金额"></el-input>
             </template>
           </el-table-column>
           <el-table-column prop="totalPackageAmount" label="总包业绩金额" min-width="150">
             <template slot-scope="scope">
               <el-input
                 v-digits="2"
+                @input="changeReceiveItem($event, scope.row, 'totalPackageAmount')"
                 v-model="scope.row.totalPackageAmount"
                 :disabled="postData.calculation === 'Auto'"
-                placeholder="应收金额"></el-input>
+                placeholder="总包业绩金额"></el-input>
             </template>
           </el-table-column>
           <el-table-column prop="distributionAmount" label="分销业绩金额" min-width="150">
             <template slot-scope="scope">
               <el-input
                 v-digits="2"
+                @input="changeReceiveItem($event, scope.row, 'distributionAmount')"
                 v-model="scope.row.distributionAmount"
                 :disabled="postData.calculation === 'Auto'"
-                placeholder="应收金额"></el-input>
+                placeholder="分销业绩金额"></el-input>
             </template>
           </el-table-column>
           <el-table-column prop="otherChannelFees" label="其他渠道费用(正数为产生，负数为使用)" min-width="150"></el-table-column>
@@ -666,8 +678,24 @@
         </el-table>
       </el-col>
     </el-row>
-    <div class="divider-padding">
-      <el-divider>业绩分配</el-divider>
+    <div class="divider-padding" v-if="addFlag">
+      <div class="divider-tip color-blur">
+        <div>完善收派金额后请点击下方按钮初始化加载对外拆佣及平台费用数据</div>
+        <div class="btn">
+          <el-button class="btn-color" @click="handleLoadCommission('add')">点击加载对外拆佣及平台费用数据</el-button>
+        </div>
+      </div>
+    </div>
+    <div class="divider-padding border-color-red" v-if="editFlag">
+      <div class="divider-tip color-red">
+        <div>收派金额发生变动，业绩需要初始化重新分配，请点击下方刷新按钮重新初始化对外拆佣及平台费用数据</div>
+        <div class="btn">
+          <el-button type="danger" @click="handleLoadCommission('refresh')">刷新</el-button>
+        </div>
+      </div>
+    </div>
+    <div class="divider-padding border-color-none" v-if="tipsFlag">
+      <el-divider>{{dividerTips}}</el-divider>
     </div>
     <p id="anchor-8" class="ih-info-title">对外拆佣</p>
     <el-row style="padding-left: 20px">
@@ -686,6 +714,7 @@
               <el-select
                 :disabled="postData.calculation === 'Auto'"
                 v-model="scope.row.target"
+                @change="changeCommissionTarget($event, scope.row)"
                 placeholder="请选择">
                 <el-option
                   v-for="item in $root.dictAllList('CommObjectType')"
@@ -696,21 +725,21 @@
               </el-select>
             </template>
           </el-table-column>
-          <el-table-column prop="commName" label="收款方" min-width="120">
+          <el-table-column prop="agencyName" label="收款方" min-width="120">
             <template slot-scope="scope">
               <div v-if="postData.calculation === 'Auto'">
-                <el-input placeholder="收款方" disabled v-model="scope.row.commName"></el-input>
+                <el-input placeholder="收款方" disabled v-model="scope.row.agencyName"></el-input>
               </div>
               <div v-else>
                 <div v-if="scope.row.target === 'Personal'">
-                  <el-input placeholder="请输入收款方" v-model="scope.row.commName"></el-input>
+                  <el-input placeholder="请输入收款方" v-model="scope.row.agencyName"></el-input>
                 </div>
                 <div v-if="scope.row.target === 'AgentCompany'">
-                  <el-input placeholder="" disabled v-model="scope.row.commName"></el-input>
+                  <el-input placeholder="" disabled v-model="scope.row.agencyName"></el-input>
                 </div>
                 <div v-if="scope.row.target === 'ChannelCompany'">
-                  <el-input placeholder="请选择收款方" readonly v-model="scope.row.commName">
-                    <el-button slot="append" icon="el-icon-search" @click.native.prevent="selectCommName"></el-button>
+                  <el-input placeholder="请选择收款方" readonly v-model="scope.row.agencyName">
+                    <el-button slot="append" icon="el-icon-search" @click.native.prevent="selectAgencyName"></el-button>
                   </el-input>
                 </div>
               </div>
@@ -722,6 +751,7 @@
                 v-model="scope.row.feeType"
                 :disabled="postData.calculation === 'Auto'"
                 placeholder="费用类型"
+                @change="changeFeeType($event, scope.row)"
                 class="width--100">
                 <el-option
                   v-for="item in $root.dictAllList('FeeType')"
@@ -745,17 +775,25 @@
                   <el-select
                     :disabled="postData.calculation === 'Auto'"
                     v-model="scope.row.partyACustomer"
+                    @change="handleSelectCustomer($event, scope.row)"
                     placeholder="请选择">
-                    <el-option label="客户A" value="AA"></el-option>
-                    <el-option label="客户B" value="BB"></el-option>
-                    <el-option label="甲方A" value="CC"></el-option>
-                    <el-option label="甲方B" value="DD"></el-option>
+                    <el-option
+                      v-for="(item, index) in commissionCustomerList" :key="index"
+                      :label="item.partyACustomerName" :value="item.partyACustomer"></el-option>
                   </el-select>
                 </div>
               </div>
             </template>
           </el-table-column>
-          <el-table-column prop="amount" label="金额" min-width="120"></el-table-column>
+          <el-table-column prop="amount" label="金额" min-width="120">
+            <template slot-scope="scope">
+              <el-input
+                v-digits="2"
+                placeholder="金额"
+                :disabled="postData.calculation === 'Auto'"
+                v-model="scope.row.amount"></el-input>
+            </template>
+          </el-table-column>
           <el-table-column prop="remarks" label="备注" min-width="120">
             <template slot-scope="scope">
               <el-input v-model="scope.row.remarks" clearable placeholder="备注"/>
@@ -951,6 +989,8 @@
   import EditDealAchieve from "@/views/deal/dealReport/dialog/editDealAchieve.vue";
   import {
     post_pageData_initBasic, // 选择周期、房号后初始化页面
+    post_pageData_initChannelComm, // 初始化对外拆佣表格数据
+    post_pageData_initAchieve, // 初始化平台费用表格数据
     get_deal_get__id, // 编辑功能
     post_deal_achieveAllotEntry, // 文员岗 - 录入成交信息
     post_deal_updateAchieveAllot, // 文员岗 - 修改成交信息
@@ -1033,7 +1073,8 @@
       channelLevelName: null, // 渠道等级
       brokerId: null, // 渠道经纪人Id
       brokerName: null, // 渠道经纪人
-      oneAgentTeamId: null,
+      oneAgentTeamId: null, // 一手代理团队Id
+      oneAgentTeamName: null, // 一手代理团队name
       isMarketProject: null,
       dealOrgId: null, // 成交组织id
       dealOrgName: null, // 成交组织name
@@ -1073,22 +1114,13 @@
       receiveAchieveVO: [], // 应收信息
       documentVO: [], // 附件信息
       commissionInfoList: [], // 对外拆佣
-      achieveTotalBagList: [
-        {
-          SupervisorList: [],
-          ManagerList: [],
-          DirectorList: [],
-        }
-      ], // 平台费用 - 总包
-      achieveDistriList: [
-        {
-          SupervisorList: [],
-          ManagerList: [],
-          DirectorList: [],
-        }
-      ], // 平台费用 - 分销
+      achieveTotalBagList: [], // 平台费用 - 总包
+      achieveDistriList: [], // 平台费用 - 分销
       calculation: 'Auto', // 计算方式 - 默认自动
     };
+    tempReceiveVO: any = []; // 初始化的收派金额数据
+    commissionCustomerList: any = []; // 初始化费用来源的甲方信息 --- 代理费
+    commissionServiceFeeObj: any = []; // 初始化费用来源的甲方信息 --- 服务费
     rules: any = {
       dealCode: [
         {required: true, message: "成交报告编号不能为空", trigger: "change"},
@@ -1213,6 +1245,10 @@
     navFlag: any = false; // 是否展开锚点
     navList: any = []; // 锚点列表
     currentReceiveIndex: any = null; // 当前选中的收派金额列表数据
+    addFlag: any = false; // 新增页面 --- 提示框
+    editFlag: any = false; // 编辑页面 --- 提示框
+    tipsFlag: any = false; // 加载拆佣情况 --- 提示框
+    dividerTips: any = '业绩分配'; // 分割标题：业绩分配; 刷新成功; 加载成功
 
     // 应收信息表格
     get receiveAchieveVO() {
@@ -1247,8 +1283,17 @@
       }
       this.id = this.$route.query.id;
       if (this.id) {
+        this.addFlag = false;
+        this.editFlag = true;
+        this.tipsFlag = false;
+        this.dividerTips = '刷新成功';
         const res: any = await get_deal_get__id({id: this.id});
         this.postData = res;
+      } else {
+        this.addFlag = true;
+        this.editFlag = false;
+        this.tipsFlag = false;
+        this.dividerTips = '业绩分配';
       }
     }
 
@@ -1290,6 +1335,156 @@
         flag = true;
       }
       return flag;
+    }
+
+    // 显示变动提示
+    showChangeTips() {
+      this.addFlag = false;
+      this.editFlag = true;
+      this.tipsFlag = false;
+      this.dividerTips = '加载成功';
+    }
+
+    // 改变计算方式
+    changeCalculation() {
+      // console.log(this.tempReceiveVO);
+      this.postData.receiveVO = (this as any).$tool.deepClone(this.tempReceiveVO);
+      this.postData.commissionInfoList = [];
+      this.postData.achieveTotalBagList = [];
+      this.postData.achieveDistriList = [];
+      if (!this.addFlag) {
+        this.showChangeTips();
+      }
+    }
+
+    // 手动方式下，改变收派金额某一项的方法
+    changeReceiveItem(value: any, row: any, type: any) {
+      // console.log('value', value);
+      // console.log('row', row);
+      if (!value) {
+        (this as any).$nextTick(() => {
+          row[type] = 0;
+        })
+      } else {
+        (this as any).$nextTick(() => {
+          row.otherChannelFees = row.receiveAmount - row.commAmount - row.rewardAmount - row.totalPackageAmount - row.distributionAmount;
+        })
+      }
+      // 提示框
+      if (!this.addFlag) {
+        this.addFlag = false;
+        this.editFlag = true;
+        this.tipsFlag = false;
+        this.dividerTips = '刷新成功';
+      }
+    }
+
+    // 新增 --- 初始化拆佣和平台费用
+    async handleLoadCommission(type: any = '') {
+      let flag: any = false;
+      flag = (this as any).$parent.validReceiveData(this.postData.receiveVO, this.postData.calculation);
+      if (!flag) {
+        this.$message.error("请先完善收派金额信息！");
+        return;
+      }
+      if (type === 'add') {
+        // 新增的时候
+        await this.initCommissionData();
+        await this.initAchieveData();
+        this.addFlag = false;
+        this.editFlag = false;
+        this.tipsFlag = true;
+        this.dividerTips = "加载成功";
+      } else if (type === 'refresh') {
+        // 刷新
+        try {
+          const h: any = this.$createElement;
+          await this.$msgbox({
+            title: '操作确认',
+            message: h('div', null, [
+              h('i', { class: 'el-icon-question', style: 'font-size: 20px; color: #F90'},
+                null),
+              h('span', { style: 'font-size: 18px; font-weight: bold' },
+                '刷新后之前录入的对外拆用及平台费用将会被清除，清除后会自动计算加载对外拆用及平台费用的初始数据。'),
+              h('div', { style: 'margin-top: 5px'}, '是否确定刷新？')
+            ]),
+            showCancelButton: true,
+            confirmButtonText: '确定',
+            cancelButtonText: '取消',
+          });
+          await this.initCommissionData();
+          await this.initAchieveData();
+          this.addFlag = false;
+          this.editFlag = false;
+          this.tipsFlag = true;
+          this.dividerTips = "加载成功";
+        } catch (error) {
+          console.log(error);
+        }
+      }
+    }
+
+    // 初始化对外拆佣
+    async initCommissionData() {
+      let params: any = {
+        channelId: this.postData.agencyId,
+        channelName: this.postData.agencyName,
+        firstAgencyCompanyId: this.postData.oneAgentTeamId,
+        firstAgencyCompanyName: this.postData.oneAgentTeamName,
+        receives: this.postData.receiveVO
+      };
+      let commissionData: any = await post_pageData_initChannelComm(params);
+      console.log(commissionData);
+      this.postData.commissionInfoList = commissionData;
+    }
+
+    // 一手代理公司选项发生改变
+    changeSelectAgent(value: any) {
+      // console.log(value);
+      // console.log(this.firstAgencyCompanyList);
+      if (value) {
+        if (this.firstAgencyCompanyList && this.firstAgencyCompanyList.length) {
+          this.firstAgencyCompanyList.forEach((list: any) => {
+            if (list.agencyId === value) {
+              this.postData.oneAgentTeamName = list.agencyName;
+            }
+          })
+        }
+      } else {
+        this.postData.oneAgentTeamName = null;
+      }
+    }
+
+    // 初始化平台费用
+    async initAchieveData() {
+      let params: any = {
+        branchCompanyId: this.baseInfoByTerm.startDivisionId, // 分公司Id --- 项目周期带出
+        contType: this.postData.contType, // 合同类型
+        distriAmount: this.getTotalAmount('distributionAmount'), // 分销金额
+        isMarketProject: this.postData.isMarketProject, // 是否市场化项目
+        modelCode: this.postData.businessType, // 业务模式
+        propertyType: this.postData.propertyType, // 物业类型
+        specialId: this.baseInfoByTerm.specialId, // 特殊方案Id --- 项目周期带出
+        totalBagAmount: this.getTotalAmount('totalPackageAmount') // 总包金额
+      };
+      let achieveInfo: any = await post_pageData_initAchieve(params);
+      console.log(achieveInfo);
+      this.postData.achieveTotalBagList = achieveInfo.totalBag;
+      this.postData.achieveDistriList = achieveInfo.distri;
+    }
+
+    // 获取分销金额和总包金额
+    getTotalAmount(type: any = '') {
+      if (!type) return;
+      let total = 0;
+      if (this.postData.receiveVO.length) {
+        this.postData.receiveVO.forEach((vo: any) => {
+          total = total + parseFloat(vo[type] ? vo[type] : 0);
+        });
+        return total;
+      } else {
+        return 0;
+      }
     }
 
     // 选择项目周期
@@ -1433,8 +1628,25 @@
       this.contNoList = []; // 分销协议编号
       this.packageIdsList = []; // ids
       this.postData.customerVO = []; // 客户信息
+      this.postData.receiveVO = []; // 收派金额
+      this.tempReceiveVO = []; // 收派金额初始值
       this.postData.offerNoticeVO = []; // 优惠告知书
       this.postData.documentVO = []; // 上传附件
+      this.postData.calculation = 'Auto'; // 计算方式改为手动
+      this.postData.commissionInfoList = [];
+      this.postData.achieveTotalBagList = [];
+      this.postData.achieveDistriList = [];
+      if (this.id) {
+        this.addFlag = false;
+        this.editFlag = false;
+        this.tipsFlag = true;
+        this.dividerTips = '业绩分配';
+      } else {
+        this.addFlag = true;
+        this.editFlag = false;
+        this.tipsFlag = false;
+        this.dividerTips = '加载成功';
+      }
       let list: any = ['contType', 'contNo', 'recordState', 'recordStr', 'area', 'room', 'hall',
         'toilet', 'propertyNo', 'signType', 'stage', 'returnRatio', 'subscribePrice', 'subscribeDate',
         'signPrice', 'signDate', 'dataSign', 'agencyId', 'agencyName', 'channelLevel', 'channelLevelName']
@@ -1532,15 +1744,53 @@
       // 客户信息
       this.postData.customerVO = baseInfo.customerAddVOS && baseInfo.customerAddVOS.length ? baseInfo.customerAddVOS : [];
       // 收派金额
-      this.postData.receiveVO = baseInfo.receiveVOS && baseInfo.receiveVOS.length ? baseInfo.receiveVOS : [];
-      // 构建收派金额的收派套餐列表
-      if (this.postData.receiveVO.length) {
-        this.postData.receiveVO.forEach((vo: any) => {
-          this.$set(vo, 'showData', []);
-        });
-      }
+      // this.postData.receiveVO = baseInfo.receiveVOS && baseInfo.receiveVOS.length ? baseInfo.receiveVOS : [];
+      this.postData.receiveVO = (this as any).$parent.initReceiveVOS(baseInfo.receiveVOS);
+      this.tempReceiveVO = (this as any).$tool.deepClone(this.postData.receiveVO);
+      // 收派金额中的甲方
+      this.commissionCustomerList = [];
+      this.commissionCustomerList = this.initCommissionCustomer(baseInfo.receiveVOS);
+      this.commissionServiceFeeObj = {};
+      this.commissionServiceFeeObj = this.initCommissionServiceFee(baseInfo.receiveVOS);
       // 附件信息
       this.initDocument(baseInfo.contType, baseInfo);
+    }
+
+    // 初始化收派金额中的代理费的甲方数组 --- 代理费
+    initCommissionCustomer(data: any = []) {
+      let tempArr: any = [];
+      if (data.length) {
+        data.forEach((item: any) => {
+          if (item.type === 'AgencyFee') {
+            tempArr.push(
+              {
+                partyACustomerName: item.partyACustomerName,
+                partyACustomer: item.partyACustomer
+              }
+            )
+          }
+        })
+      }
+      return tempArr;
+    }
+
+    // 初始化收派金额中的代理费的甲方对象 --- 服务费
+    initCommissionServiceFee(data: any = []) {
+      let tempObj: any = {
+        partyACustomerName: null,
+        partyACustomer: null
+      };
+      let tempArr: any = [];
+      if (data.length) {
+        tempArr = data.find((item: any) => {
+          return item.type === 'ServiceFee';
+        })
+      }
+      if (tempArr.length) {
+        tempObj.partyACustomerName = tempArr[0].partyACustomerName;
+        tempObj.partyACustomer = tempArr[0].partyACustomer;
+      }
+      return tempObj;
     }
 
     // 初始化渠道商(渠道公司) --- 分销成交模式才有渠道商
@@ -1585,8 +1835,8 @@
               vo.defaultFileList = initData.visitConfirmForms && initData.visitConfirmForms.length ? initData.visitConfirmForms : [];
               vo.fileList = initData.visitConfirmForms && initData.visitConfirmForms.length ? initData.visitConfirmForms : [];
               break;
-            case "DealConfirForm":
-              // 成交确认单
+            case "Notice":
+              // 优惠告知书PDF
               vo.defaultFileList = initData.noticePDF && initData.noticePDF.length  ? initData.noticePDF : [];
               vo.fileList = initData.noticePDF && initData.noticePDF.length  ? initData.noticePDF : [];
               break;
@@ -1594,6 +1844,11 @@
               // 业主身份证
               vo.defaultFileList = initData.customerIds && initData.customerIds.length ? initData.customerIds : [];
               vo.fileList = initData.customerIds && initData.customerIds.length ? initData.customerIds : [];
+              break;
+            case "DealConfirForm":
+              // 成交确认书
+              vo.defaultFileList = initData.dealConfirmForms && initData.dealConfirmForms.length ? initData.dealConfirmForms : [];
+              vo.fileList = initData.dealConfirmForms && initData.dealConfirmForms.length ? initData.dealConfirmForms : [];
               break;
           }
         })
@@ -1613,11 +1868,12 @@
           return item.code !== "Notice";
         });
       }
-      console.log('附件信息表格：', this.postData.documentVO);
+      // console.log('附件信息表格：', this.postData.documentVO);
     }
 
     // 修改合同类型
     changeContType(value: any) {
+      console.log(value);
       if (!value) return;
       if (value === 'DistriDeal') {
         // 如果查询不到此房号的已成交报备信息，用户又选择分销成交
@@ -1684,7 +1940,7 @@
     }
 
     // 选择拆佣 - 收款方
-    selectCommName(scope: any) {
+    selectAgencyName(scope: any) {
       console.log('选择收款方', scope);
       if (this.postData.calculation === 'Auto') return;
       this.dialogAddAgentCompany = true;
@@ -1779,7 +2035,7 @@
 
     // 确定选择收派套餐
     async finishAddReceivePackage(data: any) {
-      console.log('data', data);
+      // console.log('data', data);
       if (data.length === 0) return
       if (this.postData.receiveVO.length > 0) {
         this.postData.receiveVO.forEach((vo: any, index: any) => {
@@ -1794,6 +2050,9 @@
             vo.otherChannelFees = data[0].otherChannelAmount;
           }
         });
+      }
+      if (!this.addFlag) {
+        this.showChangeTips();
       }
     }
 
@@ -1816,9 +2075,70 @@
 
     // 增加拆佣项
     handleAddCommission() {
-      console.log('增加拆佣项');
-      let obj = {};
+      // console.log('增加拆佣项');
+      let obj = {
+        agencyId: null, // 拆佣公司ID
+        agencyName: null, // 收款方(渠道公司)
+        amount: 0, // 拆佣金额
+        feeType: null, // 费用类型
+        packageId: null, // 收派标准
+        partyACustomer: null, // 甲方或客户
+        partyACustomerName: null, // 甲方或客户名称
+        remarks: null, // 备注
+        target: null // 拆佣对象
+      };
       this.postData.commissionInfoList.push(obj);
+    }
+
+    // 改变拆佣对象
+    changeCommissionTarget(value: any, row: any) {
+      if (!value) return;
+      switch(value){
+        case 'Personal':
+          // 个人
+          row.agencyName = "";
+          row.agencyId = "";
+          break;
+        case 'AgentCompany':
+          // 一手代理公司
+          row.agencyName = this.postData.oneAgentTeamName;
+          row.agencyId = this.postData.oneAgentTeamName;
+          break;
+        case 'ChannelCompany':
+          // 渠道公司
+          row.agencyName = "";
+          row.agencyId = "";
+          break;
+      }
+    }
+
+    // 改变费用类型
+    changeFeeType(value: any, row: any) {
+      if (!value) return;
+      switch(value){
+        case 'ServiceFee':
+          // 服务费
+          row.partyACustomer = this.commissionServiceFeeObj.partyACustomer;
+          row.partyACustomerName = this.commissionServiceFeeObj.partyACustomerName;
+          break;
+        case 'AgencyFee':
+          // 代理费
+          row.partyACustomer = "";
+          row.partyACustomerName = "";
+          break;
+      }
+    }
+
+    // 选择费用来源
+    handleSelectCustomer(value: any, row: any) {
+      if (!value) return;
+      if (this.commissionCustomerList && this.commissionCustomerList.length) {
+        this.commissionCustomerList.forEach((list: any) => {
+          if (list.partyACustomer === value) {
+            row.partyACustomerName = list.partyACustomerName;
+          }
+        })
+      }
     }
 
     // 计算对外拆佣合计
@@ -1937,49 +2257,37 @@
 
     // 保存
     async handleSave(type: any) {
-      console.log('type', type);
-      // type: save --- 保存； submit --- 提交
+      // console.log('type', type);
+      if (type === 'save') {
+        // 保存
+        console.log('save', type);
+      } else if (type === 'submit') {
+        // 提交
+        if (['Recognize', 'Subscribe'].includes(this.postData.stage)) {
+          this.$message.error('成交阶段未到达签约阶段，不可提交!');
+          return;
+        }
+      }
       (this.$refs["ruleForm"] as ElForm).validate(this.addSave);
     }
 
     @NoRepeatHttp()
     async addSave(valid: any) {
-      if (valid) {
+      // 校验收派金额是都有收派套餐
+      let flag = (this as any).$parent.validReceiveData(this.postData.receiveVO, this.postData.calculation);
+      if (valid && flag) {
+        // 整合数据
+        let postData: any = this.getPostData();
         if (this.id) {
-          let postData: any = {
-            id: this.id,
-            modelName: this.postData.modelName,
-            buModelContTypeList: []
-          };
-          if (this.postData.buModelContTypeList.length > 0) {
-            this.postData.buModelContTypeList.forEach((list: any) => {
-              postData.buModelContTypeList.push(
-                {
-                  contType: list
-                }
-              )
-            })
-          }
+          postData.basic.dealVO.dealCode = this.postData.dealCode;
+          postData.basic.dealVO.id = this.postData.id;
+          postData.basic.dealVO.parentId = this.postData.parentId;
           await post_deal_updateAchieveAllot(postData);
           this.$message.success("编辑成功");
           this.$goto({
             path: "/dealReport/list",
           });
         } else {
-          let postData: any = {
-            modelName: this.postData.modelName,
-            buModelContTypeList: []
-          };
-          if (this.postData.buModelContTypeList.length > 0) {
-            this.postData.buModelContTypeList.forEach((list: any) => {
-              postData.buModelContTypeList.push(
-                {
-                  contType: list
-                }
-              )
-            })
-          }
-          // 区别案场岗和文员岗
           await post_deal_achieveAllotEntry(postData);
           this.$message.success("新增成功");
           this.$goto({
@@ -1990,6 +2298,158 @@
         this.$message.warning("请先填好数据再保存");
         return false;
       }
+    }
+
+    // 构建参数
+    getPostData() {
+      let obj: any = {
+        achieveVO: [], // 平台费用信息
+        allotDate: null, // 业绩分配日期
+        alloterId: null, // 业绩分配人ID
+        basic: {
+          agencyVO: [], // 渠道商信息
+          customerVO: [], // 客户信息
+          dealVO: {
+            "businessType": "",
+            "charge": "",
+            "contNo": "",
+            "contType": "",
+            "cycleId": '',
+            "dataSign": "",
+            "dealOrgId": '',
+            "isConsign": "",
+            "isMarketProject": "",
+            "isMat": "",
+            "modelCode": "",
+            "noticeIds": [],
+            "oneAgentTeamId": "",
+            "recordState": "",
+            "refineModel": "",
+            "reportId": '',
+            "sceneSales": "",
+            "signDate": "",
+            "signPrice": '',
+            "signType": "",
+            "stage": "",
+            "subscribeDate": "",
+            "subscribePrice": ""
+          }, // 成交基础信息
+          documentVO: [], // 上传附件
+          houseVO: {
+            address: "",
+            area: "",
+            buildingId: "",
+            hall: "",
+            propertyNo: "",
+            propertyType: "",
+            room: "",
+            roomId: "",
+            roomNo: "",
+            toilet: ""
+          }, // 房屋信息
+          receiveAchieveVO: [], // 收派金额 --- 汇总
+          receiveVO: [] // 收派金额
+        }, // 成交基础信息
+        calculation: null, // 计算方式(Auto-自动、Manual-手动)
+        channelCommVO: [] // 对外拆佣信息
+      }
+      // 平台费用
+      obj.achieveVO = this.postData.achieveTotalBagList.concat(this.postData.achieveDistriList);
+      // 渠道商信息 --- 分销成交才会有
+      if (this.baseInfoInDeal.contType === 'DistriDeal') {
+        obj.basic.agencyVO.push(
+          {
+            agencyId: this.postData.agencyId,
+            brokerId: this.postData.brokerId,
+            channelLevel: this.postData.channelLevel,
+          }
+        )
+        obj.basic.dealVO.contNo = this.postData.contNo;
+        obj.basic.dealVO.isMat = this.postData.isMat;
+      }
+      // 客户信息
+      if (this.postData.customerVO.length > 0) {
+        this.postData.customerVO.forEach((item: any, index: any) => {
+          if (index === 0) {
+            item.isCustomer = 'Yes';
+          } else {
+            item.isCustomer = 'No';
+          }
+        });
+        obj.basic.customerVO = this.postData.customerVO;
+      }
+      // 基础信息
+      obj.basic.dealVO.businessType = this.baseInfoByTerm.busTypeEnum;
+      obj.basic.dealVO.charge = this.baseInfoByTerm.chargeEnum;
+      obj.basic.dealVO.contType = this.postData.contType;
+      obj.basic.dealVO.cycleId = this.postData.cycleId;
+      obj.basic.dealVO.dataSign = this.baseInfoInDeal.myReturnVO.dataSign;
+      obj.basic.dealVO.dealOrgId = this.postData.dealOrgId;
+      obj.basic.dealVO.isConsign = this.postData.isConsign;
+      obj.basic.dealVO.isMarketProject = this.postData.isMarketProject;
+      obj.basic.dealVO.modelCode = this.postData.businessType;
+      if (this.postData.offerNoticeVO.length > 0) {
+        this.postData.offerNoticeVO.forEach((vo: any) => {
+          obj.basic.dealVO.noticeIds.push(vo.id);
+        })
+      }
+      obj.basic.dealVO.oneAgentTeamId = this.postData.oneAgentTeamId;
+      obj.basic.dealVO.recordState = this.postData.recordState;
+      obj.basic.dealVO.refineModel = this.postData.refineModel;
+      obj.basic.dealVO.reportId = this.baseInfoInDeal.recordId;
+      obj.basic.dealVO.sceneSales = this.postData.sceneSales;
+      obj.basic.dealVO.signDate = this.postData.signDate;
+      obj.basic.dealVO.signPrice = this.postData.signPrice;
+      obj.basic.dealVO.signType = this.postData.signType;
+      obj.basic.dealVO.stage = this.postData.stage;
+      obj.basic.dealVO.subscribeDate = this.postData.subscribeDate;
+      obj.basic.dealVO.subscribePrice = this.postData.subscribePrice;
+      obj.basic.houseVO.address = this.postData.address;
+      obj.basic.houseVO.area = this.postData.area;
+      obj.basic.houseVO.buildingId = this.postData.buildingId;
+      obj.basic.houseVO.hall = this.postData.hall;
+      obj.basic.houseVO.hall = this.postData.hall;
+      obj.basic.houseVO.propertyNo = this.postData.propertyNo;
+      obj.basic.houseVO.propertyType = this.postData.propertyType;
+      obj.basic.houseVO.room = this.postData.room;
+      obj.basic.houseVO.roomId = this.postData.roomId;
+      obj.basic.houseVO.roomNo = this.baseInfoInDeal.roomNo;
+      obj.basic.houseVO.toilet = this.postData.toilet;
+      // 附件信息
+      if (this.postData.documentVO.length > 0) {
+        this.postData.documentVO.forEach((item: any) => {
+          if (item.fileList.length > 0) {
+            item.fileList.forEach((list: any) => {
+              obj.basic.documentVO.push(
+                {
+                  fileId: list.fileId,
+                  fileName: list.name,
+                  fileType: item.code
+                }
+              )
+            })
+          }
+        })
+      }
+      // 派发金额合计
+      if (this.receiveAchieveVO.length > 0) {
+        this.receiveAchieveVO.forEach((vo: any) => {
+          obj.basic.receiveAchieveVO.push(
+            {
+              achieveAmount: vo.achieveAmount,
+              otherChannelFees: vo.otherChannelFees,
+              receiveAmount: vo.receiveAmount
+            }
+          )
+        });
+      }
+      // 派发金额
+      obj.basic.receiveVO = this.postData.receiveVO;
+      // 计算方式
+      obj.calculation = this.postData.calculation;
+      // 对外拆佣信息
+      obj.channelCommVO = this.postData.commissionInfoList
+      return obj;
     }
 
     // 查看来访/成交确认信息
@@ -2147,9 +2607,46 @@
   }
 
   .divider-padding {
-    padding: 20px 20px;
+    height: 115px;
+    //padding: 20px 0px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
     box-sizing: border-box;
-    margin: 10px 0px;
+    margin: 10px 0px 10px 20px;
+    border: 2px solid #409EFF;
+    border-radius: 5px;
+
+    .divider-tip {
+      font-weight: bold;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+
+      div {
+        flex: 1;
+      }
+
+      .btn {
+        margin-top: 10px;
+
+        .btn-color {
+          color: #FFF;
+          background-color: #409EFF;
+          border-color: #409EFF;
+        }
+      }
+    }
+
+    .color-blur {
+      color: #409EFF;
+    }
+
+    .color-red {
+      color: #f56c6c;
+    }
 
     /deep/.el-divider {
       background-color: #409EFF;
@@ -2159,6 +2656,26 @@
       color: #409EFF;
       font-size: 18px;
       font-weight: bold;
+    }
+  }
+
+  .border-color-red {
+    border-color: #f56c6c;
+  }
+
+  .border-color-none {
+    border-color: white;
+  }
+
+  .border-color-green {
+    border-color: #67c23a;
+
+    /deep/.el-divider {
+      background-color: #67c23a;
+    }
+
+    /deep/.el-divider__text {
+      color: #67c23a;
     }
   }
 </style>

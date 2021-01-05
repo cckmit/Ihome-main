@@ -4,14 +4,14 @@
  * @Author: zyc
  * @Date: 2020-06-23 10:42:04
  * @LastEditors: zyc
- * @LastEditTime: 2020-12-30 09:34:45
+ * @LastEditTime: 2021-01-05 14:08:46
 --> 
 <template>
   <div class="header-container">
     <div class="left-item">
       <i
         class="el-icon-s-fold close-btn"
-        style="font-size: 20px; cursor: pointer; color: #606266"
+        style="font-size: 20px; cursor: pointer; color: #999"
         :class="isCollapse ? 'is-active' : ''"
         @click="clickAside()"
       ></i>
@@ -25,17 +25,35 @@
       >
       <div class="breadcrumb" v-show="true">
         <el-breadcrumb separator-class="el-icon-arrow-right">
-          <!-- <el-breadcrumb-item :to="{ path: '/' }">首页</el-breadcrumb-item> -->
           <el-breadcrumb-item v-for="(item, index) in crumbs" :key="index">{{
             item && item.name
           }}</el-breadcrumb-item>
-          <!-- <el-breadcrumb-item>活动列表</el-breadcrumb-item>
-          <el-breadcrumb-item>活动详情</el-breadcrumb-item>-->
         </el-breadcrumb>
       </div>
     </div>
     <div class="right-item">
-      <span class="userinfo">{{ userInfo.name }}</span>
+      <ul class="right-ul">
+        <li class="right-li">
+          <span class="userinfo">欢迎你～ {{ userInfo.name }}</span>
+        </li>
+        <!-- <li class="right-li right-li-icon">
+          <el-badge
+            :value="12"
+            class="item"
+            style="top: 5px; position: relative"
+          >
+            <img style="width: 20px" src="../assets/layout/notice.png" alt="" />
+          </el-badge>
+        </li>
+        <li class="right-li right-li-icon">
+          <img style="width: 20px" src="../assets/layout/user.png" alt="" />
+        </li> -->
+        <li class="right-li right-li-icon" @click="loginOut()" title="退出">
+          <img style="width: 20px" src="../assets/layout/loginout.png" alt="" />
+        </li>
+      </ul>
+
+      <!-- <span class="userinfo">{{ userInfo.name }}</span>
       <el-popover
         placement="top-start"
         width="120"
@@ -44,7 +62,6 @@
       >
         <ul class="head-ul">
           <li>个人中心</li>
-          <!-- <li @click="doc()">开发规范文档</li> -->
           <li @click="loginOut()">退出</li>
         </ul>
         <el-avatar
@@ -53,7 +70,7 @@
           size="medium"
           :src="circleUrl"
         ></el-avatar>
-      </el-popover>
+      </el-popover> -->
     </div>
   </div>
 </template>
@@ -102,74 +119,38 @@ export default class IhHeader extends Vue {
   clickAside(): void {
     AppModule.toggleSideBar();
   }
-
-  // @Watch("$route")
-  // async getBreadcrumb(newVal: any) {
-  //   // let menuList: any = await allMenu();
-  //   //  console.log((window as any).polyihomeData);
-  //   let menuList: any[] =
-  //     (window as any).polyihomeData?.userInfo.menuList || [];
-  //   console.log("menuList", menuList);
-
-  //   // let menuList = (this.$root as any).userInfo?.menuList || [];
-
-  //   let arr = null;
-  //   for (let index = 0; index < menuList.length; index++) {
-  //     const element = menuList[index];
-  //     if (newVal.path == element.url) {
-  //       arr = element;
-  //       break;
-  //     }
-  //   }
-  //   let data = null;
-  //   for (let index = 0; index < menuList.length; index++) {
-  //     const element = menuList[index];
-  //     if (arr?.parentId == element.id) {
-  //       data = element;
-  //       break;
-  //     }
-  //   }
-
-  //   if (data && arr) {
-  //     this.breadcrumbList = [data, arr];
-  //   } else {
-  //     if (
-  //       newVal.path != "/web-sales/" &&
-  //       newVal.path != "/web-sales" &&
-  //       newVal.path != "/web-system/" &&
-  //       newVal.path != "/web-system"
-  //     ) {
-  //       this.breadcrumbList.push({
-  //         name: "--",
-  //       });
-  //     }
-  //   }
-
-  //   // newVal.matched.forEach((item: any) => {
-  //   //   this.breadcrumbList.push({
-  //   //     title: item.meta?.title,
-  //   //     path: item.path,
-  //   //   });
-  //   // });
-  // }
-  doc() {
-    console.log("开发规范文档");
-    window.open(
-      "http://10.188.0.139:1999/%E6%96%B0%E6%88%BF%E5%89%8D%E7%AB%AF.pdf"
-    );
-  }
-  created() {
-    // this.breadcrumbList = [];
-    // this.$route.matched.forEach((item: any) => {
-    //   this.breadcrumbList.push({
-    //     title: item.meta?.title,
-    //     path: item.path,
-    //   });
-    // });
-    // this.getBreadcrumb(this.$route);
-  }
 }
 </script>
+<style lang="scss" >
+.header-container {
+  .right-item {
+    font-size: 14px;
+    color: #666;
+  }
+  .right-ul {
+    margin: 0;
+  }
+  .right-li {
+    list-style-type: none;
+    display: inline-block;
+    margin: 0 20px;
+    height: 50px;
+    line-height: 50px;
+  }
+  .right-li-icon {
+    cursor: pointer;
+    top: 5px;
+    position: relative;
+  }
+
+  .el-badge__content.is-fixed {
+    position: absolute;
+    top: 10px;
+    right: 10px;
+    transform: translateY(-50%) translateX(100%);
+  }
+}
+</style>
 <style lang="scss" scoped>
 .header-container {
   width: 100%;
@@ -197,6 +178,7 @@ export default class IhHeader extends Vue {
   line-height: 50px;
   height: 50px;
 }
+
 .breadcrumb > .el-breadcrumb {
   line-height: 50px;
   height: 50px;
@@ -204,6 +186,9 @@ export default class IhHeader extends Vue {
 .right-item {
   flex: 1;
   text-align: right;
+  line-height: 50px;
+  height: 50px;
+  display: inline-block;
 }
 .avatar {
   margin: 7px 0px 0 10px;
@@ -220,12 +205,5 @@ export default class IhHeader extends Vue {
   li:hover {
     color: #f90;
   }
-}
-.userinfo {
-  position: relative;
-  top: -12px;
-  right: 10px;
-  font-size: 14px;
-  color: #666;
 }
 </style>
