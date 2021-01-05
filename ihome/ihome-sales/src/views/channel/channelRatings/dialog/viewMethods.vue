@@ -4,7 +4,7 @@
  * @Author: wwq
  * @Date: 2020-10-09 09:35:09
  * @LastEditors: wwq
- * @LastEditTime: 2020-10-23 11:01:03
+ * @LastEditTime: 2021-01-05 18:31:51
 -->
 <template>
   <el-dialog
@@ -60,7 +60,7 @@ export default class Edit extends Vue {
   viewDialogVisible = true;
 
   previewHandler(file: any) {
-    window.open(`/sales-document-cover-local/file/download/${file.fileId}`);
+    window.open(`/sales-api/sales-document-cover/file/download/${file.fileId}`);
   }
 
   beforeRemove() {

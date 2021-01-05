@@ -4,7 +4,7 @@
  * @Author: wwq
  * @Date: 2020-10-09 09:35:09
  * @LastEditors: wwq
- * @LastEditTime: 2020-10-23 10:53:39
+ * @LastEditTime: 2021-01-05 18:31:34
 -->
 
 <template>
@@ -21,7 +21,7 @@
     <el-upload
       ref="upload"
       class="upload-demo"
-      action="/sales-document-cover-local/file/upload"
+      action="/sales-api/sales-document-cover/file/upload"
       :on-success="handleSuccess"
       :on-remove="handleRemove"
       :file-list="fileList"
@@ -31,12 +31,20 @@
       }"
       :on-preview="previewHandler"
     >
-      <el-button size="small" slot="trigger" type="primary"
-        >点击上传文件</el-button
-      >
+      <el-button
+        size="small"
+        slot="trigger"
+        type="primary"
+      >点击上传文件</el-button>
     </el-upload>
-    <span slot="footer" class="dialog-footer">
-      <el-button type="primary" @click="finish()">保 存</el-button>
+    <span
+      slot="footer"
+      class="dialog-footer"
+    >
+      <el-button
+        type="primary"
+        @click="finish()"
+      >保 存</el-button>
     </span>
   </el-dialog>
 </template>
@@ -56,6 +64,7 @@ export default class Edit extends Vue {
   @Prop() data: any;
   private fileList: any = [];
   private tooken: any;
+  private submitList: any = [];
   fileName: any = "";
 
   async created() {
@@ -64,10 +73,8 @@ export default class Edit extends Vue {
       (res: any) => {
         return res.map((v: any) => ({
           name: v.fileName,
-          fileName: v.fileName,
           url: `/sales-document-cover-local/file/browse/${v.fileId}`,
           fileId: v.fileId,
-          type: v.type,
         }));
       }
     );
@@ -75,13 +82,22 @@ export default class Edit extends Vue {
   }
   upDialogVisible = true;
 
-  handleSuccess(response: any, file: any) {
-    this.fileList.push({
-      name: file.name,
-      fileName: file.name,
-      url: `/sales-document-cover-local/file/browse/${file.response.data[0].fileId}`,
-      fileId: file.response.data[0].fileId,
-      type: file.response.data[0].generateFileType,
+  handleSuccess(response: any, file: any, fileList: any) {
+    this.submitList = [];
+    fileList.forEach((v: any) => {
+      if (!v.response) {
+        this.submitList.push({
+          fileName: v.name,
+          url: `/sales-document-cover-local/file/browse/${v.fileId}`,
+          fileId: v.fileId,
+        });
+      } else {
+        this.submitList.push({
+          fileName: v.name,
+          url: `/sales-document-cover-local/file/browse/${v.response.data[0].fileId}`,
+          fileId: v.response.data[0].fileId,
+        });
+      }
     });
   }
 
@@ -90,12 +106,17 @@ export default class Edit extends Vue {
   }
 
   previewHandler(file: any) {
-    window.open(`/sales-document-cover-local/file/download/${file.fileId}`);
+    window.open(`/sales-api/sales-document-cover/file/download/${file.fileId}`);
   }
 
   async finish() {
-    console.log(this.fileList);
-    await post_channelGradeStandard_addManagementAttachment(this.fileList);
+    let arr: any = [];
+    if (this.submitList.length) {
+      arr = [...this.submitList];
+    } else {
+      arr = [...this.fileList];
+    }
+    await post_channelGradeStandard_addManagementAttachment(arr);
     this.$message.success("保存成功!");
     this.$emit("finish");
   }
