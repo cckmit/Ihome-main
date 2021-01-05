@@ -4,7 +4,7 @@
  * @Author: zyc
  * @Date: 2020-11-24 10:49:02
  * @LastEditors: zyc
- * @LastEditTime: 2020-12-30 09:43:33
+ * @LastEditTime: 2021-01-05 09:14:12
  */
 /*
  * @Descripttion: 
@@ -36,7 +36,7 @@ if ((<any>window).__POWERED_BY_QIANKUN__) {
 import ElementUI from 'element-ui';
 // import 'element-ui/lib/theme-chalk/index.css';
 // import '../ihome-theme/theme/index.css'
-import '../ihome-theme/orange/theme/index.css'
+import '../ihome-theme/theme/index.css'
 
 import '../ui/css/ihome-ui.scss'
 import { UserModule } from '@/store/modules/user'

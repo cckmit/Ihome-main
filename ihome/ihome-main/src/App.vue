@@ -4,10 +4,10 @@
  * @Author: zyc
  * @Date: 2020-06-22 11:46:23
  * @LastEditors: zyc
- * @LastEditTime: 2020-12-16 17:20:42
+ * @LastEditTime: 2021-01-05 11:01:22
 --> 
 <template>
-  <div>
+  <div class="app">
     <el-container v-show="!loginPage" id="main-root" class="root">
       <el-aside
         :width="sidebarWidth"
@@ -16,15 +16,15 @@
       >
         <div class="container-logo" v-show="!isCollapsed">
           <img
-            src="./assets/img/logo/logo.png"
-            style="width: 100%"
+            src="./assets/layout/logo-text.png"
+            style="width: 165px"
             alt
             srcset
           />
         </div>
         <div class="container-logo-lm" v-show="isCollapsed">
           <img
-            src="./assets/img/logo/ihome.jpg"
+            src="./assets/layout/logo-icon.png"
             style="width: 100%"
             alt
             srcset
@@ -33,15 +33,12 @@
 
         <el-scrollbar
           class="scroll"
-          :style="{ height: `calc(100% - ${isCollapsed ? '64' : '50'}px)` }"
+          :style="{ height: `calc(100% - ${isCollapsed ? '100' : '100'}px)` }"
         >
           <el-menu
             :default-openeds="defaultOpeneds"
             :default-active="defaultActive"
             class="el-menu-vertical-demo"
-            background-color="#ef9d39"
-            text-color="#fff"
-            active-text-color="#ffd04b"
             :collapse-transition="false"
             :collapse="isCollapsed"
             :class="{ 'is-collapse': isCollapsed }"
@@ -91,6 +88,10 @@
             </template>
           </el-menu>
         </el-scrollbar>
+
+        <div class="container-footer" v-show="!isCollapsed">
+          <img src="./assets/layout/x.png" alt srcset />
+        </div>
       </el-aside>
 
       <el-container v-show="!loginPage">
@@ -289,9 +290,31 @@ export default class App extends Vue {
 }
 </script>
 <style lang="scss">
-$asideBg: #ef9d39;
-$asideFontColor: #f5eed4;
-$asideActive: #e29334;
+.container-footer {
+  text-align: center;
+  line-height: 66px;
+  height: 28px;
+  width: 100%;
+}
+$asideBg: #4881f9;
+$asideFontColor: #9de5fc;
+$asideActive: #003894;
+
+.el-submenu.is-active.is-opened > div {
+  background: $asideActive !important;
+}
+.el-submenu.is-active.is-opened > ul > li {
+  background: #3c6bcf !important;
+}
+.el-submenu.is-active {
+  background: $asideActive !important;
+}
+.el-menu-item {
+  background: #fff !important;
+}
+.el-menu-item.is-active {
+  color: #9de5fc !important;
+}
 body {
   margin: 0;
   padding: 0;
@@ -340,13 +363,11 @@ body {
     width: 6px !important;
   }
 }
-// .el-menu .el-submenu,
-// .el-menu-item-group__title,
-// .el-menu-item,
-// .el-menu-item.is-disabled,
-// .el-menu-vertical-demo.el-menu {
-//   background: $asideBg !important;
-// }
+
+.el-menu-vertical-demo.el-menu,
+.el-menu-item {
+  background: $asideBg !important;
+}
 
 .el-menu .el-submenu div,
 .el-submenu i,
@@ -356,15 +377,10 @@ body {
 .el-menu {
   border-right: solid 1px $asideBg !important;
   &.is-collapse {
-    // width: calc(100% - 17px) !important;
-    // margin: 0 auto !important;
     text-align: center;
   }
 }
-.el-submenu :hover {
-  color: #fff !important;
-  background: #516f94 !important;
-}
+
 .el-menu-item.is-active {
   color: $asideFontColor !important;
   background: $asideActive !important;
@@ -373,25 +389,11 @@ body {
   width: 199px;
   min-height: 400px;
 }
-// 滚动条整体样式
-// ::-webkit-scrollbar {
-//   width: 6px;
-//   height: 6px;
-// }
-// ::-webkit-scrollbar-thumb {
-//   border-radius: 12px;
-//   box-shadow: inset 0 0 5px rgba(0, 0, 0, 0.2);
-//   background: rgba(144, 147, 153, 0.3);
-// }
-// ::-webkit-scrollbar-track {
-//   box-shadow: inset 0 0 5px rgba(0, 0, 0, 0.2);
-//   border-radius: 12px;
-//   background: #ededed;
-// }
 </style>
 <style scoped lang="scss">
 $asideFontColor: #f5eed4;
-$asideActive: #e29334;
+$asideActive: #003894;
+$asideBg: #4881f9;
 .right-container-header {
   height: 50px;
   line-height: 50px;
@@ -405,6 +407,8 @@ $asideActive: #e29334;
   box-sizing: border-box;
   // left: 0;
   // right: 0;
+  // background: #4881f9;
+  // color: #fff !important;
 }
 .right-container {
   width: 100%;
@@ -419,6 +423,7 @@ $asideActive: #e29334;
   padding: 10px;
   box-sizing: border-box;
   margin: 0 auto;
+  text-align: center;
   // border-bottom: 1px solid #2c4e5a;
 }
 .container-logo-lm {
@@ -436,7 +441,7 @@ $asideActive: #e29334;
   background: #f5f6f8;
 }
 .ih-aside {
-  background-color: #ef9d39;
+  background-color: $asideBg;
   z-index: 101;
   color: $asideFontColor !important;
   transition: width 0.28s;
@@ -448,7 +453,7 @@ $asideActive: #e29334;
   color: $asideFontColor !important;
 }
 .el-submenu :hover {
-  color: $asideFontColor !important;
-  background: $asideActive !important;
+  color: #9de5fc !important;
+  background: #003894 !important;
 }
 </style>
