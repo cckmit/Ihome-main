@@ -1,6 +1,6 @@
 /* eslint-disable */
 /* 此脚本由swagger-ui的api-docs自动生成，请勿修改 */
-//2021-1-5 16:06:36
+//2021-1-5 15:19:05
 import { request } from '@/api/base'
 const basePath = "/sales-api/deal"
 /**添加业绩比例方案信息*/
@@ -134,10 +134,6 @@ return await request.post< DealInitPageResponseVO,DealInitPageResponseVO> (baseP
 /**初始化对外拆佣*/
 export async function post_pageData_initChannelComm (d?: any) {
 return await request.post< ChannelCommInitDataVO[],ChannelCommInitDataVO[]> (basePath+'/pageData/initChannelComm', d)
-}
-/**initSelectableChannels*/
-export async function get_pageData_initSelectableChannels__cycleId (d?: any) {
-return await request.get<DistributionChannelResponse[],DistributionChannelResponse[]>(basePath+'/pageData/initSelectableChannels/{cycleId}', { params: d })
 }
 /**派发套餐明细*/
 export async function post_pageData_initSelectablePackage (d?: any) {
@@ -302,10 +298,6 @@ receiveVO: ReceiveAddVO[];
 export interface AchieveInitDataReturnVO {
 /**平台费用——分销部分*/
 distri: AchieveRefreshDataDetailVO[];
-/**平台费用——分销部分——可选角色*/
-distriRoles: string[];
-/**平台费用——总包部分——可选角色*/
-totablBagRoles: string[];
 /**平台费用——总包部分*/
 totalBag: AchieveRefreshDataDetailVO[];
 }
@@ -1589,23 +1581,6 @@ status: string;
 subscribeDate: string;
 /**认购价格*/
 subscribePrice: number;
-}
-/**DistributionChannelResponse*/
-export interface DistributionChannelResponse {
-/**(必填)渠道账户*/
-channelAccount: string;
-/**(必填)渠道开户行*/
-channelAccountBank: string;
-/**(必填)渠道账户名*/
-channelAccountName: string;
-/**(必填)渠道公司*/
-channelCompanyId: number;
-/**(必填)渠道联系人*/
-channelContact: string;
-/**(必填)渠道联系人电话*/
-channelContactTel: string;
-/**(必填)渠道等级(BigPlatform-大平台、Big-大型中介/一级平台、Middle-中型中介/二级平台、Small-小型中介、Appoint-指定中介行、Strategic-战略合作方)*/
-channelLevel: string;
 }
 /**DocumentAddVO*/
 export interface DocumentAddVO {

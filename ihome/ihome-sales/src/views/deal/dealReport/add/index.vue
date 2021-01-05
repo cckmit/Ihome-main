@@ -279,19 +279,19 @@
       } else {
         // 手动
         data.forEach((item: any) => {
-          if ([null, undefined].includes(item.receiveAmount)) {
+          if ([null, undefined, ""].includes(item.receiveAmount)) {
             flag = false;
           }
-          if ([null, undefined].includes(item.commAmount)) {
+          if ([null, undefined, ""].includes(item.commAmount)) {
             flag = false;
           }
-          if ([null, undefined].includes(item.rewardAmount)) {
+          if ([null, undefined, ""].includes(item.rewardAmount)) {
             flag = false;
           }
-          if ([null, undefined].includes(item.totalPackageAmount)) {
+          if ([null, undefined, ""].includes(item.totalPackageAmount)) {
             flag = false;
           }
-          if ([null, undefined].includes(item.distributionAmount)) {
+          if ([null, undefined, ""].includes(item.distributionAmount)) {
             flag = false;
           }
         })

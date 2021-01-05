@@ -349,6 +349,7 @@
         <el-col :span="6">
           <el-form-item label="认购价格" :prop="['Subscribe', 'SignUp'].includes(postData.stage) ? 'subscribePrice' : ' '">
             <el-input
+              v-digits="2"
               :disabled="isDisabled('subscribePrice', 'dealVO')"
               v-model="postData.subscribePrice"
               placeholder="请输入认购价格"></el-input>
@@ -369,6 +370,7 @@
         <el-col :span="6">
           <el-form-item label="签约价格" :prop="['SignUp'].includes(postData.stage) ? 'signPrice' : ' '">
             <el-input
+              v-digits="2"
               :disabled="isDisabled('signPrice', 'dealVO')"
               v-model="postData.signPrice"
               placeholder="请输入签约价格"></el-input>
@@ -511,7 +513,7 @@
       <div>
         <el-select
           v-model="postData.calculation"
-          @click="changeCalculation"
+          @change="changeCalculation"
           placeholder="请选择计算方式"
           class="width--100">
           <el-option
@@ -712,6 +714,7 @@
               <el-select
                 :disabled="postData.calculation === 'Auto'"
                 v-model="scope.row.target"
+                @change="changeCommissionTarget($event, scope.row)"
                 placeholder="请选择">
                 <el-option
                   v-for="item in $root.dictAllList('CommObjectType')"
@@ -722,21 +725,21 @@
               </el-select>
             </template>
           </el-table-column>
-          <el-table-column prop="commName" label="收款方" min-width="120">
+          <el-table-column prop="agencyName" label="收款方" min-width="120">
             <template slot-scope="scope">
               <div v-if="postData.calculation === 'Auto'">
-                <el-input placeholder="收款方" disabled v-model="scope.row.commName"></el-input>
+                <el-input placeholder="收款方" disabled v-model="scope.row.agencyName"></el-input>
               </div>
               <div v-else>
                 <div v-if="scope.row.target === 'Personal'">
-                  <el-input placeholder="请输入收款方" v-model="scope.row.commName"></el-input>
+                  <el-input placeholder="请输入收款方" v-model="scope.row.agencyName"></el-input>
                 </div>
                 <div v-if="scope.row.target === 'AgentCompany'">
-                  <el-input placeholder="" disabled v-model="scope.row.commName"></el-input>
+                  <el-input placeholder="" disabled v-model="scope.row.agencyName"></el-input>
                 </div>
                 <div v-if="scope.row.target === 'ChannelCompany'">
-                  <el-input placeholder="请选择收款方" readonly v-model="scope.row.commName">
-                    <el-button slot="append" icon="el-icon-search" @click.native.prevent="selectCommName"></el-button>
+                  <el-input placeholder="请选择收款方" readonly v-model="scope.row.agencyName">
+                    <el-button slot="append" icon="el-icon-search" @click.native.prevent="selectAgencyName"></el-button>
                   </el-input>
                 </div>
               </div>
@@ -748,6 +751,7 @@
                 v-model="scope.row.feeType"
                 :disabled="postData.calculation === 'Auto'"
                 placeholder="费用类型"
+                @change="changeFeeType($event, scope.row)"
                 class="width--100">
                 <el-option
                   v-for="item in $root.dictAllList('FeeType')"
@@ -771,11 +775,11 @@
                   <el-select
                     :disabled="postData.calculation === 'Auto'"
                     v-model="scope.row.partyACustomer"
+                    @change="handleSelectCustomer($event, scope.row)"
                     placeholder="请选择">
-                    <el-option label="客户A" value="AA"></el-option>
-                    <el-option label="客户B" value="BB"></el-option>
-                    <el-option label="甲方A" value="CC"></el-option>
-                    <el-option label="甲方B" value="DD"></el-option>
+                    <el-option
+                      v-for="(item, index) in commissionCustomerList" :key="index"
+                      :label="item.partyACustomerName" :value="item.partyACustomer"></el-option>
                   </el-select>
                 </div>
               </div>
@@ -784,6 +788,7 @@
           <el-table-column prop="amount" label="金额" min-width="120">
             <template slot-scope="scope">
               <el-input
+                v-digits="2"
                 placeholder="金额"
                 :disabled="postData.calculation === 'Auto'"
                 v-model="scope.row.amount"></el-input>
@@ -1114,6 +1119,8 @@
       calculation: 'Auto', // 计算方式 - 默认自动
     };
     tempReceiveVO: any = []; // 初始化的收派金额数据
+    commissionCustomerList: any = []; // 初始化费用来源的甲方信息 --- 代理费
+    commissionServiceFeeObj: any = []; // 初始化费用来源的甲方信息 --- 服务费
     rules: any = {
       dealCode: [
         {required: true, message: "成交报告编号不能为空", trigger: "change"},
@@ -1330,16 +1337,24 @@
       return flag;
     }
 
+    // 显示变动提示
+    showChangeTips() {
+      this.addFlag = false;
+      this.editFlag = true;
+      this.tipsFlag = false;
+      this.dividerTips = '加载成功';
+    }
+
     // 改变计算方式
     changeCalculation() {
+      // console.log(this.tempReceiveVO);
       this.postData.receiveVO = (this as any).$tool.deepClone(this.tempReceiveVO);
       this.postData.commissionInfoList = [];
       this.postData.achieveTotalBagList = [];
       this.postData.achieveDistriList = [];
-      this.addFlag = false;
-      this.editFlag = true;
-      this.tipsFlag = false;
-      this.dividerTips = '刷新成功';
+      if (!this.addFlag) {
+        this.showChangeTips();
+      }
     }
 
     // 手动方式下，改变收派金额某一项的方法
@@ -1732,8 +1747,50 @@
       // this.postData.receiveVO = baseInfo.receiveVOS && baseInfo.receiveVOS.length ? baseInfo.receiveVOS : [];
       this.postData.receiveVO = (this as any).$parent.initReceiveVOS(baseInfo.receiveVOS);
       this.tempReceiveVO = (this as any).$tool.deepClone(this.postData.receiveVO);
+      // 收派金额中的甲方
+      this.commissionCustomerList = [];
+      this.commissionCustomerList = this.initCommissionCustomer(baseInfo.receiveVOS);
+      this.commissionServiceFeeObj = {};
+      this.commissionServiceFeeObj = this.initCommissionServiceFee(baseInfo.receiveVOS);
       // 附件信息
       this.initDocument(baseInfo.contType, baseInfo);
+    }
+
+    // 初始化收派金额中的代理费的甲方数组 --- 代理费
+    initCommissionCustomer(data: any = []) {
+      let tempArr: any = [];
+      if (data.length) {
+        data.forEach((item: any) => {
+          if (item.type === 'AgencyFee') {
+            tempArr.push(
+              {
+                partyACustomerName: item.partyACustomerName,
+                partyACustomer: item.partyACustomer
+              }
+            )
+          }
+        })
+      }
+      return tempArr;
+    }
+
+    // 初始化收派金额中的代理费的甲方对象 --- 服务费
+    initCommissionServiceFee(data: any = []) {
+      let tempObj: any = {
+        partyACustomerName: null,
+        partyACustomer: null
+      };
+      let tempArr: any = [];
+      if (data.length) {
+        tempArr = data.find((item: any) => {
+          return item.type === 'ServiceFee';
+        })
+      }
+      if (tempArr.length) {
+        tempObj.partyACustomerName = tempArr[0].partyACustomerName;
+        tempObj.partyACustomer = tempArr[0].partyACustomer;
+      }
+      return tempObj;
     }
 
     // 初始化渠道商(渠道公司) --- 分销成交模式才有渠道商
@@ -1816,6 +1873,7 @@
 
     // 修改合同类型
     changeContType(value: any) {
+      console.log(value);
       if (!value) return;
       if (value === 'DistriDeal') {
         // 如果查询不到此房号的已成交报备信息，用户又选择分销成交
@@ -1882,7 +1940,7 @@
     }
 
     // 选择拆佣 - 收款方
-    selectCommName(scope: any) {
+    selectAgencyName(scope: any) {
       console.log('选择收款方', scope);
       if (this.postData.calculation === 'Auto') return;
       this.dialogAddAgentCompany = true;
@@ -1993,6 +2051,9 @@
           }
         });
       }
+      if (!this.addFlag) {
+        this.showChangeTips();
+      }
     }
 
     // 删除客户/对外拆佣项
@@ -2014,9 +2075,70 @@
 
     // 增加拆佣项
     handleAddCommission() {
-      console.log('增加拆佣项');
-      let obj = {};
+      // console.log('增加拆佣项');
+      let obj = {
+        agencyId: null, // 拆佣公司ID
+        agencyName: null, // 收款方(渠道公司)
+        amount: 0, // 拆佣金额
+        feeType: null, // 费用类型
+        packageId: null, // 收派标准
+        partyACustomer: null, // 甲方或客户
+        partyACustomerName: null, // 甲方或客户名称
+        remarks: null, // 备注
+        target: null // 拆佣对象
+      };
       this.postData.commissionInfoList.push(obj);
+    }
+
+    // 改变拆佣对象
+    changeCommissionTarget(value: any, row: any) {
+      if (!value) return;
+      switch(value){
+        case 'Personal':
+          // 个人
+          row.agencyName = "";
+          row.agencyId = "";
+          break;
+        case 'AgentCompany':
+          // 一手代理公司
+          row.agencyName = this.postData.oneAgentTeamName;
+          row.agencyId = this.postData.oneAgentTeamName;
+          break;
+        case 'ChannelCompany':
+          // 渠道公司
+          row.agencyName = "";
+          row.agencyId = "";
+          break;
+      }
+    }
+
+    // 改变费用类型
+    changeFeeType(value: any, row: any) {
+      if (!value) return;
+      switch(value){
+        case 'ServiceFee':
+          // 服务费
+          row.partyACustomer = this.commissionServiceFeeObj.partyACustomer;
+          row.partyACustomerName = this.commissionServiceFeeObj.partyACustomerName;
+          break;
+        case 'AgencyFee':
+          // 代理费
+          row.partyACustomer = "";
+          row.partyACustomerName = "";
+          break;
+      }
+    }
+
+    // 选择费用来源
+    handleSelectCustomer(value: any, row: any) {
+      if (!value) return;
+      if (this.commissionCustomerList && this.commissionCustomerList.length) {
+        this.commissionCustomerList.forEach((list: any) => {
+          if (list.partyACustomer === value) {
+            row.partyACustomerName = list.partyACustomerName;
+          }
+        })
+      }
     }
 
     // 计算对外拆佣合计
