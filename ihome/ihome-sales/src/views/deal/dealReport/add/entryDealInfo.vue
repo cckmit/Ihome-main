@@ -348,6 +348,7 @@
         <el-col :span="6">
           <el-form-item label="认购价格" :prop="['Subscribe', 'SignUp'].includes(postData.stage) ? 'subscribePrice' : ' '">
             <el-input
+              v-digits="2"
               :disabled="isDisabled('subscribePrice', 'dealVO')"
               v-model="postData.subscribePrice"
               placeholder="请输入认购价格"></el-input>
@@ -368,6 +369,7 @@
         <el-col :span="6">
           <el-form-item label="签约价格" :prop="['SignUp'].includes(postData.stage) ? 'signPrice' : ' '">
             <el-input
+              v-digits="2"
               :disabled="isDisabled('signPrice', 'dealVO')"
               v-model="postData.signPrice"
               placeholder="请输入签约价格"></el-input>
