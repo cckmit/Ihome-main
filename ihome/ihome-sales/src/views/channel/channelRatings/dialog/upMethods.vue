@@ -4,7 +4,7 @@
  * @Author: wwq
  * @Date: 2020-10-09 09:35:09
  * @LastEditors: wwq
- * @LastEditTime: 2021-01-05 18:31:34
+ * @LastEditTime: 2021-01-06 10:10:45
 -->
 
 <template>
@@ -106,7 +106,15 @@ export default class Edit extends Vue {
   }
 
   previewHandler(file: any) {
-    window.open(`/sales-api/sales-document-cover/file/download/${file.fileId}`);
+    if (file.response) {
+      window.open(
+        `/sales-api/sales-document-cover/file/download/${file.response.data[0].fileId}`
+      );
+    } else {
+      window.open(
+        `/sales-api/sales-document-cover/file/download/${file.fileId}`
+      );
+    }
   }
 
   async finish() {
