@@ -4,7 +4,7 @@
  * @Author: wwq
  * @Date: 2020-12-01 14:49:06
  * @LastEditors: wwq
- * @LastEditTime: 2021-01-06 16:43:23
+ * @LastEditTime: 2021-01-06 18:56:30
 -->
 <template>
   <el-dialog
@@ -363,7 +363,7 @@ export default class PartyAAdd extends Vue {
 .IhSelectPageByDeveloper {
   /deep/ .el-select__tags-text {
     display: inline-block;
-    max-width: 135px;
+    max-width: 180px;
     overflow: hidden;
     text-overflow: ellipsis;
     white-space: nowrap;
