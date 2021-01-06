@@ -2450,7 +2450,14 @@
         });
       }
       // 派发金额
-      obj.basic.receiveVO = this.postData.receiveVO;
+      obj.basic.receiveVO = JSON.parse(JSON.stringify(this.postData.receiveVO));
+      if (obj.basic && obj.basic.receiveVO && obj.basic.receiveVO.length) {
+        obj.basic.receiveVO.forEach((vo: any) => {
+          if ([null, undefined, 0, ""].includes(vo.otherChannelFees)) {
+            vo.otherChannelFees = null; // 后台要置null
+          }
+        });
+      }
       // 计算方式
       obj.calculation = this.postData.calculation;
       // 对外拆佣信息

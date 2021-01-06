@@ -4,7 +4,7 @@
  * @Author: ywl
  * @Date: 2020-12-01 15:49:07
  * @LastEditors: ywl
- * @LastEditTime: 2020-12-22 21:06:20
+ * @LastEditTime: 2021-01-06 09:02:36
  */
 import { RouteConfig } from 'vue-router'
 
@@ -19,6 +19,7 @@ const financeRoutes: Array<RouteConfig> = [
     path: '/bankBranch',
     meta: { title: '银行网点', icon: null },
     component: Layout,
+    redirect: '/bankBranch/list',
     children: [
       {
         path: 'list',
@@ -32,6 +33,7 @@ const financeRoutes: Array<RouteConfig> = [
     path: '/receiptAccount',
     meta: { title: '收款账号', icon: null },
     component: Layout,
+    redirect: '/receiptAccount/list',
     children: [
       {
         path: 'list',
@@ -45,6 +47,7 @@ const financeRoutes: Array<RouteConfig> = [
     path: '/invoiceTax',
     meta: { title: '发票税率维护', icon: null },
     component: Layout,
+    redirect: '/invoiceTax/list',
     children: [
       {
         path: 'list',
@@ -70,6 +73,7 @@ const financeRoutes: Array<RouteConfig> = [
     path: '/pos',
     meta: { title: 'POS机管理', icon: null },
     component: Layout,
+    redirect: '/pos/list',
     children: [
       {
         path: 'list',
@@ -89,6 +93,7 @@ const financeRoutes: Array<RouteConfig> = [
     path: '/posApply',
     meta: { title: 'POS申请事项', icon: null },
     component: Layout,
+    redirect: '/posApply/list',
     children: [
       {
         path: 'list',
@@ -106,8 +111,9 @@ const financeRoutes: Array<RouteConfig> = [
   },
   {
     path: '/invoice',
-    meta: { title: '开票管理', icon: null },
+    meta: { title: '开票', icon: null },
     component: Layout,
+    redirect: '/invoice/list',
     children: [
       {
         path: 'list',
@@ -125,8 +131,9 @@ const financeRoutes: Array<RouteConfig> = [
   },
   {
     path: '/payment',
-    meta: { title: '收款管理', icon: null },
+    meta: { title: '收款', icon: null },
     component: Layout,
+    redirect: '/payment/list',
     children: [
       {
         path: 'list',
