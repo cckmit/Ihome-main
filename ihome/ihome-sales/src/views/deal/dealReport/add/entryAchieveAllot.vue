@@ -361,8 +361,8 @@
               style="width: 100%"
               :disabled="isDisabled('subscribeDate', 'dealVO')"
               v-model="postData.subscribeDate"
-              type="datetime"
-              value-format="yyyy-MM-dd HH:mm:ss"
+              type="date"
+              value-format="yyyy-MM-dd"
               placeholder="请选择认购日期">
             </el-date-picker>
           </el-form-item>
@@ -382,8 +382,8 @@
               style="width: 100%"
               :disabled="isDisabled('signDate', 'dealVO')"
               v-model="postData.signDate"
-              type="datetime"
-              value-format="yyyy-MM-dd HH:mm:ss"
+              type="date"
+              value-format="yyyy-MM-dd"
               placeholder="请选择签约日期">
             </el-date-picker>
           </el-form-item>
@@ -403,9 +403,9 @@
             <el-date-picker
               style="width: 100%"
               v-model="postData.entryDate"
-              type="datetime"
+              type="date"
               disabled
-              value-format="yyyy-MM-dd HH:mm:ss"
+              value-format="yyyy-MM-dd"
               placeholder="请选择录入日期">
             </el-date-picker>
           </el-form-item>
@@ -477,20 +477,20 @@
         <el-table
           class="ih-table"
           :data="postData.customerVO">
-          <el-table-column prop="custCode" label="客户编号" min-width="150"></el-table-column>
-          <el-table-column prop="custType" label="客户类型" min-width="120">
+          <el-table-column prop="customerNo" label="客户编号" min-width="150"></el-table-column>
+          <el-table-column prop="customerType" label="客户类型" min-width="120">
             <template slot-scope="scope">
-              <div>{{$root.dictAllName(scope.row.custType, 'CustType')}}</div>
+              <div>{{$root.dictAllName(scope.row.customerType, 'CustType')}}</div>
             </template>
           </el-table-column>
-          <el-table-column prop="custName" label="客户名称" min-width="120"></el-table-column>
-          <el-table-column prop="custTel" label="手机号码" min-width="120"></el-table-column>
+          <el-table-column prop="customerName" label="客户名称" min-width="120"></el-table-column>
+          <el-table-column prop="customerPhone" label="手机号码" min-width="120"></el-table-column>
           <el-table-column prop="cardType" label="证件类型" min-width="120">
             <template slot-scope="scope">
               <div>{{$root.dictAllName(scope.row.cardType, 'CardType')}}</div>
             </template>
           </el-table-column>
-          <el-table-column prop="certificateNumber" label="证件编号" min-width="150"></el-table-column>
+          <el-table-column prop="cardNo" label="证件编号" min-width="150"></el-table-column>
           <el-table-column prop="email" label="邮箱" min-width="120"></el-table-column>
           <el-table-column
             v-if="!baseInfoInDeal.customerAddVOS.length"
@@ -569,31 +569,31 @@
                           </template>
                         </el-table-column>
                         <el-table-column label="条件" prop="condition" min-width="200"></el-table-column>
-                        <el-table-column label="应收金额" prop="receivableAmout" min-width="100">
+                        <el-table-column label="应收金额" prop="receivableAmout" min-width="200">
                           <template slot-scope="scope">
                             <div>金额：{{scope.row.receivableAmout}}</div>
                             <div>点数：{{scope.row.receivablePoint}}</div>
                           </template>
                         </el-table-column>
-                        <el-table-column label="派发佣金" prop="sendAmount" min-width="100">
+                        <el-table-column label="派发佣金" prop="sendAmount" min-width="200">
                           <template slot-scope="scope">
                             <div>金额：{{scope.row.sendAmount}}</div>
                             <div>点数：{{scope.row.sendPoint}}</div>
                           </template>
                         </el-table-column>
-                        <el-table-column label="派发内场奖励" prop="sendInAmount" min-width="150">
+                        <el-table-column label="派发内场奖励" prop="sendInAmount" min-width="200">
                           <template slot-scope="scope">
                             <div>金额：{{scope.row.sendInAmount}}</div>
                             <div>点数：{{scope.row.sendInPoint}}</div>
                           </template>
                         </el-table-column>
-                        <el-table-column label="总包业绩" prop="generalAchieveAmount" min-width="100">
+                        <el-table-column label="总包业绩" prop="generalAchieveAmount" min-width="200">
                           <template slot-scope="scope">
                             <div>金额：{{scope.row.generalAchieveAmount}}</div>
                             <div>点数：{{scope.row.generalAchievePoint}}</div>
                           </template>
                         </el-table-column>
-                        <el-table-column label="分销业绩" prop="distributeAchieveAmount" min-width="100">
+                        <el-table-column label="分销业绩" prop="distributeAchieveAmount" min-width="200">
                           <template slot-scope="scope">
                             <div>金额：{{scope.row.distributeAchieveAmount}}</div>
                             <div>点数：{{scope.row.distributeAchievePoint}}</div>
@@ -2331,6 +2331,7 @@
             "signPrice": '',
             "signType": "",
             "stage": "",
+            "status": "",
             "subscribeDate": "",
             "subscribePrice": ""
           }, // 成交基础信息
@@ -2402,6 +2403,11 @@
       obj.basic.dealVO.signPrice = this.postData.signPrice;
       obj.basic.dealVO.signType = this.postData.signType;
       obj.basic.dealVO.stage = this.postData.stage;
+      if (['Recognize', 'Subscribe'].includes(this.postData.stage)) {
+        obj.basic.dealVO.status = 'Draft'; // 草稿
+      } else if (this.postData.stage === 'SignUp') {
+        obj.basic.dealVO.status = 'AchieveDeclareUnconfirm'; // 业绩申报待确认
+      }
       obj.basic.dealVO.subscribeDate = this.postData.subscribeDate;
       obj.basic.dealVO.subscribePrice = this.postData.subscribePrice;
       obj.basic.houseVO.address = this.postData.address;
