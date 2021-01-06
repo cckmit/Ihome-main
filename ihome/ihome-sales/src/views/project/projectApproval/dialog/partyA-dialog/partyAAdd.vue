@@ -4,7 +4,7 @@
  * @Author: wwq
  * @Date: 2020-12-01 14:49:06
  * @LastEditors: wwq
- * @LastEditTime: 2021-01-06 10:05:30
+ * @LastEditTime: 2021-01-06 16:43:23
 -->
 <template>
   <el-dialog
@@ -13,7 +13,7 @@
     :close-on-click-modal="false"
     :close-on-press-escape="false"
     :before-close="cancel"
-    width="750px"
+    width="850px"
     class="dialog text-left"
     title="甲方合同信息"
   >

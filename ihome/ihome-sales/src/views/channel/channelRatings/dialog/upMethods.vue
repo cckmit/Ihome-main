@@ -66,13 +66,14 @@ export default class Edit extends Vue {
   private tooken: any;
   private submitList: any = [];
   fileName: any = "";
+  submitType: any = "";
 
   async created() {
     this.tooken = getToken();
     const data = await get_channelGradeStandard_getSupplierManagementAttachments().then(
       (res: any) => {
         return res.map((v: any) => ({
-          fileName: v.fileName,
+          name: v.fileName,
           url: `/sales-document-cover-local/file/browse/${v.fileId}`,
           fileId: v.fileId,
         }));
@@ -99,10 +100,27 @@ export default class Edit extends Vue {
         });
       }
     });
+    this.submitType = "update";
   }
 
   handleRemove(file: any, fileList: any) {
-    this.fileList = fileList;
+    this.submitList = [];
+    fileList.forEach((v: any) => {
+      if (!v.response) {
+        this.submitList.push({
+          fileName: v.name,
+          url: `/sales-document-cover-local/file/browse/${v.fileId}`,
+          fileId: v.fileId,
+        });
+      } else {
+        this.submitList.push({
+          fileName: v.name,
+          url: `/sales-document-cover-local/file/browse/${v.response.data[0].fileId}`,
+          fileId: v.response.data[0].fileId,
+        });
+      }
+    });
+    this.submitType = "update";
   }
 
   previewHandler(file: any) {
@@ -119,14 +137,18 @@ export default class Edit extends Vue {
 
   async finish() {
     let arr: any = [];
-    if (this.submitList.length) {
+    if (this.submitType) {
       arr = [...this.submitList];
     } else {
-      arr = [...this.fileList];
+      arr = this.fileList.map((j: any) => ({
+        ...j,
+        fileName: j.name,
+      }));
     }
     await post_channelGradeStandard_addManagementAttachment(arr);
     this.$message.success("保存成功!");
     this.$emit("finish");
+    this.submitType = "";
   }
 
   cancel() {
