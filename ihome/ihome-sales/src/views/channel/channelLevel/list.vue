@@ -145,14 +145,14 @@
           @click="search()"
         >查询</el-button>
         <el-button
-          type="info"
-          @click="empty()"
-        >重置</el-button>
-        <el-button
           type="success"
           @click="add()"
           v-has="'B.SALES.CHANNEL.LEVELLIST.ADD'"
         >添加</el-button>
+        <el-button
+          type="info"
+          @click="empty()"
+        >重置</el-button>
         <el-button
           @click="update()"
           v-has="'B.SALES.CHANNEL.LEVELLIST.UPDATEENTRY'"

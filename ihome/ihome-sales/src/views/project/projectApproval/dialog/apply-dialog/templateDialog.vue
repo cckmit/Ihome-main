@@ -4,7 +4,7 @@
  * @Author: ywl
  * @Date: 2020-10-30 09:53:42
  * @LastEditors: wwq
- * @LastEditTime: 2020-12-25 10:02:31
+ * @LastEditTime: 2021-01-05 17:17:07
 -->
 <template>
   <el-dialog
@@ -17,7 +17,7 @@
     title="选择中介分销合同模板"
     class="text-left"
   >
-    <el-table :data="resInfo.distributContractVOS">
+    <el-table :data="resInfo.distributContractByTermVOS">
       <el-table-column
         label="合同主标题"
         prop="contractTitle"
@@ -71,7 +71,7 @@
 <script lang="ts">
 import { Component, Vue, Prop } from "vue-property-decorator";
 
-import { get_distributContract_get__termId } from "@/api/project/index";
+import { get_distributContract_getByTerm__termId } from "@/api/project/index";
 
 @Component({})
 export default class TemplateDialog extends Vue {
@@ -91,7 +91,7 @@ export default class TemplateDialog extends Vue {
 
   async created() {
     if (this.data.id) {
-      this.resInfo = await get_distributContract_get__termId({
+      this.resInfo = await get_distributContract_getByTerm__termId({
         termId: this.data.id,
       });
     }

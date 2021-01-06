@@ -189,6 +189,7 @@
                 v-if="!(searchConditon.channelEnum === 'Appoint' || searchConditon.channelEnum === 'Strategic')"
                 v-model="info.channelCompanyId"
                 clearable
+                :disabled="SelectPageByConditionDisabled"
                 style="width: 70%"
                 placeholder="渠道商名称"
                 :params="searchConditon"
@@ -546,6 +547,7 @@ export default class Apply extends Vue {
   channelAccountOptions: any = [];
   searchConditon: any = {};
   submitLoading: any = false;
+  SelectPageByConditionDisabled: any = true;
 
   @Watch("info.channelEnum", { immediate: true })
   getIsShow(val: any) {
@@ -571,6 +573,7 @@ export default class Apply extends Vue {
   }
 
   templateFinish(data: any) {
+    this.SelectPageByConditionDisabled = false;
     this.searchConditon = {
       cycleCity: data.city,
       channelEnum: data.channelEnum,

@@ -3,8 +3,8 @@
  * @version: 
  * @Author: wwq
  * @Date: 2020-12-01 14:49:06
- * @LastEditors: ywl
- * @LastEditTime: 2020-12-30 19:17:54
+ * @LastEditors: wwq
+ * @LastEditTime: 2021-01-06 10:05:30
 -->
 <template>
   <el-dialog
@@ -44,9 +44,9 @@
             prop="partyA"
           >
             <IhSelectPageByDeveloper
+              class="IhSelectPageByDeveloper"
               v-model="form.partyA"
               placeholder="请选择甲方"
-              clearable
               multiple
             ></IhSelectPageByDeveloper>
           </el-form-item>
@@ -358,6 +358,18 @@ export default class PartyAAdd extends Vue {
   }
   /deep/ .el-dialog__body {
     padding: 10px 20px 0 20px;
+  }
+}
+.IhSelectPageByDeveloper {
+  /deep/ .el-select__tags-text {
+    display: inline-block;
+    max-width: 135px;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+  /deep/ .el-tag__close.el-icon-close {
+    top: -7px;
   }
 }
 </style>
