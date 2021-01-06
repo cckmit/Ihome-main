@@ -4,7 +4,7 @@
  * @Author: ywl
  * @Date: 2020-10-16 15:19:48
  * @LastEditors: ywl
- * @LastEditTime: 2020-12-04 08:45:31
+ * @LastEditTime: 2021-01-06 18:25:27
  */
 import { RouteConfig } from 'vue-router'
 
@@ -13,7 +13,7 @@ import Layout from '../components/Layout.vue';
 const contractRoutes: Array<RouteConfig> = [
   {
     path: '/partyA',
-    meta: { title: '甲方合同', icon: 'form' },
+    meta: { title: '甲方合同列表', icon: 'form' },
     redirect: '/partyA/list',
     component: Layout,
     children: [
@@ -39,7 +39,7 @@ const contractRoutes: Array<RouteConfig> = [
   },
   {
     path: '/distribution',
-    meta: { title: '渠道分销协议', icon: 'form' },
+    meta: { title: '渠道分销协议列表', icon: 'form' },
     redirect: '/distribution/list',
     component: Layout,
     children: [
@@ -109,7 +109,7 @@ const contractRoutes: Array<RouteConfig> = [
   },
   {
     path: '/discount',
-    meta: { title: '甲方/中介战略协议', icon: 'form' },
+    meta: { title: '优惠告知书列表', icon: 'form' },
     redirect: '/discount/list',
     component: Layout,
     children: [
