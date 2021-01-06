@@ -4,7 +4,7 @@
  * @Author: lgf
  * @Date: 2020-09-16 14:05:21
  * @LastEditors: ywl
- * @LastEditTime: 2021-01-04 11:00:45
+ * @LastEditTime: 2021-01-06 11:16:17
 -->
 <template>
   <div class="text-left">
@@ -119,7 +119,7 @@
           width="200"
         >
           <template v-slot="{row}">
-            {{$root.dictAllName(row.type, "Account")}}
+            {{$root.dictAllName(row.accountType, "Account")}}
           </template>
         </el-table-column>
       </el-table>
