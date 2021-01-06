@@ -4,7 +4,7 @@
  * @Author: wwq
  * @Date: 2020-11-27 17:17:06
  * @LastEditors: wwq
- * @LastEditTime: 2021-01-06 09:56:39
+ * @LastEditTime: 2021-01-06 18:59:44
 -->
 <template>
   <IhPage>
@@ -126,8 +126,8 @@
             >
               <span
                 class="text-ellipsis"
-                :title="$root.dictAllName(info.busEnumChange, 'BusinessModel')"
-              >{{ $root.dictAllName(info.busEnumChange, "BusinessModel") }}</span>
+                :title="$root.dictAllName(info.busEnum, 'BusinessModel')"
+              >{{ $root.dictAllName(info.busEnum, "BusinessModel") }}</span>
             </el-form-item>
           </el-col>
           <el-col :span="8">
@@ -576,7 +576,6 @@ export default class FirstAgencyEdit extends Vue {
         termId: id,
       });
       this.info = { ...res };
-      this.info.startDivision = (this.$root as any).userInfo.name;
       this.info.timeList = [res.termStart, res.termEnd];
       this.info.termStageEnum = "Subscription";
       this.info.companyId = res.companyId;

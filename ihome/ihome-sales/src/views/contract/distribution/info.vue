@@ -4,7 +4,7 @@
  * @Author: ywl
  * @Date: 2020-09-27 10:46:14
  * @LastEditors: ywl
- * @LastEditTime: 2020-12-31 17:50:03
+ * @LastEditTime: 2021-01-05 19:00:01
 -->
 <template>
   <IhPage class="text-left distribution-info">
@@ -96,6 +96,18 @@
           <el-col :span="12">
             <el-form-item label="乙方开户行">
               {{ruleForm.channelAccountBank}}
+            </el-form-item>
+          </el-col>
+        </el-row>
+        <el-row>
+          <el-col :span="12">
+            <el-form-item label="负责人">
+              {{ruleForm.dealMan}}
+            </el-form-item>
+          </el-col>
+          <el-col :span="12">
+            <el-form-item label="负责人电话">
+              {{ruleForm.dealTel}}
             </el-form-item>
           </el-col>
         </el-row>

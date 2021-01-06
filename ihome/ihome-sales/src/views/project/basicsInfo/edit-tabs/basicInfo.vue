@@ -4,7 +4,7 @@
  * @Author: wwq
  * @Date: 2020-11-03 11:52:41
  * @LastEditors: wwq
- * @LastEditTime: 2020-12-30 15:47:39
+ * @LastEditTime: 2021-01-06 19:01:18
 -->
 <template>
   <div>
@@ -255,7 +255,6 @@
             <el-form
               ref="contantForm"
               :model="item.msg"
-              :rules="contantRules"
             >
               <div class="contant">
                 <div style="
@@ -302,7 +301,6 @@
                       label="产权年限"
                       label-width="90px"
                       class="text-left"
-                      prop="propertyAge"
                     >
                       <el-select
                         style="width: 50%"
@@ -617,11 +615,6 @@ export default class EditBasicInfo extends Vue {
         message: "请选择同步明源房号数据",
         trigger: "change",
       },
-    ],
-  };
-  contantRules: any = {
-    propertyAge: [
-      { required: true, message: "请选择产权年限", trigger: "change" },
     ],
   };
   YesOrNoType: any = [
