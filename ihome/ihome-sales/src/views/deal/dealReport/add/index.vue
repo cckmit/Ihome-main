@@ -270,7 +270,7 @@
     * */
     validReceiveData(data: any = [], way: any = "Auto") {
       if (data.length === 0) return false;
-      let flag: any = false;
+      let flag: any = true;
       if (way === 'Auto') {
         // 自动
         flag = data.every((item: any) => {

@@ -18,7 +18,7 @@
     width="1100px"
     style="text-align: left"
     class="dialog">
-    <el-form ref="form" label-width="80px">
+    <el-form ref="form" label-width="80px" @submit.native.prevent>
       <el-row>
         <el-col :span="8">
           <el-form-item label="编号">

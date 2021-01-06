@@ -9,6 +9,7 @@
 <template>
   <ih-page class="text-left">
     <el-form
+      @submit.native.prevent
       v-loading="formLoading"
       :model="postData"
       :rules="rules"
@@ -30,8 +31,8 @@
         </el-col>
         <el-col :span="6">
           <el-form-item label="项目周期" prop="cycleId">
-            <el-input placeholder="请选择项目周期" readonly v-model="postData.cycleName">
-              <el-button slot="append" icon="el-icon-search" @click.native.prevent="selectProject"></el-button>
+            <el-input placeholder="请选择项目周期" readonly v-model="postData.cycleName" @click.native.prevent="selectProject">
+              <el-button slot="append" icon="el-icon-search"></el-button>
             </el-input>
           </el-form-item>
         </el-col>
@@ -255,37 +256,28 @@
           <el-form-item label="户型">
             <div class="home-type-wrapper">
               <div>
-                <el-input-number
+                <el-input
                   v-digits="0"
                   :disabled="isDisabled('room', 'houseVO')"
-                  v-model="postData.room"
-                  :min="0"
-                  :step="1"
-                  size="small"
-                  :controls="false"
-                  :step-strictly="true"></el-input-number>室
+                  v-model="postData.room">
+                  <div slot="append">室</div>
+                </el-input>
               </div>
               <div>
-                <el-input-number
+                <el-input
                   v-digits="0"
                   :disabled="isDisabled('hall', 'houseVO')"
-                  v-model="postData.hall"
-                  :min="0"
-                  :step="1"
-                  size="small"
-                  :controls="false"
-                  :step-strictly="true"></el-input-number>厅
+                  v-model="postData.hall">
+                  <div slot="append">厅</div>
+                </el-input>
               </div>
               <div>
-                <el-input-number
+                <el-input
                   v-digits="0"
                   :disabled="isDisabled('toilet', 'houseVO')"
-                  v-model="postData.toilet"
-                  :min="0"
-                  :step="1"
-                  size="small"
-                  :controls="false"
-                  :step-strictly="true"></el-input-number>卫
+                  v-model="postData.toilet">
+                  <div slot="append">卫</div>
+                </el-input>
               </div>
             </div>
           </el-form-item>
@@ -1648,7 +1640,7 @@
               obj.documentVO.push(
                 {
                   fileId: list.fileId,
-                  fileName: list.name,
+                  fileName: list.fileName,
                   fileType: item.code
                 }
               )
@@ -1714,6 +1706,10 @@
     div {
       flex: 1;
       text-align: center;
+
+      &:not(:last-child) {
+        margin-right: 10px;
+      }
 
       /deep/ .el-input-number {
         box-sizing: border-box;

@@ -11,6 +11,7 @@
     <div>
       <p class="ih-info-title">成交信息</p>
       <el-form
+        @submit.native.prevent
         :model="postData"
         ref="ruleForm"
         label-width="150px"

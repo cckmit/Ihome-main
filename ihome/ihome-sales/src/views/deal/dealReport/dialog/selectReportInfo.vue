@@ -20,7 +20,7 @@
     style="text-align: left"
     class="dialog dialog-wrapper">
     <div slot="title" class="title">选择已成交报备信息列表(分销模式下必选)</div>
-    <el-form ref="form" label-width="100px">
+    <el-form ref="form" label-width="100px" @submit.native.prevent>
       <el-row>
         <el-col :span="8">
           <el-form-item label="项目名称">
