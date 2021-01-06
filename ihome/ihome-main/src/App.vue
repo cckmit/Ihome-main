@@ -4,7 +4,7 @@
  * @Author: zyc
  * @Date: 2020-06-22 11:46:23
  * @LastEditors: zyc
- * @LastEditTime: 2021-01-06 10:42:07
+ * @LastEditTime: 2021-01-06 15:24:15
 --> 
 <template>
   <div class="app">
@@ -15,12 +15,16 @@
         class="ih-aside"
       >
         <div class="container-logo" v-show="!isCollapsed">
-          <img class="logo-img" src="./assets/layout/logo-home.png" />
-          <img src="./assets/layout/logo-text.png" style="width: 135px" />
-          <!-- <span class="logo-title">新房分销系统</span> -->
+          <el-link href="/">
+            <img class="logo-img" src="./assets/layout/logo-home.png" />
+            <img src="./assets/layout/logo-text.png" style="width: 135px" />
+            <!-- <span class="logo-title">新房分销系统</span> -->
+          </el-link>
         </div>
         <div class="container-logo-lm" v-show="isCollapsed">
-          <img src="./assets/layout/logo-icon.png" style="width: 100%" />
+          <el-link href="/">
+            <img src="./assets/layout/logo-icon.png" style="width: 100%" />
+          </el-link>
         </div>
 
         <el-scrollbar
@@ -90,7 +94,7 @@
 
       <el-container v-show="!loginPage">
         <div class="right-container">
-          <IhHeader class="right-container-header" />
+          <Header class="right-container-header" />
           <!-- v-loading="loading" -->
           <el-main
             class="right-container-body"
@@ -123,14 +127,14 @@
   </div>
 </template>
  <script lang='ts'>
-import IhHeader from "@/components/IhHeader.vue";
+import Header from "@/components/Header.vue";
 import { Component, Vue, Prop, Watch } from "vue-property-decorator";
 import { UserModule } from "./store/modules/user";
 import { AppModule } from "./store/modules/app";
 // import { allMenu } from "./api/users";
 import { normalAsideWidth, stretchAsideWidth } from "./setting";
 @Component({
-  components: { IhHeader },
+  components: { Header },
 })
 export default class App extends Vue {
   @Prop({ required: true }) private loading!: boolean;
@@ -145,6 +149,8 @@ export default class App extends Vue {
   menuList: any = [];
 
   groupMenuList: any[] = [];
+  onShfit = false;
+  onCtrl = false;
 
   async created() {
     // this.menuList = await allMenu();
@@ -152,6 +158,7 @@ export default class App extends Vue {
     this.menuList = (window as any).polyihomeData.userInfo?.menuList || [];
     this.setMenu();
   }
+
   setMenu() {
     let menuList = this.menuList;
 
@@ -232,20 +239,46 @@ export default class App extends Vue {
   }
   mounted() {
     window.addEventListener("resize", this.resize);
+    const setKeyStatus = (keyCode: any, status: any) => {
+      switch (keyCode) {
+        case 16:
+          if (this.onShfit === status) return;
+
+          this.onShfit = status;
+          break;
+        case 17:
+          if (this.onCtrl === status) return;
+
+          this.onCtrl = status;
+          break;
+      }
+    };
+    document.onkeydown = (e: any) => {
+      setKeyStatus(e.keyCode, true);
+    };
+    document.onkeyup = (e: any) => {
+      setKeyStatus(e.keyCode, false);
+    };
   }
   resize() {
     this.screenWidth =
       document.documentElement.clientWidth || document.body.clientWidth;
     this.screenHeight =
       document.documentElement.clientHeight || document.body.clientHeight;
-    // console.log(this.screenWidth, this.screenHeight);
   }
 
   goto(url: string) {
     if (window.location.pathname != url) {
-      this.$router.push({
-        path: url,
-      });
+      if (this.onCtrl) {
+        (window as any).open(url);
+        // this.$router.push({
+        //   path: url,
+        // });
+      } else {
+        this.$router.push({
+          path: url,
+        });
+      }
     }
   }
   changeState(value: any) {
