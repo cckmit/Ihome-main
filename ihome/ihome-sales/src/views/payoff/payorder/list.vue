@@ -4,22 +4,22 @@
  * @Author: wwq
  * @Date: 2020-12-26 11:11:28
  * @LastEditors: wwq
- * @LastEditTime: 2020-12-29 10:11:06
+ * @LastEditTime: 2021-01-07 14:36:45
 -->
 <template>
-  <IhPage label-width="100px">
+  <IhPage label-width="120px">
     <template v-slot:form>
       <el-form
         ref="form"
-        label-width="100px"
+        label-width="120px"
       >
         <el-row>
           <el-col :span="8">
-            <el-form-item label="付款单编号">
+            <el-form-item label="付款申请单编号">
               <el-input
                 v-model="queryPageParameters.applyCode"
                 clearable
-                placeholder="请填写付款单编号"
+                placeholder="请填写付款申请单编号"
               ></el-input>
             </el-form-item>
           </el-col>
@@ -29,6 +29,49 @@
                 placeholder="请选择渠道商"
                 v-model="queryPageParameters.agencyName"
               ></IhSelectPageByChannel>
+            </el-form-item>
+          </el-col>
+          <el-col :span="8">
+            <el-form-item label="组织">
+              <SelectOrganizationTree
+                :v-model="queryPageParameters.belongOrgId"
+                @callback="(id) => (queryPageParameters.belongOrgId = id)"
+              />
+            </el-form-item>
+          </el-col>
+          <el-col :span="8">
+            <el-form-item label="审核人">
+              <IhSelectPageUser
+                v-model="queryPageParameters.reviewerId"
+                clearable
+              >
+              </IhSelectPageUser>
+            </el-form-item>
+          </el-col>
+          <el-col :span="8">
+            <el-form-item label="结算方式">
+              <el-select
+                style="width: 100%"
+                v-model="queryPageParameters.settlementMethod"
+                clearable
+                placeholder="请选择"
+              >
+                <el-option
+                  v-for="item in $root.dictAllList('SettlementMethod')"
+                  :key="item.code"
+                  :label="item.name"
+                  :value="item.code"
+                ></el-option>
+              </el-select>
+            </el-form-item>
+          </el-col>
+          <el-col :span="8">
+            <el-form-item label="制单人">
+              <IhSelectPageUser
+                v-model="queryPageParameters.makerId"
+                clearable
+              >
+              </IhSelectPageUser>
             </el-form-item>
           </el-col>
           <el-col :span="8">
@@ -48,36 +91,6 @@
               </el-select>
             </el-form-item>
           </el-col>
-        </el-row>
-        <el-row>
-          <el-col :span="8">
-            <el-form-item label="组织">
-              <SelectOrganizationTree
-                :v-model="queryPageParameters.belongOrgId"
-                @callback="(id) => (queryPageParameters.belongOrgId = id)"
-              />
-            </el-form-item>
-          </el-col>
-          <el-col :span="8">
-            <el-form-item label="制单人">
-              <IhSelectPageUser
-                v-model="queryPageParameters.makerId"
-                clearable
-              >
-              </IhSelectPageUser>
-            </el-form-item>
-          </el-col>
-          <el-col :span="8">
-            <el-form-item label="审核人">
-              <IhSelectPageUser
-                v-model="queryPageParameters.reviewerId"
-                clearable
-              >
-              </IhSelectPageUser>
-            </el-form-item>
-          </el-col>
-        </el-row>
-        <el-row>
           <el-col :span="8">
             <el-form-item label="制单日期">
               <el-date-picker
@@ -94,6 +107,23 @@
               ></el-date-picker>
             </el-form-item>
           </el-col>
+          <el-col :span="8">
+            <el-form-item label="付款方式">
+              <el-select
+                style="width: 100%"
+                v-model="queryPageParameters.paymentMethod"
+                disabled
+                placeholder="请选择"
+              >
+                <el-option
+                  v-for="item in $root.dictAllList('PaymentMethod')"
+                  :key="item.code"
+                  :label="item.name"
+                  :value="item.code"
+                ></el-option>
+              </el-select>
+            </el-form-item>
+          </el-col>
         </el-row>
       </el-form>
     </template>
@@ -107,26 +137,18 @@
         <el-button
           type="success"
           @click="add()"
-          v-has="'B.SALES.DEVELOPER.LIST.ADD'"
-        >新增</el-button>
+        >发起支付申请</el-button>
         <el-button
           type="info"
           @click="reset()"
         >重置</el-button>
         <el-button
           type="danger"
-          v-has="'B.SALES.DEVELOPER.LIST.UPDATEENTRY'"
           @click="del()"
-        >删除</el-button>
+        >批量删除</el-button>
         <el-button
           type="success"
           @click="add()"
-          v-has="'B.SALES.DEVELOPER.LIST.ADD'"
-        >发起支付</el-button>
-        <el-button
-          type="success"
-          @click="add()"
-          v-has="'B.SALES.DEVELOPER.LIST.ADD'"
         >导出</el-button>
       </el-row>
     </template>
@@ -145,52 +167,85 @@
           align="center"
         ></el-table-column>
         <el-table-column
-          label="付款单编号"
+          label="付款申请单编号"
           prop="applyCode"
           width="180"
         ></el-table-column>
         <el-table-column
           label="所属组织"
           prop="belongOrgName"
-        ></el-table-column>
-        <el-table-column
-          label="制单人"
-          prop="maker"
+          width="180"
         ></el-table-column>
         <el-table-column
           label="渠道商"
           prop="agencyName"
-          width="120"
+          width="150"
         ></el-table-column>
         <el-table-column
           label="申请支付金额"
           prop="applyAmount"
-        ></el-table-column>
-        <el-table-column
-          label="实际支付金额"
-          prop="actualAmount"
+          width="120"
         ></el-table-column>
         <el-table-column
           label="扣除金额"
           prop="deductAmount"
         ></el-table-column>
         <el-table-column
+          label="实际支付金额"
+          prop="actualAmount"
+          width="120"
+        ></el-table-column>
+        <el-table-column
           label="状态"
           prop="status"
+          width="120"
         >
           <template v-slot="{ row }">{{
             $root.dictAllName(row.status, "PayoffStatus")
           }}</template>
         </el-table-column>
         <el-table-column
+          label="结算方式"
+          prop="settlementMethod"
+        >
+          <template v-slot="{ row }">{{
+            $root.dictAllName(row.settlementMethod, "SettlementMethod")
+          }}</template>
+        </el-table-column>
+        <el-table-column
+          label="付款方式"
+          prop="paymentMethod"
+          width="120"
+        >
+          <template v-slot="{ row }">{{
+            $root.dictAllName(row.paymentMethod, "PaymentMethod")
+          }}</template>
+        </el-table-column>
+        <el-table-column
+          label="制单人"
+          prop="maker"
+          width="120"
+        ></el-table-column>
+        <el-table-column
           label="制单日期"
           prop="makerTime"
           width="180"
         ></el-table-column>
         <el-table-column
+          label="流程进度"
+          fixed="right"
+          width="120"
+          align="center"
+        >
+          <template v-slot="{ row }">
+            <el-link @click="showPlanPicture(row)">流程进度图</el-link>
+          </template>
+        </el-table-column>
+        <el-table-column
           label="操作"
           fixed="right"
           width="120"
+          align="center"
         >
           <template v-slot="{ row }">
             <el-link
@@ -209,7 +264,7 @@
                 <el-dropdown-item
                   :class="{ 'ih-data-disabled': ''}"
                   @click.native.prevent="routeTo(row, 'edit')"
-                >修改</el-dropdown-item>
+                >编辑</el-dropdown-item>
                 <el-dropdown-item
                   :class="{ 'ih-data-disabled': ''}"
                   @click.native.prevent="remove(row)"
@@ -222,19 +277,7 @@
                 <el-dropdown-item
                   :class="{'ih-data-disabled': ''}"
                   @click.native.prevent="routeTo(row, 'check')"
-                >补充信息</el-dropdown-item>
-                <el-dropdown-item
-                  :class="{'ih-data-disabled': ''}"
-                  @click.native.prevent="routeTo(row, 'check')"
-                >审核</el-dropdown-item>
-                <el-dropdown-item
-                  :class="{'ih-data-disabled': ''}"
-                  @click.native.prevent="routeTo(row, 'check')"
-                >财务管控</el-dropdown-item>
-                <el-dropdown-item
-                  :class="{'ih-data-disabled': ''}"
-                  @click.native.prevent="routeTo(row, 'check')"
-                >发起支付</el-dropdown-item>
+                >补充</el-dropdown-item>
                 <el-dropdown-item
                   :class="{'ih-data-disabled': ''}"
                   @click.native.prevent="routeTo(row, 'change')"
@@ -323,6 +366,10 @@ export default class PayoffList extends Vue {
     // const fen = roleList.includes("RBusinessManagement");
     // const zong = roleList.includes("RHeadBusinessManagement");
     // return (fen || zong) && status;
+  }
+
+  showPlanPicture(data: any) {
+    console.log(data);
   }
 
   get emptyText() {

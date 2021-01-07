@@ -4,7 +4,7 @@
  * @Author: wwq
  * @Date: 2020-12-29 11:04:59
  * @LastEditors: wwq
- * @LastEditTime: 2020-12-29 17:30:01
+ * @LastEditTime: 2021-01-07 16:11:28
 -->
 <template>
   <el-dialog
@@ -144,14 +144,27 @@
       @page-change="pageChange"
       @size-change="sizeChange"
     >
-      <template #receivable>
+      <template #serReceive>
         <el-table-column
-          label="应收实收金额"
+          label="服务费情况"
           width="150"
         >
           <template v-slot="{ row }">
             <div>应收: {{row.serReceiveFees}}</div>
             <div>实收: {{row.serActualFees}}</div>
+            <div>未收: {{row.serNoFees}}</div>
+          </template>
+        </el-table-column>
+      </template>
+      <template #ageReceive>
+        <el-table-column
+          label="代理费情况"
+          width="150"
+        >
+          <template v-slot="{ row }">
+            <div>应收: {{row.ageReceiveFees}}</div>
+            <div>实收: {{row.ageActualFees}}</div>
+            <div>未收: {{row.ageUnpaidFees}}</div>
           </template>
         </el-table-column>
       </template>
@@ -270,12 +283,18 @@ export default class Obligation extends Vue {
       minWidth: 150,
     },
     {
+      slot: "busModel",
+    },
+    {
       label: "渠道商",
       prop: "agencyName",
       minWidth: 150,
     },
     {
-      slot: "receivable",
+      slot: "serReceive",
+    },
+    {
+      slot: "ageReceive",
     },
     {
       slot: "excrete",
@@ -300,20 +319,17 @@ export default class Obligation extends Vue {
     {
       label: "认购日期",
       prop: "subscribeDate",
-      minWidth: 150,
+      minWidth: 160,
     },
     {
       label: "签约日期",
       prop: "signDate",
-      minWidth: 150,
+      minWidth: 160,
     },
     {
       label: "录入日期",
       prop: "entryDate",
-      minWidth: 150,
-    },
-    {
-      slot: "busModel",
+      minWidth: 160,
     },
   ];
 
@@ -350,7 +366,6 @@ export default class Obligation extends Vue {
   }
   // 获取选中项 --- 最后需要获取的数据
   private selectionChange(selection: any) {
-    console.log(selection, "selectionChange");
     this.selection = selection;
   }
   private pageChange(val: number) {
@@ -368,52 +383,52 @@ export default class Obligation extends Vue {
       pageSize: this.pageSize,
     });
     // 假数据
-    this.resPageInfo.list = [
-      {
-        serReceiveFees: 1,
-        serActualFees: 2,
-        serCommFees: 3,
-        ageCommFees: 4,
-        serCanCommFees: 5,
-        ageCanCommFees: 6,
-        serSettledCommFees: 7,
-        ageSettledCommFees: 8,
-        serUnsetCommFees: 9,
-        ageUnsetCommFees: 10,
-        busModel: "TotalBagModel",
-        dealCode: "xxxxx1",
-        cycleName: "周期1",
-        cycleId: 1,
-        countDeduction: 11,
-        customer: "皮小强1",
-        agencyName: "皮小强皮包公司1",
-        subscribeDate: "2021-1-1 11:11:11",
-        signDate: "2021-1-1 11:11:11",
-        entryDate: "2021-1-1 11:11:11",
-      },
-      {
-        serReceiveFees: 1,
-        serActualFees: 2,
-        serCommFees: 3,
-        ageCommFees: 4,
-        serCanCommFees: 5,
-        ageCanCommFees: 6,
-        serSettledCommFees: 7,
-        ageSettledCommFees: 8,
-        serUnsetCommFees: 9,
-        ageUnsetCommFees: 10,
-        busModel: "TotalBagModel",
-        dealCode: "xxxxx2",
-        cycleName: "周期2",
-        cycleId: 2,
-        countDeduction: 11,
-        customer: "皮小强2",
-        agencyName: "皮小强皮包公司2",
-        subscribeDate: "2021-1-1 11:11:11",
-        signDate: "2021-1-1 11:11:11",
-        entryDate: "2021-1-1 11:11:11",
-      },
-    ];
+    // this.resPageInfo.list = [
+    //   {
+    //     serReceiveFees: 1,
+    //     serActualFees: 2,
+    //     serCommFees: 3,
+    //     ageCommFees: 4,
+    //     serCanCommFees: 5,
+    //     ageCanCommFees: 6,
+    //     serSettledCommFees: 7,
+    //     ageSettledCommFees: 8,
+    //     serUnsetCommFees: 9,
+    //     ageUnsetCommFees: 10,
+    //     busModel: "TotalBagModel",
+    //     dealCode: "xxxxx1",
+    //     cycleName: "周期1",
+    //     cycleId: 1,
+    //     countDeduction: 11,
+    //     customer: "皮小强1",
+    //     agencyName: "皮小强皮包公司1",
+    //     subscribeDate: "2021-1-1 11:11:11",
+    //     signDate: "2021-1-1 11:11:11",
+    //     entryDate: "2021-1-1 11:11:11",
+    //   },
+    //   {
+    //     serReceiveFees: 1,
+    //     serActualFees: 2,
+    //     serCommFees: 3,
+    //     ageCommFees: 4,
+    //     serCanCommFees: 5,
+    //     ageCanCommFees: 6,
+    //     serSettledCommFees: 7,
+    //     ageSettledCommFees: 8,
+    //     serUnsetCommFees: 9,
+    //     ageUnsetCommFees: 10,
+    //     busModel: "TotalBagModel",
+    //     dealCode: "xxxxx2",
+    //     cycleName: "周期2",
+    //     cycleId: 2,
+    //     countDeduction: 11,
+    //     customer: "皮小强2",
+    //     agencyName: "皮小强皮包公司2",
+    //     subscribeDate: "2021-1-1 11:11:11",
+    //     signDate: "2021-1-1 11:11:11",
+    //     entryDate: "2021-1-1 11:11:11",
+    //   },
+    // ];
   }
 
   created() {
