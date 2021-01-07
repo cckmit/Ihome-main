@@ -982,8 +982,7 @@
         @cancel="() => (dialogEditDealAchieve = false)"
         @finish="
             (data) => {
-              dialogEditDealAchieve = false;
-              finishAddProjectCycle(data);
+              finishEditDealAchieve(data);
             }
           "
       />
@@ -1001,6 +1000,8 @@
     get_deal_get__id, // 编辑功能
     post_deal_achieveAllotEntry, // 文员岗 - 录入成交信息
     post_deal_updateAchieveAllot, // 文员岗 - 修改成交信息
+    post_pageData_recalculateAchieve, // 重新计算平台费用部分
+    post_pageData_recalculateAchieveComm, // 总包分销一致时，重新计算平台费用的拆佣金额及拆用比例
   } from "@/api/deal";
   import {
     get_term_getProBaseByTermId__termId, // 通过项目周期获取成交基础信息
@@ -1258,9 +1259,14 @@
     dividerTips: any = '业绩分配'; // 分割标题：业绩分配; 刷新成功; 加载成功
     selectableChannelIds: any = []; // 可选渠道商id
     editDealAchieveData: any = {
-      currentEditItem: null, // 平台费用要修改的项
+      isSameFlag: false, // 是否分销与总包一致
+      currentEditItem: {
+        roleType: null
+      }, // 平台费用要修改的项
       btnType: null, // 按钮类型-新增/修改
       type: null, // 平台费用类型-总包/分销 --- 用于角色类型的下拉选择
+      totalBag: [], // 平台费用——总包部分
+      distri: [], // 平台费用——分销部分
       distriRoles: [], // 平台费用——分销部分——可选角色
       totablBagRoles: [], // 平台费用——总包部分——可选角色
       totalAmount: 0, // 收派金额列表中 （派发佣金合计金额+派发内场奖励合计金额）
@@ -1269,7 +1275,7 @@
       type: null, // 当前选择修改的类型：总包/分销
       index: null // 当前选择修改的序号：总包/分销
     };
-    isSameFlag: any = false; // 是否分销同步
+    isSameFlag: any = false; // 是否分销与总包一致
 
     // 应收信息表格
     get receiveAchieveVO() {
@@ -1496,18 +1502,15 @@
       // 重置数据
       this.postData.achieveTotalBagList = [];
       this.postData.achieveDistriList = [];
-      this.editDealAchieveData = {
-        btnType: null, // 按钮类型-新增/修改
-        type: null, // 平台费用类型-总包/分销
-        distriRoles: [], // 平台费用——分销部分——可选角色
-        totablBagRoles: [], // 平台费用——总包部分——可选角色
-      };
       let achieveInfo: any = await post_pageData_initAchieve(params);
       // console.log(achieveInfo);
       this.postData.achieveTotalBagList = this.getAchieveList(achieveInfo.totalBag, 'TotalBag');
       this.postData.achieveDistriList = this.getAchieveList(achieveInfo.distri, 'Distri');
       // 是否分销与总包一致
       this.isSameFlag = achieveInfo.same;
+      this.editDealAchieveData.isSameFlag = achieveInfo.same;
+      this.editDealAchieveData.distri = achieveInfo.distri;
+      this.editDealAchieveData.totalBag = achieveInfo.totalBag;
       // 处理角色类型选项
       if (achieveInfo.same) {
         // 分销同步总包
@@ -1543,6 +1546,7 @@
           )
         })
       }
+      return tempArr;
     }
 
     /*
@@ -2291,34 +2295,162 @@
         this.editDealAchieveData.type = 'distri';
         this.currentChangeObj.index = null;
       }
+      this.editDealAchieveData.currentEditItem.roleType = 'add';
       this.dialogEditDealAchieve = true;
     }
 
     // 修改平台费用 --- 总包/分销
     editAchieveTotalBag(scope: any, type: any) {
-      // console.log('data', scope);
+      console.log('data', scope);
       // console.log('data', type);
       this.editDealAchieveData.btnType = 'edit';
-      this.editDealAchieveData.currentEditItem = scope;
+      this.editDealAchieveData.currentEditItem = scope.row;
       this.currentChangeObj.index = scope.$index;
       this.currentChangeObj.type = type;
       this.dialogEditDealAchieve = true;
     }
 
+    // 确定新增/修改平台业绩
+    async finishEditDealAchieve(data: any = {}) {
+      // console.log('finishEditDealAchieve', data);
+      let tempArr: any = [];
+      if (this.editDealAchieveData.type === 'total') {
+        // 总包
+        if (this.editDealAchieveData.btnType === 'add') {
+          // 新增
+          tempArr = [...this.postData.achieveTotalBagList, data];
+        } else if (this.editDealAchieveData.btnType === 'edit') {
+          // 编辑
+          tempArr = JSON.parse(JSON.stringify(this.postData.achieveTotalBagList));
+          if (tempArr.length > 0) {
+            tempArr.forEach((item: any, index: any) => {
+              if (index === this.currentChangeObj.index) {
+                item = {
+                  ...item,
+                  ...data
+                }
+              }
+            });
+          }
+         }
+      } else if (this.editDealAchieveData.type === 'distri') {
+        // 分销
+        if (this.editDealAchieveData.btnType === 'add') {
+          // 新增
+          tempArr = [...this.postData.achieveDistriList, data];
+        } else if (this.editDealAchieveData.btnType === 'edit') {
+          // 编辑
+          tempArr = JSON.parse(JSON.stringify(this.postData.achieveDistriList));
+          if (tempArr.length > 0) {
+            tempArr.forEach((item: any, index: any) => {
+              if (index === this.currentChangeObj.index) {
+                item = {
+                  ...item,
+                  ...data
+                }
+              }
+            });
+          }
+        }
+      }
+      await this.recalculateAchieve(this.editDealAchieveData.type, tempArr);
+      this.dialogEditDealAchieve = !this.dialogEditDealAchieve;
+    }
+
     // 移除平台费用 --- 总包/分销
     deleteAchieveTotalBag(scope: any, type: any) {
       // console.log('data', scope);
+      let tempArr: any = [];
       if (type === 'total') {
         // 总包
-        this.postData.achieveTotalBagList = this.postData.achieveTotalBagList.filter((list: any, index: any) => {
+        tempArr = this.postData.achieveTotalBagList.filter((item: any, index: any) => {
           return index !== scope.$index;
         });
       } else if (type === 'distri') {
         // 分销
-        this.postData.achieveDistriList = this.postData.achieveDistriList.filter((list: any, index: any) => {
+        tempArr = this.postData.achieveDistriList.filter((item: any, index: any) => {
           return index !== scope.$index;
-        })
+        });
       }
+      this.recalculateAchieve(type, tempArr);
+    }
+
+    /*
+    * 重新计算平台费用
+    * type: String，总包还是分销：total，distri
+    * tempList：Array，数组参数
+    * */
+    async recalculateAchieve(type: any = "", tempList: any = []) {
+      let params: any = {
+        branchCompanyId: this.baseInfoByTerm.startDivisionId, // 分公司Id --- 项目周期带出
+        contType: this.postData.contType, // 合同类型
+        isMarketProject: this.postData.isMarketProject, // 是否市场化项目
+        list: tempList,
+        modelCode: this.postData.businessType, // 业务模式
+        propertyType: this.postData.propertyType, // 物业类型
+        specialId: this.baseInfoByTerm.specialId, // 特殊方案Id --- 项目周期带出
+        totalAmount: null, // 总包/分销总金额
+        type: null
+      }
+      if (type === 'total') {
+        // 总包
+        params.type = "TotalBag";
+        params.totalAmount = this.getTotalAmount('totalPackageAmount');
+      } else if (type === 'distri') {
+        // 分销
+        params.type = "Distri";
+        params.totalAmount = this.getTotalAmount('distributionAmount');
+      }
+      let list: any = await post_pageData_recalculateAchieve(params);
+      console.log(list);
+      let commInfo: any = {};
+      if (this.isSameFlag) {
+        // 分销同步总包
+        let paramsObj: any = {
+          totalBagList: params.list, // 总包拆佣
+          totalCommAmount: this.editDealAchieveData.totalAmount, // 总拆佣金额
+        }
+        commInfo = await post_pageData_recalculateAchieveComm(paramsObj);
+        console.log(commInfo);
+      }
+      if (list && list.length) {
+        if (type === 'total') {
+          // 总包
+          this.postData.achieveTotalBagList = tempList;
+          if (this.postData.achieveTotalBagList.length) {
+            this.postData.achieveTotalBagList = this.getAchieveData(this.postData.achieveTotalBagList, list);
+          }
+        } else if (type === 'distri') {
+          // 分销
+          this.postData.achieveDistriList = tempList;
+          if (this.postData.achieveDistriList.length) {
+            this.postData.achieveDistriList = this.getAchieveData(this.postData.achieveDistriList, list);
+          }
+        }
+      }
+      if (commInfo.totalBagList && commInfo.totalBagList.length) {
+        // 总包同步分销
+        this.postData.achieveTotalBagList = this.getAchieveData(this.postData.achieveTotalBagList, commInfo.totalBagList);
+        this.postData.achieveDistriList = this.getAchieveData(this.postData.achieveDistriList, commInfo.distriList);
+      }
+    }
+
+    // 总包/分销平台费用从新计算
+    getAchieveData(typeList: any = [], filterList: any = []) {
+      let tempArr: any = [];
+      typeList.forEach((typeItem: any, typeIndex: any) => {
+        filterList.forEach((filterItem: any, filterIndex: any) => {
+          if (typeIndex === filterIndex) {
+            tempArr.push(
+              {
+                ...typeItem,
+                ...filterItem
+              }
+            )
+          }
+        })
+      });
+      return tempArr;
     }
 
     // 计算平台费用-总包/分销合计
@@ -2330,7 +2462,7 @@
           sums[index] = '合计';
           return;
         }
-        if ([1, 2, 3, 4, 5].includes(index)) {
+        if ([3, 5, 6].includes(index)) {
           const values = data.map((item: any) => Number(item[column.property]));
           if (!values.every((value: any) => isNaN(value))) {
             sums[index] = values.reduce((prev: any, curr: any) => {

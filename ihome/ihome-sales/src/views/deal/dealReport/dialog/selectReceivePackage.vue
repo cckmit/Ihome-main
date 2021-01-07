@@ -118,9 +118,9 @@
 
     async created() {
       console.log('data', this.data);
-      await this.getListMixin();
       // 判断套餐类型
       this.dialogTitle = `选择${(this as any).$root.dictAllName(this.data.feeType, 'FeeType')}收派套餐标准`;
+      await this.getListMixin();
       // if (this.data.hasRecord) {
       //   // 分销模式
       //   this.queryPageParameters.packageMxIds = this.data.idList;
@@ -161,19 +161,18 @@
 
     async getListMixin() {
       let self = this;
-      this.queryPageParameters = {
-        ...this.queryPageParameters,
-        ...this.data
+      self.queryPageParameters = {
+        ...self.queryPageParameters,
+        ...self.data
       }
-      // let infoList: any = await post_collectandsend_getCollectadnsendMxByIds(this.queryPageParameters);
-      let infoList: any = await post_pageData_initSelectablePackage(this.queryPageParameters);
+      let infoList: any = await post_pageData_initSelectablePackage(self.queryPageParameters);
       if (infoList && infoList.list && infoList.list.length) {
         infoList.list.forEach((item: any) => {
           // 类型
-          item.typeName = (self as any).$root.dictAllName(self.data.type, 'FeeType');
+          item.typeName = (self as any).$root.dictAllName(self.data.feeType, 'FeeType');
         })
       }
-      this.resPageInfo = infoList;
+      self.resPageInfo = infoList;
     }
 
     async finish() {

@@ -18,12 +18,16 @@
     width="1000px"
     style="text-align: left"
     class="dialog">
-    <el-form ref="form" label-width="150px" @submit.native.prevent>
+    <el-form ref="form" :model="form" :rules="rules" label-width="150px" @submit.native.prevent>
       <el-row :gutter="10">
         <el-col :span="8">
-          <el-form-item label="角色类型">
+          <el-form-item label="角色类型" prop="roleType">
+            <div v-if="data.currentEditItem && data.currentEditItem.roleType === 'BranchOffice'">
+              {{$root.dictAllName(form.roleType, 'DealRole')}}
+            </div>
             <el-select
-              v-if="data.currentEditItem.roleType !== 'BranchOffice'"
+              v-else
+              @change="handleSelectRoleType"
               v-model="form.roleType" placeholder="请选择">
               <el-option
                 v-for="item in dealRoleList"
@@ -32,11 +36,10 @@
                 :value="item.code"
               ></el-option>
             </el-select>
-            <div>{{$root.dictAllName(form.roleType, 'DealRole')}}</div>
           </el-form-item>
         </el-col>
         <el-col :span="8" v-if="data.currentEditItem.roleType !== 'BranchOffice'">
-          <el-form-item label="角色人">
+          <el-form-item label="角色人" :prop="data.currentEditItem.roleType !== 'BranchOffice' ? 'rolerId' : ' '">
             <IhSelectPageUser
               v-model="form.rolerId"
               @changeOption="handleSelectRole"
@@ -50,28 +53,30 @@
           </el-form-item>
         </el-col>
         <el-col :span="8" v-if="data.currentEditItem.roleType !== 'BranchOffice'">
-          <el-form-item label="角色业绩上限">
+          <el-form-item label="角色业绩上限" :prop="data.currentEditItem.roleType !== 'BranchOffice' ? 'roleAchieveCap' : ' '">
             <el-input v-digits="2" disabled v-model="form.roleAchieveCap" />
           </el-form-item>
         </el-col>
         <el-col :span="8">
-          <el-form-item label="角色人业绩">
-            <el-input v-model="form.corporateAchieve" v-digits="2" placeholder="拆佣金额" />
+          <el-form-item label="角色人业绩" prop="corporateAchieve">
+            <el-input
+              :disabled="data.currentEditItem.roleType === 'BranchOffice'"
+              v-model="form.corporateAchieve" v-digits="2" placeholder="" />
           </el-form-item>
         </el-col>
         <el-col :span="8" v-if="data.currentEditItem.roleType !== 'BranchOffice'">
           <el-form-item label="角色业绩比例（%）">
-            <el-input disabled v-digits="2" v-model="form.corporateAchieveRatio" />
+            <div class="div-disabled">{{getPercentage(form.corporateAchieve, form.roleAchieveCap)}}%</div>
           </el-form-item>
         </el-col>
         <el-col :span="8">
           <el-form-item label="拆佣金额">
-            <el-input v-model="form.commFees" v-digits="2" placeholder="拆佣金额"/>
+            <el-input v-model="form.commFees" v-digits="2" placeholder=""/>
           </el-form-item>
         </el-col>
         <el-col :span="8">
           <el-form-item label="拆佣比例（%）">
-            <el-input disabled v-digits="2" v-model="form.commFeesRatio" />
+            <div class="div-disabled">{{getPercentage(form.commFees, data.totalAmount)}}%</div>
           </el-form-item>
         </el-col>
         <el-col :span="24">
@@ -80,12 +85,12 @@
               <el-button type="primary" size="mini" @click="addManagement">新增行</el-button>
             </div>
           </el-form-item>
-          <el-table class="ih-table" max-height="250px" :data="form.managementList">
-            <el-table-column prop="name" label="名称" min-width="100">
+          <el-table class="ih-table" max-height="250px" :data="form.managerAchieveList">
+            <el-table-column prop="managerId" label="名称" min-width="100">
               <template slot-scope="scope">
                 <IhSelectPageUser
                   v-model="scope.row.managerId"
-                  @changeOption="handleSelectManagementRole"
+                  @changeOption="handleSelectManagementRole($event, scope.row)"
                   clearable>
                 </IhSelectPageUser>
               </template>
@@ -93,12 +98,12 @@
             <el-table-column prop="managerPosition" label="岗位" min-width="100"></el-table-column>
             <el-table-column prop="achieveFees" label="分配金额" min-width="100">
               <template slot-scope="scope">
-                <el-input v-digits="2" v-model="scope.row.otherChannelFees" />
+                <el-input v-digits="2" v-model="scope.row.achieveFees" />
               </template>
             </el-table-column>
             <el-table-column prop="achieveFeesRatio" label="金额比例" min-width="100">
               <template slot-scope="scope">
-                <div v-if="scope.row.otherChannelFees">{{scope.row.otherChannelFees}}%</div>
+                <div class="div-disabled">{{getPercentage(scope.row.achieveFees, form.corporateAchieve)}}%</div>
               </template>
             </el-table-column>
             <el-table-column fixed="right" label="操作" width="100">
@@ -134,12 +139,23 @@
       super();
     }
 
+    private validateCorporateAchieve: any = (rule: any, value: any, callback: any) => {
+      if (!value) {
+        return callback(new Error('角色人业绩不能为空'));
+      } else {
+        if (value > this.form.roleAchieveCap) {
+          return callback(new Error('角色人业绩不能大于角色人业绩上限'));
+        }
+        callback();
+      }
+    };
+
     @Prop({default: null}) data: any;
     dialogVisible = true;
     form: any = {
       commFees: 0, // 拆佣金额
       commFeesRatio: 0, // 拆佣金额比例
-      corporateAchieve: 0, // 角色业绩
+      corporateAchieve: 0, // 角色人业绩
       corporateAchieveRatio: 0, // 角色业绩比例
       roleAchieveCap: 0, // 角色业绩上限
       roleType: "", // 角色类型
@@ -150,21 +166,22 @@
       type: "", // 类型(TotalBag-总包、Distri-分销)
       managerAchieveList: [] // 成交管理者业绩信息
     };
+    rules: any = {
+      roleType: [
+        {required: true, message: "角色类型必选", trigger: "change"}
+      ],
+      rolerId: [
+        {required: true, message: "角色人必选", trigger: "change"}
+      ],
+      roleAchieveCap: [
+        {required: true, message: "角色业绩上限不能为空", trigger: "change"}
+      ],
+      corporateAchieve: [
+        {validator: this.validateCorporateAchieve, trigger: ["change", "blur"]}
+      ]
+    };
     dealRoleList: any = []; // 角色类型 --- 从角色字典中过滤分公司选项
     achieveTitle: any = '新增角色业绩'; // 弹窗标题
-
-    async finish() {
-      this.$emit("finish", true);
-    }
-
-    async beforeFinish() {
-      this.$emit("cancel", false);
-    }
-
-    // 取消
-    cancel() {
-      this.$emit("cancel", false);
-    }
 
     created() {
       console.log('editDealAchieveData', this.data);
@@ -172,7 +189,7 @@
       if (this.data.btnType === 'add') {
         this.achieveTitle = '新增角色业绩';
       } else if (this.data.btnType === 'edit') {
-        this.form = this.data.currentEditItem;
+        this.form = (this as any).$tool.deepClone(this.data.currentEditItem);
         if (this.data.currentEditItem.roleType === 'BranchOffice') {
           this.achieveTitle = '分配管理岗业绩';
         } else {
@@ -218,17 +235,76 @@
       console.log('datadata', this.data);
     }
 
+    // 确定
+    async finish() {
+      let flag: any = false;
+      flag = this.validForm(this.form);
+      (this as any).$refs.form.validate((valid: any) => {
+        if (valid && flag) {
+          this.$emit("finish", this.form);
+        } else {
+          console.log('error finish!!');
+          return false;
+        }
+      });
+    }
+
+    // 校验form
+    validForm(data: any) {
+      let flag: any = true;
+      if (data.managerAchieveList && data.managerAchieveList.length) {
+        let total: any = 0;
+        data.managerAchieveList.forEach((list: any) => {
+          total = total + parseFloat(list.achieveFees ? list.achieveFees : 0);
+        });
+        if (total > this.form.corporateAchieve) {
+          flag = false;
+        }
+      }
+      return flag
+    }
+
+    // 取消
+    async beforeFinish() {
+      this.$emit("cancel", false);
+    }
+
+    // 计算比例
+    getPercentage(num: any, total: any) {
+      if (num == 0 || total == 0){
+        return 0;
+      }
+      // 小数点后两位百分比
+      return (Math.round(num / total * 10000) / 100.00);
+    }
+
+    // 选择角色类型
+    handleSelectRoleType(value: any) {
+      if (!value) return;
+      if (this.dealRoleList.length) {
+        this.dealRoleList.forEach((list: any) => {
+          if (list.code === value) {
+            this.form.roleAchieveCap = list.roleAchieveCap;
+          }
+        })
+      }
+    }
+
+    // 取消
+    cancel() {
+      this.$emit("cancel", false);
+    }
+
     // 添加管理岗
     addManagement() {
-      this.form.managementList.push(
+      this.form.managerAchieveList.push(
         {
           achieveFees: 0, // 业绩金额
           achieveFeesRatio: 0, // 业绩金额比例
           belongOrgId: null, // 归属组织ID
           managerId: null, // 管理者ID
           managerName: null, // 管理者名字
-          managerPosition: null, // 管理者岗位
-          type: null // 类型(Supervisor-主管、Manager-经理、Director-总监)
+          managerPosition: null // 管理者岗位
         }
       )
     }
@@ -236,23 +312,27 @@
     // 选择角色人
     handleSelectRole(data: any) {
       console.log(data);
+      this.form.rolerId = data.id;
+      this.form.belongOrgId = data.orgId;
+      this.form.belongOrgName = data.orgName;
+      this.form.rolerPosition = data.jobName;
     }
 
     //  选择管理岗角色人
-    handleSelectManagementRole(data: any) {
-      console.log(data);
-    }
-
-    // 确定选择角色
-    async finishAddProjectCycle(data: any) {
-      console.log('data', data);
+    handleSelectManagementRole(data: any, row: any) {
+      // console.log(data);
+      // console.log(row);
+      row.belongOrgId = data.orgId;
+      row.managerId = data.id;
+      row.managerName = data.name;
+      row.managerPosition = data.jobName;
     }
 
     // 移除
     handleRemove(scope: any) {
       console.log(scope);
-      if (this.form.managementList.length > 0) {
-        this.form.managementList = this.form.managementList.filter((item: any, index: any) => {
+      if (this.form.managerAchieveList.length > 0) {
+        this.form.managerAchieveList = this.form.managerAchieveList.filter((item: any, index: any) => {
           return index !== scope.$index;
         });
       }
@@ -301,5 +381,17 @@
         }
       }
     }
+  }
+
+  .div-disabled {
+    border-radius: 4px;
+    border: 1px solid #E4E7ED;
+    box-sizing: border-box;
+    background-color: #F5F7FA;
+    color: #C0C4CC;
+    padding: 0 15px;
+    cursor: not-allowed;
+    height: 40px;
+    line-height: 40px;
   }
 </style>
