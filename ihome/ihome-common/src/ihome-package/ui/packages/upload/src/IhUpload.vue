@@ -4,7 +4,7 @@
  * @Author: wwq
  * @Date: 2020-09-09 16:17:16
  * @LastEditors: wwq
- * @LastEditTime: 2020-12-18 15:08:23
+ * @LastEditTime: 2021-01-07 08:44:33
 -->
 <template>
   <div class="upload">
@@ -134,6 +134,7 @@
 import { Component, Vue, Prop, Watch } from "vue-property-decorator";
 import ImageViewer from "./image-viewer.vue";
 import Cropper from "./cropper.vue";
+import { getToken } from "../../../../util/cookies";
 import {
   post_file_upload,
   get_file_remove__fid,
@@ -145,7 +146,6 @@ import {
   },
 })
 export default class IhUpload extends Vue {
-  @Prop() private action: any;
   @Prop() private fileList!: Array<object>;
   @Prop({
     type: Number,
@@ -224,6 +224,11 @@ export default class IhUpload extends Vue {
   private cropperName = "";
   private cropperImg = "";
   private changeFileList: any = [];
+  private action = `/sales-api/sales-document-cover/file/upload`;
+  private headers: any = {
+    Authorization: "bearer " + getToken(),
+  };
+  private fdData: any = [];
 
   @Watch("list", { deep: true })
   getList(list: any) {

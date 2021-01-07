@@ -4,14 +4,13 @@
  * @Author: zyc
  * @Date: 2020-12-16 10:26:34
  * @LastEditors: zyc
- * @LastEditTime: 2020-12-16 10:28:38
+ * @LastEditTime: 2021-01-07 09:12:38
 -->
 <template>
   <IhPage>
-    <h2>
-      <span style="margin-right: 20px">{{ userInfo.name }}</span>
-      <span>欢迎您!</span>
-    </h2>
+    <div style="margin-top: 150px">
+      <img src="../../assets/homepage.png" alt="" />
+    </div>
   </IhPage>
 </template>
 <script lang="ts">
@@ -22,9 +21,9 @@ import { Component, Vue } from "vue-property-decorator";
   components: {},
 })
 export default class HomeIndex extends Vue {
-  get userInfo() {
-    return (this as any).$root.userInfo || {};
-  }
+  // get userInfo() {
+  //   return (this as any).$root.userInfo || {};
+  // }
 }
 </script>
 <style lang="scss" scoped>
