@@ -9,7 +9,7 @@
 <template>
   <ih-page label-width="100px">
     <template v-slot:form>
-      <el-form ref="form" label-width="100px">
+      <el-form ref="form" label-width="100px" @submit.native.prevent>
         <el-row>
           <el-col :span="2" class="text-left">
             <el-button type="success" @click="add()">新增</el-button>

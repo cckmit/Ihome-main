@@ -9,6 +9,7 @@
 <template>
   <ih-page class="text-left">
     <el-form
+      @submit.native.prevent
       v-loading="formLoading"
       :model="postData"
       :rules="rules"
@@ -30,8 +31,8 @@
         </el-col>
         <el-col :span="6">
           <el-form-item label="项目周期" prop="cycleId">
-            <el-input placeholder="请选择项目周期" readonly v-model="postData.cycleName">
-              <el-button slot="append" icon="el-icon-search" @click.native.prevent="selectProject"></el-button>
+            <el-input placeholder="请选择项目周期" readonly v-model="postData.cycleName" @click.native.prevent="selectProject">
+              <el-button slot="append" icon="el-icon-search"></el-button>
             </el-input>
           </el-form-item>
         </el-col>
@@ -256,37 +257,28 @@
           <el-form-item label="户型">
             <div class="home-type-wrapper">
               <div>
-                <el-input-number
+                <el-input
                   v-digits="0"
                   :disabled="isDisabled('room', 'houseVO')"
-                  v-model="postData.room"
-                  :min="0"
-                  :step="1"
-                  size="small"
-                  :controls="false"
-                  :step-strictly="true"></el-input-number>室
+                  v-model="postData.room">
+                  <div slot="append">室</div>
+                </el-input>
               </div>
               <div>
-                <el-input-number
+                <el-input
                   v-digits="0"
                   :disabled="isDisabled('hall', 'houseVO')"
-                  v-model="postData.hall"
-                  :min="0"
-                  :step="1"
-                  size="small"
-                  :controls="false"
-                  :step-strictly="true"></el-input-number>厅
+                  v-model="postData.hall">
+                  <div slot="append">厅</div>
+                </el-input>
               </div>
               <div>
-                <el-input-number
+                <el-input
                   v-digits="0"
                   :disabled="isDisabled('toilet', 'houseVO')"
-                  v-model="postData.toilet"
-                  :min="0"
-                  :step="1"
-                  size="small"
-                  :controls="false"
-                  :step-strictly="true"></el-input-number>卫
+                  v-model="postData.toilet">
+                  <div slot="append">卫</div>
+                </el-input>
               </div>
             </div>
           </el-form-item>
@@ -765,11 +757,11 @@
           <el-table-column prop="partyACustomer" label="费用来源(客户/甲方)" min-width="120">
             <template slot-scope="scope">
               <div v-if="postData.calculation === 'Auto'">
-                <el-input placeholder="" disabled v-model="scope.row.partyACustomer"></el-input>
+                <el-input placeholder="" disabled v-model="scope.row.partyACustomerName"></el-input>
               </div>
               <div v-else>
                 <div v-if="scope.row.feeType === 'ServiceFee'">
-                  <el-input placeholder="" disabled v-model="scope.row.partyACustomer"></el-input>
+                  <el-input placeholder="" disabled v-model="scope.row.partyACustomerName"></el-input>
                 </div>
                 <div v-if="scope.row.feeType === 'AgencyFee'">
                   <el-select
@@ -828,7 +820,7 @@
             :data="postData.achieveTotalBagList">
             <el-table-column prop="roleType" label="角色类型" min-width="120">
               <template slot-scope="scope">
-                <div>{{$root.dictAllName(scope.row.roleType, 'roleType')}}</div>
+                <div>{{$root.dictAllName(scope.row.roleType, 'DealRole')}}</div>
               </template>
             </el-table-column>
             <el-table-column prop="roleAchieveCap" label="角色业绩上限" min-width="150"></el-table-column>
@@ -851,15 +843,16 @@
               <template slot-scope="scope">
                 <el-link
                   class="margin-right-10"
-                  type="error"
-                  @click.native.prevent="deleteAchieveTotalBag(scope)"
-                >删除
+                  type="primary"
+                  @click.native.prevent="editAchieveTotalBag(scope, 'total')"
+                >修改
                 </el-link>
                 <el-link
+                  v-if="scope.row.roleType !== 'BranchOffice'"
                   class="margin-right-10"
-                  type="primary"
-                  @click.native.prevent="editAchieveTotalBag(scope)"
-                >修改
+                  type="error"
+                  @click.native.prevent="deleteAchieveTotalBag(scope, 'total')"
+                >移除
                 </el-link>
               </template>
             </el-table-column>
@@ -882,7 +875,7 @@
             :data="postData.achieveDistriList">
             <el-table-column prop="roleType" label="角色类型" min-width="120">
               <template slot-scope="scope">
-                <div>{{$root.dictAllName(scope.row.roleType, 'roleType')}}</div>
+                <div>{{$root.dictAllName(scope.row.roleType, 'DealRole')}}</div>
               </template>
             </el-table-column>
             <el-table-column prop="roleAchieveCap" label="角色业绩上限" min-width="150"></el-table-column>
@@ -905,15 +898,16 @@
               <template slot-scope="scope">
                 <el-link
                   class="margin-right-10"
-                  type="error"
-                  @click.native.prevent="deleteAchieveTotalBag(scope)"
-                >删除
+                  type="primary"
+                  @click.native.prevent="editAchieveTotalBag(scope, 'distri')"
+                >修改
                 </el-link>
                 <el-link
+                  v-if="scope.row.roleType !== 'BranchOffice'"
                   class="margin-right-10"
-                  type="primary"
-                  @click.native.prevent="editAchieveTotalBag(scope)"
-                >修改
+                  type="error"
+                  @click.native.prevent="deleteAchieveTotalBag(scope, 'distri')"
+                >移除
                 </el-link>
               </template>
             </el-table-column>
@@ -962,6 +956,7 @@
     </div>
     <ih-dialog :show="dialogAddAgentCompany" desc="选择渠道公司列表">
       <AgentCompanyList
+        :data="selectableChannelIds"
         @cancel="() => (dialogAddAgentCompany = false)"
         @finish="
             (data) => {
@@ -972,6 +967,7 @@
     </ih-dialog>
     <ih-dialog :show="dialogEditDealAchieve" desc="新增/修改角色业绩">
       <EditDealAchieve
+        :data="editDealAchieveData"
         @cancel="() => (dialogEditDealAchieve = false)"
         @finish="
             (data) => {
@@ -1249,6 +1245,17 @@
     editFlag: any = false; // 编辑页面 --- 提示框
     tipsFlag: any = false; // 加载拆佣情况 --- 提示框
     dividerTips: any = '业绩分配'; // 分割标题：业绩分配; 刷新成功; 加载成功
+    selectableChannelIds: any = []; // 可选渠道商id
+    editDealAchieveData: any = {
+      btnType: null, // 按钮类型-新增/修改
+      type: null, // 平台费用类型-总包/分销
+      distriRoles: [], // 平台费用——分销部分——可选角色
+      totablBagRoles: [], // 平台费用——总包部分——可选角色
+    }; // 平台费用 --- 新增/编辑弹窗的数据
+    currentChangeObj: any = {
+      type: null, // 当前选择修改的类型：总包/分销
+      index: null // 当前选择修改的序号：总包/分销
+    };
 
     // 应收信息表格
     get receiveAchieveVO() {
@@ -1467,10 +1474,25 @@
         specialId: this.baseInfoByTerm.specialId, // 特殊方案Id --- 项目周期带出
         totalBagAmount: this.getTotalAmount('totalPackageAmount') // 总包金额
       };
+      // 重置数据
+      this.postData.achieveTotalBagList = [];
+      this.postData.achieveDistriList = [];
+      this.editDealAchieveData = {
+        btnType: null, // 按钮类型-新增/修改
+        type: null, // 平台费用类型-总包/分销
+        distriRoles: [], // 平台费用——分销部分——可选角色
+        totablBagRoles: [], // 平台费用——总包部分——可选角色
+      };
       let achieveInfo: any = await post_pageData_initAchieve(params);
-      console.log(achieveInfo);
+      // console.log(achieveInfo);
       this.postData.achieveTotalBagList = achieveInfo.totalBag;
       this.postData.achieveDistriList = achieveInfo.distri;
+      this.editDealAchieveData = {
+        btnType: null, // 按钮类型-新增/修改
+        type: null, // 平台费用类型-总包/分销
+        distriRoles: achieveInfo.distriRoles, // 平台费用——分销部分——可选角色
+        totablBagRoles: achieveInfo.totablBagRoles, // 平台费用——总包部分——可选角色
+      };
     }
 
     // 获取分销金额和总包金额
@@ -1636,6 +1658,7 @@
       this.postData.commissionInfoList = [];
       this.postData.achieveTotalBagList = [];
       this.postData.achieveDistriList = [];
+      this.selectableChannelIds = [];
       if (this.id) {
         this.addFlag = false;
         this.editFlag = false;
@@ -1673,6 +1696,8 @@
       this.baseInfoInDeal = JSON.parse(JSON.stringify(baseInfo || '{}'));
       // console.log('baseInfobaseInfo', this.baseInfoInDeal);
       // 处理数据
+      // 拆佣信息中-收款方-可选渠道商id
+      this.selectableChannelIds = baseInfo.selectableChannelIds;
       // 纯提示
       if (baseInfo.customerIsDifferent) {
         this.$notify({
@@ -1752,6 +1777,7 @@
       this.commissionCustomerList = this.initCommissionCustomer(baseInfo.receiveVOS);
       this.commissionServiceFeeObj = {};
       this.commissionServiceFeeObj = this.initCommissionServiceFee(baseInfo.receiveVOS);
+      console.log('commissionServiceFeeObj', this.commissionServiceFeeObj)
       // 附件信息
       this.initDocument(baseInfo.contType, baseInfo);
     }
@@ -1782,9 +1808,11 @@
       };
       let tempArr: any = [];
       if (data.length) {
-        tempArr = data.find((item: any) => {
-          return item.type === 'ServiceFee';
-        })
+        data.forEach((item: any) => {
+          if (item.type === 'ServiceFee') {
+            tempArr.push(item);
+          }
+        });
       }
       if (tempArr.length) {
         tempObj.partyACustomerName = tempArr[0].partyACustomerName;
@@ -2058,17 +2086,19 @@
 
     // 删除客户/对外拆佣项
     async deleteAdd(scope: any, type: any) {
-      console.log(scope);
-      console.log(type);
+      // console.log(scope);
+      // console.log(type);
       if (type === 'customer') {
         // 删除客户
-        this.postData.customerVO = this.postData.customerVO.filter((item: any) => {
-          return item.id !== scope.row.id;
+        this.postData.customerVO = this.postData.customerVO.filter((item: any, index: any) => {
+          console.log(item);
+          return index !== scope.$index;
         });
       } else if (type === 'commission') {
         // 删除对外拆佣项
-        this.postData.commissionInfoList = this.postData.commissionInfoList.filter((item: any) => {
-          return item.id !== scope.row.id;
+        this.postData.commissionInfoList = this.postData.commissionInfoList.filter((item: any, index: any) => {
+          console.log(item);
+          return index !== scope.$index;
         });
       }
     }
@@ -2171,34 +2201,54 @@
       return sums;
     }
 
-    // 新增总包/分销业绩
+    // 新增平台角色业绩
     handleAddAchieve(type: any) {
-      console.log('type', type);
-      // this.dialogAddRole = true;
-      this.dialogEditDealAchieve = true;
+      // console.log('type', type);
+      this.editDealAchieveData.btnType = 'add';
       // total - 总包； distri - 分销
-    }
-
-    // 删除总包平台费用
-    deleteAchieveTotalBag(scope: any) {
-      console.log('data', scope);
-    }
-
-    // 修改总包平台费用
-    editAchieveTotalBag(scope: any) {
-      console.log('data', scope);
+      if (type === 'total') {
+        // 总包
+        this.currentChangeObj.type = 'total';
+        this.currentChangeObj.index = null;
+      } else if (type === 'distri') {
+        // 分销
+        this.currentChangeObj.type = 'distri';
+        this.currentChangeObj.index = null;
+      }
       this.dialogEditDealAchieve = true;
     }
 
-    // 删除分销平台费用
-    deleteAchieveDistri(scope: any) {
-      console.log('data', scope);
+    // 修改平台费用 --- 总包/分销
+    editAchieveTotalBag(scope: any, type: any) {
+      // console.log('data', scope);
+      // console.log('data', type);
+      this.editDealAchieveData.btnType = 'edit';
+      if (type === 'total') {
+        // 总包
+        this.currentChangeObj.type = 'total';
+        this.currentChangeObj.index = scope.$index;
+      } else if (type === 'distri') {
+        // 分销
+        this.currentChangeObj.type = 'distri';
+        this.currentChangeObj.index = scope.$index;
+      }
+      this.dialogEditDealAchieve = true;
     }
 
-    // 修改分销平台费用
-    editAchieveDistri(scope: any) {
-      console.log('data', scope);
-      this.dialogEditDealAchieve = true;
+    // 移除平台费用 --- 总包/分销
+    deleteAchieveTotalBag(scope: any, type: any) {
+      // console.log('data', scope);
+      if (type === 'total') {
+        // 总包
+        this.postData.achieveTotalBagList = this.postData.achieveTotalBagList.filter((list: any, index: any) => {
+          return index !== scope.$index;
+        });
+      } else if (type === 'distri') {
+        // 分销
+        this.postData.achieveDistriList = this.postData.achieveDistriList.filter((list: any, index: any) => {
+          return index !== scope.$index;
+        })
+      }
     }
 
     // 计算平台费用-总包/分销合计
@@ -2429,7 +2479,7 @@
               obj.basic.documentVO.push(
                 {
                   fileId: list.fileId,
-                  fileName: list.name,
+                  fileName: list.fileName,
                   fileType: item.code
                 }
               )
@@ -2529,6 +2579,10 @@
     div {
       flex: 1;
       text-align: center;
+
+      &:not(:last-child) {
+        margin-right: 10px;
+      }
 
       /deep/ .el-input-number {
         box-sizing: border-box;

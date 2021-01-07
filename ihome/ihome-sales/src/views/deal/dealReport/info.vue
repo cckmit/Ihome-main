@@ -10,6 +10,7 @@
   <ih-page class="text-left">
     <p id="anchor-1" class="ih-info-title">成交信息</p>
     <el-form
+      @submit.native.prevent
       :model="infoForm"
       ref="ruleForm"
       label-width="150px"

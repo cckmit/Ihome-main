@@ -18,7 +18,7 @@
     width="1000px"
     style="text-align: left"
     class="dialog">
-    <el-form ref="form" label-width="100px">
+    <el-form ref="form" label-width="100px" @submit.native.prevent>
       <el-row>
         <el-col :span="8">
           <el-form-item label="经纪人姓名">
