@@ -59,13 +59,14 @@ const baseProps: IProps<IPropsData> = {
  */
 let props = Object.assign(baseProps)
 
-const devArray: Array<IRegisterApp<IProps<IPropsData>>> = [{
-    routerPrefix: 'web-common',
-    publicPath: '/web-common/',
-    port: 8084,
-    ip: 'localhost',
-    props: props
-},
+const devArray: Array<IRegisterApp<IProps<IPropsData>>> = [
+//     {
+//     routerPrefix: 'web-common',
+//     publicPath: '/web-common/',
+//     port: 8084,
+//     ip: 'localhost',
+//     props: props
+// },
 {
     routerPrefix: 'web-system',
     publicPath: '/web-system/',

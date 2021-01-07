@@ -59,28 +59,9 @@
                 placeholder="经办人"
                 clearable
               >
-                <template v-slot="{ data }">
-                  <span style="float: left">{{ data.name }}</span>
-                  <span
-                    class="margin-left-30"
-                    style="float: right; color: #8492a6; font-size: 13px"
-                    >{{ data.employeeCode }}</span
-                  >
-                </template>
+                
               </IhSelectPageUser>
-              <!-- <el-select
-                v-model="queryPageParameters.approvalUser"
-                clearable
-                placeholder="经办人"
-                class="width--100"
-              >
-                <el-option
-                  v-for="item in approvalUserList"
-                  :key="item.value"
-                  :label="item.label"
-                  :value="item.value"
-                ></el-option>
-              </el-select> -->
+            
             </el-form-item>
           </el-col>
           <el-col :span="8">
@@ -148,27 +129,27 @@
         :empty-text="emptyText"
       >
         <el-table-column type="selection" width="55"> </el-table-column>
-        <el-table-column type="index" label="序号" width="50"></el-table-column>
+        <el-table-column fixed type="index" label="序号" width="50"></el-table-column>
         <el-table-column
           prop="approvalNo"
           label="申请编号"
-          width="120"
+          width="160"
           fixed
         ></el-table-column>
         <el-table-column
           prop="approvalTitle"
           label="标题"
-          width="240"
+          fixed
         ></el-table-column>
         <el-table-column
           prop="departmentName"
           label="事业部"
-          width="180"
+          
         ></el-table-column>
         <el-table-column
           prop="inputTime"
           label="发起日期"
-          width="180"
+          width="100"
         ></el-table-column>
         <el-table-column
           prop="approvalUserName"
@@ -203,16 +184,19 @@
                 <el-dropdown-item
                   @click.native.prevent="edit(scope)"
                   v-has="'B.SALES.CHANNEL.APPROVALLIST.UPDATE'"
+                  :class="{'ih-data-disabled':scope.row.status!='Draft'}"
                   >修改</el-dropdown-item
                 >
                 <el-dropdown-item
                   @click.native.prevent="remove(scope)"
                   v-has="'B.SALES.CHANNEL.APPROVALLIST.DELETE'"
+                   :class="{'ih-data-disabled':scope.row.status!='Draft'}"
                   >删除</el-dropdown-item
                 >
                 <el-dropdown-item
                   @click.native.prevent="withdraw(scope)"
                   v-has="'B.SALES.CHANNEL.APPROVALLIST.RETURNRESEND'"
+                  :class="{'ih-data-disabled':scope.row.status!='ApprovalFailed'}"
                   >撤回重发</el-dropdown-item
                 >
                 <el-dropdown-item
