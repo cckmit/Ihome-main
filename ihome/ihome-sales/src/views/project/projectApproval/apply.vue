@@ -695,13 +695,15 @@ export default class Apply extends Vue {
   }
   async submit() {
     this.submitLoading = true;
-    const res: any = await post_distribution_create(this.info);
-    if (res) {
+    try {
+      await post_distribution_create(this.info);
       this.submitLoading = false;
       this.$message.success("申领成功");
       this.$goto({
         path: "/projectApproval/list",
       });
+    } catch (err) {
+      this.submitLoading = false;
     }
   }
 

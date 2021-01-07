@@ -4,7 +4,7 @@
  * @Author: wwq
  * @Date: 2020-12-01 14:49:06
  * @LastEditors: wwq
- * @LastEditTime: 2021-01-06 18:56:30
+ * @LastEditTime: 2021-01-07 09:28:46
 -->
 <template>
   <el-dialog
@@ -99,7 +99,10 @@
       </el-row>
       <el-row>
         <el-col :span="12">
-          <el-form-item label="合作项目">
+          <el-form-item
+            label="合作项目"
+            prop="cooperationProjectsName"
+          >
             <el-input
               placeholder="请填写合作项目"
               v-model="form.cooperationProjectsName"
@@ -116,10 +119,13 @@
       </el-row>
       <el-row>
         <el-col :span="12">
-          <el-form-item label="合作时间">
+          <el-form-item
+            label="合作时间"
+            prop="timeList"
+          >
             <el-date-picker
               style="width:100%;"
-              v-model="timeList"
+              v-model="form.timeList"
               type="daterange"
               align="left"
               unlink-panels
@@ -157,7 +163,10 @@
       </el-row>
       <el-row>
         <el-col :span="12">
-          <el-form-item label="成交确认人">
+          <el-form-item
+            label="成交确认人"
+            prop="confirmer"
+          >
             <el-input
               v-model="form.confirmer"
               placeholder="成交确认人"
@@ -165,7 +174,11 @@
           </el-form-item>
         </el-col>
         <el-col :span="12">
-          <el-form-item label="联系方式">
+          <el-form-item
+            label="成交确认人联系方式"
+            prop="confirmerContact"
+            class="formItem"
+          >
             <el-input
               v-model="form.confirmerContact"
               placeholder="成交确认人联系方式"
@@ -215,6 +228,7 @@ import { Form as ElForm } from "element-ui";
 import { NoRepeatHttp } from "ihome-common/util/aop/no-repeat-http";
 import { post_company_getAll } from "@/api/system/index";
 import { get_bankAccount_get__companyId } from "@/api/finance/index";
+import { phoneValidator } from "ihome-common/util/base/form-ui";
 
 @Component({
   components: {},
@@ -224,7 +238,7 @@ export default class PartyAAdd extends Vue {
   dialogVisible = true;
   partyFileList: any = [];
   stampFileList: any = [];
-  timeList: any = [];
+
   form: any = {
     title: null,
     partyA: [],
@@ -236,6 +250,7 @@ export default class PartyAAdd extends Vue {
     handlerId: null,
     confirmer: null,
     confirmerContact: null,
+    timeList: [],
   };
   partyBOptions: any = [];
   branchOption: any = [];
@@ -246,6 +261,20 @@ export default class PartyAAdd extends Vue {
       {
         required: true,
         message: "请填写合同标题",
+        trigger: "change",
+      },
+    ],
+    cooperationProjectsName: [
+      {
+        required: true,
+        message: "请填写合作项目",
+        trigger: "change",
+      },
+    ],
+    timeList: [
+      {
+        required: true,
+        message: "请选择合作时间",
         trigger: "change",
       },
     ],
@@ -269,6 +298,21 @@ export default class PartyAAdd extends Vue {
         message: "请选择合同跟进人",
         trigger: "change",
       },
+    ],
+    confirmer: [
+      {
+        required: true,
+        message: "请填写成交确认人",
+        trigger: "change",
+      },
+    ],
+    confirmerContact: [
+      {
+        required: true,
+        message: "请填写成交确认人联系方式",
+        trigger: "change",
+      },
+      { validator: phoneValidator, trigger: "change" },
     ],
     receivingAccountId: [
       {
@@ -315,9 +359,9 @@ export default class PartyAAdd extends Vue {
         userId: v,
       }));
 
-      let flag = this.timeList && this.timeList.length;
-      this.form.cooperationTime = flag ? this.timeList[0] : null;
-      this.form.cooperationEnd = flag ? this.timeList[1] : null;
+      let flag = this.form.timeList && this.form.timeList.length;
+      this.form.cooperationTime = flag ? this.form.timeList[0] : null;
+      this.form.cooperationEnd = flag ? this.form.timeList[1] : null;
       this.$emit("finish", {
         ...this.form,
         partyA: arr,
@@ -370,6 +414,11 @@ export default class PartyAAdd extends Vue {
   }
   /deep/ .el-tag__close.el-icon-close {
     top: -7px;
+  }
+}
+.formItem {
+  /deep/ .el-form-item__label {
+    line-height: 20px;
   }
 }
 </style>

@@ -4,7 +4,7 @@
  * @Author: wwq
  * @Date: 2020-11-27 17:17:06
  * @LastEditors: wwq
- * @LastEditTime: 2021-01-04 18:59:11
+ * @LastEditTime: 2021-01-07 09:31:13
 -->
 <template>
   <div class="project-approval-box">
@@ -767,7 +767,7 @@
         @click="submitProjectApproval()"
       >提交立项审核</el-button>
       <el-button
-        v-if="['TermAdopt', 'ConstractReject'].includes(info.auditEnum)"
+        v-if="['TermAdopt', 'ConstractReject', 'ConstractWait'].includes(info.auditEnum)"
         type="success"
         @click="submitContract()"
       >提交合同审核</el-button>
