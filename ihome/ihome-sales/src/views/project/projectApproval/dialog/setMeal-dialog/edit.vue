@@ -4,7 +4,7 @@
  * @Author: wwq
  * @Date: 2020-12-04 09:40:47
  * @LastEditors: wwq
- * @LastEditTime: 2020-12-28 10:25:24
+ * @LastEditTime: 2021-01-06 19:06:59
 -->
 <template>
   <el-dialog
@@ -49,10 +49,10 @@
               placeholder="物业类型"
             >
               <el-option
-                v-for="item in $root.dictAllList('Property')"
-                :key="item.code"
-                :label="item.name"
-                :value="item.code"
+                v-for="item in propertyEnumOptions"
+                :key="item.propertyEnum"
+                :label="item.propertyName"
+                :value="item.propertyEnum"
               ></el-option>
             </el-select>
           </el-form-item>
@@ -156,7 +156,29 @@
             <!-- 表头行选择 -->
             <div class="top-select">
               <!-- 服务费代理费 -->
-              <div class="title">服务费</div>
+              <div
+                class="msg-left"
+                style="width: 400px"
+              >
+                <div class="title">服务费</div>
+                <div style="display: flex;align-items: center">
+                  <div style="width: 160px">是否免收服务费</div>
+                  <el-select
+                    style="margin-left: 10px"
+                    v-model="item.exVoidService"
+                    clearable
+                    placeholder="请选择"
+                    @change="exVoidServiceChange(item.exVoidService, i)"
+                  >
+                    <el-option
+                      v-for="item in YesOrNoType"
+                      :key="item.code"
+                      :label="item.name"
+                      :value="item.code"
+                    ></el-option>
+                  </el-select>
+                </div>
+              </div>
               <!-- 删除模板,新增行 -->
               <div class="right-button">
                 <el-button
@@ -202,7 +224,7 @@
               </el-table-column>
               <el-table-column
                 prop="contractEnum"
-                label="合同类型"
+                label="渠道类型"
                 width="150"
                 align="center"
               >
@@ -294,6 +316,7 @@
                       v-model="row.receivableAmout"
                       v-digits="4"
                       clearable
+                      :disabled="item.exVoidService ? true: false"
                       style="width: 70%"
                     />
                   </div>
@@ -303,6 +326,7 @@
                       v-model="row.receivablePoint"
                       v-digits="4"
                       clearable
+                      :disabled="item.exVoidService ? true: false"
                       style="width: 70%"
                     />
                   </div>
@@ -582,7 +606,7 @@
               </el-table-column>
               <el-table-column
                 prop="contractEnum"
-                label="合同类型"
+                label="渠道类型"
                 width="150"
                 align="center"
               >
@@ -972,6 +996,7 @@ export default class SetMealEdit extends Vue {
   channelRowIndex = 0;
   padCommissionEnumOptions: any = [];
   contractTypeOptions: any = [];
+  propertyEnumOptions: any = [];
   rules: any = {
     packageName: [
       { required: true, message: "请输入套餐名称", trigger: "change" },
@@ -986,6 +1011,17 @@ export default class SetMealEdit extends Vue {
       { required: true, message: "请选择有效时间", trigger: "change" },
     ],
   };
+
+  YesOrNoType = [
+    {
+      code: 1,
+      name: "是",
+    },
+    {
+      code: 0,
+      name: "否",
+    },
+  ];
 
   otherChannelAmount(row: any) {
     let total =
@@ -1122,6 +1158,17 @@ export default class SetMealEdit extends Vue {
     );
   }
 
+  exVoidServiceChange(data: any, index: number) {
+    if (data) {
+      this.info.colletionandsendMxs[index].colletionandsendDetails.forEach(
+        (v: any) => {
+          v.receivablePoint = 0;
+          v.receivableAmout = 0;
+        }
+      );
+    }
+  }
+
   selectCompany(v: any, i: number) {
     if (v) {
       const item = this.info.partyAInfoList.find((j: any) => j.companyId === v);
@@ -1214,6 +1261,7 @@ export default class SetMealEdit extends Vue {
           },
         ];
       }
+      this.propertyEnumOptions = res.propertyDropDowm;
       this.info = (this.$tool as any).deepClone(res);
       this.info.timeList = [this.info.startTime, this.info.endTime];
       this.info.partyAInfoList = [...res.partyAInfoList];
@@ -1240,9 +1288,10 @@ export default class SetMealEdit extends Vue {
         }
       });
     } else {
-      const item = await get_collectandsend_getBaseTermByTermId__termId({
+      const item: any = await get_collectandsend_getBaseTermByTermId__termId({
         termId: this.$route.query.id,
       });
+      this.propertyEnumOptions = item.propertyDropDowm;
       this.info.partyAInfoList = [...item.partyAInfoList];
       this.partyAInfoList = [...item.partyAInfoList];
       if (item.padCommissionEnum !== "Veto") {
@@ -1313,6 +1362,7 @@ export default class SetMealEdit extends Vue {
             },
           ],
           costTypeEnum: "ServiceFee",
+          exVoidService: "",
         },
         {
           colletionandsendDetails: [
@@ -1444,6 +1494,7 @@ export default class SetMealEdit extends Vue {
                   },
                 ],
                 costTypeEnum: "ServiceFee",
+                exVoidService: "",
               });
             }
           } else if (action === "confirm") {
@@ -1488,7 +1539,7 @@ export default class SetMealEdit extends Vue {
       });
     } else if (this.info.chargeEnum === "Service") {
       let item = this.info.colletionandsendMxs.map((v: any) => v.costTypeEnum);
-      if (item.includes("Service")) {
+      if (item.includes("ServiceFee")) {
         this.$message.warning("服务费已存在,无需再增加");
         return;
       } else {
@@ -1521,6 +1572,7 @@ export default class SetMealEdit extends Vue {
             },
           ],
           costTypeEnum: "ServiceFee",
+          exVoidService: "",
         });
       }
     } else if (this.info.chargeEnum === "Agent") {

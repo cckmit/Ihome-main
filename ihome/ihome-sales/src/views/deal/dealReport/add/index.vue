@@ -77,6 +77,7 @@
   import SelectNoticeList from "@/views/deal/dealReport/dialog/selectNoticeList.vue";
   import AddCustomer from "@/views/deal/dealReport/dialog/addCustomer.vue";
   import SelectReceivePackage from "@/views/deal/dealReport/dialog/selectReceivePackage.vue";
+  import DealInfo from "@/views/deal/dealReport/dialog/dealInfo.vue";
   import {
     post_buModelContType_getList,
     post_buModelContType_subList
@@ -90,6 +91,7 @@
       SelectNoticeList,
       AddCustomer,
       SelectReceivePackage,
+      DealInfo
     }
   })
   export default class DealReportEntry extends Vue {
@@ -124,6 +126,29 @@
       this.dialogAddProjectCycle = true;
     }
 
+    // 获取细分业务模式的值
+    getRefineModel(value: any = '') {
+      let returnValue = '';
+      switch(value){
+        case 'TotalBagModel' :
+          // 总包
+          returnValue = 'All';
+          break;
+        case 'DistriModel' :
+          // 分销
+          returnValue = 'District';
+          break;
+        case 'TotalBagDistriModel' :
+          // 总包+分销
+          returnValue = '';
+          break;
+        default:
+          returnValue = '';
+          break;
+      }
+      return returnValue;
+    }
+
     // 确定选择项目周期
     async finishAddProjectCycle(data: any) {
       // console.log('data', data);
@@ -147,6 +172,13 @@
       this.dialogAddNotice = false;
     }
 
+    // 预览-优惠告知书
+    previewNotice(scope: any) {
+      window.open(
+        `/sales-api/sales-document-cover/file/browse/${scope.row.templateId}`
+      );
+    }
+
     // 添加客户
     handleAddCustomer() {
       this.dialogAddCustomer = !this.dialogAddCustomer;
@@ -160,7 +192,7 @@
 
     // 选择收派套餐
     selectPackage(data: any = {}) {
-      if (!data.type) return;
+      if (!data.feeType) return;
       if (data.hasRecord) {
         // 分销模式
         if (!data.contNo) {
@@ -171,19 +203,19 @@
         // 非分销模式
         // 合同类型contType + 物业类型propertyType + 细分业务类型refineModel + 立项周期cycleId，这几个条件必须满足
         let tips: any = [];
-        if (!data.cycleId) {
+        if (!data.termId) {
           tips.push('项目周期');
         }
-        if (!data.refineModel) {
+        if (!data.subdivide) {
           tips.push('细分业务模式');
         }
-        if (!data.propertyType) {
+        if (!data.property) {
           tips.push('物业类型');
         }
         if (!data.contType) {
           tips.push('合同类型');
         }
-        if (!tips.length) {
+        if (tips.length) {
           this.$message.error(`请先选择${tips.join('，')}`);
           return;
         }
@@ -192,10 +224,95 @@
       this.dialogAddReceivePackage = !this.dialogAddReceivePackage;
     }
 
+    // 计算收派金额总计
+    getReceiveSummaries(param: any) {
+      const {columns, data} = param;
+      const sums: any = [];
+      columns.forEach((column: any, index: any) => {
+        if (index === 0) {
+          sums[index] = '合计金额';
+          return;
+        }
+        if (![0, 1, 2].includes(index)) {
+          const values = data.map((item: any) => Number(item[column.property]));
+          if (!values.every((value: any) => isNaN(value))) {
+            sums[index] = values.reduce((prev: any, curr: any) => {
+              const value = Number(curr);
+              if (!isNaN(value)) {
+                return prev + curr;
+              } else {
+                return prev;
+              }
+            }, 0);
+          } else {
+            sums[index] = '';
+          }
+        } else {
+          sums[index] = '';
+        }
+      });
+      return sums;
+    }
+
     // 确定选择收派套餐
     async finishAddReceivePackage(data: any) {
       if (data.length === 0) return;
       await (this as any).$refs.child.finishAddReceivePackage(data);
+      this.dialogAddReceivePackage = !this.dialogAddReceivePackage;
+    }
+
+    /*
+    * 校验收派金额信息模块
+    * 自动---是否都有收派套餐
+    * 手动---除了其他渠道费用外是否都大于等于0
+    * params: data: Array --- 需要判断的收派金额数组
+    * params: way: string --- 计算方式---auto:自动；Manual:手动
+    * */
+    validReceiveData(data: any = [], way: any = "Auto") {
+      if (data.length === 0) return false;
+      let flag: any = true;
+      if (way === 'Auto') {
+        // 自动
+        flag = data.every((item: any) => {
+          return (item.showData && item.showData.length > 0);
+        });
+      } else {
+        // 手动
+        data.forEach((item: any) => {
+          if ([null, undefined, ""].includes(item.receiveAmount)) {
+            flag = false;
+          }
+          if ([null, undefined, ""].includes(item.commAmount)) {
+            flag = false;
+          }
+          if ([null, undefined, ""].includes(item.rewardAmount)) {
+            flag = false;
+          }
+          if ([null, undefined, ""].includes(item.totalPackageAmount)) {
+            flag = false;
+          }
+          if ([null, undefined, ""].includes(item.distributionAmount)) {
+            flag = false;
+          }
+        })
+      }
+      return flag;
+    }
+
+    // 初始化收派金额信息，置为0
+    initReceiveVOS(data: any = []) {
+      if (data && data.length > 0) {
+        data.forEach((item: any) => {
+          this.$set(item, 'showData', []);
+          item.receiveAmount = item.receiveAmount ? item.receiveAmount : 0;
+          item.commAmount = item.commAmount ? item.commAmount : 0;
+          item.rewardAmount = item.rewardAmount ? item.rewardAmount : 0;
+          item.totalPackageAmount = item.totalPackageAmount ? item.totalPackageAmount : 0;
+          item.distributionAmount = item.distributionAmount ? item.distributionAmount : 0;
+          item.otherChannelFees = item.otherChannelFees ? item.otherChannelFees : 0;
+        })
+      }
+      return data;
     }
 
     // 查看来访/成交确认信息

@@ -4,7 +4,7 @@
  * @Author: zyc
  * @Date: 2020-07-09 14:31:23
  * @LastEditors: zyc
- * @LastEditTime: 2020-12-22 11:40:29
+ * @LastEditTime: 2021-01-06 19:20:57
 --> 
 <template>
   <ih-page>
@@ -51,6 +51,7 @@
                   @change="changeDepartment()"
                   filterable
                   placeholder="请选择事业部"
+                  class="width--100"
                 >
                   <el-option
                     v-for="item in departmentList"
@@ -164,7 +165,7 @@
         </el-table-column>
         <el-table-column prop="attachmentDetails" label="附件">
           <template slot-scope="scope">
-            <span
+            <span class="margin-right-10"
               v-for="(cItem, cIndex) in scope.row.attachmentDetails"
               :key="cIndex"
             >

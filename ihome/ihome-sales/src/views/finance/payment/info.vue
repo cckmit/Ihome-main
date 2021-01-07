@@ -4,7 +4,7 @@
  * @Author: ywl
  * @Date: 2020-12-17 19:43:20
  * @LastEditors: ywl
- * @LastEditTime: 2020-12-22 11:23:29
+ * @LastEditTime: 2021-01-06 17:30:26
 -->
 <template>
   <IhPage class="text-left">
@@ -41,7 +41,7 @@
             <el-form-item label="付款方">{{$root.dictAllName(info.payment.payer, 'PaymentPayer')}}</el-form-item>
           </el-col>
           <el-col :span="8">
-            <el-form-item label="业务编号">{{info.payment.businessId}}</el-form-item>
+            <el-form-item label="业务编号">{{info.payment.businessCode}}</el-form-item>
           </el-col>
         </el-row>
         <el-row>
@@ -87,7 +87,7 @@
             <el-form-item label="录入终端">{{$root.dictAllName(info.payment.terminal, 'PaymentTerminal')}}</el-form-item>
           </el-col>
           <el-col :span="8">
-            <el-form-item label="成交报告编号">{{info.payment.operator}}</el-form-item>
+            <el-form-item label="成交报告编号">{{info.payment.dealCode}}</el-form-item>
           </el-col>
         </el-row>
         <el-row>

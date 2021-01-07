@@ -4,7 +4,7 @@
  * @Author: ywl
  * @Date: 2020-09-16 14:05:21
  * @LastEditors: ywl
- * @LastEditTime: 2020-12-18 19:30:27
+ * @LastEditTime: 2021-01-04 11:00:31
 -->
 <template>
   <IhPage>
@@ -209,11 +209,11 @@
           label="开户银行"
           min-width="200"
         ></el-table-column>
-        <el-table-column
+        <!-- <el-table-column
           prop="branchNo"
           label="联行号"
           width="150"
-        ></el-table-column>
+        ></el-table-column> -->
         <el-table-column
           prop="accountType"
           label="账号类型"

@@ -4,7 +4,7 @@
  * @Author: wwq
  * @Date: 2020-11-27 17:28:28
  * @LastEditors: wwq
- * @LastEditTime: 2020-12-25 14:00:03
+ * @LastEditTime: 2021-01-04 18:49:34
 -->
 <template>
   <div>
@@ -186,7 +186,16 @@
         <el-table-column
           label="周期名称"
           prop="termName"
-        ></el-table-column>
+        >
+          <template v-slot="{ row }">
+            <el-link
+              type="primary"
+              @click.native.prevent="routerTo(row)"
+            >
+              {{row.termName}}
+            </el-link>
+          </template>
+        </el-table-column>
         <el-table-column
           label="所属项目"
           prop="proName"
@@ -365,6 +374,16 @@ export default class Other extends Vue {
   select() {
     this.dialogVisible = true;
     this.editData.id = this.info.companyId;
+  }
+
+  routerTo(row: any) {
+    const item = this.$router.resolve({
+      path: `/projectApproval/info`,
+      query: {
+        id: row.termId,
+      },
+    });
+    window.open(item.href, "_blank");
   }
 
   async bankFinish(data: any) {

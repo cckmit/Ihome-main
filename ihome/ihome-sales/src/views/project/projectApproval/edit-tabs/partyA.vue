@@ -4,7 +4,7 @@
  * @Author: wwq
  * @Date: 2020-11-27 17:20:24
  * @LastEditors: wwq
- * @LastEditTime: 2020-12-29 09:21:34
+ * @LastEditTime: 2020-12-31 10:09:53
 -->
 <template>
   <div>
@@ -51,7 +51,11 @@
         <el-table-column
           prop="cooperationTime"
           label="执行时间"
-        ></el-table-column>
+        >
+          <template v-slot="{ row }">
+            {{ row.cooperationTime && row.cooperationEnd ? `${row.cooperationTime} ~ ${row.cooperationEnd}` : '' }}
+          </template>
+        </el-table-column>
         <el-table-column
           prop="handlerName"
           label="合同跟进人"
@@ -73,88 +77,90 @@
       </el-table>
     </div>
     <br />
-    <div class="partyA">
-      <p class="ih-info-title">栋座归属信息</p>
-      <div class="partyButton">
-        <el-button
-          size="small"
-          type="success"
-          @click="editParty"
-        >修改
-        </el-button>
+    <div v-if="!(info.partyAInfoMesgVOS.length === 0 || info.partyAInfoMesgVOS.length === 1)">
+      <div class="partyA">
+        <p class="ih-info-title">栋座归属信息</p>
+        <div class="partyButton">
+          <el-button
+            size="small"
+            type="success"
+            @click="editParty"
+          >修改
+          </el-button>
+        </div>
+      </div>
+      <div class="padding-left-20">
+        <el-table
+          class="ih-table"
+          :data="info.partyAInfoMesgVOS"
+          style="width: 100%"
+        >
+          <el-table-column
+            prop="companyName"
+            label="甲方名称"
+          ></el-table-column>
+          <el-table-column label="项目栋座">
+            <template v-slot="{ row }">
+              <template v-for="(item, i) in row.buildingVos">
+                <span :key="i">
+                  <span>{{item.buildingName}}</span>
+                  <span v-if="i !== row.buildingVos.length - 1">、</span>
+                </span>
+
+              </template>
+            </template>
+          </el-table-column>
+        </el-table>
       </div>
     </div>
-    <div class="padding-left-20">
-      <el-table
-        class="ih-table"
-        :data="info.partyAInfoMesgVOS"
-        style="width: 100%"
-      >
-        <el-table-column
-          prop="companyName"
-          label="甲方名称"
-        ></el-table-column>
-        <el-table-column label="项目栋座">
-          <template v-slot="{ row }">
-            <template v-for="(item, i) in row.buildingVos">
-              <span :key="i">
-                <span>{{item.buildingName}}</span>
-                <span v-if="i !== row.buildingVos.length - 1">、</span>
-              </span>
-
-            </template>
-          </template>
-        </el-table-column>
-      </el-table>
-      <br />
-      <el-form
-        :model="info"
-        label-width="140px"
-      >
-        <el-row>
-          <el-col :span="24">
-            <el-form-item label="客户成交以及确认">
-              <div class="editParty">
-                <el-input
-                  show-word-limit
-                  type="textarea"
-                  disabled
-                  :autosize="{ minRows: 4, maxRows: 8 }"
-                  placeholder="请输入客户成交以及确认"
-                  v-model="info.partyAOaVO.customerConfirm"
-                >
-                </el-input>
-                <i
-                  class="el-icon-edit-outline tubiao"
-                  @click="customerDialog"
-                ></i>
-              </div>
-            </el-form-item>
-          </el-col>
-        </el-row>
-        <el-row>
-          <el-col :span="24">
-            <el-form-item label="违约责任">
-              <div class="editParty">
-                <el-input
-                  show-word-limit
-                  type="textarea"
-                  disabled
-                  :autosize="{ minRows: 4, maxRows: 8 }"
-                  placeholder="请输入违约责任"
-                  v-model="info.partyAOaVO.responsibiltity"
-                >
-                </el-input>
-                <i
-                  class="el-icon-edit-outline tubiao"
-                  @click="responsibiltityDialog"
-                ></i>
-              </div>
-            </el-form-item>
-          </el-col>
-        </el-row>
-      </el-form>
-    </div>
+    <br />
+    <el-form
+      :model="info"
+      label-width="140px"
+    >
+      <el-row>
+        <el-col :span="24">
+          <el-form-item label="客户成交以及确认">
+            <div class="editParty">
+              <el-input
+                show-word-limit
+                type="textarea"
+                disabled
+                :autosize="{ minRows: 4, maxRows: 8 }"
+                placeholder="请输入客户成交以及确认"
+                v-model="info.partyAOaVO.customerConfirm"
+              >
+              </el-input>
+              <i
+                class="el-icon-edit-outline tubiao"
+                @click="customerDialog"
+              ></i>
+            </div>
+          </el-form-item>
+        </el-col>
+      </el-row>
+      <el-row>
+        <el-col :span="24">
+          <el-form-item label="违约责任">
+            <div class="editParty">
+              <el-input
+                show-word-limit
+                type="textarea"
+                disabled
+                :autosize="{ minRows: 4, maxRows: 8 }"
+                placeholder="请输入违约责任"
+                v-model="info.partyAOaVO.responsibiltity"
+              >
+              </el-input>
+              <i
+                class="el-icon-edit-outline tubiao"
+                @click="responsibiltityDialog"
+              ></i>
+            </div>
+          </el-form-item>
+        </el-col>
+      </el-row>
+    </el-form>
     <ih-dialog :show="dialogVisible">
       <PartyAList
         @cancel="() => (dialogVisible = false)"

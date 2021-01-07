@@ -4,7 +4,7 @@
  * @Author: wwq
  * @Date: 2020-12-08 14:28:17
  * @LastEditors: wwq
- * @LastEditTime: 2020-12-28 16:18:05
+ * @LastEditTime: 2021-01-06 19:07:54
 -->
 <template>
   <el-dialog
@@ -128,7 +128,7 @@
                 </el-table-column>
                 <el-table-column
                   prop="contractEnum"
-                  label="合同类型"
+                  label="渠道类型"
                   width="150"
                   align="center"
                 >
@@ -306,7 +306,7 @@
                 </el-table-column>
                 <el-table-column
                   prop="contractEnum"
-                  label="合同类型"
+                  label="渠道类型"
                   width="150"
                   align="center"
                 >
@@ -464,7 +464,7 @@
   </el-dialog>
 </template>
 <script lang="ts">
-import { Component, Vue } from "vue-property-decorator";
+import { Component, Vue, Prop } from "vue-property-decorator";
 import {
   post_collectandsend_getAllByTerm,
   post_distributContract_getItemByCondition,
@@ -476,6 +476,8 @@ import SetMealInfo from "../setMeal-dialog/info.vue";
   },
 })
 export default class SetMealDialog extends Vue {
+  @Prop()
+  searchdata!: any;
   dialogVisible = true;
   infoDialogVisible = false;
   info: any = {
@@ -576,14 +578,18 @@ export default class SetMealDialog extends Vue {
   }
 
   async rowClick(row: any) {
-    const res = await post_distributContract_getItemByCondition({
-      packageId: row.packageId,
-    });
-    this.info = (this.$tool as any).deepClone(res);
-    if (this.info.colletionandsendMxs.length) {
-      this.info.colletionandsendMxs.forEach(
-        (i: any, n: number) => (this.map[n] = [])
-      );
+    let obj: any = {};
+    obj.packageId = row.packageId;
+    obj.padCommissionEnum = this.searchdata.padCommissionEnum;
+    obj.channelEnum = this.searchdata.channelEnum;
+    const res = await post_distributContract_getItemByCondition(obj);
+    if (res) {
+      this.info = (this.$tool as any).deepClone(res);
+      if (this.info.colletionandsendMxs.length) {
+        this.info.colletionandsendMxs.forEach(
+          (i: any, n: number) => (this.map[n] = [])
+        );
+      }
     }
   }
 }

@@ -10,7 +10,7 @@
   <ih-page label-width="100px">
     <template v-slot:form>
       <p class="ih-info-title">{{branchCompanyName}}业绩比例管理</p>
-      <el-form ref="form" label-width="110px">
+      <el-form ref="form" label-width="110px" @submit.native.prevent>
         <el-row>
           <el-col :span="8">
             <el-form-item label="业务模式">

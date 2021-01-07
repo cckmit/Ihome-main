@@ -11,6 +11,7 @@
     <div>
       <p class="ih-info-title">成交信息</p>
       <el-form
+        @submit.native.prevent
         :model="postData"
         :rules="rules"
         ref="ruleForm"
@@ -344,18 +345,6 @@
                     :controls="false"
                     abel="描述文字"></el-input-number>
                   厅
-                </div>
-                <div>
-                  <el-input-number
-                    v-model="postData.kitchen"
-                    disabled
-                    :min="0"
-                    :step="1"
-                    size="small"
-                    :step-strictly="true"
-                    :controls="false"
-                    abel="描述文字"></el-input-number>
-                  厨
                 </div>
                 <div>
                   <el-input-number

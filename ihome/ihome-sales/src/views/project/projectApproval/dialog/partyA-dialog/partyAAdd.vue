@@ -4,7 +4,7 @@
  * @Author: wwq
  * @Date: 2020-12-01 14:49:06
  * @LastEditors: wwq
- * @LastEditTime: 2020-12-23 20:10:11
+ * @LastEditTime: 2021-01-07 09:28:46
 -->
 <template>
   <el-dialog
@@ -13,7 +13,7 @@
     :close-on-click-modal="false"
     :close-on-press-escape="false"
     :before-close="cancel"
-    width="750px"
+    width="850px"
     class="dialog text-left"
     title="甲方合同信息"
   >
@@ -44,9 +44,9 @@
             prop="partyA"
           >
             <IhSelectPageByDeveloper
+              class="IhSelectPageByDeveloper"
               v-model="form.partyA"
               placeholder="请选择甲方"
-              clearable
               multiple
             ></IhSelectPageByDeveloper>
           </el-form-item>
@@ -99,7 +99,10 @@
       </el-row>
       <el-row>
         <el-col :span="12">
-          <el-form-item label="合作项目">
+          <el-form-item
+            label="合作项目"
+            prop="cooperationProjectsName"
+          >
             <el-input
               placeholder="请填写合作项目"
               v-model="form.cooperationProjectsName"
@@ -116,13 +119,20 @@
       </el-row>
       <el-row>
         <el-col :span="12">
-          <el-form-item label="合作时间">
+          <el-form-item
+            label="合作时间"
+            prop="timeList"
+          >
             <el-date-picker
               style="width:100%;"
-              v-model="form.cooperationTime"
-              type="date"
+              v-model="form.timeList"
+              type="daterange"
               align="left"
-              placeholder="年/月/日"
+              unlink-panels
+              range-separator="至"
+              start-placeholder="开始日期"
+              end-placeholder="结束日期"
+              :picker-options="$root.pickerOptions"
               value-format="yyyy-MM-dd"
             ></el-date-picker>
           </el-form-item>
@@ -153,7 +163,10 @@
       </el-row>
       <el-row>
         <el-col :span="12">
-          <el-form-item label="成交确认人">
+          <el-form-item
+            label="成交确认人"
+            prop="confirmer"
+          >
             <el-input
               v-model="form.confirmer"
               placeholder="成交确认人"
@@ -161,7 +174,11 @@
           </el-form-item>
         </el-col>
         <el-col :span="12">
-          <el-form-item label="联系方式">
+          <el-form-item
+            label="成交确认人联系方式"
+            prop="confirmerContact"
+            class="formItem"
+          >
             <el-input
               v-model="form.confirmerContact"
               placeholder="成交确认人联系方式"
@@ -211,6 +228,7 @@ import { Form as ElForm } from "element-ui";
 import { NoRepeatHttp } from "ihome-common/util/aop/no-repeat-http";
 import { post_company_getAll } from "@/api/system/index";
 import { get_bankAccount_get__companyId } from "@/api/finance/index";
+import { phoneValidator } from "ihome-common/util/base/form-ui";
 
 @Component({
   components: {},
@@ -220,6 +238,7 @@ export default class PartyAAdd extends Vue {
   dialogVisible = true;
   partyFileList: any = [];
   stampFileList: any = [];
+
   form: any = {
     title: null,
     partyA: [],
@@ -227,9 +246,11 @@ export default class PartyAAdd extends Vue {
     receivingAccountId: null,
     cooperationProjectsName: null,
     cooperationTime: null,
+    cooperationEnd: null,
     handlerId: null,
     confirmer: null,
     confirmerContact: null,
+    timeList: [],
   };
   partyBOptions: any = [];
   branchOption: any = [];
@@ -240,6 +261,20 @@ export default class PartyAAdd extends Vue {
       {
         required: true,
         message: "请填写合同标题",
+        trigger: "change",
+      },
+    ],
+    cooperationProjectsName: [
+      {
+        required: true,
+        message: "请填写合作项目",
+        trigger: "change",
+      },
+    ],
+    timeList: [
+      {
+        required: true,
+        message: "请选择合作时间",
         trigger: "change",
       },
     ],
@@ -263,6 +298,21 @@ export default class PartyAAdd extends Vue {
         message: "请选择合同跟进人",
         trigger: "change",
       },
+    ],
+    confirmer: [
+      {
+        required: true,
+        message: "请填写成交确认人",
+        trigger: "change",
+      },
+    ],
+    confirmerContact: [
+      {
+        required: true,
+        message: "请填写成交确认人联系方式",
+        trigger: "change",
+      },
+      { validator: phoneValidator, trigger: "change" },
     ],
     receivingAccountId: [
       {
@@ -308,6 +358,10 @@ export default class PartyAAdd extends Vue {
       arr = this.form.partyA.map((v: any) => ({
         userId: v,
       }));
+
+      let flag = this.form.timeList && this.form.timeList.length;
+      this.form.cooperationTime = flag ? this.form.timeList[0] : null;
+      this.form.cooperationEnd = flag ? this.form.timeList[1] : null;
       this.$emit("finish", {
         ...this.form,
         partyA: arr,
@@ -348,6 +402,23 @@ export default class PartyAAdd extends Vue {
   }
   /deep/ .el-dialog__body {
     padding: 10px 20px 0 20px;
+  }
+}
+.IhSelectPageByDeveloper {
+  /deep/ .el-select__tags-text {
+    display: inline-block;
+    max-width: 180px;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+  /deep/ .el-tag__close.el-icon-close {
+    top: -7px;
+  }
+}
+.formItem {
+  /deep/ .el-form-item__label {
+    line-height: 20px;
   }
 }
 </style>

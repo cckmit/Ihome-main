@@ -4,7 +4,7 @@
  * @Author: wwq
  * @Date: 2020-12-09 20:12:21
  * @LastEditors: wwq
- * @LastEditTime: 2020-12-28 10:23:43
+ * @LastEditTime: 2020-12-31 17:57:14
 -->
 <template>
   <el-dialog
@@ -61,6 +61,17 @@
                 >
                   <div>
                     <el-checkbox-group
+                      v-if="item.conditionModel === 'Property'"
+                      v-model="item.values"
+                    >
+                      <el-checkbox
+                        :label="list.propertyEnum"
+                        v-for="(list, h) in PropertyOptions"
+                        :key="h"
+                      >{{list.propertyName}}</el-checkbox>
+                    </el-checkbox-group>
+                    <el-checkbox-group
+                      v-else
                       v-model="item.values"
                       @change="checkboxChange"
                     >
@@ -300,7 +311,7 @@
 <script lang="ts">
 import { Component, Vue, Prop, Watch } from "vue-property-decorator";
 import {
-  get_settleCondition_getMakingType,
+  get_his_settleCondition_getMakingType__proId,
   post_partyAContract_getBuilding__termId,
   post_settleCondition_getMaking__settleId,
 } from "@/api/project/index";
@@ -327,6 +338,7 @@ export default class MakingEdit extends Vue {
     servicePadCommisionType: null,
     settleConditionMakingVOS: [],
   };
+  PropertyOptions: any = [];
   budingList: any = [];
   padCommissionEnumOptions: any = [];
   rules: any = {
@@ -433,27 +445,32 @@ export default class MakingEdit extends Vue {
 
   // 获取类型
   async getMakingType() {
-    let arr: any = [];
-    arr = await get_settleCondition_getMakingType();
-    this.info.settleConditionMakingVOS = arr.map((v: any) => ({
-      enumType: v.enumType,
-      type: v.fieldEnum,
-      compare: null,
-      compareB: null,
-      conditionAnd: null,
-      conditionModel: v.conditionMarkingEnum,
-      conditionNumA: null,
-      conditionNumB: null,
-      conditionSetId: null,
-      designatedAgency: [],
-      returnRateByHouse: null,
-      values: [],
-      checkboxed: false,
-      conditionAndCheckboxed: false,
-      compareBList: [],
-      isConditionAndShow: true,
-      mulitVal: [],
-    }));
+    let obj: any = {};
+    obj = await get_his_settleCondition_getMakingType__proId({
+      proId: this.data.proId,
+    });
+    this.PropertyOptions = obj.propertyVOS;
+    this.info.settleConditionMakingVOS = obj.settleMakingListVOS.map(
+      (v: any) => ({
+        enumType: v.enumType,
+        type: v.fieldEnum,
+        compare: null,
+        compareB: null,
+        conditionAnd: null,
+        conditionModel: v.conditionMarkingEnum,
+        conditionNumA: null,
+        conditionNumB: null,
+        conditionSetId: null,
+        designatedAgency: [],
+        returnRateByHouse: null,
+        values: [],
+        checkboxed: false,
+        conditionAndCheckboxed: false,
+        compareBList: [],
+        isConditionAndShow: true,
+        mulitVal: [],
+      })
+    );
   }
 
   // 获取结佣详情

@@ -9,7 +9,7 @@
 <template>
   <el-dialog
     v-dialogDrag
-    title="新增/修改角色业绩"
+    :title="achieveTitle"
     :visible.sync="dialogVisible"
     :close-on-click-modal="false"
     :close-on-press-escape="false"
@@ -18,7 +18,7 @@
     width="1000px"
     style="text-align: left"
     class="dialog">
-    <el-form ref="form" label-width="150px">
+    <el-form ref="form" label-width="150px" @submit.native.prevent>
       <el-row :gutter="10">
         <el-col :span="8">
           <el-form-item label="角色类型">
@@ -34,9 +34,11 @@
         </el-col>
         <el-col :span="8">
           <el-form-item label="角色人">
-            <el-input placeholder="请选择角色人" readonly v-model="form.rolerName">
-              <el-button slot="append" icon="el-icon-search" @click.native.prevent="selectRole"></el-button>
-            </el-input>
+            <IhSelectPageUser
+              v-model="form.rolerId"
+              @changeOption="(data) => {form.data = data}"
+              clearable>
+            </IhSelectPageUser>
           </el-form-item>
         </el-col>
         <el-col :span="8">
@@ -78,9 +80,10 @@
           <el-table class="ih-table" max-height="250px" :data="form.managementList">
             <el-table-column prop="name" label="名称" min-width="100">
               <template slot-scope="scope">
-                <el-input placeholder="名称" readonly v-model="scope.row.name">
-                  <el-button slot="append" icon="el-icon-search" @click.native.prevent="selectRole"></el-button>
-                </el-input>
+                <IhSelectPageUser
+                  v-model="scope.row.roleId"
+                  clearable>
+                </IhSelectPageUser>
               </template>
             </el-table-column>
             <el-table-column prop="achieveAmount" label="岗位" min-width="100"></el-table-column>
@@ -155,6 +158,7 @@
     dealRoleList: any = []; // 角色类型 --- 从角色字典中过滤分公司选项
     isCompany: any = false; // 是否公司业绩
     dialogAddRole: any = false;
+    achieveTitle: any = '新增角色业绩'; // 弹窗标题
 
     queryPageParameters: any = {
       channelGrade: null,
@@ -183,8 +187,19 @@
     }
 
     created() {
+      console.log('editDealAchieveData', this.data);
+      // 弹框标题
+      if (this.data.btnType === 'add') {
+        this.achieveTitle = '新增角色业绩';
+      } else if (this.data.btnType === 'edit') {
+        if (this.data.type === 'BranchOffice') {
+          this.achieveTitle = '分配管理岗业绩';
+        } else {
+          this.achieveTitle = '修改角色业绩';
+        }
+      }
       const list: any = (this as any).$root.dictAllList('DealRole');
-      console.log('角色类型', list);
+      // console.log('角色类型', list);
       if (list.length > 0) {
         this.dealRoleList = list.filter((item: any) => {
           return item.code !== "BranchOffice";

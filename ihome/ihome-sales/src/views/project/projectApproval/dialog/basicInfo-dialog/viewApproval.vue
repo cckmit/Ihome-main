@@ -4,7 +4,7 @@
  * @Author: wwq
  * @Date: 2020-12-10 11:42:19
  * @LastEditors: wwq
- * @LastEditTime: 2020-12-17 15:17:49
+ * @LastEditTime: 2021-01-04 18:37:49
 -->
 <template>
   <el-dialog
@@ -38,7 +38,7 @@
         <td>启动事业部</td>
         <td>{{info.startDivision}}</td>
         <td>启动城市</td>
-        <td>{{info.city}}</td>
+        <td>{{info.cityName}}</td>
         <td>开展周期</td>
         <td>{{info.termStart + '~' + info.termEnd}}</td>
       </tr>
@@ -151,7 +151,7 @@
         <td>{{info.termOverallRate}}</td>
         <td colspan="4"></td>
       </tr>
-      <tr>
+      <!-- <tr>
         <td rowspan="2">审核情况</td>
         <td
           colspan="3"
@@ -173,7 +173,7 @@
             <div class="text-right">[马碧莹 2019-11-07 11:25]</div>
           </div>
         </td>
-      </tr>
+      </tr> -->
     </table>
     <span
       slot="footer"

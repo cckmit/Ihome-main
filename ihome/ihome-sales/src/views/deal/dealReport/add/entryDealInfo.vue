@@ -9,6 +9,7 @@
 <template>
   <ih-page class="text-left">
     <el-form
+      @submit.native.prevent
       v-loading="formLoading"
       :model="postData"
       :rules="rules"
@@ -21,7 +22,7 @@
       </div>
       <el-row>
         <el-col :span="6" v-if="!!postData.dealCode">
-          <el-form-item label="成交报告编号" :prop="!!postData.dealCode ? 'dealCode' : ''">
+          <el-form-item label="成交报告编号" :prop="!!postData.dealCode ? 'dealCode' : ' '">
             <el-input
               disabled
               placeholder="成交报告编号"
@@ -30,8 +31,8 @@
         </el-col>
         <el-col :span="6">
           <el-form-item label="项目周期" prop="cycleId">
-            <el-input placeholder="请选择项目周期" readonly v-model="postData.cycleName">
-              <el-button slot="append" icon="el-icon-search" @click.native.prevent="selectProject"></el-button>
+            <el-input placeholder="请选择项目周期" readonly v-model="postData.cycleName" @click.native.prevent="selectProject">
+              <el-button slot="append" icon="el-icon-search"></el-button>
             </el-input>
           </el-form-item>
         </el-col>
@@ -172,7 +173,7 @@
           </el-form-item>
         </el-col>
         <el-col :span="6" v-if="baseInfoInDeal.hasRecord">
-          <el-form-item label="分销协议编号" :prop="baseInfoInDeal.hasRecord ? 'contNo' : ''">
+          <el-form-item label="分销协议编号" :prop="baseInfoInDeal.hasRecord ? 'contNo' : ' '">
             <div class="contNo-wrapper">
               <el-select
                 v-model="postData.contNo"
@@ -192,7 +193,7 @@
           </el-form-item>
         </el-col>
         <el-col :span="6" v-if="baseInfoInDeal.hasRecord">
-          <el-form-item label="是否垫佣" :prop="baseInfoInDeal.hasRecord ? 'isMat' : ''">
+          <el-form-item label="是否垫佣" :prop="baseInfoInDeal.hasRecord ? 'isMat' : ' '">
             <el-select
               v-model="postData.isMat"
               disabled
@@ -208,22 +209,22 @@
           </el-form-item>
         </el-col>
         <el-col :span="6" v-if="baseInfoInDeal.hasRecord">
-          <el-form-item label="报备信息" :prop="baseInfoInDeal.hasRecord ? 'recordStr' : ''">
+          <el-form-item label="报备信息" :prop="baseInfoInDeal.hasRecord ? 'recordStr' : ' '">
             <el-input v-model="postData.recordStr" disabled placeholder="房号自动带出"></el-input>
           </el-form-item>
         </el-col>
         <el-col :span="6" v-if="baseInfoInDeal.hasRecord">
-          <el-form-item label="渠道公司" :prop="baseInfoInDeal.hasRecord ? 'agencyName' : ''">
+          <el-form-item label="渠道公司" :prop="baseInfoInDeal.hasRecord ? 'agencyName' : ' '">
             <el-input v-model="postData.agencyName" disabled placeholder="选成交报备自动带出"></el-input>
           </el-form-item>
         </el-col>
         <el-col :span="6" v-if="baseInfoInDeal.hasRecord">
-          <el-form-item label="渠道等级" :prop="baseInfoInDeal.hasRecord ? 'channelLevelName' : ''">
+          <el-form-item label="渠道等级" :prop="baseInfoInDeal.hasRecord ? 'channelLevelName' : ' '">
             <el-input v-model="postData.channelLevelName" disabled placeholder="选成交报备自动带出"></el-input>
           </el-form-item>
         </el-col>
         <el-col :span="6" v-if="baseInfoInDeal.hasRecord">
-          <el-form-item label="经纪人" :prop="baseInfoInDeal.hasRecord ? 'brokerName' : ''">
+          <el-form-item label="经纪人" :prop="baseInfoInDeal.hasRecord ? 'brokerName' : ' '">
             <el-input v-model="postData.brokerName" disabled placeholder="选成交报备自动带出"></el-input>
           </el-form-item>
         </el-col>
@@ -255,48 +256,28 @@
           <el-form-item label="户型">
             <div class="home-type-wrapper">
               <div>
-                <el-input-number
+                <el-input
                   v-digits="0"
                   :disabled="isDisabled('room', 'houseVO')"
-                  v-model="postData.room"
-                  :min="0"
-                  :step="1"
-                  size="small"
-                  :controls="false"
-                  :step-strictly="true"></el-input-number>室
+                  v-model="postData.room">
+                  <div slot="append">室</div>
+                </el-input>
               </div>
               <div>
-                <el-input-number
+                <el-input
                   v-digits="0"
                   :disabled="isDisabled('hall', 'houseVO')"
-                  v-model="postData.hall"
-                  :min="0"
-                  :step="1"
-                  size="small"
-                  :controls="false"
-                  :step-strictly="true"></el-input-number>厅
+                  v-model="postData.hall">
+                  <div slot="append">厅</div>
+                </el-input>
               </div>
               <div>
-                <el-input-number
-                  v-digits="0"
-                  :disabled="isDisabled('kitchen', 'houseVO')"
-                  v-model="postData.kitchen"
-                  :min="0"
-                  :step="1"
-                  size="small"
-                  :controls="false"
-                  :step-strictly="true"></el-input-number>厨
-              </div>
-              <div>
-                <el-input-number
+                <el-input
                   v-digits="0"
                   :disabled="isDisabled('toilet', 'houseVO')"
-                  v-model="postData.toilet"
-                  :min="0"
-                  :step="1"
-                  size="small"
-                  :controls="false"
-                  :step-strictly="true"></el-input-number>卫
+                  v-model="postData.toilet">
+                  <div slot="append">卫</div>
+                </el-input>
               </div>
             </div>
           </el-form-item>
@@ -357,60 +338,65 @@
           </el-form-item>
         </el-col>
         <el-col :span="6">
-          <el-form-item label="认购价格" :prop="['Subscribe', 'SignUp'].includes(postData.stage) ? 'subscribePrice' : ''">
+          <el-form-item label="认购价格" :prop="['Subscribe', 'SignUp'].includes(postData.stage) ? 'subscribePrice' : ' '">
             <el-input
+              v-digits="2"
               :disabled="isDisabled('subscribePrice', 'dealVO')"
               v-model="postData.subscribePrice"
               placeholder="请输入认购价格"></el-input>
           </el-form-item>
         </el-col>
         <el-col :span="6">
-          <el-form-item label="认购日期" :prop="['Subscribe', 'SignUp'].includes(postData.stage) ? 'subscribeDate' : ''">
+          <el-form-item label="认购日期" :prop="['Subscribe', 'SignUp'].includes(postData.stage) ? 'subscribeDate' : ' '">
             <el-date-picker
               style="width: 100%"
               :disabled="isDisabled('subscribeDate', 'dealVO')"
               v-model="postData.subscribeDate"
-              type="datetime"
+              type="date"
+              value-format="yyyy-MM-dd"
               placeholder="请选择认购日期">
             </el-date-picker>
           </el-form-item>
         </el-col>
         <el-col :span="6">
-          <el-form-item label="签约价格" :prop="['SignUp'].includes(postData.stage) ? 'signPrice' : ''">
+          <el-form-item label="签约价格" :prop="['SignUp'].includes(postData.stage) ? 'signPrice' : ' '">
             <el-input
+              v-digits="2"
               :disabled="isDisabled('signPrice', 'dealVO')"
               v-model="postData.signPrice"
               placeholder="请输入签约价格"></el-input>
           </el-form-item>
         </el-col>
         <el-col :span="6">
-          <el-form-item label="签约日期" :prop="['SignUp'].includes(postData.stage) ? 'signDate' : ''">
+          <el-form-item label="签约日期" :prop="['SignUp'].includes(postData.stage) ? 'signDate' : ' '">
             <el-date-picker
               style="width: 100%"
               :disabled="isDisabled('signDate', 'dealVO')"
               v-model="postData.signDate"
-              type="datetime"
+              type="date"
+              value-format="yyyy-MM-dd"
               placeholder="请选择签约日期">
             </el-date-picker>
           </el-form-item>
         </el-col>
         <el-col :span="6">
-          <el-form-item label="成交组织" prop="dealOrgId">
-            <el-input v-model="postData.dealOrgId" disabled placeholder="项目周期自动带出"></el-input>
+          <el-form-item label="成交组织" prop="dealOrgName">
+            <el-input v-model="postData.dealOrgName" disabled placeholder="项目周期自动带出"></el-input>
           </el-form-item>
         </el-col>
         <el-col :span="6" v-if="!!id">
-          <el-form-item label="录入人" :prop="!!id ? 'entryPerson' : ''">
+          <el-form-item label="录入人" :prop="!!id ? 'entryPerson' : ' '">
             <el-input v-model="postData.entryPerson" disabled placeholder="录入人"></el-input>
           </el-form-item>
         </el-col>
         <el-col :span="6" v-if="!!id">
-          <el-form-item label="录入日期" :prop="!!id ? 'entryDate' : ''">
+          <el-form-item label="录入日期" :prop="!!id ? 'entryDate' : ' '">
             <el-date-picker
               style="width: 100%"
               v-model="postData.entryDate"
-              type="datetime"
+              type="date"
               disabled
+              value-format="yyyy-MM-dd"
               placeholder="请选择录入日期">
             </el-date-picker>
           </el-form-item>
@@ -421,7 +407,7 @@
           </el-form-item>
         </el-col>
         <el-col :span="6" v-if="!!id">
-          <el-form-item label="成交状态" :prop="!!id ? 'status' : ''">
+          <el-form-item label="成交状态" :prop="!!id ? 'status' : ' '">
             <el-input v-model="postData.status" disabled placeholder="成交状态"></el-input>
           </el-form-item>
         </el-col>
@@ -462,7 +448,7 @@
                 <el-link
                   class="margin-right-10"
                   type="success"
-                  @click.native.prevent="previewNotice(scope)"
+                  @click.native.prevent="$parent.previewNotice(scope)"
                 >预览
                 </el-link>
               </template>
@@ -475,36 +461,36 @@
     <el-row style="padding-left: 20px">
       <el-col>
         <div
-          v-if="!baseInfoInDeal.myReturnVO.customerVOS.length"
+          v-if="!baseInfoInDeal.customerAddVOS.length"
           class="add-all-wrapper">
           <el-button type="success" @click="handleAddCustomer">添加客户</el-button>
         </div>
         <el-table
           class="ih-table"
           :data="postData.customerVO">
-          <el-table-column prop="custCode" label="客户编号" min-width="150"></el-table-column>
-          <el-table-column prop="custType" label="客户类型" min-width="120">
+          <el-table-column prop="customerNo" label="客户编号" min-width="150"></el-table-column>
+          <el-table-column prop="customerType" label="客户类型" min-width="120">
             <template slot-scope="scope">
-              <div>{{$root.dictAllName(scope.row.custType, 'CustType')}}</div>
+              <div>{{$root.dictAllName(scope.row.customerType, 'CustType')}}</div>
             </template>
           </el-table-column>
-          <el-table-column prop="custName" label="客户名称" min-width="120"></el-table-column>
-          <el-table-column prop="custTel" label="手机号码" min-width="120"></el-table-column>
+          <el-table-column prop="customerName" label="客户名称" min-width="120"></el-table-column>
+          <el-table-column prop="customerPhone" label="手机号码" min-width="120"></el-table-column>
           <el-table-column prop="cardType" label="证件类型" min-width="120">
             <template slot-scope="scope">
               <div>{{$root.dictAllName(scope.row.cardType, 'CardType')}}</div>
             </template>
           </el-table-column>
-          <el-table-column prop="certificateNumber" label="证件编号" min-width="150"></el-table-column>
+          <el-table-column prop="cardNo" label="证件编号" min-width="150"></el-table-column>
           <el-table-column prop="email" label="邮箱" min-width="120"></el-table-column>
           <el-table-column
-            v-if="!baseInfoInDeal.myReturnVO.customerVOS.length"
+            v-if="!baseInfoInDeal.customerAddVOS.length"
             fixed="right" label="操作" width="100">
             <template slot-scope="scope">
               <el-link
                 class="margin-right-10"
                 type="primary"
-                @click.native.prevent="deleteAdd(scope, 'customer')"
+                @click.native.prevent="deleteAdd(scope)"
               >删除
               </el-link>
             </template>
@@ -519,7 +505,7 @@
           class="ih-table"
           show-summary
           sum-text="合计金额"
-          :summary-method="getReceiveSummaries"
+          :summary-method="$parent.getReceiveSummaries"
           :data="postData.receiveVO">
           <el-table-column prop="type" label="类型" min-width="120">
             <template slot-scope="scope">
@@ -544,14 +530,10 @@
                 <el-tooltip placement="top" effect="light">
                   <div slot="content">
                     <el-table :data="scope.row.showData" style="width: 100%">
-                      <el-table-column label="类型" prop="type" min-width="100">
-                        <template slot-scope="scope">
-                          <div>{{$root.dictAllName(scope.row.branchName, 'CardType')}}</div>
-                        </template>
-                      </el-table-column>
+                      <el-table-column label="类型" prop="typeName" min-width="100"></el-table-column>
                       <el-table-column label="合同类型" prop="contractEnum" min-width="100">
                         <template slot-scope="scope">
-                          <div>{{$root.dictAllName(scope.row.contractEnum, 'Contract')}}</div>
+                          <div>{{$root.dictAllName(scope.row.contractEnum, 'ContType')}}</div>
                         </template>
                       </el-table-column>
                       <el-table-column label="客户类型" prop="transactionEnum" min-width="100">
@@ -560,31 +542,31 @@
                         </template>
                       </el-table-column>
                       <el-table-column label="条件" prop="condition" min-width="200"></el-table-column>
-                      <el-table-column label="应收金额" prop="receivableAmout" min-width="100">
+                      <el-table-column label="应收金额" prop="receivableAmout" min-width="200">
                         <template slot-scope="scope">
                           <div>金额：{{scope.row.receivableAmout}}</div>
                           <div>点数：{{scope.row.receivablePoint}}</div>
                         </template>
                       </el-table-column>
-                      <el-table-column label="派发佣金" prop="sendAmount" min-width="100">
+                      <el-table-column label="派发佣金" prop="sendAmount" min-width="200">
                         <template slot-scope="scope">
                           <div>金额：{{scope.row.sendAmount}}</div>
                           <div>点数：{{scope.row.sendPoint}}</div>
                         </template>
                       </el-table-column>
-                      <el-table-column label="派发内场奖励" prop="sendInAmount" min-width="150">
+                      <el-table-column label="派发内场奖励" prop="sendInAmount" min-width="200">
                         <template slot-scope="scope">
                           <div>金额：{{scope.row.sendInAmount}}</div>
                           <div>点数：{{scope.row.sendInPoint}}</div>
                         </template>
                       </el-table-column>
-                      <el-table-column label="总包业绩" prop="generalAchieveAmount" min-width="100">
+                      <el-table-column label="总包业绩" prop="generalAchieveAmount" min-width="200">
                         <template slot-scope="scope">
                           <div>金额：{{scope.row.generalAchieveAmount}}</div>
                           <div>点数：{{scope.row.generalAchievePoint}}</div>
                         </template>
                       </el-table-column>
-                      <el-table-column label="分销业绩" prop="distributeAchieveAmount" min-width="100">
+                      <el-table-column label="分销业绩" prop="distributeAchieveAmount" min-width="200">
                         <template slot-scope="scope">
                           <div>金额：{{scope.row.distributeAchieveAmount}}</div>
                           <div>点数：{{scope.row.distributeAchievePoint}}</div>
@@ -595,7 +577,7 @@
                   <el-input
                     readonly
                     placeholder="收派标准">
-                    <el-button slot="append" icon="el-icon-search"
+                    <el-button slot="append" icon="el-icon-edit-outline"
                       @click.native.prevent="selectPackage(scope)"></el-button>
                   </el-input>
                 </el-tooltip>
@@ -636,7 +618,8 @@
             <template slot-scope="scope">
               <IhUpload
                 :isCrop="false"
-                :file-list.sync="scope.row.fileList"
+                :file-list.sync="scope.row.defaultFileList"
+                :file-type="scope.row.code"
                 size="100px"
                 :limit="100"
                 :file-size="10"
@@ -649,7 +632,7 @@
       </el-col>
     </el-row>
     <div class="text-center btn-top">
-      <el-button type="success" @click="handleSave('submit')">提交</el-button>
+      <el-button type="success" @click="handleSave">提交</el-button>
       <el-button @click="cancel()">取消</el-button>
     </div>
     <div class="nav-box">
@@ -673,6 +656,9 @@
   import {
     get_term_getProBaseByTermId__termId, // 通过项目周期获取成交基础信息
   } from "@/api/project";
+  import {
+    get_org_get__id, // 通过组织id获取组织name
+  } from "@/api/system";
   import {Form as ElForm} from "element-ui";
   import {NoRepeatHttp} from "ihome-common/util/aop/no-repeat-http";
 
@@ -719,7 +705,8 @@
         customerVOS: {},
         dealVO: {},
         dataSign: ''
-      }
+      }, // 明源数据
+      customerAddVOS: [], // 客户信息
     }; // 通过initPage接口获取到的成交信息(项目周期 + 房号)
     formLoading: any = false; // 表格loading状态
     postData: any = {
@@ -743,7 +730,8 @@
       brokerName: null, // 渠道经纪人
       oneAgentTeamId: null,
       isMarketProject: null,
-      dealOrgId: null,
+      dealOrgId: null, // 成交组织id
+      dealOrgName: null, // 成交组织name
       recordState: null, // 备案情况
       returnRatio: null,
       dataSign: null, // 数据标志
@@ -771,13 +759,12 @@
       area: null,
       room: null,
       hall: null,
-      kitchen: null,
       toilet: null,
       sceneSales: null, // 现场销售
       offerNoticeVO: [], // 优惠告知书
       customerVO: [], // 客户信息
       agencyVO: [], // 渠道信息
-      receiveVO: [{}], // 收派金额
+      receiveVO: [], // 收派金额
       receiveAchieveVO: [], // 应收信息
       documentVO: [], // 附件信息
     };
@@ -803,8 +790,8 @@
       isMarketProject: [
         {required: true, message: "是否市场化项目必选", trigger: "change"},
       ],
-      dealOrgId: [
-        {required: true, message: "成交组织必选", trigger: "change"},
+      dealOrgName: [
+        {required: true, message: "成交组织不能为空", trigger: "change"},
       ],
       dataSign: [
         {required: true, message: "数据标志不能为空", trigger: "change"},
@@ -893,6 +880,7 @@
     ]; // 锚点列表
     navFlag: any = false; // 是否展开锚点
     navList: any = []; // 锚点列表
+    currentReceiveIndex: any = null; // 当前选中的收派金额列表数据
 
     // 应收信息表格
     get receiveAchieveVO() {
@@ -918,13 +906,6 @@
     }
 
     async created() {
-      this.postData.documentVO = (this as any).$root.dictAllList('DealFileType'); // 附件类型
-      // 附件类型增加key
-      if (this.postData.documentVO.length > 0) {
-        this.postData.documentVO.forEach((vo: any) => {
-          vo.fileList = []
-        })
-      }
       // 锚点设置默认值
       this.navList = (this as any).$tool.deepClone(this.defaultNavList);
       if (this.postData.contType === 'NaturalVisitDeal') {
@@ -991,6 +972,11 @@
         if (data[0].termId !== this.postData.cycleId) {
           // 不相等要清空数据关联数据 + 重新请求接口
           if (this.postData.cycleId) {
+            this.contNoList = []; // 分销协议编号
+            this.packageIdsList = []; // ids
+            this.postData.customerVO = []; // 客户信息
+            this.postData.offerNoticeVO = []; // 优惠告知书
+            this.postData.documentVO = []; // 上传附件
             let list: any = [
               'refineModel',
               'oneAgentTeamId',
@@ -1005,7 +991,6 @@
               'area',
               'room',
               'hall',
-              'kitchen',
               'toilet',
               'propertyNo',
               'sceneSales',
@@ -1035,7 +1020,7 @@
         this.postData.businessType = baseInfo.busEnum;
         this.contTypeList = await this.getContTypeList(this.postData.businessType); // 获取合同类型
         this.refineModelList =await this.getRefineModelList(this.postData.businessType); // 获取细分业务模式下拉项
-        this.changeBusinessType(this.postData.businessType); // 赋值细分业务模式
+        this.postData.refineModel = (this as any).$parent.getRefineModel(this.postData.businessType); // 赋值细分业务模式
         // 是否市场化项目
         this.postData.isMarketProject = baseInfo.exMarket === 1 ? 'Yes' : 'No';
         // 物业类型
@@ -1089,7 +1074,18 @@
         } else {
           this.navList = (this as any).$tool.deepClone(this.defaultNavList);
         }
+        // 成交组织
+        await this.getOrgName(baseInfo.groupId);
       }
+    }
+
+    // 获取组织name
+    async getOrgName(id: any = '') {
+      if (!id) return;
+      const info: any = await get_org_get__id({id: id});
+      // console.log('组织info:', info);
+      this.postData.dealOrgName = info.name;
+      this.postData.dealOrgId = id;
     }
 
     // 改变栋座
@@ -1105,8 +1101,10 @@
       this.contNoList = []; // 分销协议编号
       this.packageIdsList = []; // ids
       this.postData.customerVO = []; // 客户信息
+      this.postData.receiveVO = []; // 收派金额
       this.postData.offerNoticeVO = []; // 优惠告知书
-      let list: any = ['contType', 'contNo', 'recordState', 'recordStr', 'area', 'room', 'hall', 'kitchen',
+      this.postData.documentVO = []; // 上传附件
+      let list: any = ['contType', 'contNo', 'recordState', 'recordStr', 'area', 'room', 'hall',
         'toilet', 'propertyNo', 'signType', 'stage', 'returnRatio', 'subscribePrice', 'subscribeDate',
         'signPrice', 'signDate', 'dataSign', 'agencyId', 'agencyName', 'channelLevel', 'channelLevelName']
       this.resetObject('postData', list);
@@ -1162,7 +1160,6 @@
       // 户型
       this.postData.room = baseInfo.myReturnVO.houseVO?.room;
       this.postData.hall = baseInfo.myReturnVO.houseVO?.hall;
-      this.postData.kitchen = baseInfo.myReturnVO.houseVO?.kitchen;
       this.postData.toilet = baseInfo.myReturnVO.houseVO?.toilet;
       // 预售合同编号
       this.postData.propertyNo = baseInfo.myReturnVO.houseVO?.propertyNo;
@@ -1200,22 +1197,14 @@
         this.initAgency(baseInfo.agencyVOs, false);
       }
       // 优惠告知书
-      this.postData.offerNoticeVO = baseInfo.notice ? baseInfo.notice : [];
+      this.postData.offerNoticeVO = baseInfo.notice && baseInfo.notice.length ? baseInfo.notice : [];
       // 客户信息
-      this.postData.customerVO = baseInfo.myReturnVO && baseInfo.myReturnVO.customerVOS && baseInfo.myReturnVO.customerVOS.length ? baseInfo.myReturnVO.customerVOS : [];
+      this.postData.customerVO = baseInfo.customerAddVOS && baseInfo.customerAddVOS.length ? baseInfo.customerAddVOS : [];
       // 收派金额
       // this.postData.receiveVO = baseInfo.receiveVOS && baseInfo.receiveVOS.length ? baseInfo.receiveVOS : [];
-      let obj = {
-        receiveAmount: 200,
-        commAmount: 10,
-        rewardAmount: 5,
-        totalPackageAmount: 2,
-        distributionAmount: 1,
-      }
-      this.postData.receiveVO = [];
-      for (let i = 0; i <= 3; i++) {
-        this.postData.receiveVO.push(obj);
-      }
+      this.postData.receiveVO = (this as any).$parent.initReceiveVOS(baseInfo.receiveVOS);
+      // 附件信息
+      this.initDocument(baseInfo.contType, baseInfo);
     }
 
     // 初始化渠道商(渠道公司) --- 分销成交模式才有渠道商
@@ -1244,25 +1233,56 @@
       }
     }
 
-    // 改变细分业务模式
-    changeBusinessType(value: any) {
-      // console.log(value);
-      switch(value){
-        case 'TotalBagModel' :
-          // 总包
-          this.postData.refineModel = 'All';
-          break;
-        case 'DistriModel' :
-          // 分销
-          this.postData.refineModel = 'District';
-          break;
-        case 'TotalBagDistriModel' :
-          // 总包+分销
-          this.postData.refineModel = '';
-          break;
-        default:
-          this.postData.refineModel = '';
+    // 初始化附件表格数据
+    initDocument(contType: any = '', initData: any = {}) {
+      let fileList: any = (this as any).$root.dictAllList('DealFileType'); // 附件类型
+      // console.log('fileList', fileList);
+      // 附件类型增加key
+      if (fileList.length > 0) {
+        fileList.forEach((vo: any) => {
+          vo.defaultFileList = [];
+          vo.fileList = [];
+          // 赋值
+          switch(vo.code) {
+            case "VisitConfirForm":
+              // 来访确认单
+              vo.defaultFileList = initData.visitConfirmForms && initData.visitConfirmForms.length ? initData.visitConfirmForms : [];
+              vo.fileList = initData.visitConfirmForms && initData.visitConfirmForms.length ? initData.visitConfirmForms : [];
+              break;
+            case "Notice":
+              // 优惠告知书PDF
+              vo.defaultFileList = initData.noticePDF && initData.noticePDF.length  ? initData.noticePDF : [];
+              vo.fileList = initData.noticePDF && initData.noticePDF.length  ? initData.noticePDF : [];
+              break;
+            case "OwnerID":
+              // 业主身份证
+              vo.defaultFileList = initData.customerIds && initData.customerIds.length ? initData.customerIds : [];
+              vo.fileList = initData.customerIds && initData.customerIds.length ? initData.customerIds : [];
+              break;
+            case "DealConfirForm":
+              // 成交确认书
+              vo.defaultFileList = initData.dealConfirmForms && initData.dealConfirmForms.length ? initData.dealConfirmForms : [];
+              vo.fileList = initData.dealConfirmForms && initData.dealConfirmForms.length ? initData.dealConfirmForms : [];
+              break;
+          }
+        })
       }
+      this.postData.documentVO = JSON.parse(JSON.stringify(fileList));
+      // 1.是否是分销成交
+      if (contType !== 'DistriDeal') {
+        // 隐藏来访确认单、成交确认单
+        this.postData.documentVO = fileList.filter((item: any) => {
+          return !["VisitConfirForm", "DealConfirForm"].includes(item.code);
+        });
+      }
+      // 2.项目周期的收费模式
+      if (this.baseInfoByTerm.chargeEnum === 'Agent') {
+        // 隐藏优惠告知书
+        this.postData.documentVO = fileList.filter((item: any) => {
+          return item.code !== "Notice";
+        });
+      }
+      // console.log('附件信息表格：', this.postData.documentVO);
     }
 
     // 修改合同类型
@@ -1303,50 +1323,32 @@
 
     // 选择收派套餐
     selectPackage(scope: any) {
-      // console.log('选择收派套餐', scope);
+      console.log('选择收派套餐', scope);
+      this.currentReceiveIndex = scope.$index;
+      // let params: any = {
+      //   hasRecord: this.baseInfoInDeal.hasRecord, // 是否有成交报备(是否分销成交)
+      //   idList: this.packageIdsList, // 分销成交 --- 选择分销协议后的ids
+      //   contNo: this.postData.contNo, // 分销协议编号
+      //   type: scope.row.type, // 标题类型
+      //   postObj: {
+      //     contractEnum: this.postData.contType, // 合同类型
+      //     propertyEnum: this.postData.propertyType, // 物业类型
+      //     subdivideEnum: this.postData.refineModel, // 细分业务
+      //     termId: this.postData.cycleId, // 立项周期ID
+      //   }, // 非分销需要获取id的参数
+      // };
       let params: any = {
-        hasRecord: this.baseInfoInDeal.hasRecord, // 是否有成交报备(是否分销成交)
-        idList: this.packageIdsList, // 分销成交 --- 选择分销协议后的ids
+        termId: this.baseInfoByTerm.termId, // 项目周期id
+        contType: this.postData.contType, // 合同类型
+        hasRecord: this.postData.hasRecord, // 是否有成交报备(是否分销成交)
         contNo: this.postData.contNo, // 分销协议编号
-        type: scope.row.type, // 标题类型
-        postObj: {
-          contractEnum: this.postData.contType, // 合同类型
-          propertyEnum: this.postData.propertyType, // 物业类型
-          subdivideEnum: this.postData.refineModel, // 细分业务
-          termId: this.postData.cycleId, // 立项周期ID
-        }, // 非分销需要获取id的参数
+        distributionIds: this.packageIdsList, // 分销成交 --- 选择分销协议后的ids
+        feeType: scope.row.type, // 费用类型
+        partyACustomerId: scope.row.partyACustomer, // 甲方或客户
+        property: this.postData.propertyType, // 物业类型
+        subdivide: this.postData.refineModel, // 细分业务模式
       };
       (this as any).$parent.selectPackage(params);
-    }
-
-    // 计算收派金额总计
-    getReceiveSummaries(param: any) {
-      const {columns, data} = param;
-      const sums: any = [];
-      columns.forEach((column: any, index: any) => {
-        if (index === 0) {
-          sums[index] = '合计金额';
-          return;
-        }
-        if (![0, 1, 2].includes(index)) {
-          const values = data.map((item: any) => Number(item[column.property]));
-          if (!values.every((value: any) => isNaN(value))) {
-            sums[index] = values.reduce((prev: any, curr: any) => {
-              const value = Number(curr);
-              if (!isNaN(value)) {
-                return prev + curr;
-              } else {
-                return prev;
-              }
-            }, 0);
-          } else {
-            sums[index] = '';
-          }
-        } else {
-          sums[index] = '';
-        }
-      });
-      return sums;
     }
 
     // 添加优惠告知书
@@ -1394,11 +1396,6 @@
       })
     }
 
-    // 预览-优惠告知书
-    previewNotice(scope: any) {
-      console.log(scope);
-    }
-
     // 添加客户
     handleAddCustomer() {
       (this as any).$parent.handleAddCustomer();
@@ -1427,48 +1424,49 @@
 
     // 确定选择收派套餐
     async finishAddReceivePackage(data: any) {
-      // console.log('data', data);
+      // console.log('确定选择收派套餐', data);
       if (data.length === 0) return;
       if (this.postData.receiveVO.length > 0) {
-        let flag = false;
-        flag = this.postData.receiveVO.some((item: any) => {
-          return item.id === data[0].id;
-        })
-        if (flag) {
-          this.$message.error('已经存在相同的收派套餐，请重新选择！');
-          return;
-        } else {
-          this.postData.receiveVO.push(...data);
-        }
-      } else {
-        this.postData.receiveVO.push(...data);
-      }
-      (this as any).$parent.selectPackage();
-    }
-
-    // 确定选择渠道经纪人
-    async finishAddBroker(data: any) {
-      console.log('data', data);
-      // this.addTotalPackageList = data;
-    }
-
-    // 删除客户/渠道经纪人
-    async deleteAdd(scope: any, type: any) {
-      console.log(scope);
-      console.log(type);
-      if (type === 'customer') {
-        // 删除客户信息逻辑
-        this.postData.customerVO = this.postData.customerVO.filter((item: any) => {
-          return item.id !== scope.row.id;
+        this.postData.receiveVO.forEach((vo: any, index: any) => {
+          if (index === this.currentReceiveIndex) {
+            vo.showData = data;
+            vo.packageId = data[0].packageId;
+            vo.receiveAmount = data[0].receivableAmout;
+            vo.commAmount = data[0].sendAmount;
+            vo.rewardAmount = data[0].sendInAmount;
+            vo.totalPackageAmount = data[0].generalAchieveAmount;
+            vo.distributionAmount = data[0].distributeAchieveAmount;
+            vo.otherChannelFees = data[0].otherChannelAmount;
+          }
         });
-      } else if (type === 'broker') {
-        // 删除渠道经纪人逻辑
-        console.log(222);
       }
     }
 
-    getNewFile(val: any) {
-      console.log(val);
+    // 删除客户
+    async deleteAdd(scope: any) {
+      console.log(scope);
+      // 删除客户
+      this.postData.customerVO = this.postData.customerVO.filter((item: any) => {
+        return item.id !== scope.row.id;
+      });
+    }
+
+    // 上传图片/文件
+    getNewFile(data: any, type?: any) {
+      // console.log(data);
+      // console.log(type);
+      if (this.postData.documentVO.length > 0) {
+        this.postData.documentVO.forEach((vo: any) => {
+          if (vo.code === type) {
+            if (data && data.length) {
+              data.forEach((item: any) => {
+                vo.fileList.push(item);
+              })
+            }
+          }
+        });
+      }
+      console.log('postData.documentVO', this.postData.documentVO);
     }
 
     // 取消
@@ -1479,49 +1477,37 @@
     }
 
     // 保存
-    async handleSave(type: any) {
-      console.log('type', type);
-      // type: save --- 保存； submit --- 提交
-      (this.$refs["ruleForm"] as ElForm).validate(this.addSave);
+    async handleSave() {
+      // console.log(this.postData);
+      if (this.postData.stage === 'SignUp') {
+        try {
+          await this.$confirm("签约阶段的业绩申报将提交给文员，如需修改信息请联系文员", "提示");
+          (this.$refs["ruleForm"] as ElForm).validate(this.addSave);
+        } catch (error) {
+          console.log(error);
+        }
+      } else {
+        (this.$refs["ruleForm"] as ElForm).validate(this.addSave);
+      }
     }
 
     @NoRepeatHttp()
     async addSave(valid: any) {
-      if (valid) {
+      // 1.校验收派金额是都有收派套餐
+      let flag = (this as any).$parent.validReceiveData(this.postData.receiveVO);
+      if (valid && flag) {
+        // 整合数据
+        let postData: any = this.getPostData();
         if (this.id) {
-          let postData: any = {
-            id: this.id,
-            modelName: this.postData.modelName,
-            buModelContTypeList: []
-          };
-          if (this.postData.buModelContTypeList.length > 0) {
-            this.postData.buModelContTypeList.forEach((list: any) => {
-              postData.buModelContTypeList.push(
-                {
-                  contType: list
-                }
-              )
-            })
-          }
+          postData.dealVO.dealCode = this.postData.dealCode;
+          postData.dealVO.id = this.postData.id;
+          postData.dealVO.parentId = this.postData.parentId;
           await post_deal_updateDealBasicInf(postData);
           this.$message.success("编辑成功");
           this.$goto({
             path: "/dealReport/list",
           });
         } else {
-          let postData: any = {
-            modelName: this.postData.modelName,
-            buModelContTypeList: []
-          };
-          if (this.postData.buModelContTypeList.length > 0) {
-            this.postData.buModelContTypeList.forEach((list: any) => {
-              postData.buModelContTypeList.push(
-                {
-                  contType: list
-                }
-              )
-            })
-          }
           await post_deal_entryDealBasicInf(postData);
           this.$message.success("新增成功");
           this.$goto({
@@ -1532,6 +1518,158 @@
         this.$message.warning("请先填好数据再保存");
         return false;
       }
+    }
+
+    // 构建参数
+    getPostData() {
+      let obj: any = {
+        agencyVO: [], // 渠道商信息
+        customerVO: [], // 客户信息
+        dealVO: {
+          "businessType": "",
+          "charge": "",
+          "contNo": "",
+          "contType": "",
+          "cycleId": '',
+          "dataSign": "",
+          "dealOrgId": '',
+          "isConsign": "",
+          "isMarketProject": "",
+          "isMat": "",
+          "modelCode": "",
+          "noticeIds": [],
+          "oneAgentTeamId": "",
+          "recordState": "",
+          "refineModel": "",
+          "reportId": '',
+          "sceneSales": "",
+          "signDate": "",
+          "signPrice": '',
+          "signType": "",
+          "stage": "",
+          "status": "",
+          "subscribeDate": "",
+          "subscribePrice": ""
+        }, // 成交基础信息
+        documentVO: [], // 上传附件
+        houseVO: {
+          address: "",
+          area: "",
+          buildingId: "",
+          hall: "",
+          propertyNo: "",
+          propertyType: "",
+          room: "",
+          roomId: "",
+          roomNo: "",
+          toilet: ""
+        }, // 房屋信息
+        receiveAchieveVO: [], // 收派金额 --- 汇总
+        receiveVO: [] // 收派金额
+      }
+      // 1. 渠道商信息 --- 分销成交才会有
+      if (this.baseInfoInDeal.contType === 'DistriDeal') {
+        obj.agencyVO.push(
+          {
+            agencyId: this.postData.agencyId,
+            brokerId: this.postData.brokerId,
+            channelLevel: this.postData.channelLevel,
+          }
+        )
+        obj.dealVO.contNo = this.postData.contNo;
+        obj.dealVO.isMat = this.postData.isMat;
+      }
+      // 2. 客户信息
+      if (this.postData.customerVO.length > 0) {
+        this.postData.customerVO.forEach((item: any, index: any) => {
+          if (index === 0) {
+            item.isCustomer = 'Yes';
+          } else {
+            item.isCustomer = 'No';
+          }
+        });
+        obj.customerVO = this.postData.customerVO;
+      }
+      // 3.基础信息
+      obj.dealVO.businessType = this.baseInfoByTerm.busTypeEnum;
+      obj.dealVO.charge = this.baseInfoByTerm.chargeEnum;
+      obj.dealVO.contType = this.postData.contType;
+      obj.dealVO.cycleId = this.postData.cycleId;
+      obj.dealVO.dataSign = this.baseInfoInDeal.myReturnVO.dataSign;
+      obj.dealVO.dealOrgId = this.postData.dealOrgId;
+      obj.dealVO.isConsign = this.postData.isConsign;
+      obj.dealVO.isMarketProject = this.postData.isMarketProject;
+      obj.dealVO.modelCode = this.postData.businessType;
+      if (this.postData.offerNoticeVO.length > 0) {
+        this.postData.offerNoticeVO.forEach((vo: any) => {
+          obj.dealVO.noticeIds.push(vo.id);
+        })
+      }
+      obj.dealVO.oneAgentTeamId = this.postData.oneAgentTeamId;
+      obj.dealVO.recordState = this.postData.recordState;
+      obj.dealVO.refineModel = this.postData.refineModel;
+      obj.dealVO.reportId = this.baseInfoInDeal.recordId;
+      obj.dealVO.sceneSales = this.postData.sceneSales;
+      obj.dealVO.signDate = this.postData.signDate;
+      obj.dealVO.signPrice = this.postData.signPrice;
+      obj.dealVO.signType = this.postData.signType;
+      obj.dealVO.stage = this.postData.stage;
+      if (['Recognize', 'Subscribe'].includes(this.postData.stage)) {
+        obj.dealVO.status = 'Draft'; // 草稿
+      } else if (this.postData.stage === 'SignUp') {
+        obj.dealVO.status = 'AchieveDeclareUnconfirm'; // 业绩申报待确认
+      }
+      obj.dealVO.subscribeDate = this.postData.subscribeDate;
+      obj.dealVO.subscribePrice = this.postData.subscribePrice;
+      obj.houseVO.address = this.postData.address;
+      obj.houseVO.area = this.postData.area;
+      obj.houseVO.buildingId = this.postData.buildingId;
+      obj.houseVO.hall = this.postData.hall;
+      obj.houseVO.hall = this.postData.hall;
+      obj.houseVO.propertyNo = this.postData.propertyNo;
+      obj.houseVO.propertyType = this.postData.propertyType;
+      obj.houseVO.room = this.postData.room;
+      obj.houseVO.roomId = this.postData.roomId;
+      obj.houseVO.roomNo = this.baseInfoInDeal.roomNo;
+      obj.houseVO.toilet = this.postData.toilet;
+      // 附件信息
+      if (this.postData.documentVO.length > 0) {
+        this.postData.documentVO.forEach((item: any) => {
+          if (item.fileList.length > 0) {
+            item.fileList.forEach((list: any) => {
+              obj.documentVO.push(
+                {
+                  fileId: list.fileId,
+                  fileName: list.fileName,
+                  fileType: item.code
+                }
+              )
+            })
+          }
+        })
+      }
+      // 派发金额合计
+      if (this.receiveAchieveVO.length > 0) {
+        this.receiveAchieveVO.forEach((vo: any) => {
+          obj.receiveAchieveVO.push(
+            {
+              achieveAmount: vo.achieveAmount,
+              otherChannelFees: vo.otherChannelFees,
+              receiveAmount: vo.receiveAmount
+            }
+          )
+        });
+      }
+      // 派发金额
+      obj.receiveVO = JSON.parse(JSON.stringify(this.postData.receiveVO));
+      if (obj.receiveVO.length) {
+        obj.receiveVO.forEach((vo: any) => {
+          if ([null, undefined, 0, ""].includes(vo.otherChannelFees)) {
+            vo.otherChannelFees = null; // 后台要置null
+          }
+        });
+      }
+      return obj;
     }
 
     // 查看来访/成交确认信息
@@ -1561,36 +1699,6 @@
     }
   }
 
-  .manager-list {
-    width: 100%;
-    display: flex;
-    flex-direction: row;
-    align-items: center;
-
-    div {
-      flex: 1;
-    }
-  }
-
-  .receive-wrapper {
-    width: 100%;
-    display: flex;
-    flex-direction: row;
-    align-items: center;
-    box-sizing: border-box;
-    margin: 10px 0px;
-
-    p {
-      flex: 1;
-      display: inline-block;
-    }
-
-    div {
-      box-sizing: border-box;
-      margin-left: 5px;
-    }
-  }
-
   .home-type-wrapper {
     width: 100%;
     display: flex;
@@ -1598,6 +1706,10 @@
     div {
       flex: 1;
       text-align: center;
+
+      &:not(:last-child) {
+        margin-right: 10px;
+      }
 
       /deep/ .el-input-number {
         box-sizing: border-box;
@@ -1609,25 +1721,6 @@
   .btn-top {
     box-sizing: border-box;
     margin-top: 20px;
-  }
-
-  .ih-type-wrapper {
-    width: 100%;
-    box-sizing: border-box;
-    padding-left: 20px;
-    margin: 15px 0px;
-    text-align: left;
-    display: flex;
-    align-items: center;
-
-    .title {
-      margin-right: 20px;
-      box-sizing: border-box;
-      border-left: 5px solid #F90;
-      padding-left: 5px;
-      color: #f90;
-      margin-left: 20px;
-    }
   }
 
   .nav-box {
@@ -1685,22 +1778,6 @@
       transform: scaleX(0);
       transition: all 0.3s;
       transform-origin: left bottom;
-    }
-  }
-
-  .divider-padding {
-    padding: 20px 20px;
-    box-sizing: border-box;
-    margin: 10px 0px;
-
-    /deep/.el-divider {
-      background-color: #409EFF;
-    }
-
-    /deep/.el-divider__text {
-      color: #409EFF;
-      font-size: 18px;
-      font-weight: bold;
     }
   }
 </style>

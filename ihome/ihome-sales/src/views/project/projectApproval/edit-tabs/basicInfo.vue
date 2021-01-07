@@ -4,11 +4,14 @@
  * @Author: wwq
  * @Date: 2020-11-27 17:17:06
  * @LastEditors: wwq
- * @LastEditTime: 2020-12-25 19:57:53
+ * @LastEditTime: 2021-01-07 09:31:13
 -->
 <template>
   <div class="project-approval-box">
-    <p class="ih-info-title">合作项目信息</p>
+    <div class="title-init">
+      <p class="ih-info-title">合作项目信息</p>
+      <div class="init">备注：立项信息仅首页的内容会推送至OA审核</div>
+    </div>
     <el-form
       :model="info"
       :rules="rules"
@@ -435,6 +438,29 @@
             ></el-input>
           </el-form-item>
         </el-col>
+        <el-col
+          :span="8"
+          v-if="isShow"
+        >
+          <el-form-item
+            label="是否免收服务费"
+            prop="exVoidService"
+          >
+            <el-select
+              v-model="info.exVoidService"
+              clearable
+              placeholder="请选择"
+              class="width--100"
+            >
+              <el-option
+                v-for="item in YesOrNoType"
+                :key="item.code"
+                :label="item.name"
+                :value="item.code"
+              ></el-option>
+            </el-select>
+          </el-form-item>
+        </el-col>
       </el-row>
       <el-row v-if="isShow">
         <el-col :span="8">
@@ -448,6 +474,7 @@
               clearable
               placeholder="请选择"
               class="width--100"
+              @change="exDiscountChange"
             >
               <el-option
                 v-for="item in YesOrNoType"
@@ -511,7 +538,7 @@
               class="width--100"
             >
               <el-option
-                v-for="item in $root.dictAllList('YesOrNoType')"
+                v-for="item in $root.dictAllList('HouseandcarGtRecord')"
                 :key="item.code"
                 :label="item.name"
                 :value="item.code"
@@ -594,7 +621,7 @@
           </el-form-item>
         </el-col>
       </el-row>
-      <p class="ih-info-title">联动周期信息</p>
+      <p class="ih-info-title">测算结果</p>
       <el-row>
         <el-col :span="8">
           <el-form-item
@@ -735,12 +762,12 @@
         @click="save()"
       >保存</el-button>
       <el-button
-        v-if="info.auditEnum === 'Draft'"
+        v-if="['Draft', 'TermReject'].includes(info.auditEnum)"
         type="success"
         @click="submitProjectApproval()"
       >提交立项审核</el-button>
       <el-button
-        v-if="info.auditEnum === 'TermAdopt'"
+        v-if="['TermAdopt', 'ConstractReject', 'ConstractWait'].includes(info.auditEnum)"
         type="success"
         @click="submitContract()"
       >提交合同审核</el-button>
@@ -824,6 +851,7 @@ export default class FirstAgencyEdit extends Vue {
     companyName: null,
     companyId: null,
     termId: null,
+    exVoidService: null,
   };
   fileListType: any = [];
   submitFile: any = {};
@@ -999,6 +1027,13 @@ export default class FirstAgencyEdit extends Vue {
         trigger: "change",
       },
     ],
+    exVoidService: [
+      {
+        required: true,
+        message: "请选择是否免收服务费",
+        trigger: "change",
+      },
+    ],
   };
 
   YesOrNoType = [
@@ -1017,6 +1052,7 @@ export default class FirstAgencyEdit extends Vue {
   getIsShow(val: any) {
     if (val === "Agent") {
       this.isShow = false;
+      this.info.exVoidService = null;
     } else {
       this.isShow = true;
     }
@@ -1076,7 +1112,7 @@ export default class FirstAgencyEdit extends Vue {
     });
     this.$message({
       type: "success",
-      message: "审核成功",
+      message: "提交立项审核成功",
     });
     this.$goto({ path: `/projectApproval/list` });
   }
@@ -1087,9 +1123,16 @@ export default class FirstAgencyEdit extends Vue {
     });
     this.$message({
       type: "success",
-      message: "审核成功",
+      message: "提交合同审核成功",
     });
     this.$goto({ path: `/projectApproval/list` });
+  }
+
+  exDiscountChange(val: any) {
+    if (!Number(val)) {
+      this.info.subscriDiscountModel = null;
+      this.info.notificDiscountModel = null;
+    }
   }
 
   save() {
@@ -1221,6 +1264,17 @@ export default class FirstAgencyEdit extends Vue {
 .formItem {
   /deep/ .el-form-item__label {
     line-height: 20px;
+  }
+}
+.title-init {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+
+  .init {
+    font-size: 14px;
+    margin-left: 10px;
+    color: red;
   }
 }
 </style>

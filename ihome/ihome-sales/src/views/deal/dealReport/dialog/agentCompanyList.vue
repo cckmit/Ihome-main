@@ -18,7 +18,7 @@
     width="1000px"
     style="text-align: left"
     class="dialog">
-    <el-form>
+    <el-form @submit.native.prevent>
       <el-row>
         <el-col class="col-bottom-20">
           <el-input
@@ -103,7 +103,8 @@
     private dialogVisible = true;
     private selection = [];
     public queryPageParameters: any = {
-      channelName: null // 编号
+      channelName: null, // 渠道公司
+      channelIds: [] // 渠道IDs
     };
     public resPageInfo: any = {
       total: null,
@@ -112,7 +113,10 @@
     @Prop({default: null}) data: any;
 
     created() {
-      this.getListMixin();
+      console.log('agentData', this.data);
+      if (this.data && this.data.length) {
+        this.getListMixin();
+      }
     }
 
     async beforeFinish() {
@@ -151,6 +155,7 @@
     }
 
     async getListMixin() {
+      this.queryPageParameters.channelIds = this.data;
       this.resPageInfo = await post_channelGrade_getChannelAndChannelGrade(this.queryPageParameters);
     }
   }

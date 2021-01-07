@@ -4,7 +4,7 @@
  * @Author: lgf
  * @Date: 2020-09-16 14:05:21
  * @LastEditors: ywl
- * @LastEditTime: 2020-12-15 16:56:25
+ * @LastEditTime: 2021-01-06 11:16:17
 -->
 <template>
   <div class="text-left">
@@ -109,17 +109,17 @@
           label="开户银行"
           width="300"
         ></el-table-column>
-        <el-table-column
+        <!-- <el-table-column
           prop="branchNo"
           label="联行号"
-        ></el-table-column>
+        ></el-table-column> -->
         <el-table-column
           prop="accountType"
           label="账号类型"
           width="200"
         >
           <template v-slot="{row}">
-            {{$root.dictAllName(row.type, "Account")}}
+            {{$root.dictAllName(row.accountType, "Account")}}
           </template>
         </el-table-column>
       </el-table>

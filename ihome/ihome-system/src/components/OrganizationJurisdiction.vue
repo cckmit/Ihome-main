@@ -4,7 +4,7 @@
  * @Author: zyc
  * @Date: 2020-07-09 15:03:17
  * @LastEditors: zyc
- * @LastEditTime: 2020-12-19 16:34:19
+ * @LastEditTime: 2020-12-30 16:47:29
 --> 
 <template>
   <el-dialog
@@ -55,10 +55,11 @@
               :expand-on-click-node="false"
               :data="dataTree"
               :props="defaultProps"
-              :default-expand-all="true"
+              :default-expand-all="false"
               :filter-node-method="filterNode"
               :highlight-current="true"
               :default-checked-keys="defaultCheckedKeys"
+              :default-expanded-keys="defaultExpandedKeys"
               node-key="id"
               show-checkbox
               @current-change="currentChange"
@@ -116,6 +117,8 @@ export default class OrganizationJurisdiction extends Vue {
     cancelParent: false,
     cancelChildren: true,
   };
+  mapList: any = new Map();
+  defaultExpandedKeys: any[] = [];
   @Prop({ default: null }) data: any;
   dialogVisible = true;
   value: any = null;
@@ -160,20 +163,26 @@ export default class OrganizationJurisdiction extends Vue {
     this.$emit("select", item);
   }
   getInvalid(node: any) {
-    let item = null;
-
-    for (let index = 0; index < this.resList.length; index++) {
-      const element = this.resList[index];
-      if (node.key == element.id) {
-        item = element;
-        break;
-      }
-    }
-    if (item && item.status == "Valid") {
+    let status = this.mapList.get(node.key).status;
+    if (status == "Valid") {
       return `el-tree-node__label`;
     } else {
       return "el-tree-node__label invalid";
     }
+    // let item = null;
+
+    // for (let index = 0; index < this.resList.length; index++) {
+    //   const element = this.resList[index];
+    //   if (node.key == element.id) {
+    //     item = element;
+    //     break;
+    //   }
+    // }
+    // if (item && item.status == "Valid") {
+    //   return `el-tree-node__label`;
+    // } else {
+    //   return "el-tree-node__label invalid";
+    // }
   }
 
   handleCheck(currentNode: any, treeStatus: any) {
@@ -235,7 +244,14 @@ export default class OrganizationJurisdiction extends Vue {
     const res: any = await get_org_getAll({ onlyValid: false });
     if (res && res.length > 0) {
       res[0].parentId = 0;
+      this.defaultExpandedKeys = [res[0].id];
     }
+    let map = new Map();
+    for (let index = 0; index < res.length; index++) {
+      const element = res[index];
+      map.set(element.id, element);
+    }
+    this.mapList = map;
     this.resList = this.$tool.deepClone(res);
 
     this.dataTree = this.$tool.listToGruop(res, { rootId: 0 });

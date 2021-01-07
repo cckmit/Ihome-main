@@ -4,7 +4,7 @@
  * @Author: zyc
  * @Date: 2020-07-14 09:23:40
  * @LastEditors: zyc
- * @LastEditTime: 2020-12-22 16:21:52
+ * @LastEditTime: 2021-01-06 11:19:24
 --> 
 --> 
 <template>
@@ -27,7 +27,6 @@
                 clearable
               >
               </IhSelectPageUser>
-            
             </el-form-item>
           </el-col>
           <el-col :span="8">
@@ -234,8 +233,13 @@ export default class InvitationCodeList extends Vue {
     console.log("mounted");
   }
   expiresTimeChange(dateArray: any) {
-    this.queryPageParameters.expiresTimeBegin = dateArray[0];
-    this.queryPageParameters.expiresTimeEnd = dateArray[1];
+    if (dateArray) {
+      this.queryPageParameters.expiresTimeBegin = dateArray[0];
+      this.queryPageParameters.expiresTimeEnd = dateArray[1];
+    } else {
+      this.queryPageParameters.expiresTimeBegin = null;
+      this.queryPageParameters.expiresTimeEnd = null;
+    }
   }
   async remove(scope: any) {
     try {

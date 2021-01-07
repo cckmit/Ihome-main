@@ -4,7 +4,7 @@
  * @Author: wwq
  * @Date: 2020-12-07 14:32:16
  * @LastEditors: wwq
- * @LastEditTime: 2020-12-19 16:56:08
+ * @LastEditTime: 2021-01-06 19:07:09
 -->
 <template>
   <el-dialog
@@ -110,7 +110,16 @@
             <!-- 表头行选择 -->
             <div class="top-select">
               <!-- 服务费代理费 -->
-              <div class="title">服务费</div>
+              <div
+                class="msg-left"
+                style="width: 400px"
+              >
+                <div class="title">服务费</div>
+                <div style="display: flex;align-items: center">
+                  <div style="width: 120px">是否免收服务费:</div>
+                  <div>{{item.exVoidService?'是': '否'}}</div>
+                </div>
+              </div>
             </div>
             <el-table
               class="ih-table"
@@ -129,7 +138,7 @@
               </el-table-column>
               <el-table-column
                 prop="contractEnum"
-                label="合同类型"
+                label="渠道类型"
                 width="150"
                 align="center"
               >
@@ -300,7 +309,7 @@
               </el-table-column>
               <el-table-column
                 prop="contractEnum"
-                label="合同类型"
+                label="渠道类型"
                 width="150"
                 align="center"
               >

@@ -4,7 +4,7 @@
  * @Author: ywl
  * @Date: 2020-09-27 17:27:00
  * @LastEditors: ywl
- * @LastEditTime: 2020-12-26 14:35:34
+ * @LastEditTime: 2020-12-31 17:50:35
 -->
 <template>
   <IhPage class="text-left discount-info">
@@ -226,6 +226,7 @@ export default class DiscountDetail extends Vue {
       try {
         await post_notice_annex(this.addFile);
         this.$message.success("提交成功");
+        this.addFile = [];
       } catch (error) {
         console.log(error);
       }

@@ -169,12 +169,27 @@
           </el-col>
         </el-row>
         <el-row>
+          <el-row>
+            <el-col :span="12">
+              <el-form-item label="负责人">
+                <span :title="info.dealMan">{{info.dealMan}}</span>
+              </el-form-item>
+            </el-col>
+            <el-col :span="12">
+              <el-form-item label="负责人电话">
+                <span :title="info.dealTel">{{info.dealTel}}</span>
+              </el-form-item>
+            </el-col>
+          </el-row>
+        </el-row>
+        <el-row>
           <el-col :span="12">
             <el-form-item label="乙方(渠道)公司">
               <SelectPageByCondition
                 v-if="!(searchConditon.channelEnum === 'Appoint' || searchConditon.channelEnum === 'Strategic')"
                 v-model="info.channelCompanyId"
                 clearable
+                :disabled="SelectPageByConditionDisabled"
                 style="width: 70%"
                 placeholder="渠道商名称"
                 :params="searchConditon"
@@ -532,6 +547,7 @@ export default class Apply extends Vue {
   channelAccountOptions: any = [];
   searchConditon: any = {};
   submitLoading: any = false;
+  SelectPageByConditionDisabled: any = true;
 
   @Watch("info.channelEnum", { immediate: true })
   getIsShow(val: any) {
@@ -557,6 +573,7 @@ export default class Apply extends Vue {
   }
 
   templateFinish(data: any) {
+    this.SelectPageByConditionDisabled = false;
     this.searchConditon = {
       cycleCity: data.city,
       channelEnum: data.channelEnum,
@@ -678,13 +695,15 @@ export default class Apply extends Vue {
   }
   async submit() {
     this.submitLoading = true;
-    const res: any = await post_distribution_create(this.info);
-    if (res) {
+    try {
+      await post_distribution_create(this.info);
       this.submitLoading = false;
       this.$message.success("申领成功");
       this.$goto({
         path: "/projectApproval/list",
       });
+    } catch (err) {
+      this.submitLoading = false;
     }
   }
 

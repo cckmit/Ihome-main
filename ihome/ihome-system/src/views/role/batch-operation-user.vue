@@ -4,7 +4,7 @@
  * @Author: zyc
  * @Date: 2020-07-09 16:53:27
  * @LastEditors: zyc
- * @LastEditTime: 2020-12-14 15:17:53
+ * @LastEditTime: 2021-01-06 11:17:44
 --> 
 <template>
   <el-dialog
@@ -168,15 +168,43 @@
         @selection-change="handleSelectionChange"
       >
         <el-table-column type="selection" width="55"></el-table-column>
-        <el-table-column type="index" label="序号" width="50"></el-table-column>
-        <el-table-column prop="name" label="姓名"></el-table-column>
-        <el-table-column prop="account" label="登录账号"></el-table-column>
+        <el-table-column
+          fixed
+          type="index"
+          label="序号"
+          width="50"
+        ></el-table-column>
+        <el-table-column
+          fixed
+          prop="name"
+          label="姓名"
+          width="100"
+        ></el-table-column>
+        <el-table-column
+          width="150"
+          fixed
+          prop="account"
+          label="登录账号"
+        ></el-table-column>
+
+        <el-table-column
+          prop="mobilePhone"
+          label="手机号码"
+          width="150"
+        ></el-table-column>
+
+        <el-table-column prop="accountType" label="账号类别">
+          <template slot-scope="scope">{{
+            $root.dictAllName(scope.row.accountType, "UserAccountType")
+          }}</template>
+        </el-table-column>
         <el-table-column prop="employeeStatus" label="用户类别">
           <template slot-scope="scope">{{
             $root.dictAllName(scope.row.userType, "UserType")
           }}</template>
         </el-table-column>
         <el-table-column
+          width="100"
           prop="employmentDate"
           label="入职日期"
         ></el-table-column>
@@ -190,7 +218,11 @@
             $root.dictAllName(scope.row.status, "ValidType")
           }}</template>
         </el-table-column>
-        <el-table-column prop="orgName" label="归属组织"></el-table-column>
+        <el-table-column
+          prop="orgName"
+          label="归属组织"
+          width="300"
+        ></el-table-column>
       </el-table>
       <div class="text-right padding-right-40">
         <el-pagination
@@ -237,7 +269,7 @@ export default class BatchOperationUser extends Vue {
     account: null,
     accountType: null,
     employeeCode: null,
-    employeeStatus:null,
+    employeeStatus: null,
     employeeType: null,
     employmentDateEnd: null,
     employmentDateStart: null,
@@ -249,7 +281,7 @@ export default class BatchOperationUser extends Vue {
     name: null,
     orgId: null,
     permissionOrgId: null,
-    status:null,
+    status: null,
     workType: null,
     userType: null,
   };
@@ -271,8 +303,13 @@ export default class BatchOperationUser extends Vue {
   };
   orgList: any = [];
   employmentDateChange(dateArray: any) {
-    this.queryPageParameters.employmentDateStart = dateArray[0];
-    this.queryPageParameters.employmentDateEnd = dateArray[1];
+    if (dateArray) {
+      this.queryPageParameters.employmentDateStart = dateArray[0];
+      this.queryPageParameters.employmentDateEnd = dateArray[1];
+    } else {
+      this.queryPageParameters.employmentDateStart = null;
+      this.queryPageParameters.employmentDateEnd = null;
+    }
   }
 
   cancel() {

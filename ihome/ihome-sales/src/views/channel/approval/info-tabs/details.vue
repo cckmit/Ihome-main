@@ -4,7 +4,7 @@
  * @Author: zyc
  * @Date: 2020-07-09 14:31:23
  * @LastEditors: zyc
- * @LastEditTime: 2020-12-22 09:42:40
+ * @LastEditTime: 2021-01-06 19:19:38
 --> 
 <template>
   <div>
@@ -53,12 +53,12 @@
           </el-col>
         </el-row>
       </el-col>
-      <el-col :span="8">
+      <!-- <el-col :span="8">
         <el-row>
           <el-col :span="6" class="ih-info-item-left">OA发文文号</el-col>
           <el-col :span="18" class="ih-info-item-right">{{ info.oaNo }}</el-col>
         </el-row>
-      </el-col>
+      </el-col> -->
     </el-row>
     <p class="ih-info-title">渠道等级信息列表</p>
     <el-table
@@ -71,7 +71,11 @@
       </el-table-column>
       <!-- <el-table-column prop="name" label="信用代码"> </el-table-column>
       <el-table-column prop="name" label="法定代表人"> </el-table-column> -->
-      <el-table-column prop="special" label="特批入库"> </el-table-column>
+      <el-table-column prop="special" label="特批入库">
+        <template slot-scope="scope">{{
+          $root.dictAllName(scope.row.special, "YesOrNoType")
+        }}</template>
+      </el-table-column>
       <el-table-column prop="city" label="业务开展城市">
         <template v-slot="{ row }">
           {{ $root.getAreaName(row.city) }}
@@ -90,14 +94,33 @@
     </el-table>
     <p class="ih-info-title">附件信息</p>
     <el-table
-      :data="info.channelApprovalAttachments"
+      :data="showChannelApprovalAttachments"
       style="width: 100%; padding: 20px"
     >
-      <el-table-column prop="date" label="类型" width="180"> </el-table-column>
-      <el-table-column prop="name" label="渠道商名称" width="180">
+      <!-- <el-table-column prop="storageNum" label="编号" width="180">
+        </el-table-column> -->
+      <el-table-column prop="type" label="类型" width="180">
+        <template slot-scope="scope">
+          {{ $root.dictAllName(scope.row.type, "ChannelGradeAttachment") }}
+        </template>
       </el-table-column>
-      <el-table-column prop="name" label="业务开展城市"> </el-table-column>
-      <el-table-column prop="name" label="附件"> </el-table-column>
+      <el-table-column prop="channelName" label="渠道商名称" width="180">
+      </el-table-column>
+      <el-table-column prop="city" label="业务开展城市" width="180">
+        <template slot-scope="scope">
+          {{ $root.getAreaName(scope.row.city) }}
+        </template>
+      </el-table-column>
+      <el-table-column prop="attachmentDetails" label="附件">
+        <template slot-scope="scope">
+          <span class="margin-right-10"
+            v-for="(cItem, cIndex) in scope.row.attachmentDetails"
+            :key="cIndex"
+          >
+            <IhFilePreview :data="cItem"></IhFilePreview>
+          </span>
+        </template>
+      </el-table-column>
     </el-table>
     <p class="ih-info-title">推送OA附件清单</p>
     <div class="text-left margin-left-30" style="color: #999">
@@ -118,7 +141,10 @@
 </template>
 <script lang="ts">
 import { Component, Vue } from "vue-property-decorator";
-import { get_channelApproval_get__id } from "../../../../api/channel/index";
+import {
+  get_channelApproval_get__id,
+  post_channelGrade_getChannelGradeAttachmentByType,
+} from "../../../../api/channel/index";
 @Component({
   components: {},
 })
@@ -128,10 +154,30 @@ export default class InvitationCodeDetails extends Vue {
     channelApprovalGrades: [],
     oaAttachmentVOs: [],
   };
+  showChannelApprovalAttachments: any[] = [];
 
   async created() {
     let id = this.$route.query.id;
     this.info = await get_channelApproval_get__id({ id: id });
+    this.showChannelApprovalAttachments = [];
+    (this.info.channelApprovalGrades || []).forEach((item: any) => {
+      this.loadAttachments(item, item.gradeType);
+    });
+  }
+  async loadAttachments(item: any, gradeType: any) {
+    const res: any = await post_channelGrade_getChannelGradeAttachmentByType({
+      gradeId: item.gradeId,
+      gradeType: gradeType,
+    });
+    console.log(res);
+    if (res.channelId) {
+      this.showChannelApprovalAttachments.push(res);
+    }
+
+    // res.forEach((element: any) => {
+    //   element.storageNum = item.storageNum;
+
+    // });
   }
   down(item: any) {
     let url = this.$tool.downloadLongFileUrl(item.fileId);

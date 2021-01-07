@@ -4,7 +4,7 @@
  * @Author: wwq
  * @Date: 2020-12-11 15:36:51
  * @LastEditors: wwq
- * @LastEditTime: 2020-12-25 08:55:28
+ * @LastEditTime: 2020-12-31 17:55:57
 -->
 <template>
   <el-dialog
@@ -50,12 +50,26 @@
                   v-if="item.checkboxed && item.enumType && !['ContractType', 'ExRecode', 'PadCommission'].includes(item.conditionModel)"
                   class="condition-list"
                 >
-                  <el-checkbox-group v-model="item.values">
+                  <el-checkbox-group
+                    v-model="item.values"
+                    v-if="item.conditionModel === 'Property'"
+                    disabled
+                  >
+                    <el-checkbox
+                      :label="list.propertyEnum"
+                      v-for="(list, h) in PropertyOptions"
+                      :key="h"
+                    >{{list.propertyName}}</el-checkbox>
+                  </el-checkbox-group>
+                  <el-checkbox-group
+                    v-model="item.values"
+                    v-else
+                    disabled
+                  >
                     <el-checkbox
                       :label="list.code"
                       v-for="(list, h) in $root.dictAllList(item.enumType)"
                       :key="h"
-                      disabled
                     >{{list.name}}</el-checkbox>
                   </el-checkbox-group>
                 </div>
@@ -250,7 +264,7 @@
 <script lang="ts">
 import { Component, Vue, Prop } from "vue-property-decorator";
 import {
-  get_settleCondition_getPleaseType,
+  get_his_settleCondition_getPleaseType__proId,
   post_partyAContract_getBuilding__termId,
   post_settleCondition_getPlease__settleId,
 } from "@/api/project/index";
@@ -268,6 +282,7 @@ export default class PleaseEdit extends Vue {
     agencyPadCommisionType: null,
     settleConditionPleaseVOS: [],
   };
+  PropertyOptions: any = [];
   budingList: any = [];
   padCommissionEnumOptions: any = [];
   cancel() {
@@ -276,27 +291,32 @@ export default class PleaseEdit extends Vue {
 
   // 获取类型
   async getMakingType() {
-    let arr: any = [];
-    arr = await get_settleCondition_getPleaseType();
-    this.info.settleConditionPleaseVOS = arr.map((v: any) => ({
-      enumType: v.enumType,
-      type: v.fieldEnum,
-      compare: null,
-      compareB: null,
-      conditionAnd: null,
-      conditionModel: v.conditionPleaseEnum,
-      conditionNumA: null,
-      conditionNumB: null,
-      conditionSetId: null,
-      designatedAgency: [],
-      returnRateByHouse: null,
-      values: [],
-      checkboxed: false,
-      conditionAndCheckboxed: false,
-      compareBList: [],
-      isConditionAndShow: true,
-      mulitVal: [],
-    }));
+    let obj: any = {};
+    obj = await get_his_settleCondition_getPleaseType__proId({
+      proId: this.data.proId,
+    });
+    this.PropertyOptions = obj.propertyVOS;
+    this.info.settleConditionPleaseVOS = obj.settlePleaseListVOS.map(
+      (v: any) => ({
+        enumType: v.enumType,
+        type: v.fieldEnum,
+        compare: null,
+        compareB: null,
+        conditionAnd: null,
+        conditionModel: v.conditionPleaseEnum,
+        conditionNumA: null,
+        conditionNumB: null,
+        conditionSetId: null,
+        designatedAgency: [],
+        returnRateByHouse: null,
+        values: [],
+        checkboxed: false,
+        conditionAndCheckboxed: false,
+        compareBList: [],
+        isConditionAndShow: true,
+        mulitVal: [],
+      })
+    );
   }
 
   // 获取请佣详情

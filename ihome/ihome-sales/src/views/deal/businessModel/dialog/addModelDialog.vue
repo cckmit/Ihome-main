@@ -19,6 +19,7 @@
     style="text-align: left"
     class="dialog">
     <el-form
+      @submit.native.prevent
       v-loading="editLoading"
       :model="postData"
       :rules="rules"

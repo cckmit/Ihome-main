@@ -11,6 +11,7 @@
     <div>
       <p class="ih-info-title">成交信息</p>
       <el-form
+        @submit.native.prevent
         :model="postData"
         ref="ruleForm"
         label-width="150px"
@@ -107,7 +108,6 @@
               <div class="home-type-wrapper">
                 <div>{{postData.house.room}}室</div>
                 <div>{{postData.house.hall}}厅</div>
-                <div>{{postData.house.kitchen}}厨</div>
                 <div>{{postData.house.toilet}}卫</div>
               </div>
             </el-form-item>

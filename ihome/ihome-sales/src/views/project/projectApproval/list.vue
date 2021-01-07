@@ -4,7 +4,7 @@
  * @Author: wwq
  * @Date: 2020-11-27 17:11:14
  * @LastEditors: wwq
- * @LastEditTime: 2020-12-28 10:14:40
+ * @LastEditTime: 2021-01-07 09:36:25
 -->
 <template>
   <IhPage label-width="100px">
@@ -260,7 +260,7 @@ import Add from "./dialog/basicInfo-dialog/add.vue";
 export default class ProjectApproval extends Vue {
   queryPageParameters: any = {
     proNo: null,
-    proName: null,
+    proId: null,
     termName: null,
     busTypeEnum: null,
     province: null,
@@ -283,8 +283,14 @@ export default class ProjectApproval extends Vue {
     const TermReject = row.auditEnum === "TermReject";
     const ConstractAdopt = row.auditEnum === "ConstractAdopt";
     const ConstractReject = row.auditEnum === "ConstractReject";
+    const ConstractWait = row.auditEnum === "ConstractWait";
     return (
-      Draft || TermAdopt || TermReject || ConstractAdopt || ConstractReject
+      Draft ||
+      TermAdopt ||
+      TermReject ||
+      ConstractAdopt ||
+      ConstractReject ||
+      ConstractWait
     );
   }
 
@@ -308,7 +314,7 @@ export default class ProjectApproval extends Vue {
   reset() {
     Object.assign(this.queryPageParameters, {
       proNo: null,
-      proName: null,
+      proId: null,
       termName: null,
       busTypeEnum: null,
       province: null,
@@ -327,7 +333,7 @@ export default class ProjectApproval extends Vue {
       },
     });
     if (where === "apply") {
-      window.sessionStorage.setItem("groupId", row.groupId);
+      window.sessionStorage.setItem("groupId", row.startDivisionId);
     }
   }
 

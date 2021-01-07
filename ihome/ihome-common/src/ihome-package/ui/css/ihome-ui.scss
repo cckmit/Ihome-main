@@ -2,15 +2,15 @@
 
 /*nprogress样式*/
 #nprogress .bar {
-  background: #F90 !important;
+  background: #003894 !important;
 }
 #nprogress .spinner-icon {
   width: 18px;
   height: 18px;
   box-sizing: border-box;
   border: solid 2px transparent;
-  border-top-color: #F90 !important;
-  border-left-color: #F90 !important;
+  border-top-color: #003894 !important;
+  border-left-color: #003894 !important;
   border-radius: 50%;
   -webkit-animation: nprogress-spinner 400ms linear infinite;
   animation: nprogress-spinner 400ms linear infinite;
@@ -52,15 +52,15 @@
   }
 
 .el-table__header th{
-    background: #f1f1f1 !important;
-    color: #7b7b7b;
+    background: #4881F9 !important;
+    color: #FFFFFF;
 }
 .el-table__row:hover td{
     background-color: #f6faec !important;
 }
 .el-tree--highlight-current .el-tree-node.is-current > .el-tree-node__content {
-    background-color: #fff7eb!important;
-    color: #f90 !important;
+    background-color: #F2F5FD!important;
+    color: #003894 !important;
   }
   .ih-table{
       .el-dropdown-link{
@@ -94,9 +94,9 @@
   .ih-info-title {
     text-align: left;
     margin-left: 20px;
-    border-left: 5px solid #F90;
+    border-left: 5px solid #003894;
     padding-left: 5px;
-    color: #f90;
+    color: #003894;
     font-weight: 500;
     line-height: 14px;
   }

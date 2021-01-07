@@ -3,8 +3,8 @@
  * @version: 
  * @Author: zyc
  * @Date: 2020-11-24 10:49:09
- * @LastEditors: zyc
- * @LastEditTime: 2020-12-22 17:55:26
+ * @LastEditors: wwq
+ * @LastEditTime: 2020-12-30 19:08:18
 -->
 
 <!--
@@ -27,12 +27,16 @@
     style="text-align: left"
     class="dialog"
   >
-    <el-form ref="form" label-width="100px">
+    <el-form
+      ref="form"
+      label-width="100px"
+    >
       <el-row>
         <el-col :span="8">
           <el-form-item label="渠道商">
             <IhSelectPageByChannel
               placeholder="渠道商"
+              clearable
               v-model="queryPageParameters.channelId"
             ></IhSelectPageByChannel>
           </el-form-item>
@@ -88,18 +92,18 @@
         </el-col>
         <el-col :span="8">
           <el-form-item label="录入人">
-            <IhSelectPageUser v-model="queryPageParameters.inputUser" clearable>
+            <IhSelectPageUser
+              v-model="queryPageParameters.inputUser"
+              clearable
+            >
               <template v-slot="{ data }">
                 <span style="float: left">{{ data.name }}</span>
-                <span
-                  style="
+                <span style="
                     margin-left: 20px;
                     float: right;
                     color: #8492a6;
                     font-size: 13px;
-                  "
-                  >{{ data.account }}</span
-                >
+                  ">{{ data.account }}</span>
               </template>
             </IhSelectPageUser>
           </el-form-item>
@@ -125,9 +129,15 @@
       <el-row>
         <el-col :span="8">
           <el-form-item label="">
-            <el-button type="primary" @click="getListMixin()">查询</el-button>
+            <el-button
+              type="primary"
+              @click="getListMixin()"
+            >查询</el-button>
 
-            <el-button type="info" @click="reset()">重置</el-button>
+            <el-button
+              type="info"
+              @click="reset()"
+            >重置</el-button>
           </el-form-item>
         </el-col>
       </el-row>
@@ -137,7 +147,10 @@
       :data="resPageInfo.list"
       @selection-change="handleSelectionChange"
     >
-      <el-table-column type="selection" width="55"> </el-table-column>
+      <el-table-column
+        type="selection"
+        width="55"
+      > </el-table-column>
 
       <el-table-column
         prop="storageNum"
@@ -159,27 +172,47 @@
         label="法定代表人"
         width="180"
       ></el-table-column> -->
-      <el-table-column prop="province" label="业务开展省份" width="180">
+      <el-table-column
+        prop="province"
+        label="业务开展省份"
+        width="180"
+      >
         <template slot-scope="scope">
           {{ $root.getAreaName(scope.row.province) }}
         </template>
       </el-table-column>
-      <el-table-column prop="city" label="业务开展城市" width="180">
+      <el-table-column
+        prop="city"
+        label="业务开展城市"
+        width="180"
+      >
         <template slot-scope="scope">
           {{ $root.getAreaName(scope.row.city) }}
         </template>
       </el-table-column>
-      <el-table-column prop="cityGrade" label="城市等级" width="180">
+      <el-table-column
+        prop="cityGrade"
+        label="城市等级"
+        width="180"
+      >
         <template slot-scope="scope">
           {{ $root.dictAllName(scope.row.cityGrade, "CityLevel") }}
-        </template></el-table-column
+        </template>
+      </el-table-column>
+      <el-table-column
+        prop="channelGrade"
+        label="渠道等级"
+        width="180"
       >
-      <el-table-column prop="channelGrade" label="渠道等级" width="180">
         <template slot-scope="scope">
           {{ $root.dictAllName(scope.row.channelGrade, "ChannelLevel") }}
-        </template></el-table-column
+        </template>
+      </el-table-column>
+      <el-table-column
+        prop="special"
+        label="特批入库"
+        width="180"
       >
-      <el-table-column prop="special" label="特批入库" width="180">
         <template slot-scope="scope">
           {{ $root.dictAllName(scope.row.special, "YesOrNoType") }}
         </template>
@@ -201,9 +234,15 @@
       :total="resPageInfo.total"
     ></el-pagination>
 
-    <span slot="footer" class="dialog-footer">
+    <span
+      slot="footer"
+      class="dialog-footer"
+    >
       <el-button @click="cancel()">取 消</el-button>
-      <el-button type="primary" @click="finish()">确 定</el-button>
+      <el-button
+        type="primary"
+        @click="finish()"
+      >确 定</el-button>
     </span>
   </el-dialog>
 </template>

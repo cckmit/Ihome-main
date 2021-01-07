@@ -4,7 +4,7 @@
  * @Author: zyc
  * @Date: 2020-06-22 16:44:13
  * @LastEditors: zyc
- * @LastEditTime: 2020-12-14 17:24:43
+ * @LastEditTime: 2021-01-06 14:38:09
 --> 
 <template >
   <div class="main">
@@ -23,7 +23,8 @@
       ref="ruleForm"
       label-width="100px"
     >
-      <h3 style="text-align: center; margin: 10px">登录页面</h3>
+      <h3 style="text-align: center; margin: 10px">居恒新房分销系统·登录</h3>
+      <br>
       <el-form-item label="账号" prop="username">
         <el-input placeholder="账号" v-model="ruleForm.username"></el-input>
       </el-form-item>

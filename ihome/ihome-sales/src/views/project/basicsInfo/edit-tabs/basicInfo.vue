@@ -4,7 +4,7 @@
  * @Author: wwq
  * @Date: 2020-11-03 11:52:41
  * @LastEditors: wwq
- * @LastEditTime: 2020-12-23 09:31:58
+ * @LastEditTime: 2021-01-06 19:01:18
 -->
 <template>
   <div>
@@ -15,17 +15,6 @@
       :rules="rules"
     >
       <el-row>
-        <el-col :span="8">
-          <el-form-item label="盘编">
-            <el-input
-              clearable
-              maxlength="64"
-              v-model="form.proNo"
-              placeholder="盘编"
-              disabled
-            ></el-input>
-          </el-form-item>
-        </el-col>
         <el-col :span="8">
           <el-form-item
             label="项目推广名"
@@ -52,27 +41,16 @@
             ></el-input>
           </el-form-item>
         </el-col>
-      </el-row>
-      <el-row>
         <el-col :span="8">
           <el-form-item
             label="开发商名称"
             prop="developerId"
           >
-            <el-select
+            <IhSelectPageByDeveloper
               v-model="form.developerId"
-              clearable
-              filterable
-              class="width--100"
-              placeholder="开发商名称"
+              :searchName="form.developerName"
             >
-              <el-option
-                v-for="item in developerOptions"
-                :key="item.value"
-                :label="item.label"
-                :value="item.value"
-              ></el-option>
-            </el-select>
+            </IhSelectPageByDeveloper>
           </el-form-item>
         </el-col>
         <el-col :span="8">
@@ -112,6 +90,17 @@
                 :value="item.code"
               ></el-option>
             </el-select>
+          </el-form-item>
+        </el-col>
+        <el-col :span="8">
+          <el-form-item
+            label="省市区"
+            prop="provinceOption"
+          >
+            <IhCascader
+              v-model="form.provinceOption"
+              :checkStrictly="false"
+            ></IhCascader>
           </el-form-item>
         </el-col>
       </el-row>
@@ -157,18 +146,7 @@
         </el-col>
       </el-row>
       <el-row>
-        <el-col :span="8">
-          <el-form-item
-            label="省市区"
-            prop="provinceOption"
-          >
-            <IhCascader
-              v-model="form.provinceOption"
-              :checkStrictly="false"
-            ></IhCascader>
-          </el-form-item>
-        </el-col>
-        <el-col :span="16">
+        <el-col :span="24">
           <el-form-item
             label="项目地址"
             prop="proAddr"
@@ -277,7 +255,6 @@
             <el-form
               ref="contantForm"
               :model="item.msg"
-              :rules="contantRules"
             >
               <div class="contant">
                 <div style="
@@ -324,7 +301,6 @@
                       label="产权年限"
                       label-width="90px"
                       class="text-left"
-                      prop="propertyAge"
                     >
                       <el-select
                         style="width: 50%"
@@ -528,8 +504,12 @@
     <div class="margin-top-20">
       <el-button
         type="primary"
-        @click="save"
+        @click="submit('save')"
       >保存</el-button>
+      <el-button
+        type="primary"
+        @click="submit('submit')"
+      >提交</el-button>
       <el-button @click="$goto({ path: '/projects/list' })">关闭</el-button>
     </div>
     <ih-dialog :show="dialogVisible">
@@ -542,11 +522,11 @@
 </template>
 <script lang="ts">
 import { Component, Vue, Watch } from "vue-property-decorator";
-import { post_company_listAll } from "@/api/developer/index";
 import {
   get_project_get__proId,
   post_project_add,
   post_project_update,
+  post_project_auditWait,
 } from "@/api/project/index";
 import FirstAgencyDialog from "../dialog/firstAgency.vue";
 import { Form as ElForm } from "element-ui";
@@ -637,11 +617,6 @@ export default class EditBasicInfo extends Vue {
       },
     ],
   };
-  contantRules: any = {
-    propertyAge: [
-      { required: true, message: "请选择产权年限", trigger: "change" },
-    ],
-  };
   YesOrNoType: any = [
     {
       code: 0,
@@ -652,7 +627,6 @@ export default class EditBasicInfo extends Vue {
       name: "是",
     },
   ];
-  developerOptions: any = [];
   houseFileList: any = [];
   radio = "";
   houseList: any = [];
@@ -708,7 +682,6 @@ export default class EditBasicInfo extends Vue {
 
   created() {
     this.getInfo();
-    this.getDeveloper();
   }
 
   async getInfo() {
@@ -777,16 +750,6 @@ export default class EditBasicInfo extends Vue {
     let obj: any = {};
     obj[type] = data;
     this.submitFile = { ...this.submitFile, ...obj };
-  }
-
-  async getDeveloper() {
-    const item = await post_company_listAll({
-      name: "",
-    });
-    this.developerOptions = item.map((v: any) => ({
-      label: v.name,
-      value: v.id,
-    }));
   }
 
   getRadio(data: any) {
@@ -909,7 +872,7 @@ export default class EditBasicInfo extends Vue {
     });
   }
 
-  async save() {
+  async submit(submittype: any) {
     (this.$refs["form"] as ElForm).validate(async (v: any) => {
       if (v) {
         let obj = { ...this.form };
@@ -988,10 +951,14 @@ export default class EditBasicInfo extends Vue {
           await post_project_add(obj);
         } else {
           obj.proId = this.projectId;
-          await post_project_update(obj);
+          if (submittype === "save") {
+            await post_project_update(obj);
+          } else if (submittype === "submit") {
+            await post_project_auditWait(obj);
+          }
         }
         this.houseList = [];
-        this.$message.success("保存成功");
+        this.$message.success("提交成功");
         this.$goto({ path: "/projects/list" });
       }
     });

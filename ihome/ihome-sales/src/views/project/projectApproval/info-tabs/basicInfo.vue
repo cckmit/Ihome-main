@@ -4,7 +4,7 @@
  * @Author: wwq
  * @Date: 2020-11-27 17:17:06
  * @LastEditors: wwq
- * @LastEditTime: 2020-12-25 19:52:33
+ * @LastEditTime: 2021-01-06 18:59:44
 -->
 <template>
   <IhPage>
@@ -22,7 +22,10 @@
               label="合作项目"
               prop="proName"
             >
-              <span class="text-ellipsis">{{ info.proName }}</span>
+              <span
+                class="text-ellipsis"
+                :title="info.proName"
+              >{{ info.proName }}</span>
             </el-form-item>
           </el-col>
           <el-col :span="8">
@@ -30,7 +33,10 @@
               label="项目地址"
               prop="proAddr"
             >
-              <span class="text-ellipsis">{{ info.proAddr }}</span>
+              <span
+                class="text-ellipsis"
+                :title="info.proAddr"
+              >{{ info.proAddr }}</span>
             </el-form-item>
           </el-col>
         </el-row>
@@ -40,12 +46,18 @@
               label="备案名称"
               prop="proRecord"
             >
-              <span class="text-ellipsis">{{ info.proRecord }}</span>
+              <span
+                class="text-ellipsis"
+                :title="info.proRecord"
+              >{{ info.proRecord }}</span>
             </el-form-item>
           </el-col>
           <el-col :span="8">
             <el-form-item label="开发商">
-              <span class="text-ellipsis">{{ info.developerName }}</span>
+              <span
+                class="text-ellipsis"
+                :title="info.developerName"
+              >{{ info.developerName }}</span>
             </el-form-item>
           </el-col>
         </el-row>
@@ -66,7 +78,10 @@
               label="周期名称"
               prop="termName"
             >
-              <span class="text-ellipsis">{{ info.termName }}</span>
+              <span
+                class="text-ellipsis"
+                :title="info.termName"
+              >{{ info.termName }}</span>
             </el-form-item>
           </el-col>
           <el-col :span="8">
@@ -74,7 +89,10 @@
               label="周期时间"
               prop="timeList"
             >
-              <span class="text-ellipsis">{{ info.timeList[0] + '~'+ info.timeList[1] }}</span>
+              <span
+                class="text-ellipsis"
+                :title="info.timeList[0] + '~'+ info.timeList[1]"
+              >{{ info.timeList[0] + '~'+ info.timeList[1] }}</span>
             </el-form-item>
           </el-col>
           <el-col :span="8">
@@ -82,7 +100,10 @@
               label="呈批文号"
               prop="approvalNo"
             >
-              <span class="text-ellipsis">{{ info.approvalNo }}</span>
+              <span
+                class="text-ellipsis"
+                :title="info.approvalNo"
+              >{{ info.approvalNo }}</span>
             </el-form-item>
           </el-col>
         </el-row>
@@ -92,7 +113,10 @@
               label="启动事业部"
               prop="startDivision"
             >
-              <span class="text-ellipsis">{{ info.startDivision }}</span>
+              <span
+                class="text-ellipsis"
+                :title="info.startDivision"
+              >{{ info.startDivision }}</span>
             </el-form-item>
           </el-col>
           <el-col :span="8">
@@ -100,7 +124,10 @@
               label="业务模式"
               prop="busEnum"
             >
-              <span class="text-ellipsis">{{ $root.dictAllName(info.busEnumChange, "BusinessModel") }}</span>
+              <span
+                class="text-ellipsis"
+                :title="$root.dictAllName(info.busEnum, 'BusinessModel')"
+              >{{ $root.dictAllName(info.busEnum, "BusinessModel") }}</span>
             </el-form-item>
           </el-col>
           <el-col :span="8">
@@ -108,7 +135,10 @@
               label="收费类型"
               prop="chargeEnum"
             >
-              <span class="text-ellipsis">{{ $root.dictAllName(info.chargeEnum, "Charge") }}</span>
+              <span
+                class="text-ellipsis"
+                :title="$root.dictAllName(info.chargeEnum, 'Charge')"
+              >{{ $root.dictAllName(info.chargeEnum, "Charge") }}</span>
             </el-form-item>
           </el-col>
         </el-row>
@@ -118,7 +148,10 @@
               label="模式属性"
               prop="attributeEnum"
             >
-              <span class="text-ellipsis">{{ $root.dictAllName(info.attributeEnum, "Attribute") }}</span>
+              <span
+                class="text-ellipsis"
+                :title="$root.dictAllName(info.attributeEnum, 'Attribute')"
+              >{{ $root.dictAllName(info.attributeEnum, "Attribute") }}</span>
             </el-form-item>
           </el-col>
           <el-col :span="8">
@@ -126,7 +159,10 @@
               label="垫佣周期"
               prop="padCommissionEnum"
             >
-              <span class="text-ellipsis">{{ $root.dictAllName(info.padCommissionEnum, "PadCommission") }}</span>
+              <span
+                class="text-ellipsis"
+                :title="$root.dictAllName(info.padCommissionEnum, 'PadCommission')"
+              >{{ $root.dictAllName(info.padCommissionEnum, "PadCommission") }}</span>
             </el-form-item>
           </el-col>
           <el-col :span="8">
@@ -134,14 +170,20 @@
               label="业务类型"
               prop="busTypeEnum"
             >
-              <span class="text-ellipsis">{{ $root.dictAllName(info.busTypeEnum, "BusType") }}</span>
+              <span
+                class="text-ellipsis"
+                :title="$root.dictAllName(info.busTypeEnum, 'BusType')"
+              >{{ $root.dictAllName(info.busTypeEnum, "BusType") }}</span>
             </el-form-item>
           </el-col>
         </el-row>
         <el-row>
           <el-col :span="8">
             <el-form-item label="我司主体">
-              <span class="text-ellipsis">{{ info.companyName }}</span>
+              <span
+                class="text-ellipsis"
+                :title="info.companyName"
+              >{{ info.companyName }}</span>
             </el-form-item>
           </el-col>
           <el-col :span="8">
@@ -157,7 +199,10 @@
               label="项目委托方"
               prop="proClient"
             >
-              <span class="text-ellipsis">{{ info.proClient }}</span>
+              <span
+                class="text-ellipsis"
+                :title="info.proClient"
+              >{{ info.proClient }}</span>
             </el-form-item>
           </el-col>
         </el-row>
@@ -167,7 +212,10 @@
               label="项目周期阶段"
               prop="termStageEnum"
             >
-              <span class="text-ellipsis">{{ $root.dictAllName(info.termStageEnum, "TermStage") }}</span>
+              <span
+                class="text-ellipsis"
+                :title="$root.dictAllName(info.termStageEnum, 'TermStage')"
+              >{{ $root.dictAllName(info.termStageEnum, "TermStage") }}</span>
             </el-form-item>
           </el-col>
           <el-col :span="8">
@@ -179,7 +227,10 @@
             </el-form-item>
           </el-col>
           <el-col :span="8">
-            <el-form-item label="允许其他渠道费用临时穿底">
+            <el-form-item
+              label="允许其他渠道费用临时穿底"
+              class="formItem"
+            >
               <span class="text-ellipsis">{{ info.exOver?'是':'否' }}</span>
             </el-form-item>
           </el-col>
@@ -189,6 +240,7 @@
             <el-form-item
               label="往期业绩金额（万元）"
               prop="preBusAmount"
+              class="formItem"
             >
               <span class="text-ellipsis">{{ info.preBusAmount }}</span>
             </el-form-item>
@@ -197,12 +249,16 @@
             <el-form-item
               label="服务费可用其他渠道费用"
               prop="serviceBalance"
+              class="formItem"
             >
               <span class="text-ellipsis">{{ info.serviceBalance }}</span>
             </el-form-item>
           </el-col>
           <el-col :span="8">
-            <el-form-item label="允许跨项目使用其他渠道费用">
+            <el-form-item
+              label="允许跨项目使用其他渠道费用"
+              class="formItem"
+            >
               <span class="text-ellipsis">{{ info.exOtherProChannelUse?'是':'否' }}</span>
             </el-form-item>
           </el-col>
@@ -224,12 +280,23 @@
               <span class="text-ellipsis">{{ info.overStandardCount }}</span>
             </el-form-item>
           </el-col>
+          <el-col
+            :span="8"
+            v-if="isShow"
+          >
+            <el-form-item
+              label="是否免收服务费"
+              prop="exVoidService"
+            >
+              <span class="text-ellipsis">{{ info.exVoidService?'是':'否' }}</span>
+            </el-form-item>
+          </el-col>
         </el-row>
         <el-row v-if="isShow">
           <el-col :span="8">
             <el-form-item
               label="认购书是否体现优惠折扣"
-              prop="exDiscount"
+              class="formItem"
             >
               <span class="text-ellipsis">{{ info.exDiscount?'是':'否' }}</span>
             </el-form-item>
@@ -237,7 +304,7 @@
           <el-col :span="8">
             <el-form-item
               label="认购书优惠折扣体现方式"
-              prop="subscriDiscountModel"
+              class="formItem"
             >
               <span class="text-ellipsis">{{ info.subscriDiscountModel }}</span>
             </el-form-item>
@@ -245,7 +312,7 @@
           <el-col :span="8">
             <el-form-item
               label="优惠告知书折扣体现方式"
-              prop="notificDiscountModel"
+              class="formItem"
             >
               <span class="text-ellipsis">{{ info.notificDiscountModel }}</span>
             </el-form-item>
@@ -253,10 +320,7 @@
         </el-row>
         <el-row>
           <el-col :span="12">
-            <el-form-item
-              label="客户报备要求简述"
-              prop="customerReportingRequire"
-            >
+            <el-form-item label="客户报备要求简述">
               <span class="text-ellipsis">{{ info.customerReportingRequire }}</span>
             </el-form-item>
           </el-col>
@@ -266,7 +330,7 @@
           >
             <el-form-item
               label="【项目房款/车位款+服务费】>备案价"
-              prop="houseandcarGtRecordEnum"
+              class="formItem"
             >
               <span class="text-ellipsis">{{ $root.dictAllName(info.houseandcarGtRecordEnum, "YesOrNoType") }}</span>
             </el-form-item>
@@ -274,18 +338,12 @@
         </el-row>
         <el-row>
           <el-col :span="12">
-            <el-form-item
-              label="收取佣金标准简述"
-              prop="collectCommissionStandardSketch"
-            >
+            <el-form-item label="收取佣金标准简述">
               <span class="text-ellipsis">{{ info.collectCommissionStandardSketch }}</span>
             </el-form-item>
           </el-col>
           <el-col :span="12">
-            <el-form-item
-              label="收取佣金条件简述"
-              prop="collectCommissionConditionSketch"
-            >
+            <el-form-item label="收取佣金条件简述">
               <span class="text-ellipsis">{{ info.collectCommissionConditionSketch }}</span>
             </el-form-item>
           </el-col>
@@ -328,12 +386,12 @@
             </el-form-item>
           </el-col>
         </el-row>
-        <p class="ih-info-title">联动周期信息</p>
+        <p class="ih-info-title">测算结果</p>
         <el-row>
           <el-col :span="8">
             <el-form-item
               label="服务费总包模式-总包成交留存率"
-              prop="serviceFeeTotalByTotalRate"
+              class="formItem"
             >
               <span class="text-ellipsis">{{ info.serviceFeeTotalByTotalRate }}</span>
             </el-form-item>
@@ -341,7 +399,7 @@
           <el-col :span="8">
             <el-form-item
               label="代理费总包模式-总包成交留存率"
-              prop="agencyFeeTotalByTotalRate"
+              class="formItem"
             >
               <span class="text-ellipsis">{{ info.agencyFeeTotalByTotalRate }}</span>
             </el-form-item>
@@ -349,7 +407,7 @@
           <el-col :span="8">
             <el-form-item
               label="纯分销模式-代理费留存率"
-              prop="distributeAgencyRate"
+              class="formItem"
             >
               <span class="text-ellipsis">{{ info.distributeAgencyRate }}</span>
             </el-form-item>
@@ -359,7 +417,7 @@
           <el-col :span="8">
             <el-form-item
               label="服务费总包模式-分销成交留存率"
-              prop="serviceFeeTotalByDistrictbuteRate"
+              class="formItem"
             >
               <span class="text-ellipsis">{{ info.serviceFeeTotalByDistrictbuteRate }}</span>
             </el-form-item>
@@ -367,7 +425,7 @@
           <el-col :span="8">
             <el-form-item
               label="代理费总包模式-分销成交留存率"
-              prop="agencyFeeTotalByDistrictbuteRate"
+              class="formItem"
             >
               <span class="text-ellipsis">{{ info.agencyFeeTotalByDistrictbuteRate }}</span>
             </el-form-item>
@@ -375,7 +433,7 @@
           <el-col :span="8">
             <el-form-item
               label="纯分销模式-服务费留存率"
-              prop="distributeServiceRate"
+              class="formItem"
             >
               <span class="text-ellipsis">{{ info.distributeServiceRate }}</span>
             </el-form-item>
@@ -485,16 +543,19 @@ export default class FirstAgencyEdit extends Vue {
     attachTermVOS: [],
     companyName: null,
     companyId: null,
+    exVoidService: null,
   };
   fileListType: any = [];
   private attachTermVOS: any = [];
   isShow: any = true;
   auditMsg = "";
+  exVoidServiceShow: any = true;
 
   @Watch("info.chargeEnum", { immediate: true })
   getIsShow(val: any) {
     if (val === "Agent") {
       this.isShow = false;
+      this.info.exVoidService = null;
     } else {
       this.isShow = true;
     }
@@ -515,7 +576,6 @@ export default class FirstAgencyEdit extends Vue {
         termId: id,
       });
       this.info = { ...res };
-      this.info.startDivision = (this.$root as any).userInfo.name;
       this.info.timeList = [res.termStart, res.termEnd];
       this.info.termStageEnum = "Subscription";
       this.info.companyId = res.companyId;
@@ -553,5 +613,11 @@ export default class FirstAgencyEdit extends Vue {
 .msg-title {
   text-align: left;
   margin-left: 25px;
+}
+
+.formItem {
+  /deep/ .el-form-item__label {
+    line-height: 20px;
+  }
 }
 </style>

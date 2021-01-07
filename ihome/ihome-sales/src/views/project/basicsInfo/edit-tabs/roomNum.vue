@@ -4,7 +4,7 @@
  * @Author: wwq
  * @Date: 2020-09-27 11:52:41
  * @LastEditors: wwq
- * @LastEditTime: 2020-12-23 20:54:48
+ * @LastEditTime: 2020-12-31 09:46:17
 -->
 <template>
   <div>
@@ -82,6 +82,8 @@
         </el-col>
       </el-row>
     </el-form>
+    <div class="inittitle">温馨提示：推荐使用快捷导入房号功能，导入成功后将自动生成户型信息、栋座信息、房间信息</div>
+    <br />
     <el-table
       class="ih-table"
       :data="resPageInfo.list"
@@ -290,5 +292,10 @@ export default class EidtRoomNum extends Vue {
   }
 }
 </script>
-<style lang="scss">
+<style lang="scss" scoped>
+.inittitle {
+  font-size: 14px;
+  color: red;
+  text-align: left;
+}
 </style>
