@@ -439,6 +439,7 @@
             <el-table-column fixed="right" label="操作" width="100">
               <template slot-scope="scope">
                 <el-link
+                  style="color: #f66"
                   v-if="!!scope.row.addType"
                   class="margin-right-10"
                   type="primary"
@@ -488,6 +489,7 @@
             fixed="right" label="操作" width="100">
             <template slot-scope="scope">
               <el-link
+                style="color: #f66"
                 class="margin-right-10"
                 type="primary"
                 @click.native.prevent="deleteAdd(scope)"

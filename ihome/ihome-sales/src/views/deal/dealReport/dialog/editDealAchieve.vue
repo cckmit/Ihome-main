@@ -22,7 +22,9 @@
       <el-row :gutter="10">
         <el-col :span="8">
           <el-form-item label="角色类型">
-            <el-select v-model="form.roleType" placeholder="请选择">
+            <el-select
+              v-if="data.currentEditItem.roleType !== 'BranchOffice'"
+              v-model="form.roleType" placeholder="请选择">
               <el-option
                 v-for="item in dealRoleList"
                 :key="item.code"
@@ -30,45 +32,46 @@
                 :value="item.code"
               ></el-option>
             </el-select>
+            <div>{{$root.dictAllName(form.roleType, 'DealRole')}}</div>
           </el-form-item>
         </el-col>
-        <el-col :span="8">
+        <el-col :span="8" v-if="data.currentEditItem.roleType !== 'BranchOffice'">
           <el-form-item label="角色人">
             <IhSelectPageUser
               v-model="form.rolerId"
-              @changeOption="(data) => {form.data = data}"
+              @changeOption="handleSelectRole"
               clearable>
             </IhSelectPageUser>
           </el-form-item>
         </el-col>
-        <el-col :span="8">
+        <el-col :span="8" v-if="data.currentEditItem.roleType !== 'BranchOffice'">
           <el-form-item label="店组">
             <el-input placeholder="角色人自动带出" disabled v-model="form.belongOrgName" />
           </el-form-item>
         </el-col>
-        <el-col :span="8">
+        <el-col :span="8" v-if="data.currentEditItem.roleType !== 'BranchOffice'">
           <el-form-item label="角色业绩上限">
-            <el-input placeholder="" disabled v-model="form.roleAchieveCap" />
+            <el-input v-digits="2" disabled v-model="form.roleAchieveCap" />
           </el-form-item>
         </el-col>
         <el-col :span="8">
           <el-form-item label="角色人业绩">
-            <el-input v-model="form.corporateAchieve" placeholder="拆佣金额" />
+            <el-input v-model="form.corporateAchieve" v-digits="2" placeholder="拆佣金额" />
           </el-form-item>
         </el-col>
-        <el-col :span="8">
+        <el-col :span="8" v-if="data.currentEditItem.roleType !== 'BranchOffice'">
           <el-form-item label="角色业绩比例（%）">
-            <el-input placeholder="" disabled v-model="form.corporateAchieveRatio" />
+            <el-input disabled v-digits="2" v-model="form.corporateAchieveRatio" />
           </el-form-item>
         </el-col>
         <el-col :span="8">
           <el-form-item label="拆佣金额">
-            <el-input v-model="form.commFees" placeholder="拆佣金额"/>
+            <el-input v-model="form.commFees" v-digits="2" placeholder="拆佣金额"/>
           </el-form-item>
         </el-col>
         <el-col :span="8">
           <el-form-item label="拆佣比例（%）">
-            <el-input placeholder="" disabled v-model="form.commFeesRatio" />
+            <el-input disabled v-digits="2" v-model="form.commFeesRatio" />
           </el-form-item>
         </el-col>
         <el-col :span="24">
@@ -81,18 +84,19 @@
             <el-table-column prop="name" label="名称" min-width="100">
               <template slot-scope="scope">
                 <IhSelectPageUser
-                  v-model="scope.row.roleId"
+                  v-model="scope.row.managerId"
+                  @changeOption="handleSelectManagementRole"
                   clearable>
                 </IhSelectPageUser>
               </template>
             </el-table-column>
-            <el-table-column prop="achieveAmount" label="岗位" min-width="100"></el-table-column>
-            <el-table-column prop="otherChannelFees" label="分配金额" min-width="100">
+            <el-table-column prop="managerPosition" label="岗位" min-width="100"></el-table-column>
+            <el-table-column prop="achieveFees" label="分配金额" min-width="100">
               <template slot-scope="scope">
-                <el-input placeholder="" v-model="scope.row.otherChannelFees" />
+                <el-input v-digits="2" v-model="scope.row.otherChannelFees" />
               </template>
             </el-table-column>
-            <el-table-column prop="otherChannelFees" label="金额比例" min-width="100">
+            <el-table-column prop="achieveFeesRatio" label="金额比例" min-width="100">
               <template slot-scope="scope">
                 <div v-if="scope.row.otherChannelFees">{{scope.row.otherChannelFees}}%</div>
               </template>
@@ -115,26 +119,14 @@
       <el-button @click="cancel()">取 消</el-button>
       <el-button type="primary" @click="finish()">确 定</el-button>
     </span>
-    <ih-dialog :show="dialogAddRole" desc="选择角色用户列表">
-      <SelectRole
-        @cancel="() => (dialogAddRole = false)"
-        @finish="
-            (data) => {
-              dialogAddRole = false;
-              finishAddProjectCycle(data);
-            }
-          "
-      />
-    </ih-dialog>
   </el-dialog>
 </template>
 <script lang="ts">
   import {Component, Vue, Prop} from "vue-property-decorator";
-  import SelectRole from "@/views/deal/dealReport/dialog/selectRole.vue";
   import PaginationMixin from "@/mixins/pagination";
 
   @Component({
-    components: {SelectRole},
+    components: {},
     mixins: [PaginationMixin],
   })
   export default class EditDealAchieve extends Vue {
@@ -145,33 +137,21 @@
     @Prop({default: null}) data: any;
     dialogVisible = true;
     form: any = {
-      roleType: null,
-      roleAchieveCap: null,
-      corporateAchieve: null,
-      corporateAchieveRatio: null,
-      commFees: null,
-      commFeesRatio: null,
-      rolerName: null,
-      belongOrgName: null,
-      managementList: [],
+      commFees: 0, // 拆佣金额
+      commFeesRatio: 0, // 拆佣金额比例
+      corporateAchieve: 0, // 角色业绩
+      corporateAchieveRatio: 0, // 角色业绩比例
+      roleAchieveCap: 0, // 角色业绩上限
+      roleType: "", // 角色类型
+      rolerId: 0, // 角色人ID
+      belongOrgId: null, // 归属组织ID
+      belongOrgName: null, // 归属组织name
+      rolerPosition: "", // 角色人岗位
+      type: "", // 类型(TotalBag-总包、Distri-分销)
+      managerAchieveList: [] // 成交管理者业绩信息
     };
     dealRoleList: any = []; // 角色类型 --- 从角色字典中过滤分公司选项
-    isCompany: any = false; // 是否公司业绩
-    dialogAddRole: any = false;
     achieveTitle: any = '新增角色业绩'; // 弹窗标题
-
-    queryPageParameters: any = {
-      channelGrade: null,
-      channelId: null,
-      city: null,
-      cityGrade: null,
-      departmentOrgId: null,
-      inputUser: null,
-      province: null,
-      special: null,
-      status: null,
-      storageNum: null,
-    };
 
     async finish() {
       this.$emit("finish", true);
@@ -192,20 +172,48 @@
       if (this.data.btnType === 'add') {
         this.achieveTitle = '新增角色业绩';
       } else if (this.data.btnType === 'edit') {
-        if (this.data.type === 'BranchOffice') {
+        this.form = this.data.currentEditItem;
+        if (this.data.currentEditItem.roleType === 'BranchOffice') {
           this.achieveTitle = '分配管理岗业绩';
         } else {
           this.achieveTitle = '修改角色业绩';
         }
       }
+      // 角色类型下拉选项
       const list: any = (this as any).$root.dictAllList('DealRole');
-      // console.log('角色类型', list);
-      if (list.length > 0) {
-        this.dealRoleList = list.filter((item: any) => {
-          return item.code !== "BranchOffice";
-        });
-      } else {
-        this.dealRoleList = [];
+      this.dealRoleList = [];
+      if (this.data.type === 'total') {
+        // 总包
+        if (list.length > 0 && this.data && this.data.totablBagRoles && this.data.totablBagRoles.length > 0) {
+          this.data.totablBagRoles.forEach((item: any) => {
+            list.forEach((L: any) => {
+              if (item.code === L.code) {
+                this.dealRoleList.push(
+                  {
+                    ...L,
+                    roleAchieveCap: item.roleAchieveCap
+                  }
+                );
+              }
+            })
+          });
+        }
+      } else if (this.data.type === 'distri') {
+        // 分销
+        if (list.length > 0 && this.data && this.data.distriRoles && this.data.distriRoles.length > 0) {
+          this.data.distriRoles.forEach((item: any) => {
+            list.forEach((L: any) => {
+              if (item === L.code) {
+                this.dealRoleList.push(
+                  {
+                    ...L,
+                    roleAchieveCap: item.roleAchieveCap
+                  }
+                );
+              }
+            })
+          });
+        }
       }
       console.log('datadata', this.data);
     }
@@ -214,18 +222,25 @@
     addManagement() {
       this.form.managementList.push(
         {
-          addId: new Date().getTime() + this.form.managementList.length,
-          money: '',
-          ratio: '',
-          manager: '',
-          managerPosition: ''
+          achieveFees: 0, // 业绩金额
+          achieveFeesRatio: 0, // 业绩金额比例
+          belongOrgId: null, // 归属组织ID
+          managerId: null, // 管理者ID
+          managerName: null, // 管理者名字
+          managerPosition: null, // 管理者岗位
+          type: null // 类型(Supervisor-主管、Manager-经理、Director-总监)
         }
       )
     }
 
-    selectRole(scope: any) {
-      console.log(scope);
-      this.dialogAddRole = true;
+    // 选择角色人
+    handleSelectRole(data: any) {
+      console.log(data);
+    }
+
+    //  选择管理岗角色人
+    handleSelectManagementRole(data: any) {
+      console.log(data);
     }
 
     // 确定选择角色
@@ -237,8 +252,8 @@
     handleRemove(scope: any) {
       console.log(scope);
       if (this.form.managementList.length > 0) {
-        this.form.managementList = this.form.managementList.filter((item: any) => {
-          return item.addId !== scope.row.addId;
+        this.form.managementList = this.form.managementList.filter((item: any, index: any) => {
+          return index !== scope.$index;
         });
       }
     }
