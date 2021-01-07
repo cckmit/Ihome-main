@@ -4,7 +4,7 @@
  * @Author: ywl
  * @Date: 2020-09-25 17:34:32
  * @LastEditors: ywl
- * @LastEditTime: 2020-12-30 19:03:47
+ * @LastEditTime: 2021-01-07 20:46:45
 -->
 <template>
   <IhPage label-width="100px">
@@ -358,7 +358,7 @@
                 <el-dropdown-item
                   :class="{ 'ih-data-disabled': row.distributionState !== 'Drafting' && row.distributionState !== 'Disallowance' }"
                   @click.native.prevent="remove(row)"
-                  v-has="'E.SALES.CONTRACT.DISTLIST.DELETE'"
+                  v-has="'B.SALES.CONTRACT.DISTLIST.DELETE'"
                 >删除</el-dropdown-item>
                 <el-dropdown-item
                   @click.native.prevent="duplicate(row)"
