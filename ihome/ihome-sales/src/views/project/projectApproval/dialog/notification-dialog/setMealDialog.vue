@@ -4,7 +4,7 @@
  * @Author: wwq
  * @Date: 2020-12-08 14:28:17
  * @LastEditors: wwq
- * @LastEditTime: 2021-01-04 19:48:09
+ * @LastEditTime: 2021-01-06 19:07:54
 -->
 <template>
   <el-dialog
@@ -128,7 +128,7 @@
                 </el-table-column>
                 <el-table-column
                   prop="contractEnum"
-                  label="合同类型"
+                  label="渠道类型"
                   width="150"
                   align="center"
                 >
@@ -306,7 +306,7 @@
                 </el-table-column>
                 <el-table-column
                   prop="contractEnum"
-                  label="合同类型"
+                  label="渠道类型"
                   width="150"
                   align="center"
                 >
