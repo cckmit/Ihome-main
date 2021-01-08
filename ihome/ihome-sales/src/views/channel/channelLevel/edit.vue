@@ -4,7 +4,7 @@
  * @Author: wwq
  * @Date: 2020-10-15 16:02:03
  * @LastEditors: wwq
- * @LastEditTime: 2020-12-16 20:25:34
+ * @LastEditTime: 2021-01-08 11:48:45
 -->
 <template>
   <IhPage>
@@ -279,7 +279,7 @@
           >保存</el-button>
           <el-button
             @click="pass('2')"
-            type="primary"
+            type="success"
           >提交</el-button>
         </div>
       </div>

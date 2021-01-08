@@ -4,7 +4,7 @@
  * @Author: wwq
  * @Date: 2020-09-25 17:59:09
  * @LastEditors: wwq
- * @LastEditTime: 2020-12-15 14:32:47
+ * @LastEditTime: 2021-01-08 11:47:17
 -->
 <template>
   <ih-page>
@@ -81,7 +81,6 @@
           <el-col :span="8">
             <el-form-item
               label="法定代表人"
-              required
               prop="legalPerson"
             >
               <el-input
@@ -343,7 +342,7 @@
           >保存</el-button>
           <el-button
             @click="submit('WaitAuditByBranchHead')"
-            type="primary"
+            type="success"
           >提交</el-button>
         </div>
       </div>

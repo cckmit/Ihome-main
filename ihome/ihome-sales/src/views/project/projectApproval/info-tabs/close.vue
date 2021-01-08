@@ -4,7 +4,7 @@
  * @Author: wwq
  * @Date: 2020-11-27 17:26:20
  * @LastEditors: wwq
- * @LastEditTime: 2020-12-14 09:41:08
+ * @LastEditTime: 2021-01-08 10:46:42
 -->
 <template>
   <div>
@@ -21,19 +21,16 @@
         ></el-table-column>
         <el-table-column
           label="中介性质"
-          prop="propertyEnum"
+          prop="agencyText"
         >
-          <template v-slot="{ row }">{{
-            $root.dictAllName(row.propertyEnum, "Property")
-          }}</template>
         </el-table-column>
         <el-table-column
-          label="优先级"
-          prop="priorityEnum"
+          label="状态"
+          prop="cancel"
         >
-          <template v-slot="{ row }">{{
-            $root.dictAllName(row.priorityEnum, "Priority")
-          }}</template>
+          <template v-slot="{ row }">
+            {{row.cancel ? '作废' : '有效'}}
+          </template>
         </el-table-column>
         <el-table-column
           label="操作"
@@ -65,19 +62,16 @@
         ></el-table-column>
         <el-table-column
           label="甲方名称"
-          prop="propertyEnum"
+          prop="partyAText"
         >
-          <template v-slot="{ row }">{{
-            $root.dictAllName(row.propertyEnum, "Property")
-          }}</template>
         </el-table-column>
         <el-table-column
-          label="优先级"
-          prop="priorityEnum"
+          label="状态"
+          prop="cancel"
         >
-          <template v-slot="{ row }">{{
-            $root.dictAllName(row.priorityEnum, "Priority")
-          }}</template>
+          <template v-slot="{ row }">
+            {{row.cancel ? '作废' : '有效'}}
+          </template>
         </el-table-column>
         <el-table-column
           label="操作"

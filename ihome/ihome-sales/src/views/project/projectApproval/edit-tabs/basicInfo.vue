@@ -4,7 +4,7 @@
  * @Author: wwq
  * @Date: 2020-11-27 17:17:06
  * @LastEditors: wwq
- * @LastEditTime: 2021-01-07 09:31:13
+ * @LastEditTime: 2021-01-08 12:01:10
 -->
 <template>
   <div class="project-approval-box">
@@ -1194,10 +1194,6 @@ export default class FirstAgencyEdit extends Vue {
       }
     });
   }
-  submit() {
-    this.$message.warning("接口未提供,功能未实现");
-  }
-
   async getInfo() {
     let id = this.$route.query.id;
     if (id) {
