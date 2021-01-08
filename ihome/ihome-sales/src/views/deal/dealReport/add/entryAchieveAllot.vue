@@ -1477,8 +1477,14 @@
       }
       if (type === 'add') {
         // 新增的时候
+        const loading = this.$loading({
+          lock: true,
+          text: '数据加载中...',
+          spinner: 'el-icon-loading'
+        });
         await this.initCommissionData();
         await this.initAchieveData();
+        loading.close();
         this.addFlag = false;
         this.editFlag = false;
         this.tipsFlag = true;
@@ -1500,8 +1506,14 @@
             confirmButtonText: '确定',
             cancelButtonText: '取消',
           });
+          const loading = this.$loading({
+            lock: true,
+            text: '数据加载中...',
+            spinner: 'el-icon-loading'
+          });
           await this.initCommissionData();
           await this.initAchieveData();
+          loading.close();
           this.addFlag = false;
           this.editFlag = false;
           this.tipsFlag = true;
@@ -1826,6 +1838,11 @@
         cycleId: cycleId,
         roomId: roomId
       };
+      const loading = this.$loading({
+        lock: true,
+        text: '数据加载中...',
+        spinner: 'el-icon-loading'
+      });
       let baseInfo: any = await post_pageData_initBasic(params);
       this.baseInfoInDeal = JSON.parse(JSON.stringify(baseInfo || '{}'));
       // console.log('baseInfobaseInfo', this.baseInfoInDeal);
@@ -1914,6 +1931,7 @@
       console.log('commissionServiceFeeObj', this.commissionServiceFeeObj)
       // 附件信息
       this.initDocument(baseInfo.contType, baseInfo);
+      loading.close();
     }
 
     // 初始化收派金额中的代理费的甲方数组 --- 代理费
@@ -2075,18 +2093,6 @@
     selectPackage(scope: any) {
       // console.log('选择收派套餐', scope);
       this.currentReceiveIndex = scope.$index;
-      // let params: any = {
-      //   hasRecord: this.baseInfoInDeal.hasRecord, // 是否有成交报备(是否分销成交)
-      //   idList: this.packageIdsList, // 分销成交 --- 选择分销协议后的ids
-      //   contNo: this.postData.contNo, // 分销协议编号
-      //   type: scope.row.type, // 标题类型
-      //   postObj: {
-      //     contractEnum: this.postData.contType, // 合同类型
-      //     propertyEnum: this.postData.propertyType, // 物业类型
-      //     subdivideEnum: this.postData.refineModel, // 细分业务
-      //     termId: this.postData.cycleId, // 立项周期ID
-      //   }, // 非分销需要获取id的参数
-      // };
       let params: any = {
         termId: this.baseInfoByTerm.termId, // 项目周期id
         contType: this.postData.contType, // 合同类型

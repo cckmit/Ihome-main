@@ -1153,6 +1153,11 @@
         cycleId: cycleId,
         roomId: roomId
       };
+      const loading = this.$loading({
+        lock: true,
+        text: '数据加载中...',
+        spinner: 'el-icon-loading'
+      });
       let baseInfo: any = await post_pageData_initBasic(params);
       this.baseInfoInDeal = JSON.parse(JSON.stringify(baseInfo || '{}'));
       // console.log('baseInfobaseInfo', this.baseInfoInDeal);
@@ -1232,6 +1237,7 @@
       this.postData.receiveVO = (this as any).$parent.initReceiveVOS(baseInfo.receiveVOS);
       // 附件信息
       this.initDocument(baseInfo.contType, baseInfo);
+      loading.close();
     }
 
     // 初始化渠道商(渠道公司) --- 分销成交模式才有渠道商
@@ -1352,18 +1358,6 @@
     selectPackage(scope: any) {
       console.log('选择收派套餐', scope);
       this.currentReceiveIndex = scope.$index;
-      // let params: any = {
-      //   hasRecord: this.baseInfoInDeal.hasRecord, // 是否有成交报备(是否分销成交)
-      //   idList: this.packageIdsList, // 分销成交 --- 选择分销协议后的ids
-      //   contNo: this.postData.contNo, // 分销协议编号
-      //   type: scope.row.type, // 标题类型
-      //   postObj: {
-      //     contractEnum: this.postData.contType, // 合同类型
-      //     propertyEnum: this.postData.propertyType, // 物业类型
-      //     subdivideEnum: this.postData.refineModel, // 细分业务
-      //     termId: this.postData.cycleId, // 立项周期ID
-      //   }, // 非分销需要获取id的参数
-      // };
       let params: any = {
         termId: this.baseInfoByTerm.termId, // 项目周期id
         contType: this.postData.contType, // 合同类型
