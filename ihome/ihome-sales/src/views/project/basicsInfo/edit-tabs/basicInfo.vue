@@ -4,7 +4,7 @@
  * @Author: wwq
  * @Date: 2020-11-03 11:52:41
  * @LastEditors: wwq
- * @LastEditTime: 2021-01-08 11:49:16
+ * @LastEditTime: 2021-01-08 14:09:53
 -->
 <template>
   <div>
@@ -359,6 +359,7 @@
                 </div>
               </template>
             </IhUpload>
+            <div style="text-align: left;color: #aaa;margin-top: -10px">图片尺寸：480*480，用于移动端页面展示，封面图用于首页/详情页首张展示</div>
           </el-form-item>
         </el-col>
       </el-row>
