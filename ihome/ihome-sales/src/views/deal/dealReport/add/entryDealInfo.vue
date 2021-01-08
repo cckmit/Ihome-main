@@ -462,7 +462,7 @@
     <el-row style="padding-left: 20px">
       <el-col>
         <div
-          v-if="!baseInfoInDeal.customerAddVOS.length"
+          v-if="!baseInfoInDeal.customerAddVOS.length && postData.roomId"
           class="add-all-wrapper">
           <el-button type="success" @click="handleAddCustomer">添加客户</el-button>
         </div>

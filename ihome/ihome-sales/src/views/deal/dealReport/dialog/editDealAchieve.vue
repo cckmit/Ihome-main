@@ -151,7 +151,7 @@
         return callback(new Error('角色人业绩不能为空'));
       } else {
         if (value > this.form.roleAchieveCap) {
-          return callback(new Error('角色人业绩不能大于角色业绩上限'));
+          return callback(new Error('角色人业绩大于角色业绩上限'));
         }
         callback();
       }

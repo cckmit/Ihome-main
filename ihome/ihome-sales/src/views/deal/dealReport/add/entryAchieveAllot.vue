@@ -463,7 +463,7 @@
     <el-row style="padding-left: 20px">
       <el-col>
         <div
-          v-if="!baseInfoInDeal.customerAddVOS.length"
+          v-if="!baseInfoInDeal.customerAddVOS.length && postData.roomId"
           class="add-all-wrapper">
           <el-button type="success" @click="handleAddCustomer">添加客户</el-button>
         </div>
@@ -672,24 +672,26 @@
         </el-table>
       </el-col>
     </el-row>
-    <div class="divider-padding" v-if="addFlag">
-      <div class="divider-tip color-blur">
-        <div>完善收派金额后请点击下方按钮初始化加载对外拆佣及平台费用数据</div>
-        <div class="btn">
-          <el-button class="btn-color" @click="handleLoadCommission('add')">点击加载对外拆佣及平台费用数据</el-button>
+    <div v-if="postData.receiveVO.length">
+      <div class="divider-padding" v-if="addFlag">
+        <div class="divider-tip color-blur">
+          <div>完善收派金额后请点击下方按钮初始化加载对外拆佣及平台费用数据</div>
+          <div class="btn">
+            <el-button class="btn-color" @click="handleLoadCommission('add')">点击加载对外拆佣及平台费用数据</el-button>
+          </div>
         </div>
       </div>
-    </div>
-    <div class="divider-padding border-color-red" v-if="editFlag">
-      <div class="divider-tip color-red">
-        <div>收派金额发生变动，业绩需要初始化重新分配，请点击下方刷新按钮重新初始化对外拆佣及平台费用数据</div>
-        <div class="btn">
-          <el-button type="danger" @click="handleLoadCommission('refresh')">刷新</el-button>
+      <div class="divider-padding border-color-red" v-if="editFlag">
+        <div class="divider-tip color-red">
+          <div>收派金额发生变动，业绩需要初始化重新分配，请点击下方刷新按钮重新初始化对外拆佣及平台费用数据</div>
+          <div class="btn">
+            <el-button type="danger" @click="handleLoadCommission('refresh')">刷新</el-button>
+          </div>
         </div>
       </div>
-    </div>
-    <div class="divider-padding border-color-none" v-if="tipsFlag">
-      <el-divider>{{dividerTips}}</el-divider>
+      <div class="divider-padding border-color-none" v-if="tipsFlag">
+        <el-divider>{{dividerTips}}</el-divider>
+      </div>
     </div>
     <p id="anchor-8" class="ih-info-title">对外拆佣</p>
     <el-row style="padding-left: 20px">
@@ -810,7 +812,10 @@
     <div v-if="postData.businessType !== 'DistriModel'">
       <div class="ih-type-wrapper">
         <div class="title">总包</div>
-        <el-button type="success" @click="handleAddAchieve('total')">新增角色</el-button>
+        <el-button
+          v-if="postData.achieveTotalBagList.length"
+          type="success"
+          @click="handleAddAchieve('total')">新增角色</el-button>
       </div>
       <el-row style="padding-left: 20px">
         <el-col>
@@ -880,7 +885,7 @@
       <div class="ih-type-wrapper">
         <div class="title">分销</div>
         <el-button
-          v-if="!isSameFlag"
+          v-if="!isSameFlag && postData.achieveTotalBagList.length"
           type="success"
           @click="handleAddAchieve('distri')">新增角色</el-button>
       </div>
