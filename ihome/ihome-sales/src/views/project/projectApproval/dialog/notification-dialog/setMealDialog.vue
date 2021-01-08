@@ -4,7 +4,7 @@
  * @Author: wwq
  * @Date: 2020-12-08 14:28:17
  * @LastEditors: wwq
- * @LastEditTime: 2021-01-08 10:23:02
+ * @LastEditTime: 2021-01-08 14:41:58
 -->
 <template>
   <el-dialog
@@ -102,7 +102,13 @@
               <!-- 表头行选择 -->
               <div class="top-select">
                 <!-- 服务费代理费 -->
-                <div class="title">服务费</div>
+                <div class="msg-left">
+                  <div class="title">服务费</div>
+                  <div style="display: flex;align-items: center">
+                    <div style="width: 120px">是否免收服务费:</div>
+                    <div>{{item.exVoidService?'是': '否'}}</div>
+                  </div>
+                </div>
               </div>
               <el-table
                 class="ih-table"
@@ -623,7 +629,7 @@ export default class SetMealDialog extends Vue {
   }
 }
 .msg-left {
-  width: 250px;
+  width: 210px;
   padding: 0 10px;
   display: flex;
   justify-content: flex-start;
