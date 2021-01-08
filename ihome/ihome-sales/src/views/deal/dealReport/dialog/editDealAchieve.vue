@@ -60,23 +60,27 @@
         <el-col :span="8">
           <el-form-item label="角色人业绩" prop="corporateAchieve">
             <el-input
+              @input="calculatePercentage($event, 'corporateAchieveRatio')"
               :disabled="data.currentEditItem.roleType === 'BranchOffice'"
               v-model="form.corporateAchieve" v-digits="2" placeholder="" />
           </el-form-item>
         </el-col>
         <el-col :span="8" v-if="data.currentEditItem.roleType !== 'BranchOffice'">
           <el-form-item label="角色业绩比例（%）">
-            <div class="div-disabled">{{getPercentage(form.corporateAchieve, form.roleAchieveCap)}}%</div>
+            <div class="div-disabled">{{form.corporateAchieveRatio}}%</div>
           </el-form-item>
         </el-col>
         <el-col :span="8">
           <el-form-item label="拆佣金额">
-            <el-input v-model="form.commFees" v-digits="2" placeholder=""/>
+            <el-input
+              v-model="form.commFees"
+              @input="calculatePercentage($event, 'commFeesRatio')"
+              v-digits="2" placeholder=""/>
           </el-form-item>
         </el-col>
         <el-col :span="8">
           <el-form-item label="拆佣比例（%）">
-            <div class="div-disabled">{{getPercentage(form.commFees, data.totalAmount)}}%</div>
+            <div class="div-disabled">{{form.commFeesRatio}}%</div>
           </el-form-item>
         </el-col>
         <el-col :span="24">
@@ -98,12 +102,15 @@
             <el-table-column prop="managerPosition" label="岗位" min-width="100"></el-table-column>
             <el-table-column prop="achieveFees" label="分配金额" min-width="100">
               <template slot-scope="scope">
-                <el-input v-digits="2" v-model="scope.row.achieveFees" />
+                <el-input
+                  v-digits="2"
+                  @input="calculatePercentage($event, 'achieveFeesRatio', scope.row)"
+                  v-model="scope.row.achieveFees" />
               </template>
             </el-table-column>
             <el-table-column prop="achieveFeesRatio" label="金额比例" min-width="100">
               <template slot-scope="scope">
-                <div class="div-disabled">{{getPercentage(scope.row.achieveFees, form.corporateAchieve)}}%</div>
+                <div>{{scope.row.achieveFeesRatio}}%</div>
               </template>
             </el-table-column>
             <el-table-column fixed="right" label="操作" width="100">
@@ -139,17 +146,16 @@
       super();
     }
 
-    private validateCorporateAchieve: any = (rule: any, value: any, callback: any) => {
+    private validateCorporateAchieve (rule: any, value: any, callback: any) {
       if (!value) {
         return callback(new Error('角色人业绩不能为空'));
       } else {
         if (value > this.form.roleAchieveCap) {
-          return callback(new Error('角色人业绩不能大于角色人业绩上限'));
+          return callback(new Error('角色人业绩不能大于角色业绩上限'));
         }
         callback();
       }
-    };
-
+    }
     @Prop({default: null}) data: any;
     dialogVisible = true;
     form: any = {
@@ -159,7 +165,8 @@
       corporateAchieveRatio: 0, // 角色业绩比例
       roleAchieveCap: 0, // 角色业绩上限
       roleType: "", // 角色类型
-      rolerId: 0, // 角色人ID
+      rolerId: null, // 角色人ID
+      rolerName: null, // 角色人Name
       belongOrgId: null, // 归属组织ID
       belongOrgName: null, // 归属组织name
       rolerPosition: "", // 角色人岗位
@@ -270,6 +277,31 @@
     }
 
     // 计算比例
+    calculatePercentage(value: any, type: any, row: any = {}) {
+      if (!type) return;
+      switch (type) {
+        case 'corporateAchieveRatio':
+          // 角色人业绩比例
+          this.form.corporateAchieveRatio = this.getPercentage(this.form.corporateAchieve, this.form.roleAchieveCap);
+          // 如果管理岗列表有数据，要重新算
+          if (this.form.managerAchieveList.length > 0) {
+            this.form.managerAchieveList.forEach((list: any) => {
+              list.achieveFeesRatio = this.getPercentage(list.achieveFees, this.form.corporateAchieve);
+            });
+          }
+          break;
+        case 'commFeesRatio':
+          // 拆佣比例
+          this.form.commFeesRatio = this.getPercentage(this.form.commFees, this.data.totalAmount);
+          break;
+        case 'achieveFeesRatio':
+          // 管理岗的金额比例
+          row.achieveFeesRatio = this.getPercentage(row.achieveFees, this.form.corporateAchieve);
+          break;
+      }
+    }
+
+    // 计算比例
     getPercentage(num: any, total: any) {
       if (num == 0 || total == 0){
         return 0;
@@ -313,6 +345,7 @@
     handleSelectRole(data: any) {
       console.log(data);
       this.form.rolerId = data.id;
+      this.form.rolerName = data.name;
       this.form.belongOrgId = data.orgId;
       this.form.belongOrgName = data.orgName;
       this.form.rolerPosition = data.jobName;
