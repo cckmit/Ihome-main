@@ -3,12 +3,17 @@
  * @version: 
  * @Author: lsj
  * @Date: 2020-11-09 16:35:00
- * @LastEditors: ywl
- * @LastEditTime: 2020-12-29 09:19:46
+ * @LastEditors: lsj
+ * @LastEditTime: 2021-01-08 18:39:20
 -->
 <template>
   <div class="table-checkbox-demo">
+    <div class="btn-wrapper">
+      <el-button type="primary" @click="handleCancelAll">取消全选</el-button>
+    </div>
     <IhTableCheckBox
+      ref="checkBox"
+      :row-class-name="tableRowClassName"
       :isSingle="true"
       valueKey="code"
       :data="tableData"
@@ -133,7 +138,39 @@ export default class TableDemo extends Vue {
       // })
     }
   }
+
+  // 标记表格行
+  tableRowClassName({row, rowIndex}: any) {
+    console.log(row);
+    if (rowIndex === 1) {
+      return 'warning-row';
+    } else if (rowIndex === 3) {
+      return 'success-row';
+    }
+    return '';
+  }
+
+  // 多选模式下： 取消所有选择项
+  handleCancelAll() {
+    (this as any).$refs.checkBox.handleClearSelection();
+  }
 }
 </script>
 <style lang="scss" scoped>
+.btn-wrapper {
+  width: 100%;
+  box-sizing: border-box;
+  margin-bottom: 10px;
+  text-align: left;
+}
+
+.table-checkbox-demo {
+  /deep/.warning-row {
+    background: oldlace;
+  }
+
+  /deep/.success-row {
+    background: #f0f9eb;
+  }
+}
 </style>
