@@ -2377,52 +2377,8 @@
       let tempArr: any = [];
       if (this.editDealAchieveData.type === 'total') {
         tempArr = this.getTempList(this.editDealAchieveData.btnType, this.currentChangeObj.index, this.postData.achieveTotalBagList, data);
-        // 总包
-        // if (this.editDealAchieveData.btnType === 'add') {
-        //   // 新增
-        //   tempArr = [...this.postData.achieveTotalBagList, data];
-        // } else if (this.editDealAchieveData.btnType === 'edit') {
-        //   // 编辑
-        //   let temp = JSON.parse(JSON.stringify(this.postData.achieveTotalBagList));
-        //   if (temp.length > 0) {
-        //     temp.forEach((item: any, index: any) => {
-        //       if (index === this.currentChangeObj.index) {
-        //         tempArr.push(
-        //           {
-        //             ...item,
-        //             ...data
-        //           }
-        //         );
-        //       } else {
-        //         tempArr.push(item);
-        //       }
-        //     });
-        //   }
-        //  }
       } else if (this.editDealAchieveData.type === 'distri') {
         tempArr = this.getTempList(this.editDealAchieveData.btnType, this.currentChangeObj.index, this.postData.achieveDistriList, data);
-        // // 分销
-        // if (this.editDealAchieveData.btnType === 'add') {
-        //   // 新增
-        //   tempArr = [...this.postData.achieveDistriList, data];
-        // } else if (this.editDealAchieveData.btnType === 'edit') {
-        //   // 编辑
-        //   let temp = JSON.parse(JSON.stringify(this.postData.achieveDistriList));
-        //   if (temp.length > 0) {
-        //     temp.forEach((item: any, index: any) => {
-        //       if (index === this.currentChangeObj.index) {
-        //         tempArr.push(
-        //           {
-        //             ...item,
-        //             ...data
-        //           }
-        //         );
-        //       } else {
-        //         tempArr.push(item);
-        //       }
-        //     });
-        //   }
-        // }
       }
       await this.recalculateAchieve(this.editDealAchieveData.type, tempArr);
       this.dialogEditDealAchieve = !this.dialogEditDealAchieve;
@@ -2936,13 +2892,13 @@
 
   .nav-box {
     position: fixed;
-    right: 16px;
+    right: 37px;
     top: 30%;
     box-sizing: border-box;
     display: flex;
     flex-direction: row;
     //align-items: center;
-    border: 1px solid #ffffff;
+    //border: 1px solid #ffffff;
     z-index: 200;
 
     .nav-icon {

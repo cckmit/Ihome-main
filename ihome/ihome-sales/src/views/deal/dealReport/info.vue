@@ -868,13 +868,13 @@
 
   .nav-box {
     position: fixed;
-    right: 16px;
+    right: 37px;
     top: 30%;
     box-sizing: border-box;
     display: flex;
     flex-direction: row;
     //align-items: center;
-    border: 1px solid #ffffff;
+    //border: 1px solid #ffffff;
     z-index: 200;
 
     .nav-icon {
