@@ -4,7 +4,7 @@
  * @Author: wwq
  * @Date: 2020-11-03 11:52:41
  * @LastEditors: wwq
- * @LastEditTime: 2021-01-06 19:01:18
+ * @LastEditTime: 2021-01-08 11:49:16
 -->
 <template>
   <div>
@@ -15,6 +15,18 @@
       :rules="rules"
     >
       <el-row>
+        <el-col
+          :span="8"
+          v-if="$route.name === 'projectChildEdit'"
+        >
+          <el-form-item label="盘编">
+            <el-input
+              disabled
+              v-model="form.proNo"
+              placeholder="盘编"
+            ></el-input>
+          </el-form-item>
+        </el-col>
         <el-col :span="8">
           <el-form-item
             label="项目推广名"
@@ -103,50 +115,48 @@
             ></IhCascader>
           </el-form-item>
         </el-col>
-      </el-row>
-      <el-row v-if="isShow">
-        <el-col :span="8">
-          <el-form-item label="爱家父项目推广名">
-            <el-input
-              clearable
-              v-model="form.parentName"
-              placeholder="爱家父项目推广名"
-              disabled
-            ></el-input>
-          </el-form-item>
-        </el-col>
-        <el-col :span="8">
-          <el-form-item label="明源楼盘名">
-            <el-input
-              clearable
-              v-model="form.buildingGuidName"
-              placeholder="明源楼盘名"
-              disabled
-            ></el-input>
-          </el-form-item>
-        </el-col>
-        <el-col :span="8">
-          <el-form-item
-            label="同步明源房号数据"
-            prop="exSyncRoom"
-          >
-            <el-select
-              v-model="form.exSyncRoom"
-              clearable
-              class="width--100"
+        <el-row v-if="isShow">
+          <el-col :span="8">
+            <el-form-item label="爱家父项目推广名">
+              <el-input
+                clearable
+                v-model="form.parentName"
+                placeholder="爱家父项目推广名"
+                disabled
+              ></el-input>
+            </el-form-item>
+          </el-col>
+          <el-col :span="8">
+            <el-form-item label="明源楼盘名">
+              <el-input
+                clearable
+                v-model="form.buildingGuidName"
+                placeholder="明源楼盘名"
+                disabled
+              ></el-input>
+            </el-form-item>
+          </el-col>
+          <el-col :span="8">
+            <el-form-item
+              label="同步明源房号数据"
+              prop="exSyncRoom"
             >
-              <el-option
-                v-for="item in YesOrNoType"
-                :key="item.code"
-                :label="item.name"
-                :value="item.code"
-              ></el-option>
-            </el-select>
-          </el-form-item>
-        </el-col>
-      </el-row>
-      <el-row>
-        <el-col :span="24">
+              <el-select
+                v-model="form.exSyncRoom"
+                clearable
+                class="width--100"
+              >
+                <el-option
+                  v-for="item in YesOrNoType"
+                  :key="item.code"
+                  :label="item.name"
+                  :value="item.code"
+                ></el-option>
+              </el-select>
+            </el-form-item>
+          </el-col>
+        </el-row>
+        <el-col :span="16">
           <el-form-item
             label="项目地址"
             prop="proAddr"
@@ -224,6 +234,7 @@
           <el-form-item
             label="物业类型"
             class="text-left"
+            prop="checkboxEnum"
           >
             <el-checkbox-group
               v-model="form.checkboxEnum"
@@ -334,6 +345,7 @@
               :file-size="10"
               size="100px"
               accept="image/*"
+              upload-accept="image"
               :loadPermi="false"
               @newFileList="houseFiles"
             >
@@ -457,6 +469,7 @@
               <template v-slot="{ $index }">
                 <el-button
                   size="small"
+                  type="danger"
                   @click="delFirstAgencyCompanys($index)"
                 >删除</el-button>
               </template>
@@ -507,7 +520,7 @@
         @click="submit('save')"
       >保存</el-button>
       <el-button
-        type="primary"
+        type="success"
         @click="submit('submit')"
       >提交</el-button>
       <el-button @click="$goto({ path: '/projects/list' })">关闭</el-button>
@@ -613,6 +626,13 @@ export default class EditBasicInfo extends Vue {
       {
         required: true,
         message: "请选择同步明源房号数据",
+        trigger: "change",
+      },
+    ],
+    checkboxEnum: [
+      {
+        required: true,
+        message: "请选择物业类型",
         trigger: "change",
       },
     ],
@@ -786,7 +806,29 @@ export default class EditBasicInfo extends Vue {
 
   checkboxChangeHandler(val: any) {
     const item = val.map((v: any) => JSON.parse(v));
-    this.checkBoxChangeList = item;
+    // let arr: any = item.concat(this.checkBoxChangeList);
+    let newArr: any = [];
+    let flag: any = true;
+    item.forEach((v: any) => {
+      newArr.forEach((j: any) => {
+        if (v.id === j.id) {
+          flag = false;
+        }
+      });
+      if (flag) {
+        newArr.push({
+          ...v,
+        });
+      }
+    });
+    if (this.checkBoxChangeList.length) {
+      this.checkBoxChangeList = [];
+      newArr.forEach((v: any) => {
+        this.checkBoxChangeList.push(v);
+      });
+    } else {
+      this.checkBoxChangeList = newArr;
+    }
   }
 
   // 处理楼房图片
