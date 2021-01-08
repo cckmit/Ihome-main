@@ -4,7 +4,7 @@
  * @Author: wwq
  * @Date: 2020-12-04 09:40:47
  * @LastEditors: wwq
- * @LastEditTime: 2021-01-06 19:06:59
+ * @LastEditTime: 2021-01-08 10:23:47
 -->
 <template>
   <el-dialog
@@ -224,7 +224,7 @@
               </el-table-column>
               <el-table-column
                 prop="contractEnum"
-                label="渠道类型"
+                label="合同类型"
                 width="150"
                 align="center"
               >
@@ -247,7 +247,7 @@
               </el-table-column>
               <el-table-column
                 prop="transactionEnum"
-                label="客户类型"
+                label="渠道类型"
                 width="150"
                 align="center"
               >
@@ -606,7 +606,7 @@
               </el-table-column>
               <el-table-column
                 prop="contractEnum"
-                label="渠道类型"
+                label="合同类型"
                 width="150"
                 align="center"
               >
@@ -629,7 +629,7 @@
               </el-table-column>
               <el-table-column
                 prop="transactionEnum"
-                label="客户类型"
+                label="渠道类型"
                 width="150"
                 align="center"
               >

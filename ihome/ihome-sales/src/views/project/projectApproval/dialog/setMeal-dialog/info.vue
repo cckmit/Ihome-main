@@ -4,7 +4,7 @@
  * @Author: wwq
  * @Date: 2020-12-07 14:32:16
  * @LastEditors: wwq
- * @LastEditTime: 2021-01-06 19:07:09
+ * @LastEditTime: 2021-01-08 14:41:26
 -->
 <template>
   <el-dialog
@@ -110,10 +110,7 @@
             <!-- 表头行选择 -->
             <div class="top-select">
               <!-- 服务费代理费 -->
-              <div
-                class="msg-left"
-                style="width: 400px"
-              >
+              <div class="msg-left">
                 <div class="title">服务费</div>
                 <div style="display: flex;align-items: center">
                   <div style="width: 120px">是否免收服务费:</div>
@@ -138,7 +135,7 @@
               </el-table-column>
               <el-table-column
                 prop="contractEnum"
-                label="渠道类型"
+                label="合同类型"
                 width="150"
                 align="center"
               >
@@ -148,7 +145,7 @@
               </el-table-column>
               <el-table-column
                 prop="transactionEnum"
-                label="客户类型"
+                label="渠道类型"
                 width="150"
                 align="center"
               >
@@ -309,7 +306,7 @@
               </el-table-column>
               <el-table-column
                 prop="contractEnum"
-                label="渠道类型"
+                label="合同类型"
                 width="150"
                 align="center"
               >
@@ -319,7 +316,7 @@
               </el-table-column>
               <el-table-column
                 prop="transactionEnum"
-                label="客户类型"
+                label="渠道类型"
                 width="150"
                 align="center"
               >
@@ -576,7 +573,7 @@ export default class SetMealEdit extends Vue {
   }
 }
 .msg-left {
-  width: 250px;
+  width: 210px;
   padding: 0 10px;
   display: flex;
   justify-content: flex-start;

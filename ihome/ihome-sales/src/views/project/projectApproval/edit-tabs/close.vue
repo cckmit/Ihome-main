@@ -4,7 +4,7 @@
  * @Author: wwq
  * @Date: 2020-11-27 17:26:20
  * @LastEditors: wwq
- * @LastEditTime: 2020-12-31 17:20:32
+ * @LastEditTime: 2021-01-08 10:44:50
 -->
 <template>
   <div>
@@ -34,6 +34,14 @@
         >
         </el-table-column>
         <el-table-column
+          label="状态"
+          prop="cancel"
+        >
+          <template v-slot="{ row }">
+            {{row.cancel ? '作废' : '有效'}}
+          </template>
+        </el-table-column>
+        <el-table-column
           label="操作"
           width="220"
           fixed="right"
@@ -51,6 +59,7 @@
               @click="edit(row, 'making')"
             >修改</el-button>
             <el-button
+              v-if="!row.cancel"
               size="small"
               type="danger"
               @click="cancellation(row, 'making')"
@@ -86,6 +95,14 @@
         >
         </el-table-column>
         <el-table-column
+          prop="settleName"
+          label="状态"
+        >
+          <template v-slot="{ row }">
+            {{row.cancel ? '作废' : '有效'}}
+          </template>
+        </el-table-column>
+        <el-table-column
           label="操作"
           width="220"
           fixed="right"
@@ -103,6 +120,7 @@
               @click="edit(row, 'please')"
             >修改</el-button>
             <el-button
+              v-if="!row.cancel"
               size="small"
               type="danger"
               @click="cancellation(row, 'please')"

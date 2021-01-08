@@ -4,7 +4,7 @@
  * @Author: wwq
  * @Date: 2020-11-03 11:52:41
  * @LastEditors: wwq
- * @LastEditTime: 2020-12-30 15:35:50
+ * @LastEditTime: 2021-01-08 11:02:52
 -->
 <template>
   <div>
@@ -15,6 +15,14 @@
       class="text-left"
     >
       <el-row>
+        <el-col :span="8">
+          <el-form-item
+            label="盘编"
+            :title="form.proNo"
+          >
+            <span class="text-ellipsis">{{form.proNo}}</span>
+          </el-form-item>
+        </el-col>
         <el-col :span="8">
           <el-form-item
             label="项目推广名"
@@ -233,6 +241,7 @@
               :file-size="10"
               size="100px"
               accept="image/*"
+              :removePermi="false"
             >
               <template #extend="{ data }">
                 <div class="padding-top-5 font">
