@@ -4,7 +4,7 @@
  * @Author: wwq
  * @Date: 2020-12-26 11:11:28
  * @LastEditors: wwq
- * @LastEditTime: 2021-01-07 14:36:45
+ * @LastEditTime: 2021-01-08 19:44:56
 -->
 <template>
   <IhPage label-width="120px">
@@ -112,7 +112,6 @@
               <el-select
                 style="width: 100%"
                 v-model="queryPageParameters.paymentMethod"
-                disabled
                 placeholder="请选择"
               >
                 <el-option
@@ -144,7 +143,7 @@
         >重置</el-button>
         <el-button
           type="danger"
-          @click="del()"
+          @click="remove(null, 'duo')"
         >批量删除</el-button>
         <el-button
           type="success"
@@ -199,10 +198,13 @@
           label="状态"
           prop="status"
           width="120"
+          align="center"
         >
-          <template v-slot="{ row }">{{
-            $root.dictAllName(row.status, "PayoffStatus")
-          }}</template>
+          <template v-slot="{ row }">
+            <div class="status-style">
+              {{$root.dictAllName(row.status, "PayoffStatus")}}
+            </div>
+          </template>
         </el-table-column>
         <el-table-column
           label="结算方式"
@@ -267,16 +269,16 @@
                 >编辑</el-dropdown-item>
                 <el-dropdown-item
                   :class="{ 'ih-data-disabled': ''}"
-                  @click.native.prevent="remove(row)"
+                  @click.native.prevent="remove(row, '')"
                 >删除</el-dropdown-item>
                 <el-dropdown-item
                   :class="{'ih-data-disabled': ''}"
-                  @click.native.prevent="routeTo(row, 'revocation')"
+                  @click.native.prevent="recall(row)"
                 >撤回
                 </el-dropdown-item>
                 <el-dropdown-item
                   :class="{'ih-data-disabled': ''}"
-                  @click.native.prevent="routeTo(row, 'check')"
+                  @click.native.prevent="routeTo(row, 'replenish')"
                 >补充</el-dropdown-item>
                 <el-dropdown-item
                   :class="{'ih-data-disabled': ''}"
@@ -321,7 +323,11 @@
 </template>
 <script lang="ts">
 import { Component, Vue } from "vue-property-decorator";
-import { post_payApply_getList } from "@/api/payoff/index";
+import {
+  post_payApply_getList,
+  post_payApply_delete_ids,
+  post_payApply_withdrawSubmit,
+} from "@/api/payoff/index";
 import PaginationMixin from "../../../mixins/pagination";
 import SelectOrganizationTree from "@/components/SelectOrganizationTree.vue";
 
@@ -400,19 +406,40 @@ export default class PayoffList extends Vue {
     });
   }
 
-  async remove(row: any) {
-    console.log(row);
-    // try {
-    //   await this.$confirm("是否确定删除?", "提示");
-    //   await get_company_delete__id({ id: row.id });
-    //   this.getListMixin();
-    //   this.$message({
-    //     type: "success",
-    //     message: "删除成功!",
-    //   });
-    // } catch (error) {
-    //   console.log(error);
-    // }
+  async remove(data: any, type: any) {
+    try {
+      let arr: any = [];
+      if (type) {
+        if (this.selection.length) {
+          arr = this.selection.map((v: any) => v.id);
+        } else {
+          this.$message.warning("请勾选表格数据");
+          return;
+        }
+      } else {
+        arr = [data.id];
+      }
+      await this.$confirm("是否确定删除?", "提示");
+      await post_payApply_delete_ids({ ids: arr });
+      this.getListMixin();
+      this.$message({
+        type: "success",
+        message: "删除成功!",
+      });
+    } catch (error) {
+      console.log(error);
+    }
+  }
+
+  async recall(data: any) {
+    await post_payApply_withdrawSubmit({
+      id: data.id,
+    });
+    this.getListMixin();
+    this.$message({
+      type: "success",
+      message: "撤回成功!",
+    });
   }
 
   routeTo(row: any, where: string) {
@@ -446,4 +473,27 @@ export default class PayoffList extends Vue {
 }
 </script>
 <style lang="scss" scoped>
+.status-style {
+  z-index: 10;
+  overflow: hidden;
+  &::after {
+    content: "驳回";
+    position: absolute;
+    top: 0;
+    right: -14px;
+    width: 50px;
+    height: 20px;
+    background: red;
+    color: #fff;
+    text-align: center;
+    transform: rotate(45deg);
+    font-size: 12px;
+    opacity: 0.7;
+  }
+}
+.ih-table {
+  /deep/ .el-table_1_column_8 {
+    overflow: hidden;
+  }
+}
 </style>

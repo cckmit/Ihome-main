@@ -4,7 +4,7 @@
  * @Author: wwq
  * @Date: 2020-12-26 11:11:23
  * @LastEditors: wwq
- * @LastEditTime: 2021-01-07 19:47:20
+ * @LastEditTime: 2021-01-08 17:08:14
 -->
 <template>
   <IhPage>
@@ -18,25 +18,22 @@
       >
         <el-row>
           <el-col :span="8">
-            <el-form-item
-              label="付款单编号"
-              prop="applyCode"
-            >
+            <el-form-item label="付款单编号">
               <el-input
                 disabled
                 v-model="info.applyCode"
-                placeholder="付款单编号"
+                placeholder="保存后生成"
               ></el-input>
             </el-form-item>
           </el-col>
           <el-col :span="8">
             <el-form-item
               label="制单人"
-              prop="makerId"
+              prop="maker"
             >
               <el-input
                 disabled
-                v-model="info.makerId"
+                v-model="info.maker"
                 placeholder="制单人"
               ></el-input>
             </el-form-item>
@@ -54,7 +51,10 @@
             </el-form-item>
           </el-col>
           <el-col :span="8">
-            <el-form-item label="状态">
+            <el-form-item
+              label="当前状态"
+              prop="status"
+            >
               <el-select
                 style="width: 100%"
                 v-model="info.status"
@@ -107,17 +107,16 @@
           <el-col :span="8">
             <el-form-item
               label="发票类型"
-              required
               prop="invoiceType"
             >
               <el-select
                 v-model="info.invoiceType"
                 clearable
-                placeholder="请选择类型"
+                placeholder="请选择发票类型"
                 class="width--100"
               >
                 <el-option
-                  v-for="item in $root.dictAllList('InvoiceType')"
+                  v-for="item in $root.dictAllList('PayoffInvoiceType')"
                   :key="item.code"
                   :label="item.name"
                   :value="item.code"
@@ -137,7 +136,7 @@
                 class="width--100"
               >
                 <el-option
-                  v-for="item in $root.dictAllList('ChannelCompanyType')"
+                  v-for="item in taxRateOptions"
                   :key="item.code"
                   :label="item.name"
                   :value="item.code"
@@ -146,12 +145,15 @@
             </el-form-item>
           </el-col>
           <el-col :span="8">
-            <el-form-item label="结算方式">
+            <el-form-item
+              label="结算方式"
+              prop="settlementMethod"
+            >
               <el-select
                 style="width: 100%"
                 v-model="info.settlementMethod"
                 disabled
-                placeholder="请选择"
+                placeholder="请选择结算方式"
               >
                 <el-option
                   v-for="item in $root.dictAllList('SettlementMethod')"
@@ -163,7 +165,10 @@
             </el-form-item>
           </el-col>
           <el-col :span="8">
-            <el-form-item label="付款方式">
+            <el-form-item
+              label="付款方式"
+              prop="paymentMethod"
+            >
               <el-select
                 style="width: 100%"
                 v-model="info.paymentMethod"
@@ -667,7 +672,7 @@
         >保存</el-button>
         <el-button
           @click="submit('WaitAuditByBranchHead')"
-          type="primary"
+          type="success"
         >提交</el-button>
         <el-button @click="cancel">取消</el-button>
       </div>
@@ -705,6 +710,7 @@ export default class PayoffEdit extends Vue {
     receiveAccount: null,
     invoiceType: null,
     taxRate: null,
+    maker: null,
     makerId: null,
     makerTime: null,
     payApplyDetailList: [],
@@ -720,23 +726,100 @@ export default class PayoffEdit extends Vue {
   fileListType: any = [];
   submitFile: any = {};
   contactsData: any = {};
-  contactsIndex: any;
   contactsDialogVisible = false;
+  taxRateOptions: any = [
+    {
+      code: "0",
+      name: "0%",
+    },
+    {
+      code: "1",
+      name: "1%",
+    },
+    {
+      code: "3",
+      name: "3%",
+    },
+    {
+      code: "5",
+      name: "5%",
+    },
+    {
+      code: "6",
+      name: "6%",
+    },
+  ];
 
   private rules: any = {
-    name: [{ required: true, message: "请填写名称", trigger: "change" }],
-    creditCode: [
-      { required: true, message: "请填写信用代码", trigger: "change" },
+    applyCode: [
+      {
+        required: true,
+        message: "请填写付款单编号",
+        trigger: "change",
+      },
     ],
-    shortName: [{ required: true, message: "请填写简称", trigger: "change" }],
-    type: [{ required: true, message: "请选择类型", trigger: "change" }],
-    setupTime: [
-      { required: true, message: "请选择成立日期", trigger: "change" },
+    maker: [
+      {
+        required: true,
+        message: "请填写制单人",
+        trigger: "change",
+      },
     ],
-    capital: [{ required: true, message: "请填写注册资本", trigger: "change" }],
-    address: [{ required: true, message: "请填写住所", trigger: "change" }],
-    legalPerson: [
-      { required: true, message: "请填法定代表人", trigger: "change" },
+    makerTime: [
+      {
+        required: true,
+        message: "请选择制单日期",
+        trigger: "change",
+      },
+    ],
+    status: [
+      {
+        required: true,
+        message: "请选择当前状态",
+        trigger: "change",
+      },
+    ],
+    agencyId: [
+      {
+        required: true,
+        message: "请选择渠道商",
+        trigger: "change",
+      },
+    ],
+    receiveAccount: [
+      {
+        required: true,
+        message: "请选择渠道收款账号",
+        trigger: "change",
+      },
+    ],
+    invoiceType: [
+      {
+        required: true,
+        message: "请选择发票类型",
+        trigger: "change",
+      },
+    ],
+    taxRate: [
+      {
+        required: true,
+        message: "请选择发票税率",
+        trigger: "change",
+      },
+    ],
+    settlementMethod: [
+      {
+        required: true,
+        message: "请选择结算方式",
+        trigger: "change",
+      },
+    ],
+    paymentMethod: [
+      {
+        required: true,
+        message: "请选择付款方式",
+        trigger: "change",
+      },
     ],
   };
 
@@ -821,6 +904,12 @@ export default class PayoffEdit extends Vue {
         name: res.agencyName,
       });
     } else {
+      this.info.maker = (this.$root as any).userInfo.name;
+      this.info.makerId = (this.$root as any).userInfo.id;
+      this.info.makerTime = (this.$tool as any).todayStr();
+      this.info.status = "Unconfirm";
+      this.info.settlementMethod = "Centralization";
+      this.info.paymentMethod = "Cash";
       this.getFileListType([]);
     }
   }
@@ -911,21 +1000,27 @@ export default class PayoffEdit extends Vue {
   }
 
   contactsFinish(data: any) {
-    console.log(data);
-    this.info.payApplyDetailList = data.map((v: any) => ({
+    let arr: any = data.map((v: any) => ({
       ...v,
       cycleId: v.cycleId + "",
     }));
+    if (this.info.payApplyDetailList.length) {
+      let newArr: any = arr.concat(this.info.payApplyDetailList);
+      const res = new Map();
+      this.info.payApplyDetailList = newArr.filter(
+        (v: any) => !res.has(v.cycleId) && res.set(v.cycleId, 1)
+      );
+    } else {
+      this.info.payApplyDetailList = arr;
+    }
     this.contactsDialogVisible = false;
-    // this.info.contactList.push(data);
-    // this.$set(this.info.contactList, this.contactsIndex, data);
   }
 
   async getChannelInfo(item: any) {
     this.info.agencyName = item.name;
     let res = await get_channel_get__id({ id: item.id });
     this.channelAccountOptions = res.channelBanks;
-    this.info.receiveAccount = "";
+    this.info.receiveAccount = null;
   }
 
   submit(val: string) {
@@ -973,17 +1068,14 @@ export default class PayoffEdit extends Vue {
           return;
         }
         switch (this.$route.name) {
-          case "developerAdd":
+          case "payoffAdd":
             // await post_company_add(this.info);
             break;
-          case "developerEdit":
+          case "payoffEdit":
             // await post_company_updateDraft(this.info);
             break;
-          case "developerChange":
-            // await post_company_update(this.info);
-            break;
         }
-        this.$goto({ path: `/developers/list` });
+        this.$goto({ path: `/payoff/list` });
         this.$message({
           type: "success",
           message: val === "Draft" ? "保存成功!" : "提交成功!",
@@ -1005,11 +1097,6 @@ export default class PayoffEdit extends Vue {
 .bottom {
   margin-top: 30px;
   text-align: center;
-}
-.zhouqi {
-  display: flex;
-  flex-direction: row;
-  align-items: center;
 }
 
 .text-ellipsis {
