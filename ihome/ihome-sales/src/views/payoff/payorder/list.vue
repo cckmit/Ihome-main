@@ -4,7 +4,7 @@
  * @Author: wwq
  * @Date: 2020-12-26 11:11:28
  * @LastEditors: wwq
- * @LastEditTime: 2021-01-08 19:44:56
+ * @LastEditTime: 2021-01-09 09:33:32
 -->
 <template>
   <IhPage label-width="120px">
@@ -492,7 +492,7 @@ export default class PayoffList extends Vue {
   }
 }
 .ih-table {
-  /deep/ .el-table_1_column_8 {
+  /deep/ .is-center {
     overflow: hidden;
   }
 }

@@ -4,7 +4,7 @@
  * @Author: wwq
  * @Date: 2020-12-26 11:11:23
  * @LastEditors: wwq
- * @LastEditTime: 2021-01-08 17:08:14
+ * @LastEditTime: 2021-01-09 14:07:26
 -->
 <template>
   <IhPage>
@@ -687,7 +687,7 @@
   </IhPage>
 </template>
 <script lang="ts">
-import { Component, Vue, Watch } from "vue-property-decorator";
+import { Component, Vue } from "vue-property-decorator";
 import {
   get_payApply_get__id,
   post_payApply_calculation_results,
@@ -823,8 +823,7 @@ export default class PayoffEdit extends Vue {
     ],
   };
 
-  @Watch("info.payApplyDetailList")
-  getPayApplyDetailList(val: any) {
+  filterTabs(val: any) {
     let obj: any = {};
     let arr: any = val.map((v: any) => ({
       label: v.cycleName,
@@ -903,6 +902,7 @@ export default class PayoffEdit extends Vue {
         id: res.agencyId,
         name: res.agencyName,
       });
+      this.filterTabs(this.info.payApplyDetailList);
     } else {
       this.info.maker = (this.$root as any).userInfo.name;
       this.info.makerId = (this.$root as any).userInfo.id;
@@ -946,7 +946,7 @@ export default class PayoffEdit extends Vue {
     obj.agencyId = this.info.agencyId;
     obj.agencyName = this.info.agencyName;
     obj.taxRate = this.info.taxRate;
-    obj.payApplyDetailList = this.showTable;
+    obj.payApplyDetailList = this.info.payApplyDetailList;
     const res = await post_payApply_calculation_results(obj);
     console.log(res);
   }
@@ -981,6 +981,7 @@ export default class PayoffEdit extends Vue {
     if (this.info.agencyId) {
       this.contactsDialogVisible = true;
       this.contactsData.agencyId = this.info.agencyId;
+      this.contactsData.hasCheckedData = this.info.payApplyDetailList;
     } else {
       this.$message.warning("请选择渠道商");
     }
@@ -1013,6 +1014,7 @@ export default class PayoffEdit extends Vue {
     } else {
       this.info.payApplyDetailList = arr;
     }
+    this.filterTabs(this.info.payApplyDetailList);
     this.contactsDialogVisible = false;
   }
 

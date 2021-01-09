@@ -4,7 +4,7 @@
  * @Author: wwq
  * @Date: 2020-12-29 11:04:59
  * @LastEditors: wwq
- * @LastEditTime: 2021-01-08 17:44:35
+ * @LastEditTime: 2021-01-09 11:54:44
 -->
 <template>
   <el-dialog
@@ -246,8 +246,8 @@ export default class Obligation extends Vue {
   @Prop({
     default: () => [],
   })
-  hasCheckedData!: any;
-  @Prop() data!: any;
+  @Prop()
+  data!: any;
 
   info: any = {
     dealCode: null,
@@ -265,6 +265,7 @@ export default class Obligation extends Vue {
     total: null,
     list: [],
   };
+  hasCheckedData: any = [];
   selection: any = [];
   private dialogVisible = true;
   private pageSize = 10;
@@ -382,6 +383,7 @@ export default class Obligation extends Vue {
       pageNum: this.pageNum,
       pageSize: this.pageSize,
     });
+    this.hasCheckedData = this.data.hasCheckedData;
     // 假数据
     // this.resPageInfo.list = [
     //   {
