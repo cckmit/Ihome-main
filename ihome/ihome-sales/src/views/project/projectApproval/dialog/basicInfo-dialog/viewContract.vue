@@ -4,7 +4,7 @@
  * @Author: wwq
  * @Date: 2020-12-10 11:42:42
  * @LastEditors: wwq
- * @LastEditTime: 2021-01-04 18:41:53
+ * @LastEditTime: 2021-01-08 19:59:08
 -->
 <template>
   <el-dialog
@@ -100,7 +100,7 @@
         <td colspan="4"></td>
       </tr>
       <tr>
-        <td rowspan="9">合同内容概述</td>
+        <td rowspan="8">合同内容概述</td>
         <td>认购书是否体现优惠折扣</td>
         <td>{{info.exDiscount?'是':'否'}}</td>
         <td>认购书优惠折扣体现方式</td>
@@ -143,10 +143,10 @@
         <td>渠道</td>
         <td colspan="4">{{info.qdResponsibiltity}}</td>
       </tr>
-      <tr>
+      <!-- <tr>
         <td>补充条款</td>
         <td colspan="5">{{info.qdOtherRemark}}</td>
-      </tr>
+      </tr> -->
       <tr>
         <td>合同其他说明</td>
         <td colspan="6">{{info.otherRemark}}</td>

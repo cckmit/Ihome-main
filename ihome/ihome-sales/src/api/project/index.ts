@@ -1,6 +1,6 @@
 /* eslint-disable */
 /* 此脚本由swagger-ui的api-docs自动生成，请勿修改 */
-//2021-1-5 4:27:27 ├F10: PM┤
+//2021-1-9 9:18:29 ├F10: AM┤
 import { request } from '@/api/base'
 const basePath = "/sales-api/project"
 /**index*/
@@ -141,7 +141,7 @@ return await request.get<DistributContractMO,DistributContractMO>(basePath+'/dis
 }
 /**根据立项查询分销合同信息[过滤了禁用]*/
 export async function get_distributContract_getByTerm__termId (d?: any) {
-return await request.get<DistributContractByTermVO[],DistributContractByTermVO[]>(basePath+'/distributContract/getByTerm/{termId}', { params: d })
+return await request.get<DistributContractApplyVO,DistributContractApplyVO>(basePath+'/distributContract/getByTerm/{termId}', { params: d })
 }
 /**中介分销合检验条件是否符合*/
 export async function post_distributContract_getCheckCollectByCondition (d?: any) {
@@ -503,7 +503,7 @@ return await request.get<ProBaseVO,ProBaseVO>(basePath+'/project/getProBase/{pro
 export async function get_project_getProDetail__proId (d?: any) {
 return await request.get<ProjectDetailVO,ProjectDetailVO>(basePath+'/project/getProDetail/{proId}', { params: d })
 }
-/**项目项目-客户报备项目信息*/
+/**项目-客户报备项目信息*/
 export async function get_project_getProDetailBB__proId (d?: any) {
 return await request.get<ProjectDetailBBVO,ProjectDetailBBVO>(basePath+'/project/getProDetailBB/{proId}', { params: d })
 }
@@ -631,6 +631,14 @@ return await request.post< SettlementResponse[],SettlementResponse[]> (basePath+
 export async function get_settleCondition_getPleaseType__proId (d?: any) {
 return await request.get<SettlePleaseParamVO,SettlePleaseParamVO>(basePath+'/settleCondition/getPleaseType/{proId}', { params: d })
 }
+/**结佣-启用*/
+export async function post_settleCondition_startMaking (d?: any) {
+return await request.post< number,number> (basePath+'/settleCondition/startMaking', d)
+}
+/**请佣-启用*/
+export async function post_settleCondition_startPlease (d?: any) {
+return await request.post< number,number> (basePath+'/settleCondition/startPlease', d)
+}
 /**结佣-修改*/
 export async function post_settleCondition_updateMaking (d?: any) {
 return await request.post< number,number> (basePath+'/settleCondition/updateMaking', d)
@@ -727,6 +735,14 @@ return await request.post< TermInfoMsgVo,TermInfoMsgVo> (basePath+'/term/getTerm
 export async function post_term_getYdList (d?: any) {
 return await request.post< any,any> (basePath+'/term/getYdList', d)
 }
+/**启动立项周期*/
+export async function post_term_start__termId (d?: any) {
+return await request.post< number,number> (basePath+'/term/start/{termId}', d)
+}
+/**禁用立项周期*/
+export async function post_term_stop__termId (d?: any) {
+return await request.post< number,number> (basePath+'/term/stop/{termId}', d)
+}
 /**项目周期修改*/
 export async function post_term_update (d?: any) {
 return await request.post< number,number> (basePath+'/term/update', d)
@@ -805,6 +821,8 @@ type: string;
 }
 /**AttachTermItemVO*/
 export interface AttachTermItemVO {
+/**是否自动生成，1~不能删除并且不用提交，0或者null可以删除*/
+exAuto: number;
 /**(必填)文件ID*/
 fileId: string;
 /**(必填)文件名称*/
@@ -1697,6 +1715,15 @@ channelCompanyName: string;
 /**无需爱家报备ID*/
 wxId: number;
 }
+/**DistributContractApplyVO*/
+export interface DistributContractApplyVO {
+/**市*/
+city: string;
+/**中介分销*/
+distributContractByTermVOS: DistributContractByTermVO[];
+/**启动事业部ID*/
+startDivisionId: number;
+}
 /**DistributContractByTermVO*/
 export interface DistributContractByTermVO {
 /**中介分销合同ID*/
@@ -1968,7 +1995,7 @@ startDivisionName: string;
 termEnd: string;
 /**周期名称*/
 termName: string;
-/**项目周期阶段 SUBSCRIPTION-认购(默认)、RECOGNIZE-认筹(Subscription-认购(默认)、Recognize-认筹)*/
+/**项目周期阶段 SUBSCRIPTION-认购(默认)、RECOGNIZE-认筹(Subscription-认购、Recognize-认筹)*/
 termStageEnum: string;
 /**周期起始时间(yyyy-MM-dd)*/
 termStart: string;
@@ -3509,6 +3536,8 @@ termId: number;
 export interface SettleMakingVO {
 /**中介性质*/
 agencyText: string;
+/**是否作废,1`作废 0~有效*/
+cancel: number;
 /**结算ID*/
 settleId: number;
 /**结算名称*/
@@ -3564,6 +3593,8 @@ termId: number;
 }
 /**SettlePleaseVO*/
 export interface SettlePleaseVO {
+/**是否作废,1`作废 0~有效*/
+cancel: number;
 /**甲方公司*/
 partyAText: string;
 /**结算ID*/
@@ -3774,8 +3805,10 @@ firstAgencyCompanys: 一手公司代理[];
 groupId: number;
 /**店组名称*/
 groupName: string;
-/**(必填)ID*/
+/**proId*/
 proId: number;
+/**项目名称*/
+proName: string;
 /**物业类型*/
 propertyEnums: string[];
 /**省*/
@@ -3786,9 +3819,11 @@ specialId: number;
 startDivisionId: number;
 /**启动事业部*/
 startDivisionName: string;
-/**(必填)ID*/
+/**termId*/
 termId: number;
-/**项目周期阶段 SUBSCRIPTION-认购(默认)、RECOGNIZE-认筹(Subscription-认购(默认)、Recognize-认筹)*/
+/**周期名称*/
+termName: string;
+/**项目周期阶段 SUBSCRIPTION-认购(默认)、RECOGNIZE-认筹(Subscription-认购、Recognize-认筹)*/
 termStageEnum: string;
 }
 /**TermDropDownVo*/
@@ -4081,7 +4116,7 @@ termId: number;
 termName: string;
 /**项目综合留存率*/
 termOverallRate: number;
-/**(必填)项目周期阶段 SUBSCRIPTION-认购(默认)、RECOGNIZE-认筹(Subscription-认购(默认)、Recognize-认筹)*/
+/**(必填)项目周期阶段 SUBSCRIPTION-认购(默认)、RECOGNIZE-认筹(Subscription-认购、Recognize-认筹)*/
 termStageEnum: string;
 /**(必填)周期起始时间(yyyy-MM-dd)*/
 termStart: string;
@@ -4110,6 +4145,8 @@ proName: string;
 proNo: string;
 /**省*/
 province: string;
+/**周期状态(Stop-禁用、Start-启用)*/
+state: string;
 /**立项ID*/
 termId: number;
 /**周期名称 合作项目名称(项目推广名)+周期时间*/
@@ -4237,7 +4274,7 @@ termId: number;
 termName: string;
 /**项目综合留存率*/
 termOverallRate: number;
-/**(必填)项目周期阶段 SUBSCRIPTION-认购(默认)、RECOGNIZE-认筹(Subscription-认购(默认)、Recognize-认筹)*/
+/**(必填)项目周期阶段 SUBSCRIPTION-认购(默认)、RECOGNIZE-认筹(Subscription-认购、Recognize-认筹)*/
 termStageEnum: string;
 /**(必填)周期起始时间(yyyy-MM-dd)*/
 termStart: string;
@@ -4300,7 +4337,7 @@ termEnd: string;
 termId: number;
 /**(必填)周期名称 合作项目名称(项目推广名)+周期时间*/
 termName: string;
-/**(必填)项目周期阶段 SUBSCRIPTION-认购(默认)、RECOGNIZE-认筹(Subscription-认购(默认)、Recognize-认筹)*/
+/**(必填)项目周期阶段 SUBSCRIPTION-认购(默认)、RECOGNIZE-认筹(Subscription-认购、Recognize-认筹)*/
 termStageEnum: string;
 /**(必填)周期起始时间(yyyy-MM-dd)*/
 termStart: string;
@@ -4331,6 +4368,8 @@ proNo: string;
 province: string;
 /**启动事业部ID*/
 startDivisionId: number;
+/**周期状态(Stop-禁用、Start-启用)*/
+state: string;
 /**周期结束时间(yyyy-MM-dd)*/
 termEnd: string;
 /**立项ID*/
@@ -4361,7 +4400,7 @@ proName: string;
 termId: number;
 /**周期名称 合作项目名称(项目推广名)+周期时间*/
 termName: string;
-/**项目周期阶段 SUBSCRIPTION-认购(默认)、RECOGNIZE-认筹(Subscription-认购(默认)、Recognize-认筹)*/
+/**项目周期阶段 SUBSCRIPTION-认购(默认)、RECOGNIZE-认筹(Subscription-认购、Recognize-认筹)*/
 termStageEnum: string;
 }
 /**一手公司代理*/

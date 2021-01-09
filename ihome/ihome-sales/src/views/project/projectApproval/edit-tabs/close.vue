@@ -4,7 +4,7 @@
  * @Author: wwq
  * @Date: 2020-11-27 17:26:20
  * @LastEditors: wwq
- * @LastEditTime: 2021-01-08 10:44:50
+ * @LastEditTime: 2021-01-09 09:19:58
 -->
 <template>
   <div>
@@ -58,6 +58,12 @@
               type="success"
               @click="edit(row, 'making')"
             >修改</el-button>
+            <el-button
+              v-if="row.cancel"
+              size="small"
+              type="success"
+              @click="start(row, 'making')"
+            >启用</el-button>
             <el-button
               v-if="!row.cancel"
               size="small"
@@ -120,6 +126,12 @@
               @click="edit(row, 'please')"
             >修改</el-button>
             <el-button
+              v-if="row.cancel"
+              size="small"
+              type="success"
+              @click="start(row, 'please')"
+            >启用</el-button>
+            <el-button
               v-if="!row.cancel"
               size="small"
               type="danger"
@@ -171,6 +183,8 @@ import {
   post_settleCondition_updateMaking,
   post_settleCondition_addPlease,
   post_settleCondition_updatePlease,
+  post_settleCondition_startMaking,
+  post_settleCondition_startPlease,
 } from "@/api/project/index.ts";
 @Component({
   components: {
@@ -291,6 +305,22 @@ export default class Close extends Vue {
       this.$message.success("修改成功");
     }
     this.pleaseEditDialogVisible = false;
+    this.getInfo();
+  }
+
+  async start(data: any, type: any) {
+    if (type === "making") {
+      await post_settleCondition_startMaking({
+        settleId: data.settleId,
+        termId: this.$route.query.id,
+      });
+    } else {
+      await post_settleCondition_startPlease({
+        settleId: data.settleId,
+        termId: this.$route.query.id,
+      });
+    }
+    this.$message.success("启用成功");
     this.getInfo();
   }
 
