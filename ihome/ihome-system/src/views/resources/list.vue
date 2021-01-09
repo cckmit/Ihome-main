@@ -4,7 +4,7 @@
  * @Author: zyc
  * @Date: 2020-07-06 09:41:43
  * @LastEditors: zyc
- * @LastEditTime: 2020-12-17 09:51:19
+ * @LastEditTime: 2021-01-09 10:38:44
 --> 
 <template>
   <ih-page>
@@ -21,7 +21,12 @@
               <el-form ref="form" label-width="80px">
                 <el-row>
                   <el-col :span="2" class="text-left">
-                    <el-button @click="add({})" type="success" v-has="'B.SALES.SYSTEM.RESOURCELIST.ADD'">添加</el-button>
+                    <el-button
+                      @click="add({})"
+                      type="success"
+                      v-has="'B.SALES.SYSTEM.RESOURCELIST.ADD'"
+                      >添加</el-button
+                    >
                   </el-col>
                   <el-col :span="22" class="text-right">
                     <el-select
@@ -61,7 +66,7 @@
                 width="100%"
                 class="ih-table"
                 :default-sort="{ prop: 'date', order: 'descending' }"
-                :height="pageHeight-25"
+                :height="pageHeight - 25"
               >
                 <!-- <el-table-column type="selection" width="50"></el-table-column> -->
                 <el-table-column
@@ -150,13 +155,18 @@
                         <i class="el-icon-arrow-down el-icon--right"></i>
                       </span>
                       <el-dropdown-menu slot="dropdown">
-                        <el-dropdown-item v-has="'B.SALES.SYSTEM.RESOURCELIST.UPDATE'" @click.native.prevent="edit(scope)"
+                        <el-dropdown-item
+                          v-has="'B.SALES.SYSTEM.RESOURCELIST.UPDATE'"
+                          @click.native.prevent="edit(scope)"
                           >修改</el-dropdown-item
                         >
-                        <el-dropdown-item v-has="'B.SALES.SYSTEM.RESOURCELIST.DELETE'" @click.native.prevent="remove(scope)"
+                        <el-dropdown-item
+                          v-has="'B.SALES.SYSTEM.RESOURCELIST.DELETE'"
+                          @click.native.prevent="remove(scope)"
                           >删除</el-dropdown-item
                         >
-                        <el-dropdown-item v-has="'B.SALES.SYSTEM.RESOURCELIST.ADDTOROLE'"
+                        <el-dropdown-item
+                          v-has="'B.SALES.SYSTEM.RESOURCELIST.ADDTOROLE'"
                           @click.native.prevent="batchOperationRole(scope)"
                           >批量分配角色</el-dropdown-item
                         >
@@ -336,7 +346,7 @@ export default class ResourcesList extends Vue {
         type: "success",
         message: "删除成功!",
       });
-       (this.$refs as any).resourcesRadio.init();
+      (this.$refs as any).resourcesRadio.init();
     } catch (error) {
       console.log(error);
     }

@@ -4,7 +4,7 @@
  * @Author: zyc
  * @Date: 2020-06-30 09:21:17
  * @LastEditors: zyc
- * @LastEditTime: 2020-12-17 09:34:16
+ * @LastEditTime: 2021-01-09 10:38:34
 --> 
 <template>
   <ih-page>
@@ -228,9 +228,18 @@
     <template v-slot:btn>
       <el-row>
         <el-button type="primary" @click="search()">查询</el-button>
-        <el-button v-has="'B.SALES.SYSTEM.USERLIST.ADD'" type="success" @click="add()">添加</el-button>
+        <el-button
+          v-has="'B.SALES.SYSTEM.USERLIST.ADD'"
+          type="success"
+          @click="add()"
+          >添加</el-button
+        >
         <el-button type="info" @click="reset()">重置</el-button>
-        <el-button @click="copyUser()" v-has="'B.SALES.SYSTEM.USERLIST.COPYAUTH'">复制用户岗位角色组织权限</el-button>
+        <el-button
+          @click="copyUser()"
+          v-has="'B.SALES.SYSTEM.USERLIST.COPYAUTH'"
+          >复制用户岗位角色组织权限</el-button
+        >
         <el-link
           type="primary"
           class="float-right margin-right-40"
@@ -341,25 +350,43 @@
                 <i class="el-icon-arrow-down el-icon--right"></i>
               </span>
               <el-dropdown-menu slot="dropdown">
-                <el-dropdown-item @click.native.prevent="edit(scope)" v-has="'B.SALES.SYSTEM.USERLIST.UPDATE'"
+                <el-dropdown-item
+                  @click.native.prevent="edit(scope)"
+                  v-has="'B.SALES.SYSTEM.USERLIST.UPDATE'"
+                  :class="{ 'ih-data-disabled': scope.row.userType != 'Staff' }"
                   >修改</el-dropdown-item
                 >
-                <el-dropdown-item @click.native.prevent="remove(scope)" v-has="'B.SALES.SYSTEM.USERLIST.DELETE'"
+                <el-dropdown-item
+                  @click.native.prevent="remove(scope)"
+                  v-has="'B.SALES.SYSTEM.USERLIST.DELETE'"
+                  :class="{ 'ih-data-disabled': scope.row.userType != 'Staff' }"
                   >删除</el-dropdown-item
                 >
-                <el-dropdown-item @click.native.prevent="locking(scope)" v-has="'B.SALES.SYSTEM.USERLIST.LOCK'"
+                <el-dropdown-item
+                  @click.native.prevent="locking(scope)"
+                  v-has="'B.SALES.SYSTEM.USERLIST.LOCK'"
                   >锁定用户</el-dropdown-item
                 >
-                <el-dropdown-item @click.native.prevent="activation(scope)" v-has="'B.SALES.SYSTEM.USERLIST.ACTIVE'"
+                <el-dropdown-item
+                  @click.native.prevent="activation(scope)"
+                  v-has="'B.SALES.SYSTEM.USERLIST.ACTIVE'"
                   >激活用户</el-dropdown-item
                 >
-                <el-dropdown-item @click.native.prevent="resetPassword(scope)" v-has="'B.SALES.SYSTEM.USERLIST.RESET'"
+                <el-dropdown-item
+                  @click.native.prevent="resetPassword(scope)"
+                  v-has="'B.SALES.SYSTEM.USERLIST.RESET'"
                   >重置密码</el-dropdown-item
                 >
-                <el-dropdown-item @click.native.prevent="jobRole(scope)" v-has="'B.SALES.SYSTEM.USERLIST.ADDROLE'"
+                <el-dropdown-item
+                  @click.native.prevent="jobRole(scope)"
+                  v-has="'B.SALES.SYSTEM.USERLIST.ADDROLE'"
+                  :class="{ 'ih-data-disabled': scope.row.userType != 'Staff' }"
                   >分配岗位角色</el-dropdown-item
                 >
-                <el-dropdown-item @click.native.prevent="pOrganization(scope)" v-has="'B.SALES.SYSTEM.USERLIST.ADDAUTH'"
+                <el-dropdown-item
+                  @click.native.prevent="pOrganization(scope)"
+                  v-has="'B.SALES.SYSTEM.USERLIST.ADDAUTH'"
+                  :class="{ 'ih-data-disabled': scope.row.userType != 'Staff' }"
                   >分配组织权限</el-dropdown-item
                 >
               </el-dropdown-menu>
@@ -638,7 +665,8 @@ export default class UserList extends Vue {
       confirmButtonText: "确定",
       cancelButtonText: "取消",
       inputPattern: /^(?=.*[0-9])(?=.*[a-z])(?=.*[A-Z])(?=.*[@#$%^&.]).{8,20}$/,
-      inputErrorMessage: "密码必须包含大写字母、小写字母、数字、特殊字符（.@#$%^&）,长度8-20位",
+      inputErrorMessage:
+        "密码必须包含大写字母、小写字母、数字、特殊字符（.@#$%^&）,长度8-20位",
     })
       .then(async (obj: any) => {
         await post_user_resetPassword({

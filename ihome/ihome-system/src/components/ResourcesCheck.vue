@@ -4,7 +4,7 @@
  * @Author: zyc
  * @Date: 2020-07-09 15:03:17
  * @LastEditors: zyc
- * @LastEditTime: 2020-12-29 10:30:01
+ * @LastEditTime: 2021-01-09 10:30:01
 --> 
 <template>
   <el-dialog
@@ -125,22 +125,40 @@ export default class ResourcesCheck extends Vue {
     label: "name",
   };
   filterNode(value: any, data: any) {
-    if (!value && !this.selectType) {
+    value = value == "" ? null : value;
+    let selectType = this.selectType == "" ? null : this.selectType;
+    if (!value && !selectType) {
       return true;
     } else {
-      if (value && this.selectType) {
+      if (value && selectType) {
         return (
           data[this.defaultProps.label].indexOf(value) !== -1 &&
-          data.type.indexOf(this.selectType)
+          data.type.indexOf(selectType) !== -1
         );
       } else {
         if (value) {
           return data[this.defaultProps.label].indexOf(value) !== -1;
         } else {
-          return data.type.indexOf(this.selectType);
+          return data.type.indexOf(selectType) !== -1;
         }
       }
     }
+    // if (!value && !this.selectType) {
+    //   return true;
+    // } else {
+    //   if (value && this.selectType) {
+    //     return (
+    //       data[this.defaultProps.label].indexOf(value) !== -1 &&
+    //       data.type.indexOf(this.selectType)
+    //     );
+    //   } else {
+    //     if (value) {
+    //       return data[this.defaultProps.label].indexOf(value) !== -1;
+    //     } else {
+    //       return data.type.indexOf(this.selectType);
+    //     }
+    //   }
+    // }
   }
   currentChange(item: any) {
     console.log(item);
