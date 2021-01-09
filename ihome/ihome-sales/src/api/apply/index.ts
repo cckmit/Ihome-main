@@ -1,6 +1,6 @@
 /* eslint-disable */
 /* 此脚本由swagger-ui的api-docs自动生成，请勿修改 */
-//2021-1-7 2:21:38 ├F10: PM┤
+//2021-1-8 10:57:33 ├F10: AM┤
 import { request } from '@/api/base'
 const basePath = "/sales-api/apply"
 /**请佣申请单审核*/
@@ -130,6 +130,10 @@ return await request.get<number[],number[]>(basePath+'/devDeductDetail/getIdList
 /**查询抵扣项费用明细列表*/
 export async function post_devDeductDetail_getList (d?: any) {
 return await request.post< any,any> (basePath+'/devDeductDetail/getList', d)
+}
+/**根据甲方公司ID获取待冲正抵扣项费用明细列表*/
+export async function get_devDeductDetail_getListAllByWait__developId (d?: any) {
+return await request.get<DevDeductDetailBaseVo[],DevDeductDetailBaseVo[]>(basePath+'/devDeductDetail/getListAllByWait/{developId}', { params: d })
 }
 /**查询抵扣项费用汇总列表*/
 export async function post_devDeductDetail_getListSumByDev (d?: any) {
@@ -516,13 +520,13 @@ room: number;
 roomId: number;
 /**项目现场销售*/
 sceneSales: string;
-/**(必填)签约信息：签约时间（购买方），签约日期(yyyy-MM-dd HH:mm:ss)*/
+/**(必填)签约信息：签约时间（购买方），签约日期(yyyy-MM-dd)*/
 signDate: string;
 /**(必填)签约信息：签约金额（购买方）,签约总价（元）*/
 signPrice: number;
 /**(必填)签约类型(TempSignUp-临签、NormalSignUp-正签)*/
 signType: string;
-/**(必填)认购时间（购买方），认购日期(yyyy-MM-dd HH:mm:ss)*/
+/**(必填)认购时间（购买方），认购日期(yyyy-MM-dd)*/
 subscribeDate: string;
 /**(必填)项目周期ID*/
 termId: number;
@@ -611,13 +615,13 @@ roomId: number;
 roomName: number;
 /**项目现场销售*/
 sceneSales: string;
-/**签约信息：签约时间（购买方），签约日期(yyyy-MM-dd HH:mm:ss)*/
+/**签约信息：签约时间（购买方），签约日期(yyyy-MM-dd)*/
 signDate: string;
 /**签约信息：签约金额（购买方）,签约总价（元）*/
 signPrice: number;
 /**签约类型(TempSignUp-临签、NormalSignUp-正签)*/
 signType: string;
-/**认购时间（购买方），认购日期(yyyy-MM-dd HH:mm:ss)*/
+/**认购时间（购买方），认购日期(yyyy-MM-dd)*/
 subscribeDate: string;
 /**抵扣项类别(ChangeBasicInf-变更基础信息、ChangeAchieveInf-变更业绩信息、RetreatRoom-退房、ChangeInternalAchieveInf-变更内部员工业绩)*/
 suppContType: string;
@@ -695,13 +699,13 @@ roomId: number;
 roomName: number;
 /**项目现场销售*/
 sceneSales: string;
-/**签约信息：签约时间（购买方），签约日期(yyyy-MM-dd HH:mm:ss)*/
+/**签约信息：签约时间（购买方），签约日期(yyyy-MM-dd)*/
 signDate: string;
 /**签约信息：签约金额（购买方）,签约总价（元）*/
 signPrice: number;
 /**签约类型(TempSignUp-临签、NormalSignUp-正签)*/
 signType: string;
-/**认购时间（购买方），认购日期(yyyy-MM-dd HH:mm:ss)*/
+/**认购时间（购买方），认购日期(yyyy-MM-dd)*/
 subscribeDate: string;
 /**项目周期ID*/
 termId: number;
@@ -794,13 +798,13 @@ room: number;
 roomId: number;
 /**项目现场销售*/
 sceneSales: string;
-/**(必填)签约信息：签约时间（购买方），签约日期(yyyy-MM-dd HH:mm:ss)*/
+/**(必填)签约信息：签约时间（购买方），签约日期(yyyy-MM-dd)*/
 signDate: string;
 /**(必填)签约信息：签约金额（购买方）,签约总价（元）*/
 signPrice: number;
 /**(必填)签约类型(TempSignUp-临签、NormalSignUp-正签)*/
 signType: string;
-/**(必填)认购时间（购买方），认购日期(yyyy-MM-dd HH:mm:ss)*/
+/**(必填)认购时间（购买方），认购日期(yyyy-MM-dd)*/
 subscribeDate: string;
 /**(必填)抵扣项类别(ChangeBasicInf-变更基础信息、ChangeAchieveInf-变更业绩信息、RetreatRoom-退房、ChangeInternalAchieveInf-变更内部员工业绩)*/
 suppContType: string;
@@ -1094,7 +1098,7 @@ roomId: number;
 roomName: string;
 /**项目现场销售*/
 sceneSales: string;
-/**签约信息：签约时间（购买方），签约日期(yyyy-MM-dd HH:mm:ss)*/
+/**签约信息：签约时间（购买方），签约日期(yyyy-MM-dd)*/
 signDate: string;
 /**签约信息：签约金额（购买方）,签约总价（元）*/
 signPrice: number;
@@ -1104,7 +1108,7 @@ signType: string;
 subMoney: number;
 /**扣除项类别*/
 subType: string;
-/**认购时间（购买方），认购日期(yyyy-MM-dd HH:mm:ss)*/
+/**认购时间（购买方），认购日期(yyyy-MM-dd)*/
 subscribeDate: string;
 /**实际收款金额：税额*/
 taxMoney: number;
