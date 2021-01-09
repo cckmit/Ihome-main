@@ -463,7 +463,7 @@
     <el-row style="padding-left: 20px">
       <el-col>
         <div
-          v-if="!baseInfoInDeal.customerAddVOS.length"
+          v-if="!baseInfoInDeal.customerAddVOS.length && postData.roomId"
           class="add-all-wrapper">
           <el-button type="success" @click="handleAddCustomer">添加客户</el-button>
         </div>
@@ -672,24 +672,26 @@
         </el-table>
       </el-col>
     </el-row>
-    <div class="divider-padding" v-if="addFlag">
-      <div class="divider-tip color-blur">
-        <div>完善收派金额后请点击下方按钮初始化加载对外拆佣及平台费用数据</div>
-        <div class="btn">
-          <el-button class="btn-color" @click="handleLoadCommission('add')">点击加载对外拆佣及平台费用数据</el-button>
+    <div v-if="postData.receiveVO.length">
+      <div class="divider-padding" v-if="addFlag">
+        <div class="divider-tip color-blur">
+          <div>完善收派金额后请点击下方按钮初始化加载对外拆佣及平台费用数据</div>
+          <div class="btn">
+            <el-button class="btn-color" @click="handleLoadCommission('add')">点击加载对外拆佣及平台费用数据</el-button>
+          </div>
         </div>
       </div>
-    </div>
-    <div class="divider-padding border-color-red" v-if="editFlag">
-      <div class="divider-tip color-red">
-        <div>收派金额发生变动，业绩需要初始化重新分配，请点击下方刷新按钮重新初始化对外拆佣及平台费用数据</div>
-        <div class="btn">
-          <el-button type="danger" @click="handleLoadCommission('refresh')">刷新</el-button>
+      <div class="divider-padding border-color-red" v-if="editFlag">
+        <div class="divider-tip color-red">
+          <div>收派金额发生变动，业绩需要初始化重新分配，请点击下方刷新按钮重新初始化对外拆佣及平台费用数据</div>
+          <div class="btn">
+            <el-button type="danger" @click="handleLoadCommission('refresh')">刷新</el-button>
+          </div>
         </div>
       </div>
-    </div>
-    <div class="divider-padding border-color-none" v-if="tipsFlag">
-      <el-divider>{{dividerTips}}</el-divider>
+      <div class="divider-padding border-color-none" v-if="tipsFlag">
+        <el-divider>{{dividerTips}}</el-divider>
+      </div>
     </div>
     <p id="anchor-8" class="ih-info-title">对外拆佣</p>
     <el-row style="padding-left: 20px">
@@ -810,7 +812,10 @@
     <div v-if="postData.businessType !== 'DistriModel'">
       <div class="ih-type-wrapper">
         <div class="title">总包</div>
-        <el-button type="success" @click="handleAddAchieve('total')">新增角色</el-button>
+        <el-button
+          v-if="postData.achieveTotalBagList.length"
+          type="success"
+          @click="handleAddAchieve('total')">新增角色</el-button>
       </div>
       <el-row style="padding-left: 20px">
         <el-col>
@@ -826,18 +831,31 @@
               </template>
             </el-table-column>
             <el-table-column prop="roleAchieveCap" label="角色业绩上限" min-width="150"></el-table-column>
-            <el-table-column prop="rolerName" label="角色人" min-width="150"></el-table-column>
+            <el-table-column prop="rolerName" label="角色人" min-width="150">
+              <template slot-scope="scope">
+                <div v-if="scope.row.roleType === 'BranchOffice'">——</div>
+                <div v-else>{{scope.row.rolerName}}</div>
+              </template>
+            </el-table-column>
             <el-table-column prop="corporateAchieve" label="角色人业绩" min-width="150"></el-table-column>
-            <el-table-column prop="corporateAchieveRatio" label="角色人业绩比例（%）" min-width="150"></el-table-column>
+            <el-table-column prop="corporateAchieveRatio" label="角色人业绩比例(%)" min-width="150"></el-table-column>
             <el-table-column prop="commFees" label="拆佣金额" min-width="150"></el-table-column>
-            <el-table-column prop="commFeesRatio" label="拆佣比例（%）" min-width="150"></el-table-column>
-            <el-table-column prop="belongOrgName" label="店组" min-width="130"></el-table-column>
-            <el-table-column prop="managerAchieveList" label="管理岗" min-width="150">
+            <el-table-column prop="commFeesRatio" label="拆佣比例(%)" min-width="110"></el-table-column>
+            <el-table-column prop="belongOrgName" label="店组" min-width="100">
+              <template slot-scope="scope">
+                <div v-if="scope.row.roleType === 'BranchOffice'">{{postData.dealOrgName}}</div>
+                <div v-else>{{scope.row.belongOrgName}}</div>
+              </template>
+            </el-table-column>
+            <el-table-column prop="managerAchieveList" label="管理岗" min-width="210">
               <template slot-scope="scope">
                 <div class="manager-list" v-for="(item, index) in scope.row.managerAchieveList" :key="index">
-                  <div>{{item.achieveFees}}</div>
-                  <div>{{item.achieveFeesRatio}}</div>
-                  <div>{{item.managerName}}({{$root.dictAllName(item.type, 'ManagerType')}})</div>
+                  <div class="fee">{{item.achieveFees}}</div>
+                  <div class="ratio">{{item.achieveFeesRatio}}</div>
+                  <div class="name">
+                    <span>{{item.managerName}}</span>
+                    (<span>{{item.managerPosition}}</span>)
+                  </div>
                 </div>
               </template>
             </el-table-column>
@@ -867,7 +885,7 @@
       <div class="ih-type-wrapper">
         <div class="title">分销</div>
         <el-button
-          v-if="!isSameFlag"
+          v-if="!isSameFlag && postData.achieveTotalBagList.length"
           type="success"
           @click="handleAddAchieve('distri')">新增角色</el-button>
       </div>
@@ -885,18 +903,31 @@
               </template>
             </el-table-column>
             <el-table-column prop="roleAchieveCap" label="角色业绩上限" min-width="150"></el-table-column>
-            <el-table-column prop="rolerName" label="角色人" min-width="150"></el-table-column>
+            <el-table-column prop="rolerName" label="角色人" min-width="150">
+              <template slot-scope="scope">
+                <div v-if="scope.row.roleType === 'BranchOffice'">——</div>
+                <div v-else>{{scope.row.rolerName}}</div>
+              </template>
+            </el-table-column>
             <el-table-column prop="corporateAchieve" label="角色人业绩" min-width="150"></el-table-column>
-            <el-table-column prop="corporateAchieveRatio" label="角色人业绩比例（%）" min-width="150"></el-table-column>
+            <el-table-column prop="corporateAchieveRatio" label="角色人业绩比例(%)" min-width="150"></el-table-column>
             <el-table-column prop="commFees" label="拆佣金额" min-width="150"></el-table-column>
-            <el-table-column prop="commFeesRatio" label="拆佣比例（%）" min-width="150"></el-table-column>
-            <el-table-column prop="belongOrgName" label="店组" min-width="130"></el-table-column>
-            <el-table-column prop="managerAchieveList" label="管理岗" min-width="150">
+            <el-table-column prop="commFeesRatio" label="拆佣比例(%)" min-width="110"></el-table-column>
+            <el-table-column prop="belongOrgName" label="店组" min-width="100">
+              <template slot-scope="scope">
+                <div v-if="scope.row.roleType === 'BranchOffice'">{{postData.dealOrgName}}</div>
+                <div v-else>{{scope.row.belongOrgName}}</div>
+              </template>
+            </el-table-column>
+            <el-table-column prop="managerAchieveList" label="管理岗" min-width="210">
               <template slot-scope="scope">
                 <div class="manager-list" v-for="(item, index) in scope.row.managerAchieveList" :key="index">
-                  <div>{{item.achieveFees}}</div>
-                  <div>{{item.achieveFeesRatio}}</div>
-                  <div>{{item.managerName}}({{$root.dictAllName(item.type, 'ManagerType')}})</div>
+                  <div class="fee">{{item.achieveFees}}</div>
+                  <div class="ratio">{{item.achieveFeesRatio}}%</div>
+                  <div class="name">
+                    <span>{{item.managerName}}</span>
+                    (<span>{{item.managerPosition}}</span>)
+                  </div>
                 </div>
               </template>
             </el-table-column>
@@ -995,7 +1026,7 @@
   </ih-page>
 </template>
 <script lang="ts">
-  import {Component, Vue, Prop} from "vue-property-decorator";
+  import {Component, Vue, Prop, Watch} from "vue-property-decorator";
   import AgentCompanyList from "@/views/deal/dealReport/dialog/agentCompanyList.vue";
   import EditDealAchieve from "@/views/deal/dealReport/dialog/editDealAchieve.vue";
   import {
@@ -1007,6 +1038,7 @@
     post_deal_updateAchieveAllot, // 文员岗 - 修改成交信息
     post_pageData_recalculateAchieve, // 重新计算平台费用部分
     post_pageData_recalculateAchieveComm, // 总包分销一致时，重新计算平台费用的拆佣金额及拆用比例
+    post_pageData_calculateReceiveAmount // 重算收派金额
   } from "@/api/deal";
   import {
     get_term_getProBaseByTermId__termId, // 通过项目周期获取成交基础信息
@@ -1283,6 +1315,18 @@
     };
     isSameFlag: any = false; // 是否分销与总包一致
 
+    @Watch("postData.signPrice")
+    getNewSignPrice(newVal: any,oldVal: any) {
+      console.log(newVal);
+      console.log(oldVal);
+    }
+
+    @Watch("postData.subscribePrice")
+    getNewSubscribePrice(newVal: any,oldVal: any) {
+      console.log(newVal);
+      console.log(oldVal);
+    }
+
     // 应收信息表格
     get receiveAchieveVO() {
       let arr: any = [];
@@ -1433,8 +1477,14 @@
       }
       if (type === 'add') {
         // 新增的时候
+        const loading = this.$loading({
+          lock: true,
+          text: '数据加载中...',
+          spinner: 'el-icon-loading'
+        });
         await this.initCommissionData();
         await this.initAchieveData();
+        loading.close();
         this.addFlag = false;
         this.editFlag = false;
         this.tipsFlag = true;
@@ -1456,8 +1506,14 @@
             confirmButtonText: '确定',
             cancelButtonText: '取消',
           });
+          const loading = this.$loading({
+            lock: true,
+            text: '数据加载中...',
+            spinner: 'el-icon-loading'
+          });
           await this.initCommissionData();
           await this.initAchieveData();
+          loading.close();
           this.addFlag = false;
           this.editFlag = false;
           this.tipsFlag = true;
@@ -1782,6 +1838,11 @@
         cycleId: cycleId,
         roomId: roomId
       };
+      const loading = this.$loading({
+        lock: true,
+        text: '数据加载中...',
+        spinner: 'el-icon-loading'
+      });
       let baseInfo: any = await post_pageData_initBasic(params);
       this.baseInfoInDeal = JSON.parse(JSON.stringify(baseInfo || '{}'));
       // console.log('baseInfobaseInfo', this.baseInfoInDeal);
@@ -1870,6 +1931,7 @@
       console.log('commissionServiceFeeObj', this.commissionServiceFeeObj)
       // 附件信息
       this.initDocument(baseInfo.contType, baseInfo);
+      loading.close();
     }
 
     // 初始化收派金额中的代理费的甲方数组 --- 代理费
@@ -2031,18 +2093,6 @@
     selectPackage(scope: any) {
       // console.log('选择收派套餐', scope);
       this.currentReceiveIndex = scope.$index;
-      // let params: any = {
-      //   hasRecord: this.baseInfoInDeal.hasRecord, // 是否有成交报备(是否分销成交)
-      //   idList: this.packageIdsList, // 分销成交 --- 选择分销协议后的ids
-      //   contNo: this.postData.contNo, // 分销协议编号
-      //   type: scope.row.type, // 标题类型
-      //   postObj: {
-      //     contractEnum: this.postData.contType, // 合同类型
-      //     propertyEnum: this.postData.propertyType, // 物业类型
-      //     subdivideEnum: this.postData.refineModel, // 细分业务
-      //     termId: this.postData.cycleId, // 立项周期ID
-      //   }, // 非分销需要获取id的参数
-      // };
       let params: any = {
         termId: this.baseInfoByTerm.termId, // 项目周期id
         contType: this.postData.contType, // 合同类型
@@ -2155,17 +2205,26 @@
     async finishAddReceivePackage(data: any) {
       // console.log('data', data);
       if (data.length === 0) return
+      let dataObj = data[0];
+      delete dataObj['typeName']; // 删除typeName属性
+      let postData: any = {
+        detail: dataObj,
+        signPrice: this.postData.signPrice ? this.postData.signPrice : null,
+        subscribePrice: this.postData.subscribePrice ? this.postData.subscribePrice : null
+      }
+      let info: any = await post_pageData_calculateReceiveAmount(postData);
+      console.log(info);
       if (this.postData.receiveVO.length > 0) {
         this.postData.receiveVO.forEach((vo: any, index: any) => {
           if (index === this.currentReceiveIndex) {
             vo.showData = data;
             vo.packageId = data[0].packageId;
             vo.receiveAmount = data[0].receivableAmout;
-            vo.commAmount = data[0].sendAmount;
-            vo.rewardAmount = data[0].sendInAmount;
-            vo.totalPackageAmount = data[0].generalAchieveAmount;
-            vo.distributionAmount = data[0].distributeAchieveAmount;
-            vo.otherChannelFees = data[0].otherChannelAmount;
+            vo.commAmount = info.comm;
+            vo.rewardAmount = info.reward;
+            vo.totalPackageAmount = info.totalBag;
+            vo.distributionAmount = info.distri;
+            vo.otherChannelFees = info.other;
           }
         });
       }
@@ -2316,6 +2375,7 @@
       console.log('data', scope);
       // console.log('data', type);
       this.editDealAchieveData.btnType = 'edit';
+      this.editDealAchieveData.type = type;
       this.editDealAchieveData.currentEditItem = scope.row;
       this.currentChangeObj.index = scope.$index;
       this.currentChangeObj.type = type;
@@ -2324,49 +2384,46 @@
 
     // 确定新增/修改平台业绩
     async finishEditDealAchieve(data: any = {}) {
-      // console.log('finishEditDealAchieve', data);
+      console.log('finishEditDealAchieve', data);
       let tempArr: any = [];
       if (this.editDealAchieveData.type === 'total') {
-        // 总包
-        if (this.editDealAchieveData.btnType === 'add') {
-          // 新增
-          tempArr = [...this.postData.achieveTotalBagList, data];
-        } else if (this.editDealAchieveData.btnType === 'edit') {
-          // 编辑
-          tempArr = JSON.parse(JSON.stringify(this.postData.achieveTotalBagList));
-          if (tempArr.length > 0) {
-            tempArr.forEach((item: any, index: any) => {
-              if (index === this.currentChangeObj.index) {
-                item = {
-                  ...item,
-                  ...data
-                }
-              }
-            });
-          }
-         }
+        tempArr = this.getTempList(this.editDealAchieveData.btnType, this.currentChangeObj.index, this.postData.achieveTotalBagList, data);
       } else if (this.editDealAchieveData.type === 'distri') {
-        // 分销
-        if (this.editDealAchieveData.btnType === 'add') {
-          // 新增
-          tempArr = [...this.postData.achieveDistriList, data];
-        } else if (this.editDealAchieveData.btnType === 'edit') {
-          // 编辑
-          tempArr = JSON.parse(JSON.stringify(this.postData.achieveDistriList));
-          if (tempArr.length > 0) {
-            tempArr.forEach((item: any, index: any) => {
-              if (index === this.currentChangeObj.index) {
-                item = {
-                  ...item,
-                  ...data
-                }
-              }
-            });
-          }
-        }
+        tempArr = this.getTempList(this.editDealAchieveData.btnType, this.currentChangeObj.index, this.postData.achieveDistriList, data);
       }
       await this.recalculateAchieve(this.editDealAchieveData.type, tempArr);
       this.dialogEditDealAchieve = !this.dialogEditDealAchieve;
+    }
+
+    /*
+    * 整合平台费用重算的list
+    * btnType: String，按钮类型---新增/编辑
+    * currentIndex: Number，当前编辑的平台费用序号
+    * list：Array，总包/分销现有的表格数据
+    * data: Object，新增/编辑的对象
+    * */
+    getTempList(btnType: any = "", currentIndex: any = null, list: any = [], data: any = {}) {
+      let tempList: any = [];
+      if (btnType === 'add') {
+        tempList = [...list, data];
+      } else if (btnType === 'edit') {
+        let tempArr = JSON.parse(JSON.stringify(list));
+        if (tempArr.length > 0) {
+          tempArr.forEach((item: any, index: any) => {
+            if (index === currentIndex) {
+              tempList.push(
+                {
+                  ...item,
+                  ...data
+                }
+              );
+            } else {
+              tempList.push(item);
+            }
+          });
+        }
+      }
+      return tempList;
     }
 
     // 移除平台费用 --- 总包/分销
@@ -2763,11 +2820,22 @@
     align-items: center;
 
     div {
-      flex: 1;
-
+      //flex: 1;
       &:not(:last-child) {
         margin-right: 10px;
       }
+    }
+
+    .fee {
+      width: 30%;
+    }
+
+    .ratio{
+      width: 20%;
+    }
+
+    .name{
+      width: 50%;
     }
   }
 
@@ -2835,13 +2903,13 @@
 
   .nav-box {
     position: fixed;
-    right: 16px;
+    right: 37px;
     top: 30%;
     box-sizing: border-box;
     display: flex;
     flex-direction: row;
     //align-items: center;
-    border: 1px solid #ffffff;
+    //border: 1px solid #ffffff;
     z-index: 200;
 
     .nav-icon {
