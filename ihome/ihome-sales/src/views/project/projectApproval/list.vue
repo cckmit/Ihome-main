@@ -4,7 +4,7 @@
  * @Author: wwq
  * @Date: 2020-11-27 17:11:14
  * @LastEditors: wwq
- * @LastEditTime: 2021-01-09 16:47:50
+ * @LastEditTime: 2021-01-09 17:10:00
 -->
 <template>
   <IhPage label-width="100px">
@@ -303,6 +303,7 @@ export default class ProjectApproval extends Vue {
     city: null,
     district: null,
     auditEnum: null,
+    state: null,
   };
   provinceOption: any = [];
   selection: any = [];
@@ -357,6 +358,7 @@ export default class ProjectApproval extends Vue {
       city: null,
       district: null,
       auditEnum: null,
+      state: null,
     });
     this.provinceOption = [];
   }
