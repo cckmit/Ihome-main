@@ -4,7 +4,7 @@
  * @Author: wwq
  * @Date: 2020-09-09 16:17:16
  * @LastEditors: wwq
- * @LastEditTime: 2021-01-08 11:36:52
+ * @LastEditTime: 2021-01-09 14:49:43
 -->
 <template>
   <div class="upload">
@@ -72,7 +72,7 @@
               </span>
               <span
                 class="el-upload-list__item-delete"
-                v-if="removePermi"
+                v-if="removePermi && !file.exAuto"
                 @click="handleRemove(file)"
               >
                 <i

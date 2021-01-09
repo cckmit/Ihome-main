@@ -4,7 +4,7 @@
  * @Author: wwq
  * @Date: 2020-11-27 17:15:27
  * @LastEditors: wwq
- * @LastEditTime: 2021-01-04 18:51:19
+ * @LastEditTime: 2021-01-09 15:53:30
 -->
 <template>
   <ih-page>
@@ -13,6 +13,7 @@
         <el-tabs
           type="border-card"
           v-model="tabActive"
+          stretch
           @tab-click="tabClick(tabActive)"
         >
           <el-tab-pane

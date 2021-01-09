@@ -4,7 +4,7 @@
  * @Author: wwq
  * @Date: 2020-11-27 17:11:14
  * @LastEditors: wwq
- * @LastEditTime: 2021-01-07 09:36:25
+ * @LastEditTime: 2021-01-09 16:47:50
 -->
 <template>
   <IhPage label-width="100px">
@@ -79,6 +79,23 @@
               >
                 <el-option
                   v-for="item in $root.dictAllList('Audit')"
+                  :key="item.code"
+                  :label="item.name"
+                  :value="item.code"
+                ></el-option>
+              </el-select>
+            </el-form-item>
+          </el-col>
+          <el-col :span="8">
+            <el-form-item label="可用状态">
+              <el-select
+                style="width: 100%"
+                v-model="queryPageParameters.state"
+                clearable
+                placeholder="请选择"
+              >
+                <el-option
+                  v-for="item in $root.dictAllList('TermState')"
                   :key="item.code"
                   :label="item.name"
                   :value="item.code"
@@ -179,6 +196,15 @@
           }}</template>
         </el-table-column>
         <el-table-column
+          prop="auditEnum"
+          label="可用状态"
+          width="120"
+        >
+          <template v-slot="{ row }">{{
+            $root.dictAllName(row.state, "TermState")
+          }}</template>
+        </el-table-column>
+        <el-table-column
           fixed="right"
           label="操作"
           width="120"
@@ -203,20 +229,28 @@
                   v-has="'B.SALES.PROJECT.TERMLIST.UPDATE'"
                 >修改</el-dropdown-item>
                 <el-dropdown-item
-                  @click.native.prevent="remove(row)"
-                  :class="{'ih-data-disabled': !delChange(row)}"
-                  v-has="'B.SALES.PROJECT.TERMLIST.DELETE'"
-                >删除</el-dropdown-item>
-                <el-dropdown-item
                   :class="{'ih-data-disabled': row.auditEnum !== 'ConstractAdopt'}"
                   @click.native.prevent="routeTo(row, 'apply')"
                   v-has="'B.SALES.PROJECT.TERMLIST.APPLYDISTRIBUT'"
                 >申领分销协议</el-dropdown-item>
                 <el-dropdown-item
                   :class="{'ih-data-disabled': row.auditEnum !== 'ConstractAdopt'}"
-                  @click.native.prevent="routeTo(row, 'replenish')"
+                  @click.native.prevent="replenish(row)"
                   v-has="'B.SALES.PROJECT.TERMLIST.EDITDISTRIBUT'"
-                >发起补充协议</el-dropdown-item>
+                >补充协议</el-dropdown-item>
+                <el-dropdown-item
+                  v-if="row.state === 'Stop'"
+                  @click.native.prevent="start(row)"
+                >启用周期</el-dropdown-item>
+                <el-dropdown-item
+                  v-if="row.state === 'Start'"
+                  @click.native.prevent="stop(row)"
+                >作废周期</el-dropdown-item>
+                <el-dropdown-item
+                  @click.native.prevent="remove(row)"
+                  :class="{'ih-data-disabled': !delChange(row)}"
+                  v-has="'B.SALES.PROJECT.TERMLIST.DELETE'"
+                >删除</el-dropdown-item>
               </el-dropdown-menu>
             </el-dropdown>
           </template>
@@ -249,6 +283,8 @@ import {
   post_term_getList,
   post_term_del__termId,
   get_term_applyTerm__termId,
+  post_term_start__termId,
+  post_term_stop__termId,
 } from "@/api/project/index";
 import PaginationMixin from "@/mixins/pagination";
 import Add from "./dialog/basicInfo-dialog/add.vue";
@@ -323,6 +359,28 @@ export default class ProjectApproval extends Vue {
       auditEnum: null,
     });
     this.provinceOption = [];
+  }
+
+  async start(data: any) {
+    await post_term_start__termId({
+      termId: data.termId,
+    });
+    this.getListMixin();
+    this.$message({
+      type: "success",
+      message: "启用成功!",
+    });
+  }
+
+  async stop(data: any) {
+    await post_term_stop__termId({
+      termId: data.termId,
+    });
+    this.getListMixin();
+    this.$message({
+      type: "success",
+      message: "作废成功!",
+    });
   }
 
   routeTo(row: any, where: string) {
