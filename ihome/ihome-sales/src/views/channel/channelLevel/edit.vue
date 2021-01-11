@@ -4,7 +4,7 @@
  * @Author: wwq
  * @Date: 2020-10-15 16:02:03
  * @LastEditors: wwq
- * @LastEditTime: 2020-12-16 20:25:34
+ * @LastEditTime: 2021-01-09 15:22:34
 -->
 <template>
   <IhPage>
@@ -27,6 +27,7 @@
                 <div style="display: flex; justify-contant: flex-start">
                   <IhSelectPageByChannel
                     :disabled="$route.name === 'channelLevelChange'"
+                    :search-name="resPageInfo.channelName"
                     v-model="resPageInfo.channelId"
                     clearable
                     placeholder="请选择渠道商"
@@ -279,7 +280,7 @@
           >保存</el-button>
           <el-button
             @click="pass('2')"
-            type="primary"
+            type="success"
           >提交</el-button>
         </div>
       </div>
@@ -313,6 +314,7 @@ export default class ChannelRates extends Vue {
 
   resPageInfo: any = {
     channelId: "",
+    channelName: "",
     channelGrade: "",
     channelType: "Platform",
     province: "",

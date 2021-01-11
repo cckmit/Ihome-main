@@ -4,7 +4,7 @@
  * @Author: wwq
  * @Date: 2020-11-27 17:17:06
  * @LastEditors: wwq
- * @LastEditTime: 2021-01-07 09:31:13
+ * @LastEditTime: 2021-01-09 15:14:49
 -->
 <template>
   <div class="project-approval-box">
@@ -759,12 +759,12 @@
       <el-button
         v-if="$route.name === 'projectApprovalEdit'"
         type="primary"
-        @click="save()"
+        @click="submit('save')"
       >保存</el-button>
       <el-button
         v-if="['Draft', 'TermReject'].includes(info.auditEnum)"
         type="success"
-        @click="submitProjectApproval()"
+        @click="submit('ProjectApproval')"
       >提交立项审核</el-button>
       <el-button
         v-if="['TermAdopt', 'ConstractReject', 'ConstractWait'].includes(info.auditEnum)"
@@ -788,7 +788,7 @@ import { Form as ElForm } from "element-ui";
 import {
   get_term_get__termId,
   post_term_update,
-  post_term_audit,
+  post_term_commitAndAudit,
   post_term_constractAudit,
 } from "@/api/project/index";
 import { post_dict_getAllByType } from "@/api/system/index";
@@ -1106,17 +1106,6 @@ export default class FirstAgencyEdit extends Vue {
     window.sessionStorage.setItem("padCommissionEnum", val);
   }
 
-  async submitProjectApproval() {
-    await post_term_audit({
-      termId: this.info.termId,
-    });
-    this.$message({
-      type: "success",
-      message: "提交立项审核成功",
-    });
-    this.$goto({ path: `/projectApproval/list` });
-  }
-
   async submitContract() {
     await post_term_constractAudit({
       termId: this.info.termId,
@@ -1135,7 +1124,7 @@ export default class FirstAgencyEdit extends Vue {
     }
   }
 
-  save() {
+  submit(type: any) {
     (this.$refs["ruleForm"] as ElForm).validate(async (v: any) => {
       if (v) {
         let infoObj = { ...this.info };
@@ -1176,11 +1165,13 @@ export default class FirstAgencyEdit extends Vue {
           }
         });
         if (isSubmit) {
-          infoObj.attachTermVOS = arr.map((v: any) => ({
+          let isSubmitArr: any = arr.map((v: any) => ({
             fileId: v.fileId,
             fileName: v.name,
             type: v.type,
+            exAuto: v.exAuto,
           }));
+          infoObj.attachTermVOS = isSubmitArr.filter((j: any) => !j.exAuto);
         } else {
           this.$message({
             type: "warning",
@@ -1188,16 +1179,17 @@ export default class FirstAgencyEdit extends Vue {
           });
           return;
         }
-        await post_term_update(infoObj);
-        this.$message.success("保存成功");
+        if (type === "save") {
+          await post_term_update(infoObj);
+          this.$message.success("保存成功");
+        } else if (type === "ProjectApproval") {
+          await post_term_commitAndAudit(infoObj);
+          this.$message.success("提交立项审核成功");
+        }
         this.$goto({ path: "/projectApproval/list" });
       }
     });
   }
-  submit() {
-    this.$message.warning("接口未提供,功能未实现");
-  }
-
   async getInfo() {
     let id = this.$route.query.id;
     if (id) {

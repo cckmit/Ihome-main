@@ -3,8 +3,8 @@
  * @version: 
  * @Author: lsj
  * @Date: 2020-11-09 16:05:00
- * @LastEditors: ywl
- * @LastEditTime: 2020-12-29 09:38:52
+ * @LastEditors: lsj
+ * @LastEditTime: 2021-01-08 18:41:15
 -->
 <template>
   <div class="ih-table-checkBox">
@@ -24,6 +24,7 @@
             :data="data"
             :border="border"
             :row-key="getRowKeys"
+            :row-class-name="rowClassName"
             @selection-change="handleSelectChange"
           >
             <el-table-column
@@ -135,6 +136,12 @@ export default class IhTableCheckBox extends Vue {
   @Prop() private hasCheckedData!: any; // 已选项
   @Prop() private rowKey!: any; // 选择项的标识
   @Prop() private column!: any; // 表头
+  @Prop({
+    default: () => {
+      return ""
+    }
+  })
+  rowClassName: any; // 可将表格内容 highlight 显示，方便区分「成功、信息、警告、危险」等内容。
   @Prop({
     default: "id",
   })
@@ -304,6 +311,12 @@ export default class IhTableCheckBox extends Vue {
       });
     }
     this.$emit("selection-change", this.checkedData);
+  }
+
+  // 多选模式下，取消全选
+  handleClearSelection() {
+    if (this.isSingle) return;
+    (this as any).$refs.checkTable && (this as any).$refs.checkTable.clearSelection();
   }
 }
 </script>

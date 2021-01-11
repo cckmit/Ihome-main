@@ -439,6 +439,7 @@
             <el-table-column fixed="right" label="操作" width="100">
               <template slot-scope="scope">
                 <el-link
+                  style="color: #f66"
                   v-if="!!scope.row.addType"
                   class="margin-right-10"
                   type="primary"
@@ -461,7 +462,7 @@
     <el-row style="padding-left: 20px">
       <el-col>
         <div
-          v-if="!baseInfoInDeal.customerAddVOS.length"
+          v-if="!baseInfoInDeal.customerAddVOS.length && postData.roomId"
           class="add-all-wrapper">
           <el-button type="success" @click="handleAddCustomer">添加客户</el-button>
         </div>
@@ -488,6 +489,7 @@
             fixed="right" label="操作" width="100">
             <template slot-scope="scope">
               <el-link
+                style="color: #f66"
                 class="margin-right-10"
                 type="primary"
                 @click.native.prevent="deleteAdd(scope)"
@@ -636,22 +638,28 @@
       <el-button @click="cancel()">取消</el-button>
     </div>
     <div class="nav-box">
-      <div class="nav-icon" @click="navFlag = !navFlag " :title="navFlag ? '收起' : '展开'">
-        <i :class="navFlag ? 'el-icon-s-unfold' : 'el-icon-s-fold'"></i>
+      <div class="nav-icon el-button--success" @click="navFlag = !navFlag " :title="navFlag ? '收起' : '展开'">
+        <i :class="navFlag ? 'el-icon-d-arrow-right' : 'el-icon-d-arrow-left'"></i>
       </div>
       <div :class="navFlag ? 'nav-wrapper' : 'nav-wrapper nav-transition'">
-        <div @click="goAnchor(item.id)" v-for="item in navList" :key="item.id" class="nav-item">{{item.name}}</div>
+        <div
+          @click="handleGoAnchor(item.id, index)"
+          v-for="(item, index) in navList"
+          :key="item.id"
+          :class="currentActiveIndex === index ? 'el-button--warning' : ''"
+          class="nav-item el-button--success">{{item.name}}</div>
       </div>
     </div>
   </ih-page>
 </template>
 <script lang="ts">
-  import {Component, Vue, Prop} from "vue-property-decorator";
+  import {Component, Vue, Prop, Watch} from "vue-property-decorator";
   import {
     post_pageData_initBasic, // 选择周期、房号后初始化页面
     get_deal_get__id, // 编辑功能
     post_deal_entryDealBasicInf, // 案场岗 - 录入成交信息
-    post_deal_updateDealBasicInf // 案场岗 - 修改成交信息
+    post_deal_updateDealBasicInf, // 案场岗 - 修改成交信息
+    post_pageData_calculateReceiveAmount // 重算收派金额
   } from "@/api/deal";
   import {
     get_term_getProBaseByTermId__termId, // 通过项目周期获取成交基础信息
@@ -744,8 +752,8 @@
       signType: null, // 签约类型
       subscribePrice: null, // 认购价格
       subscribeDate: null, // 认购日期
-      signPrice: null, // 签约日期
-      signDate: null, // 签约价格
+      signPrice: null, // 签约价格
+      signDate: null, // 签约日期
       entryDate: null,
       entryPerson: null,
       status: null,
@@ -863,7 +871,7 @@
       },
       {
         id: 2,
-        name: '优惠告知书信息'
+        name: '优惠告知书'
       },
       {
         id: 3,
@@ -880,7 +888,20 @@
     ]; // 锚点列表
     navFlag: any = false; // 是否展开锚点
     navList: any = []; // 锚点列表
+    currentActiveIndex: any = 0; // 当前激活的nav
     currentReceiveIndex: any = null; // 当前选中的收派金额列表数据
+
+    @Watch("postData.signPrice")
+    getNewSignPrice(newVal: any,oldVal: any) {
+      console.log(newVal);
+      console.log(oldVal);
+    }
+
+    @Watch("postData.subscribePrice")
+    getNewSubscribePrice(newVal: any,oldVal: any) {
+      console.log(newVal);
+      console.log(oldVal);
+    }
 
     // 应收信息表格
     get receiveAchieveVO() {
@@ -918,6 +939,12 @@
         const res: any = await get_deal_get__id({id: this.id});
         this.postData = res;
       }
+    }
+
+    // nav的跳转
+    handleGoAnchor(id: any, index: any) {
+      this.currentActiveIndex = index;
+      this.goAnchor(id);
     }
 
     /*
@@ -1126,6 +1153,11 @@
         cycleId: cycleId,
         roomId: roomId
       };
+      const loading = this.$loading({
+        lock: true,
+        text: '数据加载中...',
+        spinner: 'el-icon-loading'
+      });
       let baseInfo: any = await post_pageData_initBasic(params);
       this.baseInfoInDeal = JSON.parse(JSON.stringify(baseInfo || '{}'));
       // console.log('baseInfobaseInfo', this.baseInfoInDeal);
@@ -1205,6 +1237,7 @@
       this.postData.receiveVO = (this as any).$parent.initReceiveVOS(baseInfo.receiveVOS);
       // 附件信息
       this.initDocument(baseInfo.contType, baseInfo);
+      loading.close();
     }
 
     // 初始化渠道商(渠道公司) --- 分销成交模式才有渠道商
@@ -1325,18 +1358,6 @@
     selectPackage(scope: any) {
       console.log('选择收派套餐', scope);
       this.currentReceiveIndex = scope.$index;
-      // let params: any = {
-      //   hasRecord: this.baseInfoInDeal.hasRecord, // 是否有成交报备(是否分销成交)
-      //   idList: this.packageIdsList, // 分销成交 --- 选择分销协议后的ids
-      //   contNo: this.postData.contNo, // 分销协议编号
-      //   type: scope.row.type, // 标题类型
-      //   postObj: {
-      //     contractEnum: this.postData.contType, // 合同类型
-      //     propertyEnum: this.postData.propertyType, // 物业类型
-      //     subdivideEnum: this.postData.refineModel, // 细分业务
-      //     termId: this.postData.cycleId, // 立项周期ID
-      //   }, // 非分销需要获取id的参数
-      // };
       let params: any = {
         termId: this.baseInfoByTerm.termId, // 项目周期id
         contType: this.postData.contType, // 合同类型
@@ -1426,17 +1447,26 @@
     async finishAddReceivePackage(data: any) {
       // console.log('确定选择收派套餐', data);
       if (data.length === 0) return;
+      let dataObj = data[0];
+      delete dataObj['typeName']; // 删除typeName属性
+      let postData: any = {
+        detail: dataObj,
+        signPrice: this.postData.signPrice ? this.postData.signPrice : null,
+        subscribePrice: this.postData.subscribePrice ? this.postData.subscribePrice : null
+      }
+      let info: any = await post_pageData_calculateReceiveAmount(postData);
+      console.log(info);
       if (this.postData.receiveVO.length > 0) {
         this.postData.receiveVO.forEach((vo: any, index: any) => {
           if (index === this.currentReceiveIndex) {
             vo.showData = data;
             vo.packageId = data[0].packageId;
             vo.receiveAmount = data[0].receivableAmout;
-            vo.commAmount = data[0].sendAmount;
-            vo.rewardAmount = data[0].sendInAmount;
-            vo.totalPackageAmount = data[0].generalAchieveAmount;
-            vo.distributionAmount = data[0].distributeAchieveAmount;
-            vo.otherChannelFees = data[0].otherChannelAmount;
+            vo.commAmount = info.comm;
+            vo.rewardAmount = info.reward;
+            vo.totalPackageAmount = info.totalBag;
+            vo.distributionAmount = info.distri;
+            vo.otherChannelFees = info.other;
           }
         });
       }
@@ -1725,26 +1755,29 @@
 
   .nav-box {
     position: fixed;
-    right: 20px;
+    right: 37px;
     top: 30%;
     box-sizing: border-box;
     display: flex;
     flex-direction: row;
     //align-items: center;
-    border: 1px solid #ffffff;
+    //border: 1px solid #ffffff;
     z-index: 200;
 
     .nav-icon {
-      height: 40px;
-      line-height: 42px;
+      width: 24px;
+      height: 46px;
+      line-height: 47px;
+      border-radius: 50px 0 0 50px;
       cursor: pointer;
-      background-color: #2B4558;
+      //background-color: #2B4558;
       color: #ffffff;
-      font-size: 29px;
+      font-size: 12px;
+      text-align: center;
     }
 
     .nav-wrapper {
-      width: 133px;
+      //width: 133px;
       box-sizing: border-box;
       display: flex;
       flex-direction: column;
@@ -1757,11 +1790,13 @@
       transform-origin: left bottom;
 
       .nav-item {
-        height: 40px;
-        line-height: 40px;
+        width: 44px;
+        //height: 40px;
+        //line-height: 40px;
         text-align: center;
+        font-size: 14px;
         box-sizing: border-box;
-        padding: 0px 10px;
+        padding: 5px 5px;
         cursor: pointer;
         border-left: 1px solid #ffffff;
         border-bottom: 1px solid #ffffff;

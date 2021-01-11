@@ -4,7 +4,7 @@
  * @Author: wwq
  * @Date: 2020-11-27 17:26:20
  * @LastEditors: wwq
- * @LastEditTime: 2021-01-08 10:46:42
+ * @LastEditTime: 2021-01-09 16:21:23
 -->
 <template>
   <div>
@@ -105,9 +105,9 @@
 </template>
 <script lang="ts">
 import { Component, Vue } from "vue-property-decorator";
-import MakingInfo from "../dialog/close-dialog/makingInfo.vue";
-import PleaseInfo from "../dialog/close-dialog/pleaseInfo.vue";
-import { get_settleCondition_getPage__termId } from "@/api/project/index.ts";
+import MakingInfo from "../dialog/close-dialog/historyMakingInfo.vue";
+import PleaseInfo from "../dialog/close-dialog/historyPleaseInfo.vue";
+import { get_his_settleCondition_getPage__termId } from "@/api/project/index.ts";
 @Component({
   components: {
     MakingInfo,
@@ -132,7 +132,7 @@ export default class Close extends Vue {
   async getInfo() {
     const id = this.$route.query.id;
     if (id) {
-      this.info = await get_settleCondition_getPage__termId({
+      this.info = await get_his_settleCondition_getPage__termId({
         termId: id,
       });
     }

@@ -2,9 +2,9 @@
  * @Descripttion: 
  * @version: 
  * @Author: wwq
- * @Date: 2020-12-07 14:32:16
+ * @Date: 2021-01-09 16:10:30
  * @LastEditors: wwq
- * @LastEditTime: 2021-01-08 14:41:26
+ * @LastEditTime: 2021-01-09 16:11:40
 -->
 <template>
   <el-dialog
@@ -454,7 +454,7 @@
 </template>
 <script lang="ts">
 import { Component, Vue, Prop } from "vue-property-decorator";
-import { get_collectandsend_get__packageId } from "@/api/project/index";
+import { get_his_collectandsend_get__packageId } from "@/api/project/index";
 @Component({
   components: {},
 })
@@ -535,7 +535,7 @@ export default class SetMealEdit extends Vue {
   async getInfo() {
     const id = this.data.id;
     if (id) {
-      const res = await get_collectandsend_get__packageId({
+      const res = await get_his_collectandsend_get__packageId({
         packageId: id,
       });
       this.info = (this.$tool as any).deepClone(res);

@@ -2,9 +2,9 @@
  * @Descripttion: 
  * @version: 
  * @Author: wwq
- * @Date: 2020-11-27 17:15:36
+ * @Date: 2021-01-09 15:45:15
  * @LastEditors: wwq
- * @LastEditTime: 2021-01-09 15:53:04
+ * @LastEditTime: 2021-01-09 15:52:49
 -->
 <template>
   <ih-page>
@@ -64,13 +64,6 @@
           >
             <Calculation v-if="componetName === 'Calculation'" />
           </el-tab-pane>
-
-          <el-tab-pane
-            label="日志及OA附言"
-            name="LogOA"
-          >
-            <LogOA v-if="componetName === 'LogOA'" />
-          </el-tab-pane>
         </el-tabs>
       </el-scrollbar>
     </template>
@@ -79,15 +72,14 @@
 <script lang="ts">
 import { Component, Vue } from "vue-property-decorator";
 
-import BasicInfo from "./info-tabs/basicInfo.vue";
-import Calculation from "./info-tabs/calculation.vue";
-import Close from "./info-tabs/close.vue";
-import LogOA from "./info-tabs/logOA.vue";
-import Notification from "./info-tabs/notification.vue";
-import Other from "./info-tabs/other.vue";
-import PartyA from "./info-tabs/partyA.vue";
-import ReportedRules from "./info-tabs/reportedRules.vue";
-import SetMeal from "./info-tabs/setMeal.vue";
+import BasicInfo from "./history-tabs/basicInfo.vue";
+import Calculation from "./history-tabs/calculation.vue";
+import Close from "./history-tabs/close.vue";
+import Notification from "./history-tabs/notification.vue";
+import Other from "./history-tabs/other.vue";
+import PartyA from "./history-tabs/partyA.vue";
+import ReportedRules from "./history-tabs/reportedRules.vue";
+import SetMeal from "./history-tabs/setMeal.vue";
 
 Component.registerHooks(["beforeRouteEnter"]);
 @Component({
@@ -95,7 +87,6 @@ Component.registerHooks(["beforeRouteEnter"]);
     BasicInfo,
     Calculation,
     Close,
-    LogOA,
     Notification,
     Other,
     PartyA,

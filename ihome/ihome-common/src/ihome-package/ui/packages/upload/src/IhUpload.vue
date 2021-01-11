@@ -4,7 +4,7 @@
  * @Author: wwq
  * @Date: 2020-09-09 16:17:16
  * @LastEditors: wwq
- * @LastEditTime: 2021-01-07 08:44:33
+ * @LastEditTime: 2021-01-11 10:06:42
 -->
 <template>
   <div class="upload">
@@ -72,7 +72,7 @@
               </span>
               <span
                 class="el-upload-list__item-delete"
-                v-if="removePermi"
+                v-if="removePermi && !file.exAuto"
                 @click="handleRemove(file)"
               >
                 <i
@@ -212,6 +212,11 @@ export default class IhUpload extends Vue {
     default: true,
   })
   uploadShow?: boolean;
+  @Prop({
+    type: String,
+    default: "",
+  })
+  uploadAccept!: string;
 
   private list: any[] = [];
   private srcList: any[] = [];
@@ -304,15 +309,61 @@ export default class IhUpload extends Vue {
   beforeUpload(file: any) {
     return new Promise((resolve, reject) => {
       const size = file.size / 1024 / 1024 < this.fileSize;
+      const type = file?.name?.match(/(?<=\.).+/)?.toString();
       if (!size) {
         this.$message({
           message: `文件大小不能超过 ${this.fileSize}MB`,
-          type: "error",
+          type: "warning",
         });
-        reject("文件容量过大!");
+        reject();
         return;
       } else {
-        resolve();
+        if (this.uploadAccept) {
+          switch (this.uploadAccept) {
+            case "image":
+              switch (type) {
+                case "gif":
+                case "jpg":
+                case "png":
+                case "jpeg":
+                  resolve();
+                  break;
+                default:
+                  this.$message({
+                    message: `只能上传图片类型`,
+                    type: "warning",
+                  });
+                  reject();
+                  break;
+              }
+              break;
+          }
+        } else {
+          switch (type) {
+            case "gif":
+            case "jpg":
+            case "png":
+            case "jpeg":
+            case "doc":
+            case "docx":
+            case "docm":
+            case "xls":
+            case "xlsx":
+            case "pdf":
+            case "ppt":
+            case "potx":
+            case "pptx":
+              resolve();
+              break;
+            default:
+              this.$message({
+                message: `只能上传图片, 文档, 表格, pdf, ppt类型`,
+                type: "warning",
+              });
+              reject();
+              break;
+          }
+        }
       }
     });
   }
@@ -462,6 +513,10 @@ export default class IhUpload extends Vue {
 .upload {
   display: flex;
   justify-content: flex-start;
+  line-height: normal;
+  /deep/ .el-upload--picture-card {
+    margin-bottom: 10px;
+  }
 }
 .avatar-uploader .el-upload {
   position: relative;

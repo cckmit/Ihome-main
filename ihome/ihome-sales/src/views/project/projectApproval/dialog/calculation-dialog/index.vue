@@ -4,7 +4,7 @@
  * @Author: wwq
  * @Date: 2020-12-03 10:50:26
  * @LastEditors: wwq
- * @LastEditTime: 2020-12-25 09:01:50
+ * @LastEditTime: 2021-01-09 17:05:54
 -->
 <template>
   <el-dialog
@@ -15,7 +15,7 @@
     :before-close="cancel"
     width="80%"
     class="dialog text-left"
-    title="项目联动业务留存率测算表"
+    :title="form.termCalcVo.termName"
   >
     <table
       border="1"
@@ -32,11 +32,11 @@
       </tr>
       <tr>
         <td class="bold">周期时间</td>
-        <td colspan="9">{{form && form.termCalcVo && form.termCalcVo.termStart + '~' + form.termCalcVo && form.termCalcVo.termEnd}}</td>
+        <td colspan="9">{{(form && form.termCalcVo && form.termCalcVo.termStart) + '~' + (form.termCalcVo && form.termCalcVo.termEnd)}}</td>
       </tr>
       <tr>
         <td class="bold">是否市场化项目</td>
-        <td colspan="2">{{form && form.termCalcVo && form.termCalcVo.exMarket}}</td>
+        <td colspan="2">{{(form && form.termCalcVo && form.termCalcVo.exMarket) ? '是' : '否'}}</td>
         <td class="bold">业务模式</td>
         <td colspan="2">{{form && form.termCalcVo && $root.dictAllName(form.termCalcVo.busEnum, 'BusinessModel')}}</td>
         <td class="bold">收费类型</td>

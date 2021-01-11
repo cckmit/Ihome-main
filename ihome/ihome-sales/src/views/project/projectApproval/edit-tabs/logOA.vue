@@ -4,7 +4,7 @@
  * @Author: wwq
  * @Date: 2020-11-27 17:29:09
  * @LastEditors: wwq
- * @LastEditTime: 2020-12-29 18:28:48
+ * @LastEditTime: 2021-01-09 15:48:42
 -->
 <template>
   <div>
@@ -203,8 +203,14 @@ export default class SetMeal extends Vue {
     this.orgPostName = res.orgPostName;
   }
 
-  view() {
-    this.$message.warning("接口未提供");
+  view(data: any) {
+    let router = this.$router.resolve({
+      path: `/projectApproval/history`,
+      query: {
+        id: data.termId,
+      },
+    });
+    window.open(router.href, "_blank");
   }
 }
 </script>

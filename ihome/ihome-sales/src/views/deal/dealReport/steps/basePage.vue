@@ -818,11 +818,16 @@
       </el-col>
     </el-row>
     <div class="nav-box">
-      <div class="nav-icon" @click="navFlag = !navFlag " :title="navFlag ? '收起' : '展开'">
-        <i :class="navFlag ? 'el-icon-s-unfold' : 'el-icon-s-fold'"></i>
+      <div class="nav-icon el-button--success" @click="navFlag = !navFlag " :title="navFlag ? '收起' : '展开'">
+        <i :class="navFlag ? 'el-icon-d-arrow-right' : 'el-icon-d-arrow-left'"></i>
       </div>
       <div :class="navFlag ? 'nav-wrapper' : 'nav-wrapper nav-transition'">
-        <div @click="goAnchor(item.id)" v-for="item in navList" :key="item.id" class="nav-item">{{item.name}}</div>
+        <div
+          @click="goAnchor(item.id, index)"
+          v-for="(item, index) in navList"
+          :key="item.id"
+          :class="currentActiveIndex === index ? 'el-button--warning' : ''"
+          class="nav-item el-button--success">{{item.name}}</div>
       </div>
     </div>
     <ih-dialog :show="dialogAddProjectCycle" desc="选择项目周期列表">
@@ -1056,7 +1061,7 @@
       },
       {
         id: 2,
-        name: '优惠告知书信息'
+        name: '优惠告知书'
       },
       {
         id: 3,
@@ -1079,6 +1084,7 @@
         name: '上传附件'
       },
     ]; // 锚点列表
+    currentActiveIndex: any = 0; // 当前激活的nav
 
     async created() {
       this.DealDataFlag = (this as any).$root.dictAllList('DealDataFlag'); // 数据来源
@@ -1103,7 +1109,7 @@
     }
 
     // 跳转到指定索引的元素
-    goAnchor(id: any) {
+    goAnchor(id: any, index: any) {
       this.$nextTick(() => {
         // 获取目标的 offsetTop
         let selector = `#anchor-${id}`;
@@ -1152,6 +1158,7 @@
           // 往下滑
           smoothDown();
         }
+        this.currentActiveIndex = index;
       })
     }
 
@@ -1487,26 +1494,29 @@
 
   .nav-box {
     position: fixed;
-    right: 20px;
+    right: 37px;
     top: 30%;
     box-sizing: border-box;
     display: flex;
     flex-direction: row;
     //align-items: center;
-    border: 1px solid #ffffff;
+    //border: 1px solid #ffffff;
     z-index: 200;
 
     .nav-icon {
-      height: 40px;
-      line-height: 42px;
+      width: 24px;
+      height: 46px;
+      line-height: 47px;
+      border-radius: 50px 0 0 50px;
       cursor: pointer;
-      background-color: #2B4558;
+      //background-color: #2B4558;
       color: #ffffff;
-      font-size: 29px;
+      font-size: 12px;
+      text-align: center;
     }
 
     .nav-wrapper {
-      width: 133px;
+      //width: 133px;
       box-sizing: border-box;
       display: flex;
       flex-direction: column;
@@ -1519,11 +1529,13 @@
       transform-origin: left bottom;
 
       .nav-item {
-        height: 40px;
-        line-height: 40px;
+        width: 44px;
+        //height: 40px;
+        //line-height: 40px;
         text-align: center;
+        font-size: 14px;
         box-sizing: border-box;
-        padding: 0px 10px;
+        padding: 5px 5px;
         cursor: pointer;
         border-left: 1px solid #ffffff;
         border-bottom: 1px solid #ffffff;

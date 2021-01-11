@@ -4,7 +4,7 @@
  * @Author: zyc
  * @Date: 2020-07-09 15:03:17
  * @LastEditors: zyc
- * @LastEditTime: 2020-12-19 09:36:30
+ * @LastEditTime: 2021-01-09 10:29:18
 --> 
 <template>
   <div>
@@ -63,7 +63,7 @@ export default class ResourcesRadio extends Vue {
   filterText: any = "";
   @Watch("filterText")
   filterTextWatch(val: any) {
-    (this.$refs.tree as any).filter(val, this.selectType);
+    (this.$refs.tree as any).filter(val);
   }
   dataTree: any = [];
   defaultProps: any = {
@@ -71,22 +71,24 @@ export default class ResourcesRadio extends Vue {
     label: "name",
   };
   selectChange() {
-    (this.$refs.tree as any).filter(this.filterText, this.selectType);
+    (this.$refs.tree as any).filter(this.filterText);
   }
   filterNode(value: any, data: any) {
-    if (!value && !this.selectType) {
+    value = value == "" ? null : value;
+    let selectType = this.selectType == "" ? null : this.selectType;
+    if (!value && !selectType) {
       return true;
     } else {
-      if (value && this.selectType) {
+      if (value && selectType) {
         return (
           data[this.defaultProps.label].indexOf(value) !== -1 &&
-          data.type.indexOf(this.selectType)
+          data.type.indexOf(selectType) !== -1
         );
       } else {
         if (value) {
           return data[this.defaultProps.label].indexOf(value) !== -1;
         } else {
-          return data.type.indexOf(this.selectType);
+          return data.type.indexOf(selectType) !== -1;
         }
       }
     }
@@ -97,6 +99,11 @@ export default class ResourcesRadio extends Vue {
 
   async created() {
     this.init();
+    let ResourceType = (this as any).$root.dictAllList(
+      "ResourceType",
+      "AllowAdjust"
+    );
+    console.log(ResourceType);
   }
   async init() {
     const res = await get_resource_getAll();

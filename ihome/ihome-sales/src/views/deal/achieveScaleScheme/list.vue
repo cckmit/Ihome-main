@@ -102,10 +102,10 @@
       </el-form>
     </template>
     <template v-slot:btn>
-      <el-row>
+      <el-row class="margin-left-10">
         <el-button type="primary" @click="getListMixin()">查询</el-button>
+        <el-button type="success" @click="add()">添加</el-button>
         <el-button type="info" @click="reset()">重置</el-button>
-        <el-button type="success" @click="add()">新增</el-button>
       </el-row>
     </template>
     <template v-slot:table>
