@@ -1481,7 +1481,7 @@
         this.postData.receiveVO.forEach((vo: any, index: any) => {
           if (index === this.currentReceiveIndex) {
             vo.showData = data;
-            vo.packageId = data[0].packageId;
+            vo.packageId = data[0].packageMxId;
             vo.receiveAmount = data[0].receivableAmout;
             vo.commAmount = info.comm;
             vo.rewardAmount = info.reward;
