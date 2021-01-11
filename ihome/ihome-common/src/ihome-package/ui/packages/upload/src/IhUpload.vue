@@ -4,7 +4,7 @@
  * @Author: wwq
  * @Date: 2020-09-09 16:17:16
  * @LastEditors: wwq
- * @LastEditTime: 2021-01-09 14:49:43
+ * @LastEditTime: 2021-01-11 10:06:42
 -->
 <template>
   <div class="upload">
@@ -513,6 +513,10 @@ export default class IhUpload extends Vue {
 .upload {
   display: flex;
   justify-content: flex-start;
+  line-height: normal;
+  /deep/ .el-upload--picture-card {
+    margin-bottom: 10px;
+  }
 }
 .avatar-uploader .el-upload {
   position: relative;
