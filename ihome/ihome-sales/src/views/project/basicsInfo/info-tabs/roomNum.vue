@@ -4,7 +4,7 @@
  * @Author: wwq
  * @Date: 2020-11-03 11:52:41
  * @LastEditors: wwq
- * @LastEditTime: 2020-12-11 08:54:47
+ * @LastEditTime: 2021-01-09 15:00:50
 -->
 <template>
   <div>
@@ -14,11 +14,11 @@
     >
       <el-row>
         <el-col :span="6">
-          <el-form-item label="项目盘编">
+          <el-form-item label="栋座名称">
             <el-input
               clearable
               v-model="queryPageParameters.buildingName"
-              placeholder="项目盘编"
+              placeholder="栋座名称"
             ></el-input>
           </el-form-item>
         </el-col>
@@ -39,8 +39,25 @@
             </el-select>
           </el-form-item>
         </el-col>
+        <el-col :span="6">
+          <el-form-item label="装修级别">
+            <el-select
+              v-model="queryPageParameters.renovatLevelEnum"
+              clearable
+              placeholder="装修级别"
+              style="width: 100%"
+            >
+              <el-option
+                v-for="item in $root.dictAllList('RenovatLevel')"
+                :key="item.code"
+                :label="item.name"
+                :value="item.code"
+              ></el-option>
+            </el-select>
+          </el-form-item>
+        </el-col>
         <el-col
-          :span="10"
+          :span="6"
           class="text-left"
         >
           <el-form-item>

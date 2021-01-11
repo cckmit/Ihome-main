@@ -1,6 +1,6 @@
 /* eslint-disable */
 /* 此脚本由swagger-ui的api-docs自动生成，请勿修改 */
-//2021-1-9 9:18:29 ├F10: AM┤
+//2021-1-9 3:10:44 ├F10: PM┤
 import { request } from '@/api/base'
 const basePath = "/sales-api/project"
 /**index*/
@@ -658,6 +658,10 @@ return await request.get<number,number>(basePath+'/term/applyTerm/{termId}', { p
 /**项目周期-审核*/
 export async function post_term_audit (d?: any) {
 return await request.post< number,number> (basePath+'/term/audit', d)
+}
+/**项目周期提交并且审核*/
+export async function post_term_commitAndAudit (d?: any) {
+return await request.post< number,number> (basePath+'/term/commitAndAudit', d)
 }
 /**合同-审核*/
 export async function post_term_constractAudit (d?: any) {

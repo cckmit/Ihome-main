@@ -4,7 +4,7 @@
  * @Author: wwq
  * @Date: 2020-10-22 14:45:15
  * @LastEditors: wwq
- * @LastEditTime: 2021-01-08 16:04:54
+ * @LastEditTime: 2021-01-11 10:20:17
  */
 import { RouteConfig } from 'vue-router'
 
@@ -137,6 +137,12 @@ const projectRoutes: Array<RouteConfig> = [
         name: 'projectApprovalApply',
         component: () => import('../views/project/projectApproval/apply.vue'),
         meta: { title: '立项周期申领分销协议', icon: 'form' }
+      },
+      {
+        path: 'history',
+        name: 'projectApprovalHistory',
+        component: () => import('../views/project/projectApproval/history.vue'),
+        meta: { title: '立项周期查看快照', icon: 'form' }
       }
     ]
   },

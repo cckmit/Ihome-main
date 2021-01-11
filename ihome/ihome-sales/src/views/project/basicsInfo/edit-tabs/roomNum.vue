@@ -4,7 +4,7 @@
  * @Author: wwq
  * @Date: 2020-09-27 11:52:41
  * @LastEditors: wwq
- * @LastEditTime: 2020-12-31 09:46:17
+ * @LastEditTime: 2021-01-09 14:57:15
 -->
 <template>
   <div>
@@ -20,7 +20,7 @@
               style="width: 100%"
               clearable
               v-model="queryPageParameters.buildingName"
-              placeholder="项目盘编"
+              placeholder="栋座名称"
             ></el-input>
           </el-form-item>
         </el-col>
@@ -46,7 +46,7 @@
             <el-select
               v-model="queryPageParameters.renovatLevelEnum"
               clearable
-              placeholder="物业类型"
+              placeholder="装修级别"
               style="width: 100%"
             >
               <el-option
