@@ -4,7 +4,7 @@
  * @Author: wwq
  * @Date: 2020-12-26 11:11:23
  * @LastEditors: wwq
- * @LastEditTime: 2021-01-09 14:07:26
+ * @LastEditTime: 2021-01-11 09:04:20
 -->
 <template>
   <IhPage>
@@ -323,7 +323,7 @@
               <div>
                 服务费:
                 <el-input
-                  v-model="row.serNoCommFees"
+                  v-model="row.serThisCommFees"
                   v-digits="2"
                   clearable
                   style="width: 70%"
@@ -332,15 +332,15 @@
               <div class="margin-top-5">
                 代理费:
                 <el-input
-                  v-model="row.ageNoCommFees"
+                  v-model="row.ageThisCommFees"
                   v-digits="2"
                   clearable
                   style="width: 70%"
                 />
               </div>
               <div>合计: {{
-                (Number(row.serNoCommFees?row.serNoCommFees:0) + 
-                Number(row.ageNoCommFees?row.ageNoCommFees:0)).toFixed(2)
+                (Number(row.serThisCommFees?row.serThisCommFees:0) + 
+                Number(row.ageThisCommFees?row.ageThisCommFees:0)).toFixed(2)
               }}</div>
             </template>
           </el-table-column>
@@ -362,7 +362,7 @@
             width="200"
           >
             <template v-slot="{ row }">
-              <el-select
+              <!-- <el-select
                 v-model="row.deductType"
                 clearable
                 placeholder="请选择"
@@ -374,7 +374,12 @@
                   :label="item.name"
                   :value="item.code"
                 ></el-option>
-              </el-select>
+              </el-select> -->
+              <el-input
+                v-model="row.deductType"
+                clearable
+                style="width: 70%"
+              />
             </template>
           </el-table-column>
           <el-table-column
@@ -841,8 +846,8 @@ export default class PayoffEdit extends Vue {
 
   ratioChange(row: any) {
     const a =
-      Number(row.serNoCommFees ? row.serNoCommFees : 0) +
-      Number(row.ageNoCommFees ? row.ageNoCommFees : 0);
+      Number(row.serThisCommFees ? row.serThisCommFees : 0) +
+      Number(row.ageThisCommFees ? row.ageThisCommFees : 0);
     const b =
       Number(row.noTaxAmount ? row.noTaxAmount : 0) +
       Number(row.tax ? row.tax : 0);
@@ -852,8 +857,8 @@ export default class PayoffEdit extends Vue {
   }
   noTaxAmountChange(row: any) {
     const a =
-      Number(row.serNoCommFees ? row.serNoCommFees : 0) +
-      Number(row.ageNoCommFees ? row.ageNoCommFees : 0);
+      Number(row.serThisCommFees ? row.serThisCommFees : 0) +
+      Number(row.ageThisCommFees ? row.ageThisCommFees : 0);
     const b = a - Number(row.thisDeduct);
     let c = b / (1 + Number(this.info.taxRate));
     row.noTaxAmount = c.toFixed(2);
@@ -862,8 +867,8 @@ export default class PayoffEdit extends Vue {
 
   taxChange(row: any) {
     const a =
-      Number(row.serNoCommFees ? row.serNoCommFees : 0) +
-      Number(row.ageNoCommFees ? row.ageNoCommFees : 0);
+      Number(row.serThisCommFees ? row.serThisCommFees : 0) +
+      Number(row.ageThisCommFees ? row.ageThisCommFees : 0);
     let b = a - Number(row.thisDeduct) - Number(row.noTaxAmount);
     row.tax = b.toFixed(2);
     return isNaN(b) ? 0 : b.toFixed(2);
@@ -1003,6 +1008,9 @@ export default class PayoffEdit extends Vue {
   contactsFinish(data: any) {
     let arr: any = data.map((v: any) => ({
       ...v,
+      serThisCommFees: 0,
+      ageThisCommFees: 0,
+      thisDeduct: 0,
       cycleId: v.cycleId + "",
     }));
     if (this.info.payApplyDetailList.length) {
