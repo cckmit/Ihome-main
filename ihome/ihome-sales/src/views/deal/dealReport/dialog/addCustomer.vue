@@ -56,7 +56,7 @@
       <el-row>
         <el-col :span="8">
           <el-form-item label="">
-            <el-button type="primary" @click="getListMixin()">查询</el-button>
+            <el-button type="primary" @click="handleSearch">查询</el-button>
             <el-button type="info" @click="reset()">重置</el-button>
           </el-form-item>
         </el-col>
@@ -169,6 +169,12 @@
         return
       }
       this.$emit("finish", this.selection);
+    }
+
+    // 查询
+    handleSearch() {
+      this.queryPageParameters.pageNum = 1;
+      this.getListMixin();
     }
 
     async getListMixin() {
