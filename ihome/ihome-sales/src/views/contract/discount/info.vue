@@ -4,7 +4,7 @@
  * @Author: ywl
  * @Date: 2020-09-27 17:27:00
  * @LastEditors: ywl
- * @LastEditTime: 2020-12-31 17:50:35
+ * @LastEditTime: 2021-01-11 11:09:44
 -->
 <template>
   <IhPage class="text-left discount-info">
@@ -227,6 +227,7 @@ export default class DiscountDetail extends Vue {
         await post_notice_annex(this.addFile);
         this.$message.success("提交成功");
         this.addFile = [];
+        this.$router.go(0);
       } catch (error) {
         console.log(error);
       }
@@ -252,15 +253,15 @@ export default class DiscountDetail extends Vue {
 
 <style lang="scss" scoped>
 .discount-info {
-  /deep/ .upload {
-    display: inline-block;
-    line-height: normal;
-  }
-  .upload-button {
-    position: absolute;
-    bottom: 0px;
-    margin-left: 15px;
-  }
+  // /deep/ .upload {
+  //   display: inline-block;
+  //   line-height: normal;
+  // }
+  // .upload-button {
+  //   position: absolute;
+  //   bottom: 0px;
+  //   margin-left: 15px;
+  // }
   .annotation {
     color: #d9001b;
     font-size: 14px;

@@ -4,7 +4,7 @@
  * @Author: ywl
  * @Date: 2020-09-27 10:46:14
  * @LastEditors: ywl
- * @LastEditTime: 2021-01-05 19:00:01
+ * @LastEditTime: 2021-01-11 11:04:49
 -->
 <template>
   <IhPage class="text-left distribution-info">
@@ -375,6 +375,9 @@ export default class DistributionDetail extends Vue {
       distributionId: this.ruleForm.id,
       archiveNo: this.ruleForm.archiveNo,
     });
+    this.$goto({
+      path: "/distribution/list",
+    });
     this.$message.success("原件归档成功");
   }
   private handleSealFile(val: any) {
@@ -398,6 +401,7 @@ export default class DistributionDetail extends Vue {
       distributionId: this.ruleForm.id,
     });
     this.sealFile = [];
+    this.$router.go(0);
     this.$message.success("扫描件归档成功");
   }
   private preview() {
@@ -413,6 +417,7 @@ export default class DistributionDetail extends Vue {
       this.fileList = res.annexList.map((i: any) => ({
         name: i.attachmentSuffix,
         fileId: i.fileNo,
+        exAuto: 1,
       }));
     }
     let contractNo = this.$route.query.contractNo;
@@ -422,6 +427,7 @@ export default class DistributionDetail extends Vue {
       this.fileList = res.annexList.map((i: any) => ({
         name: i.attachmentSuffix,
         fileId: i.fileNo,
+        exAuto: 1,
       }));
     }
   }
@@ -434,14 +440,14 @@ export default class DistributionDetail extends Vue {
 
 <style lang="scss" scoped>
 .distribution-info {
-  /deep/ .upload {
-    display: inline-block;
-  }
-  .upload-button {
-    position: absolute;
-    bottom: 0;
-    margin-left: 15px;
-  }
+  // /deep/ .upload {
+  //   display: inline-block;
+  // }
+  // .upload-button {
+  //   position: absolute;
+  //   bottom: 0;
+  //   margin-left: 15px;
+  // }
   .annotation {
     color: #d9001b;
     font-size: 14px;

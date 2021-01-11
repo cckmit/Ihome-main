@@ -3,8 +3,8 @@
  * @version: 
  * @Author: ywl
  * @Date: 2020-09-25 16:00:37
- * @LastEditors: wwq
- * @LastEditTime: 2020-12-11 08:45:25
+ * @LastEditors: ywl
+ * @LastEditTime: 2021-01-11 11:07:29
 -->
 <template>
   <IhPage>
@@ -148,7 +148,7 @@
                 type="primary"
                 @click="submit()"
               >提交</el-button>
-              <el-button>取消</el-button>
+              <el-button @click="$router.go(-1)">取消</el-button>
             </div>
           </el-col>
         </el-row>
@@ -187,6 +187,9 @@ export default class PartyAadd extends Vue {
         await post_contract_original_archive({
           contractId: this.formData.id,
           archiveNo: this.formData.archiveNo,
+        });
+        this.$goto({
+          path: "/partyA/list",
         });
         this.$message.success("原件归档成功");
       }
