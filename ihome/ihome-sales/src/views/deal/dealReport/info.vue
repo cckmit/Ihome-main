@@ -578,7 +578,6 @@
 
     async created() {
       this.dealId = this.$route.query.id;
-      this.dealId = 2;
       if (this.dealId) {
         await this.init(); // 基础数据
         await this.getInformation(); // 优惠告知书
