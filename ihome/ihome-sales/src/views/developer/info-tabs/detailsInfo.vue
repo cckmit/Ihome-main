@@ -4,7 +4,7 @@
  * @Author: wwq
  * @Date: 2020-10-15 12:33:25
  * @LastEditors: wwq
- * @LastEditTime: 2020-12-15 15:09:45
+ * @LastEditTime: 2021-01-12 09:15:36
 -->
 <template>
   <div class="text-left">
@@ -235,7 +235,7 @@
       class="text-left"
     >
       <p class="ih-info-title">撤回信息</p>
-      <p class="msg-title">撤回原因</p>
+      <p class="msg-title"><span style="color: red">* </span>撤回原因</p>
       <el-input
         type="textarea"
         class="padding-left-20"
@@ -257,7 +257,7 @@
       class="text-left"
     >
       <p class="ih-info-title">审核信息</p>
-      <p class="msg-title">审核意见</p>
+      <p class="msg-title"><span style="color: red">* </span>审核意见</p>
       <el-input
         class="padding-left-20"
         style="box-sizing: border-box"
@@ -362,11 +362,9 @@ export default class Home extends Vue {
   }
 
   async pass(val: any) {
-    if (!val) {
-      if (!this.resPageInfo.checkOpinion) {
-        this.$message.warning("请填写审核意见");
-        return;
-      }
+    if (!this.resPageInfo.checkOpinion) {
+      this.$message.warning("请填写审核意见");
+      return;
     }
     await post_company_audit({
       reason: this.resPageInfo.checkOpinion,

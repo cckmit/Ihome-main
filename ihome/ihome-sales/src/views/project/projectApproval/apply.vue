@@ -200,10 +200,11 @@
           </el-col>
           <el-col :span="12">
             <el-form-item label="乙方渠道等级">
-              <span v-if="!(searchConditon.channelEnum === 'Appoint' || searchConditon.channelEnum === 'Strategic')">
+              <!-- <span v-if="!['Appoint', 'Strategic'].includes(searchConditon.channelEnum)">
                 {{$root.dictAllName(info.channelLevel, 'ChannelLevel')}}
               </span>
-              <span v-else>{{$root.dictAllName(info.channelLevel, 'ChannelCustomer')}}</span>
+              <span v-else>{{$root.dictAllName(info.channelLevel, 'ChannelCustomer')}}</span> -->
+              <span>{{$root.dictAllName(info.channelLevel, 'ChannelLevel')}}</span>
             </el-form-item>
           </el-col>
         </el-row>
@@ -494,7 +495,7 @@ import {
 } from "@/api/project/index";
 import {
   get_channel_get__id,
-  post_channelGrade_getList,
+  post_channelGrade_getOne,
 } from "@/api/channel/index";
 import { post_distribution_create } from "@/api/contract/index";
 import ViewContract from "./dialog/notification-dialog/viewContract.vue";
@@ -573,6 +574,7 @@ export default class Apply extends Vue {
   }
 
   templateFinish(data: any) {
+    this.info.channelCompanyId = null;
     this.SelectPageByConditionDisabled = false;
     this.searchConditon = {
       cycleCity: data.city,
@@ -628,8 +630,8 @@ export default class Apply extends Vue {
       departmentOrgId: list.startDivisionId,
       city: list.city,
     };
-    let channelList: any = await post_channelGrade_getList(obj);
-    this.info.channelLevel = channelList?.list[0]?.channelGrade;
+    let channelList: any = await post_channelGrade_getOne(obj);
+    this.info.channelLevel = channelList?.channelGrade;
     this.info.organizationId = window.sessionStorage.getItem("groupId");
   }
 
@@ -710,6 +712,7 @@ export default class Apply extends Vue {
   async created() {
     await this.getDropDown();
     this.info.cycleId = Number(this.$route.query.id);
+    this.info.handlerId = (this.$root as any).userInfo.name;
   }
 
   cancel() {
