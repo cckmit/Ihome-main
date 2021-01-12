@@ -4,7 +4,7 @@
  * @Author: ywl
  * @Date: 2020-09-25 16:00:37
  * @LastEditors: ywl
- * @LastEditTime: 2020-12-31 17:47:44
+ * @LastEditTime: 2021-01-11 10:55:40
 -->
 <template>
   <IhPage class="text-left partyA-info">
@@ -164,7 +164,7 @@
           :data="formData.cycleList"
         >
           <el-table-column
-            label="周期编号"
+            label="呈批文号"
             prop="approvalNo"
             min-width="180"
           ></el-table-column>
@@ -249,6 +249,8 @@ export default class PartyAadd extends Vue {
   private addArchive: any = [];
 
   private handleContract(val: any) {
+    console.log(val, this.contractList);
+
     this.addContract = val
       .filter((i: any) => {
         return i.response;
@@ -281,6 +283,7 @@ export default class PartyAadd extends Vue {
         this.addContract = [];
         this.addArchive = [];
         this.$message.success("提交附件成功");
+        this.$router.go(0);
       } catch (err) {
         console.log(err);
       }
@@ -297,12 +300,14 @@ export default class PartyAadd extends Vue {
           this.contractList.push({
             name: i.attachmentSuffix,
             fileId: i.fileNo,
+            exAuto: 1,
           });
         }
         if (i.type === "ArchiveAnnex") {
           this.archiveList.push({
             name: i.attachmentSuffix,
             fileId: i.fileNo,
+            exAuto: 1,
           });
         }
       });
@@ -317,15 +322,6 @@ export default class PartyAadd extends Vue {
 
 <style lang="scss" scoped>
 .partyA-info {
-  /deep/ .upload {
-    display: inline-block;
-    line-height: normal;
-  }
-  .upload-button {
-    position: absolute;
-    bottom: 0;
-    margin-left: 15px;
-  }
   .annotation {
     color: #d9001b;
     font-size: 14px;

@@ -4,7 +4,7 @@
  * @Author: wwq
  * @Date: 2020-09-25 17:59:09
  * @LastEditors: wwq
- * @LastEditTime: 2021-01-08 11:47:17
+ * @LastEditTime: 2021-01-12 09:22:00
 -->
 <template>
   <ih-page>
@@ -348,6 +348,16 @@
       </div>
 
       <div v-if="$route.name === 'developerChange'">
+        <p class="ih-info-title">企业概括</p>
+        <el-input
+          class="padding-left-20"
+          style="box-sizing: border-box"
+          type="textarea"
+          :autosize="{ minRows: 5, maxRows: 10 }"
+          placeholder="请输入内容"
+          v-model="resPageInfo.remark"
+        >
+        </el-input>
         <p class="ih-info-title">变更原因</p>
         <el-input
           class="padding-left-20"
@@ -653,6 +663,10 @@ export default class Edit extends Vue {
             await post_company_updateDraft(this.resPageInfo);
             break;
           case "developerChange":
+            if (!this.resPageInfo.reason) {
+              this.$message.warning("请填写变更原因");
+              return;
+            }
             await post_company_update(this.resPageInfo);
             break;
         }

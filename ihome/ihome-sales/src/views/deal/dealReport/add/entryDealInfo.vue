@@ -58,6 +58,7 @@
               v-model="postData.refineModel"
               :disabled="['TotalBagModel', 'DistriModel'].includes(postData.businessType)"
               placeholder="请选择细分业务模式"
+              @change="changePropertyTypeOrRefineModel"
               class="width--100">
               <el-option
                 v-for="item in refineModelList"
@@ -121,6 +122,7 @@
               v-model="postData.propertyType"
               clearable
               placeholder="请选择物业类型"
+              @change="changePropertyTypeOrRefineModel"
               class="width--100">
               <el-option
                 v-for="item in propertyTypeList"
@@ -173,7 +175,7 @@
           </el-form-item>
         </el-col>
         <el-col :span="6" v-if="baseInfoInDeal.hasRecord">
-          <el-form-item label="分销协议编号" :prop="baseInfoInDeal.hasRecord ? 'contNo' : ' '">
+          <el-form-item label="分销协议编号" :prop="baseInfoInDeal.hasRecord ? 'contNo' : 'notEmpty'">
             <div class="contNo-wrapper">
               <el-select
                 v-model="postData.contNo"
@@ -193,7 +195,7 @@
           </el-form-item>
         </el-col>
         <el-col :span="6" v-if="baseInfoInDeal.hasRecord">
-          <el-form-item label="是否垫佣" :prop="baseInfoInDeal.hasRecord ? 'isMat' : ' '">
+          <el-form-item label="是否垫佣" :prop="baseInfoInDeal.hasRecord ? 'isMat' : 'notEmpty'">
             <el-select
               v-model="postData.isMat"
               disabled
@@ -209,22 +211,22 @@
           </el-form-item>
         </el-col>
         <el-col :span="6" v-if="baseInfoInDeal.hasRecord">
-          <el-form-item label="报备信息" :prop="baseInfoInDeal.hasRecord ? 'recordStr' : ' '">
+          <el-form-item label="报备信息" :prop="baseInfoInDeal.hasRecord ? 'recordStr' : 'notEmpty'">
             <el-input v-model="postData.recordStr" disabled placeholder="房号自动带出"></el-input>
           </el-form-item>
         </el-col>
         <el-col :span="6" v-if="baseInfoInDeal.hasRecord">
-          <el-form-item label="渠道公司" :prop="baseInfoInDeal.hasRecord ? 'agencyName' : ' '">
+          <el-form-item label="渠道公司" :prop="baseInfoInDeal.hasRecord ? 'agencyName' : 'notEmpty'">
             <el-input v-model="postData.agencyName" disabled placeholder="选成交报备自动带出"></el-input>
           </el-form-item>
         </el-col>
         <el-col :span="6" v-if="baseInfoInDeal.hasRecord">
-          <el-form-item label="渠道等级" :prop="baseInfoInDeal.hasRecord ? 'channelLevelName' : ' '">
+          <el-form-item label="渠道等级" :prop="baseInfoInDeal.hasRecord ? 'channelLevelName' : 'notEmpty'">
             <el-input v-model="postData.channelLevelName" disabled placeholder="选成交报备自动带出"></el-input>
           </el-form-item>
         </el-col>
         <el-col :span="6" v-if="baseInfoInDeal.hasRecord">
-          <el-form-item label="经纪人" :prop="baseInfoInDeal.hasRecord ? 'brokerName' : ' '">
+          <el-form-item label="经纪人" :prop="baseInfoInDeal.hasRecord ? 'brokerName' : 'notEmpty'">
             <el-input v-model="postData.brokerName" disabled placeholder="选成交报备自动带出"></el-input>
           </el-form-item>
         </el-col>
@@ -341,13 +343,14 @@
           <el-form-item label="认购价格" :prop="['Subscribe', 'SignUp'].includes(postData.stage) ? 'subscribePrice' : ' '">
             <el-input
               v-digits="2"
+              @blur="changePrice($event, 'SubscribePrice')"
               :disabled="isDisabled('subscribePrice', 'dealVO')"
               v-model="postData.subscribePrice"
               placeholder="请输入认购价格"></el-input>
           </el-form-item>
         </el-col>
         <el-col :span="6">
-          <el-form-item label="认购日期" :prop="['Subscribe', 'SignUp'].includes(postData.stage) ? 'subscribeDate' : ' '">
+          <el-form-item label="认购日期" :prop="['Subscribe', 'SignUp'].includes(postData.stage) ? 'subscribeDate' : 'notEmpty'">
             <el-date-picker
               style="width: 100%"
               :disabled="isDisabled('subscribeDate', 'dealVO')"
@@ -359,16 +362,17 @@
           </el-form-item>
         </el-col>
         <el-col :span="6">
-          <el-form-item label="签约价格" :prop="['SignUp'].includes(postData.stage) ? 'signPrice' : ' '">
+          <el-form-item label="签约价格" :prop="['SignUp'].includes(postData.stage) ? 'signPrice' : 'notEmpty'">
             <el-input
               v-digits="2"
+              @blur="changePrice($event, 'SignPrice')"
               :disabled="isDisabled('signPrice', 'dealVO')"
               v-model="postData.signPrice"
               placeholder="请输入签约价格"></el-input>
           </el-form-item>
         </el-col>
         <el-col :span="6">
-          <el-form-item label="签约日期" :prop="['SignUp'].includes(postData.stage) ? 'signDate' : ' '">
+          <el-form-item label="签约日期" :prop="['SignUp'].includes(postData.stage) ? 'signDate' : 'notEmpty'">
             <el-date-picker
               style="width: 100%"
               :disabled="isDisabled('signDate', 'dealVO')"
@@ -385,12 +389,12 @@
           </el-form-item>
         </el-col>
         <el-col :span="6" v-if="!!id">
-          <el-form-item label="录入人" :prop="!!id ? 'entryPerson' : ' '">
+          <el-form-item label="录入人" :prop="!!id ? 'entryPerson' : 'notEmpty'">
             <el-input v-model="postData.entryPerson" disabled placeholder="录入人"></el-input>
           </el-form-item>
         </el-col>
         <el-col :span="6" v-if="!!id">
-          <el-form-item label="录入日期" :prop="!!id ? 'entryDate' : ' '">
+          <el-form-item label="录入日期" :prop="!!id ? 'entryDate' : 'notEmpty'">
             <el-date-picker
               style="width: 100%"
               v-model="postData.entryDate"
@@ -407,7 +411,7 @@
           </el-form-item>
         </el-col>
         <el-col :span="6" v-if="!!id">
-          <el-form-item label="成交状态" :prop="!!id ? 'status' : ' '">
+          <el-form-item label="成交状态" :prop="!!id ? 'status' : 'notEmpty'">
             <el-input v-model="postData.status" disabled placeholder="成交状态"></el-input>
           </el-form-item>
         </el-col>
@@ -653,7 +657,7 @@
   </ih-page>
 </template>
 <script lang="ts">
-  import {Component, Vue, Prop, Watch} from "vue-property-decorator";
+  import {Component, Vue, Prop} from "vue-property-decorator";
   import {
     post_pageData_initBasic, // 选择周期、房号后初始化页面
     get_deal_get__id, // 编辑功能
@@ -776,6 +780,10 @@
       receiveAchieveVO: [], // 应收信息
       documentVO: [], // 附件信息
     };
+    tempContType: any = []; // 临时合同类型
+    tempReceiveVO: any = []; // 临时收派金额信息
+    tempSignPrice: any = null; // 临时签约价格
+    tempSubscribePrice: any = null; // 临时认购价格
     rules: any = {
       dealCode: [
         {required: true, message: "成交报告编号不能为空", trigger: "change"},
@@ -861,6 +869,7 @@
       signDate: [
         {required: true, message: "签约日期不能为空", trigger: "change"},
       ],
+      notEmpty: []
     };
     id: any = null;
     cycleCheckedData: any = [];
@@ -890,18 +899,6 @@
     navList: any = []; // 锚点列表
     currentActiveIndex: any = 0; // 当前激活的nav
     currentReceiveIndex: any = null; // 当前选中的收派金额列表数据
-
-    @Watch("postData.signPrice")
-    getNewSignPrice(newVal: any,oldVal: any) {
-      console.log(newVal);
-      console.log(oldVal);
-    }
-
-    @Watch("postData.subscribePrice")
-    getNewSubscribePrice(newVal: any,oldVal: any) {
-      console.log(newVal);
-      console.log(oldVal);
-    }
 
     // 应收信息表格
     get receiveAchieveVO() {
@@ -999,33 +996,7 @@
         if (data[0].termId !== this.postData.cycleId) {
           // 不相等要清空数据关联数据 + 重新请求接口
           if (this.postData.cycleId) {
-            this.contNoList = []; // 分销协议编号
-            this.packageIdsList = []; // ids
-            this.postData.customerVO = []; // 客户信息
-            this.postData.offerNoticeVO = []; // 优惠告知书
-            this.postData.documentVO = []; // 上传附件
-            let list: any = [
-              'refineModel',
-              'oneAgentTeamId',
-              'propertyType',
-              'buildingId',
-              'roomId',
-              'contType',
-              'contNo',
-              'reportId',
-              'recordStr',
-              'recordState',
-              'area',
-              'room',
-              'hall',
-              'toilet',
-              'propertyNo',
-              'sceneSales',
-              'signType',
-              'stage',
-              'dataSign',
-            ];
-            await this.resetObject('postData', list);
+            await this.resetData();
           }
           this.packageIdsList = []; // ids
           this.postData.cycleName = data[0].termName;
@@ -1125,10 +1096,15 @@
 
     // 清空数据 - 主要是和初始化数据有关的数据
     resetData() {
+      this.tempContType = null;
+      this.tempReceiveVO = [];
+      this.tempSubscribePrice = null;
+      this.tempSignPrice = null;
       this.contNoList = []; // 分销协议编号
       this.packageIdsList = []; // ids
       this.postData.customerVO = []; // 客户信息
       this.postData.receiveVO = []; // 收派金额
+      this.tempReceiveVO = []; // 收派金额初始值
       this.postData.offerNoticeVO = []; // 优惠告知书
       this.postData.documentVO = []; // 上传附件
       let list: any = ['contType', 'contNo', 'recordState', 'recordStr', 'area', 'room', 'hall',
@@ -1153,11 +1129,6 @@
         cycleId: cycleId,
         roomId: roomId
       };
-      const loading = this.$loading({
-        lock: true,
-        text: '数据加载中...',
-        spinner: 'el-icon-loading'
-      });
       let baseInfo: any = await post_pageData_initBasic(params);
       this.baseInfoInDeal = JSON.parse(JSON.stringify(baseInfo || '{}'));
       // console.log('baseInfobaseInfo', this.baseInfoInDeal);
@@ -1235,9 +1206,9 @@
       // 收派金额
       // this.postData.receiveVO = baseInfo.receiveVOS && baseInfo.receiveVOS.length ? baseInfo.receiveVOS : [];
       this.postData.receiveVO = (this as any).$parent.initReceiveVOS(baseInfo.receiveVOS);
+      this.tempReceiveVO = (this as any).$tool.deepClone(this.postData.receiveVO);
       // 附件信息
       this.initDocument(baseInfo.contType, baseInfo);
-      loading.close();
     }
 
     // 初始化渠道商(渠道公司) --- 分销成交模式才有渠道商
@@ -1320,10 +1291,9 @@
 
     // 修改合同类型
     changeContType(value: any) {
-      if (!value) return;
       if (value === 'DistriDeal') {
         // 如果查询不到此房号的已成交报备信息，用户又选择分销成交
-        this.postData.contType = '';
+        this.postData.contType = this.tempContType ? (this as any).$tool.deepClone(this.tempContType) : '';
         if (!this.baseInfoInDeal.hasRecord) {
           this.$alert('系统查询不到此房号的已成交报备信息，请先维护报备信息！', '提示', {
             confirmButtonText: '确定'
@@ -1334,6 +1304,33 @@
         // 不是分销成交
         // 1.清空数据
         // 2.请求接口获取数据
+        let flag: any = false;
+        if (this.postData.receiveVO.length) {
+          // 判断收派金额数据是否选了收派套餐
+          flag = (this as any).$parent.hasReceivePackage(this.postData.receiveVO);
+        }
+        if (flag) {
+          // 如果已经选了，判断合同类型是否一样
+          if (value !== this.tempContType) {
+            // 不一样，要初始化收派套餐
+            this.postData.receiveVO = (this as any).$tool.deepClone(this.tempReceiveVO);
+          }
+        }
+      }
+      this.tempContType = value;
+    }
+
+    // 改变物业类型或细分业务模式
+    changePropertyTypeOrRefineModel(value: any) {
+      console.log(value);
+      let flag: any = false;
+      if (this.postData.receiveVO.length) {
+        // 判断收派金额数据是否选了收派套餐
+        flag = (this as any).$parent.hasReceivePackage(this.postData.receiveVO);
+      }
+      if (flag) {
+        // 不一样，要初始化收派套餐、对外拆佣、平台费用
+        this.postData.receiveVO = (this as any).$tool.deepClone(this.tempReceiveVO);
       }
     }
 
@@ -1352,6 +1349,26 @@
           }
         })
       }
+    }
+
+    // 改变签约、认购价格后，初始化收派套餐问题
+    changePrice(e: any, type: any) {
+      // console.log(e.target.value);
+      // console.log(type);
+      let value: any = e.target.value;
+      let flag: any = false;
+      if (this.postData.receiveVO.length) {
+        // 判断收派金额数据是否选了收派套餐
+        flag = (this as any).$parent.hasReceivePackage(this.postData.receiveVO);
+      }
+      if (flag) {
+        // 如果已经选了，判断价格是否和之前的一样
+        if (value !== (this as any)[`temp${type}`]) {
+          // 不一样+失焦，要初始化收派套餐
+          this.postData.receiveVO = (this as any).$tool.deepClone(this.tempReceiveVO);
+        }
+      }
+      (this as any)[`temp${type}`] = value;
     }
 
     // 选择收派套餐
@@ -1454,13 +1471,17 @@
         signPrice: this.postData.signPrice ? this.postData.signPrice : null,
         subscribePrice: this.postData.subscribePrice ? this.postData.subscribePrice : null
       }
+      if (!postData.signPrice && !postData.subscribePrice) {
+        this.$message.error('认购价格、签约价格不能都为空！');
+        return;
+      }
       let info: any = await post_pageData_calculateReceiveAmount(postData);
-      console.log(info);
+      // console.log(info);
       if (this.postData.receiveVO.length > 0) {
         this.postData.receiveVO.forEach((vo: any, index: any) => {
           if (index === this.currentReceiveIndex) {
             vo.showData = data;
-            vo.packageId = data[0].packageId;
+            vo.packageId = data[0].packageMxId;
             vo.receiveAmount = data[0].receivableAmout;
             vo.commAmount = info.comm;
             vo.rewardAmount = info.reward;

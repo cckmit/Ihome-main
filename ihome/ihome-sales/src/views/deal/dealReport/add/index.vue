@@ -228,6 +228,17 @@
       this.dialogAddReceivePackage = !this.dialogAddReceivePackage;
     }
 
+    // 判断收派金额信息是否有收派套餐
+    hasReceivePackage(data: any = []) {
+      let flag: any = false; // 默认无
+      if (data && data.length) {
+        flag = data.some((item: any) => {
+          return (item.showData && item.showData.length > 0);
+        });
+      }
+      return flag;
+    }
+
     // 计算收派金额总计
     getReceiveSummaries(param: any) {
       const {columns, data} = param;
@@ -243,9 +254,10 @@
             sums[index] = values.reduce((prev: any, curr: any) => {
               const value = Number(curr);
               if (!isNaN(value)) {
-                return prev + curr;
+                let total = (prev * 1 * 100 + curr * 1 * 100) / 100;
+                return total;
               } else {
-                return prev;
+                return ((prev * 1 * 100) / 100);
               }
             }, 0);
           } else {

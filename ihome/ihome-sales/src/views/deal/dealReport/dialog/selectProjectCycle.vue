@@ -26,7 +26,7 @@
             clearable
             placeholder="项目周期名称"
           ></el-input>
-          <el-button type="primary" class="margin-left-20" @click="getListMixin()">查询</el-button>
+          <el-button type="primary" class="margin-left-20" @click="handleSearch">查询</el-button>
         </el-col>
       </el-row>
     </el-form>
@@ -128,6 +128,12 @@
 
     private handleSelectAll() {
       (this.$refs.table as any).clearSelection();
+    }
+
+    // 查询
+    handleSearch() {
+      this.queryPageParameters.pageNum = 1;
+      this.getListMixin();
     }
 
     async getListMixin() {
