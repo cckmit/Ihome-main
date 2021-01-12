@@ -4,7 +4,7 @@
  * @Author: wwq
  * @Date: 2020-12-26 11:17:06
  * @LastEditors: wwq
- * @LastEditTime: 2021-01-08 16:15:30
+ * @LastEditTime: 2021-01-11 19:32:20
  */
 import { RouteConfig } from 'vue-router'
 import Layout from '../components/Layout.vue';
@@ -43,6 +43,38 @@ const payoffRoutes: Array<RouteConfig> = [
         path: 'replenish',
         name: 'payoffReplenish',
         component: () => import('../views/payoff/payorder/info.vue'),
+        meta: { title: '付款单补充', icon: 'form' }
+      },
+    ]
+  },
+  {
+    path: '/auditpay',
+    meta: { title: '结佣付款管理', icon: null },
+    redirect: '/auditpay/list',
+    component: Layout,
+    children: [
+      {
+        path: 'list',
+        name: 'payoffList',
+        component: () => import('../views/payoff/auditpay/list.vue'),
+        meta: { title: '审核付款申请列表', icon: 'form', keepAlive: true }
+      },
+      {
+        path: 'audit',
+        name: 'payoffAudit',
+        component: () => import('../views/payoff/auditpay/edit.vue'),
+        meta: { title: '付款单审核', icon: 'form' }
+      },
+      {
+        path: 'info',
+        name: 'payoffInfo',
+        component: () => import('../views/payoff/auditpay/info.vue'),
+        meta: { title: '付款单查看', icon: 'form' }
+      },
+      {
+        path: 'replenish',
+        name: 'payoffReplenish',
+        component: () => import('../views/payoff/auditpay/info.vue'),
         meta: { title: '付款单补充', icon: 'form' }
       },
     ]

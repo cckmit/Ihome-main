@@ -1,6 +1,6 @@
 /* eslint-disable */
 /* 此脚本由swagger-ui的api-docs自动生成，请勿修改 */
-//2020-12-29 9:23:48 ├F10: AM┤
+//2021-1-11 6:24:09 ├F10: PM┤
 import { request } from '@/api/base'
 const basePath = "/sales-api/payoff"
 /**计算成本归属*/
@@ -11,9 +11,17 @@ return await request.post< any,any> (basePath+'/costApportion/calculateCostAppor
 export async function post_costApportion_getCostApportionList (d?: any) {
 return await request.post< any,any> (basePath+'/costApportion/getCostApportionList', d)
 }
+/**限额模版*/
+export async function get_file_download_quota_stencil (d?: any) {
+return await request.get<any,any>(basePath+'/file/download/quota/stencil', { params: d })
+}
+/**导出付款单明细*/
+export async function get_file_excel_detail__id (d?: any) {
+return await request.get<any,any>(basePath+'/file/excel/detail/{id}', { params: d })
+}
 /**导出列表*/
-export async function post_export_list (d?: any) {
-return await request.post< any,any> (basePath+'/export/list', d)
+export async function post_file_excel_list (d?: any) {
+return await request.post< any,any> (basePath+'/file/excel/list', d)
 }
 /**计算结佣统计数据*/
 export async function post_payApply_calculation_results (d?: any) {
@@ -47,6 +55,14 @@ return await request.post< number,number> (basePath+'/payApply/notFinanceReviewA
 export async function post_payApply_payApplySuppFile (d?: any) {
 return await request.post< boolean,boolean> (basePath+'/payApply/payApplySuppFile', d)
 }
+/**结佣限额导入*/
+export async function get_payApply_quota (d?: any) {
+return await request.get<any,any>(basePath+'/payApply/quota', { params: d })
+}
+/**审核列表*/
+export async function post_payApply_review_list (d?: any) {
+return await request.post< ReviewListResponse[],ReviewListResponse[]> (basePath+'/payApply/review/list', d)
+}
 /**修改付款单*/
 export async function post_payApply_updateApply (d?: any) {
 return await request.post< boolean,boolean> (basePath+'/payApply/updateApply', d)
@@ -79,17 +95,29 @@ return await request.get<PayDealVO,PayDealVO>(basePath+'/payDeal/{dealNo}', { pa
 export async function post_payDeductDetail_create (d?: any) {
 return await request.post< number,number> (basePath+'/payDeductDetail/create', d)
 }
-/**保存付款单ID,更新状态*/
-export async function get_payDeductDetail_detail (d?: any) {
-return await request.get<PayDeductDetailVO[],PayDeductDetailVO[]>(basePath+'/payDeductDetail/detail', { params: d })
-}
 /**查询结佣抵扣明细列表*/
 export async function post_payDeductDetail_getPayDeductDetailList (d?: any) {
 return await request.post< any,any> (basePath+'/payDeductDetail/getPayDeductDetailList', d)
 }
-/**保存付款单ID,更新状态*/
-export async function post_payDeductDetail_update (d?: any) {
-return await request.post< boolean,boolean> (basePath+'/payDeductDetail/update', d)
+/**抵扣汇总列表*/
+export async function post_payDeductDetail_summary_list (d?: any) {
+return await request.post< any,any> (basePath+'/payDeductDetail/summary/list', d)
+}
+/**结佣付款明细*/
+export async function post_payDetail_getList (d?: any) {
+return await request.post< any,any> (basePath+'/payDetail/getList', d)
+}
+/**合并订单推送*/
+export async function post_payDetail_push (d?: any) {
+return await request.post< boolean,boolean> (basePath+'/payDetail/push', d)
+}
+/**付款单拆分*/
+export async function post_payDetail_split (d?: any) {
+return await request.post< boolean,boolean> (basePath+'/payDetail/split', d)
+}
+/**付款单修改*/
+export async function post_payDetail_update (d?: any) {
+return await request.post< boolean,boolean> (basePath+'/payDetail/update', d)
 }
 /**查询付款审核日志*/
 export async function get_processRecord_getProcessRecordList__applyId (d?: any) {
@@ -102,14 +130,6 @@ return await request.get<ProcessRecordVO[],ProcessRecordVO[]>(basePath+'/process
 /**获取oa当前待办人*/
 export async function get_processRecord_oa_review_person__applyId (d?: any) {
 return await request.get<OaAttorneysResponse,OaAttorneysResponse>(basePath+'/processRecord/oa/review/person/{applyId}', { params: d })
-}
-/**设置已付款*/
-export async function post_processRecord_setUpPaid (d?: any) {
-return await request.post< number,number> (basePath+'/processRecord/setUpPaid', d)
-}
-/**设置未付款*/
-export async function post_processRecord_setUpUnpaid (d?: any) {
-return await request.post< number,number> (basePath+'/processRecord/setUpUnpaid', d)
 }
 //===============================================================================================
 /**ResModel模型*/
@@ -154,7 +174,7 @@ actualAmount: number;
 applyAmount: number;
 /**渠道公司周期结佣汇总*/
 cycleCommissionList: CommissionSummary[];
-/**本期应扣*/
+/**本期应扣金额*/
 deductAmount: number;
 /**不含税金额*/
 noTaxAmount: number;
@@ -166,6 +186,8 @@ tax: number;
 totalPayFees: number;
 /**累计扣除金额*/
 totalPdeductFees: number;
+/**付款累计的税额总和*/
+totalTax: number;
 /**附件信息*/
 documentList: DocumentAddVO[];
 }
@@ -336,20 +358,20 @@ id: number;
 invoiceType: string;
 /**制单人ID*/
 makerId: number;
-/**制单日期(yyyy-MM-dd HH:mm:ss)*/
+/**制单日期(yyyy-MM-dd)*/
 makerTime: string;
+/**付款方式(Cash-现金、Other-其他)*/
+paymentMethod: string;
 /**项目*/
 projectName: string;
 /**渠道收款账号*/
 receiveAccount: string;
-/**当前状态： 保存 = Unconfirm ；提交 = PlatformClerkUnreview(Unconfirm-附件待确认、PlatformClerkUnreview-待平台文员审核、OneLineUnreview-待一线业务审核、BranchBusinessManageUnreview-待分公司业管审核、BranchFinanceUnreview-待分公司财务审核、OAUnreview-待OA审批、OAReviewing-OA流程审批中、ReviewPass-终审通过、CompletePay-完成支付、ReviewReject-终审驳回、ReviewEnd-审批终止)*/
+/**结算方式(Centralization-集中支付、OnlineBanking-网银支付)*/
+settlementMethod: string;
+/**当前状态： 保存 = Unconfirm ；提交 = PlatformClerkUnreview(Unconfirm-附件待确认、PlatformClerkUnreview-待平台文员审核、OneLineUnreview-待一线业务审核、BranchBusinessManageUnreview-待分公司业管审核、BranchFinanceUnreview-待分公司财务审核、OAReviewing-OA流程审批中、ReviewPass-终审通过、ReviewReject-终审驳回、ConfirmingPay-支付确认中、PaymentSuccessful-支付成功、PaymentFailed-支付失败)*/
 status: string;
 /**发票税率*/
 taxRate: number;
-/**累计付款金额*/
-totalPayFees: number;
-/**累计扣除金额*/
-totalPdeductFees: number;
 }
 /**PayApplyDetailAddVO*/
 export interface PayApplyDetailAddVO {
@@ -430,8 +452,6 @@ ageActualFees: number;
 ageCommFees: number;
 /**代理费付款限额*/
 ageLimitFees: number;
-/**代理费未收*/
-ageNoFees: number;
 /**代理费应收*/
 ageReceiveFees: number;
 /**代理费已结佣*/
@@ -482,8 +502,6 @@ serActualFees: number;
 serCommFees: number;
 /**服务费付款限额*/
 serLimitFees: number;
-/**服务费未收*/
-serNoFees: number;
 /**服务费应收*/
 serReceiveFees: number;
 /**服务费已结佣*/
@@ -536,9 +554,13 @@ deductAmount: number;
 id: number;
 /**制单人*/
 maker: string;
-/**制单日期(yyyy-MM-dd HH:mm:ss)*/
+/**制单日期(yyyy-MM-dd)*/
 makerTime: string;
-/**状态(Unconfirm-附件待确认、PlatformClerkUnreview-待平台文员审核、OneLineUnreview-待一线业务审核、BranchBusinessManageUnreview-待分公司业管审核、BranchFinanceUnreview-待分公司财务审核、OAUnreview-待OA审批、OAReviewing-OA流程审批中、ReviewPass-终审通过、CompletePay-完成支付、ReviewReject-终审驳回、ReviewEnd-审批终止)*/
+/**付款方式(Cash-现金、Other-其他)*/
+paymentMethod: string;
+/**结算方式(Centralization-集中支付、OnlineBanking-网银支付)*/
+settlementMethod: string;
+/**状态(Unconfirm-附件待确认、PlatformClerkUnreview-待平台文员审核、OneLineUnreview-待一线业务审核、BranchBusinessManageUnreview-待分公司业管审核、BranchFinanceUnreview-待分公司财务审核、OAReviewing-OA流程审批中、ReviewPass-终审通过、ReviewReject-终审驳回、ConfirmingPay-支付确认中、PaymentSuccessful-支付成功、PaymentFailed-支付失败)*/
 status: string;
 }
 /**PayApplyQueryVO*/
@@ -561,7 +583,9 @@ pageNum: number;
 pageSize: number;
 /**审核人*/
 reviewerId: number;
-/**状态(Unconfirm-附件待确认、PlatformClerkUnreview-待平台文员审核、OneLineUnreview-待一线业务审核、BranchBusinessManageUnreview-待分公司业管审核、BranchFinanceUnreview-待分公司财务审核、OAUnreview-待OA审批、OAReviewing-OA流程审批中、ReviewPass-终审通过、CompletePay-完成支付、ReviewReject-终审驳回、ReviewEnd-审批终止)*/
+/**结算方式(Centralization-集中支付、OnlineBanking-网银支付)*/
+settlementMethod: string;
+/**状态(Unconfirm-附件待确认、PlatformClerkUnreview-待平台文员审核、OneLineUnreview-待一线业务审核、BranchBusinessManageUnreview-待分公司业管审核、BranchFinanceUnreview-待分公司财务审核、OAReviewing-OA流程审批中、ReviewPass-终审通过、ReviewReject-终审驳回、ConfirmingPay-支付确认中、PaymentSuccessful-支付成功、PaymentFailed-支付失败)*/
 status: string;
 }
 /**PayDealAddVO*/
@@ -639,6 +663,8 @@ ageActualFees: number;
 ageCanCommFees: number;
 /**代理费拆佣*/
 ageCommFees: number;
+/**代理费付款限额*/
+ageLimitFees: number;
 /**代理费应收*/
 ageReceiveFees: number;
 /**代理费已结佣*/
@@ -657,8 +683,6 @@ busModel: string;
 contNo: string;
 /**合同类型(DistriDeal-分销成交、NaturalVisitDeal-自然来访成交、SelfChannelDeal-自渠成交)*/
 contType: string;
-/**(必填)累计扣款*/
-countDeduction: number;
 /**创建时间(yyyy-MM-dd HH:mm:ss)*/
 createTime: string;
 /**创建用户*/
@@ -681,7 +705,7 @@ entryDate: string;
 id: number;
 /**是否垫佣(Yes-是、No-否)*/
 isMat: string;
-/**没有勾选：0 已勾选：1(Yes-是、No-否)*/
+/**没有勾选：No 已勾选：Yes(Yes-是、No-否)*/
 isSelected: string;
 /**结算状态(AlreadyNotSettlement-已结算、NotSettlement-未结算)*/
 payDealStatus: string;
@@ -691,6 +715,8 @@ serActualFees: number;
 serCanCommFees: number;
 /**服务费拆佣*/
 serCommFees: number;
+/**服务费付款限额*/
+serLimitFees: number;
 /**服务费应收*/
 serReceiveFees: number;
 /**服务费已结佣*/
@@ -699,6 +725,8 @@ serSettledCommFees: number;
 serUnpaidFees: number;
 /**服务费未结佣*/
 serUnsetCommFees: number;
+/**签字确认*/
+signConfirm: string;
 /**签约日期(yyyy-MM-dd HH:mm:ss)*/
 signDate: string;
 /**签约价格*/
@@ -747,6 +775,8 @@ ageActualFees: number;
 ageCanCommFees: number;
 /**代理费拆佣*/
 ageCommFees: number;
+/**代理费付款限额*/
+ageLimitFees: number;
 /**代理费应收*/
 ageReceiveFees: number;
 /**代理费已结佣*/
@@ -787,7 +817,7 @@ entryDate: string;
 id: number;
 /**是否垫佣(Yes-是、No-否)*/
 isMat: string;
-/**没有勾选：0 已勾选：1(Yes-是、No-否)*/
+/**没有勾选：No 已勾选：Yes(Yes-是、No-否)*/
 isSelected: string;
 /**结算状态(AlreadyNotSettlement-已结算、NotSettlement-未结算)*/
 payDealStatus: string;
@@ -797,6 +827,8 @@ serActualFees: number;
 serCanCommFees: number;
 /**服务费拆佣*/
 serCommFees: number;
+/**服务费付款限额*/
+serLimitFees: number;
 /**服务费应收*/
 serReceiveFees: number;
 /**服务费已结佣*/
@@ -805,6 +837,8 @@ serSettledCommFees: number;
 serUnpaidFees: number;
 /**服务费未结佣*/
 serUnsetCommFees: number;
+/**签字确认*/
+signConfirm: string;
 /**签约日期(yyyy-MM-dd HH:mm:ss)*/
 signDate: string;
 /**签约价格*/
@@ -860,37 +894,52 @@ feeType: string;
 }
 /**PayDeductDetailQueryVO*/
 export interface PayDeductDetailQueryVO {
-/**渠道商ID*/
-agencyId: number;
 /**渠道商名称*/
 agencyName: string;
-/**抵扣的付款单ID*/
-applyId: number;
-/**周期ID*/
-cycleId: number;
-/**周期名称*/
-cycleName: string;
 /**成交报告编号*/
 dealCode: string;
-/**成交ID*/
-dealId: number;
+/**抵扣开始时间(yyyy-MM-dd HH:mm:ss)*/
+deductionBeginTime: string;
+/**抵扣结束时间(yyyy-MM-dd HH:mm:ss)*/
+deductionEndTime: string;
+/**抵扣单号*/
+deductionNo: string;
+/**产生开始时间(yyyy-MM-dd HH:mm:ss)*/
+generateBeginTime: string;
+/**产生结束时间(yyyy-MM-dd HH:mm:ss)*/
+generateEndTime: string;
+/**(必填)当前页*/
+pageNum: number;
+/**(必填)每页条数*/
+pageSize: number;
+/**抵扣状态(Undeduction-待抵扣、Deducting-抵扣审核中、Deducted-已抵扣)*/
+status: string;
+/**抵扣类型(PayoffDeducted-结佣抵扣、DirectRefund-直接退款)*/
+type: string;
+}
+/**PayDeductDetailSummaryRequest*/
+export interface PayDeductDetailSummaryRequest {
+/**渠道商名称*/
+agencyName: string;
 /**(必填)当前页*/
 pageNum: number;
 /**(必填)每页条数*/
 pageSize: number;
 }
-/**PayDeductDetailUpdateVO*/
-export interface PayDeductDetailUpdateVO {
-/**抵扣的付款单ID*/
-applyId: number;
-/**抵扣时间(yyyy-MM-dd HH:mm:ss)*/
-deductTime: string;
-/**ID*/
-ids: number[];
-/**抵扣状态(Undeduction-待抵扣、Deducting-抵扣审核中、Deducted-已抵扣)*/
-status: string;
-/**抵扣类型(PayoffDeducted-结佣抵扣、DirectRefund-直接退款)*/
-type: string;
+/**PayDeductDetailSummaryResponse*/
+export interface PayDeductDetailSummaryResponse {
+/**渠道商名称*/
+agencyName: string;
+/**已抵扣项费用*/
+deductedAmount: number;
+/**抵扣中抵扣项费用(*/
+deductingAmount: number;
+/**已产生抵扣项费用*/
+generatedAmount: number;
+/**序号*/
+rowNumber: number;
+/**待抵扣项费用*/
+undeductionAMOUNT: number;
 }
 /**PayDeductDetailVO*/
 export interface PayDeductDetailVO {
@@ -898,6 +947,8 @@ export interface PayDeductDetailVO {
 agencyId: number;
 /**渠道商名称*/
 agencyName: string;
+/**变更后应结佣金额*/
+amount: number;
 /**抵扣的付款单ID*/
 applyId: number;
 /**创建时间(yyyy-MM-dd HH:mm:ss)*/
@@ -918,6 +969,10 @@ deductAmount: number;
 deductTime: string;
 /**抵扣项类别(ChangeBasicInf-变更基础信息、ChangeAchieveInf-变更业绩信息、RetreatRoom-退房、ChangeInternalAchieveInf-变更内部员工业绩)*/
 deductType: string;
+/**产生抵扣费用金额*/
+deductionAmount: number;
+/**抵扣单号：结佣抵扣=结佣单号，直接退款=退款单号*/
+deductionNo: string;
 /**已删除*/
 deleted: number;
 /**费用类型(ServiceFee-服务费、AgencyFee-代理费)*/
@@ -926,6 +981,8 @@ feeType: string;
 generateTime: string;
 /**ID*/
 id: number;
+/**已结佣金额*/
+paidAmount: number;
 /**抵扣状态(Undeduction-待抵扣、Deducting-抵扣审核中、Deducted-已抵扣)*/
 status: string;
 /**抵扣类型(PayoffDeducted-结佣抵扣、DirectRefund-直接退款)*/
@@ -934,6 +991,115 @@ type: string;
 updateTime: string;
 /**更新用户*/
 updateUser: number;
+}
+/**PayDetailPushRequest*/
+export interface PayDetailPushRequest {
+/**付款结算单号列表*/
+settlementCodes: string[];
+}
+/**PayDetailQueryResponse*/
+export interface PayDetailQueryResponse {
+/**本期实际支付金额*/
+actualAmount: number;
+/**渠道商ID*/
+agencyId: number;
+/**渠道商名称*/
+agencyName: string;
+/**申请日期(yyyy-MM-dd)*/
+applicationDate: string;
+/**付款单编号*/
+applyCode: string;
+/**公司名称*/
+companyName: string;
+/**ID*/
+id: number;
+/**付款账户*/
+paymentAccount: string;
+/**付款日期(yyyy-MM-dd)*/
+paymentDate: string;
+/**付款方式(Cash-现金、Other-其他)*/
+paymentMethod: string;
+/**状态(PendingPayment-待付款、Paying-付款中、PaymentSuccess-付款成功、PaymentFail-付款失败、TicketRefunded-已退票)*/
+paymentStatus: string;
+/**推送日期(yyyy-MM-dd)*/
+pushDate: string;
+/**渠道收款账号*/
+receiveAccount: string;
+/**付款结算单号*/
+settlementCode: string;
+/**结算方式(Centralization-集中支付、OnlineBanking-网银支付)*/
+settlementMethod: string;
+}
+/**PayDetailQueryVO*/
+export interface PayDetailQueryVO {
+/**渠道商名称*/
+agencyName: string;
+/**付款单编号*/
+applyCode: string;
+/**开始日期(yyyy-MM-dd)*/
+beginDate: string;
+/**结束日期(yyyy-MM-dd)*/
+endDate: string;
+/**(必填)当前页*/
+pageNum: number;
+/**(必填)每页条数*/
+pageSize: number;
+/**日期类型(ApplicationDate-申请日期、PushDate-推送日期、PaymentDate-付款日期)*/
+payDateType: string;
+/**付款方式(Cash-现金、Other-其他)*/
+paymentMethod: string;
+/**状态(PendingPayment-待付款、Paying-付款中、PaymentSuccess-付款成功、PaymentFail-付款失败、TicketRefunded-已退票)*/
+paymentStatus: string;
+/**结算方式(Centralization-集中支付、OnlineBanking-网银支付)*/
+settlementMethod: string;
+}
+/**PayDetailSplitRequest*/
+export interface PayDetailSplitRequest {
+/**本期实际支付金额*/
+actualAmount: number;
+/**渠道商ID*/
+agencyId: number;
+/**渠道商名称*/
+agencyName: string;
+/**付款单编号*/
+applyCode: string;
+/**公司名称*/
+companyName: string;
+/**ID*/
+id: number;
+/**付款账户*/
+paymentAccount: string;
+/**渠道收款账号*/
+receiveAccount: string;
+/**付款结算单号*/
+settlementCode: string;
+/**拆分金额列表*/
+splitAmounts: number[];
+}
+/**PayDetailUpdateRequest*/
+export interface PayDetailUpdateRequest {
+/**本期实际支付金额*/
+actualAmount: number;
+/**渠道商ID*/
+agencyId: number;
+/**渠道商名称*/
+agencyName: string;
+/**付款单编号*/
+applyCode: string;
+/**公司名称*/
+companyName: string;
+/**ID*/
+id: number;
+/**付款账户*/
+paymentAccount: string;
+/**付款方式(Cash-现金、Other-其他)*/
+paymentMethod: string;
+/**渠道收款账号*/
+receiveAccount: string;
+/**付款结算单号*/
+settlementCode: string;
+/**结算方式(Centralization-集中支付、OnlineBanking-网银支付)*/
+settlementMethod: string;
 }
 /**PaySummaryVO*/
 export interface PaySummaryVO {
@@ -976,34 +1142,9 @@ updateTime: string;
 /**更新用户*/
 updateUser: number;
 }
-/**ProcessRecordAddVO*/
-export interface ProcessRecordAddVO {
-/**操作后状态(Reject-驳回、Draft-草稿、AchieveDeclareUnconfirm-业绩申报待确认、PlatformClerkUnreview-平台文员待审核、HeadDepartUnreview-事业部负责人待审核、BranchBusinessManageUnreview-分公司业管待审核、NotSigned-待签署生效、ReviewPassed-已审核)*/
-afterStatus: string;
-/**付款单ID*/
-applyId: number;
-/**操作(Submit-提交、WithdrawSubmit-撤回提交、Review-审核、WithdrawReview-撤回审核、AchieveAllot-业绩分配、Sign-签署)*/
-operate: string;
-/**操作时间(yyyy-MM-dd HH:mm:ss)*/
-operateTime: string;
-/**操作人ID*/
-operaterId: number;
-/**操作人岗位*/
-operaterJob: string;
-/**操作人姓名*/
-operaterName: string;
-/**操作前状态(Reject-驳回、Draft-草稿、AchieveDeclareUnconfirm-业绩申报待确认、PlatformClerkUnreview-平台文员待审核、HeadDepartUnreview-事业部负责人待审核、BranchBusinessManageUnreview-分公司业管待审核、NotSigned-待签署生效、ReviewPassed-已审核)*/
-preStatus: string;
-/**备注*/
-remark: string;
-/**处理结果*/
-result: string;
-/**系统*/
-system: string;
-}
 /**ProcessRecordVO*/
 export interface ProcessRecordVO {
-/**操作后状态(Unconfirm-附件待确认、PlatformClerkUnreview-待平台文员审核、OneLineUnreview-待一线业务审核、BranchBusinessManageUnreview-待分公司业管审核、BranchFinanceUnreview-待分公司财务审核、OAUnreview-待OA审批、OAReviewing-OA流程审批中、ReviewPass-终审通过、CompletePay-完成支付、ReviewReject-终审驳回、ReviewEnd-审批终止)*/
+/**操作后状态(Unconfirm-附件待确认、PlatformClerkUnreview-待平台文员审核、OneLineUnreview-待一线业务审核、BranchBusinessManageUnreview-待分公司业管审核、BranchFinanceUnreview-待分公司财务审核、OAReviewing-OA流程审批中、ReviewPass-终审通过、ReviewReject-终审驳回、ConfirmingPay-支付确认中、PaymentSuccessful-支付成功、PaymentFailed-支付失败)*/
 afterStatus: string;
 /**付款单ID*/
 applyId: number;
@@ -1025,36 +1166,66 @@ operaterId: number;
 operaterJob: string;
 /**操作人姓名*/
 operaterName: string;
-/**操作前状态(Unconfirm-附件待确认、PlatformClerkUnreview-待平台文员审核、OneLineUnreview-待一线业务审核、BranchBusinessManageUnreview-待分公司业管审核、BranchFinanceUnreview-待分公司财务审核、OAUnreview-待OA审批、OAReviewing-OA流程审批中、ReviewPass-终审通过、CompletePay-完成支付、ReviewReject-终审驳回、ReviewEnd-审批终止)*/
+/**操作前状态(Unconfirm-附件待确认、PlatformClerkUnreview-待平台文员审核、OneLineUnreview-待一线业务审核、BranchBusinessManageUnreview-待分公司业管审核、BranchFinanceUnreview-待分公司财务审核、OAReviewing-OA流程审批中、ReviewPass-终审通过、ReviewReject-终审驳回、ConfirmingPay-支付确认中、PaymentSuccessful-支付成功、PaymentFailed-支付失败)*/
 preStatus: string;
 /**备注*/
 remark: string;
-/**处理结果*/
+/**处理结果(Through-通过、Overrule-驳回、consent-同意、Update-更新、Create-创建)*/
 result: string;
-/**系统*/
+/**系统(Business-业务系统、OA-OA)*/
 system: string;
 /**更新时间(yyyy-MM-dd HH:mm:ss)*/
 updateTime: string;
 /**更新用户*/
 updateUser: number;
 }
-/**SetUpPaidApplyVO*/
-export interface SetUpPaidApplyVO {
-/**付款单ID*/
-applyId: number;
-/**抵扣项ID*/
-payDeductDetailId: number;
-/**付款操作记录信息*/
-processRecord: ProcessRecordAddVO;
+/**ReviewListRequest*/
+export interface ReviewListRequest {
+/**渠道商ID*/
+agencyId: number;
+/**付款单编号*/
+applyCode: string;
+/**所属组织*/
+belongOrgId: number;
+/**制单开始时间(yyyy-MM-dd)*/
+makerBeginDate: string;
+/**制单结束时间(yyyy-MM-dd)*/
+makerEndDate: string;
+/**制单人*/
+makerId: number;
+/**(必填)当前页*/
+pageNum: number;
+/**(必填)每页条数*/
+pageSize: number;
+/**(必填)审核状态*/
+payoffReviewStatus: string;
+/**审核人*/
+reviewId: number;
+/**结算方式(Centralization-集中支付、OnlineBanking-网银支付)*/
+settlementMethod: string;
 }
-/**SetUpUnpaidApplyVO*/
-export interface SetUpUnpaidApplyVO {
-/**付款单ID*/
-applyId: number;
-/**抵扣项ID*/
-payDeductDetailId: number;
-/**付款操作记录信息*/
-processRecord: ProcessRecordAddVO;
+/**ReviewListResponse*/
+export interface ReviewListResponse {
+/**本期实际支付金额*/
+actualAmount: number;
+/**渠道商名称*/
+agencyName: string;
+/**本期申请支付金额*/
+applyAmount: number;
+/**付款单编号*/
+applyCode: string;
+/**本期应扣*/
+deductAmount: number;
+/**undefined*/
+id: number;
+/**制单人*/
+makerId: number;
+/**制单日期(yyyy-MM-dd)*/
+makerTime: string;
+/**付款方式(Cash-现金、Other-其他)*/
+paymentMethod: string;
+/**结算方式(Centralization-集中支付、OnlineBanking-网银支付)*/
+settlementMethod: string;
 }
 /**ShowPayApplyDetailVO*/
 export interface ShowPayApplyDetailVO {
@@ -1092,7 +1263,7 @@ invoiceType: string;
 maker: string;
 /**制单人*/
 makerId: number;
-/**制单日期(yyyy-MM-dd HH:mm:ss)*/
+/**制单日期(yyyy-MM-dd)*/
 makerTime: string;
 /**不含税金额*/
 noTaxAmount: number;
@@ -1100,11 +1271,15 @@ noTaxAmount: number;
 oaFlowId: number;
 /**累计抵扣信息*/
 paySummaryList: PaySummaryVO[];
+/**付款方式(Cash-现金、Other-其他)*/
+paymentMethod: string;
 /**项目*/
 projectName: string;
 /**渠道收款账号*/
 receiveAccount: string;
-/**状态(Unconfirm-附件待确认、PlatformClerkUnreview-待平台文员审核、OneLineUnreview-待一线业务审核、BranchBusinessManageUnreview-待分公司业管审核、BranchFinanceUnreview-待分公司财务审核、OAUnreview-待OA审批、OAReviewing-OA流程审批中、ReviewPass-终审通过、CompletePay-完成支付、ReviewReject-终审驳回、ReviewEnd-审批终止)*/
+/**结算方式(Centralization-集中支付、OnlineBanking-网银支付)*/
+settlementMethod: string;
+/**状态(Unconfirm-附件待确认、PlatformClerkUnreview-待平台文员审核、OneLineUnreview-待一线业务审核、BranchBusinessManageUnreview-待分公司业管审核、BranchFinanceUnreview-待分公司财务审核、OAReviewing-OA流程审批中、ReviewPass-终审通过、ReviewReject-终审驳回、ConfirmingPay-支付确认中、PaymentSuccessful-支付成功、PaymentFailed-支付失败)*/
 status: string;
 /**税额*/
 tax: number;
@@ -1114,6 +1289,8 @@ taxRate: number;
 totalPayFees: number;
 /**累计扣除金额*/
 totalPdeductFees: number;
+/**付款累计的税额总和（含本次）*/
+totalTax: number;
 /**更新时间(yyyy-MM-dd HH:mm:ss)*/
 updateTime: string;
 /**更新用户*/
@@ -1131,7 +1308,7 @@ processRecordList: ProcessRecordVO[];
 }
 /**UpdateApplyVO*/
 export interface UpdateApplyVO {
-/**本期实际支付金额:  修改不用传*/
+/**本期实际支付金额*/
 actualAmount: number;
 /**付款单主体信息*/
 payApplyVO: PayApplyAddVO;

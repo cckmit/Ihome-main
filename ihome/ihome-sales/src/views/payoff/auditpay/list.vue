@@ -4,7 +4,7 @@
  * @Author: wwq
  * @Date: 2020-12-26 11:11:28
  * @LastEditors: wwq
- * @LastEditTime: 2021-01-11 20:45:20
+ * @LastEditTime: 2021-01-11 20:32:06
 -->
 <template>
   <IhPage label-width="120px">
@@ -75,23 +75,6 @@
             </el-form-item>
           </el-col>
           <el-col :span="8">
-            <el-form-item label="状态">
-              <el-select
-                style="width: 100%"
-                v-model="queryPageParameters.status"
-                clearable
-                placeholder="请选择"
-              >
-                <el-option
-                  v-for="item in $root.dictAllList('PayoffStatus')"
-                  :key="item.code"
-                  :label="item.name"
-                  :value="item.code"
-                ></el-option>
-              </el-select>
-            </el-form-item>
-          </el-col>
-          <el-col :span="8">
             <el-form-item label="制单日期">
               <el-date-picker
                 style="width: 100%"
@@ -134,17 +117,9 @@
           @click="search()"
         >查询</el-button>
         <el-button
-          type="success"
-          @click="add()"
-        >发起支付申请</el-button>
-        <el-button
           type="info"
           @click="reset()"
         >重置</el-button>
-        <el-button
-          type="danger"
-          @click="remove(null, 'duo')"
-        >批量删除</el-button>
         <el-button
           type="success"
           @click="exportMsg()"
@@ -194,18 +169,6 @@
           prop="actualAmount"
           width="120"
         ></el-table-column>
-        <el-table-column
-          label="状态"
-          prop="status"
-          width="140"
-          align="center"
-        >
-          <template v-slot="{ row }">
-            <div :class="{ 'status-style': ['Unconfirm', 'BranchFinanceUnreview'].includes(row.status)  }">
-              {{$root.dictAllName(row.status, "PayoffStatus")}}
-            </div>
-          </template>
-        </el-table-column>
         <el-table-column
           label="结算方式"
           prop="settlementMethod"
@@ -269,28 +232,11 @@
                 <el-dropdown-item
                   :class="{ 'ih-data-disabled': ''}"
                   @click.native.prevent="routeTo(row, 'edit')"
-                >编辑</el-dropdown-item>
+                >审核</el-dropdown-item>
                 <el-dropdown-item
                   :class="{ 'ih-data-disabled': ''}"
                   @click.native.prevent="remove(row, '')"
-                >删除</el-dropdown-item>
-                <el-dropdown-item
-                  :class="{'ih-data-disabled': ''}"
-                  @click.native.prevent="recall(row)"
-                >撤回
-                </el-dropdown-item>
-                <el-dropdown-item
-                  :class="{'ih-data-disabled': ''}"
-                  @click.native.prevent="routeTo(row, 'replenish')"
-                >补充</el-dropdown-item>
-                <el-dropdown-item
-                  :class="{'ih-data-disabled': ''}"
-                  @click.native.prevent="uploadList(row, 'SetteDetail')"
-                >导出结算明细</el-dropdown-item>
-                <el-dropdown-item
-                  :class="{'ih-data-disabled': ''}"
-                  @click.native.prevent="uploadList(row, 'RequestForm')"
-                >下载请款单</el-dropdown-item>
+                >管控</el-dropdown-item>
               </el-dropdown-menu>
             </el-dropdown>
           </template>
@@ -327,7 +273,7 @@
 <script lang="ts">
 import { Component, Vue } from "vue-property-decorator";
 import {
-  post_payApply_getList,
+  post_payApply_review_list,
   post_payApply_delete_ids,
   post_payApply_withdrawSubmit,
 } from "@/api/payoff/index";
@@ -349,8 +295,8 @@ export default class PayoffList extends Vue {
     applyAmount: null,
     actualAmount: null,
     deductAmount: null,
-    status: null,
     makerTime: null,
+    payoffReviewStatus: "Pending",
     beginMakerTime: null,
     endMakerTime: null,
     timeList: [],
@@ -383,34 +329,6 @@ export default class PayoffList extends Vue {
     console.log(data);
   }
 
-  get emptyText() {
-    return this.resPageInfo.total === null ? "正在加载数据..." : "暂无数据";
-  }
-
-  async created() {
-    this.getListMixin();
-  }
-  async getListMixin() {
-    this.resPageInfo = await post_payApply_getList(this.queryPageParameters);
-  }
-
-  reset() {
-    Object.assign(this.queryPageParameters, {
-      applyCode: null,
-      belongOrgName: null,
-      maker: null,
-      agencyName: null,
-      applyAmount: null,
-      actualAmount: null,
-      deductAmount: null,
-      status: null,
-      makerTime: null,
-      beginMakerTime: null,
-      endMakerTime: null,
-      timeList: [],
-    });
-  }
-
   // 导出
   async exportMsg() {
     let arr: any = this.resPageInfo.list.map((v: any) => v.id);
@@ -429,39 +347,39 @@ export default class PayoffList extends Vue {
       const href = window.URL.createObjectURL(res.data);
       const $a = document.createElement("a");
       $a.href = href;
-      $a.download = "付款单列表.xlsx";
+      $a.download = "审核付款申请列表.xlsx";
       $a.click();
       $a.remove();
     });
   }
 
-  // 导出明细和下载请款单
-  uploadList(data: any, type: any) {
-    const item = data.documentList.find((v: any) => v.fileType === type);
-    if (item) {
-      const token: any = getToken();
-      axios({
-        method: "POST",
-        url: `/sales-api/sales-document-cover/file/download/${item.fileId}`,
-        xsrfHeaderName: "Authorization",
-        responseType: "blob",
-        headers: {
-          "Content-Type": "application/json",
-          Authorization: "bearer " + token,
-        },
-      }).then((res: any) => {
-        const href = window.URL.createObjectURL(res.data);
-        const $a = document.createElement("a");
-        $a.href = href;
-        if (type === "SetteDetail") {
-          $a.download = `${item.fileName}.xlsx`;
-        } else {
-          $a.download = `${item.fileName}.pdf`;
-        }
-        $a.click();
-        $a.remove();
-      });
-    }
+  get emptyText() {
+    return this.resPageInfo.total === null ? "正在加载数据..." : "暂无数据";
+  }
+
+  async created() {
+    this.getListMixin();
+  }
+  async getListMixin() {
+    this.resPageInfo = await post_payApply_review_list(
+      this.queryPageParameters
+    );
+  }
+
+  reset() {
+    Object.assign(this.queryPageParameters, {
+      applyCode: null,
+      belongOrgName: null,
+      maker: null,
+      agencyName: null,
+      applyAmount: null,
+      actualAmount: null,
+      deductAmount: null,
+      makerTime: null,
+      beginMakerTime: null,
+      endMakerTime: null,
+      timeList: [],
+    });
   }
 
   async remove(data: any, type: any) {
@@ -478,7 +396,7 @@ export default class PayoffList extends Vue {
         arr = [data.id];
       }
       await this.$confirm("是否确定删除?", "提示");
-      await post_payApply_delete_ids(arr);
+      await post_payApply_delete_ids({ ids: arr });
       this.getListMixin();
       this.$message({
         type: "success",
@@ -531,27 +449,4 @@ export default class PayoffList extends Vue {
 }
 </script>
 <style lang="scss" scoped>
-.status-style {
-  z-index: 10;
-  overflow: hidden;
-  &::after {
-    content: "驳回";
-    position: absolute;
-    top: 0;
-    right: -14px;
-    width: 50px;
-    height: 20px;
-    background: red;
-    color: #fff;
-    text-align: center;
-    transform: rotate(45deg);
-    font-size: 12px;
-    opacity: 0.7;
-  }
-}
-.ih-table {
-  /deep/ .is-center {
-    overflow: hidden;
-  }
-}
 </style>
