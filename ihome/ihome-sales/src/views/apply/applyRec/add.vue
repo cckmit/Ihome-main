@@ -4,7 +4,7 @@
  * @Author: ywl
  * @Date: 2021-01-07 16:30:03
  * @LastEditors: ywl
- * @LastEditTime: 2021-01-09 17:53:19
+ * @LastEditTime: 2021-01-11 20:54:59
 -->
 <template>
   <IhPage class="text-left">
@@ -25,6 +25,18 @@
             </el-form-item>
           </el-col>
           <el-col :span="8">
+            <el-form-item label="项目名称">
+              <IhSelectPageByProject
+                v-model="form.proId"
+                placeholder="请选择联动项目"
+                clearable
+                @changeOption="(data) => {
+                  dealParams.proId = data.proId;
+                }"
+              ></IhSelectPageByProject>
+            </el-form-item>
+          </el-col>
+          <el-col :span="8">
             <el-form-item label="甲方公司">
               <IhSelectPageByDeveloper
                 v-model="form.developId"
@@ -32,6 +44,7 @@
                 clearable
                 @changeOption="(data) => {
                   dealParams.developId = data.id;
+                  form.developName = data.name;
                   getWaitList(data.id)
                 }"
               ></IhSelectPageByDeveloper>
@@ -45,6 +58,7 @@
                 clearable
                 @changeOption="(data) => {
                   dealParams.polyCompanyId = data.id
+                  form.sellerTaxNo = data.creditCode
                   getAccount(data.id)
                 }"
               ></IhSelectPageByCompany>
@@ -162,7 +176,7 @@
           >
             <template v-slot="{ row }">
               <el-input
-                v-model.number="row.applyMoney"
+                v-model="row.applyMoney"
                 v-digits="2"
                 clearable
               />
@@ -174,7 +188,7 @@
           >
             <template v-slot="{ row }">
               <el-input
-                v-model.number="row.subMoney"
+                v-model="row.subMoney"
                 v-digits="2"
                 clearable
               />
@@ -377,38 +391,201 @@
       <br />
       <p class="ih-info-title">项目周期请款汇总</p>
       <div class="padding-left-20">
-        <el-table style="width: 100%">
-          <el-table-column label="周期名称"></el-table-column>
-          <el-table-column label="所属项目"></el-table-column>
+        <el-table
+          style="width: 100%"
+          :data="form.termList"
+          show-summary
+        >
+          <el-table-column
+            label="周期名称"
+            prop="termName"
+          ></el-table-column>
+          <el-table-column
+            label="所属项目"
+            prop="proName"
+          ></el-table-column>
           <el-table-column
             label="累计请款次数"
             min-width="115"
+            prop="hisSumApplyNum"
           ></el-table-column>
           <el-table-column
             label="历史已申请请款金额（含税）"
             min-width="205"
+            prop="hisSumApplyMoney"
           ></el-table-column>
           <el-table-column
             label="累计扣除金额（含税）"
             min-width="180"
+            prop="hisSumSubMoney"
           ></el-table-column>
           <el-table-column
             label="历史实际请款金额（含税）"
             min-width="205"
+            prop="hisSumActMoney"
           ></el-table-column>
           <el-table-column
             label="已回款金额（含税）"
             min-width="180"
+            prop="hisSumReceMoney"
           ></el-table-column>
           <el-table-column
             label="本次实际请款金额（含税）"
             min-width="205"
+            prop="actMoney"
           ></el-table-column>
           <el-table-column
             label="累计实际请款金额（含税）"
             min-width="205"
+            prop="sumActMoney"
           ></el-table-column>
         </el-table>
+      </div>
+      <p class="ih-info-title">请款信息</p>
+      <div class="padding-left-20">
+        <table
+          class="apply-table bg-color"
+          style="width: 100%"
+        >
+          <tr>
+            <td class="width-150">请款单位名称</td>
+            <td colspan="3">{{form.developName}}</td>
+            <td class="width-150">上次请款单号</td>
+            <td class="width-150">{{form.lastApplyNo}}</td>
+          </tr>
+          <tr>
+            <td class="width-150">本次请款金额</td>
+            <td class="width-150">{{form.applyMoney}}</td>
+            <td class="width-150">本次扣除金额</td>
+            <td class="width-150">{{subMoneySum()}}</td>
+            <td class="width-150">本次扣罚金额</td>
+            <td class="width-150 padding-0">
+              <el-input
+                v-model="form.fineMoney"
+                v-digits="2"
+                clearable
+              />
+            </td>
+          </tr>
+          <tr>
+            <td>扣罚项类别</td>
+            <td
+              colspan="5"
+              class="padding-0"
+            >
+              <el-input placeholder="如有扣罚请录入扣罚项类别"></el-input>
+            </td>
+          </tr>
+          <tr>
+            <td class="width-150">本次实际请款金额（含税）</td>
+            <td class="width-150">{{actMoneyTaxSum()}}</td>
+            <td class="width-150">本次实际请款金额（不含税）</td>
+            <td class="width-150">{{actMoneySum()}}</td>
+            <td class="width-150">本次实际请款税额</td>
+            <td class="width-150">{{totalTaxMoneySum()}}</td>
+          </tr>
+          <tr>
+            <td class="width-150">累计实际请款金额</td>
+            <td class="width-150">{{parseFloat(form.actMoneyTax + hisInfo.sumActMoneyTax).toFixed(2)}}</td>
+            <td class="width-150">累计实际请款不含税金额</td>
+            <td class="width-150">{{parseFloat(form.actMoneyTax + hisInfo.sumActMoney).toFixed(2)}}</td>
+            <td class="width-150">累计实际请款税额</td>
+            <td class="width-150">{{parseFloat(form.taxMoney + hisInfo.sumTaxMoney).toFixed(2)}}</td>
+          </tr>
+          <tr>
+            <td class="width-150">发票类型</td>
+            <td class="width-150 padding-0">
+              <el-select
+                v-model="form.billTypeCode"
+                class="width--100"
+              >
+                <el-option
+                  v-for="(i, n) in $root.dictAllList('InvoiceType')"
+                  :key="n"
+                  :label="i.name"
+                  :value="i.code"
+                ></el-option>
+              </el-select>
+            </td>
+            <td class="width-150">开票税率</td>
+            <td class="width-150">{{form.taxRate}}</td>
+            <td class="width-150">纳税人识别号</td>
+            <td class="width-150">{{form.sellerTaxNo}}</td>
+          </tr>
+          <tr>
+            <td>收款单位名称</td>
+            <td colspan="5">{{form.sellerName}}</td>
+          </tr>
+          <tr>
+            <td class="width-150">开户行</td>
+            <td colspan="5">{{form.sellerOpeningBankBranch}}</td>
+            <!-- <td class="width-150">银行</td>
+            <td class="width-150">{{form.sellerOpeningBankType}}</td>
+            <td class="width-150">支行</td>
+            <td class="width-150">{{form.sellerOpeningBankBranch}}</td> -->
+          </tr>
+          <tr>
+            <td>银行帐号</td>
+            <td colspan="5">{{form.sellerBankAccount}}</td>
+          </tr>
+          <tr>
+            <td>经办部门意见</td>
+            <td
+              colspan="5"
+              class="padding-0"
+            >
+              <el-input
+                type="textarea"
+                :rows="4"
+                v-model="form.remark"
+                resize="none"
+                placeholder="请输入内容"
+              ></el-input>
+            </td>
+          </tr>
+        </table>
+      </div>
+      <p class="ih-info-title">上传附件</p>
+      <div class="padding-left-20">
+        <el-table
+          style="width: 100%"
+          :data="fileListType"
+        >
+          <el-table-column
+            prop="type"
+            width="180"
+            label="类型"
+            align="center"
+          >
+            <template v-slot="{ row }">
+              <div><span
+                  style="color: red"
+                  v-if="row.subType"
+                >*</span>{{row.name}}
+              </div>
+            </template>
+          </el-table-column>
+          <el-table-column label="附件">
+            <template v-slot="{ row }">
+              <IhUpload
+                :file-list.sync="row.fileList"
+                :file-size="10"
+                :file-type="row.code"
+                size="100px"
+                @newFileList="queryNew"
+              ></IhUpload>
+            </template>
+          </el-table-column>
+        </el-table>
+        <br />
+      </div>
+      <div class="text-center">
+        <el-button
+          type="primary"
+          @click="submit()"
+        >暂存</el-button>
+        <el-button type="success">提交</el-button>
+        <el-button>返回</el-button>
       </div>
     </template>
     <IhDialog :show="selectVisible">
@@ -432,6 +609,8 @@ import {
 import {
   get_devDeductDetail_getListAllByWait__developId,
   post_applyRecDeal_getTermTotalList,
+  post_applyRec_getHisRec,
+  post_applyRec_save,
 } from "../../../api/apply/index";
 
 @Component({
@@ -440,16 +619,47 @@ import {
 export default class ApplyRecAdd extends Vue {
   private form: any = {
     developId: null,
+    developName: null,
     polyCompanyId: null,
     receAccountId: null,
+    proId: null,
     branchNo: null,
     sellerTaxNo: null,
     taxRate: null,
+    remark: null,
+    sellerBankAccount: null,
+    sellerName: null,
+    sellerOpeningBankBranch: null,
+    sellerOpeningBankType: null,
+    fineType: null,
+    lastApplyNo: null,
+    billTypeCode: null,
+    applyMoney: 0, // 本次请款金额
+    subMoney: 0, // 本次扣除金额
+    fineMoney: 0, // 本次扣罚金额
+    actMoneyTax: 0, // 本次实际请款金额(含税)
+    actMoney: 0, // 本次实际请款金额(不含税)
+    taxMoney: 0, // 本次实际请款税额
+    sumActMoneyTax: 0, // 累计实际请款金额 - 添加时要算
+    sumActMoney: 0, // 累计实际请款不含税金额 - 添加时要算
+    sumTaxMoney: 0, // 累计实际请款税额 - 添加时要算
     devAgentFeeAddFromPageVO: {
       applyRecDealList: [],
       devDeductDetailIdList: [],
     },
     dealList: [],
+    termList: [],
+    fileList: {
+      fileList: [],
+    },
+  };
+  private fileListType: any = [];
+  private submitFile: any = {};
+  private hisInfo: any = {
+    lastApplyNo: null,
+    sumActMoney: 0,
+    sumActMoneyTax: 0,
+    sumTaxMoney: 0,
   };
   private accountData: any = null;
   private selectVisible = false;
@@ -458,6 +668,7 @@ export default class ApplyRecAdd extends Vue {
     developId: null,
     polyCompanyId: null,
     receAccountId: null,
+    proId: null,
   };
   private waitList: any = [];
   private uploadLoad = false;
@@ -493,6 +704,7 @@ export default class ApplyRecAdd extends Vue {
     this.form.dealList.forEach((i: any) => {
       sum += parseFloat(i.applyMoney) || 0;
     });
+    this.form.applyMoney = sum;
     return sum;
   }
   private get totalSubMoney() {
@@ -520,6 +732,40 @@ export default class ApplyRecAdd extends Vue {
     );
     return row.taxMoney;
   }
+  private subMoneySum() {
+    let sum = 0;
+    this.agencyList.forEach((i: any) => {
+      sum += parseFloat(i.subMoney) || 0;
+    });
+    this.form.subMoney = sum.toFixed(2);
+    return sum.toFixed(2);
+  }
+  private actMoneyTaxSum() {
+    let sum = 0;
+    sum =
+      (parseFloat(this.form.applyMoney) || 0) -
+      (parseFloat(this.form.subMoney) || 0) -
+      (parseFloat(this.form.fineMoney) || 0);
+    this.form.actMoneyTax = sum.toFixed(2);
+    return sum.toFixed(2);
+  }
+  private actMoneySum() {
+    let sum = 0;
+    sum =
+      parseFloat(this.form.actMoneyTax || 0) /
+      (1 + (parseFloat(this.form.taxRate) || 0));
+    this.form.actMoney = sum.toFixed(2);
+    return sum.toFixed(2);
+  }
+  private totalTaxMoneySum() {
+    this.form.taxMoney =
+      (parseFloat(this.form.actMoneyTax) || 0) -
+      (parseFloat(this.form.actMoney) || 0);
+    return (
+      (parseFloat(this.form.actMoneyTax) || 0) -
+      (parseFloat(this.form.actMoney) || 0)
+    );
+  }
   /**
    * @description: 甲方公司应扣除代理费明细合计
    * @param {*} param
@@ -528,6 +774,10 @@ export default class ApplyRecAdd extends Vue {
   private getSummaries({ columns, data }: any) {
     const sums: any = [];
     columns.forEach((column: any, index: number) => {
+      if (index === 0) {
+        sums[index] = "合计";
+        return;
+      }
       const values = data.map((item: any) => Number(item[column.property]));
       if (!values.every((value: any) => isNaN(value))) {
         sums[index] = values.reduce((prev: any, curr: any) => {
@@ -555,11 +805,12 @@ export default class ApplyRecAdd extends Vue {
     if (
       this.dealParams.developId &&
       this.dealParams.polyCompanyId &&
-      this.dealParams.receAccountId
+      this.dealParams.receAccountId &&
+      this.dealParams.proId
     ) {
       this.selectVisible = true;
     } else {
-      this.$message.warning("请先选择甲方公司, 收款公司和收款账号");
+      this.$message.warning("请先选择项目名称, 甲方公司, 收款公司和收款账号");
     }
   }
   private dealRemove(index: number) {
@@ -599,18 +850,36 @@ export default class ApplyRecAdd extends Vue {
     const info = await get_bankAccount_getBankInfoByAccountId__accountId({
       accountId,
     });
-    console.log(info);
     this.form.branchNo = info.branchNo;
     this.form.taxRate = info.taxRate;
+    this.form.sellerOpeningBankBranch = info.branchName;
+    this.form.sellerOpeningBankType = info.bankName;
+    this.form.sellerBankAccount = info.accountNo;
+    this.form.sellerName = info.accountName;
   }
-  private handleUpdateInfo() {
+  private async handleUpdateInfo() {
     if (
       this.dealParams.developId &&
       this.dealParams.polyCompanyId &&
       this.dealParams.receAccountId &&
       this.form.dealList.length
     ) {
-      //
+      try {
+        await this.getTermTotalList({
+          developId: this.dealParams.developId,
+          polyCompanyId: this.dealParams.polyCompanyId,
+          termProList: this.form.dealList.map((i: any) => ({
+            proId: i.proId,
+            termId: i.termId,
+          })),
+        });
+        await this.getHisRec({
+          developId: this.dealParams.developId,
+          polyCompanyId: this.dealParams.polyCompanyId,
+        });
+      } catch (error) {
+        console.log(error);
+      }
     } else {
       this.$message.warning("请完成上面操作再更新页面");
     }
@@ -621,10 +890,126 @@ export default class ApplyRecAdd extends Vue {
    */
   private async getTermTotalList(param: any) {
     try {
-      await post_applyRecDeal_getTermTotalList(param);
+      let list = await post_applyRecDeal_getTermTotalList(param);
+      console.log(list);
+      this.form.termList = list.map((i: any) => {
+        let actMoney = 0;
+        this.form.dealList
+          .filter((item: any) => item.termId === i.termId)
+          .forEach((newItem: any) => {
+            parseFloat(
+              (actMoney += newItem.noTaxMoney + newItem.taxMoney)
+            ).toFixed(2);
+          });
+        return {
+          ...i,
+          developId: this.dealParams.developId,
+          polyCompanyId: this.dealParams.polyCompanyId,
+          receAccountId: this.dealParams.receAccountId,
+          actMoney,
+          sumActMoney: parseFloat(i.hisSumActMoney + actMoney).toFixed(2),
+        };
+      });
     } catch (error) {
       console.log(error);
     }
+  }
+  private async getHisRec(param: any) {
+    try {
+      const res = await post_applyRec_getHisRec(param);
+      console.log(res);
+      this.hisInfo = res;
+      this.form.lastApplyNo = res.lastApplyNo;
+    } catch (error) {
+      console.log(error);
+    }
+  }
+  queryNew(data: any, type?: any) {
+    let obj: any = {};
+    obj[type] = data;
+    this.submitFile = { ...this.submitFile, ...obj };
+  }
+  getFileListType() {
+    const list = (this.$root as any)
+      .dictAllList("ApplyFileType")
+      .filter((i: any) => !i.code.includes("PDF"));
+    console.log(list);
+    this.fileListType = list.map((i: any) => {
+      return {
+        ...i,
+        fileList: [],
+      };
+    });
+    let obj: any = {};
+    this.fileListType.forEach((h: any) => {
+      obj[h.code] = h.fileList;
+    });
+    this.submitFile = { ...obj };
+  }
+  private async submit(type: any) {
+    console.log(type);
+
+    this.form.sumActMoneyTax = parseFloat(
+      this.form.actMoneyTax + this.hisInfo.sumActMoneyTax
+    ).toFixed(2);
+    this.form.sumActMoney = parseFloat(
+      this.form.actMoneyTax + this.hisInfo.sumActMoney
+    ).toFixed(2);
+    this.form.sumTaxMoney = parseFloat(
+      this.form.taxMoney + this.hisInfo.sumTaxMoney
+    ).toFixed(2);
+    this.form.op = "";
+
+    // 校验提示
+    let arr: any = [];
+    Object.values(this.submitFile).forEach((v: any) => {
+      if (v.length) {
+        arr = arr.concat(v);
+      }
+    });
+    // 以下操作仅仅是为了校验必上传项
+    let submitList: any = this.fileListType.map((v: any) => {
+      return {
+        ...v,
+        fileList: arr
+          .filter((j: any) => j.type === v.code)
+          .map((h: any) => ({
+            ...h,
+            name: h.fileName,
+          })),
+      };
+    });
+    let isSubmit = true;
+    let msgList: any = [];
+    submitList.forEach((v: any) => {
+      if (v.subType && !v.fileList.length) {
+        msgList.push(v.name);
+        isSubmit = false;
+      }
+    });
+    if (isSubmit) {
+      this.form.fileList.fileList = arr.map((v: any) => ({
+        fileId: v.fileId,
+        fileName: v.name,
+        type: v.type,
+      }));
+    } else {
+      this.$message({
+        type: "warning",
+        message: `${msgList.join(",")}项,请上传附件`,
+      });
+      return;
+    }
+
+    try {
+      await post_applyRec_save(this.form);
+    } catch (error) {
+      console.log(error);
+    }
+  }
+
+  created() {
+    this.getFileListType();
   }
 }
 </script>
@@ -648,6 +1033,9 @@ export default class ApplyRecAdd extends Vue {
   border-collapse: collapse;
   font-size: 14px;
   background-color: #f5f7fa;
+  &.bg-color {
+    background-color: #fff;
+  }
   &,
   th,
   td {
@@ -657,6 +1045,9 @@ export default class ApplyRecAdd extends Vue {
   td {
     padding: 10px 0;
     text-align: center;
+  }
+  .padding-0 {
+    padding: 0;
   }
 }
 </style>

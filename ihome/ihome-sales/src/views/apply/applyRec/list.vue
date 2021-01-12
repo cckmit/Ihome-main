@@ -4,7 +4,7 @@
  * @Author: ywl
  * @Date: 2021-01-07 10:29:38
  * @LastEditors: ywl
- * @LastEditTime: 2021-01-07 16:16:36
+ * @LastEditTime: 2021-01-11 11:18:48
 -->
 <template>
   <IhPage label-width="100px">
@@ -63,6 +63,15 @@
                   :value="i.code"
                 ></el-option>
               </el-select>
+            </el-form-item>
+          </el-col>
+          <el-col :span="8">
+            <el-form-item label="项目名称">
+              <IhSelectPageByProject
+                v-model="queryPageParameters.proId"
+                placeholder="请选择联动项目"
+                clearable
+              ></IhSelectPageByProject>
             </el-form-item>
           </el-col>
           <el-col :span="8">

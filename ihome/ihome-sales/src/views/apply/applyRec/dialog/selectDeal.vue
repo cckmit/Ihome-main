@@ -4,7 +4,7 @@
  * @Author: ywl
  * @Date: 2021-01-07 19:02:24
  * @LastEditors: ywl
- * @LastEditTime: 2021-01-08 15:59:16
+ * @LastEditTime: 2021-01-11 11:25:44
 -->
 <template>
   <el-dialog
@@ -29,7 +29,7 @@
             ></el-input>
           </el-form-item>
         </el-col>
-        <el-col :span="8">
+        <!-- <el-col :span="8">
           <el-form-item label="项目名称">
             <el-input
               v-model="queryPageParameters.proName"
@@ -37,7 +37,7 @@
               clearable
             ></el-input>
           </el-form-item>
-        </el-col>
+        </el-col> -->
         <el-col :span="8">
           <el-form-item label="周期名称">
             <el-input
