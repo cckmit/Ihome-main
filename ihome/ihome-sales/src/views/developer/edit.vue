@@ -4,7 +4,7 @@
  * @Author: wwq
  * @Date: 2020-09-25 17:59:09
  * @LastEditors: wwq
- * @LastEditTime: 2021-01-12 09:22:00
+ * @LastEditTime: 2021-01-12 10:55:21
 -->
 <template>
   <ih-page>
@@ -359,6 +359,7 @@
         >
         </el-input>
         <p class="ih-info-title">变更原因</p>
+        <p class="msg-title"><span style="color: red">* </span>变更信息</p>
         <el-input
           class="padding-left-20"
           style="box-sizing: border-box"
@@ -692,5 +693,9 @@ export default class Edit extends Vue {
 .bottom {
   margin-top: 30px;
   text-align: center;
+}
+.msg-title {
+  text-align: left;
+  margin-left: 25px;
 }
 </style>
