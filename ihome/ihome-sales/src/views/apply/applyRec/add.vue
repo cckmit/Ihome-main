@@ -4,7 +4,7 @@
  * @Author: ywl
  * @Date: 2021-01-07 16:30:03
  * @LastEditors: ywl
- * @LastEditTime: 2021-01-11 20:54:59
+ * @LastEditTime: 2021-01-12 17:48:51
 -->
 <template>
   <IhPage class="text-left">
@@ -40,6 +40,7 @@
             <el-form-item label="甲方公司">
               <IhSelectPageByDeveloper
                 v-model="form.developId"
+                :searchName="paramDevName"
                 placeholder="请选择甲方公司"
                 clearable
                 @changeOption="(data) => {
@@ -98,7 +99,10 @@
           </el-col>
           <el-col :span="8">
             <el-form-item label="申请人">
-              <el-input></el-input>
+              <el-input
+                v-model="form.applyUserName"
+                disabled
+              ></el-input>
             </el-form-item>
           </el-col>
           <el-col :span="8">
@@ -399,10 +403,12 @@
           <el-table-column
             label="周期名称"
             prop="termName"
+            min-width="185"
           ></el-table-column>
           <el-table-column
             label="所属项目"
             prop="proName"
+            min-width="165"
           ></el-table-column>
           <el-table-column
             label="累计请款次数"
@@ -486,11 +492,11 @@
           </tr>
           <tr>
             <td class="width-150">累计实际请款金额</td>
-            <td class="width-150">{{parseFloat(form.actMoneyTax + hisInfo.sumActMoneyTax).toFixed(2)}}</td>
+            <td class="width-150">{{totalActMoneyTax}}</td>
             <td class="width-150">累计实际请款不含税金额</td>
-            <td class="width-150">{{parseFloat(form.actMoneyTax + hisInfo.sumActMoney).toFixed(2)}}</td>
+            <td class="width-150">{{totalActMoney}}</td>
             <td class="width-150">累计实际请款税额</td>
-            <td class="width-150">{{parseFloat(form.taxMoney + hisInfo.sumTaxMoney).toFixed(2)}}</td>
+            <td class="width-150">{{totalTaxMoney}}</td>
           </tr>
           <tr>
             <td class="width-150">发票类型</td>
@@ -611,6 +617,10 @@ import {
   post_applyRecDeal_getTermTotalList,
   post_applyRec_getHisRec,
   post_applyRec_save,
+  get_applyRec_getApplyRecById__applyId,
+  get_applyRecDeal_getAll__applyId,
+  get_applyRecDealTerm_getAll__applyId,
+  post_applyRecFile_getAll,
 } from "../../../api/apply/index";
 
 @Component({
@@ -618,6 +628,8 @@ import {
 })
 export default class ApplyRecAdd extends Vue {
   private form: any = {
+    applyTime: null,
+    applyUserName: null,
     developId: null,
     developName: null,
     polyCompanyId: null,
@@ -672,6 +684,7 @@ export default class ApplyRecAdd extends Vue {
   };
   private waitList: any = [];
   private uploadLoad = false;
+  private paramDevName: any = "";
 
   private get agencyList() {
     // 应扣除代理费明细
@@ -681,7 +694,7 @@ export default class ApplyRecAdd extends Vue {
     let list = this.form.dealList.map((i: any) => ({
       dealCode: i.dealCode,
       dealId: i.id,
-      developId: i.channelId,
+      developId: this.form.developId,
       proId: i.proId,
       proName: i.proName,
       subMoney: i.subMoney,
@@ -704,7 +717,7 @@ export default class ApplyRecAdd extends Vue {
     this.form.dealList.forEach((i: any) => {
       sum += parseFloat(i.applyMoney) || 0;
     });
-    this.form.applyMoney = sum;
+    // this.form.applyMoney = sum;
     return sum;
   }
   private get totalSubMoney() {
@@ -715,6 +728,27 @@ export default class ApplyRecAdd extends Vue {
     return sum;
   }
 
+  private get totalActMoneyTax() {
+    let sum =
+      (parseFloat(this.form.actMoneyTax) || 0) +
+      (parseFloat(this.hisInfo.sumActMoneyTax) || 0);
+    // this.form.sumActMoneyTax = sum.toFixed(2);
+    return sum.toFixed(2);
+  }
+  private get totalActMoney() {
+    let sum =
+      (parseFloat(this.form.actMoney) || 0) +
+      (parseFloat(this.hisInfo.sumActMoney) || 0);
+    // this.form.sumActMoney = sum.toFixed(2);
+    return sum.toFixed(2);
+  }
+  private get totalTaxMoney() {
+    let sum =
+      (parseFloat(this.form.taxMoney) || 0) +
+      (parseFloat(this.hisInfo.sumTaxMoney) || 0);
+    // this.form.sumTaxMoney = sum.toFixed(2);
+    return sum.toFixed(2);
+  }
   private noTaxMoneySum(row: any) {
     // 计算不含税金额
     let num =
@@ -737,7 +771,7 @@ export default class ApplyRecAdd extends Vue {
     this.agencyList.forEach((i: any) => {
       sum += parseFloat(i.subMoney) || 0;
     });
-    this.form.subMoney = sum.toFixed(2);
+    // this.form.subMoney = sum.toFixed(2);
     return sum.toFixed(2);
   }
   private actMoneyTaxSum() {
@@ -746,7 +780,7 @@ export default class ApplyRecAdd extends Vue {
       (parseFloat(this.form.applyMoney) || 0) -
       (parseFloat(this.form.subMoney) || 0) -
       (parseFloat(this.form.fineMoney) || 0);
-    this.form.actMoneyTax = sum.toFixed(2);
+    // this.form.actMoneyTax = sum.toFixed(2);
     return sum.toFixed(2);
   }
   private actMoneySum() {
@@ -754,17 +788,15 @@ export default class ApplyRecAdd extends Vue {
     sum =
       parseFloat(this.form.actMoneyTax || 0) /
       (1 + (parseFloat(this.form.taxRate) || 0));
-    this.form.actMoney = sum.toFixed(2);
+    // this.form.actMoney = sum.toFixed(2);
     return sum.toFixed(2);
   }
   private totalTaxMoneySum() {
-    this.form.taxMoney =
+    let sum =
       (parseFloat(this.form.actMoneyTax) || 0) -
       (parseFloat(this.form.actMoney) || 0);
-    return (
-      (parseFloat(this.form.actMoneyTax) || 0) -
-      (parseFloat(this.form.actMoney) || 0)
-    );
+    // this.form.taxMoney = sum.toFixed(2);
+    return sum.toFixed(2);
   }
   /**
    * @description: 甲方公司应扣除代理费明细合计
@@ -929,7 +961,7 @@ export default class ApplyRecAdd extends Vue {
     obj[type] = data;
     this.submitFile = { ...this.submitFile, ...obj };
   }
-  getFileListType() {
+  getFileListType(data: any) {
     const list = (this.$root as any)
       .dictAllList("ApplyFileType")
       .filter((i: any) => !i.code.includes("PDF"));
@@ -937,7 +969,12 @@ export default class ApplyRecAdd extends Vue {
     this.fileListType = list.map((i: any) => {
       return {
         ...i,
-        fileList: [],
+        fileList: data
+          .filter((j: any) => j.type === i.code)
+          .map((h: any) => ({
+            ...h,
+            name: h.fileName,
+          })),
       };
     });
     let obj: any = {};
@@ -948,16 +985,6 @@ export default class ApplyRecAdd extends Vue {
   }
   private async submit(type: any) {
     console.log(type);
-
-    this.form.sumActMoneyTax = parseFloat(
-      this.form.actMoneyTax + this.hisInfo.sumActMoneyTax
-    ).toFixed(2);
-    this.form.sumActMoney = parseFloat(
-      this.form.actMoneyTax + this.hisInfo.sumActMoney
-    ).toFixed(2);
-    this.form.sumTaxMoney = parseFloat(
-      this.form.taxMoney + this.hisInfo.sumTaxMoney
-    ).toFixed(2);
     this.form.op = "";
 
     // 校验提示
@@ -1001,15 +1028,50 @@ export default class ApplyRecAdd extends Vue {
       return;
     }
 
+    console.log(this.form);
+
     try {
       await post_applyRec_save(this.form);
     } catch (error) {
       console.log(error);
     }
   }
+  private async getInfo(applyId: any) {
+    try {
+      const info = await get_applyRec_getApplyRecById__applyId({ applyId });
+      this.paramDevName = info.developName;
+      this.getAccount(info.polyCompanyId);
+      this.accountData = { id: info.receAccountId };
+      this.form = { ...this.form, ...info };
+      this.form.dealList = await get_applyRecDeal_getAll__applyId({ applyId });
+      this.form.termList = await get_applyRecDealTerm_getAll__applyId({
+        applyId,
+      });
+      if (this.form.status === "Draft") {
+        await this.getHisRec({
+          developId: info.developId,
+          polyCompanyId: info.polyCompanyId,
+        });
+      }
+      console.log(this.form);
+    } catch (error) {
+      console.log(error);
+    }
+  }
 
-  created() {
-    this.getFileListType();
+  async created() {
+    let id = this.$route.query.id;
+    if (id) {
+      this.getInfo(id);
+      let list = await post_applyRecFile_getAll({
+        applyId: id,
+        typeList: ["Contract", "Invoice", "ApplyReport"],
+      });
+      this.getFileListType(list);
+    } else {
+      this.getFileListType([]);
+      this.form.applyUserName = (this.$root as any).userInfo.name;
+    }
   }
 }
 </script>

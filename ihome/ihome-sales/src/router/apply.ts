@@ -4,7 +4,7 @@
  * @Author: ywl
  * @Date: 2021-01-07 10:29:54
  * @LastEditors: ywl
- * @LastEditTime: 2021-01-07 16:33:36
+ * @LastEditTime: 2021-01-12 19:32:34
  */
 import { RouteConfig } from 'vue-router'
 
@@ -33,6 +33,20 @@ const applyRoutes: Array<RouteConfig> = [
         component: () => import('../views/apply/applyRec/add.vue'),
         meta: { title: '发起请佣申请', icon: 'form' }
       }
+    ]
+  },
+  {
+    path: '/deduct',
+    meta: { title: '抵扣项费用明细', icon: null },
+    component: Layout,
+    redirect: '/deduct/list',
+    children: [
+      {
+        path: 'list',
+        name: 'deductList',
+        component: () => import('../views/apply/deduct/list.vue'),
+        meta: { title: '抵扣项费用明细', icon: 'form', keepAlive: true }
+      },
     ]
   }
 ]

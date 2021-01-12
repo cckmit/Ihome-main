@@ -4,7 +4,7 @@
  * @Author: ywl
  * @Date: 2021-01-07 10:29:38
  * @LastEditors: ywl
- * @LastEditTime: 2021-01-11 11:18:48
+ * @LastEditTime: 2021-01-12 14:39:50
 -->
 <template>
   <IhPage label-width="100px">
@@ -99,7 +99,10 @@
           type="primary"
           @click="search()"
         >查询</el-button>
-        <el-button type="success">发起请佣申请</el-button>
+        <el-button
+          type="success"
+          @click="$router.push('/applyRec/add')"
+        >发起请佣申请</el-button>
         <el-button
           type="info"
           @click="reset()"
@@ -199,6 +202,7 @@
             <el-link
               type="success"
               v-if="row.status === 'Draft' || row.status === 'BusinessDepart'"
+              @click="$router.push(`/applyRec/add?id=${row.id}`)"
             >编辑</el-link>
             <el-link
               type="primary"
@@ -254,6 +258,7 @@ export default class ApplyRecList extends Vue {
     let flag = this.timeList && this.timeList.length;
     this.queryPageParameters.applyTimeStart = flag ? this.timeList[0] : null;
     this.queryPageParameters.applyTimeEnd = flag ? this.timeList[1] : null;
+    this.queryPageParameters.pageNum = 1;
     this.getListMixin();
   }
   private reset() {
