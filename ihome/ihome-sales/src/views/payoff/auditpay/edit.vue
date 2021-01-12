@@ -4,7 +4,7 @@
  * @Author: wwq
  * @Date: 2020-12-26 11:11:23
  * @LastEditors: wwq
- * @LastEditTime: 2021-01-11 17:57:59
+ * @LastEditTime: 2021-01-12 19:55:03
 -->
 <template>
   <IhPage>
@@ -52,35 +52,14 @@
           </el-col>
           <el-col :span="8">
             <el-form-item
-              label="当前状态"
-              prop="status"
-            >
-              <el-select
-                style="width: 100%"
-                v-model="info.status"
-                disabled
-                placeholder="请选择"
-              >
-                <el-option
-                  v-for="item in $root.dictAllList('PayoffStatus')"
-                  :key="item.code"
-                  :label="item.name"
-                  :value="item.code"
-                ></el-option>
-              </el-select>
-            </el-form-item>
-          </el-col>
-          <el-col :span="8">
-            <el-form-item
               label="渠道商"
               prop="agencyId"
             >
               <IhSelectPageByChannel
-                clearable
+                disabled
                 placeholder="请选择渠道商"
                 v-model="info.agencyId"
                 :search-name="info.agencyName"
-                @changeOption="getChannelInfo"
               ></IhSelectPageByChannel>
             </el-form-item>
           </el-col>
@@ -91,14 +70,14 @@
             >
               <el-select
                 v-model="info.receiveAccount"
-                clearable
+                disabled
                 placeholder="请选择账号"
                 class="width--100"
               >
                 <el-option
                   v-for="item in channelAccountOptions"
                   :key="item.id"
-                  :label="item.accountName"
+                  :label="item.accountNo"
                   :value="item.id"
                 ></el-option>
               </el-select>
@@ -152,8 +131,9 @@
               <el-select
                 style="width: 100%"
                 v-model="info.settlementMethod"
-                disabled
+                clearable
                 placeholder="请选择结算方式"
+                @change="settlementMethodChange"
               >
                 <el-option
                   v-for="item in $root.dictAllList('SettlementMethod')"
@@ -172,7 +152,8 @@
               <el-select
                 style="width: 100%"
                 v-model="info.paymentMethod"
-                disabled
+                :disabled="paymentMethodDisabled"
+                clearable
                 placeholder="请选择"
               >
                 <el-option
@@ -631,6 +612,7 @@
                 v-model="info.description"
                 maxlength="500"
                 show-word-limit
+                readonly
               >
               </el-input>
             </td>
@@ -668,23 +650,124 @@
                 :removePermi="false"
                 :limit="row.fileList.length"
                 size="100px"
-                @newFileList="queryNew"
               ></IhUpload>
             </template>
           </el-table-column>
         </el-table>
       </div>
       <br />
+      <div class="top">
+        <p class="ih-info-title">操作日志</p>
+        <div class="right-button">
+          <el-popover
+            class="margin-right-10"
+            placement="top"
+            trigger="manual"
+            :content="`姓名: ${operateName} 岗位: ${operatePost}`"
+            v-model="operateVisible"
+          >
+            <el-button
+              slot="reference"
+              type="success"
+              size="small"
+              icon="el-icon-search"
+              @click="searchPerson"
+            >查询当前代办人</el-button>
+          </el-popover>
+          <el-button
+            @click="updateOA"
+            type="success"
+            size="small"
+            icon="el-icon-refresh"
+          >同步OA审核日志</el-button>
+        </div>
+      </div>
+      <div class="padding-left-20">
+        <el-table
+          class="ih-table"
+          :data="info.processRecordList"
+          style="width: 100%"
+        >
+          <el-table-column
+            label="操作"
+            prop="operate"
+          >
+            <template v-slot="{ row }">
+              {{$root.dictAllName(row.operate, 'PayoffOperate')}}
+            </template>
+          </el-table-column>
+          <el-table-column
+            label="操作后状态"
+            prop="afterStatus"
+          >
+            <template v-slot="{ row }">
+              {{$root.dictAllName(row.afterStatus, 'PayoffStatus')}}
+            </template>
+          </el-table-column>
+          <el-table-column
+            label="操作人"
+            prop="operaterName"
+          ></el-table-column>
+          <el-table-column
+            label="岗位"
+            prop="operaterJob"
+          ></el-table-column>
+          <el-table-column
+            label="操作时间"
+            prop="operateTime"
+          ></el-table-column>
+          <el-table-column
+            label="处理结果"
+            prop="result"
+          >
+            <template v-slot="{ row }">
+              {{$root.dictAllName(row.result, 'PayoffProcessResult')}}
+            </template>
+          </el-table-column>
+          <el-table-column
+            label="系统"
+            prop="system"
+          >
+            <template v-slot="{ row }">
+              {{$root.dictAllName(row.system, 'PayoffSystem')}}
+            </template>
+          </el-table-column>
+          <el-table-column
+            label="审核意见"
+            prop="remark"
+          ></el-table-column>
+        </el-table>
+      </div>
+
+      <div v-if="$route.name === 'auditpayAudit'">
+        <p class="ih-info-title">审核意见</p>
+        <el-input
+          class="padding-left-20"
+          style="box-sizing: border-box"
+          type="textarea"
+          :autosize="{ minRows: 5, maxRows: 10 }"
+          placeholder="请输入内容"
+          v-model="info.postscript"
+          maxlength="500"
+          show-word-limit
+        >
+        </el-input>
+      </div>
+      <br />
       <div class="bottom">
         <el-button
           @click="submit('Unconfirm')"
           type="primary"
-        >保存</el-button>
+        >暂存</el-button>
         <el-button
           @click="submit('PlatformClerkUnreview')"
           type="success"
-        >提交</el-button>
-        <el-button @click="cancel">取消</el-button>
+        >通过</el-button>
+        <el-button
+          @click="submit('PlatformClerkUnreview')"
+          type="danger"
+        >驳回</el-button>
+        <el-button @click="cancel">返回</el-button>
       </div>
     </template>
     <ih-dialog :show="contactsDialogVisible">
@@ -703,8 +786,9 @@ import {
   post_payApply_entryApply,
   post_payApply_updateApply,
   post_payApply_calculation_results,
+  get_processRecord_oa_review_person__applyId,
+  get_processRecord_oa_review_log__applyId,
 } from "@/api/payoff/index";
-import { get_channel_get__id } from "@/api/channel/index";
 import { Form as ElForm } from "element-ui";
 import Obligation from "./dialog/obligation.vue";
 
@@ -731,13 +815,17 @@ export default class PayoffEdit extends Vue {
     documentList: [],
     paySummaryList: [],
     description: null,
+    postscript: null,
   };
+  operateName: any = null;
+  operatePost: any = null;
+  operateVisible: any = false;
   channelAccountOptions: any = [];
+  paymentMethodDisabled: any = false;
   showTable: any = [];
   tabsValue: any = null;
   tabsList: any = [];
   fileListType: any = [];
-  submitFile: any = {};
   contactsData: any = {};
   contactsDialogVisible = false;
   taxRateOptions: any = [
@@ -912,14 +1000,8 @@ export default class PayoffEdit extends Vue {
         })),
       };
       this.getFileListType(res.documentList);
-      this.getChannelInfo(
-        {
-          id: res.agencyId,
-          name: res.agencyName,
-        },
-        "clear"
-      );
       this.filterTabs(this.info.payApplyDetailList);
+      this.settlementMethodChange(res.settlementMethod);
     } else {
       this.info.maker = (this.$root as any).userInfo.name;
       this.info.makerId = (this.$root as any).userInfo.id;
@@ -944,17 +1026,34 @@ export default class PayoffEdit extends Vue {
           })),
       };
     });
-    let obj: any = {};
-    this.fileListType.forEach((h: any) => {
-      obj[h.code] = h.fileList;
-    });
-    this.submitFile = { ...obj };
   }
 
-  queryNew(data: any, type?: any) {
-    let obj: any = {};
-    obj[type] = data;
-    this.submitFile = { ...this.submitFile, ...obj };
+  async searchPerson() {
+    if (!this.operateName || !this.operatePost) {
+      const res = await get_processRecord_oa_review_person__applyId({
+        applyId: this.payoffId,
+      });
+      this.operateName = res.name;
+      this.operatePost = res.orgPostName;
+    }
+    this.operateVisible = true;
+  }
+
+  async updateOA() {
+    const res = await get_processRecord_oa_review_log__applyId({
+      applyId: this.payoffId,
+    });
+    this.info.processRecordList = res;
+  }
+
+  settlementMethodChange(val: any) {
+    if (val === "OnlineBanking") {
+      this.paymentMethodDisabled = true;
+      this.info.paymentMethod = "Other";
+    } else {
+      this.paymentMethodDisabled = false;
+      this.info.paymentMethod = "Cash";
+    }
   }
 
   // 计算
@@ -1021,7 +1120,7 @@ export default class PayoffEdit extends Vue {
   async delContacts(index: number) {
     try {
       await this.$confirm("是否确定移除?", "提示");
-      this.info.contactList.splice(index, 1);
+      this.showTable.splice(index, 1);
       this.$message({
         type: "success",
         message: "移除成功!",
@@ -1052,13 +1151,6 @@ export default class PayoffEdit extends Vue {
     this.contactsDialogVisible = false;
   }
 
-  async getChannelInfo(item: any, type: any) {
-    this.info.agencyName = item.name;
-    let res = await get_channel_get__id({ id: item.id });
-    this.channelAccountOptions = res.channelBanks;
-    if (!type) this.info.receiveAccount = null;
-  }
-
   submit(val: string) {
     (this.$refs["form"] as ElForm).validate(async (v: any) => {
       if (v) {
@@ -1085,52 +1177,12 @@ export default class PayoffEdit extends Vue {
         obj.payApplyDetailList = this.info.payApplyDetailList;
         obj.payApplyVO.status = val;
         // 假数据
-        obj.payApplyVO.projectName = "xxxx计划";
         obj.payApplyVO.areaId = 15;
         obj.payApplyVO.belongOrgId = 15;
         if (this.$route.name === "payoffAdd") {
           await post_payApply_entryApply(obj);
         } else if (this.$route.name === "payoffEdit") {
           obj.payApplyVO.id = this.payoffId;
-          let arr: any = [];
-          Object.values(this.submitFile).forEach((v: any) => {
-            if (v.length) {
-              arr = arr.concat(v);
-            }
-          });
-          // 以下操作仅仅是为了校验必上传项
-          let submitList: any = this.fileListType.map((v: any) => {
-            return {
-              ...v,
-              fileList: arr
-                .filter((j: any) => j.fileType === v.code)
-                .map((h: any) => ({
-                  ...h,
-                  name: h.fileName,
-                })),
-            };
-          });
-          let isSubmit = true;
-          let msgList: any = [];
-          submitList.forEach((v: any) => {
-            if (v.subType && !v.fileList.length) {
-              msgList.push(v.name);
-              isSubmit = false;
-            }
-          });
-          if (isSubmit) {
-            obj.documentList = arr.map((v: any) => ({
-              fileId: v.fileId,
-              fileName: v.name,
-              fileType: v.fileType,
-            }));
-          } else {
-            this.$message({
-              type: "warning",
-              message: `${msgList.join(",")}项,请上传附件`,
-            });
-            return;
-          }
           await post_payApply_updateApply(obj);
         }
         this.$goto({ path: `/payoff/list` });
@@ -1163,5 +1215,20 @@ export default class PayoffEdit extends Vue {
   overflow: hidden;
   text-overflow: ellipsis;
   white-space: nowrap;
+}
+
+.top {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  .title {
+    font-size: 15px;
+    text-align: center;
+  }
+  .right-button {
+    display: flex;
+    justify-content: space-around;
+    align-items: center;
+  }
 }
 </style>

@@ -4,7 +4,7 @@
  * @Author: wwq
  * @Date: 2020-12-26 11:11:23
  * @LastEditors: wwq
- * @LastEditTime: 2021-01-11 17:57:59
+ * @LastEditTime: 2021-01-12 19:30:05
 -->
 <template>
   <IhPage>
@@ -1021,7 +1021,7 @@ export default class PayoffEdit extends Vue {
   async delContacts(index: number) {
     try {
       await this.$confirm("是否确定移除?", "提示");
-      this.info.contactList.splice(index, 1);
+      this.showTable.splice(index, 1);
       this.$message({
         type: "success",
         message: "移除成功!",
@@ -1085,7 +1085,6 @@ export default class PayoffEdit extends Vue {
         obj.payApplyDetailList = this.info.payApplyDetailList;
         obj.payApplyVO.status = val;
         // 假数据
-        obj.payApplyVO.projectName = "xxxx计划";
         obj.payApplyVO.areaId = 15;
         obj.payApplyVO.belongOrgId = 15;
         if (this.$route.name === "payoffAdd") {

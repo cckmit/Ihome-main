@@ -4,7 +4,7 @@
  * @Author: wwq
  * @Date: 2020-12-26 11:11:28
  * @LastEditors: wwq
- * @LastEditTime: 2021-01-11 20:32:06
+ * @LastEditTime: 2021-01-12 19:55:59
 -->
 <template>
   <IhPage label-width="120px">
@@ -27,6 +27,7 @@
             <el-form-item label="渠道商">
               <IhSelectPageByChannel
                 placeholder="请选择渠道商"
+                clearable
                 v-model="queryPageParameters.agencyName"
               ></IhSelectPageByChannel>
             </el-form-item>
@@ -96,6 +97,7 @@
                 style="width: 100%"
                 v-model="queryPageParameters.paymentMethod"
                 placeholder="请选择"
+                clearable
               >
                 <el-option
                   v-for="item in $root.dictAllList('PaymentMethod')"
@@ -218,9 +220,9 @@
           <template v-slot="{ row }">
             <el-link
               type="primary"
-              @click.native.prevent="routeTo(row, 'info')"
-            >详情</el-link>
-            <el-dropdown
+              @click.native.prevent="routeTo(row, 'audit')"
+            >审核</el-link>
+            <!-- <el-dropdown
               trigger="click"
               class="margin-left-15"
             >
@@ -238,7 +240,7 @@
                   @click.native.prevent="remove(row, '')"
                 >管控</el-dropdown-item>
               </el-dropdown-menu>
-            </el-dropdown>
+            </el-dropdown> -->
           </template>
         </el-table-column>
       </el-table>
@@ -272,11 +274,7 @@
 </template>
 <script lang="ts">
 import { Component, Vue } from "vue-property-decorator";
-import {
-  post_payApply_review_list,
-  post_payApply_delete_ids,
-  post_payApply_withdrawSubmit,
-} from "@/api/payoff/index";
+import { post_payApply_review_list } from "@/api/payoff/index";
 import PaginationMixin from "../../../mixins/pagination";
 import SelectOrganizationTree from "@/components/SelectOrganizationTree.vue";
 import axios from "axios";
@@ -296,7 +294,6 @@ export default class PayoffList extends Vue {
     actualAmount: null,
     deductAmount: null,
     makerTime: null,
-    payoffReviewStatus: "Pending",
     beginMakerTime: null,
     endMakerTime: null,
     timeList: [],
@@ -382,45 +379,9 @@ export default class PayoffList extends Vue {
     });
   }
 
-  async remove(data: any, type: any) {
-    try {
-      let arr: any = [];
-      if (type) {
-        if (this.selection.length) {
-          arr = this.selection.map((v: any) => v.id);
-        } else {
-          this.$message.warning("请勾选表格数据");
-          return;
-        }
-      } else {
-        arr = [data.id];
-      }
-      await this.$confirm("是否确定删除?", "提示");
-      await post_payApply_delete_ids({ ids: arr });
-      this.getListMixin();
-      this.$message({
-        type: "success",
-        message: "删除成功!",
-      });
-    } catch (error) {
-      console.log(error);
-    }
-  }
-
-  async recall(data: any) {
-    await post_payApply_withdrawSubmit({
-      id: data.id,
-    });
-    this.getListMixin();
-    this.$message({
-      type: "success",
-      message: "撤回成功!",
-    });
-  }
-
   routeTo(row: any, where: string) {
     this.$router.push({
-      path: `/payoff/${where}`,
+      path: `/auditpay/${where}`,
       query: {
         id: row.id,
       },

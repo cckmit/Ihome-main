@@ -4,7 +4,7 @@
  * @Author: wwq
  * @Date: 2020-12-26 11:17:06
  * @LastEditors: wwq
- * @LastEditTime: 2021-01-11 19:32:20
+ * @LastEditTime: 2021-01-12 16:58:01
  */
 import { RouteConfig } from 'vue-router'
 import Layout from '../components/Layout.vue';
@@ -55,27 +55,15 @@ const payoffRoutes: Array<RouteConfig> = [
     children: [
       {
         path: 'list',
-        name: 'payoffList',
+        name: 'auditpayList',
         component: () => import('../views/payoff/auditpay/list.vue'),
         meta: { title: '审核付款申请列表', icon: 'form', keepAlive: true }
       },
       {
         path: 'audit',
-        name: 'payoffAudit',
+        name: 'auditpayAudit',
         component: () => import('../views/payoff/auditpay/edit.vue'),
         meta: { title: '付款单审核', icon: 'form' }
-      },
-      {
-        path: 'info',
-        name: 'payoffInfo',
-        component: () => import('../views/payoff/auditpay/info.vue'),
-        meta: { title: '付款单查看', icon: 'form' }
-      },
-      {
-        path: 'replenish',
-        name: 'payoffReplenish',
-        component: () => import('../views/payoff/auditpay/info.vue'),
-        meta: { title: '付款单补充', icon: 'form' }
       },
     ]
   },
