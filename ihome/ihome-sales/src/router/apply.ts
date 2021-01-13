@@ -4,7 +4,7 @@
  * @Author: ywl
  * @Date: 2021-01-07 10:29:54
  * @LastEditors: ywl
- * @LastEditTime: 2021-01-13 11:39:44
+ * @LastEditTime: 2021-01-13 15:08:48
  */
 import { RouteConfig } from 'vue-router'
 
@@ -33,6 +33,20 @@ const applyRoutes: Array<RouteConfig> = [
         component: () => import('../views/apply/applyRec/add.vue'),
         meta: { title: '发起请佣申请', icon: 'form' }
       }
+    ]
+  },
+  {
+    path: '/returnConfirm',
+    meta: { title: '回款登记确认', icon: null },
+    component: Layout,
+    redirect: '/returnConfirm/list',
+    children: [
+      {
+        path: 'list',
+        name: 'returnConfirm',
+        component: () => import('../views/apply/returnConfirm/list.vue'),
+        meta: { title: '回款登记确认', icon: 'form', keepAlive: true }
+      },
     ]
   },
   {

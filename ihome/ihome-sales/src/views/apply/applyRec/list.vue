@@ -4,7 +4,7 @@
  * @Author: ywl
  * @Date: 2021-01-07 10:29:38
  * @LastEditors: ywl
- * @LastEditTime: 2021-01-12 14:39:50
+ * @LastEditTime: 2021-01-13 15:06:29
 -->
 <template>
   <IhPage label-width="100px">
@@ -121,6 +121,7 @@
           type="selection"
           width="50"
           align="center"
+          fixed
         ></el-table-column>
         <el-table-column
           label="请款申请"
