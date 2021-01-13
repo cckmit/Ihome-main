@@ -256,6 +256,7 @@
                 return ((prev * 1 * 100) / 100);
               }
             }, 0);
+            sums[index] = Math.round(sums[index] * 100) / 100; // 解决精度缺失问题
           } else {
             sums[index] = '';
           }

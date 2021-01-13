@@ -145,6 +145,9 @@
               v-else
               v-model="postData.buildingId"
               :proId="postData.proId"
+              :propertyEnum="postData.propertyType"
+              :isCascade="true"
+              cascadeType="build"
               placeholder="请选择栋座"
               clearable
             ></IhSelectPageByBuild>
@@ -161,6 +164,8 @@
               v-model="postData.roomId"
               :proId="postData.proId"
               :buildingId="postData.buildingId"
+              :isCascade="true"
+              cascadeType="room"
               placeholder="请选择房号"
               clearable
             ></IhSelectPageByRoom>

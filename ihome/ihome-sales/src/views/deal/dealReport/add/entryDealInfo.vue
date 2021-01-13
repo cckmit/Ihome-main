@@ -139,6 +139,9 @@
               @change="changeBuild"
               v-model="postData.buildingId"
               :proId="baseInfoByTerm.proId"
+              :propertyEnum="postData.propertyType"
+              :isCascade="true"
+              cascadeType="build"
               placeholder="请选择栋座"
               clearable
             ></IhSelectPageByBuild>
@@ -151,6 +154,8 @@
               v-model="postData.roomId"
               :proId="baseInfoByTerm.proId"
               :buildingId="postData.buildingId"
+              :isCascade="true"
+              cascadeType="room"
               placeholder="请选择房号"
               clearable
             ></IhSelectPageByRoom>
@@ -910,7 +915,7 @@
           otherChannelFees: 0,
         }
         this.postData.receiveVO.forEach((item: any) => {
-          obj.receiveAmount = (obj.receiveAmount * 1 * 100 + item.receiveAmount) / 100;
+          obj.receiveAmount = (obj.receiveAmount * 1 * 100 + item.receiveAmount * 1 * 100) / 100;
           obj.achieveAmount = (obj.achieveAmount * 1 * 100 + item.commAmount * 1 * 100
             + item.rewardAmount * 1 * 100 + item.totalPackageAmount * 1 * 100
             + item.distributionAmount * 1 * 100) / 100;
@@ -1330,6 +1335,10 @@
         // 不一样，要初始化收派套餐、对外拆佣、平台费用
         this.postData.receiveVO = (this as any).$tool.deepClone(this.tempReceiveVO);
       }
+      // 清空栋座 + 房间号 + 下面的所有信息
+      this.postData.roomId = null;
+      this.postData.buildingId = null;
+      this.resetData();
     }
 
     // 是否垫佣是根据对应的分销协议来判断

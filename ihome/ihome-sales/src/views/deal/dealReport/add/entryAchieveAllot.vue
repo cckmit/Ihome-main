@@ -140,6 +140,9 @@
               @change="changeBuild"
               v-model="postData.buildingId"
               :proId="baseInfoByTerm.proId"
+              :propertyEnum="postData.propertyType"
+              :isCascade="true"
+              cascadeType="build"
               placeholder="请选择栋座"
               clearable
             ></IhSelectPageByBuild>
@@ -152,6 +155,8 @@
               v-model="postData.roomId"
               :proId="baseInfoByTerm.proId"
               :buildingId="postData.buildingId"
+              :isCascade="true"
+              cascadeType="room"
               placeholder="请选择房号"
               clearable
             ></IhSelectPageByRoom>
@@ -2095,6 +2100,10 @@
         this.tipsFlag = false;
         this.dividerTips = "加载成功";
       }
+      // 清空栋座 + 房间号 + 下面的所有信息
+      this.postData.roomId = null;
+      this.postData.buildingId = null;
+      this.resetData();
     }
 
     // 是否垫佣是根据对应的分销协议来判断
@@ -2595,6 +2604,7 @@
                 return ((prev * 1 * 100) / 100);
               }
             }, 0);
+            sums[index] = Math.round(sums[index] * 100) / 100; // 解决精度缺失问题
           } else {
             sums[index] = '';
           }
