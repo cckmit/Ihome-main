@@ -4,7 +4,7 @@
  * @Author: zyc
  * @Date: 2020-12-09 09:45:58
  * @LastEditors: zyc
- * @LastEditTime: 2020-12-22 09:36:02
+ * @LastEditTime: 2021-01-13 15:33:11
  */
 /*
  * @Descripttion: 
@@ -61,12 +61,12 @@ export interface ToolInterface {
      * @param {type} 
      * @return {type} 
      */
-    downloadFileUrl(fid: number | string): string;
+    downloadFileUrl(fid: number | string, obj?: any): string;
     /**（全路径）获取下载的文件路径
      * @param {type} 
      * @return {type} 
      */
-    downloadLongFileUrl(fid: number | string): string;
+    downloadLongFileUrl(fid: number | string, obj?: any): string;
     /**复制文本
      * @param {*}
      * @return {*}
@@ -96,17 +96,38 @@ export class Tool implements ToolInterface {
      * @param {type} 
      * @return {type} 
      */
-    downloadFileUrl(fid: string | number): string {
-        let url = `/sales-api/sales-document-cover/file/download/${fid}`;
-        return url;
+    downloadFileUrl(fid: string | number, obj?: any): string {
+        if (obj) {
+            if (obj.fileName) {
+                let url = `/sales-api/sales-document-cover/file/download/${fid}?fn=` + obj.fileName;
+                return url;
+            } else {
+                let url = `/sales-api/sales-document-cover/file/download/${fid}`;
+                return url;
+            }
+        } else {
+            let url = `/sales-api/sales-document-cover/file/download/${fid}`;
+            return url;
+        }
     }
     /**（全路径）获取下载的文件路径
      * @param {type} 
      * @return {type} 
      */
-    downloadLongFileUrl(fid: string | number): string {
-        let url = `/sales-api/sales-document-cover/file/download/${fid}`;
-        return window.location.origin + url;
+    downloadLongFileUrl(fid: string | number, obj?: any): string {
+        let origin = window.location.origin;
+        if (obj) {
+            if (obj.fileName) {
+                let url = `/sales-api/sales-document-cover/file/download/${fid}?fn=` + obj.fileName;
+                return origin + url;
+            } else {
+                let url = `/sales-api/sales-document-cover/file/download/${fid}`;
+                return origin + url;
+            }
+        } else {
+            let url = `/sales-api/sales-document-cover/file/download/${fid}`;
+            return origin + url;
+        }
     }
     /**（根路径）获取预览文件路径(fid,width?,height?)
    * @param {type} 
