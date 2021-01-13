@@ -94,6 +94,13 @@ export default class IhSelectPage extends Vue {
   @Prop() promiseFun?: Function;
   @Prop() searchName?: string;
   @Prop() proId?: any;
+  @Prop() buildingId?: any;
+  @Prop() propertyEnum?: any; // 物业类型
+  @Prop() cascadeType?: any; // 级联类型 --- 栋座build/房间号room
+  @Prop({
+    default: false,
+  })
+  isCascade?: boolean; // 是否级联(栋座需要物业类型情况下)
   @Prop({
     default: false,
   })
@@ -179,10 +186,32 @@ export default class IhSelectPage extends Vue {
   }
 
   handleVisible(val: any): void {
-    if (val) {
-      if (this.isBlur && !this.proId) {
-        (this.$refs.selectPage as any).blur();
-        this.handleMessage();
+    if (this.isCascade) {
+      if (val) {
+        // 判断是栋座还是房间号
+        switch (this.cascadeType) {
+          case 'build':
+            // 栋座：项目id + 物业类型
+            if (this.isBlur && (!this.proId || !this.propertyEnum)) {
+              (this.$refs.selectPage as any).blur();
+              this.handleMessage();
+            }
+            return;
+          case 'room':
+            // 房间号：项目id + 栋座
+            if (this.isBlur && (!this.proId || !this.buildingId)) {
+              (this.$refs.selectPage as any).blur();
+              this.handleMessage();
+            }
+            return;
+        }
+      }
+    } else {
+      if (val) {
+        if (this.isBlur && !this.proId) {
+          (this.$refs.selectPage as any).blur();
+          this.handleMessage();
+        }
       }
     }
   }
