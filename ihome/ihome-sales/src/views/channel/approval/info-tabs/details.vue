@@ -4,7 +4,7 @@
  * @Author: zyc
  * @Date: 2020-07-09 14:31:23
  * @LastEditors: zyc
- * @LastEditTime: 2021-01-06 19:19:38
+ * @LastEditTime: 2021-01-13 15:42:59
 --> 
 <template>
   <div>
@@ -113,7 +113,8 @@
       </el-table-column>
       <el-table-column prop="attachmentDetails" label="附件">
         <template slot-scope="scope">
-          <span class="margin-right-10"
+          <span
+            class="margin-right-10"
             v-for="(cItem, cIndex) in scope.row.attachmentDetails"
             :key="cIndex"
           >
@@ -180,7 +181,7 @@ export default class InvitationCodeDetails extends Vue {
     // });
   }
   down(item: any) {
-    let url = this.$tool.downloadLongFileUrl(item.fileId);
+    let url = this.$tool.downloadLongFileUrl(item.fileId, item);
     console.log(url);
     (window as any).open(url);
   }

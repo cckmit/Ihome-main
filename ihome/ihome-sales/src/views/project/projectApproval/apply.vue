@@ -3,10 +3,11 @@
     <template #info>
       <p class="ih-info-title">申领渠道分销合同</p>
       <el-form
-        ref="ruleForm"
+        ref="Form"
         label-width="120px"
         class="demo-ruleForm"
         :model="info"
+        :rules="rules"
       >
         <el-row>
           <el-col :span="12">
@@ -97,7 +98,10 @@
         </el-row>
         <el-row>
           <el-col :span="12">
-            <el-form-item label="合同跟进人">
+            <el-form-item
+              label="合同跟进人"
+              prop="handlerId"
+            >
               <IhSelectPageUser
                 v-model="info.handlerId"
                 clearable
@@ -184,7 +188,10 @@
         </el-row>
         <el-row>
           <el-col :span="12">
-            <el-form-item label="乙方(渠道)公司">
+            <el-form-item
+              label="乙方(渠道)公司"
+              prop="channelCompanyId"
+            >
               <SelectPageByCondition
                 v-if="!(searchConditon.channelEnum === 'Appoint' || searchConditon.channelEnum === 'Strategic')"
                 v-model="info.channelCompanyId"
@@ -215,7 +222,10 @@
             </el-form-item>
           </el-col>
           <el-col :span="12">
-            <el-form-item label="乙方联系人">
+            <el-form-item
+              label="乙方联系人"
+              prop="channelContact"
+            >
               <el-input
                 placeholder="乙方联系人"
                 style="width: 70%"
@@ -226,7 +236,10 @@
         </el-row>
         <el-row>
           <el-col :span="12">
-            <el-form-item label="乙方联系人电话">
+            <el-form-item
+              label="乙方联系人电话"
+              prop="channelContactTel"
+            >
               <el-input
                 placeholder="乙方联系人电话"
                 style="width: 70%"
@@ -235,9 +248,12 @@
             </el-form-item>
           </el-col>
           <el-col :span="12">
-            <el-form-item label="乙方账号名">
+            <el-form-item
+              label="乙方账号名"
+              prop="channelAccountName"
+            >
               <el-select
-                v-model="channelAccountName"
+                v-model="info.channelAccountName"
                 placeholder="乙方账号名"
                 clearable
                 style="width: 70%"
@@ -256,12 +272,18 @@
         </el-row>
         <el-row>
           <el-col :span="12">
-            <el-form-item label="乙方账号">
+            <el-form-item
+              label="乙方账号"
+              prop="channelAccount"
+            >
               <span>{{info.channelAccount}}</span>
             </el-form-item>
           </el-col>
           <el-col :span="12">
-            <el-form-item label="乙方开户行">
+            <el-form-item
+              label="乙方开户行"
+              prop="channelAccountBank"
+            >
               <span>{{info.channelAccountBank}}</span>
             </el-form-item>
           </el-col>
@@ -463,7 +485,7 @@
         <el-button
           type="primary"
           :loading="submitLoading"
-          @click="submit()"
+          @click="finish()"
         >提交</el-button>
         <el-button @click="cancel">取消</el-button>
       </div>
@@ -502,6 +524,9 @@ import ViewContract from "./dialog/notification-dialog/viewContract.vue";
 import axios from "axios";
 import { getToken } from "ihome-common/util/cookies";
 import SelectPageByCondition from "@/components/SelectPageByCondition.vue";
+import { phoneValidator } from "ihome-common/util/base/form-ui";
+import { Form as ElForm } from "element-ui";
+import { NoRepeatHttp } from "ihome-common/util/aop/no-repeat-http";
 
 @Component({
   components: { TemplateDailog, ViewContract, SelectPageByCondition },
@@ -542,13 +567,66 @@ export default class Apply extends Vue {
     channelLevel: null,
     channelCompanyId: null,
     channelCompanyName: null,
+    channelAccountName: null,
   };
-  channelAccountName = "";
+
   isShow = false;
   channelAccountOptions: any = [];
   searchConditon: any = {};
   submitLoading: any = false;
   SelectPageByConditionDisabled: any = true;
+  rules: any = {
+    handlerId: [
+      {
+        required: true,
+        message: "请选择合同跟进人",
+        trigger: "change",
+      },
+    ],
+    channelCompanyId: [
+      {
+        required: true,
+        message: "请选择乙方(渠道)公司",
+        trigger: "change",
+      },
+    ],
+    channelContact: [
+      {
+        required: true,
+        message: "请填写乙方联系人",
+        trigger: "change",
+      },
+    ],
+    channelContactTel: [
+      {
+        required: true,
+        message: "请填写乙方联系人电话",
+        trigger: "change",
+      },
+      { validator: phoneValidator, trigger: "change" },
+    ],
+    channelAccountName: [
+      {
+        required: true,
+        message: "请选择乙方账号名",
+        trigger: "change",
+      },
+    ],
+    channelAccount: [
+      {
+        required: true,
+        message: "乙方账号为必填项",
+        trigger: "change",
+      },
+    ],
+    channelAccountBank: [
+      {
+        required: true,
+        message: "乙方开户行为必填项",
+        trigger: "change",
+      },
+    ],
+  };
 
   @Watch("info.channelEnum", { immediate: true })
   getIsShow(val: any) {
@@ -695,24 +773,36 @@ export default class Apply extends Vue {
     this.info.channelAccountBank = item.branchName;
     this.info.channelAccountName = item.accountName;
   }
-  async submit() {
-    this.submitLoading = true;
-    try {
-      await post_distribution_create(this.info);
-      this.submitLoading = false;
-      this.$message.success("申领成功");
-      this.$goto({
-        path: "/projectApproval/list",
-      });
-    } catch (err) {
-      this.submitLoading = false;
+
+  @NoRepeatHttp()
+  async submit(valid: any) {
+    if (valid) {
+      this.submitLoading = true;
+      try {
+        await post_distribution_create(this.info);
+        this.submitLoading = false;
+        this.$message.success("申领成功");
+        this.$goto({
+          path: "/projectApproval/list",
+        });
+      } catch (err) {
+        this.submitLoading = false;
+      }
     }
+  }
+
+  finish() {
+    (this.$refs["Form"] as ElForm).validate(this.submit);
   }
 
   async created() {
     await this.getDropDown();
     this.info.cycleId = Number(this.$route.query.id);
     this.info.handlerId = (this.$root as any).userInfo.name;
+    this.handler = {
+      name: (this.$root as any).userInfo.name,
+      id: (this.$root as any).userInfo.id,
+    };
   }
 
   cancel() {

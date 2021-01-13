@@ -240,7 +240,7 @@ ul li >>> .el-tree .el-tree-node__content {
   font-weight: normal;
 }
 .el-tree >>> .is-current .el-tree-node__label {
-  color: #f90;
+  color: #003894;
   font-weight: 700;
 }
 .el-tree >>> .is-current .el-tree-node__children .el-tree-node__label {
