@@ -83,6 +83,7 @@
     private dialogVisible = true;
     private selection = [];
     public queryPageParameters: any = {
+      auditEnum: 'ConstractAdopt', // 只显示合同审核通过的
       termName: null
     };
     public resPageInfo: any = {

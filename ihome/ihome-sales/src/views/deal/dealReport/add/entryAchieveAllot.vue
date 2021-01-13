@@ -2836,7 +2836,12 @@
       // 计算方式
       obj.calculation = this.postData.calculation;
       // 对外拆佣信息
-      obj.channelCommVO = this.postData.commissionInfoList
+      obj.channelCommVO = (this as any).$tool.deepClone(this.postData.commissionInfoList);
+      if (obj.channelCommVO && obj.channelCommVO.length) {
+        obj.channelCommVO.forEach((item: any) => {
+          item.isMainDeal = true; // 后端说写死
+        });
+      }
       return obj;
     }
 
