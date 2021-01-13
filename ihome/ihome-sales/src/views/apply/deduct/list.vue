@@ -4,7 +4,7 @@
  * @Author: ywl
  * @Date: 2021-01-12 19:30:20
  * @LastEditors: ywl
- * @LastEditTime: 2021-01-12 21:00:43
+ * @LastEditTime: 2021-01-13 14:32:00
 -->
 <template>
   <IhPage label-width="100px">
@@ -322,7 +322,15 @@ export default class DeductList extends Vue {
   }
 
   created() {
+    let paramsJson: any = sessionStorage.getItem("deductParams");
+    let params = JSON.parse(paramsJson);
+    if (params && params.developName) {
+      this.queryPageParameters.developName = params.developName;
+    }
     this.getListMixin();
+  }
+  destroyed() {
+    sessionStorage.removeItem("deductParams");
   }
 }
 </script>
