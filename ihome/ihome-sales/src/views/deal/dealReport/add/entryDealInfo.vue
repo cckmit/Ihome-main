@@ -513,7 +513,7 @@
           sum-text="合计金额"
           :summary-method="$parent.getReceiveSummaries"
           :data="postData.receiveVO">
-          <el-table-column prop="type" label="类型" min-width="120">
+          <el-table-column prop="type" label="类型" fixed min-width="120">
             <template slot-scope="scope">
               <div>{{$root.dictAllName(scope.row.type, 'FeeType')}}</div>
             </template>
@@ -590,11 +590,11 @@
               </div>
             </template>
           </el-table-column>
-          <el-table-column prop="receiveAmount" label="应收金额" min-width="120"></el-table-column>
-          <el-table-column prop="commAmount" label="派发佣金金额" min-width="150"></el-table-column>
-          <el-table-column prop="rewardAmount" label="派发内场奖励金额" min-width="150"></el-table-column>
-          <el-table-column prop="totalPackageAmount" label="总包业绩金额" min-width="150"></el-table-column>
-          <el-table-column prop="distributionAmount" label="分销业绩金额" min-width="150"></el-table-column>
+          <el-table-column prop="receiveAmount" label="应收金额" min-width="180"></el-table-column>
+          <el-table-column prop="commAmount" label="派发佣金金额" min-width="180"></el-table-column>
+          <el-table-column prop="rewardAmount" label="派发内场奖励金额" min-width="180"></el-table-column>
+          <el-table-column prop="totalPackageAmount" label="总包业绩金额" min-width="180"></el-table-column>
+          <el-table-column prop="distributionAmount" label="分销业绩金额" min-width="180"></el-table-column>
           <el-table-column prop="otherChannelFees" label="其他渠道费用(正数为产生，负数为使用)" min-width="150"></el-table-column>
         </el-table>
       </el-col>
@@ -910,13 +910,11 @@
           otherChannelFees: 0,
         }
         this.postData.receiveVO.forEach((item: any) => {
-          obj.receiveAmount = obj.receiveAmount + parseFloat(item.receiveAmount ? item.receiveAmount : 0);
-          obj.achieveAmount = obj.achieveAmount + parseFloat(item.commAmount ? item.commAmount : 0)
-            + parseFloat(item.rewardAmount ? item.rewardAmount : 0)
-            + parseFloat(item.totalPackageAmount ? item.totalPackageAmount : 0)
-            + parseFloat(item.distributionAmount ? item.distributionAmount : 0);
-          obj.otherChannelFees = obj.otherChannelFees
-            + parseFloat(item.otherChannelFees ? item.otherChannelFees : 0);
+          obj.receiveAmount = (obj.receiveAmount * 1 * 100 + item.receiveAmount) / 100;
+          obj.achieveAmount = (obj.achieveAmount * 1 * 100 + item.commAmount * 1 * 100
+            + item.rewardAmount * 1 * 100 + item.totalPackageAmount * 1 * 100
+            + item.distributionAmount * 1 * 100) / 100;
+          obj.otherChannelFees = (obj.otherChannelFees * 1 * 100 + item.otherChannelFees * 1 * 100) / 100;
         })
         arr.push(obj);
       }
@@ -1482,7 +1480,7 @@
           if (index === this.currentReceiveIndex) {
             vo.showData = data;
             vo.packageId = data[0].packageMxId;
-            vo.receiveAmount = data[0].receivableAmout;
+            vo.receiveAmount = info.receiveAmount;
             vo.commAmount = info.comm;
             vo.rewardAmount = info.reward;
             vo.totalPackageAmount = info.totalBag;

@@ -17,7 +17,6 @@
       v-bind:is="currentComponent"></component>
     <ih-dialog :show="dialogAddProjectCycle" desc="选择项目周期列表">
       <SelectProjectCycle
-        :data="projectLoading"
         @cancel="() => (dialogAddProjectCycle = false)"
         @finish="
             (data) => {
@@ -109,7 +108,6 @@
       idList: [] // 可选的收派套餐ids
     }; // 收派套餐data数据
     dialogViewInfo: any = false; // 来访/成交信息弹窗标识
-    projectLoading: any = false; // 确定选择周期按钮loading
 
     async created() {
       this.currentBtnType = this.$route.query.btnType;
@@ -154,11 +152,9 @@
     // 确定选择项目周期
     async finishAddProjectCycle(data: any) {
       // console.log('data', data);
-      this.projectLoading = true;
       if (data && data.length > 0) {
         await (this as any).$refs.child.finishAddProjectCycle(data);
       }
-      this.projectLoading = false;
       this.dialogAddProjectCycle = false;
     }
 
