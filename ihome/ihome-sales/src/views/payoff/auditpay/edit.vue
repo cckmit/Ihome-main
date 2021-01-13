@@ -4,7 +4,7 @@
  * @Author: wwq
  * @Date: 2020-12-26 11:11:23
  * @LastEditors: wwq
- * @LastEditTime: 2021-01-12 19:55:03
+ * @LastEditTime: 2021-01-13 16:28:20
 -->
 <template>
   <IhPage>
@@ -48,6 +48,26 @@
                 v-model="info.makerTime"
                 placeholder="制单日期"
               ></el-input>
+            </el-form-item>
+          </el-col>
+          <el-col :span="8">
+            <el-form-item
+              label="当前状态"
+              prop="status"
+            >
+              <el-select
+                style="width: 100%"
+                v-model="info.status"
+                disabled
+                placeholder="请选择"
+              >
+                <el-option
+                  v-for="item in $root.dictAllList('PayoffStatus')"
+                  :key="item.code"
+                  :label="item.name"
+                  :value="item.code"
+                ></el-option>
+              </el-select>
             </el-form-item>
           </el-col>
           <el-col :span="8">
@@ -747,7 +767,7 @@
           type="textarea"
           :autosize="{ minRows: 5, maxRows: 10 }"
           placeholder="请输入内容"
-          v-model="info.postscript"
+          v-model="info.auditOpinion"
           maxlength="500"
           show-word-limit
         >
@@ -756,15 +776,15 @@
       <br />
       <div class="bottom">
         <el-button
-          @click="submit('Unconfirm')"
+          @click="submit('TemporaryStorage')"
           type="primary"
         >暂存</el-button>
         <el-button
-          @click="submit('PlatformClerkUnreview')"
+          @click="submit('Through')"
           type="success"
         >通过</el-button>
         <el-button
-          @click="submit('PlatformClerkUnreview')"
+          @click="submit('Reject')"
           type="danger"
         >驳回</el-button>
         <el-button @click="cancel">返回</el-button>
@@ -783,14 +803,14 @@
 import { Component, Vue } from "vue-property-decorator";
 import {
   get_payApply_get__id,
-  post_payApply_entryApply,
-  post_payApply_updateApply,
   post_payApply_calculation_results,
+  post_payApply_financeReviewApply,
+  post_payApply_notFinanceReviewApply,
   get_processRecord_oa_review_person__applyId,
   get_processRecord_oa_review_log__applyId,
 } from "@/api/payoff/index";
 import { Form as ElForm } from "element-ui";
-import Obligation from "./dialog/obligation.vue";
+import Obligation from "../payorder/dialog/obligation.vue";
 
 @Component({
   components: {
@@ -815,8 +835,9 @@ export default class PayoffEdit extends Vue {
     documentList: [],
     paySummaryList: [],
     description: null,
-    postscript: null,
+    auditOpinion: null,
   };
+  submitFile: any = {};
   operateName: any = null;
   operatePost: any = null;
   operateVisible: any = false;
@@ -1026,6 +1047,11 @@ export default class PayoffEdit extends Vue {
           })),
       };
     });
+    let obj: any = {};
+    this.fileListType.forEach((h: any) => {
+      obj[h.code] = h.fileList;
+    });
+    this.submitFile = { ...obj };
   }
 
   async searchPerson() {
@@ -1064,7 +1090,6 @@ export default class PayoffEdit extends Vue {
     obj.taxRate = this.info.taxRate;
     obj.payApplyDetailList = this.info.payApplyDetailList;
     const res: any = await post_payApply_calculation_results(obj);
-    // this.info.agencyName = res.agencyName;
     this.info.area = (this.$root as any).userInfo.orgName;
     this.info.areaId = (this.$root as any).userInfo.orgId;
     this.info.projectName = res.projectName;
@@ -1154,44 +1179,94 @@ export default class PayoffEdit extends Vue {
   submit(val: string) {
     (this.$refs["form"] as ElForm).validate(async (v: any) => {
       if (v) {
-        let obj: any = {
-          payApplyVO: {},
-          payApplyDetailList: [],
-        };
-        obj.payApplyVO.description = this.info.description;
-        obj.payApplyVO.agencyId = this.info.agencyId;
-        obj.payApplyVO.agencyName = this.info.agencyName;
-        obj.payApplyVO.applyCode = this.info.applyCode;
-        obj.payApplyVO.area = this.info.area;
-        obj.payApplyVO.areaId = this.info.areaId;
-        obj.payApplyVO.belongOrgId = this.info.areaId;
-        obj.payApplyVO.makerId = this.info.makerId;
-        obj.payApplyVO.invoiceType = this.info.invoiceType;
-        obj.payApplyVO.makerTime = this.info.makerTime;
-        obj.payApplyVO.paymentMethod = this.info.paymentMethod;
-        obj.payApplyVO.projectName = this.info.projectName;
-        obj.payApplyVO.receiveAccount = this.info.receiveAccount;
-        obj.payApplyVO.settlementMethod = this.info.settlementMethod;
-        obj.payApplyVO.status = this.info.status;
-        obj.payApplyVO.taxRate = this.info.taxRate;
-        obj.payApplyDetailList = this.info.payApplyDetailList;
-        obj.payApplyVO.status = val;
-        // 假数据
-        obj.payApplyVO.areaId = 15;
-        obj.payApplyVO.belongOrgId = 15;
-        if (this.$route.name === "payoffAdd") {
-          await post_payApply_entryApply(obj);
-        } else if (this.$route.name === "payoffEdit") {
+        let obj: any = {};
+        obj.applyId = this.payoffId;
+        obj.auditOpinion = this.info.auditOpinion;
+        obj.payoffApproval = val;
+        if (
+          val === "TemporaryStorage" &&
+          this.info.status === "BranchFinanceUnreview"
+        ) {
+          obj.payApplyVO = {};
+          obj.payApplyVO.description = this.info.description;
+          obj.payApplyVO.agencyId = this.info.agencyId;
+          obj.payApplyVO.agencyName = this.info.agencyName;
+          obj.payApplyVO.applyCode = this.info.applyCode;
+          obj.payApplyVO.area = this.info.area;
+          obj.payApplyVO.areaId = this.info.areaId;
+          obj.payApplyVO.belongOrgId = this.info.areaId;
           obj.payApplyVO.id = this.payoffId;
-          await post_payApply_updateApply(obj);
+          obj.payApplyVO.invoiceType = this.info.invoiceType;
+          obj.payApplyVO.makerId = this.info.makerId;
+          obj.payApplyVO.makerTime = this.info.makerTime;
+          obj.payApplyVO.paymentMethod = this.info.paymentMethod;
+          obj.payApplyVO.projectName = this.info.projectName;
+          obj.payApplyVO.receiveAccount = this.info.receiveAccount;
+          obj.payApplyVO.settlementMethod = this.info.settlementMethod;
+          obj.payApplyVO.status = this.info.status;
+          obj.payApplyVO.taxRate = this.info.taxRate;
+          obj.payApplyDetailList = this.info.payApplyDetailList;
+          // 假数据
+          obj.payApplyVO.areaId = 15;
+          obj.payApplyVO.belongOrgId = 15;
+          // 校验提示
+          let arr: any = [];
+          Object.values(this.submitFile).forEach((v: any) => {
+            if (v.length) {
+              arr = arr.concat(v);
+            }
+          });
+          obj.documentList = arr.map((v: any) => ({
+            fileId: v.fileId,
+            fileName: v.name,
+            fileType: v.type,
+          }));
         }
-        this.$goto({ path: `/payoff/list` });
+        switch (val) {
+          case "TemporaryStorage":
+            if (!this.info.auditOpinion) {
+              this.$message.warning("请填写审核意见");
+              return;
+            }
+            break;
+          case "Reject":
+            if (!this.info.auditOpinion) {
+              this.$message.warning("请填写审核意见");
+              return;
+            }
+            break;
+          default:
+            break;
+        }
+        switch (this.info.status) {
+          case "PlatformClerkUnreview":
+          case "OneLineUnreview":
+          case "BranchBusinessManageUnreview":
+            delete obj.applyId;
+            obj.id = this.payoffId;
+            await post_payApply_notFinanceReviewApply(obj);
+            break;
+          case "BranchFinanceUnreview":
+            await post_payApply_financeReviewApply(obj);
+            break;
+        }
         this.$message({
           type: "success",
-          message: val === "Unconfirm" ? "保存成功!" : "提交成功!",
+          message: `${this.messageChange(val)}`,
         });
+        this.$goto({ path: `/auditpay/list` });
       }
     });
+  }
+  messageChange(val: any) {
+    switch (val) {
+      case "TemporaryStorage":
+        return "暂存成功";
+      case "Through":
+        return "通过成功";
+      case "Reject":
+        return "驳回成功";
+    }
   }
 }
 </script>
