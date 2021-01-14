@@ -1,6 +1,6 @@
 /* eslint-disable */
 /* 此脚本由swagger-ui的api-docs自动生成，请勿修改 */
-//2021-1-14 15:14:55
+//2021-1-7 16:45:38
 import { request } from '@/api/base'
 const basePath = "/sales-api/deal"
 /**添加业绩比例方案信息*/
@@ -75,10 +75,6 @@ return await request.post< number,number> (basePath+'/deal/entryDealBasicInf', d
 export async function post_deal_financeConnectDeal (d?: any) {
 return await request.post< boolean,boolean> (basePath+'/deal/financeConnectDeal', d)
 }
-/**财务实收，关联已审核的成交报告)*/
-export async function post_deal_financeDisconnectDeal (d?: any) {
-return await request.post< boolean,boolean> (basePath+'/deal/financeDisconnectDeal', d)
-}
 /**查询成交详情*/
 export async function get_deal_get__id (d?: any) {
 return await request.get<DealDetailVO,DealDetailVO>(basePath+'/deal/get/{id}', { params: d })
@@ -100,16 +96,12 @@ export async function get_deal_getReviewPassed__id (d?: any) {
 return await request.get<any,any>(basePath+'/deal/getReviewPassed/{id}', { params: d })
 }
 /**请佣模块，根据主成交报告id，查详细成交信息及已付应付佣金总额)*/
-export async function post_deal_payoffCheckChannelComm (d?: any) {
-return await request.post< PayoffCheckChannelCommDetailReturnVO,PayoffCheckChannelCommDetailReturnVO> (basePath+'/deal/payoffCheckChannelComm', d)
-}
-/**根据主成交报告编号，查询房产信息、主客户信息及佣金数据；*/
-export async function get_deal_payoffGetDealInfo__dealCode (d?: any) {
-return await request.get<GetDealCustomerAndHouseDataVO,GetDealCustomerAndHouseDataVO>(basePath+'/deal/payoffGetDealInfo/{dealCode}', { params: d })
+export async function get_deal_payoffCheckChannelComm__dealCode (d?: any) {
+return await request.get<PayoffCheckChannelCommDetailReturnVO,PayoffCheckChannelCommDetailReturnVO>(basePath+'/deal/payoffCheckChannelComm/{dealCode}', { params: d })
 }
 /**根据成交报告编号、渠道商id，获取主成交+补充成交报告，合计已付及应付佣金*/
-export async function post_deal_sumCommBySuppDeal (d?: any) {
-return await request.post< PayoffCheckChannelCommReturnVO,PayoffCheckChannelCommReturnVO> (basePath+'/deal/sumCommBySuppDeal', d)
+export async function get_deal_sumCommBySuppDeal__dealCode (d?: any) {
+return await request.get<PayoffCheckChannelCommReturnVO,PayoffCheckChannelCommReturnVO>(basePath+'/deal/sumCommBySuppDeal/{dealCode}', { params: d })
 }
 /**去修改主成交*/
 export async function get_deal_toUpdateMainDeal__id (d?: any) {
@@ -135,7 +127,7 @@ return await request.post< number,number> (basePath+'/deal/withdrawDeal', d)
 export async function post_house_test (d?: any) {
 return await request.post< number,number> (basePath+'/house/test', d)
 }
-/**根据收派套餐，计算收派金额*/
+/**重新计算平台费用部分*/
 export async function post_pageData_calculateReceiveAmount (d?: any) {
 return await request.post< CalculateReceiveReturnVO,CalculateReceiveReturnVO> (basePath+'/pageData/calculateReceiveAmount', d)
 }
@@ -162,14 +154,6 @@ return await request.post< AchieveRefreshDataDetailVO[],AchieveRefreshDataDetail
 /**当总包分销一致时，重新计算平台费用的拆佣金额及拆用比例*/
 export async function post_pageData_recalculateAchieveComm (d?: any) {
 return await request.post< AchieveRecalculateCommReturnVO,AchieveRecalculateCommReturnVO> (basePath+'/pageData/recalculateAchieveComm', d)
-}
-/**test*/
-export async function post_pageData_test (d?: any) {
-return await request.post< string,string> (basePath+'/pageData/test', d)
-}
-/**test*/
-export async function get_pageData_test__id (d?: any) {
-return await request.get<string,string>(basePath+'/pageData/test/{id}', { params: d })
 }
 /**查询成交审核日志*/
 export async function post_processRecord_getProcessRecordList (d?: any) {
@@ -202,10 +186,6 @@ return await request.post< number,number> (basePath+'/suppDeal/entryRetreatRoom'
 /**录入内部员工业绩变更*/
 export async function post_suppDeal_entryStaffAchieveChange (d?: any) {
 return await request.post< number,number> (basePath+'/suppDeal/entryStaffAchieveChange', d)
-}
-/**测试Json*/
-export async function get_suppDeal_getTest (d?: any) {
-return await request.get<any,any>(basePath+'/suppDeal/getTest', { params: d })
 }
 /**预览录入业绩信息变更*/
 export async function post_suppDeal_previewEntryAchieveInfChange (d?: any) {
@@ -240,12 +220,12 @@ export async function post_suppDeal_previewUpdateStaffAchieveChange (d?: any) {
 return await request.post< PreviewUpdateStaffAchieveChangeInputVO,PreviewUpdateStaffAchieveChangeInputVO> (basePath+'/suppDeal/previewUpdateStaffAchieveChange', d)
 }
 /**去新增补充成交*/
-export async function post_suppDeal_toAddSuppDeal (d?: any) {
-return await request.post< DealDetailVO,DealDetailVO> (basePath+'/suppDeal/toAddSuppDeal', d)
+export async function get_suppDeal_toAddSuppDeal__id (d?: any) {
+return await request.get<DealDetailVO,DealDetailVO>(basePath+'/suppDeal/toAddSuppDeal/{id}', { params: d })
 }
 /**去修改补充成交*/
-export async function get_suppDeal_toUpdateSuppDeal (d?: any) {
-return await request.get<DealDetailVO,DealDetailVO>(basePath+'/suppDeal/toUpdateSuppDeal', { params: d })
+export async function get_suppDeal_toUpdateSuppDeal__id (d?: any) {
+return await request.get<DealDetailVO,DealDetailVO>(basePath+'/suppDeal/toUpdateSuppDeal/{id}', { params: d })
 }
 /**审核补充成交报告 返回所有数据信息*/
 export async function get_suppDeal_toauditBasicInfChang (d?: any) {
@@ -292,6 +272,8 @@ belongOrgId: number;
 commFees: number;
 /**角色业绩*/
 corporateAchieve: number;
+/**主成交ID*/
+parentId: number;
 /**角色业绩上限*/
 roleAchieveCap: number;
 /**角色类型(Expand-拓盘方、SourcePartner-客源合作人、ChannelPost-渠道岗、CasePost-案场岗、AgentIntegrate-中介整合方、ParkingSalesTeam-车位销售小组、Dealer-成交人、SalesPost-销售代表岗、ClerkPost-文员岗、BranchOffice-分公司)*/
@@ -309,12 +291,20 @@ managerAchieveList: ManagerAchieveAddVO[];
 export interface AchieveAllotEntryVO {
 /**平台费用信息*/
 achieveVO: AchieveAddVO[];
+/**业绩分配日期(yyyy-MM-dd HH:mm:ss)*/
+allotDate: string;
+/**业绩分配人ID*/
+alloterId: number;
 /**成交基础信息*/
 basic: EntryDealBasicInfVO;
 /**计算方式(Auto-自动、Manual-手动)*/
 calculation: string;
 /**成交对外拆佣信息*/
 channelCommVO: ChannelCommAddVO[];
+/**应收业绩信息*/
+receiveAchieveVO: ReceiveAchieveAddVO[];
+/**应收信息（收派金额）*/
+receiveVO: ReceiveAddVO[];
 }
 /**AchieveInitDataReturnVO*/
 export interface AchieveInitDataReturnVO {
@@ -605,8 +595,6 @@ isSame: string;
 isSpecial: string;
 /**业务模式(TotalBagModel-纯总包模式、DistriModel-纯分销模式、TotalBagDistrModel-总包+分销下的分销模式)*/
 modelCode: string;
-/**已关联的项目*/
-projects: TermSpecialVO[];
 /**备注说明*/
 remarks: string;
 /**更新时间(yyyy-MM-dd HH:mm:ss)*/
@@ -828,8 +816,6 @@ agencyName: string;
 amount: number;
 /**费用类型(ServiceFee-服务费、AgencyFee-代理费)*/
 feeType: string;
-/**是否主成交*/
-isMainDeal: boolean;
 /**收派标准*/
 packageId: number;
 /**甲方或客户*/
@@ -849,8 +835,6 @@ agencyName: string;
 amount: number;
 /**费用类型(ServiceFee-服务费、AgencyFee-代理费)*/
 feeType: string;
-/**是否主成交*/
-isMainDeal: boolean;
 /**收派标准*/
 packageId: number;
 /**甲方或客户*/
@@ -1154,17 +1138,8 @@ signDate: string;
 signType: string;
 /**成交阶段(Recognize-认筹、Subscribe-认购、SignUp-签约)*/
 stage: string;
-/**成交状态(Reject-驳回、Draft-草稿、AchieveDeclareUnconfirm-业绩申报待确认、PlatformClerkUnreview-平台文员待审核、HeadDepartUnreview-事业部负责人待审核、BranchBusinessManageUnreview-分公司业管待审核、NotSigned-待签署生效、ReviewPassed-已审核)*/
-status: string;
 /**认购日期(yyyy-MM-dd)*/
 subscribeDate: string;
-}
-/**DealAddSelectVo*/
-export interface DealAddSelectVo {
-/**成交Id*/
-dealId: number;
-/**补充成交类型(ChangeBasicInf-变更基础信息、ChangeAchieveInf-变更业绩信息、RetreatRoom-退房、ChangeInternalAchieveInf-变更内部员工业绩)*/
-suppContType: string;
 }
 /**DealAddVO*/
 export interface DealAddVO {
@@ -1322,8 +1297,6 @@ dealCode: string;
 dealOrgId: number;
 /**已删除*/
 deleted: number;
-/**展示历史成交附件信息*/
-documentShowList: DocumentVO[];
 /**录入日期(yyyy-MM-dd HH:mm:ss)*/
 entryDate: string;
 /**录入人（案场）*/
@@ -1424,9 +1397,9 @@ packageMxIds: number[];
 }
 /**DealInitPageRequestVO*/
 export interface DealInitPageRequestVO {
-/**周期id*/
+/**undefined*/
 cycleId: number;
-/**房间id*/
+/**undefined*/
 roomId: number;
 }
 /**DealInitPageResponseVO*/
@@ -1922,27 +1895,6 @@ partyAId: number;
 /**实收金额*/
 receivedAmount: number;
 }
-/**GetDealCustomerAndHouseDataVO*/
-export interface GetDealCustomerAndHouseDataVO {
-/**房号*/
-buildingNo: string;
-/**可结佣金（佣金总额）*/
-channelComm: number;
-/**客户名称*/
-customerName: string;
-/**联系方式*/
-customerPhone: string;
-/**已结佣金*/
-paidChannelComm: number;
-/**楼盘名称*/
-proName: string;
-/**物业类型(Residence-住宅、WorkShop-厂房、Apartment-公寓、Villa-别墅、Shop-商铺、Office-写字楼、Parking-车位、Other-其他)*/
-propertyType: string;
-/**房号*/
-roomNo: string;
-/**未结佣金*/
-unpaidChannelComm: number;
-}
 /**House*/
 export interface House {
 /**房屋地址*/
@@ -2144,13 +2096,17 @@ receives: ReceiveInitChannelCommVO[];
 export interface ManagerAchieveAddVO {
 /**业绩金额*/
 achieveFees: number;
+/**业绩ID*/
+achieveId: number;
 /**归属组织ID*/
 belongOrgId: number;
 /**管理者ID*/
 managerId: number;
 /**管理者岗位*/
 managerPosition: string;
-/**类型——默认【主管】(Supervisor-主管、Manager-经理、Director-总监)*/
+/**主成交ID*/
+parentId: number;
+/**类型(Supervisor-主管、Manager-经理、Director-总监)*/
 type: string;
 }
 /**ManagerAchieveVO*/
@@ -2341,50 +2297,38 @@ subdivide: string;
 /**周期ID，非分销成交时不能为空*/
 termId: number;
 }
-/**PayoffCheckChannelCommDetailRequestVO*/
-export interface PayoffCheckChannelCommDetailRequestVO {
-/**主成交报告编号*/
-dealCodes: string[];
-}
 /**PayoffCheckChannelCommDetailReturnVO*/
 export interface PayoffCheckChannelCommDetailReturnVO {
-/**返回数据明细列表*/
-details: PayoffCheckChannelCommDetailVO[];
-}
-/**PayoffCheckChannelCommDetailVO*/
-export interface PayoffCheckChannelCommDetailVO {
 /**面积*/
 area: number;
 /**报告编号*/
 code: string;
-/**佣金计付标准*/
-commPaymentStandard: string;
 /**合同编号*/
 contractNo: string;
 /**客户姓名*/
 customerName: string;
 /**地址*/
 houseAddress: string;
-/**序号*/
-index: string;
+/**已付佣金总额*/
+paidChannelComm: number;
 /**签约价*/
 price: number;
 /**项目名*/
 projectName: string;
-/**物业类型*/
-property: string;
+/**物业类型(Residence-住宅、WorkShop-厂房、Apartment-公寓、Villa-别墅、Shop-商铺、Office-写字楼、Parking-车位、Other-其他)*/
+propertyEnum: string;
 /**回笼比例*/
 returnRatio: number;
-/**签约日期*/
+/**签约日期(yyyy-MM-dd)*/
 signDate: string;
-/**签约类型*/
-signUp: string;
-/**认购日期*/
+/**签约类型(TempSignUp-临签、NormalSignUp-正签)*/
+signUpEnum: string;
+/**认购日期(yyyy-MM-dd)*/
 subscribeDate: string;
-/**周期Id*/
-termId: number;
 /**周期名*/
 termName: string;
+/**佣金总额*/
+totalChannelComm: number;
 }
 /**PayoffCheckChannelCommReturnVO*/
 export interface PayoffCheckChannelCommReturnVO {
@@ -2396,13 +2340,6 @@ channelId: number;
 dealCode: string;
 /**主成交+补充成交报告，合计已付佣金*/
 paidAmount: number;
-}
-/**PayoffCheckChannelCommVO*/
-export interface PayoffCheckChannelCommVO {
-/**渠道商ID*/
-channelId: number;
-/**成交报告编号*/
-dealCode: string;
 }
 /**PreviewEntryAchieveInfChangeVO*/
 export interface PreviewEntryAchieveInfChangeVO {
@@ -2540,8 +2477,6 @@ export interface PreviewEntryStaffAchieveChangeInputVO {
 achieveVO: AchieveAddVO[];
 /**父成交Id*/
 parentId: number;
-/**成交状态(Reject-驳回、Draft-草稿、AchieveDeclareUnconfirm-业绩申报待确认、PlatformClerkUnreview-平台文员待审核、HeadDepartUnreview-事业部负责人待审核、BranchBusinessManageUnreview-分公司业管待审核、NotSigned-待签署生效、ReviewPassed-已审核)*/
-status: string;
 }
 /**PreviewUpdateAchieveInfChangeVO*/
 export interface PreviewUpdateAchieveInfChangeVO {
@@ -2681,8 +2616,6 @@ achieveVO: AchieveAddVO[];
 dealId: number;
 /**父成交Id*/
 parentId: number;
-/**成交状态(Reject-驳回、Draft-草稿、AchieveDeclareUnconfirm-业绩申报待确认、PlatformClerkUnreview-平台文员待审核、HeadDepartUnreview-事业部负责人待审核、BranchBusinessManageUnreview-分公司业管待审核、NotSigned-待签署生效、ReviewPassed-已审核)*/
-status: string;
 }
 /**ProcessRecordQueryVO*/
 export interface ProcessRecordQueryVO {
@@ -2955,13 +2888,6 @@ achieveConfirmTime: string;
 dealId: number;
 /**备注*/
 remark: string;
-}
-/**TermSpecialVO*/
-export interface TermSpecialVO {
-/**ID*/
-termId: number;
-/**周期名称*/
-termName: string;
 }
 /**UpdateAchieveAllotVO*/
 export interface UpdateAchieveAllotVO {
