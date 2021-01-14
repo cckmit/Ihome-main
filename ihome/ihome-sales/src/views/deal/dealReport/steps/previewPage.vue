@@ -8,7 +8,7 @@
 -->
 <template>
   <ih-page class="text-left">
-    <div v-if="changeType !== 'staffAchieveInfo'">
+    <div v-if="changeType !== 'ChangeInternalAchieveInf'">
       <p id="anchor-1" class="ih-info-title">成交信息</p>
       <el-form
         :model="infoForm"
@@ -381,7 +381,7 @@
         </el-table>
       </el-col>
     </el-row>
-    <div v-if="changeType !== 'staffAchieveInfo'">
+    <div v-if="changeType !== 'ChangeInternalAchieveInf'">
       <p id="anchor-9" class="ih-info-title">上传附件</p>
       <el-row style="padding-left: 20px">
         <el-col>
@@ -474,7 +474,7 @@
     created() {
       this.dealId = this.$route.query.id;
       this.changeType = this.$route.query.type;
-      console.log('this.changeType', this.changeType);
+      // console.log('this.changeType', this.changeType);
       if (this.dealId) {
         this.init();
       }

@@ -4,12 +4,12 @@
  * @Author: wwq
  * @Date: 2020-10-22 14:45:15
  * @LastEditors: wwq
- * @LastEditTime: 2021-01-09 15:44:53
+ * @LastEditTime: 2021-01-11 10:20:17
  */
 import { RouteConfig } from 'vue-router'
 
 import Layout from '../components/Layout.vue';
-/**开发商路由
+/**项目管理路由
  * @param {type} 
  * @return {type} 
  */
@@ -24,7 +24,7 @@ const projectRoutes: Array<RouteConfig> = [
         path: 'list',
         name: 'projectList',
         component: () => import('../views/project/basicsInfo/list.vue'),
-        meta: { title: '项目基础信息列表', icon: 'form' }
+        meta: { title: '项目基础信息列表', icon: 'form', keepAlive: true }
       },
       {
         path: 'parentEdit',
@@ -80,7 +80,7 @@ const projectRoutes: Array<RouteConfig> = [
         path: 'list',
         name: 'firstAgencyList',
         component: () => import('../views/project/firstAgency/list.vue'),
-        meta: { title: '一手代理公司列表', icon: 'form' }
+        meta: { title: '一手代理公司列表', icon: 'form', keepAlive: true }
       },
       {
         path: 'add',
@@ -112,7 +112,7 @@ const projectRoutes: Array<RouteConfig> = [
         path: 'list',
         name: 'projectApprovalList',
         component: () => import('../views/project/projectApproval/list.vue'),
-        meta: { title: '立项周期列表', icon: 'form' }
+        meta: { title: '立项周期列表', icon: 'form', keepAlive: true }
       },
       {
         path: 'edit',

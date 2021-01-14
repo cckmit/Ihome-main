@@ -4,7 +4,7 @@
  * @Author: wwq
  * @Date: 2020-12-03 10:50:26
  * @LastEditors: wwq
- * @LastEditTime: 2021-01-09 17:05:54
+ * @LastEditTime: 2021-01-13 11:24:46
 -->
 <template>
   <el-dialog
@@ -14,8 +14,8 @@
     :close-on-press-escape="false"
     :before-close="cancel"
     width="80%"
-    class="dialog text-left"
-    :title="form.termCalcVo.termName"
+    class="dialog text-center"
+    :title="`${form.termCalcVo.termName}联动业务留存率测算表`"
   >
     <table
       border="1"
@@ -234,11 +234,13 @@
             <el-input
               ref="estimatedPadCommissionRate"
               v-model="item.calcComplateVO.estimatedPadCommissionRate"
+              placeholder="比例(%)"
               @change="inputBlur('estimatedPadCommissionRate')"
             ></el-input>
           </td>
           <td>垫佣金额预估</td>
           <td>{{item.calcComplateVO.estimatedPadCommission}}</td>
+          <!-- <td>{{estimatedPadCommissionChange(item)}}</td> -->
           <td>万</td>
         </tr>
         <tr :key="i + Math.random()">
@@ -270,6 +272,7 @@
                 <el-input
                   :ref="item.calcComplateVO.propertyEnum + item.calcComplateVO.costTypeEnum + key + h"
                   v-model="row.remark"
+                  placeholder="备注"
                   @change="inputBlur(item.calcComplateVO.propertyEnum + item.calcComplateVO.costTypeEnum + key + h)"
                 ></el-input>
               </td>
@@ -286,7 +289,10 @@
         <td>-</td>
         <td>{{(form && form.agencySum && form.agencySum.plateRate || 0) + '%'}}</td>
         <td colspan="3">
-          <el-input v-model="form.agencySum.remark"></el-input>
+          <el-input
+            v-model="form.agencySum.remark"
+            placeholder="备注"
+          ></el-input>
         </td>
       </tr>
     </table>
@@ -355,6 +361,20 @@ export default class CalculationDialog extends Vue {
   }
   finish() {
     this.$emit("finish", this.form);
+  }
+
+  estimatedPadCommissionChange(item: any) {
+    let num: any = 0;
+    item.forEach((v: any) => {
+      v.calcComplateMxVOS.forEach((j: any, key: any) => {
+        num += j[key][v.calcComplateMxVOS.length - 1].otherDemolition;
+      });
+      // const percent = v.calcComplateVO.estimatedPadCommissionRate;
+    });
+    console.log(num);
+
+    // item.calcComplateVO.estimatedPadCommission = num * (percent / 100);
+    // return item.calcComplateVO.estimatedPadCommission;
   }
 
   created() {

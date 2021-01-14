@@ -124,9 +124,9 @@
             <div v-else></div>
           </template>
         </el-table-column>
-        <el-table-column prop="isMarketProject" label="是否特殊方案" min-width="120">
+        <el-table-column prop="isSpecial" label="是否特殊方案" min-width="120">
           <template slot-scope="scope">
-            <div v-if="scope.row.isMarketProject">{{scope.row.isMarketProject === 'Yes' ? '是' : '否'}}</div>
+            <div v-if="scope.row.isSpecial">{{scope.row.isSpecial === 'Yes' ? '是' : '否'}}</div>
             <div v-else></div>
           </template>
         </el-table-column>

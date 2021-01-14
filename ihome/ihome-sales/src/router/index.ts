@@ -4,7 +4,7 @@
  * @Author: zyc
  * @Date: 2020-06-22 11:10:43
  * @LastEditors: ywl
- * @LastEditTime: 2021-01-07 14:18:12
+ * @LastEditTime: 2021-01-14 16:00:11
  */
 import Vue from 'vue'
 import VueRouter, { RouteConfig, Route } from 'vue-router'
@@ -25,8 +25,9 @@ import { developerRoutes } from './developer';
 import { contractRoutes } from './contract';
 import { projectRoutes } from './project';
 import { dealRoutes } from './deal';
-import { financeRoutes } from './finance';
 import { applyRoutes } from './apply';
+import { financeRoutes } from './finance'
+import { payoffRoutes } from './payoff'
 
 let routes: Array<RouteConfig> = [
   {
@@ -50,7 +51,7 @@ let routes: Array<RouteConfig> = [
   },
 ]
 
-routes = routes.concat(channelRoutes, developerRoutes, contractRoutes, projectRoutes, dealRoutes, financeRoutes, applyRoutes);
+routes = routes.concat(channelRoutes, developerRoutes, contractRoutes, projectRoutes, dealRoutes, financeRoutes, payoffRoutes, applyRoutes);
 
 const router = new VueRouter({
   mode: 'history',

@@ -4,7 +4,7 @@
  * @Author: ywl
  * @Date: 2020-09-25 17:34:32
  * @LastEditors: ywl
- * @LastEditTime: 2021-01-07 20:46:45
+ * @LastEditTime: 2021-01-14 15:32:22
 -->
 <template>
   <IhPage label-width="100px">
@@ -570,10 +570,6 @@ export default class DistributionList extends Vue {
     }
   }
   private handleExport() {
-    if (!this.selectionData.length) {
-      this.$message.warning("请先勾选表格数据");
-      return;
-    }
     const token: any = getToken();
     axios({
       method: "POST",
@@ -584,12 +580,12 @@ export default class DistributionList extends Vue {
         "Content-Type": "application/json",
         Authorization: "bearer " + token,
       },
-      data: this.selectionData.map((i: any) => i.id),
+      data: { ...this.queryPageParameters },
     }).then((res: any) => {
       const href = window.URL.createObjectURL(res.data);
       const $a = document.createElement("a");
       $a.href = href;
-      $a.download = "列表.xlsx";
+      $a.download = "渠道分销协议列表.xlsx";
       $a.click();
       $a.remove();
     });

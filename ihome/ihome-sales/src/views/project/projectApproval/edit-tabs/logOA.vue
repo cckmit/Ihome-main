@@ -4,7 +4,7 @@
  * @Author: wwq
  * @Date: 2020-11-27 17:29:09
  * @LastEditors: wwq
- * @LastEditTime: 2021-01-09 15:48:42
+ * @LastEditTime: 2021-01-14 15:11:42
 -->
 <template>
   <div>
@@ -103,7 +103,10 @@
           prop="dealRes"
         >
         </el-table-column>
-        <el-table-column label="系统">
+        <el-table-column
+          label="系统"
+          prop="operatorType"
+        >
         </el-table-column>
         <el-table-column
           label="备注"
@@ -161,7 +164,7 @@ import {
 @Component({
   components: {},
 })
-export default class SetMeal extends Vue {
+export default class LogOA extends Vue {
   info: any = {
     termHisVOS: [],
     termLogVOS: [],
@@ -191,16 +194,21 @@ export default class SetMeal extends Vue {
     const res = await post_logAndOA_getTermLog__termId({
       termId: this.termId,
     });
-    this.info.termLogVOS = res;
+    if (res.length) {
+      this.info.termLogVOS = res;
+    }
   }
 
   async queryCurrent() {
     const res = await get_logAndOA_getOALog__termId({
       termId: this.termId,
     });
-    this.isShow = true;
-    this.name = res.name;
-    this.orgPostName = res.orgPostName;
+
+    if (res) {
+      this.isShow = true;
+      this.name = res.name;
+      this.orgPostName = res.orgPostName;
+    }
   }
 
   view(data: any) {
