@@ -4,7 +4,7 @@
  * @Author: wwq
  * @Date: 2020-12-26 11:17:06
  * @LastEditors: wwq
- * @LastEditTime: 2021-01-13 16:39:53
+ * @LastEditTime: 2021-01-14 11:14:44
  */
 import { RouteConfig } from 'vue-router'
 import Layout from '../components/Layout.vue';
@@ -106,18 +106,6 @@ const payoffRoutes: Array<RouteConfig> = [
         name: 'importList',
         component: () => import('../views/payoff/import/list.vue'),
         meta: { title: '渠道结佣额度导入', icon: 'form', keepAlive: true }
-      },
-      {
-        path: 'error',
-        name: 'importError',
-        component: () => import('../views/payoff/import/error.vue'),
-        meta: { title: '渠道结佣额度导入异常', icon: 'form' }
-      },
-      {
-        path: 'success',
-        name: 'importSuccess',
-        component: () => import('../views/payoff/import/success.vue'),
-        meta: { title: '渠道结佣额度导入成功', icon: 'form' }
       },
       {
         path: 'uploading',

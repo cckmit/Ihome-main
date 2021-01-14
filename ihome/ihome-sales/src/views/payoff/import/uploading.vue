@@ -4,7 +4,7 @@
  * @Author: wwq
  * @Date: 2021-01-13 16:35:41
  * @LastEditors: wwq
- * @LastEditTime: 2021-01-13 21:15:00
+ * @LastEditTime: 2021-01-14 10:47:14
 -->
 <template>
   <IhPage>
@@ -70,11 +70,6 @@ export default class Import extends Vue {
     }
   }
   async uploadMsg() {
-    let data: any = sessionStorage.getItem("importData");
-    let arr: any = JSON.parse(data);
-    const fd = new FormData();
-    fd.append("file", arr[0]);
-    console.log(arr[0], fd, "xxxxxxxxxxxxx");
     try {
       let data: any = sessionStorage.getItem("importData");
       let arr: any = JSON.parse(data);
