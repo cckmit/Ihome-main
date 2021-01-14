@@ -4,7 +4,7 @@
  * @Author: wwq
  * @Date: 2020-12-02 11:18:51
  * @LastEditors: wwq
- * @LastEditTime: 2020-12-02 11:40:48
+ * @LastEditTime: 2021-01-14 16:03:16
 -->
 <template>
   <el-dialog
@@ -57,7 +57,7 @@
           </el-form-item>
         </el-col>
       </el-row>
-      <el-row>
+      <!-- <el-row>
         <el-col :span="24">
           <el-form-item
             label="甲方退款天数"
@@ -73,7 +73,7 @@
             </div>
           </el-form-item>
         </el-col>
-      </el-row>
+      </el-row> -->
     </el-form>
     <span
       slot="footer"
@@ -102,7 +102,6 @@ export default class AddNotification extends Vue {
   form: any = {
     premiumReceived: null,
     modeDescription: null,
-    partyARefundDays: null,
   };
   rules: any = {
     premiumReceived: [
@@ -118,13 +117,6 @@ export default class AddNotification extends Vue {
     ],
     modeDescription: [
       { required: true, message: "请输入优惠方式说明", trigger: "change" },
-    ],
-    partyARefundDays: [
-      { required: true, message: "请输入甲方退款天数", trigger: "change" },
-      {
-        validator: isNumberValidato,
-        trigger: "change",
-      },
     ],
   };
 

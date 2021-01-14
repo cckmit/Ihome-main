@@ -4,7 +4,7 @@
  * @Author: wwq
  * @Date: 2020-11-27 17:27:01
  * @LastEditors: wwq
- * @LastEditTime: 2020-12-23 19:55:51
+ * @LastEditTime: 2021-01-14 16:40:56
 -->
 <template>
   <div>
@@ -142,10 +142,6 @@
             prop="modeDescription"
           ></el-table-column>
           <el-table-column
-            prop="partyARefundDays"
-            label="甲方退款天数"
-          ></el-table-column>
-          <el-table-column
             label="操作"
             width="120"
             fixed="right"
@@ -161,6 +157,23 @@
           </el-table-column>
         </el-table>
       </div>
+      <div class="margin-left-20 margin-top-20">
+        <el-form label-width="100px">
+          <el-row>
+            <el-col :span="6">
+              <el-form-item
+                label="甲方退款天数"
+                prop="partyARefundDays"
+              >
+                <el-input
+                  v-model="info.partyARefundDays"
+                  disabled
+                ></el-input>
+              </el-form-item>
+            </el-col>
+          </el-row>
+        </el-form>
+      </div>
       <div class="file text-left">
         <el-form>
           <el-row>
@@ -174,6 +187,7 @@
                   size="100px"
                   :limit="fileList.length"
                   :removePermi="false"
+                  :upload-show="!!fileList.length"
                 ></IhUpload>
               </el-form-item>
             </el-col>
@@ -191,7 +205,7 @@
   </div>
 </template>
 <script lang="ts">
-import { Component, Vue, Watch } from "vue-property-decorator";
+import { Component, Vue } from "vue-property-decorator";
 import ViewContract from "../dialog/notification-dialog/viewContract.vue";
 import { get_distributContract_get__termId } from "@/api/project/index.ts";
 import axios from "axios";
@@ -207,6 +221,7 @@ export default class Notification extends Vue {
     distributContractVOS: [],
     preferentialMxVOS: [],
     chargeEnum: null,
+    partyARefundDays: null,
     constractOaVO: {
       customerConfirm: null,
       responsibiltity: null,
@@ -216,23 +231,6 @@ export default class Notification extends Vue {
   viewData: any = {};
   fileList: any = [];
 
-  @Watch("info.attachTermVOS")
-  geiFileList(val: any, oldVal: any) {
-    if (oldVal === undefined) {
-      this.fileList = val.map((v: any) => ({
-        name: v.attachName,
-        fileId: v.attachAddr,
-      }));
-    } else {
-      if (val.length !== oldVal.length) {
-        this.fileList = val.map((v: any) => ({
-          name: v.attachName,
-          fileId: v.attachAddr,
-        }));
-      }
-    }
-  }
-
   created() {
     this.getInfo();
   }
@@ -240,9 +238,16 @@ export default class Notification extends Vue {
   async getInfo() {
     const id = this.$route.query.id;
     if (id) {
-      this.info = await get_distributContract_get__termId({
+      const res = await get_distributContract_get__termId({
         termId: id,
       });
+      this.info = { ...res };
+      if (res.attachTermVOS.length) {
+        this.fileList = res.attachTermVOS.map((v: any) => ({
+          name: v.fileName,
+          fileId: v.fileId,
+        }));
+      }
     }
   }
 

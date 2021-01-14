@@ -4,7 +4,7 @@
  * @Author: wwq
  * @Date: 2020-11-27 17:27:01
  * @LastEditors: wwq
- * @LastEditTime: 2020-12-29 09:18:39
+ * @LastEditTime: 2021-01-14 16:30:52
 -->
 <template>
   <div>
@@ -203,10 +203,6 @@
             prop="modeDescription"
           ></el-table-column>
           <el-table-column
-            prop="partyARefundDays"
-            label="甲方退款天数"
-          ></el-table-column>
-          <el-table-column
             prop="state"
             label="状态"
           >
@@ -251,6 +247,29 @@
             </template>
           </el-table-column>
         </el-table>
+      </div>
+      <div class="margin-left-20 margin-top-20">
+        <el-form label-width="100px">
+          <el-row>
+            <el-col :span="6">
+              <el-form-item
+                label="甲方退款天数"
+                prop="partyARefundDays"
+              >
+                <div class="editParty">
+                  <el-input
+                    v-model="info.partyARefundDays"
+                    disabled
+                  ></el-input>
+                  <i
+                    class="el-icon-edit-outline tubiao"
+                    @click="editDialog('partyARefundDays')"
+                  ></i>
+                </div>
+              </el-form-item>
+            </el-col>
+          </el-row>
+        </el-form>
       </div>
       <div class="file text-left">
         <el-form>
@@ -325,6 +344,7 @@ import {
   post_distributContract_cancel__agencyContrictId,
   post_preferential_start__preferentialMxId,
   post_preferential_cancel__preferentialMxId,
+  post_preferential_updateRetuenDays,
 } from "@/api/project/index.ts";
 import axios from "axios";
 import { getToken } from "ihome-common/util/cookies";
@@ -346,6 +366,7 @@ export default class Notification extends Vue {
     preferentialMxVOS: [],
     chargeEnum: null,
     city: null,
+    partyARefundDays: null,
     constractOaVO: {
       customerConfirm: null,
       responsibiltity: null,
@@ -529,15 +550,21 @@ export default class Notification extends Vue {
     switch (type) {
       case "customerConfirm":
         this.editData.title = "客户成交以及确认";
+        this.editData.value = this.info.constractOaVO[type];
         break;
       case "responsibiltity":
         this.editData.title = "违约责任";
+        this.editData.value = this.info.constractOaVO[type];
         break;
       case "otherRemark":
         this.editData.title = "合同其他说明";
+        this.editData.value = this.info.constractOaVO[type];
+        break;
+      case "partyARefundDays":
+        this.editData.title = "甲方退款天数";
+        this.editData.value = this.info.partyARefundDays;
         break;
     }
-    this.editData.value = this.info.constractOaVO[type];
     this.editDialogVisible = true;
   }
 
@@ -546,19 +573,35 @@ export default class Notification extends Vue {
     switch (this.editType) {
       case "customerConfirm":
         type = 1;
+        await post_distributContract_saveOaRemark({
+          constractOaId: this.info.constractOaVO.constractOaId,
+          remark: data,
+          type: type,
+        });
         break;
       case "responsibiltity":
         type = 2;
+        await post_distributContract_saveOaRemark({
+          constractOaId: this.info.constractOaVO.constractOaId,
+          remark: data,
+          type: type,
+        });
         break;
       case "otherRemark":
         type = 3;
+        await post_distributContract_saveOaRemark({
+          constractOaId: this.info.constractOaVO.constractOaId,
+          remark: data,
+          type: type,
+        });
+        break;
+      case "partyARefundDays":
+        await post_preferential_updateRetuenDays({
+          partyARefundDays: data,
+          termId: this.$route.query.id,
+        });
         break;
     }
-    await post_distributContract_saveOaRemark({
-      constractOaId: this.info.constractOaVO.constractOaId,
-      remark: data,
-      type: type,
-    });
     this.$message.success("保存成功");
     this.getInfo();
     this.editDialogVisible = false;
