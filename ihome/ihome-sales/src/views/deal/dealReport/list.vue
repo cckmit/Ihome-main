@@ -322,16 +322,16 @@
                   <i class="el-icon-arrow-down el-icon--right"></i>
                   </span>
                   <el-dropdown-menu slot="dropdown">
-                    <el-dropdown-item @click.native.prevent="handleChangeDealInfo(scope, 'baseInfo')"
+                    <el-dropdown-item @click.native.prevent="handleChangeDealInfo(scope, 'ChangeBasicInf')"
                     >变更基础信息
                     </el-dropdown-item>
-                    <el-dropdown-item @click.native.prevent="handleChangeDealInfo(scope, 'achieveInfo')"
+                    <el-dropdown-item @click.native.prevent="handleChangeDealInfo(scope, 'ChangeAchieveInf')"
                     >变更业绩信息
                     </el-dropdown-item>
-                    <el-dropdown-item @click.native.prevent="handleChangeDealInfo(scope, 'checkOut')"
+                    <el-dropdown-item @click.native.prevent="handleChangeDealInfo(scope, 'RetreatRoom')"
                     >退房
                     </el-dropdown-item>
-                    <el-dropdown-item @click.native.prevent="handleChangeDealInfo(scope, 'staffAchieveInfo')"
+                    <el-dropdown-item @click.native.prevent="handleChangeDealInfo(scope, 'ChangeInternalAchieveInf')"
                     >内部员工业绩变更
                     </el-dropdown-item>
                   </el-dropdown-menu>
@@ -538,20 +538,26 @@
 
     /*
     * type: 变更成交按钮类型
-    * baseInfo --- 变更基础信息
-    * achieveInfo --- 变更业绩信息
-    * checkOut --- 退房
-    * staffAchieveInfo --- 内部员工业绩变更
+    * ChangeBasicInf --- 变更基础信息
+    * ChangeAchieveInf --- 变更业绩信息
+    * RetreatRoom --- 退房
+    * ChangeInternalAchieveInf --- 内部员工业绩变更
     * */
     async handleChangeDealInfo(scope: any, type: any) {
       // console.log(scope);
-      this.$router.push({
-        path: "/dealReport/changeDealInfo",
-        query: {
-          id: scope.row.id,
-          type: type
-        }
-      });
+      // console.log(type);
+      if (scope.row.id === scope.row.parentId) {
+        // 这两个id一样，才是主成交报告，才能新增补充成交
+        this.$router.push({
+          path: "/dealReport/suppDeal",
+          query: {
+            id: scope.row.id,
+            type: type
+          }
+        });
+      } else {
+        this.$message.warning('非主成交报告，没有此操作');
+      }
     }
 
     // 撤回审核

@@ -16,7 +16,7 @@
       class="demo-ruleForm">
       <p id="anchor-1" ref="#anchor-1" class="ih-info-title">成交信息</p>
       <div
-        v-if="!['staffAchieveInfo'].includes(changeType)"
+        v-if="!['ChangeInternalAchieveInf'].includes(changeType)"
         class="add-all-wrapper padding-left-20">
         <el-button type="success">更新明源数据</el-button>
       </div>
@@ -32,13 +32,13 @@
         <el-col :span="6">
           <el-form-item label="项目周期" prop="cycleId">
             <el-input
-              v-if="['achieveInfo', 'checkOut'].includes(changeType)"
+              v-if="['ChangeAchieveInf', 'RetreatRoom'].includes(changeType)"
               placeholder="请选择项目周期"
               readonly v-model="postData.cycleName">
               <el-button slot="append" icon="el-icon-search" @click.native.prevent="selectProject"></el-button>
             </el-input>
             <el-input
-              v-if="['baseInfo', 'staffAchieveInfo'].includes(changeType)"
+              v-if="['ChangeBasicInf', 'ChangeInternalAchieveInf'].includes(changeType)"
               placeholder="请选择项目周期"
               disabled v-model="postData.cycleName"></el-input>
           </el-form-item>
@@ -63,7 +63,7 @@
           <el-form-item label="细分业务模式" prop="subdivisionType">
             <el-select
               v-model="postData.subdivisionType"
-              :disabled="['baseInfo', 'staffAchieveInfo'].includes(changeType)"
+              :disabled="['ChangeBasicInf', 'ChangeInternalAchieveInf'].includes(changeType)"
               placeholder="请选择细分业务模式"
               class="width--100">
               <el-option
@@ -111,7 +111,7 @@
           <el-form-item label="一手代理公司" prop="oneAgentTeamId">
             <el-select
               v-model="postData.oneAgentTeamId"
-              :disabled="['baseInfo', 'staffAchieveInfo'].includes(changeType)"
+              :disabled="['ChangeBasicInf', 'ChangeInternalAchieveInf'].includes(changeType)"
               placeholder="请选择一手代理公司"
               class="width--100">
               <el-option label="是" value="yes"></el-option>
@@ -138,7 +138,7 @@
         <el-col :span="6">
           <el-form-item label="栋座">
             <el-input
-              v-if="['staffAchieveInfo'].includes(changeType)"
+              v-if="['ChangeInternalAchieveInf'].includes(changeType)"
               placeholder="栋座"
               disabled v-model="postData.buildingId"></el-input>
             <IhSelectPageByBuild
@@ -156,7 +156,7 @@
         <el-col :span="6">
           <el-form-item label="房号">
             <el-input
-              v-if="['staffAchieveInfo'].includes(changeType)"
+              v-if="['ChangeInternalAchieveInf'].includes(changeType)"
               placeholder="房号"
               disabled v-model="postData.roomId"></el-input>
             <IhSelectPageByRoom
@@ -175,7 +175,7 @@
           <el-form-item label="合同类型" prop="contType">
             <el-select
               v-model="postData.contType"
-              :disabled="['baseInfo', 'staffAchieveInfo'].includes(changeType)"
+              :disabled="['ChangeBasicInf', 'ChangeInternalAchieveInf'].includes(changeType)"
               placeholder="请选择合同类型"
               @change="changeContType"
               class="width--100">
@@ -193,7 +193,7 @@
             <div class="contNo-wrapper">
               <el-select
                 v-model="postData.contNo"
-                :disabled="['baseInfo', 'staffAchieveInfo'].includes(changeType)"
+                :disabled="['ChangeBasicInf', 'ChangeInternalAchieveInf'].includes(changeType)"
                 placeholder="请选择分销协议编号"
                 class="width--100">
                 <el-option
@@ -250,7 +250,7 @@
           <el-form-item label="备案情况">
             <el-select
               v-model="postData.recordState"
-              :disabled="['baseInfo', 'staffAchieveInfo'].includes(changeType)"
+              :disabled="['ChangeBasicInf', 'ChangeInternalAchieveInf'].includes(changeType)"
               placeholder="请选择备案情况"
               class="width--100">
               <el-option
@@ -266,7 +266,7 @@
           <el-form-item label="建筑面积" prop="area">
             <el-input
               v-model="postData.area"
-              :disabled="['staffAchieveInfo'].includes(changeType)"
+              :disabled="['ChangeInternalAchieveInf'].includes(changeType)"
               placeholder="请输入建筑面积"></el-input>
           </el-form-item>
         </el-col>
@@ -275,7 +275,7 @@
             <div class="home-type-wrapper">
               <div>
                 <el-input-number
-                  :disabled="['staffAchieveInfo'].includes(changeType)"
+                  :disabled="['ChangeInternalAchieveInf'].includes(changeType)"
                   v-digits="0"
                   v-model="postData.room"
                   :min="0"
@@ -285,7 +285,7 @@
               </div>
               <div>
                 <el-input-number
-                  :disabled="['staffAchieveInfo'].includes(changeType)"
+                  :disabled="['ChangeInternalAchieveInf'].includes(changeType)"
                   v-digits="0"
                   v-model="postData.hall"
                   :min="0"
@@ -295,7 +295,7 @@
               </div>
               <div>
                 <el-input-number
-                  :disabled="['staffAchieveInfo'].includes(changeType)"
+                  :disabled="['ChangeInternalAchieveInf'].includes(changeType)"
                   v-digits="0"
                   v-model="postData.toilet"
                   :min="0"
@@ -309,7 +309,7 @@
         <el-col :span="12">
           <el-form-item label="房产证/预售合同编号">
             <el-input
-              :disabled="['staffAchieveInfo'].includes(changeType)"
+              :disabled="['ChangeInternalAchieveInf'].includes(changeType)"
               v-model="postData.propertyNo"
               placeholder="请输入房产证/预售合同编号"></el-input>
           </el-form-item>
@@ -317,7 +317,7 @@
         <el-col :span="12">
           <el-form-item label="房产证地址">
             <el-input
-              :disabled="['staffAchieveInfo'].includes(changeType)"
+              :disabled="['ChangeInternalAchieveInf'].includes(changeType)"
               v-model="postData.address"
               placeholder="请输入房产证地址"></el-input>
           </el-form-item>
@@ -325,7 +325,7 @@
         <el-col :span="8">
           <el-form-item label="现场销售">
             <el-input
-              :disabled="['staffAchieveInfo'].includes(changeType)"
+              :disabled="['ChangeInternalAchieveInf'].includes(changeType)"
               v-model="postData.remarks" placeholder="请输入现场销售"></el-input>
           </el-form-item>
         </el-col>
@@ -333,7 +333,7 @@
           <el-form-item label="签约类型">
             <el-select
               v-model="postData.signType"
-              :disabled="['staffAchieveInfo'].includes(changeType)"
+              :disabled="['ChangeInternalAchieveInf'].includes(changeType)"
               placeholder="请选择签约类型"
               class="width--100">
               <el-option
@@ -349,7 +349,7 @@
           <el-form-item label="成交阶段" prop="stage">
             <el-select
               v-model="postData.stage"
-              :disabled="['staffAchieveInfo'].includes(changeType)"
+              :disabled="['ChangeInternalAchieveInf'].includes(changeType)"
               placeholder="请选择成交阶段"
               class="width--100">
               <el-option
@@ -365,7 +365,7 @@
           <el-form-item label="明源房款回笼比例">
             <el-input
               v-model="postData.returnRatio"
-              :disabled="['baseInfo', 'staffAchieveInfo'].includes(changeType)"
+              :disabled="['ChangeBasicInf', 'ChangeInternalAchieveInf'].includes(changeType)"
               placeholder="请输入明源房款回笼比例"></el-input>
           </el-form-item>
         </el-col>
@@ -373,7 +373,7 @@
           <el-form-item label="认购价格">
             <el-input
               v-model="postData.subscribePrice"
-              :disabled="['baseInfo', 'staffAchieveInfo'].includes(changeType)"
+              :disabled="['ChangeBasicInf', 'ChangeInternalAchieveInf'].includes(changeType)"
               placeholder="请输入认购价格"></el-input>
           </el-form-item>
         </el-col>
@@ -381,7 +381,7 @@
           <el-form-item label="认购日期">
             <el-date-picker
               style="width: 100%"
-              :disabled="['staffAchieveInfo'].includes(changeType)"
+              :disabled="['ChangeInternalAchieveInf'].includes(changeType)"
               v-model="postData.subscribeDate"
               type="datetime"
               placeholder="请选择认购日期">
@@ -392,7 +392,7 @@
           <el-form-item label="签约价格">
             <el-input
               v-model="postData.signPrice"
-              :disabled="['baseInfo', 'staffAchieveInfo'].includes(changeType)"
+              :disabled="['ChangeBasicInf', 'ChangeInternalAchieveInf'].includes(changeType)"
               placeholder="请输入签约价格"></el-input>
           </el-form-item>
         </el-col>
@@ -400,7 +400,7 @@
           <el-form-item label="签约日期">
             <el-date-picker
               style="width: 100%"
-              :disabled="['staffAchieveInfo'].includes(changeType)"
+              :disabled="['ChangeInternalAchieveInf'].includes(changeType)"
               v-model="postData.signDate"
               type="datetime"
               placeholder="请选择签约日期">
@@ -419,18 +419,12 @@
         </el-col>
         <el-col :span="6">
           <el-form-item label="录入日期" prop="entryDate">
-            <el-date-picker
-              style="width: 100%"
-              v-model="postData.entryDate"
-              type="datetime"
-              disabled
-              placeholder="请选择录入日期">
-            </el-date-picker>
+            <el-input v-model="postData.entryDate" disabled placeholder="录入日期"></el-input>
           </el-form-item>
         </el-col>
         <el-col :span="6">
           <el-form-item label="数据标志" prop="dataSign">
-            <el-input v-model="postData.dataSign" disabled placeholder="请输入数据标志"></el-input>
+            <el-input v-model="postData.dataSign" disabled placeholder="数据标志"></el-input>
           </el-form-item>
         </el-col>
         <el-col :span="6">
@@ -485,7 +479,7 @@
       <el-col>
         <div class="add-all-wrapper">
           <el-button
-            v-if="!['staffAchieveInfo'].includes(changeType)"
+            v-if="!['ChangeInternalAchieveInf'].includes(changeType)"
             type="success" @click="handleAddCustomer">添加客户</el-button>
         </div>
         <el-table
@@ -557,8 +551,8 @@
     </el-row>
     <div class="receive-wrapper" id="anchor-4">
       <p class="ih-info-title">收派金额</p>
-      <div v-if="!['baseInfo', 'staffAchieveInfo'].includes(changeType)">计算方式</div>
-      <div v-if="!['baseInfo', 'staffAchieveInfo'].includes(changeType)">
+      <div v-if="!['ChangeBasicInf', 'ChangeInternalAchieveInf'].includes(changeType)">计算方式</div>
+      <div v-if="!['ChangeBasicInf', 'ChangeInternalAchieveInf'].includes(changeType)">
         <el-select
           v-model="postData.calculation"
           placeholder="请选择计算方式"
@@ -698,7 +692,7 @@
     <div class="ih-type-wrapper">
       <div class="title">总包</div>
       <el-button
-        v-if="!['baseInfo'].includes(changeType)"
+        v-if="!['ChangeBasicInf'].includes(changeType)"
         type="success" @click="handleAddAchieve('total')">新增角色</el-button>
     </div>
     <el-row style="padding-left: 20px">
@@ -750,7 +744,7 @@
     <div class="ih-type-wrapper">
       <div class="title">分销</div>
       <el-button
-        v-if="!['baseInfo'].includes(changeType)"
+        v-if="!['ChangeBasicInf'].includes(changeType)"
         type="success" @click="handleAddAchieve('distri')">新增角色</el-button>
     </div>
     <el-row style="padding-left: 20px">
@@ -927,7 +921,7 @@
   import AddBroker from "@/views/deal/dealReport/dialog/addBroker.vue";
   import EditDealAchieve from "@/views/deal/dealReport/dialog/editDealAchieve.vue";
   import {
-    get_achieveScaleScheme_get__id
+    get_suppDeal_toAddSuppDeal__id
   } from "@/api/deal";
 
   @Component({
@@ -1105,7 +1099,11 @@
       this.changeType = this.$route.query.type;
       // console.log('this.changeType', this.changeType);
       if (this.id) {
-        const res: any = await get_achieveScaleScheme_get__id({id: this.id});
+        let postData: any = {
+          id: this.id,
+          suppContTypeEnum: this.changeType
+        }
+        const res: any = await get_suppDeal_toAddSuppDeal__id(postData);
         this.postData = res;
       } else {
         // 录入日期

@@ -29,20 +29,20 @@
             {{infoForm.isSame === 'Yes' ? "是" : "否"}}
           </el-form-item>
         </el-col>
-        <el-col :span="6">
+        <el-col :span="12">
           <el-form-item label="物业类型">{{infoForm.achievePropertyTypeStr}}</el-form-item>
         </el-col>
-        <el-col :span="6">
+        <el-col :span="12">
           <el-form-item label="是否特殊方案">
             {{infoForm.isSpecial === 'Yes' ? "是" : "否"}}
           </el-form-item>
         </el-col>
-        <el-col :span="6">
+        <el-col class="tag-wrapper" :span="24" v-if="infoForm.isSpecial === 'Yes'">
           <el-form-item label="关联项目">
             <el-tag
-              v-for="item in infoForm.achieveProjectList"
-              :key="item.id">
-              {{item.projectName}}
+              v-for="item in infoForm.projects"
+              :key="item.termId">
+              {{item.termName}}
             </el-tag>
           </el-form-item>
         </el-col>
@@ -80,7 +80,8 @@
       remarks: null,
       achievePropertyTypeStr: null, // 物业类型
       achieveProjectList: [], // 关联项目
-      achieveScaleConfigList: [] // 业绩比例配置
+      achieveScaleConfigList: [], // 业绩比例配置
+      projects: [] // 关联的项目
     };
 
     async created() {
@@ -146,4 +147,9 @@
   }
 </script>
 <style lang="scss" scoped>
+  .tag-wrapper {
+    /deep/.el-tag {
+      margin-right: 10px;
+    }
+  }
 </style>
