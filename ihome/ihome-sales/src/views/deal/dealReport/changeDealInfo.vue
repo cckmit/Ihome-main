@@ -435,15 +435,15 @@
             sum-text="合计金额"
             :summary-method="getReceiveSummaries"
             :data="infoList">
-            <el-table-column prop="type" label="类型" min-width="120"></el-table-column>
+            <el-table-column prop="type" label="类型" fixed min-width="120"></el-table-column>
             <el-table-column prop="partyACustomerName" label="甲方/客户" min-width="120"></el-table-column>
             <el-table-column prop="packageId" label="收派套餐" min-width="120"></el-table-column>
-            <el-table-column prop="receiveAmount" label="应收金额" min-width="120"></el-table-column>
-            <el-table-column prop="receivedAmount" label="应收已收金额" min-width="150"></el-table-column>
-            <el-table-column prop="commAmount" label="派发佣金金额" min-width="150"></el-table-column>
-            <el-table-column prop="rewardAmount" label="派发内场奖励金额" min-width="150"></el-table-column>
-            <el-table-column prop="totalPackageAmount" label="总包业绩金额" min-width="150"></el-table-column>
-            <el-table-column prop="distributionAmount" label="分销业绩金额" min-width="150"></el-table-column>
+            <el-table-column prop="receiveAmount" label="应收金额" min-width="180"></el-table-column>
+            <el-table-column prop="receivedAmount" label="应收已收金额" min-width="180"></el-table-column>
+            <el-table-column prop="commAmount" label="派发佣金金额" min-width="180"></el-table-column>
+            <el-table-column prop="rewardAmount" label="派发内场奖励金额" min-width="180"></el-table-column>
+            <el-table-column prop="totalPackageAmount" label="总包业绩金额" min-width="180"></el-table-column>
+            <el-table-column prop="distributionAmount" label="分销业绩金额" min-width="180"></el-table-column>
             <el-table-column prop="otherChannelFees" label="其他渠道费用(正数为产生，负数为使用)" min-width="150"></el-table-column>
           </el-table>
         </el-col>

@@ -4,7 +4,7 @@
  * @Author: wwq
  * @Date: 2020-11-27 17:29:09
  * @LastEditors: wwq
- * @LastEditTime: 2020-12-15 10:30:12
+ * @LastEditTime: 2021-01-14 15:16:27
 -->
 <template>
   <div>
@@ -51,7 +51,28 @@
     </div>
 
     <br />
-    <p class="ih-info-title">立项操作日志</p>
+    <div class="logOA">
+      <p class="ih-info-title">立项操作日志</p>
+      <div class="logOAButton">
+        <el-button
+          size="small"
+          type="primary"
+          @click="queryLog"
+        >查询OA审核日志</el-button>
+        <el-button
+          size="small"
+          type="primary"
+          @click="queryCurrent"
+        >查询OA当前待办人</el-button>
+      </div>
+      <div
+        class="operator"
+        v-if="isShow"
+      >
+        <span>姓名: {{name + ','}}</span>
+        <span style="margin-left: 10px">岗位: {{orgPostName}}</span>
+      </div>
+    </div>
     <div class="padding-left-20">
       <el-table
         class="ih-table"
@@ -62,9 +83,6 @@
           prop="operatorType"
           label="操作"
         >
-          <template v-slot="{ row }">{{
-            $root.dictAllName(row.operatorType, "OperatorType")
-          }}</template>
         </el-table-column>
         <el-table-column
           label="操作人"
@@ -86,7 +104,10 @@
           prop="dealRes"
         >
         </el-table-column>
-        <el-table-column label="系统">
+        <el-table-column
+          label="系统"
+          prop="operatorType"
+        >
         </el-table-column>
         <el-table-column
           label="备注"
@@ -96,7 +117,7 @@
       </el-table>
     </div>
 
-    <br />
+    <!-- <br />
     <p class="ih-info-title">OA附言信息</p>
     <div class="padding-left-20">
       <el-table
@@ -134,17 +155,31 @@
           </template>
         </el-table-column>
       </el-table>
-    </div>
+    </div> -->
   </div>
 </template>
 <script lang="ts">
 import { Component, Vue } from "vue-property-decorator";
-import { get_logAndOA_get__termId } from "@/api/project/index.ts";
+import {
+  get_logAndOA_get__termId,
+  post_logAndOA_getTermLog__termId,
+  get_logAndOA_getOALog__termId,
+} from "@/api/project/index.ts";
 @Component({
   components: {},
 })
-export default class SetMeal extends Vue {
-  info: any = [];
+export default class LogOA extends Vue {
+  info: any = {
+    termHisVOS: [],
+    termLogVOS: [],
+  };
+  isShow = false;
+  name: any = "";
+  orgPostName: any = "";
+
+  get termId() {
+    return this.$route.query.id;
+  }
 
   created() {
     this.getInfo();
@@ -156,20 +191,63 @@ export default class SetMeal extends Vue {
       const item = await get_logAndOA_get__termId({
         termId: id,
       });
-      let arr: any = [];
-      arr = item.oafyVOS.map((v: any) => ({
-        ...v,
-        fileList: [
-          {
-            name: v.picAddrs,
-            fileId: v.picAddrs,
-          },
-        ],
-      }));
-      this.info = { ...arr, oafyVOS: arr };
+      // let arr: any = [];
+      // arr = item.oafyVOS.map((v: any) => ({
+      //   ...v,
+      //   fileList: [
+      //     {
+      //       name: v.picAddrs,
+      //       fileId: v.picAddrs,
+      //     },
+      //   ],
+      // }));
+      // this.info = { ...arr, oafyVOS: arr };
+      this.info = { ...item };
     }
+  }
+  async queryLog() {
+    const res = await post_logAndOA_getTermLog__termId({
+      termId: this.termId,
+    });
+    if (res.length) {
+      this.info.termLogVOS = res;
+    }
+  }
+
+  async queryCurrent() {
+    const res = await get_logAndOA_getOALog__termId({
+      termId: this.termId,
+    });
+    if (res) {
+      this.isShow = true;
+      this.name = res.name;
+      this.orgPostName = res.orgPostName;
+    }
+  }
+
+  view(data: any) {
+    let router = this.$router.resolve({
+      path: `/projectApproval/history`,
+      query: {
+        id: data.termId,
+      },
+    });
+    window.open(router.href, "_blank");
   }
 }
 </script>
 <style lang="scss" scoped>
+.logOA {
+  display: flex;
+  flex-flow: row nowrap;
+  justify-content: flex-start;
+  align-items: center;
+
+  .logOAButton {
+    margin: 5px 0 0 20px;
+  }
+  .operator {
+    margin-left: 20px;
+  }
+}
 </style>

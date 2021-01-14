@@ -4,7 +4,7 @@
  * @Author: wwq
  * @Date: 2020-12-01 10:58:54
  * @LastEditors: wwq
- * @LastEditTime: 2020-12-01 15:00:19
+ * @LastEditTime: 2021-01-14 16:28:10
 -->
 <template>
   <el-dialog
@@ -20,10 +20,26 @@
     <el-form
       ref="form"
       :model="form"
-      label-width="80px"
+      label-width="130px"
     >
       <el-row>
-        <el-col :span="24">
+        <el-col
+          :span="24"
+          v-if="data.title === '甲方退款天数'"
+        >
+          <el-form-item :label="`${data.title}`">
+            <el-input
+              :placeholder="`请输入${data.title}`"
+              v-model="form.value"
+              v-digits="0"
+            >
+            </el-input>
+          </el-form-item>
+        </el-col>
+        <el-col
+          :span="24"
+          v-else
+        >
           <el-form-item :label="`${data.title}`">
             <el-input
               show-word-limit
@@ -35,6 +51,7 @@
             </el-input>
           </el-form-item>
         </el-col>
+
       </el-row>
     </el-form>
     <span

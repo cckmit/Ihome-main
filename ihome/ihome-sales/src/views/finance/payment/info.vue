@@ -4,7 +4,7 @@
  * @Author: ywl
  * @Date: 2020-12-17 19:43:20
  * @LastEditors: ywl
- * @LastEditTime: 2021-01-06 17:30:26
+ * @LastEditTime: 2021-01-14 15:45:53
 -->
 <template>
   <IhPage class="text-left">
@@ -135,7 +135,11 @@
           <el-table-column
             label="操作"
             prop="operation"
-          ></el-table-column>
+          >
+            <template v-slot="{ row }">
+              {{$root.dictAllName(row.operation, 'PaymentOperator')}}
+            </template>
+          </el-table-column>
           <el-table-column
             label="操作人"
             prop="operatorName"
@@ -147,7 +151,12 @@
           <el-table-column
             label="处理结果"
             prop="result"
-          ></el-table-column>
+          >
+            <template v-slot="{ row }">
+              <span v-if="row.result">{{row.result}}</span>
+              <span v-else>--</span>
+            </template>
+          </el-table-column>
           <el-table-column
             label="备注"
             prop="remark"

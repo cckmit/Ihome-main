@@ -4,7 +4,7 @@
  * @Author: ywl
  * @Date: 2020-09-25 16:00:37
  * @LastEditors: ywl
- * @LastEditTime: 2021-01-11 11:07:29
+ * @LastEditTime: 2021-01-14 15:38:19
 -->
 <template>
   <IhPage>
@@ -92,6 +92,9 @@
             <el-form-item
               label="归档编号"
               label-width="160px"
+              :rules="[
+                { required: true, message: '请填写归档编号', trigger: 'change' },
+              ]"
             >
               <el-input
                 v-model="formData.archiveNo"

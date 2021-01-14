@@ -62,7 +62,7 @@
     </div>
     <span slot="footer" class="dialog-footer">
       <el-button @click="cancel()">取 消</el-button>
-      <el-button :loading="data" type="primary" @click="finish">确 定</el-button>
+      <el-button type="primary" @click="finish">确 定</el-button>
     </span>
   </el-dialog>
 </template>
@@ -83,6 +83,7 @@
     private dialogVisible = true;
     private selection = [];
     public queryPageParameters: any = {
+      auditEnum: 'ConstractAdopt', // 只显示合同审核通过的
       termName: null
     };
     public resPageInfo: any = {

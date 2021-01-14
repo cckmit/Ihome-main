@@ -25,19 +25,15 @@
             v-bind:is="currentComponent"></component>
         </keep-alive>
       </div>
-      <div
-        v-if="currentActiveIndex === 0"
-        class="btn">
+      <div v-if="currentActiveIndex === 0" class="btn">
         <el-button
-          v-if="type === 'staffAchieveInfo'"
+          v-if="type === 'ChangeInternalAchieveInf'"
           type="success"
           @click="changeStep('next')">预览变更</el-button>
         <el-button v-else type="primary" @click="changeStep('next')">下一步</el-button>
         <el-button @click="backToList">取消</el-button>
       </div>
-      <div
-        v-if="currentActiveIndex === 2 || (currentActiveIndex === 1 && type === 'staffAchieveInfo')"
-        class="btn">
+      <div v-if="currentActiveIndex === 2 || (currentActiveIndex === 1 && type === 'ChangeInternalAchieveInf')" class="btn">
         <el-button type="primary">保存</el-button>
         <el-button type="success">提交</el-button>
         <el-button @click="changeStep('up')">返回</el-button>
@@ -173,26 +169,26 @@
     }
 
     async created() {
-      this.type = this.$route.query.type;
+      this.type = this.$route.query.type; // 补充成交类型
       // console.log('this.type ', this.type);
       if (this.type) {
         // 初始化步骤
         this.currentActiveIndex = 0;
         // 初始化步骤条
         switch(this.type){
-          case 'baseInfo' :
+          case 'ChangeBasicInf' :
             // 变更基础信息
             this.currentStepsList = (this as any).$tool.deepClone(this.baseInfoStepsList);
             break;
-          case 'achieveInfo' :
+          case 'ChangeAchieveInf' :
             // 变更业绩信息
             this.currentStepsList = (this as any).$tool.deepClone(this.achieveStepsList);
             break;
-          case 'checkOut' :
+          case 'RetreatRoom' :
             // 退房
             this.currentStepsList = (this as any).$tool.deepClone(this.checkOutStepsList);
             break;
-          case 'staffAchieveInfo' :
+          case 'ChangeInternalAchieveInf' :
             // 内部员工业绩变更
             this.currentStepsList = (this as any).$tool.deepClone(this.staffStepsList);
             break;
@@ -213,14 +209,14 @@
 
     // 子组件触发上一步方法
     clickUp() {
-      console.log('clickUp');
+      // console.log('clickUp');
       // 上一步
       this.currentActiveIndex = this.currentActiveIndex - 1;
     }
 
     // 子组件触发预览变更方法
     clickPreview() {
-      console.log('clickPreview');
+      // console.log('clickPreview');
       // 下一步
       this.currentActiveIndex = this.currentActiveIndex + 1;
     }

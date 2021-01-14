@@ -139,6 +139,9 @@
               @change="changeBuild"
               v-model="postData.buildingId"
               :proId="baseInfoByTerm.proId"
+              :propertyEnum="postData.propertyType"
+              :isCascade="true"
+              cascadeType="build"
               placeholder="请选择栋座"
               clearable
             ></IhSelectPageByBuild>
@@ -151,6 +154,8 @@
               v-model="postData.roomId"
               :proId="baseInfoByTerm.proId"
               :buildingId="postData.buildingId"
+              :isCascade="true"
+              cascadeType="room"
               placeholder="请选择房号"
               clearable
             ></IhSelectPageByRoom>
@@ -174,8 +179,41 @@
             </el-select>
           </el-form-item>
         </el-col>
-        <el-col :span="6" v-if="baseInfoInDeal.hasRecord">
-          <el-form-item label="分销协议编号" :prop="baseInfoInDeal.hasRecord ? 'contNo' : 'notEmpty'">
+        <el-col :span="6" v-if="postData.contType === 'DistriDeal'">
+          <el-form-item label="渠道公司" :prop="postData.contType === 'DistriDeal' ? 'agencyName' : 'notEmpty'">
+            <div v-if="baseInfoInDeal.hasRecord">
+              <el-input
+                v-model="postData.agencyName"
+                :disabled="baseInfoInDeal.hasRecord"
+                placeholder=""></el-input>
+            </div>
+            <div v-else>
+              <el-input
+                placeholder="请选择渠道公司"
+                readonly v-model="postData.agencyName" @click.native.prevent="selectAgency">
+                <el-button slot="append" icon="el-icon-search"></el-button>
+              </el-input>
+            </div>
+          </el-form-item>
+        </el-col>
+        <el-col :span="6" v-if="postData.contType === 'DistriDeal'">
+          <el-form-item label="渠道等级" :prop="postData.contType === 'DistriDeal' ? 'channelLevelName' : 'notEmpty'">
+            <el-input
+              v-model="postData.channelLevelName"
+              disabled
+              placeholder=""></el-input>
+          </el-form-item>
+        </el-col>
+        <el-col :span="6" v-if="postData.contType === 'DistriDeal'">
+          <el-form-item label="经纪人" :prop="postData.contType === 'DistriDeal' ? 'brokerName' : 'notEmpty'">
+            <el-input
+              v-model="postData.brokerName"
+              disabled
+              placeholder=""></el-input>
+          </el-form-item>
+        </el-col>
+        <el-col :span="6" v-if="postData.contType === 'DistriDeal'">
+          <el-form-item label="分销协议编号" :prop="postData.contType === 'DistriDeal' ? 'contNo' : 'notEmpty'">
             <div class="contNo-wrapper">
               <el-select
                 v-model="postData.contNo"
@@ -194,8 +232,8 @@
             </div>
           </el-form-item>
         </el-col>
-        <el-col :span="6" v-if="baseInfoInDeal.hasRecord">
-          <el-form-item label="是否垫佣" :prop="baseInfoInDeal.hasRecord ? 'isMat' : 'notEmpty'">
+        <el-col :span="6" v-if="postData.contType === 'DistriDeal'">
+          <el-form-item label="是否垫佣" :prop="postData.contType === 'DistriDeal' ? 'isMat' : 'notEmpty'">
             <el-select
               v-model="postData.isMat"
               disabled
@@ -210,24 +248,12 @@
             </el-select>
           </el-form-item>
         </el-col>
-        <el-col :span="6" v-if="baseInfoInDeal.hasRecord">
-          <el-form-item label="报备信息" :prop="baseInfoInDeal.hasRecord ? 'recordStr' : 'notEmpty'">
-            <el-input v-model="postData.recordStr" disabled placeholder="房号自动带出"></el-input>
-          </el-form-item>
-        </el-col>
-        <el-col :span="6" v-if="baseInfoInDeal.hasRecord">
-          <el-form-item label="渠道公司" :prop="baseInfoInDeal.hasRecord ? 'agencyName' : 'notEmpty'">
-            <el-input v-model="postData.agencyName" disabled placeholder="选成交报备自动带出"></el-input>
-          </el-form-item>
-        </el-col>
-        <el-col :span="6" v-if="baseInfoInDeal.hasRecord">
-          <el-form-item label="渠道等级" :prop="baseInfoInDeal.hasRecord ? 'channelLevelName' : 'notEmpty'">
-            <el-input v-model="postData.channelLevelName" disabled placeholder="选成交报备自动带出"></el-input>
-          </el-form-item>
-        </el-col>
-        <el-col :span="6" v-if="baseInfoInDeal.hasRecord">
-          <el-form-item label="经纪人" :prop="baseInfoInDeal.hasRecord ? 'brokerName' : 'notEmpty'">
-            <el-input v-model="postData.brokerName" disabled placeholder="选成交报备自动带出"></el-input>
+        <el-col :span="6" v-if="postData.contType === 'DistriDeal'">
+          <el-form-item label="报备信息" :prop="postData.contType === 'DistriDeal' ? 'recordStr' : 'notEmpty'">
+            <el-input
+              v-model="postData.recordStr"
+              :disabled="baseInfoInDeal.hasRecord"
+              placeholder=""></el-input>
           </el-form-item>
         </el-col>
         <el-col :span="6">
@@ -513,7 +539,7 @@
           sum-text="合计金额"
           :summary-method="$parent.getReceiveSummaries"
           :data="postData.receiveVO">
-          <el-table-column prop="type" label="类型" min-width="120">
+          <el-table-column prop="type" label="类型" fixed min-width="120">
             <template slot-scope="scope">
               <div>{{$root.dictAllName(scope.row.type, 'FeeType')}}</div>
             </template>
@@ -590,11 +616,11 @@
               </div>
             </template>
           </el-table-column>
-          <el-table-column prop="receiveAmount" label="应收金额" min-width="120"></el-table-column>
-          <el-table-column prop="commAmount" label="派发佣金金额" min-width="150"></el-table-column>
-          <el-table-column prop="rewardAmount" label="派发内场奖励金额" min-width="150"></el-table-column>
-          <el-table-column prop="totalPackageAmount" label="总包业绩金额" min-width="150"></el-table-column>
-          <el-table-column prop="distributionAmount" label="分销业绩金额" min-width="150"></el-table-column>
+          <el-table-column prop="receiveAmount" label="应收金额" min-width="180"></el-table-column>
+          <el-table-column prop="commAmount" label="派发佣金金额" min-width="180"></el-table-column>
+          <el-table-column prop="rewardAmount" label="派发内场奖励金额" min-width="180"></el-table-column>
+          <el-table-column prop="totalPackageAmount" label="总包业绩金额" min-width="180"></el-table-column>
+          <el-table-column prop="distributionAmount" label="分销业绩金额" min-width="180"></el-table-column>
           <el-table-column prop="otherChannelFees" label="其他渠道费用(正数为产生，负数为使用)" min-width="150"></el-table-column>
         </el-table>
       </el-col>
@@ -719,6 +745,7 @@
         dataSign: ''
       }, // 明源数据
       customerAddVOS: [], // 客户信息
+      selectableChannelIds: [], // 可选的渠道商ids
     }; // 通过initPage接口获取到的成交信息(项目周期 + 房号)
     formLoading: any = false; // 表格loading状态
     postData: any = {
@@ -857,6 +884,9 @@
       brokerName: [
         {required: true, message: "渠道经纪人不能为空", trigger: "change"},
       ],
+      contNo: [
+        {required: true, message: "分销协议必选", trigger: "change"},
+      ],
       subscribePrice: [
         {required: true, message: "认购价格不能为空", trigger: "change"},
       ],
@@ -910,13 +940,11 @@
           otherChannelFees: 0,
         }
         this.postData.receiveVO.forEach((item: any) => {
-          obj.receiveAmount = obj.receiveAmount + parseFloat(item.receiveAmount ? item.receiveAmount : 0);
-          obj.achieveAmount = obj.achieveAmount + parseFloat(item.commAmount ? item.commAmount : 0)
-            + parseFloat(item.rewardAmount ? item.rewardAmount : 0)
-            + parseFloat(item.totalPackageAmount ? item.totalPackageAmount : 0)
-            + parseFloat(item.distributionAmount ? item.distributionAmount : 0);
-          obj.otherChannelFees = obj.otherChannelFees
-            + parseFloat(item.otherChannelFees ? item.otherChannelFees : 0);
+          obj.receiveAmount = (obj.receiveAmount * 1 * 100 + item.receiveAmount * 1 * 100) / 100;
+          obj.achieveAmount = (obj.achieveAmount * 1 * 100 + item.commAmount * 1 * 100
+            + item.rewardAmount * 1 * 100 + item.totalPackageAmount * 1 * 100
+            + item.distributionAmount * 1 * 100) / 100;
+          obj.otherChannelFees = (obj.otherChannelFees * 1 * 100 + item.otherChannelFees * 1 * 100) / 100;
         })
         arr.push(obj);
       }
@@ -1084,6 +1112,20 @@
       // console.log('组织info:', info);
       this.postData.dealOrgName = info.name;
       this.postData.dealOrgId = id;
+    }
+
+    // 选择渠道公司
+    selectAgency() {
+      if (!this.postData.roomId) {
+        this.$message.warning('请先选择房号');
+        return;
+      }
+      (this as any).$parent.selectAgency(this.baseInfoInDeal.selectableChannelIds);
+    }
+
+    // 确定选择项目周期
+    finishAddAgency(data: any) {
+      console.log('data', data);
     }
 
     // 改变栋座
@@ -1293,12 +1335,11 @@
     changeContType(value: any) {
       if (value === 'DistriDeal') {
         // 如果查询不到此房号的已成交报备信息，用户又选择分销成交
-        this.postData.contType = this.tempContType ? (this as any).$tool.deepClone(this.tempContType) : '';
+        // this.postData.contType = this.tempContType ? (this as any).$tool.deepClone(this.tempContType) : '';
         if (!this.baseInfoInDeal.hasRecord) {
           this.$alert('系统查询不到此房号的已成交报备信息，请先维护报备信息！', '提示', {
             confirmButtonText: '确定'
           });
-          return;
         }
       } else {
         // 不是分销成交
@@ -1332,6 +1373,10 @@
         // 不一样，要初始化收派套餐、对外拆佣、平台费用
         this.postData.receiveVO = (this as any).$tool.deepClone(this.tempReceiveVO);
       }
+      // 清空栋座 + 房间号 + 下面的所有信息
+      this.postData.roomId = null;
+      this.postData.buildingId = null;
+      this.resetData();
     }
 
     // 是否垫佣是根据对应的分销协议来判断
@@ -1482,7 +1527,7 @@
           if (index === this.currentReceiveIndex) {
             vo.showData = data;
             vo.packageId = data[0].packageMxId;
-            vo.receiveAmount = data[0].receivableAmout;
+            vo.receiveAmount = info.receiveAmount;
             vo.commAmount = info.comm;
             vo.rewardAmount = info.reward;
             vo.totalPackageAmount = info.totalBag;
@@ -1619,7 +1664,7 @@
         receiveVO: [] // 收派金额
       }
       // 1. 渠道商信息 --- 分销成交才会有
-      if (this.baseInfoInDeal.contType === 'DistriDeal') {
+      if (this.postData.contType === 'DistriDeal') {
         obj.agencyVO.push(
           {
             agencyId: this.postData.agencyId,
@@ -1651,9 +1696,10 @@
       obj.dealVO.isConsign = this.postData.isConsign;
       obj.dealVO.isMarketProject = this.postData.isMarketProject;
       obj.dealVO.modelCode = this.postData.businessType;
+      // 优惠告知书
       if (this.postData.offerNoticeVO.length > 0) {
         this.postData.offerNoticeVO.forEach((vo: any) => {
-          obj.dealVO.noticeIds.push(vo.id);
+          obj.dealVO.noticeIds.push(vo.noticeId);
         })
       }
       obj.dealVO.oneAgentTeamId = this.postData.oneAgentTeamId;

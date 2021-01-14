@@ -17,11 +17,21 @@
       v-bind:is="currentComponent"></component>
     <ih-dialog :show="dialogAddProjectCycle" desc="选择项目周期列表">
       <SelectProjectCycle
-        :data="projectLoading"
         @cancel="() => (dialogAddProjectCycle = false)"
         @finish="
             (data) => {
               finishAddProjectCycle(data);
+            }
+          "
+      />
+    </ih-dialog>
+    <ih-dialog :show="dialogAddAgency" desc="选择渠道公司列表">
+      <AgentCompanyList
+        :data="selectableChannelIds"
+        @cancel="() => (dialogAddAgency = false)"
+        @finish="
+            (data) => {
+              finishAddAgency(data);
             }
           "
       />
@@ -75,6 +85,7 @@
   import EntryDealInfo from "@/views/deal/dealReport/add/entryDealInfo.vue"; // 案场岗 - 录入成交信息
   import EntryAchieveAllot from "@/views/deal/dealReport/add/entryAchieveAllot.vue";  // 文员岗 - 录入成交信息
   import SelectProjectCycle from "@/views/deal/dealReport/dialog/selectProjectCycle.vue";
+  import AgentCompanyList from "@/views/deal/dealReport/dialog/agentCompanyList.vue";
   import SelectNoticeList from "@/views/deal/dealReport/dialog/selectNoticeList.vue";
   import AddCustomer from "@/views/deal/dealReport/dialog/addCustomer.vue";
   import SelectReceivePackage from "@/views/deal/dealReport/dialog/selectReceivePackage.vue";
@@ -89,6 +100,7 @@
       EntryDealInfo,
       EntryAchieveAllot,
       SelectProjectCycle,
+      AgentCompanyList,
       SelectNoticeList,
       AddCustomer,
       SelectReceivePackage,
@@ -100,6 +112,8 @@
     private currentBtnType: any = null;
 
     dialogAddProjectCycle: any = false; // 选择项目周期弹窗标识
+    dialogAddAgency: any = false; // 选择渠道公司弹窗标识
+    selectableChannelIds: any = []; // 可选渠道商id列表
     dialogAddNotice: any = false; // 选择优惠告知书弹窗标识
     baseInfoByTerm: any = null; // 项目周期数据 - 初始化优惠告知书需要
     dialogAddCustomer: any = false; // 选择客户弹窗标识
@@ -109,7 +123,6 @@
       idList: [] // 可选的收派套餐ids
     }; // 收派套餐data数据
     dialogViewInfo: any = false; // 来访/成交信息弹窗标识
-    projectLoading: any = false; // 确定选择周期按钮loading
 
     async created() {
       this.currentBtnType = this.$route.query.btnType;
@@ -121,11 +134,6 @@
         // 业绩申报 --- 案场岗 - 录入成交信息
         this.currentComponent = EntryDealInfo;
       }
-    }
-
-    // 选择项目周期
-    selectProject() {
-      this.dialogAddProjectCycle = true;
     }
 
     // 获取细分业务模式的值
@@ -151,15 +159,37 @@
       return returnValue;
     }
 
+    // 选择项目周期
+    selectProject(data: any = []) {
+      if (data && data.length) {
+        this.selectableChannelIds = data;
+      } else {
+        this.selectableChannelIds = [];
+      }
+      this.dialogAddProjectCycle = true;
+    }
+
     // 确定选择项目周期
     async finishAddProjectCycle(data: any) {
       // console.log('data', data);
-      this.projectLoading = true;
       if (data && data.length > 0) {
         await (this as any).$refs.child.finishAddProjectCycle(data);
       }
-      this.projectLoading = false;
       this.dialogAddProjectCycle = false;
+    }
+
+    // 选择渠道公司
+    selectAgency() {
+      this.dialogAddAgency = true;
+    }
+
+    // 确定选择渠道公司
+    async finishAddAgency(data: any) {
+      // console.log('data', data);
+      if (data && data.length > 0) {
+        await (this as any).$refs.child.finishAddAgency(data);
+      }
+      this.dialogAddAgency = false;
     }
 
     // 添加优惠告知书
@@ -260,6 +290,7 @@
                 return ((prev * 1 * 100) / 100);
               }
             }, 0);
+            sums[index] = Math.round(sums[index] * 100) / 100; // 解决精度缺失问题
           } else {
             sums[index] = '';
           }

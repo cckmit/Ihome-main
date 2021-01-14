@@ -14,10 +14,10 @@
       class="demo-ruleForm">
       <el-row>
         <el-col :span="6">
-          <el-form-item label="业务模式">{{infoForm.modelName}}</el-form-item>
+          <el-form-item label="业务模式">{{$root.dictAllName(infoForm.modelCode, 'BusinessModel')}}</el-form-item>
         </el-col>
         <el-col :span="6">
-          <el-form-item label="合同类型">{{infoForm.contType}}</el-form-item>
+          <el-form-item label="合同类型">{{$root.dictAllName(infoForm.contType, 'ContType')}}</el-form-item>
         </el-col>
         <el-col :span="6">
           <el-form-item label="是否市场化项目">
@@ -29,20 +29,20 @@
             {{infoForm.isSame === 'Yes' ? "是" : "否"}}
           </el-form-item>
         </el-col>
-        <el-col :span="6">
+        <el-col :span="12">
           <el-form-item label="物业类型">{{infoForm.achievePropertyTypeStr}}</el-form-item>
         </el-col>
-        <el-col :span="6">
+        <el-col :span="12">
           <el-form-item label="是否特殊方案">
             {{infoForm.isSpecial === 'Yes' ? "是" : "否"}}
           </el-form-item>
         </el-col>
-        <el-col :span="6">
+        <el-col class="tag-wrapper" :span="24" v-if="infoForm.isSpecial === 'Yes'">
           <el-form-item label="关联项目">
             <el-tag
-              v-for="item in infoForm.achieveProjectList"
-              :key="item.id">
-              {{item.projectName}}
+              v-for="item in infoForm.projects"
+              :key="item.termId">
+              {{item.termName}}
             </el-tag>
           </el-form-item>
         </el-col>
@@ -80,37 +80,16 @@
       remarks: null,
       achievePropertyTypeStr: null, // 物业类型
       achieveProjectList: [], // 关联项目
-      achieveScaleConfigList: [] // 业绩比例配置
+      achieveScaleConfigList: [], // 业绩比例配置
+      projects: [] // 关联的项目
     };
 
     async created() {
       let id = this.$route.query.id;
       if (id) {
         this.infoForm = await get_achieveScaleScheme_get__id({id: id});
-        let businessModelList = (this as any).$root.dictAllList('BusinessModel'); // 业务模式
-        let contTypeList = (this as any).$root.dictAllList('ContType'); // 合同类型
         let propertyList = (this as any).$root.dictAllList('Property'); // 物业类型
         // 处理数据
-        // 1.业务模式
-        if (this.infoForm.modelName) {
-          if (businessModelList && businessModelList.length > 0) {
-            businessModelList.forEach((list: any) => {
-              if (list.code === this.infoForm.modelName) {
-                this.infoForm.modelName = list.name;
-              }
-            })
-          }
-        }
-        // 合同类型
-        if (this.infoForm.contType) {
-          if (contTypeList && contTypeList.length > 0) {
-            contTypeList.forEach((list: any) => {
-              if (list.code === this.infoForm.contType) {
-                this.infoForm.contType = list.name;
-              }
-            })
-          }
-        }
         // 物业类型
         if (this.infoForm.achievePropertyTypeList && this.infoForm.achievePropertyTypeList.length > 0) {
           let achieveNameArr: any = [];
@@ -168,4 +147,9 @@
   }
 </script>
 <style lang="scss" scoped>
+  .tag-wrapper {
+    /deep/.el-tag {
+      margin-right: 10px;
+    }
+  }
 </style>

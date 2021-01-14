@@ -4,7 +4,7 @@
  * @Author: ywl
  * @Date: 2020-09-27 16:27:36
  * @LastEditors: ywl
- * @LastEditTime: 2020-12-26 11:56:37
+ * @LastEditTime: 2021-01-14 15:33:33
 -->
 <template>
   <IhPage label-width="80px">
@@ -362,10 +362,6 @@ export default class DiscountList extends Vue {
   }
 
   private handleExport() {
-    if (!this.selectionData.length) {
-      this.$message.warning("请先勾选表格数据");
-      return;
-    }
     const token: any = getToken();
     axios({
       method: "POST",
@@ -376,12 +372,12 @@ export default class DiscountList extends Vue {
         "Content-Type": "application/json",
         Authorization: "bearer " + token,
       },
-      data: this.selectionData.map((i: any) => i.id),
+      data: { ...this.queryPageParameters },
     }).then((res: any) => {
       const href = window.URL.createObjectURL(res.data);
       const $a = document.createElement("a");
       $a.href = href;
-      $a.download = "告知书列表.xlsx";
+      $a.download = "优惠告知书列表.xlsx";
       $a.click();
       $a.remove();
     });

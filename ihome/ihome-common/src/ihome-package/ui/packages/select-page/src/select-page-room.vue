@@ -19,6 +19,11 @@ export default class SelectPageByBuild extends Vue {
   @Prop() proId?: any;
   @Prop() buildingId?: any;
   @Prop({
+    default: false,
+  })
+  isCascade?: boolean; // 是否级联(栋座需要物业类型情况下)
+  @Prop() cascadeType?: any; // 级联类型 --- 栋座build/房间号room
+  @Prop({
     default: true,
   })
   switchHidePage?: boolean;
@@ -40,7 +45,13 @@ export default class SelectPageByBuild extends Vue {
 
   @Watch("proId")
   watchProId(val: any) {
-    if (val) this.getSelectList();
+    if (this.isCascade) {
+      if (val && this.buildingId) {
+        this.getSelectList();
+      }
+    } else {
+      if (val) this.getSelectList();
+    }
   }
   @Watch("buildingId")
   watchBuildId(val: any) {
@@ -52,7 +63,18 @@ export default class SelectPageByBuild extends Vue {
   searchLoad = false;
 
   handleMessage() {
-    this.$message.warning("请先选择项目");
+    if (this.isCascade) {
+      if (!this.proId) {
+        this.$message.warning("请先选择项目");
+        return;
+      }
+      if (!this.buildingId) {
+        this.$message.warning("请先选择栋座");
+        return;
+      }
+    } else {
+      this.$message.warning("请先选择项目");
+    }
   }
   async getSelectList() {
     if (this.proId || !this.isBlur) {
