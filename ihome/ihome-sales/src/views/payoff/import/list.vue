@@ -4,7 +4,7 @@
  * @Author: wwq
  * @Date: 2021-01-13 16:35:12
  * @LastEditors: wwq
- * @LastEditTime: 2021-01-14 14:46:06
+ * @LastEditTime: 2021-01-14 16:59:58
 -->
 <template>
   <IhPage>
@@ -35,7 +35,7 @@
           ></el-step>
         </el-steps>
       </div>
-      <div v-if="progress === 'start'">
+      <div v-show="progress === 'start'">
         <div>
           <div class="download">
             <div class="download-icon">
@@ -75,7 +75,7 @@
                 >
                   <el-link
                     class="uploadbutton"
-                    v-if="!submitList.length"
+                    v-show="!submitList.length"
                     type="primary"
                     slot="trigger"
                   >上传文件</el-link>
@@ -91,7 +91,7 @@
           >下一步</el-button>
         </div>
       </div>
-      <div v-if="progress === 'loading'">
+      <div v-show="progress === 'loading'">
         <div class="progress">
           <el-progress
             :text-inside="true"
@@ -103,7 +103,7 @@
           正在导入数据，请勿关闭或刷新页面
         </div>
       </div>
-      <div v-if="progress === 'success'">
+      <div v-show="progress === 'success'">
         <div class="margin-top-40">
           <i
             class="el-icon-success"
@@ -121,7 +121,7 @@
           </div>
         </div>
       </div>
-      <div v-if="progress === 'error'">
+      <div v-show="progress === 'error'">
         <div class="download">
           <div class="download-icon">
             <i class="el-icon-warning">
@@ -245,7 +245,6 @@ export default class Import extends Vue {
   nextPage() {
     if (this.submitList.length) {
       this.timer = setInterval(this.updatePercentage, 50);
-      this.percentage = 0;
       this.progress = "loading";
       this.active = 2;
     } else {
@@ -302,6 +301,7 @@ export default class Import extends Vue {
 
   goBack() {
     this.active = 1;
+    this.percentage = 0;
     this.fileList = [];
     this.submitList = [];
     this.progress = "start";
