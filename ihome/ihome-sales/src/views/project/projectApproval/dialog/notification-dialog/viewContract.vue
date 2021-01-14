@@ -4,7 +4,7 @@
  * @Author: wwq
  * @Date: 2020-12-02 20:13:07
  * @LastEditors: wwq
- * @LastEditTime: 2020-12-22 20:55:58
+ * @LastEditTime: 2021-01-14 17:57:52
 -->
 <template>
   <el-dialog
@@ -315,7 +315,7 @@ export default class AddContract extends Vue {
 
   @Watch("info.channelEnum", { immediate: true })
   getIsShow(val: any) {
-    if (val === "Appoint") {
+    if (val === "Appoint" || val === "Strategic") {
       this.isShow = true;
     } else {
       this.isShow = false;

@@ -4,7 +4,7 @@
  * @Author: wwq
  * @Date: 2020-11-27 17:17:06
  * @LastEditors: wwq
- * @LastEditTime: 2021-01-06 18:59:44
+ * @LastEditTime: 2021-01-14 17:16:44
 -->
 <template>
   <IhPage>
@@ -577,7 +577,6 @@ export default class FirstAgencyEdit extends Vue {
       });
       this.info = { ...res };
       this.info.timeList = [res.termStart, res.termEnd];
-      this.info.termStageEnum = "Subscription";
       this.info.companyId = res.companyId;
       window.sessionStorage.setItem("proId", res.proId);
       window.sessionStorage.setItem("padCommissionEnum", res.padCommissionEnum);

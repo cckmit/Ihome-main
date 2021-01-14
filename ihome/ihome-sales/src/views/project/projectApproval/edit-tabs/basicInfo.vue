@@ -4,7 +4,7 @@
  * @Author: wwq
  * @Date: 2020-11-27 17:17:06
  * @LastEditors: wwq
- * @LastEditTime: 2021-01-09 15:14:49
+ * @LastEditTime: 2021-01-14 17:16:33
 -->
 <template>
   <div class="project-approval-box">
@@ -1202,7 +1202,6 @@ export default class FirstAgencyEdit extends Vue {
         res.timeList = [];
       }
       this.info = { ...res };
-      this.info.termStageEnum = "Subscription";
       this.info.companyId = res.companyId;
       window.sessionStorage.setItem("proId", res.proId);
       if (this.info.chargeEnum) {
