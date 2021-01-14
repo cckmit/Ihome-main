@@ -4,7 +4,7 @@
  * @Author: ywl
  * @Date: 2021-01-07 10:29:54
  * @LastEditors: ywl
- * @LastEditTime: 2021-01-13 15:08:48
+ * @LastEditTime: 2021-01-14 19:13:56
  */
 import { RouteConfig } from 'vue-router'
 
@@ -32,6 +32,26 @@ const applyRoutes: Array<RouteConfig> = [
         name: 'applyRecAdd',
         component: () => import('../views/apply/applyRec/add.vue'),
         meta: { title: '发起请佣申请', icon: 'form' }
+      }
+    ]
+  },
+  {
+    path: '/applyRecAudit',
+    meta: { title: '请佣申请审核', icon: null },
+    component: Layout,
+    redirect: '/applyRecAudit/list',
+    children: [
+      {
+        path: 'list',
+        name: 'applyRecAudit',
+        component: () => import('../views/apply/applyRecAudit/list.vue'),
+        meta: { title: '请佣申请审核', icon: 'form', keepAlive: true }
+      },
+      {
+        path: 'audit',
+        name: 'applyAudit',
+        component: () => import('../views/apply/applyRecAudit/list.vue'),
+        meta: { title: '审核请佣申请', icon: 'form' }
       }
     ]
   },

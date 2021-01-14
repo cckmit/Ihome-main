@@ -4,7 +4,7 @@
  * @Author: ywl
  * @Date: 2021-01-07 16:30:03
  * @LastEditors: ywl
- * @LastEditTime: 2021-01-14 16:10:32
+ * @LastEditTime: 2021-01-14 19:28:38
 -->
 <template>
   <IhPage class="text-left">
@@ -109,7 +109,7 @@
           </el-col>
           <el-col :span="8">
             <el-form-item label="申请日期">
-              <el-input></el-input>
+              <el-input disabled></el-input>
             </el-form-item>
           </el-col>
         </el-row>

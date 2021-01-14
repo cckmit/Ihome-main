@@ -1,6 +1,6 @@
 /* eslint-disable */
 /* 此脚本由swagger-ui的api-docs自动生成，请勿修改 */
-//2021-1-14 10:25:15 ├F10: AM┤
+//2021-1-14 6:47:54 ├F10: PM┤
 import { request } from '@/api/base'
 const basePath = "/sales-api/apply"
 /**发起开票申请*/
@@ -23,6 +23,10 @@ return await request.post< number,number> (basePath+'/applyRec/cancel/{applyId}'
 export async function get_applyRec_getApplyRecById__applyId (d?: any) {
 return await request.get<ApplyRecBaseVO,ApplyRecBaseVO>(basePath+'/applyRec/getApplyRecById/{applyId}', { params: d })
 }
+/**查询请佣申请审核列表*/
+export async function post_applyRec_getAuditList (d?: any) {
+return await request.post< any,any> (basePath+'/applyRec/getAuditList', d)
+}
 /**获取上次请款单号、请款累计汇总信息*/
 export async function post_applyRec_getHisRec (d?: any) {
 return await request.post< GetHisSumRecVO,GetHisSumRecVO> (basePath+'/applyRec/getHisRec', d)
@@ -43,7 +47,7 @@ return await request.get<ApplyRecIsOkVo,ApplyRecIsOkVo>(basePath+'/applyRec/isIn
 export async function get_applyRec_isRedCorrect__applyId (d?: any) {
 return await request.get<ApplyRecIsOkVo,ApplyRecIsOkVo>(basePath+'/applyRec/isRedCorrect/{applyId}', { params: d })
 }
-/**请佣申请单保存*/
+/**请佣申请单保存（草稿、提交、保存并发起开票申请）*/
 export async function post_applyRec_save (d?: any) {
 return await request.post< SaveResVO,SaveResVO> (basePath+'/applyRec/save', d)
 }
@@ -436,6 +440,60 @@ pageSize: number;
 proId: number;
 /**状态(Draft-草稿、BusinessDepart-待事业部负责人审核、BusinessMan-待业管审核、BranchAccount-待分公司会计审核、Oa-OA领导审核中、InvoiceApply-待申请开票、BusinessManAgain-待业管复审、InvoiceClerk-待开票员审核、InvoiceMake-待开票员开票、Confirm-待回款确认、Complete-已完成、Stop-终止)*/
 status: string;
+}
+/**AuditListVO*/
+export interface AuditListVO {
+/**本次实际请款金额（含税）*/
+actMoneyTax: number;
+/**本次请款金额（元）*/
+applyMoney: number;
+/**请佣申请单号*/
+applyNo: string;
+/**申请时间(yyyy-MM-dd HH:mm:ss)*/
+applyTime: string;
+/**发起人ID*/
+applyUserId: number;
+/**发起人姓名*/
+applyUserName: string;
+/**审核时间,记录到开票员审核通过这个节点(yyyy-MM-dd HH:mm:ss)*/
+auditTime: string;
+/**成交报告份数*/
+dealCount: number;
+/**甲方公司（即开发商）ID*/
+developId: number;
+/**甲方公司名称*/
+developName: string;
+/**本次扣罚金额，默认为0*/
+fineMoney: number;
+/**逻辑ID，主键，自增长*/
+id: number;
+/**项目ID*/
+proId: number;
+/**项目推广名称*/
+proName: string;
+/**本次扣除金额（元）*/
+subMoney: number;
+}
+/**AuditQueryVO*/
+export interface AuditQueryVO {
+/**请佣申请单号*/
+applyNo: string;
+/**申请时间：结束(yyyy-MM-dd)*/
+applyTimeEnd: string;
+/**申请时间：开始(yyyy-MM-dd)*/
+applyTimeStart: string;
+/**发票类型(SpecialElectron-增值税专用发票（电子）、OrdinaryElectron-增值税普通发票（电子）、OrdinaryPaper-增值税普通发票（纸质)、SpecialPaper-增值税专用发票（纸质）)*/
+billTypeCode: string;
+/**甲方公司名称*/
+developName: string;
+/**(必填)当前页*/
+pageNum: number;
+/**(必填)每页条数*/
+pageSize: number;
+/**项目ID*/
+proId: number;
+/**查询是否审核，已审核（true），未审核（false），全部（传入空）*/
+queryIsAudit: boolean;
 }
 /**AuditVO*/
 export interface AuditVO {
@@ -1210,6 +1268,8 @@ export interface ListVO_1 {
 actMoney: number;
 /**请佣申请单逻辑ID*/
 applyId: number;
+/**甲方公司（即开发商）ID*/
+developId: number;
 /**历史实际请款金额（含税）*/
 hisSumActMoney: number;
 /**历史已申请请款金额（含税）*/
@@ -1222,10 +1282,14 @@ hisSumReceMoney: number;
 hisSumSubMoney: number;
 /**逻辑ID，主键，自增长*/
 id: number;
+/**乙方公司（我司主体）ID*/
+polyCompanyId: number;
 /**项目ID*/
 proId: number;
 /**项目推广名称*/
 proName: string;
+/**乙方（我司主体）收款账号ID*/
+receAccountId: number;
 /**累计实际请款金额（含税）*/
 sumActMoney: number;
 /**项目周期ID*/
