@@ -4,7 +4,7 @@
  * @Author: ywl
  * @Date: 2020-09-27 10:46:14
  * @LastEditors: ywl
- * @LastEditTime: 2021-01-14 16:31:12
+ * @LastEditTime: 2021-01-14 17:18:40
 -->
 <template>
   <IhPage class="text-left distribution-info">
@@ -402,7 +402,9 @@ export default class DistributionDetail extends Vue {
     });
     this.$message.success("提交盖章版归档附件成功");
     this.sealFile = [];
-    this.$router.go(0);
+    setTimeout(() => {
+      this.$router.go(0);
+    }, 1000);
   }
   private preview() {
     window.open(

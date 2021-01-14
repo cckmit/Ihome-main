@@ -4,7 +4,7 @@
  * @Author: ywl
  * @Date: 2020-09-25 17:34:32
  * @LastEditors: ywl
- * @LastEditTime: 2021-01-14 16:40:27
+ * @LastEditTime: 2021-01-14 17:16:03
 -->
 <template>
   <IhPage label-width="100px">
@@ -371,12 +371,12 @@
                   :class="{ 'ih-data-disabled': !originalChange(row) }"
                   v-has="'B.SALES.CONTRACT.DISTLIST.ORIGINALFILE'"
                 >原件归档</el-dropdown-item>
+                <el-dropdown-item
+                  @click.native.prevent="handleExportFile(row)"
+                  v-has="'B.SALES.CONTRACT.DISTLIST.EXPRORTATTCH'"
+                  :class="{ 'ih-data-disabled': !exportChange()}"
+                >导出附件</el-dropdown-item>
               </el-dropdown-menu>
-              <el-dropdown-item
-                @click.native.prevent="handleExportFile(row)"
-                v-has="'B.SALES.CONTRACT.DISTLIST.EXPRORTATTCH'"
-                :class="{ 'ih-data-disabled': !exportChange()}"
-              >导出附件</el-dropdown-item>
             </el-dropdown>
           </template>
         </el-table-column>
