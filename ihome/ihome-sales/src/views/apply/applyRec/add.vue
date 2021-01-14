@@ -4,7 +4,7 @@
  * @Author: ywl
  * @Date: 2021-01-07 16:30:03
  * @LastEditors: ywl
- * @LastEditTime: 2021-01-14 14:52:37
+ * @LastEditTime: 2021-01-14 16:10:32
 -->
 <template>
   <IhPage class="text-left">
@@ -1061,6 +1061,10 @@ export default class ApplyRecAdd extends Vue {
 
     try {
       await post_applyRec_save(this.form);
+      this.$message.success(`${type === "" ? "暂存" : "提交"}成功`);
+      this.$goto({
+        path: "/applyRec/list",
+      });
     } catch (error) {
       console.log(error);
     }
