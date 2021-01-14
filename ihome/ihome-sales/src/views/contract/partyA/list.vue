@@ -4,7 +4,7 @@
  * @Author: ywl
  * @Date: 2020-09-25 11:53:51
  * @LastEditors: ywl
- * @LastEditTime: 2021-01-14 15:25:07
+ * @LastEditTime: 2021-01-14 16:38:10
 -->
 <template>
   <IhPage label-width="100px">
@@ -203,7 +203,12 @@
           type="info"
           @click="handleReset()"
         >重置</el-button>
-        <el-dropdown
+        <el-button
+          type="success"
+          v-has="'B.SALES.CONTRACT.PARTYALIST.EXPORTLIST'"
+          @click.native.prevent="handleExport()"
+        >导出列表</el-button>
+        <!-- <el-dropdown
           class="margin-left-10"
           trigger="click"
         >
@@ -215,13 +220,8 @@
               @click.native.prevent="handleExport()"
               v-has="'B.SALES.CONTRACT.PARTYALIST.EXPORTLIST'"
             >导出列表</el-dropdown-item>
-            <el-dropdown-item
-              @click.native.prevent="handleExportFile()"
-              v-has="'B.SALES.CONTRACT.PARTYALIST.EXPRORTATTCH'"
-              :class="{ 'ih-data-disabled': !exportChange() }"
-            >导出附件</el-dropdown-item>
           </el-dropdown-menu>
-        </el-dropdown>
+        </el-dropdown> -->
         <el-link
           type="primary"
           class="float-right margin-right-40"
@@ -359,6 +359,11 @@
                   v-has="'B.SALES.CONTRACT.PARTYALIST.ORIGINALFILE'"
                   :class="{ 'ih-data-disabled': !masterChange(row) }"
                 >原件归档</el-dropdown-item>
+                <el-dropdown-item
+                  @click.native.prevent="handleExportFile(row)"
+                  v-has="'B.SALES.CONTRACT.PARTYALIST.EXPRORTATTCH'"
+                  :class="{ 'ih-data-disabled': !exportChange() }"
+                >导出附件</el-dropdown-item>
               </el-dropdown-menu>
             </el-dropdown>
           </template>
@@ -496,27 +501,22 @@ export default class PartyAList extends Vue {
       $a.remove();
     });
   }
-  private handleExportFile() {
-    if (!this.selectTable.length) {
-      this.$message.warning("请先勾选表格数据");
-      return;
-    }
+  private handleExportFile(row: any) {
     const token: any = getToken();
     axios({
       method: "POST",
-      url: `/sales-api/contract/export/contract/file`,
+      url: `/sales-api/contract/export/contract/file/${row.id}`,
       xsrfHeaderName: "Authorization",
       responseType: "blob",
       headers: {
         "Content-Type": "application/json",
         Authorization: "bearer " + token,
       },
-      data: this.selectTable.map((i: any) => i.id),
     }).then((res: any) => {
       const href = window.URL.createObjectURL(res.data);
       const $a = document.createElement("a");
       $a.href = href;
-      $a.download = "附件.zip";
+      $a.download = "甲方合同附件.zip";
       $a.click();
       $a.remove();
     });

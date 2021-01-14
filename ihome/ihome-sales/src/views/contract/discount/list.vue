@@ -4,7 +4,7 @@
  * @Author: ywl
  * @Date: 2020-09-27 16:27:36
  * @LastEditors: ywl
- * @LastEditTime: 2021-01-14 15:33:33
+ * @LastEditTime: 2021-01-14 17:04:49
 -->
 <template>
   <IhPage label-width="80px">
@@ -147,6 +147,22 @@
                   ></el-input>
                 </el-form-item>
               </el-col>
+              <el-col :span="8">
+                <el-form-item label="模板类型">
+                  <el-select
+                    v-model="queryPageParameters.templateType"
+                    placeholder="请选择模板类型"
+                    clearable
+                  >
+                    <el-option
+                      v-for="(i, n) in $root.dictAllList('TemplateType')"
+                      :key="n"
+                      :label="i.name"
+                      :value="i.code"
+                    ></el-option>
+                  </el-select>
+                </el-form-item>
+              </el-col>
             </el-row>
           </div>
         </el-collapse-transition>
@@ -163,25 +179,11 @@
           type="info"
           @click="handleReact()"
         >重置</el-button>
-        <el-dropdown
-          class="margin-left-10"
-          trigger="click"
-        >
-          <el-button type="success">
-            导出<i class="el-icon-arrow-down el-icon--right"></i>
-          </el-button>
-          <el-dropdown-menu slot="dropdown">
-            <el-dropdown-item
-              @click.native.prevent="handleExport()"
-              v-has="'B.SALES.CONTRACT.DISCOUNTLIST.EXPORTLIST'"
-            >导出列表</el-dropdown-item>
-            <el-dropdown-item
-              @click.native.prevent="handleExportFile()"
-              v-has="'B.SALES.CONTRACT.DISCOUNTLIST.EXPRORTATTCH'"
-              :class="{ 'ih-data-disabled': !exportChange()}"
-            >导出附件</el-dropdown-item>
-          </el-dropdown-menu>
-        </el-dropdown>
+        <el-button
+          type="success"
+          @click="handleExport()"
+          v-has="'B.SALES.CONTRACT.DISCOUNTLIST.EXPORTLIST'"
+        >导出列表</el-button>
         <el-link
           type="primary"
           class="float-right margin-right-40"
@@ -285,7 +287,7 @@
         <el-table-column
           fixed="right"
           label="操作"
-          min-width="100"
+          min-width="120"
         >
           <template v-slot="{ row }">
             <el-link
@@ -294,11 +296,27 @@
               class="margin-right-10"
               @click.native.prevent="$router.push(`/discount/info?id=${row.id}`)"
             >详情</el-link>
-            <el-link
+            <el-dropdown trigger="click">
+              <span class="el-dropdown-link">
+                更多<i class="el-icon-arrow-down el-icon--right"></i>
+              </span>
+              <el-dropdown-menu slot="dropdown">
+                <el-dropdown-item
+                  @click.native.prevent="preview(row)"
+                  v-has="'B.SALES.CONTRACT.DISCOUNTLIST.PREVIEW'"
+                >预览</el-dropdown-item>
+                <el-dropdown-item
+                  @click.native.prevent="handleExportFile(row)"
+                  v-has="'B.SALES.CONTRACT.DISCOUNTLIST.EXPRORTATTCH'"
+                  :class="{ 'ih-data-disabled': !exportChange()}"
+                >导出附件</el-dropdown-item>
+              </el-dropdown-menu>
+            </el-dropdown>
+            <!-- <el-link
               type="success"
               v-has="'B.SALES.CONTRACT.DISCOUNTLIST.PREVIEW'"
               @click="preview(row)"
-            >预览</el-link>
+            >预览</el-link> -->
           </template>
         </el-table-column>
       </el-table>
@@ -344,6 +362,7 @@ export default class DiscountList extends Vue {
     roomNumberId: null,
     notificationTypes: null,
     buyUnit: null,
+    templateType: null,
   };
   private timeList: any = [];
   private searchOpen = true;
@@ -382,22 +401,17 @@ export default class DiscountList extends Vue {
       $a.remove();
     });
   }
-  private handleExportFile() {
-    if (!this.selectionData.length) {
-      this.$message.warning("请先勾选表格数据");
-      return;
-    }
+  private handleExportFile(row: any) {
     const token: any = getToken();
     axios({
       method: "POST",
-      url: `/sales-api/contract/export/notice/file`,
+      url: `/sales-api/contract/export/notice/file/${row.id}`,
       xsrfHeaderName: "Authorization",
       responseType: "blob",
       headers: {
         "Content-Type": "application/json",
         Authorization: "bearer " + token,
       },
-      data: this.selectionData.map((i: any) => i.id),
     }).then((res: any) => {
       const href = window.URL.createObjectURL(res.data);
       const $a = document.createElement("a");
