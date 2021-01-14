@@ -1,19 +1,5 @@
-/*
- * @Descripttion: 
- * @version: 
- * @Author: zyc
- * @Date: 2020-12-09 09:45:58
- * @LastEditors: zyc
- * @LastEditTime: 2021-01-13 15:33:11
- */
-/*
- * @Descripttion: 
- * @version: 
- * @Author: zyc
- * @Date: 2020-06-09 16:38:00
- * @LastEditors: zyc
- * @LastEditTime: 2020-12-15 10:37:33
- */
+
+
 export interface ToolInterface {
     /**深度拷贝
      * @param {type} 
@@ -73,8 +59,10 @@ export interface ToolInterface {
      */
     coptText(text: any, callback: Function): any;
 
+   
 }
 export class Tool implements ToolInterface {
+   
 
     /**获取当前时间+n天yyyy-MM-dd字符串
     * @param {type} 

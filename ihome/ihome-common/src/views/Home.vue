@@ -4,7 +4,7 @@
  * @Author: wwq
  * @Date: 2020-09-16 14:54:19
  * @LastEditors: zyc
- * @LastEditTime: 2020-12-18 14:12:06
+ * @LastEditTime: 2021-01-14 15:18:18
 -->
 <template>
   <div>
@@ -25,8 +25,9 @@
 </template>
 <script lang="ts">
 // import { testApi, testPostApi } from "../api/test";
-import { Component, Vue } from "vue-property-decorator";
 
+import { Component, Vue } from "vue-property-decorator";
+ 
 @Component({
   components: {},
 })
@@ -69,13 +70,13 @@ export default class Home extends Vue {
       desc: "限制input框只能输入数字，支持小数位数限制",
       path: "/inputDigits",
     },
-     {
+    {
       key: "IhLeftRightContainer",
       name: "左右拖拽大小容器",
       desc: "鼠标经过分割线可拖拽左右宽度,参考字典页面",
       path: "/leftRightContainer",
     },
-     {
+    {
       key: "IhFilePreview",
       name: "文件预览组件",
       desc: "图片，pdf，其他",
@@ -85,6 +86,7 @@ export default class Home extends Vue {
   info(scope: any) {
     this.$router.push(scope.row.path);
   }
+ 
 }
 </script>
 <style lang="scss" scoped>
