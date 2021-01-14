@@ -27,7 +27,7 @@
             v-model="queryPageParameters.channelName"
             placeholder="渠道公司"
           ></el-input>
-          <el-button type="primary" @click="getListMixin()">查询</el-button>
+          <el-button type="primary" @click="handleSearch">查询</el-button>
         </el-col>
       </el-row>
     </el-form>
@@ -113,9 +113,11 @@
     @Prop({default: null}) data: any;
 
     created() {
-      console.log('agentData', this.data);
+      // console.log('agentData', this.data);
       if (this.data && this.data.length) {
         this.getListMixin();
+      } else {
+        this.$message.error('暂无可选的渠道商信息');
       }
     }
 
@@ -139,6 +141,12 @@
       this.$emit("finish", this.selection);
     }
 
+    // 查询
+    handleSearch() {
+      this.queryPageParameters.pageNum = 1;
+      this.getListMixin();
+    }
+
     private handleSelectionChange(val: any) {
       this.selection = val;
     }
@@ -155,8 +163,10 @@
     }
 
     async getListMixin() {
-      this.queryPageParameters.channelIds = this.data;
-      this.resPageInfo = await post_channelGrade_getChannelAndChannelGrade(this.queryPageParameters);
+      if (this.data && this.data.length) {
+        this.queryPageParameters.channelIds = this.data;
+        this.resPageInfo = await post_channelGrade_getChannelAndChannelGrade(this.queryPageParameters);
+      }
     }
   }
 </script>
