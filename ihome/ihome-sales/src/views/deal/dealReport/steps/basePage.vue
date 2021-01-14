@@ -362,14 +362,6 @@
           </el-form-item>
         </el-col>
         <el-col :span="6">
-          <el-form-item label="明源房款回笼比例">
-            <el-input
-              v-model="postData.returnRatio"
-              :disabled="['ChangeBasicInf', 'ChangeInternalAchieveInf'].includes(changeType)"
-              placeholder="请输入明源房款回笼比例"></el-input>
-          </el-form-item>
-        </el-col>
-        <el-col :span="6">
           <el-form-item label="认购价格">
             <el-input
               v-model="postData.subscribePrice"
@@ -921,7 +913,7 @@
   import AddBroker from "@/views/deal/dealReport/dialog/addBroker.vue";
   import EditDealAchieve from "@/views/deal/dealReport/dialog/editDealAchieve.vue";
   import {
-    get_suppDeal_toAddSuppDeal__id
+    post_suppDeal_toAddSuppDeal
   } from "@/api/deal";
 
   @Component({
@@ -945,7 +937,6 @@
       isMarketProject: null,
       dealOrgId: null,
       recordState: null,
-      returnRatio: null,
       dataSign: null,
       contNo: null,
       isMat: null,
@@ -1100,10 +1091,10 @@
       // console.log('this.changeType', this.changeType);
       if (this.id) {
         let postData: any = {
-          id: this.id,
-          suppContTypeEnum: this.changeType
+          dealId: this.id,
+          suppContType: this.changeType
         }
-        const res: any = await get_suppDeal_toAddSuppDeal__id(postData);
+        const res: any = await post_suppDeal_toAddSuppDeal(postData);
         this.postData = res;
       } else {
         // 录入日期
