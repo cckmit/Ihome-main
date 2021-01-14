@@ -4,7 +4,7 @@
  * @Author: wwq
  * @Date: 2020-12-02 15:37:31
  * @LastEditors: wwq
- * @LastEditTime: 2021-01-06 11:53:19
+ * @LastEditTime: 2021-01-14 18:02:19
 -->
 <template>
   <el-dialog
@@ -433,7 +433,7 @@
   </el-dialog>
 </template>
 <script lang="ts">
-import { Component, Vue, Prop } from "vue-property-decorator";
+import { Component, Vue, Prop, Watch } from "vue-property-decorator";
 import {
   get_distributContract_getDistri__agencyContrictId,
   post_distributContract_getCollectByCondition,
@@ -559,6 +559,16 @@ export default class AddContract extends Vue {
   isShow: any = false;
   unContractDisabled: any = true;
   padCommissionEnumOptions: any = [];
+
+  @Watch("info.channelEnum", { immediate: true })
+  getIsShow(val: any) {
+    if (val === "Appoint" || val === "Strategic") {
+      this.isShow = true;
+    } else {
+      this.isShow = false;
+    }
+  }
+
   private get termId() {
     return this.$route.query.id;
   }
@@ -721,7 +731,12 @@ export default class AddContract extends Vue {
       consumerId: null,
     };
     if (type === "channel") {
-      this.isShow = data === "Appoint" || data === "Strategic" ? true : false;
+      if (data === "Appoint" || data === "Strategic") {
+        this.isShow = true;
+      } else {
+        this.isShow = false;
+      }
+      // this.isShow = data === "Appoint" || data === "Strategic" ? true : false;
     }
     if (this.isShow) {
       if (

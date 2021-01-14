@@ -577,7 +577,6 @@ export default class FirstAgencyEdit extends Vue {
       });
       this.info = { ...res };
       this.info.timeList = [res.termStart, res.termEnd];
-      this.info.termStageEnum = "Subscription";
       this.info.companyId = res.companyId;
       window.sessionStorage.setItem("proId", res.proId);
       window.sessionStorage.setItem("padCommissionEnum", res.padCommissionEnum);

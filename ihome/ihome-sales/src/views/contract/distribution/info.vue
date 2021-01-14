@@ -4,7 +4,7 @@
  * @Author: ywl
  * @Date: 2020-09-27 10:46:14
  * @LastEditors: ywl
- * @LastEditTime: 2021-01-14 17:18:40
+ * @LastEditTime: 2021-01-14 19:30:27
 -->
 <template>
   <IhPage class="text-left distribution-info">
@@ -298,7 +298,10 @@
             </el-form-item>
           </el-col>
           <el-col :span="12">
-            <el-form-item label="归档编号">
+            <el-form-item
+              label="归档编号"
+              required
+            >
               <el-input
                 v-model="ruleForm.archiveNo"
                 placeholder="请输入归档编号"
