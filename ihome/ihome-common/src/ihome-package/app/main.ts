@@ -4,7 +4,7 @@
  * @Author: zyc
  * @Date: 2020-11-24 10:49:02
  * @LastEditors: zyc
- * @LastEditTime: 2021-01-05 09:14:12
+ * @LastEditTime: 2021-01-14 15:12:59
  */
 /*
  * @Descripttion: 
@@ -37,7 +37,7 @@ import ElementUI from 'element-ui';
 // import 'element-ui/lib/theme-chalk/index.css';
 // import '../ihome-theme/theme/index.css'
 import '../ihome-theme/theme/index.css'
-
+import { MyMath } from '../util/math'
 import '../ui/css/ihome-ui.scss'
 import { UserModule } from '@/store/modules/user'
 
@@ -52,6 +52,7 @@ Vue.use(VueCropper)
 Vue.use(ElementUI);
 Vue.config.productionTip = false;
 Vue.prototype.$tool = new Tool();
+Vue.prototype.$math = new MyMath();
 Vue.prototype.$goto = function (location: Location) {
   (window as any).activatedRefresh = location.path;
   this.$router.push(location)

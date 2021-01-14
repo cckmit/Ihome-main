@@ -4,7 +4,7 @@
  * @Author: zyc
  * @Date: 2020-06-22 11:46:23
  * @LastEditors: zyc
- * @LastEditTime: 2021-01-05 09:12:42
+ * @LastEditTime: 2021-01-14 15:38:32
  */
 import Vue from 'vue'
 import App from './App.vue'
