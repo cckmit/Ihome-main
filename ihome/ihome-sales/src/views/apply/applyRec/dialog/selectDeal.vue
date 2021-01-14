@@ -4,7 +4,7 @@
  * @Author: ywl
  * @Date: 2021-01-07 19:02:24
  * @LastEditors: ywl
- * @LastEditTime: 2021-01-11 11:25:44
+ * @LastEditTime: 2021-01-14 15:05:11
 -->
 <template>
   <el-dialog
@@ -209,7 +209,7 @@ export default class SelectDeal extends Vue {
   private dialogVisible = true;
   private pageSize = 10;
   private pageNum = 1;
-  private rowKey: any = "id";
+  private rowKey: any = "fromDealId";
   private tableMaxHeight: any = 350;
   private tableColumn = [
     {
@@ -308,12 +308,16 @@ export default class SelectDeal extends Vue {
     this.getList();
   }
   private async getList() {
-    this.resPageInfo = await post_deal_getList({
+    let res = await post_deal_getList({
       ...this.queryPageParameters,
       ...this.params,
       pageNum: this.pageNum,
       pageSize: this.pageSize,
     });
+    this.resPageInfo = {
+      ...res,
+      list: res.list.map((i: any) => ({ ...i, fromDealId: i.id })),
+    };
   }
 
   created() {

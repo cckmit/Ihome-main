@@ -50,28 +50,28 @@
         <el-table-column
           label="甲方公司名称"
           prop="developName"
-          width="215"
+          min-width="215"
           fixed
         ></el-table-column>
         <el-table-column
           label="已产生抵扣项费用(元)"
           prop="sumSubMoney"
-          width="165"
+          min-width="165"
         ></el-table-column>
         <el-table-column
           label="已冲正抵扣项费用(元)"
           prop="completeSumSubMoney"
-          width="165"
+          min-width="165"
         ></el-table-column>
         <el-table-column
           label="待冲正抵扣项费用(元)"
           prop="waitSumSubMoney"
-          width="165"
+          min-width="165"
         ></el-table-column>
         <el-table-column
           label="冲正中抵扣项费用(元)"
           prop="ongoingSumSubMoney"
-          width="165"
+          min-width="165"
         ></el-table-column>
         <el-table-column
           label="操作"

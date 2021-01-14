@@ -1,6 +1,6 @@
 /* eslint-disable */
 /* 此脚本由swagger-ui的api-docs自动生成，请勿修改 */
-//2021-1-13 3:25:44 ├F10: PM┤
+//2021-1-14 10:25:15 ├F10: AM┤
 import { request } from '@/api/base'
 const basePath = "/sales-api/apply"
 /**发起开票申请*/
@@ -45,7 +45,7 @@ return await request.get<ApplyRecIsOkVo,ApplyRecIsOkVo>(basePath+'/applyRec/isRe
 }
 /**请佣申请单保存*/
 export async function post_applyRec_save (d?: any) {
-return await request.post< number,number> (basePath+'/applyRec/save', d)
+return await request.post< SaveResVO,SaveResVO> (basePath+'/applyRec/save', d)
 }
 /**请佣申请单终止*/
 export async function post_applyRec_stop__applyId (d?: any) {
@@ -67,9 +67,9 @@ return await request.post< GetTermTotalResVO[],GetTermTotalResVO[]> (basePath+'/
 export async function get_applyRecDeal_isCanToAddDeal__dealId (d?: any) {
 return await request.get<boolean,boolean>(basePath+'/applyRecDeal/isCanToAddDeal/{dealId}', { params: d })
 }
-/**根据成交报告ID查询是否可发起请佣*/
-export async function get_applyRecDeal_isCanToApply__dealId (d?: any) {
-return await request.get<boolean,boolean>(basePath+'/applyRecDeal/isCanToApply/{dealId}', { params: d })
+/**根据待选成交报告逻辑ID查询是否可发起请佣*/
+export async function get_applyRecDeal_isCanToApply__fromDealId (d?: any) {
+return await request.get<boolean,boolean>(basePath+'/applyRecDeal/isCanToApply/{fromDealId}', { params: d })
 }
 /**根据请佣ID获取项目周期请款汇总记录*/
 export async function get_applyRecDealTerm_getAll__applyId (d?: any) {
@@ -176,33 +176,16 @@ list:T[];
 /**总记录数*/
 total: number;
 }
-/**AddDealFromPageVO*/
-export interface AddDealFromPageVO {
-/**(必填)成交报告编号*/
-dealCode: string;
-/**(必填)成交报告ID*/
-dealId: number;
-/**(必填)甲方公司（即开发商）ID*/
-developId: number;
-/**(必填)项目ID*/
-proId: number;
-/**(必填)扣除代理费*/
-subMoney: number;
-/**(必填)抵扣项类别*/
-subType: string;
-/**(必填)项目周期ID*/
-termId: number;
-}
 /**AddFromPageVO*/
 export interface AddFromPageVO {
-/**(必填)待选成交报告逻辑ID*/
-applyDealId: number;
 /**(必填)本次请款金额，默认为对应的【系统计算本次可提金额】*/
 applyMoney: number;
 /**渠道公司（中介公司）经纪人，中介业务员*/
 channelAgentName: string;
 /**(必填)成交报告编号*/
 dealCode: string;
+/**(必填)待选成交报告逻辑ID*/
+fromDealId: number;
 /**(必填)是否达到请款条件，0否1是*/
 isCanApply: number;
 /**(必填)实际收款金额：不含税金额*/
@@ -257,15 +240,6 @@ fileId: string;
 fileName: string;
 /**(必填)附件类型(Contract-合同附件、Invoice-开票资料、ApplyReport-请款报告、DealPDF-成交报告明细PDF、TermPDF-项目周期请款汇总PDF、AgentFeePDF-甲方公司应扣除代理费明细PDF)*/
 type: string;
-}
-/**AddFromPageVO_3*/
-export interface AddFromPageVO_3 {
-/**请佣申请单逻辑ID*/
-applyId: number;
-/**已选成交报告集合*/
-applyRecDealList: AddDealFromPageVO[];
-/**抵扣项费用明细逻辑ID集合*/
-devDeductDetailIdList: number[];
 }
 /**AddListFromPageVO*/
 export interface AddListFromPageVO {
@@ -343,6 +317,10 @@ lastApplyNo: string;
 oaSysApplyId: number;
 /**乙方公司（我司主体）ID*/
 polyCompanyId: number;
+/**项目ID*/
+proId: number;
+/**项目推广名称*/
+proName: string;
 /**乙方（我司主体）收款账号ID*/
 receAccountId: number;
 /**经办部门意见*/
@@ -429,6 +407,10 @@ developName: string;
 id: number;
 /**是否驳回，0否1是，默认0否*/
 isReject: number;
+/**项目ID*/
+proId: number;
+/**项目推广名称*/
+proName: string;
 /**状态(Draft-草稿、BusinessDepart-待事业部负责人审核、BusinessMan-待业管审核、BranchAccount-待分公司会计审核、Oa-OA领导审核中、InvoiceApply-待申请开票、BusinessManAgain-待业管复审、InvoiceClerk-待开票员审核、InvoiceMake-待开票员开票、Confirm-待回款确认、Complete-已完成、Stop-终止)*/
 status: string;
 /**本次扣除金额（元）*/
@@ -450,6 +432,8 @@ developName: string;
 pageNum: number;
 /**(必填)每页条数*/
 pageSize: number;
+/**项目ID*/
+proId: number;
 /**状态(Draft-草稿、BusinessDepart-待事业部负责人审核、BusinessMan-待业管审核、BranchAccount-待分公司会计审核、Oa-OA领导审核中、InvoiceApply-待申请开票、BusinessManAgain-待业管复审、InvoiceClerk-待开票员审核、InvoiceMake-待开票员开票、Confirm-待回款确认、Complete-已完成、Stop-终止)*/
 status: string;
 }
@@ -608,7 +592,7 @@ houseCount: number;
 id: number;
 /**是否达到请款条件，0否1是*/
 isCanApply: number;
-/**代理费金额：未回款金额*/
+/**代理费金额：已提未回款金额*/
 noConfirmAmount: number;
 /**代理费金额：未收*/
 noReceiveAmount: number;
@@ -618,6 +602,8 @@ oneAgentTeamId: number;
 oneAgentTeamName: string;
 /**是否垫佣(Veto-否、One-1个月、Two-2个月、Three-3个月、FOUR-4个月、Five-5个月、Six-6个月、Seven-7个月、Eight-8个月、Nine-9个月、Ten-10个月、Eleven-11个月、Twelve-12个月)*/
 padCommissionEnum: string;
+/**乙方公司（我司主体）ID*/
+polyCompanyId: number;
 /**项目ID*/
 proId: number;
 /**项目推广名称*/
@@ -626,6 +612,8 @@ proName: string;
 propertyNo: string;
 /**物业类型(Residence-住宅、WorkShop-厂房、Apartment-公寓、Villa-别墅、Shop-商铺、Office-写字楼、Parking-车位、Other-其他)*/
 propertyType: string;
+/**乙方（我司主体）收款账号ID*/
+receAccountId: number;
 /**代理费金额：应收*/
 receiveAmount: number;
 /**代理费金额：已收*/
@@ -668,6 +656,8 @@ suppDealTime: string;
 termId: number;
 /**周期名称*/
 termName: string;
+/**该周期所归属的事业部ID层级*/
+tremOrgId: number;
 }
 /**DealDevelopListVO*/
 export interface DealDevelopListVO {
@@ -708,7 +698,7 @@ dealId: number;
 id: number;
 /**是否达到请款条件，0否1是*/
 isCanApply: number;
-/**代理费金额：未回款金额*/
+/**代理费金额：已提未回款金额*/
 noConfirmAmount: number;
 /**代理费金额：未收*/
 noReceiveAmount: number;
@@ -716,12 +706,16 @@ noReceiveAmount: number;
 oneAgentTeamId: number;
 /**代理公司名称，一手代理团队名称*/
 oneAgentTeamName: string;
+/**乙方公司（我司主体）ID*/
+polyCompanyId: number;
 /**项目ID*/
 proId: number;
 /**项目推广名称*/
 proName: string;
 /**合同编号(购房)*/
 propertyNo: string;
+/**乙方（我司主体）收款账号ID*/
+receAccountId: number;
 /**代理费金额：应收*/
 receiveAmount: number;
 /**代理费金额：已收*/
@@ -744,6 +738,8 @@ subscribeDate: string;
 termId: number;
 /**周期名称*/
 termName: string;
+/**该周期所归属的事业部ID层级*/
+tremOrgId: number;
 }
 /**DealQueryVO*/
 export interface DealQueryVO {
@@ -769,8 +765,8 @@ polyCompanyId: number;
 proId: number;
 /**(必填)乙方（我司主体）收款账号ID*/
 receAccountId: number;
-/**周期名称*/
-termName: string;
+/**项目周期ID*/
+termId: number;
 }
 /**DealSaveResVO*/
 export interface DealSaveResVO {
@@ -852,6 +848,10 @@ termId: number;
 export interface DevAgentFeeListVO {
 /**请佣申请单逻辑ID*/
 applyId: number;
+/**数据来源(Deal-成交报告、DeductDetail-抵扣项费用明细)*/
+dataSource: string;
+/**数据来源逻辑ID*/
+dataSourceId: number;
 /**成交报告编号*/
 dealCode: string;
 /**成交报告ID*/
@@ -1099,6 +1099,10 @@ fineMoney: number;
 id: number;
 /**回款信息：未回款金额*/
 noReceMoney: number;
+/**项目ID*/
+proId: number;
+/**项目推广名称*/
+proName: string;
 /**回款信息：已回款金额*/
 receMoney: number;
 /**回款确认时间：出纳回款登记时间(yyyy-MM-dd HH:mm:ss)*/
@@ -1153,6 +1157,8 @@ customerName: string;
 dealCode: string;
 /**成交报告ID*/
 dealId: number;
+/**待选成交报告逻辑ID*/
+fromDealId: number;
 /**逻辑ID，主键，自增长*/
 id: number;
 /**是否达到请款条件，0否1是*/
@@ -1270,6 +1276,8 @@ developName: string;
 pageNum: number;
 /**(必填)每页条数*/
 pageSize: number;
+/**项目ID*/
+proId: number;
 /**状态：回款待确认(Confirm)；回款已确认(Complete)，全部(不传值)(Draft-草稿、BusinessDepart-待事业部负责人审核、BusinessMan-待业管审核、BranchAccount-待分公司会计审核、Oa-OA领导审核中、InvoiceApply-待申请开票、BusinessManAgain-待业管复审、InvoiceClerk-待开票员审核、InvoiceMake-待开票员开票、Confirm-待回款确认、Complete-已完成、Stop-终止)*/
 status: string;
 }
@@ -1279,6 +1287,8 @@ export interface SaveFromPageVO {
 actMoney: number;
 /**(必填)本次实际请款金额（含税）*/
 actMoneyTax: number;
+/**已选甲方公司应扣除代理费明细来源：抵扣项费用明细*/
+agentFeeFromDeductIdList: number[];
 /**(必填)本次请款金额（元）*/
 applyMoney: number;
 /**(必填)发票类型(SpecialElectron-增值税专用发票（电子）、OrdinaryElectron-增值税普通发票（电子）、OrdinaryPaper-增值税普通发票（纸质)、SpecialPaper-增值税专用发票（纸质）)*/
@@ -1287,8 +1297,6 @@ billTypeCode: string;
 branchNo: string;
 /**(必填)已选成交报告列表*/
 dealList: AddFromPageVO[];
-/**已选甲方公司应扣除代理费明细*/
-devAgentFeeAddFromPageVO: AddFromPageVO_3;
 /**(必填)甲方公司（即开发商）ID*/
 developId: number;
 /**附件记录*/
@@ -1305,6 +1313,8 @@ lastApplyNo: string;
 op: string;
 /**(必填)乙方公司（我司主体）ID*/
 polyCompanyId: number;
+/**(必填)项目ID*/
+proId: number;
 /**(必填)乙方（我司主体）收款账号ID*/
 receAccountId: number;
 /**(必填)经办部门意见*/
@@ -1333,6 +1343,33 @@ taxMoney: number;
 taxRate: number;
 /**(必填)项目周期请款汇总信息*/
 termList: AddFromPageVO_1[];
+}
+/**SaveResVO*/
+export interface SaveResVO {
+/**新增成交报告列表信息ID列表*/
+addDealIdList: number[];
+/**新增甲方应扣除代理费明细ID列表*/
+addDevAgentFeeIdList: number[];
+/**新增附件记录ID列表*/
+addFileIdList: number[];
+/**新增项目周期请款汇总ID列表*/
+addTermIdList: number[];
+/**请佣逻辑ID*/
+applyId: number;
+/**取消关联抵扣项费用明细ID列表*/
+cancelDeductIdList: number[];
+/**关联抵扣项费用明细ID列表*/
+deductIdList: number[];
+/**删除已选的甲方公司应扣除代理费明细数量*/
+delAgentFeeCount: number;
+/**删除已选的成交报告数量*/
+delDealCount: number;
+/**删除已选的附件记录数量*/
+delFileCount: number;
+/**删除已选的项目周期请款汇总数量*/
+delTermCount: number;
+/**日志ID*/
+logId: number;
 }
 /**TermProVO*/
 export interface TermProVO {
