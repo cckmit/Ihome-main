@@ -4,7 +4,7 @@
  * @Author: ywl
  * @Date: 2020-09-25 16:00:37
  * @LastEditors: ywl
- * @LastEditTime: 2021-01-11 10:55:40
+ * @LastEditTime: 2021-01-15 16:56:01
 -->
 <template>
   <IhPage class="text-left partyA-info">
@@ -127,6 +127,11 @@
                 size="100px"
                 @newFileList="handleContract"
               ></IhUpload>
+              <el-button
+                type="primary"
+                class="upload-button"
+                @click="submitContract()"
+              >提交</el-button>
             </el-form-item>
           </el-col>
         </el-row>
@@ -142,7 +147,7 @@
               <el-button
                 type="primary"
                 class="upload-button"
-                @click="submit()"
+                @click="submitArchive()"
               >提交</el-button>
             </el-form-item>
           </el-col>
@@ -273,12 +278,29 @@ export default class PartyAadd extends Vue {
       }));
     console.log(this.addArchive);
   }
-  private async submit() {
-    if (this.addContract.length || this.addArchive.length) {
+  private async submitContract() {
+    if (this.addContract.length) {
       try {
         await post_contract_annex({
           contractId: this.formData.id,
-          annexList: this.addContract.concat(this.addArchive),
+          annexList: this.addContract,
+        });
+        this.addContract = [];
+        this.$message.success("提交附件成功");
+        this.$router.go(0);
+      } catch (error) {
+        console.log(error);
+      }
+    } else {
+      this.$message.warning("请先上传甲方合同附件");
+    }
+  }
+  private async submitArchive() {
+    if (this.addArchive.length) {
+      try {
+        await post_contract_annex({
+          contractId: this.formData.id,
+          annexList: this.addArchive,
         });
         this.addContract = [];
         this.addArchive = [];
@@ -288,7 +310,7 @@ export default class PartyAadd extends Vue {
         console.log(err);
       }
     } else {
-      this.$message.warning("请先上传附件");
+      this.$message.warning("请先上传盖章版附件");
     }
   }
   private async getInfo() {

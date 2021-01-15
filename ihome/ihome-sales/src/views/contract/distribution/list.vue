@@ -4,7 +4,7 @@
  * @Author: ywl
  * @Date: 2020-09-25 17:34:32
  * @LastEditors: ywl
- * @LastEditTime: 2021-01-14 17:16:03
+ * @LastEditTime: 2021-01-15 15:55:49
 -->
 <template>
   <IhPage label-width="100px">
@@ -96,10 +96,15 @@
               </el-col>
               <el-col :span="8">
                 <el-form-item label="归属组织">
-                  <SelectOrganizationTree
+                  <IhSelectPageDivision
+                    v-model="queryPageParameters.organizationId"
+                    placeholder="请选择归属组织"
+                    clearable
+                  ></IhSelectPageDivision>
+                  <!-- <SelectOrganizationTree
                     :orgId="queryPageParameters.organizationId"
                     @callback="(id) => (queryPageParameters.organizationId = id)"
-                  />
+                  /> -->
                 </el-form-item>
               </el-col>
               <el-col :span="8">

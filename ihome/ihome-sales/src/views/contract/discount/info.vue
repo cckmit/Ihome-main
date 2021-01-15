@@ -4,7 +4,7 @@
  * @Author: ywl
  * @Date: 2020-09-27 17:27:00
  * @LastEditors: ywl
- * @LastEditTime: 2021-01-11 11:09:44
+ * @LastEditTime: 2021-01-15 16:53:54
 -->
 <template>
   <IhPage class="text-left discount-info">
@@ -218,6 +218,7 @@ export default class DiscountDetail extends Vue {
         .map((item: any) => ({
           name: item.attachmentSuffix,
           fileId: item.fileNo,
+          exAuto: 1,
         }));
     }
   }

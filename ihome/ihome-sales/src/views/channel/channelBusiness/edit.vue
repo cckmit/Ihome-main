@@ -4,7 +4,7 @@
  * @Author: ywl
  * @Date: 2020-09-16 14:05:21
  * @LastEditors: ywl
- * @LastEditTime: 2021-01-04 11:00:31
+ * @LastEditTime: 2021-01-15 17:42:21
 -->
 <template>
   <IhPage>
@@ -415,8 +415,24 @@ import {
   post_channel_add,
   post_channel_edit,
   post_channelChange_add,
+  get_channel_checkSetupTime,
+  post_channelChange_changeCheck,
 } from "@/api/channel/index";
 import BankDialog from "./dialog/bankDialog.vue";
+
+async function dataChange(rule: any, value: any, callback: any) {
+  try {
+    let flag = await get_channel_checkSetupTime({ setupTime: value });
+    if (flag) {
+      callback();
+    } else {
+      callback(new Error("成立时间必须大于三个月"));
+    }
+  } catch (error) {
+    callback();
+    console.log(error);
+  }
+}
 
 @Component({
   components: {
@@ -497,6 +513,7 @@ export default class ModifyThe extends Vue {
     ],
     setupTime: [
       { required: true, message: "请输入成立日期", trigger: "change" },
+      { validator: dataChange, trigger: "change" },
     ],
     capital: [
       { required: true, message: "请输入注册资本", trigger: "change" },
@@ -636,15 +653,26 @@ export default class ModifyThe extends Vue {
               this.$message.warning("变更原因不能为空");
               return;
             }
-            await post_channelChange_add({
-              ...this.info,
-              operateType: type,
-              channelAttachmentChanges: [...this.info.channelAttachments],
-              channelPersonChanges: [{ ...this.channelPersonsData }],
-              channelBankChanges: this.info.channelBanks,
-              changeReason: this.changeReason,
-              oldChannelId: this.$route.query.id,
-            });
+            try {
+              let flag = await post_channelChange_changeCheck({
+                oldChannelId: this.$route.query.id,
+              });
+              if (flag) {
+                await post_channelChange_add({
+                  ...this.info,
+                  operateType: type,
+                  channelAttachmentChanges: [...this.info.channelAttachments],
+                  channelPersonChanges: [{ ...this.channelPersonsData }],
+                  channelBankChanges: this.info.channelBanks,
+                  changeReason: this.changeReason,
+                  oldChannelId: this.$route.query.id,
+                });
+              } else {
+                this.$message.warning("渠道变更中, 请不要提交重复变更");
+              }
+            } catch (error) {
+              console.log(error);
+            }
             this.$message.success("渠道商变更提交成功");
             this.$goto({ path: "/channelChange/list" });
             break;
