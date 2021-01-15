@@ -155,7 +155,7 @@ export default class App extends Vue {
   async created() {
     // this.menuList = await allMenu();
     // this.menuList = (this.$root as any).userInfo?.menuList || [];
-    this.menuList = (window as any).polyihomeData.userInfo?.menuList || [];
+    this.menuList = (window as any).polyihomeData?.userInfo?.menuList || [];
     this.setMenu();
   }
 

@@ -4,7 +4,7 @@
  * @Author: wwq
  * @Date: 2020-11-03 11:52:41
  * @LastEditors: wwq
- * @LastEditTime: 2021-01-08 14:09:53
+ * @LastEditTime: 2021-01-15 17:10:24
 -->
 <template>
   <div>
@@ -658,11 +658,31 @@ export default class EditBasicInfo extends Vue {
   BMap: any = {};
   searchAddr = "";
   isShow = true;
+  oldInfo: any = {};
+  oldSubmitFile: any = {};
 
   @Watch("form.exMinyuan", { immediate: true, deep: true })
   isShowList(v: any) {
     if (!v) this.isShow = false;
     else this.isShow = true;
+  }
+
+  @Watch("form", { immediate: true, deep: true })
+  infoChange(val: any) {
+    let isCut: any = true;
+    if (JSON.stringify(val) !== JSON.stringify(this.oldInfo)) {
+      isCut = false;
+    }
+    this.$emit("cutOther", isCut);
+  }
+
+  @Watch("submitFile", { immediate: true, deep: true })
+  fileListTypeChange(val: any) {
+    let isCut: any = true;
+    if (JSON.stringify(val) !== JSON.stringify(this.oldSubmitFile)) {
+      isCut = false;
+    }
+    this.$emit("cutOther", isCut);
   }
 
   private get projectId() {
@@ -742,6 +762,7 @@ export default class EditBasicInfo extends Vue {
         (item: any) => item.exIndex === 1
       )[0]?.fileId;
       this.getFileListType(data.attachPics);
+      this.oldInfo = { ...this.form };
     } else {
       this.getFileListType([]);
     }
@@ -765,6 +786,7 @@ export default class EditBasicInfo extends Vue {
       obj[h.code] = h.fileList;
     });
     this.submitFile = { ...obj };
+    this.oldSubmitFile = this.submitFile;
   }
 
   queryNew(data: any, type?: any) {
@@ -834,7 +856,6 @@ export default class EditBasicInfo extends Vue {
 
   // 处理楼房图片
   houseFiles(data: any) {
-    console.log(data);
     this.houseList = data.map((v: any) => ({
       fileId: v.fileId,
       fileName: v.name,

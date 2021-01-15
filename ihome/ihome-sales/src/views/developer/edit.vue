@@ -4,7 +4,7 @@
  * @Author: wwq
  * @Date: 2020-09-25 17:59:09
  * @LastEditors: wwq
- * @LastEditTime: 2021-01-14 17:49:56
+ * @LastEditTime: 2021-01-15 12:26:08
 -->
 <template>
   <ih-page>
@@ -79,10 +79,7 @@
             </el-form-item>
           </el-col>
           <el-col :span="8">
-            <el-form-item
-              label="法定代表人"
-              prop="legalPerson"
-            >
+            <el-form-item label="法定代表人">
               <el-input
                 clearable
                 maxlength="32"
@@ -92,10 +89,7 @@
             </el-form-item>
           </el-col>
           <el-col :span="8">
-            <el-form-item
-              label="法人身份证号码"
-              prop="legalPersonId"
-            >
+            <el-form-item label="法人身份证号码">
               <el-input
                 clearable
                 maxlength="18"
@@ -120,10 +114,7 @@
             </el-form-item>
           </el-col>
           <el-col :span="8">
-            <el-form-item
-              label="注册资本"
-              prop="capital"
-            >
+            <el-form-item label="注册资本">
               <el-input
                 clearable
                 maxlength="32"
@@ -471,25 +462,22 @@ export default class Edit extends Vue {
     ],
     shortName: [{ required: true, message: "请填写简称", trigger: "change" }],
     type: [{ required: true, message: "请选择类型", trigger: "change" }],
-    legalPersonId: [
-      { required: true, message: "请填写法人身份证号码", trigger: "change" },
-      {
-        pattern: /(^[1-9]\d{5}(18|19|([23]\d))\d{2}((0[1-9])|(10|11|12))(([0-2][1-9])|10|20|30|31)\d{3}[0-9Xx]$)|(^[1-9]\d{5}\d{2}((0[1-9])|(10|11|12))(([0-2][1-9])|10|20|30|31)\d{2}$)/,
-        message: "证件号码格式有误！",
-        trigger: "change",
-      },
-    ],
+    // legalPersonId: [
+    //   { required: true, message: "请填写法人身份证号码", trigger: "change" },
+    //   {
+    //     pattern: /(^[1-9]\d{5}(18|19|([23]\d))\d{2}((0[1-9])|(10|11|12))(([0-2][1-9])|10|20|30|31)\d{3}[0-9Xx]$)|(^[1-9]\d{5}\d{2}((0[1-9])|(10|11|12))(([0-2][1-9])|10|20|30|31)\d{2}$)/,
+    //     message: "证件号码格式有误！",
+    //     trigger: "change",
+    //   },
+    // ],
     setupTime: [
       { required: true, message: "请选择成立日期", trigger: "change" },
     ],
-    capital: [{ required: true, message: "请填写注册资本", trigger: "change" }],
+    // capital: [{ required: true, message: "请填写注册资本", trigger: "change" }],
     provinceOption: [
       { required: true, message: "请选择省市区", trigger: "change" },
     ],
     address: [{ required: true, message: "请填写住所", trigger: "change" }],
-    legalPerson: [
-      { required: true, message: "请填法定代表人", trigger: "change" },
-    ],
   };
 
   searchOpen = true;

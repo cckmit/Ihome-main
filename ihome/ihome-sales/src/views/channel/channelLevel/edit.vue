@@ -4,7 +4,7 @@
  * @Author: wwq
  * @Date: 2020-10-15 16:02:03
  * @LastEditors: wwq
- * @LastEditTime: 2021-01-09 15:22:34
+ * @LastEditTime: 2021-01-15 17:58:13
 -->
 <template>
   <IhPage>
@@ -298,6 +298,7 @@ import {
   post_channelGradeChange_add,
   post_channelGrade_edit,
   post_channelGradeStandard_getAllByCityCodeAndChannelGrade,
+  post_channelGradeChange_changeCheck,
 } from "../../../api/channel/index";
 
 import { Form as ElForm } from "element-ui";
@@ -327,6 +328,8 @@ export default class ChannelRates extends Vue {
     channelGradeAttachments: [],
     provinceOption: [],
   };
+
+  private addDictList: any = [];
 
   private rules: any = {
     channelId: [{ required: true, message: "请选择渠道商", trigger: "change" }],
@@ -359,8 +362,22 @@ export default class ChannelRates extends Vue {
   }
 
   getFileListType(data: any) {
-    const list = (this.$root as any).dictAllList("ChannelGradeAttachment");
-    this.fileListType = list.map((v: any) => {
+    const ChannelGrade = (this.$root as any).dictAllList(
+      "ChannelGradeAttachment"
+    );
+    const channelLevelDict = (this.$root as any).dictAllList(
+      "ChannelLevelStandardAttachment"
+    );
+    let newDict: any = [];
+    if (data.length) {
+      newDict = channelLevelDict.filter((j: any) => {
+        return data.map((i: any) => i.type).includes(j.code);
+      });
+    } else {
+      newDict = this.addDictList;
+    }
+    const dictList = newDict.concat(ChannelGrade);
+    this.fileListType = dictList.map((v: any) => {
       return {
         ...v,
         fileList: data
@@ -409,6 +426,17 @@ export default class ChannelRates extends Vue {
         inputValue: "",
         standardId: v.id,
       }));
+      const list = (this.$root as any).dictAllList(
+        "ChannelLevelStandardAttachment"
+      );
+      this.addDictList = res[0].channelGradeStandardAttachments.map(
+        (j: any) => ({
+          code: j.materialType,
+          name: list.find((h: any) => h.code === j.materialType).name,
+          type: "ChannelGradeAttachment",
+        })
+      );
+      this.getFileListType([]);
     } else {
       this.resPageInfo.channelGradeItems = [];
     }
@@ -473,7 +501,18 @@ export default class ChannelRates extends Vue {
                 ...this.resPageInfo.channelGradeAttachments,
               ];
               this.resPageInfo.changeReason = this.changeReason;
-              await post_channelGradeChange_add(this.resPageInfo);
+              try {
+                let flag = await post_channelGradeChange_changeCheck({
+                  oldGradeId: this.resPageInfo.oldGradeId,
+                });
+                if (flag) {
+                  await post_channelGradeChange_add(this.resPageInfo);
+                } else {
+                  this.$message.warning("渠道等级变更中, 请不要提交重复变更");
+                }
+              } catch (error) {
+                console.log(error);
+              }
             } else {
               this.$message.warning("请填写变更原因");
               return;

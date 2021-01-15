@@ -3,8 +3,8 @@
  * @version: 
  * @Author: wwq
  * @Date: 2020-10-15 12:33:25
- * @LastEditors: ywl
- * @LastEditTime: 2020-12-18 20:07:53
+ * @LastEditors: wwq
+ * @LastEditTime: 2021-01-15 15:21:31
 -->
 <template>
   <div class="text-left">
@@ -291,6 +291,7 @@ export default class Home extends Vue {
   async created() {
     this.getInfo();
   }
+  addDictList: any = [];
 
   async getInfo() {
     let id = this.$route.query.id;
@@ -300,8 +301,17 @@ export default class Home extends Vue {
     }
   }
   getFileListType(data: any) {
-    const list = (this.$root as any).dictAllList("ChannelGradeAttachment");
-    this.fileListType = list.map((v: any) => {
+    const ChannelGrade = (this.$root as any).dictAllList(
+      "ChannelGradeAttachment"
+    );
+    const channelLevelDict = (this.$root as any).dictAllList(
+      "ChannelLevelStandardAttachment"
+    );
+    const newDict: any = channelLevelDict.filter((j: any) => {
+      return data.map((i: any) => i.type).includes(j.code);
+    });
+    const dictList = newDict.concat(ChannelGrade);
+    this.fileListType = dictList.map((v: any) => {
       return {
         ...v,
         fileList: data
@@ -312,6 +322,7 @@ export default class Home extends Vue {
           })),
       };
     });
+    console.log(this.fileListType);
   }
   async pass(val: any) {
     if (this.remark) {

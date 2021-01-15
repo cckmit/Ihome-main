@@ -197,6 +197,9 @@
         this.achieveTitle = '新增角色业绩';
       } else if (this.data.btnType === 'edit') {
         this.form = (this as any).$tool.deepClone(this.data.currentEditItem);
+        if (this.form.rolerId === 0) {
+          this.form.rolerId = null;
+        }
         if (this.data.currentEditItem.roleType === 'BranchOffice') {
           this.achieveTitle = '分配管理岗业绩';
         } else {

@@ -4,7 +4,7 @@
  * @Author: zyc
  * @Date: 2020-11-24 10:49:02
  * @LastEditors: zyc
- * @LastEditTime: 2021-01-14 15:12:59
+ * @LastEditTime: 2021-01-15 11:22:11
  */
 /*
  * @Descripttion: 
@@ -73,239 +73,230 @@ if (process.env.NODE_ENV !== 'production') {
 let areaAll: any = (window as any).polyihomeData?.areaAll || {};//全部行政区数据
 let dictAll: any = (window as any).polyihomeData?.dictAll || [];//存在后端加载的所有字典数据
 let userInfo: any = (window as any).polyihomeData?.userInfo || {};//用户信息
-function render() {
+async function render() {
+
   //window全局变量共享数据
-  (window as any).polyihomeData = {
-    userInfo: {},
-    areaAll: [],
-    dictAll: {}
-  };
-
-  Promise.all([get_area_getAll(), get_dict_getAll(), post_sessionUser_getUserInfo({ terminalType: "Pc" })]).then((res: any) => {
-    areaAll = res[0];
-    dictAll = res[1];
-    userInfo = res[2];
-    //window全局变量共享数据
-    (window as any).polyihomeData = {
-      userInfo: userInfo,
-      areaAll: areaAll,
-      dictAll: dictAll
-    };
-  }).catch((err: any) => {
-    console.error('子项目初始化数据异常', err)
-
-  }).finally(() => {
-    instance = new Vue({
-      store,
-      router,
-      methods: {
-        /**该方法已抛弃，使用dictAllName
-         * @param {type} 
-         * @return {type} 
-         */
-        displayName(source: any, key: any) {
-          console.error('该方法已抛弃，使用dictAllName')
-          let item: any = $dic[source];
-          if (item) {
-            return item[key];
-          } else {
-            console.error(source, key, '枚举类型无法匹配')
-            return null;
-          }
-        },
-        /**该方法已抛弃，使用dictAllList
-         * @param {type} 
-         * @return {type} 
-         */
-        displayList(source: any, key: any) {
-          console.error('该方法已抛弃，使用dictAllList')
-          let item: any = $dic[source];
-          if (item) {
-            let list = $dic.getListTool(item);
-            return list;
-          } else {
-            console.error(source, key, '枚举类型无法匹配.')
-            return [];
-          }
-        },
-        /**根据字典类别获取该分类的列表
-         * @param {type} 
-         * @return {type} 
-         */
-        dictAllList(category: any, tag?: any) {
-          let list: any[] = dictAll[category];
-          if (list) {
-            if (tag) {
-              let listTag = list.filter((item: any) => {
-                if (item.tag == tag) {
-                  return true;
-                } else {
-                  return false;
-                }
-              })
-              return listTag;
-
-            } else {
-              return list;
-            }
-
-          } else {
-            console.error(category, '字典类型无法匹配.')
-            return [];
-          }
-        },
-        /**根据字典code和类别获取对应的name
-         * @param {type} 
-         * @return {type} 
-         */
-        dictAllName(data: any, category: any) {
-          if (data === undefined || data === null) {
-            return null;
-          } else {
-            let list: any[] = dictAll[category];
-            if (list) {
-              let item: any = list.filter((i: any) => {
-                if (i.code == data) {
-                  return true;
-                } else {
-                  return false;
-                }
-              })
-              if (item && item.length == 1) {
-                return item[0].name;
-              } else if (item && item.length > 1) {
-                console.error(data, category, item, '字典匹配到多项.返回第一项');
-                return item[0].name;
-              } else {
-                console.error(data, category, '字典无法匹配到数据');
-                return null;
-              }
-            } else {
-              console.error(category, '字典类型无法匹配.')
-              return null;
-            }
-          }
-        },
-        /**根据字典code和类别获取对应的name
-        * @param {type} 
-        * @return {type} 
-        */
-        dictAllItem(data: any, category: any) {
-          if (data === undefined || data === null) {
-            return {}
-          } else {
-            let list: any[] = dictAll[category];
-            if (list) {
-              let item: any = list.filter((i: any) => {
-                if (i.code == data) {
-                  return true;
-                } else {
-                  return false;
-                }
-              })
-              if (item && item.length == 1) {
-                return item[0]
-              } else if (item && item.length > 1) {
-                console.error(data, category, item, '字典匹配到多项.返回第一项');
-                return item[0]
-              } else {
-                console.error(data, category, '字典无法匹配到数据');
-                return {};
-              }
-            } else {
-              console.error(category, '字典类型无法匹配.')
-              return {};
-            }
-          }
-        },
-        /**根据行政区code获取对应的name
-         * @param {type} 
-         * @return {type} 
-         */
-        getAreaName(code: string) {
-          if (areaAll) {
-            let areaName = null;
-            for (let index = 0; index < areaAll.length; index++) {
-              const element = areaAll[index];
-              if (element.code == code) {
-                areaName = element.name;
-                break;
-              }
-            }
-            return areaName;
-
-          } else {
-            return null;
-          }
-        },
-        /**根据行政区code获取对应的该项数据
-        * @param {type} 
-        * @return {type} 
-        */
-        getArea(code: string) {
-          if (areaAll) {
-            let area = null;
-            for (let index = 0; index < areaAll.length; index++) {
-              const element = areaAll[index];
-              if (element.code == code) {
-                area = element;
-                break;
-              }
-            }
-            return area;
-          } else {
-            return null;
-          }
-        }
-      },
-      data: {
-        userInfo: userInfo,
-        paginationLayout: "total, sizes, prev, pager, next, jumper",
-        pageSizes: [10, 20, 50],
-        pageSize: 10,
-        pickerOptions: {
-          shortcuts: [
-            {
-              text: "最近一周",
-              onClick(picker: any) {
-                const end = new Date();
-                const start = new Date();
-                start.setTime(start.getTime() - 3600 * 1000 * 24 * 7);
-                picker.$emit("pick", [start, end]);
-              },
-            },
-            {
-              text: "最近一个月",
-              onClick(picker: any) {
-                const end = new Date();
-                const start = new Date();
-                start.setTime(start.getTime() - 3600 * 1000 * 24 * 30);
-                picker.$emit("pick", [start, end]);
-              },
-            },
-            {
-              text: "最近三个月",
-              onClick(picker: any) {
-                const end = new Date();
-                const start = new Date();
-                start.setTime(start.getTime() - 3600 * 1000 * 24 * 90);
-                picker.$emit("pick", [start, end]);
-              },
-            },
-          ],
-        }
-      },
-      render: h => h(App),
-    }).$mount('#app');
 
 
-    directives(Vue)
-    filters(Vue, instance)
-  })
+  try {
+    if (!(<any>window).isQianKunMain) {
+      (window as any).polyihomeData = {
+        userInfo: {},
+        areaAll: [],
+        dictAll: {}
+      };
+      (window as any).polyihomeData.userInfo = await post_sessionUser_getUserInfo({ terminalType: "Pc" });
+    }
+
+  } catch (error) {
+
+  } finally {
+    if (!(<any>window).isQianKunMain) {
+      Promise.all([get_area_getAll(), get_dict_getAll()]).then((res: any) => {
+        areaAll = res[0];
+        dictAll = res[1];
+
+        //window全局变量共享数据
+        (window as any).polyihomeData = {
+          areaAll: areaAll,
+          dictAll: dictAll
+        };
+      }).catch((err: any) => {
+        console.error('子项目初始化数据异常', err)
+
+      }).finally(() => {
+        newVue();
+      })
+    } else {
+      newVue();
+    }
+
+
+  }
+
 
 }
+function newVue() {
+  instance = new Vue({
+    store,
+    router,
+    methods: {
+      /**根据字典类别获取该分类的列表
+       * @param {type} 
+       * @return {type} 
+       */
+      dictAllList(category: any, tag?: any) {
+        let list: any[] = dictAll[category];
+        if (list) {
+          if (tag) {
+            let listTag = list.filter((item: any) => {
+              if (item.tag == tag) {
+                return true;
+              } else {
+                return false;
+              }
+            })
+            return listTag;
 
-if (!(<any>window).__POWERED_BY_QIANKUN__) {
+          } else {
+            return list;
+          }
+
+        } else {
+          console.error(category, '字典类型无法匹配.')
+          return [];
+        }
+      },
+      /**根据字典code和类别获取对应的name
+       * @param {type} 
+       * @return {type} 
+       */
+      dictAllName(data: any, category: any) {
+        if (data === undefined || data === null) {
+          return null;
+        } else {
+          let list: any[] = dictAll[category];
+          if (list) {
+            let item: any = list.filter((i: any) => {
+              if (i.code == data) {
+                return true;
+              } else {
+                return false;
+              }
+            })
+            if (item && item.length == 1) {
+              return item[0].name;
+            } else if (item && item.length > 1) {
+              console.error(data, category, item, '字典匹配到多项.返回第一项');
+              return item[0].name;
+            } else {
+              console.error(data, category, '字典无法匹配到数据');
+              return null;
+            }
+          } else {
+            console.error(category, '字典类型无法匹配.')
+            return null;
+          }
+        }
+      },
+      /**根据字典code和类别获取对应的name
+      * @param {type} 
+      * @return {type} 
+      */
+      dictAllItem(data: any, category: any) {
+        if (data === undefined || data === null) {
+          return {}
+        } else {
+          let list: any[] = dictAll[category];
+          if (list) {
+            let item: any = list.filter((i: any) => {
+              if (i.code == data) {
+                return true;
+              } else {
+                return false;
+              }
+            })
+            if (item && item.length == 1) {
+              return item[0]
+            } else if (item && item.length > 1) {
+              console.error(data, category, item, '字典匹配到多项.返回第一项');
+              return item[0]
+            } else {
+              console.error(data, category, '字典无法匹配到数据');
+              return {};
+            }
+          } else {
+            console.error(category, '字典类型无法匹配.')
+            return {};
+          }
+        }
+      },
+      /**根据行政区code获取对应的name
+       * @param {type} 
+       * @return {type} 
+       */
+      getAreaName(code: string) {
+        if (areaAll) {
+          let areaName = null;
+          for (let index = 0; index < areaAll.length; index++) {
+            const element = areaAll[index];
+            if (element.code == code) {
+              areaName = element.name;
+              break;
+            }
+          }
+          return areaName;
+
+        } else {
+          return null;
+        }
+      },
+      /**根据行政区code获取对应的该项数据
+      * @param {type} 
+      * @return {type} 
+      */
+      getArea(code: string) {
+        if (areaAll) {
+          let area = null;
+          for (let index = 0; index < areaAll.length; index++) {
+            const element = areaAll[index];
+            if (element.code == code) {
+              area = element;
+              break;
+            }
+          }
+          return area;
+        } else {
+          return null;
+        }
+      }
+    },
+    data: {
+      userInfo: userInfo,
+      paginationLayout: "total, sizes, prev, pager, next, jumper",
+      pageSizes: [10, 20, 50],
+      pageSize: 10,
+      pickerOptions: {
+        shortcuts: [
+          {
+            text: "最近一周",
+            onClick(picker: any) {
+              const end = new Date();
+              const start = new Date();
+              start.setTime(start.getTime() - 3600 * 1000 * 24 * 7);
+              picker.$emit("pick", [start, end]);
+            },
+          },
+          {
+            text: "最近一个月",
+            onClick(picker: any) {
+              const end = new Date();
+              const start = new Date();
+              start.setTime(start.getTime() - 3600 * 1000 * 24 * 30);
+              picker.$emit("pick", [start, end]);
+            },
+          },
+          {
+            text: "最近三个月",
+            onClick(picker: any) {
+              const end = new Date();
+              const start = new Date();
+              start.setTime(start.getTime() - 3600 * 1000 * 24 * 90);
+              picker.$emit("pick", [start, end]);
+            },
+          },
+        ],
+      }
+    },
+    render: h => h(App),
+  }).$mount('#app');
+
+
+  directives(Vue)
+  filters(Vue, instance)
+}
+console.log('isQianKunMain', (<any>window).isQianKunMain)
+if (!(<any>window).isQianKunMain) {
   render();
 } else {
   directives(Vue)

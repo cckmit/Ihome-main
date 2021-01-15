@@ -4,7 +4,7 @@
  * @Author: wwq
  * @Date: 2020-11-27 17:26:20
  * @LastEditors: wwq
- * @LastEditTime: 2021-01-08 10:46:42
+ * @LastEditTime: 2021-01-15 17:34:15
 -->
 <template>
   <div>
@@ -144,6 +144,7 @@ export default class Close extends Vue {
         id: row.settleId,
         chargeEnum: this.info.chargeEnum,
         padCommissionEnum: this.info.padCommissionEnum,
+        proId: this.info.proId,
       };
       this.makingInfoDialogVisible = true;
     } else {
@@ -151,6 +152,7 @@ export default class Close extends Vue {
         id: row.settleId,
         chargeEnum: this.info.chargeEnum,
         padCommissionEnum: this.info.padCommissionEnum,
+        proId: this.info.proId,
       };
       this.pleaseInfoDialogVisible = true;
     }

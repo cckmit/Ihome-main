@@ -4,7 +4,7 @@
  * @Author: wwq
  * @Date: 2020-12-26 11:11:23
  * @LastEditors: wwq
- * @LastEditTime: 2021-01-11 17:57:59
+ * @LastEditTime: 2021-01-15 10:32:07
 -->
 <template>
   <IhPage>
@@ -76,11 +76,10 @@
               prop="agencyId"
             >
               <IhSelectPageByChannel
-                clearable
+                disabled
                 placeholder="请选择渠道商"
                 v-model="info.agencyId"
                 :search-name="info.agencyName"
-                @changeOption="getChannelInfo"
               ></IhSelectPageByChannel>
             </el-form-item>
           </el-col>
@@ -91,14 +90,14 @@
             >
               <el-select
                 v-model="info.receiveAccount"
-                clearable
+                disabled
                 placeholder="请选择账号"
                 class="width--100"
               >
                 <el-option
                   v-for="item in channelAccountOptions"
                   :key="item.id"
-                  :label="item.accountName"
+                  :label="item.accountNo"
                   :value="item.id"
                 ></el-option>
               </el-select>
@@ -136,10 +135,10 @@
                 class="width--100"
               >
                 <el-option
-                  v-for="item in taxRateOptions"
+                  v-for="item in $root.dictAllList('PayoffTaxRate')"
                   :key="item.code"
-                  :label="item.name"
-                  :value="item.code"
+                  :label="item.name + '%'"
+                  :value="item.name"
                 ></el-option>
               </el-select>
             </el-form-item>
@@ -152,8 +151,9 @@
               <el-select
                 style="width: 100%"
                 v-model="info.settlementMethod"
-                disabled
+                clearable
                 placeholder="请选择结算方式"
+                @change="settlementMethodChange"
               >
                 <el-option
                   v-for="item in $root.dictAllList('SettlementMethod')"
@@ -172,7 +172,8 @@
               <el-select
                 style="width: 100%"
                 v-model="info.paymentMethod"
-                disabled
+                :disabled="paymentMethodDisabled"
+                clearable
                 placeholder="请选择"
               >
                 <el-option
@@ -182,6 +183,18 @@
                   :value="item.code"
                 ></el-option>
               </el-select>
+            </el-form-item>
+          </el-col>
+          <el-col :span="8">
+            <el-form-item
+              label="结佣项目"
+              prop="settlementMethod"
+            >
+              <IhSelectPageByProject
+                v-model="info.projectId"
+                :search-name="info.projectName"
+                disabled
+              ></IhSelectPageByProject>
             </el-form-item>
           </el-col>
         </el-row>
@@ -214,8 +227,6 @@
           class="ih-table"
           :data="showTable"
           style="width: 100%"
-          show-summary
-          :summary-method="getSummaries"
         >
           <el-table-column
             type="index"
@@ -401,7 +412,7 @@
             <template v-slot="{ row }">
               <div>服务费: {{row.serLimitFees}}</div>
               <div>代理费: {{row.ageLimitFees}}</div>
-              <div>签字确认: {{$root.dictAllName(row.signConfirm, 'YesOrNoType')}}</div>
+              <div>签字确认: {{row.signConfirm}}</div>
             </template>
           </el-table-column>
           <el-table-column
@@ -458,7 +469,7 @@
             prop="deductType"
           >
             <template v-slot="{ row }">
-              {{ $root.dictAllName(row.deductType, "DeductType")}}
+              {{ $root.dictAllName(row.deductType, "SuppContType")}}
             </template>
           </el-table-column>
           <el-table-column
@@ -631,6 +642,7 @@
                 v-model="info.description"
                 maxlength="500"
                 show-word-limit
+                readonly
               >
               </el-input>
             </td>
@@ -668,23 +680,124 @@
                 :removePermi="false"
                 :limit="row.fileList.length"
                 size="100px"
-                @newFileList="queryNew"
               ></IhUpload>
             </template>
           </el-table-column>
         </el-table>
       </div>
       <br />
+      <div class="top">
+        <p class="ih-info-title">操作日志</p>
+        <div class="right-button">
+          <el-popover
+            class="margin-right-10"
+            placement="top"
+            trigger="manual"
+            :content="`姓名: ${operateName} 岗位: ${operatePost}`"
+            v-model="operateVisible"
+          >
+            <el-button
+              slot="reference"
+              type="success"
+              size="small"
+              icon="el-icon-search"
+              @click="searchPerson"
+            >查询当前代办人</el-button>
+          </el-popover>
+          <el-button
+            @click="updateOA"
+            type="success"
+            size="small"
+            icon="el-icon-refresh"
+          >同步OA审核日志</el-button>
+        </div>
+      </div>
+      <div class="padding-left-20">
+        <el-table
+          class="ih-table"
+          :data="info.processRecordList"
+          style="width: 100%"
+        >
+          <el-table-column
+            label="操作"
+            prop="operate"
+          >
+            <template v-slot="{ row }">
+              {{$root.dictAllName(row.operate, 'PayoffOperate')}}
+            </template>
+          </el-table-column>
+          <el-table-column
+            label="操作后状态"
+            prop="afterStatus"
+          >
+            <template v-slot="{ row }">
+              {{$root.dictAllName(row.afterStatus, 'PayoffStatus')}}
+            </template>
+          </el-table-column>
+          <el-table-column
+            label="操作人"
+            prop="operaterName"
+          ></el-table-column>
+          <el-table-column
+            label="岗位"
+            prop="operaterJob"
+          ></el-table-column>
+          <el-table-column
+            label="操作时间"
+            prop="operateTime"
+          ></el-table-column>
+          <el-table-column
+            label="处理结果"
+            prop="result"
+          >
+            <template v-slot="{ row }">
+              {{$root.dictAllName(row.result, 'PayoffProcessResult')}}
+            </template>
+          </el-table-column>
+          <el-table-column
+            label="系统"
+            prop="system"
+          >
+            <template v-slot="{ row }">
+              {{$root.dictAllName(row.system, 'PayoffSystem')}}
+            </template>
+          </el-table-column>
+          <el-table-column
+            label="审核意见"
+            prop="remark"
+          ></el-table-column>
+        </el-table>
+      </div>
+
+      <div v-if="$route.name === 'auditpayAudit'">
+        <p class="ih-info-title">审核意见</p>
+        <el-input
+          class="padding-left-20"
+          style="box-sizing: border-box"
+          type="textarea"
+          :autosize="{ minRows: 5, maxRows: 10 }"
+          placeholder="请输入内容"
+          v-model="info.auditOpinion"
+          maxlength="500"
+          show-word-limit
+        >
+        </el-input>
+      </div>
+      <br />
       <div class="bottom">
         <el-button
-          @click="submit('Unconfirm')"
+          @click="submit('TemporaryStorage')"
           type="primary"
-        >保存</el-button>
+        >暂存</el-button>
         <el-button
-          @click="submit('PlatformClerkUnreview')"
+          @click="submit('Through')"
           type="success"
-        >提交</el-button>
-        <el-button @click="cancel">取消</el-button>
+        >通过</el-button>
+        <el-button
+          @click="submit('Reject')"
+          type="danger"
+        >驳回</el-button>
+        <el-button @click="cancel">返回</el-button>
       </div>
     </template>
     <ih-dialog :show="contactsDialogVisible">
@@ -700,13 +813,14 @@
 import { Component, Vue } from "vue-property-decorator";
 import {
   get_payApply_get__id,
-  post_payApply_entryApply,
-  post_payApply_updateApply,
   post_payApply_calculation_results,
+  post_payApply_financeReviewApply,
+  post_payApply_notFinanceReviewApply,
+  get_processRecord_oa_review_person__applyId,
+  get_processRecord_oa_review_log__applyId,
 } from "@/api/payoff/index";
-import { get_channel_get__id } from "@/api/channel/index";
 import { Form as ElForm } from "element-ui";
-import Obligation from "./dialog/obligation.vue";
+import Obligation from "../payorder/dialog/obligation.vue";
 
 @Component({
   components: {
@@ -731,37 +845,22 @@ export default class PayoffEdit extends Vue {
     documentList: [],
     paySummaryList: [],
     description: null,
+    auditOpinion: null,
+    projectId: null,
+    projectName: null,
   };
+  submitFile: any = {};
+  operateName: any = null;
+  operatePost: any = null;
+  operateVisible: any = false;
   channelAccountOptions: any = [];
+  paymentMethodDisabled: any = false;
   showTable: any = [];
   tabsValue: any = null;
   tabsList: any = [];
   fileListType: any = [];
-  submitFile: any = {};
   contactsData: any = {};
   contactsDialogVisible = false;
-  taxRateOptions: any = [
-    {
-      code: "0",
-      name: "0%",
-    },
-    {
-      code: "1",
-      name: "1%",
-    },
-    {
-      code: "3",
-      name: "3%",
-    },
-    {
-      code: "5",
-      name: "5%",
-    },
-    {
-      code: "6",
-      name: "6%",
-    },
-  ];
 
   private rules: any = {
     applyCode: [
@@ -912,14 +1011,8 @@ export default class PayoffEdit extends Vue {
         })),
       };
       this.getFileListType(res.documentList);
-      this.getChannelInfo(
-        {
-          id: res.agencyId,
-          name: res.agencyName,
-        },
-        "clear"
-      );
       this.filterTabs(this.info.payApplyDetailList);
+      this.settlementMethodChange(res.settlementMethod);
     } else {
       this.info.maker = (this.$root as any).userInfo.name;
       this.info.makerId = (this.$root as any).userInfo.id;
@@ -951,10 +1044,32 @@ export default class PayoffEdit extends Vue {
     this.submitFile = { ...obj };
   }
 
-  queryNew(data: any, type?: any) {
-    let obj: any = {};
-    obj[type] = data;
-    this.submitFile = { ...this.submitFile, ...obj };
+  async searchPerson() {
+    if (!this.operateName || !this.operatePost) {
+      const res = await get_processRecord_oa_review_person__applyId({
+        applyId: this.payoffId,
+      });
+      this.operateName = res.name;
+      this.operatePost = res.orgPostName;
+    }
+    this.operateVisible = true;
+  }
+
+  async updateOA() {
+    const res = await get_processRecord_oa_review_log__applyId({
+      applyId: this.payoffId,
+    });
+    this.info.processRecordList = res;
+  }
+
+  settlementMethodChange(val: any) {
+    if (val === "OnlineBanking") {
+      this.paymentMethodDisabled = true;
+      this.info.paymentMethod = "Other";
+    } else {
+      this.paymentMethodDisabled = false;
+      this.info.paymentMethod = "Cash";
+    }
   }
 
   // 计算
@@ -962,10 +1077,9 @@ export default class PayoffEdit extends Vue {
     let obj: any = {};
     obj.agencyId = this.info.agencyId;
     obj.agencyName = this.info.agencyName;
-    obj.taxRate = this.info.taxRate;
+    obj.taxRate = Number(this.info.taxRate);
     obj.payApplyDetailList = this.info.payApplyDetailList;
     const res: any = await post_payApply_calculation_results(obj);
-    // this.info.agencyName = res.agencyName;
     this.info.area = (this.$root as any).userInfo.orgName;
     this.info.areaId = (this.$root as any).userInfo.orgId;
     this.info.projectName = res.projectName;
@@ -1021,7 +1135,7 @@ export default class PayoffEdit extends Vue {
   async delContacts(index: number) {
     try {
       await this.$confirm("是否确定移除?", "提示");
-      this.info.contactList.splice(index, 1);
+      this.showTable.splice(index, 1);
       this.$message({
         type: "success",
         message: "移除成功!",
@@ -1052,94 +1166,97 @@ export default class PayoffEdit extends Vue {
     this.contactsDialogVisible = false;
   }
 
-  async getChannelInfo(item: any, type: any) {
-    this.info.agencyName = item.name;
-    let res = await get_channel_get__id({ id: item.id });
-    this.channelAccountOptions = res.channelBanks;
-    if (!type) this.info.receiveAccount = null;
-  }
-
   submit(val: string) {
     (this.$refs["form"] as ElForm).validate(async (v: any) => {
       if (v) {
-        let obj: any = {
-          payApplyVO: {},
-          payApplyDetailList: [],
-        };
-        obj.payApplyVO.description = this.info.description;
-        obj.payApplyVO.agencyId = this.info.agencyId;
-        obj.payApplyVO.agencyName = this.info.agencyName;
-        obj.payApplyVO.applyCode = this.info.applyCode;
-        obj.payApplyVO.area = this.info.area;
-        obj.payApplyVO.areaId = this.info.areaId;
-        obj.payApplyVO.belongOrgId = this.info.areaId;
-        obj.payApplyVO.makerId = this.info.makerId;
-        obj.payApplyVO.invoiceType = this.info.invoiceType;
-        obj.payApplyVO.makerTime = this.info.makerTime;
-        obj.payApplyVO.paymentMethod = this.info.paymentMethod;
-        obj.payApplyVO.projectName = this.info.projectName;
-        obj.payApplyVO.receiveAccount = this.info.receiveAccount;
-        obj.payApplyVO.settlementMethod = this.info.settlementMethod;
-        obj.payApplyVO.status = this.info.status;
-        obj.payApplyVO.taxRate = this.info.taxRate;
-        obj.payApplyDetailList = this.info.payApplyDetailList;
-        obj.payApplyVO.status = val;
-        // 假数据
-        obj.payApplyVO.projectName = "xxxx计划";
-        obj.payApplyVO.areaId = 15;
-        obj.payApplyVO.belongOrgId = 15;
-        if (this.$route.name === "payoffAdd") {
-          await post_payApply_entryApply(obj);
-        } else if (this.$route.name === "payoffEdit") {
+        let obj: any = {};
+        obj.applyId = this.payoffId;
+        obj.auditOpinion = this.info.auditOpinion;
+        obj.payoffApproval = val;
+        if (
+          val === "TemporaryStorage" &&
+          this.info.status === "BranchFinanceUnreview"
+        ) {
+          obj.payApplyVO = {};
+          obj.payApplyVO.description = this.info.description;
+          obj.payApplyVO.agencyId = this.info.agencyId;
+          obj.payApplyVO.agencyName = this.info.agencyName;
+          obj.payApplyVO.applyCode = this.info.applyCode;
+          obj.payApplyVO.area = this.info.area;
+          obj.payApplyVO.areaId = this.info.areaId;
+          obj.payApplyVO.belongOrgId = this.info.areaId;
           obj.payApplyVO.id = this.payoffId;
+          obj.payApplyVO.invoiceType = this.info.invoiceType;
+          obj.payApplyVO.makerId = this.info.makerId;
+          obj.payApplyVO.makerTime = this.info.makerTime;
+          obj.payApplyVO.paymentMethod = this.info.paymentMethod;
+          obj.payApplyVO.projectName = this.info.projectName;
+          obj.payApplyVO.receiveAccount = this.info.receiveAccount;
+          obj.payApplyVO.settlementMethod = this.info.settlementMethod;
+          obj.payApplyVO.status = this.info.status;
+          obj.payApplyVO.taxRate = Number(this.info.taxRate);
+          obj.payApplyDetailList = this.info.payApplyDetailList;
+          // 假数据
+          obj.payApplyVO.areaId = 15;
+          obj.payApplyVO.belongOrgId = 15;
+          // 校验提示
           let arr: any = [];
           Object.values(this.submitFile).forEach((v: any) => {
             if (v.length) {
               arr = arr.concat(v);
             }
           });
-          // 以下操作仅仅是为了校验必上传项
-          let submitList: any = this.fileListType.map((v: any) => {
-            return {
-              ...v,
-              fileList: arr
-                .filter((j: any) => j.fileType === v.code)
-                .map((h: any) => ({
-                  ...h,
-                  name: h.fileName,
-                })),
-            };
-          });
-          let isSubmit = true;
-          let msgList: any = [];
-          submitList.forEach((v: any) => {
-            if (v.subType && !v.fileList.length) {
-              msgList.push(v.name);
-              isSubmit = false;
-            }
-          });
-          if (isSubmit) {
-            obj.documentList = arr.map((v: any) => ({
-              fileId: v.fileId,
-              fileName: v.name,
-              fileType: v.fileType,
-            }));
-          } else {
-            this.$message({
-              type: "warning",
-              message: `${msgList.join(",")}项,请上传附件`,
-            });
-            return;
-          }
-          await post_payApply_updateApply(obj);
+          obj.documentList = arr.map((v: any) => ({
+            fileId: v.fileId,
+            fileName: v.name,
+            fileType: v.type,
+          }));
         }
-        this.$goto({ path: `/payoff/list` });
+        switch (val) {
+          case "TemporaryStorage":
+            if (!this.info.auditOpinion) {
+              this.$message.warning("请填写审核意见");
+              return;
+            }
+            break;
+          case "Reject":
+            if (!this.info.auditOpinion) {
+              this.$message.warning("请填写审核意见");
+              return;
+            }
+            break;
+          default:
+            break;
+        }
+        switch (this.info.status) {
+          case "PlatformClerkUnreview":
+          case "OneLineUnreview":
+          case "BranchBusinessManageUnreview":
+            delete obj.applyId;
+            obj.id = this.payoffId;
+            await post_payApply_notFinanceReviewApply(obj);
+            break;
+          case "BranchFinanceUnreview":
+            await post_payApply_financeReviewApply(obj);
+            break;
+        }
         this.$message({
           type: "success",
-          message: val === "Unconfirm" ? "保存成功!" : "提交成功!",
+          message: `${this.messageChange(val)}`,
         });
+        this.$goto({ path: `/auditpay/list` });
       }
     });
+  }
+  messageChange(val: any) {
+    switch (val) {
+      case "TemporaryStorage":
+        return "暂存成功";
+      case "Through":
+        return "通过成功";
+      case "Reject":
+        return "驳回成功";
+    }
   }
 }
 </script>
@@ -1163,5 +1280,20 @@ export default class PayoffEdit extends Vue {
   overflow: hidden;
   text-overflow: ellipsis;
   white-space: nowrap;
+}
+
+.top {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  .title {
+    font-size: 15px;
+    text-align: center;
+  }
+  .right-button {
+    display: flex;
+    justify-content: space-around;
+    align-items: center;
+  }
 }
 </style>

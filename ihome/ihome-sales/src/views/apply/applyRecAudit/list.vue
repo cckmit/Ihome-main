@@ -1,10 +1,10 @@
 <!--
- * @Description: file content
+ * @Description: 请佣申请审核
  * @version: 
  * @Author: ywl
- * @Date: 2021-01-07 10:29:38
+ * @Date: 2021-01-14 18:20:57
  * @LastEditors: ywl
- * @LastEditTime: 2021-01-15 15:36:53
+ * @LastEditTime: 2021-01-15 09:11:10
 -->
 <template>
   <IhPage label-width="100px">
@@ -49,23 +49,6 @@
         </el-row>
         <el-row>
           <el-col :span="8">
-            <el-form-item label="状态">
-              <el-select
-                v-model="queryPageParameters.status"
-                placeholder="请选择状态"
-                class="width--100"
-                clearable
-              >
-                <el-option
-                  v-for="(i, n) in $root.dictAllList('ApplySatus')"
-                  :key="n"
-                  :label="i.name"
-                  :value="i.code"
-                ></el-option>
-              </el-select>
-            </el-form-item>
-          </el-col>
-          <el-col :span="8">
             <el-form-item label="项目名称">
               <IhSelectPageByProject
                 v-model="queryPageParameters.proId"
@@ -93,36 +76,25 @@
         </el-row>
       </el-form>
     </template>
-    <template v-slot:btn>
+    <template #btn>
       <el-row>
         <el-button
           type="primary"
           @click="search()"
         >查询</el-button>
         <el-button
-          type="success"
-          @click="$router.push('/applyRec/add')"
-        >发起请佣申请</el-button>
-        <el-button
           type="info"
           @click="reset()"
         >重置</el-button>
-        <el-button>导出</el-button>
       </el-row>
     </template>
-    <template v-slot:table>
+    <template #table>
       <br />
       <el-table
         class="ih-table"
         :empty-text="emptyText"
         :data="resPageInfo.list"
       >
-        <el-table-column
-          type="selection"
-          width="50"
-          align="center"
-          fixed
-        ></el-table-column>
         <el-table-column
           label="请款申请单号"
           prop="applyNo"
@@ -147,23 +119,18 @@
           prop="subMoney"
         ></el-table-column>
         <el-table-column
+          label="扣罚金额"
+          prop="fineMoney"
+        ></el-table-column>
+        <el-table-column
           label="实际请款金额"
           prop="actMoneyTax"
           min-width="120"
         ></el-table-column>
         <el-table-column
-          label="发票类型"
-          prop="billTypeCode"
-          width="175"
-        >
-          <template v-slot="{ row }">
-            {{$root.dictAllName(row.billTypeCode, 'InvoiceType')}}
-          </template>
-        </el-table-column>
-        <el-table-column
-          label="申请时间"
-          prop="applyTime"
-          width="155"
+          label="成交报告份数"
+          prop="dealCount"
+          min-width="120"
         ></el-table-column>
         <el-table-column
           label="申请人"
@@ -171,24 +138,8 @@
           min-width="165"
         ></el-table-column>
         <el-table-column
-          label="状态"
-          prop="status"
-          width="185"
-        >
-          <template v-slot="{row}">
-            <span>{{$root.dictAllName(row.status, 'ApplySatus')}}</span>
-            <el-tag
-              v-if="row.isReject"
-              effect="plain"
-              type="danger"
-              size="mini"
-              class="margin-left-10"
-            >驳回</el-tag>
-          </template>
-        </el-table-column>
-        <el-table-column
-          label="审核时间"
-          prop="auditTime"
+          label="申请时间"
+          prop="applyTime"
           width="155"
         ></el-table-column>
         <el-table-column
@@ -202,29 +153,18 @@
         <el-table-column
           label="操作"
           fixed="right"
-          width="120"
+          width="80"
         >
           <template v-slot="{ row }">
             <el-link
               type="success"
-              v-if="row.status === 'Draft' || row.status === 'BusinessDepart'"
-              @click="$router.push(`/applyRec/add?id=${row.id}`)"
-            >编辑</el-link>
-            <el-link
-              type="primary"
-              v-else-if="row.status === 'InvoiceApply'"
-              @click="$router.push(`/applyRec/add?id=${row.id}`)"
-            >发起开票申请</el-link>
-            <el-link
-              type="primary"
-              v-else
-              @click="$router.push(`/applyRec/info?id=${row.id}`)"
-            >查看</el-link>
+              @click="$router.push(`/applyRecAudit/audit?id=${row.id}`)"
+            >审核</el-link>
           </template>
         </el-table-column>
       </el-table>
     </template>
-    <template v-slot:pagination>
+    <template #pagination>
       <br />
       <el-pagination
         @size-change="handleSizeChangeMixin"
@@ -242,20 +182,20 @@
 <script lang="ts">
 import { Component, Vue } from "vue-property-decorator";
 import PaginationMixin from "../../../mixins/pagination";
-import { post_applyRec_getList } from "../../../api/apply/index";
+import { post_applyRec_getAuditList } from "../../../api/apply/index";
 
 @Component({
   mixins: [PaginationMixin],
 })
-export default class ApplyRecList extends Vue {
+export default class ApplyRecAuditList extends Vue {
   queryPageParameters: any = {
     applyNo: null,
-    applyTimeEnd: null,
     applyTimeStart: null,
+    applyTimeEnd: null,
     billTypeCode: null,
     developName: null,
-    status: null,
     proId: null,
+    queryIsAudit: false,
   };
   resPageInfo: any = {
     total: null,
@@ -273,17 +213,18 @@ export default class ApplyRecList extends Vue {
   private reset() {
     Object.assign(this.queryPageParameters, {
       applyNo: null,
-      applyTimeEnd: null,
       applyTimeStart: null,
+      applyTimeEnd: null,
       billTypeCode: null,
       developName: null,
-      status: null,
       proId: null,
     });
     this.timeList = [];
   }
   async getListMixin() {
-    this.resPageInfo = await post_applyRec_getList(this.queryPageParameters);
+    this.resPageInfo = await post_applyRec_getAuditList(
+      this.queryPageParameters
+    );
   }
 
   created() {

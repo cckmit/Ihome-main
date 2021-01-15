@@ -4,7 +4,7 @@
  * @Author: wwq
  * @Date: 2020-11-27 17:17:06
  * @LastEditors: wwq
- * @LastEditTime: 2021-01-14 17:16:33
+ * @LastEditTime: 2021-01-15 16:52:02
 -->
 <template>
   <div class="project-approval-box">
@@ -1047,6 +1047,8 @@ export default class FirstAgencyEdit extends Vue {
     },
   ];
   isShow: any = true;
+  oldInfo: any = {};
+  oldSubmitFile: any = {};
 
   @Watch("info.chargeEnum", { immediate: true })
   getIsShow(val: any) {
@@ -1056,6 +1058,24 @@ export default class FirstAgencyEdit extends Vue {
     } else {
       this.isShow = true;
     }
+  }
+
+  @Watch("info", { immediate: true, deep: true })
+  infoChange(val: any) {
+    let isCut: any = true;
+    if (JSON.stringify(val) !== JSON.stringify(this.oldInfo)) {
+      isCut = false;
+    }
+    this.$emit("cutOther", isCut);
+  }
+
+  @Watch("submitFile", { immediate: true, deep: true })
+  fileListTypeChange(val: any) {
+    let isCut: any = true;
+    if (JSON.stringify(val) !== JSON.stringify(this.oldSubmitFile)) {
+      isCut = false;
+    }
+    this.$emit("cutOther", isCut);
   }
 
   private get padCommissionEnumOptions() {
@@ -1204,6 +1224,7 @@ export default class FirstAgencyEdit extends Vue {
       this.info = { ...res };
       this.info.companyId = res.companyId;
       window.sessionStorage.setItem("proId", res.proId);
+      this.oldInfo = { ...res };
       if (this.info.chargeEnum) {
         this.getchargeEnumOptions();
       }
@@ -1234,6 +1255,7 @@ export default class FirstAgencyEdit extends Vue {
       obj[h.code] = h.fileList;
     });
     this.submitFile = { ...obj };
+    this.oldSubmitFile = this.submitFile;
   }
 
   queryNew(data: any, type?: any) {

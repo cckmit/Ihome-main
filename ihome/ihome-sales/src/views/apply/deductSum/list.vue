@@ -1,10 +1,10 @@
 <!--
- * @Descripttion: 
+ * @Description: 
  * @version: 
- * @Author: wwq
- * @Date: 2020-12-26 11:11:28
- * @LastEditors: wwq
- * @LastEditTime: 2021-01-13 19:40:17
+ * @Author: ywl
+ * @Date: 2021-01-13 10:33:10
+ * @LastEditors: ywl
+ * @LastEditTime: 2021-01-13 14:22:33
 -->
 <template>
   <IhPage label-width="100px">
@@ -16,8 +16,8 @@
             class="text-right"
           >
             <el-input
-              v-model="queryPageParameters.agencyName"
-              placeholder="渠道公司名称"
+              v-model="queryPageParameters.developName"
+              placeholder="甲方公司名称"
               class="width-250"
               @keyup.enter.native="search"
               clearable
@@ -48,25 +48,30 @@
           fixed
         ></el-table-column>
         <el-table-column
-          label="渠道公司名称"
-          prop="agencyName"
+          label="甲方公司名称"
+          prop="developName"
+          min-width="215"
           fixed
         ></el-table-column>
         <el-table-column
           label="已产生抵扣项费用(元)"
-          prop="generatedAmount"
+          prop="sumSubMoney"
+          min-width="165"
         ></el-table-column>
         <el-table-column
-          label="已抵扣项费用(元)"
-          prop="deductedAmount"
+          label="已冲正抵扣项费用(元)"
+          prop="completeSumSubMoney"
+          min-width="165"
         ></el-table-column>
         <el-table-column
-          label="待抵扣项费用(元)"
-          prop="undeductionAMOUNT"
+          label="待冲正抵扣项费用(元)"
+          prop="waitSumSubMoney"
+          min-width="165"
         ></el-table-column>
         <el-table-column
-          label="抵扣中抵扣项费用(元)"
-          prop="deductingAmount"
+          label="冲正中抵扣项费用(元)"
+          prop="ongoingSumSubMoney"
+          min-width="165"
         ></el-table-column>
         <el-table-column
           label="操作"
@@ -100,14 +105,14 @@
 <script lang="ts">
 import { Component, Vue } from "vue-property-decorator";
 import PaginationMixin from "../../../mixins/pagination";
-import { post_payDeductDetail_summary_list } from "@/api/payoff/index";
+import { post_devDeductDetail_getListSumByDev } from "../../../api/apply/index";
 
 @Component({
   mixins: [PaginationMixin],
 })
 export default class DeductSumList extends Vue {
   queryPageParameters: any = {
-    agencyName: null,
+    developName: null,
   };
   resPageInfo: any = {
     total: null,
@@ -127,14 +132,15 @@ export default class DeductSumList extends Vue {
     );
   }
   private handleTo(row: any) {
-    this.$router.push("/deductionDetail/list");
+    this.$router.push("/deduct/list");
     let params = JSON.stringify({
-      agencyName: row.agencyName,
+      developId: row.developId,
+      developName: row.developName,
     });
-    sessionStorage.setItem("deductionDetailParams", params);
+    sessionStorage.setItem("deductParams", params);
   }
   async getListMixin() {
-    this.resPageInfo = await post_payDeductDetail_summary_list(
+    this.resPageInfo = await post_devDeductDetail_getListSumByDev(
       this.queryPageParameters
     );
   }

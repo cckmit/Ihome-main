@@ -4,7 +4,7 @@
  * @Author: wwq
  * @Date: 2020-10-22 15:16:54
  * @LastEditors: wwq
- * @LastEditTime: 2020-12-15 08:27:20
+ * @LastEditTime: 2021-01-15 16:37:24
 -->
 <template>
   <ih-page>
@@ -14,12 +14,16 @@
           type="border-card"
           v-model="tabActive"
           @tab-click="tabClick(tabActive)"
+          :before-leave="beforeLeave"
         >
           <el-tab-pane
             label="基础信息"
             name="BasicInfo"
           >
-            <BasicInfo v-if="componetName === 'BasicInfo'" />
+            <BasicInfo
+              v-if="componetName === 'BasicInfo'"
+              @cutOther="querybasicInfo"
+            />
           </el-tab-pane>
           <el-tab-pane
             label="楼盘户型"
@@ -60,6 +64,7 @@ export default class ProjectChildEdit extends Vue {
   tabActive: any = "BasicInfo";
   typeStr = "";
   componetName: any = "BasicInfo";
+  isCut: any = true;
 
   private beforeRouteEnter(to: any, from: any, next: any) {
     next((vm: any) => {
@@ -68,6 +73,21 @@ export default class ProjectChildEdit extends Vue {
   }
   tabClick(val: any) {
     this.componetName = val;
+  }
+  beforeLeave(activeName: any, oldActiveName: any) {
+    if (oldActiveName === "BasicInfo") {
+      if (!this.isCut) {
+        this.$alert("请保存后再切换", "提示", {
+          confirmButtonText: "确定",
+          type: "warning",
+        });
+        return false;
+      }
+    }
+  }
+
+  querybasicInfo(isCut: any) {
+    this.isCut = isCut;
   }
 }
 </script>

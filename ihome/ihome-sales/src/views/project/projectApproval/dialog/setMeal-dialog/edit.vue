@@ -4,7 +4,7 @@
  * @Author: wwq
  * @Date: 2020-12-04 09:40:47
  * @LastEditors: wwq
- * @LastEditTime: 2021-01-08 10:23:47
+ * @LastEditTime: 2021-01-15 17:57:23
 -->
 <template>
   <el-dialog
@@ -1621,6 +1621,20 @@ export default class SetMealEdit extends Vue {
   async delTemplate(i: number) {
     try {
       await this.$confirm("是否确定删除模板?", "提示");
+      // this.info.colletionandsendMxs[i].partyCompanyId = null;
+      const item = this.info.colletionandsendMxs[i].partyCompanyId;
+      this.info.partyAInfoList = this.info.partyAInfoList.map((v: any) => {
+        if (v.companyId === item) {
+          return {
+            ...v,
+            disabled: false,
+          };
+        } else {
+          return {
+            ...v,
+          };
+        }
+      });
       this.info.colletionandsendMxs.splice(i, 1);
       this.$message({
         type: "success",
