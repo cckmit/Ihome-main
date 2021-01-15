@@ -4,7 +4,7 @@
  * @Author: wwq
  * @Date: 2020-12-26 11:11:23
  * @LastEditors: wwq
- * @LastEditTime: 2021-01-13 16:28:20
+ * @LastEditTime: 2021-01-15 10:32:07
 -->
 <template>
   <IhPage>
@@ -135,10 +135,10 @@
                 class="width--100"
               >
                 <el-option
-                  v-for="item in taxRateOptions"
+                  v-for="item in $root.dictAllList('PayoffTaxRate')"
                   :key="item.code"
-                  :label="item.name"
-                  :value="item.code"
+                  :label="item.name + '%'"
+                  :value="item.name"
                 ></el-option>
               </el-select>
             </el-form-item>
@@ -185,6 +185,18 @@
               </el-select>
             </el-form-item>
           </el-col>
+          <el-col :span="8">
+            <el-form-item
+              label="结佣项目"
+              prop="settlementMethod"
+            >
+              <IhSelectPageByProject
+                v-model="info.projectId"
+                :search-name="info.projectName"
+                disabled
+              ></IhSelectPageByProject>
+            </el-form-item>
+          </el-col>
         </el-row>
       </el-form>
     </template>
@@ -215,8 +227,6 @@
           class="ih-table"
           :data="showTable"
           style="width: 100%"
-          show-summary
-          :summary-method="getSummaries"
         >
           <el-table-column
             type="index"
@@ -402,7 +412,7 @@
             <template v-slot="{ row }">
               <div>服务费: {{row.serLimitFees}}</div>
               <div>代理费: {{row.ageLimitFees}}</div>
-              <div>签字确认: {{$root.dictAllName(row.signConfirm, 'YesOrNoType')}}</div>
+              <div>签字确认: {{row.signConfirm}}</div>
             </template>
           </el-table-column>
           <el-table-column
@@ -459,7 +469,7 @@
             prop="deductType"
           >
             <template v-slot="{ row }">
-              {{ $root.dictAllName(row.deductType, "DeductType")}}
+              {{ $root.dictAllName(row.deductType, "SuppContType")}}
             </template>
           </el-table-column>
           <el-table-column
@@ -836,6 +846,8 @@ export default class PayoffEdit extends Vue {
     paySummaryList: [],
     description: null,
     auditOpinion: null,
+    projectId: null,
+    projectName: null,
   };
   submitFile: any = {};
   operateName: any = null;
@@ -849,28 +861,6 @@ export default class PayoffEdit extends Vue {
   fileListType: any = [];
   contactsData: any = {};
   contactsDialogVisible = false;
-  taxRateOptions: any = [
-    {
-      code: "0",
-      name: "0%",
-    },
-    {
-      code: "1",
-      name: "1%",
-    },
-    {
-      code: "3",
-      name: "3%",
-    },
-    {
-      code: "5",
-      name: "5%",
-    },
-    {
-      code: "6",
-      name: "6%",
-    },
-  ];
 
   private rules: any = {
     applyCode: [
@@ -1087,7 +1077,7 @@ export default class PayoffEdit extends Vue {
     let obj: any = {};
     obj.agencyId = this.info.agencyId;
     obj.agencyName = this.info.agencyName;
-    obj.taxRate = this.info.taxRate;
+    obj.taxRate = Number(this.info.taxRate);
     obj.payApplyDetailList = this.info.payApplyDetailList;
     const res: any = await post_payApply_calculation_results(obj);
     this.info.area = (this.$root as any).userInfo.orgName;
@@ -1204,7 +1194,7 @@ export default class PayoffEdit extends Vue {
           obj.payApplyVO.receiveAccount = this.info.receiveAccount;
           obj.payApplyVO.settlementMethod = this.info.settlementMethod;
           obj.payApplyVO.status = this.info.status;
-          obj.payApplyVO.taxRate = this.info.taxRate;
+          obj.payApplyVO.taxRate = Number(this.info.taxRate);
           obj.payApplyDetailList = this.info.payApplyDetailList;
           // 假数据
           obj.payApplyVO.areaId = 15;

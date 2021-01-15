@@ -4,7 +4,7 @@
  * @Author: wwq
  * @Date: 2021-01-13 16:35:12
  * @LastEditors: wwq
- * @LastEditTime: 2021-01-14 16:59:58
+ * @LastEditTime: 2021-01-15 09:20:23
 -->
 <template>
   <IhPage>
@@ -69,7 +69,7 @@
                   :on-success="handleSuccess"
                   :on-remove="handleRemove"
                   :before-upload="beforeUpload"
-                  :file-list="fileList"
+                  :file-list.sync="fileList"
                   name="files"
                   :headers="headers"
                 >

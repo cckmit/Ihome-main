@@ -4,7 +4,7 @@
  * @Author: wwq
  * @Date: 2021-01-13 14:44:01
  * @LastEditors: wwq
- * @LastEditTime: 2021-01-13 20:13:12
+ * @LastEditTime: 2021-01-15 09:06:24
 -->
 <template>
   <IhPage label-width="100px">
@@ -150,7 +150,10 @@
           fixed
         >
           <template v-slot="{ row }">
-            <el-link type="primary">{{row.dealCode}}</el-link>
+            <el-link
+              type="primary"
+              @click="gotoDealCode(row.dealCode)"
+            >{{row.dealCode}}</el-link>
           </template>
         </el-table-column>
         <el-table-column
@@ -317,6 +320,10 @@ export default class DeductList extends Vue {
     this.resPageInfo = await post_payDeductDetail_getPayDeductDetailList(
       this.queryPageParameters
     );
+  }
+
+  gotoDealCode(data: any) {
+    console.log(data);
   }
 
   created() {

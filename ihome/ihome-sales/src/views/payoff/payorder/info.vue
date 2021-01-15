@@ -4,7 +4,7 @@
  * @Author: wwq
  * @Date: 2020-12-26 11:11:19
  * @LastEditors: wwq
- * @LastEditTime: 2021-01-11 16:17:17
+ * @LastEditTime: 2021-01-15 10:30:07
 -->
 <template>
   <IhPage>
@@ -139,10 +139,10 @@
                 class="width--100"
               >
                 <el-option
-                  v-for="item in $root.dictAllList('ChannelCompanyType')"
+                  v-for="item in $root.dictAllList('PayoffTaxRate')"
                   :key="item.code"
-                  :label="item.name"
-                  :value="item.code"
+                  :label="item.name + '%'"
+                  :value="item.name"
                 ></el-option>
               </el-select>
             </el-form-item>
@@ -187,6 +187,18 @@
               </el-select>
             </el-form-item>
           </el-col>
+          <el-col :span="8">
+            <el-form-item
+              label="结佣项目"
+              prop="settlementMethod"
+            >
+              <IhSelectPageByProject
+                v-model="info.projectId"
+                :search-name="info.projectName"
+                disabled
+              ></IhSelectPageByProject>
+            </el-form-item>
+          </el-col>
         </el-row>
       </el-form>
     </template>
@@ -210,8 +222,6 @@
           class="ih-table"
           :data="showTable"
           style="width: 100%"
-          show-summary
-          :summary-method="getSummaries"
         >
           <el-table-column
             type="index"
@@ -389,7 +399,7 @@
             <template v-slot="{ row }">
               <div>服务费: {{row.serLimitFees}}</div>
               <div>代理费: {{row.ageLimitFees}}</div>
-              <div>签字确认: {{$root.dictAllName(row.signConfirm, 'YesOrNoType')}}</div>
+              <div>签字确认: {{row.signConfirm}}</div>
             </template>
           </el-table-column>
           <el-table-column
@@ -421,7 +431,7 @@
             prop="deductType"
           >
             <template v-slot="{ row }">
-              {{ $root.dictAllName(row.deductType, "DeductType")}}
+              {{ $root.dictAllName(row.deductType, "SuppContType")}}
             </template>
           </el-table-column>
           <el-table-column
@@ -790,6 +800,8 @@ export default class PayoffEdit extends Vue {
     paySummaryList: [],
     processRecordList: [],
     postscript: null,
+    projectId: null,
+    projectName: null,
   };
   channelAccountOptions: any = [];
   showTable: any = [];
@@ -914,6 +926,7 @@ export default class PayoffEdit extends Vue {
       this.info = {
         ...res,
         receiveAccount: Number(res.receiveAccount),
+        taxRate: res.taxRate + "",
         payApplyDetailList: res.payApplyDetailList.map((j: any) => ({
           ...j,
           cycleId: j.cycleId + "",

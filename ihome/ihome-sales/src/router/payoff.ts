@@ -4,7 +4,7 @@
  * @Author: wwq
  * @Date: 2020-12-26 11:17:06
  * @LastEditors: wwq
- * @LastEditTime: 2021-01-14 16:54:08
+ * @LastEditTime: 2021-01-15 10:50:21
  */
 import { RouteConfig } from 'vue-router'
 import Layout from '../components/Layout.vue';
@@ -106,6 +106,20 @@ const payoffRoutes: Array<RouteConfig> = [
         name: 'importList',
         component: () => import('../views/payoff/import/list.vue'),
         meta: { title: '渠道结佣额度导入', icon: 'form', keepAlive: true }
+      },
+    ]
+  },
+  {
+    path: '/payoffpayment',
+    meta: { title: '结佣付款列表', icon: null },
+    redirect: '/payoffpayment/list',
+    component: Layout,
+    children: [
+      {
+        path: 'list',
+        name: 'payoffpaymentList',
+        component: () => import('../views/payoff/payoffpayment/list.vue'),
+        meta: { title: '结佣付款列表', icon: 'form', keepAlive: true }
       },
     ]
   },
