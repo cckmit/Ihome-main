@@ -4,7 +4,7 @@
  * @Author: zyc
  * @Date: 2020-07-14 10:51:31
  * @LastEditors: zyc
- * @LastEditTime: 2020-12-14 17:30:08
+ * @LastEditTime: 2021-01-15 09:31:35
 --> 
 <template>
   <div>
@@ -40,7 +40,7 @@
       ></el-table-column>
       <el-table-column prop="userType" label="用户类型">
         <template slot-scope="scope">{{
-          $root.displayName("accountType", scope.row.accountType)
+          $root.dictAllName( scope.row.accountType,"UserAccountType")
         }}</template>
       </el-table-column>
       <el-table-column prop="orgName" label="归属组织"></el-table-column>
