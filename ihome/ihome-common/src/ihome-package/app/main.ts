@@ -4,7 +4,7 @@
  * @Author: zyc
  * @Date: 2020-11-24 10:49:02
  * @LastEditors: zyc
- * @LastEditTime: 2021-01-15 09:38:16
+ * @LastEditTime: 2021-01-15 11:22:11
  */
 /*
  * @Descripttion: 
@@ -76,13 +76,15 @@ let userInfo: any = (window as any).polyihomeData?.userInfo || {};//用户信息
 async function render() {
 
   //window全局变量共享数据
-  (window as any).polyihomeData = {
-    userInfo: {},
-    areaAll: [],
-    dictAll: {}
-  };
+
+
   try {
     if (!(<any>window).isQianKunMain) {
+      (window as any).polyihomeData = {
+        userInfo: {},
+        areaAll: [],
+        dictAll: {}
+      };
       (window as any).polyihomeData.userInfo = await post_sessionUser_getUserInfo({ terminalType: "Pc" });
     }
 
