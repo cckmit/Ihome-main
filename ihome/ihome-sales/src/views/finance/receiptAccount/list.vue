@@ -4,7 +4,7 @@
  * @Author: ywl
  * @Date: 2020-12-01 10:37:53
  * @LastEditors: ywl
- * @LastEditTime: 2020-12-12 17:09:52
+ * @LastEditTime: 2021-01-15 20:57:17
 -->
 <template>
   <IhPage label-width="80px">
@@ -102,9 +102,14 @@
             {{ $root.dictAllName(row.accountType, 'AccountType') }}
           </template>
         </el-table-column>
+        <el-table-column label="默认标记">
+          <template v-slot="{ row }">
+            {{row.defaultFlag ? '默认' : '非默认'}}
+          </template>
+        </el-table-column>
         <el-table-column
           label="操作"
-          width="215"
+          width="115"
           fixed="right"
         >
           <template v-slot="{ row }">
@@ -113,7 +118,21 @@
               class="margin-right-10"
               @click="handleEdit(row)"
             >修改</el-link>
-            <el-link
+            <el-dropdown trigger="click">
+              <span class="el-dropdown-link">
+                更多
+                <i class="el-icon-arrow-down el-icon--right"></i>
+              </span>
+              <el-dropdown-menu slot="dropdown">
+                <el-dropdown-item @click.native.prevent="remove(row)">删除</el-dropdown-item>
+                <el-dropdown-item @click.native.prevent="handleShowPay(row)">维护在线支付信息</el-dropdown-item>
+                <el-dropdown-item
+                  :class="{ 'ih-data-disabled': row.defaultFlag }"
+                  @click.native.prevent="saveAccount(row)"
+                >设为默认账号</el-dropdown-item>
+              </el-dropdown-menu>
+            </el-dropdown>
+            <!-- <el-link
               type="danger"
               class="margin-right-10"
               @click="remove(row)"
@@ -121,7 +140,7 @@
             <el-link
               type="success"
               @click="handleShowPay(row)"
-            >维护在线支付信息</el-link>
+            >维护在线支付信息</el-link> -->
           </template>
         </el-table-column>
       </el-table>
@@ -170,6 +189,7 @@ import PayInfo from "./dialog/payInfo.vue";
 import {
   post_bankAccount_getList,
   post_bankAccount_delete__id,
+  post_bankAccount_updateFlag,
 } from "@/api/finance/index";
 
 import PaginationMixin from "../../../mixins/pagination";
@@ -223,6 +243,19 @@ export default class ReceiptList extends Vue {
       }
       this.getListMixin();
       this.$message.success("删除成功");
+    } catch (error) {
+      console.log(error);
+    }
+  }
+  private async saveAccount(row: any) {
+    try {
+      await this.$confirm(`是否确认设账号${row.accountNo}为默认账号`, "提示");
+      await post_bankAccount_updateFlag({
+        companyId: row.companyId,
+        id: row.id,
+      });
+      this.$message.success("设置成功");
+      this.getListMixin();
     } catch (error) {
       console.log(error);
     }

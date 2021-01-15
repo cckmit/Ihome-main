@@ -1,6 +1,6 @@
 /* eslint-disable */
 /* 此脚本由swagger-ui的api-docs自动生成，请勿修改 */
-//2021-1-15 4:57:23 ├F10: PM┤
+//2021-1-15 8:45:22 ├F10: PM┤
 import { request } from '@/api/base'
 const basePath = "/sales-api/channel"
 /**添加渠道*/
@@ -147,7 +147,7 @@ export async function post_channelApproval_getFlowState__id(d?: any) {
 export async function post_channelApproval_getList(d?: any) {
   return await request.post<any, any>(basePath + '/channelApproval/getList', d)
 }
-/**获取已经提交OA的流程id【排除审核通过】*/
+/**getSummaryIds*/
 export async function get_channelApproval_getSummaryIds(d?: any) {
   return await request.get<any[], any[]>(basePath + '/channelApproval/getSummaryIds', { params: d })
 }
@@ -167,7 +167,7 @@ export async function post_channelApproval_previewOaAttachment(d?: any) {
 export async function post_channelApproval_queryOaApprovalUser__id(d?: any) {
   return await request.post<string, string>(basePath + '/channelApproval/queryOaApprovalUser/{id}', d)
 }
-/**同步OA审核状态*/
+/**syncState*/
 export async function post_channelApproval_syncState(d?: any) {
   return await request.post<number, number>(basePath + '/channelApproval/syncState', d)
 }
@@ -228,8 +228,8 @@ export async function post_channelChange_backToDraft__id(d?: any) {
   return await request.post<number, number>(basePath + '/channelChange/backToDraft/{id}', d)
 }
 /**渠道变更时判断是否存在变更中的记录*/
-export async function post_channelChange_changeCheck(d?: any) {
-  return await request.post<boolean, boolean>(basePath + '/channelChange/changeCheck', d)
+export async function get_channelChange_changeCheck__oldChannelId(d?: any) {
+  return await request.get<boolean, boolean>(basePath + '/channelChange/changeCheck/{oldChannelId}', { params: d })
 }
 /**删除渠道变更信息*/
 export async function post_channelChange_delete__id(d?: any) {
@@ -328,8 +328,8 @@ export async function post_channelGradeChange_backToDraft__id(d?: any) {
   return await request.post<number, number>(basePath + '/channelGradeChange/backToDraft/{id}', d)
 }
 /**渠道变更时判断是否存在变更中的记录*/
-export async function post_channelGradeChange_changeCheck(d?: any) {
-  return await request.post<boolean, boolean>(basePath + '/channelGradeChange/changeCheck', d)
+export async function get_channelGradeChange_changeCheck__oldGradeId(d?: any) {
+  return await request.get<boolean, boolean>(basePath + '/channelGradeChange/changeCheck/{oldGradeId}', { params: d })
 }
 /**删除渠道等级变更信息*/
 export async function post_channelGradeChange_delete__id(d?: any) {
@@ -1653,8 +1653,17 @@ export interface ChannelGradeAttachmentBaseVO {
   /**类型*/
   type: string;
 }
-/**ChannelGradeAttachmentChange*/
-export interface ChannelGradeAttachmentChange {
+/**ChannelGradeAttachmentChangeBaseVO*/
+export interface ChannelGradeAttachmentChangeBaseVO {
+  /**文件ID*/
+  fileId: string;
+  /**文件名称*/
+  fileName: string;
+  /**类型*/
+  type: string;
+}
+/**ChannelGradeAttachmentChangeVO*/
+export interface ChannelGradeAttachmentChangeVO {
   /**创建时间(yyyy-MM-dd HH:mm:ss)*/
   createTime: string;
   /**创建用户*/
@@ -1669,21 +1678,14 @@ export interface ChannelGradeAttachmentChange {
   gradeId: number;
   /**ID*/
   id: number;
+  /**文件名后缀*/
+  suffix: string;
   /**类型*/
   type: string;
   /**更新时间(yyyy-MM-dd HH:mm:ss)*/
   updateTime: string;
   /**更新用户*/
   updateUser: number;
-}
-/**ChannelGradeAttachmentChangeBaseVO*/
-export interface ChannelGradeAttachmentChangeBaseVO {
-  /**文件ID*/
-  fileId: string;
-  /**文件名称*/
-  fileName: string;
-  /**类型*/
-  type: string;
 }
 /**ChannelGradeAttachmentDetailVO*/
 export interface ChannelGradeAttachmentDetailVO {
@@ -1803,7 +1805,7 @@ export interface ChannelGradeChangeDetail {
   /**渠道等级(BigPlatform-大平台、LargeIntermediary-大型中介、FirstPlatform-一级平台、MediumIntermediary-中型中介、SecondPlatform-二级平台、SmallIntermediary-小型中介)*/
   channelGrade: string;
   /**附件信息*/
-  channelGradeAttachmentChanges: ChannelGradeAttachmentChange[];
+  channelGradeAttachmentChanges: ChannelGradeAttachmentChangeVO[];
   /**渠道评级标准信息*/
   channelGradeItemChanges: ChannelGradeItemChangeVO[];
   /**公司名称*/
