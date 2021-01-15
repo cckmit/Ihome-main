@@ -28,6 +28,7 @@ import { dealRoutes } from './deal';
 import { applyRoutes } from './apply';
 import { financeRoutes } from './finance'
 import { payoffRoutes } from './payoff'
+import { capitalRoutes } from './capital'
 
 let routes: Array<RouteConfig> = [
   {
@@ -51,7 +52,7 @@ let routes: Array<RouteConfig> = [
   },
 ]
 
-routes = routes.concat(channelRoutes, developerRoutes, contractRoutes, projectRoutes, dealRoutes, financeRoutes, payoffRoutes, applyRoutes);
+routes = routes.concat(channelRoutes, developerRoutes, contractRoutes, projectRoutes, dealRoutes, financeRoutes, payoffRoutes, applyRoutes, capitalRoutes);
 
 const router = new VueRouter({
   mode: 'history',
