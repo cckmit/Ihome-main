@@ -4,7 +4,7 @@
  * @Author: wwq
  * @Date: 2020-11-27 17:29:09
  * @LastEditors: wwq
- * @LastEditTime: 2021-01-14 15:16:27
+ * @LastEditTime: 2021-01-15 20:26:10
 -->
 <template>
   <div>
@@ -80,7 +80,7 @@
         style="width: 100%"
       >
         <el-table-column
-          prop="operatorType"
+          prop="node"
           label="操作"
         >
         </el-table-column>
