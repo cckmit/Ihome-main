@@ -875,7 +875,7 @@
               </template>
             </el-table-column>
             <el-table-column prop="corporateAchieve" label="角色人业绩" min-width="150"></el-table-column>
-            <el-table-column prop="corporateAchieveRatio" label="角色人业绩比例(%)" min-width="150"></el-table-column>
+            <el-table-column prop="roleAchieveRatio" label="角色人业绩比例(%)" min-width="150"></el-table-column>
             <el-table-column prop="commFees" label="拆佣金额" min-width="150"></el-table-column>
             <el-table-column prop="commFeesRatio" label="拆佣比例(%)" min-width="110"></el-table-column>
             <el-table-column prop="belongOrgName" label="店组" min-width="100">
@@ -947,7 +947,7 @@
               </template>
             </el-table-column>
             <el-table-column prop="corporateAchieve" label="角色人业绩" min-width="150"></el-table-column>
-            <el-table-column prop="corporateAchieveRatio" label="角色人业绩比例(%)" min-width="150"></el-table-column>
+            <el-table-column prop="roleAchieveRatio" label="角色人业绩比例(%)" min-width="150"></el-table-column>
             <el-table-column prop="commFees" label="拆佣金额" min-width="150"></el-table-column>
             <el-table-column prop="commFeesRatio" label="拆佣比例(%)" min-width="110"></el-table-column>
             <el-table-column prop="belongOrgName" label="店组" min-width="100">
@@ -1482,13 +1482,16 @@
       if (!value) {
         (this as any).$nextTick(() => {
           row[type] = 0;
-        })
+          row.otherChannelFees = (row.receiveAmount * 1 * 100
+            - row.commAmount * 1 * 100 - row.rewardAmount * 1 * 100
+            - row.totalPackageAmount * 1 * 100 - row.distributionAmount * 1 * 100) / 100;
+        });
       } else {
         (this as any).$nextTick(() => {
           row.otherChannelFees = (row.receiveAmount * 1 * 100
             - row.commAmount * 1 * 100 - row.rewardAmount * 1 * 100
             - row.totalPackageAmount * 1 * 100 - row.distributionAmount * 1 * 100) / 100;
-        })
+        });
       }
       // 提示框
       if (!this.addFlag) {
@@ -1620,7 +1623,7 @@
               commFees: 0, // 拆佣金额
               commFeesRatio: 0, // 拆佣金额比例
               corporateAchieve: 0, // 角色业绩
-              corporateAchieveRatio: 0, // 角色业绩比例
+              roleAchieveRatio: 0, // 角色业绩比例
               roleAchieveCap: 0, // 角色业绩上限
               roleType: null, // 角色类型
               rolerId: null, // 角色人ID
@@ -2511,8 +2514,10 @@
       console.log('finishEditDealAchieve', data);
       let tempArr: any = [];
       if (this.editDealAchieveData.type === 'total') {
+        data.type = 'TotalBag';
         tempArr = this.getTempList(this.editDealAchieveData.btnType, this.currentChangeObj.index, this.postData.achieveTotalBagList, data);
       } else if (this.editDealAchieveData.type === 'distri') {
+        data.type = 'Distri';
         tempArr = this.getTempList(this.editDealAchieveData.btnType, this.currentChangeObj.index, this.postData.achieveDistriList, data);
       }
       await this.recalculateAchieve(this.editDealAchieveData.type, tempArr);
