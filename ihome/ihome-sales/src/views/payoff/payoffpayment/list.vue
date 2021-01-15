@@ -4,7 +4,7 @@
  * @Author: wwq
  * @Date: 2021-01-15 10:45:53
  * @LastEditors: wwq
- * @LastEditTime: 2021-01-15 12:23:16
+ * @LastEditTime: 2021-01-15 15:55:36
 -->
 <template>
   <IhPage label-width="100px">
@@ -271,7 +271,7 @@ export default class ReturnConfirmList extends Vue {
     paymentCode: null,
     beginDate: null,
     endDate: null,
-    paymentStatus: [
+    paymentStatusList: [
       "PendingPayment",
       "Paying",
       "PaymentSuccess",

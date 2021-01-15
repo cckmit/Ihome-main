@@ -3,8 +3,8 @@
  * @version: 
  * @Author: wwq
  * @Date: 2020-12-01 09:05:50
- * @LastEditors: ywl
- * @LastEditTime: 2020-12-30 19:20:29
+ * @LastEditors: wwq
+ * @LastEditTime: 2021-01-15 17:15:24
 -->
 <template>
   <el-dialog
@@ -82,11 +82,10 @@
             </el-col>
             <el-col :span="8">
               <el-form-item label="归属组织">
-                <SelectOrganizationTree
+                <IhSelectPageDivision
+                  v-model="queryPageParameters.organizationId"
                   clearable
-                  :orgId="queryPageParameters.organizationId"
-                  @callback="(id) => (queryPageParameters.organizationId = id)"
-                />
+                ></IhSelectPageDivision>
               </el-form-item>
             </el-col>
           </el-row>
