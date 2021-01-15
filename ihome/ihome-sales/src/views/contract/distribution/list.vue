@@ -4,7 +4,7 @@
  * @Author: ywl
  * @Date: 2020-09-25 17:34:32
  * @LastEditors: ywl
- * @LastEditTime: 2021-01-15 15:55:49
+ * @LastEditTime: 2021-01-15 21:11:58
 -->
 <template>
   <IhPage label-width="100px">
@@ -540,26 +540,32 @@ export default class DistributionList extends Vue {
   private handleSelectionChange(val: any): void {
     this.selectionData = val;
   }
-  // 根据角色来驳回
+  // 根据角色来撤回
   private handleWith() {
     if (this.selectionData.length) {
-      if (
-        this.channelChange() &&
-        this.selectionData
-          .map((i: any) => i.distributionState)
-          .every((v: any) => v === "Pending")
-      ) {
-        this.withdraw();
-      } else if (
-        this.contractChange() &&
-        this.selectionData
-          .map((i: any) => i.distributionState)
-          .every((v: any) => v === "NotDistributed")
-      ) {
-        this.withdraw();
-      } else {
-        this.$message.warning("请筛选一致的待审核的合同数据或待派发的合同数据");
-        return;
+      if (this.channelChange()) {
+        if (
+          this.selectionData
+            .map((i: any) => i.distributionState)
+            .every((v: any) => v === "Pending")
+        ) {
+          this.withdraw();
+        } else {
+          this.$message.warning("只有待审核的合同才能操作撤回");
+          return;
+        }
+      }
+      if (this.contractChange()) {
+        if (
+          this.selectionData
+            .map((i: any) => i.distributionState)
+            .every((v: any) => v === "NotDistributed")
+        ) {
+          this.withdraw();
+        } else {
+          this.$message.warning("只有待派发的合同才能操作撤回");
+          return;
+        }
       }
     } else {
       this.$message.warning("请先勾选表格数据");
@@ -646,23 +652,29 @@ export default class DistributionList extends Vue {
   // 根据角色驳回不同的操作
   private handleDis() {
     if (this.selectionData.length) {
-      if (
-        this.contractChange() &&
-        this.selectionData
-          .map((i: any) => i.distributionState)
-          .every((v: any) => v === "Pending")
-      ) {
-        this.disallowance();
-      } else if (
-        this.channelChange() &&
-        this.selectionData
-          .map((i: any) => i.distributionState)
-          .every((v: any) => v === "NotDistributed")
-      ) {
-        this.disallowance();
-      } else {
-        this.$message.warning("请筛选一致的待审核的合同数据或待派发的合同数据");
-        return;
+      if (this.contractChange()) {
+        if (
+          this.selectionData
+            .map((i: any) => i.distributionState)
+            .every((v: any) => v === "Pending")
+        ) {
+          this.disallowance();
+        } else {
+          this.$message.warning("只有待审核的合同才能操作驳回");
+          return;
+        }
+      }
+      if (this.channelChange()) {
+        if (
+          this.selectionData
+            .map((i: any) => i.distributionState)
+            .every((v: any) => v === "NotDistributed")
+        ) {
+          this.disallowance();
+        } else {
+          this.$message.warning("只有待派发的合同才能操作驳回");
+          return;
+        }
       }
     } else {
       this.$message.warning("请先勾选表格数据");

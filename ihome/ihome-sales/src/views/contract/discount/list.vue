@@ -4,7 +4,7 @@
  * @Author: ywl
  * @Date: 2020-09-27 16:27:36
  * @LastEditors: ywl
- * @LastEditTime: 2021-01-14 17:04:49
+ * @LastEditTime: 2021-01-15 19:01:13
 -->
 <template>
   <IhPage label-width="80px">
@@ -153,6 +153,7 @@
                     v-model="queryPageParameters.templateType"
                     placeholder="请选择模板类型"
                     clearable
+                    class="width--100"
                   >
                     <el-option
                       v-for="(i, n) in $root.dictAllList('TemplateType')"

@@ -3,8 +3,8 @@
  * @version: 
  * @Author: ywl
  * @Date: 2020-08-13 11:40:10
- * @LastEditors: wwq
- * @LastEditTime: 2020-12-19 14:47:23
+ * @LastEditors: ywl
+ * @LastEditTime: 2021-01-15 20:50:10
 -->
 <template>
   <IhPage label-width="100px">
@@ -237,7 +237,7 @@
                   v-has="'B.SALES.CHANNEL.BASELIST.REVOKEDRAFT'"
                 >退回起草</el-dropdown-item>
                 <el-dropdown-item
-                  @click.native.prevent="handleToPage(row, 'change')"
+                  @click.native.prevent="updateInfo(row)"
                   :class="{ 'ih-data-disabled': !passChange(row) }"
                   v-has="'B.SALES.CHANNEL.BASELIST.UPDATEINFO'"
                 >变更信息</el-dropdown-item>
@@ -291,6 +291,7 @@ import {
   post_channel_getList,
   post_channel_delete__id,
   post_channel_backToDraft__id,
+  get_channelChange_changeCheck__oldChannelId,
 } from "@/api/channel/index";
 import UpdateUser from "./dialog/updateUser.vue";
 
@@ -345,6 +346,21 @@ export default class List extends Vue {
     return (!DRAFT || !ToBeConfirmed) && dangqian;
   }
 
+  async updateInfo(row: any) {
+    let flag = true;
+    try {
+      flag = await get_channelChange_changeCheck__oldChannelId({
+        oldChannelId: row.id,
+      });
+    } catch (error) {
+      console.log(error);
+    }
+    if (!flag) {
+      this.handleToPage(row, "change");
+    } else {
+      this.$message.warning("渠道变更中, 请不要提交重复变更");
+    }
+  }
   search() {
     this.queryPageParameters.provinces = this.provinceList[0];
     this.queryPageParameters.city = this.provinceList[1];
