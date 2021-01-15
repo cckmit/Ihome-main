@@ -4,7 +4,7 @@
  * @Author: wwq
  * @Date: 2020-10-15 12:33:25
  * @LastEditors: wwq
- * @LastEditTime: 2021-01-15 15:21:31
+ * @LastEditTime: 2021-01-15 20:08:00
 -->
 <template>
   <div class="text-left">
@@ -312,17 +312,24 @@ export default class Home extends Vue {
     });
     const dictList = newDict.concat(ChannelGrade);
     this.fileListType = dictList.map((v: any) => {
+      let arr: any = [];
+      data
+        .filter((j: any) => j.type === v.code)
+        .forEach((h: any) => {
+          if (h.fileId) {
+            arr.push({
+              ...h,
+              name: h.fileName,
+            });
+          } else {
+            arr = [];
+          }
+        });
       return {
         ...v,
-        fileList: data
-          .filter((j: any) => j.type === v.code)
-          .map((h: any) => ({
-            ...h,
-            name: h.fileName,
-          })),
+        fileList: arr,
       };
     });
-    console.log(this.fileListType);
   }
   async pass(val: any) {
     if (this.remark) {

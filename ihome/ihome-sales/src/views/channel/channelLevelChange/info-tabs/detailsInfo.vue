@@ -4,7 +4,7 @@
  * @Author: wwq
  * @Date: 2020-10-15 12:33:25
  * @LastEditors: wwq
- * @LastEditTime: 2020-12-16 20:22:44
+ * @LastEditTime: 2021-01-15 20:08:08
 -->
 <template>
   <div class="text-left">
@@ -320,16 +320,33 @@ export default class Home extends Vue {
     }
   }
   getFileListType(data: any) {
-    const list = (this.$root as any).dictAllList("ChannelGradeAttachment");
-    this.fileListType = list.map((v: any) => {
+    const ChannelGrade = (this.$root as any).dictAllList(
+      "ChannelGradeAttachment"
+    );
+    const channelLevelDict = (this.$root as any).dictAllList(
+      "ChannelLevelStandardAttachment"
+    );
+    const newDict: any = channelLevelDict.filter((j: any) => {
+      return data.map((i: any) => i.type).includes(j.code);
+    });
+    const dictList = newDict.concat(ChannelGrade);
+    this.fileListType = dictList.map((v: any) => {
+      let arr: any = [];
+      data
+        .filter((j: any) => j.type === v.code)
+        .forEach((h: any) => {
+          if (h.fileId) {
+            arr.push({
+              ...h,
+              name: h.fileName,
+            });
+          } else {
+            arr = [];
+          }
+        });
       return {
         ...v,
-        fileList: data
-          .filter((j: any) => j.type === v.code)
-          .map((h: any) => ({
-            ...h,
-            name: h.fileName,
-          })),
+        fileList: arr,
       };
     });
   }

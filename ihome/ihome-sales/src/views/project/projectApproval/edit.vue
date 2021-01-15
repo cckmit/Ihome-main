@@ -4,7 +4,7 @@
  * @Author: wwq
  * @Date: 2020-11-27 17:15:27
  * @LastEditors: wwq
- * @LastEditTime: 2021-01-15 16:52:55
+ * @LastEditTime: 2021-01-15 19:02:05
 -->
 <template>
   <ih-page>
@@ -122,7 +122,6 @@ export default class ProjectApprovalEdit extends Vue {
   }
 
   beforeLeave(activeName: any, oldActiveName: any) {
-    console.log(activeName, oldActiveName);
     if (oldActiveName === "BasicInfo") {
       if (!this.isCut) {
         this.$alert("请保存后再切换", "提示", {

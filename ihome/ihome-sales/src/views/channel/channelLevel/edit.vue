@@ -4,7 +4,7 @@
  * @Author: wwq
  * @Date: 2020-10-15 16:02:03
  * @LastEditors: ywl
- * @LastEditTime: 2021-01-15 20:47:37
+ * @LastEditTime: 2021-01-15 21:17:42
 -->
 <template>
   <IhPage>
@@ -377,14 +377,22 @@ export default class ChannelRates extends Vue {
     }
     const dictList = newDict.concat(ChannelGrade);
     this.fileListType = dictList.map((v: any) => {
+      let arr: any = [];
+      data
+        .filter((j: any) => j.type === v.code)
+        .forEach((h: any) => {
+          if (h.fileId) {
+            arr.push({
+              ...h,
+              name: h.fileName,
+            });
+          } else {
+            arr = [];
+          }
+        });
       return {
         ...v,
-        fileList: data
-          .filter((j: any) => j.type === v.code)
-          .map((h: any) => ({
-            ...h,
-            name: h.fileName,
-          })),
+        fileList: arr,
       };
     });
     let obj: any = {};
