@@ -4,7 +4,7 @@
  * @Author: zyc
  * @Date: 2020-10-13 19:51:15
  * @LastEditors: zyc
- * @LastEditTime: 2021-01-04 16:15:15
+ * @LastEditTime: 2021-01-15 08:51:00
 -->
 <template>
   <div>
@@ -68,9 +68,7 @@
         width="180"
       ></el-table-column>
       <el-table-column prop="companyName" label="渠道商名称">
-        <!-- <template slot-scope="scope">{{
-          $root.displayName("accountType", scope.row.accountType)
-        }}</template> -->
+        
       </el-table-column>
       <el-table-column prop="registTime" label="注册日期"></el-table-column>
     </el-table>

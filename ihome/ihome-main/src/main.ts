@@ -4,7 +4,7 @@
  * @Author: zyc
  * @Date: 2020-06-22 11:46:23
  * @LastEditors: zyc
- * @LastEditTime: 2021-01-14 15:38:32
+ * @LastEditTime: 2021-01-14 17:05:09
  */
 import Vue from 'vue'
 import App from './App.vue'
@@ -70,65 +70,68 @@ import { get_dict_getAll, get_area_getAll, post_sessionUser_getUserInfo } from '
 };
 
 
-function render({ appContent, loading }: any = {}) {
+async function render({ appContent, loading }: any = {}) {
 
   // Promise.all([post_sessionUser_getUserInfo()]).then((res: any) => {
   //   userInfo = res[0];
   //   (window as any).polyihomeData.userInfo = userInfo;
   // })
-
-  Promise.all([get_area_getAll(), get_dict_getAll(), post_sessionUser_getUserInfo({terminalType:"Pc"})]).then((res: any) => {
-    (window as any).polyihomeData.areaAll = res[0];
-    (window as any).polyihomeData.dictAll = res[1];
-    (window as any).polyihomeData.userInfo = res[2];
-    console.log((window as any).polyihomeData);
-
-
-  })
-    .catch((err: any) => {
-      console.error('系统初始化数据存在异常', err)
-    }).finally(() => {
-      if (!app) {
-        app = new Vue({
-          el: "#container",
-          router,
-          store,
-          data() {
-            return {
-              content: appContent,
-              loading,
-              userInfo: (window as any).polyihomeData.userInfo,
-              crumbs:[{name:'xxxxx'}]
-            };
-          },
-          render(h) {
-            return h(App, {
-              props: {
-                content: (<any>this).content,
-                loading: (<any>this).loading
-              }
-            });
-          }
-        });
-      } else {
-        app.content = appContent;
-        app.loading = loading;
-      }
-      // 注册子应用
-      registerMicroApps(apps, lifeCycles);
-
-      // 设置默认子应用,与 genActiveRule中的参数保持一致
-      setDefaultMountApp(defaultMountApp);
-
-      // 启动
-      start();
-
+  try {
+    const resUserInfo: any = await post_sessionUser_getUserInfo({ terminalType: "Pc" });
+    (window as any).polyihomeData.userInfo = resUserInfo;
+  } catch (error) {
+    (error);
+  } finally {
+    Promise.all([get_area_getAll(), get_dict_getAll()]).then((res: any) => {
+      (window as any).polyihomeData.areaAll = res[0];
+      (window as any).polyihomeData.dictAll = res[1];
+      console.log((window as any).polyihomeData);
     })
+      .catch((err: any) => {
+        console.error('系统初始化数据存在异常', err)
+      }).finally(() => {
+        if (!app) {
+          app = new Vue({
+            el: "#container",
+            router,
+            store,
+            data() {
+              return {
+                content: appContent,
+                loading,
+                userInfo: (window as any).polyihomeData.userInfo,
+                crumbs: [{ name: 'xxxxx' }]
+              };
+            },
+            render(h) {
+              return h(App, {
+                props: {
+                  content: (<any>this).content,
+                  loading: (<any>this).loading
+                }
+              });
+            }
+          });
+        } else {
+          app.content = appContent;
+          app.loading = loading;
+        }
+        // 注册子应用
+        registerMicroApps(apps, lifeCycles);
+
+        // 设置默认子应用,与 genActiveRule中的参数保持一致
+        setDefaultMountApp(defaultMountApp);
+
+        // 启动
+        start();
+
+      })
+  }
 
 
 }
 
-
+(window as any).isQianKunMain = true;//此参数用于子项目是否嵌套主项目，还是单独运行
 function initApp() {
   render({ appContent: '', loading: false });
 }

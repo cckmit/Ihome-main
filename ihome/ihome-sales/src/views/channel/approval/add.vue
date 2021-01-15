@@ -4,7 +4,7 @@
  * @Author: zyc
  * @Date: 2020-07-09 14:31:23
  * @LastEditors: zyc
- * @LastEditTime: 2021-01-06 19:20:57
+ * @LastEditTime: 2021-01-15 09:49:31
 --> 
 <template>
   <ih-page>
@@ -165,7 +165,8 @@
         </el-table-column>
         <el-table-column prop="attachmentDetails" label="附件">
           <template slot-scope="scope">
-            <span class="margin-right-10"
+            <span
+              class="margin-right-10"
               v-for="(cItem, cIndex) in scope.row.attachmentDetails"
               :key="cIndex"
             >
@@ -286,7 +287,15 @@ export default class ApprovalAdd extends Vue {
   };
 
   postData: any = {
-    approvalDesc: null,
+    approvalDesc: `公司领导：
+2020年XX分公司已入库渠道公司XX家（已通过OA呈批入库的数量，如果0就删除），本次申请入库XX家，业务系统已上传相关资料且均已审核通过，其中大平台/大型中介/一级平台共X家，中型中介/二级平台共X家，小型中介共X家。
+本次甄选合格的公司如下，详见附件1：《爱家XX分公司渠道合格供应商名录》。
+1、如有不符合供应商管理办法的特殊情况公司，请补充说明申请入库理由，例如公司资质、实力、规模、以往代表项目及业绩等情况；
+2、如入库公司数量较少，建议补充说明入库公司的情况，尤其是大平台/大型中介/一级平台情况
+附件1：《爱家XX分公司渠道合格供应商名录》
+附件2：《XX渠道公司特批入库补充材料》
+特此申请！ 
+妥否，请领导批示！`,
     approvalTitle: null,
     channelApprovalAttachments: [],
     channelApprovalGrades: [],

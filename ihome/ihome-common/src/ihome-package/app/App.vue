@@ -4,7 +4,7 @@
  * @Author: zyc
  * @Date: 2020-06-29 16:35:32
  * @LastEditors: zyc
- * @LastEditTime: 2020-12-29 15:12:32
+ * @LastEditTime: 2021-01-14 17:14:13
 --> 
 <!--
  * @Descripttion: 
@@ -84,7 +84,7 @@ export default class App extends Vue {
   @Watch("$route")
   async route(newVal: any) {
     let menuList: any[] =
-      (window as any).polyihomeData?.userInfo.menuList || [];
+      (window as any).polyihomeData?.userInfo?.menuList || [];
 
     let curruntUrl = "";
     if (process.env.BASE_URL.endsWith("/")) {
@@ -140,7 +140,13 @@ export default class App extends Vue {
       }
     }
 
-    (this as any).$qiankun["appRoutes"](crumbs, routes);
+    try {
+       (this as any).$qiankun?.appRoutes(crumbs, routes);
+    } catch (error) {
+      console.log(error)
+    }
+
+   
   }
 }
 </script>
