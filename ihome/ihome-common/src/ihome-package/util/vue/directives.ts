@@ -4,11 +4,11 @@
  * @Author: zyc
  * @Date: 2020-05-26 17:02:03
  * @LastEditors: zyc
- * @LastEditTime: 2020-12-18 14:10:11
+ * @LastEditTime: 2021-01-14 17:15:04
  */
 export default (Vue: any) => {
     function has(el: any, binding: any) {
-        let d = ((window as any).polyihomeData.userInfo.resourceList || []).filter((item: any) => {
+        let d = ((window as any).polyihomeData?.userInfo?.resourceList || []).filter((item: any) => {
             return item.type == 'Button';
         });//权限列表
         let list = d.map((item: any) => {

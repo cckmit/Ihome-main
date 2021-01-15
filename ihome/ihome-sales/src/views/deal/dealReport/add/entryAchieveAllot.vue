@@ -623,6 +623,11 @@
                             <div>点数：{{scope.row.distributeAchievePoint}}</div>
                           </template>
                         </el-table-column>
+                        <el-table-column label="其他渠道费用" prop="otherChannelAmount" min-width="160">
+                          <template slot-scope="scope">
+                            <div>金额：{{scope.row.otherChannelAmount}}</div>
+                          </template>
+                        </el-table-column>
                       </el-table>
                     </div>
                     <el-input
@@ -822,7 +827,9 @@
           </el-table-column>
           <el-table-column prop="remarks" label="备注" min-width="120">
             <template slot-scope="scope">
-              <el-input v-model="scope.row.remarks" clearable placeholder="备注"/>
+              <el-input
+                :disabled="postData.calculation === 'Auto'"
+                v-model="scope.row.remarks" placeholder="备注"/>
             </template>
           </el-table-column>
           <el-table-column fixed="right" label="操作" width="100" v-if="postData.calculation !== 'Auto'">
@@ -2086,34 +2093,50 @@
     changeContType(value: any) {
       console.log(value);
       // if (!value) return;
-      if (value === 'DistriDeal') {
-        // 如果查询不到此房号的已成交报备信息，用户又选择分销成交
-        // this.postData.contType = this.tempContType ? (this as any).$tool.deepClone(this.tempContType) : '';
-        if (!this.baseInfoInDeal.hasRecord) {
-          this.$alert('系统查询不到此房号的已成交报备信息，请先维护报备信息！', '提示', {
-            confirmButtonText: '确定'
-          });
-        }
-      } else {
-        // 不是分销成交
-        // 1.清空数据
-        // 2.请求接口获取数据
-        let flag: any = false;
-        if (this.postData.receiveVO.length) {
-          // 判断收派金额数据是否选了收派套餐
-          flag = (this as any).$parent.hasReceivePackage(this.postData.receiveVO);
-        }
-        if (flag) {
-          this.postData.receiveVO = (this as any).$tool.deepClone(this.tempReceiveVO);
-          this.postData.commissionInfoList = [];
-          this.postData.achieveTotalBagList = [];
-          this.postData.achieveDistriList = [];
-          // 显示手动按钮
-          this.addFlag = false;
-          this.editFlag = true;
-          this.tipsFlag = false;
-          this.dividerTips = "加载成功";
-        }
+      // if (value === 'DistriDeal') {
+      //   // 如果查询不到此房号的已成交报备信息，用户又选择分销成交
+      //   this.postData.contType = this.tempContType ? (this as any).$tool.deepClone(this.tempContType) : '';
+      //   if (!this.baseInfoInDeal.hasRecord) {
+      //     this.$alert('系统查询不到此房号的已成交报备信息，请先维护报备信息！', '提示', {
+      //       confirmButtonText: '确定'
+      //     });
+      //   }
+      // } else {
+      //   // 不是分销成交
+      //   // 1.清空数据
+      //   // 2.请求接口获取数据
+      //   let flag: any = false;
+      //   if (this.postData.receiveVO.length) {
+      //     // 判断收派金额数据是否选了收派套餐
+      //     flag = (this as any).$parent.hasReceivePackage(this.postData.receiveVO);
+      //   }
+      //   if (flag) {
+      //     this.postData.receiveVO = (this as any).$tool.deepClone(this.tempReceiveVO);
+      //     this.postData.commissionInfoList = [];
+      //     this.postData.achieveTotalBagList = [];
+      //     this.postData.achieveDistriList = [];
+      //     // 显示手动按钮
+      //     this.addFlag = false;
+      //     this.editFlag = true;
+      //     this.tipsFlag = false;
+      //     this.dividerTips = "加载成功";
+      //   }
+      // }
+      let flag: any = false;
+      if (this.postData.receiveVO.length) {
+        // 判断收派金额数据是否选了收派套餐
+        flag = (this as any).$parent.hasReceivePackage(this.postData.receiveVO);
+      }
+      if (flag) {
+        this.postData.receiveVO = (this as any).$tool.deepClone(this.tempReceiveVO);
+        this.postData.commissionInfoList = [];
+        this.postData.achieveTotalBagList = [];
+        this.postData.achieveDistriList = [];
+        // 显示手动按钮
+        this.addFlag = false;
+        this.editFlag = true;
+        this.tipsFlag = false;
+        this.dividerTips = "加载成功";
       }
       this.tempContType = value;
     }
@@ -2434,11 +2457,13 @@
             sums[index] = values.reduce((prev: any, curr: any) => {
               const value = Number(curr);
               if (!isNaN(value)) {
-                return prev + curr;
+                let total = (prev * 1 * 100 + curr * 1 * 100) / 100;
+                return total;
               } else {
-                return prev;
+                return ((prev * 1 * 100) / 100);
               }
             }, 0);
+            sums[index] = Math.round(sums[index] * 100) / 100; // 解决精度缺失问题
           } else {
             sums[index] = '';
           }
@@ -2778,6 +2803,17 @@
       }
       // 平台费用
       obj.achieveVO = this.postData.achieveTotalBagList.concat(this.postData.achieveDistriList);
+      // 平台费用增加字段：isMainDeal --- 主成交为true，补充成交为false
+      if (obj.achieveVO && obj.achieveVO.length) {
+        obj.achieveVO.forEach((item: any) => {
+          item.isMainDeal = true;
+          if (item.managerAchieveList && item.managerAchieveList.length) {
+            item.managerAchieveList.forEach((list: any) => {
+              list.isMainDeal = true;
+            });
+          }
+        })
+      }
       // 渠道商信息 --- 分销成交才会有
       if (this.postData.contType === 'DistriDeal') {
         obj.basic.agencyVO.push(
