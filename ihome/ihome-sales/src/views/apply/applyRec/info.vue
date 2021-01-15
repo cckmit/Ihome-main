@@ -1,10 +1,10 @@
 <!--
- * @Description: 请佣申请审核详情
+ * @Description: 查看请佣详情
  * @version: 
  * @Author: ywl
- * @Date: 2021-01-14 19:09:51
+ * @Date: 2021-01-15 15:29:09
  * @LastEditors: ywl
- * @LastEditTime: 2021-01-15 14:28:05
+ * @LastEditTime: 2021-01-15 15:31:17
 -->
 <template>
   <IhPage class="text-left">
@@ -540,31 +540,8 @@
           ></el-table-column>
         </el-table>
       </div>
-      <p class="ih-info-title">审批意见</p>
-      <div class="padding-left-20">
-        <el-input
-          type="textarea"
-          style="box-sizing: border-box;"
-          placeholder="输入内容"
-          v-model="remark"
-          :autosize="{ minRows: 5, maxRows: 8 }"
-          maxlength="256"
-        ></el-input>
-      </div>
       <br />
       <div class="text-center">
-        <el-button
-          type="primary"
-          @click="applyStop()"
-        >终止</el-button>
-        <el-button
-          type="danger"
-          @click="submit(1)"
-        >驳回</el-button>
-        <el-button
-          type="success"
-          @click="submit(0)"
-        >通过</el-button>
         <el-button @click="$router.go(-1)">返回</el-button>
       </div>
     </template>
@@ -580,8 +557,6 @@ import {
   get_applyRecDealTerm_getAll__applyId,
   get_devAgentFee_getAll__applyId,
   get_opLog_getAllListByApplyId__applyId,
-  post_applyRec_audit,
-  post_applyRec_stop__applyId,
 } from "../../../api/apply/index";
 
 @Component({})
@@ -592,7 +567,6 @@ export default class ApplyAudit extends Vue {
   private termList: any = [];
   private fileListType: any = [];
   private opLogList: any = [];
-  private remark: any = null;
 
   private get totalNoReceiveAmount() {
     let sum = 0;
@@ -677,35 +651,6 @@ export default class ApplyAudit extends Vue {
       this.opLogList = await get_opLog_getAllListByApplyId__applyId({
         applyId,
       });
-    } catch (error) {
-      console.log(error);
-    }
-  }
-  private async applyStop() {
-    try {
-      await this.$confirm("是否确认终止?", "提示");
-      await post_applyRec_stop__applyId({ applyId: this.form.id });
-      this.$message.success("终止成功");
-      this.$goto("/applyRecAudit/list");
-    } catch (error) {
-      console.log(error);
-    }
-  }
-  private async submit(isReject: number) {
-    if (!this.remark) {
-      this.$message.warning("审批意见不能为空");
-      return;
-    }
-    let params = {
-      isReject,
-      remark: this.remark,
-      applyId: this.form.id,
-      opBefore: this.form.status,
-    };
-    try {
-      await post_applyRec_audit(params);
-      this.$message.success(`${isReject ? "驳回" : "通过"}成功`);
-      this.$goto("/applyRecAudit/list");
     } catch (error) {
       console.log(error);
     }

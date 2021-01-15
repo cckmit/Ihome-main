@@ -4,7 +4,7 @@
  * @Author: ywl
  * @Date: 2021-01-13 14:50:21
  * @LastEditors: ywl
- * @LastEditTime: 2021-01-13 18:02:22
+ * @LastEditTime: 2021-01-15 15:34:34
 -->
 <template>
   <IhPage label-width="100px">
@@ -81,6 +81,7 @@
       <el-tabs
         v-model="queryPageParameters.status"
         type="border-card"
+        @tab-click="tabChange"
       >
         <template v-for="(i, n) in tabsList">
           <el-tab-pane
@@ -93,6 +94,7 @@
               class="ih-table"
               :empty-text="emptyText"
               :data="resPageInfo.list"
+              v-loading="loading"
             >
               <el-table-column
                 v-if="i.name === 'Confirm'"
@@ -109,6 +111,7 @@
               <el-table-column
                 label="项目名称"
                 prop="applyNo"
+                min-width="165"
               ></el-table-column>
               <el-table-column
                 label="甲方公司名称"
@@ -135,6 +138,7 @@
               <el-table-column
                 label="回款信息"
                 prop="applyNo"
+                min-width="145"
               >
                 <template v-slot="{ row }">
                   <div>应回款：{{row.shuoldReceMoney}}</div>
@@ -144,6 +148,7 @@
               </el-table-column>
               <el-table-column
                 label="申请人"
+                min-width="145"
                 prop="applyUserName"
               ></el-table-column>
               <el-table-column
@@ -159,7 +164,12 @@
               <el-table-column
                 label="回款状态"
                 prop="status"
-              ></el-table-column>
+                width="135"
+              >
+                <template v-slot="{ row }">
+                  {{$root.dictAllName(row.status, 'ApplySatus')}}
+                </template>
+              </el-table-column>
               <el-table-column
                 v-if="i.name !== 'Confirm'"
                 label="回款确认人"
@@ -177,8 +187,15 @@
                 width="120"
                 fixed="right"
               >
-                <template v-slot="{  }">
-                  <el-link type="primary">查看</el-link>
+                <template v-slot="{ row }">
+                  <el-link
+                    type="primary"
+                    @click="$router.push(`/applyRec/info?id=${row.id}`)"
+                  >查看</el-link>
+                  <el-link
+                    type="success"
+                    class="margin-left-10"
+                  >添加回款</el-link>
                 </template>
               </el-table-column>
             </el-table>
@@ -222,6 +239,7 @@ export default class ReturnConfirmList extends Vue {
     total: null,
     list: [],
   };
+  private loading = false;
   private timeList: any = [];
   private tabsList: any = [
     {
@@ -238,10 +256,16 @@ export default class ReturnConfirmList extends Vue {
     },
   ];
 
+  private tabChange() {
+    this.queryPageParameters.pageNum = 1;
+    this.getListMixin();
+  }
   async getListMixin() {
+    this.loading = true;
     this.resPageInfo = await post_receConfirmDetail_getList(
       this.queryPageParameters
     );
+    this.loading = false;
   }
 
   created() {

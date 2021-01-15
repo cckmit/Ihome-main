@@ -4,7 +4,7 @@
  * @Author: ywl
  * @Date: 2021-01-14 18:20:57
  * @LastEditors: ywl
- * @LastEditTime: 2021-01-14 19:03:34
+ * @LastEditTime: 2021-01-15 09:11:10
 -->
 <template>
   <IhPage label-width="100px">
@@ -155,8 +155,11 @@
           fixed="right"
           width="80"
         >
-          <template v-slot="{  }">
-            <el-link type="success">审核</el-link>
+          <template v-slot="{ row }">
+            <el-link
+              type="success"
+              @click="$router.push(`/applyRecAudit/audit?id=${row.id}`)"
+            >审核</el-link>
           </template>
         </el-table-column>
       </el-table>

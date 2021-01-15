@@ -4,7 +4,7 @@
  * @Author: ywl
  * @Date: 2021-01-07 10:29:38
  * @LastEditors: ywl
- * @LastEditTime: 2021-01-14 19:06:36
+ * @LastEditTime: 2021-01-15 15:36:53
 -->
 <template>
   <IhPage label-width="100px">
@@ -168,6 +168,7 @@
         <el-table-column
           label="申请人"
           prop="applyUserName"
+          min-width="165"
         ></el-table-column>
         <el-table-column
           label="状态"
@@ -212,10 +213,12 @@
             <el-link
               type="primary"
               v-else-if="row.status === 'InvoiceApply'"
+              @click="$router.push(`/applyRec/add?id=${row.id}`)"
             >发起开票申请</el-link>
             <el-link
               type="primary"
               v-else
+              @click="$router.push(`/applyRec/info?id=${row.id}`)"
             >查看</el-link>
           </template>
         </el-table-column>

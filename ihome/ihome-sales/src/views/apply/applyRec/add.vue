@@ -4,7 +4,7 @@
  * @Author: ywl
  * @Date: 2021-01-07 16:30:03
  * @LastEditors: ywl
- * @LastEditTime: 2021-01-14 19:28:38
+ * @LastEditTime: 2021-01-15 15:00:08
 -->
 <template>
   <IhPage class="text-left">
@@ -193,11 +193,14 @@
             width="150"
           >
             <template v-slot="{ row }">
-              <el-input
+              <el-input-number
                 v-model="row.subMoney"
+                controls-position="right"
+                :min="0"
                 v-digits="2"
                 clearable
-              />
+                class="width--100"
+              ></el-input-number>
             </template>
           </el-table-column>
           <el-table-column
@@ -590,12 +593,40 @@
         </el-table>
         <br />
       </div>
+      <div
+        class="padding-left-20"
+        v-if="form.status === 'InvoiceApply'"
+      >
+        <el-alert
+          type="warning"
+          center
+        >
+          <template #title>
+            <div class="text-center">发起开票申请提示</div>
+          </template>
+          <template>
+            <div class="text-center">没有修改请款申请单信息请点击“发起开票申请”按钮发起申请。</div>
+            <div class="text-center">如修改了请款申请单信息请点击“保存并发起开票申请”按钮发起申请。</div>
+          </template>
+        </el-alert>
+        <br />
+      </div>
       <div class="text-center">
         <el-button
           type="primary"
           v-if="form.status === 'BusinessDepart'"
           @click="cancel()"
         >撤销</el-button>
+        <template v-else-if="form.status === 'InvoiceApply'">
+          <el-button
+            type="success"
+            @click="invoiceApply()"
+          >发起开票申请</el-button>
+          <el-button
+            type="primary"
+            @click="submit('SaveAndInvoiceApply')"
+          >保存并发起开票申请</el-button>
+        </template>
         <template v-else>
           <el-button
             type="primary"
@@ -635,8 +666,10 @@ import {
   get_applyRec_getApplyRecById__applyId,
   get_applyRecDeal_getAll__applyId,
   get_applyRecDealTerm_getAll__applyId,
+  get_devAgentFee_getAll__applyId,
   post_applyRecFile_getAll,
   post_applyRec_cancel__applyId,
+  post_applyRec_InvoiceApply__applyId,
 } from "../../../api/apply/index";
 
 @Component({
@@ -709,17 +742,19 @@ export default class ApplyRecAdd extends Vue {
   private get agencyList() {
     // 应扣除代理费明细
     this.form.agentFeeFromDeductIdList = this.waitList.map((i: any) => i.id);
-    let list = this.form.dealList.map((i: any) => ({
-      dealCode: i.dealCode,
-      dealId: i.id,
-      developId: this.form.developId,
-      proId: i.proId,
-      proName: i.proName,
-      subMoney: i.subMoney,
-      subType: i.subType,
-      termId: i.termId,
-      termName: i.termName,
-    }));
+    let list = this.form.dealList
+      .filter((val: any) => this.$math.tofixed(parseFloat(val.subMoney), 2) > 0)
+      .map((i: any) => ({
+        dealCode: i.dealCode,
+        dealId: i.id,
+        developId: this.form.developId,
+        proId: i.proId,
+        proName: i.proName,
+        subMoney: i.subMoney,
+        subType: i.subType,
+        termId: i.termId,
+        termName: i.termName,
+      }));
     // this.form.devAgentFeeAddFromPageVO.applyRecDealList = list;
     return this.waitList.concat(list);
   }
@@ -1061,7 +1096,19 @@ export default class ApplyRecAdd extends Vue {
 
     try {
       await post_applyRec_save(this.form);
-      this.$message.success(`${type === "" ? "暂存" : "提交"}成功`);
+      let msg = "";
+      switch (type) {
+        case "SaveAndInvoiceApply":
+          msg = "保存并发起开票申请";
+          break;
+        case "":
+          msg = "暂存";
+          break;
+        default:
+          msg = "提交";
+          break;
+      }
+      this.$message.success(`${msg}成功`);
       this.$goto({
         path: "/applyRec/list",
       });
@@ -1073,6 +1120,18 @@ export default class ApplyRecAdd extends Vue {
     try {
       await post_applyRec_cancel__applyId({ applyId: this.form.id });
       this.$message.success("撤销成功");
+      this.$goto({
+        path: "/applyRec/list",
+      });
+    } catch (error) {
+      console.log(error);
+    }
+  }
+  private async invoiceApply() {
+    let applyId = this.$route.query.id;
+    try {
+      await post_applyRec_InvoiceApply__applyId({ applyId });
+      this.$message.success("发起开票成功");
       this.$goto({
         path: "/applyRec/list",
       });
@@ -1103,6 +1162,9 @@ export default class ApplyRecAdd extends Vue {
       this.form.termList = await get_applyRecDealTerm_getAll__applyId({
         applyId,
       });
+      let feeList = await get_devAgentFee_getAll__applyId({ applyId });
+      console.log(feeList);
+
       if (this.form.status === "Draft") {
         await this.getHisRec({
           developId: info.developId,
