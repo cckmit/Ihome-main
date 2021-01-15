@@ -28,45 +28,50 @@
       @select-all="handleSelectAll">
       <el-table-column fixed type="selection" width="50" align="center"></el-table-column>
       <el-table-column label="类型" prop="typeName" min-width="100"></el-table-column>
-      <el-table-column label="合同类型" prop="contractEnum" min-width="100">
+      <el-table-column label="合同类型" prop="contractEnum" min-width="110">
         <template slot-scope="scope">
           <div>{{$root.dictAllName(scope.row.contractEnum, 'ContType')}}</div>
         </template>
       </el-table-column>
-      <el-table-column label="客户类型" prop="transactionEnum" min-width="100">
+      <el-table-column label="客户类型" prop="transactionEnum" min-width="110">
         <template slot-scope="scope">
           <div>{{$root.dictAllName(scope.row.transactionEnum, 'Transaction')}}</div>
         </template>
       </el-table-column>
-      <el-table-column label="条件" prop="condition" min-width="200"></el-table-column>
-      <el-table-column label="应收金额" prop="receivableAmout" min-width="100">
+      <el-table-column label="条件" prop="condition" min-width="250"></el-table-column>
+      <el-table-column label="应收金额" prop="receivableAmout" min-width="160">
         <template slot-scope="scope">
           <div>金额：{{scope.row.receivableAmout}}</div>
           <div>点数：{{scope.row.receivablePoint}}</div>
         </template>
       </el-table-column>
-      <el-table-column label="派发佣金" prop="sendAmount" min-width="100">
+      <el-table-column label="派发佣金" prop="sendAmount" min-width="160">
         <template slot-scope="scope">
           <div>金额：{{scope.row.sendAmount}}</div>
           <div>点数：{{scope.row.sendPoint}}</div>
         </template>
       </el-table-column>
-      <el-table-column label="派发内场奖励" prop="sendInAmount" min-width="150">
+      <el-table-column label="派发内场奖励" prop="sendInAmount" min-width="160">
         <template slot-scope="scope">
           <div>金额：{{scope.row.sendInAmount}}</div>
           <div>点数：{{scope.row.sendInPoint}}</div>
         </template>
       </el-table-column>
-      <el-table-column label="总包业绩" prop="generalAchieveAmount" min-width="100">
+      <el-table-column label="总包业绩" prop="generalAchieveAmount" min-width="160">
         <template slot-scope="scope">
           <div>金额：{{scope.row.generalAchieveAmount}}</div>
           <div>点数：{{scope.row.generalAchievePoint}}</div>
         </template>
       </el-table-column>
-      <el-table-column label="分销业绩" prop="distributeAchieveAmount" min-width="100">
+      <el-table-column label="分销业绩" prop="distributeAchieveAmount" min-width="160">
         <template slot-scope="scope">
           <div>金额：{{scope.row.distributeAchieveAmount}}</div>
           <div>点数：{{scope.row.distributeAchievePoint}}</div>
+        </template>
+      </el-table-column>
+      <el-table-column label="其他渠道费用" prop="otherChannelAmount" min-width="160">
+        <template slot-scope="scope">
+          <div>金额：{{scope.row.otherChannelAmount}}</div>
         </template>
       </el-table-column>
     </el-table>

@@ -4,7 +4,7 @@
  * @Author: ywl
  * @Date: 2020-09-27 10:46:14
  * @LastEditors: ywl
- * @LastEditTime: 2021-01-14 15:42:00
+ * @LastEditTime: 2021-01-14 19:30:27
 -->
 <template>
   <IhPage class="text-left distribution-info">
@@ -298,7 +298,10 @@
             </el-form-item>
           </el-col>
           <el-col :span="12">
-            <el-form-item label="归档编号">
+            <el-form-item
+              label="归档编号"
+              required
+            >
               <el-input
                 v-model="ruleForm.archiveNo"
                 placeholder="请输入归档编号"
@@ -400,9 +403,11 @@ export default class DistributionDetail extends Vue {
       annexCreateListList: this.sealFile,
       distributionId: this.ruleForm.id,
     });
-    this.sealFile = [];
-    this.$router.go(0);
     this.$message.success("提交盖章版归档附件成功");
+    this.sealFile = [];
+    setTimeout(() => {
+      this.$router.go(0);
+    }, 1000);
   }
   private preview() {
     window.open(

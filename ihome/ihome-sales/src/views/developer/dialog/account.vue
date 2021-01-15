@@ -4,7 +4,7 @@
  * @Author: wwq
  * @Date: 2020-07-08 14:23:16
  * @LastEditors: wwq
- * @LastEditTime: 2020-12-15 14:35:26
+ * @LastEditTime: 2021-01-14 17:51:02
 --> 
 <template>
   <el-dialog
@@ -19,7 +19,7 @@
   >
     <el-form
       ref="form"
-      :model="form"
+      :model="info"
       :rules="rules"
       label-width="80px"
     >
@@ -30,7 +30,7 @@
             prop="name"
           >
             <el-input
-              v-model="form.name"
+              v-model="info.name"
               placeholder="账户姓名"
               maxlength="64"
             ></el-input>
@@ -45,7 +45,7 @@
             prop="number"
           >
             <el-input
-              v-model="form.number"
+              v-model="info.number"
               placeholder="账号"
               maxlength="32"
             ></el-input>
@@ -60,10 +60,16 @@
             prop="bank"
           >
             <el-input
-              v-model="form.bank"
+              v-model="info.bank"
               placeholder="开户银行"
-              maxlength="64"
-            ></el-input>
+              readonly
+            >
+              <el-button
+                slot="append"
+                icon="el-icon-search"
+                @click.native="dialogFormVisible = true"
+              ></el-button>
+            </el-input>
           </el-form-item>
         </el-col>
       </el-row>
@@ -76,7 +82,7 @@
           >
             <el-select
               style="width: 100%"
-              v-model="form.type"
+              v-model="info.type"
               clearable
               placeholder="账号类型"
             >
@@ -91,6 +97,16 @@
         </el-col>
       </el-row>
     </el-form>
+
+    <IhDialog
+      :show="dialogFormVisible"
+      desc="银行网点档案库"
+    >
+      <BankRecord
+        @cancel="() => (dialogFormVisible = false)"
+        @finish="handleFinish"
+      />
+    </IhDialog>
 
     <span
       slot="footer"
@@ -123,20 +139,24 @@ import { Component, Vue, Prop } from "vue-property-decorator";
 import { Form as ElForm } from "element-ui";
 import { noTrim } from "ihome-common/util/base/form-ui";
 import { NoRepeatHttp } from "ihome-common/util/aop/no-repeat-http";
+import BankRecord from "./bankRecord.vue";
 @Component({
-  components: {},
+  components: {
+    BankRecord,
+  },
 })
 export default class UserAdd extends Vue {
   @Prop({ default: null }) data: any;
   dialogVisible = true;
+  dialogFormVisible = false;
 
-  form: any = {
+  private info: any = {
     bank: null,
     name: null,
     number: null,
     type: null,
   };
-  rules: any = {
+  private rules: object = {
     name: [
       { validator: noTrim, trigger: "change" },
       { required: true, message: "请输入名称", trigger: "change" },
@@ -146,12 +166,14 @@ export default class UserAdd extends Vue {
       { required: true, message: "请输入账号", trigger: "change" },
       { validator: isNumberOrStrikethrough, trigger: "change" },
     ],
-    bank: [
-      { validator: noTrim, trigger: "change" },
-      { required: true, message: "请输入开户银行", trigger: "change" },
-    ],
+    bank: [{ required: true, message: "请选择开户银行", trigger: "change" }],
     type: [{ required: true, message: "账号类型必选", trigger: "change" }],
   };
+
+  handleFinish(data: any) {
+    this.dialogFormVisible = false;
+    this.info.bank = data.branchName;
+  }
 
   cancel() {
     this.$emit("cancel", false);
@@ -162,14 +184,16 @@ export default class UserAdd extends Vue {
   @NoRepeatHttp()
   async submit(valid: any) {
     if (valid) {
-      this.$emit("finish", this.form);
+      this.$emit("finish", this.info);
     } else {
       console.log("error submit!!");
       return false;
     }
   }
   async created() {
-    this.form = { ...this.data };
+    if (Object.keys(this.data).length) {
+      this.info = this.data;
+    }
   }
 }
 </script>

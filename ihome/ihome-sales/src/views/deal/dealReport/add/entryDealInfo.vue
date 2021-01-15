@@ -604,6 +604,11 @@
                           <div>点数：{{scope.row.distributeAchievePoint}}</div>
                         </template>
                       </el-table-column>
+                      <el-table-column label="其他渠道费用" prop="otherChannelAmount" min-width="160">
+                        <template slot-scope="scope">
+                          <div>金额：{{scope.row.otherChannelAmount}}</div>
+                        </template>
+                      </el-table-column>
                     </el-table>
                   </div>
                   <el-input
@@ -1333,29 +1338,41 @@
 
     // 修改合同类型
     changeContType(value: any) {
-      if (value === 'DistriDeal') {
-        // 如果查询不到此房号的已成交报备信息，用户又选择分销成交
-        // this.postData.contType = this.tempContType ? (this as any).$tool.deepClone(this.tempContType) : '';
-        if (!this.baseInfoInDeal.hasRecord) {
-          this.$alert('系统查询不到此房号的已成交报备信息，请先维护报备信息！', '提示', {
-            confirmButtonText: '确定'
-          });
-        }
-      } else {
-        // 不是分销成交
-        // 1.清空数据
-        // 2.请求接口获取数据
-        let flag: any = false;
-        if (this.postData.receiveVO.length) {
-          // 判断收派金额数据是否选了收派套餐
-          flag = (this as any).$parent.hasReceivePackage(this.postData.receiveVO);
-        }
-        if (flag) {
-          // 如果已经选了，判断合同类型是否一样
-          if (value !== this.tempContType) {
-            // 不一样，要初始化收派套餐
-            this.postData.receiveVO = (this as any).$tool.deepClone(this.tempReceiveVO);
-          }
+      // if (value === 'DistriDeal') {
+      //   // 如果查询不到此房号的已成交报备信息，用户又选择分销成交
+      //   this.postData.contType = this.tempContType ? (this as any).$tool.deepClone(this.tempContType) : '';
+      //   if (!this.baseInfoInDeal.hasRecord) {
+      //     this.$alert('系统查询不到此房号的已成交报备信息，请先维护报备信息！', '提示', {
+      //       confirmButtonText: '确定'
+      //     });
+      //   }
+      // } else {
+      //   // 不是分销成交
+      //   // 1.清空数据
+      //   // 2.请求接口获取数据
+      //   let flag: any = false;
+      //   if (this.postData.receiveVO.length) {
+      //     // 判断收派金额数据是否选了收派套餐
+      //     flag = (this as any).$parent.hasReceivePackage(this.postData.receiveVO);
+      //   }
+      //   if (flag) {
+      //     // 如果已经选了，判断合同类型是否一样
+      //     if (value !== this.tempContType) {
+      //       // 不一样，要初始化收派套餐
+      //       this.postData.receiveVO = (this as any).$tool.deepClone(this.tempReceiveVO);
+      //     }
+      //   }
+      // }
+      let flag: any = false;
+      if (this.postData.receiveVO.length) {
+        // 判断收派金额数据是否选了收派套餐
+        flag = (this as any).$parent.hasReceivePackage(this.postData.receiveVO);
+      }
+      if (flag) {
+        // 如果已经选了，判断合同类型是否一样
+        if (value !== this.tempContType) {
+          // 不一样，要初始化收派套餐
+          this.postData.receiveVO = (this as any).$tool.deepClone(this.tempReceiveVO);
         }
       }
       this.tempContType = value;
