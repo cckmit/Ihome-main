@@ -107,6 +107,7 @@
                 clearable
                 value-key="id"
                 style="width: 70%"
+                :search-name="handler.name"
                 @changeOption="(data) => {handler = data}"
               >
                 <template v-slot="{ data }">
@@ -537,7 +538,10 @@ export default class Apply extends Vue {
   viewData: any = {};
   dropOption: any = [];
   channelData: any = null;
-  handler: any = null;
+  handler: any = {
+    name: null,
+    id: null,
+  };
   templateData: any = [];
   editData: any = {};
   info: any = {
@@ -798,7 +802,7 @@ export default class Apply extends Vue {
   async created() {
     await this.getDropDown();
     this.info.cycleId = Number(this.$route.query.id);
-    this.info.handlerId = (this.$root as any).userInfo.name;
+    this.info.handlerId = (this.$root as any).userInfo.id;
     this.handler = {
       name: (this.$root as any).userInfo.name,
       id: (this.$root as any).userInfo.id,
