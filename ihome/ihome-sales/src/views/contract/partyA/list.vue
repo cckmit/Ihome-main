@@ -4,7 +4,7 @@
  * @Author: ywl
  * @Date: 2020-09-25 11:53:51
  * @LastEditors: ywl
- * @LastEditTime: 2021-01-14 16:38:10
+ * @LastEditTime: 2021-01-16 09:04:57
 -->
 <template>
   <IhPage label-width="100px">
@@ -94,10 +94,11 @@
               </el-col> -->
               <el-col :span="8">
                 <el-form-item label="归属组织">
-                  <SelectOrganizationTree
-                    :orgId="queryPageParameters.organizationId"
-                    @callback="(id) => (queryPageParameters.organizationId = id)"
-                  />
+                  <IhSelectPageDivision
+                    v-model="queryPageParameters.organizationId"
+                    placeholder="请选择归属组织"
+                    clearable
+                  ></IhSelectPageDivision>
                 </el-form-item>
               </el-col>
             </el-row>
@@ -389,8 +390,6 @@
 <script lang="ts">
 import { Component, Vue } from "vue-property-decorator";
 import PaginationMixin from "@/mixins/pagination";
-import SelectOrganizationTree from "@/components/SelectOrganizationTree.vue";
-import SelectPageByProject from "@/components/SelectPageByProject.vue";
 import axios from "axios";
 import { getToken } from "ihome-common/util/cookies";
 import {
@@ -400,7 +399,6 @@ import {
 } from "@/api/contract/index";
 
 @Component({
-  components: { SelectOrganizationTree, SelectPageByProject },
   mixins: [PaginationMixin],
 })
 export default class PartyAList extends Vue {
