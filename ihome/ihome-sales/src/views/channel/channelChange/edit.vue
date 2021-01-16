@@ -4,7 +4,7 @@
  * @Author: ywl
  * @Date: 2020-09-16 14:05:21
  * @LastEditors: ywl
- * @LastEditTime: 2020-12-16 16:24:01
+ * @LastEditTime: 2021-01-15 21:24:12
 -->
 <template>
   <IhPage>
@@ -407,8 +407,23 @@ import {
 import {
   get_channelChange_get__id,
   post_channelChange_edit,
+  get_channel_checkSetupTime,
 } from "@/api/channel/index";
 import BankDialog from "./dialog/bankDialog.vue";
+
+async function dataChange(rule: any, value: any, callback: any) {
+  try {
+    let flag = await get_channel_checkSetupTime({ setupTime: value });
+    if (flag) {
+      callback();
+    } else {
+      callback(new Error("成立时间必须大于三个月"));
+    }
+  } catch (error) {
+    callback();
+    console.log(error);
+  }
+}
 
 @Component({
   components: {
@@ -489,6 +504,7 @@ export default class ModifyThe extends Vue {
     ],
     setupTime: [
       { required: true, message: "请输入成立日期", trigger: "change" },
+      { validator: dataChange, trigger: "change" },
     ],
     capital: [
       { required: true, message: "请输入注册资本", trigger: "change" },

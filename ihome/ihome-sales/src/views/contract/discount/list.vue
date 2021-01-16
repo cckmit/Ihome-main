@@ -4,7 +4,7 @@
  * @Author: ywl
  * @Date: 2020-09-27 16:27:36
  * @LastEditors: ywl
- * @LastEditTime: 2021-01-15 19:01:13
+ * @LastEditTime: 2021-01-16 09:05:50
 -->
 <template>
   <IhPage label-width="80px">
@@ -453,6 +453,7 @@ export default class DiscountList extends Vue {
       roomNumberId: null,
       notificationTypes: null,
       buyUnit: null,
+      templateType: null,
     });
     this.timeList = [];
   }
