@@ -4,7 +4,7 @@
  * @Author: ywl
  * @Date: 2020-12-08 17:45:05
  * @LastEditors: ywl
- * @LastEditTime: 2020-12-17 16:25:25
+ * @LastEditTime: 2021-01-16 18:21:50
 -->
 <template>
   <IhPage label-width="80px">
@@ -114,10 +114,22 @@
           type="info"
           @click="reset()"
         >重置</el-button>
-        <el-button @click="handleAutoAll()">批量自动开票</el-button>
-        <el-button @click="handleHCByAuto()">批量自动红冲</el-button>
-        <el-button @click="handleHCByHandmade()">批量手工红冲</el-button>
-        <el-button @click="handleDownload()">批量下载发票</el-button>
+        <el-button
+          @click="handleAutoAll()"
+          v-has="'B.SALES.FINANCE.INVOICELIST.ALLAUTOINVOICE'"
+        >批量自动开票</el-button>
+        <el-button
+          @click="handleHCByAuto()"
+          v-has="'B.SALES.FINANCE.INVOICELIST.ALLAUTORED'"
+        >批量自动红冲</el-button>
+        <el-button
+          @click="handleHCByHandmade()"
+          v-has="'B.SALES.FINANCE.INVOICELIST.ALLHANDRED'"
+        >批量手工红冲</el-button>
+        <el-button
+          @click="handleDownload()"
+          v-has="'B.SALES.FINANCE.INVOICELIST.ALLDOWNLOAD'"
+        >批量下载发票</el-button>
       </el-row>
     </template>
     <template v-slot:table>
@@ -216,12 +228,17 @@
                 <el-dropdown-item
                   @click.native.prevent="handleAutoItem(row)"
                   :disabled="row.status === 'Done'"
+                  v-has="'B.SALES.FINANCE.INVOICELIST.AUTOINVOICE'"
                 >自动开票</el-dropdown-item>
                 <el-dropdown-item
                   :disabled="row.status === 'Done'"
                   @click.native.prevent="handleHand(row)"
+                  v-has="'B.SALES.FINANCE.INVOICELIST.HANDINVOICE'"
                 >手工开票</el-dropdown-item>
-                <el-dropdown-item @click.native.prevent="downloadFile([row.id])">下载发票</el-dropdown-item>
+                <el-dropdown-item
+                  @click.native.prevent="downloadFile([row.id])"
+                  v-has="'B.SALES.FINANCE.INVOICELIST.DOWNLOAD'"
+                >下载发票</el-dropdown-item>
               </el-dropdown-menu>
             </el-dropdown>
           </template>

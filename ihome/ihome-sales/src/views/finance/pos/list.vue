@@ -4,7 +4,7 @@
  * @Author: ywl
  * @Date: 2020-12-01 10:39:24
  * @LastEditors: ywl
- * @LastEditTime: 2020-12-31 17:29:36
+ * @LastEditTime: 2021-01-16 18:26:51
 -->
 <template>
   <IhPage label-width="90px">
@@ -126,12 +126,17 @@
         <el-button
           type="success"
           @click="handleAdd()"
+          v-has="'B.SALES.FINANCE.POSLIST.ADD'"
         >入库</el-button>
         <el-button
           type="success"
           @click="importVisble = true"
+          v-has="'B.SALES.FINANCE.POSLIST.IMPORTADD'"
         >入库导入</el-button>
-        <el-button @click="revoke()">撤机</el-button>
+        <el-button
+          @click="revoke()"
+          v-has="'B.SALES.FINANCE.POSLIST.BACKOUT'"
+        >撤机</el-button>
         <el-link
           type="primary"
           class="float-right margin-right-40"
@@ -225,10 +230,12 @@
                 <el-dropdown-item
                   :class="{'is-disabled': row.status !== 'Stop'}"
                   @click.native.prevent="remove(row)"
+                  v-has="'B.SALES.FINANCE.POSLIST.REMOVE'"
                 >删除</el-dropdown-item>
                 <el-dropdown-item
                   :class="{'is-disabled': row.status !== 'CentralStock' && row.status !== 'BranchStock'}"
                   @click.native.prevent="handleEdit(row)"
+                  v-has="'B.SALES.FINANCE.POSLIST.EDIT'"
                 >修改</el-dropdown-item>
               </el-dropdown-menu>
             </el-dropdown>

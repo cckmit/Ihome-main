@@ -4,7 +4,7 @@
  * @Author: ywl
  * @Date: 2020-12-01 10:38:45
  * @LastEditors: ywl
- * @LastEditTime: 2020-12-17 16:26:00
+ * @LastEditTime: 2021-01-16 18:23:45
 -->
 <template>
   <IhPage label-width="100px">
@@ -59,13 +59,14 @@
           @click="search()"
         >查询</el-button>
         <el-button
+          type="success"
+          @click="handleAdd()"
+          v-has="'B.SALES.FINANCE.INVOICETAXLIST.ADD'"
+        >添加</el-button>
+        <el-button
           type="info"
           @click="reset()"
         >重置</el-button>
-        <el-button
-          type="success"
-          @click="handleAdd()"
-        >添加</el-button>
       </el-row>
     </template>
     <template v-slot:table>
@@ -124,10 +125,12 @@
               type="primary"
               class="margin-right-10"
               @click="handleEdit(row)"
+              v-has="'B.SALES.FINANCE.INVOICETAXLIST.EDIT'"
             >修改</el-link>
             <el-link
               type="danger"
               @click="remove(row)"
+              v-has="'B.SALES.FINANCE.INVOICETAXLIST.REMOVE'"
             >删除</el-link>
           </template>
         </el-table-column>

@@ -4,7 +4,7 @@
  * @Author: ywl
  * @Date: 2020-12-08 21:04:03
  * @LastEditors: ywl
- * @LastEditTime: 2020-12-23 17:14:50
+ * @LastEditTime: 2021-01-16 10:24:24
 -->
 <template>
   <el-dialog
@@ -147,7 +147,7 @@
               @click="handleAdd()"
             ></i>
             <i
-              :class="['add-icon', {'el-icon-remove-outline': n !== 0}]"
+              :class="['add-icon', {'el-icon-circle-close': n !== 0}]"
               @click="handleRemove(n)"
             ></i>
           </el-form-item>

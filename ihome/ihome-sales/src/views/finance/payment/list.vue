@@ -4,7 +4,7 @@
  * @Author: ywl
  * @Date: 2020-12-09 19:24:59
  * @LastEditors: ywl
- * @LastEditTime: 2020-12-30 11:47:07
+ * @LastEditTime: 2021-01-16 18:25:31
 -->
 <template>
   <IhPage label-width="100px">
@@ -256,7 +256,10 @@
           type="info"
           @click="reset()"
         >重置</el-button>
-        <el-button @click="batchRelieve()">批量解除关联</el-button>
+        <el-button
+          @click="batchRelieve()"
+          v-has="'B.SALES.FINANCE.PAYMENTLIST.ALLRELIEVE'"
+        >批量解除关联</el-button>
         <el-link
           type="primary"
           class="float-right margin-right-40"
@@ -392,18 +395,22 @@
                 <el-dropdown-item
                   :class="{'ih-data-disabled': row.status !== 'NotCheck'}"
                   @click.native.prevent="checkPay(row)"
+                  v-has="'B.SALES.FINANCE.PAYMENTLIST.ACCOUNTCHECK'"
                 >对账</el-dropdown-item>
                 <el-dropdown-item
                   :class="{'ih-data-disabled': row.status !== 'NotPaid'}"
                   @click.native.prevent="remove(row)"
+                  v-has="'B.SALES.FINANCE.PAYMENTLIST.REMOVE'"
                 >删除</el-dropdown-item>
                 <el-dropdown-item
                   :class="{'ih-data-disabled': row.status !== 'Paid'}"
                   @click.native.prevent="handleRele(row)"
+                  v-has="'B.SALES.FINANCE.PAYMENTLIST.RELEVANCE'"
                 >关联成交</el-dropdown-item>
                 <el-dropdown-item
                   :class="{'ih-data-disabled': row.status !== 'Paid'}"
                   @click.native.prevent="relieve(row)"
+                  v-has="'B.SALES.FINANCE.PAYMENTLIST.RELIEVE'"
                 >解除关联</el-dropdown-item>
               </el-dropdown-menu>
             </el-dropdown>
