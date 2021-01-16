@@ -28,20 +28,20 @@
           </el-col>
           <el-col :span="8">
             <el-form-item label="项目名称">
-              <el-input
-                v-model="queryPageParameters.proName"
-                placeholder="请输入项目名称"
+              <IhSelectPageByProject
+                v-model="queryPageParameters.proId"
+                placeholder="请选择项目名称"
                 clearable
-              ></el-input>
+              ></IhSelectPageByProject>
             </el-form-item>
           </el-col>
           <el-col :span="8">
             <el-form-item label="周期名称">
-              <el-input
-                v-model="queryPageParameters.termName"
-                placeholder="请输入周期名称"
+              <IhSelectPageByCycle
+                v-model="queryPageParameters.termId"
+                placeholder="请选择周期名称"
                 clearable
-              ></el-input>
+              ></IhSelectPageByCycle>
             </el-form-item>
           </el-col>
           <el-col :span="8">
@@ -163,8 +163,8 @@ import {getToken} from "ihome-common/util/cookies";
 export default class DetailsList extends Vue {
   queryPageParameters: any = {
     detailsType: 'All',
-    proName: null,
-    termName: null,
+    proId: null,
+    termId: null,
     timeList: [],
     produceType: null,
     useType: null,
@@ -243,8 +243,8 @@ export default class DetailsList extends Vue {
     this.queryPageParameters.produceType = null;
     this.queryPageParameters.useType = null;
     Object.assign(this.queryPageParameters, {
-      proName: null,
-      termName: null,
+      proId: null,
+      termId: null,
       timeList: [],
       produceType: null,
       useType: null,
@@ -255,8 +255,8 @@ export default class DetailsList extends Vue {
   reset() {
     Object.assign(this.queryPageParameters, {
       detailsType: 'All',
-      proName: null,
-      termName: null,
+      proId: null,
+      termId: null,
       timeList: [],
       produceType: null,
       useType: null,

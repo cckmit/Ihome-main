@@ -15,29 +15,27 @@
         <el-row>
           <el-col :span="8">
             <el-form-item label="组织">
-              <el-input
-                v-model="queryPageParameters.org"
-                placeholder="请输入组织"
-                clearable
-              ></el-input>
+              <SelectOrganizationTree
+                :orgId="queryPageParameters.organizationId"
+                @callback="(id) => (queryPageParameters.organizationId = id)"/>
             </el-form-item>
           </el-col>
           <el-col :span="8">
             <el-form-item label="项目名称">
-              <el-input
-                v-model="queryPageParameters.proName"
-                placeholder="请输入项目名称"
+              <IhSelectPageByProject
+                v-model="queryPageParameters.proId"
+                placeholder="请选择项目名称"
                 clearable
-              ></el-input>
+              ></IhSelectPageByProject>
             </el-form-item>
           </el-col>
           <el-col :span="8">
             <el-form-item label="周期名称">
-              <el-input
-                v-model="queryPageParameters.termName"
-                placeholder="请输入周期名称"
+              <IhSelectPageByCycle
+                v-model="queryPageParameters.termId"
+                placeholder="请选择周期名称"
                 clearable
-              ></el-input>
+              ></IhSelectPageByCycle>
             </el-form-item>
           </el-col>
         </el-row>
@@ -99,9 +97,9 @@ import {getToken} from "ihome-common/util/cookies";
 })
 export default class SummaryList extends Vue {
   queryPageParameters: any = {
-    org: null,
-    proName: null,
-    termName: null
+    organizationId: null,
+    proId: null,
+    termId: null
   };
   resPageInfo: any = {
     total: null,
@@ -148,9 +146,9 @@ export default class SummaryList extends Vue {
 
   reset() {
     Object.assign(this.queryPageParameters, {
-      org: null,
-      proName: null,
-      termName: null
+      organizationId: null,
+      proId: null,
+      termId: null
     });
   }
 
