@@ -4,7 +4,7 @@
  * @Author: wwq
  * @Date: 2020-11-27 17:21:01
  * @LastEditors: wwq
- * @LastEditTime: 2021-01-06 17:51:20
+ * @LastEditTime: 2021-01-16 14:06:50
 -->
 <template>
   <div class="text-left">
@@ -181,7 +181,12 @@ export default class ReportedRules extends Vue {
   async getInfo() {
     let id = this.$route.query.id;
     const res = await get_customerReportRule_get__termId({ termId: id });
-    this.info = { ...res, developersRules: "以合同为准。" };
+    this.info = {
+      ...res,
+      developersRules: res.developersRules
+        ? res.developersRules
+        : "以合同为准。",
+    };
   }
 
   async created() {

@@ -98,7 +98,7 @@
                 <el-option
                   v-for="item in channelAccountOptions"
                   :key="item.id"
-                  :label="item.accountName"
+                  :label="item.accountNo"
                   :value="item.id"
                 ></el-option>
               </el-select>
