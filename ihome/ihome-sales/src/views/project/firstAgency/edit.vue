@@ -4,7 +4,7 @@
  * @Author: wwq
  * @Date: 2020-11-03 18:39:23
  * @LastEditors: wwq
- * @LastEditTime: 2020-12-16 17:15:59
+ * @LastEditTime: 2021-01-16 18:53:30
 -->
 <template>
   <IhPage>
@@ -367,6 +367,7 @@ import { Form as ElForm } from "element-ui";
 import {
   get_firstAgencyCompany_get__agencyId,
   post_firstAgencyCompany_save,
+  post_firstAgencyCompany_commit__agencyId,
 } from "@/api/project/index";
 import BankDialog from "./dialog/bankDialog.vue";
 import { phoneValidator } from "ihome-common/util/base/form-ui";
@@ -547,8 +548,12 @@ export default class FirstAgencyEdit extends Vue {
       }
     });
   }
-  submit() {
-    this.$message.warning("接口未提供,功能未实现");
+  async submit() {
+    await post_firstAgencyCompany_commit__agencyId({
+      agencyId: this.$route.query.id,
+    });
+    this.$message.success("提交成功");
+    this.$goto({ path: "/firstAgency/list" });
   }
   /**
    * @description: 新添加数据--银行账号信息

@@ -4,7 +4,7 @@
  * @Author: wwq
  * @Date: 2020-11-27 17:29:09
  * @LastEditors: wwq
- * @LastEditTime: 2021-01-14 15:11:42
+ * @LastEditTime: 2021-01-16 18:57:56
 -->
 <template>
   <div>
@@ -110,7 +110,7 @@
         </el-table-column>
         <el-table-column
           label="备注"
-          align="remark"
+          prop="remark"
         >
         </el-table-column>
       </el-table>
@@ -186,6 +186,7 @@ export default class LogOA extends Vue {
       const item = await get_logAndOA_get__termId({
         termId: this.termId,
       });
+      console.log(item);
       this.info = { ...item };
     }
   }

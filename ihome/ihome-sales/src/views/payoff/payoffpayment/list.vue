@@ -4,7 +4,7 @@
  * @Author: wwq
  * @Date: 2021-01-15 10:45:53
  * @LastEditors: wwq
- * @LastEditTime: 2021-01-16 14:50:18
+ * @LastEditTime: 2021-01-16 18:28:00
 -->
 <template>
   <IhPage label-width="100px">
@@ -120,6 +120,7 @@
           type="success"
           v-if="tabsValue === 'PendingPayment'"
           @click="mergePush(selection, 'merge')"
+          v-has="'B.SALES.PAYOFF.PAYOFFPAYMENT.HBFKTS'"
         >合并付款推送</el-button>
       </el-row>
     </template>
@@ -129,7 +130,7 @@
       <el-tabs
         v-model="tabsValue"
         type="border-card"
-        @tab-click="handleClick(tabsValue)"
+        @tab-click="search"
       >
         <template v-for="(i, n) in tabsList">
           <el-tab-pane
@@ -260,23 +261,32 @@
                   <el-link
                     type="primary"
                     v-if="['PendingPayment'].includes(row.paymentStatus) && row.settlementMethod === 'Centralization'"
+                    @click="splitChange(row)"
+                    v-has="'B.SALES.PAYOFF.PAYOFFPAYMENT.CFLB'"
                   >拆分</el-link>
                   <el-link
                     type="primary"
                     v-if="['PendingPayment'].includes(row.paymentStatus) && row.settlementMethod === 'Centralization'"
                     @click="mergePush(row, 'single')"
+                    v-has="'B.SALES.PAYOFF.PAYOFFPAYMENT.FKTZ'"
                   >付款推送</el-link>
                   <el-link
                     type="primary"
-                    v-if="row.settlementMethod === 'OnlineBanking'"
+                    v-if="['PendingPayment'].includes(row.paymentStatus) && row.settlementMethod === 'OnlineBanking'"
+                    @click="setting(row)"
+                    v-has="'B.SALES.PAYOFF.PAYOFFPAYMENT.SZYFK'"
                   >设置已付款</el-link>
                   <el-link
                     type="primary"
                     v-if="['PendingPayment'].includes(row.paymentStatus)"
+                    @click="editChange(row)"
+                    v-has="'B.SALES.PAYOFF.PAYOFFPAYMENT.EDIT'"
                   >修改</el-link>
                   <el-link
                     type="primary"
                     v-if="['PaymentFail', 'TicketRefunded'].includes(row.paymentStatus)"
+                    v-has="'B.SALES.PAYOFF.PAYOFFPAYMENT.TBZT'"
+                    @click="synchronization(row)"
                   >同步状态</el-link>
                   <span v-if="['Paying', 'PaymentSuccess'].includes(row.paymentStatus)">---</span>
                 </template>
@@ -298,19 +308,52 @@
         :total="resPageInfo.total"
       ></el-pagination>
     </template>
+    <ih-dialog :show="dialogFormVisible">
+      <Split
+        :data="splitData"
+        @cancel="() => (dialogFormVisible = false)"
+        @finish="(data) => splitFinish(data)"
+      />
+    </ih-dialog>
+    <ih-dialog :show="editdialogFormVisible">
+      <Edit
+        :data="editData"
+        @cancel="() => (editdialogFormVisible = false)"
+        @finish="(data) => editFinish(data)"
+      />
+    </ih-dialog>
+    <ih-dialog :show="setdialogFormVisible">
+      <Setting
+        :data="setData"
+        @cancel="() => (setdialogFormVisible = false)"
+        @finish="(data) => setFinish(data)"
+      />
+    </ih-dialog>
   </IhPage>
 </template>
 
 <script lang="ts">
 import { Component, Vue } from "vue-property-decorator";
 import PaginationMixin from "../../../mixins/pagination";
+import Split from "./dialog/split.vue";
+import Edit from "./dialog/edit.vue";
+import Setting from "./dialog/setting.vue";
+import { post_payDetail_split } from "@/api/payoff/index";
 import {
   post_payDetail_getList,
   post_payDetail_push,
+  post_payDetail_update,
+  get_processRecord_oa_flow_ids,
+  post_payDetail_change_status,
 } from "@/api/payoff/index";
 
 @Component({
   mixins: [PaginationMixin],
+  components: {
+    Split,
+    Edit,
+    Setting,
+  },
 })
 export default class ReturnConfirmList extends Vue {
   queryPageParameters: any = {
@@ -330,6 +373,12 @@ export default class ReturnConfirmList extends Vue {
     ],
   };
   tabsValue: any = "all";
+  splitData: any = {};
+  editData: any = {};
+  setData: any = {};
+  dialogFormVisible: any = false;
+  editdialogFormVisible: any = false;
+  setdialogFormVisible: any = false;
   resPageInfo: any = {
     total: null,
     list: [],
@@ -381,22 +430,23 @@ export default class ReturnConfirmList extends Vue {
     this.getListMixin();
   }
 
-  handleClick(val: any) {
-    if (val !== "all") {
-      this.showTable = this.resPageInfo.list.filter(
-        (v: any) => v.paymentStatus === val
-      );
-    } else {
-      this.showTable = this.resPageInfo.list;
-    }
-  }
-
   search() {
     if (this.timeList.length) {
       this.queryPageParameters.beginDate = this.timeList[0];
       this.queryPageParameters.endDate = this.timeList[1];
     }
     this.queryPageParameters.pageNum = 1;
+    if (this.tabsValue !== "all") {
+      this.queryPageParameters.paymentStatusList = [this.tabsValue];
+    } else {
+      this.queryPageParameters.paymentStatusList = [
+        "PendingPayment",
+        "Paying",
+        "PaymentSuccess",
+        "PaymentFail",
+        "TicketRefunded",
+      ];
+    }
     this.getListMixin();
   }
 
@@ -443,6 +493,58 @@ export default class ReturnConfirmList extends Vue {
       message: "付款推送成功",
       position: "bottom-right",
     });
+  }
+
+  // 拆分
+  splitChange(data: any) {
+    this.splitData = { ...data };
+    this.dialogFormVisible = true;
+  }
+
+  // 拆分成功
+  async splitFinish(data: any) {
+    await post_payDetail_split(data);
+    this.$message.success("拆分成功");
+    this.search();
+    this.dialogFormVisible = false;
+  }
+
+  // 修改
+  editChange(data: any) {
+    this.editData = { ...data };
+    this.editdialogFormVisible = true;
+  }
+
+  // 修改成功
+  async editFinish(data: any) {
+    await post_payDetail_update(data);
+    this.$message.success("修改成功");
+    this.search();
+    this.editdialogFormVisible = false;
+  }
+
+  // 同步状态
+  async synchronization(data: any) {
+    await get_processRecord_oa_flow_ids({
+      paymentCode: data.paymentCode,
+    });
+    this.$message.success("同步成功");
+    this.search();
+  }
+
+  // 设置已付款
+  setting(data: any) {
+    this.setData.id = data.id;
+    this.setData.paymentDate = data.paymentDate;
+    this.setdialogFormVisible = true;
+  }
+
+  // 设置已付款完成
+  async setFinish(data: any) {
+    await post_payDetail_change_status(data);
+    this.$message.success("设置成功");
+    this.search();
+    this.setdialogFormVisible = false;
   }
 }
 </script>
