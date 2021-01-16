@@ -3,8 +3,8 @@
  * @version: 
  * @Author: wwq
  * @Date: 2020-10-15 16:02:03
- * @LastEditors: wwq
- * @LastEditTime: 2021-01-15 17:58:13
+ * @LastEditors: ywl
+ * @LastEditTime: 2021-01-15 21:17:42
 -->
 <template>
   <IhPage>
@@ -298,7 +298,6 @@ import {
   post_channelGradeChange_add,
   post_channelGrade_edit,
   post_channelGradeStandard_getAllByCityCodeAndChannelGrade,
-  post_channelGradeChange_changeCheck,
 } from "../../../api/channel/index";
 
 import { Form as ElForm } from "element-ui";
@@ -378,14 +377,22 @@ export default class ChannelRates extends Vue {
     }
     const dictList = newDict.concat(ChannelGrade);
     this.fileListType = dictList.map((v: any) => {
+      let arr: any = [];
+      data
+        .filter((j: any) => j.type === v.code)
+        .forEach((h: any) => {
+          if (h.fileId) {
+            arr.push({
+              ...h,
+              name: h.fileName,
+            });
+          } else {
+            arr = [];
+          }
+        });
       return {
         ...v,
-        fileList: data
-          .filter((j: any) => j.type === v.code)
-          .map((h: any) => ({
-            ...h,
-            name: h.fileName,
-          })),
+        fileList: arr,
       };
     });
     let obj: any = {};
@@ -502,14 +509,14 @@ export default class ChannelRates extends Vue {
               ];
               this.resPageInfo.changeReason = this.changeReason;
               try {
-                let flag = await post_channelGradeChange_changeCheck({
-                  oldGradeId: this.resPageInfo.oldGradeId,
-                });
-                if (flag) {
-                  await post_channelGradeChange_add(this.resPageInfo);
-                } else {
-                  this.$message.warning("渠道等级变更中, 请不要提交重复变更");
-                }
+                // let flag = await post_channelGradeChange_changeCheck({
+                //   oldGradeId: this.resPageInfo.oldGradeId,
+                // });
+                // if (flag) {
+                await post_channelGradeChange_add(this.resPageInfo);
+                // } else {
+                //   this.$message.warning("渠道等级变更中, 请不要提交重复变更");
+                // }
               } catch (error) {
                 console.log(error);
               }

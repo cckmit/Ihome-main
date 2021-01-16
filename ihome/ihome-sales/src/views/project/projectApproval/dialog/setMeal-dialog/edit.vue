@@ -4,7 +4,7 @@
  * @Author: wwq
  * @Date: 2020-12-04 09:40:47
  * @LastEditors: wwq
- * @LastEditTime: 2021-01-15 17:57:23
+ * @LastEditTime: 2021-01-15 21:07:31
 -->
 <template>
   <el-dialog
@@ -314,7 +314,7 @@
                     金额:
                     <el-input
                       v-model="row.receivableAmout"
-                      v-digits="4"
+                      v-digits="2"
                       clearable
                       :disabled="item.exVoidService ? true: false"
                       style="width: 70%"
@@ -324,7 +324,7 @@
                     点数:
                     <el-input
                       v-model="row.receivablePoint"
-                      v-digits="4"
+                      v-digits="2"
                       clearable
                       :disabled="item.exVoidService ? true: false"
                       style="width: 70%"
@@ -343,7 +343,7 @@
                     <el-input
                       :disabled="(row.transactionEnum === 'Natural' || row.transactionEnum === 'SelfChannel') ? true : false"
                       v-model="row.sendAmount"
-                      v-digits="4"
+                      v-digits="2"
                       clearable
                       style="width: 70%"
                     />
@@ -353,7 +353,7 @@
                     <el-input
                       :disabled="(row.transactionEnum === 'Natural' || row.transactionEnum === 'SelfChannel') ? true : false"
                       v-model="row.sendPoint"
-                      v-digits="4"
+                      v-digits="2"
                       clearable
                       style="width: 70%"
                     />
@@ -370,7 +370,7 @@
                     金额:
                     <el-input
                       v-model="row.sendInAmount"
-                      v-digits="4"
+                      v-digits="2"
                       clearable
                       style="width: 70%"
                     />
@@ -379,7 +379,7 @@
                     点数:
                     <el-input
                       v-model="row.sendInPoint"
-                      v-digits="4"
+                      v-digits="2"
                       clearable
                       style="width: 70%"
                     />
@@ -396,7 +396,7 @@
                     金额:
                     <el-input
                       v-model="row.generalAchieveAmount"
-                      v-digits="4"
+                      v-digits="2"
                       clearable
                       :class="{'is-disabled': generalAchieveAmountDisabled(row)}"
                       style="width: 70%"
@@ -406,7 +406,7 @@
                     点数:
                     <el-input
                       v-model="row.generalAchievePoint"
-                      v-digits="4"
+                      v-digits="2"
                       clearable
                       :class="{'is-disabled': generalAchieveAmountDisabled(row)}"
                       style="width: 70%"
@@ -424,7 +424,7 @@
                     金额:
                     <el-input
                       v-model="row.distributeAchieveAmount"
-                      v-digits="4"
+                      v-digits="2"
                       clearable
                       :class="{'is-disabled': distributeAchieveAmountDisabled(row)}"
                       style="width: 70%"
@@ -434,7 +434,7 @@
                     点数:
                     <el-input
                       v-model="row.distributeAchievePoint"
-                      v-digits="4"
+                      v-digits="2"
                       clearable
                       :class="{'is-disabled': distributeAchieveAmountDisabled(row)}"
                       style="width: 70%"
@@ -452,7 +452,7 @@
                     金额:
                     <el-input
                       :value="otherChannelAmount(row)"
-                      v-digits="4"
+                      v-digits="2"
                       disabled
                       style="width: 70%"
                     />
@@ -548,7 +548,6 @@
                 <div class="title">代理费</div>
                 <el-select
                   v-model="item.partyCompanyId"
-                  clearable
                   placeholder="请选择"
                   @change="selectCompany(item.partyCompanyId, i)"
                 >
@@ -719,7 +718,7 @@
                     金额:
                     <el-input
                       v-model="row.receivableAmout"
-                      v-digits="4"
+                      v-digits="2"
                       clearable
                       style="width: 70%"
                     />
@@ -728,7 +727,7 @@
                     点数:
                     <el-input
                       v-model="row.receivablePoint"
-                      v-digits="4"
+                      v-digits="2"
                       clearable
                       style="width: 70%"
                     />
@@ -746,7 +745,7 @@
                     <el-input
                       :disabled="(row.transactionEnum === 'Natural' || row.transactionEnum === 'SelfChannel') ? true : false"
                       v-model="row.sendAmount"
-                      v-digits="4"
+                      v-digits="2"
                       clearable
                       style="width: 70%"
                     />
@@ -756,7 +755,7 @@
                     <el-input
                       :disabled="(row.transactionEnum === 'Natural' || row.transactionEnum === 'SelfChannel') ? true : false"
                       v-model="row.sendPoint"
-                      v-digits="4"
+                      v-digits="2"
                       clearable
                       style="width: 70%"
                     />
@@ -773,7 +772,7 @@
                     金额:
                     <el-input
                       v-model="row.sendInAmount"
-                      v-digits="4"
+                      v-digits="2"
                       clearable
                       style="width: 70%"
                     />
@@ -782,7 +781,7 @@
                     点数:
                     <el-input
                       v-model="row.sendInPoint"
-                      v-digits="4"
+                      v-digits="2"
                       clearable
                       style="width: 70%"
                     />
@@ -799,7 +798,7 @@
                     金额:
                     <el-input
                       v-model="row.generalAchieveAmount"
-                      v-digits="4"
+                      v-digits="2"
                       clearable
                       :class="{'is-disabled': generalAchieveAmountDisabled(row)}"
                       style="width: 70%"
@@ -809,7 +808,7 @@
                     点数:
                     <el-input
                       v-model="row.generalAchievePoint"
-                      v-digits="4"
+                      v-digits="2"
                       clearable
                       :class="{'is-disabled': generalAchieveAmountDisabled(row)}"
                       style="width: 70%"
@@ -827,7 +826,7 @@
                     金额:
                     <el-input
                       v-model="row.distributeAchieveAmount"
-                      v-digits="4"
+                      v-digits="2"
                       clearable
                       :class="{'is-disabled': distributeAchieveAmountDisabled(row)}"
                       style="width: 70%"
@@ -837,7 +836,7 @@
                     点数:
                     <el-input
                       v-model="row.distributeAchievePoint"
-                      v-digits="4"
+                      v-digits="2"
                       clearable
                       :class="{'is-disabled': distributeAchieveAmountDisabled(row)}"
                       style="width: 70%"

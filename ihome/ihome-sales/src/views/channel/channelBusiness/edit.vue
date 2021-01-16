@@ -4,7 +4,7 @@
  * @Author: ywl
  * @Date: 2020-09-16 14:05:21
  * @LastEditors: ywl
- * @LastEditTime: 2021-01-15 17:42:21
+ * @LastEditTime: 2021-01-15 20:30:23
 -->
 <template>
   <IhPage>
@@ -416,7 +416,6 @@ import {
   post_channel_edit,
   post_channelChange_add,
   get_channel_checkSetupTime,
-  post_channelChange_changeCheck,
 } from "@/api/channel/index";
 import BankDialog from "./dialog/bankDialog.vue";
 
@@ -654,22 +653,22 @@ export default class ModifyThe extends Vue {
               return;
             }
             try {
-              let flag = await post_channelChange_changeCheck({
+              // let flag = await post_channelChange_changeCheck({
+              //   oldChannelId: this.$route.query.id,
+              // });
+              // if (flag) {
+              await post_channelChange_add({
+                ...this.info,
+                operateType: type,
+                channelAttachmentChanges: [...this.info.channelAttachments],
+                channelPersonChanges: [{ ...this.channelPersonsData }],
+                channelBankChanges: this.info.channelBanks,
+                changeReason: this.changeReason,
                 oldChannelId: this.$route.query.id,
               });
-              if (flag) {
-                await post_channelChange_add({
-                  ...this.info,
-                  operateType: type,
-                  channelAttachmentChanges: [...this.info.channelAttachments],
-                  channelPersonChanges: [{ ...this.channelPersonsData }],
-                  channelBankChanges: this.info.channelBanks,
-                  changeReason: this.changeReason,
-                  oldChannelId: this.$route.query.id,
-                });
-              } else {
-                this.$message.warning("渠道变更中, 请不要提交重复变更");
-              }
+              // } else {
+              //   this.$message.warning("渠道变更中, 请不要提交重复变更");
+              // }
             } catch (error) {
               console.log(error);
             }

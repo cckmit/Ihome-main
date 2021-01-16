@@ -3,8 +3,8 @@
  * @version: 
  * @Author: wwq
  * @Date: 2020-08-13 11:40:10
- * @LastEditors: wwq
- * @LastEditTime: 2020-12-21 09:59:28
+ * @LastEditors: ywl
+ * @LastEditTime: 2021-01-15 20:54:29
 -->
 <template>
   <IhPage label-width="100px">
@@ -292,7 +292,7 @@
                 >退回起草</el-dropdown-item>
                 <el-dropdown-item
                   :class="{ 'ih-data-disabled': !changeButton(row) }"
-                  @click.native.prevent="routerTo(row, 'change')"
+                  @click.native.prevent="updateInfo(row)"
                   v-has="'B.SALES.CHANNEL.LEVELLIST.UPDATEINFO'"
                 >变更信息</el-dropdown-item>
               </el-dropdown-menu>
@@ -336,6 +336,7 @@ import {
   post_channelGrade_getList,
   post_channelGrade_delete__id,
   post_channelGrade_backToDraft__id,
+  get_channelGradeChange_changeCheck__oldGradeId,
 } from "../../../api/channel/index";
 import PaginationMixin from "../../../mixins/pagination";
 import UpdateUser from "./dialog/updateUser.vue";
@@ -416,6 +417,21 @@ export default class UserList extends Vue {
     return Approved && dangqian;
   }
 
+  async updateInfo(row: any) {
+    let flag = true;
+    try {
+      flag = await get_channelGradeChange_changeCheck__oldGradeId({
+        oldGradeId: row.id,
+      });
+    } catch (error) {
+      console.log(error);
+    }
+    if (!flag) {
+      this.routerTo(row, "change");
+    } else {
+      this.$message.warning("渠道等级变更中, 请不要提交重复变更");
+    }
+  }
   search() {
     this.queryPageParameters.province = this.provinceOption[0];
     this.queryPageParameters.city = this.provinceOption[1];

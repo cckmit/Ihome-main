@@ -1,6 +1,6 @@
 /* eslint-disable */
 /* 此脚本由swagger-ui的api-docs自动生成，请勿修改 */
-//2020-12-31 5:24:03 ├F10: PM┤
+//2021-1-15 8:41:29 ├F10: PM┤
 import { request } from '@/api/base'
 const basePath = "/sales-api/finance"
 /**新增收款账号在线支付信息*/
@@ -27,7 +27,7 @@ return await request.post< number,number> (basePath+'/bankAccount/add', d)
 export async function post_bankAccount_delete__id (d?: any) {
 return await request.post< number,number> (basePath+'/bankAccount/delete/{id}', d)
 }
-/**获取公司对应收款账户信息*/
+/**获取公司对应收款账户信息列表*/
 export async function get_bankAccount_get__companyId (d?: any) {
 return await request.get<BankAccountVO[],BankAccountVO[]>(basePath+'/bankAccount/get/{companyId}', { params: d })
 }
@@ -51,6 +51,10 @@ return await request.post< any,any> (basePath+'/bankAccount/getList', d)
 export async function post_bankAccount_update (d?: any) {
 return await request.post< number,number> (basePath+'/bankAccount/update', d)
 }
+/**切换为公司默认账号*/
+export async function post_bankAccount_updateFlag (d?: any) {
+return await request.post< number,number> (basePath+'/bankAccount/updateFlag', d)
+}
 /**删除银行网点*/
 export async function post_bankBranch_delete__id (d?: any) {
 return await request.post< number,number> (basePath+'/bankBranch/delete/{id}', d)
@@ -58,6 +62,10 @@ return await request.post< number,number> (basePath+'/bankBranch/delete/{id}', d
 /**查询银行网点详情*/
 export async function get_bankBranch_get__id (d?: any) {
 return await request.get<BankBranchVO,BankBranchVO>(basePath+'/bankBranch/get/{id}', { params: d })
+}
+/**查询银行网点详情根据银行账号*/
+export async function get_bankBranch_getByAccountNo__accountNo (d?: any) {
+return await request.get<BankBranchVO,BankBranchVO>(basePath+'/bankBranch/getByAccountNo/{accountNo}', { params: d })
 }
 /**查询银行网点信息列表数据*/
 export async function post_bankBranch_getList (d?: any) {
@@ -111,6 +119,10 @@ return await request.post< number,number> (basePath+'/invoice/handHCInvoicing', 
 export async function post_invoice_handInvoicing (d?: any) {
 return await request.post< number,number> (basePath+'/invoice/handInvoicing', d)
 }
+/**终止操作废除开票信息*/
+export async function post_invoice_invalid_businessNo__businessNo (d?: any) {
+return await request.post< number,number> (basePath+'/invoice/invalid/businessNo/{businessNo}', d)
+}
 /**(未实现)Excel导入开票基础数据*/
 export async function post_invoiceBase_importData (d?: any) {
 return await request.post< number,number> (basePath+'/invoiceBase/importData', d)
@@ -142,62 +154,6 @@ return await request.post< any,any> (basePath+'/invoiceConfig/getList', d)
 /**修改发票税率配置信息*/
 export async function post_invoiceConfig_update (d?: any) {
 return await request.post< number,number> (basePath+'/invoiceConfig/update', d)
-}
-/**(已实现)新增甲方开票信息数据*/
-export async function post_invoiceOld_add (d?: any) {
-return await request.post< string,string> (basePath+'/invoiceOld/add', d)
-}
-/**(已实现)航天自动红冲-可批量*/
-export async function post_invoiceOld_autoHongChong (d?: any) {
-return await request.post< string,string> (basePath+'/invoiceOld/autoHongChong', d)
-}
-/**(已实现)航天自动开正票-可批量*/
-export async function post_invoiceOld_autoKaiPiao (d?: any) {
-return await request.post< string,string> (basePath+'/invoiceOld/autoKaiPiao', d)
-}
-/**(已实现)下载发票文件-可批量*/
-export async function post_invoiceOld_downloadFile (d?: any) {
-return await request.post< string[],string[]> (basePath+'/invoiceOld/downloadFile', d)
-}
-/**(未实现)导出数据*/
-export async function post_invoiceOld_exportData (d?: any) {
-return await request.post< any,any> (basePath+'/invoiceOld/exportData', d)
-}
-/**[已实现]查询航天发票文件信息*/
-export async function post_invoiceOld_getHtFileInfo (d?: any) {
-return await request.post< InvoiceBillHtPdfInfo,InvoiceBillHtPdfInfo> (basePath+'/invoiceOld/getHtFileInfo', d)
-}
-/**(未实现)查询开票信息列表数据*/
-export async function post_invoiceOld_getList (d?: any) {
-return await request.post< any,any> (basePath+'/invoiceOld/getList', d)
-}
-/**(未实现)查询甲方正票信息列表数据*/
-export async function post_invoiceOld_getPartyAList (d?: any) {
-return await request.post< any,any> (basePath+'/invoiceOld/getPartyAList', d)
-}
-/**(未实现)查询甲方红票信息列表数据*/
-export async function post_invoiceOld_getPartyARedList (d?: any) {
-return await request.post< any,any> (basePath+'/invoiceOld/getPartyARedList', d)
-}
-/**(已实现)Excel导入历史发票信息*/
-export async function post_invoiceOld_importData (d?: any) {
-return await request.post< number,number> (basePath+'/invoiceOld/importData', d)
-}
-/**(已实现)手动开票*/
-export async function post_invoiceOld_manualKaiPiao (d?: any) {
-return await request.post< string,string> (basePath+'/invoiceOld/manualKaiPiao', d)
-}
-/**(实现中)甲方手动开票*/
-export async function post_invoiceOld_partyAManualKaiPiao (d?: any) {
-return await request.post< string,string> (basePath+'/invoiceOld/partyAManualKaiPiao', d)
-}
-/**(实现中)查询开票详情*/
-export async function post_invoiceOld_queryInvoiceInfo (d?: any) {
-return await request.post< InvoiceInfoVO,InvoiceInfoVO> (basePath+'/invoiceOld/queryInvoiceInfo', d)
-}
-/**测试航天开票*/
-export async function post_invoiceOld_test (d?: any) {
-return await request.post< number,number> (basePath+'/invoiceOld/test', d)
 }
 /**保存在线支付银联账单*/
 export async function post_payBill_addOnlinePayBill (d?: any) {
@@ -267,6 +223,10 @@ return await request.get<PaymentBankInfoVO,PaymentBankInfoVO>(basePath+'/payment
 export async function get_payment_getBusinessId__businessId (d?: any) {
 return await request.get<number,number>(basePath+'/payment/getBusinessId/{businessId}', { params: d })
 }
+/**根据微信小程序订单号查询付款记录*/
+export async function get_payment_getByWxPayOrder__unionPayWeChatNo (d?: any) {
+return await request.get<Payment,Payment>(basePath+'/payment/getByWxPayOrder/{unionPayWeChatNo}', { params: d })
+}
 /**查询一条付款记录详情*/
 export async function get_payment_getDetail__id (d?: any) {
 return await request.get<PaymentPCDetailVO,PaymentPCDetailVO>(basePath+'/payment/getDetail/{id}', { params: d })
@@ -291,6 +251,10 @@ return await request.get<any,any>(basePath+'/payment/getPayStatus/{id}', { param
 export async function get_payment_getPaymentQRCodeInfo__id (d?: any) {
 return await request.get<PaymentQRCodeVO,PaymentQRCodeVO>(basePath+'/payment/getPaymentQRCodeInfo/{id}', { params: d })
 }
+/**根据付款编号查询在线支付信息列表*/
+export async function get_payment_getRefundInfo__businessId (d?: any) {
+return await request.get<PaymentRefundVO,PaymentRefundVO>(basePath+'/payment/getRefundInfo/{businessId}', { params: d })
+}
 /**根据付款编号查询在线支付信息*/
 export async function get_payment_getSecretKeyByPayNo__payNo (d?: any) {
 return await request.get<AccountOnlinePayVO,AccountOnlinePayVO>(basePath+'/payment/getSecretKeyByPayNo/{payNo}', { params: d })
@@ -303,6 +267,10 @@ return await request.post< PaymentOnlinePayParamVO,PaymentOnlinePayParamVO> (bas
 export async function post_payment_getUnionPayUrl (d?: any) {
 return await request.post< string,string> (basePath+'/payment/getUnionPayUrl', d)
 }
+/**获取小程序支付JSAPI*/
+export async function get_payment_getWeChatJsApi__id (d?: any) {
+return await request.get<string,string>(basePath+'/payment/getWeChatJsApi/{id}', { params: d })
+}
 /**index*/
 export async function get_payment_index__id (d?: any) {
 return await request.get<object,object>(basePath+'/payment/index/{id}', { params: d })
@@ -310,10 +278,6 @@ return await request.get<object,object>(basePath+'/payment/index/{id}', { params
 /**在线支付支付成功 业务处理*/
 export async function post_payment_onlinePayBusinessDeal (d?: any) {
 return await request.post< number,number> (basePath+'/payment/onlinePayBusinessDeal', d)
-}
-/**电子回单签署回调*/
-export async function post_payment_payment_signCallback (d?: any) {
-return await request.post< boolean,boolean> (basePath+'/payment/payment/signCallback', d)
 }
 /**POS机支付 业务处理*/
 export async function post_payment_posPayBusinessDeal (d?: any) {
@@ -327,9 +291,21 @@ return await request.post< string,string> (basePath+'/payment/queryOnlinePayTrad
 export async function post_payment_relevanceDeal (d?: any) {
 return await request.post< number,number> (basePath+'/payment/relevanceDeal', d)
 }
+/**电子回单签署回调*/
+export async function post_payment_signCallback (d?: any) {
+return await request.post< boolean,boolean> (basePath+'/payment/signCallback', d)
+}
+/**查询并更新银联微信小程序支付状态*/
+export async function get_payment_syncWXPayStatus__id (d?: any) {
+return await request.get<number,number>(basePath+'/payment/syncWXPayStatus/{id}', { params: d })
+}
+/**定时任务查询并更新微信支付订单状态*/
+export async function get_payment_taskSyncWXPayStatus (d?: any) {
+return await request.get<number,number>(basePath+'/payment/taskSyncWXPayStatus', { params: d })
+}
 /**修改付款记录*/
 export async function post_payment_update (d?: any) {
-return await request.post< number,number> (basePath+'/payment/update', d)
+return await request.post< object,object> (basePath+'/payment/update', d)
 }
 /**删除草稿状态的POS机事项*/
 export async function post_posApplyItem_delete__id (d?: any) {
@@ -470,8 +446,14 @@ export interface BankAccountAllVO {
 accountName: string;
 /**账号*/
 accountNo: string;
+/**开户银行*/
+branchName: string;
+/**联行号*/
+branchNo: string;
 /**公司主体ID*/
 companyId: number;
+/**默认标识[0-非默认 1-默认]*/
+defaultFlag: number;
 /**ID*/
 id: number;
 }
@@ -487,6 +469,8 @@ bankName: string;
 branchName: string;
 /**联行号*/
 branchNo: string;
+/**默认标识[0-非默认 1-默认]*/
+defaultFlag: number;
 /**税率*/
 taxRate: string;
 /**纳税人识别号*/
@@ -504,6 +488,13 @@ accountType: string;
 pageNum: number;
 /**(必填)每页条数*/
 pageSize: number;
+}
+/**BankAccountUpdateFlagVO*/
+export interface BankAccountUpdateFlagVO {
+/**(必填)公司主体ID*/
+companyId: number;
+/**(必填)id*/
+id: number;
 }
 /**BankAccountUpdateVO*/
 export interface BankAccountUpdateVO {
@@ -540,8 +531,12 @@ branchNo: string;
 category: string;
 /**公司主体ID*/
 companyId: number;
+/**默认标识[0-非默认 1-默认]*/
+defaultFlag: number;
 /**ID*/
 id: number;
+/**税率*/
+taxRate: number;
 }
 /**BankBranchQueryVO*/
 export interface BankBranchQueryVO {
@@ -604,39 +599,6 @@ thirdOrderNo: string;
 /**时间戳*/
 timestamp: number;
 }
-/**HandInvoiceBillVO*/
-export interface HandInvoiceBillVO {
-/**发票金额[含税]*/
-billAmount: number;
-/**发票代码*/
-billCode: string;
-/**发票号码*/
-billNo: string;
-/**发票抬头*/
-billTitle: string;
-/**发票类型(General_ZZ-增值税普通发票（纸质）、General_DZ-增值税普通发票（电子）、Special_ZZ-增值税专用发票(纸质）)*/
-billTypeCode: string;
-/**附件ID*/
-fileId: string;
-/**附件名称*/
-fileName: string;
-/**附件类型*/
-fileType: string;
-/**附件链接*/
-fileUrl: string;
-/**开票票据信息ID*/
-id: number;
-/**开票日期(yyyy-MM-dd HH:mm:ss)*/
-invoiceTime: string;
-/**确认主营[不含税]*/
-mainAmount: number;
-/**NC凭证号*/
-ncCode: string;
-/**备注*/
-remark: string;
-/**税额[公式]*/
-taxAmount: number;
-}
 /**InvoiceApplyRecAddVO*/
 export interface InvoiceApplyRecAddVO {
 /**请款单代理费金额（含税）*/
@@ -667,116 +629,10 @@ fileName: string;
 /**附件类型*/
 type: string;
 }
-/**InvoiceBaseVO*/
-export interface InvoiceBaseVO {
-/**商品分类编码*/
-classifyCode: string;
-/**公司名称*/
-companyName: string;
-/**创建时间(yyyy-MM-dd HH:mm:ss)*/
-createTime: string;
-/**创建用户*/
-createUser: number;
-/**已删除*/
-deleted: number;
-/**开票员*/
-handlers: string;
-/**undefined*/
-id: number;
-/**收款员*/
-payee: string;
-/**项目名称*/
-projectName: string;
-/**项目单位*/
-projectUnit: string;
-/**复核人*/
-reviewer: string;
-/**销方地址*/
-sellerAddress: string;
-/**销方银行账号*/
-sellerBankAccount: string;
-/**销方公司ID*/
-sellerCompanyId: number;
-/**销方公司名称*/
-sellerName: string;
-/**销方开户行支行*/
-sellerOpeningBankBranch: string;
-/**销方开户行类型*/
-sellerOpeningBankType: string;
-/**销方电话*/
-sellerPhone: string;
-/**销方税号*/
-sellerTaxNo: string;
-/**税率*/
-taxRate: number;
-/**更新时间(yyyy-MM-dd HH:mm:ss)*/
-updateTime: string;
-/**更新用户*/
-updateUser: number;
-}
-/**InvoiceBasicVO*/
-export interface InvoiceBasicVO {
-/**(必填)业务编号*/
-businessCodes: string[];
-/**购方类型Code[CUSTOMER表示客户, PARTYA表示甲方](CUSTOMER-客户、PARTYA-甲方)*/
-buyerTypeCode: string;
-}
 /**InvoiceBilIdslVO*/
 export interface InvoiceBilIdslVO {
 /**(必填)航天发票信息id数组*/
 billIds: number[];
-}
-/**InvoiceBillHandVO*/
-export interface InvoiceBillHandVO {
-/**发票金额[含税]*/
-billAmount: number;
-/**发票代码*/
-billCode: string;
-/**发票号码*/
-billNo: string;
-/**发票抬头*/
-billTitle: string;
-/**发票类型(General_ZZ-增值税普通发票（纸质）、General_DZ-增值税普通发票（电子）、Special_ZZ-增值税专用发票(纸质）)*/
-billTypeCode: string;
-/**业务编码[成交报告编号]*/
-businessCode: number;
-/**文件ID*/
-fileId: string;
-/**文件名称*/
-fileName: string;
-/**文件类型*/
-fileType: string;
-/**文件地址*/
-fileUrl: string;
-/**开票票据信息ID*/
-id: number;
-/**开票信息ID*/
-invoiceId: number;
-/**开票方式(HAND-手动开票、AUTO-自动开票)*/
-invoiceModeCode: string;
-/**开票日期(yyyy-MM-dd HH:mm:ss)*/
-invoiceTime: string;
-/**开票类型[1正票、2红票]*/
-invoiceType: number;
-/**确认主营[不含税]*/
-mainAmount: number;
-/**NC凭证号*/
-ncCode: string;
-/**订单号*/
-orderNo: string;
-/**备注*/
-remark: string;
-/**流水号*/
-serialNo: string;
-/**税额[公式]*/
-taxAmount: number;
-}
-/**InvoiceBillHtPdfInfo*/
-export interface InvoiceBillHtPdfInfo {
-/**undefined*/
-htPdfFile: string;
-/**undefined*/
-htPdfUrl: string;
 }
 /**InvoiceBillInfoVO*/
 export interface InvoiceBillInfoVO {
@@ -954,7 +810,7 @@ attachmentVOs: InvoiceAttachmentVO[];
 /**发票信息集合*/
 invoiceBillInfos: InvoiceBillInfoVO[];
 /**开票信息*/
-invoiceInfo: InvoiceInfoVO_1;
+invoiceInfo: InvoiceInfoVO;
 /**开票历史记录信息集合*/
 invoiceRecords: InvoiceRecordVO[];
 }
@@ -1031,15 +887,6 @@ tax: number;
 }
 /**InvoiceInfoVO*/
 export interface InvoiceInfoVO {
-/**undefined*/
-baseInfo: InvoiceBaseVO;
-/**undefined*/
-billList: InvoiceBillHandVO[];
-/**undefined*/
-invoiceInfo: InvoiceVO;
-}
-/**InvoiceInfoVO_1*/
-export interface InvoiceInfoVO_1 {
 /**金额（含税）*/
 amount: number;
 /**业务ID*/
@@ -1072,150 +919,15 @@ payee: string;
 payeeAccountNo: string;
 /**备注*/
 remark: string;
-/**状态(Done-已开票、NotDone-未开票)*/
+/**状态(Done-已开票、NotDone-未开票、Invalid-废弃)*/
 status: string;
 /**税额*/
 tax: number;
 /**税率*/
 taxRate: number;
 }
-/**InvoiceManualInfoVO*/
-export interface InvoiceManualInfoVO {
-/**发票信息*/
-billList: HandInvoiceBillVO[];
-/**(必填)业务编号[成交报告编号 或 请佣申请单号]*/
-businessCode: string;
-/**购方类型Code[CUSTOMER表示客户, PARTYA表示甲方](CUSTOMER-客户、PARTYA-甲方)*/
-buyerTypeCode: string;
-}
-/**InvoiceOperateListVO*/
-export interface InvoiceOperateListVO {
-/**(必填)发票信息*/
-datas: InvoiceOperateVO[];
-}
-/**InvoiceOperateVO*/
-export interface InvoiceOperateVO {
-/**(必填)业务编号[成交报告编号 或 请佣申请单号]*/
-businessCode: string;
-/**购方类型Code[CUSTOMER表示客户, PARTYA表示甲方](CUSTOMER-客户、PARTYA-甲方)*/
-buyerTypeCode: string;
-}
-/**InvoicePartyAAddVO*/
-export interface InvoicePartyAAddVO {
-/**申请费用类型Code[甲方](SaleAgentFee-销售代理费)*/
-applyFeeTypeCode: string;
-/**请佣申请单号*/
-businessCode: string;
-/**购方邮箱*/
-buyerEmail: string;
-/**甲方名称*/
-buyerName: string;
-/**甲方手机*/
-buyerPhone: string;
-/**已付金额*/
-paidAmount: number;
-/**应付金额*/
-payableAmount: number;
-/**收款银行账号*/
-payeeBankAccount: string;
-/**收款方公司ID*/
-payeeCompanyId: number;
-/**收款方公司名称*/
-payeeCompanyName: string;
-/**退款金额*/
-refundAmount: number;
-/**开票备注信息*/
-remark: string;
-}
-/**InvoicePartyAQueryVO*/
-export interface InvoicePartyAQueryVO {
-/**开票起始日期(yyyy-MM-dd HH:mm:ss)*/
-beginTime: string;
-/**请款申请单号*/
-businessCode: string;
-/**甲方公司名称*/
-buyerName: string;
-/**开票截止日期(yyyy-MM-dd HH:mm:ss)*/
-endTime: string;
-/**开票方式(HAND-手动开票、AUTO-自动开票)*/
-invoiceModeCode: string;
-/**开票状态(NotInvoiced-未开票、Invoiced-已开票)*/
-invoicingStatus: string;
-/**(必填)当前页*/
-pageNum: number;
-/**(必填)每页条数*/
-pageSize: number;
-/**红冲起始日期(yyyy-MM-dd HH:mm:ss)*/
-redBeginTime: string;
-/**红冲状态(NotRed-未红冲、Red-已红冲、PendingRefundRed-待退款红冲)*/
-redDashedStatus: string;
-/**红冲截止日期(yyyy-MM-dd HH:mm:ss)*/
-redEndTime: string;
-}
-/**InvoicePartyARedQueryVO*/
-export interface InvoicePartyARedQueryVO {
-/**开票起始日期(yyyy-MM-dd HH:mm:ss)*/
-beginTime: string;
-/**请款申请单号*/
-businessCode: string;
-/**甲方公司名称*/
-buyerName: string;
-/**开票截止日期(yyyy-MM-dd HH:mm:ss)*/
-endTime: string;
-/**(必填)当前页*/
-pageNum: number;
-/**(必填)每页条数*/
-pageSize: number;
-/**红冲起始日期(yyyy-MM-dd HH:mm:ss)*/
-redBeginTime: string;
-/**红冲状态(NotRed-未红冲、Red-已红冲、PendingRefundRed-待退款红冲)*/
-redDashedStatus: string;
-/**红冲截止日期(yyyy-MM-dd HH:mm:ss)*/
-redEndTime: string;
-}
-/**InvoicePartyAVO*/
-export interface InvoicePartyAVO {
-/**申请费用类型(SaleAgentFee-销售代理费)*/
-applyFeeTypeCode: string;
-/**业务编码*/
-businessCode: string;
-/**甲方公司名称*/
-buyerName: string;
-/**发票信息ID*/
-id: number;
-/**开票方式(HAND-手动开票、AUTO-自动开票)*/
-invoiceModeCode: string;
-/**开票时间(yyyy-MM-dd HH:mm:ss)*/
-invoiceTime: string;
-/**开票状态(NotInvoiced-未开票、Invoiced-已开票)*/
-invoicingStatus: string;
-/**正票状态Code(NotInvoiced-未开票、Invoiced-已开票)*/
-normalStatusCode: string;
-/**本次申请金额(元)*/
-payableAmount: number;
-/**收款银行账号*/
-payeeBankAccount: string;
-/**收款方公司名称*/
-payeeCompanyName: string;
-/**红冲状态Code(NotRed-未红冲、Red-已红冲、PendingRefundRed-待退款红冲)*/
-redDashedStatusCode: string;
-/**红冲时间(yyyy-MM-dd HH:mm:ss)*/
-redInvoiceTime: string;
-}
-/**InvoiceQueryHtFileVO*/
-export interface InvoiceQueryHtFileVO {
-/**发票代码*/
-billCode: string;
-/**发票号码*/
-billNo: string;
-}
 /**InvoiceQueryVO*/
 export interface InvoiceQueryVO {
-/**(必填)业务编号*/
-businessCodes: string[];
-}
-/**InvoiceQueryVO_1*/
-export interface InvoiceQueryVO_1 {
 /**业务单号*/
 businessNo: string;
 /**截止开票日期(yyyy-MM-dd)*/
@@ -1232,7 +944,7 @@ pageNum: number;
 pageSize: number;
 /**起始开票日期(yyyy-MM-dd)*/
 startTime: string;
-/**开票状态(Done-已开票、NotDone-未开票)*/
+/**开票状态(Done-已开票、NotDone-未开票、Invalid-废弃)*/
 status: string;
 }
 /**InvoiceRecordVO*/
@@ -1252,59 +964,6 @@ remark: string;
 }
 /**InvoiceVO*/
 export interface InvoiceVO {
-/**业绩确认时间(yyyy-MM-dd HH:mm:ss)*/
-achieveConfirmTime: string;
-/**申请费用类型Code[甲方]*/
-applyFeeTypeCode: string;
-/**业务编码*/
-businessCode: string;
-/**购方邮箱*/
-buyerEmail: string;
-/**购方名称*/
-buyerName: string;
-/**购方手机*/
-buyerPhone: string;
-/**购方类型(CUSTOMER-客户、PARTYA-甲方)*/
-buyerTypeCode: string;
-/**立项周期ID*/
-cycleId: number;
-/**立项周期名称*/
-cycleName: string;
-/**成交组织ID*/
-dealOrgId: number;
-/**成交人ID*/
-dealPersonId: number;
-/**房屋地址*/
-houseAddress: string;
-/**发票信息ID*/
-id: number;
-/**开票方式Code(HAND-手动开票、AUTO-自动开票)*/
-invoiceModeCode: string;
-/**正票状态Code(NotInvoiced-未开票、Invoiced-已开票)*/
-normalStatusCode: string;
-/**已付金额*/
-paidAmount: number;
-/**应付金额*/
-payableAmount: number;
-/**收款银行账号*/
-payeeBankAccount: string;
-/**收款方公司ID*/
-payeeCompanyId: number;
-/**收款方公司名称*/
-payeeCompanyName: string;
-/**联动项目ID*/
-projectId: number;
-/**联动项目名称*/
-projectName: string;
-/**红冲状态Code(NotRed-未红冲、Red-已红冲、PendingRefundRed-待退款红冲)*/
-redDashedStatusCode: string;
-/**退款金额*/
-refundAmount: number;
-/**备注信息*/
-remark: string;
-}
-/**InvoiceVO_1*/
-export interface InvoiceVO_1 {
 /**金额（含税）*/
 amount: number;
 /**业务ID*/
@@ -1331,7 +990,7 @@ operationType: string;
 payee: string;
 /**收款方账号*/
 payeeAccountNo: string;
-/**状态(Done-已开票、NotDone-未开票)*/
+/**状态(Done-已开票、NotDone-未开票、Invalid-废弃)*/
 status: string;
 /**税额*/
 tax: number;
@@ -1362,8 +1021,8 @@ payStatus: string;
 /**undefined*/
 shoppingTime: string;
 }
-/**OnlinePayResultVO*/
-export interface OnlinePayResultVO {
+/**OnlinePayVO*/
+export interface OnlinePayVO {
 /**undefined*/
 currCode: string;
 /**undefined*/
@@ -1374,6 +1033,8 @@ orderNo: string;
 payAmount: number;
 /**undefined*/
 payNo: string;
+/**支付时间(yyyy-MM-dd HH:mm:ss)*/
+payTime: string;
 /**undefined*/
 reserved01: string;
 /**undefined*/
@@ -1386,6 +1047,71 @@ settDate: string;
 signMsg: string;
 /**undefined*/
 systemSSN: string;
+}
+/**Payment*/
+export interface Payment {
+/**支付金额*/
+amount: number;
+/**业务编号[优惠告知书和请款单号]*/
+businessCode: string;
+/**业务编号*/
+businessId: number;
+/**对账时间(yyyy-MM-dd HH:mm:ss)*/
+checkTime: string;
+/**实收确认时间(yyyy-MM-dd HH:mm:ss)*/
+confirmTime: string;
+/**创建时间(yyyy-MM-dd HH:mm:ss)*/
+createTime: string;
+/**创建用户*/
+createUser: number;
+/**成交报告编号[冗余字段]*/
+dealCode: string;
+/**成交ID*/
+dealId: number;
+/**已删除*/
+deleted: number;
+/**款项类型(ServiceFee-服务费、AgencyFee-代理费)*/
+foundType: string;
+/**店组ID*/
+groupId: number;
+/**ID*/
+id: number;
+/**经办人*/
+operator: number;
+/**凭证号*/
+payCode: string;
+/**收款日期(yyyy-MM-dd)*/
+payDate: string;
+/**收款编号*/
+payNo: string;
+/**支付时间(yyyy-MM-dd HH:mm:ss)*/
+payTime: string;
+/**支付方式(Pos-POS刷卡、WeChatPay-微信支付、UnionPay-银联支付、Alipay-支付宝支付、Transfer-银行转账、PosNoOrder-无订单刷卡)*/
+payType: string;
+/**收款账号*/
+payeeAccount: string;
+/**收款账户*/
+payeeName: string;
+/**付款方(Customer-客户、PartyA-甲方)*/
+payer: string;
+/**项目ID*/
+proId: number;
+/**房号ID*/
+roomId: number;
+/**状态(NotPaid-待支付、Paid-已支付、NotCheck-待对账、Revoked-已撤销、Flushed-已冲正)*/
+status: string;
+/**立项ID*/
+termId: number;
+/**录入终端(WeChatApp-微信小程序、Pc-电脑)*/
+terminal: string;
+/**银联微信小程序订单号[按银联要求格式生成,15位商户号+8位日期+9位随机数字]*/
+unionPayWeChatNo: string;
+/**银联微信小程序订单时间[yyyyMMddHHssmm]*/
+unionPayWeChatTime: string;
+/**更新时间(yyyy-MM-dd HH:mm:ss)*/
+updateTime: string;
+/**更新用户*/
+updateUser: number;
 }
 /**PaymentAddVO*/
 export interface PaymentAddVO {
@@ -1462,7 +1188,7 @@ export interface PaymentAttachmentDetailVO {
 fileId: string;
 /**文件名称*/
 fileName: string;
-/**类型[新增时候不传](Evidence-收款凭证、ElectronicReceipt-电子回单)*/
+/**类型[新增和修改时候不传](Evidence-收款凭证、ElectronicReceipt-电子回单)*/
 type: string;
 }
 /**PaymentBankInfoVO*/
@@ -1502,7 +1228,7 @@ recordVOs: PaymentRecordVO[];
 export interface PaymentPCVO {
 /**支付金额*/
 amount: number;
-/**=业务编号[优惠告知书和请款单号]*/
+/**业务编号[优惠告知书和请款单号]*/
 businessCode: string;
 /**业务编号*/
 businessId: number;
@@ -1564,6 +1290,10 @@ termId: number;
 termName: string;
 /**录入终端(WeChatApp-微信小程序、Pc-电脑)*/
 terminal: string;
+/**银联微信小程序订单号[按银联要求格式生成,15位商户号+8位日期+9位随机数字]*/
+unionPayWeChatNo: string;
+/**银联微信小程序订单时间[yyyyMMddHHssmm]*/
+unionPayWeChatTime: string;
 /**更新时间(yyyy-MM-dd HH:mm:ss)*/
 updateTime: string;
 /**更新用户*/
@@ -1654,6 +1384,19 @@ remark: string;
 /**操作结果*/
 result: string;
 }
+/**PaymentRefundVO*/
+export interface PaymentRefundVO {
+/**支付金额*/
+amount: number;
+/**业务ID*/
+businessId: number;
+/**退款时间(yyyy-MM-dd HH:mm:ss)*/
+payTime: string;
+/**收款人*/
+payee: string;
+/**状态(NotPaid-待支付、Paid-已支付、NotCheck-待对账、Revoked-已撤销、Flushed-已冲正)*/
+status: string;
+}
 /**PaymentRelevanceDealVO*/
 export interface PaymentRelevanceDealVO {
 /**成交报告编号*/
@@ -1667,16 +1410,18 @@ id: number;
 export interface PaymentUpdateVO {
 /**(必填)支付金额*/
 amount: number;
+/**文件ID集合[银行转账方式才必填,其他方式不填]*/
+attachments: PaymentAttachmentDetailVO[];
 /**(必填)优惠告知书I*/
 businessId: number;
-/**文件ID-转账方式才传*/
-fileId: string;
-/**(必填)款项类型(ServiceFee-服务费、AgencyFee-代理费)*/
-foundType: string;
 /**(必填)ID*/
 id: number;
 /**(必填)支付方式(Pos-POS刷卡、WeChatPay-微信支付、UnionPay-银联支付、Alipay-支付宝支付、Transfer-银行转账、PosNoOrder-无订单刷卡)*/
 payType: string;
+/**收款账号[银行转账方式才必填,其他方式不填]*/
+payeeAccount: string;
+/**收款账户[银行转账方式才必填,其他方式不填]*/
+payeeName: string;
 /**(必填)付款服务费*/
 serviceAmount: number;
 /**(必填)已付服务费*/
@@ -1688,6 +1433,8 @@ unpaidServiceFee: number;
 export interface PaymentVO {
 /**支付金额*/
 amount: number;
+/**文件ID集合*/
+attachments: PaymentAttachmentDetailVO[];
 /**业务编号*/
 businessId: number;
 /**附件ID集合*/
@@ -1698,6 +1445,8 @@ id: number;
 payDate: string;
 /**收款编号*/
 payNo: string;
+/**支付时间(yyyy-MM-dd HH:mm:ss)*/
+payTime: string;
 /**支付方式(Pos-POS刷卡、WeChatPay-微信支付、UnionPay-银联支付、Alipay-支付宝支付、Transfer-银行转账、PosNoOrder-无订单刷卡)*/
 payType: string;
 /**状态(NotPaid-待支付、Paid-已支付、NotCheck-待对账、Revoked-已撤销、Flushed-已冲正)*/
