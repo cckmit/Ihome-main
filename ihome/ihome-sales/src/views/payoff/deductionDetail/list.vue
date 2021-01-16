@@ -4,7 +4,7 @@
  * @Author: wwq
  * @Date: 2021-01-13 14:44:01
  * @LastEditors: wwq
- * @LastEditTime: 2021-01-15 09:06:24
+ * @LastEditTime: 2021-01-16 10:26:55
 -->
 <template>
   <IhPage label-width="100px">
@@ -152,7 +152,7 @@
           <template v-slot="{ row }">
             <el-link
               type="primary"
-              @click="gotoDealCode(row.dealCode)"
+              @click="gotoDealCode(row.dealId)"
             >{{row.dealCode}}</el-link>
           </template>
         </el-table-column>
@@ -322,8 +322,15 @@ export default class DeductList extends Vue {
     );
   }
 
-  gotoDealCode(data: any) {
-    console.log(data);
+  gotoDealCode(id: any) {
+    // 预览
+    let router = this.$router.resolve({
+      path: `/dealReport/info`,
+      query: {
+        id: id,
+      },
+    });
+    window.open(router.href, "_blank");
   }
 
   created() {
