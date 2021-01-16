@@ -4,7 +4,7 @@
  * @Author: ywl
  * @Date: 2020-12-01 10:29:31
  * @LastEditors: ywl
- * @LastEditTime: 2020-12-28 15:56:00
+ * @LastEditTime: 2021-01-16 18:17:37
 -->
 <template>
   <IhPage label-width="80px">
@@ -76,6 +76,7 @@
         >重置</el-button>
         <el-button
           type="success"
+          v-has="'B.SALES.FINANCE.BANKLIST.IMPORT'"
           @click="importVisible = true"
         >导入</el-button>
       </el-row>
@@ -121,6 +122,7 @@
             <el-link
               type="danger"
               @click="remove(row)"
+              v-has="'B.SALES.FINANCE.BANKLIST.REMOVE'"
             >删除</el-link>
           </template>
         </el-table-column>
