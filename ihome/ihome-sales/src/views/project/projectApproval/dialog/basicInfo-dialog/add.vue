@@ -3,8 +3,8 @@
  * @version: 
  * @Author: wwq
  * @Date: 2020-11-27 18:41:30
- * @LastEditors: wwq
- * @LastEditTime: 2020-12-18 08:55:22
+ * @LastEditors: zyc
+ * @LastEditTime: 2021-01-18 16:26:31
 -->
 <template>
   <el-dialog
@@ -109,10 +109,9 @@ import BasicInfo from "./basicinfo.vue";
 import { NoRepeatHttp } from "ihome-common/util/aop/no-repeat-http";
 import { Form as ElForm } from "element-ui";
 import { post_term_add } from "@/api/project/index.ts";
-import SelectOrganizationTree from "@/components/SelectOrganizationTree.vue";
 
 @Component({
-  components: { BasicInfo, SelectOrganizationTree },
+  components: { BasicInfo },
 })
 export default class AddDialog extends Vue {
   dialogVisible = true;

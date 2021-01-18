@@ -4,7 +4,7 @@
  * @Author: zyc
  * @Date: 2020-06-22 11:10:43
  * @LastEditors: zyc
- * @LastEditTime: 2020-12-18 14:12:51
+ * @LastEditTime: 2021-01-18 16:37:00
  */
 import Vue from 'vue'
 import VueRouter, { RouteConfig } from 'vue-router'
@@ -100,6 +100,14 @@ const routes: Array<RouteConfig> = [
     component: () => import('../views/filePreviewPage.vue'),
     meta: {
       title: '文件预览'
+    }
+  },
+  {
+    path: '/selectOrgTree',
+    name: 'SelectOrgTree',
+    component: () => import('../views/selectOrgTree.vue'),
+    meta: {
+      title: '归属组织'
     }
   },
 

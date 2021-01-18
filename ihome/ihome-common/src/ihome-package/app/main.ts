@@ -1,28 +1,22 @@
-/*
- * @Descripttion: 
- * @version: 
- * @Author: zyc
- * @Date: 2020-11-24 10:49:02
- * @LastEditors: zyc
- * @LastEditTime: 2021-01-15 11:22:11
- */
+
 /*
  * @Descripttion: 
  * @version: 
  * @Author: zyc
  * @Date: 2020-07-07 09:25:17
  * @LastEditors: zyc
- * @LastEditTime: 2020-11-24 11:07:55
+ * @LastEditTime: 2021-01-18 16:35:01
  */
-/* eslint-disable  no-console */
+/* eslint-disable  no-console  */
+/* eslint-disable  no-extra-semi  */
 import '../util/base/extend'
 import Vue from 'vue'
 import App from './App.vue'
 import { router } from '@/router'
 import { Location } from 'vue-router/types/router.d'
 import store from '@/store'
-import * as dic from '../util/enums/dic'
-let $dic: any = Object.assign(dic, dic.dicModular);
+// import * as dic from '../util/enums/dic'
+// let $dic: any = Object.assign(dic, dic.dicModular);
 
 import { get_dict_getAll, get_area_getAll, post_sessionUser_getUserInfo } from '@/api/system'
 
@@ -73,49 +67,6 @@ if (process.env.NODE_ENV !== 'production') {
 let areaAll: any = (window as any).polyihomeData?.areaAll || {};//全部行政区数据
 let dictAll: any = (window as any).polyihomeData?.dictAll || [];//存在后端加载的所有字典数据
 let userInfo: any = (window as any).polyihomeData?.userInfo || {};//用户信息
-async function render() {
-
-  //window全局变量共享数据
-
-
-  try {
-    if (!(<any>window).isQianKunMain) {
-      (window as any).polyihomeData = {
-        userInfo: {},
-        areaAll: [],
-        dictAll: {}
-      };
-      (window as any).polyihomeData.userInfo = await post_sessionUser_getUserInfo({ terminalType: "Pc" });
-    }
-
-  } catch (error) {
-
-  } finally {
-    if (!(<any>window).isQianKunMain) {
-      Promise.all([get_area_getAll(), get_dict_getAll()]).then((res: any) => {
-        areaAll = res[0];
-        dictAll = res[1];
-
-        //window全局变量共享数据
-        (window as any).polyihomeData = {
-          areaAll: areaAll,
-          dictAll: dictAll
-        };
-      }).catch((err: any) => {
-        console.error('子项目初始化数据异常', err)
-
-      }).finally(() => {
-        newVue();
-      })
-    } else {
-      newVue();
-    }
-
-
-  }
-
-
-}
 function newVue() {
   instance = new Vue({
     store,
@@ -290,11 +241,50 @@ function newVue() {
     },
     render: h => h(App),
   }).$mount('#app');
-
-
   directives(Vue)
   filters(Vue, instance)
+};
+async function render() {
+
+  //window全局变量共享数据
+
+
+  try {
+    if (!(<any>window).isQianKunMain) {
+      (window as any).polyihomeData = {
+        userInfo: {},
+        areaAll: [],
+        dictAll: {}
+      };
+      (window as any).polyihomeData.userInfo = await post_sessionUser_getUserInfo({ terminalType: "Pc" });
+    }
+
+  } catch (error) {
+    console.log(error)
+
+  } finally {
+    if (!(<any>window).isQianKunMain) {
+      Promise.all([get_area_getAll(), get_dict_getAll()]).then((res: any) => {
+        //window全局变量共享数据
+        ; (window as any).polyihomeData.areaAll = res[0];
+        ; (window as any).polyihomeData.dictAll = res[1];
+
+      }).catch((err: any) => {
+        console.error('子项目初始化数据异常', err)
+
+      }).finally(() => {
+        newVue();
+      })
+    } else {
+      newVue();
+    }
+
+
+  }
+
+
 }
+
 console.log('isQianKunMain', (<any>window).isQianKunMain)
 if (!(<any>window).isQianKunMain) {
   render();

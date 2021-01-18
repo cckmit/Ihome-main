@@ -4,7 +4,7 @@
  * @Author: wwq
  * @Date: 2020-09-16 14:54:19
  * @LastEditors: zyc
- * @LastEditTime: 2021-01-14 15:18:18
+ * @LastEditTime: 2021-01-18 16:29:48
 -->
 <template>
   <div>
@@ -81,6 +81,12 @@ export default class Home extends Vue {
       name: "文件预览组件",
       desc: "图片，pdf，其他",
       path: "/filePreview",
+    },
+    {
+      key: "IhSelectOrgTree",
+      name: "归属组织tree",
+      desc: "归属组织tree",
+      path: "/selectOrgTree",
     },
   ];
   info(scope: any) {
