@@ -11,13 +11,14 @@
     <template v-slot:form>
       <el-form
         ref="form"
+        @submit.native.prevent
         label-width="120px">
         <el-row>
           <el-col :span="8">
             <el-form-item label="组织">
-              <SelectOrganizationTree
-                :orgId="queryPageParameters.organizationId"
-                @callback="(id) => (queryPageParameters.organizationId = id)"/>
+              <IhSelectOrgTree
+                v-model="queryPageParameters.org"
+              ></IhSelectOrgTree>
             </el-form-item>
           </el-col>
           <el-col :span="8">
@@ -97,7 +98,7 @@ import {getToken} from "ihome-common/util/cookies";
 })
 export default class SummaryList extends Vue {
   queryPageParameters: any = {
-    organizationId: null,
+    org: null,
     proId: null,
     termId: null
   };
@@ -146,7 +147,7 @@ export default class SummaryList extends Vue {
 
   reset() {
     Object.assign(this.queryPageParameters, {
-      organizationId: null,
+      org: null,
       proId: null,
       termId: null
     });
