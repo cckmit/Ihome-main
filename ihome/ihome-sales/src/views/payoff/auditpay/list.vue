@@ -4,7 +4,7 @@
  * @Author: wwq
  * @Date: 2020-12-26 11:11:28
  * @LastEditors: wwq
- * @LastEditTime: 2021-01-12 19:55:59
+ * @LastEditTime: 2021-01-16 17:46:04
 -->
 <template>
   <IhPage label-width="120px">
@@ -125,6 +125,7 @@
         <el-button
           type="success"
           @click="exportMsg()"
+          v-has="'B.SALES.PAYOFF.PAYAPPLY.DCLB'"
         >导出</el-button>
       </el-row>
     </template>
@@ -221,6 +222,7 @@
             <el-link
               type="primary"
               @click.native.prevent="routeTo(row, 'audit')"
+              v-has="'B.SALES.PAYOFF.PAYAPPLY.SHLB'"
             >审核</el-link>
             <!-- <el-dropdown
               trigger="click"

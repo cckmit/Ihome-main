@@ -4,7 +4,7 @@
  * @Author: ywl
  * @Date: 2020-12-01 10:37:53
  * @LastEditors: ywl
- * @LastEditTime: 2021-01-15 20:57:17
+ * @LastEditTime: 2021-01-16 18:22:32
 -->
 <template>
   <IhPage label-width="80px">
@@ -56,13 +56,14 @@
           @click="search()"
         >查询</el-button>
         <el-button
+          type="success"
+          @click="handleAdd()"
+          v-has="'B.SALES.FINANCE.RECEIPTLIST.ADD'"
+        >添加</el-button>
+        <el-button
           type="info"
           @click="reset()"
         >重置</el-button>
-        <el-button
-          type="success"
-          @click="handleAdd()"
-        >添加</el-button>
       </el-row>
     </template>
     <template v-slot:table>
@@ -117,6 +118,7 @@
               type="primary"
               class="margin-right-10"
               @click="handleEdit(row)"
+              v-has="'B.SALES.FINANCE.RECEIPTLIST.EDIT'"
             >修改</el-link>
             <el-dropdown trigger="click">
               <span class="el-dropdown-link">
@@ -124,11 +126,18 @@
                 <i class="el-icon-arrow-down el-icon--right"></i>
               </span>
               <el-dropdown-menu slot="dropdown">
-                <el-dropdown-item @click.native.prevent="remove(row)">删除</el-dropdown-item>
-                <el-dropdown-item @click.native.prevent="handleShowPay(row)">维护在线支付信息</el-dropdown-item>
+                <el-dropdown-item
+                  @click.native.prevent="remove(row)"
+                  v-has="'B.SALES.FINANCE.RECEIPTLIST.REMOVE'"
+                >删除</el-dropdown-item>
+                <el-dropdown-item
+                  @click.native.prevent="handleShowPay(row)"
+                  v-has="'B.SALES.FINANCE.RECEIPTLIST.MAINTAINONLINE'"
+                >维护在线支付信息</el-dropdown-item>
                 <el-dropdown-item
                   :class="{ 'ih-data-disabled': row.defaultFlag }"
                   @click.native.prevent="saveAccount(row)"
+                  v-has="'B.SALES.FINANCE.RECEIPTLIST.DEFALTACCOUNT'"
                 >设为默认账号</el-dropdown-item>
               </el-dropdown-menu>
             </el-dropdown>

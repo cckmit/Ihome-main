@@ -4,7 +4,7 @@
  * @Author: wwq
  * @Date: 2021-01-15 10:45:53
  * @LastEditors: wwq
- * @LastEditTime: 2021-01-15 15:55:36
+ * @LastEditTime: 2021-01-16 18:28:00
 -->
 <template>
   <IhPage label-width="100px">
@@ -116,7 +116,12 @@
           type="info"
           @click="reset()"
         >重置</el-button>
-        <el-button type="success">合并付款推送</el-button>
+        <el-button
+          type="success"
+          v-if="tabsValue === 'PendingPayment'"
+          @click="mergePush(selection, 'merge')"
+          v-has="'B.SALES.PAYOFF.PAYOFFPAYMENT.HBFKTS'"
+        >合并付款推送</el-button>
       </el-row>
     </template>
     <template #table>
@@ -125,7 +130,7 @@
       <el-tabs
         v-model="tabsValue"
         type="border-card"
-        @tab-click="handleClick(tabsValue)"
+        @tab-click="search"
       >
         <template v-for="(i, n) in tabsList">
           <el-tab-pane
@@ -138,21 +143,25 @@
               class="ih-table"
               :empty-text="emptyText"
               :data="showTable"
+              @selection-change="selectionChange"
             >
               <el-table-column
                 v-if="i.name === 'PendingPayment'"
                 type="selection"
                 width="50"
                 align="center"
+                :selectable="selectable"
               ></el-table-column>
               <el-table-column
                 label="付款结算单号"
                 prop="settlementCode"
+                width="150"
                 fixed
               ></el-table-column>
               <el-table-column
                 label="付款申请单编号"
                 prop="applyCode"
+                width="150"
               ></el-table-column>
               <el-table-column
                 label="结算方式"
@@ -175,16 +184,34 @@
                 label="付款金额"
                 prop="actualAmount"
               ></el-table-column>
-              <el-table-column label="收款方信息">
+              <el-table-column
+                label="收款方信息"
+                width="180"
+              >
                 <template v-slot="{ row }">
-                  <div>{{`渠道公司：${row.agencyName}`}}</div>
-                  <div>{{`收款帐号：${row.receiveAccount}`}}</div>
+                  <div
+                    class="text-ellipsis"
+                    :title="row.agencyName"
+                  >{{`渠道公司：${row.agencyName}`}}</div>
+                  <div
+                    class="text-ellipsis"
+                    :title="row.receiveAccount"
+                  >{{`收款帐号：${row.receiveAccount}`}}</div>
                 </template>
               </el-table-column>
-              <el-table-column label="付款方信息">
+              <el-table-column
+                label="付款方信息"
+                width="180"
+              >
                 <template v-slot="{ row }">
-                  <div>{{`公司名称：${row.companyName}`}}</div>
-                  <div>{{`付款账户：${row.paymentAccount}`}}</div>
+                  <div
+                    class="text-ellipsis"
+                    :title="row.companyName"
+                  >{{`公司名称：${row.companyName}`}}</div>
+                  <div
+                    class="text-ellipsis"
+                    :title="row.paymentAccount"
+                  >{{`付款账户：${row.paymentAccount}`}}</div>
                 </template>
               </el-table-column>
               <el-table-column
@@ -195,7 +222,7 @@
               >
                 <template v-slot="{ row }">
                   <div>
-                    {{$root.dictAllName(row.paymentStatus, "PayoffStatus")}}
+                    {{$root.dictAllName(row.paymentStatus, "PayStatus")}}
                   </div>
                 </template>
               </el-table-column>
@@ -203,35 +230,65 @@
                 v-if="i.name !== 'PendingPayment'"
                 label="支付唯一编码"
                 prop="paymentCode"
+                width="150"
               ></el-table-column>
               <el-table-column
-                v-if="['', 'Paying'].includes(i.name)"
+                v-if="['all', 'Paying'].includes(i.name)"
                 label="推送时间"
                 prop="pushDate"
+                width="120"
               ></el-table-column>
               <el-table-column
                 v-if="!['PendingPayment', 'Paying'].includes(i.name)"
                 label="付款时间"
                 prop="paymentDate"
+                width="120"
               ></el-table-column>
               <el-table-column
-                v-if="['', 'PaymentFail', 'TicketRefunded'].includes(i.name)"
+                v-if="['all', 'PaymentFail', 'TicketRefunded'].includes(i.name)"
                 label="失败原因"
                 prop="reason"
+                width="150"
               ></el-table-column>
               <el-table-column
                 v-if="!['PaymentSuccess', 'Paying'].includes(i.name)"
                 label="操作"
-                width="auto"
+                width="90"
                 fixed="right"
                 align="center"
               >
-                <template v-slot="{  }">
-                  <el-link type="primary">拆分</el-link>
-                  <el-link type="primary">付款推送</el-link>
-                  <el-link type="primary">设置已付款</el-link>
-                  <el-link type="primary">修改</el-link>
-                  <el-link type="primary">同步状态</el-link>
+                <template v-slot="{ row }">
+                  <el-link
+                    type="primary"
+                    v-if="['PendingPayment'].includes(row.paymentStatus) && row.settlementMethod === 'Centralization'"
+                    @click="splitChange(row)"
+                    v-has="'B.SALES.PAYOFF.PAYOFFPAYMENT.CFLB'"
+                  >拆分</el-link>
+                  <el-link
+                    type="primary"
+                    v-if="['PendingPayment'].includes(row.paymentStatus) && row.settlementMethod === 'Centralization'"
+                    @click="mergePush(row, 'single')"
+                    v-has="'B.SALES.PAYOFF.PAYOFFPAYMENT.FKTZ'"
+                  >付款推送</el-link>
+                  <el-link
+                    type="primary"
+                    v-if="['PendingPayment'].includes(row.paymentStatus) && row.settlementMethod === 'OnlineBanking'"
+                    @click="setting(row)"
+                    v-has="'B.SALES.PAYOFF.PAYOFFPAYMENT.SZYFK'"
+                  >设置已付款</el-link>
+                  <el-link
+                    type="primary"
+                    v-if="['PendingPayment'].includes(row.paymentStatus)"
+                    @click="editChange(row)"
+                    v-has="'B.SALES.PAYOFF.PAYOFFPAYMENT.EDIT'"
+                  >修改</el-link>
+                  <el-link
+                    type="primary"
+                    v-if="['PaymentFail', 'TicketRefunded'].includes(row.paymentStatus)"
+                    v-has="'B.SALES.PAYOFF.PAYOFFPAYMENT.TBZT'"
+                    @click="synchronization(row)"
+                  >同步状态</el-link>
+                  <span v-if="['Paying', 'PaymentSuccess'].includes(row.paymentStatus)">---</span>
                 </template>
               </el-table-column>
             </el-table>
@@ -251,16 +308,52 @@
         :total="resPageInfo.total"
       ></el-pagination>
     </template>
+    <ih-dialog :show="dialogFormVisible">
+      <Split
+        :data="splitData"
+        @cancel="() => (dialogFormVisible = false)"
+        @finish="(data) => splitFinish(data)"
+      />
+    </ih-dialog>
+    <ih-dialog :show="editdialogFormVisible">
+      <Edit
+        :data="editData"
+        @cancel="() => (editdialogFormVisible = false)"
+        @finish="(data) => editFinish(data)"
+      />
+    </ih-dialog>
+    <ih-dialog :show="setdialogFormVisible">
+      <Setting
+        :data="setData"
+        @cancel="() => (setdialogFormVisible = false)"
+        @finish="(data) => setFinish(data)"
+      />
+    </ih-dialog>
   </IhPage>
 </template>
 
 <script lang="ts">
 import { Component, Vue } from "vue-property-decorator";
 import PaginationMixin from "../../../mixins/pagination";
-import { post_payDetail_getList } from "@/api/payoff/index";
+import Split from "./dialog/split.vue";
+import Edit from "./dialog/edit.vue";
+import Setting from "./dialog/setting.vue";
+import { post_payDetail_split } from "@/api/payoff/index";
+import {
+  post_payDetail_getList,
+  post_payDetail_push,
+  post_payDetail_update,
+  get_processRecord_oa_flow_ids,
+  post_payDetail_change_status,
+} from "@/api/payoff/index";
 
 @Component({
   mixins: [PaginationMixin],
+  components: {
+    Split,
+    Edit,
+    Setting,
+  },
 })
 export default class ReturnConfirmList extends Vue {
   queryPageParameters: any = {
@@ -279,7 +372,13 @@ export default class ReturnConfirmList extends Vue {
       "TicketRefunded",
     ],
   };
-  tabsValue: any = "";
+  tabsValue: any = "all";
+  splitData: any = {};
+  editData: any = {};
+  setData: any = {};
+  dialogFormVisible: any = false;
+  editdialogFormVisible: any = false;
+  setdialogFormVisible: any = false;
   resPageInfo: any = {
     total: null,
     list: [],
@@ -288,7 +387,7 @@ export default class ReturnConfirmList extends Vue {
   private tabsList: any = [
     {
       label: "全部",
-      name: "",
+      name: "all",
     },
     {
       label: "待付款",
@@ -312,20 +411,23 @@ export default class ReturnConfirmList extends Vue {
     },
   ];
   showTable: any = [];
+  selection: any = [];
 
   async getListMixin() {
     this.resPageInfo = await post_payDetail_getList(this.queryPageParameters);
-    this.resPageInfo.list = [{}];
+    this.showTable = this.resPageInfo.list;
+  }
+
+  selectable(row: any) {
+    if (row.settlementMethod !== "Centralization") {
+      return false;
+    } else {
+      return true;
+    }
   }
 
   created() {
     this.getListMixin();
-  }
-
-  handleClick(val: any) {
-    this.showTable = this.resPageInfo.list.filter(
-      (v: any) => v.paymentStatus === val
-    );
   }
 
   search() {
@@ -334,6 +436,17 @@ export default class ReturnConfirmList extends Vue {
       this.queryPageParameters.endDate = this.timeList[1];
     }
     this.queryPageParameters.pageNum = 1;
+    if (this.tabsValue !== "all") {
+      this.queryPageParameters.paymentStatusList = [this.tabsValue];
+    } else {
+      this.queryPageParameters.paymentStatusList = [
+        "PendingPayment",
+        "Paying",
+        "PaymentSuccess",
+        "PaymentFail",
+        "TicketRefunded",
+      ];
+    }
     this.getListMixin();
   }
 
@@ -349,5 +462,98 @@ export default class ReturnConfirmList extends Vue {
     });
     this.timeList = [];
   }
+
+  selectionChange(selection: any) {
+    this.selection = selection;
+  }
+
+  // 合并推送
+  async mergePush(data: any, type: any) {
+    (this.$notify as any).closeAll();
+    let arr: any = [];
+    if (type === "merge") {
+      if (this.selection.length) {
+        arr = this.selection.map((v: any) => v.settlementCode);
+      } else {
+        this.$notify({
+          type: "error",
+          title: "请勾选至少一条付款结算单",
+          message: "至少勾选一条付款结算单推送",
+          position: "bottom-right",
+        });
+        return;
+      }
+    } else {
+      arr = [data.settlementCode];
+    }
+    await post_payDetail_push(arr);
+    this.$notify({
+      type: "success",
+      title: "推送成功",
+      message: "付款推送成功",
+      position: "bottom-right",
+    });
+  }
+
+  // 拆分
+  splitChange(data: any) {
+    this.splitData = { ...data };
+    this.dialogFormVisible = true;
+  }
+
+  // 拆分成功
+  async splitFinish(data: any) {
+    await post_payDetail_split(data);
+    this.$message.success("拆分成功");
+    this.search();
+    this.dialogFormVisible = false;
+  }
+
+  // 修改
+  editChange(data: any) {
+    this.editData = { ...data };
+    this.editdialogFormVisible = true;
+  }
+
+  // 修改成功
+  async editFinish(data: any) {
+    await post_payDetail_update(data);
+    this.$message.success("修改成功");
+    this.search();
+    this.editdialogFormVisible = false;
+  }
+
+  // 同步状态
+  async synchronization(data: any) {
+    await get_processRecord_oa_flow_ids({
+      paymentCode: data.paymentCode,
+    });
+    this.$message.success("同步成功");
+    this.search();
+  }
+
+  // 设置已付款
+  setting(data: any) {
+    this.setData.id = data.id;
+    this.setData.paymentDate = data.paymentDate;
+    this.setdialogFormVisible = true;
+  }
+
+  // 设置已付款完成
+  async setFinish(data: any) {
+    await post_payDetail_change_status(data);
+    this.$message.success("设置成功");
+    this.search();
+    this.setdialogFormVisible = false;
+  }
 }
 </script>
+<style lang="scss" scoped>
+.text-ellipsis {
+  width: 100%;
+  display: inline-block;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+</style>

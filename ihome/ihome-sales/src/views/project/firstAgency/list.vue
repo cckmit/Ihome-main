@@ -4,7 +4,7 @@
  * @Author: wwq
  * @Date: 2020-10-28 15:34:27
  * @LastEditors: wwq
- * @LastEditTime: 2020-12-19 14:23:53
+ * @LastEditTime: 2021-01-16 18:53:59
 -->
 <template>
   <ih-page>
@@ -170,13 +170,13 @@
               </span>
               <el-dropdown-menu slot="dropdown">
                 <el-dropdown-item
-                  :class="{'ih-data-disabled': row.status === 'Audited'}"
+                  :class="{ 'ih-data-disabled': !editChange(row) }"
                   @click.native.prevent="routeTo(row, 'edit')"
                   v-has="'B.SALES.PROJECT.AGENCYLIST.UPDATE'"
                 >修改</el-dropdown-item>
                 <el-dropdown-item
-                  @click.native.prevent="
-                  $message.warning('接口未提供,功能未实现')"
+                  @click.native.prevent="audit(row)"
+                  :class="{'ih-data-disabled': !checkChange(row)}"
                   v-has="'B.SALES.PROJECT.AGENCYLIST.VERIFY'"
                 >审核</el-dropdown-item>
               </el-dropdown-menu>
@@ -201,7 +201,10 @@
 </template>
 <script lang="ts">
 import { Component, Vue } from "vue-property-decorator";
-import { post_firstAgencyCompany_getList } from "@/api/project/index";
+import {
+  post_firstAgencyCompany_getList,
+  post_firstAgencyCompany_audit__agencyId,
+} from "@/api/project/index";
 import PaginationMixin from "@/mixins/pagination";
 
 @Component({
@@ -225,6 +228,22 @@ export default class FirstAgencyList extends Vue {
     total: null,
     list: [],
   };
+
+  checkChange(row: any) {
+    const WaitByBranch = row.agencyAuditEnum === "WaitByBranch";
+    const roleList = (this.$root as any).userInfo.roleList.map(
+      (v: any) => v.code
+    );
+    const fen = roleList.includes("RBusinessManagement");
+    const zong = roleList.includes("RHeadBusinessManagement");
+    return (fen || zong) && WaitByBranch;
+  }
+
+  editChange(row: any) {
+    const Draft = row.agencyAuditEnum === "Draft";
+    const dangqian = (this.$root as any).userInfo.id === row.followManId;
+    return Draft && dangqian;
+  }
 
   get emptyText() {
     return this.resPageInfo.total === null ? "正在加载数据..." : "暂无数据";
@@ -260,6 +279,14 @@ export default class FirstAgencyList extends Vue {
         id: row.agencyId,
       },
     });
+  }
+
+  async audit(data: any) {
+    await post_firstAgencyCompany_audit__agencyId({
+      agencyId: data.agencyId,
+    });
+    this.$message.success("审核成功");
+    this.getListMixin();
   }
 
   add() {

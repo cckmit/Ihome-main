@@ -4,7 +4,7 @@
  * @Author: wwq
  * @Date: 2020-11-03 11:52:41
  * @LastEditors: wwq
- * @LastEditTime: 2021-01-15 17:10:24
+ * @LastEditTime: 2021-01-16 15:02:02
 -->
 <template>
   <div>
@@ -115,47 +115,49 @@
             ></IhCascader>
           </el-form-item>
         </el-col>
-        <el-row v-if="isShow">
-          <el-col :span="8">
-            <el-form-item label="爱家父项目推广名">
-              <el-input
-                clearable
-                v-model="form.parentName"
-                placeholder="爱家父项目推广名"
-                disabled
-              ></el-input>
-            </el-form-item>
-          </el-col>
-          <el-col :span="8">
-            <el-form-item label="明源楼盘名">
-              <el-input
-                clearable
-                v-model="form.buildingGuidName"
-                placeholder="明源楼盘名"
-                disabled
-              ></el-input>
-            </el-form-item>
-          </el-col>
-          <el-col :span="8">
-            <el-form-item
-              label="同步明源房号数据"
-              prop="exSyncRoom"
+      </el-row>
+      <el-row v-if="isShow">
+        <el-col :span="8">
+          <el-form-item label="爱家父项目推广名">
+            <el-input
+              clearable
+              v-model="form.parentName"
+              placeholder="爱家父项目推广名"
+              disabled
+            ></el-input>
+          </el-form-item>
+        </el-col>
+        <el-col :span="8">
+          <el-form-item label="明源楼盘名">
+            <el-input
+              clearable
+              v-model="form.buildingGuidName"
+              placeholder="明源楼盘名"
+              disabled
+            ></el-input>
+          </el-form-item>
+        </el-col>
+        <el-col :span="8">
+          <el-form-item
+            label="同步明源房号数据"
+            prop="exSyncRoom"
+          >
+            <el-select
+              v-model="form.exSyncRoom"
+              clearable
+              class="width--100"
             >
-              <el-select
-                v-model="form.exSyncRoom"
-                clearable
-                class="width--100"
-              >
-                <el-option
-                  v-for="item in YesOrNoType"
-                  :key="item.code"
-                  :label="item.name"
-                  :value="item.code"
-                ></el-option>
-              </el-select>
-            </el-form-item>
-          </el-col>
-        </el-row>
+              <el-option
+                v-for="item in YesOrNoType"
+                :key="item.code"
+                :label="item.name"
+                :value="item.code"
+              ></el-option>
+            </el-select>
+          </el-form-item>
+        </el-col>
+      </el-row>
+      <el-row>
         <el-col :span="16">
           <el-form-item
             label="项目地址"

@@ -4,7 +4,7 @@
  * @Author: ywl
  * @Date: 2020-12-22 19:30:19
  * @LastEditors: ywl
- * @LastEditTime: 2020-12-28 14:50:22
+ * @LastEditTime: 2021-01-16 18:32:13
 -->
 <template>
   <IhPage label-width="80px">
@@ -97,11 +97,26 @@
             申请操作<i class="el-icon-arrow-down el-icon--right"></i>
           </el-button>
           <el-dropdown-menu slot="dropdown">
-            <el-dropdown-item @click.native.prevent="handleApply('Use')">领用</el-dropdown-item>
-            <el-dropdown-item @click.native.prevent="handleApply('Apply')">申领</el-dropdown-item>
-            <el-dropdown-item @click.native.prevent="handleApply('Move')">调动</el-dropdown-item>
-            <el-dropdown-item @click.native.prevent="handleApply('Return')">退还</el-dropdown-item>
-            <el-dropdown-item @click.native.prevent="handleApply('GiveBack')">归还</el-dropdown-item>
+            <el-dropdown-item
+              @click.native.prevent="handleApply('Use')"
+              v-has="'B.SALES.FINANCE.POSAPPLYLIST.USE'"
+            >领用</el-dropdown-item>
+            <el-dropdown-item
+              @click.native.prevent="handleApply('Apply')"
+              v-has="'B.SALES.FINANCE.POSAPPLYLIST.APPLY'"
+            >申领</el-dropdown-item>
+            <el-dropdown-item
+              @click.native.prevent="handleApply('Move')"
+              v-has="'B.SALES.FINANCE.POSAPPLYLIST.MOVE'"
+            >调动</el-dropdown-item>
+            <el-dropdown-item
+              @click.native.prevent="handleApply('Return')"
+              v-has="'B.SALES.FINANCE.POSAPPLYLIST.RETURN'"
+            >退还</el-dropdown-item>
+            <el-dropdown-item
+              @click.native.prevent="handleApply('GiveBack')"
+              v-has="'B.SALES.FINANCE.POSAPPLYLIST.GIVEBACK'"
+            >归还</el-dropdown-item>
           </el-dropdown-menu>
         </el-dropdown>
       </el-row>
@@ -192,54 +207,65 @@
                   <el-dropdown-item
                     :class="{'ih-data-disabled': row.status !== 'UseWaitApprove'}"
                     @click.native.prevent="posOperate(row, 'UseApprove')"
+                    v-has="'B.SALES.FINANCE.POSAPPLYLIST.USEAPPROVE'"
                   >领用审核</el-dropdown-item>
                   <el-dropdown-item
                     :class="{'ih-data-disabled': row.status !== 'UseWaitSend'}"
                     @click.native.prevent="posOperate(row, 'UseSend')"
+                    v-has="'B.SALES.FINANCE.POSAPPLYLIST.USESEND'"
                   >领用寄出</el-dropdown-item>
                   <el-dropdown-item
                     :class="{'ih-data-disabled': row.status !== 'UseOneTheWay'}"
                     @click.native.prevent="posOperate(row, 'UseSign')"
+                    v-has="'B.SALES.FINANCE.POSAPPLYLIST.USESIGN'"
                   >领用签收</el-dropdown-item>
                 </template>
                 <template v-if="row.itemType === 'Return'">
                   <el-dropdown-item
                     :class="{'ih-data-disabled': row.status !== 'ReturnOnTheWay'}"
                     @click.native.prevent="posOperate(row, 'ReturnConfirm')"
+                    v-has="'B.SALES.FINANCE.POSAPPLYLIST.RECONFIRM'"
                   >确认退还</el-dropdown-item>
                 </template>
                 <template v-if="row.itemType === 'Apply'">
                   <el-dropdown-item
                     :class="{'ih-data-disabled': row.status !== 'ApplyWaitApprove'}"
                     @click.native.prevent="posOperate(row, 'ApplyApprove')"
+                    v-has="'B.SALES.FINANCE.POSAPPLYLIST.APPLYAPPROVE'"
                   >申领审核</el-dropdown-item>
                   <el-dropdown-item
                     :class="{'ih-data-disabled': row.status !== 'ApplyWaitSend'}"
                     @click.native.prevent="posOperate(row, 'ApplySend')"
+                    v-has="'B.SALES.FINANCE.POSAPPLYLIST.APPLYSEND'"
                   >申领寄出</el-dropdown-item>
                   <el-dropdown-item
                     :class="{'ih-data-disabled': row.status !== 'ApplyOnTheWay'}"
                     @click.native.prevent="posOperate(row, 'ApplySign')"
+                    v-has="'B.SALES.FINANCE.POSAPPLYLIST.APPLIYSIGN'"
                   >申领签收</el-dropdown-item>
                 </template>
                 <template v-if="row.itemType === 'GiveBack'">
                   <el-dropdown-item
                     :class="{'ih-data-disabled': row.status !== 'GiveBackOnTheWay'}"
                     @click.native.prevent="posOperate(row, 'GiveBackConfirm')"
+                    v-has="'B.SALES.FINANCE.POSAPPLYLIST.GBCONFIRM'"
                   >确认归还</el-dropdown-item>
                 </template>
                 <template v-if="row.itemType === 'Move'">
                   <el-dropdown-item
                     :class="{'ih-data-disabled': row.status !== 'MoveWaitApprove'}"
                     @click.native.prevent="posOperate(row, 'MoveApprove')"
+                    v-has="'B.SALES.FINANCE.POSAPPLYLIST.MOVEAPPROVE'"
                   >调动审核</el-dropdown-item>
                   <el-dropdown-item
                     :class="{'ih-data-disabled': row.status !== 'MoveWaitSend'}"
                     @click.native.prevent="posOperate(row, 'MoveSend')"
+                    v-has="'B.SALES.FINANCE.POSAPPLYLIST.MOVESEND'"
                   >调动寄出</el-dropdown-item>
                   <el-dropdown-item
                     :class="{'ih-data-disabled': row.status !== 'MoveOnTheWay'}"
                     @click.native.prevent="posOperate(row, 'MoveSign')"
+                    v-has="'B.SALES.FINANCE.POSAPPLYLIST.MOVESIGN'"
                   >调动签收</el-dropdown-item>
                 </template>
               </el-dropdown-menu>

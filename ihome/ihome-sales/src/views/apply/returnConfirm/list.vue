@@ -4,7 +4,7 @@
  * @Author: ywl
  * @Date: 2021-01-13 14:50:21
  * @LastEditors: ywl
- * @LastEditTime: 2021-01-15 15:34:34
+ * @LastEditTime: 2021-01-16 17:37:11
 -->
 <template>
   <IhPage label-width="100px">
@@ -23,7 +23,7 @@
           <el-col :span="8">
             <el-form-item label="甲方公司名称">
               <el-input
-                v-model="queryPageParameters.applyNo"
+                v-model="queryPageParameters.developName"
                 placeholder="请输入甲方公司名称"
                 clearable
               ></el-input>
@@ -31,22 +31,29 @@
           </el-col>
           <el-col :span="8">
             <el-form-item label="发票类型">
-              <el-input
-                v-model="queryPageParameters.applyNo"
+              <el-select
+                v-model="queryPageParameters.billTypeCode"
                 placeholder="请选择发票类型"
                 clearable
-              ></el-input>
+              >
+                <el-option
+                  v-for="(i, n) in $root.dictAllList('InvoiceType')"
+                  :key="n"
+                  :label="i.name"
+                  :value="i.code"
+                ></el-option>
+              </el-select>
             </el-form-item>
           </el-col>
         </el-row>
         <el-row>
           <el-col :span="8">
             <el-form-item label="项目名称">
-              <el-input
-                v-model="queryPageParameters.applyNo"
-                placeholder="请选择项目名称"
+              <IhSelectPageByProject
+                v-model="queryPageParameters.proId"
+                placeholder="请选择项目"
                 clearable
-              ></el-input>
+              ></IhSelectPageByProject>
             </el-form-item>
           </el-col>
           <el-col :span="8">
@@ -70,9 +77,15 @@
     </template>
     <template #btn>
       <el-row>
-        <el-button type="primary">查询</el-button>
-        <el-button type="info">重置</el-button>
-        <el-button>批量添加回款</el-button>
+        <el-button
+          type="primary"
+          @click="search()"
+        >查询</el-button>
+        <el-button
+          type="info"
+          @click="reset()"
+        >重置</el-button>
+        <el-button @click="handleAll()">批量添加回款</el-button>
       </el-row>
     </template>
     <template #table>
@@ -95,6 +108,7 @@
               :empty-text="emptyText"
               :data="resPageInfo.list"
               v-loading="loading"
+              @selection-change="handleSelectionChange"
             >
               <el-table-column
                 v-if="i.name === 'Confirm'"
@@ -110,7 +124,7 @@
               ></el-table-column>
               <el-table-column
                 label="项目名称"
-                prop="applyNo"
+                prop="proName"
                 min-width="165"
               ></el-table-column>
               <el-table-column
@@ -148,7 +162,7 @@
               </el-table-column>
               <el-table-column
                 label="申请人"
-                min-width="145"
+                min-width="165"
                 prop="applyUserName"
               ></el-table-column>
               <el-table-column
@@ -195,6 +209,7 @@
                   <el-link
                     type="success"
                     class="margin-left-10"
+                    @click="retPayment(row)"
                   >添加回款</el-link>
                 </template>
               </el-table-column>
@@ -215,15 +230,39 @@
         :total="resPageInfo.total"
       ></el-pagination>
     </template>
+    <!-- dialog -->
+    <IhDialog :show="dialogVisible">
+      <Add
+        :data="tableData"
+        @cancel="() => (dialogVisible = false)"
+        @finish="() => {
+          dialogVisible = false;
+          getListMixin();
+        }"
+      />
+    </IhDialog>
+    <IhDialog :show="allVisible">
+      <AllAdd
+        :data="selectTable"
+        @cancel="() => (allVisible = false)"
+        @finish="() => {
+          allVisible = false;
+          getListMixin();
+        }"
+      />
+    </IhDialog>
   </IhPage>
 </template>
 
 <script lang="ts">
 import { Component, Vue } from "vue-property-decorator";
 import PaginationMixin from "../../../mixins/pagination";
+import Add from "./dialog/add.vue";
+import AllAdd from "./dialog/allAdd.vue";
 import { post_receConfirmDetail_getList } from "../../../api/apply/index";
 
 @Component({
+  components: { Add, AllAdd },
   mixins: [PaginationMixin],
 })
 export default class ReturnConfirmList extends Vue {
@@ -255,7 +294,42 @@ export default class ReturnConfirmList extends Vue {
       name: "",
     },
   ];
+  private dialogVisible = false;
+  private tableData: any = null;
+  private allVisible = false;
+  private selectTable: any = [];
 
+  private reset() {
+    Object.assign(this.queryPageParameters, {
+      applyNo: null,
+      applyTimeEnd: null,
+      applyTimeStart: null,
+      billTypeCode: null,
+      developName: null,
+    });
+    this.timeList = [];
+  }
+  private search() {
+    let flag = this.timeList && this.timeList.length;
+    this.queryPageParameters.applyTimeStart = flag ? this.timeList[0] : null;
+    this.queryPageParameters.applyTimeEnd = flag ? this.timeList[1] : null;
+    this.queryPageParameters.pageNum = 1;
+    this.getListMixin();
+  }
+  private handleAll() {
+    if (this.selectTable.length) {
+      this.allVisible = true;
+    } else {
+      this.$message.warning("请先勾选表格数据");
+    }
+  }
+  private handleSelectionChange(val: any) {
+    this.selectTable = val;
+  }
+  private retPayment(row: any) {
+    this.dialogVisible = true;
+    this.tableData = { ...row };
+  }
   private tabChange() {
     this.queryPageParameters.pageNum = 1;
     this.getListMixin();

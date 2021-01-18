@@ -4,7 +4,7 @@
  * @Author: wwq
  * @Date: 2020-12-26 11:11:28
  * @LastEditors: wwq
- * @LastEditTime: 2021-01-11 20:45:20
+ * @LastEditTime: 2021-01-16 17:45:26
 -->
 <template>
   <IhPage label-width="120px">
@@ -136,6 +136,7 @@
         <el-button
           type="success"
           @click="add()"
+          v-has="'B.SALES.PAYOFF.PAYOFFLIST.FFZFSQ'"
         >发起支付申请</el-button>
         <el-button
           type="info"
@@ -144,10 +145,12 @@
         <el-button
           type="danger"
           @click="remove(null, 'duo')"
+          v-has="'B.SALES.PAYOFF.PAYOFFLIST.PLSC'"
         >批量删除</el-button>
         <el-button
           type="success"
           @click="exportMsg()"
+          v-has="'B.SALES.PAYOFF.PAYOFFLIST.DCLB'"
         >导出</el-button>
       </el-row>
     </template>
@@ -269,27 +272,33 @@
                 <el-dropdown-item
                   :class="{ 'ih-data-disabled': ''}"
                   @click.native.prevent="routeTo(row, 'edit')"
+                  v-has="'B.SALES.PAYOFF.PAYOFFLIST.BJLB'"
                 >编辑</el-dropdown-item>
                 <el-dropdown-item
                   :class="{ 'ih-data-disabled': ''}"
                   @click.native.prevent="remove(row, '')"
+                  v-has="'B.SALES.PAYOFF.PAYOFFLIST.SCLB'"
                 >删除</el-dropdown-item>
                 <el-dropdown-item
                   :class="{'ih-data-disabled': ''}"
                   @click.native.prevent="recall(row)"
+                  v-has="'B.SALES.PAYOFF.PAYOFFLIST.CHLB'"
                 >撤回
                 </el-dropdown-item>
                 <el-dropdown-item
                   :class="{'ih-data-disabled': ''}"
                   @click.native.prevent="routeTo(row, 'replenish')"
+                  v-has="'B.SALES.PAYOFF.PAYOFFLIST.BCLB'"
                 >补充</el-dropdown-item>
                 <el-dropdown-item
                   :class="{'ih-data-disabled': ''}"
                   @click.native.prevent="uploadList(row, 'SetteDetail')"
+                  v-has="'B.SALES.PAYOFF.PAYOFFLIST.DCJSMX'"
                 >导出结算明细</el-dropdown-item>
                 <el-dropdown-item
                   :class="{'ih-data-disabled': ''}"
                   @click.native.prevent="uploadList(row, 'RequestForm')"
+                  v-has="'B.SALES.PAYOFF.PAYOFFLIST.XZQKD'"
                 >下载请款单</el-dropdown-item>
               </el-dropdown-menu>
             </el-dropdown>

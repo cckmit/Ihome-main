@@ -4,7 +4,7 @@
  * @Author: wwq
  * @Date: 2020-11-27 17:29:09
  * @LastEditors: wwq
- * @LastEditTime: 2021-01-15 20:26:10
+ * @LastEditTime: 2021-01-16 18:56:57
 -->
 <template>
   <div>
@@ -12,7 +12,7 @@
     <div class="padding-left-20">
       <el-table
         class="ih-table"
-        :data="info.snapshotVOS"
+        :data="info.termHisVOS"
         style="width: 100%"
       >
         <el-table-column
@@ -111,7 +111,7 @@
         </el-table-column>
         <el-table-column
           label="备注"
-          align="remark"
+          prop="remark"
         >
         </el-table-column>
       </el-table>
