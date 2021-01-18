@@ -1146,10 +1146,10 @@
         let channelList: any = (this as any).$root.dictAllList('ChannelLevel');
         this.postData.agencyId = data[0].channelId; // 渠道公司Id
         this.postData.agencyName = data[0].channelName; // 渠道公司
-        this.postData.channelLevel = data[0].channelGradeId; // 渠道等级Id
+        this.postData.channelLevel = data[0].channelGrade; // 渠道等级Id
         if (channelList && channelList.length > 0 && data[0].channelGrade) {
           channelList.forEach((list: any) => {
-            if (list.code === data[0].channelLevel) {
+            if (list.code === data[0].channelGrade) {
               this.postData.channelLevelName= list.name; // 渠道等级
             }
           });
@@ -1168,10 +1168,10 @@
 
     // 确定选择经纪人
     finishAddBroker(data: any) {
-      console.log('data', data);
+      // console.log('data', data);
       if(data && data.length) {
-        this.postData.brokerId= data[0].brokerId; // 渠道经纪人Id
-        this.postData.brokerName= data[0].brokerName; // 渠道经纪人
+        this.postData.brokerId= data[0].id; // 渠道经纪人Id
+        this.postData.brokerName= data[0].name; // 渠道经纪人
       }
     }
 

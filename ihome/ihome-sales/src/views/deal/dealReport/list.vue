@@ -312,21 +312,25 @@
               </span>
               <el-dropdown-menu slot="dropdown">
                 <el-dropdown-item
+                  :class="{ 'ih-data-disabled': ['Draft', 'AchieveDeclareUnconfirm', 'Reject'].includes(scope.row.status)}"
                   v-has="'B.SALES.DEAL.DEALLIST.UPDATE'"
                   @click.native.prevent="handleEdit(scope)"
                 >修改
                 </el-dropdown-item>
                 <el-dropdown-item
+                  :class="{ 'ih-data-disabled': ['Draft', 'AchieveDeclareUnconfirm', 'Reject'].includes(scope.row.status)}"
                   v-has="'B.SALES.DEAL.DEALLIST.DELETE'"
                   @click.native.prevent="handleDelete(scope)"
                 >删除
                 </el-dropdown-item>
                 <el-dropdown-item
+                  :class="{ 'ih-data-disabled': ['PlatformClerkUnreview', 'HeadDepartUnreview', 'BranchBusinessManageUnreview', 'NotSigned'].includes(scope.row.status)}"
                   v-has="'B.SALES.DEAL.DEALLIST.REVOKE'"
                   @click.native.prevent="handleRecall(scope)"
                 >撤回
                 </el-dropdown-item>
                 <el-dropdown
+                  :class="{ 'ih-data-disabled': scope.row.status === 'ReviewPassed'}"
                   v-has="'B.SALES.DEAL.DEALLIST.SUPPLEMENTDEAL'"
                   trigger="click" class="el-dropdown-menu__item" placement="top-start">
                   <span class="el-dropdown-link">
@@ -349,15 +353,16 @@
                   </el-dropdown-menu>
                 </el-dropdown>
                 <el-dropdown-item
+                  :class="{ 'ih-data-disabled': ['PlatformClerkUnreview', 'HeadDepartUnreview', 'BranchBusinessManageUnreview'].includes(scope.row.status)}"
                   v-has="'B.SALES.DEAL.DEALLIST.VERIFY'"
                   @click.native.prevent="handleReview(scope)"
                 >审核
                 </el-dropdown-item>
-                <el-dropdown-item
-                  v-has="'B.SALES.DEAL.DEALLIST.REVOKEVERIFY'"
-                  @click.native.prevent="handleWithdrawalReview(scope)"
-                >撤回审核
-                </el-dropdown-item>
+<!--                <el-dropdown-item-->
+<!--                  v-has="'B.SALES.DEAL.DEALLIST.REVOKEVERIFY'"-->
+<!--                  @click.native.prevent="handleWithdrawalReview(scope)"-->
+<!--                >撤回审核-->
+<!--                </el-dropdown-item>-->
               </el-dropdown-menu>
             </el-dropdown>
           </template>

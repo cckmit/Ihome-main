@@ -224,7 +224,7 @@
       if (data && data.length > 0) {
         await (this as any).$refs.child.finishAddBroker(data);
       }
-      this.dialogAddAgency = false;
+      this.dialogAddBroker = false;
     }
 
     // 添加优惠告知书
