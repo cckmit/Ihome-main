@@ -3,8 +3,8 @@
  * @version: 
  * @Author: wwq
  * @Date: 2020-12-01 09:05:50
- * @LastEditors: wwq
- * @LastEditTime: 2021-01-15 17:15:24
+ * @LastEditors: zyc
+ * @LastEditTime: 2021-01-18 15:00:33
 -->
 <template>
   <el-dialog
@@ -310,10 +310,10 @@ import PaginationMixin from "@/mixins/pagination";
 import { post_contract_list } from "@/api/contract/index";
 import { post_company_listAll } from "@/api/developer/index";
 import { post_company_getAll } from "@/api/system/index";
-import SelectOrganizationTree from "@/components/SelectOrganizationTree.vue";
+
 
 @Component({
-  components: { SelectOrganizationTree },
+  components: {  },
   mixins: [PaginationMixin],
 })
 export default class PartyAList extends Vue {

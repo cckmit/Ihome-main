@@ -4,7 +4,7 @@
  * @Author: zyc
  * @Date: 2020-06-30 09:21:17
  * @LastEditors: zyc
- * @LastEditTime: 2021-01-09 10:38:34
+ * @LastEditTime: 2021-01-18 14:50:53
 --> 
 <template>
   <ih-page>
@@ -140,20 +140,7 @@
             <el-row>
               <el-col :span="8">
                 <el-form-item label="归属组织">
-                  <SelectOrganizationTree
-                    :orgId="queryPageParameters.orgId"
-                    @callback="(id) => (queryPageParameters.orgId = id)"
-                  />
-                  <!-- <IhSelectTree
-                    min-height="400px"
-                    class="width--100"
-                    :props="props"
-                    :options="list"
-                    :value="queryPageParameters.orgId"
-                    :clearable="true"
-                    :accordion="true"
-                    @getValue="getValue($event)"
-                  />-->
+                  <IhSelectOrgTree v-model="queryPageParameters.orgId" />
                 </el-form-item>
               </el-col>
               <el-col :span="8">
@@ -211,12 +198,7 @@
               </el-col>
               <el-col :span="8">
                 <el-form-item label="权限组织">
-                  <SelectOrganizationTree
-                    :orgId="queryPageParameters.permissionOrgId"
-                    @callback="
-                      (id) => (queryPageParameters.permissionOrgId = id)
-                    "
-                  />
+                  <IhSelectOrgTree v-model="queryPageParameters.permissionOrgId" />
                 </el-form-item>
               </el-col>
             </el-row>
@@ -465,7 +447,8 @@ import UserAdd from "./add.vue";
 import UserJobRole from "./dialog/job.vue";
 import CopyUsers from "./dialog/copy-users.vue";
 import OrganizationJurisdiction from "@/components/OrganizationJurisdiction.vue";
-import SelectOrganizationTree from "@/components/SelectOrganizationTree.vue";
+
+
 import {
   post_user_getList,
   post_user_delete__id,
@@ -481,7 +464,7 @@ import PaginationMixin from "../../mixins/pagination";
     UserJobRole,
     OrganizationJurisdiction,
     CopyUsers,
-    SelectOrganizationTree,
+
   },
   mixins: [PaginationMixin],
 })
