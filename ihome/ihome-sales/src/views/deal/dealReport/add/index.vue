@@ -217,18 +217,14 @@
         contNoList: [] // 分销协议列表
       }
       if (data && data.length > 0) {
-        postData.agencyData = data;
-        if (this.selectableChannelInfo.isMultipleNotice && this.selectableChannelInfo.cycleId) {
-          let objData: any = {
-            channelId: data[0].channelId, // 渠道商公司ID
-            cycleId: this.selectableChannelInfo.cycleId // 周期ID
-          }
-          const info: any = await post_pageData_initDistribution(objData);
-          postData.contNoList = info.contracts;
-          await (this as any).$refs.child.finishAddAgency(postData);
-        } else {
-          await (this as any).$refs.child.finishAddAgency(postData);
+        let objData: any = {
+          channelId: data[0].channelId, // 渠道商公司ID
+          cycleId: this.selectableChannelInfo.cycleId // 周期ID
         }
+        const info: any = await post_pageData_initDistribution(objData);
+        postData.agencyData = data;
+        postData.contNoList = info.contracts;
+        await (this as any).$refs.child.finishAddAgency(postData);
       }
       this.dialogAddAgency = false;
     }
