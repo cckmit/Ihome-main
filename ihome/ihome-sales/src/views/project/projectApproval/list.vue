@@ -4,7 +4,7 @@
  * @Author: wwq
  * @Date: 2020-11-27 17:11:14
  * @LastEditors: wwq
- * @LastEditTime: 2021-01-18 12:05:40
+ * @LastEditTime: 2021-01-18 14:06:35
 -->
 <template>
   <IhPage label-width="100px">
@@ -239,12 +239,12 @@
                   v-has="'B.SALES.PROJECT.TERMLIST.EDITDISTRIBUT'"
                 >补充协议</el-dropdown-item>
                 <el-dropdown-item
-                  v-if="row.state === 'Stop'"
+                  v-if="row.state === 'Stop' && row.auditEnum === 'ConstractAdopt'"
                   @click.native.prevent="start(row)"
                   v-has="'B.SALES.PROJECT.TERMLIST.QYZQ'"
                 >启用周期</el-dropdown-item>
                 <el-dropdown-item
-                  v-if="row.state === 'Start'"
+                  v-if="row.state === 'Start' && row.auditEnum === 'ConstractAdopt'"
                   @click.native.prevent="stop(row)"
                   v-has="'B.SALES.PROJECT.TERMLIST.ZFZQ'"
                 >作废周期</el-dropdown-item>

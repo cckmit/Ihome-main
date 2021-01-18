@@ -4,7 +4,7 @@
  * @Author: wwq
  * @Date: 2020-11-27 17:27:01
  * @LastEditors: wwq
- * @LastEditTime: 2021-01-14 16:43:19
+ * @LastEditTime: 2021-01-18 14:14:11
 -->
 <template>
   <div>
@@ -142,9 +142,13 @@
             prop="modeDescription"
           ></el-table-column>
           <el-table-column
-            prop="partyARefundDays"
-            label="甲方退款天数"
-          ></el-table-column>
+            prop="state"
+            label="状态"
+          >
+            <template v-slot="{ row }">
+              {{$root.dictAllName(row.state, 'Oper')}}
+            </template>
+          </el-table-column>
           <el-table-column
             label="操作"
             width="120"
