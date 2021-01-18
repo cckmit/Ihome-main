@@ -74,10 +74,9 @@
               </el-col>
               <el-col :span="8">
                 <el-form-item label="组织">
-                  <SelectOrganizationTree
-                    :orgId="queryPageParameters.dealOrg"
-                    @callback="(id) => (queryPageParameters.dealOrg = id)"
-                  />
+                  <IhSelectOrgTree
+                    v-model="queryPageParameters.dealOrg"
+                  ></IhSelectOrgTree>
                 </el-form-item>
               </el-col>
               <el-col :span="8">
