@@ -116,8 +116,6 @@
       // console.log('agentData', this.data);
       if (this.data && this.data.length) {
         this.getListMixin();
-      } else {
-        this.$message.error('暂无可选的渠道商信息');
       }
     }
 

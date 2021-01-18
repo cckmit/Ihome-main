@@ -207,10 +207,19 @@
         </el-col>
         <el-col :span="6" v-if="postData.contType === 'DistriDeal'">
           <el-form-item label="经纪人" :prop="postData.contType === 'DistriDeal' ? 'brokerName' : 'notEmpty'">
-            <el-input
-              v-model="postData.brokerName"
-              disabled
-              placeholder=""></el-input>
+            <div v-if="baseInfoInDeal.hasRecord">
+              <el-input
+                v-model="postData.brokerName"
+                :disabled="baseInfoInDeal.hasRecord"
+                placeholder=""></el-input>
+            </div>
+            <div v-else>
+              <el-input
+                placeholder="请选择经纪人"
+                readonly v-model="postData.brokerName" @click.native.prevent="selectBroker">
+                <el-button slot="append" icon="el-icon-search"></el-button>
+              </el-input>
+            </div>
           </el-form-item>
         </el-col>
         <el-col :span="6" v-if="postData.contType === 'DistriDeal'">
@@ -449,7 +458,7 @@
       <el-row style="padding-left: 20px">
         <el-col>
           <div
-            v-if="baseInfoByTerm.termStageEnum === 'Recognize' && !baseInfoInDeal.notice.length"
+            v-if="postData.roomId && !baseInfoInDeal.notice.length"
             class="add-all-wrapper">
             <el-button type="success" @click="handleAddNotice">添加</el-button>
           </div>
@@ -471,7 +480,7 @@
               <template slot-scope="scope">
                 <el-link
                   style="color: #f66"
-                  v-if="!!scope.row.addType"
+                  v-if="!!scope.row.addType && scope.$index === 0"
                   class="margin-right-10"
                   type="primary"
                   @click.native.prevent="removeNotice(scope)"
@@ -493,7 +502,7 @@
     <el-row style="padding-left: 20px">
       <el-col>
         <div
-          v-if="!baseInfoInDeal.customerAddVOS.length && postData.roomId"
+          v-if="!baseInfoInDeal.customerAddVOS.length && !baseInfoInDeal.isMultipleNotice && postData.roomId"
           class="add-all-wrapper">
           <el-button type="success" @click="handleAddCustomer">添加客户</el-button>
         </div>
@@ -516,7 +525,7 @@
           <el-table-column prop="cardNo" label="证件编号" min-width="150"></el-table-column>
           <el-table-column prop="email" label="邮箱" min-width="120"></el-table-column>
           <el-table-column
-            v-if="!baseInfoInDeal.customerAddVOS.length"
+            v-if="!baseInfoInDeal.customerAddVOS.length && !baseInfoInDeal.isMultipleNotice"
             fixed="right" label="操作" width="100">
             <template slot-scope="scope">
               <el-link
@@ -1075,7 +1084,8 @@
     post_deal_updateAchieveAllot, // 文员岗 - 修改成交信息
     post_pageData_recalculateAchieve, // 重新计算平台费用部分
     post_pageData_recalculateAchieveComm, // 总包分销一致时，重新计算平台费用的拆佣金额及拆用比例
-    post_pageData_calculateReceiveAmount // 重算收派金额
+    post_pageData_calculateReceiveAmount, // 重算收派金额
+    post_pageData_convertCustomers // 通过优惠告知书查询客户
   } from "@/api/deal";
   import {
     get_term_getProBaseByTermId__termId, // 通过项目周期获取成交基础信息
@@ -1135,6 +1145,7 @@
       },
       customerAddVOS: [], // 客户信息
       selectableChannelIds: [], // 可选的渠道商ids
+      isMultipleNotice: false, // 同房号是否存在多份优惠告知书
     }; // 通过initPage接口获取到的成交信息(项目周期 + 房号)
     formLoading: any = false; // 表格loading状态
     postData: any = {
@@ -1818,6 +1829,37 @@
     // 确定选择项目周期
     finishAddAgency(data: any) {
       console.log('data', data);
+      if(data && data.length) {
+        let channelList: any = (this as any).$root.dictAllList('ChannelLevel');
+        this.postData.agencyId = data[0].channelId; // 渠道公司Id
+        this.postData.agencyName = data[0].channelName; // 渠道公司
+        this.postData.channelLevel = data[0].channelGrade; // 渠道等级Id
+        if (channelList && channelList.length > 0 && data[0].channelGrade) {
+          channelList.forEach((list: any) => {
+            if (list.code === data[0].channelGrade) {
+              this.postData.channelLevelName= list.name; // 渠道等级
+            }
+          });
+        }
+      }
+    }
+
+    // 选择经纪人
+    selectBroker() {
+      if (!this.postData.agencyId) {
+        this.$message.warning('请先选择渠道公司');
+        return;
+      }
+      (this as any).$parent.selectBroker(this.postData.agencyId);
+    }
+
+    // 确定选择经纪人
+    finishAddBroker(data: any) {
+      // console.log('data', data);
+      if(data && data.length) {
+        this.postData.brokerId= data[0].id; // 渠道经纪人Id
+        this.postData.brokerName= data[0].name; // 渠道经纪人
+      }
     }
 
     // 改变栋座
@@ -1895,6 +1937,14 @@
         this.$notify({
           title: '提示',
           message: '明源客户与优惠告知书客户有差异',
+          duration: 0
+        });
+      }
+      // 多分优惠告知书情况
+      if (baseInfo.isMultipleNotice) {
+        this.$notify({
+          title: '提示',
+          message: '同房号存在多份已生效的优惠告知书',
           duration: 0
         });
       }
@@ -2249,13 +2299,22 @@
     // 添加优惠告知书
     handleAddNotice() {
       if(this.baseInfoByTerm.termId) {
-        (this as any).$parent.handleAddNotice(this.baseInfoByTerm);
+        let data: any = {
+          termId: this.baseInfoByTerm.termId,
+          proId: this.baseInfoByTerm.proId,
+          roomId: this.postData.roomId, // 多分优惠告知书下需要通过房号去限制
+          isMultipleNotice: this.baseInfoInDeal.isMultipleNotice // 同房号是否存在多份优惠告知书
+        };
+        (this as any).$parent.handleAddNotice(data);
       }
     }
 
     // 确定选择优惠告知书
     async finishAddNotice(data: any) {
       if (data.length === 0) return;
+      if (this.baseInfoInDeal.isMultipleNotice) {
+        // await this.getCustomByNotice(data.ownerList);
+      }
       if (this.postData.offerNoticeVO.length > 0) {
         let flag = false;
         flag = this.postData.offerNoticeVO.some((item: any) => {
@@ -2268,7 +2327,7 @@
           this.postData.offerNoticeVO.push(
             {
               ...data,
-              addType: 'manual'
+              addType: 'manual' // 手动添加的才可以删除
             }
           );
         }
@@ -2276,19 +2335,28 @@
         this.postData.offerNoticeVO.push(
           {
             ...data,
-            addType: 'manual'
+            addType: 'manual' // 手动添加的才可以删除
           }
         );
       }
       (this as any).$parent.handleAddNotice(this.baseInfoByTerm);
     }
 
+    // 客户信息由优惠告知书带出 ---- 2021-01-16 待定
+    async getCustomByNotice(list: any = []) {
+      if (!list.length) return;
+      // 等待后端提供接口
+      const customList: any = await post_pageData_convertCustomers(list);
+      console.log(customList);
+    }
+
     // 删除优惠告知书
     removeNotice(scope: any) {
-      // console.log(scope);
-      this.postData.offerNoticeVO = this.postData.offerNoticeVO.filter((item: any) => {
-        return item.id !== scope.row.id;
-      })
+      console.log(scope);
+      // this.postData.offerNoticeVO = this.postData.offerNoticeVO.filter((item: any) => {
+      //   return item.id !== scope.row.id;
+      // });
+      this.postData.offerNoticeVO = [];
     }
 
     // 添加客户
@@ -2304,7 +2372,18 @@
     // 确定选择客户
     async finishAddCustomer(data: any) {
       // console.log('data', data);
-      if (data.length === 0) return
+      if (data.length === 0) return;
+      let customData: any = {
+        addId: data[0].id, // 手动添加的时候保存id --- 为了回显收派金额
+        cardNo: data[0].certificateNumber,
+        cardType: data[0].cardType,
+        customerName: data[0].custName,
+        customerNo: data[0].custCode,
+        customerPhone: data[0].custTel,
+        customerType: data[0].custType,
+        email: data[0].email,
+        isCustomer: null // 是否主要客户
+      }
       if (this.postData.customerVO.length > 0) {
         let flag = false;
         flag = this.postData.customerVO.some((item: any) => {
@@ -2314,12 +2393,66 @@
           this.$message.error('已经存在相同的客户，请重新选择！');
           return;
         } else {
-          this.postData.customerVO.push(...data);
+          customData.isCustomer = "No";
+          this.postData.customerVO.push(customData);
         }
       } else {
-        this.postData.customerVO.push(...data);
+        customData.isCustomer = "Yes";
+        this.postData.customerVO.push(customData);
+        // 因为没有客户，选了客户后第一个客户是主要客户，需要回显到收派金额中类型为服务费的客户上
+        if (this.postData.receiveVO && this.postData.receiveVO.length) {
+          this.postData.receiveVO.forEach((item: any) => {
+            if (item.type === "ServiceFee") {
+              item.partyACustomer = data[0].id;
+              item.partyACustomerName = data[0].custName;
+            }
+          })
+        }
       }
       (this as any).$parent.handleAddCustomer();
+    }
+
+    // 删除客户/对外拆佣项
+    async deleteAdd(scope: any, type: any) {
+      // console.log(scope);
+      // console.log(type);
+      if (type === 'customer') {
+        // 删除客户
+        this.postData.customerVO = this.postData.customerVO.filter((item: any) => {
+          return item.id !== scope.row.id;
+        });
+        if (scope.$index === 0) {
+          // 删除的是第一个,需要把现在的第一个赋值给收派金额类型为服务费的信息中
+          if (this.postData.customerVO.length) {
+            if (this.postData.receiveVO && this.postData.receiveVO.length) {
+              this.postData.receiveVO.forEach((item: any) => {
+                if (item.type === "ServiceFee") {
+                  item.partyACustomer = this.postData.customerVO[0].addId;
+                  item.partyACustomerName = this.postData.customerVO[0].customerName;
+                  item.isCustomer = "Yes";
+                }
+              })
+            }
+          } else {
+            if (this.postData.receiveVO.length) {
+              if (this.postData.receiveVO && this.postData.receiveVO.length) {
+                this.postData.receiveVO.forEach((item: any) => {
+                  if (item.type === "ServiceFee") {
+                    item.partyACustomer = null;
+                    item.partyACustomerName = null;
+                  }
+                })
+              }
+            }
+          }
+        }
+      } else if (type === 'commission') {
+        // 删除对外拆佣项
+        this.postData.commissionInfoList = this.postData.commissionInfoList.filter((item: any, index: any) => {
+          console.log(item);
+          return index !== scope.$index;
+        });
+      }
     }
 
     // 确定选择收派套餐
@@ -2358,25 +2491,6 @@
       }
     }
 
-    // 删除客户/对外拆佣项
-    async deleteAdd(scope: any, type: any) {
-      // console.log(scope);
-      // console.log(type);
-      if (type === 'customer') {
-        // 删除客户
-        this.postData.customerVO = this.postData.customerVO.filter((item: any, index: any) => {
-          console.log(item);
-          return index !== scope.$index;
-        });
-      } else if (type === 'commission') {
-        // 删除对外拆佣项
-        this.postData.commissionInfoList = this.postData.commissionInfoList.filter((item: any, index: any) => {
-          console.log(item);
-          return index !== scope.$index;
-        });
-      }
-    }
-
     // 增加拆佣项
     handleAddCommission() {
       // console.log('增加拆佣项');
@@ -2406,7 +2520,7 @@
         case 'AgentCompany':
           // 一手代理公司
           row.agencyName = this.postData.oneAgentTeamName;
-          row.agencyId = this.postData.oneAgentTeamName;
+          row.agencyId = this.postData.oneAgentTeamId;
           break;
         case 'ChannelCompany':
           // 渠道公司

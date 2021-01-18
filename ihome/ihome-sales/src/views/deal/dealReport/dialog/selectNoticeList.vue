@@ -46,10 +46,11 @@
         </el-col>
         <el-col :span="8">
           <el-form-item label="项目名称">
-            <SelectPageByProject
+            <IhSelectPageByProject
+              clearable
               v-model="queryPageParameters.projectId"
-              placeholder="请选择联动项目"
-            ></SelectPageByProject>
+              placeholder="请选择项目名称"
+            ></IhSelectPageByProject>
           </el-form-item>
         </el-col>
       </el-row>
@@ -58,41 +59,44 @@
           <el-row>
             <el-col :span="8">
               <el-form-item label="立项周期">
-                <SelectPageByCycle
+                <IhSelectPageByCycle
+                  clearable
                   v-model="queryPageParameters.cycleId"
                   placeholder="请选择立项周期"
-                ></SelectPageByCycle>
+                ></IhSelectPageByCycle>
               </el-form-item>
             </el-col>
             <el-col :span="8">
               <el-form-item label="栋座">
-                <SelectPageByBuild
+                <IhSelectPageByBuild
                   v-model="queryPageParameters.buyUnit"
                   :proId="queryPageParameters.projectId"
                   placeholder="请选择栋座"
-                ></SelectPageByBuild>
+                  clearable
+                ></IhSelectPageByBuild>
               </el-form-item>
             </el-col>
             <el-col :span="8">
               <el-form-item label="房号">
-                <SelectPageByRoom
+                <IhSelectPageByRoom
+                  :disabled="data.isMultipleNotice"
                   v-model="queryPageParameters.roomNumberId"
                   :proId="queryPageParameters.projectId"
                   :buildingId="queryPageParameters.buyUnit"
                   placeholder="请选择房号"
-                ></SelectPageByRoom>
+                ></IhSelectPageByRoom>
               </el-form-item>
             </el-col>
           </el-row>
           <el-row>
             <el-col :span="8">
               <el-form-item label="甲方">
-                <el-select
+                <IhSelectPageByCompany
                   v-model="queryPageParameters.partyAId"
                   clearable
                   placeholder="请选择甲方"
-                  class="width--100">
-                </el-select>
+                  class="width--100"
+                ></IhSelectPageByCompany>
               </el-form-item>
             </el-col>
             <el-col :span="8">
@@ -204,21 +208,11 @@
 </template>
 <script lang="ts">
   import {Component, Vue, Prop} from "vue-property-decorator";
-  import SelectPageByProject from "@/components/SelectPageByProject.vue";
-  import SelectPageByCycle from "@/components/SelectPageByCycle.vue";
-  import SelectPageByBuild from "@/components/SelectPageByBuild.vue";
-  import SelectPageByRoom from "@/components/selectPageByRoom.vue";
-
   import { post_notice_deal_list } from "@/api/contract/index";
   import PaginationMixin from "@/mixins/pagination";
 
   @Component({
-    components: {
-      SelectPageByProject,
-      SelectPageByCycle,
-      SelectPageByBuild,
-      SelectPageByRoom
-    },
+    components: {},
     mixins: [PaginationMixin],
   })
   export default class SelectNoticeList extends Vue {
