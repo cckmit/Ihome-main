@@ -4,7 +4,7 @@
  * @Author: wwq
  * @Date: 2020-11-27 17:11:14
  * @LastEditors: wwq
- * @LastEditTime: 2021-01-18 14:06:35
+ * @LastEditTime: 2021-01-18 19:09:40
 -->
 <template>
   <IhPage label-width="100px">
@@ -229,12 +229,12 @@
                   v-has="'B.SALES.PROJECT.TERMLIST.UPDATE'"
                 >修改</el-dropdown-item>
                 <el-dropdown-item
-                  :class="{'ih-data-disabled': !(row.auditEnum !== 'ConstractAdopt' && row.state === 'Start')}"
+                  :class="{'ih-data-disabled': !(row.auditEnum === 'ConstractAdopt' && row.state === 'Start')}"
                   @click.native.prevent="routeTo(row, 'apply')"
                   v-has="'B.SALES.PROJECT.TERMLIST.APPLYDISTRIBUT'"
                 >申领分销协议</el-dropdown-item>
                 <el-dropdown-item
-                  :class="{'ih-data-disabled': !(row.auditEnum !== 'ConstractAdopt' && row.state === 'Start')}"
+                  :class="{'ih-data-disabled': !(row.auditEnum === 'ConstractAdopt' && row.state === 'Start')}"
                   @click.native.prevent="replenish(row)"
                   v-has="'B.SALES.PROJECT.TERMLIST.EDITDISTRIBUT'"
                 >补充协议</el-dropdown-item>

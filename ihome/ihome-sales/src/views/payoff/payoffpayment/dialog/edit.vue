@@ -4,7 +4,7 @@
  * @Author: wwq
  * @Date: 2021-01-16 17:16:53
  * @LastEditors: wwq
- * @LastEditTime: 2021-01-16 18:34:24
+ * @LastEditTime: 2021-01-18 14:51:52
 -->
 <template>
   <el-dialog
@@ -278,7 +278,8 @@ export default class Edit extends Vue {
     this.channelAccountOptions = res.channelBanks;
     this.settlementMethodChange(this.info.settlementMethod);
     // 通过制单人查询我司及账号
-    this.makingInfo = await get_role_get__id(this.info.makerId);
+    this.makingInfo = await get_role_get__id({ id: this.info.makerId });
+    console.log(this.makingInfo);
   }
 }
 </script>

@@ -4,7 +4,7 @@
  * @Author: wwq
  * @Date: 2020-12-26 11:11:28
  * @LastEditors: wwq
- * @LastEditTime: 2021-01-16 17:45:26
+ * @LastEditTime: 2021-01-18 16:48:44
 -->
 <template>
   <IhPage label-width="120px">
@@ -331,6 +331,13 @@
         "
       />
     </ih-dialog>
+
+    <ih-dialog :show="prodialogVisible">
+      <Progress
+        :data="rogressData"
+        @cancel="() => (prodialogVisible = false)"
+      />
+    </ih-dialog>
   </IhPage>
 </template>
 <script lang="ts">
@@ -342,11 +349,12 @@ import {
 } from "@/api/payoff/index";
 import PaginationMixin from "../../../mixins/pagination";
 import SelectOrganizationTree from "@/components/SelectOrganizationTree.vue";
+import Progress from "./dialog/progress.vue";
 import axios from "axios";
 import { getToken } from "ihome-common/util/cookies";
 
 @Component({
-  components: { SelectOrganizationTree },
+  components: { SelectOrganizationTree, Progress },
   mixins: [PaginationMixin],
 })
 export default class PayoffList extends Vue {
@@ -364,6 +372,8 @@ export default class PayoffList extends Vue {
     endMakerTime: null,
     timeList: [],
   };
+  prodialogVisible: any = false;
+  rogressData: any = {};
   selection: any = [];
   resPageInfo: any = {
     total: null,
@@ -389,7 +399,11 @@ export default class PayoffList extends Vue {
   }
 
   showPlanPicture(data: any) {
-    console.log(data);
+    this.rogressData = {
+      id: data.id,
+      status: data.status,
+    };
+    this.prodialogVisible = true;
   }
 
   get emptyText() {
