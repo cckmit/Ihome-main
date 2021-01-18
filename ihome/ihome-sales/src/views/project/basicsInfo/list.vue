@@ -4,14 +4,14 @@
  * @Author: wwq
  * @Date: 2020-08-13 11:40:10
  * @LastEditors: wwq
- * @LastEditTime: 2021-01-07 20:23:51
+ * @LastEditTime: 2021-01-18 19:24:51
 -->
 <template>
-  <IhPage label-width="100px">
+  <IhPage label-width="110px">
     <template v-slot:form>
       <el-form
         ref="form"
-        label-width="100px"
+        label-width="110px"
       >
         <el-row>
           <el-col :span="8">
@@ -93,6 +93,23 @@
               </el-select>
             </el-form-item>
           </el-col>
+          <el-col :span="8">
+            <el-form-item label="是否市场化项目">
+              <el-select
+                v-model="queryPageParameters.exMarket"
+                clearable
+                placeholder="请选择"
+                class="width--100"
+              >
+                <el-option
+                  v-for="item in YesOrNoType"
+                  :key="item.code"
+                  :label="item.name"
+                  :value="item.code"
+                ></el-option>
+              </el-select>
+            </el-form-item>
+          </el-col>
         </el-row>
       </el-form>
     </template>
@@ -134,6 +151,14 @@
           label="项目名称"
           width="100"
         ></el-table-column>
+        <el-table-column
+          label="市场化项目"
+          prop="exMarket"
+        >
+          <template v-slot="{ row }">
+            {{row.exMarket? '是' : '否'}}
+          </template>
+        </el-table-column>
         <el-table-column
           prop="province"
           label="省份"
@@ -244,12 +269,24 @@ export default class ProjectList extends Vue {
     district: null,
     busTypeEnum: null,
     auditEnum: null,
+    exMarket: null,
   };
   provinceOption: any = [];
   resPageInfo: any = {
     total: 0,
     list: [],
   };
+
+  YesOrNoType = [
+    {
+      code: 1,
+      name: "是",
+    },
+    {
+      code: 0,
+      name: "否",
+    },
+  ];
 
   auditChange(row: any) {
     const Conduct = row.auditEnum === "Conduct";
@@ -284,6 +321,7 @@ export default class ProjectList extends Vue {
       district: null,
       busTypeEnum: null,
       auditEnum: null,
+      exMarket: null,
     });
     this.provinceOption = [];
   }
