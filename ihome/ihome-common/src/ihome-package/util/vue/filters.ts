@@ -4,7 +4,7 @@
  * @Author: zyc
  * @Date: 2020-07-16 08:55:55
  * @LastEditors: ywl
- * @LastEditTime: 2020-10-27 14:50:37
+ * @LastEditTime: 2021-01-18 21:04:58
  */
 export default (Vue: any, vm: any) => {
     (vm)
@@ -110,6 +110,11 @@ export default (Vue: any, vm: any) => {
         ) {
             return dates[val];
         });
+    })
+
+    Vue.filter('percent', function (value: any) {
+        let mul = Number(value) * 100
+        return mul + '%'
     })
 
 };
