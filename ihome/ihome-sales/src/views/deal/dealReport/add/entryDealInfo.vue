@@ -228,6 +228,7 @@
                 v-model="postData.contNo"
                 clearable
                 @change="changeContNo"
+                @visible-change="handleGetList"
                 placeholder="请选择分销协议编号"
                 class="width--100">
                 <el-option
@@ -707,6 +708,9 @@
     post_pageData_convertCustomers // 通过优惠告知书查询客户
   } from "@/api/deal";
   import {
+    post_distributionmx_receive_detail // 手动选择渠道商情况下，需要根据渠道商公司ID和周期ID去查分销协议
+  } from "@/api/contract";
+  import {
     get_term_getProBaseByTermId__termId, // 通过项目周期获取成交基础信息
   } from "@/api/project";
   import {
@@ -1061,8 +1065,8 @@
         // 业务模式
         this.postData.businessType = baseInfo.busEnum;
         this.contTypeList = await this.getContTypeList(this.postData.businessType); // 获取合同类型
-        this.refineModelList =await this.getRefineModelList(this.postData.businessType); // 获取细分业务模式下拉项
         this.postData.refineModel = (this as any).$parent.getRefineModel(this.postData.businessType); // 赋值细分业务模式
+        this.refineModelList = await this.getRefineModelList(this.postData.businessType); // 获取细分业务模式下拉项
         // 是否市场化项目
         this.postData.isMarketProject = baseInfo.exMarket === 1 ? 'Yes' : 'No';
         // 物业类型
@@ -1231,12 +1235,20 @@
         });
       }
       // 多分优惠告知书情况
+      this.postData.contNo = null; // 重置选择的编号
       if (baseInfo.isMultipleNotice) {
         this.$notify({
           title: '提示',
           message: '同房号存在多份已生效的优惠告知书',
           duration: 0
         });
+      } else {
+        // 分销协议编号
+        if (baseInfo.contracts && baseInfo.contracts.length > 0) {
+          this.contNoList = baseInfo.contracts;
+        } else {
+          this.contNoList = [];
+        }
       }
       // 栋座
       if (baseInfo.buildingId && !this.postData.buildingId) {
@@ -1244,13 +1256,6 @@
       }
       // 合同类型
       this.postData.contType = baseInfo.contType;
-      // 分销协议编号
-      this.postData.contNo = null; // 重置选择的编号
-      if (baseInfo.contracts && baseInfo.contracts.length > 0) {
-        this.contNoList = baseInfo.contracts;
-      } else {
-        this.contNoList = [];
-      }
       // 备案情况
       this.postData.recordState = baseInfo.myReturnVO.dealVO?.recordState;
       // 报备信息
@@ -1461,6 +1466,32 @@
           }
         })
       }
+    }
+
+    // 多个优惠告知书情况下，分销协议需要手动获取
+    async handleGetList(value: any) {
+      console.log('handleGetList', value);
+      if (value && this.baseInfoInDeal.isMultipleNotice) {
+        await this.getContNoList();
+      }
+    }
+
+    // 多个优惠告知书情况下，分销协议需要手动去获取：根据渠道公司id和周期id
+    async getContNoList() {
+      if (!this.postData.channelId) {
+        this.$message.warning("请先选择渠道商");
+        return;
+      }
+      if (!this.baseInfoByTerm.termId) {
+        this.$message.warning("请先选择项目周期");
+        return;
+      }
+      let postData: any = {
+        channelCompanyId: this.postData.channelId, // 渠道商公司ID
+        cycleId: this.baseInfoByTerm.termId // 周期ID
+      }
+      const list: any = await post_distributionmx_receive_detail(postData);
+      this.contNoList = list;
     }
 
     // 改变签约、认购价格后，初始化收派套餐问题
