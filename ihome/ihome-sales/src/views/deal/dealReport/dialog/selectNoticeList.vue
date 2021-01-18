@@ -47,7 +47,7 @@
         <el-col :span="8">
           <el-form-item label="项目名称">
             <IhSelectPageByProject
-              clearable
+              disabled
               v-model="queryPageParameters.projectId"
               placeholder="请选择项目名称"
             ></IhSelectPageByProject>
@@ -60,7 +60,7 @@
             <el-col :span="8">
               <el-form-item label="立项周期">
                 <IhSelectPageByCycle
-                  clearable
+                  disabled
                   v-model="queryPageParameters.cycleId"
                   placeholder="请选择立项周期"
                 ></IhSelectPageByCycle>
@@ -72,14 +72,14 @@
                   v-model="queryPageParameters.buyUnit"
                   :proId="queryPageParameters.projectId"
                   placeholder="请选择栋座"
-                  clearable
+                  disabled
                 ></IhSelectPageByBuild>
               </el-form-item>
             </el-col>
             <el-col :span="8">
               <el-form-item label="房号">
                 <IhSelectPageByRoom
-                  :disabled="data.isMultipleNotice"
+                  disabled
                   v-model="queryPageParameters.roomNumberId"
                   :proId="queryPageParameters.projectId"
                   :buildingId="queryPageParameters.buyUnit"
@@ -245,6 +245,8 @@
       console.log('notice data', this.data);
       this.queryPageParameters.cycleId = this.data.termId;
       this.queryPageParameters.projectId = this.data.proId;
+      this.queryPageParameters.buyUnit = this.data.buyUnit;
+      this.queryPageParameters.roomNumberId = this.data.roomId;
       this.getListMixin();
     }
 

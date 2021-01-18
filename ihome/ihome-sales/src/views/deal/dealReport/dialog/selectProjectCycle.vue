@@ -20,13 +20,30 @@
     class="dialog">
     <el-form ref="form" label-width="100px" @submit.native.prevent>
       <el-row>
-        <el-col :span="8" class="search-col">
-          <el-input
-            v-model="queryPageParameters.termName"
-            clearable
-            placeholder="项目周期名称"
-          ></el-input>
-          <el-button type="primary" class="margin-left-20" @click="handleSearch">查询</el-button>
+        <el-col :span="8">
+          <el-form-item label="周期名称">
+            <el-input
+              v-model="queryPageParameters.termName"
+              clearable
+              placeholder="周期名称"
+            ></el-input>
+          </el-form-item>
+        </el-col>
+        <el-col :span="8">
+          <el-form-item label="项目名称">
+            <el-input
+              v-model="queryPageParameters.proName"
+              placeholder="项目名称"
+            ></el-input>
+          </el-form-item>
+        </el-col>
+      </el-row>
+      <el-row>
+        <el-col :span="8">
+          <el-form-item label="">
+            <el-button type="primary" @click="handleSearch">查询</el-button>
+            <el-button type="info" @click="reset()">重置</el-button>
+          </el-form-item>
         </el-col>
       </el-row>
     </el-form>
@@ -39,14 +56,15 @@
       @select="handleSelect"
       @select-all="handleSelectAll">
       <el-table-column fixed type="selection" width="50" align="center"></el-table-column>
-      <el-table-column label="项目周期名称" prop="termName" min-width="250"></el-table-column>
+      <el-table-column label="周期名称" prop="termName" min-width="300"></el-table-column>
+      <el-table-column label="归属项目" prop="proName" min-width="180"></el-table-column>
       <el-table-column label="业务类型" prop="busTypeEnum" min-width="100">
         <template slot-scope="scope">
           <div>{{$root.dictAllName(scope.row.busTypeEnum, 'BusType')}}</div>
         </template>
       </el-table-column>
-      <el-table-column label="开始时间" prop="termStart" min-width="150"></el-table-column>
-      <el-table-column label="结束时间" prop="termEnd" min-width="150"></el-table-column>
+      <el-table-column label="开始时间" prop="termStart" min-width="130"></el-table-column>
+      <el-table-column label="结束时间" prop="termEnd" min-width="130"></el-table-column>
     </el-table>
     <div class="text-right">
       <br />
@@ -69,7 +87,7 @@
 <script lang="ts">
   import {Component, Vue, Prop} from "vue-property-decorator";
 
-  import {post_term_getList} from "@/api/project/index";
+  import {post_term_getDealList} from "@/api/project/index";
   import PaginationMixin from "@/mixins/pagination";
 
   @Component({
@@ -84,7 +102,9 @@
     private selection = [];
     public queryPageParameters: any = {
       auditEnum: 'ConstractAdopt', // 只显示合同审核通过的
-      termName: null
+      state: 'Start', // 只显示启用
+      termName: null,
+      proName: null
     };
     public resPageInfo: any = {
       total: null,
@@ -138,7 +158,16 @@
     }
 
     async getListMixin() {
-      this.resPageInfo = await post_term_getList(this.queryPageParameters);
+      this.resPageInfo = await post_term_getDealList(this.queryPageParameters);
+    }
+
+    private reset() {
+      Object.assign(this.queryPageParameters, {
+        auditEnum: 'ConstractAdopt', // 只显示合同审核通过的
+        state: 'Start', // 只显示启用
+        termName: null,
+        proName: null
+      });
     }
   }
 </script>

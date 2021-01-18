@@ -1061,8 +1061,8 @@
         // 业务模式
         this.postData.businessType = baseInfo.busEnum;
         this.contTypeList = await this.getContTypeList(this.postData.businessType); // 获取合同类型
-        this.refineModelList =await this.getRefineModelList(this.postData.businessType); // 获取细分业务模式下拉项
         this.postData.refineModel = (this as any).$parent.getRefineModel(this.postData.businessType); // 赋值细分业务模式
+        this.refineModelList = await this.getRefineModelList(this.postData.businessType); // 获取细分业务模式下拉项
         // 是否市场化项目
         this.postData.isMarketProject = baseInfo.exMarket === 1 ? 'Yes' : 'No';
         // 物业类型
@@ -1136,13 +1136,18 @@
         this.$message.warning('请先选择房号');
         return;
       }
-      (this as any).$parent.selectAgency(this.baseInfoInDeal.selectableChannelIds);
+      let data: any = {
+        selectableChannelIds: this.baseInfoInDeal.selectableChannelIds,
+        isMultipleNotice: this.baseInfoInDeal.isMultipleNotice,
+        cycleId: this.postData.cycleId
+      };
+      (this as any).$parent.selectAgency(data);
     }
 
     // 确定选择渠道公司
     finishAddAgency(data: any) {
-      console.log('data', data);
-      if(data && data.length) {
+      // console.log('data', data);
+      if(data.agencyData && data.agencyData.length) {
         let channelList: any = (this as any).$root.dictAllList('ChannelLevel');
         this.postData.agencyId = data[0].channelId; // 渠道公司Id
         this.postData.agencyName = data[0].channelName; // 渠道公司
@@ -1154,6 +1159,10 @@
             }
           });
         }
+      }
+      // 分销协议编号
+      if (data.contNoList && data.contNoList.length && this.baseInfoInDeal.isMultipleNotice) {
+        this.contNoList = data.contNoList;
       }
     }
 
@@ -1231,12 +1240,20 @@
         });
       }
       // 多分优惠告知书情况
+      this.postData.contNo = null; // 重置选择的编号
       if (baseInfo.isMultipleNotice) {
         this.$notify({
           title: '提示',
           message: '同房号存在多份已生效的优惠告知书',
           duration: 0
         });
+      } else {
+        // 分销协议编号
+        if (baseInfo.contracts && baseInfo.contracts.length > 0) {
+          this.contNoList = baseInfo.contracts;
+        } else {
+          this.contNoList = [];
+        }
       }
       // 栋座
       if (baseInfo.buildingId && !this.postData.buildingId) {
@@ -1244,13 +1261,6 @@
       }
       // 合同类型
       this.postData.contType = baseInfo.contType;
-      // 分销协议编号
-      this.postData.contNo = null; // 重置选择的编号
-      if (baseInfo.contracts && baseInfo.contracts.length > 0) {
-        this.contNoList = baseInfo.contracts;
-      } else {
-        this.contNoList = [];
-      }
       // 备案情况
       this.postData.recordState = baseInfo.myReturnVO.dealVO?.recordState;
       // 报备信息
@@ -1507,6 +1517,7 @@
         let data: any = {
           termId: this.baseInfoByTerm.termId,
           proId: this.baseInfoByTerm.proId,
+          buyUnit: this.postData.buildingId, // 栋座
           roomId: this.postData.roomId, // 多分优惠告知书下需要通过房号去限制
           isMultipleNotice: this.baseInfoInDeal.isMultipleNotice // 同房号是否存在多份优惠告知书
         };
@@ -1515,35 +1526,29 @@
     }
 
     // 确定选择优惠告知书
-    async finishAddNotice(data: any) {
-      if (data.length === 0) return;
-      // 判断客户是否是优惠告知书带出 --- 同房号下有多个优惠告知书 ---> 客户是由优惠告知书带出
-      if (this.baseInfoInDeal.isMultipleNotice) {
-        // await this.getCustomByNotice(data.ownerList);
-      }
-      if (this.postData.offerNoticeVO.length > 0) {
-        let flag = false;
-        flag = this.postData.offerNoticeVO.some((item: any) => {
-          return item.id === data[0].id;
-        })
-        if (flag) {
-          this.$message.error('已经存在相同的优惠告知书，请重新选择！');
-          return;
-        } else {
-          this.postData.offerNoticeVO.push(
-            {
-              ...data,
-              addType: 'manual' // 手动添加的才可以删除
-            }
-          );
-        }
-      } else {
-        this.postData.offerNoticeVO.push(
-          {
-            ...data,
-            addType: 'manual' // 手动添加的才可以删除
+    async finishAddNotice(info: any) {
+      // 选择优惠告知书后 --- 带出优惠告知书 + 客户信息
+      this.postData.offerNoticeVO = info.dealNotices;
+      this.postData.customerVO = info.customerConvertResponse;
+      // 回显收派金额中类型为服务费的客户上
+      if (this.postData.customerVO.length && this.postData.receiveVO && this.postData.receiveVO.length) {
+        this.postData.receiveVO.forEach((item: any) => {
+          if (item.type === "ServiceFee") {
+            item.partyACustomer = this.postData.customerVO[0].addId;
+            item.partyACustomerName = this.postData.customerVO[0].customerName;
           }
-        );
+        })
+      } else {
+        if (this.postData.receiveVO.length) {
+          if (this.postData.receiveVO && this.postData.receiveVO.length) {
+            this.postData.receiveVO.forEach((item: any) => {
+              if (item.type === "ServiceFee") {
+                item.partyACustomer = null;
+                item.partyACustomerName = null;
+              }
+            })
+          }
+        }
       }
       (this as any).$parent.handleAddNotice(this.baseInfoByTerm);
     }
@@ -1586,17 +1591,8 @@
         isCustomer: null // 是否主要客户
       }
       if (this.postData.customerVO.length > 0) {
-        let flag = false;
-        flag = this.postData.customerVO.some((item: any) => {
-          return item.id === data[0].id;
-        })
-        if (flag) {
-          this.$message.error('已经存在相同的客户，请重新选择！');
-          return;
-        } else {
-          customData.isCustomer = "No";
-          this.postData.customerVO.push(customData);
-        }
+        customData.isCustomer = "No";
+        this.postData.customerVO.push(customData);
       } else {
         customData.isCustomer = "Yes";
         this.postData.customerVO.push(customData);
@@ -1618,7 +1614,7 @@
       console.log(scope);
       // 删除客户
       this.postData.customerVO = this.postData.customerVO.filter((item: any) => {
-        return item.id !== scope.row.id;
+        return item.addId !== scope.row.addId;
       });
       if (scope.$index === 0) {
         // 删除的是第一个,需要把现在的第一个赋值给收派金额类型为服务费的信息中
@@ -1628,10 +1624,16 @@
               if (item.type === "ServiceFee") {
                 item.partyACustomer = this.postData.customerVO[0].addId;
                 item.partyACustomerName = this.postData.customerVO[0].customerName;
-                item.isCustomer = "Yes";
               }
-            })
+            });
           }
+          this.postData.customerVO.forEach((item: any, index: any) => {
+            if (index === 0) {
+              item.isCustomer = "Yes";
+            } else {
+              item.isCustomer = "No";
+            }
+          })
         } else {
           if (this.postData.receiveVO.length) {
             if (this.postData.receiveVO && this.postData.receiveVO.length) {

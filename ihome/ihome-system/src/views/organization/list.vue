@@ -4,7 +4,7 @@
  * @Author: zyc
  * @Date: 2020-12-09 09:45:59
  * @LastEditors: zyc
- * @LastEditTime: 2020-12-30 11:27:57
+ * @LastEditTime: 2021-01-18 14:52:11
 -->
 <!--
  * @Descripttion: 
@@ -23,7 +23,7 @@
             <el-col :span="24" class="organization-list-left">
               <OrganizationTree
                 ref="organizationTree"
-                @select="selectOrganizationTree"
+                @select="selectOrgTree"
                 @edit="editTree"
               />
             </el-col>
@@ -345,7 +345,7 @@ export default class OrganizationList extends Vue {
       console.log(error);
     }
   }
-  selectOrganizationTree(item: any) {
+  selectOrgTree(item: any) {
     this.queryPageParameters.parentId = item.id;
     this.leftItem = item;
     this.queryPageParameters.level = item.level + 1;

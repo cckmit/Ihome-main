@@ -147,7 +147,7 @@
     }
 
     private validateCorporateAchieve (rule: any, value: any, callback: any) {
-      if (!value) {
+      if (!value && this.data.currentEditItem.roleType !== 'BranchOffice') {
         return callback(new Error('角色人业绩不能为空'));
       } else {
         if (value > this.form.roleAchieveCap) {
