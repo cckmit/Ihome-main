@@ -2520,7 +2520,7 @@
         case 'AgentCompany':
           // 一手代理公司
           row.agencyName = this.postData.oneAgentTeamName;
-          row.agencyId = this.postData.oneAgentTeamName;
+          row.agencyId = this.postData.oneAgentTeamId;
           break;
         case 'ChannelCompany':
           // 渠道公司
