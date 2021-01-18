@@ -3,8 +3,8 @@
  * @version: 
  * @Author: ywl
  * @Date: 2020-09-27 10:46:14
- * @LastEditors: ywl
- * @LastEditTime: 2021-01-14 19:30:27
+ * @LastEditors: wwq
+ * @LastEditTime: 2021-01-18 11:18:52
 -->
 <template>
   <IhPage class="text-left distribution-info">
@@ -136,7 +136,6 @@
                 type="textarea"
                 :autosize="{ minRows: 3, maxRows: 3}"
                 v-model="ruleForm.agencyFeeRemark"
-                placeholder="代理费计付标准备注"
                 disabled
               ></el-input>
             </el-form-item>
@@ -149,7 +148,6 @@
                 type="textarea"
                 :autosize="{ minRows: 3, maxRows: 3}"
                 v-model="ruleForm.consumerComplete"
-                placeholder="客户成交以及确认"
                 disabled
               ></el-input>
             </el-form-item>
@@ -162,7 +160,6 @@
                 type="textarea"
                 :autosize="{ minRows: 3, maxRows: 3}"
                 v-model="ruleForm.agencyCostCondition"
-                placeholder="代理费结算条件"
                 disabled
               ></el-input>
             </el-form-item>
@@ -175,7 +172,6 @@
                 type="textarea"
                 :autosize="{ minRows: 3, maxRows: 3}"
                 v-model="ruleForm.agencyCostSettleWay"
-                placeholder="代理费结算方式"
                 disabled
               ></el-input>
             </el-form-item>
@@ -188,7 +184,6 @@
                 type="textarea"
                 :autosize="{ minRows: 3, maxRows: 3}"
                 v-model="ruleForm.unContractLiability"
-                placeholder="违约责任"
                 disabled
               ></el-input>
             </el-form-item>
@@ -201,7 +196,6 @@
                 type="textarea"
                 :autosize="{ minRows: 3, maxRows: 3}"
                 v-model="ruleForm.supplementary"
-                placeholder="补充条款"
                 disabled
               ></el-input>
             </el-form-item>

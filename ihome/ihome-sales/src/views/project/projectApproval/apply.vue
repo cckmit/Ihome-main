@@ -312,7 +312,6 @@
                 type="textarea"
                 disabled
                 :autosize="{ minRows: 4, maxRows: 8 }"
-                placeholder="请输入代理费计付标准备注"
                 v-model="info.agencyFeeRemark"
               >
               </el-input>
@@ -327,7 +326,6 @@
                 show-word-limit
                 type="textarea"
                 :autosize="{ minRows: 4, maxRows: 8 }"
-                placeholder="请输入客户成交以及确认"
                 v-model="info.consumerComplete"
               >
               </el-input>
@@ -342,7 +340,6 @@
                 show-word-limit
                 type="textarea"
                 :autosize="{ minRows: 4, maxRows: 8 }"
-                placeholder="请输入代理费结算条件"
                 v-model="info.agencyCostCondition"
               >
               </el-input>
@@ -357,7 +354,6 @@
                 show-word-limit
                 type="textarea"
                 :autosize="{ minRows: 4, maxRows: 8 }"
-                placeholder="请输入代理费结算方式"
                 v-model="info.agencyCostSettleWay"
               >
               </el-input>
@@ -372,7 +368,6 @@
                 disabled
                 type="textarea"
                 :autosize="{ minRows: 4, maxRows: 8 }"
-                placeholder="请输入违约责任"
                 v-model="info.unContractLiability"
               >
               </el-input>
@@ -387,7 +382,6 @@
                 show-word-limit
                 type="textarea"
                 :autosize="{ minRows: 4, maxRows: 8 }"
-                placeholder="请输入补充条款"
                 v-model="info.supplementary"
               >
               </el-input>

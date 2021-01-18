@@ -4,13 +4,14 @@
  * @Author: wwq
  * @Date: 2021-01-09 15:45:15
  * @LastEditors: wwq
- * @LastEditTime: 2021-01-09 15:52:49
+ * @LastEditTime: 2021-01-18 11:09:25
 -->
 <template>
   <ih-page>
     <template v-slot:info>
       <el-scrollbar>
         <el-tabs
+          class="tabClass"
           type="border-card"
           v-model="tabActive"
           stretch
@@ -20,49 +21,73 @@
             label="基础信息"
             name="BasicInfo"
           >
-            <BasicInfo v-if="componetName === 'BasicInfo'" />
+            <BasicInfo
+              v-if="componetName === 'BasicInfo'"
+              :style="{'max-height': maxHeight, 'overflow-y': 'auto', 'padding-right': '15px'}"
+            />
           </el-tab-pane>
           <el-tab-pane
             label="甲方合同"
             name="PartyA"
           >
-            <PartyA v-if="componetName === 'PartyA'" />
+            <PartyA
+              v-if="componetName === 'PartyA'"
+              :style="{'max-height': maxHeight, 'overflow-y': 'auto', 'padding-right': '15px'}"
+            />
           </el-tab-pane>
           <el-tab-pane
             label="报备规则"
             name="ReportedRules"
           >
-            <ReportedRules v-if="componetName === 'ReportedRules'" />
+            <ReportedRules
+              v-if="componetName === 'ReportedRules'"
+              :style="{'max-height': maxHeight, 'overflow-y': 'auto', 'padding-right': '15px'}"
+            />
           </el-tab-pane>
           <el-tab-pane
             label="收派套餐"
             name="SetMeal"
           >
-            <SetMeal v-if="componetName === 'SetMeal'" />
+            <SetMeal
+              v-if="componetName === 'SetMeal'"
+              :style="{'max-height': maxHeight, 'overflow-y': 'auto', 'padding-right': '15px'}"
+            />
           </el-tab-pane>
           <el-tab-pane
             label="结算条件"
             name="Close"
           >
-            <Close v-if="componetName === 'Close'" />
+            <Close
+              v-if="componetName === 'Close'"
+              :style="{'max-height': maxHeight, 'overflow-y': 'auto', 'padding-right': '15px'}"
+            />
           </el-tab-pane>
           <el-tab-pane
             label="中介分销合同/优惠告知书"
             name="Notification"
           >
-            <Notification v-if="componetName === 'Notification'" />
+            <Notification
+              v-if="componetName === 'Notification'"
+              :style="{'max-height': maxHeight, 'overflow-y': 'auto', 'padding-right': '15px'}"
+            />
           </el-tab-pane>
           <el-tab-pane
             label="其他配置"
             name="Other"
           >
-            <Other v-if="componetName === 'Other'" />
+            <Other
+              v-if="componetName === 'Other'"
+              :style="{'max-height': maxHeight, 'overflow-y': 'auto', 'padding-right': '15px'}"
+            />
           </el-tab-pane>
           <el-tab-pane
             label="立项测算表"
             name="Calculation"
           >
-            <Calculation v-if="componetName === 'Calculation'" />
+            <Calculation
+              v-if="componetName === 'Calculation'"
+              :style="{'max-height': maxHeight, 'overflow-y': 'auto', 'padding-right': '15px'}"
+            />
           </el-tab-pane>
         </el-tabs>
       </el-scrollbar>
@@ -107,10 +132,23 @@ export default class ProjectApprovalInfo extends Vue {
   tabClick(val: any) {
     this.componetName = val;
   }
+
+  get maxHeight() {
+    let h =
+      (document.documentElement.clientHeight || document.body.clientHeight) -
+      210 +
+      "px";
+    return h;
+  }
 }
 </script>
 <style lang="scss" scoped>
 .ih-page {
   overflow: hidden;
+}
+.tabClass {
+  /deep/ .el-tabs__content {
+    padding-right: 0;
+  }
 }
 </style>

@@ -4,7 +4,7 @@
  * @Author: wwq
  * @Date: 2020-12-04 09:40:47
  * @LastEditors: wwq
- * @LastEditTime: 2021-01-15 21:07:31
+ * @LastEditTime: 2021-01-18 14:39:01
 -->
 <template>
   <el-dialog
@@ -19,7 +19,7 @@
   >
     <p class="ih-info-title">基础信息</p>
     <el-form
-      ref="form"
+      ref="form1"
       :model="info"
       :rules="rules"
       label-width="80px"
@@ -132,8 +132,15 @@
       </div>
     </div>
     <div class="estimated">
-      <el-form :model="info">
-        <el-form-item label="假定成交价">
+      <el-form
+        :model="info"
+        :rules="rules"
+        ref="form2"
+      >
+        <el-form-item
+          label="假定成交价"
+          prop="estimatedTransactionPrice"
+        >
           <el-input
             v-digits="2"
             v-model="info.estimatedTransactionPrice"
@@ -306,7 +313,7 @@
               </el-table-column>
               <el-table-column
                 label="应收金额(元)"
-                width="150"
+                width="160"
                 align="center"
               >
                 <template v-slot="{ row }">
@@ -317,24 +324,24 @@
                       v-digits="2"
                       clearable
                       :disabled="item.exVoidService ? true: false"
-                      style="width: 70%"
+                      style="width: 72%"
                     />
                   </div>
                   <div class="margin-top-5">
                     点数:
                     <el-input
                       v-model="row.receivablePoint"
-                      v-digits="2"
+                      v-digits="5"
                       clearable
                       :disabled="item.exVoidService ? true: false"
-                      style="width: 70%"
+                      style="width: 72%"
                     />
                   </div>
                 </template>
               </el-table-column>
               <el-table-column
                 label="派发佣金(元)"
-                width="150"
+                width="160"
                 align="center"
               >
                 <template v-slot="{ row }">
@@ -345,7 +352,7 @@
                       v-model="row.sendAmount"
                       v-digits="2"
                       clearable
-                      style="width: 70%"
+                      style="width: 72%"
                     />
                   </div>
                   <div class="margin-top-5">
@@ -353,16 +360,16 @@
                     <el-input
                       :disabled="(row.transactionEnum === 'Natural' || row.transactionEnum === 'SelfChannel') ? true : false"
                       v-model="row.sendPoint"
-                      v-digits="2"
+                      v-digits="5"
                       clearable
-                      style="width: 70%"
+                      style="width: 72%"
                     />
                   </div>
                 </template>
               </el-table-column>
               <el-table-column
                 label="派发内场奖励(元)"
-                width="150"
+                width="160"
                 align="center"
               >
                 <template v-slot="{ row }">
@@ -372,23 +379,23 @@
                       v-model="row.sendInAmount"
                       v-digits="2"
                       clearable
-                      style="width: 70%"
+                      style="width: 72%"
                     />
                   </div>
                   <div class="margin-top-5">
                     点数:
                     <el-input
                       v-model="row.sendInPoint"
-                      v-digits="2"
+                      v-digits="5"
                       clearable
-                      style="width: 70%"
+                      style="width: 72%"
                     />
                   </div>
                 </template>
               </el-table-column>
               <el-table-column
                 label="总包业绩(元)"
-                width="150"
+                width="160"
                 align="center"
               >
                 <template v-slot="{ row }">
@@ -399,24 +406,24 @@
                       v-digits="2"
                       clearable
                       :class="{'is-disabled': generalAchieveAmountDisabled(row)}"
-                      style="width: 70%"
+                      style="width: 72%"
                     />
                   </div>
                   <div class="margin-top-5">
                     点数:
                     <el-input
                       v-model="row.generalAchievePoint"
-                      v-digits="2"
+                      v-digits="5"
                       clearable
                       :class="{'is-disabled': generalAchieveAmountDisabled(row)}"
-                      style="width: 70%"
+                      style="width: 72%"
                     />
                   </div>
                 </template>
               </el-table-column>
               <el-table-column
                 label="分销业绩(元)"
-                width="150"
+                width="160"
                 align="center"
               >
                 <template v-slot="{ row }">
@@ -427,17 +434,17 @@
                       v-digits="2"
                       clearable
                       :class="{'is-disabled': distributeAchieveAmountDisabled(row)}"
-                      style="width: 70%"
+                      style="width: 72%"
                     />
                   </div>
                   <div class="margin-top-5">
                     点数:
                     <el-input
                       v-model="row.distributeAchievePoint"
-                      v-digits="2"
+                      v-digits="5"
                       clearable
                       :class="{'is-disabled': distributeAchieveAmountDisabled(row)}"
-                      style="width: 70%"
+                      style="width: 72%"
                     />
                   </div>
                 </template>
@@ -710,7 +717,7 @@
               </el-table-column>
               <el-table-column
                 label="应收金额(元)"
-                width="150"
+                width="160"
                 align="center"
               >
                 <template v-slot="{ row }">
@@ -720,23 +727,23 @@
                       v-model="row.receivableAmout"
                       v-digits="2"
                       clearable
-                      style="width: 70%"
+                      style="width: 72%"
                     />
                   </div>
                   <div class="margin-top-5">
                     点数:
                     <el-input
                       v-model="row.receivablePoint"
-                      v-digits="2"
+                      v-digits="5"
                       clearable
-                      style="width: 70%"
+                      style="width: 72%"
                     />
                   </div>
                 </template>
               </el-table-column>
               <el-table-column
                 label="派发佣金(元)"
-                width="150"
+                width="160"
                 align="center"
               >
                 <template v-slot="{ row }">
@@ -747,7 +754,7 @@
                       v-model="row.sendAmount"
                       v-digits="2"
                       clearable
-                      style="width: 70%"
+                      style="width: 72%"
                     />
                   </div>
                   <div class="margin-top-5">
@@ -755,16 +762,16 @@
                     <el-input
                       :disabled="(row.transactionEnum === 'Natural' || row.transactionEnum === 'SelfChannel') ? true : false"
                       v-model="row.sendPoint"
-                      v-digits="2"
+                      v-digits="5"
                       clearable
-                      style="width: 70%"
+                      style="width: 72%"
                     />
                   </div>
                 </template>
               </el-table-column>
               <el-table-column
                 label="派发内场奖励(元)"
-                width="150"
+                width="160"
                 align="center"
               >
                 <template v-slot="{ row }">
@@ -774,23 +781,23 @@
                       v-model="row.sendInAmount"
                       v-digits="2"
                       clearable
-                      style="width: 70%"
+                      style="width: 72%"
                     />
                   </div>
                   <div class="margin-top-5">
                     点数:
                     <el-input
                       v-model="row.sendInPoint"
-                      v-digits="2"
+                      v-digits="5"
                       clearable
-                      style="width: 70%"
+                      style="width: 72%"
                     />
                   </div>
                 </template>
               </el-table-column>
               <el-table-column
                 label="总包业绩(元)"
-                width="150"
+                width="160"
                 align="center"
               >
                 <template v-slot="{ row }">
@@ -801,24 +808,24 @@
                       v-digits="2"
                       clearable
                       :class="{'is-disabled': generalAchieveAmountDisabled(row)}"
-                      style="width: 70%"
+                      style="width: 72%"
                     />
                   </div>
                   <div class="margin-top-5">
                     点数:
                     <el-input
                       v-model="row.generalAchievePoint"
-                      v-digits="2"
+                      v-digits="5"
                       clearable
                       :class="{'is-disabled': generalAchieveAmountDisabled(row)}"
-                      style="width: 70%"
+                      style="width: 72%"
                     />
                   </div>
                 </template>
               </el-table-column>
               <el-table-column
                 label="分销业绩(元)"
-                width="150"
+                width="160"
                 align="center"
               >
                 <template v-slot="{ row }">
@@ -829,17 +836,17 @@
                       v-digits="2"
                       clearable
                       :class="{'is-disabled': distributeAchieveAmountDisabled(row)}"
-                      style="width: 70%"
+                      style="width: 72%"
                     />
                   </div>
                   <div class="margin-top-5">
                     点数:
                     <el-input
                       v-model="row.distributeAchievePoint"
-                      v-digits="2"
+                      v-digits="5"
                       clearable
                       :class="{'is-disabled': distributeAchieveAmountDisabled(row)}"
-                      style="width: 70%"
+                      style="width: 72%"
                     />
                   </div>
                 </template>
@@ -951,7 +958,7 @@
 <script lang="ts">
 import { Component, Vue, Prop, Watch } from "vue-property-decorator";
 import { Form as ElForm } from "element-ui";
-import { NoRepeatHttp } from "ihome-common/util/aop/no-repeat-http";
+// import { NoRepeatHttp } from "ihome-common/util/aop/no-repeat-http";
 import {
   get_collectandsend_get__packageId,
   get_collectandsend_getBaseTermByTermId__termId,
@@ -1008,6 +1015,13 @@ export default class SetMealEdit extends Vue {
     ],
     timeList: [
       { required: true, message: "请选择有效时间", trigger: "change" },
+    ],
+    estimatedTransactionPrice: [
+      {
+        required: true,
+        message: "请输入假定成交价",
+        trigger: "change",
+      },
     ],
   };
 
@@ -1196,37 +1210,45 @@ export default class SetMealEdit extends Vue {
   cancel() {
     this.$emit("cancel", false);
   }
-  finish() {
-    (this.$refs["form"] as ElForm).validate(this.submit);
-  }
-  @NoRepeatHttp()
-  async submit(valid: any) {
-    if (valid) {
-      this.info.startTime = this.info.timeList[0];
-      this.info.endTime = this.info.timeList[1];
-      this.info.colletionandsendMxs.forEach((v: any) => {
-        v.colletionandsendDetails = v.colletionandsendDetails.map(
-          (j: any, h: number) => ({
-            ...j,
-            sort: h,
-          })
-        );
+  async finish(): Promise<void> {
+    let form1 = new Promise((resolve: (value: any) => void) => {
+      (this.$refs["form1"] as ElForm).validate((val) => {
+        resolve(val);
       });
-      let obj = this.$tool.deepClone(this.info);
-      if (obj.chargeEnum === "Service") {
-        obj.colletionandsendMxs = this.info.colletionandsendMxs.filter(
-          (v: any) => v.costTypeEnum === "ServiceFee"
-        );
-      } else if (obj.chargeEnum === "Agent") {
-        obj.colletionandsendMxs = this.info.colletionandsendMxs.filter(
-          (v: any) => v.costTypeEnum === "AgencyFee"
-        );
+    });
+    let form2 = new Promise((resolve: (value: any) => void) => {
+      (this.$refs["form2"] as ElForm).validate((val) => {
+        resolve(val);
+      });
+    });
+    Promise.all([form1, form2]).then(async (value) => {
+      if (value[0] && value[1]) {
+        this.submit();
       }
-      this.$emit("finish", obj);
-    } else {
-      console.log("error submit!!");
-      return false;
+    });
+  }
+  async submit() {
+    this.info.startTime = this.info.timeList[0];
+    this.info.endTime = this.info.timeList[1];
+    this.info.colletionandsendMxs.forEach((v: any) => {
+      v.colletionandsendDetails = v.colletionandsendDetails.map(
+        (j: any, h: number) => ({
+          ...j,
+          sort: h,
+        })
+      );
+    });
+    let obj = this.$tool.deepClone(this.info);
+    if (obj.chargeEnum === "Service") {
+      obj.colletionandsendMxs = this.info.colletionandsendMxs.filter(
+        (v: any) => v.costTypeEnum === "ServiceFee"
+      );
+    } else if (obj.chargeEnum === "Agent") {
+      obj.colletionandsendMxs = this.info.colletionandsendMxs.filter(
+        (v: any) => v.costTypeEnum === "AgencyFee"
+      );
     }
+    this.$emit("finish", obj);
   }
   async created() {
     this.getInfo();

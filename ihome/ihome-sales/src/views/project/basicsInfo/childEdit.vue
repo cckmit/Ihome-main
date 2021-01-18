@@ -4,13 +4,14 @@
  * @Author: wwq
  * @Date: 2020-10-22 15:16:54
  * @LastEditors: wwq
- * @LastEditTime: 2021-01-15 16:37:24
+ * @LastEditTime: 2021-01-18 11:13:04
 -->
 <template>
   <ih-page>
     <template v-slot:info>
       <el-scrollbar>
         <el-tabs
+          class="tabClass"
           type="border-card"
           v-model="tabActive"
           @tab-click="tabClick(tabActive)"
@@ -21,6 +22,7 @@
             name="BasicInfo"
           >
             <BasicInfo
+              :style="{'max-height': maxHeight, 'overflow-y': 'auto', 'padding-right': '15px'}"
               v-if="componetName === 'BasicInfo'"
               @cutOther="querybasicInfo"
             />
@@ -29,19 +31,28 @@
             label="楼盘户型"
             name="HouseType"
           >
-            <HouseType v-if="componetName === 'HouseType'" />
+            <HouseType
+              v-if="componetName === 'HouseType'"
+              :style="{'max-height': maxHeight, 'overflow-y': 'auto', 'padding-right': '15px'}"
+            />
           </el-tab-pane>
           <el-tab-pane
             label="栋座房号"
             name="RoomNum"
           >
-            <RoomNum v-if="componetName === 'RoomNum'" />
+            <RoomNum
+              v-if="componetName === 'RoomNum'"
+              :style="{'max-height': maxHeight, 'overflow-y': 'auto', 'padding-right': '15px'}"
+            />
           </el-tab-pane>
           <el-tab-pane
             label="推广信息"
             name="PopularizeInfo"
           >
-            <PopularizeInfo v-if="componetName === 'PopularizeInfo'" />
+            <PopularizeInfo
+              v-if="componetName === 'PopularizeInfo'"
+              :style="{'max-height': maxHeight, 'overflow-y': 'auto', 'padding-right': '15px'}"
+            />
           </el-tab-pane>
         </el-tabs>
       </el-scrollbar>
@@ -86,6 +97,14 @@ export default class ProjectChildEdit extends Vue {
     }
   }
 
+  get maxHeight() {
+    let h =
+      (document.documentElement.clientHeight || document.body.clientHeight) -
+      210 +
+      "px";
+    return h;
+  }
+
   querybasicInfo(isCut: any) {
     this.isCut = isCut;
   }
@@ -94,5 +113,10 @@ export default class ProjectChildEdit extends Vue {
 <style lang="scss" scoped>
 .ih-page {
   overflow: hidden;
+}
+.tabClass {
+  /deep/ .el-tabs__content {
+    padding-right: 0;
+  }
 }
 </style>

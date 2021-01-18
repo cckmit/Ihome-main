@@ -4,7 +4,7 @@
  * @Author: wwq
  * @Date: 2020-11-27 17:29:09
  * @LastEditors: wwq
- * @LastEditTime: 2021-01-16 18:57:56
+ * @LastEditTime: 2021-01-18 11:36:06
 -->
 <template>
   <div>
@@ -64,13 +64,6 @@
           type="primary"
           @click="queryCurrent"
         >查询OA当前待办人</el-button>
-      </div>
-      <div
-        class="operator"
-        v-if="isShow"
-      >
-        <span>姓名: {{name + ','}}</span>
-        <span style="margin-left: 10px">岗位: {{orgPostName}}</span>
       </div>
     </div>
     <div class="padding-left-20">
@@ -169,9 +162,6 @@ export default class LogOA extends Vue {
     termHisVOS: [],
     termLogVOS: [],
   };
-  isShow = false;
-  name: any = "";
-  orgPostName: any = "";
 
   get termId() {
     return this.$route.query.id;
@@ -201,15 +191,12 @@ export default class LogOA extends Vue {
   }
 
   async queryCurrent() {
-    const res = await get_logAndOA_getOALog__termId({
+    let res: any = await get_logAndOA_getOALog__termId({
       termId: this.termId,
     });
-
-    if (res) {
-      this.isShow = true;
-      this.name = res.name;
-      this.orgPostName = res.orgPostName;
-    }
+    this.$alert(`姓名: ${res?.name} 岗位: ${res?.orgPostName}`, "当前待办人", {
+      confirmButtonText: "确定",
+    });
   }
 
   view(data: any) {
