@@ -12,7 +12,9 @@
       <el-form ref="form" label-width="100px" @submit.native.prevent>
         <el-row>
           <el-col :span="2" class="text-left">
-            <el-button type="success" @click="add()">新增</el-button>
+            <el-button
+              v-has="'B.SALES.DEAL.BUMODELIST.ADD'"
+              type="success" @click="add()">添加</el-button>
           </el-col>
           <el-col :span="22" class="text-right">
             <el-select
@@ -46,12 +48,14 @@
         <el-table-column fixed="right" label="操作" width="130">
           <template slot-scope="scope">
             <el-link
+              v-has="'B.SALES.DEAL.BUMODELIST.UPDATE'"
               class="margin-right-10"
               type="primary"
               @click.native.prevent="edit(scope)"
-            >编辑
+            >修改
             </el-link>
             <el-link
+              v-has="'B.SALES.DEAL.BUMODELIST.DELETE'"
               style="color: #f66"
               type="primary"
               @click.native.prevent="remove(scope)"

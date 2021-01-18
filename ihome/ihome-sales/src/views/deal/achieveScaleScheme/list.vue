@@ -104,7 +104,9 @@
     <template v-slot:btn>
       <el-row class="margin-left-10">
         <el-button type="primary" @click="getListMixin()">查询</el-button>
-        <el-button type="success" @click="add()">添加</el-button>
+        <el-button
+          v-has="'B.SALES.DEAL.ACHIEVELIST.ADD'"
+          type="success" @click="add()">添加</el-button>
         <el-button type="info" @click="reset()">重置</el-button>
       </el-row>
     </template>
@@ -151,10 +153,14 @@
                 <i class="el-icon-arrow-down el-icon--right"></i>
               </span>
               <el-dropdown-menu slot="dropdown">
-                <el-dropdown-item @click.native.prevent="edit(scope)"
-                >编辑
+                <el-dropdown-item
+                  v-has="'B.SALES.DEAL.ACHIEVELIST.UPDATE'"
+                  @click.native.prevent="edit(scope)"
+                >修改
                 </el-dropdown-item>
-                <el-dropdown-item @click.native.prevent="remove(scope)"
+                <el-dropdown-item
+                  v-has="'B.SALES.DEAL.ACHIEVELIST.DELETE'"
+                  @click.native.prevent="remove(scope)"
                 >删除
                 </el-dropdown-item>
               </el-dropdown-menu>

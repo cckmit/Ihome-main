@@ -36,6 +36,17 @@
           "
       />
     </ih-dialog>
+    <ih-dialog :show="dialogAddBroker" desc="选择经纪人列表">
+      <AddBroker
+        :data="channelId"
+        @cancel="() => (dialogAddBroker = false)"
+        @finish="
+            (data) => {
+              finishAddBroker(data);
+            }
+          "
+      />
+    </ih-dialog>
     <ih-dialog :show="dialogAddNotice" desc="选择优惠告知书列表">
       <SelectNoticeList
         :data="baseInfoByTerm"
@@ -86,6 +97,7 @@
   import EntryAchieveAllot from "@/views/deal/dealReport/add/entryAchieveAllot.vue";  // 文员岗 - 录入成交信息
   import SelectProjectCycle from "@/views/deal/dealReport/dialog/selectProjectCycle.vue";
   import AgentCompanyList from "@/views/deal/dealReport/dialog/agentCompanyList.vue";
+  import AddBroker from "@/views/deal/dealReport/dialog/addBroker.vue";
   import SelectNoticeList from "@/views/deal/dealReport/dialog/selectNoticeList.vue";
   import AddCustomer from "@/views/deal/dealReport/dialog/addCustomer.vue";
   import SelectReceivePackage from "@/views/deal/dealReport/dialog/selectReceivePackage.vue";
@@ -101,6 +113,7 @@
       EntryAchieveAllot,
       SelectProjectCycle,
       AgentCompanyList,
+      AddBroker,
       SelectNoticeList,
       AddCustomer,
       SelectReceivePackage,
@@ -114,6 +127,8 @@
     dialogAddProjectCycle: any = false; // 选择项目周期弹窗标识
     dialogAddAgency: any = false; // 选择渠道公司弹窗标识
     selectableChannelIds: any = []; // 可选渠道商id列表
+    dialogAddBroker: any = false; // 选择经纪人弹窗标识
+    channelId: any = null; // 渠道商ID
     dialogAddNotice: any = false; // 选择优惠告知书弹窗标识
     baseInfoByTerm: any = null; // 项目周期数据 - 初始化优惠告知书需要
     dialogAddCustomer: any = false; // 选择客户弹窗标识
@@ -160,12 +175,7 @@
     }
 
     // 选择项目周期
-    selectProject(data: any = []) {
-      if (data && data.length) {
-        this.selectableChannelIds = data;
-      } else {
-        this.selectableChannelIds = [];
-      }
+    selectProject() {
       this.dialogAddProjectCycle = true;
     }
 
@@ -179,8 +189,14 @@
     }
 
     // 选择渠道公司
-    selectAgency() {
-      this.dialogAddAgency = true;
+    selectAgency(data: any = []) {
+      if (data && data.length) {
+        this.selectableChannelIds = data;
+        this.dialogAddAgency = true;
+      } else {
+        this.$message.error('暂无可选的渠道商信息');
+        this.selectableChannelIds = [];
+      }
     }
 
     // 确定选择渠道公司
@@ -188,6 +204,25 @@
       // console.log('data', data);
       if (data && data.length > 0) {
         await (this as any).$refs.child.finishAddAgency(data);
+      }
+      this.dialogAddAgency = false;
+    }
+
+    // 选择经纪人
+    selectBroker(data: any = null) {
+      if (data) {
+        this.channelId = data;
+      } else {
+        this.channelId = null;
+      }
+      this.dialogAddBroker = true;
+    }
+
+    // 确定选择经纪人
+    async finishAddBroker(data: any) {
+      // console.log('data', data);
+      if (data && data.length > 0) {
+        await (this as any).$refs.child.finishAddBroker(data);
       }
       this.dialogAddAgency = false;
     }
