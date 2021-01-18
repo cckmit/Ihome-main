@@ -4,28 +4,48 @@
  * @Author: wwq
  * @Date: 2020-11-02 15:19:19
  * @LastEditors: wwq
- * @LastEditTime: 2020-11-10 10:26:10
+ * @LastEditTime: 2021-01-18 11:14:41
 -->
 <template>
   <ih-page>
     <template v-slot:info>
       <el-scrollbar>
-        <el-tabs type="border-card" v-model="tabActive">
-          <el-tab-pane label="基础信息" name="1">
-            <BasicInfo :typeStr="typeStr" />
+        <el-tabs
+          class="tabClass"
+          type="border-card"
+          v-model="tabActive"
+        >
+          <el-tab-pane
+            label="基础信息"
+            name="1"
+          >
+            <BasicInfo
+              :typeStr="typeStr"
+              :style="{'max-height': maxHeight, 'overflow-y': 'auto', 'padding-right': '15px'}"
+            />
           </el-tab-pane>
-          <el-tab-pane label="楼盘户型" name="2">
-            <HouseType />
+          <el-tab-pane
+            label="楼盘户型"
+            name="2"
+          >
+            <HouseType :style="{'max-height': maxHeight, 'overflow-y': 'auto', 'padding-right': '15px'}" />
           </el-tab-pane>
-          <el-tab-pane label="栋座房号" name="3">
-            <RoomNum />
+          <el-tab-pane
+            label="栋座房号"
+            name="3"
+          >
+            <RoomNum :style="{'max-height': maxHeight, 'overflow-y': 'auto', 'padding-right': '15px'}" />
           </el-tab-pane>
-          <el-tab-pane label="推广信息" name="4">
-            <PopularizeInfo />
+          <el-tab-pane
+            label="推广信息"
+            name="4"
+          >
+            <PopularizeInfo :style="{'max-height': maxHeight, 'overflow-y': 'auto', 'padding-right': '15px'}" />
           </el-tab-pane>
         </el-tabs>
-      </el-scrollbar> </template
-  ></ih-page>
+      </el-scrollbar>
+    </template>
+  </ih-page>
 </template>
 <script lang="ts">
 import { Component, Vue } from "vue-property-decorator";
@@ -48,10 +68,23 @@ export default class ProjectChildInfo extends Vue {
       vm.typeStr = to.name;
     });
   }
+
+  get maxHeight() {
+    let h =
+      (document.documentElement.clientHeight || document.body.clientHeight) -
+      210 +
+      "px";
+    return h;
+  }
 }
 </script>
 <style lang="scss" scoped>
 .ih-page {
   overflow: hidden;
+}
+.tabClass {
+  /deep/ .el-tabs__content {
+    padding-right: 0;
+  }
 }
 </style>

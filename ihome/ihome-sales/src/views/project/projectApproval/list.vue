@@ -4,7 +4,7 @@
  * @Author: wwq
  * @Date: 2020-11-27 17:11:14
  * @LastEditors: wwq
- * @LastEditTime: 2021-01-09 17:10:00
+ * @LastEditTime: 2021-01-18 12:05:40
 -->
 <template>
   <IhPage label-width="100px">
@@ -229,22 +229,24 @@
                   v-has="'B.SALES.PROJECT.TERMLIST.UPDATE'"
                 >修改</el-dropdown-item>
                 <el-dropdown-item
-                  :class="{'ih-data-disabled': row.auditEnum !== 'ConstractAdopt'}"
+                  :class="{'ih-data-disabled': !(row.auditEnum !== 'ConstractAdopt' && row.state === 'Start')}"
                   @click.native.prevent="routeTo(row, 'apply')"
                   v-has="'B.SALES.PROJECT.TERMLIST.APPLYDISTRIBUT'"
                 >申领分销协议</el-dropdown-item>
                 <el-dropdown-item
-                  :class="{'ih-data-disabled': row.auditEnum !== 'ConstractAdopt'}"
+                  :class="{'ih-data-disabled': !(row.auditEnum !== 'ConstractAdopt' && row.state === 'Start')}"
                   @click.native.prevent="replenish(row)"
                   v-has="'B.SALES.PROJECT.TERMLIST.EDITDISTRIBUT'"
                 >补充协议</el-dropdown-item>
                 <el-dropdown-item
                   v-if="row.state === 'Stop'"
                   @click.native.prevent="start(row)"
+                  v-has="'B.SALES.PROJECT.TERMLIST.QYZQ'"
                 >启用周期</el-dropdown-item>
                 <el-dropdown-item
                   v-if="row.state === 'Start'"
                   @click.native.prevent="stop(row)"
+                  v-has="'B.SALES.PROJECT.TERMLIST.ZFZQ'"
                 >作废周期</el-dropdown-item>
                 <el-dropdown-item
                   @click.native.prevent="remove(row)"
@@ -321,13 +323,15 @@ export default class ProjectApproval extends Vue {
     const ConstractAdopt = row.auditEnum === "ConstractAdopt";
     const ConstractReject = row.auditEnum === "ConstractReject";
     const ConstractWait = row.auditEnum === "ConstractWait";
+    const Start = row.state === "Start";
     return (
-      Draft ||
-      TermAdopt ||
-      TermReject ||
-      ConstractAdopt ||
-      ConstractReject ||
-      ConstractWait
+      (Draft ||
+        TermAdopt ||
+        TermReject ||
+        ConstractAdopt ||
+        ConstractReject ||
+        ConstractWait) &&
+      Start
     );
   }
 

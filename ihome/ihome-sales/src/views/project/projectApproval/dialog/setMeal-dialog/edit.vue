@@ -4,7 +4,7 @@
  * @Author: wwq
  * @Date: 2020-12-04 09:40:47
  * @LastEditors: wwq
- * @LastEditTime: 2021-01-15 21:07:31
+ * @LastEditTime: 2021-01-18 12:43:40
 -->
 <template>
   <el-dialog
@@ -306,7 +306,7 @@
               </el-table-column>
               <el-table-column
                 label="应收金额(元)"
-                width="150"
+                width="160"
                 align="center"
               >
                 <template v-slot="{ row }">
@@ -317,24 +317,24 @@
                       v-digits="2"
                       clearable
                       :disabled="item.exVoidService ? true: false"
-                      style="width: 70%"
+                      style="width: 72%"
                     />
                   </div>
                   <div class="margin-top-5">
                     点数:
                     <el-input
                       v-model="row.receivablePoint"
-                      v-digits="2"
+                      v-digits="5"
                       clearable
                       :disabled="item.exVoidService ? true: false"
-                      style="width: 70%"
+                      style="width: 72%"
                     />
                   </div>
                 </template>
               </el-table-column>
               <el-table-column
                 label="派发佣金(元)"
-                width="150"
+                width="160"
                 align="center"
               >
                 <template v-slot="{ row }">
@@ -345,7 +345,7 @@
                       v-model="row.sendAmount"
                       v-digits="2"
                       clearable
-                      style="width: 70%"
+                      style="width: 72%"
                     />
                   </div>
                   <div class="margin-top-5">
@@ -353,16 +353,16 @@
                     <el-input
                       :disabled="(row.transactionEnum === 'Natural' || row.transactionEnum === 'SelfChannel') ? true : false"
                       v-model="row.sendPoint"
-                      v-digits="2"
+                      v-digits="5"
                       clearable
-                      style="width: 70%"
+                      style="width: 72%"
                     />
                   </div>
                 </template>
               </el-table-column>
               <el-table-column
                 label="派发内场奖励(元)"
-                width="150"
+                width="160"
                 align="center"
               >
                 <template v-slot="{ row }">
@@ -372,23 +372,23 @@
                       v-model="row.sendInAmount"
                       v-digits="2"
                       clearable
-                      style="width: 70%"
+                      style="width: 72%"
                     />
                   </div>
                   <div class="margin-top-5">
                     点数:
                     <el-input
                       v-model="row.sendInPoint"
-                      v-digits="2"
+                      v-digits="5"
                       clearable
-                      style="width: 70%"
+                      style="width: 72%"
                     />
                   </div>
                 </template>
               </el-table-column>
               <el-table-column
                 label="总包业绩(元)"
-                width="150"
+                width="160"
                 align="center"
               >
                 <template v-slot="{ row }">
@@ -399,24 +399,24 @@
                       v-digits="2"
                       clearable
                       :class="{'is-disabled': generalAchieveAmountDisabled(row)}"
-                      style="width: 70%"
+                      style="width: 72%"
                     />
                   </div>
                   <div class="margin-top-5">
                     点数:
                     <el-input
                       v-model="row.generalAchievePoint"
-                      v-digits="2"
+                      v-digits="5"
                       clearable
                       :class="{'is-disabled': generalAchieveAmountDisabled(row)}"
-                      style="width: 70%"
+                      style="width: 72%"
                     />
                   </div>
                 </template>
               </el-table-column>
               <el-table-column
                 label="分销业绩(元)"
-                width="150"
+                width="160"
                 align="center"
               >
                 <template v-slot="{ row }">
@@ -427,17 +427,17 @@
                       v-digits="2"
                       clearable
                       :class="{'is-disabled': distributeAchieveAmountDisabled(row)}"
-                      style="width: 70%"
+                      style="width: 72%"
                     />
                   </div>
                   <div class="margin-top-5">
                     点数:
                     <el-input
                       v-model="row.distributeAchievePoint"
-                      v-digits="2"
+                      v-digits="5"
                       clearable
                       :class="{'is-disabled': distributeAchieveAmountDisabled(row)}"
-                      style="width: 70%"
+                      style="width: 72%"
                     />
                   </div>
                 </template>
@@ -710,7 +710,7 @@
               </el-table-column>
               <el-table-column
                 label="应收金额(元)"
-                width="150"
+                width="160"
                 align="center"
               >
                 <template v-slot="{ row }">
@@ -720,23 +720,23 @@
                       v-model="row.receivableAmout"
                       v-digits="2"
                       clearable
-                      style="width: 70%"
+                      style="width: 72%"
                     />
                   </div>
                   <div class="margin-top-5">
                     点数:
                     <el-input
                       v-model="row.receivablePoint"
-                      v-digits="2"
+                      v-digits="5"
                       clearable
-                      style="width: 70%"
+                      style="width: 72%"
                     />
                   </div>
                 </template>
               </el-table-column>
               <el-table-column
                 label="派发佣金(元)"
-                width="150"
+                width="160"
                 align="center"
               >
                 <template v-slot="{ row }">
@@ -747,7 +747,7 @@
                       v-model="row.sendAmount"
                       v-digits="2"
                       clearable
-                      style="width: 70%"
+                      style="width: 72%"
                     />
                   </div>
                   <div class="margin-top-5">
@@ -755,16 +755,16 @@
                     <el-input
                       :disabled="(row.transactionEnum === 'Natural' || row.transactionEnum === 'SelfChannel') ? true : false"
                       v-model="row.sendPoint"
-                      v-digits="2"
+                      v-digits="5"
                       clearable
-                      style="width: 70%"
+                      style="width: 72%"
                     />
                   </div>
                 </template>
               </el-table-column>
               <el-table-column
                 label="派发内场奖励(元)"
-                width="150"
+                width="160"
                 align="center"
               >
                 <template v-slot="{ row }">
@@ -774,23 +774,23 @@
                       v-model="row.sendInAmount"
                       v-digits="2"
                       clearable
-                      style="width: 70%"
+                      style="width: 72%"
                     />
                   </div>
                   <div class="margin-top-5">
                     点数:
                     <el-input
                       v-model="row.sendInPoint"
-                      v-digits="2"
+                      v-digits="5"
                       clearable
-                      style="width: 70%"
+                      style="width: 72%"
                     />
                   </div>
                 </template>
               </el-table-column>
               <el-table-column
                 label="总包业绩(元)"
-                width="150"
+                width="160"
                 align="center"
               >
                 <template v-slot="{ row }">
@@ -801,24 +801,24 @@
                       v-digits="2"
                       clearable
                       :class="{'is-disabled': generalAchieveAmountDisabled(row)}"
-                      style="width: 70%"
+                      style="width: 72%"
                     />
                   </div>
                   <div class="margin-top-5">
                     点数:
                     <el-input
                       v-model="row.generalAchievePoint"
-                      v-digits="2"
+                      v-digits="5"
                       clearable
                       :class="{'is-disabled': generalAchieveAmountDisabled(row)}"
-                      style="width: 70%"
+                      style="width: 72%"
                     />
                   </div>
                 </template>
               </el-table-column>
               <el-table-column
                 label="分销业绩(元)"
-                width="150"
+                width="160"
                 align="center"
               >
                 <template v-slot="{ row }">
@@ -829,17 +829,17 @@
                       v-digits="2"
                       clearable
                       :class="{'is-disabled': distributeAchieveAmountDisabled(row)}"
-                      style="width: 70%"
+                      style="width: 72%"
                     />
                   </div>
                   <div class="margin-top-5">
                     点数:
                     <el-input
                       v-model="row.distributeAchievePoint"
-                      v-digits="2"
+                      v-digits="5"
                       clearable
                       :class="{'is-disabled': distributeAchieveAmountDisabled(row)}"
-                      style="width: 70%"
+                      style="width: 72%"
                     />
                   </div>
                 </template>
