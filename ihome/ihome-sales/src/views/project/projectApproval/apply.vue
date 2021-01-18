@@ -781,7 +781,7 @@ export default class Apply extends Vue {
         this.submitLoading = false;
         this.$message.success("申领成功");
         this.$goto({
-          path: "/projectApproval/list",
+          path: "/distribution/list",
         });
       } catch (err) {
         this.submitLoading = false;
