@@ -4,7 +4,7 @@
  * @Author: ywl
  * @Date: 2020-10-20 15:03:13
  * @LastEditors: ywl
- * @LastEditTime: 2021-01-14 15:16:43
+ * @LastEditTime: 2021-01-18 14:48:04
 -->
 <template>
   <el-select
@@ -28,6 +28,7 @@
         class="select-page-search"
         :placeholder="searchPlaceholder"
         v-model="filterText"
+        :validate-event="false"
         clearable
         @keyup.enter.native="handleKeyup()"
       >

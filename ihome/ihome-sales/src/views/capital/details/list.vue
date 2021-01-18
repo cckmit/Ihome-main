@@ -11,21 +11,9 @@
     <template v-slot:form>
       <el-form
         ref="form"
+        @submit.native.prevent
         label-width="120px">
         <el-row>
-          <el-col :span="8">
-            <el-form-item label="明细类型">
-              <el-select
-                style="width: 100%"
-                v-model="queryPageParameters.detailsType"
-                @change="changeDetailsType"
-                placeholder="请选择">
-                <el-option label="全部" value="All"></el-option>
-                <el-option label="产生明细" value="produce"></el-option>
-                <el-option label="使用明细" value="use"></el-option>
-              </el-select>
-            </el-form-item>
-          </el-col>
           <el-col :span="8">
             <el-form-item label="项目名称">
               <IhSelectPageByProject
@@ -60,7 +48,7 @@
               ></el-date-picker>
             </el-form-item>
           </el-col>
-          <el-col :span="8" v-if="queryPageParameters.detailsType === 'produce'">
+          <el-col :span="8" v-if="currentTabsName === 'produce'">
             <el-form-item label="产生类别">
               <el-select
                 style="width: 100%"
@@ -75,7 +63,7 @@
               </el-select>
             </el-form-item>
           </el-col>
-          <el-col :span="8" v-if="queryPageParameters.detailsType === 'use'">
+          <el-col :span="8" v-if="currentTabsName === 'use'">
             <el-form-item label="使用类别">
               <el-select
                 style="width: 100%"
@@ -100,38 +88,54 @@
     </template>
     <template v-slot:table>
       <br/>
-      <el-table
-        class="ih-table"
-        :data="resPageInfo.list"
-        :empty-text="emptyText">
-        <el-table-column label="成交报告编号" prop="dealCode" fixed min-width="220"></el-table-column>
-        <el-table-column label="成交周期" prop="termName" min-width="180"></el-table-column>
-        <el-table-column label="周期所属项目" prop="proName" min-width="180"></el-table-column>
-        <el-table-column label="周期所属店组" prop="shopGroup" min-width="180"></el-table-column>
-        <el-table-column label="周期所属事业部" prop="departmentName" min-width="200"></el-table-column>
-        <el-table-column
-          v-if="queryPageParameters.detailsType === 'All'"
-          label="产生/使用其他渠道费金额" prop="postAmount" min-width="200"></el-table-column>
-        <el-table-column
-          v-if="queryPageParameters.detailsType === 'produce'"
-          label="产生其他渠道费金额" prop="postAmount" min-width="200"></el-table-column>
-        <el-table-column
-          v-if="queryPageParameters.detailsType === 'produce'"
-          label="产生类别" prop="postCategory" min-width="200"></el-table-column>
-        <el-table-column
-          v-if="queryPageParameters.detailsType === 'use'"
-          label="使用其他渠道费金额" prop="postAmount" min-width="200"></el-table-column>
-        <el-table-column
-          v-if="queryPageParameters.detailsType === 'use'"
-          label="使用类别" prop="postCategory" min-width="200"></el-table-column>
-        <el-table-column
-          v-if="queryPageParameters.detailsType === 'use'"
-          label="使用的其他渠道费用归属周期" prop="otherTermName" min-width="300"></el-table-column>
-        <el-table-column
-          v-if="queryPageParameters.detailsType === 'use'"
-          label="使用的其他渠道费用归属项目" prop="otherProName" min-width="300"></el-table-column>
-        <el-table-column label="记录时间" prop="createTime" min-width="150"></el-table-column>
-      </el-table>
+      <el-tabs type="border-card" v-model="currentTabsName" @tab-click="changeTabPane">
+        <el-tab-pane label="全部" name="All">
+          <el-table
+            class="ih-table"
+            :data="resPageInfo.list"
+            :empty-text="emptyText">
+            <el-table-column label="成交报告编号" prop="dealCode" fixed min-width="220"></el-table-column>
+            <el-table-column label="成交周期" prop="termName" min-width="180"></el-table-column>
+            <el-table-column label="周期所属项目" prop="proName" min-width="180"></el-table-column>
+            <el-table-column label="周期所属店组" prop="shopGroup" min-width="180"></el-table-column>
+            <el-table-column label="周期所属事业部" prop="departmentName" min-width="200"></el-table-column>
+            <el-table-column label="产生/使用其他渠道费金额" prop="postAmount" min-width="200"></el-table-column>
+            <el-table-column label="记录时间" prop="createTime" min-width="150"></el-table-column>
+          </el-table>
+        </el-tab-pane>
+        <el-tab-pane label="产生明细" name="produce">
+          <el-table
+            class="ih-table"
+            :data="resPageInfo.list"
+            :empty-text="emptyText">
+            <el-table-column label="成交报告编号" prop="dealCode" fixed min-width="220"></el-table-column>
+            <el-table-column label="成交周期" prop="termName" min-width="180"></el-table-column>
+            <el-table-column label="周期所属项目" prop="proName" min-width="180"></el-table-column>
+            <el-table-column label="周期所属店组" prop="shopGroup" min-width="180"></el-table-column>
+            <el-table-column label="周期所属事业部" prop="departmentName" min-width="200"></el-table-column>
+            <el-table-column label="产生其他渠道费金额" prop="postAmount" min-width="200"></el-table-column>
+            <el-table-column label="产生类别" prop="postCategory" min-width="200"></el-table-column>
+            <el-table-column label="记录时间" prop="createTime" min-width="150"></el-table-column>
+          </el-table>
+        </el-tab-pane>
+        <el-tab-pane label="使用明细" name="use">
+          <el-table
+            class="ih-table"
+            :data="resPageInfo.list"
+            :empty-text="emptyText">
+            <el-table-column label="成交报告编号" prop="dealCode" fixed min-width="220"></el-table-column>
+            <el-table-column label="成交周期" prop="termName" min-width="180"></el-table-column>
+            <el-table-column label="周期所属项目" prop="proName" min-width="180"></el-table-column>
+            <el-table-column label="周期所属店组" prop="shopGroup" min-width="180"></el-table-column>
+            <el-table-column label="周期所属事业部" prop="departmentName" min-width="200"></el-table-column>
+            <el-table-column label="使用其他渠道费金额" prop="postAmount" min-width="200"></el-table-column>
+            <el-table-column label="使用类别" prop="postCategory" min-width="200"></el-table-column>
+            <el-table-column label="使用的其他渠道费用归属周期" prop="otherTermName" min-width="300"></el-table-column>
+            <el-table-column label="使用的其他渠道费用归属项目" prop="otherProName" min-width="300"></el-table-column>
+            <el-table-column label="记录时间" prop="createTime" min-width="150"></el-table-column>
+          </el-table>
+        </el-tab-pane>
+      </el-tabs>
     </template>
     <template v-slot:pagination>
       <br/>
@@ -161,8 +165,8 @@ import {getToken} from "ihome-common/util/cookies";
   mixins: [PaginationMixin],
 })
 export default class DetailsList extends Vue {
+  currentTabsName: any = 'All';
   queryPageParameters: any = {
-    detailsType: 'All',
     proId: null,
     termId: null,
     timeList: [],
@@ -217,7 +221,7 @@ export default class DetailsList extends Vue {
       termName: this.queryPageParameters.cycleId, // 周期名称
       type: 0 // 类别 1:产生 2:使用
     }
-    switch (this.queryPageParameters.detailsType) {
+    switch (this.currentTabsName) {
       case "All":
         postData.postCategory = '';
         postData.type = null;
@@ -236,9 +240,9 @@ export default class DetailsList extends Vue {
     this.resPageInfo = await post_capitalPoolFlow_detail(postData);
   }
 
-  // 改变细节类型
-  changeDetailsType(value: any) {
-    console.log(value);
+  // 改变tabs
+  changeTabPane() {
+    // console.log(value.name);
     this.queryPageParameters.pageNum = 1;
     this.queryPageParameters.produceType = null;
     this.queryPageParameters.useType = null;
@@ -254,7 +258,6 @@ export default class DetailsList extends Vue {
 
   reset() {
     Object.assign(this.queryPageParameters, {
-      detailsType: 'All',
       proId: null,
       termId: null,
       timeList: [],

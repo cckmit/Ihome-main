@@ -11,70 +11,118 @@
     <template v-slot:form>
       <el-form
         ref="form"
+        @submit.native.prevent
         label-width="120px">
         <el-row>
-          <el-col :span="8">
-            <el-form-item label="时间类型">
-              <el-select
-                style="width: 100%"
-                v-model="queryPageParameters.timeType"
-                clearable
-                placeholder="请选择">
-                <el-option label="当日" value="currentDate"></el-option>
-                <el-option label="当月" value="currentMonth"></el-option>
-                <el-option label="全年" value="annual"></el-option>
-                <el-option label="上一年" value="lastYear"></el-option>
-              </el-select>
-            </el-form-item>
-          </el-col>
-          <el-col :span="8">
-            <el-form-item label="时间范围">
-              <el-date-picker
-                style="width: 100%"
-                v-model="queryPageParameters.timeList"
-                type="datetimerange"
-                align="left"
-                unlink-panels
-                range-separator="到"
-                start-placeholder="开始日期"
-                end-placeholder="结束日期"
-                :picker-options="currentOptions"
-                value-format="yyyy-MM-dd hh:mm:ss"
-              ></el-date-picker>
-            </el-form-item>
+          <el-col class="col-bottom-20">
+            <el-date-picker
+              v-model="queryPageParameters.timeList"
+              type="datetimerange"
+              align="left"
+              unlink-panels
+              range-separator="到"
+              start-placeholder="开始日期"
+              end-placeholder="结束日期"
+              value-format="yyyy-MM-dd hh:mm:ss"
+            ></el-date-picker>
+            <el-button type="primary" @click="search">查询</el-button>
+            <el-button type="success">导出</el-button>
           </el-col>
         </el-row>
       </el-form>
     </template>
-    <template v-slot:btn>
-      <el-row>
-        <el-button type="primary" @click="search()">查询</el-button>
-        <!--        <el-button type="info" @click="reset()">重置</el-button>-->
-        <el-button type="success">导出</el-button>
-      </el-row>
-    </template>
     <template v-slot:table>
       <br/>
-      <el-table
-        class="ih-table"
-        :data="resPageInfo.list"
-        :empty-text="emptyText">
-        <el-table-column label="序号" prop="applyCode" fixed min-width="80"></el-table-column>
-        <el-table-column label="组织" prop="agencyName" min-width="150"></el-table-column>
-        <el-table-column label="应收业绩(万元)" prop="applyAmount" min-width="450">
-          <el-table-column label="总包" prop="province" min-width="150"></el-table-column>
-          <el-table-column label="分销" prop="province" min-width="150"></el-table-column>
-          <el-table-column label="对外拆佣" prop="province" min-width="150"></el-table-column>
-        </el-table-column>
-        <el-table-column label="实收业绩(万元)" prop="deductAmount" min-width="450">
-          <el-table-column label="总包" prop="province" min-width="150"></el-table-column>
-          <el-table-column label="分销" prop="province" min-width="150"></el-table-column>
-          <el-table-column label="对外拆佣" prop="province" min-width="150"></el-table-column>
-        </el-table-column>
-        <el-table-column label="其他渠道费用(万元)" prop="actualAmount" min-width="190"></el-table-column>
-        <el-table-column label="总应收(万元)" prop="actualAmount" min-width="190"></el-table-column>
-        <el-table-column label="总实收(万元)" prop="actualAmount" min-width="190"></el-table-column>
-      </el-table>
+      <el-tabs type="border-card" v-model="currentTabsName" @tab-click="changeTabPane">
+        <el-tab-pane label="当日" name="currentDate">
+          <el-table
+            class="ih-table"
+            :data="resPageInfo.list"
+            :empty-text="emptyText">
+            <el-table-column label="序号" prop="applyCode" fixed min-width="80"></el-table-column>
+            <el-table-column label="组织" prop="agencyName" min-width="150"></el-table-column>
+            <el-table-column label="应收业绩(万元)" prop="applyAmount" min-width="450">
+              <el-table-column label="总包" prop="province" min-width="150"></el-table-column>
+              <el-table-column label="分销" prop="province" min-width="150"></el-table-column>
+              <el-table-column label="对外拆佣" prop="province" min-width="150"></el-table-column>
+            </el-table-column>
+            <el-table-column label="实收业绩(万元)" prop="deductAmount" min-width="450">
+              <el-table-column label="总包" prop="province" min-width="150"></el-table-column>
+              <el-table-column label="分销" prop="province" min-width="150"></el-table-column>
+              <el-table-column label="对外拆佣" prop="province" min-width="150"></el-table-column>
+            </el-table-column>
+            <el-table-column label="其他渠道费用(万元)" prop="actualAmount" min-width="190"></el-table-column>
+            <el-table-column label="总应收(万元)" prop="actualAmount" min-width="190"></el-table-column>
+            <el-table-column label="总实收(万元)" prop="actualAmount" min-width="190"></el-table-column>
+          </el-table>
+        </el-tab-pane>
+        <el-tab-pane label="当月" name="currentMonth">
+          <el-table
+            class="ih-table"
+            :data="resPageInfo.list"
+            :empty-text="emptyText">
+            <el-table-column label="序号" prop="applyCode" fixed min-width="80"></el-table-column>
+            <el-table-column label="组织" prop="agencyName" min-width="150"></el-table-column>
+            <el-table-column label="应收业绩(万元)" prop="applyAmount" min-width="450">
+              <el-table-column label="总包" prop="province" min-width="150"></el-table-column>
+              <el-table-column label="分销" prop="province" min-width="150"></el-table-column>
+              <el-table-column label="对外拆佣" prop="province" min-width="150"></el-table-column>
+            </el-table-column>
+            <el-table-column label="实收业绩(万元)" prop="deductAmount" min-width="450">
+              <el-table-column label="总包" prop="province" min-width="150"></el-table-column>
+              <el-table-column label="分销" prop="province" min-width="150"></el-table-column>
+              <el-table-column label="对外拆佣" prop="province" min-width="150"></el-table-column>
+            </el-table-column>
+            <el-table-column label="其他渠道费用(万元)" prop="actualAmount" min-width="190"></el-table-column>
+            <el-table-column label="总应收(万元)" prop="actualAmount" min-width="190"></el-table-column>
+            <el-table-column label="总实收(万元)" prop="actualAmount" min-width="190"></el-table-column>
+          </el-table>
+        </el-tab-pane>
+        <el-tab-pane label="全年" name="currentYear">
+          <el-table
+            class="ih-table"
+            :data="resPageInfo.list"
+            :empty-text="emptyText">
+            <el-table-column label="序号" prop="applyCode" fixed min-width="80"></el-table-column>
+            <el-table-column label="组织" prop="agencyName" min-width="150"></el-table-column>
+            <el-table-column label="应收业绩(万元)" prop="applyAmount" min-width="450">
+              <el-table-column label="总包" prop="province" min-width="150"></el-table-column>
+              <el-table-column label="分销" prop="province" min-width="150"></el-table-column>
+              <el-table-column label="对外拆佣" prop="province" min-width="150"></el-table-column>
+            </el-table-column>
+            <el-table-column label="实收业绩(万元)" prop="deductAmount" min-width="450">
+              <el-table-column label="总包" prop="province" min-width="150"></el-table-column>
+              <el-table-column label="分销" prop="province" min-width="150"></el-table-column>
+              <el-table-column label="对外拆佣" prop="province" min-width="150"></el-table-column>
+            </el-table-column>
+            <el-table-column label="其他渠道费用(万元)" prop="actualAmount" min-width="190"></el-table-column>
+            <el-table-column label="总应收(万元)" prop="actualAmount" min-width="190"></el-table-column>
+            <el-table-column label="总实收(万元)" prop="actualAmount" min-width="190"></el-table-column>
+          </el-table>
+        </el-tab-pane>
+        <el-tab-pane label="上一年" name="lastYear">
+          <el-table
+            class="ih-table"
+            :data="resPageInfo.list"
+            :empty-text="emptyText">
+            <el-table-column label="序号" prop="applyCode" fixed min-width="80"></el-table-column>
+            <el-table-column label="组织" prop="agencyName" min-width="150"></el-table-column>
+            <el-table-column label="应收业绩(万元)" prop="applyAmount" min-width="450">
+              <el-table-column label="总包" prop="province" min-width="150"></el-table-column>
+              <el-table-column label="分销" prop="province" min-width="150"></el-table-column>
+              <el-table-column label="对外拆佣" prop="province" min-width="150"></el-table-column>
+            </el-table-column>
+            <el-table-column label="实收业绩(万元)" prop="deductAmount" min-width="450">
+              <el-table-column label="总包" prop="province" min-width="150"></el-table-column>
+              <el-table-column label="分销" prop="province" min-width="150"></el-table-column>
+              <el-table-column label="对外拆佣" prop="province" min-width="150"></el-table-column>
+            </el-table-column>
+            <el-table-column label="其他渠道费用(万元)" prop="actualAmount" min-width="190"></el-table-column>
+            <el-table-column label="总应收(万元)" prop="actualAmount" min-width="190"></el-table-column>
+            <el-table-column label="总实收(万元)" prop="actualAmount" min-width="190"></el-table-column>
+          </el-table>
+        </el-tab-pane>
+      </el-tabs>
     </template>
     <template v-slot:pagination>
       <br/>
@@ -104,6 +152,7 @@ import {getToken} from "ihome-common/util/cookies";
   mixins: [PaginationMixin],
 })
 export default class ReportList extends Vue {
+  currentTabsName: any = 'currentDate';
   queryPageParameters: any = {
     timeType: 'currentDate',
     timeList: []
@@ -145,6 +194,22 @@ export default class ReportList extends Vue {
     return this.resPageInfo.total === null ? "正在加载数据..." : "暂无数据";
   }
 
+  // 改变tabs
+  changeTabPane() {
+    // console.log(value.name);
+    this.queryPageParameters.pageNum = 1;
+    this.queryPageParameters.produceType = null;
+    this.queryPageParameters.useType = null;
+    Object.assign(this.queryPageParameters, {
+      proId: null,
+      termId: null,
+      timeList: [],
+      produceType: null,
+      useType: null,
+    });
+    this.getListMixin();
+  }
+
   async getListMixin() {
     this.resPageInfo = await post_payApply_review_list(
       this.queryPageParameters
@@ -165,4 +230,11 @@ export default class ReportList extends Vue {
 }
 </script>
 <style lang="scss" scoped>
+.col-bottom-20 {
+  text-align: left;
+
+  /deep/.el-button {
+    margin-left: 10px;
+  }
+}
 </style>

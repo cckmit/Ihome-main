@@ -62,6 +62,7 @@
         :searchPlaceholder="'2020-10-27 10:10:00' | timestampToDate('YYYY-MM-DD')"
       >
       </SelectPageByOther>
+      <span>{{'0.66' | percent}}</span>
     </el-form-item>
     <el-form-item label="事业部">事业部继承组件用法</el-form-item>
     <el-form-item>
