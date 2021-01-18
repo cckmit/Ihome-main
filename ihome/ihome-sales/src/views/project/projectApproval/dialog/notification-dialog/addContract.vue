@@ -4,7 +4,7 @@
  * @Author: wwq
  * @Date: 2020-12-02 15:37:31
  * @LastEditors: wwq
- * @LastEditTime: 2021-01-14 18:02:19
+ * @LastEditTime: 2021-01-18 21:17:41
 -->
 <template>
   <el-dialog
@@ -309,18 +309,13 @@
           :span='10'
           v-if="isShow"
         >
-          <el-input
-            placeholder="请选择中介公司"
+          <SelectPageByCondition
             v-model="info.designatedAgency"
-            class="input-with-select"
-            readonly
-          >
-            <el-button
-              slot="append"
-              icon="el-icon-search"
-              @click="businessDialogVisible = true"
-            ></el-button>
-          </el-input>
+            clearable
+            placeholder="渠道商名称"
+            :params="searchConditon"
+            @changeOption="getChannelInfo"
+          ></SelectPageByCondition>
         </el-col>
       </el-row>
       <el-row>
@@ -417,12 +412,6 @@
         @click="finish()"
       >提 交</el-button>
     </span>
-    <ih-dialog :show="businessDialogVisible">
-      <Business
-        @cancel="() => (businessDialogVisible = false)"
-        @finish="(data) => businessFinish(data)"
-      />
-    </ih-dialog>
     <ih-dialog :show="setmealDialogVisible">
       <SetMealDialog
         :searchdata="setMealDialogData"
@@ -442,25 +431,25 @@ import {
 import { get_company_get__id } from "@/api/system/index";
 import { Form as ElForm } from "element-ui";
 import { NoRepeatHttp } from "ihome-common/util/aop/no-repeat-http";
-import Business from "../notification-dialog/channelBusiness.vue";
 import SetMealDialog from "./setMealDialog.vue";
 import axios from "axios";
 import { getToken } from "ihome-common/util/cookies";
 import { phoneValidator } from "ihome-common/util/base/form-ui";
+import SelectPageByCondition from "@/components/SelectPageByCondition.vue";
 
 @Component({
   components: {
-    Business,
     SetMealDialog,
+    SelectPageByCondition,
   },
 })
 export default class AddContract extends Vue {
   @Prop({ default: null }) data: any;
   dialogVisible = true;
-  businessDialogVisible = false;
   setmealDialogVisible = false;
   queryObj: any = {};
   setMealDialogData: any = {};
+  searchConditon: any = {};
   info: any = {
     contractTitle: null,
     contractSubtitle: null,
@@ -564,9 +553,20 @@ export default class AddContract extends Vue {
   getIsShow(val: any) {
     if (val === "Appoint" || val === "Strategic") {
       this.isShow = true;
+      this.searchConditon = {
+        cycleCity: window.sessionStorage.getItem("shengshiqu"),
+        departmentOrgId: window.sessionStorage.getItem("departmentOrgId"),
+        // channelEnum: this.info.channelEnum,
+      };
     } else {
       this.isShow = false;
     }
+  }
+
+  getChannelInfo(item: any) {
+    this.info.designatedAgency = item.name;
+    this.info.designatedAgencyId = item.id;
+    this.queryUnderData(this.info.designatedAgency, "business");
   }
 
   private get termId() {
@@ -695,13 +695,6 @@ export default class AddContract extends Vue {
       console.log("error submit!");
       return false;
     }
-  }
-
-  businessFinish(data: any) {
-    this.info.designatedAgency = data[0].name;
-    this.info.designatedAgencyId = data[0].id;
-    this.businessDialogVisible = false;
-    this.queryUnderData(this.info.designatedAgency, "business");
   }
 
   finish() {
