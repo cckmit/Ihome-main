@@ -2628,7 +2628,7 @@
 
     // 确定新增/修改平台业绩
     async finishEditDealAchieve(data: any = {}) {
-      console.log('finishEditDealAchieve', data);
+      // console.log('finishEditDealAchieve', data);
       let tempArr: any = [];
       if (this.editDealAchieveData.type === 'total') {
         data.type = 'TotalBag';
@@ -2637,7 +2637,16 @@
         data.type = 'Distri';
         tempArr = this.getTempList(this.editDealAchieveData.btnType, this.currentChangeObj.index, this.postData.achieveDistriList, data);
       }
-      await this.recalculateAchieve(this.editDealAchieveData.type, tempArr);
+      // 判断是否总包和分销一致
+      if (this.isSameFlag) {
+        // 一致
+        this.postData.achieveTotalBagList = this.getTempList(this.editDealAchieveData.btnType, this.currentChangeObj.index, this.postData.achieveTotalBagList, data);
+        this.postData.achieveDistriList = this.getTempList(this.editDealAchieveData.btnType, this.currentChangeObj.index, this.postData.achieveDistriList, data);
+        await this.recalculateAchieveBySame(tempArr);
+      } else {
+        // 不一致
+        await this.recalculateAchieve(this.editDealAchieveData.type, tempArr);
+      }
       this.dialogEditDealAchieve = !this.dialogEditDealAchieve;
     }
 
@@ -2691,7 +2700,7 @@
     }
 
     /*
-    * 重新计算平台费用
+    * 重新计算平台费用 --- 总包和分销不一致的情况
     * type: String，总包还是分销：total，distri
     * tempList：Array，数组参数
     * */
@@ -2718,16 +2727,6 @@
       }
       let list: any = await post_pageData_recalculateAchieve(params);
       console.log(list);
-      let commInfo: any = {};
-      if (this.isSameFlag) {
-        // 分销同步总包
-        let paramsObj: any = {
-          totalBagList: params.list, // 总包拆佣
-          totalCommAmount: this.editDealAchieveData.totalAmount, // 总拆佣金额
-        }
-        commInfo = await post_pageData_recalculateAchieveComm(paramsObj);
-        console.log(commInfo);
-      }
       if (list && list.length) {
         if (type === 'total') {
           // 总包
@@ -2743,11 +2742,22 @@
           }
         }
       }
-      if (commInfo.totalBagList && commInfo.totalBagList.length) {
-        // 总包同步分销
-        this.postData.achieveTotalBagList = this.getAchieveData(this.postData.achieveTotalBagList, commInfo.totalBagList);
-        this.postData.achieveDistriList = this.getAchieveData(this.postData.achieveDistriList, commInfo.distriList);
+    }
+
+    /*
+    * 重新计算平台费用 --- 总包和分销一致的情况
+    * tempList：Array，总包数组参数
+    * */
+    async recalculateAchieveBySame(tempList: any = []) {
+      // 分销同步总包
+      let paramsObj: any = {
+        totalBagList: tempList, // 总包拆佣
+        totalCommAmount: this.getTotalAmount('totalPackageAmount'), // 总拆佣金额
       }
+      let commInfo: any = await post_pageData_recalculateAchieveComm(paramsObj);
+      // console.log(commInfo);
+      this.postData.achieveTotalBagList = this.getAchieveData(this.postData.achieveTotalBagList, commInfo.totalBagList);
+      this.postData.achieveDistriList = this.getAchieveData(this.postData.achieveDistriList, commInfo.distriList);
     }
 
     // 总包/分销平台费用从新计算
