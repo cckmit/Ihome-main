@@ -198,7 +198,7 @@
 
     // 选择渠道公司
     selectAgency(info: any = {}) {
-      if (info.data && info.data.length) {
+      if (info.selectableChannelIds && info.selectableChannelIds.length) {
         this.dialogAddAgency = true;
         this.selectableChannelInfo = info;
       } else {
