@@ -27,7 +27,7 @@
     </ih-dialog>
     <ih-dialog :show="dialogAddAgency" desc="选择渠道公司列表">
       <AgentCompanyList
-        :data="selectableChannelIds"
+        :data="selectableChannelInfo.selectableChannelIds"
         @cancel="() => (dialogAddAgency = false)"
         @finish="
             (data) => {
@@ -103,8 +103,9 @@
   import SelectReceivePackage from "@/views/deal/dealReport/dialog/selectReceivePackage.vue";
   import DealInfo from "@/views/deal/dealReport/dialog/dealInfo.vue";
   import {
-    post_buModelContType_getList, // post_notice_deal_details__noticeId
-    post_buModelContType_subList
+    post_buModelContType_getList,
+    post_buModelContType_subList,
+    post_pageData_initDistribution // 选择渠道商后带出分销协议
   } from "@/api/deal";
   import {
     post_notice_deal_details__noticeId // 选择优惠告知书后获取关联的优惠告知书
@@ -129,7 +130,11 @@
 
     dialogAddProjectCycle: any = false; // 选择项目周期弹窗标识
     dialogAddAgency: any = false; // 选择渠道公司弹窗标识
-    selectableChannelIds: any = []; // 可选渠道商id列表
+    selectableChannelInfo: any = {
+      selectableChannelIds: [],
+      isMultipleNotice: false,
+      cycleId: null
+    }; // 可选渠道商id列表
     dialogAddBroker: any = false; // 选择经纪人弹窗标识
     channelId: any = null; // 渠道商ID
     dialogAddNotice: any = false; // 选择优惠告知书弹窗标识
@@ -192,21 +197,38 @@
     }
 
     // 选择渠道公司
-    selectAgency(data: any = []) {
-      if (data && data.length) {
-        this.selectableChannelIds = data;
+    selectAgency(info: any = {}) {
+      if (info.data && info.data.length) {
         this.dialogAddAgency = true;
+        this.selectableChannelInfo = info;
       } else {
+        this.selectableChannelInfo.selectableChannelIds = [];
+        this.selectableChannelInfo.isMultipleNotice = false;
+        this.selectableChannelInfo.cycleId = null;
         this.$message.error('暂无可选的渠道商信息');
-        this.selectableChannelIds = [];
       }
     }
 
     // 确定选择渠道公司
     async finishAddAgency(data: any) {
       // console.log('data', data);
+      let postData: any = {
+        agencyData: [], // 渠道商信息
+        contNoList: [] // 分销协议列表
+      }
       if (data && data.length > 0) {
-        await (this as any).$refs.child.finishAddAgency(data);
+        postData.agencyData = data;
+        if (this.selectableChannelInfo.isMultipleNotice && this.selectableChannelInfo.cycleId) {
+          let objData: any = {
+            channelId: data[0].channelId, // 渠道商公司ID
+            cycleId: this.selectableChannelInfo.cycleId // 周期ID
+          }
+          const info: any = await post_pageData_initDistribution(objData);
+          postData.contNoList = info.contracts;
+          await (this as any).$refs.child.finishAddAgency(postData);
+        } else {
+          await (this as any).$refs.child.finishAddAgency(postData);
+        }
       }
       this.dialogAddAgency = false;
     }

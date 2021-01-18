@@ -1,6 +1,6 @@
 /* eslint-disable */
 /* 此脚本由swagger-ui的api-docs自动生成，请勿修改 */
-//2021-1-18 16:58:41
+//2021-1-16 16:51:59
 import { request } from '@/api/base'
 const basePath = "/sales-api/deal"
 /**添加业绩比例方案信息*/
@@ -159,10 +159,6 @@ return await request.post< DealInitPageResponseVO,DealInitPageResponseVO> (baseP
 export async function post_pageData_initChannelComm (d?: any) {
 return await request.post< ChannelCommInitDataVO[],ChannelCommInitDataVO[]> (basePath+'/pageData/initChannelComm', d)
 }
-/**选择渠道商后，带出分销协议*/
-export async function post_pageData_initDistribution (d?: any) {
-return await request.post< DealInitDistributionReturnVO,DealInitDistributionReturnVO> (basePath+'/pageData/initDistribution', d)
-}
 /**派发套餐明细*/
 export async function post_pageData_initSelectablePackage (d?: any) {
 return await request.post< any,any> (basePath+'/pageData/initSelectablePackage', d)
@@ -174,10 +170,6 @@ return await request.post< AchieveRefreshDataDetailVO[],AchieveRefreshDataDetail
 /**当总包分销一致时，重新计算平台费用的拆佣金额及拆用比例*/
 export async function post_pageData_recalculateAchieveComm (d?: any) {
 return await request.post< AchieveRecalculateCommReturnVO,AchieveRecalculateCommReturnVO> (basePath+'/pageData/recalculateAchieveComm', d)
-}
-/**test*/
-export async function post_pageData_test (d?: any) {
-return await request.post< string,string> (basePath+'/pageData/test', d)
 }
 /**查询成交审核日志*/
 export async function post_processRecord_getProcessRecordList (d?: any) {
@@ -212,8 +204,8 @@ export async function post_suppDeal_entryStaffAchieveChange (d?: any) {
 return await request.post< number,number> (basePath+'/suppDeal/entryStaffAchieveChange', d)
 }
 /**测试Json*/
-export async function post_suppDeal_getTest (d?: any) {
-return await request.post< any,any> (basePath+'/suppDeal/getTest', d)
+export async function get_suppDeal_getTest (d?: any) {
+return await request.get<any,any>(basePath+'/suppDeal/getTest', { params: d })
 }
 /**预览录入业绩信息变更*/
 export async function post_suppDeal_previewEntryAchieveInfChange (d?: any) {
@@ -1386,18 +1378,6 @@ deal: Deal;
 /**成交房产*/
 house: House;
 }
-/**DealInitDistributionReturnVO*/
-export interface DealInitDistributionReturnVO {
-/**分销协议——是否垫佣——收派套餐*/
-contracts: DealInitPageDistributionVO[];
-}
-/**DealInitDistributionVO*/
-export interface DealInitDistributionVO {
-/**渠道商id*/
-channelId: number;
-/**周期id*/
-cycleId: number;
-}
 /**DealInitPageDistributionVO*/
 export interface DealInitPageDistributionVO {
 /**垫佣情况：Yes 垫佣，No 未垫佣(Veto-否、One-1个月、Two-2个月、Three-3个月、FOUR-4个月、Five-5个月、Six-6个月、Seven-7个月、Eight-8个月、Nine-9个月、Ten-10个月、Eleven-11个月、Twelve-12个月)*/
@@ -1641,71 +1621,6 @@ subscribeDate: string;
 }
 /**DealUpdateVO*/
 export interface DealUpdateVO {
-/**业务类型(New-新房、Finished-产成品)*/
-businessType: string;
-/**收费类型(Service-服务费、Agent-代理费、ServiAndAgen-服务费+代理费)*/
-charge: string;
-/**分销协议编号*/
-contNo: string;
-/**合同类型(DistriDeal-分销成交、NaturalVisitDeal-自然来访成交、SelfChannelDeal-自渠成交)*/
-contType: string;
-/**周期ID*/
-cycleId: number;
-/**数据标志(NoMingYuan-非明源数据、WholeMingYuan-完整明源数据、NoWholeMingYuan-不完整明源数据)*/
-dataSign: string;
-/**成交报告编号*/
-dealCode: string;
-/**成交组织ID*/
-dealOrgId: number;
-/**录入日期(yyyy-MM-dd HH:mm:ss)*/
-entryDate: string;
-/**录入人ID*/
-entryPersonId: number;
-/**ID*/
-id: number;
-/**是否代销(Yes-是、No-否)*/
-isConsign: string;
-/**是否市场化项目(Yes-是、No-否)*/
-isMarketProject: string;
-/**是否垫佣(Veto-否、One-1个月、Two-2个月、Three-3个月、FOUR-4个月、Five-5个月、Six-6个月、Seven-7个月、Eight-8个月、Nine-9个月、Ten-10个月、Eleven-11个月、Twelve-12个月)*/
-isMat: string;
-/**业务模式(TotalBagModel-纯总包模式、DistriModel-纯分销模式、TotalBagDistrModel-总包+分销下的分销模式)*/
-modelCode: string;
-/**优惠告知书Id*/
-noticeIds: number[];
-/**一手代理团队ID*/
-oneAgentTeamId: number;
-/**主成交ID*/
-parentId: number;
-/**备案情况(Has-有、No-无)*/
-recordState: string;
-/**细分业务模式(All-总包、District-分销)*/
-refineModel: string;
-/**备注*/
-remarks: string;
-/**报备信息ID*/
-reportId: number;
-/**明源房款回笼比例*/
-returnRatio: number;
-/**现场销售*/
-sceneSales: string;
-/**签约日期(yyyy-MM-dd)*/
-signDate: string;
-/**签约价格*/
-signPrice: number;
-/**签约类型(TempSignUp-临签、NormalSignUp-正签)*/
-signType: string;
-/**成交阶段(Recognize-认筹、Subscribe-认购、SignUp-签约)*/
-stage: string;
-/**成交状态(Reject-驳回、Draft-草稿、AchieveDeclareUnconfirm-业绩申报待确认、PlatformClerkUnreview-平台文员待审核、HeadDepartUnreview-事业部负责人待审核、BranchBusinessManageUnreview-分公司业管待审核、NotSigned-待签署生效、ReviewPassed-已审核)*/
-status: string;
-/**认购日期(yyyy-MM-dd)*/
-subscribeDate: string;
-/**认购价格*/
-subscribePrice: number;
-}
-/**DealUpdateVO_1*/
-export interface DealUpdateVO_1 {
 /**业务类型(New-新房、Finished-产成品)*/
 businessType: string;
 /**收费类型(Service-服务费、Agent-代理费、ServiAndAgen-服务费+代理费)*/
@@ -2235,8 +2150,6 @@ houseVO: MingYuanHouseVO;
 }
 /**NoticeAgreementCreateRequest*/
 export interface NoticeAgreementCreateRequest {
-/**周期ID*/
-cycleId: number;
 /**(必填)成交报告ID*/
 dealId: number;
 /**新房号：房号发生改变的时候，参数必传*/
@@ -2497,31 +2410,6 @@ channelCommVO: ChannelCommAddVO[];
 /**客户信息*/
 customerVO: CustomerUpdateVO[];
 /**成交信息*/
-dealVO: DealUpdateVO_1;
-/**成交附件信息*/
-documentVO: DocumentUpdateVO[];
-/**房产信息*/
-houseVO: HouseUpdateVO;
-/**优惠告知书*/
-noticeAgreementCreateRequest: NoticeAgreementCreateRequest;
-/**应收业绩信息*/
-receiveAchieveVO: ReceiveAchieveUpdateVO[];
-/**应收信息（收派金额）*/
-receiveVO: ReceiveUpdateVO[];
-}
-/**PreviewUpdateAchieveInfChangeVO_1*/
-export interface PreviewUpdateAchieveInfChangeVO_1 {
-/**平台费用信息*/
-achieveVO: AchieveAddVO[];
-/**中介信息*/
-agencyVO: AgencyUpdateVO[];
-/**计算方式(Auto-自动、Manual-手动)*/
-calculation: string;
-/**成交对外拆佣信息*/
-channelCommVO: ChannelCommAddVO[];
-/**客户信息*/
-customerVO: CustomerUpdateVO[];
-/**成交信息*/
 dealVO: DealUpdateVO;
 /**成交附件信息*/
 documentVO: DocumentUpdateVO[];
@@ -2556,7 +2444,7 @@ agencyVO: AgencyUpdateVO[];
 /**客户信息*/
 customerVO: CustomerUpdateVO[];
 /**成交信息*/
-dealVO: DealUpdateVO_1;
+dealVO: DealUpdateVO;
 /**成交附件信息*/
 documentVO: DocumentUpdateVO[];
 /**房产信息*/
@@ -2566,31 +2454,6 @@ noticeAgreementCreateRequest: NoticeAgreementCreateRequest;
 }
 /**PreviewUpdateRetreatRoomVO*/
 export interface PreviewUpdateRetreatRoomVO {
-/**平台费用信息*/
-achieveVO: AchieveAddVO[];
-/**中介信息*/
-agencyVO: AgencyUpdateVO[];
-/**计算方式(Auto-自动、Manual-手动)*/
-calculation: string;
-/**成交对外拆佣信息*/
-channelCommVO: ChannelCommAddVO[];
-/**客户信息*/
-customerVO: CustomerUpdateVO[];
-/**成交信息*/
-dealVO: DealUpdateVO_1;
-/**成交附件信息*/
-documentVO: DocumentUpdateVO[];
-/**房产信息*/
-houseVO: HouseUpdateVO;
-/**优惠告知书*/
-noticeAgreementCreateRequest: NoticeAgreementCreateRequest;
-/**应收业绩信息*/
-receiveAchieveVO: ReceiveAchieveUpdateVO[];
-/**应收信息（收派金额）*/
-receiveVO: ReceiveUpdateVO[];
-}
-/**PreviewUpdateRetreatRoomVO_1*/
-export interface PreviewUpdateRetreatRoomVO_1 {
 /**平台费用信息*/
 achieveVO: AchieveAddVO[];
 /**中介信息*/

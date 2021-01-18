@@ -228,7 +228,6 @@
                 v-model="postData.contNo"
                 clearable
                 @change="changeContNo"
-                @visible-change="handleGetList"
                 placeholder="请选择分销协议编号"
                 class="width--100">
                 <el-option
@@ -708,9 +707,6 @@
     post_pageData_convertCustomers // 通过优惠告知书查询客户
   } from "@/api/deal";
   import {
-    post_distributionmx_receive_detail // 手动选择渠道商情况下，需要根据渠道商公司ID和周期ID去查分销协议
-  } from "@/api/contract";
-  import {
     get_term_getProBaseByTermId__termId, // 通过项目周期获取成交基础信息
   } from "@/api/project";
   import {
@@ -1140,13 +1136,18 @@
         this.$message.warning('请先选择房号');
         return;
       }
-      (this as any).$parent.selectAgency(this.baseInfoInDeal.selectableChannelIds);
+      let data: any = {
+        selectableChannelIds: this.baseInfoInDeal.selectableChannelIds,
+        isMultipleNotice: this.baseInfoInDeal.isMultipleNotice,
+        cycleId: this.postData.cycleId
+      };
+      (this as any).$parent.selectAgency(data);
     }
 
     // 确定选择渠道公司
     finishAddAgency(data: any) {
-      console.log('data', data);
-      if(data && data.length) {
+      // console.log('data', data);
+      if(data.agencyData && data.agencyData.length) {
         let channelList: any = (this as any).$root.dictAllList('ChannelLevel');
         this.postData.agencyId = data[0].channelId; // 渠道公司Id
         this.postData.agencyName = data[0].channelName; // 渠道公司
@@ -1158,6 +1159,10 @@
             }
           });
         }
+      }
+      // 分销协议编号
+      if (data.contNoList && data.contNoList.length && this.baseInfoInDeal.isMultipleNotice) {
+        this.contNoList = data.contNoList;
       }
     }
 
@@ -1466,32 +1471,6 @@
           }
         })
       }
-    }
-
-    // 多个优惠告知书情况下，分销协议需要手动获取
-    async handleGetList(value: any) {
-      // console.log('handleGetList', value);
-      if (value && this.baseInfoInDeal.isMultipleNotice) {
-        await this.getContNoList();
-      }
-    }
-
-    // 多个优惠告知书情况下，分销协议需要手动去获取：根据渠道公司id和周期id
-    async getContNoList() {
-      if (!this.postData.channelId) {
-        this.$message.warning("请先选择渠道商");
-        return;
-      }
-      if (!this.baseInfoByTerm.termId) {
-        this.$message.warning("请先选择项目周期");
-        return;
-      }
-      let postData: any = {
-        channelCompanyId: this.postData.channelId, // 渠道商公司ID
-        cycleId: this.baseInfoByTerm.termId // 周期ID
-      }
-      const list: any = await post_distributionmx_receive_detail(postData);
-      this.contNoList = list;
     }
 
     // 改变签约、认购价格后，初始化收派套餐问题
