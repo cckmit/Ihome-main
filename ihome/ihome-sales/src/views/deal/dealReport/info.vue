@@ -204,7 +204,7 @@
               <el-link
                 class="margin-right-10"
                 type="primary"
-                @click.native.prevent="preview(scope)"
+                @click.native.prevent="previewNotice(scope)"
               >预览
               </el-link>
             </template>
@@ -694,11 +694,13 @@
             sums[index] = values.reduce((prev: any, curr: any) => {
               const value = Number(curr);
               if (!isNaN(value)) {
-                return prev + curr;
+                let total = (prev * 1 * 100 + curr * 1 * 100) / 100;
+                return total;
               } else {
-                return prev;
+                return ((prev * 1 * 100) / 100);
               }
             }, 0);
+            sums[index] = Math.round(sums[index] * 100) / 100; // 解决精度缺失问题
           } else {
             sums[index] = '';
           }
@@ -724,11 +726,13 @@
             sums[index] = values.reduce((prev: any, curr: any) => {
               const value = Number(curr);
               if (!isNaN(value)) {
-                return prev + curr;
+                let total = (prev * 1 * 100 + curr * 1 * 100) / 100;
+                return total;
               } else {
-                return prev;
+                return ((prev * 1 * 100) / 100);
               }
             }, 0);
+            sums[index] = Math.round(sums[index] * 100) / 100; // 解决精度缺失问题
           } else {
             sums[index] = '';
           }
@@ -748,17 +752,19 @@
           sums[index] = '合计';
           return;
         }
-        if ([1, 2, 3, 4, 5].includes(index)) {
+        if ([3, 5, 6].includes(index)) {
           const values = data.map((item: any) => Number(item[column.property]));
           if (!values.every((value: any) => isNaN(value))) {
             sums[index] = values.reduce((prev: any, curr: any) => {
               const value = Number(curr);
               if (!isNaN(value)) {
-                return prev + curr;
+                let total = (prev * 1 * 100 + curr * 1 * 100) / 100;
+                return total;
               } else {
-                return prev;
+                return ((prev * 1 * 100) / 100);
               }
             }, 0);
+            sums[index] = Math.round(sums[index] * 100) / 100; // 解决精度缺失问题
           } else {
             sums[index] = '';
           }
@@ -781,9 +787,11 @@
       window.open(router.href, "_blank");
     }
 
-    // 预览
-    preview(scope: any) {
-      console.log('预览scope', scope);
+    // 预览-优惠告知书
+    previewNotice(scope: any) {
+      window.open(
+        `/sales-api/sales-document-cover/file/browse/${scope.row.templateId}`
+      );
     }
 
     // 查看开票详情
