@@ -103,9 +103,12 @@
   import SelectReceivePackage from "@/views/deal/dealReport/dialog/selectReceivePackage.vue";
   import DealInfo from "@/views/deal/dealReport/dialog/dealInfo.vue";
   import {
-    post_buModelContType_getList,
+    post_buModelContType_getList, // post_notice_deal_details__noticeId
     post_buModelContType_subList
   } from "@/api/deal";
+  import {
+    post_notice_deal_details__noticeId // 选择优惠告知书后获取关联的优惠告知书
+  } from "@/api/contract";
 
   @Component({
     components: {
@@ -236,9 +239,29 @@
     // 确定选择优惠告知书
     async finishAddNotice(data: any) {
       if (data && data.length > 0) {
-        await (this as any).$refs.child.finishAddNotice(data);
+        let postData: any = {
+          noticeId: data[0].id
+        }
+        let noticeInfo: any = await post_notice_deal_details__noticeId(postData);
+        if (noticeInfo.dealNotices && noticeInfo.dealNotices.length) {
+          noticeInfo.dealNotices.forEach((item: any) => {
+            item.noticeId = item.id;
+            item.addType = "manual";
+          });
+        }
+        if (noticeInfo.customerConvertResponse && noticeInfo.customerConvertResponse.length) {
+          noticeInfo.customerConvertResponse.forEach((item: any, index: any) => {
+            if (index === 0) {
+              item.isCustomer = "Yes";
+            } else {
+              item.isCustomer = "No";
+            }
+            item.addId = item.id; // 手动添加的时候保存id --- 为了回显收派金额
+          });
+        }
+        await (this as any).$refs.child.finishAddNotice(noticeInfo);
+        this.dialogAddNotice = false;
       }
-      this.dialogAddNotice = false;
     }
 
     // 预览-优惠告知书
