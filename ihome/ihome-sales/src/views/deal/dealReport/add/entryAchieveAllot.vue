@@ -1836,12 +1836,12 @@
       // console.log('data', data);
       if(data.agencyData && data.agencyData.length) {
         let channelList: any = (this as any).$root.dictAllList('ChannelLevel');
-        this.postData.agencyId = data[0].channelId; // 渠道公司Id
-        this.postData.agencyName = data[0].channelName; // 渠道公司
-        this.postData.channelLevel = data[0].channelGrade; // 渠道等级Id
-        if (channelList && channelList.length > 0 && data[0].channelGrade) {
+        this.postData.agencyId = data.agencyData[0].channelId; // 渠道公司Id
+        this.postData.agencyName = data.agencyData[0].channelName; // 渠道公司
+        this.postData.channelLevel = data.agencyData[0].channelGrade; // 渠道等级Id
+        if (channelList && channelList.length > 0 && data.agencyData[0].channelGrade) {
           channelList.forEach((list: any) => {
-            if (list.code === data[0].channelGrade) {
+            if (list.code === data.agencyData[0].channelGrade) {
               this.postData.channelLevelName= list.name; // 渠道等级
             }
           });
