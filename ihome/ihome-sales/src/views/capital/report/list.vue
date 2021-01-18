@@ -108,7 +108,6 @@ export default class ReportList extends Vue {
     timeType: 'currentDate',
     timeList: []
   };
-  currentOptions: any = {};
   resPageInfo: any = {
     total: null,
     list: [],
