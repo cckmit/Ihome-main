@@ -1,10 +1,10 @@
 <!--
- * @Descripttion: 
+ * @Description:
  * @version: 
  * @Author: lsj
  * @Date: 2020-11-03 13:20:35
  * @LastEditors: lsj
- * @LastEditTime: 2020-12-22 18:45:20
+ * @LastEditTime: 2021-01-19 08:52:16
 -->
 <template>
   <ih-page class="text-left">
@@ -20,7 +20,9 @@
           <el-form-item label="成交报告编号">{{infoForm.dealCode}}</el-form-item>
         </el-col>
         <el-col :span="6">
-          <el-form-item label="项目周期">{{infoForm.projectCycle}}</el-form-item>
+          <el-form-item label="项目周期">
+            <div class="cycle-name-wrapper" :title="infoForm.cycleName">{{infoForm.cycleName}}</div>
+          </el-form-item>
         </el-col>
         <el-col :span="6">
           <el-form-item label="业务模式">
@@ -65,7 +67,7 @@
           <el-form-item label="分销协议编号">
             <div class="contNo-wrapper">
               <div class="no">{{infoForm.contNo}}</div>
-              <div>
+              <div v-if="infoForm.contNo">
                 <el-link
                   class="margin-left-10"
                   type="primary"
@@ -82,7 +84,7 @@
           </el-form-item>
         </el-col>
         <el-col :span="6">
-          <el-form-item label="报备信息">{{infoForm.projectCycle}}</el-form-item>
+          <el-form-item label="报备信息">{{infoForm.recordStr}}</el-form-item>
         </el-col>
         <el-col :span="6">
           <el-form-item label="渠道公司">
@@ -500,7 +502,7 @@
           class="nav-item el-button--success">{{item.name}}</div>
       </div>
     </div>
-    <ih-dialog :show="reviewDialog" desc="成交审核记录">
+    <ih-dialog :show="reviewDialog" desc="成交审核操作记录信息">
       <ReviewDetailsDialog
         :data="reviewData"
         @cancel="() => (reviewDialog = false)"
@@ -508,8 +510,7 @@
             () => {
               reviewDialog = false;
             }
-          "
-      />
+          "/>
     </ih-dialog>
   </ih-page>
 </template>
@@ -606,7 +607,7 @@
     // 获取开票信息
     async getInvoiceInfo() {
       let info: any = await get_invoice_getInvoiceInfo__businessId({businessId: this.dealId});
-      console.log(info);
+      // console.log(info);
       if (info.id) {
         this.infoForm.invoiceList.push(info);
       } else {
@@ -617,7 +618,7 @@
     // 根据成交id获取优惠告知书列表
     async getInformation() {
       const list: any = await post_notice_customer_information({dealId: this.dealId});
-      console.log('优惠告知书列表', list);
+      // console.log('优惠告知书列表', list);
       if (list && list.length > 0) {
         this.infoForm.offerNoticeList = list;
       } else {
@@ -815,16 +816,20 @@
 
     // 查看审核详情
     viewReviewDetails() {
-      console.log('查看审核详情');
-      this.reviewData = {
-        title: 'main', // 标题
-        dealId: this.infoForm.id // 成交id
-      }
+      // console.log('查看审核详情');
+      this.reviewData = this.infoForm.processRecordList;
       this.reviewDialog = true;
     }
   }
 </script>
 <style lang="scss" scoped>
+  .cycle-name-wrapper {
+    width: 97%;
+    overflow: hidden;
+    text-overflow:ellipsis;
+    white-space: nowrap;
+  }
+
   .home-type-wrapper {
     width: 100%;
     display: flex;
