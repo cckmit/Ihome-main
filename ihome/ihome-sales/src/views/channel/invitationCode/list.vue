@@ -4,7 +4,7 @@
  * @Author: zyc
  * @Date: 2020-07-14 09:23:40
  * @LastEditors: zyc
- * @LastEditTime: 2021-01-06 11:19:24
+ * @LastEditTime: 2021-01-19 09:44:02
 --> 
 --> 
 <template>
@@ -110,7 +110,7 @@
         <el-table-column
           prop="invitationCode"
           label="邀请码"
-          width="180"
+          width="150"
         ></el-table-column>
         <!-- <el-table-column
           prop="status"
@@ -122,19 +122,25 @@
             $root.dictAllName(scope.row.status, "ValidType")
           }}</template>
         </el-table-column> -->
-        <el-table-column
-          prop="expiresTime"
-          label="失效日期"
-          width="95"
-        ></el-table-column>
+
         <el-table-column prop="departmentName" label="事业部"></el-table-column>
         <el-table-column prop="createUserName" label="创建人"></el-table-column>
         <el-table-column
           prop="createTime"
           label="创建时间"
-          width="155"
+          width="180"
         ></el-table-column>
-
+        <el-table-column prop="expiresTime" label="失效日期" width="180">
+          <template slot-scope="scope">
+            <span
+              :class="{
+                ValidTypeColor: isValidType(scope),
+                NoValidTypeColor: !isValidType(scope),
+              }"
+              >{{ scope.row.expiresTime }}</span
+            >
+          </template>
+        </el-table-column>
         <el-table-column fixed="right" label="操作" width="120">
           <template slot-scope="scope">
             <el-link
@@ -232,6 +238,13 @@ export default class InvitationCodeList extends Vue {
   async mounted() {
     console.log("mounted");
   }
+  isValidType(scope: any) {
+    if (new Date(scope.row.expiresTime).getTime() > new Date().getTime()) {
+      return false;
+    } else {
+      return true;
+    }
+  }
   expiresTimeChange(dateArray: any) {
     if (dateArray) {
       this.queryPageParameters.expiresTimeBegin = dateArray[0];
@@ -304,4 +317,10 @@ export default class InvitationCodeList extends Vue {
 }
 </script>
 <style lang="scss" scoped>
+.ValidTypeColor {
+  color: red;
+}
+.NoValidTypeColor {
+  color: #4caf50;
+}
 </style>
