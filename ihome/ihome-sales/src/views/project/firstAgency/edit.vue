@@ -4,7 +4,7 @@
  * @Author: wwq
  * @Date: 2020-11-03 18:39:23
  * @LastEditors: wwq
- * @LastEditTime: 2021-01-16 18:53:30
+ * @LastEditTime: 2021-01-19 10:25:15
 -->
 <template>
   <IhPage>
@@ -333,11 +333,12 @@
       <br />
       <el-button
         type="primary"
-        @click="save()"
+        @click="save('save')"
       >保存</el-button>
       <el-button
+        :disabled="!$route.query.id"
         type="success"
-        @click="submit()"
+        @click="save('submit')"
       >提交</el-button>
     </div>
 
@@ -367,7 +368,7 @@ import { Form as ElForm } from "element-ui";
 import {
   get_firstAgencyCompany_get__agencyId,
   post_firstAgencyCompany_save,
-  post_firstAgencyCompany_commit__agencyId,
+  post_firstAgencyCompany_saveAndCommit,
 } from "@/api/project/index";
 import BankDialog from "./dialog/bankDialog.vue";
 import { phoneValidator } from "ihome-common/util/base/form-ui";
@@ -477,7 +478,7 @@ export default class FirstAgencyEdit extends Vue {
     this.dialogFormVisible = true;
   }
 
-  save() {
+  save(val: any) {
     (this.$refs["ruleForm"] as ElForm).validate(async (v: any) => {
       if (v) {
         let infoObj: any = { ...this.info };
@@ -542,24 +543,18 @@ export default class FirstAgencyEdit extends Vue {
         }
         infoObj.followMan = (this.$root as any).userInfo.name;
         infoObj.followManId = (this.$root as any).userInfo.id;
-        await post_firstAgencyCompany_save(infoObj);
-        this.$message.success("保存成功");
+        if (val === "save") {
+          await post_firstAgencyCompany_save(infoObj);
+          this.$message.success("保存成功");
+        } else {
+          await post_firstAgencyCompany_saveAndCommit(infoObj);
+          this.$message.success("提交成功");
+        }
+
         this.$goto({ path: "/firstAgency/list" });
       }
     });
   }
-  async submit() {
-    await post_firstAgencyCompany_commit__agencyId({
-      agencyId: this.$route.query.id,
-    });
-    this.$message.success("提交成功");
-    this.$goto({ path: "/firstAgency/list" });
-  }
-  /**
-   * @description: 新添加数据--银行账号信息
-   * @param {object} value
-   * @param {string} type
-   */
   private handlePushBank(value: any, type: string): void {
     switch (type) {
       case "new-add":
