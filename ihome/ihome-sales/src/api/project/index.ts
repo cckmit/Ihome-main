@@ -1,6 +1,6 @@
 /* eslint-disable */
 /* 此脚本由swagger-ui的api-docs自动生成，请勿修改 */
-//2021-1-19 10:15:55 ├F10: AM┤
+//2021-1-19 3:19:35 ├F10: PM┤
 import { request } from '@/api/base'
 const basePath = "/sales-api/project"
 /**index*/
@@ -118,6 +118,58 @@ export async function post_collectandsend_stop(d?: any) {
 /**派发套餐-修改*/
 export async function post_collectandsend_update(d?: any) {
     return await request.post<CollectandsendUpdateVO, CollectandsendUpdateVO>(basePath + '/collectandsend/update', d)
+}
+/**保存新增开发商信息*/
+export async function post_company_add(d?: any) {
+    return await request.post<number, number>(basePath + '/company/add', d)
+}
+/**审核开发商*/
+export async function post_company_audit(d?: any) {
+    return await request.post<number, number>(basePath + '/company/audit', d)
+}
+/**删除开发商*/
+export async function get_company_delete__id(d?: any) {
+    return await request.get<number, number>(basePath + '/company/delete/{id}', { params: d })
+}
+/**开发商详情*/
+export async function get_company_get__id(d?: any) {
+    return await request.get<CompanyDetailVO, CompanyDetailVO>(basePath + '/company/get/{id}', { params: d })
+}
+/**开发商列表*/
+export async function post_company_getList(d?: any) {
+    return await request.post<any, any>(basePath + '/company/getList', d)
+}
+/**开发商名称*/
+export async function get_company_getName__id(d?: any) {
+    return await request.get<string, string>(basePath + '/company/getName/{id}', { params: d })
+}
+/**开发商列表(不分页)*/
+export async function post_company_listAll(d?: any) {
+    return await request.post<CompanyListVO[], CompanyListVO[]>(basePath + '/company/listAll', d)
+}
+/**开发商数据列表*/
+export async function post_company_listByIds(d?: any) {
+    return await request.post<QueryCompanyNameResponseVO[], QueryCompanyNameResponseVO[]>(basePath + '/company/listByIds', d)
+}
+/**撤回开发商*/
+export async function post_company_retract(d?: any) {
+    return await request.post<number, number>(basePath + '/company/retract', d)
+}
+/**变更信息*/
+export async function post_company_update(d?: any) {
+    return await request.post<number, number>(basePath + '/company/update', d)
+}
+/**修改开发商信息*/
+export async function post_company_updateDraft(d?: any) {
+    return await request.post<number, number>(basePath + '/company/updateDraft', d)
+}
+/**变更录入人*/
+export async function post_company_updateInputUser(d?: any) {
+    return await request.post<number, number>(basePath + '/company/updateInputUser', d)
+}
+/**开发商操作日志列表*/
+export async function get_companyLog_getAll__companyId(d?: any) {
+    return await request.get<CompanyLogDetailVO[], CompanyLogDetailVO[]>(basePath + '/companyLog/getAll/{companyId}', { params: d })
 }
 /**立项报备规则-新增*/
 export async function post_customerReportRule_add(d?: any) {
@@ -441,7 +493,7 @@ export async function get_preferential_getListByTermId__termId(d?: any) {
 }
 /**优惠告知书-预览*/
 export async function post_preferential_getPreView(d?: any) {
-    return await request.post<PreViewVO, PreViewVO>(basePath + '/preferential/getPreView', d)
+    return await request.post<any, any>(basePath + '/preferential/getPreView', d)
 }
 /**优惠告知数-下载二维码*/
 export async function get_preferential_getQRCodeImage__preferentialMxId(d?: any) {
@@ -877,6 +929,15 @@ export interface AttachTermItemVO {
     fileName: string;
     /**(必填)文件类型(PartyAConfirm-甲方确认函/授权函、IntermediaryLetter-中介启动函、CalcForm-立项测算表、PartyAContract-甲方合同、CrossPro-跨项目使用其他渠道费用授权函、IntermediaryDistribut-中介分销协议、SubscriptTemplate-认购书模板、DiscountNotice-优惠告知书、OtherFile-其他附件)*/
     type: string;
+}
+/**AuditVO*/
+export interface AuditVO {
+    /**开发商ID*/
+    id: number;
+    /**审核结果*/
+    pass: boolean;
+    /**审核意见*/
+    reason: string;
 }
 /**BuildingAddVO*/
 export interface BuildingAddVO {
@@ -1631,12 +1692,279 @@ export interface CollectandsendVO {
     /**立项周期ID*/
     termId: number;
 }
+/**CompanyAttachmentBaseVO*/
+export interface CompanyAttachmentBaseVO {
+    /**文件ID*/
+    fileId: string;
+    /**文件名*/
+    fileName: string;
+    /**类型(Licence-营业执照、BankLicence-开户许可证、Other-其他附件)*/
+    type: string;
+}
+/**CompanyBankBaseVO*/
+export interface CompanyBankBaseVO {
+    /**开户银行*/
+    bank: string;
+    /**账户名称*/
+    name: string;
+    /**账户号码*/
+    number: string;
+    /**账号类型(Basic-基本存款账户、General-一般存款账户)*/
+    type: string;
+}
+/**CompanyBaseVO*/
+export interface CompanyBaseVO {
+    /**(必填)住所*/
+    address: string;
+    /**附件列表*/
+    attachmentList: CompanyAttachmentBaseVO[];
+    /**账户信息*/
+    bankList: CompanyBankBaseVO[];
+    /**营业期限*/
+    businessTime: string;
+    /**注册资本*/
+    capital: string;
+    /**(必填)城市*/
+    city: string;
+    /**联系人信息*/
+    contactList: CompanyContactBaseVO[];
+    /**(必填)行政区*/
+    county: string;
+    /**(必填)统一社会信用代码*/
+    creditCode: string;
+    /**(必填)录入人*/
+    inputUser: number;
+    /**法人代表*/
+    legalPerson: string;
+    /**法人身份证*/
+    legalPersonId: string;
+    /**(必填)开发商名称*/
+    name: string;
+    /**(必填)省份*/
+    province: string;
+    /**企业概况*/
+    remark: string;
+    /**(必填)成立日期(yyyy-MM-dd)*/
+    setupTime: string;
+    /**(必填)简称*/
+    shortName: string;
+    /**状态(Draft-起草、WaitAuditByBranchHead-待分公司业管审核、Audited-已审核)*/
+    status: string;
+    /**(必填)公司类型(limitedLiabilityCompany-有限责任公司（自然人投资或控股）、CompanyLimitedByShares-股份有限公司、IndividualIndustrial-个体工商户)*/
+    type: string;
+}
+/**CompanyContactBaseVO*/
+export interface CompanyContactBaseVO {
+    /**联系人姓名*/
+    contactName: string;
+    /**联系电话*/
+    contactNum: string;
+    /**电子邮箱*/
+    email: string;
+}
+/**CompanyDetailVO*/
+export interface CompanyDetailVO {
+    /**(必填)住所*/
+    address: string;
+    /**附件列表*/
+    attachmentList: CompanyAttachmentBaseVO[];
+    /**账户信息*/
+    bankList: CompanyBankBaseVO[];
+    /**营业期限*/
+    businessTime: string;
+    /**注册资本*/
+    capital: string;
+    /**(必填)城市*/
+    city: string;
+    /**联系人信息*/
+    contactList: CompanyContactBaseVO[];
+    /**(必填)行政区*/
+    county: string;
+    /**(必填)统一社会信用代码*/
+    creditCode: string;
+    /**开发商ID*/
+    id: number;
+    /**(必填)录入人*/
+    inputUser: number;
+    /**录入人*/
+    inputUserName: string;
+    /**法人代表*/
+    legalPerson: string;
+    /**法人身份证*/
+    legalPersonId: string;
+    /**(必填)开发商名称*/
+    name: string;
+    /**(必填)省份*/
+    province: string;
+    /**企业概况*/
+    remark: string;
+    /**(必填)成立日期(yyyy-MM-dd)*/
+    setupTime: string;
+    /**(必填)简称*/
+    shortName: string;
+    /**状态(Draft-起草、WaitAuditByBranchHead-待分公司业管审核、Audited-已审核)*/
+    status: string;
+    /**(必填)公司类型(limitedLiabilityCompany-有限责任公司（自然人投资或控股）、CompanyLimitedByShares-股份有限公司、IndividualIndustrial-个体工商户)*/
+    type: string;
+}
+/**CompanyEditAuditedDetailVO*/
+export interface CompanyEditAuditedDetailVO {
+    /**(必填)住所*/
+    address: string;
+    /**附件列表*/
+    attachmentList: CompanyAttachmentBaseVO[];
+    /**账户信息*/
+    bankList: CompanyBankBaseVO[];
+    /**营业期限*/
+    businessTime: string;
+    /**注册资本*/
+    capital: string;
+    /**(必填)城市*/
+    city: string;
+    /**联系人信息*/
+    contactList: CompanyContactBaseVO[];
+    /**(必填)行政区*/
+    county: string;
+    /**(必填)统一社会信用代码*/
+    creditCode: string;
+    /**开发商ID*/
+    id: number;
+    /**(必填)录入人*/
+    inputUser: number;
+    /**法人代表*/
+    legalPerson: string;
+    /**法人身份证*/
+    legalPersonId: string;
+    /**(必填)开发商名称*/
+    name: string;
+    /**(必填)省份*/
+    province: string;
+    /**变更原因*/
+    reason: string;
+    /**企业概况*/
+    remark: string;
+    /**(必填)成立日期(yyyy-MM-dd)*/
+    setupTime: string;
+    /**(必填)简称*/
+    shortName: string;
+    /**状态(Draft-起草、WaitAuditByBranchHead-待分公司业管审核、Audited-已审核)*/
+    status: string;
+    /**(必填)公司类型(limitedLiabilityCompany-有限责任公司（自然人投资或控股）、CompanyLimitedByShares-股份有限公司、IndividualIndustrial-个体工商户)*/
+    type: string;
+}
+/**CompanyEditDetailVO*/
+export interface CompanyEditDetailVO {
+    /**(必填)住所*/
+    address: string;
+    /**附件列表*/
+    attachmentList: CompanyAttachmentBaseVO[];
+    /**账户信息*/
+    bankList: CompanyBankBaseVO[];
+    /**营业期限*/
+    businessTime: string;
+    /**注册资本*/
+    capital: string;
+    /**(必填)城市*/
+    city: string;
+    /**联系人信息*/
+    contactList: CompanyContactBaseVO[];
+    /**(必填)行政区*/
+    county: string;
+    /**(必填)统一社会信用代码*/
+    creditCode: string;
+    /**开发商ID*/
+    id: number;
+    /**(必填)录入人*/
+    inputUser: number;
+    /**法人代表*/
+    legalPerson: string;
+    /**法人身份证*/
+    legalPersonId: string;
+    /**(必填)开发商名称*/
+    name: string;
+    /**(必填)省份*/
+    province: string;
+    /**企业概况*/
+    remark: string;
+    /**(必填)成立日期(yyyy-MM-dd)*/
+    setupTime: string;
+    /**(必填)简称*/
+    shortName: string;
+    /**状态(Draft-起草、WaitAuditByBranchHead-待分公司业管审核、Audited-已审核)*/
+    status: string;
+    /**(必填)公司类型(limitedLiabilityCompany-有限责任公司（自然人投资或控股）、CompanyLimitedByShares-股份有限公司、IndividualIndustrial-个体工商户)*/
+    type: string;
+}
 /**CompanyIdVo*/
 export interface CompanyIdVo {
     /**甲方ID*/
     companyId: number;
     /**甲方名称*/
     companyName: string;
+}
+/**CompanyListVO*/
+export interface CompanyListVO {
+    /**城市*/
+    city: string;
+    /**行政区*/
+    county: string;
+    /**统一社会信用代码*/
+    creditCode: string;
+    /**开发商ID*/
+    id: number;
+    /**录入人ID*/
+    inputUser: number;
+    /**录入人*/
+    inputUserName: string;
+    /**公司名称*/
+    name: string;
+    /**省份*/
+    province: string;
+    /**状态(Draft-起草、WaitAuditByBranchHead-待分公司业管审核、Audited-已审核)*/
+    status: string;
+}
+/**CompanyLogDetailVO*/
+export interface CompanyLogDetailVO {
+    /**开发商ID*/
+    companyId: number;
+    /**处理结果*/
+    operateResult: string;
+    /**处理时间(yyyy-MM-dd HH:mm:ss)*/
+    operateTime: string;
+    /**操作*/
+    operation: string;
+    /**处理人ID*/
+    operator: number;
+    /**处理人名字*/
+    operatorName: string;
+    /**备注*/
+    remark: string;
+}
+/**CompanyQueryAllVO*/
+export interface CompanyQueryAllVO {
+    /**公司名称*/
+    name: string;
+}
+/**CompanyQueryVO*/
+export interface CompanyQueryVO {
+    /**城市*/
+    city: string;
+    /**行政区*/
+    county: string;
+    /**统一社会信用代码*/
+    creditCode: string;
+    /**录入人*/
+    inputUser: number;
+    /**公司名称*/
+    name: string;
+    /**(必填)当前页*/
+    pageNum: number;
+    /**(必填)每页条数*/
+    pageSize: number;
+    /**省份*/
+    province: string;
+    /**状态(Draft-起草、WaitAuditByBranchHead-待分公司业管审核、Audited-已审核)*/
+    status: string;
 }
 /**ConstractOaSaveVO*/
 export interface ConstractOaSaveVO {
@@ -2333,24 +2661,22 @@ export interface FirstAgencyCompanyQueryVO {
 export interface FirstAgencyListVO {
     /**审核状态(Draft-草稿、WaitByBranch-分公司待审核、Reviewd-OA已审核)*/
     agencyAuditEnum: string;
-    /**一手公司代理ID*/
-    agencyId: number;
-    /**公司名称*/
-    agencyName: string;
-    /**区*/
-    area: string;
-    /**区*/
-    areaName: string;
     /**市*/
     city: string;
     /**市*/
     cityName: string;
-    /**信用代码*/
-    creditCode: string;
+    /**行政区*/
+    county: string;
+    /**区*/
+    countyName: string;
     /**跟进人*/
     followMan: string;
     /**跟进人ID*/
     followManId: number;
+    /**公司ID*/
+    id: number;
+    /**公司名称*/
+    name: string;
     /**项目一手公司代理ID*/
     proAgencyId: number;
     /**省*/
@@ -2358,7 +2684,7 @@ export interface FirstAgencyListVO {
     /**省*/
     provinceName: string;
     /**简称*/
-    simpleName: string;
+    shortName: string;
 }
 /**FlowComment*/
 export interface FlowComment {
@@ -2858,6 +3184,8 @@ export interface PaymentVO {
 }
 /**PreViewVO*/
 export interface PreViewVO {
+    /**字节数组*/
+    bytes: string;
     /**ID*/
     fileId: string;
     /**参数*/
@@ -3434,6 +3762,20 @@ export interface PropertyVO {
     /**物业类型名称(Residence-住宅、WorkShop-厂房、Apartment-公寓、Villa-别墅、Shop-商铺、Office-写字楼、Parking-车位、Other-其他)*/
     propertyName: string;
 }
+/**QueryCompanyNameResponseVO*/
+export interface QueryCompanyNameResponseVO {
+    /**开发商名称*/
+    companyName: string;
+    /**开发商ID*/
+    id: number;
+    /**开发商简称*/
+    shortName: string;
+}
+/**QueryCompanyNameVO*/
+export interface QueryCompanyNameVO {
+    /**开发商ID*/
+    ids: number[];
+}
 /**RecommendProjectVo*/
 export interface RecommendProjectVo {
     /**市*/
@@ -3453,6 +3795,13 @@ export interface RelationTermVO {
     exNew: boolean;
     /**乙方收款账号ID*/
     receivingAccountId: number;
+}
+/**RetractVO*/
+export interface RetractVO {
+    /**开发商ID*/
+    id: number;
+    /**撤回原因*/
+    reason: string;
 }
 /**RoomAddArgs*/
 export interface RoomAddArgs {
@@ -4627,22 +4976,27 @@ export interface TermYdVO {
     /**项目周期阶段 SUBSCRIPTION-认购(默认)、RECOGNIZE-认筹(Subscription-认购、Recognize-认筹)*/
     termStageEnum: string;
 }
+/**UpdateInputUserVO*/
+export interface UpdateInputUserVO {
+    /**开发商ID*/
+    companyId: number[];
+    /**(必填)新录入人*/
+    inputUser: number;
+}
 /**一手公司代理*/
 export interface 一手公司代理 {
-    /**一手公司代理ID*/
-    agencyId: number;
-    /**公司名称*/
-    agencyName: string;
-    /**区*/
-    area: string;
-    /**区*/
-    areaName: string;
     /**市*/
     city: string;
     /**市*/
     cityName: string;
-    /**信用代码*/
-    creditCode: string;
+    /**行政区*/
+    county: string;
+    /**区*/
+    countyName: string;
+    /**公司ID*/
+    id: number;
+    /**公司名称*/
+    name: string;
     /**项目一手公司代理ID*/
     proAgencyId: number;
     /**省*/
@@ -4650,5 +5004,5 @@ export interface 一手公司代理 {
     /**省*/
     provinceName: string;
     /**简称*/
-    simpleName: string;
+    shortName: string;
 }

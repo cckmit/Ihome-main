@@ -4,7 +4,7 @@
  * @Author: wwq
  * @Date: 2020-12-02 15:37:31
  * @LastEditors: wwq
- * @LastEditTime: 2021-01-19 10:45:50
+ * @LastEditTime: 2021-01-19 14:06:30
 -->
 <template>
   <el-dialog
@@ -670,6 +670,7 @@ export default class AddContract extends Vue {
           data: {
             data: res.data.parmas,
             fileId: res.data.fileId,
+            bytes: res.data.bytes,
           },
         }).then((item: any) => {
           const arr = new Blob([item.data], { type: "application/pdf" });

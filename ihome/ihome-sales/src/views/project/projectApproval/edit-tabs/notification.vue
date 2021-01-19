@@ -4,7 +4,7 @@
  * @Author: wwq
  * @Date: 2020-11-27 17:27:01
  * @LastEditors: wwq
- * @LastEditTime: 2021-01-19 10:48:30
+ * @LastEditTime: 2021-01-19 14:08:48
 -->
 <template>
   <div>
@@ -436,26 +436,25 @@ export default class Notification extends Vue {
         Authorization: "bearer " + token,
       },
     }).then((res: any) => {
-      if (res?.data?.fileId) {
-        axios({
-          method: "POST",
-          url: `/sales-api/sales-document-cover/pdf/ftlToPdf/brow`,
-          xsrfHeaderName: "Authorization",
-          responseType: "blob",
-          headers: {
-            "Content-Type": "application/json",
-            Authorization: "bearer " + token,
-          },
-          data: {
-            data: res.data.parmas,
-            fileId: res.data.fileId,
-          },
-        }).then((item: any) => {
-          const arr = new Blob([item.data], { type: "application/pdf" });
-          const href = window.URL.createObjectURL(arr);
-          window.open(href);
-        });
-      }
+      console.log(res);
+      axios({
+        method: "POST",
+        url: `/sales-api/sales-document-cover/pdf/ftlToPdf/brow`,
+        xsrfHeaderName: "Authorization",
+        responseType: "blob",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: "bearer " + token,
+        },
+        data: {
+          data: res.data.parmas,
+          bytes: res.data.bytes,
+        },
+      }).then((item: any) => {
+        const arr = new Blob([item.data], { type: "application/pdf" });
+        const href = window.URL.createObjectURL(arr);
+        window.open(href);
+      });
     });
   }
 
@@ -476,26 +475,25 @@ export default class Notification extends Vue {
         termId: row.termId,
       },
     }).then((res: any) => {
-      if (res?.data?.fileId) {
-        axios({
-          method: "POST",
-          url: `/sales-api/sales-document-cover/pdf/ftlToPdf/brow`,
-          xsrfHeaderName: "Authorization",
-          responseType: "blob",
-          headers: {
-            "Content-Type": "application/json",
-            Authorization: "bearer " + token,
-          },
-          data: {
-            data: res.data.parmas,
-            fileId: res.data.fileId,
-          },
-        }).then((item: any) => {
-          const arr = new Blob([item.data], { type: "application/pdf" });
-          const href = window.URL.createObjectURL(arr);
-          window.open(href);
-        });
-      }
+      console.log(res);
+      axios({
+        method: "POST",
+        url: `/sales-api/sales-document-cover/pdf/ftlToPdf/brow`,
+        xsrfHeaderName: "Authorization",
+        responseType: "blob",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: "bearer " + token,
+        },
+        data: {
+          data: res.data.parmas,
+          bytes: res.data.bytes,
+        },
+      }).then((item: any) => {
+        const arr = new Blob([item.data], { type: "application/pdf" });
+        const href = window.URL.createObjectURL(arr);
+        window.open(href);
+      });
     });
   }
 

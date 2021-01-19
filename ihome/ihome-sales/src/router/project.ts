@@ -4,7 +4,7 @@
  * @Author: wwq
  * @Date: 2020-10-22 14:45:15
  * @LastEditors: wwq
- * @LastEditTime: 2021-01-11 10:20:17
+ * @LastEditTime: 2021-01-19 15:58:38
  */
 import { RouteConfig } from 'vue-router'
 
@@ -95,10 +95,28 @@ const projectRoutes: Array<RouteConfig> = [
         meta: { title: '一手代理公司编辑', icon: 'form' }
       },
       {
+        path: 'change',
+        name: 'firstAgencyChange',
+        component: () => import('../views/project/firstAgency/edit.vue'),
+        meta: { title: '一手代理公司变更', icon: 'form' }
+      },
+      {
         path: 'info',
         name: 'firstAgencyInfo',
         component: () => import('../views/project/firstAgency/info.vue'),
         meta: { title: '一手代理公司详情', icon: 'form' }
+      },
+      {
+        path: 'check',
+        name: 'firstAgencyCheck',
+        component: () => import('../views/project/firstAgency/info.vue'),
+        meta: { title: '一手代理公司审核', icon: 'form' }
+      },
+      {
+        path: 'revocation',
+        name: 'firstAgencyRevocation',
+        component: () => import('../views/project/firstAgency/info.vue'),
+        meta: { title: '一手代理公司撤回', icon: 'form' }
       }
     ]
   },

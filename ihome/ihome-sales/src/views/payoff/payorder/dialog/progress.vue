@@ -4,7 +4,7 @@
  * @Author: wwq
  * @Date: 2021-01-18 16:30:42
  * @LastEditors: wwq
- * @LastEditTime: 2021-01-19 08:51:32
+ * @LastEditTime: 2021-01-19 11:45:26
 -->
 <template>
   <el-dialog
@@ -69,15 +69,15 @@ export default class Progress extends Vue {
     },
     {
       name: "0A流程审核",
-      code: "OAUnreview",
-    },
-    {
-      name: "支付推送",
       code: "OAReviewing",
     },
     {
+      name: "支付推送",
+      code: "ConfirmingPay",
+    },
+    {
       name: "支付成功",
-      code: "CompletePay",
+      code: "PaymentSuccessful",
     },
   ];
 
