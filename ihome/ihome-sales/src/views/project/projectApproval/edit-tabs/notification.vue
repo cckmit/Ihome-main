@@ -4,7 +4,7 @@
  * @Author: wwq
  * @Date: 2020-11-27 17:27:01
  * @LastEditors: wwq
- * @LastEditTime: 2021-01-19 16:50:20
+ * @LastEditTime: 2021-01-19 18:44:00
 -->
 <template>
   <div>
@@ -431,6 +431,7 @@ export default class Notification extends Vue {
       method: "POST",
       url: `/sales-api/project/distributContract/getPreViewOut/${row.agencyContrictId}`,
       xsrfHeaderName: "Authorization",
+      responseType: "blob",
       headers: {
         "Content-Type": "application/json",
         Authorization: "bearer " + token,
@@ -448,6 +449,7 @@ export default class Notification extends Vue {
       method: "POST",
       url: `/sales-api/project/preferential/getPreView`,
       xsrfHeaderName: "Authorization",
+      responseType: "blob",
       headers: {
         "Content-Type": "application/json",
         Authorization: "bearer " + token,
