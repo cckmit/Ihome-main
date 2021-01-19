@@ -4,7 +4,7 @@
  * @Author: wwq
  * @Date: 2020-12-04 09:40:47
  * @LastEditors: wwq
- * @LastEditTime: 2021-01-19 10:03:26
+ * @LastEditTime: 2021-01-19 10:40:27
 -->
 <template>
   <el-dialog
@@ -278,13 +278,11 @@
                     v-if="row.transactionEnum === 'Appoint' || row.transactionEnum === 'Strategic'"
                   >
                     <SelectPageByCondition
-                      :title="row.consumerName"
-                      v-model="row.consumerName"
-                      :search-name="row.consumerName"
+                      v-model="row.consumerId"
                       clearable
                       placeholder="请选择"
                       :params="searchConditon"
-                      @changeOption="getChannelInfo(row.consumerName, i, $index)"
+                      @changeOption="getChannelInfo(row.consumerId, i, $index)"
                     ></SelectPageByCondition>
                   </div>
                 </template>
@@ -679,13 +677,11 @@
                     v-if="row.transactionEnum === 'Appoint' || row.transactionEnum === 'Strategic'"
                   >
                     <SelectPageByCondition
-                      :title="row.consumerName"
-                      v-model="row.consumerName"
-                      :search-name="row.consumerName"
+                      v-model="row.consumerId"
                       clearable
                       placeholder="请选择"
                       :params="searchConditon"
-                      @changeOption="getChannelInfo(row.consumerName, i, $index)"
+                      @changeOption="getChannelInfo(row.consumerId, i, $index)"
                     ></SelectPageByCondition>
                   </div>
                 </template>
