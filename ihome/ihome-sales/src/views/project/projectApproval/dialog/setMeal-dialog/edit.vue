@@ -4,7 +4,7 @@
  * @Author: wwq
  * @Date: 2020-12-04 09:40:47
  * @LastEditors: wwq
- * @LastEditTime: 2021-01-18 20:35:41
+ * @LastEditTime: 2021-01-19 10:40:27
 -->
 <template>
   <el-dialog
@@ -277,20 +277,13 @@
                     class="margin-top-5"
                     v-if="row.transactionEnum === 'Appoint' || row.transactionEnum === 'Strategic'"
                   >
-                    <el-input
+                    <SelectPageByCondition
+                      v-model="row.consumerId"
+                      clearable
                       placeholder="请选择"
-                      :title="row.consumerName"
-                      v-model="row.consumerName"
-                      class="input-with-select"
-                      readonly
-                    >
-                      <i
-                        slot="suffix"
-                        class="el-input__icon el-icon-search"
-                        style="cursor: pointer;"
-                        @click="channnelChange(i, $index )"
-                      ></i>
-                    </el-input>
+                      :params="searchConditon"
+                      @changeOption="getChannelInfo(row.consumerId, i, $index)"
+                    ></SelectPageByCondition>
                   </div>
                 </template>
               </el-table-column>
@@ -683,20 +676,13 @@
                     class="margin-top-5"
                     v-if="row.transactionEnum === 'Appoint' || row.transactionEnum === 'Strategic'"
                   >
-                    <el-input
+                    <SelectPageByCondition
+                      v-model="row.consumerId"
+                      clearable
                       placeholder="请选择"
-                      :title="row.consumerName"
-                      v-model="row.consumerName"
-                      class="input-with-select"
-                      readonly
-                    >
-                      <i
-                        slot="suffix"
-                        class="el-input__icon el-icon-search"
-                        style="cursor: pointer;"
-                        @click="channnelChange(i, $index)"
-                      ></i>
-                    </el-input>
+                      :params="searchConditon"
+                      @changeOption="getChannelInfo(row.consumerId, i, $index)"
+                    ></SelectPageByCondition>
                   </div>
                 </template>
               </el-table-column>
@@ -980,12 +966,6 @@
         </template>
       </div>
     </div>
-    <ih-dialog :show="businessDialogVisible">
-      <Business
-        @cancel="() => (businessDialogVisible = false)"
-        @finish="(data) => businessFinish(data)"
-      />
-    </ih-dialog>
     <ih-dialog :show="rulesDialogVisible">
       <Rules
         :data="rulesData"
@@ -1016,23 +996,22 @@ import {
 } from "@/api/project/index";
 import { post_buModelContType_get } from "@/api/deal/index";
 import { post_dict_getAllByType } from "@/api/system/index";
-import Business from "../notification-dialog/channelBusiness.vue";
+import SelectPageByCondition from "@/components/SelectPageByCondition.vue";
 import Rules from "../setMeal-dialog/rules.vue";
 @Component({
   components: {
-    Business,
+    SelectPageByCondition,
     Rules,
   },
 })
 export default class SetMealEdit extends Vue {
   @Prop({ default: null }) data: any;
   dialogVisible = true;
-  businessDialogVisible = false;
   rulesDialogVisible = false;
   rulesData: any = [];
   isSubdivideEnum = false;
   busEnumType = "";
-
+  searchConditon: any = {};
   info: any = {
     packageName: null,
     propertyEnum: null,
@@ -1048,8 +1027,6 @@ export default class SetMealEdit extends Vue {
   partyCompanyIndex = 0;
   conditionIndex = 0;
   conditionRowIndex = 0;
-  channelIndex = 0;
-  channelRowIndex = 0;
   padCommissionEnumOptions: any = [];
   contractTypeOptions: any = [];
   propertyEnumOptions: any = [];
@@ -1310,6 +1287,10 @@ export default class SetMealEdit extends Vue {
       const res: any = await get_collectandsend_get__packageId({
         packageId: id,
       });
+      this.searchConditon = {
+        cycleCity: res.city,
+        departmentOrgId: res.startDivisionId,
+      };
       if (res.padCommissionEnum !== "Veto") {
         this.padCommissionEnumOptions = [
           {
@@ -1362,6 +1343,10 @@ export default class SetMealEdit extends Vue {
       const item: any = await get_collectandsend_getBaseTermByTermId__termId({
         termId: this.$route.query.id,
       });
+      this.searchConditon = {
+        cycleCity: item.city,
+        departmentOrgId: item.startDivisionId,
+      };
       this.propertyEnumOptions = item.propertyDropDowm;
       this.info.partyAInfoList = [...item.partyAInfoList];
       this.partyAInfoList = [...item.partyAInfoList];
@@ -1779,7 +1764,7 @@ export default class SetMealEdit extends Vue {
 
   // 根据合同类型获取客户类型
   async contractEnumChange(row: any) {
-    // row.transactionEnum = "";
+    row.transactionEnum = "";
     let item: any = [];
     item = await post_dict_getAllByType({
       type: "Transaction",
@@ -1792,30 +1777,13 @@ export default class SetMealEdit extends Vue {
     }));
   }
 
-  // 合同类型为指定中介/战略合作方时
-  channnelChange(i: number, index: number) {
-    this.channelIndex = i;
-    this.channelRowIndex = index;
-    this.businessDialogVisible = true;
-  }
-
   // 选择代理费公司
-  businessFinish(data: any) {
+  getChannelInfo(data: any, i: number, index: number) {
     this.$set(
-      this.info.colletionandsendMxs[this.channelIndex].colletionandsendDetails[
-        this.channelRowIndex
-      ],
-      "consumerName",
-      data[0].name
-    );
-    this.$set(
-      this.info.colletionandsendMxs[this.channelIndex].colletionandsendDetails[
-        this.channelRowIndex
-      ],
+      this.info.colletionandsendMxs[i].colletionandsendDetails[index],
       "consumerId",
-      data[0].id
+      data
     );
-    this.businessDialogVisible = false;
   }
 
   // 编辑条件

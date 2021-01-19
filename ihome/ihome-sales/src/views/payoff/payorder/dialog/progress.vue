@@ -4,7 +4,7 @@
  * @Author: wwq
  * @Date: 2021-01-18 16:30:42
  * @LastEditors: wwq
- * @LastEditTime: 2021-01-18 18:04:09
+ * @LastEditTime: 2021-01-19 08:51:32
 -->
 <template>
   <el-dialog
@@ -12,6 +12,7 @@
     :visible.sync="dialogVisible"
     :close-on-click-modal="false"
     :close-on-press-escape="false"
+    :before-close="cancel"
     width="85%"
     class="splitdialog text-left"
     title="流程进度图"
@@ -28,12 +29,6 @@
         ></el-step>
       </template>
     </el-steps>
-    <span
-      slot="footer"
-      class="dialog-footer"
-    >
-      <el-button @click="cancel()">取 消</el-button>
-    </span>
   </el-dialog>
 </template>
 <script lang="ts">
@@ -100,6 +95,7 @@ export default class Progress extends Vue {
     const res = await get_processRecord_process_node__applyId({
       applyId: this.form.id,
     });
+    console.log(res, "res");
     this.dicts.forEach((v: any, i: number) => {
       res.forEach((j: any) => {
         if (v.code === j.afterStatus) {

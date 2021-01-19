@@ -4,7 +4,7 @@
  * @Author: wwq
  * @Date: 2020-11-27 17:27:01
  * @LastEditors: wwq
- * @LastEditTime: 2021-01-14 16:30:52
+ * @LastEditTime: 2021-01-19 10:00:40
 -->
 <template>
   <div>
@@ -192,6 +192,7 @@
         <el-table
           class="ih-table"
           :data="info.preferentialMxVOS"
+          :loading="tableLoading"
           style="width: 100%"
         >
           <el-table-column
@@ -361,6 +362,7 @@ export default class Notification extends Vue {
   editDialogVisible = false;
   addDialogVisible = false;
   viewDialogVisible = false;
+  tableLoading: any = false;
   info: any = {
     distributContractVOS: [],
     preferentialMxVOS: [],
@@ -517,12 +519,24 @@ export default class Notification extends Vue {
     data.termId = this.$route.query.id;
     if (this.contractData.agencyContrictId) {
       data.agencyContrictId = this.contractData.agencyContrictId;
-      await post_distributContract_update(data);
-      this.$message.success("修改成功");
+      this.tableLoading = true;
+      try {
+        await post_distributContract_update(data);
+        this.$message.success("修改成功");
+        this.tableLoading = false;
+      } catch (err) {
+        this.tableLoading = false;
+      }
     } else {
       data.partyCompanyId = this.info.preferentialPartyAId;
-      await post_distributContract_add(data);
-      this.$message.success("新增成功");
+      this.tableLoading = true;
+      try {
+        await post_distributContract_add(data);
+        this.$message.success("新增成功");
+        this.tableLoading = false;
+      } catch (err) {
+        this.tableLoading = false;
+      }
     }
     this.dialogVisible = false;
     this.getInfo();
@@ -530,19 +544,31 @@ export default class Notification extends Vue {
 
   // 中介分销合同启用
   async start(data: any) {
-    await post_distributContract_start__agencyContrictId({
-      agencyContrictId: data.agencyContrictId,
-    });
-    this.$message.success("启用成功");
-    this.getInfo();
+    try {
+      this.tableLoading = true;
+      await post_distributContract_start__agencyContrictId({
+        agencyContrictId: data.agencyContrictId,
+      });
+      this.tableLoading = false;
+      this.$message.success("启用成功");
+      this.getInfo();
+    } catch (err) {
+      this.tableLoading = false;
+    }
   }
 
   async stop(data: any) {
-    await post_distributContract_cancel__agencyContrictId({
-      agencyContrictId: data.agencyContrictId,
-    });
-    this.$message.success("禁用成功");
-    this.getInfo();
+    try {
+      this.tableLoading = true;
+      await post_distributContract_cancel__agencyContrictId({
+        agencyContrictId: data.agencyContrictId,
+      });
+      this.tableLoading = false;
+      this.$message.success("禁用成功");
+      this.getInfo();
+    } catch (err) {
+      this.tableLoading = false;
+    }
   }
 
   editDialog(type: string) {

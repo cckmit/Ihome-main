@@ -4,7 +4,7 @@
  * @Author: wwq
  * @Date: 2020-11-27 17:29:09
  * @LastEditors: wwq
- * @LastEditTime: 2021-01-18 11:36:06
+ * @LastEditTime: 2021-01-19 10:06:07
 -->
 <template>
   <div>
@@ -194,7 +194,7 @@ export default class LogOA extends Vue {
     let res: any = await get_logAndOA_getOALog__termId({
       termId: this.termId,
     });
-    this.$alert(`姓名: ${res?.name} 岗位: ${res?.orgPostName}`, "当前待办人", {
+    this.$alert(res, "当前待办人", {
       confirmButtonText: "确定",
     });
   }
