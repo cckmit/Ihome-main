@@ -143,7 +143,8 @@
             <el-input
               v-if="['ChangeInternalAchieveInf'].includes(changeType)"
               placeholder="栋座"
-              disabled v-model="postData.buildingId"></el-input>
+              disabled
+              v-model="postData.buildingId"></el-input>
             <IhSelectPageByBuild
               v-else
               v-model="postData.buildingId"
@@ -161,7 +162,8 @@
             <el-input
               v-if="['ChangeInternalAchieveInf'].includes(changeType)"
               placeholder="房号"
-              disabled v-model="postData.roomId"></el-input>
+              disabled
+              v-model="postData.roomId"></el-input>
             <IhSelectPageByRoom
               v-else
               v-model="postData.roomId"
@@ -1101,8 +1103,9 @@
   import AddBroker from "@/views/deal/dealReport/dialog/addBroker.vue";
   import EditDealAchieve from "@/views/deal/dealReport/dialog/editDealAchieve.vue";
   import {
-    post_pageData_recalculateAchieve, post_pageData_recalculateAchieveComm,
-    post_suppDeal_toAddSuppDeal
+    post_pageData_recalculateAchieve, // 重算平台费用 --- 总包分销不一致的情况
+    post_pageData_recalculateAchieveComm, // 重算平台费用 --- 总包分销一致的情况
+    post_suppDeal_toAddSuppDeal // 新增补充成交
   } from "@/api/deal";
   import {
     get_term_getProBaseByTermId__termId, // 通过项目周期获取成交基础信息
@@ -1347,7 +1350,7 @@
     }
 
     async created() {
-      this.DealDataFlag = (this as any).$root.dictAllList('DealDataFlag'); // 数据来源
+      this.DealDataFlag = (this as any).$root.dictAllList('DealDataFlag'); // 数据来源类型
       this.postData.documentVO = (this as any).$root.dictAllList('DealFileType'); // 附件类型
       // 附件类型增加key
       if (this.postData.documentVO.length > 0) {
@@ -1359,7 +1362,7 @@
       this.id = this.$route.query.id;
       this.changeType = this.$route.query.type;
       // console.log('this.changeType', this.changeType);
-      if (this.id) {
+      if (this.id && this.changeType) {
         await this.initPageInfo();
       }
     }
@@ -1425,6 +1428,7 @@
         suppContType: this.changeType
       }
       const res: any = await post_suppDeal_toAddSuppDeal(postData);
+      console.log(res);
       await this.getBaseDealInfo(res.cycleId);
       this.postData = res;
       this.postData.address = res.house.address;
