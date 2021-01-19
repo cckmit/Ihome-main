@@ -4,7 +4,7 @@
  * @Author: wwq
  * @Date: 2020-11-27 17:27:01
  * @LastEditors: wwq
- * @LastEditTime: 2021-01-19 10:00:40
+ * @LastEditTime: 2021-01-19 10:48:30
 -->
 <template>
   <div>
@@ -524,6 +524,8 @@ export default class Notification extends Vue {
         await post_distributContract_update(data);
         this.$message.success("修改成功");
         this.tableLoading = false;
+        this.dialogVisible = false;
+        this.getInfo();
       } catch (err) {
         this.tableLoading = false;
       }
@@ -534,12 +536,12 @@ export default class Notification extends Vue {
         await post_distributContract_add(data);
         this.$message.success("新增成功");
         this.tableLoading = false;
+        this.dialogVisible = false;
+        this.getInfo();
       } catch (err) {
         this.tableLoading = false;
       }
     }
-    this.dialogVisible = false;
-    this.getInfo();
   }
 
   // 中介分销合同启用

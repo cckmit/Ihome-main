@@ -4,7 +4,7 @@
  * @Author: wwq
  * @Date: 2020-12-02 15:37:31
  * @LastEditors: wwq
- * @LastEditTime: 2021-01-18 21:17:41
+ * @LastEditTime: 2021-01-19 10:45:50
 -->
 <template>
   <el-dialog
@@ -310,10 +310,11 @@
           v-if="isShow"
         >
           <SelectPageByCondition
-            v-model="info.designatedAgency"
+            v-model="info.designatedAgencyId"
             clearable
             placeholder="渠道商名称"
             :params="searchConditon"
+            :search-name="info.designatedAgency"
             @changeOption="getChannelInfo"
           ></SelectPageByCondition>
         </el-col>
