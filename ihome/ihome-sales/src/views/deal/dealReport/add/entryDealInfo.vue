@@ -1568,6 +1568,20 @@
       //   return item.id !== scope.row.id;
       // });
       this.postData.offerNoticeVO = [];
+      if (this.baseInfoInDeal.isMultipleNotice) {
+        // 多份优惠告知书下，删除了优惠告知书，对应的客户也要删除
+        this.postData.customerVO = [];
+        if (this.postData.receiveVO.length) {
+          if (this.postData.receiveVO && this.postData.receiveVO.length) {
+            this.postData.receiveVO.forEach((item: any) => {
+              if (item.type === "ServiceFee") {
+                item.partyACustomer = null;
+                item.partyACustomerName = null;
+              }
+            })
+          }
+        }
+      }
     }
 
     // 添加客户
@@ -1611,7 +1625,7 @@
 
     // 删除客户
     async deleteAdd(scope: any) {
-      console.log(scope);
+      // console.log(scope);
       // 删除客户
       this.postData.customerVO = this.postData.customerVO.filter((item: any) => {
         return item.addId !== scope.row.addId;
