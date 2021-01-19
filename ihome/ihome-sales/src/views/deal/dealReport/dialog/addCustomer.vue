@@ -1,10 +1,10 @@
 <!--
- * @Descripttion: 
+ * @Description:
  * @version: 
  * @Author: lsj
  * @Date: 2020-11-03 15:28:12
  * @LastEditors: lsj
- * @LastEditTime: 2020-12-23 18:10:20
+ * @LastEditTime: 2021-01-19 17:00:11
 -->
 <template>
   <el-dialog
@@ -23,40 +23,74 @@
         <el-col :span="8">
           <el-form-item label="客户姓名">
             <el-input
+              clearable
               v-model="queryPageParameters.custName"
               placeholder="客户姓名"
             ></el-input>
           </el-form-item>
         </el-col>
         <el-col :span="8">
-          <el-form-item label="客户类型">
-            <el-input
-              v-model="queryPageParameters.custType"
-              placeholder="客户类型"
-            ></el-input>
-          </el-form-item>
-        </el-col>
-        <el-col :span="8">
-          <el-form-item label="客户编号">
-            <el-input
-              v-model="queryPageParameters.custCode"
-              placeholder="客户编号"
-            ></el-input>
-          </el-form-item>
-        </el-col>
-        <el-col :span="8">
           <el-form-item label="手机号码">
             <el-input
+              clearable
               v-model="queryPageParameters.custTel"
               placeholder="手机号码"
             ></el-input>
           </el-form-item>
         </el-col>
+        <el-col :span="8">
+          <el-form-item label="客户类型">
+            <el-select
+              clearable
+              v-model="queryPageParameters.custType"
+              placeholder="客户类型"
+              class="width--100">
+              <el-option
+                v-for="item in $root.dictAllList('CustType')"
+                :key="item.code"
+                :label="item.name"
+                :value="item.code"
+              ></el-option>
+            </el-select>
+          </el-form-item>
+        </el-col>
+        <el-col :span="12">
+          <el-form-item label="创建时间">
+            <el-date-picker
+              v-model="queryPageParameters.timeList"
+              type="datetimerange"
+              align="left"
+              unlink-panels
+              range-separator="到"
+              start-placeholder="开始日期"
+              end-placeholder="结束日期"
+              value-format="yyyy-MM-dd hh:mm:ss"
+            ></el-date-picker>
+          </el-form-item>
+        </el-col>
+        <el-col :span="8">
+          <el-form-item label="客户来源">
+            <el-select
+              clearable
+              v-model="queryPageParameters.custOrg"
+              placeholder="客户来源"
+              class="width--100">
+              <el-option
+                v-for="item in $root.dictAllList('CustomerSourceType')"
+                :key="item.code"
+                :label="item.name"
+                :value="item.code"
+              ></el-option>
+            </el-select>
+          </el-form-item>
+        </el-col>
       </el-row>
       <el-row>
-        <el-col :span="8">
+        <el-col>
           <el-form-item label="">
             <el-button type="primary" @click="handleSearch">查询</el-button>
+            <el-button type="success" @click="add">添加</el-button>
+            <el-button type="default" @click="handleSearch">刷新</el-button>
             <el-button type="info" @click="reset()">重置</el-button>
           </el-form-item>
         </el-col>
@@ -71,20 +105,34 @@
       @select="handleSelect"
       @select-all="handleSelectAll">
       <el-table-column fixed type="selection" width="50" align="center"></el-table-column>
-      <el-table-column label="客户编号" prop="custCode" min-width="250"></el-table-column>
-      <el-table-column label="客户姓名" prop="custName" min-width="110"></el-table-column>
-      <el-table-column label="客户类型" prop="custType" min-width="110">
+      <el-table-column label="客户姓名" prop="custName" min-width="120"></el-table-column>
+      <el-table-column label="手机号码" prop="custTel" min-width="180"></el-table-column>
+      <el-table-column label="客户来源" prop="custOrg" min-width="130">
+        <template slot-scope="scope">
+          <div>{{$root.dictAllName(scope.row.custOrg, 'CustomerOrg')}}</div>
+        </template>
+      </el-table-column>
+      <el-table-column label="客户类型" prop="custType" min-width="100">
         <template slot-scope="scope">
           <div>{{$root.dictAllName(scope.row.custType, 'CustType')}}</div>
         </template>
       </el-table-column>
-      <el-table-column label="手机号码" prop="custTel" min-width="160"></el-table-column>
       <el-table-column label="证件类型" prop="cardType" min-width="120">
         <template slot-scope="scope">
           <div>{{$root.dictAllName(scope.row.cardType, 'CardType')}}</div>
         </template>
       </el-table-column>
-      <el-table-column label="证件号码" prop="certificateNumber" min-width="180"></el-table-column>
+      <el-table-column label="证件编号" prop="" min-width="250">
+        <template slot-scope="scope">
+          <div>{{scope.row.certificateNumber ? scope.row.certificateNumber : '—'}}</div>
+        </template>
+      </el-table-column>
+      <el-table-column label="邮箱" prop="email" min-width="150">
+        <template slot-scope="scope">
+          <div>{{scope.row.email ? scope.row.email : '—'}}</div>
+        </template>
+      </el-table-column>
+      <el-table-column label="创建时间" prop="createTime" min-width="180"></el-table-column>
     </el-table>
     <div class="text-right">
       <br />
@@ -102,16 +150,24 @@
       <el-button @click="cancel()">取 消</el-button>
       <el-button type="primary" @click="finish()">确 定</el-button>
     </span>
+    <ih-dialog :show="dialogEnter" desc="添加客户">
+      <EnterCustomer
+        @cancel="() => (dialogEnter = false)"
+        @finish="
+            () => {dialogEnter = false}
+          "/>
+    </ih-dialog>
   </el-dialog>
 </template>
 <script lang="ts">
   import {Component, Vue, Prop} from "vue-property-decorator";
+  import EnterCustomer from "@/views/deal/dealReport/dialog/enterCustomer.vue";
 
   import {post_customer_getCustList} from "@/api/customer";
   import PaginationMixin from "@/mixins/pagination";
 
   @Component({
-    components: {},
+    components: {EnterCustomer},
     mixins: [PaginationMixin],
   })
   export default class AddCustomer extends Vue {
@@ -122,15 +178,17 @@
     private selection = [];
     public queryPageParameters: any = {
       custName: null,
+      custTel: null,
       custType: null,
-      custCode: null,
-      custTel: null
+      timeList: [],
+      custOrg: null
     };
     public resPageInfo: any = {
       total: null,
       list: [],
     };
     @Prop({default: null}) data: any;
+    dialogEnter: any = false; // 添加客户
 
     created() {
       this.getListMixin();
@@ -178,15 +236,35 @@
     }
 
     async getListMixin() {
-      this.resPageInfo = await post_customer_getCustList(this.queryPageParameters);
+      let postData: any = {
+        createTimeRealMax: null,
+        createTimeRealMin: null,
+        custName: this.queryPageParameters.custName,
+        custTel: this.queryPageParameters.custTel,
+        custType: this.queryPageParameters.custType,
+        custOrg: this.queryPageParameters.custOrg,
+        pageNum: this.queryPageParameters.pageNum,
+        pageSize: this.queryPageParameters.pageSize
+      }
+      if (this.queryPageParameters.timeList && this.queryPageParameters.timeList.length) {
+        postData.createTimeRealMax = this.queryPageParameters.timeList[1];
+        postData.createTimeRealMin = this.queryPageParameters.timeList[0];
+      }
+      this.resPageInfo = await post_customer_getCustList(postData);
+    }
+
+    // 添加
+    add() {
+      this.dialogEnter = !this.dialogEnter;
     }
 
     private reset() {
       Object.assign(this.queryPageParameters, {
         custName: null,
-        custType: null,
-        custCode: null,
         custTel: null,
+        custType: null,
+        timeList: [],
+        custOrg: null
       });
     }
   }
