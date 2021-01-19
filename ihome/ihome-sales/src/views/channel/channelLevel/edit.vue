@@ -3,8 +3,8 @@
  * @version: 
  * @Author: wwq
  * @Date: 2020-10-15 16:02:03
- * @LastEditors: ywl
- * @LastEditTime: 2021-01-15 21:17:42
+ * @LastEditors: wwq
+ * @LastEditTime: 2021-01-19 18:56:54
 -->
 <template>
   <IhPage>
@@ -425,24 +425,24 @@ export default class ChannelRates extends Vue {
       let obj: any = {};
       obj.channelGrade = this.resPageInfo.channelGrade;
       obj.cityCode = this.resPageInfo.provinceOption[1];
-      let res = await post_channelGradeStandard_getAllByCityCodeAndChannelGrade(
+      let res: any = await post_channelGradeStandard_getAllByCityCodeAndChannelGrade(
         obj
       );
-      this.resPageInfo.channelGradeItems = res.map((v: any) => ({
-        ...v,
-        inputValue: "",
-        standardId: v.id,
-      }));
+      this.resPageInfo.channelGradeItems = res.channelGradeStandards.map(
+        (v: any) => ({
+          ...v,
+          inputValue: "",
+          standardId: v.id,
+        })
+      );
       const list = (this.$root as any).dictAllList(
         "ChannelLevelStandardAttachment"
       );
-      this.addDictList = res[0].channelGradeStandardAttachments.map(
-        (j: any) => ({
-          code: j.materialType,
-          name: list.find((h: any) => h.code === j.materialType).name,
-          type: "ChannelGradeAttachment",
-        })
-      );
+      this.addDictList = res.channelGradeStandardAttachments.map((j: any) => ({
+        code: j,
+        name: list.find((h: any) => h.code === j).name,
+        type: "ChannelGradeAttachment",
+      }));
       this.getFileListType([]);
     } else {
       this.resPageInfo.channelGradeItems = [];
