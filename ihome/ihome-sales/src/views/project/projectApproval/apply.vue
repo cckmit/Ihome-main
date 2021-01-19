@@ -777,7 +777,16 @@ export default class Apply extends Vue {
     if (valid) {
       this.submitLoading = true;
       try {
-        await post_distribution_create(this.info);
+        let obj: any = {
+          ...this.info,
+          distributionMxList: this.info.contractMxVOList.map((v: any) => ({
+            ...v,
+            sendStandard: v.sendContext,
+            sendContext: v.standardPay,
+          })),
+        };
+        delete obj.contractMxVOList;
+        await post_distribution_create(obj);
         this.submitLoading = false;
         this.$message.success("申领成功");
         this.$goto({
