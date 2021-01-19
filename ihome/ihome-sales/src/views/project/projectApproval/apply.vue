@@ -742,26 +742,9 @@ export default class Apply extends Vue {
         Authorization: "bearer " + token,
       },
     }).then((res: any) => {
-      if (res?.data?.fileId) {
-        axios({
-          method: "POST",
-          url: `/sales-api/sales-document-cover/pdf/ftlToPdf/brow`,
-          xsrfHeaderName: "Authorization",
-          responseType: "blob",
-          headers: {
-            "Content-Type": "application/json",
-            Authorization: "bearer " + token,
-          },
-          data: {
-            data: res.data.parmas,
-            fileId: res.data.fileId,
-          },
-        }).then((item: any) => {
-          const arr = new Blob([item.data], { type: "application/pdf" });
-          const href = window.URL.createObjectURL(arr);
-          window.open(href);
-        });
-      }
+      const arr = new Blob([res.data], { type: "application/pdf" });
+      const href = window.URL.createObjectURL(arr);
+      window.open(href);
     });
   }
 

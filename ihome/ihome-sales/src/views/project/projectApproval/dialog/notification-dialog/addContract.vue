@@ -4,7 +4,7 @@
  * @Author: wwq
  * @Date: 2020-12-02 15:37:31
  * @LastEditors: wwq
- * @LastEditTime: 2021-01-19 14:06:30
+ * @LastEditTime: 2021-01-19 16:48:11
 -->
 <template>
   <el-dialog
@@ -657,27 +657,9 @@ export default class AddContract extends Vue {
         contractEndTime: this.info.timeList[1],
       },
     }).then((res: any) => {
-      if (res?.data?.fileId) {
-        axios({
-          method: "POST",
-          url: `/sales-api/sales-document-cover/pdf/ftlToPdf/brow`,
-          xsrfHeaderName: "Authorization",
-          responseType: "blob",
-          headers: {
-            "Content-Type": "application/json",
-            Authorization: "bearer " + token,
-          },
-          data: {
-            data: res.data.parmas,
-            fileId: res.data.fileId,
-            bytes: res.data.bytes,
-          },
-        }).then((item: any) => {
-          const arr = new Blob([item.data], { type: "application/pdf" });
-          const href = window.URL.createObjectURL(arr);
-          window.open(href);
-        });
-      }
+      const arr = new Blob([res.data], { type: "application/pdf" });
+      const href = window.URL.createObjectURL(arr);
+      window.open(href);
     });
   }
 
