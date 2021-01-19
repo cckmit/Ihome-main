@@ -1848,7 +1848,7 @@
         }
       }
       // 分销协议编号
-      if (data.contNoList && data.contNoList.length && this.baseInfoInDeal.isMultipleNotice) {
+      if (data.contNoList && data.contNoList.length) {
         this.contNoList = data.contNoList;
       }
     }
