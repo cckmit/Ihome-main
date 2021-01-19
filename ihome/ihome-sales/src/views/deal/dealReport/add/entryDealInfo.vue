@@ -1,10 +1,10 @@
 <!--
- * @Descripttion: 
+ * @Description:
  * @version: 
  * @Author: lsj
  * @Date: 2020-12-23 14:20:40
  * @LastEditors: lsj
- * @LastEditTime: 2020-12-23 18:50:50
+ * @LastEditTime: 2021-01-19 19:16:20
 -->
 <template>
   <ih-page class="text-left">
@@ -102,7 +102,7 @@
           </el-form-item>
         </el-col>
         <el-col :span="6">
-          <el-form-item label="一手代理公司" prop="oneAgentTeamId">
+          <el-form-item label="一手代理公司" :prop="oneAgentRequiredFlag ? 'oneAgentTeamId' : 'notEmpty'">
             <el-select
               v-model="postData.oneAgentTeamId"
               clearable
@@ -945,10 +945,12 @@
     navList: any = []; // 锚点列表
     currentActiveIndex: any = 0; // 当前激活的nav
     currentReceiveIndex: any = null; // 当前选中的收派金额列表数据
+    oneAgentRequiredFlag: any = false; // 收派金额 - 派发内场奖励金额合计大于0，为true
 
     // 应收信息表格
     get receiveAchieveVO() {
-      let arr: any = []
+      let arr: any = [];
+      let rewardTotal: any = 0; // 派发内场总金额合计，用于判断一手代理团队是否必选
       if (this.postData.receiveVO.length > 0) {
         let obj = {
           receiveAmount: 0,
@@ -961,8 +963,14 @@
             + item.rewardAmount * 1 * 100 + item.totalPackageAmount * 1 * 100
             + item.distributionAmount * 1 * 100) / 100;
           obj.otherChannelFees = (obj.otherChannelFees * 1 * 100 + item.otherChannelFees * 1 * 100) / 100;
+          rewardTotal = (rewardTotal * 1 * 100 + item.rewardAmount * 1 * 100) / 100;
         })
         arr.push(obj);
+      }
+      if (rewardTotal > 0) {
+        this.oneAgentRequiredFlag = true;
+      } else {
+        this.oneAgentRequiredFlag = false;
       }
       return arr;
     }

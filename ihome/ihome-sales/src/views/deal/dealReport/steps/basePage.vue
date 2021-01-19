@@ -1,10 +1,10 @@
 <!--
- * @Descripttion: 
+ * @Description:
  * @version: 
  * @Author: lsj
  * @Date: 2020-12-10 16:45:20
  * @LastEditors: lsj
- * @LastEditTime: 2020-12-18 16:36:10
+ * @LastEditTime: 2021-01-19 18:36:55
 -->
 <template>
   <ih-page class="text-left">
@@ -1428,7 +1428,7 @@
         suppContType: this.changeType
       }
       const res: any = await post_suppDeal_toAddSuppDeal(postData);
-      console.log(res);
+      // console.log(res);
       await this.getBaseDealInfo(res.cycleId);
       this.postData = res;
       this.postData.address = res.house.address;
@@ -1449,6 +1449,7 @@
       await this.getOrgName(res.dealOrgId);
       // 成交状态
       this.postData.statusName = (this as any).$root.dictAllName(res.status, 'DealStatus');
+      // console.log(this.postData.statusName);
       // 计算方式
       this.postData.calculationName = (this as any).$root.dictAllName(res.calculation, 'DealCalculateWay');
       // 优惠告知书
