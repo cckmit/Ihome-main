@@ -2355,7 +2355,7 @@
             item.partyACustomer = this.postData.customerVO[0].addId;
             item.partyACustomerName = this.postData.customerVO[0].customerName;
           }
-        })
+        });
       } else {
         if (this.postData.receiveVO.length) {
           if (this.postData.receiveVO && this.postData.receiveVO.length) {
@@ -2367,6 +2367,13 @@
             })
           }
         }
+      }
+      // 提示框
+      if (!this.addFlag) {
+        this.addFlag = false;
+        this.editFlag = true;
+        this.tipsFlag = false;
+        this.dividerTips = '刷新成功';
       }
       (this as any).$parent.handleAddNotice(this.baseInfoByTerm);
     }
@@ -2399,16 +2406,18 @@
             })
           }
         }
+        // 提示框
+        if (!this.addFlag) {
+          this.addFlag = false;
+          this.editFlag = true;
+          this.tipsFlag = false;
+          this.dividerTips = '刷新成功';
+        }
       }
     }
 
     // 添加客户
     handleAddCustomer() {
-      (this as any).$parent.handleAddCustomer();
-    }
-
-    // 添加渠道经纪人
-    handleAddBroker() {
       (this as any).$parent.handleAddCustomer();
     }
 
@@ -2440,7 +2449,14 @@
               item.partyACustomer = data[0].id;
               item.partyACustomerName = data[0].custName;
             }
-          })
+          });
+        }
+        // 提示框
+        if (!this.addFlag) {
+          this.addFlag = false;
+          this.editFlag = true;
+          this.tipsFlag = false;
+          this.dividerTips = '刷新成功';
         }
       }
       (this as any).$parent.handleAddCustomer();
@@ -2485,6 +2501,13 @@
               }
             }
           }
+          // 提示框
+          if (!this.addFlag) {
+            this.addFlag = false;
+            this.editFlag = true;
+            this.tipsFlag = false;
+            this.dividerTips = '刷新成功';
+          }
         }
       } else if (type === 'commission') {
         // 删除对外拆佣项
@@ -2493,6 +2516,11 @@
           return index !== scope.$index;
         });
       }
+    }
+
+    // 添加渠道经纪人
+    handleAddBroker() {
+      (this as any).$parent.handleAddCustomer();
     }
 
     // 确定选择收派套餐
