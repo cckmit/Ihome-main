@@ -4,7 +4,7 @@
  * @Author: ywl
  * @Date: 2020-12-01 10:39:24
  * @LastEditors: ywl
- * @LastEditTime: 2021-01-16 18:26:51
+ * @LastEditTime: 2021-01-20 16:26:21
 -->
 <template>
   <IhPage label-width="90px">
@@ -41,7 +41,7 @@
                 class="width--100"
               >
                 <el-option
-                  v-for="(i, n) in $root.dictAllList('PosTerminalStatus')"
+                  v-for="(i, n) in posStatusList"
                   :key="n"
                   :label="i.name"
                   :value="i.code"
@@ -316,6 +316,11 @@ export default class POSList extends Vue {
   private dialogVisible = false;
   private importVisble = false;
   private isAdd = true;
+
+  private get posStatusList() {
+    const list = (this.$root as any).dictAllList("PosTerminalStatus");
+    return list.filter((i: any) => i.tag.includes("PosTerminal"));
+  }
 
   private async revoke() {
     if (this.selection.length) {
