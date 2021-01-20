@@ -4,7 +4,7 @@
  * @Author: wwq
  * @Date: 2020-11-27 17:27:01
  * @LastEditors: wwq
- * @LastEditTime: 2021-01-19 18:44:00
+ * @LastEditTime: 2021-01-20 10:26:26
 -->
 <template>
   <div>
@@ -335,8 +335,6 @@ import AddContract from "../dialog/notification-dialog/addContract.vue";
 import ViewContract from "../dialog/notification-dialog/viewContract.vue";
 import {
   get_distributContract_get__termId,
-  post_distributContract_add,
-  post_distributContract_update,
   post_distributContract_saveOaRemark,
   post_preferential_uploadTemplate,
   post_preferential_add,
@@ -483,33 +481,14 @@ export default class Notification extends Vue {
     this.viewDialogVisible = true;
   }
 
-  async contractFinish(data: any) {
-    data.termId = this.$route.query.id;
+  contractFinish() {
     if (this.contractData.agencyContrictId) {
-      data.agencyContrictId = this.contractData.agencyContrictId;
-      this.tableLoading = true;
-      try {
-        await post_distributContract_update(data);
-        this.$message.success("修改成功");
-        this.tableLoading = false;
-        this.dialogVisible = false;
-        this.getInfo();
-      } catch (err) {
-        this.tableLoading = false;
-      }
+      this.$message.success("修改成功");
     } else {
-      data.partyCompanyId = this.info.preferentialPartyAId;
-      this.tableLoading = true;
-      try {
-        await post_distributContract_add(data);
-        this.$message.success("新增成功");
-        this.tableLoading = false;
-        this.dialogVisible = false;
-        this.getInfo();
-      } catch (err) {
-        this.tableLoading = false;
-      }
+      this.$message.success("新增成功");
     }
+    this.dialogVisible = false;
+    this.getInfo();
   }
 
   // 中介分销合同启用

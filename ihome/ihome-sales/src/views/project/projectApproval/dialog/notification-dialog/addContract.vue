@@ -4,7 +4,7 @@
  * @Author: wwq
  * @Date: 2020-12-02 15:37:31
  * @LastEditors: wwq
- * @LastEditTime: 2021-01-19 18:41:50
+ * @LastEditTime: 2021-01-20 11:20:29
 -->
 <template>
   <el-dialog
@@ -151,6 +151,8 @@
         <el-col :span="24">
           <el-form-item label="代理费计付标准备注">
             <el-input
+              class="textareaClass"
+              maxlength="2000"
               show-word-limit
               type="textarea"
               :autosize="{ minRows: 4, maxRows: 8 }"
@@ -168,6 +170,8 @@
             prop="consumerComplete"
           >
             <el-input
+              class="textareaClass"
+              maxlength="2000"
               show-word-limit
               type="textarea"
               :autosize="{ minRows: 4, maxRows: 8 }"
@@ -185,6 +189,8 @@
             prop='agencyCostCondition'
           >
             <el-input
+              class="textareaClass"
+              maxlength="2000"
               show-word-limit
               type="textarea"
               :autosize="{ minRows: 4, maxRows: 8 }"
@@ -202,6 +208,8 @@
             prop="agencyCostSettleWay"
           >
             <el-input
+              class="textareaClass"
+              maxlength="2000"
               show-word-limit
               type="textarea"
               :autosize="{ minRows: 4, maxRows: 8 }"
@@ -220,6 +228,8 @@
           >
             <div class="editParty">
               <el-input
+                class="textareaClass"
+                maxlength="2000"
                 show-word-limit
                 :disabled="unContractDisabled"
                 type="textarea"
@@ -240,6 +250,8 @@
         <el-col :span="24">
           <el-form-item label="补充条款">
             <el-input
+              class="textareaClass"
+              maxlength="2000"
               show-word-limit
               type="textarea"
               :autosize="{ minRows: 4, maxRows: 8 }"
@@ -258,10 +270,11 @@
             class="formItem"
           >
             <el-input
+              class="textareaClass"
+              maxlength="2000"
               v-model="info.agencyFeeReturnTime"
               clearable
               placeholder="请输入房屋未成交乙方退回代理费期限"
-              class="width--100"
             >
             </el-input>
           </el-form-item>
@@ -273,10 +286,11 @@
             class="formItem"
           >
             <el-input
+              class="textareaClass"
+              maxlength="2000"
               v-model="info.agencyFeeReturnRate"
               clearable
               placeholder="请输入房屋未成交乙方退回代理费逾期违约金比例"
-              class="width--100"
             >
             </el-input>
           </el-form-item>
@@ -410,6 +424,7 @@
       <el-button @click="cancel()">取 消</el-button>
       <el-button
         type="primary"
+        :loading="finishLoading"
         @click="finish()"
       >提 交</el-button>
     </span>
@@ -428,6 +443,8 @@ import {
   get_distributContract_getDistri__agencyContrictId,
   post_distributContract_getCollectByCondition,
   post_distributContract_getCheckCollectByCondition,
+  post_distributContract_update,
+  post_distributContract_add,
 } from "@/api/project/index";
 import { get_company_get__id } from "@/api/system/index";
 import { Form as ElForm } from "element-ui";
@@ -448,6 +465,7 @@ export default class AddContract extends Vue {
   @Prop({ default: null }) data: any;
   dialogVisible = true;
   setmealDialogVisible = false;
+  finishLoading = false;
   queryObj: any = {};
   setMealDialogData: any = {};
   searchConditon: any = {};
@@ -671,11 +689,30 @@ export default class AddContract extends Vue {
   @NoRepeatHttp()
   async submit(valid: any) {
     if (valid) {
+      this.finishLoading = true;
       if (this.info.timeList.length) {
         this.info.contractStartTime = this.info.timeList[0];
         this.info.contractEndTime = this.info.timeList[1];
       }
-      this.$emit("finish", this.info);
+      this.info.termId = this.$route.query.id;
+      if (this.data.agencyContrictId) {
+        this.info.agencyContrictId = this.data.agencyContrictId;
+        try {
+          await post_distributContract_update(this.info);
+          this.finishLoading = false;
+        } catch (err) {
+          this.finishLoading = false;
+        }
+      } else {
+        try {
+          this.info.partyCompanyId = this.data.id;
+          await post_distributContract_add(this.info);
+          this.finishLoading = false;
+        } catch (err) {
+          this.finishLoading = false;
+        }
+      }
+      this.$emit("finish");
     } else {
       console.log("error submit!");
       return false;
@@ -795,10 +832,17 @@ export default class AddContract extends Vue {
   position: relative;
   .tubiao {
     position: absolute;
-    bottom: 5px;
+    bottom: 20px;
     right: 25px;
     font-size: 24px;
     cursor: pointer;
+  }
+}
+.textareaClass {
+  /deep/ .el-input__count {
+    background: transparent;
+    bottom: -5px;
+    right: 20px;
   }
 }
 .formItem {

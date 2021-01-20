@@ -3,15 +3,15 @@
  * @version: 
  * @Author: ywl
  * @Date: 2020-08-13 11:40:10
- * @LastEditors: ywl
- * @LastEditTime: 2021-01-15 20:50:10
+ * @LastEditors: wwq
+ * @LastEditTime: 2021-01-20 11:30:34
 -->
 <template>
-  <IhPage label-width="100px">
+  <IhPage label-width="90px">
     <template v-slot:form>
       <el-form
         ref="form"
-        label-width="100px"
+        label-width="90px"
       >
         <el-row>
           <el-col :span="8">
@@ -23,10 +23,13 @@
             </el-form-item>
           </el-col>
           <el-col :span="8">
-            <el-form-item label="信用代码">
+            <el-form-item
+              label="统一社会信用代码"
+              class="formItem"
+            >
               <el-input
                 v-model="queryPageParameters.creditCode"
-                placeholder="信用代码"
+                placeholder="统一社会信用代码"
               ></el-input>
             </el-form-item>
           </el-col>
@@ -466,3 +469,10 @@ export default class List extends Vue {
   }
 }
 </script>
+<style lang="scss" scoped>
+.formItem {
+  /deep/ .el-form-item__label {
+    line-height: 20px;
+  }
+}
+</style>

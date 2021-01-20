@@ -4,7 +4,7 @@
  * @Author: wwq
  * @Date: 2020-12-01 10:58:54
  * @LastEditors: wwq
- * @LastEditTime: 2021-01-14 16:28:10
+ * @LastEditTime: 2021-01-20 11:12:13
 -->
 <template>
   <el-dialog
@@ -42,11 +42,13 @@
         >
           <el-form-item :label="`${data.title}`">
             <el-input
+              class="textareaClass"
               show-word-limit
               type="textarea"
               :autosize="{ minRows: 4, maxRows: 8 }"
               :placeholder="`请输入${data.title}`"
               v-model="form.value"
+              maxlength="2000"
             >
             </el-input>
           </el-form-item>
@@ -102,4 +104,12 @@ export default class PartyADialog extends Vue {
 }
 </script>
 <style lang="scss" scoped>
+.textareaClass {
+  /deep/ .el-input__count {
+    background: transparent;
+    bottom: -40px;
+    right: 3px;
+    box-sizing: border-box;
+  }
+}
 </style>
