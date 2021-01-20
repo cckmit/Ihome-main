@@ -111,9 +111,9 @@
               class="width--100">
               <el-option
                 v-for="item in firstAgencyCompanyList"
-                :key="item.agencyId"
-                :label="item.agencyName"
-                :value="item.agencyId"></el-option>
+                :key="item.proAgencyId"
+                :label="item.name"
+                :value="item.proAgencyId"></el-option>
             </el-select>
           </el-form-item>
         </el-col>
@@ -1587,7 +1587,7 @@
         if (this.firstAgencyCompanyList && this.firstAgencyCompanyList.length) {
           this.firstAgencyCompanyList.forEach((list: any) => {
             if (list.agencyId === value) {
-              this.postData.oneAgentTeamName = list.agencyName;
+              this.postData.oneAgentTeamName = list.name;
             }
           })
         }
