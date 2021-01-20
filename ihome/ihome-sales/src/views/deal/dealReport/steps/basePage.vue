@@ -1007,18 +1007,20 @@
       <el-col>
         <el-table
           class="ih-table"
-          :data="postData.documentList">
-          <el-table-column prop="name" label="类型" min-width="80"></el-table-column>
-          <el-table-column prop="fileName" label="附件" min-width="120">
+          :data="postData.uploadDocumentList">
+          <el-table-column prop="name" label="类型" width="180"></el-table-column>
+          <el-table-column prop="fileName" label="附件" min-width="300">
             <template slot-scope="scope">
               <IhUpload
-                :isCrop="false"
-                :file-list.sync="scope.row.fileList"
-                size="100px"
-                :limit="5"
-                :file-size="10"
-                :isMove="false"
                 @newFileList="getNewFile"
+                :isCrop="false"
+                :isMove="false"
+                :removePermi="true"
+                size="100px"
+                :limit="10"
+                :file-size="10"
+                :file-list.sync="scope.row.defaultFileList"
+                :file-type="scope.row.code"
               ></IhUpload>
             </template>
           </el-table-column>
@@ -1180,7 +1182,7 @@
       agencyVO: [], // 渠道信息
       receiveList: [], // 收派金额
       receiveAchieveVO: [], // 应收信息
-      documentList: [], // 附件信息
+      uploadDocumentList: [], // 附件信息
       channelCommList: [], // 对外拆佣
       achieveTotalBagList: [
         {
@@ -1197,7 +1199,6 @@
         }
       ], // 平台费用 - 分销
     };
-    DealDataFlag: any = []; // 数据来源
     rules: any = {
       dealCode: [
         {required: true, message: "成交报告编号不能为空", trigger: "change"},
@@ -1353,14 +1354,6 @@
     }
 
     async created() {
-      this.DealDataFlag = (this as any).$root.dictAllList('DealDataFlag'); // 数据来源类型
-      this.postData.documentList = (this as any).$root.dictAllList('DealFileType'); // 附件类型
-      // 附件类型增加key
-      if (this.postData.documentList.length > 0) {
-        this.postData.documentList.forEach((vo: any) => {
-          vo.fileList = []
-        })
-      }
       // 成交报告的id
       this.id = this.$route.query.id;
       this.changeType = this.$route.query.type;
@@ -1480,7 +1473,10 @@
           }
         })
       }
+      // 通过项目周期id获取基础信息
       await this.getBaseDealInfo(res.cycleId);
+      // 初始化附件信息
+      await this.initDocumentList(res.documentShowList);
     }
 
     // 调整收派金额信息
@@ -1543,6 +1539,29 @@
           }
         }
       }
+    }
+
+    // 初始化附件信息
+    initDocumentList(list: any = []) {
+      if (!list.length) return;
+      let fileList: any = (this as any).$root.dictAllList('DealFileType'); // 附件类型
+      if (fileList.length > 0) {
+        fileList.forEach((vo: any) => {
+          vo.defaultFileList = []; // 存放原来的数据
+          vo.fileList = []; // 存放新上传的数据
+          if (list && list.length) {
+            list.forEach((item: any) => {
+              if (item.fileType === vo.code) {
+                item.exAuto = true; // 不能删除
+                vo.defaultFileList.push(item);
+              }
+            })
+          }
+        });
+      } else {
+        fileList = [];
+      }
+      this.postData.uploadDocumentList = JSON.parse(JSON.stringify(fileList));
     }
 
     // 获取组织name
@@ -2066,17 +2085,15 @@
       return sums;
     }
 
-    // 上传附件
+    // 获取最新的上传附件
     getNewFile(data: any, type?: any) {
       // console.log(data);
-      if (this.postData.documentList.length > 0) {
-        this.postData.documentList.forEach((vo: any) => {
+      // console.log(type);
+      // console.log(this.postData.uploadDocumentList);
+      if (this.postData.uploadDocumentList.length > 0) {
+        this.postData.uploadDocumentList.forEach((vo: any) => {
           if (vo.code === type) {
-            if (data && data.length) {
-              data.forEach((item: any) => {
-                vo.fileList.push(item);
-              })
-            }
+            vo.fileList = data;
           }
         });
       }

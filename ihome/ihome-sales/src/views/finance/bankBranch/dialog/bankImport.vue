@@ -4,7 +4,7 @@
  * @Author: ywl
  * @Date: 2020-12-28 15:05:47
  * @LastEditors: ywl
- * @LastEditTime: 2020-12-28 16:21:52
+ * @LastEditTime: 2021-01-20 16:21:50
 -->
 <template>
   <el-dialog
@@ -27,6 +27,7 @@
       accept="*"
       :http-request="httpRequest"
       :on-success="successHandler"
+      :on-error="errorHandler"
     >
       <el-button
         slot="trigger"
@@ -54,6 +55,7 @@ import { post_fileTemplate_list } from "../../../../api/sales-document-cover/ind
 export default class BankImport extends Vue {
   dialogVisible = true;
   fileList: any = [];
+  loading: any = null;
 
   private async download() {
     const token: any = getToken();
@@ -85,14 +87,36 @@ export default class BankImport extends Vue {
   async httpRequest(req: any) {
     const fd = new FormData();
     fd.append("file", req.file);
+    this.loading = this.$loading({
+      lock: true,
+      text: "上传中, 请耐心等待...",
+      spinner: "el-icon-loading",
+      background: "rgba(0, 0, 0, 0.6)",
+      customClass: "ih-loading-spinner",
+    });
     return await post_bankBranch_importData(fd);
   }
-  successHandler() {
+  successHandler(response: any) {
     this.$emit("finish");
-    this.$message.success("导入成功");
+    this.loading.close();
+    this.$message.success(`成功导入${response}条开户行信息`);
+  }
+  errorHandler() {
+    console.log("导入失败");
+    this.loading.close();
+    // this.$message.warning('导入失败')
   }
   cancel() {
     this.$emit("cancel", false);
   }
 }
 </script>
+
+<style lang="scss">
+.ih-loading-spinner {
+  .el-icon-loading,
+  .el-loading-text {
+    color: #fff;
+  }
+}
+</style>

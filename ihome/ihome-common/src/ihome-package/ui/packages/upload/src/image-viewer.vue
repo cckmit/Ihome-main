@@ -390,4 +390,7 @@ export default {
   font-size: 28px;
   color: #fff;
 }
+.el-image-viewer__close {
+  color: #fff;
+}
 </style>
