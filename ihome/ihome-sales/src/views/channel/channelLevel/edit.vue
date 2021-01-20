@@ -4,7 +4,7 @@
  * @Author: wwq
  * @Date: 2020-10-15 16:02:03
  * @LastEditors: wwq
- * @LastEditTime: 2021-01-19 18:56:54
+ * @LastEditTime: 2021-01-20 19:45:10
 -->
 <template>
   <IhPage>
@@ -345,6 +345,13 @@ export default class ChannelRates extends Vue {
     this.getInfo();
   }
 
+  get dictsList() {
+    const list = (this.$root as any).dictAllList(
+      "ChannelLevelStandardAttachment"
+    );
+    return list.filter((i: any) => i.tag.includes("ChannelGradeAttachment"));
+  }
+
   async getInfo() {
     let id = this.$route.query.id;
     if (id) {
@@ -361,12 +368,9 @@ export default class ChannelRates extends Vue {
   }
 
   getFileListType(data: any) {
-    const ChannelGrade = (this.$root as any).dictAllList(
-      "ChannelGradeAttachment"
-    );
-    const channelLevelDict = (this.$root as any).dictAllList(
-      "ChannelLevelStandardAttachment"
-    );
+    const channelLevelDict = (this.$root as any)
+      .dictAllList("ChannelLevelStandardAttachment")
+      .filter((v: any) => v.tag.includes("ChannelLevelStandardAttachment"));
     let newDict: any = [];
     if (data.length) {
       newDict = channelLevelDict.filter((j: any) => {
@@ -375,7 +379,7 @@ export default class ChannelRates extends Vue {
     } else {
       newDict = this.addDictList;
     }
-    const dictList = newDict.concat(ChannelGrade);
+    const dictList = newDict.concat(this.dictsList);
     this.fileListType = dictList.map((v: any) => {
       let arr: any = [];
       data

@@ -4,7 +4,7 @@
  * @Author: wwq
  * @Date: 2020-10-09 09:35:09
  * @LastEditors: wwq
- * @LastEditTime: 2020-10-23 10:29:46
+ * @LastEditTime: 2021-01-20 19:09:18
 -->
 
 <template>
@@ -19,17 +19,27 @@
     class="dialog text-left"
     title="查看所需材料"
   >
-    <el-form ref="form" :model="form" label-width="80px">
+    <el-form
+      ref="form"
+      :model="form"
+      label-width="80px"
+    >
       <el-row>
         <el-col :span="12">
-          <el-form-item label="城市等级" prop="cityGrade">
+          <el-form-item
+            label="城市等级"
+            prop="cityGrade"
+          >
             <span>
               {{ $root.dictAllName(form.cityGrade, "CityLevel") }}
             </span>
           </el-form-item>
         </el-col>
         <el-col :span="12">
-          <el-form-item label="渠道等级" prop="channelGrade">
+          <el-form-item
+            label="渠道等级"
+            prop="channelGrade"
+          >
             <span>{{
               $root.dictAllName(form.channelGrade, "ChannelLevel")
             }}</span>
@@ -39,8 +49,8 @@
       <el-row>
         <el-col :span="24">
           <el-form-item label="所需材料">
-            <template v-for="item in form.standardAttachments"
-              ><div
+            <template v-for="item in form.standardAttachments">
+              <div
                 :key="item"
                 :class="
                   item &&

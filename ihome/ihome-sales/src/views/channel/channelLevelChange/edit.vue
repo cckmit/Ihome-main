@@ -4,7 +4,7 @@
  * @Author: ywl
  * @Date: 2020-10-15 16:02:03
  * @LastEditors: wwq
- * @LastEditTime: 2021-01-19 19:02:25
+ * @LastEditTime: 2021-01-20 19:53:29
 -->
 <template>
   <IhPage>
@@ -322,6 +322,13 @@ export default class ChannelRates extends Vue {
     special: [{ required: true, message: "请选择特批入库", trigger: "change" }],
   };
 
+  get dictsList() {
+    const list = (this.$root as any).dictAllList(
+      "ChannelLevelStandardAttachment"
+    );
+    return list.filter((i: any) => i.tag.includes("ChannelGradeAttachment"));
+  }
+
   // 获取评级信息数据
   async getTableData(val: any) {
     if (val instanceof Array) {
@@ -352,14 +359,14 @@ export default class ChannelRates extends Vue {
       const list = (this.$root as any).dictAllList(
         "ChannelLevelStandardAttachment"
       );
-      this.addDictList = res[0].channelGradeStandardAttachments.map(
-        (j: any) => ({
-          code: j,
-          name: list.find((h: any) => h.code === j).name,
-          type: "ChannelGradeAttachment",
-        })
-      );
+      this.addDictList = res.channelGradeStandardAttachments.map((j: any) => ({
+        code: j,
+        name: list.find((h: any) => h.code === j).name,
+        type: "ChannelGradeAttachment",
+      }));
       this.getFileListType([]);
+    } else {
+      this.resPageInfo.channelGradeItems = [];
     }
   }
   pass(val: any) {
@@ -444,12 +451,9 @@ export default class ChannelRates extends Vue {
   }
 
   getFileListType(data: any) {
-    const ChannelGrade = (this.$root as any).dictAllList(
-      "ChannelGradeAttachment"
-    );
-    const channelLevelDict = (this.$root as any).dictAllList(
-      "ChannelLevelStandardAttachment"
-    );
+    const channelLevelDict = (this.$root as any)
+      .dictAllList("ChannelLevelStandardAttachment")
+      .filter((v: any) => v.tag.includes("ChannelLevelStandardAttachment"));
     let newDict: any = [];
     if (data.length) {
       newDict = channelLevelDict.filter((j: any) => {
@@ -458,7 +462,7 @@ export default class ChannelRates extends Vue {
     } else {
       newDict = this.addDictList;
     }
-    const dictList = newDict.concat(ChannelGrade);
+    const dictList = newDict.concat(this.dictsList);
     this.fileListType = dictList.map((v: any) => {
       let arr: any = [];
       data
