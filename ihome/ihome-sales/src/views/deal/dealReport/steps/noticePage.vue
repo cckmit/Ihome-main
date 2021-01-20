@@ -31,13 +31,15 @@
             </el-form-item>
             <el-form-item v-if="form.suppProtocolType === 'PaperTemplate'" label="纸质版附件">
               <IhUpload
-                :isCrop="false"
-                :file-list.sync="form.suppAnnexList"
-                size="100px"
-                :limit="1"
-                :file-size="10"
-                :isMove="false"
                 @newFileList="getNewFile"
+                :isCrop="false"
+                :isMove="false"
+                :removePermi="true"
+                size="100px"
+                :limit="10"
+                :file-size="10"
+                :file-list.sync="form.suppAnnexList"
+                :file-type="form.code"
               ></IhUpload>
             </el-form-item>
           </div>
@@ -267,8 +269,9 @@
     }
 
     // 上传附件的值
-    getNewFile(val: any) {
+    getNewFile(val: any, type?: any) {
       console.log(val);
+      console.log(type);
     }
   }
 </script>
