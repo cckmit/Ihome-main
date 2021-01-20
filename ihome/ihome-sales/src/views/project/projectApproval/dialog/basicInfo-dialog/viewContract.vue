@@ -4,7 +4,7 @@
  * @Author: wwq
  * @Date: 2020-12-10 11:42:42
  * @LastEditors: wwq
- * @LastEditTime: 2021-01-08 19:59:08
+ * @LastEditTime: 2021-01-20 09:04:53
 -->
 <template>
   <el-dialog
@@ -110,7 +110,7 @@
       </tr>
       <tr>
         <td>【项目房款/车位款+服务费】＞备案价</td>
-        <td>{{$root.dictAllName(info.houseandcarGtRecordEnum, "YesOrNoType")}}</td>
+        <td>{{$root.dictAllName(info.houseandcarGtRecordEnum, "HouseandcarGtRecord")}}</td>
         <td colspan="4"></td>
       </tr>
       <tr>
@@ -149,7 +149,7 @@
       </tr> -->
       <tr>
         <td>合同其他说明</td>
-        <td colspan="6">{{info.otherRemark}}</td>
+        <td colspan="6">{{info.qdOtherRemark}}</td>
       </tr>
       <!-- <tr>
         <td rowspan="2">审核情况</td>
