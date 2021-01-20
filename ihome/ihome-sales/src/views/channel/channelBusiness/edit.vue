@@ -3,8 +3,8 @@
  * @version: 
  * @Author: ywl
  * @Date: 2020-09-16 14:05:21
- * @LastEditors: ywl
- * @LastEditTime: 2021-01-15 20:30:23
+ * @LastEditors: wwq
+ * @LastEditTime: 2021-01-20 15:40:24
 -->
 <template>
   <IhPage>
@@ -14,7 +14,7 @@
         :model="info"
         :rules="rules"
         ref="ruleForm"
-        label-width="120px"
+        label-width="100px"
         class="demo-ruleForm"
       >
         <el-row>
@@ -32,8 +32,9 @@
           </el-col>
           <el-col :span="8">
             <el-form-item
-              label="信用代码"
+              label="统一社会信用代码"
               prop="creditCode"
+              class="formItem"
             >
               <el-input
                 v-model="info.creditCode"
@@ -88,6 +89,7 @@
           </el-col>
           <el-col :span="8">
             <el-form-item
+              class="formItem"
               label="法人身份证号码"
               prop="legalIdentityCode"
             >
@@ -775,6 +777,11 @@ export default class ModifyThe extends Vue {
     top: 0px;
     left: 120px;
     transform: translate(0, -30%);
+  }
+}
+.formItem {
+  /deep/ .el-form-item__label {
+    line-height: 20px;
   }
 }
 </style>

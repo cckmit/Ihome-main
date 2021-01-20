@@ -110,9 +110,9 @@
               class="width--100">
               <el-option
                 v-for="item in firstAgencyCompanyList"
-                :key="item.agencyId"
-                :label="item.agencyName"
-                :value="item.agencyId"></el-option>
+                :key="item.proAgencyId"
+                :label="item.name"
+                :value="item.proAgencyId"></el-option>
             </el-select>
           </el-form-item>
         </el-col>
@@ -660,17 +660,18 @@
           class="ih-table"
           :data="postData.documentVO">
           <el-table-column prop="name" label="类型" width="200"></el-table-column>
-          <el-table-column prop="fileName" label="附件" min-width="120">
+          <el-table-column prop="fileName" label="附件" min-width="300">
             <template slot-scope="scope">
               <IhUpload
+                @newFileList="getNewFile"
                 :isCrop="false"
-                :file-list.sync="scope.row.defaultFileList"
-                :file-type="scope.row.code"
+                :isMove="false"
+                :removePermi="true"
                 size="100px"
                 :limit="100"
                 :file-size="10"
-                :isMove="false"
-                @newFileList="getNewFile"
+                :file-list.sync="scope.row.defaultFileList"
+                :file-type="scope.row.code"
               ></IhUpload>
             </template>
           </el-table-column>
@@ -1359,29 +1360,29 @@
       // 附件类型增加key
       if (fileList.length > 0) {
         fileList.forEach((vo: any) => {
-          vo.defaultFileList = [];
-          vo.fileList = [];
+          vo.defaultFileList = []; // 存放原来的数据
+          vo.fileList = []; // 存放新上传的数据
           // 赋值
           switch(vo.code) {
             case "VisitConfirForm":
               // 来访确认单
               vo.defaultFileList = initData.visitConfirmForms && initData.visitConfirmForms.length ? initData.visitConfirmForms : [];
-              vo.fileList = initData.visitConfirmForms && initData.visitConfirmForms.length ? initData.visitConfirmForms : [];
+              // vo.fileList = initData.visitConfirmForms && initData.visitConfirmForms.length ? initData.visitConfirmForms : [];
               break;
             case "Notice":
               // 优惠告知书PDF
               vo.defaultFileList = initData.noticePDF && initData.noticePDF.length  ? initData.noticePDF : [];
-              vo.fileList = initData.noticePDF && initData.noticePDF.length  ? initData.noticePDF : [];
+              // vo.fileList = initData.noticePDF && initData.noticePDF.length  ? initData.noticePDF : [];
               break;
             case "OwnerID":
               // 业主身份证
               vo.defaultFileList = initData.customerIds && initData.customerIds.length ? initData.customerIds : [];
-              vo.fileList = initData.customerIds && initData.customerIds.length ? initData.customerIds : [];
+              // vo.fileList = initData.customerIds && initData.customerIds.length ? initData.customerIds : [];
               break;
             case "DealConfirForm":
               // 成交确认书
               vo.defaultFileList = initData.dealConfirmForms && initData.dealConfirmForms.length ? initData.dealConfirmForms : [];
-              vo.fileList = initData.dealConfirmForms && initData.dealConfirmForms.length ? initData.dealConfirmForms : [];
+              // vo.fileList = initData.dealConfirmForms && initData.dealConfirmForms.length ? initData.dealConfirmForms : [];
               break;
           }
         })
@@ -1712,14 +1713,11 @@
         this.postData.documentVO.forEach((vo: any) => {
           if (vo.code === type) {
             if (data && data.length) {
-              data.forEach((item: any) => {
-                vo.fileList.push(item);
-              })
+              vo.fileList = data;
             }
           }
         });
       }
-      console.log('postData.documentVO', this.postData.documentVO);
     }
 
     // 取消

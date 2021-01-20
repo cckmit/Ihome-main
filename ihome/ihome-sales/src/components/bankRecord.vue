@@ -3,8 +3,8 @@
  * @version: 
  * @Author: ywl
  * @Date: 2020-11-30 16:21:18
- * @LastEditors: ywl
- * @LastEditTime: 2020-12-14 16:35:46
+ * @LastEditors: wwq
+ * @LastEditTime: 2021-01-20 15:47:42
 -->
 <template>
   <el-dialog
@@ -16,6 +16,7 @@
     append-to-body
     width="80%"
     title="银行网点档案库"
+    top="5vh"
   >
     <el-form label-width="80px">
       <el-row>
@@ -25,24 +26,40 @@
               :level="2"
               v-model="provinceList"
             ></IhCascader> -->
-            <el-input v-model="queryPageParameters.provinceName"></el-input>
+            <el-input
+              v-model="queryPageParameters.provinceName"
+              placeholder="省份"
+              clearable
+            ></el-input>
           </el-form-item>
         </el-col>
         <el-col :span="8">
           <el-form-item label="城市">
-            <el-input v-model="queryPageParameters.cityName"></el-input>
+            <el-input
+              v-model="queryPageParameters.cityName"
+              placeholder="城市"
+              clearable
+            ></el-input>
           </el-form-item>
         </el-col>
         <el-col :span="8">
-          <el-form-item label="网点名称">
-            <el-input v-model="queryPageParameters.branchName"></el-input>
+          <el-form-item label="开户行">
+            <el-input
+              v-model="queryPageParameters.branchName"
+              placeholder="开户行"
+              clearable
+            ></el-input>
           </el-form-item>
         </el-col>
       </el-row>
       <el-row>
         <el-col :span="8">
           <el-form-item label="联行号">
-            <el-input v-model="queryPageParameters.branchNo"></el-input>
+            <el-input
+              v-model="queryPageParameters.branchNo"
+              placeholder="联行号"
+              clearable
+            ></el-input>
           </el-form-item>
         </el-col>
       </el-row>
@@ -77,7 +94,7 @@
         prop="branchNo"
       ></el-table-column>
       <el-table-column
-        label="网点名称"
+        label="开户行"
         min-width="205"
         prop="branchName"
       ></el-table-column>
@@ -118,7 +135,7 @@
 
 <script lang="ts">
 import { Component, Vue } from "vue-property-decorator";
-import PaginationMixin from "../../../../mixins/pagination";
+import PaginationMixin from "../mixins/pagination";
 import { post_bankBranch_getList } from "@/api/finance/index";
 
 @Component({
@@ -126,7 +143,6 @@ import { post_bankBranch_getList } from "@/api/finance/index";
 })
 export default class BankRecord extends Vue {
   private dialogVisible = true;
-  private provinceList = [];
   private selection = [];
   public queryPageParameters: any = {
     provinceName: null,
@@ -150,8 +166,6 @@ export default class BankRecord extends Vue {
     }
   }
   private handleSearch() {
-    this.queryPageParameters.provinceName = this.provinceList[0];
-    this.queryPageParameters.cityName = this.provinceList[1];
     this.queryPageParameters.pageNum = 1;
     this.getListMixin();
   }
@@ -162,7 +176,6 @@ export default class BankRecord extends Vue {
       branchNo: null,
       branchName: null,
     });
-    this.provinceList = [];
   }
   private handleSelectionChange(val: any) {
     this.selection = val;

@@ -4,7 +4,7 @@
  * @Author: wwq
  * @Date: 2020-07-08 14:23:16
  * @LastEditors: wwq
- * @LastEditTime: 2021-01-19 16:05:40
+ * @LastEditTime: 2021-01-20 15:42:10
 --> 
 <template>
   <el-dialog
@@ -139,7 +139,7 @@ import { Component, Vue, Prop } from "vue-property-decorator";
 import { Form as ElForm } from "element-ui";
 import { noTrim } from "ihome-common/util/base/form-ui";
 import { NoRepeatHttp } from "ihome-common/util/aop/no-repeat-http";
-import BankRecord from "./bankRecord.vue";
+import BankRecord from "@/components/bankRecord.vue";
 @Component({
   components: {
     BankRecord,

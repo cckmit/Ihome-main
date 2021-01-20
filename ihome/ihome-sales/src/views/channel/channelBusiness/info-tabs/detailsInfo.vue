@@ -3,13 +3,13 @@
  * @version: 
  * @Author: lgf
  * @Date: 2020-09-16 14:05:21
- * @LastEditors: ywl
- * @LastEditTime: 2021-01-06 11:16:17
+ * @LastEditors: wwq
+ * @LastEditTime: 2021-01-20 11:33:22
 -->
 <template>
   <div class="text-left">
     <p class="ih-info-title">基础信息</p>
-    <el-form label-width="120px">
+    <el-form label-width="130px">
       <el-row>
         <el-col :span="8">
           <el-form-item label="名称">
@@ -20,7 +20,7 @@
           </el-form-item>
         </el-col>
         <el-col :span="8">
-          <el-form-item label="信用代码">{{ info.creditCode }}</el-form-item>
+          <el-form-item label="统一社会信用代码">{{ info.creditCode }}</el-form-item>
         </el-col>
         <el-col :span="8">
           <el-form-item label="简称">{{ info.shortName }}</el-form-item>
@@ -320,7 +320,7 @@ interface ConfirmObj {
 
 <style lang="scss" scoped>
 .text-ellipsis {
-  display: inline-block;
+  display: block;
   width: 100%;
   overflow: hidden;
   text-overflow: ellipsis;

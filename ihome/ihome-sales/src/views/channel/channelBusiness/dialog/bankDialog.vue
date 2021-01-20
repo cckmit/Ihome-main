@@ -3,8 +3,8 @@
  * @version: 
  * @Author: ywl
  * @Date: 2020-10-12 10:38:48
- * @LastEditors: ywl
- * @LastEditTime: 2020-12-14 16:32:56
+ * @LastEditors: wwq
+ * @LastEditTime: 2021-01-20 15:41:15
 -->
 <template>
   <el-dialog
@@ -113,7 +113,7 @@ import { Form as ElForm } from "element-ui";
 import { NoRepeatHttp } from "ihome-common/util/aop/no-repeat-http";
 import { noTrim, isNumberValidato } from "ihome-common/util/base/form-ui";
 // import { post_channelBank_add } from "@/api/channel/index";
-import BankRecord from "./bankRecord.vue";
+import BankRecord from "@/components/bankRecord.vue";
 
 @Component({
   components: { BankRecord },

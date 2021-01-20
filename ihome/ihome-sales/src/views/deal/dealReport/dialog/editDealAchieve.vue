@@ -230,7 +230,7 @@
         if (list.length > 0 && this.data && this.data.distriRoles && this.data.distriRoles.length > 0) {
           this.data.distriRoles.forEach((item: any) => {
             list.forEach((L: any) => {
-              if (item === L.code) {
+              if (item.code === L.code) {
                 this.dealRoleList.push(
                   {
                     ...L,

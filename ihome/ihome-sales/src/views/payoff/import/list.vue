@@ -4,7 +4,7 @@
  * @Author: wwq
  * @Date: 2021-01-13 16:35:12
  * @LastEditors: wwq
- * @LastEditTime: 2021-01-15 09:20:23
+ * @LastEditTime: 2021-01-20 09:54:34
 -->
 <template>
   <IhPage>
@@ -286,6 +286,7 @@ export default class Import extends Vue {
             this.progress = "error";
             this.errorMsg = res.data.data.msg;
           }
+          this.fileList = [];
           this.successTotal = res.data.data.success;
           this.errorTotal = res.data.data.error;
         })
