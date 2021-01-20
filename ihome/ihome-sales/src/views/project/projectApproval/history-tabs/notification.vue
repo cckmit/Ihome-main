@@ -4,7 +4,7 @@
  * @Author: wwq
  * @Date: 2020-11-27 17:27:01
  * @LastEditors: wwq
- * @LastEditTime: 2021-01-18 14:14:11
+ * @LastEditTime: 2021-01-20 16:31:22
 -->
 <template>
   <div>
@@ -292,8 +292,8 @@ export default class Notification extends Vue {
   position: relative;
   .tubiao {
     position: absolute;
-    bottom: 10px;
-    right: 10px;
+    bottom: 5px;
+    right: 20px;
     font-size: 24px;
     cursor: pointer;
   }

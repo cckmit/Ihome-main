@@ -331,7 +331,7 @@
             label="【项目房款/车位款+服务费】>备案价"
             class="formItem"
           >
-            <span class="text-ellipsis">{{ $root.dictAllName(info.houseandcarGtRecordEnum, "YesOrNoType") }}</span>
+            <span class="text-ellipsis">{{ $root.dictAllName(info.houseandcarGtRecordEnum, "HouseandcarGtRecord") }}</span>
           </el-form-item>
         </el-col>
       </el-row>

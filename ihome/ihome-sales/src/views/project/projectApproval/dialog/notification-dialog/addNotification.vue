@@ -4,7 +4,7 @@
  * @Author: wwq
  * @Date: 2020-12-02 11:18:51
  * @LastEditors: wwq
- * @LastEditTime: 2021-01-14 16:03:16
+ * @LastEditTime: 2021-01-20 17:09:17
 -->
 <template>
   <el-dialog
@@ -82,6 +82,7 @@
       <el-button @click="cancel()">取 消</el-button>
       <el-button
         type="primary"
+        :loading="finishLoading"
         @click="finish()"
       >确 定</el-button>
     </span>
@@ -92,12 +93,14 @@ import { Component, Vue, Prop } from "vue-property-decorator";
 import { Form as ElForm } from "element-ui";
 import { NoRepeatHttp } from "ihome-common/util/aop/no-repeat-http";
 import { isNumberValidato } from "ihome-common/util/base/form-ui";
+import { post_preferential_add, post_preferential_update } from "@/api/project";
 @Component({
   components: {},
 })
 export default class AddNotification extends Vue {
   @Prop({ default: null }) data: any;
   dialogVisible = true;
+  finishLoading = false;
 
   form: any = {
     premiumReceived: null,
@@ -129,7 +132,24 @@ export default class AddNotification extends Vue {
   @NoRepeatHttp()
   async submit(valid: any) {
     if (valid) {
-      this.$emit("finish", this.form);
+      this.finishLoading = true;
+      this.form.termId = this.$route.query.id;
+      if (this.data.title === "新增") {
+        try {
+          await post_preferential_add(this.form);
+          this.finishLoading = false;
+        } catch (err) {
+          this.finishLoading = false;
+        }
+      } else {
+        try {
+          await post_preferential_update(this.form);
+          this.finishLoading = false;
+        } catch (err) {
+          this.finishLoading = false;
+        }
+      }
+      this.$emit("finish");
     } else {
       console.log("error submit!!");
       return false;

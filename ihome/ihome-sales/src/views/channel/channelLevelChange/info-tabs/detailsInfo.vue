@@ -4,7 +4,7 @@
  * @Author: wwq
  * @Date: 2020-10-15 12:33:25
  * @LastEditors: wwq
- * @LastEditTime: 2021-01-15 20:08:08
+ * @LastEditTime: 2021-01-20 19:48:50
 -->
 <template>
   <div class="text-left">
@@ -288,6 +288,13 @@ export default class Home extends Vue {
   };
   fileListType: any = [];
 
+  get dictsList() {
+    const list = (this.$root as any).dictAllList(
+      "ChannelLevelStandardAttachment"
+    );
+    return list.filter((i: any) => i.tag.includes("ChannelGradeAttachment"));
+  }
+
   async pass(val: any) {
     if (this.remark) {
       await post_channelGradeChange_approveRecord({
@@ -320,16 +327,13 @@ export default class Home extends Vue {
     }
   }
   getFileListType(data: any) {
-    const ChannelGrade = (this.$root as any).dictAllList(
-      "ChannelGradeAttachment"
-    );
-    const channelLevelDict = (this.$root as any).dictAllList(
-      "ChannelLevelStandardAttachment"
-    );
+    const channelLevelDict = (this.$root as any)
+      .dictAllList("ChannelLevelStandardAttachment")
+      .filter((v: any) => v.tag.includes("ChannelLevelStandardAttachment"));
     const newDict: any = channelLevelDict.filter((j: any) => {
       return data.map((i: any) => i.type).includes(j.code);
     });
-    const dictList = newDict.concat(ChannelGrade);
+    const dictList = newDict.concat(this.dictsList);
     this.fileListType = dictList.map((v: any) => {
       let arr: any = [];
       data

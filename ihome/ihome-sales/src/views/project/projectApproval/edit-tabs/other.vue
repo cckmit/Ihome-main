@@ -4,7 +4,7 @@
  * @Author: wwq
  * @Date: 2020-11-27 17:28:28
  * @LastEditors: wwq
- * @LastEditTime: 2021-01-04 18:49:34
+ * @LastEditTime: 2021-01-20 16:46:02
 -->
 <template>
   <div>
@@ -444,8 +444,8 @@ export default class Other extends Vue {
   }
 
   specialClick() {
+    this.achieveData.id = this.info.startDivisionId;
     this.achieveDialogVisible = true;
-    this.achieveData.id = this.info.companyId;
   }
 
   async achieveFinish(data: any) {
@@ -462,7 +462,7 @@ export default class Other extends Vue {
     this.approvalDialogVisible = true;
     this.approvalData.exOver = this.info.exOtherProChannelUse ? 1 : 0;
     this.approvalData.termId = this.termId;
-    this.approvalData.proId = window.sessionStorage.getItem("proId");
+    this.approvalData.proId = this.info.proId;
   }
 
   async approvalFinish(data: any) {

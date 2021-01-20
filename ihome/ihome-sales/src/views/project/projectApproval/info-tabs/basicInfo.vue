@@ -4,7 +4,7 @@
  * @Author: wwq
  * @Date: 2020-11-27 17:17:06
  * @LastEditors: wwq
- * @LastEditTime: 2021-01-18 11:06:34
+ * @LastEditTime: 2021-01-20 18:38:48
 -->
 <template>
   <div>
@@ -331,7 +331,7 @@
             label="【项目房款/车位款+服务费】>备案价"
             class="formItem"
           >
-            <span class="text-ellipsis">{{ $root.dictAllName(info.houseandcarGtRecordEnum, "YesOrNoType") }}</span>
+            <span class="text-ellipsis">{{ $root.dictAllName(info.houseandcarGtRecordEnum, "HouseandcarGtRecord") }}</span>
           </el-form-item>
         </el-col>
       </el-row>

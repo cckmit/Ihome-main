@@ -3,8 +3,8 @@
  * @version: 
  * @Author: wwq
  * @Date: 2020-10-09 09:35:09
- * @LastEditors: ywl
- * @LastEditTime: 2020-11-11 11:45:30
+ * @LastEditors: wwq
+ * @LastEditTime: 2021-01-20 19:12:34
 -->
 
 <template>
@@ -104,9 +104,7 @@
           >
             <el-checkbox-group v-model="form.standardAttachments">
               <el-row>
-                <template v-for="item in $root.dictAllList(
-                    'ChannelLevelStandardAttachment'
-                  )">
+                <template v-for="item in dictsList">
                   <el-col
                     :span="12"
                     :key="item.code"
@@ -165,6 +163,15 @@ export default class Edit extends Vue {
     gradeStandard: null,
     standardAttachments: [],
   };
+
+  private get dictsList() {
+    const list = (this.$root as any).dictAllList(
+      "ChannelLevelStandardAttachment"
+    );
+    return list.filter((i: any) =>
+      i.tag.includes("ChannelLevelStandardAttachment")
+    );
+  }
 
   private rules: any = {
     cityGrade: [

@@ -4,15 +4,24 @@
  * @Author: wwq
  * @Date: 2020-11-03 11:52:41
  * @LastEditors: wwq
- * @LastEditTime: 2020-11-06 17:32:51
+ * @LastEditTime: 2021-01-20 18:54:38
 -->
 <template>
   <div class="house-type text-left">
-    <div class="content" v-for="item in info" :key="item.houseTypeId">
+    <div
+      class="content"
+      v-for="item in info"
+      :key="item.houseTypeId"
+    >
       <img
+        v-if="item.picAddr"
         class="img"
         :src="`/sales-api/sales-document-cover/file/browse/${item.picAddr}`"
-        alt=""
+      />
+      <img
+        v-else
+        class="img"
+        :src="require('../../../../../src/assets/img/ihome.jpg')"
       />
       <div class="title">
         {{ `${item.houseName} ${item.space}m²` }}<br />
@@ -57,6 +66,7 @@ export default class EditHouseType extends Vue {
   overflow: auto;
   width: 100%;
   height: 100%;
+  padding-right: 0 !important;
   .content {
     display: inline-block;
     margin-left: 20px;

@@ -4,7 +4,7 @@
  * @Author: wwq
  * @Date: 2020-11-27 17:20:24
  * @LastEditors: wwq
- * @LastEditTime: 2020-12-31 10:09:53
+ * @LastEditTime: 2021-01-20 16:31:10
 -->
 <template>
   <div>
@@ -360,8 +360,8 @@ export default class PartyA extends Vue {
   position: relative;
   .tubiao {
     position: absolute;
-    bottom: 10px;
-    right: 10px;
+    bottom: 5px;
+    right: 20px;
     font-size: 24px;
     cursor: pointer;
   }
