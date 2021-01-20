@@ -4,7 +4,7 @@
  * @Author: wwq
  * @Date: 2020-11-03 11:52:41
  * @LastEditors: wwq
- * @LastEditTime: 2020-12-31 09:47:27
+ * @LastEditTime: 2021-01-20 17:41:10
 -->
 <template>
   <div>
@@ -27,9 +27,14 @@
         :key="item.houseTypeId"
       >
         <img
+          v-if="item.picAddr"
           class="img"
           :src="`/sales-api/sales-document-cover/file/browse/${item.picAddr}`"
-          alt=""
+        />
+        <img
+          v-else
+          class="img"
+          :src="require('../../../../../src/assets/img/ihome.jpg')"
         />
         <div class="title">
           {{ `${item.houseName} ${item.space}m²` }}<br />

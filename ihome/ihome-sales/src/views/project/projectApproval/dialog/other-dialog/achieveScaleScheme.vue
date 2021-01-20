@@ -4,7 +4,7 @@
  * @Author: wwq
  * @Date: 2020-12-09 11:11:02
  * @LastEditors: wwq
- * @LastEditTime: 2020-12-11 09:05:45
+ * @LastEditTime: 2021-01-20 16:51:17
 -->
 <template>
   <el-dialog
@@ -282,7 +282,7 @@ export default class AchieveScaleScheme extends Vue {
     property: null,
     isMarketProject: null,
     isSame: null,
-    isSpecial: null,
+    isSpecial: "Yes",
   };
   resPageInfo: any = {
     list: [],

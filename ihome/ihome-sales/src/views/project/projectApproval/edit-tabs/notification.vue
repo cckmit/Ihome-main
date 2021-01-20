@@ -4,7 +4,7 @@
  * @Author: wwq
  * @Date: 2020-11-27 17:27:01
  * @LastEditors: wwq
- * @LastEditTime: 2021-01-20 10:26:26
+ * @LastEditTime: 2021-01-20 17:09:54
 -->
 <template>
   <div>
@@ -337,8 +337,6 @@ import {
   get_distributContract_get__termId,
   post_distributContract_saveOaRemark,
   post_preferential_uploadTemplate,
-  post_preferential_add,
-  post_preferential_update,
   post_distributContract_start__agencyContrictId,
   post_distributContract_cancel__agencyContrictId,
   post_preferential_start__preferentialMxId,
@@ -637,14 +635,10 @@ export default class Notification extends Vue {
     this.getInfo();
   }
 
-  async addFinish(data: any) {
-    delete data.title;
-    data.termId = this.$route.query.id;
+  async addFinish() {
     if (this.addType === "add") {
-      await post_preferential_add(data);
       this.$message.success("新增成功");
     } else if (this.addType === "edit") {
-      await post_preferential_update(data);
       this.$message.success("修改成功");
     }
     this.getInfo();
@@ -683,8 +677,8 @@ export default class Notification extends Vue {
   position: relative;
   .tubiao {
     position: absolute;
-    bottom: 10px;
-    right: 10px;
+    bottom: 5px;
+    right: 20px;
     font-size: 24px;
     cursor: pointer;
   }
