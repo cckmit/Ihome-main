@@ -4,7 +4,7 @@
  * @Author: zyc
  * @Date: 2020-12-09 09:45:59
  * @LastEditors: zyc
- * @LastEditTime: 2021-01-18 14:52:11
+ * @LastEditTime: 2021-01-19 16:14:58
 -->
 <!--
  * @Descripttion: 
@@ -135,6 +135,7 @@
                 :data="resPageInfo.list"
                 width="100%"
                 class="ih-table"
+                :height="pageHeight-150"
                 :default-sort="{ prop: 'date', order: 'descending' }"
               >
                 <!-- <el-table-column type="selection" width="50"></el-table-column> -->

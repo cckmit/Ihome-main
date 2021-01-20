@@ -4,7 +4,7 @@
  * @Author: lsj
  * @Date: 2020-12-23 14:20:30
  * @LastEditors: lsj
- * @LastEditTime: 2021-01-19 16:07:50
+ * @LastEditTime: 2021-01-19 19:16:45
 -->
 <template>
   <ih-page class="text-left">
@@ -102,7 +102,7 @@
           </el-form-item>
         </el-col>
         <el-col :span="6">
-          <el-form-item label="一手代理公司" prop="oneAgentTeamId">
+          <el-form-item label="一手代理公司" :prop="oneAgentRequiredFlag ? 'oneAgentTeamId' : 'notEmpty'">
             <el-select
               v-model="postData.oneAgentTeamId"
               clearable
@@ -1369,10 +1369,12 @@
       index: null // 当前选择修改的序号：总包/分销
     };
     isSameFlag: any = false; // 是否分销与总包一致
+    oneAgentRequiredFlag: any = false; // 收派金额 - 派发内场奖励金额合计大于0，为true
 
     // 应收信息表格
     get receiveAchieveVO() {
       let arr: any = [];
+      let rewardTotal: any = 0; // 派发内场总金额合计，用于判断一手代理团队是否必选
       let totalAmount: any = 0; // 派发佣金合计金额+派发内场奖励合计金额
       if (this.postData.receiveVO.length > 0) {
         let obj = {
@@ -1388,10 +1390,16 @@
           obj.otherChannelFees = (obj.otherChannelFees * 1 * 100 + item.otherChannelFees * 1 * 100) / 100;
           totalAmount = (totalAmount * 1 * 100 + item.commAmount * 1 * 100 +
             item.rewardAmount * 1 * 100) / 100;
+          rewardTotal = (rewardTotal * 1 * 100 + item.rewardAmount * 1 * 100) / 100;
         })
         arr.push(obj);
       }
       this.editDealAchieveData.totalAmount = totalAmount;
+      if (rewardTotal > 0) {
+        this.oneAgentRequiredFlag = true;
+      } else {
+        this.oneAgentRequiredFlag = false;
+      }
       return arr;
     }
 
