@@ -4,7 +4,7 @@
  * @Author: wwq
  * @Date: 2020-09-25 17:59:09
  * @LastEditors: wwq
- * @LastEditTime: 2021-01-20 11:48:45
+ * @LastEditTime: 2021-01-20 14:16:35
 -->
 <template>
   <ih-page>
@@ -33,32 +33,6 @@
             </el-form-item>
           </el-col>
           <el-col :span="8">
-            <el-form-item label="简称">
-              <el-input
-                v-model="queryPageParameters.shortName"
-                placeholder="简称"
-                clearable
-              ></el-input>
-            </el-form-item>
-          </el-col>
-        </el-row>
-        <el-row>
-          <el-col :span="8">
-            <el-form-item label="省市区">
-              <IhCascader v-model="provinceOption"></IhCascader>
-            </el-form-item>
-          </el-col>
-          <el-col :span="8">
-            <el-form-item label="录入人">
-              <IhSelectPageUser
-                v-model="queryPageParameters.inputUser"
-                placeholder="录入人"
-                clearable
-              >
-              </IhSelectPageUser>
-            </el-form-item>
-          </el-col>
-          <el-col :span="8">
             <el-form-item label="状态">
               <el-select
                 style="width: 100%"
@@ -73,6 +47,21 @@
                   :value="item.code"
                 ></el-option>
               </el-select>
+            </el-form-item>
+          </el-col>
+          <el-col :span="8">
+            <el-form-item label="省市区">
+              <IhCascader v-model="provinceOption"></IhCascader>
+            </el-form-item>
+          </el-col>
+          <el-col :span="8">
+            <el-form-item label="录入人">
+              <IhSelectPageUser
+                v-model="queryPageParameters.inputUser"
+                placeholder="录入人"
+                clearable
+              >
+              </IhSelectPageUser>
             </el-form-item>
           </el-col>
         </el-row>
@@ -118,10 +107,6 @@
           prop="name"
           label="名称"
           width="200"
-        ></el-table-column>
-        <el-table-column
-          prop="shortName"
-          label="简称"
         ></el-table-column>
         <el-table-column
           prop="creditCode"
