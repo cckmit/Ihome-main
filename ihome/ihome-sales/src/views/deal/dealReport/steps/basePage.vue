@@ -375,7 +375,7 @@
             <el-input
               v-model="postData.returnRatio"
               disabled
-               placeholder="请输入明源房款回笼比例"></el-input>
+               placeholder="明源房款回笼比例"></el-input>
           </el-form-item>
         </el-col>
         <el-col :span="6">
@@ -437,7 +437,7 @@
         </el-col>
         <el-col :span="6">
           <el-form-item label="数据标志" prop="dataSign">
-            <el-input v-model="postData.dataSign" disabled placeholder="数据标志"></el-input>
+            <el-input v-model="postData.dataSignName" disabled placeholder="数据标志"></el-input>
           </el-form-item>
         </el-col>
         <el-col :span="6">
@@ -465,28 +465,30 @@
         </el-col>
       </el-row>
     </el-form>
-    <p id="anchor-2" class="ih-info-title">优惠告知书信息</p>
-    <el-row style="padding-left: 20px">
-      <el-col>
-        <el-table
-          class="ih-table"
-          :data="postData.offerNoticeVO">
-          <el-table-column prop="offerNoticeName" label="名称" min-width="120"></el-table-column>
-          <el-table-column prop="offerNoticeCode" label="优惠告知书编号" min-width="120"></el-table-column>
-          <el-table-column prop="offerNoticeStatus" label="优惠告知书状态" min-width="120"></el-table-column>
-          <el-table-column fixed="right" label="操作" width="100">
-            <template slot-scope="scope">
-              <el-link
-                class="margin-right-10"
-                type="primary"
-                @click.native.prevent="preview(scope)"
-              >预览
-              </el-link>
-            </template>
-          </el-table-column>
-        </el-table>
-      </el-col>
-    </el-row>
+    <div id="anchor-2" v-if="baseInfoByTerm.chargeEnum !== 'Agent'">
+      <p class="ih-info-title">优惠告知书信息</p>
+      <el-row style="padding-left: 20px">
+        <el-col>
+          <el-table
+            class="ih-table"
+            :data="postData.offerNoticeVO">
+            <el-table-column prop="offerNoticeName" label="名称" min-width="120"></el-table-column>
+            <el-table-column prop="offerNoticeCode" label="优惠告知书编号" min-width="120"></el-table-column>
+            <el-table-column prop="offerNoticeStatus" label="优惠告知书状态" min-width="120"></el-table-column>
+            <el-table-column fixed="right" label="操作" width="100">
+              <template slot-scope="scope">
+                <el-link
+                  class="margin-right-10"
+                  type="primary"
+                  @click.native.prevent="preview(scope)"
+                >预览
+                </el-link>
+              </template>
+            </el-table-column>
+          </el-table>
+        </el-col>
+      </el-row>
+    </div>
     <p id="anchor-3" class="ih-info-title">客户信息</p>
     <el-row style="padding-left: 20px">
       <el-col>
@@ -612,7 +614,7 @@
                   <el-input
                     readonly
                     placeholder="收派标准">
-                    <el-button slot="append" icon="el-icon-edit-outline"></el-button>
+                    <el-button slot="append" icon="el-icon-view"></el-button>
                   </el-input>
                 </el-tooltip>
               </div>
@@ -1005,7 +1007,7 @@
       <el-col>
         <el-table
           class="ih-table"
-          :data="postData.documentVO">
+          :data="postData.documentList">
           <el-table-column prop="name" label="类型" min-width="80"></el-table-column>
           <el-table-column prop="fileName" label="附件" min-width="120">
             <template slot-scope="scope">
@@ -1068,8 +1070,7 @@
               dialogAddCustomer = false;
               finishAddCustomer(data);
             }
-          "
-      />
+          "/>
     </ih-dialog>
     <ih-dialog :show="dialogAddBroker" desc="选择渠道经纪人列表">
       <AddBroker
@@ -1146,6 +1147,7 @@
       isMarketProject: null,
       recordState: null,
       dataSign: null,
+      dataSignName: null,
       contNo: null,
       isMat: null,
       isConsign: null,
@@ -1178,7 +1180,7 @@
       agencyVO: [], // 渠道信息
       receiveList: [], // 收派金额
       receiveAchieveVO: [], // 应收信息
-      documentVO: [], // 附件信息
+      documentList: [], // 附件信息
       channelCommList: [], // 对外拆佣
       achieveTotalBagList: [
         {
@@ -1315,6 +1317,7 @@
       proId: null, // 项目id --- 用于查询分销协议列表
       termId: null, // 项目周期id
       termStageEnum: null, // 判断优惠告知书是否有添加按钮
+      chargeEnum: null, //
     }; // 通过项目周期id获取到的初始化成交基础信息
     baseInfoInDeal: any = {
       notice: [], // 优惠告知书
@@ -1351,10 +1354,10 @@
 
     async created() {
       this.DealDataFlag = (this as any).$root.dictAllList('DealDataFlag'); // 数据来源类型
-      this.postData.documentVO = (this as any).$root.dictAllList('DealFileType'); // 附件类型
+      this.postData.documentList = (this as any).$root.dictAllList('DealFileType'); // 附件类型
       // 附件类型增加key
-      if (this.postData.documentVO.length > 0) {
-        this.postData.documentVO.forEach((vo: any) => {
+      if (this.postData.documentList.length > 0) {
+        this.postData.documentList.forEach((vo: any) => {
           vo.fileList = []
         })
       }
@@ -1427,10 +1430,12 @@
         dealId: this.id,
         suppContType: this.changeType
       }
-      const res: any = await post_suppDeal_toAddSuppDeal(postData);
+      let res: any = await post_suppDeal_toAddSuppDeal(postData);
       // console.log(res);
-      await this.getBaseDealInfo(res.cycleId);
-      this.postData = res;
+      this.postData = {
+        ...this.postData,
+        ...res
+      };
       this.postData.address = res.house.address;
       this.postData.area = res.house.area;
       this.postData.buildingId = res.house.buildingId;
@@ -1449,11 +1454,20 @@
       await this.getOrgName(res.dealOrgId);
       // 成交状态
       this.postData.statusName = (this as any).$root.dictAllName(res.status, 'DealStatus');
-      // console.log(this.postData.statusName);
       // 计算方式
       this.postData.calculationName = (this as any).$root.dictAllName(res.calculation, 'DealCalculateWay');
+      // 数据标志
+      this.postData.dataSignName = (this as any).$root.dictAllName(res.dataSign, 'DealDataFlag');
       // 优惠告知书
       await this.getNoticeList(res.id);
+      // 客户信息
+      if (this.postData.customerList && this.postData.customerList.length) {
+        this.postData.customerList.forEach((list: any) => {
+          list.addId = list.id;
+        });
+      }
+      // 调整收派金额信息
+      await this.initReceiveList(this.postData.receiveList);
       // 平台费用
       this.postData.achieveTotalBagList = [];
       this.postData.achieveDistriList = [];
@@ -1466,6 +1480,15 @@
           }
         })
       }
+      await this.getBaseDealInfo(res.cycleId);
+    }
+
+    // 调整收派金额信息
+    initReceiveList(data: any = []) {
+      if (!data.length) return;
+      data.forEach((item: any) => {
+        this.$set(item, 'showData', [item.collectandsendDetailDealVO]);
+      })
     }
 
     // 初始化渠道商(渠道公司) --- 分销成交模式才有渠道商
@@ -1535,7 +1558,7 @@
     async getNoticeList(dealId: any = '') {
       if (!dealId) return;
       const list: any = await post_notice_customer_information({dealId: dealId});
-      console.log('组织info:', list);
+      // console.log('组织info:', list);
       this.postData.offerNoticeVO = list;
     }
 
@@ -1676,7 +1699,56 @@
 
     // 添加客户
     handleAddCustomer() {
-      this.dialogAddCustomer = true;
+      this.dialogAddCustomer = !this.dialogAddCustomer;
+    }
+
+    // 确定选择客户
+    async finishAddCustomer(data: any) {
+      console.log('data', data);
+      if (data.length === 0) return;
+      let customData: any = {
+        addId: data[0].id, // 手动添加的时候保存id --- 为了回显收派金额
+        cardNo: data[0].certificateNumber,
+        cardType: data[0].cardType,
+        customerName: data[0].custName,
+        customerNo: data[0].custCode,
+        customerPhone: data[0].custTel,
+        customerType: data[0].custType,
+        email: data[0].email,
+        isCustomer: null // 是否主要客户
+      }
+      if (this.postData.customerList.length > 0) {
+        customData.isCustomer = "No";
+        this.postData.customerList.push(customData);
+      } else {
+        customData.isCustomer = "Yes";
+        this.postData.customerList.push(customData);
+        // 因为没有客户，选了客户后第一个客户是主要客户，需要回显到收派金额中类型为服务费的客户上
+        if (this.postData.customerList && this.postData.customerList.length) {
+          this.postData.customerList.forEach((item: any) => {
+            if (item.type === "ServiceFee") {
+              item.partyACustomer = data[0].id;
+              item.partyACustomerName = data[0].custName;
+            }
+          })
+        }
+      }
+    }
+
+    // 删除客户/渠道经纪人
+    async deleteAdd(scope: any, type: any) {
+      // console.log(scope);
+      // console.log(type);
+      if (type === 'customer') {
+        // 删除客户信息逻辑
+        // console.log(111);
+        this.postData.customerList = this.postData.customerList.filter((list: any) => {
+          return list.addId !== scope.row.addId;
+        });
+      } else if (type === 'broker') {
+        // 删除渠道经纪人逻辑
+        console.log(222);
+      }
     }
 
     // 添加渠道经纪人
@@ -1684,29 +1756,10 @@
       this.dialogAddBroker = true;
     }
 
-    // 确定选择客户
-    async finishAddCustomer(data: any) {
-      console.log('data', data);
-      // this.addTotalPackageList = data;
-    }
-
     // 确定选择渠道经纪人
     async finishAddBroker(data: any) {
       console.log('data', data);
       // this.addTotalPackageList = data;
-    }
-
-    // 删除客户/渠道经纪人
-    async deleteAdd(scope: any, type: any) {
-      console.log(scope);
-      console.log(type);
-      if (type === 'customer') {
-        // 删除客户信息逻辑
-        console.log(111);
-      } else if (type === 'broker') {
-        // 删除渠道经纪人逻辑
-        console.log(222);
-      }
     }
 
     // 增加拆佣项
@@ -2014,8 +2067,19 @@
     }
 
     // 上传附件
-    getNewFile(val: any) {
-      console.log(val);
+    getNewFile(data: any, type?: any) {
+      // console.log(data);
+      if (this.postData.documentList.length > 0) {
+        this.postData.documentList.forEach((vo: any) => {
+          if (vo.code === type) {
+            if (data && data.length) {
+              data.forEach((item: any) => {
+                vo.fileList.push(item);
+              })
+            }
+          }
+        });
+      }
     }
   }
 </script>
