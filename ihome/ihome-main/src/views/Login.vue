@@ -4,7 +4,7 @@
  * @Author: zyc
  * @Date: 2020-06-22 16:44:13
  * @LastEditors: zyc
- * @LastEditTime: 2020-12-07 09:26:22
+ * @LastEditTime: 2021-01-06 14:38:09
 --> 
 <template >
   <div class="main">
@@ -23,12 +23,18 @@
       ref="ruleForm"
       label-width="100px"
     >
-      <h3 style="text-align: center; margin: 10px">登录页面</h3>
+      <h3 style="text-align: center; margin: 10px">居恒新房分销系统·登录</h3>
+      <br>
       <el-form-item label="账号" prop="username">
-        <el-input v-model="ruleForm.username"></el-input>
+        <el-input placeholder="账号" v-model="ruleForm.username"></el-input>
       </el-form-item>
       <el-form-item label="密码" prop="password">
-        <el-input v-model="ruleForm.password" type="password"></el-input>
+        <el-input
+          placeholder="密码"
+          v-model="ruleForm.password"
+          type="password"
+          @keyup.enter.native="submitForm('ruleForm')"
+        ></el-input>
       </el-form-item>
 
       <el-form-item>
@@ -54,14 +60,14 @@ import { defaultMountApp } from "../setting";
 export default class Login extends Vue {
   loading: boolean = false;
   ruleForm: any = {
-    username: "admin",
-    password: "123456",
+    username: null,
+    password: null,
   };
   rules: any = {
     username: [{ required: true, message: "请输入账号", trigger: "blur" }, {}],
     password: [
       { required: true, message: "请输入密码", trigger: "blur" },
-      { min: 6, max: 30, message: "长度在最少6位", trigger: "change" },
+      // { min: 6, max: 30, message: "长度在最少6位", trigger: "change" },
     ],
   };
   private submitForm() {

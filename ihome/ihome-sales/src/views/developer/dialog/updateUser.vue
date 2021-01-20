@@ -4,7 +4,7 @@
  * @Author: wwq
  * @Date: 2020-07-08 14:23:16
  * @LastEditors: wwq
- * @LastEditTime: 2020-11-11 10:51:03
+ * @LastEditTime: 2020-12-15 14:49:27
 --> 
 <template>
   <el-dialog
@@ -15,6 +15,7 @@
     :before-close="cancel"
     width="500px"
     class="dialog text-left"
+    title="变更录入人"
   >
     <el-form
       ref="form"
@@ -24,7 +25,7 @@
       <el-row>
         <el-col :span="24">
           <el-form-item
-            label="已选渠道商"
+            label="已选开发商"
             prop="name"
           >
             <template v-for="(item, i) in data">
@@ -98,7 +99,7 @@ export default class UpdateUser extends Vue {
   async submit(valid: any) {
     if (valid) {
       await post_company_updateInputUser(this.form);
-      this.$message.success("保存成功");
+      this.$message.success("变更录入人成功");
       this.$emit("finish");
     } else {
       console.log("error submit!!");

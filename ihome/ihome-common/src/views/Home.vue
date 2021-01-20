@@ -4,7 +4,7 @@
  * @Author: wwq
  * @Date: 2020-09-16 14:54:19
  * @LastEditors: zyc
- * @LastEditTime: 2020-10-26 15:40:21
+ * @LastEditTime: 2021-01-18 16:29:48
 -->
 <template>
   <div>
@@ -25,8 +25,9 @@
 </template>
 <script lang="ts">
 // import { testApi, testPostApi } from "../api/test";
-import { Component, Vue } from "vue-property-decorator";
 
+import { Component, Vue } from "vue-property-decorator";
+ 
 @Component({
   components: {},
 })
@@ -47,10 +48,16 @@ export default class Home extends Vue {
     },
     {
       key: "IhSelectPageUser",
-      name: "用户下拉分页",
-      desc: "用户下拉分页组件，支持多列，搜索，分页",
+      name: "下拉分页",
+      desc: "下拉分页组件，支持多列，搜索，分页",
       path: "/selectPage",
     },
+    //  {
+    //   key: "IhSelectPageDivision",
+    //   name: "事业部下拉分页",
+    //   desc: "事业部下拉分页组件，支持多列，搜索，分页",
+    //   path: "/SelectPageDivision",
+    // },
     {
       key: "IhTableCheckBox",
       name: "表格多选",
@@ -63,10 +70,29 @@ export default class Home extends Vue {
       desc: "限制input框只能输入数字，支持小数位数限制",
       path: "/inputDigits",
     },
+    {
+      key: "IhLeftRightContainer",
+      name: "左右拖拽大小容器",
+      desc: "鼠标经过分割线可拖拽左右宽度,参考字典页面",
+      path: "/leftRightContainer",
+    },
+    {
+      key: "IhFilePreview",
+      name: "文件预览组件",
+      desc: "图片，pdf，其他",
+      path: "/filePreview",
+    },
+    {
+      key: "IhSelectOrgTree",
+      name: "归属组织tree",
+      desc: "归属组织tree",
+      path: "/selectOrgTree",
+    },
   ];
   info(scope: any) {
     this.$router.push(scope.row.path);
   }
+ 
 }
 </script>
 <style lang="scss" scoped>

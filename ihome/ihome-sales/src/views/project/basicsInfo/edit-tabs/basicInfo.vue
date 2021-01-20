@@ -4,7 +4,7 @@
  * @Author: wwq
  * @Date: 2020-11-03 11:52:41
  * @LastEditors: wwq
- * @LastEditTime: 2020-11-11 11:37:31
+ * @LastEditTime: 2021-01-19 16:22:35
 -->
 <template>
   <div>
@@ -15,14 +15,15 @@
       :rules="rules"
     >
       <el-row>
-        <el-col :span="8">
+        <el-col
+          :span="8"
+          v-if="$route.name === 'projectChildEdit'"
+        >
           <el-form-item label="盘编">
             <el-input
-              clearable
-              maxlength="64"
+              disabled
               v-model="form.proNo"
               placeholder="盘编"
-              disabled
             ></el-input>
           </el-form-item>
         </el-col>
@@ -52,27 +53,16 @@
             ></el-input>
           </el-form-item>
         </el-col>
-      </el-row>
-      <el-row>
         <el-col :span="8">
           <el-form-item
             label="开发商名称"
             prop="developerId"
           >
-            <el-select
+            <IhSelectPageByDeveloper
               v-model="form.developerId"
-              clearable
-              filterable
-              class="width--100"
-              placeholder="开发商名称"
+              :searchName="form.developerName"
             >
-              <el-option
-                v-for="item in developerOptions"
-                :key="item.value"
-                :label="item.label"
-                :value="item.value"
-              ></el-option>
-            </el-select>
+            </IhSelectPageByDeveloper>
           </el-form-item>
         </el-col>
         <el-col :span="8">
@@ -112,6 +102,17 @@
                 :value="item.code"
               ></el-option>
             </el-select>
+          </el-form-item>
+        </el-col>
+        <el-col :span="8">
+          <el-form-item
+            label="省市区"
+            prop="provinceOption"
+          >
+            <IhCascader
+              v-model="form.provinceOption"
+              :checkStrictly="false"
+            ></IhCascader>
           </el-form-item>
         </el-col>
       </el-row>
@@ -157,17 +158,6 @@
         </el-col>
       </el-row>
       <el-row>
-        <el-col :span="8">
-          <el-form-item
-            label="省市区"
-            prop="provinceOption"
-          >
-            <IhCascader
-              v-model="form.provinceOption"
-              :checkStrictly="false"
-            ></IhCascader>
-          </el-form-item>
-        </el-col>
         <el-col :span="16">
           <el-form-item
             label="项目地址"
@@ -246,6 +236,7 @@
           <el-form-item
             label="物业类型"
             class="text-left"
+            prop="checkboxEnum"
           >
             <el-checkbox-group
               v-model="form.checkboxEnum"
@@ -277,7 +268,6 @@
             <el-form
               ref="contantForm"
               :model="item.msg"
-              :rules="contantRules"
             >
               <div class="contant">
                 <div style="
@@ -324,7 +314,6 @@
                       label="产权年限"
                       label-width="90px"
                       class="text-left"
-                      prop="propertyAge"
                     >
                       <el-select
                         style="width: 50%"
@@ -332,7 +321,7 @@
                         clearable
                       >
                         <el-option
-                          v-for="item in $root.dictAllList('PropertyAgeEnum')"
+                          v-for="item in $root.dictAllList('PropertyAge')"
                           :key="item.code"
                           :label="item.name"
                           :value="item.code"
@@ -358,6 +347,7 @@
               :file-size="10"
               size="100px"
               accept="image/*"
+              upload-accept="image"
               :loadPermi="false"
               @newFileList="houseFiles"
             >
@@ -371,6 +361,7 @@
                 </div>
               </template>
             </IhUpload>
+            <div style="text-align: left;color: #aaa;margin-top: -10px">图片尺寸：480*480，用于移动端页面展示，封面图用于首页/详情页首张展示</div>
           </el-form-item>
         </el-col>
       </el-row>
@@ -391,7 +382,7 @@
               label="业务类型"
             >
               <template v-slot="{ row }">{{
-                $root.dictAllName(row.busTypeEnum, "BusTypeEnum")
+                $root.dictAllName(row.busTypeEnum, "BusType")
               }}</template>
             </el-table-column>
             <el-table-column
@@ -411,7 +402,7 @@
               label="审核状态"
             >
               <template v-slot="{ row }">{{
-                $root.dictAllName(row.auditEnum, "AuditEnum")
+                $root.dictAllName(row.auditEnum, "Audit")
               }}</template>
             </el-table-column>
             <el-table-column
@@ -419,10 +410,10 @@
               width="120"
               fixed="right"
             >
-              <template>
+              <template v-slot="{ row }">
                 <el-button
                   size="small"
-                  @click="viewCycleData"
+                  @click="viewCycleData(row)"
                 >查看</el-button>
               </template>
             </el-table-column>
@@ -450,11 +441,11 @@
             style="width: 100%"
           >
             <el-table-column
-              prop="agencyName"
+              prop="name"
               label="一手代理团队名称"
             ></el-table-column>
             <el-table-column
-              prop="simpleName"
+              prop="shortName"
               label="简称"
             ></el-table-column>
             <el-table-column
@@ -481,6 +472,7 @@
               <template v-slot="{ $index }">
                 <el-button
                   size="small"
+                  type="danger"
                   @click="delFirstAgencyCompanys($index)"
                 >删除</el-button>
               </template>
@@ -493,22 +485,33 @@
         <div class="padding-left-20">
           <el-table
             class="ih-table"
-            :data="form.attachPics"
+            :data="fileListType"
             style="width: 100%"
           >
             <el-table-column
-              prop="proAttachEnum"
+              prop="type"
+              width="180"
               label="类型"
+              align="center"
             >
-              <template v-slot="{ row }">{{
-                $root.dictAllName(row.proAttachEnum, "ProAttachEnum")
-              }}</template>
+              <template v-slot="{ row }">
+                <div><span
+                    style="color: red"
+                    v-if="row.subType"
+                  >*</span>{{row.name}}
+                </div>
+              </template>
             </el-table-column>
             <el-table-column label="附件">
-              <IhUpload
-                :file-list="accFileList"
-                size="100px"
-              ></IhUpload>
+              <template v-slot="{ row }">
+                <IhUpload
+                  :file-list.sync="row.fileList"
+                  :file-size="10"
+                  :file-type="row.code"
+                  size="100px"
+                  @newFileList="queryNew"
+                ></IhUpload>
+              </template>
             </el-table-column>
           </el-table>
         </div>
@@ -517,8 +520,12 @@
     <div class="margin-top-20">
       <el-button
         type="primary"
-        @click="save"
+        @click="submit('save')"
       >保存</el-button>
+      <el-button
+        type="success"
+        @click="submit('submit')"
+      >提交</el-button>
       <el-button @click="$goto({ path: '/projects/list' })">关闭</el-button>
     </div>
     <ih-dialog :show="dialogVisible">
@@ -531,11 +538,11 @@
 </template>
 <script lang="ts">
 import { Component, Vue, Watch } from "vue-property-decorator";
-import { post_company_listAll } from "@/api/developer/index";
 import {
   get_project_get__proId,
   post_project_add,
   post_project_update,
+  post_project_auditWait,
 } from "@/api/project/index";
 import FirstAgencyDialog from "../dialog/firstAgency.vue";
 import { Form as ElForm } from "element-ui";
@@ -586,6 +593,9 @@ export default class EditBasicInfo extends Vue {
     provinceOption: [],
   };
 
+  fileListType: any = [];
+  submitFile: any = {};
+
   contantForm: any = {
     averPrice: null,
     propertyAge: null,
@@ -622,10 +632,12 @@ export default class EditBasicInfo extends Vue {
         trigger: "change",
       },
     ],
-  };
-  contantRules: any = {
-    propertyAge: [
-      { required: true, message: "请选择产权年限", trigger: "change" },
+    checkboxEnum: [
+      {
+        required: true,
+        message: "请选择物业类型",
+        trigger: "change",
+      },
     ],
   };
   YesOrNoType: any = [
@@ -638,11 +650,9 @@ export default class EditBasicInfo extends Vue {
       name: "是",
     },
   ];
-  developerOptions: any = [];
   houseFileList: any = [];
   radio = "";
   houseList: any = [];
-  accFileList: any = [];
   dialogVisible = false;
   checkBoxChangeList: any = [];
   center: any = { lng: 0, lat: 0 };
@@ -650,6 +660,8 @@ export default class EditBasicInfo extends Vue {
   BMap: any = {};
   searchAddr = "";
   isShow = true;
+  oldInfo: any = {};
+  oldSubmitFile: any = {};
 
   @Watch("form.exMinyuan", { immediate: true, deep: true })
   isShowList(v: any) {
@@ -657,12 +669,30 @@ export default class EditBasicInfo extends Vue {
     else this.isShow = true;
   }
 
+  @Watch("form", { immediate: true, deep: true })
+  infoChange(val: any) {
+    let isCut: any = true;
+    if (JSON.stringify(val) !== JSON.stringify(this.oldInfo)) {
+      isCut = false;
+    }
+    this.$emit("cutOther", isCut);
+  }
+
+  @Watch("submitFile", { immediate: true, deep: true })
+  fileListTypeChange(val: any) {
+    let isCut: any = true;
+    if (JSON.stringify(val) !== JSON.stringify(this.oldSubmitFile)) {
+      isCut = false;
+    }
+    this.$emit("cutOther", isCut);
+  }
+
   private get projectId() {
     return this.$route.query.id;
   }
 
   private get checkBoxList() {
-    let list = (this.$root as any).dictAllList("PropertyEnum");
+    let list = (this.$root as any).dictAllList("Property");
     let arr: any = [];
     list.forEach((v: any) => {
       let item = this.contantList.find((j: any) => v.code === j.propertyEnum);
@@ -695,7 +725,6 @@ export default class EditBasicInfo extends Vue {
 
   created() {
     this.getInfo();
-    this.getDeveloper();
   }
 
   async getInfo() {
@@ -707,14 +736,14 @@ export default class EditBasicInfo extends Vue {
       this.form.provinceOption = [data.province, data.city, data.district];
       this.contantList = data.propertyArgs.map((v: any) => ({
         ...v,
-        title: (this.$root as any).dictAllName(v.propertyEnum, "PropertyEnum"),
+        title: (this.$root as any).dictAllName(v.propertyEnum, "Property"),
       }));
       this.form.jingwei = data.lat + "," + data.lng;
       let arr: any = [];
       this.contantList.forEach((v: any) => {
         arr.push(
           JSON.stringify({
-            ...(this.$root as any).dictAllItem(v.propertyEnum, "PropertyEnum"),
+            ...(this.$root as any).dictAllItem(v.propertyEnum, "Property"),
             msg: {
               ...v,
             },
@@ -726,31 +755,52 @@ export default class EditBasicInfo extends Vue {
         this.checkBoxChangeList.push(JSON.parse(v));
       });
       this.houseFileList = this.form.proPics.map((v: any) => ({
-        name: v.attachName,
-        fileId: v.attachAddr,
+        name: v.fileName,
+        fileId: v.fileId,
         exIndex: v.exIndex,
         proAttachEnum: "ProPic",
       }));
       this.radio = this.houseFileList.filter(
         (item: any) => item.exIndex === 1
       )[0]?.fileId;
+      this.getFileListType(data.attachPics);
+      this.oldInfo = { ...this.form };
+    } else {
+      this.getFileListType([]);
     }
   }
 
-  async getDeveloper() {
-    const item = await post_company_listAll({
-      name: "",
+  getFileListType(data: any) {
+    const list = (this.$root as any).dictAllList("ProAttach");
+    this.fileListType = list.map((v: any) => {
+      return {
+        ...v,
+        fileList: data
+          .filter((j: any) => j.type === v.code)
+          .map((h: any) => ({
+            ...h,
+            name: h.fileName,
+          })),
+      };
     });
-    this.developerOptions = item.map((v: any) => ({
-      label: v.name,
-      value: v.id,
-    }));
+    let obj: any = {};
+    this.fileListType.forEach((h: any) => {
+      obj[h.code] = h.fileList;
+    });
+    this.submitFile = { ...obj };
+    this.oldSubmitFile = this.submitFile;
+  }
+
+  queryNew(data: any, type?: any) {
+    let obj: any = {};
+    obj[type] = data;
+    this.submitFile = { ...this.submitFile, ...obj };
   }
 
   getRadio(data: any) {
     if (this.houseList.length) {
       this.houseList = this.houseList.map((v: any) => {
-        if (data === v.attachAddr) {
+        if (data === v.fileId) {
           return {
             ...v,
             exIndex: 1,
@@ -781,22 +831,43 @@ export default class EditBasicInfo extends Vue {
 
   checkboxChangeHandler(val: any) {
     const item = val.map((v: any) => JSON.parse(v));
-    this.checkBoxChangeList = item;
+    // let arr: any = item.concat(this.checkBoxChangeList);
+    let newArr: any = [];
+    let flag: any = true;
+    item.forEach((v: any) => {
+      newArr.forEach((j: any) => {
+        if (v.id === j.id) {
+          flag = false;
+        }
+      });
+      if (flag) {
+        newArr.push({
+          ...v,
+        });
+      }
+    });
+    if (this.checkBoxChangeList.length) {
+      this.checkBoxChangeList = [];
+      newArr.forEach((v: any) => {
+        this.checkBoxChangeList.push(v);
+      });
+    } else {
+      this.checkBoxChangeList = newArr;
+    }
   }
 
   // 处理楼房图片
   houseFiles(data: any) {
-    console.log(data);
     this.houseList = data.map((v: any) => ({
-      attachAddr: v.fileId,
-      attachName: v.name,
+      fileId: v.fileId,
+      fileName: v.name,
       attachId: null,
       proAttachEnum: "ProPic",
       exIndex: v.exIndex, // 是否设为主页
     }));
     // let arr = data.map((v: any) => ({
-    //   attachAddr: v.fileId,
-    //   attachName: v.name,
+    //   fileId: v.fileId,
+    //   fileName: v.name,
     //   attachId: v.null,
     //   proAttachEnum: "ProPic",
     //   exIndex: null, // 是否设为主页
@@ -806,8 +877,14 @@ export default class EditBasicInfo extends Vue {
     // });
   }
 
-  viewCycleData() {
-    console.log(111);
+  viewCycleData(data: any) {
+    const item = this.$router.resolve({
+      path: `/projectApproval/info`,
+      query: {
+        id: data.termId,
+      },
+    });
+    window.open(item.href, "_blank");
   }
   async delFirstAgencyCompanys(index: number) {
     try {
@@ -861,7 +938,7 @@ export default class EditBasicInfo extends Vue {
     });
   }
 
-  async save() {
+  async submit(submittype: any) {
     (this.$refs["form"] as ElForm).validate(async (v: any) => {
       if (v) {
         let obj = { ...this.form };
@@ -887,21 +964,67 @@ export default class EditBasicInfo extends Vue {
           obj.proPics = this.houseList;
         } else {
           obj.proPics = this.houseFileList.map((v: any) => ({
-            attachName: v.name,
-            attachAddr: v.fileId,
+            fileName: v.name,
+            fileId: v.fileId,
             attachId: null,
             exIndex: v.exIndex,
             proAttachEnum: v.proAttachEnum,
           }));
         }
+
+        // 校验提示
+        let arr: any = [];
+        Object.values(this.submitFile).forEach((v: any) => {
+          if (v.length) {
+            arr = arr.concat(v);
+          }
+        });
+        // 以下操作仅仅是为了校验必上传项
+        let submitList: any = this.fileListType.map((v: any) => {
+          return {
+            ...v,
+            fileList: arr
+              .filter((j: any) => j.type === v.code)
+              .map((h: any) => ({
+                ...h,
+                name: h.fileName,
+              })),
+          };
+        });
+        let isSubmit = true;
+        let msgList: any = [];
+        submitList.forEach((v: any) => {
+          if (v.subType && !v.fileList.length) {
+            msgList.push(v.name);
+            isSubmit = false;
+          }
+        });
+        if (isSubmit) {
+          obj.attachPics = arr.map((v: any) => ({
+            fileId: v.fileId,
+            fileName: v.name,
+            type: v.type,
+          }));
+        } else {
+          this.$message({
+            type: "warning",
+            message: `${msgList.join(",")}项,请上传附件`,
+          });
+          return;
+        }
+
         if (this.$route.name === "projectChildAdd") {
           await post_project_add(obj);
         } else {
           obj.proId = this.projectId;
-          await post_project_update(obj);
+          if (submittype === "save") {
+            await post_project_update(obj);
+          } else if (submittype === "submit") {
+            await post_project_auditWait(obj);
+          }
         }
         this.houseList = [];
-        this.$message.success("保存成功");
+        this.$message.success("提交成功");
         this.$goto({ path: "/projects/list" });
       }
     });

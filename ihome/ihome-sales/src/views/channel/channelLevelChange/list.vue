@@ -3,8 +3,8 @@
  * @version: 
  * @Author: zyc
  * @Date: 2020-06-30 09:21:17
- * @LastEditors: ywl
- * @LastEditTime: 2020-11-30 17:51:12
+ * @LastEditors: wwq
+ * @LastEditTime: 2020-12-22 09:18:28
 --> 
 <template>
   <IhPage label-width="100px">
@@ -16,19 +16,11 @@
         <el-row>
           <el-col :span="8">
             <el-form-item label="渠道商名称">
-              <el-select
+              <IhSelectPageByChannel
                 v-model="queryPageParameters.channelId"
                 clearable
-                placeholder="请选择"
-                class="width--100"
-              >
-                <el-option
-                  v-for="item in channelList"
-                  :key="item.id"
-                  :label="item.name"
-                  :value="item.id"
-                ></el-option>
-              </el-select>
+                placeholder="请选择渠道商"
+              ></IhSelectPageByChannel>
             </el-form-item>
           </el-col>
           <el-col :span="8">
@@ -93,19 +85,11 @@
           </el-col>
           <el-col :span="8">
             <el-form-item label="事业部">
-              <el-select
+              <IhSelectPageDivision
                 v-model="queryPageParameters.departmentOrgId"
                 clearable
-                placeholder="请选择"
-                class="width--100"
-              >
-                <el-option
-                  v-for="item in testList"
-                  :key="item.id"
-                  :label="item.value"
-                  :value="item.id"
-                ></el-option>
-              </el-select>
+                placeholder="请选择事业部"
+              ></IhSelectPageDivision>
             </el-form-item>
           </el-col>
         </el-row>
@@ -122,7 +106,10 @@
           type="info"
           @click="reset()"
         >重置</el-button>
-        <el-button @click="handleOpen()">变更录入人</el-button>
+        <el-button
+          @click="handleOpen()"
+          v-has="'B.SALES.CHANNEL.LEVELCHANGELIST.UPDATEENTRY'"
+        >变更录入人</el-button>
       </el-row>
     </template>
 
@@ -143,11 +130,10 @@
         <el-table-column
           fixed
           label="渠道商名称"
-          prop="channelId"
+          prop="channelName"
           min-width="200"
         ></el-table-column>
         <el-table-column
-          fixed
           prop="storageNum"
           label="入库编号"
           min-width="170"
@@ -165,7 +151,7 @@
         <el-table-column
           prop="departmentName"
           label="事业部"
-          width="150"
+          min-width="225"
         >
         </el-table-column>
         <el-table-column
@@ -203,20 +189,28 @@
               <el-dropdown-menu slot="dropdown">
                 <el-dropdown-item
                   @click.native.prevent="handleToPage(row, 'edit')"
-                  :disabled="row.status !== 'DRAFT'"
+                  :class="{ 'ih-data-disabled': !editChange(row) }"
+                  v-has="'B.SALES.CHANNEL.LEVELCHANGELIST.UPDATE'"
                 >修改</el-dropdown-item>
                 <el-dropdown-item
                   @click.native.prevent="remove(row)"
-                  :disabled="row.status !== 'DRAFT'"
+                  :class="{ 'ih-data-disabled': !editChange(row) }"
+                  v-has="'B.SALES.CHANNEL.LEVELCHANGELIST.DELETE'"
                 >删除</el-dropdown-item>
                 <el-dropdown-item
                   @click.native.prevent="handleToPage(row, 'revoke')"
-                  :disabled="row.status !== 'PTWYSH'"
+                  :class="{ 'ih-data-disabled': !recallChange(row) }"
+                  v-has="'B.SALES.CHANNEL.LEVELCHANGELIST.REVOKE'"
                 >撤回</el-dropdown-item>
-                <el-dropdown-item @click.native.prevent="handleToPage(row, 'examine')">审核</el-dropdown-item>
+                <el-dropdown-item
+                  :class="{ 'ih-data-disabled': !auditChange(row) }"
+                  @click.native.prevent="handleToPage(row, 'examine')"
+                  v-has="'B.SALES.CHANNEL.LEVELCHANGELIST.VERIFY'"
+                >审核</el-dropdown-item>
                 <el-dropdown-item
                   @click.native.prevent="backDraft(row)"
-                  :disabled="row.status !== 'PASS'"
+                  :class="{'ih-data-disabled': row.status !== 'PASS'}"
+                  v-has="'B.SALES.CHANNEL.LEVELCHANGELIST.REVOKEDRAFT'"
                 >退回起草</el-dropdown-item>
               </el-dropdown-menu>
             </el-dropdown>
@@ -261,7 +255,6 @@ import { Component, Vue } from "vue-property-decorator";
 import {
   post_channelGradeChange_getList,
   post_channelGradeChange_delete__id,
-  get_channel_getAll,
   post_channelGradeChange_backToDraft__id,
 } from "@/api/channel/index";
 import UpdateUser from "./dialog/updateUser.vue";
@@ -288,14 +281,45 @@ export default class LevelChangeList extends Vue {
   };
   dialogVisible = false;
   selectionData = [];
-  private channelList: any = [];
 
-  // 测试数据
-  testList = [
-    { value: "管理员1", id: 1 },
-    { value: "管理员2", id: 2 },
-    { value: "管理员3", id: 3 },
-  ];
+  editChange(row: any) {
+    const DRAFT = row.status === "DRAFT";
+    const dangqian = (this.$root as any).userInfo.id === row.inputUser;
+    return DRAFT && dangqian;
+  }
+
+  auditChange(row: any) {
+    const PTWYSH = row.status === "PTWYSH";
+    const FGSYGSH = row.status === "FGSYGSH";
+    const ZBYGSH = row.status === "ZBYGSH";
+    const roleList = (this.$root as any).userInfo.roleList.map(
+      (v: any) => v.code
+    );
+    const pingtai = roleList.includes("RPlatformClerk");
+    const fen = roleList.includes("RBusinessManagement");
+    const zong = roleList.includes("RHeadBusinessManagement");
+    return (PTWYSH && pingtai) || (FGSYGSH && fen) || (ZBYGSH && zong);
+  }
+
+  recallChange(row: any) {
+    const PTWYSH = row.status === "PTWYSH";
+    const FGSYGSH = row.status === "FGSYGSH";
+    const ZBYGSH = row.status === "ZBYGSH";
+    const roleList = (this.$root as any).userInfo.roleList.map(
+      (v: any) => v.code
+    );
+    const pingtai = roleList.includes("RPlatformClerk");
+    const fen = roleList.includes("RBusinessManagement");
+    const qudao = roleList.includes("RChannelStaff");
+    const dangqian = (this.$root as any).userInfo.id === row.inputUser;
+    const skipPlatformClerk = row.skipPlatformClerk === "true" ? true : false;
+    return (
+      (PTWYSH && dangqian && !skipPlatformClerk && qudao) ||
+      (FGSYGSH && dangqian && skipPlatformClerk && qudao) ||
+      (FGSYGSH && pingtai) ||
+      (ZBYGSH && fen)
+    );
+  }
 
   reset() {
     Object.assign(this.queryPageParameters, {
@@ -381,9 +405,6 @@ export default class LevelChangeList extends Vue {
     }
     this.dialogVisible = true;
   }
-  private async getChannelList(): Promise<void> {
-    this.channelList = await get_channel_getAll();
-  }
   public async getListMixin(): Promise<void> {
     this.resPageInfo = await post_channelGradeChange_getList(
       this.queryPageParameters
@@ -392,7 +413,6 @@ export default class LevelChangeList extends Vue {
 
   async created() {
     this.getListMixin();
-    this.getChannelList();
   }
 }
 </script>

@@ -8,7 +8,10 @@
     >
       <div class="el-image-viewer__mask"></div>
       <!-- CLOSE -->
-      <span class="el-image-viewer__btn el-image-viewer__close" @click="hide">
+      <span
+        class="el-image-viewer__btn el-image-viewer__close"
+        @click="hide"
+      >
         <i class="el-icon-circle-close"></i>
       </span>
       <!-- ARROW -->
@@ -31,10 +34,19 @@
       <!-- ACTIONS -->
       <div class="el-image-viewer__btn el-image-viewer__actions">
         <div class="el-image-viewer__actions__inner">
-          <i class="el-icon-zoom-out" @click="handleActions('zoomOut')"></i>
-          <i class="el-icon-zoom-in" @click="handleActions('zoomIn')"></i>
+          <i
+            class="el-icon-zoom-out"
+            @click="handleActions('zoomOut')"
+          ></i>
+          <i
+            class="el-icon-zoom-in"
+            @click="handleActions('zoomIn')"
+          ></i>
           <i class="el-image-viewer__actions__divider"></i>
-          <i :class="mode.icon" @click="toggleMode"></i>
+          <i
+            :class="mode.icon"
+            @click="toggleMode"
+          ></i>
           <i class="el-image-viewer__actions__divider"></i>
           <i
             class="el-icon-refresh-left"
@@ -62,8 +74,12 @@
             @mousedown="handleMouseDown"
             style="cursor: pointer"
           />
-          <span class="title" v-if="i === index" :key="i">{{
-            `${preFileName} ${imgIndex + 1}/${viewerMsg.length}`
+          <span
+            class="title"
+            v-if="i === index"
+            :key="i"
+          >{{
+            `${preFileName} ${viewerMsg[i].name} ${imgIndex + 1}/${viewerMsg.length}`
           }}</span>
         </template>
       </div>

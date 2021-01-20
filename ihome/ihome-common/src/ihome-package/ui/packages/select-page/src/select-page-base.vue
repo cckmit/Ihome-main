@@ -4,7 +4,7 @@
  * @Author: ywl
  * @Date: 2020-10-20 15:03:13
  * @LastEditors: ywl
- * @LastEditTime: 2020-12-05 15:59:17
+ * @LastEditTime: 2021-01-18 14:48:04
 -->
 <template>
   <el-select
@@ -20,6 +20,7 @@
     :collapse-tags="collapseTags"
     popper-class="ih-select-page"
     class="width--100"
+    :loading="searchLoad"
   >
     <!-- 搜索 -->
     <div class="selectInput">
@@ -27,23 +28,33 @@
         class="select-page-search"
         :placeholder="searchPlaceholder"
         v-model="filterText"
+        :validate-event="false"
         clearable
         @keyup.enter.native="handleKeyup()"
-      ></el-input>
+      >
+        <i
+          slot="suffix"
+          class="el-input__icon el-icon-loading"
+          v-if="searchLoad"
+        ></i>
+      </el-input>
     </div>
     <!-- 下拉部分 -->
     <el-option
-      v-for="(item, index) in optionList"
+      v-for="(item) in optionList"
       :key="item[keyProp]"
       :label="item[labelProp]"
-      :value="valueKey ? item : item[valueProp]"
+      :value="item[valueProp]"
       :disabled="item[disabledProp]"
       @click.native="handleClickOption(item)"
     >
-      <slot
-        :data="item"
-        :index="index"
-      ></slot>
+      <template v-if="isTempOption">
+        <span style="float: left">{{ item[optionProps.label] }}</span>
+        <span
+          class="margin-left-30"
+          style="float: right; color: #8492a6; font-size: 13px"
+        >{{ item[optionProps.value] }}</span>
+      </template>
     </el-option>
     <!-- 分页 -->
     <div style="bottom: 0;width: 100%;background: #fff">
@@ -74,7 +85,7 @@ const debounce = (function () {
 
 @Component({})
 export default class IhSelectPage extends Vue {
-  @Prop() value!: any;
+  @Prop() value!: string | number;
   @Prop() clearable?: boolean;
   @Prop() disabled?: boolean;
   @Prop() placeholder?: string;
@@ -82,13 +93,25 @@ export default class IhSelectPage extends Vue {
   @Prop() multiple?: boolean;
   @Prop() collapseTags?: boolean;
   @Prop() promiseFun?: Function;
+  @Prop() searchName?: string;
   @Prop() proId?: any;
+  @Prop() buildingId?: any;
+  @Prop() propertyEnum?: any; // 物业类型
+  @Prop() cascadeType?: any; // 级联类型 --- 栋座build/房间号room
+  @Prop({
+    default: false,
+  })
+  isCascade?: boolean; // 是否级联(栋座需要物业类型情况下)
+  @Prop({
+    default: false,
+  })
+  isTempOption?: boolean;
   @Prop({
     default: false,
   })
   isBlur?: boolean;
   @Prop({
-    default: false,
+    default: true,
   })
   switchHidePage?: boolean;
   @Prop({
@@ -96,7 +119,7 @@ export default class IhSelectPage extends Vue {
   })
   isKeyUp?: boolean;
   @Prop({
-    default: "检索关键字",
+    default: "请输入两个关键字检索",
   })
   searchPlaceholder?: string;
   @Prop({
@@ -109,7 +132,16 @@ export default class IhSelectPage extends Vue {
       };
     },
   })
-  props?: PropsType;
+  props?: any;
+  @Prop({
+    default: () => {
+      return {
+        label: "label",
+        value: "value",
+      };
+    },
+  })
+  optionProps?: any;
 
   private filterText = "";
   // 下拉列表
@@ -120,40 +152,76 @@ export default class IhSelectPage extends Vue {
     pageNum: 1,
     pageSize: 10,
   };
+  searchLoad = false;
+  searchOne = false;
 
-  @Watch("value", { immediate: true, deep: true })
-  watchValue(val: any, old: any) {
-    if (typeof old === "undefined" && val) {
-      this.filterText = val.name;
-    }
-  }
+  // @Watch("value", { immediate: true, deep: true })
+  // watchValue(val: any, old: any) {
+  //   if (typeof old === "undefined" && val) {
+  //     this.filterText = val.name;
+  //   }
+  // }
   @Watch("filterText")
   filter(val: any) {
     if (val.length >= 2 && !this.isKeyUp) {
-      debounce(this.getSelectList, 1000);
+      if (this.searchOne) {
+        this.getSelectList();
+        this.searchOne = false;
+      } else {
+        debounce(this.getSelectList, 500);
+      }
     } else if (!val.length) {
       this.getSelectList();
     }
   }
+  @Watch("searchName", { immediate: true })
+  watchSearch(val: any) {
+    if (val) {
+      this.filterText = val;
+      this.searchOne = true;
+    }
+  }
 
   private get labelProp(): string {
-    return (this.props as PropsType).lable || "label";
+    return (this.props as any).lable || "label";
   }
   private get valueProp(): string {
-    return (this.props as PropsType).value || "value";
+    return (this.props as any).value || "value";
   }
   private get keyProp(): string {
-    return (this.props as PropsType).key || "key";
+    return (this.props as any).key || "key";
   }
   private get disabledProp(): string {
-    return (this.props as PropsType).disabled || "disabled";
+    return (this.props as any).disabled || "disabled";
   }
 
   handleVisible(val: any): void {
-    if (val) {
-      if (this.isBlur && !this.proId) {
-        (this.$refs.selectPage as any).blur();
-        this.handleMessage();
+    if (this.isCascade) {
+      if (val) {
+        // 判断是栋座还是房间号
+        switch (this.cascadeType) {
+          case "build":
+            // 栋座：项目id + 物业类型
+            if (this.isBlur && (!this.proId || !this.propertyEnum)) {
+              (this.$refs.selectPage as any).blur();
+              this.handleMessage();
+            }
+            return;
+          case "room":
+            // 房间号：项目id + 栋座
+            if (this.isBlur && (!this.proId || !this.buildingId)) {
+              (this.$refs.selectPage as any).blur();
+              this.handleMessage();
+            }
+            return;
+        }
+      }
+    } else {
+      if (val) {
+        if (this.isBlur && !this.proId) {
+          (this.$refs.selectPage as any).blur();
+          this.handleMessage();
+        }
       }
     }
   }
@@ -181,18 +249,12 @@ export default class IhSelectPage extends Vue {
     this.$emit("input", val);
   }
   handleClickOption(data: any) {
-    this.$emit("optionClick", data);
+    this.$emit("changeOption", data);
   }
 
   mounted() {
     this.getSelectList();
   }
-}
-interface PropsType {
-  lable: string;
-  key: string;
-  value: string;
-  disabled: string;
 }
 </script>
 

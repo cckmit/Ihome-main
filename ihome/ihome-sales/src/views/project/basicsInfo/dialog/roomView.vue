@@ -4,7 +4,7 @@
  * @Author: wwq
  * @Date: 2020-11-03 18:39:23
  * @LastEditors: wwq
- * @LastEditTime: 2020-11-10 16:55:46
+ * @LastEditTime: 2020-12-19 17:37:56
 -->
 <template>
   <el-dialog
@@ -18,10 +18,13 @@
     class="dialog text-left"
     :title="`当前位置: ${$route.query.proName} ${$root.dictAllName(
       data.propertyEnum,
-      'PropertyEnum'
+      'Property'
     )} ${data.buildingName}`"
   >
-    <el-form ref="form" label-width="70px">
+    <el-form
+      ref="form"
+      label-width="70px"
+    >
       <el-row>
         <el-col :span="5">
           <el-form-item label="房号：">
@@ -59,7 +62,7 @@
               class="width--100"
             >
               <el-option
-                v-for="item in $root.dictAllList('PositionEnum')"
+                v-for="item in $root.dictAllList('Position')"
                 :key="item.code"
                 :label="item.name"
                 :value="item.code"
@@ -67,9 +70,15 @@
             </el-select>
           </el-form-item>
         </el-col>
-        <el-col :span="8" class="text-left width--50">
+        <el-col
+          :span="8"
+          class="text-left width--50"
+        >
           <el-form-item>
-            <el-button type="primary" @click="search()">查询</el-button>
+            <el-button
+              type="primary"
+              @click="search()"
+            >查询</el-button>
             <el-button
               type="success"
               @click="add()"
@@ -78,8 +87,7 @@
                   this.$route.name
                 )
               "
-              >添加房号</el-button
-            >
+            >添加房号</el-button>
           </el-form-item>
         </el-col>
       </el-row>
@@ -90,8 +98,14 @@
       style="width: 100%"
       height="538px"
     >
-      <el-table-column prop="roomNo" label="房号"></el-table-column>
-      <el-table-column prop="houseName" label="户型"></el-table-column>
+      <el-table-column
+        prop="roomNo"
+        label="房号"
+      ></el-table-column>
+      <el-table-column
+        prop="houseName"
+        label="户型"
+      ></el-table-column>
       <el-table-column label="房型">
         <template v-slot="{ row }">
           <span>
@@ -103,10 +117,16 @@
           </span>
         </template>
       </el-table-column>
-      <el-table-column prop="space" label="面积"></el-table-column>
-      <el-table-column prop="positionEnum" label="朝向">
+      <el-table-column
+        prop="space"
+        label="面积"
+      ></el-table-column>
+      <el-table-column
+        prop="positionEnum"
+        label="朝向"
+      >
         <template v-slot="{ row }">
-          {{ $root.dictAllName(row.positionEnum, "PositionEnum") }}
+          {{ $root.dictAllName(row.positionEnum, "Position") }}
         </template>
       </el-table-column>
       <el-table-column
@@ -118,10 +138,15 @@
         "
       >
         <template v-slot="{ row }">
-          <el-link type="primary" @click="edit(row)">编辑</el-link>
-          <el-link style="margin-left: 20px" type="primary" @click="remove(row)"
-            >移除</el-link
-          >
+          <el-link
+            type="primary"
+            @click="edit(row)"
+          >编辑</el-link>
+          <el-link
+            style="margin-left: 20px"
+            type="primary"
+            @click="remove(row)"
+          >移除</el-link>
         </template>
       </el-table-column>
     </el-table>
@@ -156,9 +181,10 @@ import { Component, Vue, Prop } from "vue-property-decorator";
 import PaginationMixin from "@/mixins/pagination";
 import RoomViewEdit from "./roomViewEdit.vue";
 import {
-  post_room_getList,
+  post_room_getListByBuildingId,
   get_houseType_getItemsByProperty__proId,
   post_room_add,
+  post_room_update,
   post_room_del__id,
 } from "@/api/project/index";
 
@@ -175,6 +201,7 @@ export default class RoomView extends Vue {
     houseTypeName: null,
     positionEnum: null,
     proId: this.$route.query.id,
+    buildingId: this.data.buildingId,
   };
   houseTypeOptions: any = [];
   editData: any = {};
@@ -194,7 +221,9 @@ export default class RoomView extends Vue {
     this.getHouseType();
   }
   async getListMixin() {
-    this.resPageInfo = await post_room_getList(this.queryPageParameters);
+    this.resPageInfo = await post_room_getListByBuildingId(
+      this.queryPageParameters
+    );
   }
 
   async getHouseType() {
@@ -238,7 +267,11 @@ export default class RoomView extends Vue {
   async editFinish(data: any) {
     let obj = { ...data };
     obj.proId = this.proId;
-    await post_room_add(obj);
+    if (this.roomViewType === "add") {
+      await post_room_add(obj);
+    } else {
+      await post_room_update(obj);
+    }
     this.$message.success("保存成功");
     this.viewEditDialogVisible = false;
     this.getListMixin();

@@ -4,28 +4,44 @@
  * @Author: zyc
  * @Date: 2020-07-09 14:30:56
  * @LastEditors: zyc
- * @LastEditTime: 2020-08-13 11:08:46
+ * @LastEditTime: 2021-01-15 09:32:43
 --> 
 <template>
   <div>
-    <div style="text-align:right;">
+    <div style="text-align: right">
       <el-input
-        style="width:300px;"
+        style="width: 300px"
         placeholder="登录账号 姓名"
         class="input-with-select"
+        clearable
         v-model="queryPageParameters.key"
+        @keyup.enter.native="getListMixin()"
       >
-        <el-button slot="append" icon="el-icon-search" @click="getListMixin()"></el-button>
+        <el-button
+          slot="append"
+          icon="el-icon-search"
+          @click="getListMixin()"
+        ></el-button>
       </el-input>
     </div>
     <br />
     <el-table :data="resPageInfo.list" style="width: 100%">
       <el-table-column type="index" label="序号" width="50"></el-table-column>
       <el-table-column prop="name" label="姓名" width="180"></el-table-column>
-      <el-table-column prop="account" label="登录账号" width="180"></el-table-column>
-      <el-table-column prop="mobilePhone" label="手机号码" width="180"></el-table-column>
+      <el-table-column
+        prop="account"
+        label="登录账号"
+        width="180"
+      ></el-table-column>
+      <el-table-column
+        prop="mobilePhone"
+        label="手机号码"
+        width="180"
+      ></el-table-column>
       <el-table-column prop="userType" label="用户类型">
-        <template slot-scope="scope">{{$root.displayName('accountType',scope.row.accountType)}}</template>
+        <template slot-scope="scope">{{
+         $root.dictAllName( scope.row.accountType,"UserAccountType")
+        }}</template>
       </el-table-column>
       <el-table-column prop="orgName" label="归属组织"></el-table-column>
     </el-table>
@@ -60,7 +76,7 @@ export default class RoleInfoUser extends Vue {
     total: 0,
     list: [],
   };
- 
+
   async getListMixin() {
     this.resPageInfo = await post_user_getListByRoleId(
       this.queryPageParameters

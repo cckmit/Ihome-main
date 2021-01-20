@@ -4,7 +4,7 @@
  * @Author: lgf
  * @Date: 2020-09-16 14:05:21
  * @LastEditors: ywl
- * @LastEditTime: 2020-12-01 14:34:42
+ * @LastEditTime: 2021-01-06 11:16:17
 -->
 <template>
   <div class="text-left">
@@ -109,17 +109,17 @@
           label="开户银行"
           width="300"
         ></el-table-column>
-        <el-table-column
+        <!-- <el-table-column
           prop="branchNo"
           label="联行号"
-        ></el-table-column>
+        ></el-table-column> -->
         <el-table-column
           prop="accountType"
           label="账号类型"
           width="200"
         >
           <template v-slot="{row}">
-            {{$root.dictAllName(row.type, "AccountEnum")}}
+            {{$root.dictAllName(row.accountType, "Account")}}
           </template>
         </el-table-column>
       </el-table>
@@ -154,13 +154,38 @@
       >综合查询被执行人</el-link>
     </p>
     <div class="padding-left-20">
-      <el-table style="width: 100%">
+      <el-table
+        class="ih-table"
+        style="width: 100%"
+        :data="fileListType"
+      >
         <el-table-column
           prop="type"
           width="180"
           label="类型"
-        ></el-table-column>
-        <el-table-column label="附件"></el-table-column>
+          align="center"
+        >
+          <template v-slot="{ row }">
+            <div><span
+                style="color: red"
+                v-if="row.subType"
+              >*</span>{{row.name}}
+            </div>
+          </template>
+        </el-table-column>
+        <el-table-column label="附件">
+          <template v-slot="{ row }">
+            <IhUpload
+              :file-list.sync="row.fileList"
+              :file-size="10"
+              :file-type="row.code"
+              :limit="row.fileList.length"
+              :upload-show="!!row.fileList.length"
+              size="100px"
+              :removePermi="false"
+            ></IhUpload>
+          </template>
+        </el-table-column>
       </el-table>
       <br />
     </div>
@@ -188,7 +213,7 @@
           type="success"
           @click="confirmChannel('Confirm')"
         >通过</el-button>
-        <el-button @click="confirmChannel('Reject')">退回</el-button>
+        <el-button @click="confirmChannel('Reject')">驳回</el-button>
       </div>
     </template>
 
@@ -226,6 +251,7 @@ import {
 })
 export default class Home extends Vue {
   info: any = {};
+  fileListType: any = [];
   private channelPersons: object = {};
   private approveRecord: ConfirmObj = {
     remark: "",
@@ -237,8 +263,25 @@ export default class Home extends Vue {
 
   async getInfo() {
     let id = this.$route.query.id;
-    this.info = await get_channel_get__id({ id: id });
-    this.channelPersons = this.info.channelPersons[0];
+    if (id) {
+      this.info = await get_channel_get__id({ id: id });
+      this.channelPersons = this.info.channelPersons[0];
+      this.getFileListType(this.info.channelAttachments);
+    }
+  }
+  getFileListType(data: any) {
+    const list = (this.$root as any).dictAllList("ChannelAttachment");
+    this.fileListType = list.map((v: any) => {
+      return {
+        ...v,
+        fileList: data
+          .filter((j: any) => j.type === v.code)
+          .map((h: any) => ({
+            ...h,
+            name: h.fileName,
+          })),
+      };
+    });
   }
   private async confirmChannel(type: string): Promise<void> {
     if (!this.approveRecord.remark) {

@@ -4,7 +4,7 @@
  * @Author: ywl
  * @Date: 2020-09-27 16:27:36
  * @LastEditors: ywl
- * @LastEditTime: 2020-12-05 14:42:04
+ * @LastEditTime: 2021-01-16 09:05:50
 -->
 <template>
   <IhPage label-width="80px">
@@ -19,6 +19,7 @@
             <el-form-item label="编号">
               <el-input
                 v-model="queryPageParameters.noticeNo"
+                clearable
                 placeholder="请输入编号"
               ></el-input>
             </el-form-item>
@@ -26,13 +27,13 @@
           <el-col :span="8">
             <el-form-item label="类型">
               <el-select
-                v-model="queryPageParameters.notificationType"
+                v-model="queryPageParameters.notificationTypes"
                 placeholder="请选择类型"
                 clearable
                 class="width--100"
               >
                 <el-option
-                  v-for="i in $root.dictAllList('NoticeEnum.NotificationType')"
+                  v-for="i in $root.dictAllList('NotificationType')"
                   :key="i.code"
                   :label="i.name"
                   :value="i.code"
@@ -43,10 +44,11 @@
           <el-col :span="8">
             <el-form-item label="项目名称">
               <!-- @change="queryPageParameters.buyUnit='';queryPageParameters.buyUnit='';" -->
-              <SelectPageByProject
+              <IhSelectPageByProject
+                clearable
                 v-model="queryPageParameters.projectId"
                 placeholder="请选择联动项目"
-              ></SelectPageByProject>
+              ></IhSelectPageByProject>
             </el-form-item>
           </el-col>
         </el-row>
@@ -55,31 +57,34 @@
             <el-row>
               <el-col :span="8">
                 <el-form-item label="立项周期">
-                  <SelectPageByCycle
+                  <IhSelectPageByCycle
+                    clearable
                     v-model="queryPageParameters.cycleId"
                     placeholder="请选择立项周期"
-                  ></SelectPageByCycle>
+                  ></IhSelectPageByCycle>
                 </el-form-item>
               </el-col>
               <el-col :span="8">
                 <el-form-item label="栋座">
                   <!-- @change="queryPageParameters.roomNumberId = ''" -->
-                  <SelectPageByBuild
+                  <IhSelectPageByBuild
                     v-model="queryPageParameters.buyUnit"
                     :proId="queryPageParameters.projectId"
                     placeholder="请选择栋座"
-                  ></SelectPageByBuild>
+                    clearable
+                  ></IhSelectPageByBuild>
                 </el-form-item>
               </el-col>
               <el-col :span="8">
                 <el-form-item label="房号">
                   <!-- projectId项目, buyUnit栋座 -->
-                  <SelectPageByRoom
+                  <IhSelectPageByRoom
                     v-model="queryPageParameters.roomNumberId"
                     :proId="queryPageParameters.projectId"
                     :buildingId="queryPageParameters.buyUnit"
                     placeholder="请选择房号"
-                  ></SelectPageByRoom>
+                    clearable
+                  ></IhSelectPageByRoom>
                 </el-form-item>
               </el-col>
             </el-row>
@@ -87,13 +92,12 @@
             <el-row>
               <el-col :span="8">
                 <el-form-item label="甲方">
-                  <el-select
+                  <IhSelectPageByCompany
                     v-model="queryPageParameters.partyAId"
                     clearable
                     placeholder="请选择甲方"
                     class="width--100"
-                  >
-                  </el-select>
+                  ></IhSelectPageByCompany>
                 </el-form-item>
               </el-col>
               <el-col :span="8">
@@ -108,13 +112,13 @@
               <el-col :span="8">
                 <el-form-item label="状态">
                   <el-select
-                    v-model="queryPageParameters.informationStatus"
+                    v-model="queryPageParameters.notificationStatuses"
                     clearable
                     placeholder="请选择状态"
                     class="width--100"
                   >
                     <el-option
-                      v-for="item in $root.dictAllList('NoticeEnum.InformationStatus')"
+                      v-for="item in $root.dictAllList('NotificationStatus')"
                       :key="item.code"
                       :label="item.name"
                       :value="item.code"
@@ -130,6 +134,7 @@
                   <el-input
                     v-model="queryPageParameters.ownerName"
                     placeholder="请输入客户"
+                    clearable
                   ></el-input>
                 </el-form-item>
               </el-col>
@@ -138,7 +143,25 @@
                   <el-input
                     v-model="queryPageParameters.ownerMobile"
                     placeholder="请输入客户电话"
+                    clearable
                   ></el-input>
+                </el-form-item>
+              </el-col>
+              <el-col :span="8">
+                <el-form-item label="模板类型">
+                  <el-select
+                    v-model="queryPageParameters.templateType"
+                    placeholder="请选择模板类型"
+                    clearable
+                    class="width--100"
+                  >
+                    <el-option
+                      v-for="(i, n) in $root.dictAllList('TemplateType')"
+                      :key="n"
+                      :label="i.name"
+                      :value="i.code"
+                    ></el-option>
+                  </el-select>
                 </el-form-item>
               </el-col>
             </el-row>
@@ -157,18 +180,11 @@
           type="info"
           @click="handleReact()"
         >重置</el-button>
-        <el-dropdown
-          class="margin-left-10"
-          trigger="click"
-        >
-          <el-button type="success">
-            导出<i class="el-icon-arrow-down el-icon--right"></i>
-          </el-button>
-          <el-dropdown-menu slot="dropdown">
-            <el-dropdown-item>导出列表</el-dropdown-item>
-            <el-dropdown-item>导出附件</el-dropdown-item>
-          </el-dropdown-menu>
-        </el-dropdown>
+        <el-button
+          type="success"
+          @click="handleExport()"
+          v-has="'B.SALES.CONTRACT.DISCOUNTLIST.EXPORTLIST'"
+        >导出列表</el-button>
         <el-link
           type="primary"
           class="float-right margin-right-40"
@@ -187,6 +203,12 @@
       >
         <el-table-column
           fixed
+          type="selection"
+          width="50"
+          align="center"
+        ></el-table-column>
+        <el-table-column
+          fixed
           label="编号"
           prop="noticeNo"
           min-width="300"
@@ -197,7 +219,7 @@
           min-width="140"
         >
           <template v-slot="{ row }">
-            {{$root.dictAllName(row.notificationType, 'NoticeEnum.NotificationType')}}
+            {{$root.dictAllName(row.notificationType, 'NotificationType')}}
           </template>
         </el-table-column>
         <el-table-column
@@ -212,12 +234,12 @@
         ></el-table-column>
         <el-table-column
           label="栋座"
-          prop="buyUnit"
+          prop="buyUnitName"
           width="160"
         ></el-table-column>
         <el-table-column
           label="房号"
-          prop="roomNumberId"
+          prop="roomNumberName"
           min-width="160"
         ></el-table-column>
         <el-table-column
@@ -245,7 +267,7 @@
         <el-table-column
           label="客户电话"
           prop="ownerMobile"
-          width="120"
+          width="125"
         >
           <template v-slot="{ row }">
             <div
@@ -257,27 +279,45 @@
         <el-table-column
           label="状态"
           prop="notificationStatus"
-          width="120"
+          width="135"
         >
           <template v-slot="{ row }">
-            {{$root.dictAllName(row.notificationStatus, 'NoticeEnum.NotificationStatus')}}
+            {{$root.dictAllName(row.notificationStatus, 'NotificationStatus')}}
           </template>
         </el-table-column>
         <el-table-column
           fixed="right"
           label="操作"
-          width="100"
+          min-width="120"
         >
           <template v-slot="{ row }">
             <el-link
+              :class="{'ih-data-disabled':row.notificationType !== 'Notification'}"
               type="primary"
+              class="margin-right-10"
               @click.native.prevent="$router.push(`/discount/info?id=${row.id}`)"
             >详情</el-link>
-            <el-link
+            <el-dropdown trigger="click">
+              <span class="el-dropdown-link">
+                更多<i class="el-icon-arrow-down el-icon--right"></i>
+              </span>
+              <el-dropdown-menu slot="dropdown">
+                <el-dropdown-item
+                  @click.native.prevent="preview(row)"
+                  v-has="'B.SALES.CONTRACT.DISCOUNTLIST.PREVIEW'"
+                >预览</el-dropdown-item>
+                <el-dropdown-item
+                  @click.native.prevent="handleExportFile(row)"
+                  v-has="'B.SALES.CONTRACT.DISCOUNTLIST.EXPRORTATTCH'"
+                  :class="{ 'ih-data-disabled': !exportChange()}"
+                >导出附件</el-dropdown-item>
+              </el-dropdown-menu>
+            </el-dropdown>
+            <!-- <el-link
               type="success"
-              class="margin-left-10"
+              v-has="'B.SALES.CONTRACT.DISCOUNTLIST.PREVIEW'"
               @click="preview(row)"
-            >预览</el-link>
+            >预览</el-link> -->
           </template>
         </el-table-column>
       </el-table>
@@ -301,35 +341,29 @@
 <script lang="ts">
 import { Component, Vue } from "vue-property-decorator";
 import PaginationMixin from "@/mixins/pagination";
-import SelectPageByProject from "@/components/SelectPageByProject.vue";
-import SelectPageByCycle from "@/components/SelectPageByCycle.vue";
-import SelectPageByBuild from "@/components/SelectPageByBuild.vue";
-import SelectPageByRoom from "@/components/selectPageByRoom.vue";
+import axios from "axios";
+import { getToken } from "ihome-common/util/cookies";
 
 import { post_notice_list } from "@/api/contract/index";
 
 @Component({
-  components: {
-    SelectPageByProject,
-    SelectPageByCycle,
-    SelectPageByBuild,
-    SelectPageByRoom,
-  },
+  components: {},
   mixins: [PaginationMixin],
 })
 export default class DiscountList extends Vue {
   public queryPageParameters: any = {
     area: null,
     cycleId: null,
-    informationStatus: null,
+    notificationStatuses: null,
     noticeNo: null,
     ownerMobile: null,
     ownerName: null,
     partyAId: null,
     projectId: null,
     roomNumberId: null,
-    notificationType: null,
+    notificationTypes: null,
     buyUnit: null,
+    templateType: null,
   };
   private timeList: any = [];
   private searchOpen = true;
@@ -337,19 +371,67 @@ export default class DiscountList extends Vue {
     total: null,
     list: [],
   };
+  private selectionData: any = [];
 
+  private exportChange() {
+    const roleList = (this.$root as any).userInfo.roleList.map(
+      (v: any) => v.code
+    );
+    const isBusines = roleList.includes("RBusinessManagement");
+    return isBusines;
+  }
+
+  private handleExport() {
+    const token: any = getToken();
+    axios({
+      method: "POST",
+      url: `/sales-api/contract/export/notice/list`,
+      xsrfHeaderName: "Authorization",
+      responseType: "blob",
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: "bearer " + token,
+      },
+      data: { ...this.queryPageParameters },
+    }).then((res: any) => {
+      const href = window.URL.createObjectURL(res.data);
+      const $a = document.createElement("a");
+      $a.href = href;
+      $a.download = "优惠告知书列表.xlsx";
+      $a.click();
+      $a.remove();
+    });
+  }
+  private handleExportFile(row: any) {
+    const token: any = getToken();
+    axios({
+      method: "POST",
+      url: `/sales-api/contract/export/notice/file/${row.id}`,
+      xsrfHeaderName: "Authorization",
+      responseType: "blob",
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: "bearer " + token,
+      },
+    }).then((res: any) => {
+      const href = window.URL.createObjectURL(res.data);
+      const $a = document.createElement("a");
+      $a.href = href;
+      $a.download = "优惠告知书附件.zip";
+      $a.click();
+      $a.remove();
+    });
+  }
   private openToggle(): void {
     this.searchOpen = !this.searchOpen;
   }
   private preview(row: any) {
     window.open(
-      `/sales-api/sales-document-cover/file/browse/${
-        row.templateId || "5fc62269282f220001926755"
-      }`
+      `/sales-api/sales-document-cover/file/browse/${row.templateId}`
     );
   }
   private handleSelectionChange(val: any): void {
-    console.log(val);
+    this.selectionData = val;
   }
   private handleSearch() {
     // let sign = this.timeList && this.timeList.length;
@@ -362,20 +444,32 @@ export default class DiscountList extends Vue {
     Object.assign(this.queryPageParameters, {
       area: null,
       cycleId: null,
-      informationStatus: null,
+      notificationStatuses: null,
       noticeNo: null,
       ownerMobile: null,
       ownerName: null,
       partyAId: null,
       projectId: null,
       roomNumberId: null,
-      notificationType: null,
+      notificationTypes: null,
       buyUnit: null,
+      templateType: null,
     });
     this.timeList = [];
   }
   public async getListMixin(): Promise<void> {
-    this.resPageInfo = await post_notice_list(this.queryPageParameters);
+    let notificationStatuses: any, notificationTypes: any;
+    if (this.queryPageParameters.notificationStatuses) {
+      notificationStatuses = [this.queryPageParameters.notificationStatuses];
+    }
+    if (this.queryPageParameters.notificationTypes) {
+      notificationTypes = [this.queryPageParameters.notificationTypes];
+    }
+    this.resPageInfo = await post_notice_list({
+      ...this.queryPageParameters,
+      notificationStatuses,
+      notificationTypes,
+    });
   }
 
   created() {

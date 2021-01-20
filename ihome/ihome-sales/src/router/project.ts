@@ -4,12 +4,12 @@
  * @Author: wwq
  * @Date: 2020-10-22 14:45:15
  * @LastEditors: wwq
- * @LastEditTime: 2020-11-10 15:49:49
+ * @LastEditTime: 2021-01-19 15:58:38
  */
 import { RouteConfig } from 'vue-router'
 
 import Layout from '../components/Layout.vue';
-/**开发商路由
+/**项目管理路由
  * @param {type} 
  * @return {type} 
  */
@@ -24,7 +24,7 @@ const projectRoutes: Array<RouteConfig> = [
         path: 'list',
         name: 'projectList',
         component: () => import('../views/project/basicsInfo/list.vue'),
-        meta: { title: '项目基础信息列表', icon: 'form' }
+        meta: { title: '项目基础信息列表', icon: 'form', keepAlive: true }
       },
       {
         path: 'parentEdit',
@@ -80,7 +80,7 @@ const projectRoutes: Array<RouteConfig> = [
         path: 'list',
         name: 'firstAgencyList',
         component: () => import('../views/project/firstAgency/list.vue'),
-        meta: { title: '一手代理公司列表', icon: 'form' }
+        meta: { title: '一手代理公司列表', icon: 'form', keepAlive: true }
       },
       {
         path: 'add',
@@ -95,10 +95,72 @@ const projectRoutes: Array<RouteConfig> = [
         meta: { title: '一手代理公司编辑', icon: 'form' }
       },
       {
+        path: 'change',
+        name: 'firstAgencyChange',
+        component: () => import('../views/project/firstAgency/edit.vue'),
+        meta: { title: '一手代理公司变更', icon: 'form' }
+      },
+      {
         path: 'info',
         name: 'firstAgencyInfo',
         component: () => import('../views/project/firstAgency/info.vue'),
         meta: { title: '一手代理公司详情', icon: 'form' }
+      },
+      {
+        path: 'check',
+        name: 'firstAgencyCheck',
+        component: () => import('../views/project/firstAgency/info.vue'),
+        meta: { title: '一手代理公司审核', icon: 'form' }
+      },
+      {
+        path: 'revocation',
+        name: 'firstAgencyRevocation',
+        component: () => import('../views/project/firstAgency/info.vue'),
+        meta: { title: '一手代理公司撤回', icon: 'form' }
+      }
+    ]
+  },
+  {
+    path: '/projectApproval',
+    meta: { title: '立项周期管理', icon: null },
+    redirect: '/projectApproval/list',
+    component: Layout,
+    children: [
+      {
+        path: 'list',
+        name: 'projectApprovalList',
+        component: () => import('../views/project/projectApproval/list.vue'),
+        meta: { title: '立项周期列表', icon: 'form', keepAlive: true }
+      },
+      {
+        path: 'edit',
+        name: 'projectApprovalEdit',
+        component: () => import('../views/project/projectApproval/edit.vue'),
+        meta: { title: '立项周期编辑', icon: 'form' }
+      },
+      {
+        path: 'info',
+        name: 'projectApprovalInfo',
+        component: () => import('../views/project/projectApproval/info.vue'),
+        meta: { title: '立项周期详情', icon: 'form' }
+      },
+      {
+        path: 'audit',
+        name: 'projectApprovalAudit',
+        component: () => import('../views/project/projectApproval/info.vue'),
+        meta: { title: '立项周期审核', icon: 'form' }
+      },
+      {
+        path: 'apply',
+        name: 'projectApprovalApply',
+        component: () => import('../views/project/projectApproval/apply.vue'),
+        meta: { title: '立项周期申领分销协议', icon: 'form' }
+      },
+      {
+        path: 'history',
+        name: 'projectApprovalHistory',
+        component: () => import('../views/project/projectApproval/history.vue'),
+        meta: { title: '立项周期查看快照', icon: 'form' }
       }
     ]
   },

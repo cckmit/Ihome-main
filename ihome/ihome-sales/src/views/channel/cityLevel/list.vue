@@ -3,8 +3,8 @@
  * @version: 
  * @Author: wwq
  * @Date: 2020-06-30 09:21:17
- * @LastEditors: zyc
- * @LastEditTime: 2020-11-11 15:04:35
+ * @LastEditors: wwq
+ * @LastEditTime: 2020-12-16 19:10:59
 --> 
 <template>
   <IhPage label-width="100px">
@@ -59,6 +59,7 @@
         <el-button
           type="success"
           @click="citySet()"
+          v-has="'B.SALES.CHANNEL.CITYLEVELLIST.SETCITYLEVEL'"
         >设置城市等级</el-button>
       </el-row>
     </template>

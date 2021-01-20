@@ -3,8 +3,8 @@
  * @version: 
  * @Author: wwq
  * @Date: 2020-10-15 12:33:25
- * @LastEditors: ywl
- * @LastEditTime: 2020-11-03 17:53:14
+ * @LastEditors: wwq
+ * @LastEditTime: 2021-01-12 09:15:36
 -->
 <template>
   <div class="text-left">
@@ -46,7 +46,7 @@
             align="left"
           >
             <span>{{
-              $root.dictAllName(resPageInfo.type, "CompanyTypeEnum")
+              $root.dictAllName(resPageInfo.type, "ChannelCompanyType")
             }}</span>
           </el-form-item>
         </el-col>
@@ -119,7 +119,7 @@
             label="录入人"
             align="left"
           >
-            <span>{{ resPageInfo.inputUser }}</span>
+            <span>{{ resPageInfo.inputUserName }}</span>
           </el-form-item>
         </el-col>
         <el-col :span="8">
@@ -128,7 +128,7 @@
             align="left"
           >
             <span>{{
-              $root.dictAllName(resPageInfo.status, "CompanyStatusEnum")
+              $root.dictAllName(resPageInfo.status, "CompanyStatus")
             }}</span>
           </el-form-item>
         </el-col>
@@ -181,7 +181,7 @@
           label="账号类型"
         >
           <template v-slot="{ row }">{{
-            $root.dictAllName(row.type, "BankAccountTypeEnum")
+            $root.dictAllName(row.type, "AccountType")
           }}</template>
         </el-table-column>
       </el-table>
@@ -191,21 +191,36 @@
     <div class="padding-left-20">
       <el-table
         class="ih-table"
-        :data="resPageInfo.attachmentList"
+        :data="fileListType"
         style="width: 100%"
       >
         <el-table-column
           prop="type"
+          width="180"
           label="类型"
+          align="center"
         >
-          <template v-slot="{ row }">{{
-            $root.displayName("accessoryTpye", row.type)
-          }}</template>
+          <template v-slot="{ row }">
+            <div><span
+                style="color: red"
+                v-if="row.subType"
+              >*</span>{{row.name}}
+            </div>
+          </template>
         </el-table-column>
-        <el-table-column
-          prop="fileId"
-          label="附件"
-        ></el-table-column>
+        <el-table-column label="附件">
+          <template v-slot="{ row }">
+            <IhUpload
+              :file-list.sync="row.fileList"
+              :file-size="10"
+              :file-type="row.code"
+              :limit="row.fileList.length"
+              size="100px"
+              :removePermi="false"
+              :upload-show="!!row.fileList.length"
+            ></IhUpload>
+          </template>
+        </el-table-column>
       </el-table>
     </div>
     <br />
@@ -220,7 +235,7 @@
       class="text-left"
     >
       <p class="ih-info-title">撤回信息</p>
-      <p class="msg-title">撤回原因</p>
+      <p class="msg-title"><span style="color: red">* </span>撤回原因</p>
       <el-input
         type="textarea"
         class="padding-left-20"
@@ -242,7 +257,7 @@
       class="text-left"
     >
       <p class="ih-info-title">审核信息</p>
-      <p class="msg-title">审核意见</p>
+      <p class="msg-title"><span style="color: red">* </span>审核意见</p>
       <el-input
         class="padding-left-20"
         style="box-sizing: border-box"
@@ -284,7 +299,6 @@ export default class Home extends Vue {
     return this.$route.query.id;
   }
   searchOpen = true;
-  private fileList = [];
   private info = [];
   private remark = "";
 
@@ -296,6 +310,7 @@ export default class Home extends Vue {
     recallReason: null,
     checkOpinion: null,
   };
+  fileListType: any = [];
 
   openToggle() {
     this.searchOpen = !this.searchOpen;
@@ -311,7 +326,23 @@ export default class Home extends Vue {
       const res = await get_company_get__id({ id: this.developerId });
       this.resPageInfo = res;
       this.resPageInfo.provinceOption = [res.province, res.city, res.county];
+      this.getFileListType(res.attachmentList);
     }
+  }
+
+  getFileListType(data: any) {
+    const list = (this.$root as any).dictAllList("AttachementType");
+    this.fileListType = list.map((v: any) => {
+      return {
+        ...v,
+        fileList: data
+          .filter((j: any) => j.type === v.code)
+          .map((h: any) => ({
+            ...h,
+            name: h.fileName,
+          })),
+      };
+    });
   }
 
   async submitRecall() {
@@ -331,11 +362,9 @@ export default class Home extends Vue {
   }
 
   async pass(val: any) {
-    if (!val) {
-      if (!this.resPageInfo.checkOpinion) {
-        this.$message.warning("请填写审核意见");
-        return;
-      }
+    if (!this.resPageInfo.checkOpinion) {
+      this.$message.warning("请填写审核意见");
+      return;
     }
     await post_company_audit({
       reason: this.resPageInfo.checkOpinion,

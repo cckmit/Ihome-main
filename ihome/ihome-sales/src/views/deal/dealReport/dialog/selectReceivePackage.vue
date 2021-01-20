@@ -4,70 +4,79 @@
  * @Author: lsj
  * @Date: 2020-11-03 15:28:12
  * @LastEditors: lsj
- * @LastEditTime: 2020-11-03 15:30:12
+ * @LastEditTime: 2020-12-23 20:18:09
 -->
 <template>
   <el-dialog
     v-dialogDrag
-    title="选择收派套餐列表"
+    :title="dialogTitle"
     :visible.sync="dialogVisible"
     :close-on-click-modal="false"
     :close-on-press-escape="false"
-    :before-close="finish"
+    :before-close="beforeFinish"
     append-to-body
-    width="1000px"
+    width="80%"
     style="text-align: left"
     class="dialog">
-    <div>
-      <div v-if="data.type === 'service'" class="title">服务费收派套餐</div>
-      <div v-else class="title">代理费收派套餐</div>
-      <el-table
-        class="ih-table"
-        :empty-text="emptyText"
-        :data="resPageInfo.list"
-        @selection-change="handleSelectionChange">
-        <el-table-column type="selection" width="55"></el-table-column>
-        <el-table-column prop="storageNum" label="类型" min-width="180"></el-table-column>
-        <el-table-column prop="channelName" label="合同类型" min-width="180"></el-table-column>
-        <el-table-column prop="province" label="客户类型" min-width="180"></el-table-column>
-        <el-table-column prop="province" label="条件" min-width="180"></el-table-column>
-        <el-table-column prop="province" label="应收金额" min-width="180">
-          <template slot-scope="scope">
-            <div>金额：{{scope}}</div>
-            <div>点数：{{scope}}</div>
-          </template>
-        </el-table-column>
-        <el-table-column prop="province" label="派发佣金" min-width="180">
-          <template slot-scope="scope">
-            <div>金额：{{scope}}</div>
-            <div>点数：{{scope}}</div>
-          </template>
-        </el-table-column>
-        <el-table-column prop="province" label="派发内场奖励" min-width="180">
-          <template slot-scope="scope">
-            <div>金额：{{scope}}</div>
-            <div>点数：{{scope}}</div>
-          </template>
-        </el-table-column>
-        <el-table-column prop="province" label="总包业绩" min-width="180">
-          <template slot-scope="scope">
-            <div>金额：{{scope}}</div>
-            <div>点数：{{scope}}</div>
-          </template>
-        </el-table-column>
-        <el-table-column prop="province" label="分销业绩" min-width="180">
-          <template slot-scope="scope">
-            <div>金额：{{scope}}</div>
-            <div>点数：{{scope}}</div>
-          </template>
-        </el-table-column>
-        <el-table-column prop="province" label="其他渠道费用" min-width="180" v-if="data.type === 'service'">
-          <template slot-scope="scope">
-            <div>金额：{{scope}}</div>
-            <div>点数：{{scope}}</div>
-          </template>
-        </el-table-column>
-      </el-table>
+    <el-table
+      ref="table"
+      :max-height="350"
+      class="ih-table table-dialog"
+      :data="resPageInfo.list"
+      @selection-change="handleSelectionChange"
+      @select="handleSelect"
+      @select-all="handleSelectAll">
+      <el-table-column fixed type="selection" width="50" align="center"></el-table-column>
+      <el-table-column label="类型" prop="typeName" min-width="100"></el-table-column>
+      <el-table-column label="合同类型" prop="contractEnum" min-width="110">
+        <template slot-scope="scope">
+          <div>{{$root.dictAllName(scope.row.contractEnum, 'ContType')}}</div>
+        </template>
+      </el-table-column>
+      <el-table-column label="客户类型" prop="transactionEnum" min-width="110">
+        <template slot-scope="scope">
+          <div>{{$root.dictAllName(scope.row.transactionEnum, 'Transaction')}}</div>
+        </template>
+      </el-table-column>
+      <el-table-column label="条件" prop="condition" min-width="250"></el-table-column>
+      <el-table-column label="应收金额" prop="receivableAmout" min-width="160">
+        <template slot-scope="scope">
+          <div>金额：{{scope.row.receivableAmout}}</div>
+          <div>点数：{{scope.row.receivablePoint}}</div>
+        </template>
+      </el-table-column>
+      <el-table-column label="派发佣金" prop="sendAmount" min-width="160">
+        <template slot-scope="scope">
+          <div>金额：{{scope.row.sendAmount}}</div>
+          <div>点数：{{scope.row.sendPoint}}</div>
+        </template>
+      </el-table-column>
+      <el-table-column label="派发内场奖励" prop="sendInAmount" min-width="160">
+        <template slot-scope="scope">
+          <div>金额：{{scope.row.sendInAmount}}</div>
+          <div>点数：{{scope.row.sendInPoint}}</div>
+        </template>
+      </el-table-column>
+      <el-table-column label="总包业绩" prop="generalAchieveAmount" min-width="160">
+        <template slot-scope="scope">
+          <div>金额：{{scope.row.generalAchieveAmount}}</div>
+          <div>点数：{{scope.row.generalAchievePoint}}</div>
+        </template>
+      </el-table-column>
+      <el-table-column label="分销业绩" prop="distributeAchieveAmount" min-width="160">
+        <template slot-scope="scope">
+          <div>金额：{{scope.row.distributeAchieveAmount}}</div>
+          <div>点数：{{scope.row.distributeAchievePoint}}</div>
+        </template>
+      </el-table-column>
+      <el-table-column label="其他渠道费用" prop="otherChannelAmount" min-width="160">
+        <template slot-scope="scope">
+          <div>金额：{{scope.row.otherChannelAmount}}</div>
+        </template>
+      </el-table-column>
+    </el-table>
+    <div class="text-right">
+      <br />
       <el-pagination
         @size-change="handleSizeChangeMixin"
         @current-change="handleCurrentChangeMixin"
@@ -79,61 +88,114 @@
       ></el-pagination>
     </div>
     <span slot="footer" class="dialog-footer">
+      <el-button @click="cancel()">取 消</el-button>
       <el-button type="primary" @click="finish()">确 定</el-button>
     </span>
   </el-dialog>
 </template>
 <script lang="ts">
   import {Component, Vue, Prop} from "vue-property-decorator";
-
-  import {post_channelGrade_getList} from "@/api/channel";
   import PaginationMixin from "@/mixins/pagination";
+  import {
+    // post_collectandsend_getCollectadnsendMxByIds,
+    post_term_getCollectPackageByDeal
+  } from "@/api/project"; // 根据可选IDS获取收派套餐
+  import {
+    post_pageData_initSelectablePackage
+  } from "@/api/deal"; // 获取收派套餐
 
   @Component({
-    components: {},
-    mixins: [PaginationMixin],
+    mixins: [PaginationMixin]
   })
   export default class SelectReceivePackage extends Vue {
     constructor() {
       super();
     }
-
-    @Prop({default: null}) data: any;
-    dialogVisible = true;
-    resPageInfo: any = {
+    private dialogVisible = true;
+    private selection = [];
+    public queryPageParameters: any = {};
+    public resPageInfo: any = {
       total: null,
       list: [],
     };
+    @Prop({default: null}) data: any;
+    dialogTitle: any = null; // 弹窗标题
 
-    queryPageParameters: any = {
-      channelGrade: null,
-      channelId: null,
-      city: null,
-      cityGrade: null,
-      departmentOrgId: null,
-      inputUser: null,
-      province: null,
-      special: null,
-      status: null,
-      storageNum: null,
-    };
-
-    async finish() {
-      this.$emit("finish", true);
+    async created() {
+      console.log('data', this.data);
+      // 判断套餐类型
+      this.dialogTitle = `选择${(this as any).$root.dictAllName(this.data.feeType, 'FeeType')}收派套餐标准`;
+      await this.getListMixin();
+      // if (this.data.hasRecord) {
+      //   // 分销模式
+      //   this.queryPageParameters.packageMxIds = this.data.idList;
+      //   await this.getListMixin();
+      // } else {
+      //   // 非分销模式
+      //   await this.getPackageIds(this.data.postObj);
+      // }
     }
 
-    created() {
-      // this.getListMixin();
-      console.log('datadata', this.data);
+    private handleSelectionChange(val: any) {
+      this.selection = val;
     }
 
-    handleSelectionChange(val: any) {
-      console.log(val);
-      // this.selectList = val;
+    private handleSelect(selection: any) {
+      if (selection.length > 1) {
+        let del_row = selection.shift();
+        (this.$refs.table as any).toggleRowSelection(del_row, false);
+      }
+    }
+
+    private handleSelectAll() {
+      (this.$refs.table as any).clearSelection();
+    }
+
+    async getPackageIds(postData: any = {}) {
+      const list: any = await post_term_getCollectPackageByDeal(postData);
+      // console.log(list);
+      let idsList: any = [];
+      if (list && list.length) {
+        list.forEach((item: any) => {
+          idsList.push(item.packageMxId);
+        })
+      }
+      this.queryPageParameters.packageMxIds = idsList;
+      await this.getListMixin();
     }
 
     async getListMixin() {
-      this.resPageInfo = await post_channelGrade_getList(this.queryPageParameters);
+      let self = this;
+      self.queryPageParameters = {
+        ...self.queryPageParameters,
+        ...self.data
+      }
+      let infoList: any = await post_pageData_initSelectablePackage(self.queryPageParameters);
+      if (infoList && infoList.list && infoList.list.length) {
+        infoList.list.forEach((item: any) => {
+          // 类型
+          item.typeName = (self as any).$root.dictAllName(self.data.feeType, 'FeeType');
+        })
+      }
+      self.resPageInfo = infoList;
+    }
+
+    async finish() {
+      if (this.selection.length) {
+        this.$emit("finish", this.selection);
+      } else {
+        this.$message.warning("请先勾选表格数据");
+      }
+    }
+
+    // 取消之前
+    async beforeFinish() {
+      this.$emit("cancel", false);
+    }
+
+    // 取消
+    cancel() {
+      this.$emit("cancel", false);
     }
   }
 </script>
@@ -146,4 +208,19 @@
     box-sizing: border-box;
     margin-bottom: 10px;
   }
+
+  .dialog {
+    /deep/.el-dialog__body {
+      padding: 10px 20px 20px 20px;
+    }
+  }
+</style>
+<style lang="scss">
+.ih-table.table-dialog {
+  .el-table__header {
+    .el-checkbox {
+      display: none !important;
+    }
+  }
+}
 </style>

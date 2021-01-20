@@ -4,19 +4,19 @@
  * @Author: zyc
  * @Date: 2020-07-07 10:29:16
  * @LastEditors: zyc
- * @LastEditTime: 2020-10-22 16:27:50
+ * @LastEditTime: 2020-12-16 15:06:23
 --> 
  
 <template>
   <el-dialog
     v-dialogDrag
-    title="资源编辑"
+    title="资源修改"
     :visible.sync="dialogVisible"
     :close-on-click-modal="false"
     :close-on-press-escape="false"
     :before-close="cancel"
     width="800px"
-    style="text-align: left;"
+    style="text-align: left"
     class="dialog"
   >
     <el-form
@@ -27,18 +27,18 @@
       class="demo-ruleForm"
     >
       <el-form-item label="资源名称">
-        <div>{{data.name}}</div>
+        <div>{{ data.name }}</div>
       </el-form-item>
       <el-form-item label="父编码" prop="parentCode">
-        <div>{{ruleForm.parentCode}}</div>
+        <div>{{ ruleForm.parentCode }}</div>
       </el-form-item>
       <el-form-item label="类型" prop="type">
         <el-select v-model="ruleForm.type" placeholder="请选择类型">
           <el-option
-            v-for="(item,index) in  $root.displayList('modular')"
-            :key="index"
-            :label="item.label"
-            :value="item.value"
+            v-for="item in $root.dictAllList('ResourceType', 'AllowAdjust')"
+            :key="item.code"
+            :label="item.name"
+            :value="item.code"
           ></el-option>
         </el-select>
       </el-form-item>
@@ -49,11 +49,17 @@
       <el-form-item label="编码" prop="code">
         <el-input v-model="ruleForm.code"></el-input>
       </el-form-item>
-      <el-form-item label="URL" :prop="ruleForm.type=='Menu'||ruleForm.type=='Api'?'url':null">
+      <el-form-item
+        label="URL"
+        :prop="ruleForm.type == 'Menu' || ruleForm.type == 'Api' ? 'url' : null"
+      >
         <el-input type="url" v-model="ruleForm.url"></el-input>
       </el-form-item>
-       <el-form-item label="ICON">
+      <el-form-item label="ICON">
         <el-input type="icon" v-model="ruleForm.icon"></el-input>
+      </el-form-item>
+      <el-form-item label="排序">
+        <el-input type="seq" v-model="ruleForm.seq"></el-input>
       </el-form-item>
     </el-form>
 
@@ -86,7 +92,8 @@ export default class ResourcesEdit extends Vue {
     parentCode: null,
     type: "",
     url: "",
-    icon:''
+    icon: "",
+    seq: null,
   };
   rules: any = {
     type: [{ required: true, message: "请选择类型", trigger: "change" }],
@@ -134,7 +141,8 @@ export default class ResourcesEdit extends Vue {
         parentId: this.ruleForm.parentId,
         type: this.ruleForm.type,
         url: this.ruleForm.url,
-        icon:this.ruleForm.icon
+        icon: this.ruleForm.icon,
+        seq: this.ruleForm.seq,
       };
       await post_resource_update(p);
       this.$message({

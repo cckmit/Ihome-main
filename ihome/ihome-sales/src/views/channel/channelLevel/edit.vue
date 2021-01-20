@@ -3,8 +3,8 @@
  * @version: 
  * @Author: wwq
  * @Date: 2020-10-15 16:02:03
- * @LastEditors: ywl
- * @LastEditTime: 2020-11-11 11:44:23
+ * @LastEditors: wwq
+ * @LastEditTime: 2021-01-19 18:56:54
 -->
 <template>
   <IhPage>
@@ -25,20 +25,13 @@
                 prop="channelId"
               >
                 <div style="display: flex; justify-contant: flex-start">
-                  <el-select
-                    :disabled="$route.name === 'channelLevlChange'"
+                  <IhSelectPageByChannel
+                    :disabled="$route.name === 'channelLevelChange'"
+                    :search-name="resPageInfo.channelName"
                     v-model="resPageInfo.channelId"
                     clearable
-                    class="width--100"
                     placeholder="请选择渠道商"
-                  >
-                    <el-option
-                      v-for="item in channelOptions"
-                      :key="item.id"
-                      :label="item.name"
-                      :value="item.id"
-                    ></el-option>
-                  </el-select>
+                  ></IhSelectPageByChannel>
                   <el-link
                     style="margin-left: 10px; text-align: center; width: 50px"
                     :href="`/web-sales/channelBusiness/info?id=${resPageInfo.channelId}`"
@@ -149,19 +142,7 @@
                 label="事业部"
                 align="left"
               >
-                <el-select
-                  class="width--100"
-                  v-model="resPageInfo.departmentOrgId"
-                  clearable
-                  placeholder="请选择事业部"
-                >
-                  <el-option
-                    v-for="item in departmentOrgIdOptions"
-                    :key="item.id"
-                    :label="item.name"
-                    :value="item.id"
-                  ></el-option>
-                </el-select>
+                <IhSelectPageDivision v-model="resPageInfo.departmentOrgId"></IhSelectPageDivision>
               </el-form-item>
             </el-col>
           </el-row>
@@ -221,6 +202,7 @@
                 <el-form-item>
                   <el-input
                     clearable
+                    :maxlength="8"
                     v-model="row.inputValue"
                   ></el-input>
                 </el-form-item>
@@ -245,26 +227,33 @@
         <div class="padding-left-20">
           <el-table
             class="ih-table"
-            :data="resPageInfo.channelGradeAttachments"
+            :data="fileListType"
             style="width: 100%"
           >
             <el-table-column
               prop="type"
+              width="180"
               label="类型"
-              width="200"
+              align="center"
             >
-              <template v-slot="{ row }">{{
-                $root.displayName("accessoryTpye", row.type)
-              }}</template>
+              <template v-slot="{ row }">
+                <div><span
+                    style="color: red"
+                    v-if="row.subType"
+                  >*</span>{{row.name}}
+                </div>
+              </template>
             </el-table-column>
-            <el-table-column
-              prop="fileId"
-              label="附件"
-            >
-              <IhUpload
-                size="100px"
-                :fileList="fileList"
-              />
+            <el-table-column label="附件">
+              <template v-slot="{ row }">
+                <IhUpload
+                  :file-list.sync="row.fileList"
+                  :file-size="10"
+                  :file-type="row.code"
+                  size="100px"
+                  @newFileList="queryNew"
+                ></IhUpload>
+              </template>
             </el-table-column>
           </el-table>
         </div>
@@ -291,7 +280,7 @@
           >保存</el-button>
           <el-button
             @click="pass('2')"
-            type="primary"
+            type="success"
           >提交</el-button>
         </div>
       </div>
@@ -304,7 +293,6 @@ import { Component, Vue } from "vue-property-decorator";
 //引入请求数据的api
 import {
   get_channelGrade_get__id,
-  get_channel_getAll,
   get_channelCityLevel_get__cityCode,
   post_channelGrade_add,
   post_channelGradeChange_add,
@@ -320,18 +308,19 @@ export default class ChannelRates extends Vue {
   private get Id() {
     return this.$route.query.id;
   }
-  private fileList = [];
   private changeReason = "";
-  channelOptions: any = [];
+  fileListType: any = [];
+  submitFile: any = {};
 
   resPageInfo: any = {
     channelId: "",
+    channelName: "",
     channelGrade: "",
     channelType: "Platform",
     province: "",
     city: "",
     cityGrade: "",
-    departmentOrgId: "1234",
+    departmentOrgId: "",
     special: "",
     storageNum: "",
     channelGradeItems: [],
@@ -339,20 +328,7 @@ export default class ChannelRates extends Vue {
     provinceOption: [],
   };
 
-  departmentOrgIdOptions: any = [
-    {
-      name: "人事部",
-      id: "111",
-    },
-    {
-      name: "产品研发部",
-      id: "222",
-    },
-    {
-      name: "技术部",
-      id: "333",
-    },
-  ];
+  private addDictList: any = [];
 
   private rules: any = {
     channelId: [{ required: true, message: "请选择渠道商", trigger: "change" }],
@@ -369,13 +345,7 @@ export default class ChannelRates extends Vue {
     this.getInfo();
   }
 
-  // 获取渠道商
-  async getChannelAll() {
-    this.channelOptions = await get_channel_getAll();
-  }
-
   async getInfo() {
-    this.getChannelAll();
     let id = this.$route.query.id;
     if (id) {
       this.resPageInfo = await get_channelGrade_get__id({ id: id });
@@ -384,8 +354,60 @@ export default class ChannelRates extends Vue {
         this.resPageInfo.province,
         this.resPageInfo.city,
       ];
+      this.getFileListType(this.resPageInfo.channelGradeAttachments);
+    } else {
+      this.getFileListType([]);
     }
   }
+
+  getFileListType(data: any) {
+    const ChannelGrade = (this.$root as any).dictAllList(
+      "ChannelGradeAttachment"
+    );
+    const channelLevelDict = (this.$root as any).dictAllList(
+      "ChannelLevelStandardAttachment"
+    );
+    let newDict: any = [];
+    if (data.length) {
+      newDict = channelLevelDict.filter((j: any) => {
+        return data.map((i: any) => i.type).includes(j.code);
+      });
+    } else {
+      newDict = this.addDictList;
+    }
+    const dictList = newDict.concat(ChannelGrade);
+    this.fileListType = dictList.map((v: any) => {
+      let arr: any = [];
+      data
+        .filter((j: any) => j.type === v.code)
+        .forEach((h: any) => {
+          if (h.fileId) {
+            arr.push({
+              ...h,
+              name: h.fileName,
+            });
+          } else {
+            arr = [];
+          }
+        });
+      return {
+        ...v,
+        fileList: arr,
+      };
+    });
+    let obj: any = {};
+    this.fileListType.forEach((h: any) => {
+      obj[h.code] = h.fileList;
+    });
+    this.submitFile = { ...obj };
+  }
+
+  queryNew(data: any, type?: any) {
+    let obj: any = {};
+    obj[type] = data;
+    this.submitFile = { ...this.submitFile, ...obj };
+  }
+
   // 获取评级信息数据
   async getTableData(val: any) {
     if (val instanceof Array && val.length) {
@@ -403,14 +425,25 @@ export default class ChannelRates extends Vue {
       let obj: any = {};
       obj.channelGrade = this.resPageInfo.channelGrade;
       obj.cityCode = this.resPageInfo.provinceOption[1];
-      let res = await post_channelGradeStandard_getAllByCityCodeAndChannelGrade(
+      let res: any = await post_channelGradeStandard_getAllByCityCodeAndChannelGrade(
         obj
       );
-      this.resPageInfo.channelGradeItems = res.map((v: any) => ({
-        ...v,
-        inputValue: "",
-        standardId: v.id,
+      this.resPageInfo.channelGradeItems = res.channelGradeStandards.map(
+        (v: any) => ({
+          ...v,
+          inputValue: "",
+          standardId: v.id,
+        })
+      );
+      const list = (this.$root as any).dictAllList(
+        "ChannelLevelStandardAttachment"
+      );
+      this.addDictList = res.channelGradeStandardAttachments.map((j: any) => ({
+        code: j,
+        name: list.find((h: any) => h.code === j).name,
+        type: "ChannelGradeAttachment",
       }));
+      this.getFileListType([]);
     } else {
       this.resPageInfo.channelGradeItems = [];
     }
@@ -419,6 +452,46 @@ export default class ChannelRates extends Vue {
   pass(val: any) {
     (this.$refs["form"] as ElForm).validate(async (v: any) => {
       if (v) {
+        // 校验提示
+        let arr: any = [];
+        Object.values(this.submitFile).forEach((v: any) => {
+          if (v.length) {
+            arr = arr.concat(v);
+          }
+        });
+        // 以下操作仅仅是为了校验必上传项
+        let submitList: any = this.fileListType.map((v: any) => {
+          return {
+            ...v,
+            fileList: arr
+              .filter((j: any) => j.type === v.code)
+              .map((h: any) => ({
+                ...h,
+                name: h.fileName,
+              })),
+          };
+        });
+        let isSubmit = true;
+        let msgList: any = [];
+        submitList.forEach((v: any) => {
+          if (v.subType && !v.fileList.length) {
+            msgList.push(v.name);
+            isSubmit = false;
+          }
+        });
+        if (isSubmit) {
+          this.resPageInfo.channelGradeAttachments = arr.map((v: any) => ({
+            fileId: v.fileId,
+            fileName: v.name,
+            type: v.type,
+          }));
+        } else {
+          this.$message({
+            type: "warning",
+            message: `${msgList.join(",")}项,请上传附件`,
+          });
+          return;
+        }
         this.resPageInfo.operateType = val;
         switch (this.$route.name) {
           case "channelLevelEdit":
@@ -435,7 +508,18 @@ export default class ChannelRates extends Vue {
                 ...this.resPageInfo.channelGradeAttachments,
               ];
               this.resPageInfo.changeReason = this.changeReason;
-              await post_channelGradeChange_add(this.resPageInfo);
+              try {
+                // let flag = await post_channelGradeChange_changeCheck({
+                //   oldGradeId: this.resPageInfo.oldGradeId,
+                // });
+                // if (flag) {
+                await post_channelGradeChange_add(this.resPageInfo);
+                // } else {
+                //   this.$message.warning("渠道等级变更中, 请不要提交重复变更");
+                // }
+              } catch (error) {
+                console.log(error);
+              }
             } else {
               this.$message.warning("请填写变更原因");
               return;

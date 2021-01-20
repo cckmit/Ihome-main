@@ -4,7 +4,7 @@
  * @Author: zyc
  * @Date: 2020-07-09 14:31:23
  * @LastEditors: zyc
- * @LastEditTime: 2020-11-16 10:34:21
+ * @LastEditTime: 2021-01-15 09:49:31
 --> 
 <template>
   <ih-page>
@@ -29,7 +29,7 @@
           <el-row>
             <el-col :span="6" class="ih-info-item-left">发起人</el-col>
             <el-col :span="18" class="ih-info-item-right">{{
-              postData.approvalUser
+              postData.approvalUserName
             }}</el-col>
           </el-row>
         </el-col>
@@ -48,17 +48,26 @@
               >
                 <el-select
                   v-model="postData.departmentOrgId"
-                  clearable
-                  placeholder="事业部"
+                  @change="changeDepartment()"
+                  filterable
+                  placeholder="请选择事业部"
                   class="width--100"
                 >
                   <el-option
-                    v-for="item in divisionList"
+                    v-for="item in departmentList"
                     :key="item.id"
                     :label="item.name"
                     :value="item.id"
-                  ></el-option>
+                  >
+                  </el-option>
                 </el-select>
+                <!-- <IhSelectPageDivision
+                  v-model="postData.departmentOrgId"
+                  :searchName="postData.departmentName"
+                  clearable
+                  value-key="id"
+                >
+                </IhSelectPageDivision> -->
               </el-form-item>
             </el-col>
           </el-row>
@@ -79,14 +88,14 @@
             @click="addChannelApprovalGradesChange()"
             >添加变更信息</el-button
           >
-          <span class="padding-left-20"
+          <span v-if="false" class="padding-left-20" @click="preFileName()"
             ><el-link type="success">预览供应商名录</el-link></span
           >
         </div>
       </div>
 
       <el-table
-        :data="channelApprovalGrades"
+        :data="showChannelApprovalGrades"
         style="width: 100%; padding: 20px"
       >
         <el-table-column prop="storageNum" label="入库编号" width="180">
@@ -103,10 +112,25 @@
         </el-table-column>
         <!-- <el-table-column prop="name" label="信用代码"> </el-table-column>
       <el-table-column prop="name" label="法定代表人"> </el-table-column> -->
-        <el-table-column prop="special" label="特批入库"> </el-table-column>
-        <el-table-column prop="city" label="业务开展城市"> </el-table-column>
-        <el-table-column prop="cityGrade" label="城市等级"> </el-table-column>
+        <el-table-column prop="special" label="特批入库">
+          <template slot-scope="scope">
+            {{ $root.dictAllName(scope.row.special, "YesOrNoType") }}
+          </template>
+        </el-table-column>
+        <el-table-column prop="city" label="业务开展城市">
+          <template slot-scope="scope">
+            {{ $root.getAreaName(scope.row.city) }}
+          </template>
+        </el-table-column>
+        <el-table-column prop="cityGrade" label="城市等级">
+          <template slot-scope="scope">
+            {{ $root.dictAllName(scope.row.cityGrade, "CityLevel") }}
+          </template>
+        </el-table-column>
         <el-table-column prop="channelGrade" label="渠道等级">
+          <template slot-scope="scope">
+            {{ $root.dictAllName(scope.row.channelGrade, "ChannelLevel") }}
+          </template>
         </el-table-column>
         <el-table-column prop="" label="操作">
           <template slot-scope="scope">
@@ -122,15 +146,34 @@
       </el-table>
       <p class="ih-info-title">附件信息</p>
       <el-table
-        :data="channelApprovalAttachmentsList"
+        :data="showChannelApprovalAttachments"
         style="width: 100%; padding: 20px"
       >
-        <el-table-column prop="date" label="类型" width="180">
+        <!-- <el-table-column prop="storageNum" label="编号" width="180">
+        </el-table-column> -->
+        <el-table-column prop="type" label="类型" width="180">
+          <template slot-scope="scope">
+            {{ $root.dictAllName(scope.row.type, "ChannelGradeAttachment") }}
+          </template>
         </el-table-column>
-        <el-table-column prop="name" label="渠道商名称" width="180">
+        <el-table-column prop="channelName" label="渠道商名称" width="180">
         </el-table-column>
-        <el-table-column prop="name" label="业务开展城市"> </el-table-column>
-        <el-table-column prop="name" label="附件"> </el-table-column>
+        <el-table-column prop="city" label="业务开展城市" width="180">
+          <template slot-scope="scope">
+            {{ $root.getAreaName(scope.row.city) }}
+          </template>
+        </el-table-column>
+        <el-table-column prop="attachmentDetails" label="附件">
+          <template slot-scope="scope">
+            <span
+              class="margin-right-10"
+              v-for="(cItem, cIndex) in scope.row.attachmentDetails"
+              :key="cIndex"
+            >
+              <IhFilePreview :data="cItem"></IhFilePreview>
+            </span>
+          </template>
+        </el-table-column>
       </el-table>
       <p class="ih-info-title">呈批信息</p>
       <el-row class="ih-info-line">
@@ -143,31 +186,59 @@
         </el-form-item>
       </el-row>
       <el-row class="ih-info-line text-left">
-        <span style="padding: 10px; line-height: 40px"> 呈批说明 </span>
+        <el-form-item label="呈批说明" prop="approvalDesc">
+          <el-input
+            type="textarea"
+            :rows="10"
+            placeholder="呈批说明"
+            v-model="postData.approvalDesc"
+            maxlength="512"
+            show-word-limit
+          ></el-input>
+        </el-form-item>
+
+        <!-- <span style="padding: 10px; line-height: 40px" prop="approvalDesc">
+          呈批说明
+        </span>
         <span>
           <el-input
             type="textarea"
             :rows="10"
             placeholder="呈批说明"
             v-model="postData.approvalDesc"
+            maxlength="512"
+            show-word-limit
           >
           </el-input>
-        </span>
+        </span> -->
       </el-row>
       <div>
-        <el-button type="primary" @click="save()">保存为草稿</el-button>
-        <el-button type="success" @click="submit()">提交呈批</el-button>
+        <el-button type="primary" @click="save()" :disabled="infoFinish"
+          >保存为草稿</el-button
+        >
+        <el-button type="success" @click="submit()" :disabled="infoFinish"
+          >提交呈批</el-button
+        >
       </div>
       <ih-dialog :show="dialogAdd" desc="渠道合作信息列表">
         <ChannelApprovalGradesList
+          :data="dialogAddGradeType"
+          :departmentOrgId="postData.departmentOrgId"
           @cancel="() => (dialogAdd = false)"
           @finish="
-            (data) => {
+            (data, gradeType) => {
               dialogAdd = false;
-              finishAdd(data);
+              finishAdd(data, gradeType);
             }
           "
         />
+      </ih-dialog>
+      <ih-dialog
+        v-if="showOaSubmit"
+        :show="showOaSubmit"
+        desc="提交呈批确认信息"
+      >
+        <OaSubmit :data="postData" @cancel="() => (showOaSubmit = false)" />
       </ih-dialog>
     </el-form>
   </ih-page>
@@ -175,34 +246,33 @@
 <script lang="ts">
 import { Component, Vue } from "vue-property-decorator";
 import ChannelApprovalGradesList from "@/views/channel/approval/channel-approval-grades/list.vue";
+import OaSubmit from "./dialog/oa-submit.vue";
+
 import {
   post_channelApproval_add,
   post_channelApproval_edit,
   get_channelApproval_get__id,
+  post_channelGrade_getChannelGradeAttachmentByType,
+  post_channelApproval_previewDirectoryFile,
 } from "../../../api/channel/index";
+import { get_org_getUserDepartmentList } from "../../../api/system/index";
 import { Form as ElForm } from "element-ui";
 import { NoRepeatHttp } from "ihome-common/util/aop/no-repeat-http";
 @Component({
-  components: { ChannelApprovalGradesList },
+  components: { ChannelApprovalGradesList, OaSubmit },
 })
 export default class ApprovalAdd extends Vue {
-  divisionList: any = [
-    {
-      id: 1,
-      name: "测试1",
-    },
-    {
-      id: 2,
-      name: "测试2",
-    },
-  ];
   departmentOrgId: any = null;
   input: any = null;
   textarea: any = null;
   dialogAdd: any = false;
-  channelApprovalGrades: any[] = [];
-  channelApprovalAttachmentsList: any = [];
+  dialogAddGradeType: any = null;
+  channelApprovalGrades: any[] = []; //渠道等级信息列表,页面显示字段
+  channelApprovalAttachmentsList: any = []; //附件信息
+  departmentList: any = []; //事业部下拉框
   id: any = null;
+  showOaSubmit = false;
+  infoFinish = false;
 
   rules: any = {
     approvalTitle: [
@@ -211,70 +281,149 @@ export default class ApprovalAdd extends Vue {
     departmentOrgId: [
       { required: true, message: "事业部必选", trigger: "change" },
     ],
+    approvalDesc: [
+      { required: true, message: "呈批说明必填", trigger: "change" },
+    ],
   };
+
   postData: any = {
-    approvalDesc: null,
+    approvalDesc: `公司领导：
+2020年XX分公司已入库渠道公司XX家（已通过OA呈批入库的数量，如果0就删除），本次申请入库XX家，业务系统已上传相关资料且均已审核通过，其中大平台/大型中介/一级平台共X家，中型中介/二级平台共X家，小型中介共X家。
+本次甄选合格的公司如下，详见附件1：《爱家XX分公司渠道合格供应商名录》。
+1、如有不符合供应商管理办法的特殊情况公司，请补充说明申请入库理由，例如公司资质、实力、规模、以往代表项目及业绩等情况；
+2、如入库公司数量较少，建议补充说明入库公司的情况，尤其是大平台/大型中介/一级平台情况
+附件1：《爱家XX分公司渠道合格供应商名录》
+附件2：《XX渠道公司特批入库补充材料》
+特此申请！ 
+妥否，请领导批示！`,
     approvalTitle: null,
-    channelApprovalAttachments: [
-      // {
-      //   approvalId: null,
-      //   id: null,
-      // },
-    ],
-    channelApprovalGrades: [
-      // {
-      //   approvalId: null,
-      //   id: null,
-      // },
-    ],
+    channelApprovalAttachments: [],
+    channelApprovalGrades: [],
     departmentOrgId: null,
     operateType: null, //1保存2提交
   };
 
+  showChannelApprovalAttachments: any = []; //展示选择的渠道等级
+  showChannelApprovalGrades: any[] = []; //展示附件信息
+
   async created() {
     this.id = this.$route.query.id;
+    this.departmentList = await get_org_getUserDepartmentList();
     if (this.id) {
-      const res: any = await get_channelApproval_get__id({ id: this.id });
-      this.postData = res;
+      try {
+        const res: any = await get_channelApproval_get__id({ id: this.id });
+        this.infoFinish = false;
+        this.postData = res;
+
+        res.channelApprovalGrades.forEach((item: any) => {
+          this.showChannelApprovalGrades.push(item);
+          this.loadAttachments(item, item.gradeType);
+        });
+      } catch (error) {
+        this.infoFinish = false;
+      }
+    } else {
+      this.infoFinish = false;
     }
   }
-  addChannelApprovalGrades() {
-    this.dialogAdd = true;
+  changeDepartment() {
+    this.postData.channelApprovalGrades = [];
+    this.showChannelApprovalGrades = [];
+    this.showChannelApprovalAttachments = [];
   }
-  finishAdd(data: any) {
-    for (let index = 0; index < data.length; index++) {
-      const element = data[index];
-      let result = this.channelApprovalGrades.some((item: any) => {
-        return item.id == element.id;
-      });
-      if (!result) {
-        this.channelApprovalGrades.push(element);
+  isExis(list: any[], item: any) {
+    let r = false;
+    for (let index = 0; index < list.length; index++) {
+      const element = list[index];
+      if (element.gradeId == item.id && element.gradeType == item.gradeType) {
+        r = true;
+        break;
       }
+    }
+    return r;
+  }
+
+  async finishAdd(list: any, gradeType: string) {
+    list.forEach(async (item: any) => {
+      item.gradeId = item.id;
+      item.gradeType = gradeType;
+      if (!this.isExis(this.postData.channelApprovalGrades, item)) {
+        this.postData.channelApprovalGrades.push({
+          gradeId: item.id,
+          gradeType: gradeType,
+        });
+        this.showChannelApprovalGrades.push(item);
+        this.loadAttachments(item, gradeType);
+      }
+    });
+  }
+  async loadAttachments(item: any, gradeType: any) {
+    const res: any = await post_channelGrade_getChannelGradeAttachmentByType({
+      gradeId: item.gradeId,
+      gradeType: gradeType,
+    });
+    console.log(res);
+    if (res.channelId) {
+      this.showChannelApprovalAttachments.push(res);
+    }
+
+    // res.forEach((element: any) => {
+    //   element.storageNum = item.storageNum;
+
+    // });
+  }
+  addChannelApprovalGrades() {
+    if (this.postData.departmentOrgId) {
+      this.dialogAddGradeType = "Basic";
+      this.dialogAdd = true;
+    } else {
+      this.$message.warning("请先选择事业部");
     }
   }
   addChannelApprovalGradesChange() {
-    this.dialogAdd = true;
+    if (this.postData.departmentOrgId) {
+      this.dialogAddGradeType = "Change";
+      this.dialogAdd = true;
+    } else {
+      this.$message.warning("请先选择事业部");
+    }
   }
   remove(scope: any) {
-    this.channelApprovalGrades.splice(scope.$index, 1);
+    let tempList: any[] = [];
+    this.showChannelApprovalAttachments.forEach((item: any) => {
+      if (item.storageNum != scope.row.storageNum) {
+        tempList.push(item);
+      }
+    });
+    this.showChannelApprovalAttachments = tempList;
+    this.postData.channelApprovalGrades.splice(scope.$index, 1);
+
+    this.showChannelApprovalGrades.splice(scope.$index, 1);
   }
   async save() {
-    if (this.id) {
-      (this.$refs["ruleForm"] as ElForm).validate(this.editSave);
+    if (
+      this.postData.channelApprovalGrades &&
+      this.postData.channelApprovalGrades.length > 0
+    ) {
+      if (this.id) {
+        (this.$refs["ruleForm"] as ElForm).validate(this.editSave);
+      } else {
+        (this.$refs["ruleForm"] as ElForm).validate(this.addSave);
+      }
     } else {
-      (this.$refs["ruleForm"] as ElForm).validate(this.addSave);
+      this.$message.warning("请先添加渠道等级数据");
     }
   }
   @NoRepeatHttp()
   async addSave(valid: any) {
     if (valid) {
+      this.postData.operateType = 1;
       await post_channelApproval_add(this.postData);
       this.$message.success("新增成功");
-      this.$router.push({
+      this.$goto({
         path: "/approval/list",
       });
     } else {
-      this.$message.warning("请先填好数据再保存");
       return false;
     }
   }
@@ -283,18 +432,9 @@ export default class ApprovalAdd extends Vue {
     if (valid) {
       this.postData.operateType = 1;
 
-      // let editData = {
-      //   approvalDesc: this.postData.approvalDesc,
-      //   approvalTitle: this.postData.approvalTitle,
-      //   channelApprovalAttachments: this.postData.channelApprovalAttachments,
-      //   channelApprovalGrades: this.postData.channelApprovalGrades,
-      //   departmentOrgId: this.postData.departmentOrgId,
-      //   id: this.postData.id,
-      //   operateType: this.postData.operateType,
-      // };
-      // console.log(editData);
+      console.log(this.postData);
       await post_channelApproval_edit(this.postData);
-      this.$message.success("编辑成功");
+      this.$message.success("修改成功");
       this.$goto({
         path: "/approval/list",
       });
@@ -304,24 +444,49 @@ export default class ApprovalAdd extends Vue {
     }
   }
   async submit() {
-    (this.$refs["ruleForm"] as ElForm).validate(this.submitApi);
+    if (
+      this.postData.channelApprovalGrades &&
+      this.postData.channelApprovalGrades.length > 0
+    ) {
+      (this.$refs["ruleForm"] as ElForm).validate((valid: any) => {
+        if (valid) {
+          this.showOaSubmit = true;
+        }
+      });
+    } else {
+      this.$message.warning("请先添加渠道等级数据");
+    }
   }
   @NoRepeatHttp()
   async submitApi(valid: any) {
     if (valid) {
       this.postData.operateType = 2;
-      await post_channelApproval_edit(this.postData);
-      this.$message.success("提交成功");
-      this.$goto({
-        path: "/approval/list",
-      });
-    } else {
-      this.$message.warning("请先填好数据再保存");
-      return false;
+      if (this.id) {
+        await post_channelApproval_edit(this.postData);
+        this.$message.success("提交成功");
+        this.$goto({
+          path: "/approval/list",
+        });
+      } else {
+        await post_channelApproval_add(this.postData);
+        this.$message.success("提交成功");
+        this.$goto({
+          path: "/approval/list",
+        });
+      }
     }
   }
   goInfo(scope: any) {
     window.open(`/web-sales/channelLevel/info?id=${scope.row.id}`);
+  }
+  async preFileName() {
+    const res: any = await post_channelApproval_previewDirectoryFile(
+      this.postData
+    );
+
+    let url = this.$tool.downloadLongFileUrl(res);
+    console.log(url);
+    (window as any).open(url);
   }
 }
 </script>

@@ -4,7 +4,7 @@
  * @Author: ywl
  * @Date: 2020-09-25 16:00:37
  * @LastEditors: ywl
- * @LastEditTime: 2020-12-04 09:16:24
+ * @LastEditTime: 2021-01-15 16:56:01
 -->
 <template>
   <IhPage class="text-left partyA-info">
@@ -36,23 +36,33 @@
           </el-col>
         </el-row>
         <el-row>
-          <el-col :span="24">
+          <el-col :span="12">
             <el-form-item label="乙方">
               {{formData.partyBName}}
             </el-form-item>
           </el-col>
+          <el-col :span="12">
+            <el-form-item label="乙方收款账号">
+              {{formData.receivingAccount}}
+            </el-form-item>
+          </el-col>
         </el-row>
         <el-row>
-          <el-col :span="24">
+          <el-col :span="12">
             <el-form-item label="合作项目">
               {{formData.cooperationProjectsName}}
+            </el-form-item>
+          </el-col>
+          <el-col :span="12">
+            <el-form-item label="归属组织">
+              {{formData.organizationName}}
             </el-form-item>
           </el-col>
         </el-row>
         <el-row>
           <el-col :span="12">
             <el-form-item label="合作时间">
-              {{formData.cooperationTime}}
+              {{ formData.cooperationTime && formData.cooperationEnd ? `${formData.cooperationTime} ~ ${formData.cooperationEnd}` : '' }}
             </el-form-item>
           </el-col>
           <el-col :span="12">
@@ -97,7 +107,7 @@
         <el-row>
           <el-col :span="12">
             <el-form-item label="归档状态">
-              {{ $root.dictAllName(formData.archiveStatus, 'ContractEnum.ArchiveStatus')}}
+              {{ $root.dictAllName(formData.archiveStatus, 'ArchiveStatus')}}
             </el-form-item>
           </el-col>
           <el-col :span="12">
@@ -105,7 +115,7 @@
               label="审核状态"
               label-width="160px"
             >
-              {{ $root.dictAllName(formData.approvalStatus, 'ContractEnum.ApprovalStatus') }}
+              {{ $root.dictAllName(formData.approvalStatus, 'ApprovalStatus') }}
             </el-form-item>
           </el-col>
         </el-row>
@@ -117,6 +127,11 @@
                 size="100px"
                 @newFileList="handleContract"
               ></IhUpload>
+              <el-button
+                type="primary"
+                class="upload-button"
+                @click="submitContract()"
+              >提交</el-button>
             </el-form-item>
           </el-col>
         </el-row>
@@ -132,7 +147,7 @@
               <el-button
                 type="primary"
                 class="upload-button"
-                @click="submit()"
+                @click="submitArchive()"
               >提交</el-button>
             </el-form-item>
           </el-col>
@@ -153,24 +168,41 @@
           class="ih-table partyA-table"
           :data="formData.cycleList"
         >
-          <el-table-column label="周期编号"></el-table-column>
+          <el-table-column
+            label="呈批文号"
+            prop="approvalNo"
+            min-width="180"
+          ></el-table-column>
           <el-table-column
             label="周期名称"
             prop="termName"
+            min-width="250"
           ></el-table-column>
-          <el-table-column label="周期时间">
+          <el-table-column
+            label="周期时间"
+            width="185"
+          >
             <template v-slot="{row}">
-              <span>{{`${row.termStart}-${row.termEnd}`}}</span>
+              <span>{{`${row.termStart} ~ ${row.termEnd}`}}</span>
             </template>
           </el-table-column>
           <el-table-column
             label="周期审核状态"
             prop="auditEnum"
-          ></el-table-column>
+            width="120"
+          >
+            <template v-slot="{ row }">
+              {{ $root.dictAllName(row.auditEnum, "Audit") }}
+            </template>
+          </el-table-column>
           <el-table-column
             label="业务类型"
             prop="busTypeEnum"
-          ></el-table-column>
+          >
+            <template v-slot="{ row }">
+              {{ $root.dictAllName(row.busTypeEnum, "BusType") }}
+            </template>
+          </el-table-column>
           <el-table-column
             label="归属项目"
             prop="proName"
@@ -178,15 +210,27 @@
           <el-table-column
             label="省份"
             prop="province"
-          ></el-table-column>
+          >
+            <template v-slot="{ row }">
+              {{$root.getAreaName(row.province)}}
+            </template>
+          </el-table-column>
           <el-table-column
             label="城市"
             prop="city"
-          ></el-table-column>
+          >
+            <template v-slot="{ row }">
+              {{$root.getAreaName(row.city)}}
+            </template>
+          </el-table-column>
           <el-table-column
             label="行政区"
             prop="district"
-          ></el-table-column>
+          >
+            <template v-slot="{ row }">
+              {{$root.getAreaName(row.district)}}
+            </template>
+          </el-table-column>
         </el-table>
       </div>
     </template>
@@ -210,6 +254,8 @@ export default class PartyAadd extends Vue {
   private addArchive: any = [];
 
   private handleContract(val: any) {
+    console.log(val, this.contractList);
+
     this.addContract = val
       .filter((i: any) => {
         return i.response;
@@ -232,19 +278,39 @@ export default class PartyAadd extends Vue {
       }));
     console.log(this.addArchive);
   }
-  private async submit() {
-    if (this.addContract.length || this.addArchive.length) {
+  private async submitContract() {
+    if (this.addContract.length) {
       try {
         await post_contract_annex({
           contractId: this.formData.id,
-          annexList: this.addContract.concat(this.addArchive),
+          annexList: this.addContract,
         });
+        this.addContract = [];
         this.$message.success("提交附件成功");
+        this.$router.go(0);
+      } catch (error) {
+        console.log(error);
+      }
+    } else {
+      this.$message.warning("请先上传甲方合同附件");
+    }
+  }
+  private async submitArchive() {
+    if (this.addArchive.length) {
+      try {
+        await post_contract_annex({
+          contractId: this.formData.id,
+          annexList: this.addArchive,
+        });
+        this.addContract = [];
+        this.addArchive = [];
+        this.$message.success("提交附件成功");
+        this.$router.go(0);
       } catch (err) {
         console.log(err);
       }
     } else {
-      this.$message.warning("请先上传附件");
+      this.$message.warning("请先上传盖章版附件");
     }
   }
   private async getInfo() {
@@ -256,12 +322,14 @@ export default class PartyAadd extends Vue {
           this.contractList.push({
             name: i.attachmentSuffix,
             fileId: i.fileNo,
+            exAuto: 1,
           });
         }
         if (i.type === "ArchiveAnnex") {
           this.archiveList.push({
             name: i.attachmentSuffix,
             fileId: i.fileNo,
+            exAuto: 1,
           });
         }
       });
@@ -276,14 +344,6 @@ export default class PartyAadd extends Vue {
 
 <style lang="scss" scoped>
 .partyA-info {
-  /deep/ .upload {
-    display: inline-block;
-  }
-  .upload-button {
-    position: absolute;
-    bottom: 25px;
-    margin-left: 15px;
-  }
   .annotation {
     color: #d9001b;
     font-size: 14px;

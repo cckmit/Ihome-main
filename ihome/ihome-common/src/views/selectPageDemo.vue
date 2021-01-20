@@ -6,14 +6,14 @@
     label-width="200px"
     class="text-left"
   >
+    <div class="text-center">下拉分页-- 默认宽度是100%</div>
     <el-form-item
-      label="默认使用"
+      label="默认使用: "
       prop="testInput"
-      :rules="[
+    >clearable：是否可以清空选项；disabled：是否禁用；placeholder：占位符</el-form-item>
+    <el-form-item :rules="[
         { required: true, message: '请选择用户'},
-      ]"
-    >
-      <!-- clearable：是否可以清空选项；disabled：是否禁用；placeholder：占位符 -->
+      ]">
       <IhSelectPageUser
         v-model="form.testInput"
         placeholder="默认使用"
@@ -21,34 +21,35 @@
       >
       </IhSelectPageUser>
     </el-form-item>
-    <el-form-item label="自定义模板使用">
+    <el-form-item label="自定义模板使用:">
+      自定义模板使用 isTempOption开启自定义模板, optionProps自定义左右两边的值label, value
+    </el-form-item>
+    <el-form-item>
       <IhSelectPageUser
         v-model="form.testInput1"
         clearable
-      >
-        <!-- 自定义模板使用 v-slot返回来的data：当前每条的数据；index：每一条数据的下标 -->
-        <template v-slot="{ data }">
-          <span style="float: left">{{ data.name }}</span>
-          <span
-            class="margin-left-30"
-            style="float: right; color: #8492a6; font-size: 13px"
-          >{{ data.employeeCode }}</span>
-        </template>
-      </IhSelectPageUser>
+      ></IhSelectPageUser>
     </el-form-item>
     <el-form-item label="绑定值为对象">
-      <!-- 如果需要绑定值为对象，value-key必须传 -->
+      如果需要绑定值为对象,value-key必须传,searchName是指定的搜索值,changeOption是选中值的回调
+    </el-form-item>
+    <el-form-item>
+
       <IhSelectPageUser
-        v-model="form.testInput3"
+        v-model="form.testInput3.id"
+        :searchName="form.testInput3.name"
+        @changeOption="(data) => {form.data = data}"
         class="width-300"
         clearable
         value-key="id"
       >
       </IhSelectPageUser>
-      <span>选中的值：{{form.testInput3}}</span>
+      <span>选中的值：{{form.data}}</span>
     </el-form-item>
     <el-form-item label="测试继承">
-      <!-- searchPlaceholder：搜索框提示语, isKeyUp：设置回车搜索 -->
+      searchPlaceholder：搜索框提示语, isKeyUp：设置回车搜索
+    </el-form-item>
+    <el-form-item>
       <SelectPageByOther
         class="width-300"
         v-model="form.testInput4"
@@ -56,11 +57,78 @@
         :props="{
           value: 'id',
           key: 'id',
-          lable: 'name'
+          label: 'name'
         }"
         :searchPlaceholder="'2020-10-27 10:10:00' | timestampToDate('YYYY-MM-DD')"
       >
       </SelectPageByOther>
+      <span>{{'0.66' | percent}}</span>
+    </el-form-item>
+    <el-form-item label="事业部">事业部继承组件用法</el-form-item>
+    <el-form-item>
+      <IhSelectPageDivision v-model="form.testInput5"></IhSelectPageDivision>
+    </el-form-item>
+    <el-form-item label="渠道商">渠道商继承组件用法</el-form-item>
+    <el-form-item>
+      <IhSelectPageByChannel v-model="form.testInput6"></IhSelectPageByChannel>
+    </el-form-item>
+    <el-form-item label="项目">项目继承组件用法</el-form-item>
+    <el-form-item>
+      <IhSelectPageByProject
+        v-model="form.testInput7"
+        clearable
+      ></IhSelectPageByProject>
+    </el-form-item>
+    <el-form-item label="周期">周期继承组件用法</el-form-item>
+    <el-form-item>
+      <IhSelectPageByCycle
+        v-model="form.testInput8"
+        clearable
+      ></IhSelectPageByCycle>
+    </el-form-item>
+    <el-form-item label="栋座">栋座继承组件用法 (proId: 默认需要项目的id来请求接口, isBlur: 不做项目id的限制)</el-form-item>
+    <el-form-item label="限制">
+      <IhSelectPageByBuild
+        v-model="form.testInput9"
+        :proId="form.testInput7"
+        clearable
+      ></IhSelectPageByBuild>
+    </el-form-item>
+    <el-form-item label="没限制">
+      <IhSelectPageByBuild
+        v-model="form.testInput9"
+        :proId="form.testInput7"
+        :isBlur="false"
+        clearable
+      ></IhSelectPageByBuild>
+    </el-form-item>
+    <el-form-item label="房号">房号继承组件用法 (proId: 默认需要项目的id来请求接口, isBlur: 不做项目id的限制)</el-form-item>
+    <el-form-item label="限制">
+      <IhSelectPageByRoom
+        v-model="form.testInput10"
+        :proId="form.testInput7"
+        clearable
+      ></IhSelectPageByRoom>
+    </el-form-item>
+    <el-form-item label="没限制">
+      <IhSelectPageByRoom
+        v-model="form.testInput10"
+        :proId="form.testInput7"
+        :isBlur="false"
+        clearable
+      ></IhSelectPageByRoom>
+    </el-form-item>
+    <el-form-item label="我司">我司继承组件</el-form-item>
+    <el-form-item>
+      <IhSelectPageByCompany v-model="form.testInput11"></IhSelectPageByCompany>
+    </el-form-item>
+    <el-form-item label="开发商">开发商继承组件</el-form-item>
+    <el-form-item>
+      <IhSelectPageByDeveloper v-model="form.testInput12"></IhSelectPageByDeveloper>
+    </el-form-item>
+    <el-form-item label="组织">查询店组</el-form-item>
+    <el-form-item>
+      <IhSelectPageOrg v-model="form.testInput13"></IhSelectPageOrg>
     </el-form-item>
   </el-form>
 </template>
@@ -71,10 +139,33 @@ import { Component, Vue } from "vue-property-decorator";
 import { post_company_getAll } from "@/api/system/index";
 
 import SelectPageByOther from "./components/SelectPageByOther.vue";
-import { IhSelectPageUser } from "../ihome-package/ui/packages/select-page/index";
+import {
+  IhSelectPageOrg,
+  IhSelectPageUser,
+  IhSelectPageDivision,
+  IhSelectPageByChannel,
+  IhSelectPageByProject,
+  IhSelectPageByCycle,
+  IhSelectPageByBuild,
+  IhSelectPageByRoom,
+  IhSelectPageByCompany,
+  IhSelectPageByDeveloper,
+} from "../ihome-package/ui/packages/select-page/index";
 
 @Component({
-  components: { SelectPageByOther, IhSelectPageUser },
+  components: {
+    SelectPageByOther,
+    IhSelectPageUser,
+    IhSelectPageDivision,
+    IhSelectPageByChannel,
+    IhSelectPageByProject,
+    IhSelectPageByCycle,
+    IhSelectPageByBuild,
+    IhSelectPageByRoom,
+    IhSelectPageByCompany,
+    IhSelectPageByDeveloper,
+    IhSelectPageOrg,
+  },
 })
 export default class SelectPageDemo extends Vue {
   form = {
@@ -82,10 +173,20 @@ export default class SelectPageDemo extends Vue {
     testInput1: "",
     testInput2: "",
     testInput3: {
-      id: 2,
-      name: "张三",
+      id: 15,
+      name: "皮xq",
     },
     testInput4: "",
+    testInput5: "",
+    testInput6: "",
+    testInput7: null,
+    testInput8: null,
+    testInput9: null,
+    testInput10: null,
+    testInput11: null,
+    testInput12: null,
+    testInput13: null,
+    data: null,
   };
   private rules = {};
 

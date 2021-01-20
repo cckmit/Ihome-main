@@ -4,7 +4,7 @@
  * @Author: wwq
  * @Date: 2020-09-25 17:59:09
  * @LastEditors: wwq
- * @LastEditTime: 2020-11-11 11:46:19
+ * @LastEditTime: 2021-01-15 12:26:08
 -->
 <template>
   <ih-page>
@@ -70,7 +70,7 @@
                 class="width--100"
               >
                 <el-option
-                  v-for="item in $root.dictAllList('CompanyTypeEnum')"
+                  v-for="item in $root.dictAllList('ChannelCompanyType')"
                   :key="item.code"
                   :label="item.name"
                   :value="item.code"
@@ -79,11 +79,7 @@
             </el-form-item>
           </el-col>
           <el-col :span="8">
-            <el-form-item
-              label="法定代表人"
-              required
-              prop="legalPerson"
-            >
+            <el-form-item label="法定代表人">
               <el-input
                 clearable
                 maxlength="32"
@@ -93,10 +89,7 @@
             </el-form-item>
           </el-col>
           <el-col :span="8">
-            <el-form-item
-              label="法人身份证号码"
-              prop="legalPersonId"
-            >
+            <el-form-item label="法人身份证号码">
               <el-input
                 clearable
                 maxlength="18"
@@ -121,10 +114,7 @@
             </el-form-item>
           </el-col>
           <el-col :span="8">
-            <el-form-item
-              label="注册资本"
-              prop="capital"
-            >
+            <el-form-item label="注册资本">
               <el-input
                 clearable
                 maxlength="32"
@@ -169,14 +159,11 @@
             </el-form-item>
           </el-col>
           <el-col :span="8">
-            <el-form-item
-              label="录入人"
-              prop="inputUser"
-            >
+            <el-form-item label="录入人">
               <el-input
                 clearable
                 disabled
-                v-model="resPageInfo.inputUser"
+                v-model="resPageInfo.inputUserName"
                 placeholder="录入人"
               ></el-input>
             </el-form-item>
@@ -266,7 +253,7 @@
             label="账号类型"
           >
             <template v-slot="{ row }">{{
-              $root.dictAllName(row.type, "BankAccountTypeEnum")
+              $root.dictAllName(row.type, "AccountType")
             }}</template>
           </el-table-column>
           <el-table-column
@@ -296,21 +283,34 @@
       <div class="padding-left-20">
         <el-table
           class="ih-table"
-          :data="resPageInfo.attachmentList"
+          :data="fileListType"
           style="width: 100%"
         >
           <el-table-column
             prop="type"
+            width="180"
             label="类型"
+            align="center"
           >
-            <!-- <template v-slot="{ row }">{{
-            $root.displayName("accessoryTpye", row.type)
-          }}</template> -->
+            <template v-slot="{ row }">
+              <div><span
+                  style="color: red"
+                  v-if="row.subType"
+                >*</span>{{row.name}}
+              </div>
+            </template>
           </el-table-column>
-          <el-table-column
-            prop="fileId"
-            label="附件"
-          ></el-table-column>
+          <el-table-column label="附件">
+            <template v-slot="{ row }">
+              <IhUpload
+                :file-list.sync="row.fileList"
+                :file-size="10"
+                :file-type="row.code"
+                size="100px"
+                @newFileList="queryNew"
+              ></IhUpload>
+            </template>
+          </el-table-column>
         </el-table>
       </div>
       <br />
@@ -333,13 +333,24 @@
           >保存</el-button>
           <el-button
             @click="submit('WaitAuditByBranchHead')"
-            type="primary"
+            type="success"
           >提交</el-button>
         </div>
       </div>
 
       <div v-if="$route.name === 'developerChange'">
+        <p class="ih-info-title">企业概括</p>
+        <el-input
+          class="padding-left-20"
+          style="box-sizing: border-box"
+          type="textarea"
+          :autosize="{ minRows: 5, maxRows: 10 }"
+          placeholder="请输入内容"
+          v-model="resPageInfo.remark"
+        >
+        </el-input>
         <p class="ih-info-title">变更原因</p>
+        <p class="msg-title"><span style="color: red">* </span>变更信息</p>
         <el-input
           class="padding-left-20"
           style="box-sizing: border-box"
@@ -425,6 +436,7 @@ export default class Edit extends Vue {
     county: null,
     address: null,
     inputUser: null,
+    inputUserName: null,
     contactList: [],
     bankList: [],
     attachmentList: [],
@@ -432,6 +444,8 @@ export default class Edit extends Vue {
     reason: null,
     provinceOption: [],
   };
+  fileListType: any = [];
+  submitFile: any = {};
   accountData: any = {};
   contactsData: any = {};
   contactsDialogType: any;
@@ -448,25 +462,22 @@ export default class Edit extends Vue {
     ],
     shortName: [{ required: true, message: "请填写简称", trigger: "change" }],
     type: [{ required: true, message: "请选择类型", trigger: "change" }],
-    legalPersonId: [
-      { required: true, message: "请填写法人身份证号码", trigger: "change" },
-      {
-        pattern: /(^[1-9]\d{5}(18|19|([23]\d))\d{2}((0[1-9])|(10|11|12))(([0-2][1-9])|10|20|30|31)\d{3}[0-9Xx]$)|(^[1-9]\d{5}\d{2}((0[1-9])|(10|11|12))(([0-2][1-9])|10|20|30|31)\d{2}$)/,
-        message: "证件号码格式有误！",
-        trigger: "change",
-      },
-    ],
+    // legalPersonId: [
+    //   { required: true, message: "请填写法人身份证号码", trigger: "change" },
+    //   {
+    //     pattern: /(^[1-9]\d{5}(18|19|([23]\d))\d{2}((0[1-9])|(10|11|12))(([0-2][1-9])|10|20|30|31)\d{3}[0-9Xx]$)|(^[1-9]\d{5}\d{2}((0[1-9])|(10|11|12))(([0-2][1-9])|10|20|30|31)\d{2}$)/,
+    //     message: "证件号码格式有误！",
+    //     trigger: "change",
+    //   },
+    // ],
     setupTime: [
       { required: true, message: "请选择成立日期", trigger: "change" },
     ],
-    capital: [{ required: true, message: "请填写注册资本", trigger: "change" }],
+    // capital: [{ required: true, message: "请填写注册资本", trigger: "change" }],
     provinceOption: [
       { required: true, message: "请选择省市区", trigger: "change" },
     ],
     address: [{ required: true, message: "请填写住所", trigger: "change" }],
-    legalPerson: [
-      { required: true, message: "请填法定代表人", trigger: "change" },
-    ],
   };
 
   searchOpen = true;
@@ -482,7 +493,38 @@ export default class Edit extends Vue {
       const res = await get_company_get__id({ id: this.developerId });
       this.resPageInfo = res;
       this.resPageInfo.provinceOption = [res.province, res.city, res.county];
+      this.getFileListType(res.attachmentList);
+    } else {
+      this.resPageInfo.inputUserName = (this.$root as any).userInfo.name;
+      this.resPageInfo.inputUser = (this.$root as any).userInfo.id;
+      this.getFileListType([]);
     }
+  }
+
+  getFileListType(data: any) {
+    const list = (this.$root as any).dictAllList("AttachementType");
+    this.fileListType = list.map((v: any) => {
+      return {
+        ...v,
+        fileList: data
+          .filter((j: any) => j.type === v.code)
+          .map((h: any) => ({
+            ...h,
+            name: h.fileName,
+          })),
+      };
+    });
+    let obj: any = {};
+    this.fileListType.forEach((h: any) => {
+      obj[h.code] = h.fileList;
+    });
+    this.submitFile = { ...obj };
+  }
+
+  queryNew(data: any, type?: any) {
+    let obj: any = {};
+    obj[type] = data;
+    this.submitFile = { ...this.submitFile, ...obj };
   }
 
   // 联系人信息
@@ -500,12 +542,16 @@ export default class Edit extends Vue {
   }
 
   async delContacts(index: number) {
-    await this.$confirm("是否确定移除?", "提示");
-    this.resPageInfo.contactList.splice(index, 1);
-    this.$message({
-      type: "success",
-      message: "移除成功!",
-    });
+    try {
+      await this.$confirm("是否确定移除?", "提示");
+      this.resPageInfo.contactList.splice(index, 1);
+      this.$message({
+        type: "success",
+        message: "移除成功!",
+      });
+    } catch (err) {
+      console.log(err);
+    }
   }
 
   contactsFinish(data: any) {
@@ -531,12 +577,16 @@ export default class Edit extends Vue {
   }
 
   async delAccount(index: number) {
-    await this.$confirm("是否确定移除?", "提示");
-    this.resPageInfo.bankList.splice(index, 1);
-    this.$message({
-      type: "success",
-      message: "移除成功!",
-    });
+    try {
+      await this.$confirm("是否确定移除?", "提示");
+      this.resPageInfo.bankList.splice(index, 1);
+      this.$message({
+        type: "success",
+        message: "移除成功!",
+      });
+    } catch (error) {
+      console.log(error);
+    }
   }
 
   accountFinish(data: any) {
@@ -554,6 +604,46 @@ export default class Edit extends Vue {
         this.resPageInfo.city = this.resPageInfo.provinceOption[1];
         this.resPageInfo.county = this.resPageInfo.provinceOption[2];
         this.resPageInfo.status = val;
+        // 校验提示
+        let arr: any = [];
+        Object.values(this.submitFile).forEach((v: any) => {
+          if (v.length) {
+            arr = arr.concat(v);
+          }
+        });
+        // 以下操作仅仅是为了校验必上传项
+        let submitList: any = this.fileListType.map((v: any) => {
+          return {
+            ...v,
+            fileList: arr
+              .filter((j: any) => j.type === v.code)
+              .map((h: any) => ({
+                ...h,
+                name: h.fileName,
+              })),
+          };
+        });
+        let isSubmit = true;
+        let msgList: any = [];
+        submitList.forEach((v: any) => {
+          if (v.subType && !v.fileList.length) {
+            msgList.push(v.name);
+            isSubmit = false;
+          }
+        });
+        if (isSubmit) {
+          this.resPageInfo.attachmentList = arr.map((v: any) => ({
+            fileId: v.fileId,
+            fileName: v.name,
+            type: v.type,
+          }));
+        } else {
+          this.$message({
+            type: "warning",
+            message: `${msgList.join(",")}项,请上传附件`,
+          });
+          return;
+        }
         switch (this.$route.name) {
           case "developerAdd":
             await post_company_add(this.resPageInfo);
@@ -562,6 +652,10 @@ export default class Edit extends Vue {
             await post_company_updateDraft(this.resPageInfo);
             break;
           case "developerChange":
+            if (!this.resPageInfo.reason) {
+              this.$message.warning("请填写变更原因");
+              return;
+            }
             await post_company_update(this.resPageInfo);
             break;
         }
@@ -587,5 +681,9 @@ export default class Edit extends Vue {
 .bottom {
   margin-top: 30px;
   text-align: center;
+}
+.msg-title {
+  text-align: left;
+  margin-left: 25px;
 }
 </style>

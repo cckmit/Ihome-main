@@ -4,7 +4,7 @@
  * @Author: zyc
  * @Date: 2020-10-13 19:40:35
  * @LastEditors: zyc
- * @LastEditTime: 2020-10-13 19:56:11
+ * @LastEditTime: 2020-12-31 09:51:54
 -->
 <template>
   <ih-page>
@@ -24,7 +24,7 @@
 <script lang="ts">
 import { Component, Vue } from "vue-property-decorator";
 
-import  InvitationCodeDetails from "./info-tabs/details.vue";
+import InvitationCodeDetails from "./info-tabs/details.vue";
 import RegisterUserList from "./info-tabs/register-user-list.vue";
 @Component({
   components: { InvitationCodeDetails, RegisterUserList },

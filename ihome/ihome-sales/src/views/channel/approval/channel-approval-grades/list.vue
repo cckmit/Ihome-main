@@ -1,16 +1,24 @@
+<!--
+ * @Descripttion: 
+ * @version: 
+ * @Author: zyc
+ * @Date: 2020-11-24 10:49:09
+ * @LastEditors: wwq
+ * @LastEditTime: 2020-12-30 19:08:18
+-->
 
 <!--
  * @Descripttion: 
  * @version: 
  * @Author: zyc
  * @Date: 2020-10-13 19:06:12
- * @LastEditors: wwq
- * @LastEditTime: 2020-11-11 08:58:11
+ * @LastEditors: zyc
+ * @LastEditTime: 2020-12-11 16:36:15
 -->
 <template>
   <el-dialog
     v-dialogDrag
-    title="渠道合作信息列表"
+    :title="title"
     :visible.sync="dialogVisible"
     :close-on-click-modal="false"
     :close-on-press-escape="false"
@@ -19,23 +27,18 @@
     style="text-align: left"
     class="dialog"
   >
-    <el-form ref="form" label-width="100px">
+    <el-form
+      ref="form"
+      label-width="100px"
+    >
       <el-row>
         <el-col :span="8">
           <el-form-item label="渠道商">
-            <el-select
-              v-model="queryPageParameters.channelId"
+            <IhSelectPageByChannel
+              placeholder="渠道商"
               clearable
-              placeholder="事业部"
-              class="width--100"
-            >
-              <el-option
-                v-for="item in channelList"
-                :key="item.value"
-                :label="item.label"
-                :value="item.value"
-              ></el-option>
-            </el-select>
+              v-model="queryPageParameters.channelId"
+            ></IhSelectPageByChannel>
           </el-form-item>
         </el-col>
         <el-col :span="8">
@@ -74,26 +77,33 @@
         </el-col>
         <el-col :span="8">
           <el-form-item label="业务开展省市">
-            <el-input
+            <ih-cascader
+              placeholder="省市"
+              v-model="queryPageParameters.provinceCity"
+              :level="2"
+              :checkStrictly="true"
+              @change="handleChange"
+            ></ih-cascader>
+            <!-- <el-input
               v-model="queryPageParameters.city"
               placeholder="申请编号"
-            ></el-input>
+            ></el-input> -->
           </el-form-item>
         </el-col>
         <el-col :span="8">
           <el-form-item label="录入人">
-            <IhSelectPageUser v-model="queryPageParameters.inputUser" clearable>
+            <IhSelectPageUser
+              v-model="queryPageParameters.inputUser"
+              clearable
+            >
               <template v-slot="{ data }">
                 <span style="float: left">{{ data.name }}</span>
-                <span
-                  style="
+                <span style="
                     margin-left: 20px;
                     float: right;
                     color: #8492a6;
                     font-size: 13px;
-                  "
-                  >{{ data.account }}</span
-                >
+                  ">{{ data.account }}</span>
               </template>
             </IhSelectPageUser>
           </el-form-item>
@@ -119,9 +129,15 @@
       <el-row>
         <el-col :span="8">
           <el-form-item label="">
-            <el-button type="primary" @click="getListMixin()">查询</el-button>
+            <el-button
+              type="primary"
+              @click="getListMixin()"
+            >查询</el-button>
 
-            <el-button type="info" @click="reset()">重置</el-button>
+            <el-button
+              type="info"
+              @click="reset()"
+            >重置</el-button>
           </el-form-item>
         </el-col>
       </el-row>
@@ -131,7 +147,10 @@
       :data="resPageInfo.list"
       @selection-change="handleSelectionChange"
     >
-      <el-table-column type="selection" width="55"> </el-table-column>
+      <el-table-column
+        type="selection"
+        width="55"
+      > </el-table-column>
 
       <el-table-column
         prop="storageNum"
@@ -157,35 +176,50 @@
         prop="province"
         label="业务开展省份"
         width="180"
-      ></el-table-column>
+      >
+        <template slot-scope="scope">
+          {{ $root.getAreaName(scope.row.province) }}
+        </template>
+      </el-table-column>
       <el-table-column
         prop="city"
         label="业务开展城市"
         width="180"
-      ></el-table-column>
+      >
+        <template slot-scope="scope">
+          {{ $root.getAreaName(scope.row.city) }}
+        </template>
+      </el-table-column>
       <el-table-column
         prop="cityGrade"
         label="城市等级"
         width="180"
-      ></el-table-column>
+      >
+        <template slot-scope="scope">
+          {{ $root.dictAllName(scope.row.cityGrade, "CityLevel") }}
+        </template>
+      </el-table-column>
       <el-table-column
         prop="channelGrade"
         label="渠道等级"
         width="180"
-      ></el-table-column>
+      >
+        <template slot-scope="scope">
+          {{ $root.dictAllName(scope.row.channelGrade, "ChannelLevel") }}
+        </template>
+      </el-table-column>
       <el-table-column
         prop="special"
         label="特批入库"
         width="180"
-      ></el-table-column>
+      >
+        <template slot-scope="scope">
+          {{ $root.dictAllName(scope.row.special, "YesOrNoType") }}
+        </template>
+      </el-table-column>
 
-      <!-- <el-table-column label="状态" width="120">
-        <template slot-scope="scope">{{
-          $root.dictAllName(scope.row.status, "ChannelApprovalStatus")
-        }}</template>
-      </el-table-column> -->
       <el-table-column
-        prop="inputUser"
+        prop="inputUserName"
         label="录入人"
         width="180"
       ></el-table-column>
@@ -200,16 +234,25 @@
       :total="resPageInfo.total"
     ></el-pagination>
 
-    <span slot="footer" class="dialog-footer">
+    <span
+      slot="footer"
+      class="dialog-footer"
+    >
       <el-button @click="cancel()">取 消</el-button>
-      <el-button type="primary" @click="finish()">确 定</el-button>
+      <el-button
+        type="primary"
+        @click="finish()"
+      >确 定</el-button>
     </span>
   </el-dialog>
 </template>
 <script lang="ts">
 import { Component, Vue, Prop } from "vue-property-decorator";
 
-import { post_channelGrade_getList } from "../../../../api/channel/index";
+import {
+  post_channelGrade_getList,
+  post_channelGradeChange_getList,
+} from "../../../../api/channel/index";
 import PaginationMixin from "../../../../mixins/pagination";
 @Component({
   components: {},
@@ -220,7 +263,9 @@ export default class ChannelApprovalGradesList extends Vue {
     super();
   }
   @Prop({ default: null }) data: any;
+  @Prop({ default: null }) departmentOrgId: any;
   dialogVisible = true;
+  title = "渠道合作信息列表";
   resPageInfo: any = {
     total: 0,
     list: [],
@@ -238,23 +283,43 @@ export default class ChannelApprovalGradesList extends Vue {
 
     province: null,
     special: null,
-    status: null,
+    status: "PASS",
     storageNum: null,
+    provinceCity: null,
   };
 
   cancel() {
-    this.$emit("finish", true);
+    this.$emit("finish", false);
+  }
+  reset() {
+    Object.assign(this.queryPageParameters, {
+      channelGrade: null,
+      channelId: null,
+      city: null,
+      cityGrade: null,
+      departmentOrgId: null,
+      inputUser: null,
+      province: null,
+      special: null,
+      status: "PASS",
+      storageNum: null,
+      provinceCity: null,
+    });
   }
 
   async finish() {
     if (this.selectList && this.selectList.length > 0) {
-      this.$emit("finish", this.selectList);
+      this.$emit("finish", this.selectList, this.data);
     } else {
       this.$message.warning("请先勾选数据");
     }
   }
 
   created() {
+    console.log(this.data);
+    if (this.data == "Change") {
+      this.title = "渠道合作信息列表(变更信息)";
+    }
     this.getListMixin();
   }
   handleSelectionChange(val: any) {
@@ -262,9 +327,31 @@ export default class ChannelApprovalGradesList extends Vue {
     this.selectList = val;
   }
   async getListMixin() {
-    this.resPageInfo = await post_channelGrade_getList(
-      this.queryPageParameters
-    );
+    this.queryPageParameters.departmentOrgId = this.departmentOrgId;
+    if (this.data == "Change") {
+      this.resPageInfo = await post_channelGradeChange_getList(
+        this.queryPageParameters
+      );
+    } else {
+      this.resPageInfo = await post_channelGrade_getList(
+        this.queryPageParameters
+      );
+    }
+  }
+  handleChange(v: any) {
+    console.log(v);
+    if (v) {
+      if (v.length == 1) {
+        this.queryPageParameters.province = v[0];
+        this.queryPageParameters.city = null;
+      } else {
+        this.queryPageParameters.province = v[0];
+        this.queryPageParameters.city = v[1];
+      }
+    } else {
+      this.queryPageParameters.province = null;
+      this.queryPageParameters.city = null;
+    }
   }
 }
 </script>

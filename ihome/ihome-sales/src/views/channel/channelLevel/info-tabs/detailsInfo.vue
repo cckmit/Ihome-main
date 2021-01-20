@@ -3,8 +3,8 @@
  * @version: 
  * @Author: wwq
  * @Date: 2020-10-15 12:33:25
- * @LastEditors: ywl
- * @LastEditTime: 2020-11-03 17:19:50
+ * @LastEditors: wwq
+ * @LastEditTime: 2021-01-15 20:08:00
 -->
 <template>
   <div class="text-left">
@@ -19,10 +19,10 @@
             label="渠道商"
             align="left"
           >
-            <span class="text-ellipsis">{{ resPageInfo.channelId
+            <span class="text-ellipsis">{{ resPageInfo.channelName
               }}<el-link
                 style="margin-left: 5px"
-                :href="`/web-sales/channels/info?id=${resPageInfo.channelId}`"
+                :href="`/web-sales/channelBusiness/info?id=${resPageInfo.channelId}`"
                 type="primary"
                 target="_blank"
               >详情</el-link></span>
@@ -100,7 +100,7 @@
             align="left"
           >
             <span>{{
-              $root.dictAllName(resPageInfo.status, "ChannelStatus")
+              $root.dictAllName(resPageInfo.status, "ChannelGradeStatus")
             }}</span>
           </el-form-item>
         </el-col>
@@ -167,7 +167,7 @@
     <div class="padding-left-20">
       <el-table
         class="ih-table"
-        :data="resPageInfo.channelGradeAttachments"
+        :data="fileListType"
         style="width: 100%"
       >
         <el-table-column
@@ -175,18 +175,29 @@
           label="类型"
           width="200"
         >
-          <template v-slot="{ row }">{{
-            $root.displayName("accessoryTpye", row.type)
-          }}</template>
+          <template v-slot="{ row }">
+            <div><span
+                style="color: red"
+                v-if="row.subType"
+              >*</span>{{row.name}}
+            </div>
+          </template>
         </el-table-column>
         <el-table-column
           prop="fileId"
           label="附件"
         >
-          <IhUpload
-            size="100px"
-            :fileList="fileList"
-          />
+          <template v-slot="{ row }">
+            <IhUpload
+              :file-list.sync="row.fileList"
+              :file-size="10"
+              :file-type="row.code"
+              :limit="row.fileList.length"
+              :upload-show="!!row.fileList.length"
+              size="100px"
+              :removePermi="false"
+            ></IhUpload>
+          </template>
         </el-table-column>
       </el-table>
     </div>
@@ -275,16 +286,51 @@ export default class Home extends Vue {
     channelGradeItems: [],
     channelGradeAttachments: [],
   };
+  fileListType: any = [];
 
   async created() {
     this.getInfo();
   }
+  addDictList: any = [];
 
   async getInfo() {
     let id = this.$route.query.id;
-    if (id) this.resPageInfo = await get_channelGrade_get__id({ id: id });
+    if (id) {
+      this.resPageInfo = await get_channelGrade_get__id({ id: id });
+      this.getFileListType(this.resPageInfo.channelGradeAttachments);
+    }
   }
-
+  getFileListType(data: any) {
+    const ChannelGrade = (this.$root as any).dictAllList(
+      "ChannelGradeAttachment"
+    );
+    const channelLevelDict = (this.$root as any).dictAllList(
+      "ChannelLevelStandardAttachment"
+    );
+    const newDict: any = channelLevelDict.filter((j: any) => {
+      return data.map((i: any) => i.type).includes(j.code);
+    });
+    const dictList = newDict.concat(ChannelGrade);
+    this.fileListType = dictList.map((v: any) => {
+      let arr: any = [];
+      data
+        .filter((j: any) => j.type === v.code)
+        .forEach((h: any) => {
+          if (h.fileId) {
+            arr.push({
+              ...h,
+              name: h.fileName,
+            });
+          } else {
+            arr = [];
+          }
+        });
+      return {
+        ...v,
+        fileList: arr,
+      };
+    });
+  }
   async pass(val: any) {
     if (this.remark) {
       await post_channelGrade_approveRecord({

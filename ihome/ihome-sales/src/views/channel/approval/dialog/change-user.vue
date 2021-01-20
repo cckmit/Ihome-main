@@ -19,7 +19,7 @@
     style="text-align: left"
     class="dialog user-job-role-dialog"
   >
-    <p class="ih-info-title">已选渠道商</p>
+    <p class="ih-info-title">已选编号</p>
 
     <div class="margin-left-30">
       <div v-for="(item, index) in data" :key="index" class="text-item">
@@ -36,15 +36,13 @@
       class="demo-ruleForm"
     >
       <el-form-item label="选择用户" prop="userId">
-        <el-select v-model="postData.userId" placeholder="请选择">
-          <el-option
-            v-for="item in userList"
-            :key="item.id"
-            :label="item.name"
-            :value="item.id"
-          >
-          </el-option>
-        </el-select>
+       
+        <IhSelectPageUser
+                v-model="postData.userId"
+                placeholder="经办人"
+                clearable
+              >
+        </IhSelectPageUser>
       </el-form-item>
     </el-form>
 
@@ -69,22 +67,13 @@ export default class ApprovalChangeUser extends Vue {
   @Prop({ default: null }) data: any;
   dialogVisible = true;
   rules: any = {
-    userId: [{ required: true, message: "用户必选", trigger: "change" }],
+    userId: [{ required: true, message: "经办人必选", trigger: "change" }],
   };
   postData: any = {
     ids: [],
     userId: null,
   };
-  userList: any = [
-    {
-      id: 1,
-      name: "测试1",
-    },
-    {
-      id: 2,
-      name: "测试2",
-    },
-  ];
+   
 
   cancel() {
     this.$emit("cancel", false);

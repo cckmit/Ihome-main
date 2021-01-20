@@ -4,7 +4,7 @@
  * @Author: wwq
  * @Date: 2020-11-03 18:39:23
  * @LastEditors: wwq
- * @LastEditTime: 2020-11-11 11:36:19
+ * @LastEditTime: 2020-12-31 09:31:14
 -->
 <template>
   <el-dialog
@@ -26,10 +26,7 @@
     >
       <el-row>
         <el-col :span="16">
-          <el-form-item
-            label="户型图："
-            prop="fileList"
-          >
+          <el-form-item label="户型图：">
             <IhUpload
               :file-list="form.fileList"
               accept="image/*"
@@ -62,10 +59,10 @@
           >
             <div style="display: flex; justify-contant: flex-start">
               <el-input
-                v-model.number="form.space"
-                onkeyup="this.value = this.value.replace(/[^\d.]/g,'');"
+                v-model="form.space"
                 placeholder="户型面积"
                 maxlength="50"
+                v-digits="2"
               ></el-input>
               <span style="width: 30px; margin-left: 10px">m²</span>
             </div>
@@ -136,7 +133,7 @@
               clearable
             >
               <el-option
-                v-for="item in $root.dictAllList('PositionEnum')"
+                v-for="item in $root.dictAllList('Position')"
                 :key="item.code"
                 :label="item.name"
                 :value="item.code"
@@ -183,7 +180,6 @@ export default class HouseTypeEdit extends Vue {
     fileList: [],
   };
   rules: any = {
-    fileList: [{ required: true, message: "请上传户型图", trigger: "change" }],
     houseName: [
       { required: true, message: "请输入户型名称", trigger: "change" },
     ],

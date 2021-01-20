@@ -1,11 +1,5 @@
-/*
- * @Descripttion: 
- * @version: 
- * @Author: zyc
- * @Date: 2020-06-09 16:38:00
- * @LastEditors: zyc
- * @LastEditTime: 2020-12-07 15:30:44
- */
+
+
 export interface ToolInterface {
     /**深度拷贝
      * @param {type} 
@@ -39,24 +33,36 @@ export interface ToolInterface {
      * @return {type} 
      */
     todayLongStr(format?: string): string;
-    /**获取预览文件路径(fid,width?,height?)
+    /**（根路径）获取预览文件路径(fid,width?,height?)
      * @param {type} 
      * @return {type} 
      */
     getFileUrl(fid: number | string, width?: number | string, height?: number | string): string;
-    /**获取下载的文件路径
+    /**（全路径）获取预览文件路径(fid,width?,height?)
+    * @param {type} 
+    * @return {type} 
+    */
+    getLongFileUrl(fid: number | string, width?: number | string, height?: number | string): string;
+    /**（根路径）获取下载的文件路径
      * @param {type} 
      * @return {type} 
      */
-    downloadFileUrl(fid: number | string): string;
+    downloadFileUrl(fid: number | string, obj?: any): string;
+    /**（全路径）获取下载的文件路径
+     * @param {type} 
+     * @return {type} 
+     */
+    downloadLongFileUrl(fid: number | string, obj?: any): string;
     /**复制文本
      * @param {*}
      * @return {*}
      */
     coptText(text: any, callback: Function): any;
 
+   
 }
 export class Tool implements ToolInterface {
+   
 
     /**获取当前时间+n天yyyy-MM-dd字符串
     * @param {type} 
@@ -74,27 +80,71 @@ export class Tool implements ToolInterface {
         let result = `${year}-${month}-${day}`
         return result;
     }
-    /**获取下载的文件路径
+    /**（全路径）获取下载的文件路径
      * @param {type} 
      * @return {type} 
      */
-    downloadFileUrl(fid: string | number): string {
-        let url = `/sales-document-cover/file/download/{${fid}}`;
-        return url;
+    downloadFileUrl(fid: string | number, obj?: any): string {
+        if (obj) {
+            if (obj.fileName) {
+                let url = `/sales-api/sales-document-cover/file/download/${fid}?fn=` + obj.fileName;
+                return url;
+            } else {
+                let url = `/sales-api/sales-document-cover/file/download/${fid}`;
+                return url;
+            }
+        } else {
+            let url = `/sales-api/sales-document-cover/file/download/${fid}`;
+            return url;
+        }
     }
-    /**获取预览文件路径(fid,width?,height?)
+    /**（全路径）获取下载的文件路径
+     * @param {type} 
+     * @return {type} 
+     */
+    downloadLongFileUrl(fid: string | number, obj?: any): string {
+        let origin = window.location.origin;
+        if (obj) {
+            if (obj.fileName) {
+                let url = `/sales-api/sales-document-cover/file/download/${fid}?fn=` + obj.fileName;
+                return origin + url;
+            } else {
+                let url = `/sales-api/sales-document-cover/file/download/${fid}`;
+                return origin + url;
+            }
+        } else {
+            let url = `/sales-api/sales-document-cover/file/download/${fid}`;
+            return origin + url;
+        }
+    }
+    /**（根路径）获取预览文件路径(fid,width?,height?)
    * @param {type} 
    * @return {type} 
    */
     getFileUrl(fid: string | number, width?: string | number, height?: string | number): string {
         if (width && height) {
             //缩略图
-            let url = `/sales-document-cover/image/thumbnail/{${fid}}/{${width}}/{${height}}`;
+            let url = `/sales-api/sales-document-cover/image/thumbnail/${fid}/${width}/${height}`;
             return url;
         } else {
             //文件路径
-            let url = `/sales-document-cover/file/browse/{${fid}}`;
+            let url = `/sales-api/sales-document-cover/file/browse/${fid}`;
             return url;
+        }
+    }
+    /**（全路径）获取预览文件路径(fid,width?,height?)
+   * @param {type} 
+   * @return {type} 
+   */
+    getLongFileUrl(fid: string | number, width?: string | number, height?: string | number): string {
+        if (width && height) {
+            //缩略图
+            let url = `/sales-api/sales-document-cover/image/thumbnail/${fid}/${width}/${height}`;
+            return window.location.origin + url;
+        } else {
+            //文件路径
+            let url = `/sales-api/sales-document-cover/file/browse/${fid}`;
+            return window.location.origin + url;
         }
     }
     /**今天的字符串格式年月日时分秒

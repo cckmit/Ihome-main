@@ -4,7 +4,7 @@
  * @Author: ywl
  * @Date: 2020-09-25 16:00:37
  * @LastEditors: ywl
- * @LastEditTime: 2020-12-03 14:20:33
+ * @LastEditTime: 2021-01-14 15:38:19
 -->
 <template>
   <IhPage>
@@ -92,6 +92,9 @@
             <el-form-item
               label="归档编号"
               label-width="160px"
+              :rules="[
+                { required: true, message: '请填写归档编号', trigger: 'change' },
+              ]"
             >
               <el-input
                 v-model="formData.archiveNo"
@@ -103,7 +106,7 @@
         <el-row>
           <el-col :span="12">
             <el-form-item label="归档状态">
-              {{ $root.dictAllName(formData.archiveStatus, 'ContractEnum.ArchiveStatus')}}
+              {{ $root.dictAllName(formData.archiveStatus, 'ArchiveStatus')}}
             </el-form-item>
           </el-col>
           <el-col :span="12">
@@ -111,7 +114,7 @@
               label="审核状态"
               label-width="160px"
             >
-              {{ $root.dictAllName(formData.approvalStatus, 'ContractEnum.ApprovalStatus') }}
+              {{ $root.dictAllName(formData.approvalStatus, 'ApprovalStatus') }}
             </el-form-item>
           </el-col>
         </el-row>
@@ -148,7 +151,7 @@
                 type="primary"
                 @click="submit()"
               >提交</el-button>
-              <el-button>取消</el-button>
+              <el-button @click="$router.go(-1)">取消</el-button>
             </div>
           </el-col>
         </el-row>
@@ -187,6 +190,9 @@ export default class PartyAadd extends Vue {
         await post_contract_original_archive({
           contractId: this.formData.id,
           archiveNo: this.formData.archiveNo,
+        });
+        this.$goto({
+          path: "/partyA/list",
         });
         this.$message.success("原件归档成功");
       }

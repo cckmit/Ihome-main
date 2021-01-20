@@ -4,7 +4,7 @@
  * @Author: ywl
  * @Date: 2020-09-16 14:05:21
  * @LastEditors: ywl
- * @LastEditTime: 2020-12-01 15:11:59
+ * @LastEditTime: 2021-01-15 20:30:23
 -->
 <template>
   <IhPage>
@@ -163,6 +163,12 @@
           <el-col :span="8">
             <el-form-item label="跟进人">
               <el-input
+                disabled
+                :value="$root.userInfo.name || '自动带出'"
+                v-if="$route.name === 'AddChannel'"
+              />
+              <el-input
+                v-else
                 v-model="info.followUserName"
                 placeholder="跟进人"
                 disabled
@@ -185,7 +191,7 @@
     <div class="padding-left-20">
       <el-table
         :data="info.channelBanks"
-        style="width: 100%; "
+        style="width: 100%"
       >
         <el-table-column
           prop="accountName"
@@ -196,24 +202,25 @@
           prop="accountNo"
           label="账号"
           min-width="200"
-        > </el-table-column>
+        >
+        </el-table-column>
         <el-table-column
           prop="branchName"
           label="开户银行"
           min-width="200"
         ></el-table-column>
-        <el-table-column
+        <!-- <el-table-column
           prop="branchNo"
           label="联行号"
           width="150"
-        ></el-table-column>
+        ></el-table-column> -->
         <el-table-column
           prop="accountType"
           label="账号类型"
           width="150"
         >
           <template v-slot="{ row }">
-            <span>{{$root.dictAllName(row.accountType, "AccountEnum")}}</span>
+            <span>{{ $root.dictAllName(row.accountType, "Account") }}</span>
           </template>
         </el-table-column>
         <el-table-column
@@ -305,17 +312,39 @@
       >综合查询被执行人</el-link>
       <span
         class="margin-left-10"
-        style="font-size: 12px; color: #909399;"
+        style="font-size: 12px; color: #909399"
       >附件类型支持jpg、png、bmp、tif、tiff等图片格式，以及pdf、word、excel文档，单个文件不能超过10M</span>
     </p>
     <div class="padding-left-20">
-      <el-table style="width: 100%">
+      <el-table
+        style="width: 100%"
+        :data="fileListType"
+      >
         <el-table-column
           prop="type"
           width="180"
           label="类型"
-        ></el-table-column>
-        <el-table-column label="附件"></el-table-column>
+          align="center"
+        >
+          <template v-slot="{ row }">
+            <div><span
+                style="color: red"
+                v-if="row.subType"
+              >*</span>{{row.name}}
+            </div>
+          </template>
+        </el-table-column>
+        <el-table-column label="附件">
+          <template v-slot="{ row }">
+            <IhUpload
+              :file-list.sync="row.fileList"
+              :file-size="10"
+              :file-type="row.code"
+              size="100px"
+              @newFileList="queryNew"
+            ></IhUpload>
+          </template>
+        </el-table-column>
       </el-table>
     </div>
 
@@ -386,8 +415,23 @@ import {
   post_channel_add,
   post_channel_edit,
   post_channelChange_add,
+  get_channel_checkSetupTime,
 } from "@/api/channel/index";
 import BankDialog from "./dialog/bankDialog.vue";
+
+async function dataChange(rule: any, value: any, callback: any) {
+  try {
+    let flag = await get_channel_checkSetupTime({ setupTime: value });
+    if (flag) {
+      callback();
+    } else {
+      callback(new Error("成立时间必须大于三个月"));
+    }
+  } catch (error) {
+    callback();
+    console.log(error);
+  }
+}
 
 @Component({
   components: {
@@ -416,6 +460,8 @@ export default class ModifyThe extends Vue {
     provinceList: [],
   };
   changeReason = "";
+  fileListType: any = [];
+  submitFile: any = {};
   dialogFormVisible = false;
   Bankrule: any = {
     accountName: null,
@@ -466,6 +512,7 @@ export default class ModifyThe extends Vue {
     ],
     setupTime: [
       { required: true, message: "请输入成立日期", trigger: "change" },
+      { validator: dataChange, trigger: "change" },
     ],
     capital: [
       { required: true, message: "请输入注册资本", trigger: "change" },
@@ -487,7 +534,7 @@ export default class ModifyThe extends Vue {
       { validator: validIdentityCard, trigger: "change" },
     ],
     email: [
-      { required: true, message: "请填写邮箱", trigger: "change" },
+      // { required: true, message: "请填写邮箱", trigger: "change" },
       { type: "email", message: "请输入正确的邮箱地址", trigger: "change" },
     ],
   };
@@ -537,7 +584,47 @@ export default class ModifyThe extends Vue {
           this.$message.warning("账户信息中，基本存款账号必须录入");
           return;
         }
-        this.info.channelPersons.push(this.channelPersonsData);
+        // this.info.channelPersons = [{ ...this.channelPersonsData }];
+        // 校验提示
+        let arr: any = [];
+        Object.values(this.submitFile).forEach((v: any) => {
+          if (v.length) {
+            arr = arr.concat(v);
+          }
+        });
+        // 以下操作仅仅是为了校验必上传项
+        let submitList: any = this.fileListType.map((v: any) => {
+          return {
+            ...v,
+            fileList: arr
+              .filter((j: any) => j.type === v.code)
+              .map((h: any) => ({
+                ...h,
+                name: h.fileName,
+              })),
+          };
+        });
+        let isSubmit = true;
+        let msgList: any = [];
+        submitList.forEach((v: any) => {
+          if (v.subType && !v.fileList.length) {
+            msgList.push(v.name);
+            isSubmit = false;
+          }
+        });
+        if (isSubmit) {
+          this.info.channelAttachments = arr.map((v: any) => ({
+            fileId: v.fileId,
+            fileName: v.name,
+            type: v.type,
+          }));
+        } else {
+          this.$message({
+            type: "warning",
+            message: `${msgList.join(",")}项,请上传附件`,
+          });
+          return;
+        }
         switch (this.pageName) {
           case "AddChannel":
             // 渠道商添加
@@ -565,14 +652,26 @@ export default class ModifyThe extends Vue {
               this.$message.warning("变更原因不能为空");
               return;
             }
-            await post_channelChange_add({
-              ...this.info,
-              operateType: type,
-              channelPersonChanges: [{ ...this.channelPersonsData }],
-              channelBankChanges: this.info.channelBanks,
-              changeReason: this.changeReason,
-              oldChannelId: this.$route.query.id,
-            });
+            try {
+              // let flag = await post_channelChange_changeCheck({
+              //   oldChannelId: this.$route.query.id,
+              // });
+              // if (flag) {
+              await post_channelChange_add({
+                ...this.info,
+                operateType: type,
+                channelAttachmentChanges: [...this.info.channelAttachments],
+                channelPersonChanges: [{ ...this.channelPersonsData }],
+                channelBankChanges: this.info.channelBanks,
+                changeReason: this.changeReason,
+                oldChannelId: this.$route.query.id,
+              });
+              // } else {
+              //   this.$message.warning("渠道变更中, 请不要提交重复变更");
+              // }
+            } catch (error) {
+              console.log(error);
+            }
             this.$message.success("渠道商变更提交成功");
             this.$goto({ path: "/channelChange/list" });
             break;
@@ -611,6 +710,9 @@ export default class ModifyThe extends Vue {
       this.channelPersonsData = this.info.channelPersons.length
         ? this.info.channelPersons[0]
         : {};
+      this.getFileListType(res.channelAttachments);
+    } else {
+      this.getFileListType([]);
     }
   }
   /**
@@ -630,7 +732,33 @@ export default class ModifyThe extends Vue {
    */
   private async deleteBank(row: object, index: number): Promise<void> {
     this.info.channelBanks.splice(index, 1);
-    this.$message.success("删除成功");
+    // this.$message.success("删除成功");
+  }
+
+  getFileListType(data: any) {
+    const list = (this.$root as any).dictAllList("ChannelAttachment");
+    this.fileListType = list.map((v: any) => {
+      return {
+        ...v,
+        fileList: data
+          .filter((j: any) => j.type === v.code)
+          .map((h: any) => ({
+            ...h,
+            name: h.fileName,
+          })),
+      };
+    });
+    let obj: any = {};
+    this.fileListType.forEach((h: any) => {
+      obj[h.code] = h.fileList;
+    });
+    this.submitFile = { ...obj };
+  }
+
+  queryNew(data: any, type?: any) {
+    let obj: any = {};
+    obj[type] = data;
+    this.submitFile = { ...this.submitFile, ...obj };
   }
 
   async created() {

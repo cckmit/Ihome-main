@@ -9,7 +9,7 @@
 <template>
   <ih-page>
     <template v-slot:info>
-      <el-tabs type="border-card"  v-model="tabActive">
+      <el-tabs type="border-card" v-model="tabActive">
         <el-tab-pane label="资源详情" name="1">
           <InfoDetails />
         </el-tab-pane>
@@ -34,7 +34,7 @@ import InfoDetails from "./info-tabs/details.vue";
 import InfoJob from "./info-tabs/job.vue";
 import InfoUser from "./info-tabs/user.vue";
 @Component({
-  components: { InfoRole, InfoDetails, InfoJob, InfoUser }
+  components: { InfoRole, InfoDetails, InfoJob, InfoUser },
 })
 export default class ResourcesInfo extends Vue {
   tabActive: any = null;

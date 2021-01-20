@@ -4,10 +4,10 @@
  * @Author: zyc
  * @Date: 2020-06-22 11:46:23
  * @LastEditors: zyc
- * @LastEditTime: 2020-11-11 14:21:04
+ * @LastEditTime: 2021-01-06 15:24:15
 --> 
 <template>
-  <div>
+  <div class="app">
     <el-container v-show="!loginPage" id="main-root" class="root">
       <el-aside
         :width="sidebarWidth"
@@ -15,33 +15,26 @@
         class="ih-aside"
       >
         <div class="container-logo" v-show="!isCollapsed">
-          <img
-            src="./assets/img/logo/logo.png"
-            style="width: 100%"
-            alt
-            srcset
-          />
+          <el-link href="/">
+            <img class="logo-img" src="./assets/layout/logo-home.png" />
+            <img src="./assets/layout/logo-text.png" style="width: 135px" />
+            <!-- <span class="logo-title">新房分销系统</span> -->
+          </el-link>
         </div>
         <div class="container-logo-lm" v-show="isCollapsed">
-          <img
-            src="./assets/img/logo/ihome.jpg"
-            style="width: 100%"
-            alt
-            srcset
-          />
+          <el-link href="/">
+            <img src="./assets/layout/logo-icon.png" style="width: 100%" />
+          </el-link>
         </div>
 
         <el-scrollbar
           class="scroll"
-          :style="{ height: `calc(100% - ${isCollapsed ? '64' : '50'}px)` }"
+          :style="{ height: `calc(100% - ${isCollapsed ? '100' : '100'}px)` }"
         >
           <el-menu
             :default-openeds="defaultOpeneds"
             :default-active="defaultActive"
             class="el-menu-vertical-demo"
-            background-color="#ef9d39"
-            text-color="#fff"
-            active-text-color="#ffd04b"
             :collapse-transition="false"
             :collapse="isCollapsed"
             :class="{ 'is-collapse': isCollapsed }"
@@ -51,17 +44,17 @@
               <el-menu-item
                 :index="item.id"
                 v-if="!item.children"
-                @click="goto(item.path)"
+                @click="goto(item.url)"
                 :key="item.id"
               >
-                <i :class="item.icon"></i>
-                <span>{{ item.title }}</span>
+                <i :class="item.icon || 'el-icon-folder'"></i>
+                <span>{{ item.name }}</span>
               </el-menu-item>
 
               <el-submenu :index="item.id" v-if="item.children" :key="item.id">
                 <template slot="title">
                   <i :class="item.icon"></i>
-                  <span>{{ item.title }}</span>
+                  <span>{{ item.name }}</span>
                 </template>
                 <template
                   v-for="(childrenItem, childrenIndex) in item.children"
@@ -71,31 +64,37 @@
                     :key="childrenIndex"
                     v-if="childrenItem.children"
                   >
-                    <template slot="title">{{ childrenItem.title }}</template>
+                    <template slot="title">{{ childrenItem.name }}</template>
                     <el-menu-item
                       :index="cItem.id"
                       v-for="(cItem, cIndex) in childrenItem.children"
                       :key="cIndex"
-                      >{{ cItem.title }}</el-menu-item
+                    >
+                      {{ cItem.name }}</el-menu-item
                     >
                   </el-submenu>
                   <el-menu-item
+                    style="padding-left: 50px"
                     v-else
                     :key="childrenIndex"
-                    @click="goto(childrenItem.path)"
+                    @click="goto(childrenItem.url)"
                     :index="childrenItem.id"
-                    >{{ childrenItem.title }}</el-menu-item
+                    >{{ childrenItem.name }}</el-menu-item
                   >
                 </template>
               </el-submenu>
             </template>
           </el-menu>
         </el-scrollbar>
+
+        <div class="container-footer" v-show="!isCollapsed">
+          <img src="./assets/layout/x.png" alt srcset />
+        </div>
       </el-aside>
 
       <el-container v-show="!loginPage">
         <div class="right-container">
-          <IhHeader class="right-container-header" />
+          <Header class="right-container-header" />
           <!-- v-loading="loading" -->
           <el-main
             class="right-container-body"
@@ -128,14 +127,14 @@
   </div>
 </template>
  <script lang='ts'>
-import IhHeader from "@/components/IhHeader.vue";
+import Header from "@/components/Header.vue";
 import { Component, Vue, Prop, Watch } from "vue-property-decorator";
 import { UserModule } from "./store/modules/user";
 import { AppModule } from "./store/modules/app";
-import { allMenu } from "./api/users";
+// import { allMenu } from "./api/users";
 import { normalAsideWidth, stretchAsideWidth } from "./setting";
 @Component({
-  components: { IhHeader },
+  components: { Header },
 })
 export default class App extends Vue {
   @Prop({ required: true }) private loading!: boolean;
@@ -150,23 +149,36 @@ export default class App extends Vue {
   menuList: any = [];
 
   groupMenuList: any[] = [];
+  onShfit = false;
+  onCtrl = false;
 
   async created() {
-    this.menuList = await allMenu();
+    // this.menuList = await allMenu();
+    // this.menuList = (this.$root as any).userInfo?.menuList || [];
+    this.menuList = (window as any).polyihomeData?.userInfo?.menuList || [];
     this.setMenu();
   }
+
   setMenu() {
     let menuList = this.menuList;
+
     menuList.map((item: any) => {
+      if (item.type && item.type == "Service") {
+        item.parentId = 0;
+      }
       item.id = item.id.toString();
+      if (item.parentId === null) {
+        item.parentId = "0";
+      }
       item.parentId = item.parentId.toString();
       return item;
     });
 
     this.groupMenuList = this.listToGruop(menuList, { rootId: "0" });
+
     for (let index = 0; index < menuList.length; index++) {
       const element = menuList[index];
-      if (element.path == this.$route.path) {
+      if (element.url == this.$route.path) {
         this.defaultActive = element.id.toString(); //设置菜单选中
         this.defaultOpeneds = [element.parentId.toString()]; //设置当前菜单展开
         break;
@@ -227,20 +239,46 @@ export default class App extends Vue {
   }
   mounted() {
     window.addEventListener("resize", this.resize);
+    const setKeyStatus = (keyCode: any, status: any) => {
+      switch (keyCode) {
+        case 16:
+          if (this.onShfit === status) return;
+
+          this.onShfit = status;
+          break;
+        case 17:
+          if (this.onCtrl === status) return;
+
+          this.onCtrl = status;
+          break;
+      }
+    };
+    document.onkeydown = (e: any) => {
+      setKeyStatus(e.keyCode, true);
+    };
+    document.onkeyup = (e: any) => {
+      setKeyStatus(e.keyCode, false);
+    };
   }
   resize() {
     this.screenWidth =
       document.documentElement.clientWidth || document.body.clientWidth;
     this.screenHeight =
       document.documentElement.clientHeight || document.body.clientHeight;
-    // console.log(this.screenWidth, this.screenHeight);
   }
 
-  goto(path: string) {
-    if (window.location.pathname != path) {
-      this.$router.push({
-        path: path,
-      });
+  goto(url: string) {
+    if (window.location.pathname != url) {
+      if (this.onCtrl) {
+        (window as any).open(url);
+        // this.$router.push({
+        //   path: url,
+        // });
+      } else {
+        this.$router.push({
+          path: url,
+        });
+      }
     }
   }
   changeState(value: any) {
@@ -279,9 +317,33 @@ export default class App extends Vue {
 }
 </script>
 <style lang="scss">
-$asideBg: #ef9d39;
-$asideFontColor: #f5eed4;
-$asideActive: #e29334;
+.container-footer {
+  text-align: center;
+  line-height: 66px;
+  height: 28px;
+  width: 100%;
+  color: #d1defb;
+}
+$asideBg: #003894;
+$asideFontColor: #d1defb;
+$asideActive: #4881f9;
+
+.el-submenu.is-active.is-opened > div {
+  background: #4881f9 !important;
+}
+.el-submenu.is-active.is-opened > ul > li {
+  background: #002f7b !important;
+}
+.el-submenu.is-active {
+  background: $asideActive !important;
+}
+.el-menu-item {
+  background: #fff !important;
+}
+// .el-menu-item.is-active {
+//   color: #9DE5FC !important;
+// }
+
 body {
   margin: 0;
   padding: 0;
@@ -330,58 +392,38 @@ body {
     width: 6px !important;
   }
 }
-// .el-menu .el-submenu,
-// .el-menu-item-group__title,
-// .el-menu-item,
-// .el-menu-item.is-disabled,
-// .el-menu-vertical-demo.el-menu {
-//   background: $asideBg !important;
-// }
+
+.el-menu-vertical-demo.el-menu,
+.el-menu-item {
+  background: $asideBg !important;
+}
 
 .el-menu .el-submenu div,
 .el-submenu i,
 .el-menu-item {
-  color: #fff !important;
+  color: #d1defb !important;
+  font-family: Source Han Sans CN;
 }
+
 .el-menu {
   border-right: solid 1px $asideBg !important;
   &.is-collapse {
-    // width: calc(100% - 17px) !important;
-    // margin: 0 auto !important;
     text-align: center;
   }
 }
-.el-submenu :hover {
-  color: #fff !important;
-  background: #516f94 !important;
-}
+
 .el-menu-item.is-active {
-  color: $asideFontColor !important;
   background: $asideActive !important;
 }
 .el-menu-vertical-demo:not(.el-menu--collapse) {
   width: 199px;
   min-height: 400px;
 }
-// 滚动条整体样式
-// ::-webkit-scrollbar {
-//   width: 6px;
-//   height: 6px;
-// }
-// ::-webkit-scrollbar-thumb {
-//   border-radius: 12px;
-//   box-shadow: inset 0 0 5px rgba(0, 0, 0, 0.2);
-//   background: rgba(144, 147, 153, 0.3);
-// }
-// ::-webkit-scrollbar-track {
-//   box-shadow: inset 0 0 5px rgba(0, 0, 0, 0.2);
-//   border-radius: 12px;
-//   background: #ededed;
-// }
 </style>
 <style scoped lang="scss">
-$asideFontColor: #f5eed4;
-$asideActive: #e29334;
+$asideFontColor: #d1defb;
+$asideActive: #4881f9;
+$asideBg: #003894;
 .right-container-header {
   height: 50px;
   line-height: 50px;
@@ -395,6 +437,8 @@ $asideActive: #e29334;
   box-sizing: border-box;
   // left: 0;
   // right: 0;
+  // background: #4881f9;
+  // color: #fff !important;
 }
 .right-container {
   width: 100%;
@@ -403,13 +447,12 @@ $asideActive: #e29334;
 //   margin-top: 50px;
 // }
 .container-logo {
-  width: 200px;
+  width: 220px;
   height: 50px;
   line-height: 50px;
-  padding: 10px;
   box-sizing: border-box;
   margin: 0 auto;
-  // border-bottom: 1px solid #2c4e5a;
+  text-align: center;
 }
 .container-logo-lm {
   width: 64px;
@@ -426,7 +469,7 @@ $asideActive: #e29334;
   background: #f5f6f8;
 }
 .ih-aside {
-  background-color: #ef9d39;
+  background-color: $asideBg;
   z-index: 101;
   color: $asideFontColor !important;
   transition: width 0.28s;
@@ -438,7 +481,25 @@ $asideActive: #e29334;
   color: $asideFontColor !important;
 }
 .el-submenu :hover {
-  color: $asideFontColor !important;
-  background: $asideActive !important;
+  background: #255dc7 !important;
+}
+.el-menu-item.is-active {
+  color: #9de5fc !important;
+}
+.logo-title {
+  font-size: 20px;
+  height: 50px;
+  line-height: 50px;
+  display: inline-block;
+  width: 134px;
+  color: #fff;
+}
+.logo-img {
+  position: relative;
+  top: 4px;
+}
+.is-opened .el-menu-item {
+  height: 45px;
+  line-height: 45px;
 }
 </style>

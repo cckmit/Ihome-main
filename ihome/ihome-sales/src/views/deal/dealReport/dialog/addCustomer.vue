@@ -1,10 +1,10 @@
 <!--
- * @Descripttion: 
+ * @Description:
  * @version: 
  * @Author: lsj
  * @Date: 2020-11-03 15:28:12
  * @LastEditors: lsj
- * @LastEditTime: 2020-11-03 15:30:12
+ * @LastEditTime: 2021-01-19 17:00:11
 -->
 <template>
   <el-dialog
@@ -18,225 +18,254 @@
     width="1000px"
     style="text-align: left"
     class="dialog">
-    <el-form ref="form" label-width="100px">
+    <el-form ref="form" label-width="100px" @submit.native.prevent>
       <el-row>
         <el-col :span="8">
           <el-form-item label="客户姓名">
             <el-input
+              clearable
               v-model="queryPageParameters.custName"
               placeholder="客户姓名"
             ></el-input>
           </el-form-item>
         </el-col>
         <el-col :span="8">
-          <el-form-item label="客户类型">
-            <el-input
-              v-model="queryPageParameters.custType"
-              placeholder="客户类型"
-            ></el-input>
-          </el-form-item>
-        </el-col>
-        <el-col :span="8">
-          <el-form-item label="客户编号">
-            <el-input
-              v-model="queryPageParameters.custCode"
-              placeholder="客户编号"
-            ></el-input>
-          </el-form-item>
-        </el-col>
-        <el-col :span="8">
           <el-form-item label="手机号码">
             <el-input
+              clearable
               v-model="queryPageParameters.custTel"
               placeholder="手机号码"
             ></el-input>
           </el-form-item>
         </el-col>
+        <el-col :span="8">
+          <el-form-item label="客户类型">
+            <el-select
+              clearable
+              v-model="queryPageParameters.custType"
+              placeholder="客户类型"
+              class="width--100">
+              <el-option
+                v-for="item in $root.dictAllList('CustType')"
+                :key="item.code"
+                :label="item.name"
+                :value="item.code"
+              ></el-option>
+            </el-select>
+          </el-form-item>
+        </el-col>
+        <el-col :span="12">
+          <el-form-item label="创建时间">
+            <el-date-picker
+              v-model="queryPageParameters.timeList"
+              type="datetimerange"
+              align="left"
+              unlink-panels
+              range-separator="到"
+              start-placeholder="开始日期"
+              end-placeholder="结束日期"
+              value-format="yyyy-MM-dd hh:mm:ss"
+            ></el-date-picker>
+          </el-form-item>
+        </el-col>
+        <el-col :span="8">
+          <el-form-item label="客户来源">
+            <el-select
+              clearable
+              v-model="queryPageParameters.custOrg"
+              placeholder="客户来源"
+              class="width--100">
+              <el-option
+                v-for="item in $root.dictAllList('CustomerSourceType')"
+                :key="item.code"
+                :label="item.name"
+                :value="item.code"
+              ></el-option>
+            </el-select>
+          </el-form-item>
+        </el-col>
       </el-row>
       <el-row>
-        <el-col :span="8">
+        <el-col>
           <el-form-item label="">
-            <el-button type="primary" @click="getListMixin()">查询</el-button>
+            <el-button type="primary" @click="handleSearch">查询</el-button>
+            <el-button type="success" @click="add">添加</el-button>
+            <el-button type="default" @click="handleSearch">刷新</el-button>
             <el-button type="info" @click="reset()">重置</el-button>
           </el-form-item>
         </el-col>
       </el-row>
     </el-form>
-    <IhTableCheckBox
-      :isSingle="true"
-      :valueKey="rowKey"
+    <el-table
+      ref="table"
+      :max-height="350"
+      class="ih-table table-dialog"
       :data="resPageInfo.list"
-      :hasCheckedData="hasCheckedData"
-      :rowKey="rowKey"
-      :column="tableColumn"
-      :maxHeight="tableMaxHeight"
-      @selection-change="selectionChange"
-      :pageSize="pageSize"
-      :pageCurrent="currentPage"
-      :pageTotal="resPageInfo.total"
-      @page-change="pageChange"
-      @size-change="sizeChange">
-    </IhTableCheckBox>
+      @selection-change="handleSelectionChange"
+      @select="handleSelect"
+      @select-all="handleSelectAll">
+      <el-table-column fixed type="selection" width="50" align="center"></el-table-column>
+      <el-table-column label="客户姓名" prop="custName" min-width="120"></el-table-column>
+      <el-table-column label="手机号码" prop="custTel" min-width="180"></el-table-column>
+      <el-table-column label="客户来源" prop="custOrg" min-width="130">
+        <template slot-scope="scope">
+          <div>{{$root.dictAllName(scope.row.custOrg, 'CustomerOrg')}}</div>
+        </template>
+      </el-table-column>
+      <el-table-column label="客户类型" prop="custType" min-width="100">
+        <template slot-scope="scope">
+          <div>{{$root.dictAllName(scope.row.custType, 'CustType')}}</div>
+        </template>
+      </el-table-column>
+      <el-table-column label="证件类型" prop="cardType" min-width="120">
+        <template slot-scope="scope">
+          <div>{{$root.dictAllName(scope.row.cardType, 'CardType')}}</div>
+        </template>
+      </el-table-column>
+      <el-table-column label="证件编号" prop="" min-width="250">
+        <template slot-scope="scope">
+          <div>{{scope.row.certificateNumber ? scope.row.certificateNumber : '—'}}</div>
+        </template>
+      </el-table-column>
+      <el-table-column label="邮箱" prop="email" min-width="150">
+        <template slot-scope="scope">
+          <div>{{scope.row.email ? scope.row.email : '—'}}</div>
+        </template>
+      </el-table-column>
+      <el-table-column label="创建时间" prop="createTime" min-width="180"></el-table-column>
+    </el-table>
+    <div class="text-right">
+      <br />
+      <el-pagination
+        @size-change="handleSizeChangeMixin"
+        @current-change="handleCurrentChangeMixin"
+        :current-page.sync="queryPageParameters.pageNum"
+        :page-sizes="$root.pageSizes"
+        :page-size="queryPageParameters.pageSize"
+        :layout="$root.paginationLayout"
+        :total="resPageInfo.total"
+      ></el-pagination>
+    </div>
     <span slot="footer" class="dialog-footer">
+      <el-button @click="cancel()">取 消</el-button>
       <el-button type="primary" @click="finish()">确 定</el-button>
     </span>
+    <ih-dialog :show="dialogEnter" desc="添加客户">
+      <EnterCustomer
+        @cancel="() => (dialogEnter = false)"
+        @finish="
+            () => {dialogEnter = false}
+          "/>
+    </ih-dialog>
   </el-dialog>
 </template>
 <script lang="ts">
   import {Component, Vue, Prop} from "vue-property-decorator";
+  import EnterCustomer from "@/views/deal/dealReport/dialog/enterCustomer.vue";
 
   import {post_customer_getCustList} from "@/api/customer";
   import PaginationMixin from "@/mixins/pagination";
 
   @Component({
-    components: {},
+    components: {EnterCustomer},
     mixins: [PaginationMixin],
   })
   export default class AddCustomer extends Vue {
     constructor() {
       super();
     }
-
-    private rowKey: any = 'id'; // 选择项的标识
-    private tableMaxHeight: any = 350;
-    private tableColumn = [
-      {
-        prop: "custCode",
-        label: "客户编号",
-        align: "left",
-        minWidth: 250,
-      },
-      {
-        prop: "custName",
-        label: "客户姓名",
-        align: "left",
-        minWidth: 110,
-      },
-      {
-        prop: "custTypeByName",
-        label: "客户类型",
-        align: "left",
-        minWidth: 110,
-      },
-      {
-        prop: "custTel",
-        label: "手机号码",
-        align: "left",
-        minWidth: 160,
-      },
-      {
-        prop: "cardTypeByName",
-        label: "证件类型",
-        align: "left",
-        minWidth: 120,
-      },
-      {
-        prop: "certificateNumber",
-        label: "证件号码",
-        align: "left",
-        minWidth: 180,
-      }
-    ];
-    private pageSize = 10;
-    private currentPage = 1;
-
-    @Prop({default: null}) data: any;
-    @Prop({
-      default: ()=>[]
-    })
-    hasCheckedData!: any;
-    dialogVisible = true;
-    resPageInfo: any = {
+    private dialogVisible = true;
+    private selection = [];
+    public queryPageParameters: any = {
+      custName: null,
+      custTel: null,
+      custType: null,
+      timeList: [],
+      custOrg: null
+    };
+    public resPageInfo: any = {
       total: null,
       list: [],
     };
-
-    queryPageParameters: any = {
-      custName: null,
-      custType: null,
-      custCode: null,
-      custTel: null
-    };
-    currentSelection: any = []; // 当前选择的项
+    @Prop({default: null}) data: any;
+    dialogEnter: any = false; // 添加客户
 
     created() {
       this.getListMixin();
     }
 
+    private handleSelectionChange(val: any) {
+      this.selection = val;
+    }
+
+    private handleSelect(selection: any) {
+      if (selection.length > 1) {
+        let del_row = selection.shift();
+        (this.$refs.table as any).toggleRowSelection(del_row, false);
+      }
+    }
+
+    private handleSelectAll() {
+      (this.$refs.table as any).clearSelection();
+    }
+
     async beforeFinish() {
-      this.$emit("cancel");
+      this.$emit("cancel", false);
+    }
+
+    // 取消
+    cancel() {
+      this.$emit("cancel", false);
     }
 
     async finish() {
-      if (this.currentSelection.length === 0) {
+      if (this.selection.length === 0) {
         this.$message({
           type: "error",
-          message: "请选择渠道商",
+          message: "请选择客户",
         });
         return
       }
-      this.$emit("finish", this.currentSelection);
+      this.$emit("finish", this.selection);
     }
 
-    // 获取选中项 --- 最后需要获取的数据
-    private selectionChange(selection: any) {
-      console.log(selection, "selectionChange");
-      this.currentSelection = selection;
-    }
-
-    private pageChange(index: number) {
-      this.currentPage = index;
-      this.queryPageParameters.pageNum = index;
-      this.getListMixin();
-    }
-
-    private sizeChange(val: any) {
-      this.currentPage = 1;
-      this.pageSize = val;
+    // 查询
+    handleSearch() {
       this.queryPageParameters.pageNum = 1;
-      this.queryPageParameters.pageSize = val;
       this.getListMixin();
     }
 
     async getListMixin() {
-      const infoList = await post_customer_getCustList(this.queryPageParameters);
-      // 原始数据处理
-      if (infoList.list.length > 0) {
-        infoList.list.forEach((item: any) => {
-          item.checked = false; // 勾选标志
-          // 客户类型
-          if (item.custType) {
-            item.custTypeByName = (this as any).$root.dictAllName(item.custType, 'CustType');
-          }
-          // 证件类型
-          if (item.cardType) {
-            item.cardTypeByName = (this as any).$root.dictAllName(item.cardType, 'CardType');
-          }
-        })
+      let postData: any = {
+        createTimeRealMax: null,
+        createTimeRealMin: null,
+        custName: this.queryPageParameters.custName,
+        custTel: this.queryPageParameters.custTel,
+        custType: this.queryPageParameters.custType,
+        custOrg: this.queryPageParameters.custOrg,
+        pageNum: this.queryPageParameters.pageNum,
+        pageSize: this.queryPageParameters.pageSize
       }
-      this.resPageInfo = JSON.parse(JSON.stringify(infoList));
-      // 勾选回显
-      if (this.resPageInfo.list.length > 0 && this.hasCheckedData.length > 0) {
-        this.hasCheckedData.forEach((data: any) => {
-          this.resPageInfo.list.forEach((list: any) => {
-            if (list[this.rowKey] === data[this.rowKey]) {
-              list.checked = true;
-              this.currentSelection = [...list];
-            }
-          })
-        })
+      if (this.queryPageParameters.timeList && this.queryPageParameters.timeList.length) {
+        postData.createTimeRealMax = this.queryPageParameters.timeList[1];
+        postData.createTimeRealMin = this.queryPageParameters.timeList[0];
       }
+      this.resPageInfo = await post_customer_getCustList(postData);
     }
 
-    reset() {
-      this.queryPageParameters = {
+    // 添加
+    add() {
+      this.dialogEnter = !this.dialogEnter;
+    }
+
+    private reset() {
+      Object.assign(this.queryPageParameters, {
         custName: null,
-        custType: null,
-        custCode: null,
         custTel: null,
-        pageNum: 1,
-        pageSize: this.queryPageParameters.pageSize
-      };
+        custType: null,
+        timeList: [],
+        custOrg: null
+      });
     }
   }
 </script>

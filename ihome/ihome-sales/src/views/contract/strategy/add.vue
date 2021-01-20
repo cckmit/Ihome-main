@@ -3,8 +3,8 @@
  * @version: 
  * @Author: ywl
  * @Date: 2020-09-27 14:41:06
- * @LastEditors: ywl
- * @LastEditTime: 2020-12-04 20:06:36
+ * @LastEditors: wwq
+ * @LastEditTime: 2020-12-11 08:46:05
 -->
 <template>
   <IhPage>
@@ -43,7 +43,7 @@
                 class="width--100"
               >
                 <el-option
-                  v-for="item in $root.dictAllList('AgreementTypeEnum')"
+                  v-for="item in $root.dictAllList('AgreementType')"
                   :key="item.code"
                   :label="item.name"
                   :value="item.code"
@@ -151,7 +151,7 @@
                 class="width--100"
               >
                 <el-option
-                  v-for="item in $root.dictAllList('StrategyEnum.FileState')"
+                  v-for="item in $root.dictAllList('FileState')"
                   :key="item.code"
                   :label="item.name"
                   :value="item.code"

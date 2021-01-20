@@ -4,7 +4,7 @@
  * @Author: ywl
  * @Date: 2020-08-13 11:40:10
  * @LastEditors: ywl
- * @LastEditTime: 2020-11-30 17:43:53
+ * @LastEditTime: 2021-01-15 20:50:10
 -->
 <template>
   <IhPage label-width="100px">
@@ -47,19 +47,20 @@
           </el-col>
           <el-col :span="8">
             <el-form-item label="渠道跟进人">
-              <el-select
+              <IhSelectPageUser
                 v-model="queryPageParameters.followUserId"
                 clearable
-                placeholder="渠道跟进人"
-                class="width--100"
               >
-                <el-option
-                  v-for="item in testList"
-                  :key="item.id"
-                  :label="item.value"
-                  :value="item.id"
-                ></el-option>
-              </el-select>
+                <template v-slot="{ data }">
+                  <span style="float: left">{{ data.name }}</span>
+                  <span style="
+                      margin-left: 20px;
+                      float: right;
+                      color: #8492a6;
+                      font-size: 13px;
+                    ">{{ data.account }}</span>
+                </template>
+              </IhSelectPageUser>
             </el-form-item>
           </el-col>
           <el-col :span="8">
@@ -110,12 +111,16 @@
         <el-button
           type="success"
           @click="$router.push('/channelBusiness/add')"
+          v-has="'B.SALES.CHANNEL.BASELIST.ADD'"
         >添加</el-button>
         <el-button
           type="info"
           @click="reset()"
         >重置</el-button>
-        <el-button @click="changeFollower()">变更跟进人</el-button>
+        <el-button
+          @click="changeFollower()"
+          v-has="'B.SALES.CHANNEL.BASELIST.UPDATEFOLLOWER'"
+        >变更跟进人</el-button>
         <!-- <el-button @click="changeInputPerson()">变更录入人</el-button> -->
       </el-row>
     </template>
@@ -213,31 +218,33 @@
               <el-dropdown-menu slot="dropdown">
                 <el-dropdown-item
                   @click.native.prevent="handleToPage(row, 'edit')"
-                  :disabled="row.status !== 'DRAFT'"
+                  :class="{ 'ih-data-disabled': !editChange(row) }"
+                  v-has="'B.SALES.CHANNEL.BASELIST.UPDATE'"
                 >修改</el-dropdown-item>
                 <el-dropdown-item
                   @click.native.prevent="remove(row)"
-                  :disabled="row.status !== 'DRAFT'"
+                  :class="{ 'ih-data-disabled': !editChange(row) }"
+                  v-has="'B.SALES.CHANNEL.BASELIST.DELETE'"
                 >删除</el-dropdown-item>
                 <el-dropdown-item
                   @click.native.prevent="handleToPage(row, 'confirm')"
-                  :disabled="row.status !== 'ToBeConfirmed'"
+                  :class="{ 'ih-data-disabled': !confirmChange(row) }"
+                  v-has="'B.SALES.CHANNEL.BASELIST.CONFIRM'"
                 >确认</el-dropdown-item>
-                <!-- <el-dropdown-item
-                  @click.native.prevent="handleToPage(row, 'revoke')"
-                  :disabled="row.status === 'DRAFT'"
-                >撤回起草</el-dropdown-item> -->
                 <el-dropdown-item
                   @click.native.prevent="backDraft(row, 'revoke')"
-                  :disabled="row.status === 'DRAFT'"
-                >撤回起草</el-dropdown-item>
+                  :class="{'ih-data-disabled': row.status !== 'Confirmed'}"
+                  v-has="'B.SALES.CHANNEL.BASELIST.REVOKEDRAFT'"
+                >退回起草</el-dropdown-item>
                 <el-dropdown-item
-                  @click.native.prevent="handleToPage(row, 'change')"
-                  :disabled="row.status !== 'PASS'"
+                  @click.native.prevent="updateInfo(row)"
+                  :class="{ 'ih-data-disabled': !passChange(row) }"
+                  v-has="'B.SALES.CHANNEL.BASELIST.UPDATEINFO'"
                 >变更信息</el-dropdown-item>
                 <el-dropdown-item
                   @click.native.prevent="handleToPage(row, 'agent')"
-                  :disabled="row.status !== 'DRAFT'"
+                  :class="{ 'ih-data-disabled': !agentChange(row) }"
+                  v-has="'B.SALES.CHANNEL.BASELIST.MAINTAINAGENT'"
                 >维护渠道经纪人</el-dropdown-item>
               </el-dropdown-menu>
             </el-dropdown>
@@ -284,6 +291,7 @@ import {
   post_channel_getList,
   post_channel_delete__id,
   post_channel_backToDraft__id,
+  get_channelChange_changeCheck__oldChannelId,
 } from "@/api/channel/index";
 import UpdateUser from "./dialog/updateUser.vue";
 
@@ -313,13 +321,46 @@ export default class List extends Vue {
   isInput = true;
   private provinceList: any = [];
 
-  // 测试数据
-  testList = [
-    { value: "管理员1", id: 1 },
-    { value: "管理员2", id: 2 },
-    { value: "管理员3", id: 3 },
-  ];
+  editChange(row: any) {
+    const status = row.status === "DRAFT";
+    const dangqian = (this.$root as any).userInfo.id === row.followUserId;
+    return status && dangqian;
+  }
 
+  confirmChange(row: any) {
+    const status = row.status === "ToBeConfirmed";
+    const dangqian = (this.$root as any).userInfo.id === row.followUserId;
+    return status && dangqian;
+  }
+
+  passChange(row: any) {
+    const status = row.status === "PASS";
+    const dangqian = (this.$root as any).userInfo.id === row.followUserId;
+    return status && dangqian;
+  }
+
+  agentChange(row: any) {
+    const DRAFT = row.status === "DRAFT";
+    const ToBeConfirmed = row.status === "ToBeConfirmed";
+    const dangqian = (this.$root as any).userInfo.id === row.followUserId;
+    return (!DRAFT || !ToBeConfirmed) && dangqian;
+  }
+
+  async updateInfo(row: any) {
+    let flag = true;
+    try {
+      flag = await get_channelChange_changeCheck__oldChannelId({
+        oldChannelId: row.id,
+      });
+    } catch (error) {
+      console.log(error);
+    }
+    if (!flag) {
+      this.handleToPage(row, "change");
+    } else {
+      this.$message.warning("渠道变更中, 请不要提交重复变更");
+    }
+  }
   search() {
     this.queryPageParameters.provinces = this.provinceList[0];
     this.queryPageParameters.city = this.provinceList[1];

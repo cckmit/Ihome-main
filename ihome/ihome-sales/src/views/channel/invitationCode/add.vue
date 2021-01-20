@@ -4,7 +4,7 @@
  * @Author: zyc
  * @Date: 2020-10-13 19:06:12
  * @LastEditors: zyc
- * @LastEditTime: 2020-11-16 10:15:47
+ * @LastEditTime: 2020-12-22 17:22:08
 -->
 <template>
   <el-dialog
@@ -36,26 +36,20 @@
       </el-form-item>
 
       <el-form-item label="事业部" prop="departmentOrgId">
-        <el-select
-          v-model="form.departmentOrgId"
-          clearable
+        <IhSelectPageDivision
           placeholder="事业部"
-          class="width--100"
-        >
-          <el-option
-            v-for="item in divisionList"
-            :key="item.value"
-            :label="item.label"
-            :value="item.value"
-          ></el-option>
-        </el-select>
+          v-model="form.departmentOrgId"
+          :searchName="form.departmentName"
+          clearable
+          value-key="id"
+        ></IhSelectPageDivision>
       </el-form-item>
       <el-form-item label="" prop="">
         <el-button type="primary" @click="finish('ruleForm')">创建</el-button>
       </el-form-item>
       <div v-show="url">
         <el-form-item label="" prop="">
-          <el-image
+          <el-image  
             style="width: 300px; height: 300px"
             :src="url"
             fit="fill"
@@ -139,13 +133,13 @@ export default class InvitationCodeAdd extends Vue {
   async submit(valid: any) {
     if (valid) {
       const res = await get_channelInvitationCode_create(this.form);
-      this.url = res;
+      this.url = this.url = this.$tool.downloadLongFileUrl(res);
       this.$message.success("创建成功");
     }
   }
 
   download() {
-    console.log("下载，未实现");
+    window.open(this.url);
   }
 }
 </script>

@@ -115,12 +115,13 @@ export default class AgentDialog extends Vue {
       this.isAdd
         ? await post_channelAgent_add({
             ...this.form,
-            chanelId: this.channelId,
+            channelId: this.channelId,
           })
         : await post_channelAgent_edit({
             ...this.form,
-            chanelId: this.channelId,
+            channelId: this.channelId,
           });
+      this.$message.success(`${this.isAdd ? "添加" : "修改"}基金人成功`);
       this.$emit("finish", this.isAdd);
     } else {
       console.log("error submit!!");

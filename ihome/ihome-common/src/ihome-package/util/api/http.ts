@@ -4,7 +4,7 @@
  * @Author: zyc
  * @Date: 2020-10-22 09:00:11
  * @LastEditors: zyc
- * @LastEditTime: 2020-12-07 09:24:47
+ * @LastEditTime: 2020-12-15 19:49:19
  */
 import axios from 'axios'
 import { Message, MessageBox } from 'element-ui'
@@ -106,20 +106,28 @@ service.interceptors.response.use(
 
 
     },
-    (error) => {
+    (error: any) => {
+        NProgress.done();
         // console.log(error);
         // console.log(error.response);
         // console.log(error.message);
         if (error.response.status == 401) {
-            Message({
-                message: '请先登录',
-                type: 'error',
-                duration: messageTime
-            });
-            removeToken();
-            if (window.location.pathname != '/login') {
-                (window as any).location = '/login';
+
+            if (error.response.config.url?.startsWith('/sales-api/system/sessionUser/getUserInfo')) {
+
+            } else {
+                Message({
+                    message: '请先登录',
+                    type: 'error',
+                    duration: messageTime
+                });
+                removeToken();
+                if (window.location.pathname != '/login') {
+                    (window as any).location = '/login';
+                }
             }
+
+
 
 
         } else if (error.response.status == 403) {

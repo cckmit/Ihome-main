@@ -3,8 +3,8 @@
  * @version: 
  * @Author: ywl
  * @Date: 2020-09-27 10:46:14
- * @LastEditors: ywl
- * @LastEditTime: 2020-12-04 10:27:33
+ * @LastEditors: wwq
+ * @LastEditTime: 2021-01-18 11:18:52
 -->
 <template>
   <IhPage class="text-left distribution-info">
@@ -101,6 +101,18 @@
         </el-row>
         <el-row>
           <el-col :span="12">
+            <el-form-item label="负责人">
+              {{ruleForm.dealMan}}
+            </el-form-item>
+          </el-col>
+          <el-col :span="12">
+            <el-form-item label="负责人电话">
+              {{ruleForm.dealTel}}
+            </el-form-item>
+          </el-col>
+        </el-row>
+        <el-row>
+          <el-col :span="12">
             <el-form-item label="合作期限">
               {{ruleForm.contractStartTime}} -- {{ruleForm.contractEndTime}}
             </el-form-item>
@@ -124,7 +136,6 @@
                 type="textarea"
                 :autosize="{ minRows: 3, maxRows: 3}"
                 v-model="ruleForm.agencyFeeRemark"
-                placeholder="代理费计付标准备注"
                 disabled
               ></el-input>
             </el-form-item>
@@ -137,7 +148,6 @@
                 type="textarea"
                 :autosize="{ minRows: 3, maxRows: 3}"
                 v-model="ruleForm.consumerComplete"
-                placeholder="客户成交以及确认"
                 disabled
               ></el-input>
             </el-form-item>
@@ -150,7 +160,6 @@
                 type="textarea"
                 :autosize="{ minRows: 3, maxRows: 3}"
                 v-model="ruleForm.agencyCostCondition"
-                placeholder="代理费结算条件"
                 disabled
               ></el-input>
             </el-form-item>
@@ -163,7 +172,6 @@
                 type="textarea"
                 :autosize="{ minRows: 3, maxRows: 3}"
                 v-model="ruleForm.agencyCostSettleWay"
-                placeholder="代理费结算方式"
                 disabled
               ></el-input>
             </el-form-item>
@@ -176,7 +184,6 @@
                 type="textarea"
                 :autosize="{ minRows: 3, maxRows: 3}"
                 v-model="ruleForm.unContractLiability"
-                placeholder="违约责任"
                 disabled
               ></el-input>
             </el-form-item>
@@ -189,7 +196,6 @@
                 type="textarea"
                 :autosize="{ minRows: 3, maxRows: 3}"
                 v-model="ruleForm.supplementary"
-                placeholder="补充条款"
                 disabled
               ></el-input>
             </el-form-item>
@@ -218,14 +224,14 @@
         <el-row>
           <el-col :span="24">
             <el-form-item label="渠道类型">
-              {{$root.dictAllName(ruleForm.channelEnum, 'ChannelEnum')}}
+              {{$root.dictAllName(ruleForm.channelEnum, 'ChannelCustomer')}}
             </el-form-item>
           </el-col>
         </el-row>
         <el-row>
           <el-col :span="18">
             <el-form-item label="代理费是否垫佣">
-              {{$root.dictAllName(ruleForm.padCommissionEnum, 'PadCommissionEnum')}}
+              {{$root.dictAllName(ruleForm.padCommissionEnum, 'PadCommission')}}
             </el-form-item>
           </el-col>
         </el-row>
@@ -237,7 +243,7 @@
             prop="propertyEnum"
           >
             <template v-slot="{ row }">
-              {{$root.dictAllName(row.propertyEnum, 'PropertyEnum')}}
+              {{$root.dictAllName(row.propertyEnum, 'Property')}}
             </template>
           </el-table-column>
           <el-table-column
@@ -267,22 +273,29 @@
         <el-row>
           <el-col :span="12">
             <el-form-item label="归档状态">
-              {{$root.dictAllName(ruleForm.archiveStatus, 'DistributionEnum.ArchiveStatus')}}
+              {{$root.dictAllName(ruleForm.archiveStatus, 'ArchiveStatus')}}
             </el-form-item>
           </el-col>
           <el-col :span="12">
             <el-form-item label="审核状态">
+              {{$root.dictAllName(ruleForm.distributionState, 'DistributionState')}}
             </el-form-item>
           </el-col>
         </el-row>
         <el-row>
           <el-col :span="12">
             <el-form-item label="合同电子版">
-              <el-button type="success">预览电子版</el-button>
+              <el-button
+                type="success"
+                @click="preview()"
+              >预览电子版</el-button>
             </el-form-item>
           </el-col>
           <el-col :span="12">
-            <el-form-item label="归档编号">
+            <el-form-item
+              label="归档编号"
+              required
+            >
               <el-input
                 v-model="ruleForm.archiveNo"
                 placeholder="请输入归档编号"
@@ -296,8 +309,10 @@
           <el-col :span="18">
             <el-form-item label="盖章版归档">
               <IhUpload
+                v-if="$route.name === 'DistributionDetail' ? true : fileList.length"
                 :file-list="fileList"
                 @newFileList="handleSealFile"
+                :limit="$route.name === 'DistributionDetail' ? 10 : fileList.length"
                 size="100px"
                 class="upload"
               ></IhUpload>
@@ -324,7 +339,7 @@
           type="primary"
           @click="archive()"
         >提交</el-button>
-        <el-button @click="$router.push(-1)">取消</el-button>
+        <el-button @click="$router.go(-1)">取消</el-button>
       </div>
     </template>
   </IhPage>
@@ -335,6 +350,7 @@ import { Component, Vue } from "vue-property-decorator";
 
 import {
   get_distribution_detail__id,
+  get_distribution_deal_detail__contractNo,
   post_distribution_original_archive,
   post_distribution_annex,
 } from "@/api/contract/index";
@@ -355,6 +371,9 @@ export default class DistributionDetail extends Vue {
     await post_distribution_original_archive({
       distributionId: this.ruleForm.id,
       archiveNo: this.ruleForm.archiveNo,
+    });
+    this.$goto({
+      path: "/distribution/list",
     });
     this.$message.success("原件归档成功");
   }
@@ -378,13 +397,37 @@ export default class DistributionDetail extends Vue {
       annexCreateListList: this.sealFile,
       distributionId: this.ruleForm.id,
     });
-    this.$message.success("扫描件归档成功");
+    this.$message.success("提交盖章版归档附件成功");
+    this.sealFile = [];
+    setTimeout(() => {
+      this.$router.go(0);
+    }, 1000);
+  }
+  private preview() {
+    window.open(
+      `/sales-api/sales-document-cover/file/browse/${this.ruleForm.electronicContractNo}`
+    );
   }
   private async getInfo(): Promise<void> {
     let id = this.$route.query.id;
     if (id) {
       let res = await get_distribution_detail__id({ id: id });
       this.ruleForm = { ...this.ruleForm, ...res };
+      this.fileList = res.annexList.map((i: any) => ({
+        name: i.attachmentSuffix,
+        fileId: i.fileNo,
+        exAuto: 1,
+      }));
+    }
+    let contractNo = this.$route.query.contractNo;
+    if (contractNo) {
+      let res = await get_distribution_deal_detail__contractNo({ contractNo });
+      this.ruleForm = { ...this.ruleForm, ...res };
+      this.fileList = res.annexList.map((i: any) => ({
+        name: i.attachmentSuffix,
+        fileId: i.fileNo,
+        exAuto: 1,
+      }));
     }
   }
 
@@ -396,14 +439,14 @@ export default class DistributionDetail extends Vue {
 
 <style lang="scss" scoped>
 .distribution-info {
-  /deep/ .upload {
-    display: inline-block;
-  }
-  .upload-button {
-    position: absolute;
-    bottom: 0;
-    margin-left: 15px;
-  }
+  // /deep/ .upload {
+  //   display: inline-block;
+  // }
+  // .upload-button {
+  //   position: absolute;
+  //   bottom: 0;
+  //   margin-left: 15px;
+  // }
   .annotation {
     color: #d9001b;
     font-size: 14px;

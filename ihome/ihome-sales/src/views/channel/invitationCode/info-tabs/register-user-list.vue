@@ -4,7 +4,7 @@
  * @Author: zyc
  * @Date: 2020-10-13 19:51:15
  * @LastEditors: zyc
- * @LastEditTime: 2020-10-14 10:01:02
+ * @LastEditTime: 2021-01-15 08:51:00
 -->
 <template>
   <div>
@@ -14,7 +14,8 @@
         <el-row>
           <el-col :span="8">
             <el-form-item label="姓名">
-              <el-input clearable
+              <el-input
+                clearable
                 v-model="queryPageParameters.username"
                 placeholder="姓名"
               ></el-input>
@@ -22,7 +23,8 @@
           </el-col>
           <el-col :span="8">
             <el-form-item label="手机号码">
-              <el-input clearable
+              <el-input
+                clearable
                 v-model="queryPageParameters.mobile"
                 placeholder="手机号码"
               ></el-input>
@@ -30,10 +32,12 @@
           </el-col>
           <el-col :span="8">
             <el-form-item label="渠道商">
-              <el-select clearable
+              <el-select
+                clearable
                 v-model="queryPageParameters.channelId"
                 filterable
                 placeholder="请选择"
+                style="width: 100%"
               >
                 <el-option
                   v-for="item in allList"
@@ -48,12 +52,11 @@
         </el-row>
       </el-form>
     </div>
-     <el-row class="text-left margin-left-80">
-        <el-button type="primary" @click="getListMixin()">查询</el-button>
-      </el-row>
+    <el-row class="text-left margin-left-80">
+      <el-button type="primary" @click="getListMixin()">查询</el-button>
+    </el-row>
     <br />
     <el-table :data="resPageInfo.list" style="width: 100%">
-     
       <el-table-column
         prop="username"
         label="姓名"
@@ -64,10 +67,8 @@
         label="手机号码"
         width="180"
       ></el-table-column>
-      <el-table-column prop="channelId" label="渠道商名称">
-        <!-- <template slot-scope="scope">{{
-          $root.displayName("accountType", scope.row.accountType)
-        }}</template> -->
+      <el-table-column prop="companyName" label="渠道商名称">
+        
       </el-table-column>
       <el-table-column prop="registTime" label="注册日期"></el-table-column>
     </el-table>
@@ -90,6 +91,7 @@ import { Component, Vue } from "vue-property-decorator";
 import {
   get_channel_getAll,
   post_channelRegistUser_getList,
+  get_channelInvitationCode_get__id,
 } from "../../../../api/channel/index";
 import PaginationMixin from "../../../../mixins/pagination";
 @Component({
@@ -117,7 +119,8 @@ export default class RegisterUserList extends Vue {
   }
   async created() {
     let id = this.$route.query.id;
-    this.queryPageParameters.invitationCode = id;
+    const res: any = await get_channelInvitationCode_get__id({ id: id });
+    this.queryPageParameters.invitationCode = res.invitationCode;
     this.allList = await get_channel_getAll();
     this.getListMixin();
   }

@@ -3,8 +3,8 @@
  * @version: 
  * @Author: ywl
  * @Date: 2020-06-30 09:21:17
- * @LastEditors: ywl
- * @LastEditTime: 2020-11-30 18:01:20
+ * @LastEditors: wwq
+ * @LastEditTime: 2020-12-21 09:59:39
 --> 
 <template>
   <IhPage label-width="100px">
@@ -16,20 +16,11 @@
         <el-row>
           <el-col :span="8">
             <el-form-item label="渠道商名称">
-              <el-select
+              <IhSelectPageByChannel
                 v-model="queryPageParameters.oldChannelId"
                 clearable
-                placeholder="请选择"
-                class="width--100"
-                filterable
-              >
-                <el-option
-                  v-for="item in channelList"
-                  :key="item.id"
-                  :label="item.name"
-                  :value="item.id"
-                ></el-option>
-              </el-select>
+                placeholder="请选择渠道商"
+              ></IhSelectPageByChannel>
             </el-form-item>
           </el-col>
           <!-- <el-col :span="8">
@@ -59,7 +50,7 @@
                 class="width--100"
               >
                 <el-option
-                  v-for="item in $root.dictAllList('ChannelStatus')"
+                  v-for="item in $root.dictAllList('ChannelChangeStatus')"
                   :key="item.code"
                   :label="item.name"
                   :value="item.code"
@@ -139,10 +130,10 @@
         <el-table-column
           prop="status"
           label="状态"
-          width="115"
+          width="145"
         >
           <template v-slot="{ row }">
-            {{ $root.dictAllName(row.status, "ChannelStatus") }}
+            {{ $root.dictAllName(row.status, "ChannelChangeStatus") }}
           </template>
         </el-table-column>
         <el-table-column
@@ -172,19 +163,33 @@
               <el-dropdown-menu slot="dropdown">
                 <el-dropdown-item
                   @click.native.prevent="handleToPage(row, 'edit')"
-                  :disabled="row.status !== 'DRAFT'"
+                  :class="{ 'ih-data-disabled': !editChange(row) }"
+                  v-has="'B.SALES.CHANNEL.CHANGELIST.UPDATE'"
                 >修改</el-dropdown-item>
                 <el-dropdown-item
                   @click.native.prevent="remove(row)"
-                  :disabled="row.status !== 'DRAFT'"
+                  :class="{ 'ih-data-disabled': !editChange(row) }"
+                  v-has="'B.SALES.CHANNEL.CHANGELIST.DELETE'"
                 >删除</el-dropdown-item>
                 <el-dropdown-item
                   @click.native.prevent="handleToPage(row, 'confirm')"
-                  :disabled="row.status !== 'ToBeConfirmed'"
+                  :class="{'ih-data-disabled': row.status !== 'ToBeConfirmed'}"
+                  v-has="'B.SALES.CHANNEL.CHANGELIST.CONFIRM'"
                 >确认</el-dropdown-item>
-                <el-dropdown-item @click.native.prevent="handleToPage(row, 'examine')">审核</el-dropdown-item>
-                <el-dropdown-item @click.native.prevent="handleToPage(row, 'revoke')">撤回</el-dropdown-item>
-                <el-dropdown-item @click.native.prevent="draft(row)">退回起草</el-dropdown-item>
+                <el-dropdown-item
+                  @click.native.prevent="handleToPage(row, 'examine')"
+                  :class="{ 'ih-data-disabled': !auditChange(row) }"
+                  v-has="'B.SALES.CHANNEL.CHANGELIST.VERIFY'"
+                >审核</el-dropdown-item>
+                <el-dropdown-item
+                  :class="{ 'ih-data-disabled': !recallChange(row) }"
+                  @click.native.prevent="handleToPage(row, 'revoke')"
+                  v-has="'B.SALES.CHANNEL.CHANGELIST.REVOKE'"
+                >撤回</el-dropdown-item>
+                <!-- <el-dropdown-item
+                  @click.native.prevent="draft(row)"
+                  v-has="'B.SALES.CHANNEL.CHANGELIST.REVOKEDRAFT'"
+                >退回起草</el-dropdown-item> -->
               </el-dropdown-menu>
             </el-dropdown>
           </template>
@@ -227,7 +232,6 @@ import { Component, Vue } from "vue-property-decorator";
 
 import {
   post_channelChange_getList,
-  get_channel_getAll,
   post_channelChange_delete__id,
   post_channelChange_backToDraft__id,
 } from "@/api/channel/index";
@@ -251,7 +255,45 @@ export default class ChannelChangeList extends Vue {
   };
   selectionData = [];
   dialogVisible = false;
-  private channelList: any = [];
+
+  editChange(row: any) {
+    const DRAFT = row.status === "DRAFT";
+    const dangqian = (this.$root as any).userInfo.id === row.followUserId;
+    return DRAFT && dangqian;
+  }
+
+  recallChange(row: any) {
+    const PTWYSH = row.status === "PTWYSH";
+    const FGSYGSH = row.status === "FGSYGSH";
+    const ZBYGSH = row.status === "ZBYGSH";
+    const roleList = (this.$root as any).userInfo.roleList.map(
+      (v: any) => v.code
+    );
+    const pingtai = roleList.includes("RPlatformClerk");
+    const fen = roleList.includes("RBusinessManagement");
+    const qudao = roleList.includes("RChannelStaff");
+    const dangqian = (this.$root as any).userInfo.id === row.followUserId;
+    const skipPlatformClerk = row.skipPlatformClerk === "true" ? true : false;
+    return (
+      (PTWYSH && dangqian && !skipPlatformClerk && qudao) ||
+      (FGSYGSH && dangqian && skipPlatformClerk && qudao) ||
+      (FGSYGSH && pingtai) ||
+      (ZBYGSH && fen)
+    );
+  }
+
+  auditChange(row: any) {
+    const PTWYSH = row.status === "PTWYSH";
+    const FGSYGSH = row.status === "FGSYGSH";
+    const ZBYGSH = row.status === "ZBYGSH";
+    const roleList = (this.$root as any).userInfo.roleList.map(
+      (v: any) => v.code
+    );
+    const pingtai = roleList.includes("RPlatformClerk");
+    const fen = roleList.includes("RBusinessManagement");
+    const zong = roleList.includes("RHeadBusinessManagement");
+    return (PTWYSH && pingtai) || (FGSYGSH && fen) || (ZBYGSH && zong);
+  }
 
   reset() {
     Object.assign(this.queryPageParameters, {
@@ -327,13 +369,9 @@ export default class ChannelChangeList extends Vue {
       this.queryPageParameters
     );
   }
-  private async getChannelList(): Promise<void> {
-    this.channelList = await get_channel_getAll();
-  }
 
   async created() {
     this.getListMixin();
-    this.getChannelList();
   }
 }
 </script>

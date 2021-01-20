@@ -3,8 +3,8 @@
  * @version: 
  * @Author: zyc
  * @Date: 2020-06-22 11:10:43
- * @LastEditors: ywl
- * @LastEditTime: 2020-10-20 17:07:41
+ * @LastEditors: zyc
+ * @LastEditTime: 2021-01-18 16:37:00
  */
 import Vue from 'vue'
 import VueRouter, { RouteConfig } from 'vue-router'
@@ -62,6 +62,15 @@ const routes: Array<RouteConfig> = [
     }
   },
   {
+    path: '/selectPageDivision',
+    name: 'selectPageDivision',
+    component: () => import('../views/selectPageDivision.vue'),
+    meta: {
+      title: '下拉框分页Demo'
+    }
+  },
+
+  {
     path: '/tableCheckBox',
     name: 'tableCheckBox',
     component: () => import('../views/tableCheckBoxDemo.vue'),
@@ -76,7 +85,32 @@ const routes: Array<RouteConfig> = [
     meta: {
       title: 'input输入框限制输入小数'
     }
-  }
+  },
+  {
+    path: '/leftRightContainer',
+    name: 'leftRightContainer',
+    component: () => import('../views/leftRightContainer.vue'),
+    meta: {
+      title: '左右拖动'
+    }
+  },
+  {
+    path: '/filePreview',
+    name: 'filePreview',
+    component: () => import('../views/filePreviewPage.vue'),
+    meta: {
+      title: '文件预览'
+    }
+  },
+  {
+    path: '/selectOrgTree',
+    name: 'SelectOrgTree',
+    component: () => import('../views/selectOrgTree.vue'),
+    meta: {
+      title: '归属组织'
+    }
+  },
+
 ]
 const router = new VueRouter({
   mode: 'history',

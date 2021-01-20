@@ -5,7 +5,7 @@ pipeline {
 	    NEXUS3_ADDRESS = 'docker.polyic.cn'
 		IMAGE_NAME_VERSION = '1.0.0'		
 		NODE_NPM_VERSION = '12.18.4-alpine'
-		
+		NEXUS3_DOCKER_CREDS = credentials('nexus3')
         CURR_MODULE = 'sales-web'
 			
     }
@@ -30,26 +30,19 @@ pipeline {
             }
         }
 		
-		stage('docker build') {
+		stage('deploy') {
 		    agent any
 			
 			steps {
-				echo 'docker build mkdir dockerdir..'
-				sh 'rm -rf dockerdir && mkdir -p dockerdir/html'
+			    echo 'deploy..'
 				
-				echo 'docker build copy ihome-main..'
-				sh 'mkdir dockerdir/html/web-main && cp -r ihome/ihome-main/dist/* dockerdir/html/web-main'
+				sh 'rm -rf ../html/web-main/* && cp -r ihome/ihome-main/dist/* ../html/web-main/'
+				sh 'rm -rf ../html/web-system/* && cp -r ihome/ihome-system/dist/* ../html/web-system/'
+				sh 'rm -rf ../html/web-sales/* && cp -r ihome/ihome-sales/dist/* ../html/web-sales/'
 				
-				echo 'docker build copy ihome-system..'
-				sh 'mkdir dockerdir/html/web-system && cp -r ihome/ihome-system/dist/* dockerdir/html/web-system'
-				
-				echo 'docker build copy ihome-sales..'
-				sh 'mkdir dockerdir/html/web-sales && cp -r ihome/ihome-sales/dist/* dockerdir/html/web-sales'
-								
-				echo 'docker build..'
-				sh 'docker build -f Dockerfile -t ${NEXUS3_ADDRESS}/${CURR_MODULE}:${IMAGE_NAME_VERSION} dockerdir/'
             }
-        }		
+        }	
+	
     }
 	
 }

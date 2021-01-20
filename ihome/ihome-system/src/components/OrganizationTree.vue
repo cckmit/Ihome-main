@@ -4,7 +4,7 @@
  * @Author: zyc
  * @Date: 2020-08-04 15:23:09
  * @LastEditors: zyc
- * @LastEditTime: 2020-10-23 11:46:17
+ * @LastEditTime: 2020-12-30 11:27:29
 --> 
 <template>
   <div class="OrganizationTree">
@@ -32,7 +32,8 @@
         :expand-on-click-node="false"
         :data="dataTree"
         :props="defaultProps"
-        :default-expand-all="true"
+        :default-expand-all="false"
+        :default-expanded-keys="defaultExpandedKeys"
         :filter-node-method="filterNode"
         :highlight-current="true"
         node-key="id"
@@ -59,6 +60,7 @@
 <script lang="ts">
 import { Component, Vue, Prop, Watch } from "vue-property-decorator";
 import { get_org_getAll } from "../api/system/index";
+
 @Component({
   components: {},
 })
@@ -71,25 +73,31 @@ export default class OrganizationTree extends Vue {
   selectType = false;
   value: any = null;
   filterText: any = null;
-  @Watch("filterText")
-  filterTextWatch(val: any) {
-    (this.$refs.tree as any).filter(val, this.selectType);
-  }
+  defaultExpandedKeys: any[] = [];
+
   list: any = [];
+  mapList: any = new Map();
   getInvalid(node: any) {
-    let item = null;
-    for (let index = 0; index < this.list.length; index++) {
-      const element = this.list[index];
-      if (node.key == element.id) {
-        item = element;
-        break;
-      }
-    }
-    if (item && item.status == "Valid") {
+    let status = this.mapList.get(node.key).status;
+    if (status == "Valid") {
       return `el-tree-node__label`;
     } else {
       return "el-tree-node__label invalid";
     }
+
+    // let item = null;
+    // for (let index = 0; index < this.list.length; index++) {
+    //   const element = this.list[index];
+    //   if (node.key == element.id) {
+    //     item = element;
+    //     break;
+    //   }
+    // }
+    // if (item && item.status == "Valid") {
+    //   return `el-tree-node__label`;
+    // } else {
+    //   return "el-tree-node__label invalid";
+    // }
   }
 
   edit(node: any) {
@@ -100,25 +108,28 @@ export default class OrganizationTree extends Vue {
     children: "children",
     label: "name",
   };
+  @Watch("filterText")
+  filterTextWatch(val: string) {
+    (this.$refs.tree as any).filter(val);
+  }
   selectChange() {
     (this.$refs.tree as any).filter(this.filterText, this.selectType);
   }
-  filterNode(value: any, data: any) {
+  filterNode(value: string, data: any) {
     if (!value && !this.selectType) {
       return true;
     } else {
-      if (this.selectType) {
-        if (value) {
-          let r =
-            data[this.defaultProps.label].indexOf(value) !== -1 &&
-            data.status == "Valid";
-          return r;
-        } else {
-          let r = data.status == "Valid";
-          return r;
-        }
+      if (value && this.selectType) {
+        return (
+          data[this.defaultProps.label].indexOf(value) !== -1 &&
+          data.status == (this.selectType ? "Valid" : "Invalid")
+        );
       } else {
-        return data[this.defaultProps.label].indexOf(value) !== -1;
+        if (value) {
+          return data[this.defaultProps.label].indexOf(value) !== -1;
+        } else {
+          return data.status == (this.selectType ? "Valid" : "Invalid");
+        }
       }
     }
   }
@@ -130,8 +141,15 @@ export default class OrganizationTree extends Vue {
     this.list = res;
     if (res && res.length > 0) {
       res[0].parentId = 0;
+      this.defaultExpandedKeys = [res[0].id];
     }
+    let map = new Map();
+    for (let index = 0; index < this.list.length; index++) {
+      const element = this.list[index];
 
+      map.set(element.id, element);
+    }
+    this.mapList = map;
     this.dataTree = this.$tool.listToGruop(res, { rootId: 0 });
     this.$nextTick(() => {
       this.selectType = true;

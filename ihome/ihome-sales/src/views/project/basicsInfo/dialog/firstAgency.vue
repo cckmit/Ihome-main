@@ -4,7 +4,7 @@
  * @Author: wwq
  * @Date: 2020-11-03 18:39:23
  * @LastEditors: wwq
- * @LastEditTime: 2020-11-04 16:25:23
+ * @LastEditTime: 2021-01-19 16:15:45
 -->
 <template>
   <el-dialog
@@ -17,12 +17,15 @@
     class="text-left dialog-table"
     :title="`一手代理公司列表`"
   >
-    <el-form ref="form" label-width="80px">
+    <el-form
+      ref="form"
+      label-width="80px"
+    >
       <el-row>
         <el-col :span="8">
           <el-form-item label="名称">
             <el-input
-              v-model="queryPageParameters.agencyName"
+              v-model="queryPageParameters.name"
               clearable
             ></el-input>
           </el-form-item>
@@ -36,38 +39,15 @@
           </el-form-item>
         </el-col>
         <el-col :span="8">
-          <el-form-item label="简称">
-            <el-input
-              v-model="queryPageParameters.simpleName"
-              clearable
-            ></el-input>
-          </el-form-item>
-        </el-col>
-      </el-row>
-      <el-row>
-        <el-col :span="8">
-          <el-form-item label="省市">
-            <IhCascader v-model="provinceOption" :level="2"></IhCascader>
-          </el-form-item>
-        </el-col>
-        <el-col :span="8">
-          <el-form-item label="跟进人">
-            <el-input
-              v-model="queryPageParameters.followMan"
-              clearable
-            ></el-input>
-          </el-form-item>
-        </el-col>
-        <el-col :span="8">
           <el-form-item label="状态">
             <el-select
               style="width: 100%"
-              v-model="queryPageParameters.agencyAuditEnum"
+              v-model="queryPageParameters.status"
               clearable
               placeholder="请选择"
             >
               <el-option
-                v-for="item in $root.dictAllList('AgencyAuditEnum')"
+                v-for="item in $root.dictAllList('CompanyStatus')"
                 :key="item.code"
                 :label="item.name"
                 :value="item.code"
@@ -76,10 +56,41 @@
           </el-form-item>
         </el-col>
       </el-row>
+      <el-row>
+        <el-col :span="8">
+          <el-form-item label="省市区">
+            <IhCascader v-model="provinceOption"></IhCascader>
+          </el-form-item>
+        </el-col>
+        <el-col :span="8">
+          <el-form-item label="录入人">
+            <IhSelectPageUser
+              v-model="queryPageParameters.inputUser"
+              clearable
+            >
+              <template v-slot="{ data }">
+                <span style="float: left">{{ data.name }}</span>
+                <span style="
+                      margin-left: 20px;
+                      float: right;
+                      color: #8492a6;
+                      font-size: 13px;
+                    ">{{ data.account }}</span>
+              </template>
+            </IhSelectPageUser>
+          </el-form-item>
+        </el-col>
+      </el-row>
     </el-form>
     <div class="margin-left-80">
-      <el-button type="primary" @click="search()">查询</el-button>
-      <el-button type="info" @click="reset()">重置</el-button>
+      <el-button
+        type="primary"
+        @click="search()"
+      >查询</el-button>
+      <el-button
+        type="info"
+        @click="reset()"
+      >重置</el-button>
     </div>
     <br />
     <el-table
@@ -89,39 +100,69 @@
       @selection-change="selectionChange"
     >
       <el-table-column
-        type="selection"
         width="50"
+        type="selection"
         align="center"
       ></el-table-column>
       <el-table-column
-        prop="agencyName"
+        prop="name"
         label="名称"
-        width="200"
+        width="250"
       ></el-table-column>
-      <el-table-column prop="simpleName" label="简称"></el-table-column>
-      <el-table-column prop="province" label="省份">
+      <el-table-column
+        prop="creditCode"
+        label="信用代码"
+        width="180"
+      ></el-table-column>
+      <el-table-column
+        prop="province"
+        label="省份"
+      >
         <template v-slot="{ row }">{{
-          $root.getAreaName(row.province)
-        }}</template>
+            $root.getAreaName(row.province)
+          }}</template>
       </el-table-column>
-      <el-table-column prop="city" label="城市">
-        <template v-slot="{ row }">{{ $root.getAreaName(row.city) }}</template>
-      </el-table-column>
-      <el-table-column prop="followMan" label="跟进人"></el-table-column>
-      <el-table-column prop="agencyAuditEnum" label="状态" width="150">
+      <el-table-column
+        prop="city"
+        label="城市"
+      >
         <template v-slot="{ row }">{{
-          $root.dictAllName(row.agencyAuditEnum, "AgencyAuditEnum")
-        }}</template>
+            $root.getAreaName(row.city)
+          }}</template>
       </el-table-column>
-      <el-table-column fixed="right" label="操作" width="100">
+      <el-table-column
+        prop="county"
+        label="行政区"
+      >
+        <template v-slot="{ row }">{{
+            $root.getAreaName(row.county)
+          }}</template>
+      </el-table-column>
+      <el-table-column
+        prop="inputUserName"
+        label="录入人"
+      ></el-table-column>
+      <el-table-column
+        prop="status"
+        label="状态"
+        width="150"
+      >
+        <template v-slot="{ row }">{{
+            $root.dictAllName(row.status, "CompanyStatus")
+          }}</template>
+      </el-table-column>
+      <el-table-column
+        fixed="right"
+        label="操作"
+        width="100"
+      >
         <template v-slot="{ row }">
           <el-link
             type="primary"
             class="margin-left-16"
             :href="`/web-sales/firstAgency/info?id=${row.agencyId}`"
             target="_blank"
-            >详情</el-link
-          >
+          >详情</el-link>
         </template>
       </el-table-column>
     </el-table>
@@ -137,16 +178,22 @@
       :layout="$root.paginationLayout"
       :total="resPageInfo.total"
     ></el-pagination>
-    <span slot="footer" class="dialog-footer">
+    <span
+      slot="footer"
+      class="dialog-footer"
+    >
       <el-button @click="cancel()">取 消</el-button>
-      <el-button type="primary" @click="finish()">确 定</el-button>
+      <el-button
+        type="primary"
+        @click="finish()"
+      >确 定</el-button>
     </span>
   </el-dialog>
 </template>
 <script lang="ts">
 import { Component, Vue } from "vue-property-decorator";
 import PaginationMixin from "@/mixins/pagination";
-import { post_firstAgencyCompany_getList } from "@/api/project/index";
+import { post_company_getList } from "@/api/project/index";
 
 @Component({
   components: {},
@@ -177,9 +224,7 @@ export default class FirstAgencyDialog extends Vue {
     this.getListMixin();
   }
   async getListMixin() {
-    this.resPageInfo = await post_firstAgencyCompany_getList(
-      this.queryPageParameters
-    );
+    this.resPageInfo = await post_company_getList(this.queryPageParameters);
   }
 
   reset() {

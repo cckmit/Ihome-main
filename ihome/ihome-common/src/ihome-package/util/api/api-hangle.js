@@ -4,7 +4,7 @@
  * @Author: zyc
  * @Date: 2020-07-31 15:21:06
  * @LastEditors: zyc
- * @LastEditTime: 2020-10-20 10:12:49
+ * @LastEditTime: 2020-12-24 11:01:38
  */
 let http = require('http');
 let fs = require("fs");
@@ -75,7 +75,7 @@ function handleBody(body) {
     let countPost = 0;
     let countPut = 0;
     let countDelete = 0;
-    Object.keys(paths||{}).forEach(k => {
+    Object.keys(paths || {}).forEach(k => {
         count += 1;
         let v = paths[k];
         if (paths[k]["get"]) {
@@ -88,14 +88,17 @@ function handleBody(body) {
                 originalRef = "any";
             }
 
-            originalRef = replaceAll(originalRef, '«int»', '<number>')
+            originalRef = replaceAll(originalRef, '«int»', '<number>');
+            originalRef = replaceAll(originalRef, '«bigdecimal»', '<number>');
+
             originalRef = replaceAll(originalRef, '«', '<')
             originalRef = replaceAll(originalRef, '»', '>')
 
 
             if (originalRef && originalRef.length > 0) {
 
-            } else {
+            }
+            else {
                 originalRef = "any"
             }
             if (originalRef.startsWith('ResModel')) {
@@ -111,6 +114,8 @@ function handleBody(body) {
             if (originalRef.startsWith('Map<')) {
                 originalRef = "any"
             }
+ 
+            console.log(originalRef)
             let res = 'any'
             let parameters = paths[k]["get"].parameters;
             if (parameters && parameters.length > 0) {
@@ -127,8 +132,14 @@ function handleBody(body) {
                 res = 'any'
             }
 
-            writeLine(`export async function ${className} (d?: ${res}) {`)
-            writeLine(`return await request.get<${originalRef},${originalRef}>(basePath+'${k}', { params: d })`)
+            writeLine(`export async function ${className} (d?: ${res}) {`);
+            if (originalRef.includes('>') || originalRef.includes('<')) {
+                originalRef = "any"
+            }
+            let excludeList = ['LocalDateTime'];//排除的类型，做为any
+            let typeStr = excludeList.includes(originalRef) ? 'any' : originalRef;
+
+            writeLine(`return await request.get<${typeStr},${typeStr}>(basePath+'${k}', { params: d })`)
             writeLine(`}`)
 
         } else {
@@ -155,7 +166,8 @@ function handleBody(body) {
             if (!originalRef) {
                 originalRef = "any";
             }
-            originalRef = replaceAll(originalRef, '«int»', '<number>')
+            originalRef = replaceAll(originalRef, '«int»', '<number>');
+            originalRef = replaceAll(originalRef, '«bigdecimal»', '<number>');
             originalRef = replaceAll(originalRef, '«', '<')
             originalRef = replaceAll(originalRef, '»', '>')
 
@@ -195,9 +207,15 @@ function handleBody(body) {
                 res = 'any'
             }
 
-            writeLine(`export async function ${className} (d?: ${res}) {`)
+            writeLine(`export async function ${className} (d?: ${res}) {`);
 
-            writeLine(`return await request.post< ${originalRef},${originalRef}> (basePath+'${k}', d)`)
+            if (originalRef.includes('>') || originalRef.includes('<')) {
+                originalRef = "any"
+            }
+            let excludeList = ['LocalDateTime'];//排除的类型，做为any
+            let typeStr = excludeList.includes(originalRef) ? 'any' : originalRef;
+
+            writeLine(`return await request.post< ${typeStr},${typeStr}> (basePath+'${k}', d)`)
             writeLine(`}`)
 
         }
@@ -227,7 +245,7 @@ function handleBody(body) {
     writeLine(`total: number;`)
     writeLine(`}`)
 
-    Object.keys(definitions||{}).forEach(k => {
+    Object.keys(definitions || {}).forEach(k => {
         if (k.includes("ApiResult") || k.includes("PageInfo")) {
             console.log('(k.includes("ApiResult") || k.includes("PageInfo")')
         } else {
@@ -241,17 +259,17 @@ function handleBody(body) {
 
                 let requiredList = definitions[k].required || [];
                 if (objs) {
-                    Object.keys(objs||{}).forEach(key => {
+                    Object.keys(objs || {}).forEach(key => {
                         let required = requiredList.includes(key);
                         writeLine(`/**${required ? '(必填)' : ''}${objs[key].description}*/`)
                         let _type = objs[key].type;
-                        if (_type === "integer" || _type === "number" || _type === "int" || _type == "bigdecimal" || _type == "float" || _type == "double") {
+                        if (_type === "integer" || _type === "number" || _type === "int" || _type == "bigdecimal" || _type == "float" || _type == "double" || _type == 'bigdecimal') {
                             _type = "number";
                         } else if (_type === "string" || _type === "String") {
                             _type = "string";
                         } else if (_type === "array") {
                             let _arrType = objs[key].items.originalRef ? objs[key].items.originalRef : objs[key].items.type;
-                            if (_arrType === "integer" || _arrType === "number" || _arrType === "int" || _arrType == "bigdecimal" || _arrType == "float" || _arrType == "double") {
+                            if (_arrType === "integer" || _arrType === "number" || _arrType === "int" || _arrType == "bigdecimal" || _arrType == "float" || _arrType == "double" || _type == 'bigdecimal') {
                                 _arrType = "number";
                             }
                             if (!_arrType) {

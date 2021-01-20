@@ -4,7 +4,7 @@
  * @Author: zyc
  * @Date: 2020-06-30 09:21:17
  * @LastEditors: zyc
- * @LastEditTime: 2020-11-11 14:47:23
+ * @LastEditTime: 2021-01-18 14:50:53
 --> 
 <template>
   <ih-page>
@@ -28,18 +28,18 @@
             </el-form-item>
           </el-col>
           <el-col :span="8">
-            <el-form-item label="用户类型">
+            <el-form-item label="账号类型">
               <el-select
                 v-model="queryPageParameters.accountType"
                 clearable
-                placeholder="请选择用户类型"
+                placeholder="请选择账号类型"
                 class="width--100"
               >
                 <el-option
-                  v-for="item in $root.displayList('accountType')"
-                  :key="item.value"
-                  :label="item.label"
-                  :value="item.value"
+                  v-for="item in $root.dictAllList('UserAccountType')"
+                  :key="item.code"
+                  :label="item.name"
+                  :value="item.code"
                 ></el-option>
               </el-select>
             </el-form-item>
@@ -73,10 +73,10 @@
                     class="width--100"
                   >
                     <el-option
-                      v-for="item in $root.displayList('accountStatus')"
-                      :key="item.value"
-                      :label="item.label"
-                      :value="item.value"
+                      v-for="item in $root.dictAllList('ValidType')"
+                      :key="item.code"
+                      :label="item.name"
+                      :value="item.code"
                     ></el-option>
                   </el-select>
                 </el-form-item>
@@ -127,10 +127,10 @@
                     class="width--100"
                   >
                     <el-option
-                      v-for="item in $root.displayList('employeeStatus')"
-                      :key="item.value"
-                      :label="item.label"
-                      :value="item.value"
+                      v-for="item in $root.dictAllList('EmployeeStatus')"
+                      :key="item.code"
+                      :label="item.name"
+                      :value="item.code"
                     ></el-option>
                   </el-select>
                 </el-form-item>
@@ -140,20 +140,7 @@
             <el-row>
               <el-col :span="8">
                 <el-form-item label="归属组织">
-                  <SelectOrganizationTree
-                    :orgId="queryPageParameters.orgId"
-                    @callback="(id) => (queryPageParameters.orgId = id)"
-                  />
-                  <!-- <IhSelectTree
-                    min-height="400px"
-                    class="width--100"
-                    :props="props"
-                    :options="list"
-                    :value="queryPageParameters.orgId"
-                    :clearable="true"
-                    :accordion="true"
-                    @getValue="getValue($event)"
-                  />-->
+                  <IhSelectOrgTree v-model="queryPageParameters.orgId" />
                 </el-form-item>
               </el-col>
               <el-col :span="8">
@@ -165,10 +152,10 @@
                     class="width--100"
                   >
                     <el-option
-                      v-for="item in $root.displayList('employeeType')"
-                      :key="item.value"
-                      :label="item.label"
-                      :value="item.value"
+                      v-for="item in $root.dictAllList('EmployeeType')"
+                      :key="item.code"
+                      :label="item.name"
+                      :value="item.code"
                     ></el-option>
                   </el-select>
                 </el-form-item>
@@ -182,12 +169,36 @@
                     class="width--100"
                   >
                     <el-option
-                      v-for="item in $root.displayList('workType')"
-                      :key="item.value"
-                      :label="item.label"
-                      :value="item.value"
+                      v-for="item in $root.dictAllList('UserWorkType')"
+                      :key="item.code"
+                      :label="item.name"
+                      :value="item.code"
                     ></el-option>
                   </el-select>
+                </el-form-item>
+              </el-col>
+            </el-row>
+            <el-row>
+              <el-col :span="8">
+                <el-form-item label="用户类别">
+                  <el-select
+                    v-model="queryPageParameters.userType"
+                    clearable
+                    placeholder="请选择用户类别"
+                    class="width--100"
+                  >
+                    <el-option
+                      v-for="item in $root.dictAllList('UserType')"
+                      :key="item.code"
+                      :label="item.name"
+                      :value="item.code"
+                    ></el-option>
+                  </el-select>
+                </el-form-item>
+              </el-col>
+              <el-col :span="8">
+                <el-form-item label="权限组织">
+                  <IhSelectOrgTree v-model="queryPageParameters.permissionOrgId" />
                 </el-form-item>
               </el-col>
             </el-row>
@@ -199,9 +210,18 @@
     <template v-slot:btn>
       <el-row>
         <el-button type="primary" @click="search()">查询</el-button>
-        <el-button type="success" @click="add()">添加</el-button>
+        <el-button
+          v-has="'B.SALES.SYSTEM.USERLIST.ADD'"
+          type="success"
+          @click="add()"
+          >添加</el-button
+        >
         <el-button type="info" @click="reset()">重置</el-button>
-        <el-button @click="copyUser()">复制用户岗位角色组织权限</el-button>
+        <el-button
+          @click="copyUser()"
+          v-has="'B.SALES.SYSTEM.USERLIST.COPYAUTH'"
+          >复制用户岗位角色组织权限</el-button
+        >
         <el-link
           type="primary"
           class="float-right margin-right-40"
@@ -244,9 +264,14 @@
           label="手机号码"
           width="120"
         ></el-table-column>
-        <el-table-column prop="accountType" label="用户类型" width="120">
+        <el-table-column prop="accountType" label="账号类型" width="120">
           <template slot-scope="scope">{{
-            $root.displayName("accountType", scope.row.accountType)
+            $root.dictAllName(scope.row.accountType, "UserAccountType")
+          }}</template>
+        </el-table-column>
+        <el-table-column prop="userType" label="用户类型" width="120">
+          <template slot-scope="scope">{{
+            $root.dictAllName(scope.row.userType, "UserType")
           }}</template>
         </el-table-column>
         <el-table-column
@@ -261,12 +286,12 @@
         ></el-table-column>
         <el-table-column prop="status" label="账号状态" width="120">
           <template slot-scope="scope">{{
-            $root.displayName("accountStatus", scope.row.status)
+            $root.dictAllName(scope.row.status, "ValidType")
           }}</template>
         </el-table-column>
         <el-table-column prop="employeeStatus" label="雇员状态">
           <template slot-scope="scope">{{
-            $root.displayName("employeeStatus", scope.row.employeeStatus)
+            $root.dictAllName(scope.row.employeeStatus, "EmployeeStatus")
           }}</template>
         </el-table-column>
         <el-table-column
@@ -281,12 +306,12 @@
         ></el-table-column>
         <el-table-column prop="employeeType" label="人员类型">
           <template slot-scope="scope">{{
-            $root.displayName("employeeType", scope.row.employeeType)
+            $root.dictAllName(scope.row.employeeType, "EmployeeType")
           }}</template>
         </el-table-column>
         <el-table-column prop="workType" label="职能类别">
           <template slot-scope="scope">{{
-            $root.displayName("workType", scope.row.workType)
+            $root.dictAllName(scope.row.workType, "UserWorkType")
           }}</template>
         </el-table-column>
         <el-table-column prop="updateUserName" label="修改人"></el-table-column>
@@ -307,25 +332,43 @@
                 <i class="el-icon-arrow-down el-icon--right"></i>
               </span>
               <el-dropdown-menu slot="dropdown">
-                <el-dropdown-item @click.native.prevent="edit(scope)"
-                  >编辑</el-dropdown-item
+                <el-dropdown-item
+                  @click.native.prevent="edit(scope)"
+                  v-has="'B.SALES.SYSTEM.USERLIST.UPDATE'"
+                  :class="{ 'ih-data-disabled': scope.row.userType != 'Staff' }"
+                  >修改</el-dropdown-item
                 >
-                <el-dropdown-item @click.native.prevent="remove(scope)"
+                <el-dropdown-item
+                  @click.native.prevent="remove(scope)"
+                  v-has="'B.SALES.SYSTEM.USERLIST.DELETE'"
+                  :class="{ 'ih-data-disabled': scope.row.userType != 'Staff' }"
                   >删除</el-dropdown-item
                 >
-                <el-dropdown-item @click.native.prevent="locking(scope)"
+                <el-dropdown-item
+                  @click.native.prevent="locking(scope)"
+                  v-has="'B.SALES.SYSTEM.USERLIST.LOCK'"
                   >锁定用户</el-dropdown-item
                 >
-                <el-dropdown-item @click.native.prevent="activation(scope)"
+                <el-dropdown-item
+                  @click.native.prevent="activation(scope)"
+                  v-has="'B.SALES.SYSTEM.USERLIST.ACTIVE'"
                   >激活用户</el-dropdown-item
                 >
-                <el-dropdown-item @click.native.prevent="resetPassword(scope)"
+                <el-dropdown-item
+                  @click.native.prevent="resetPassword(scope)"
+                  v-has="'B.SALES.SYSTEM.USERLIST.RESET'"
                   >重置密码</el-dropdown-item
                 >
-                <el-dropdown-item @click.native.prevent="jobRole(scope)"
+                <el-dropdown-item
+                  @click.native.prevent="jobRole(scope)"
+                  v-has="'B.SALES.SYSTEM.USERLIST.ADDROLE'"
+                  :class="{ 'ih-data-disabled': scope.row.userType != 'Staff' }"
                   >分配岗位角色</el-dropdown-item
                 >
-                <el-dropdown-item @click.native.prevent="pOrganization(scope)"
+                <el-dropdown-item
+                  @click.native.prevent="pOrganization(scope)"
+                  v-has="'B.SALES.SYSTEM.USERLIST.ADDAUTH'"
+                  :class="{ 'ih-data-disabled': scope.row.userType != 'Staff' }"
                   >分配组织权限</el-dropdown-item
                 >
               </el-dropdown-menu>
@@ -404,13 +447,14 @@ import UserAdd from "./add.vue";
 import UserJobRole from "./dialog/job.vue";
 import CopyUsers from "./dialog/copy-users.vue";
 import OrganizationJurisdiction from "@/components/OrganizationJurisdiction.vue";
-import SelectOrganizationTree from "@/components/SelectOrganizationTree.vue";
+
+
 import {
   post_user_getList,
   post_user_delete__id,
   post_user_lock__id,
   post_user_activate__id,
-  post_user_resetPassword__id,
+  post_user_resetPassword,
 } from "../../api/system/index";
 import PaginationMixin from "../../mixins/pagination";
 
@@ -420,17 +464,17 @@ import PaginationMixin from "../../mixins/pagination";
     UserJobRole,
     OrganizationJurisdiction,
     CopyUsers,
-    SelectOrganizationTree,
+
   },
   mixins: [PaginationMixin],
 })
 export default class UserList extends Vue {
   queryPageParameters: any = {
     account: null,
-    accountType: "Ihome",
+    accountType: null,
     employeeCode: null,
-    employeeStatus: "On",
-    employeeType: "Formal",
+    employeeStatus: null,
+    employeeType: null,
     employmentDateEnd: null,
     employmentDateStart: null,
     employmentDate: null,
@@ -441,7 +485,7 @@ export default class UserList extends Vue {
     name: null,
     orgId: null,
     permissionOrgId: null,
-    status: "Valid",
+    status: null,
     workType: null,
   };
   jobVisibleData: any = null;
@@ -453,23 +497,31 @@ export default class UserList extends Vue {
   };
 
   employmentDateChange(dateArray: any) {
-    console.log(dateArray);
-    this.queryPageParameters.employmentDateStart = dateArray[0];
-    this.queryPageParameters.employmentDateEnd = dateArray[1];
+    if (dateArray) {
+      this.queryPageParameters.employmentDateStart = dateArray[0];
+      this.queryPageParameters.employmentDateEnd = dateArray[1];
+    } else {
+      this.queryPageParameters.employmentDateStart = null;
+      this.queryPageParameters.employmentDateEnd = null;
+    }
   }
   leaveDateChange(dateArray: any) {
-    console.log(dateArray);
-    this.queryPageParameters.leaveDateStart = dateArray[0];
-    this.queryPageParameters.leaveDateEnd = dateArray[1];
+    if (dateArray) {
+      this.queryPageParameters.leaveDateStart = dateArray[0];
+      this.queryPageParameters.leaveDateEnd = dateArray[1];
+    } else {
+      this.queryPageParameters.leaveDateStart = null;
+      this.queryPageParameters.leaveDateEnd = null;
+    }
   }
 
   reset() {
     Object.assign(this.queryPageParameters, {
       account: null,
-      accountType: "Ihome",
+      accountType: null,
       employeeCode: null,
-      employeeStatus: "On",
-      employeeType: "Formal",
+      employeeStatus: null,
+      employeeType: null,
       employmentDateEnd: null,
       employmentDateStart: null,
       employmentDate: null,
@@ -480,7 +532,7 @@ export default class UserList extends Vue {
       name: null,
       orgId: null,
       permissionOrgId: null,
-      status: "Valid",
+      status: null,
       workType: null,
     });
   }
@@ -513,8 +565,7 @@ export default class UserList extends Vue {
     this.dialogVisible = true;
   }
 
-  finishJob(data: any) {
-    console.log(data);
+  finishJob() {
     this.search();
   }
 
@@ -530,8 +581,6 @@ export default class UserList extends Vue {
   }
 
   search() {
-    console.log(this.queryPageParameters);
-    console.log(this.valuedate);
     this.getListMixin();
   }
 
@@ -545,12 +594,10 @@ export default class UserList extends Vue {
     this.add(scope.row);
   }
   jobRole(scope: any) {
-    console.log(scope);
     this.jobVisibleData = scope.row;
     this.jobVisible = true;
   }
   pOrganization(scope: any) {
-    console.log(scope);
     this.OrganizationJurisdictionData = scope.row;
     this.organizationJurisdictionVisible = true;
   }
@@ -569,7 +616,6 @@ export default class UserList extends Vue {
     }
   }
   async locking(scope: any) {
-    console.log(scope);
     try {
       await this.$confirm("是否确定锁定用户?", "提示");
       await post_user_lock__id({ id: scope.row.id });
@@ -584,7 +630,6 @@ export default class UserList extends Vue {
     }
   }
   async activation(scope: any) {
-    console.log(scope);
     try {
       await this.$confirm("是否确定激活用户?", "提示");
       await post_user_activate__id({ id: scope.row.id });
@@ -599,14 +644,23 @@ export default class UserList extends Vue {
     }
   }
   async resetPassword(scope: any) {
-    console.log(scope);
-    try {
-      await this.$confirm("是否确定重置密码?", "提示");
-      const res = await post_user_resetPassword__id({ id: scope.row.id });
-      this.$alert(res, "密码重置成功");
-    } catch (error) {
-      console.log(error);
-    }
+    this.$prompt("请输入新密码", "提示", {
+      confirmButtonText: "确定",
+      cancelButtonText: "取消",
+      inputPattern: /^(?=.*[0-9])(?=.*[a-z])(?=.*[A-Z])(?=.*[@#$%^&.]).{8,20}$/,
+      inputErrorMessage:
+        "密码必须包含大写字母、小写字母、数字、特殊字符（.@#$%^&）,长度8-20位",
+    })
+      .then(async (obj: any) => {
+        await post_user_resetPassword({
+          id: scope.row.id,
+          password: obj.value,
+        });
+        this.$alert("密码重置成功");
+      })
+      .catch((err) => {
+        console.log(err);
+      });
   }
   copyUser() {
     if (this.copyUserData && this.copyUserData.length > 0) {
@@ -615,13 +669,14 @@ export default class UserList extends Vue {
       this.$message.warning("请先选择数据");
     }
   }
-  finishCopyUser(data: any) {
-    console.log(data);
+  finishCopyUser() {
     this.search();
   }
   handleSelectionChange(val: any) {
-    console.log(val);
-    // this.copyUserData = val;
+    this.copyUserData = val;
+  }
+  finish() {
+    this.getListMixin();
   }
 }
 </script>

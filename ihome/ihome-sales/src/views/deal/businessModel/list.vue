@@ -4,19 +4,21 @@
  * @Author: lsj
  * @Date: 2020-10-29 13:53:20
  * @LastEditors: lsj
- * @LastEditTime: 2020-10-30 14:34:50
+ * @LastEditTime: 2020-12-16 11:25:50
 -->
 <template>
   <ih-page label-width="100px">
     <template v-slot:form>
-      <el-form ref="form" label-width="100px">
+      <el-form ref="form" label-width="100px" @submit.native.prevent>
         <el-row>
           <el-col :span="2" class="text-left">
-            <el-button type="success" @click="add()">新增</el-button>
+            <el-button
+              v-has="'B.SALES.DEAL.BUMODELIST.ADD'"
+              type="success" @click="add()">添加</el-button>
           </el-col>
           <el-col :span="22" class="text-right">
             <el-select
-              v-model="queryPageParameters.modelName"
+              v-model="queryPageParameters.modelCode"
               clearable
               placeholder="请选择业务模式">
               <el-option
@@ -36,27 +38,24 @@
       <el-table
         class="ih-table"
         :data="resPageInfo.list"
-        :empty-text="emptyText"
-      >
-        <el-table-column
-          prop="modelName"
-          label="业务模式"
-          min-width="120"
-        ></el-table-column>
-        <el-table-column
-          prop="contType"
-          label="合同类型"
-          min-width="240"
-        ></el-table-column>
+        :empty-text="emptyText">
+        <el-table-column prop="modelCode" label="业务模式" min-width="120">
+          <template slot-scope="scope">
+            <div>{{$root.dictAllName(scope.row.modelCode, 'BusinessModel')}}</div>
+          </template>
+        </el-table-column>
+        <el-table-column prop="contType" label="合同类型" min-width="240"></el-table-column>
         <el-table-column fixed="right" label="操作" width="130">
           <template slot-scope="scope">
             <el-link
+              v-has="'B.SALES.DEAL.BUMODELIST.UPDATE'"
               class="margin-right-10"
               type="primary"
               @click.native.prevent="edit(scope)"
-            >编辑
+            >修改
             </el-link>
             <el-link
+              v-has="'B.SALES.DEAL.BUMODELIST.DELETE'"
               style="color: #f66"
               type="primary"
               @click.native.prevent="remove(scope)"
@@ -65,7 +64,7 @@
         </el-table-column>
       </el-table>
     </template>
-    <template v-slot:pagination>
+    <template v-slot:pagination v-if="false">
       <br/>
       <el-pagination
         @size-change="handleSizeChangeMixin"
@@ -79,7 +78,7 @@
     </template>
     <ih-dialog :show="dialogAddModel" desc="新增/修改业务模式">
       <AddModelDialog
-        :data="modelId"
+        :data="modelCode"
         @cancel="() => (dialogAddModel = false)"
         @finish="
             () => {
@@ -96,8 +95,8 @@
   import AddModelDialog from "./dialog/addModelDialog.vue";
 
   import {
-    post_businessModel_getList,
-    post_businessModel_delete__id
+    post_buModelContType_getList,
+    post_buModelContType_delete
   } from "@/api/deal";
 
   import PaginationMixin from "@/mixins/pagination";
@@ -108,7 +107,7 @@
   })
   export default class BusinessModelList extends Vue {
     queryPageParameters: any = {
-      modelName: null
+      modelCode: null
     };
 
     resPageInfo: any = {
@@ -116,7 +115,7 @@
       list: [],
     };
     dialogAddModel: any = false;
-    modelId: any = false;
+    modelCode: any = false;
 
     async created() {
       // console.log('业务模式', (this as any).$root.dictAllList('BusinessModel'));
@@ -125,56 +124,20 @@
 
     // 获取业务模式列表
     async getListMixin() {
-      this.resPageInfo = await post_businessModel_getList(this.queryPageParameters);
+      this.resPageInfo.list = await post_buModelContType_getList(this.queryPageParameters);
       if (this.resPageInfo.list && this.resPageInfo.list.length > 0) {
         this.resPageInfo.list.forEach((listItem: any) => {
-          // 业务模式
-          if (listItem.modelName) {
-            switch (listItem.modelName) {
-              case "TotalBagModel":
-                listItem.modelName = "总包模式";
-                break;
-              case "DistriModel":
-                listItem.modelName = "分销模式";
-                break;
-              case "TotalBagDistriModel":
-                listItem.modelName = "总包+分销模式";
-                break;
-              case "UnderwritingModel":
-                listItem.modelName = "承销";
-                break;
-              default:
-                listItem.modelName = "其他";
-            }
-          }
           // 合同类型
-          if (listItem.contType) {
-            let typeArr = listItem.contType.split(',');
+          if (listItem.contTypeList.length > 0) {
             let nameType: any = [];
-            if (typeArr.length > 0) {
-              typeArr.forEach((typeItem: any) => {
-                switch (typeItem.replace(" ", "")) {
-                  case "DistriDeal":
-                    nameType.push("分销成交");
-                    break;
-                  case "NaturalVisitDeal":
-                    nameType.push("自然来访成交");
-                    break;
-                  case "SelfChannelDeal":
-                    nameType.push("自渠成交");
-                    break;
-                  case "SelfDeal":
-                    nameType.push("自行成交");
-                    break;
-                  default:
-                    nameType.push("其他");
-                }
-              })
-            }
+            listItem.contTypeList.forEach((typeItem: any) => {
+              let name = (this as any).$root.dictAllName(typeItem, 'ContType')
+              nameType.push(name);
+            })
             if (nameType.length > 0) {
-              listItem.contType = nameType.join(',')
+              listItem.contType = nameType.join('，');
             } else {
-              listItem.contType = ""
+              listItem.contType = "";
             }
           }
         })
@@ -185,7 +148,7 @@
     async remove(scope: any) {
       try {
         await this.$confirm("是否确定删除?", "提示");
-        await post_businessModel_delete__id({id: scope.row.id});
+        await post_buModelContType_delete({modelCode: scope.row.modelCode});
         this.$message({
           type: "success",
           message: "删除成功!",
@@ -198,13 +161,13 @@
 
     // 新增
     async add() {
-      this.modelId = null;
+      this.modelCode = null;
       this.dialogAddModel = true;
     }
 
     // 编辑
     async edit(scope: any) {
-      this.modelId = scope.row.id;
+      this.modelCode = scope.row.modelCode;
       this.dialogAddModel = true;
     }
 

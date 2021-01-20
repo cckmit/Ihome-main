@@ -4,7 +4,7 @@
  * @Author: ywl
  * @Date: 2020-10-12 10:38:48
  * @LastEditors: ywl
- * @LastEditTime: 2020-12-01 15:09:38
+ * @LastEditTime: 2020-12-14 16:32:56
 -->
 <template>
   <el-dialog
@@ -43,19 +43,29 @@
         <el-input
           v-model="Bankrule.branchName"
           readonly
-          @click.native="dialogFormVisible = true"
-        ></el-input>
+        >
+          <el-button
+            slot="append"
+            icon="el-icon-search"
+            @click.native="dialogFormVisible = true"
+          ></el-button>
+        </el-input>
       </el-form-item>
-      <el-form-item
+      <!-- <el-form-item
         label="联行号"
         prop="branchNo"
       >
         <el-input
           v-model="Bankrule.branchNo"
           readonly
-          @click.native="dialogFormVisible = true"
-        ></el-input>
-      </el-form-item>
+        >
+          <el-button
+            slot="append"
+            icon="el-icon-search"
+            @click.native="dialogFormVisible = true"
+          ></el-button>
+        </el-input>
+      </el-form-item> -->
       <el-form-item
         label="账户类型"
         prop="accountType"
@@ -67,7 +77,7 @@
           class="width--100"
         >
           <el-option
-            v-for="item in $root.dictAllList('AccountEnum')"
+            v-for="item in $root.dictAllList('Account')"
             :key="item.code"
             :label="item.name"
             :value="item.code"

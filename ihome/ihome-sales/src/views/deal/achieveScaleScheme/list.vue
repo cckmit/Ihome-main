@@ -10,12 +10,12 @@
   <ih-page label-width="100px">
     <template v-slot:form>
       <p class="ih-info-title">{{branchCompanyName}}业绩比例管理</p>
-      <el-form ref="form" label-width="110px">
+      <el-form ref="form" label-width="110px" @submit.native.prevent>
         <el-row>
           <el-col :span="8">
             <el-form-item label="业务模式">
               <el-select
-              v-model="queryPageParameters.modelName"
+              v-model="queryPageParameters.modelCode"
               clearable
               placeholder="请选择业务模式"
               class="width--100">
@@ -54,7 +54,7 @@
                 placeholder="请选择物业类型"
                 class="width--100">
                 <el-option
-                  v-for="item in $root.dictAllList('PropertyEnum')"
+                  v-for="item in $root.dictAllList('Property')"
                   :key="item.code"
                   :label="item.name"
                   :value="item.code"
@@ -102,10 +102,12 @@
       </el-form>
     </template>
     <template v-slot:btn>
-      <el-row>
+      <el-row class="margin-left-10">
         <el-button type="primary" @click="getListMixin()">查询</el-button>
+        <el-button
+          v-has="'B.SALES.DEAL.ACHIEVELIST.ADD'"
+          type="success" @click="add()">添加</el-button>
         <el-button type="info" @click="reset()">重置</el-button>
-        <el-button type="success" @click="add()">新增</el-button>
       </el-row>
     </template>
     <template v-slot:table>
@@ -117,16 +119,16 @@
         <el-table-column prop="branchCompany" label="分公司" min-width="120"></el-table-column>
         <el-table-column prop="contType" label="合同类型" min-width="120"></el-table-column>
         <el-table-column prop="propertyTypeStr" label="物业类型" min-width="120"></el-table-column>
-        <el-table-column prop="modelName" label="业务模式" min-width="120"></el-table-column>
+        <el-table-column prop="modelCode" label="业务模式" min-width="120"></el-table-column>
         <el-table-column prop="isMarketProject" label="是否市场化项目" min-width="120">
           <template slot-scope="scope">
             <div v-if="scope.row.isMarketProject">{{scope.row.isMarketProject === 'Yes' ? '是' : '否'}}</div>
             <div v-else></div>
           </template>
         </el-table-column>
-        <el-table-column prop="isMarketProject" label="是否特殊方案" min-width="120">
+        <el-table-column prop="isSpecial" label="是否特殊方案" min-width="120">
           <template slot-scope="scope">
-            <div v-if="scope.row.isMarketProject">{{scope.row.isMarketProject === 'Yes' ? '是' : '否'}}</div>
+            <div v-if="scope.row.isSpecial">{{scope.row.isSpecial === 'Yes' ? '是' : '否'}}</div>
             <div v-else></div>
           </template>
         </el-table-column>
@@ -151,10 +153,14 @@
                 <i class="el-icon-arrow-down el-icon--right"></i>
               </span>
               <el-dropdown-menu slot="dropdown">
-                <el-dropdown-item @click.native.prevent="edit(scope)"
-                >编辑
+                <el-dropdown-item
+                  v-has="'B.SALES.DEAL.ACHIEVELIST.UPDATE'"
+                  @click.native.prevent="edit(scope)"
+                >修改
                 </el-dropdown-item>
-                <el-dropdown-item @click.native.prevent="remove(scope)"
+                <el-dropdown-item
+                  v-has="'B.SALES.DEAL.ACHIEVELIST.DELETE'"
+                  @click.native.prevent="remove(scope)"
                 >删除
                 </el-dropdown-item>
               </el-dropdown-menu>
@@ -194,7 +200,7 @@
   export default class AchieveScaleSchemeList extends Vue {
     branchCompanyName: any = null; // 分公司名称
     queryPageParameters: any = {
-      modelName: null,
+      modelCode: null,
       contType: null,
       property: null,
       isMarketProject: null,
@@ -209,7 +215,7 @@
     companyId: any = null; // 分公司id
 
     async created() {
-      // console.log('物业类型', (this as any).$root.dictAllList('PropertyEnum'));
+      // console.log('物业类型', (this as any).$root.dictAllList('Property'));
       this.companyId = localStorage.getItem('companyId');
       if (this.companyId) {
         await this.getListMixin();
@@ -221,7 +227,7 @@
       let self = this;
       if (!self.companyId) return;
       let contTypeList = (self as any).$root.dictAllList('ContType'); // 合同类型
-      let propertyEnumList = (self as any).$root.dictAllList('PropertyEnum'); // 物业类型
+      let propertyList = (self as any).$root.dictAllList('Property'); // 物业类型
       let businessModelList = (self as any).$root.dictAllList('BusinessModel'); // 业务类型
       self.queryPageParameters.branchCompanyId = self.companyId; // 分公司id
       self.resPageInfo = await post_achieveScaleScheme_getList(self.queryPageParameters);
@@ -255,8 +261,8 @@
             let propertyNameType: any = [];
             if (typeArr.length > 0) {
               typeArr.forEach((typeItem: any) => {
-                if (propertyEnumList && propertyEnumList.length > 0) {
-                  propertyEnumList.forEach((propertyItem: any) => {
+                if (propertyList && propertyList.length > 0) {
+                  propertyList.forEach((propertyItem: any) => {
                     if (typeItem === propertyItem.code) {
                       propertyNameType.push(propertyItem.name);
                     }
@@ -271,15 +277,15 @@
             }
           }
           // 业务模式
-          if (listItem.modelName) {
+          if (listItem.modelCode) {
             if (businessModelList && businessModelList.length > 0) {
               businessModelList.forEach((businessItem: any) => {
-                if (listItem.modelName === businessItem.code) {
-                  listItem.modelName = businessItem.name;
+                if (listItem.modelCode === businessItem.code) {
+                  listItem.modelCode = businessItem.name;
                 }
               })
             } else {
-              listItem.modelName = "";
+              listItem.modelCode = "";
             }
           }
         })
@@ -312,7 +318,7 @@
     // 重置
     reset() {
       this.queryPageParameters = {
-        modelName: null,
+        modelCode: null,
         contType: null,
         achievePropertyTypeList: null,
         isMarketProject: null,

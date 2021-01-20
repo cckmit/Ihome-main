@@ -4,7 +4,7 @@
  * @Author: ywl
  * @Date: 2020-09-16 14:05:21
  * @LastEditors: ywl
- * @LastEditTime: 2020-12-01 15:13:18
+ * @LastEditTime: 2021-01-15 21:24:12
 -->
 <template>
   <IhPage>
@@ -196,7 +196,8 @@
           prop="accountNo"
           label="账号"
           width="200"
-        > </el-table-column>
+        >
+        </el-table-column>
         <el-table-column
           prop="branchName"
           label="开户银行"
@@ -213,7 +214,7 @@
           width="150"
         >
           <template v-slot="{ row }">
-            <span>{{$root.dictAllName(row.accountType, "AccountEnum")}}</span>
+            <span>{{ $root.dictAllName(row.accountType, "Account") }}</span>
           </template>
         </el-table-column>
         <el-table-column
@@ -226,7 +227,7 @@
               type="primary"
               class="margin-right-15"
               @click="editBank(row, $index)"
-            >编辑</el-link>
+            >修改</el-link>
             <el-link
               type="danger"
               @click="deleteBank(row, $index)"
@@ -306,24 +307,46 @@
       >综合查询被执行人</el-link>
       <span
         class="margin-left-10"
-        style="font-size: 12px; color: #909399;"
+        style="font-size: 12px; color: #909399"
       >附件类型支持jpg、png、bmp、tif、tiff等图片格式，以及pdf、word、excel文档，单个文件不能超过10M</span>
     </p>
     <div class="padding-left-20">
-      <el-table style="width: 100%">
+      <el-table
+        style="width: 100%"
+        :data="fileListType"
+      >
         <el-table-column
           prop="type"
           width="180"
           label="类型"
-        ></el-table-column>
-        <el-table-column label="附件"></el-table-column>
+          align="center"
+        >
+          <template v-slot="{ row }">
+            <div><span
+                style="color: red"
+                v-if="row.subType"
+              >*</span>{{row.name}}
+            </div>
+          </template>
+        </el-table-column>
+        <el-table-column label="附件">
+          <template v-slot="{ row }">
+            <IhUpload
+              :file-list.sync="row.fileList"
+              :file-size="10"
+              :file-type="row.code"
+              size="100px"
+              @newFileList="queryNew"
+            ></IhUpload>
+          </template>
+        </el-table-column>
       </el-table>
     </div>
 
     <p class="ih-info-title">企业概况</p>
     <el-input
       type="textarea"
-      style="box-sizing: border-box;"
+      style="box-sizing: border-box"
       class="padding-left-20"
       :autosize="{ minRows: 5, maxRows: 8 }"
       maxlength="256"
@@ -335,7 +358,7 @@
     <p class="ih-info-title">变更原因</p>
     <el-input
       type="textarea"
-      style="box-sizing: border-box;"
+      style="box-sizing: border-box"
       class="padding-left-20"
       :autosize="{ minRows: 5, maxRows: 8 }"
       maxlength="256"
@@ -384,8 +407,23 @@ import {
 import {
   get_channelChange_get__id,
   post_channelChange_edit,
+  get_channel_checkSetupTime,
 } from "@/api/channel/index";
 import BankDialog from "./dialog/bankDialog.vue";
+
+async function dataChange(rule: any, value: any, callback: any) {
+  try {
+    let flag = await get_channel_checkSetupTime({ setupTime: value });
+    if (flag) {
+      callback();
+    } else {
+      callback(new Error("成立时间必须大于三个月"));
+    }
+  } catch (error) {
+    callback();
+    console.log(error);
+  }
+}
 
 @Component({
   components: {
@@ -413,6 +451,8 @@ export default class ModifyThe extends Vue {
     timeList: [],
     provinceList: [],
   };
+  fileListType: any = [];
+  submitFile: any = {};
   changeReason = "";
   dialogFormVisible = false;
   Bankrule: any = {
@@ -464,6 +504,7 @@ export default class ModifyThe extends Vue {
     ],
     setupTime: [
       { required: true, message: "请输入成立日期", trigger: "change" },
+      { validator: dataChange, trigger: "change" },
     ],
     capital: [
       { required: true, message: "请输入注册资本", trigger: "change" },
@@ -475,6 +516,7 @@ export default class ModifyThe extends Vue {
     address: [
       { required: true, message: "请输入住所", trigger: "change" },
       { validator: noTrim, trigger: "change" },
+      { min: 1, max: 64, message: "长度在 1 到 64 个字符", trigger: "change" },
     ],
     mobile: [
       { required: true, message: "请输入手机号", trigger: "change" },
@@ -485,7 +527,7 @@ export default class ModifyThe extends Vue {
       { validator: validIdentityCard, trigger: "change" },
     ],
     email: [
-      { required: true, message: "请填写邮箱", trigger: "change" },
+      // { required: true, message: "请填写邮箱", trigger: "change" },
       { type: "email", message: "请输入正确的邮箱地址", trigger: "change" },
     ],
   };
@@ -524,18 +566,58 @@ export default class ModifyThe extends Vue {
 
     Promise.all([ruleFrom, personForm]).then(async (value) => {
       if (value[0] && value[1]) {
-        let includeBase = this.info.channelBanks
+        let includeBase = this.info.channelBankChanges
           .map((i: any) => i.accountType)
           .includes("Base");
         if (!includeBase) {
           this.$message.warning("账户信息中，基本存款账号必须录入");
           return;
         }
-        this.info.channelPersonChanges.push(this.channelPersonsData);
+        // 校验提示
+        let arr: any = [];
+        Object.values(this.submitFile).forEach((v: any) => {
+          if (v.length) {
+            arr = arr.concat(v);
+          }
+        });
+        // 以下操作仅仅是为了校验必上传项
+        let submitList: any = this.fileListType.map((v: any) => {
+          return {
+            ...v,
+            fileList: arr
+              .filter((j: any) => j.type === v.code)
+              .map((h: any) => ({
+                ...h,
+                name: h.fileName,
+              })),
+          };
+        });
+        let isSubmit = true;
+        let msgList: any = [];
+        submitList.forEach((v: any) => {
+          if (v.subType && !v.fileList.length) {
+            msgList.push(v.name);
+            isSubmit = false;
+          }
+        });
+        if (isSubmit) {
+          this.info.channelAttachmentChanges = arr.map((v: any) => ({
+            fileId: v.fileId,
+            fileName: v.name,
+            type: v.type,
+          }));
+        } else {
+          this.$message({
+            type: "warning",
+            message: `${msgList.join(",")}项,请上传附件`,
+          });
+          return;
+        }
         await post_channelChange_edit({
           ...this.info,
           operateType: type,
           changeReason: this.changeReason,
+          channelPersonChanges: [{ ...this.channelPersonsData }],
         });
         this.$message.success("渠道商变更修改成功");
         this.$goto({ path: "/channelChange/list" });
@@ -572,7 +654,36 @@ export default class ModifyThe extends Vue {
       this.channelPersonsData = this.info.channelPersonChanges.length
         ? this.info.channelPersonChanges[0]
         : {};
+      this.getFileListType(res.channelAttachmentChanges);
+    } else {
+      this.getFileListType([]);
     }
+  }
+
+  getFileListType(data: any) {
+    const list = (this.$root as any).dictAllList("ChannelAttachment");
+    this.fileListType = list.map((v: any) => {
+      return {
+        ...v,
+        fileList: data
+          .filter((j: any) => j.type === v.code)
+          .map((h: any) => ({
+            ...h,
+            name: h.fileName,
+          })),
+      };
+    });
+    let obj: any = {};
+    this.fileListType.forEach((h: any) => {
+      obj[h.code] = h.fileList;
+    });
+    this.submitFile = { ...obj };
+  }
+
+  queryNew(data: any, type?: any) {
+    let obj: any = {};
+    obj[type] = data;
+    this.submitFile = { ...this.submitFile, ...obj };
   }
   /**
    * @description: 编辑银行信息
@@ -590,9 +701,14 @@ export default class ModifyThe extends Vue {
    * @param {number} index 编辑当前行数据下标
    */
   private async deleteBank(row: object, index: number): Promise<void> {
-    await this.$confirm(`此操作将该银行信息, 是否继续?`, "提示");
     this.info.channelBankChanges.splice(index, 1);
-    this.$message.success("删除成功");
+    // try {
+    //   await this.$confirm(`此操作将该银行信息, 是否继续?`, "提示");
+    //   this.info.channelBankChanges.splice(index, 1);
+    //   this.$message.success("删除成功");
+    // } catch (error) {
+    //   console.log(error);
+    // }
   }
 
   async created() {

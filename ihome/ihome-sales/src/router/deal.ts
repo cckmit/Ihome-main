@@ -33,7 +33,7 @@ const dealRoutes: Array<RouteConfig> = [
   // 业绩比例方案-分公司方案列表路由
   {
     path: '/achieveScaleScheme',
-    meta: { title: '业务模式', icon: 'form' },
+    meta: { title: '业绩比例方案', icon: 'form' },
     redirect: '/achieveScaleScheme/companyList',
     component: Layout,
     children: [
@@ -78,8 +78,8 @@ const dealRoutes: Array<RouteConfig> = [
       },
       {
         path: 'add',
-        name: 'DealReportAdd',
-        component: () => import('@/views/deal/dealReport/add.vue'),
+        name: 'DealReportEntry',
+        component: () => import('@/views/deal/dealReport/add/index.vue'),
         meta: { title: '成交报告新增/修改', icon: 'form' }
       },
       {
@@ -95,9 +95,9 @@ const dealRoutes: Array<RouteConfig> = [
         meta: { title: '成交业绩分配录入', icon: 'form' }
       },
       {
-        path: 'changeDealInfo',
-        name: 'ChangeDealInfo',
-        component: () => import('@/views/deal/dealReport/changeDealInfo.vue'),
+        path: 'suppDeal',
+        name: 'SuppDeal',
+        component: () => import('@/views/deal/dealReport/suppDeal.vue'),
         meta: { title: '成交信息变更', icon: 'form' }
       },
       {

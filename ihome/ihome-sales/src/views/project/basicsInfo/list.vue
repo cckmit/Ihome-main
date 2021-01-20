@@ -4,14 +4,14 @@
  * @Author: wwq
  * @Date: 2020-08-13 11:40:10
  * @LastEditors: wwq
- * @LastEditTime: 2020-11-11 15:31:31
+ * @LastEditTime: 2021-01-18 19:24:51
 -->
 <template>
-  <IhPage label-width="100px">
+  <IhPage label-width="110px">
     <template v-slot:form>
       <el-form
         ref="form"
-        label-width="100px"
+        label-width="110px"
       >
         <el-row>
           <el-col :span="8">
@@ -25,22 +25,30 @@
           </el-col>
           <el-col :span="8">
             <el-form-item label="项目名称">
-              <el-input
+              <IhSelectPageByProject
+                v-model="queryPageParameters.proId"
                 clearable
-                v-model="queryPageParameters.proName"
-                placeholder="项目名称"
-              ></el-input>
+                :props="{
+                  value: 'proId',
+                  key: 'proId',
+                  lable: 'proName'
+                }"
+              ></IhSelectPageByProject>
             </el-form-item>
           </el-col>
-          <el-col :span="8">
+          <!-- <el-col :span="8">
             <el-form-item label="周期名称">
-              <el-input
+              <IhSelectPageByCycle
+                v-model="queryPageParameters.termId"
                 clearable
-                v-model="queryPageParameters.termName"
-                placeholder="周期名称"
-              ></el-input>
+                :props="{
+                  value: 'termId',
+                  key: 'termId',
+                  lable: 'termName'
+                }"
+              ></IhSelectPageByCycle>
             </el-form-item>
-          </el-col>
+          </el-col> -->
           <el-col :span="8">
             <el-form-item label="省市区">
               <IhCascader
@@ -51,7 +59,7 @@
               />
             </el-form-item>
           </el-col>
-          <el-col :span="8">
+          <!-- <el-col :span="8">
             <el-form-item label="业务类型">
               <el-select
                 v-model="queryPageParameters.busTypeEnum"
@@ -60,14 +68,14 @@
                 class="width--100"
               >
                 <el-option
-                  v-for="item in $root.dictAllList('BusTypeEnum')"
+                  v-for="item in $root.dictAllList('BusType')"
                   :key="item.code"
                   :label="item.name"
                   :value="item.code"
                 ></el-option>
               </el-select>
             </el-form-item>
-          </el-col>
+          </el-col> -->
           <el-col :span="8">
             <el-form-item label="项目审核状态">
               <el-select
@@ -77,7 +85,24 @@
                 class="width--100"
               >
                 <el-option
-                  v-for="item in $root.dictAllList('AuditEnum')"
+                  v-for="item in $root.dictAllList('ProAudit')"
+                  :key="item.code"
+                  :label="item.name"
+                  :value="item.code"
+                ></el-option>
+              </el-select>
+            </el-form-item>
+          </el-col>
+          <el-col :span="8">
+            <el-form-item label="是否市场化项目">
+              <el-select
+                v-model="queryPageParameters.exMarket"
+                clearable
+                placeholder="请选择"
+                class="width--100"
+              >
+                <el-option
+                  v-for="item in YesOrNoType"
                   :key="item.code"
                   :label="item.name"
                   :value="item.code"
@@ -96,13 +121,14 @@
           @click="search()"
         >查询</el-button>
         <el-button
+          type="success"
+          @click="add()"
+          v-has="'B.SALES.PROJECT.BASICLIST.ADD'"
+        >添加</el-button>
+        <el-button
           type="info"
           @click="reset()"
         >重置</el-button>
-        <el-button
-          type="success"
-          @click="add()"
-        >添加</el-button>
       </el-row>
     </template>
 
@@ -125,6 +151,14 @@
           label="项目名称"
           width="100"
         ></el-table-column>
+        <el-table-column
+          label="市场化项目"
+          prop="exMarket"
+        >
+          <template v-slot="{ row }">
+            {{row.exMarket? '是' : '否'}}
+          </template>
+        </el-table-column>
         <el-table-column
           prop="province"
           label="省份"
@@ -158,7 +192,7 @@
           label="项目审核状态"
         >
           <template v-slot="{ row }">{{
-            $root.dictAllName(row.auditEnum, "AuditEnum")
+            $root.dictAllName(row.auditEnum, "ProAudit")
           }}</template>
         </el-table-column>
         <el-table-column
@@ -181,16 +215,19 @@
               </span>
               <el-dropdown-menu slot="dropdown">
                 <el-dropdown-item
-                  :disabled="row.auditEnum !== 'Draft'"
+                  :class="{'ih-data-disabled': row.auditEnum !== 'Draft'}"
                   @click.native.prevent="routerTo(row, 'edit')"
+                  v-has="'B.SALES.PROJECT.BASICLIST.UPDATE'"
                 >编辑</el-dropdown-item>
                 <el-dropdown-item
-                  :disabled="row.auditEnum !== 'Draft'"
+                  :class="{'ih-data-disabled': row.auditEnum !== 'Draft'}"
                   @click.native.prevent="remove(row)"
+                  v-has="'B.SALES.PROJECT.BASICLIST.DELETE'"
                 >删除</el-dropdown-item>
                 <el-dropdown-item
                   @click.native.prevent="routerTo(row, 'audit')"
-                  :disabled="row.status !== 'Conduct'"
+                  :class="{'ih-data-disabled': !auditChange(row)}"
+                  v-has="'B.SALES.PROJECT.BASICLIST.VERIFY'"
                 >审核</el-dropdown-item>
               </el-dropdown-menu>
             </el-dropdown>
@@ -225,22 +262,46 @@ import PaginationMixin from "@/mixins/pagination";
 export default class ProjectList extends Vue {
   queryPageParameters: any = {
     proNo: null,
-    proName: null,
+    proId: null,
     termName: null,
     province: null,
     city: null,
     district: null,
     busTypeEnum: null,
     auditEnum: null,
+    exMarket: null,
   };
   provinceOption: any = [];
   resPageInfo: any = {
-    total: null,
+    total: 0,
     list: [],
   };
 
+  YesOrNoType = [
+    {
+      code: 1,
+      name: "是",
+    },
+    {
+      code: 0,
+      name: "否",
+    },
+  ];
+
+  auditChange(row: any) {
+    const Conduct = row.auditEnum === "Conduct";
+    const roleList = (this.$root as any).userInfo.roleList.map(
+      (v: any) => v.code
+    );
+    const fen = roleList.includes("RBusinessManagement");
+    const zong = roleList.includes("RHeadBusinessManagement");
+    return (fen || zong) && Conduct;
+  }
+
   get emptyText() {
-    return this.resPageInfo.total === null ? "正在加载数据..." : "暂无数据";
+    return this.resPageInfo.total === null
+      ? "正在加载数据..."
+      : "请点击查询加载数据";
   }
 
   search() {
@@ -253,13 +314,14 @@ export default class ProjectList extends Vue {
   reset() {
     Object.assign(this.queryPageParameters, {
       proNo: null,
-      proName: null,
+      proId: null,
       termName: null,
       province: null,
       city: null,
       district: null,
       busTypeEnum: null,
       auditEnum: null,
+      exMarket: null,
     });
     this.provinceOption = [];
   }
@@ -331,7 +393,7 @@ export default class ProjectList extends Vue {
   }
 
   created() {
-    this.getListMixin();
+    // this.getListMixin();
   }
 
   //获取数据

@@ -4,7 +4,7 @@
  * @Author: zyc
  * @Date: 2020-06-24 09:30:41
  * @LastEditors: zyc
- * @LastEditTime: 2020-10-20 09:57:51
+ * @LastEditTime: 2020-12-29 15:13:30
  */
 
 import { VuexModule, Module, Action, Mutation, getModule } from 'vuex-module-decorators'
@@ -23,6 +23,16 @@ export interface IUserState {
 class User extends VuexModule implements IUserState {
     public token = getToken() || ''
     public userInfo = {}
+    public crumbs: any[] = [];//面包屑列表
+    @Action
+    public setCrumbs(crumbs: any[]) {
+        // this.crumbs = crumbs;
+        this.SETCRUMBS(crumbs);
+    }
+    @Mutation
+    private SETCRUMBS(crumbs: any[]) {
+        this.crumbs = crumbs;
+    }
 
 
     @Mutation
@@ -37,7 +47,7 @@ class User extends VuexModule implements IUserState {
 
     @Action
     public async Login(data: any) {
-         
+
         console.log(data)
         // username = username.trim()
         const res: any = await login({ username: data.username, password: data.password })
@@ -45,8 +55,8 @@ class User extends VuexModule implements IUserState {
         //     assess_token: 'xxxxxxxxxx'
         // }
         console.log(res);
-         
-        
+
+
         setToken(res.access_token)
         this.SET_TOKEN(res.access_token)
         this.SET_USERINFO({ id: 1, name: data.username })

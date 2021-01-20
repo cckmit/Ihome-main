@@ -4,18 +4,21 @@
  * @Author: wwq
  * @Date: 2020-11-03 11:52:41
  * @LastEditors: wwq
- * @LastEditTime: 2020-11-09 09:09:04
+ * @LastEditTime: 2021-01-09 15:00:50
 -->
 <template>
   <div>
-    <el-form ref="form" label-width="100px">
+    <el-form
+      ref="form"
+      label-width="100px"
+    >
       <el-row>
         <el-col :span="6">
-          <el-form-item label="项目盘编">
+          <el-form-item label="栋座名称">
             <el-input
               clearable
               v-model="queryPageParameters.buildingName"
-              placeholder="项目盘编"
+              placeholder="栋座名称"
             ></el-input>
           </el-form-item>
         </el-col>
@@ -28,7 +31,7 @@
               class="width--100"
             >
               <el-option
-                v-for="item in $root.dictAllList('PropertyEnum')"
+                v-for="item in $root.dictAllList('Property')"
                 :key="item.code"
                 :label="item.name"
                 :value="item.code"
@@ -36,38 +39,87 @@
             </el-select>
           </el-form-item>
         </el-col>
-        <el-col :span="10" class="text-left">
+        <el-col :span="6">
+          <el-form-item label="装修级别">
+            <el-select
+              v-model="queryPageParameters.renovatLevelEnum"
+              clearable
+              placeholder="装修级别"
+              style="width: 100%"
+            >
+              <el-option
+                v-for="item in $root.dictAllList('RenovatLevel')"
+                :key="item.code"
+                :label="item.name"
+                :value="item.code"
+              ></el-option>
+            </el-select>
+          </el-form-item>
+        </el-col>
+        <el-col
+          :span="6"
+          class="text-left"
+        >
           <el-form-item>
-            <el-button type="primary" @click="search()">查询</el-button>
+            <el-button
+              type="primary"
+              @click="search()"
+            >查询</el-button>
           </el-form-item>
         </el-col>
       </el-row>
     </el-form>
-    <el-table class="ih-table" :data="resPageInfo.list" style="width: 100%">
-      <el-table-column prop="buildingName" label="栋座"></el-table-column>
-      <el-table-column prop="propertyEnum" label="物业类型">
+    <el-table
+      class="ih-table"
+      :data="resPageInfo.list"
+      style="width: 100%"
+    >
+      <el-table-column
+        prop="buildingName"
+        label="栋座"
+      ></el-table-column>
+      <el-table-column
+        prop="propertyEnum"
+        label="物业类型"
+      >
         <template v-slot="{ row }">{{
-          $root.dictAllName(row.propertyEnum, "PropertyEnum")
+          $root.dictAllName(row.propertyEnum, "Property")
         }}</template>
       </el-table-column>
-      <el-table-column prop="floor" label="地上层数"></el-table-column>
-      <el-table-column prop="undergroundNum" label="地下层数"></el-table-column>
-      <el-table-column prop="houseTypes" label="户型">
+      <el-table-column
+        prop="floor"
+        label="地上层数"
+      ></el-table-column>
+      <el-table-column
+        prop="undergroundNum"
+        label="地下层数"
+      ></el-table-column>
+      <el-table-column
+        prop="houseTypes"
+        label="户型"
+      >
         <template v-slot="{ row }">
-          <span v-for="(item, i) in row.houseTypes" :key="i">
+          <span
+            v-for="(item, i) in row.houseTypes"
+            :key="i"
+          >
             <span>{{ item }}</span>
             <span v-if="i !== row.houseTypes.length - 1">、</span>
           </span>
         </template>
       </el-table-column>
-      <el-table-column label="操作" width="120" fixed="right" align="center">
+      <el-table-column
+        label="操作"
+        width="120"
+        fixed="right"
+        align="center"
+      >
         <template v-slot="{ row }">
           <el-link
             style="margin-left: 20px"
             type="primary"
             @click.native.prevent="view(row)"
-            >查看房号</el-link
-          >
+          >查看房号</el-link>
         </template>
       </el-table-column>
     </el-table>
@@ -82,8 +134,14 @@
       :layout="$root.paginationLayout"
       :total="resPageInfo.total"
     ></el-pagination>
-    <ih-dialog :show="viewDialogVisible" desc="查看房源">
-      <RoomView :data="viewData" @cancel="() => (viewDialogVisible = false)" />
+    <ih-dialog
+      :show="viewDialogVisible"
+      desc="查看房源"
+    >
+      <RoomView
+        :data="viewData"
+        @cancel="() => (viewDialogVisible = false)"
+      />
     </ih-dialog>
   </div>
 </template>

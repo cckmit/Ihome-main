@@ -4,7 +4,7 @@
  * @Author: ywl
  * @Date: 2020-11-30 16:21:18
  * @LastEditors: ywl
- * @LastEditTime: 2020-12-01 11:29:20
+ * @LastEditTime: 2020-12-14 16:35:46
 -->
 <template>
   <el-dialog
@@ -20,11 +20,17 @@
     <el-form label-width="80px">
       <el-row>
         <el-col :span="8">
-          <el-form-item label="省市">
-            <IhCascader
+          <el-form-item label="省份">
+            <!-- <IhCascader
               :level="2"
               v-model="provinceList"
-            ></IhCascader>
+            ></IhCascader> -->
+            <el-input v-model="queryPageParameters.provinceName"></el-input>
+          </el-form-item>
+        </el-col>
+        <el-col :span="8">
+          <el-form-item label="城市">
+            <el-input v-model="queryPageParameters.cityName"></el-input>
           </el-form-item>
         </el-col>
         <el-col :span="8">
@@ -32,6 +38,8 @@
             <el-input v-model="queryPageParameters.branchName"></el-input>
           </el-form-item>
         </el-col>
+      </el-row>
+      <el-row>
         <el-col :span="8">
           <el-form-item label="联行号">
             <el-input v-model="queryPageParameters.branchNo"></el-input>
@@ -178,3 +186,13 @@ export default class BankRecord extends Vue {
   }
 }
 </script>
+
+<style lang="scss" scoped>
+.ih-table {
+  /deep/ .el-table__header {
+    .el-checkbox {
+      display: none !important;
+    }
+  }
+}
+</style>

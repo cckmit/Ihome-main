@@ -4,7 +4,7 @@
  * @Author: lsj
  * @Date: 2020-11-03 09:10:20
  * @LastEditors: lsj
- * @LastEditTime: 2020-11-13 14:38:33
+ * @LastEditTime: 2020-12-24 09:43:58
 -->
 <template>
   <ih-page label-width="100px">
@@ -16,7 +16,7 @@
               <el-input
                 v-model="queryPageParameters.dealCode"
                 clearable
-                placeholder="成交报告编号"
+                placeholder="请输入成交报告编号"
               ></el-input>
             </el-form-item>
           </el-col>
@@ -25,7 +25,7 @@
               <el-select
                 v-model="queryPageParameters.contType"
                 clearable
-                placeholder="合同类型"
+                placeholder="请选择"
                 class="width--100">
                 <el-option
                   v-for="item in $root.dictAllList('ContType')"
@@ -41,7 +41,7 @@
               <el-select
                 v-model="queryPageParameters.status"
                 clearable
-                placeholder="成交状态"
+                placeholder="请选择"
                 class="width--100">
                 <el-option
                   v-for="item in $root.dictAllList('DealStatus')"
@@ -52,177 +52,187 @@
               </el-select>
             </el-form-item>
           </el-col>
-          <el-col :span="8">
-            <el-form-item label="补充类型">
-              <el-select
-                v-model="queryPageParameters.suppContType"
-                clearable
-                placeholder="补充类型"
-                class="width--100">
-                <el-option
-                  v-for="item in $root.dictAllList('SuppContType')"
-                  :key="item.code"
-                  :label="item.name"
-                  :value="item.code"
-                ></el-option>
-              </el-select>
-            </el-form-item>
-          </el-col>
-          <el-col :span="8">
-            <el-form-item label="组织">
-              <SelectOrganizationTree
-                :orgId="queryPageParameters.dealOrg"
-                @callback="(id) => (queryPageParameters.dealOrg = id)"
-              />
-            </el-form-item>
-          </el-col>
-          <el-col :span="8">
-            <el-form-item label="录入人">
-              <IhSelectPageUser
-                v-model="queryPageParameters.entryPerson"
-                clearable>
-                <template v-slot="{ data }">
-                  <span style="float: left">{{ data.name }}</span>
-                  <span style="
-                      margin-left: 20px;
-                      float: right;
-                      color: #8492a6;
-                      font-size: 13px;
-                    ">{{ data.account }}</span>
-                </template>
-              </IhSelectPageUser>
-            </el-form-item>
-          </el-col>
-          <el-col :span="8">
-            <el-form-item label="客户姓名">
-              <el-input
-                v-model="queryPageParameters.customerName"
-                clearable
-                placeholder="客户姓名"
-              ></el-input>
-            </el-form-item>
-          </el-col>
-          <el-col :span="8">
-            <el-form-item label="客户电话">
-              <el-input
-                v-model="queryPageParameters.customerPhone"
-                clearable
-                placeholder="客户电话"
-              ></el-input>
-            </el-form-item>
-          </el-col>
-          <el-col :span="8">
-            <el-form-item label="渠道公司">
-              <el-input
-                v-model="queryPageParameters.agencyName"
-                clearable
-                placeholder="渠道公司"
-              ></el-input>
-            </el-form-item>
-          </el-col>
-          <el-col :span="8">
-            <el-form-item label="经纪人">
-              <SelectByBroker
-                v-model="queryPageParameters.broker"
-                :isKeyUp="true"
-                :props="{
-                  value: 'id',
-                  key: 'id',
-                  lable: 'name'}"
-              />
-            </el-form-item>
-          </el-col>
-          <el-col :span="8">
-            <el-form-item label="成交阶段">
-              <el-select
-                v-model="queryPageParameters.stage"
-                clearable
-                placeholder="成交阶段"
-                class="width--100">
-                <el-option
-                  v-for="item in $root.dictAllList('DealStage')"
-                  :key="item.code"
-                  :label="item.name"
-                  :value="item.code"
-                ></el-option>
-              </el-select>
-            </el-form-item>
-          </el-col>
-          <el-col :span="8">
-            <el-form-item label="项目周期">
-              <SelectByCycle
-                v-model="queryPageParameters.projectCycle"
-                :isKeyUp="true"
-                :props="{
-                  value: 'id',
-                  key: 'id',
-                  lable: 'name'}"
-              />
-            </el-form-item>
-          </el-col>
-          <el-col :span="8">
-            <el-form-item label="栋座">
-              <SelectByTower
-                v-model="queryPageParameters.agencyName"
-                :isKeyUp="true"
-                :props="{
-                  value: 'id',
-                  key: 'id',
-                  lable: 'name'}"
-              />
-            </el-form-item>
-          </el-col>
-          <el-col :span="8">
-            <el-form-item label="房号">
-              <el-input
-                v-model="queryPageParameters.agencyName"
-                clearable
-                placeholder="房号"
-              ></el-input>
-            </el-form-item>
-          </el-col>
-          <el-col :span="8">
-            <el-form-item label="查询时间">
-              <div class="search-time-wrapper">
-                <div class="time-type">
+        </el-row>
+        <el-collapse-transition>
+          <div v-show="searchOpen">
+            <el-row>
+              <el-col :span="8">
+                <el-form-item label="补充类型">
                   <el-select
-                    v-model="queryPageParameters.timeType"
-                    placeholder="请选择"
+                    v-model="queryPageParameters.suppContType"
                     clearable
+                    placeholder="请选择"
                     class="width--100">
                     <el-option
-                      v-for="item in $root.dictAllList('DealTimeType')"
+                      v-for="item in $root.dictAllList('SuppContType')"
                       :key="item.code"
                       :label="item.name"
                       :value="item.code"
                     ></el-option>
                   </el-select>
-                </div>
-                <div class="time-range">
-                  <el-date-picker
-                    v-model="selectTimeRange"
-                    type="daterange"
-                    align="left"
-                    unlink-panels
-                    range-separator="至"
-                    start-placeholder="开始日期"
-                    end-placeholder="结束日期"
-                    :picker-options="$root.pickerOptions"
-                    value-format="yyyy-MM-dd"
-                    @change="inputTimeChange"
-                  ></el-date-picker>
-                </div>
-              </div>
-            </el-form-item>
-          </el-col>
-        </el-row>
+                </el-form-item>
+              </el-col>
+              <el-col :span="8">
+                <el-form-item label="组织">
+                  <IhSelectOrgTree
+                    v-model="queryPageParameters.dealOrg"
+                  ></IhSelectOrgTree>
+                </el-form-item>
+              </el-col>
+              <el-col :span="8">
+                <el-form-item label="录入人">
+                  <IhSelectPageUser
+                    v-model="queryPageParameters.entryPerson"
+                    clearable>
+                    <template v-slot="{ data }">
+                      <span style="float: left">{{ data.name }}</span>
+                      <span style="
+                      margin-left: 20px;
+                      float: right;
+                      color: #8492a6;
+                      font-size: 13px;
+                    ">{{ data.account }}</span>
+                    </template>
+                  </IhSelectPageUser>
+                </el-form-item>
+              </el-col>
+              <el-col :span="8">
+                <el-form-item label="客户姓名">
+                  <el-input
+                    v-model="queryPageParameters.customerName"
+                    clearable
+                    placeholder="客户姓名"
+                  ></el-input>
+                </el-form-item>
+              </el-col>
+              <el-col :span="8">
+                <el-form-item label="客户电话">
+                  <el-input
+                    v-model="queryPageParameters.customerPhone"
+                    clearable
+                    placeholder="客户电话"
+                  ></el-input>
+                </el-form-item>
+              </el-col>
+              <el-col :span="8">
+                <el-form-item label="渠道公司">
+                  <IhSelectPageByChannel
+                    v-model="queryPageParameters.agencyId"
+                    clearable
+                    placeholder="请选择渠道公司"
+                    class="width--100"
+                  ></IhSelectPageByChannel>
+                </el-form-item>
+              </el-col>
+              <el-col :span="8">
+                <el-form-item label="经纪人">
+                  <SelectByBroker
+                    v-model="queryPageParameters.brokerId"
+                    :proId="queryPageParameters.agencyId"
+                    clearable
+                    placeholder="经纪人"/>
+                </el-form-item>
+              </el-col>
+              <el-col :span="8">
+                <el-form-item label="成交阶段">
+                  <el-select
+                    v-model="queryPageParameters.stage"
+                    clearable
+                    placeholder="请选择"
+                    class="width--100">
+                    <el-option
+                      v-for="item in $root.dictAllList('DealStage')"
+                      :key="item.code"
+                      :label="item.name"
+                      :value="item.code"
+                    ></el-option>
+                  </el-select>
+                </el-form-item>
+              </el-col>
+              <el-col :span="8">
+                <el-form-item label="项目周期">
+                  <IhSelectPageByCycle
+                    clearable
+                    v-model="queryPageParameters.cycleId"
+                    placeholder="请选择立项周期"
+                  ></IhSelectPageByCycle>
+                </el-form-item>
+              </el-col>
+              <el-col :span="8">
+                <el-form-item label="栋座">
+                  <IhSelectPageByBuild
+                    v-model="queryPageParameters.buyUnit"
+                    :proId="queryPageParameters.cycleId"
+                    placeholder="请选择栋座"
+                    clearable
+                  ></IhSelectPageByBuild>
+                </el-form-item>
+              </el-col>
+              <el-col :span="8">
+                <el-form-item label="房号">
+                  <IhSelectPageByRoom
+                    v-model="queryPageParameters.roomNumberId"
+                    :proId="queryPageParameters.cycleId"
+                    :buildingId="queryPageParameters.buyUnit"
+                    placeholder="请选择房号"
+                    clearable
+                  ></IhSelectPageByRoom>
+                </el-form-item>
+              </el-col>
+              <el-col :span="8">
+                <el-form-item label="查询时间">
+                  <div class="search-time-wrapper">
+                    <div class="time-type">
+                      <el-select
+                        v-model="queryPageParameters.timeType"
+                        placeholder="请选择"
+                        clearable
+                        class="width--100">
+                        <el-option
+                          v-for="item in $root.dictAllList('DealTimeType')"
+                          :key="item.code"
+                          :label="item.name"
+                          :value="item.code"
+                        ></el-option>
+                      </el-select>
+                    </div>
+                    <div class="time-range">
+                      <el-date-picker
+                        v-model="selectTimeRange"
+                        type="daterange"
+                        align="left"
+                        unlink-panels
+                        range-separator="至"
+                        start-placeholder="开始日期"
+                        end-placeholder="结束日期"
+                        :picker-options="$root.pickerOptions"
+                        value-format="yyyy-MM-dd"
+                        @change="inputTimeChange"
+                      ></el-date-picker>
+                    </div>
+                  </div>
+                </el-form-item>
+              </el-col>
+            </el-row>
+          </div>
+        </el-collapse-transition>
       </el-form>
     </template>
     <template v-slot:btn>
       <el-row>
         <el-button type="primary" @click="getListMixin()">查询</el-button>
+        <el-button
+          v-has="'B.SALES.DEAL.DEALLIST.ADD'"
+          type="success" @click="handleAdd('add')">添加</el-button>
+        <el-button
+          v-has="'B.SALES.DEAL.DEALLIST.ACHIEVEDECLARE'"
+          type="success" @click="handleAdd('declare')">业绩申报</el-button>
         <el-button type="info" @click="handleReset()">重置</el-button>
-        <el-button type="success" @click="handleAdd()">新增</el-button>
+        <el-link
+          type="primary"
+          class="float-right margin-right-40"
+          @click="openToggle()"
+        >{{searchOpen?'收起':'展开'}}</el-link>
       </el-row>
     </template>
     <template v-slot:table>
@@ -243,7 +253,7 @@
           <template slot-scope="scope">
             <div v-if="scope.row.contType">{{ $root.dictAllName(scope.row.contType, 'ContType') }}</div>
             <div v-if="scope.row.suppContType">{{ $root.dictAllName(scope.row.suppContType, 'SuppContType') }}</div>
-            <div>状态：{{ $root.dictAllName(scope.row.status, 'DealStatus') }}</div>
+            <div v-if="scope.row.status">状态：{{ $root.dictAllName(scope.row.status, 'DealStatus') }}</div>
           </template>
         </el-table-column>
         <el-table-column prop="actualAmount" label="应收实收金额" min-width="190">
@@ -278,7 +288,7 @@
           </template>
         </el-table-column>
         <el-table-column prop="dealOrg" label="组织信息" min-width="260"></el-table-column>
-        <el-table-column prop="allotDate" label="签约/填写/业绩/审批日期" min-width="210">
+        <el-table-column prop="allotDate" label="签约/填写/业绩确认/审批日期" min-width="210">
           <template slot-scope="scope">
             <div>签约：{{scope.row.signDate}}</div>
             <div>填写：{{scope.row.createTime}}</div>
@@ -300,44 +310,58 @@
                 <i class="el-icon-arrow-down el-icon--right"></i>
               </span>
               <el-dropdown-menu slot="dropdown">
-                <el-dropdown-item @click.native.prevent="handleEdit(scope)"
+                <el-dropdown-item
+                  :class="{ 'ih-data-disabled': !['Draft', 'AchieveDeclareUnconfirm', 'Reject'].includes(scope.row.status)}"
+                  v-has="'B.SALES.DEAL.DEALLIST.UPDATE'"
+                  @click.native.prevent="handleEdit(scope)"
                 >修改
                 </el-dropdown-item>
-                <el-dropdown-item @click.native.prevent="handleDelete(scope)"
+                <el-dropdown-item
+                  :class="{ 'ih-data-disabled': !['Draft', 'AchieveDeclareUnconfirm', 'Reject'].includes(scope.row.status)}"
+                  v-has="'B.SALES.DEAL.DEALLIST.DELETE'"
+                  @click.native.prevent="handleDelete(scope)"
                 >删除
                 </el-dropdown-item>
-                <el-dropdown-item @click.native.prevent="handleRecall(scope)"
+                <el-dropdown-item
+                  :class="{ 'ih-data-disabled': ['Draft', 'ReviewPassed', 'Reject'].includes(scope.row.status)}"
+                  v-has="'B.SALES.DEAL.DEALLIST.REVOKE'"
+                  @click.native.prevent="handleRecall(scope)"
                 >撤回
                 </el-dropdown-item>
-                <el-dropdown-item @click.native.prevent="handleReview(scope)"
-                >审核
-                </el-dropdown-item>
-                <el-dropdown-item @click.native.prevent="handleReviewAchieve(scope)"
-                >审核申报业绩
-                </el-dropdown-item>
                 <el-dropdown trigger="click" class="el-dropdown-menu__item" placement="top-start">
-                  <span class="el-dropdown-link">
+                  <span
+                    v-has="'B.SALES.DEAL.DEALLIST.SUPPLEMENTDEAL'"
+                    :class="{ 'ih-data-disabled': !(scope.row.status === 'ReviewPassed' && scope.row.id === scope.row.parentId)}"
+                    class="el-dropdown-link">
                   补充成交
                   <i class="el-icon-arrow-down el-icon--right"></i>
                   </span>
                   <el-dropdown-menu slot="dropdown">
-                    <el-dropdown-item @click.native.prevent="handleChangeDealInfo(scope, 'baseInfo')"
+                    <el-dropdown-item @click.native.prevent="handleChangeDealInfo(scope, 'ChangeBasicInf')"
                     >变更基础信息
                     </el-dropdown-item>
-                    <el-dropdown-item @click.native.prevent="handleChangeDealInfo(scope, 'achieveInfo')"
+                    <el-dropdown-item @click.native.prevent="handleChangeDealInfo(scope, 'ChangeAchieveInf')"
                     >变更业绩信息
                     </el-dropdown-item>
-                    <el-dropdown-item @click.native.prevent="handleChangeDealInfo(scope, 'checkOut')"
+                    <el-dropdown-item @click.native.prevent="handleChangeDealInfo(scope, 'RetreatRoom')"
                     >退房
                     </el-dropdown-item>
-                    <el-dropdown-item @click.native.prevent="handleChangeDealInfo(scope, 'staffAchieveInfo')"
+                    <el-dropdown-item @click.native.prevent="handleChangeDealInfo(scope, 'ChangeInternalAchieveInf')"
                     >内部员工业绩变更
                     </el-dropdown-item>
                   </el-dropdown-menu>
                 </el-dropdown>
-                <el-dropdown-item @click.native.prevent="handleWithdrawalReview(scope)"
-                >撤回审核
+                <el-dropdown-item
+                  :class="{ 'ih-data-disabled': !['PlatformClerkUnreview', 'HeadDepartUnreview', 'BranchBusinessManageUnreview'].includes(scope.row.status)}"
+                  v-has="'B.SALES.DEAL.DEALLIST.VERIFY'"
+                  @click.native.prevent="handleReview(scope)"
+                >审核
                 </el-dropdown-item>
+<!--                <el-dropdown-item-->
+<!--                  v-has="'B.SALES.DEAL.DEALLIST.REVOKEVERIFY'"-->
+<!--                  @click.native.prevent="handleWithdrawalReview(scope)"-->
+<!--                >撤回审核-->
+<!--                </el-dropdown-item>-->
               </el-dropdown-menu>
             </el-dropdown>
           </template>
@@ -362,9 +386,6 @@
   import {Component, Vue} from "vue-property-decorator";
   import SelectOrganizationTree from "@/components/select/SelectOrganizationTree.vue";
   import SelectByBroker from "@/components/select/SelectByBroker.vue";
-  import SelectByCycle from "@/components/select/SelectByCycle.vue";
-  import SelectByTower from "@/components/select/SelectByTower.vue";
-
   import {
     post_deal_getList,
     post_deal_delete__id,
@@ -375,10 +396,14 @@
   import PaginationMixin from "@/mixins/pagination";
 
   @Component({
-    components: {SelectOrganizationTree, SelectByBroker, SelectByCycle, SelectByTower},
+    components: {
+      SelectOrganizationTree,
+      SelectByBroker
+    },
     mixins: [PaginationMixin],
   })
   export default class DealReportList extends Vue {
+    private searchOpen = true;
     queryPageParameters: any = {
       dealCode: null,
       contType: null,
@@ -388,10 +413,10 @@
       entryPerson: null,
       customerName: null,
       customerPhone: null,
-      agencyName: null,
+      agencyId: null, // 渠道商id
       stage: null,
       projectCycle: null,
-      broker: null,
+      brokerId: null,
       timeType: null,
       beginTime: null,
       endTime: null
@@ -400,11 +425,16 @@
 
     resPageInfo: any = {
       total: null,
-      list: [{},{}],
+      list: [],
     };
 
     async created() {
       await this.getListMixin();
+    }
+
+    // 查询条件折叠/展开
+    private openToggle(): void {
+      this.searchOpen = !this.searchOpen;
     }
 
     // 改变查询时间
@@ -442,10 +472,10 @@
         entryPerson: null,
         customerName: null,
         customerPhone: null,
-        agencyName: null,
+        agencyId: null,
         stage: null,
         projectCycle: null,
-        broker: null,
+        brokerId: null,
         timeType: null,
         beginTime: null,
         endTime: null,
@@ -456,9 +486,10 @@
     }
 
     // 新增
-    async handleAdd() {
+    async handleAdd(type: any) {
       this.$router.push({
-        path: "/dealReport/add"
+        path: "/dealReport/add",
+        query: {btnType: type}
       });
     }
 
@@ -525,31 +556,28 @@
       });
     }
 
-    // 审核申报业绩
-    async handleReviewAchieve(scope: any) {
-      console.log(scope);
-      this.$router.push({
-        path: "/dealReport/add",
-        query: {id: scope.row.id}
-      });
-    }
-
     /*
     * type: 变更成交按钮类型
-    * baseInfo --- 变更基础信息
-    * achieveInfo --- 变更业绩信息
-    * checkOut --- 退房
-    * staffAchieveInfo --- 内部员工业绩变更
+    * ChangeBasicInf --- 变更基础信息
+    * ChangeAchieveInf --- 变更业绩信息
+    * RetreatRoom --- 退房
+    * ChangeInternalAchieveInf --- 内部员工业绩变更
     * */
     async handleChangeDealInfo(scope: any, type: any) {
-      console.log(scope);
-      this.$router.push({
-        path: "/dealReport/changeDealInfo",
-        query: {
-          id: scope.row.id,
-          type: type
-        }
-      });
+      // console.log(scope);
+      // console.log(type);
+      if (scope.row.id === scope.row.parentId) {
+        // 这两个id一样，才是主成交报告，才能新增补充成交
+        this.$router.push({
+          path: "/dealReport/suppDeal",
+          query: {
+            id: scope.row.id,
+            type: type
+          }
+        });
+      } else {
+        this.$message.warning('非主成交报告，没有此操作');
+      }
     }
 
     // 撤回审核

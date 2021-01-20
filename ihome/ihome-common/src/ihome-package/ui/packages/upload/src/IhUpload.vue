@@ -4,11 +4,12 @@
  * @Author: wwq
  * @Date: 2020-09-09 16:17:16
  * @LastEditors: wwq
- * @LastEditTime: 2020-11-10 09:34:54
+ * @LastEditTime: 2021-01-15 21:16:09
 -->
 <template>
   <div class="upload">
     <el-upload
+      v-if="uploadShow"
       class="avatar-uploader"
       ref="upload"
       list-type="picture-card"
@@ -31,46 +32,75 @@
           :style="{ width: size, height: size }"
           :src="uploadType(file)"
         />
-        <slot name="extend" :data="file" />
-        <span
-          class="el-upload-list__item-actions uploadbutton"
-          :style="{
+        <slot
+          name="extend"
+          :data="file"
+        />
+        <el-tooltip
+          class="item"
+          effect="light"
+          :content="file.name"
+          placement="top"
+        >
+          <span
+            class="el-upload-list__item-actions uploadbutton"
+            :style="{
             width: size,
             height: Object.keys($scopedSlots).length ? size : '',
           }"
-        >
-          <span class="operation">
-            <span
-              class="el-upload-list__item-preview"
-              v-if="previewPermi"
-              @click="handlePictureCardPreview(file)"
-            >
-              <i class="el-icon-zoom-in" title="预览"></i>
+          >
+            <span class="operation">
+              <span
+                class="el-upload-list__item-preview"
+                v-if="previewPermi"
+                @click="handlePictureCardPreview(file)"
+              >
+                <i
+                  class="el-icon-zoom-in"
+                  title="预览"
+                ></i>
+              </span>
+              <span
+                class="el-upload-list__item-delete"
+                v-if="loadPermi"
+                @click="handleDownload(file)"
+              >
+                <i
+                  class="el-icon-download"
+                  title="下载"
+                ></i>
+              </span>
+              <span
+                class="el-upload-list__item-delete"
+                v-if="removePermi && !file.exAuto"
+                @click="handleRemove(file)"
+              >
+                <i
+                  class="el-icon-delete"
+                  title="删除"
+                ></i>
+              </span>
             </span>
             <span
-              class="el-upload-list__item-delete"
-              v-if="loadPermi"
-              @click="handleDownload(file)"
+              class="move"
+              v-if="isMove"
+              ref="move"
             >
-              <i class="el-icon-download" title="下载"></i>
-            </span>
-            <span
-              class="el-upload-list__item-delete"
-              v-if="removePermi"
-              @click="handleRemove(file)"
-            >
-              <i class="el-icon-delete" title="删除"></i>
+              <span @click="leftShift(file)">
+                <i
+                  class="el-icon-back"
+                  title="左移"
+                ></i>
+              </span>
+              <span @click="rightShift(file)">
+                <i
+                  class="el-icon-right"
+                  title="右移"
+                ></i>
+              </span>
             </span>
           </span>
-          <span class="move" v-if="isMove" ref="move">
-            <span @click="leftShift(file)">
-              <i class="el-icon-back" title="左移"></i>
-            </span>
-            <span @click="rightShift(file)">
-              <i class="el-icon-right" title="右移"></i>
-            </span>
-          </span>
-        </span>
+        </el-tooltip>
       </template>
       <i
         class="el-icon-plus avatar-uploader-icon"
@@ -86,7 +116,10 @@
       :viewer-msg="viewerArr"
       :viewer-index="viewerIndex"
     ></image-viewer>
-    <ih-dialog :show="dialogVisible" desc="联系人信息">
+    <ih-dialog
+      :show="dialogVisible"
+      desc="联系人信息"
+    >
       <Cropper
         ref="cropper"
         :img="cropperImg"
@@ -101,6 +134,7 @@
 import { Component, Vue, Prop, Watch } from "vue-property-decorator";
 import ImageViewer from "./image-viewer.vue";
 import Cropper from "./cropper.vue";
+import { getToken } from "../../../../util/cookies";
 import {
   post_file_upload,
   get_file_remove__fid,
@@ -112,7 +146,6 @@ import {
   },
 })
 export default class IhUpload extends Vue {
-  @Prop() private action: any;
   @Prop() private fileList!: Array<object>;
   @Prop({
     type: Number,
@@ -121,7 +154,7 @@ export default class IhUpload extends Vue {
   limit!: number;
   @Prop({
     type: Boolean,
-    default: true,
+    default: false,
   })
   multiple?: boolean;
   @Prop({
@@ -164,6 +197,26 @@ export default class IhUpload extends Vue {
     default: false,
   })
   isMove?: boolean;
+  @Prop({
+    type: Boolean,
+    default: false,
+  })
+  delFileServer?: boolean;
+  @Prop({
+    type: String,
+    default: null,
+  })
+  fileType?: string;
+  @Prop({
+    type: Boolean,
+    default: true,
+  })
+  uploadShow?: boolean;
+  @Prop({
+    type: String,
+    default: "",
+  })
+  uploadAccept!: string;
 
   private list: any[] = [];
   private srcList: any[] = [];
@@ -176,6 +229,11 @@ export default class IhUpload extends Vue {
   private cropperName = "";
   private cropperImg = "";
   private changeFileList: any = [];
+  private action = `/sales-api/sales-document-cover/file/upload`;
+  private headers: any = {
+    Authorization: "bearer " + getToken(),
+  };
+  private fdData: any = [];
 
   @Watch("list", { deep: true })
   getList(list: any) {
@@ -212,9 +270,15 @@ export default class IhUpload extends Vue {
     return await post_file_upload(fd);
   }
   successHandler(response: any, file: any, fileList: any) {
-    this.replaceUpload(file, fileList, fileList.length - 1, response[0].fileId);
+    fileList.forEach((v: any, index: number) => {
+      if (v?.response?.length) {
+        this.replaceUpload(v, fileList, index, v.response[0].fileId);
+      } else {
+        this.replaceUpload(v, fileList, index, v.fileId);
+      }
+    });
     this.$message.success("上传成功");
-    this.$emit("newFileList", fileList);
+    this.$emit("newFileList", fileList, this.fileType);
   }
   errorHandler() {
     this.$message.error("上传失败");
@@ -245,15 +309,61 @@ export default class IhUpload extends Vue {
   beforeUpload(file: any) {
     return new Promise((resolve, reject) => {
       const size = file.size / 1024 / 1024 < this.fileSize;
+      const type = file?.name?.match(/(?<=\.).+/)?.toString();
       if (!size) {
         this.$message({
           message: `文件大小不能超过 ${this.fileSize}MB`,
-          type: "error",
+          type: "warning",
         });
-        reject("文件容量过大!");
+        reject();
         return;
       } else {
-        resolve();
+        if (this.uploadAccept) {
+          switch (this.uploadAccept) {
+            case "image":
+              switch (type) {
+                case "gif":
+                case "jpg":
+                case "png":
+                case "jpeg":
+                  resolve();
+                  break;
+                default:
+                  this.$message({
+                    message: `只能上传图片类型`,
+                    type: "warning",
+                  });
+                  reject();
+                  break;
+              }
+              break;
+          }
+        } else {
+          switch (type) {
+            case "gif":
+            case "jpg":
+            case "png":
+            case "jpeg":
+            case "doc":
+            case "docx":
+            case "docm":
+            case "xls":
+            case "xlsx":
+            case "pdf":
+            case "ppt":
+            case "potx":
+            case "pptx":
+              resolve();
+              break;
+            default:
+              this.$message({
+                message: `只能上传图片, 文档, 表格, pdf, ppt类型`,
+                type: "warning",
+              });
+              reject();
+              break;
+          }
+        }
       }
     });
   }
@@ -279,15 +389,17 @@ export default class IhUpload extends Vue {
       case "potx":
       case "pptx":
         return require("../../../img/ppt.png");
+      default:
+        return require("../../../img/file.jpg");
     }
   }
   // 移除图片
   async handleRemove(file: any) {
-    await get_file_remove__fid({ fid: file.fileId });
+    if (this.delFileServer) await get_file_remove__fid({ fid: file.fileId });
     await (this.$refs.upload as any).handleRemove(file);
     let index = this.list.findIndex((v) => v.uid === file.uid);
     this.$delete(this.list, index);
-    this.$emit("newFileList", this.list);
+    this.$emit("newFileList", this.list, this.fileType);
   }
   // 点击图片预览按钮
   handlePictureCardPreview(file: any) {
@@ -348,8 +460,11 @@ export default class IhUpload extends Vue {
       case "pptx":
         fileList[index].img_url = require("../../../img/ppt.png");
         break;
+      default:
+        fileList[index].img_url = require("../../../img/file.jpg");
     }
     fileList[index].fileId = fileId;
+    fileList[index].type = this.fileType;
     this.list = [...fileList];
   }
 
@@ -398,6 +513,10 @@ export default class IhUpload extends Vue {
 .upload {
   display: flex;
   justify-content: flex-start;
+  line-height: normal;
+  /deep/ .el-upload--picture-card {
+    margin-bottom: 10px;
+  }
 }
 .avatar-uploader .el-upload {
   position: relative;

@@ -3,17 +3,14 @@
  * @version: 
  * @Author: zyc
  * @Date: 2020-07-14 09:23:40
- * @LastEditors: ywl
- * @LastEditTime: 2020-11-30 17:47:11
+ * @LastEditors: zyc
+ * @LastEditTime: 2021-01-19 09:44:02
 --> 
 --> 
 <template>
   <ih-page>
     <template v-slot:form>
-      <el-form
-        ref="form"
-        label-width="80px"
-      >
+      <el-form ref="form" label-width="80px">
         <el-row>
           <el-col :span="8">
             <el-form-item label="邀请码">
@@ -25,19 +22,11 @@
           </el-col>
           <el-col :span="8">
             <el-form-item label="创建人">
-              <el-select
+              <IhSelectPageUser
                 v-model="queryPageParameters.invitationUserId"
                 clearable
-                placeholder="创建人"
-                class="width--100"
               >
-                <el-option
-                  v-for="item in createUserList"
-                  :key="item.value"
-                  :label="item.label"
-                  :value="item.value"
-                ></el-option>
-              </el-select>
+              </IhSelectPageUser>
             </el-form-item>
           </el-col>
           <el-col :span="8">
@@ -59,22 +48,15 @@
           </el-col>
           <el-col :span="8">
             <el-form-item label="事业部">
-              <el-select
+              <IhSelectPageDivision
+                placeholder="事业部"
                 v-model="queryPageParameters.departmentOrgId"
                 clearable
-                placeholder="事业部"
-                class="width--100"
-              >
-                <el-option
-                  v-for="item in divisionList"
-                  :key="item.value"
-                  :label="item.label"
-                  :value="item.value"
-                ></el-option>
-              </el-select>
+                value-key="id"
+              ></IhSelectPageDivision>
             </el-form-item>
           </el-col>
-          <el-col :span="8">
+          <!-- <el-col :span="8">
             <el-form-item label="状态">
               <el-select
                 v-model="queryPageParameters.status"
@@ -90,29 +72,27 @@
                 ></el-option>
               </el-select>
             </el-form-item>
-          </el-col>
+          </el-col> -->
         </el-row>
       </el-form>
     </template>
 
     <template v-slot:btn>
       <el-row>
-        <el-button
-          type="primary"
-          @click="getListMixin()"
-        >查询</el-button>
+        <el-button type="primary" @click="getListMixin()">查询</el-button>
         <el-button
           type="success"
           @click="add()"
-        >添加</el-button>
-        <el-button
-          type="info"
-          @click="reset()"
-        >重置</el-button>
+          v-has="'B.SALES.CHANNEL.CODELIST.ADD'"
+          >添加</el-button
+        >
+        <el-button type="info" @click="reset()">重置</el-button>
         <el-button
           type="default"
           @click="toVoid()"
-        >作废</el-button>
+          v-has="'B.SALES.CHANNEL.CODELIST.INVALID'"
+          >作废</el-button
+        >
       </el-row>
     </template>
 
@@ -124,71 +104,59 @@
         @selection-change="handleSelectionChange"
         :empty-text="emptyText"
       >
-        <el-table-column
-          type="selection"
-          width="50"
-          align="center"
-        >
+        <el-table-column type="selection" width="50" align="center">
         </el-table-column>
-        <el-table-column
-          type="index"
-          label="序号"
-          width="50"
-        ></el-table-column>
+        <el-table-column type="index" label="序号" width="50"></el-table-column>
         <el-table-column
           prop="invitationCode"
           label="邀请码"
-          width="180"
+          width="150"
         ></el-table-column>
         <!-- <el-table-column
           prop="status"
           label="状态"
           width="180"
         ></el-table-column> -->
-        <el-table-column
-          label="状态"
-          width="120"
-        >
+        <!-- <el-table-column label="状态" width="120">
           <template slot-scope="scope">{{
             $root.dictAllName(scope.row.status, "ValidType")
           }}</template>
-        </el-table-column>
-        <el-table-column
-          prop="expiresTime"
-          label="失效日期"
-          width="95"
-        ></el-table-column>
-        <el-table-column
-          prop="departmentName"
-          label="事业部"
-        ></el-table-column>
-        <el-table-column
-          prop="createUserName"
-          label="创建人"
-        ></el-table-column>
+        </el-table-column> -->
+
+        <el-table-column prop="departmentName" label="事业部"></el-table-column>
+        <el-table-column prop="createUserName" label="创建人"></el-table-column>
         <el-table-column
           prop="createTime"
           label="创建时间"
-          width="155"
+          width="180"
         ></el-table-column>
-
-        <el-table-column
-          fixed="right"
-          label="操作"
-          width="120"
-        >
+        <el-table-column prop="expiresTime" label="失效日期" width="180">
+          <template slot-scope="scope">
+            <span
+              :class="{
+                ValidTypeColor: isValidType(scope),
+                NoValidTypeColor: !isValidType(scope),
+              }"
+              >{{ scope.row.expiresTime }}</span
+            >
+          </template>
+        </el-table-column>
+        <el-table-column fixed="right" label="操作" width="120">
           <template slot-scope="scope">
             <el-link
               style="color: #409eff"
               class="margin-right-10"
               type="primary"
               @click.native.prevent="info(scope)"
-            >详情</el-link>
+              >详情</el-link
+            >
             <el-link
               style="color: #f66"
               type="primary"
               @click.native.prevent="remove(scope)"
-            >删除</el-link>
+              v-has="'B.SALES.CHANNEL.CODELIST.DELETE'"
+              >删除</el-link
+            >
           </template>
         </el-table-column>
       </el-table>
@@ -206,10 +174,7 @@
       ></el-pagination>
     </template>
 
-    <ih-dialog
-      :show="dialogAdd"
-      desc="新增二维码"
-    >
+    <ih-dialog :show="dialogAdd" desc="新增二维码">
       <InvitationCodeAdd
         @cancel="() => (dialogAdd = false)"
         @finish="
@@ -273,9 +238,21 @@ export default class InvitationCodeList extends Vue {
   async mounted() {
     console.log("mounted");
   }
+  isValidType(scope: any) {
+    if (new Date(scope.row.expiresTime).getTime() > new Date().getTime()) {
+      return false;
+    } else {
+      return true;
+    }
+  }
   expiresTimeChange(dateArray: any) {
-    this.queryPageParameters.expiresTimeBegin = dateArray[0];
-    this.queryPageParameters.expiresTimeEnd = dateArray[1];
+    if (dateArray) {
+      this.queryPageParameters.expiresTimeBegin = dateArray[0];
+      this.queryPageParameters.expiresTimeEnd = dateArray[1];
+    } else {
+      this.queryPageParameters.expiresTimeBegin = null;
+      this.queryPageParameters.expiresTimeEnd = null;
+    }
   }
   async remove(scope: any) {
     try {
@@ -340,4 +317,10 @@ export default class InvitationCodeList extends Vue {
 }
 </script>
 <style lang="scss" scoped>
+.ValidTypeColor {
+  color: red;
+}
+.NoValidTypeColor {
+  color: #4caf50;
+}
 </style>

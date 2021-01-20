@@ -4,7 +4,7 @@
  * @Author: lsj
  * @Date: 2020-11-03 15:28:12
  * @LastEditors: lsj
- * @LastEditTime: 2020-11-03 15:30:12
+ * @LastEditTime: 2020-12-16 10:50:50
 -->
 <template>
   <el-dialog
@@ -13,17 +13,19 @@
     :visible.sync="dialogVisible"
     :close-on-click-modal="false"
     :close-on-press-escape="false"
+    :show-close="false"
     :before-close="beforeFinish"
     append-to-body
     width="1000px"
     style="text-align: left"
-    class="dialog">
-    <el-form ref="form" label-width="100px">
+    class="dialog dialog-wrapper">
+    <div slot="title" class="title">选择已成交报备信息列表(分销模式下必选)</div>
+    <el-form ref="form" label-width="100px" @submit.native.prevent>
       <el-row>
         <el-col :span="8">
           <el-form-item label="项目名称">
             <el-input
-              v-model="queryPageParameters.termName"
+              v-model="queryPageParameters.proName"
               placeholder="项目周期名称"
             ></el-input>
           </el-form-item>
@@ -31,7 +33,7 @@
         <el-col :span="8">
           <el-form-item label="渠道公司">
             <el-input
-              v-model="queryPageParameters.termName"
+              v-model="queryPageParameters.channelName"
               placeholder="渠道公司"
             ></el-input>
           </el-form-item>
@@ -39,7 +41,7 @@
         <el-col :span="8">
           <el-form-item label="报备人">
             <el-input
-              v-model="queryPageParameters.termName"
+              v-model="queryPageParameters.name"
               placeholder="报备人"
             ></el-input>
           </el-form-item>
@@ -47,7 +49,7 @@
         <el-col :span="8">
           <el-form-item label="报备时间">
             <el-date-picker
-              v-model="queryPageParameters.time"
+              v-model="queryPageParameters.reportDate"
               type="daterange"
               range-separator="至"
               start-placeholder="开始日期"
@@ -81,6 +83,7 @@
       @size-change="sizeChange">
     </IhTableCheckBox>
     <span slot="footer" class="dialog-footer">
+      <!-- <el-button @click="cancel()">取 消</el-button>-->
       <el-button type="primary" @click="finish">确 定</el-button>
     </span>
   </el-dialog>
@@ -88,7 +91,7 @@
 <script lang="ts">
   import {Component, Vue, Prop} from "vue-property-decorator";
 
-  import {post_term_getList} from "@/api/project/index";
+  import {post_report_getDealList} from "@/api/customer/index";
   import PaginationMixin from "@/mixins/pagination";
 
   @Component({
@@ -104,38 +107,56 @@
     private tableMaxHeight: any = 350;
     private tableColumn = [
       {
-        prop: "termName",
-        label: "栋座",
+        prop: "proCycle",
+        label: "周期名称",
         align: "left",
         minWidth: 200,
       },
       {
-        prop: "busTypeEnum",
-        label: "房号",
+        prop: "proName",
+        label: "报备项目",
         align: "left",
         minWidth: 100,
       },
       {
-        prop: "termStart",
-        label: "户型",
+        prop: "reportType",
+        label: "报备类型",
         align: "left",
         minWidth: 140,
       },
       {
-        prop: "termEnd",
-        label: "房型",
+        prop: "name",
+        label: "客户信息",
         align: "left",
         minWidth: 140,
       },
       {
-        prop: "termEnd1",
-        label: "面积",
+        prop: "mobile",
+        label: "客户号码",
         align: "left",
         minWidth: 140,
       },
       {
-        prop: "termEnd2",
-        label: "朝向",
+        prop: "reportUser",
+        label: "报备人",
+        align: "left",
+        minWidth: 140,
+      },
+      {
+        prop: "channelName",
+        label: "所属公司",
+        align: "left",
+        minWidth: 140,
+      },
+      {
+        prop: "reportDate",
+        label: "报备时间",
+        align: "left",
+        minWidth: 140,
+      },
+      {
+        prop: "visitDate",
+        label: "到访时间",
         align: "left",
         minWidth: 140,
       }
@@ -155,18 +176,28 @@
     };
 
     queryPageParameters: any = {
-      termName: null,
-      busTypeEnum: null,
-      time: null
+      dealStatus: 'ValidDeal',
+      proName: null,
+      channelName: null,
+      name: null,
+      reportDateStart: null,
+      reportDateEnd: null,
+      reportDate: []
     };
     currentSelection: any = []; // 当前选择的项
 
     created() {
-      // this.getListMixin();
+      // console.log('proId', this.data);
+      this.getListMixin();
     }
 
     async beforeFinish() {
-      this.$emit("cancel");
+      this.$emit("cancel", false);
+    }
+
+    // 取消
+    cancel() {
+      this.$emit("cancel", false);
     }
 
     async finish() {
@@ -182,7 +213,7 @@
 
     // 获取选中项 --- 最后需要获取的数据
     private selectionChange(selection: any) {
-      console.log(selection, "selectionChange");
+      // console.log(selection, "selectionChange");
       this.currentSelection = selection;
     }
 
@@ -201,7 +232,15 @@
     }
 
     async getListMixin() {
-      const infoList = await post_term_getList(this.queryPageParameters);
+      this.queryPageParameters.proId = this.data; // 关联的项目周期id
+      if (this.queryPageParameters.reportDate.length > 0) {
+        this.queryPageParameters.reportDateStart = this.queryPageParameters.reportDate[0];
+        this.queryPageParameters.reportDateEnd = this.queryPageParameters.reportDate[1];
+      } else {
+        this.queryPageParameters.reportDateStart = null;
+        this.queryPageParameters.reportDateEnd = null;
+      }
+      const infoList = await post_report_getDealList(this.queryPageParameters);
       if (infoList.list.length > 0) {
         infoList.list.forEach((item: any) => {
           item.checked = false;
@@ -226,8 +265,14 @@
 
     reset() {
       this.queryPageParameters = {
-        termName: null,
-        busTypeEnum: null,
+        proId: this.data,
+        dealStatus: 'ValidDeal',
+        proName: null,
+        channelName: null,
+        name: null,
+        reportDateStart: null,
+        reportDateEnd: null,
+        reportDate: [],
         pageNum: 1,
         pageSize: this.queryPageParameters.pageSize
       };
@@ -235,4 +280,14 @@
   }
 </script>
 <style lang="scss" scoped>
+  .title {
+    color: red;
+    font-size: 22px;
+  }
+
+  .dialog-wrapper {
+    /deep/.el-dialog__body {
+      padding: 10px 20px !important;
+    }
+  }
 </style>

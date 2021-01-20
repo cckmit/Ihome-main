@@ -4,7 +4,7 @@
  * @Author: zyc
  * @Date: 2020-07-09 10:21:50
  * @LastEditors: zyc
- * @LastEditTime: 2020-11-11 14:48:05
+ * @LastEditTime: 2020-12-17 08:53:34
 --> 
 <template>
   <ih-page>
@@ -12,7 +12,7 @@
       <el-form ref="form" label-width="80px" @submit.native.prevent>
         <el-row>
           <el-col :span="2" class="text-left">
-            <el-button @click="add({})" type="success">添加</el-button>
+            <el-button @click="add({})" type="success" v-has="'B.SALES.SYSTEM.ROLELIST.ADD'">添加</el-button>
           </el-col>
           <el-col :span="22" class="text-right">
             <el-input
@@ -21,6 +21,7 @@
               class="input-with-select"
               v-model="queryPageParameters.key"
               @keyup.enter.native="getListMixin"
+              clearable
             ></el-input>
             <el-button
               type="primary"
@@ -38,7 +39,7 @@
         class="ih-table"
         :data="resPageInfo.list"
         style="width: 100%"
-       :empty-text="emptyText"
+        :empty-text="emptyText"
       >
         <el-table-column type="index" label="序号" width="50"></el-table-column>
         <el-table-column prop="name" label="名称" width="180"></el-table-column>
@@ -67,20 +68,20 @@
                 <i class="el-icon-arrow-down el-icon--right"></i>
               </span>
               <el-dropdown-menu slot="dropdown">
-                <el-dropdown-item @click.native.prevent="edit(scope)"
-                  >编辑</el-dropdown-item
+                <el-dropdown-item v-has="'B.SALES.SYSTEM.ROLELIST.UPDATE'" @click.native.prevent="edit(scope)"
+                  >修改</el-dropdown-item
                 >
-                <el-dropdown-item @click.native.prevent="remove(scope)"
-                  >删除角色</el-dropdown-item
+                <el-dropdown-item v-has="'B.SALES.SYSTEM.ROLELIST.DELETE'" @click.native.prevent="remove(scope)"
+                  >删除</el-dropdown-item
                 >
-                <el-dropdown-item @click.native.prevent="setJurisdiction(scope)"
+                <el-dropdown-item v-has="'B.SALES.SYSTEM.ROLELIST.ADDAUTH'" @click.native.prevent="setJurisdiction(scope)"
                   >分配权限</el-dropdown-item
                 >
-                <el-dropdown-item
+                <el-dropdown-item v-has="'B.SALES.SYSTEM.ROLELIST.ADDTOJOB'"
                   @click.native.prevent="batchOperationJob(scope)"
                   >批量分配岗位</el-dropdown-item
                 >
-                <el-dropdown-item
+                <el-dropdown-item v-has="'B.SALES.SYSTEM.ROLELIST.ADDTOUSER'"
                   @click.native.prevent="batchOperationUser(scope)"
                   >批量分配用户</el-dropdown-item
                 >
@@ -103,7 +104,7 @@
       ></el-pagination>
     </template>
 
-    <ih-dialog :show="dialogAdd" desc="角色新增编辑">
+    <ih-dialog :show="dialogAdd" desc="角色新增修改">
       <RoleAdd
         :data="itemData"
         @cancel="() => (dialogAdd = false)"

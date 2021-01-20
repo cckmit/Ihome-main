@@ -4,103 +4,131 @@
  * @Author: wwq
  * @Date: 2020-11-03 11:52:41
  * @LastEditors: wwq
- * @LastEditTime: 2020-11-10 14:03:10
+ * @LastEditTime: 2021-01-08 11:02:52
 -->
 <template>
   <div>
-    <el-form ref="form" label-width="130px" :model="form" class="text-left">
+    <el-form
+      ref="form"
+      label-width="130px"
+      :model="form"
+      class="text-left"
+    >
       <el-row>
         <el-col :span="8">
-          <el-form-item label="盘编">
-            <span class="text-ellipsis" :title="form.proNo">{{
-              form.proNo
-            }}</span>
+          <el-form-item
+            label="盘编"
+            :title="form.proNo"
+          >
+            <span class="text-ellipsis">{{form.proNo}}</span>
           </el-form-item>
         </el-col>
         <el-col :span="8">
-          <el-form-item label="项目推广名">
-            <span>{{ form.proName }}</span>
+          <el-form-item
+            label="项目推广名"
+            :title="form.proName"
+          >
+            <span class="text-ellipsis">{{ form.proName }}</span>
           </el-form-item>
         </el-col>
         <el-col :span="8">
-          <el-form-item label="项目备案名">
-            <span>{{ form.proRecord }}</span>
+          <el-form-item
+            label="项目备案名"
+            :title="form.proRecord"
+          >
+            <span class="text-ellipsis">{{ form.proRecord }}</span>
           </el-form-item>
         </el-col>
-      </el-row>
-      <el-row>
         <el-col :span="8">
-          <el-form-item label="开发商名称">
-            <span>{{ form.developerId }}</span>
+          <el-form-item
+            label="开发商名称"
+            :title="form.developerName"
+          >
+            <span class="text-ellipsis">{{ form.developerName }}</span>
           </el-form-item>
         </el-col>
         <el-col :span="8">
           <el-form-item label="市场化项目">
-            <span>{{ filterExMarket(form.exMarket) }}</span>
+            <span class="text-ellipsis">{{ filterExMarket(form.exMarket) }}</span>
           </el-form-item>
         </el-col>
         <el-col :span="8">
           <el-form-item label="关联明源">
-            <span>{{ filterExMarket(form.exMinyuan) }}</span>
+            <span class="text-ellipsis">{{ filterExMarket(form.exMinyuan) }}</span>
           </el-form-item>
         </el-col>
       </el-row>
       <el-row v-if="isShow">
         <el-col :span="8">
-          <el-form-item label="爱家父项目推广名">
-            <span>{{ form.parentName }}</span>
+          <el-form-item
+            label="爱家父项目推广名"
+            :title="form.parentName"
+          >
+            <span class="text-ellipsis">{{ form.parentName }}</span>
           </el-form-item>
         </el-col>
         <el-col :span="8">
-          <el-form-item label="明源楼盘名">
-            <span>{{ form.buildingGuidName }}</span>
+          <el-form-item
+            label="明源楼盘名"
+            :title="form.buildingGuidName"
+          >
+            <span class="text-ellipsis">{{ form.buildingGuidName }}</span>
           </el-form-item>
         </el-col>
         <el-col :span="8">
           <el-form-item label="同步明源房号数据">
-            <span>{{ filterExMarket(form.exSyncRoom) }}</span>
+            <span class="text-ellipsis">{{ filterExMarket(form.exSyncRoom) }}</span>
           </el-form-item>
         </el-col>
       </el-row>
       <el-row>
         <el-col :span="8">
           <el-form-item label="省份">
-            <span>{{ $root.getAreaName(form.province) }}</span>
+            <span class="text-ellipsis">{{ $root.getAreaName(form.province) }}</span>
           </el-form-item>
         </el-col>
         <el-col :span="8">
           <el-form-item label="城市">
-            <span>{{ $root.getAreaName(form.city) }}</span>
+            <span class="text-ellipsis">{{ $root.getAreaName(form.city) }}</span>
           </el-form-item>
         </el-col>
         <el-col :span="8">
           <el-form-item label="行政区">
-            <span>{{ $root.getAreaName(form.district) }}</span>
+            <span class="text-ellipsis">{{ $root.getAreaName(form.district) }}</span>
           </el-form-item>
         </el-col>
       </el-row>
       <el-row>
         <el-col :span="24">
-          <el-form-item label="项目地址">
-            <span>{{ form.proAddr }}</span>
+          <el-form-item
+            label="项目地址"
+            :title="form.proAddr"
+          >
+            <span class="text-ellipsis">{{ form.proAddr }}</span>
           </el-form-item>
         </el-col>
       </el-row>
       <el-row>
         <el-col :span="8">
-          <el-form-item label="经纬度">
-            <span>{{ form.jingwei }}</span>
+          <el-form-item
+            label="经纬度"
+            :title="form.jingwei"
+          >
+            <span class="text-ellipsis">{{ form.jingwei }}</span>
           </el-form-item>
         </el-col>
-        <el-col :span="8">
-          <el-form-item label="详细地址">
-            <span>{{ form.searchAddr }}</span>
+        <el-col :span="16">
+          <el-form-item
+            label="详细地址"
+            :title="form.searchAddr"
+          >
+            <span class="text-ellipsis">{{ form.searchAddr }}</span>
           </el-form-item>
         </el-col>
       </el-row>
       <el-row>
-        <el-form-item
-          ><el-col :span="16">
+        <el-form-item>
+          <el-col :span="16">
             <BaiduMap
               class="bm-view"
               ak="7KCUbHHtMOe3DmrxbAZaLcUf4cKeWchn"
@@ -122,10 +150,19 @@
       </el-row>
       <el-row>
         <el-col :span="24">
-          <el-form-item label="物业类型" class="text-left">
-            <el-checkbox-group v-model="form.checkboxEnum" disabled>
+          <el-form-item
+            label="物业类型"
+            class="text-left"
+          >
+            <el-checkbox-group
+              v-model="form.checkboxEnum"
+              disabled
+            >
               <template v-for="item in checkBoxList">
-                <el-checkbox :key="JSON.parse(item).code" :label="item">{{
+                <el-checkbox
+                  :key="JSON.parse(item).code"
+                  :label="item"
+                >{{
                   JSON.parse(item).name
                 }}</el-checkbox>
               </template>
@@ -141,16 +178,17 @@
           class="msglist"
         >
           <el-form-item>
-            <el-form ref="contantForm" :model="item.msg">
+            <el-form
+              ref="contantForm"
+              :model="item.msg"
+            >
               <div class="contant">
-                <div
-                  style="
+                <div style="
                     font-weight: bold;
                     margin-left: 20px;
                     text-align: left;
                     font-size: 15px;
-                  "
-                >
+                  ">
                   {{ `${item.msg.title}信息` }}
                 </div>
                 <el-row style="padding-bottom: 10px">
@@ -171,9 +209,7 @@
                       class="text-left"
                     >
                       <span>{{ item.msg.propertyCost }}</span>
-                      <span style="width: 80px; margin-left: 10px"
-                        >元/m²/月</span
-                      >
+                      <span style="width: 80px; margin-left: 10px">元/m²/月</span>
                     </el-form-item>
                   </el-col>
                   <el-col :span="24">
@@ -185,7 +221,7 @@
                       <span>{{
                         $root.dictAllName(
                           item.msg.propertyAge,
-                          "PropertyAgeEnum"
+                          "PropertyAge"
                         )
                       }}</span>
                     </el-form-item>
@@ -205,12 +241,15 @@
               :file-size="10"
               size="100px"
               accept="image/*"
+              :removePermi="false"
             >
               <template #extend="{ data }">
                 <div class="padding-top-5 font">
-                  <el-radio v-model="radio" :label="data.fileId" disabled
-                    >设为封面图</el-radio
-                  >
+                  <el-radio
+                    v-model="radio"
+                    :label="data.fileId"
+                    disabled
+                  >设为封面图</el-radio>
                 </div>
               </template>
             </IhUpload>
@@ -220,14 +259,21 @@
       <el-row>
         <p class="ih-info-title">项目周期</p>
         <div class="padding-left-20">
-          <el-table class="ih-table" :data="form.terms" style="width: 100%">
+          <el-table
+            class="ih-table"
+            :data="form.terms"
+            style="width: 100%"
+          >
             <el-table-column
               prop="termName"
               label="项目周期名称"
             ></el-table-column>
-            <el-table-column prop="busTypeEnum" label="业务类型">
+            <el-table-column
+              prop="busTypeEnum"
+              label="业务类型"
+            >
               <template v-slot="{ row }">{{
-                $root.dictAllName(row.busTypeEnum, "BusTypeEnum")
+                $root.dictAllName(row.busTypeEnum, "BusType")
               }}</template>
             </el-table-column>
             <el-table-column
@@ -238,10 +284,16 @@
               prop="termStart"
               label="开始时间"
             ></el-table-column>
-            <el-table-column prop="termEnd" label="结束时间"></el-table-column>
-            <el-table-column prop="auditEnum" label="审核状态">
+            <el-table-column
+              prop="termEnd"
+              label="结束时间"
+            ></el-table-column>
+            <el-table-column
+              prop="auditEnum"
+              label="审核状态"
+            >
               <template v-slot="{ row }">{{
-                $root.dictAllName(row.auditEnum, "AuditEnum")
+                $root.dictAllName(row.auditEnum, "Audit")
               }}</template>
             </el-table-column>
           </el-table>
@@ -260,13 +312,22 @@
               prop="agencyName"
               label="一手代理团队名称"
             ></el-table-column>
-            <el-table-column prop="simpleName" label="简称"></el-table-column>
-            <el-table-column prop="province" label="省份">
+            <el-table-column
+              prop="simpleName"
+              label="简称"
+            ></el-table-column>
+            <el-table-column
+              prop="province"
+              label="省份"
+            >
               <template v-slot="{ row }">{{
                 $root.getAreaName(row.province)
               }}</template>
             </el-table-column>
-            <el-table-column prop="city" label="城市">
+            <el-table-column
+              prop="city"
+              label="城市"
+            >
               <template v-slot="{ row }">{{
                 $root.getAreaName(row.city)
               }}</template>
@@ -279,26 +340,44 @@
         <div class="padding-left-20">
           <el-table
             class="ih-table"
-            :data="form.attachPics"
+            :data="fileListType"
             style="width: 100%"
           >
-            <el-table-column prop="proAttachEnum" label="类型">
-              <template v-slot="{ row }">{{
-                $root.dictAllName(row.proAttachEnum, "ProAttachEnum")
-              }}</template>
+            <el-table-column
+              prop="type"
+              width="180"
+              label="类型"
+              align="center"
+            >
+              <template v-slot="{ row }">
+                <div><span
+                    style="color: red"
+                    v-if="row.subType"
+                  >*</span>{{row.name}}
+                </div>
+              </template>
             </el-table-column>
             <el-table-column label="附件">
-              <IhUpload
-                :file-list="accFileList"
-                :limit="accFileList.length"
-                size="100px"
-              ></IhUpload>
+              <template v-slot="{ row }">
+                <IhUpload
+                  :file-list.sync="row.fileList"
+                  :file-size="10"
+                  :file-type="row.code"
+                  :limit="row.fileList.length"
+                  :upload-show="!!row.fileList.length"
+                  size="100px"
+                  :removePermi="false"
+                ></IhUpload>
+              </template>
             </el-table-column>
           </el-table>
         </div>
       </el-row>
     </el-form>
-    <div class="margin-top-20" v-if="$route.name === 'projectChildAudit'">
+    <div
+      class="margin-top-20"
+      v-if="$route.name === 'projectChildAudit'"
+    >
       <p class="ih-info-title">审核意见</p>
       <el-input
         class="padding-left-20"
@@ -310,8 +389,14 @@
       >
       </el-input>
       <div class="margin-top-20">
-        <el-button @click="auditPass()" type="primary">通过</el-button>
-        <el-button @click="auditReject()" type="primary">驳回</el-button>
+        <el-button
+          @click="auditPass()"
+          type="primary"
+        >通过</el-button>
+        <el-button
+          @click="auditReject()"
+          type="primary"
+        >驳回</el-button>
       </div>
     </div>
   </div>
@@ -358,6 +443,7 @@ export default class InfoBasicInfo extends Vue {
   };
   remark = "";
   contantList: any = [];
+  fileListType: any = [];
   checkBoxChangeList: any = [];
   YesOrNoType: any = [
     {
@@ -390,7 +476,7 @@ export default class InfoBasicInfo extends Vue {
   }
 
   private get checkBoxList() {
-    let list = (this.$root as any).dictAllList("PropertyEnum");
+    let list = (this.$root as any).dictAllList("Property");
     let arr: any = [];
     list.forEach((v: any) => {
       let item = this.contantList.find((j: any) => v.code === j.propertyEnum);
@@ -437,14 +523,14 @@ export default class InfoBasicInfo extends Vue {
       this.form = { ...this.form, ...data };
       this.contantList = data.propertyArgs.map((v: any) => ({
         ...v,
-        title: (this.$root as any).dictAllName(v.propertyEnum, "PropertyEnum"),
+        title: (this.$root as any).dictAllName(v.propertyEnum, "Property"),
       }));
       this.form.jingwei = data.lat + "," + data.lng;
       let arr: any = [];
       this.contantList.forEach((v: any) => {
         arr.push(
           JSON.stringify({
-            ...(this.$root as any).dictAllItem(v.propertyEnum, "PropertyEnum"),
+            ...(this.$root as any).dictAllItem(v.propertyEnum, "Property"),
             msg: {
               ...v,
             },
@@ -456,15 +542,31 @@ export default class InfoBasicInfo extends Vue {
         this.checkBoxChangeList.push(JSON.parse(v));
       });
       this.houseFileList = this.form.proPics.map((v: any) => ({
-        name: v.attachName,
-        fileId: v.attachAddr,
+        name: v.fileName,
+        fileId: v.fileId,
         exIndex: v.exIndex,
         proAttachEnum: "ProPic",
       }));
       this.radio = this.houseFileList.filter(
         (item: any) => item.exIndex === 1
-      )[0]["fileId"];
+      )[0]?.fileId;
+      this.getFileListType(data.attachPics);
     }
+  }
+
+  getFileListType(data: any) {
+    const list = (this.$root as any).dictAllList("ProAttach");
+    this.fileListType = list.map((v: any) => {
+      return {
+        ...v,
+        fileList: data
+          .filter((j: any) => j.type === v.code)
+          .map((h: any) => ({
+            ...h,
+            name: h.fileName,
+          })),
+      };
+    });
   }
 
   handler({ BMap }: any) {

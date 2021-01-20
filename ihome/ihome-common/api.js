@@ -4,12 +4,15 @@
  * @Author: zyc
  * @Date: 2020-08-04 17:43:48
  * @LastEditors: zyc
- * @LastEditTime: 2020-10-13 15:27:59
+ * @LastEditTime: 2020-12-16 11:35:09
  */
-let handleSwagger = require('./node_modules/ihome-common/util/api/api-hangle');
+// let handleSwagger = require('./node_modules/ihome-common/util/api/api-hangle');
+let handleSwagger = require('./src/ihome-package/util/api/api-hangle');
 function doneApi() {
     //在这里配置要生成的api
-    handleSwagger('system')
+    // handleSwagger('channel')
+    // handleSwagger('project')
+    handleSwagger('deal')
 }
 module.exports = (api, projectOptions) => {
     api.registerCommand('api', {

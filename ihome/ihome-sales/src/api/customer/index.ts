@@ -1,6 +1,6 @@
 /* eslint-disable */
 /* 此脚本由swagger-ui的api-docs自动生成，请勿修改 */
-//2020-12-7 11:53:55
+//2020-12-16 15:48:23
 import { request } from '@/api/base'
 const basePath = "/sales-api/customer"
 /**批量取消项目收藏*/
@@ -13,7 +13,7 @@ return await request.post< string,string> (basePath+'/collect/addOrUpdate', d)
 }
 /**查询项目收藏列表*/
 export async function post_collect_getList (d?: any) {
-return await request.post< PageModel<CollectVO>,PageModel<CollectVO>> (basePath+'/collect/getList', d)
+return await request.post< any,any> (basePath+'/collect/getList', d)
 }
 /**添加客户*/
 export async function post_customer_add (d?: any) {
@@ -21,7 +21,7 @@ return await request.post< number,number> (basePath+'/customer/add', d)
 }
 /**查询客户列表*/
 export async function post_customer_getCustList (d?: any) {
-return await request.post< PageModel<CustomerVO>,PageModel<CustomerVO>> (basePath+'/customer/getCustList', d)
+return await request.post< any,any> (basePath+'/customer/getCustList', d)
 }
 /**通过CUST_CODE查询客户*/
 export async function post_customer_getCustomer (d?: any) {
@@ -35,37 +35,41 @@ return await request.post< Customer,Customer> (basePath+'/customer/getCustomerBy
 export async function post_customer_updateCustomer (d?: any) {
 return await request.post< number,number> (basePath+'/customer/updateCustomer', d)
 }
-/**成交登记*/
-export async function post_deal_add (d?: any) {
-return await request.post< any,any> (basePath+'/deal/add', d)
-}
-/**成交有效无效操作*/
-export async function post_deal_dealValidOrInvalid (d?: any) {
-return await request.post< number,number> (basePath+'/deal/dealValidOrInvalid', d)
-}
-/**查询报备成交详情*/
-export async function get_deal_get__id (d?: any) {
-return await request.get<DealDetail,DealDetail>(basePath+'/deal/get/{id}', { params: d })
-}
-/**查询我的报备成交列表*/
-export async function post_deal_getList (d?: any) {
-return await request.post< PageModel<DealVO>,PageModel<DealVO>> (basePath+'/deal/getList', d)
-}
-/**get*/
-export async function get_demo_get__id (d?: any) {
-return await request.get<any,any>(basePath+'/demo/get/{id}', { params: d })
-}
 /**客户报备*/
 export async function post_report_add (d?: any) {
 return await request.post< any,any> (basePath+'/report/add', d)
 }
-/**查询报备详情*/
+/**成交有效无效操作*/
+export async function post_report_dealValidOrInvalid (d?: any) {
+return await request.post< number,number> (basePath+'/report/dealValidOrInvalid', d)
+}
+/**查询报备成交详情*/
 export async function get_report_get__id (d?: any) {
 return await request.get<ReportDetail,ReportDetail>(basePath+'/report/get/{id}', { params: d })
 }
+/**查询我的报备成交列表*/
+export async function post_report_getDealList (d?: any) {
+return await request.post< any,any> (basePath+'/report/getDealList', d)
+}
+/**根据成交房间ID查询报备ID身份证附件*/
+export async function post_report_getDealReportData (d?: any) {
+return await request.post< DealReportDataVo,DealReportDataVo> (basePath+'/report/getDealReportData', d)
+}
+/**根据项目ID查询报备IDs*/
+export async function get_report_getDealReportIds__proId (d?: any) {
+return await request.get<number[],number[]>(basePath+'/report/getDealReportIds/{proId}', { params: d })
+}
 /**查询我的报备列表*/
 export async function post_report_getList (d?: any) {
-return await request.post< PageModel<ReportListVO>,PageModel<ReportListVO>> (basePath+'/report/getList', d)
+return await request.post< any,any> (basePath+'/report/getList', d)
+}
+/**根据报备ID查询房间id栋座id*/
+export async function get_report_getRoomSubBuildingByReportId__reportId (d?: any) {
+return await request.get<ReportRoomSubBuildingVo,ReportRoomSubBuildingVo>(basePath+'/report/getRoomSubBuildingByReportId/{reportId}', { params: d })
+}
+/**查询我的报备到访列表*/
+export async function post_report_getVisitList (d?: any) {
+return await request.post< any,any> (basePath+'/report/getVisitList', d)
 }
 /**报备有效无效操作*/
 export async function post_report_reportValidOrInvalid (d?: any) {
@@ -101,7 +105,7 @@ return await request.get<ReportCustomerDetail,ReportCustomerDetail>(basePath+'/r
 }
 /**查询客户池列表*/
 export async function post_reportCustomer_getList (d?: any) {
-return await request.post< PageModel<ReportCustomerListVO>,PageModel<ReportCustomerListVO>> (basePath+'/reportCustomer/getList', d)
+return await request.post< any,any> (basePath+'/reportCustomer/getList', d)
 }
 /**编辑客户*/
 export async function post_reportCustomer_update (d?: any) {
@@ -227,8 +231,6 @@ cardType: string;
 certificateNumber: string;
 /**客户名称*/
 custName: string;
-/**客户来源(FriendIntroduced-朋友介绍、Activity-活动、RoomExhibition-房展会、Internet-网络、Store-门店、OldCustomers-老客户、Magazine-杂志、Other-其他)*/
-custOrg: string;
 /**客户联系方式*/
 custTel: string;
 /**客户类型(Individual-个人、Company-公司)*/
@@ -236,14 +238,14 @@ custType: string;
 }
 /**CustomerQueryCustTelORCustNameVO*/
 export interface CustomerQueryCustTelORCustNameVO {
-/**客户创建最大时间(yyyy-MM-dd HH:mm:ss)*/
+/**客户创建时间(yyyy-MM-dd HH:mm:ss)*/
 createTimeRealMax: string;
-/**客户创建最小时间(yyyy-MM-dd HH:mm:ss)*/
+/**客户创建时间(yyyy-MM-dd HH:mm:ss)*/
 createTimeRealMin: string;
+/**客户编号*/
+custCode: string;
 /**客户名称*/
 custName: string;
-/**客户来源(FriendIntroduced-朋友介绍、Activity-活动、RoomExhibition-房展会、Internet-网络、Store-门店、OldCustomers-老客户、Magazine-杂志、Other-其他)*/
-custOrg: string;
 /**客户联系方式*/
 custTel: string;
 /**客户类型(Individual-个人、Company-公司)*/
@@ -261,8 +263,6 @@ certificateNumber: string;
 custCode: string;
 /**客户名称*/
 custName: string;
-/**客户来源(FriendIntroduced-朋友介绍、Activity-活动、RoomExhibition-房展会、Internet-网络、Store-门店、OldCustomers-老客户、Magazine-杂志、Other-其他)*/
-custOrg: string;
 /**客户联系方式*/
 custTel: string;
 /**客户类型(Individual-个人、Company-公司)*/
@@ -320,130 +320,44 @@ updateTime: string;
 /**更新用户*/
 updateUser: number;
 }
-/**DealBseVO*/
-export interface DealBseVO {
-/**是否市场化项目*/
-exMarket: number;
-/**手机号码*/
-mobile: string;
-/**姓名*/
-name: string;
-/**项目ID*/
-proId: number;
-/**性别(Mr-先生、Ms-女士)*/
-sex: string;
-/**认购栋座*/
-subscriptionBuilding: string;
-/**认购房号*/
-subscriptionRoom: string;
-/**是否悦家云(Y-悦家云、N-非悦家云)*/
-yueJiaYun: string;
-}
-/**DealDetail*/
-export interface DealDetail {
-/**评论意见*/
-comments: string;
-/**创建时间(yyyy-MM-dd HH:mm:ss)*/
-createTime: string;
-/**创建用户*/
-createUser: number;
-/**成交状态(UnderReview-审核中、ValidDeal-成交有效、InvalidDeal-成交无效)*/
-dealStatus: string;
-/**成交时间(yyyy-MM-dd HH:mm:ss)*/
-dealTime: string;
-/**已删除*/
-deleted: number;
-/**是否市场化项目*/
-exMarket: number;
-/**ID*/
-id: number;
-/**联系方式*/
-mobile: string;
-/**姓名*/
-name: string;
-/**项目ID*/
-proId: number;
+/**DealReportDataVo*/
+export interface DealReportDataVo {
+/**身份证附件ID*/
+fileIds: string[];
 /**报备ID*/
 reportId: number;
-/**性别(Mr-先生、Ms-女士)*/
-sex: string;
-/**认购栋座*/
-subscriptionBuilding: string;
-/**认购房号*/
-subscriptionRoom: string;
-/**更新时间(yyyy-MM-dd HH:mm:ss)*/
-updateTime: string;
-/**更新用户*/
-updateUser: number;
-/**是否悦家云(Y-悦家云、N-非悦家云)*/
-yueJiaYun: string;
 }
-/**DealQueryVO*/
-export interface DealQueryVO {
+/**DealReportParamVo*/
+export interface DealReportParamVo {
+/**成交房间IDID*/
+roomId: number;
+}
+/**DealReportQueryVO*/
+export interface DealReportQueryVO {
+/**中介公司*/
+channelName: string;
 /**成交状态(UnderReview-审核中、ValidDeal-成交有效、InvalidDeal-成交无效)*/
 dealStatus: string;
-/**手机号码*/
-mobile: string;
-/**姓名*/
+/**周期所属事业部*/
+department: string;
+/**是否市场化项目*/
+exMarket: number;
+/**报备人姓名*/
 name: string;
 /**(必填)当前页*/
 pageNum: number;
 /**(必填)每页条数*/
 pageSize: number;
-/**报备时间结束*/
+/**项目周期*/
+proCycle: string;
+/**项目ID*/
+proId: string;
+/**项目名称*/
+proName: string;
+/**报备时间结束(yyyy-MM-dd HH:mm:ss)*/
 reportDateEnd: string;
 /**报备时间开始(yyyy-MM-dd HH:mm:ss)*/
 reportDateStart: string;
-}
-/**DealVO*/
-export interface DealVO {
-/**评论意见*/
-comments: string;
-/**创建时间(yyyy-MM-dd HH:mm:ss)*/
-createTime: string;
-/**创建用户*/
-createUser: number;
-/**成交状态(UnderReview-审核中、ValidDeal-成交有效、InvalidDeal-成交无效)*/
-dealStatus: string;
-/**成交时间(yyyy-MM-dd HH:mm:ss)*/
-dealTime: string;
-/**已删除*/
-deleted: number;
-/**是否市场化项目*/
-exMarket: number;
-/**ID*/
-id: number;
-/**联系方式*/
-mobile: string;
-/**姓名*/
-name: string;
-/**项目ID*/
-proId: number;
-/**报备ID*/
-reportId: number;
-/**性别(Mr-先生、Ms-女士)*/
-sex: string;
-/**认购栋座*/
-subscriptionBuilding: string;
-/**认购房号*/
-subscriptionRoom: string;
-/**更新时间(yyyy-MM-dd HH:mm:ss)*/
-updateTime: string;
-/**更新用户*/
-updateUser: number;
-/**是否悦家云(Y-悦家云、N-非悦家云)*/
-yueJiaYun: string;
-}
-/**DealValidOrInvalidVO*/
-export interface DealValidOrInvalidVO {
-/**无效意见*/
-comments: string;
-/**成交时间(yyyy-MM-dd HH:mm:ss)*/
-dealTime: string;
-/**ID*/
-id: number;
-/**报备成交状态操作类型【有效/无效】(Valid-有效、Invalid-无效)*/
-validOrInvalid: string;
 }
 /**ReportAttachmentBaseVO*/
 export interface ReportAttachmentBaseVO {
@@ -508,6 +422,8 @@ factorsOfConcerns: string[];
 houseDecorations: string[];
 /**ID*/
 id: number;
+/**录入时间(yyyy-MM-dd HH:mm:ss)*/
+inputTime: string;
 /**意向面积集合*/
 intentAreas: string[];
 /**意向户型集合*/
@@ -585,6 +501,8 @@ updateUser: number;
 export interface ReportCustomerListVO {
 /**客户ID*/
 id: number;
+/**录入时间(yyyy-MM-dd HH:mm:ss)*/
+inputTime: string;
 /**客户手机号*/
 mobile: string;
 /**客户姓名*/
@@ -699,28 +617,46 @@ proId: number;
 reportDate: string;
 /**报备状态(UnderReview-审核中、ValidReport-报备有效、InvalidReport-报备无效)*/
 reportStatus: string;
+/**报备人*/
+reportUser: number;
 }
 /**ReportListVO*/
 export interface ReportListVO {
+/**所属公司*/
+channelName: string;
+/**成交时间(yyyy-MM-dd)*/
+dealDate: string;
 /**联系方式*/
 mobile: string;
-/**姓名*/
+/**客户姓名*/
 name: string;
-/**报备楼盘*/
-realEstate: string;
+/**项目周期*/
+proCycle: string;
+/**项目周期事业部*/
+proCycleDept: string;
+/**报备项目*/
+proName: string;
 /**报备时间(yyyy-MM-dd HH:mm:ss)*/
 reportDate: string;
 /**报备状态(UnderReview-审核中、ValidReport-报备有效、InvalidReport-报备无效)*/
 reportStatus: string;
+/**报备类型(FirstThreeAfterFour-前三后四、FullNumber-全号)*/
+reportType: string;
+/**报备人*/
+reportUser: string;
+/**客户性别(Mr-先生、Ms-女士)*/
+sex: string;
+/**到访时间(yyyy-MM-dd)*/
+visitDate: string;
 }
 /**ReportQueryVO*/
 export interface ReportQueryVO {
 /**中介公司*/
 channelName: string;
 /**周期所属事业部*/
-departmentId: number;
-/**联系方式*/
-mobile: string;
+department: string;
+/**是否市场化项目*/
+exMarket: number;
 /**报备人姓名*/
 name: string;
 /**(必填)当前页*/
@@ -729,16 +665,31 @@ pageNum: number;
 pageSize: number;
 /**项目周期*/
 proCycle: string;
+/**项目ID*/
+proId: string;
 /**项目名称*/
 proName: string;
-/**报备时间结束*/
+/**报备时间结束(yyyy-MM-dd HH:mm:ss)*/
 reportDateEnd: string;
 /**报备时间开始(yyyy-MM-dd HH:mm:ss)*/
 reportDateStart: string;
 /**报备状态(UnderReview-审核中、ValidReport-报备有效、InvalidReport-报备无效)*/
 reportStatus: string;
-/**到访状态(UnderReview-审核中、ValidVisit-到访有效、InvalidVisit-到访无效)*/
-visitStatus: string;
+}
+/**ReportRoomSubBuildingVo*/
+export interface ReportRoomSubBuildingVo {
+/**渠道商ID*/
+channelId: number;
+/**渠道商名字*/
+channelName: string;
+/**来访确认单附件ID*/
+fileIds: string[];
+/**项目ID*/
+proId: number;
+/**房间ID*/
+roomId: number;
+/**栋座ID*/
+subBuildingId: number;
 }
 /**ReportUpdateMobile*/
 export interface ReportUpdateMobile {
@@ -767,10 +718,18 @@ proId: number;
 remark: string;
 /**报备用户ID*/
 reportCustomerId: number;
+/**报备人手机号*/
+reportMobile: string;
+/**报备人姓名*/
+reportName: string;
 /**报备类型(FirstThreeAfterFour-前三后四、FullNumber-全号)*/
 reportType: string;
+/**认购房号*/
+roomId: number;
 /**性别(Mr-先生、Ms-女士)*/
 sex: string;
+/**认购栋座*/
+subBuildingId: number;
 /**是否悦家云(Y-悦家云、N-非悦家云)*/
 yueJiaYun: string;
 }
@@ -781,14 +740,43 @@ ids: number[];
 /**操作类型【有效/无效】(Valid-有效、Invalid-无效)*/
 validOrInvalid: string;
 }
-/**VisitValidOrInvalidVO*/
-export interface VisitValidOrInvalidVO {
+/**VisitDealValidOrInvalidVO*/
+export interface VisitDealValidOrInvalidVO {
 /**无效意见*/
-comments: string;
+comment: string;
 /**ID集合*/
 id: number;
 /**操作类型【有效/无效】(Valid-有效、Invalid-无效)*/
 validOrInvalid: string;
-/**到访时间(yyyy-MM-dd HH:mm:ss)*/
-visitDate: string;
+/**到访成交时间(yyyy-MM-dd)*/
+visitDealDate: string;
+/**到访/成交类型(Visit-到访、Deal-成交)*/
+visitDealType: string;
+}
+/**VisitReportQueryVO*/
+export interface VisitReportQueryVO {
+/**中介公司*/
+channelName: string;
+/**周期所属事业部*/
+department: string;
+/**是否市场化项目*/
+exMarket: number;
+/**报备人姓名*/
+name: string;
+/**(必填)当前页*/
+pageNum: number;
+/**(必填)每页条数*/
+pageSize: number;
+/**项目周期*/
+proCycle: string;
+/**项目ID*/
+proId: string;
+/**项目名称*/
+proName: string;
+/**报备时间结束(yyyy-MM-dd HH:mm:ss)*/
+reportDateEnd: string;
+/**报备时间开始(yyyy-MM-dd HH:mm:ss)*/
+reportDateStart: string;
+/**到访状态(UnderReview-审核中、ValidVisit-到访有效、InvalidVisit-到访无效)*/
+visitStatus: string;
 }

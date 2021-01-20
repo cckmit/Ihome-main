@@ -4,18 +4,24 @@
  * @Author: zyc
  * @Date: 2020-07-09 14:30:29
  * @LastEditors: zyc
- * @LastEditTime: 2020-08-04 14:25:56
+ * @LastEditTime: 2020-12-16 14:32:39
 --> 
 <template>
   <div>
-    <div style="text-align:right;">
+    <div style="text-align: right">
       <el-input
-        style="width:300px;"
+        style="width: 300px"
         placeholder="名称 编码"
         class="input-with-select"
         v-model="queryPageParameters.key"
+        clearable
+        @keyup.enter.native="getListMixin()"
       >
-        <el-button slot="append" icon="el-icon-search" @click="getListMixin()"></el-button>
+        <el-button
+          slot="append"
+          icon="el-icon-search"
+          @click="getListMixin()"
+        ></el-button>
       </el-input>
     </div>
     <br />
@@ -23,7 +29,7 @@
       <el-table-column type="index" label="序号" width="50"></el-table-column>
       <el-table-column prop="name" label="名称" width="180"></el-table-column>
       <el-table-column prop="code" label="编码" width="180"></el-table-column>
-      <el-table-column prop="describe" label="描述"></el-table-column>
+      <el-table-column prop="remark" label="描述"></el-table-column>
     </el-table>
     <div class="text-right">
       <el-pagination

@@ -2,30 +2,31 @@
  * @Descripttion: 
  * @version: 
  * @Author: wwq
- * @Date: 2020-11-03 18:39:23
+ * @Date: 2020-09-25 17:59:09
  * @LastEditors: wwq
- * @LastEditTime: 2020-11-11 11:41:50
+ * @LastEditTime: 2021-01-19 16:10:04
 -->
 <template>
-  <IhPage>
+  <ih-page>
     <template v-slot:form>
       <p class="ih-info-title">基础信息</p>
       <el-form
-        :model="info"
-        :rules="rules"
-        ref="ruleForm"
+        ref="form"
         label-width="120px"
-        class="demo-ruleForm"
+        :model="resPageInfo"
+        :rules="rules"
       >
         <el-row>
           <el-col :span="8">
             <el-form-item
               label="名称"
-              prop="agencyName"
+              prop="name"
             >
               <el-input
-                v-model="info.agencyName"
                 clearable
+                maxlength="64"
+                v-model="resPageInfo.name"
+                placeholder="名称"
               ></el-input>
             </el-form-item>
           </el-col>
@@ -35,55 +36,23 @@
               prop="creditCode"
             >
               <el-input
-                v-model="info.creditCode"
                 clearable
+                maxlength="18"
+                v-model="resPageInfo.creditCode"
+                placeholder="信用代码"
               ></el-input>
             </el-form-item>
           </el-col>
           <el-col :span="8">
             <el-form-item
               label="简称"
-              prop="simpleName"
+              prop="shortName"
             >
               <el-input
-                v-model="info.simpleName"
                 clearable
-              ></el-input>
-            </el-form-item>
-          </el-col>
-        </el-row>
-        <el-row>
-          <el-col :span="8">
-            <el-form-item
-              label="省市区"
-              prop="provinceList"
-            >
-              <IhCascader
-                v-model="info.provinceList"
-                :checkStrictly="false"
-              ></IhCascader>
-            </el-form-item>
-          </el-col>
-          <el-col :span="8">
-            <el-form-item
-              label="住所"
-              prop="addr"
-            >
-              <el-input
-                v-model="info.addr"
-                clearable
-                placeholder="请输入住所"
-              ></el-input>
-            </el-form-item>
-          </el-col>
-          <el-col :span="8">
-            <el-form-item
-              label="法定代表人"
-              prop="legalPerson"
-            >
-              <el-input
-                v-model="info.legalPerson"
-                clearable
+                maxlength="16"
+                v-model="resPageInfo.shortName"
+                placeholder="简称"
               ></el-input>
             </el-form-item>
           </el-col>
@@ -92,12 +61,12 @@
           <el-col :span="8">
             <el-form-item
               label="类型"
-              prop="companyType"
+              prop="type"
             >
               <el-select
-                v-model="info.companyType"
+                v-model="resPageInfo.type"
                 clearable
-                placeholder="请选择"
+                placeholder="请选择类型"
                 class="width--100"
               >
                 <el-option
@@ -110,12 +79,32 @@
             </el-form-item>
           </el-col>
           <el-col :span="8">
+            <el-form-item label="法定代表人">
+              <el-input
+                clearable
+                maxlength="32"
+                v-model="resPageInfo.legalPerson"
+                placeholder="法定代表人"
+              ></el-input>
+            </el-form-item>
+          </el-col>
+          <el-col :span="8">
+            <el-form-item label="法人身份证号码">
+              <el-input
+                clearable
+                maxlength="18"
+                v-model="resPageInfo.legalPersonId"
+                placeholder="法人身份证号码"
+              ></el-input>
+            </el-form-item>
+          </el-col>
+          <el-col :span="8">
             <el-form-item
               label="成立日期"
-              prop="establishDate"
+              prop="setupTime"
             >
               <el-date-picker
-                v-model="info.establishDate"
+                v-model="resPageInfo.setupTime"
                 style="width: 100%"
                 type="date"
                 placeholder="选择日期"
@@ -125,501 +114,576 @@
             </el-form-item>
           </el-col>
           <el-col :span="8">
-            <el-form-item
-              label="注册资本"
-              prop="registeredCapital"
-            >
+            <el-form-item label="注册资本">
               <el-input
-                v-model="info.registeredCapital"
                 clearable
+                maxlength="32"
+                v-model="resPageInfo.capital"
+                placeholder="注册资本"
               ></el-input>
             </el-form-item>
           </el-col>
-        </el-row>
-        <el-row>
+
           <el-col :span="8">
             <el-form-item label="营业期限">
-              <el-date-picker
-                style="width: 100%"
-                v-model="info.timeList"
-                type="daterange"
-                align="left"
-                unlink-panels
-                range-separator="至"
-                start-placeholder="开始日期"
-                end-placeholder="结束日期"
-                value-format="yyyy-MM-dd"
-                :picker-options="$root.pickerOptions"
-              >
-                ></el-date-picker>
+              <el-input
+                clearable
+                maxlength="32"
+                v-model="resPageInfo.businessTime"
+                placeholder="营业期限"
+              ></el-input>
             </el-form-item>
           </el-col>
           <el-col :span="8">
             <el-form-item
-              label="跟进人"
-              prop="followMan"
+              label="省市区"
+              prop="provinceOption"
+            >
+              <IhCascader
+                v-model="resPageInfo.provinceOption"
+                :checkStrictly="false"
+              ></IhCascader>
+            </el-form-item>
+          </el-col>
+          <el-col :span="16">
+            <el-form-item
+              label="住所"
+              prop="address"
             >
               <el-input
-                v-model="info.followMan"
+                clearable
+                maxlength="64"
+                v-model="resPageInfo.address"
+                placeholder="住所"
+              ></el-input>
+            </el-form-item>
+          </el-col>
+          <el-col :span="8">
+            <el-form-item label="录入人">
+              <el-input
+                clearable
                 disabled
-                placeholder="自动带出"
+                v-model="resPageInfo.inputUserName"
+                placeholder="录入人"
               ></el-input>
             </el-form-item>
           </el-col>
         </el-row>
       </el-form>
     </template>
-    <!-- 银行账号信息 -->
-    <p class="ih-info-title">
-      <span>银行账号信息</span>
-      <el-button
-        type="primary"
-        size="small"
-        class="add-account"
-        @click.native="addAccount()"
-      >添加</el-button>
-    </p>
-    <div class="padding-left-20">
-      <el-table
-        :data="info.firstAgencyAccounts"
-        style="width: 100%"
-      >
-        <el-table-column
-          prop="accountName"
-          label="账户名称"
-          min-width="200"
-        ></el-table-column>
-        <el-table-column
-          prop="accountNo"
-          label="账号"
-          width="200"
+
+    <template v-slot:table>
+      <div class="content">
+        <p class="ih-info-title">联系人信息</p>
+        <el-button
+          @click="addContacts()"
+          type="primary"
+          size="small"
+        >添加</el-button>
+      </div>
+      <div class="padding-left-20">
+        <el-table
+          class="ih-table"
+          :data="resPageInfo.contactList"
+          style="width: 100%"
         >
-        </el-table-column>
-        <el-table-column
-          prop="depositBank"
-          label="开户银行"
-          min-width="200"
-        ></el-table-column>
-        <el-table-column
-          prop="accountEnum"
-          label="账号类型"
-          width="150"
-        >
-          <template v-slot="{ row }">
-            <span>{{ $root.dictAllName(row.accountEnum, "AccountEnum") }}</span>
-          </template>
-        </el-table-column>
-        <el-table-column
-          label="操作"
-          fixed="right"
-          width="120"
-        >
-          <template v-slot="{ row, $index }">
-            <el-link
-              type="primary"
-              class="margin-right-15"
-              @click="editBank(row, $index)"
-            >编辑</el-link>
-            <el-link
-              type="danger"
-              @click="deleteBank($index)"
-            >移除</el-link>
-          </template>
-        </el-table-column>
-      </el-table>
-    </div>
-    <p class="ih-info-title">负责人信息</p>
-    <el-form
-      :model="info"
-      :rules="rules"
-      ref="personForm"
-      label-width="120px"
-      class="demo-ruleForm"
-    >
-      <el-row>
-        <el-col :span="8">
-          <el-form-item
+          <el-table-column
+            prop="contactName"
             label="姓名"
-            prop="responsibleMan"
+          ></el-table-column>
+          <el-table-column
+            prop="contactNum"
+            label="手机号"
+          ></el-table-column>
+          <el-table-column
+            prop="email"
+            label="电子邮箱"
+          ></el-table-column>
+          <el-table-column
+            fixed="right"
+            label="操作"
+            align="center"
           >
-            <el-input
-              v-model="info.responsibleMan"
-              clearable
-            ></el-input>
-          </el-form-item>
-        </el-col>
-        <el-col :span="8">
-          <el-form-item
-            label="手机号码"
-            prop="mobile"
-          >
-            <el-input
-              v-model="info.mobile"
-              clearable
-            ></el-input>
-          </el-form-item>
-        </el-col>
-        <el-col :span="8">
-          <el-form-item
-            label="身份证号码"
-            prop="idCard"
-          >
-            <el-input
-              v-model="info.idCard"
-              clearable
-            ></el-input>
-          </el-form-item>
-        </el-col>
-        <el-col :span="8">
-          <el-form-item
-            label="邮箱"
-            prop="mail"
-          >
-            <el-input
-              v-model="info.mail"
-              clearable
-            ></el-input>
-          </el-form-item>
-        </el-col>
-      </el-row>
-    </el-form>
-
-    <p class="ih-info-title">附件信息</p>
-    <div class="padding-left-20">
-      <el-table
-        style="width: 100%"
-        :data="info.attachAgencyVOS"
-      >
-        <el-table-column
-          prop="firstAgencyAttachEnum"
-          width="180"
-          label="类型"
-          align="center"
-        >
-          <template v-slot="{ row }">{{
-            $root.dictAllName(
-              row.firstAgencyAttachEnum,
-              "FirstAgencyAttachEnum"
-            )
-          }}</template>
-        </el-table-column>
-        <el-table-column
-          label="附件"
-          align="center"
-        >
-          <template v-slot="{ row }">
-            <IhUpload
-              :file-list="row.fileList"
-              size="100px"
-              accept="image/*"
-              @newFileList="queryFiles"
-            >
-            </IhUpload>
-          </template>
-        </el-table-column>
-      </el-table>
-    </div>
-
-    <p class="ih-info-title">备注</p>
-    <el-input
-      type="textarea"
-      style="box-sizing: border-box"
-      class="padding-left-20"
-      :autosize="{ minRows: 5, maxRows: 8 }"
-      maxlength="256"
-      placeholder="请输入备注"
-      v-model="info.remark"
-    >
-    </el-input>
-    <div>
+            <template v-slot="{ row, $index }">
+              <span
+                class="el-dropdown-link"
+                @click="editContacts(row, $index)"
+              >
+                编辑
+              </span>
+              <span
+                class="el-dropdown-link"
+                @click="delContacts($index)"
+              >
+                移除
+              </span>
+            </template>
+          </el-table-column>
+        </el-table>
+      </div>
       <br />
-      <el-button
-        type="primary"
-        @click="save()"
-      >保存</el-button>
-      <el-button
-        type="success"
-        @click="submit()"
-      >提交</el-button>
-    </div>
+      <div class="content">
+        <p class="ih-info-title">账户信息</p>
+        <el-button
+          @click="addAccount()"
+          type="primary"
+          size="small"
+        >添加</el-button>
+      </div>
+      <div class="padding-left-20">
+        <el-table
+          class="ih-table"
+          :data="resPageInfo.bankList"
+          style="width: 100%"
+        >
+          <el-table-column
+            prop="name"
+            label="账户名称"
+          ></el-table-column>
+          <el-table-column
+            prop="number"
+            label="账号"
+          ></el-table-column>
+          <el-table-column
+            prop="bank"
+            label="开户银行"
+          ></el-table-column>
+          <el-table-column
+            prop="type"
+            label="账号类型"
+          >
+            <template v-slot="{ row }">{{
+              $root.dictAllName(row.type, "AccountType")
+            }}</template>
+          </el-table-column>
+          <el-table-column
+            fixed="right"
+            label="操作"
+            align="center"
+          >
+            <template v-slot="{ row, $index }">
+              <span
+                class="el-dropdown-link"
+                @click="editAccount(row, $index)"
+              >
+                编辑
+              </span>
+              <span
+                class="el-dropdown-link"
+                @click="delAccount($index)"
+              >
+                移除
+              </span>
+            </template>
+          </el-table-column>
+        </el-table>
+      </div>
+      <br />
+      <p class="ih-info-title">附件信息</p>
+      <div class="padding-left-20">
+        <el-table
+          class="ih-table"
+          :data="fileListType"
+          style="width: 100%"
+        >
+          <el-table-column
+            prop="type"
+            width="180"
+            label="类型"
+            align="center"
+          >
+            <template v-slot="{ row }">
+              <div><span
+                  style="color: red"
+                  v-if="row.subType"
+                >*</span>{{row.name}}
+              </div>
+            </template>
+          </el-table-column>
+          <el-table-column label="附件">
+            <template v-slot="{ row }">
+              <IhUpload
+                :file-list.sync="row.fileList"
+                :file-size="10"
+                :file-type="row.code"
+                size="100px"
+                @newFileList="queryNew"
+              ></IhUpload>
+            </template>
+          </el-table-column>
+        </el-table>
+      </div>
+      <br />
+      <div v-if="$route.name !== 'firstAgencyChange'">
+        <p class="ih-info-title">企业概况</p>
+        <el-input
+          class="padding-left-20"
+          style="box-sizing: border-box"
+          maxlength="256"
+          type="textarea"
+          :autosize="{ minRows: 5, maxRows: 10 }"
+          placeholder="请输入企业概况"
+          v-model="resPageInfo.remark"
+        >
+        </el-input>
+        <div class="bottom">
+          <el-button
+            @click="submit('Draft')"
+            type="primary"
+          >保存</el-button>
+          <el-button
+            @click="submit('WaitAuditByBranchHead')"
+            type="success"
+          >提交</el-button>
+        </div>
+      </div>
 
-    <!-- 账户信息 -->
-    <IhDialog
-      :show="dialogFormVisible"
-      desc="账户信息"
+      <div v-if="$route.name === 'firstAgencyChange'">
+        <p class="ih-info-title">企业概括</p>
+        <el-input
+          class="padding-left-20"
+          style="box-sizing: border-box"
+          type="textarea"
+          :autosize="{ minRows: 5, maxRows: 10 }"
+          placeholder="请输入内容"
+          v-model="resPageInfo.remark"
+        >
+        </el-input>
+        <p class="ih-info-title">变更原因</p>
+        <p class="msg-title"><span style="color: red">* </span>变更信息</p>
+        <el-input
+          class="padding-left-20"
+          style="box-sizing: border-box"
+          type="textarea"
+          :autosize="{ minRows: 5, maxRows: 10 }"
+          placeholder="请输入内容"
+          v-model="resPageInfo.reason"
+        >
+        </el-input>
+        <div class="bottom">
+          <el-button
+            @click="submit('Audited')"
+            type="primary"
+          >提交</el-button>
+        </div>
+      </div>
+    </template>
+
+    <ih-dialog
+      :show="contactsDialogVisible"
+      desc="联系人信息"
     >
-      <BankDialog
-        :data="Bankrule"
-        :bankType="bankType"
-        @cancel="() => (dialogFormVisible = false)"
+      <Contacts
+        :data="contactsData"
+        @cancel="() => (contactsDialogVisible = false)"
         @finish="
-          (data, type) => {
-            handlePushBank(data, type);
+          (data) => {
+            contactsDialogVisible = false;
+            contactsFinish(data);
           }
         "
       />
-    </IhDialog>
-  </IhPage>
+    </ih-dialog>
+    <ih-dialog
+      :show="accountDialogVisible"
+      desc="账户信息"
+    >
+      <Account
+        :data="accountData"
+        @cancel="() => (accountDialogVisible = false)"
+        @finish="
+          (data) => {
+            accountDialogVisible = false;
+            accountFinish(data);
+          }
+        "
+      />
+    </ih-dialog>
+  </ih-page>
 </template>
-
 <script lang="ts">
 import { Component, Vue } from "vue-property-decorator";
-import { Form as ElForm } from "element-ui";
-//引入请求数据的api -- 先调用本地的
+import Contacts from "./dialog/contacts.vue";
+import Account from "./dialog/account.vue";
 import {
-  get_firstAgencyCompany_get__agencyId,
-  post_firstAgencyCompany_save,
+  get_company_get__id,
+  post_company_add,
+  post_company_updateDraft,
+  post_company_update,
 } from "@/api/project/index";
-import BankDialog from "./dialog/bankDialog.vue";
-import { phoneValidator } from "ihome-common/util/base/form-ui";
+import { Form as ElForm } from "element-ui";
 
 @Component({
   components: {
-    BankDialog,
+    Contacts,
+    Account,
   },
 })
-export default class FirstAgencyEdit extends Vue {
-  info: any = {
-    agencyName: "",
-    creditCode: "",
-    simpleName: "",
-    provinceList: [],
-    addr: "",
-    legalPerson: "",
-    companyType: "",
-    registeredCapital: "",
-    businessStart: "",
-    businessEnd: "",
-    followMan: "",
-    province: "",
-    city: "",
-    area: "",
-    establishDate: "",
-    attachAgencyVOS: [], // 附件信息
-    firstAgencyAccounts: [], // 账号信息
-    responsibleMan: "",
-    mobile: "",
-    idCard: "",
-    mail: "",
-    remark: "",
-    timeList: [],
+export default class Edit extends Vue {
+  private fileList: Array<object> = [];
+  resPageInfo: any = {
+    name: null,
+    creditCode: null,
+    shortName: null,
+    type: null,
+    legalPerson: null,
+    legalPersonId: null,
+    setupTime: null,
+    capital: null,
+    businessTime: null,
+    province: null,
+    city: null,
+    county: null,
+    address: null,
+    inputUser: null,
+    inputUserName: null,
+    contactList: [],
+    bankList: [],
+    attachmentList: [],
+    remark: null,
+    reason: null,
+    provinceOption: [],
   };
-  accessoryFile: any = [];
-  dialogFormVisible = false;
-  Bankrule: any = {
-    accountName: "",
-    accountNo: "",
-    depositBank: "",
-    accountEnum: "",
-  };
-  bankType: any = "new-add";
-  private fileList: any = [];
+  fileListType: any = [];
+  submitFile: any = {};
+  accountData: any = {};
+  contactsData: any = {};
+  contactsDialogType: any;
+  contactsIndex: any;
+  accountDialogType: any;
+  accountIndex: any;
+  contactsDialogVisible = false;
+  accountDialogVisible = false;
 
   private rules: any = {
-    agencyName: [
-      { required: true, message: "请输入公司名称", trigger: "change" },
-    ],
+    name: [{ required: true, message: "请填写名称", trigger: "change" }],
     creditCode: [
-      { required: true, message: "请输入信用代码", trigger: "change" },
-      {
-        pattern: /^[A-Za-z0-9]{18}$/,
-        message: "信用代码格式不对",
-        trigger: "change",
-      },
+      { required: true, message: "请填写信用代码", trigger: "change" },
     ],
-    simpleName: [{ required: true, message: "请输入简称", trigger: "change" }],
-    provinceList: [
+    shortName: [{ required: true, message: "请填写简称", trigger: "change" }],
+    type: [{ required: true, message: "请选择类型", trigger: "change" }],
+    // legalPersonId: [
+    //   { required: true, message: "请填写法人身份证号码", trigger: "change" },
+    //   {
+    //     pattern: /(^[1-9]\d{5}(18|19|([23]\d))\d{2}((0[1-9])|(10|11|12))(([0-2][1-9])|10|20|30|31)\d{3}[0-9Xx]$)|(^[1-9]\d{5}\d{2}((0[1-9])|(10|11|12))(([0-2][1-9])|10|20|30|31)\d{2}$)/,
+    //     message: "证件号码格式有误！",
+    //     trigger: "change",
+    //   },
+    // ],
+    setupTime: [
+      { required: true, message: "请选择成立日期", trigger: "change" },
+    ],
+    // capital: [{ required: true, message: "请填写注册资本", trigger: "change" }],
+    provinceOption: [
       { required: true, message: "请选择省市区", trigger: "change" },
     ],
-    addr: [{ required: true, message: "请输入住所", trigger: "change" }],
-    legalPerson: [
-      { required: true, message: "请输入法定代表人", trigger: "change" },
-    ],
-    companyType: [{ required: true, message: "请选择类型", trigger: "change" }],
-    registeredCapital: [
-      { required: true, message: "请输入注册资本", trigger: "change" },
-    ],
-    establishDate: [
-      { required: true, message: "请输入成立日期", trigger: "change" },
-    ],
-    responsibleMan: [
-      { required: true, message: "请输入姓名", trigger: "change" },
-    ],
-    mobile: [
-      { required: true, message: "请输入手机号", trigger: "change" },
-      { validator: phoneValidator, trigger: "change" },
-    ],
-    idCard: [
-      { required: true, message: "请填写证件号码", trigger: "change" },
-      {
-        pattern: /(^[1-9]\d{5}(18|19|([23]\d))\d{2}((0[1-9])|(10|11|12))(([0-2][1-9])|10|20|30|31)\d{3}[0-9Xx]$)|(^[1-9]\d{5}\d{2}((0[1-9])|(10|11|12))(([0-2][1-9])|10|20|30|31)\d{2}$)/,
-        message: "证件号码格式有误！",
-        trigger: "change",
-      },
-    ],
-    mail: [
-      { required: true, message: "请填写邮箱", trigger: "change" },
-      {
-        type: "email",
-        message: "请输入正确的邮箱地址",
-        trigger: "change",
-      },
-    ],
+    address: [{ required: true, message: "请填写住所", trigger: "change" }],
   };
 
-  addAccount() {
-    this.Bankrule = {
-      accountName: "",
-      accountNo: "",
-      depositBank: "",
-      accountEnum: "",
-    };
-    this.bankType = "new-add";
-    this.dialogFormVisible = true;
-  }
-
-  save() {
-    (this.$refs["ruleForm"] as ElForm).validate(async (v: any) => {
-      if (v) {
-        let infoObj = { ...this.info };
-        if (this.info.timeList.length) {
-          infoObj.businessStart = this.info.timeList[0];
-          infoObj.businessEnd = this.info.timeList[1];
-        }
-        if (this.info.provinceList.length) {
-          infoObj.province = this.info.provinceList[0];
-          infoObj.city = this.info.provinceList[1];
-          infoObj.area = this.info.provinceList[2];
-        }
-        switch (this.$route.name) {
-          case "firstAgencyAdd":
-            infoObj.agencyId = "";
-            break;
-          case "firstAgencyEdit":
-            infoObj.agencyId = this.$route.query.id;
-            break;
-        }
-        let arr: any = [];
-        if (this.accessoryFile.length) {
-          infoObj.attachAgencyVOS = this.accessoryFile;
-        } else {
-          this.info.attachAgencyVOS.forEach((v: any) => {
-            arr = v.fileList.map((j: any) => ({
-              attachAddr: j.name,
-              attachId: j.fileId,
-              firstAgencyAttachEnum: j.firstAgencyAttachEnum,
-            }));
-          });
-          infoObj.attachAgencyVOS = arr;
-        }
-        infoObj.followMan = "admin";
-        infoObj.followManId = 1;
-        console.log(infoObj);
-        await post_firstAgencyCompany_save(infoObj);
-        this.$message.success("保存成功");
-        this.$goto({ path: "/firstAgency/list" });
-      }
-    });
-  }
-  submit() {
-    this.$message.warning("接口未提供,功能未实现");
-  }
-  /**
-   * @description: 新添加数据--银行账号信息
-   * @param {object} value
-   * @param {string} type
-   */
-  private handlePushBank(value: any, type: string): void {
-    switch (type) {
-      case "new-add":
-        this.info.firstAgencyAccounts.push(value);
-        break;
-      case "new-edit":
-        this.$set(this.info.firstAgencyAccounts, value.index, value);
-        break;
-    }
-    this.dialogFormVisible = false;
-  }
-  async getInfo() {
-    let id = this.$route.query.id;
-    if (id) {
-      let res: any = await get_firstAgencyCompany_get__agencyId({
-        agencyId: id,
-      });
-      res.timeList = [res.businessStart, res.businessEnd];
-      let arr: any = [];
-      res.attachAgencyVOS.forEach((v: any) => {
-        const item = arr.find(
-          (j: any) => j.firstAgencyAttachEnum === v.firstAgencyAttachEnum
-        );
-        if (!item) {
-          arr.push({
-            firstAgencyAttachEnum: v.firstAgencyAttachEnum,
-            fileList: [
-              {
-                name: v.attachAddr,
-                fileId: v.attachId,
-                firstAgencyAttachEnum: v.firstAgencyAttachEnum,
-              },
-            ],
-          });
-        } else {
-          item.fileList.push({
-            name: v.attachAddr,
-            fileId: v.attachId,
-            firstAgencyAttachEnum: v.firstAgencyAttachEnum,
-          });
-        }
-      });
-      this.info = { ...res, attachAgencyVOS: [...arr] };
-      this.info.provinceList = [res.province, res.city, res.area];
-    }
-  }
-  /**
-   * @description: 编辑银行信息
-   * @param {object} row 编辑当前行数据
-   * @param {number} index 编辑当前行数据下标
-   */
-  private editBank(row: object, index: number): void {
-    this.bankType = "new-edit";
-    this.Bankrule = { ...row, index };
-    this.dialogFormVisible = true;
-  }
-  /**
-   * @description: 删除银行信息
-   * @param {number} index 编辑当前行数据下标
-   */
-  private async deleteBank(index: number): Promise<void> {
-    await this.$confirm("是否确定移除?", "提示");
-    this.info.firstAgencyAccounts.splice(index, 1);
-    this.$message({
-      type: "success",
-      message: "移除成功!",
-    });
+  searchOpen = true;
+  private get developerId() {
+    return this.$route.query.id;
   }
 
   async created() {
     this.getInfo();
   }
+  async getInfo() {
+    if (this.developerId) {
+      const res = await get_company_get__id({ id: this.developerId });
+      this.resPageInfo = res;
+      this.resPageInfo.provinceOption = [res.province, res.city, res.county];
+      this.getFileListType(res.attachmentList);
+    } else {
+      this.resPageInfo.inputUserName = (this.$root as any).userInfo.name;
+      this.resPageInfo.inputUser = (this.$root as any).userInfo.id;
+      this.getFileListType([]);
+    }
+  }
 
-  queryFiles(data: any) {
-    this.accessoryFile = data.map((v: any) => ({
-      attachAddr: v.name,
-      attachId: v.fileId,
-      firstAgencyAttachEnum: data[0].firstAgencyAttachEnum,
-    }));
+  getFileListType(data: any) {
+    const list = (this.$root as any).dictAllList("AttachementType");
+    this.fileListType = list.map((v: any) => {
+      return {
+        ...v,
+        fileList: data
+          .filter((j: any) => j.type === v.code)
+          .map((h: any) => ({
+            ...h,
+            name: h.fileName,
+          })),
+      };
+    });
+    let obj: any = {};
+    this.fileListType.forEach((h: any) => {
+      obj[h.code] = h.fileList;
+    });
+    this.submitFile = { ...obj };
+  }
+
+  queryNew(data: any, type?: any) {
+    let obj: any = {};
+    obj[type] = data;
+    this.submitFile = { ...this.submitFile, ...obj };
+  }
+
+  // 联系人信息
+  addContacts() {
+    this.contactsDialogVisible = true;
+    this.contactsData = {};
+    this.contactsDialogType = "add";
+  }
+
+  editContacts(row: any, index: number) {
+    this.contactsData = row;
+    this.contactsIndex = index;
+    this.contactsDialogType = "edit";
+    this.contactsDialogVisible = true;
+  }
+
+  async delContacts(index: number) {
+    try {
+      await this.$confirm("是否确定移除?", "提示");
+      this.resPageInfo.contactList.splice(index, 1);
+      this.$message({
+        type: "success",
+        message: "移除成功!",
+      });
+    } catch (err) {
+      console.log(err);
+    }
+  }
+
+  contactsFinish(data: any) {
+    if (this.contactsDialogType === "add") {
+      this.resPageInfo.contactList.push(data);
+    } else {
+      this.$set(this.resPageInfo.contactList, this.contactsIndex, data);
+    }
+  }
+
+  //账户信息
+  addAccount() {
+    this.accountDialogVisible = true;
+    this.accountData = {};
+    this.accountDialogType = "add";
+  }
+
+  editAccount(row: any, index: number) {
+    this.accountData = row;
+    this.contactsIndex = index;
+    this.accountDialogType = "edit";
+    this.accountDialogVisible = true;
+  }
+
+  async delAccount(index: number) {
+    try {
+      await this.$confirm("是否确定移除?", "提示");
+      this.resPageInfo.bankList.splice(index, 1);
+      this.$message({
+        type: "success",
+        message: "移除成功!",
+      });
+    } catch (error) {
+      console.log(error);
+    }
+  }
+
+  accountFinish(data: any) {
+    if (this.accountDialogType === "add") {
+      this.resPageInfo.bankList.push(data);
+    } else {
+      this.$set(this.resPageInfo.bankList, this.contactsIndex, data);
+    }
+  }
+
+  submit(val: string) {
+    (this.$refs["form"] as ElForm).validate(async (v: any) => {
+      if (v) {
+        this.resPageInfo.province = this.resPageInfo.provinceOption[0];
+        this.resPageInfo.city = this.resPageInfo.provinceOption[1];
+        this.resPageInfo.county = this.resPageInfo.provinceOption[2];
+        this.resPageInfo.status = val;
+        // 校验提示
+        let arr: any = [];
+        Object.values(this.submitFile).forEach((v: any) => {
+          if (v.length) {
+            arr = arr.concat(v);
+          }
+        });
+        // 以下操作仅仅是为了校验必上传项
+        let submitList: any = this.fileListType.map((v: any) => {
+          return {
+            ...v,
+            fileList: arr
+              .filter((j: any) => j.type === v.code)
+              .map((h: any) => ({
+                ...h,
+                name: h.fileName,
+              })),
+          };
+        });
+        let isSubmit = true;
+        let msgList: any = [];
+        submitList.forEach((v: any) => {
+          if (v.subType && !v.fileList.length) {
+            msgList.push(v.name);
+            isSubmit = false;
+          }
+        });
+        if (isSubmit) {
+          this.resPageInfo.attachmentList = arr.map((v: any) => ({
+            fileId: v.fileId,
+            fileName: v.name,
+            type: v.type,
+          }));
+        } else {
+          this.$message({
+            type: "warning",
+            message: `${msgList.join(",")}项,请上传附件`,
+          });
+          return;
+        }
+        switch (this.$route.name) {
+          case "firstAgencyAdd":
+            await post_company_add(this.resPageInfo);
+            break;
+          case "firstAgencyEdit":
+            await post_company_updateDraft(this.resPageInfo);
+            break;
+          case "firstAgencyChange":
+            if (!this.resPageInfo.reason) {
+              this.$message.warning("请填写变更原因");
+              return;
+            }
+            await post_company_update(this.resPageInfo);
+            break;
+        }
+        this.$goto({ path: `/firstAgency/list` });
+        this.$message({
+          type: "success",
+          message: val === "Draft" ? "保存成功!" : "提交成功!",
+        });
+      }
+    });
   }
 }
 </script>
-
 <style lang="scss" scoped>
-.ih-info-title {
+.content {
   position: relative;
-  .add-account {
+  /deep/ .el-button {
     position: absolute;
-    top: 0px;
-    left: 120px;
-    transform: translate(0, -30%);
+    top: -15px;
+    left: 130px;
   }
+}
+.bottom {
+  margin-top: 30px;
+  text-align: center;
+}
+.msg-title {
+  text-align: left;
+  margin-left: 25px;
 }
 </style>
