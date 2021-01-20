@@ -4,7 +4,7 @@
  * @Author: wwq
  * @Date: 2020-09-25 17:59:09
  * @LastEditors: wwq
- * @LastEditTime: 2021-01-19 16:29:08
+ * @LastEditTime: 2021-01-20 11:48:45
 -->
 <template>
   <ih-page>
@@ -18,6 +18,7 @@
             <el-form-item label="名称">
               <el-input
                 v-model="queryPageParameters.name"
+                placeholder="名称"
                 clearable
               ></el-input>
             </el-form-item>
@@ -26,8 +27,35 @@
             <el-form-item label="信用代码">
               <el-input
                 v-model="queryPageParameters.creditCode"
+                placeholder="信用代码"
                 clearable
               ></el-input>
+            </el-form-item>
+          </el-col>
+          <el-col :span="8">
+            <el-form-item label="简称">
+              <el-input
+                v-model="queryPageParameters.shortName"
+                placeholder="简称"
+                clearable
+              ></el-input>
+            </el-form-item>
+          </el-col>
+        </el-row>
+        <el-row>
+          <el-col :span="8">
+            <el-form-item label="省市区">
+              <IhCascader v-model="provinceOption"></IhCascader>
+            </el-form-item>
+          </el-col>
+          <el-col :span="8">
+            <el-form-item label="录入人">
+              <IhSelectPageUser
+                v-model="queryPageParameters.inputUser"
+                placeholder="录入人"
+                clearable
+              >
+              </IhSelectPageUser>
             </el-form-item>
           </el-col>
           <el-col :span="8">
@@ -45,31 +73,6 @@
                   :value="item.code"
                 ></el-option>
               </el-select>
-            </el-form-item>
-          </el-col>
-        </el-row>
-        <el-row>
-          <el-col :span="8">
-            <el-form-item label="省市区">
-              <IhCascader v-model="provinceOption"></IhCascader>
-            </el-form-item>
-          </el-col>
-          <el-col :span="8">
-            <el-form-item label="录入人">
-              <IhSelectPageUser
-                v-model="queryPageParameters.inputUser"
-                clearable
-              >
-                <template v-slot="{ data }">
-                  <span style="float: left">{{ data.name }}</span>
-                  <span style="
-                      margin-left: 20px;
-                      float: right;
-                      color: #8492a6;
-                      font-size: 13px;
-                    ">{{ data.account }}</span>
-                </template>
-              </IhSelectPageUser>
             </el-form-item>
           </el-col>
         </el-row>
@@ -114,7 +117,11 @@
         <el-table-column
           prop="name"
           label="名称"
-          width="250"
+          width="200"
+        ></el-table-column>
+        <el-table-column
+          prop="shortName"
+          label="简称"
         ></el-table-column>
         <el-table-column
           prop="creditCode"
@@ -259,6 +266,7 @@ export default class DeveloperList extends Vue {
     inputUser: null,
     province: null,
     city: null,
+    shortName: null,
   };
   provinceOption: any = [];
   selection: any = [];
@@ -303,6 +311,7 @@ export default class DeveloperList extends Vue {
       inputUser: null,
       province: null,
       city: null,
+      shortName: null,
     });
     this.provinceOption = [];
   }
