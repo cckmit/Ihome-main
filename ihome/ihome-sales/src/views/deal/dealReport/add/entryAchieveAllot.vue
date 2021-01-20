@@ -1013,16 +1013,18 @@
           class="ih-table"
           :data="postData.documentVO">
           <el-table-column prop="name" label="类型" width="200"></el-table-column>
-          <el-table-column prop="fileName" label="附件" min-width="120">
+          <el-table-column prop="fileName" label="附件" min-width="300">
             <template slot-scope="scope">
               <IhUpload
+                @newFileList="getNewFile"
                 :isCrop="false"
-                :file-list.sync="scope.row.fileList"
+                :isMove="false"
+                :removePermi="true"
                 size="100px"
                 :limit="100"
                 :file-size="10"
-                :isMove="false"
-                @newFileList="getNewFile"
+                :file-list.sync="scope.row.defaultFileList"
+                :file-type="scope.row.code"
               ></IhUpload>
             </template>
           </el-table-column>
@@ -2130,29 +2132,29 @@
       // 附件类型增加key
       if (fileList.length > 0) {
         fileList.forEach((vo: any) => {
-          vo.defaultFileList = [];
-          vo.fileList = [];
+          vo.defaultFileList = []; // 存放原来的数据
+          vo.fileList = []; // 存放新上传的数据
           // 赋值
           switch(vo.code) {
             case "VisitConfirForm":
               // 来访确认单
               vo.defaultFileList = initData.visitConfirmForms && initData.visitConfirmForms.length ? initData.visitConfirmForms : [];
-              vo.fileList = initData.visitConfirmForms && initData.visitConfirmForms.length ? initData.visitConfirmForms : [];
+              // vo.fileList = initData.visitConfirmForms && initData.visitConfirmForms.length ? initData.visitConfirmForms : [];
               break;
             case "Notice":
               // 优惠告知书PDF
               vo.defaultFileList = initData.noticePDF && initData.noticePDF.length  ? initData.noticePDF : [];
-              vo.fileList = initData.noticePDF && initData.noticePDF.length  ? initData.noticePDF : [];
+              // vo.fileList = initData.noticePDF && initData.noticePDF.length  ? initData.noticePDF : [];
               break;
             case "OwnerID":
               // 业主身份证
               vo.defaultFileList = initData.customerIds && initData.customerIds.length ? initData.customerIds : [];
-              vo.fileList = initData.customerIds && initData.customerIds.length ? initData.customerIds : [];
+              // vo.fileList = initData.customerIds && initData.customerIds.length ? initData.customerIds : [];
               break;
             case "DealConfirForm":
               // 成交确认书
               vo.defaultFileList = initData.dealConfirmForms && initData.dealConfirmForms.length ? initData.dealConfirmForms : [];
-              vo.fileList = initData.dealConfirmForms && initData.dealConfirmForms.length ? initData.dealConfirmForms : [];
+              // vo.fileList = initData.dealConfirmForms && initData.dealConfirmForms.length ? initData.dealConfirmForms : [];
               break;
           }
         })
@@ -2664,6 +2666,7 @@
       // console.log('type', type);
       this.editDealAchieveData.btnType = 'add';
       this.editDealAchieveData.type = type;
+      this.editDealAchieveData.currentEditItem = {};
       this.editDealAchieveData.currentEditItem.roleType = 'add';
       this.currentChangeObj.type = type;
       this.currentChangeObj.index = null;
@@ -2676,7 +2679,7 @@
       // console.log('data', type);
       this.editDealAchieveData.btnType = 'edit';
       this.editDealAchieveData.type = type;
-      this.editDealAchieveData.currentEditItem = scope.row;
+      this.editDealAchieveData.currentEditItem = JSON.parse(JSON.stringify(scope.row));
       this.currentChangeObj.index = scope.$index;
       this.currentChangeObj.type = type;
       this.dialogEditDealAchieve = true;
@@ -2695,7 +2698,9 @@
       if (this.isSameFlag) {
         // 总包分销一致：一起增加，一起减少
         tempTotalBagList = this.getTempList(this.editDealAchieveData.btnType, this.currentChangeObj.index, this.postData.achieveTotalBagList, data);
-        tempDistriList = this.getTempList(this.editDealAchieveData.btnType, this.currentChangeObj.index, this.postData.achieveDistriList, data);
+        let tempData = JSON.parse(JSON.stringify(data)); // 修改类型
+        tempData.type = 'Distri';
+        tempDistriList = this.getTempList(this.editDealAchieveData.btnType, this.currentChangeObj.index, this.postData.achieveDistriList, tempData);
       } else {
         // 总包分销不一致：新增、修改都只针对对应的类型数据
         if (this.editDealAchieveData.type === 'total') {
@@ -2869,15 +2874,13 @@
 
     // 上传图片/文件
     getNewFile(data: any, type?: any) {
-      console.log(data);
-      console.log(type);
+      // console.log(data);
+      // console.log(type);
       if (this.postData.documentVO.length > 0) {
         this.postData.documentVO.forEach((vo: any) => {
           if (vo.code === type) {
             if (data && data.length) {
-              data.forEach((item: any) => {
-                vo.fileList.push(item);
-              })
+              vo.fileList = data;
             }
           }
         });
