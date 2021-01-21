@@ -3,8 +3,8 @@
  * @version: 
  * @Author: wwq
  * @Date: 2020-09-09 16:17:16
- * @LastEditors: wwq
- * @LastEditTime: 2021-01-20 09:33:44
+ * @LastEditors: ywl
+ * @LastEditTime: 2021-01-21 18:50:43
 -->
 <template>
   <div class="upload">
@@ -307,7 +307,7 @@ export default class IhUpload extends Vue {
     }
   }
   beforeUpload(file: any) {
-    return new Promise((resolve, reject) => {
+    return new Promise((resolve: any, reject: any) => {
       const size = file.size / 1024 / 1024 < this.fileSize;
       const type = file?.name?.match(/(?<=\.).+/)?.toString();
       if (!size) {
