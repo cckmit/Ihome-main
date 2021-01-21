@@ -4,7 +4,7 @@
  * @Author: wwq
  * @Date: 2020-11-27 17:27:01
  * @LastEditors: wwq
- * @LastEditTime: 2021-01-20 17:09:54
+ * @LastEditTime: 2021-01-21 15:30:40
 -->
 <template>
   <div>
@@ -15,6 +15,7 @@
           size="small"
           type="success"
           @click="addTemplate"
+          v-has="'B.SALES.PROJECT.TERMLIST.ZJFXHTXZ'"
         >+增加模板</el-button>
       </div>
     </div>
@@ -82,6 +83,7 @@
             <el-button
               size="small"
               type="success"
+              v-has="'B.SALES.PROJECT.TERMLIST.ZJFXHTBJ'"
               @click="editTemplate(row)"
             >编辑</el-button>
             <el-button
@@ -94,12 +96,14 @@
               type="success"
               v-if="row.state === 'Stop'"
               @click="start(row)"
+              v-has="'B.SALES.PROJECT.TERMLIST.ZJFXHTQY'"
             >启用</el-button>
             <el-button
               size="small"
               type="danger"
               v-if="row.state === 'Start'"
               @click="stop(row)"
+              v-has="'B.SALES.PROJECT.TERMLIST.ZJFXHTJY'"
             >禁用</el-button>
           </template>
         </el-table-column>
@@ -124,6 +128,7 @@
               >
               </el-input>
               <i
+                v-has="'B.SALES.PROJECT.TERMLIST.ZJFXHTKHBJ'"
                 class="el-icon-edit-outline tubiao"
                 @click="editDialog('customerConfirm')"
               ></i>
@@ -145,6 +150,7 @@
               >
               </el-input>
               <i
+                v-has="'B.SALES.PROJECT.TERMLIST.ZJFXHTWYZR'"
                 class="el-icon-edit-outline tubiao"
                 @click="editDialog('responsibiltity')"
               ></i>
@@ -166,6 +172,7 @@
               >
               </el-input>
               <i
+                v-has="'B.SALES.PROJECT.TERMLIST.ZJFXHTQTSM'"
                 class="el-icon-edit-outline tubiao"
                 @click="editDialog('otherRemark')"
               ></i>
@@ -183,6 +190,7 @@
             size="small"
             type="success"
             @click="addNotification"
+            v-has="'B.SALES.PROJECT.TERMLIST.YHGZSXZ'"
           >+增加电子优惠告知书
           </el-button>
         </div>
@@ -222,6 +230,7 @@
                 size="small"
                 type="success"
                 @click="editNotification(row)"
+                v-has="'B.SALES.PROJECT.TERMLIST.YHGZSBJ'"
               >编辑</el-button>
               <el-button
                 size="small"
@@ -232,18 +241,21 @@
                 size="small"
                 type="success"
                 @click="uploadQRcode(row)"
+                v-has="'B.SALES.PROJECT.TERMLIST.YHGZSDOWMLOAD'"
               >下载二维码</el-button>
               <el-button
                 size="small"
                 type="success"
                 v-if="row.state === 'Stop'"
                 @click="startlation(row)"
+                v-has="'B.SALES.PROJECT.TERMLIST.YHGZSQY'"
               >启用</el-button>
               <el-button
                 size="small"
                 type="danger"
                 v-if="row.state === 'Start'"
                 @click="stoplation(row)"
+                v-has="'B.SALES.PROJECT.TERMLIST.YHGZSJY'"
               >禁用</el-button>
             </template>
           </el-table-column>
@@ -263,7 +275,7 @@
                     disabled
                   ></el-input>
                   <i
-                    class="el-icon-edit-outline tubiao"
+                    class="el-icon-edit-outline partyARefundDays"
                     @click="editDialog('partyARefundDays')"
                   ></i>
                 </div>
@@ -679,6 +691,13 @@ export default class Notification extends Vue {
     position: absolute;
     bottom: 5px;
     right: 20px;
+    font-size: 24px;
+    cursor: pointer;
+  }
+  .partyARefundDays {
+    position: absolute;
+    bottom: 5px;
+    right: 6px;
     font-size: 24px;
     cursor: pointer;
   }

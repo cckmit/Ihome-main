@@ -4,7 +4,7 @@
  * @Author: wwq
  * @Date: 2020-11-27 17:21:01
  * @LastEditors: wwq
- * @LastEditTime: 2021-01-16 14:06:50
+ * @LastEditTime: 2021-01-21 11:27:14
 -->
 <template>
   <div class="text-left">
@@ -16,6 +16,7 @@
           size="small"
           type="success"
           @click="edit()"
+          v-has="'B.SALES.PROJECT.TERMLIST.KHBBGZBJ'"
         >编辑</el-button>
       </div>
     </div>
@@ -113,6 +114,7 @@
           size="small"
           type="success"
           @click="addChannel"
+          v-has="'B.SALES.PROJECT.TERMLIST.BBGZXZ'"
         >+增加</el-button>
       </div>
     </div>
@@ -139,6 +141,7 @@
           <el-button
             size="small"
             type="danger"
+            v-has="'B.SALES.PROJECT.TERMLIST.BBGZSC'"
             @click="delChannel(row)"
           >删除</el-button>
         </template>

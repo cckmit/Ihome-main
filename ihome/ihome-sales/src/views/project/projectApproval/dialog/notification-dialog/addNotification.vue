@@ -4,7 +4,7 @@
  * @Author: wwq
  * @Date: 2020-12-02 11:18:51
  * @LastEditors: wwq
- * @LastEditTime: 2021-01-20 17:09:17
+ * @LastEditTime: 2021-01-21 17:20:12
 -->
 <template>
   <el-dialog
@@ -138,6 +138,7 @@ export default class AddNotification extends Vue {
         try {
           await post_preferential_add(this.form);
           this.finishLoading = false;
+          this.$emit("finish");
         } catch (err) {
           this.finishLoading = false;
         }
@@ -145,11 +146,11 @@ export default class AddNotification extends Vue {
         try {
           await post_preferential_update(this.form);
           this.finishLoading = false;
+          this.$emit("finish");
         } catch (err) {
           this.finishLoading = false;
         }
       }
-      this.$emit("finish");
     } else {
       console.log("error submit!!");
       return false;

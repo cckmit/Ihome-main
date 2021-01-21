@@ -4,7 +4,7 @@
  * @Author: wwq
  * @Date: 2020-11-03 11:52:41
  * @LastEditors: wwq
- * @LastEditTime: 2021-01-19 16:22:35
+ * @LastEditTime: 2021-01-21 10:51:04
 -->
 <template>
   <div>
@@ -238,12 +238,10 @@
             class="text-left"
             prop="checkboxEnum"
           >
-            <el-checkbox-group
-              v-model="form.checkboxEnum"
-              @change="checkboxChangeHandler"
-            >
+            <el-checkbox-group v-model="form.checkboxEnum">
               <template v-for="item in checkBoxList">
                 <el-checkbox
+                  @change="checkBoxChange(item)"
                   :key="JSON.parse(item).code"
                   :label="item"
                 >{{
@@ -829,30 +827,15 @@ export default class EditBasicInfo extends Vue {
     }
   }
 
-  checkboxChangeHandler(val: any) {
-    const item = val.map((v: any) => JSON.parse(v));
-    // let arr: any = item.concat(this.checkBoxChangeList);
-    let newArr: any = [];
-    let flag: any = true;
-    item.forEach((v: any) => {
-      newArr.forEach((j: any) => {
-        if (v.id === j.id) {
-          flag = false;
-        }
-      });
-      if (flag) {
-        newArr.push({
-          ...v,
-        });
-      }
-    });
-    if (this.checkBoxChangeList.length) {
-      this.checkBoxChangeList = [];
-      newArr.forEach((v: any) => {
-        this.checkBoxChangeList.push(v);
-      });
+  checkBoxChange(val: any) {
+    const item = JSON.parse(val);
+    const same = this.checkBoxChangeList.find((v: any) => v.code === item.code);
+    if (same) {
+      this.checkBoxChangeList = this.checkBoxChangeList.filter(
+        (v: any) => v.code !== same.code
+      );
     } else {
-      this.checkBoxChangeList = newArr;
+      this.checkBoxChangeList.push(item);
     }
   }
 

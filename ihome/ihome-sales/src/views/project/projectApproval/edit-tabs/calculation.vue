@@ -4,7 +4,7 @@
  * @Author: wwq
  * @Date: 2020-11-27 17:27:57
  * @LastEditors: wwq
- * @LastEditTime: 2020-12-24 09:21:59
+ * @LastEditTime: 2021-01-21 11:58:21
 -->
 <template>
   <div class="calculation-box">
@@ -15,6 +15,7 @@
           size="small"
           type="success"
           @click="enterTo"
+          v-has="'B.SALES.PROJECT.TERMLIST.LXCSXZ'"
         >+进入立项测算内页</el-button>
       </div>
     </div>
