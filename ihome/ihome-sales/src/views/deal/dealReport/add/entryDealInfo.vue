@@ -1124,6 +1124,7 @@
         if (baseInfo.firstAgencyCompanys && baseInfo.firstAgencyCompanys.length > 0) {
           this.firstAgencyCompanyList = JSON.parse(JSON.stringify(baseInfo.firstAgencyCompanys));
         }
+        console.log(this.firstAgencyCompanyList);
         // 处理优惠告知书的nav
         this.postData.offerNoticeVO = []; // 先重置优惠告知书的数据
         if (baseInfo.chargeEnum === 'Agent') {
