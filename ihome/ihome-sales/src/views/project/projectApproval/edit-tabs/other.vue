@@ -4,7 +4,7 @@
  * @Author: wwq
  * @Date: 2020-11-27 17:28:28
  * @LastEditors: wwq
- * @LastEditTime: 2021-01-20 16:46:02
+ * @LastEditTime: 2021-01-21 11:57:31
 -->
 <template>
   <div>
@@ -15,6 +15,7 @@
           size="small"
           type="success"
           @click="select"
+          v-has="'B.SALES.PROJECT.TERMLIST.QTPZSKXX'"
         >选择</el-button>
       </div>
     </div>
@@ -43,6 +44,7 @@
           size="small"
           type="success"
           @click="organSelect"
+          v-has="'B.SALES.PROJECT.TERMLIST.QTPZCJGSZZ'"
         >选择</el-button>
       </div>
     </div>
@@ -92,6 +94,7 @@
             <el-button
               slot="append"
               icon="el-icon-search"
+              v-has="'B.SALES.PROJECT.TERMLIST.QTPZTSYJ'"
               @click="specialClick"
             ></el-button>
           </el-input>
@@ -121,6 +124,7 @@
             active-color="#ef9d39"
             inactive-color="#7b7b7b"
             @change="exOverChange"
+            v-has="'B.SALES.PROJECT.TERMLIST.QTPZYXCD'"
           >
           </el-switch>
         </div>
@@ -145,6 +149,7 @@
             active-color="#ef9d39"
             inactive-color="#7b7b7b"
             @change="exOtherProChannelUseChange"
+            v-has="'B.SALES.PROJECT.TERMLIST.QTPZYXKXM'"
           >
           </el-switch>
         </div>
@@ -173,6 +178,7 @@
               type="success"
               size="small"
               @click="add"
+              v-has="'B.SALES.PROJECT.TERMLIST.QTPZXZYXZQ'"
             >+新增允许周期</el-button>
           </div>
         </div>
@@ -229,18 +235,21 @@
               size="small"
               type="info"
               @click="forbidden(row)"
+              v-has="'B.SALES.PROJECT.TERMLIST.QTPZZQJY'"
             >禁用</el-button>
             <el-button
               v-if="row.shareStateEnum === 'Stop'"
               size="small"
               type="success"
               @click="start(row)"
+              v-has="'B.SALES.PROJECT.TERMLIST.QTPZZQQY'"
             >启用</el-button>
             <el-button
               v-if="Number(row.amount) === 0"
               size="small"
               type="danger"
               @click="remove(row)"
+              v-has="'B.SALES.PROJECT.TERMLIST.QTPZZQYC'"
             >移除</el-button>
           </template>
         </el-table-column>

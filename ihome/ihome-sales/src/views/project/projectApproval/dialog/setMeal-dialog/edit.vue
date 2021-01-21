@@ -4,7 +4,7 @@
  * @Author: wwq
  * @Date: 2020-12-04 09:40:47
  * @LastEditors: wwq
- * @LastEditTime: 2021-01-19 10:40:27
+ * @LastEditTime: 2021-01-21 14:36:57
 -->
 <template>
   <el-dialog
@@ -241,7 +241,7 @@
                     v-model="row.contractEnum"
                     clearable
                     placeholder="请选择"
-                    @change="contractEnumChange(row)"
+                    @change="contractEnumChange(row, 'click')"
                   >
                     <el-option
                       v-for="item in contractTypeOptions"
@@ -306,7 +306,7 @@
               </el-table-column>
               <el-table-column
                 label="应收金额(元)"
-                width="180"
+                width="200"
                 align="center"
               >
                 <template v-slot="{ row }">
@@ -322,24 +322,23 @@
                   </div>
                   <div class="margin-top-5">
                     点数:
-                    <el-input-number
-                      :max="100"
-                      :min="0"
+                    <el-input
+                      @input="row.receivablePoint = numberChange(row.receivablePoint)"
                       class="point"
-                      :controls="false"
                       style="width: 70%"
                       v-model="row.receivablePoint"
                       v-digits="5"
                       clearable
                       :disabled="item.exVoidService ? true: false"
-                    ></el-input-number>
-                    <span class="percent">%</span>
+                    >
+                      <template slot="append">%</template>
+                    </el-input>
                   </div>
                 </template>
               </el-table-column>
               <el-table-column
                 label="派发佣金(元)"
-                width="180"
+                width="200"
                 align="center"
               >
                 <template v-slot="{ row }">
@@ -355,24 +354,23 @@
                   </div>
                   <div class="margin-top-5">
                     点数:
-                    <el-input-number
-                      :max="100"
-                      :min="0"
+                    <el-input
+                      @input="row.transactionEnum = numberChange(row.transactionEnum)"
                       class="point"
-                      :controls="false"
                       style="width: 70%"
                       :disabled="(row.transactionEnum === 'Natural' || row.transactionEnum === 'SelfChannel') ? true : false"
                       v-model="row.sendPoint"
                       v-digits="5"
                       clearable
-                    ></el-input-number>
-                    <span class="percent">%</span>
+                    >
+                      <template slot="append">%</template>
+                    </el-input>
                   </div>
                 </template>
               </el-table-column>
               <el-table-column
                 label="派发内场奖励(元)"
-                width="180"
+                width="200"
                 align="center"
               >
                 <template v-slot="{ row }">
@@ -387,23 +385,22 @@
                   </div>
                   <div class="margin-top-5">
                     点数:
-                    <el-input-number
-                      :max="100"
-                      :min="0"
+                    <el-input
+                      @input="row.sendInPoint = numberChange(row.sendInPoint)"
                       class="point"
-                      :controls="false"
                       style="width: 70%"
                       v-model="row.sendInPoint"
                       v-digits="5"
                       clearable
-                    ></el-input-number>
-                    <span class="percent">%</span>
+                    >
+                      <template slot="append">%</template>
+                    </el-input>
                   </div>
                 </template>
               </el-table-column>
               <el-table-column
                 label="总包业绩(元)"
-                width="180"
+                width="200"
                 align="center"
               >
                 <template v-slot="{ row }">
@@ -419,24 +416,23 @@
                   </div>
                   <div class="margin-top-5">
                     点数:
-                    <el-input-number
-                      :max="100"
-                      :min="0"
+                    <el-input
+                      @input="row.generalAchievePoint = numberChange(row.generalAchievePoint)"
                       class="point"
-                      :controls="false"
                       style="width: 70%"
                       v-model="row.generalAchievePoint"
                       v-digits="5"
                       clearable
                       :class="{'is-disabled': generalAchieveAmountDisabled(row)}"
-                    ></el-input-number>
-                    <span class="percent">%</span>
+                    >
+                      <template slot="append">%</template>
+                    </el-input>
                   </div>
                 </template>
               </el-table-column>
               <el-table-column
                 label="分销业绩(元)"
-                width="180"
+                width="200"
                 align="center"
               >
                 <template v-slot="{ row }">
@@ -452,18 +448,17 @@
                   </div>
                   <div class="margin-top-5">
                     点数:
-                    <el-input-number
-                      :max="100"
-                      :min="0"
+                    <el-input
+                      @input="row.distributeAchievePoint = numberChange(row.distributeAchievePoint)"
                       class="point"
-                      :controls="false"
                       style="width: 70%"
                       v-model="row.distributeAchievePoint"
                       v-digits="5"
                       clearable
                       :class="{'is-disabled': distributeAchieveAmountDisabled(row)}"
-                    ></el-input-number>
-                    <span class="percent">%</span>
+                    >
+                      <template slot="append">%</template>
+                    </el-input>
                   </div>
                 </template>
               </el-table-column>
@@ -640,7 +635,7 @@
                     v-model="row.contractEnum"
                     clearable
                     placeholder="请选择"
-                    @change="contractEnumChange(row)"
+                    @change="contractEnumChange(row, 'click')"
                   >
                     <el-option
                       v-for="item in contractTypeOptions"
@@ -728,7 +723,7 @@
               </el-table-column>
               <el-table-column
                 label="应收金额(元)"
-                width="180"
+                width="200"
                 align="center"
               >
                 <template v-slot="{ row }">
@@ -743,23 +738,22 @@
                   </div>
                   <div class="margin-top-5">
                     点数:
-                    <el-input-number
-                      :max="100"
-                      :min="0"
+                    <el-input
+                      @input="row.receivablePoint = numberChange(row.receivablePoint)"
                       class="point"
-                      :controls="false"
                       style="width: 70%"
                       v-model="row.receivablePoint"
                       v-digits="5"
                       clearable
-                    ></el-input-number>
-                    <span class="percent">%</span>
+                    >
+                      <template slot="append">%</template>
+                    </el-input>
                   </div>
                 </template>
               </el-table-column>
               <el-table-column
                 label="派发佣金(元)"
-                width="180"
+                width="200"
                 align="center"
               >
                 <template v-slot="{ row }">
@@ -775,24 +769,23 @@
                   </div>
                   <div class="margin-top-5">
                     点数:
-                    <el-input-number
-                      :max="100"
-                      :min="0"
+                    <el-input
+                      @input="row.sendPoint = numberChange(row.sendPoint)"
                       class="point"
-                      :controls="false"
                       style="width: 70%"
                       :disabled="(row.transactionEnum === 'Natural' || row.transactionEnum === 'SelfChannel') ? true : false"
                       v-model="row.sendPoint"
                       v-digits="5"
                       clearable
-                    ></el-input-number>
-                    <span class="percent">%</span>
+                    >
+                      <template slot="append">%</template>
+                    </el-input>
                   </div>
                 </template>
               </el-table-column>
               <el-table-column
                 label="派发内场奖励(元)"
-                width="180"
+                width="200"
                 align="center"
               >
                 <template v-slot="{ row }">
@@ -807,23 +800,22 @@
                   </div>
                   <div class="margin-top-5">
                     点数:
-                    <el-input-number
-                      :max="100"
-                      :min="0"
+                    <el-input
+                      @input="row.sendInPoint = numberChange(row.sendInPoint)"
                       class="point"
-                      :controls="false"
                       style="width: 70%"
                       v-model="row.sendInPoint"
                       v-digits="5"
                       clearable
-                    ></el-input-number>
-                    <span class="percent">%</span>
+                    >
+                      <template slot="append">%</template>
+                    </el-input>
                   </div>
                 </template>
               </el-table-column>
               <el-table-column
                 label="总包业绩(元)"
-                width="160"
+                width="200"
                 align="center"
               >
                 <template v-slot="{ row }">
@@ -834,29 +826,28 @@
                       v-digits="2"
                       clearable
                       :class="{'is-disabled': generalAchieveAmountDisabled(row)}"
-                      style="width: 72%"
+                      style="width: 70%"
                     />
                   </div>
                   <div class="margin-top-5">
                     点数:
-                    <el-input-number
-                      :max="100"
-                      :min="0"
+                    <el-input
+                      @input="row.generalAchievePoint = numberChange(row.generalAchievePoint)"
                       class="point"
-                      :controls="false"
                       style="width: 70%"
                       v-model="row.generalAchievePoint"
                       v-digits="5"
                       clearable
                       :class="{'is-disabled': generalAchieveAmountDisabled(row)}"
-                    ></el-input-number>
-                    <span class="percent">%</span>
+                    >
+                      <template slot="append">%</template>
+                    </el-input>
                   </div>
                 </template>
               </el-table-column>
               <el-table-column
                 label="分销业绩(元)"
-                width="160"
+                width="200"
                 align="center"
               >
                 <template v-slot="{ row }">
@@ -867,23 +858,22 @@
                       v-digits="2"
                       clearable
                       :class="{'is-disabled': distributeAchieveAmountDisabled(row)}"
-                      style="width: 72%"
+                      style="width: 70%"
                     />
                   </div>
                   <div class="margin-top-5">
                     点数:
-                    <el-input-number
-                      :max="100"
-                      :min="0"
+                    <el-input
+                      @input="row.distributeAchievePoint = numberChange(row.distributeAchievePoint)"
                       class="point"
-                      :controls="false"
                       style="width: 70%"
                       v-model="row.distributeAchievePoint"
                       v-digits="5"
                       clearable
                       :class="{'is-disabled': distributeAchieveAmountDisabled(row)}"
-                    ></el-input-number>
-                    <span class="percent">%</span>
+                    >
+                      <template slot="append">%</template>
+                    </el-input>
                   </div>
                 </template>
               </el-table-column>
@@ -995,7 +985,6 @@ import {
   post_collectandsend_createConditionDescribe,
 } from "@/api/project/index";
 import { post_buModelContType_get } from "@/api/deal/index";
-import { post_dict_getAllByType } from "@/api/system/index";
 import SelectPageByCondition from "@/components/SelectPageByCondition.vue";
 import Rules from "../setMeal-dialog/rules.vue";
 @Component({
@@ -1277,6 +1266,15 @@ export default class SetMealEdit extends Vue {
     }
     this.$emit("finish", obj);
   }
+
+  numberChange(val: any) {
+    if (0 <= val && val <= 100) {
+      return val;
+    } else {
+      return val > 100 ? 100 : 0;
+    }
+  }
+
   async created() {
     this.getInfo();
   }
@@ -1321,10 +1319,9 @@ export default class SetMealEdit extends Vue {
       let arr: any = [];
       this.info.colletionandsendMxs.forEach((v: any) => {
         if (v.partyCompanyId) arr.push(v.partyCompanyId);
-        v.colletionandsendDetails = v.colletionandsendDetails.map((j: any) => ({
-          ...j,
-          transactionEnumOptions: JSON.parse(j.transactionEnumOptions),
-        }));
+        v.colletionandsendDetails.forEach((j: any) => {
+          this.contractEnumChange(j, "");
+        });
       });
       this.info.partyAInfoList = this.partyAInfoList.map((h: any) => {
         if (arr.includes(h.companyId)) {
@@ -1392,7 +1389,6 @@ export default class SetMealEdit extends Vue {
         {
           colletionandsendDetails: [
             {
-              transactionEnumOptions: [],
               collectandsendConditionVOS: [],
               condition: "",
               contractEnum: "",
@@ -1423,7 +1419,6 @@ export default class SetMealEdit extends Vue {
         {
           colletionandsendDetails: [
             {
-              transactionEnumOptions: [],
               collectandsendConditionVOS: [],
               condition: "",
               contractEnum: "",
@@ -1525,7 +1520,6 @@ export default class SetMealEdit extends Vue {
                 colletionandsendDetails: [
                   {
                     subdivideEnum: this.busEnumType,
-                    transactionEnumOptions: [],
                     collectandsendConditionVOS: [],
                     condition: "",
                     contractEnum: "",
@@ -1559,7 +1553,6 @@ export default class SetMealEdit extends Vue {
                 colletionandsendDetails: [
                   {
                     subdivideEnum: this.busEnumType,
-                    transactionEnumOptions: [],
                     collectandsendConditionVOS: [],
                     condition: "",
                     contractEnum: "",
@@ -1603,7 +1596,6 @@ export default class SetMealEdit extends Vue {
           colletionandsendDetails: [
             {
               subdivideEnum: this.busEnumType,
-              transactionEnumOptions: [],
               collectandsendConditionVOS: [],
               condition: "",
               contractEnum: "",
@@ -1637,7 +1629,6 @@ export default class SetMealEdit extends Vue {
           colletionandsendDetails: [
             {
               subdivideEnum: this.busEnumType,
-              transactionEnumOptions: [],
               collectandsendConditionVOS: [],
               condition: "",
               contractEnum: "",
@@ -1728,7 +1719,6 @@ export default class SetMealEdit extends Vue {
       sort: "",
       subdivideEnum: this.busEnumType,
       transactionEnum: "",
-      transactionEnumOptions: [],
     });
   }
 
@@ -1762,15 +1752,19 @@ export default class SetMealEdit extends Vue {
     }));
   }
 
+  // 合同类型字典
+  get contractDicts() {
+    const list = (this.$root as any).dictAllList("Transaction");
+    return list;
+  }
+
   // 根据合同类型获取客户类型
-  async contractEnumChange(row: any) {
-    row.transactionEnum = "";
+  async contractEnumChange(row: any, type: any) {
+    if (type) row.transactionEnum = "";
     let item: any = [];
-    item = await post_dict_getAllByType({
-      type: "Transaction",
-      tag: row.contractEnum,
-      valid: "Valid",
-    });
+    item = this.contractDicts.filter(
+      (v: any) => v.tag.includes(row.contractEnum) && v.valid === "Valid"
+    );
     row.transactionEnumOptions = item.map((v: any) => ({
       code: v.code,
       name: v.name,
@@ -1877,14 +1871,9 @@ export default class SetMealEdit extends Vue {
 }
 
 .point {
-  /deep/ .el-input__inner {
-    text-align: left;
+  /deep/ .el-input-group__append {
+    padding: 0 3px;
   }
-}
-.percent {
-  position: absolute;
-  right: 25px;
-  bottom: 20px;
 }
 </style>
 <style lang="scss">

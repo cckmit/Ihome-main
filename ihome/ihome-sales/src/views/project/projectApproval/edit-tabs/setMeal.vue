@@ -4,7 +4,7 @@
  * @Author: wwq
  * @Date: 2020-11-27 17:22:45
  * @LastEditors: wwq
- * @LastEditTime: 2020-12-25 14:13:36
+ * @LastEditTime: 2021-01-21 11:34:03
 -->
 <template>
   <div>
@@ -15,6 +15,7 @@
           size="small"
           type="success"
           @click="add"
+          v-has="'B.SALES.PROJECT.TERMLIST.SPTCXZ'"
         >+增加收派套餐</el-button>
       </div>
     </div>
@@ -78,17 +79,20 @@
               size="small"
               type="success"
               @click="edit(row)"
+              v-has="'B.SALES.PROJECT.TERMLIST.SPTCXG'"
             >修改</el-button>
             <el-button
               v-if="row.state === 'Cancel'"
               size="small"
               type="success"
               @click="start(row)"
+              v-has="'B.SALES.PROJECT.TERMLIST.SPTCQY'"
             >启用</el-button>
             <el-button
               v-if="row.state === 'Start'"
               size="small"
               type="danger"
+              v-has="'B.SALES.PROJECT.TERMLIST.SPTCZF'"
               @click="cancellation(row)"
             >作废</el-button>
           </template>

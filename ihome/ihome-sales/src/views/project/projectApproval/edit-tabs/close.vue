@@ -4,7 +4,7 @@
  * @Author: wwq
  * @Date: 2020-11-27 17:26:20
  * @LastEditors: wwq
- * @LastEditTime: 2021-01-09 09:19:58
+ * @LastEditTime: 2021-01-21 11:40:04
 -->
 <template>
   <div>
@@ -15,6 +15,7 @@
           size="small"
           type="success"
           @click="add('making')"
+          v-has="'B.SALES.PROJECT.TERMLIST.JYXZ'"
         >+增加</el-button>
       </div>
     </div>
@@ -57,18 +58,21 @@
               size="small"
               type="success"
               @click="edit(row, 'making')"
+              v-has="'B.SALES.PROJECT.TERMLIST.JYXG'"
             >修改</el-button>
             <el-button
               v-if="row.cancel"
               size="small"
               type="success"
               @click="start(row, 'making')"
+              v-has="'B.SALES.PROJECT.TERMLIST.JYQY'"
             >启用</el-button>
             <el-button
               v-if="!row.cancel"
               size="small"
               type="danger"
               @click="cancellation(row, 'making')"
+              v-has="'B.SALES.PROJECT.TERMLIST.JYZF'"
             >作废</el-button>
           </template>
         </el-table-column>
@@ -82,6 +86,7 @@
           size="small"
           type="success"
           @click="add('please')"
+          v-has="'B.SALES.PROJECT.TERMLIST.QYXZ'"
         >+增加</el-button>
       </div>
     </div>
@@ -124,17 +129,20 @@
               size="small"
               type="success"
               @click="edit(row, 'please')"
+              v-has="'B.SALES.PROJECT.TERMLIST.QYXG'"
             >修改</el-button>
             <el-button
               v-if="row.cancel"
               size="small"
               type="success"
+              v-has="'B.SALES.PROJECT.TERMLIST.QYQY'"
               @click="start(row, 'please')"
             >启用</el-button>
             <el-button
               v-if="!row.cancel"
               size="small"
               type="danger"
+              v-has="'B.SALES.PROJECT.TERMLIST.QYZF'"
               @click="cancellation(row, 'please')"
             >作废</el-button>
           </template>
