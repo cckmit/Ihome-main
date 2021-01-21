@@ -1,10 +1,10 @@
 <!--
- * @Descripttion: 
+ * @Description:
  * @version: 
  * @Author: lsj
  * @Date: 2020-12-10 16:45:20
  * @LastEditors: lsj
- * @LastEditTime: 2020-12-11 10:25:10
+ * @LastEditTime: 2021-01-21 19:40:15
 -->
 <template>
   <ih-page>
@@ -37,9 +37,10 @@
                 :removePermi="true"
                 size="100px"
                 :limit="10"
+                accept=".jpg,.jpeg,.png,.gif,.bmp,.JPG,.JPEG,.PBG,.GIF,.BMP"
                 :file-size="10"
-                :file-list.sync="form.suppAnnexList"
-                :file-type="form.code"
+                :file-list.sync="fileList"
+                file-type="suppAnnexList"
               ></IhUpload>
             </el-form-item>
           </div>
@@ -78,13 +79,16 @@
             </el-form-item>
             <el-form-item v-if="form.finishProtocolType === 'PaperTemplate'" label="纸质版附件">
               <IhUpload
-                :isCrop="false"
-                :file-list.sync="form.finishAnnexList"
-                size="100px"
-                :limit="1"
-                :file-size="10"
-                :isMove="false"
                 @newFileList="getNewFile"
+                :isCrop="false"
+                :isMove="false"
+                :removePermi="true"
+                size="100px"
+                :limit="10"
+                accept=".jpg,.jpeg,.png,.gif,.bmp,.JPG,.JPEG,.PBG,.GIF,.BMP"
+                :file-size="10"
+                :file-list.sync="fileList"
+                file-type="finishAnnexList"
               ></IhUpload>
             </el-form-item>
           </div>
@@ -98,34 +102,22 @@
             <el-row>
               <el-col :span="12">
                 <el-form-item label="联动周期">
-                  <el-input
-                    disabled
-                    placeholder="联动周期"
-                    v-model="pageData.dealCode"/>
+                  <el-input disabled class="input" placeholder="联动周期" v-model="pageData.cycleName"/>
                 </el-form-item>
               </el-col>
               <el-col :span="12">
                 <el-form-item label="栋座">
-                  <el-input
-                    disabled
-                    placeholder="栋座"
-                    v-model="pageData.dealCode"/>
+                  <el-input disabled class="input" placeholder="栋座" v-model="pageData.buildingName"/>
                 </el-form-item>
               </el-col>
               <el-col :span="12">
                 <el-form-item label="房号">
-                  <el-input
-                    disabled
-                    placeholder="房号"
-                    v-model="pageData.dealCode"/>
+                  <el-input disabled class="input" placeholder="房号" v-model="pageData.roomNo"/>
                 </el-form-item>
               </el-col>
               <el-col :span="12">
                 <el-form-item label="业主类型">
-                  <el-input
-                    disabled
-                    placeholder="业主类型"
-                    v-model="pageData.dealCode"/>
+                  <el-input disabled class="input" placeholder="业主类型" v-model="customType"/>
                 </el-form-item>
               </el-col>
               <el-col :span="12">
@@ -145,24 +137,36 @@
               </el-col>
               <el-col :span="12">
                 <el-form-item label="优惠方式" :prop="form.offerSwitch ? 'offerMode' : ''">
-                  <el-select v-model="form.offerMode" placeholder="请选择优惠方式">
+                  <el-select
+                    @change="handleSelectMode"
+                    v-model="form.offerMode"
+                    placeholder="请选择优惠方式">
                     <el-option
                       v-for="item in preferentialList"
-                      :key="item.code"
-                      :label="item.name"
-                      :value="item.code"
+                      :key="item.preferentialMxId"
+                      :label="item.modeDescription"
+                      :value="item.preferentialMxId"
                     ></el-option>
                   </el-select>
                 </el-form-item>
               </el-col>
               <el-col :span="12">
                 <el-form-item label="优惠方式说明" :prop="form.offerSwitch ? 'offerRemark' : ''">
-                  <el-input class="input" v-model="form.offerRemark" disabled placeholder="优惠方式说明"></el-input>
+                  <el-input
+                    class="input"
+                    v-model="form.offerRemark"
+                    :disabled="form.offerMode !== 'Manual'"
+                    placeholder="优惠方式说明"></el-input>
                 </el-form-item>
               </el-col>
               <el-col :span="12">
                 <el-form-item label="优惠金额" :prop="form.offerSwitch ? 'offerMoney' : ''">
-                  <el-input class="input" v-model="form.offerMoney" disabled placeholder="优惠金额"></el-input>
+                  <el-input
+                    v-digits="2"
+                    class="input"
+                    v-model="form.offerMoney"
+                    :disabled="form.offerMode !== 'Manual'"
+                    placeholder="优惠金额"></el-input>
                 </el-form-item>
               </el-col>
               <el-col :span="24">
@@ -184,37 +188,28 @@
                   </el-table-column>
                   <el-table-column prop="cardNo" label="证件编号" min-width="150"></el-table-column>
                   <el-table-column prop="email" label="邮箱" min-width="120"></el-table-column>
-                  <el-table-column
-                    v-if="changeType !== 'ChangeInternalAchieveInf'"
-                    fixed="right" label="操作" width="100">
-                    <template slot-scope="scope">
-                      <el-link
-                        class="margin-right-10"
-                        type="primary"
-                        @click.native.prevent="deleteAdd(scope, 'customer')"
-                      >删除
-                      </el-link>
-                    </template>
-                  </el-table-column>
                 </el-table>
               </el-col>
-              <el-col :span="24">
+              <el-col class="margin-top-10" :span="24">
                 <el-form-item v-if="form.offerProtocolType === 'PaperTemplate'" label="纸质版附件">
                   <IhUpload
-                    :isCrop="false"
-                    :file-list.sync="form.offerAnnexList"
-                    size="100px"
-                    :limit="1"
-                    :file-size="10"
-                    :isMove="false"
                     @newFileList="getNewFile"
+                    :isCrop="false"
+                    :isMove="false"
+                    :removePermi="true"
+                    size="100px"
+                    :limit="10"
+                    accept=".jpg,.jpeg,.png,.gif,.bmp,.JPG,.JPEG,.PBG,.GIF,.BMP"
+                    :file-size="10"
+                    :file-list.sync="fileList"
+                    file-type="offerAnnexList"
                   ></IhUpload>
                 </el-form-item>
               </el-col>
             </el-row>
           </div>
         </div>
-        <div class="notice-item">
+        <div class="notice-item margin-top-10">
           <div class="notice-type">
             <div class="type">退款申请书</div>
             <el-switch v-model="form.refundSwitch" active-color="#409EFF" inactive-color="#989898"></el-switch>
@@ -235,13 +230,16 @@
             </el-form-item>
             <el-form-item v-if="form.refundProtocolType === 'PaperTemplate'" label="纸质版附件">
               <IhUpload
-                :isCrop="false"
-                :file-list.sync="form.refundAnnexList"
-                size="100px"
-                :limit="1"
-                :file-size="10"
-                :isMove="false"
                 @newFileList="getNewFile"
+                :isCrop="false"
+                :isMove="false"
+                :removePermi="true"
+                size="100px"
+                :limit="10"
+                accept=".jpg,.jpeg,.png,.gif,.bmp,.JPG,.JPEG,.PBG,.GIF,.BMP"
+                :file-size="10"
+                :file-list.sync="fileList"
+                file-type="refundAnnexList"
               ></IhUpload>
             </el-form-item>
           </div>
@@ -259,12 +257,18 @@
   import {
     get_preferential_getListByTermId__termId
   } from "@/api/project";
+  import {
+    post_suppDeal_previewEntryBasicInfChange, // 预览录入基础信息变更
+  } from  "@/api/deal"
+  import {Form as ElForm} from "element-ui";
+  import {NoRepeatHttp} from "ihome-common/util/aop/no-repeat-http";
 
   @Component({
     components: {},
   })
   export default class NoticePage extends Vue {
     @Prop() private pageData?: any; // 页面数据
+    fileList: any = [];
     preferentialList: any = []; // 优惠方式下拉选项
     form: any = {
       suppSwitch: false, // 补充协议开关
@@ -315,41 +319,268 @@
     };
     value: any = false;
 
+    // 业主类型取客户列表中第一个客户的类型
+    get customType() {
+      let type: any = '';
+      if (this.pageData && this.pageData.customerList && this.pageData.customerList.length) {
+        type = (this as any).$root.dictAllName(this.pageData.customerList[0].customerType, 'CustType');
+      }
+      return type;
+    }
+
     async created() {
       console.log('info:', this.pageData);
-      console.log('$root.dictAllList():', (this as any).$root.dictAllList('TemplateType'));
-      // await this.getPreferentialList();
+      // console.log('$root.dictAllList():', (this as any).$root.dictAllList('TemplateType'));
+      await this.getPreferentialList();
     }
 
     // 根据周期id获取到优惠方式
     async getPreferentialList() {
-      let preferentialList = await get_preferential_getListByTermId__termId({termId: ''});
-      console.log('preferentialList', preferentialList);
+      if (this.pageData && this.pageData.cycleId) {
+        this.preferentialList = await get_preferential_getListByTermId__termId({termId: this.pageData.cycleId});
+        // console.log('preferentialList', this.preferentialList);
+        // 多个自定义选项
+        this.preferentialList.push(
+          {
+            modeDescription: '自定义',
+            preferentialMxId: 'Manual'
+          }
+        )
+      }
+    }
+
+    // 选择优惠方式
+    handleSelectMode(value: any) {
+      if (value && value !== 'Manual') {
+        if (this.preferentialList && this.preferentialList.length) {
+          this.preferentialList.forEach((item: any) => {
+            if (item.preferentialMxId === value) {
+              this.form.offerRemark = item.modeDescription;
+              this.form.offerMoney = item.premiumReceived;
+            }
+          });
+        }
+      } else {
+        this.form.offerRemark = "";
+        this.form.offerMoney = "";
+      }
     }
 
     // 上一步
     handleUp() {
-      console.log('123');
       this.$emit("up");
+    }
+
+    // 上传附件的值
+    getNewFile(list: any, type?: any) {
+      // console.log(list);
+      // console.log(type);
+      // 保存上传的文件
+      if (type) {
+        if (list && list.length > 0) {
+          let tempList: any = [];
+          list.forEach((item: any) => {
+            tempList.push(
+              {
+                attachmentSuffix: item.response.length ? item.response[0].generateFileType : '', // 附件后缀
+                fileNo: item.fileId, // 附件编号
+                type: 'NoticeAttachment' // 告知书附件
+              }
+            )
+          });
+          this.form[type] = tempList;
+        }
+      }
     }
 
     // 预览变更
     handlePreview() {
-      console.log('123');
-      (this as any).$refs["ruleForm"].validate((v: any) => {
-        if (v) {
-          console.log(1);
-          this.$emit("preview");
-        } else {
-          console.log(2)
-        }
-      })
+      // console.log(this.form);
+      (this.$refs["ruleForm"] as ElForm).validate(this.submitPreview);
     }
 
-    // 上传附件的值
-    getNewFile(val: any, type?: any) {
-      console.log(val);
-      console.log(type);
+    @NoRepeatHttp()
+    async submitPreview(valid: any) {
+      if (valid) {
+        let postData: any = null;
+        // 补充成交类型
+        switch (this.pageData.changeTypeByDeal) {
+          case "ChangeBasicInf":
+            // 变更基础信息
+            this.$emit('next', 'next', this.pageData);
+            postData = await this.initBaseData();
+            await post_suppDeal_previewEntryBasicInfChange(postData);
+            this.$emit('next', 'next', this.pageData);
+            break
+          case "ChangeAchieveInf":
+            // 变更业绩信息
+            console.log(1);
+            break
+          case "RetreatRoom":
+            // 退房
+            console.log(1);
+            break
+          case "ChangeInternalAchieveInf":
+            // 内部员工业绩变更
+            console.log(1);
+            break
+        }
+      } else {
+        this.$message.warning("请先填好数据再保存");
+        return false;
+      }
+    }
+
+    // 构建补充的优惠告知书数据
+    initNoticeData() {
+      let tempList: any = []; // 优惠告知书列表
+      // 补充协议
+      if (this.form.suppSwitch) {
+        tempList.push(
+          {
+            annexList: this.form.suppAnnexList,
+            explain: null, // 优惠方式说明
+            notificationType: 'SupplementaryAgreement', // 告知书类型
+            paymentAmount: null, // 优惠金额
+            promotionMethod: null, // 优惠选择方式 Manual-自定义、Automatic-选择
+            reason: null, // 原因 --- 终止协议必填
+            reasonDescription: null, // 原因描述：终止协议必填
+            templateType: this.form.suppProtocolType // 模版类型(PaperTemplate-纸质模板、ElectronicTemplate-电子模版)
+          }
+        )
+      }
+      // 终止协议
+      if (this.form.finishSwitch) {
+        tempList.push(
+          {
+            annexList: this.form.finishAnnexList,
+            explain: null, // 优惠方式说明
+            notificationType: 'TerminationAgreement', // 告知书类型
+            paymentAmount: null, // 优惠金额
+            promotionMethod: null, // 优惠选择方式 Manual-自定义、Automatic-选择
+            reason: this.form.finishReason, // 原因 --- 终止协议必填
+            reasonDescription: null, // 原因描述：终止协议必填
+            templateType: this.form.finishProtocolType // 模版类型(PaperTemplate-纸质模板、ElectronicTemplate-电子模版)
+          }
+        )
+      }
+      // 优惠告知书
+      if (this.form.offerSwitch) {
+        tempList.push(
+          {
+            annexList: this.form.offerAnnexList,
+            explain: this.form.offerRemark, // 优惠方式说明
+            notificationType: 'Notification', // 告知书类型
+            paymentAmount: this.form.offerMoney, // 优惠金额
+            promotionMethod: this.form.offerMode === 'Manual' ? 'Manual' : 'Automatic', // 优惠选择方式 Manual-自定义、Automatic-选择
+            reason: null, // 原因 --- 终止协议必填
+            reasonDescription: null, // 原因描述：终止协议必填
+            templateType: this.form.offerProtocolType // 模版类型(PaperTemplate-纸质模板、ElectronicTemplate-电子模版)
+          }
+        )
+      }
+      // 退款申请书
+      if (this.form.refundSwitch) {
+        tempList.push(
+          {
+            annexList: this.form.refundAnnexList,
+            explain: null, // 优惠方式说明
+            notificationType: 'RefundApplication', // 告知书类型
+            paymentAmount: null, // 优惠金额
+            promotionMethod: null, // 优惠选择方式 Manual-自定义、Automatic-选择
+            reason: null, // 原因 --- 终止协议必填
+            reasonDescription: null, // 原因描述：终止协议必填
+            templateType: this.form.refundProtocolType // 模版类型(PaperTemplate-纸质模板、ElectronicTemplate-电子模版)
+          }
+        )
+      }
+      return tempList;
+    }
+
+    // 整合基础信息提交数据
+    initBaseData() {
+      let dataObj: any = {
+        agencyVO: [], // 中介信息
+        customerVO: this.pageData.customerList, // 客户信息
+        dealAddInputVO: {
+          parentId: this.pageData.parentId, // 主成交id
+          signDate: this.pageData.signDate,
+          signType: this.pageData.signType,
+          stage: this.pageData.stage,
+          status: this.pageData.status,
+          subscribeDate: this.pageData.subscribeDate,
+        }, // 主成交信息
+        documentVO: this.getDocumentList(this.pageData.uploadDocumentList), // 成交附件信息
+        houseAddInputVO: {
+          address: this.pageData.address,
+          area: this.pageData.area,
+          buildingId: this.pageData.buildingId,
+          hall: this.pageData.hall,
+          propertyNo: this.pageData.propertyNo,
+          room: this.pageData.room,
+          roomId: this.pageData.roomId,
+          roomNo: this.pageData.roomNo,
+          toilet: this.pageData.toilet
+        },
+        noticeAgreementCreateRequest: {
+          cycleId: this.pageData.cycleId,
+          dealId: this.pageData.id,
+          noticeDealList: this.initNoticeData(),
+        }
+      }
+      if (this.pageData.agencyId) {
+        dataObj.agencyVO.push(
+          {
+            agencyId: this.pageData.agencyId,
+            brokerId: this.pageData.brokerId,
+            channelLevel: this.pageData.channelLevel
+          }
+        )
+      }
+      return dataObj;
+    }
+
+    // 获取附件信息
+    getDocumentList(list: any = []) {
+      let tempList: any = [];
+      if (list && list.length > 0) {
+        list.forEach((item: any) => {
+          // console.log(item);
+          if (item.fileList && item.fileList.length) {
+            item.fileList.forEach((L: any) => {
+              if (!L.exAuto) {
+                // 只获取新上传的
+                tempList.push(
+                  {
+                    fileId: L.fileId,
+                    fileName: L.name,
+                    fileType: item.code
+                  }
+                );
+              }
+            });
+          }
+        });
+      }
+      return tempList;
+    }
+
+    // 获取客户信息
+    initOwnerList(data: any = []) {
+      let tempList: any = [];
+      if (data && data.length) {
+        data.forEach((item: any) => {
+          tempList.push(
+            {
+              id: item.id,
+              ownerCertificateNo: item.cardNo,
+              ownerMobile: item.customerPhone,
+              ownerName: item.customerName,
+            }
+          )
+        });
+      }
+      return tempList;
     }
   }
 </script>
@@ -383,7 +614,7 @@
         width: 100%;
 
         .input {
-          width: 15%;
+          width: 50%;
         }
       }
     }

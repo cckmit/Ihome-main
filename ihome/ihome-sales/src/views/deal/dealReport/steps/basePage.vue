@@ -4,7 +4,7 @@
  * @Author: lsj
  * @Date: 2020-12-10 16:45:20
  * @LastEditors: lsj
- * @LastEditTime: 2021-01-19 18:36:55
+ * @LastEditTime: 2021-01-21 19:13:22
 -->
 <template>
   <ih-page class="text-left">
@@ -126,7 +126,7 @@
           <el-form-item label="物业类型" prop="propertyType">
             <el-select
               v-model="postData.propertyType"
-              clearable
+              :disabled="['ChangeBasicInf', 'ChangeInternalAchieveInf'].includes(changeType)"
               placeholder="请选择物业类型"
               class="width--100">
               <el-option
@@ -1134,6 +1134,7 @@
     changeType: any = null; // 补充成交类型
     contNoList: any = []; // 分销协议编号列表
     postData: any = {
+      changeTypeByDeal: null, // 补充成交类型
       calculation: 'Auto',
       calculationName: null,
       dealCode: null,
@@ -1365,6 +1366,7 @@
       // 成交报告的id
       this.id = this.$route.query.id;
       this.changeType = this.$route.query.type;
+      this.postData.changeTypeByDeal = this.$route.query.type;
       // console.log('this.changeType', this.changeType);
       if (this.id && this.changeType) {
         await this.initPageInfo();
@@ -1491,7 +1493,12 @@
     initReceiveList(data: any = []) {
       if (!data.length) return;
       data.forEach((item: any) => {
-        this.$set(item, 'showData', [item.collectandsendDetailDealVO]);
+        this.$set(item, 'showData', [
+          {
+            ...item.collectandsendDetailDealVO,
+            typeName: (this as any).$root.dictAllName(item.type, 'FeeType')
+          }
+        ]);
       })
     }
 
@@ -1654,38 +1661,6 @@
       }
     }
 
-    // 计算收派金额总计
-    getReceiveSummaries(param: any) {
-      const {columns, data} = param;
-      const sums: any = [];
-      columns.forEach((column: any, index: any) => {
-        if (index === 0) {
-          sums[index] = '合计金额';
-          return;
-        }
-        if (![0, 1, 2].includes(index)) {
-          const values = data.map((item: any) => Number(item[column.property]));
-          if (!values.every((value: any) => isNaN(value))) {
-            sums[index] = values.reduce((prev: any, curr: any) => {
-              const value = Number(curr);
-              if (!isNaN(value)) {
-                let total = (prev * 1 * 100 + curr * 1 * 100) / 100;
-                return total;
-              } else {
-                return ((prev * 1 * 100) / 100);
-              }
-            }, 0);
-            sums[index] = Math.round(sums[index] * 100) / 100; // 解决精度缺失问题
-          } else {
-            sums[index] = '';
-          }
-        } else {
-          sums[index] = '';
-        }
-      });
-      return sums;
-    }
-
     // 选择项目周期
     selectProject() {
       this.dialogAddProjectCycle = true;
@@ -1836,6 +1811,25 @@
       // this.addTotalPackageList = data;
     }
 
+    // 选择收派套餐
+    selectPackage(scope: any) {
+      // console.log('选择收派套餐', scope);
+      // this.currentReceiveIndex = scope.$index;
+      let params: any = {
+        termId: this.baseInfoByTerm.termId, // 项目周期id
+        contType: this.postData.contType, // 合同类型
+        hasRecord: this.postData.hasRecord, // 是否有成交报备(是否分销成交)
+        contNo: this.postData.contNo, // 分销协议编号
+        distributionIds: this.packageIdsList, // 分销成交 --- 选择分销协议后的ids
+        feeType: scope.row.type, // 费用类型
+        partyACustomerId: scope.row.partyACustomer, // 甲方或客户
+        property: this.postData.propertyType, // 物业类型
+        subdivide: this.postData.refineModel, // 细分业务模式
+      };
+      console.log(params);
+      // (this as any).$parent.selectPackage(params);
+    }
+
     // 增加拆佣项
     handleAddCommission() {
       console.log('增加拆佣项');
@@ -1851,38 +1845,6 @@
         target: null // 拆佣对象
       };
       this.postData.channelCommList.push(obj);
-    }
-
-    // 计算对外拆佣合计
-    getCommissionSummaries(param: any) {
-      const {columns, data} = param;
-      const sums: any = [];
-      columns.forEach((column: any, index: any) => {
-        if (index === 0) {
-          sums[index] = '合计';
-          return;
-        }
-        if ([4].includes(index)) {
-          const values = data.map((item: any) => Number(item[column.property]));
-          if (!values.every((value: any) => isNaN(value))) {
-            sums[index] = values.reduce((prev: any, curr: any) => {
-              const value = Number(curr);
-              if (!isNaN(value)) {
-                let total = (prev * 1 * 100 + curr * 1 * 100) / 100;
-                return total;
-              } else {
-                return ((prev * 1 * 100) / 100);
-              }
-            }, 0);
-            sums[index] = Math.round(sums[index] * 100) / 100; // 解决精度缺失问题
-          } else {
-            sums[index] = '';
-          }
-        } else {
-          sums[index] = '';
-        }
-      });
-      return sums;
     }
 
     // 选择拆佣 - 收款方
@@ -2108,38 +2070,6 @@
       return tempArr;
     }
 
-    // 计算平台费用-总包/分销合计
-    getAchieveSummaries(param: any) {
-      const {columns, data} = param;
-      const sums: any = [];
-      columns.forEach((column: any, index: any) => {
-        if (index === 0) {
-          sums[index] = '合计';
-          return;
-        }
-        if ([1, 2, 3, 4, 5].includes(index)) {
-          const values = data.map((item: any) => Number(item[column.property]));
-          if (!values.every((value: any) => isNaN(value))) {
-            sums[index] = values.reduce((prev: any, curr: any) => {
-              const value = Number(curr);
-              if (!isNaN(value)) {
-                let total = (prev * 1 * 100 + curr * 1 * 100) / 100;
-                return total;
-              } else {
-                return ((prev * 1 * 100) / 100);
-              }
-            }, 0);
-            sums[index] = Math.round(sums[index] * 100) / 100; // 解决精度缺失问题
-          } else {
-            sums[index] = '';
-          }
-        } else {
-          sums[index] = '';
-        }
-      });
-      return sums;
-    }
-
     // 获取最新的上传附件
     getNewFile(data: any, type?: any) {
       // console.log(data);
@@ -2176,6 +2106,102 @@
           this.$emit("back");
           break;
       }
+    }
+
+    // 计算收派金额总计
+    getReceiveSummaries(param: any) {
+      const {columns, data} = param;
+      const sums: any = [];
+      columns.forEach((column: any, index: any) => {
+        if (index === 0) {
+          sums[index] = '合计金额';
+          return;
+        }
+        if (![0, 1, 2].includes(index)) {
+          const values = data.map((item: any) => Number(item[column.property]));
+          if (!values.every((value: any) => isNaN(value))) {
+            sums[index] = values.reduce((prev: any, curr: any) => {
+              const value = Number(curr);
+              if (!isNaN(value)) {
+                let total = (prev * 1 * 100 + curr * 1 * 100) / 100;
+                return total;
+              } else {
+                return ((prev * 1 * 100) / 100);
+              }
+            }, 0);
+            sums[index] = Math.round(sums[index] * 100) / 100; // 解决精度缺失问题
+          } else {
+            sums[index] = '';
+          }
+        } else {
+          sums[index] = '';
+        }
+      });
+      return sums;
+    }
+
+    // 计算对外拆佣合计
+    getCommissionSummaries(param: any) {
+      const {columns, data} = param;
+      const sums: any = [];
+      columns.forEach((column: any, index: any) => {
+        if (index === 0) {
+          sums[index] = '合计';
+          return;
+        }
+        if ([4].includes(index)) {
+          const values = data.map((item: any) => Number(item[column.property]));
+          if (!values.every((value: any) => isNaN(value))) {
+            sums[index] = values.reduce((prev: any, curr: any) => {
+              const value = Number(curr);
+              if (!isNaN(value)) {
+                let total = (prev * 1 * 100 + curr * 1 * 100) / 100;
+                return total;
+              } else {
+                return ((prev * 1 * 100) / 100);
+              }
+            }, 0);
+            sums[index] = Math.round(sums[index] * 100) / 100; // 解决精度缺失问题
+          } else {
+            sums[index] = '';
+          }
+        } else {
+          sums[index] = '';
+        }
+      });
+      return sums;
+    }
+
+    // 计算平台费用-总包/分销合计
+    getAchieveSummaries(param: any) {
+      const {columns, data} = param;
+      const sums: any = [];
+      columns.forEach((column: any, index: any) => {
+        if (index === 0) {
+          sums[index] = '合计';
+          return;
+        }
+        if ([3, 5, 6].includes(index)) {
+          const values = data.map((item: any) => Number(item[column.property]));
+          if (!values.every((value: any) => isNaN(value))) {
+            sums[index] = values.reduce((prev: any, curr: any) => {
+              const value = Number(curr);
+              if (!isNaN(value)) {
+                let total = (prev * 1 * 100 + curr * 1 * 100) / 100;
+                return total;
+              } else {
+                return ((prev * 1 * 100) / 100);
+              }
+            }, 0);
+            sums[index] = Math.round(sums[index] * 100) / 100; // 解决精度缺失问题
+          } else {
+            sums[index] = '';
+          }
+        } else {
+          sums[index] = '';
+        }
+      });
+      return sums;
     }
   }
 </script>
