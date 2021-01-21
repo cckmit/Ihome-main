@@ -135,6 +135,7 @@ export default {
     },
     viewerIndex: {
       type: Number,
+      default: 0,
     },
   },
 
@@ -165,7 +166,12 @@ export default {
       return this.index === this.urlList.length - 1;
     },
     currentImg() {
-      return this.urlList[this.index];
+      let res = this.imageType(
+        this.viewerMsg[this.index],
+        this.urlList,
+        this.index
+      );
+      return res;
     },
     imgStyle() {
       const { scale, deg, offsetX, offsetY, enableTransition } = this.transform;
@@ -190,7 +196,7 @@ export default {
     index: {
       handler: function (val) {
         this.reset();
-        this.onSwitch(val);
+        this.onSwitch && this.onSwitch(val);
       },
     },
     currentImg() {
@@ -209,6 +215,31 @@ export default {
     },
   },
   methods: {
+    imageType(file, url, index) {
+      const type = file?.name?.match(/(?<=\.).+/)?.toString();
+      switch (type) {
+        case "gif":
+        case "jpg":
+        case "png":
+        case "jpeg":
+          return url[index];
+        case "doc":
+        case "docx":
+        case "docm":
+          return require("../../../img/word.jpg");
+        case "xls":
+        case "xlsx":
+          return require("../../../img/excel.png");
+        case "pdf":
+          return require("../../../img/pdf.jpg");
+        case "ppt":
+        case "potx":
+        case "pptx":
+          return require("../../../img/ppt.png");
+        default:
+          return require("../../../img/file.jpg");
+      }
+    },
     // 点击预览图片事件
     clickHandler(file) {
       const type = file.name.match(/(?<=\.).+/).toString();

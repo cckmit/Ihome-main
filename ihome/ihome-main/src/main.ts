@@ -4,7 +4,7 @@
  * @Author: zyc
  * @Date: 2020-06-22 11:46:23
  * @LastEditors: zyc
- * @LastEditTime: 2021-01-14 17:05:09
+ * @LastEditTime: 2021-01-21 15:35:23
  */
 import Vue from 'vue'
 import App from './App.vue'
@@ -13,7 +13,7 @@ import store from './store'
 import ElementUI from 'element-ui';
 import 'ihome-common/ihome-theme/theme/index.css'
 // import 'element-ui/lib/theme-chalk/index.css';
-import { registerMicroApps, setDefaultMountApp, start } from "qiankun"
+import { registerMicroApps, setDefaultMountApp, start, addGlobalUncaughtErrorHandler } from "qiankun"
 import { apps, lifeCycles } from './qiankun/register-app'
 import { actions } from './qiankun/actions'
 import { defaultMountApp } from './setting'
@@ -68,7 +68,29 @@ import { get_dict_getAll, get_area_getAll, post_sessionUser_getUserInfo } from '
   areaAll: [],
   dictAll: {}
 };
+//全局异常捕获
+addGlobalUncaughtErrorHandler((event: any) => {
+  console.log('qiankun全局异常捕获');
+  console.log(event);
+  let errMsg = event?.message;
+  console.log(errMsg);
 
+  if (errMsg) {
+    if (errMsg.includes("application 'ihome-web-sales' died in status LOADING_SOURCE_CODE")) {
+      ElementUI.Message({
+        message: 'sales模块加载失败',
+        type: 'error'
+      });
+
+    } else if (errMsg.includes("application 'ihome-web-system' died in status LOADING_SOURCE_CODE")) {
+      ElementUI.Message({
+        message: 'system模块加载失败',
+        type: 'error'
+      });
+    }
+  }
+
+});
 
 async function render({ appContent, loading }: any = {}) {
 
@@ -100,7 +122,7 @@ async function render({ appContent, loading }: any = {}) {
                 content: appContent,
                 loading,
                 userInfo: (window as any).polyihomeData.userInfo,
-                crumbs: [{ name: 'xxxxx' }]
+                crumbs: [{ name: '' }]
               };
             },
             render(h) {

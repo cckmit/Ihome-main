@@ -4,7 +4,7 @@
  * @Author: ywl
  * @Date: 2020-09-27 16:27:36
  * @LastEditors: ywl
- * @LastEditTime: 2021-01-16 09:05:50
+ * @LastEditTime: 2021-01-21 20:41:13
 -->
 <template>
   <IhPage label-width="80px">
@@ -335,6 +335,12 @@
         :total="resPageInfo.total"
       ></el-pagination>
     </template>
+    <IhImgViews
+      v-if="isShowImg"
+      :url-list="srcList"
+      :viewer-msg="srcData"
+      :onClose="() => (isShowImg = false)"
+    ></IhImgViews>
   </IhPage>
 </template>
 
@@ -372,6 +378,9 @@ export default class DiscountList extends Vue {
     list: [],
   };
   private selectionData: any = [];
+  private isShowImg = false;
+  private srcList: any = [];
+  private srcData: any = [];
 
   private exportChange() {
     const roleList = (this.$root as any).userInfo.roleList.map(
@@ -426,9 +435,27 @@ export default class DiscountList extends Vue {
     this.searchOpen = !this.searchOpen;
   }
   private preview(row: any) {
-    window.open(
-      `/sales-api/sales-document-cover/file/browse/${row.templateId}`
-    );
+    if (row.templateType === "ElectronicTemplate") {
+      window.open(
+        `/sales-api/sales-document-cover/file/browse/${row.templateId}`
+      );
+    } else {
+      let imgList = row.annexList.filter(
+        (item: any) => item.type === "NoticeAttachment"
+      );
+      this.srcList = imgList.map(
+        (i: any) => `/sales-api/sales-document-cover/file/browse/${i.fileNo}`
+      );
+      this.srcData = imgList.map((v: any) => ({
+        name: v.attachmentSuffix,
+        preFileName: "优惠告知书",
+      }));
+      if (this.srcList.length) {
+        this.isShowImg = true;
+      } else {
+        this.$message.warning("暂无图片");
+      }
+    }
   }
   private handleSelectionChange(val: any): void {
     this.selectionData = val;
