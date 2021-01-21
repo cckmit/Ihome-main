@@ -11,6 +11,7 @@
     <div v-if="changeType !== 'ChangeInternalAchieveInf'">
       <p id="anchor-1" class="ih-info-title">成交信息</p>
       <el-form
+        @submit.native.prevent
         :model="infoForm"
         ref="ruleForm"
         label-width="150px"
@@ -453,39 +454,52 @@
         <el-col>
           <el-table
             class="ih-table"
-            :data="infoForm.documentList">
-            <el-table-column prop="fileType" label="类型" min-width="120">
+            :data="infoForm.uploadDocumentList">
+            <el-table-column prop="name" label="类型" width="180"></el-table-column>
+            <el-table-column prop="fileName" label="附件" min-width="300">
               <template slot-scope="scope">
-                <div>{{$root.dictAllName(scope.row.fileType, 'DealFileType')}}</div>
+                <IhUpload
+                  :isCrop="false"
+                  :isMove="false"
+                  :removePermi="true"
+                  size="100px"
+                  :limit="10"
+                  :file-size="10"
+                  :file-list.sync="scope.row.defaultFileList"
+                  :upload-show="false"
+                  :file-type="scope.row.code"
+                ></IhUpload>
               </template>
             </el-table-column>
-            <el-table-column prop="fileName" label="附件" min-width="120"></el-table-column>
           </el-table>
         </el-col>
       </el-row>
-      <div class="nav-box">
-        <div class="nav-icon el-button--success" @click="navFlag = !navFlag " :title="navFlag ? '收起' : '展开'">
-          <i :class="navFlag ? 'el-icon-d-arrow-right' : 'el-icon-d-arrow-left'"></i>
-        </div>
-        <div :class="navFlag ? 'nav-wrapper' : 'nav-wrapper nav-transition'">
-          <div
-            @click="goAnchor(item.id, index)"
-            v-for="(item, index) in navList"
-            :key="item.id"
-            :class="currentActiveIndex === index ? 'el-button--warning' : ''"
-            class="nav-item el-button--success">{{item.name}}</div>
-        </div>
+    </div>
+    <div class="nav-box">
+      <div class="nav-icon el-button--success" @click="navFlag = !navFlag " :title="navFlag ? '收起' : '展开'">
+        <i :class="navFlag ? 'el-icon-d-arrow-right' : 'el-icon-d-arrow-left'"></i>
       </div>
-      <div class="btn">
-        <el-button type="primary">保存</el-button>
-        <el-button type="success">提交</el-button>
-        <el-button @click="handleStepNext">返回</el-button>
+      <div :class="navFlag ? 'nav-wrapper' : 'nav-wrapper nav-transition'">
+        <div
+          @click="goAnchor(item.id, index)"
+          v-for="(item, index) in navList"
+          :key="item.id"
+          :class="currentActiveIndex === index ? 'el-button--warning' : ''"
+          class="nav-item el-button--success">{{item.name}}</div>
       </div>
+    </div>
+    <div class="btn">
+      <el-button type="primary" @click="handleSubmit('save')">保存</el-button>
+      <el-button type="success" @click="handleSubmit('submit')">提交</el-button>
+      <el-button @click="handleStepNext">返回</el-button>
     </div>
   </ih-page>
 </template>
 <script lang="ts">
   import {Component, Vue, Prop} from "vue-property-decorator";
+  import {
+    post_suppDeal_entryBasicInfChange, // 录入基础信息变更
+  } from "@/api/deal";
 
   @Component({
     components: {},
@@ -505,7 +519,7 @@
       achieveList: [], // 平台费用 - 包含总包和分销
       achieveTotalBagList: [], // 平台费用 - 总包 - 前端拆分
       achieveDistriList: [], // 平台费用 - 分销 - 前端拆分
-      documentList: [], // 附件信息
+      uploadDocumentList: [], // 附件信息
       processRecordList: [] // 审核信息
     };
     dealId: any = null;
@@ -566,8 +580,8 @@
     created() {
       console.log('preview', this.pageData);
       this.infoForm = this.pageData;
-      // this.dealId = this.$route.query.id;
-      // this.changeType = this.$route.query.type;
+      this.dealId = this.$route.query.id;
+      this.changeType = this.$route.query.type;
     }
 
     // 跳转到指定索引的元素
@@ -630,6 +644,33 @@
       window.open(
         `/sales-api/sales-document-cover/file/browse/${scope.row.templateId}`
       );
+    }
+
+    // 保存/提交功能
+    async handleSubmit(type: any = '') {
+      console.log(type);
+      if (!type) return;
+      let postData: any = this.pageData.currentPostData;
+      postData.dealAddInputVO.status = type === 'save' ? 'Draft' : 'PlatformClerkUnreview';
+      // 补充成交类型
+      switch (this.changeType) {
+        case "ChangeBasicInf":
+          // 变更基础信息
+          await post_suppDeal_entryBasicInfChange(postData);
+          break
+        case "ChangeAchieveInf":
+          // 变更业绩信息
+          console.log(1);
+          break
+        case "RetreatRoom":
+          // 退房
+          console.log(1);
+          break
+        case "ChangeInternalAchieveInf":
+          // 内部员工业绩变更
+          console.log(1);
+          break
+      }
     }
 
     // 返回

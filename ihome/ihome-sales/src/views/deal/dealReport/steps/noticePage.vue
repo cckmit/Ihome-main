@@ -9,7 +9,7 @@
 <template>
   <ih-page>
     <div class="notice-wrapper">
-      <el-form :model="form" :rules="rules"  ref="ruleForm" label-width="150px">
+      <el-form :model="form" :rules="rules"  ref="ruleForm" label-width="150px" @submit.native.prevent>
         <div class="notice-item">
           <div class="notice-type">
             <div class="type">补充协议</div>
@@ -259,7 +259,7 @@
   } from "@/api/project";
   import {
     post_suppDeal_previewEntryBasicInfChange, // 预览录入基础信息变更
-  } from  "@/api/deal"
+  } from  "@/api/deal";
   import {Form as ElForm} from "element-ui";
   import {NoRepeatHttp} from "ihome-common/util/aop/no-repeat-http";
 
@@ -407,10 +407,16 @@
         switch (this.pageData.changeTypeByDeal) {
           case "ChangeBasicInf":
             // 变更基础信息
-            this.$emit('next', 'next', this.pageData);
             postData = await this.initBaseData();
+            this.$emit('next', 'next', {
+              ...this.pageData,
+              currentPostData: postData
+            });
             await post_suppDeal_previewEntryBasicInfChange(postData);
-            this.$emit('next', 'next', this.pageData);
+            this.$emit('next', 'next', {
+              ...this.pageData,
+              currentPostData: postData
+            });
             break
           case "ChangeAchieveInf":
             // 变更业绩信息
@@ -507,7 +513,7 @@
           signDate: this.pageData.signDate,
           signType: this.pageData.signType,
           stage: this.pageData.stage,
-          status: this.pageData.status,
+          status: null, // 最后点击提交/保存的时候才会赋值
           subscribeDate: this.pageData.subscribeDate,
         }, // 主成交信息
         documentVO: this.getDocumentList(this.pageData.uploadDocumentList), // 成交附件信息

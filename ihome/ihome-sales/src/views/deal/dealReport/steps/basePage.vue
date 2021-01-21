@@ -9,6 +9,7 @@
 <template>
   <ih-page class="text-left">
     <el-form
+      @submit.native.prevent
       :model="postData"
       :rules="rules"
       ref="ruleForm"
@@ -1558,7 +1559,6 @@
 
     // 初始化附件信息
     initDocumentList(list: any = []) {
-      if (!list.length) return;
       let fileList: any = (this as any).$root.dictAllList('DealFileType'); // 附件类型
       if (fileList.length > 0) {
         fileList.forEach((vo: any) => {
@@ -2074,7 +2074,6 @@
     getNewFile(data: any, type?: any) {
       // console.log(data);
       // console.log(type);
-      // console.log(this.postData.uploadDocumentList);
       if (this.postData.uploadDocumentList.length > 0) {
         this.postData.uploadDocumentList.forEach((vo: any) => {
           if (vo.code === type) {
