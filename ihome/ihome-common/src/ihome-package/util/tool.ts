@@ -59,10 +59,48 @@ export interface ToolInterface {
      */
     coptText(text: any, callback: Function): any;
 
-   
+    /**用户是否包含某个角色
+     * @param {*}
+     * @return {*}
+     */
+    hasRole(code: string): boolean;
+    /**用户是否包含某个岗位
+     * @param {*}
+     * @return {*}
+     */
+    hasJob(code: string): boolean;
+    /**用户是否包含某个资源
+     * @param {*}
+     * @return {*}
+     */
+    hasResource(code: string): boolean;
+
+
 }
 export class Tool implements ToolInterface {
-   
+    /**用户是否包含某个角色
+     * @param {string} code
+     * @return {*}
+     */
+    hasRole(code: string): boolean {
+        let roleList = (window as any).userInfo?.roleList?.map((item: any) => { return item.code }) || [];
+        return roleList.includes(code);
+    }
+    /**用户是否包含某个岗位
+     * @param {string} code
+     * @return {*}
+     */
+    hasJob(code: string): boolean {
+        throw new Error("未实现");
+    }
+    /**用户是否包含某个资源
+     * @param {string} code
+     * @return {*}
+     */
+    hasResource(code: string): boolean {
+        throw new Error("未实现");
+    }
+
 
     /**获取当前时间+n天yyyy-MM-dd字符串
     * @param {type} 

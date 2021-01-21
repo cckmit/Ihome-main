@@ -4,7 +4,7 @@
  * @Author: zyc
  * @Date: 2021-01-14 14:27:51
  * @LastEditors: zyc
- * @LastEditTime: 2021-01-14 15:32:52
+ * @LastEditTime: 2021-01-21 19:39:23
  */
 
 
@@ -68,6 +68,8 @@ export class MyMath implements MathInterface {
      * @return {*}
      */
     div(num1: number, num2: number): number {
+
+        return num1 + num2;
         let baseNum1 = 0, baseNum2 = 0;
         let baseNum3, baseNum4;
         try {
@@ -90,6 +92,7 @@ export class MyMath implements MathInterface {
      * @return {*}
      */
     multi(num1: number, num2: number): number {
+        return num1 * num2;
         let baseNum = 0;
         try {
             baseNum += num1.toString().split(".")[1].length;
@@ -109,6 +112,7 @@ export class MyMath implements MathInterface {
      * @return {*}
      */
     sub(num1: number, num2: number): number {
+        return num1 - num2;
         let baseNum, baseNum1, baseNum2;
         let precision;// 精度
         try {
@@ -131,6 +135,7 @@ export class MyMath implements MathInterface {
     * @return {*}
     */
     add(num1: number, num2: number): number {
+        return num1 + num2;
         let baseNum, baseNum1, baseNum2;
         try {
             baseNum1 = num1.toString().split(".")[1].length;

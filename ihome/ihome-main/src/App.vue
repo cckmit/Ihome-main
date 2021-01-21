@@ -4,7 +4,7 @@
  * @Author: zyc
  * @Date: 2020-06-22 11:46:23
  * @LastEditors: zyc
- * @LastEditTime: 2021-01-06 15:24:15
+ * @LastEditTime: 2021-01-21 15:28:30
 --> 
 <template>
   <div class="app">
@@ -317,6 +317,12 @@ export default class App extends Vue {
 }
 </script>
 <style lang="scss">
+.fail-app-msg {
+  text-align: center;
+  font-size: 25px;
+  color: #ccc;
+  margin-top: 50px;
+}
 .container-footer {
   text-align: center;
   line-height: 66px;
