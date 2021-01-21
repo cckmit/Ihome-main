@@ -1587,7 +1587,7 @@
       if (value) {
         if (this.firstAgencyCompanyList && this.firstAgencyCompanyList.length) {
           this.firstAgencyCompanyList.forEach((list: any) => {
-            if (list.agencyId === value) {
+            if (list.id === value) {
               this.postData.oneAgentTeamName = list.name;
             }
           })

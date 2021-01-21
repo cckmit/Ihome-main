@@ -410,6 +410,11 @@
             class="nav-item el-button--success">{{item.name}}</div>
         </div>
       </div>
+      <div class="btn">
+        <el-button type="primary">保存</el-button>
+        <el-button type="success">提交</el-button>
+        <el-button @click="handleStepNext">返回</el-button>
+      </div>
     </div>
   </ih-page>
 </template>
@@ -646,6 +651,11 @@
     preview(scope: any) {
       console.log('预览scope', scope);
     }
+
+    // 返回
+    handleStepNext() {
+      this.$emit("next", 'up');
+    }
   }
 </script>
 <style lang="scss" scoped>
@@ -657,6 +667,12 @@
       flex: 1;
       text-align: center;
     }
+  }
+
+  .btn {
+    box-sizing: border-box;
+    margin-top: 30px;
+    text-align: center;
   }
 
   .contNo-wrapper {

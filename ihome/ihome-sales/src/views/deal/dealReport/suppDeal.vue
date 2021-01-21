@@ -28,11 +28,6 @@
             v-bind:is="currentComponent"></component>
         </keep-alive>
       </div>
-      <div v-if="currentActiveIndex === 2 || (currentActiveIndex === 1 && type === 'ChangeInternalAchieveInf')" class="btn">
-        <el-button type="primary">保存</el-button>
-        <el-button type="success">提交</el-button>
-        <el-button @click="handleStepNext('up')">返回</el-button>
-      </div>
     </div>
   </ih-page>
 </template>
@@ -198,7 +193,7 @@
         // 下一步
         this.currentActiveIndex = this.currentActiveIndex + 1;
       } else {
-        // 上一步
+        // 上一步 - 返回
         if (this.currentActiveIndex === 0) return;
         this.currentActiveIndex = this.currentActiveIndex - 1;
       }
@@ -240,10 +235,6 @@
     /deep/.is-process .el-step__icon {
       color: #ffffff;
       background-color: #409EFF;
-    }
-
-    .btn {
-      text-align: center;
     }
   }
 </style>

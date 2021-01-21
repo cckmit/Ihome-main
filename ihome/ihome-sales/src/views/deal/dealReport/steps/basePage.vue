@@ -2156,6 +2156,10 @@
 
     // 底部按钮功能
     handleClickBtn(btnType: any = '') {
+      let data: any = {
+        ...this.postData,
+        receiveAchieveVO: this.receiveAchieveVO
+      }
       switch (btnType) {
         case "preview":
           // 预览
@@ -2165,7 +2169,7 @@
         case "next":
           // 下一步
           console.log(456);
-          this.$emit("next", 'next', this.postData);
+          this.$emit("next", 'next', data);
           break;
         case "back":
           // 取消

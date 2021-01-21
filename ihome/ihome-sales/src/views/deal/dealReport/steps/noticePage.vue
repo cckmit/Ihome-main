@@ -95,46 +95,123 @@
             <el-switch v-model="form.offerSwitch" active-color="#409EFF" inactive-color="#989898"></el-switch>
           </div>
           <div class="notice-form" v-if="form.offerSwitch">
-            <el-form-item label="优惠告知书类型" :prop="form.offerSwitch ? 'offerProtocolType' : ''">
-              <el-select
-                v-model="form.offerProtocolType"
-                clearable
-                placeholder="请选择优惠告知书类型">
-                <el-option
-                  v-for="item in $root.dictAllList('TemplateType')"
-                  :key="item.code"
-                  :label="item.name"
-                  :value="item.code"
-                ></el-option>
-              </el-select>
-            </el-form-item>
-            <el-form-item label="优惠方式" :prop="form.offerSwitch ? 'offerMode' : ''">
-              <el-select v-model="form.offerMode" placeholder="请选择优惠方式">
-                <el-option
-                  v-for="item in preferentialList"
-                  :key="item.code"
-                  :label="item.name"
-                  :value="item.code"
-                ></el-option>
-              </el-select>
-            </el-form-item>
-            <el-form-item label="优惠方式说明" :prop="form.offerSwitch ? 'offerRemark' : ''">
-              <el-input class="input" v-model="form.offerRemark" disabled placeholder="优惠方式说明"></el-input>
-            </el-form-item>
-            <el-form-item label="优惠金额" :prop="form.offerSwitch ? 'offerMoney' : ''">
-              <el-input class="input" v-model="form.offerMoney" disabled placeholder="优惠金额"></el-input>
-            </el-form-item>
-            <el-form-item v-if="form.offerProtocolType === 'PaperTemplate'" label="纸质版附件">
-              <IhUpload
-                :isCrop="false"
-                :file-list.sync="form.offerAnnexList"
-                size="100px"
-                :limit="1"
-                :file-size="10"
-                :isMove="false"
-                @newFileList="getNewFile"
-              ></IhUpload>
-            </el-form-item>
+            <el-row>
+              <el-col :span="12">
+                <el-form-item label="联动周期">
+                  <el-input
+                    disabled
+                    placeholder="联动周期"
+                    v-model="pageData.dealCode"/>
+                </el-form-item>
+              </el-col>
+              <el-col :span="12">
+                <el-form-item label="栋座">
+                  <el-input
+                    disabled
+                    placeholder="栋座"
+                    v-model="pageData.dealCode"/>
+                </el-form-item>
+              </el-col>
+              <el-col :span="12">
+                <el-form-item label="房号">
+                  <el-input
+                    disabled
+                    placeholder="房号"
+                    v-model="pageData.dealCode"/>
+                </el-form-item>
+              </el-col>
+              <el-col :span="12">
+                <el-form-item label="业主类型">
+                  <el-input
+                    disabled
+                    placeholder="业主类型"
+                    v-model="pageData.dealCode"/>
+                </el-form-item>
+              </el-col>
+              <el-col :span="12">
+                <el-form-item label="优惠告知书类型" :prop="form.offerSwitch ? 'offerProtocolType' : ''">
+                  <el-select
+                    v-model="form.offerProtocolType"
+                    clearable
+                    placeholder="请选择优惠告知书类型">
+                    <el-option
+                      v-for="item in $root.dictAllList('TemplateType')"
+                      :key="item.code"
+                      :label="item.name"
+                      :value="item.code"
+                    ></el-option>
+                  </el-select>
+                </el-form-item>
+              </el-col>
+              <el-col :span="12">
+                <el-form-item label="优惠方式" :prop="form.offerSwitch ? 'offerMode' : ''">
+                  <el-select v-model="form.offerMode" placeholder="请选择优惠方式">
+                    <el-option
+                      v-for="item in preferentialList"
+                      :key="item.code"
+                      :label="item.name"
+                      :value="item.code"
+                    ></el-option>
+                  </el-select>
+                </el-form-item>
+              </el-col>
+              <el-col :span="12">
+                <el-form-item label="优惠方式说明" :prop="form.offerSwitch ? 'offerRemark' : ''">
+                  <el-input class="input" v-model="form.offerRemark" disabled placeholder="优惠方式说明"></el-input>
+                </el-form-item>
+              </el-col>
+              <el-col :span="12">
+                <el-form-item label="优惠金额" :prop="form.offerSwitch ? 'offerMoney' : ''">
+                  <el-input class="input" v-model="form.offerMoney" disabled placeholder="优惠金额"></el-input>
+                </el-form-item>
+              </el-col>
+              <el-col :span="24">
+                <el-table
+                  class="ih-table"
+                  :data="pageData.customerList">
+                  <el-table-column prop="customerNo" label="客户编号" min-width="150"></el-table-column>
+                  <el-table-column prop="customerType" label="客户类型" min-width="120">
+                    <template slot-scope="scope">
+                      <div>{{$root.dictAllName(scope.row.customerType, 'CustType')}}</div>
+                    </template>
+                  </el-table-column>
+                  <el-table-column prop="customerName" label="客户名称" min-width="120"></el-table-column>
+                  <el-table-column prop="customerPhone" label="手机号码" min-width="120"></el-table-column>
+                  <el-table-column prop="CardType" label="证件类型" min-width="120">
+                    <template slot-scope="scope">
+                      <div>{{$root.dictAllName(scope.row.cardType, 'CardType')}}</div>
+                    </template>
+                  </el-table-column>
+                  <el-table-column prop="cardNo" label="证件编号" min-width="150"></el-table-column>
+                  <el-table-column prop="email" label="邮箱" min-width="120"></el-table-column>
+                  <el-table-column
+                    v-if="changeType !== 'ChangeInternalAchieveInf'"
+                    fixed="right" label="操作" width="100">
+                    <template slot-scope="scope">
+                      <el-link
+                        class="margin-right-10"
+                        type="primary"
+                        @click.native.prevent="deleteAdd(scope, 'customer')"
+                      >删除
+                      </el-link>
+                    </template>
+                  </el-table-column>
+                </el-table>
+              </el-col>
+              <el-col :span="24">
+                <el-form-item v-if="form.offerProtocolType === 'PaperTemplate'" label="纸质版附件">
+                  <IhUpload
+                    :isCrop="false"
+                    :file-list.sync="form.offerAnnexList"
+                    size="100px"
+                    :limit="1"
+                    :file-size="10"
+                    :isMove="false"
+                    @newFileList="getNewFile"
+                  ></IhUpload>
+                </el-form-item>
+              </el-col>
+            </el-row>
           </div>
         </div>
         <div class="notice-item">
@@ -312,6 +389,8 @@
     }
 
     .btn {
+      box-sizing: border-box;
+      margin-top: 30px;
       text-align: center;
     }
   }
