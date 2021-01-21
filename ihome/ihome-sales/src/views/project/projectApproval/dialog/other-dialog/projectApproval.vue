@@ -4,7 +4,7 @@
  * @Author: wwq
  * @Date: 2020-12-08 19:26:43
  * @LastEditors: wwq
- * @LastEditTime: 2020-12-25 10:21:58
+ * @LastEditTime: 2021-01-21 20:29:21
 -->
 <template>
   <el-dialog
@@ -151,6 +151,7 @@
       <el-button
         type="primary"
         @click="finish()"
+        :loading="finishLoading"
       >确 定</el-button>
     </span>
   </el-dialog>
@@ -158,7 +159,10 @@
 <script lang="ts">
 import { Component, Vue, Prop } from "vue-property-decorator";
 import PaginationMixin from "@/mixins/pagination";
-import { post_term_getListAccrossTerm } from "@/api/project/index";
+import {
+  post_term_getListAccrossTerm,
+  post_other_add,
+} from "@/api/project/index";
 
 @Component({
   components: {},
@@ -176,6 +180,7 @@ export default class ProjectApproval extends Vue {
     district: null,
   };
   provinceOption: any = [];
+  finishLoading = false;
   resPageInfo: any = {
     list: [],
     total: 0,
@@ -226,9 +231,20 @@ export default class ProjectApproval extends Vue {
     this.getListMixin();
   }
 
-  finish() {
+  async finish() {
     if (this.selection.length) {
-      this.$emit("finish", this.selection);
+      try {
+        let arr = this.selection.map((v: any) => v.termId);
+        await post_other_add({
+          shareTermIds: arr,
+          termId: this.$route.query.id,
+        });
+        this.finishLoading = false;
+        this.$emit("finish");
+        this.$message.success("新增成功");
+      } catch (err) {
+        this.finishLoading = false;
+      }
     } else {
       this.$message.warning("请先勾选表格数据");
     }

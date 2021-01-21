@@ -4,7 +4,7 @@
  * @Author: wwq
  * @Date: 2020-12-04 09:40:47
  * @LastEditors: wwq
- * @LastEditTime: 2021-01-21 14:36:57
+ * @LastEditTime: 2021-01-21 19:50:50
 -->
 <template>
   <el-dialog
@@ -970,6 +970,7 @@
       <el-button @click="cancel()">取 消</el-button>
       <el-button
         type="primary"
+        :loading='finishLoading'
         @click="finish()"
       >保 存</el-button>
     </span>
@@ -983,6 +984,8 @@ import {
   get_collectandsend_get__packageId,
   get_collectandsend_getBaseTermByTermId__termId,
   post_collectandsend_createConditionDescribe,
+  post_collectandsend_add,
+  post_collectandsend_update,
 } from "@/api/project/index";
 import { post_buModelContType_get } from "@/api/deal/index";
 import SelectPageByCondition from "@/components/SelectPageByCondition.vue";
@@ -1001,6 +1004,7 @@ export default class SetMealEdit extends Vue {
   isSubdivideEnum = false;
   busEnumType = "";
   searchConditon: any = {};
+  finishLoading = false;
   info: any = {
     packageName: null,
     propertyEnum: null,
@@ -1244,6 +1248,7 @@ export default class SetMealEdit extends Vue {
     });
   }
   async submit() {
+    this.finishLoading = true;
     this.info.startTime = this.info.timeList[0];
     this.info.endTime = this.info.timeList[1];
     this.info.colletionandsendMxs.forEach((v: any) => {
@@ -1264,7 +1269,25 @@ export default class SetMealEdit extends Vue {
         (v: any) => v.costTypeEnum === "AgencyFee"
       );
     }
-    this.$emit("finish", obj);
+    obj.termId = this.$route.query.id;
+    if (this.data.id) {
+      obj.packageId = this.data.id;
+      try {
+        await post_collectandsend_update(obj);
+        this.finishLoading = false;
+        this.$emit("finish");
+      } catch (err) {
+        this.finishLoading = false;
+      }
+    } else {
+      try {
+        await post_collectandsend_add(obj);
+        this.finishLoading = false;
+        this.$emit("finish");
+      } catch (err) {
+        this.finishLoading = false;
+      }
+    }
   }
 
   numberChange(val: any) {

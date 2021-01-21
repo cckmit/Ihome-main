@@ -4,7 +4,7 @@
  * @Author: wwq
  * @Date: 2020-12-01 14:49:06
  * @LastEditors: wwq
- * @LastEditTime: 2021-01-07 09:28:46
+ * @LastEditTime: 2021-01-21 20:07:13
 -->
 <template>
   <el-dialog
@@ -217,6 +217,7 @@
       <el-button
         type="primary"
         @click="finish()"
+        :loading="finishLoading"
       >提 交</el-button>
     </span>
   </el-dialog>
@@ -229,6 +230,7 @@ import { NoRepeatHttp } from "ihome-common/util/aop/no-repeat-http";
 import { post_company_getAll } from "@/api/system/index";
 import { get_bankAccount_get__companyId } from "@/api/finance/index";
 import { phoneValidator } from "ihome-common/util/base/form-ui";
+import { post_contract_create } from "@/api/contract/index.ts";
 
 @Component({
   components: {},
@@ -238,6 +240,7 @@ export default class PartyAAdd extends Vue {
   dialogVisible = true;
   partyFileList: any = [];
   stampFileList: any = [];
+  finishLoading = false;
 
   form: any = {
     title: null,
@@ -354,6 +357,7 @@ export default class PartyAAdd extends Vue {
   @NoRepeatHttp()
   async submit(valid: any) {
     if (valid) {
+      this.finishLoading = true;
       let arr: any = [];
       arr = this.form.partyA.map((v: any) => ({
         userId: v,
@@ -362,11 +366,21 @@ export default class PartyAAdd extends Vue {
       let flag = this.form.timeList && this.form.timeList.length;
       this.form.cooperationTime = flag ? this.form.timeList[0] : null;
       this.form.cooperationEnd = flag ? this.form.timeList[1] : null;
-      this.$emit("finish", {
+      let obj = {
         ...this.form,
         partyA: arr,
         originalList: this.partyList.concat(this.stampList),
-      });
+      };
+      obj.projectsId = window.sessionStorage.getItem("proId");
+      obj.cycleId = this.$route.query.id;
+      obj.organizationId = this.data.startDivisionId;
+      try {
+        await post_contract_create(obj);
+        this.$emit("finish");
+        this.finishLoading = false;
+      } catch (err) {
+        this.finishLoading = false;
+      }
     } else {
       console.log("error submit!!");
       return false;

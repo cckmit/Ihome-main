@@ -4,7 +4,7 @@
  * @Author: wwq
  * @Date: 2020-12-11 15:36:42
  * @LastEditors: wwq
- * @LastEditTime: 2020-12-31 17:53:44
+ * @LastEditTime: 2021-01-21 20:21:46
 -->
 <template>
   <el-dialog
@@ -264,6 +264,7 @@
       <el-button
         type="primary"
         @click="finish()"
+        :loading="finishLoading"
       >保 存</el-button>
     </span>
   </el-dialog>
@@ -274,6 +275,8 @@ import {
   get_his_settleCondition_getPleaseType__proId,
   post_partyAContract_getBuilding__termId,
   post_settleCondition_getPlease__settleId,
+  post_settleCondition_addPlease,
+  post_settleCondition_updatePlease,
 } from "@/api/project/index";
 import { NoRepeatHttp } from "ihome-common/util/aop/no-repeat-http";
 import { Form as ElForm } from "element-ui";
@@ -285,6 +288,7 @@ export default class PleaseEdit extends Vue {
   dialogVisible = true;
   serviceFeeDisabled = false;
   agencyFeeDisabled = false;
+  finishLoading = false;
   info: any = {
     settleName: null,
     agencyFee: 0,
@@ -360,6 +364,7 @@ export default class PleaseEdit extends Vue {
   @NoRepeatHttp()
   async submit(valid: any) {
     if (valid) {
+      this.finishLoading = true;
       let arr: any = [];
       arr = this.info.settleConditionPleaseVOS.filter(
         (v: any) => v.checkboxed === true
@@ -382,7 +387,27 @@ export default class PleaseEdit extends Vue {
         settleConditionPleaseVOS: arr,
         agencyFee: this.info.agencyFee ? 1 : 0,
       };
-      this.$emit("finish", obj);
+      obj.termId = this.$route.query.id;
+      if (!this.data.id) {
+        try {
+          await post_settleCondition_addPlease(obj);
+          this.$emit("finish");
+          this.finishLoading = false;
+          this.$message.success("新增成功");
+        } catch (err) {
+          this.finishLoading = false;
+        }
+      } else {
+        try {
+          obj.settleId = this.data.id;
+          await post_settleCondition_updatePlease(obj);
+          this.$message.success("修改成功");
+          this.finishLoading = false;
+          this.$emit("finish");
+        } catch (err) {
+          this.finishLoading = false;
+        }
+      }
     }
   }
 

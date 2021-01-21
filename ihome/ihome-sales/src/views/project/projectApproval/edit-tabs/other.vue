@@ -4,7 +4,7 @@
  * @Author: wwq
  * @Date: 2020-11-27 17:28:28
  * @LastEditors: wwq
- * @LastEditTime: 2021-01-21 11:57:31
+ * @LastEditTime: 2021-01-21 20:28:51
 -->
 <template>
   <div>
@@ -298,7 +298,6 @@ import {
   post_other_saveReceipt,
   post_other_saveGroup,
   post_other_saveSpecial,
-  post_other_add,
   post_other_del,
   post_other_start,
   post_other_stop,
@@ -474,14 +473,8 @@ export default class Other extends Vue {
     this.approvalData.proId = this.info.proId;
   }
 
-  async approvalFinish(data: any) {
-    let arr = data.map((v: any) => v.termId);
-    await post_other_add({
-      shareTermIds: arr,
-      termId: this.$route.query.id,
-    });
+  async approvalFinish() {
     this.getInfo();
-    this.$message.success("新增成功");
     this.approvalDialogVisible = false;
   }
 

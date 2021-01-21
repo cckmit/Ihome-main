@@ -4,7 +4,7 @@
  * @Author: wwq
  * @Date: 2020-11-27 17:20:24
  * @LastEditors: wwq
- * @LastEditTime: 2021-01-21 11:18:28
+ * @LastEditTime: 2021-01-21 20:10:25
 -->
 <template>
   <div>
@@ -202,10 +202,8 @@ import PartyAList from "../dialog/partyA-dialog/partyAList.vue";
 import PartyADialog from "../dialog/partyA-dialog/partyADialog.vue";
 import PartyABuding from "../dialog/partyA-dialog/partyABuding.vue";
 import PartyAAdd from "../dialog/partyA-dialog/partyAAdd.vue";
-import { post_contract_create } from "@/api/contract/index.ts";
 import {
   get_partyAContract_get__termId,
-  post_partyAContract_add,
   post_partyAContract_saveOaRemark,
   post_partyAContract_del,
   post_partyAContract_addPartyABuildings,
@@ -274,15 +272,7 @@ export default class PartyA extends Vue {
   addSystemParty() {
     this.dialogVisible = true;
   }
-  async systemAddFinish(data: any) {
-    const ids: any = [];
-    data.forEach((v: any) => {
-      ids.push(v.id);
-    });
-    await post_partyAContract_add({
-      partyAContractVOS: ids,
-      termId: this.$route.query.id,
-    });
+  async systemAddFinish() {
     this.$message.success("新增成功");
     this.getInfo();
     this.dialogVisible = false;
@@ -291,14 +281,10 @@ export default class PartyA extends Vue {
   addParty() {
     this.addDialogVisible = true;
     this.partyAddData.startDivisionName = this.info.startDivisionName;
+    this.partyAddData.organizationId = this.info.startDivisionId;
   }
 
-  async addFinish(data: any) {
-    console.log(data);
-    data.projectsId = window.sessionStorage.getItem("proId");
-    data.cycleId = this.$route.query.id;
-    data.organizationId = this.info.startDivisionId;
-    await post_contract_create(data);
+  async addFinish() {
     this.$message.success("录入成功");
     this.getInfo();
     this.addDialogVisible = false;
