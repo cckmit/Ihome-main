@@ -4,7 +4,7 @@
  * @Author: wwq
  * @Date: 2020-12-02 15:37:31
  * @LastEditors: wwq
- * @LastEditTime: 2021-01-20 11:20:29
+ * @LastEditTime: 2021-01-21 17:19:28
 -->
 <template>
   <el-dialog
@@ -700,6 +700,7 @@ export default class AddContract extends Vue {
         try {
           await post_distributContract_update(this.info);
           this.finishLoading = false;
+          this.$emit("finish");
         } catch (err) {
           this.finishLoading = false;
         }
@@ -708,11 +709,11 @@ export default class AddContract extends Vue {
           this.info.partyCompanyId = this.data.id;
           await post_distributContract_add(this.info);
           this.finishLoading = false;
+          this.$emit("finish");
         } catch (err) {
           this.finishLoading = false;
         }
       }
-      this.$emit("finish");
     } else {
       console.log("error submit!");
       return false;

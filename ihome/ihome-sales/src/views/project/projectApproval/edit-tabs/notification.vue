@@ -4,7 +4,7 @@
  * @Author: wwq
  * @Date: 2020-11-27 17:27:01
  * @LastEditors: wwq
- * @LastEditTime: 2021-01-21 11:49:16
+ * @LastEditTime: 2021-01-21 15:30:40
 -->
 <template>
   <div>
@@ -275,7 +275,7 @@
                     disabled
                   ></el-input>
                   <i
-                    class="el-icon-edit-outline tubiao"
+                    class="el-icon-edit-outline partyARefundDays"
                     @click="editDialog('partyARefundDays')"
                   ></i>
                 </div>
@@ -691,6 +691,13 @@ export default class Notification extends Vue {
     position: absolute;
     bottom: 5px;
     right: 20px;
+    font-size: 24px;
+    cursor: pointer;
+  }
+  .partyARefundDays {
+    position: absolute;
+    bottom: 5px;
+    right: 6px;
     font-size: 24px;
     cursor: pointer;
   }
