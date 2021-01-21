@@ -1027,6 +1027,14 @@
         </el-table>
       </el-col>
     </el-row>
+    <div class="btn">
+      <el-button
+        v-if="changeType === 'ChangeInternalAchieveInf'"
+        type="success"
+        @click="handleClickBtn('preview')">预览变更</el-button>
+      <el-button v-else type="primary" @click="handleClickBtn('next')">下一步</el-button>
+      <el-button @click="handleClickBtn('back')">取消</el-button>
+    </div>
     <div class="nav-box">
       <div class="nav-icon el-button--success" @click="navFlag = !navFlag " :title="navFlag ? '收起' : '展开'">
         <i :class="navFlag ? 'el-icon-d-arrow-right' : 'el-icon-d-arrow-left'"></i>
@@ -2145,6 +2153,26 @@
         });
       }
     }
+
+    // 底部按钮功能
+    handleClickBtn(btnType: any = '') {
+      switch (btnType) {
+        case "preview":
+          // 预览
+          this.$emit("preview");
+          console.log(123);
+          break;
+        case "next":
+          // 下一步
+          console.log(456);
+          this.$emit("next", 'next');
+          break;
+        case "back":
+          // 取消
+          this.$emit("back");
+          break;
+      }
+    }
   }
 </script>
 <style lang="scss" scoped>
@@ -2152,6 +2180,12 @@
     width: 100%;
     box-sizing: border-box;
     margin-bottom: 10px;
+  }
+
+  .btn {
+    box-sizing: border-box;
+    margin-top: 30px;
+    text-align: center;
   }
 
   .receive-wrapper {
