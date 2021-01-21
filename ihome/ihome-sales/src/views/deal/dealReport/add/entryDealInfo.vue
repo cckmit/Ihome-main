@@ -110,9 +110,9 @@
               class="width--100">
               <el-option
                 v-for="item in firstAgencyCompanyList"
-                :key="item.proAgencyId"
+                :key="item.id"
                 :label="item.name"
-                :value="item.proAgencyId"></el-option>
+                :value="item.id"></el-option>
             </el-select>
           </el-form-item>
         </el-col>
