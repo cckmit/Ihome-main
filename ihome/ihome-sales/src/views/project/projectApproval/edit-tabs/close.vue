@@ -4,7 +4,7 @@
  * @Author: wwq
  * @Date: 2020-11-27 17:26:20
  * @LastEditors: wwq
- * @LastEditTime: 2021-01-21 11:40:04
+ * @LastEditTime: 2021-01-21 20:22:09
 -->
 <template>
   <div>
@@ -153,7 +153,7 @@
       <MakingEdit
         :data="makingData"
         @cancel="() => (makingEditDialogVisible = false)"
-        @finish="(data) => makingEditFinish(data)"
+        @finish="makingEditFinish"
       />
     </ih-dialog>
     <ih-dialog :show="makingInfoDialogVisible">
@@ -166,7 +166,7 @@
       <PleaseEdit
         :data="pleaseData"
         @cancel="() => (pleaseEditDialogVisible = false)"
-        @finish="(data) => pleaseEditFinish(data)"
+        @finish="pleaseEditFinish"
       />
     </ih-dialog>
     <ih-dialog :show="pleaseInfoDialogVisible">
@@ -187,10 +187,6 @@ import {
   get_settleCondition_getPage__termId,
   post_settleCondition_cancelPlease,
   post_settleCondition_cancelMaking,
-  post_settleCondition_addMaking,
-  post_settleCondition_updateMaking,
-  post_settleCondition_addPlease,
-  post_settleCondition_updatePlease,
   post_settleCondition_startMaking,
   post_settleCondition_startPlease,
 } from "@/api/project/index.ts";
@@ -288,30 +284,12 @@ export default class Close extends Vue {
     }
   }
 
-  async makingEditFinish(data: any) {
-    data.termId = this.$route.query.id;
-    if (!this.makingData.id) {
-      await post_settleCondition_addMaking(data);
-      this.$message.success("新增成功");
-    } else {
-      data.settleId = this.makingData.id;
-      await post_settleCondition_updateMaking(data);
-      this.$message.success("修改成功");
-    }
+  makingEditFinish() {
     this.makingEditDialogVisible = false;
     this.getInfo();
   }
 
-  async pleaseEditFinish(data: any) {
-    data.termId = this.$route.query.id;
-    if (!this.pleaseData.id) {
-      await post_settleCondition_addPlease(data);
-      this.$message.success("新增成功");
-    } else {
-      data.settleId = this.pleaseData.id;
-      await post_settleCondition_updatePlease(data);
-      this.$message.success("修改成功");
-    }
+  pleaseEditFinish() {
     this.pleaseEditDialogVisible = false;
     this.getInfo();
   }

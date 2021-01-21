@@ -4,7 +4,7 @@
  * @Author: wwq
  * @Date: 2020-11-27 17:21:01
  * @LastEditors: wwq
- * @LastEditTime: 2021-01-21 11:27:14
+ * @LastEditTime: 2021-01-21 19:57:45
 -->
 <template>
   <div class="text-left">
@@ -169,7 +169,6 @@ import Edit from "../dialog/reportedRules-dialog/edit.vue";
 import Business from "../dialog/reportedRules-dialog/channelBusiness.vue";
 import {
   get_customerReportRule_get__termId,
-  post_customerReportRule_addWXBB,
   post_customerReportRule_delWXBB__wxId,
 } from "@/api/project/index";
 @Component({
@@ -204,15 +203,7 @@ export default class ReportedRules extends Vue {
   addChannel() {
     this.businessDialogVisible = true;
   }
-  async businessFinish(data: any) {
-    let arr: any = [];
-    data.forEach((v: any) => {
-      arr.push(v.id);
-    });
-    await post_customerReportRule_addWXBB({
-      channelCompanyId: arr,
-      termId: this.$route.query.id,
-    });
+  async businessFinish() {
     this.$message.success("新增成功");
     this.getInfo();
     this.businessDialogVisible = false;
