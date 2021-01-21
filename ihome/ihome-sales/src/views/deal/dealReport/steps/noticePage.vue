@@ -178,7 +178,7 @@
   </ih-page>
 </template>
 <script lang="ts">
-  import {Component, Vue} from "vue-property-decorator";
+  import {Component, Vue, Prop} from "vue-property-decorator";
   import {
     get_preferential_getListByTermId__termId
   } from "@/api/project";
@@ -187,6 +187,7 @@
     components: {},
   })
   export default class NoticePage extends Vue {
+    @Prop() private pageData?: any; // 页面数据
     preferentialList: any = []; // 优惠方式下拉选项
     form: any = {
       suppSwitch: false, // 补充协议开关
@@ -238,7 +239,7 @@
     value: any = false;
 
     async created() {
-      console.log('info:');
+      console.log('info:', this.pageData);
       console.log('$root.dictAllList():', (this as any).$root.dictAllList('TemplateType'));
       // await this.getPreferentialList();
     }

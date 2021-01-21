@@ -2165,7 +2165,7 @@
         case "next":
           // 下一步
           console.log(456);
-          this.$emit("next", 'next');
+          this.$emit("next", 'next', this.postData);
           break;
         case "back":
           // 取消

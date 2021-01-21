@@ -20,6 +20,7 @@
         <keep-alive>
           <component
             ref="child"
+            :pageData="pageData"
             @up="handleStepUp"
             @next="handleStepNext"
             @preview="handlePreview"
@@ -148,11 +149,12 @@
     ]; // 内部员工业绩变更
     currentActiveIndex: any = 0;
     currentComponent: any = BasePage; // 需要展示的页面
+    pageData: any = null; // 页面数据
 
     @Watch("currentActiveIndex")
-    currentActiveIndexChange(newValue: any, oldValue: any) {
-      console.log('newValue', newValue);
-      console.log('oldValue', oldValue);
+    currentActiveIndexChange(newValue: any) {
+      // console.log('newValue', newValue);
+      // console.log('oldValue', oldValue);
       if (this.currentStepsList.length > 0) {
         this.currentStepsList.forEach((list: any) => {
           if (list.id === newValue) {
@@ -191,7 +193,7 @@
     }
 
     // 下一步
-    handleStepNext(type: any) {
+    handleStepNext(type: any, data: any = null) {
       if (type === 'next') {
         // 下一步
         this.currentActiveIndex = this.currentActiveIndex + 1;
@@ -199,6 +201,9 @@
         // 上一步
         if (this.currentActiveIndex === 0) return;
         this.currentActiveIndex = this.currentActiveIndex - 1;
+      }
+      if (data) {
+        this.pageData = data; // 保存页面数据
       }
     }
 
