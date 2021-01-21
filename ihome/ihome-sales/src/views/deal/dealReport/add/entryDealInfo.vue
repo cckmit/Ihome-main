@@ -1055,8 +1055,12 @@
         //   await this.getBaseDealInfo(this.postData.cycleId);
         // }
         // 不管是否一样，都清数据
-        await this.resetData();
-        this.packageIdsList = []; // ids
+        if (this.postData.cycleId) {
+          await this.resetData();
+          this.packageIdsList = []; // ids
+        }
+        // await this.resetData();
+        // this.packageIdsList = []; // ids
         this.postData.cycleName = data[0].termName;
         this.postData.cycleId = data[0].termId;
         this.cycleCheckedData = [...data];
