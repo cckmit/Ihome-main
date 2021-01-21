@@ -58,7 +58,7 @@
               v-model="postData.refineModel"
               :disabled="['TotalBagModel', 'DistriModel'].includes(postData.businessType)"
               placeholder="请选择细分业务模式"
-              @change="changePropertyTypeOrRefineModel"
+              @change="changeRefineModel"
               class="width--100">
               <el-option
                 v-for="item in refineModelList"
@@ -110,9 +110,9 @@
               class="width--100">
               <el-option
                 v-for="item in firstAgencyCompanyList"
-                :key="item.proAgencyId"
+                :key="item.id"
                 :label="item.name"
-                :value="item.proAgencyId"></el-option>
+                :value="item.id"></el-option>
             </el-select>
           </el-form-item>
         </el-col>
@@ -122,7 +122,7 @@
               v-model="postData.propertyType"
               clearable
               placeholder="请选择物业类型"
-              @change="changePropertyTypeOrRefineModel"
+              @change="changePropertyType"
               class="width--100">
               <el-option
                 v-for="item in propertyTypeList"
@@ -824,7 +824,6 @@
       receiveAchieveVO: [], // 应收信息
       documentVO: [], // 附件信息
     };
-    tempContType: any = []; // 临时合同类型
     tempReceiveVO: any = []; // 临时收派金额信息
     tempSignPrice: any = null; // 临时签约价格
     tempSubscribePrice: any = null; // 临时认购价格
@@ -1046,17 +1045,26 @@
     async finishAddProjectCycle(data: any) {
       // console.log('data', data);
       if (data && data.length > 0) {
-        if (data[0].termId !== this.postData.cycleId) {
-          // 不相等要清空数据关联数据 + 重新请求接口
-          if (this.postData.cycleId) {
-            await this.resetData();
-          }
+        // if (data[0].termId !== this.postData.cycleId) {
+        //   // 不相等要清空数据关联数据 + 重新请求接口
+        //   await this.resetData();
+        //   this.packageIdsList = []; // ids
+        //   this.postData.cycleName = data[0].termName;
+        //   this.postData.cycleId = data[0].termId;
+        //   this.cycleCheckedData = [...data];
+        //   await this.getBaseDealInfo(this.postData.cycleId);
+        // }
+        // 不管是否一样，都清数据
+        if (this.postData.cycleId) {
+          await this.resetData();
           this.packageIdsList = []; // ids
-          this.postData.cycleName = data[0].termName;
-          this.postData.cycleId = data[0].termId;
-          this.cycleCheckedData = [...data];
-          await this.getBaseDealInfo(this.postData.cycleId);
         }
+        // await this.resetData();
+        // this.packageIdsList = []; // ids
+        this.postData.cycleName = data[0].termName;
+        this.postData.cycleId = data[0].termId;
+        this.cycleCheckedData = [...data];
+        await this.getBaseDealInfo(this.postData.cycleId);
       }
     }
 
@@ -1116,6 +1124,7 @@
         if (baseInfo.firstAgencyCompanys && baseInfo.firstAgencyCompanys.length > 0) {
           this.firstAgencyCompanyList = JSON.parse(JSON.stringify(baseInfo.firstAgencyCompanys));
         }
+        console.log(this.firstAgencyCompanyList);
         // 处理优惠告知书的nav
         this.postData.offerNoticeVO = []; // 先重置优惠告知书的数据
         if (baseInfo.chargeEnum === 'Agent') {
@@ -1194,8 +1203,7 @@
     }
 
     // 改变栋座
-    changeBuild(value: any) {
-      console.log('改变栋座', value);
+    changeBuild() {
       // 清空房间号 + 下面的所有信息
       this.postData.roomId = null;
       this.resetData();
@@ -1203,8 +1211,6 @@
 
     // 清空数据 - 主要是和初始化数据有关的数据
     resetData() {
-      this.tempContType = null;
-      this.tempReceiveVO = [];
       this.tempSubscribePrice = null;
       this.tempSignPrice = null;
       this.contNoList = []; // 分销协议编号
@@ -1406,32 +1412,7 @@
     }
 
     // 修改合同类型
-    changeContType(value: any) {
-      // if (value === 'DistriDeal') {
-      //   // 如果查询不到此房号的已成交报备信息，用户又选择分销成交
-      //   this.postData.contType = this.tempContType ? (this as any).$tool.deepClone(this.tempContType) : '';
-      //   if (!this.baseInfoInDeal.hasRecord) {
-      //     this.$alert('系统查询不到此房号的已成交报备信息，请先维护报备信息！', '提示', {
-      //       confirmButtonText: '确定'
-      //     });
-      //   }
-      // } else {
-      //   // 不是分销成交
-      //   // 1.清空数据
-      //   // 2.请求接口获取数据
-      //   let flag: any = false;
-      //   if (this.postData.receiveVO.length) {
-      //     // 判断收派金额数据是否选了收派套餐
-      //     flag = (this as any).$parent.hasReceivePackage(this.postData.receiveVO);
-      //   }
-      //   if (flag) {
-      //     // 如果已经选了，判断合同类型是否一样
-      //     if (value !== this.tempContType) {
-      //       // 不一样，要初始化收派套餐
-      //       this.postData.receiveVO = (this as any).$tool.deepClone(this.tempReceiveVO);
-      //     }
-      //   }
-      // }
+    changeContType() {
       let flag: any = false;
       if (this.postData.receiveVO.length) {
         // 判断收派金额数据是否选了收派套餐
@@ -1439,30 +1420,29 @@
       }
       if (flag) {
         // 如果已经选了，判断合同类型是否一样
-        if (value !== this.tempContType) {
-          // 不一样，要初始化收派套餐
-          this.postData.receiveVO = (this as any).$tool.deepClone(this.tempReceiveVO);
-        }
+        this.postData.receiveVO = (this as any).$tool.deepClone(this.tempReceiveVO);
       }
-      this.tempContType = value;
     }
 
-    // 改变物业类型或细分业务模式
-    changePropertyTypeOrRefineModel(value: any) {
-      console.log(value);
+    // 改变物业类型
+    changePropertyType() {
+      // 清空栋座 + 房间号 + 下面的所有信息
+      this.postData.roomId = null;
+      this.postData.buildingId = null;
+      this.resetData();
+    }
+
+    // 改变细分业务模式
+    changeRefineModel() {
       let flag: any = false;
       if (this.postData.receiveVO.length) {
         // 判断收派金额数据是否选了收派套餐
         flag = (this as any).$parent.hasReceivePackage(this.postData.receiveVO);
       }
       if (flag) {
-        // 不一样，要初始化收派套餐、对外拆佣、平台费用
+        // 已经选了收派套餐，要初始化收派套餐
         this.postData.receiveVO = (this as any).$tool.deepClone(this.tempReceiveVO);
       }
-      // 清空栋座 + 房间号 + 下面的所有信息
-      this.postData.roomId = null;
-      this.postData.buildingId = null;
-      this.resetData();
     }
 
     // 是否垫佣是根据对应的分销协议来判断
@@ -1518,6 +1498,39 @@
         subdivide: this.postData.refineModel, // 细分业务模式
       };
       (this as any).$parent.selectPackage(params);
+    }
+
+    // 确定选择收派套餐
+    async finishAddReceivePackage(data: any) {
+      // console.log('确定选择收派套餐', data);
+      if (data.length === 0) return;
+      let dataObj = data[0];
+      delete dataObj['typeName']; // 删除typeName属性
+      let postData: any = {
+        detail: dataObj,
+        signPrice: this.postData.signPrice ? this.postData.signPrice : null,
+        subscribePrice: this.postData.subscribePrice ? this.postData.subscribePrice : null
+      }
+      if (!postData.signPrice && !postData.subscribePrice) {
+        this.$message.error('认购价格、签约价格不能都为空！');
+        return;
+      }
+      let info: any = await post_pageData_calculateReceiveAmount(postData);
+      // console.log(info);
+      if (this.postData.receiveVO.length > 0) {
+        this.postData.receiveVO.forEach((vo: any, index: any) => {
+          if (index === this.currentReceiveIndex) {
+            vo.showData = data;
+            vo.packageId = data[0].packageMxId;
+            vo.receiveAmount = info.receiveAmount;
+            vo.commAmount = info.comm;
+            vo.rewardAmount = info.reward;
+            vo.totalPackageAmount = info.totalBag;
+            vo.distributionAmount = info.distri;
+            vo.otherChannelFees = info.other;
+          }
+        });
+      }
     }
 
     // 添加优惠告知书
@@ -1669,39 +1682,6 @@
             }
           }
         }
-      }
-    }
-
-    // 确定选择收派套餐
-    async finishAddReceivePackage(data: any) {
-      // console.log('确定选择收派套餐', data);
-      if (data.length === 0) return;
-      let dataObj = data[0];
-      delete dataObj['typeName']; // 删除typeName属性
-      let postData: any = {
-        detail: dataObj,
-        signPrice: this.postData.signPrice ? this.postData.signPrice : null,
-        subscribePrice: this.postData.subscribePrice ? this.postData.subscribePrice : null
-      }
-      if (!postData.signPrice && !postData.subscribePrice) {
-        this.$message.error('认购价格、签约价格不能都为空！');
-        return;
-      }
-      let info: any = await post_pageData_calculateReceiveAmount(postData);
-      // console.log(info);
-      if (this.postData.receiveVO.length > 0) {
-        this.postData.receiveVO.forEach((vo: any, index: any) => {
-          if (index === this.currentReceiveIndex) {
-            vo.showData = data;
-            vo.packageId = data[0].packageMxId;
-            vo.receiveAmount = info.receiveAmount;
-            vo.commAmount = info.comm;
-            vo.rewardAmount = info.reward;
-            vo.totalPackageAmount = info.totalBag;
-            vo.distributionAmount = info.distri;
-            vo.otherChannelFees = info.other;
-          }
-        });
       }
     }
 

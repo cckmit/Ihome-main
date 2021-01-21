@@ -20,23 +20,13 @@
         <keep-alive>
           <component
             ref="child"
-            @up="clickUp"
-            @preview="clickPreview"
+            :pageData="pageData"
+            @up="handleStepUp"
+            @next="handleStepNext"
+            @preview="handlePreview"
+            @back="handleBack"
             v-bind:is="currentComponent"></component>
         </keep-alive>
-      </div>
-      <div v-if="currentActiveIndex === 0" class="btn">
-        <el-button
-          v-if="type === 'ChangeInternalAchieveInf'"
-          type="success"
-          @click="changeStep('next')">预览变更</el-button>
-        <el-button v-else type="primary" @click="changeStep('next')">下一步</el-button>
-        <el-button @click="backToList">取消</el-button>
-      </div>
-      <div v-if="currentActiveIndex === 2 || (currentActiveIndex === 1 && type === 'ChangeInternalAchieveInf')" class="btn">
-        <el-button type="primary">保存</el-button>
-        <el-button type="success">提交</el-button>
-        <el-button @click="changeStep('up')">返回</el-button>
       </div>
     </div>
   </ih-page>
@@ -154,11 +144,12 @@
     ]; // 内部员工业绩变更
     currentActiveIndex: any = 0;
     currentComponent: any = BasePage; // 需要展示的页面
+    pageData: any = null; // 页面数据
 
     @Watch("currentActiveIndex")
-    currentActiveIndexChange(newValue: any, oldValue: any) {
-      console.log('newValue', newValue);
-      console.log('oldValue', oldValue);
+    currentActiveIndexChange(newValue: any) {
+      // console.log('newValue', newValue);
+      // console.log('oldValue', oldValue);
       if (this.currentStepsList.length > 0) {
         this.currentStepsList.forEach((list: any) => {
           if (list.id === newValue) {
@@ -196,33 +187,36 @@
       }
     }
 
-    changeStep(type: any) {
+    // 下一步
+    handleStepNext(type: any, data: any = null) {
       if (type === 'next') {
         // 下一步
         this.currentActiveIndex = this.currentActiveIndex + 1;
       } else {
-        // 上一步
+        // 上一步 - 返回
         if (this.currentActiveIndex === 0) return;
         this.currentActiveIndex = this.currentActiveIndex - 1;
+      }
+      if (data) {
+        this.pageData = data; // 保存页面数据
       }
     }
 
     // 子组件触发上一步方法
-    clickUp() {
-      // console.log('clickUp');
+    handleStepUp() {
       // 上一步
       this.currentActiveIndex = this.currentActiveIndex - 1;
     }
 
     // 子组件触发预览变更方法
-    clickPreview() {
-      // console.log('clickPreview');
+    handlePreview() {
       // 下一步
       this.currentActiveIndex = this.currentActiveIndex + 1;
     }
 
     // 回到列表页
-    backToList() {
+    handleBack() {
+      console.log('handleBack');
       this.$router.push({
         path: "/dealReport/list"
       });
@@ -241,10 +235,6 @@
     /deep/.is-process .el-step__icon {
       color: #ffffff;
       background-color: #409EFF;
-    }
-
-    .btn {
-      text-align: center;
     }
   }
 </style>

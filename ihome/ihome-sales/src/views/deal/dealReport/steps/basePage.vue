@@ -1027,6 +1027,14 @@
         </el-table>
       </el-col>
     </el-row>
+    <div class="btn">
+      <el-button
+        v-if="changeType === 'ChangeInternalAchieveInf'"
+        type="success"
+        @click="handleClickBtn('preview')">预览变更</el-button>
+      <el-button v-else type="primary" @click="handleClickBtn('next')">下一步</el-button>
+      <el-button @click="handleClickBtn('back')">取消</el-button>
+    </div>
     <div class="nav-box">
       <div class="nav-icon el-button--success" @click="navFlag = !navFlag " :title="navFlag ? '收起' : '展开'">
         <i :class="navFlag ? 'el-icon-d-arrow-right' : 'el-icon-d-arrow-left'"></i>
@@ -1723,7 +1731,7 @@
 
     // 确定选择客户
     async finishAddCustomer(data: any) {
-      console.log('data', data);
+      // console.log('data', data);
       if (data.length === 0) return;
       let customData: any = {
         addId: data[0].id, // 手动添加的时候保存id --- 为了回显收派金额
@@ -1743,13 +1751,12 @@
         customData.isCustomer = "Yes";
         this.postData.customerList.push(customData);
         // 因为没有客户，选了客户后第一个客户是主要客户，需要回显到收派金额中类型为服务费的客户上
-        if (this.postData.customerList && this.postData.customerList.length) {
-          this.postData.customerList.forEach((item: any) => {
-            if (item.type === "ServiceFee") {
-              item.partyACustomer = data[0].id;
-              item.partyACustomerName = data[0].custName;
-            }
-          })
+        if (this.postData.receiveList && this.postData.receiveList.length) {
+          this.updateList('receiveList', 'type', data[0].id, data[0].custName, false);
+        }
+        // 回显到对应的对外拆佣上
+        if (this.postData.channelCommList && this.postData.channelCommList.length) {
+          this.updateList('channelCommList', 'feeType', data[0].id, data[0].custName, false);
         }
       }
     }
@@ -1760,13 +1767,61 @@
       // console.log(type);
       if (type === 'customer') {
         // 删除客户信息逻辑
-        // console.log(111);
         this.postData.customerList = this.postData.customerList.filter((list: any) => {
           return list.addId !== scope.row.addId;
         });
+        if (scope.$index === 0) {
+          if (this.postData.customerList.length) {
+            // 修改当前第一个客户为主要客户
+            this.postData.customerList.forEach((item: any, index: any) => {
+              if (index === 0) {
+                item.isCustomer = "Yes";
+              } else {
+                item.isCustomer = "No";
+              }
+            });
+            // 删除的是第一个,需要把现在的第一个赋值给收派金额类型为服务费的信息中
+            let id: any = this.postData.customerList[0].addId;
+            let name: any = this.postData.customerList[0].customerName;
+            if (this.postData.receiveList && this.postData.receiveList.length) {
+              this.updateList('receiveList', 'type', id, name, false);
+            }
+            // 回显到对应的对外拆佣上
+            if (this.postData.channelCommList && this.postData.channelCommList.length) {
+              this.updateList('channelCommList', 'feeType', id, name, false);
+            }
+          } else {
+            // 没有客户了，收派信息、对外拆佣的服务费对应的名字变为空
+            if (this.postData.receiveList && this.postData.receiveList.length) {
+              this.updateList('receiveList', 'type', '', '', true);
+            }
+            if (this.postData.channelCommList && this.postData.channelCommList.length) {
+              this.updateList('channelCommList', 'feeType', '', '', true);
+            }
+          }
+        }
       } else if (type === 'broker') {
         // 删除渠道经纪人逻辑
         console.log(222);
+      }
+    }
+
+    /*
+    * 修改收派金额或对外拆佣的值
+    * updateType: String，收派金额receiveList/对外拆佣channelCommList
+    * type: String，收派金额/对外拆佣对应的字段
+    * id: String，更新的id
+    * name: String，更新的name
+    * isNull: Boolean，true: 置空，false: 置为对应值
+    * */
+    updateList(updateType: any = '', type: any = '', id: any = '', name: any = '', isNull: any = false) {
+      if (this.postData[updateType] && this.postData[updateType].length) {
+        this.postData[updateType].forEach((list: any) => {
+          if (list[type] === "ServiceFee") {
+            list.partyACustomer = isNull ? null : id;
+            list.partyACustomerName = isNull ? null : name;
+          }
+        });
       }
     }
 
@@ -2025,8 +2080,8 @@
     getTotalAmount(type: any = '') {
       if (!type) return;
       let total = 0;
-      if (this.postData.receiveVO.length) {
-        this.postData.receiveVO.forEach((vo: any) => {
+      if (this.postData.receiveList.length) {
+        this.postData.receiveList.forEach((vo: any) => {
           total = total + parseFloat(vo[type] ? vo[type] : 0);
         });
         return total;
@@ -2098,6 +2153,30 @@
         });
       }
     }
+
+    // 底部按钮功能
+    handleClickBtn(btnType: any = '') {
+      let data: any = {
+        ...this.postData,
+        receiveAchieveVO: this.receiveAchieveVO
+      }
+      switch (btnType) {
+        case "preview":
+          // 预览
+          this.$emit("preview");
+          console.log(123);
+          break;
+        case "next":
+          // 下一步
+          console.log(456);
+          this.$emit("next", 'next', data);
+          break;
+        case "back":
+          // 取消
+          this.$emit("back");
+          break;
+      }
+    }
   }
 </script>
 <style lang="scss" scoped>
@@ -2105,6 +2184,12 @@
     width: 100%;
     box-sizing: border-box;
     margin-bottom: 10px;
+  }
+
+  .btn {
+    box-sizing: border-box;
+    margin-top: 30px;
+    text-align: center;
   }
 
   .receive-wrapper {
