@@ -1722,41 +1722,74 @@
     async finishAddProjectCycle(data: any) {
       // console.log('data', data);
       if (data && data.length > 0) {
-        if (data[0].termId !== this.postData.cycleId) {
-          // 不相等要清空数据关联数据 + 重新请求接口
-          this.contNoList = []; // 分销协议编号
-          this.packageIdsList = []; // ids
-          this.postData.customerVO = []; // 客户信息
-          this.postData.offerNoticeVO = []; // 优惠告知书
-          this.postData.documentVO = []; // 上传附件
-          let list: any = [
-            'refineModel',
-            'oneAgentTeamId',
-            'propertyType',
-            'buildingId',
-            'roomId',
-            'contType',
-            'contNo',
-            'reportId',
-            'recordStr',
-            'recordState',
-            'area',
-            'room',
-            'hall',
-            'toilet',
-            'propertyNo',
-            'sceneSales',
-            'signType',
-            'stage',
-            'dataSign',
-          ];
-          await this.resetObject('postData', list);
-          this.packageIdsList = []; // ids
-          this.postData.cycleName = data[0].termName;
-          this.postData.cycleId = data[0].termId;
-          this.cycleCheckedData = [...data];
-          await this.getBaseDealInfo(this.postData.cycleId);
-        }
+        // if (data[0].termId !== this.postData.cycleId) {
+        //   // 不相等要清空数据关联数据 + 重新请求接口
+        //   this.contNoList = []; // 分销协议编号
+        //   this.packageIdsList = []; // ids
+        //   this.postData.customerVO = []; // 客户信息
+        //   this.postData.offerNoticeVO = []; // 优惠告知书
+        //   this.postData.documentVO = []; // 上传附件
+        //   let list: any = [
+        //     'refineModel',
+        //     'oneAgentTeamId',
+        //     'propertyType',
+        //     'buildingId',
+        //     'roomId',
+        //     'contType',
+        //     'contNo',
+        //     'reportId',
+        //     'recordStr',
+        //     'recordState',
+        //     'area',
+        //     'room',
+        //     'hall',
+        //     'toilet',
+        //     'propertyNo',
+        //     'sceneSales',
+        //     'signType',
+        //     'stage',
+        //     'dataSign',
+        //   ];
+        //   await this.resetObject('postData', list);
+        //   this.packageIdsList = []; // ids
+        //   this.postData.cycleName = data[0].termName;
+        //   this.postData.cycleId = data[0].termId;
+        //   this.cycleCheckedData = [...data];
+        //   await this.getBaseDealInfo(this.postData.cycleId);
+        // }
+        // 不管相等不相等要清空数据关联数据 + 重新请求接口
+        this.contNoList = []; // 分销协议编号
+        this.packageIdsList = []; // ids
+        this.postData.customerVO = []; // 客户信息
+        this.postData.offerNoticeVO = []; // 优惠告知书
+        this.postData.documentVO = []; // 上传附件
+        let list: any = [
+          'refineModel',
+          'oneAgentTeamId',
+          'propertyType',
+          'buildingId',
+          'roomId',
+          'contType',
+          'contNo',
+          'reportId',
+          'recordStr',
+          'recordState',
+          'area',
+          'room',
+          'hall',
+          'toilet',
+          'propertyNo',
+          'sceneSales',
+          'signType',
+          'stage',
+          'dataSign',
+        ];
+        await this.resetObject('postData', list);
+        this.packageIdsList = []; // ids
+        this.postData.cycleName = data[0].termName;
+        this.postData.cycleId = data[0].termId;
+        this.cycleCheckedData = [...data];
+        await this.getBaseDealInfo(this.postData.cycleId);
       }
     }
 

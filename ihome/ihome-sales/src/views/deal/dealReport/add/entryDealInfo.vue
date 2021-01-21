@@ -1045,15 +1045,22 @@
     async finishAddProjectCycle(data: any) {
       // console.log('data', data);
       if (data && data.length > 0) {
-        if (data[0].termId !== this.postData.cycleId) {
-          // 不相等要清空数据关联数据 + 重新请求接口
-          await this.resetData();
-          this.packageIdsList = []; // ids
-          this.postData.cycleName = data[0].termName;
-          this.postData.cycleId = data[0].termId;
-          this.cycleCheckedData = [...data];
-          await this.getBaseDealInfo(this.postData.cycleId);
-        }
+        // if (data[0].termId !== this.postData.cycleId) {
+        //   // 不相等要清空数据关联数据 + 重新请求接口
+        //   await this.resetData();
+        //   this.packageIdsList = []; // ids
+        //   this.postData.cycleName = data[0].termName;
+        //   this.postData.cycleId = data[0].termId;
+        //   this.cycleCheckedData = [...data];
+        //   await this.getBaseDealInfo(this.postData.cycleId);
+        // }
+        // 不管是否一样，都清数据
+        await this.resetData();
+        this.packageIdsList = []; // ids
+        this.postData.cycleName = data[0].termName;
+        this.postData.cycleId = data[0].termId;
+        this.cycleCheckedData = [...data];
+        await this.getBaseDealInfo(this.postData.cycleId);
       }
     }
 
