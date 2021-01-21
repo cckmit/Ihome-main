@@ -4,7 +4,7 @@
  * @Author: wwq
  * @Date: 2020-12-03 10:50:26
  * @LastEditors: wwq
- * @LastEditTime: 2021-01-13 11:24:46
+ * @LastEditTime: 2021-01-21 19:24:59
 -->
 <template>
   <el-dialog
@@ -235,12 +235,15 @@
               ref="estimatedPadCommissionRate"
               v-model="item.calcComplateVO.estimatedPadCommissionRate"
               placeholder="比例(%)"
-              @change="inputBlur('estimatedPadCommissionRate')"
+              v-digits="5"
+              clearable
+              @input="item.calcComplateVO.estimatedPadCommissionRate = numberChange(item.calcComplateVO.estimatedPadCommissionRate)"
+              @blur="numBlurChange(item.calcComplateVO.estimatedPadCommissionRate, item)"
+              @change="inputBlur('estimatedPadCommissionRate', i)"
             ></el-input>
           </td>
           <td>垫佣金额预估</td>
           <td>{{item.calcComplateVO.estimatedPadCommission}}</td>
-          <!-- <td>{{estimatedPadCommissionChange(item)}}</td> -->
           <td>万</td>
         </tr>
         <tr :key="i + Math.random()">
@@ -331,12 +334,12 @@ export default class CalculationDialog extends Vue {
     else return "否";
   }
 
-  inputBlur(v: any) {
+  inputBlur(v: any, i: number) {
     this.$nextTick(() => {
       if (v === "serviceSum") {
         (this.$refs as any)[v].focus();
       } else {
-        (this.$refs as any)[v][0].focus();
+        (this.$refs as any)[v][i].focus();
       }
     });
   }
@@ -363,18 +366,28 @@ export default class CalculationDialog extends Vue {
     this.$emit("finish", this.form);
   }
 
-  estimatedPadCommissionChange(item: any) {
-    let num: any = 0;
-    item.forEach((v: any) => {
-      v.calcComplateMxVOS.forEach((j: any, key: any) => {
-        num += j[key][v.calcComplateMxVOS.length - 1].otherDemolition;
-      });
-      // const percent = v.calcComplateVO.estimatedPadCommissionRate;
-    });
-    console.log(num);
+  numberChange(val: any) {
+    if (0 <= val && val <= 100) {
+      return val;
+    } else {
+      return val > 100 ? 100 : 0;
+    }
+  }
 
-    // item.calcComplateVO.estimatedPadCommission = num * (percent / 100);
-    // return item.calcComplateVO.estimatedPadCommission;
+  numBlurChange(val: any, data: any) {
+    let num: any = 0;
+    let item: any = null;
+    for (item in data.calcComplateMxVOS) {
+      data.calcComplateMxVOS[item].forEach((v: any) => {
+        if (!v.transactionEnum) {
+          num += v.otherDemolition;
+        }
+      });
+    }
+    data.calcComplateVO.estimatedPadCommission = this.$math.div(
+      this.$math.multi(num, this.$math.div(val, 100)),
+      10000
+    );
   }
 
   created() {
