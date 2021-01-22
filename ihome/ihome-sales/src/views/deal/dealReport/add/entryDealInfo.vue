@@ -553,7 +553,11 @@
               <div>{{$root.dictAllName(scope.row.type, 'FeeType')}}</div>
             </template>
           </el-table-column>
-          <el-table-column prop="partyACustomerName" label="甲方/客户" min-width="120"></el-table-column>
+          <el-table-column prop="partyACustomerName" label="甲方/客户" min-width="120">
+            <template slot-scope="scope">
+              <div>{{scope.row.type === "ServiceFee" ? '客户' : scope.row.partyACustomerName}}</div>
+            </template>
+          </el-table-column>
           <el-table-column prop="packageId" label="收派套餐" min-width="140">
             <template slot-scope="scope">
               <div v-if="!scope.row.packageId">

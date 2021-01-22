@@ -571,7 +571,11 @@
               <div>{{scope.row.type === 'ServiceFee' ? '服务费' : '代理费'}}</div>
             </template>
           </el-table-column>
-          <el-table-column prop="partyACustomerName" label="甲方/客户" min-width="120"></el-table-column>
+          <el-table-column prop="partyACustomerName" label="甲方/客户" min-width="120">
+            <template slot-scope="scope">
+              <div>{{scope.row.type === "ServiceFee" ? '客户' : scope.row.partyACustomerName}}</div>
+            </template>
+          </el-table-column>
           <el-table-column prop="packageId" label="收派套餐" min-width="140">
             <template slot-scope="scope">
               <div v-if="postData.calculation === 'Auto'">
@@ -808,9 +812,7 @@
                 <el-input placeholder="" disabled v-model="scope.row.partyACustomerName"></el-input>
               </div>
               <div v-else>
-                <div v-if="scope.row.feeType === 'ServiceFee'">
-                  <el-input placeholder="" disabled v-model="scope.row.partyACustomerName"></el-input>
-                </div>
+                <div v-if="scope.row.feeType === 'ServiceFee'">客户</div>
                 <div v-if="scope.row.feeType === 'AgencyFee'">
                   <el-select
                     :disabled="postData.calculation === 'Auto'"
