@@ -4,7 +4,7 @@
  * @Author: wwq
  * @Date: 2020-12-04 09:40:47
  * @LastEditors: wwq
- * @LastEditTime: 2021-01-21 19:50:50
+ * @LastEditTime: 2021-01-22 14:07:58
 -->
 <template>
   <el-dialog
@@ -355,7 +355,7 @@
                   <div class="margin-top-5">
                     点数:
                     <el-input
-                      @input="row.transactionEnum = numberChange(row.transactionEnum)"
+                      @input="row.sendPoint = numberChange(row.sendPoint)"
                       class="point"
                       style="width: 70%"
                       :disabled="(row.transactionEnum === 'Natural' || row.transactionEnum === 'SelfChannel') ? true : false"
