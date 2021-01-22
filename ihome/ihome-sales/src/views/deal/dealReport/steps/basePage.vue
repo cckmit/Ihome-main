@@ -24,22 +24,19 @@
       <el-row :gutter="5">
         <el-col :span="8">
           <el-form-item label="成交报告编号" prop="dealCode">
-            <el-input
-              disabled
-              placeholder="成交报告编号"
-              v-model="postData.dealCode"/>
+            <el-input disabled v-model="postData.dealCode"/>
           </el-form-item>
         </el-col>
         <el-col :span="8">
           <el-form-item label="项目周期" prop="cycleId">
             <el-input
-              v-if="['ChangeAchieveInf', 'RetreatRoom'].includes(changeType)"
+              v-if="['ChangeAchieveInf'].includes(changeType)"
               placeholder="请选择项目周期"
               readonly v-model="postData.cycleName">
               <el-button slot="append" icon="el-icon-search" @click.native.prevent="selectProject"></el-button>
             </el-input>
             <el-input
-              v-if="['ChangeBasicInf', 'ChangeInternalAchieveInf'].includes(changeType)"
+              v-if="['ChangeBasicInf', 'ChangeInternalAchieveInf', 'RetreatRoom'].includes(changeType)"
               disabled v-model="postData.projectCycle"></el-input>
           </el-form-item>
         </el-col>
@@ -63,7 +60,7 @@
           <el-form-item label="细分业务模式" prop="refineModel">
             <el-select
               v-model="postData.refineModel"
-              :disabled="['ChangeBasicInf', 'ChangeInternalAchieveInf'].includes(changeType)"
+              :disabled="['ChangeBasicInf', 'RetreatRoom', 'ChangeInternalAchieveInf'].includes(changeType)"
               placeholder="请选择细分业务模式"
               class="width--100">
               <el-option
@@ -108,10 +105,10 @@
           </el-form-item>
         </el-col>
         <el-col :span="8">
-          <el-form-item label="一手代理公司" prop="oneAgentTeamId">
+          <el-form-item label="一手代理公司" :prop="oneAgentRequiredFlag ? 'oneAgentTeamId' : 'notEmpty'">
             <el-select
               v-model="postData.oneAgentTeamId"
-              :disabled="['ChangeBasicInf', 'ChangeInternalAchieveInf'].includes(changeType)"
+              :disabled="['ChangeBasicInf', 'RetreatRoom', 'ChangeInternalAchieveInf'].includes(changeType)"
               placeholder="请选择一手代理公司"
               class="width--100">
               <el-option
@@ -126,7 +123,7 @@
           <el-form-item label="物业类型" prop="propertyType">
             <el-select
               v-model="postData.propertyType"
-              :disabled="['ChangeBasicInf', 'ChangeInternalAchieveInf'].includes(changeType)"
+              :disabled="['ChangeBasicInf', 'RetreatRoom', 'ChangeInternalAchieveInf'].includes(changeType)"
               placeholder="请选择物业类型"
               class="width--100">
               <el-option
@@ -141,7 +138,7 @@
         <el-col :span="8">
           <el-form-item label="栋座">
             <el-input
-              v-if="['ChangeInternalAchieveInf'].includes(changeType)"
+              v-if="['ChangeInternalAchieveInf', 'RetreatRoom'].includes(changeType)"
               placeholder="栋座"
               disabled
               v-model="postData.buildingId"></el-input>
@@ -160,7 +157,7 @@
         <el-col :span="8">
           <el-form-item label="房号">
             <el-input
-              v-if="['ChangeInternalAchieveInf'].includes(changeType)"
+              v-if="['ChangeInternalAchieveInf', 'RetreatRoom'].includes(changeType)"
               placeholder="房号"
               disabled
               v-model="postData.roomId"></el-input>
@@ -180,7 +177,7 @@
           <el-form-item label="合同类型" prop="contType">
             <el-select
               v-model="postData.contType"
-              :disabled="['ChangeBasicInf', 'ChangeInternalAchieveInf'].includes(changeType)"
+              :disabled="['ChangeBasicInf', 'RetreatRoom', 'ChangeInternalAchieveInf'].includes(changeType)"
               placeholder="请选择合同类型"
               @change="changeContType"
               class="width--100">
@@ -195,26 +192,51 @@
         </el-col>
         <el-col :span="8" v-if="postData.contType === 'DistriDeal'">
           <el-form-item label="渠道公司" prop="agencyName">
-            <div v-if="['ChangeBasicInf', 'ChangeInternalAchieveInf'].includes(changeType)">
-              <el-input placeholder="渠道公司" disabled v-model="postData.agencyName"></el-input>
+            <div v-if="['ChangeBasicInf', 'RetreatRoom', 'ChangeInternalAchieveInf'].includes(changeType)">
+              <el-input disabled v-model="postData.agencyName"></el-input>
             </div>
             <div v-else>
-              <el-input
-                placeholder="请选择渠道公司"
-                readonly v-model="postData.agencyName">
-                <el-button slot="append" icon="el-icon-search"></el-button>
-              </el-input>
+              <div v-if="baseInfoInDeal.hasRecord">
+                <el-input
+                  v-model="postData.agencyName"
+                  :disabled="baseInfoInDeal.hasRecord"
+                  placeholder=""></el-input>
+              </div>
+              <div v-else>
+                <el-input
+                  placeholder="请选择渠道公司"
+                  readonly v-model="postData.agencyName" @click.native.prevent="selectAgency">
+                  <el-button slot="append" icon="el-icon-search"></el-button>
+                </el-input>
+              </div>
             </div>
           </el-form-item>
         </el-col>
         <el-col :span="8" v-if="postData.contType === 'DistriDeal'">
           <el-form-item label="渠道等级">
-            <el-input placeholder="渠道等级" disabled v-model="postData.channelLevelName"></el-input>
+            <el-input disabled v-model="postData.channelLevelName"></el-input>
           </el-form-item>
         </el-col>
         <el-col :span="8" v-if="postData.contType === 'DistriDeal'">
           <el-form-item label="经纪人">
-            <el-input placeholder="经纪人" disabled v-model="postData.brokerName"></el-input>
+            <div v-if="['ChangeBasicInf', 'RetreatRoom', 'ChangeInternalAchieveInf'].includes(changeType)">
+              <el-input disabled v-model="postData.brokerName"></el-input>
+            </div>
+            <div v-else>
+              <div v-if="baseInfoInDeal.hasRecord">
+                <el-input
+                  v-model="postData.brokerName"
+                  :disabled="baseInfoInDeal.hasRecord"
+                  placeholder=""></el-input>
+              </div>
+              <div v-else>
+                <el-input
+                  placeholder="请选择经纪人"
+                  readonly v-model="postData.brokerName" @click.native.prevent="selectBroker">
+                  <el-button slot="append" icon="el-icon-search"></el-button>
+                </el-input>
+              </div>
+            </div>
           </el-form-item>
         </el-col>
         <el-col :span="8" v-if="postData.contType === 'DistriDeal'">
@@ -223,7 +245,7 @@
               <el-select
                 v-model="postData.contNo"
                 @change="changeContNo"
-                :disabled="['ChangeBasicInf', 'ChangeInternalAchieveInf'].includes(changeType)"
+                :disabled="['ChangeBasicInf', 'RetreatRoom', 'ChangeInternalAchieveInf'].includes(changeType)"
                 placeholder="请选择分销协议编号"
                 class="width--100">
                 <el-option
@@ -255,17 +277,14 @@
         </el-col>
         <el-col :span="8" v-if="postData.contType === 'DistriDeal'">
           <el-form-item label="报备信息">
-            <el-input
-              disabled
-              placeholder="成交报告编号"
-              v-model="postData.recordStr"/>
+            <el-input disabled v-model="postData.recordStr"/>
           </el-form-item>
         </el-col>
         <el-col :span="8">
           <el-form-item label="备案情况" prop="recordState">
             <el-select
               v-model="postData.recordState"
-              :disabled="['ChangeBasicInf', 'ChangeInternalAchieveInf'].includes(changeType)"
+              :disabled="['ChangeBasicInf', 'RetreatRoom', 'ChangeInternalAchieveInf'].includes(changeType)"
               placeholder="请选择备案情况"
               class="width--100">
               <el-option
@@ -281,7 +300,7 @@
           <el-form-item label="建筑面积" prop="area">
             <el-input
               v-model="postData.area"
-              :disabled="['ChangeInternalAchieveInf'].includes(changeType)"
+              :disabled="['ChangeInternalAchieveInf', 'RetreatRoom'].includes(changeType)"
               placeholder="请输入建筑面积"></el-input>
           </el-form-item>
         </el-col>
@@ -291,7 +310,7 @@
               <div>
                 <el-input
                   v-digits="0"
-                  :disabled="['ChangeInternalAchieveInf'].includes(changeType)"
+                  :disabled="['ChangeInternalAchieveInf', 'RetreatRoom'].includes(changeType)"
                   v-model="postData.room">
                   <div slot="append">室</div>
                 </el-input>
@@ -299,7 +318,7 @@
               <div>
                 <el-input
                   v-digits="0"
-                  :disabled="['ChangeInternalAchieveInf'].includes(changeType)"
+                  :disabled="['ChangeInternalAchieveInf', 'RetreatRoom'].includes(changeType)"
                   v-model="postData.hall">
                   <div slot="append">厅</div>
                 </el-input>
@@ -307,7 +326,7 @@
               <div>
                 <el-input
                   v-digits="0"
-                  :disabled="['ChangeInternalAchieveInf'].includes(changeType)"
+                  :disabled="['ChangeInternalAchieveInf', 'RetreatRoom'].includes(changeType)"
                   v-model="postData.toilet">
                   <div slot="append">卫</div>
                 </el-input>
@@ -318,7 +337,7 @@
         <el-col :span="8">
           <el-form-item label="房产证/预售合同编号">
             <el-input
-              :disabled="['ChangeInternalAchieveInf'].includes(changeType)"
+              :disabled="['ChangeInternalAchieveInf', 'RetreatRoom'].includes(changeType)"
               v-model="postData.propertyNo"
               placeholder="请输入房产证/预售合同编号"></el-input>
           </el-form-item>
@@ -326,7 +345,7 @@
         <el-col :span="16">
           <el-form-item label="房产证地址">
             <el-input
-              :disabled="['ChangeInternalAchieveInf'].includes(changeType)"
+              :disabled="['ChangeInternalAchieveInf', 'RetreatRoom'].includes(changeType)"
               v-model="postData.address"
               placeholder="请输入房产证地址"></el-input>
           </el-form-item>
@@ -334,15 +353,15 @@
         <el-col :span="8">
           <el-form-item label="现场销售">
             <el-input
-              :disabled="['ChangeInternalAchieveInf'].includes(changeType)"
-              v-model="postData.sceneSales" placeholder="请输入现场销售"></el-input>
+              :disabled="['ChangeInternalAchieveInf', 'RetreatRoom'].includes(changeType)"
+              v-model="postData.sceneSales"></el-input>
           </el-form-item>
         </el-col>
         <el-col :span="8">
           <el-form-item label="签约类型" prop="signType">
             <el-select
               v-model="postData.signType"
-              :disabled="['ChangeInternalAchieveInf'].includes(changeType)"
+              :disabled="['ChangeInternalAchieveInf', 'RetreatRoom'].includes(changeType)"
               placeholder="请选择签约类型"
               class="width--100">
               <el-option
@@ -358,7 +377,7 @@
           <el-form-item label="成交阶段" prop="stage">
             <el-select
               v-model="postData.stage"
-              :disabled="['ChangeInternalAchieveInf'].includes(changeType)"
+              :disabled="['ChangeInternalAchieveInf', 'RetreatRoom'].includes(changeType)"
               placeholder="请选择成交阶段"
               class="width--100">
               <el-option
@@ -372,10 +391,7 @@
         </el-col>
         <el-col :span="8">
           <el-form-item label="明源房款回笼比例">
-            <el-input
-              v-model="postData.returnRatio"
-              disabled
-               placeholder="明源房款回笼比例"></el-input>
+            <el-input v-model="postData.returnRatio" disabled></el-input>
           </el-form-item>
         </el-col>
         <el-col :span="8">
@@ -383,15 +399,15 @@
             <el-input
               v-digits="2"
               v-model="postData.subscribePrice"
-              :disabled="['ChangeBasicInf', 'ChangeInternalAchieveInf'].includes(changeType)"
-              placeholder="请输入认购价格"></el-input>
+              :disabled="['ChangeBasicInf', 'RetreatRoom', 'ChangeInternalAchieveInf'].includes(changeType)"
+              placeholder=""></el-input>
           </el-form-item>
         </el-col>
         <el-col :span="8">
           <el-form-item label="认购日期" prop="subscribeDate">
             <el-date-picker
               style="width: 100%"
-              :disabled="['ChangeInternalAchieveInf'].includes(changeType)"
+              :disabled="['ChangeInternalAchieveInf', 'RetreatRoom'].includes(changeType)"
               v-model="postData.subscribeDate"
               type="date"
               value-format="yyyy-MM-dd"
@@ -404,7 +420,7 @@
             <el-input
               v-digits="2"
               v-model="postData.signPrice"
-              :disabled="['ChangeBasicInf', 'ChangeInternalAchieveInf'].includes(changeType)"
+              :disabled="['ChangeBasicInf', 'RetreatRoom', 'ChangeInternalAchieveInf'].includes(changeType)"
               placeholder="请输入签约价格"></el-input>
           </el-form-item>
         </el-col>
@@ -412,7 +428,7 @@
           <el-form-item label="签约日期" prop="signDate">
             <el-date-picker
               style="width: 100%"
-              :disabled="['ChangeInternalAchieveInf'].includes(changeType)"
+              :disabled="['ChangeInternalAchieveInf', 'RetreatRoom'].includes(changeType)"
               v-model="postData.signDate"
               type="date"
               value-format="yyyy-MM-dd"
@@ -422,12 +438,12 @@
         </el-col>
         <el-col :span="8">
           <el-form-item label="成交组织">
-            <el-input v-model="postData.dealOrgName" disabled placeholder="请选择成交组织"></el-input>
+            <el-input v-model="postData.dealOrgName" disabled></el-input>
           </el-form-item>
         </el-col>
         <el-col :span="8">
           <el-form-item label="录入人">
-            <el-input v-model="postData.entryPerson" disabled placeholder="录入人"></el-input>
+            <el-input v-model="postData.entryPerson" disabled></el-input>
           </el-form-item>
         </el-col>
         <el-col :span="8">
@@ -437,30 +453,27 @@
         </el-col>
         <el-col :span="8">
           <el-form-item label="数据标志" prop="dataSign">
-            <el-input v-model="postData.dataSignName" disabled placeholder="数据标志"></el-input>
+            <el-input v-model="postData.dataSignName" disabled placeholder=""></el-input>
           </el-form-item>
         </el-col>
         <el-col :span="8">
           <el-form-item label="成交状态" prop="status">
-            <el-input v-model="postData.statusName" disabled placeholder="成交状态"></el-input>
+            <el-input v-model="postData.statusName" disabled placeholder=""></el-input>
           </el-form-item>
         </el-col>
         <el-col :span="8" v-if="['ChangeBasicInf', 'ChangeInternalAchieveInf'].includes(changeType)">
           <el-form-item label="业绩分配人">
-            <el-input v-model="postData.alloter" disabled placeholder="成交状态"></el-input>
+            <el-input v-model="postData.alloter" disabled ></el-input>
           </el-form-item>
         </el-col>
         <el-col :span="8" v-if="['ChangeBasicInf', 'ChangeInternalAchieveInf'].includes(changeType)">
           <el-form-item label="业绩分配时间">
-            <el-input v-model="postData.allotDate" disabled placeholder="成交状态"></el-input>
+            <el-input v-model="postData.allotDate" disabled></el-input>
           </el-form-item>
         </el-col>
         <el-col :span="8" v-if="['ChangeBasicInf', 'ChangeInternalAchieveInf'].includes(changeType)">
           <el-form-item label="计算方式">
-            <el-input
-              disabled
-              v-model="postData.calculationName"
-              placeholder="计算方式"></el-input>
+            <el-input disabled v-model="postData.calculationName"></el-input>
           </el-form-item>
         </el-col>
       </el-row>
@@ -861,7 +874,7 @@
     <div class="ih-type-wrapper">
       <div class="title">总包</div>
       <el-button
-        v-if="!['ChangeBasicInf'].includes(changeType)"
+        v-if="!['ChangeBasicInf'].includes(changeType) || postData.achieveTotalBagList.length"
         type="success" @click="handleAddAchieve('total')">新增角色</el-button>
     </div>
     <el-row style="padding-left: 20px">
@@ -932,7 +945,7 @@
     <div class="ih-type-wrapper">
       <div class="title">分销</div>
       <el-button
-        v-if="!['ChangeBasicInf'].includes(changeType)"
+        v-if="!['ChangeBasicInf'].includes(changeType) && !isSameFlag && postData.achieveDistriList.length"
         type="success" @click="handleAddAchieve('distri')">新增角色</el-button>
     </div>
     <el-row style="padding-left: 20px">
@@ -1095,14 +1108,14 @@
     </ih-dialog>
     <ih-dialog :show="dialogEditDealAchieve" desc="新增/修改成交业绩">
       <EditDealAchieve
+        :data="editDealAchieveData"
         @cancel="() => (dialogEditDealAchieve = false)"
         @finish="
             (data) => {
               dialogEditDealAchieve = false;
               finishAddProjectCycle(data);
             }
-          "
-      />
+          "/>
     </ih-dialog>
   </ih-page>
 </template>
@@ -1114,6 +1127,7 @@
   import AddBroker from "@/views/deal/dealReport/dialog/addBroker.vue";
   import EditDealAchieve from "@/views/deal/dealReport/dialog/editDealAchieve.vue";
   import {
+    post_pageData_initBasic, // 选择周期、房号后初始化页面
     post_pageData_recalculateAchieve, // 重算平台费用 --- 总包分销不一致的情况
     post_pageData_recalculateAchieveComm, // 重算平台费用 --- 总包分销一致的情况
     post_suppDeal_toAddSuppDeal // 新增补充成交
@@ -1330,20 +1344,24 @@
       chargeEnum: null, //
     }; // 通过项目周期id获取到的初始化成交基础信息
     baseInfoInDeal: any = {
-      notice: [], // 优惠告知书
       myReturnVO: {
         houseVO: {},
         customerVOS: {},
         dealVO: {},
         dataSign: ''
       },
-      customerAddVOS: [], // 客户信息
+      hasRecord: false,
       selectableChannelIds: [], // 可选的渠道商ids
     }; // 通过initPage接口获取到的成交信息(项目周期 + 房号)
+    oneAgentRequiredFlag: any = false; // 收派金额 - 派发内场奖励金额合计大于0，为true
+    tempReceiveVO: any = []; // 临时收派金额信息
+    tempSignPrice: any = null; // 临时签约价格
+    tempSubscribePrice: any = null; // 临时认购价格
 
     // 应收信息表格
     get receiveAchieveVO() {
       let arr: any = []
+      let rewardTotal: any = 0; // 派发内场总金额合计，用于判断一手代理团队是否必选
       if (this.postData.receiveList.length > 0) {
         let obj = {
           receiveAmount: 0,
@@ -1356,8 +1374,14 @@
             + item.rewardAmount * 1 * 100 + item.totalPackageAmount * 1 * 100
             + item.distributionAmount * 1 * 100) / 100;
           obj.otherChannelFees = (obj.otherChannelFees * 1 * 100 + item.otherChannelFees * 1 * 100) / 100;
+          rewardTotal = (rewardTotal * 1 * 100 + item.rewardAmount * 1 * 100) / 100;
         })
         arr.push(obj);
+      }
+      if (rewardTotal > 0) {
+        this.oneAgentRequiredFlag = true;
+      } else {
+        this.oneAgentRequiredFlag = false;
       }
       return arr;
     }
@@ -1439,6 +1463,7 @@
         ...this.postData,
         ...res
       };
+      this.isSameFlag = res.isSame; // 总包分销是否同步
       this.postData.address = res.house.address;
       this.postData.area = res.house.area;
       this.postData.buildingId = res.house.buildingId;
@@ -1483,10 +1508,12 @@
           }
         })
       }
-      // 通过项目周期id获取基础信息
-      await this.getBaseDealInfo(res.cycleId);
       // 初始化附件信息
       await this.initDocumentList(res.documentShowList);
+      // 通过项目周期id获取基础信息
+      await this.getBaseDealInfo(res.cycleId);
+      // 根据项目周期和房号初始化页面数据
+      await this.initPageById(res.cycleId, res.house.roomId);
     }
 
     // 调整收派金额信息
@@ -1514,14 +1541,25 @@
           if (channelList && channelList.length > 0 && data[0].channelLevel) {
             channelList.forEach((list: any) => {
               if (list.code === data[0].channelLevel) {
-                this.postData.channelLevelName= list.name; // 渠道等级
+                this.postData.channelLevelName = list.name; // 渠道等级
               }
             });
           }
-          this.postData.brokerId= data[0].brokerId; // 渠道经纪人Id
-          this.postData.brokerName= data[0].brokerName; // 渠道经纪人
+          this.postData.brokerId = data[0].brokerId; // 渠道经纪人Id
+          this.postData.brokerName = data[0].brokerName; // 渠道经纪人
         }
       }
+    }
+
+    // 根据项目周期和房号初始化页面数据
+    async initPageById(cycleId: any, roomId: any) {
+      if (!cycleId || !roomId) return;
+      let params: any = {
+        cycleId: cycleId,
+        roomId: roomId
+      };
+      let baseInfo: any = await post_pageData_initBasic(params);
+      this.baseInfoInDeal = JSON.parse(JSON.stringify(baseInfo || '{}'));
     }
 
     // 通过项目周期id获取基础信息
@@ -1595,6 +1633,42 @@
       this.postData.offerNoticeVO = list;
     }
 
+    // 选择渠道公司
+    selectAgency() {
+      if (!this.postData.roomId) {
+        this.$message.warning('请先选择房号');
+        return;
+      }
+      let data: any = {
+        selectableChannelIds: this.baseInfoInDeal.selectableChannelIds,
+        isMultipleNotice: this.baseInfoInDeal.isMultipleNotice,
+        cycleId: this.postData.cycleId
+      };
+      (this as any).$parent.selectAgency(data);
+    }
+
+    // 确定选择渠道公司
+    finishAddAgency(data: any) {
+      // console.log('data', data);
+      if(data.agencyData && data.agencyData.length) {
+        let channelList: any = (this as any).$root.dictAllList('ChannelLevel');
+        this.postData.agencyId = data.agencyData[0].channelId; // 渠道公司Id
+        this.postData.agencyName = data.agencyData[0].channelName; // 渠道公司
+        this.postData.channelLevel = data.agencyData[0].channelGrade; // 渠道等级Id
+        if (channelList && channelList.length > 0 && data.agencyData[0].channelGrade) {
+          channelList.forEach((list: any) => {
+            if (list.code === data.agencyData[0].channelGrade) {
+              this.postData.channelLevelName= list.name; // 渠道等级
+            }
+          });
+        }
+      }
+      // 分销协议编号
+      if (data.contNoList && data.contNoList.length) {
+        this.contNoList = data.contNoList;
+      }
+    }
+
     // 是否垫佣是根据对应的分销协议来判断
     changeContNo(value: any) {
       this.postData.isMat = null;
@@ -1660,6 +1734,41 @@
       }
     }
 
+    /*
+    * 重置值方法
+    * params: objName: string --- data中存在的对象 eg:postData
+    * params: keyList: array --- 需要重置对象值的key数组 eg:['a', 'b']
+    * */
+    resetObject(objName: any = '', keyList: any = []) {
+      if (!objName || !(this as any)[objName]) return;
+      if (keyList.length > 0) {
+        keyList.forEach((item: any) => {
+          (this as any)[objName][item] = null;
+        })
+      } else {
+        for (let keys in (this as any)[objName]) {
+          (this as any)[objName][keys] = null;
+        }
+      }
+    }
+
+    // 清空数据 - 主要是和初始化数据有关的数据
+    resetData() {
+      this.tempSubscribePrice = null;
+      this.tempSignPrice = null;
+      this.contNoList = []; // 分销协议编号
+      this.packageIdsList = []; // ids
+      this.postData.customerVO = []; // 客户信息
+      this.postData.receiveVO = []; // 收派金额
+      this.tempReceiveVO = []; // 收派金额初始值
+      this.postData.offerNoticeVO = []; // 优惠告知书
+      this.postData.documentVO = []; // 上传附件
+      let list: any = ['contType', 'contNo', 'recordState', 'recordStr', 'area', 'room', 'hall',
+        'toilet', 'propertyNo', 'signType', 'stage', 'returnRatio', 'subscribePrice', 'subscribeDate',
+        'signPrice', 'signDate', 'dataSign', 'agencyId', 'agencyName', 'channelLevel', 'channelLevelName']
+      this.resetObject('postData', list);
+    }
+
     // 选择项目周期
     selectProject() {
       this.dialogAddProjectCycle = true;
@@ -1667,11 +1776,19 @@
 
     // 确定选择项目周期
     async finishAddProjectCycle(data: any) {
-      console.log('data', data);
+      // console.log('data', data);
       if (data && data.length > 0) {
+        // 不管是否一样，都清数据
+        if (this.postData.cycleId) {
+          await this.resetData();
+          this.packageIdsList = []; // ids
+        }
+        // await this.resetData();
+        // this.packageIdsList = []; // ids
         this.postData.cycleName = data[0].termName;
         this.postData.cycleId = data[0].termId;
         this.cycleCheckedData = [...data];
+        await this.getBaseDealInfo(this.postData.cycleId);
       }
     }
 
@@ -1817,7 +1934,7 @@
       let params: any = {
         termId: this.baseInfoByTerm.termId, // 项目周期id
         contType: this.postData.contType, // 合同类型
-        hasRecord: this.postData.hasRecord, // 是否有成交报备(是否分销成交)
+        hasRecord: this.baseInfoInDeal.hasRecord, // 是否有成交报备(是否分销成交)
         contNo: this.postData.contNo, // 分销协议编号
         distributionIds: this.packageIdsList, // 分销成交 --- 选择分销协议后的ids
         feeType: scope.row.type, // 费用类型
@@ -1882,34 +1999,25 @@
       }
     }
 
-    // 新增总包/分销业绩
+    // 新增平台角色业绩
     handleAddAchieve(type: any) {
-      console.log('type', type);
       // console.log('type', type);
       this.editDealAchieveData.btnType = 'add';
-      // total - 总包； distri - 分销
-      if (type === 'total') {
-        // 总包
-        this.currentChangeObj.type = 'total';
-        this.editDealAchieveData.type = 'total';
-        this.currentChangeObj.index = null;
-      } else if (type === 'distri') {
-        // 分销
-        this.currentChangeObj.type = 'distri';
-        this.editDealAchieveData.type = 'distri';
-        this.currentChangeObj.index = null;
-      }
+      this.editDealAchieveData.type = type;
+      this.editDealAchieveData.currentEditItem = {};
       this.editDealAchieveData.currentEditItem.roleType = 'add';
+      this.currentChangeObj.type = type;
+      this.currentChangeObj.index = null;
       this.dialogEditDealAchieve = true;
     }
 
     // 修改平台费用 --- 总包/分销
     editAchieveTotalBag(scope: any, type: any) {
-      console.log('data', scope);
+      // console.log('data', scope);
       // console.log('data', type);
       this.editDealAchieveData.btnType = 'edit';
       this.editDealAchieveData.type = type;
-      this.editDealAchieveData.currentEditItem = scope.row;
+      this.editDealAchieveData.currentEditItem = JSON.parse(JSON.stringify(scope.row));
       this.currentChangeObj.index = scope.$index;
       this.currentChangeObj.type = type;
       this.dialogEditDealAchieve = true;
@@ -1917,15 +2025,64 @@
 
     // 确定新增/修改平台业绩
     async finishEditDealAchieve(data: any = {}) {
-      console.log('finishEditDealAchieve', data);
-      let tempArr: any = [];
+      // console.log('finishEditDealAchieve', data);
+      let tempTotalBagList: any = []; // 临时总包列表
+      let tempDistriList: any = []; // 临时分销列表
       if (this.editDealAchieveData.type === 'total') {
-        tempArr = this.getTempList(this.editDealAchieveData.btnType, this.currentChangeObj.index, this.postData.achieveTotalBagList, data);
+        data.type = 'TotalBag';
       } else if (this.editDealAchieveData.type === 'distri') {
-        tempArr = this.getTempList(this.editDealAchieveData.btnType, this.currentChangeObj.index, this.postData.achieveDistriList, data);
+        data.type = 'Distri';
       }
-      await this.recalculateAchieve(this.editDealAchieveData.type, tempArr);
+      if (this.isSameFlag) {
+        // 总包分销一致：一起增加，一起减少
+        tempTotalBagList = this.getTempList(this.editDealAchieveData.btnType, this.currentChangeObj.index, this.postData.achieveTotalBagList, data);
+        let tempData = JSON.parse(JSON.stringify(data)); // 修改类型
+        tempData.type = 'Distri';
+        tempDistriList = this.getTempList(this.editDealAchieveData.btnType, this.currentChangeObj.index, this.postData.achieveDistriList, tempData);
+      } else {
+        // 总包分销不一致：新增、修改都只针对对应的类型数据
+        if (this.editDealAchieveData.type === 'total') {
+          tempTotalBagList = this.getTempList(this.editDealAchieveData.btnType, this.currentChangeObj.index, this.postData.achieveTotalBagList, data);
+          tempDistriList = (this as any).$tool.deepClone(this.postData.achieveDistriList);
+        } else if (this.editDealAchieveData.type === 'distri') {
+          tempTotalBagList = (this as any).$tool.deepClone(this.postData.achieveTotalBagList);
+          tempDistriList = this.getTempList(this.editDealAchieveData.btnType, this.currentChangeObj.index, this.postData.achieveDistriList, data);
+        }
+      }
+      await this.recalculateAchieve(tempTotalBagList, tempDistriList);
       this.dialogEditDealAchieve = !this.dialogEditDealAchieve;
+    }
+
+    // 移除平台费用 --- 总包/分销
+    deleteAchieveTotalBag(scope: any, type: any) {
+      // console.log('data', scope);
+      let tempTotalBagList: any = []; // 临时总包列表
+      let tempDistriList: any = []; // 临时分销列表
+      if (this.isSameFlag) {
+        // 总包分销一致：一起增加，一起减少
+        tempTotalBagList = this.postData.achieveTotalBagList.filter((item: any, index: any) => {
+          return index !== scope.$index;
+        });
+        tempDistriList = this.postData.achieveDistriList.filter((item: any, index: any) => {
+          return index !== scope.$index;
+        });
+      } else {
+        // 总包分销不一致：新增、修改都只针对对应的类型数据
+        if (type === 'total') {
+          // 总包
+          tempTotalBagList = this.postData.achieveTotalBagList.filter((item: any, index: any) => {
+            return index !== scope.$index;
+          });
+          tempDistriList = (this as any).$tool.deepClone(this.postData.achieveDistriList);
+        } else if (type === 'distri') {
+          // 分销
+          tempTotalBagList = (this as any).$tool.deepClone(this.postData.achieveTotalBagList);
+          tempDistriList = this.postData.achieveDistriList.filter((item: any, index: any) => {
+            return index !== scope.$index;
+          });
+        }
+      }
+      this.recalculateAchieve(tempTotalBagList, tempDistriList);
     }
 
     /*
@@ -1959,96 +2116,49 @@
       return tempList;
     }
 
-    // 移除平台费用 --- 总包/分销
-    deleteAchieveTotalBag(scope: any, type: any) {
-      // console.log('data', scope);
-      let tempArr: any = [];
-      if (type === 'total') {
-        // 总包
-        tempArr = this.postData.achieveTotalBagList.filter((item: any, index: any) => {
-          return index !== scope.$index;
-        });
-      } else if (type === 'distri') {
-        // 分销
-        tempArr = this.postData.achieveDistriList.filter((item: any, index: any) => {
-          return index !== scope.$index;
-        });
-      }
-      this.recalculateAchieve(type, tempArr);
-    }
 
     /*
-    * 重新计算平台费用
-    * type: String，总包还是分销：total，distri
-    * tempList：Array，数组参数
+    * 重新计算平台费用 --- 总包和分销不一致的情况
+    * tempTotalBagList: Array，总包列表
+    * tempDistriList：Array，分销列表
     * */
-    async recalculateAchieve(type: any = "", tempList: any = []) {
+    async recalculateAchieve(tempTotalBagList: any = [], tempDistriList: any = []) {
       let params: any = {
         branchCompanyId: this.baseInfoByTerm.startDivisionId, // 分公司Id --- 项目周期带出
         contType: this.postData.contType, // 合同类型
         isMarketProject: this.postData.isMarketProject, // 是否市场化项目
-        list: tempList,
         modelCode: this.postData.businessType, // 业务模式
         propertyType: this.postData.propertyType, // 物业类型
         specialId: this.baseInfoByTerm.specialId, // 特殊方案Id --- 项目周期带出
-        totalAmount: null, // 总包/分销总金额
-        type: null
+        distriAmount: this.getTotalAmount('distributionAmount'), // 分销总金额
+        distriList: tempDistriList, // 分销一方内的已分配的平台费用
+        totalBagAmount: this.getTotalAmount('totalPackageAmount'), // 总包总金额
+        totalBagList: tempTotalBagList, // 总包一方内的已分配的平台费用
       }
-      if (type === 'total') {
-        // 总包
-        params.type = "TotalBag";
-        params.totalAmount = this.getTotalAmount('totalPackageAmount');
-      } else if (type === 'distri') {
-        // 分销
-        params.type = "Distri";
-        params.totalAmount = this.getTotalAmount('distributionAmount');
-      }
-      let list: any = await post_pageData_recalculateAchieve(params);
-      console.log(list);
-      let commInfo: any = {};
+      let info: any = await post_pageData_recalculateAchieve(params);
+      // console.log(list);
+      this.postData.achieveTotalBagList = this.getAchieveData(tempTotalBagList, info.totalBagList);
+      this.postData.achieveDistriList = this.getAchieveData(tempDistriList, info.distriList);
       if (this.isSameFlag) {
-        // 分销同步总包
-        let paramsObj: any = {
-          totalBagList: params.list, // 总包拆佣
-          totalCommAmount: this.editDealAchieveData.totalAmount, // 总拆佣金额
-        }
-        commInfo = await post_pageData_recalculateAchieveComm(paramsObj);
-        console.log(commInfo);
-      }
-      if (list && list.length) {
-        if (type === 'total') {
-          // 总包
-          this.postData.achieveTotalBagList = tempList;
-          if (this.postData.achieveTotalBagList.length) {
-            this.postData.achieveTotalBagList = this.getAchieveData(this.postData.achieveTotalBagList, list);
-          }
-        } else if (type === 'distri') {
-          // 分销
-          this.postData.achieveDistriList = tempList;
-          if (this.postData.achieveDistriList.length) {
-            this.postData.achieveDistriList = this.getAchieveData(this.postData.achieveDistriList, list);
-          }
-        }
-      }
-      if (commInfo.totalBagList && commInfo.totalBagList.length) {
-        // 总包同步分销
-        this.postData.achieveTotalBagList = this.getAchieveData(this.postData.achieveTotalBagList, commInfo.totalBagList);
-        this.postData.achieveDistriList = this.getAchieveData(this.postData.achieveDistriList, commInfo.distriList);
+        // 总包和分销一致的情况下，还需要调用重算拆佣金额接口
+        await this.recalculateAchieveBySame(this.postData.achieveTotalBagList);
       }
     }
 
-    // 获取分销金额和总包金额
-    getTotalAmount(type: any = '') {
-      if (!type) return;
-      let total = 0;
-      if (this.postData.receiveList.length) {
-        this.postData.receiveList.forEach((vo: any) => {
-          total = total + parseFloat(vo[type] ? vo[type] : 0);
-        });
-        return total;
-      } else {
-        return 0;
+    /*
+    * 重新计算平台费用 --- 总包和分销一致的情况
+    * tempList：Array，总包数组参数
+    * */
+    async recalculateAchieveBySame(list: any = []) {
+      // 分销同步总包
+      let paramsObj: any = {
+        totalBagList: list, // 总包拆佣
+        totalCommAmount: this.getCommAmount(), // 总拆佣金额
       }
+      let commInfo: any = await post_pageData_recalculateAchieveComm(paramsObj);
+      // console.log(commInfo);
+      this.postData.achieveTotalBagList = this.getAchieveData(this.postData.achieveTotalBagList, commInfo.totalBagList);
+      this.postData.achieveDistriList = this.getAchieveData(this.postData.achieveDistriList, commInfo.distriList);
     }
 
     // 总包/分销平台费用从新计算
@@ -2067,6 +2177,35 @@
         })
       });
       return tempArr;
+    }
+
+    // 获取拆佣总金额
+    getCommAmount() {
+      let total = 0;
+      if (this.postData.channelCommList.length) {
+        this.postData.channelCommList.forEach((vo: any) => {
+          let commValue: any = vo.commAmount ? vo.commAmount : 0;
+          let rewardValue: any = vo.rewardAmount ? vo.rewardAmount : 0;
+          total = (total * 1 * 100 + commValue * 1 * 100 + rewardValue * 1 * 100) / 100;
+        });
+        return total;
+      } else {
+        return 0;
+      }
+    }
+
+    // 获取分销金额和总包金额
+    getTotalAmount(type: any = '') {
+      if (!type) return;
+      let total = 0;
+      if (this.postData.receiveList.length) {
+        this.postData.receiveList.forEach((vo: any) => {
+          total = total + parseFloat(vo[type] ? vo[type] : 0);
+        });
+        return total;
+      } else {
+        return 0;
+      }
     }
 
     // 获取最新的上传附件

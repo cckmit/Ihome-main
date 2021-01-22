@@ -933,7 +933,7 @@
       <div class="ih-type-wrapper">
         <div class="title">分销</div>
         <el-button
-          v-if="!isSameFlag && postData.achieveTotalBagList.length"
+          v-if="!isSameFlag && postData.achieveDistriList.length"
           type="success"
           @click="handleAddAchieve('distri')">新增角色</el-button>
       </div>
