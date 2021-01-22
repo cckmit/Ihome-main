@@ -4,7 +4,7 @@
  * @Author: wwq
  * @Date: 2020-12-02 15:37:31
  * @LastEditors: wwq
- * @LastEditTime: 2021-01-21 17:19:28
+ * @LastEditTime: 2021-01-21 20:48:00
 -->
 <template>
   <el-dialog
@@ -660,26 +660,32 @@ export default class AddContract extends Vue {
 
   // 预览电子版
   viewElectronic() {
-    const token: any = getToken();
-    axios({
-      method: "POST",
-      url: `/sales-api/project/distributContract/getPreView`,
-      xsrfHeaderName: "Authorization",
-      responseType: "blob",
-      headers: {
-        "Content-Type": "application/json",
-        Authorization: "bearer " + token,
-      },
-      data: {
-        ...this.info,
-        contractStartTime: this.info.timeList[0],
-        contractEndTime: this.info.timeList[1],
-      },
-    }).then((res: any) => {
-      const arr = new Blob([res.data], { type: "application/pdf" });
-      const href = window.URL.createObjectURL(arr);
-      window.open(href);
-    });
+    if (this.data.agencyContrictId) {
+      window.open(
+        `/sales-api/sales-document-cover/file/browse/${this.info.fileId}`
+      );
+    } else {
+      const token: any = getToken();
+      axios({
+        method: "POST",
+        url: `/sales-api/project/distributContract/getPreView`,
+        xsrfHeaderName: "Authorization",
+        responseType: "blob",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: "bearer " + token,
+        },
+        data: {
+          ...this.info,
+          contractStartTime: this.info.timeList[0],
+          contractEndTime: this.info.timeList[1],
+        },
+      }).then((res: any) => {
+        const arr = new Blob([res.data], { type: "application/pdf" });
+        const href = window.URL.createObjectURL(arr);
+        window.open(href);
+      });
+    }
   }
 
   cancel() {

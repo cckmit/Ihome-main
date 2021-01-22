@@ -4,7 +4,7 @@
  * @Author: wwq
  * @Date: 2020-11-27 17:27:01
  * @LastEditors: wwq
- * @LastEditTime: 2021-01-21 15:30:40
+ * @LastEditTime: 2021-01-21 20:45:49
 -->
 <template>
   <div>
@@ -434,21 +434,22 @@ export default class Notification extends Vue {
   }
 
   previewTop(row: any) {
-    const token: any = getToken();
-    axios({
-      method: "POST",
-      url: `/sales-api/project/distributContract/getPreViewOut/${row.agencyContrictId}`,
-      xsrfHeaderName: "Authorization",
-      responseType: "blob",
-      headers: {
-        "Content-Type": "application/json",
-        Authorization: "bearer " + token,
-      },
-    }).then((res: any) => {
-      const arr = new Blob([res.data], { type: "application/pdf" });
-      const href = window.URL.createObjectURL(arr);
-      window.open(href);
-    });
+    // const token: any = getToken();
+    // axios({
+    //   method: "POST",
+    //   url: `/sales-api/project/distributContract/getPreViewOut/${row.agencyContrictId}`,
+    //   xsrfHeaderName: "Authorization",
+    //   responseType: "blob",
+    //   headers: {
+    //     "Content-Type": "application/json",
+    //     Authorization: "bearer " + token,
+    //   },
+    // }).then((res: any) => {
+    //   const arr = new Blob([res.data], { type: "application/pdf" });
+    //   const href = window.URL.createObjectURL(arr);
+    //   window.open(href);
+    // });
+    window.open(`/sales-api/sales-document-cover/file/browse/${row.fileId}`);
   }
 
   async previewBottom(row: any) {

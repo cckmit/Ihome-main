@@ -4,7 +4,7 @@
  * @Author: wwq
  * @Date: 2020-12-09 20:12:21
  * @LastEditors: wwq
- * @LastEditTime: 2020-12-31 17:57:14
+ * @LastEditTime: 2021-01-21 20:22:00
 -->
 <template>
   <el-dialog
@@ -304,6 +304,7 @@
       <el-button
         type="primary"
         @click="finish()"
+        :loading="finishLoading"
       >保 存</el-button>
     </span>
   </el-dialog>
@@ -314,6 +315,8 @@ import {
   get_his_settleCondition_getMakingType__proId,
   post_partyAContract_getBuilding__termId,
   post_settleCondition_getMaking__settleId,
+  post_settleCondition_addMaking,
+  post_settleCondition_updateMaking,
 } from "@/api/project/index";
 import { NoRepeatHttp } from "ihome-common/util/aop/no-repeat-http";
 import { Form as ElForm } from "element-ui";
@@ -326,6 +329,7 @@ export default class MakingEdit extends Vue {
   isShow = false;
   serviceFeeDisabled = false;
   agencyFeeDisabled = false;
+  finishLoading = false;
   info: any = {
     settleName: null,
     agencyFee: 0,
@@ -416,6 +420,7 @@ export default class MakingEdit extends Vue {
   @NoRepeatHttp()
   async submit(valid: any) {
     if (valid) {
+      this.finishLoading = true;
       let arr: any = [];
       arr = this.info.settleConditionMakingVOS.filter(
         (v: any) => v.checkboxed === true
@@ -439,7 +444,27 @@ export default class MakingEdit extends Vue {
         agencyFee: this.info.agencyFee ? 1 : 0,
         serviceFee: this.info.serviceFee ? 1 : 0,
       };
-      this.$emit("finish", obj);
+      obj.termId = this.$route.query.id;
+      if (!this.data.id) {
+        try {
+          await post_settleCondition_addMaking(obj);
+          this.finishLoading = false;
+          this.$message.success("新增成功");
+          this.$emit("finish");
+        } catch (err) {
+          this.finishLoading = false;
+        }
+      } else {
+        try {
+          obj.settleId = this.data.id;
+          await post_settleCondition_updateMaking(obj);
+          this.$message.success("修改成功");
+          this.finishLoading = false;
+          this.$emit("finish");
+        } catch (err) {
+          this.finishLoading = false;
+        }
+      }
     }
   }
 

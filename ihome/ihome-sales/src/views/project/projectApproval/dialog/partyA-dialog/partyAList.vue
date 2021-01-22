@@ -3,8 +3,8 @@
  * @version: 
  * @Author: wwq
  * @Date: 2020-12-01 09:05:50
- * @LastEditors: zyc
- * @LastEditTime: 2021-01-18 15:00:33
+ * @LastEditors: wwq
+ * @LastEditTime: 2021-01-21 20:11:13
 -->
 <template>
   <el-dialog
@@ -300,6 +300,7 @@
       <el-button
         type="primary"
         @click="finish()"
+        :loading="finishLoading"
       >确 定</el-button>
     </span>
   </el-dialog>
@@ -310,10 +311,10 @@ import PaginationMixin from "@/mixins/pagination";
 import { post_contract_list } from "@/api/contract/index";
 import { post_company_listAll } from "@/api/developer/index";
 import { post_company_getAll } from "@/api/system/index";
-
+import { post_partyAContract_add } from "@/api/project/index";
 
 @Component({
-  components: {  },
+  components: {},
   mixins: [PaginationMixin],
 })
 export default class PartyAList extends Vue {
@@ -335,6 +336,7 @@ export default class PartyAList extends Vue {
     timeList: [],
   };
   provinceOption: any = [];
+  finishLoading = false;
   private searchOpen = true;
   resPageInfo: any = {
     list: [],
@@ -404,9 +406,23 @@ export default class PartyAList extends Vue {
     this.getListMixin();
   }
 
-  finish() {
+  async finish() {
     if (this.selection.length) {
-      this.$emit("finish", this.selection);
+      this.finishLoading = true;
+      const ids: any = [];
+      this.selection.forEach((v: any) => {
+        ids.push(v.id);
+      });
+      try {
+        await post_partyAContract_add({
+          partyAContractVOS: ids,
+          termId: this.$route.query.id,
+        });
+        this.finishLoading = false;
+        this.$emit("finish");
+      } catch (err) {
+        this.finishLoading = false;
+      }
     } else {
       this.$message.warning("请先勾选表格数据");
     }

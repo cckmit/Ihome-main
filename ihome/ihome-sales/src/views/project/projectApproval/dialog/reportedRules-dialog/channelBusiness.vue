@@ -4,7 +4,7 @@
  * @Author: wwq
  * @Date: 2020-11-30 19:24:37
  * @LastEditors: wwq
- * @LastEditTime: 2020-12-02 19:28:25
+ * @LastEditTime: 2021-01-21 19:58:23
 -->
 <template>
   <el-dialog
@@ -51,19 +51,11 @@
       <el-row>
         <el-col :span="8">
           <el-form-item label="渠道跟进人">
-            <el-select
+            <IhSelectPageUser
               v-model="queryPageParameters.followUserId"
               clearable
-              placeholder="渠道跟进人"
-              class="width--100"
             >
-              <el-option
-                v-for="item in testList"
-                :key="item.id"
-                :label="item.value"
-                :value="item.id"
-              ></el-option>
-            </el-select>
+            </IhSelectPageUser>
           </el-form-item>
         </el-col>
         <el-col :span="8">
@@ -89,16 +81,6 @@
               v-model="queryPageParameters.inputUser"
               clearable
             >
-              <!-- 自定义模板使用 v-slot返回来的data：当前每条的数据；index：每一条数据的下标 -->
-              <template v-slot="{ data }">
-                <span style="float: left">{{ data.name }}</span>
-                <span style="
-                      margin-left: 20px;
-                      float: right;
-                      color: #8492a6;
-                      font-size: 13px;
-                    ">{{ data.account }}</span>
-              </template>
             </IhSelectPageUser>
           </el-form-item>
         </el-col>
@@ -225,6 +207,7 @@
       <el-button
         type="primary"
         @click="finish()"
+        :loading="finishLoading"
       >确 定</el-button>
     </span>
   </el-dialog>
@@ -233,6 +216,7 @@
 import { Component, Vue } from "vue-property-decorator";
 import PaginationMixin from "@/mixins/pagination";
 import { post_channel_getList } from "@/api/channel/index";
+import { post_customerReportRule_addWXBB } from "@/api/project/index";
 
 @Component({
   components: {},
@@ -252,17 +236,12 @@ export default class ProjectApprovalDialog extends Vue {
     followUserId: null,
   };
   provinceOption: any = [];
+  finishLoading = false;
   resPageInfo: any = {
     list: [{}],
     total: 0,
   };
   selection: any = [];
-  // 测试数据
-  testList = [
-    { value: "管理员1", id: 1 },
-    { value: "管理员2", id: 2 },
-    { value: "管理员3", id: 3 },
-  ];
 
   get emptyText() {
     return this.resPageInfo.total === null ? "正在加载数据..." : "暂无数据";
@@ -306,9 +285,23 @@ export default class ProjectApprovalDialog extends Vue {
     this.getListMixin();
   }
 
-  finish() {
+  async finish() {
     if (this.selection.length) {
-      this.$emit("finish", this.selection);
+      let arr: any = [];
+      this.selection.forEach((v: any) => {
+        arr.push(v.id);
+      });
+      try {
+        this.finishLoading = true;
+        await post_customerReportRule_addWXBB({
+          channelCompanyId: arr,
+          termId: this.$route.query.id,
+        });
+        this.finishLoading = false;
+        this.$emit("finish");
+      } catch (err) {
+        this.finishLoading = false;
+      }
     } else {
       this.$message.warning("请先勾选表格数据");
     }

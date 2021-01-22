@@ -4,7 +4,7 @@
  * @Author: wwq
  * @Date: 2020-11-27 17:22:45
  * @LastEditors: wwq
- * @LastEditTime: 2021-01-21 11:34:03
+ * @LastEditTime: 2021-01-21 19:50:59
 -->
 <template>
   <div>
@@ -107,7 +107,7 @@
       />
     </ih-dialog>
     <ih-dialog :show="viewDialogVisible">
-      <info
+      <Info
         :data="infoData"
         @cancel="() => (viewDialogVisible = false)"
       />
@@ -122,8 +122,6 @@ import {
   post_collectandsend_getAllByTerm,
   post_collectandsend_start,
   post_collectandsend_cancel,
-  post_collectandsend_add,
-  post_collectandsend_update,
 } from "@/api/project/index.ts";
 @Component({
   components: {
@@ -166,20 +164,10 @@ export default class SetMeal extends Vue {
     this.infoData.id = row.packageId;
   }
 
-  async addFinish(data: any) {
-    data.termId = this.$route.query.id;
-    data.colletionandsendMxs.forEach((v: any) => {
-      v.colletionandsendDetails = v.colletionandsendDetails.map((j: any) => ({
-        ...j,
-        transactionEnumOptions: JSON.stringify(j.transactionEnumOptions),
-      }));
-    });
+  async addFinish() {
     if (this.editData.id) {
-      data.packageId = this.editData.id;
-      await post_collectandsend_update(data);
       this.$message.success("修改成功");
     } else {
-      await post_collectandsend_add(data);
       this.$message.success("新增成功");
     }
     this.dialogVisible = false;
