@@ -13,7 +13,7 @@
       :model="postData"
       :rules="rules"
       ref="ruleForm"
-      label-width="160px"
+      label-width="150px"
       class="demo-ruleForm">
       <p id="anchor-1" ref="#anchor-1" class="ih-info-title">成交信息</p>
       <div
@@ -21,8 +21,8 @@
         class="add-all-wrapper padding-left-20">
         <el-button type="success">更新明源数据</el-button>
       </div>
-      <el-row>
-        <el-col :span="6">
+      <el-row :gutter="5">
+        <el-col :span="8">
           <el-form-item label="成交报告编号" prop="dealCode">
             <el-input
               disabled
@@ -30,7 +30,7 @@
               v-model="postData.dealCode"/>
           </el-form-item>
         </el-col>
-        <el-col :span="6">
+        <el-col :span="8">
           <el-form-item label="项目周期" prop="cycleId">
             <el-input
               v-if="['ChangeAchieveInf', 'RetreatRoom'].includes(changeType)"
@@ -40,11 +40,10 @@
             </el-input>
             <el-input
               v-if="['ChangeBasicInf', 'ChangeInternalAchieveInf'].includes(changeType)"
-              placeholder="请选择项目周期"
               disabled v-model="postData.projectCycle"></el-input>
           </el-form-item>
         </el-col>
-        <el-col :span="6">
+        <el-col :span="8">
           <el-form-item label="业务模式" prop="modelCode">
             <el-select
               v-model="postData.modelCode"
@@ -60,7 +59,7 @@
             </el-select>
           </el-form-item>
         </el-col>
-        <el-col :span="6">
+        <el-col :span="8">
           <el-form-item label="细分业务模式" prop="refineModel">
             <el-select
               v-model="postData.refineModel"
@@ -76,7 +75,7 @@
             </el-select>
           </el-form-item>
         </el-col>
-        <el-col :span="6">
+        <el-col :span="8">
           <el-form-item label="是否代销" prop="isConsign">
             <el-select
               v-model="postData.isConsign"
@@ -92,7 +91,7 @@
             </el-select>
           </el-form-item>
         </el-col>
-        <el-col :span="6">
+        <el-col :span="8">
           <el-form-item label="是否市场化项目" prop="isMarketProject">
             <el-select
               v-model="postData.isMarketProject"
@@ -108,7 +107,7 @@
             </el-select>
           </el-form-item>
         </el-col>
-        <el-col :span="6">
+        <el-col :span="8">
           <el-form-item label="一手代理公司" prop="oneAgentTeamId">
             <el-select
               v-model="postData.oneAgentTeamId"
@@ -123,7 +122,7 @@
             </el-select>
           </el-form-item>
         </el-col>
-        <el-col :span="6">
+        <el-col :span="8">
           <el-form-item label="物业类型" prop="propertyType">
             <el-select
               v-model="postData.propertyType"
@@ -139,7 +138,7 @@
             </el-select>
           </el-form-item>
         </el-col>
-        <el-col :span="6">
+        <el-col :span="8">
           <el-form-item label="栋座">
             <el-input
               v-if="['ChangeInternalAchieveInf'].includes(changeType)"
@@ -158,7 +157,7 @@
             ></IhSelectPageByBuild>
           </el-form-item>
         </el-col>
-        <el-col :span="6">
+        <el-col :span="8">
           <el-form-item label="房号">
             <el-input
               v-if="['ChangeInternalAchieveInf'].includes(changeType)"
@@ -177,7 +176,7 @@
             ></IhSelectPageByRoom>
           </el-form-item>
         </el-col>
-        <el-col :span="6">
+        <el-col :span="8">
           <el-form-item label="合同类型" prop="contType">
             <el-select
               v-model="postData.contType"
@@ -194,7 +193,7 @@
             </el-select>
           </el-form-item>
         </el-col>
-        <el-col :span="6" v-if="postData.contType === 'DistriDeal'">
+        <el-col :span="8" v-if="postData.contType === 'DistriDeal'">
           <el-form-item label="渠道公司" prop="agencyName">
             <div v-if="['ChangeBasicInf', 'ChangeInternalAchieveInf'].includes(changeType)">
               <el-input placeholder="渠道公司" disabled v-model="postData.agencyName"></el-input>
@@ -208,17 +207,17 @@
             </div>
           </el-form-item>
         </el-col>
-        <el-col :span="6" v-if="postData.contType === 'DistriDeal'">
+        <el-col :span="8" v-if="postData.contType === 'DistriDeal'">
           <el-form-item label="渠道等级">
             <el-input placeholder="渠道等级" disabled v-model="postData.channelLevelName"></el-input>
           </el-form-item>
         </el-col>
-        <el-col :span="6" v-if="postData.contType === 'DistriDeal'">
+        <el-col :span="8" v-if="postData.contType === 'DistriDeal'">
           <el-form-item label="经纪人">
             <el-input placeholder="经纪人" disabled v-model="postData.brokerName"></el-input>
           </el-form-item>
         </el-col>
-        <el-col :span="6" v-if="postData.contType === 'DistriDeal'">
+        <el-col :span="8" v-if="postData.contType === 'DistriDeal'">
           <el-form-item label="分销协议编号" prop="contNo">
             <div class="contNo-wrapper">
               <el-select
@@ -238,7 +237,7 @@
             </div>
           </el-form-item>
         </el-col>
-        <el-col :span="6" v-if="postData.contType === 'DistriDeal'">
+        <el-col :span="8" v-if="postData.contType === 'DistriDeal'">
           <el-form-item label="是否垫佣" prop="isMat">
             <el-select
               v-model="postData.isMat"
@@ -254,7 +253,7 @@
             </el-select>
           </el-form-item>
         </el-col>
-        <el-col :span="6" v-if="postData.contType === 'DistriDeal'">
+        <el-col :span="8" v-if="postData.contType === 'DistriDeal'">
           <el-form-item label="报备信息">
             <el-input
               disabled
@@ -262,7 +261,7 @@
               v-model="postData.recordStr"/>
           </el-form-item>
         </el-col>
-        <el-col :span="6">
+        <el-col :span="8">
           <el-form-item label="备案情况" prop="recordState">
             <el-select
               v-model="postData.recordState"
@@ -278,7 +277,7 @@
             </el-select>
           </el-form-item>
         </el-col>
-        <el-col :span="6">
+        <el-col :span="8">
           <el-form-item label="建筑面积" prop="area">
             <el-input
               v-model="postData.area"
@@ -286,7 +285,7 @@
               placeholder="请输入建筑面积"></el-input>
           </el-form-item>
         </el-col>
-        <el-col :span="12">
+        <el-col :span="8">
           <el-form-item label="户型">
             <div class="home-type-wrapper">
               <div>
@@ -316,7 +315,7 @@
             </div>
           </el-form-item>
         </el-col>
-        <el-col :span="12">
+        <el-col :span="8">
           <el-form-item label="房产证/预售合同编号">
             <el-input
               :disabled="['ChangeInternalAchieveInf'].includes(changeType)"
@@ -324,7 +323,7 @@
               placeholder="请输入房产证/预售合同编号"></el-input>
           </el-form-item>
         </el-col>
-        <el-col :span="12">
+        <el-col :span="16">
           <el-form-item label="房产证地址">
             <el-input
               :disabled="['ChangeInternalAchieveInf'].includes(changeType)"
@@ -332,14 +331,14 @@
               placeholder="请输入房产证地址"></el-input>
           </el-form-item>
         </el-col>
-        <el-col :span="6">
+        <el-col :span="8">
           <el-form-item label="现场销售">
             <el-input
               :disabled="['ChangeInternalAchieveInf'].includes(changeType)"
               v-model="postData.sceneSales" placeholder="请输入现场销售"></el-input>
           </el-form-item>
         </el-col>
-        <el-col :span="6">
+        <el-col :span="8">
           <el-form-item label="签约类型" prop="signType">
             <el-select
               v-model="postData.signType"
@@ -355,7 +354,7 @@
             </el-select>
           </el-form-item>
         </el-col>
-        <el-col :span="6">
+        <el-col :span="8">
           <el-form-item label="成交阶段" prop="stage">
             <el-select
               v-model="postData.stage"
@@ -371,7 +370,7 @@
             </el-select>
           </el-form-item>
         </el-col>
-        <el-col :span="6">
+        <el-col :span="8">
           <el-form-item label="明源房款回笼比例">
             <el-input
               v-model="postData.returnRatio"
@@ -379,7 +378,7 @@
                placeholder="明源房款回笼比例"></el-input>
           </el-form-item>
         </el-col>
-        <el-col :span="6">
+        <el-col :span="8">
           <el-form-item label="认购价格" prop="subscribePrice">
             <el-input
               v-digits="2"
@@ -388,7 +387,7 @@
               placeholder="请输入认购价格"></el-input>
           </el-form-item>
         </el-col>
-        <el-col :span="6">
+        <el-col :span="8">
           <el-form-item label="认购日期" prop="subscribeDate">
             <el-date-picker
               style="width: 100%"
@@ -400,7 +399,7 @@
             </el-date-picker>
           </el-form-item>
         </el-col>
-        <el-col :span="6">
+        <el-col :span="8">
           <el-form-item label="签约价格" prop="signPrice">
             <el-input
               v-digits="2"
@@ -409,7 +408,7 @@
               placeholder="请输入签约价格"></el-input>
           </el-form-item>
         </el-col>
-        <el-col :span="6">
+        <el-col :span="8">
           <el-form-item label="签约日期" prop="signDate">
             <el-date-picker
               style="width: 100%"
@@ -421,42 +420,42 @@
             </el-date-picker>
           </el-form-item>
         </el-col>
-        <el-col :span="6">
+        <el-col :span="8">
           <el-form-item label="成交组织">
             <el-input v-model="postData.dealOrgName" disabled placeholder="请选择成交组织"></el-input>
           </el-form-item>
         </el-col>
-        <el-col :span="6">
+        <el-col :span="8">
           <el-form-item label="录入人">
             <el-input v-model="postData.entryPerson" disabled placeholder="录入人"></el-input>
           </el-form-item>
         </el-col>
-        <el-col :span="6">
+        <el-col :span="8">
           <el-form-item label="录入日期">
             <el-input v-model="postData.entryDate" disabled placeholder="录入日期"></el-input>
           </el-form-item>
         </el-col>
-        <el-col :span="6">
+        <el-col :span="8">
           <el-form-item label="数据标志" prop="dataSign">
             <el-input v-model="postData.dataSignName" disabled placeholder="数据标志"></el-input>
           </el-form-item>
         </el-col>
-        <el-col :span="6">
+        <el-col :span="8">
           <el-form-item label="成交状态" prop="status">
             <el-input v-model="postData.statusName" disabled placeholder="成交状态"></el-input>
           </el-form-item>
         </el-col>
-        <el-col :span="6" v-if="['ChangeBasicInf', 'ChangeInternalAchieveInf'].includes(changeType)">
+        <el-col :span="8" v-if="['ChangeBasicInf', 'ChangeInternalAchieveInf'].includes(changeType)">
           <el-form-item label="业绩分配人">
             <el-input v-model="postData.alloter" disabled placeholder="成交状态"></el-input>
           </el-form-item>
         </el-col>
-        <el-col :span="6" v-if="['ChangeBasicInf', 'ChangeInternalAchieveInf'].includes(changeType)">
+        <el-col :span="8" v-if="['ChangeBasicInf', 'ChangeInternalAchieveInf'].includes(changeType)">
           <el-form-item label="业绩分配时间">
             <el-input v-model="postData.allotDate" disabled placeholder="成交状态"></el-input>
           </el-form-item>
         </el-col>
-        <el-col :span="6" v-if="['ChangeBasicInf', 'ChangeInternalAchieveInf'].includes(changeType)">
+        <el-col :span="8" v-if="['ChangeBasicInf', 'ChangeInternalAchieveInf'].includes(changeType)">
           <el-form-item label="计算方式">
             <el-input
               disabled

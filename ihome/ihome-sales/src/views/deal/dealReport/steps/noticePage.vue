@@ -528,11 +528,7 @@
           roomNo: this.pageData.roomNo,
           toilet: this.pageData.toilet
         },
-        noticeAgreementCreateRequest: {
-          cycleId: this.pageData.cycleId,
-          dealId: this.pageData.id,
-          noticeDealList: this.initNoticeData(),
-        }
+        noticeDealList: this.initNoticeData(),
       }
       if (this.pageData.agencyId) {
         dataObj.agencyVO.push(
@@ -597,7 +593,7 @@
 
     .notice-item {
       width: 100%;
-      min-height: 240px;
+      min-height: 80px;
 
       .notice-type {
         width: 100%;

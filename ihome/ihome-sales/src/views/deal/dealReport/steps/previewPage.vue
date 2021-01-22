@@ -16,7 +16,7 @@
         ref="ruleForm"
         label-width="150px"
         class="demo-ruleForm">
-        <el-row>
+        <el-row :gutter="5">
           <el-col :span="8">
             <el-form-item label="成交报告编号">{{infoForm.dealCode}}</el-form-item>
           </el-col>
@@ -35,12 +35,12 @@
           </el-col>
           <el-col :span="8">
             <el-form-item label="是否代销">
-              {{!!infoForm.isConsign ? infoForm.isConsign === 'Yes' ? '是' : '否' : ''}}
+              {{$root.dictAllName(infoForm.isConsign, 'YesOrNoType')}}
             </el-form-item>
           </el-col>
           <el-col :span="8">
             <el-form-item label="是否市场化项目">
-              {{!!infoForm.isMarketProject ? infoForm.isMarketProject === 'Yes' ? '是' : '否' : ''}}
+              {{$root.dictAllName(infoForm.isMarketProject, 'YesOrNoType')}}
             </el-form-item>
           </el-col>
           <el-col :span="8">
@@ -48,21 +48,36 @@
           </el-col>
           <el-col :span="8">
             <el-form-item label="物业类型">
-              {{$root.dictAllName(infoForm.house.propertyType, 'Property')}}
+              {{$root.dictAllName(infoForm.propertyType, 'Property')}}
             </el-form-item>
           </el-col>
           <el-col :span="8">
-            <el-form-item label="栋座">{{infoForm.house.buildingName}}</el-form-item>
+            <el-form-item label="栋座">{{infoForm.buildingName}}</el-form-item>
           </el-col>
           <el-col :span="8">
-            <el-form-item label="房号">{{infoForm.house.roomNo}}</el-form-item>
+            <el-form-item label="房号">{{infoForm.roomNo}}</el-form-item>
           </el-col>
           <el-col :span="8">
             <el-form-item label="合同类型">
               {{$root.dictAllName(infoForm.contType, 'ContType')}}
             </el-form-item>
           </el-col>
-          <el-col :span="8">
+          <el-col :span="8" v-if="infoForm.contType === 'DistriDeal'">
+            <el-form-item label="渠道公司">
+              {{infoForm.agencyList && infoForm.agencyList.length ? infoForm.agencyList[0].agencyName : ''}}
+            </el-form-item>
+          </el-col>
+          <el-col :span="8" v-if="infoForm.contType === 'DistriDeal'">
+            <el-form-item label="渠道等级">
+              {{infoForm.agencyList && infoForm.agencyList.length ? $root.dictAllName(infoForm.agencyList[0].channelLevel, 'ChannelLevel') : ''}}
+            </el-form-item>
+          </el-col>
+          <el-col :span="8" v-if="infoForm.contType === 'DistriDeal'">
+            <el-form-item label="经纪人">
+              {{infoForm.agencyList && infoForm.agencyList.length ? infoForm.agencyList[0].broker : ''}}
+            </el-form-item>
+          </el-col>
+          <el-col :span="8" v-if="infoForm.contType === 'DistriDeal'">
             <el-form-item label="分销协议编号">
               <div class="contNo-wrapper">
                 <div class="contNo">{{infoForm.contNo}}</div>
@@ -72,36 +87,21 @@
               </div>
             </el-form-item>
           </el-col>
-          <el-col :span="8">
+          <el-col :span="8" v-if="infoForm.contType === 'DistriDeal'">
             <el-form-item label="是否垫佣">
-              {{!!infoForm.isMat ? infoForm.isMat === 'Yes' ? '是' : '否' : ''}}
+              {{$root.dictAllName(infoForm.isMat, 'YesOrNoType')}}
             </el-form-item>
           </el-col>
-          <el-col :span="8">
-            <el-form-item label="报备信息">{{infoForm.projectCycle}}</el-form-item>
-          </el-col>
-          <el-col :span="8">
-            <el-form-item label="渠道公司">
-              {{infoForm.agencyList && infoForm.agencyList.length ? infoForm.agencyList[0].agencyName : ''}}
-            </el-form-item>
-          </el-col>
-          <el-col :span="8">
-            <el-form-item label="渠道等级">
-              {{infoForm.agencyList && infoForm.agencyList.length ? $root.dictAllName(infoForm.agencyList[0].channelLevel, 'ChannelLevel') : ''}}
-            </el-form-item>
-          </el-col>
-          <el-col :span="8">
-            <el-form-item label="经纪人">
-              {{infoForm.agencyList && infoForm.agencyList.length ? infoForm.agencyList[0].broker : ''}}
-            </el-form-item>
+          <el-col :span="8" v-if="infoForm.contType === 'DistriDeal'">
+            <el-form-item label="报备信息">{{infoForm.recordStr}}</el-form-item>
           </el-col>
           <el-col :span="8">
             <el-form-item label="备案情况">
-              {{!!infoForm.recordState ? infoForm.recordState === 'Has' ? '有' : '无' : ''}}
+              {{$root.dictAllName(infoForm.recordState, 'HasOrNoType')}}
             </el-form-item>
           </el-col>
           <el-col :span="8">
-            <el-form-item label="建筑面积">{{infoForm.house.area}}</el-form-item>
+            <el-form-item label="建筑面积">{{infoForm.area}}</el-form-item>
           </el-col>
           <el-col :span="8">
             <el-form-item label="户型">
@@ -113,10 +113,10 @@
             </el-form-item>
           </el-col>
           <el-col :span="8">
-            <el-form-item label="房产证/预售合同编号">{{infoForm.house.propertyNo}}</el-form-item>
+            <el-form-item label="房产证/预售合同编号">{{infoForm.propertyNo}}</el-form-item>
           </el-col>
           <el-col :span="16">
-            <el-form-item label="房产证地址">{{infoForm.house.address}}</el-form-item>
+            <el-form-item label="房产证地址">{{infoForm.address}}</el-form-item>
           </el-col>
           <el-col :span="8">
             <el-form-item label="现场销售">{{infoForm.sceneSales}}</el-form-item>
@@ -147,7 +147,7 @@
             <el-form-item label="签约日期">{{infoForm.signDate}}</el-form-item>
           </el-col>
           <el-col :span="8">
-            <el-form-item label="成交组织">{{infoForm.dealOrgId}}</el-form-item>
+            <el-form-item label="成交组织">{{infoForm.dealOrgName}}</el-form-item>
           </el-col>
           <el-col :span="8">
             <el-form-item label="录入人">{{infoForm.entryPerson}}</el-form-item>
@@ -183,7 +183,7 @@
         <el-col>
           <el-table
             class="ih-table"
-            :data="infoForm.offerNoticeVO">
+            :data="getOfferNoticeVO">
             <el-table-column prop="notificationType" label="名称" min-width="120">
               <template slot-scope="scope">
                 <div>{{$root.dictAllName(scope.row.notificationType, 'NotificationType')}}</div>
@@ -461,13 +461,12 @@
                 <IhUpload
                   :isCrop="false"
                   :isMove="false"
-                  :removePermi="true"
+                  :removePermi="false"
                   size="100px"
-                  :limit="10"
+                  :limit="scope.row.fileList.length"
                   :file-size="10"
-                  :file-list.sync="scope.row.defaultFileList"
-                  :upload-show="false"
-                  :file-type="scope.row.code"
+                  :file-list.sync="scope.row.fileList"
+                  :upload-show="!!scope.row.fileList.length"
                 ></IhUpload>
               </template>
             </el-table-column>
@@ -554,7 +553,8 @@
         name: '上传附件'
       }
     ]; // 锚点列表
-    currentActiveIndex: any =0; // 当前激活的nav
+    currentActiveIndex: any = 0; // 当前激活的nav
+    isCreated: any = false; // 当走了一次created后就置为true
 
     // 应收信息表格
     get receiveAchieveVO() {
@@ -577,65 +577,45 @@
       return arr;
     }
 
-    created() {
-      console.log('preview', this.pageData);
-      this.infoForm = this.pageData;
-      this.dealId = this.$route.query.id;
-      this.changeType = this.$route.query.type;
+    // 优惠告知书
+    get getOfferNoticeVO() {
+      let list: any = [];
+      if (this.pageData.offerNoticeVO && this.pageData.offerNoticeVO.length) {
+        list = [...this.pageData.offerNoticeVO];
+      }
+      if (this.pageData.currentPostData && this.pageData.currentPostData.noticeDealList && this.pageData.currentPostData.noticeDealList.length) {
+        this.pageData.currentPostData.noticeDealList.forEach((item: any) => {
+          list.push(
+            {
+              noticeAttachmentList: [], // 告知书附件
+              noticeNo: '————', // 优惠告知书编号 --- 暂时新增的没有
+              notificationStatus: null, // 告知书状态 --- 暂时新增的没有
+              notificationStatusName: '新增', // 告知书状态 --- 显示新增
+              notificationType: item.notificationType, // 告知书状态 --- 显示新增
+              paymentAmount: null, // 优惠金额
+              templateId: null, // 预览编号
+              templateType: item.templateType, // 模版类型 --- 显示新增
+            }
+          )
+        })
+      }
+      return list;
     }
 
-    // 跳转到指定索引的元素
-    goAnchor(id: any, index: any) {
-      this.$nextTick(() => {
-        // 获取目标的 offsetTop
-        let selector = `#anchor-${id}`;
-        let dom = document.querySelector(selector) as any;
-        const targetOffsetTop = dom ? dom.offsetTop - 60 : 0;
-        // console.log('targetOffsetTop:', targetOffsetTop);
-        // 获取当前 offsetTop
-        let mainDom =  document.querySelector('.el-main') as any;
-        let scrollTop = mainDom ? mainDom.scrollTop : 0;
-        // console.log('scrollTop:', scrollTop);
-        // 定义一次跳 50 个像素，数字越大跳得越快，但是会有掉帧得感觉，步子迈大了会扯到蛋
-        const STEP = 50;
-        // 定义往下滑函数
-        function smoothDown() {
-          // 如果当前 scrollTop 小于 targetOffsetTop 说明视口还没滑到指定位置
-          if (scrollTop < targetOffsetTop) {
-            // 如果和目标相差距离大于等于 STEP 就跳 STEP
-            // 否则直接跳到目标点，目标是为了防止跳过了。
-            if (targetOffsetTop - scrollTop >= STEP) {
-              scrollTop += STEP;
-            } else {
-              scrollTop = targetOffsetTop;
-            }
-            mainDom.scrollTop = scrollTop;
-            // 关于 requestAnimationFrame 可以自己查一下，在这种场景下，相比 setInterval 性价比更高
-            window.requestAnimationFrame(smoothDown);
-          }
-        }
-        // 定义往上滑函数
-        function smoothUp() {
-          if (scrollTop > targetOffsetTop) {
-            if (scrollTop - targetOffsetTop >= STEP) {
-              scrollTop -= STEP;
-            } else {
-              scrollTop = targetOffsetTop;
-            }
-            mainDom.scrollTop = scrollTop;
-            window.requestAnimationFrame(smoothUp);
-          }
-        }
-        // 判断是往下滑还是往上滑
-        if (scrollTop > targetOffsetTop) {
-          // 往上滑
-          smoothUp();
-        } else {
-          // 往下滑
-          smoothDown();
-        }
-        this.currentActiveIndex = index;
-      })
+    created() {
+      // console.log('preview', this.pageData);
+      this.infoForm = (this as any).$tool.deepClone(this.pageData);
+      this.dealId = this.$route.query.id;
+      this.changeType = this.$route.query.type;
+      this.isCreated = true;
+    }
+
+    // 重新赋值
+    activated() {
+      // console.log('activated', this.pageData);
+      if (this.isCreated) {
+        this.infoForm = (this as any).$tool.deepClone(this.pageData);
+      }
     }
 
     // 预览-优惠告知书
@@ -648,7 +628,7 @@
 
     // 保存/提交功能
     async handleSubmit(type: any = '') {
-      console.log(type);
+      // console.log(type);
       if (!type) return;
       let postData: any = this.pageData.currentPostData;
       postData.dealAddInputVO.status = type === 'save' ? 'Draft' : 'PlatformClerkUnreview';
@@ -772,6 +752,60 @@
         }
       });
       return sums;
+    }
+
+    // 跳转到指定索引的元素
+    goAnchor(id: any, index: any) {
+      this.$nextTick(() => {
+        // 获取目标的 offsetTop
+        let selector = `#anchor-${id}`;
+        let dom = document.querySelector(selector) as any;
+        const targetOffsetTop = dom ? dom.offsetTop - 60 : 0;
+        // console.log('targetOffsetTop:', targetOffsetTop);
+        // 获取当前 offsetTop
+        let mainDom =  document.querySelector('.el-main') as any;
+        let scrollTop = mainDom ? mainDom.scrollTop : 0;
+        // console.log('scrollTop:', scrollTop);
+        // 定义一次跳 50 个像素，数字越大跳得越快，但是会有掉帧得感觉，步子迈大了会扯到蛋
+        const STEP = 50;
+        // 定义往下滑函数
+        function smoothDown() {
+          // 如果当前 scrollTop 小于 targetOffsetTop 说明视口还没滑到指定位置
+          if (scrollTop < targetOffsetTop) {
+            // 如果和目标相差距离大于等于 STEP 就跳 STEP
+            // 否则直接跳到目标点，目标是为了防止跳过了。
+            if (targetOffsetTop - scrollTop >= STEP) {
+              scrollTop += STEP;
+            } else {
+              scrollTop = targetOffsetTop;
+            }
+            mainDom.scrollTop = scrollTop;
+            // 关于 requestAnimationFrame 可以自己查一下，在这种场景下，相比 setInterval 性价比更高
+            window.requestAnimationFrame(smoothDown);
+          }
+        }
+        // 定义往上滑函数
+        function smoothUp() {
+          if (scrollTop > targetOffsetTop) {
+            if (scrollTop - targetOffsetTop >= STEP) {
+              scrollTop -= STEP;
+            } else {
+              scrollTop = targetOffsetTop;
+            }
+            mainDom.scrollTop = scrollTop;
+            window.requestAnimationFrame(smoothUp);
+          }
+        }
+        // 判断是往下滑还是往上滑
+        if (scrollTop > targetOffsetTop) {
+          // 往上滑
+          smoothUp();
+        } else {
+          // 往下滑
+          smoothDown();
+        }
+        this.currentActiveIndex = index;
+      })
     }
   }
 </script>
