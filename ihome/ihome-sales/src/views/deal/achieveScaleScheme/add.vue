@@ -1,10 +1,10 @@
 <!--
- * @Descripttion: 
+ * @Description:
  * @version: 
  * @Author: lsj
  * @Date: 2020-10-30 16:38:23
  * @LastEditors: lsj
- * @LastEditTime: 2020-10-30 16:38:23
+ * @LastEditTime: 2021-01-22 09:29:16
 -->
 <template>
   <ih-page class="text-left">
@@ -57,8 +57,12 @@
               clearable
               placeholder="请选择"
               class="width--100">
-              <el-option label="是" value="Yes"></el-option>
-              <el-option label="否" value="No"></el-option>
+              <el-option
+                v-for="item in $root.dictAllList('YesOrNoType')"
+                :key="item.code"
+                :label="item.name"
+                :value="item.code"
+              ></el-option>
             </el-select>
           </el-form-item>
         </el-col>
@@ -85,11 +89,16 @@
             <el-select
               v-model="postData.isSame"
               @change="handleChangeIsSame"
-              clearable
+              :clearable="!['DistriModel', 'TotalBagModel'].includes(postData.modelCode)"
+              :disabled="['DistriModel', 'TotalBagModel'].includes(postData.modelCode)"
               placeholder="请选择"
               class="width--100">
-              <el-option label="是" value="Yes"></el-option>
-              <el-option label="否" value="No"></el-option>
+              <el-option
+                v-for="item in $root.dictAllList('YesOrNoType')"
+                :key="item.code"
+                :label="item.name"
+                :value="item.code"
+              ></el-option>
             </el-select>
           </el-form-item>
         </el-col>
@@ -100,8 +109,12 @@
               clearable
               placeholder="请选择"
               class="width--100">
-              <el-option label="是" value="Yes"></el-option>
-              <el-option label="否" value="No"></el-option>
+              <el-option
+                v-for="item in $root.dictAllList('YesOrNoType')"
+                :key="item.code"
+                :label="item.name"
+                :value="item.code"
+              ></el-option>
             </el-select>
           </el-form-item>
         </el-col>
@@ -123,8 +136,12 @@
       label-width="0"
       class="demo-ruleForm form-padding-20">
       <div class="add-all-wrapper">
-        <el-button type="success" @click="addPerformance('TotalBag')">添加总包</el-button>
-        <el-button type="success" @click="addPerformance('Distri')">添加分销</el-button>
+        <el-button
+          v-if="postData.modelCode !== 'DistriModel'"
+          type="success" @click="addPerformance('TotalBag')">添加总包</el-button>
+        <el-button
+          v-if="postData.modelCode !== 'TotalBagModel'"
+          type="success" @click="addPerformance('Distri')">添加分销</el-button>
       </div>
       <el-table
         class="ih-table"
@@ -400,7 +417,7 @@
 
     // 分销同步总包逻辑
     handleChangeIsSame(value: any) {
-      console.log('value', value);
+      // console.log('value', value);
       if (value === 'Yes') {
         // 同步
         if (this.tableModel.tableData && this.tableModel.tableData.length > 0) {
@@ -489,10 +506,16 @@
 
     // 改变业务模式
     async handleChange(value: any) {
-      console.log('valuevalue', value);
+      // console.log('valuevalue', value);
       this.postData.contType = null;
       this.getByNameList = [];
       if (value) {
+        // 纯总包/分销的时候，分销与总包一致置为disabled且为否
+        if (['DistriModel', 'TotalBagModel'].includes(this.postData.modelCode)) {
+          this.postData.isSame = 'No';
+        } else {
+          this.postData.isSame = null;
+        }
         await this.getModelContTypeList();
       }
     }
@@ -562,7 +585,7 @@
 
     // 删除总包/分销
     async deleteAdd(scope: any) {
-      console.log(scope);
+      // console.log(scope);
       try {
         await this.$confirm("是否确定删除?", "提示");
         if (this.tableModel.tableData && this.tableModel.tableData.length > 0) {
@@ -632,7 +655,7 @@
     // 改变角色选项时的逻辑
     handleChangeRole(value: any, scope: any) {
       // console.log('eeee', value);
-      console.log('scope', scope);
+      // console.log('scope', scope);
       if (value) {
         if (value === scope.row.missingRole) {
           scope.row.missingRole = null;
