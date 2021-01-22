@@ -4,7 +4,7 @@
  * @Author: zyc
  * @Date: 2020-06-22 16:44:13
  * @LastEditors: zyc
- * @LastEditTime: 2021-01-06 14:38:09
+ * @LastEditTime: 2021-01-22 11:25:11
 --> 
 <template >
   <div class="main">
@@ -23,8 +23,15 @@
       ref="ruleForm"
       label-width="100px"
     >
+      <h3
+        style="text-align: center; margin: 10px; color: red"
+        v-if="env != 'prd'"
+      >
+        {{ envName }}
+      </h3>
       <h3 style="text-align: center; margin: 10px">居恒新房分销系统·登录</h3>
-      <br>
+
+      <br />
       <el-form-item label="账号" prop="username">
         <el-input placeholder="账号" v-model="ruleForm.username"></el-input>
       </el-form-item>
@@ -54,11 +61,14 @@ import { Component, Vue } from "vue-property-decorator";
 import { UserModule } from "../store/modules/user";
 import { Form as ElForm } from "element-ui";
 import { defaultMountApp } from "../setting";
+import { get_sessionUser_getSystemParam } from "../api/system/index";
 @Component({
   components: {},
 })
 export default class Login extends Vue {
   loading: boolean = false;
+  env = "prd";
+  envName = "";
   ruleForm: any = {
     username: null,
     password: null,
@@ -106,6 +116,13 @@ export default class Login extends Vue {
   resetForm(formName: any) {
     const that: any = this;
     that.$refs[formName].resetFields();
+  }
+  async created() {
+    const res: any = await get_sessionUser_getSystemParam();
+    if (res?.env) {
+      this.env = res.env;
+      this.envName = res.envName;
+    }
   }
 }
 </script>

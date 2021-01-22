@@ -4,7 +4,7 @@
  * @Author: wwq
  * @Date: 2020-09-25 17:59:09
  * @LastEditors: wwq
- * @LastEditTime: 2021-01-15 12:26:08
+ * @LastEditTime: 2021-01-22 17:20:58
 -->
 <template>
   <ih-page>
@@ -12,7 +12,7 @@
       <p class="ih-info-title">基础信息</p>
       <el-form
         ref="form"
-        label-width="120px"
+        label-width="135px"
         :model="resPageInfo"
         :rules="rules"
       >
@@ -166,6 +166,28 @@
                 v-model="resPageInfo.inputUserName"
                 placeholder="录入人"
               ></el-input>
+            </el-form-item>
+          </el-col>
+          <el-col :span='8'>
+            <el-form-item
+              label="保利系统内开发商"
+              prop="isPolyDeveloper"
+            >
+              <el-select
+                v-model="resPageInfo.isPolyDeveloper"
+                clearable
+                placeholder="请选择类型"
+                class="width--100"
+              >
+                <el-option
+                  label="是"
+                  :value="1"
+                ></el-option>
+                <el-option
+                  label="否"
+                  :value="0"
+                ></el-option>
+              </el-select>
             </el-form-item>
           </el-col>
         </el-row>
@@ -442,6 +464,7 @@ export default class Edit extends Vue {
     attachmentList: [],
     remark: null,
     reason: null,
+    isPolyDeveloper: null,
     provinceOption: [],
   };
   fileListType: any = [];
@@ -478,6 +501,13 @@ export default class Edit extends Vue {
       { required: true, message: "请选择省市区", trigger: "change" },
     ],
     address: [{ required: true, message: "请填写住所", trigger: "change" }],
+    isPolyDeveloper: [
+      {
+        required: true,
+        message: "请选择是否保利系统内开发商",
+        trigger: "change",
+      },
+    ],
   };
 
   searchOpen = true;

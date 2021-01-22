@@ -4,7 +4,7 @@
  * @Author: wwq
  * @Date: 2020-12-03 10:50:26
  * @LastEditors: wwq
- * @LastEditTime: 2021-01-21 19:24:59
+ * @LastEditTime: 2021-01-22 14:28:50
 -->
 <template>
   <el-dialog
@@ -13,7 +13,7 @@
     :close-on-click-modal="false"
     :close-on-press-escape="false"
     :before-close="cancel"
-    width="80%"
+    width="85%"
     class="dialog text-center"
     :title="`${form.termCalcVo.termName}联动业务留存率测算表`"
   >
@@ -384,9 +384,9 @@ export default class CalculationDialog extends Vue {
         }
       });
     }
-    data.calcComplateVO.estimatedPadCommission = this.$math.div(
-      this.$math.multi(num, this.$math.div(val, 100)),
-      10000
+    data.calcComplateVO.estimatedPadCommission = this.$math.tofixed(
+      (num * (Number(val) / 100)) / 10000,
+      6
     );
   }
 
