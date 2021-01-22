@@ -1976,16 +1976,18 @@
       // console.log('改变房号', value);
       this.resetData(); // 重置数据
       if (value) {
-        this.initPageById(this.baseInfoByTerm.termId, value);
+        this.initPageById(this.baseInfoByTerm.termId, value, this.postData.propertyType);
       }
     }
 
     // 根据项目周期和房号初始化页面数据
-    async initPageById(cycleId: any, roomId: any) {
-      if (!cycleId || !roomId) return;
+    async initPageById(cycleId: any, roomId: any, propertyType: any = '') {
+      if (!cycleId || !roomId || !propertyType) return;
       let params: any = {
         cycleId: cycleId,
-        roomId: roomId
+        roomId: roomId,
+        isMainDeal: true, // 是否主成交
+        property: propertyType, // 物业类型
       };
       // const loading = this.$loading({
       //   lock: true,

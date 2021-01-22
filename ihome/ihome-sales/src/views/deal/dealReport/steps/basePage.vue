@@ -1517,7 +1517,7 @@
       // 通过项目周期id获取基础信息
       await this.getBaseDealInfo(res.cycleId);
       // 根据项目周期和房号初始化页面数据
-      await this.initPageById(res.cycleId, res.house.roomId);
+      await this.initPageById(res.cycleId, res.house.roomId, res.house.propertyType);
     }
 
     // 调整收派金额信息
@@ -1556,11 +1556,13 @@
     }
 
     // 根据项目周期和房号初始化页面数据
-    async initPageById(cycleId: any, roomId: any) {
-      if (!cycleId || !roomId) return;
+    async initPageById(cycleId: any, roomId: any, propertyType: any = '') {
+      if (!cycleId || !roomId || !propertyType) return;
       let params: any = {
         cycleId: cycleId,
-        roomId: roomId
+        roomId: roomId,
+        isMainDeal: false, // 是否主成交
+        property: propertyType, // 物业类型
       };
       let baseInfo: any = await post_pageData_initBasic(params);
       this.baseInfoInDeal = JSON.parse(JSON.stringify(baseInfo || '{}'));
