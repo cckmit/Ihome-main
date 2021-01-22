@@ -257,9 +257,6 @@
   import {
     get_preferential_getListByTermId__termId
   } from "@/api/project";
-  import {
-    post_suppDeal_previewEntryBasicInfChange, // 预览录入基础信息变更
-  } from  "@/api/deal";
   import {Form as ElForm} from "element-ui";
   import {NoRepeatHttp} from "ihome-common/util/aop/no-repeat-http";
 
@@ -402,20 +399,13 @@
     @NoRepeatHttp()
     async submitPreview(valid: any) {
       if (valid) {
-        let postData: any = null;
         // 补充成交类型
         switch (this.pageData.changeTypeByDeal) {
           case "ChangeBasicInf":
             // 变更基础信息
-            postData = await this.initBaseData();
             this.$emit('next', 'next', {
               ...this.pageData,
-              currentPostData: postData
-            });
-            await post_suppDeal_previewEntryBasicInfChange(postData);
-            this.$emit('next', 'next', {
-              ...this.pageData,
-              currentPostData: postData
+              noticeDealList: this.initNoticeData(),
             });
             break
           case "ChangeAchieveInf":
@@ -501,45 +491,6 @@
         )
       }
       return tempList;
-    }
-
-    // 整合基础信息提交数据
-    initBaseData() {
-      let dataObj: any = {
-        agencyVO: [], // 中介信息
-        customerVO: this.pageData.customerList, // 客户信息
-        dealAddInputVO: {
-          parentId: this.pageData.parentId, // 主成交id
-          signDate: this.pageData.signDate,
-          signType: this.pageData.signType,
-          stage: this.pageData.stage,
-          status: null, // 最后点击提交/保存的时候才会赋值
-          subscribeDate: this.pageData.subscribeDate,
-        }, // 主成交信息
-        documentVO: this.getDocumentList(this.pageData.uploadDocumentList), // 成交附件信息
-        houseAddInputVO: {
-          address: this.pageData.address,
-          area: this.pageData.area,
-          buildingId: this.pageData.buildingId,
-          hall: this.pageData.hall,
-          propertyNo: this.pageData.propertyNo,
-          room: this.pageData.room,
-          roomId: this.pageData.roomId,
-          roomNo: this.pageData.roomNo,
-          toilet: this.pageData.toilet
-        },
-        noticeDealList: this.initNoticeData(),
-      }
-      if (this.pageData.agencyId) {
-        dataObj.agencyVO.push(
-          {
-            agencyId: this.pageData.agencyId,
-            brokerId: this.pageData.brokerId,
-            channelLevel: this.pageData.channelLevel
-          }
-        )
-      }
-      return dataObj;
     }
 
     // 获取附件信息

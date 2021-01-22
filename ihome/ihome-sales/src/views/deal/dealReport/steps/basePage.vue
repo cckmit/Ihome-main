@@ -507,7 +507,7 @@
       <el-col>
         <div class="add-all-wrapper">
           <el-button
-            v-if="!['ChangeInternalAchieveInf'].includes(changeType)"
+            v-if="!['ChangeInternalAchieveInf'].includes(changeType) && postData.roomId"
             type="success" @click="handleAddCustomer">添加客户</el-button>
         </div>
         <el-table
@@ -874,7 +874,7 @@
     <div class="ih-type-wrapper">
       <div class="title">总包</div>
       <el-button
-        v-if="!['ChangeBasicInf'].includes(changeType) || postData.achieveTotalBagList.length"
+        v-if="!['ChangeBasicInf'].includes(changeType) && postData.achieveTotalBagList.length"
         type="success" @click="handleAddAchieve('total')">新增角色</el-button>
     </div>
     <el-row style="padding-left: 20px">
@@ -1097,14 +1097,14 @@
     </ih-dialog>
     <ih-dialog :show="dialogAddBroker" desc="选择渠道经纪人列表">
       <AddBroker
+        :data="postData.agencyId"
         @cancel="() => (dialogAddBroker = false)"
         @finish="
             (data) => {
               dialogAddBroker = false;
               finishAddBroker(data);
             }
-          "
-      />
+          "/>
     </ih-dialog>
     <ih-dialog :show="dialogEditDealAchieve" desc="新增/修改成交业绩">
       <EditDealAchieve
@@ -1130,6 +1130,7 @@
     post_pageData_initBasic, // 选择周期、房号后初始化页面
     post_pageData_recalculateAchieve, // 重算平台费用 --- 总包分销不一致的情况
     post_pageData_recalculateAchieveComm, // 重算平台费用 --- 总包分销一致的情况
+    post_suppDeal_previewEntryBasicInfChange, // 预览录入基础信息变更
     post_suppDeal_toAddSuppDeal // 新增补充成交
   } from "@/api/deal";
   import {
@@ -1669,6 +1670,24 @@
       }
     }
 
+    // 选择经纪人
+    selectBroker() {
+      if (!this.postData.agencyId) {
+        this.$message.warning('请先选择渠道公司');
+        return;
+      }
+      this.dialogAddBroker = true;
+    }
+
+    // 确定选择经纪人
+    finishAddBroker(data: any) {
+      // console.log('data', data);
+      if(data && data.length) {
+        this.postData.brokerId= data[0].id; // 渠道经纪人Id
+        this.postData.brokerName= data[0].name; // 渠道经纪人
+      }
+    }
+
     // 是否垫佣是根据对应的分销协议来判断
     changeContNo(value: any) {
       this.postData.isMat = null;
@@ -1914,17 +1933,6 @@
           }
         });
       }
-    }
-
-    // 添加渠道经纪人
-    handleAddBroker() {
-      this.dialogAddBroker = true;
-    }
-
-    // 确定选择渠道经纪人
-    async finishAddBroker(data: any) {
-      console.log('data', data);
-      // this.addTotalPackageList = data;
     }
 
     // 选择收派套餐
@@ -2222,11 +2230,7 @@
     }
 
     // 底部按钮功能
-    handleClickBtn(btnType: any = '') {
-      let data: any = {
-        ...this.postData,
-        receiveAchieveVO: this.receiveAchieveVO
-      }
+    async handleClickBtn(btnType: any = '') {
       switch (btnType) {
         case "preview":
           // 预览
@@ -2235,14 +2239,107 @@
           break;
         case "next":
           // 下一步
-          console.log(456);
-          this.$emit("next", 'next', data);
+          await this.submitData();
           break;
         case "back":
           // 取消
           this.$emit("back");
           break;
       }
+    }
+
+    // 后端校验数据
+    async submitData() {
+      // 补充成交类型
+      let data: any = null;
+      switch (this.changeType) {
+        case "ChangeBasicInf":
+          // 变更基础信息
+          data = await this.initBaseData();
+          await post_suppDeal_previewEntryBasicInfChange(data);
+          this.$emit('next', 'next', {
+            ...this.postData,
+            receiveAchieveVO: this.receiveAchieveVO,
+            currentPostData: data
+          });
+          break
+        case "ChangeAchieveInf":
+          // 变更业绩信息
+          console.log(1);
+          break
+        case "RetreatRoom":
+          // 退房
+          console.log(1);
+          break
+        case "ChangeInternalAchieveInf":
+          // 内部员工业绩变更
+          console.log(1);
+          break
+      }
+    }
+
+    // 整合基础信息提交数据
+    initBaseData() {
+      let dataObj: any = {
+        agencyVO: [], // 中介信息
+        customerVO: this.postData.customerList, // 客户信息
+        dealAddInputVO: {
+          parentId: this.postData.parentId, // 主成交id
+          signDate: this.postData.signDate,
+          signType: this.postData.signType,
+          stage: this.postData.stage,
+          status: null, // 最后点击提交/保存的时候才会赋值
+          subscribeDate: this.postData.subscribeDate,
+        }, // 主成交信息
+        documentVO: this.getDocumentList(this.postData.uploadDocumentList), // 成交附件信息
+        houseAddInputVO: {
+          address: this.postData.address,
+          area: this.postData.area,
+          buildingId: this.postData.buildingId,
+          hall: this.postData.hall,
+          propertyNo: this.postData.propertyNo,
+          room: this.postData.room,
+          roomId: this.postData.roomId,
+          roomNo: this.postData.roomNo,
+          toilet: this.postData.toilet
+        },
+        noticeDealList: [],
+      }
+      if (this.postData.agencyId) {
+        dataObj.agencyVO.push(
+          {
+            agencyId: this.postData.agencyId,
+            brokerId: this.postData.brokerId,
+            channelLevel: this.postData.channelLevel
+          }
+        )
+      }
+      return dataObj;
+    }
+
+    // 获取附件信息
+    getDocumentList(list: any = []) {
+      let tempList: any = [];
+      if (list && list.length > 0) {
+        list.forEach((item: any) => {
+          // console.log(item);
+          if (item.fileList && item.fileList.length) {
+            item.fileList.forEach((L: any) => {
+              if (!L.exAuto) {
+                // 只获取新上传的
+                tempList.push(
+                  {
+                    fileId: L.fileId,
+                    fileName: L.name,
+                    fileType: item.code
+                  }
+                );
+              }
+            });
+          }
+        });
+      }
+      return tempList;
     }
 
     // 计算收派金额总计

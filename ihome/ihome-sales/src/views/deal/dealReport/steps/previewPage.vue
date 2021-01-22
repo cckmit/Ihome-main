@@ -583,8 +583,8 @@
       if (this.pageData.offerNoticeVO && this.pageData.offerNoticeVO.length) {
         list = [...this.pageData.offerNoticeVO];
       }
-      if (this.pageData.currentPostData && this.pageData.currentPostData.noticeDealList && this.pageData.currentPostData.noticeDealList.length) {
-        this.pageData.currentPostData.noticeDealList.forEach((item: any) => {
+      if (this.pageData && this.pageData.noticeDealList && this.pageData.noticeDealList.length) {
+        this.pageData.noticeDealList.forEach((item: any) => {
           list.push(
             {
               noticeAttachmentList: [], // 告知书附件
@@ -631,6 +631,7 @@
       // console.log(type);
       if (!type) return;
       let postData: any = this.pageData.currentPostData;
+      postData.noticeDealList = this.pageData?.noticeDealList;
       postData.dealAddInputVO.status = type === 'save' ? 'Draft' : 'PlatformClerkUnreview';
       // 补充成交类型
       switch (this.changeType) {
