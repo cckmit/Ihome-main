@@ -403,10 +403,6 @@
         switch (this.pageData.changeTypeByDeal) {
           case "ChangeBasicInf":
             // 变更基础信息
-            this.$emit('next', 'next', {
-              ...this.pageData,
-              noticeDealList: this.initNoticeData(),
-            });
             break
           case "ChangeAchieveInf":
             // 变更业绩信息
@@ -421,6 +417,10 @@
             console.log(1);
             break
         }
+        this.$emit('next', 'next', {
+          ...this.pageData,
+          noticeDealList: this.initNoticeData(),
+        });
       } else {
         this.$message.warning("请先填好数据再保存");
         return false;

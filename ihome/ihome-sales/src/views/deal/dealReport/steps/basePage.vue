@@ -1131,6 +1131,9 @@
     post_pageData_recalculateAchieve, // 重算平台费用 --- 总包分销不一致的情况
     post_pageData_recalculateAchieveComm, // 重算平台费用 --- 总包分销一致的情况
     post_suppDeal_previewEntryBasicInfChange, // 预览录入基础信息变更
+    post_suppDeal_previewEntryRetreatRoom, // 预览录入退房
+    post_suppDeal_previewEntryAchieveInfChange, // 预览录入业绩信息变更
+    post_suppDeal_previewEntryStaffAchieveChange, // 预览录入内部员工业绩变更
     post_suppDeal_toAddSuppDeal // 新增补充成交
   } from "@/api/deal";
   import {
@@ -1777,11 +1780,16 @@
       this.tempSignPrice = null;
       this.contNoList = []; // 分销协议编号
       this.packageIdsList = []; // ids
-      this.postData.customerVO = []; // 客户信息
-      this.postData.receiveVO = []; // 收派金额
+      this.postData.customerList = []; // 客户信息
+      this.postData.receiveList = []; // 收派金额
       this.tempReceiveVO = []; // 收派金额初始值
       this.postData.offerNoticeVO = []; // 优惠告知书
-      this.postData.documentVO = []; // 上传附件
+      this.postData.uploadDocumentList = []; // 上传附件
+      this.postData.calculation = 'Auto'; // 计算方式改为手动
+      this.postData.channelCommList = []; // 对外拆佣
+      this.postData.achieveTotalBagList = [];
+      this.postData.achieveDistriList = [];
+      this.selectableChannelIds = [];
       let list: any = ['contType', 'contNo', 'recordState', 'recordStr', 'area', 'room', 'hall',
         'toilet', 'propertyNo', 'signType', 'stage', 'returnRatio', 'subscribePrice', 'subscribeDate',
         'signPrice', 'signDate', 'dataSign', 'agencyId', 'agencyName', 'channelLevel', 'channelLevelName']
@@ -2259,21 +2267,39 @@
           await post_suppDeal_previewEntryBasicInfChange(data);
           this.$emit('next', 'next', {
             ...this.postData,
-            receiveAchieveVO: this.receiveAchieveVO,
+            // receiveAchieveVO: this.receiveAchieveVO,
             currentPostData: data
           });
           break
         case "ChangeAchieveInf":
-          // 变更业绩信息
-          console.log(1);
+          // 变更成交业绩信息
+          data = await this.initRetreatRoomData();
+          await post_suppDeal_previewEntryAchieveInfChange(data);
+          this.$emit('next', 'next', {
+            ...this.postData,
+            // receiveAchieveVO: this.receiveAchieveVO,
+            currentPostData: data
+          });
           break
         case "RetreatRoom":
           // 退房
-          console.log(1);
+          data = await this.initRetreatRoomData();
+          await post_suppDeal_previewEntryRetreatRoom(data);
+          this.$emit('next', 'next', {
+            ...this.postData,
+            // receiveAchieveVO: this.receiveAchieveVO,
+            currentPostData: data
+          });
           break
         case "ChangeInternalAchieveInf":
           // 内部员工业绩变更
-          console.log(1);
+          data = await this.initStaffAchieveData();
+          await post_suppDeal_previewEntryStaffAchieveChange(data);
+          this.$emit('next', 'next', {
+            ...this.postData,
+            // receiveAchieveVO: this.receiveAchieveVO,
+            currentPostData: data
+          });
           break
       }
     }
@@ -2313,6 +2339,72 @@
             channelLevel: this.postData.channelLevel
           }
         )
+      }
+      return dataObj;
+    }
+
+    // 整合退房 + 成交业绩数据
+    initRetreatRoomData() {
+      let dataObj: any = {
+        achieveVO: [...this.postData.achieveTotalBagList, ...this.postData.achieveDistriList], // 平台费用信息
+        agencyVO: [], // 中介信息
+        calculation: this.postData.calculation, // 计算方式
+        channelCommVO: this.postData.channelCommList, // 对外拆佣信息
+        customerVO: this.postData.customerList, // 客户信息
+        dealVO: {
+          ...this.postData,
+          noticeIds: [] // 优惠告知书Id
+        }, // 成交基础信息
+        documentVO: this.getDocumentList(this.postData.uploadDocumentList), // 成交附件信息
+        houseVO: {
+          address: this.postData.address,
+          area: this.postData.area,
+          buildingId: this.postData.buildingId,
+          hall: this.postData.hall,
+          propertyNo: this.postData.propertyNo,
+          room: this.postData.room,
+          roomId: this.postData.roomId,
+          roomNo: this.postData.roomNo,
+          toilet: this.postData.toilet
+        },
+        noticeDealList: [],
+        receiveAchieveVO: [], // 应收业绩信息
+        receiveVO: this.postData.receiveList, // 收派金额
+        parentId: this.postData.parentId, // 父成交Id
+        status: null, // 成交状态
+      }
+      if (this.postData.agencyId) {
+        dataObj.agencyVO.push(
+          {
+            agencyId: this.postData.agencyId,
+            brokerId: this.postData.brokerId,
+            channelLevel: this.postData.channelLevel
+          }
+        )
+      }
+      if (this.postData.offerNoticeVO && this.postData.offerNoticeVO.length) {
+        this.postData.offerNoticeVO.forEach((item: any) => {
+          dataObj.dealVO.noticeIds.push(item.noticeId);
+        });
+      }
+      if (this.receiveAchieveVO && this.receiveAchieveVO.length) {
+        dataObj.receiveAchieveVO.push(
+          {
+            receiveAmount: this.receiveAchieveVO[0].receiveAmount,
+            achieveAmount: this.receiveAchieveVO[0].achieveAmount,
+            otherChannelFees: this.receiveAchieveVO[0].otherChannelFees
+          }
+        )
+      }
+      return dataObj;
+    }
+
+    // 整合变更内部员工业绩数据
+    initStaffAchieveData() {
+      let dataObj: any = {
+        achieveVO: [...this.postData.achieveTotalBagList, ...this.postData.achieveDistriList], // 平台费用信息
+        parentId: this.postData.parentId, // 父成交Id
+        status: null, // 成交状态
       }
       return dataObj;
     }

@@ -498,6 +498,9 @@
   import {Component, Vue, Prop} from "vue-property-decorator";
   import {
     post_suppDeal_entryBasicInfChange, // 录入基础信息变更
+    post_suppDeal_entryAchieveInfChange, // 录入业绩信息变更
+    post_suppDeal_entryRetreatRoom, // 录入退房
+    post_suppDeal_entryStaffAchieveChange, // 录入内部员工业绩变更
   } from "@/api/deal";
 
   @Component({
@@ -631,25 +634,30 @@
       // console.log(type);
       if (!type) return;
       let postData: any = this.pageData.currentPostData;
-      postData.noticeDealList = this.pageData?.noticeDealList;
-      postData.dealAddInputVO.status = type === 'save' ? 'Draft' : 'PlatformClerkUnreview';
       // 补充成交类型
       switch (this.changeType) {
         case "ChangeBasicInf":
           // 变更基础信息
+          postData.noticeDealList = this.pageData?.noticeDealList;
+          postData.dealAddInputVO.status = type === 'save' ? 'Draft' : 'PlatformClerkUnreview';
           await post_suppDeal_entryBasicInfChange(postData);
           break
         case "ChangeAchieveInf":
           // 变更业绩信息
-          console.log(1);
+          postData.noticeDealList = this.pageData?.noticeDealList;
+          postData.status = type === 'save' ? 'Draft' : 'PlatformClerkUnreview';
+          await post_suppDeal_entryAchieveInfChange(postData);
           break
         case "RetreatRoom":
           // 退房
-          console.log(1);
+          postData.noticeDealList = this.pageData?.noticeDealList;
+          postData.status = type === 'save' ? 'Draft' : 'PlatformClerkUnreview';
+          await post_suppDeal_entryRetreatRoom(postData);
           break
         case "ChangeInternalAchieveInf":
           // 内部员工业绩变更
-          console.log(1);
+          postData.status = type === 'save' ? 'Draft' : 'PlatformClerkUnreview';
+          await post_suppDeal_entryStaffAchieveChange(postData);
           break
       }
     }
