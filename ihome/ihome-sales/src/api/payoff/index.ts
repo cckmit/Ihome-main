@@ -1,24 +1,8 @@
 /* eslint-disable */
 /* 此脚本由swagger-ui的api-docs自动生成，请勿修改 */
-//2021-1-16 5:50:37 ├F10: PM┤
+//2021-1-23 10:59:14 ├F10: AM┤
 import { request } from '@/api/base'
 const basePath = "/sales-api/payoff"
-/**计算成本归属*/
-export async function post_costApportion_calculateCostApportion(d?: any) {
-  return await request.post<any, any>(basePath + '/costApportion/calculateCostApportion', d)
-}
-/**查询成本归属列表*/
-export async function post_costApportion_getCostApportionList(d?: any) {
-  return await request.post<any, any>(basePath + '/costApportion/getCostApportionList', d)
-}
-/**限额模版*/
-export async function get_file_download_quota_stencil(d?: any) {
-  return await request.get<any, any>(basePath + '/file/download/quota/stencil', { params: d })
-}
-/**导出列表*/
-export async function post_file_excel_list(d?: any) {
-  return await request.post<any, any>(basePath + '/file/excel/list', d)
-}
 /**计算结佣统计数据*/
 export async function post_payApply_calculation_results(d?: any) {
   return await request.post<CalculationResultsResponse, CalculationResultsResponse>(basePath + '/payApply/calculation/results', d)
@@ -37,7 +21,7 @@ export async function post_payApply_financeReviewApply(d?: any) {
 }
 /**查询付款详情*/
 export async function get_payApply_get__id(d?: any) {
-  return await request.get<ShowPayApplyDetailVO, ShowPayApplyDetailVO>(basePath + '/payApply/get/{id}', { params: d })
+  return await request.get<ShowPayApplyDetailResponse, ShowPayApplyDetailResponse>(basePath + '/payApply/get/{id}', { params: d })
 }
 /**查询付款列表*/
 export async function post_payApply_getList(d?: any) {
@@ -62,26 +46,6 @@ export async function post_payApply_review_list(d?: any) {
 /**修改付款单*/
 export async function post_payApply_updateApply(d?: any) {
   return await request.post<boolean, boolean>(basePath + '/payApply/updateApply', d)
-}
-/**员工计算付款单金额*/
-export async function post_payApply_wechat_staff_calculation(d?: any) {
-  return await request.post<StaffWechatCalculationResponse, StaffWechatCalculationResponse>(basePath + '/payApply/wechat/staff/calculation', d)
-}
-/**员工创建付款申请单*/
-export async function post_payApply_wechat_staff_create(d?: any) {
-  return await request.post<number, number>(basePath + '/payApply/wechat/staff/create', d)
-}
-/**员工查询成交报告的结佣信息*/
-export async function post_payApply_wechat_staff_deal_details__dealNo(d?: any) {
-  return await request.post<StaffWechatDealDetailsResponse, StaffWechatDealDetailsResponse>(basePath + '/payApply/wechat/staff/deal/details/{dealNo}', d)
-}
-/**员工查询付款单详情*/
-export async function post_payApply_wechat_staff_detail__applyId(d?: any) {
-  return await request.post<StaffWechatDetailsResponse, StaffWechatDetailsResponse>(basePath + '/payApply/wechat/staff/detail/{applyId}', d)
-}
-/**员工查询结佣信息*/
-export async function post_payApply_wechat_staff_list(d?: any) {
-  return await request.post<any, any>(basePath + '/payApply/wechat/staff/list', d)
 }
 /**撤回提交*/
 export async function post_payApply_withdrawSubmit(d?: any) {
@@ -114,6 +78,10 @@ export async function get_payDeal__dealNo(d?: any) {
 /**创建抵扣项*/
 export async function post_payDeductDetail_create(d?: any) {
   return await request.post<number, number>(basePath + '/payDeductDetail/create', d)
+}
+/**查询未抵扣的信息*/
+export async function get_payDeductDetail_deduct_details__channelId(d?: any) {
+  return await request.get<PayDeductDetailInfo[], PayDeductDetailInfo[]>(basePath + '/payDeductDetail/deduct/details/{channelId}', { params: d })
 }
 /**查询结佣抵扣明细列表*/
 export async function post_payDeductDetail_getPayDeductDetailList(d?: any) {
@@ -149,15 +117,15 @@ export async function post_payDetail_update(d?: any) {
 }
 /**查询付款审核日志*/
 export async function get_processRecord_getProcessRecordList__applyId(d?: any) {
-  return await request.get<ProcessRecordVO[], ProcessRecordVO[]>(basePath + '/processRecord/getProcessRecordList/{applyId}', { params: d })
+  return await request.get<ProcessRecordResponse[], ProcessRecordResponse[]>(basePath + '/processRecord/getProcessRecordList/{applyId}', { params: d })
 }
 /**待同步的表单流程ID*/
 export async function get_processRecord_oa_flow_ids(d?: any) {
-  return await request.get<any[], any[]>(basePath + '/processRecord/oa/flow/ids', { params: d })
+  return await request.get<string[], string[]>(basePath + '/processRecord/oa/flow/ids', { params: d })
 }
 /**获取OA审核日志*/
 export async function get_processRecord_oa_review_log__applyId(d?: any) {
-  return await request.get<ProcessRecordVO[], ProcessRecordVO[]>(basePath + '/processRecord/oa/review/log/{applyId}', { params: d })
+  return await request.get<ProcessRecordResponse[], ProcessRecordResponse[]>(basePath + '/processRecord/oa/review/log/{applyId}', { params: d })
 }
 /**获取oa当前待办人*/
 export async function get_processRecord_oa_review_person__applyId(d?: any) {
@@ -188,12 +156,24 @@ export interface PageModel<T> {
   /**总记录数*/
   total: number;
 }
-/**CalculateCostApportionVO*/
-export interface CalculateCostApportionVO {
+/**ApplyUpdateRequest*/
+export interface ApplyUpdateRequest {
+  /**申请单编号*/
+  applyCode: string;
+  /**修改本期实际付款税额 = true , 没修改本期实际付款税额 = false*/
+  modify: boolean;
+  /**其他扣除项*/
+  otherDeductionDetailResponseList: OtherDeductionDetailResponse[];
+  /**付款单主体信息*/
+  payApplyVO: PayApplyAddVO;
+  /**结佣汇总清单*/
+  paySummaryDetailsResponseList: PaySummaryDetailsResponse[];
+  /**附件信息*/
+  documentList: DocumentAddVO[];
   /**待付款列表信息*/
   payApplyDetailList: PayApplyDetailAddVO[];
-  /**抵扣信息*/
-  payDeductDetailList: PayDeductDetailAddVO[];
+  /**本期需抵扣金额明细*/
+  payDeductDetailResponseList: PayDeductDetailResponse[];
 }
 /**CalculationResultsRequest*/
 export interface CalculationResultsRequest {
@@ -203,8 +183,12 @@ export interface CalculationResultsRequest {
   agencyName: string;
   /**发票税率*/
   taxRate: number;
+  /**其他扣除项*/
+  otherDeductionDetailCalculationRequestList: OtherDeductionDetailCalculationRequest[];
   /**待付款列表信息*/
   payApplyDetailList: PayApplyDetailAddVO[];
+  /**本期需抵扣金额明细*/
+  payDeductDetailCalculationRequestList: PayDeductDetailCalculationRequest[];
 }
 /**CalculationResultsResponse*/
 export interface CalculationResultsResponse {
@@ -212,24 +196,18 @@ export interface CalculationResultsResponse {
   actualAmount: number;
   /**本期申请支付金额*/
   applyAmount: number;
-  /**渠道公司周期结佣汇总*/
-  cycleCommissionList: CommissionSummary[];
-  /**本期应扣金额*/
+  /**本期扣除金额*/
   deductAmount: number;
+  /**(必填)扣除类别项*/
+  deductionCategory: string;
+  /**本期扣罚金额*/
+  finedAmount: number;
   /**不含税金额*/
   noTaxAmount: number;
-  /**累计抵扣*/
-  payDeductDetailList: PayDeductDetailVO[];
-  /**项目名字*/
-  projectName: string;
+  /**渠道公司周期结佣汇总*/
+  paySummaryDetailsResponses: PaySummaryDetailsResponse[];
   /**税额*/
   tax: number;
-  /**累计付款金额*/
-  totalPayFees: number;
-  /**累计扣除金额*/
-  totalPdeductFees: number;
-  /**付款累计的税额总和*/
-  totalTax: number;
   /**附件信息*/
   documentList: DocumentAddVO[];
 }
@@ -240,81 +218,6 @@ export interface ChangeStatusRequest {
   /**付款日期(yyyy-MM-dd)*/
   paymentDate: string;
 }
-/**CommissionSummary*/
-export interface CommissionSummary {
-  /**本期实际支付金额*/
-  actualAmount: number;
-  /**周期ID*/
-  cycleId: number;
-  /**周期名称*/
-  cycleName: string;
-  /**本期扣除金额*/
-  deductAmount: number;
-  /**历史累计发生金额*/
-  historyTotalPayFees: number;
-  /**历史累计扣除金额*/
-  historyTotalPdeductFees: number;
-  /**累计结佣次数*/
-  num: number;
-  /**所属项目ID*/
-  projectId: number;
-  /**所属项目名称*/
-  projectName: string;
-  /**累计发生金额(含本次)*/
-  totalPayFees: number;
-  /**累计扣除金额(含本次)*/
-  totalPdeductFees: number;
-}
-/**CostApportionQueryVO*/
-export interface CostApportionQueryVO {
-  /**付款单ID*/
-  applyId: number;
-  /**周期ID*/
-  cycleId: number;
-  /**(必填)当前页*/
-  pageNum: number;
-  /**(必填)每页条数*/
-  pageSize: number;
-}
-/**CostApportionVO*/
-export interface CostApportionVO {
-  /**付款单ID*/
-  applyId: number;
-  /**创建时间(yyyy-MM-dd HH:mm:ss)*/
-  createTime: string;
-  /**创建用户*/
-  createUser: number;
-  /**周期ID*/
-  cycleId: number;
-  /**周期名称*/
-  cycleName: string;
-  /**已删除*/
-  deleted: number;
-  /**ID*/
-  id: number;
-  /**成本归属区域*/
-  ownedAreaName: string;
-  /**成本归属门店*/
-  ownedStoreId: number;
-  /**成本归属门店*/
-  ownedStoreName: string;
-  /**应承担总成本*/
-  shouldTotalCost: number;
-  /**本次分摊成本金额（合计）*/
-  thisApportionCost: number;
-  /**本次分摊不含税金额 */
-  thisApportionNoTaxCost: number;
-  /**本次分摊税额*/
-  thisApportionTax: number;
-  /**累计已分摊成本金额*/
-  totalApportionCost: number;
-  /**未分摊成本金额*/
-  unapportionCost: number;
-  /**更新时间(yyyy-MM-dd HH:mm:ss)*/
-  updateTime: string;
-  /**更新用户*/
-  updateUser: number;
-}
 /**DocumentAddVO*/
 export interface DocumentAddVO {
   /**(必填)文件ID*/
@@ -324,8 +227,8 @@ export interface DocumentAddVO {
   /**(必填)文件类型(Contract-合同、BusinessLicense-营业执照、Invoice-发票、RequestForm-请款单、ConfirmDetail-开发签字确认明细、SetteDetail-结算明细、Other-其他)*/
   fileType: string;
 }
-/**DocumentVO*/
-export interface DocumentVO {
+/**DocumentResponse*/
+export interface DocumentResponse {
   /**付款申请ID*/
   applyId: number;
   /**创建时间(yyyy-MM-dd HH:mm:ss)*/
@@ -347,15 +250,25 @@ export interface DocumentVO {
   /**更新用户*/
   updateUser: number;
 }
-/**EntryApplyVO*/
-export interface EntryApplyVO {
+/**EntryApplyRequest*/
+export interface EntryApplyRequest {
+  /**修改本期实际付款税额 = true , 没修改本期实际付款税额 = false*/
+  modify: boolean;
   /**付款单主体信息*/
   payApplyVO: PayApplyAddVO;
+  /**附件信息*/
+  documentList: DocumentAddVO[];
+  /**其他扣除项*/
+  otherDeductionDetailCalculationRequestList: OtherDeductionDetailCalculationRequest[];
   /**待付款列表信息*/
   payApplyDetailList: PayApplyDetailAddVO[];
+  /**本期需抵扣金额明细*/
+  payDeductDetailCalculationRequestList: PayDeductDetailCalculationRequest[];
 }
 /**FinanceReviewApplyVO*/
 export interface FinanceReviewApplyVO {
+  /**修改本期实际付款税额 = true , 没修改本期实际付款税额 = false*/
+  modify: boolean;
   /**undefined*/
   payApplyDetailList: PayApplyDetailAddVO[];
   /**保存状态不能为空： 付款单主体信息*/
@@ -366,6 +279,10 @@ export interface FinanceReviewApplyVO {
   auditOpinion: string;
   /**保存操作不能为空： 附件信息*/
   documentList: DocumentAddVO[];
+  /**其他扣除项*/
+  otherDeductionDetailCalculationRequestList: OtherDeductionDetailCalculationRequest[];
+  /**本期需抵扣金额明细*/
+  payDeductDetailCalculationRequestList: PayDeductDetailCalculationRequest[];
   /**(必填)操作状态(TemporaryStorage-暂存、Through-通过、Reject-驳回、Saving-保存)*/
   payoffApproval: string;
 }
@@ -427,6 +344,10 @@ export interface OaAttorneysResponse {
   name: string;
   /**岗位*/
   orgPostName: string;
+  /**结果*/
+  result: string;
+  /**状态*/
+  status: boolean;
 }
 /**OaFlowInfoModel*/
 export interface OaFlowInfoModel {
@@ -437,47 +358,103 @@ export interface OaFlowInfoModel {
   /**OA流程ID*/
   summaryId: number;
 }
+/**OtherDeductionDetailCalculationRequest*/
+export interface OtherDeductionDetailCalculationRequest {
+  /**周期ID*/
+  cycleId: number;
+  /**周期名字*/
+  cycleName: string;
+  /**本期扣除金额*/
+  deductAmount: number;
+  /**不含税金额*/
+  noTaxAmount: number;
+  /**其他扣除类型(TaxDifference-税额差、Deduction-扣罚、Other-其他)*/
+  otherDeductionType: string;
+  /**备注*/
+  remark: string;
+  /**税额*/
+  tax: number;
+}
+/**OtherDeductionDetailResponse*/
+export interface OtherDeductionDetailResponse {
+  /**付款申请单编号*/
+  applyCode: string;
+  /**付款申请单ID*/
+  applyId: number;
+  /**创建时间(yyyy-MM-dd HH:mm:ss)*/
+  createTime: string;
+  /**创建用户*/
+  createUser: number;
+  /**周期ID*/
+  cycleId: number;
+  /**周期名字*/
+  cycleName: string;
+  /**本期扣除金额*/
+  deductAmount: number;
+  /**已删除*/
+  deleted: number;
+  /**ID*/
+  id: number;
+  /**不含税金额*/
+  noTaxAmount: number;
+  /**其他扣除类型(TaxDifference-税额差、Deduction-扣罚、Other-其他)*/
+  otherDeductionType: string;
+  /**备注*/
+  remark: string;
+  /**税额*/
+  tax: number;
+  /**更新时间(yyyy-MM-dd HH:mm:ss)*/
+  updateTime: string;
+  /**更新用户*/
+  updateUser: number;
+}
 /**PayApplyAddVO*/
 export interface PayApplyAddVO {
+  /**本期实际支付金额*/
+  actualAmount: number;
   /**渠道商ID*/
   agencyId: number;
   /**渠道商名称*/
   agencyName: string;
-  /**付款单编号*/
-  applyCode: string;
-  /**区域*/
-  area: string;
-  /**区域ID*/
-  areaId: number;
+  /**本期申请支付金额*/
+  applyAmount: number;
   /**所属组织ID*/
   belongOrgId: number;
+  /**所属组织*/
+  belongOrgName: string;
+  /**本期扣除金额*/
+  deductAmount: number;
+  /**(必填)扣除类别项*/
+  deductionCategory: string;
   /**(必填)申请说明*/
   description: string;
-  /**undefined*/
-  id: number;
-  /**发票类型(General_ZZ-增值税普通发票（纸质）、General_DZ-增值税普通发票（电子）、Special_ZZ-增值税专用发票(纸质）)*/
+  /**本期扣罚金额*/
+  finedAmount: number;
+  /**发票类型(General_ZZ-增值税普通发票（纸质）、General_DZ-增值税普通发票（电子）)*/
   invoiceType: string;
   /**制单人ID*/
   makerId: number;
   /**制单日期(yyyy-MM-dd)*/
   makerTime: string;
-  /**付款方式(Cash-现金、Other-其他)*/
-  paymentMethod: string;
+  /**本期实际付款金额（不含税）*/
+  noTaxAmount: number;
   /**项目ID*/
   projectId: number;
   /**项目*/
   projectName: string;
   /**渠道收款账号*/
   receiveAccount: string;
-  /**结算方式(Centralization-集中支付、OnlineBanking-网银支付)*/
-  settlementMethod: string;
   /**当前状态： 保存 = Unconfirm ；提交 = PlatformClerkUnreview(Unconfirm-附件待确认、PlatformClerkUnreview-待平台文员审核、OneLineUnreview-待一线业务审核、BranchBusinessManageUnreview-待分公司业管审核、BranchFinanceUnreview-待分公司财务审核、OAReviewing-OA流程审批中、ReviewPass-终审通过、ReviewReject-终审驳回、ConfirmingPay-支付确认中、PaymentSuccessful-支付成功、PaymentFailed-支付失败)*/
   status: string;
+  /**本期实际付款税额*/
+  tax: number;
   /**发票税率*/
   taxRate: number;
 }
 /**PayApplyDetailAddVO*/
 export interface PayApplyDetailAddVO {
+  /**实际付款金额*/
+  actualAmount: number;
   /**地址*/
   address: string;
   /**代理费实收*/
@@ -516,6 +493,8 @@ export interface PayApplyDetailAddVO {
   isMat: string;
   /**不含税金额*/
   noTaxAmount: number;
+  /**项目ID*/
+  projectId: number;
   /**本次支付比例(%)*/
   ratio: number;
   /**服务费实收*/
@@ -545,8 +524,10 @@ export interface PayApplyDetailAddVO {
   /**本次应扣*/
   thisDeduct: number;
 }
-/**PayApplyDetailVO*/
-export interface PayApplyDetailVO {
+/**PayApplyDetailResponse*/
+export interface PayApplyDetailResponse {
+  /**实际付款金额*/
+  actualAmount: number;
   /**地址*/
   address: string;
   /**代理费实收*/
@@ -565,8 +546,6 @@ export interface PayApplyDetailVO {
   ageUnpaidFees: number;
   /**代理费未结佣*/
   ageUnsetCommFees: number;
-  /**合计拆佣金额*/
-  allCommFees: number;
   /**付款单ID*/
   applyId: number;
   /**业务模式(TotalBagModel-纯总包模式、DistriModel-纯分销模式、TotalBagDistrModel-总包+分销下的分销模式)*/
@@ -597,6 +576,8 @@ export interface PayApplyDetailVO {
   isMat: string;
   /**不含税金额*/
   noTaxAmount: number;
+  /**项目ID*/
+  projectId: number;
   /**本次支付比例(%)*/
   ratio: number;
   /**服务费实收*/
@@ -656,7 +637,7 @@ export interface PayApplyListVO {
   /**扣除金额*/
   deductAmount: number;
   /**附件*/
-  documentList: DocumentVO[];
+  documentList: DocumentResponse[];
   /**付款单ID*/
   id: number;
   /**制单人*/
@@ -1002,10 +983,27 @@ export interface PayDeductDetailAddVO {
   /**抵扣项类别(PayoffDeducted-结佣抵扣、DirectRefund-直接退款)*/
   type: string;
 }
+/**PayDeductDetailCalculationRequest*/
+export interface PayDeductDetailCalculationRequest {
+  /**周期ID*/
+  cycleId: number;
+  /**周期名称*/
+  cycleName: string;
+  /**补充成交报告编号*/
+  dealCode: string;
+  /**抵扣金额*/
+  deductAmount: number;
+  /**抵扣项类别(ChangeBasicInf-变更基础信息、ChangeAchieveInf-变更业绩信息、RetreatRoom-退房、ChangeInternalAchieveInf-变更内部员工业绩)*/
+  deductType: string;
+  /**ID*/
+  id: number;
+  /**不含税金额*/
+  noTaxAmount: number;
+  /**税额*/
+  tax: number;
+}
 /**PayDeductDetailInfo*/
 export interface PayDeductDetailInfo {
-  /**渠道商名称*/
-  agencyName: string;
   /**周期名称*/
   cycleName: string;
   /**成交报告编号*/
@@ -1014,8 +1012,8 @@ export interface PayDeductDetailInfo {
   deductAmount: number;
   /**抵扣项类别(ChangeBasicInf-变更基础信息、ChangeAchieveInf-变更业绩信息、RetreatRoom-退房、ChangeInternalAchieveInf-变更内部员工业绩)*/
   deductType: string;
-  /**费用类型(ServiceFee-服务费、AgencyFee-代理费)*/
-  feeType: string;
+  /**id*/
+  id: number;
 }
 /**PayDeductDetailQueryVO*/
 export interface PayDeductDetailQueryVO {
@@ -1042,6 +1040,25 @@ export interface PayDeductDetailQueryVO {
   /**抵扣类型(PayoffDeducted-结佣抵扣、DirectRefund-直接退款)*/
   type: string;
 }
+/**PayDeductDetailResponse*/
+export interface PayDeductDetailResponse {
+  /**周期Id*/
+  cycleId: number;
+  /**周期名称*/
+  cycleName: string;
+  /**补充成交报告编号*/
+  dealCode: string;
+  /**抵扣金额*/
+  deductAmount: number;
+  /**抵扣项类别(ChangeBasicInf-变更基础信息、ChangeAchieveInf-变更业绩信息、RetreatRoom-退房、ChangeInternalAchieveInf-变更内部员工业绩)*/
+  deductType: string;
+  /**ID*/
+  id: number;
+  /**不含税金额*/
+  noTaxAmount: number;
+  /**税额*/
+  tax: number;
+}
 /**PayDeductDetailSummaryRequest*/
 export interface PayDeductDetailSummaryRequest {
   /**渠道商名称*/
@@ -1057,14 +1074,14 @@ export interface PayDeductDetailSummaryResponse {
   agencyName: string;
   /**已抵扣项费用*/
   deductedAmount: number;
-  /**抵扣中抵扣项费用(*/
+  /**抵扣中抵扣项费用*/
   deductingAmount: number;
   /**已产生抵扣项费用*/
   generatedAmount: number;
   /**序号*/
   rowNumber: number;
   /**待抵扣项费用*/
-  undeductionAMOUNT: number;
+  undeductionAmount: number;
 }
 /**PayDeductDetailVO*/
 export interface PayDeductDetailVO {
@@ -1074,6 +1091,8 @@ export interface PayDeductDetailVO {
   agencyName: string;
   /**变更后应结佣金额*/
   amount: number;
+  /**抵扣的付款单编号*/
+  applyCode: string;
   /**抵扣的付款单ID*/
   applyId: number;
   /**合同类型(DistriDeal-分销成交、NaturalVisitDeal-自然来访成交、SelfChannelDeal-自渠成交)*/
@@ -1086,9 +1105,9 @@ export interface PayDeductDetailVO {
   cycleId: number;
   /**周期名称*/
   cycleName: string;
-  /**成交报告编号*/
+  /**补充成交报告编号*/
   dealCode: string;
-  /**成交ID*/
+  /**补充报告*/
   dealId: number;
   /**抵扣金额*/
   deductAmount: number;
@@ -1108,10 +1127,14 @@ export interface PayDeductDetailVO {
   generateTime: string;
   /**ID*/
   id: number;
+  /**不含税金额*/
+  noTaxAmount: number;
   /**已结佣金额*/
   paidAmount: number;
-  /**抵扣状态(Undeduction-待抵扣、Deducting-抵扣审核中、Deducted-已抵扣)*/
+  /**状态(Undeduction-待抵扣、Deducting-抵扣审核中、Deducted-已抵扣)*/
   status: string;
+  /**税额*/
+  tax: number;
   /**抵扣类型(PayoffDeducted-结佣抵扣、DirectRefund-直接退款)*/
   type: string;
   /**更新时间(yyyy-MM-dd HH:mm:ss)*/
@@ -1147,6 +1170,8 @@ export interface PayDetailQueryResponse {
   companyName: string;
   /**ID*/
   id: number;
+  /**制单人ID*/
+  makerId: number;
   /**付款账户*/
   paymentAccount: string;
   /**支付编码*/
@@ -1239,55 +1264,45 @@ export interface PayDetailUpdateRequest {
   /**结算方式(Centralization-集中支付、OnlineBanking-网银支付)*/
   settlementMethod: string;
 }
-/**PayRecord*/
-export interface PayRecord {
-  /**结佣金额*/
-  actualAmount: number;
-  /**付款日期(yyyy-MM-dd)*/
-  paymentDate: string;
-  /**付款结算单号*/
-  settlementCode: string;
+/**PaySummaryContractInfo*/
+export interface PaySummaryContractInfo {
+  /**编号*/
+  contNo: string;
+  /**标题*/
+  title: string;
 }
-/**PaySummaryVO*/
-export interface PaySummaryVO {
-  /**本期实际支付金额*/
-  actualAmount: number;
-  /**渠道商ID*/
-  agencyId: number;
-  /**渠道商名称*/
-  agencyName: string;
-  /**付款单ID*/
+/**PaySummaryDetailsResponse*/
+export interface PaySummaryDetailsResponse {
+  /**付款申请单编号*/
+  applyCode: string;
+  /**付款申请单ID*/
   applyId: number;
-  /**创建时间(yyyy-MM-dd HH:mm:ss)*/
-  createTime: string;
-  /**创建用户*/
-  createUser: number;
+  /**累计实际付款金额（含税）*/
+  cumulativeActual: number;
+  /**累计申请付款金额（含税）*/
+  cumulativeApplication: number;
+  /**本期实际付款金额（含税）*/
+  currentActual: number;
+  /**本期申请付款金额（含税）*/
+  currentApplication: number;
+  /**本期扣除金额（含税）*/
+  currentDeduction: number;
+  /**本期扣罚金额（含税）*/
+  currentFined: number;
   /**周期ID*/
   cycleId: number;
-  /**周期名称*/
+  /**周期名字*/
   cycleName: string;
-  /**本期扣除金额*/
-  deductAmount: number;
-  /**已删除*/
-  deleted: number;
-  /**历史累计发生金额*/
-  historyTotalPayFees: number;
-  /**历史累计扣除金额*/
-  historyTotalPdeductFees: number;
-  /**ID*/
-  id: number;
-  /**累计结佣次数*/
-  num: number;
-  /**所属项目*/
-  projectName: string;
-  /**累计发生金额(含本次)*/
-  totalPayFees: number;
-  /**累计扣除金额(含本次)*/
-  totalPdeductFees: number;
-  /**更新时间(yyyy-MM-dd HH:mm:ss)*/
-  updateTime: string;
-  /**更新用户*/
-  updateUser: number;
+  /**累计结佣次数（不含本次）*/
+  grandTotalFrequency: number;
+  /**历史实际付款金额（含税）*/
+  historicalActualAmount: number;
+  /**历史申请付款金额（含税）*/
+  historicalApplicationAmount: number;
+  /**模式属性(SeriAll-服务费纯总包模式、AgenAll-代理费纯总包模式、SeriAllAgenAll-服务费纯总包+代理费纯总包模式、ServiDist-服务费纯分销模式、AgencyDist-代理费纯分销模式、AllAndDistBySeri-服务费总包+服务费分销模式、AllAndDistByAgen-代理费总包+代理费分销模式、All-服务费总包+代理费总包+服务费分销+代理费分销模式、ServiAllAServDistAAgenDist-服务费总包+服务费分销+代理费分销模式、ServiAllAAgenDist-服务费总包+代理费分销模式)*/
+  modeAttributes: string;
+  /**合同信息列表*/
+  paySummaryContractInfoList: PaySummaryContractInfo[];
 }
 /**ProcessNodeResponse*/
 export interface ProcessNodeResponse {
@@ -1296,8 +1311,8 @@ export interface ProcessNodeResponse {
   /**操作时间(yyyy-MM-dd HH:mm:ss)*/
   operateTime: string;
 }
-/**ProcessRecordVO*/
-export interface ProcessRecordVO {
+/**ProcessRecordResponse*/
+export interface ProcessRecordResponse {
   /**操作后状态(Unconfirm-附件待确认、PlatformClerkUnreview-待平台文员审核、OneLineUnreview-待一线业务审核、BranchBusinessManageUnreview-待分公司业管审核、BranchFinanceUnreview-待分公司财务审核、OAReviewing-OA流程审批中、ReviewPass-终审通过、ReviewReject-终审驳回、ConfirmingPay-支付确认中、PaymentSuccessful-支付成功、PaymentFailed-支付失败)*/
   afterStatus: string;
   /**付款单ID*/
@@ -1381,28 +1396,38 @@ export interface ReviewListResponse {
 }
 /**ReviewUpdateMainBody*/
 export interface ReviewUpdateMainBody {
+  /**本期实际支付金额*/
+  actualAmount: number;
   /**渠道商ID*/
   agencyId: number;
   /**渠道商名称*/
   agencyName: string;
+  /**本期申请支付金额*/
+  applyAmount: number;
   /**付款单编号*/
   applyCode: string;
-  /**区域*/
-  area: string;
-  /**区域ID*/
-  areaId: number;
+  /**付款单ID*/
+  applyId: number;
   /**所属组织ID*/
   belongOrgId: number;
+  /**所属组织*/
+  belongOrgName: string;
+  /**本期扣除金额*/
+  deductAmount: number;
+  /**(必填)扣除类别项*/
+  deductionCategory: string;
   /**(必填)申请说明*/
   description: string;
-  /**undefined*/
-  id: number;
-  /**发票类型(General_ZZ-增值税普通发票（纸质）、General_DZ-增值税普通发票（电子）、Special_ZZ-增值税专用发票(纸质）)*/
+  /**本期扣罚金额*/
+  finedAmount: number;
+  /**发票类型(General_ZZ-增值税普通发票（纸质）、General_DZ-增值税普通发票（电子）)*/
   invoiceType: string;
   /**制单人ID*/
   makerId: number;
   /**制单日期(yyyy-MM-dd)*/
   makerTime: string;
+  /**本期实际付款金额（不含税）*/
+  noTaxAmount: number;
   /**付款方ID*/
   payerId: number;
   /**付款方名字*/
@@ -1411,7 +1436,7 @@ export interface ReviewUpdateMainBody {
   paymentAccount: string;
   /**付款方式(Cash-现金、Other-其他)*/
   paymentMethod: string;
-  /**项目Id*/
+  /**项目ID*/
   projectId: number;
   /**项目*/
   projectName: string;
@@ -1421,53 +1446,59 @@ export interface ReviewUpdateMainBody {
   settlementMethod: string;
   /**当前状态： 保存 = Unconfirm ；提交 = PlatformClerkUnreview(Unconfirm-附件待确认、PlatformClerkUnreview-待平台文员审核、OneLineUnreview-待一线业务审核、BranchBusinessManageUnreview-待分公司业管审核、BranchFinanceUnreview-待分公司财务审核、OAReviewing-OA流程审批中、ReviewPass-终审通过、ReviewReject-终审驳回、ConfirmingPay-支付确认中、PaymentSuccessful-支付成功、PaymentFailed-支付失败)*/
   status: string;
+  /**本期实际付款税额*/
+  tax: number;
   /**发票税率*/
   taxRate: number;
 }
-/**ShowPayApplyDetailVO*/
-export interface ShowPayApplyDetailVO {
+/**ShowPayApplyDetailResponse*/
+export interface ShowPayApplyDetailResponse {
   /**本期实际支付金额*/
   actualAmount: number;
   /**渠道商ID*/
   agencyId: number;
-  /**渠道商名称*/
+  /**渠道商名字*/
   agencyName: string;
   /**本期申请支付金额*/
   applyAmount: number;
-  /**付款单编号*/
+  /**付款申请编号*/
   applyCode: string;
-  /**区域*/
-  area: string;
-  /**所属组织*/
+  /**事业部ID*/
   belongOrgId: number;
-  /**所属组织*/
+  /**事业部名字*/
   belongOrgName: string;
   /**创建时间(yyyy-MM-dd HH:mm:ss)*/
   createTime: string;
   /**创建用户*/
   createUser: number;
-  /**本期应扣*/
+  /**本期扣除金额*/
   deductAmount: number;
+  /**扣除类别项*/
+  deductionCategory: string;
   /**已删除*/
   deleted: number;
-  /**申请说明*/
+  /**经办部门意见*/
   description: string;
-  /**ID*/
+  /**本期扣罚金额*/
+  finedAmount: number;
+  /**id*/
   id: number;
-  /**发票类型(General_ZZ-增值税普通发票（纸质）、General_DZ-增值税普通发票（电子）、Special_ZZ-增值税专用发票(纸质）)*/
+  /**发票类型(General_ZZ-增值税普通发票（纸质）、General_DZ-增值税普通发票（电子）)*/
   invoiceType: string;
   /**制单人*/
   maker: string;
-  /**制单人*/
+  /**制单人ID*/
   makerId: number;
-  /**制单日期(yyyy-MM-dd)*/
+  /**制单人时间(yyyy-MM-dd)*/
   makerTime: string;
-  /**不含税金额*/
+  /**本期实际付款金额（不含税）*/
   noTaxAmount: number;
   /**OA流程ID*/
   oaFlowId: number;
-  /**累计抵扣信息*/
-  paySummaryList: PaySummaryVO[];
+  /**其他扣除项*/
+  otherDeductionDetailResponseList: OtherDeductionDetailResponse[];
+  /**结佣汇总清单*/
+  paySummaryDetailsResponseList: PaySummaryDetailsResponse[];
   /**付款方ID*/
   payerId: number;
   /**付款方名字*/
@@ -1478,9 +1509,9 @@ export interface ShowPayApplyDetailVO {
   paymentMethod: string;
   /**项目ID*/
   projectId: number;
-  /**项目*/
+  /**项目名字*/
   projectName: string;
-  /**渠道收款账号*/
+  /**渠道商账号*/
   receiveAccount: string;
   /**驳回标识(Yes-是、No-否)*/
   rejectionMark: string;
@@ -1488,236 +1519,22 @@ export interface ShowPayApplyDetailVO {
   settlementMethod: string;
   /**状态(Unconfirm-附件待确认、PlatformClerkUnreview-待平台文员审核、OneLineUnreview-待一线业务审核、BranchBusinessManageUnreview-待分公司业管审核、BranchFinanceUnreview-待分公司财务审核、OAReviewing-OA流程审批中、ReviewPass-终审通过、ReviewReject-终审驳回、ConfirmingPay-支付确认中、PaymentSuccessful-支付成功、PaymentFailed-支付失败)*/
   status: string;
-  /**税额*/
+  /**本期实际付款税额*/
   tax: number;
   /**发票税率*/
   taxRate: number;
-  /**累计付款金额*/
-  totalPayFees: number;
-  /**累计扣除金额*/
-  totalPdeductFees: number;
-  /**付款累计的税额总和（含本次）*/
-  totalTax: number;
   /**更新时间(yyyy-MM-dd HH:mm:ss)*/
   updateTime: string;
   /**更新用户*/
   updateUser: number;
-  /**成本归属列表信息*/
-  costApportionList: CostApportionVO[];
   /**附件信息*/
-  documentList: DocumentVO[];
+  documentList: DocumentResponse[];
   /**付款列表信息*/
-  payApplyDetailList: PayApplyDetailVO[];
-  /**抵扣项信息*/
-  payDeductDetailInfos: PayDeductDetailInfo[];
+  payApplyDetailList: PayApplyDetailResponse[];
+  /**本期需抵扣金额明细*/
+  payDeductDetailResponseList: PayDeductDetailResponse[];
   /**付款操作记录信息*/
-  processRecordList: ProcessRecordVO[];
-}
-/**StaffWechatCalculationRequest*/
-export interface StaffWechatCalculationRequest {
-  /**渠道商ID*/
-  agencyId: number;
-  /**渠道商名称*/
-  agencyName: string;
-  /**成交编号*/
-  dealCodes: string[];
-  /**发票类型(General_ZZ-增值税普通发票（纸质）、General_DZ-增值税普通发票（电子）、Special_ZZ-增值税专用发票(纸质）)*/
-  invoiceType: string;
-  /**项目ID*/
-  projectId: number;
-  /**项目*/
-  projectName: string;
-  /**渠道收款账号*/
-  receiveAccount: string;
-  /**发票税率*/
-  taxRate: number;
-}
-/**StaffWechatCalculationResponse*/
-export interface StaffWechatCalculationResponse {
-  /**本期实际支付金额*/
-  actualAmount: number;
-  /**附件*/
-  documentList: DocumentVO[];
-  /**不含税金额*/
-  noTaxAmount: number;
-  /**税额*/
-  tax: number;
-}
-/**StaffWechatCreateRequest*/
-export interface StaffWechatCreateRequest {
-  /**渠道商ID*/
-  agencyId: number;
-  /**渠道商名称*/
-  agencyName: string;
-  /**区域*/
-  area: string;
-  /**区域ID*/
-  areaId: number;
-  /**所属组织ID*/
-  belongOrgId: number;
-  /**成交编号*/
-  dealCodes: string[];
-  /**(必填)申请说明*/
-  description: string;
-  /**发票类型(General_ZZ-增值税普通发票（纸质）、General_DZ-增值税普通发票（电子）、Special_ZZ-增值税专用发票(纸质）)*/
-  invoiceType: string;
-  /**制单人ID*/
-  makerId: number;
-  /**制单日期(yyyy-MM-dd)*/
-  makerTime: string;
-  /**付款方式(Cash-现金、Other-其他)*/
-  paymentMethod: string;
-  /**项目ID*/
-  projectId: number;
-  /**项目*/
-  projectName: string;
-  /**渠道收款账号*/
-  receiveAccount: string;
-  /**结算方式(Centralization-集中支付、OnlineBanking-网银支付)*/
-  settlementMethod: string;
-  /**发票税率*/
-  taxRate: number;
-}
-/**StaffWechatDealDetailsResponse*/
-export interface StaffWechatDealDetailsResponse {
-  /**在结佣金*/
-  authenticChannelComm: number;
-  /**房号*/
-  buildingNo: string;
-  /**可结佣金（佣金总额）*/
-  channelComm: number;
-  /**客户名称*/
-  customerName: string;
-  /**联系方式*/
-  customerPhone: string;
-  /**已结佣金*/
-  paidChannelComm: number;
-  /**结佣记录*/
-  payRecordList: PayRecord[];
-  /**楼盘名称*/
-  proName: string;
-  /**物业类型(Residence-住宅、WorkShop-厂房、Apartment-公寓、Villa-别墅、Shop-商铺、Office-写字楼、Parking-车位、Other-其他)*/
-  propertyType: string;
-  /**房号*/
-  roomNo: string;
-  /**未结佣金*/
-  unpaidChannelComm: number;
-}
-/**StaffWechatDetailCycleSummaryResponse*/
-export interface StaffWechatDetailCycleSummaryResponse {
-  /**业务模式(TotalBagModel-纯总包模式、DistriModel-纯分销模式、TotalBagDistrModel-总包+分销下的分销模式)*/
-  busModel: string;
-  /** 周期实际结佣总金额*/
-  cycleTotalActualAmount: number;
-  /**周期结佣总金额*/
-  cycleTotalAmount: number;
-  /**周期结佣扣除总金额*/
-  cycleTotalDeductionAmount: number;
-  /**是否垫佣(Yes-是、No-否)*/
-  isMat: string;
-  /**明细列表*/
-  staffWechatDetailResponseList: StaffWechatDetailResponse[];
-}
-/**StaffWechatDetailResponse*/
-export interface StaffWechatDetailResponse {
-  /**成交编号*/
-  dealCode: string;
-  /**扣除原因*/
-  deductType: string;
-  /**本单本次应扣*/
-  thisDeduct: number;
-  /**本单实结总金额*/
-  totalActualAmount: number;
-  /**本单佣总金额*/
-  totalAmount: number;
-}
-/**StaffWechatDetailsResponse*/
-export interface StaffWechatDetailsResponse {
-  /**本期实际支付金额*/
-  actualAmount: number;
-  /**渠道商名称*/
-  agencyName: string;
-  /**本期申请支付金额*/
-  applyAmount: number;
-  /**付款单编号*/
-  applyCode: string;
-  /**本期应扣*/
-  deductAmount: number;
-  /**申请说明*/
-  description: string;
-  /**附件信息*/
-  documentList: DocumentVO[];
-  /**发票类型(General_ZZ-增值税普通发票（纸质）、General_DZ-增值税普通发票（电子）、Special_ZZ-增值税专用发票(纸质）)*/
-  invoiceType: string;
-  /**不含税金额*/
-  noTaxAmount: number;
-  /**项目*/
-  projectName: string;
-  /**渠道收款账号*/
-  receiveAccount: string;
-  /**明细信息*/
-  staffWechatDetailCycleSummaryResponseList: StaffWechatDetailCycleSummaryResponse[];
-  /**状态(Unconfirm-附件待确认、PlatformClerkUnreview-待平台文员审核、OneLineUnreview-待一线业务审核、BranchBusinessManageUnreview-待分公司业管审核、BranchFinanceUnreview-待分公司财务审核、OAReviewing-OA流程审批中、ReviewPass-终审通过、ReviewReject-终审驳回、ConfirmingPay-支付确认中、PaymentSuccessful-支付成功、PaymentFailed-支付失败)*/
-  status: string;
-  /**税额*/
-  tax: number;
-  /**发票税率*/
-  taxRate: number;
-}
-/**StaffWechatListRequest*/
-export interface StaffWechatListRequest {
-  /**渠道商Id*/
-  agencyId: number;
-  /**付款单编号*/
-  applyCode: string;
-  /**制单人*/
-  makerId: number;
-  /**(必填)当前页*/
-  pageNum: number;
-  /**(必填)每页条数*/
-  pageSize: number;
-  /**状态(Unconfirm-附件待确认、PlatformClerkUnreview-待平台文员审核、OneLineUnreview-待一线业务审核、BranchBusinessManageUnreview-待分公司业管审核、BranchFinanceUnreview-待分公司财务审核、OAReviewing-OA流程审批中、ReviewPass-终审通过、ReviewReject-终审驳回、ConfirmingPay-支付确认中、PaymentSuccessful-支付成功、PaymentFailed-支付失败)*/
-  status: string;
-}
-/**StaffWechatListResponse*/
-export interface StaffWechatListResponse {
-  /**实际支付金额*/
-  actualAmount: number;
-  /**渠道商名称*/
-  agencyName: string;
-  /**申请支付金额*/
-  applyAmount: number;
-  /**付款单编号*/
-  applyCode: string;
-  /**所属组织*/
-  belongOrgName: string;
-  /**所属组织Id*/
-  belongOrgid: number;
-  /**扣除金额*/
-  deductAmount: number;
-  /**付款单ID*/
-  id: number;
-  /**制单人*/
-  maker: string;
-  /**制单人*/
-  makerId: number;
-  /**制单日期(yyyy-MM-dd)*/
-  makerTime: string;
-  /**岗位*/
-  post: string;
-  /**驳回标识(Yes-是、No-否)*/
-  rejectionMark: string;
-  /**状态(Unconfirm-附件待确认、PlatformClerkUnreview-待平台文员审核、OneLineUnreview-待一线业务审核、BranchBusinessManageUnreview-待分公司业管审核、BranchFinanceUnreview-待分公司财务审核、OAReviewing-OA流程审批中、ReviewPass-终审通过、ReviewReject-终审驳回、ConfirmingPay-支付确认中、PaymentSuccessful-支付成功、PaymentFailed-支付失败)*/
-  status: string;
-}
-/**UpdateApplyVO*/
-export interface UpdateApplyVO {
-  /**付款单主体信息*/
-  payApplyVO: PayApplyAddVO;
-  /**附件信息*/
-  documentList: DocumentAddVO[];
-  /**待付款列表信息*/
-  payApplyDetailList: PayApplyDetailAddVO[];
+  processRecordResponseList: ProcessRecordResponse[];
 }
 /**WechatStaffPayDealListVO*/
 export interface WechatStaffPayDealListVO {
