@@ -29,7 +29,10 @@
               </el-select>
             </el-form-item>
           </el-col>
-          <el-col :span="12">
+          <el-col
+            :span="12"
+            class="text-right"
+          >
             <el-button
               type="primary"
               class="margin-bottom-17"
@@ -306,7 +309,10 @@
         </el-row>
         <el-row>
           <el-col :span="24">
-            <el-form-item label="代理费计付标准备注">
+            <el-form-item
+              label="代理费计付标准备注"
+              class="formItem"
+            >
               <el-input
                 show-word-limit
                 type="textarea"
@@ -320,7 +326,10 @@
         </el-row>
         <el-row>
           <el-col :span="24">
-            <el-form-item label="客户成交以及确认">
+            <el-form-item
+              label="客户成交以及确认"
+              class="formItem"
+            >
               <el-input
                 disabled
                 show-word-limit
@@ -390,7 +399,10 @@
         </el-row>
         <el-row>
           <el-col :span="12">
-            <el-form-item label="房屋未成交乙方退回代理费期限">
+            <el-form-item
+              label="房屋未成交乙方退回代理费期限"
+              class="formItem"
+            >
               <span
                 class="text-ellipsis"
                 :title="info.agencyFeeReturnTime"
@@ -398,7 +410,10 @@
             </el-form-item>
           </el-col>
           <el-col :span="12">
-            <el-form-item label="房屋未成交乙方退回代理费逾期违约金比例">
+            <el-form-item
+              label="房屋未成交乙方退回代理费逾期违约金比例"
+              class="formItem"
+            >
               <span
                 class="text-ellipsis"
                 :title="info.agencyFeeReturnRate"
@@ -732,20 +747,23 @@ export default class Apply extends Vue {
   }
 
   previewTop(row: any) {
-    const token: any = getToken();
-    axios({
-      method: "POST",
-      url: `/sales-api/project/distributContract/getPreViewOut/${row.agencyContrictId}`,
-      xsrfHeaderName: "Authorization",
-      headers: {
-        "Content-Type": "application/json",
-        Authorization: "bearer " + token,
-      },
-    }).then((res: any) => {
-      const arr = new Blob([res.data], { type: "application/pdf" });
-      const href = window.URL.createObjectURL(arr);
-      window.open(href);
-    });
+    // const token: any = getToken();
+    // axios({
+    //   method: "POST",
+    //   url: `/sales-api/project/distributContract/getPreViewOut/${row.agencyContrictId}`,
+    //   xsrfHeaderName: "Authorization",
+    //   headers: {
+    //     "Content-Type": "application/json",
+    //     Authorization: "bearer " + token,
+    //   },
+    // }).then((res: any) => {
+    //   const arr = new Blob([res.data], { type: "application/pdf" });
+    //   const href = window.URL.createObjectURL(arr);
+    //   window.open(href);
+    // });
+    window.open(
+      `/sales-api/sales-document-cover/file/browse/${row.scanningContract}`
+    );
   }
 
   channelAccountChange(val: any) {
@@ -815,5 +833,11 @@ export default class Apply extends Vue {
   display: flex;
   justify-content: flex-start;
   align-items: center;
+}
+
+.formItem {
+  /deep/ .el-form-item__label {
+    line-height: 20px;
+  }
 }
 </style>

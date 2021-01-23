@@ -4,7 +4,7 @@
  * @Author: wwq
  * @Date: 2020-12-02 20:13:07
  * @LastEditors: wwq
- * @LastEditTime: 2021-01-14 17:57:52
+ * @LastEditTime: 2021-01-23 09:17:37
 -->
 <template>
   <el-dialog
@@ -272,8 +272,8 @@
 <script lang="ts">
 import { Component, Vue, Prop, Watch } from "vue-property-decorator";
 import { get_distributContract_getDistri__agencyContrictId } from "@/api/project/index";
-import axios from "axios";
-import { getToken } from "ihome-common/util/cookies";
+// import axios from "axios";
+// import { getToken } from "ihome-common/util/cookies";
 
 @Component({
   components: {},
@@ -341,38 +341,41 @@ export default class AddContract extends Vue {
 
   // 预览电子版
   viewElectronic() {
-    const token: any = getToken();
-    axios({
-      method: "POST",
-      url: `/sales-api/project/distributContract/getPreView`,
-      xsrfHeaderName: "Authorization",
-      headers: {
-        "Content-Type": "application/json",
-        Authorization: "bearer " + token,
-      },
-      data: this.info,
-    }).then((res: any) => {
-      if (res?.data?.fileId) {
-        axios({
-          method: "POST",
-          url: `/sales-api/sales-document-cover/pdf/ftlToPdf/brow`,
-          xsrfHeaderName: "Authorization",
-          responseType: "blob",
-          headers: {
-            "Content-Type": "application/json",
-            Authorization: "bearer " + token,
-          },
-          data: {
-            data: res.data.parmas,
-            fileId: res.data.fileId,
-          },
-        }).then((item: any) => {
-          const arr = new Blob([item.data], { type: "application/pdf" });
-          const href = window.URL.createObjectURL(arr);
-          window.open(href);
-        });
-      }
-    });
+    // const token: any = getToken();
+    // axios({
+    //   method: "POST",
+    //   url: `/sales-api/project/distributContract/getPreView`,
+    //   xsrfHeaderName: "Authorization",
+    //   headers: {
+    //     "Content-Type": "application/json",
+    //     Authorization: "bearer " + token,
+    //   },
+    //   data: this.info,
+    // }).then((res: any) => {
+    //   if (res?.data?.fileId) {
+    //     axios({
+    //       method: "POST",
+    //       url: `/sales-api/sales-document-cover/pdf/ftlToPdf/brow`,
+    //       xsrfHeaderName: "Authorization",
+    //       responseType: "blob",
+    //       headers: {
+    //         "Content-Type": "application/json",
+    //         Authorization: "bearer " + token,
+    //       },
+    //       data: {
+    //         data: res.data.parmas,
+    //         fileId: res.data.fileId,
+    //       },
+    //     }).then((item: any) => {
+    //       const arr = new Blob([item.data], { type: "application/pdf" });
+    //       const href = window.URL.createObjectURL(arr);
+    //       window.open(href);
+    //     });
+    //   }
+    // });
+    window.open(
+      `/sales-api/sales-document-cover/file/browse/${this.info.fileId}`
+    );
   }
 }
 </script>
