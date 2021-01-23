@@ -419,14 +419,14 @@
           }
         })
       }
-      // 判断收派信息存在服务费的时候，是否有甲方/客户信息
-      data.forEach((item: any) => {
-        if (item.type === 'ServiceFee') {
-          if (!item.partyACustomer || !item.partyACustomerName) {
-            flag = false;
-          }
-        }
-      });
+      // 判断收派信息存在服务费的时候，是否有甲方/客户信息 --- 2021-01-23暂时取消判断
+      // data.forEach((item: any) => {
+      //   if (item.type === 'ServiceFee') {
+      //     if (!item.partyACustomer || !item.partyACustomerName) {
+      //       flag = false;
+      //     }
+      //   }
+      // });
       return flag;
     }
 

@@ -272,7 +272,7 @@
           </el-form-item>
         </el-col>
         <el-col :span="8">
-          <el-form-item label="户型">
+          <el-form-item label="户型" prop="room" required>
             <div class="home-type-wrapper">
               <div>
                 <el-input
@@ -421,7 +421,9 @@
         </el-col>
         <el-col :span="8">
           <el-form-item label="数据标志" prop="dataSign">
-            <el-input v-model="postData.dataSign" disabled></el-input>
+            <div class="div-disabled">
+              {{$root.dictAllName(postData.dataSign, 'DealDataFlag')}}
+            </div>
           </el-form-item>
         </el-col>
         <el-col :span="8" v-if="!!id">
@@ -1081,6 +1083,15 @@
     }
   })
   export default class EntryAchieveAllot extends Vue {
+    private validateRoom (rule: any, value: any, callback: any) {
+      if ([null, undefined, ""].includes(this.postData.room)
+        || [null, undefined, ""].includes(this.postData.hall)
+        || [null, undefined, ""].includes(this.postData.toilet)) {
+        return callback(new Error('户型信息不全'));
+      } else {
+        callback();
+      }
+    }
     @Prop({
       type: Function,
       default: null,
@@ -1255,6 +1266,9 @@
       ],
       area: [
         {required: true, message: "建筑面积必填", trigger: "change"},
+      ],
+      room: [
+        {validator: this.validateRoom, trigger: ["change", "blur"]}
       ],
       recordStr: [
         {required: true, message: "报备信息不能为空", trigger: "change"},
@@ -1818,7 +1832,10 @@
                 // 清空优惠告知书 --- 认筹周期需要自己手动添加
                 this.postData.offerNoticeVO = [];
                 // 认筹周期 --- 全部
-                this.dealStageList = JSON.parse(JSON.stringify(DealStageList));
+                // this.dealStageList = JSON.parse(JSON.stringify(DealStageList));
+                this.dealStageList = DealStageList.filter((item: any) => {
+                  return item.code !== 'Recognize';
+                });
                 break;
             }
           }
@@ -2032,15 +2049,15 @@
       // 签约日期
       this.postData.signDate = baseInfo.myReturnVO.dealVO?.signDate;
       // 数据标志
-      let dataFlagList: any = (this as any).$root.dictAllList('DealDataFlag');
-      this.postData.dataSign = null;
-      if (dataFlagList && dataFlagList.length > 0 && baseInfo.myReturnVO.dataSign) {
-        dataFlagList.forEach((list: any) => {
-          if (list.code === baseInfo.myReturnVO.dataSign) {
-            this.postData.dataSign = list.name;
-          }
-        });
-      }
+      // let dataFlagList: any = (this as any).$root.dictAllList('DealDataFlag');
+      this.postData.dataSign = baseInfo.myReturnVO.dataSign;
+      // if (dataFlagList && dataFlagList.length > 0 && baseInfo.myReturnVO.dataSign) {
+      //   dataFlagList.forEach((list: any) => {
+      //     if (list.code === baseInfo.myReturnVO.dataSign) {
+      //       this.postData.dataSign = list.name;
+      //     }
+      //   });
+      // }
       // 分销成交和非分销成交不一样
       if (baseInfo.contType === 'DistriDeal') {
         // 分销成交模式
@@ -3115,6 +3132,19 @@
     width: 100%;
     box-sizing: border-box;
     margin-bottom: 10px;
+  }
+
+  .div-disabled {
+    width: 100%;
+    border-radius: 4px;
+    border: 1px solid #E4E7ED;
+    background-color: #F5F7FA;
+    color: #C0C4CC;
+    cursor: not-allowed;
+    padding: 0 15px;
+    box-sizing: border-box;
+    height: 40px;
+    line-height: 40px;
   }
 
   .contNo-wrapper {
