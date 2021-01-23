@@ -23,15 +23,12 @@
       <el-row>
         <el-col :span="8" v-if="!!postData.dealCode">
           <el-form-item label="成交报告编号" :prop="!!postData.dealCode ? 'dealCode' : ' '">
-            <el-input
-              disabled
-              placeholder="成交报告编号"
-              v-model="postData.dealCode"/>
+            <el-input disabled v-model="postData.dealCode"/>
           </el-form-item>
         </el-col>
         <el-col :span="8">
           <el-form-item label="项目周期" prop="cycleId">
-            <el-input placeholder="请选择项目周期" readonly v-model="postData.cycleName" @click.native.prevent="selectProject">
+            <el-input readonly v-model="postData.cycleName" @click.native.prevent="selectProject">
               <el-button slot="append" icon="el-icon-search"></el-button>
             </el-input>
           </el-form-item>
@@ -41,7 +38,6 @@
             <el-select
               v-model="postData.businessType"
               disabled
-              placeholder="项目周期自动带出"
               class="width--100">
               <el-option
                 v-for="item in $root.dictAllList('BusinessModel')"
@@ -165,7 +161,6 @@
           <el-form-item label="合同类型" prop="contType">
             <el-select
               v-model="postData.contType"
-              :clearable="!baseInfoInDeal.hasRecord"
               :disabled="baseInfoInDeal.contType === 'DistriDeal' && baseInfoInDeal.hasRecord"
               placeholder="请选择合同类型"
               @change="changeContType"
@@ -184,8 +179,7 @@
             <div v-if="baseInfoInDeal.hasRecord">
               <el-input
                 v-model="postData.agencyName"
-                :disabled="baseInfoInDeal.hasRecord"
-                placeholder=""></el-input>
+                :disabled="baseInfoInDeal.hasRecord"></el-input>
             </div>
             <div v-else>
               <el-input
@@ -198,10 +192,7 @@
         </el-col>
         <el-col :span="8" v-if="postData.contType === 'DistriDeal'">
           <el-form-item label="渠道等级" :prop="postData.contType === 'DistriDeal' ? 'channelLevelName' : 'notEmpty'">
-            <el-input
-              v-model="postData.channelLevelName"
-              disabled
-              placeholder=""></el-input>
+            <el-input v-model="postData.channelLevelName" disabled></el-input>
           </el-form-item>
         </el-col>
         <el-col :span="8" v-if="postData.contType === 'DistriDeal'">
@@ -209,8 +200,7 @@
             <div v-if="baseInfoInDeal.hasRecord">
               <el-input
                 v-model="postData.brokerName"
-                :disabled="baseInfoInDeal.hasRecord"
-                placeholder=""></el-input>
+                :disabled="baseInfoInDeal.hasRecord"></el-input>
             </div>
             <div v-else>
               <el-input
@@ -226,7 +216,6 @@
             <div class="contNo-wrapper">
               <el-select
                 v-model="postData.contNo"
-                clearable
                 @change="changeContNo"
                 placeholder="请选择分销协议编号"
                 class="width--100">
@@ -259,10 +248,7 @@
         </el-col>
         <el-col :span="8" v-if="postData.contType === 'DistriDeal'">
           <el-form-item label="报备信息" :prop="postData.contType === 'DistriDeal' ? 'recordStr' : 'notEmpty'">
-            <el-input
-              v-model="postData.recordStr"
-              :disabled="baseInfoInDeal.hasRecord"
-              placeholder=""></el-input>
+            <el-input v-model="postData.recordStr" :disabled="baseInfoInDeal.hasRecord"></el-input>
           </el-form-item>
         </el-col>
         <el-col :span="8">
@@ -285,8 +271,7 @@
           <el-form-item label="建筑面积" prop="area">
             <el-input
               :disabled="isDisabled('area', 'houseVO')"
-              v-model="postData.area"
-              placeholder="请输入建筑面积"></el-input>
+              v-model="postData.area"></el-input>
           </el-form-item>
         </el-col>
         <el-col :span="8">
@@ -321,17 +306,17 @@
         </el-col>
         <el-col :span="8">
           <el-form-item label="房产证/预售合同编号">
-            <el-input v-model="postData.propertyNo" clearable placeholder="请输入房产证/预售合同编号"></el-input>
+            <el-input v-model="postData.propertyNo" clearable></el-input>
           </el-form-item>
         </el-col>
         <el-col :span="16">
           <el-form-item label="房产证地址">
-            <el-input v-model="postData.address" clearable placeholder="请输入房产证地址"></el-input>
+            <el-input v-model="postData.address" clearable></el-input>
           </el-form-item>
         </el-col>
         <el-col :span="8">
           <el-form-item label="现场销售">
-            <el-input v-model="postData.sceneSales" clearable placeholder="请输入现场销售"></el-input>
+            <el-input v-model="postData.sceneSales" clearable></el-input>
           </el-form-item>
         </el-col>
         <el-col :span="8">
@@ -369,9 +354,7 @@
         </el-col>
         <el-col :span="8" v-if="isDisabled('returnRatio', 'dealVO')">
           <el-form-item label="明源房款回笼比例">
-            <el-input
-              v-model="postData.returnRatio"
-              clearable placeholder="请输入明源房款回笼比例"></el-input>
+            <el-input v-model="postData.returnRatio" clearable></el-input>
           </el-form-item>
         </el-col>
         <el-col :span="8">
@@ -420,12 +403,12 @@
         </el-col>
         <el-col :span="8">
           <el-form-item label="成交组织" prop="dealOrgName">
-            <el-input v-model="postData.dealOrgName" disabled placeholder="项目周期自动带出"></el-input>
+            <el-input v-model="postData.dealOrgName" disabled></el-input>
           </el-form-item>
         </el-col>
         <el-col :span="8" v-if="!!id">
           <el-form-item label="录入人" :prop="!!id ? 'entryPerson' : 'notEmpty'">
-            <el-input v-model="postData.entryPerson" disabled placeholder="录入人"></el-input>
+            <el-input v-model="postData.entryPerson" disabled></el-input>
           </el-form-item>
         </el-col>
         <el-col :span="8" v-if="!!id">
@@ -442,12 +425,12 @@
         </el-col>
         <el-col :span="8">
           <el-form-item label="数据标志" prop="dataSign">
-            <el-input v-model="postData.dataSign" disabled placeholder="自动判断"></el-input>
+            <el-input v-model="postData.dataSign" disabled></el-input>
           </el-form-item>
         </el-col>
         <el-col :span="8" v-if="!!id">
           <el-form-item label="成交状态" :prop="!!id ? 'status' : 'notEmpty'">
-            <el-input v-model="postData.status" disabled placeholder="成交状态"></el-input>
+            <el-input v-model="postData.status" disabled></el-input>
           </el-form-item>
         </el-col>
       </el-row>
@@ -950,6 +933,7 @@
     currentActiveIndex: any = 0; // 当前激活的nav
     currentReceiveIndex: any = null; // 当前选中的收派金额列表数据
     oneAgentRequiredFlag: any = false; // 收派金额 - 派发内场奖励金额合计大于0，为true
+    hasAddNoticeFlag: any = false; // 是否有添加(删除)优惠告知书的标识：true-可以；false-不可以
 
     // 应收信息表格
     get receiveAchieveVO() {
@@ -1418,15 +1402,18 @@
     }
 
     // 修改合同类型
-    changeContType() {
+    changeContType(value: any) {
       let flag: any = false;
       if (this.postData.receiveVO.length) {
         // 判断收派金额数据是否选了收派套餐
         flag = (this as any).$parent.hasReceivePackage(this.postData.receiveVO);
       }
       if (flag) {
-        // 如果已经选了，判断合同类型是否一样
         this.postData.receiveVO = (this as any).$tool.deepClone(this.tempReceiveVO);
+      }
+      // 非分销成交、无优惠告知书且不是多份优惠告知书情况下，报错
+      if (value !== "DistriDeal" && !this.baseInfoInDeal.notice.length && this.baseInfoInDeal.dealNoticeStatus !== 'MultipleNotice') {
+        this.$message.error('优惠告知书信息异常');
       }
     }
 
@@ -1837,11 +1824,23 @@
       obj.dealVO.isConsign = this.postData.isConsign;
       obj.dealVO.isMarketProject = this.postData.isMarketProject;
       obj.dealVO.modelCode = this.postData.businessType;
-      // 优惠告知书
+      // 优惠告知书ids
       if (this.postData.offerNoticeVO.length > 0) {
+        let firstNoticeList: any = []; // 类型为优惠告知书的id列表
+        let firstId: any = null; // 第一个类型为优惠告知书的id
+        // 需要拿到优惠告知书信息列表中第一个类型为优惠告知书的id
+        firstNoticeList = this.postData.offerNoticeVO.find((item: any) => {
+          return item.notificationType === "Notification";
+        });
+        if (firstNoticeList.length) {
+          firstId = firstNoticeList[0].noticeId;
+          obj.basic.dealVO.noticeIds.push(firstId);
+        }
         this.postData.offerNoticeVO.forEach((vo: any) => {
-          obj.dealVO.noticeIds.push(vo.noticeId);
-        })
+          if (vo.noticeId !== firstId) {
+            obj.basic.dealVO.noticeIds.push(vo.noticeId);
+          }
+        });
       }
       obj.dealVO.oneAgentTeamId = this.postData.oneAgentTeamId;
       obj.dealVO.recordState = this.postData.recordState;
