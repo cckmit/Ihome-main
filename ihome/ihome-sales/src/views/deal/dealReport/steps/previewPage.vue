@@ -607,9 +607,9 @@
 
     created() {
       // console.log('preview', this.pageData);
-      this.infoForm = (this as any).$tool.deepClone(this.pageData);
       this.dealId = this.$route.query.id;
       this.changeType = this.$route.query.type;
+      this.infoForm = (this as any).$tool.deepClone(this.pageData);
       this.isCreated = true;
     }
 
@@ -617,6 +617,8 @@
     activated() {
       // console.log('activated', this.pageData);
       if (this.isCreated) {
+        this.dealId = this.$route.query.id;
+        this.changeType = this.$route.query.type;
         this.infoForm = (this as any).$tool.deepClone(this.pageData);
       }
     }

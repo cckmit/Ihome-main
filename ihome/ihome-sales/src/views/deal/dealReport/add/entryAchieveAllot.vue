@@ -23,10 +23,7 @@
       <el-row>
         <el-col :span="8" v-if="!!postData.dealCode">
           <el-form-item label="成交报告编号" :prop="!!postData.dealCode ? 'dealCode' : ' '">
-            <el-input
-              disabled
-              placeholder="成交报告编号"
-              v-model="postData.dealCode"/>
+            <el-input disabled v-model="postData.dealCode"/>
           </el-form-item>
         </el-col>
         <el-col :span="8">
@@ -41,7 +38,6 @@
             <el-select
               v-model="postData.businessType"
               disabled
-              placeholder="项目周期自动带出"
               class="width--100">
               <el-option
                 v-for="item in $root.dictAllList('BusinessModel')"
@@ -166,7 +162,6 @@
           <el-form-item label="合同类型" prop="contType">
             <el-select
               v-model="postData.contType"
-              :clearable="!baseInfoInDeal.hasRecord"
               :disabled="baseInfoInDeal.contType === 'DistriDeal' && baseInfoInDeal.hasRecord"
               placeholder="请选择合同类型"
               @change="changeContType"
@@ -185,8 +180,7 @@
             <div v-if="baseInfoInDeal.hasRecord">
               <el-input
                 v-model="postData.agencyName"
-                :disabled="baseInfoInDeal.hasRecord"
-                placeholder=""></el-input>
+                :disabled="baseInfoInDeal.hasRecord"></el-input>
             </div>
             <div v-else>
               <el-input
@@ -199,19 +193,13 @@
         </el-col>
         <el-col :span="8" v-if="postData.contType === 'DistriDeal'">
           <el-form-item label="渠道等级" :prop="postData.contType === 'DistriDeal' ? 'channelLevelName' : 'notEmpty'">
-            <el-input
-              v-model="postData.channelLevelName"
-              disabled
-              placeholder=""></el-input>
+            <el-input v-model="postData.channelLevelName" disabled></el-input>
           </el-form-item>
         </el-col>
         <el-col :span="8" v-if="postData.contType === 'DistriDeal'">
           <el-form-item label="经纪人" :prop="postData.contType === 'DistriDeal' ? 'brokerName' : 'notEmpty'">
             <div v-if="baseInfoInDeal.hasRecord">
-              <el-input
-                v-model="postData.brokerName"
-                :disabled="baseInfoInDeal.hasRecord"
-                placeholder=""></el-input>
+              <el-input v-model="postData.brokerName" :disabled="baseInfoInDeal.hasRecord"></el-input>
             </div>
             <div v-else>
               <el-input
@@ -227,7 +215,6 @@
             <div class="contNo-wrapper">
               <el-select
                 v-model="postData.contNo"
-                clearable
                 @change="changeContNo"
                 placeholder="请选择分销协议编号"
                 class="width--100">
@@ -260,10 +247,7 @@
         </el-col>
         <el-col :span="8" v-if="postData.contType === 'DistriDeal'">
           <el-form-item label="报备信息" :prop="postData.contType === 'DistriDeal' ? 'recordStr' : 'notEmpty'">
-            <el-input
-              v-model="postData.recordStr"
-              :disabled="baseInfoInDeal.hasRecord"
-              placeholder=""></el-input>
+            <el-input v-model="postData.recordStr" :disabled="baseInfoInDeal.hasRecord"></el-input>
           </el-form-item>
         </el-col>
         <el-col :span="8">
@@ -284,14 +268,11 @@
         </el-col>
         <el-col :span="8">
           <el-form-item label="建筑面积" prop="area">
-            <el-input
-              :disabled="isDisabled('area', 'houseVO')"
-              v-model="postData.area"
-              placeholder="请输入建筑面积"></el-input>
+            <el-input :disabled="isDisabled('area', 'houseVO')" v-model="postData.area"></el-input>
           </el-form-item>
         </el-col>
         <el-col :span="8">
-          <el-form-item label="户型">
+          <el-form-item label="户型" prop="room" required>
             <div class="home-type-wrapper">
               <div>
                 <el-input
@@ -322,17 +303,17 @@
         </el-col>
         <el-col :span="8">
           <el-form-item label="房产证/预售合同编号">
-            <el-input v-model="postData.propertyNo" clearable placeholder="请输入房产证/预售合同编号"></el-input>
+            <el-input v-model="postData.propertyNo" clearable></el-input>
           </el-form-item>
         </el-col>
         <el-col :span="16">
           <el-form-item label="房产证地址">
-            <el-input v-model="postData.address" clearable placeholder="请输入房产证地址"></el-input>
+            <el-input v-model="postData.address" clearable></el-input>
           </el-form-item>
         </el-col>
         <el-col :span="8">
           <el-form-item label="现场销售">
-            <el-input v-model="postData.sceneSales" clearable placeholder="请输入现场销售"></el-input>
+            <el-input v-model="postData.sceneSales" clearable></el-input>
           </el-form-item>
         </el-col>
         <el-col :span="8">
@@ -370,9 +351,7 @@
         </el-col>
         <el-col :span="8" v-if="isDisabled('returnRatio', 'dealVO')">
           <el-form-item label="明源房款回笼比例">
-            <el-input
-              v-model="postData.returnRatio"
-              clearable placeholder="请输入明源房款回笼比例"></el-input>
+            <el-input v-model="postData.returnRatio"></el-input>
           </el-form-item>
         </el-col>
         <el-col :span="8">
@@ -381,8 +360,7 @@
               v-digits="2"
               @blur="changePrice($event, 'SubscribePrice')"
               :disabled="isDisabled('subscribePrice', 'dealVO')"
-              v-model="postData.subscribePrice"
-              placeholder="请输入认购价格"></el-input>
+              v-model="postData.subscribePrice"></el-input>
           </el-form-item>
         </el-col>
         <el-col :span="8">
@@ -421,12 +399,12 @@
         </el-col>
         <el-col :span="8">
           <el-form-item label="成交组织" prop="dealOrgName">
-            <el-input v-model="postData.dealOrgName" disabled placeholder="项目周期自动带出"></el-input>
+            <el-input v-model="postData.dealOrgName" disabled></el-input>
           </el-form-item>
         </el-col>
         <el-col :span="8" v-if="!!id">
           <el-form-item label="录入人" :prop="!!id ? 'entryPerson' : 'notEmpty'">
-            <el-input v-model="postData.entryPerson" disabled placeholder="录入人"></el-input>
+            <el-input v-model="postData.entryPerson" disabled></el-input>
           </el-form-item>
         </el-col>
         <el-col :span="8" v-if="!!id">
@@ -443,12 +421,14 @@
         </el-col>
         <el-col :span="8">
           <el-form-item label="数据标志" prop="dataSign">
-            <el-input v-model="postData.dataSign" disabled placeholder="自动判断"></el-input>
+            <div class="div-disabled">
+              {{$root.dictAllName(postData.dataSign, 'DealDataFlag')}}
+            </div>
           </el-form-item>
         </el-col>
         <el-col :span="8" v-if="!!id">
           <el-form-item label="成交状态" :prop="!!id ? 'status' : 'notEmpty'">
-            <el-input v-model="postData.status" disabled placeholder="成交状态"></el-input>
+            <el-input v-model="postData.status" disabled></el-input>
           </el-form-item>
         </el-col>
       </el-row>
@@ -661,8 +641,7 @@
                 v-digits="2"
                 @input="changeReceiveItem($event, scope.row, 'receiveAmount')"
                 v-model="scope.row.receiveAmount"
-                :disabled="postData.calculation === 'Auto'"
-                placeholder="应收金额"></el-input>
+                :disabled="postData.calculation === 'Auto'"></el-input>
             </template>
           </el-table-column>
           <el-table-column prop="commAmount" label="派发佣金金额" min-width="180">
@@ -671,8 +650,7 @@
                 v-digits="2"
                 @input="changeReceiveItem($event, scope.row, 'commAmount')"
                 v-model="scope.row.commAmount"
-                :disabled="postData.calculation === 'Auto'"
-                placeholder="派发佣金金额"></el-input>
+                :disabled="postData.calculation === 'Auto'"></el-input>
             </template>
           </el-table-column>
           <el-table-column prop="rewardAmount" label="派发内场奖励金额" min-width="180">
@@ -681,8 +659,7 @@
                 v-digits="2"
                 @input="changeReceiveItem($event, scope.row, 'rewardAmount')"
                 v-model="scope.row.rewardAmount"
-                :disabled="postData.calculation === 'Auto'"
-                placeholder="派发内场奖励金额"></el-input>
+                :disabled="postData.calculation === 'Auto'"></el-input>
             </template>
           </el-table-column>
           <el-table-column prop="totalPackageAmount" label="总包业绩金额" min-width="180">
@@ -701,8 +678,8 @@
                 v-digits="2"
                 @input="changeReceiveItem($event, scope.row, 'distributionAmount')"
                 v-model="scope.row.distributionAmount"
-                :disabled="(postData.calculation === 'Auto' || postData.businessType !== 'TotalBagModel')"
-                placeholder="分销业绩金额"></el-input>
+                :disabled="(postData.calculation === 'Auto' || postData.businessType !== 'TotalBagModel')">
+              </el-input>
             </template>
           </el-table-column>
           <el-table-column prop="otherChannelFees" label="其他渠道费用(正数为产生，负数为使用)" min-width="150"></el-table-column>
@@ -779,7 +756,7 @@
                   <el-input placeholder="请输入收款方" v-model="scope.row.agencyName"></el-input>
                 </div>
                 <div v-if="scope.row.target === 'AgentCompany'">
-                  <el-input placeholder="" disabled v-model="scope.row.agencyName"></el-input>
+                  <el-input disabled v-model="scope.row.agencyName"></el-input>
                 </div>
                 <div v-if="scope.row.target === 'ChannelCompany'">
                   <el-input placeholder="请选择收款方" readonly v-model="scope.row.agencyName">
@@ -794,7 +771,7 @@
               <el-select
                 v-model="scope.row.feeType"
                 :disabled="postData.calculation === 'Auto'"
-                placeholder="费用类型"
+                placeholder="请选择费用类型"
                 @change="changeFeeType($event, scope.row)"
                 class="width--100">
                 <el-option
@@ -809,7 +786,7 @@
           <el-table-column prop="partyACustomer" label="费用来源(客户/甲方)" min-width="120">
             <template slot-scope="scope">
               <div v-if="postData.calculation === 'Auto'">
-                <el-input placeholder="" disabled v-model="scope.row.partyACustomerName"></el-input>
+                <el-input disabled v-model="scope.row.partyACustomerName"></el-input>
               </div>
               <div v-else>
                 <div v-if="scope.row.feeType === 'ServiceFee'">客户</div>
@@ -840,7 +817,7 @@
             <template slot-scope="scope">
               <el-input
                 :disabled="postData.calculation === 'Auto'"
-                v-model="scope.row.remarks" placeholder="备注"/>
+                v-model="scope.row.remarks"/>
             </template>
           </el-table-column>
           <el-table-column fixed="right" label="操作" width="100" v-if="postData.calculation !== 'Auto'">
@@ -1106,6 +1083,15 @@
     }
   })
   export default class EntryAchieveAllot extends Vue {
+    private validateRoom (rule: any, value: any, callback: any) {
+      if ([null, undefined, ""].includes(this.postData.room)
+        || [null, undefined, ""].includes(this.postData.hall)
+        || [null, undefined, ""].includes(this.postData.toilet)) {
+        return callback(new Error('户型信息不全'));
+      } else {
+        callback();
+      }
+    }
     @Prop({
       type: Function,
       default: null,
@@ -1280,6 +1266,9 @@
       ],
       area: [
         {required: true, message: "建筑面积必填", trigger: "change"},
+      ],
+      room: [
+        {validator: this.validateRoom, trigger: ["change", "blur"]}
       ],
       recordStr: [
         {required: true, message: "报备信息不能为空", trigger: "change"},
@@ -1843,7 +1832,10 @@
                 // 清空优惠告知书 --- 认筹周期需要自己手动添加
                 this.postData.offerNoticeVO = [];
                 // 认筹周期 --- 全部
-                this.dealStageList = JSON.parse(JSON.stringify(DealStageList));
+                // this.dealStageList = JSON.parse(JSON.stringify(DealStageList));
+                this.dealStageList = DealStageList.filter((item: any) => {
+                  return item.code !== 'Recognize';
+                });
                 break;
             }
           }
@@ -2057,15 +2049,15 @@
       // 签约日期
       this.postData.signDate = baseInfo.myReturnVO.dealVO?.signDate;
       // 数据标志
-      let dataFlagList: any = (this as any).$root.dictAllList('DealDataFlag');
-      this.postData.dataSign = null;
-      if (dataFlagList && dataFlagList.length > 0 && baseInfo.myReturnVO.dataSign) {
-        dataFlagList.forEach((list: any) => {
-          if (list.code === baseInfo.myReturnVO.dataSign) {
-            this.postData.dataSign = list.name;
-          }
-        });
-      }
+      // let dataFlagList: any = (this as any).$root.dictAllList('DealDataFlag');
+      this.postData.dataSign = baseInfo.myReturnVO.dataSign;
+      // if (dataFlagList && dataFlagList.length > 0 && baseInfo.myReturnVO.dataSign) {
+      //   dataFlagList.forEach((list: any) => {
+      //     if (list.code === baseInfo.myReturnVO.dataSign) {
+      //       this.postData.dataSign = list.name;
+      //     }
+      //   });
+      // }
       // 分销成交和非分销成交不一样
       if (baseInfo.contType === 'DistriDeal') {
         // 分销成交模式
@@ -3035,11 +3027,23 @@
       obj.basic.dealVO.isConsign = this.postData.isConsign;
       obj.basic.dealVO.isMarketProject = this.postData.isMarketProject;
       obj.basic.dealVO.modelCode = this.postData.businessType;
-      // 优惠告知书
+      // 优惠告知书ids
       if (this.postData.offerNoticeVO.length > 0) {
+        let firstNoticeList: any = []; // 类型为优惠告知书的id列表
+        let firstId: any = null; // 第一个类型为优惠告知书的id
+        // 需要拿到优惠告知书信息列表中第一个类型为优惠告知书的id
+        firstNoticeList = this.postData.offerNoticeVO.find((item: any) => {
+          return item.notificationType === "Notification";
+        });
+        if (firstNoticeList.length) {
+          firstId = firstNoticeList[0].noticeId;
+          obj.basic.dealVO.noticeIds.push(firstId);
+        }
         this.postData.offerNoticeVO.forEach((vo: any) => {
-          obj.basic.dealVO.noticeIds.push(vo.noticeId);
-        })
+          if (vo.noticeId !== firstId) {
+            obj.basic.dealVO.noticeIds.push(vo.noticeId);
+          }
+        });
       }
       obj.basic.dealVO.oneAgentTeamId = this.postData.oneAgentTeamId;
       obj.basic.dealVO.recordState = this.postData.recordState;
@@ -3128,6 +3132,19 @@
     width: 100%;
     box-sizing: border-box;
     margin-bottom: 10px;
+  }
+
+  .div-disabled {
+    width: 100%;
+    border-radius: 4px;
+    border: 1px solid #E4E7ED;
+    background-color: #F5F7FA;
+    color: #C0C4CC;
+    cursor: not-allowed;
+    padding: 0 15px;
+    box-sizing: border-box;
+    height: 40px;
+    line-height: 40px;
   }
 
   .contNo-wrapper {
