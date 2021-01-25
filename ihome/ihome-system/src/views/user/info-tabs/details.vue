@@ -4,7 +4,7 @@
  * @Author: zyc
  * @Date: 2020-07-08 14:23:16
  * @LastEditors: zyc
- * @LastEditTime: 2020-12-09 14:48:34
+ * @LastEditTime: 2021-01-25 10:15:49
 --> 
 <template>
   <div>
@@ -47,6 +47,14 @@
           <el-col :span="6" class="ih-info-item-left">岗位</el-col>
           <el-col :span="18" class="ih-info-item-right">{{
             info.jobName
+          }}</el-col>
+        </el-row>
+      </el-col>
+      <el-col :span="8">
+        <el-row>
+          <el-col :span="6" class="ih-info-item-left">岗位</el-col>
+          <el-col :span="18" class="ih-info-item-right">{{
+            $root.dictAllName(info.userType, "UserType")
           }}</el-col>
         </el-row>
       </el-col>

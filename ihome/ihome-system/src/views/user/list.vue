@@ -4,7 +4,7 @@
  * @Author: zyc
  * @Date: 2020-06-30 09:21:17
  * @LastEditors: zyc
- * @LastEditTime: 2021-01-18 14:50:53
+ * @LastEditTime: 2021-01-25 10:20:45
 --> 
 <template>
   <ih-page>
@@ -341,7 +341,7 @@
                 <el-dropdown-item
                   @click.native.prevent="remove(scope)"
                   v-has="'B.SALES.SYSTEM.USERLIST.DELETE'"
-                  :class="{ 'ih-data-disabled': scope.row.userType != 'Staff' }"
+                  :class="{ 'ih-data-disabled': scope.row.userType != 'Staff','ih-data-disabled': scope.row.status == 'Valid' }"
                   >删除</el-dropdown-item
                 >
                 <el-dropdown-item
@@ -604,6 +604,7 @@ export default class UserList extends Vue {
 
   async remove(scope: any) {
     try {
+      
       await this.$confirm("是否确定删除?", "提示");
       await post_user_delete__id({ id: scope.row.id });
       this.resPageInfo.list.splice(scope.$index, 1);
