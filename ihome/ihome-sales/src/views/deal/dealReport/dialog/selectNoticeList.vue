@@ -72,14 +72,14 @@
                   v-model="queryPageParameters.buyUnit"
                   :proId="queryPageParameters.projectId"
                   placeholder="请选择栋座"
-                  disabled
+                  :disabled="!!data.buyUnit"
                 ></IhSelectPageByBuild>
               </el-form-item>
             </el-col>
             <el-col :span="8">
               <el-form-item label="房号">
                 <IhSelectPageByRoom
-                  disabled
+                  :disabled="!!data.roomId"
                   v-model="queryPageParameters.roomNumberId"
                   :proId="queryPageParameters.projectId"
                   :buildingId="queryPageParameters.buyUnit"
@@ -176,8 +176,8 @@
       </el-table-column>
       <el-table-column label="项目名称" prop="projectName" min-width="180"></el-table-column>
       <el-table-column label="联动周期" prop="cycleName" min-width="130"></el-table-column>
-      <el-table-column label="栋座" prop="buyUnit" min-width="100"></el-table-column>
-      <el-table-column label="房号" prop="roomNumberId" min-width="100"></el-table-column>
+      <el-table-column label="栋座" prop="buyUnitName" min-width="100"></el-table-column>
+      <el-table-column label="房号" prop="roomNumberName" min-width="100"></el-table-column>
       <el-table-column label="甲方名称" prop="partyAName" min-width="120"></el-table-column>
       <el-table-column label="区域" prop="area" min-width="120"></el-table-column>
       <el-table-column label="客户名称" prop="ownerName" min-width="150"></el-table-column>

@@ -104,7 +104,8 @@
     private selection = [];
     public queryPageParameters: any = {
       channelName: null, // 渠道公司
-      channelIds: [] // 渠道IDs
+      channelIds: [], // 渠道IDs
+      cycleId: null // 周期ID
     };
     public resPageInfo: any = {
       total: null,
@@ -114,9 +115,9 @@
 
     created() {
       // console.log('agentData', this.data);
-      if (this.data && this.data.length) {
-        this.getListMixin();
-      }
+      this.queryPageParameters.channelIds = this.data.selectableChannelIds;
+      this.queryPageParameters.cycleId = this.data.cycleId;
+      this.getListMixin();
     }
 
     async beforeFinish() {
@@ -162,7 +163,6 @@
 
     async getListMixin() {
       if (this.data && this.data.length) {
-        this.queryPageParameters.channelIds = this.data;
         this.resPageInfo = await post_channelGrade_getChannelAndChannelGrade(this.queryPageParameters);
       }
     }

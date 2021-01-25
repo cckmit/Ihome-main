@@ -497,7 +497,10 @@
     async handleInfo(scope: any) {
       this.$router.push({
         path: "/dealReport/info",
-        query: {id: scope.row.id}
+        query: {
+          id: scope.row.id,
+          type: "ID"
+        }
       });
     }
 
