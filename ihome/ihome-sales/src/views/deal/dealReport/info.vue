@@ -611,8 +611,19 @@
         this.infoForm = await get_deal_getByCode__dealCode({code : this.dealIdOrCode});
       }
       // console.log(this.infoForm);
+      // 收派金额数据整理 showData
+      if (this.infoForm.receiveList && this.infoForm.receiveList.length > 0) {
+        this.infoForm.receiveList.forEach((list: any) => {
+          this.$set(list, 'showData', [
+            {
+              ...list.collectandsendDetailDealVO,
+              typeName: (this as any).$root.dictAllName(list.type, 'FeeType')
+            }
+          ]);
+        });
+      }
       // 平台费用 - 拆分总包和分销数据
-      if (this.infoForm.achieveList.length > 0) {
+      if (this.infoForm.achieveList && this.infoForm.achieveList.length > 0) {
         this.infoForm.achieveTotalBagList = [];
         this.infoForm.achieveDistriList = [];
         this.infoForm.achieveList.forEach((list: any) => {
