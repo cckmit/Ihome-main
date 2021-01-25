@@ -4,7 +4,7 @@
  * @Author: wwq
  * @Date: 2020-12-29 11:04:59
  * @LastEditors: wwq
- * @LastEditTime: 2021-01-09 11:54:44
+ * @LastEditTime: 2021-01-25 15:26:00
 -->
 <template>
   <el-dialog
@@ -260,6 +260,7 @@ export default class Obligation extends Vue {
     endTime: null,
     timeList: [],
     agencyId: null,
+    projectId: null,
   };
   resPageInfo: any = {
     total: null,
@@ -435,6 +436,7 @@ export default class Obligation extends Vue {
 
   created() {
     this.info.agencyId = this.data.agencyId;
+    this.info.projectId = this.data.projectId;
     this.getList();
   }
 }

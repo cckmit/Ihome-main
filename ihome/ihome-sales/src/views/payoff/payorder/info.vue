@@ -4,7 +4,7 @@
  * @Author: wwq
  * @Date: 2020-12-26 11:11:19
  * @LastEditors: wwq
- * @LastEditTime: 2021-01-16 15:07:33
+ * @LastEditTime: 2021-01-25 17:33:34
 -->
 <template>
   <IhPage>
@@ -18,59 +18,38 @@
       >
         <el-row>
           <el-col :span="8">
-            <el-form-item
-              label="付款单编号"
-              prop="applyCode"
-            >
+            <el-form-item label="付款单编号">
               <el-input
                 disabled
                 v-model="info.applyCode"
-                placeholder="付款单编号"
+                placeholder="保存后生成"
               ></el-input>
             </el-form-item>
           </el-col>
           <el-col :span="8">
             <el-form-item
-              label="制单人"
-              prop="maker"
+              label="结佣项目"
+              prop="projectId"
             >
-              <el-input
+              <IhSelectPageByProject
+                v-model="info.projectId"
+                :search-name="info.projectName"
                 disabled
-                v-model="info.maker"
-                placeholder="制单人"
-              ></el-input>
+              ></IhSelectPageByProject>
             </el-form-item>
           </el-col>
           <el-col :span="8">
             <el-form-item
-              label="制单日期"
-              prop="makerTime"
+              label="事业部"
+              prop="belongOrgId"
             >
-              <el-input
+              <IhSelectPageDivision
                 disabled
-                v-model="info.makerTime"
-                placeholder="制单日期"
-              ></el-input>
-            </el-form-item>
-          </el-col>
-          <el-col :span="8">
-            <el-form-item
-              label="当前状态"
-              prop="status"
-            >
-              <el-select
-                style="width: 100%"
-                v-model="info.status"
-                disabled
-                placeholder="请选择"
+                placeholder="事业部"
+                v-model="info.belongOrgId"
+                :search-name="info.belongOrgName"
               >
-                <el-option
-                  v-for="item in $root.dictAllList('PayoffStatus')"
-                  :key="item.code"
-                  :label="item.name"
-                  :value="item.code"
-                ></el-option>
-              </el-select>
+              </IhSelectPageDivision>
             </el-form-item>
           </el-col>
           <el-col :span="8">
@@ -148,38 +127,15 @@
             </el-form-item>
           </el-col>
           <el-col :span="8">
-            <el-form-item
-              label="结算方式"
-              prop="settlementMethod"
-            >
+            <el-form-item label="当前状态">
               <el-select
                 style="width: 100%"
-                v-model="info.settlementMethod"
-                disabled
-                placeholder="请选择结算方式"
-              >
-                <el-option
-                  v-for="item in $root.dictAllList('SettlementMethod')"
-                  :key="item.code"
-                  :label="item.name"
-                  :value="item.code"
-                ></el-option>
-              </el-select>
-            </el-form-item>
-          </el-col>
-          <el-col :span="8">
-            <el-form-item
-              label="付款方式"
-              prop="paymentMethod"
-            >
-              <el-select
-                style="width: 100%"
-                v-model="info.paymentMethod"
+                v-model="info.status"
                 disabled
                 placeholder="请选择"
               >
                 <el-option
-                  v-for="item in $root.dictAllList('PaymentMethod')"
+                  v-for="item in $root.dictAllList('PayoffStatus')"
                   :key="item.code"
                   :label="item.name"
                   :value="item.code"
@@ -189,14 +145,26 @@
           </el-col>
           <el-col :span="8">
             <el-form-item
-              label="结佣项目"
-              prop="settlementMethod"
+              label="制单人"
+              prop="maker"
             >
-              <IhSelectPageByProject
-                v-model="info.projectId"
-                :search-name="info.projectName"
+              <el-input
                 disabled
-              ></IhSelectPageByProject>
+                v-model="info.maker"
+                placeholder="制单人"
+              ></el-input>
+            </el-form-item>
+          </el-col>
+          <el-col :span="8">
+            <el-form-item
+              label="制单日期"
+              prop="makerTime"
+            >
+              <el-input
+                disabled
+                v-model="info.makerTime"
+                placeholder="制单日期"
+              ></el-input>
             </el-form-item>
           </el-col>
         </el-row>
@@ -246,10 +214,10 @@
                 class="text-ellipsis"
                 :title="row.address"
               >地址: {{row.address}}</div>
-              <div
+              <!-- <div
                 class="text-ellipsis"
                 :title="$root.dictAllName(row.busModel, 'BusinessModel')"
-              >业务模式: {{$root.dictAllName(row.busModel, 'BusinessModel')}}</div>
+              >业务模式: {{$root.dictAllName(row.busModel, 'BusinessModel')}}</div> -->
             </template>
           </el-table-column>
           <el-table-column
@@ -257,11 +225,11 @@
             width="250"
           >
             <template v-slot="{ row }">
-              <div class="text-ellipsis">是否垫佣: {{$root.dictAllName(row.isMat, 'YesOrNoType')}}</div>
               <div
                 class="text-ellipsis"
                 :title="row.contNo"
               >分销协议编号: {{row.contNo}}</div>
+              <div class="text-ellipsis">是否垫佣: {{$root.dictAllName(row.isMat, 'YesOrNoType')}}</div>
             </template>
           </el-table-column>
           <el-table-column
@@ -330,7 +298,6 @@
                 服务费:
                 <el-input
                   v-model="row.serThisCommFees"
-                  v-digits="2"
                   disabled
                   style="width: 70%"
                 />
@@ -339,7 +306,6 @@
                 代理费:
                 <el-input
                   v-model="row.ageThisCommFees"
-                  v-digits="2"
                   disabled
                   style="width: 70%"
                 />
@@ -388,6 +354,7 @@
             width="150"
           >
             <template v-slot="{ row }">
+              <div>实际付款金额: {{row.actualAmount}}</div>
               <div>不含税金额: {{row.noTaxAmount}}</div>
               <div>税额: {{row.tax}}</div>
             </template>
@@ -410,18 +377,24 @@
         </el-table>
       </div>
       <br />
-      <p class="ih-info-title">本期扣除金额明细</p>
+      <p class="ih-info-title">本期需抵扣金额明细</p>
       <div class="padding-left-20">
         <el-table
           class="ih-table"
-          :data="info.payDeductDetailInfos"
+          :data="info.payDeductDetailResponseList"
           style="width: 100%"
           show-summary
         >
           <el-table-column
             label="成交报告编号"
             prop="dealCode"
-          ></el-table-column>
+          >
+            <template v-slot="{ row }">
+              <el-link @click="$router.push(`/dealReport/info?code=${row.dealCode}&&type=CODE`)">
+                {{row.dealCode}}
+              </el-link>
+            </template>
+          </el-table-column>
           <el-table-column
             label="项目周期"
             prop="cycleName"
@@ -435,110 +408,162 @@
             </template>
           </el-table-column>
           <el-table-column
-            label="费用类型"
-            prop="feeType"
-          >
-            <template v-slot="{ row }">
-              {{ $root.dictAllName(row.feeType, "FeeType")}}
-            </template>
-          </el-table-column>
-          <el-table-column
             label="扣除金额"
             prop="deductAmount"
           ></el-table-column>
+          <el-table-column
+            label="不含税金额"
+            prop="noTaxAmount"
+          ></el-table-column>
+          <el-table-column
+            label="税额"
+            prop="tax"
+          ></el-table-column>
         </el-table>
       </div>
       <br />
-      <p class="ih-info-title">此渠道公司周期结佣汇总</p>
+      <p class="ih-info-title">其他扣除项</p>
       <div class="padding-left-20">
         <el-table
           class="ih-table"
-          :data="info.paySummaryList"
+          :data="info.otherDeductionDetailResponseList"
           style="width: 100%"
           show-summary
         >
           <el-table-column
-            label="周期名称"
+            label="扣除类型"
+            prop="otherDeductionType"
+          >
+            <template v-slot="{ row }">
+              <span>{{$root.dictAllName(row.otherDeductionType, 'OtherDeductionType')}}</span>
+            </template>
+          </el-table-column>
+          <el-table-column
+            label="项目周期"
             prop="cycleName"
-          ></el-table-column>
-          <el-table-column
-            label="所属项目"
-            prop="projectName"
-          ></el-table-column>
-          <el-table-column
-            label="累计结佣次数"
-            prop="num"
-          ></el-table-column>
-          <el-table-column
-            label="历史累计发生金额"
-            prop="historyTotalPayFees"
-          ></el-table-column>
-          <el-table-column
-            label="历史累计扣除金额"
-            prop="historyTotalPdeductFees"
-          ></el-table-column>
-          <el-table-column
-            label="本期实际付款金额"
-            prop="actualAmount"
-          ></el-table-column>
+            width="250"
+          >
+            <template v-slot="{ row }">
+              <span :title="row.cycleName">{{row.cycleName}}</span>
+            </template>
+          </el-table-column>
           <el-table-column
             label="本期扣除金额"
             prop="deductAmount"
-          ></el-table-column>
+          >
+          </el-table-column>
           <el-table-column
-            label="累计发生金额（含本期）"
-            prop="totalPayFees"
-          ></el-table-column>
+            label="不含税金额"
+            prop="noTaxAmount"
+          >
+          </el-table-column>
           <el-table-column
-            label="累计扣除金额（含本期）"
-            prop="totalPdeductFees"
-          ></el-table-column>
+            label="税额"
+            prop="tax"
+          >
+          </el-table-column>
+          <el-table-column
+            label="备注"
+            prop="remark"
+            width="200"
+          >
+          </el-table-column>
         </el-table>
       </div>
       <br />
-      <p class="ih-info-title">成本归属列表</p>
+      <p class="ih-info-title">结佣汇总清单</p>
       <div class="padding-left-20">
         <el-table
           class="ih-table"
-          :data="info.costApportionList"
+          :data="info.paySummaryDetailsResponseList"
           style="width: 100%"
           show-summary
         >
           <el-table-column
             label="周期名称"
             prop="cycleName"
+            width="200"
+          >
+            <template v-slot="{ row }">
+              <el-link
+                @click="$router.push(`/projectApproval/info?id=${row.cycleId}`)"
+                :title="row.cycleName"
+                class="text-ellipsis"
+              >
+                {{row.cycleName}}
+              </el-link>
+            </template>
+          </el-table-column>
+          <el-table-column
+            label="合同信息"
+            width="250"
+          >
+            <template v-slot="{ row }">
+              <template v-for="(item, i) in row.paySummaryContractInfoList">
+                <el-link
+                  @click="$router.push(`/projectApproval/info?id=${item.contNo}`)"
+                  :key="i"
+                  :title="`名称: ${item.title} 编号: ${item.contNo}`"
+                  class="text-ellipsis"
+                >
+                  {{`名称: ${item.title} 编号: ${item.contNo}`}}
+                </el-link>
+              </template>
+            </template>
+          </el-table-column>
+          <el-table-column
+            label="模式属性"
+            prop="modeAttributes"
+            width="230"
+          >
+            <template v-slot="{ row }">
+              {{$root.dictAllName(row.modeAttributes, 'Attribute')}}
+            </template>
+          </el-table-column>
+          <el-table-column
+            label="累计结佣次数（不含本次）"
+            prop="grandTotalFrequency"
+            width="120"
           ></el-table-column>
           <el-table-column
-            label="成本归属区域"
-            prop="ownedAreaName"
+            label="历史申请付款金额（含税）"
+            prop="historicalApplicationAmount"
+            width="120"
           ></el-table-column>
           <el-table-column
-            label="成本归属门店"
-            prop="ownedStoreId"
+            label="历史实际付款金额（含税）"
+            prop="historicalActualAmount"
+            width="120"
           ></el-table-column>
           <el-table-column
-            label="应承担总成本"
-            prop="shouldTotalCost"
+            label="本期申请付款金额（含税）"
+            prop="currentApplication"
+            width="120"
           ></el-table-column>
           <el-table-column
-            label="累计已分摊成本金额"
-            prop="totalApportionCost"
+            label="本期扣除金额（含税）"
+            prop="currentDeduction"
+            width="120"
           ></el-table-column>
           <el-table-column
-            label="未分摊成本金额"
-            prop="unapportionCost"
+            label="本期扣罚金额（含税）"
+            prop="currentFined"
+            width="120"
           ></el-table-column>
           <el-table-column
-            label="本次分摊成本金额（合计）"
-            prop="thisApportionCost"
+            label="本期实际付款金额（含税）"
+            prop="currentActual"
+            width="120"
           ></el-table-column>
           <el-table-column
-            label="本次分摊不含税金额"
-            prop="thisApportionNoTaxCost"
+            label="累计申请付款金额（含税）"
+            prop="cumulativeApplication"
+            width="120"
           ></el-table-column>
           <el-table-column
-            label="本次分摊税额"
-            prop="thisApportionTax"
+            label="累计实际付款金额（含税）"
+            prop="cumulativeActual"
+            width="120"
           ></el-table-column>
         </el-table>
       </div>
@@ -558,12 +583,10 @@
               width="200"
             >领取单位</td>
             <td colspan="3">{{info.agencyName}}</td>
-            <td width="200">区域</td>
-            <td width="200">{{info.area}}</td>
-          </tr>
-          <tr>
             <td width="200">项目</td>
             <td width="200">{{info.projectName}}</td>
+          </tr>
+          <tr>
             <td
               width="200"
               height="50"
@@ -571,40 +594,56 @@
             <td width="200">{{info.applyAmount}}</td>
             <td width="200">本期扣除金额</td>
             <td width="200">{{info.deductAmount}}</td>
+            <td width="200">本期扣罚金额</td>
+            <td width="200">{{info.finedAmount}}</td>
           </tr>
           <tr>
-            <td height="50">本期实际付款金额</td>
+            <td height="50">扣除类别项</td>
+            <td colspan="5">{{info.deductionCategory}}</td>
+          </tr>
+          <tr>
+            <td height="50">本期实际付款金额(含税)</td>
             <td>{{info.actualAmount}}</td>
-            <td>不含税金额（实付）</td>
+            <td>本期实际付款金额（不含税）</td>
             <td>{{info.noTaxAmount}}</td>
-            <td>税额（实付）</td>
+            <td>本期实际付款税额</td>
             <td>{{info.tax}}</td>
           </tr>
           <tr>
-            <td height="50">累计付款金额</td>
-            <td>{{info.totalPayFees}}</td>
-            <td>累计扣除金额</td>
-            <td>{{info.totalPdeductFees}}</td>
-            <td>累计付款税额</td>
-            <td>{{info.totalTax}}</td>
-          </tr>
-          <tr>
-            <td
-              colspan="6"
-              height="50"
-            >经办部门意见</td>
-          </tr>
-          <tr>
             <td colspan="6">
-              <div style="height: 100px;text-align: left;padding: 5px">
-                {{info.description}}
-              </div>
+              <div class="text-left padding-left-15">经办部门意见</div>
+              <el-input
+                class="inputClass"
+                type="textarea"
+                style="box-sizing: border-box"
+                :autosize="{ minRows: 5, maxRows: 10 }"
+                placeholder="请输入内容"
+                v-model="info.description"
+                readonly
+              >
+              </el-input>
             </td>
           </tr>
         </table>
       </div>
       <br />
-      <p class="ih-info-title">附件信息</p>
+      <div class="content">
+        <p class="ih-info-title">上传附件</p>
+        <div>
+          <el-button
+            @click="downloadTemplate('jiesuan')"
+            type="success"
+            size="small"
+            icon="el-icon-download"
+          >结算明细未盖章版</el-button>
+          <el-button
+            @click="downloadTemplate('qingyong')"
+            type="success"
+            size="small"
+            icon="el-icon-download"
+          >请款单未盖章版</el-button>
+        </div>
+      </div>
       <div class="padding-left-20">
         <el-table
           class="ih-table"
@@ -627,7 +666,7 @@
           </el-table-column>
           <el-table-column
             label="附件"
-            v-if="$route.name==='payoffInfo'"
+            v-if="['payoffInfo', 'payoffRecall'].includes($route.name)"
           >
             <template v-slot="{ row }">
               <IhUpload
@@ -651,6 +690,8 @@
                 :file-size="10"
                 :file-type="row.code"
                 size="100px"
+                :limit="row.limit && row.fileList.length"
+                :upload-show="row.limit && !!row.fileList.length"
                 @newFileList="queryNew"
               ></IhUpload>
             </template>
@@ -658,7 +699,7 @@
         </el-table>
       </div>
       <br />
-      <div class="top">
+      <div class="content">
         <p class="ih-info-title">操作日志</p>
         <div class="right-button">
           <el-popover
@@ -761,8 +802,13 @@
           v-if="$route.name==='payoffReplenish'"
           @click="submit()"
           type="success"
-        >提交</el-button>
-        <el-button @click="cancel">取消</el-button>
+        >提 交</el-button>
+        <el-button
+          v-if="$route.name==='payoffRecall'"
+          @click="recall()"
+          type="success"
+        >撤 回</el-button>
+        <el-button @click="cancel">返 回</el-button>
       </div>
     </template>
   </IhPage>
@@ -774,6 +820,7 @@ import {
   get_processRecord_oa_review_person__applyId,
   get_processRecord_oa_review_log__applyId,
   post_payApply_payApplySuppFile,
+  post_payApply_withdrawSubmit,
 } from "@/api/payoff/index";
 import { get_channel_get__id } from "@/api/channel/index";
 import { Form as ElForm } from "element-ui";
@@ -785,23 +832,42 @@ export default class PayoffEdit extends Vue {
   private fileList: Array<object> = [];
   info: any = {
     applyCode: null,
-    status: null,
+    projectId: null,
+    projectName: null,
+    belongOrgId: null,
+    belongOrgName: null,
     agencyId: null,
+    agencyName: null,
     receiveAccount: null,
     invoiceType: null,
     taxRate: null,
+    status: null,
     maker: null,
     makerId: null,
     makerTime: null,
     payApplyDetailList: [],
-    payDeductDetailList: [],
-    costApportionList: [],
+    payDeductDetailResponseList: [],
+    otherDeductionDetailResponseList: [
+      {
+        otherDeductionType: "",
+        cycleName: "",
+        cycleId: "",
+        deductAmount: 0,
+        noTaxAmount: 0,
+        tax: 0,
+        remark: "",
+      },
+    ],
+    paySummaryDetailsResponseList: [],
+    applyAmount: null,
+    deductAmount: null,
+    finedAmount: null,
+    deductionCategory: null,
+    actualAmount: null,
+    noTaxAmount: null,
+    tax: null,
+    description: null,
     documentList: [],
-    paySummaryList: [],
-    processRecordList: [],
-    postscript: null,
-    projectId: null,
-    projectName: null,
   };
   channelAccountOptions: any = [];
   showTable: any = [];
@@ -953,9 +1019,24 @@ export default class PayoffEdit extends Vue {
           .map((h: any) => ({
             ...h,
             name: h.fileName,
-            type: v.fileType,
           })),
       };
+    });
+    this.fileListType = this.fileListType.map((v: any) => {
+      if (["Contract", "BusinessLicense"].includes(v.code)) {
+        return {
+          ...v,
+          limit: true,
+          fileList: v.fileList.map((j: any) => ({
+            ...j,
+            exAuto: 1,
+          })),
+        };
+      } else {
+        return {
+          ...v,
+        };
+      }
     });
     let obj: any = {};
     this.fileListType.forEach((h: any) => {
@@ -968,6 +1049,10 @@ export default class PayoffEdit extends Vue {
     let obj: any = {};
     obj[type] = data;
     this.submitFile = { ...this.submitFile, ...obj };
+  }
+
+  downloadTemplate(type: any) {
+    console.log(type);
   }
 
   // 合计
@@ -1020,6 +1105,18 @@ export default class PayoffEdit extends Vue {
     this.info.processRecordList = res;
   }
 
+  // 撤回
+  async recall() {
+    await post_payApply_withdrawSubmit({
+      id: this.payoffId,
+    });
+    this.$message({
+      type: "success",
+      message: "撤回成功!",
+    });
+    this.$goto({ path: `/payoff/list` });
+  }
+
   submit() {
     (this.$refs["form"] as ElForm).validate(async (v: any) => {
       if (v) {
@@ -1042,7 +1139,6 @@ export default class PayoffEdit extends Vue {
               .map((h: any) => ({
                 ...h,
                 name: h.fileName,
-                type: h.fileType,
               })),
           };
         });
@@ -1058,7 +1154,7 @@ export default class PayoffEdit extends Vue {
           obj.documents = arr.map((v: any) => ({
             fileId: v.fileId,
             fileName: v.name,
-            fileType: v.type,
+            fileType: v.fileType,
           }));
         } else {
           this.$message({
@@ -1080,12 +1176,9 @@ export default class PayoffEdit extends Vue {
 </script>
 <style lang="scss" scoped>
 .content {
-  position: relative;
-  /deep/ .el-button {
-    position: absolute;
-    top: -10px;
-    right: 0;
-  }
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
 }
 .bottom {
   margin-top: 30px;
@@ -1100,18 +1193,10 @@ export default class PayoffEdit extends Vue {
   white-space: nowrap;
 }
 
-.top {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  .title {
-    font-size: 15px;
-    text-align: center;
-  }
-  .right-button {
-    display: flex;
-    justify-content: space-around;
-    align-items: center;
+.inputClass {
+  /deep/ .el-textarea__inner,
+  /deep/ .el-input__inner {
+    border: none;
   }
 }
 </style>

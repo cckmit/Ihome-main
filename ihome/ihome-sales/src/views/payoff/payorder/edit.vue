@@ -4,7 +4,7 @@
  * @Author: wwq
  * @Date: 2020-12-26 11:11:23
  * @LastEditors: wwq
- * @LastEditTime: 2021-01-25 14:38:50
+ * @LastEditTime: 2021-01-25 17:34:57
 -->
 <template>
   <IhPage>
@@ -29,7 +29,7 @@
           <el-col :span="8">
             <el-form-item
               label="结佣项目"
-              prop="settlementMethod"
+              prop="projectId"
             >
               <IhSelectPageByProject
                 v-model="info.projectId"
@@ -41,7 +41,7 @@
           <el-col :span="8">
             <el-form-item
               label="事业部"
-              prop="settlementMethod"
+              prop="belongOrgId"
             >
               <IhSelectPageDivision
                 clearable
@@ -127,10 +127,7 @@
             </el-form-item>
           </el-col>
           <el-col :span="8">
-            <el-form-item
-              label="当前状态"
-              prop="status"
-            >
+            <el-form-item label="当前状态">
               <el-select
                 style="width: 100%"
                 v-model="info.status"
@@ -356,10 +353,9 @@
           <el-table-column
             label="本次实际付款金额"
             width="150"
-            prop="11"
           >
             <template v-slot="{ row }">
-              <div>实际付款金额: {{'xxxx'}}</div>
+              <div>实际付款金额: {{row.actualAmount}}</div>
               <div>不含税金额: {{noTaxAmountChange(row)}}</div>
               <div>税额: {{taxChange(row)}}</div>
             </template>
@@ -413,7 +409,7 @@
             prop="dealCode"
           >
             <template v-slot="{ row }">
-              <el-link @click="$router.push(`/dealReport/info?id=${row.dealCode}`)">
+              <el-link @click="$router.push(`/dealReport/info?code=${row.dealCode}&&type=CODE`)">
                 {{row.dealCode}}
               </el-link>
             </template>
@@ -463,7 +459,7 @@
         >
           <el-table-column
             label="扣除类型"
-            prop="cycleName"
+            prop="otherDeductionType"
           >
             <template v-slot="{ row }">
               <el-select
@@ -511,12 +507,13 @@
             prop="noTaxAmount"
           >
             <template v-slot="{ row }">
-              <el-input
+              <!-- <el-input
                 v-digits="2"
                 v-model="row.noTaxAmount"
                 clearable
                 placeholder="不含税金额"
-              />
+              /> -->
+              {{Number(row.deductAmount) / (1 + Number(info.taxRate))}}
             </template>
           </el-table-column>
           <el-table-column
@@ -524,12 +521,7 @@
             prop="tax"
           >
             <template v-slot="{ row }">
-              <el-input
-                v-digits="2"
-                v-model="row.tax"
-                clearable
-                placeholder="税额"
-              />
+              {{Number(row.noTaxAmount) * Number(info.taxRate)}}
             </template>
           </el-table-column>
           <el-table-column
@@ -706,7 +698,16 @@
             <td>本期实际付款金额（不含税）</td>
             <td>{{info.noTaxAmount}}</td>
             <td>本期实际付款税额</td>
-            <td>{{info.tax}}</td>
+            <td>
+              <el-input
+                class="inputClass"
+                v-model="info.tax"
+                placeholder="请输入"
+                v-digits="2"
+                clearable
+                @change="taxinputChange"
+              />
+            </td>
           </tr>
           <tr>
             <td colspan="6">
@@ -822,11 +823,16 @@ export default class PayoffEdit extends Vue {
   private fileList: Array<object> = [];
   info: any = {
     applyCode: null,
-    status: null,
+    projectId: null,
+    projectName: null,
+    belongOrgId: null,
+    belongOrgName: null,
     agencyId: null,
+    agencyName: null,
     receiveAccount: null,
     invoiceType: null,
     taxRate: null,
+    status: null,
     maker: null,
     makerId: null,
     makerTime: null,
@@ -844,11 +850,15 @@ export default class PayoffEdit extends Vue {
       },
     ],
     paySummaryDetailsResponseList: [],
-    documentList: [],
-    paySummaryList: [],
+    applyAmount: null,
+    deductAmount: null,
+    finedAmount: null,
+    deductionCategory: null,
+    actualAmount: null,
+    noTaxAmount: null,
+    tax: null,
     description: null,
-    projectId: null,
-    projectName: null,
+    documentList: [],
   };
   channelAccountOptions: any = [];
   showTable: any = [];
@@ -859,33 +869,20 @@ export default class PayoffEdit extends Vue {
   contactsData: any = {};
   contactsDialogVisible = false;
   updateList: any = [];
+  modify = false;
 
   private rules: any = {
-    applyCode: [
+    projectId: [
       {
         required: true,
-        message: "请填写付款单编号",
+        message: "请选择结佣项目",
         trigger: "change",
       },
     ],
-    maker: [
+    belongOrgId: [
       {
         required: true,
-        message: "请填写制单人",
-        trigger: "change",
-      },
-    ],
-    makerTime: [
-      {
-        required: true,
-        message: "请选择制单日期",
-        trigger: "change",
-      },
-    ],
-    status: [
-      {
-        required: true,
-        message: "请选择当前状态",
+        message: "请选择事业部",
         trigger: "change",
       },
     ],
@@ -893,6 +890,13 @@ export default class PayoffEdit extends Vue {
       {
         required: true,
         message: "请选择渠道商",
+        trigger: "change",
+      },
+    ],
+    applyCode: [
+      {
+        required: true,
+        message: "请填写付款单编号",
         trigger: "change",
       },
     ],
@@ -917,17 +921,17 @@ export default class PayoffEdit extends Vue {
         trigger: "change",
       },
     ],
-    settlementMethod: [
+    maker: [
       {
         required: true,
-        message: "请选择结算方式",
+        message: "请填写制单人",
         trigger: "change",
       },
     ],
-    paymentMethod: [
+    makerTime: [
       {
         required: true,
-        message: "请选择付款方式",
+        message: "请选择制单日期",
         trigger: "change",
       },
     ],
@@ -994,6 +998,11 @@ export default class PayoffEdit extends Vue {
     this.$router.push("/payoff/list");
   }
 
+  taxinputChange(v: any) {
+    console.log(v);
+    this.modify = true;
+  }
+
   async created() {
     this.getInfo();
   }
@@ -1024,8 +1033,6 @@ export default class PayoffEdit extends Vue {
       this.info.makerId = (this.$root as any).userInfo.id;
       this.info.makerTime = (this.$tool as any).todayStr();
       this.info.status = "Unconfirm";
-      this.info.settlementMethod = "Centralization";
-      this.info.paymentMethod = "Cash";
       this.getFileListType([]);
     }
   }
@@ -1099,6 +1106,7 @@ export default class PayoffEdit extends Vue {
       });
     });
     this.getFileListType(this.updateList);
+    this.modify = true;
   }
 
   // 合计
@@ -1128,12 +1136,15 @@ export default class PayoffEdit extends Vue {
   }
 
   addContacts() {
-    if (this.info.agencyId) {
+    if (this.info.agencyId && this.info.projectId) {
       this.contactsDialogVisible = true;
-      this.contactsData.agencyId = this.info.agencyId;
-      this.contactsData.hasCheckedData = this.info.payApplyDetailList;
+      this.contactsData = {
+        agencyId: this.info.agencyId,
+        hasCheckedData: this.info.payApplyDetailList,
+        projectId: this.info.projectId,
+      };
     } else {
-      this.$message.warning("请选择渠道商");
+      this.$message.warning("请选择结佣项目、渠道商");
     }
   }
 
@@ -1196,24 +1207,72 @@ export default class PayoffEdit extends Vue {
           payApplyVO: {},
           payApplyDetailList: [],
         };
+        obj.modify = this.modify;
+        obj.payApplyVO.deductionCategory = this.info.deductionCategory;
         obj.payApplyVO.description = this.info.description;
+        obj.payApplyVO.actualAmount = this.info.actualAmount;
         obj.payApplyVO.agencyId = this.info.agencyId;
         obj.payApplyVO.agencyName = this.info.agencyName;
-        obj.payApplyVO.applyCode = this.info.applyCode;
-        obj.payApplyVO.area = this.info.area;
-        obj.payApplyVO.areaId = this.info.areaId;
-        obj.payApplyVO.belongOrgId = this.info.areaId;
-        obj.payApplyVO.makerId = this.info.makerId;
+        obj.payApplyVO.applyAmount = this.info.applyAmount;
+        obj.payApplyVO.belongOrgId = this.info.belongOrgId;
+        obj.payApplyVO.belongOrgName = this.info.belongOrgName;
+        obj.payApplyVO.deductAmount = this.info.deductAmount;
+        obj.payApplyVO.finedAmount = this.info.finedAmount;
         obj.payApplyVO.invoiceType = this.info.invoiceType;
+        obj.payApplyVO.makerId = this.info.makerId;
         obj.payApplyVO.makerTime = this.info.makerTime;
-        obj.payApplyVO.paymentMethod = this.info.paymentMethod;
+        obj.payApplyVO.noTaxAmount = this.info.noTaxAmount;
+        obj.payApplyVO.projectId = this.info.projectId;
         obj.payApplyVO.projectName = this.info.projectName;
         obj.payApplyVO.receiveAccount = this.info.receiveAccount;
-        obj.payApplyVO.settlementMethod = this.info.settlementMethod;
-        obj.payApplyVO.status = this.info.status;
-        obj.payApplyVO.taxRate = Number(this.info.taxRate);
-        obj.payApplyDetailList = this.info.payApplyDetailList;
         obj.payApplyVO.status = val;
+        obj.payApplyVO.tax = this.info.tax;
+        obj.payApplyVO.taxRate = Number(this.info.taxRate);
+        obj.otherDeductionDetailCalculationRequestList = this.info.otherDeductionDetailResponseList;
+        obj.payApplyDetailList = this.info.payApplyDetailList;
+        obj.payDeductDetailCalculationRequestList = this.info.payDeductDetailResponseList;
+        // obj.payApplyVO.area = this.info.area;
+        // obj.payApplyVO.areaId = this.info.areaId;
+        let arr: any = [];
+        Object.values(this.submitFile).forEach((v: any) => {
+          if (v.length) {
+            arr = arr.concat(v);
+          }
+        });
+        // 以下操作仅仅是为了校验必上传项
+        let submitList: any = this.fileListType.map((v: any) => {
+          return {
+            ...v,
+            fileList: arr
+              .filter((j: any) => j.fileType === v.code)
+              .map((h: any) => ({
+                ...h,
+                name: h.fileName,
+              })),
+          };
+        });
+        let isSubmit = true;
+        let msgList: any = [];
+        submitList.forEach((v: any) => {
+          if (v.subType && !v.fileList.length) {
+            msgList.push(v.name);
+            isSubmit = false;
+          }
+        });
+        if (isSubmit) {
+          obj.documentList = arr.map((v: any) => ({
+            fileId: v.fileId,
+            fileName: v.name,
+            fileType: v.fileType,
+          }));
+        } else {
+          this.$message({
+            type: "warning",
+            message: `${msgList.join(",")}项,请上传附件`,
+          });
+          return;
+        }
+
         // 假数据
         obj.payApplyVO.areaId = 15;
         obj.payApplyVO.belongOrgId = 15;
@@ -1221,45 +1280,7 @@ export default class PayoffEdit extends Vue {
           await post_payApply_entryApply(obj);
         } else if (this.$route.name === "payoffEdit") {
           obj.payApplyVO.id = this.payoffId;
-          let arr: any = [];
-          Object.values(this.submitFile).forEach((v: any) => {
-            if (v.length) {
-              arr = arr.concat(v);
-            }
-          });
-          // 以下操作仅仅是为了校验必上传项
-          let submitList: any = this.fileListType.map((v: any) => {
-            return {
-              ...v,
-              fileList: arr
-                .filter((j: any) => j.fileType === v.code)
-                .map((h: any) => ({
-                  ...h,
-                  name: h.fileName,
-                })),
-            };
-          });
-          let isSubmit = true;
-          let msgList: any = [];
-          submitList.forEach((v: any) => {
-            if (v.subType && !v.fileList.length) {
-              msgList.push(v.name);
-              isSubmit = false;
-            }
-          });
-          if (isSubmit) {
-            obj.documentList = arr.map((v: any) => ({
-              fileId: v.fileId,
-              fileName: v.name,
-              fileType: v.fileType,
-            }));
-          } else {
-            this.$message({
-              type: "warning",
-              message: `${msgList.join(",")}项,请上传附件`,
-            });
-            return;
-          }
+          obj.applyCode = this.info.applyCode;
           await post_payApply_updateApply(obj);
         }
         this.$goto({ path: `/payoff/list` });
@@ -1292,7 +1313,8 @@ export default class PayoffEdit extends Vue {
 }
 
 .inputClass {
-  /deep/ .el-textarea__inner {
+  /deep/ .el-textarea__inner,
+  /deep/ .el-input__inner {
     border: none;
   }
 }
