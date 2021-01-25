@@ -17,7 +17,7 @@
     append-to-body
     width="1000px"
     style="text-align: left"
-    class="dialog">
+    class="dialog dialog-padding">
     <el-table
       style="padding-left: 20px"
       class="ih-table"
@@ -85,4 +85,9 @@
   }
 </script>
 <style lang="scss" scoped>
+.dialog-padding {
+  /deep/.el-dialog__body {
+    padding: 10px 20px;
+  }
+}
 </style>
