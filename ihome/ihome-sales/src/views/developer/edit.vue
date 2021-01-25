@@ -4,7 +4,7 @@
  * @Author: wwq
  * @Date: 2020-09-25 17:59:09
  * @LastEditors: wwq
- * @LastEditTime: 2021-01-22 17:20:58
+ * @LastEditTime: 2021-01-23 18:11:51
 -->
 <template>
   <ih-page>
@@ -317,7 +317,7 @@
             <template v-slot="{ row }">
               <div><span
                   style="color: red"
-                  v-if="row.subType"
+                  v-if="row.subType && !resPageInfo.isPolyDeveloper"
                 >*</span>{{row.name}}
               </div>
             </template>
@@ -642,37 +642,46 @@ export default class Edit extends Vue {
           }
         });
         // 以下操作仅仅是为了校验必上传项
-        let submitList: any = this.fileListType.map((v: any) => {
-          return {
-            ...v,
-            fileList: arr
-              .filter((j: any) => j.type === v.code)
-              .map((h: any) => ({
-                ...h,
-                name: h.fileName,
-              })),
-          };
-        });
-        let isSubmit = true;
-        let msgList: any = [];
-        submitList.forEach((v: any) => {
-          if (v.subType && !v.fileList.length) {
-            msgList.push(v.name);
-            isSubmit = false;
+        if (!this.resPageInfo.isPolyDeveloper) {
+          let submitList: any = this.fileListType.map((v: any) => {
+            return {
+              ...v,
+              fileList: arr
+                .filter((j: any) => j.type === v.code)
+                .map((h: any) => ({
+                  ...h,
+                  name: h.fileName,
+                })),
+            };
+          });
+          let isSubmit = true;
+          let msgList: any = [];
+          submitList.forEach((v: any) => {
+            if (v.subType && !v.fileList.length) {
+              msgList.push(v.name);
+              isSubmit = false;
+            }
+          });
+
+          if (isSubmit) {
+            this.resPageInfo.attachmentList = arr.map((v: any) => ({
+              fileId: v.fileId,
+              fileName: v.name,
+              type: v.type,
+            }));
+          } else {
+            this.$message({
+              type: "warning",
+              message: `${msgList.join(",")}项,请上传附件`,
+            });
+            return;
           }
-        });
-        if (isSubmit) {
+        } else {
           this.resPageInfo.attachmentList = arr.map((v: any) => ({
             fileId: v.fileId,
             fileName: v.name,
             type: v.type,
           }));
-        } else {
-          this.$message({
-            type: "warning",
-            message: `${msgList.join(",")}项,请上传附件`,
-          });
-          return;
         }
         switch (this.$route.name) {
           case "developerAdd":
