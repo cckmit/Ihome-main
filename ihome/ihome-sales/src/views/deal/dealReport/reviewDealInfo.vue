@@ -1,10 +1,10 @@
 <!--
- * @Descripttion: 
+ * @Description:
  * @version: 
  * @Author: lsj
  * @Date: 2020-11-11 08:48:35
  * @LastEditors: lsj
- * @LastEditTime: 2020-12-18 20:10:36
+ * @LastEditTime: 2021-01-25 14:55:22
 -->
 <template>
   <ih-page class="text-left">
@@ -12,8 +12,6 @@
       <p class="ih-info-title">成交信息</p>
       <el-form
         @submit.native.prevent
-        :model="postData"
-        ref="ruleForm"
         label-width="150px"
         class="demo-ruleForm">
         <el-row>
@@ -21,7 +19,9 @@
             <el-form-item label="成交报告编号">{{postData.dealCode}}</el-form-item>
           </el-col>
           <el-col :span="8">
-            <el-form-item label="项目周期">{{postData.projectCycle}}</el-form-item>
+            <el-form-item label="项目周期">
+              <div class="cycle-name-wrapper" :title="postData.cycleName">{{postData.projectCycle}}</div>
+            </el-form-item>
           </el-col>
           <el-col :span="8">
             <el-form-item label="业务模式">
@@ -35,12 +35,12 @@
           </el-col>
           <el-col :span="8">
             <el-form-item label="是否代销">
-              {{!!postData.isConsign ? postData.isConsign === 'Yes' ? '是' : '否' : ''}}
+              {{$root.dictAllName(postData.isConsign, 'YesOrNoType')}}
             </el-form-item>
           </el-col>
           <el-col :span="8">
             <el-form-item label="是否市场化项目">
-              {{!!postData.isMarketProject ? postData.isMarketProject === 'Yes' ? '是' : '否' : ''}}
+              {{$root.dictAllName(postData.isMarketProject, 'YesOrNoType')}}
             </el-form-item>
           </el-col>
           <el-col :span="8">
@@ -65,20 +65,25 @@
           <el-col :span="8">
             <el-form-item label="分销协议编号">
               <div class="contNo-wrapper">
-                <div class="contNo">{{postData.contNo}}</div>
+                <div class="no cycle-name-wrapper" :title="postData.contNo">{{postData.contNo}}</div>
                 <div v-if="postData.contNo">
-                  <el-link type="primary">详情</el-link>
+                  <el-link
+                    class="margin-left-10"
+                    type="primary"
+                    @click.native.prevent="viewContNoDetail(postData.contNo)"
+                  >查看
+                  </el-link>
                 </div>
               </div>
             </el-form-item>
           </el-col>
           <el-col :span="8">
             <el-form-item label="是否垫佣">
-              {{!!postData.isMat ? postData.isMat === 'Yes' ? '是' : '否' : ''}}
+              {{$root.dictAllName(postData.isMat, 'YesOrNoType')}}
             </el-form-item>
           </el-col>
           <el-col :span="8">
-            <el-form-item label="报备信息">{{postData.projectCycle}}</el-form-item>
+            <el-form-item label="报备信息">{{postData.recordStr}}</el-form-item>
           </el-col>
           <el-col :span="8">
             <el-form-item label="渠道公司">
@@ -97,7 +102,7 @@
           </el-col>
           <el-col :span="8">
             <el-form-item label="备案情况">
-              {{!!postData.recordState ? postData.recordState === 'Has' ? '有' : '无' : ''}}
+              {{$root.dictAllName(postData.recordState, 'HasOrNoType')}}
             </el-form-item>
           </el-col>
           <el-col :span="8">
@@ -248,23 +253,76 @@
                 <div>{{$root.dictAllName(scope.row.type, 'FeeType')}}</div>
               </template>
             </el-table-column>
-            <el-table-column prop="partyACustomerName" label="甲方/客户" min-width="120"></el-table-column>
-            <el-table-column prop="packageId" label="收派套餐" min-width="120">
+            <el-table-column prop="partyACustomerName" label="甲方/客户" min-width="120">
               <template slot-scope="scope">
-                <el-tooltip placement="right" effect="light">
-                  <div slot="content">
-                    <div>123{{scope.row.name}}</div>
-                    <div>456</div>
-                  </div>
-                  <el-tag effect="plain">收派标准</el-tag>
-                </el-tooltip>
+                <div>{{scope.row.type === "ServiceFee" ? '客户' : scope.row.partyACustomerName}}</div>
               </template>
             </el-table-column>
-            <el-table-column prop="receiveAmount" label="应收金额" min-width="120"></el-table-column>
-            <el-table-column prop="commAmount" label="派发佣金金额" min-width="150"></el-table-column>
-            <el-table-column prop="rewardAmount" label="派发内场奖励金额" min-width="150"></el-table-column>
-            <el-table-column prop="totalPackageAmount" label="总包业绩金额" min-width="150"></el-table-column>
-            <el-table-column prop="distributionAmount" label="分销业绩金额" min-width="150"></el-table-column>
+            <el-table-column prop="packageId" label="收派套餐" min-width="140">
+              <template slot-scope="scope">
+                <div v-if="postData.calculation === 'Auto'">
+                  <el-tooltip placement="top" effect="light">
+                    <div slot="content">
+                      <el-table :data="scope.row.showData" style="width: 100%">
+                        <el-table-column label="类型" prop="typeName" min-width="100"></el-table-column>
+                        <el-table-column label="合同类型" prop="contractEnum" min-width="100">
+                          <template slot-scope="scope">
+                            <div>{{$root.dictAllName(scope.row.contractEnum, 'ContType')}}</div>
+                          </template>
+                        </el-table-column>
+                        <el-table-column label="客户类型" prop="transactionEnum" min-width="100">
+                          <template slot-scope="scope">
+                            <div>{{$root.dictAllName(scope.row.transactionEnum, 'Transaction')}}</div>
+                          </template>
+                        </el-table-column>
+                        <el-table-column label="条件" prop="condition" min-width="200"></el-table-column>
+                        <el-table-column label="应收金额" prop="receivableAmout" min-width="200">
+                          <template slot-scope="scope">
+                            <div>金额：{{scope.row.receivableAmout}}</div>
+                            <div>点数：{{scope.row.receivablePoint}}</div>
+                          </template>
+                        </el-table-column>
+                        <el-table-column label="派发佣金" prop="sendAmount" min-width="200">
+                          <template slot-scope="scope">
+                            <div>金额：{{scope.row.sendAmount}}</div>
+                            <div>点数：{{scope.row.sendPoint}}</div>
+                          </template>
+                        </el-table-column>
+                        <el-table-column label="派发内场奖励" prop="sendInAmount" min-width="200">
+                          <template slot-scope="scope">
+                            <div>金额：{{scope.row.sendInAmount}}</div>
+                            <div>点数：{{scope.row.sendInPoint}}</div>
+                          </template>
+                        </el-table-column>
+                        <el-table-column label="总包业绩" prop="generalAchieveAmount" min-width="200">
+                          <template slot-scope="scope">
+                            <div>金额：{{scope.row.generalAchieveAmount}}</div>
+                            <div>点数：{{scope.row.generalAchievePoint}}</div>
+                          </template>
+                        </el-table-column>
+                        <el-table-column label="分销业绩" prop="distributeAchieveAmount" min-width="200">
+                          <template slot-scope="scope">
+                            <div>金额：{{scope.row.distributeAchieveAmount}}</div>
+                            <div>点数：{{scope.row.distributeAchievePoint}}</div>
+                          </template>
+                        </el-table-column>
+                      </el-table>
+                    </div>
+                    <el-input
+                      readonly
+                      placeholder="收派标准">
+                      <el-button slot="append" icon="el-icon-view"></el-button>
+                    </el-input>
+                  </el-tooltip>
+                </div>
+                <div v-else>---</div>
+              </template>
+            </el-table-column>
+            <el-table-column prop="receiveAmount" label="应收金额" min-width="180"></el-table-column>
+            <el-table-column prop="commAmount" label="派发佣金金额" min-width="180"></el-table-column>
+            <el-table-column prop="rewardAmount" label="派发内场奖励金额" min-width="180"></el-table-column>
+            <el-table-column prop="totalPackageAmount" label="总包业绩金额" min-width="180"></el-table-column>
+            <el-table-column prop="distributionAmount" label="分销业绩金额" min-width="180"></el-table-column>
             <el-table-column prop="otherChannelFees" label="其他渠道费用(正数为产生，负数为使用)" min-width="150"></el-table-column>
           </el-table>
         </el-col>
@@ -273,7 +331,7 @@
         <el-col>
           <el-table
             class="ih-table"
-            :data="infoList">
+            :data="postData.receiveAchieveList">
             <el-table-column prop="receiveAmount" label="本单应收" min-width="120"></el-table-column>
             <el-table-column prop="achieveAmount" label="本单业绩" min-width="120"></el-table-column>
             <el-table-column prop="otherChannelFees" label="其他渠道费用(正数为产生，负数为使用)" min-width="150"></el-table-column>
@@ -290,7 +348,7 @@
             show-summary
             sum-text="合计金额"
             :summary-method="getCommissionSummaries"
-            :data="postData.commissionInfoList">
+            :data="postData.channelCommList">
             <el-table-column prop="target" label="拆佣对象" min-width="120">
               <template slot-scope="scope">
                 <div>{{$root.dictAllName(scope.row.target, 'CommObjectType')}}</div>
@@ -302,21 +360,9 @@
                 <div>{{$root.dictAllName(scope.row.feeType, 'FeeType')}}</div>
               </template>
             </el-table-column>
-            <el-table-column prop="partyACustomerName" label="费用来源(客户/甲方)" min-width="120">
-              <template slot-scope="scope">
-                <el-input v-model="scope.row.payee" clearable placeholder="收款方"/>
-              </template>
-            </el-table-column>
-            <el-table-column prop="amount" label="金额" min-width="120">
-              <template slot-scope="scope">
-                <el-input v-model="scope.row.amount" clearable placeholder="金额"/>
-              </template>
-            </el-table-column>
-            <el-table-column prop="remarks" label="备注" min-width="120">
-              <template slot-scope="scope">
-                <el-input v-model="scope.row.remarks" clearable placeholder="备注"/>
-              </template>
-            </el-table-column>
+            <el-table-column prop="partyACustomerName" label="费用来源(客户/甲方)" min-width="120"></el-table-column>
+            <el-table-column prop="amount" label="金额" min-width="150"></el-table-column>
+            <el-table-column prop="remarks" label="备注" min-width="150"></el-table-column>
           </el-table>
         </el-col>
       </el-row>
@@ -339,24 +385,27 @@
                 <div>{{$root.dictAllName(scope.row.roleType, 'DealRole')}}</div>
               </template>
             </el-table-column>
-            <el-table-column prop="roleAchieveCap" label="角色业绩上限" min-width="120"></el-table-column>
-            <el-table-column prop="corporateAchieve" label="公司业绩" min-width="120"></el-table-column>
-            <el-table-column prop="corporateAchieveRatio" label="角色业绩比例（%）" min-width="120"></el-table-column>
-            <el-table-column prop="commFees" label="拆佣金额" min-width="150"></el-table-column>
-            <el-table-column prop="commFeesRatio" label="拆佣比例（%）" min-width="150"></el-table-column>
+            <el-table-column prop="roleAchieveCap" label="角色业绩上限" min-width="150"></el-table-column>
             <el-table-column prop="rolerName" label="角色人" min-width="150">
               <template slot-scope="scope">
                 <div>{{scope.row.rolerName}}</div>
                 <div>{{scope.row.rolerPosition}}</div>
               </template>
             </el-table-column>
+            <el-table-column prop="roleAchieveCap" label="角色人业绩" min-width="120"></el-table-column>
+            <el-table-column prop="roleAchieveRatio" label="角色业绩比例（%）" min-width="120"></el-table-column>
+            <el-table-column prop="commFees" label="拆佣金额" min-width="150"></el-table-column>
+            <el-table-column prop="commFeesRatio" label="拆佣比例（%）" min-width="150"></el-table-column>
             <el-table-column prop="belongOrgName" label="店组" min-width="150"></el-table-column>
-            <el-table-column prop="type" label="管理岗" min-width="150">
+            <el-table-column prop="managerAchieveList" label="管理岗" min-width="150">
               <template slot-scope="scope">
-                <div v-for="(item, index) in scope.row.managerAchieveList" :key="index">
-                  <div>{{item.achieveFees}}</div>
-                  <div>{{item.ratio}}</div>
-                  <div>{{item.manager}}({{$root.dictAllName(item.type, 'ManagerType')}})</div>
+                <div class="manager-list" v-for="(item, index) in scope.row.managerAchieveList" :key="index">
+                  <div class="fee">{{item.achieveFees}}</div>
+                  <div class="ratio">{{item.ratio ? item.ratio : 0}}%</div>
+                  <div class="name">
+                    <span>{{item.manager ? item.manager : '---'}}</span>
+                    (<span>{{$root.dictAllName(item.type, 'ManagerType')}}</span>)
+                  </div>
                 </div>
               </template>
             </el-table-column>
@@ -379,24 +428,27 @@
                 <div>{{$root.dictAllName(scope.row.roleType, 'DealRole')}}</div>
               </template>
             </el-table-column>
-            <el-table-column prop="roleAchieveCap" label="角色业绩上限" min-width="120"></el-table-column>
-            <el-table-column prop="corporateAchieve" label="公司业绩" min-width="120"></el-table-column>
-            <el-table-column prop="corporateAchieveRatio" label="角色业绩比例（%）" min-width="120"></el-table-column>
-            <el-table-column prop="commFees" label="拆佣金额" min-width="150"></el-table-column>
-            <el-table-column prop="commFeesRatio" label="拆佣比例（%）" min-width="150"></el-table-column>
+            <el-table-column prop="roleAchieveCap" label="角色业绩上限" min-width="150"></el-table-column>
             <el-table-column prop="rolerName" label="角色人" min-width="150">
               <template slot-scope="scope">
                 <div>{{scope.row.rolerName}}</div>
                 <div>{{scope.row.rolerPosition}}</div>
               </template>
             </el-table-column>
+            <el-table-column prop="roleAchieveCap" label="角色人业绩" min-width="120"></el-table-column>
+            <el-table-column prop="roleAchieveRatio" label="角色业绩比例（%）" min-width="120"></el-table-column>
+            <el-table-column prop="commFees" label="拆佣金额" min-width="150"></el-table-column>
+            <el-table-column prop="commFeesRatio" label="拆佣比例（%）" min-width="150"></el-table-column>
             <el-table-column prop="belongOrgName" label="店组" min-width="150"></el-table-column>
-            <el-table-column prop="type" label="管理岗" min-width="150">
+            <el-table-column prop="managerAchieveList" label="管理岗" min-width="150">
               <template slot-scope="scope">
-                <div v-for="(item, index) in scope.row.managerAchieveList" :key="index">
-                  <div>{{item.achieveFees}}</div>
-                  <div>{{item.ratio}}</div>
-                  <div>{{item.manager}}({{$root.dictAllName(item.type, 'ManagerType')}})</div>
+                <div class="manager-list" v-for="(item, index) in scope.row.managerAchieveList" :key="index">
+                  <div class="fee">{{item.achieveFees}}</div>
+                  <div class="ratio">{{item.ratio ? item.ratio : 0}}%</div>
+                  <div class="name">
+                    <span>{{item.manager ? item.manager : '---'}}</span>
+                    (<span>{{$root.dictAllName(item.type, 'ManagerType')}}</span>)
+                  </div>
                 </div>
               </template>
             </el-table-column>
@@ -410,7 +462,7 @@
         <el-col>
           <el-table
             class="ih-table"
-            :data="infoList">
+            :data="postData.documentList">
             <el-table-column prop="fileType" label="类型" min-width="120">
               <template slot-scope="scope">
                 <div>{{$root.dictAllName(scope.row.fileType, 'DealFileType')}}</div>
@@ -425,7 +477,6 @@
       <p class="ih-info-title">审核意见</p>
       <el-form
         :model="postData"
-        :rules="rules"
         ref="ruleForm"
         label-width="20px"
         class="demo-ruleForm">
@@ -453,11 +504,18 @@
       <el-button type="danger" @click="handleFail()">驳回</el-button>
       <el-button type="success" @click="handlePass()">通过</el-button>
     </div>
-    <ih-dialog :show="dialogReviewDeal" desc="成交审核记录">
+    <ih-dialog :show="dialogReviewDeal" desc="成交审核操作记录信息">
       <ReviewDetailsDialog
         :data="reviewData"
         @cancel="() => (dialogReviewDeal = false)"
-        @finish="() => {dialogReviewDeal = false;}"
+        @finish="() => {dialogReviewDeal = false}"
+      />
+    </ih-dialog>
+    <ih-dialog :show="dialogSelectDate" desc="审核业绩确认时间">
+      <ReviewDate
+        :data="reviewData"
+        @cancel="() => (dialogSelectDate = false)"
+        @finish="() => {dialogSelectDate = false}"
       />
     </ih-dialog>
   </ih-page>
@@ -465,56 +523,89 @@
 <script lang="ts">
   import {Component, Vue} from "vue-property-decorator";
   import ReviewDetailsDialog from "@/views/deal/dealReport/dialog/reviewDetailsDialog.vue";
-
+  import ReviewDate from "@/views/deal/dealReport/dialog/reviewDate.vue";
   import {
-    post_achieveScaleScheme_add,
-    get_achieveScaleScheme_get__id,
-    post_achieveScaleScheme_update
+    get_deal_get__id // 根据ID查询成交详情
   } from "@/api/deal";
-  import {Form as ElForm} from "element-ui";
-  import {NoRepeatHttp} from "ihome-common/util/aop/no-repeat-http";
+  import {
+    post_notice_customer_information // 根据成交id获取优惠告知书
+  } from "@/api/contract";
 
   @Component({
-    components: {ReviewDetailsDialog},
+    components: {ReviewDate, ReviewDetailsDialog},
   })
   export default class ReviewDealInfo extends Vue {
     postData: any = {
-      modelName: null,
-      contType: null,
-      isMarketProject: null,
-      isSame: null,
-      achievePropertyTypeList: [],
-      achieveProjectList: [],
-      house: {},
-      buModelContTypeList: [],
-      commissionInfoList: [],
-      achieveTotalBagList: [],
-      achieveDistriList: [],
-      offerNoticeList: [],
-      customerList: [],
-      receiveList: [],
-    };
-    infoList: any = [];
-    rules: any = {
-      modelName: [
-        {required: true, message: "业务模式必选", trigger: "change"},
-      ],
-      buModelContTypeList: [
-        {required: true, message: "合同类型必选", trigger: "change"},
-      ]
+      dealCode: null,
+      house: {}, // 房产信息
+      offerNoticeList: [], // 优惠告知书
+      customerList: [], // 客户信息
+      agencyList: [], // 渠道信息
+      receiveList: [], // 收派金额
+      receiveAchieveList: [], // 应收业绩 - 收派信息下
+      channelCommList: [], // 对外拆佣信息
+      achieveList: [], // 平台费用 - 包含总包和分销
+      achieveTotalBagList: [], // 平台费用 - 总包 - 前端拆分
+      achieveDistriList: [], // 平台费用 - 分销 - 前端拆分
+      documentList: [], // 附件信息
+      processRecordList: [], // 审核信息
     };
     id: any = null;
     changeType: any = null; // 改变成交信息的类型
     dialogReviewDeal: any = false; // 成交审核记录弹窗标识
-    reviewData: any = null;
+    dialogSelectDate: any = false; // 选择业绩确认时间
+    reviewData: any = null; // 审核详情
 
     async created() {
       this.id = this.$route.query.id;
       this.changeType = this.$route.query.type;
       // console.log('changeType', this.changeType);
       if (this.id) {
-        const res: any = await get_achieveScaleScheme_get__id({id: this.id});
-        this.postData = res;
+        await this.init(this.id);
+      }
+    }
+
+    // 初始化数据
+    async init(id: any = '') {
+      if (!id) return;
+      this.postData = await get_deal_get__id({id: id});
+      // console.log(this.postData);
+      // 收派金额数据整理 showData
+      if (this.postData.receiveList && this.postData.receiveList.length > 0) {
+        this.postData.receiveList.forEach((list: any) => {
+          this.$set(list, 'showData', [
+            {
+              ...list.collectandsendDetailDealVO,
+              typeName: (this as any).$root.dictAllName(list.type, 'FeeType')
+            }
+          ]);
+        });
+      }
+      // 平台费用 - 拆分总包和分销数据
+      if (this.postData.achieveList && this.postData.achieveList.length > 0) {
+        this.postData.achieveTotalBagList = [];
+        this.postData.achieveDistriList = [];
+        this.postData.achieveList.forEach((list: any) => {
+          if (list.type === 'TotalBag') {
+            this.postData.achieveTotalBagList.push(list);
+          } else if (list.type === 'Distri') {
+            this.postData.achieveDistriList.push(list);
+          }
+        })
+      }
+      // 初始化优惠告知书信息
+      await this.getInformation(id);
+    }
+
+    // 根据成交id获取优惠告知书列表
+    async getInformation(id: any = '') {
+      if (!id) return;
+      const list: any = await post_notice_customer_information({dealId: id});
+      // console.log('优惠告知书列表', list);
+      if (list && list.length > 0) {
+        this.postData.offerNoticeList = list;
+      } else {
+        this.postData.offerNoticeList = [];
       }
     }
 
@@ -533,11 +624,13 @@
             sums[index] = values.reduce((prev: any, curr: any) => {
               const value = Number(curr);
               if (!isNaN(value)) {
-                return prev + curr;
+                let total = (prev * 1 * 100 + curr * 1 * 100) / 100;
+                return total;
               } else {
-                return prev;
+                return ((prev * 1 * 100) / 100);
               }
             }, 0);
+            sums[index] = Math.round(sums[index] * 100) / 100; // 解决精度缺失问题
           } else {
             sums[index] = '';
           }
@@ -563,11 +656,13 @@
             sums[index] = values.reduce((prev: any, curr: any) => {
               const value = Number(curr);
               if (!isNaN(value)) {
-                return prev + curr;
+                let total = (prev * 1 * 100 + curr * 1 * 100) / 100;
+                return total;
               } else {
-                return prev;
+                return ((prev * 1 * 100) / 100);
               }
             }, 0);
+            sums[index] = Math.round(sums[index] * 100) / 100; // 解决精度缺失问题
           } else {
             sums[index] = '';
           }
@@ -587,17 +682,19 @@
           sums[index] = '合计';
           return;
         }
-        if ([1, 2, 3, 4, 5].includes(index)) {
+        if ([3, 5, 6].includes(index)) {
           const values = data.map((item: any) => Number(item[column.property]));
           if (!values.every((value: any) => isNaN(value))) {
             sums[index] = values.reduce((prev: any, curr: any) => {
               const value = Number(curr);
               if (!isNaN(value)) {
-                return prev + curr;
+                let total = (prev * 1 * 100 + curr * 1 * 100) / 100;
+                return total;
               } else {
-                return prev;
+                return ((prev * 1 * 100) / 100);
               }
             }, 0);
+            sums[index] = Math.round(sums[index] * 100) / 100; // 解决精度缺失问题
           } else {
             sums[index] = '';
           }
@@ -610,21 +707,25 @@
 
     // 预览-优惠告知书
     preview(scope: any) {
-      console.log(scope);
+      window.open(
+        `/sales-api/sales-document-cover/file/browse/${scope.row.templateId}`
+      );
     }
 
     // 查看审核记录
     handleViewReviewDetail() {
       this.dialogReviewDeal = true;
-      this.reviewData = {
-        title: 'main'
-      }
+      this.reviewData = this.postData.processRecordList;
     }
 
     // 查看原成交详情
     handleViewInfoDetail() {
       this.$router.push({
-        path: "/dealReport/info"
+        path: "/dealReport/info",
+        query: {
+          id: this.postData.id,
+          type: "ID"
+        }
       });
     }
 
@@ -636,7 +737,6 @@
     // 驳回
     handleFail() {
       console.log('驳回');
-      (this.$refs["ruleForm"] as ElForm).validate(this.addSave);
     }
 
     // 返回
@@ -646,53 +746,16 @@
       });
     }
 
-    @NoRepeatHttp()
-    async addSave(valid: any) {
-      if (valid) {
-        if (this.id) {
-          let postData: any = {
-            id: this.id,
-            modelName: this.postData.modelName,
-            buModelContTypeList: []
-          };
-          if (this.postData.buModelContTypeList.length > 0) {
-            this.postData.buModelContTypeList.forEach((list: any) => {
-              postData.buModelContTypeList.push(
-                {
-                  contType: list
-                }
-              )
-            })
-          }
-          await post_achieveScaleScheme_update(postData);
-          this.$message.success("编辑成功");
-          this.$goto({
-            path: "/dealReport/list",
-          });
-        } else {
-          let postData: any = {
-            modelName: this.postData.modelName,
-            buModelContTypeList: []
-          };
-          if (this.postData.buModelContTypeList.length > 0) {
-            this.postData.buModelContTypeList.forEach((list: any) => {
-              postData.buModelContTypeList.push(
-                {
-                  contType: list
-                }
-              )
-            })
-          }
-          await post_achieveScaleScheme_add(postData);
-          this.$message.success("新增成功");
-          this.$goto({
-            path: "/dealReport/list",
-          });
-        }
-      } else {
-        this.$message.warning("请先填好数据再保存");
-        return false;
-      }
+    // 查看分销协议
+    viewContNoDetail(contractNo: any) {
+      if (!contractNo) return;
+      let router = this.$router.resolve({
+        path: `/distribution/info`,
+        query: {
+          contractNo: contractNo
+        },
+      });
+      window.open(router.href, "_blank");
     }
   }
 </script>
@@ -703,16 +766,47 @@
     margin-bottom: 10px;
   }
 
+  .cycle-name-wrapper {
+    width: 97%;
+    overflow: hidden;
+    text-overflow:ellipsis;
+    white-space: nowrap;
+  }
+
+  .manager-list {
+    width: 100%;
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+
+    div {
+      //flex: 1;
+      &:not(:last-child) {
+        margin-right: 10px;
+      }
+    }
+
+    .fee {
+      width: 30%;
+    }
+
+    .ratio{
+      width: 20%;
+    }
+
+    .name{
+      width: 50%;
+    }
+  }
+
   .contNo-wrapper {
     width: 100%;
     display: flex;
     flex-direction: row;
     align-items: center;
 
-    .contNo {
+    .no {
       flex: 1;
-      box-sizing: border-box;
-      margin-right: 20px;
     }
   }
 
