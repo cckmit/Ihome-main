@@ -4,7 +4,7 @@
  * @Author: zyc
  * @Date: 2020-06-22 16:44:13
  * @LastEditors: zyc
- * @LastEditTime: 2021-01-22 11:25:11
+ * @LastEditTime: 2021-01-25 09:03:00
 --> 
 <template >
   <div class="main">
@@ -58,10 +58,12 @@
  
 <script lang="ts">
 import { Component, Vue } from "vue-property-decorator";
-import { UserModule } from "../store/modules/user";
+// import { UserModule } from "../store/modules/user";
 import { Form as ElForm } from "element-ui";
 import { defaultMountApp } from "../setting";
 import { get_sessionUser_getSystemParam } from "../api/system/index";
+import request from "ihome-common/util/api/http";
+import { setToken } from "../utils/cookies";
 @Component({
   components: {},
 })
@@ -88,9 +90,17 @@ export default class Login extends Vue {
         try {
           console.log(this.ruleForm);
 
-          const res = await UserModule.Login(this.ruleForm);
+          const auth_client = "UGM6c2FsZXMhMjAyMA==";
+          let url = `/sales-api/sales-oauth2/oauth/token?grant_type=password&username=${this.ruleForm.username}&password=${this.ruleForm.password}&auth_client=${auth_client}`;
+          const res: any = await request({
+            url: url,
+            method: "post",
+          });
+
+          // const res = await UserModule.Login(this.ruleForm);
 
           console.log(res);
+          setToken(res.access_token);
 
           this.loading = false;
           (window as any).location = defaultMountApp;

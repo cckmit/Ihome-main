@@ -4,7 +4,7 @@
  * @Author: zyc
  * @Date: 2020-06-23 10:42:04
  * @LastEditors: zyc
- * @LastEditTime: 2021-01-05 14:08:46
+ * @LastEditTime: 2021-01-25 09:01:04
 --> 
 <template>
   <div class="header-container">
@@ -82,6 +82,7 @@ import { headImg } from "../utils/base64-img";
 import { defaultIsCollapse } from "../setting";
 // import { allMenu } from "../api/users";
 import { get_sessionUser_logout } from "../api/system/index";
+import { removeToken } from "../utils/cookies";
 @Component({
   components: {},
 })
@@ -103,9 +104,9 @@ export default class IhHeader extends Vue {
   async loginOut() {
     try {
       await get_sessionUser_logout();
-      await UserModule.LogOut();
+      removeToken();
     } catch (error) {
-      await UserModule.LogOut();
+      removeToken();
     } finally {
       this.$router.push("/login");
     }
