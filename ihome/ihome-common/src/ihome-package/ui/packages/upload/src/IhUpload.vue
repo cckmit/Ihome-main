@@ -3,8 +3,8 @@
  * @version: 
  * @Author: wwq
  * @Date: 2020-09-09 16:17:16
- * @LastEditors: ywl
- * @LastEditTime: 2021-01-21 18:50:43
+ * @LastEditors: wwq
+ * @LastEditTime: 2021-01-25 09:24:33
 -->
 <template>
   <div class="upload">
@@ -149,7 +149,7 @@ export default class IhUpload extends Vue {
   @Prop() private fileList!: Array<object>;
   @Prop({
     type: Number,
-    default: 5,
+    default: 999,
   })
   limit!: number;
   @Prop({

@@ -4,7 +4,7 @@
  * @Author: wwq
  * @Date: 2020-12-26 11:11:23
  * @LastEditors: wwq
- * @LastEditTime: 2021-01-23 17:52:09
+ * @LastEditTime: 2021-01-25 14:38:50
 -->
 <template>
   <IhPage>
@@ -705,7 +705,7 @@
             <td>{{info.actualAmount}}</td>
             <td>本期实际付款金额（不含税）</td>
             <td>{{info.noTaxAmount}}</td>
-            <td>税额（实付）</td>
+            <td>本期实际付款税额</td>
             <td>{{info.tax}}</td>
           </tr>
           <tr>
@@ -726,7 +726,24 @@
           </tr>
         </table>
       </div>
-      <p class="ih-info-title">附件信息</p>
+      <br />
+      <div class="content">
+        <p class="ih-info-title">上传附件</p>
+        <div>
+          <el-button
+            @click="downloadTemplate('jiesuan')"
+            type="success"
+            size="small"
+            icon="el-icon-download"
+          >结算明细未盖章版</el-button>
+          <el-button
+            @click="downloadTemplate('qingyong')"
+            type="success"
+            size="small"
+            icon="el-icon-download"
+          >请款单未盖章版</el-button>
+        </div>
+      </div>
       <div class="padding-left-20">
         <el-table
           class="ih-table"
@@ -753,10 +770,9 @@
                 :file-list.sync="row.fileList"
                 :file-size="10"
                 :file-type="row.code"
-                :upload-show="!!row.fileList.length"
-                :removePermi="false"
-                :limit="row.fileList.length"
                 size="100px"
+                :limit="row.limit && row.fileList.length"
+                :upload-show="row.limit && !!row.fileList.length"
                 @newFileList="queryNew"
               ></IhUpload>
             </template>
@@ -815,6 +831,7 @@ export default class PayoffEdit extends Vue {
     makerId: null,
     makerTime: null,
     payApplyDetailList: [],
+    payDeductDetailResponseList: [],
     otherDeductionDetailResponseList: [
       {
         otherDeductionType: "",
@@ -826,7 +843,7 @@ export default class PayoffEdit extends Vue {
         remark: "",
       },
     ],
-    costApportionList: [],
+    paySummaryDetailsResponseList: [],
     documentList: [],
     paySummaryList: [],
     description: null,
@@ -841,6 +858,7 @@ export default class PayoffEdit extends Vue {
   submitFile: any = {};
   contactsData: any = {};
   contactsDialogVisible = false;
+  updateList: any = [];
 
   private rules: any = {
     applyCode: [
@@ -991,6 +1009,7 @@ export default class PayoffEdit extends Vue {
           cycleId: j.cycleId + "",
         })),
       };
+      this.updateList = res.documentList;
       this.getFileListType(res.documentList);
       this.getChannelInfo(
         {
@@ -1024,6 +1043,22 @@ export default class PayoffEdit extends Vue {
           })),
       };
     });
+    this.fileListType = this.fileListType.map((v: any) => {
+      if (["Contract", "BusinessLicense"].includes(v.code)) {
+        return {
+          ...v,
+          limit: true,
+          fileList: v.fileList.map((j: any) => ({
+            ...j,
+            exAuto: 1,
+          })),
+        };
+      } else {
+        return {
+          ...v,
+        };
+      }
+    });
     let obj: any = {};
     this.fileListType.forEach((h: any) => {
       obj[h.code] = h.fileList;
@@ -1044,22 +1079,26 @@ export default class PayoffEdit extends Vue {
     obj.agencyName = this.info.agencyName;
     obj.taxRate = Number(this.info.taxRate);
     obj.payApplyDetailList = this.info.payApplyDetailList;
+    obj.otherDeductionDetailCalculationRequestList = this.info.otherDeductionDetailResponseList;
+    obj.payDeductDetailCalculationRequestList = this.info.payDeductDetailResponseList;
     const res: any = await post_payApply_calculation_results(obj);
-    // this.info.agencyName = res.agencyName;
-    this.info.area = (this.$root as any).userInfo.orgName;
-    this.info.areaId = (this.$root as any).userInfo.orgId;
-    this.info.projectName = res.projectName;
-    this.info.paySummaryList = res.cycleCommissionList;
-    this.info.payDeductDetailList = res.payDeductDetailList;
+    this.info.actualAmount = res.actualAmount;
     this.info.applyAmount = res.applyAmount;
     this.info.deductAmount = res.deductAmount;
-    this.info.actualAmount = res.actualAmount;
+    this.info.deductionCategory = res.deductionCategory;
+    this.info.finedAmount = res.finedAmount;
     this.info.noTaxAmount = res.noTaxAmount;
     this.info.tax = res.tax;
-    this.info.totalPayFees = res.totalPayFees;
-    this.info.totalPdeductFees = res.totalPdeductFees;
-    this.info.totalTax = res.totalTax;
-    this.getFileListType(res.documentList);
+    this.info.paySummaryDetailsResponseList = res.paySummaryDetailsResponses;
+    this.updateList.forEach((v: any) => {
+      res.documentList.forEach((j: any) => {
+        if (j.fileType === v.fileType) {
+          v.fileId = j.fileId;
+          v.fileName = j.fileName;
+        }
+      });
+    });
+    this.getFileListType(this.updateList);
   }
 
   // 合计
@@ -1116,6 +1155,10 @@ export default class PayoffEdit extends Vue {
 
   async delOtherDeduction(index: number) {
     this.info.otherDeductionDetailResponseList.splice(index, 1);
+  }
+
+  downloadTemplate(type: any) {
+    console.log(type);
   }
 
   contactsFinish(data: any) {
@@ -1231,12 +1274,9 @@ export default class PayoffEdit extends Vue {
 </script>
 <style lang="scss" scoped>
 .content {
-  position: relative;
-  /deep/ .el-button {
-    position: absolute;
-    top: -10px;
-    right: 0;
-  }
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
 }
 .bottom {
   margin-top: 30px;

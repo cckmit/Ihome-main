@@ -4,7 +4,7 @@
  * @Author: zyc
  * @Date: 2020-07-14 14:34:44
  * @LastEditors: zyc
- * @LastEditTime: 2020-12-14 20:48:25
+ * @LastEditTime: 2021-01-25 10:26:20
 --> 
 <template>
   <el-dialog
@@ -187,6 +187,9 @@ export default class UserJobRole extends Vue {
   }
   async currentChange(val: any) {
     console.log(val);
+    if (!val) {
+      val = { id: null };
+    }
 
     this.currentItem = val;
     // const res = await post_role_getAllByJobId__jobId({
