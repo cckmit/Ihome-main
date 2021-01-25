@@ -22,7 +22,6 @@
       style="padding-left: 20px"
       class="ih-table"
       :max-height="300"
-      :empty-text="emptyText"
       :data="data">
       <el-table-column prop="operate" label="操作" min-width="150">
         <template slot-scope="scope">

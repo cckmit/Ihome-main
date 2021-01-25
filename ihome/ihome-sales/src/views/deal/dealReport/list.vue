@@ -1,10 +1,10 @@
 <!--
- * @Descripttion: 
+ * @Description:
  * @version: 
  * @Author: lsj
  * @Date: 2020-11-03 09:10:20
  * @LastEditors: lsj
- * @LastEditTime: 2020-12-24 09:43:58
+ * @LastEditTime: 2021-01-25 15:13:16
 -->
 <template>
   <ih-page label-width="100px">
@@ -351,17 +351,16 @@
                     </el-dropdown-item>
                   </el-dropdown-menu>
                 </el-dropdown>
+<!--                <el-dropdown-item-->
+<!--                  :class="{ 'ih-data-disabled': !['PlatformClerkUnreview', 'HeadDepartUnreview', 'BranchBusinessManageUnreview', 'NotSigned'].includes(scope.row.status)}"-->
+<!--                  v-has="'B.SALES.DEAL.DEALLIST.VERIFY'"-->
+<!--                  @click.native.prevent="handleReview(scope)"-->
+<!--                >审核-->
+<!--                </el-dropdown-item>-->
                 <el-dropdown-item
-                  :class="{ 'ih-data-disabled': !['PlatformClerkUnreview', 'HeadDepartUnreview', 'BranchBusinessManageUnreview'].includes(scope.row.status)}"
-                  v-has="'B.SALES.DEAL.DEALLIST.VERIFY'"
                   @click.native.prevent="handleReview(scope)"
                 >审核
                 </el-dropdown-item>
-<!--                <el-dropdown-item-->
-<!--                  v-has="'B.SALES.DEAL.DEALLIST.REVOKEVERIFY'"-->
-<!--                  @click.native.prevent="handleWithdrawalReview(scope)"-->
-<!--                >撤回审核-->
-<!--                </el-dropdown-item>-->
               </el-dropdown-menu>
             </el-dropdown>
           </template>
@@ -551,10 +550,28 @@
     // 审核
     async handleReview(scope: any) {
       console.log(scope);
+      // 判断成交报告的类型
+      let type: any = '';
+      if (scope.row.id === scope.row.parentId) {
+        // 主成交模式
+        type = "mainDeal";
+      } else {
+        // 补充成交模式
+        if (['ChangeAchieveInf', 'RetreatRoom'].includes(scope.row.suppContType)) {
+          type = "mainDeal";
+        }
+        if (['ChangeBasicInf'].includes(scope.row.suppContType)) {
+          type = "baseDeal";
+        }
+        if (['ChangeInternalAchieveInf'].includes(scope.row.suppContType)) {
+          type = "achieveDeal";
+        }
+      }
       this.$router.push({
         path: "/dealReport/reviewDealInfo",
         query: {
-          id: scope.row.id
+          id: scope.row.id,
+          type: type
         }
       });
     }

@@ -36,12 +36,12 @@
         </el-col>
         <el-col :span="8">
           <el-form-item label="是否代销">
-            {{!!infoForm.isConsign ? infoForm.isConsign === 'Yes' ? '是' : '否' : ''}}
+            {{$root.dictAllName(infoForm.isConsign, 'YesOrNoType')}}
           </el-form-item>
         </el-col>
         <el-col :span="8">
           <el-form-item label="是否市场化项目">
-            {{!!infoForm.isMarketProject ? infoForm.isMarketProject === 'Yes' ? '是' : '否' : ''}}
+            {{$root.dictAllName(infoForm.isMarketProject, 'YesOrNoType')}}
           </el-form-item>
         </el-col>
         <el-col :span="8">
@@ -80,7 +80,7 @@
         </el-col>
         <el-col :span="8">
           <el-form-item label="是否垫佣">
-            {{!!infoForm.isMat ? infoForm.isMat === 'Yes' ? '是' : '否' : ''}}
+            {{$root.dictAllName(infoForm.isMat, 'YesOrNoType')}}
           </el-form-item>
         </el-col>
         <el-col :span="8">
@@ -103,7 +103,7 @@
         </el-col>
         <el-col :span="8">
           <el-form-item label="备案情况">
-            {{!!infoForm.recordState ? infoForm.recordState === 'Has' ? '有' : '无' : ''}}
+            {{$root.dictAllName(infoForm.recordState, 'HasOrNoType')}}
           </el-form-item>
         </el-col>
         <el-col :span="8">

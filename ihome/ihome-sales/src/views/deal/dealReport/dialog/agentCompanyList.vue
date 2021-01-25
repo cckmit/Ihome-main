@@ -162,9 +162,8 @@
     }
 
     async getListMixin() {
-      if (this.data && this.data.length) {
-        this.resPageInfo = await post_channelGrade_getChannelAndChannelGrade(this.queryPageParameters);
-      }
+      this.resPageInfo = await post_channelGrade_getChannelAndChannelGrade(this.queryPageParameters);
+
     }
   }
 </script>
