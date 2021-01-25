@@ -517,7 +517,10 @@
 <script lang="ts">
   import {Component, Vue} from "vue-property-decorator";
   import ReviewDetailsDialog from "@/views/deal/dealReport/dialog/reviewDetailsDialog.vue";
-  import {get_deal_get__id} from "@/api/deal";
+  import {
+    get_deal_get__id, // 根据ID查询成交详情
+    get_deal_getByCode__dealCode // 用成交报告编号，查询成交详情 --- 兼容其他模块
+  } from "@/api/deal";
   import {post_notice_customer_information} from "@/api/contract";
   import {get_invoice_getInvoiceInfo__businessId} from "@/api/finance";
 
@@ -543,7 +546,8 @@
     };
     reviewDialog: any = false;
     reviewData: any = {};
-    dealId: any = null;
+    infoType: any = null; // 是通过成交ID还是成交编号获取详情
+    dealIdOrCode: any = null; // ID或者code
     navFlag: any = false; // 是否折叠锚点
     navList: any = [
       {
@@ -578,17 +582,20 @@
     currentActiveIndex: any =0; // 当前激活的nav
 
     async created() {
-      this.dealId = this.$route.query.id;
-      if (this.dealId) {
+      this.infoType = this.$route.query.type;
+      this.dealIdOrCode = this.$route.query.id;
+      if (this.infoType && this.dealIdOrCode) {
         await this.init(); // 基础数据
-        await this.getInformation(); // 优惠告知书
-        await this.getInvoiceInfo(); // 开票信息
       }
     }
 
     // 初始化数据
     async init() {
-      this.infoForm = await get_deal_get__id({id: this.dealId});
+      if (this.infoType === "ID") {
+        this.infoForm = await get_deal_get__id({id: this.dealIdOrCode});
+      } else {
+        this.infoForm = await get_deal_getByCode__dealCode({code : this.dealIdOrCode});
+      }
       // console.log(this.infoForm);
       // 平台费用 - 拆分总包和分销数据
       if (this.infoForm.achieveList.length > 0) {
@@ -602,11 +609,16 @@
           }
         })
       }
+      // 初始化优惠告知书信息
+      await this.getInformation(this.infoForm.id);
+      // 初始化开票信息
+      await this.getInvoiceInfo(this.infoForm.id);
     }
 
     // 获取开票信息
-    async getInvoiceInfo() {
-      let info: any = await get_invoice_getInvoiceInfo__businessId({businessId: this.dealId});
+    async getInvoiceInfo(id: any = '') {
+      if (!id) return;
+      let info: any = await get_invoice_getInvoiceInfo__businessId({businessId: id});
       // console.log(info);
       if (info.id) {
         this.infoForm.invoiceList.push(info);
@@ -616,8 +628,9 @@
     }
 
     // 根据成交id获取优惠告知书列表
-    async getInformation() {
-      const list: any = await post_notice_customer_information({dealId: this.dealId});
+    async getInformation(id: any = '') {
+      if (!id) return;
+      const list: any = await post_notice_customer_information({dealId: id});
       // console.log('优惠告知书列表', list);
       if (list && list.length > 0) {
         this.infoForm.offerNoticeList = list;

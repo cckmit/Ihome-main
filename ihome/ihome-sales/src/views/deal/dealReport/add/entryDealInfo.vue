@@ -1427,7 +1427,7 @@
     }
 
     // 修改合同类型
-    changeContType(value: any) {
+    changeContType() {
       let flag: any = false;
       if (this.postData.receiveVO.length) {
         // 判断收派金额数据是否选了收派套餐
