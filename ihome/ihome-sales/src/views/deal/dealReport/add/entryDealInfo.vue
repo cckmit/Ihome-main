@@ -28,7 +28,7 @@
         </el-col>
         <el-col :span="8">
           <el-form-item label="项目周期" prop="cycleId">
-            <el-input readonly v-model="postData.cycleName" @click.native.prevent="selectProject">
+            <el-input placeholder="请选择项目周期" readonly v-model="postData.cycleName" @click.native.prevent="selectProject">
               <el-button slot="append" icon="el-icon-search"></el-button>
             </el-input>
           </el-form-item>

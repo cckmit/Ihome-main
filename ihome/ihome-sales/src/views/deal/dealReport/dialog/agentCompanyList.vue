@@ -163,7 +163,6 @@
 
     async getListMixin() {
       this.resPageInfo = await post_channelGrade_getChannelAndChannelGrade(this.queryPageParameters);
-
     }
   }
 </script>

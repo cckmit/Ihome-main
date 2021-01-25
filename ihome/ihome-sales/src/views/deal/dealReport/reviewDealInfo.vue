@@ -8,7 +8,7 @@
 -->
 <template>
   <ih-page class="text-left">
-    <div>
+    <div id="anchor-1" v-if="!['achieveDeal'].includes(currentType)">
       <p class="ih-info-title">成交信息</p>
       <el-form
         @submit.native.prevent
@@ -184,7 +184,7 @@
         </el-row>
       </el-form>
     </div>
-    <div>
+    <div id="anchor-2" v-if="!['achieveDeal'].includes(currentType)">
       <p class="ih-info-title">优惠告知书信息</p>
       <el-row style="padding-left: 20px">
         <el-col>
@@ -212,7 +212,7 @@
         </el-col>
       </el-row>
     </div>
-    <div>
+    <div id="anchor-3" v-if="!['achieveDeal'].includes(currentType)">
       <p class="ih-info-title">客户信息</p>
       <el-row style="padding-left: 20px">
         <el-col>
@@ -238,7 +238,7 @@
         </el-col>
       </el-row>
     </div>
-    <div>
+    <div id="anchor-4" v-if="!['baseDeal', 'achieveDeal'].includes(currentType)">
       <p class="ih-info-title">收派金额</p>
       <el-row style="padding-left: 20px">
         <el-col>
@@ -339,7 +339,7 @@
         </el-col>
       </el-row>
     </div>
-    <div>
+    <div id="anchor-5" v-if="!['baseDeal', 'achieveDeal'].includes(currentType)">
       <p class="ih-info-title">对外拆佣</p>
       <el-row style="padding-left: 20px">
         <el-col>
@@ -367,7 +367,7 @@
         </el-col>
       </el-row>
     </div>
-    <div>
+    <div id="anchor-6" v-if="!['baseDeal'].includes(currentType)">
       <p class="ih-info-title">平台费用</p>
       <div class="ih-type-wrapper">
         <div class="title">总包</div>
@@ -456,7 +456,7 @@
         </el-col>
       </el-row>
     </div>
-    <div>
+    <div id="anchor-7" v-if="!['achieveDeal'].includes(currentType)">
       <p class="ih-info-title">上传附件</p>
       <el-row style="padding-left: 20px">
         <el-col>
@@ -477,16 +477,17 @@
       <p class="ih-info-title">审核意见</p>
       <el-form
         :model="postData"
+        :rules="rules"
         ref="ruleForm"
         label-width="20px"
         class="demo-ruleForm">
         <el-row class="audit-info">
           <el-col :span="12">
-            <el-form-item label="">
+            <el-form-item label="" prop="postRemarks">
               <el-input
                 type="textarea"
                 :rows="3"
-                v-model="postData.remarks"
+                v-model="postData.postRemarks"
                 placeholder="请输入审核意见"></el-input>
             </el-form-item>
           </el-col>
@@ -504,6 +505,19 @@
       <el-button type="danger" @click="handleFail()">驳回</el-button>
       <el-button type="success" @click="handlePass()">通过</el-button>
     </div>
+    <div v-if="currentType === 'mainDeal'" class="nav-box">
+      <div class="nav-icon el-button--success" @click="navFlag = !navFlag " :title="navFlag ? '收起' : '展开'">
+        <i :class="navFlag ? 'el-icon-d-arrow-right' : 'el-icon-d-arrow-left'"></i>
+      </div>
+      <div :class="navFlag ? 'nav-wrapper' : 'nav-wrapper nav-transition'">
+        <div
+          @click="goAnchor(item.id, index)"
+          v-for="(item, index) in navList"
+          :key="item.id"
+          :class="currentActiveIndex === index ? 'el-button--warning' : ''"
+          class="nav-item el-button--success">{{item.name}}</div>
+      </div>
+    </div>
     <ih-dialog :show="dialogReviewDeal" desc="成交审核操作记录信息">
       <ReviewDetailsDialog
         :data="reviewData"
@@ -515,7 +529,11 @@
       <ReviewDate
         :data="reviewData"
         @cancel="() => (dialogSelectDate = false)"
-        @finish="() => {dialogSelectDate = false}"
+        @finish="
+            (data) => {
+              finishSelectDate(data);
+            }
+          "
       />
     </ih-dialog>
   </ih-page>
@@ -525,11 +543,15 @@
   import ReviewDetailsDialog from "@/views/deal/dealReport/dialog/reviewDetailsDialog.vue";
   import ReviewDate from "@/views/deal/dealReport/dialog/reviewDate.vue";
   import {
-    get_deal_get__id // 根据ID查询成交详情
+    get_deal_get__id, // 根据ID查询成交详情
+    post_processRecord_rejectDeal, // 驳回
+    post_processRecord_reviewDeal, // 通过
   } from "@/api/deal";
   import {
     post_notice_customer_information // 根据成交id获取优惠告知书
   } from "@/api/contract";
+  import {Form as ElForm} from "element-ui";
+  import {NoRepeatHttp} from "ihome-common/util/aop/no-repeat-http";
 
   @Component({
     components: {ReviewDate, ReviewDetailsDialog},
@@ -549,26 +571,65 @@
       achieveDistriList: [], // 平台费用 - 分销 - 前端拆分
       documentList: [], // 附件信息
       processRecordList: [], // 审核信息
+      postRemarks: null,
+      status: null, // 成交报告的状态
     };
-    id: any = null;
-    changeType: any = null; // 改变成交信息的类型
+    rules: any = {
+      postRemarks: [
+        {required: true, message: "驳回的时候审核意见不能为空", trigger: "change"},
+      ]
+    }
+    id: any = null; // 成交id
+    currentType: any = null; // 改变成交信息的类型
     dialogReviewDeal: any = false; // 成交审核记录弹窗标识
     dialogSelectDate: any = false; // 选择业绩确认时间
+    selectData: any = null; // 业绩时间
     reviewData: any = null; // 审核详情
+    navFlag: any = false; // 是否折叠锚点
+    navList: any = [
+      {
+        id: 1,
+        name: '成交信息'
+      },
+      {
+        id: 2,
+        name: '优惠告知书'
+      },
+      {
+        id: 3,
+        name: '客户信息'
+      },
+      {
+        id: 4,
+        name: '收派金额'
+      },
+      {
+        id: 5,
+        name: '对外拆佣'
+      },
+      {
+        id: 6,
+        name: '平台费用'
+      },
+      {
+        id: 7,
+        name: '上传附件'
+      }
+    ]; // 锚点列表
+    currentActiveIndex: any = 0; // 当前激活的nav
 
     async created() {
       this.id = this.$route.query.id;
-      this.changeType = this.$route.query.type;
-      // console.log('changeType', this.changeType);
+      this.currentType = this.$route.query.type;
+      // console.log('currentType', this.currentType);
       if (this.id) {
-        await this.init(this.id);
+        await this.init();
       }
     }
 
     // 初始化数据
-    async init(id: any = '') {
-      if (!id) return;
-      this.postData = await get_deal_get__id({id: id});
+    async init() {
+      this.postData = await get_deal_get__id({id: this.id});
       // console.log(this.postData);
       // 收派金额数据整理 showData
       if (this.postData.receiveList && this.postData.receiveList.length > 0) {
@@ -594,13 +655,12 @@
         })
       }
       // 初始化优惠告知书信息
-      await this.getInformation(id);
+      await this.getInformation();
     }
 
     // 根据成交id获取优惠告知书列表
-    async getInformation(id: any = '') {
-      if (!id) return;
-      const list: any = await post_notice_customer_information({dealId: id});
+    async getInformation() {
+      const list: any = await post_notice_customer_information({dealId: this.id});
       // console.log('优惠告知书列表', list);
       if (list && list.length > 0) {
         this.postData.offerNoticeList = list;
@@ -732,11 +792,53 @@
     // 通过
     handlePass() {
       console.log('通过');
+      // 判断成交报告的状态
+      this.postData.status = 'NotSigned';
+      if (['BranchBusinessManageUnreview', 'NotSigned'].includes(this.postData.status)) {
+        // 最后一个节点审核通过时，需要选择业绩确认时间
+        this.dialogSelectDate = true;
+      } else {
+        this.selectData = null;
+        this.submitPass();
+      }
+    }
+
+    // 确定业绩时间
+    finishSelectDate(data: any) {
+      this.selectData = data;
+      console.log(this.selectData);
+    }
+
+    async submitPass() {
+      let postData: any = {
+        dealId: this.id,
+        remark: this.postData.postRemarks,
+        achieveConfirmTime: this.selectData
+      }
+      await post_processRecord_reviewDeal(postData);
+      this.dialogSelectDate = false;
+      this.$goto({
+        path: "/dealReport/list",
+      });
     }
 
     // 驳回
     handleFail() {
-      console.log('驳回');
+      (this.$refs["ruleForm"] as ElForm).validate(this.submitFail);
+    }
+
+    @NoRepeatHttp()
+    async submitFail(valid: any) {
+      if (valid) {
+        let postData: any = {
+          dealId: this.id,
+          remark: this.postData.postRemarks
+        }
+        await post_processRecord_rejectDeal(postData);
+        this.$goto({
+          path: "/dealReport/list",
+        });
+      }
     }
 
     // 返回
@@ -756,6 +858,60 @@
         },
       });
       window.open(router.href, "_blank");
+    }
+
+    // 跳转到指定索引的元素
+    goAnchor(id: any, index: any) {
+      this.$nextTick(() => {
+        // 获取目标的 offsetTop
+        let selector = `#anchor-${id}`;
+        let dom = document.querySelector(selector) as any;
+        const targetOffsetTop = dom ? dom.offsetTop - 60 : 0;
+        // console.log('targetOffsetTop:', targetOffsetTop);
+        // 获取当前 offsetTop
+        let mainDom =  document.querySelector('.el-main') as any;
+        let scrollTop = mainDom ? mainDom.scrollTop : 0;
+        // console.log('scrollTop:', scrollTop);
+        // 定义一次跳 50 个像素，数字越大跳得越快，但是会有掉帧得感觉，步子迈大了会扯到蛋
+        const STEP = 50;
+        // 定义往下滑函数
+        function smoothDown() {
+          // 如果当前 scrollTop 小于 targetOffsetTop 说明视口还没滑到指定位置
+          if (scrollTop < targetOffsetTop) {
+            // 如果和目标相差距离大于等于 STEP 就跳 STEP
+            // 否则直接跳到目标点，目标是为了防止跳过了。
+            if (targetOffsetTop - scrollTop >= STEP) {
+              scrollTop += STEP;
+            } else {
+              scrollTop = targetOffsetTop;
+            }
+            mainDom.scrollTop = scrollTop;
+            // 关于 requestAnimationFrame 可以自己查一下，在这种场景下，相比 setInterval 性价比更高
+            window.requestAnimationFrame(smoothDown);
+          }
+        }
+        // 定义往上滑函数
+        function smoothUp() {
+          if (scrollTop > targetOffsetTop) {
+            if (scrollTop - targetOffsetTop >= STEP) {
+              scrollTop -= STEP;
+            } else {
+              scrollTop = targetOffsetTop;
+            }
+            mainDom.scrollTop = scrollTop;
+            window.requestAnimationFrame(smoothUp);
+          }
+        }
+        // 判断是往下滑还是往上滑
+        if (scrollTop > targetOffsetTop) {
+          // 往上滑
+          smoothUp();
+        } else {
+          // 往下滑
+          smoothDown();
+        }
+        this.currentActiveIndex = index;
+      })
     }
   }
 </script>
@@ -856,6 +1012,69 @@
     .audit-info {
       display: flex;
       align-items: center;
+    }
+  }
+
+  .nav-box {
+    position: fixed;
+    right: 37px;
+    top: 30%;
+    box-sizing: border-box;
+    display: flex;
+    flex-direction: row;
+    //align-items: center;
+    //border: 1px solid #ffffff;
+    z-index: 200;
+
+    .nav-icon {
+      width: 24px;
+      height: 46px;
+      line-height: 47px;
+      border-radius: 50px 0 0 50px;
+      cursor: pointer;
+      //background-color: #2B4558;
+      color: #ffffff;
+      font-size: 12px;
+      text-align: center;
+    }
+
+    .nav-wrapper {
+      //width: 133px;
+      box-sizing: border-box;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      background-color: #2B4558;
+      color: #ffffff;
+      visibility: visible;
+      transform: scaleX(1);
+      transition: all 0.3s;
+      transform-origin: left bottom;
+
+      .nav-item {
+        width: 44px;
+        //height: 40px;
+        //line-height: 40px;
+        text-align: center;
+        font-size: 14px;
+        box-sizing: border-box;
+        padding: 5px 5px;
+        cursor: pointer;
+        border-left: 1px solid #ffffff;
+        border-bottom: 1px solid #ffffff;
+
+        &:not(:last-child) {
+          border-bottom: 1px solid #ffffff;
+        }
+      }
+    }
+
+    .nav-transition {
+      width: 0;
+      visibility: hidden;
+      transform: scaleX(0);
+      transition: all 0.3s;
+      transform-origin: left bottom;
     }
   }
 </style>

@@ -15,17 +15,18 @@
     :close-on-press-escape="false"
     :before-close="beforeFinish"
     append-to-body
-    width="300px"
+    width="400px"
     style="text-align: left"
     class="dialog">
-    <el-form ref="form" :model="form" label-width="110px" @submit.native.prevent>
+    <el-form ref="form" :model="form" :rules="rules" label-width="100px" @submit.native.prevent>
       <el-row>
         <el-col>
-          <el-form-item label="确认时间">
+          <el-form-item label="确认时间" prop="date">
             <el-date-picker
               v-model="form.date"
-              type="date"
-              placeholder="选择日期">
+              type="datetime"
+              value-format="yyyy-MM-dd HH:mm:ss"
+              placeholder="选择日期时间">
             </el-date-picker>
           </el-form-item>
         </el-col>
@@ -39,6 +40,8 @@
 </template>
 <script lang="ts">
   import {Component, Vue, Prop} from "vue-property-decorator";
+  import {Form as ElForm} from "element-ui";
+  import {NoRepeatHttp} from "ihome-common/util/aop/no-repeat-http";
 
   @Component({
     components: {},
@@ -53,6 +56,11 @@
     public form: any = {
       date: null
     };
+    rules: any = {
+      date: [
+        {required: true, message: "请选择业绩确认时间", trigger: "change"},
+      ]
+    }
 
     created() {
       console.log(123);
@@ -68,14 +76,21 @@
     }
 
     async finish() {
-      this.$emit("finish", false);
+      (this.$refs["form"] as ElForm).validate(this.submitFinish);
+    }
+
+    @NoRepeatHttp()
+    submitFinish(valid: any) {
+      if (valid) {
+        this.$emit("finish", this.form.date);
+      }
     }
   }
 </script>
 <style lang="scss" scoped>
 .dialog {
   /deep/.el-dialog__body {
-    padding: 10px 20px 20px 20px;
+    padding: 10px 20px 10px 20px;
   }
 }
 </style>

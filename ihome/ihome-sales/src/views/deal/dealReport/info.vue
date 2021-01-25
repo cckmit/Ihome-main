@@ -593,7 +593,7 @@
         name: '上传附件'
       }
     ]; // 锚点列表
-    currentActiveIndex: any =0; // 当前激活的nav
+    currentActiveIndex: any = 0; // 当前激活的nav
 
     async created() {
       this.infoType = this.$route.query.type;
