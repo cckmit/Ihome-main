@@ -4,7 +4,7 @@
  * @Author: wwq
  * @Date: 2020-11-27 17:27:01
  * @LastEditors: wwq
- * @LastEditTime: 2021-01-21 20:45:49
+ * @LastEditTime: 2021-01-25 18:56:09
 -->
 <template>
   <div>
@@ -33,16 +33,6 @@
           label="甲方公司"
           prop="partyCompany"
         >
-        </el-table-column>
-        <el-table-column label="派发佣金标准">
-          <template v-slot="{ row }">
-            <template v-for="(item, i) in row.distributContractMxVOS">
-              <span :key="i">
-                <span>{{item.sendContext}}</span>
-                <span v-if="i !== row.distributContractMxVOS.length - 1">、</span>
-              </span>
-            </template>
-          </template>
         </el-table-column>
         <el-table-column
           prop="padCommissionEnum"

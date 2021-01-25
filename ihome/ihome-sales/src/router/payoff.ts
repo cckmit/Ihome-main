@@ -4,7 +4,7 @@
  * @Author: wwq
  * @Date: 2020-12-26 11:17:06
  * @LastEditors: wwq
- * @LastEditTime: 2021-01-15 10:50:21
+ * @LastEditTime: 2021-01-25 17:23:22
  */
 import { RouteConfig } from 'vue-router'
 import Layout from '../components/Layout.vue';
@@ -38,6 +38,12 @@ const payoffRoutes: Array<RouteConfig> = [
         name: 'payoffInfo',
         component: () => import('../views/payoff/payorder/info.vue'),
         meta: { title: '付款单查看', icon: 'form' }
+      },
+      {
+        path: 'recall',
+        name: 'payoffRecall',
+        component: () => import('../views/payoff/payorder/info.vue'),
+        meta: { title: '付款单撤回', icon: 'form' }
       },
       {
         path: 'replenish',

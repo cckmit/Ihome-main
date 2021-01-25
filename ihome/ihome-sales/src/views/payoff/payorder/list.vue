@@ -4,7 +4,7 @@
  * @Author: wwq
  * @Date: 2020-12-26 11:11:28
  * @LastEditors: wwq
- * @LastEditTime: 2021-01-18 16:48:44
+ * @LastEditTime: 2021-01-25 17:24:45
 -->
 <template>
   <IhPage label-width="120px">
@@ -281,7 +281,7 @@
                 >删除</el-dropdown-item>
                 <el-dropdown-item
                   :class="{'ih-data-disabled': ''}"
-                  @click.native.prevent="recall(row)"
+                  @click.native.prevent="routeTo(row, 'recall')"
                   v-has="'B.SALES.PAYOFF.PAYOFFLIST.CHLB'"
                 >撤回
                 </el-dropdown-item>
@@ -345,7 +345,6 @@ import { Component, Vue } from "vue-property-decorator";
 import {
   post_payApply_getList,
   post_payApply_delete_ids,
-  post_payApply_withdrawSubmit,
 } from "@/api/payoff/index";
 import PaginationMixin from "../../../mixins/pagination";
 import SelectOrganizationTree from "@/components/SelectOrganizationTree.vue";
@@ -510,17 +509,6 @@ export default class PayoffList extends Vue {
     } catch (error) {
       console.log(error);
     }
-  }
-
-  async recall(data: any) {
-    await post_payApply_withdrawSubmit({
-      id: data.id,
-    });
-    this.getListMixin();
-    this.$message({
-      type: "success",
-      message: "撤回成功!",
-    });
   }
 
   routeTo(row: any, where: string) {
