@@ -4,11 +4,11 @@
  * @Author: zyc
  * @Date: 2020-06-24 09:30:41
  * @LastEditors: zyc
- * @LastEditTime: 2020-12-29 15:13:30
+ * @LastEditTime: 2021-01-25 09:01:31
  */
 
 import { VuexModule, Module, Action, Mutation, getModule } from 'vuex-module-decorators'
-import { logout, getUserInfo, login } from '../../api/users'
+import { getUserInfo, login } from '../../api/users'
 import { getToken, setToken, removeToken } from '../../utils/cookies'
 
 import store from '@/store'
@@ -88,7 +88,7 @@ class User extends VuexModule implements IUserState {
         if (this.token === '') {
             throw Error('LogOut: token is undefined!')
         }
-        await logout()
+
         removeToken()
         this.SET_TOKEN('')
     }

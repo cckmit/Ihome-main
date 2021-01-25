@@ -4,7 +4,7 @@
  * @Author: zyc
  * @Date: 2020-06-22 11:46:23
  * @LastEditors: zyc
- * @LastEditTime: 2021-01-21 15:35:23
+ * @LastEditTime: 2021-01-25 09:08:32
  */
 import Vue from 'vue'
 import App from './App.vue'
@@ -68,25 +68,33 @@ import { get_dict_getAll, get_area_getAll, post_sessionUser_getUserInfo } from '
   areaAll: [],
   dictAll: {}
 };
+let systemToast = false;//提示一次
+let salesToast = false;//提示一次
 //全局异常捕获
 addGlobalUncaughtErrorHandler((event: any) => {
-  console.log('qiankun全局异常捕获');
-  console.log(event);
   let errMsg = event?.message;
-  console.log(errMsg);
-
   if (errMsg) {
     if (errMsg.includes("application 'ihome-web-sales' died in status LOADING_SOURCE_CODE")) {
-      ElementUI.Message({
-        message: 'sales模块加载失败',
-        type: 'error'
-      });
+      if (!salesToast) {
+        ElementUI.Message({
+          message: 'sales模块加载失败',
+          type: 'error'
+        });
+        salesToast = true;
+        console.log('qiankun-sales全局异常捕获');
+        console.log(event);
+      }
 
     } else if (errMsg.includes("application 'ihome-web-system' died in status LOADING_SOURCE_CODE")) {
-      ElementUI.Message({
-        message: 'system模块加载失败',
-        type: 'error'
-      });
+      if (!systemToast) {
+        ElementUI.Message({
+          message: 'system模块加载失败',
+          type: 'error'
+        });
+        systemToast = true;
+        console.log('qiankun-system全局异常捕获');
+        console.log(event);
+      }
     }
   }
 
