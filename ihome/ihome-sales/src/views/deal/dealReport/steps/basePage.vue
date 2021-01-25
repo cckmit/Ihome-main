@@ -225,7 +225,7 @@
               <div v-else>
                 <el-input
                   placeholder="请选择渠道公司"
-                  readonly v-model="postData.agencyName" @click.native.prevent="selectAgency">
+                  readonly v-model="postData.agencyName" @click.native.prevent="selectAgency('agency', '')">
                   <el-button slot="append" icon="el-icon-search"></el-button>
                 </el-input>
               </div>
@@ -800,7 +800,7 @@
                 </div>
                 <div v-if="scope.row.target === 'ChannelCompany'">
                   <el-input placeholder="请选择收款方" readonly v-model="scope.row.agencyName">
-                    <el-button slot="append" icon="el-icon-search" @click.native.prevent="selectAgencyName"></el-button>
+                    <el-button slot="append" icon="el-icon-search" @click.native.prevent="selectAgency('agencyName', scope)"></el-button>
                   </el-input>
                 </div>
               </div>
@@ -1097,12 +1097,11 @@
     </ih-dialog>
     <ih-dialog :show="dialogAddAgentCompany" desc="选择渠道商列表">
       <AgentCompanyList
-        :data="selectableChannelIds"
+        :data="agentCompanyData"
         @cancel="() => (dialogAddAgentCompany = false)"
         @finish="
             (data) => {
-              dialogAddAgentCompany = false;
-              finishAddAgentCompany(data);
+              finishAddAgency(data);
             }
           "
       />
@@ -1149,6 +1148,7 @@
   import AddBroker from "@/views/deal/dealReport/dialog/addBroker.vue";
   import EditDealAchieve from "@/views/deal/dealReport/dialog/editDealAchieve.vue";
   import {
+    get_pageData_getProBaseByTermId__cycleId, // 通过项目周期获取成交基础信息
     post_pageData_initBasic, // 选择周期、房号后初始化页面
     post_pageData_recalculateAchieve, // 重算平台费用 --- 总包分销不一致的情况
     post_pageData_recalculateAchieveComm, // 重算平台费用 --- 总包分销一致的情况
@@ -1162,9 +1162,6 @@
     post_pageData_initChannelComm,
     post_pageData_initAchieve,
   } from "@/api/deal";
-  import {
-    get_term_getProBaseByTermId__termId, // 通过项目周期获取成交基础信息
-  } from "@/api/project";
   import {get_org_get__id} from "@/api/system"; // 获取组织name
   import {
     post_notice_customer_information // 通过成交id获取优惠告知书
@@ -1315,9 +1312,14 @@
     cycleCheckedData: any = [];
     reportCheckedData: any = [];
     dialogAddAgentCompany: any = false;
+    currentSelectAgencyType: any = null; // 当前选择渠道商的按钮类型
+    currentSelectAgencyIndex: any = null; // 对外拆佣中选的的当前索引
     commissionCustomerList: any = []; // 初始化费用来源的甲方信息 --- 代理费
     commissionServiceFeeObj: any = []; // 初始化费用来源的甲方信息 --- 服务费
-    selectableChannelIds: any = []; // 可选渠道商id
+    agentCompanyData: any = {
+      selectableChannelIds: [], // 可选渠道商id列表
+      cycleId: null // 项目周期
+    }; // 选择渠道商弹窗数据
     editDealAchieveData: any = {
       isSameFlag: false, // 是否分销与总包一致
       currentEditItem: {
@@ -1405,6 +1407,7 @@
       termId: null, // 项目周期id
       termStageEnum: null, // 判断优惠告知书是否有添加按钮
       chargeEnum: null, //
+      selectableChannelIds: [], // 可选的渠道商ids
     }; // 通过项目周期id获取到的初始化成交基础信息
     baseInfoInDeal: any = {
       myReturnVO: {
@@ -1638,8 +1641,6 @@
       // 周期改变后，整个页面都要初始化
       if (this.hasChangeProCycleFlag) {
         // 处理数据
-        // 拆佣信息中-收款方-可选渠道商id
-        this.selectableChannelIds = baseInfo.selectableChannelIds;
         // 纯提示
         if (baseInfo.customerIsDifferent) {
           this.$notify({
@@ -1650,7 +1651,7 @@
         }
         // 多分优惠告知书情况
         this.postData.contNo = null; // 重置选择的编号
-        if (baseInfo.isMultipleNotice) {
+        if (baseInfo.dealNoticeStatus === 'MultipleNotice') {
           this.$notify({
             title: '提示',
             message: '同房号存在多份已生效的优惠告知书',
@@ -1730,7 +1731,7 @@
     // 通过项目周期id获取基础信息
     async getBaseDealInfo(id: any) {
       if (!id) return;
-      let baseInfo: any = await get_term_getProBaseByTermId__termId({termId: id});
+      let baseInfo: any = await get_pageData_getProBaseByTermId__cycleId({id: id});
       this.baseInfoByTerm = JSON.parse(JSON.stringify(baseInfo));
       // 一手代理团队的选项
       this.firstAgencyCompanyList = [];
@@ -1753,8 +1754,9 @@
             case 'Recognize':
               // 清空优惠告知书 --- 认筹周期需要自己手动添加
               this.postData.offerNoticeVO = [];
-              // 认筹周期 --- 全部
-              this.dealStageList = JSON.parse(JSON.stringify(DealStageList));
+              this.dealStageList = DealStageList.filter((item: any) => {
+                return item.code !== 'Recognize';
+              });
               break;
           }
         }
@@ -2087,40 +2089,55 @@
       (this as any)[`temp${type}`] = value;
     }
 
-    // 选择渠道公司
-    selectAgency() {
-      if (!this.postData.roomId) {
-        this.$message.warning('请先选择房号');
-        return;
-      }
-      let data: any = {
-        selectableChannelIds: this.baseInfoInDeal.selectableChannelIds,
-        isMultipleNotice: this.baseInfoInDeal.isMultipleNotice,
+    /*
+    * 选择渠道公司 + 对外拆佣中选择渠道公司--->收款方
+    * type: String，点击的是基础信息中选择渠道商(agency)还是对外拆佣中选择收款方(agencyName)
+    * scope: Object, 对外拆佣中当前选中的数据
+    * */
+    selectAgency(type: any = '', scope: any) {
+      this.currentSelectAgencyType = type;
+      this.currentSelectAgencyIndex = scope.$index;
+      this.agentCompanyData = {
+        selectableChannelIds: this.baseInfoByTerm.selectableChannelIds,
         cycleId: this.postData.cycleId
       };
-      (this as any).$parent.selectAgency(data);
+      this.dialogAddAgentCompany = true;
     }
 
     // 确定选择渠道公司
     finishAddAgency(data: any) {
       // console.log('data', data);
       if(data.agencyData && data.agencyData.length) {
-        let channelList: any = (this as any).$root.dictAllList('ChannelLevel');
-        this.postData.agencyId = data.agencyData[0].channelId; // 渠道公司Id
-        this.postData.agencyName = data.agencyData[0].channelName; // 渠道公司
-        this.postData.channelLevel = data.agencyData[0].channelGrade; // 渠道等级Id
-        if (channelList && channelList.length > 0 && data.agencyData[0].channelGrade) {
-          channelList.forEach((list: any) => {
-            if (list.code === data.agencyData[0].channelGrade) {
-              this.postData.channelLevelName= list.name; // 渠道等级
-            }
-          });
+        if (this.currentSelectAgencyType === 'agency') {
+          // 基础信息中选择渠道商
+          let channelList: any = (this as any).$root.dictAllList('ChannelLevel');
+          this.postData.agencyId = data.agencyData[0].channelId; // 渠道公司Id
+          this.postData.agencyName = data.agencyData[0].channelName; // 渠道公司名字
+          this.postData.channelLevel = data.agencyData[0].channelGrade; // 渠道等级Id
+          if (channelList && channelList.length > 0 && data.agencyData[0].channelGrade) {
+            channelList.forEach((list: any) => {
+              if (list.code === data.agencyData[0].channelGrade) {
+                this.postData.channelLevelName= list.name; // 渠道等级
+              }
+            });
+          }
+        } else if (this.currentSelectAgencyType === 'agencyName') {
+          // 对外拆佣中选择收款方
+          if (this.postData.channelCommList && this.postData.channelCommList.length) {
+            this.postData.channelCommList.forEach((list: any, index: any) => {
+              if (index === this.currentSelectAgencyIndex) {
+                list.agencyId = data.agencyData[0].channelId; // 渠道公司Id
+                list.agencyName = data.agencyData[0].channelName; // 渠道公司名字
+              }
+            });
+          }
         }
       }
       // 分销协议编号
       if (data.contNoList && data.contNoList.length) {
         this.contNoList = data.contNoList;
       }
+      this.dialogAddAgentCompany = false;
     }
 
     // 选择经纪人
@@ -2248,7 +2265,6 @@
       this.postData.channelCommList = []; // 对外拆佣
       this.postData.achieveTotalBagList = []; // 平台费用-总包
       this.postData.achieveDistriList = []; // 平台费用-分销
-      this.selectableChannelIds = []; // 可选渠道商ids
       this.addFlag = true;
       this.editFlag = false;
       this.tipsFlag = false;
@@ -2586,13 +2602,6 @@
         target: null // 拆佣对象
       };
       this.postData.channelCommList.push(obj);
-    }
-
-    // 选择拆佣 - 收款方
-    selectAgencyName(scope: any) {
-      console.log('选择收款方', scope);
-      if (this.postData.calculation === 'Auto') return;
-      this.dialogAddAgentCompany = true;
     }
 
     // 改变费用类型

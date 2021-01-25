@@ -27,14 +27,13 @@
     </ih-dialog>
     <ih-dialog :show="dialogAddAgency" desc="选择渠道公司列表">
       <AgentCompanyList
-        :data="selectableChannelInfo.selectableChannelIds"
+        :data="agentCompanyData"
         @cancel="() => (dialogAddAgency = false)"
         @finish="
             (data) => {
               finishAddAgency(data);
             }
-          "
-      />
+          "/>
     </ih-dialog>
     <ih-dialog :show="dialogAddBroker" desc="选择经纪人列表">
       <AddBroker
@@ -130,7 +129,7 @@
 
     dialogAddProjectCycle: any = false; // 选择项目周期弹窗标识
     dialogAddAgency: any = false; // 选择渠道公司弹窗标识
-    selectableChannelInfo: any = {
+    agentCompanyData: any = {
       selectableChannelIds: [],
       cycleId: null
     }; // 可选渠道商id列表
@@ -199,10 +198,10 @@
     selectAgency(info: any = {}) {
       if (info.selectableChannelIds && info.selectableChannelIds.length) {
         this.dialogAddAgency = true;
-        this.selectableChannelInfo = info;
+        this.agentCompanyData = info;
       } else {
-        this.selectableChannelInfo.selectableChannelIds = [];
-        this.selectableChannelInfo.cycleId = null;
+        this.agentCompanyData.selectableChannelIds = [];
+        this.agentCompanyData.cycleId = null;
         this.$message.error('暂无可选的渠道商信息');
       }
     }
@@ -217,7 +216,7 @@
       if (data && data.length > 0) {
         let objData: any = {
           channelId: data[0].channelId, // 渠道商公司ID
-          cycleId: this.selectableChannelInfo.cycleId // 周期ID
+          cycleId: this.agentCompanyData.cycleId // 周期ID
         }
         const info: any = await post_pageData_initDistribution(objData);
         postData.agencyData = data;
