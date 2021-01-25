@@ -4,7 +4,7 @@
  * @Author: wwq
  * @Date: 2020-11-03 11:52:41
  * @LastEditors: wwq
- * @LastEditTime: 2021-01-21 10:51:04
+ * @LastEditTime: 2021-01-25 14:35:23
 -->
 <template>
   <div>
@@ -285,9 +285,10 @@
                     >
                       <el-input
                         style="width: 50%"
-                        v-model.number="item.msg.averPrice"
+                        v-model="item.msg.averPrice"
                         placeholder="住宅均价"
                         maxlength="50"
+                        v-digits="2"
                       ></el-input>
                       <span style="width: 80px; margin-left: 10px">元/m²</span>
                     </el-form-item>
@@ -300,9 +301,10 @@
                     >
                       <el-input
                         style="width: 50%"
-                        v-model.number="item.msg.propertyCost"
+                        v-model="item.msg.propertyCost"
                         placeholder="住宅均价"
                         maxlength="50"
+                        v-digits="2"
                       ></el-input>
                       <span style="width: 80px; margin-left: 10px">元/m²/月</span>
                     </el-form-item>

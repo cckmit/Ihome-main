@@ -4,7 +4,7 @@
  * @Author: wwq
  * @Date: 2020-11-03 11:52:41
  * @LastEditors: wwq
- * @LastEditTime: 2021-01-20 17:41:10
+ * @LastEditTime: 2021-01-25 14:59:20
 -->
 <template>
   <div>
@@ -31,11 +31,19 @@
           class="img"
           :src="`/sales-api/sales-document-cover/file/browse/${item.picAddr}`"
         />
-        <img
+        <el-image
           v-else
           class="img"
-          :src="require('../../../../../src/assets/img/ihome.jpg')"
-        />
+          style="background-color: #f1f1f1;"
+        >
+          <div
+            slot="error"
+            class="image-slot"
+            style="font-size: 120px"
+          >
+            <i class="el-icon-picture-outline"></i>
+          </div>
+        </el-image>
         <div class="title">
           {{ `${item.houseName} ${item.space}m²` }}<br />
           {{
@@ -191,6 +199,7 @@ export default class EditHouseType extends Vue {
     .img {
       width: 150px;
       height: 150px;
+      line-height: 150px;
     }
   }
 
