@@ -132,7 +132,6 @@
     dialogAddAgency: any = false; // 选择渠道公司弹窗标识
     selectableChannelInfo: any = {
       selectableChannelIds: [],
-      isMultipleNotice: false,
       cycleId: null
     }; // 可选渠道商id列表
     dialogAddBroker: any = false; // 选择经纪人弹窗标识
@@ -203,7 +202,6 @@
         this.selectableChannelInfo = info;
       } else {
         this.selectableChannelInfo.selectableChannelIds = [];
-        this.selectableChannelInfo.isMultipleNotice = false;
         this.selectableChannelInfo.cycleId = null;
         this.$message.error('暂无可选的渠道商信息');
       }

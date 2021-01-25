@@ -72,14 +72,14 @@
                   v-model="queryPageParameters.buyUnit"
                   :proId="queryPageParameters.projectId"
                   placeholder="请选择栋座"
-                  disabled
+                  :disabled="!!data.buyUnit"
                 ></IhSelectPageByBuild>
               </el-form-item>
             </el-col>
             <el-col :span="8">
               <el-form-item label="房号">
                 <IhSelectPageByRoom
-                  disabled
+                  :disabled="!!data.roomId"
                   v-model="queryPageParameters.roomNumberId"
                   :proId="queryPageParameters.projectId"
                   :buildingId="queryPageParameters.buyUnit"

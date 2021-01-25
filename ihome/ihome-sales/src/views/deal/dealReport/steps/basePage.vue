@@ -2180,13 +2180,22 @@
     }
 
     // 修改合同类型
-    changeContType(value: any) {
-      if (value === 'NaturalVisitDeal') {
-        // 自然来访
-        console.log(123)
-      } else {
-        // 自然来访
-        console.log(123)
+    changeContType() {
+      let flag: any = false;
+      if (this.postData.receiveList.length) {
+        // 判断收派金额数据是否选了收派套餐
+        flag = (this as any).$parent.hasReceivePackage(this.postData.receiveList);
+      }
+      if (flag) {
+        this.postData.receiveList = (this as any).$tool.deepClone(this.tempReceiveVO);
+        this.postData.channelCommList = [];
+        this.postData.achieveTotalBagList = [];
+        this.postData.achieveDistriList = [];
+        // 显示手动按钮
+        this.addFlag = false;
+        this.editFlag = true;
+        this.tipsFlag = false;
+        this.dividerTips = "加载成功";
       }
     }
 

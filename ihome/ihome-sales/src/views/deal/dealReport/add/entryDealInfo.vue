@@ -451,7 +451,7 @@
       <el-row style="padding-left: 20px">
         <el-col>
           <div
-            v-if="postData.roomId && !baseInfoInDeal.notice.length"
+            v-if="hasAddNoticeFlag"
             class="add-all-wrapper">
             <el-button type="success" @click="handleAddNotice">添加</el-button>
           </div>
@@ -495,7 +495,7 @@
     <el-row style="padding-left: 20px">
       <el-col>
         <div
-          v-if="!baseInfoInDeal.customerAddVOS.length && !baseInfoInDeal.isMultipleNotice && postData.roomId"
+          v-if="!baseInfoInDeal.customerAddVOS.length && baseInfoInDeal.dealNoticeStatus !== 'MultipleNotice' && postData.roomId"
           class="add-all-wrapper">
           <el-button type="success" @click="handleAddCustomer">添加客户</el-button>
         </div>
@@ -518,7 +518,7 @@
           <el-table-column prop="cardNo" label="证件编号" min-width="150"></el-table-column>
           <el-table-column prop="email" label="邮箱" min-width="120"></el-table-column>
           <el-table-column
-            v-if="!baseInfoInDeal.customerAddVOS.length && !baseInfoInDeal.isMultipleNotice"
+            v-if="!baseInfoInDeal.customerAddVOS.length && baseInfoInDeal.dealNoticeStatus !== 'MultipleNotice'"
             fixed="right" label="操作" width="100">
             <template slot-scope="scope">
               <el-link
@@ -698,6 +698,7 @@
 <script lang="ts">
   import {Component, Vue, Prop} from "vue-property-decorator";
   import {
+    post_pageData_dealCheckNotice, // 判断是否应该存在优惠告知书，返回true则允许添加，返回false则不允许，返回业务逻辑则直接抛出异常
     post_pageData_initBasic, // 选择周期、房号后初始化页面
     get_deal_get__id, // 编辑功能
     post_deal_entryDealBasicInf, // 案场岗 - 录入成交信息
@@ -769,7 +770,7 @@
       }, // 明源数据
       customerAddVOS: [], // 客户信息
       selectableChannelIds: [], // 可选的渠道商ids
-      isMultipleNotice: false, // 同房号是否存在多份优惠告知书
+      dealNoticeStatus: null, // 同房号是否存在多份优惠告知书(NoneNotice-没有优惠告知书、OneNotice-一份优惠告知书、MultipleNotice-多份优惠告知书)
     }; // 通过initPage接口获取到的成交信息(项目周期 + 房号)
     formLoading: any = false; // 表格loading状态
     postData: any = {
@@ -1169,7 +1170,6 @@
       }
       let data: any = {
         selectableChannelIds: this.baseInfoInDeal.selectableChannelIds,
-        isMultipleNotice: this.baseInfoInDeal.isMultipleNotice,
         cycleId: this.postData.cycleId
       };
       (this as any).$parent.selectAgency(data);
@@ -1271,7 +1271,7 @@
       }
       // 多分优惠告知书情况
       this.postData.contNo = null; // 重置选择的编号
-      if (baseInfo.isMultipleNotice) {
+      if (baseInfo.dealNoticeStatus === 'MultipleNotice') {
         this.$notify({
           title: '提示',
           message: '同房号存在多份已生效的优惠告知书',
@@ -1436,10 +1436,25 @@
       if (flag) {
         this.postData.receiveVO = (this as any).$tool.deepClone(this.tempReceiveVO);
       }
-      // 非分销成交、无优惠告知书且不是多份优惠告知书情况下，报错
-      if (value !== "DistriDeal" && !this.baseInfoInDeal.notice.length && this.baseInfoInDeal.dealNoticeStatus !== 'MultipleNotice') {
-        this.$message.error('优惠告知书信息异常');
+      // 判断是否可以手动添加优惠告知书
+      this.canAddNoticeItem(this.baseInfoByTerm.chargeEnum, this.postData.contType, this.baseInfoInDeal.dealNoticeStatus);
+    }
+
+    // 判断是否可以手动添加优惠告知书
+    canAddNoticeItem(charge: any = '', contType: any = '', Status: any = '', isVoidService: any = false) {
+      let postData: any = {
+        charge: charge, // 启动模式(Service-服务费、Agent-代理费、ServiAndAgen-服务费+代理费)
+        contType: contType, // 合同类型(DistriDeal-分销成交、NaturalVisitDeal-自然来访成交、SelfChannelDeal-自渠成交)
+        dealNoticeStatus: Status, // 优惠告知书情况(NoneNotice-没有优惠告知书、OneNotice-一份优惠告知书、MultipleNotice-多份优惠告知书)
+        isVoidService: isVoidService, // 是否免受服务费
       }
+      post_pageData_dealCheckNotice(postData).then((res: any) => {
+        console.log(res);
+        this.hasAddNoticeFlag = res;
+      }).catch((err: any) => {
+        console.log(err);
+        this.hasAddNoticeFlag = false;
+      });
     }
 
     // 改变物业类型
@@ -1467,6 +1482,7 @@
     changeContNo(value: any) {
       this.postData.isMat = null;
       this.packageIdsList = [];
+      let isVoidFlag: any = false;
       if (!value) return;
       if (this.contNoList.length > 0) {
         this.contNoList.forEach((item: any) => {
@@ -1475,9 +1491,12 @@
             this.postData.isMat = item.advancementSituation;
             // 分销模式下获取分销协议返回的收派套餐id
             this.packageIdsList = item.packageMxIds && item.packageMxIds.length ? item.packageMxIds : [];
+            isVoidFlag = item.voidService;
           }
-        })
+        });
       }
+      // 判断是否可以手动添加优惠告知书
+      this.canAddNoticeItem(this.baseInfoByTerm.chargeEnum, this.postData.contType, this.baseInfoInDeal.dealNoticeStatus, isVoidFlag);
     }
 
     // 改变签约、认购价格后，初始化收派套餐问题
@@ -1559,7 +1578,6 @@
           proId: this.baseInfoByTerm.proId,
           buyUnit: this.postData.buildingId, // 栋座
           roomId: this.postData.roomId, // 多分优惠告知书下需要通过房号去限制
-          isMultipleNotice: this.baseInfoInDeal.isMultipleNotice // 同房号是否存在多份优惠告知书
         };
         (this as any).$parent.handleAddNotice(data);
       }
@@ -1608,7 +1626,7 @@
       //   return item.id !== scope.row.id;
       // });
       this.postData.offerNoticeVO = [];
-      if (this.baseInfoInDeal.isMultipleNotice) {
+      if (this.baseInfoInDeal.dealNoticeStatus === 'MultipleNotice') {
         // 多份优惠告知书下，删除了优惠告知书，对应的客户也要删除
         this.postData.customerVO = [];
         if (this.postData.receiveVO.length) {
