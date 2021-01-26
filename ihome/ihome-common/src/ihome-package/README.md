@@ -2,6 +2,7 @@
 # ihome-common
 ## 日志
 ```
+v1.2.31  2021-01-26 17:48  api-hangle.js
 v1.2.30  2021-01-26 15:48  math.ts
 v1.2.27  2021-01-26 11:42  npm run api
 v1.2.25  2021-01-26 10:26  roleTool.ts
