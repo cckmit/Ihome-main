@@ -795,7 +795,6 @@
       // console.log('通过');
       this.failBtn = false;
       // 判断成交报告的状态
-      this.postData.status = 'NotSigned';
       if (['BranchBusinessManageUnreview', 'NotSigned'].includes(this.postData.status)) {
         // 最后一个节点审核通过时，需要选择业绩确认时间
         this.dialogSelectDate = true;
