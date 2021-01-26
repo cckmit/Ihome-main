@@ -25,6 +25,7 @@
             <el-date-picker
               v-model="form.date"
               type="datetime"
+              :picker-options="pickerOptions"
               value-format="yyyy-MM-dd HH:mm:ss"
               placeholder="选择日期时间">
             </el-date-picker>
@@ -56,6 +57,30 @@
     public form: any = {
       date: null
     };
+    pickerOptions: any = {
+      disabledDate(time: any) {
+        let curDate: any = new Date();
+        let year: any = curDate.getFullYear();
+        let month: any = curDate.getMonth() + 1 < 10 ? "0" + (curDate.getMonth() + 1) : curDate.getMonth() + 1;
+        // let day: any = curDate.getDate() < 10 ? "0" + curDate.getDate() : curDate.getDate();
+        // 判断今天是否是本月的第一天
+        let rangeTimes: any = 0;
+        if (curDate.getDate() === 1) {
+          // 是第一天，还要判断当月是否为第一个月
+          if (curDate.getMonth() === 0) {
+            // 第一个月
+            rangeTimes = new Date(`${year - 1}-12`).getTime();
+          } else {
+            // 不是第一个月
+            rangeTimes = new Date(`${year}-${month - 1}`).getTime();
+          }
+        } else {
+          // 不是第一天
+          rangeTimes = new Date(`${year}-${month}-01`).getTime();
+        }
+        return time.getTime() > (Date.now() - 8.64e6) || time.getTime() < (rangeTimes - 8.64e6);
+      }
+    }
     rules: any = {
       date: [
         {required: true, message: "请选择业绩确认时间", trigger: "change"},

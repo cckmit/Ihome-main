@@ -11,7 +11,6 @@
     <div id="anchor-1" v-if="!['achieveDeal'].includes(currentType)">
       <p class="ih-info-title">成交信息</p>
       <el-form
-        @submit.native.prevent
         label-width="150px"
         class="demo-ruleForm">
         <el-row>
@@ -483,7 +482,7 @@
         class="demo-ruleForm">
         <el-row class="audit-info">
           <el-col :span="12">
-            <el-form-item label="" prop="postRemarks">
+            <el-form-item label="" :prop="failBtn ? 'postRemarks' : 'empty'">
               <el-input
                 type="textarea"
                 :rows="3"
@@ -577,7 +576,8 @@
     rules: any = {
       postRemarks: [
         {required: true, message: "驳回的时候审核意见不能为空", trigger: "change"},
-      ]
+      ],
+      empty: []
     }
     id: any = null; // 成交id
     currentType: any = null; // 改变成交信息的类型
@@ -617,6 +617,7 @@
       }
     ]; // 锚点列表
     currentActiveIndex: any = 0; // 当前激活的nav
+    failBtn: any = false; // 点击通过/驳回按钮
 
     async created() {
       this.id = this.$route.query.id;
@@ -791,7 +792,8 @@
 
     // 通过
     handlePass() {
-      console.log('通过');
+      // console.log('通过');
+      this.failBtn = false;
       // 判断成交报告的状态
       this.postData.status = 'NotSigned';
       if (['BranchBusinessManageUnreview', 'NotSigned'].includes(this.postData.status)) {
@@ -804,9 +806,10 @@
     }
 
     // 确定业绩时间
-    finishSelectDate(data: any) {
+    async finishSelectDate(data: any) {
       this.selectData = data;
-      console.log(this.selectData);
+      // console.log(this.selectData);
+      await this.submitPass();
     }
 
     async submitPass() {
@@ -824,7 +827,10 @@
 
     // 驳回
     handleFail() {
-      (this.$refs["ruleForm"] as ElForm).validate(this.submitFail);
+      this.failBtn = true;
+      this.$nextTick(() => {
+        (this.$refs["ruleForm"] as ElForm).validate(this.submitFail);
+      });
     }
 
     @NoRepeatHttp()
