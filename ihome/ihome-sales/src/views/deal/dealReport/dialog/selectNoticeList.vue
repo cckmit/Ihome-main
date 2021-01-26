@@ -112,7 +112,7 @@
               <el-form-item label="状态">
                 <el-select
                   v-model="queryPageParameters.notificationStatuses"
-                  clearable
+                  :disabled="data.status && data.status.length"
                   placeholder="请选择状态"
                   class="width--100">
                   <el-option
@@ -247,6 +247,7 @@
       this.queryPageParameters.projectId = this.data.proId;
       this.queryPageParameters.buyUnit = this.data.buyUnit;
       this.queryPageParameters.roomNumberId = this.data.roomId;
+      this.queryPageParameters.notificationStatuses = this.data.status;
       this.getListMixin();
     }
 

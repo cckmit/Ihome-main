@@ -1056,15 +1056,6 @@
     async finishAddProjectCycle(data: any) {
       // console.log('data', data);
       if (data && data.length > 0) {
-        // if (data[0].termId !== this.postData.cycleId) {
-        //   // 不相等要清空数据关联数据 + 重新请求接口
-        //   await this.resetData();
-        //   this.packageIdsList = []; // ids
-        //   this.postData.cycleName = data[0].termName;
-        //   this.postData.cycleId = data[0].termId;
-        //   this.cycleCheckedData = [...data];
-        //   await this.getBaseDealInfo(this.postData.cycleId);
-        // }
         // 不管是否一样，都清数据
         if (this.postData.cycleId) {
           await this.resetData();
@@ -1288,6 +1279,8 @@
         } else {
           this.contNoList = [];
         }
+        // 优惠告知书
+        this.postData.offerNoticeVO = baseInfo.notice && baseInfo.notice.length ? baseInfo.notice : [];
       }
       // 栋座
       if (baseInfo.buildingId && !this.postData.buildingId) {
@@ -1340,15 +1333,15 @@
         // 非分销成交模式 --- 自然来访 / 自渠成交
         this.initAgency(baseInfo.agencyVOs, false);
       }
-      // 优惠告知书
-      this.postData.offerNoticeVO = baseInfo.notice && baseInfo.notice.length ? baseInfo.notice : [];
       // 客户信息
       this.postData.customerVO = baseInfo.customerAddVOS && baseInfo.customerAddVOS.length ? baseInfo.customerAddVOS : [];
       // 收派金额 --- 代理费
       // this.postData.receiveVO = baseInfo.receiveVOS && baseInfo.receiveVOS.length ? baseInfo.receiveVOS : [];
       if (baseInfo.receiveVOS && baseInfo.receiveVOS.length) {
         let tempList: any = (this as any).$parent.initReceiveVOS(baseInfo.receiveVOS);
+        console.log('receiveVO:', tempList);
         this.postData.receiveVO = [...this.postData.receiveVO, ...tempList];
+        console.log('postData.receiveVO:', tempList);
       }
       // 暂存
       this.tempReceiveVO = (this as any).$tool.deepClone(this.postData.receiveVO);
@@ -1438,14 +1431,8 @@
 
     // 修改合同类型
     changeContType() {
-      let flag: any = false;
-      if (this.postData.receiveVO.length) {
-        // 判断收派金额数据是否选了收派套餐
-        flag = (this as any).$parent.hasReceivePackage(this.postData.receiveVO);
-      }
-      if (flag) {
-        this.postData.receiveVO = (this as any).$tool.deepClone(this.tempReceiveVO);
-      }
+      // 初始化收派套餐
+      this.initReceive();
       // 判断是否可以手动添加优惠告知书
       this.canAddNoticeItem(this.baseInfoByTerm.chargeEnum, this.postData.contType, this.baseInfoInDeal.dealNoticeStatus);
     }
@@ -1476,16 +1463,9 @@
     }
 
     // 改变细分业务模式
-    changeRefineModel() {
-      let flag: any = false;
-      if (this.postData.receiveVO.length) {
-        // 判断收派金额数据是否选了收派套餐
-        flag = (this as any).$parent.hasReceivePackage(this.postData.receiveVO);
-      }
-      if (flag) {
-        // 已经选了收派套餐，要初始化收派套餐
-        this.postData.receiveVO = (this as any).$tool.deepClone(this.tempReceiveVO);
-      }
+    async changeRefineModel() {
+      // 不一样+失焦，要初始化收派套餐
+      await this.initReceive();
     }
 
     // 是否垫佣是根据对应的分销协议来判断
@@ -1505,15 +1485,26 @@
           }
         });
       }
+      // 初始化收派套餐
+      this.initReceive();
       // 判断是否可以手动添加优惠告知书
       this.canAddNoticeItem(this.baseInfoByTerm.chargeEnum, this.postData.contType, this.baseInfoInDeal.dealNoticeStatus, isVoidFlag);
     }
 
     // 改变签约、认购价格后，初始化收派套餐问题
-    changePrice(e: any, type: any) {
+    async changePrice(e: any, type: any) {
       // console.log(e.target.value);
       // console.log(type);
       let value: any = e.target.value;
+      if (value !== (this as any)[`temp${type}`]) {
+        // 不一样+失焦，要初始化收派套餐
+        await this.initReceive();
+      }
+      (this as any)[`temp${type}`] = value;
+    }
+
+    // 合同类型、分销协议编号、细分业务模式、认购价格、签约价格改变之后要初始化收派金额
+    initReceive() {
       let flag: any = false;
       if (this.postData.receiveVO.length) {
         // 判断收派金额数据是否选了收派套餐
@@ -1521,12 +1512,8 @@
       }
       if (flag) {
         // 如果已经选了，判断价格是否和之前的一样
-        if (value !== (this as any)[`temp${type}`]) {
-          // 不一样+失焦，要初始化收派套餐
-          this.postData.receiveVO = (this as any).$tool.deepClone(this.tempReceiveVO);
-        }
+        this.postData.receiveVO = (this as any).$tool.deepClone(this.tempReceiveVO);
       }
-      (this as any)[`temp${type}`] = value;
     }
 
     // 选择收派套餐
@@ -1588,6 +1575,7 @@
           proId: this.baseInfoByTerm.proId,
           buyUnit: this.postData.buildingId, // 栋座
           roomId: this.postData.roomId, // 多分优惠告知书下需要通过房号去限制
+          status: ['BecomeEffective'] // 主成交下优惠告知书要是已生效状态
         };
         (this as any).$parent.handleAddNotice(data);
       }
