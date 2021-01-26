@@ -1,6 +1,6 @@
 /* eslint-disable */
 /* 此脚本由swagger-ui的api-docs自动生成，请勿修改 */
-//2021-1-25 11:25:06 ├F10: AM┤
+//2021-1-26 10:05:43 ├F10: AM┤
 import { request } from '@/api/base'
 const basePath = "/sales-api/project"
 /**index*/
@@ -830,6 +830,10 @@ export async function get_term_getProInfo__proId(d?: any) {
 /**通过周期ID获取项目名称*/
 export async function get_term_getProName__termId(d?: any) {
     return await request.get<string, string>(basePath + '/term/getProName/{termId}', { params: d })
+}
+/**通过周期ID判断是否认筹*/
+export async function get_term_getRecognizeById__termId(d?: any) {
+    return await request.get<boolean, boolean>(basePath + '/term/getRecognizeById/{termId}', { params: d })
 }
 /**周期模糊搜索*/
 export async function get_term_getSearch(d?: any) {
