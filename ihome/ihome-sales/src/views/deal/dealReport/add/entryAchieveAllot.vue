@@ -1469,7 +1469,7 @@
       this.postData.commissionInfoList = [];
       this.postData.achieveTotalBagList = [];
       this.postData.achieveDistriList = [];
-      if (!this.addFlag) {receiveVOS
+      if (!this.addFlag) {
         this.showChangeTips();
       }
     }
