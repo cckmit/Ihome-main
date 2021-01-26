@@ -400,7 +400,7 @@
   export default class DealReportList extends Vue {
     private searchOpen = true;
     queryPageParameters: any = {
-      dealCode: null,
+      dealCode: '123测试',
       contType: null,
       status: null,
       suppContType: null,
