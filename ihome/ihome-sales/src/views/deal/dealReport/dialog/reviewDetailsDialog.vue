@@ -25,17 +25,17 @@
       :data="data">
       <el-table-column prop="operate" label="操作" min-width="150">
         <template slot-scope="scope">
-          <div>{{$root.dictAllName(scope.row.operate, 'CustType')}}</div>
+          <div>{{$root.dictAllName(scope.row.operate, 'DealOperate')}}</div>
         </template>
       </el-table-column>
       <el-table-column prop="operaterName" label="操作人" min-width="130"></el-table-column>
-      <el-table-column prop="operaterJob" label="岗位" min-width="130"></el-table-column>
-      <el-table-column prop="afterStatus" label="操作后状态" min-width="150">
+      <el-table-column prop="operaterJob" label="岗位" min-width="150"></el-table-column>
+      <el-table-column prop="afterStatus" label="操作后状态" min-width="120">
         <template slot-scope="scope">
           <div>{{$root.dictAllName(scope.row.afterStatus, 'DealStatus')}}</div>
         </template>
       </el-table-column>
-      <el-table-column prop="operateTime" label="操作时间" min-width="150"></el-table-column>
+      <el-table-column prop="operateTime" label="操作时间" min-width="160"></el-table-column>
       <el-table-column prop="result" label="处理结果" min-width="130">
         <template slot-scope="scope">
           <div>{{scope.row.result ? scope.row.result : '---'}}</div>

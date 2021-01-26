@@ -13,7 +13,7 @@
       :model="postData"
       :rules="rules"
       ref="ruleForm"
-      label-width="150px"
+      label-width="110px"
       class="demo-ruleForm">
       <p id="anchor-1" ref="#anchor-1" class="ih-info-title">成交信息</p>
       <div
@@ -95,7 +95,7 @@
             </el-select>
           </el-form-item>
         </el-col>
-        <el-col :span="8">
+        <el-col :span="8" class="form-item-label-wrapper">
           <el-form-item label="是否市场化项目" prop="isMarketProject">
             <el-select
               v-model="postData.isMarketProject"
@@ -330,7 +330,7 @@
                   v-digits="0"
                   :disabled="['ChangeInternalAchieveInf', 'RetreatRoom'].includes(changeType) ||isDisabled('room', 'houseVO')"
                   v-model="postData.room">
-                  <div slot="append">室</div>
+                  <template slot="append">室</template>
                 </el-input>
               </div>
               <div>
@@ -338,7 +338,7 @@
                   v-digits="0"
                   :disabled="['ChangeInternalAchieveInf', 'RetreatRoom'].includes(changeType) || isDisabled('hall', 'houseVO')"
                   v-model="postData.hall">
-                  <div slot="append">厅</div>
+                  <template slot="append">厅</template>
                 </el-input>
               </div>
               <div>
@@ -346,13 +346,13 @@
                   v-digits="0"
                   :disabled="['ChangeInternalAchieveInf', 'RetreatRoom'].includes(changeType) || isDisabled('toilet', 'houseVO')"
                   v-model="postData.toilet">
-                  <div slot="append">卫</div>
+                  <template slot="append">卫</template>
                 </el-input>
               </div>
             </div>
           </el-form-item>
         </el-col>
-        <el-col :span="8">
+        <el-col :span="8" class="form-item-label-wrapper">
           <el-form-item label="房产证/预售合同编号">
             <el-input
               :disabled="['ChangeInternalAchieveInf', 'RetreatRoom'].includes(changeType)"
@@ -394,7 +394,7 @@
             <div class="div-disabled">签约</div>
           </el-form-item>
         </el-col>
-        <el-col :span="8" v-if="isDisabled('returnRatio', 'dealVO')">
+        <el-col :span="8" v-if="isDisabled('returnRatio', 'dealVO')" class="form-item-label-wrapper">
           <el-form-item label="明源房款回笼比例">
             <el-input v-model="postData.returnRatio" disabled></el-input>
           </el-form-item>
@@ -1530,6 +1530,8 @@
       }
       let res: any = await post_suppDeal_toAddSuppDeal(postData);
       // console.log(res);
+      // 通过项目周期id获取基础信息
+      await this.getBaseDealInfo(res.cycleId);
       this.postData = {
         ...this.postData,
         ...res
@@ -1586,8 +1588,6 @@
       }
       // 初始化附件信息
       await this.initDocumentList(res.documentShowList);
-      // 通过项目周期id获取基础信息
-      await this.getBaseDealInfo(res.cycleId);
       // 根据项目周期和房号初始化页面数据
       await this.initPageById(res.cycleId, res.house.roomId, res.house.propertyType);
     }
@@ -1622,7 +1622,7 @@
             });
           }
           this.postData.brokerId = data[0].brokerId; // 渠道经纪人Id
-          this.postData.brokerName = data[0].brokerName; // 渠道经纪人
+          this.postData.brokerName = data[0].broker; // 渠道经纪人
         }
       }
     }
@@ -1713,10 +1713,16 @@
         this.postData.offerNoticeVO = baseInfo.notice && baseInfo.notice.length ? baseInfo.notice : [];
         // 客户信息
         this.postData.customerList = baseInfo.customerAddVOS && baseInfo.customerAddVOS.length ? baseInfo.customerAddVOS : [];
-        // 收派金额
+        // 收派金额 --- 代理费
         // this.postData.receiveVO = baseInfo.receiveVOS && baseInfo.receiveVOS.length ? baseInfo.receiveVOS : [];
-        this.postData.receiveList = this.initReceiveVOS(baseInfo.receiveVOS);
+        if (baseInfo.receiveVOS && baseInfo.receiveVOS.length) {
+          let tempList: any = (this as any).$parent.initReceiveVOS(baseInfo.receiveVOS);
+          this.postData.receiveList = [...this.postData.receiveList, ...tempList];
+        }
+        // 暂存
         this.tempReceiveVO = (this as any).$tool.deepClone(this.postData.receiveList);
+        // this.postData.receiveList = this.initReceiveVOS(baseInfo.receiveVOS);
+        // this.tempReceiveVO = (this as any).$tool.deepClone(this.postData.receiveList);
         // 收派金额中的甲方
         this.commissionCustomerList = [];
         this.commissionCustomerList = this.initCommissionCustomer(baseInfo.receiveVOS);
@@ -1784,6 +1790,15 @@
           });
         } else {
           this.navList = (this as any).$tool.deepClone(this.defaultNavList);
+        }
+        // 收派金额部分信息 --- 服务费
+        if (baseInfo.serviceFee) {
+          let tempList: any = [];
+          tempList.push(baseInfo.serviceFee);
+          let item: any = (this as any).$parent.initReceiveVOS(tempList);
+          this.postData.receiveList.push(item);
+          // 暂存
+          this.tempReceiveVO = (this as any).$tool.deepClone(this.postData.receiveList);
         }
         // 成交组织
         await this.getOrgName(baseInfo.groupId);
@@ -3175,6 +3190,18 @@
     width: 100%;
     box-sizing: border-box;
     margin-bottom: 10px;
+  }
+
+  .demo-ruleForm {
+    /deep/.el-input-group__append {
+      padding: 0px 10px;
+    }
+  }
+
+  .form-item-label-wrapper {
+    /deep/.el-form-item__label {
+      line-height: 20px;
+    }
   }
 
   .div-disabled {
