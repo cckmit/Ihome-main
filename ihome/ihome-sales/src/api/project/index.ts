@@ -1,6 +1,6 @@
 /* eslint-disable */
 /* 此脚本由swagger-ui的api-docs自动生成，请勿修改 */
-//2021-1-26 10:05:43 ├F10: AM┤
+//2021-1-26 11:17:18 ├F10: AM┤
 import { request } from '@/api/base'
 const basePath = "/sales-api/project"
 /**index*/
