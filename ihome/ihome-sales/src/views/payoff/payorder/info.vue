@@ -4,7 +4,7 @@
  * @Author: wwq
  * @Date: 2020-12-26 11:11:19
  * @LastEditors: wwq
- * @LastEditTime: 2021-01-25 17:33:34
+ * @LastEditTime: 2021-01-26 11:57:37
 -->
 <template>
   <IhPage>
@@ -248,7 +248,7 @@
             <template v-slot="{ row }">
               <div>应收: {{row.serReceiveFees}}</div>
               <div>实收: {{row.serActualFees}}</div>
-              <div>未收: {{row.serNoFees}}</div>
+              <div>未收: {{row.serUnpaidFees}}</div>
             </template>
           </el-table-column>
           <el-table-column
@@ -268,7 +268,7 @@
             <template v-slot="{ row }">
               <div>服务费: {{row.serCommFees}}</div>
               <div>代理费: {{row.ageCommFees}}</div>
-              <div>合计: {{row.allCommFees}}</div>
+              <div>合计: {{$math.tofixed($math.add(Number(row.serCommFees), Number(row.ageCommFees)), 2)}}</div>
             </template>
           </el-table-column>
           <el-table-column
@@ -278,6 +278,7 @@
             <template v-slot="{ row }">
               <div>服务费: {{row.serSettledCommFees}}</div>
               <div>代理费: {{row.ageSettledCommFees}}</div>
+              <div>合计: {{$math.tofixed($math.add(Number(row.serSettledCommFees), Number(row.ageSettledCommFees)), 2)}}</div>
             </template>
           </el-table-column>
           <el-table-column
@@ -287,6 +288,7 @@
             <template v-slot="{ row }">
               <div>服务费: {{row.serUnsetCommFees}}</div>
               <div>代理费: {{row.ageUnsetCommFees}}</div>
+              <div>合计: {{$math.tofixed($math.add(Number(row.serUnsetCommFees), Number(row.ageUnsetCommFees)), 2)}}</div>
             </template>
           </el-table-column>
           <el-table-column
@@ -311,8 +313,7 @@
                 />
               </div>
               <div>合计: {{
-                (Number(row.serThisCommFees?row.serThisCommFees:0) + 
-                Number(row.ageThisCommFees?row.ageThisCommFees:0)).toFixed(2)
+                $math.tofixed($math.add(Number(row.serThisCommFees), Number(row.ageThisCommFees)), 2)
               }}</div>
             </template>
           </el-table-column>
