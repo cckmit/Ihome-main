@@ -4,7 +4,7 @@
  * @Author: wwq
  * @Date: 2020-12-07 14:32:16
  * @LastEditors: wwq
- * @LastEditTime: 2021-01-08 14:41:26
+ * @LastEditTime: 2021-01-26 20:57:44
 -->
 <template>
   <el-dialog
@@ -173,7 +173,7 @@
               >
                 <template v-slot="{ row }">
                   <div>{{`金额:` + row.receivableAmout}}</div>
-                  <div>{{`点数:` + row.receivablePoint}}</div>
+                  <div>{{`点数: ${row.receivablePoint || 0}%`}}</div>
                 </template>
               </el-table-column>
               <el-table-column
@@ -183,7 +183,7 @@
               >
                 <template v-slot="{ row }">
                   <div>{{`金额:` + row.sendAmount}}</div>
-                  <div>{{`点数:` + row.sendPoint}}</div>
+                  <div>{{`点数: ${row.sendPoint || 0}%`}}</div>
                 </template>
               </el-table-column>
               <el-table-column
@@ -193,7 +193,7 @@
               >
                 <template v-slot="{ row }">
                   <div>{{`金额:` + row.sendInAmount}}</div>
-                  <div>{{`点数:` + row.sendInPoint}}</div>
+                  <div>{{`点数: ${row.sendInPoint || 0}%`}}</div>
                 </template>
               </el-table-column>
               <el-table-column
@@ -203,7 +203,7 @@
               >
                 <template v-slot="{ row }">
                   <div>{{`金额:` + row.generalAchieveAmount}}</div>
-                  <div>{{`点数:` + row.generalAchievePoint}}</div>
+                  <div>{{`点数: ${row.generalAchievePoint || 0}%`}}</div>
                 </template>
               </el-table-column>
               <el-table-column
@@ -213,7 +213,7 @@
               >
                 <template v-slot="{ row }">
                   <div>{{`金额:` + row.distributeAchieveAmount}}</div>
-                  <div>{{`点数:` + row.distributeAchievePoint}}</div>
+                  <div>{{`点数: ${row.distributeAchievePoint || 0}%`}}</div>
                 </template>
               </el-table-column>
               <el-table-column
@@ -354,7 +354,7 @@
               >
                 <template v-slot="{ row }">
                   <div>{{`金额:` + row.receivableAmout}}</div>
-                  <div>{{`点数:` + row.receivablePoint}}</div>
+                  <div>{{`点数: ${row.receivablePoint || 0}%`}}</div>
                 </template>
               </el-table-column>
               <el-table-column
@@ -364,7 +364,7 @@
               >
                 <template v-slot="{ row }">
                   <div>{{`金额:` + row.sendAmount}}</div>
-                  <div>{{`点数:` + row.sendPoint}}</div>
+                  <div>{{`点数: ${row.sendPoint || 0}%`}}</div>
                 </template>
               </el-table-column>
               <el-table-column
@@ -374,7 +374,7 @@
               >
                 <template v-slot="{ row }">
                   <div>{{`金额:` + row.sendInAmount}}</div>
-                  <div>{{`点数:` + row.sendInPoint}}</div>
+                  <div>{{`点数: ${row.sendInPoint || 0}%`}}</div>
                 </template>
               </el-table-column>
               <el-table-column
@@ -384,7 +384,7 @@
               >
                 <template v-slot="{ row }">
                   <div>{{`金额:` + row.generalAchieveAmount}}</div>
-                  <div>{{`点数:` + row.generalAchievePoint}}</div>
+                  <div>{{`点数: ${row.generalAchievePoint || 0}%`}}</div>
                 </template>
               </el-table-column>
               <el-table-column
@@ -394,7 +394,7 @@
               >
                 <template v-slot="{ row }">
                   <div>{{`金额:` + row.distributeAchieveAmount}}</div>
-                  <div>{{`点数:` + row.distributeAchievePoint}}</div>
+                  <div>{{`点数: ${row.distributeAchievePoint || 0}%`}}</div>
                 </template>
               </el-table-column>
               <el-table-column

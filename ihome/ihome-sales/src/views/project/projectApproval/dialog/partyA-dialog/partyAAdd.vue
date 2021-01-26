@@ -4,7 +4,7 @@
  * @Author: wwq
  * @Date: 2020-12-01 14:49:06
  * @LastEditors: wwq
- * @LastEditTime: 2021-01-23 15:19:41
+ * @LastEditTime: 2021-01-26 19:34:57
 -->
 <template>
   <el-dialog
@@ -163,10 +163,7 @@
       </el-row>
       <el-row>
         <el-col :span="12">
-          <el-form-item
-            label="成交确认人"
-            prop="confirmer"
-          >
+          <el-form-item label="成交确认人">
             <el-input
               v-model="form.confirmer"
               placeholder="成交确认人"
@@ -176,12 +173,12 @@
         <el-col :span="12">
           <el-form-item
             label="成交确认人联系方式"
-            prop="confirmerContact"
             class="formItem"
           >
             <el-input
               v-model="form.confirmerContact"
               placeholder="成交确认人联系方式"
+              v-digits="0"
             ></el-input>
           </el-form-item>
         </el-col>
@@ -302,21 +299,14 @@ export default class PartyAAdd extends Vue {
         trigger: "change",
       },
     ],
-    confirmer: [
-      {
-        required: true,
-        message: "请填写成交确认人",
-        trigger: "change",
-      },
-    ],
-    confirmerContact: [
-      {
-        required: true,
-        message: "请填写成交确认人联系方式",
-        trigger: "change",
-      },
-      { validator: phoneValidator, trigger: "change" },
-    ],
+    // confirmer: [
+    //   {
+    //     required: true,
+    //     message: "请填写成交确认人",
+    //     trigger: "change",
+    //   },
+    // ],
+    confirmerContact: [{ validator: phoneValidator, trigger: "change" }],
     receivingAccountId: [
       {
         required: true,
