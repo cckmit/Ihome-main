@@ -1,6 +1,6 @@
 /* eslint-disable */
 /* 此脚本由swagger-ui的api-docs自动生成，请勿修改 */
-//2021-1-26 15:05:58
+//2021-1-26 17:50:26
 import { request } from '@/api/base'
 const basePath = "/sales-api/system"
 /**查询所有行政区划信息*/
@@ -146,6 +146,10 @@ return await request.post< DictBaseVO,DictBaseVO> (basePath+'/dict/getByTypeAndC
 /**启用字典项*/
 export async function post_dict_open__id (d?: any) {
 return await request.post< number,number> (basePath+'/dict/open/{id}', d)
+}
+/**枚举同步字典*/
+export async function post_dict_syncdictionary (d?: any) {
+return await request.post< any,any> (basePath+'/dict/syncdictionary', d)
 }
 /**修改字典项*/
 export async function post_dict_update (d?: any) {

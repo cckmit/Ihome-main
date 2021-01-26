@@ -4,7 +4,7 @@
  * @Author: zyc
  * @Date: 2020-12-16 10:26:34
  * @LastEditors: zyc
- * @LastEditTime: 2021-01-07 09:12:38
+ * @LastEditTime: 2021-01-26 17:17:34
 -->
 <template>
   <IhPage>
@@ -24,6 +24,10 @@ export default class HomeIndex extends Vue {
   // get userInfo() {
   //   return (this as any).$root.userInfo || {};
   // }
+  created(){
+    let a = this.$roleTool.RHeadBusinessManagement();
+    console.log(a);
+  }
 }
 </script>
 <style lang="scss" scoped>

@@ -4,7 +4,7 @@
  * @Author: zyc
  * @Date: 2020-05-30 17:13:05
  * @LastEditors: zyc
- * @LastEditTime: 2021-01-26 10:26:11
+ * @LastEditTime: 2021-01-26 17:15:53
  */
 
 import Vue from "vue";
@@ -12,7 +12,7 @@ import 'axios'
 import { ToolInterface } from './util/tool'
 import { RawLocation, Route } from 'vue-router/types/router.d'
 import { MathInterface } from './util/math'
-import { RoleTool } from './util/roleTool'
+import { RoleToolInterface } from './util/roleTool'
 declare module "vue/types/vue" {
   interface Vue {
     component(name: string, component: any): any;
@@ -30,7 +30,7 @@ declare module "vue/types/vue" {
      * @param {*}
      * @return {*}
      */
-    $roleTool: RoleTool;
+    $roleTool: RoleToolInterface;
     /**跳转，与this.$router.push用法一致
      * @param {*}
      * @return {*}

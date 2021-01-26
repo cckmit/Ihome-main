@@ -4,9 +4,10 @@
  * @Author: zyc
  * @Date: 2020-07-31 15:21:06
  * @LastEditors: zyc
- * @LastEditTime: 2021-01-26 15:11:47
+ * @LastEditTime: 2021-01-26 17:48:27
  */
 let http = require('http');
+let https = require('https');
 let fs = require("fs");
 let name;
 let outSrc;
@@ -58,7 +59,13 @@ function handleSwagger(prefix) {
         });
     }
     // 向服务端发送请求
-    let req = http.request(options, callback);
+    let _http;
+    if(process.env.PROXY_PROTOCOL=='https'){
+        _http=https;
+    }else{
+        _http=http;
+    }
+    let req = _http.request(options, callback);
     req.end();
 }
 function handleBody(body) {
