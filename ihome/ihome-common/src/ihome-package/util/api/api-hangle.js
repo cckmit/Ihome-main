@@ -4,7 +4,7 @@
  * @Author: zyc
  * @Date: 2020-07-31 15:21:06
  * @LastEditors: zyc
- * @LastEditTime: 2021-01-26 11:23:50
+ * @LastEditTime: 2021-01-26 15:11:47
  */
 let http = require('http');
 let fs = require("fs");
@@ -116,7 +116,6 @@ function handleBody(body) {
                 originalRef = "any"
             }
  
-            console.log(originalRef)
             let res = 'any'
             let parameters = paths[k]["get"].parameters;
             if (parameters && parameters.length > 0) {

@@ -920,7 +920,7 @@
             </template>
           </el-table-column>
           <el-table-column prop="corporateAchieve" label="角色人业绩" min-width="150"></el-table-column>
-          <el-table-column prop="corporateAchieveRatio" label="角色人业绩比例(%)" min-width="150"></el-table-column>
+          <el-table-column prop="roleAchieveRatio" label="角色人业绩比例(%)" min-width="150"></el-table-column>
           <el-table-column prop="commFees" label="拆佣金额" min-width="150"></el-table-column>
           <el-table-column prop="commFeesRatio" label="拆佣比例(%)" min-width="110"></el-table-column>
           <el-table-column prop="belongOrgName" label="店组" min-width="100">
@@ -991,7 +991,7 @@
             </template>
           </el-table-column>
           <el-table-column prop="corporateAchieve" label="角色人业绩" min-width="150"></el-table-column>
-          <el-table-column prop="corporateAchieveRatio" label="角色人业绩比例(%)" min-width="150"></el-table-column>
+          <el-table-column prop="roleAchieveRatio" label="角色人业绩比例(%)" min-width="150"></el-table-column>
           <el-table-column prop="commFees" label="拆佣金额" min-width="150"></el-table-column>
           <el-table-column prop="commFeesRatio" label="拆佣比例(%)" min-width="110"></el-table-column>
           <el-table-column prop="belongOrgName" label="店组" min-width="100">
@@ -1138,6 +1138,17 @@
             }
           "/>
     </ih-dialog>
+    <ih-dialog :show="dialogAddReceivePackage" desc="选择收派套餐标准">
+      <SelectReceivePackage
+        :data="receivePackageData"
+        @cancel="() => (dialogAddReceivePackage = false)"
+        @finish="
+            (data) => {
+              finishAddReceivePackage(data);
+            }
+          "
+      />
+    </ih-dialog>
   </ih-page>
 </template>
 <script lang="ts">
@@ -1161,6 +1172,8 @@
     post_buModelContType_subList,
     post_pageData_initChannelComm,
     post_pageData_initAchieve,
+    // post_pageData_calculateReceiveAmount, // 根据收派套餐，计算收派金额
+    // post_pageData_calculateReceiveAmounts, // 根据收派套餐，计算收派金额
   } from "@/api/deal";
   import {get_org_get__id} from "@/api/system"; // 获取组织name
   import {
@@ -1340,6 +1353,11 @@
     };
     companyCheckedData: any = [];
     dialogEditDealAchieve: any = false;
+    dialogAddReceivePackage: any = false;
+    receivePackageData: any = {
+      type: '', // 费用类型
+      idList: [] // 可选的收派套餐ids
+    }; // 收派套餐data数据
     navFlag: any = false; // 是否折叠锚点
     defaultNavList: any = [
       {
@@ -1419,6 +1437,7 @@
       hasRecord: false,
       selectableChannelIds: [], // 可选的渠道商ids
     }; // 通过initPage接口获取到的成交信息(项目周期 + 房号)
+    currentReceiveIndex: any = null; // 当前选中的收派金额列表数据
     oneAgentRequiredFlag: any = false; // 收派金额 - 派发内场奖励金额合计大于0，为true
     tempReceiveVO: any = []; // 临时收派金额信息
     tempSignPrice: any = null; // 临时签约价格
@@ -2586,7 +2605,7 @@
     // 选择收派套餐
     selectPackage(scope: any) {
       // console.log('选择收派套餐', scope);
-      // this.currentReceiveIndex = scope.$index;
+      this.currentReceiveIndex = scope.$index;
       let params: any = {
         termId: this.baseInfoByTerm.termId, // 项目周期id
         contType: this.postData.contType, // 合同类型
