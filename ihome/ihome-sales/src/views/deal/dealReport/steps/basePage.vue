@@ -920,7 +920,7 @@
             </template>
           </el-table-column>
           <el-table-column prop="corporateAchieve" label="角色人业绩" min-width="150"></el-table-column>
-          <el-table-column prop="corporateAchieveRatio" label="角色人业绩比例(%)" min-width="150"></el-table-column>
+          <el-table-column prop="roleAchieveRatio" label="角色人业绩比例(%)" min-width="150"></el-table-column>
           <el-table-column prop="commFees" label="拆佣金额" min-width="150"></el-table-column>
           <el-table-column prop="commFeesRatio" label="拆佣比例(%)" min-width="110"></el-table-column>
           <el-table-column prop="belongOrgName" label="店组" min-width="100">
@@ -991,7 +991,7 @@
             </template>
           </el-table-column>
           <el-table-column prop="corporateAchieve" label="角色人业绩" min-width="150"></el-table-column>
-          <el-table-column prop="corporateAchieveRatio" label="角色人业绩比例(%)" min-width="150"></el-table-column>
+          <el-table-column prop="roleAchieveRatio" label="角色人业绩比例(%)" min-width="150"></el-table-column>
           <el-table-column prop="commFees" label="拆佣金额" min-width="150"></el-table-column>
           <el-table-column prop="commFeesRatio" label="拆佣比例(%)" min-width="110"></el-table-column>
           <el-table-column prop="belongOrgName" label="店组" min-width="100">
