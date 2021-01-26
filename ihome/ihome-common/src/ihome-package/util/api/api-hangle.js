@@ -4,7 +4,7 @@
  * @Author: zyc
  * @Date: 2020-07-31 15:21:06
  * @LastEditors: zyc
- * @LastEditTime: 2020-12-24 11:01:38
+ * @LastEditTime: 2021-01-26 11:23:50
  */
 let http = require('http');
 let fs = require("fs");
@@ -89,6 +89,7 @@ function handleBody(body) {
             }
 
             originalRef = replaceAll(originalRef, '«int»', '<number>');
+            originalRef = replaceAll(originalRef, '«long»', '<number>');
             originalRef = replaceAll(originalRef, '«bigdecimal»', '<number>');
 
             originalRef = replaceAll(originalRef, '«', '<')
@@ -167,6 +168,7 @@ function handleBody(body) {
                 originalRef = "any";
             }
             originalRef = replaceAll(originalRef, '«int»', '<number>');
+            originalRef = replaceAll(originalRef, '«long»', '<number>');
             originalRef = replaceAll(originalRef, '«bigdecimal»', '<number>');
             originalRef = replaceAll(originalRef, '«', '<')
             originalRef = replaceAll(originalRef, '»', '>')

@@ -2,6 +2,7 @@
 # ihome-common
 ## 日志
 ```
+v1.2.27  2021-01-26 11:42  npm run api
 v1.2.25  2021-01-26 10:26  roleTool.ts
 v1.2.24  2021-01-25 09:23  math.ts优化
 v1.2.23  2021-01-21 20:49  IhImgView组件
