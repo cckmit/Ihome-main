@@ -1,10 +1,10 @@
 /*
- * @Descripttion: 
+ * @Descripttion: 编码
  * @version: 
  * @Author: zyc
  * @Date: 2021-01-21 17:23:14
  * @LastEditors: zyc
- * @LastEditTime: 2021-01-21 17:38:25
+ * @LastEditTime: 2021-01-26 10:11:58
  */
 
 /**角色编码
@@ -17,6 +17,26 @@ const RoleCode = {
      * @return {*}
      */
     RAuditCustomer: 'RAuditCustomer',
+    /**总部业务管理角色
+     * @param {*}
+     * @return {*}
+     */
+    RHeadBusinessManagement: 'RHeadBusinessManagement',
+    /**分公司业务管理角色
+     * @param {*}
+     * @return {*}
+     */
+    RBusinessManagement: 'RBusinessManagement',
+    /**文员
+     * @param {*}
+     * @return {*}
+     */
+    RFrontLineClerk: 'RFrontLineClerk',
+    /**平台文员
+     * @param {*}
+     * @return {*}
+     */
+    RPlatformClerk: 'RPlatformClerk'
 
 }
 /**岗位编码

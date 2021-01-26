@@ -4,7 +4,7 @@
  * @Author: zyc
  * @Date: 2020-05-30 17:13:05
  * @LastEditors: zyc
- * @LastEditTime: 2021-01-14 15:33:53
+ * @LastEditTime: 2021-01-26 10:26:11
  */
 
 import Vue from "vue";
@@ -12,6 +12,7 @@ import 'axios'
 import { ToolInterface } from './util/tool'
 import { RawLocation, Route } from 'vue-router/types/router.d'
 import { MathInterface } from './util/math'
+import { RoleTool } from './util/roleTool'
 declare module "vue/types/vue" {
   interface Vue {
     component(name: string, component: any): any;
@@ -25,6 +26,11 @@ declare module "vue/types/vue" {
      * @return {*}
      */
     $math: MathInterface;
+    /**判断用户是否包含某种角色或岗位
+     * @param {*}
+     * @return {*}
+     */
+    $roleTool: RoleTool;
     /**跳转，与this.$router.push用法一致
      * @param {*}
      * @return {*}

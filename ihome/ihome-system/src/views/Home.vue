@@ -4,7 +4,7 @@
  * @Author: zyc
  * @Date: 2020-06-22 11:10:43
  * @LastEditors: zyc
- * @LastEditTime: 2021-01-14 14:42:35
+ * @LastEditTime: 2021-01-26 10:45:21
 --> 
 <template>
   <div>
@@ -32,6 +32,7 @@ export default class Home extends Vue {
     label: "path",
   };
   created() {
+    console.log(this.$roleTool.RHeadBusinessManagement());
     this.data = routes;
     let a1 = this.$math.add(0.1, 0.2);
     let a2 = this.$math.sub(0.1, 0.2);
