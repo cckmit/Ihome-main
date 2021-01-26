@@ -605,12 +605,14 @@
 
     // 初始化数据
     async init() {
+      let info: any = null;
       if (this.infoType === "ID") {
-        this.infoForm = await get_deal_get__id({id: this.dealIdOrCode});
+        info = await get_deal_get__id({id: this.dealIdOrCode});
       } else {
-        this.infoForm = await get_deal_getByCode__dealCode({code : this.dealIdOrCode});
+        info = await get_deal_getByCode__dealCode({code : this.dealIdOrCode});
       }
       // console.log(this.infoForm);
+      this.infoForm = info;
       // 收派金额数据整理 showData
       if (this.infoForm.receiveList && this.infoForm.receiveList.length > 0) {
         this.infoForm.receiveList.forEach((list: any) => {
@@ -634,10 +636,15 @@
           }
         })
       }
-      // 初始化优惠告知书信息
-      await this.getInformation(this.infoForm.id);
+      // 判断是否需要请求接口来获取优惠告知书
+      if (info.notice && info.notice.length) {
+        this.infoForm.offerNoticeList = info.notice;
+      } else {
+        // 初始化优惠告知书信息
+        await this.getInformation(info.id);
+      }
       // 初始化开票信息
-      await this.getInvoiceInfo(this.infoForm.id);
+      await this.getInvoiceInfo(info.id);
     }
 
     // 获取开票信息

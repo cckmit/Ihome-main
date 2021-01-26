@@ -4,7 +4,7 @@
  * @Author: wwq
  * @Date: 2020-12-26 11:11:23
  * @LastEditors: wwq
- * @LastEditTime: 2021-01-25 17:34:57
+ * @LastEditTime: 2021-01-26 17:06:45
 -->
 <template>
   <IhPage>
@@ -255,7 +255,7 @@
             <template v-slot="{ row }">
               <div>应收: {{row.serReceiveFees}}</div>
               <div>实收: {{row.serActualFees}}</div>
-              <div>未收: {{row.serNoFees}}</div>
+              <div>未收: {{row.serUnpaidFees}}</div>
             </template>
           </el-table-column>
           <el-table-column
@@ -275,7 +275,7 @@
             <template v-slot="{ row }">
               <div>服务费: {{row.serCommFees}}</div>
               <div>代理费: {{row.ageCommFees}}</div>
-              <div>合计: {{row.allCommFees}}</div>
+              <div>合计: {{$math.tofixed($math.add(Number(row.serCommFees), Number(row.ageCommFees)), 2)}}</div>
             </template>
           </el-table-column>
           <el-table-column
@@ -285,6 +285,7 @@
             <template v-slot="{ row }">
               <div>服务费: {{row.serSettledCommFees}}</div>
               <div>代理费: {{row.ageSettledCommFees}}</div>
+              <div>合计: {{$math.tofixed($math.add(Number(row.serSettledCommFees), Number(row.ageSettledCommFees)), 2)}}</div>
             </template>
           </el-table-column>
           <el-table-column
@@ -294,6 +295,7 @@
             <template v-slot="{ row }">
               <div>服务费: {{row.serUnsetCommFees}}</div>
               <div>代理费: {{row.ageUnsetCommFees}}</div>
+              <div>合计: {{$math.tofixed($math.add(Number(row.serUnsetCommFees), Number(row.ageUnsetCommFees)), 2)}}</div>
             </template>
           </el-table-column>
           <el-table-column
@@ -320,8 +322,7 @@
                 />
               </div>
               <div>合计: {{
-                (Number(row.serThisCommFees?row.serThisCommFees:0) + 
-                Number(row.ageThisCommFees?row.ageThisCommFees:0)).toFixed(2)
+                $math.tofixed($math.add(Number(row.serThisCommFees), Number(row.ageThisCommFees)), 2)
               }}</div>
             </template>
           </el-table-column>
@@ -355,7 +356,7 @@
             width="150"
           >
             <template v-slot="{ row }">
-              <div>实际付款金额: {{row.actualAmount}}</div>
+              <div>实际付款金额: {{practicalChange(row)}}</div>
               <div>不含税金额: {{noTaxAmountChange(row)}}</div>
               <div>税额: {{taxChange(row)}}</div>
             </template>
@@ -433,11 +434,19 @@
           <el-table-column
             label="不含税金额"
             prop="noTaxAmount"
-          ></el-table-column>
+          >
+            <template v-slot="{ row }">
+              {{dataNoTaxAmountChange(row)}}
+            </template>
+          </el-table-column>
           <el-table-column
             label="税额"
             prop="tax"
-          ></el-table-column>
+          >
+            <template v-slot="{ row }">
+              {{dataTaxChange(row)}}
+            </template>
+          </el-table-column>
         </el-table>
       </div>
       <br />
@@ -507,13 +516,7 @@
             prop="noTaxAmount"
           >
             <template v-slot="{ row }">
-              <!-- <el-input
-                v-digits="2"
-                v-model="row.noTaxAmount"
-                clearable
-                placeholder="不含税金额"
-              /> -->
-              {{Number(row.deductAmount) / (1 + Number(info.taxRate))}}
+              {{dataNoTaxAmountChange(row)}}
             </template>
           </el-table-column>
           <el-table-column
@@ -521,7 +524,7 @@
             prop="tax"
           >
             <template v-slot="{ row }">
-              {{Number(row.noTaxAmount) * Number(info.taxRate)}}
+              {{dataTaxChange(row)}}
             </template>
           </el-table-column>
           <el-table-column
@@ -592,7 +595,7 @@
             <template v-slot="{ row }">
               <template v-for="(item, i) in row.paySummaryContractInfoList">
                 <el-link
-                  @click="$router.push(`/projectApproval/info?id=${item.contNo}`)"
+                  @click="$router.push(`/distribution/info?contractNo=${item.contNo}`)"
                   :key="i"
                   :title="`名称: ${item.title} 编号: ${item.contNo}`"
                   class="text-ellipsis"
@@ -809,6 +812,7 @@ import {
   post_payApply_entryApply,
   post_payApply_updateApply,
   post_payApply_calculation_results,
+  get_payDeductDetail_deduct_details__channelId,
 } from "@/api/payoff/index";
 import { get_channel_get__id } from "@/api/channel/index";
 import { Form as ElForm } from "element-ui";
@@ -953,34 +957,69 @@ export default class PayoffEdit extends Vue {
     );
   }
 
-  ratioChange(row: any) {
-    const a =
-      Number(row.serThisCommFees ? row.serThisCommFees : 0) +
-      Number(row.ageThisCommFees ? row.ageThisCommFees : 0);
-    const b =
-      Number(row.noTaxAmount ? row.noTaxAmount : 0) +
-      Number(row.tax ? row.tax : 0);
-    let computed: any = b / a;
-    row.ratio = computed.toFixed(2) * 100;
-    return isNaN(computed) ? 0 : computed.toFixed(2) * 100;
-  }
-  noTaxAmountChange(row: any) {
-    const a =
-      Number(row.serThisCommFees ? row.serThisCommFees : 0) +
-      Number(row.ageThisCommFees ? row.ageThisCommFees : 0);
-    const b = a - Number(row.thisDeduct);
-    let c = b / (1 + Number(this.info.taxRate));
-    row.noTaxAmount = c.toFixed(2);
-    return isNaN(c) ? 0 : c.toFixed(2);
+  // 实际付款金额(本次申请付款金额合计-本次应扣)
+  practicalChange(row: any) {
+    const total = this.$math.add(
+      Number(row.serThisCommFees),
+      Number(row.ageThisCommFees)
+    );
+    const deduct = Number(row.thisDeduct);
+    const res = this.$math.sub(total, deduct);
+    row.actualAmount = this.$math.tofixed(res, 2);
+    return this.$math.tofixed(res, 2);
   }
 
+  // 不含税金额(实际付款金额/(1+发票税率))
+  noTaxAmountChange(row: any) {
+    const practical = Number(row.actualAmount);
+    const shuier = this.$math.add(1, Number(this.info.taxRate));
+    const res = this.$math.div(practical, shuier);
+    row.noTaxAmount = this.$math.tofixed(res, 2);
+    return this.$math.tofixed(res, 2);
+  }
+
+  // 税额(实际付款金额-不含税金额)
   taxChange(row: any) {
-    const a =
-      Number(row.serThisCommFees ? row.serThisCommFees : 0) +
-      Number(row.ageThisCommFees ? row.ageThisCommFees : 0);
-    let b = a - Number(row.thisDeduct) - Number(row.noTaxAmount);
-    row.tax = b.toFixed(2);
-    return isNaN(b) ? 0 : b.toFixed(2);
+    const practical = Number(row.actualAmount);
+    const noTaxAmount = Number(row.noTaxAmount);
+    const res = this.$math.sub(practical, noTaxAmount);
+    row.tax = this.$math.tofixed(res, 2);
+    return this.$math.tofixed(res, 2);
+  }
+
+  // 本次支付比例(%)( 本次申请付款金额 / 未结佣付款金额 * 100 )
+  ratioChange(row: any) {
+    const total1 = this.$math.add(
+      Number(row.serThisCommFees),
+      Number(row.ageThisCommFees)
+    );
+    const total2 = this.$math.add(
+      Number(row.serUnsetCommFees),
+      Number(row.ageUnsetCommFees)
+    );
+    const total3 = this.$math.div(total1, total2);
+    const res = this.$math.multi(total3, 100);
+    console.log(res);
+    row.ratio = this.$math.tofixed(res, 2);
+    return this.$math.tofixed(res, 2);
+  }
+
+  // 明细表-不含税金额(扣除金额/ (1+开票税率))
+  dataNoTaxAmountChange(row: any) {
+    const deductAmount = Number(row.deductAmount);
+    const shuier = this.$math.add(1, Number(this.info.taxRate));
+    const res = this.$math.div(deductAmount, shuier);
+    row.noTaxAmount = this.$math.tofixed(res, 2);
+    return this.$math.tofixed(res, 2);
+  }
+
+  // 明细表-税额(不含税金额 * 开票税率)
+  dataTaxChange(row: any) {
+    const noTaxAmount = row.noTaxAmount ? Number(row.noTaxAmount) : 0;
+    const taxRate = this.info.taxRate ? Number(this.info.taxRate) : 0;
+    const res = this.$math.multi(noTaxAmount, taxRate);
+    row.tax = this.$math.tofixed(res, 2);
+    return this.$math.tofixed(res, 2);
   }
 
   searchOpen = true;
@@ -1198,6 +1237,15 @@ export default class PayoffEdit extends Vue {
     let res = await get_channel_get__id({ id: item.id });
     this.channelAccountOptions = res.channelBanks;
     if (!type) this.info.receiveAccount = null;
+    // 获取本期需抵扣金额明细
+    this.queryDeductionData(item.id);
+  }
+
+  async queryDeductionData(id: any) {
+    const res = await get_payDeductDetail_deduct_details__channelId({
+      channelId: id,
+    });
+    this.info.payDeductDetailResponseList = res ? res : [];
   }
 
   submit(val: string) {

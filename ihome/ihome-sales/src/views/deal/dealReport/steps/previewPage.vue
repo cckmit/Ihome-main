@@ -643,23 +643,35 @@
           postData.noticeDealList = this.pageData?.noticeDealList;
           postData.dealAddInputVO.status = type === 'save' ? 'Draft' : 'PlatformClerkUnreview';
           await post_suppDeal_entryBasicInfChange(postData);
+          this.$goto({
+            path: "/dealReport/list",
+          });
           break
         case "ChangeAchieveInf":
           // 变更业绩信息
           postData.noticeDealList = this.pageData?.noticeDealList;
           postData.status = type === 'save' ? 'Draft' : 'PlatformClerkUnreview';
           await post_suppDeal_entryAchieveInfChange(postData);
+          this.$goto({
+            path: "/dealReport/list",
+          });
           break
         case "RetreatRoom":
           // 退房
           postData.noticeDealList = this.pageData?.noticeDealList;
           postData.status = type === 'save' ? 'Draft' : 'PlatformClerkUnreview';
           await post_suppDeal_entryRetreatRoom(postData);
+          this.$goto({
+            path: "/dealReport/list",
+          });
           break
         case "ChangeInternalAchieveInf":
           // 内部员工业绩变更
           postData.status = type === 'save' ? 'Draft' : 'PlatformClerkUnreview';
           await post_suppDeal_entryStaffAchieveChange(postData);
+          this.$goto({
+            path: "/dealReport/list",
+          });
           break
       }
     }

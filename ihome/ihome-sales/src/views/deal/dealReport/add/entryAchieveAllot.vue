@@ -14,13 +14,13 @@
       :model="postData"
       :rules="rules"
       ref="ruleForm"
-      label-width="150px"
+      label-width="110px"
       class="demo-ruleForm">
       <p id="anchor-1" class="ih-info-title">成交信息</p>
       <div class="add-all-wrapper padding-left-20">
         <el-button type="success">更新明源数据</el-button>
       </div>
-      <el-row>
+      <el-row :gutter="5">
         <el-col :span="8" v-if="!!postData.dealCode">
           <el-form-item label="成交报告编号" :prop="!!postData.dealCode ? 'dealCode' : ' '">
             <el-input disabled v-model="postData.dealCode"/>
@@ -81,7 +81,7 @@
             </el-select>
           </el-form-item>
         </el-col>
-        <el-col :span="8">
+        <el-col :span="8" class="form-item-label-wrapper">
           <el-form-item label="是否市场化项目" prop="isMarketProject">
             <el-select
               v-model="postData.isMarketProject"
@@ -279,7 +279,7 @@
                   v-digits="0"
                   :disabled="isDisabled('room', 'houseVO')"
                   v-model="postData.room">
-                  <div slot="append">室</div>
+                  <template slot="append">室</template>
                 </el-input>
               </div>
               <div>
@@ -287,7 +287,7 @@
                   v-digits="0"
                   :disabled="isDisabled('hall', 'houseVO')"
                   v-model="postData.hall">
-                  <div slot="append">厅</div>
+                  <template slot="append">厅</template>
                 </el-input>
               </div>
               <div>
@@ -295,13 +295,13 @@
                   v-digits="0"
                   :disabled="isDisabled('toilet', 'houseVO')"
                   v-model="postData.toilet">
-                  <div slot="append">卫</div>
+                  <template slot="append">卫</template>
                 </el-input>
               </div>
             </div>
           </el-form-item>
         </el-col>
-        <el-col :span="8">
+        <el-col :span="8" class="form-item-label-wrapper">
           <el-form-item label="房产证/预售合同编号">
             <el-input v-model="postData.propertyNo" clearable></el-input>
           </el-form-item>
@@ -1575,6 +1575,15 @@
       } else {
         this.postData.oneAgentTeamName = null;
       }
+      // 如果有对外拆佣信息，要同步拆佣对象为一手代理公司的收款方
+      if (this.postData.commissionInfoList && this.postData.commissionInfoList.length) {
+        this.postData.commissionInfoList.forEach((item: any) => {
+          if (item.target === "AgentCompany") {
+            item.agencyName = this.postData.oneAgentTeamName;
+            item.agencyId = this.postData.oneAgentTeamId;
+          }
+        })
+      }
     }
 
     // 初始化平台费用
@@ -1702,70 +1711,9 @@
     async finishAddProjectCycle(data: any) {
       // console.log('data', data);
       if (data && data.length > 0) {
-        // if (data[0].termId !== this.postData.cycleId) {
-        //   // 不相等要清空数据关联数据 + 重新请求接口
-        //   this.contNoList = []; // 分销协议编号
-        //   this.packageIdsList = []; // ids
-        //   this.postData.customerVO = []; // 客户信息
-        //   this.postData.offerNoticeVO = []; // 优惠告知书
-        //   this.postData.documentVO = []; // 上传附件
-        //   let list: any = [
-        //     'refineModel',
-        //     'oneAgentTeamId',
-        //     'propertyType',
-        //     'buildingId',
-        //     'roomId',
-        //     'contType',
-        //     'contNo',
-        //     'reportId',
-        //     'recordStr',
-        //     'recordState',
-        //     'area',
-        //     'room',
-        //     'hall',
-        //     'toilet',
-        //     'propertyNo',
-        //     'sceneSales',
-        //     'signType',
-        //     'stage',
-        //     'dataSign',
-        //   ];
-        //   await this.resetObject('postData', list);
-        //   this.packageIdsList = []; // ids
-        //   this.postData.cycleName = data[0].termName;
-        //   this.postData.cycleId = data[0].termId;
-        //   this.cycleCheckedData = [...data];
-        //   await this.getBaseDealInfo(this.postData.cycleId);
-        // }
         // 不管相等不相等要清空数据关联数据 + 重新请求接口
         if (this.postData.cycleId) {
-          this.contNoList = []; // 分销协议编号
-          this.packageIdsList = []; // ids
-          this.postData.customerVO = []; // 客户信息
-          this.postData.offerNoticeVO = []; // 优惠告知书
-          this.postData.documentVO = []; // 上传附件
-          let list: any = [
-            'refineModel',
-            'oneAgentTeamId',
-            'propertyType',
-            'buildingId',
-            'roomId',
-            'contType',
-            'contNo',
-            'reportId',
-            'recordStr',
-            'recordState',
-            'area',
-            'room',
-            'hall',
-            'toilet',
-            'propertyNo',
-            'sceneSales',
-            'signType',
-            'stage',
-            'dataSign',
-          ];
-          await this.resetObject('postData', list);
+          this.resetData();
           this.packageIdsList = []; // ids
         }
         this.postData.cycleName = data[0].termName;
@@ -1843,6 +1791,15 @@
           });
         } else {
           this.navList = (this as any).$tool.deepClone(this.defaultNavList);
+        }
+        // 收派金额部分信息 --- 服务费
+        if (baseInfo.serviceFee) {
+          let tempList: any = [];
+          tempList.push(baseInfo.serviceFee);
+          let item: any = (this as any).$parent.initReceiveVOS(tempList);
+          this.postData.receiveVO.push(item);
+          // 暂存
+          this.tempReceiveVO = (this as any).$tool.deepClone(this.postData.receiveVO);
         }
         // 成交组织
         await this.getOrgName(baseInfo.groupId);
@@ -2015,6 +1972,8 @@
         } else {
           this.contNoList = [];
         }
+        // 优惠告知书
+        this.postData.offerNoticeVO = baseInfo.notice && baseInfo.notice.length ? baseInfo.notice : [];
       }
       // 栋座
       if (baseInfo.buildingId && !this.postData.buildingId) {
@@ -2067,20 +2026,26 @@
         // 非分销成交模式 --- 自然来访 / 自渠成交
         this.initAgency(baseInfo.agencyVOs, false);
       }
-      // 优惠告知书
-      this.postData.offerNoticeVO = baseInfo.notice && baseInfo.notice.length ? baseInfo.notice : [];
       // 客户信息
       this.postData.customerVO = baseInfo.customerAddVOS && baseInfo.customerAddVOS.length ? baseInfo.customerAddVOS : [];
-      // 收派金额
+      // 收派金额 --- 代理费
       // this.postData.receiveVO = baseInfo.receiveVOS && baseInfo.receiveVOS.length ? baseInfo.receiveVOS : [];
-      this.postData.receiveVO = (this as any).$parent.initReceiveVOS(baseInfo.receiveVOS);
+      if (baseInfo.receiveVOS && baseInfo.receiveVOS.length) {
+        let tempList: any = (this as any).$parent.initReceiveVOS(baseInfo.receiveVOS);
+        console.log('receiveVO:', tempList);
+        this.postData.receiveVO = [...this.postData.receiveVO, ...tempList];
+        console.log('postData.receiveVO:', tempList);
+      }
+      // 暂存
       this.tempReceiveVO = (this as any).$tool.deepClone(this.postData.receiveVO);
+      // this.postData.receiveVO = (this as any).$parent.initReceiveVOS(baseInfo.receiveVOS);
+      // this.tempReceiveVO = (this as any).$tool.deepClone(this.postData.receiveVO);
       // 收派金额中的甲方
       this.commissionCustomerList = [];
       this.commissionCustomerList = this.initCommissionCustomer(baseInfo.receiveVOS);
       this.commissionServiceFeeObj = {};
       this.commissionServiceFeeObj = this.initCommissionServiceFee(baseInfo.receiveVOS);
-      console.log('commissionServiceFeeObj', this.commissionServiceFeeObj)
+      // console.log('commissionServiceFeeObj', this.commissionServiceFeeObj)
       // 附件信息
       this.initDocument(baseInfo.contType, baseInfo);
       // loading.close();
@@ -2142,7 +2107,7 @@
             });
           }
           this.postData.brokerId= data[0].brokerId; // 渠道经纪人Id
-          this.postData.brokerName= data[0].brokerName; // 渠道经纪人
+          this.postData.brokerName= data[0].broker; // 渠道经纪人
         }
       } else {
         // 非分销成交模式 --- 没有渠道相关信息
@@ -2205,22 +2170,8 @@
 
     // 修改合同类型
     changeContType() {
-      let flag: any = false;
-      if (this.postData.receiveVO.length) {
-        // 判断收派金额数据是否选了收派套餐
-        flag = (this as any).$parent.hasReceivePackage(this.postData.receiveVO);
-      }
-      if (flag) {
-        this.postData.receiveVO = (this as any).$tool.deepClone(this.tempReceiveVO);
-        this.postData.commissionInfoList = [];
-        this.postData.achieveTotalBagList = [];
-        this.postData.achieveDistriList = [];
-        // 显示手动按钮
-        this.addFlag = false;
-        this.editFlag = true;
-        this.tipsFlag = false;
-        this.dividerTips = "加载成功";
-      }
+      // 初始化收派套餐
+      this.initReceive();
       // 判断是否可以手动添加优惠告知书
       this.canAddNoticeItem(this.baseInfoByTerm.chargeEnum, this.postData.contType, this.baseInfoInDeal.dealNoticeStatus);
     }
@@ -2252,15 +2203,8 @@
 
     // 改变细分业务模式
     changeRefineModel() {
-      let flag: any = false;
-      if (this.postData.receiveVO.length) {
-        // 判断收派金额数据是否选了收派套餐
-        flag = (this as any).$parent.hasReceivePackage(this.postData.receiveVO);
-      }
-      if (flag) {
-        // 已经选了收派套餐，要初始化收派套餐
-        this.postData.receiveVO = (this as any).$tool.deepClone(this.tempReceiveVO);
-      }
+      // 初始化收派套餐
+      this.initReceive();
     }
 
     // 是否垫佣是根据对应的分销协议来判断
@@ -2280,6 +2224,8 @@
           }
         });
       }
+      // 初始化收派套餐
+      this.initReceive();
       // 判断是否可以手动添加优惠告知书
       this.canAddNoticeItem(this.baseInfoByTerm.chargeEnum, this.postData.contType, this.baseInfoInDeal.dealNoticeStatus, isVoidFlag);
     }
@@ -2289,21 +2235,32 @@
       // console.log(e.target.value);
       // console.log(type);
       let value: any = e.target.value;
-      let flag: any = false;
-      if (this.postData.receiveVO.length) {
-        // 判断收派金额数据是否选了收派套餐
-        flag = this.postData.receiveVO.some((item: any) => {
-          return (item.showData && item.showData.length > 0);
-        });
-      }
-      if (flag) {
-        // 如果已经选了，判断价格是否和之前的一样
-        if (value !== (this as any)[`temp${type}`]) {
-          // 不一样+失焦，要初始化收派套餐
-          this.postData.receiveVO = (this as any).$tool.deepClone(this.tempReceiveVO);
-        }
+      // 如果已经选了，判断价格是否和之前的一样
+      if (value !== (this as any)[`temp${type}`]) {
+        // 不一样+失焦，要初始化收派套餐
+        this.initReceive();
       }
       (this as any)[`temp${type}`] = value;
+    }
+
+    // 合同类型、分销协议编号、细分业务模式、认购价格、签约价格改变之后要初始化收派金额
+    initReceive() {
+      let flag: any = false;
+      if (this.postData.receiveVO.length && this.postData.calculation === "Auto") {
+        // 判断收派金额数据是否选了收派套餐
+        flag = (this as any).$parent.hasReceivePackage(this.postData.receiveVO);
+      }
+      if (flag) {
+        this.postData.receiveVO = (this as any).$tool.deepClone(this.tempReceiveVO);
+        this.postData.commissionInfoList = [];
+        this.postData.achieveTotalBagList = [];
+        this.postData.achieveDistriList = [];
+        // 显示手动按钮
+        this.addFlag = false;
+        this.editFlag = true;
+        this.tipsFlag = false;
+        this.dividerTips = "加载成功";
+      }
     }
 
     // 选择收派套餐
@@ -2368,6 +2325,7 @@
           proId: this.baseInfoByTerm.proId,
           buyUnit: this.postData.buildingId, // 栋座
           roomId: this.postData.roomId, // 多分优惠告知书下需要通过房号去限制
+          status: ['BecomeEffective'] // 主成交下优惠告知书要是已生效状态
         };
         (this as any).$parent.handleAddNotice(data);
       }
@@ -3136,6 +3094,18 @@
     width: 100%;
     box-sizing: border-box;
     margin-bottom: 10px;
+  }
+
+  .demo-ruleForm {
+    /deep/.el-input-group__append {
+      padding: 0px 10px;
+    }
+  }
+
+  .form-item-label-wrapper {
+    /deep/.el-form-item__label {
+      line-height: 20px;
+    }
   }
 
   .div-disabled {

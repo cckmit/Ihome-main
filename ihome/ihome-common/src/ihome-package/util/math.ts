@@ -4,7 +4,7 @@
  * @Author: zyc
  * @Date: 2021-01-14 14:27:51
  * @LastEditors: zyc
- * @LastEditTime: 2021-01-25 09:22:18
+ * @LastEditTime: 2021-01-26 16:58:16
  */
 
 
@@ -68,13 +68,11 @@ export class MyMath implements MathInterface {
      * @return {*}
      */
     div(num1: number, num2: number): number {
-
-
         let baseNum1 = 0, baseNum2 = 0;
         let baseNum3, baseNum4;
         try {
             let arr = num1.toString().split(".");
-            if (arr.length == 0) {
+            if (arr.length <= 1) {
                 baseNum1 = 0;
             } else {
                 baseNum1 = arr[1].length;
@@ -84,7 +82,7 @@ export class MyMath implements MathInterface {
         }
         try {
             let arr = num2.toString().split(".");
-            if (arr.length == 0) {
+            if (arr.length <= 1 ) {
                 baseNum2 = 0;
             } else {
                 baseNum2 = arr[1].length;
@@ -103,26 +101,21 @@ export class MyMath implements MathInterface {
      * @return {*}
      */
     multi(num1: number, num2: number): number {
-
         let baseNum = 0;
         try {
             let arr = num1.toString().split(".");
-            if (arr.length == 0) {
-                baseNum = 0;
-            } else {
+            if (arr.length >1) {
                 baseNum += arr[1].length;
-            }
+            }  
 
         } catch (e) {
             console.error(e);
         }
         try {
             let arr = num2.toString().split(".");
-            if (arr.length == 0) {
-                baseNum = 0;
-            } else {
+            if (arr.length >1) {
                 baseNum += arr[1].length;
-            }
+            }  
 
         } catch (e) {
             console.error(e);
@@ -135,12 +128,11 @@ export class MyMath implements MathInterface {
      * @return {*}
      */
     sub(num1: number, num2: number): number {
-
         let baseNum, baseNum1, baseNum2;
         let precision;// 精度
         try {
             let arr = num1.toString().split(".");
-            if (arr.length == 0) {
+            if (arr.length <= 1) {
                 baseNum1 = 0;
             } else {
                 baseNum1 = arr[1].length;
@@ -151,7 +143,7 @@ export class MyMath implements MathInterface {
         }
         try {
             let arr = num2.toString().split(".");
-            if (arr.length == 0) {
+            if (arr.length <= 1) {
                 baseNum2 = 0;
             } else {
                 baseNum2 = arr[1].length;
@@ -169,11 +161,10 @@ export class MyMath implements MathInterface {
     * @return {*}
     */
     add(num1: number, num2: number): number {
-
         let baseNum, baseNum1, baseNum2;
         try {
             let arr = num1.toString().split(".");
-            if (arr.length == 0) {
+            if (arr.length <= 1) {
                 baseNum1 = 0;
             } else {
                 baseNum1 = arr[1].length;
@@ -184,10 +175,10 @@ export class MyMath implements MathInterface {
         }
         try {
             let arr = num2.toString().split(".");
-            if (arr.length == 0) {
+            if (arr.length <= 1 ) {
                 baseNum2 = 0;
             } else {
-                baseNum2 = [1].length;
+                baseNum2 = arr[1].length;
             }
 
         } catch (e) {

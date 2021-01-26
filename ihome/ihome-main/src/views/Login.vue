@@ -4,7 +4,7 @@
  * @Author: zyc
  * @Date: 2020-06-22 16:44:13
  * @LastEditors: zyc
- * @LastEditTime: 2021-01-25 09:03:00
+ * @LastEditTime: 2021-01-26 17:23:07
 --> 
 <template >
   <div class="main">
@@ -128,6 +128,7 @@ export default class Login extends Vue {
     that.$refs[formName].resetFields();
   }
   async created() {
+ 
     const res: any = await get_sessionUser_getSystemParam();
     if (res?.env) {
       this.env = res.env;

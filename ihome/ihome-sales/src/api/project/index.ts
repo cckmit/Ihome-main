@@ -835,6 +835,10 @@ export async function get_term_getProName__termId(d?: any) {
 export async function get_term_getRecognizeById__termId(d?: any) {
   return await request.get<boolean, boolean>(basePath + '/term/getRecognizeById/{termId}', { params: d })
 }
+/**通过周期ID判断是否认筹*/
+export async function get_term_getRecognizeById__termId(d?: any) {
+    return await request.get<boolean, boolean>(basePath + '/term/getRecognizeById/{termId}', { params: d })
+}
 /**周期模糊搜索*/
 export async function get_term_getSearch(d?: any) {
   return await request.get<TermItemVO[], TermItemVO[]>(basePath + '/term/getSearch', { params: d })

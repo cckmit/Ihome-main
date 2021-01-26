@@ -1,6 +1,6 @@
 /* eslint-disable */
 /* 此脚本由swagger-ui的api-docs自动生成，请勿修改 */
-//2021-1-26 4:06:19 ├F10: PM┤
+//2021-1-26 17:36:22
 import { request } from '@/api/base'
 const basePath = "/sales-api/payoff"
 /**计算结佣统计数据*/
@@ -125,7 +125,7 @@ return await request.get<number[],number[]>(basePath+'/processRecord/oa/flow/ids
 }
 /**获取OA审核日志*/
 export async function get_processRecord_oa_review_log__applyId (d?: any) {
-return await request.get<ShowRecordResponse[],ShowRecordResponse[]>(basePath+'/processRecord/oa/review/log/{applyId}', { params: d })
+return await request.get<ProcessRecordResponse[],ProcessRecordResponse[]>(basePath+'/processRecord/oa/review/log/{applyId}', { params: d })
 }
 /**获取oa当前待办人*/
 export async function get_processRecord_oa_review_person__applyId (d?: any) {
@@ -269,10 +269,10 @@ payDeductDetailCalculationRequestList: PayDeductDetailCalculationRequest[];
 export interface FinanceReviewApplyVO {
 /**修改本期实际付款税额 = true , 没修改本期实际付款税额 = false*/
 modify: boolean;
-/**待付款单列表*/
+/**undefined*/
 payApplyDetailList: PayApplyDetailAddVO[];
-/**付款单主体信息*/
-reviewUpdateMainBody: ReviewUpdateMainBody;
+/**保存状态不能为空： 付款单主体信息*/
+payApplyVO: ReviewUpdateMainBody;
 /**(必填)付款单ID*/
 applyId: number;
 /**(必填)审核意见*/
@@ -1535,25 +1535,6 @@ payApplyDetailList: PayApplyDetailResponse[];
 payDeductDetailResponseList: PayDeductDetailResponse[];
 /**付款操作记录信息*/
 processRecordResponseList: ProcessRecordResponse[];
-}
-/**ShowRecordResponse*/
-export interface ShowRecordResponse {
-/**操作后状态(Unconfirm-附件待确认、PlatformClerkUnreview-待平台文员审核、OneLineUnreview-待一线业务审核、BranchBusinessManageUnreview-待分公司业管审核、BranchFinanceUnreview-待分公司财务审核、OAReviewing-OA流程审批中、ReviewPass-终审通过、ReviewReject-终审驳回、ConfirmingPay-支付确认中、PaymentSuccessful-支付成功、PaymentFailed-支付失败)*/
-afterStatus: string;
-/**操作(Submit-提交、Withdraw-撤回、Review-审核、WithdrawReview-撤回审核、FinancialContr-财务管控、SetupPaid-设置已付款、SetupUnPaid-设置未付款、SuppInfo-补充信息)*/
-operate: string;
-/**操作时间(yyyy-MM-dd HH:mm:ss)*/
-operateTime: string;
-/**操作人岗位*/
-operaterJob: string;
-/**操作人姓名*/
-operaterName: string;
-/**备注*/
-remark: string;
-/**处理结果(Through-通过、Overrule-驳回、consent-同意、Update-更新、Create-创建)*/
-result: string;
-/**系统(Business-业务系统、OA-OA)*/
-system: string;
 }
 /**WechatStaffPayDealListVO*/
 export interface WechatStaffPayDealListVO {

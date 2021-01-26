@@ -13,7 +13,7 @@
       :model="postData"
       :rules="rules"
       ref="ruleForm"
-      label-width="150px"
+      label-width="110px"
       class="demo-ruleForm">
       <p id="anchor-1" ref="#anchor-1" class="ih-info-title">成交信息</p>
       <div
@@ -95,7 +95,7 @@
             </el-select>
           </el-form-item>
         </el-col>
-        <el-col :span="8">
+        <el-col :span="8" class="form-item-label-wrapper">
           <el-form-item label="是否市场化项目" prop="isMarketProject">
             <el-select
               v-model="postData.isMarketProject"
@@ -330,7 +330,7 @@
                   v-digits="0"
                   :disabled="['ChangeInternalAchieveInf', 'RetreatRoom'].includes(changeType) ||isDisabled('room', 'houseVO')"
                   v-model="postData.room">
-                  <div slot="append">室</div>
+                  <template slot="append">室</template>
                 </el-input>
               </div>
               <div>
@@ -338,7 +338,7 @@
                   v-digits="0"
                   :disabled="['ChangeInternalAchieveInf', 'RetreatRoom'].includes(changeType) || isDisabled('hall', 'houseVO')"
                   v-model="postData.hall">
-                  <div slot="append">厅</div>
+                  <template slot="append">厅</template>
                 </el-input>
               </div>
               <div>
@@ -346,13 +346,13 @@
                   v-digits="0"
                   :disabled="['ChangeInternalAchieveInf', 'RetreatRoom'].includes(changeType) || isDisabled('toilet', 'houseVO')"
                   v-model="postData.toilet">
-                  <div slot="append">卫</div>
+                  <template slot="append">卫</template>
                 </el-input>
               </div>
             </div>
           </el-form-item>
         </el-col>
-        <el-col :span="8">
+        <el-col :span="8" class="form-item-label-wrapper">
           <el-form-item label="房产证/预售合同编号">
             <el-input
               :disabled="['ChangeInternalAchieveInf', 'RetreatRoom'].includes(changeType)"
@@ -394,7 +394,7 @@
             <div class="div-disabled">签约</div>
           </el-form-item>
         </el-col>
-        <el-col :span="8" v-if="isDisabled('returnRatio', 'dealVO')">
+        <el-col :span="8" v-if="isDisabled('returnRatio', 'dealVO')" class="form-item-label-wrapper">
           <el-form-item label="明源房款回笼比例">
             <el-input v-model="postData.returnRatio" disabled></el-input>
           </el-form-item>
@@ -555,6 +555,7 @@
       <div v-if="!['ChangeBasicInf', 'ChangeInternalAchieveInf'].includes(changeType)">
         <el-select
           v-model="postData.calculation"
+          @change="changeCalculation"
           placeholder="请选择计算方式"
           class="width--100">
           <el-option
@@ -579,7 +580,11 @@
               <div>{{scope.row.type === 'ServiceFee' ? '服务费' : '代理费'}}</div>
             </template>
           </el-table-column>
-          <el-table-column prop="partyACustomerName" label="甲方/客户" min-width="120"></el-table-column>
+          <el-table-column prop="partyACustomerName" label="甲方/客户" min-width="120">
+            <template slot-scope="scope">
+              <div>{{scope.row.type === "ServiceFee" ? '客户' : scope.row.partyACustomerName}}</div>
+            </template>
+          </el-table-column>
           <el-table-column prop="packageId" label="收派套餐" min-width="140">
             <template slot-scope="scope">
               <div v-if="['ChangeBasicInf', 'ChangeInternalAchieveInf'].includes(changeType)">
@@ -713,11 +718,53 @@
               </div>
             </template>
           </el-table-column>
-          <el-table-column prop="receiveAmount" label="应收金额" min-width="180"></el-table-column>
-          <el-table-column prop="commAmount" label="派发佣金金额" min-width="180"></el-table-column>
-          <el-table-column prop="rewardAmount" label="派发内场奖励金额" min-width="180"></el-table-column>
-          <el-table-column prop="totalPackageAmount" label="总包业绩金额" min-width="180"></el-table-column>
-          <el-table-column prop="distributionAmount" label="分销业绩金额" min-width="180"></el-table-column>
+          <el-table-column prop="receiveAmount" label="应收金额" min-width="180">
+            <template slot-scope="scope">
+              <el-input
+                v-digits="2"
+                @input="changeReceiveItem($event, scope.row, 'receiveAmount')"
+                v-model="scope.row.receiveAmount"
+                :disabled="postData.calculation === 'Auto'"></el-input>
+            </template>
+          </el-table-column>
+          <el-table-column prop="commAmount" label="派发佣金金额" min-width="180">
+            <template slot-scope="scope">
+              <el-input
+                v-digits="2"
+                @input="changeReceiveItem($event, scope.row, 'commAmount')"
+                v-model="scope.row.commAmount"
+                :disabled="postData.calculation === 'Auto'"></el-input>
+            </template>
+          </el-table-column>
+          <el-table-column prop="rewardAmount" label="派发内场奖励金额" min-width="180">
+            <template slot-scope="scope">
+              <el-input
+                v-digits="2"
+                @input="changeReceiveItem($event, scope.row, 'rewardAmount')"
+                v-model="scope.row.rewardAmount"
+                :disabled="postData.calculation === 'Auto'"></el-input>
+            </template>
+          </el-table-column>
+          <el-table-column prop="totalPackageAmount" label="总包业绩金额" min-width="180">
+            <template slot-scope="scope">
+              <el-input
+                v-digits="2"
+                @input="changeReceiveItem($event, scope.row, 'totalPackageAmount')"
+                v-model="scope.row.totalPackageAmount"
+                :disabled="(postData.calculation === 'Auto' || postData.modelCode !== 'DistriModel')"
+                placeholder="总包业绩金额"></el-input>
+            </template>
+          </el-table-column>
+          <el-table-column prop="distributionAmount" label="分销业绩金额" min-width="180">
+            <template slot-scope="scope">
+              <el-input
+                v-digits="2"
+                @input="changeReceiveItem($event, scope.row, 'distributionAmount')"
+                v-model="scope.row.distributionAmount"
+                :disabled="(postData.calculation === 'Auto' || postData.modelCode !== 'TotalBagModel')">
+              </el-input>
+            </template>
+          </el-table-column>
           <el-table-column prop="otherChannelFees" label="其他渠道费用(正数为产生，负数为使用)" min-width="150"></el-table-column>
         </el-table>
       </el-col>
@@ -920,7 +967,7 @@
             </template>
           </el-table-column>
           <el-table-column prop="corporateAchieve" label="角色人业绩" min-width="150"></el-table-column>
-          <el-table-column prop="corporateAchieveRatio" label="角色人业绩比例(%)" min-width="150"></el-table-column>
+          <el-table-column prop="roleAchieveRatio" label="角色人业绩比例(%)" min-width="150"></el-table-column>
           <el-table-column prop="commFees" label="拆佣金额" min-width="150"></el-table-column>
           <el-table-column prop="commFeesRatio" label="拆佣比例(%)" min-width="110"></el-table-column>
           <el-table-column prop="belongOrgName" label="店组" min-width="100">
@@ -991,7 +1038,7 @@
             </template>
           </el-table-column>
           <el-table-column prop="corporateAchieve" label="角色人业绩" min-width="150"></el-table-column>
-          <el-table-column prop="corporateAchieveRatio" label="角色人业绩比例(%)" min-width="150"></el-table-column>
+          <el-table-column prop="roleAchieveRatio" label="角色人业绩比例(%)" min-width="150"></el-table-column>
           <el-table-column prop="commFees" label="拆佣金额" min-width="150"></el-table-column>
           <el-table-column prop="commFeesRatio" label="拆佣比例(%)" min-width="110"></el-table-column>
           <el-table-column prop="belongOrgName" label="店组" min-width="100">
@@ -1138,6 +1185,16 @@
             }
           "/>
     </ih-dialog>
+    <ih-dialog :show="dialogAddReceivePackage" desc="选择收派套餐标准">
+      <SelectReceivePackage
+        :data="receivePackageData"
+        @cancel="() => (dialogAddReceivePackage = false)"
+        @finish="
+            (data) => {
+              finishAddReceivePackage(data);
+            }
+          "/>
+    </ih-dialog>
   </ih-page>
 </template>
 <script lang="ts">
@@ -1161,6 +1218,7 @@
     post_buModelContType_subList,
     post_pageData_initChannelComm,
     post_pageData_initAchieve,
+    post_pageData_calculateReceiveAmount, // 根据收派套餐，计算收派金额
   } from "@/api/deal";
   import {get_org_get__id} from "@/api/system"; // 获取组织name
   import {
@@ -1340,6 +1398,11 @@
     };
     companyCheckedData: any = [];
     dialogEditDealAchieve: any = false;
+    dialogAddReceivePackage: any = false;
+    receivePackageData: any = {
+      type: '', // 费用类型
+      idList: [] // 可选的收派套餐ids
+    }; // 收派套餐data数据
     navFlag: any = false; // 是否折叠锚点
     defaultNavList: any = [
       {
@@ -1419,8 +1482,8 @@
       hasRecord: false,
       selectableChannelIds: [], // 可选的渠道商ids
     }; // 通过initPage接口获取到的成交信息(项目周期 + 房号)
+    currentReceiveIndex: any = null; // 当前选中的收派金额列表数据
     oneAgentRequiredFlag: any = false; // 收派金额 - 派发内场奖励金额合计大于0，为true
-    tempReceiveVO: any = []; // 临时收派金额信息
     tempSignPrice: any = null; // 临时签约价格
     tempSubscribePrice: any = null; // 临时认购价格
     hasChangeProCycleFlag: any = false; // 项目周期是否变动过，默认没有-false
@@ -1530,6 +1593,8 @@
       }
       let res: any = await post_suppDeal_toAddSuppDeal(postData);
       // console.log(res);
+      // 通过项目周期id获取基础信息
+      await this.getBaseDealInfo(res.cycleId);
       this.postData = {
         ...this.postData,
         ...res
@@ -1586,8 +1651,6 @@
       }
       // 初始化附件信息
       await this.initDocumentList(res.documentShowList);
-      // 通过项目周期id获取基础信息
-      await this.getBaseDealInfo(res.cycleId);
       // 根据项目周期和房号初始化页面数据
       await this.initPageById(res.cycleId, res.house.roomId, res.house.propertyType);
     }
@@ -1622,7 +1685,7 @@
             });
           }
           this.postData.brokerId = data[0].brokerId; // 渠道经纪人Id
-          this.postData.brokerName = data[0].brokerName; // 渠道经纪人
+          this.postData.brokerName = data[0].broker; // 渠道经纪人
         }
       }
     }
@@ -1664,6 +1727,8 @@
           } else {
             this.contNoList = [];
           }
+          // 优惠告知书
+          this.postData.offerNoticeVO = baseInfo.notice && baseInfo.notice.length ? baseInfo.notice : [];
         }
         // 栋座
         if (baseInfo.buildingId && !this.postData.buildingId) {
@@ -1709,14 +1774,15 @@
           // 非分销成交模式 --- 自然来访 / 自渠成交
           this.initAgency(baseInfo.agencyVOs, false);
         }
-        // 优惠告知书
-        this.postData.offerNoticeVO = baseInfo.notice && baseInfo.notice.length ? baseInfo.notice : [];
         // 客户信息
         this.postData.customerList = baseInfo.customerAddVOS && baseInfo.customerAddVOS.length ? baseInfo.customerAddVOS : [];
-        // 收派金额
+        // 收派金额 --- 代理费
         // this.postData.receiveVO = baseInfo.receiveVOS && baseInfo.receiveVOS.length ? baseInfo.receiveVOS : [];
-        this.postData.receiveList = this.initReceiveVOS(baseInfo.receiveVOS);
-        this.tempReceiveVO = (this as any).$tool.deepClone(this.postData.receiveList);
+        if (baseInfo.receiveVOS && baseInfo.receiveVOS.length) {
+          let tempList: any = (this as any).$parent.initReceiveVOS(baseInfo.receiveVOS);
+          this.postData.receiveList = [...this.postData.receiveList, ...tempList];
+        }
+        // this.postData.receiveList = this.initReceiveVOS(baseInfo.receiveVOS);
         // 收派金额中的甲方
         this.commissionCustomerList = [];
         this.commissionCustomerList = this.initCommissionCustomer(baseInfo.receiveVOS);
@@ -1784,6 +1850,13 @@
           });
         } else {
           this.navList = (this as any).$tool.deepClone(this.defaultNavList);
+        }
+        // 收派金额部分信息 --- 服务费
+        if (baseInfo.serviceFee) {
+          let tempList: any = [];
+          tempList.push(baseInfo.serviceFee);
+          let item: any = (this as any).$parent.initReceiveVOS(tempList);
+          this.postData.receiveList.push(item);
         }
         // 成交组织
         await this.getOrgName(baseInfo.groupId);
@@ -2014,17 +2087,8 @@
 
     // 改变细分业务模式
     changeRefineModel() {
-      let flag: any = false;
-      if (this.postData.receiveList && this.postData.receiveList.length) {
-        // 判断收派金额数据是否选了收派套餐
-        flag = this.postData.receiveList.some((item: any) => {
-          return (item.showData && item.showData.length > 0);
-        });
-      }
-      if (flag) {
-        // 已经选了收派套餐，要初始化收派套餐
-        this.postData.receiveList = (this as any).$tool.deepClone(this.tempReceiveVO);
-      }
+      // 初始化收派金额
+      this.initAllReceiveList();
     }
 
     // 一手代理公司选项发生改变
@@ -2036,10 +2100,19 @@
             if (list.id === value) {
               this.postData.oneAgentTeamName = list.name;
             }
-          })
+          });
         }
       } else {
         this.postData.oneAgentTeamName = null;
+      }
+      // 如果有对外拆佣信息，要同步拆佣对象为一手代理公司的收款方
+      if (this.postData.channelCommList && this.postData.channelCommList.length) {
+        this.postData.channelCommList.forEach((item: any) => {
+          if (item.target === "AgentCompany") {
+            item.agencyName = this.postData.oneAgentTeamName;
+            item.agencyId = this.postData.oneAgentTeamId;
+          }
+        });
       }
     }
 
@@ -2067,26 +2140,59 @@
       }
     }
 
-    // 改变签约、认购价格后，初始化收派套餐问题
-    changePrice(e: any, type: any) {
-      // console.log(e.target.value);
-      // console.log(type);
-      let value: any = e.target.value;
-      let flag: any = false;
-      if (this.postData.receiveList.length) {
-        // 判断收派金额数据是否选了收派套餐
-        flag = this.postData.receiveList.some((item: any) => {
-          return (item.showData && item.showData.length > 0);
-        });
+    // 改变计算方式 --- 手动/自动
+    changeCalculation() {
+      this.postData.channelCommList = [];
+      this.postData.achieveTotalBagList = [];
+      this.postData.achieveDistriList = [];
+      if (!this.addFlag) {
+        this.showChangeTips();
       }
-      if (flag) {
-        // 如果已经选了，判断价格是否和之前的一样
-        if (value !== (this as any)[`temp${type}`]) {
-          // 不一样+失焦，要初始化收派套餐
-          this.postData.receiveList = (this as any).$tool.deepClone(this.tempReceiveVO);
-        }
+    }
+
+    // 显示变动提示
+    showChangeTips() {
+      this.addFlag = false;
+      this.editFlag = true;
+      this.tipsFlag = false;
+      this.dividerTips = '加载成功';
+    }
+
+    // 改变签约、认购价格后，重新计算收派套餐问题
+    async changePrice(e: any, type: any) {
+      let value: any = e.target.value;
+      if (value !== (this as any)[`temp${type}`]) {
+        // 不一样+失焦，要初始化收派套餐
+        this.initAllReceiveList();
       }
       (this as any)[`temp${type}`] = value;
+    }
+
+    // 手动方式下，改变收派金额某一项的方法
+    changeReceiveItem(value: any, row: any, type: any) {
+      // console.log('value', value);
+      // console.log('row', row);
+      if (!value) {
+        (this as any).$nextTick(() => {
+          row[type] = 0;
+          row.otherChannelFees = (row.receiveAmount * 1 * 100
+            - row.commAmount * 1 * 100 - row.rewardAmount * 1 * 100
+            - row.totalPackageAmount * 1 * 100 - row.distributionAmount * 1 * 100) / 100;
+        });
+      } else {
+        (this as any).$nextTick(() => {
+          row.otherChannelFees = (row.receiveAmount * 1 * 100
+            - row.commAmount * 1 * 100 - row.rewardAmount * 1 * 100
+            - row.totalPackageAmount * 1 * 100 - row.distributionAmount * 1 * 100) / 100;
+        });
+      }
+      // 提示框
+      if (!this.addFlag) {
+        this.addFlag = false;
+        this.editFlag = true;
+        this.tipsFlag = false;
+        this.dividerTips = '刷新成功';
+      }
     }
 
     /*
@@ -2173,6 +2279,8 @@
           }
         })
       }
+      // 初始化收派金额
+      this.initAllReceiveList();
     }
 
     // 修改业务模式逻辑
@@ -2198,22 +2306,8 @@
 
     // 修改合同类型
     changeContType() {
-      let flag: any = false;
-      if (this.postData.receiveList.length) {
-        // 判断收派金额数据是否选了收派套餐
-        flag = (this as any).$parent.hasReceivePackage(this.postData.receiveList);
-      }
-      if (flag) {
-        this.postData.receiveList = (this as any).$tool.deepClone(this.tempReceiveVO);
-        this.postData.channelCommList = [];
-        this.postData.achieveTotalBagList = [];
-        this.postData.achieveDistriList = [];
-        // 显示手动按钮
-        this.addFlag = false;
-        this.editFlag = true;
-        this.tipsFlag = false;
-        this.dividerTips = "加载成功";
-      }
+      // 初始化收派金额
+      this.initAllReceiveList();
     }
 
     // 预览分销协议
@@ -2258,7 +2352,6 @@
       this.packageIdsList = []; // ids
       this.postData.customerList = []; // 客户信息
       this.postData.receiveList = []; // 收派金额
-      this.tempReceiveVO = []; // 收派金额初始值
       this.postData.offerNoticeVO = []; // 优惠告知书
       this.postData.uploadDocumentList = []; // 上传附件
       this.postData.calculation = 'Auto'; // 计算方式改为手动
@@ -2273,6 +2366,31 @@
         'toilet', 'propertyNo', 'signType', 'stage', 'returnRatio', 'subscribePrice', 'subscribeDate',
         'signPrice', 'signDate', 'dataSign', 'agencyId', 'agencyName', 'channelLevel', 'channelLevelName']
       this.resetObject('postData', list);
+    }
+
+    // 初始化收派套餐 --- 变更成交业绩 + 退房的时候
+    initAllReceiveList() {
+      if (['ChangeAchieveInf', 'RetreatRoom'].includes(this.changeType)
+        && this.postData.receiveList && this.postData.receiveList.length) {
+        let tempList: any = (this as any).$tool.deepClone(this.postData.receiveList);
+        tempList.forEach((list: any) => {
+          list.collectandsendDetailDealVO = null;
+          list.showData = [];
+          list.packageId = null;
+          list.receiveAmount = 0;
+          list.commAmount = 0;
+          list.rewardAmount = 0;
+          list.totalPackageAmount = 0;
+          list.distributionAmount = 0;
+          list.otherChannelFees = 0;
+        });
+        this.postData.receiveList = tempList;
+        // 显示手动按钮
+        this.addFlag = false;
+        this.editFlag = true;
+        this.tipsFlag = false;
+        this.dividerTips = "加载成功";
+      }
     }
 
     // 选择项目周期
@@ -2470,7 +2588,7 @@
         contType: this.postData.contType, // 合同类型
         distriAmount: this.getTotalAmount('distributionAmount'), // 分销金额
         isMarketProject: this.postData.isMarketProject, // 是否市场化项目
-        modelCode: this.postData.businessType, // 业务模式
+        modelCode: this.postData.modelCode, // 业务模式
         propertyType: this.postData.propertyType, // 物业类型
         specialId: this.baseInfoByTerm.specialId, // 特殊方案Id --- 项目周期带出
         totalBagAmount: this.getTotalAmount('totalPackageAmount') // 总包金额
@@ -2571,7 +2689,7 @@
     // 选择收派套餐
     selectPackage(scope: any) {
       // console.log('选择收派套餐', scope);
-      // this.currentReceiveIndex = scope.$index;
+      this.currentReceiveIndex = scope.$index;
       let params: any = {
         termId: this.baseInfoByTerm.termId, // 项目周期id
         contType: this.postData.contType, // 合同类型
@@ -2584,7 +2702,41 @@
         subdivide: this.postData.refineModel, // 细分业务模式
       };
       console.log(params);
-      // (this as any).$parent.selectPackage(params);
+      this.receivePackageData = params;
+      this.dialogAddReceivePackage = true;
+    }
+
+    // 确定选择收派套餐
+    async finishAddReceivePackage(data: any) {
+      // console.log('确定选择收派套餐', data);
+      if (data.length === 0) return;
+      let dataObj = data[0];
+      delete dataObj['typeName']; // 删除typeName属性
+      let postData: any = {
+        detail: dataObj,
+        signPrice: this.postData.signPrice ? this.postData.signPrice : null,
+        subscribePrice: this.postData.subscribePrice ? this.postData.subscribePrice : null
+      }
+      if (!postData.signPrice && !postData.subscribePrice) {
+        this.$message.error('认购价格、签约价格不能都为空！');
+        return;
+      }
+      let info: any = await post_pageData_calculateReceiveAmount(postData);
+      // console.log(info);
+      if (this.postData.receiveList.length > 0) {
+        this.postData.receiveList.forEach((vo: any, index: any) => {
+          if (index === this.currentReceiveIndex) {
+            vo.showData = data;
+            vo.packageId = data[0].packageMxId;
+            vo.receiveAmount = info.receiveAmount;
+            vo.commAmount = info.comm;
+            vo.rewardAmount = info.reward;
+            vo.totalPackageAmount = info.totalBag;
+            vo.distributionAmount = info.distri;
+            vo.otherChannelFees = info.other;
+          }
+        });
+      }
     }
 
     // 增加拆佣项
@@ -2761,7 +2913,7 @@
         branchCompanyId: this.baseInfoByTerm.startDivisionId, // 分公司Id --- 项目周期带出
         contType: this.postData.contType, // 合同类型
         isMarketProject: this.postData.isMarketProject, // 是否市场化项目
-        modelCode: this.postData.businessType, // 业务模式
+        modelCode: this.postData.modelCode, // 业务模式
         propertyType: this.postData.propertyType, // 物业类型
         specialId: this.baseInfoByTerm.specialId, // 特殊方案Id --- 项目周期带出
         distriAmount: this.getTotalAmount('distributionAmount'), // 分销总金额
@@ -3175,6 +3327,18 @@
     width: 100%;
     box-sizing: border-box;
     margin-bottom: 10px;
+  }
+
+  .demo-ruleForm {
+    /deep/.el-input-group__append {
+      padding: 0px 10px;
+    }
+  }
+
+  .form-item-label-wrapper {
+    /deep/.el-form-item__label {
+      line-height: 20px;
+    }
   }
 
   .div-disabled {

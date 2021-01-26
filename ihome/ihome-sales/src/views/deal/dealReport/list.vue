@@ -351,13 +351,9 @@
                     </el-dropdown-item>
                   </el-dropdown-menu>
                 </el-dropdown>
-<!--                <el-dropdown-item-->
-<!--                  :class="{ 'ih-data-disabled': !['PlatformClerkUnreview', 'HeadDepartUnreview', 'BranchBusinessManageUnreview', 'NotSigned'].includes(scope.row.status)}"-->
-<!--                  v-has="'B.SALES.DEAL.DEALLIST.VERIFY'"-->
-<!--                  @click.native.prevent="handleReview(scope)"-->
-<!--                >审核-->
-<!--                </el-dropdown-item>-->
                 <el-dropdown-item
+                  :class="{ 'ih-data-disabled': !['PlatformClerkUnreview', 'HeadDepartUnreview', 'BranchBusinessManageUnreview', 'NotSigned'].includes(scope.row.status)}"
+                  v-has="'B.SALES.DEAL.DEALLIST.VERIFY'"
                   @click.native.prevent="handleReview(scope)"
                 >审核
                 </el-dropdown-item>

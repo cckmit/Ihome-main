@@ -4,7 +4,7 @@
  * @Author: ywl
  * @Date: 2020-09-27 16:27:36
  * @LastEditors: ywl
- * @LastEditTime: 2021-01-21 20:41:13
+ * @LastEditTime: 2021-01-22 09:03:14
 -->
 <template>
   <IhPage label-width="80px">
@@ -440,9 +440,7 @@ export default class DiscountList extends Vue {
         `/sales-api/sales-document-cover/file/browse/${row.templateId}`
       );
     } else {
-      let imgList = row.annexList.filter(
-        (item: any) => item.type === "NoticeAttachment"
-      );
+      let imgList = row.annexList;
       this.srcList = imgList.map(
         (i: any) => `/sales-api/sales-document-cover/file/browse/${i.fileNo}`
       );
