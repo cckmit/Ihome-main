@@ -66,19 +66,19 @@
         // 判断今天是否是本月的第一天
         let rangeTimes: any = 0;
         if (curDate.getDate() === 1) {
-          // 是第一天，还要判断当月是否为第一个月
+          // 第一天，还要判断当月是否为第一个月
           if (curDate.getMonth() === 0) {
             // 第一个月
-            rangeTimes = new Date(`${year - 1}-12`).getTime();
+            rangeTimes = new Date(`${year - 1}-12-01`).getTime();
           } else {
             // 不是第一个月
-            rangeTimes = new Date(`${year}-${month - 1}`).getTime();
+            rangeTimes = new Date(`${year}-${month}-01`).getTime();
           }
         } else {
           // 不是第一天
           rangeTimes = new Date(`${year}-${month}-01`).getTime();
         }
-        return time.getTime() > (Date.now() - 8.64e6) || time.getTime() < (rangeTimes - 8.64e6);
+        return time.getTime() > Date.now() - 8.64e6 || time.getTime() < rangeTimes - 8.64e6;
       }
     }
     rules: any = {
