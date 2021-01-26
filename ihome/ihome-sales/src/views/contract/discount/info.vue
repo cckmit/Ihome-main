@@ -4,7 +4,7 @@
  * @Author: ywl
  * @Date: 2020-09-27 17:27:00
  * @LastEditors: ywl
- * @LastEditTime: 2021-01-15 16:53:54
+ * @LastEditTime: 2021-01-26 11:06:02
 -->
 <template>
   <IhPage class="text-left discount-info">
@@ -90,7 +90,7 @@
         <el-row v-else>
           <el-col :span="24">
             <el-form-item label="(拟)购买单位">
-              {{`${resInfo.buyUnitName}-${resInfo.roomNumberName}`}}
+              {{isRecognize ? '以最终甲方推送的房号确认书为准' : `${resInfo.buyUnitName}-${resInfo.roomNumberName}`}}
             </el-form-item>
           </el-col>
         </el-row>
@@ -182,7 +182,7 @@
 
 <script lang="ts">
 import { Component, Vue } from "vue-property-decorator";
-
+import { get_term_getRecognizeById__termId } from "../../../api/project/index";
 import { get_notice_detail__id, post_notice_annex } from "@/api/contract/index";
 
 @Component({})
@@ -190,6 +190,7 @@ export default class DiscountDetail extends Vue {
   private fileList: Array<object> = [];
   private resInfo: any = {};
   private addFile: any = [];
+  private isRecognize = false;
 
   private get isPaper(): boolean {
     return this.resInfo.templateType === "PaperTemplate";
@@ -210,7 +211,14 @@ export default class DiscountDetail extends Vue {
   private async getInfo(): Promise<void> {
     let id = this.$route.query.id;
     if (id) {
-      this.resInfo = await get_notice_detail__id({ id: id });
+      try {
+        this.resInfo = await get_notice_detail__id({ id: id });
+        this.isRecognize = await get_term_getRecognizeById__termId({
+          termId: this.resInfo.cycleId,
+        });
+      } catch (error) {
+        console.log(error);
+      }
       this.fileList = this.resInfo.noticeAttachmentList
         .filter((i: any) => {
           return i.type === "NoticeAttachment";
