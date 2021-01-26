@@ -4,7 +4,7 @@
  * @Author: lsj
  * @Date: 2021-01-15 07:53:15
  * @LastEditors: lsj
- * @LastEditTime: 2021-01-15 07:57:25
+ * @LastEditTime: 2021-01-26 08:55:13
 -->
 <template>
   <IhPage label-width="120px">
@@ -67,6 +67,30 @@
           </template>
         </el-table-column>
       </el-table>
+      <el-table
+        class="ih-table margin-top-10"
+        :data="totalList">
+        <el-table-column label="" prop="name" fixed width="220">
+          <template>
+            <div class="color-red">合计</div>
+          </template>
+        </el-table-column>
+        <el-table-column label="产生其他渠道费(元)" prop="addAmount" width="220">
+          <template v-slot="{ row }">
+            <div class="color-red">{{row.addAmount}}</div>
+          </template>
+        </el-table-column>
+        <el-table-column label="已使用其他渠道费(元)" prop="useAmount" width="220">
+          <template v-slot="{ row }">
+            <div class="color-red">{{row.useAmount}}</div>
+          </template>
+        </el-table-column>
+        <el-table-column label="剩余其他渠道费(元)" prop="amount" width="220">
+          <template v-slot="{ row }">
+            <div class="color-red">{{row.amount}}</div>
+          </template>
+        </el-table-column>
+      </el-table>
     </template>
     <template v-slot:pagination>
       <br/>
@@ -86,7 +110,8 @@
 import {Component, Vue} from "vue-property-decorator";
 import SelectOrganizationTree from "@/components/SelectOrganizationTree.vue";
 import {
-  post_capitalPoolFlow_summary
+  post_capitalPoolFlow_summary, // 其它渠道费用汇总
+  post_capitalPoolFlow_summarysum, // 其它渠道费用汇总-合计
 } from "@/api/project/index";
 import PaginationMixin from "../../../mixins/pagination";
 import axios from "axios";
@@ -106,6 +131,7 @@ export default class SummaryList extends Vue {
     total: null,
     list: [],
   };
+  totalList: any = []
 
   async created() {
     await this.getListMixin();
@@ -140,9 +166,14 @@ export default class SummaryList extends Vue {
   }
 
   async getListMixin() {
-    this.resPageInfo = await post_capitalPoolFlow_summary(
-      this.queryPageParameters
-    );
+    this.resPageInfo = await post_capitalPoolFlow_summary(this.queryPageParameters);
+    let totalObj: any = await post_capitalPoolFlow_summarysum(this.queryPageParameters);
+    this.totalList = [
+      {
+        name: '合计',
+        ...totalObj
+      }
+    ]
   }
 
   reset() {
@@ -164,4 +195,7 @@ export default class SummaryList extends Vue {
 }
 </script>
 <style lang="scss" scoped>
+.color-red {
+  color: red;
+}
 </style>

@@ -4,7 +4,7 @@
  * @Author: lsj
  * @Date: 2021-01-14 21:55:30
  * @LastEditors: lsj
- * @LastEditTime: 2021-01-15 07:50:50
+ * @LastEditTime: 2021-01-26 08:36:26
 -->
 <template>
   <IhPage label-width="120px">
@@ -136,6 +136,10 @@
           </el-table>
         </el-tab-pane>
       </el-tabs>
+      <div class="details-sum-wrapper">
+        <span>{{detailsSum.desc}}：</span>
+        <span class="total-color">{{detailsSum.totalAmount}}</span>元
+      </div>
     </template>
     <template v-slot:pagination>
       <br/>
@@ -154,7 +158,8 @@
 <script lang="ts">
 import {Component, Vue} from "vue-property-decorator";
 import {
-  post_capitalPoolFlow_detail
+  post_capitalPoolFlow_detail, // 其它渠道费用明细
+  post_capitalPoolFlow_detailsum // 其它渠道费用明细-汇总
 } from "@/api/project/index";
 import PaginationMixin from "../../../mixins/pagination";
 import axios from "axios";
@@ -177,6 +182,10 @@ export default class DetailsList extends Vue {
     total: null,
     list: [],
   };
+  detailsSum: any = {
+    desc: null,
+    totalAmount: 0,
+  }; // 汇总
 
   async created() {
     await this.getListMixin();
@@ -217,8 +226,8 @@ export default class DetailsList extends Vue {
       pageNum: this.queryPageParameters.pageNum,
       pageSize: this.queryPageParameters.pageSize,
       postCategory: null, // 产生类别 服务费盈余、成交变更、成交退款、其它 使用类别 (同周期使用)Samecycle、(跨周期)Interycle、(跨项目)Interproject
-      proName: this.queryPageParameters.pr, // 项目名称
-      termName: this.queryPageParameters.cycleId, // 周期名称
+      proId: this.queryPageParameters.proId, // 项目名称
+      termId: this.queryPageParameters.termId, // 周期名称
       type: 0 // 类别 1:产生 2:使用
     }
     switch (this.currentTabsName) {
@@ -238,6 +247,8 @@ export default class DetailsList extends Vue {
         break;
     }
     this.resPageInfo = await post_capitalPoolFlow_detail(postData);
+    this.detailsSum = await post_capitalPoolFlow_detailsum(postData);
+    // console.log(this.detailsSum);
   }
 
   // 改变tabs
@@ -273,4 +284,17 @@ export default class DetailsList extends Vue {
 }
 </script>
 <style lang="scss" scoped>
+.details-sum-wrapper {
+  width: 100%;
+  box-sizing: border-box;
+  text-align: left;
+  font-size: 15px;
+  margin-top: 10px;
+
+  .total-color {
+    color: red;
+    display: inline-block;
+    padding-right: 5px;
+  }
+}
 </style>
