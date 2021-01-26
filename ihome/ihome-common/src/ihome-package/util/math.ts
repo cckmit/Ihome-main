@@ -4,7 +4,7 @@
  * @Author: zyc
  * @Date: 2021-01-14 14:27:51
  * @LastEditors: zyc
- * @LastEditTime: 2021-01-26 15:48:21
+ * @LastEditTime: 2021-01-26 16:09:20
  */
 
 
@@ -82,7 +82,7 @@ export class MyMath implements MathInterface {
         }
         try {
             let arr = num2.toString().split(".");
-            if (arr.length <= 1 >) {
+            if (arr.length <= 1 ) {
                 baseNum2 = 0;
             } else {
                 baseNum2 = arr[1].length;
@@ -179,7 +179,7 @@ export class MyMath implements MathInterface {
         }
         try {
             let arr = num2.toString().split(".");
-            if (arr.length <= 1 >) {
+            if (arr.length <= 1 ) {
                 baseNum2 = 0;
             } else {
                 baseNum2 = arr[1].length;
