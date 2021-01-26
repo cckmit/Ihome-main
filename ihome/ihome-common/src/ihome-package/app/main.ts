@@ -5,7 +5,7 @@
  * @Author: zyc
  * @Date: 2020-07-07 09:25:17
  * @LastEditors: zyc
- * @LastEditTime: 2021-01-21 17:40:14
+ * @LastEditTime: 2021-01-26 10:24:18
  */
 /* eslint-disable  no-console  */
 /* eslint-disable  no-extra-semi  */
@@ -39,6 +39,7 @@ import registerIhomeCommon from '../ui/src/index';
 registerIhomeCommon(Vue);
 
 import { Tool } from '../util/tool'
+import { RoleTool } from '../util/roleTool'
 import VueCropper from 'vue-cropper'
 
 Vue.use(VueCropper)
@@ -46,6 +47,7 @@ Vue.use(VueCropper)
 Vue.use(ElementUI);
 Vue.config.productionTip = false;
 Vue.prototype.$tool = new Tool();
+Vue.prototype.$roleTool = new RoleTool();
 Vue.prototype.$math = new MyMath();
 Vue.prototype.$goto = function (location: Location) {
   (window as any).activatedRefresh = location.path;
