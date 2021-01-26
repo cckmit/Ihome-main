@@ -4,7 +4,7 @@
  * @Author: zyc
  * @Date: 2021-01-14 14:27:51
  * @LastEditors: zyc
- * @LastEditTime: 2021-01-26 16:09:20
+ * @LastEditTime: 2021-01-26 16:58:16
  */
 
 
@@ -104,22 +104,18 @@ export class MyMath implements MathInterface {
         let baseNum = 0;
         try {
             let arr = num1.toString().split(".");
-            if (arr.length <= 1) {
-                baseNum = 0;
-            } else {
+            if (arr.length >1) {
                 baseNum += arr[1].length;
-            }
+            }  
 
         } catch (e) {
             console.error(e);
         }
         try {
             let arr = num2.toString().split(".");
-            if (arr.length <= 1) {
-                baseNum = 0;
-            } else {
+            if (arr.length >1) {
                 baseNum += arr[1].length;
-            }
+            }  
 
         } catch (e) {
             console.error(e);
