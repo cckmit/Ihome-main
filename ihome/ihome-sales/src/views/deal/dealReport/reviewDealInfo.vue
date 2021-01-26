@@ -791,7 +791,7 @@
     }
 
     // 通过
-    handlePass() {
+    async handlePass() {
       // console.log('通过');
       this.failBtn = false;
       // 判断成交报告的状态
@@ -800,7 +800,7 @@
         this.dialogSelectDate = true;
       } else {
         this.selectData = null;
-        this.submitPass();
+        await this.submitPass();
       }
     }
 
