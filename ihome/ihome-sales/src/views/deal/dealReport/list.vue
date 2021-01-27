@@ -501,7 +501,7 @@
 
     // 修改
     async handleEdit(scope: any) {
-      //
+      // 通过id和parentId是否相等来判断是主成交还是补充成交
       if (scope.row.id === scope.row.parentId) {
         // 主成交
         let type: any = '';
@@ -522,7 +522,15 @@
         });
       } else {
         // 补充成交
-
+        if (scope.row.suppContType && ['Draft', 'Reject'].includes(scope.row.status)) {
+          this.$router.push({
+            path: "/dealReport/suppDeal",
+            query: {
+              id: scope.row.id,
+              type: scope.row.suppContType
+            }
+          });
+        }
       }
     }
 
