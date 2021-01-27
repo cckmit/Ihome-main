@@ -1352,6 +1352,8 @@
     isSameFlag: any = false; // 是否分销与总包一致
     oneAgentRequiredFlag: any = false; // 收派金额 - 派发内场奖励金额合计大于0，为true
     hasAddNoticeFlag: any = false; // 是否有添加(删除)优惠告知书的标识：true-可以；false-不可以
+    // 编辑功能相关字段
+    editBaseInfo: any = null; // 编辑初始化页面数据
 
     // 应收信息表格
     get receiveAchieveVO() {
@@ -1399,14 +1401,196 @@
         this.editFlag = true;
         this.tipsFlag = false;
         this.dividerTips = '刷新成功';
-        const res: any = await get_deal_get__id({id: this.id});
-        this.postData = res;
+        await this.editInitPage(this.id);
       } else {
         this.addFlag = true;
         this.editFlag = false;
         this.tipsFlag = false;
         this.dividerTips = '业绩分配';
       }
+    }
+
+    // 编辑功能 --- 初始化页面
+    async editInitPage(id: any) {
+      const res: any = await get_deal_get__id({id: id});
+      this.editBaseInfo = res;
+      console.log(res);
+      await this.editBaseDealInfo(res.cycleId);
+      await this.editInitPageById(res.cycleId, res.house.roomId, res.house.propertyType);
+      this.$nextTick(() => {
+        this.postData.dealCode = res.dealCode;
+        this.postData.cycleId = res.cycleId;
+        this.postData.cycleName = res.cycleName;
+        this.postData.modelCode = res.modelCode;
+        this.postData.refineModel = res.refineModel;
+        this.postData.isConsign = res.isConsign;
+        this.postData.isMarketProject = res.isMarketProject;
+        this.postData.oneAgentTeamId = res.oneAgentTeamId;
+        this.postData.oneAgentTeam = res.oneAgentTeam;
+        this.postData.propertyType = res?.house?.propertyType;
+        this.postData.buildingId = res?.house?.buildingId;
+        this.postData.roomId = res?.house?.roomId;
+        this.postData.contType = res.contType;
+        // 分销成交和非分销成交不一样
+        if (res.contType === 'DistriDeal') {
+          // 分销成交模式
+          // 1. 初始化渠道商/渠道公司
+          this.initAgency(res.agencyList, true);
+        } else if (['SelfChannelDeal', 'NaturalVisitDeal'].includes(res.contType)) {
+          // 非分销成交模式 --- 自然来访 / 自渠成交
+          this.initAgency(res.agencyList, false);
+        }
+        this.postData.contNo = res.contNo;
+        this.postData.isMat = res.isMat;
+        this.postData.recordStr = res.recordStr;
+        this.postData.recordState = res.recordState;
+        this.postData.area = res?.house?.area;
+        this.postData.room = res?.house?.room;
+        this.postData.hall = res?.house?.hall;
+        this.postData.toilet = res?.house?.toilet;
+        this.postData.propertyNo = res?.house?.propertyNo;
+        this.postData.address = res?.house?.address;
+        this.postData.sceneSales = res.sceneSales;
+        this.postData.signType = res.signType;
+        this.postData.stage = res.stage;
+        this.postData.returnRatio = res.returnRatio;
+        this.postData.subscribePrice = res.subscribePrice;
+        this.postData.subscribeDate = res.subscribeDate;
+        this.postData.signPrice = res.signPrice;
+        this.postData.signDate = res.signDate;
+        this.postData.entryPerson = res.entryPerson;
+        this.postData.entryDate = res.entryPerson;
+        this.postData.dataSign = res.entryPerson;
+        this.postData.status = res.status;
+        this.postData.customerVO = res.customerList;
+        this.postData.receiveVO = this.initReceiveVO(res.receiveList);
+        this.postData.documentVO = this.initDocumentVO(res.documentList);
+        this.postData.offerNoticeVO = res.notice;
+      });
+    }
+
+    // 编辑 --- 通过周期ID获取信息
+    async editBaseDealInfo(id: any) {
+      if (!id) return;
+      let baseInfo: any = await get_pageData_getProBaseByTermId__cycleId({cycleId: id});
+      this.baseInfoByTerm = JSON.parse(JSON.stringify(baseInfo));
+      // 给postData赋值对应数据
+      if (baseInfo) {
+        // 业务模式
+        // this.postData.businessType = baseInfo.busEnum;
+        this.contTypeList = await this.getContTypeList(this.postData.modelCode); // 获取合同类型
+        this.postData.refineModel = (this as any).$parent.getRefineModel(this.postData.modelCode); // 赋值细分业务模式
+        this.refineModelList = await this.getRefineModelList(this.postData.modelCode); // 获取细分业务模式下拉项
+        // 物业类型
+        this.propertyTypeList = [];
+        const typeList: any = (this as any).$root.dictAllList('Property');
+        if (baseInfo.propertyEnums.length > 0 && typeList && typeList.length > 0) {
+          let tempArr: any = [];
+          baseInfo.propertyEnums.forEach((enu: any) => {
+            typeList.forEach((list: any) => {
+              if (enu === list.code) {
+                tempArr.push(list);
+              }
+            })
+          })
+          this.propertyTypeList = tempArr;
+        }
+        // 成交阶段的选项
+        this.dealStageList = [];
+        if (baseInfo.termStageEnum) {
+          let DealStageList: any = (this as any).$root.dictAllList('DealStage');
+          if (DealStageList && DealStageList.length > 0) {
+            switch(baseInfo.termStageEnum){
+              case 'Subscription':
+                // 认购周期 --- 只有认购+签约
+                this.dealStageList = DealStageList.filter((item: any) => {
+                  return item.code !== 'Recognize';
+                });
+                break;
+              case 'Recognize':
+                // 数据标志 --- 非明源
+                this.postData.dataSign = "NoMingYuan";
+                // 清空优惠告知书 --- 认筹周期需要自己手动添加
+                this.postData.offerNoticeVO = [];
+                // 认筹周期 --- 全部
+                this.dealStageList = JSON.parse(JSON.stringify(DealStageList));
+                break;
+            }
+          }
+        }
+        // 一手代理团队的选项
+        this.firstAgencyCompanyList = [];
+        if (baseInfo.firstAgencyCompanys && baseInfo.firstAgencyCompanys.length > 0) {
+          this.firstAgencyCompanyList = JSON.parse(JSON.stringify(baseInfo.firstAgencyCompanys));
+        }
+        console.log(this.firstAgencyCompanyList);
+        // 处理优惠告知书的nav
+        this.postData.offerNoticeVO = []; // 先重置优惠告知书的数据
+        if (baseInfo.chargeEnum === 'Agent') {
+          this.navList = this.navList.filter((item: any) => {
+            return item.id !== 3;
+          });
+        } else {
+          this.navList = (this as any).$tool.deepClone(this.defaultNavList);
+        }
+        // 成交组织
+        await this.getOrgName(baseInfo.groupId);
+      }
+    }
+
+    // 编辑 --- 通过房号、物业类型、周期获取分销协议编号
+    async editInitPageById(cycleId: any, roomId: any, propertyType: any = '') {
+      if (!cycleId || !roomId || !propertyType) return;
+      let params: any = {
+        cycleId: cycleId,
+        roomId: roomId,
+        isMainDeal: true, // 是否主成交
+        property: propertyType, // 物业类型
+      };
+      let baseInfo: any = await post_pageData_initBasic(params);
+      this.baseInfoInDeal = JSON.parse(JSON.stringify(baseInfo || '{}'));
+      // 多分优惠告知书情况
+      // this.postData.contNo = null; // 重置选择的编号
+      // 分销协议编号
+      if (baseInfo.contracts && baseInfo.contracts.length > 0) {
+        this.contNoList = baseInfo.contracts; // 分销协议选择列表
+      } else {
+        this.contNoList = [];
+      }
+    }
+
+    // 编辑 --- 构建收派金额数据
+    initReceiveVO(list: any = []) {
+      let tempList: any = []
+      if (list && list.length) {
+        list.forEach((item: any) => {
+          tempList.push(
+            {
+              ...item,
+              showData: [item.collectandsendDetailDealVO]
+            }
+          )
+        });
+      }
+      return tempList;
+    }
+
+    // 编辑 --- 构建上传附件数据
+    initDocumentVO(list: any = []) {
+      let fileList: any = (this as any).$root.dictAllList('DealFileType'); // 附件类型
+      // 附件类型增加key
+      if (fileList.length > 0 && list.length > 0) {
+        fileList.forEach((vo: any) => {
+          vo.defaultFileList = []; // 存放原来的数据
+          vo.fileList = []; // 存放新上传的数据
+          list.forEach((item: any) => {
+            if (vo.code === item.fileType) {
+              vo.defaultFileList.push(item);
+            }
+          });
+        });
+      }
+      return fileList;
     }
 
     // nav的跳转
