@@ -711,6 +711,7 @@
   import {
     get_org_get__id, // 通过组织id获取组织name
   } from "@/api/system";
+  import {post_notice_customer_information} from "@/api/contract"; // 获取优惠告知书
   import {Form as ElForm} from "element-ui";
   import {NoRepeatHttp} from "ihome-common/util/aop/no-repeat-http";
 
@@ -1011,6 +1012,7 @@
       console.log(res);
       await this.editBaseDealInfo(res.cycleId);
       await this.editInitPageById(res.cycleId, res.house.roomId, res.house.propertyType);
+      await this.getInformation(id);
       this.$nextTick(() => {
         this.postData.dealCode = res.dealCode;
         this.postData.cycleId = res.cycleId;
@@ -1059,7 +1061,6 @@
         this.postData.customerVO = res.customerList;
         this.postData.receiveVO = this.initReceiveVO(res.receiveList);
         this.postData.documentVO = this.initDocumentVO(res.documentList);
-        this.postData.offerNoticeVO = res.notice;
       });
     }
 
@@ -1185,6 +1186,18 @@
         });
       }
       return fileList;
+    }
+
+    // 编辑 --- 根据成交id获取优惠告知书列表
+    async getInformation(id: any = '') {
+      if (!id) return;
+      const list: any = await post_notice_customer_information({dealId: id});
+      // console.log('优惠告知书列表', list);
+      if (list && list.length > 0) {
+        this.postData.offerNoticeVO = list;
+      } else {
+        this.postData.offerNoticeVO = [];
+      }
     }
 
     // nav的跳转
