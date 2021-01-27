@@ -1059,6 +1059,7 @@
         this.postData.customerVO = res.customerList;
         this.postData.receiveVO = this.initReceiveVO(res.receiveList);
         this.postData.documentVO = this.initDocumentVO(res.documentList);
+        this.postData.offerNoticeVO = res.notice;
       });
     }
 
@@ -1327,10 +1328,13 @@
         if (baseInfo.serviceFee) {
           let tempList: any = [];
           tempList.push(baseInfo.serviceFee);
+          // console.log(tempList);
           let list: any = (this as any).$parent.initReceiveVOS(tempList);
-          this.postData.receiveVO.push(...list);
-          // 暂存
-          this.tempReceiveVO = (this as any).$tool.deepClone(this.postData.receiveVO);
+          this.$nextTick(() => {
+            this.postData.receiveVO.push(...list);
+            // 暂存
+            this.tempReceiveVO = (this as any).$tool.deepClone(this.postData.receiveVO);
+          });
         }
         // 成交组织
         await this.getOrgName(baseInfo.groupId);
@@ -2148,12 +2152,6 @@
     margin-bottom: 10px;
   }
 
-  .demo-ruleForm {
-    /deep/.el-input-group__append {
-      padding: 0px 10px;
-    }
-  }
-
   .form-item-label-wrapper {
     /deep/.el-form-item__label {
       line-height: 20px;
@@ -2191,12 +2189,20 @@
     width: 100%;
     display: flex;
 
+    /deep/.el-input-group__append {
+      padding: 0px 0px;
+    }
+
+    /deep/.el-input__inner {
+      padding: 0px 0px 0px 15px;
+    }
+
     div {
       flex: 1;
       text-align: center;
 
       &:not(:last-child) {
-        margin-right: 10px;
+        margin-right: 5px;
       }
 
       /deep/ .el-input-number {
