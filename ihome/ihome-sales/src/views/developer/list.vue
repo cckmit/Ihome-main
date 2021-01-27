@@ -4,7 +4,7 @@
  * @Author: wwq
  * @Date: 2020-09-25 17:59:09
  * @LastEditors: wwq
- * @LastEditTime: 2020-12-25 19:42:14
+ * @LastEditTime: 2021-01-27 10:25:19
 -->
 <template>
   <ih-page>
@@ -276,12 +276,9 @@ export default class DeveloperList extends Vue {
 
   checkChange(row: any) {
     const status = row.status === "WaitAuditByBranchHead";
-    const roleList = (this.$root as any).userInfo.roleList.map(
-      (v: any) => v.code
-    );
-    const fen = roleList.includes("RBusinessManagement");
-    const zong = roleList.includes("RHeadBusinessManagement");
-    return (fen || zong) && status;
+    const RBusinessManagement = this.$roleTool.RBusinessManagement();
+    const RHeadBusinessManagement = this.$roleTool.RHeadBusinessManagement();
+    return (RBusinessManagement || RHeadBusinessManagement) && status;
   }
 
   get emptyText() {
