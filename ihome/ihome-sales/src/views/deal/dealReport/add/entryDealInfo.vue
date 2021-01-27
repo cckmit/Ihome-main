@@ -1244,9 +1244,9 @@
       if (data && data.length > 0) {
         // 不管是否一样，都清数据
         if (this.postData.cycleId) {
+          this.postData.receiveVO = []; // 收派金额
           await this.resetData();
         }
-        // await this.resetData();
         this.$nextTick(async () => {
           this.postData.cycleName = data[0].termName;
           this.postData.cycleId = data[0].termId;
@@ -1402,6 +1402,7 @@
     changeBuild() {
       // 清空房间号 + 下面的所有信息
       this.postData.roomId = null;
+      this.resetReceiveVO();
       this.resetData();
     }
 
@@ -1412,7 +1413,6 @@
       this.contNoList = []; // 分销协议编号
       this.packageIdsList = []; // ids
       this.postData.customerVO = []; // 客户信息
-      this.postData.receiveVO = []; // 收派金额
       this.tempReceiveVO = []; // 收派金额初始值
       this.postData.offerNoticeVO = []; // 优惠告知书
       this.postData.documentVO = []; // 上传附件
@@ -1425,9 +1425,19 @@
     // 改变房号
     changeRoom(value: any) {
       // console.log('改变房号', value);
+      this.resetReceiveVO();
       this.resetData(); // 重置数据
       if (value) {
         this.initPageById(this.baseInfoByTerm.termId, value, this.postData.propertyType);
+      }
+    }
+
+    // 物业类型、栋座、房号改变，收派金额模块只需要清空代理费
+    resetReceiveVO() {
+      if (this.postData.receiveVO && this.postData.receiveVO.length) {
+        this.postData.receiveVO = this.postData.receiveVO.filter((vo: any) => {
+          return vo.type === "ServiceFee";
+        });
       }
     }
 
@@ -1652,6 +1662,7 @@
       // 清空栋座 + 房间号 + 下面的所有信息
       this.postData.roomId = null;
       this.postData.buildingId = null;
+      this.resetReceiveVO();
       this.resetData();
     }
 
