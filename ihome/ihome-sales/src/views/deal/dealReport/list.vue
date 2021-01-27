@@ -527,7 +527,8 @@
             path: "/dealReport/suppDeal",
             query: {
               id: scope.row.id,
-              type: scope.row.suppContType
+              type: scope.row.suppContType,
+              btnType: 'edit' // 修改
             }
           });
         }
@@ -615,7 +616,8 @@
           path: "/dealReport/suppDeal",
           query: {
             id: scope.row.id,
-            type: type
+            type: type,
+            btnType: 'add' // 新增
           }
         });
       } else {

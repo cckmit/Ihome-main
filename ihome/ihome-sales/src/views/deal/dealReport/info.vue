@@ -557,6 +557,9 @@
     components: {ReviewDetailsDialog},
   })
   export default class DealReportInfo extends Vue {
+    private isShowImg = false;
+    private srcList: any = [];
+    private srcData: any = [];
     infoForm: any = {
       dealCode: null,
       house: {}, // 房产信息
@@ -609,9 +612,6 @@
       }
     ]; // 锚点列表
     currentActiveIndex: any = 0; // 当前激活的nav
-    private isShowImg = false;
-    private srcList: any = [];
-    private srcData: any = [];
 
     async created() {
       this.infoType = this.$route.query.type;
