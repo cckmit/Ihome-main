@@ -3104,7 +3104,7 @@
           postData.basic.dealVO.id = this.postData.id;
           postData.basic.dealVO.parentId = this.postData.parentId;
           await post_deal_updateAchieveAllot(postData);
-          this.$message.success("编辑成功");
+          this.$message.success("修改成功");
           this.$goto({
             path: "/dealReport/list",
           });

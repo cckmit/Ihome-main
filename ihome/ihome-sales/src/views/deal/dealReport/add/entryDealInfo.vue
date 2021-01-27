@@ -1964,6 +1964,7 @@
         try {
           await this.$confirm("签约阶段的业绩申报将提交给文员，如需修改信息请联系文员", "提示");
           (this.$refs["ruleForm"] as ElForm).validate(this.addSave);
+          console.log('ruleForm', 1231213);
         } catch (error) {
           console.log(error);
         }
@@ -1976,6 +1977,7 @@
     async addSave(valid: any) {
       // 1.校验收派金额是都有收派套餐
       let flag = (this as any).$parent.validReceiveData(this.postData.receiveVO);
+      console.log('flag', flag);
       if (valid && flag) {
         // 整合数据
         let postData: any = this.getPostData();
@@ -1984,7 +1986,7 @@
           postData.dealVO.id = this.postData.id;
           postData.dealVO.parentId = this.postData.parentId;
           await post_deal_updateDealBasicInf(postData);
-          this.$message.success("编辑成功");
+          this.$message.success("修改成功");
           this.$goto({
             path: "/dealReport/list",
           });
@@ -2091,11 +2093,11 @@
         });
         if (firstNoticeList.length) {
           firstId = firstNoticeList[0].noticeId;
-          obj.basic.dealVO.noticeIds.push(firstId);
+          obj.dealVO.noticeIds.push(firstId);
         }
         this.postData.offerNoticeVO.forEach((vo: any) => {
           if (vo.noticeId !== firstId) {
-            obj.basic.dealVO.noticeIds.push(vo.noticeId);
+            obj.dealVO.noticeIds.push(vo.noticeId);
           }
         });
       }
