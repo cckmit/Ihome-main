@@ -4,7 +4,7 @@
  * @Author: ywl
  * @Date: 2020-06-30 09:21:17
  * @LastEditors: wwq
- * @LastEditTime: 2020-12-21 09:59:39
+ * @LastEditTime: 2021-01-27 10:35:51
 --> 
 <template>
   <IhPage label-width="100px">
@@ -266,19 +266,16 @@ export default class ChannelChangeList extends Vue {
     const PTWYSH = row.status === "PTWYSH";
     const FGSYGSH = row.status === "FGSYGSH";
     const ZBYGSH = row.status === "ZBYGSH";
-    const roleList = (this.$root as any).userInfo.roleList.map(
-      (v: any) => v.code
-    );
-    const pingtai = roleList.includes("RPlatformClerk");
-    const fen = roleList.includes("RBusinessManagement");
-    const qudao = roleList.includes("RChannelStaff");
+    const RPlatformClerk = this.$roleTool.RPlatformClerk();
+    const RBusinessManagement = this.$roleTool.RBusinessManagement();
+    const RChannelStaff = this.$roleTool.RChannelStaff();
     const dangqian = (this.$root as any).userInfo.id === row.followUserId;
     const skipPlatformClerk = row.skipPlatformClerk === "true" ? true : false;
     return (
-      (PTWYSH && dangqian && !skipPlatformClerk && qudao) ||
-      (FGSYGSH && dangqian && skipPlatformClerk && qudao) ||
-      (FGSYGSH && pingtai) ||
-      (ZBYGSH && fen)
+      (PTWYSH && dangqian && !skipPlatformClerk && RChannelStaff) ||
+      (FGSYGSH && dangqian && skipPlatformClerk && RChannelStaff) ||
+      (FGSYGSH && RPlatformClerk) ||
+      (ZBYGSH && RBusinessManagement)
     );
   }
 
@@ -286,13 +283,14 @@ export default class ChannelChangeList extends Vue {
     const PTWYSH = row.status === "PTWYSH";
     const FGSYGSH = row.status === "FGSYGSH";
     const ZBYGSH = row.status === "ZBYGSH";
-    const roleList = (this.$root as any).userInfo.roleList.map(
-      (v: any) => v.code
+    const RHeadBusinessManagement = this.$roleTool.RHeadBusinessManagement();
+    const RBusinessManagement = this.$roleTool.RBusinessManagement();
+    const RPlatformClerk = this.$roleTool.RPlatformClerk();
+    return (
+      (PTWYSH && RPlatformClerk) ||
+      (FGSYGSH && RBusinessManagement) ||
+      (ZBYGSH && RHeadBusinessManagement)
     );
-    const pingtai = roleList.includes("RPlatformClerk");
-    const fen = roleList.includes("RBusinessManagement");
-    const zong = roleList.includes("RHeadBusinessManagement");
-    return (PTWYSH && pingtai) || (FGSYGSH && fen) || (ZBYGSH && zong);
   }
 
   reset() {

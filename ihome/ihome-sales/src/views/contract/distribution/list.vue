@@ -3,8 +3,8 @@
  * @version: 
  * @Author: ywl
  * @Date: 2020-09-25 17:34:32
- * @LastEditors: ywl
- * @LastEditTime: 2021-01-15 21:11:58
+ * @LastEditors: wwq
+ * @LastEditTime: 2021-01-27 10:59:26
 -->
 <template>
   <IhPage label-width="100px">
@@ -454,41 +454,23 @@ export default class DistributionList extends Vue {
 
   private originalChange(row: any) {
     const isDis = row.distributionState === "Distributed";
-    const roleList = (this.$root as any).userInfo.roleList.map(
-      (v: any) => v.code
-    );
-    const isXZ = roleList.includes("ROffice");
-    return isDis && isXZ;
+    const ROffice = this.$roleTool.ROffice();
+    return isDis && ROffice;
   }
   private duplicateChange(row: any) {
     const isDis = row.distributionState === "Distributed";
     // const isStatus = row.archiveStatus === "ScansAreNotArchived";
-    const roleList = (this.$root as any).userInfo.roleList.map(
-      (v: any) => v.code
-    );
-    const isPTWY = roleList.includes("RPlatformClerk");
-    return isDis && isPTWY;
+    const RPlatformClerk = this.$roleTool.RPlatformClerk();
+    return isDis && RPlatformClerk;
   }
   private contractChange() {
-    const roleList = (this.$root as any).userInfo.roleList.map(
-      (v: any) => v.code
-    );
-    const isContract = roleList.includes("RContractManager");
-    return isContract;
+    return this.$roleTool.RContractManager();
   }
   private channelChange() {
-    const roleList = (this.$root as any).userInfo.roleList.map(
-      (v: any) => v.code
-    );
-    const isChannel = roleList.includes("RChannelStaff");
-    return isChannel;
+    return this.$roleTool.RChannelStaff();
   }
   private exportChange() {
-    const roleList = (this.$root as any).userInfo.roleList.map(
-      (v: any) => v.code
-    );
-    const isBusines = roleList.includes("RBusinessManagement");
-    return isBusines;
+    return this.$roleTool.RBusinessManagement();
   }
 
   private openToggle(): void {

@@ -4,7 +4,7 @@
  * @Author: wwq
  * @Date: 2020-12-08 14:28:17
  * @LastEditors: wwq
- * @LastEditTime: 2021-01-26 21:00:39
+ * @LastEditTime: 2021-01-27 15:27:03
 -->
 <template>
   <el-dialog
@@ -472,7 +472,7 @@
 <script lang="ts">
 import { Component, Vue, Prop } from "vue-property-decorator";
 import {
-  post_collectandsend_getAllByTerm,
+  post_collectandsend_getAllByStart,
   post_distributContract_getItemByCondition,
 } from "@/api/project/index.ts";
 import SetMealInfo from "../setMeal-dialog/info.vue";
@@ -577,7 +577,7 @@ export default class SetMealDialog extends Vue {
   async getInfo() {
     const id = this.$route.query.id;
     if (id) {
-      this.data = await post_collectandsend_getAllByTerm({
+      this.data = await post_collectandsend_getAllByStart({
         termId: id,
       });
     }

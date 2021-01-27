@@ -4,7 +4,7 @@
  * @Author: zyc
  * @Date: 2020-06-30 09:21:17
  * @LastEditors: wwq
- * @LastEditTime: 2020-12-22 09:18:28
+ * @LastEditTime: 2021-01-27 11:01:29
 --> 
 <template>
   <IhPage label-width="100px">
@@ -292,32 +292,30 @@ export default class LevelChangeList extends Vue {
     const PTWYSH = row.status === "PTWYSH";
     const FGSYGSH = row.status === "FGSYGSH";
     const ZBYGSH = row.status === "ZBYGSH";
-    const roleList = (this.$root as any).userInfo.roleList.map(
-      (v: any) => v.code
+    const RHeadBusinessManagement = this.$roleTool.RHeadBusinessManagement();
+    const RBusinessManagement = this.$roleTool.RBusinessManagement();
+    const RPlatformClerk = this.$roleTool.RPlatformClerk();
+    return (
+      (PTWYSH && RPlatformClerk) ||
+      (FGSYGSH && RBusinessManagement) ||
+      (ZBYGSH && RHeadBusinessManagement)
     );
-    const pingtai = roleList.includes("RPlatformClerk");
-    const fen = roleList.includes("RBusinessManagement");
-    const zong = roleList.includes("RHeadBusinessManagement");
-    return (PTWYSH && pingtai) || (FGSYGSH && fen) || (ZBYGSH && zong);
   }
 
   recallChange(row: any) {
     const PTWYSH = row.status === "PTWYSH";
     const FGSYGSH = row.status === "FGSYGSH";
     const ZBYGSH = row.status === "ZBYGSH";
-    const roleList = (this.$root as any).userInfo.roleList.map(
-      (v: any) => v.code
-    );
-    const pingtai = roleList.includes("RPlatformClerk");
-    const fen = roleList.includes("RBusinessManagement");
-    const qudao = roleList.includes("RChannelStaff");
-    const dangqian = (this.$root as any).userInfo.id === row.inputUser;
+    const RPlatformClerk = this.$roleTool.RPlatformClerk();
+    const RBusinessManagement = this.$roleTool.RBusinessManagement();
+    const RChannelStaff = this.$roleTool.RChannelStaff();
+    const dangqian = (this.$root as any).userInfo.id === row.followUserId;
     const skipPlatformClerk = row.skipPlatformClerk === "true" ? true : false;
     return (
-      (PTWYSH && dangqian && !skipPlatformClerk && qudao) ||
-      (FGSYGSH && dangqian && skipPlatformClerk && qudao) ||
-      (FGSYGSH && pingtai) ||
-      (ZBYGSH && fen)
+      (PTWYSH && dangqian && !skipPlatformClerk && RChannelStaff) ||
+      (FGSYGSH && dangqian && skipPlatformClerk && RChannelStaff) ||
+      (FGSYGSH && RPlatformClerk) ||
+      (ZBYGSH && RBusinessManagement)
     );
   }
 
