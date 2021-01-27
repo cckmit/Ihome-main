@@ -4,7 +4,7 @@
  * @Author: zyc
  * @Date: 2021-01-26 10:19:00
  * @LastEditors: zyc
- * @LastEditTime: 2021-01-26 10:23:26
+ * @LastEditTime: 2021-01-27 08:43:26
  */
 
 
@@ -92,7 +92,7 @@ export class RoleTool implements RoleToolInterface {
      * @return {*}
      */
     hasRole(code: string): boolean {
-        let roleList = (window as any).userInfo?.roleList?.map((item: any) => { return item.code }) || [];
+        let roleList = (window as any).polyihomeData.userInfo?.roleList?.map((item: any) => { return item.code }) || [];
         return roleList.includes(code);
     }
 
