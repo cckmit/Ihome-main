@@ -4,7 +4,7 @@
  * @Author: wwq
  * @Date: 2020-12-26 11:11:23
  * @LastEditors: wwq
- * @LastEditTime: 2021-01-26 14:55:45
+ * @LastEditTime: 2021-01-26 17:06:45
 -->
 <template>
   <IhPage>
@@ -987,6 +987,23 @@ export default class PayoffEdit extends Vue {
     return this.$math.tofixed(res, 2);
   }
 
+  // 本次支付比例(%)( 本次申请付款金额 / 未结佣付款金额 * 100 )
+  ratioChange(row: any) {
+    const total1 = this.$math.add(
+      Number(row.serThisCommFees),
+      Number(row.ageThisCommFees)
+    );
+    const total2 = this.$math.add(
+      Number(row.serUnsetCommFees),
+      Number(row.ageUnsetCommFees)
+    );
+    const total3 = this.$math.div(total1, total2);
+    const res = this.$math.multi(total3, 100);
+    console.log(res);
+    row.ratio = this.$math.tofixed(res, 2);
+    return this.$math.tofixed(res, 2);
+  }
+
   // 明细表-不含税金额(扣除金额/ (1+开票税率))
   dataNoTaxAmountChange(row: any) {
     const deductAmount = Number(row.deductAmount);
@@ -1002,22 +1019,6 @@ export default class PayoffEdit extends Vue {
     const taxRate = this.info.taxRate ? Number(this.info.taxRate) : 0;
     const res = this.$math.multi(noTaxAmount, taxRate);
     row.tax = this.$math.tofixed(res, 2);
-    return this.$math.tofixed(res, 2);
-  }
-
-  // 本次支付比例(%)( 本次申请付款金额 / 未结佣付款金额 * 100 )
-  ratioChange(row: any) {
-    const total1 = this.$math.add(
-      Number(row.serThisCommFees),
-      Number(row.ageThisCommFees)
-    );
-    const total2 = this.$math.add(
-      Number(row.serUnsetCommFees),
-      Number(row.ageUnsetCommFees)
-    );
-    const total3 = this.$math.div(total1, total2);
-    const res = this.$math.multi(total3, 100);
-    row.ratio = this.$math.tofixed(res, 2);
     return this.$math.tofixed(res, 2);
   }
 

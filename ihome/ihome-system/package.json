@@ -27,7 +27,7 @@
     "core-js": "^3.6.5",
     "driver.js": "^0.9.8",
     "element-ui": "^2.13.2",
-    "ihome-common": "^1.2.31",
+    "ihome-common": "^1.2.32",
     "js-cookie": "^2.2.1",
     "nprogress": "^0.2.0",
     "qiankun": "^2.0.24",
