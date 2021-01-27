@@ -1222,7 +1222,6 @@
       if (!key || !type || !data[type]?.[key]) return false;
       let flag = true;
       // 1.是否明源数据标志
-      // let signFlag = ['WholeMingYuan', 'NoWholeMingYuan'].includes(data.dataSign);
       let signFlag = this.baseInfoByTerm.exMinyuan;
       // 2.对应明源字段是否有值
       if (data[type][key] && signFlag) {
@@ -1418,7 +1417,7 @@
       this.postData.documentVO = []; // 上传附件
       let list: any = ['contType', 'contNo', 'recordState', 'recordStr', 'area', 'room', 'hall',
         'toilet', 'propertyNo', 'signType', 'stage', 'returnRatio', 'subscribePrice', 'subscribeDate',
-        'signPrice', 'signDate', 'dataSign', 'agencyId', 'agencyName', 'channelLevel', 'channelLevelName']
+        'signPrice', 'signDate', 'agencyId', 'agencyName', 'channelLevel', 'channelLevelName']
       this.resetObject('postData', list);
     }
 

@@ -88,6 +88,12 @@
           "
       />
     </ih-dialog>
+    <IhImgViews
+      v-if="isShowImg"
+      :url-list="srcList"
+      :viewer-msg="srcData"
+      :onClose="() => (isShowImg = false)"
+    ></IhImgViews>
   </div>
 </template>
 <script lang="ts">
@@ -126,6 +132,9 @@
   export default class DealReportEntry extends Vue {
     private currentComponent: any = null;
     private currentBtnType: any = null;
+    private isShowImg = false;
+    private srcList: any = [];
+    private srcData: any = [];
 
     dialogAddProjectCycle: any = false; // 选择项目周期弹窗标识
     dialogAddAgency: any = false; // 选择渠道公司弹窗标识
@@ -281,9 +290,25 @@
 
     // 预览-优惠告知书
     previewNotice(scope: any) {
-      window.open(
-        `/sales-api/sales-document-cover/file/browse/${scope.row.templateId}`
-      );
+      if (scope.row.templateType === "ElectronicTemplate") {
+        window.open(
+          `/sales-api/sales-document-cover/file/browse/${scope.row.templateId}`
+        );
+      } else {
+        let imgList = scope.row.noticeAttachmentList || scope.row.annexList;
+        this.srcList = imgList.map(
+          (i: any) => `/sales-api/sales-document-cover/file/browse/${i.fileNo}`
+        );
+        this.srcData = imgList.map((v: any) => ({
+          name: v.attachmentSuffix,
+          preFileName: "优惠告知书",
+        }));
+        if (this.srcList.length) {
+          this.isShowImg = true;
+        } else {
+          this.$message.warning("暂无图片");
+        }
+      }
     }
 
     // 添加客户
