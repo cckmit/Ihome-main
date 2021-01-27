@@ -1769,10 +1769,7 @@
                 // 清空优惠告知书 --- 认筹周期需要自己手动添加
                 this.postData.offerNoticeVO = [];
                 // 认筹周期 --- 全部
-                // this.dealStageList = JSON.parse(JSON.stringify(DealStageList));
-                this.dealStageList = DealStageList.filter((item: any) => {
-                  return item.code !== 'Recognize';
-                });
+                this.dealStageList = JSON.parse(JSON.stringify(DealStageList));
                 break;
             }
           }
@@ -1796,8 +1793,8 @@
         if (baseInfo.serviceFee) {
           let tempList: any = [];
           tempList.push(baseInfo.serviceFee);
-          let item: any = (this as any).$parent.initReceiveVOS(tempList);
-          this.postData.receiveVO.push(item);
+          let list: any = (this as any).$parent.initReceiveVOS(tempList);
+          this.postData.receiveVO.push(...list);
           // 暂存
           this.tempReceiveVO = (this as any).$tool.deepClone(this.postData.receiveVO);
         }
@@ -2325,7 +2322,7 @@
           proId: this.baseInfoByTerm.proId,
           buyUnit: this.postData.buildingId, // 栋座
           roomId: this.postData.roomId, // 多分优惠告知书下需要通过房号去限制
-          status: ['BecomeEffective'] // 主成交下优惠告知书要是已生效状态
+          status: 'BecomeEffective' // 主成交下优惠告知书要是已生效状态
         };
         (this as any).$parent.handleAddNotice(data);
       }

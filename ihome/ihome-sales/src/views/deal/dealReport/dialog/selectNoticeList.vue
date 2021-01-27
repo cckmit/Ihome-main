@@ -112,7 +112,7 @@
               <el-form-item label="状态">
                 <el-select
                   v-model="queryPageParameters.notificationStatuses"
-                  :disabled="data.status && data.status.length"
+                  :disabled="data.status"
                   placeholder="请选择状态"
                   class="width--100">
                   <el-option
