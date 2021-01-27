@@ -4,14 +4,15 @@
  * @Author: wwq
  * @Date: 2020-11-03 11:52:41
  * @LastEditors: wwq
- * @LastEditTime: 2021-01-25 14:59:20
+ * @LastEditTime: 2021-01-27 17:23:05
 -->
 <template>
   <div>
     <div class="text-left margin-left-25">
       <el-button
+        v-has="'B.SALES.PROJECT.BASICLIST.LPHXKJDRFH'"
         type="success"
-        v-if="$route.name !== 'projectChildAdd'"
+        v-if="$route.name !== 'projectChildAdd' && !isMingyuan"
         @click="fastImport"
         size="mini"
       >快捷导入房号</el-button>
@@ -52,18 +53,31 @@
         }}
         </div>
         <el-button
+          v-if="!isMingyuan"
           size="small"
           type="success"
-          @click="edit(item)"
+          v-has="'B.SALES.PROJECT.BASICLIST.LPHXBJ'"
+          @click="edit(item, '')"
         >编辑</el-button>
         <el-button
+          v-else
+          size="small"
+          type="success"
+          v-has="'B.SALES.PROJECT.BASICLIST.LPHXBJ'"
+          @click="edit(item, 'mingyuan')"
+        >编辑</el-button>
+        <el-button
+          v-if="!isMingyuan"
           size="small"
           type="danger"
+          v-has="'B.SALES.PROJECT.BASICLIST.LPHXSC'"
           @click="remove(item)"
         >删除</el-button>
       </div>
       <div
+        v-if="!isMingyuan"
         class="plus"
+        v-has="'B.SALES.PROJECT.BASICLIST.LPHXXZ'"
         @click="add()"
       >
         <i class="el-icon-plus"></i>
@@ -114,6 +128,10 @@ export default class EditHouseType extends Vue {
   importDialogVisible = false;
   inportData: any = {};
 
+  get isMingyuan() {
+    return Number(window.sessionStorage.getItem("projectExMinyuan"));
+  }
+
   private get proId() {
     return this.$route.query.id;
   }
@@ -133,9 +151,9 @@ export default class EditHouseType extends Vue {
     this.dialogVisible = true;
   }
 
-  edit(data: any) {
+  edit(data: any, type: any) {
     this.dialogType = "edit";
-    this.editData = { ...data };
+    this.editData = { ...data, type };
     this.dialogVisible = true;
   }
 
@@ -144,7 +162,10 @@ export default class EditHouseType extends Vue {
     obj = { ...data };
     if (data.fileList.length) {
       obj.picAddr = data.fileList[0].fileId;
+    } else {
+      obj.picAddr = "";
     }
+    console.log(obj);
     obj.proId = this.proId;
     if (this.dialogType === "add") {
       await post_houseType_add(obj);
