@@ -4,7 +4,7 @@
  * @Author: wwq
  * @Date: 2020-12-04 09:40:47
  * @LastEditors: wwq
- * @LastEditTime: 2021-01-22 14:07:58
+ * @LastEditTime: 2021-01-27 20:58:18
 -->
 <template>
   <el-dialog
@@ -464,19 +464,11 @@
               </el-table-column>
               <el-table-column
                 label="其他渠道费用(元)"
-                width="150"
+                width="200"
                 align="center"
               >
                 <template v-slot="{ row }">
-                  <div>
-                    金额:
-                    <el-input
-                      :value="otherChannelAmount(row)"
-                      v-digits="2"
-                      disabled
-                      style="width: 70%"
-                    />
-                  </div>
+                  <span>{{`金额:` + otherChannelAmount(row)}}</span>
                 </template>
               </el-table-column>
               <el-table-column
@@ -1089,7 +1081,7 @@ export default class SetMealEdit extends Vue {
         (isNaN(num3) ? 0 : num3) +
         (isNaN(num4) ? 0 : num4));
     row.otherChannelAmount = computed;
-    return isNaN(computed) ? 0 : this.strip(computed);
+    return isNaN(computed) ? 0 : this.$math.tofixed(computed, 2);
   }
 
   estimateComplateAmount(row: any) {
@@ -1103,7 +1095,7 @@ export default class SetMealEdit extends Vue {
       10000 *
       Number(isNaN(row.estimateComplateNum) ? 0 : row.estimateComplateNum);
     row.estimateComplateAmount = total;
-    return isNaN(total) ? 0 : this.strip(total);
+    return isNaN(total) ? 0 : this.$math.tofixed(total, 2);
   }
 
   estimateReceiveAmount(row: any) {
@@ -1118,11 +1110,7 @@ export default class SetMealEdit extends Vue {
         ) *
         10000;
     row.estimateReceiveAmount = total;
-    return isNaN(total) ? 0 : this.strip(total);
-  }
-
-  strip(number: number, precision = 12) {
-    return Number(parseFloat(number.toPrecision(precision)));
+    return isNaN(total) ? 0 : this.$math.tofixed(total, 2);
   }
 
   @Watch("info.busEnum", { immediate: true })
