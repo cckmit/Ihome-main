@@ -1353,6 +1353,7 @@
     isSameFlag: any = false; // 是否分销与总包一致
     oneAgentRequiredFlag: any = false; // 收派金额 - 派发内场奖励金额合计大于0，为true
     hasAddNoticeFlag: any = false; // 是否有添加(删除)优惠告知书的标识：true-可以；false-不可以
+    currentBtnType: any = null; // 点击的是保存还是提交按钮
     // 编辑功能相关字段
     editBaseInfo: any = null; // 编辑初始化页面数据
 
@@ -1975,18 +1976,14 @@
         if (baseInfo.termStageEnum) {
           let DealStageList: any = (this as any).$root.dictAllList('DealStage');
           if (DealStageList && DealStageList.length > 0) {
+            // 文员录入成交只能选择签约
+            this.dealStageList = DealStageList.filter((item: any) => {
+              return item.code === 'SignUp';
+            });
             switch(baseInfo.termStageEnum){
-              case 'Subscription':
-                // 认购周期 --- 只有认购+签约
-                this.dealStageList = DealStageList.filter((item: any) => {
-                  return item.code !== 'Recognize';
-                });
-                break;
               case 'Recognize':
                 // 清空优惠告知书 --- 认筹周期需要自己手动添加
                 this.postData.offerNoticeVO = [];
-                // 认筹周期 --- 全部
-                this.dealStageList = JSON.parse(JSON.stringify(DealStageList));
                 break;
             }
           }
@@ -2154,6 +2151,10 @@
         this.postData.receiveVO = this.postData.receiveVO.filter((vo: any) => {
           return vo.type === "ServiceFee";
         });
+        this.addFlag = false;
+        this.editFlag = true;
+        this.tipsFlag = false;
+        this.dividerTips = '刷新成功';
       }
     }
 
@@ -3099,6 +3100,7 @@
     // 保存
     async handleSave(type: any) {
       // console.log('type', type);
+      this.currentBtnType = type;
       if (type === 'save') {
         // 保存
         console.log('save', type);
@@ -3116,9 +3118,16 @@
     async addSave(valid: any) {
       // 校验收派金额是都有收派套餐
       let flag = (this as any).$parent.validReceiveData(this.postData.receiveVO, this.postData.calculation);
-      if (valid && flag) {
+      if (valid && flag && this.currentBtnType) {
         // 整合数据
         let postData: any = this.getPostData();
+        if (this.currentBtnType === 'save') {
+          // 保存
+          postData.basic.dealVO.status = 'AchieveDeclareUnconfirm'; // 业绩申报待确认
+        } else if (this.currentBtnType === 'submit') {
+          // 提交
+          postData.basic.dealVO.status = 'PlatformClerkUnreview'; // 平台文员待审核
+        }
         if (this.id) {
           postData.basic.dealVO.dealCode = this.postData.dealCode;
           postData.basic.dealVO.id = this.postData.id;
@@ -3268,11 +3277,6 @@
       obj.basic.dealVO.signPrice = this.postData.signPrice;
       obj.basic.dealVO.signType = this.postData.signType;
       obj.basic.dealVO.stage = this.postData.stage;
-      if (['Recognize', 'Subscribe'].includes(this.postData.stage)) {
-        obj.basic.dealVO.status = 'Draft'; // 草稿
-      } else if (this.postData.stage === 'SignUp') {
-        obj.basic.dealVO.status = 'AchieveDeclareUnconfirm'; // 业绩申报待确认
-      }
       obj.basic.dealVO.subscribeDate = this.postData.subscribeDate;
       obj.basic.dealVO.subscribePrice = this.postData.subscribePrice;
       obj.basic.houseVO.address = this.postData.address;

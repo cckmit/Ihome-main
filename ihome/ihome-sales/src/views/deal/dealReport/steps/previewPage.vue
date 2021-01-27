@@ -492,6 +492,12 @@
       <el-button type="success" @click="handleSubmit('submit')">提交</el-button>
       <el-button @click="handleStepNext">返回</el-button>
     </div>
+    <IhImgViews
+      v-if="isShowImg"
+      :url-list="srcList"
+      :viewer-msg="srcData"
+      :onClose="() => (isShowImg = false)"
+    ></IhImgViews>
   </ih-page>
 </template>
 <script lang="ts">
@@ -501,14 +507,22 @@
     post_suppDeal_entryAchieveInfChange, // 录入业绩信息变更
     post_suppDeal_entryRetreatRoom, // 录入退房
     post_suppDeal_entryStaffAchieveChange, // 录入内部员工业绩变更
+    post_suppDeal_updateAchieveInfChangeVO, // 修改业绩信息变更
+    post_suppDeal_updateBasicInfChange, // 修改基础信息变更
+    post_suppDeal_updateRetreatRoom, // 修改退房
+    post_suppDeal_updateStaffAchieveChange, // 修改内部员工业绩变更
   } from "@/api/deal";
 
   @Component({
     components: {},
   })
   export default class PreviewPage extends Vue {
+    private isShowImg = false;
+    private srcList: any = [];
+    private srcData: any = [];
     @Prop() private pageData?: any; // 页面数据
     changeType: any = null; // 补充成交类型
+    btnType: any = null; // 新增add还是修改edit --- 初始化接口不一样
     infoForm: any = {
       dealCode: null,
       house: {}, // 房产信息
@@ -590,7 +604,7 @@
         this.pageData.noticeDealList.forEach((item: any) => {
           list.push(
             {
-              noticeAttachmentList: [], // 告知书附件
+              noticeAttachmentList: item.annexList, // 告知书附件
               noticeNo: '————', // 优惠告知书编号 --- 暂时新增的没有
               notificationStatus: null, // 告知书状态 --- 暂时新增的没有
               notificationStatusName: '新增', // 告知书状态 --- 显示新增
@@ -609,6 +623,7 @@
       // console.log('preview', this.pageData);
       this.dealId = this.$route.query.id;
       this.changeType = this.$route.query.type;
+      this.btnType = this.$route.query.btnType;
       this.infoForm = (this as any).$tool.deepClone(this.pageData);
       this.isCreated = true;
     }
@@ -619,6 +634,7 @@
       if (this.isCreated) {
         this.dealId = this.$route.query.id;
         this.changeType = this.$route.query.type;
+        this.btnType = this.$route.query.btnType;
         this.infoForm = (this as any).$tool.deepClone(this.pageData);
       }
     }
@@ -626,9 +642,25 @@
     // 预览-优惠告知书
     preview(scope: any) {
       // console.log(scope);
-      window.open(
-        `/sales-api/sales-document-cover/file/browse/${scope.row.templateId}`
-      );
+      if (scope.row.templateType === "ElectronicTemplate") {
+        window.open(
+          `/sales-api/sales-document-cover/file/browse/${scope.row.templateId}`
+        );
+      } else {
+        let imgList = scope.row.noticeAttachmentList || scope.row.annexList;
+        this.srcList = imgList.map(
+          (i: any) => `/sales-api/sales-document-cover/file/browse/${i.fileNo}`
+        );
+        this.srcData = imgList.map((v: any) => ({
+          name: v.attachmentSuffix,
+          preFileName: "优惠告知书",
+        }));
+        if (this.srcList.length) {
+          this.isShowImg = true;
+        } else {
+          this.$message.warning("暂无图片");
+        }
+      }
     }
 
     // 保存/提交功能
@@ -642,7 +674,13 @@
           // 变更基础信息
           postData.noticeDealList = this.pageData?.noticeDealList;
           postData.dealAddInputVO.status = type === 'save' ? 'Draft' : 'PlatformClerkUnreview';
-          await post_suppDeal_entryBasicInfChange(postData);
+          if (this.btnType === "add") {
+            // 去新增
+            await post_suppDeal_entryBasicInfChange(postData);
+          } else if (this.btnType === "edit") {
+            // 去修改
+            await post_suppDeal_updateBasicInfChange(postData);
+          }
           this.$goto({
             path: "/dealReport/list",
           });
@@ -651,7 +689,13 @@
           // 变更业绩信息
           postData.noticeDealList = this.pageData?.noticeDealList;
           postData.status = type === 'save' ? 'Draft' : 'PlatformClerkUnreview';
-          await post_suppDeal_entryAchieveInfChange(postData);
+          if (this.btnType === "add") {
+            // 去新增
+            await post_suppDeal_entryAchieveInfChange(postData);
+          } else if (this.btnType === "edit") {
+            // 去修改
+            await post_suppDeal_updateAchieveInfChangeVO(postData);
+          }
           this.$goto({
             path: "/dealReport/list",
           });
@@ -660,7 +704,13 @@
           // 退房
           postData.noticeDealList = this.pageData?.noticeDealList;
           postData.status = type === 'save' ? 'Draft' : 'PlatformClerkUnreview';
-          await post_suppDeal_entryRetreatRoom(postData);
+          if (this.btnType === "add") {
+            // 去新增
+            await post_suppDeal_entryRetreatRoom(postData);
+          } else if (this.btnType === "edit") {
+            // 去修改
+            await post_suppDeal_updateRetreatRoom(postData);
+          }
           this.$goto({
             path: "/dealReport/list",
           });
@@ -668,7 +718,13 @@
         case "ChangeInternalAchieveInf":
           // 内部员工业绩变更
           postData.status = type === 'save' ? 'Draft' : 'PlatformClerkUnreview';
-          await post_suppDeal_entryStaffAchieveChange(postData);
+          if (this.btnType === "add") {
+            // 去新增
+            await post_suppDeal_entryStaffAchieveChange(postData);
+          } else if (this.btnType === "edit") {
+            // 去修改
+            await post_suppDeal_updateStaffAchieveChange(postData);
+          }
           this.$goto({
             path: "/dealReport/list",
           });

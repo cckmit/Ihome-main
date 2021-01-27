@@ -1195,6 +1195,12 @@
             }
           "/>
     </ih-dialog>
+    <IhImgViews
+      v-if="isShowImg"
+      :url-list="srcList"
+      :viewer-msg="srcData"
+      :onClose="() => (isShowImg = false)"
+    ></IhImgViews>
   </ih-page>
 </template>
 <script lang="ts">
@@ -1213,12 +1219,17 @@
     post_suppDeal_previewEntryRetreatRoom, // 预览录入退房
     post_suppDeal_previewEntryAchieveInfChange, // 预览录入业绩信息变更
     post_suppDeal_previewEntryStaffAchieveChange, // 预览录入内部员工业绩变更
-    post_suppDeal_toAddSuppDeal, // 新增补充成交
+    post_suppDeal_toAddSuppDeal, // 新增补充成交 --- 初始页面接口
     post_buModelContType_getList,
     post_buModelContType_subList,
     post_pageData_initChannelComm,
     post_pageData_initAchieve,
     post_pageData_calculateReceiveAmount, // 根据收派套餐，计算收派金额
+    get_suppDeal_toUpdateSuppDeal, // 去修改补充成交 --- 初始页面接口
+    post_suppDeal_previewUpdateAchieveInfChange, // 预览修改业绩信息变更
+    post_suppDeal_previewUpdateBasicInfChange, // 预览修改基础信息变更
+    post_suppDeal_previewUpdateRetreatRoom, // 预览修改退房
+    post_suppDeal_previewUpdateStaffAchieveChange, // 预览修改内部员工业绩变更
   } from "@/api/deal";
   import {get_org_get__id} from "@/api/system"; // 获取组织name
   import {
@@ -1230,7 +1241,11 @@
       AgentCompanyList, EditDealAchieve},
   })
   export default class BasePage extends Vue {
+    private isShowImg = false;
+    private srcList: any = [];
+    private srcData: any = [];
     changeType: any = null; // 补充成交类型
+    btnType: any = null; // 新增add还是修改edit --- 初始化接口不一样
     contNoList: any = []; // 分销协议编号列表
     postData: any = {
       changeTypeByDeal: null, // 补充成交类型
@@ -1524,9 +1539,10 @@
       // 成交报告的id
       this.id = this.$route.query.id;
       this.changeType = this.$route.query.type;
+      this.btnType = this.$route.query.btnType;
       this.postData.changeTypeByDeal = this.$route.query.type;
       // console.log('this.changeType', this.changeType);
-      if (this.id && this.changeType) {
+      if (this.id && this.changeType && this.btnType) {
         await this.initPageInfo();
       }
     }
@@ -1587,11 +1603,20 @@
 
     // 初始化页面数据
     async initPageInfo() {
-      let postData: any = {
-        dealId: this.id,
-        suppContType: this.changeType
+      let res: any = null;
+      if (this.btnType === "add") {
+        // 去新增
+        let postData: any = {
+          dealId: this.id,
+          suppContType: this.changeType
+        }
+        res = await post_suppDeal_toAddSuppDeal(postData);
+      } else if (this.btnType === "edit") {
+        // 去修改
+        res = await get_suppDeal_toUpdateSuppDeal(this.id);
+      } else {
+        return;
       }
-      let res: any = await post_suppDeal_toAddSuppDeal(postData);
       // console.log(res);
       // 通过项目周期id获取基础信息
       await this.getBaseDealInfo(res.cycleId);
@@ -1780,7 +1805,11 @@
         // this.postData.receiveVO = baseInfo.receiveVOS && baseInfo.receiveVOS.length ? baseInfo.receiveVOS : [];
         if (baseInfo.receiveVOS && baseInfo.receiveVOS.length) {
           let tempList: any = (this as any).$parent.initReceiveVOS(baseInfo.receiveVOS);
-          this.postData.receiveList = [...this.postData.receiveList, ...tempList];
+          if (this.postData.receiveList && this.postData.receiveList.length) {
+            this.postData.receiveList.push(...tempList);
+          } else {
+            this.postData.receiveList = tempList;
+          }
         }
         // this.postData.receiveList = this.initReceiveVOS(baseInfo.receiveVOS);
         // 收派金额中的甲方
@@ -1810,19 +1839,14 @@
       if (baseInfo.termStageEnum) {
         let DealStageList: any = (this as any).$root.dictAllList('DealStage');
         if (DealStageList && DealStageList.length > 0) {
+          // 认购周期 --- 只有认购+签约
+          this.dealStageList = DealStageList.filter((item: any) => {
+            return item.code !== 'Recognize';
+          });
           switch(baseInfo.termStageEnum){
-            case 'Subscription':
-              // 认购周期 --- 只有认购+签约
-              this.dealStageList = DealStageList.filter((item: any) => {
-                return item.code !== 'Recognize';
-              });
-              break;
             case 'Recognize':
               // 清空优惠告知书 --- 认筹周期需要自己手动添加
               this.postData.offerNoticeVO = [];
-              this.dealStageList = DealStageList.filter((item: any) => {
-                return item.code !== 'Recognize';
-              });
               break;
           }
         }
@@ -1855,8 +1879,10 @@
         if (baseInfo.serviceFee) {
           let tempList: any = [];
           tempList.push(baseInfo.serviceFee);
-          let item: any = (this as any).$parent.initReceiveVOS(tempList);
-          this.postData.receiveList.push(item);
+          let list: any = (this as any).$parent.initReceiveVOS(tempList);
+          this.$nextTick(() => {
+            this.postData.receiveList.push(...list);
+          });
         }
         // 成交组织
         await this.getOrgName(baseInfo.groupId);
@@ -2118,26 +2144,45 @@
 
     // 改变物业类型
     changePropertyType() {
+      if (this.changeType !== "ChangeAchieveInf") return;
       // 清空栋座 + 房间号 + 下面的所有信息
       this.postData.roomId = null;
       this.postData.buildingId = null;
+      this.resetReceiveList();
       this.resetData();
     }
 
     // 改变栋座
     changeBuild() {
+      if (this.changeType !== "ChangeAchieveInf") return;
       // 清空房间号 + 下面的所有信息
       this.postData.roomId = null;
+      this.resetReceiveList();
       this.resetData();
     }
 
     // 改变房号
     changeRoom(value: any) {
+      if (this.changeType !== "ChangeAchieveInf") return;
       // console.log('改变房号', value);
+      this.resetReceiveList();
       this.resetData(); // 重置数据
       if (value) {
         this.initPageById(this.postData.cycleId, value, this.postData.propertyType);
       }
+    }
+
+    // 物业类型、栋座、房号改变，收派金额模块只需要清空代理费
+    resetReceiveList() {
+      if (this.postData.receiveList && this.postData.receiveList.length) {
+        this.postData.receiveList = this.postData.receiveList.filter((vo: any) => {
+          return vo.type === "ServiceFee";
+        });
+      }
+      this.addFlag = false;
+      this.editFlag = true;
+      this.tipsFlag = false;
+      this.dividerTips = '刷新成功';
     }
 
     // 改变计算方式 --- 手动/自动
@@ -2351,7 +2396,6 @@
       this.contNoList = []; // 分销协议编号
       this.packageIdsList = []; // ids
       this.postData.customerList = []; // 客户信息
-      this.postData.receiveList = []; // 收派金额
       this.postData.offerNoticeVO = []; // 优惠告知书
       this.postData.uploadDocumentList = []; // 上传附件
       this.postData.calculation = 'Auto'; // 计算方式改为手动
@@ -2364,7 +2408,7 @@
       this.dividerTips = '加载成功';
       let list: any = ['contType', 'contNo', 'recordState', 'recordStr', 'area', 'room', 'hall',
         'toilet', 'propertyNo', 'signType', 'stage', 'returnRatio', 'subscribePrice', 'subscribeDate',
-        'signPrice', 'signDate', 'dataSign', 'agencyId', 'agencyName', 'channelLevel', 'channelLevelName']
+        'signPrice', 'signDate', 'agencyId', 'agencyName', 'channelLevel', 'channelLevelName']
       this.resetObject('postData', list);
     }
 
@@ -2395,6 +2439,7 @@
 
     // 选择项目周期
     selectProject() {
+      if (this.changeType !== "ChangeAchieveInf") return;
       this.dialogAddProjectCycle = true;
     }
 
@@ -2404,11 +2449,9 @@
       if (data && data.length > 0) {
         // 不管是否一样，都清数据
         if (this.postData.cycleId) {
+          this.postData.receiveList = []; // 收派金额
           await this.resetData();
-          this.packageIdsList = []; // ids
         }
-        // await this.resetData();
-        // this.packageIdsList = []; // ids
         this.postData.cycleName = data[0].termName;
         this.postData.cycleId = data[0].termId;
         this.cycleCheckedData = [...data];
@@ -2435,9 +2478,25 @@
     // 预览-优惠告知书
     preview(scope: any) {
       // console.log(scope);
-      window.open(
-        `/sales-api/sales-document-cover/file/browse/${scope.row.templateId}`
-      );
+      if (scope.row.templateType === "ElectronicTemplate") {
+        window.open(
+          `/sales-api/sales-document-cover/file/browse/${scope.row.templateId}`
+        );
+      } else {
+        let imgList = scope.row.noticeAttachmentList || scope.row.annexList;
+        this.srcList = imgList.map(
+          (i: any) => `/sales-api/sales-document-cover/file/browse/${i.fileNo}`
+        );
+        this.srcData = imgList.map((v: any) => ({
+          name: v.attachmentSuffix,
+          preFileName: "优惠告知书",
+        }));
+        if (this.srcList.length) {
+          this.isShowImg = true;
+        } else {
+          this.$message.warning("暂无图片");
+        }
+      }
     }
 
     // 添加客户
@@ -3012,8 +3071,9 @@
       switch (btnType) {
         case "preview":
           // 预览
-          this.$emit("preview");
-          console.log(123);
+          if (this.changeType === "ChangeInternalAchieveInf") {
+            await this.submitData();
+          }
           break;
         case "next":
           // 下一步
@@ -3034,7 +3094,13 @@
         case "ChangeBasicInf":
           // 变更基础信息
           data = await this.initBaseData();
-          await post_suppDeal_previewEntryBasicInfChange(data);
+          if (this.btnType === "add") {
+            // 去新增
+            await post_suppDeal_previewEntryBasicInfChange(data);
+          } else if (this.btnType === "edit") {
+            // 去修改
+            await post_suppDeal_previewUpdateBasicInfChange(data);
+          }
           this.$emit('next', 'next', {
             ...this.postData,
             // receiveAchieveVO: this.receiveAchieveVO,
@@ -3044,7 +3110,13 @@
         case "ChangeAchieveInf":
           // 变更成交业绩信息
           data = await this.initRetreatRoomData();
-          await post_suppDeal_previewEntryAchieveInfChange(data);
+          if (this.btnType === "add") {
+            // 去新增
+            await post_suppDeal_previewEntryAchieveInfChange(data);
+          } else if (this.btnType === "edit") {
+            // 去修改
+            await post_suppDeal_previewUpdateAchieveInfChange(data);
+          }
           this.$emit('next', 'next', {
             ...this.postData,
             // receiveAchieveVO: this.receiveAchieveVO,
@@ -3054,7 +3126,13 @@
         case "RetreatRoom":
           // 退房
           data = await this.initRetreatRoomData();
-          await post_suppDeal_previewEntryRetreatRoom(data);
+          if (this.btnType === "add") {
+            // 去新增
+            await post_suppDeal_previewEntryRetreatRoom(data);
+          } else if (this.btnType === "edit") {
+            // 去修改
+            await post_suppDeal_previewUpdateRetreatRoom(data);
+          }
           this.$emit('next', 'next', {
             ...this.postData,
             // receiveAchieveVO: this.receiveAchieveVO,
@@ -3064,8 +3142,14 @@
         case "ChangeInternalAchieveInf":
           // 内部员工业绩变更
           data = await this.initStaffAchieveData();
-          await post_suppDeal_previewEntryStaffAchieveChange(data);
-          this.$emit('next', 'next', {
+          if (this.btnType === "add") {
+            // 去新增
+            await post_suppDeal_previewEntryStaffAchieveChange(data);
+          } else if (this.btnType === "edit") {
+            // 去修改
+            await post_suppDeal_previewUpdateStaffAchieveChange(data);
+          }
+          this.$emit("preview", {
             ...this.postData,
             // receiveAchieveVO: this.receiveAchieveVO,
             currentPostData: data

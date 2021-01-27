@@ -42,7 +42,7 @@
   })
   export default class SuppDeal extends Vue {
     id: any = null; // 成交报告id
-    type: any = null; // 补充成交类型
+    changeType: any = null; // 补充成交类型
     currentStepsList: any = [];
     baseInfoStepsList: any = [
       {
@@ -160,13 +160,12 @@
     }
 
     async created() {
-      this.type = this.$route.query.type; // 补充成交类型
-      // console.log('this.type ', this.type);
-      if (this.type) {
+      this.changeType = this.$route.query.type; // 补充成交类型
+      if (this.changeType) {
         // 初始化步骤
         this.currentActiveIndex = 0;
         // 初始化步骤条
-        switch(this.type){
+        switch(this.changeType){
           case 'ChangeBasicInf' :
             // 变更基础信息
             this.currentStepsList = (this as any).$tool.deepClone(this.baseInfoStepsList);
@@ -209,9 +208,12 @@
     }
 
     // 子组件触发预览变更方法
-    handlePreview() {
+    handlePreview(data: any = null) {
       // 下一步
       this.currentActiveIndex = this.currentActiveIndex + 1;
+      if (data) {
+        this.pageData = data; // 保存页面数据
+      }
     }
 
     // 回到列表页
