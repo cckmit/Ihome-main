@@ -4,7 +4,7 @@
  * @Author: wwq
  * @Date: 2020-08-13 11:40:10
  * @LastEditors: wwq
- * @LastEditTime: 2021-01-18 19:24:51
+ * @LastEditTime: 2021-01-27 14:15:02
 -->
 <template>
   <IhPage label-width="110px">
@@ -215,7 +215,7 @@
               </span>
               <el-dropdown-menu slot="dropdown">
                 <el-dropdown-item
-                  :class="{'ih-data-disabled': row.auditEnum !== 'Draft'}"
+                  :class="{'ih-data-disabled': !editChange(row)}"
                   @click.native.prevent="routerTo(row, 'edit')"
                   v-has="'B.SALES.PROJECT.BASICLIST.UPDATE'"
                 >编辑</el-dropdown-item>
@@ -288,14 +288,23 @@ export default class ProjectList extends Vue {
     },
   ];
 
+  editChange(row: any) {
+    const Adopt = row.auditEnum === "Adopt";
+    const RHeadBusinessManagement = this.$roleTool.RHeadBusinessManagement();
+    const RBusinessManagement = this.$roleTool.RBusinessManagement();
+    const RFrontLineClerk = this.$roleTool.RFrontLineClerk();
+    return (
+      (Adopt &&
+        (RHeadBusinessManagement || RBusinessManagement || RFrontLineClerk)) ||
+      RFrontLineClerk
+    );
+  }
+
   auditChange(row: any) {
     const Conduct = row.auditEnum === "Conduct";
-    const roleList = (this.$root as any).userInfo.roleList.map(
-      (v: any) => v.code
-    );
-    const fen = roleList.includes("RBusinessManagement");
-    const zong = roleList.includes("RHeadBusinessManagement");
-    return (fen || zong) && Conduct;
+    const RBusinessManagement = this.$roleTool.RBusinessManagement();
+    const RHeadBusinessManagement = this.$roleTool.RHeadBusinessManagement();
+    return (RBusinessManagement || RHeadBusinessManagement) && Conduct;
   }
 
   get emptyText() {
@@ -375,6 +384,7 @@ export default class ProjectList extends Vue {
         proName: row.proName,
       },
     });
+    window.sessionStorage.setItem("projectStatus", row.auditEnum);
   }
 
   // 删除

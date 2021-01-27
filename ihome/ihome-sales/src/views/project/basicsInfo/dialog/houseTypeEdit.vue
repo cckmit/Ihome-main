@@ -4,7 +4,7 @@
  * @Author: wwq
  * @Date: 2020-11-03 18:39:23
  * @LastEditors: wwq
- * @LastEditTime: 2021-01-21 10:52:56
+ * @LastEditTime: 2021-01-27 17:16:19
 -->
 <template>
   <el-dialog
@@ -47,6 +47,7 @@
               v-model="form.houseName"
               placeholder="户型名称"
               maxlength="200"
+              :disabled="Boolean(form.type)"
             ></el-input>
           </el-form-item>
         </el-col>
@@ -62,6 +63,7 @@
                 v-model="form.space"
                 placeholder="户型面积"
                 maxlength="50"
+                :disabled="Boolean(form.type)"
                 v-digits="2"
               ></el-input>
               <span style="width: 30px; margin-left: 10px">m²</span>
@@ -76,6 +78,7 @@
               <el-select
                 v-model="form.room"
                 clearable
+                :disabled="Boolean(form.type)"
               >
                 <el-option
                   v-for="item in numOptions"
@@ -88,6 +91,7 @@
               <el-select
                 v-model="form.hall"
                 clearable
+                :disabled="Boolean(form.type)"
               >
                 <el-option
                   v-for="item in numOptions"
@@ -100,6 +104,7 @@
               <el-select
                 v-model="form.kitchen"
                 clearable
+                :disabled="Boolean(form.type)"
               >
                 <el-option
                   v-for="item in numOptions"
@@ -112,6 +117,7 @@
               <el-select
                 v-model="form.toilet"
                 clearable
+                :disabled="Boolean(form.type)"
               >
                 <el-option
                   v-for="item in numOptions"
@@ -131,6 +137,7 @@
             <el-select
               v-model="form.positionEnum"
               clearable
+              :disabled="Boolean(form.type)"
             >
               <el-option
                 v-for="item in $root.dictAllList('Position')"
@@ -248,7 +255,11 @@ export default class HouseTypeEdit extends Vue {
     }
   }
   newFileList(data: any) {
-    this.$set(this.form.fileList, 0, data[0]);
+    if (data.length) {
+      this.$set(this.form.fileList, 0, data[0]);
+    } else {
+      this.form.fileList = [];
+    }
   }
 }
 </script>

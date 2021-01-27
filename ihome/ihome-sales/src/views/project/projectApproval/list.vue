@@ -4,7 +4,7 @@
  * @Author: wwq
  * @Date: 2020-11-27 17:11:14
  * @LastEditors: wwq
- * @LastEditTime: 2021-01-18 19:09:40
+ * @LastEditTime: 2021-01-27 15:11:55
 -->
 <template>
   <IhPage label-width="100px">
@@ -323,14 +323,17 @@ export default class ProjectApproval extends Vue {
     const ConstractAdopt = row.auditEnum === "ConstractAdopt";
     const ConstractReject = row.auditEnum === "ConstractReject";
     const ConstractWait = row.auditEnum === "ConstractWait";
+    const RHeadBusinessManagement = this.$roleTool.RHeadBusinessManagement();
+    const RBusinessManagement = this.$roleTool.RBusinessManagement();
+    const RFrontLineClerk = this.$roleTool.RFrontLineClerk();
     const Start = row.state === "Start";
     return (
-      (Draft ||
-        TermAdopt ||
-        TermReject ||
-        ConstractAdopt ||
-        ConstractReject ||
-        ConstractWait) &&
+      ((Draft && RFrontLineClerk) ||
+        (TermAdopt && RFrontLineClerk) ||
+        (TermReject && RFrontLineClerk) ||
+        (ConstractAdopt && (RHeadBusinessManagement || RBusinessManagement)) ||
+        (ConstractReject && RFrontLineClerk) ||
+        (ConstractWait && RFrontLineClerk)) &&
       Start
     );
   }

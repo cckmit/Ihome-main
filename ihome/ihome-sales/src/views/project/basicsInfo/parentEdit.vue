@@ -4,7 +4,7 @@
  * @Author: wwq
  * @Date: 2020-11-10 10:21:03
  * @LastEditors: wwq
- * @LastEditTime: 2020-11-11 15:00:00
+ * @LastEditTime: 2021-01-27 17:10:14
 -->
 <template>
   <ih-page>
@@ -138,8 +138,9 @@
         <el-button
           type="primary"
           @click="save"
-        >保存</el-button>
-        <el-button @click="$goto({ path: '/projects/list' })">关闭</el-button>
+          v-has="'B.SALES.PROJECT.BASICLIST.FXMBC'"
+        >保 存</el-button>
+        <el-button @click="$goto({ path: '/projects/list' })">关 闭</el-button>
       </div>
     </template>
   </ih-page>
@@ -196,6 +197,21 @@ export default class EditBasicInfo extends Vue {
       name: "是",
     },
   ];
+
+  saveChange() {
+    const status = window.sessionStorage.getItem("projectStatus");
+    const Draft = status === "Draft";
+    const Adopt = status === "Adopt";
+    const Reject = status === "Reject";
+    const RHeadBusinessManagement = this.$roleTool.RHeadBusinessManagement();
+    const RBusinessManagement = this.$roleTool.RBusinessManagement();
+    const RFrontLineClerk = this.$roleTool.RFrontLineClerk();
+    return (
+      (Draft && RFrontLineClerk) ||
+      ((RHeadBusinessManagement || RBusinessManagement) && Adopt) ||
+      (RFrontLineClerk && Reject)
+    );
+  }
 
   private get projectId() {
     return this.$route.query.id;
