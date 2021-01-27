@@ -2360,21 +2360,41 @@
           switch(vo.code) {
             case "VisitConfirForm":
               // 来访确认单
+              if (initData.visitConfirmForms && initData.visitConfirmForms.length) {
+                initData.visitConfirmForms.forEach((item: any) => {
+                  item.name = item.fileName;
+                });
+              }
               vo.defaultFileList = initData.visitConfirmForms && initData.visitConfirmForms.length ? initData.visitConfirmForms : [];
               // vo.fileList = initData.visitConfirmForms && initData.visitConfirmForms.length ? initData.visitConfirmForms : [];
               break;
             case "Notice":
               // 优惠告知书PDF
+              if (initData.noticePDF && initData.noticePDF.length) {
+                initData.noticePDF.forEach((item: any) => {
+                  item.name = item.fileName;
+                });
+              }
               vo.defaultFileList = initData.noticePDF && initData.noticePDF.length  ? initData.noticePDF : [];
               // vo.fileList = initData.noticePDF && initData.noticePDF.length  ? initData.noticePDF : [];
               break;
             case "OwnerID":
               // 业主身份证
+              if (initData.customerIds && initData.customerIds.length) {
+                initData.customerIds.forEach((item: any) => {
+                  item.name = item.fileName;
+                });
+              }
               vo.defaultFileList = initData.customerIds && initData.customerIds.length ? initData.customerIds : [];
               // vo.fileList = initData.customerIds && initData.customerIds.length ? initData.customerIds : [];
               break;
             case "DealConfirForm":
               // 成交确认书
+              if (initData.dealConfirmForms && initData.dealConfirmForms.length) {
+                initData.dealConfirmForms.forEach((item: any) => {
+                  item.name = item.fileName;
+                });
+              }
               vo.defaultFileList = initData.dealConfirmForms && initData.dealConfirmForms.length ? initData.dealConfirmForms : [];
               // vo.fileList = initData.dealConfirmForms && initData.dealConfirmForms.length ? initData.dealConfirmForms : [];
               break;
