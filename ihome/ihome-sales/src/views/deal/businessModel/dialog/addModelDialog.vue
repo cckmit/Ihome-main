@@ -154,7 +154,7 @@
           //   contTypeList: []
           // };
           await post_buModelContType_update(this.postData);
-          this.$message.success("编辑成功");
+          this.$message.success("修改成功");
           await this.finish();
         } else {
           // 新增模式
