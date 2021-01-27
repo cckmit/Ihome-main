@@ -83,9 +83,9 @@
             {{$root.dictAllName(infoForm.isMat, 'YesOrNoType')}}
           </el-form-item>
         </el-col>
-        <el-col :span="8">
-          <el-form-item label="报备信息">{{infoForm.recordStr}}</el-form-item>
-        </el-col>
+<!--        <el-col :span="8">-->
+<!--          <el-form-item label="报备信息">{{infoForm.recordStr}}</el-form-item>-->
+<!--        </el-col>-->
         <el-col :span="8">
           <el-form-item label="渠道公司">
             {{infoForm.agencyList && infoForm.agencyList.length ? infoForm.agencyList[0].agencyName : ''}}

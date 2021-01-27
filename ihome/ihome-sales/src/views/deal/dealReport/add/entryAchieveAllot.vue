@@ -245,11 +245,11 @@
             </el-select>
           </el-form-item>
         </el-col>
-        <el-col :span="8" v-if="postData.contType === 'DistriDeal'">
-          <el-form-item label="报备信息" :prop="postData.contType === 'DistriDeal' ? 'recordStr' : 'notEmpty'">
-            <el-input v-model="postData.recordStr" :disabled="baseInfoInDeal.hasRecord"></el-input>
-          </el-form-item>
-        </el-col>
+<!--        <el-col :span="8" v-if="postData.contType === 'DistriDeal'">-->
+<!--          <el-form-item label="报备信息" :prop="postData.contType === 'DistriDeal' ? 'recordStr' : 'notEmpty'">-->
+<!--            <el-input v-model="postData.recordStr" :disabled="baseInfoInDeal.hasRecord"></el-input>-->
+<!--          </el-form-item>-->
+<!--        </el-col>-->
         <el-col :span="8">
           <el-form-item label="备案情况" prop="recordState">
             <el-select
@@ -427,8 +427,10 @@
           </el-form-item>
         </el-col>
         <el-col :span="8" v-if="!!id">
-          <el-form-item label="成交状态" :prop="!!id ? 'status' : 'notEmpty'">
-            <el-input v-model="postData.status" disabled></el-input>
+          <el-form-item label="成交状态">
+            <div class="div-disabled">
+              {{$root.dictAllName(postData.dataSign, 'DealStatus')}}
+            </div>
           </el-form-item>
         </el-col>
       </el-row>
@@ -1419,7 +1421,11 @@
       console.log(res);
       await this.editBaseDealInfo(res.cycleId);
       await this.editInitPageById(res.cycleId, res.house.roomId, res.house.propertyType);
-      await this.getInformation(id);
+      if (res.notice && res.notice.length) {
+        this.postData.offerNoticeVO = res.notice;
+      } else {
+        await this.getInformation(id);
+      }
       this.$nextTick(() => {
         this.postData.dealCode = res.dealCode;
         this.postData.cycleId = res.cycleId;

@@ -271,14 +271,14 @@
         </el-table-column>
         <el-table-column prop="commAmount" label="渠道信息" min-width="190">
           <template slot-scope="scope">
-            <div>公司：{{scope.row.commAmount}}</div>
+            <div>公司：{{scope.row.dealBranchCompany}}</div>
             <div>经纪人：{{scope.row.paidCommAmount}}</div>
           </template>
         </el-table-column>
         <el-table-column prop="commAmount" label="项目周期信息" min-width="180">
           <template slot-scope="scope">
-            <div>项目：{{scope.row.commAmount}}</div>
-            <div>周期：{{scope.row.paidCommAmount}}</div>
+            <div>项目：{{scope.row.projectName}}</div>
+            <div>周期：{{scope.row.termName}}</div>
           </template>
         </el-table-column>
         <el-table-column prop="entryPerson" label="人员信息" min-width="180">
