@@ -1045,12 +1045,13 @@
   import AgentCompanyList from "@/views/deal/dealReport/dialog/agentCompanyList.vue";
   import EditDealAchieve from "@/views/deal/dealReport/dialog/editDealAchieve.vue";
   import {
+    get_deal_get__id, // 编辑功能
+
     get_pageData_getProBaseByTermId__cycleId, // 通过项目周期获取成交基础信息
     post_pageData_dealCheckNotice, // 判断是否应该存在优惠告知书，返回true则允许添加，返回false则不允许，返回业务逻辑则直接抛出异常
     post_pageData_initBasic, // 选择周期、房号后初始化页面
     post_pageData_initChannelComm, // 初始化对外拆佣表格数据
     post_pageData_initAchieve, // 初始化平台费用表格数据
-    get_deal_get__id, // 编辑功能
     post_deal_achieveAllotEntry, // 文员岗 - 录入成交信息
     post_deal_updateAchieveAllot, // 文员岗 - 修改成交信息
     post_pageData_recalculateAchieve, // 重新计算平台费用部分
@@ -1731,9 +1732,10 @@
       this.baseInfoByTerm = JSON.parse(JSON.stringify(baseInfo));
       // 给postData赋值对应数据
       if (baseInfo) {
-        this.contTypeList = await this.getContTypeList(this.postData.modelCode); // 获取合同类型
-        this.postData.refineModel = (this as any).$parent.getRefineModel(this.postData.modelCode); // 赋值细分业务模式
-        this.refineModelList = await this.getRefineModelList(this.postData.modelCode); // 获取细分业务模式下拉项
+        this.postData.modelCode = baseInfo.busEnum; // 业务模式
+        this.contTypeList = await this.getContTypeList(baseInfo.busEnum); // 获取合同类型
+        this.refineModelList = await this.getRefineModelList(baseInfo.busEnum); // 获取细分业务模式下拉项
+        this.postData.refineModel = (this as any).$parent.getRefineModel(baseInfo.busEnum); // 赋值细分业务模式
         // 是否市场化项目
         this.postData.isMarketProject = baseInfo.exMarket === 1 ? 'Yes' : 'No';
         // 物业类型

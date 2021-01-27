@@ -1263,9 +1263,10 @@
       this.baseInfoByTerm = JSON.parse(JSON.stringify(baseInfo));
       // 给postData赋值对应数据
       if (baseInfo) {
-        this.contTypeList = await this.getContTypeList(this.postData.modelCode); // 获取合同类型
-        this.postData.refineModel = (this as any).$parent.getRefineModel(this.postData.modelCode); // 赋值细分业务模式
-        this.refineModelList = await this.getRefineModelList(this.postData.modelCode); // 获取细分业务模式下拉项
+        this.postData.modelCode = baseInfo.busEnum; // 业务模式
+        this.contTypeList = await this.getContTypeList(baseInfo.busEnum); // 获取合同类型
+        this.refineModelList = await this.getRefineModelList(baseInfo.busEnum); // 获取细分业务模式下拉项
+        this.postData.refineModel = (this as any).$parent.getRefineModel(baseInfo.busEnum); // 赋值细分业务模式
         // 是否市场化项目
         this.postData.isMarketProject = baseInfo.exMarket === 1 ? 'Yes' : 'No';
         // 物业类型
