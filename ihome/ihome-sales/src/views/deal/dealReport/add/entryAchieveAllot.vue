@@ -2031,7 +2031,12 @@
       if (baseInfo.receiveVOS && baseInfo.receiveVOS.length) {
         let tempList: any = (this as any).$parent.initReceiveVOS(baseInfo.receiveVOS);
         console.log('receiveVO:', tempList);
-        this.postData.receiveVO = [...this.postData.receiveVO, ...tempList];
+        if (this.postData.receiveVO && this.postData.receiveVO.length) {
+          this.postData.receiveVO.push(...tempList);
+        } else {
+          this.postData.receiveVO = tempList;
+        }
+        // this.postData.receiveVO = [...this.postData.receiveVO, ...tempList];
         console.log('postData.receiveVO:', tempList);
       }
       // 暂存
