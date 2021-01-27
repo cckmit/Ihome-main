@@ -587,7 +587,7 @@
           </el-table-column>
           <el-table-column prop="packageId" label="收派套餐" min-width="140">
             <template slot-scope="scope">
-              <div v-if="['ChangeBasicInf', 'ChangeInternalAchieveInf'].includes(changeType)">
+              <div v-if="!['ChangeBasicInf', 'ChangeInternalAchieveInf'].includes(changeType)">
                 <el-tooltip placement="top" effect="light">
                   <div slot="content">
                     <el-table :data="scope.row.showData" style="width: 100%">
