@@ -1245,14 +1245,14 @@
         // 不管是否一样，都清数据
         if (this.postData.cycleId) {
           await this.resetData();
-          this.packageIdsList = []; // ids
         }
         // await this.resetData();
-        // this.packageIdsList = []; // ids
-        this.postData.cycleName = data[0].termName;
-        this.postData.cycleId = data[0].termId;
-        this.cycleCheckedData = [...data];
-        await this.getBaseDealInfo(this.postData.cycleId);
+        this.$nextTick(async () => {
+          this.postData.cycleName = data[0].termName;
+          this.postData.cycleId = data[0].termId;
+          this.cycleCheckedData = [...data];
+          await this.getBaseDealInfo(this.postData.cycleId);
+        });
       }
     }
 
@@ -1263,8 +1263,6 @@
       this.baseInfoByTerm = JSON.parse(JSON.stringify(baseInfo));
       // 给postData赋值对应数据
       if (baseInfo) {
-        // 业务模式
-        // this.postData.businessType = baseInfo.busEnum;
         this.contTypeList = await this.getContTypeList(this.postData.modelCode); // 获取合同类型
         this.postData.refineModel = (this as any).$parent.getRefineModel(this.postData.modelCode); // 赋值细分业务模式
         this.refineModelList = await this.getRefineModelList(this.postData.modelCode); // 获取细分业务模式下拉项

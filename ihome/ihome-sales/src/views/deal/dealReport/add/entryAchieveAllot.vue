@@ -34,9 +34,9 @@
           </el-form-item>
         </el-col>
         <el-col :span="8">
-          <el-form-item label="业务模式" prop="businessType">
+          <el-form-item label="业务模式" prop="modelCode">
             <el-select
-              v-model="postData.businessType"
+              v-model="postData.modelCode"
               disabled
               class="width--100">
               <el-option
@@ -52,7 +52,7 @@
           <el-form-item label="细分业务模式" prop="refineModel">
             <el-select
               v-model="postData.refineModel"
-              :disabled="['TotalBagModel', 'DistriModel'].includes(postData.businessType)"
+              :disabled="['TotalBagModel', 'DistriModel'].includes(postData.modelCode)"
               placeholder="请选择细分业务模式"
               @change="changeRefineModel"
               class="width--100">
@@ -668,7 +668,7 @@
                 v-digits="2"
                 @input="changeReceiveItem($event, scope.row, 'totalPackageAmount')"
                 v-model="scope.row.totalPackageAmount"
-                :disabled="(postData.calculation === 'Auto' || postData.businessType !== 'DistriModel')"
+                :disabled="(postData.calculation === 'Auto' || postData.modelCode !== 'DistriModel')"
                 placeholder="总包业绩金额"></el-input>
             </template>
           </el-table-column>
@@ -678,7 +678,7 @@
                 v-digits="2"
                 @input="changeReceiveItem($event, scope.row, 'distributionAmount')"
                 v-model="scope.row.distributionAmount"
-                :disabled="(postData.calculation === 'Auto' || postData.businessType !== 'TotalBagModel')">
+                :disabled="(postData.calculation === 'Auto' || postData.modelCode !== 'TotalBagModel')">
               </el-input>
             </template>
           </el-table-column>
@@ -834,7 +834,7 @@
       </el-col>
     </el-row>
     <p id="anchor-9" class="ih-info-title">平台费用</p>
-    <div v-if="postData.businessType !== 'DistriModel'">
+    <div v-if="postData.modelCode !== 'DistriModel'">
       <div class="ih-type-wrapper">
         <div class="title">总包</div>
         <el-button
@@ -906,7 +906,7 @@
         </el-col>
       </el-row>
     </div>
-    <div v-if="postData.businessType !== 'TotalBagModel'">
+    <div v-if="postData.modelCode !== 'TotalBagModel'">
       <div class="ih-type-wrapper">
         <div class="title">分销</div>
         <el-button
@@ -1135,7 +1135,7 @@
       dealCode: null,
       cycleId: null, // 接口用到的id
       cycleName: null, // 只用于显示
-      businessType: null,
+      modelCode: null,
       contType: null,
       refineModel: null, // 细分业务模式
       channelId: null,
@@ -1202,7 +1202,7 @@
       cycleId: [
         {required: true, message: "项目周期必选", trigger: "change"},
       ],
-      businessType: [
+      modelCode: [
         {required: true, message: "业务模式必选", trigger: "change"},
       ],
       contType: [
@@ -1593,7 +1593,7 @@
         contType: this.postData.contType, // 合同类型
         distriAmount: this.getTotalAmount('distributionAmount'), // 分销金额
         isMarketProject: this.postData.isMarketProject, // 是否市场化项目
-        modelCode: this.postData.businessType, // 业务模式
+        modelCode: this.postData.modelCode, // 业务模式
         propertyType: this.postData.propertyType, // 物业类型
         specialId: this.baseInfoByTerm.specialId, // 特殊方案Id --- 项目周期带出
         totalBagAmount: this.getTotalAmount('totalPackageAmount') // 总包金额
@@ -1713,13 +1713,14 @@
       if (data && data.length > 0) {
         // 不管相等不相等要清空数据关联数据 + 重新请求接口
         if (this.postData.cycleId) {
-          this.resetData();
-          this.packageIdsList = []; // ids
+          await this.resetData();
         }
-        this.postData.cycleName = data[0].termName;
-        this.postData.cycleId = data[0].termId;
-        this.cycleCheckedData = [...data];
-        await this.getBaseDealInfo(this.postData.cycleId);
+        this.$nextTick(async () => {
+          this.postData.cycleName = data[0].termName;
+          this.postData.cycleId = data[0].termId;
+          this.cycleCheckedData = [...data];
+          await this.getBaseDealInfo(this.postData.cycleId);
+        });
       }
     }
 
@@ -1730,11 +1731,9 @@
       this.baseInfoByTerm = JSON.parse(JSON.stringify(baseInfo));
       // 给postData赋值对应数据
       if (baseInfo) {
-        // 业务模式
-        this.postData.businessType = baseInfo.busEnum;
-        this.contTypeList = await this.getContTypeList(this.postData.businessType); // 获取合同类型
-        this.postData.refineModel = (this as any).$parent.getRefineModel(this.postData.businessType); // 赋值细分业务模式
-        this.refineModelList = await this.getRefineModelList(this.postData.businessType); // 获取细分业务模式下拉项
+        this.contTypeList = await this.getContTypeList(this.postData.modelCode); // 获取合同类型
+        this.postData.refineModel = (this as any).$parent.getRefineModel(this.postData.modelCode); // 赋值细分业务模式
+        this.refineModelList = await this.getRefineModelList(this.postData.modelCode); // 获取细分业务模式下拉项
         // 是否市场化项目
         this.postData.isMarketProject = baseInfo.exMarket === 1 ? 'Yes' : 'No';
         // 物业类型
@@ -2737,7 +2736,7 @@
         branchCompanyId: this.baseInfoByTerm.startDivisionId, // 分公司Id --- 项目周期带出
         contType: this.postData.contType, // 合同类型
         isMarketProject: this.postData.isMarketProject, // 是否市场化项目
-        modelCode: this.postData.businessType, // 业务模式
+        modelCode: this.postData.modelCode, // 业务模式
         propertyType: this.postData.propertyType, // 物业类型
         specialId: this.baseInfoByTerm.specialId, // 特殊方案Id --- 项目周期带出
         distriAmount: this.getTotalAmount('distributionAmount'), // 分销总金额
@@ -2987,7 +2986,7 @@
       obj.basic.dealVO.dealOrgId = this.postData.dealOrgId;
       obj.basic.dealVO.isConsign = this.postData.isConsign;
       obj.basic.dealVO.isMarketProject = this.postData.isMarketProject;
-      obj.basic.dealVO.modelCode = this.postData.businessType;
+      obj.basic.dealVO.modelCode = this.postData.modelCode;
       // 优惠告知书ids
       if (this.postData.offerNoticeVO.length > 0) {
         let firstNoticeList: any = []; // 类型为优惠告知书的id列表

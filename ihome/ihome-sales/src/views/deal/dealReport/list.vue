@@ -501,10 +501,29 @@
 
     // 修改
     async handleEdit(scope: any) {
-      this.$router.push({
-        path: "/dealReport/add",
-        query: {id: scope.row.id}
-      });
+      //
+      if (scope.row.id === scope.row.parentId) {
+        // 主成交
+        let type: any = '';
+        if (scope.row.status === "Draft") {
+          // 案场岗的录入编辑
+          type = "declare"
+        } else if (['Reject', 'AchieveDeclareUnconfirm'].includes(scope.row.status)) {
+          // 文员岗的录入编辑
+          type = "add"
+        }
+        if (!type) return;
+        this.$router.push({
+          path: "/dealReport/add",
+          query: {
+            id: scope.row.id,
+            btnType: type
+          }
+        });
+      } else {
+        // 补充成交
+
+      }
     }
 
     // 删除
