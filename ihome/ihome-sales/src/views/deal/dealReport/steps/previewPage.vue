@@ -92,9 +92,9 @@
               {{$root.dictAllName(infoForm.isMat, 'YesOrNoType')}}
             </el-form-item>
           </el-col>
-          <el-col :span="8" v-if="infoForm.contType === 'DistriDeal'">
-            <el-form-item label="报备信息">{{infoForm.recordStr}}</el-form-item>
-          </el-col>
+<!--          <el-col :span="8" v-if="infoForm.contType === 'DistriDeal'">-->
+<!--            <el-form-item label="报备信息">{{infoForm.recordStr}}</el-form-item>-->
+<!--          </el-col>-->
           <el-col :span="8">
             <el-form-item label="备案情况">
               {{$root.dictAllName(infoForm.recordState, 'HasOrNoType')}}
