@@ -1464,8 +1464,26 @@
         this.postData.status = res.status;
         this.postData.customerVO = res.customerList;
         this.postData.receiveVO = this.initReceiveVO(res.receiveList);
+        // 收派金额中的甲方
+        this.commissionCustomerList = [];
+        this.commissionCustomerList = this.initCommissionCustomer(res.receiveList);
+        this.commissionServiceFeeObj = {};
+        this.commissionServiceFeeObj = this.initCommissionServiceFee(res.receiveList);
         this.postData.documentVO = this.initDocumentVO(res.documentList);
         this.postData.offerNoticeVO = res.notice;
+        this.postData.commissionInfoList = res.channelCommList;
+        this.postData.achieveTotalBagList = [];
+        this.postData.achieveDistriList = [];
+        if (res.achieveList && res.achieveList.length) {
+          res.achieveList.forEach((list: any) => {
+            if (list.type === "TotalBag") {
+              this.postData.achieveTotalBagList.push(list);
+            }
+            if (list.type === "Distri") {
+              this.postData.achieveDistriList.push(list);
+            }
+          });
+        }
       });
     }
 
