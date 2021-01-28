@@ -196,7 +196,11 @@
               </template>
             </el-table-column>
             <el-table-column prop="noticeNo" label="优惠告知书编号" min-width="120"></el-table-column>
-            <el-table-column prop="notificationStatus" label="优惠告知书状态" min-width="120"></el-table-column>
+            <el-table-column prop="notificationStatus" label="优惠告知书状态" min-width="120">
+              <template v-slot="{ row }">
+                {{$root.dictAllName(row.notificationStatus, 'NotificationStatus')}}
+              </template>
+            </el-table-column>
             <el-table-column fixed="right" label="操作" width="130">
               <template slot-scope="scope">
                 <el-link
@@ -464,7 +468,7 @@
             :data="postData.documentList">
             <el-table-column prop="fileType" label="类型" width="200">
               <template slot-scope="scope">
-                <div>{{$root.dictAllName(scope.row.fileType, 'DealFileType')}}</div>
+                <div>{{$root.dictAllName(scope.row.code, 'DealFileType')}}</div>
               </template>
             </el-table-column>
             <el-table-column prop="fileName" label="附件" min-width="300">
@@ -653,7 +657,7 @@
     // 初始化数据
     async init() {
       let info: any = await get_deal_get__id({id: this.id});
-      this.postData = info;
+      this.postData = (this as any).$tool.deepClone(info || {});
       // 判断优惠告知书是通过接口还是另外请求
       if(info.notice && info.notice.length) {
         this.postData.offerNoticeList = info.notice;
@@ -685,11 +689,10 @@
           }
         })
       }
-      this.postData.documentList = [];
+      // console.log(info.documentList);
       if (info.documentList && info.documentList.length) {
         this.postData.documentList = this.initDocumentList(info.documentList);
       }
-
     }
 
     // 构建附件信息
@@ -702,7 +705,12 @@
           vo.fileList = []; // 存放新上传的数据
           list.forEach((item: any) => {
             if (vo.code === item.fileType) {
-              vo.defaultFileList.push(item);
+              vo.defaultFileList.push(
+                {
+                  ...item,
+                  name: list.fileName
+                }
+              );
             }
           });
         });

@@ -454,7 +454,7 @@
           :data="infoForm.documentList">
           <el-table-column prop="fileType" label="类型" width="200">
             <template slot-scope="scope">
-              <div>{{$root.dictAllName(scope.row.fileType, 'DealFileType')}}</div>
+              <div>{{$root.dictAllName(scope.row.code, 'DealFileType')}}</div>
             </template>
           </el-table-column>
           <el-table-column prop="fileName" label="附件" min-width="300">
@@ -634,7 +634,7 @@
         info = await get_deal_getByCode__dealCode({code : this.dealIdOrCode});
       }
       // console.log(this.infoForm);
-      this.infoForm = info;
+      this.infoForm = (this as any).$tool.deepClone(info || {});
       // 收派金额数据整理 showData
       if (this.infoForm.receiveList && this.infoForm.receiveList.length > 0) {
         this.infoForm.receiveList.forEach((list: any) => {
@@ -665,7 +665,6 @@
         // 初始化优惠告知书信息
         await this.getInformation(info.id);
       }
-      this.infoForm.documentList = [];
       if (info.documentList && info.documentList.length) {
         this.infoForm.documentList = this.initDocumentList(info.documentList);
       }
@@ -683,7 +682,12 @@
           vo.fileList = []; // 存放新上传的数据
           list.forEach((item: any) => {
             if (vo.code === item.fileType) {
-              vo.defaultFileList.push(item);
+              vo.defaultFileList.push(
+                {
+                  ...item,
+                  name: list.fileName
+                }
+              );
             }
           });
         });
