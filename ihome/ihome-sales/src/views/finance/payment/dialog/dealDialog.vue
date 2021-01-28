@@ -4,7 +4,7 @@
  * @Author: ywl
  * @Date: 2020-12-18 10:12:10
  * @LastEditors: ywl
- * @LastEditTime: 2021-01-27 20:28:13
+ * @LastEditTime: 2021-01-28 17:20:17
 -->
 <template>
   <el-dialog
@@ -55,7 +55,7 @@
         </el-col>
       </el-row>
       <el-row>
-        <el-col :span="8">
+        <!-- <el-col :span="8">
           <el-form-item label="联动项目">
             <IhSelectPageByProject
               clearable
@@ -63,33 +63,34 @@
               placeholder="请选择联动项目"
             ></IhSelectPageByProject>
           </el-form-item>
+        </el-col> -->
+        <el-col :span="8">
+          <el-form-item label="项目周期">
+            <IhSelectPageByCycle
+              clearable
+              v-model="queryPageParameters.projectCycle"
+              @changeOption="(data) => proId = data.proId"
+              placeholder="请选择立项周期"
+            ></IhSelectPageByCycle>
+          </el-form-item>
         </el-col>
         <el-col :span="8">
           <el-form-item label="房号">
             <IhSelectPageByRoom
               v-model="queryPageParameters.roomNo"
-              :proId="queryPageParameters.projectCycle"
+              :proId="proId"
               placeholder="请选择房号"
               clearable
             ></IhSelectPageByRoom>
           </el-form-item>
         </el-col>
         <el-col :span="8">
-          <el-form-item label="立项周期">
-            <IhSelectPageByCycle
-              clearable
-              v-model="queryPageParameters.projectCycle"
-              placeholder="请选择立项周期"
-            ></IhSelectPageByCycle>
-          </el-form-item>
-        </el-col>
-      </el-row>
-      <el-row>
-        <el-col :span="8">
           <el-form-item label="组织">
             <IhSelectOrgTree v-model="queryPageParameters.dealOrg"></IhSelectOrgTree>
           </el-form-item>
         </el-col>
+      </el-row>
+      <el-row>
         <el-col :span="8">
           <el-form-item label="业主姓名">
             <el-input
@@ -201,6 +202,7 @@ export default class DealDialog extends Vue {
     beginTime: null,
     endTime: null,
   };
+  proId: any = null;
   public resPageInfo: any = {
     total: null,
     list: [],
@@ -243,6 +245,7 @@ export default class DealDialog extends Vue {
       endTime: null,
     });
     this.timeList = [];
+    this.proId = null;
   }
   private handleSelectionChange(val: any) {
     this.selection = val;
