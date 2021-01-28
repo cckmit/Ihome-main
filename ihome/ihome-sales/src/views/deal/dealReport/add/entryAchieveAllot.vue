@@ -1433,7 +1433,7 @@
           cycleId: res.cycleId,
           property: res.house.propertyType
         }
-        let info: any = await (this as any).$parent.getContTypeList(params);
+        let info: any = await (this as any).$parent.getContNoList(params);
         this.packageIdsList = [];
         this.contNoList = [];
         if (info && info.contracts && info.contracts.length) {
