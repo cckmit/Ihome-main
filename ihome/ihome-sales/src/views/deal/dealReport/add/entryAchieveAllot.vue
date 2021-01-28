@@ -1442,6 +1442,18 @@
         }
       }
       this.$nextTick(() => {
+        this.isSameFlag = res?.scheme?.isSame === "Yes"; // 分销总包是否一致
+        this.editDealAchieveData.isSameFlag = res?.scheme?.isSame === "Yes";
+        // 处理角色类型选项
+        if (this.isSameFlag) {
+          // 分销同步总包
+          this.editDealAchieveData.totablBagRoles = this.getRoleListAndAchieveCap(res.totalBag, res.totablBagRoles);
+          this.editDealAchieveData.distriRoles = this.getRoleListAndAchieveCap(res.totalBag, res.totablBagRoles);
+        } else {
+          // 分销不同步总包
+          this.editDealAchieveData.totablBagRoles = this.getRoleListAndAchieveCap(res.totalBag, res.totablBagRoles);
+          this.editDealAchieveData.distriRoles = this.getRoleListAndAchieveCap(res.distri, res.distriRoles);
+        }
         this.postData.dealCode = res.dealCode;
         this.postData.cycleId = res.cycleId;
         this.postData.cycleName = res.cycleName;
@@ -1851,6 +1863,7 @@
       if (achieveInfo.same) {
         // 分销同步总包
         this.editDealAchieveData.totablBagRoles = this.getRoleListAndAchieveCap(achieveInfo.totalBag, achieveInfo.totablBagRoles);
+        this.editDealAchieveData.distriRoles = this.getRoleListAndAchieveCap(achieveInfo.totalBag, achieveInfo.totablBagRoles);
       } else {
         // 分销不同步总包
         this.editDealAchieveData.totablBagRoles = this.getRoleListAndAchieveCap(achieveInfo.totalBag, achieveInfo.totablBagRoles);
