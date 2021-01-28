@@ -2865,6 +2865,7 @@
           }
         });
       }
+      this.dialogAddReceivePackage = false;
     }
 
     // 增加拆佣项
