@@ -1020,6 +1020,24 @@
       } else {
         await this.getInformation(id);
       }
+      if (res.cycleId && res.house.propertyType && res.agencyList && res.agencyList.length) {
+        let params: any = {
+          channelId: res.agencyList[0].agencyId,
+          cycleId: res.cycleId,
+          property: res.house.propertyType
+        }
+        let info: any = await (this as any).$parent.getContTypeList(params);
+        this.packageIdsList = [];
+        this.contNoList = [];
+        if (info && info.contracts && info.contracts.length) {
+          this.contNoList = info.contracts;
+          info.contracts.forEach((item: any) => {
+            if (item.contractNo === res.contNo) {
+              this.packageIdsList = item.packageMxIds;
+            }
+          });
+        }
+      }
       this.$nextTick(() => {
         this.postData.dealCode = res.dealCode;
         this.postData.cycleId = res.cycleId;
@@ -1154,11 +1172,11 @@
       // 多分优惠告知书情况
       // this.postData.contNo = null; // 重置选择的编号
       // 分销协议编号
-      if (baseInfo.contracts && baseInfo.contracts.length > 0) {
-        this.contNoList = baseInfo.contracts; // 分销协议选择列表
-      } else {
-        this.contNoList = [];
-      }
+      // if (baseInfo.contracts && baseInfo.contracts.length > 0) {
+      //   this.contNoList = baseInfo.contracts; // 分销协议选择列表
+      // } else {
+      //   this.contNoList = [];
+      // }
     }
 
     // 编辑 --- 构建收派金额数据
@@ -1375,7 +1393,8 @@
     selectAgency() {
       let data: any = {
         selectableChannelIds: this.baseInfoByTerm.selectableChannelIds,
-        cycleId: this.postData.cycleId
+        cycleId: this.postData.cycleId,
+        property: this.postData.propertyType
       };
       (this as any).$parent.selectAgency(data);
     }
