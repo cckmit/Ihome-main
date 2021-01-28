@@ -3314,6 +3314,7 @@
       obj.basic.houseVO.toilet = this.postData.toilet;
       // 附件信息
       if (this.postData.documentVO.length > 0) {
+        console.log('this.postData.documentVO', this.postData.documentVO);
         this.postData.documentVO.forEach((item: any) => {
           if (item.fileList.length > 0) {
             item.fileList.forEach((list: any) => {
@@ -3328,7 +3329,8 @@
           }
           // 初始化的
           obj.documentVO.push(...item.defaultFileList);
-        })
+        });
+        console.log('obj.documentVO', obj.documentVO);
       }
       // 派发金额合计
       if (this.receiveAchieveVO.length > 0) {
