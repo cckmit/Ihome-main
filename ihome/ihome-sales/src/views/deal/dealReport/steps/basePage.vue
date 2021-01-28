@@ -1211,6 +1211,7 @@
   import EditDealAchieve from "@/views/deal/dealReport/dialog/editDealAchieve.vue";
   import SelectReceivePackage from "@/views/deal/dealReport/dialog/selectReceivePackage.vue";
   import {
+    post_pageData_initDistribution, // 初始化后根据渠道商信息获取分销协议
     get_pageData_getProBaseByTermId__cycleId, // 通过项目周期获取成交基础信息
     post_pageData_initBasic, // 选择周期、房号后初始化页面
     post_pageData_recalculateAchieve, // 重算平台费用 --- 总包分销不一致的情况
@@ -1624,12 +1625,18 @@
       } else {
         return;
       }
-      // console.log(res);
+      console.log(res);
       // 通过项目周期id获取基础信息
       await this.getBaseDealInfo(res.cycleId);
       this.contTypeList = await this.getContTypeList(res.modelCode); // 根据业务模式获取合同类型
       this.postData.refineModel = await this.getRefineModel(res.modelCode); // 赋值细分业务模式
       this.refineModelList = await this.getRefineModelList(res.modelCode); // 获取细分业务模式下拉项
+      if (res.agencyList && res.agencyList.length) {
+        if (res.agencyList[0].agencyId) {
+          await this.getContNoList(res.agencyList[0].agencyId, res.cycleId, res.contNo);
+        }
+        await this.initAgency(res.agencyList, true);
+      }
       this.postData = {
         ...this.postData,
         ...res
@@ -1651,9 +1658,9 @@
       this.postData.roomId = res.house.roomId;
       this.postData.roomNo = res.house.roomNo;
       this.postData.toilet = res.house.toilet;
-      if (res.agencyList && res.agencyList.length) {
-        this.initAgency(res.agencyList, true);
-      }
+      // if (res.agencyList && res.agencyList.length) {
+      //   this.initAgency(res.agencyList, true);
+      // }
       // 成交组织
       await this.getOrgName(res.dealOrgId);
       // 成交状态
@@ -1722,6 +1729,31 @@
           this.postData.brokerId = data[0].brokerId; // 渠道经纪人Id
           this.postData.brokerName = data[0].broker; // 渠道经纪人
         }
+      }
+    }
+
+    /*
+    * 获取分销协议编号选项和对应的packageIDS
+    * channelId: 渠道商公司ID
+    * cycleId: 周期ID
+    * contNo: 初始化的分销协议编号
+    * */
+    async getContNoList(channelId: any, cycleId: any, contNo: any) {
+      let objData: any = {
+        channelId: channelId, // 渠道商公司ID
+        cycleId: cycleId // 周期ID
+      }
+      const info: any = await post_pageData_initDistribution(objData);
+      if (info.contracts && info.contracts.length) {
+        this.contNoList = info.contracts;
+        this.packageIdsList = [];
+        info.contracts.forEach((item: any) => {
+          if (item.contractNo === contNo) {
+            this.packageIdsList = item.packageMxIds;
+          }
+        });
+      } else {
+        this.contNoList = [];
       }
     }
 
