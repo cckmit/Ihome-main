@@ -587,7 +587,7 @@
           </el-table-column>
           <el-table-column prop="packageId" label="收派套餐" min-width="140">
             <template slot-scope="scope">
-              <div v-if="!['ChangeBasicInf', 'ChangeInternalAchieveInf'].includes(changeType)">
+              <div v-if="['ChangeBasicInf', 'ChangeInternalAchieveInf'].includes(changeType)">
                 <el-tooltip placement="top" effect="light">
                   <div slot="content">
                     <el-table :data="scope.row.showData" style="width: 100%">
@@ -1209,6 +1209,7 @@
   import AddCustomer from "@/views/deal/dealReport/dialog/addCustomer.vue";
   import AddBroker from "@/views/deal/dealReport/dialog/addBroker.vue";
   import EditDealAchieve from "@/views/deal/dealReport/dialog/editDealAchieve.vue";
+  import SelectReceivePackage from "@/views/deal/dealReport/dialog/selectReceivePackage.vue";
   import {
     get_pageData_getProBaseByTermId__cycleId, // 通过项目周期获取成交基础信息
     post_pageData_initBasic, // 选择周期、房号后初始化页面
@@ -1236,8 +1237,14 @@
   } from "@/api/contract";
 
   @Component({
-    components: {AddCustomer, AddBroker, SelectProjectCycle,
-      AgentCompanyList, EditDealAchieve},
+    components: {
+      AddCustomer,
+      AddBroker,
+      SelectProjectCycle,
+      AgentCompanyList,
+      EditDealAchieve,
+      SelectReceivePackage,
+    }
   })
   export default class BasePage extends Vue {
     private isShowImg = false;
@@ -1620,6 +1627,9 @@
       // console.log(res);
       // 通过项目周期id获取基础信息
       await this.getBaseDealInfo(res.cycleId);
+      this.contTypeList = await this.getContTypeList(res.modelCode); // 根据业务模式获取合同类型
+      this.postData.refineModel = await this.getRefineModel(res.modelCode); // 赋值细分业务模式
+      this.refineModelList = await this.getRefineModelList(res.modelCode); // 获取细分业务模式下拉项
       this.postData = {
         ...this.postData,
         ...res
@@ -1815,6 +1825,8 @@
       if (!id) return;
       let baseInfo: any = await get_pageData_getProBaseByTermId__cycleId({cycleId: id});
       this.baseInfoByTerm = JSON.parse(JSON.stringify(baseInfo));
+      // 物业类型
+      this.propertyTypeList = this.getPropertyTypeList(baseInfo.propertyEnums);
       // 一手代理团队的选项
       this.firstAgencyCompanyList = [];
       if (baseInfo.firstAgencyCompanys && baseInfo.firstAgencyCompanys.length > 0) {
@@ -1848,8 +1860,6 @@
         this.refineModelList = await this.getRefineModelList(this.postData.modelCode); // 获取细分业务模式下拉项
         // 是否市场化项目
         this.postData.isMarketProject = baseInfo.exMarket === 1 ? 'Yes' : 'No';
-        // 物业类型
-        this.propertyTypeList = this.getPropertyTypeList(baseInfo.propertyEnums);
         // 是否代销
         this.postData.isConsign = baseInfo.exConsignment === 1 ? 'Yes' : 'No';
         // 处理优惠告知书的nav
