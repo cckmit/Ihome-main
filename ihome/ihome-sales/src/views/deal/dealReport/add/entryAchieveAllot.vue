@@ -3324,8 +3324,10 @@
                   fileType: item.code
                 }
               )
-            })
+            });
           }
+          // 初始化的
+          obj.documentVO.push(...item.defaultFileList);
         })
       }
       // 派发金额合计

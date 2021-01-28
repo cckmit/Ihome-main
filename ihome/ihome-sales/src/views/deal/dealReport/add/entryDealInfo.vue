@@ -2175,6 +2175,7 @@
       // 附件信息
       if (this.postData.documentVO.length > 0) {
         this.postData.documentVO.forEach((item: any) => {
+          // 重新上传的
           if (item.fileList.length > 0) {
             item.fileList.forEach((list: any) => {
               obj.documentVO.push(
@@ -2184,8 +2185,10 @@
                   fileType: item.code
                 }
               )
-            })
+            });
           }
+          // 初始化的
+          obj.documentVO.push(...item.defaultFileList);
         })
       }
       // 派发金额合计
