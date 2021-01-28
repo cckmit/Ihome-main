@@ -153,7 +153,7 @@
           <el-form-item label="签约日期">{{infoForm.signDate}}</el-form-item>
         </el-col>
         <el-col :span="8">
-          <el-form-item label="成交组织">{{infoForm.dealOrgId}}</el-form-item>
+          <el-form-item label="成交组织">{{infoForm.dealOrgName}}</el-form-item>
         </el-col>
         <el-col :span="8">
           <el-form-item label="录入人">{{infoForm.entryPerson}}</el-form-item>
@@ -464,10 +464,11 @@
                 :isMove="false"
                 :removePermi="true"
                 size="100px"
-                :limit="100"
+                :limit="scope.row.defaultFileList.length"
                 :file-size="10"
                 :file-list.sync="scope.row.defaultFileList"
                 :file-type="scope.row.code"
+                :upload-show="!!scope.row.defaultFileList"
               ></IhUpload>
             </template>
           </el-table-column>
@@ -556,6 +557,7 @@
   } from "@/api/deal";
   import {post_notice_customer_information} from "@/api/contract";
   import {get_invoice_getInvoiceInfo__businessId} from "@/api/finance";
+  import {get_org_get__id} from "@/api/system";
 
   @Component({
     components: {ReviewDetailsDialog},
@@ -566,6 +568,7 @@
     private srcData: any = [];
     infoForm: any = {
       dealCode: null,
+      dealOrgName: null, // 成交组织name
       house: {}, // 房产信息
       offerNoticeList: [], // 优惠告知书
       customerList: [], // 客户信息
@@ -667,9 +670,20 @@
       }
       if (info.documentList && info.documentList.length) {
         this.infoForm.documentList = this.initDocumentList(info.documentList);
+        console.log('this.infoForm.documentList', this.infoForm.documentList);
       }
       // 初始化开票信息
       await this.getInvoiceInfo(info.id);
+      // 获取显示的成交组织name
+      await this.getOrgName(info.dealOrgId);
+    }
+
+    // 获取组织name
+    async getOrgName(id: any = '') {
+      if (!id) return;
+      const info: any = await get_org_get__id({id: id});
+      // console.log('组织info:', info);
+      this.infoForm.dealOrgName = info.name;
     }
 
     // 构建附件信息

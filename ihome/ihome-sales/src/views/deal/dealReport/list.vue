@@ -241,7 +241,7 @@
         class="ih-table"
         :empty-text="emptyText"
         :data="resPageInfo.list">
-        <el-table-column prop="dealCode" label="成交报告编号" min-width="260"></el-table-column>
+        <el-table-column prop="dealCode" label="成交报告编号" min-width="190"></el-table-column>
         <el-table-column prop="contType" label="房产信息" min-width="260">
           <template slot-scope="scope">
             <div>地址：{{scope.row.address}}</div>
@@ -275,20 +275,20 @@
             <div>经纪人：{{scope.row.brokerName}}</div>
           </template>
         </el-table-column>
-        <el-table-column prop="commAmount" label="项目周期信息" min-width="180">
+        <el-table-column prop="commAmount" label="项目周期信息" min-width="300">
           <template slot-scope="scope">
             <div>项目：{{scope.row.projectName}}</div>
             <div>周期：{{scope.row.termName}}</div>
           </template>
         </el-table-column>
-        <el-table-column prop="entryPerson" label="人员信息" min-width="180">
+        <el-table-column prop="entryPerson" label="人员信息" min-width="200">
           <template slot-scope="scope">
             <div>录入人：{{scope.row.entryPerson}}</div>
             <div>业绩分配人：{{scope.row.alloter}}</div>
           </template>
         </el-table-column>
-        <el-table-column prop="dealOrg" label="组织信息" min-width="260"></el-table-column>
-        <el-table-column prop="allotDate" label="签约/填写/业绩确认/审批日期" min-width="210">
+        <el-table-column prop="dealOrg" label="组织信息" min-width="250"></el-table-column>
+        <el-table-column prop="allotDate" label="签约/填写/业绩确认/审批日期" min-width="220">
           <template slot-scope="scope">
             <div>签约：{{scope.row.signDate}}</div>
             <div>填写：{{scope.row.createTime}}</div>
