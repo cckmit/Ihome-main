@@ -4,7 +4,7 @@
  * @Author: wwq
  * @Date: 2020-11-03 11:52:41
  * @LastEditors: wwq
- * @LastEditTime: 2021-01-08 11:02:52
+ * @LastEditTime: 2021-01-27 15:21:33
 -->
 <template>
   <div>
@@ -309,11 +309,11 @@
             style="width: 100%"
           >
             <el-table-column
-              prop="agencyName"
+              prop="name"
               label="一手代理团队名称"
             ></el-table-column>
             <el-table-column
-              prop="simpleName"
+              prop="shortName"
               label="简称"
             ></el-table-column>
             <el-table-column

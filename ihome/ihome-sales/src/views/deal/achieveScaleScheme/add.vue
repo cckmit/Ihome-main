@@ -712,7 +712,7 @@
         if (this.id) {
           postData.id = this.id;
           await post_achieveScaleScheme_update(postData);
-          this.$message.success("编辑成功");
+          this.$message.success("修改成功");
         } else {
           await post_achieveScaleScheme_add(postData);
           this.$message.success("新增成功");

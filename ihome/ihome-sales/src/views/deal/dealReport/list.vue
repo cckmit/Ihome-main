@@ -271,14 +271,14 @@
         </el-table-column>
         <el-table-column prop="commAmount" label="渠道信息" min-width="190">
           <template slot-scope="scope">
-            <div>公司：{{scope.row.commAmount}}</div>
+            <div>公司：{{scope.row.dealBranchCompany}}</div>
             <div>经纪人：{{scope.row.paidCommAmount}}</div>
           </template>
         </el-table-column>
         <el-table-column prop="commAmount" label="项目周期信息" min-width="180">
           <template slot-scope="scope">
-            <div>项目：{{scope.row.commAmount}}</div>
-            <div>周期：{{scope.row.paidCommAmount}}</div>
+            <div>项目：{{scope.row.projectName}}</div>
+            <div>周期：{{scope.row.termName}}</div>
           </template>
         </el-table-column>
         <el-table-column prop="entryPerson" label="人员信息" min-width="180">
@@ -501,10 +501,38 @@
 
     // 修改
     async handleEdit(scope: any) {
-      this.$router.push({
-        path: "/dealReport/add",
-        query: {id: scope.row.id}
-      });
+      // 通过id和parentId是否相等来判断是主成交还是补充成交
+      if (scope.row.id === scope.row.parentId) {
+        // 主成交
+        let type: any = '';
+        if (scope.row.status === "Draft") {
+          // 案场岗的录入编辑
+          type = "declare"
+        } else if (['Reject', 'AchieveDeclareUnconfirm'].includes(scope.row.status)) {
+          // 文员岗的录入编辑
+          type = "add"
+        }
+        if (!type) return;
+        this.$router.push({
+          path: "/dealReport/add",
+          query: {
+            id: scope.row.id,
+            btnType: type
+          }
+        });
+      } else {
+        // 补充成交
+        if (scope.row.suppContType && ['Draft', 'Reject'].includes(scope.row.status)) {
+          this.$router.push({
+            path: "/dealReport/suppDeal",
+            query: {
+              id: scope.row.id,
+              type: scope.row.suppContType,
+              btnType: 'edit' // 修改
+            }
+          });
+        }
+      }
     }
 
     // 删除
@@ -588,7 +616,8 @@
           path: "/dealReport/suppDeal",
           query: {
             id: scope.row.id,
-            type: type
+            type: type,
+            btnType: 'add' // 新增
           }
         });
       } else {

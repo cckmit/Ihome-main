@@ -3,8 +3,8 @@
  * @version: 
  * @Author: zyc
  * @Date: 2021-01-26 10:19:00
- * @LastEditors: zyc
- * @LastEditTime: 2021-01-26 10:23:26
+ * @LastEditors: wwq
+ * @LastEditTime: 2021-01-27 10:56:49
  */
 
 
@@ -52,8 +52,23 @@ export interface RoleToolInterface {
     */
     RPlatformClerk(): boolean;
 
+    /**是否包含【渠道专员角色】
+     * @param {*}
+     * @return {*}
+     */
+    RChannelStaff(): boolean;
 
+    /**是否包含【行政角色】
+     * @param {*}
+     * @return {*}
+     */
+    ROffice(): boolean;
 
+    /**是否包含【行政角色】
+     * @param {*}
+     * @return {*}
+     */
+    RContractManager(): boolean;
 
 
 }
@@ -86,13 +101,34 @@ export class RoleTool implements RoleToolInterface {
     RPlatformClerk(): boolean {
         return this.hasRole(RoleCode.RPlatformClerk);
     }
+    /**是否包含【渠道专员】
+    * @param {*}
+    * @return {*}
+    */
+    RChannelStaff(): boolean {
+        return this.hasRole(RoleCode.RChannelStaff);
+    }
+    /**是否包含【行政】
+    * @param {*}
+    * @return {*}
+    */
+    ROffice(): boolean {
+        return this.hasRole(RoleCode.ROffice);
+    }
+    /**是否包含【合同管理员】
+    * @param {*}
+    * @return {*}
+    */
+    RContractManager(): boolean {
+        return this.hasRole(RoleCode.RContractManager);
+    }
 
     /**用户是否包含某个角色
      * @param {string} code
      * @return {*}
      */
     hasRole(code: string): boolean {
-        let roleList = (window as any).userInfo?.roleList?.map((item: any) => { return item.code }) || [];
+        let roleList = (window as any).polyihomeData.userInfo?.roleList?.map((item: any) => { return item.code }) || [];
         return roleList.includes(code);
     }
 

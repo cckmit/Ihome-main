@@ -4,7 +4,7 @@
  * @Author: wwq
  * @Date: 2020-12-08 14:28:17
  * @LastEditors: wwq
- * @LastEditTime: 2021-01-26 21:00:39
+ * @LastEditTime: 2021-01-27 21:00:16
 -->
 <template>
   <el-dialog
@@ -472,7 +472,7 @@
 <script lang="ts">
 import { Component, Vue, Prop } from "vue-property-decorator";
 import {
-  post_collectandsend_getAllByTerm,
+  post_collectandsend_getAllByStart,
   post_distributContract_getItemByCondition,
 } from "@/api/project/index.ts";
 import SetMealInfo from "../setMeal-dialog/info.vue";
@@ -541,7 +541,7 @@ export default class SetMealDialog extends Vue {
         10000;
     let computed = total - (num1 + num2 + num3 + num4);
     row.otherChannelAmount = computed;
-    return isNaN(computed) ? 0 : computed;
+    return isNaN(computed) ? 0 : this.$math.tofixed(computed, 2);
   }
 
   estimateComplateAmount(row: any) {
@@ -551,7 +551,7 @@ export default class SetMealDialog extends Vue {
       10000 *
       Number(row.estimateComplateNum);
     row.estimateComplateAmount = total;
-    return isNaN(total) ? 0 : total;
+    return isNaN(total) ? 0 : this.$math.tofixed(total, 2);
   }
 
   estimateReceiveAmount(row: any) {
@@ -562,7 +562,7 @@ export default class SetMealDialog extends Vue {
         Number(this.info.estimatedTransactionPrice) *
         10000;
     row.estimateReceiveAmount = total;
-    return isNaN(total) ? 0 : total;
+    return isNaN(total) ? 0 : this.$math.tofixed(total, 2);
   }
 
   view(data: any) {
@@ -577,7 +577,7 @@ export default class SetMealDialog extends Vue {
   async getInfo() {
     const id = this.$route.query.id;
     if (id) {
-      this.data = await post_collectandsend_getAllByTerm({
+      this.data = await post_collectandsend_getAllByStart({
         termId: id,
       });
     }

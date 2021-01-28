@@ -83,9 +83,9 @@
             {{$root.dictAllName(infoForm.isMat, 'YesOrNoType')}}
           </el-form-item>
         </el-col>
-        <el-col :span="8">
-          <el-form-item label="报备信息">{{infoForm.recordStr}}</el-form-item>
-        </el-col>
+<!--        <el-col :span="8">-->
+<!--          <el-form-item label="报备信息">{{infoForm.recordStr}}</el-form-item>-->
+<!--        </el-col>-->
         <el-col :span="8">
           <el-form-item label="渠道公司">
             {{infoForm.agencyList && infoForm.agencyList.length ? infoForm.agencyList[0].agencyName : ''}}
@@ -452,12 +452,21 @@
         <el-table
           class="ih-table"
           :data="infoForm.documentList">
-          <el-table-column prop="fileType" label="类型" min-width="120">
+          <el-table-column prop="name" label="类型" min-width="120"></el-table-column>
+          <el-table-column prop="fileName" label="附件" min-width="120">
             <template slot-scope="scope">
-              <div>{{$root.dictAllName(scope.row.fileType, 'DealFileType')}}</div>
+              <IhUpload
+                :isCrop="false"
+                :isMove="false"
+                :removePermi="true"
+                size="100px"
+                :limit="100"
+                :file-size="10"
+                :file-list.sync="scope.row.defaultFileList"
+                :file-type="scope.row.code"
+              ></IhUpload>
             </template>
           </el-table-column>
-          <el-table-column prop="fileName" label="附件" min-width="120"></el-table-column>
         </el-table>
       </el-col>
     </el-row>
@@ -526,6 +535,12 @@
             }
           "/>
     </ih-dialog>
+    <IhImgViews
+      v-if="isShowImg"
+      :url-list="srcList"
+      :viewer-msg="srcData"
+      :onClose="() => (isShowImg = false)"
+    ></IhImgViews>
   </ih-page>
 </template>
 <script lang="ts">
@@ -542,6 +557,9 @@
     components: {ReviewDetailsDialog},
   })
   export default class DealReportInfo extends Vue {
+    private isShowImg = false;
+    private srcList: any = [];
+    private srcData: any = [];
     infoForm: any = {
       dealCode: null,
       house: {}, // 房产信息
@@ -643,8 +661,30 @@
         // 初始化优惠告知书信息
         await this.getInformation(info.id);
       }
+      this.infoForm.documentList = [];
+      if (info.documentList && info.documentList.length) {
+        this.infoForm.documentList = this.initDocumentList(info.documentList);
+      }
       // 初始化开票信息
       await this.getInvoiceInfo(info.id);
+    }
+
+    // 构建附件信息
+    initDocumentList(list: any = []) {
+      let fileList: any = (this as any).$root.dictAllList('DealFileType'); // 附件类型
+      // 附件类型增加key
+      if (fileList.length > 0 && list.length > 0) {
+        fileList.forEach((vo: any) => {
+          vo.defaultFileList = []; // 存放原来的数据
+          vo.fileList = []; // 存放新上传的数据
+          list.forEach((item: any) => {
+            if (vo.code === item.fileType) {
+              vo.defaultFileList.push(item);
+            }
+          });
+        });
+      }
+      return fileList;
     }
 
     // 获取开票信息
@@ -835,9 +875,25 @@
 
     // 预览-优惠告知书
     previewNotice(scope: any) {
-      window.open(
-        `/sales-api/sales-document-cover/file/browse/${scope.row.templateId}`
-      );
+      if (scope.row.templateType === "ElectronicTemplate") {
+        window.open(
+          `/sales-api/sales-document-cover/file/browse/${scope.row.templateId}`
+        );
+      } else {
+        let imgList = scope.row.noticeAttachmentList;
+        this.srcList = imgList.map(
+          (i: any) => `/sales-api/sales-document-cover/file/browse/${i.fileNo}`
+        );
+        this.srcData = imgList.map((v: any) => ({
+          name: v.attachmentSuffix,
+          preFileName: "优惠告知书",
+        }));
+        if (this.srcList.length) {
+          this.isShowImg = true;
+        } else {
+          this.$message.warning("暂无图片");
+        }
+      }
     }
 
     // 查看开票详情

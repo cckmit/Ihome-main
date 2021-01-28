@@ -294,11 +294,11 @@
             </el-select>
           </el-form-item>
         </el-col>
-        <el-col :span="8" v-if="postData.contType === 'DistriDeal'">
-          <el-form-item label="报备信息">
-            <el-input disabled v-model="postData.recordStr"/>
-          </el-form-item>
-        </el-col>
+<!--        <el-col :span="8" v-if="postData.contType === 'DistriDeal'">-->
+<!--          <el-form-item label="报备信息">-->
+<!--            <el-input disabled v-model="postData.recordStr"/>-->
+<!--          </el-form-item>-->
+<!--        </el-col>-->
         <el-col :span="8">
           <el-form-item label="备案情况" prop="recordState">
             <el-select
@@ -463,7 +463,7 @@
           </el-form-item>
         </el-col>
         <el-col :span="8">
-          <el-form-item label="成交状态" prop="status">
+          <el-form-item label="成交状态">
             <el-input v-model="postData.statusName" disabled></el-input>
           </el-form-item>
         </el-col>
@@ -587,7 +587,7 @@
           </el-table-column>
           <el-table-column prop="packageId" label="收派套餐" min-width="140">
             <template slot-scope="scope">
-              <div v-if="['ChangeBasicInf', 'ChangeInternalAchieveInf'].includes(changeType)">
+              <div v-if="!['ChangeBasicInf', 'ChangeInternalAchieveInf'].includes(changeType)">
                 <el-tooltip placement="top" effect="light">
                   <div slot="content">
                     <el-table :data="scope.row.showData" style="width: 100%">
@@ -751,7 +751,7 @@
                 v-digits="2"
                 @input="changeReceiveItem($event, scope.row, 'totalPackageAmount')"
                 v-model="scope.row.totalPackageAmount"
-                :disabled="(postData.calculation === 'Auto' || postData.modelCode !== 'DistriModel')"
+                :disabled="(postData.calculation === 'Auto' || postData.modelCode === 'DistriModel')"
                 placeholder="总包业绩金额"></el-input>
             </template>
           </el-table-column>
@@ -761,7 +761,7 @@
                 v-digits="2"
                 @input="changeReceiveItem($event, scope.row, 'distributionAmount')"
                 v-model="scope.row.distributionAmount"
-                :disabled="(postData.calculation === 'Auto' || postData.modelCode !== 'TotalBagModel')">
+                :disabled="(postData.calculation === 'Auto' || postData.modelCode === 'TotalBagModel')">
               </el-input>
             </template>
           </el-table-column>
@@ -1180,8 +1180,7 @@
         @cancel="() => (dialogEditDealAchieve = false)"
         @finish="
             (data) => {
-              dialogEditDealAchieve = false;
-              finishAddProjectCycle(data);
+              finishEditDealAchieve(data);
             }
           "/>
     </ih-dialog>
@@ -1195,6 +1194,12 @@
             }
           "/>
     </ih-dialog>
+    <IhImgViews
+      v-if="isShowImg"
+      :url-list="srcList"
+      :viewer-msg="srcData"
+      :onClose="() => (isShowImg = false)"
+    ></IhImgViews>
   </ih-page>
 </template>
 <script lang="ts">
@@ -1213,12 +1218,17 @@
     post_suppDeal_previewEntryRetreatRoom, // 预览录入退房
     post_suppDeal_previewEntryAchieveInfChange, // 预览录入业绩信息变更
     post_suppDeal_previewEntryStaffAchieveChange, // 预览录入内部员工业绩变更
-    post_suppDeal_toAddSuppDeal, // 新增补充成交
+    post_suppDeal_toAddSuppDeal, // 新增补充成交 --- 初始页面接口
     post_buModelContType_getList,
     post_buModelContType_subList,
     post_pageData_initChannelComm,
     post_pageData_initAchieve,
     post_pageData_calculateReceiveAmount, // 根据收派套餐，计算收派金额
+    get_suppDeal_toUpdateSuppDeal, // 去修改补充成交 --- 初始页面接口
+    post_suppDeal_previewUpdateAchieveInfChange, // 预览修改业绩信息变更
+    post_suppDeal_previewUpdateBasicInfChange, // 预览修改基础信息变更
+    post_suppDeal_previewUpdateRetreatRoom, // 预览修改退房
+    post_suppDeal_previewUpdateStaffAchieveChange, // 预览修改内部员工业绩变更
   } from "@/api/deal";
   import {get_org_get__id} from "@/api/system"; // 获取组织name
   import {
@@ -1230,7 +1240,11 @@
       AgentCompanyList, EditDealAchieve},
   })
   export default class BasePage extends Vue {
+    private isShowImg = false;
+    private srcList: any = [];
+    private srcData: any = [];
     changeType: any = null; // 补充成交类型
+    btnType: any = null; // 新增add还是修改edit --- 初始化接口不一样
     contNoList: any = []; // 分销协议编号列表
     postData: any = {
       changeTypeByDeal: null, // 补充成交类型
@@ -1486,6 +1500,7 @@
     oneAgentRequiredFlag: any = false; // 收派金额 - 派发内场奖励金额合计大于0，为true
     tempSignPrice: any = null; // 临时签约价格
     tempSubscribePrice: any = null; // 临时认购价格
+    tempDocumentList: any = []; // 记录来访确认单和成交确认单
     hasChangeProCycleFlag: any = false; // 项目周期是否变动过，默认没有-false
     addFlag: any = false; // 新增页面 --- 提示框
     editFlag: any = false; // 编辑页面 --- 提示框
@@ -1524,9 +1539,10 @@
       // 成交报告的id
       this.id = this.$route.query.id;
       this.changeType = this.$route.query.type;
+      this.btnType = this.$route.query.btnType;
       this.postData.changeTypeByDeal = this.$route.query.type;
       // console.log('this.changeType', this.changeType);
-      if (this.id && this.changeType) {
+      if (this.id && this.changeType && this.btnType) {
         await this.initPageInfo();
       }
     }
@@ -1587,11 +1603,20 @@
 
     // 初始化页面数据
     async initPageInfo() {
-      let postData: any = {
-        dealId: this.id,
-        suppContType: this.changeType
+      let res: any = null;
+      if (this.btnType === "add") {
+        // 去新增
+        let postData: any = {
+          dealId: this.id,
+          suppContType: this.changeType
+        }
+        res = await post_suppDeal_toAddSuppDeal(postData);
+      } else if (this.btnType === "edit") {
+        // 去修改
+        res = await get_suppDeal_toUpdateSuppDeal(this.id);
+      } else {
+        return;
       }
-      let res: any = await post_suppDeal_toAddSuppDeal(postData);
       // console.log(res);
       // 通过项目周期id获取基础信息
       await this.getBaseDealInfo(res.cycleId);
@@ -1765,32 +1790,23 @@
         // 数据标志
         this.postData.dataSign = baseInfo.myReturnVO.dataSign;
         this.postData.dataSignName = (this as any).$root.dictAllName(baseInfo.myReturnVO.dataSign, 'DealDataFlag');
-        // 分销成交和非分销成交不一样
-        if (baseInfo.contType === 'DistriDeal') {
-          // 分销成交模式
-          // 1. 初始化渠道商/渠道公司
-          this.initAgency(baseInfo.agencyVOs, true);
-        } else if (['SelfChannelDeal', 'NaturalVisitDeal'].includes(baseInfo.contType)) {
-          // 非分销成交模式 --- 自然来访 / 自渠成交
-          this.initAgency(baseInfo.agencyVOs, false);
-        }
         // 客户信息
         this.postData.customerList = baseInfo.customerAddVOS && baseInfo.customerAddVOS.length ? baseInfo.customerAddVOS : [];
         // 收派金额 --- 代理费
-        // this.postData.receiveVO = baseInfo.receiveVOS && baseInfo.receiveVOS.length ? baseInfo.receiveVOS : [];
         if (baseInfo.receiveVOS && baseInfo.receiveVOS.length) {
           let tempList: any = (this as any).$parent.initReceiveVOS(baseInfo.receiveVOS);
-          this.postData.receiveList = [...this.postData.receiveList, ...tempList];
+          if (this.postData.receiveList && this.postData.receiveList.length) {
+            this.postData.receiveList.push(...tempList);
+          } else {
+            this.postData.receiveList = tempList;
+          }
         }
-        // this.postData.receiveList = this.initReceiveVOS(baseInfo.receiveVOS);
         // 收派金额中的甲方
         this.commissionCustomerList = [];
         this.commissionCustomerList = this.initCommissionCustomer(baseInfo.receiveVOS);
         this.commissionServiceFeeObj = {};
         this.commissionServiceFeeObj = this.initCommissionServiceFee(baseInfo.receiveVOS);
         console.log('commissionServiceFeeObj', this.commissionServiceFeeObj);
-        // 附件信息
-        this.initDocument(baseInfo.contType, baseInfo);
       }
     }
 
@@ -1810,26 +1826,20 @@
       if (baseInfo.termStageEnum) {
         let DealStageList: any = (this as any).$root.dictAllList('DealStage');
         if (DealStageList && DealStageList.length > 0) {
+          // 认购周期 --- 只有认购+签约
+          this.dealStageList = DealStageList.filter((item: any) => {
+            return item.code !== 'Recognize';
+          });
           switch(baseInfo.termStageEnum){
-            case 'Subscription':
-              // 认购周期 --- 只有认购+签约
-              this.dealStageList = DealStageList.filter((item: any) => {
-                return item.code !== 'Recognize';
-              });
-              break;
             case 'Recognize':
               // 清空优惠告知书 --- 认筹周期需要自己手动添加
               this.postData.offerNoticeVO = [];
-              this.dealStageList = DealStageList.filter((item: any) => {
-                return item.code !== 'Recognize';
-              });
               break;
           }
         }
       }
       // 如果周期改变了，就执行以下逻辑
       if (this.hasChangeProCycleFlag) {
-        //
         this.postData.projectId = baseInfo.proId;
         // 业务模式
         this.postData.modelCode = baseInfo.busEnum;
@@ -1855,11 +1865,15 @@
         if (baseInfo.serviceFee) {
           let tempList: any = [];
           tempList.push(baseInfo.serviceFee);
-          let item: any = (this as any).$parent.initReceiveVOS(tempList);
-          this.postData.receiveList.push(item);
+          let list: any = (this as any).$parent.initReceiveVOS(tempList);
+          this.$nextTick(() => {
+            this.postData.receiveList.push(...list);
+          });
         }
         // 成交组织
         await this.getOrgName(baseInfo.groupId);
+        // 初始化附件信息
+        await this.initDocument(baseInfo);
       }
     }
 
@@ -1995,55 +2009,33 @@
       return tempObj;
     }
 
-    // 初始化附件信息 --- 周期改变后
-    initDocument(contType: any = '', initData: any = {}) {
+    // 初始化附件表格数据
+    initDocument(info: any) {
       let fileList: any = (this as any).$root.dictAllList('DealFileType'); // 附件类型
-      // console.log('fileList', fileList);
       // 附件类型增加key
       if (fileList.length > 0) {
         fileList.forEach((vo: any) => {
           vo.defaultFileList = []; // 存放原来的数据
           vo.fileList = []; // 存放新上传的数据
-          // 赋值
-          switch(vo.code) {
-            case "VisitConfirForm":
-              // 来访确认单
-              vo.defaultFileList = initData.visitConfirmForms && initData.visitConfirmForms.length ? initData.visitConfirmForms : [];
-              // vo.fileList = initData.visitConfirmForms && initData.visitConfirmForms.length ? initData.visitConfirmForms : [];
-              break;
-            case "Notice":
-              // 优惠告知书PDF
-              vo.defaultFileList = initData.noticePDF && initData.noticePDF.length  ? initData.noticePDF : [];
-              // vo.fileList = initData.noticePDF && initData.noticePDF.length  ? initData.noticePDF : [];
-              break;
-            case "OwnerID":
-              // 业主身份证
-              vo.defaultFileList = initData.customerIds && initData.customerIds.length ? initData.customerIds : [];
-              // vo.fileList = initData.customerIds && initData.customerIds.length ? initData.customerIds : [];
-              break;
-            case "DealConfirForm":
-              // 成交确认书
-              vo.defaultFileList = initData.dealConfirmForms && initData.dealConfirmForms.length ? initData.dealConfirmForms : [];
-              // vo.fileList = initData.dealConfirmForms && initData.dealConfirmForms.length ? initData.dealConfirmForms : [];
-              break;
-          }
-        })
-      }
-      this.postData.uploadDocumentList = JSON.parse(JSON.stringify(fileList));
-      // 1.是否是分销成交
-      if (contType !== 'DistriDeal') {
-        // 隐藏来访确认单、成交确认单
-        this.postData.uploadDocumentList = fileList.filter((item: any) => {
-          return !["VisitConfirForm", "DealConfirForm"].includes(item.code);
         });
       }
-      // 2.项目周期的收费模式
-      if (this.baseInfoByTerm.chargeEnum === 'Agent') {
-        // 隐藏优惠告知书
-        this.postData.uploadDocumentList = fileList.filter((item: any) => {
+      // 保存来访确认单和成交确认单
+      this.tempDocumentList = [];
+      this.tempDocumentList = fileList.filter((item: any) => {
+        return ["VisitConfirForm", "DealConfirForm"].includes(item.code);
+      });
+      console.log('this.tempDocumentList', this.tempDocumentList);
+      if (info.chargeEnum === 'Agent') {
+        // 项目周期的收费模式为代理费的话，隐藏优惠告知书
+        fileList = fileList.filter((item: any) => {
           return item.code !== "Notice";
         });
       }
+      // 先隐藏来访确认单和成交确认单
+      fileList = fileList.filter((item: any) => {
+        return !["VisitConfirForm", "DealConfirForm"].includes(item.code);
+      });
+      this.postData.uploadDocumentList = (this as any).$tool.deepClone(fileList);
     }
 
     // 初始化附件信息 --- 页面初始化的时候
@@ -2118,26 +2110,48 @@
 
     // 改变物业类型
     changePropertyType() {
+      if (this.changeType !== "ChangeAchieveInf") return;
       // 清空栋座 + 房间号 + 下面的所有信息
       this.postData.roomId = null;
       this.postData.buildingId = null;
+      this.initDocument(this.baseInfoByTerm);
+      this.resetReceiveList();
       this.resetData();
     }
 
     // 改变栋座
     changeBuild() {
+      if (this.changeType !== "ChangeAchieveInf") return;
       // 清空房间号 + 下面的所有信息
       this.postData.roomId = null;
+      this.initDocument(this.baseInfoByTerm);
+      this.resetReceiveList();
       this.resetData();
     }
 
     // 改变房号
     changeRoom(value: any) {
+      if (this.changeType !== "ChangeAchieveInf") return;
       // console.log('改变房号', value);
+      this.resetReceiveList();
+      this.initDocument(this.baseInfoByTerm);
       this.resetData(); // 重置数据
       if (value) {
         this.initPageById(this.postData.cycleId, value, this.postData.propertyType);
       }
+    }
+
+    // 物业类型、栋座、房号改变，收派金额模块只需要清空代理费
+    resetReceiveList() {
+      if (this.postData.receiveList && this.postData.receiveList.length) {
+        this.postData.receiveList = this.postData.receiveList.filter((vo: any) => {
+          return vo.type === "ServiceFee";
+        });
+      }
+      this.addFlag = false;
+      this.editFlag = true;
+      this.tipsFlag = false;
+      this.dividerTips = '刷新成功';
     }
 
     // 改变计算方式 --- 手动/自动
@@ -2305,9 +2319,66 @@
     }
 
     // 修改合同类型
-    changeContType() {
+    changeContType(value: any) {
       // 初始化收派金额
       this.initAllReceiveList();
+      // 选择房号后构建表格数据
+      this.getUploadDocumentList(value);
+    }
+
+    // 选择房号后构建表格数据
+    getUploadDocumentList(type: any) {
+      if (type === "DistriDeal") {
+        this.postData.uploadDocumentList.push(...this.tempDocumentList);
+        if (this.postData.uploadDocumentList.length) {
+          this.postData.uploadDocumentList.forEach((list: any) => {
+            // 回显房号带出来的值
+            let baseInfo: any = (this as any).$tool.deepClone(this.baseInfoInDeal);
+            switch(list.code) {
+              case "VisitConfirForm":
+                // 来访确认单
+                if (baseInfo.visitConfirmForms && baseInfo.visitConfirmForms.length) {
+                  this.baseInfoInDeal.visitConfirmForms.forEach((item: any) => {
+                    item.name = item.fileName;
+                  });
+                }
+                list.defaultFileList = baseInfo.visitConfirmForms && baseInfo.visitConfirmForms.length ? baseInfo.visitConfirmForms : [];
+                break;
+              case "Notice":
+                // 优惠告知书PDF
+                if (baseInfo.noticePDF && baseInfo.noticePDF.length) {
+                  baseInfo.noticePDF.forEach((item: any) => {
+                    item.name = item.fileName;
+                  });
+                }
+                list.defaultFileList = baseInfo.noticePDF && baseInfo.noticePDF.length  ? baseInfo.noticePDF : [];
+                break;
+              case "OwnerID":
+                // 业主身份证
+                if (baseInfo.customerIds && baseInfo.customerIds.length) {
+                  baseInfo.customerIds.forEach((item: any) => {
+                    item.name = item.fileName;
+                  });
+                }
+                list.defaultFileList = baseInfo.customerIds && baseInfo.customerIds.length ? baseInfo.customerIds : [];
+                break;
+              case "DealConfirForm":
+                // 成交确认书
+                if (baseInfo.dealConfirmForms && baseInfo.dealConfirmForms.length) {
+                  baseInfo.dealConfirmForms.forEach((item: any) => {
+                    item.name = item.fileName;
+                  });
+                }
+                list.defaultFileList = baseInfo.dealConfirmForms && baseInfo.dealConfirmForms.length ? baseInfo.dealConfirmForms : [];
+                break;
+            }
+          });
+        }
+      } else {
+        this.postData.uploadDocumentList = this.postData.uploadDocumentList.filter((item: any) => {
+          return !["VisitConfirForm", "DealConfirForm"].includes(item.code);
+        });
+      }
     }
 
     // 预览分销协议
@@ -2351,9 +2422,8 @@
       this.contNoList = []; // 分销协议编号
       this.packageIdsList = []; // ids
       this.postData.customerList = []; // 客户信息
-      this.postData.receiveList = []; // 收派金额
       this.postData.offerNoticeVO = []; // 优惠告知书
-      this.postData.uploadDocumentList = []; // 上传附件
+      // this.postData.uploadDocumentList = []; // 上传附件
       this.postData.calculation = 'Auto'; // 计算方式改为手动
       this.postData.channelCommList = []; // 对外拆佣
       this.postData.achieveTotalBagList = []; // 平台费用-总包
@@ -2364,7 +2434,7 @@
       this.dividerTips = '加载成功';
       let list: any = ['contType', 'contNo', 'recordState', 'recordStr', 'area', 'room', 'hall',
         'toilet', 'propertyNo', 'signType', 'stage', 'returnRatio', 'subscribePrice', 'subscribeDate',
-        'signPrice', 'signDate', 'dataSign', 'agencyId', 'agencyName', 'channelLevel', 'channelLevelName']
+        'signPrice', 'signDate', 'agencyId', 'agencyName', 'channelLevel', 'channelLevelName']
       this.resetObject('postData', list);
     }
 
@@ -2395,6 +2465,7 @@
 
     // 选择项目周期
     selectProject() {
+      if (this.changeType !== "ChangeAchieveInf") return;
       this.dialogAddProjectCycle = true;
     }
 
@@ -2404,11 +2475,10 @@
       if (data && data.length > 0) {
         // 不管是否一样，都清数据
         if (this.postData.cycleId) {
+          this.postData.receiveList = []; // 收派金额
+          this.postData.documentVO = []; // 上传附件
           await this.resetData();
-          this.packageIdsList = []; // ids
         }
-        // await this.resetData();
-        // this.packageIdsList = []; // ids
         this.postData.cycleName = data[0].termName;
         this.postData.cycleId = data[0].termId;
         this.cycleCheckedData = [...data];
@@ -2435,9 +2505,25 @@
     // 预览-优惠告知书
     preview(scope: any) {
       // console.log(scope);
-      window.open(
-        `/sales-api/sales-document-cover/file/browse/${scope.row.templateId}`
-      );
+      if (scope.row.templateType === "ElectronicTemplate") {
+        window.open(
+          `/sales-api/sales-document-cover/file/browse/${scope.row.templateId}`
+        );
+      } else {
+        let imgList = scope.row.noticeAttachmentList || scope.row.annexList;
+        this.srcList = imgList.map(
+          (i: any) => `/sales-api/sales-document-cover/file/browse/${i.fileNo}`
+        );
+        this.srcData = imgList.map((v: any) => ({
+          name: v.attachmentSuffix,
+          preFileName: "优惠告知书",
+        }));
+        if (this.srcList.length) {
+          this.isShowImg = true;
+        } else {
+          this.$message.warning("暂无图片");
+        }
+      }
     }
 
     // 添加客户
@@ -3012,8 +3098,9 @@
       switch (btnType) {
         case "preview":
           // 预览
-          this.$emit("preview");
-          console.log(123);
+          if (this.changeType === "ChangeInternalAchieveInf") {
+            await this.submitData();
+          }
           break;
         case "next":
           // 下一步
@@ -3034,7 +3121,13 @@
         case "ChangeBasicInf":
           // 变更基础信息
           data = await this.initBaseData();
-          await post_suppDeal_previewEntryBasicInfChange(data);
+          if (this.btnType === "add") {
+            // 去新增
+            await post_suppDeal_previewEntryBasicInfChange(data);
+          } else if (this.btnType === "edit") {
+            // 去修改
+            await post_suppDeal_previewUpdateBasicInfChange(data);
+          }
           this.$emit('next', 'next', {
             ...this.postData,
             // receiveAchieveVO: this.receiveAchieveVO,
@@ -3044,7 +3137,13 @@
         case "ChangeAchieveInf":
           // 变更成交业绩信息
           data = await this.initRetreatRoomData();
-          await post_suppDeal_previewEntryAchieveInfChange(data);
+          if (this.btnType === "add") {
+            // 去新增
+            await post_suppDeal_previewEntryAchieveInfChange(data);
+          } else if (this.btnType === "edit") {
+            // 去修改
+            await post_suppDeal_previewUpdateAchieveInfChange(data);
+          }
           this.$emit('next', 'next', {
             ...this.postData,
             // receiveAchieveVO: this.receiveAchieveVO,
@@ -3054,7 +3153,13 @@
         case "RetreatRoom":
           // 退房
           data = await this.initRetreatRoomData();
-          await post_suppDeal_previewEntryRetreatRoom(data);
+          if (this.btnType === "add") {
+            // 去新增
+            await post_suppDeal_previewEntryRetreatRoom(data);
+          } else if (this.btnType === "edit") {
+            // 去修改
+            await post_suppDeal_previewUpdateRetreatRoom(data);
+          }
           this.$emit('next', 'next', {
             ...this.postData,
             // receiveAchieveVO: this.receiveAchieveVO,
@@ -3064,8 +3169,14 @@
         case "ChangeInternalAchieveInf":
           // 内部员工业绩变更
           data = await this.initStaffAchieveData();
-          await post_suppDeal_previewEntryStaffAchieveChange(data);
-          this.$emit('next', 'next', {
+          if (this.btnType === "add") {
+            // 去新增
+            await post_suppDeal_previewEntryStaffAchieveChange(data);
+          } else if (this.btnType === "edit") {
+            // 去修改
+            await post_suppDeal_previewUpdateStaffAchieveChange(data);
+          }
+          this.$emit("preview", {
             ...this.postData,
             // receiveAchieveVO: this.receiveAchieveVO,
             currentPostData: data

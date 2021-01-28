@@ -3,8 +3,8 @@
  * @version: 
  * @Author: zyc
  * @Date: 2021-01-21 17:23:14
- * @LastEditors: zyc
- * @LastEditTime: 2021-01-26 10:11:58
+ * @LastEditors: wwq
+ * @LastEditTime: 2021-01-27 10:56:30
  */
 
 /**角色编码
@@ -36,7 +36,22 @@ const RoleCode = {
      * @param {*}
      * @return {*}
      */
-    RPlatformClerk: 'RPlatformClerk'
+    RPlatformClerk: 'RPlatformClerk',
+    /**渠道专员
+     * @param {*}
+     * @return {*}
+     */
+    RChannelStaff: 'RChannelStaff',
+    /**行政
+     * @param {*}
+     * @return {*}
+     */
+    ROffice: 'ROffice',
+    /**合同管理员
+     * @param {*}
+     * @return {*}
+     */
+    RContractManager: 'RContractManager',
 
 }
 /**岗位编码

@@ -4,7 +4,7 @@
  * @Author: wwq
  * @Date: 2020-11-03 11:52:41
  * @LastEditors: wwq
- * @LastEditTime: 2021-01-25 14:35:23
+ * @LastEditTime: 2021-01-27 17:10:04
 -->
 <template>
   <div>
@@ -517,13 +517,32 @@
         </div>
       </el-row>
     </el-form>
-    <div class="margin-top-20">
+    <div
+      class="margin-top-20"
+      v-if="$route.name === 'projectChildAdd'"
+    >
       <el-button
         type="primary"
         @click="submit('save')"
       >保存</el-button>
       <el-button
         type="success"
+        @click="submit('submit')"
+      >提交</el-button>
+      <el-button @click="$goto({ path: '/projects/list' })">关闭</el-button>
+    </div>
+    <div
+      class="margin-top-20"
+      v-if="$route.name === 'projectChildEdit'"
+    >
+      <el-button
+        type="primary"
+        v-has="'B.SALES.PROJECT.BASICLIST.ZXMBC'"
+        @click="submit('save')"
+      >保存</el-button>
+      <el-button
+        type="success"
+        v-has="'B.SALES.PROJECT.BASICLIST.ZXMTJ'"
         @click="submit('submit')"
       >提交</el-button>
       <el-button @click="$goto({ path: '/projects/list' })">关闭</el-button>
@@ -663,6 +682,21 @@ export default class EditBasicInfo extends Vue {
   oldInfo: any = {};
   oldSubmitFile: any = {};
 
+  submitChange() {
+    const status = window.sessionStorage.getItem("projectStatus");
+    const Draft = status === "Draft";
+    const Adopt = status === "Adopt";
+    const Reject = status === "Reject";
+    const RHeadBusinessManagement = this.$roleTool.RHeadBusinessManagement();
+    const RBusinessManagement = this.$roleTool.RBusinessManagement();
+    const RFrontLineClerk = this.$roleTool.RFrontLineClerk();
+    return (
+      (Draft && RFrontLineClerk) ||
+      ((RHeadBusinessManagement || RBusinessManagement) && Adopt) ||
+      (RFrontLineClerk && Reject)
+    );
+  }
+
   @Watch("form.exMinyuan", { immediate: true, deep: true })
   isShowList(v: any) {
     if (!v) this.isShow = false;
@@ -733,6 +767,10 @@ export default class EditBasicInfo extends Vue {
         proId: this.projectId,
       });
       this.form = { ...this.form, ...data };
+      window.sessionStorage.setItem(
+        "projectExMinyuan",
+        data.exMinyuan.toString()
+      );
       this.form.provinceOption = [data.province, data.city, data.district];
       this.contantList = data.propertyArgs.map((v: any) => ({
         ...v,

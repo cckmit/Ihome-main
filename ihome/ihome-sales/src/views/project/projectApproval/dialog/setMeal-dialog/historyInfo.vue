@@ -4,7 +4,7 @@
  * @Author: wwq
  * @Date: 2021-01-09 16:10:30
  * @LastEditors: wwq
- * @LastEditTime: 2021-01-26 20:52:22
+ * @LastEditTime: 2021-01-27 20:59:39
 -->
 <template>
   <el-dialog
@@ -501,7 +501,7 @@ export default class SetMealEdit extends Vue {
         10000;
     let computed = total - (num1 + num2 + num3 + num4);
     row.otherChannelAmount = computed;
-    return isNaN(computed) ? 0 : computed;
+    return isNaN(computed) ? 0 : this.$math.tofixed(computed, 2);
   }
 
   estimateComplateAmount(row: any) {
@@ -511,7 +511,7 @@ export default class SetMealEdit extends Vue {
       10000 *
       Number(row.estimateComplateNum);
     row.estimateComplateAmount = total;
-    return isNaN(total) ? 0 : total;
+    return isNaN(total) ? 0 : this.$math.tofixed(total, 2);
   }
 
   estimateReceiveAmount(row: any) {
@@ -522,7 +522,7 @@ export default class SetMealEdit extends Vue {
         Number(this.info.estimatedTransactionPrice) *
         10000;
     row.estimateReceiveAmount = total;
-    return isNaN(total) ? 0 : total;
+    return isNaN(total) ? 0 : this.$math.tofixed(total, 2);
   }
 
   cancel() {

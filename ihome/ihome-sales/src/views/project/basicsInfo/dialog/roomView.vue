@@ -4,7 +4,7 @@
  * @Author: wwq
  * @Date: 2020-11-03 18:39:23
  * @LastEditors: wwq
- * @LastEditTime: 2020-12-19 17:37:56
+ * @LastEditTime: 2021-01-27 17:04:01
 -->
 <template>
   <el-dialog
@@ -86,7 +86,8 @@
                 !['projectChildInfo', 'projectChildAudit'].includes(
                   this.$route.name
                 )
-              "
+               && !isMingyuan"
+              v-has="'B.SALES.PROJECT.BASICLIST.XZFH'"
             >添加房号</el-button>
           </el-form-item>
         </el-col>
@@ -134,17 +135,19 @@
         width="150"
         fixed="right"
         v-if="
-          !['projectChildInfo', 'projectChildAudit'].includes(this.$route.name)
+          !['projectChildInfo', 'projectChildAudit'].includes(this.$route.name) && !isMingyuan
         "
       >
         <template v-slot="{ row }">
           <el-link
             type="primary"
             @click="edit(row)"
+            v-has="'B.SALES.PROJECT.BASICLIST.BJFH'"
           >编辑</el-link>
           <el-link
             style="margin-left: 20px"
             type="primary"
+            v-has="'B.SALES.PROJECT.BASICLIST.SCFH'"
             @click="remove(row)"
           >移除</el-link>
         </template>
@@ -211,6 +214,10 @@ export default class RoomView extends Vue {
     total: 0,
   };
   roomViewType: any = "";
+
+  get isMingyuan() {
+    return Number(window.sessionStorage.getItem("projectExMinyuan"));
+  }
 
   private get proId() {
     return this.$route.query.id;

@@ -4,7 +4,7 @@
  * @Author: wwq
  * @Date: 2020-09-27 11:52:41
  * @LastEditors: wwq
- * @LastEditTime: 2021-01-09 14:57:15
+ * @LastEditTime: 2021-01-27 17:01:52
 -->
 <template>
   <div>
@@ -72,10 +72,13 @@
             <el-button
               type="success"
               @click="add()"
+              v-if="!isMingyuan"
+              v-has="'B.SALES.PROJECT.BASICLIST.XZDZ'"
             >新增栋座</el-button>
             <el-button
+              v-has="'B.SALES.PROJECT.BASICLIST.DZFHKJDRFH'"
               type="success"
-              v-if="$route.name !== 'projectChildAdd'"
+              v-if="$route.name !== 'projectChildAdd' && !isMingyuan"
               @click="fastImport"
             >快捷导入房号</el-button>
           </el-form-item>
@@ -135,11 +138,14 @@
         label="操作"
         width="150"
         fixed="right"
+        align="center"
       >
         <template v-slot="{ row }">
           <el-link
             type="primary"
             @click="edit(row)"
+            v-has="'B.SALES.PROJECT.BASICLIST.DZFHBJ'"
+            v-if="!isMingyuan"
           >编辑</el-link>
           <el-link
             style="margin-left: 20px"
@@ -226,6 +232,10 @@ export default class EidtRoomNum extends Vue {
     list: [],
     total: 0,
   };
+
+  get isMingyuan() {
+    return Number(window.sessionStorage.getItem("projectExMinyuan"));
+  }
 
   private get proId() {
     return this.$route.query.id;

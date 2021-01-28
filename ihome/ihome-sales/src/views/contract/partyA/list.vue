@@ -3,8 +3,8 @@
  * @version: 
  * @Author: ywl
  * @Date: 2020-09-25 11:53:51
- * @LastEditors: ywl
- * @LastEditTime: 2021-01-16 09:04:57
+ * @LastEditors: wwq
+ * @LastEditTime: 2021-01-27 10:45:25
 -->
 <template>
   <IhPage label-width="100px">
@@ -455,11 +455,7 @@ export default class PartyAList extends Vue {
     return isStatus;
   }
   private exportChange() {
-    const roleList = (this.$root as any).userInfo.roleList.map(
-      (v: any) => v.code
-    );
-    const isBusines = roleList.includes("RBusinessManagement");
-    return isBusines;
+    return this.$roleTool.RBusinessManagement();
   }
 
   private async remove(row: any) {
