@@ -151,7 +151,7 @@
             <el-form-item label="签约日期">{{postData.signDate}}</el-form-item>
           </el-col>
           <el-col :span="8">
-            <el-form-item label="成交组织">{{postData.dealOrgId}}</el-form-item>
+            <el-form-item label="成交组织">{{postData.dealOrgName}}</el-form-item>
           </el-col>
           <el-col :span="8">
             <el-form-item label="录入人">{{postData.entryPerson}}</el-form-item>
@@ -196,7 +196,11 @@
               </template>
             </el-table-column>
             <el-table-column prop="noticeNo" label="优惠告知书编号" min-width="120"></el-table-column>
-            <el-table-column prop="notificationStatus" label="优惠告知书状态" min-width="120"></el-table-column>
+            <el-table-column prop="notificationStatus" label="优惠告知书状态" min-width="120">
+              <template v-slot="{ row }">
+                {{$root.dictAllName(row.notificationStatus, 'NotificationStatus')}}
+              </template>
+            </el-table-column>
             <el-table-column fixed="right" label="操作" width="130">
               <template slot-scope="scope">
                 <el-link
@@ -464,7 +468,7 @@
             :data="postData.documentList">
             <el-table-column prop="fileType" label="类型" width="200">
               <template slot-scope="scope">
-                <div>{{$root.dictAllName(scope.row.fileType, 'DealFileType')}}</div>
+                <div>{{$root.dictAllName(scope.row.code, 'DealFileType')}}</div>
               </template>
             </el-table-column>
             <el-table-column prop="fileName" label="附件" min-width="300">
@@ -474,10 +478,11 @@
                   :isMove="false"
                   :removePermi="true"
                   size="100px"
-                  :limit="100"
+                  :limit="scope.row.defaultFileList.length"
                   :file-size="10"
                   :file-list.sync="scope.row.defaultFileList"
                   :file-type="scope.row.code"
+                  :upload-show="!!scope.row.defaultFileList"
                 ></IhUpload>
               </template>
             </el-table-column>
@@ -568,6 +573,7 @@
   import {
     post_notice_customer_information // 根据成交id获取优惠告知书
   } from "@/api/contract";
+  import {get_org_get__id} from "@/api/system";
   import {Form as ElForm} from "element-ui";
   import {NoRepeatHttp} from "ihome-common/util/aop/no-repeat-http";
 
@@ -580,6 +586,7 @@
     private srcData: any = [];
     postData: any = {
       dealCode: null,
+      dealOrgName: null,
       house: {}, // 房产信息
       offerNoticeList: [], // 优惠告知书
       customerList: [], // 客户信息
@@ -653,7 +660,7 @@
     // 初始化数据
     async init() {
       let info: any = await get_deal_get__id({id: this.id});
-      this.postData = info;
+      this.postData = (this as any).$tool.deepClone(info || {});
       // 判断优惠告知书是通过接口还是另外请求
       if(info.notice && info.notice.length) {
         this.postData.offerNoticeList = info.notice;
@@ -685,11 +692,20 @@
           }
         })
       }
-      this.postData.documentList = [];
+      // console.log(info.documentList);
       if (info.documentList && info.documentList.length) {
         this.postData.documentList = this.initDocumentList(info.documentList);
       }
+      // 获取显示的成交组织name
+      await this.getOrgName(info.dealOrgId);
+    }
 
+    // 获取组织name
+    async getOrgName(id: any = '') {
+      if (!id) return;
+      const info: any = await get_org_get__id({id: id});
+      // console.log('组织info:', info);
+      this.postData.dealOrgName = info.name;
     }
 
     // 构建附件信息
@@ -702,7 +718,12 @@
           vo.fileList = []; // 存放新上传的数据
           list.forEach((item: any) => {
             if (vo.code === item.fileType) {
-              vo.defaultFileList.push(item);
+              vo.defaultFileList.push(
+                {
+                  ...item,
+                  name: list.fileName
+                }
+              );
             }
           });
         });

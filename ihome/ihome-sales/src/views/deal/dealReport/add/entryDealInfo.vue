@@ -837,7 +837,6 @@
       receiveAchieveVO: [], // 应收信息
       documentVO: [], // 附件信息
     };
-    tempReceiveVO: any = []; // 临时收派金额信息
     tempSignPrice: any = null; // 临时签约价格
     tempSubscribePrice: any = null; // 临时认购价格
     tempDocumentList: any = []; // 记录来访确认单和成交确认单
@@ -1370,8 +1369,6 @@
           let list: any = (this as any).$parent.initReceiveVOS(tempList);
           this.$nextTick(() => {
             this.postData.receiveVO.push(...list);
-            // 暂存
-            this.tempReceiveVO = (this as any).$tool.deepClone(this.postData.receiveVO);
           });
         }
         // 成交组织
@@ -1456,7 +1453,6 @@
       this.contNoList = []; // 分销协议编号
       this.packageIdsList = []; // ids
       this.postData.customerVO = []; // 客户信息
-      this.tempReceiveVO = []; // 收派金额初始值
       this.postData.offerNoticeVO = []; // 优惠告知书
       // this.postData.documentVO = []; // 上传附件
       let list: any = ['contType', 'contNo', 'recordState', 'recordStr', 'area', 'room', 'hall',
@@ -1561,7 +1557,6 @@
       // 客户信息
       this.postData.customerVO = baseInfo.customerAddVOS && baseInfo.customerAddVOS.length ? baseInfo.customerAddVOS : [];
       // 收派金额 --- 代理费
-      // this.postData.receiveVO = baseInfo.receiveVOS && baseInfo.receiveVOS.length ? baseInfo.receiveVOS : [];
       if (baseInfo.receiveVOS && baseInfo.receiveVOS.length) {
         let tempList: any = (this as any).$parent.initReceiveVOS(baseInfo.receiveVOS);
         console.log('receiveVO:', tempList);
@@ -1572,8 +1567,6 @@
         }
         console.log('postData.receiveVO:', tempList);
       }
-      // 暂存
-      this.tempReceiveVO = (this as any).$tool.deepClone(this.postData.receiveVO);
     }
 
     // 初始化渠道商(渠道公司) --- 分销成交模式才有渠道商
@@ -1725,7 +1718,7 @@
 
     // 改变细分业务模式
     async changeRefineModel() {
-      // 不一样+失焦，要初始化收派套餐
+      // 要初始化收派套餐
       await this.initReceive();
     }
 
@@ -1766,14 +1759,8 @@
 
     // 合同类型、分销协议编号、细分业务模式、认购价格、签约价格改变之后要初始化收派金额
     initReceive() {
-      let flag: any = false;
       if (this.postData.receiveVO.length) {
-        // 判断收派金额数据是否选了收派套餐
-        flag = (this as any).$parent.hasReceivePackage(this.postData.receiveVO);
-      }
-      if (flag) {
-        // 如果已经选了，判断价格是否和之前的一样
-        this.postData.receiveVO = (this as any).$tool.deepClone(this.tempReceiveVO);
+        this.postData.receiveVO = (this as any).$parent.resetReceiveVOS(this.postData.receiveVO);
       }
     }
 
