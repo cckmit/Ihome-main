@@ -4,7 +4,7 @@
  * @Author: ywl
  * @Date: 2020-12-18 10:12:10
  * @LastEditors: ywl
- * @LastEditTime: 2021-01-28 17:20:17
+ * @LastEditTime: 2021-01-28 19:36:35
 -->
 <template>
   <el-dialog
@@ -15,7 +15,7 @@
     :before-close="cancel"
     append-to-body
     width="80%"
-    top="5vh"
+    top="3vh"
     title="关联成交报告"
   >
     <el-form label-width="100px">
@@ -117,6 +117,7 @@
       class="ih-table table-dialog"
       ref="table"
       :data="resPageInfo.list"
+      height="40vh"
       @selection-change="handleSelectionChange"
       @select="handleSelect"
     >
