@@ -482,6 +482,22 @@
       return data;
     }
 
+    // 重置收派金额信息：去掉id、收派套餐、价格
+    resetReceiveVOS(list: any = []) {
+      list.forEach((item: any) => {
+        item.showData = [];
+        item.packageId = null;
+        item.packgeName = null;
+        item.receiveAmount = 0;
+        item.commAmount = 0;
+        item.rewardAmount = 0;
+        item.totalPackageAmount = 0;
+        item.distributionAmount = 0;
+        item.otherChannelFees = 0;
+      });
+      return list;
+    }
+
     // 查看来访/成交确认信息
     handleViewDealInfo() {
       this.dialogViewInfo = !this.dialogViewInfo;

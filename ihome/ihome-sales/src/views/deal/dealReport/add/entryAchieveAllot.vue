@@ -1195,7 +1195,6 @@
       achieveDistriList: [], // 平台费用 - 分销
       calculation: 'Auto', // 计算方式 - 默认自动
     };
-    tempReceiveVO: any = []; // 临时收派金额信息
     tempSignPrice: any = null; // 临时签约价格
     tempSubscribePrice: any = null; // 临时认购价格
     tempDocumentList: any = []; // 记录来访确认单和成交确认单
@@ -1707,11 +1706,10 @@
 
     // 改变计算方式
     changeCalculation() {
-      // console.log(this.tempReceiveVO);
-      this.postData.receiveVO = (this as any).$tool.deepClone(this.tempReceiveVO);
       this.postData.commissionInfoList = [];
       this.postData.achieveTotalBagList = [];
       this.postData.achieveDistriList = [];
+      this.initReceive()
       if (!this.addFlag) {
         this.showChangeTips();
       }
@@ -2037,8 +2035,6 @@
           let list: any = (this as any).$parent.initReceiveVOS(tempList);
           this.$nextTick(() => {
             this.postData.receiveVO.push(...list);
-            // 暂存
-            this.tempReceiveVO = (this as any).$tool.deepClone(this.postData.receiveVO);
           });
         }
         // 成交组织
@@ -2142,7 +2138,6 @@
       this.contNoList = []; // 分销协议编号
       this.packageIdsList = []; // ids
       this.postData.customerVO = []; // 客户信息
-      this.tempReceiveVO = []; // 收派金额初始值
       this.postData.offerNoticeVO = []; // 优惠告知书
       // this.postData.documentVO = []; // 上传附件
       this.postData.calculation = 'Auto'; // 计算方式改为手动
@@ -2281,8 +2276,6 @@
         }
         console.log('postData.receiveVO:', tempList);
       }
-      // 暂存
-      this.tempReceiveVO = (this as any).$tool.deepClone(this.postData.receiveVO);
       // 收派金额中的甲方
       this.commissionCustomerList = [];
       this.commissionCustomerList = this.initCommissionCustomer(baseInfo.receiveVOS);
@@ -2513,7 +2506,7 @@
       let value: any = e.target.value;
       // 如果已经选了，判断价格是否和之前的一样
       if (value !== (this as any)[`temp${type}`]) {
-        // 不一样+失焦，要初始化收派套餐
+        // 要初始化收派套餐
         this.initReceive();
       }
       (this as any)[`temp${type}`] = value;
@@ -2521,16 +2514,9 @@
 
     // 合同类型、分销协议编号、细分业务模式、认购价格、签约价格改变之后要初始化收派金额
     initReceive() {
-      let flag: any = false;
       if (this.postData.receiveVO.length && this.postData.calculation === "Auto") {
         // 判断收派金额数据是否选了收派套餐
-        flag = (this as any).$parent.hasReceivePackage(this.postData.receiveVO);
-      }
-      if (flag) {
-        this.postData.receiveVO = (this as any).$tool.deepClone(this.tempReceiveVO);
-        this.postData.commissionInfoList = [];
-        this.postData.achieveTotalBagList = [];
-        this.postData.achieveDistriList = [];
+        this.postData.receiveVO = (this as any).$parent.resetReceiveVOS(this.postData.receiveVO);
         // 显示手动按钮
         this.addFlag = false;
         this.editFlag = true;
