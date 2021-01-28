@@ -17,7 +17,7 @@
       label-width="110px"
       class="demo-ruleForm">
       <p id="anchor-1" class="ih-info-title">成交信息</p>
-      <div class="add-all-wrapper padding-left-20">
+      <div class="add-all-wrapper padding-left-20" v-if="id">
         <el-button type="success">更新明源数据</el-button>
       </div>
       <el-row :gutter="5">
@@ -670,7 +670,7 @@
                 v-digits="2"
                 @input="changeReceiveItem($event, scope.row, 'totalPackageAmount')"
                 v-model="scope.row.totalPackageAmount"
-                :disabled="(postData.calculation === 'Auto' || postData.modelCode !== 'DistriModel')"
+                :disabled="(postData.calculation === 'Auto' || postData.modelCode === 'DistriModel')"
                 placeholder="总包业绩金额"></el-input>
             </template>
           </el-table-column>
@@ -680,7 +680,7 @@
                 v-digits="2"
                 @input="changeReceiveItem($event, scope.row, 'distributionAmount')"
                 v-model="scope.row.distributionAmount"
-                :disabled="(postData.calculation === 'Auto' || postData.modelCode !== 'TotalBagModel')">
+                :disabled="(postData.calculation === 'Auto' || postData.modelCode === 'TotalBagModel')">
               </el-input>
             </template>
           </el-table-column>
@@ -1197,6 +1197,7 @@
     tempReceiveVO: any = []; // 临时收派金额信息
     tempSignPrice: any = null; // 临时签约价格
     tempSubscribePrice: any = null; // 临时认购价格
+    tempDocumentList: any = []; // 记录来访确认单和成交确认单
     commissionCustomerList: any = []; // 初始化费用来源的甲方信息 --- 代理费
     commissionServiceFeeObj: any = []; // 初始化费用来源的甲方信息 --- 服务费
     rules: any = {
@@ -1426,6 +1427,24 @@
       } else {
         await this.getInformation(id);
       }
+      if (res.cycleId && res.house.propertyType && res.agencyList && res.agencyList.length) {
+        let params: any = {
+          channelId: res.agencyList[0].agencyId,
+          cycleId: res.cycleId,
+          property: res.house.propertyType
+        }
+        let info: any = await (this as any).$parent.getContTypeList(params);
+        this.packageIdsList = [];
+        this.contNoList = [];
+        if (info && info.contracts && info.contracts.length) {
+          this.contNoList = info.contracts;
+          info.contracts.forEach((item: any) => {
+            if (item.contractNo === res.contNo) {
+              this.packageIdsList = item.packageMxIds;
+            }
+          });
+        }
+      }
       this.$nextTick(() => {
         this.postData.dealCode = res.dealCode;
         this.postData.cycleId = res.cycleId;
@@ -1578,11 +1597,11 @@
       // 多分优惠告知书情况
       // this.postData.contNo = null; // 重置选择的编号
       // 分销协议编号
-      if (baseInfo.contracts && baseInfo.contracts.length > 0) {
-        this.contNoList = baseInfo.contracts; // 分销协议选择列表
-      } else {
-        this.contNoList = [];
-      }
+      // if (baseInfo.contracts && baseInfo.contracts.length > 0) {
+      //   this.contNoList = baseInfo.contracts; // 分销协议选择列表
+      // } else {
+      //   this.contNoList = [];
+      // }
     }
 
     // 编辑 --- 构建收派金额数据
@@ -1937,6 +1956,7 @@
         // 不管相等不相等要清空数据关联数据 + 重新请求接口
         if (this.postData.cycleId) {
           this.postData.receiveVO = []; // 收派金额
+          this.postData.documentVO = []; // 上传附件
           await this.resetData();
         }
         this.$nextTick(async () => {
@@ -2022,6 +2042,8 @@
         }
         // 成交组织
         await this.getOrgName(baseInfo.groupId);
+        // 初始化附件信息
+        await this.initDocument(baseInfo);
       }
     }
 
@@ -2044,7 +2066,8 @@
       this.currentSelectAgencyIndex = scope.$index;
       let data: any = {
         selectableChannelIds: this.baseInfoByTerm.selectableChannelIds,
-        cycleId: this.postData.cycleId
+        cycleId: this.postData.cycleId,
+        property: this.postData.propertyType
       };
       (this as any).$parent.selectAgency(data);
     }
@@ -2106,6 +2129,7 @@
     changeBuild() {
       // 清空房间号 + 下面的所有信息
       this.postData.roomId = null;
+      this.initDocument(this.baseInfoByTerm);
       this.resetReceiveVO();
       this.resetData();
     }
@@ -2119,7 +2143,7 @@
       this.postData.customerVO = []; // 客户信息
       this.tempReceiveVO = []; // 收派金额初始值
       this.postData.offerNoticeVO = []; // 优惠告知书
-      this.postData.documentVO = []; // 上传附件
+      // this.postData.documentVO = []; // 上传附件
       this.postData.calculation = 'Auto'; // 计算方式改为手动
       this.postData.commissionInfoList = [];
       this.postData.achieveTotalBagList = [];
@@ -2145,6 +2169,7 @@
     changeRoom(value: any) {
       // console.log('改变房号', value);
       this.resetReceiveVO();
+      this.initDocument(this.baseInfoByTerm);
       this.resetData(); // 重置数据
       if (value) {
         this.initPageById(this.baseInfoByTerm.termId, value, this.postData.propertyType);
@@ -2241,28 +2266,10 @@
       // 签约日期
       this.postData.signDate = baseInfo.myReturnVO.dealVO?.signDate;
       // 数据标志
-      // let dataFlagList: any = (this as any).$root.dictAllList('DealDataFlag');
       this.postData.dataSign = baseInfo.myReturnVO.dataSign;
-      // if (dataFlagList && dataFlagList.length > 0 && baseInfo.myReturnVO.dataSign) {
-      //   dataFlagList.forEach((list: any) => {
-      //     if (list.code === baseInfo.myReturnVO.dataSign) {
-      //       this.postData.dataSign = list.name;
-      //     }
-      //   });
-      // }
-      // 分销成交和非分销成交不一样
-      if (baseInfo.contType === 'DistriDeal') {
-        // 分销成交模式
-        // 1. 初始化渠道商/渠道公司
-        this.initAgency(baseInfo.agencyVOs, true);
-      } else if (['SelfChannelDeal', 'NaturalVisitDeal'].includes(baseInfo.contType)) {
-        // 非分销成交模式 --- 自然来访 / 自渠成交
-        this.initAgency(baseInfo.agencyVOs, false);
-      }
       // 客户信息
       this.postData.customerVO = baseInfo.customerAddVOS && baseInfo.customerAddVOS.length ? baseInfo.customerAddVOS : [];
       // 收派金额 --- 代理费
-      // this.postData.receiveVO = baseInfo.receiveVOS && baseInfo.receiveVOS.length ? baseInfo.receiveVOS : [];
       if (baseInfo.receiveVOS && baseInfo.receiveVOS.length) {
         let tempList: any = (this as any).$parent.initReceiveVOS(baseInfo.receiveVOS);
         console.log('receiveVO:', tempList);
@@ -2271,22 +2278,16 @@
         } else {
           this.postData.receiveVO = tempList;
         }
-        // this.postData.receiveVO = [...this.postData.receiveVO, ...tempList];
         console.log('postData.receiveVO:', tempList);
       }
       // 暂存
       this.tempReceiveVO = (this as any).$tool.deepClone(this.postData.receiveVO);
-      // this.postData.receiveVO = (this as any).$parent.initReceiveVOS(baseInfo.receiveVOS);
-      // this.tempReceiveVO = (this as any).$tool.deepClone(this.postData.receiveVO);
       // 收派金额中的甲方
       this.commissionCustomerList = [];
       this.commissionCustomerList = this.initCommissionCustomer(baseInfo.receiveVOS);
       this.commissionServiceFeeObj = {};
       this.commissionServiceFeeObj = this.initCommissionServiceFee(baseInfo.receiveVOS);
       // console.log('commissionServiceFeeObj', this.commissionServiceFeeObj)
-      // 附件信息
-      this.initDocument(baseInfo.contType, baseInfo);
-      // loading.close();
     }
 
     // 初始化收派金额中的代理费的甲方数组 --- 代理费
@@ -2355,87 +2356,101 @@
     }
 
     // 初始化附件表格数据
-    initDocument(contType: any = '', initData: any = {}) {
+    initDocument(info: any) {
       let fileList: any = (this as any).$root.dictAllList('DealFileType'); // 附件类型
-      // console.log('fileList', fileList);
       // 附件类型增加key
       if (fileList.length > 0) {
         fileList.forEach((vo: any) => {
           vo.defaultFileList = []; // 存放原来的数据
           vo.fileList = []; // 存放新上传的数据
-          // 赋值
-          switch(vo.code) {
-            case "VisitConfirForm":
-              // 来访确认单
-              if (initData.visitConfirmForms && initData.visitConfirmForms.length) {
-                initData.visitConfirmForms.forEach((item: any) => {
-                  item.name = item.fileName;
-                });
-              }
-              vo.defaultFileList = initData.visitConfirmForms && initData.visitConfirmForms.length ? initData.visitConfirmForms : [];
-              // vo.fileList = initData.visitConfirmForms && initData.visitConfirmForms.length ? initData.visitConfirmForms : [];
-              break;
-            case "Notice":
-              // 优惠告知书PDF
-              if (initData.noticePDF && initData.noticePDF.length) {
-                initData.noticePDF.forEach((item: any) => {
-                  item.name = item.fileName;
-                });
-              }
-              vo.defaultFileList = initData.noticePDF && initData.noticePDF.length  ? initData.noticePDF : [];
-              // vo.fileList = initData.noticePDF && initData.noticePDF.length  ? initData.noticePDF : [];
-              break;
-            case "OwnerID":
-              // 业主身份证
-              if (initData.customerIds && initData.customerIds.length) {
-                initData.customerIds.forEach((item: any) => {
-                  item.name = item.fileName;
-                });
-              }
-              vo.defaultFileList = initData.customerIds && initData.customerIds.length ? initData.customerIds : [];
-              // vo.fileList = initData.customerIds && initData.customerIds.length ? initData.customerIds : [];
-              break;
-            case "DealConfirForm":
-              // 成交确认书
-              if (initData.dealConfirmForms && initData.dealConfirmForms.length) {
-                initData.dealConfirmForms.forEach((item: any) => {
-                  item.name = item.fileName;
-                });
-              }
-              vo.defaultFileList = initData.dealConfirmForms && initData.dealConfirmForms.length ? initData.dealConfirmForms : [];
-              // vo.fileList = initData.dealConfirmForms && initData.dealConfirmForms.length ? initData.dealConfirmForms : [];
-              break;
-          }
-        })
-      }
-      this.postData.documentVO = JSON.parse(JSON.stringify(fileList));
-      // 1.是否是分销成交
-      if (contType !== 'DistriDeal') {
-        // 隐藏来访确认单、成交确认单
-        this.postData.documentVO = fileList.filter((item: any) => {
-          return !["VisitConfirForm", "DealConfirForm"].includes(item.code);
         });
       }
-      // 2.项目周期的收费模式
-      if (this.baseInfoByTerm.chargeEnum === 'Agent') {
-        // 隐藏优惠告知书
-        this.postData.documentVO = fileList.filter((item: any) => {
+      // 保存来访确认单和成交确认单
+      this.tempDocumentList = [];
+      this.tempDocumentList = fileList.filter((item: any) => {
+        return ["VisitConfirForm", "DealConfirForm"].includes(item.code);
+      });
+      console.log('this.tempDocumentList', this.tempDocumentList);
+      if (info.chargeEnum === 'Agent') {
+        // 项目周期的收费模式为代理费的话，隐藏优惠告知书
+        fileList = fileList.filter((item: any) => {
           return item.code !== "Notice";
         });
       }
-      // console.log('附件信息表格：', this.postData.documentVO);
+      // 先隐藏来访确认单和成交确认单
+      fileList = fileList.filter((item: any) => {
+        return !["VisitConfirForm", "DealConfirForm"].includes(item.code);
+      });
+      this.postData.documentVO = (this as any).$tool.deepClone(fileList);
     }
 
     // 修改合同类型
-    changeContType() {
+    changeContType(value: any) {
       // 初始化收派套餐
       this.initReceive();
+      // 选择房号后构建表格数据
+      this.getDocumentList(value);
       // 判断是否可以手动添加优惠告知书
       this.canAddNoticeItem(this.baseInfoByTerm.chargeEnum, this.postData.contType, this.baseInfoInDeal.dealNoticeStatus);
     }
 
+    // 选择房号后构建表格数据
+    getDocumentList(type: any) {
+      if (type === "DistriDeal") {
+        this.postData.documentVO.push(...this.tempDocumentList);
+        if (this.postData.documentVO.length) {
+          this.postData.documentVO.forEach((list: any) => {
+            // 回显房号带出来的值
+            let baseInfo: any = (this as any).$tool.deepClone(this.baseInfoInDeal);
+            switch(list.code) {
+              case "VisitConfirForm":
+                // 来访确认单
+                if (baseInfo.visitConfirmForms && baseInfo.visitConfirmForms.length) {
+                  this.baseInfoInDeal.visitConfirmForms.forEach((item: any) => {
+                    item.name = item.fileName;
+                  });
+                }
+                list.defaultFileList = baseInfo.visitConfirmForms && baseInfo.visitConfirmForms.length ? baseInfo.visitConfirmForms : [];
+                break;
+              case "Notice":
+                // 优惠告知书PDF
+                if (baseInfo.noticePDF && baseInfo.noticePDF.length) {
+                  baseInfo.noticePDF.forEach((item: any) => {
+                    item.name = item.fileName;
+                  });
+                }
+                list.defaultFileList = baseInfo.noticePDF && baseInfo.noticePDF.length  ? baseInfo.noticePDF : [];
+                break;
+              case "OwnerID":
+                // 业主身份证
+                if (baseInfo.customerIds && baseInfo.customerIds.length) {
+                  baseInfo.customerIds.forEach((item: any) => {
+                    item.name = item.fileName;
+                  });
+                }
+                list.defaultFileList = baseInfo.customerIds && baseInfo.customerIds.length ? baseInfo.customerIds : [];
+                break;
+              case "DealConfirForm":
+                // 成交确认书
+                if (baseInfo.dealConfirmForms && baseInfo.dealConfirmForms.length) {
+                  baseInfo.dealConfirmForms.forEach((item: any) => {
+                    item.name = item.fileName;
+                  });
+                }
+                list.defaultFileList = baseInfo.dealConfirmForms && baseInfo.dealConfirmForms.length ? baseInfo.dealConfirmForms : [];
+                break;
+            }
+          });
+        }
+      } else {
+        this.postData.documentVO = this.postData.documentVO.filter((item: any) => {
+          return !["VisitConfirForm", "DealConfirForm"].includes(item.code);
+        });
+      }
+    }
+
     // 判断是否可以手动添加优惠告知书
-    canAddNoticeItem(charge: any = '', contType: any = '', Status: any = '', isVoidService: any = false) {
+    canAddNoticeItem(charge: any = '', contType: any = '', Status: any = '', isVoidService: any = null) {
       let postData: any = {
         charge: charge, // 启动模式(Service-服务费、Agent-代理费、ServiAndAgen-服务费+代理费)
         contType: contType, // 合同类型(DistriDeal-分销成交、NaturalVisitDeal-自然来访成交、SelfChannelDeal-自渠成交)
@@ -2456,6 +2471,7 @@
       // 清空栋座 + 房间号 + 下面的所有信息
       this.postData.roomId = null;
       this.postData.buildingId = null;
+      this.initDocument(this.baseInfoByTerm);
       this.resetReceiveVO();
       this.resetData();
     }

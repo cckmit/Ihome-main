@@ -4,7 +4,7 @@
  * @Author: ywl
  * @Date: 2020-12-18 10:12:10
  * @LastEditors: ywl
- * @LastEditTime: 2020-12-28 11:08:09
+ * @LastEditTime: 2021-01-27 20:28:13
 -->
 <template>
   <el-dialog
@@ -22,46 +22,81 @@
       <el-row>
         <el-col :span="8">
           <el-form-item label="成交报告编号">
-            <el-input v-model="queryPageParameters.dealCode"></el-input>
+            <el-input
+              v-model="queryPageParameters.dealCode"
+              clearable
+              placeholder="成交报告编号"
+            ></el-input>
           </el-form-item>
         </el-col>
         <el-col :span="8">
           <el-form-item label="成交日期">
-            <el-input v-model="queryPageParameters.bankName"></el-input>
+            <el-date-picker
+              style="width:100%;"
+              v-model="timeList"
+              type="daterange"
+              align="left"
+              unlink-panels
+              range-separator="至"
+              start-placeholder="开始日期"
+              end-placeholder="结束日期"
+              :picker-options="$root.pickerOptions"
+              value-format="yyyy-MM-dd"
+            ></el-date-picker>
           </el-form-item>
         </el-col>
         <el-col :span="8">
           <el-form-item label="录入人">
-            <el-input v-model="queryPageParameters.entryPerson"></el-input>
+            <IhSelectPageUser
+              v-model="queryPageParameters.entryPerson"
+              clearable
+            ></IhSelectPageUser>
           </el-form-item>
         </el-col>
       </el-row>
       <el-row>
         <el-col :span="8">
           <el-form-item label="联动项目">
-            <el-input v-model="queryPageParameters.provinceName"></el-input>
+            <IhSelectPageByProject
+              clearable
+              v-model="queryPageParameters.projectCycle"
+              placeholder="请选择联动项目"
+            ></IhSelectPageByProject>
           </el-form-item>
         </el-col>
         <el-col :span="8">
           <el-form-item label="房号">
-            <el-input v-model="queryPageParameters.roomNo"></el-input>
+            <IhSelectPageByRoom
+              v-model="queryPageParameters.roomNo"
+              :proId="queryPageParameters.projectCycle"
+              placeholder="请选择房号"
+              clearable
+            ></IhSelectPageByRoom>
           </el-form-item>
         </el-col>
         <el-col :span="8">
           <el-form-item label="立项周期">
-            <el-input v-model="queryPageParameters.projectCycle"></el-input>
+            <IhSelectPageByCycle
+              clearable
+              v-model="queryPageParameters.projectCycle"
+              placeholder="请选择立项周期"
+            ></IhSelectPageByCycle>
           </el-form-item>
         </el-col>
       </el-row>
       <el-row>
         <el-col :span="8">
           <el-form-item label="组织">
-            <el-input v-model="queryPageParameters.dealOrgId"></el-input>
+            <IhSelectOrgTree v-model="queryPageParameters.dealOrg"></IhSelectOrgTree>
           </el-form-item>
         </el-col>
         <el-col :span="8">
           <el-form-item label="业主姓名">
-            <el-input v-model="queryPageParameters.customerName                      "></el-input>
+            <el-input
+              v-model="queryPageParameters.customerName"
+              placeholder="请输入业主姓名"
+              clearable
+            ></el-input>
           </el-form-item>
         </el-col>
       </el-row>
@@ -112,7 +147,7 @@
       ></el-table-column>
       <el-table-column
         label="立项周期"
-        prop="cycleId"
+        prop="termName"
       ></el-table-column>
       <el-table-column
         label="店组"
@@ -152,13 +187,25 @@ import { post_payment_relevanceDeal } from "../../../../api/finance/index";
 })
 export default class DealDialog extends Vue {
   @Prop() id!: any;
+
   private dialogVisible = true;
   private selection = [];
-  public queryPageParameters: any = {};
+  public queryPageParameters: any = {
+    timeType: "SignUp",
+    dealCode: null,
+    entryPerson: null,
+    projectCycle: null,
+    roomNo: null,
+    dealOrg: null,
+    customerName: null,
+    beginTime: null,
+    endTime: null,
+  };
   public resPageInfo: any = {
     total: null,
     list: [],
   };
+  timeList: any = [];
 
   cancel(): void {
     this.$emit("cancel", false);
@@ -177,10 +224,25 @@ export default class DealDialog extends Vue {
     }
   }
   private search() {
-    //
+    let flag = this.timeList && this.timeList.length;
+    this.queryPageParameters.beginTime = flag ? this.timeList[0] : null;
+    this.queryPageParameters.endTime = flag ? this.timeList[1] : null;
+    this.queryPageParameters.pageNum = 1;
+    this.getListMixin();
   }
   private reset() {
-    //
+    Object.assign(this.queryPageParameters, {
+      timeType: "SignUp",
+      dealCode: null,
+      entryPerson: null,
+      projectCycle: null,
+      roomNo: null,
+      dealOrg: null,
+      customerName: null,
+      beginTime: null,
+      endTime: null,
+    });
+    this.timeList = [];
   }
   private handleSelectionChange(val: any) {
     this.selection = val;
