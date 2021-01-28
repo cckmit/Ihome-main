@@ -153,7 +153,7 @@
                 <el-form-item label="项目周期">
                   <IhSelectPageByCycle
                     clearable
-                    v-model="queryPageParameters.cycleId"
+                    v-model="queryPageParameters.projectCycle"
                     placeholder="请选择立项周期"
                   ></IhSelectPageByCycle>
                 </el-form-item>
@@ -162,7 +162,7 @@
                 <el-form-item label="栋座">
                   <IhSelectPageByBuild
                     v-model="queryPageParameters.buyUnit"
-                    :proId="queryPageParameters.cycleId"
+                    :proId="queryPageParameters.projectCycle"
                     placeholder="请选择栋座"
                     clearable
                   ></IhSelectPageByBuild>
@@ -172,7 +172,7 @@
                 <el-form-item label="房号">
                   <IhSelectPageByRoom
                     v-model="queryPageParameters.roomNumberId"
-                    :proId="queryPageParameters.cycleId"
+                    :proId="queryPageParameters.projectCycle"
                     :buildingId="queryPageParameters.buyUnit"
                     placeholder="请选择房号"
                     clearable
@@ -271,8 +271,8 @@
         </el-table-column>
         <el-table-column prop="commAmount" label="渠道信息" min-width="190">
           <template slot-scope="scope">
-            <div>公司：{{scope.row.dealBranchCompany}}</div>
-            <div>经纪人：{{scope.row.paidCommAmount}}</div>
+            <div>公司：{{scope.row.channelName}}</div>
+            <div>经纪人：{{scope.row.brokerName}}</div>
           </template>
         </el-table-column>
         <el-table-column prop="commAmount" label="项目周期信息" min-width="180">
