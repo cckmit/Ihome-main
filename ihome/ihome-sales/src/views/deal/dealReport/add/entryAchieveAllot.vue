@@ -1447,12 +1447,12 @@
         // 处理角色类型选项
         if (this.isSameFlag) {
           // 分销同步总包
-          this.editDealAchieveData.totablBagRoles = this.getRoleListAndAchieveCap(res.totalBag, res.totablBagRoles);
-          this.editDealAchieveData.distriRoles = this.getRoleListAndAchieveCap(res.totalBag, res.totablBagRoles);
+          this.editDealAchieveData.totablBagRoles = this.getRoleListAndAchieveCap(res?.totalBag, res?.totablBagRoles);
+          this.editDealAchieveData.distriRoles = this.getRoleListAndAchieveCap(res?.totalBag, res?.totablBagRoles);
         } else {
           // 分销不同步总包
-          this.editDealAchieveData.totablBagRoles = this.getRoleListAndAchieveCap(res.totalBag, res.totablBagRoles);
-          this.editDealAchieveData.distriRoles = this.getRoleListAndAchieveCap(res.distri, res.distriRoles);
+          this.editDealAchieveData.totablBagRoles = this.getRoleListAndAchieveCap(res?.totalBag, res?.totablBagRoles);
+          this.editDealAchieveData.distriRoles = this.getRoleListAndAchieveCap(res?.distri, res?.distriRoles);
         }
         this.postData.dealCode = res.dealCode;
         this.postData.cycleId = res.cycleId;
@@ -1905,7 +1905,7 @@
     *  */
     getRoleListAndAchieveCap(bagList: any = [], roleTypeList: any = []) {
       let tempArr: any = [];
-      if (bagList.length && roleTypeList.length) {
+      if (bagList && bagList.length && roleTypeList && roleTypeList.length) {
         bagList.forEach((totalItem: any) => {
           roleTypeList.forEach((roleItem: any) => {
             if (totalItem.roleType === roleItem) {
