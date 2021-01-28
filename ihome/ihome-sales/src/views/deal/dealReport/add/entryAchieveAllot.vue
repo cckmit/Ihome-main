@@ -1404,7 +1404,7 @@
       this.id = this.$route.query.id;
       if (this.id) {
         this.addFlag = false;
-        this.editFlag = true;
+        this.editFlag = false;
         this.tipsFlag = false;
         this.dividerTips = '刷新成功';
         await this.editInitPage(this.id);
