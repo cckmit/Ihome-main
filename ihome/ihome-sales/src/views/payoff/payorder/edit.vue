@@ -4,7 +4,7 @@
  * @Author: wwq
  * @Date: 2020-12-26 11:11:23
  * @LastEditors: wwq
- * @LastEditTime: 2021-01-26 17:06:45
+ * @LastEditTime: 2021-01-27 20:11:38
 -->
 <template>
   <IhPage>
@@ -35,6 +35,9 @@
                 v-model="info.projectId"
                 :search-name="info.projectName"
                 clearable
+                @changeOption="(data) => {
+                  info.projectName = data.proName;
+                }"
               ></IhSelectPageByProject>
             </el-form-item>
           </el-col>
@@ -48,6 +51,9 @@
                 placeholder="事业部"
                 v-model="info.belongOrgId"
                 :search-name="info.belongOrgName"
+                @changeOption="(data) => {
+                  info.belongOrgName = data.name;
+                }"
               >
               </IhSelectPageDivision>
             </el-form-item>
@@ -495,6 +501,9 @@
                 v-model="row.cycleId"
                 :search-name="row.cycleName"
                 clearable
+                @changeOption="(data) => {
+                  row.cycleName = data.proName;
+                }"
               ></IhSelectPageByProject>
             </template>
           </el-table-column>
@@ -504,7 +513,6 @@
           >
             <template v-slot="{ row }">
               <el-input
-                v-digits="2"
                 v-model="row.deductAmount"
                 clearable
                 placeholder="本期扣除金额"
@@ -972,7 +980,10 @@ export default class PayoffEdit extends Vue {
   // 不含税金额(实际付款金额/(1+发票税率))
   noTaxAmountChange(row: any) {
     const practical = Number(row.actualAmount);
-    const shuier = this.$math.add(1, Number(this.info.taxRate));
+    const taxRate = this.info.taxRate
+      ? this.$math.div(this.info.taxRate, 100)
+      : 0;
+    const shuier = this.$math.add(1, taxRate);
     const res = this.$math.div(practical, shuier);
     row.noTaxAmount = this.$math.tofixed(res, 2);
     return this.$math.tofixed(res, 2);
@@ -999,7 +1010,6 @@ export default class PayoffEdit extends Vue {
     );
     const total3 = this.$math.div(total1, total2);
     const res = this.$math.multi(total3, 100);
-    console.log(res);
     row.ratio = this.$math.tofixed(res, 2);
     return this.$math.tofixed(res, 2);
   }
@@ -1007,7 +1017,10 @@ export default class PayoffEdit extends Vue {
   // 明细表-不含税金额(扣除金额/ (1+开票税率))
   dataNoTaxAmountChange(row: any) {
     const deductAmount = Number(row.deductAmount);
-    const shuier = this.$math.add(1, Number(this.info.taxRate));
+    const taxRate = this.info.taxRate
+      ? this.$math.div(this.info.taxRate, 100)
+      : 0;
+    const shuier = this.$math.add(1, taxRate);
     const res = this.$math.div(deductAmount, shuier);
     row.noTaxAmount = this.$math.tofixed(res, 2);
     return this.$math.tofixed(res, 2);
@@ -1016,8 +1029,11 @@ export default class PayoffEdit extends Vue {
   // 明细表-税额(不含税金额 * 开票税率)
   dataTaxChange(row: any) {
     const noTaxAmount = row.noTaxAmount ? Number(row.noTaxAmount) : 0;
-    const taxRate = this.info.taxRate ? Number(this.info.taxRate) : 0;
-    const res = this.$math.multi(noTaxAmount, taxRate);
+    const taxRate = this.info.taxRate
+      ? this.$math.div(this.info.taxRate, 100)
+      : 0;
+    const shuier = this.$math.add(1, taxRate);
+    const res = this.$math.multi(noTaxAmount, shuier);
     row.tax = this.$math.tofixed(res, 2);
     return this.$math.tofixed(res, 2);
   }
@@ -1311,7 +1327,7 @@ export default class PayoffEdit extends Vue {
           obj.documentList = arr.map((v: any) => ({
             fileId: v.fileId,
             fileName: v.name,
-            fileType: v.fileType,
+            fileType: v.type,
           }));
         } else {
           this.$message({
