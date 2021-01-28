@@ -4,7 +4,7 @@
  * @Author: wwq
  * @Date: 2020-12-26 11:11:23
  * @LastEditors: wwq
- * @LastEditTime: 2021-01-27 20:11:38
+ * @LastEditTime: 2021-01-28 11:21:10
 -->
 <template>
   <IhPage>
@@ -497,14 +497,19 @@
             width="250"
           >
             <template v-slot="{ row }">
-              <IhSelectPageByProject
+              <el-select
+                style="width: 100%"
                 v-model="row.cycleId"
-                :search-name="row.cycleName"
-                clearable
-                @changeOption="(data) => {
-                  row.cycleName = data.proName;
-                }"
-              ></IhSelectPageByProject>
+                placeholder="请选择"
+                @change="otherCycleChange(row)"
+              >
+                <el-option
+                  v-for="item in tabsList"
+                  :key="item.value"
+                  :label="item.label"
+                  :value="item.value"
+                ></el-option>
+              </el-select>
             </template>
           </el-table-column>
           <el-table-column
@@ -783,7 +788,7 @@
                 :file-size="10"
                 :file-type="row.code"
                 size="100px"
-                :limit="row.limit && row.fileList.length"
+                :limit="row.limit ? row.fileList.length : 999"
                 :upload-show="row.limit && !!row.fileList.length"
                 @newFileList="queryNew"
               ></IhUpload>
@@ -965,6 +970,11 @@ export default class PayoffEdit extends Vue {
     );
   }
 
+  otherCycleChange(val: any) {
+    const item = this.tabsList.find((v: any) => v.value === val.cycleId);
+    val.cycleName = item.label;
+  }
+
   // 实际付款金额(本次申请付款金额合计-本次应扣)
   practicalChange(row: any) {
     const total = this.$math.add(
@@ -1032,8 +1042,7 @@ export default class PayoffEdit extends Vue {
     const taxRate = this.info.taxRate
       ? this.$math.div(this.info.taxRate, 100)
       : 0;
-    const shuier = this.$math.add(1, taxRate);
-    const res = this.$math.multi(noTaxAmount, shuier);
+    const res = this.$math.multi(noTaxAmount, taxRate);
     row.tax = this.$math.tofixed(res, 2);
     return this.$math.tofixed(res, 2);
   }
@@ -1072,6 +1081,12 @@ export default class PayoffEdit extends Vue {
           ...j,
           cycleId: j.cycleId + "",
         })),
+        otherDeductionDetailResponseList: res.otherDeductionDetailResponseList.map(
+          (j: any) => ({
+            ...j,
+            cycleId: j.cycleId + "",
+          })
+        ),
       };
       this.updateList = res.documentList;
       this.getFileListType(res.documentList);
@@ -1152,15 +1167,20 @@ export default class PayoffEdit extends Vue {
     this.info.noTaxAmount = res.noTaxAmount;
     this.info.tax = res.tax;
     this.info.paySummaryDetailsResponseList = res.paySummaryDetailsResponses;
-    this.updateList.forEach((v: any) => {
-      res.documentList.forEach((j: any) => {
-        if (j.fileType === v.fileType) {
-          v.fileId = j.fileId;
-          v.fileName = j.fileName;
-        }
+    if (this.updateList.length) {
+      this.updateList.forEach((v: any) => {
+        res.documentList.forEach((j: any) => {
+          if (j.fileType === v.fileType) {
+            v.fileId = j.fileId;
+            v.fileName = j.fileName;
+          }
+        });
       });
-    });
-    this.getFileListType(this.updateList);
+      this.getFileListType(this.updateList);
+    } else {
+      this.getFileListType(res.documentList);
+    }
+
     this.modify = true;
   }
 
@@ -1235,15 +1255,7 @@ export default class PayoffEdit extends Vue {
       thisDeduct: 0,
       cycleId: v.cycleId + "",
     }));
-    if (this.info.payApplyDetailList.length) {
-      let newArr: any = arr.concat(this.info.payApplyDetailList);
-      const res = new Map();
-      this.info.payApplyDetailList = newArr.filter(
-        (v: any) => !res.has(v.cycleId) && res.set(v.cycleId, 1)
-      );
-    } else {
-      this.info.payApplyDetailList = arr;
-    }
+    this.info.payApplyDetailList = arr;
     this.filterTabs(this.info.payApplyDetailList);
     this.contactsDialogVisible = false;
   }

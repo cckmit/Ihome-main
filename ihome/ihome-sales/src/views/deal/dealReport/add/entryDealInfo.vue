@@ -151,6 +151,7 @@
             :prop="baseInfoByTerm.termStageEnum === 'Recognize' ? 'notEmpty' : 'roomId'">
             <IhSelectPageByRoom
               @change="changeRoom"
+              @changeOption="(data) => {postData.roomNo = data.roomNo}"
               v-model="postData.roomId"
               :proId="baseInfoByTerm.proId"
               :buildingId="postData.buildingId"
@@ -1020,6 +1021,24 @@
       } else {
         await this.getInformation(id);
       }
+      if (res.cycleId && res.house.propertyType && res.agencyList && res.agencyList.length) {
+        let params: any = {
+          channelId: res.agencyList[0].agencyId,
+          cycleId: res.cycleId,
+          property: res.house.propertyType
+        }
+        let info: any = await (this as any).$parent.getContNoList(params);
+        this.packageIdsList = [];
+        this.contNoList = [];
+        if (info && info.contracts && info.contracts.length) {
+          this.contNoList = info.contracts;
+          info.contracts.forEach((item: any) => {
+            if (item.contractNo === res.contNo) {
+              this.packageIdsList = item.packageMxIds;
+            }
+          });
+        }
+      }
       this.$nextTick(() => {
         this.postData.dealCode = res.dealCode;
         this.postData.cycleId = res.cycleId;
@@ -1154,11 +1173,11 @@
       // 多分优惠告知书情况
       // this.postData.contNo = null; // 重置选择的编号
       // 分销协议编号
-      if (baseInfo.contracts && baseInfo.contracts.length > 0) {
-        this.contNoList = baseInfo.contracts; // 分销协议选择列表
-      } else {
-        this.contNoList = [];
-      }
+      // if (baseInfo.contracts && baseInfo.contracts.length > 0) {
+      //   this.contNoList = baseInfo.contracts; // 分销协议选择列表
+      // } else {
+      //   this.contNoList = [];
+      // }
     }
 
     // 编辑 --- 构建收派金额数据
@@ -1375,7 +1394,8 @@
     selectAgency() {
       let data: any = {
         selectableChannelIds: this.baseInfoByTerm.selectableChannelIds,
-        cycleId: this.postData.cycleId
+        cycleId: this.postData.cycleId,
+        property: this.postData.propertyType
       };
       (this as any).$parent.selectAgency(data);
     }
@@ -2103,7 +2123,7 @@
       obj.dealVO.charge = this.baseInfoByTerm.chargeEnum;
       obj.dealVO.contType = this.postData.contType;
       obj.dealVO.cycleId = this.postData.cycleId;
-      obj.dealVO.dataSign = this.baseInfoInDeal.myReturnVO.dataSign;
+      obj.dealVO.dataSign = this.postData.dataSign;
       obj.dealVO.dealOrgId = this.postData.dealOrgId;
       obj.dealVO.isConsign = this.postData.isConsign;
       obj.dealVO.isMarketProject = this.postData.isMarketProject;
@@ -2129,7 +2149,7 @@
       obj.dealVO.oneAgentTeamId = this.postData.oneAgentTeamId;
       obj.dealVO.recordState = this.postData.recordState;
       obj.dealVO.refineModel = this.postData.refineModel;
-      obj.dealVO.reportId = this.baseInfoInDeal.recordId;
+      // obj.dealVO.reportId = this.baseInfoInDeal.recordId;
       obj.dealVO.sceneSales = this.postData.sceneSales;
       obj.dealVO.signDate = this.postData.signDate;
       obj.dealVO.signPrice = this.postData.signPrice;
@@ -2151,11 +2171,13 @@
       obj.houseVO.propertyType = this.postData.propertyType;
       obj.houseVO.room = this.postData.room;
       obj.houseVO.roomId = this.postData.roomId;
-      obj.houseVO.roomNo = this.baseInfoInDeal.roomNo;
+      obj.houseVO.roomNo = this.postData.roomId ? this.postData.roomNo : null;
       obj.houseVO.toilet = this.postData.toilet;
       // 附件信息
       if (this.postData.documentVO.length > 0) {
+        // console.log('this.postData.documentVO', this.postData.documentVO);
         this.postData.documentVO.forEach((item: any) => {
+          // 重新上传的
           if (item.fileList.length > 0) {
             item.fileList.forEach((list: any) => {
               obj.documentVO.push(
@@ -2165,9 +2187,12 @@
                   fileType: item.code
                 }
               )
-            })
+            });
           }
-        })
+          // 初始化的
+          obj.documentVO.push(...item.defaultFileList);
+        });
+        // console.log('obj.documentVO', obj.documentVO);
       }
       // 派发金额合计
       if (this.receiveAchieveVO.length > 0) {

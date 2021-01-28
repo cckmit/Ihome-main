@@ -4,15 +4,18 @@
  * @Author: wwq
  * @Date: 2020-11-03 11:52:41
  * @LastEditors: wwq
- * @LastEditTime: 2021-01-27 17:23:05
+ * @LastEditTime: 2021-01-28 10:35:49
 -->
 <template>
   <div>
-    <div class="text-left margin-left-25">
+    <div
+      class="text-left margin-left-25"
+      v-if="!isMingyuan"
+    >
       <el-button
         v-has="'B.SALES.PROJECT.BASICLIST.LPHXKJDRFH'"
         type="success"
-        v-if="$route.name !== 'projectChildAdd' && !isMingyuan"
+        v-if="$route.name !== 'projectChildAdd'"
         @click="fastImport"
         size="mini"
       >快捷导入房号</el-button>

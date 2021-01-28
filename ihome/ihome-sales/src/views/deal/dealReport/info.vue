@@ -452,8 +452,12 @@
         <el-table
           class="ih-table"
           :data="infoForm.documentList">
-          <el-table-column prop="name" label="类型" min-width="120"></el-table-column>
-          <el-table-column prop="fileName" label="附件" min-width="120">
+          <el-table-column prop="fileType" label="类型" width="200">
+            <template slot-scope="scope">
+              <div>{{$root.dictAllName(scope.row.fileType, 'DealFileType')}}</div>
+            </template>
+          </el-table-column>
+          <el-table-column prop="fileName" label="附件" min-width="300">
             <template slot-scope="scope">
               <IhUpload
                 :isCrop="false"
