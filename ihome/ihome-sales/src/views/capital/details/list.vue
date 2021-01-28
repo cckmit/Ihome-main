@@ -55,11 +55,12 @@
                 v-model="queryPageParameters.produceType"
                 clearable
                 placeholder="请选择">
-                <el-option label="服务费盈余" value="服务费盈余"></el-option>
-                <el-option label="成交变更" value="成交变更"></el-option>
-                <el-option label="成交退款" value="成交退款"></el-option>
-                <el-option label="成交补充" value="成交补充"></el-option>
-                <el-option label="其他" value="其他"></el-option>
+                <el-option
+                  v-for="item in $root.dictAllList('PoolOperaAddCategory')"
+                  :key="item.code"
+                  :label="item.name"
+                  :value="item.code"
+                ></el-option>
               </el-select>
             </el-form-item>
           </el-col>
@@ -70,9 +71,12 @@
                 v-model="queryPageParameters.useType"
                 clearable
                 placeholder="请选择">
-                <el-option label="同周期使用" value="同周期使用"></el-option>
-                <el-option label="跨周期" value="跨周期"></el-option>
-                <el-option label="跨项目" value="跨项目"></el-option>
+                <el-option
+                  v-for="item in $root.dictAllList('PoolOperaUseCategory')"
+                  :key="item.code"
+                  :label="item.name"
+                  :value="item.code"
+                ></el-option>
               </el-select>
             </el-form-item>
           </el-col>
@@ -114,7 +118,11 @@
             <el-table-column label="周期所属店组" prop="shopGroup" min-width="180"></el-table-column>
             <el-table-column label="周期所属事业部" prop="departmentName" min-width="200"></el-table-column>
             <el-table-column label="产生其他渠道费金额" prop="postAmount" min-width="200"></el-table-column>
-            <el-table-column label="产生类别" prop="postCategory" min-width="200"></el-table-column>
+            <el-table-column label="产生类别" prop="postCategory" min-width="200">
+              <template slot-scope="scope">
+                <div>{{$root.dictAllName(scope.row.postCategory, 'PoolOperaAddCategory')}}</div>
+              </template>
+            </el-table-column>
             <el-table-column label="记录时间" prop="createTime" min-width="150"></el-table-column>
           </el-table>
         </el-tab-pane>
@@ -129,7 +137,11 @@
             <el-table-column label="周期所属店组" prop="shopGroup" min-width="180"></el-table-column>
             <el-table-column label="周期所属事业部" prop="departmentName" min-width="200"></el-table-column>
             <el-table-column label="使用其他渠道费金额" prop="postAmount" min-width="200"></el-table-column>
-            <el-table-column label="使用类别" prop="postCategory" min-width="200"></el-table-column>
+            <el-table-column label="使用类别" prop="postCategory" min-width="200">
+              <template slot-scope="scope">
+                <div>{{$root.dictAllName(scope.row.postCategory, 'PoolOperaUseCategory')}}</div>
+              </template>
+            </el-table-column>
             <el-table-column label="使用的其他渠道费用归属周期" prop="otherTermName" min-width="300"></el-table-column>
             <el-table-column label="使用的其他渠道费用归属项目" prop="otherProName" min-width="300"></el-table-column>
             <el-table-column label="记录时间" prop="createTime" min-width="150"></el-table-column>
