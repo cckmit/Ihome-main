@@ -661,13 +661,8 @@
           }
         })
       }
-      // 判断是否需要请求接口来获取优惠告知书
-      if (info.notice && info.notice.length) {
-        this.infoForm.offerNoticeList = info.notice;
-      } else {
-        // 初始化优惠告知书信息
-        await this.getInformation(info.id);
-      }
+      // 初始化优惠告知书信息
+      await this.getInformation(info.id);
       if (info.documentList && info.documentList.length) {
         this.infoForm.documentList = this.initDocumentList(info.documentList);
         console.log('this.infoForm.documentList', this.infoForm.documentList);

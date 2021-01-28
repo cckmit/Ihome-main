@@ -1422,11 +1422,7 @@
       console.log(res);
       await this.editBaseDealInfo(res.cycleId);
       await this.editInitPageById(res.cycleId, res.house.roomId, res.house.propertyType);
-      if (res.notice && res.notice.length) {
-        this.postData.offerNoticeVO = res.notice;
-      } else {
-        await this.getInformation(id);
-      }
+      await this.getInformation(id);
       if (res.cycleId && res.house.propertyType && res.agencyList && res.agencyList.length) {
         let params: any = {
           channelId: res.agencyList[0].agencyId,
