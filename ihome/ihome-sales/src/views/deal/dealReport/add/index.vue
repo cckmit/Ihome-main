@@ -140,7 +140,8 @@
     dialogAddAgency: any = false; // 选择渠道公司弹窗标识
     agentCompanyData: any = {
       selectableChannelIds: [],
-      cycleId: null
+      cycleId: null,
+      property: null
     }; // 可选渠道商id列表
     dialogAddBroker: any = false; // 选择经纪人弹窗标识
     channelId: any = null; // 渠道商ID
@@ -211,6 +212,7 @@
       } else {
         this.agentCompanyData.selectableChannelIds = [];
         this.agentCompanyData.cycleId = null;
+        this.agentCompanyData.property = null;
         this.$message.error('暂无可选的渠道商信息');
       }
     }
@@ -225,14 +227,26 @@
       if (data && data.length > 0) {
         let objData: any = {
           channelId: data[0].channelId, // 渠道商公司ID
-          cycleId: this.agentCompanyData.cycleId // 周期ID
+          cycleId: this.agentCompanyData.cycleId, // 周期ID
+          property: this.agentCompanyData.property // 物业类型
         }
         const info: any = await post_pageData_initDistribution(objData);
         postData.agencyData = data;
         postData.contNoList = info.contracts;
         await (this as any).$refs.child.finishAddAgency(postData);
+        this.dialogAddAgency = false;
       }
-      this.dialogAddAgency = false;
+    }
+
+    // 编辑 --- 获取分销协议编号和对应的packageIDs
+    async getContNoList(data: any) {
+      let info: any = await post_pageData_initDistribution(data);
+      // console.log(info);
+      if (info && info.contracts && info.contracts.length) {
+        return info;
+      } else {
+        return null;
+      }
     }
 
     // 选择经纪人

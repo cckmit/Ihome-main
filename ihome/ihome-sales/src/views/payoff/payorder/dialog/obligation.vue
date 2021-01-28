@@ -4,7 +4,7 @@
  * @Author: wwq
  * @Date: 2020-12-29 11:04:59
  * @LastEditors: wwq
- * @LastEditTime: 2021-01-25 15:26:00
+ * @LastEditTime: 2021-01-28 11:18:45
 -->
 <template>
   <el-dialog
@@ -384,7 +384,6 @@ export default class Obligation extends Vue {
       pageNum: this.pageNum,
       pageSize: this.pageSize,
     });
-    this.hasCheckedData = this.data.hasCheckedData;
     // 假数据
     // this.resPageInfo.list = [
     //   {
@@ -437,6 +436,7 @@ export default class Obligation extends Vue {
   created() {
     this.info.agencyId = this.data.agencyId;
     this.info.projectId = this.data.projectId;
+    this.hasCheckedData = this.data.hasCheckedData;
     this.getList();
   }
 }

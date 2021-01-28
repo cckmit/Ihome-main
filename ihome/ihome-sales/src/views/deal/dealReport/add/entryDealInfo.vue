@@ -17,7 +17,7 @@
       label-width="110px"
       class="demo-ruleForm">
       <p id="anchor-1" class="ih-info-title">成交信息</p>
-      <div class="add-all-wrapper padding-left-20">
+      <div class="add-all-wrapper padding-left-20" v-if="id">
         <el-button type="success">更新明源数据</el-button>
       </div>
       <el-row :gutter="5">
@@ -1020,6 +1020,24 @@
       } else {
         await this.getInformation(id);
       }
+      if (res.cycleId && res.house.propertyType && res.agencyList && res.agencyList.length) {
+        let params: any = {
+          channelId: res.agencyList[0].agencyId,
+          cycleId: res.cycleId,
+          property: res.house.propertyType
+        }
+        let info: any = await (this as any).$parent.getContNoList(params);
+        this.packageIdsList = [];
+        this.contNoList = [];
+        if (info && info.contracts && info.contracts.length) {
+          this.contNoList = info.contracts;
+          info.contracts.forEach((item: any) => {
+            if (item.contractNo === res.contNo) {
+              this.packageIdsList = item.packageMxIds;
+            }
+          });
+        }
+      }
       this.$nextTick(() => {
         this.postData.dealCode = res.dealCode;
         this.postData.cycleId = res.cycleId;
@@ -1154,11 +1172,11 @@
       // 多分优惠告知书情况
       // this.postData.contNo = null; // 重置选择的编号
       // 分销协议编号
-      if (baseInfo.contracts && baseInfo.contracts.length > 0) {
-        this.contNoList = baseInfo.contracts; // 分销协议选择列表
-      } else {
-        this.contNoList = [];
-      }
+      // if (baseInfo.contracts && baseInfo.contracts.length > 0) {
+      //   this.contNoList = baseInfo.contracts; // 分销协议选择列表
+      // } else {
+      //   this.contNoList = [];
+      // }
     }
 
     // 编辑 --- 构建收派金额数据
@@ -1375,7 +1393,8 @@
     selectAgency() {
       let data: any = {
         selectableChannelIds: this.baseInfoByTerm.selectableChannelIds,
-        cycleId: this.postData.cycleId
+        cycleId: this.postData.cycleId,
+        property: this.postData.propertyType
       };
       (this as any).$parent.selectAgency(data);
     }
@@ -1677,7 +1696,7 @@
     }
 
     // 判断是否可以手动添加优惠告知书
-    canAddNoticeItem(charge: any = '', contType: any = '', Status: any = '', isVoidService: any = false) {
+    canAddNoticeItem(charge: any = '', contType: any = '', Status: any = '', isVoidService: any = null) {
       let postData: any = {
         charge: charge, // 启动模式(Service-服务费、Agent-代理费、ServiAndAgen-服务费+代理费)
         contType: contType, // 合同类型(DistriDeal-分销成交、NaturalVisitDeal-自然来访成交、SelfChannelDeal-自渠成交)
@@ -2155,7 +2174,9 @@
       obj.houseVO.toilet = this.postData.toilet;
       // 附件信息
       if (this.postData.documentVO.length > 0) {
+        // console.log('this.postData.documentVO', this.postData.documentVO);
         this.postData.documentVO.forEach((item: any) => {
+          // 重新上传的
           if (item.fileList.length > 0) {
             item.fileList.forEach((list: any) => {
               obj.documentVO.push(
@@ -2165,9 +2186,12 @@
                   fileType: item.code
                 }
               )
-            })
+            });
           }
-        })
+          // 初始化的
+          obj.documentVO.push(...item.defaultFileList);
+        });
+        // console.log('obj.documentVO', obj.documentVO);
       }
       // 派发金额合计
       if (this.receiveAchieveVO.length > 0) {

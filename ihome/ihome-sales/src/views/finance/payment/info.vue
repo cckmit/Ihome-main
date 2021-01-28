@@ -4,7 +4,7 @@
  * @Author: ywl
  * @Date: 2020-12-17 19:43:20
  * @LastEditors: ywl
- * @LastEditTime: 2021-01-14 15:45:53
+ * @LastEditTime: 2021-01-27 20:51:01
 -->
 <template>
   <IhPage class="text-left">
@@ -70,7 +70,7 @@
         </el-row>
         <el-row>
           <el-col :span="8">
-            <el-form-item label="凭证号">{{info.payment.payCode}}</el-form-item>
+            <el-form-item label="凭证号">{{info.payment.payCode || '--'}}</el-form-item>
           </el-col>
           <el-col :span="8">
             <el-form-item label="支付时间">{{info.payment.payTime}}</el-form-item>
