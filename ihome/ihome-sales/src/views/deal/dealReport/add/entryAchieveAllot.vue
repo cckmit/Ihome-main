@@ -148,6 +148,7 @@
           <el-form-item label="房号" prop="roomId">
             <IhSelectPageByRoom
               @change="changeRoom"
+              @changeOption="(data) => {postData.roomNo = data.roomNo}"
               v-model="postData.roomId"
               :proId="baseInfoByTerm.proId"
               :buildingId="postData.buildingId"
@@ -3267,7 +3268,7 @@
       obj.basic.dealVO.charge = this.baseInfoByTerm.chargeEnum;
       obj.basic.dealVO.contType = this.postData.contType;
       obj.basic.dealVO.cycleId = this.postData.cycleId;
-      obj.basic.dealVO.dataSign = this.baseInfoInDeal.myReturnVO.dataSign;
+      obj.basic.dealVO.dataSign = this.postData.dataSign;
       obj.basic.dealVO.dealOrgId = this.postData.dealOrgId;
       obj.basic.dealVO.isConsign = this.postData.isConsign;
       obj.basic.dealVO.isMarketProject = this.postData.isMarketProject;
@@ -3293,7 +3294,7 @@
       obj.basic.dealVO.oneAgentTeamId = this.postData.oneAgentTeamId;
       obj.basic.dealVO.recordState = this.postData.recordState;
       obj.basic.dealVO.refineModel = this.postData.refineModel;
-      obj.basic.dealVO.reportId = this.baseInfoInDeal.recordId;
+      // obj.basic.dealVO.reportId = this.baseInfoInDeal.recordId;
       obj.basic.dealVO.sceneSales = this.postData.sceneSales;
       obj.basic.dealVO.signDate = this.postData.signDate;
       obj.basic.dealVO.signPrice = this.postData.signPrice;
@@ -3310,7 +3311,7 @@
       obj.basic.houseVO.propertyType = this.postData.propertyType;
       obj.basic.houseVO.room = this.postData.room;
       obj.basic.houseVO.roomId = this.postData.roomId;
-      obj.basic.houseVO.roomNo = this.baseInfoInDeal.roomNo;
+      obj.basic.houseVO.roomNo = this.postData.roomId ? this.postData.roomNo : null;
       obj.basic.houseVO.toilet = this.postData.toilet;
       // 附件信息
       if (this.postData.documentVO.length > 0) {

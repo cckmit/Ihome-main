@@ -151,6 +151,7 @@
             :prop="baseInfoByTerm.termStageEnum === 'Recognize' ? 'notEmpty' : 'roomId'">
             <IhSelectPageByRoom
               @change="changeRoom"
+              @changeOption="(data) => {postData.roomNo = data.roomNo}"
               v-model="postData.roomId"
               :proId="baseInfoByTerm.proId"
               :buildingId="postData.buildingId"
@@ -2122,7 +2123,7 @@
       obj.dealVO.charge = this.baseInfoByTerm.chargeEnum;
       obj.dealVO.contType = this.postData.contType;
       obj.dealVO.cycleId = this.postData.cycleId;
-      obj.dealVO.dataSign = this.baseInfoInDeal.myReturnVO.dataSign;
+      obj.dealVO.dataSign = this.postData.dataSign;
       obj.dealVO.dealOrgId = this.postData.dealOrgId;
       obj.dealVO.isConsign = this.postData.isConsign;
       obj.dealVO.isMarketProject = this.postData.isMarketProject;
@@ -2148,7 +2149,7 @@
       obj.dealVO.oneAgentTeamId = this.postData.oneAgentTeamId;
       obj.dealVO.recordState = this.postData.recordState;
       obj.dealVO.refineModel = this.postData.refineModel;
-      obj.dealVO.reportId = this.baseInfoInDeal.recordId;
+      // obj.dealVO.reportId = this.baseInfoInDeal.recordId;
       obj.dealVO.sceneSales = this.postData.sceneSales;
       obj.dealVO.signDate = this.postData.signDate;
       obj.dealVO.signPrice = this.postData.signPrice;
@@ -2170,7 +2171,7 @@
       obj.houseVO.propertyType = this.postData.propertyType;
       obj.houseVO.room = this.postData.room;
       obj.houseVO.roomId = this.postData.roomId;
-      obj.houseVO.roomNo = this.baseInfoInDeal.roomNo;
+      obj.houseVO.roomNo = this.postData.roomId ? this.postData.roomNo : null;
       obj.houseVO.toilet = this.postData.toilet;
       // 附件信息
       if (this.postData.documentVO.length > 0) {
