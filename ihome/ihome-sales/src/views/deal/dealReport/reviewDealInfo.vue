@@ -462,12 +462,25 @@
           <el-table
             class="ih-table"
             :data="postData.documentList">
-            <el-table-column prop="fileType" label="类型" min-width="120">
+            <el-table-column prop="fileType" label="类型" width="200">
               <template slot-scope="scope">
                 <div>{{$root.dictAllName(scope.row.fileType, 'DealFileType')}}</div>
               </template>
             </el-table-column>
-            <el-table-column prop="fileName" label="附件" min-width="120"></el-table-column>
+            <el-table-column prop="fileName" label="附件" min-width="300">
+              <template slot-scope="scope">
+                <IhUpload
+                  :isCrop="false"
+                  :isMove="false"
+                  :removePermi="true"
+                  size="100px"
+                  :limit="100"
+                  :file-size="10"
+                  :file-list.sync="scope.row.defaultFileList"
+                  :file-type="scope.row.code"
+                ></IhUpload>
+              </template>
+            </el-table-column>
           </el-table>
         </el-col>
       </el-row>
@@ -535,6 +548,12 @@
           "
       />
     </ih-dialog>
+    <IhImgViews
+      v-if="isShowImg"
+      :url-list="srcList"
+      :viewer-msg="srcData"
+      :onClose="() => (isShowImg = false)"
+    ></IhImgViews>
   </ih-page>
 </template>
 <script lang="ts">
@@ -556,6 +575,9 @@
     components: {ReviewDate, ReviewDetailsDialog},
   })
   export default class ReviewDealInfo extends Vue {
+    private isShowImg = false;
+    private srcList: any = [];
+    private srcData: any = [];
     postData: any = {
       dealCode: null,
       house: {}, // 房产信息
@@ -630,7 +652,10 @@
 
     // 初始化数据
     async init() {
-      this.postData = await get_deal_get__id({id: this.id});
+      let info: any = await get_deal_get__id({id: this.id});
+      this.postData = info;
+      // 初始化优惠告知书信息
+      await this.getInformation();
       // console.log(this.postData);
       // 收派金额数据整理 showData
       if (this.postData.receiveList && this.postData.receiveList.length > 0) {
@@ -655,8 +680,28 @@
           }
         })
       }
-      // 初始化优惠告知书信息
-      await this.getInformation();
+      this.postData.documentList = [];
+      if (info.documentList && info.documentList.length) {
+        this.postData.documentList = this.initDocumentList(info.documentList);
+      }
+    }
+
+    // 构建附件信息
+    initDocumentList(list: any = []) {
+      let fileList: any = (this as any).$root.dictAllList('DealFileType'); // 附件类型
+      // 附件类型增加key
+      if (fileList.length > 0 && list.length > 0) {
+        fileList.forEach((vo: any) => {
+          vo.defaultFileList = []; // 存放原来的数据
+          vo.fileList = []; // 存放新上传的数据
+          list.forEach((item: any) => {
+            if (vo.code === item.fileType) {
+              vo.defaultFileList.push(item);
+            }
+          });
+        });
+      }
+      return fileList;
     }
 
     // 根据成交id获取优惠告知书列表
@@ -768,9 +813,25 @@
 
     // 预览-优惠告知书
     preview(scope: any) {
-      window.open(
-        `/sales-api/sales-document-cover/file/browse/${scope.row.templateId}`
-      );
+      if (scope.row.templateType === "ElectronicTemplate") {
+        window.open(
+          `/sales-api/sales-document-cover/file/browse/${scope.row.templateId}`
+        );
+      } else {
+        let imgList = scope.row.noticeAttachmentList;
+        this.srcList = imgList.map(
+          (i: any) => `/sales-api/sales-document-cover/file/browse/${i.fileNo}`
+        );
+        this.srcData = imgList.map((v: any) => ({
+          name: v.attachmentSuffix,
+          preFileName: "优惠告知书",
+        }));
+        if (this.srcList.length) {
+          this.isShowImg = true;
+        } else {
+          this.$message.warning("暂无图片");
+        }
+      }
     }
 
     // 查看审核记录
