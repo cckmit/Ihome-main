@@ -654,8 +654,13 @@
     async init() {
       let info: any = await get_deal_get__id({id: this.id});
       this.postData = info;
-      // 初始化优惠告知书信息
-      await this.getInformation();
+      // 判断优惠告知书是通过接口还是另外请求
+      if(info.notice && info.notice.length) {
+        this.postData.offerNoticeList = info.notice;
+      } else {
+        // 初始化优惠告知书信息
+        await this.getInformation();
+      }
       // console.log(this.postData);
       // 收派金额数据整理 showData
       if (this.postData.receiveList && this.postData.receiveList.length > 0) {
@@ -684,6 +689,7 @@
       if (info.documentList && info.documentList.length) {
         this.postData.documentList = this.initDocumentList(info.documentList);
       }
+
     }
 
     // 构建附件信息
