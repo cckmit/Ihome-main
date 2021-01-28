@@ -2270,39 +2270,46 @@
     }
 
     // 确定选择渠道公司
-    finishAddAgency(data: any) {
+    async finishAddAgency(data: any) {
       // console.log('data', data);
       if(data.agencyData && data.agencyData.length) {
-        if (this.currentSelectAgencyType === 'agency') {
-          // 基础信息中选择渠道商
-          let channelList: any = (this as any).$root.dictAllList('ChannelLevel');
-          this.postData.agencyId = data.agencyData[0].channelId; // 渠道公司Id
-          this.postData.agencyName = data.agencyData[0].channelName; // 渠道公司名字
-          this.postData.channelLevel = data.agencyData[0].channelGrade; // 渠道等级Id
-          if (channelList && channelList.length > 0 && data.agencyData[0].channelGrade) {
-            channelList.forEach((list: any) => {
-              if (list.code === data.agencyData[0].channelGrade) {
-                this.postData.channelLevelName= list.name; // 渠道等级
-              }
-            });
+        let objData: any = {
+          channelId: data[0].channelId, // 渠道商公司ID
+          cycleId: this.agentCompanyData.cycleId, // 周期ID
+          property: this.agentCompanyData.property // 物业类型
+        }
+        const info: any = await post_pageData_initDistribution(objData);
+        if (info && info.contracts && info.contracts.length) {
+          // 分销协议选项列表
+          this.contNoList = info.contracts;
+          // 回显
+          if (this.currentSelectAgencyType === 'agency') {
+            // 基础信息中选择渠道商
+            let channelList: any = (this as any).$root.dictAllList('ChannelLevel');
+            this.postData.agencyId = data.agencyData[0].channelId; // 渠道公司Id
+            this.postData.agencyName = data.agencyData[0].channelName; // 渠道公司名字
+            this.postData.channelLevel = data.agencyData[0].channelGrade; // 渠道等级Id
+            if (channelList && channelList.length > 0 && data.agencyData[0].channelGrade) {
+              channelList.forEach((list: any) => {
+                if (list.code === data.agencyData[0].channelGrade) {
+                  this.postData.channelLevelName= list.name; // 渠道等级
+                }
+              });
+            }
+          } else if (this.currentSelectAgencyType === 'agencyName') {
+            // 对外拆佣中选择收款方
+            if (this.postData.channelCommList && this.postData.channelCommList.length) {
+              this.postData.channelCommList.forEach((list: any, index: any) => {
+                if (index === this.currentSelectAgencyIndex) {
+                  list.agencyId = data.agencyData[0].channelId; // 渠道公司Id
+                  list.agencyName = data.agencyData[0].channelName; // 渠道公司名字
+                }
+              });
+            }
           }
-        } else if (this.currentSelectAgencyType === 'agencyName') {
-          // 对外拆佣中选择收款方
-          if (this.postData.channelCommList && this.postData.channelCommList.length) {
-            this.postData.channelCommList.forEach((list: any, index: any) => {
-              if (index === this.currentSelectAgencyIndex) {
-                list.agencyId = data.agencyData[0].channelId; // 渠道公司Id
-                list.agencyName = data.agencyData[0].channelName; // 渠道公司名字
-              }
-            });
-          }
+          this.dialogAddAgentCompany = false;
         }
       }
-      // 分销协议编号
-      if (data.contNoList && data.contNoList.length) {
-        this.contNoList = data.contNoList;
-      }
-      this.dialogAddAgentCompany = false;
     }
 
     // 选择经纪人

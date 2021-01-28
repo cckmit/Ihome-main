@@ -234,14 +234,14 @@
         postData.agencyData = data;
         postData.contNoList = info.contracts;
         await (this as any).$refs.child.finishAddAgency(postData);
+        this.dialogAddAgency = false;
       }
-      this.dialogAddAgency = false;
     }
 
     // 编辑 --- 获取分销协议编号和对应的packageIDs
     async getContNoList(data: any) {
       let info: any = await post_pageData_initDistribution(data);
-      console.log(info);
+      // console.log(info);
       if (info && info.contracts && info.contracts.length) {
         return info;
       } else {
