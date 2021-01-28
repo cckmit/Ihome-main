@@ -1677,7 +1677,7 @@
     }
 
     // 判断是否可以手动添加优惠告知书
-    canAddNoticeItem(charge: any = '', contType: any = '', Status: any = '', isVoidService: any = false) {
+    canAddNoticeItem(charge: any = '', contType: any = '', Status: any = '', isVoidService: any = null) {
       let postData: any = {
         charge: charge, // 启动模式(Service-服务费、Agent-代理费、ServiAndAgen-服务费+代理费)
         contType: contType, // 合同类型(DistriDeal-分销成交、NaturalVisitDeal-自然来访成交、SelfChannelDeal-自渠成交)
