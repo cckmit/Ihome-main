@@ -3,8 +3,8 @@
  * @version: 
  * @Author: zyc
  * @Date: 2020-07-09 14:31:23
- * @LastEditors: zyc
- * @LastEditTime: 2021-01-15 09:49:31
+ * @LastEditors: wwq
+ * @LastEditTime: 2021-01-29 16:04:51
 --> 
 <template>
   <ih-page>
@@ -19,16 +19,27 @@
       <el-row class="ih-info-line">
         <el-col :span="8">
           <el-row>
-            <el-col :span="6" class="ih-info-item-left">申请编号</el-col>
-            <el-col :span="18" class="ih-info-item-right">
-              {{ postData.approvalNo }}</el-col
+            <el-col
+              :span="6"
+              class="ih-info-item-left"
+            >申请编号</el-col>
+            <el-col
+              :span="18"
+              class="ih-info-item-right"
             >
+              {{ postData.approvalNo }}</el-col>
           </el-row>
         </el-col>
         <el-col :span="8">
           <el-row>
-            <el-col :span="6" class="ih-info-item-left">发起人</el-col>
-            <el-col :span="18" class="ih-info-item-right">{{
+            <el-col
+              :span="6"
+              class="ih-info-item-left"
+            >发起人</el-col>
+            <el-col
+              :span="18"
+              class="ih-info-item-right"
+            >{{
               postData.approvalUserName
             }}</el-col>
           </el-row>
@@ -80,17 +91,19 @@
             size="small"
             type="primary"
             @click="addChannelApprovalGrades()"
-            >添加</el-button
-          >
+          >添加</el-button>
           <el-button
             size="small"
             type="success"
             @click="addChannelApprovalGradesChange()"
-            >添加变更信息</el-button
+          >添加变更信息</el-button>
+          <span
+            v-if="false"
+            class="padding-left-20"
+            @click="preFileName()"
           >
-          <span v-if="false" class="padding-left-20" @click="preFileName()"
-            ><el-link type="success">预览供应商名录</el-link></span
-          >
+            <el-link type="success">预览供应商名录</el-link>
+          </span>
         </div>
       </div>
 
@@ -98,49 +111,70 @@
         :data="showChannelApprovalGrades"
         style="width: 100%; padding: 20px"
       >
-        <el-table-column prop="storageNum" label="入库编号" width="180">
+        <el-table-column
+          prop="storageNum"
+          label="入库编号"
+          width="180"
+        >
           <template slot-scope="scope">
             <el-link
               class="margin-right-10"
               type="primary"
               @click.native.prevent="goInfo(scope)"
-              >{{ scope.row.storageNum }}</el-link
-            >
+            >{{ scope.row.storageNum }}</el-link>
           </template>
         </el-table-column>
-        <el-table-column prop="channelName" label="渠道商名称" width="180">
+        <el-table-column
+          prop="channelName"
+          label="渠道商名称"
+          width="180"
+        >
         </el-table-column>
         <!-- <el-table-column prop="name" label="信用代码"> </el-table-column>
       <el-table-column prop="name" label="法定代表人"> </el-table-column> -->
-        <el-table-column prop="special" label="特批入库">
+        <el-table-column
+          prop="special"
+          label="特批入库"
+        >
           <template slot-scope="scope">
             {{ $root.dictAllName(scope.row.special, "YesOrNoType") }}
           </template>
         </el-table-column>
-        <el-table-column prop="city" label="业务开展城市">
+        <el-table-column
+          prop="city"
+          label="业务开展城市"
+        >
           <template slot-scope="scope">
             {{ $root.getAreaName(scope.row.city) }}
           </template>
         </el-table-column>
-        <el-table-column prop="cityGrade" label="城市等级">
+        <el-table-column
+          prop="cityGrade"
+          label="城市等级"
+        >
           <template slot-scope="scope">
             {{ $root.dictAllName(scope.row.cityGrade, "CityLevel") }}
           </template>
         </el-table-column>
-        <el-table-column prop="channelGrade" label="渠道等级">
+        <el-table-column
+          prop="channelGrade"
+          label="渠道等级"
+        >
           <template slot-scope="scope">
             {{ $root.dictAllName(scope.row.channelGrade, "ChannelLevel") }}
           </template>
         </el-table-column>
-        <el-table-column prop="" label="操作">
+        <el-table-column
+          prop=""
+          label="操作"
+        >
           <template slot-scope="scope">
             <el-link
               style="color: #409eff"
               class="margin-right-10"
               type="primary"
               @click.native.prevent="remove(scope)"
-              >移除</el-link
-            >
+            >移除</el-link>
           </template>
         </el-table-column>
       </el-table>
@@ -151,19 +185,34 @@
       >
         <!-- <el-table-column prop="storageNum" label="编号" width="180">
         </el-table-column> -->
-        <el-table-column prop="type" label="类型" width="180">
+        <el-table-column
+          prop="type"
+          label="类型"
+          width="180"
+        >
           <template slot-scope="scope">
             {{ $root.dictAllName(scope.row.type, "ChannelGradeAttachment") }}
           </template>
         </el-table-column>
-        <el-table-column prop="channelName" label="渠道商名称" width="180">
+        <el-table-column
+          prop="channelName"
+          label="渠道商名称"
+          width="180"
+        >
         </el-table-column>
-        <el-table-column prop="city" label="业务开展城市" width="180">
+        <el-table-column
+          prop="city"
+          label="业务开展城市"
+          width="180"
+        >
           <template slot-scope="scope">
             {{ $root.getAreaName(scope.row.city) }}
           </template>
         </el-table-column>
-        <el-table-column prop="attachmentDetails" label="附件">
+        <el-table-column
+          prop="attachmentDetails"
+          label="附件"
+        >
           <template slot-scope="scope">
             <span
               class="margin-right-10"
@@ -177,7 +226,10 @@
       </el-table>
       <p class="ih-info-title">呈批信息</p>
       <el-row class="ih-info-line">
-        <el-form-item label="呈批标题" prop="approvalTitle">
+        <el-form-item
+          label="呈批标题"
+          prop="approvalTitle"
+        >
           <el-input
             maxlength="64"
             v-model="postData.approvalTitle"
@@ -186,7 +238,10 @@
         </el-form-item>
       </el-row>
       <el-row class="ih-info-line text-left">
-        <el-form-item label="呈批说明" prop="approvalDesc">
+        <el-form-item
+          label="呈批说明"
+          prop="approvalDesc"
+        >
           <el-input
             type="textarea"
             :rows="10"
@@ -213,14 +268,21 @@
         </span> -->
       </el-row>
       <div>
-        <el-button type="primary" @click="save()" :disabled="infoFinish"
-          >保存为草稿</el-button
-        >
-        <el-button type="success" @click="submit()" :disabled="infoFinish"
-          >提交呈批</el-button
-        >
+        <el-button
+          type="primary"
+          @click="save()"
+          :disabled="infoFinish"
+        >保存为草稿</el-button>
+        <el-button
+          type="success"
+          @click="submit()"
+          :disabled="infoFinish"
+        >提交呈批</el-button>
       </div>
-      <ih-dialog :show="dialogAdd" desc="渠道合作信息列表">
+      <ih-dialog
+        :show="dialogAdd"
+        desc="渠道合作信息列表"
+      >
         <ChannelApprovalGradesList
           :data="dialogAddGradeType"
           :departmentOrgId="postData.departmentOrgId"
@@ -238,7 +300,10 @@
         :show="showOaSubmit"
         desc="提交呈批确认信息"
       >
-        <OaSubmit :data="postData" @cancel="() => (showOaSubmit = false)" />
+        <OaSubmit
+          :data="postData"
+          @cancel="() => (showOaSubmit = false)"
+        />
       </ih-dialog>
     </el-form>
   </ih-page>
@@ -289,7 +354,7 @@ export default class ApprovalAdd extends Vue {
   postData: any = {
     approvalDesc: `公司领导：
 2020年XX分公司已入库渠道公司XX家（已通过OA呈批入库的数量，如果0就删除），本次申请入库XX家，业务系统已上传相关资料且均已审核通过，其中大平台/大型中介/一级平台共X家，中型中介/二级平台共X家，小型中介共X家。
-本次甄选合格的公司如下，详见附件1：《爱家XX分公司渠道合格供应商名录》。
+本次甄选合格的公司详见附件1：《爱家XX分公司渠道合格供应商名录》。
 1、如有不符合供应商管理办法的特殊情况公司，请补充说明申请入库理由，例如公司资质、实力、规模、以往代表项目及业绩等情况；
 2、如入库公司数量较少，建议补充说明入库公司的情况，尤其是大平台/大型中介/一级平台情况
 附件1：《爱家XX分公司渠道合格供应商名录》
