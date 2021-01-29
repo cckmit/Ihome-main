@@ -2252,7 +2252,9 @@
           this.contNoList = [];
         }
         // 优惠告知书
-        this.postData.offerNoticeVO = baseInfo.notice && baseInfo.notice.length ? baseInfo.notice : [];
+        if (!this.postData.offerNoticeVO) {
+          this.postData.offerNoticeVO = baseInfo.notice && baseInfo.notice.length ? baseInfo.notice : [];
+        }
       }
       // 栋座
       if (baseInfo.buildingId && !this.postData.buildingId) {

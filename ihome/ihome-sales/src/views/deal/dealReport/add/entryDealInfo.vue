@@ -962,7 +962,7 @@
     currentActiveIndex: any = 0; // 当前激活的nav
     currentReceiveIndex: any = null; // 当前选中的收派金额列表数据
     oneAgentRequiredFlag: any = false; // 收派金额 - 派发内场奖励金额合计大于0，为true
-    hasAddNoticeFlag: any = false; // 是否有添加(删除)优惠告知书的标识：true-可以；false-不可以
+    hasAddNoticeFlag: any = true; // 是否有添加(删除)优惠告知书的标识：true-可以；false-不可以
     // 编辑功能相关字段
     editBaseInfo: any = null; // 编辑初始化页面数据
 
@@ -1526,7 +1526,9 @@
           this.contNoList = [];
         }
         // 优惠告知书
-        this.postData.offerNoticeVO = baseInfo.notice && baseInfo.notice.length ? baseInfo.notice : [];
+        if (!this.postData.offerNoticeVO.length) {
+          this.postData.offerNoticeVO = baseInfo.notice && baseInfo.notice.length ? baseInfo.notice : [];
+        }
       }
       // 栋座
       if (baseInfo.buildingId && !this.postData.buildingId) {
