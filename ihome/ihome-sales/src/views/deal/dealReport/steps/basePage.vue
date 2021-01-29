@@ -128,6 +128,11 @@
           </el-form-item>
         </el-col>
         <el-col :span="8">
+          <el-form-item label="成交阶段" prop="stage">
+            <div class="div-disabled">签约</div>
+          </el-form-item>
+        </el-col>
+        <el-col :span="8">
           <el-form-item label="物业类型" prop="propertyType">
             <div
               class="div-disabled"
@@ -387,11 +392,6 @@
                 :value="item.code"
               ></el-option>
             </el-select>
-          </el-form-item>
-        </el-col>
-        <el-col :span="8">
-          <el-form-item label="成交阶段" prop="stage">
-            <div class="div-disabled">签约</div>
           </el-form-item>
         </el-col>
         <el-col :span="8" v-if="isDisabled('returnRatio', 'dealVO')" class="form-item-label-wrapper">
@@ -2485,7 +2485,7 @@
       this.tipsFlag = false;
       this.dividerTips = '加载成功';
       let list: any = ['contType', 'contNo', 'recordState', 'recordStr', 'area', 'room', 'hall',
-        'toilet', 'propertyNo', 'signType', 'stage', 'returnRatio', 'subscribePrice', 'subscribeDate',
+        'toilet', 'propertyNo', 'signType', 'returnRatio', 'subscribePrice', 'subscribeDate',
         'signPrice', 'signDate', 'agencyId', 'agencyName', 'channelLevel', 'channelLevelName']
       this.resetObject('postData', list);
     }

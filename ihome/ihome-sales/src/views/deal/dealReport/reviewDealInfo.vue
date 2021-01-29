@@ -51,6 +51,11 @@
             </el-form-item>
           </el-col>
           <el-col :span="8">
+            <el-form-item label="成交阶段">
+              {{$root.dictAllName(postData.stage, 'DealStage')}}
+            </el-form-item>
+          </el-col>
+          <el-col :span="8">
             <el-form-item label="栋座">{{postData.house.buildingName}}</el-form-item>
           </el-col>
           <el-col :span="8">
@@ -128,11 +133,6 @@
           <el-col :span="8">
             <el-form-item label="签约类型">
               {{$root.dictAllName(postData.signType, 'SignUp')}}
-            </el-form-item>
-          </el-col>
-          <el-col :span="8">
-            <el-form-item label="成交阶段">
-              {{$root.dictAllName(postData.stage, 'DealStage')}}
             </el-form-item>
           </el-col>
           <el-col :span="8">
