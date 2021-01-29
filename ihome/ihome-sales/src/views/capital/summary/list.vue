@@ -55,7 +55,7 @@
         class="ih-table"
         :data="resPageInfo.list"
         :empty-text="emptyText">
-        <el-table-column label="项目周期名称" prop="termName" fixed min-width="220"></el-table-column>
+        <el-table-column label="项目周期名称" prop="termName" fixed min-width="300"></el-table-column>
         <el-table-column label="周期所属项目" prop="proName" min-width="200"></el-table-column>
         <el-table-column label="周期所属事业部" prop="departmentName" min-width="200"></el-table-column>
         <el-table-column label="产生其他渠道费(元)" prop="addAmount" min-width="200"></el-table-column>
@@ -68,7 +68,7 @@
         </el-table-column>
       </el-table>
       <el-table
-        class="ih-table margin-top-10"
+        class="ih-table margin-top-20"
         :data="totalList">
         <el-table-column label="" prop="name" fixed width="220">
           <template>
@@ -185,7 +185,9 @@ export default class SummaryList extends Vue {
   }
 
   routeTo(row: any) {
-    console.log(row);
+    this.$router.push({
+      path: "/details/list",
+    });
   }
 
   search() {

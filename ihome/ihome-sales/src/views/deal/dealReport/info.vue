@@ -634,7 +634,7 @@
       if (this.infoType === "ID") {
         info = await get_deal_get__id({id: this.dealIdOrCode});
       } else {
-        info = await get_deal_getByCode__dealCode({code : this.dealIdOrCode});
+        info = await get_deal_getByCode__dealCode({dealCode : this.dealIdOrCode});
       }
       // console.log(this.infoForm);
       this.infoForm = (this as any).$tool.deepClone(info || {});

@@ -98,7 +98,11 @@
             class="ih-table"
             :data="resPageInfo.list"
             :empty-text="emptyText">
-            <el-table-column label="成交报告编号" prop="dealCode" fixed min-width="220"></el-table-column>
+            <el-table-column label="成交报告编号" prop="dealCode" fixed min-width="220">
+              <template slot-scope="scope">
+                <el-link type="primary" @click="goToDealInfo(scope)">{{scope.row.dealCode}}</el-link>
+              </template>
+            </el-table-column>
             <el-table-column label="成交周期" prop="termName" min-width="180"></el-table-column>
             <el-table-column label="周期所属项目" prop="proName" min-width="180"></el-table-column>
             <el-table-column label="周期所属店组" prop="shopGroup" min-width="180"></el-table-column>
@@ -112,7 +116,11 @@
             class="ih-table"
             :data="resPageInfo.list"
             :empty-text="emptyText">
-            <el-table-column label="成交报告编号" prop="dealCode" fixed min-width="220"></el-table-column>
+            <el-table-column label="成交报告编号" prop="dealCode" fixed min-width="220">
+              <template slot-scope="scope">
+                <el-link type="primary" @click="goToDealInfo(scope)">{{scope.row.dealCode}}</el-link>
+              </template>
+            </el-table-column>
             <el-table-column label="成交周期" prop="termName" min-width="180"></el-table-column>
             <el-table-column label="周期所属项目" prop="proName" min-width="180"></el-table-column>
             <el-table-column label="周期所属店组" prop="shopGroup" min-width="180"></el-table-column>
@@ -131,7 +139,11 @@
             class="ih-table"
             :data="resPageInfo.list"
             :empty-text="emptyText">
-            <el-table-column label="成交报告编号" prop="dealCode" fixed min-width="220"></el-table-column>
+            <el-table-column label="成交报告编号" prop="dealCode" fixed min-width="220">
+              <template slot-scope="scope">
+                <el-link type="primary" @click="goToDealInfo(scope)">{{scope.row.dealCode}}</el-link>
+              </template>
+            </el-table-column>
             <el-table-column label="成交周期" prop="termName" min-width="180"></el-table-column>
             <el-table-column label="周期所属项目" prop="proName" min-width="180"></el-table-column>
             <el-table-column label="周期所属店组" prop="shopGroup" min-width="180"></el-table-column>
@@ -292,6 +304,19 @@ export default class DetailsList extends Vue {
   search() {
     this.queryPageParameters.pageNum = 1;
     this.getListMixin();
+  }
+
+  // 查看成交详情
+  goToDealInfo(scope: any) {
+    if (scope.row.dealCode) {
+      this.$router.push({
+        path: "/dealReport/info",
+        query: {
+          id: scope.row.dealCode,
+          type: "CODE"
+        }
+      });
+    }
   }
 }
 </script>
