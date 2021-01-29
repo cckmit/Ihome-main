@@ -4,7 +4,7 @@
  * @Author: zyc
  * @Date: 2020-07-09 15:03:17
  * @LastEditors: zyc
- * @LastEditTime: 2021-01-09 10:30:01
+ * @LastEditTime: 2021-01-29 09:55:17
 --> 
 <template>
   <el-dialog
@@ -16,7 +16,7 @@
     :before-close="cancel"
     width="800px"
     style="text-align: left"
-    class="dialog"
+    class="dialog ResourcesCheck"
   >
     <div>
       <div style="margin-bottom: 30px" v-show="false">
@@ -295,5 +295,12 @@ export default class ResourcesCheck extends Vue {
   }
 }
 </script>
-<style lang="scss" scoped>
+<style lang="scss" >
+.ResourcesCheck {
+  top: -100px;
+  .el-tree {
+    overflow: auto;
+    height: 500px;
+  }
+}
 </style>
