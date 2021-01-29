@@ -4,7 +4,7 @@
  * @Author: wwq
  * @Date: 2020-12-26 11:11:23
  * @LastEditors: wwq
- * @LastEditTime: 2021-01-28 11:21:10
+ * @LastEditTime: 2021-01-29 14:23:09
 -->
 <template>
   <IhPage>
@@ -32,6 +32,9 @@
               prop="projectId"
             >
               <IhSelectPageByProject
+                :params="{
+                  auditEnum: 'Adopt'
+                }"
                 v-model="info.projectId"
                 :search-name="info.projectName"
                 clearable
@@ -1032,19 +1035,21 @@ export default class PayoffEdit extends Vue {
       : 0;
     const shuier = this.$math.add(1, taxRate);
     const res = this.$math.div(deductAmount, shuier);
-    row.noTaxAmount = this.$math.tofixed(res, 2);
-    return this.$math.tofixed(res, 2);
+    row.noTaxAmount = res.toFixed(2);
+    // row.noTaxAmount = this.$math.tofixed(res, 2);
+    return row.noTaxAmount;
   }
 
   // 明细表-税额(不含税金额 * 开票税率)
   dataTaxChange(row: any) {
-    const noTaxAmount = row.noTaxAmount ? Number(row.noTaxAmount) : 0;
+    const noTaxAmount = Number(row.noTaxAmount);
     const taxRate = this.info.taxRate
       ? this.$math.div(this.info.taxRate, 100)
       : 0;
     const res = this.$math.multi(noTaxAmount, taxRate);
-    row.tax = this.$math.tofixed(res, 2);
-    return this.$math.tofixed(res, 2);
+    row.tax = res.toFixed(2);
+    // row.tax = this.$math.tofixed(res, 2);
+    return row.tax;
   }
 
   searchOpen = true;
@@ -1180,7 +1185,6 @@ export default class PayoffEdit extends Vue {
     } else {
       this.getFileListType(res.documentList);
     }
-
     this.modify = true;
   }
 
