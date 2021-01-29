@@ -1141,7 +1141,11 @@
         customerVOS: {},
         dealVO: {},
         dataSign: ''
-      },
+      }, // 明源数据
+      noticePDF: [], // 优惠告知书PDF
+      customerIds: [], // 业主身份证
+      visitConfirmForms: [], // 来访确认书
+      dealConfirmForms: [], // 成交确认书
       customerAddVOS: [], // 客户信息
       selectableChannelIds: [], // 可选的渠道商ids
       dealNoticeStatus: null, // 同房号是否存在多份优惠告知书(NoneNotice-没有优惠告知书、OneNotice-一份优惠告知书、MultipleNotice-多份优惠告知书)
@@ -2449,14 +2453,14 @@
       this.canAddNoticeItem(this.baseInfoByTerm.chargeEnum, this.postData.contType, this.baseInfoInDeal.dealNoticeStatus);
     }
 
-    // 选择房号后构建表格数据
+    // 选择合同类型后构建表格数据
     getDocumentList(type: any) {
+      // 回显房号带出来的值
+      let baseInfo: any = (this as any).$tool.deepClone(this.baseInfoInDeal);
       if (type === "DistriDeal") {
         this.postData.documentVO.push(...this.tempDocumentList);
         if (this.postData.documentVO.length) {
           this.postData.documentVO.forEach((list: any) => {
-            // 回显房号带出来的值
-            let baseInfo: any = (this as any).$tool.deepClone(this.baseInfoInDeal);
             switch(list.code) {
               case "VisitConfirForm":
                 // 来访确认单
@@ -2465,25 +2469,7 @@
                     item.name = item.fileName;
                   });
                 }
-                list.defaultFileList = baseInfo.visitConfirmForms && baseInfo.visitConfirmForms.length ? baseInfo.visitConfirmForms : [];
-                break;
-              case "Notice":
-                // 优惠告知书PDF
-                if (baseInfo.noticePDF && baseInfo.noticePDF.length) {
-                  baseInfo.noticePDF.forEach((item: any) => {
-                    item.name = item.fileName;
-                  });
-                }
-                list.defaultFileList = baseInfo.noticePDF && baseInfo.noticePDF.length  ? baseInfo.noticePDF : [];
-                break;
-              case "OwnerID":
-                // 业主身份证
-                if (baseInfo.customerIds && baseInfo.customerIds.length) {
-                  baseInfo.customerIds.forEach((item: any) => {
-                    item.name = item.fileName;
-                  });
-                }
-                list.defaultFileList = baseInfo.customerIds && baseInfo.customerIds.length ? baseInfo.customerIds : [];
+                list.defaultFileList = this.postData.roomId && baseInfo.visitConfirmForms && baseInfo.visitConfirmForms.length ? baseInfo.visitConfirmForms : [];
                 break;
               case "DealConfirForm":
                 // 成交确认书
@@ -2492,7 +2478,7 @@
                     item.name = item.fileName;
                   });
                 }
-                list.defaultFileList = baseInfo.dealConfirmForms && baseInfo.dealConfirmForms.length ? baseInfo.dealConfirmForms : [];
+                list.defaultFileList = this.postData.roomId && baseInfo.dealConfirmForms && baseInfo.dealConfirmForms.length ? baseInfo.dealConfirmForms : [];
                 break;
             }
           });
@@ -2502,6 +2488,28 @@
           return !["VisitConfirForm", "DealConfirForm"].includes(item.code);
         });
       }
+      this.postData.documentVO.forEach((list: any) => {
+        switch(list.code) {
+          case "Notice":
+            // 优惠告知书PDF
+            if (baseInfo.noticePDF && baseInfo.noticePDF.length) {
+              baseInfo.noticePDF.forEach((item: any) => {
+                item.name = item.fileName;
+              });
+            }
+            list.defaultFileList = this.postData.roomId && baseInfo.noticePDF && baseInfo.noticePDF.length  ? baseInfo.noticePDF : [];
+            break;
+          case "OwnerID":
+            // 业主身份证
+            if (baseInfo.customerIds && baseInfo.customerIds.length) {
+              baseInfo.customerIds.forEach((item: any) => {
+                item.name = item.fileName;
+              });
+            }
+            list.defaultFileList = this.postData.roomId && baseInfo.customerIds && baseInfo.customerIds.length ? baseInfo.customerIds : [];
+            break;
+        }
+      });
     }
 
     // 判断是否可以手动添加优惠告知书
