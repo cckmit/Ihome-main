@@ -48,6 +48,11 @@
           <el-form-item label="一手代理公司">{{infoForm.oneAgentTeam}}</el-form-item>
         </el-col>
         <el-col :span="8">
+          <el-form-item label="成交阶段">
+            {{$root.dictAllName(infoForm.stage, 'DealStage')}}
+          </el-form-item>
+        </el-col>
+        <el-col :span="8">
           <el-form-item label="物业类型">
             {{$root.dictAllName(infoForm.house.propertyType, 'Property')}}
           </el-form-item>
@@ -133,11 +138,6 @@
           </el-form-item>
         </el-col>
         <el-col :span="8">
-          <el-form-item label="成交阶段">
-            {{$root.dictAllName(infoForm.stage, 'DealStage')}}
-          </el-form-item>
-        </el-col>
-        <el-col :span="8">
           <el-form-item label="明源房款回笼比例">{{infoForm.returnRatio ? infoForm.returnRatio : 0}}%</el-form-item>
         </el-col>
         <el-col :span="8">
@@ -153,7 +153,7 @@
           <el-form-item label="签约日期">{{infoForm.signDate}}</el-form-item>
         </el-col>
         <el-col :span="8">
-          <el-form-item label="成交组织">{{infoForm.dealOrgId}}</el-form-item>
+          <el-form-item label="成交组织">{{infoForm.dealOrgName}}</el-form-item>
         </el-col>
         <el-col :span="8">
           <el-form-item label="录入人">{{infoForm.entryPerson}}</el-form-item>
@@ -452,18 +452,23 @@
         <el-table
           class="ih-table"
           :data="infoForm.documentList">
-          <el-table-column prop="name" label="类型" min-width="120"></el-table-column>
-          <el-table-column prop="fileName" label="附件" min-width="120">
+          <el-table-column prop="fileType" label="类型" width="200">
+            <template slot-scope="scope">
+              <div>{{$root.dictAllName(scope.row.code, 'DealFileType')}}</div>
+            </template>
+          </el-table-column>
+          <el-table-column prop="fileName" label="附件" min-width="300">
             <template slot-scope="scope">
               <IhUpload
+                v-if="scope.row.defaultFileLists.length"
                 :isCrop="false"
                 :isMove="false"
-                :removePermi="true"
+                :removePermi="false"
                 size="100px"
-                :limit="100"
-                :file-size="10"
-                :file-list.sync="scope.row.defaultFileList"
+                :limit="scope.row.defaultFileLists.length"
+                :file-list.sync="scope.row.defaultFileLists"
                 :file-type="scope.row.code"
+                :upload-show="!!scope.row.defaultFileLists.length"
               ></IhUpload>
             </template>
           </el-table-column>
@@ -552,6 +557,7 @@
   } from "@/api/deal";
   import {post_notice_customer_information} from "@/api/contract";
   import {get_invoice_getInvoiceInfo__businessId} from "@/api/finance";
+  import {get_org_get__id} from "@/api/system";
 
   @Component({
     components: {ReviewDetailsDialog},
@@ -562,6 +568,7 @@
     private srcData: any = [];
     infoForm: any = {
       dealCode: null,
+      dealOrgName: null, // 成交组织name
       house: {}, // 房产信息
       offerNoticeList: [], // 优惠告知书
       customerList: [], // 客户信息
@@ -627,10 +634,10 @@
       if (this.infoType === "ID") {
         info = await get_deal_get__id({id: this.dealIdOrCode});
       } else {
-        info = await get_deal_getByCode__dealCode({code : this.dealIdOrCode});
+        info = await get_deal_getByCode__dealCode({dealCode : this.dealIdOrCode});
       }
       // console.log(this.infoForm);
-      this.infoForm = info;
+      this.infoForm = (this as any).$tool.deepClone(info || {});
       // 收派金额数据整理 showData
       if (this.infoForm.receiveList && this.infoForm.receiveList.length > 0) {
         this.infoForm.receiveList.forEach((list: any) => {
@@ -654,19 +661,25 @@
           }
         })
       }
-      // 判断是否需要请求接口来获取优惠告知书
-      if (info.notice && info.notice.length) {
-        this.infoForm.offerNoticeList = info.notice;
-      } else {
-        // 初始化优惠告知书信息
-        await this.getInformation(info.id);
-      }
-      this.infoForm.documentList = [];
+      // 初始化优惠告知书信息
+      await this.getInformation(info.id);
+      // 初始化附件
       if (info.documentList && info.documentList.length) {
         this.infoForm.documentList = this.initDocumentList(info.documentList);
+        console.log('this.infoForm.documentList', this.infoForm.documentList);
       }
       // 初始化开票信息
       await this.getInvoiceInfo(info.id);
+      // 获取显示的成交组织name
+      await this.getOrgName(info.dealOrgId);
+    }
+
+    // 获取组织name
+    async getOrgName(id: any = '') {
+      if (!id) return;
+      const info: any = await get_org_get__id({id: id});
+      // console.log('组织info:', info);
+      this.infoForm.dealOrgName = info.name;
     }
 
     // 构建附件信息
@@ -675,11 +688,17 @@
       // 附件类型增加key
       if (fileList.length > 0 && list.length > 0) {
         fileList.forEach((vo: any) => {
-          vo.defaultFileList = []; // 存放原来的数据
+          vo.defaultFileLists = []; // 存放原来的数据
           vo.fileList = []; // 存放新上传的数据
           list.forEach((item: any) => {
             if (vo.code === item.fileType) {
-              vo.defaultFileList.push(item);
+              vo.defaultFileLists.push(
+                {
+                  ...item,
+                  name: list.fileName,
+                  exAuto: true // 是否可以删除
+                }
+              );
             }
           });
         });

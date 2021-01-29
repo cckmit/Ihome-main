@@ -114,6 +114,23 @@
           </el-form-item>
         </el-col>
         <el-col :span="8">
+          <el-form-item label="成交阶段" prop="stage">
+            <el-select
+              v-model="postData.stage"
+              :disabled="isDisabled('dealStage', 'dealVO')"
+              no-data-text="请先选择项目周期"
+              placeholder="请选择成交阶段"
+              class="width--100">
+              <el-option
+                v-for="item in dealStageList"
+                :key="item.code"
+                :label="item.name"
+                :value="item.code"
+              ></el-option>
+            </el-select>
+          </el-form-item>
+        </el-col>
+        <el-col :span="8">
           <el-form-item label="物业类型" prop="propertyType">
             <el-select
               v-model="postData.propertyType"
@@ -148,6 +165,7 @@
           <el-form-item label="房号" prop="roomId">
             <IhSelectPageByRoom
               @change="changeRoom"
+              @changeOption="(data) => {postData.roomNo = data.roomNo}"
               v-model="postData.roomId"
               :proId="baseInfoByTerm.proId"
               :buildingId="postData.buildingId"
@@ -325,23 +343,6 @@
               class="width--100">
               <el-option
                 v-for="item in $root.dictAllList('SignUp')"
-                :key="item.code"
-                :label="item.name"
-                :value="item.code"
-              ></el-option>
-            </el-select>
-          </el-form-item>
-        </el-col>
-        <el-col :span="8">
-          <el-form-item label="成交阶段" prop="stage">
-            <el-select
-              v-model="postData.stage"
-              :disabled="isDisabled('dealStage', 'dealVO')"
-              no-data-text="请先选择项目周期"
-              placeholder="请选择成交阶段"
-              class="width--100">
-              <el-option
-                v-for="item in dealStageList"
                 :key="item.code"
                 :label="item.name"
                 :value="item.code"
@@ -857,14 +858,22 @@
                 <div>{{$root.dictAllName(scope.row.roleType, 'DealRole')}}</div>
               </template>
             </el-table-column>
-            <el-table-column prop="roleAchieveCap" label="角色业绩上限" min-width="150"></el-table-column>
+            <el-table-column prop="roleAchieveCap" label="角色业绩上限" min-width="150">
+              <template slot-scope="{row}">
+                <div :class="!row.correct ? 'achieve-color-red' : ''">{{row.roleAchieveCap}}</div>
+              </template>
+            </el-table-column>
             <el-table-column prop="rolerName" label="角色人" min-width="150">
               <template slot-scope="scope">
                 <div v-if="scope.row.roleType === 'BranchOffice'">——</div>
                 <div v-else>{{scope.row.rolerName}}</div>
               </template>
             </el-table-column>
-            <el-table-column prop="corporateAchieve" label="角色人业绩" min-width="150"></el-table-column>
+            <el-table-column prop="corporateAchieve" label="角色人业绩" min-width="150">
+              <template slot-scope="{row}">
+                <div :class="!row.correct ? 'achieve-color-red' : ''">{{row.corporateAchieve}}</div>
+              </template>
+            </el-table-column>
             <el-table-column prop="roleAchieveRatio" label="角色人业绩比例(%)" min-width="150"></el-table-column>
             <el-table-column prop="commFees" label="拆佣金额" min-width="150"></el-table-column>
             <el-table-column prop="commFeesRatio" label="拆佣比例(%)" min-width="110"></el-table-column>
@@ -929,14 +938,22 @@
                 <div>{{$root.dictAllName(scope.row.roleType, 'DealRole')}}</div>
               </template>
             </el-table-column>
-            <el-table-column prop="roleAchieveCap" label="角色业绩上限" min-width="150"></el-table-column>
+            <el-table-column prop="roleAchieveCap" label="角色业绩上限" min-width="150">
+              <template slot-scope="{row}">
+                <div :class="!row.correct ? 'achieve-color-red' : ''">{{row.roleAchieveCap}}</div>
+              </template>
+            </el-table-column>
             <el-table-column prop="rolerName" label="角色人" min-width="150">
               <template slot-scope="scope">
                 <div v-if="scope.row.roleType === 'BranchOffice'">——</div>
                 <div v-else>{{scope.row.rolerName}}</div>
               </template>
             </el-table-column>
-            <el-table-column prop="corporateAchieve" label="角色人业绩" min-width="150"></el-table-column>
+            <el-table-column prop="corporateAchieve" label="角色人业绩" min-width="150">
+              <template slot-scope="{row}">
+                <div :class="!row.correct ? 'achieve-color-red' : ''">{{row.corporateAchieve}}</div>
+              </template>
+            </el-table-column>
             <el-table-column prop="roleAchieveRatio" label="角色人业绩比例(%)" min-width="150"></el-table-column>
             <el-table-column prop="commFees" label="拆佣金额" min-width="150"></el-table-column>
             <el-table-column prop="commFeesRatio" label="拆佣比例(%)" min-width="110"></el-table-column>
@@ -1194,7 +1211,6 @@
       achieveDistriList: [], // 平台费用 - 分销
       calculation: 'Auto', // 计算方式 - 默认自动
     };
-    tempReceiveVO: any = []; // 临时收派金额信息
     tempSignPrice: any = null; // 临时签约价格
     tempSubscribePrice: any = null; // 临时认购价格
     tempDocumentList: any = []; // 记录来访确认单和成交确认单
@@ -1403,7 +1419,7 @@
       this.id = this.$route.query.id;
       if (this.id) {
         this.addFlag = false;
-        this.editFlag = true;
+        this.editFlag = false;
         this.tipsFlag = false;
         this.dividerTips = '刷新成功';
         await this.editInitPage(this.id);
@@ -1422,30 +1438,28 @@
       console.log(res);
       await this.editBaseDealInfo(res.cycleId);
       await this.editInitPageById(res.cycleId, res.house.roomId, res.house.propertyType);
-      if (res.notice && res.notice.length) {
-        this.postData.offerNoticeVO = res.notice;
-      } else {
-        await this.getInformation(id);
-      }
+      await this.getInformation(id); // 优惠告知书
       if (res.cycleId && res.house.propertyType && res.agencyList && res.agencyList.length) {
         let params: any = {
           channelId: res.agencyList[0].agencyId,
           cycleId: res.cycleId,
           property: res.house.propertyType
         }
-        let info: any = await (this as any).$parent.getContTypeList(params);
-        this.packageIdsList = [];
-        this.contNoList = [];
-        if (info && info.contracts && info.contracts.length) {
-          this.contNoList = info.contracts;
-          info.contracts.forEach((item: any) => {
-            if (item.contractNo === res.contNo) {
-              this.packageIdsList = item.packageMxIds;
-            }
-          });
-        }
+        await this.initContNoList(params, res.contNo);
       }
       this.$nextTick(() => {
+        this.isSameFlag = res?.scheme?.isSame === "Yes"; // 分销总包是否一致
+        this.editDealAchieveData.isSameFlag = res?.scheme?.isSame === "Yes";
+        // 处理角色类型选项
+        if (this.isSameFlag) {
+          // 分销同步总包
+          this.editDealAchieveData.totablBagRoles = this.getRoleListAndAchieveCap(res?.totalBag, res?.totablBagRoles);
+          this.editDealAchieveData.distriRoles = this.getRoleListAndAchieveCap(res?.totalBag, res?.totablBagRoles);
+        } else {
+          // 分销不同步总包
+          this.editDealAchieveData.totablBagRoles = this.getRoleListAndAchieveCap(res?.totalBag, res?.totablBagRoles);
+          this.editDealAchieveData.distriRoles = this.getRoleListAndAchieveCap(res?.distri, res?.distriRoles);
+        }
         this.postData.dealCode = res.dealCode;
         this.postData.cycleId = res.cycleId;
         this.postData.cycleName = res.cycleName;
@@ -1514,11 +1528,26 @@
       });
     }
 
+    // 编辑 --- 获取分销协议
+    async initContNoList(data: any, contNo: any) {
+      let info: any = await (this as any).$parent.getContNoList(data); // 获取分销协议
+      this.packageIdsList = [];
+      this.contNoList = [];
+      if (info && info.contracts && info.contracts.length) {
+        this.contNoList = info.contracts;
+        info.contracts.forEach((item: any) => {
+          if (item.contractNo === contNo) {
+            this.packageIdsList = item.packageMxIds;
+          }
+        });
+      }
+    }
+
     // 编辑 --- 通过周期ID获取信息
     async editBaseDealInfo(id: any) {
       if (!id) return;
       let baseInfo: any = await get_pageData_getProBaseByTermId__cycleId({cycleId: id});
-      this.baseInfoByTerm = JSON.parse(JSON.stringify(baseInfo));
+      this.baseInfoByTerm = JSON.parse(JSON.stringify(baseInfo || {}));
       // 给postData赋值对应数据
       if (baseInfo) {
         // 业务模式
@@ -1593,7 +1622,7 @@
         property: propertyType, // 物业类型
       };
       let baseInfo: any = await post_pageData_initBasic(params);
-      this.baseInfoInDeal = JSON.parse(JSON.stringify(baseInfo || '{}'));
+      this.baseInfoInDeal = JSON.parse(JSON.stringify(baseInfo || {}));
       // 多分优惠告知书情况
       // this.postData.contNo = null; // 重置选择的编号
       // 分销协议编号
@@ -1706,11 +1735,10 @@
 
     // 改变计算方式
     changeCalculation() {
-      // console.log(this.tempReceiveVO);
-      this.postData.receiveVO = (this as any).$tool.deepClone(this.tempReceiveVO);
       this.postData.commissionInfoList = [];
       this.postData.achieveTotalBagList = [];
       this.postData.achieveDistriList = [];
+      this.initReceive()
       if (!this.addFlag) {
         this.showChangeTips();
       }
@@ -1856,6 +1884,7 @@
       if (achieveInfo.same) {
         // 分销同步总包
         this.editDealAchieveData.totablBagRoles = this.getRoleListAndAchieveCap(achieveInfo.totalBag, achieveInfo.totablBagRoles);
+        this.editDealAchieveData.distriRoles = this.getRoleListAndAchieveCap(achieveInfo.totalBag, achieveInfo.totablBagRoles);
       } else {
         // 分销不同步总包
         this.editDealAchieveData.totablBagRoles = this.getRoleListAndAchieveCap(achieveInfo.totalBag, achieveInfo.totablBagRoles);
@@ -1897,7 +1926,7 @@
     *  */
     getRoleListAndAchieveCap(bagList: any = [], roleTypeList: any = []) {
       let tempArr: any = [];
-      if (bagList.length && roleTypeList.length) {
+      if (bagList && bagList.length && roleTypeList && roleTypeList.length) {
         bagList.forEach((totalItem: any) => {
           roleTypeList.forEach((roleItem: any) => {
             if (totalItem.roleType === roleItem) {
@@ -2036,8 +2065,6 @@
           let list: any = (this as any).$parent.initReceiveVOS(tempList);
           this.$nextTick(() => {
             this.postData.receiveVO.push(...list);
-            // 暂存
-            this.tempReceiveVO = (this as any).$tool.deepClone(this.postData.receiveVO);
           });
         }
         // 成交组织
@@ -2141,7 +2168,6 @@
       this.contNoList = []; // 分销协议编号
       this.packageIdsList = []; // ids
       this.postData.customerVO = []; // 客户信息
-      this.tempReceiveVO = []; // 收派金额初始值
       this.postData.offerNoticeVO = []; // 优惠告知书
       // this.postData.documentVO = []; // 上传附件
       this.postData.calculation = 'Auto'; // 计算方式改为手动
@@ -2160,19 +2186,19 @@
         this.dividerTips = '加载成功';
       }
       let list: any = ['contType', 'contNo', 'recordState', 'recordStr', 'area', 'room', 'hall',
-        'toilet', 'propertyNo', 'signType', 'stage', 'returnRatio', 'subscribePrice', 'subscribeDate',
+        'toilet', 'propertyNo', 'signType', 'returnRatio', 'subscribePrice', 'subscribeDate',
         'signPrice', 'signDate', 'agencyId', 'agencyName', 'channelLevel', 'channelLevelName']
       this.resetObject('postData', list);
     }
 
     // 改变房号
-    changeRoom(value: any) {
+    async changeRoom(value: any) {
       // console.log('改变房号', value);
-      this.resetReceiveVO();
-      this.initDocument(this.baseInfoByTerm);
-      this.resetData(); // 重置数据
+      await this.resetReceiveVO();
+      await this.initDocument(this.baseInfoByTerm);
+      await this.resetData(); // 重置数据
       if (value) {
-        this.initPageById(this.baseInfoByTerm.termId, value, this.postData.propertyType);
+        await this.initPageById(this.baseInfoByTerm.termId, value, this.postData.propertyType);
       }
     }
 
@@ -2216,6 +2242,7 @@
         });
       }
       // 多分优惠告知书情况
+      console.log(this.postData.offerNoticeVO);
       this.postData.contNo = null; // 重置选择的编号
       if (baseInfo.dealNoticeStatus === 'MultipleNotice') {
         this.$notify({
@@ -2231,7 +2258,9 @@
           this.contNoList = [];
         }
         // 优惠告知书
-        this.postData.offerNoticeVO = baseInfo.notice && baseInfo.notice.length ? baseInfo.notice : [];
+        if (!this.postData.offerNoticeVO) {
+          this.postData.offerNoticeVO = baseInfo.notice && baseInfo.notice.length ? baseInfo.notice : [];
+        }
       }
       // 栋座
       if (baseInfo.buildingId && !this.postData.buildingId) {
@@ -2254,7 +2283,9 @@
       // 签约类型
       this.postData.signType = baseInfo.myReturnVO.dealVO?.signType;
       // 成交阶段
-      this.postData.stage = baseInfo.myReturnVO.dealStage;
+      if (baseInfo && baseInfo.myReturnVO && baseInfo.myReturnVO.dealStage) {
+        this.postData.stage = baseInfo.myReturnVO.dealStage;
+      }
       // 明源房款回笼比例(%)
       this.postData.returnRatio = baseInfo.myReturnVO.dealVO?.returnRatio;
       // 认购价格
@@ -2280,8 +2311,6 @@
         }
         console.log('postData.receiveVO:', tempList);
       }
-      // 暂存
-      this.tempReceiveVO = (this as any).$tool.deepClone(this.postData.receiveVO);
       // 收派金额中的甲方
       this.commissionCustomerList = [];
       this.commissionCustomerList = this.initCommissionCustomer(baseInfo.receiveVOS);
@@ -2512,7 +2541,7 @@
       let value: any = e.target.value;
       // 如果已经选了，判断价格是否和之前的一样
       if (value !== (this as any)[`temp${type}`]) {
-        // 不一样+失焦，要初始化收派套餐
+        // 要初始化收派套餐
         this.initReceive();
       }
       (this as any)[`temp${type}`] = value;
@@ -2520,16 +2549,9 @@
 
     // 合同类型、分销协议编号、细分业务模式、认购价格、签约价格改变之后要初始化收派金额
     initReceive() {
-      let flag: any = false;
       if (this.postData.receiveVO.length && this.postData.calculation === "Auto") {
         // 判断收派金额数据是否选了收派套餐
-        flag = (this as any).$parent.hasReceivePackage(this.postData.receiveVO);
-      }
-      if (flag) {
-        this.postData.receiveVO = (this as any).$tool.deepClone(this.tempReceiveVO);
-        this.postData.commissionInfoList = [];
-        this.postData.achieveTotalBagList = [];
-        this.postData.achieveDistriList = [];
+        this.postData.receiveVO = (this as any).$parent.resetReceiveVOS(this.postData.receiveVO);
         // 显示手动按钮
         this.addFlag = false;
         this.editFlag = true;
@@ -2609,6 +2631,21 @@
     // 确定选择优惠告知书
     async finishAddNotice(info: any) {
       // 选择优惠告知书后 --- 带出优惠告知书 + 客户信息
+      if (this.postData.offerNoticeVO && this.postData.offerNoticeVO.length) {
+        // 存在优惠告知书，需要提示
+        try {
+          await this.$confirm("已存在优惠告知书，是否覆盖?", "提示");
+          await this.handleAddNoticeList(info);
+        } catch (error) {
+          console.log(error);
+        }
+      } else {
+        this.handleAddNoticeList(info);
+      }
+    }
+
+    // 确定添加优惠告知书
+    handleAddNoticeList(info: any) {
       this.postData.offerNoticeVO = info.dealNotices;
       this.postData.customerVO = info.customerConvertResponse;
       // 回显收派金额中类型为服务费的客户上
@@ -3267,7 +3304,7 @@
       obj.basic.dealVO.charge = this.baseInfoByTerm.chargeEnum;
       obj.basic.dealVO.contType = this.postData.contType;
       obj.basic.dealVO.cycleId = this.postData.cycleId;
-      obj.basic.dealVO.dataSign = this.baseInfoInDeal.myReturnVO.dataSign;
+      obj.basic.dealVO.dataSign = this.postData.dataSign;
       obj.basic.dealVO.dealOrgId = this.postData.dealOrgId;
       obj.basic.dealVO.isConsign = this.postData.isConsign;
       obj.basic.dealVO.isMarketProject = this.postData.isMarketProject;
@@ -3293,7 +3330,7 @@
       obj.basic.dealVO.oneAgentTeamId = this.postData.oneAgentTeamId;
       obj.basic.dealVO.recordState = this.postData.recordState;
       obj.basic.dealVO.refineModel = this.postData.refineModel;
-      obj.basic.dealVO.reportId = this.baseInfoInDeal.recordId;
+      // obj.basic.dealVO.reportId = this.baseInfoInDeal.recordId;
       obj.basic.dealVO.sceneSales = this.postData.sceneSales;
       obj.basic.dealVO.signDate = this.postData.signDate;
       obj.basic.dealVO.signPrice = this.postData.signPrice;
@@ -3310,10 +3347,11 @@
       obj.basic.houseVO.propertyType = this.postData.propertyType;
       obj.basic.houseVO.room = this.postData.room;
       obj.basic.houseVO.roomId = this.postData.roomId;
-      obj.basic.houseVO.roomNo = this.baseInfoInDeal.roomNo;
+      obj.basic.houseVO.roomNo = this.postData.roomId ? this.postData.roomNo : null;
       obj.basic.houseVO.toilet = this.postData.toilet;
       // 附件信息
       if (this.postData.documentVO.length > 0) {
+        // console.log('this.postData.documentVO', this.postData.documentVO);
         this.postData.documentVO.forEach((item: any) => {
           if (item.fileList.length > 0) {
             item.fileList.forEach((list: any) => {
@@ -3324,9 +3362,12 @@
                   fileType: item.code
                 }
               )
-            })
+            });
           }
-        })
+          // 初始化的
+          obj.basic.documentVO.push(...item.defaultFileList);
+        });
+        // console.log('obj.documentVO', obj.documentVO);
       }
       // 派发金额合计
       if (this.receiveAchieveVO.length > 0) {
@@ -3372,6 +3413,10 @@
     width: 100%;
     box-sizing: border-box;
     margin-bottom: 10px;
+  }
+
+  .achieve-color-red {
+    color: red;
   }
 
   .form-item-label-wrapper {

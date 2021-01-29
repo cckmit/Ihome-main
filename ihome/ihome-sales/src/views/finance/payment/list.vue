@@ -4,7 +4,7 @@
  * @Author: ywl
  * @Date: 2020-12-09 19:24:59
  * @LastEditors: ywl
- * @LastEditTime: 2021-01-16 18:25:31
+ * @LastEditTime: 2021-01-28 10:31:27
 -->
 <template>
   <IhPage label-width="100px">
@@ -173,11 +173,7 @@
             <el-row>
               <el-col :span="8">
                 <el-form-item label="组织">
-                  <el-input
-                    v-model="queryPageParameters.groupId"
-                    placeholder="请输入组织"
-                    clearable
-                  ></el-input>
+                  <IhSelectOrgTree v-model="queryPageParameters.groupId"></IhSelectOrgTree>
                 </el-form-item>
               </el-col>
               <el-col :span="8">
@@ -304,7 +300,7 @@
             <div>{{$root.dictAllName(row.foundType, 'FeeType') || '-'}}</div>
           </template>
         </el-table-column>
-        <el-table-column width="120">
+        <el-table-column min-width="175">
           <template #header>
             <div>联动项目</div>
             <div>房号</div>
@@ -317,7 +313,7 @@
         <el-table-column
           label="立项周期"
           prop="termName"
-          width="255"
+          width="275"
         >
         </el-table-column>
         <el-table-column
@@ -343,7 +339,7 @@
             <div>{{row.dealCode || '-'}}</div>
           </template>
         </el-table-column>
-        <el-table-column width="100">
+        <el-table-column min-width="185">
           <template #header>
             <div>付款方</div>
             <div>业务编号</div>

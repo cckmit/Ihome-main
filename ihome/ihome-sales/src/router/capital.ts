@@ -4,7 +4,7 @@
  * @Author: lsj
  * @Date: 2021-01-14 21:45:50
  * @LastEditors: lsj
- * @LastEditTime: 2021-01-14 21:55:22
+ * @LastEditTime: 2021-01-26 07:55:16
  */
 
 import { RouteConfig } from 'vue-router'
@@ -47,19 +47,19 @@ const capitalRoutes: Array<RouteConfig> = [
     ]
   },
   // 其他渠道费用报表
-  {
-    path: '/report',
-    meta: { title: '成交报告', icon: 'form' },
-    redirect: '/report/list',
-    component: Layout,
-    children: [
-      {
-        path: 'list',
-        name: 'ReportList',
-        component: () => import('@/views/capital/report/list.vue'),
-        meta: { title: '其他渠道费用报表列表', icon: 'form', keepAlive: true }
-      }
-    ]
-  }
+  // {
+  //   path: '/report',
+  //   meta: { title: '成交报告', icon: 'form' },
+  //   redirect: '/report/list',
+  //   component: Layout,
+  //   children: [
+  //     {
+  //       path: 'list',
+  //       name: 'ReportList',
+  //       component: () => import('@/views/capital/report/list.vue'),
+  //       meta: { title: '其他渠道费用报表列表', icon: 'form', keepAlive: true }
+  //     }
+  //   ]
+  // }
 ];
 export { capitalRoutes }

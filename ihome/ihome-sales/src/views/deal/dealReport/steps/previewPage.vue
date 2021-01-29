@@ -47,6 +47,11 @@
             <el-form-item label="一手代理公司">{{infoForm.oneAgentTeam}}</el-form-item>
           </el-col>
           <el-col :span="8">
+            <el-form-item label="成交阶段">
+              {{$root.dictAllName(infoForm.stage, 'DealStage')}}
+            </el-form-item>
+          </el-col>
+          <el-col :span="8">
             <el-form-item label="物业类型">
               {{$root.dictAllName(infoForm.propertyType, 'Property')}}
             </el-form-item>
@@ -124,11 +129,6 @@
           <el-col :span="8">
             <el-form-item label="签约类型">
               {{$root.dictAllName(infoForm.signType, 'SignUp')}}
-            </el-form-item>
-          </el-col>
-          <el-col :span="8">
-            <el-form-item label="成交阶段">
-              {{$root.dictAllName(infoForm.stage, 'DealStage')}}
             </el-form-item>
           </el-col>
           <el-col :span="8">
@@ -455,16 +455,21 @@
           <el-table
             class="ih-table"
             :data="infoForm.uploadDocumentList">
-            <el-table-column prop="name" label="类型" width="180"></el-table-column>
+            <el-table-column prop="fileType" label="类型" width="200">
+              <template slot-scope="scope">
+                <div>{{$root.dictAllName(scope.row.code, 'DealFileType')}}</div>
+              </template>
+            </el-table-column>
             <el-table-column prop="fileName" label="附件" min-width="300">
               <template slot-scope="scope">
                 <IhUpload
+                  v-if="scope.row.fileList.length"
                   :isCrop="false"
                   :isMove="false"
                   :removePermi="false"
                   size="100px"
+                  :file-type="scope.row.code"
                   :limit="scope.row.fileList.length"
-                  :file-size="10"
                   :file-list.sync="scope.row.fileList"
                   :upload-show="!!scope.row.fileList.length"
                 ></IhUpload>

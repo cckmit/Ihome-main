@@ -128,6 +128,11 @@
           </el-form-item>
         </el-col>
         <el-col :span="8">
+          <el-form-item label="成交阶段" prop="stage">
+            <div class="div-disabled">签约</div>
+          </el-form-item>
+        </el-col>
+        <el-col :span="8">
           <el-form-item label="物业类型" prop="propertyType">
             <div
               class="div-disabled"
@@ -387,11 +392,6 @@
                 :value="item.code"
               ></el-option>
             </el-select>
-          </el-form-item>
-        </el-col>
-        <el-col :span="8">
-          <el-form-item label="成交阶段" prop="stage">
-            <div class="div-disabled">签约</div>
           </el-form-item>
         </el-col>
         <el-col :span="8" v-if="isDisabled('returnRatio', 'dealVO')" class="form-item-label-wrapper">
@@ -2485,7 +2485,7 @@
       this.tipsFlag = false;
       this.dividerTips = '加载成功';
       let list: any = ['contType', 'contNo', 'recordState', 'recordStr', 'area', 'room', 'hall',
-        'toilet', 'propertyNo', 'signType', 'stage', 'returnRatio', 'subscribePrice', 'subscribeDate',
+        'toilet', 'propertyNo', 'signType', 'returnRatio', 'subscribePrice', 'subscribeDate',
         'signPrice', 'signDate', 'agencyId', 'agencyName', 'channelLevel', 'channelLevelName']
       this.resetObject('postData', list);
     }
@@ -3170,37 +3170,40 @@
     async submitData() {
       // 补充成交类型
       let data: any = null;
+      let callBackInfo: any = null; // 校验后后端返回来的插值数据
       switch (this.changeType) {
         case "ChangeBasicInf":
           // 变更基础信息
           data = await this.initBaseData();
           if (this.btnType === "add") {
             // 去新增
-            await post_suppDeal_previewEntryBasicInfChange(data);
+            callBackInfo = await post_suppDeal_previewEntryBasicInfChange(data);
           } else if (this.btnType === "edit") {
             // 去修改
-            await post_suppDeal_previewUpdateBasicInfChange(data);
+            callBackInfo = await post_suppDeal_previewUpdateBasicInfChange(data);
           }
           this.$emit('next', 'next', {
             ...this.postData,
             // receiveAchieveVO: this.receiveAchieveVO,
-            currentPostData: data
+            currentPostData: data,
+            callBackInfo
           });
-          break
+          break;
         case "ChangeAchieveInf":
           // 变更成交业绩信息
           data = await this.initRetreatRoomData();
           if (this.btnType === "add") {
             // 去新增
-            await post_suppDeal_previewEntryAchieveInfChange(data);
+            callBackInfo = await post_suppDeal_previewEntryAchieveInfChange(data);
           } else if (this.btnType === "edit") {
             // 去修改
-            await post_suppDeal_previewUpdateAchieveInfChange(data);
+            callBackInfo = await post_suppDeal_previewUpdateAchieveInfChange(data);
           }
           this.$emit('next', 'next', {
             ...this.postData,
             // receiveAchieveVO: this.receiveAchieveVO,
-            currentPostData: data
+            currentPostData: data,
+            callBackInfo
           });
           break
         case "RetreatRoom":
@@ -3208,15 +3211,16 @@
           data = await this.initRetreatRoomData();
           if (this.btnType === "add") {
             // 去新增
-            await post_suppDeal_previewEntryRetreatRoom(data);
+            callBackInfo = await post_suppDeal_previewEntryRetreatRoom(data);
           } else if (this.btnType === "edit") {
             // 去修改
-            await post_suppDeal_previewUpdateRetreatRoom(data);
+            callBackInfo = await post_suppDeal_previewUpdateRetreatRoom(data);
           }
           this.$emit('next', 'next', {
             ...this.postData,
             // receiveAchieveVO: this.receiveAchieveVO,
-            currentPostData: data
+            currentPostData: data,
+            callBackInfo
           });
           break
         case "ChangeInternalAchieveInf":
@@ -3224,15 +3228,16 @@
           data = await this.initStaffAchieveData();
           if (this.btnType === "add") {
             // 去新增
-            await post_suppDeal_previewEntryStaffAchieveChange(data);
+            callBackInfo = await post_suppDeal_previewEntryStaffAchieveChange(data);
           } else if (this.btnType === "edit") {
             // 去修改
-            await post_suppDeal_previewUpdateStaffAchieveChange(data);
+            callBackInfo = await post_suppDeal_previewUpdateStaffAchieveChange(data);
           }
           this.$emit("preview", {
             ...this.postData,
             // receiveAchieveVO: this.receiveAchieveVO,
-            currentPostData: data
+            currentPostData: data,
+            callBackInfo
           });
           break
       }
@@ -3258,6 +3263,7 @@
           buildingId: this.postData.buildingId,
           hall: this.postData.hall,
           propertyNo: this.postData.propertyNo,
+          propertyType: this.postData.propertyType,
           room: this.postData.room,
           roomId: this.postData.roomId,
           roomNo: this.postData.roomNo,
@@ -3296,6 +3302,7 @@
           buildingId: this.postData.buildingId,
           hall: this.postData.hall,
           propertyNo: this.postData.propertyNo,
+          propertyType: this.postData.propertyType,
           room: this.postData.room,
           roomId: this.postData.roomId,
           roomNo: this.postData.roomNo,

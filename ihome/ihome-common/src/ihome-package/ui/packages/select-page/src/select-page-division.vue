@@ -3,8 +3,8 @@
  * @version: 
  * @Author: ywl
  * @Date: 2020-10-20 15:03:13
- * @LastEditors: wwq
- * @LastEditTime: 2020-12-14 19:22:37
+ * @LastEditors: ywl
+ * @LastEditTime: 2021-01-29 16:05:10
 -->
 <script lang="ts">
 import { Component, Vue, Prop } from "vue-property-decorator";
@@ -27,6 +27,12 @@ export default class IhSelectPageDivision extends Vue {
     },
   })
   props?: any;
+  @Prop({
+    default: () => {
+      return {};
+    },
+  })
+  params?: object;
 
   filterText = "";
   optionList: any = [];
@@ -40,6 +46,7 @@ export default class IhSelectPageDivision extends Vue {
       parentId: null,
       status: "Valid",
       name: this.filterText,
+      ...this.params,
     });
     this.optionList = res;
     this.searchLoad = false;

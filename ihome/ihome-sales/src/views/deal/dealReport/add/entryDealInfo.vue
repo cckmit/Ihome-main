@@ -113,6 +113,24 @@
           </el-form-item>
         </el-col>
         <el-col :span="8">
+          <el-form-item label="成交阶段" prop="stage">
+            <el-select
+              v-model="postData.stage"
+              :disabled="isDisabled('dealStage', 'dealVO')"
+              no-data-text="请先选择项目周期"
+              placeholder="请选择成交阶段"
+              clearable
+              class="width--100">
+              <el-option
+                v-for="item in dealStageList"
+                :key="item.code"
+                :label="item.name"
+                :value="item.code"
+              ></el-option>
+            </el-select>
+          </el-form-item>
+        </el-col>
+        <el-col :span="8">
           <el-form-item label="物业类型" prop="propertyType">
             <el-select
               v-model="postData.propertyType"
@@ -132,7 +150,7 @@
         <el-col :span="8">
           <el-form-item
             label="栋座"
-            :prop="baseInfoByTerm.termStageEnum === 'Recognize' ? 'notEmpty' : 'buildingId'">
+            :prop="isNoRequired ? 'notEmpty' : 'buildingId'">
             <IhSelectPageByBuild
               @change="changeBuild"
               v-model="postData.buildingId"
@@ -148,9 +166,10 @@
         <el-col :span="8">
           <el-form-item
             label="房号"
-            :prop="baseInfoByTerm.termStageEnum === 'Recognize' ? 'notEmpty' : 'roomId'">
+            :prop="isNoRequired ? 'notEmpty' : 'roomId'">
             <IhSelectPageByRoom
               @change="changeRoom"
+              @changeOption="(data) => {postData.roomNo = data.roomNo}"
               v-model="postData.roomId"
               :proId="baseInfoByTerm.proId"
               :buildingId="postData.buildingId"
@@ -274,7 +293,7 @@
         <el-col :span="8">
           <el-form-item
             label="建筑面积"
-            :prop="baseInfoByTerm.termStageEnum === 'Recognize' ? 'notEmpty' : 'area'">
+            :prop="isNoRequired ? 'notEmpty' : 'area'">
             <el-input
               :disabled="isDisabled('area', 'houseVO')"
               v-model="postData.area"></el-input>
@@ -282,8 +301,8 @@
         </el-col>
         <el-col :span="8">
           <el-form-item
-            :prop="baseInfoByTerm.termStageEnum === 'Recognize' ? 'notEmpty' : 'room'"
-            :required="baseInfoByTerm.termStageEnum !== 'Recognize'"
+            :prop="isNoRequired ? 'notEmpty' : 'room'"
+            :required="!isNoRequired"
             label="户型">
             <div class="home-type-wrapper">
               <div>
@@ -337,23 +356,6 @@
               class="width--100">
               <el-option
                 v-for="item in $root.dictAllList('SignUp')"
-                :key="item.code"
-                :label="item.name"
-                :value="item.code"
-              ></el-option>
-            </el-select>
-          </el-form-item>
-        </el-col>
-        <el-col :span="8">
-          <el-form-item label="成交阶段" prop="stage">
-            <el-select
-              v-model="postData.stage"
-              :disabled="isDisabled('dealStage', 'dealVO')"
-              no-data-text="请先选择项目周期"
-              placeholder="请选择成交阶段"
-              class="width--100">
-              <el-option
-                v-for="item in dealStageList"
                 :key="item.code"
                 :label="item.name"
                 :value="item.code"
@@ -760,7 +762,7 @@
     baseInfoByTerm: any = {
       proId: null, // 项目id --- 用于查询分销协议列表
       termId: null, // 项目周期id
-      termStageEnum: null, // 判断优惠告知书是否有添加按钮
+      termStageEnum: null, // 项目周期阶段
       selectableChannelIds: [], // 可选的渠道商ids
     }; // 通过项目周期id获取到的初始化成交基础信息
     baseInfoInDeal: any = {
@@ -836,7 +838,6 @@
       receiveAchieveVO: [], // 应收信息
       documentVO: [], // 附件信息
     };
-    tempReceiveVO: any = []; // 临时收派金额信息
     tempSignPrice: any = null; // 临时签约价格
     tempSubscribePrice: any = null; // 临时认购价格
     tempDocumentList: any = []; // 记录来访确认单和成交确认单
@@ -962,9 +963,21 @@
     currentActiveIndex: any = 0; // 当前激活的nav
     currentReceiveIndex: any = null; // 当前选中的收派金额列表数据
     oneAgentRequiredFlag: any = false; // 收派金额 - 派发内场奖励金额合计大于0，为true
-    hasAddNoticeFlag: any = false; // 是否有添加(删除)优惠告知书的标识：true-可以；false-不可以
+    hasAddNoticeFlag: any = true; // 是否有添加(删除)优惠告知书的标识：true-可以；false-不可以
     // 编辑功能相关字段
     editBaseInfo: any = null; // 编辑初始化页面数据
+
+    // 判断栋座、房号、建筑面积、户型是否必填项
+    get isNoRequired() {
+      let flag: any = true;
+      if (this.baseInfoByTerm.termStageEnum === "Recognize" && this.postData.stage === "Recognize") {
+        // 项目周期是认筹 + 成交阶段是认筹，则是非必填
+        flag = true;
+      } else {
+        flag = false;
+      }
+      return flag;
+    }
 
     // 应收信息表格
     get receiveAchieveVO() {
@@ -1011,32 +1024,18 @@
     // 编辑功能 --- 初始化页面
     async editInitPage(id: any) {
       const res: any = await get_deal_get__id({id: id});
-      this.editBaseInfo = res;
+      this.editBaseInfo = JSON.parse(JSON.stringify(res || {}));
       console.log(res);
       await this.editBaseDealInfo(res.cycleId);
       await this.editInitPageById(res.cycleId, res.house.roomId, res.house.propertyType);
-      if (res.notice && res.notice.length) {
-        this.postData.offerNoticeVO = res.notice;
-      } else {
-        await this.getInformation(id);
-      }
+      await this.getInformation(id);
       if (res.cycleId && res.house.propertyType && res.agencyList && res.agencyList.length) {
         let params: any = {
           channelId: res.agencyList[0].agencyId,
           cycleId: res.cycleId,
           property: res.house.propertyType
         }
-        let info: any = await (this as any).$parent.getContTypeList(params);
-        this.packageIdsList = [];
-        this.contNoList = [];
-        if (info && info.contracts && info.contracts.length) {
-          this.contNoList = info.contracts;
-          info.contracts.forEach((item: any) => {
-            if (item.contractNo === res.contNo) {
-              this.packageIdsList = item.packageMxIds;
-            }
-          });
-        }
+        await this.initContNoList(params, res.contNo);
       }
       this.$nextTick(() => {
         this.postData.dealCode = res.dealCode;
@@ -1089,11 +1088,26 @@
       });
     }
 
+    // 编辑 --- 获取分销协议
+    async initContNoList(data: any, contNo: any) {
+      let info: any = await (this as any).$parent.getContNoList(data); // 获取分销协议
+      this.packageIdsList = [];
+      this.contNoList = [];
+      if (info && info.contracts && info.contracts.length) {
+        this.contNoList = info.contracts;
+        info.contracts.forEach((item: any) => {
+          if (item.contractNo === contNo) {
+            this.packageIdsList = item.packageMxIds;
+          }
+        });
+      }
+    }
+
     // 编辑 --- 通过周期ID获取信息
     async editBaseDealInfo(id: any) {
       if (!id) return;
       let baseInfo: any = await get_pageData_getProBaseByTermId__cycleId({cycleId: id});
-      this.baseInfoByTerm = JSON.parse(JSON.stringify(baseInfo));
+      this.baseInfoByTerm = JSON.parse(JSON.stringify(baseInfo || {}));
       // 给postData赋值对应数据
       if (baseInfo) {
         // 业务模式
@@ -1168,7 +1182,7 @@
         property: propertyType, // 物业类型
       };
       let baseInfo: any = await post_pageData_initBasic(params);
-      this.baseInfoInDeal = JSON.parse(JSON.stringify(baseInfo || '{}'));
+      this.baseInfoInDeal = JSON.parse(JSON.stringify(baseInfo || {}));
       // 多分优惠告知书情况
       // this.postData.contNo = null; // 重置选择的编号
       // 分销协议编号
@@ -1369,8 +1383,6 @@
           let list: any = (this as any).$parent.initReceiveVOS(tempList);
           this.$nextTick(() => {
             this.postData.receiveVO.push(...list);
-            // 暂存
-            this.tempReceiveVO = (this as any).$tool.deepClone(this.postData.receiveVO);
           });
         }
         // 成交组织
@@ -1440,12 +1452,12 @@
     }
 
     // 改变栋座
-    changeBuild() {
+    async changeBuild() {
       // 清空房间号 + 下面的所有信息
       this.postData.roomId = null;
-      this.resetReceiveVO();
-      this.initDocument(this.baseInfoByTerm);
-      this.resetData();
+      await this.resetReceiveVO();
+      await this.initDocument(this.baseInfoByTerm);
+      await this.resetData();
     }
 
     // 清空数据 - 主要是和初始化数据有关的数据
@@ -1455,23 +1467,22 @@
       this.contNoList = []; // 分销协议编号
       this.packageIdsList = []; // ids
       this.postData.customerVO = []; // 客户信息
-      this.tempReceiveVO = []; // 收派金额初始值
       this.postData.offerNoticeVO = []; // 优惠告知书
       // this.postData.documentVO = []; // 上传附件
       let list: any = ['contType', 'contNo', 'recordState', 'recordStr', 'area', 'room', 'hall',
-        'toilet', 'propertyNo', 'signType', 'stage', 'returnRatio', 'subscribePrice', 'subscribeDate',
+        'toilet', 'propertyNo', 'signType', 'returnRatio', 'subscribePrice', 'subscribeDate',
         'signPrice', 'signDate', 'agencyId', 'agencyName', 'channelLevel', 'channelLevelName']
       this.resetObject('postData', list);
     }
 
     // 改变房号
-    changeRoom(value: any) {
+    async changeRoom(value: any) {
       // console.log('改变房号', value);
-      this.resetReceiveVO();
-      this.initDocument(this.baseInfoByTerm);
-      this.resetData(); // 重置数据
+      await this.resetReceiveVO();
+      await this.initDocument(this.baseInfoByTerm);
+      await this.resetData(); // 重置数据
       if (value) {
-        this.initPageById(this.baseInfoByTerm.termId, value, this.postData.propertyType);
+        await this.initPageById(this.baseInfoByTerm.termId, value, this.postData.propertyType);
       }
     }
 
@@ -1494,7 +1505,7 @@
         property: propertyType, // 物业类型
       };
       let baseInfo: any = await post_pageData_initBasic(params);
-      this.baseInfoInDeal = JSON.parse(JSON.stringify(baseInfo || '{}'));
+      this.baseInfoInDeal = JSON.parse(JSON.stringify(baseInfo || {}));
       // console.log('baseInfobaseInfo', this.baseInfoInDeal);
       // 处理数据
       // 纯提示
@@ -1506,6 +1517,7 @@
         });
       }
       // 多分优惠告知书情况
+      console.log(this.postData.offerNoticeVO);
       this.postData.contNo = null; // 重置选择的编号
       if (baseInfo.dealNoticeStatus === 'MultipleNotice') {
         this.$notify({
@@ -1521,7 +1533,9 @@
           this.contNoList = [];
         }
         // 优惠告知书
-        this.postData.offerNoticeVO = baseInfo.notice && baseInfo.notice.length ? baseInfo.notice : [];
+        if (!this.postData.offerNoticeVO.length) {
+          this.postData.offerNoticeVO = baseInfo.notice && baseInfo.notice.length ? baseInfo.notice : [];
+        }
       }
       // 栋座
       if (baseInfo.buildingId && !this.postData.buildingId) {
@@ -1544,7 +1558,9 @@
       // 签约类型
       this.postData.signType = baseInfo.myReturnVO.dealVO?.signType;
       // 成交阶段
-      this.postData.stage = baseInfo.myReturnVO.dealStage;
+      if (baseInfo && baseInfo.myReturnVO && baseInfo.myReturnVO.dealStage) {
+        this.postData.stage = baseInfo.myReturnVO.dealStage;
+      }
       // 明源房款回笼比例(%)
       this.postData.returnRatio = baseInfo.myReturnVO.dealVO?.returnRatio;
       // 认购价格
@@ -1560,7 +1576,6 @@
       // 客户信息
       this.postData.customerVO = baseInfo.customerAddVOS && baseInfo.customerAddVOS.length ? baseInfo.customerAddVOS : [];
       // 收派金额 --- 代理费
-      // this.postData.receiveVO = baseInfo.receiveVOS && baseInfo.receiveVOS.length ? baseInfo.receiveVOS : [];
       if (baseInfo.receiveVOS && baseInfo.receiveVOS.length) {
         let tempList: any = (this as any).$parent.initReceiveVOS(baseInfo.receiveVOS);
         console.log('receiveVO:', tempList);
@@ -1571,8 +1586,6 @@
         }
         console.log('postData.receiveVO:', tempList);
       }
-      // 暂存
-      this.tempReceiveVO = (this as any).$tool.deepClone(this.postData.receiveVO);
     }
 
     // 初始化渠道商(渠道公司) --- 分销成交模式才有渠道商
@@ -1724,7 +1737,7 @@
 
     // 改变细分业务模式
     async changeRefineModel() {
-      // 不一样+失焦，要初始化收派套餐
+      // 要初始化收派套餐
       await this.initReceive();
     }
 
@@ -1765,14 +1778,8 @@
 
     // 合同类型、分销协议编号、细分业务模式、认购价格、签约价格改变之后要初始化收派金额
     initReceive() {
-      let flag: any = false;
       if (this.postData.receiveVO.length) {
-        // 判断收派金额数据是否选了收派套餐
-        flag = (this as any).$parent.hasReceivePackage(this.postData.receiveVO);
-      }
-      if (flag) {
-        // 如果已经选了，判断价格是否和之前的一样
-        this.postData.receiveVO = (this as any).$tool.deepClone(this.tempReceiveVO);
+        this.postData.receiveVO = (this as any).$parent.resetReceiveVOS(this.postData.receiveVO);
       }
     }
 
@@ -1844,6 +1851,21 @@
     // 确定选择优惠告知书
     async finishAddNotice(info: any) {
       // 选择优惠告知书后 --- 带出优惠告知书 + 客户信息
+      if (this.postData.offerNoticeVO && this.postData.offerNoticeVO.length) {
+        // 存在优惠告知书，需要提示
+        try {
+          await this.$confirm("已存在优惠告知书，是否覆盖?", "提示");
+          await this.handleAddNoticeList(info);
+        } catch (error) {
+          console.log(error);
+        }
+      } else {
+        this.handleAddNoticeList(info);
+      }
+    }
+
+    // 确定添加优惠告知书
+    handleAddNoticeList(info: any) {
       this.postData.offerNoticeVO = info.dealNotices;
       this.postData.customerVO = info.customerConvertResponse;
       // 回显收派金额中类型为服务费的客户上
@@ -2122,7 +2144,7 @@
       obj.dealVO.charge = this.baseInfoByTerm.chargeEnum;
       obj.dealVO.contType = this.postData.contType;
       obj.dealVO.cycleId = this.postData.cycleId;
-      obj.dealVO.dataSign = this.baseInfoInDeal.myReturnVO.dataSign;
+      obj.dealVO.dataSign = this.postData.dataSign;
       obj.dealVO.dealOrgId = this.postData.dealOrgId;
       obj.dealVO.isConsign = this.postData.isConsign;
       obj.dealVO.isMarketProject = this.postData.isMarketProject;
@@ -2148,7 +2170,7 @@
       obj.dealVO.oneAgentTeamId = this.postData.oneAgentTeamId;
       obj.dealVO.recordState = this.postData.recordState;
       obj.dealVO.refineModel = this.postData.refineModel;
-      obj.dealVO.reportId = this.baseInfoInDeal.recordId;
+      // obj.dealVO.reportId = this.baseInfoInDeal.recordId;
       obj.dealVO.sceneSales = this.postData.sceneSales;
       obj.dealVO.signDate = this.postData.signDate;
       obj.dealVO.signPrice = this.postData.signPrice;
@@ -2170,11 +2192,13 @@
       obj.houseVO.propertyType = this.postData.propertyType;
       obj.houseVO.room = this.postData.room;
       obj.houseVO.roomId = this.postData.roomId;
-      obj.houseVO.roomNo = this.baseInfoInDeal.roomNo;
+      obj.houseVO.roomNo = this.postData.roomId ? this.postData.roomNo : null;
       obj.houseVO.toilet = this.postData.toilet;
       // 附件信息
       if (this.postData.documentVO.length > 0) {
+        // console.log('this.postData.documentVO', this.postData.documentVO);
         this.postData.documentVO.forEach((item: any) => {
+          // 重新上传的
           if (item.fileList.length > 0) {
             item.fileList.forEach((list: any) => {
               obj.documentVO.push(
@@ -2184,9 +2208,12 @@
                   fileType: item.code
                 }
               )
-            })
+            });
           }
-        })
+          // 初始化的
+          obj.documentVO.push(...item.defaultFileList);
+        });
+        // console.log('obj.documentVO', obj.documentVO);
       }
       // 派发金额合计
       if (this.receiveAchieveVO.length > 0) {

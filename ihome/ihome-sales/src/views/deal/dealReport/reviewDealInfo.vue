@@ -51,6 +51,11 @@
             </el-form-item>
           </el-col>
           <el-col :span="8">
+            <el-form-item label="成交阶段">
+              {{$root.dictAllName(postData.stage, 'DealStage')}}
+            </el-form-item>
+          </el-col>
+          <el-col :span="8">
             <el-form-item label="栋座">{{postData.house.buildingName}}</el-form-item>
           </el-col>
           <el-col :span="8">
@@ -131,11 +136,6 @@
             </el-form-item>
           </el-col>
           <el-col :span="8">
-            <el-form-item label="成交阶段">
-              {{$root.dictAllName(postData.stage, 'DealStage')}}
-            </el-form-item>
-          </el-col>
-          <el-col :span="8">
             <el-form-item label="明源房款回笼比例">{{postData.returnRatio ? postData.returnRatio : 0}}%</el-form-item>
           </el-col>
           <el-col :span="8">
@@ -151,7 +151,7 @@
             <el-form-item label="签约日期">{{postData.signDate}}</el-form-item>
           </el-col>
           <el-col :span="8">
-            <el-form-item label="成交组织">{{postData.dealOrgId}}</el-form-item>
+            <el-form-item label="成交组织">{{postData.dealOrgName}}</el-form-item>
           </el-col>
           <el-col :span="8">
             <el-form-item label="录入人">{{postData.entryPerson}}</el-form-item>
@@ -196,7 +196,11 @@
               </template>
             </el-table-column>
             <el-table-column prop="noticeNo" label="优惠告知书编号" min-width="120"></el-table-column>
-            <el-table-column prop="notificationStatus" label="优惠告知书状态" min-width="120"></el-table-column>
+            <el-table-column prop="notificationStatus" label="优惠告知书状态" min-width="120">
+              <template v-slot="{ row }">
+                {{$root.dictAllName(row.notificationStatus, 'NotificationStatus')}}
+              </template>
+            </el-table-column>
             <el-table-column fixed="right" label="操作" width="130">
               <template slot-scope="scope">
                 <el-link
@@ -462,12 +466,27 @@
           <el-table
             class="ih-table"
             :data="postData.documentList">
-            <el-table-column prop="fileType" label="类型" min-width="120">
+            <el-table-column prop="fileType" label="类型" width="200">
               <template slot-scope="scope">
-                <div>{{$root.dictAllName(scope.row.fileType, 'DealFileType')}}</div>
+                <div>{{$root.dictAllName(scope.row.code, 'DealFileType')}}</div>
               </template>
             </el-table-column>
-            <el-table-column prop="fileName" label="附件" min-width="120"></el-table-column>
+            <el-table-column prop="fileName" label="附件" min-width="300">
+              <template slot-scope="scope">
+                <IhUpload
+                  v-if="scope.row.defaultFileLists.length"
+                  :isCrop="false"
+                  :isMove="false"
+                  :removePermi="true"
+                  size="100px"
+                  :limit="scope.row.defaultFileLists.length"
+                  :file-size="10"
+                  :file-list.sync="scope.row.defaultFileLists"
+                  :file-type="scope.row.code"
+                  :upload-show="!!scope.row.defaultFileLists"
+                ></IhUpload>
+              </template>
+            </el-table-column>
           </el-table>
         </el-col>
       </el-row>
@@ -535,6 +554,12 @@
           "
       />
     </ih-dialog>
+    <IhImgViews
+      v-if="isShowImg"
+      :url-list="srcList"
+      :viewer-msg="srcData"
+      :onClose="() => (isShowImg = false)"
+    ></IhImgViews>
   </ih-page>
 </template>
 <script lang="ts">
@@ -549,6 +574,7 @@
   import {
     post_notice_customer_information // 根据成交id获取优惠告知书
   } from "@/api/contract";
+  import {get_org_get__id} from "@/api/system";
   import {Form as ElForm} from "element-ui";
   import {NoRepeatHttp} from "ihome-common/util/aop/no-repeat-http";
 
@@ -556,8 +582,12 @@
     components: {ReviewDate, ReviewDetailsDialog},
   })
   export default class ReviewDealInfo extends Vue {
+    private isShowImg = false;
+    private srcList: any = [];
+    private srcData: any = [];
     postData: any = {
       dealCode: null,
+      dealOrgName: null,
       house: {}, // 房产信息
       offerNoticeList: [], // 优惠告知书
       customerList: [], // 客户信息
@@ -630,7 +660,10 @@
 
     // 初始化数据
     async init() {
-      this.postData = await get_deal_get__id({id: this.id});
+      let info: any = await get_deal_get__id({id: this.id});
+      this.postData = (this as any).$tool.deepClone(info || {});
+      // 初始化优惠告知书信息
+      await this.getInformation();
       // console.log(this.postData);
       // 收派金额数据整理 showData
       if (this.postData.receiveList && this.postData.receiveList.length > 0) {
@@ -655,8 +688,44 @@
           }
         })
       }
-      // 初始化优惠告知书信息
-      await this.getInformation();
+      // console.log(info.documentList);
+      if (info.documentList && info.documentList.length) {
+        this.postData.documentList = this.initDocumentList(info.documentList);
+      }
+      // 获取显示的成交组织name
+      await this.getOrgName(info.dealOrgId);
+    }
+
+    // 获取组织name
+    async getOrgName(id: any = '') {
+      if (!id) return;
+      const info: any = await get_org_get__id({id: id});
+      // console.log('组织info:', info);
+      this.postData.dealOrgName = info.name;
+    }
+
+    // 构建附件信息
+    initDocumentList(list: any = []) {
+      let fileList: any = (this as any).$root.dictAllList('DealFileType'); // 附件类型
+      // 附件类型增加key
+      if (fileList.length > 0 && list.length > 0) {
+        fileList.forEach((vo: any) => {
+          vo.defaultFileLists = []; // 存放原来的数据
+          vo.fileList = []; // 存放新上传的数据
+          list.forEach((item: any) => {
+            if (vo.code === item.fileType) {
+              vo.defaultFileLists.push(
+                {
+                  ...item,
+                  name: list.fileName,
+                  exAuto: true // 是否可以删除
+                }
+              );
+            }
+          });
+        });
+      }
+      return fileList;
     }
 
     // 根据成交id获取优惠告知书列表
@@ -768,9 +837,25 @@
 
     // 预览-优惠告知书
     preview(scope: any) {
-      window.open(
-        `/sales-api/sales-document-cover/file/browse/${scope.row.templateId}`
-      );
+      if (scope.row.templateType === "ElectronicTemplate") {
+        window.open(
+          `/sales-api/sales-document-cover/file/browse/${scope.row.templateId}`
+        );
+      } else {
+        let imgList = scope.row.noticeAttachmentList;
+        this.srcList = imgList.map(
+          (i: any) => `/sales-api/sales-document-cover/file/browse/${i.fileNo}`
+        );
+        this.srcData = imgList.map((v: any) => ({
+          name: v.attachmentSuffix,
+          preFileName: "优惠告知书",
+        }));
+        if (this.srcList.length) {
+          this.isShowImg = true;
+        } else {
+          this.$message.warning("暂无图片");
+        }
+      }
     }
 
     // 查看审核记录

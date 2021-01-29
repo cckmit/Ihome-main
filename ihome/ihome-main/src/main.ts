@@ -4,7 +4,7 @@
  * @Author: zyc
  * @Date: 2020-06-22 11:46:23
  * @LastEditors: zyc
- * @LastEditTime: 2021-01-25 09:08:32
+ * @LastEditTime: 2021-01-29 08:53:17
  */
 import Vue from 'vue'
 import App from './App.vue'
@@ -115,7 +115,7 @@ async function render({ appContent, loading }: any = {}) {
     Promise.all([get_area_getAll(), get_dict_getAll()]).then((res: any) => {
       (window as any).polyihomeData.areaAll = res[0];
       (window as any).polyihomeData.dictAll = res[1];
-      console.log((window as any).polyihomeData);
+   
     })
       .catch((err: any) => {
         console.error('系统初始化数据存在异常', err)

@@ -4,7 +4,7 @@
  * @Author: lsj
  * @Date: 2021-01-14 21:55:30
  * @LastEditors: lsj
- * @LastEditTime: 2021-01-15 07:50:50
+ * @LastEditTime: 2021-01-26 08:36:26
 -->
 <template>
   <IhPage label-width="120px">
@@ -55,11 +55,12 @@
                 v-model="queryPageParameters.produceType"
                 clearable
                 placeholder="请选择">
-                <el-option label="服务费盈余" value="服务费盈余"></el-option>
-                <el-option label="成交变更" value="成交变更"></el-option>
-                <el-option label="成交退款" value="成交退款"></el-option>
-                <el-option label="成交补充" value="成交补充"></el-option>
-                <el-option label="其他" value="其他"></el-option>
+                <el-option
+                  v-for="item in $root.dictAllList('PoolOperaAddCategory')"
+                  :key="item.code"
+                  :label="item.name"
+                  :value="item.code"
+                ></el-option>
               </el-select>
             </el-form-item>
           </el-col>
@@ -70,9 +71,12 @@
                 v-model="queryPageParameters.useType"
                 clearable
                 placeholder="请选择">
-                <el-option label="同周期使用" value="同周期使用"></el-option>
-                <el-option label="跨周期" value="跨周期"></el-option>
-                <el-option label="跨项目" value="跨项目"></el-option>
+                <el-option
+                  v-for="item in $root.dictAllList('PoolOperaUseCategory')"
+                  :key="item.code"
+                  :label="item.name"
+                  :value="item.code"
+                ></el-option>
               </el-select>
             </el-form-item>
           </el-col>
@@ -94,7 +98,11 @@
             class="ih-table"
             :data="resPageInfo.list"
             :empty-text="emptyText">
-            <el-table-column label="成交报告编号" prop="dealCode" fixed min-width="220"></el-table-column>
+            <el-table-column label="成交报告编号" prop="dealCode" fixed min-width="220">
+              <template slot-scope="scope">
+                <el-link type="primary" @click="goToDealInfo(scope)">{{scope.row.dealCode}}</el-link>
+              </template>
+            </el-table-column>
             <el-table-column label="成交周期" prop="termName" min-width="180"></el-table-column>
             <el-table-column label="周期所属项目" prop="proName" min-width="180"></el-table-column>
             <el-table-column label="周期所属店组" prop="shopGroup" min-width="180"></el-table-column>
@@ -108,13 +116,21 @@
             class="ih-table"
             :data="resPageInfo.list"
             :empty-text="emptyText">
-            <el-table-column label="成交报告编号" prop="dealCode" fixed min-width="220"></el-table-column>
+            <el-table-column label="成交报告编号" prop="dealCode" fixed min-width="220">
+              <template slot-scope="scope">
+                <el-link type="primary" @click="goToDealInfo(scope)">{{scope.row.dealCode}}</el-link>
+              </template>
+            </el-table-column>
             <el-table-column label="成交周期" prop="termName" min-width="180"></el-table-column>
             <el-table-column label="周期所属项目" prop="proName" min-width="180"></el-table-column>
             <el-table-column label="周期所属店组" prop="shopGroup" min-width="180"></el-table-column>
             <el-table-column label="周期所属事业部" prop="departmentName" min-width="200"></el-table-column>
             <el-table-column label="产生其他渠道费金额" prop="postAmount" min-width="200"></el-table-column>
-            <el-table-column label="产生类别" prop="postCategory" min-width="200"></el-table-column>
+            <el-table-column label="产生类别" prop="postCategory" min-width="200">
+              <template slot-scope="scope">
+                <div>{{$root.dictAllName(scope.row.postCategory, 'PoolOperaAddCategory')}}</div>
+              </template>
+            </el-table-column>
             <el-table-column label="记录时间" prop="createTime" min-width="150"></el-table-column>
           </el-table>
         </el-tab-pane>
@@ -123,19 +139,31 @@
             class="ih-table"
             :data="resPageInfo.list"
             :empty-text="emptyText">
-            <el-table-column label="成交报告编号" prop="dealCode" fixed min-width="220"></el-table-column>
+            <el-table-column label="成交报告编号" prop="dealCode" fixed min-width="220">
+              <template slot-scope="scope">
+                <el-link type="primary" @click="goToDealInfo(scope)">{{scope.row.dealCode}}</el-link>
+              </template>
+            </el-table-column>
             <el-table-column label="成交周期" prop="termName" min-width="180"></el-table-column>
             <el-table-column label="周期所属项目" prop="proName" min-width="180"></el-table-column>
             <el-table-column label="周期所属店组" prop="shopGroup" min-width="180"></el-table-column>
             <el-table-column label="周期所属事业部" prop="departmentName" min-width="200"></el-table-column>
             <el-table-column label="使用其他渠道费金额" prop="postAmount" min-width="200"></el-table-column>
-            <el-table-column label="使用类别" prop="postCategory" min-width="200"></el-table-column>
+            <el-table-column label="使用类别" prop="postCategory" min-width="200">
+              <template slot-scope="scope">
+                <div>{{$root.dictAllName(scope.row.postCategory, 'PoolOperaUseCategory')}}</div>
+              </template>
+            </el-table-column>
             <el-table-column label="使用的其他渠道费用归属周期" prop="otherTermName" min-width="300"></el-table-column>
             <el-table-column label="使用的其他渠道费用归属项目" prop="otherProName" min-width="300"></el-table-column>
             <el-table-column label="记录时间" prop="createTime" min-width="150"></el-table-column>
           </el-table>
         </el-tab-pane>
       </el-tabs>
+      <div class="details-sum-wrapper">
+        <span>{{detailsSum.desc}}：</span>
+        <span class="total-color">{{detailsSum.totalAmount}}</span>元
+      </div>
     </template>
     <template v-slot:pagination>
       <br/>
@@ -154,7 +182,8 @@
 <script lang="ts">
 import {Component, Vue} from "vue-property-decorator";
 import {
-  post_capitalPoolFlow_detail
+  post_capitalPoolFlow_detail, // 其它渠道费用明细
+  post_capitalPoolFlow_detailsum // 其它渠道费用明细-汇总
 } from "@/api/project/index";
 import PaginationMixin from "../../../mixins/pagination";
 import axios from "axios";
@@ -177,6 +206,10 @@ export default class DetailsList extends Vue {
     total: null,
     list: [],
   };
+  detailsSum: any = {
+    desc: null,
+    totalAmount: 0,
+  }; // 汇总
 
   async created() {
     await this.getListMixin();
@@ -217,8 +250,8 @@ export default class DetailsList extends Vue {
       pageNum: this.queryPageParameters.pageNum,
       pageSize: this.queryPageParameters.pageSize,
       postCategory: null, // 产生类别 服务费盈余、成交变更、成交退款、其它 使用类别 (同周期使用)Samecycle、(跨周期)Interycle、(跨项目)Interproject
-      proName: this.queryPageParameters.pr, // 项目名称
-      termName: this.queryPageParameters.cycleId, // 周期名称
+      proId: this.queryPageParameters.proId, // 项目名称
+      termId: this.queryPageParameters.termId, // 周期名称
       type: 0 // 类别 1:产生 2:使用
     }
     switch (this.currentTabsName) {
@@ -238,6 +271,8 @@ export default class DetailsList extends Vue {
         break;
     }
     this.resPageInfo = await post_capitalPoolFlow_detail(postData);
+    this.detailsSum = await post_capitalPoolFlow_detailsum(postData);
+    // console.log(this.detailsSum);
   }
 
   // 改变tabs
@@ -270,7 +305,33 @@ export default class DetailsList extends Vue {
     this.queryPageParameters.pageNum = 1;
     this.getListMixin();
   }
+
+  // 查看成交详情
+  goToDealInfo(scope: any) {
+    if (scope.row.dealCode) {
+      this.$router.push({
+        path: "/dealReport/info",
+        query: {
+          id: scope.row.dealCode,
+          type: "CODE"
+        }
+      });
+    }
+  }
 }
 </script>
 <style lang="scss" scoped>
+.details-sum-wrapper {
+  width: 100%;
+  box-sizing: border-box;
+  text-align: left;
+  font-size: 15px;
+  margin-top: 10px;
+
+  .total-color {
+    color: red;
+    display: inline-block;
+    padding-right: 5px;
+  }
+}
 </style>

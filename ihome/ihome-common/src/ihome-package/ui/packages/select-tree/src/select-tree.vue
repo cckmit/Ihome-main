@@ -152,6 +152,8 @@ export default {
 
         // this.$refs.selectTree.setCurrentKey(this.valueId); // 设置默认选中
         this.defaultExpandedKey = [this.valueId]; // 设置默认展开
+      } else {
+        this.valueTitle = "";
       }
       this.initScroll();
     },

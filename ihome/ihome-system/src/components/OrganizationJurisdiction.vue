@@ -4,7 +4,7 @@
  * @Author: zyc
  * @Date: 2020-07-09 15:03:17
  * @LastEditors: zyc
- * @LastEditTime: 2020-12-30 16:47:29
+ * @LastEditTime: 2021-01-29 09:52:46
 --> 
 <template>
   <el-dialog
@@ -278,6 +278,7 @@ export default class OrganizationJurisdiction extends Vue {
 </script>
 <style lang="scss" >
 .OrganizationJurisdiction {
+  top: -100px;
   width: 100%;
   min-width: 350px;
   .right {
@@ -308,5 +309,10 @@ export default class OrganizationJurisdiction extends Vue {
 
     line-height: 30px;
   }
+  .el-tree {
+    overflow: auto;
+    height: 500px;
+  }
 }
 </style>
+ 

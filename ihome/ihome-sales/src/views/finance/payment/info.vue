@@ -4,7 +4,7 @@
  * @Author: ywl
  * @Date: 2020-12-17 19:43:20
  * @LastEditors: ywl
- * @LastEditTime: 2021-01-27 20:51:01
+ * @LastEditTime: 2021-01-28 14:17:23
 -->
 <template>
   <IhPage class="text-left">
@@ -57,7 +57,12 @@
             <el-form-item label="收款账号">{{info.payment.payeeAccount}}</el-form-item>
           </el-col>
           <el-col :span="8">
-            <el-form-item label="立项周期">{{info.payment.termName}}</el-form-item>
+            <el-form-item label="立项周期">
+              <span
+                class="text-ellipsis"
+                :title="info.payment.termName"
+              >{{info.payment.termName}}</span>
+            </el-form-item>
           </el-col>
         </el-row>
         <el-row>
@@ -70,7 +75,7 @@
         </el-row>
         <el-row>
           <el-col :span="8">
-            <el-form-item label="凭证号">{{info.payment.payCode || '--'}}</el-form-item>
+            <el-form-item label="凭证号">{{ info.payment.payType === 'Transfer' ? '-' : info.payment.payCode }}</el-form-item>
           </el-col>
           <el-col :span="8">
             <el-form-item label="支付时间">{{info.payment.payTime}}</el-form-item>
