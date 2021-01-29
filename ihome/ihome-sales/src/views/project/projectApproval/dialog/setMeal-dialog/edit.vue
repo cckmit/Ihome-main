@@ -4,7 +4,7 @@
  * @Author: wwq
  * @Date: 2020-12-04 09:40:47
  * @LastEditors: wwq
- * @LastEditTime: 2021-01-27 20:58:18
+ * @LastEditTime: 2021-01-29 16:47:16
 -->
 <template>
   <el-dialog
@@ -1425,7 +1425,7 @@ export default class SetMealEdit extends Vue {
             },
           ],
           costTypeEnum: "ServiceFee",
-          exVoidService: "",
+          exVoidService: 0,
         },
         {
           colletionandsendDetails: [
@@ -1555,7 +1555,7 @@ export default class SetMealEdit extends Vue {
                   },
                 ],
                 costTypeEnum: "ServiceFee",
-                exVoidService: "",
+                exVoidService: 0,
               });
             }
           } else if (action === "confirm") {
@@ -1631,7 +1631,7 @@ export default class SetMealEdit extends Vue {
             },
           ],
           costTypeEnum: "ServiceFee",
-          exVoidService: "",
+          exVoidService: 0,
         });
       }
     } else if (this.info.chargeEnum === "Agent") {

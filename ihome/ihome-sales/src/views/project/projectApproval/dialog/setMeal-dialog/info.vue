@@ -4,7 +4,7 @@
  * @Author: wwq
  * @Date: 2020-12-07 14:32:16
  * @LastEditors: wwq
- * @LastEditTime: 2021-01-27 20:59:57
+ * @LastEditTime: 2021-01-29 17:15:49
 -->
 <template>
   <el-dialog
@@ -285,6 +285,7 @@
                   v-model="item.partyCompany"
                   class="input-with-select margin-left-10"
                   readonly
+                  :title="item.partyCompany"
                 >
                 </el-input>
               </div>
@@ -554,7 +555,7 @@ export default class SetMealEdit extends Vue {
 }
 .text-ellipsis {
   width: 100%;
-  display: inline-block;
+  display: block;
   overflow: hidden;
   text-overflow: ellipsis;
   white-space: nowrap;

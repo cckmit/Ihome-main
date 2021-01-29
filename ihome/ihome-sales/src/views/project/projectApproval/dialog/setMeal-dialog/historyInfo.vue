@@ -4,7 +4,7 @@
  * @Author: wwq
  * @Date: 2021-01-09 16:10:30
  * @LastEditors: wwq
- * @LastEditTime: 2021-01-27 20:59:39
+ * @LastEditTime: 2021-01-29 17:30:02
 -->
 <template>
   <el-dialog
@@ -554,7 +554,7 @@ export default class SetMealEdit extends Vue {
 }
 .text-ellipsis {
   width: 100%;
-  display: inline-block;
+  display: block;
   overflow: hidden;
   text-overflow: ellipsis;
   white-space: nowrap;

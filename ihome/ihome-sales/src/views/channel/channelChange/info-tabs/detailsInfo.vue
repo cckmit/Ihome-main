@@ -3,8 +3,8 @@
  * @version: 
  * @Author: lgf
  * @Date: 2020-09-16 14:05:21
- * @LastEditors: ywl
- * @LastEditTime: 2020-12-17 21:05:23
+ * @LastEditors: wwq
+ * @LastEditTime: 2021-01-29 17:28:17
 -->
 <template>
   <div class="text-left">
@@ -347,7 +347,7 @@ interface ConfirmObj {
 
 <style lang="scss" scoped>
 .text-ellipsis {
-  display: inline-block;
+  display: block;
   width: 100%;
   overflow: hidden;
   text-overflow: ellipsis;

@@ -4,7 +4,7 @@
  * @Author: wwq
  * @Date: 2020-11-27 17:17:06
  * @LastEditors: wwq
- * @LastEditTime: 2021-01-18 11:10:05
+ * @LastEditTime: 2021-01-29 17:30:10
 -->
 <template>
   <div>
@@ -601,7 +601,7 @@ export default class FirstAgencyEdit extends Vue {
 <style lang="scss" scoped>
 .text-ellipsis {
   width: 100%;
-  display: inline-block;
+  display: block;
   overflow: hidden;
   text-overflow: ellipsis;
   white-space: nowrap;

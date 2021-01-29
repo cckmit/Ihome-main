@@ -4,7 +4,7 @@
  * @Author: wwq
  * @Date: 2020-12-02 20:13:07
  * @LastEditors: wwq
- * @LastEditTime: 2021-01-23 09:17:37
+ * @LastEditTime: 2021-01-29 17:29:54
 -->
 <template>
   <el-dialog
@@ -395,7 +395,7 @@ export default class AddContract extends Vue {
 }
 .text-ellipsis {
   width: 100%;
-  display: inline-block;
+  display: block;
   overflow: hidden;
   text-overflow: ellipsis;
   white-space: nowrap;
