@@ -2623,6 +2623,21 @@
     // 确定选择优惠告知书
     async finishAddNotice(info: any) {
       // 选择优惠告知书后 --- 带出优惠告知书 + 客户信息
+      if (this.postData.offerNoticeVO && this.postData.offerNoticeVO.length) {
+        // 存在优惠告知书，需要提示
+        try {
+          await this.$confirm("已存在优惠告知书，是否覆盖?", "提示");
+          await this.handleAddNoticeList(info);
+        } catch (error) {
+          console.log(error);
+        }
+      } else {
+        this.handleAddNoticeList(info);
+      }
+    }
+
+    // 确定添加优惠告知书
+    handleAddNoticeList(info: any) {
       this.postData.offerNoticeVO = info.dealNotices;
       this.postData.customerVO = info.customerConvertResponse;
       // 回显收派金额中类型为服务费的客户上
