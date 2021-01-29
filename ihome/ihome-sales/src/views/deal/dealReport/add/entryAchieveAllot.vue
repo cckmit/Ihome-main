@@ -2258,7 +2258,7 @@
           this.contNoList = [];
         }
         // 优惠告知书
-        if (!this.postData.offerNoticeVO) {
+        if (!this.postData.offerNoticeVO.length) {
           this.postData.offerNoticeVO = baseInfo.notice && baseInfo.notice.length ? baseInfo.notice : [];
         }
       }
