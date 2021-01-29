@@ -455,16 +455,21 @@
           <el-table
             class="ih-table"
             :data="infoForm.uploadDocumentList">
-            <el-table-column prop="name" label="类型" width="180"></el-table-column>
+            <el-table-column prop="fileType" label="类型" width="200">
+              <template slot-scope="scope">
+                <div>{{$root.dictAllName(scope.row.code, 'DealFileType')}}</div>
+              </template>
+            </el-table-column>
             <el-table-column prop="fileName" label="附件" min-width="300">
               <template slot-scope="scope">
                 <IhUpload
+                  v-if="scope.row.fileList.length"
                   :isCrop="false"
                   :isMove="false"
                   :removePermi="false"
                   size="100px"
+                  :file-type="scope.row.code"
                   :limit="scope.row.fileList.length"
-                  :file-size="10"
                   :file-list.sync="scope.row.fileList"
                   :upload-show="!!scope.row.fileList.length"
                 ></IhUpload>
