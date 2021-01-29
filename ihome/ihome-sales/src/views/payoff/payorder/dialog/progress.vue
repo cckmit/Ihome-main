@@ -4,7 +4,7 @@
  * @Author: wwq
  * @Date: 2021-01-18 16:30:42
  * @LastEditors: wwq
- * @LastEditTime: 2021-01-19 11:45:26
+ * @LastEditTime: 2021-01-29 11:24:42
 -->
 <template>
   <el-dialog
@@ -23,6 +23,7 @@
     >
       <template v-for="(item, i) in dicts">
         <el-step
+          v-if="!item.jump"
           :key="i"
           :title="item.name"
           :description="item.operateTime ? item.operateTime : '---'"
@@ -95,7 +96,6 @@ export default class Progress extends Vue {
     const res = await get_processRecord_process_node__applyId({
       applyId: this.form.id,
     });
-    console.log(res, "res");
     this.dicts.forEach((v: any, i: number) => {
       res.forEach((j: any) => {
         if (v.code === j.afterStatus) {
