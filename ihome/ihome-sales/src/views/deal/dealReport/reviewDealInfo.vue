@@ -474,16 +474,16 @@
             <el-table-column prop="fileName" label="附件" min-width="300">
               <template slot-scope="scope">
                 <IhUpload
-                  v-if="scope.row.defaultFileList.length"
+                  v-if="scope.row.defaultFileLists.length"
                   :isCrop="false"
                   :isMove="false"
                   :removePermi="true"
                   size="100px"
-                  :limit="scope.row.defaultFileList.length"
+                  :limit="scope.row.defaultFileLists.length"
                   :file-size="10"
-                  :file-list.sync="scope.row.defaultFileList"
+                  :file-list.sync="scope.row.defaultFileLists"
                   :file-type="scope.row.code"
-                  :upload-show="!!scope.row.defaultFileList"
+                  :upload-show="!!scope.row.defaultFileLists"
                 ></IhUpload>
               </template>
             </el-table-column>
@@ -710,11 +710,11 @@
       // 附件类型增加key
       if (fileList.length > 0 && list.length > 0) {
         fileList.forEach((vo: any) => {
-          vo.defaultFileList = []; // 存放原来的数据
+          vo.defaultFileLists = []; // 存放原来的数据
           vo.fileList = []; // 存放新上传的数据
           list.forEach((item: any) => {
             if (vo.code === item.fileType) {
-              vo.defaultFileList.push(
+              vo.defaultFileLists.push(
                 {
                   ...item,
                   name: list.fileName,
