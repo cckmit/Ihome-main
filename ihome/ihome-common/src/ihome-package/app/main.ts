@@ -5,7 +5,7 @@
  * @Author: zyc
  * @Date: 2020-07-07 09:25:17
  * @LastEditors: zyc
- * @LastEditTime: 2021-01-26 10:24:18
+ * @LastEditTime: 2021-01-29 08:55:19
  */
 /* eslint-disable  no-console  */
 /* eslint-disable  no-extra-semi  */
@@ -287,7 +287,6 @@ async function render() {
 
 }
 
-console.log('isQianKunMain', (<any>window).isQianKunMain)
 if (!(<any>window).isQianKunMain) {
   render();
 } else {
