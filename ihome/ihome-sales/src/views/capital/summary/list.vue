@@ -185,6 +185,7 @@ export default class SummaryList extends Vue {
   }
 
   routeTo(row: any) {
+    console.log(row);
     this.$router.push({
       path: "/details/list",
     });

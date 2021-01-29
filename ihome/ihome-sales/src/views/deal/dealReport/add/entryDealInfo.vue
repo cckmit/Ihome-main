@@ -113,6 +113,23 @@
           </el-form-item>
         </el-col>
         <el-col :span="8">
+          <el-form-item label="成交阶段" prop="stage">
+            <el-select
+              v-model="postData.stage"
+              :disabled="isDisabled('dealStage', 'dealVO')"
+              no-data-text="请先选择项目周期"
+              placeholder="请选择成交阶段"
+              class="width--100">
+              <el-option
+                v-for="item in dealStageList"
+                :key="item.code"
+                :label="item.name"
+                :value="item.code"
+              ></el-option>
+            </el-select>
+          </el-form-item>
+        </el-col>
+        <el-col :span="8">
           <el-form-item label="物业类型" prop="propertyType">
             <el-select
               v-model="postData.propertyType"
@@ -338,23 +355,6 @@
               class="width--100">
               <el-option
                 v-for="item in $root.dictAllList('SignUp')"
-                :key="item.code"
-                :label="item.name"
-                :value="item.code"
-              ></el-option>
-            </el-select>
-          </el-form-item>
-        </el-col>
-        <el-col :span="8">
-          <el-form-item label="成交阶段" prop="stage">
-            <el-select
-              v-model="postData.stage"
-              :disabled="isDisabled('dealStage', 'dealVO')"
-              no-data-text="请先选择项目周期"
-              placeholder="请选择成交阶段"
-              class="width--100">
-              <el-option
-                v-for="item in dealStageList"
                 :key="item.code"
                 :label="item.name"
                 :value="item.code"

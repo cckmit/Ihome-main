@@ -474,6 +474,7 @@
             <el-table-column prop="fileName" label="附件" min-width="300">
               <template slot-scope="scope">
                 <IhUpload
+                  v-if="scope.row.defaultFileList.length"
                   :isCrop="false"
                   :isMove="false"
                   :removePermi="true"
@@ -716,7 +717,8 @@
               vo.defaultFileList.push(
                 {
                   ...item,
-                  name: list.fileName
+                  name: list.fileName,
+                  exAuto: true // 是否可以删除
                 }
               );
             }
