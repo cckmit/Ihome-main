@@ -1447,19 +1447,9 @@
         }
         await this.initContNoList(params, res.contNo);
       }
-      this.$nextTick(() => {
+      this.$nextTick(async () => {
         this.isSameFlag = res?.scheme?.isSame === "Yes"; // 分销总包是否一致
         this.editDealAchieveData.isSameFlag = res?.scheme?.isSame === "Yes";
-        // 处理角色类型选项
-        if (this.isSameFlag) {
-          // 分销同步总包
-          this.editDealAchieveData.totablBagRoles = this.getRoleListAndAchieveCap(res?.totalBag, res?.totablBagRoles);
-          this.editDealAchieveData.distriRoles = this.getRoleListAndAchieveCap(res?.totalBag, res?.totablBagRoles);
-        } else {
-          // 分销不同步总包
-          this.editDealAchieveData.totablBagRoles = this.getRoleListAndAchieveCap(res?.totalBag, res?.totablBagRoles);
-          this.editDealAchieveData.distriRoles = this.getRoleListAndAchieveCap(res?.distri, res?.distriRoles);
-        }
         this.postData.dealCode = res.dealCode;
         this.postData.cycleId = res.cycleId;
         this.postData.cycleName = res.cycleName;
@@ -1477,10 +1467,10 @@
         if (res.contType === 'DistriDeal') {
           // 分销成交模式
           // 1. 初始化渠道商/渠道公司
-          this.initAgency(res.agencyList, true);
+          await this.initAgency(res.agencyList, true);
         } else if (['SelfChannelDeal', 'NaturalVisitDeal'].includes(res.contType)) {
           // 非分销成交模式 --- 自然来访 / 自渠成交
-          this.initAgency(res.agencyList, false);
+          await this.initAgency(res.agencyList, false);
         }
         this.postData.contNo = res.contNo;
         this.postData.isMat = res.isMat;
@@ -1505,13 +1495,13 @@
         this.postData.dataSign = res.dataSign;
         this.postData.status = res.status;
         this.postData.customerVO = res.customerList;
-        this.postData.receiveVO = this.initReceiveVO(res.receiveList);
+        this.postData.receiveVO = await this.initReceiveVO(res.receiveList);
         // 收派金额中的甲方
         this.commissionCustomerList = [];
-        this.commissionCustomerList = this.initCommissionCustomer(res.receiveList);
+        this.commissionCustomerList = await this.initCommissionCustomer(res.receiveList);
         this.commissionServiceFeeObj = {};
-        this.commissionServiceFeeObj = this.initCommissionServiceFee(res.receiveList);
-        this.postData.documentVO = this.initDocumentVO(res.documentList);
+        this.commissionServiceFeeObj = await this.initCommissionServiceFee(res.receiveList);
+        this.postData.documentVO = await this.initDocumentVO(res.documentList);
         this.postData.commissionInfoList = res.channelCommList;
         this.postData.achieveTotalBagList = [];
         this.postData.achieveDistriList = [];
@@ -1525,6 +1515,8 @@
             }
           });
         }
+        // 获取平台费用中新增、修改弹窗中角色类型和角色业绩上限
+        await this.initAchieveRole();
       });
     }
 
@@ -1676,6 +1668,40 @@
         this.postData.offerNoticeVO = list;
       } else {
         this.postData.offerNoticeVO = [];
+      }
+    }
+
+    // 编辑 --- 获取角色类型和角色业绩上限
+    async initAchieveRole() {
+      let params: any = {
+        branchCompanyId: this.baseInfoByTerm.startDivisionId, // 分公司Id --- 项目周期带出
+        contType: this.postData.contType, // 合同类型
+        distriAmount: this.getTotalAmount('distributionAmount'), // 分销金额
+        isMarketProject: this.postData.isMarketProject, // 是否市场化项目
+        modelCode: this.postData.modelCode, // 业务模式
+        propertyType: this.postData.propertyType, // 物业类型
+        specialId: this.baseInfoByTerm.specialId, // 特殊方案Id --- 项目周期带出
+        totalBagAmount: this.getTotalAmount('totalPackageAmount') // 总包金额
+      };
+      // 重置数据
+      this.postData.achieveTotalBagList = [];
+      this.postData.achieveDistriList = [];
+      let achieveInfo: any = await post_pageData_initAchieve(params);
+      // console.log(achieveInfo);
+      this.postData.achieveTotalBagList = this.getAchieveList(achieveInfo.totalBag, 'TotalBag');
+      this.postData.achieveDistriList = this.getAchieveList(achieveInfo.distri, 'Distri');
+      // 是否分销与总包一致
+      this.editDealAchieveData.distri = achieveInfo.distri;
+      this.editDealAchieveData.totalBag = achieveInfo.totalBag;
+      // 处理角色类型选项
+      if (this.isSameFlag) {
+        // 分销同步总包
+        this.editDealAchieveData.totablBagRoles = this.getRoleListAndAchieveCap(achieveInfo.totalBag, achieveInfo.totablBagRoles);
+        this.editDealAchieveData.distriRoles = this.getRoleListAndAchieveCap(achieveInfo.totalBag, achieveInfo.totablBagRoles);
+      } else {
+        // 分销不同步总包
+        this.editDealAchieveData.totablBagRoles = this.getRoleListAndAchieveCap(achieveInfo.totalBag, achieveInfo.totablBagRoles);
+        this.editDealAchieveData.distriRoles = this.getRoleListAndAchieveCap(achieveInfo.distri, achieveInfo.distriRoles);
       }
     }
 
