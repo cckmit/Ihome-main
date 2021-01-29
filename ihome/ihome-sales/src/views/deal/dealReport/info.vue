@@ -48,6 +48,11 @@
           <el-form-item label="一手代理公司">{{infoForm.oneAgentTeam}}</el-form-item>
         </el-col>
         <el-col :span="8">
+          <el-form-item label="成交阶段">
+            {{$root.dictAllName(infoForm.stage, 'DealStage')}}
+          </el-form-item>
+        </el-col>
+        <el-col :span="8">
           <el-form-item label="物业类型">
             {{$root.dictAllName(infoForm.house.propertyType, 'Property')}}
           </el-form-item>
@@ -130,11 +135,6 @@
         <el-col :span="8">
           <el-form-item label="签约类型">
             {{$root.dictAllName(infoForm.signType, 'SignUp')}}
-          </el-form-item>
-        </el-col>
-        <el-col :span="8">
-          <el-form-item label="成交阶段">
-            {{$root.dictAllName(infoForm.stage, 'DealStage')}}
           </el-form-item>
         </el-col>
         <el-col :span="8">
