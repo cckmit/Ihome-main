@@ -262,7 +262,7 @@
             <div>实收：{{scope.row.actualAmount}}</div>
           </template>
         </el-table-column>
-        <el-table-column prop="commAmount" label="拆用金额" min-width="190">
+        <el-table-column prop="commAmount" label="拆佣金额" min-width="190">
           <template slot-scope="scope">
             <div>总金额：{{scope.row.commAmount}}</div>
             <div>已付金额：{{scope.row.paidCommAmount}}</div>
