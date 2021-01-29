@@ -1542,7 +1542,7 @@
     async editBaseDealInfo(id: any) {
       if (!id) return;
       let baseInfo: any = await get_pageData_getProBaseByTermId__cycleId({cycleId: id});
-      this.baseInfoByTerm = JSON.parse(JSON.stringify(baseInfo));
+      this.baseInfoByTerm = JSON.parse(JSON.stringify(baseInfo || {}));
       // 给postData赋值对应数据
       if (baseInfo) {
         // 业务模式
@@ -1617,7 +1617,7 @@
         property: propertyType, // 物业类型
       };
       let baseInfo: any = await post_pageData_initBasic(params);
-      this.baseInfoInDeal = JSON.parse(JSON.stringify(baseInfo || '{}'));
+      this.baseInfoInDeal = JSON.parse(JSON.stringify(baseInfo || {}));
       // 多分优惠告知书情况
       // this.postData.contNo = null; // 重置选择的编号
       // 分销协议编号

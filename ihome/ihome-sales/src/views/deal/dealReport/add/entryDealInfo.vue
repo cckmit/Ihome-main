@@ -149,7 +149,7 @@
         <el-col :span="8">
           <el-form-item
             label="栋座"
-            :prop="baseInfoByTerm.termStageEnum === 'Recognize' ? 'notEmpty' : 'buildingId'">
+            :prop="isNoRequired ? 'notEmpty' : 'buildingId'">
             <IhSelectPageByBuild
               @change="changeBuild"
               v-model="postData.buildingId"
@@ -165,7 +165,7 @@
         <el-col :span="8">
           <el-form-item
             label="房号"
-            :prop="baseInfoByTerm.termStageEnum === 'Recognize' ? 'notEmpty' : 'roomId'">
+            :prop="isNoRequired ? 'notEmpty' : 'roomId'">
             <IhSelectPageByRoom
               @change="changeRoom"
               @changeOption="(data) => {postData.roomNo = data.roomNo}"
@@ -292,7 +292,7 @@
         <el-col :span="8">
           <el-form-item
             label="建筑面积"
-            :prop="baseInfoByTerm.termStageEnum === 'Recognize' ? 'notEmpty' : 'area'">
+            :prop="isNoRequired ? 'notEmpty' : 'area'">
             <el-input
               :disabled="isDisabled('area', 'houseVO')"
               v-model="postData.area"></el-input>
@@ -300,8 +300,8 @@
         </el-col>
         <el-col :span="8">
           <el-form-item
-            :prop="baseInfoByTerm.termStageEnum === 'Recognize' ? 'notEmpty' : 'room'"
-            :required="baseInfoByTerm.termStageEnum !== 'Recognize'"
+            :prop="isNoRequired ? 'notEmpty' : 'room'"
+            :required="!isNoRequired"
             label="户型">
             <div class="home-type-wrapper">
               <div>
@@ -761,7 +761,7 @@
     baseInfoByTerm: any = {
       proId: null, // 项目id --- 用于查询分销协议列表
       termId: null, // 项目周期id
-      termStageEnum: null, // 判断优惠告知书是否有添加按钮
+      termStageEnum: null, // 项目周期阶段
       selectableChannelIds: [], // 可选的渠道商ids
     }; // 通过项目周期id获取到的初始化成交基础信息
     baseInfoInDeal: any = {
@@ -966,6 +966,18 @@
     // 编辑功能相关字段
     editBaseInfo: any = null; // 编辑初始化页面数据
 
+    // 判断栋座、房号、建筑面积、户型是否必填项
+    get isNoRequired() {
+      let flag: any = true;
+      if (this.baseInfoByTerm.termStageEnum === "Recognize" && this.postData.stage === "Recognize") {
+        // 项目周期是认筹 + 成交阶段是认筹，则是非必填
+        flag = true;
+      } else {
+        flag = false;
+      }
+      return flag;
+    }
+
     // 应收信息表格
     get receiveAchieveVO() {
       let arr: any = [];
@@ -1011,7 +1023,7 @@
     // 编辑功能 --- 初始化页面
     async editInitPage(id: any) {
       const res: any = await get_deal_get__id({id: id});
-      this.editBaseInfo = res;
+      this.editBaseInfo = JSON.parse(JSON.stringify(res || {}));
       console.log(res);
       await this.editBaseDealInfo(res.cycleId);
       await this.editInitPageById(res.cycleId, res.house.roomId, res.house.propertyType);
@@ -1089,7 +1101,7 @@
     async editBaseDealInfo(id: any) {
       if (!id) return;
       let baseInfo: any = await get_pageData_getProBaseByTermId__cycleId({cycleId: id});
-      this.baseInfoByTerm = JSON.parse(JSON.stringify(baseInfo));
+      this.baseInfoByTerm = JSON.parse(JSON.stringify(baseInfo || {}));
       // 给postData赋值对应数据
       if (baseInfo) {
         // 业务模式
@@ -1164,7 +1176,7 @@
         property: propertyType, // 物业类型
       };
       let baseInfo: any = await post_pageData_initBasic(params);
-      this.baseInfoInDeal = JSON.parse(JSON.stringify(baseInfo || '{}'));
+      this.baseInfoInDeal = JSON.parse(JSON.stringify(baseInfo || {}));
       // 多分优惠告知书情况
       // this.postData.contNo = null; // 重置选择的编号
       // 分销协议编号
@@ -1487,7 +1499,7 @@
         property: propertyType, // 物业类型
       };
       let baseInfo: any = await post_pageData_initBasic(params);
-      this.baseInfoInDeal = JSON.parse(JSON.stringify(baseInfo || '{}'));
+      this.baseInfoInDeal = JSON.parse(JSON.stringify(baseInfo || {}));
       // console.log('baseInfobaseInfo', this.baseInfoInDeal);
       // 处理数据
       // 纯提示
