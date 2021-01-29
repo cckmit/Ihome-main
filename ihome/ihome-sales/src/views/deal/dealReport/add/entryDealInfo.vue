@@ -1035,17 +1035,7 @@
           cycleId: res.cycleId,
           property: res.house.propertyType
         }
-        let info: any = await (this as any).$parent.getContNoList(params);
-        this.packageIdsList = [];
-        this.contNoList = [];
-        if (info && info.contracts && info.contracts.length) {
-          this.contNoList = info.contracts;
-          info.contracts.forEach((item: any) => {
-            if (item.contractNo === res.contNo) {
-              this.packageIdsList = item.packageMxIds;
-            }
-          });
-        }
+        await this.initContNoList(params, res.contNo);
       }
       this.$nextTick(() => {
         this.postData.dealCode = res.dealCode;
@@ -1096,6 +1086,21 @@
         this.postData.receiveVO = this.initReceiveVO(res.receiveList);
         this.postData.documentVO = this.initDocumentVO(res.documentList);
       });
+    }
+
+    // 编辑 --- 获取分销协议
+    async initContNoList(data: any, contNo: any) {
+      let info: any = await (this as any).$parent.getContNoList(data); // 获取分销协议
+      this.packageIdsList = [];
+      this.contNoList = [];
+      if (info && info.contracts && info.contracts.length) {
+        this.contNoList = info.contracts;
+        info.contracts.forEach((item: any) => {
+          if (item.contractNo === contNo) {
+            this.packageIdsList = item.packageMxIds;
+          }
+        });
+      }
     }
 
     // 编辑 --- 通过周期ID获取信息
@@ -1447,12 +1452,12 @@
     }
 
     // 改变栋座
-    changeBuild() {
+    async changeBuild() {
       // 清空房间号 + 下面的所有信息
       this.postData.roomId = null;
-      this.resetReceiveVO();
-      this.initDocument(this.baseInfoByTerm);
-      this.resetData();
+      await this.resetReceiveVO();
+      await this.initDocument(this.baseInfoByTerm);
+      await this.resetData();
     }
 
     // 清空数据 - 主要是和初始化数据有关的数据
@@ -1471,13 +1476,13 @@
     }
 
     // 改变房号
-    changeRoom(value: any) {
+    async changeRoom(value: any) {
       // console.log('改变房号', value);
-      this.resetReceiveVO();
-      this.initDocument(this.baseInfoByTerm);
-      this.resetData(); // 重置数据
+      await this.resetReceiveVO();
+      await this.initDocument(this.baseInfoByTerm);
+      await this.resetData(); // 重置数据
       if (value) {
-        this.initPageById(this.baseInfoByTerm.termId, value, this.postData.propertyType);
+        await this.initPageById(this.baseInfoByTerm.termId, value, this.postData.propertyType);
       }
     }
 
@@ -1512,6 +1517,7 @@
         });
       }
       // 多分优惠告知书情况
+      console.log(this.postData.offerNoticeVO);
       this.postData.contNo = null; // 重置选择的编号
       if (baseInfo.dealNoticeStatus === 'MultipleNotice') {
         this.$notify({
@@ -1552,7 +1558,9 @@
       // 签约类型
       this.postData.signType = baseInfo.myReturnVO.dealVO?.signType;
       // 成交阶段
-      this.postData.stage = baseInfo.myReturnVO.dealStage;
+      if (baseInfo && baseInfo.myReturnVO && baseInfo.myReturnVO.dealStage) {
+        this.postData.stage = baseInfo.myReturnVO.dealStage;
+      }
       // 明源房款回笼比例(%)
       this.postData.returnRatio = baseInfo.myReturnVO.dealVO?.returnRatio;
       // 认购价格
