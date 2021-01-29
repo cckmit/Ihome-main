@@ -2181,7 +2181,7 @@
         this.dividerTips = '加载成功';
       }
       let list: any = ['contType', 'contNo', 'recordState', 'recordStr', 'area', 'room', 'hall',
-        'toilet', 'propertyNo', 'signType', 'stage', 'returnRatio', 'subscribePrice', 'subscribeDate',
+        'toilet', 'propertyNo', 'signType', 'returnRatio', 'subscribePrice', 'subscribeDate',
         'signPrice', 'signDate', 'agencyId', 'agencyName', 'channelLevel', 'channelLevelName']
       this.resetObject('postData', list);
     }

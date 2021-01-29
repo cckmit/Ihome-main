@@ -119,6 +119,7 @@
               :disabled="isDisabled('dealStage', 'dealVO')"
               no-data-text="请先选择项目周期"
               placeholder="请选择成交阶段"
+              clearable
               class="width--100">
               <el-option
                 v-for="item in dealStageList"
@@ -1464,7 +1465,7 @@
       this.postData.offerNoticeVO = []; // 优惠告知书
       // this.postData.documentVO = []; // 上传附件
       let list: any = ['contType', 'contNo', 'recordState', 'recordStr', 'area', 'room', 'hall',
-        'toilet', 'propertyNo', 'signType', 'stage', 'returnRatio', 'subscribePrice', 'subscribeDate',
+        'toilet', 'propertyNo', 'signType', 'returnRatio', 'subscribePrice', 'subscribeDate',
         'signPrice', 'signDate', 'agencyId', 'agencyName', 'channelLevel', 'channelLevelName']
       this.resetObject('postData', list);
     }
