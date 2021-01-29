@@ -3170,37 +3170,40 @@
     async submitData() {
       // 补充成交类型
       let data: any = null;
+      let callBackInfo: any = null; // 校验后后端返回来的插值数据
       switch (this.changeType) {
         case "ChangeBasicInf":
           // 变更基础信息
           data = await this.initBaseData();
           if (this.btnType === "add") {
             // 去新增
-            await post_suppDeal_previewEntryBasicInfChange(data);
+            callBackInfo = await post_suppDeal_previewEntryBasicInfChange(data);
           } else if (this.btnType === "edit") {
             // 去修改
-            await post_suppDeal_previewUpdateBasicInfChange(data);
+            callBackInfo = await post_suppDeal_previewUpdateBasicInfChange(data);
           }
           this.$emit('next', 'next', {
             ...this.postData,
             // receiveAchieveVO: this.receiveAchieveVO,
-            currentPostData: data
+            currentPostData: data,
+            callBackInfo
           });
-          break
+          break;
         case "ChangeAchieveInf":
           // 变更成交业绩信息
           data = await this.initRetreatRoomData();
           if (this.btnType === "add") {
             // 去新增
-            await post_suppDeal_previewEntryAchieveInfChange(data);
+            callBackInfo = await post_suppDeal_previewEntryAchieveInfChange(data);
           } else if (this.btnType === "edit") {
             // 去修改
-            await post_suppDeal_previewUpdateAchieveInfChange(data);
+            callBackInfo = await post_suppDeal_previewUpdateAchieveInfChange(data);
           }
           this.$emit('next', 'next', {
             ...this.postData,
             // receiveAchieveVO: this.receiveAchieveVO,
-            currentPostData: data
+            currentPostData: data,
+            callBackInfo
           });
           break
         case "RetreatRoom":
@@ -3208,15 +3211,16 @@
           data = await this.initRetreatRoomData();
           if (this.btnType === "add") {
             // 去新增
-            await post_suppDeal_previewEntryRetreatRoom(data);
+            callBackInfo = await post_suppDeal_previewEntryRetreatRoom(data);
           } else if (this.btnType === "edit") {
             // 去修改
-            await post_suppDeal_previewUpdateRetreatRoom(data);
+            callBackInfo = await post_suppDeal_previewUpdateRetreatRoom(data);
           }
           this.$emit('next', 'next', {
             ...this.postData,
             // receiveAchieveVO: this.receiveAchieveVO,
-            currentPostData: data
+            currentPostData: data,
+            callBackInfo
           });
           break
         case "ChangeInternalAchieveInf":
@@ -3224,15 +3228,16 @@
           data = await this.initStaffAchieveData();
           if (this.btnType === "add") {
             // 去新增
-            await post_suppDeal_previewEntryStaffAchieveChange(data);
+            callBackInfo = await post_suppDeal_previewEntryStaffAchieveChange(data);
           } else if (this.btnType === "edit") {
             // 去修改
-            await post_suppDeal_previewUpdateStaffAchieveChange(data);
+            callBackInfo = await post_suppDeal_previewUpdateStaffAchieveChange(data);
           }
           this.$emit("preview", {
             ...this.postData,
             // receiveAchieveVO: this.receiveAchieveVO,
-            currentPostData: data
+            currentPostData: data,
+            callBackInfo
           });
           break
       }
