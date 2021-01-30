@@ -4,7 +4,7 @@
  * @Author: wwq
  * @Date: 2020-09-27 11:52:41
  * @LastEditors: wwq
- * @LastEditTime: 2020-12-16 14:59:26
+ * @LastEditTime: 2021-01-29 17:28:50
 -->
 <template>
   <div>
@@ -83,7 +83,7 @@ export default class Edit extends Vue {
 
 .text-ellipsis {
   width: 100%;
-  display: inline-block;
+  display: block;
   overflow: hidden;
   text-overflow: ellipsis;
   white-space: nowrap;

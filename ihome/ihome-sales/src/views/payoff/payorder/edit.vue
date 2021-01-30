@@ -4,7 +4,7 @@
  * @Author: wwq
  * @Date: 2020-12-26 11:11:23
  * @LastEditors: wwq
- * @LastEditTime: 2021-01-29 14:23:09
+ * @LastEditTime: 2021-01-29 17:29:11
 -->
 <template>
   <IhPage>
@@ -1386,7 +1386,7 @@ export default class PayoffEdit extends Vue {
 
 .text-ellipsis {
   width: 100%;
-  display: inline-block;
+  display: block;
   overflow: hidden;
   text-overflow: ellipsis;
   white-space: nowrap;

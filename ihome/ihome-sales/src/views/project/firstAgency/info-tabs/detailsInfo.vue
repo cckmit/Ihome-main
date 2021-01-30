@@ -4,7 +4,7 @@
  * @Author: wwq
  * @Date: 2020-10-15 12:33:25
  * @LastEditors: wwq
- * @LastEditTime: 2021-01-19 16:07:46
+ * @LastEditTime: 2021-01-29 17:29:29
 -->
 <template>
   <div class="text-left">
@@ -383,7 +383,7 @@ export default class Home extends Vue {
 <style lang="scss" scoped>
 .text-ellipsis {
   width: 100%;
-  display: inline-block;
+  display: block;
   overflow: hidden;
   text-overflow: ellipsis;
   white-space: nowrap;

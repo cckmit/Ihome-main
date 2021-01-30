@@ -1804,36 +1804,62 @@
           this.postData.buildingId = baseInfo.buildingId;
         }
         // 合同类型
-        this.postData.contType = baseInfo.contType;
+        if (baseInfo.contType) {
+          this.postData.contType = baseInfo.contType;
+        }
         // 备案情况
-        this.postData.recordState = baseInfo.myReturnVO.dealVO?.recordState;
+        if (baseInfo && baseInfo.myReturnVO && baseInfo.myReturnVO.dealVO && baseInfo.myReturnVO.dealVO.recordState) {
+          this.postData.recordState = baseInfo?.myReturnVO?.dealVO?.recordState;
+        }
         // 报备信息
-        this.postData.recordStr = baseInfo.recordStr;
+        if (baseInfo.recordStr) {
+          this.postData.recordStr = baseInfo.recordStr;
+        }
         // 建筑面积
-        this.postData.area = baseInfo.myReturnVO.houseVO?.area;
+        if (baseInfo.myReturnVO && baseInfo.myReturnVO.houseVO && baseInfo.myReturnVO.houseVO.area) {
+          this.postData.area = baseInfo?.myReturnVO?.houseVO?.area;
+        }
         // 户型
-        this.postData.room = baseInfo.myReturnVO.houseVO?.room;
-        this.postData.hall = baseInfo.myReturnVO.houseVO?.hall;
-        this.postData.toilet = baseInfo.myReturnVO.houseVO?.toilet;
+        if (baseInfo.myReturnVO && baseInfo.myReturnVO.houseVO && baseInfo.myReturnVO.houseVO.room) {
+          this.postData.room = baseInfo?.myReturnVO?.houseVO?.room;
+        }
+        if (baseInfo.myReturnVO && baseInfo.myReturnVO.houseVO && baseInfo.myReturnVO.houseVO.hall) {
+          this.postData.hall = baseInfo?.myReturnVO?.houseVO?.hall;
+        }
+        if (baseInfo.myReturnVO && baseInfo.myReturnVO.houseVO && baseInfo.myReturnVO.houseVO.toilet) {
+          this.postData.toilet = baseInfo?.myReturnVO?.houseVO?.toilet;
+        }
         // 预售合同编号
         this.postData.propertyNo = baseInfo.myReturnVO.houseVO?.propertyNo;
         // 签约类型
-        this.postData.signType = baseInfo.myReturnVO.dealVO?.signType;
+        if (baseInfo.myReturnVO && baseInfo.myReturnVO.dealVO && baseInfo.myReturnVO.dealVO.signType) {
+          this.postData.signType = baseInfo?.myReturnVO?.dealVO?.signType;
+        }
         // 成交阶段
         this.postData.stage = baseInfo.myReturnVO.dealStage;
         // 明源房款回笼比例(%)
         this.postData.returnRatio = baseInfo.myReturnVO.dealVO?.returnRatio;
         // 认购价格
-        this.postData.subscribePrice = baseInfo.myReturnVO.dealVO?.subscribePrice;
+        if (baseInfo && baseInfo.myReturnVO && baseInfo.myReturnVO.dealVO && baseInfo.myReturnVO.dealVO.subscribePrice) {
+          this.postData.subscribePrice = baseInfo?.myReturnVO?.dealVO?.subscribePrice;
+        }
         // 认购日期
-        this.postData.subscribeDate = baseInfo.myReturnVO.dealVO?.subscribeDate;
+        if (baseInfo && baseInfo.myReturnVO && baseInfo.myReturnVO.dealVO && baseInfo.myReturnVO.dealVO.subscribeDate) {
+          this.postData.subscribeDate = baseInfo?.myReturnVO?.dealVO?.subscribeDate;
+        }
         // 签约价格
-        this.postData.signPrice = baseInfo.myReturnVO.dealVO?.signPrice;
+        if (baseInfo && baseInfo.myReturnVO && baseInfo.myReturnVO.dealVO && baseInfo.myReturnVO.dealVO.signPrice) {
+          this.postData.signPrice = baseInfo?.myReturnVO?.dealVO?.signPrice;
+        }
         // 签约日期
-        this.postData.signDate = baseInfo.myReturnVO.dealVO?.signDate;
+        if (baseInfo && baseInfo.myReturnVO && baseInfo.myReturnVO.dealVO && baseInfo.myReturnVO.dealVO.signDate) {
+          this.postData.signDate = baseInfo?.myReturnVO?.dealVO?.signDate;
+        }
         // 数据标志
-        this.postData.dataSign = baseInfo.myReturnVO.dataSign;
-        this.postData.dataSignName = (this as any).$root.dictAllName(baseInfo.myReturnVO.dataSign, 'DealDataFlag');
+        if (baseInfo && baseInfo.myReturnVO && baseInfo.myReturnVO.dataSign) {
+          this.postData.dataSign = baseInfo?.myReturnVO?.dataSign;
+          this.postData.dataSignName = (this as any).$root.dictAllName(baseInfo.myReturnVO.dataSign, 'DealDataFlag');
+        }
         // 客户信息
         this.postData.customerList = baseInfo.customerAddVOS && baseInfo.customerAddVOS.length ? baseInfo.customerAddVOS : [];
         // 收派金额 --- 代理费

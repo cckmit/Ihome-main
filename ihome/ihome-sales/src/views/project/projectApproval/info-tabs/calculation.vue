@@ -4,7 +4,7 @@
  * @Author: wwq
  * @Date: 2020-11-27 17:27:57
  * @LastEditors: wwq
- * @LastEditTime: 2020-12-10 10:32:39
+ * @LastEditTime: 2021-01-29 17:31:58
 -->
 <template>
   <div>
@@ -17,34 +17,52 @@
     >
       <el-row>
         <el-col :span="8">
-          <el-form-item label="服务费总包模式-总包成交留存率">
+          <el-form-item
+            label="服务费总包模式-总包成交留存率"
+            class="formItem"
+          >
             <span class="text-ellipsis">{{ info.serviceFeeTotalByTotalRate }}</span>
           </el-form-item>
         </el-col>
         <el-col :span="8">
-          <el-form-item label="代理费总包模式-总包成交留存率">
+          <el-form-item
+            label="代理费总包模式-总包成交留存率"
+            class="formItem"
+          >
             <span class="text-ellipsis">{{ info.agencyFeeTotalByTotalRate }}</span>
           </el-form-item>
         </el-col>
         <el-col :span="8">
-          <el-form-item label="纯分销模式-代理费留存率">
+          <el-form-item
+            label="纯分销模式-代理费留存率"
+            class="formItem"
+          >
             <span class="text-ellipsis">{{ info.distributeAgencyRate }}</span>
           </el-form-item>
         </el-col>
       </el-row>
       <el-row>
         <el-col :span="8">
-          <el-form-item label="服务费总包模式-分销成交留存率">
+          <el-form-item
+            label="服务费总包模式-分销成交留存率"
+            class="formItem"
+          >
             <span class="text-ellipsis">{{ info.serviceFeeTotalByDistrictbuteRate }}</span>
           </el-form-item>
         </el-col>
         <el-col :span="8">
-          <el-form-item label="代理费总包模式-分销成交留存率">
+          <el-form-item
+            label="代理费总包模式-分销成交留存率"
+            class="formItem"
+          >
             <span class="text-ellipsis">{{ info.agencyFeeTotalByDistrictbuteRate }}</span>
           </el-form-item>
         </el-col>
         <el-col :span="8">
-          <el-form-item label="纯分销模式-服务费留存率">
+          <el-form-item
+            label="纯分销模式-服务费留存率"
+            class="formItem"
+          >
             <span class="text-ellipsis">{{ info.distributeServiceRate }}</span>
           </el-form-item>
         </el-col>
@@ -98,9 +116,14 @@ export default class Calculation extends Vue {
 <style lang="scss" scoped>
 .text-ellipsis {
   width: 100%;
-  display: inline-block;
+  display: block;
   overflow: hidden;
   text-overflow: ellipsis;
   white-space: nowrap;
+}
+.formItem {
+  /deep/ .el-form-item__label {
+    line-height: 20px;
+  }
 }
 </style>

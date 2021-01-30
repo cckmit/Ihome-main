@@ -4,7 +4,7 @@
  * @Author: wwq
  * @Date: 2020-12-09 20:13:35
  * @LastEditors: wwq
- * @LastEditTime: 2020-12-31 17:48:39
+ * @LastEditTime: 2021-01-29 17:29:47
 -->
 <template>
   <el-dialog
@@ -485,7 +485,7 @@ export default class MakingInfo extends Vue {
 
 .text-ellipsis {
   width: 100%;
-  display: inline-block;
+  display: block;
   overflow: hidden;
   text-overflow: ellipsis;
   white-space: nowrap;

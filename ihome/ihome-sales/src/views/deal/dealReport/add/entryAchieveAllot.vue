@@ -1141,7 +1141,11 @@
         customerVOS: {},
         dealVO: {},
         dataSign: ''
-      },
+      }, // 明源数据
+      noticePDF: [], // 优惠告知书PDF
+      customerIds: [], // 业主身份证
+      visitConfirmForms: [], // 来访确认书
+      dealConfirmForms: [], // 成交确认书
       customerAddVOS: [], // 客户信息
       selectableChannelIds: [], // 可选的渠道商ids
       dealNoticeStatus: null, // 同房号是否存在多份优惠告知书(NoneNotice-没有优惠告知书、OneNotice-一份优惠告知书、MultipleNotice-多份优惠告知书)
@@ -1411,11 +1415,6 @@
     async created() {
       // 锚点设置默认值
       this.navList = (this as any).$tool.deepClone(this.defaultNavList);
-      if (this.postData.contType === 'NaturalVisitDeal') {
-        this.navList = this.navList.filter((list: any) => {
-          return list.id !== 5
-        })
-      }
       this.id = this.$route.query.id;
       if (this.id) {
         this.addFlag = false;
@@ -1447,19 +1446,9 @@
         }
         await this.initContNoList(params, res.contNo);
       }
-      this.$nextTick(() => {
+      this.$nextTick(async () => {
         this.isSameFlag = res?.scheme?.isSame === "Yes"; // 分销总包是否一致
         this.editDealAchieveData.isSameFlag = res?.scheme?.isSame === "Yes";
-        // 处理角色类型选项
-        if (this.isSameFlag) {
-          // 分销同步总包
-          this.editDealAchieveData.totablBagRoles = this.getRoleListAndAchieveCap(res?.totalBag, res?.totablBagRoles);
-          this.editDealAchieveData.distriRoles = this.getRoleListAndAchieveCap(res?.totalBag, res?.totablBagRoles);
-        } else {
-          // 分销不同步总包
-          this.editDealAchieveData.totablBagRoles = this.getRoleListAndAchieveCap(res?.totalBag, res?.totablBagRoles);
-          this.editDealAchieveData.distriRoles = this.getRoleListAndAchieveCap(res?.distri, res?.distriRoles);
-        }
         this.postData.dealCode = res.dealCode;
         this.postData.cycleId = res.cycleId;
         this.postData.cycleName = res.cycleName;
@@ -1477,10 +1466,10 @@
         if (res.contType === 'DistriDeal') {
           // 分销成交模式
           // 1. 初始化渠道商/渠道公司
-          this.initAgency(res.agencyList, true);
+          await this.initAgency(res.agencyList, true);
         } else if (['SelfChannelDeal', 'NaturalVisitDeal'].includes(res.contType)) {
           // 非分销成交模式 --- 自然来访 / 自渠成交
-          this.initAgency(res.agencyList, false);
+          await this.initAgency(res.agencyList, false);
         }
         this.postData.contNo = res.contNo;
         this.postData.isMat = res.isMat;
@@ -1505,13 +1494,13 @@
         this.postData.dataSign = res.dataSign;
         this.postData.status = res.status;
         this.postData.customerVO = res.customerList;
-        this.postData.receiveVO = this.initReceiveVO(res.receiveList);
+        this.postData.receiveVO = await this.initReceiveVO(res.receiveList);
         // 收派金额中的甲方
         this.commissionCustomerList = [];
-        this.commissionCustomerList = this.initCommissionCustomer(res.receiveList);
+        this.commissionCustomerList = await this.initCommissionCustomer(res.receiveList);
         this.commissionServiceFeeObj = {};
-        this.commissionServiceFeeObj = this.initCommissionServiceFee(res.receiveList);
-        this.postData.documentVO = this.initDocumentVO(res.documentList);
+        this.commissionServiceFeeObj = await this.initCommissionServiceFee(res.receiveList);
+        this.postData.documentVO = await this.initDocumentVO(res.documentList);
         this.postData.commissionInfoList = res.channelCommList;
         this.postData.achieveTotalBagList = [];
         this.postData.achieveDistriList = [];
@@ -1525,6 +1514,8 @@
             }
           });
         }
+        // 获取平台费用中新增、修改弹窗中角色类型和角色业绩上限
+        await this.initAchieveRole();
       });
     }
 
@@ -1676,6 +1667,40 @@
         this.postData.offerNoticeVO = list;
       } else {
         this.postData.offerNoticeVO = [];
+      }
+    }
+
+    // 编辑 --- 获取角色类型和角色业绩上限
+    async initAchieveRole() {
+      let params: any = {
+        branchCompanyId: this.baseInfoByTerm.startDivisionId, // 分公司Id --- 项目周期带出
+        contType: this.postData.contType, // 合同类型
+        distriAmount: this.getTotalAmount('distributionAmount'), // 分销金额
+        isMarketProject: this.postData.isMarketProject, // 是否市场化项目
+        modelCode: this.postData.modelCode, // 业务模式
+        propertyType: this.postData.propertyType, // 物业类型
+        specialId: this.baseInfoByTerm.specialId, // 特殊方案Id --- 项目周期带出
+        totalBagAmount: this.getTotalAmount('totalPackageAmount') // 总包金额
+      };
+      // 重置数据
+      this.postData.achieveTotalBagList = [];
+      this.postData.achieveDistriList = [];
+      let achieveInfo: any = await post_pageData_initAchieve(params);
+      // console.log(achieveInfo);
+      this.postData.achieveTotalBagList = this.getAchieveList(achieveInfo.totalBag, 'TotalBag');
+      this.postData.achieveDistriList = this.getAchieveList(achieveInfo.distri, 'Distri');
+      // 是否分销与总包一致
+      this.editDealAchieveData.distri = achieveInfo.distri;
+      this.editDealAchieveData.totalBag = achieveInfo.totalBag;
+      // 处理角色类型选项
+      if (this.isSameFlag) {
+        // 分销同步总包
+        this.editDealAchieveData.totablBagRoles = this.getRoleListAndAchieveCap(achieveInfo.totalBag, achieveInfo.totablBagRoles);
+        this.editDealAchieveData.distriRoles = this.getRoleListAndAchieveCap(achieveInfo.totalBag, achieveInfo.totablBagRoles);
+      } else {
+        // 分销不同步总包
+        this.editDealAchieveData.totablBagRoles = this.getRoleListAndAchieveCap(achieveInfo.totalBag, achieveInfo.totablBagRoles);
+        this.editDealAchieveData.distriRoles = this.getRoleListAndAchieveCap(achieveInfo.distri, achieveInfo.distriRoles);
       }
     }
 
@@ -2156,6 +2181,7 @@
     changeBuild() {
       // 清空房间号 + 下面的所有信息
       this.postData.roomId = null;
+      this.postData.roomNo = null;
       this.initDocument(this.baseInfoByTerm);
       this.resetReceiveVO();
       this.resetData();
@@ -2267,21 +2293,37 @@
         this.postData.buildingId = baseInfo.buildingId;
       }
       // 合同类型
-      this.postData.contType = baseInfo.contType;
+      if (baseInfo.contType) {
+        this.postData.contType = baseInfo.contType;
+      }
       // 备案情况
-      this.postData.recordState = baseInfo.myReturnVO.dealVO?.recordState;
+      if (baseInfo && baseInfo.myReturnVO && baseInfo.myReturnVO.dealVO && baseInfo.myReturnVO.dealVO.recordState) {
+        this.postData.recordState = baseInfo?.myReturnVO?.dealVO?.recordState;
+      }
       // 报备信息
-      this.postData.recordStr = baseInfo.recordStr;
+      if (baseInfo.recordStr) {
+        this.postData.recordStr = baseInfo.recordStr;
+      }
       // 建筑面积
-      this.postData.area = baseInfo.myReturnVO.houseVO?.area;
+      if (baseInfo.myReturnVO && baseInfo.myReturnVO.houseVO && baseInfo.myReturnVO.houseVO.area) {
+        this.postData.area = baseInfo?.myReturnVO?.houseVO?.area;
+      }
       // 户型
-      this.postData.room = baseInfo.myReturnVO.houseVO?.room;
-      this.postData.hall = baseInfo.myReturnVO.houseVO?.hall;
-      this.postData.toilet = baseInfo.myReturnVO.houseVO?.toilet;
+      if (baseInfo.myReturnVO && baseInfo.myReturnVO.houseVO && baseInfo.myReturnVO.houseVO.room) {
+        this.postData.room = baseInfo?.myReturnVO?.houseVO?.room;
+      }
+      if (baseInfo.myReturnVO && baseInfo.myReturnVO.houseVO && baseInfo.myReturnVO.houseVO.hall) {
+        this.postData.hall = baseInfo?.myReturnVO?.houseVO?.hall;
+      }
+      if (baseInfo.myReturnVO && baseInfo.myReturnVO.houseVO && baseInfo.myReturnVO.houseVO.toilet) {
+        this.postData.toilet = baseInfo?.myReturnVO?.houseVO?.toilet;
+      }
       // 预售合同编号
       this.postData.propertyNo = baseInfo.myReturnVO.houseVO?.propertyNo;
       // 签约类型
-      this.postData.signType = baseInfo.myReturnVO.dealVO?.signType;
+      if (baseInfo.myReturnVO && baseInfo.myReturnVO.dealVO && baseInfo.myReturnVO.dealVO.signType) {
+        this.postData.signType = baseInfo?.myReturnVO?.dealVO?.signType;
+      }
       // 成交阶段
       if (baseInfo && baseInfo.myReturnVO && baseInfo.myReturnVO.dealStage) {
         this.postData.stage = baseInfo.myReturnVO.dealStage;
@@ -2289,15 +2331,25 @@
       // 明源房款回笼比例(%)
       this.postData.returnRatio = baseInfo.myReturnVO.dealVO?.returnRatio;
       // 认购价格
-      this.postData.subscribePrice = baseInfo.myReturnVO.dealVO?.subscribePrice;
+      if (baseInfo && baseInfo.myReturnVO && baseInfo.myReturnVO.dealVO && baseInfo.myReturnVO.dealVO.subscribePrice) {
+        this.postData.subscribePrice = baseInfo?.myReturnVO?.dealVO?.subscribePrice;
+      }
       // 认购日期
-      this.postData.subscribeDate = baseInfo.myReturnVO.dealVO?.subscribeDate;
+      if (baseInfo && baseInfo.myReturnVO && baseInfo.myReturnVO.dealVO && baseInfo.myReturnVO.dealVO.subscribeDate) {
+        this.postData.subscribeDate = baseInfo?.myReturnVO?.dealVO?.subscribeDate;
+      }
       // 签约价格
-      this.postData.signPrice = baseInfo.myReturnVO.dealVO?.signPrice;
+      if (baseInfo && baseInfo.myReturnVO && baseInfo.myReturnVO.dealVO && baseInfo.myReturnVO.dealVO.signPrice) {
+        this.postData.signPrice = baseInfo?.myReturnVO?.dealVO?.signPrice;
+      }
       // 签约日期
-      this.postData.signDate = baseInfo.myReturnVO.dealVO?.signDate;
+      if (baseInfo && baseInfo.myReturnVO && baseInfo.myReturnVO.dealVO && baseInfo.myReturnVO.dealVO.signDate) {
+        this.postData.signDate = baseInfo?.myReturnVO?.dealVO?.signDate;
+      }
       // 数据标志
-      this.postData.dataSign = baseInfo.myReturnVO.dataSign;
+      if (baseInfo && baseInfo.myReturnVO && baseInfo.myReturnVO.dataSign) {
+        this.postData.dataSign = baseInfo?.myReturnVO?.dataSign;
+      }
       // 客户信息
       this.postData.customerVO = baseInfo.customerAddVOS && baseInfo.customerAddVOS.length ? baseInfo.customerAddVOS : [];
       // 收派金额 --- 代理费
@@ -2316,7 +2368,7 @@
       this.commissionCustomerList = this.initCommissionCustomer(baseInfo.receiveVOS);
       this.commissionServiceFeeObj = {};
       this.commissionServiceFeeObj = this.initCommissionServiceFee(baseInfo.receiveVOS);
-      // console.log('commissionServiceFeeObj', this.commissionServiceFeeObj)
+      console.log('commissionServiceFeeObj', this.commissionServiceFeeObj)
     }
 
     // 初始化收派金额中的代理费的甲方数组 --- 代理费
@@ -2423,14 +2475,14 @@
       this.canAddNoticeItem(this.baseInfoByTerm.chargeEnum, this.postData.contType, this.baseInfoInDeal.dealNoticeStatus);
     }
 
-    // 选择房号后构建表格数据
+    // 选择合同类型后构建表格数据
     getDocumentList(type: any) {
+      // 回显房号带出来的值
+      let baseInfo: any = (this as any).$tool.deepClone(this.baseInfoInDeal);
       if (type === "DistriDeal") {
         this.postData.documentVO.push(...this.tempDocumentList);
         if (this.postData.documentVO.length) {
           this.postData.documentVO.forEach((list: any) => {
-            // 回显房号带出来的值
-            let baseInfo: any = (this as any).$tool.deepClone(this.baseInfoInDeal);
             switch(list.code) {
               case "VisitConfirForm":
                 // 来访确认单
@@ -2439,25 +2491,7 @@
                     item.name = item.fileName;
                   });
                 }
-                list.defaultFileList = baseInfo.visitConfirmForms && baseInfo.visitConfirmForms.length ? baseInfo.visitConfirmForms : [];
-                break;
-              case "Notice":
-                // 优惠告知书PDF
-                if (baseInfo.noticePDF && baseInfo.noticePDF.length) {
-                  baseInfo.noticePDF.forEach((item: any) => {
-                    item.name = item.fileName;
-                  });
-                }
-                list.defaultFileList = baseInfo.noticePDF && baseInfo.noticePDF.length  ? baseInfo.noticePDF : [];
-                break;
-              case "OwnerID":
-                // 业主身份证
-                if (baseInfo.customerIds && baseInfo.customerIds.length) {
-                  baseInfo.customerIds.forEach((item: any) => {
-                    item.name = item.fileName;
-                  });
-                }
-                list.defaultFileList = baseInfo.customerIds && baseInfo.customerIds.length ? baseInfo.customerIds : [];
+                list.defaultFileList = this.postData.roomId && baseInfo.visitConfirmForms && baseInfo.visitConfirmForms.length ? baseInfo.visitConfirmForms : [];
                 break;
               case "DealConfirForm":
                 // 成交确认书
@@ -2466,7 +2500,7 @@
                     item.name = item.fileName;
                   });
                 }
-                list.defaultFileList = baseInfo.dealConfirmForms && baseInfo.dealConfirmForms.length ? baseInfo.dealConfirmForms : [];
+                list.defaultFileList = this.postData.roomId && baseInfo.dealConfirmForms && baseInfo.dealConfirmForms.length ? baseInfo.dealConfirmForms : [];
                 break;
             }
           });
@@ -2476,6 +2510,28 @@
           return !["VisitConfirForm", "DealConfirForm"].includes(item.code);
         });
       }
+      this.postData.documentVO.forEach((list: any) => {
+        switch(list.code) {
+          case "Notice":
+            // 优惠告知书PDF
+            if (baseInfo.noticePDF && baseInfo.noticePDF.length) {
+              baseInfo.noticePDF.forEach((item: any) => {
+                item.name = item.fileName;
+              });
+            }
+            list.defaultFileList = this.postData.roomId && baseInfo.noticePDF && baseInfo.noticePDF.length  ? baseInfo.noticePDF : [];
+            break;
+          case "OwnerID":
+            // 业主身份证
+            if (baseInfo.customerIds && baseInfo.customerIds.length) {
+              baseInfo.customerIds.forEach((item: any) => {
+                item.name = item.fileName;
+              });
+            }
+            list.defaultFileList = this.postData.roomId && baseInfo.customerIds && baseInfo.customerIds.length ? baseInfo.customerIds : [];
+            break;
+        }
+      });
     }
 
     // 判断是否可以手动添加优惠告知书
@@ -2499,6 +2555,7 @@
     changePropertyType() {
       // 清空栋座 + 房间号 + 下面的所有信息
       this.postData.roomId = null;
+      this.postData.roomNo = null;
       this.postData.buildingId = null;
       this.initDocument(this.baseInfoByTerm);
       this.resetReceiveVO();
@@ -3502,11 +3559,11 @@
     display: flex;
 
     /deep/.el-input-group__append {
-      padding: 0px 0px;
+      padding: 0px 10px;
     }
 
     /deep/.el-input__inner {
-      padding: 0px 0px 0px 15px;
+      padding: 0px 0px 0px 5px;
     }
 
     div {

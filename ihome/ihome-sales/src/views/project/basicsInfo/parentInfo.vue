@@ -4,7 +4,7 @@
  * @Author: wwq
  * @Date: 2020-11-10 10:34:18
  * @LastEditors: wwq
- * @LastEditTime: 2020-11-11 14:59:50
+ * @LastEditTime: 2021-01-29 17:29:18
 -->
 <template>
   <ih-page>
@@ -203,7 +203,7 @@ export default class EditBasicInfo extends Vue {
 <style lang="scss">
 .text-ellipsis {
   width: 100%;
-  display: inline-block;
+  display: block;
   overflow: hidden;
   text-overflow: ellipsis;
   white-space: nowrap;

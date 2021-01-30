@@ -10,6 +10,7 @@
   <div class="deal-add-page-wrapper">
     <component
       ref="child"
+      :tempList="tempDocumentList"
       :getContTypeList="getContTypeList"
       :getRefineModelList="getRefineModelList"
       :goAnchor="goAnchor"
@@ -154,6 +155,7 @@
       idList: [] // 可选的收派套餐ids
     }; // 收派套餐data数据
     dialogViewInfo: any = false; // 来访/成交信息弹窗标识
+    tempDocumentList: any = []; // 存储来访确认单、成交确认单列表
 
     async created() {
       this.currentBtnType = this.$route.query.btnType;
@@ -165,6 +167,24 @@
         // 业绩申报 --- 案场岗 - 录入成交信息
         this.currentComponent = EntryDealInfo;
       }
+      this.getDocumentTempList(); // 获取来访确认单、成交确认单
+    }
+
+    // 获取来访确认单、成交确认单
+    getDocumentTempList() {
+      let fileList: any = (this as any).$root.dictAllList('DealFileType'); // 附件类型
+      // 附件类型增加key
+      if (fileList.length > 0) {
+        fileList.forEach((vo: any) => {
+          vo.defaultFileList = []; // 存放原来的数据
+          vo.fileList = []; // 存放新上传的数据
+        });
+      }
+      // 保存来访确认单和成交确认单
+      this.tempDocumentList = fileList.filter((item: any) => {
+        return ["VisitConfirForm", "DealConfirForm"].includes(item.code);
+      });
+      // console.log(this.tempDocumentList);
     }
 
     // 获取细分业务模式的值

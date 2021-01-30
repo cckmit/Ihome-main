@@ -4,7 +4,7 @@
  * @Author: wwq
  * @Date: 2020-10-15 16:02:03
  * @LastEditors: wwq
- * @LastEditTime: 2021-01-20 19:45:10
+ * @LastEditTime: 2021-01-29 17:28:26
 -->
 <template>
   <IhPage>
@@ -553,7 +553,7 @@ export default class ChannelRates extends Vue {
 .text-ellipsis {
   justify-content: flex-start;
   width: 100%;
-  display: inline-block;
+  display: block;
   overflow: hidden;
   text-overflow: ellipsis;
   white-space: nowrap;
