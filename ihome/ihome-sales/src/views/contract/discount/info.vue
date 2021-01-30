@@ -4,7 +4,7 @@
  * @Author: ywl
  * @Date: 2020-09-27 17:27:00
  * @LastEditors: ywl
- * @LastEditTime: 2021-01-26 11:06:02
+ * @LastEditTime: 2021-01-30 16:58:57
 -->
 <template>
   <IhPage class="text-left discount-info">
@@ -162,6 +162,8 @@
               <IhUpload
                 :file-list="fileList"
                 @newFileList="handleFile"
+                uploadAccept="image"
+                accept="image/*"
                 class="upload"
                 size="100px"
               ></IhUpload>
