@@ -1711,13 +1711,7 @@
         specialId: this.baseInfoByTerm.specialId, // 特殊方案Id --- 项目周期带出
         totalBagAmount: this.getTotalAmount('totalPackageAmount') // 总包金额
       };
-      // 重置数据
-      this.postData.achieveTotalBagList = [];
-      this.postData.achieveDistriList = [];
       let achieveInfo: any = await post_pageData_initAchieve(params);
-      // console.log(achieveInfo);
-      this.postData.achieveTotalBagList = this.getAchieveList(achieveInfo.totalBag, 'TotalBag');
-      this.postData.achieveDistriList = this.getAchieveList(achieveInfo.distri, 'Distri');
       // 是否分销与总包一致
       this.editDealAchieveData.distri = achieveInfo.distri;
       this.editDealAchieveData.totalBag = achieveInfo.totalBag;
@@ -2155,6 +2149,7 @@
             list.forEach((item: any) => {
               if (item.fileType === vo.code) {
                 item.exAuto = true; // 不能删除
+                item.name = item.fileName; // 名字
                 vo.defaultFileList.push(item);
               }
             })
@@ -3560,6 +3555,32 @@
     width: 100%;
     box-sizing: border-box;
     margin-bottom: 10px;
+  }
+
+  .manager-list {
+    width: 100%;
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+
+    div {
+      //flex: 1;
+      &:not(:last-child) {
+        margin-right: 10px;
+      }
+    }
+
+    .fee {
+      width: 30%;
+    }
+
+    .ratio{
+      width: 20%;
+    }
+
+    .name{
+      width: 50%;
+    }
   }
 
   .demo-ruleForm {

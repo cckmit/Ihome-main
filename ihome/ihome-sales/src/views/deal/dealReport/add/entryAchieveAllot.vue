@@ -430,7 +430,7 @@
         <el-col :span="8" v-if="!!id">
           <el-form-item label="成交状态">
             <div class="div-disabled">
-              {{$root.dictAllName(postData.dataSign, 'DealStatus')}}
+              {{$root.dictAllName(postData.status, 'DealStatus')}}
             </div>
           </el-form-item>
         </el-col>
