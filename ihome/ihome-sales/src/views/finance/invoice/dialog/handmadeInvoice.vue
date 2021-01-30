@@ -4,7 +4,7 @@
  * @Author: ywl
  * @Date: 2020-12-08 21:04:03
  * @LastEditors: ywl
- * @LastEditTime: 2021-01-30 11:36:03
+ * @LastEditTime: 2021-01-30 17:17:43
 -->
 <template>
   <el-dialog
@@ -120,7 +120,9 @@
             label="发票号码"
             :prop="`invoiceNoAndInvoiceCodeMap.${n}.key`"
             :rules="[
-              {required: true, message: '请输入发票号码', trigger: 'change'}
+              {required: true, message: '请输入发票号码', trigger: 'change'},
+              {max: 16, message: '发票号码长度不能大于16位', trigger: 'change'},
+              {pattern: /^[a-zA-Z0-9]*$/, message: '请输入字母或者数字', trigger: 'change'},
             ]"
           >
             <el-input
@@ -135,7 +137,9 @@
             class="code-item padding-right-20"
             :prop="`invoiceNoAndInvoiceCodeMap.${n}.value`"
             :rules="[
-              {required: true, message: '请输入发票号码', trigger: 'change'}
+              {required: true, message: '请输入发票代码', trigger: 'change'},
+              {max: 16, message: '发票代码长度不能大于16位', trigger: 'change'},
+              {pattern: /^[a-zA-Z0-9]*$/, message: '请输入字母或者数字', trigger: 'change'},
             ]"
           >
             <el-input
@@ -238,6 +242,14 @@ export default class Handadel extends Vue {
     ],
     remark: [
       { required: true, message: "开票备注不能为空", trigger: "change" },
+    ],
+    ncCode: [
+      { max: 32, message: "NC凭证长度不能大于32位", trigger: "change" },
+      {
+        pattern: /^[a-zA-Z0-9]*$/,
+        message: "请输入字母或者数字",
+        trigger: "change",
+      },
     ],
     // attachments: [
     //   { required: true, message: "开票附件不能为空", trigger: "change" },
