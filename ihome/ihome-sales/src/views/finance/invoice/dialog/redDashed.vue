@@ -4,7 +4,7 @@
  * @Author: ywl
  * @Date: 2020-12-09 16:47:26
  * @LastEditors: ywl
- * @LastEditTime: 2020-12-23 14:34:25
+ * @LastEditTime: 2021-01-30 11:41:56
 -->
 <template>
   <el-dialog
@@ -42,6 +42,7 @@
       <el-button
         type="primary"
         @click="finish()"
+        :loading="loading"
       >确 认</el-button>
     </template>
   </el-dialog>
@@ -65,19 +66,26 @@ export default class RedDashed extends Vue {
     remark: null,
     ids: [],
   };
+  loading = false;
 
   cancel(): void {
     this.$emit("cancel", false);
   }
   async finish() {
     let res = 0;
-    if (this.isHandmade) {
-      res = await post_invoice_handHCInvoicing(this.form);
-    } else {
-      res = await post_invoice_autoHCInvoicing(this.form);
+    try {
+      if (this.isHandmade) {
+        res = await post_invoice_handHCInvoicing(this.form);
+      } else {
+        res = await post_invoice_autoHCInvoicing(this.form);
+      }
+      this.$message.success(`${res}条数据红冲成功`);
+      this.loading = false;
+      this.$emit("finish");
+    } catch (error) {
+      console.log(error);
+      this.loading = false;
     }
-    this.$message.success(`${res}条数据红冲成功`);
-    this.$emit("finish");
   }
 
   created() {

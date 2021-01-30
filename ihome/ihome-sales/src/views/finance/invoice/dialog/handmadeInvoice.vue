@@ -4,7 +4,7 @@
  * @Author: ywl
  * @Date: 2020-12-08 21:04:03
  * @LastEditors: ywl
- * @LastEditTime: 2021-01-16 10:24:24
+ * @LastEditTime: 2021-01-30 11:36:03
 -->
 <template>
   <el-dialog
@@ -155,7 +155,10 @@
       </el-row>
       <el-row>
         <el-col :span="24">
-          <el-form-item label="附件">
+          <el-form-item
+            label="附件"
+            required
+          >
             <IhUpload
               size="100px"
               :file-list="fileList"
@@ -166,12 +169,17 @@
       </el-row>
       <el-row>
         <el-col :span="24">
-          <el-form-item label="备注">
+          <el-form-item
+            label="备注"
+            prop="remark"
+          >
             <el-input
               type="textarea"
               :rows="4"
               v-model="form.remark"
               placeholder="备注"
+              maxlength="200"
+              show-word-limit
             ></el-input>
           </el-form-item>
         </el-col>
@@ -182,6 +190,7 @@
       <el-button
         type="primary"
         @click="finish()"
+        :loading="loading"
       >保 存</el-button>
     </template>
   </el-dialog>
@@ -192,6 +201,14 @@ import { Component, Vue, Prop } from "vue-property-decorator";
 import { NoRepeatHttp } from "ihome-common/util/aop/no-repeat-http";
 import { Form as ElForm } from "element-ui";
 import { post_invoice_handInvoicing } from "../../../../api/finance/index";
+
+function checkTax(rule: any, value: any, callback: any) {
+  if (Number(value) > 9999999999999.99) {
+    callback(new Error("最大不能超过9999999999999.99"));
+  } else {
+    callback();
+  }
+}
 
 @Component({})
 export default class Handadel extends Vue {
@@ -209,15 +226,25 @@ export default class Handadel extends Vue {
     tax: null,
   };
   private rules: any = {
-    tax: [{ required: true, message: "请输入税额", trigger: "change" }],
+    tax: [
+      { required: true, message: "请输入税额", trigger: "change" },
+      { validator: checkTax, trigger: "change" },
+    ],
     invoiceType: [
       { required: true, message: "请选择发票类型", trigger: "change" },
     ],
     operationDate: [
       { required: true, message: "请选择开票日期", trigger: "change" },
     ],
+    remark: [
+      { required: true, message: "开票备注不能为空", trigger: "change" },
+    ],
+    // attachments: [
+    //   { required: true, message: "开票附件不能为空", trigger: "change" },
+    // ],
   };
   fileList: any = [];
+  private loading = false;
 
   cancel(): void {
     this.$emit("cancel", false);
@@ -244,19 +271,26 @@ export default class Handadel extends Vue {
   @NoRepeatHttp()
   async submit(valid: any) {
     if (valid) {
+      if (!this.form.attachments.length) {
+        this.$message.warning("开票附件不能为空");
+        return;
+      }
       let map: any = {};
       this.form.invoiceNoAndInvoiceCodeMap.forEach((i: any) => {
         map[i.key] = i.value;
       });
       try {
+        this.loading = true;
         const res = await post_invoice_handInvoicing({
           ...this.form,
           invoiceNoAndInvoiceCodeMap: map,
         });
         this.$message.success(`手工开票成功${res}条`);
+        this.loading = false;
         this.$emit("finish");
       } catch (err) {
         console.log(err);
+        this.loading = false;
       }
     } else {
       return false;

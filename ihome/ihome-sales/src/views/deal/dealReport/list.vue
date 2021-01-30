@@ -262,7 +262,7 @@
             <div>实收：{{scope.row.actualAmount}}</div>
           </template>
         </el-table-column>
-        <el-table-column prop="commAmount" label="拆用金额" min-width="190">
+        <el-table-column prop="commAmount" label="拆佣金额" min-width="190">
           <template slot-scope="scope">
             <div>总金额：{{scope.row.commAmount}}</div>
             <div>已付金额：{{scope.row.paidCommAmount}}</div>
@@ -384,8 +384,7 @@
   import {
     post_deal_getList,
     post_deal_delete__id,
-    post_deal_withdrawDeal,
-    post_processRecord_withdrawReview
+    get_processRecord_withdraw__id
   } from "@/api/deal";
 
   import PaginationMixin from "@/mixins/pagination";
@@ -560,7 +559,7 @@
           status: scope.row.status, // 成交当前状态
           userId: 0 // 当前用户ID
         }
-        await post_deal_withdrawDeal(postData);
+        await get_processRecord_withdraw__id(postData);
         this.$message({
           type: "success",
           message: "撤回成功!",
@@ -622,27 +621,6 @@
         });
       } else {
         this.$message.warning('非主成交报告，没有此操作');
-      }
-    }
-
-    // 撤回审核
-    async handleWithdrawalReview(scope: any) {
-      try {
-        await this.$confirm("是否确定撤回审核?", "提示");
-        let postData: any = {
-          id: scope.row.id, // 成交ID
-          jobId: 0, // 当前用户岗位ID
-          status: scope.row.status, // 成交当前状态
-          userId: 0 // 当前用户ID
-        }
-        await post_processRecord_withdrawReview(postData);
-        this.$message({
-          type: "success",
-          message: "撤回审核成功!",
-        });
-        await this.getListMixin();
-      } catch (error) {
-        console.log(error);
       }
     }
   }
