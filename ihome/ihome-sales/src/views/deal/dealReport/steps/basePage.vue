@@ -1646,7 +1646,7 @@
       this.editFlag = false;
       this.tipsFlag = true;
       this.dividerTips = '业绩分配';
-      this.isSameFlag = res.isSame; // 总包分销是否同步
+      this.isSameFlag = res?.scheme?.isSame === "Yes"; // 分销总包是否一致
       this.postData.address = res.house.address;
       this.postData.area = res.house.area;
       this.postData.buildingId = res.house.buildingId;
@@ -1695,6 +1695,42 @@
       await this.initDocumentList(res.documentShowList);
       // 根据项目周期和房号初始化页面数据
       await this.initPageById(res.cycleId, res.house.roomId, res.house.propertyType);
+      // 获取平台费用中新增、修改弹窗中角色类型和角色业绩上限
+      await this.initAchieveRole();
+    }
+
+    // 获取角色类型和角色业绩上限
+    async initAchieveRole() {
+      let params: any = {
+        branchCompanyId: this.baseInfoByTerm.startDivisionId, // 分公司Id --- 项目周期带出
+        contType: this.postData.contType, // 合同类型
+        distriAmount: this.getTotalAmount('distributionAmount'), // 分销金额
+        isMarketProject: this.postData.isMarketProject, // 是否市场化项目
+        modelCode: this.postData.modelCode, // 业务模式
+        propertyType: this.postData.propertyType, // 物业类型
+        specialId: this.baseInfoByTerm.specialId, // 特殊方案Id --- 项目周期带出
+        totalBagAmount: this.getTotalAmount('totalPackageAmount') // 总包金额
+      };
+      // 重置数据
+      this.postData.achieveTotalBagList = [];
+      this.postData.achieveDistriList = [];
+      let achieveInfo: any = await post_pageData_initAchieve(params);
+      // console.log(achieveInfo);
+      this.postData.achieveTotalBagList = this.getAchieveList(achieveInfo.totalBag, 'TotalBag');
+      this.postData.achieveDistriList = this.getAchieveList(achieveInfo.distri, 'Distri');
+      // 是否分销与总包一致
+      this.editDealAchieveData.distri = achieveInfo.distri;
+      this.editDealAchieveData.totalBag = achieveInfo.totalBag;
+      // 处理角色类型选项
+      if (this.isSameFlag) {
+        // 分销同步总包
+        this.editDealAchieveData.totablBagRoles = this.getRoleListAndAchieveCap(achieveInfo.totalBag, achieveInfo.totablBagRoles);
+        this.editDealAchieveData.distriRoles = this.getRoleListAndAchieveCap(achieveInfo.totalBag, achieveInfo.totablBagRoles);
+      } else {
+        // 分销不同步总包
+        this.editDealAchieveData.totablBagRoles = this.getRoleListAndAchieveCap(achieveInfo.totalBag, achieveInfo.totablBagRoles);
+        this.editDealAchieveData.distriRoles = this.getRoleListAndAchieveCap(achieveInfo.distri, achieveInfo.distriRoles);
+      }
     }
 
     // 调整收派金额信息

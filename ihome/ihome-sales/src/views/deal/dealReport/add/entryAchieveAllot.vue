@@ -1369,11 +1369,11 @@
       totablBagRoles: [], // 平台费用——总包部分——可选角色
       totalAmount: 0, // 收派金额列表中 （派发佣金合计金额+派发内场奖励合计金额）
     }; // 平台费用 --- 新增/编辑弹窗的数据
+    isSameFlag: any = false; // 是否分销与总包一致
     currentChangeObj: any = {
       type: null, // 当前选择修改的类型：总包/分销
       index: null // 当前选择修改的序号：总包/分销
     };
-    isSameFlag: any = false; // 是否分销与总包一致
     oneAgentRequiredFlag: any = false; // 收派金额 - 派发内场奖励金额合计大于0，为true
     hasAddNoticeFlag: any = false; // 是否有添加(删除)优惠告知书的标识：true-可以；false-不可以
     currentBtnType: any = null; // 点击的是保存还是提交按钮
@@ -1682,13 +1682,8 @@
         specialId: this.baseInfoByTerm.specialId, // 特殊方案Id --- 项目周期带出
         totalBagAmount: this.getTotalAmount('totalPackageAmount') // 总包金额
       };
-      // 重置数据
-      this.postData.achieveTotalBagList = [];
-      this.postData.achieveDistriList = [];
       let achieveInfo: any = await post_pageData_initAchieve(params);
       // console.log(achieveInfo);
-      this.postData.achieveTotalBagList = this.getAchieveList(achieveInfo.totalBag, 'TotalBag');
-      this.postData.achieveDistriList = this.getAchieveList(achieveInfo.distri, 'Distri');
       // 是否分销与总包一致
       this.editDealAchieveData.distri = achieveInfo.distri;
       this.editDealAchieveData.totalBag = achieveInfo.totalBag;
