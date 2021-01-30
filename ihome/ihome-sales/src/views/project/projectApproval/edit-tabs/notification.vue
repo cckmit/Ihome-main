@@ -4,7 +4,7 @@
  * @Author: wwq
  * @Date: 2020-11-27 17:27:01
  * @LastEditors: wwq
- * @LastEditTime: 2021-01-25 18:56:09
+ * @LastEditTime: 2021-01-30 11:18:38
 -->
 <template>
   <div>
@@ -201,6 +201,11 @@
             label="优惠方式说明"
             prop="modeDescription"
           ></el-table-column>
+          <el-table-column label="优惠期限">
+            <template v-slot="{ row }">
+              {{row.startTime && row.endTime ? `${row.startTime}-${row.endTime}` : ''}}
+            </template>
+          </el-table-column>
           <el-table-column
             prop="state"
             label="状态"
@@ -367,6 +372,8 @@ export default class Notification extends Vue {
     chargeEnum: null,
     city: null,
     partyARefundDays: null,
+    termStart: null,
+    termEnd: null,
     constractOaVO: {
       customerConfirm: null,
       responsibiltity: null,
@@ -586,7 +593,10 @@ export default class Notification extends Vue {
   addNotification() {
     this.addType = "add";
     this.addDialogVisible = true;
-    this.addNotificationData = {};
+    this.addNotificationData = {
+      timeList: [this.info.termStart, this.info.termEnd],
+      noChangeTime: [this.info.termStart, this.info.termEnd],
+    };
     this.addNotificationData.title = "新增";
   }
 
@@ -594,7 +604,11 @@ export default class Notification extends Vue {
   editNotification(data: any) {
     this.addType = "edit";
     this.addDialogVisible = true;
-    this.addNotificationData = { ...data };
+    this.addNotificationData = {
+      ...data,
+      timeList: [data.startTime, data.endTime],
+      noChangeTime: [this.info.termStart, this.info.termEnd],
+    };
     this.addNotificationData.title = "修改";
   }
 
