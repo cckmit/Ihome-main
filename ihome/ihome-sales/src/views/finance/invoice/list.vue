@@ -4,7 +4,7 @@
  * @Author: ywl
  * @Date: 2020-12-08 17:45:05
  * @LastEditors: ywl
- * @LastEditTime: 2021-01-16 18:21:50
+ * @LastEditTime: 2021-01-30 14:43:33
 -->
 <template>
   <IhPage label-width="80px">
@@ -404,10 +404,19 @@ export default class InvoiceList extends Vue {
           // 服务费批量红冲
           try {
             await this.$confirm("是否确定红冲?", "提示");
+            const loading = this.$loading({
+              lock: true,
+              text: "红冲中, 请耐心等待...",
+              spinner: "el-icon-loading",
+              background: "rgba(0, 0, 0, 0.6)",
+              customClass: "invoice-loading-spinner",
+            });
             const res = await post_invoice_autoHCInvoicing({
               ids: this.itemData.ids,
             });
+            loading.close();
             this.$message.success(`服务费红冲成功${res}条`);
+            this.getListMixin();
           } catch (error) {
             console.log(error);
           }
@@ -452,10 +461,19 @@ export default class InvoiceList extends Vue {
           // 服务费批量红冲
           try {
             await this.$confirm("是否确定红冲?", "提示");
+            const loading = this.$loading({
+              lock: true,
+              text: "红冲中, 请耐心等待...",
+              spinner: "el-icon-loading",
+              background: "rgba(0, 0, 0, 0.6)",
+              customClass: "invoice-loading-spinner",
+            });
             const res = await post_invoice_handHCInvoicing({
               ids: this.itemData.ids,
             });
             this.$message.success(`服务费红冲成功${res}条`);
+            loading.close();
+            this.getListMixin();
           } catch (error) {
             console.log(error);
           }
@@ -533,3 +551,12 @@ export default class InvoiceList extends Vue {
   }
 }
 </script>
+
+<style lang="scss">
+.invoice-loading-spinner {
+  .el-icon-loading,
+  .el-loading-text {
+    color: #fff;
+  }
+}
+</style>
