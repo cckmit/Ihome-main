@@ -4,7 +4,7 @@
  * @Author: wwq
  * @Date: 2020-12-02 11:18:51
  * @LastEditors: wwq
- * @LastEditTime: 2021-01-30 11:24:44
+ * @LastEditTime: 2021-01-30 17:07:22
 -->
 <template>
   <el-dialog
@@ -183,7 +183,6 @@ export default class AddNotification extends Vue {
   }
   async created() {
     this.form = { ...this.data };
-    console.log(this.form);
   }
 }
 </script>

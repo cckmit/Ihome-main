@@ -275,6 +275,8 @@ export default class Notification extends Vue {
         modeDescription: row.modeDescription,
         partyARefundDays: row.partyARefundDays,
         termId: row.termId,
+        startTime: row.startTime,
+        endTime: row.endTime,
       },
     }).then((res: any) => {
       const arr = new Blob([res.data], { type: "application/pdf" });

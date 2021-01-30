@@ -4,7 +4,7 @@
  * @Author: wwq
  * @Date: 2020-11-27 17:27:01
  * @LastEditors: wwq
- * @LastEditTime: 2021-01-30 11:54:58
+ * @LastEditTime: 2021-01-30 17:30:43
 -->
 <template>
   <div>
@@ -275,6 +275,8 @@ export default class Notification extends Vue {
         modeDescription: row.modeDescription,
         partyARefundDays: row.partyARefundDays,
         termId: row.termId,
+        startTime: row.startTime,
+        endTime: row.endTime,
       },
     }).then((res: any) => {
       const arr = new Blob([res.data], { type: "application/pdf" });
