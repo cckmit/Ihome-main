@@ -4,7 +4,7 @@
  * @Author: ywl
  * @Date: 2020-12-01 10:38:45
  * @LastEditors: ywl
- * @LastEditTime: 2021-01-16 18:23:45
+ * @LastEditTime: 2021-01-30 11:51:19
 -->
 <template>
   <IhPage label-width="100px">
@@ -109,7 +109,11 @@
         <el-table-column
           prop="taxRate"
           label="税率"
-        ></el-table-column>
+        >
+          <template v-slot="{ row }">
+            <span v-if="row.taxRate">{{row.taxRate | percent}}</span>
+          </template>
+        </el-table-column>
         <el-table-column
           label="操作"
           width="135"

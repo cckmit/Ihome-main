@@ -4,7 +4,7 @@
  * @Author: ywl
  * @Date: 2020-12-09 15:49:33
  * @LastEditors: ywl
- * @LastEditTime: 2020-12-12 14:24:13
+ * @LastEditTime: 2021-01-30 11:45:40
 -->
 <template>
   <el-dialog
@@ -48,6 +48,7 @@
       <el-button
         type="primary"
         @click="finish()"
+        :loading="loading"
       >保 存</el-button>
     </template>
   </el-dialog>
@@ -74,6 +75,7 @@ export default class AutoInvoice extends Vue {
       { required: true, message: "请选择发票类型", trigger: "change" },
     ],
   };
+  loading = false;
 
   cancel(): void {
     this.$emit("cancel", false);
@@ -85,11 +87,14 @@ export default class AutoInvoice extends Vue {
   async submit(valid: any) {
     if (valid) {
       try {
+        this.loading = true;
         const res = await post_invoice_autoZPInvoicing(this.form);
         this.$message.success(`开票成功${res}条`);
+        this.loading = false;
         this.$emit("finish");
       } catch (error) {
         console.log(error);
+        this.loading = false;
       }
     } else {
       return false;

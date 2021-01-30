@@ -4,7 +4,7 @@
  * @Author: ywl
  * @Date: 2020-12-08 19:55:43
  * @LastEditors: ywl
- * @LastEditTime: 2020-12-24 14:09:12
+ * @LastEditTime: 2021-01-30 11:54:41
 -->
 <template>
   <IhPage class="text-left">
@@ -46,7 +46,10 @@
         </el-row>
         <el-row>
           <el-col :span="8">
-            <el-form-item label="税率">{{info.invoiceInfo.taxRate}}</el-form-item>
+            <el-form-item
+              label="税率"
+              v-if="info.invoiceInfo.taxRate"
+            >{{info.invoiceInfo.taxRate | percent}}</el-form-item>
           </el-col>
           <el-col :span="8">
             <el-form-item label="NC凭证号">{{info.invoiceInfo.ncCode}}</el-form-item>
@@ -171,7 +174,9 @@
         @cancel="() => (redVisble = false)"
         @finish="() => {
           redVisble = false;
-          $goto('/invoice/list');
+          $goto({
+            path: '/invoice/list'
+          });
         }"
       />
     </IhDialog>
@@ -230,7 +235,9 @@ export default class InvoiceInfo extends Vue {
               ids: [this.info.invoiceInfo.id],
             });
         this.$message.success("红冲成功");
-        this.$goto("/invoice/list");
+        this.$goto({
+          path: "/invoice/list",
+        });
       } catch (error) {
         console.log(error);
       }
