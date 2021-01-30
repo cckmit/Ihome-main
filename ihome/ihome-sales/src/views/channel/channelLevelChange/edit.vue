@@ -505,7 +505,7 @@ export default class ChannelRates extends Vue {
 .text-ellipsis {
   justify-content: flex-start;
   width: 100%;
-  display: inline-block;
+  display: block;
   overflow: hidden;
   text-overflow: ellipsis;
   white-space: nowrap;
