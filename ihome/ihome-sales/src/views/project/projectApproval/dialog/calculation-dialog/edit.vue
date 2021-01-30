@@ -4,7 +4,7 @@
  * @Author: wwq
  * @Date: 2020-12-03 10:50:26
  * @LastEditors: wwq
- * @LastEditTime: 2021-01-22 14:28:50
+ * @LastEditTime: 2021-01-30 11:42:57
 -->
 <template>
   <el-dialog
@@ -183,7 +183,7 @@
                 <el-input
                   :ref="item.calcComplateVO.propertyEnum + item.calcComplateVO.costTypeEnum + key + h"
                   v-model="row.remark"
-                  @change="inputBlur(item.calcComplateVO.propertyEnum + item.calcComplateVO.costTypeEnum + key + h)"
+                  @change="inputBlur(item.calcComplateVO.propertyEnum + item.calcComplateVO.costTypeEnum + key + h, i)"
                 ></el-input>
               </td>
             </tr>
@@ -276,7 +276,7 @@
                   :ref="item.calcComplateVO.propertyEnum + item.calcComplateVO.costTypeEnum + key + h"
                   v-model="row.remark"
                   placeholder="备注"
-                  @change="inputBlur(item.calcComplateVO.propertyEnum + item.calcComplateVO.costTypeEnum + key + h)"
+                  @change="inputBlur(item.calcComplateVO.propertyEnum + item.calcComplateVO.costTypeEnum + key + h, i)"
                 ></el-input>
               </td>
             </tr>

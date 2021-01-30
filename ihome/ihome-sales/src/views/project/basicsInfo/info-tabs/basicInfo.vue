@@ -4,7 +4,7 @@
  * @Author: wwq
  * @Date: 2020-11-03 11:52:41
  * @LastEditors: wwq
- * @LastEditTime: 2021-01-27 15:21:33
+ * @LastEditTime: 2021-01-29 17:41:18
 -->
 <template>
   <div>
@@ -242,6 +242,7 @@
               size="100px"
               accept="image/*"
               :removePermi="false"
+              :upload-show="!!houseFileList.length"
             >
               <template #extend="{ data }">
                 <div class="padding-top-5 font">

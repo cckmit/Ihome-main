@@ -2,9 +2,9 @@
  * @Descripttion: 
  * @version: 
  * @Author: wwq
- * @Date: 2020-11-03 18:39:23
+ * @Date: 2020-12-29 11:04:59
  * @LastEditors: wwq
- * @LastEditTime: 2021-01-19 16:15:45
+ * @LastEditTime: 2021-01-30 14:05:18
 -->
 <template>
   <el-dialog
@@ -13,19 +13,16 @@
     :close-on-click-modal="false"
     :close-on-press-escape="false"
     :before-close="cancel"
-    width="80%"
-    class="text-left dialog-table"
-    :title="`一手代理公司列表`"
+    append-to-body
+    width="85%"
+    title="一手代理公司列表"
   >
-    <el-form
-      ref="form"
-      label-width="80px"
-    >
+    <el-form label-width="80px">
       <el-row>
         <el-col :span="8">
           <el-form-item label="名称">
             <el-input
-              v-model="queryPageParameters.name"
+              v-model="info.name"
               clearable
             ></el-input>
           </el-form-item>
@@ -33,7 +30,7 @@
         <el-col :span="8">
           <el-form-item label="信用代码">
             <el-input
-              v-model="queryPageParameters.creditCode"
+              v-model="info.creditCode"
               clearable
             ></el-input>
           </el-form-item>
@@ -42,7 +39,7 @@
           <el-form-item label="状态">
             <el-select
               style="width: 100%"
-              v-model="queryPageParameters.status"
+              v-model="info.status"
               clearable
               placeholder="请选择"
             >
@@ -65,24 +62,15 @@
         <el-col :span="8">
           <el-form-item label="录入人">
             <IhSelectPageUser
-              v-model="queryPageParameters.inputUser"
+              v-model="info.inputUser"
               clearable
             >
-              <template v-slot="{ data }">
-                <span style="float: left">{{ data.name }}</span>
-                <span style="
-                      margin-left: 20px;
-                      float: right;
-                      color: #8492a6;
-                      font-size: 13px;
-                    ">{{ data.account }}</span>
-              </template>
             </IhSelectPageUser>
           </el-form-item>
         </el-col>
       </el-row>
     </el-form>
-    <div class="margin-left-80">
+    <div class="padding-left-100">
       <el-button
         type="primary"
         @click="search()"
@@ -93,186 +81,192 @@
       >重置</el-button>
     </div>
     <br />
-    <el-table
-      class="ih-table"
+    <IhTableCheckBox
       :data="resPageInfo.list"
-      style="width: 100%"
+      :hasCheckedData="hasCheckedData"
+      :rowKey="rowKey"
+      :column="tableColumn"
+      :maxHeight="tableMaxHeight"
       @selection-change="selectionChange"
+      :pageSize="pageSize"
+      :pageCurrent="pageNum"
+      :pageTotal="resPageInfo.total"
+      @page-change="pageChange"
+      @size-change="sizeChange"
     >
-      <el-table-column
-        width="50"
-        type="selection"
-        align="center"
-      ></el-table-column>
-      <el-table-column
-        prop="name"
-        label="名称"
-        width="250"
-      ></el-table-column>
-      <el-table-column
-        prop="creditCode"
-        label="信用代码"
-        width="180"
-      ></el-table-column>
-      <el-table-column
-        prop="province"
-        label="省份"
-      >
-        <template v-slot="{ row }">{{
+      <template #province>
+        <el-table-column label="省份">
+          <template v-slot="{ row }">{{
             $root.getAreaName(row.province)
           }}</template>
-      </el-table-column>
-      <el-table-column
-        prop="city"
-        label="城市"
-      >
-        <template v-slot="{ row }">{{
+        </el-table-column>
+      </template>
+      <template #city>
+        <el-table-column label="城市">
+          <template v-slot="{ row }">{{
             $root.getAreaName(row.city)
           }}</template>
-      </el-table-column>
-      <el-table-column
-        prop="county"
-        label="行政区"
-      >
-        <template v-slot="{ row }">{{
+        </el-table-column>
+      </template>
+      <template #county>
+        <el-table-column label="行政区">
+          <template v-slot="{ row }">{{
             $root.getAreaName(row.county)
           }}</template>
-      </el-table-column>
-      <el-table-column
-        prop="inputUserName"
-        label="录入人"
-      ></el-table-column>
-      <el-table-column
-        prop="status"
-        label="状态"
-        width="150"
-      >
-        <template v-slot="{ row }">{{
+        </el-table-column>
+      </template>
+      <template #status>
+        <el-table-column
+          label="状态"
+          width="150"
+        >
+          <template v-slot="{ row }">{{
             $root.dictAllName(row.status, "CompanyStatus")
           }}</template>
-      </el-table-column>
-      <el-table-column
-        fixed="right"
-        label="操作"
-        width="100"
-      >
-        <template v-slot="{ row }">
-          <el-link
-            type="primary"
-            class="margin-left-16"
-            :href="`/web-sales/firstAgency/info?id=${row.agencyId}`"
-            target="_blank"
-          >详情</el-link>
-        </template>
-      </el-table-column>
-    </el-table>
-    <br />
-    <el-pagination
-      class="text-right"
-      style="margin-right: 40px"
-      @size-change="handleSizeChangeMixin"
-      @current-change="handleCurrentChangeMixin"
-      :current-page.sync="queryPageParameters.pageNum"
-      :page-sizes="$root.pageSizes"
-      :page-size="queryPageParameters.pageSize"
-      :layout="$root.paginationLayout"
-      :total="resPageInfo.total"
-    ></el-pagination>
-    <span
-      slot="footer"
-      class="dialog-footer"
-    >
+        </el-table-column>
+      </template>
+      <template #operation>
+        <el-table-column
+          label="操作"
+          fixed="right"
+          width="100"
+        >
+          <template v-slot="{ row }">
+            <el-link
+              type="primary"
+              class="margin-left-16"
+              :href="`/web-sales/firstAgency/info?id=${row.id}`"
+              target="_blank"
+            >详情</el-link>
+          </template>
+        </el-table-column>
+      </template>
+    </IhTableCheckBox>
+    <template #footer>
       <el-button @click="cancel()">取 消</el-button>
       <el-button
         type="primary"
         @click="finish()"
       >确 定</el-button>
-    </span>
+    </template>
   </el-dialog>
 </template>
+
 <script lang="ts">
-import { Component, Vue } from "vue-property-decorator";
-import PaginationMixin from "@/mixins/pagination";
+import { Component, Vue, Prop } from "vue-property-decorator";
 import { post_company_getList } from "@/api/project/index";
 
-@Component({
-  components: {},
-  mixins: [PaginationMixin],
-})
-export default class FirstAgencyDialog extends Vue {
-  dialogVisible = true;
-  viewEditDialogVisible = false;
-  queryPageParameters: any = {
+@Component({})
+export default class Obligation extends Vue {
+  @Prop({
+    default: () => [],
+  })
+  @Prop()
+  data!: any;
+  info: any = {
     agencyName: null,
     creditCode: null,
     simpleName: null,
     province: null,
     city: null,
     followMan: null,
-    agencyAuditEnum: null,
+    status: null,
   };
   provinceOption: any = [];
-  editData: any = {};
-
   resPageInfo: any = {
-    list: [{}],
-    total: 0,
+    total: null,
+    list: [],
   };
+  hasCheckedData: any = [];
   selection: any = [];
+  private dialogVisible = true;
+  private pageSize = 10;
+  private pageNum = 1;
+  private rowKey: any = "id";
+  private tableMaxHeight: any = 350;
+  private tableColumn = [
+    {
+      label: "名称",
+      prop: "name",
+      minWidth: 250,
+    },
+    {
+      label: "信用代码",
+      prop: "creditCode",
+      minWidth: 180,
+    },
+    {
+      slot: "province",
+    },
+    {
+      slot: "city",
+    },
+    {
+      slot: "county",
+    },
+    {
+      label: "录入人",
+      prop: "inputUserName",
+    },
+    {
+      slot: "status",
+    },
+    {
+      slot: "operation",
+    },
+  ];
 
-  async created() {
-    this.getListMixin();
+  private cancel(): void {
+    this.$emit("cancel", false);
   }
-  async getListMixin() {
-    this.resPageInfo = await post_company_getList(this.queryPageParameters);
-  }
-
-  reset() {
-    this.queryPageParameters = {
-      agencyName: null,
-      creditCode: null,
-      simpleName: null,
-      province: null,
-      city: null,
-      followMan: null,
-      agencyAuditEnum: null,
-      pageNum: this.queryPageParameters.pageNum,
-      pageSize: this.queryPageParameters.pageSize,
-    };
-    this.provinceOption = [];
-  }
-
-  cancel() {
-    this.$emit("cancel");
-  }
-
-  selectionChange(selection: any) {
-    this.selection = selection;
-  }
-
-  search() {
-    this.queryPageParameters.province = this.provinceOption[0];
-    this.queryPageParameters.city = this.provinceOption[1];
-    this.queryPageParameters.pageNum = 1;
-    this.getListMixin();
-  }
-
-  finish() {
+  private finish(): void {
     if (this.selection.length) {
       this.$emit("finish", this.selection);
     } else {
       this.$message.warning("请先勾选表格数据");
     }
   }
+  private reset() {
+    Object.assign(this.info, {
+      agencyName: null,
+      creditCode: null,
+      simpleName: null,
+      province: null,
+      city: null,
+      followMan: null,
+      status: null,
+    });
+    this.provinceOption = [];
+  }
+  private search() {
+    this.info.province = this.provinceOption[0];
+    this.info.city = this.provinceOption[1];
+    this.pageNum = 1;
+    this.getList();
+  }
+  // 获取选中项 --- 最后需要获取的数据
+  private selectionChange(selection: any) {
+    this.selection = selection;
+  }
+  private pageChange(val: number) {
+    this.pageNum = val;
+    this.getList();
+  }
+  private sizeChange(val: any) {
+    this.pageSize = val;
+    this.getList();
+  }
+  private async getList() {
+    this.resPageInfo = await post_company_getList({
+      ...this.info,
+      pageNum: this.pageNum,
+      pageSize: this.pageSize,
+    });
+  }
+
+  created() {
+    this.hasCheckedData = this.data.hasCheckedData;
+    this.getList();
+  }
 }
 </script>
-<style lang="scss" scoped>
-.dialog-table {
-  /deep/ .el-dialog {
-    margin-top: 5vh !important;
-  }
-  /deep/ .el-dialog__body {
-    padding: 10px 20px;
-  }
-}
-</style>

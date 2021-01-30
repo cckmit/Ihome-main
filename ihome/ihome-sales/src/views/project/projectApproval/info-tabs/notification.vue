@@ -4,7 +4,7 @@
  * @Author: wwq
  * @Date: 2020-11-27 17:27:01
  * @LastEditors: wwq
- * @LastEditTime: 2021-01-25 18:56:39
+ * @LastEditTime: 2021-01-30 11:53:42
 -->
 <template>
   <div>
@@ -131,6 +131,11 @@
             label="优惠方式说明"
             prop="modeDescription"
           ></el-table-column>
+          <el-table-column label="优惠期限">
+            <template v-slot="{ row }">
+              {{row.startTime && row.endTime ? `${row.startTime}-${row.endTime}` : ''}}
+            </template>
+          </el-table-column>
           <el-table-column
             prop="state"
             label="状态"
@@ -141,11 +146,16 @@
           </el-table-column>
           <el-table-column
             label="操作"
-            width="120"
+            width="180"
             fixed="right"
             align="center"
           >
             <template v-slot="{ row }">
+              <el-button
+                size="small"
+                type="success"
+                @click="previewBottom(row)"
+              >预览</el-button>
               <el-button
                 size="small"
                 type="success"
@@ -247,6 +257,32 @@ export default class Notification extends Vue {
         }));
       }
     }
+  }
+
+  async previewBottom(row: any) {
+    const token: any = getToken();
+    axios({
+      method: "POST",
+      url: `/sales-api/project/preferential/getPreView`,
+      xsrfHeaderName: "Authorization",
+      responseType: "blob",
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: "bearer " + token,
+      },
+      data: {
+        premiumReceived: row.premiumReceived,
+        modeDescription: row.modeDescription,
+        partyARefundDays: row.partyARefundDays,
+        termId: row.termId,
+        startTime: row.startTime,
+        endTime: row.endTime,
+      },
+    }).then((res: any) => {
+      const arr = new Blob([res.data], { type: "application/pdf" });
+      const href = window.URL.createObjectURL(arr);
+      window.open(href);
+    });
   }
 
   viewTemplate(data: any) {

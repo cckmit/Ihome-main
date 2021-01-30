@@ -4,7 +4,7 @@
  * @Author: wwq
  * @Date: 2020-11-27 17:27:57
  * @LastEditors: wwq
- * @LastEditTime: 2021-01-21 11:58:21
+ * @LastEditTime: 2021-01-30 11:29:06
 -->
 <template>
   <div class="calculation-box">
@@ -124,7 +124,7 @@
 <script lang="ts">
 import { Component, Vue } from "vue-property-decorator";
 import { get_calc_get__termId, post_calc_save } from "@/api/project/index";
-import CalculationDialog from "../dialog/calculation-dialog/index.vue";
+import CalculationDialog from "../dialog/calculation-dialog/edit.vue";
 @Component({
   components: {
     CalculationDialog,

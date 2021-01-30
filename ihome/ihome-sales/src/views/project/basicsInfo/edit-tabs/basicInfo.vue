@@ -4,7 +4,7 @@
  * @Author: wwq
  * @Date: 2020-11-03 11:52:41
  * @LastEditors: wwq
- * @LastEditTime: 2021-01-27 17:10:04
+ * @LastEditTime: 2021-01-30 12:21:37
 -->
 <template>
   <div>
@@ -549,6 +549,7 @@
     </div>
     <ih-dialog :show="dialogVisible">
       <FirstAgencyDialog
+        :data="firstData"
         @cancel="() => (dialogVisible = false)"
         @finish="(data) => firstAgencyFinish(data)"
       />
@@ -611,6 +612,7 @@ export default class EditBasicInfo extends Vue {
     checkboxEnum: [], // 物业类型勾选
     provinceOption: [],
   };
+  firstData: any = {};
 
   fileListType: any = [];
   submitFile: any = {};
@@ -922,19 +924,12 @@ export default class EditBasicInfo extends Vue {
     }
   }
   addFirstAgency() {
+    this.firstData.hasCheckedData = this.form.firstAgencyCompanys;
     this.dialogVisible = true;
   }
 
   firstAgencyFinish(data: any) {
-    if (this.form.firstAgencyCompanys.length) {
-      let arr: any = data.concat(this.form.firstAgencyCompanys);
-      const res = new Map();
-      this.form.firstAgencyCompanys = arr.filter(
-        (v: any) => !res.has(v.agencyId) && res.set(v.agencyId, 1)
-      );
-    } else {
-      this.form.firstAgencyCompanys = data;
-    }
+    this.form.firstAgencyCompanys = data;
     this.dialogVisible = false;
   }
 

@@ -4,7 +4,7 @@
  * @Author: wwq
  * @Date: 2020-12-02 11:18:51
  * @LastEditors: wwq
- * @LastEditTime: 2021-01-21 17:20:12
+ * @LastEditTime: 2021-01-30 17:07:22
 -->
 <template>
   <el-dialog
@@ -57,23 +57,25 @@
           </el-form-item>
         </el-col>
       </el-row>
-      <!-- <el-row>
+      <el-row>
         <el-col :span="24">
           <el-form-item
-            label="甲方退款天数"
-            prop="partyARefundDays"
+            label="优惠期限"
+            prop="timeList"
           >
-            <div class="inputTpye">
-              <el-input
-                v-model="form.partyARefundDays"
-                style="width: 30%"
-              >
-              </el-input>
-              <span class="textType">天</span>
-            </div>
+            <el-date-picker
+              v-model="form.timeList"
+              type="daterange"
+              start-placeholder="开始日期"
+              end-placeholder="结束日期"
+              :picker-options="pickerOptions"
+              value-format="yyyy-MM-dd"
+              style="width:100%"
+            >
+            </el-date-picker>
           </el-form-item>
         </el-col>
-      </el-row> -->
+      </el-row>
     </el-form>
     <span
       slot="footer"
@@ -105,6 +107,14 @@ export default class AddNotification extends Vue {
   form: any = {
     premiumReceived: null,
     modeDescription: null,
+    startTime: null,
+    endTime: null,
+    timeList: [],
+  };
+  pickerOptions: any = {
+    disabledDate: (time: any) => {
+      return this.dataTimeChange(time);
+    },
   };
   rules: any = {
     premiumReceived: [
@@ -121,7 +131,20 @@ export default class AddNotification extends Vue {
     modeDescription: [
       { required: true, message: "请输入优惠方式说明", trigger: "change" },
     ],
+    timeList: [
+      {
+        required: true,
+        message: "请选择优惠期限",
+        trigger: "change",
+      },
+    ],
   };
+  dataTimeChange(time: any) {
+    let start: any =
+      new Date(this.form.noChangeTime[0]).getTime() - 24 * 60 * 60 * 1000;
+    let end: any = new Date(this.form.noChangeTime[1]).getTime();
+    return time.getTime() < start || time.getTime() > end;
+  }
 
   cancel() {
     this.$emit("cancel", false);
@@ -134,6 +157,8 @@ export default class AddNotification extends Vue {
     if (valid) {
       this.finishLoading = true;
       this.form.termId = this.$route.query.id;
+      this.form.startTime = this.form.timeList[0];
+      this.form.endTime = this.form.timeList[1];
       if (this.data.title === "新增") {
         try {
           await post_preferential_add(this.form);

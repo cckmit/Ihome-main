@@ -4,11 +4,20 @@
  * @Author: wwq
  * @Date: 2020-11-27 17:27:57
  * @LastEditors: wwq
- * @LastEditTime: 2021-01-09 16:08:41
+ * @LastEditTime: 2021-01-30 11:47:29
 -->
 <template>
   <div>
-    <p class="ih-info-title">立项测算信息</p>
+    <div class="calculation">
+      <p class="ih-info-title">立项测算信息</p>
+      <div class="calculationButton">
+        <el-button
+          size="small"
+          type="success"
+          @click="dialogVisible = true;"
+        >查看立项测算内页</el-button>
+      </div>
+    </div>
     <br />
     <el-form
       :model="info"
@@ -57,14 +66,23 @@
         </el-col>
       </el-row>
     </el-form>
+    <ih-dialog :show="dialogVisible">
+      <CalculationDialog
+        @cancel="() => (dialogVisible = false)"
+        @finish="(data) => enterFinish(data)"
+      />
+    </ih-dialog>
   </div>
 </template>
 
 <script lang="ts">
 import { Component, Vue } from "vue-property-decorator";
 import { get_his_calc_get__termId } from "@/api/project/index";
+import CalculationDialog from "../dialog/calculation-dialog/info.vue";
 @Component({
-  components: {},
+  components: {
+    CalculationDialog,
+  },
 })
 export default class Calculation extends Vue {
   info: any = {
@@ -77,6 +95,7 @@ export default class Calculation extends Vue {
     termOverallRate: null,
   };
 
+  dialogVisible = false;
   private get termId() {
     return this.$route.query.id;
   }
@@ -102,5 +121,14 @@ export default class Calculation extends Vue {
   overflow: hidden;
   text-overflow: ellipsis;
   white-space: nowrap;
+}
+.calculation {
+  display: flex;
+  flex-flow: row nowrap;
+  justify-content: flex-start;
+}
+
+.calculationButton {
+  margin: 5px 0 0 20px;
 }
 </style>
