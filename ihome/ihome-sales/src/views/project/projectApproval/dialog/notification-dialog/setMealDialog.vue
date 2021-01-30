@@ -4,7 +4,7 @@
  * @Author: wwq
  * @Date: 2020-12-08 14:28:17
  * @LastEditors: wwq
- * @LastEditTime: 2021-01-27 21:00:16
+ * @LastEditTime: 2021-01-30 16:21:54
 -->
 <template>
   <el-dialog
@@ -22,10 +22,17 @@
       <el-table
         class="ih-table"
         :data="data"
+        ref="multipleTable"
         style="width: 100%"
         @row-click="rowClick"
-        :highlight-current-row='true'
+        @select="handleSelect"
       >
+        <el-table-column
+          type="selection"
+          width="50"
+          align="center"
+        >
+        </el-table-column>
         <el-table-column
           prop="packageName"
           label="套餐名称"
@@ -499,6 +506,7 @@ export default class SetMealDialog extends Vue {
   infoData: any = {};
   data: any = [];
   map: any = {};
+  selection: any = [];
 
   cancel() {
     this.$emit("cancel", false);
@@ -583,7 +591,18 @@ export default class SetMealDialog extends Vue {
     }
   }
 
+  handleSelect(selection: any) {
+    if (selection.length > 1) {
+      let row = selection.pop();
+      this.rowClick(row);
+    } else if (selection.length === 1) {
+      this.rowClick(selection[0]);
+    }
+  }
+
   async rowClick(row: any) {
+    (this.$refs.multipleTable as any).clearSelection();
+    (this.$refs.multipleTable as any).toggleRowSelection(row, true);
     let obj: any = {};
     obj.packageId = row.packageId;
     obj.padCommissionEnum = this.searchdata.padCommissionEnum;
@@ -604,6 +623,14 @@ export default class SetMealDialog extends Vue {
 .setMeal {
   /deep/ .el-dialog {
     margin-top: 5vh !important;
+  }
+  /deep/ .el-dialog__body {
+    padding: 0 20px 30px 20px;
+  }
+  /deep/ .el-table__header {
+    .el-checkbox {
+      display: none !important;
+    }
   }
 }
 .first-title {

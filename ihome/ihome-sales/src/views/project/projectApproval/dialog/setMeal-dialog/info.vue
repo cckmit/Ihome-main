@@ -4,7 +4,7 @@
  * @Author: wwq
  * @Date: 2020-12-07 14:32:16
  * @LastEditors: wwq
- * @LastEditTime: 2021-01-29 17:15:49
+ * @LastEditTime: 2021-01-30 16:48:53
 -->
 <template>
   <el-dialog
@@ -122,6 +122,7 @@
               class="ih-table"
               :data="item.colletionandsendDetails"
               style="width: 100%"
+              max-height="300"
             >
               <el-table-column
                 prop="subdivideEnum"
@@ -294,6 +295,7 @@
               class="ih-table"
               :data="item.colletionandsendDetails"
               style="width: 100%"
+              max-height="300"
             >
               <el-table-column
                 prop="subdivideEnum"
