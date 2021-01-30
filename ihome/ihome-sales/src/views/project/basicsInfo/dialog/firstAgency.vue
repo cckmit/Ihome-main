@@ -4,7 +4,7 @@
  * @Author: wwq
  * @Date: 2020-12-29 11:04:59
  * @LastEditors: wwq
- * @LastEditTime: 2021-01-30 12:28:50
+ * @LastEditTime: 2021-01-30 14:05:18
 -->
 <template>
   <el-dialog
@@ -135,7 +135,7 @@
             <el-link
               type="primary"
               class="margin-left-16"
-              :href="`/web-sales/firstAgency/info?id=${row.agencyId}`"
+              :href="`/web-sales/firstAgency/info?id=${row.id}`"
               target="_blank"
             >详情</el-link>
           </template>
