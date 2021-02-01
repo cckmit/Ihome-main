@@ -804,7 +804,7 @@
     <p id="anchor-5" class="ih-info-title">对外拆佣</p>
     <el-row style="padding-left: 20px">
       <el-col>
-        <div class="add-all-wrapper" v-if="postData.calculation === 'Manual' && false">
+        <div class="add-all-wrapper" v-if="false">
           <el-button type="success" @click="handleAddCommission">增加拆佣项</el-button>
         </div>
         <el-table
@@ -935,7 +935,7 @@
             </template>
           </el-table-column>
           <el-table-column
-            v-if="postData.calculation === 'Manual' || true"
+            v-if="false"
             fixed="right" label="操作" width="100">
             <template slot-scope="scope">
               <el-link
