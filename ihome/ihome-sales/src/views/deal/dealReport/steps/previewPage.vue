@@ -779,6 +779,7 @@
           postData.achieveVO = this.pageData?.callBackInfo?.achieveVO;
           postData.receiveAchieveVO = this.pageData?.callBackInfo?.receiveAchieveVO;
           postData.receiveVO = this.pageData?.callBackInfo?.receiveVO;
+          postData.channelCommVO = this.pageData?.callBackInfo?.channelCommVO;
           postData.dealVO.status = type === 'save' ? 'Draft' : 'PlatformClerkUnreview';
           if (this.btnType === "add") {
             // 去新增
@@ -797,6 +798,7 @@
           postData.achieveVO = this.pageData?.callBackInfo?.achieveVO;
           postData.receiveAchieveVO = this.pageData?.callBackInfo?.receiveAchieveVO;
           postData.receiveVO = this.pageData?.callBackInfo?.receiveVO;
+          postData.channelCommVO = this.pageData?.callBackInfo?.channelCommVO;
           postData.dealVO.status = type === 'save' ? 'Draft' : 'PlatformClerkUnreview';
           if (this.btnType === "add") {
             // 去新增
