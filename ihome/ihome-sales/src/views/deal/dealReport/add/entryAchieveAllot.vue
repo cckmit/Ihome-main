@@ -430,7 +430,7 @@
         <el-col :span="8" v-if="!!id">
           <el-form-item label="成交状态">
             <div class="div-disabled">
-              {{$root.dictAllName(postData.dataSign, 'DealStatus')}}
+              {{$root.dictAllName(postData.status, 'DealStatus')}}
             </div>
           </el-form-item>
         </el-col>
@@ -866,7 +866,10 @@
             <el-table-column prop="rolerName" label="角色人" min-width="150">
               <template slot-scope="scope">
                 <div v-if="scope.row.roleType === 'BranchOffice'">——</div>
-                <div v-else>{{scope.row.rolerName}}</div>
+                <div v-else>
+                  <div>{{scope.row.rolerName}}</div>
+                  <div>{{scope.row.rolerPosition}}</div>
+                </div>
               </template>
             </el-table-column>
             <el-table-column prop="corporateAchieve" label="角色人业绩" min-width="150">
@@ -946,7 +949,10 @@
             <el-table-column prop="rolerName" label="角色人" min-width="150">
               <template slot-scope="scope">
                 <div v-if="scope.row.roleType === 'BranchOffice'">——</div>
-                <div v-else>{{scope.row.rolerName}}</div>
+                <div v-else>
+                  <div>{{scope.row.rolerName}}</div>
+                  <div>{{scope.row.rolerPosition}}</div>
+                </div>
               </template>
             </el-table-column>
             <el-table-column prop="corporateAchieve" label="角色人业绩" min-width="150">
@@ -1215,8 +1221,9 @@
       achieveDistriList: [], // 平台费用 - 分销
       calculation: 'Auto', // 计算方式 - 默认自动
     };
-    tempSignPrice: any = null; // 临时签约价格
-    tempSubscribePrice: any = null; // 临时认购价格
+    tempContType: any = null; // 临时存放合同类型
+    tempSignPrice: any = null; // 临时存放签约价格
+    tempSubscribePrice: any = null; // 临时存放认购价格
     tempDocumentList: any = []; // 记录来访确认单和成交确认单
     commissionCustomerList: any = []; // 初始化费用来源的甲方信息 --- 代理费
     commissionServiceFeeObj: any = []; // 初始化费用来源的甲方信息 --- 服务费
@@ -1369,11 +1376,11 @@
       totablBagRoles: [], // 平台费用——总包部分——可选角色
       totalAmount: 0, // 收派金额列表中 （派发佣金合计金额+派发内场奖励合计金额）
     }; // 平台费用 --- 新增/编辑弹窗的数据
+    isSameFlag: any = false; // 是否分销与总包一致
     currentChangeObj: any = {
       type: null, // 当前选择修改的类型：总包/分销
       index: null // 当前选择修改的序号：总包/分销
     };
-    isSameFlag: any = false; // 是否分销与总包一致
     oneAgentRequiredFlag: any = false; // 收派金额 - 派发内场奖励金额合计大于0，为true
     hasAddNoticeFlag: any = false; // 是否有添加(删除)优惠告知书的标识：true-可以；false-不可以
     currentBtnType: any = null; // 点击的是保存还是提交按钮
@@ -1682,13 +1689,8 @@
         specialId: this.baseInfoByTerm.specialId, // 特殊方案Id --- 项目周期带出
         totalBagAmount: this.getTotalAmount('totalPackageAmount') // 总包金额
       };
-      // 重置数据
-      this.postData.achieveTotalBagList = [];
-      this.postData.achieveDistriList = [];
       let achieveInfo: any = await post_pageData_initAchieve(params);
       // console.log(achieveInfo);
-      this.postData.achieveTotalBagList = this.getAchieveList(achieveInfo.totalBag, 'TotalBag');
-      this.postData.achieveDistriList = this.getAchieveList(achieveInfo.distri, 'Distri');
       // 是否分销与总包一致
       this.editDealAchieveData.distri = achieveInfo.distri;
       this.editDealAchieveData.totalBag = achieveInfo.totalBag;
@@ -2011,6 +2013,13 @@
         if (this.postData.cycleId) {
           this.postData.receiveVO = []; // 收派金额
           this.postData.documentVO = []; // 上传附件
+          this.postData.oneAgentTeam = null;
+          this.postData.oneAgentTeamId = null;
+          this.postData.stage = null;
+          this.postData.propertyType = null;
+          this.postData.buildingId = null;
+          this.postData.roomId = null;
+          this.postData.roomNo = null;
           await this.resetData();
         }
         this.$nextTick(async () => {
@@ -2288,6 +2297,15 @@
           this.postData.offerNoticeVO = baseInfo.notice && baseInfo.notice.length ? baseInfo.notice : [];
         }
       }
+      // 分销成交和非分销成交不一样
+      if (baseInfo.contType === 'DistriDeal') {
+        // 分销成交模式
+        // 1. 初始化渠道商/渠道公司
+        this.initAgency(baseInfo.agencyVOs, true);
+      } else if (['SelfChannelDeal', 'NaturalVisitDeal'].includes(baseInfo.contType)) {
+        // 非分销成交模式 --- 自然来访 / 自渠成交
+        this.initAgency(baseInfo.agencyVOs, false);
+      }
       // 栋座
       if (baseInfo.buildingId && !this.postData.buildingId) {
         this.postData.buildingId = baseInfo.buildingId;
@@ -2431,7 +2449,7 @@
         }
       } else {
         // 非分销成交模式 --- 没有渠道相关信息
-        let list: any = ['agencyId', 'agencyName', 'channelLevel', 'channelLevelName'];
+        let list: any = ['agencyId', 'agencyName', 'channelLevel', 'channelLevelName', 'brokerId', 'brokerName'];
         this.resetObject('postData', list); // 重置值
       }
     }
@@ -2467,12 +2485,27 @@
 
     // 修改合同类型
     changeContType(value: any) {
-      // 初始化收派套餐
-      this.initReceive();
-      // 选择房号后构建表格数据
-      this.getDocumentList(value);
-      // 判断是否可以手动添加优惠告知书
-      this.canAddNoticeItem(this.baseInfoByTerm.chargeEnum, this.postData.contType, this.baseInfoInDeal.dealNoticeStatus);
+      if (value === 'DistriDeal') {
+        // 如果查询不到此房号的已成交报备信息，用户又选择分销成交
+        this.postData.contType = this.tempContType ? this.tempContType : null;
+        if (!this.baseInfoInDeal.hasRecord) {
+          this.$alert('系统查询不到此房号的已成交报备信息，请先维护报备信息！', '提示', {
+            confirmButtonText: '确定'
+          });
+          return;
+        }
+      } else {
+        // 不是分销成交
+        // 初始化收派套餐
+        this.initReceive();
+        // 选择房号后构建表格数据
+        this.getDocumentList(value);
+        // 判断是否可以手动添加优惠告知书
+        this.canAddNoticeItem(this.baseInfoByTerm.chargeEnum, this.postData.contType, this.baseInfoInDeal.dealNoticeStatus);
+        // 记录临时值
+        this.tempContType = value;
+      }
+      console.log(this.tempContType);
     }
 
     // 选择合同类型后构建表格数据
@@ -3415,7 +3448,7 @@
               obj.basic.documentVO.push(
                 {
                   fileId: list.fileId,
-                  fileName: list.fileName,
+                  fileName: list.name,
                   fileType: item.code
                 }
               )

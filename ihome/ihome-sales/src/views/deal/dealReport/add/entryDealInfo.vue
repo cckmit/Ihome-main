@@ -444,7 +444,7 @@
         <el-col :span="8" v-if="!!id">
           <el-form-item label="成交状态">
             <div class="div-disabled">
-              {{$root.dictAllName(postData.dataSign, 'DealStatus')}}
+              {{$root.dictAllName(postData.status, 'DealStatus')}}
             </div>
           </el-form-item>
         </el-col>
@@ -849,8 +849,9 @@
       receiveAchieveVO: [], // 应收信息
       documentVO: [], // 附件信息
     };
-    tempSignPrice: any = null; // 临时签约价格
-    tempSubscribePrice: any = null; // 临时认购价格
+    tempContType: any = null; // 临时存放合同类型
+    tempSignPrice: any = null; // 临时存放签约价格
+    tempSubscribePrice: any = null; // 临时存放认购价格
     rules: any = {
       dealCode: [
         {required: true, message: "成交报告编号不能为空", trigger: "change"},
@@ -1302,6 +1303,13 @@
         if (this.postData.cycleId) {
           this.postData.receiveVO = []; // 收派金额
           this.postData.documentVO = []; // 上传附件
+          this.postData.oneAgentTeam = null;
+          this.postData.oneAgentTeamId = null;
+          this.postData.stage = null;
+          this.postData.propertyType = null;
+          this.postData.buildingId = null;
+          this.postData.roomId = null;
+          this.postData.roomNo = null;
           await this.resetData();
         }
         this.$nextTick(async () => {
@@ -1544,6 +1552,15 @@
           this.postData.offerNoticeVO = baseInfo.notice && baseInfo.notice.length ? baseInfo.notice : [];
         }
       }
+      // 分销成交和非分销成交不一样
+      if (baseInfo.contType === 'DistriDeal') {
+        // 分销成交模式
+        // 1. 初始化渠道商/渠道公司
+        this.initAgency(baseInfo.agencyVOs, true);
+      } else if (['SelfChannelDeal', 'NaturalVisitDeal'].includes(baseInfo.contType)) {
+        // 非分销成交模式 --- 自然来访 / 自渠成交
+        this.initAgency(baseInfo.agencyVOs, false);
+      }
       // 栋座
       if (baseInfo.buildingId && !this.postData.buildingId) {
         this.postData.buildingId = baseInfo.buildingId;
@@ -1644,7 +1661,7 @@
         }
       } else {
         // 非分销成交模式 --- 没有渠道相关信息
-        let list: any = ['agencyId', 'agencyName', 'channelLevel', 'channelLevelName'];
+        let list: any = ['agencyId', 'agencyName', 'channelLevel', 'channelLevelName', 'brokerId', 'brokerName'];
         this.resetObject('postData', list); // 重置值
       }
     }
@@ -1674,12 +1691,27 @@
 
     // 修改合同类型
     changeContType(value: any) {
-      // 初始化收派套餐
-      this.initReceive();
-      // 选择房号后构建附件表格数据
-      this.getDocumentList(value);
-      // 判断是否可以手动添加优惠告知书
-      this.canAddNoticeItem(this.baseInfoByTerm.chargeEnum, this.postData.contType, this.baseInfoInDeal.dealNoticeStatus);
+      if (value === 'DistriDeal') {
+        // 如果查询不到此房号的已成交报备信息，用户又选择分销成交
+        this.postData.contType = this.tempContType ? this.tempContType : null;
+        if (!this.baseInfoInDeal.hasRecord) {
+          this.$alert('系统查询不到此房号的已成交报备信息，请先维护报备信息！', '提示', {
+            confirmButtonText: '确定'
+          });
+          return;
+        }
+      } else {
+        // 不是分销成交
+        // 初始化收派套餐
+        this.initReceive();
+        // 选择房号后构建附件表格数据
+        this.getDocumentList(value);
+        // 判断是否可以手动添加优惠告知书
+        this.canAddNoticeItem(this.baseInfoByTerm.chargeEnum, this.postData.contType, this.baseInfoInDeal.dealNoticeStatus);
+        // 记录临时值
+        this.tempContType = value;
+      }
+      console.log(this.tempContType);
     }
 
     // 修改合同类型后构建附件表格数据
@@ -2238,7 +2270,7 @@
               obj.documentVO.push(
                 {
                   fileId: list.fileId,
-                  fileName: list.fileName,
+                  fileName: list.name,
                   fileType: item.code
                 }
               )

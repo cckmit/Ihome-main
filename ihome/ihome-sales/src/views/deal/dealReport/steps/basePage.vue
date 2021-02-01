@@ -963,7 +963,10 @@
           <el-table-column prop="rolerName" label="角色人" min-width="150">
             <template slot-scope="scope">
               <div v-if="scope.row.roleType === 'BranchOffice'">——</div>
-              <div v-else>{{scope.row.rolerName}}</div>
+              <div v-else>
+                <div>{{scope.row.rolerName}}</div>
+                <div>{{scope.row.rolerPosition}}</div>
+              </div>
             </template>
           </el-table-column>
           <el-table-column prop="corporateAchieve" label="角色人业绩" min-width="150"></el-table-column>
@@ -1034,7 +1037,10 @@
           <el-table-column prop="rolerName" label="角色人" min-width="150">
             <template slot-scope="scope">
               <div v-if="scope.row.roleType === 'BranchOffice'">——</div>
-              <div v-else>{{scope.row.rolerName}}</div>
+              <div v-else>
+                <div>{{scope.row.rolerName}}</div>
+                <div>{{scope.row.rolerPosition}}</div>
+              </div>
             </template>
           </el-table-column>
           <el-table-column prop="corporateAchieve" label="角色人业绩" min-width="150"></el-table-column>
@@ -1060,7 +1066,7 @@
             </template>
           </el-table-column>
           <el-table-column
-            v-if="!isSameFlag || !['ChangeBasicInf'].includes(changeType)"
+            v-if="!isSameFlag && !['ChangeBasicInf'].includes(changeType)"
             fixed="right"
             label="操作"
             width="130">
@@ -1646,7 +1652,7 @@
       this.editFlag = false;
       this.tipsFlag = true;
       this.dividerTips = '业绩分配';
-      this.isSameFlag = res.isSame; // 总包分销是否同步
+      this.isSameFlag = res?.scheme?.isSame === "Yes"; // 分销总包是否一致
       this.postData.address = res.house.address;
       this.postData.area = res.house.area;
       this.postData.buildingId = res.house.buildingId;
@@ -1695,6 +1701,36 @@
       await this.initDocumentList(res.documentShowList);
       // 根据项目周期和房号初始化页面数据
       await this.initPageById(res.cycleId, res.house.roomId, res.house.propertyType);
+      // 获取平台费用中新增、修改弹窗中角色类型和角色业绩上限
+      await this.initAchieveRole();
+    }
+
+    // 获取角色类型和角色业绩上限
+    async initAchieveRole() {
+      let params: any = {
+        branchCompanyId: this.baseInfoByTerm.startDivisionId, // 分公司Id --- 项目周期带出
+        contType: this.postData.contType, // 合同类型
+        distriAmount: this.getTotalAmount('distributionAmount'), // 分销金额
+        isMarketProject: this.postData.isMarketProject, // 是否市场化项目
+        modelCode: this.postData.modelCode, // 业务模式
+        propertyType: this.postData.propertyType, // 物业类型
+        specialId: this.baseInfoByTerm.specialId, // 特殊方案Id --- 项目周期带出
+        totalBagAmount: this.getTotalAmount('totalPackageAmount') // 总包金额
+      };
+      let achieveInfo: any = await post_pageData_initAchieve(params);
+      // 是否分销与总包一致
+      this.editDealAchieveData.distri = achieveInfo.distri;
+      this.editDealAchieveData.totalBag = achieveInfo.totalBag;
+      // 处理角色类型选项
+      if (this.isSameFlag) {
+        // 分销同步总包
+        this.editDealAchieveData.totablBagRoles = this.getRoleListAndAchieveCap(achieveInfo.totalBag, achieveInfo.totablBagRoles);
+        this.editDealAchieveData.distriRoles = this.getRoleListAndAchieveCap(achieveInfo.totalBag, achieveInfo.totablBagRoles);
+      } else {
+        // 分销不同步总包
+        this.editDealAchieveData.totablBagRoles = this.getRoleListAndAchieveCap(achieveInfo.totalBag, achieveInfo.totablBagRoles);
+        this.editDealAchieveData.distriRoles = this.getRoleListAndAchieveCap(achieveInfo.distri, achieveInfo.distriRoles);
+      }
     }
 
     // 调整收派金额信息
@@ -1798,6 +1834,15 @@
           }
           // 优惠告知书
           this.postData.offerNoticeVO = baseInfo.notice && baseInfo.notice.length ? baseInfo.notice : [];
+        }
+        // 分销成交和非分销成交不一样
+        if (baseInfo.contType === 'DistriDeal') {
+          // 分销成交模式
+          // 1. 初始化渠道商/渠道公司
+          this.initAgency(baseInfo.agencyVOs, true);
+        } else if (['SelfChannelDeal', 'NaturalVisitDeal'].includes(baseInfo.contType)) {
+          // 非分销成交模式 --- 自然来访 / 自渠成交
+          this.initAgency(baseInfo.agencyVOs, false);
         }
         // 栋座
         if (baseInfo.buildingId && !this.postData.buildingId) {
@@ -2119,6 +2164,7 @@
             list.forEach((item: any) => {
               if (item.fileType === vo.code) {
                 item.exAuto = true; // 不能删除
+                item.name = item.fileName; // 名字
                 vo.defaultFileList.push(item);
               }
             })
@@ -3524,6 +3570,32 @@
     width: 100%;
     box-sizing: border-box;
     margin-bottom: 10px;
+  }
+
+  .manager-list {
+    width: 100%;
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+
+    div {
+      //flex: 1;
+      &:not(:last-child) {
+        margin-right: 10px;
+      }
+    }
+
+    .fee {
+      width: 30%;
+    }
+
+    .ratio{
+      width: 20%;
+    }
+
+    .name{
+      width: 50%;
+    }
   }
 
   .demo-ruleForm {
