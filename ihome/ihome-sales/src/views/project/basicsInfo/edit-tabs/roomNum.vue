@@ -4,7 +4,7 @@
  * @Author: wwq
  * @Date: 2020-09-27 11:52:41
  * @LastEditors: wwq
- * @LastEditTime: 2021-01-27 17:01:52
+ * @LastEditTime: 2021-02-01 17:07:47
 -->
 <template>
   <div>
@@ -85,7 +85,10 @@
         </el-col>
       </el-row>
     </el-form>
-    <div class="inittitle">温馨提示：推荐使用快捷导入房号功能，导入成功后将自动生成户型信息、栋座信息、房间信息</div>
+    <div
+      class="inittitle"
+      v-if="!isMingyuan"
+    >温馨提示：推荐使用快捷导入房号功能，导入成功后将自动生成户型信息、栋座信息、房间信息</div>
     <br />
     <el-table
       class="ih-table"
