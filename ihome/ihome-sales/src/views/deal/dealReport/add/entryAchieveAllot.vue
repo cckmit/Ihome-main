@@ -724,7 +724,7 @@
     <p id="anchor-8" class="ih-info-title">对外拆佣</p>
     <el-row style="padding-left: 20px">
       <el-col>
-        <div class="add-all-wrapper" v-if="postData.calculation === 'Manual'">
+        <div class="add-all-wrapper" v-if="postData.calculation === 'Manual' && false">
           <el-button type="success" @click="handleAddCommission">增加拆佣项</el-button>
         </div>
         <el-table
@@ -736,7 +736,7 @@
           <el-table-column prop="target" label="拆佣对象" min-width="120">
             <template slot-scope="scope">
               <el-select
-                :disabled="postData.calculation === 'Auto'"
+                :disabled="postData.calculation === 'Auto' || true"
                 v-model="scope.row.target"
                 @change="changeCommissionTarget($event, scope.row)"
                 placeholder="请选择">
@@ -751,7 +751,7 @@
           </el-table-column>
           <el-table-column prop="agencyName" label="收款方" min-width="120">
             <template slot-scope="scope">
-              <div v-if="postData.calculation === 'Auto'">
+              <div v-if="postData.calculation === 'Auto' || true">
                 <el-input placeholder="收款方" disabled v-model="scope.row.agencyName"></el-input>
               </div>
               <div v-else>
@@ -773,7 +773,7 @@
             <template slot-scope="scope">
               <el-select
                 v-model="scope.row.feeType"
-                :disabled="postData.calculation === 'Auto'"
+                :disabled="postData.calculation === 'Auto' || true"
                 placeholder="请选择费用类型"
                 @change="changeFeeType($event, scope.row)"
                 class="width--100">
@@ -788,8 +788,9 @@
           </el-table-column>
           <el-table-column prop="partyACustomer" label="费用来源(客户/甲方)" min-width="120">
             <template slot-scope="scope">
-              <div v-if="postData.calculation === 'Auto'">
-                <el-input disabled v-model="scope.row.partyACustomerName"></el-input>
+              <div v-if="postData.calculation === 'Auto' || true">
+                <div v-if="scope.row.feeType === 'ServiceFee'">客户</div>
+                <el-input v-if="scope.row.feeType === 'AgencyFee'" disabled v-model="scope.row.partyACustomerName"></el-input>
               </div>
               <div v-else>
                 <div v-if="scope.row.feeType === 'ServiceFee'">客户</div>
@@ -812,7 +813,7 @@
               <el-input
                 v-digits="2"
                 placeholder="金额"
-                :disabled="postData.calculation === 'Auto'"
+                :disabled="postData.calculation === 'Auto' || true"
                 v-model="scope.row.amount"></el-input>
             </template>
           </el-table-column>
@@ -823,7 +824,7 @@
                 v-model="scope.row.remarks"/>
             </template>
           </el-table-column>
-          <el-table-column fixed="right" label="操作" width="100" v-if="postData.calculation !== 'Auto'">
+          <el-table-column fixed="right" label="操作" width="100" v-if="postData.calculation !== 'Auto' || true">
             <template slot-scope="scope">
               <el-link
                 class="margin-right-10"

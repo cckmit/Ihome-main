@@ -804,7 +804,7 @@
     <p id="anchor-5" class="ih-info-title">对外拆佣</p>
     <el-row style="padding-left: 20px">
       <el-col>
-        <div class="add-all-wrapper" v-if="postData.calculation === 'Manual'">
+        <div class="add-all-wrapper" v-if="postData.calculation === 'Manual' && false">
           <el-button type="success" @click="handleAddCommission">增加拆佣项</el-button>
         </div>
         <el-table
@@ -821,7 +821,7 @@
               <div v-else>
                 <el-select
                   v-model="scope.row.target"
-                  :disabled="postData.calculation === 'Auto'"
+                  :disabled="postData.calculation === 'Auto' || true"
                   placeholder="请选择">
                   <el-option
                     v-for="item in $root.dictAllList('CommObjectType')"
@@ -839,16 +839,21 @@
                 {{scope.row.agencyName}}
               </div>
               <div v-else>
-                <div v-if="scope.row.target === 'Personal'">
-                  <el-input v-model="scope.row.agencyName"></el-input>
+                <div v-if="postData.calculation === 'Auto' || true">
+                  <el-input placeholder="收款方" disabled v-model="scope.row.agencyName"></el-input>
                 </div>
-                <div v-if="scope.row.target === 'AgentCompany'">
-                  <el-input disabled v-model="scope.row.agencyName"></el-input>
-                </div>
-                <div v-if="scope.row.target === 'ChannelCompany'">
-                  <el-input placeholder="请选择收款方" readonly v-model="scope.row.agencyName">
-                    <el-button slot="append" icon="el-icon-search" @click.native.prevent="selectAgency('agencyName', scope)"></el-button>
-                  </el-input>
+                <div v-else>
+                  <div v-if="scope.row.target === 'Personal'">
+                    <el-input placeholder="请输入收款方" v-model="scope.row.agencyName"></el-input>
+                  </div>
+                  <div v-if="scope.row.target === 'AgentCompany'">
+                    <el-input disabled v-model="scope.row.agencyName"></el-input>
+                  </div>
+                  <div v-if="scope.row.target === 'ChannelCompany'">
+                    <el-input placeholder="请选择收款方" readonly v-model="scope.row.agencyName">
+                      <el-button slot="append" icon="el-icon-search" @click.native.prevent="selectAgency('agencyName', scope)"></el-button>
+                    </el-input>
+                  </div>
                 </div>
               </div>
             </template>
@@ -861,7 +866,7 @@
               <div v-else>
                 <el-select
                   v-model="scope.row.feeType"
-                  :disabled="postData.calculation === 'Auto'"
+                  :disabled="postData.calculation === 'Auto' || true"
                   placeholder="请选择费用类型"
                   @change="changeFeeType($event, scope.row)"
                   class="width--100">
@@ -878,22 +883,27 @@
           <el-table-column prop="partyACustomer" label="费用来源(客户/甲方)" min-width="120">
             <template slot-scope="scope">
               <div v-if="['ChangeBasicInf', 'ChangeInternalAchieveInf'].includes(changeType)">
-                {{scope.row.partyACustomerName}}
+                <div v-if="scope.row.feeType === 'ServiceFee'">客户</div>
+                <div v-else>{{scope.row.partyACustomerName}}</div>
               </div>
               <div v-else>
-                <div v-if="scope.row.feeType === 'ServiceFee'">
-                  <el-input disabled v-model="scope.row.partyACustomerName"></el-input>
+                <div v-if="postData.calculation === 'Auto' || true">
+                  <div v-if="scope.row.feeType === 'ServiceFee'">客户</div>
+                  <el-input v-if="scope.row.feeType === 'AgencyFee'" disabled v-model="scope.row.partyACustomerName"></el-input>
                 </div>
-                <div v-if="scope.row.feeType === 'AgencyFee'">
-                  <el-select
-                    :disabled="postData.calculation === 'Auto'"
-                    v-model="scope.row.partyACustomer"
-                    @change="handleSelectCustomer($event, scope.row)"
-                    placeholder="请选择">
-                    <el-option
-                      v-for="(item, index) in commissionCustomerList" :key="index"
-                      :label="item.partyACustomerName" :value="item.partyACustomer"></el-option>
-                  </el-select>
+                <div v-else>
+                  <div v-if="scope.row.feeType === 'ServiceFee'">客户</div>
+                  <div v-if="scope.row.feeType === 'AgencyFee'">
+                    <el-select
+                      :disabled="postData.calculation === 'Auto'"
+                      v-model="scope.row.partyACustomer"
+                      @change="handleSelectCustomer($event, scope.row)"
+                      placeholder="请选择">
+                      <el-option
+                        v-for="(item, index) in commissionCustomerList" :key="index"
+                        :label="item.partyACustomerName" :value="item.partyACustomer"></el-option>
+                    </el-select>
+                  </div>
                 </div>
               </div>
             </template>
@@ -906,7 +916,7 @@
               <div v-else>
                 <el-input
                   v-digits="2"
-                  :disabled="postData.calculation === 'Auto'"
+                  :disabled="postData.calculation === 'Auto' || true"
                   v-model="scope.row.amount"></el-input>
               </div>
             </template>
@@ -925,7 +935,7 @@
             </template>
           </el-table-column>
           <el-table-column
-            v-if="postData.calculation === 'Manual'"
+            v-if="postData.calculation === 'Manual' || true"
             fixed="right" label="操作" width="100">
             <template slot-scope="scope">
               <el-link
