@@ -72,13 +72,13 @@
             rangeTimes = new Date(`${year - 1}-12-01`).getTime();
           } else {
             // 不是第一个月
-            rangeTimes = new Date(`${year}-${month}-01`).getTime();
+            rangeTimes = new Date(`${year}-${curDate.getMonth()}-01`).getTime();
           }
         } else {
           // 不是第一天
           rangeTimes = new Date(`${year}-${month}-01`).getTime();
         }
-        return time.getTime() > Date.now() - 8.64e6 || time.getTime() < rangeTimes - 8.64e6;
+        return time.getTime() > Date.now() || time.getTime() < rangeTimes;
       }
     }
     rules: any = {
