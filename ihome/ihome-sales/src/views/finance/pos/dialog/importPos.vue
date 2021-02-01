@@ -4,7 +4,7 @@
  * @Author: ywl
  * @Date: 2020-12-31 17:15:45
  * @LastEditors: ywl
- * @LastEditTime: 2020-12-31 17:41:01
+ * @LastEditTime: 2021-02-01 16:32:53
 -->
 <template>
   <el-dialog
@@ -45,9 +45,10 @@
 
 <script lang="ts">
 import { Component, Vue } from "vue-property-decorator";
-// import axios from "axios";
+import axios from "axios";
 import { getToken } from "ihome-common/util/cookies";
 import { post_posTerminal_importData } from "../../../../api/finance/index";
+import { post_fileTemplate_list } from "../../../../api/sales-document-cover/index";
 
 @Component({})
 export default class BankImport extends Vue {
@@ -56,6 +57,30 @@ export default class BankImport extends Vue {
 
   private async download() {
     const token: any = getToken();
+    let { list } = await post_fileTemplate_list({
+      moduleName: "Finance",
+      pageNum: 1,
+      pageSize: 10,
+      templateName: "pos机终端信息.xlsx",
+    });
+    const fileId = list[0].fileId;
+    axios({
+      method: "GET",
+      url: `/sales-api/sales-document-cover/file/download/${fileId}`,
+      xsrfHeaderName: "Authorization",
+      responseType: "blob",
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: "bearer " + token,
+      },
+    }).then((res: any) => {
+      const href = window.URL.createObjectURL(res.data);
+      const $a = document.createElement("a");
+      $a.href = href;
+      $a.download = "pos机终端信息 (导入模板).xlsx";
+      $a.click();
+      $a.remove();
+    });
     console.log(token);
   }
   async httpRequest(req: any) {
