@@ -3421,7 +3421,7 @@
       obj.basic.dealVO.oneAgentTeamId = this.postData.oneAgentTeamId;
       obj.basic.dealVO.recordState = this.postData.recordState;
       obj.basic.dealVO.refineModel = this.postData.refineModel;
-      // obj.basic.dealVO.reportId = this.baseInfoInDeal.recordId;
+      obj.basic.dealVO.reportId = this.baseInfoInDeal.recordId;
       obj.basic.dealVO.sceneSales = this.postData.sceneSales;
       obj.basic.dealVO.signDate = this.postData.signDate;
       obj.basic.dealVO.signPrice = this.postData.signPrice;

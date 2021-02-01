@@ -1291,6 +1291,7 @@
       brokerId: null, // 渠道经纪人Id
       brokerName: null, // 渠道经纪人
       recordStr: null, // 报备信息
+      reportId: null,
       oneAgentTeamId: null,
       isMarketProject: null,
       recordState: null,
@@ -1663,17 +1664,18 @@
       this.tipsFlag = true;
       this.dividerTips = '业绩分配';
       this.isSameFlag = res?.scheme?.isSame === "Yes"; // 分销总包是否一致
-      this.postData.address = res.house.address;
-      this.postData.area = res.house.area;
-      this.postData.buildingId = res.house.buildingId;
-      this.postData.buildingName = res.house.buildingName;
-      this.postData.hall = res.house.hall;
-      this.postData.propertyNo = res.house.propertyNo;
-      this.postData.propertyType = res.house.propertyType;
-      this.postData.room = res.house.room;
-      this.postData.roomId = res.house.roomId;
-      this.postData.roomNo = res.house.roomNo;
-      this.postData.toilet = res.house.toilet;
+      this.postData.address = res?.house?.address;
+      this.postData.area = res?.house?.area;
+      this.postData.buildingId = res?.house?.buildingId;
+      this.postData.buildingName = res?.house?.buildingName;
+      this.postData.hall = res?.house?.hall;
+      this.postData.propertyNo = res?.house?.propertyNo;
+      this.postData.propertyType = res?.house?.propertyType;
+      this.postData.room = res?.house?.room;
+      this.postData.roomId = res?.house?.roomId;
+      this.postData.roomNo = res?.house?.roomNo;
+      this.postData.toilet = res?.house?.toilet;
+      this.postData.reportId = res?.reportId;
       // if (res.agencyList && res.agencyList.length) {
       //   this.initAgency(res.agencyList, true);
       // }
@@ -1854,6 +1856,7 @@
           // 非分销成交模式 --- 自然来访 / 自渠成交
           this.initAgency(baseInfo.agencyVOs, false);
         }
+        this.postData.reportId = baseInfo.recordId;
         // 栋座
         if (baseInfo.buildingId && !this.postData.buildingId) {
           this.postData.buildingId = baseInfo.buildingId;
