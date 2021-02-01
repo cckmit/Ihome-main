@@ -1060,7 +1060,7 @@
             </template>
           </el-table-column>
           <el-table-column
-            v-if="!isSameFlag || !['ChangeBasicInf'].includes(changeType)"
+            v-if="!isSameFlag && !['ChangeBasicInf'].includes(changeType)"
             fixed="right"
             label="操作"
             width="130">
