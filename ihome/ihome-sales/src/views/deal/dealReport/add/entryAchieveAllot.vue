@@ -866,7 +866,10 @@
             <el-table-column prop="rolerName" label="角色人" min-width="150">
               <template slot-scope="scope">
                 <div v-if="scope.row.roleType === 'BranchOffice'">——</div>
-                <div v-else>{{scope.row.rolerName}}</div>
+                <div v-else>
+                  <div>{{scope.row.rolerName}}</div>
+                  <div>{{scope.row.rolerPosition}}</div>
+                </div>
               </template>
             </el-table-column>
             <el-table-column prop="corporateAchieve" label="角色人业绩" min-width="150">
@@ -946,7 +949,10 @@
             <el-table-column prop="rolerName" label="角色人" min-width="150">
               <template slot-scope="scope">
                 <div v-if="scope.row.roleType === 'BranchOffice'">——</div>
-                <div v-else>{{scope.row.rolerName}}</div>
+                <div v-else>
+                  <div>{{scope.row.rolerName}}</div>
+                  <div>{{scope.row.rolerPosition}}</div>
+                </div>
               </template>
             </el-table-column>
             <el-table-column prop="corporateAchieve" label="角色人业绩" min-width="150">
@@ -2006,6 +2012,13 @@
         if (this.postData.cycleId) {
           this.postData.receiveVO = []; // 收派金额
           this.postData.documentVO = []; // 上传附件
+          this.postData.oneAgentTeam = null;
+          this.postData.oneAgentTeamId = null;
+          this.postData.stage = null;
+          this.postData.propertyType = null;
+          this.postData.buildingId = null;
+          this.postData.roomId = null;
+          this.postData.roomNo = null;
           await this.resetData();
         }
         this.$nextTick(async () => {

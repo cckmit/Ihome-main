@@ -1302,6 +1302,13 @@
         if (this.postData.cycleId) {
           this.postData.receiveVO = []; // 收派金额
           this.postData.documentVO = []; // 上传附件
+          this.postData.oneAgentTeam = null;
+          this.postData.oneAgentTeamId = null;
+          this.postData.stage = null;
+          this.postData.propertyType = null;
+          this.postData.buildingId = null;
+          this.postData.roomId = null;
+          this.postData.roomNo = null;
           await this.resetData();
         }
         this.$nextTick(async () => {

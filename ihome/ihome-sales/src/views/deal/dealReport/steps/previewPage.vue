@@ -377,7 +377,10 @@
             <el-table-column prop="rolerName" label="角色人" min-width="150">
               <template slot-scope="scope">
                 <div v-if="scope.row.roleType === 'BranchOffice'">——</div>
-                <div v-else>{{scope.row.rolerName}}</div>
+                <div v-else>
+                  <div>{{scope.row.rolerName}}</div>
+                  <div>{{scope.row.rolerPosition}}</div>
+                </div>
               </template>
             </el-table-column>
             <el-table-column prop="corporateAchieve" label="角色人业绩" min-width="150"></el-table-column>
@@ -423,7 +426,10 @@
             <el-table-column prop="rolerName" label="角色人" min-width="150">
               <template slot-scope="scope">
                 <div v-if="scope.row.roleType === 'BranchOffice'">——</div>
-                <div v-else>{{scope.row.rolerName}}</div>
+                <div v-else>
+                  <div>{{scope.row.rolerName}}</div>
+                  <div>{{scope.row.rolerPosition}}</div>
+                </div>
               </template>
             </el-table-column>
             <el-table-column prop="corporateAchieve" label="角色人业绩" min-width="150"></el-table-column>
