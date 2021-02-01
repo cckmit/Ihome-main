@@ -541,7 +541,7 @@
       receiveList: [], // 收派金额
       receiveAchieveList: [], // 应收业绩 - 收派信息下
       channelCommList: [], // 对外拆佣信息
-      achieveList: [], // 平台费用 - 包含总包和分销
+      achieveVO: [], // 平台费用 - 包含总包和分销
       achieveTotalBagList: [], // 平台费用 - 总包 - 前端拆分
       achieveDistriList: [], // 平台费用 - 分销 - 前端拆分
       uploadDocumentList: [], // 附件信息
@@ -691,6 +691,8 @@
       this.changeType = this.$route.query.type;
       this.btnType = this.$route.query.btnType;
       this.infoForm = (this as any).$tool.deepClone(this.pageData);
+      // 平台费用-总包/分销数据初始化
+      this.initAchieveData();
       this.isCreated = true;
     }
 
@@ -702,7 +704,27 @@
         this.changeType = this.$route.query.type;
         this.btnType = this.$route.query.btnType;
         this.infoForm = (this as any).$tool.deepClone(this.pageData);
+        // 平台费用-总包/分销数据初始化
+        this.initAchieveData();
       }
+    }
+
+    // 初始化平台费用数据
+    initAchieveData() {
+      if (this.pageData && this.pageData.callBackInfo && this.pageData.callBackInfo.achieveVO && this.pageData.callBackInfo.achieveVO.length) {
+        this.pageData.callBackInfo.achieveVO.forEach((vo: any) => {
+          if (vo.type === "TotalBag") {
+            this.infoForm.achieveTotalBagList.push(vo);
+          } else if (vo.type === "Distri") {
+            this.infoForm.achieveDistriList.push(vo);
+          }
+
+        });
+      } else {
+        this.infoForm.achieveTotalBagList = [];
+        this.infoForm.achieveDistriList = [];
+      }
+      console.log('this.infoForm', this.infoForm);
     }
 
     // 预览-优惠告知书
@@ -754,7 +776,10 @@
         case "ChangeAchieveInf":
           // 变更业绩信息
           postData.noticeDealList = this.pageData?.noticeDealList;
-          postData.status = type === 'save' ? 'Draft' : 'PlatformClerkUnreview';
+          postData.achieveVO = this.pageData?.callBackInfo?.achieveVO;
+          postData.receiveAchieveVO = this.pageData?.callBackInfo?.receiveAchieveVO;
+          postData.receiveVO = this.pageData?.callBackInfo?.receiveVO;
+          postData.dealVO.status = type === 'save' ? 'Draft' : 'PlatformClerkUnreview';
           if (this.btnType === "add") {
             // 去新增
             await post_suppDeal_entryAchieveInfChange(postData);
@@ -769,7 +794,10 @@
         case "RetreatRoom":
           // 退房
           postData.noticeDealList = this.pageData?.noticeDealList;
-          postData.status = type === 'save' ? 'Draft' : 'PlatformClerkUnreview';
+          postData.achieveVO = this.pageData?.callBackInfo?.achieveVO;
+          postData.receiveAchieveVO = this.pageData?.callBackInfo?.receiveAchieveVO;
+          postData.receiveVO = this.pageData?.callBackInfo?.receiveVO;
+          postData.dealVO.status = type === 'save' ? 'Draft' : 'PlatformClerkUnreview';
           if (this.btnType === "add") {
             // 去新增
             await post_suppDeal_entryRetreatRoom(postData);
