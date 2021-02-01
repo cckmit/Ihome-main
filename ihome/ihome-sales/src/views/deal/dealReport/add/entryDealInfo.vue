@@ -1657,7 +1657,7 @@
             });
           }
           this.postData.brokerId= data[0].brokerId; // 渠道经纪人Id
-          this.postData.brokerName= data[0].broker; // 渠道经纪人
+          this.postData.brokerName= data[0].brokerName || data[0].broker; // 渠道经纪人
         }
       } else {
         // 非分销成交模式 --- 没有渠道相关信息

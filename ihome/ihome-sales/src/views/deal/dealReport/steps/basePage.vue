@@ -1773,7 +1773,7 @@
             });
           }
           this.postData.brokerId = data[0].brokerId; // 渠道经纪人Id
-          this.postData.brokerName = data[0].broker; // 渠道经纪人
+          this.postData.brokerName = data[0].brokerName || data[0].broker; // 渠道经纪人
         }
       }
     }
@@ -3357,7 +3357,9 @@
         dataObj.agencyVO.push(
           {
             agencyId: this.postData.agencyId,
+            agencyName: this.postData.agencyName,
             brokerId: this.postData.brokerId,
+            broker: this.postData.brokerName,
             channelLevel: this.postData.channelLevel
           }
         )
@@ -3400,7 +3402,9 @@
         dataObj.agencyVO.push(
           {
             agencyId: this.postData.agencyId,
+            agencyName: this.postData.agencyName,
             brokerId: this.postData.brokerId,
+            broker: this.postData.brokerName,
             channelLevel: this.postData.channelLevel
           }
         )
