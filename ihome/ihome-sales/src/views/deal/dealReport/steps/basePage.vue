@@ -1835,6 +1835,15 @@
           // 优惠告知书
           this.postData.offerNoticeVO = baseInfo.notice && baseInfo.notice.length ? baseInfo.notice : [];
         }
+        // 分销成交和非分销成交不一样
+        if (baseInfo.contType === 'DistriDeal') {
+          // 分销成交模式
+          // 1. 初始化渠道商/渠道公司
+          this.initAgency(baseInfo.agencyVOs, true);
+        } else if (['SelfChannelDeal', 'NaturalVisitDeal'].includes(baseInfo.contType)) {
+          // 非分销成交模式 --- 自然来访 / 自渠成交
+          this.initAgency(baseInfo.agencyVOs, false);
+        }
         // 栋座
         if (baseInfo.buildingId && !this.postData.buildingId) {
           this.postData.buildingId = baseInfo.buildingId;
