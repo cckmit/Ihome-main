@@ -4,7 +4,7 @@
  * @Author: ywl
  * @Date: 2021-01-07 10:29:38
  * @LastEditors: ywl
- * @LastEditTime: 2021-01-15 15:36:53
+ * @LastEditTime: 2021-02-02 10:31:58
 -->
 <template>
   <IhPage label-width="100px">
@@ -91,6 +91,16 @@
             </el-form-item>
           </el-col>
         </el-row>
+        <el-row>
+          <el-col :span="8">
+            <el-form-item label="申请人">
+              <IhSelectPageUser
+                v-model="queryPageParameters.applyUserId"
+                clearable
+              ></IhSelectPageUser>
+            </el-form-item>
+          </el-col>
+        </el-row>
       </el-form>
     </template>
     <template v-slot:btn>
@@ -147,10 +157,30 @@
           prop="subMoney"
         ></el-table-column>
         <el-table-column
+          label="扣罚金额"
+          prop="fineMoney"
+        ></el-table-column>
+        <el-table-column
           label="实际请款金额"
           prop="actMoneyTax"
           min-width="120"
         ></el-table-column>
+        <el-table-column
+          label="状态"
+          prop="status"
+          width="185"
+        >
+          <template v-slot="{row}">
+            <span>{{$root.dictAllName(row.status, 'ApplySatus')}}</span>
+            <el-tag
+              v-if="row.isReject"
+              effect="plain"
+              type="danger"
+              size="mini"
+              class="margin-left-10"
+            >驳回</el-tag>
+          </template>
+        </el-table-column>
         <el-table-column
           label="发票类型"
           prop="billTypeCode"
@@ -171,22 +201,6 @@
           min-width="165"
         ></el-table-column>
         <el-table-column
-          label="状态"
-          prop="status"
-          width="185"
-        >
-          <template v-slot="{row}">
-            <span>{{$root.dictAllName(row.status, 'ApplySatus')}}</span>
-            <el-tag
-              v-if="row.isReject"
-              effect="plain"
-              type="danger"
-              size="mini"
-              class="margin-left-10"
-            >驳回</el-tag>
-          </template>
-        </el-table-column>
-        <el-table-column
           label="审核时间"
           prop="auditTime"
           width="155"
@@ -194,6 +208,7 @@
         <el-table-column
           label="流程进度"
           width="120"
+          fixed="right"
         >
           <template v-slot="{  }">
             <el-link type="primary">流程进度图</el-link>
@@ -256,6 +271,7 @@ export default class ApplyRecList extends Vue {
     developName: null,
     status: null,
     proId: null,
+    applyUserId: null,
   };
   resPageInfo: any = {
     total: null,
@@ -279,6 +295,7 @@ export default class ApplyRecList extends Vue {
       developName: null,
       status: null,
       proId: null,
+      applyUserId: null,
     });
     this.timeList = [];
   }

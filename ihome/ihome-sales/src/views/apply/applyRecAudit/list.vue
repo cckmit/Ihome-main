@@ -4,7 +4,7 @@
  * @Author: ywl
  * @Date: 2021-01-14 18:20:57
  * @LastEditors: ywl
- * @LastEditTime: 2021-01-15 09:11:10
+ * @LastEditTime: 2021-02-02 11:12:47
 -->
 <template>
   <IhPage label-width="100px">
@@ -145,6 +145,7 @@
         <el-table-column
           label="流程进度"
           width="120"
+          fixed="right"
         >
           <template v-slot="{  }">
             <el-link type="primary">流程进度图</el-link>
