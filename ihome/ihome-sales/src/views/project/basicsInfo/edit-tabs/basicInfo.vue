@@ -4,7 +4,7 @@
  * @Author: wwq
  * @Date: 2020-11-03 11:52:41
  * @LastEditors: wwq
- * @LastEditTime: 2021-01-30 12:21:37
+ * @LastEditTime: 2021-02-02 14:22:44
 -->
 <template>
   <div>
@@ -542,6 +542,7 @@
       >保存</el-button>
       <el-button
         type="success"
+        :class="{'ih-data-disabled': !submitChange(row)}"
         v-has="'B.SALES.PROJECT.BASICLIST.ZXMTJ'"
         @click="submit('submit')"
       >提交</el-button>
@@ -687,14 +688,14 @@ export default class EditBasicInfo extends Vue {
   submitChange() {
     const status = window.sessionStorage.getItem("projectStatus");
     const Draft = status === "Draft";
-    const Adopt = status === "Adopt";
+    // const Adopt = status === "Adopt";
     const Reject = status === "Reject";
-    const RHeadBusinessManagement = this.$roleTool.RHeadBusinessManagement();
-    const RBusinessManagement = this.$roleTool.RBusinessManagement();
+    // const RHeadBusinessManagement = this.$roleTool.RHeadBusinessManagement();
+    // const RBusinessManagement = this.$roleTool.RBusinessManagement();
     const RFrontLineClerk = this.$roleTool.RFrontLineClerk();
     return (
       (Draft && RFrontLineClerk) ||
-      ((RHeadBusinessManagement || RBusinessManagement) && Adopt) ||
+      // ((RHeadBusinessManagement || RBusinessManagement) && Adopt) ||
       (RFrontLineClerk && Reject)
     );
   }
