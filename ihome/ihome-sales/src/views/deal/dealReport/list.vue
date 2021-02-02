@@ -222,9 +222,11 @@
       <el-row>
         <el-button type="primary" @click="getListMixin()">查询</el-button>
         <el-button
+          :class="{ 'ih-data-disabled': currentJobId === 52}"
           v-has="'B.SALES.DEAL.DEALLIST.ADD'"
           type="success" @click="handleAdd('add')">添加</el-button>
         <el-button
+          :class="{ 'ih-data-disabled': currentJobId === 4}"
           v-has="'B.SALES.DEAL.DEALLIST.ACHIEVEDECLARE'"
           type="success" @click="handleAdd('declare')">业绩申报</el-button>
         <el-button type="info" @click="handleReset()">重置</el-button>
@@ -311,19 +313,19 @@
               </span>
               <el-dropdown-menu slot="dropdown">
                 <el-dropdown-item
-                  :class="{ 'ih-data-disabled': !['Draft', 'AchieveDeclareUnconfirm', 'Reject'].includes(scope.row.status)}"
+                  :class="{ 'ih-data-disabled': hasBtnRole(scope.row, 'UPDATE')}"
                   v-has="'B.SALES.DEAL.DEALLIST.UPDATE'"
                   @click.native.prevent="handleEdit(scope)"
                 >修改
                 </el-dropdown-item>
                 <el-dropdown-item
-                  :class="{ 'ih-data-disabled': !['Draft', 'AchieveDeclareUnconfirm', 'Reject'].includes(scope.row.status)}"
+                  :class="{ 'ih-data-disabled': hasBtnRole(scope.row, 'DELETE')}"
                   v-has="'B.SALES.DEAL.DEALLIST.DELETE'"
                   @click.native.prevent="handleDelete(scope)"
                 >删除
                 </el-dropdown-item>
                 <el-dropdown-item
-                  :class="{ 'ih-data-disabled': ['Draft', 'ReviewPassed', 'Reject'].includes(scope.row.status)}"
+                  :class="{ 'ih-data-disabled': hasBtnRole(scope.row, 'REVOKE')}"
                   v-has="'B.SALES.DEAL.DEALLIST.REVOKE'"
                   @click.native.prevent="handleRecall(scope)"
                 >撤回
@@ -331,7 +333,7 @@
                 <el-dropdown trigger="click" class="el-dropdown-menu__item" placement="top-start">
                   <span
                     v-has="'B.SALES.DEAL.DEALLIST.SUPPLEMENTDEAL'"
-                    :class="{ 'ih-data-disabled': !(scope.row.status === 'ReviewPassed' && scope.row.id === scope.row.parentId)}"
+                    :class="{ 'ih-data-disabled': hasBtnRole(scope.row, 'SUPPLEMENTDEAL')}"
                     class="el-dropdown-link">
                   补充成交
                   <i class="el-icon-arrow-down el-icon--right"></i>
@@ -352,7 +354,7 @@
                   </el-dropdown-menu>
                 </el-dropdown>
                 <el-dropdown-item
-                  :class="{ 'ih-data-disabled': !['PlatformClerkUnreview', 'HeadDepartUnreview', 'BranchBusinessManageUnreview', 'NotSigned'].includes(scope.row.status)}"
+                  :class="{ 'ih-data-disabled': hasBtnRole(scope.row, 'VERIFY')}"
                   v-has="'B.SALES.DEAL.DEALLIST.VERIFY'"
                   @click.native.prevent="handleReview(scope)"
                 >审核
@@ -421,14 +423,116 @@
       total: null,
       list: [],
     };
+    currentJobId: any = null; // 当前登录人员的岗位id
 
     async created() {
+      this.currentJobId = (this as any).$root?.userInfo?.jobId;
+      console.log(this.currentJobId);
       await this.getListMixin();
     }
 
     // 查询条件折叠/展开
     private openToggle(): void {
       this.searchOpen = !this.searchOpen;
+    }
+
+    // 根据成交报告状态、是主成交还是补充成交、登录者的岗位来判断是否有操作按钮权限
+    hasBtnRole(row: any, btnName: any = "") {
+      let flag: any = true; // 是否禁用、默认禁用
+      if (this.currentJobId && btnName) {
+        switch (btnName) {
+          case 'UPDATE':
+            // 修改按钮权限
+            if (row.id === row.parentId) {
+              // 主成交
+              if (row.status === 'Draft' && this.currentJobId === 4) {
+                // 草稿、案场
+                flag = false;
+              }
+              if (['AchieveDeclareUnconfirm', 'Reject'].includes(row.status) && this.currentJobId === 52) {
+                // 业绩申报待确认 + 驳回、文员
+                flag = false;
+              }
+            } else {
+              // 补充成交
+              if (['Draft', 'Reject'].includes(row.status) && this.currentJobId === 52) {
+                // 草稿 + 驳回、文员
+                flag = false;
+              }
+            }
+            break;
+          case 'DELETE':
+            // 删除按钮权限
+            if (row.id === row.parentId) {
+              // 主成交
+              if (row.status === 'Draft' && this.currentJobId === 4) {
+                // 草稿、案场
+                flag = false;
+              }
+              if (['AchieveDeclareUnconfirm', 'Reject'].includes(row.status) && this.currentJobId === 52) {
+                // 业绩申报待确认 + 驳回、文员
+                flag = false;
+              }
+            } else {
+              // 补充成交
+              if (['Draft', 'Reject'].includes(row.status) && this.currentJobId === 52) {
+                // 草稿 + 驳回、文员
+                flag = false;
+              }
+            }
+            break;
+          case 'REVOKE':
+            // 撤回按钮权限
+            if (row.id === row.parentId) {
+              // 主成交
+              if (row.status === 'AchieveDeclareUnconfirm' && this.currentJobId === 4) {
+                // 业绩申报待确认、案场
+                flag = false;
+              }
+            }
+            // 补充成交
+            if (row.status === 'PlatformClerkUnreview' && this.currentJobId === 52) {
+              // 平台文员待审核、文员
+              flag = false;
+            }
+            if (row.status === 'HeadDepartUnreview' && this.currentJobId === 36) {
+              // 事业部负责人待审核、平台文员
+              flag = false;
+            }
+            if (row.status === 'BranchBusinessManageUnreview' && this.currentJobId === 59) {
+              // 分公司业管待审核、事业部负责人
+              flag = false;
+            }
+            if (row.status === 'NotSigned' && this.currentJobId === 67) {
+              // 待签署生效、业务监管岗（分公司业管）
+              flag = false;
+            }
+            break;
+          case 'SUPPLEMENTDEAL':
+            // 补充成交按钮权限
+            if (row.id === row.parentId && row.status === 'ReviewPassed' && this.currentJobId === 52) {
+              // 主成交、已审核、文员
+              flag = false;
+            }
+            break;
+          case 'VERIFY':
+            // 审核按钮权限
+            if (row.status === 'PlatformClerkUnreview' && this.currentJobId === 36) {
+              // 平台文员待审核、平台文员
+              flag = false;
+            }
+            if (row.status === 'HeadDepartUnreview' && this.currentJobId === 59) {
+              // 事业部负责人待审核、事业部负责人
+              flag = false;
+            }
+            if (row.status === 'BranchBusinessManageUnreview' && this.currentJobId === 67) {
+              // 分公司业管待审核、业务监管岗（分公司业管）
+              flag = false;
+            }
+            break;
+        }
+      }
+      return flag;
     }
 
     // 改变查询时间
