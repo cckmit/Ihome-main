@@ -2756,7 +2756,7 @@
     // 新增 --- 初始化拆佣和平台费用
     async handleLoadCommission(type: any = '') {
       let flag: any = false;
-      flag = (this as any).$parent.validReceiveData(this.postData.receiveList, this.postData.calculation);
+      flag = this.validReceiveData(this.postData.receiveList, this.postData.calculation);
       if (!flag) {
         this.$message.error("请先完善收派金额信息！");
         return;
@@ -2872,6 +2872,52 @@
         })
       }
       return tempArr;
+    }
+
+    /*
+    * 校验收派金额信息模块
+    * 自动---是否都有收派套餐
+    * 手动---除了其他渠道费用外是否都大于等于0
+    * params: data: Array --- 需要判断的收派金额数组
+    * params: way: string --- 计算方式---auto:自动；Manual:手动
+    * */
+    validReceiveData(data: any = [], way: any = "Auto") {
+      if (data.length === 0) return false;
+      let flag: any = true;
+      if (way === 'Auto') {
+        // 自动
+        flag = data.every((item: any) => {
+          return (item.showData && item.showData.length > 0);
+        });
+      } else {
+        // 手动
+        data.forEach((item: any) => {
+          if ([null, undefined, ""].includes(item.receiveAmount)) {
+            flag = false;
+          }
+          if ([null, undefined, ""].includes(item.commAmount)) {
+            flag = false;
+          }
+          if ([null, undefined, ""].includes(item.rewardAmount)) {
+            flag = false;
+          }
+          if ([null, undefined, ""].includes(item.totalPackageAmount)) {
+            flag = false;
+          }
+          if ([null, undefined, ""].includes(item.distributionAmount)) {
+            flag = false;
+          }
+        })
+      }
+      // 判断收派信息存在服务费的时候，是否有甲方/客户信息 --- 2021-01-23暂时取消判断
+      // data.forEach((item: any) => {
+      //   if (item.type === 'ServiceFee') {
+      //     if (!item.partyACustomer || !item.partyACustomerName) {
+      //       flag = false;
+      //     }
+      //   }
+      // });
+      return flag;
     }
 
     /*
