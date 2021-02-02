@@ -222,11 +222,11 @@
       <el-row>
         <el-button type="primary" @click="getListMixin()">查询</el-button>
         <el-button
-          :class="{ 'ih-data-disabled': currentJobId === 52}"
+          :class="{ 'ih-data-disabled': currentJobId !== 52}"
           v-has="'B.SALES.DEAL.DEALLIST.ADD'"
           type="success" @click="handleAdd('add')">添加</el-button>
         <el-button
-          :class="{ 'ih-data-disabled': currentJobId === 4}"
+          :class="{ 'ih-data-disabled': currentJobId !== 4}"
           v-has="'B.SALES.DEAL.DEALLIST.ACHIEVEDECLARE'"
           type="success" @click="handleAdd('declare')">业绩申报</el-button>
         <el-button type="info" @click="handleReset()">重置</el-button>
