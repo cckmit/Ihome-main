@@ -2184,13 +2184,24 @@
       }
       // 1. 渠道商信息 --- 分销成交才会有
       if (this.postData.contType === 'DistriDeal') {
-        obj.agencyVO.push(
-          {
-            agencyId: this.postData.agencyId,
-            brokerId: this.postData.brokerId,
-            channelLevel: this.postData.channelLevel,
-          }
-        )
+        if (this.id) {
+          obj.agencyVO.push(
+            {
+              dealId: this.id,
+              agencyId: this.postData.agencyId,
+              brokerId: this.postData.brokerId,
+              channelLevel: this.postData.channelLevel,
+            }
+          )
+        } else {
+          obj.agencyVO.push(
+            {
+              agencyId: this.postData.agencyId,
+              brokerId: this.postData.brokerId,
+              channelLevel: this.postData.channelLevel,
+            }
+          )
+        }
         obj.dealVO.contNo = this.postData.contNo;
         obj.dealVO.isMat = this.postData.isMat;
       }
@@ -2201,6 +2212,9 @@
             item.isCustomer = 'Yes';
           } else {
             item.isCustomer = 'No';
+          }
+          if (this.id) {
+            item.dealId = this.id;
           }
         });
         obj.customerVO = this.postData.customerVO;
@@ -2281,16 +2295,48 @@
         });
         // console.log('obj.documentVO', obj.documentVO);
       }
+      if (this.id && obj.documentVO && obj.documentVO.length) {
+        // 编辑情况
+        obj.documentVO.forEach((vo: any) => {
+          vo.dealId = this.id;
+        });
+      }
       // 派发金额合计
       if (this.receiveAchieveVO.length > 0) {
         this.receiveAchieveVO.forEach((vo: any) => {
-          obj.receiveAchieveVO.push(
-            {
-              achieveAmount: vo.achieveAmount,
-              otherChannelFees: vo.otherChannelFees,
-              receiveAmount: vo.receiveAmount
+          if (this.id) {
+            // 编辑情况
+            if (this.editBaseInfo && this.editBaseInfo.receiveAchieveList && this.editBaseInfo.receiveAchieveList.length) {
+              obj.basic.receiveAchieveVO.push(
+                {
+                  dealId: this.editBaseInfo.receiveAchieveList[0].dealId,
+                  id: this.editBaseInfo.receiveAchieveList[0].id,
+                  achieveAmount: vo.achieveAmount,
+                  otherChannelFees: vo.otherChannelFees,
+                  receiveAmount: vo.receiveAmount
+                }
+              )
+            } else {
+              obj.basic.receiveAchieveVO.push(
+                {
+                  dealId: null,
+                  id: null,
+                  achieveAmount: vo.achieveAmount,
+                  otherChannelFees: vo.otherChannelFees,
+                  receiveAmount: vo.receiveAmount
+                }
+              )
             }
-          )
+          } else {
+            // 新增情况
+            obj.basic.receiveAchieveVO.push(
+              {
+                achieveAmount: vo.achieveAmount,
+                otherChannelFees: vo.otherChannelFees,
+                receiveAmount: vo.receiveAmount
+              }
+            )
+          }
         });
       }
       // 派发金额

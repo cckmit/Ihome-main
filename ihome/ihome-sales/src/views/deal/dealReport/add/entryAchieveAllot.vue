@@ -1426,7 +1426,7 @@
       this.id = this.$route.query.id;
       if (this.id) {
         this.addFlag = false;
-        this.editFlag = false;
+        this.editFlag = true;
         this.tipsFlag = false;
         this.dividerTips = '刷新成功';
         await this.editInitPage(this.id);
@@ -1465,7 +1465,7 @@
         this.postData.isConsign = res.isConsign;
         this.postData.isMarketProject = res.isMarketProject;
         this.postData.oneAgentTeamId = res.oneAgentTeamId;
-        this.postData.oneAgentTeam = res.oneAgentTeam;
+        this.postData.oneAgentTeamName = res.oneAgentTeam;
         this.postData.propertyType = res?.house?.propertyType;
         this.postData.buildingId = res?.house?.buildingId;
         this.postData.roomId = res?.house?.roomId;
@@ -2384,10 +2384,12 @@
       }
       // 收派金额中的甲方
       this.commissionCustomerList = [];
-      this.commissionCustomerList = this.initCommissionCustomer(baseInfo.receiveVOS);
+      this.commissionCustomerList = await this.initCommissionCustomer(baseInfo.receiveVOS);
       this.commissionServiceFeeObj = {};
-      this.commissionServiceFeeObj = this.initCommissionServiceFee(baseInfo.receiveVOS);
-      console.log('commissionServiceFeeObj', this.commissionServiceFeeObj)
+      this.commissionServiceFeeObj = await this.initCommissionServiceFee(baseInfo.receiveVOS);
+      console.log('commissionServiceFeeObj', this.commissionServiceFeeObj);
+      // 初始化上传附件
+      await this.getDocumentList(baseInfo.contType);
     }
 
     // 初始化收派金额中的代理费的甲方数组 --- 代理费
@@ -2500,7 +2502,7 @@
         // 初始化收派套餐
         this.initReceive();
         // 选择房号后构建表格数据
-        this.getDocumentList(value);
+        // this.getDocumentList(value);
         // 判断是否可以手动添加优惠告知书
         this.canAddNoticeItem(this.baseInfoByTerm.chargeEnum, this.postData.contType, this.baseInfoInDeal.dealNoticeStatus);
         // 记录临时值
@@ -2544,6 +2546,7 @@
           return !["VisitConfirForm", "DealConfirForm"].includes(item.code);
         });
       }
+      // 获取初始化的值
       this.postData.documentVO.forEach((list: any) => {
         switch(list.code) {
           case "Notice":
@@ -3369,13 +3372,24 @@
       }
       // 渠道商信息 --- 分销成交才会有
       if (this.postData.contType === 'DistriDeal') {
-        obj.basic.agencyVO.push(
-          {
-            agencyId: this.postData.agencyId,
-            brokerId: this.postData.brokerId,
-            channelLevel: this.postData.channelLevel,
-          }
-        )
+        if (this.id) {
+          obj.basic.agencyVO.push(
+            {
+              dealId: this.id,
+              agencyId: this.postData.agencyId,
+              brokerId: this.postData.brokerId,
+              channelLevel: this.postData.channelLevel,
+            }
+          )
+        } else {
+          obj.basic.agencyVO.push(
+            {
+              agencyId: this.postData.agencyId,
+              brokerId: this.postData.brokerId,
+              channelLevel: this.postData.channelLevel,
+            }
+          )
+        }
         obj.basic.dealVO.contNo = this.postData.contNo;
         obj.basic.dealVO.isMat = this.postData.isMat;
       }
@@ -3386,6 +3400,10 @@
             item.isCustomer = 'Yes';
           } else {
             item.isCustomer = 'No';
+          }
+          if (this.id) {
+            // 编辑的时候要加上成交id
+            item.dealId = this.id;
           }
         });
         obj.basic.customerVO = this.postData.customerVO;
@@ -3446,13 +3464,24 @@
         this.postData.documentVO.forEach((item: any) => {
           if (item.fileList.length > 0) {
             item.fileList.forEach((list: any) => {
-              obj.basic.documentVO.push(
-                {
-                  fileId: list.fileId,
-                  fileName: list.name,
-                  fileType: item.code
-                }
-              )
+              if (this.id) {
+                obj.basic.documentVO.push(
+                  {
+                    dealId: this.id,
+                    fileId: list.fileId,
+                    fileName: list.name,
+                    fileType: item.code
+                  }
+                )
+              } else {
+                obj.basic.documentVO.push(
+                  {
+                    fileId: list.fileId,
+                    fileName: list.name,
+                    fileType: item.code
+                  }
+                )
+              }
             });
           }
           // 初始化的
@@ -3463,13 +3492,39 @@
       // 派发金额合计
       if (this.receiveAchieveVO.length > 0) {
         this.receiveAchieveVO.forEach((vo: any) => {
-          obj.basic.receiveAchieveVO.push(
-            {
-              achieveAmount: vo.achieveAmount,
-              otherChannelFees: vo.otherChannelFees,
-              receiveAmount: vo.receiveAmount
+          if (this.id) {
+            // 编辑情况
+            if (this.editBaseInfo && this.editBaseInfo.receiveAchieveList && this.editBaseInfo.receiveAchieveList.length) {
+              obj.basic.receiveAchieveVO.push(
+                {
+                  dealId: this.editBaseInfo.receiveAchieveList[0].dealId,
+                  id: this.editBaseInfo.receiveAchieveList[0].id,
+                  achieveAmount: vo.achieveAmount,
+                  otherChannelFees: vo.otherChannelFees,
+                  receiveAmount: vo.receiveAmount
+                }
+              )
+            } else {
+              obj.basic.receiveAchieveVO.push(
+                {
+                  dealId: null,
+                  id: null,
+                  achieveAmount: vo.achieveAmount,
+                  otherChannelFees: vo.otherChannelFees,
+                  receiveAmount: vo.receiveAmount
+                }
+              )
             }
-          )
+          } else {
+            // 新增情况
+            obj.basic.receiveAchieveVO.push(
+              {
+                achieveAmount: vo.achieveAmount,
+                otherChannelFees: vo.otherChannelFees,
+                receiveAmount: vo.receiveAmount
+              }
+            )
+          }
         });
       }
       // 派发金额
