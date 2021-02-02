@@ -1930,7 +1930,7 @@
         this.postData.customerList = baseInfo.customerAddVOS && baseInfo.customerAddVOS.length ? baseInfo.customerAddVOS : [];
         // 收派金额 --- 代理费
         if (baseInfo.receiveVOS && baseInfo.receiveVOS.length) {
-          let tempList: any = (this as any).$parent.initReceiveVOS(baseInfo.receiveVOS);
+          let tempList: any = this.initReceiveVOS(baseInfo.receiveVOS);
           if (this.postData.receiveList && this.postData.receiveList.length) {
             this.postData.receiveList.push(...tempList);
           } else {
@@ -2001,7 +2001,7 @@
         if (baseInfo.serviceFee) {
           let tempList: any = [];
           tempList.push(baseInfo.serviceFee);
-          let list: any = (this as any).$parent.initReceiveVOS(tempList);
+          let list: any = this.initReceiveVOS(tempList);
           this.$nextTick(() => {
             this.postData.receiveList.push(...list);
           });
