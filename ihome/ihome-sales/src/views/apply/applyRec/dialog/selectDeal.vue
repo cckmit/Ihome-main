@@ -4,7 +4,7 @@
  * @Author: ywl
  * @Date: 2021-01-07 19:02:24
  * @LastEditors: ywl
- * @LastEditTime: 2021-01-14 15:05:11
+ * @LastEditTime: 2021-02-02 14:53:16
 -->
 <template>
   <el-dialog
@@ -136,6 +136,17 @@
           </template>
         </el-table-column>
       </template>
+      <template #unit>
+        <el-table-column
+          label="成交单位"
+          min-width="180"
+        >
+          <template v-slot="{ row }">
+            <span v-if="row.buildingName && row.roomId">{{`${row.proName}-${row.buildingName}-${row.roomId}`}}</span>
+            <span v-else>{{`${row.proName}`}}</span>
+          </template>
+        </el-table-column>
+      </template>
       <template #sign>
         <el-table-column
           label="签约信息"
@@ -217,11 +228,11 @@ export default class SelectDeal extends Vue {
       label: "成交报告编号",
       minWidth: 170,
     },
-    {
-      prop: "proName",
-      label: "项目名称",
-      minWidth: 120,
-    },
+    // {
+    //   prop: "proName",
+    //   label: "项目名称",
+    //   minWidth: 120,
+    // },
     {
       prop: "termName",
       label: "周期名称",
@@ -239,6 +250,9 @@ export default class SelectDeal extends Vue {
       prop: "customerName",
       label: "客户姓名",
       minWidth: 150,
+    },
+    {
+      slot: "unit",
     },
     {
       slot: "contType",
