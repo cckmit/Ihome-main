@@ -121,9 +121,9 @@
               class="width--100">
               <el-option
                 v-for="item in firstAgencyCompanyList"
-                :key="item.agencyId"
-                :label="item.agencyName"
-                :value="item.agencyId"></el-option>
+                :key="item.id"
+                :label="item.name"
+                :value="item.id"></el-option>
             </el-select>
           </el-form-item>
         </el-col>
@@ -491,9 +491,17 @@
           <el-table
             class="ih-table"
             :data="postData.offerNoticeVO">
-            <el-table-column prop="offerNoticeName" label="名称" min-width="120"></el-table-column>
-            <el-table-column prop="offerNoticeCode" label="优惠告知书编号" min-width="120"></el-table-column>
-            <el-table-column prop="offerNoticeStatus" label="优惠告知书状态" min-width="120"></el-table-column>
+            <el-table-column prop="notificationType" label="名称" min-width="120">
+              <template v-slot="{ row }">
+                {{$root.dictAllName(row.notificationType, 'NotificationType')}}
+              </template>
+            </el-table-column>
+            <el-table-column prop="noticeNo" label="优惠告知书编号" min-width="120"></el-table-column>
+            <el-table-column prop="notificationStatus" label="优惠告知书状态" min-width="120">
+              <template v-slot="{ row }">
+                {{$root.dictAllName(row.notificationStatus, 'NotificationStatus')}}
+              </template>
+            </el-table-column>
             <el-table-column fixed="right" label="操作" width="100">
               <template slot-scope="scope">
                 <el-link
@@ -804,7 +812,7 @@
     <p id="anchor-5" class="ih-info-title">对外拆佣</p>
     <el-row style="padding-left: 20px">
       <el-col>
-        <div class="add-all-wrapper" v-if="postData.calculation === 'Manual'">
+        <div class="add-all-wrapper" v-if="false">
           <el-button type="success" @click="handleAddCommission">增加拆佣项</el-button>
         </div>
         <el-table
@@ -821,7 +829,7 @@
               <div v-else>
                 <el-select
                   v-model="scope.row.target"
-                  :disabled="postData.calculation === 'Auto'"
+                  :disabled="postData.calculation === 'Auto' || true"
                   placeholder="请选择">
                   <el-option
                     v-for="item in $root.dictAllList('CommObjectType')"
@@ -839,16 +847,21 @@
                 {{scope.row.agencyName}}
               </div>
               <div v-else>
-                <div v-if="scope.row.target === 'Personal'">
-                  <el-input v-model="scope.row.agencyName"></el-input>
+                <div v-if="postData.calculation === 'Auto' || true">
+                  <el-input placeholder="收款方" disabled v-model="scope.row.agencyName"></el-input>
                 </div>
-                <div v-if="scope.row.target === 'AgentCompany'">
-                  <el-input disabled v-model="scope.row.agencyName"></el-input>
-                </div>
-                <div v-if="scope.row.target === 'ChannelCompany'">
-                  <el-input placeholder="请选择收款方" readonly v-model="scope.row.agencyName">
-                    <el-button slot="append" icon="el-icon-search" @click.native.prevent="selectAgency('agencyName', scope)"></el-button>
-                  </el-input>
+                <div v-else>
+                  <div v-if="scope.row.target === 'Personal'">
+                    <el-input placeholder="请输入收款方" v-model="scope.row.agencyName"></el-input>
+                  </div>
+                  <div v-if="scope.row.target === 'AgentCompany'">
+                    <el-input disabled v-model="scope.row.agencyName"></el-input>
+                  </div>
+                  <div v-if="scope.row.target === 'ChannelCompany'">
+                    <el-input placeholder="请选择收款方" readonly v-model="scope.row.agencyName">
+                      <el-button slot="append" icon="el-icon-search" @click.native.prevent="selectAgency('agencyName', scope)"></el-button>
+                    </el-input>
+                  </div>
                 </div>
               </div>
             </template>
@@ -861,7 +874,7 @@
               <div v-else>
                 <el-select
                   v-model="scope.row.feeType"
-                  :disabled="postData.calculation === 'Auto'"
+                  :disabled="postData.calculation === 'Auto' || true"
                   placeholder="请选择费用类型"
                   @change="changeFeeType($event, scope.row)"
                   class="width--100">
@@ -878,22 +891,27 @@
           <el-table-column prop="partyACustomer" label="费用来源(客户/甲方)" min-width="120">
             <template slot-scope="scope">
               <div v-if="['ChangeBasicInf', 'ChangeInternalAchieveInf'].includes(changeType)">
-                {{scope.row.partyACustomerName}}
+                <div v-if="scope.row.feeType === 'ServiceFee'">客户</div>
+                <div v-else>{{scope.row.partyACustomerName}}</div>
               </div>
               <div v-else>
-                <div v-if="scope.row.feeType === 'ServiceFee'">
-                  <el-input disabled v-model="scope.row.partyACustomerName"></el-input>
+                <div v-if="postData.calculation === 'Auto' || true">
+                  <div v-if="scope.row.feeType === 'ServiceFee'">客户</div>
+                  <el-input v-if="scope.row.feeType === 'AgencyFee'" disabled v-model="scope.row.partyACustomerName"></el-input>
                 </div>
-                <div v-if="scope.row.feeType === 'AgencyFee'">
-                  <el-select
-                    :disabled="postData.calculation === 'Auto'"
-                    v-model="scope.row.partyACustomer"
-                    @change="handleSelectCustomer($event, scope.row)"
-                    placeholder="请选择">
-                    <el-option
-                      v-for="(item, index) in commissionCustomerList" :key="index"
-                      :label="item.partyACustomerName" :value="item.partyACustomer"></el-option>
-                  </el-select>
+                <div v-else>
+                  <div v-if="scope.row.feeType === 'ServiceFee'">客户</div>
+                  <div v-if="scope.row.feeType === 'AgencyFee'">
+                    <el-select
+                      :disabled="postData.calculation === 'Auto'"
+                      v-model="scope.row.partyACustomer"
+                      @change="handleSelectCustomer($event, scope.row)"
+                      placeholder="请选择">
+                      <el-option
+                        v-for="(item, index) in commissionCustomerList" :key="index"
+                        :label="item.partyACustomerName" :value="item.partyACustomer"></el-option>
+                    </el-select>
+                  </div>
                 </div>
               </div>
             </template>
@@ -906,7 +924,7 @@
               <div v-else>
                 <el-input
                   v-digits="2"
-                  :disabled="postData.calculation === 'Auto'"
+                  :disabled="postData.calculation === 'Auto' || true"
                   v-model="scope.row.amount"></el-input>
               </div>
             </template>
@@ -925,7 +943,7 @@
             </template>
           </el-table-column>
           <el-table-column
-            v-if="postData.calculation === 'Manual'"
+            v-if="false"
             fixed="right" label="操作" width="100">
             <template slot-scope="scope">
               <el-link
@@ -1281,6 +1299,7 @@
       brokerId: null, // 渠道经纪人Id
       brokerName: null, // 渠道经纪人
       recordStr: null, // 报备信息
+      reportId: null,
       oneAgentTeamId: null,
       isMarketProject: null,
       recordState: null,
@@ -1653,17 +1672,18 @@
       this.tipsFlag = true;
       this.dividerTips = '业绩分配';
       this.isSameFlag = res?.scheme?.isSame === "Yes"; // 分销总包是否一致
-      this.postData.address = res.house.address;
-      this.postData.area = res.house.area;
-      this.postData.buildingId = res.house.buildingId;
-      this.postData.buildingName = res.house.buildingName;
-      this.postData.hall = res.house.hall;
-      this.postData.propertyNo = res.house.propertyNo;
-      this.postData.propertyType = res.house.propertyType;
-      this.postData.room = res.house.room;
-      this.postData.roomId = res.house.roomId;
-      this.postData.roomNo = res.house.roomNo;
-      this.postData.toilet = res.house.toilet;
+      this.postData.address = res?.house?.address;
+      this.postData.area = res?.house?.area;
+      this.postData.buildingId = res?.house?.buildingId;
+      this.postData.buildingName = res?.house?.buildingName;
+      this.postData.hall = res?.house?.hall;
+      this.postData.propertyNo = res?.house?.propertyNo;
+      this.postData.propertyType = res?.house?.propertyType;
+      this.postData.room = res?.house?.room;
+      this.postData.roomId = res?.house?.roomId;
+      this.postData.roomNo = res?.house?.roomNo;
+      this.postData.toilet = res?.house?.toilet;
+      this.postData.reportId = res?.reportId;
       // if (res.agencyList && res.agencyList.length) {
       //   this.initAgency(res.agencyList, true);
       // }
@@ -1763,7 +1783,7 @@
             });
           }
           this.postData.brokerId = data[0].brokerId; // 渠道经纪人Id
-          this.postData.brokerName = data[0].broker; // 渠道经纪人
+          this.postData.brokerName = data[0].brokerName || data[0].broker; // 渠道经纪人
         }
       }
     }
@@ -1844,6 +1864,7 @@
           // 非分销成交模式 --- 自然来访 / 自渠成交
           this.initAgency(baseInfo.agencyVOs, false);
         }
+        this.postData.reportId = baseInfo.recordId;
         // 栋座
         if (baseInfo.buildingId && !this.postData.buildingId) {
           this.postData.buildingId = baseInfo.buildingId;
@@ -3347,7 +3368,9 @@
         dataObj.agencyVO.push(
           {
             agencyId: this.postData.agencyId,
+            agencyName: this.postData.agencyName,
             brokerId: this.postData.brokerId,
+            broker: this.postData.brokerName,
             channelLevel: this.postData.channelLevel
           }
         )
@@ -3390,7 +3413,9 @@
         dataObj.agencyVO.push(
           {
             agencyId: this.postData.agencyId,
+            agencyName: this.postData.agencyName,
             brokerId: this.postData.brokerId,
+            broker: this.postData.brokerName,
             channelLevel: this.postData.channelLevel
           }
         )
@@ -3771,9 +3796,46 @@
   }
 
   .divider-padding {
-    padding: 20px 20px;
+    height: 115px;
+    //padding: 20px 0px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
     box-sizing: border-box;
-    margin: 10px 0px;
+    margin: 10px 0px 10px 20px;
+    border: 2px solid #409EFF;
+    border-radius: 5px;
+
+    .divider-tip {
+      font-weight: bold;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+
+      div {
+        flex: 1;
+      }
+
+      .btn {
+        margin-top: 10px;
+
+        .btn-color {
+          color: #FFF;
+          background-color: #409EFF;
+          border-color: #409EFF;
+        }
+      }
+    }
+
+    .color-blur {
+      color: #409EFF;
+    }
+
+    .color-red {
+      color: #f56c6c;
+    }
 
     /deep/.el-divider {
       background-color: #409EFF;
@@ -3783,6 +3845,26 @@
       color: #409EFF;
       font-size: 18px;
       font-weight: bold;
+    }
+  }
+
+  .border-color-red {
+    border-color: #f56c6c;
+  }
+
+  .border-color-none {
+    border-color: white;
+  }
+
+  .border-color-green {
+    border-color: #67c23a;
+
+    /deep/.el-divider {
+      background-color: #67c23a;
+    }
+
+    /deep/.el-divider__text {
+      color: #67c23a;
     }
   }
 </style>
