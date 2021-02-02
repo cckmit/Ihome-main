@@ -121,9 +121,9 @@
               class="width--100">
               <el-option
                 v-for="item in firstAgencyCompanyList"
-                :key="item.agencyId"
-                :label="item.agencyName"
-                :value="item.agencyId"></el-option>
+                :key="item.id"
+                :label="item.name"
+                :value="item.id"></el-option>
             </el-select>
           </el-form-item>
         </el-col>
@@ -491,9 +491,17 @@
           <el-table
             class="ih-table"
             :data="postData.offerNoticeVO">
-            <el-table-column prop="offerNoticeName" label="名称" min-width="120"></el-table-column>
-            <el-table-column prop="offerNoticeCode" label="优惠告知书编号" min-width="120"></el-table-column>
-            <el-table-column prop="offerNoticeStatus" label="优惠告知书状态" min-width="120"></el-table-column>
+            <el-table-column prop="notificationType" label="名称" min-width="120">
+              <template v-slot="{ row }">
+                {{$root.dictAllName(row.notificationType, 'NotificationType')}}
+              </template>
+            </el-table-column>
+            <el-table-column prop="noticeNo" label="优惠告知书编号" min-width="120"></el-table-column>
+            <el-table-column prop="notificationStatus" label="优惠告知书状态" min-width="120">
+              <template v-slot="{ row }">
+                {{$root.dictAllName(row.notificationStatus, 'NotificationStatus')}}
+              </template>
+            </el-table-column>
             <el-table-column fixed="right" label="操作" width="100">
               <template slot-scope="scope">
                 <el-link
@@ -3788,9 +3796,46 @@
   }
 
   .divider-padding {
-    padding: 20px 20px;
+    height: 115px;
+    //padding: 20px 0px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
     box-sizing: border-box;
-    margin: 10px 0px;
+    margin: 10px 0px 10px 20px;
+    border: 2px solid #409EFF;
+    border-radius: 5px;
+
+    .divider-tip {
+      font-weight: bold;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+
+      div {
+        flex: 1;
+      }
+
+      .btn {
+        margin-top: 10px;
+
+        .btn-color {
+          color: #FFF;
+          background-color: #409EFF;
+          border-color: #409EFF;
+        }
+      }
+    }
+
+    .color-blur {
+      color: #409EFF;
+    }
+
+    .color-red {
+      color: #f56c6c;
+    }
 
     /deep/.el-divider {
       background-color: #409EFF;
@@ -3800,6 +3845,26 @@
       color: #409EFF;
       font-size: 18px;
       font-weight: bold;
+    }
+  }
+
+  .border-color-red {
+    border-color: #f56c6c;
+  }
+
+  .border-color-none {
+    border-color: white;
+  }
+
+  .border-color-green {
+    border-color: #67c23a;
+
+    /deep/.el-divider {
+      background-color: #67c23a;
+    }
+
+    /deep/.el-divider__text {
+      color: #67c23a;
     }
   }
 </style>
