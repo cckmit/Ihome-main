@@ -121,9 +121,9 @@
               class="width--100">
               <el-option
                 v-for="item in firstAgencyCompanyList"
-                :key="item.agencyId"
-                :label="item.agencyName"
-                :value="item.agencyId"></el-option>
+                :key="item.id"
+                :label="item.name"
+                :value="item.id"></el-option>
             </el-select>
           </el-form-item>
         </el-col>
@@ -491,9 +491,17 @@
           <el-table
             class="ih-table"
             :data="postData.offerNoticeVO">
-            <el-table-column prop="offerNoticeName" label="名称" min-width="120"></el-table-column>
-            <el-table-column prop="offerNoticeCode" label="优惠告知书编号" min-width="120"></el-table-column>
-            <el-table-column prop="offerNoticeStatus" label="优惠告知书状态" min-width="120"></el-table-column>
+            <el-table-column prop="notificationType" label="名称" min-width="120">
+              <template v-slot="{ row }">
+                {{$root.dictAllName(row.notificationType, 'NotificationType')}}
+              </template>
+            </el-table-column>
+            <el-table-column prop="noticeNo" label="优惠告知书编号" min-width="120"></el-table-column>
+            <el-table-column prop="notificationStatus" label="优惠告知书状态" min-width="120">
+              <template v-slot="{ row }">
+                {{$root.dictAllName(row.notificationStatus, 'NotificationStatus')}}
+              </template>
+            </el-table-column>
             <el-table-column fixed="right" label="操作" width="100">
               <template slot-scope="scope">
                 <el-link
@@ -1922,7 +1930,7 @@
         this.postData.customerList = baseInfo.customerAddVOS && baseInfo.customerAddVOS.length ? baseInfo.customerAddVOS : [];
         // 收派金额 --- 代理费
         if (baseInfo.receiveVOS && baseInfo.receiveVOS.length) {
-          let tempList: any = (this as any).$parent.initReceiveVOS(baseInfo.receiveVOS);
+          let tempList: any = this.initReceiveVOS(baseInfo.receiveVOS);
           if (this.postData.receiveList && this.postData.receiveList.length) {
             this.postData.receiveList.push(...tempList);
           } else {
@@ -1993,7 +2001,7 @@
         if (baseInfo.serviceFee) {
           let tempList: any = [];
           tempList.push(baseInfo.serviceFee);
-          let list: any = (this as any).$parent.initReceiveVOS(tempList);
+          let list: any = this.initReceiveVOS(tempList);
           this.$nextTick(() => {
             this.postData.receiveList.push(...list);
           });
@@ -2748,7 +2756,7 @@
     // 新增 --- 初始化拆佣和平台费用
     async handleLoadCommission(type: any = '') {
       let flag: any = false;
-      flag = (this as any).$parent.validReceiveData(this.postData.receiveList, this.postData.calculation);
+      flag = this.validReceiveData(this.postData.receiveList, this.postData.calculation);
       if (!flag) {
         this.$message.error("请先完善收派金额信息！");
         return;
@@ -2864,6 +2872,52 @@
         })
       }
       return tempArr;
+    }
+
+    /*
+    * 校验收派金额信息模块
+    * 自动---是否都有收派套餐
+    * 手动---除了其他渠道费用外是否都大于等于0
+    * params: data: Array --- 需要判断的收派金额数组
+    * params: way: string --- 计算方式---auto:自动；Manual:手动
+    * */
+    validReceiveData(data: any = [], way: any = "Auto") {
+      if (data.length === 0) return false;
+      let flag: any = true;
+      if (way === 'Auto') {
+        // 自动
+        flag = data.every((item: any) => {
+          return (item.showData && item.showData.length > 0);
+        });
+      } else {
+        // 手动
+        data.forEach((item: any) => {
+          if ([null, undefined, ""].includes(item.receiveAmount)) {
+            flag = false;
+          }
+          if ([null, undefined, ""].includes(item.commAmount)) {
+            flag = false;
+          }
+          if ([null, undefined, ""].includes(item.rewardAmount)) {
+            flag = false;
+          }
+          if ([null, undefined, ""].includes(item.totalPackageAmount)) {
+            flag = false;
+          }
+          if ([null, undefined, ""].includes(item.distributionAmount)) {
+            flag = false;
+          }
+        })
+      }
+      // 判断收派信息存在服务费的时候，是否有甲方/客户信息 --- 2021-01-23暂时取消判断
+      // data.forEach((item: any) => {
+      //   if (item.type === 'ServiceFee') {
+      //     if (!item.partyACustomer || !item.partyACustomerName) {
+      //       flag = false;
+      //     }
+      //   }
+      // });
+      return flag;
     }
 
     /*
@@ -3788,9 +3842,46 @@
   }
 
   .divider-padding {
-    padding: 20px 20px;
+    height: 115px;
+    //padding: 20px 0px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
     box-sizing: border-box;
-    margin: 10px 0px;
+    margin: 10px 0px 10px 20px;
+    border: 2px solid #409EFF;
+    border-radius: 5px;
+
+    .divider-tip {
+      font-weight: bold;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+
+      div {
+        flex: 1;
+      }
+
+      .btn {
+        margin-top: 10px;
+
+        .btn-color {
+          color: #FFF;
+          background-color: #409EFF;
+          border-color: #409EFF;
+        }
+      }
+    }
+
+    .color-blur {
+      color: #409EFF;
+    }
+
+    .color-red {
+      color: #f56c6c;
+    }
 
     /deep/.el-divider {
       background-color: #409EFF;
@@ -3800,6 +3891,26 @@
       color: #409EFF;
       font-size: 18px;
       font-weight: bold;
+    }
+  }
+
+  .border-color-red {
+    border-color: #f56c6c;
+  }
+
+  .border-color-none {
+    border-color: white;
+  }
+
+  .border-color-green {
+    border-color: #67c23a;
+
+    /deep/.el-divider {
+      background-color: #67c23a;
+    }
+
+    /deep/.el-divider__text {
+      color: #67c23a;
     }
   }
 </style>

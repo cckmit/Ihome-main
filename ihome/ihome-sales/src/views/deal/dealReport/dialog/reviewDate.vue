@@ -76,7 +76,7 @@
           }
         } else {
           // 不是第一天
-          rangeTimes = new Date(`${year}-${month}-01`).getTime();
+          rangeTimes = new Date(`${year}-${month}-01`).getTime() - 24 * 60 * 60 * 1000;
         }
         return time.getTime() > Date.now() || time.getTime() < rangeTimes;
       }
