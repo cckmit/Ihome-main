@@ -192,7 +192,12 @@
             <el-table-column prop="noticeNo" label="优惠告知书编号" min-width="120"></el-table-column>
             <el-table-column prop="notificationStatus" label="优惠告知书状态" min-width="120">
               <template slot-scope="scope">
-                <div>{{$root.dictAllName(scope.row.notificationStatus, 'NotificationStatus')}}</div>
+                <div v-if="scope.row.notificationStatus">
+                  {{$root.dictAllName(scope.row.notificationStatus, 'NotificationStatus')}}
+                </div>
+                <div v-else>
+                  {{scope.row.notificationStatusName}}
+                </div>
               </template>
             </el-table-column>
             <el-table-column fixed="right" label="操作" width="130">
