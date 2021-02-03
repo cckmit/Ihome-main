@@ -3282,6 +3282,8 @@
           postData.basic.dealVO.status = 'PlatformClerkUnreview'; // 平台文员待审核
         }
         if (this.id) {
+          postData.allotDate = this.editBaseInfo.allotDate ? this.editBaseInfo.allotDate : this.getCurrentDate();
+          postData.allotDate = this.editBaseInfo.alloterId ? this.editBaseInfo.alloterId : (this as any).$root?.userInfo?.id;
           postData.basic.dealVO.dealCode = this.postData.dealCode;
           postData.basic.dealVO.id = this.postData.id;
           postData.basic.dealVO.parentId = this.postData.parentId;
@@ -3301,6 +3303,35 @@
         this.$message.warning("请先填好数据再保存");
         return false;
       }
+    }
+
+    // 构建当前日期
+    getCurrentDate() {
+      let currentTimeStr: any = null;
+      let currentDate: any = new Date();
+      let year: any = currentDate.getFullYear();
+      let month: any = (currentDate.getMonth() + 1);
+      let date: any = currentDate.getDate();
+      let hour: any = currentDate.getHours();
+      let minute: any = currentDate.getMinutes();
+      let second: any = currentDate.getSeconds();
+      if (month >= 1 && month <= 9) {
+        month = "0" + month;
+      }
+      if (date >= 0 && date <= 9) {
+        date = "0" + date;
+      }
+      if (hour >= 1 && hour <= 9) {
+        hour = "0" + hour;
+      }
+      if (minute >= 0 && minute <= 9) {
+        minute = "0" + minute;
+      }
+      if (second >= 0 && second <= 9) {
+        second = "0" + second;
+      }
+      currentTimeStr = `${year}-${month}-${date} ${hour}:${minute}:${second}`;
+      return currentTimeStr;
     }
 
     // 构建参数
