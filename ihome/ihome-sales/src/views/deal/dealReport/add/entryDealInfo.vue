@@ -1226,7 +1226,7 @@
           vo.fileList = []; // 存放新上传的数据
           list.forEach((item: any) => {
             if (vo.code === item.fileType) {
-              vo.defaultFileLists.push(
+              vo.defaultFileList.push(
                 {
                   ...item,
                   name: item.fileName
