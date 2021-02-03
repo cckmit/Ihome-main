@@ -1301,6 +1301,7 @@
       recordStr: null, // 报备信息
       reportId: null,
       oneAgentTeamId: null,
+      oneAgentTeamName: null,
       isMarketProject: null,
       recordState: null,
       dataSign: null,
@@ -1684,6 +1685,7 @@
       this.postData.roomNo = res?.house?.roomNo;
       this.postData.toilet = res?.house?.toilet;
       this.postData.reportId = res?.reportId;
+      this.postData.oneAgentTeamName = res?.oneAgentTeam;
       // if (res.agencyList && res.agencyList.length) {
       //   this.initAgency(res.agencyList, true);
       // }
