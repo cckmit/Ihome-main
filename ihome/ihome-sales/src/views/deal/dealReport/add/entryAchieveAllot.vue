@@ -3320,6 +3320,7 @@
           postData.basic.dealVO.dealCode = this.postData.dealCode;
           postData.basic.dealVO.id = this.postData.id;
           postData.basic.dealVO.parentId = this.postData.parentId;
+          console.log('postData:', postData);
           await post_deal_updateAchieveAllot(postData);
           this.$message.success("修改成功");
           this.$goto({
@@ -3384,9 +3385,11 @@
             "cycleId": '',
             "dataSign": "",
             "dealOrgId": '',
+            "dealCode": null,
             "isConsign": "",
             "isMarketProject": "",
             "isMat": "",
+            "id": null,
             "modelCode": "",
             "noticeIds": [],
             "oneAgentTeamId": "",
@@ -3400,7 +3403,8 @@
             "stage": "",
             "status": "",
             "subscribeDate": "",
-            "subscribePrice": ""
+            "subscribePrice": "",
+            "parentId": null
           }, // 成交基础信息
           documentVO: [], // 上传附件
           houseVO: {
