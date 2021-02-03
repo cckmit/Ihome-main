@@ -862,7 +862,7 @@
             </el-table-column>
             <el-table-column prop="roleAchieveCap" label="角色业绩上限" min-width="150">
               <template slot-scope="{row}">
-                <div :class="!row.correct ? 'achieve-color-red' : ''">{{row.roleAchieveCap}}</div>
+                <div :class="row.correct === false ? 'achieve-color-red' : ''">{{row.roleAchieveCap}}</div>
               </template>
             </el-table-column>
             <el-table-column prop="rolerName" label="角色人" min-width="150">
@@ -876,7 +876,7 @@
             </el-table-column>
             <el-table-column prop="corporateAchieve" label="角色人业绩" min-width="150">
               <template slot-scope="{row}">
-                <div :class="!row.correct ? 'achieve-color-red' : ''">{{row.corporateAchieve}}</div>
+                <div :class="row.correct === false ? 'achieve-color-red' : ''">{{row.corporateAchieve}}</div>
               </template>
             </el-table-column>
             <el-table-column prop="roleAchieveRatio" label="角色人业绩比例(%)" min-width="150"></el-table-column>
@@ -945,7 +945,7 @@
             </el-table-column>
             <el-table-column prop="roleAchieveCap" label="角色业绩上限" min-width="150">
               <template slot-scope="{row}">
-                <div :class="!row.correct ? 'achieve-color-red' : ''">{{row.roleAchieveCap}}</div>
+                <div :class="row.correct === false ? 'achieve-color-red' : ''">{{row.roleAchieveCap}}</div>
               </template>
             </el-table-column>
             <el-table-column prop="rolerName" label="角色人" min-width="150">
@@ -959,7 +959,7 @@
             </el-table-column>
             <el-table-column prop="corporateAchieve" label="角色人业绩" min-width="150">
               <template slot-scope="{row}">
-                <div :class="!row.correct ? 'achieve-color-red' : ''">{{row.corporateAchieve}}</div>
+                <div :class="row.correct === false ? 'achieve-color-red' : ''">{{row.corporateAchieve}}</div>
               </template>
             </el-table-column>
             <el-table-column prop="roleAchieveRatio" label="角色人业绩比例(%)" min-width="150"></el-table-column>
@@ -3326,6 +3326,8 @@
           postData.basic.dealVO.dealCode = this.editBaseInfo?.dealCode;
           postData.basic.dealVO.id = this.editBaseInfo?.id;
           postData.basic.dealVO.parentId = this.editBaseInfo?.parentId;
+          postData.basic.dealVO.entryDate = this.editBaseInfo?.entryDate;
+          postData.basic.dealVO.entryPersonId = this.editBaseInfo?.entryPersonId;
           console.log('postData:', postData);
           await post_deal_updateAchieveAllot(postData);
           this.$message.success("修改成功");

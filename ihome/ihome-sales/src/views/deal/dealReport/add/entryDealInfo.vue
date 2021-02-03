@@ -2123,6 +2123,8 @@
           postData.dealVO.dealCode = this.editBaseInfo?.dealCode;
           postData.dealVO.id = this.editBaseInfo?.id;
           postData.dealVO.parentId = this.editBaseInfo?.parentId;
+          postData.dealVO.entryDate = this.editBaseInfo?.entryDate;
+          postData.dealVO.entryPersonId = this.editBaseInfo?.entryPersonId;
           await post_deal_updateDealBasicInf(postData);
           this.$message.success("修改成功");
           this.$goto({

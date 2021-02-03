@@ -978,7 +978,11 @@
               <div>{{$root.dictAllName(scope.row.roleType, 'DealRole')}}</div>
             </template>
           </el-table-column>
-          <el-table-column prop="roleAchieveCap" label="角色业绩上限" min-width="150"></el-table-column>
+          <el-table-column prop="roleAchieveCap" label="角色业绩上限" min-width="150">
+            <template slot-scope="{row}">
+              <div :class="row.correct === false ? 'achieve-color-red' : ''">{{row.roleAchieveCap}}</div>
+            </template>
+          </el-table-column>
           <el-table-column prop="rolerName" label="角色人" min-width="150">
             <template slot-scope="scope">
               <div v-if="scope.row.roleType === 'BranchOffice'">——</div>
@@ -988,7 +992,11 @@
               </div>
             </template>
           </el-table-column>
-          <el-table-column prop="corporateAchieve" label="角色人业绩" min-width="150"></el-table-column>
+          <el-table-column prop="corporateAchieve" label="角色人业绩" min-width="150">
+            <template slot-scope="{row}">
+              <div :class="row.correct === false ? 'achieve-color-red' : ''">{{row.corporateAchieve}}</div>
+            </template>
+          </el-table-column>
           <el-table-column prop="roleAchieveRatio" label="角色人业绩比例(%)" min-width="150"></el-table-column>
           <el-table-column prop="commFees" label="拆佣金额" min-width="150"></el-table-column>
           <el-table-column prop="commFeesRatio" label="拆佣比例(%)" min-width="110"></el-table-column>
@@ -1052,7 +1060,11 @@
               <div>{{$root.dictAllName(scope.row.roleType, 'DealRole')}}</div>
             </template>
           </el-table-column>
-          <el-table-column prop="roleAchieveCap" label="角色业绩上限" min-width="150"></el-table-column>
+          <el-table-column prop="roleAchieveCap" label="角色业绩上限" min-width="150">
+            <template slot-scope="{row}">
+              <div :class="row.correct === false ? 'achieve-color-red' : ''">{{row.roleAchieveCap}}</div>
+            </template>
+          </el-table-column>
           <el-table-column prop="rolerName" label="角色人" min-width="150">
             <template slot-scope="scope">
               <div v-if="scope.row.roleType === 'BranchOffice'">——</div>
@@ -1062,7 +1074,11 @@
               </div>
             </template>
           </el-table-column>
-          <el-table-column prop="corporateAchieve" label="角色人业绩" min-width="150"></el-table-column>
+          <el-table-column prop="corporateAchieve" label="角色人业绩" min-width="150">
+            <template slot-scope="{row}">
+              <div :class="row.correct === false ? 'achieve-color-red' : ''">{{row.corporateAchieve}}</div>
+            </template>
+          </el-table-column>
           <el-table-column prop="roleAchieveRatio" label="角色人业绩比例(%)" min-width="150"></el-table-column>
           <el-table-column prop="commFees" label="拆佣金额" min-width="150"></el-table-column>
           <el-table-column prop="commFeesRatio" label="拆佣比例(%)" min-width="110"></el-table-column>
