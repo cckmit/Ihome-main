@@ -4,7 +4,7 @@
  * @Author: wwq
  * @Date: 2020-12-09 11:11:02
  * @LastEditors: wwq
- * @LastEditTime: 2021-01-20 16:51:17
+ * @LastEditTime: 2021-02-03 11:00:20
 -->
 <template>
   <el-dialog
@@ -202,12 +202,12 @@
         </template>
       </el-table-column>
       <el-table-column
-        prop="isMarketProject"
+        prop="isSpecial"
         label="是否特殊方案"
         min-width="120"
       >
         <template slot-scope="scope">
-          <div v-if="scope.row.isMarketProject">{{scope.row.isMarketProject === 'Yes' ? '是' : '否'}}</div>
+          <div v-if="scope.row.isSpecial">{{scope.row.isSpecial === 'Yes' ? '是' : '否'}}</div>
           <div v-else></div>
         </template>
       </el-table-column>
