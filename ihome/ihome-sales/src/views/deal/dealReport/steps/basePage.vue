@@ -183,6 +183,7 @@
             <IhSelectPageByRoom
               v-else
               @change="changeRoom"
+              :params="{exDeal: 0}"
               v-model="postData.roomId"
               :proId="postData.projectId"
               :buildingId="postData.buildingId"
