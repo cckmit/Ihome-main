@@ -3283,7 +3283,7 @@
         }
         if (this.id) {
           postData.allotDate = this.editBaseInfo.allotDate ? this.editBaseInfo.allotDate : this.getCurrentDate();
-          postData.allotDate = this.editBaseInfo.alloterId ? this.editBaseInfo.alloterId : (this as any).$root?.userInfo?.id;
+          postData.alloterId = this.editBaseInfo.alloterId ? this.editBaseInfo.alloterId : (this as any).$root?.userInfo?.id;
           postData.basic.dealVO.dealCode = this.postData.dealCode;
           postData.basic.dealVO.id = this.postData.id;
           postData.basic.dealVO.parentId = this.postData.parentId;

@@ -192,7 +192,14 @@
 
     created() {
       console.log('editDealAchieveData', this.data);
-      // 弹框标题
+      // 弹窗初始化
+      this.initDialog();
+      // 角色类型初始化
+      this.initRoleList();
+    }
+
+    // 弹窗初始化
+    initDialog() {
       if (this.data.btnType === 'add') {
         this.achieveTitle = '新增角色业绩';
       } else if (this.data.btnType === 'edit') {
@@ -206,6 +213,10 @@
           this.achieveTitle = '修改角色业绩';
         }
       }
+    }
+
+    // 角色类型初始化
+    initRoleList() {
       // 角色类型下拉选项
       const list: any = (this as any).$root.dictAllList('DealRole');
       this.dealRoleList = [];
@@ -242,7 +253,18 @@
           });
         }
       }
-      console.log('datadata', this.data);
+      // 处理编辑的时候-因为业绩方案改变而获取不到对应角色类型的问题：角色类型type变为空
+      if (this.data && this.data.currentEditItem && this.data.currentEditItem.roleType !== 'BranchOffice' && this.dealRoleList.length > 0) {
+        let currentType: any = this.data.currentEditItem.roleType;
+        let flag: any = false;
+        flag = this.dealRoleList.some((list: any) => {
+          return list.code === currentType;
+        });
+        if (!flag) {
+          // 匹配不到，则置为空
+          this.form.roleType = null;
+        }
+      }
     }
 
     // 确定
