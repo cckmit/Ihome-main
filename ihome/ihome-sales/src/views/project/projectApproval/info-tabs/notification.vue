@@ -4,7 +4,7 @@
  * @Author: wwq
  * @Date: 2020-11-27 17:27:01
  * @LastEditors: wwq
- * @LastEditTime: 2021-01-30 11:53:42
+ * @LastEditTime: 2021-02-03 11:27:57
 -->
 <template>
   <div>
@@ -134,6 +134,14 @@
           <el-table-column label="优惠期限">
             <template v-slot="{ row }">
               {{row.startTime && row.endTime ? `${row.startTime}-${row.endTime}` : ''}}
+            </template>
+          </el-table-column>
+          <el-table-column
+            label="是否显示“本优惠不在《认购书》上重复体现”条款"
+            width="200"
+          >
+            <template v-slot="{ row }">
+              {{row.exPreferentialItem ? '是' : '否'}}
             </template>
           </el-table-column>
           <el-table-column
@@ -277,6 +285,7 @@ export default class Notification extends Vue {
         termId: row.termId,
         startTime: row.startTime,
         endTime: row.endTime,
+        exPreferentialItem: row.exPreferentialItem,
       },
     }).then((res: any) => {
       const arr = new Blob([res.data], { type: "application/pdf" });

@@ -4,7 +4,7 @@
  * @Author: wwq
  * @Date: 2020-12-02 11:18:51
  * @LastEditors: wwq
- * @LastEditTime: 2021-01-30 17:07:22
+ * @LastEditTime: 2021-02-03 11:35:42
 -->
 <template>
   <el-dialog
@@ -76,6 +76,22 @@
           </el-form-item>
         </el-col>
       </el-row>
+      <el-row>
+        <el-col :span="24">
+          <el-form-item
+            label="是否显示“本优惠不在《认购书》上重复体现”条款"
+            prop="exPreferentialItem"
+            class="formItem"
+          >
+            <el-switch
+              v-model="form.exPreferentialItem"
+              active-color="#ef9d39"
+              inactive-color="#7b7b7b"
+            >
+            </el-switch>
+          </el-form-item>
+        </el-col>
+      </el-row>
     </el-form>
     <span
       slot="footer"
@@ -110,6 +126,7 @@ export default class AddNotification extends Vue {
     startTime: null,
     endTime: null,
     timeList: [],
+    exPreferentialItem: false,
   };
   pickerOptions: any = {
     disabledDate: (time: any) => {
@@ -155,13 +172,15 @@ export default class AddNotification extends Vue {
   @NoRepeatHttp()
   async submit(valid: any) {
     if (valid) {
+      let obj = { ...this.form };
       this.finishLoading = true;
-      this.form.termId = this.$route.query.id;
-      this.form.startTime = this.form.timeList[0];
-      this.form.endTime = this.form.timeList[1];
+      obj.termId = this.$route.query.id;
+      obj.startTime = this.form.timeList[0];
+      obj.endTime = this.form.timeList[1];
+      obj.exPreferentialItem = this.form.exPreferentialItem ? 1 : 0;
       if (this.data.title === "新增") {
         try {
-          await post_preferential_add(this.form);
+          await post_preferential_add(obj);
           this.finishLoading = false;
           this.$emit("finish");
         } catch (err) {
@@ -169,7 +188,7 @@ export default class AddNotification extends Vue {
         }
       } else {
         try {
-          await post_preferential_update(this.form);
+          await post_preferential_update(obj);
           this.finishLoading = false;
           this.$emit("finish");
         } catch (err) {
@@ -182,7 +201,10 @@ export default class AddNotification extends Vue {
     }
   }
   async created() {
-    this.form = { ...this.data };
+    this.form = {
+      ...this.data,
+      exPreferentialItem: this.data.exPreferentialItem ? true : false,
+    };
   }
 }
 </script>
@@ -197,5 +219,10 @@ export default class AddNotification extends Vue {
 .textType {
   width: 60px;
   text-align: center;
+}
+.formItem {
+  /deep/ .el-form-item__label {
+    line-height: 20px;
+  }
 }
 </style>
