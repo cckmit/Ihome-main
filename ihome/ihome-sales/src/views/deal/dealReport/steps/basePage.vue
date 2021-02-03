@@ -797,7 +797,7 @@
           </div>
         </div>
       </div>
-      <div class="divider-padding border-color-red" v-if="editFlag">
+      <div class="divider-padding border-color-red" v-if="editFlag || isShowBtn">
         <div class="divider-tip color-red">
           <div>收派金额发生变动，业绩需要初始化重新分配，请点击下方刷新按钮重新初始化对外拆佣及平台费用数据</div>
           <div class="btn">
@@ -1567,6 +1567,39 @@
         this.oneAgentRequiredFlag = false;
       }
       return arr;
+    }
+
+    // 判断平台费用是否有问题，如果有，提示，然后显示加载按钮 correct
+    get isShowBtn() {
+      let flag: any = false;
+      if (this.postData.achieveTotalBagList && this.postData.achieveTotalBagList.length && this.postData.achieveDistriList && this.postData.achieveDistriList.length) {
+        let totalFlag: any = false;
+        let DistriFlag: any = false;
+        totalFlag = this.postData.achieveTotalBagList.some((list: any) => {
+          return list.correct === false;
+        });
+        DistriFlag = this.postData.achieveDistriList.some((list: any) => {
+          return list.correct === false;
+        });
+        if (totalFlag || DistriFlag) {
+          flag = true;
+        }
+      } else {
+        if (this.postData.achieveTotalBagList && this.postData.achieveTotalBagList.length) {
+          flag = this.postData.achieveTotalBagList.some((list: any) => {
+            return list.correct === false;
+          });
+        }
+        if (this.postData.achieveDistriList && this.postData.achieveDistriList.length) {
+          flag = this.postData.achieveDistriList.some((list: any) => {
+            return list.correct === false;
+          });
+        }
+      }
+      if (flag) {
+        this.$message.error('角色人业绩大于角色业绩上限，请核对业绩比例分配方案!');
+      }
+      return flag;
     }
 
     async created() {

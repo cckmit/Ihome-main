@@ -153,6 +153,7 @@
                 <el-form-item label="项目周期">
                   <IhSelectPageByCycle
                     clearable
+                    @changeOption="(data) => {queryPageParameters.proId = data.proId}"
                     v-model="queryPageParameters.projectCycle"
                     placeholder="请选择立项周期"
                   ></IhSelectPageByCycle>
@@ -162,7 +163,7 @@
                 <el-form-item label="栋座">
                   <IhSelectPageByBuild
                     v-model="queryPageParameters.buyUnit"
-                    :proId="queryPageParameters.projectCycle"
+                    :proId="queryPageParameters.proId"
                     placeholder="请选择栋座"
                     clearable
                   ></IhSelectPageByBuild>
@@ -172,7 +173,7 @@
                 <el-form-item label="房号">
                   <IhSelectPageByRoom
                     v-model="queryPageParameters.roomNumberId"
-                    :proId="queryPageParameters.projectCycle"
+                    :proId="queryPageParameters.proId"
                     :buildingId="queryPageParameters.buyUnit"
                     placeholder="请选择房号"
                     clearable
@@ -412,6 +413,7 @@
       agencyId: null, // 渠道商id
       stage: null,
       projectCycle: null,
+      proId: null,
       brokerId: null,
       timeType: null,
       beginTime: null,
