@@ -3532,6 +3532,10 @@
       obj.basic.houseVO.roomId = this.postData.roomId;
       obj.basic.houseVO.roomNo = this.postData.roomId ? this.postData.roomNo : null;
       obj.basic.houseVO.toilet = this.postData.toilet;
+      if (this.id) {
+        obj.basic.houseVO.id = this.editBaseInfo?.house?.id;
+        obj.basic.houseVO.dealId = this.id;
+      }
       // 附件信息
       if (this.postData.documentVO.length > 0) {
         // console.log('this.postData.documentVO', this.postData.documentVO);

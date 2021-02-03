@@ -2280,6 +2280,10 @@
       obj.houseVO.roomId = this.postData.roomId;
       obj.houseVO.roomNo = this.postData.roomId ? this.postData.roomNo : null;
       obj.houseVO.toilet = this.postData.toilet;
+      if (this.id) {
+        obj.houseVO.id = this.editBaseInfo?.house?.id;
+        obj.houseVO.dealId = this.id;
+      }
       // 附件信息
       if (this.postData.documentVO.length > 0) {
         // console.log('this.postData.documentVO', this.postData.documentVO);
