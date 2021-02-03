@@ -1225,7 +1225,12 @@
           vo.fileList = []; // 存放新上传的数据
           list.forEach((item: any) => {
             if (vo.code === item.fileType) {
-              vo.defaultFileList.push(item);
+              vo.defaultFileLists.push(
+                {
+                  ...item,
+                  name: item.fileName
+                }
+              );
             }
           });
         });
@@ -2114,9 +2119,9 @@
         // 整合数据
         let postData: any = this.getPostData();
         if (this.id) {
-          postData.dealVO.dealCode = this.postData.dealCode;
-          postData.dealVO.id = this.postData.id;
-          postData.dealVO.parentId = this.postData.parentId;
+          postData.dealVO.dealCode = this.editBaseInfo?.dealCode;
+          postData.dealVO.id = this.editBaseInfo?.id;
+          postData.dealVO.parentId = this.editBaseInfo?.parentId;
           await post_deal_updateDealBasicInf(postData);
           this.$message.success("修改成功");
           this.$goto({

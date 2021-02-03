@@ -1691,7 +1691,12 @@
           vo.fileList = []; // 存放新上传的数据
           list.forEach((item: any) => {
             if (vo.code === item.fileType) {
-              vo.defaultFileList.push(item);
+              vo.defaultFileLists.push(
+                {
+                  ...item,
+                  name: item.fileName
+                }
+              );
             }
           });
         });
@@ -3317,9 +3322,9 @@
         if (this.id) {
           postData.allotDate = this.editBaseInfo.allotDate ? this.editBaseInfo.allotDate : this.getCurrentDate();
           postData.alloterId = this.editBaseInfo.alloterId ? this.editBaseInfo.alloterId : (this as any).$root?.userInfo?.id;
-          postData.basic.dealVO.dealCode = this.postData.dealCode;
-          postData.basic.dealVO.id = this.postData.id;
-          postData.basic.dealVO.parentId = this.postData.parentId;
+          postData.basic.dealVO.dealCode = this.editBaseInfo?.dealCode;
+          postData.basic.dealVO.id = this.editBaseInfo?.id;
+          postData.basic.dealVO.parentId = this.editBaseInfo?.parentId;
           console.log('postData:', postData);
           await post_deal_updateAchieveAllot(postData);
           this.$message.success("修改成功");
