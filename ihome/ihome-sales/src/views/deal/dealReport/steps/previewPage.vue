@@ -722,20 +722,21 @@
 
     // 初始化平台费用数据
     initAchieveData() {
+      let totalList: any = [];
+      let distriList: any = [];
       if (this.pageData && this.pageData.callBackInfo && this.pageData.callBackInfo.achieveVO && this.pageData.callBackInfo.achieveVO.length) {
         this.pageData.callBackInfo.achieveVO.forEach((vo: any) => {
           if (vo.type === "TotalBag") {
-            this.infoForm.achieveTotalBagList.push(vo);
+            totalList.push(vo);
           } else if (vo.type === "Distri") {
-            this.infoForm.achieveDistriList.push(vo);
+            distriList.push(vo);
           }
 
         });
-      } else {
-        this.infoForm.achieveTotalBagList = [];
-        this.infoForm.achieveDistriList = [];
       }
-      console.log('this.infoForm', this.infoForm);
+      this.infoForm.achieveTotalBagList = totalList;
+      this.infoForm.achieveDistriList = distriList;
+      // console.log('this.infoForm', this.infoForm);
     }
 
     // 预览-优惠告知书

@@ -1905,7 +1905,7 @@
             this.contNoList = [];
           }
           // 优惠告知书
-          this.postData.offerNoticeVO = baseInfo.notice && baseInfo.notice.length ? baseInfo.notice : [];
+          // this.postData.offerNoticeVO = baseInfo.notice && baseInfo.notice.length ? baseInfo.notice : [];
         }
         // 分销成交和非分销成交不一样
         if (baseInfo.contType === 'DistriDeal') {
@@ -1979,7 +1979,7 @@
           this.postData.dataSignName = (this as any).$root.dictAllName(baseInfo.myReturnVO.dataSign, 'DealDataFlag');
         }
         // 客户信息
-        this.postData.customerList = baseInfo.customerAddVOS && baseInfo.customerAddVOS.length ? baseInfo.customerAddVOS : [];
+        // this.postData.customerList = baseInfo.customerAddVOS && baseInfo.customerAddVOS.length ? baseInfo.customerAddVOS : [];
         // 收派金额 --- 代理费
         if (baseInfo.receiveVOS && baseInfo.receiveVOS.length) {
           let tempList: any = this.initReceiveVOS(baseInfo.receiveVOS);
@@ -2023,7 +2023,7 @@
           switch(baseInfo.termStageEnum){
             case 'Recognize':
               // 清空优惠告知书 --- 认筹周期需要自己手动添加
-              this.postData.offerNoticeVO = [];
+              // this.postData.offerNoticeVO = [];
               break;
           }
         }
@@ -2041,7 +2041,7 @@
         // 是否代销
         this.postData.isConsign = baseInfo.exConsignment === 1 ? 'Yes' : 'No';
         // 处理优惠告知书的nav
-        this.postData.offerNoticeVO = []; // 先重置优惠告知书的数据
+        // this.postData.offerNoticeVO = []; // 先重置优惠告知书的数据
         if (baseInfo.chargeEnum === 'Agent') {
           this.navList = this.navList.filter((item: any) => {
             return item.id !== 3;
@@ -2618,8 +2618,8 @@
       this.tempSignPrice = null;
       this.contNoList = []; // 分销协议编号
       this.packageIdsList = []; // ids
-      this.postData.customerList = []; // 客户信息
-      this.postData.offerNoticeVO = []; // 优惠告知书
+      // this.postData.customerList = []; // 客户信息
+      // this.postData.offerNoticeVO = []; // 优惠告知书
       // this.postData.uploadDocumentList = []; // 上传附件
       this.postData.calculation = 'Auto'; // 计算方式改为手动
       this.postData.channelCommList = []; // 对外拆佣
