@@ -4,7 +4,7 @@
  * @Author: wwq
  * @Date: 2020-11-30 17:32:39
  * @LastEditors: wwq
- * @LastEditTime: 2021-02-04 16:35:36
+ * @LastEditTime: 2021-02-04 16:42:23
 -->
 <template>
   <el-dialog
@@ -27,7 +27,7 @@
         <el-col :span="24">
           <el-form-item
             label="开发商保护期"
-            prop="developerProtectionPeriod"
+            v-digits="1"
           >
             <div class="inputTpye">
               <el-input
@@ -83,7 +83,7 @@
         <el-col :span="24">
           <el-form-item
             label="报备有效时间"
-            prop="filingEffectiveTime"
+            v-digits="1"
           >
             <div class="inputTpye">
               <el-input
@@ -101,7 +101,7 @@
         <el-col :span="24">
           <el-form-item
             label="客户保护期时间"
-            prop="customerProtectionPeriod"
+            v-digits="1"
           >
             <div class="inputTpye">
               <el-input
@@ -182,7 +182,6 @@ import {
   post_customerReportRule_add,
   post_customerReportRule_update,
 } from "@/api/project/index.ts";
-import { isNumberValidato } from "ihome-common/util/base/form-ui";
 @Component({
   components: {},
 })
@@ -206,24 +205,6 @@ export default class ReportedRulesEdit extends Vue {
       {
         required: true,
         message: "请选择报备类型",
-        trigger: "change",
-      },
-    ],
-    developerProtectionPeriod: [
-      {
-        validator: isNumberValidato,
-        trigger: "change",
-      },
-    ],
-    filingEffectiveTime: [
-      {
-        validator: isNumberValidato,
-        trigger: "change",
-      },
-    ],
-    customerProtectionPeriod: [
-      {
-        validator: isNumberValidato,
         trigger: "change",
       },
     ],
