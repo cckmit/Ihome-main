@@ -2114,8 +2114,12 @@
     @NoRepeatHttp()
     async addSave(valid: any) {
       // 1.校验收派金额是都有收派套餐
-      let flag = (this as any).$parent.validReceiveData(this.postData.receiveVO);
+      let flag = (this as any).$parent.validReceiveData(this.postData.receiveVO, 'Auto');
       console.log('flag', flag);
+      if (!flag) {
+        this.$message.error('收派金额信息有无，请检查');
+        return;
+      }
       if (valid && flag) {
         // 整合数据
         let postData: any = this.getPostData();
@@ -2319,7 +2323,7 @@
           if (this.id) {
             // 编辑情况
             if (this.editBaseInfo && this.editBaseInfo.receiveAchieveList && this.editBaseInfo.receiveAchieveList.length) {
-              obj.basic.receiveAchieveVO.push(
+              obj.receiveAchieveVO.push(
                 {
                   dealId: this.editBaseInfo.receiveAchieveList[0].dealId,
                   id: this.editBaseInfo.receiveAchieveList[0].id,
@@ -2329,7 +2333,7 @@
                 }
               )
             } else {
-              obj.basic.receiveAchieveVO.push(
+              obj.receiveAchieveVO.push(
                 {
                   dealId: null,
                   id: null,
@@ -2341,7 +2345,7 @@
             }
           } else {
             // 新增情况
-            obj.basic.receiveAchieveVO.push(
+            obj.receiveAchieveVO.push(
               {
                 achieveAmount: vo.achieveAmount,
                 otherChannelFees: vo.otherChannelFees,
