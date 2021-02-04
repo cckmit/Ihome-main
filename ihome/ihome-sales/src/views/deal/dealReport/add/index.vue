@@ -449,6 +449,7 @@
     * */
     validReceiveData(data: any = [], way: any = "Auto") {
       if (data.length === 0) return false;
+      console.log('way:', way);
       let flag: any = true;
       if (way === 'Auto') {
         // 自动
