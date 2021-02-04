@@ -730,6 +730,13 @@
           <el-table-column prop="receiveAmount" label="应收金额" min-width="180">
             <template slot-scope="scope">
               <el-input
+                v-if="['ChangeBasicInf', 'ChangeInternalAchieveInf'].includes(changeType)"
+                v-digits="2"
+                @input="changeReceiveItem($event, scope.row, 'receiveAmount')"
+                v-model="scope.row.receiveAmount"
+                disabled></el-input>
+              <el-input
+                v-else
                 v-digits="2"
                 @input="changeReceiveItem($event, scope.row, 'receiveAmount')"
                 v-model="scope.row.receiveAmount"
@@ -739,6 +746,13 @@
           <el-table-column prop="commAmount" label="派发佣金金额" min-width="180">
             <template slot-scope="scope">
               <el-input
+                v-if="['ChangeBasicInf', 'ChangeInternalAchieveInf'].includes(changeType)"
+                v-digits="2"
+                @input="changeReceiveItem($event, scope.row, 'commAmount')"
+                v-model="scope.row.commAmount"
+                disabled></el-input>
+              <el-input
+                v-else
                 v-digits="2"
                 @input="changeReceiveItem($event, scope.row, 'commAmount')"
                 v-model="scope.row.commAmount"
@@ -748,6 +762,13 @@
           <el-table-column prop="rewardAmount" label="派发内场奖励金额" min-width="180">
             <template slot-scope="scope">
               <el-input
+                v-if="['ChangeBasicInf', 'ChangeInternalAchieveInf'].includes(changeType)"
+                v-digits="2"
+                @input="changeReceiveItem($event, scope.row, 'rewardAmount')"
+                v-model="scope.row.rewardAmount"
+                disabled></el-input>
+              <el-input
+                v-else
                 v-digits="2"
                 @input="changeReceiveItem($event, scope.row, 'rewardAmount')"
                 v-model="scope.row.rewardAmount"
@@ -757,16 +778,29 @@
           <el-table-column prop="totalPackageAmount" label="总包业绩金额" min-width="180">
             <template slot-scope="scope">
               <el-input
+                v-if="['ChangeBasicInf', 'ChangeInternalAchieveInf'].includes(changeType)"
                 v-digits="2"
                 @input="changeReceiveItem($event, scope.row, 'totalPackageAmount')"
                 v-model="scope.row.totalPackageAmount"
-                :disabled="(postData.calculation === 'Auto' || postData.modelCode === 'DistriModel')"
-                placeholder="总包业绩金额"></el-input>
+                disabled></el-input>
+              <el-input
+                v-else
+                v-digits="2"
+                @input="changeReceiveItem($event, scope.row, 'totalPackageAmount')"
+                v-model="scope.row.totalPackageAmount"
+                :disabled="(postData.calculation === 'Auto' || postData.modelCode === 'DistriModel')"></el-input>
             </template>
           </el-table-column>
           <el-table-column prop="distributionAmount" label="分销业绩金额" min-width="180">
             <template slot-scope="scope">
               <el-input
+                v-if="['ChangeBasicInf', 'ChangeInternalAchieveInf'].includes(changeType)"
+                v-digits="2"
+                @input="changeReceiveItem($event, scope.row, 'distributionAmount')"
+                v-model="scope.row.distributionAmount" disabled>
+              </el-input>
+              <el-input
+                v-else
                 v-digits="2"
                 @input="changeReceiveItem($event, scope.row, 'distributionAmount')"
                 v-model="scope.row.distributionAmount"
@@ -789,7 +823,7 @@
         </el-table>
       </el-col>
     </el-row>
-    <div v-if="postData.receiveList.length">
+    <div v-if="postData.receiveList.length && ['ChangeAchieveInf', 'RetreatRoom'].includes(changeType)">
       <div class="divider-padding" v-if="addFlag">
         <div class="divider-tip color-blur">
           <div>完善收派金额后请点击下方按钮初始化加载对外拆佣及平台费用数据</div>
@@ -809,6 +843,9 @@
       <div class="divider-padding border-color-none" v-if="tipsFlag">
         <el-divider>{{dividerTips}}</el-divider>
       </div>
+    </div>
+    <div class="divider-padding border-color-none" v-else>
+      <el-divider>业绩分配</el-divider>
     </div>
     <p id="anchor-5" class="ih-info-title">对外拆佣</p>
     <el-row style="padding-left: 20px">
