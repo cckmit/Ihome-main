@@ -4,7 +4,7 @@
  * @Author: wwq
  * @Date: 2020-12-02 15:37:31
  * @LastEditors: wwq
- * @LastEditTime: 2021-02-04 15:42:03
+ * @LastEditTime: 2021-02-04 16:54:23
 -->
 <template>
   <el-dialog
@@ -246,7 +246,7 @@
               v-model="info.costSettleType"
               clearable
               placeholder="请选择"
-              class="width--50"
+              style="width: 50%"
             >
               <el-option
                 v-for="item in $root.dictAllList('CostSettleType')"
