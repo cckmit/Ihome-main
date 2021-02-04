@@ -4,7 +4,7 @@
  * @Author: wwq
  * @Date: 2020-11-27 17:21:01
  * @LastEditors: wwq
- * @LastEditTime: 2021-01-18 11:10:50
+ * @LastEditTime: 2021-02-04 16:20:26
 -->
 <template>
   <div>
@@ -23,8 +23,16 @@
         </el-row>
         <el-row>
           <el-col :span="16">
-            <el-form-item label="是否到访为王">
-              <span class="text-ellipsis">{{ info.exVisit? '是' : '否' }}</span>
+            <el-form-item label="报备类型">
+              <span class="text-ellipsis">{{ $root.dictAllName(info.reportTypeEnum, 'ReportType') }}
+              </span>
+            </el-form-item>
+          </el-col>
+        </el-row>
+        <el-row>
+          <el-col :span="16">
+            <el-form-item label="到访为王">
+              <span class="text-ellipsis">{{ info.exVisit? '开启' : '关闭' }}</span>
               <span
                 class="hint"
                 style="margin-left:80px"

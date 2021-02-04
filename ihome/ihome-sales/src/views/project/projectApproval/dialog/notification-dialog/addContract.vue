@@ -4,7 +4,7 @@
  * @Author: wwq
  * @Date: 2020-12-02 15:37:31
  * @LastEditors: wwq
- * @LastEditTime: 2021-01-21 20:48:00
+ * @LastEditTime: 2021-02-04 15:42:03
 -->
 <template>
   <el-dialog
@@ -149,14 +149,17 @@
       </el-row>
       <el-row>
         <el-col :span="24">
-          <el-form-item label="代理费计付标准备注">
+          <el-form-item
+            label="备注"
+            prop="agencyFeeRemark"
+          >
             <el-input
               class="textareaClass"
               maxlength="2000"
               show-word-limit
               type="textarea"
               :autosize="{ minRows: 4, maxRows: 8 }"
-              placeholder="请输入代理费计付标准备注"
+              placeholder="请输入备注"
               v-model="info.agencyFeeRemark"
             >
             </el-input>
@@ -188,6 +191,19 @@
             label="代理费结算条件"
             prop='agencyCostCondition'
           >
+            <el-select
+              v-model="info.agencySettleCondtion"
+              clearable
+              placeholder="请选择"
+              class="width--50"
+            >
+              <el-option
+                v-for="item in $root.dictAllList('AgencySettleCondtion')"
+                :key="item.code"
+                :label="item.name"
+                :value="item.code"
+              ></el-option>
+            </el-select>
             <el-input
               class="textareaClass"
               maxlength="2000"
@@ -223,6 +239,28 @@
       <el-row>
         <el-col :span="24">
           <el-form-item
+            label="费用结算类型"
+            prop='costSettleType'
+          >
+            <el-select
+              v-model="info.costSettleType"
+              clearable
+              placeholder="请选择"
+              class="width--50"
+            >
+              <el-option
+                v-for="item in $root.dictAllList('CostSettleType')"
+                :key="item.code"
+                :label="item.name"
+                :value="item.code"
+              ></el-option>
+            </el-select>
+          </el-form-item>
+        </el-col>
+      </el-row>
+      <el-row>
+        <el-col :span="24">
+          <el-form-item
             label="违约责任"
             prop="unContractLiability"
           >
@@ -248,14 +286,14 @@
       </el-row>
       <el-row>
         <el-col :span="24">
-          <el-form-item label="补充条款">
+          <el-form-item label="其他约定">
             <el-input
               class="textareaClass"
               maxlength="2000"
               show-word-limit
               type="textarea"
               :autosize="{ minRows: 4, maxRows: 8 }"
-              placeholder="请输入补充条款"
+              placeholder="请输入其他约定"
               v-model="info.supplementary"
             >
             </el-input>
@@ -496,6 +534,13 @@ export default class AddContract extends Vue {
     termId: this.termId,
   };
   rules: any = {
+    agencyFeeRemark: [
+      {
+        required: true,
+        message: "请输入备注",
+        trigger: "change",
+      },
+    ],
     contractTitle: [
       { required: true, message: "请输入合同主标题", trigger: "change" },
     ],
@@ -516,6 +561,13 @@ export default class AddContract extends Vue {
     ],
     agencyCostSettleWay: [
       { required: true, message: "请输入代理费结算方式", trigger: "change" },
+    ],
+    costSettleType: [
+      {
+        required: true,
+        message: "请选择费用结算类型",
+        trigger: "change",
+      },
     ],
     unContractLiability: [
       { required: true, message: "请输入违约责任", trigger: "change" },
@@ -579,6 +631,17 @@ export default class AddContract extends Vue {
       };
     } else {
       this.isShow = false;
+    }
+  }
+
+  @Watch("info.agencySettleCondtion", { immediate: true })
+  agencySettleCondtionChange(val: any) {
+    if (val === "ComNoPad") {
+      this.info.agencyCostCondition = `乙方引荐客户支付首期房款，签订《商品房买卖合同》及其相关配套的法律文书（须要修改），乙方提交齐备的代理费核算文件（。。。。。。）及增值税发票的前提下，且甲方收到项目开发商或委托方相应代理费后，具备代理费结算条件。`;
+    } else if (val === "ComPad") {
+      this.info.agencyCostCondition = `乙方引荐客户支付首期房款，签订《商品房买卖合同》及其相关配套的法律文书（须要修改），开发商完成结算明细确认（即开发商明源系统转签约且项目开发商相关营销负责人书面签字确认），乙方提交齐备的代理费核算文件（。。。。。。）及增值税发票的前提下，具备代理费结算条件。`;
+    } else if (val === "SpecialDiscount") {
+      this.info.agencyCostCondition = `乙方引荐客户支付首期房款，签订《商品房买卖合同》及其相关配套的法律文书（须要修改），且开发商完成结算明细确认（即项目开发商总经理书面签字确认）后，乙方提交齐备的代理费核算文件（。。。。。。）及增值税发票的前提下，具备代理费结算条件。`;
     }
   }
 

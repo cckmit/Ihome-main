@@ -4,7 +4,7 @@
  * @Author: wwq
  * @Date: 2020-11-30 17:32:39
  * @LastEditors: wwq
- * @LastEditTime: 2020-12-02 11:40:35
+ * @LastEditTime: 2021-02-04 16:13:39
 -->
 <template>
   <el-dialog
@@ -38,6 +38,28 @@
               <span class="textType">小时</span>
               <span class="hint">保护期内，已完成认购的客户不能报备</span>
             </div>
+          </el-form-item>
+        </el-col>
+      </el-row>
+      <el-row>
+        <el-col :span="12">
+          <el-form-item
+            label="报备类型"
+            prop='reportType'
+          >
+            <el-select
+              v-model="form.reportType"
+              clearable
+              placeholder="请选择"
+              class="width--50"
+            >
+              <el-option
+                v-for="item in $root.dictAllList('ReportType')"
+                :key="item.code"
+                :label="item.name"
+                :value="item.code"
+              ></el-option>
+            </el-select>
           </el-form-item>
         </el-col>
       </el-row>
@@ -180,6 +202,13 @@ export default class ReportedRulesEdit extends Vue {
   };
 
   rules: any = {
+    reportType: [
+      {
+        required: true,
+        message: "请选择报备类型",
+        trigger: "change",
+      },
+    ],
     developerProtectionPeriod: [
       {
         validator: isNumberValidato,
@@ -234,7 +263,7 @@ export default class ReportedRulesEdit extends Vue {
 <style lang="scss" scoped>
 .dialog {
   /deep/ .el-dialog {
-    margin-top: 5vh !important;
+    margin-top: 4vh !important;
   }
 }
 .inputTpye {
