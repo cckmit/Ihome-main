@@ -121,7 +121,7 @@ export default class AgentDialog extends Vue {
             ...this.form,
             channelId: this.channelId,
           });
-      this.$message.success(`${this.isAdd ? "添加" : "修改"}基金人成功`);
+      this.$message.success(`${this.isAdd ? "添加" : "修改"}经纪人成功`);
       this.$emit("finish", this.isAdd);
     } else {
       console.log("error submit!!");

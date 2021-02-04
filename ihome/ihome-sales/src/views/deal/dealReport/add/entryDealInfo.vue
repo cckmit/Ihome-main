@@ -170,6 +170,7 @@
             <IhSelectPageByRoom
               @change="changeRoom"
               @changeOption="(data) => {postData.roomNo = data.roomNo}"
+              :params="{exDeal: 0}"
               v-model="postData.roomId"
               :proId="baseInfoByTerm.proId"
               :buildingId="postData.buildingId"
@@ -1225,7 +1226,12 @@
           vo.fileList = []; // 存放新上传的数据
           list.forEach((item: any) => {
             if (vo.code === item.fileType) {
-              vo.defaultFileList.push(item);
+              vo.defaultFileList.push(
+                {
+                  ...item,
+                  name: item.fileName
+                }
+              );
             }
           });
         });
@@ -2114,9 +2120,11 @@
         // 整合数据
         let postData: any = this.getPostData();
         if (this.id) {
-          postData.dealVO.dealCode = this.postData.dealCode;
-          postData.dealVO.id = this.postData.id;
-          postData.dealVO.parentId = this.postData.parentId;
+          postData.dealVO.dealCode = this.editBaseInfo?.dealCode;
+          postData.dealVO.id = this.editBaseInfo?.id;
+          postData.dealVO.parentId = this.editBaseInfo?.parentId;
+          postData.dealVO.entryDate = this.editBaseInfo?.entryDate;
+          postData.dealVO.entryPersonId = this.editBaseInfo?.entryPersonId;
           await post_deal_updateDealBasicInf(postData);
           this.$message.success("修改成功");
           this.$goto({
@@ -2274,6 +2282,10 @@
       obj.houseVO.roomId = this.postData.roomId;
       obj.houseVO.roomNo = this.postData.roomId ? this.postData.roomNo : null;
       obj.houseVO.toilet = this.postData.toilet;
+      if (this.id) {
+        obj.houseVO.id = this.editBaseInfo?.house?.id;
+        obj.houseVO.dealId = this.id;
+      }
       // 附件信息
       if (this.postData.documentVO.length > 0) {
         // console.log('this.postData.documentVO', this.postData.documentVO);

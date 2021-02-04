@@ -183,6 +183,7 @@
             <IhSelectPageByRoom
               v-else
               @change="changeRoom"
+              :params="{exDeal: 0}"
               v-model="postData.roomId"
               :proId="postData.projectId"
               :buildingId="postData.buildingId"
@@ -729,6 +730,13 @@
           <el-table-column prop="receiveAmount" label="应收金额" min-width="180">
             <template slot-scope="scope">
               <el-input
+                v-if="['ChangeBasicInf', 'ChangeInternalAchieveInf'].includes(changeType)"
+                v-digits="2"
+                @input="changeReceiveItem($event, scope.row, 'receiveAmount')"
+                v-model="scope.row.receiveAmount"
+                disabled></el-input>
+              <el-input
+                v-else
                 v-digits="2"
                 @input="changeReceiveItem($event, scope.row, 'receiveAmount')"
                 v-model="scope.row.receiveAmount"
@@ -738,6 +746,13 @@
           <el-table-column prop="commAmount" label="派发佣金金额" min-width="180">
             <template slot-scope="scope">
               <el-input
+                v-if="['ChangeBasicInf', 'ChangeInternalAchieveInf'].includes(changeType)"
+                v-digits="2"
+                @input="changeReceiveItem($event, scope.row, 'commAmount')"
+                v-model="scope.row.commAmount"
+                disabled></el-input>
+              <el-input
+                v-else
                 v-digits="2"
                 @input="changeReceiveItem($event, scope.row, 'commAmount')"
                 v-model="scope.row.commAmount"
@@ -747,6 +762,13 @@
           <el-table-column prop="rewardAmount" label="派发内场奖励金额" min-width="180">
             <template slot-scope="scope">
               <el-input
+                v-if="['ChangeBasicInf', 'ChangeInternalAchieveInf'].includes(changeType)"
+                v-digits="2"
+                @input="changeReceiveItem($event, scope.row, 'rewardAmount')"
+                v-model="scope.row.rewardAmount"
+                disabled></el-input>
+              <el-input
+                v-else
                 v-digits="2"
                 @input="changeReceiveItem($event, scope.row, 'rewardAmount')"
                 v-model="scope.row.rewardAmount"
@@ -756,16 +778,29 @@
           <el-table-column prop="totalPackageAmount" label="总包业绩金额" min-width="180">
             <template slot-scope="scope">
               <el-input
+                v-if="['ChangeBasicInf', 'ChangeInternalAchieveInf'].includes(changeType)"
                 v-digits="2"
                 @input="changeReceiveItem($event, scope.row, 'totalPackageAmount')"
                 v-model="scope.row.totalPackageAmount"
-                :disabled="(postData.calculation === 'Auto' || postData.modelCode === 'DistriModel')"
-                placeholder="总包业绩金额"></el-input>
+                disabled></el-input>
+              <el-input
+                v-else
+                v-digits="2"
+                @input="changeReceiveItem($event, scope.row, 'totalPackageAmount')"
+                v-model="scope.row.totalPackageAmount"
+                :disabled="(postData.calculation === 'Auto' || postData.modelCode === 'DistriModel')"></el-input>
             </template>
           </el-table-column>
           <el-table-column prop="distributionAmount" label="分销业绩金额" min-width="180">
             <template slot-scope="scope">
               <el-input
+                v-if="['ChangeBasicInf', 'ChangeInternalAchieveInf'].includes(changeType)"
+                v-digits="2"
+                @input="changeReceiveItem($event, scope.row, 'distributionAmount')"
+                v-model="scope.row.distributionAmount" disabled>
+              </el-input>
+              <el-input
+                v-else
                 v-digits="2"
                 @input="changeReceiveItem($event, scope.row, 'distributionAmount')"
                 v-model="scope.row.distributionAmount"
@@ -788,7 +823,7 @@
         </el-table>
       </el-col>
     </el-row>
-    <div v-if="postData.receiveList.length">
+    <div v-if="postData.receiveList.length && ['ChangeAchieveInf', 'RetreatRoom'].includes(changeType)">
       <div class="divider-padding" v-if="addFlag">
         <div class="divider-tip color-blur">
           <div>完善收派金额后请点击下方按钮初始化加载对外拆佣及平台费用数据</div>
@@ -797,7 +832,7 @@
           </div>
         </div>
       </div>
-      <div class="divider-padding border-color-red" v-if="editFlag">
+      <div class="divider-padding border-color-red" v-if="editFlag || isShowBtn">
         <div class="divider-tip color-red">
           <div>收派金额发生变动，业绩需要初始化重新分配，请点击下方刷新按钮重新初始化对外拆佣及平台费用数据</div>
           <div class="btn">
@@ -808,6 +843,9 @@
       <div class="divider-padding border-color-none" v-if="tipsFlag">
         <el-divider>{{dividerTips}}</el-divider>
       </div>
+    </div>
+    <div class="divider-padding border-color-none" v-else>
+      <el-divider>业绩分配</el-divider>
     </div>
     <p id="anchor-5" class="ih-info-title">对外拆佣</p>
     <el-row style="padding-left: 20px">
@@ -977,7 +1015,11 @@
               <div>{{$root.dictAllName(scope.row.roleType, 'DealRole')}}</div>
             </template>
           </el-table-column>
-          <el-table-column prop="roleAchieveCap" label="角色业绩上限" min-width="150"></el-table-column>
+          <el-table-column prop="roleAchieveCap" label="角色业绩上限" min-width="150">
+            <template slot-scope="{row}">
+              <div :class="row.correct === false ? 'achieve-color-red' : ''">{{row.roleAchieveCap}}</div>
+            </template>
+          </el-table-column>
           <el-table-column prop="rolerName" label="角色人" min-width="150">
             <template slot-scope="scope">
               <div v-if="scope.row.roleType === 'BranchOffice'">——</div>
@@ -987,7 +1029,11 @@
               </div>
             </template>
           </el-table-column>
-          <el-table-column prop="corporateAchieve" label="角色人业绩" min-width="150"></el-table-column>
+          <el-table-column prop="corporateAchieve" label="角色人业绩" min-width="150">
+            <template slot-scope="{row}">
+              <div :class="row.correct === false ? 'achieve-color-red' : ''">{{row.corporateAchieve}}</div>
+            </template>
+          </el-table-column>
           <el-table-column prop="roleAchieveRatio" label="角色人业绩比例(%)" min-width="150"></el-table-column>
           <el-table-column prop="commFees" label="拆佣金额" min-width="150"></el-table-column>
           <el-table-column prop="commFeesRatio" label="拆佣比例(%)" min-width="110"></el-table-column>
@@ -1051,7 +1097,11 @@
               <div>{{$root.dictAllName(scope.row.roleType, 'DealRole')}}</div>
             </template>
           </el-table-column>
-          <el-table-column prop="roleAchieveCap" label="角色业绩上限" min-width="150"></el-table-column>
+          <el-table-column prop="roleAchieveCap" label="角色业绩上限" min-width="150">
+            <template slot-scope="{row}">
+              <div :class="row.correct === false ? 'achieve-color-red' : ''">{{row.roleAchieveCap}}</div>
+            </template>
+          </el-table-column>
           <el-table-column prop="rolerName" label="角色人" min-width="150">
             <template slot-scope="scope">
               <div v-if="scope.row.roleType === 'BranchOffice'">——</div>
@@ -1061,7 +1111,11 @@
               </div>
             </template>
           </el-table-column>
-          <el-table-column prop="corporateAchieve" label="角色人业绩" min-width="150"></el-table-column>
+          <el-table-column prop="corporateAchieve" label="角色人业绩" min-width="150">
+            <template slot-scope="{row}">
+              <div :class="row.correct === false ? 'achieve-color-red' : ''">{{row.corporateAchieve}}</div>
+            </template>
+          </el-table-column>
           <el-table-column prop="roleAchieveRatio" label="角色人业绩比例(%)" min-width="150"></el-table-column>
           <el-table-column prop="commFees" label="拆佣金额" min-width="150"></el-table-column>
           <el-table-column prop="commFeesRatio" label="拆佣比例(%)" min-width="110"></el-table-column>
@@ -1569,6 +1623,39 @@
       return arr;
     }
 
+    // 判断平台费用是否有问题，如果有，提示，然后显示加载按钮 correct
+    get isShowBtn() {
+      let flag: any = false;
+      if (this.postData.achieveTotalBagList && this.postData.achieveTotalBagList.length && this.postData.achieveDistriList && this.postData.achieveDistriList.length) {
+        let totalFlag: any = false;
+        let DistriFlag: any = false;
+        totalFlag = this.postData.achieveTotalBagList.some((list: any) => {
+          return list.correct === false;
+        });
+        DistriFlag = this.postData.achieveDistriList.some((list: any) => {
+          return list.correct === false;
+        });
+        if (totalFlag || DistriFlag) {
+          flag = true;
+        }
+      } else {
+        if (this.postData.achieveTotalBagList && this.postData.achieveTotalBagList.length) {
+          flag = this.postData.achieveTotalBagList.some((list: any) => {
+            return list.correct === false;
+          });
+        }
+        if (this.postData.achieveDistriList && this.postData.achieveDistriList.length) {
+          flag = this.postData.achieveDistriList.some((list: any) => {
+            return list.correct === false;
+          });
+        }
+      }
+      if (flag) {
+        this.$message.error('角色人业绩大于角色业绩上限，请核对业绩比例分配方案!');
+      }
+      return flag;
+    }
+
     async created() {
       // 成交报告的id
       this.id = this.$route.query.id;
@@ -1855,7 +1942,7 @@
             this.contNoList = [];
           }
           // 优惠告知书
-          this.postData.offerNoticeVO = baseInfo.notice && baseInfo.notice.length ? baseInfo.notice : [];
+          // this.postData.offerNoticeVO = baseInfo.notice && baseInfo.notice.length ? baseInfo.notice : [];
         }
         // 分销成交和非分销成交不一样
         if (baseInfo.contType === 'DistriDeal') {
@@ -1929,7 +2016,7 @@
           this.postData.dataSignName = (this as any).$root.dictAllName(baseInfo.myReturnVO.dataSign, 'DealDataFlag');
         }
         // 客户信息
-        this.postData.customerList = baseInfo.customerAddVOS && baseInfo.customerAddVOS.length ? baseInfo.customerAddVOS : [];
+        // this.postData.customerList = baseInfo.customerAddVOS && baseInfo.customerAddVOS.length ? baseInfo.customerAddVOS : [];
         // 收派金额 --- 代理费
         if (baseInfo.receiveVOS && baseInfo.receiveVOS.length) {
           let tempList: any = this.initReceiveVOS(baseInfo.receiveVOS);
@@ -1973,7 +2060,7 @@
           switch(baseInfo.termStageEnum){
             case 'Recognize':
               // 清空优惠告知书 --- 认筹周期需要自己手动添加
-              this.postData.offerNoticeVO = [];
+              // this.postData.offerNoticeVO = [];
               break;
           }
         }
@@ -1991,7 +2078,7 @@
         // 是否代销
         this.postData.isConsign = baseInfo.exConsignment === 1 ? 'Yes' : 'No';
         // 处理优惠告知书的nav
-        this.postData.offerNoticeVO = []; // 先重置优惠告知书的数据
+        // this.postData.offerNoticeVO = []; // 先重置优惠告知书的数据
         if (baseInfo.chargeEnum === 'Agent') {
           this.navList = this.navList.filter((item: any) => {
             return item.id !== 3;
@@ -2568,8 +2655,8 @@
       this.tempSignPrice = null;
       this.contNoList = []; // 分销协议编号
       this.packageIdsList = []; // ids
-      this.postData.customerList = []; // 客户信息
-      this.postData.offerNoticeVO = []; // 优惠告知书
+      // this.postData.customerList = []; // 客户信息
+      // this.postData.offerNoticeVO = []; // 优惠告知书
       // this.postData.uploadDocumentList = []; // 上传附件
       this.postData.calculation = 'Auto'; // 计算方式改为手动
       this.postData.channelCommList = []; // 对外拆佣

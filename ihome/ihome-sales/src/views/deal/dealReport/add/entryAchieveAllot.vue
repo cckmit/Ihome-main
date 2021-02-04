@@ -166,6 +166,7 @@
             <IhSelectPageByRoom
               @change="changeRoom"
               @changeOption="(data) => {postData.roomNo = data.roomNo}"
+              :params="{exDeal: 0}"
               v-model="postData.roomId"
               :proId="baseInfoByTerm.proId"
               :buildingId="postData.buildingId"
@@ -709,7 +710,7 @@
           </div>
         </div>
       </div>
-      <div class="divider-padding border-color-red" v-if="editFlag">
+      <div class="divider-padding border-color-red" v-if="editFlag || isShowBtn">
         <div class="divider-tip color-red">
           <div>收派金额发生变动，业绩需要初始化重新分配，请点击下方刷新按钮重新初始化对外拆佣及平台费用数据</div>
           <div class="btn">
@@ -861,7 +862,7 @@
             </el-table-column>
             <el-table-column prop="roleAchieveCap" label="角色业绩上限" min-width="150">
               <template slot-scope="{row}">
-                <div :class="!row.correct ? 'achieve-color-red' : ''">{{row.roleAchieveCap}}</div>
+                <div :class="row.correct === false ? 'achieve-color-red' : ''">{{row.roleAchieveCap}}</div>
               </template>
             </el-table-column>
             <el-table-column prop="rolerName" label="角色人" min-width="150">
@@ -875,7 +876,7 @@
             </el-table-column>
             <el-table-column prop="corporateAchieve" label="角色人业绩" min-width="150">
               <template slot-scope="{row}">
-                <div :class="!row.correct ? 'achieve-color-red' : ''">{{row.corporateAchieve}}</div>
+                <div :class="row.correct === false ? 'achieve-color-red' : ''">{{row.corporateAchieve}}</div>
               </template>
             </el-table-column>
             <el-table-column prop="roleAchieveRatio" label="角色人业绩比例(%)" min-width="150"></el-table-column>
@@ -944,7 +945,7 @@
             </el-table-column>
             <el-table-column prop="roleAchieveCap" label="角色业绩上限" min-width="150">
               <template slot-scope="{row}">
-                <div :class="!row.correct ? 'achieve-color-red' : ''">{{row.roleAchieveCap}}</div>
+                <div :class="row.correct === false ? 'achieve-color-red' : ''">{{row.roleAchieveCap}}</div>
               </template>
             </el-table-column>
             <el-table-column prop="rolerName" label="角色人" min-width="150">
@@ -958,7 +959,7 @@
             </el-table-column>
             <el-table-column prop="corporateAchieve" label="角色人业绩" min-width="150">
               <template slot-scope="{row}">
-                <div :class="!row.correct ? 'achieve-color-red' : ''">{{row.corporateAchieve}}</div>
+                <div :class="row.correct === false ? 'achieve-color-red' : ''">{{row.corporateAchieve}}</div>
               </template>
             </el-table-column>
             <el-table-column prop="roleAchieveRatio" label="角色人业绩比例(%)" min-width="150"></el-table-column>
@@ -1420,6 +1421,39 @@
       return arr;
     }
 
+    // 判断平台费用是否有问题，如果有，提示，然后显示加载按钮 correct
+    get isShowBtn() {
+      let flag: any = false;
+      if (this.postData.achieveTotalBagList && this.postData.achieveTotalBagList.length && this.postData.achieveDistriList && this.postData.achieveDistriList.length) {
+        let totalFlag: any = false;
+        let DistriFlag: any = false;
+        totalFlag = this.postData.achieveTotalBagList.some((list: any) => {
+          return list.correct === false;
+        });
+        DistriFlag = this.postData.achieveDistriList.some((list: any) => {
+          return list.correct === false;
+        });
+        if (totalFlag || DistriFlag) {
+          flag = true;
+        }
+      } else {
+        if (this.postData.achieveTotalBagList && this.postData.achieveTotalBagList.length) {
+          flag = this.postData.achieveTotalBagList.some((list: any) => {
+            return list.correct === false;
+          });
+        }
+        if (this.postData.achieveDistriList && this.postData.achieveDistriList.length) {
+          flag = this.postData.achieveDistriList.some((list: any) => {
+            return list.correct === false;
+          });
+        }
+      }
+      if (flag) {
+        this.$message.error('角色人业绩大于角色业绩上限，请核对业绩比例分配方案!');
+      }
+      return flag;
+    }
+
     async created() {
       // 锚点设置默认值
       this.navList = (this as any).$tool.deepClone(this.defaultNavList);
@@ -1658,7 +1692,12 @@
           vo.fileList = []; // 存放新上传的数据
           list.forEach((item: any) => {
             if (vo.code === item.fileType) {
-              vo.defaultFileList.push(item);
+              vo.defaultFileList.push(
+                {
+                  ...item,
+                  name: item.fileName
+                }
+              );
             }
           });
         });
@@ -3283,10 +3322,13 @@
         }
         if (this.id) {
           postData.allotDate = this.editBaseInfo.allotDate ? this.editBaseInfo.allotDate : this.getCurrentDate();
-          postData.allotDate = this.editBaseInfo.alloterId ? this.editBaseInfo.alloterId : (this as any).$root?.userInfo?.id;
-          postData.basic.dealVO.dealCode = this.postData.dealCode;
-          postData.basic.dealVO.id = this.postData.id;
-          postData.basic.dealVO.parentId = this.postData.parentId;
+          postData.alloterId = this.editBaseInfo.alloterId ? this.editBaseInfo.alloterId : (this as any).$root?.userInfo?.id;
+          postData.basic.dealVO.dealCode = this.editBaseInfo?.dealCode;
+          postData.basic.dealVO.id = this.editBaseInfo?.id;
+          postData.basic.dealVO.parentId = this.editBaseInfo?.parentId;
+          postData.basic.dealVO.entryDate = this.editBaseInfo?.entryDate;
+          postData.basic.dealVO.entryPersonId = this.editBaseInfo?.entryPersonId;
+          console.log('postData:', postData);
           await post_deal_updateAchieveAllot(postData);
           this.$message.success("修改成功");
           this.$goto({
@@ -3351,9 +3393,11 @@
             "cycleId": '',
             "dataSign": "",
             "dealOrgId": '',
+            "dealCode": null,
             "isConsign": "",
             "isMarketProject": "",
             "isMat": "",
+            "id": null,
             "modelCode": "",
             "noticeIds": [],
             "oneAgentTeamId": "",
@@ -3367,7 +3411,8 @@
             "stage": "",
             "status": "",
             "subscribeDate": "",
-            "subscribePrice": ""
+            "subscribePrice": "",
+            "parentId": null
           }, // 成交基础信息
           documentVO: [], // 上传附件
           houseVO: {
@@ -3489,6 +3534,10 @@
       obj.basic.houseVO.roomId = this.postData.roomId;
       obj.basic.houseVO.roomNo = this.postData.roomId ? this.postData.roomNo : null;
       obj.basic.houseVO.toilet = this.postData.toilet;
+      if (this.id) {
+        obj.basic.houseVO.id = this.editBaseInfo?.house?.id;
+        obj.basic.houseVO.dealId = this.id;
+      }
       // 附件信息
       if (this.postData.documentVO.length > 0) {
         // console.log('this.postData.documentVO', this.postData.documentVO);

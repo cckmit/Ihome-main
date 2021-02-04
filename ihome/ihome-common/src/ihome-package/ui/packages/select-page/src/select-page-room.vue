@@ -3,8 +3,8 @@
  * @version: 
  * @Author: ywl
  * @Date: 2020-12-05 10:52:22
- * @LastEditors: ywl
- * @LastEditTime: 2020-12-23 20:22:35
+ * @LastEditors: lsj
+ * @LastEditTime: 2021-02-03 16:42:10
 -->
 <script lang="ts">
 import { Component, Vue, Prop, Watch } from "vue-property-decorator";
@@ -42,6 +42,12 @@ export default class SelectPageByBuild extends Vue {
     default: true,
   })
   isBlur?: boolean;
+  @Prop({
+    default: () => {
+      return {};
+    }
+  })
+  params?: object;
 
   @Watch("proId")
   watchProId(val: any) {
@@ -83,6 +89,7 @@ export default class SelectPageByBuild extends Vue {
         roomNo: this.filterText,
         proId: this.proId,
         buildingId: this.buildingId,
+        ...this.params,
       });
       this.searchLoad = false;
     }
