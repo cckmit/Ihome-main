@@ -4,7 +4,7 @@
  * @Author: wwq
  * @Date: 2020-11-30 17:32:39
  * @LastEditors: wwq
- * @LastEditTime: 2021-02-04 16:13:39
+ * @LastEditTime: 2021-02-04 16:35:36
 -->
 <template>
   <el-dialog
@@ -45,10 +45,10 @@
         <el-col :span="12">
           <el-form-item
             label="报备类型"
-            prop='reportType'
+            prop='reportTypeEnum'
           >
             <el-select
-              v-model="form.reportType"
+              v-model="form.reportTypeEnum"
               clearable
               placeholder="请选择"
               class="width--50"
@@ -202,7 +202,7 @@ export default class ReportedRulesEdit extends Vue {
   };
 
   rules: any = {
-    reportType: [
+    reportTypeEnum: [
       {
         required: true,
         message: "请选择报备类型",
