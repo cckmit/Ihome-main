@@ -4,7 +4,7 @@
  * @Author: wwq
  * @Date: 2020-12-02 15:37:31
  * @LastEditors: wwq
- * @LastEditTime: 2021-02-04 16:54:23
+ * @LastEditTime: 2021-02-04 19:34:10
 -->
 <template>
   <el-dialog
@@ -517,10 +517,13 @@ export default class AddContract extends Vue {
     timeList: [],
     contractStartTime: null,
     contractEndTime: null,
-    agencyFeeRemark: null,
-    consumerComplete: null,
+    agencyFeeRemark:
+      "成交时间节点判断以客户签订《认购书》为准。（根据实际情况添加）",
+    consumerComplete:
+      "系统内项目一般以悦家云系统确认客户，系统外项目以与开发商签订的合同为基础确定确认方式。客户成交及确认条款一般与开发商对我司的销售代理协议一致或严于该。（须要修改）",
     agencyCostCondition: null,
-    agencyCostSettleWay: null,
+    agencyCostSettleWay:
+      "乙方具备上述条件后X个工作日内，甲方向乙方结算首期代理费，首期代理费标准为【】。甲方在开发商收到乙方客户的银行按揭剩余回款后，甲方30个工作日内向乙方结算尾期代理费 （须要修改）。",
     unContractLiability: null,
     supplementary: null,
     agencyFeeReturnTime: null,
