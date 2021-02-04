@@ -571,6 +571,7 @@ export default class Apply extends Vue {
     channelCompanyId: null,
     channelCompanyName: null,
     channelAccountName: null,
+    costSettleType: null,
   };
 
   isShow = false;
@@ -655,6 +656,7 @@ export default class Apply extends Vue {
   }
 
   templateFinish(data: any) {
+    this.info.costSettleType = data.costSettleType;
     this.info.channelCompanyId = null;
     this.SelectPageByConditionDisabled = false;
     this.searchConditon = {

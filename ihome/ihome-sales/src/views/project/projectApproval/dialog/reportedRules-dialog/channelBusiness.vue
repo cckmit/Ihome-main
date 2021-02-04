@@ -4,7 +4,7 @@
  * @Author: wwq
  * @Date: 2020-11-30 19:24:37
  * @LastEditors: wwq
- * @LastEditTime: 2021-01-21 19:58:23
+ * @LastEditTime: 2021-02-04 16:45:33
 -->
 <template>
   <el-dialog
@@ -156,12 +156,7 @@
         </template>
       </el-table-column>
       <el-table-column
-        prop="inputUser"
-        label="录入人"
-        width="150"
-      ></el-table-column>
-      <el-table-column
-        prop="followUserId"
+        prop="followUserName"
         label="渠道跟进人"
         width="150"
       ></el-table-column>
