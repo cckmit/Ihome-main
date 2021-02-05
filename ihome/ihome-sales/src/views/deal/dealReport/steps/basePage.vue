@@ -1305,7 +1305,7 @@
     post_pageData_initChannelComm,
     post_pageData_initAchieve,
     post_pageData_calculateReceiveAmount, // 根据收派套餐，计算收派金额
-    get_suppDeal_toUpdateSuppDeal, // 去修改补充成交 --- 初始页面接口
+    get_suppDeal_toUpdateSuppDeal__id, // 去修改补充成交 --- 初始页面接口
     post_suppDeal_previewUpdateAchieveInfChange, // 预览修改业绩信息变更
     post_suppDeal_previewUpdateBasicInfChange, // 预览修改基础信息变更
     post_suppDeal_previewUpdateRetreatRoom, // 预览修改退房
@@ -1739,7 +1739,7 @@
         res = await post_suppDeal_toAddSuppDeal(postData);
       } else if (this.btnType === "edit") {
         // 去修改
-        res = await get_suppDeal_toUpdateSuppDeal({id: this.id});
+        res = await get_suppDeal_toUpdateSuppDeal__id({id: this.id});
       } else {
         return;
       }
