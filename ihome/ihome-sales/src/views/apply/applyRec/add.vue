@@ -4,7 +4,7 @@
  * @Author: ywl
  * @Date: 2021-01-07 16:30:03
  * @LastEditors: ywl
- * @LastEditTime: 2021-02-02 19:24:35
+ * @LastEditTime: 2021-02-05 20:49:23
 -->
 <template>
   <IhPage class="text-left">
@@ -57,13 +57,33 @@
                 @changeOption="(data) => {
                   dealParams.developId = data.id;
                   form.developName = data.name;
+                  form.invoiceTitle = data.name;
                   getWaitList(data.id)
+                  getListAccount(data.id)
                 }"
               ></IhSelectPageByDeveloper>
             </el-form-item>
           </el-col>
           <el-col :span="8">
             <el-form-item label="甲方开票帐号">
+              <el-select
+                v-model="devAccountData"
+                class="width--100"
+                placeholder="请选择甲方开票帐号"
+                value-key="bankId"
+                @change="(data) => {
+                  form.developAccount = data.number;
+                  form.developAccountId = data.bankId;
+                  getDevBankInfo(data.bankId);
+                }"
+              >
+                <el-option
+                  v-for="(i, n) in devAccount"
+                  :key="n"
+                  :label="i.number"
+                  :value="i"
+                ></el-option>
+              </el-select>
             </el-form-item>
           </el-col>
           <el-col :span="8">
@@ -113,7 +133,7 @@
                 clearable
               >
                 <el-option
-                  v-for="(i, n) in $root.dictAllList('InvoiceOperationType')"
+                  v-for="(i, n) in $root.dictAllList('InvoiceType')"
                   :key="n"
                   :value="i.code"
                   :label="i.name"
@@ -124,7 +144,7 @@
           <el-col :span="8">
             <el-form-item label="发票税率">
               <el-input
-                v-model="form.taxRate"
+                :value="form.taxRate | percent"
                 disabled
               ></el-input>
             </el-form-item>
@@ -249,6 +269,14 @@
           >
             <template v-slot="{ row }">
               {{taxMoneySum(row)}}
+            </template>
+          </el-table-column>
+          <el-table-column
+            label="本次请款比例"
+            min-width="155"
+          >
+            <template v-slot="{ row }">
+              {{applyPercentSum(row) | percent}}
             </template>
           </el-table-column>
           <!-- <el-table-column
@@ -383,11 +411,11 @@
           </tr>
         </table>
       </div>
-      <p class="ih-info-title">甲方公司应扣除代理费明细</p>
+      <p class="ih-info-title">本期需抵扣金额明细</p>
       <div class="padding-left-20">
         <el-table
           style="width: 100%"
-          :data="agencyList"
+          :data="waitList"
           show-summary
           :summary-method="getSummaries"
         >
@@ -396,10 +424,6 @@
               {{ row.suppDealCode || row.dealCode }}
             </template>
           </el-table-column>
-          <el-table-column
-            label="项目名称"
-            prop="proName"
-          ></el-table-column>
           <el-table-column
             label="周期名称"
             prop="termName"
@@ -411,24 +435,139 @@
             </template>
           </el-table-column>
           <el-table-column
-            label="扣除代理费"
+            label="扣除金额"
             prop="subMoney"
           >
             <template v-slot="{ row }">
-              {{-row.subMoney}}
+              {{row.subMoney}}
             </template>
+          </el-table-column>
+          <el-table-column label="不含税金额">
+          </el-table-column>
+          <el-table-column label="税额">
           </el-table-column>
           <el-table-column
             label="操作"
             width="120"
             fixed="right"
           >
+            <template v-slot="{  }">
+              <el-link type="danger">移除</el-link>
+            </template>
+          </el-table-column>
+        </el-table>
+      </div>
+      <p class="ih-info-title">
+        <span>其他扣除项</span>
+        <el-button
+          type="primary"
+          class="add-account"
+          size="small"
+          @click="handleAddOther"
+        >添加扣除项</el-button>
+      </p>
+      <div class="padding-left-20">
+        <el-table
+          style="width: 100%"
+          :data="form.otherSubList"
+          show-summary
+        >
+          <el-table-column label="扣除类型">
             <template v-slot="{ row }">
+              <el-select v-model="row.subType">
+                <el-option
+                  v-for="(i, n) in $root.dictAllList('ApplySubType')"
+                  :key="n"
+                  :label="i.name"
+                  :value="i.code"
+                ></el-option>
+              </el-select>
+            </template>
+          </el-table-column>
+          <el-table-column label="项目周期">
+            <template v-slot="{ row }">
+              <el-select
+                v-model="row.termObj"
+                value-key="termId"
+                @change="(data) => {
+                  row.termId = data.termId;
+                  row.termName = data.termName
+                }"
+              >
+                <el-option
+                  v-for="(i, n) in form.dealList"
+                  :key="n"
+                  :value="i"
+                  :label="i.termName"
+                ></el-option>
+              </el-select>
+            </template>
+          </el-table-column>
+          <el-table-column
+            label="本期扣除金额"
+            prop="subMoney"
+          >
+            <template v-slot="{ row }">
+              <el-input
+                v-model="row.subMoney"
+                v-digits="2"
+              >
+                <i
+                  slot="prefix"
+                  style="line-height: 40px;color: #000;"
+                >-</i>
+              </el-input>
+            </template>
+          </el-table-column>
+          <el-table-column
+            label="不含税金额"
+            prop="subMoneyNoTax"
+          >
+            <template v-slot="{ row }">
+              <!-- <el-input
+                v-model="row.subMoneyNoTax"
+                v-digits="2"
+              >
+                <i
+                  slot="prefix"
+                  style="line-height: 40px;color: #000;"
+                >-</i>
+              </el-input> -->
+              {{otherSubMoneyNoTax(row)}}
+            </template>
+          </el-table-column>
+          <el-table-column
+            label="税额"
+            prop="subMoneyTax"
+          >
+            <template v-slot="{ row }">
+              <!-- <el-input
+                v-model="row.subMoneyTax"
+                v-digits="2"
+              >
+                <i
+                  slot="prefix"
+                  style="line-height: 40px; color: #000;"
+                >-</i>
+              </el-input> -->
+              {{otherSubMoney(row)}}
+            </template>
+          </el-table-column>
+          <el-table-column label="原因及扣罚依据">
+            <template v-slot="{ row }">
+              <el-input v-model="row.reason" />
+            </template>
+          </el-table-column>
+          <el-table-column
+            label="操作"
+            width="80"
+            fixed="right"
+          >
+            <template v-slot="{ $index }">
               <el-link
                 type="danger"
-                v-if="row.id"
+                @click="removeOther($index)"
               >移除</el-link>
-              <span v-else>--</span>
             </template>
           </el-table-column>
         </el-table>
@@ -440,10 +579,10 @@
           class="width--100"
           :loading="uploadLoad"
           @click="handleUpdateInfo()"
-        >点击刷新预览项目周期请款汇总信息和请款信息</el-button>
+        >点击计算请款统计数据并生成请款汇总清单</el-button>
       </div>
       <br />
-      <p class="ih-info-title">项目周期请款汇总</p>
+      <p class="ih-info-title">请款汇总清单</p>
       <div class="padding-left-20">
         <el-table
           style="width: 100%"
@@ -456,45 +595,95 @@
             min-width="185"
           ></el-table-column>
           <el-table-column
-            label="所属项目"
-            prop="proName"
-            min-width="165"
-          ></el-table-column>
-          <el-table-column
-            label="累计请款次数"
             min-width="115"
             prop="hisSumApplyNum"
-          ></el-table-column>
+          >
+            <template #header>
+              <div>累计请款次数</div>
+              <div>（不含本次）</div>
+            </template>
+          </el-table-column>
           <el-table-column
-            label="历史已申请请款金额（含税）"
-            min-width="205"
-            prop="hisSumApplyMoney"
-          ></el-table-column>
-          <el-table-column
-            label="累计扣除金额（含税）"
             min-width="180"
-            prop="hisSumSubMoney"
-          ></el-table-column>
+            prop="hisSumApplyMoney"
+          >
+            <template #header>
+              <div>历史已申请请款金额</div>
+              <div>（含税）</div>
+            </template>
+          </el-table-column>
           <el-table-column
-            label="历史实际请款金额（含税）"
             min-width="205"
             prop="hisSumActMoney"
-          ></el-table-column>
+          >
+            <template #header>
+              <div>历史实际请款金额</div>
+              <div>（含税）</div>
+            </template>
+          </el-table-column>
           <el-table-column
-            label="已回款金额（含税）"
             min-width="180"
             prop="hisSumReceMoney"
-          ></el-table-column>
+          >
+            <template #header>
+              <div>已回款金额</div>
+              <div>（含税）</div>
+            </template>
+          </el-table-column>
           <el-table-column
-            label="本次实际请款金额（含税）"
-            min-width="205"
+            min-width="180"
+            prop="applyMoney"
+          >
+            <template #header>
+              <div>本期申请请款金额</div>
+              <div>（含税）</div>
+            </template>
+          </el-table-column>
+          <el-table-column
+            min-width="180"
+            prop="subMoney"
+          >
+            <template #header>
+              <div>本期扣除金额</div>
+              <div>（含税）</div>
+            </template>
+          </el-table-column>
+          <el-table-column
+            min-width="180"
+            prop="fineMoney"
+          >
+            <template #header>
+              <div>本期扣罚金额</div>
+              <div>（含税）</div>
+            </template>
+          </el-table-column>
+          <el-table-column
+            min-width="180"
             prop="actMoney"
-          ></el-table-column>
+          >
+            <template #header>
+              <div>本期实际请款金额</div>
+              <div>（含税）</div>
+            </template>
+          </el-table-column>
           <el-table-column
-            label="累计实际请款金额（含税）"
-            min-width="205"
+            min-width="180"
+            prop="sumApplyMoney"
+          >
+            <template #header>
+              <div>累计申请请款金额</div>
+              <div>（含税）</div>
+            </template>
+          </el-table-column>
+          <el-table-column
+            min-width="180"
             prop="sumActMoney"
-          ></el-table-column>
+          >
+            <template #header>
+              <div>累计实际请款金额</div>
+              <div>（含税）</div>
+            </template>
+          </el-table-column>
         </el-table>
       </div>
       <p class="ih-info-title">请款信息</p>
@@ -510,18 +699,12 @@
             <td class="width-150">{{form.lastApplyNo}}</td>
           </tr>
           <tr>
-            <td class="width-150">本次请款金额</td>
+            <td class="width-150">本期请款金额</td>
             <td class="width-150">{{totalApplyMoney}}</td>
-            <td class="width-150">本次扣除金额</td>
+            <td class="width-150">本期扣除金额</td>
             <td class="width-150">{{subMoneySum()}}</td>
-            <td class="width-150">本次扣罚金额</td>
-            <td class="width-150 padding-0">
-              <el-input
-                v-model="form.fineMoney"
-                v-digits="2"
-                clearable
-              />
-            </td>
+            <td class="width-150">本期扣罚金额</td>
+            <td class="width-150 padding-0">{{fineMoneySum()}}</td>
           </tr>
           <tr>
             <td>扣罚项类别</td>
@@ -529,63 +712,74 @@
               colspan="5"
               class="padding-0"
             >
-              <el-input
-                v-model="form.fineType"
-                placeholder="如有扣罚请录入扣罚项类别"
-              ></el-input>
+              {{form.fineType}}
             </td>
           </tr>
           <tr>
-            <td class="width-150">本次实际请款金额（含税）</td>
+            <td class="width-150">本期实际请款金额（含税）</td>
             <td class="width-150">{{actMoneyTaxSum()}}</td>
-            <td class="width-150">本次实际请款金额（不含税）</td>
+            <td class="width-150">本期实际请款金额（不含税）</td>
             <td class="width-150">{{actMoneySum()}}</td>
-            <td class="width-150">本次实际请款税额</td>
-            <td class="width-150">{{totalTaxMoneySum()}}</td>
+            <td class="width-150">本期实际请款税额</td>
+            <td class="width-150">{{form.taxMoney}}</td>
           </tr>
-          <tr>
-            <td class="width-150">累计实际请款金额</td>
-            <td class="width-150">{{totalActMoneyTax}}</td>
+          <!-- <tr>
             <td class="width-150">累计实际请款不含税金额</td>
             <td class="width-150">{{totalActMoney}}</td>
             <td class="width-150">累计实际请款税额</td>
             <td class="width-150">{{totalTaxMoney}}</td>
-          </tr>
+          </tr> -->
           <tr>
             <td class="width-150">发票类型</td>
-            <td class="width-150 padding-0">
-              <el-select
-                v-model="form.billTypeCode"
-                class="width--100"
-              >
-                <el-option
-                  v-for="(i, n) in $root.dictAllList('InvoiceType')"
-                  :key="n"
-                  :label="i.name"
-                  :value="i.code"
-                ></el-option>
-              </el-select>
-            </td>
+            <td class="width-150">{{$root.dictAllName(form.billTypeCode, 'InvoiceType')}}</td>
             <td class="width-150">开票税率</td>
-            <td class="width-150">{{form.taxRate}}</td>
+            <td class="width-150">{{form.taxRate | percent}}</td>
             <td class="width-150">纳税人识别号</td>
-            <td class="width-150">{{form.sellerTaxNo}}</td>
+            <td class="width-150 padding-0">
+              <el-input
+                v-model="form.developTaxNo"
+                class="table-input"
+                placeholder="请输入纳税人识别号"
+              />
+            </td>
           </tr>
           <tr>
-            <td>收款单位名称</td>
-            <td colspan="5">{{form.sellerName}}</td>
+            <td>发票抬头</td>
+            <td colspan="5">{{form.invoiceTitle}}</td>
           </tr>
           <tr>
             <td class="width-150">开户行</td>
-            <td colspan="5">{{form.sellerOpeningBankBranch}}</td>
+            <td colspan="2">{{form.developOpenBank}}</td>
+            <td class="width-150">银行帐号</td>
+            <td colspan="2">{{form.developAccount}}</td>
             <!-- <td class="width-150">银行</td>
             <td class="width-150">{{form.sellerOpeningBankType}}</td>
             <td class="width-150">支行</td>
             <td class="width-150">{{form.sellerOpeningBankBranch}}</td> -->
           </tr>
           <tr>
-            <td>银行帐号</td>
-            <td colspan="5">{{form.sellerBankAccount}}</td>
+            <td class="width-150">住所(地址)</td>
+            <td
+              colspan="2"
+              class="padding-0"
+            >
+              <el-input
+                v-model="form.developAddress"
+                class="table-input"
+                placeholder="请输入住所"
+              />
+            </td>
+            <td class="width-150">电话</td>
+            <td
+              colspan="2"
+              class="padding-0"
+            >
+              <el-input
+                v-model="form.developPhone"
+                class="table-input"
+                placeholder="请输入电话"
+              />
+            </td>
           </tr>
           <tr>
             <td>经办部门意见</td>
@@ -594,11 +788,14 @@
               class="padding-0"
             >
               <el-input
+                class="table-input"
                 type="textarea"
                 :rows="4"
                 v-model="form.remark"
                 resize="none"
                 placeholder="请输入内容"
+                maxlength="1000"
+                show-word-limit
               ></el-input>
             </td>
           </tr>
@@ -700,18 +897,24 @@
 import { Component, Vue } from "vue-property-decorator";
 import SelectDeal from "./dialog/selectDeal.vue";
 import {
+  get_company_getCompanyBankInfo__bankId,
+  get_company_listAccount__id,
+} from "../../../api/developer";
+import {
   get_bankAccount_get__companyId,
   get_bankAccount_getBankInfoByAccountId__accountId,
 } from "../../../api/finance/index";
 import {
-  get_devDeductDetail_getListAllByWait__developId,
-  post_applyRecDeal_getTermTotalList,
-  post_applyRec_getHisRec,
+  post_devDeductDetail_getListAllByWait,
+  post_applyRecDealTerm_getTermTotalList,
+  post_applyRec_getLastApplyNo,
+  // post_applyRecDeal_getTermTotalList,
+  // post_applyRec_getHisRec,
   post_applyRec_save,
   get_applyRec_getApplyRecById__applyId,
   get_applyRecDeal_getAll__applyId,
   get_applyRecDealTerm_getAll__applyId,
-  get_devAgentFee_getAll__applyId,
+  // get_devAgentFee_getAll__applyId,
   post_applyRecFile_getAll,
   post_applyRec_cancel__applyId,
   post_applyRec_InvoiceApply__applyId,
@@ -722,57 +925,57 @@ import {
 })
 export default class ApplyRecAdd extends Vue {
   private form: any = {
-    applyTime: null,
-    applyUserName: null,
-    developId: null,
-    developName: null,
-    polyCompanyId: null,
-    receAccountId: null,
-    proId: null,
-    orgId: null,
-    branchNo: null,
-    sellerTaxNo: null,
-    taxRate: null,
-    remark: null,
-    sellerBankAccount: null,
-    sellerName: null,
-    sellerOpeningBankBranch: null,
-    sellerOpeningBankType: null,
-    fineType: null,
-    lastApplyNo: null,
-    billTypeCode: null,
+    applyTime: null, //
+    applyUserName: null, //
+    developId: null, // 甲方ID
+    developName: null, // 甲方名称
+    developAccount: null, // 甲方开票账号
+    developAccountId: null, // 甲方开票账号ID
+    developAddress: null, // 甲方住所
+    developOpenBank: null, // 甲方开户行
+    developPhone: null, // 甲方电话
+    developTaxNo: null, // 甲方纳税人识别号
+    proId: null, // 项目ID
+    orgId: null, // 事业部ID
+    invoiceTitle: null, // 发票抬头
+    // branchNo: null,
+    // sellerTaxNo: null,
+    taxRate: null, // 发票税率
+    remark: null, // 意见
+    // sellerBankAccount: null,
+    // sellerOpeningBankBranch: null,
+    // sellerOpeningBankType: null,
+    polyCompanyId: null, // 收款公司ID-我司
+    receAccountId: null, // 收款账号ID
+    receBankAccount: null, // 收款账号
+    receBranchNo: null, // 联行号
+    fineType: "", // 扣罚类别
+    lastApplyNo: null, // 上传请款单号
+    billTypeCode: null, // 发票类型
     applyMoney: 0, // 本次请款金额
-    subMoney: 0, // 本次扣除金额
+    subMoney: 0, // 本次扣除金额 -- 添加
     fineMoney: 0, // 本次扣罚金额
     actMoneyTax: 0, // 本次实际请款金额(含税)
     actMoney: 0, // 本次实际请款金额(不含税)
     taxMoney: 0, // 本次实际请款税额
-    sumActMoneyTax: 0, // 累计实际请款金额 - 添加时要算
-    sumActMoney: 0, // 累计实际请款不含税金额 - 添加时要算
-    sumTaxMoney: 0, // 累计实际请款税额 - 添加时要算
-    agentFeeFromDeductIdList: [],
-    // devAgentFeeAddFromPageVO: {
-    //   applyRecDealList: [],
-    //   devDeductDetailIdList: [],
-    // },
+    // sumActMoneyTax: 0, // 累计实际请款金额 - 添加时要算
+    // sumActMoney: 0, // 累计实际请款不含税金额 - 添加时要算
+    // sumTaxMoney: 0, // 累计实际请款税额 - 添加时要算
     dealList: [],
     termList: [],
-    fileList: {
-      fileList: [],
-    },
+    otherSubList: [],
+    deductRecList: [],
+    fileList: [],
     status: null,
   };
   private fileListType: any = [];
   private submitFile: any = {};
-  private hisInfo: any = {
-    lastApplyNo: null,
-    sumActMoney: 0,
-    sumActMoneyTax: 0,
-    sumTaxMoney: 0,
-  };
+  private hisInfo: any = null;
   private accountData: any = null;
   private selectVisible = false;
   private accountList: any = [];
+  private devAccount: any = [];
+  private devAccountData: any = {};
   private dealParams: any = {
     developId: null,
     polyCompanyId: null,
@@ -786,25 +989,6 @@ export default class ApplyRecAdd extends Vue {
   private paramProName: any = "";
   private applyNo: any = null;
 
-  private get agencyList() {
-    // 应扣除代理费明细
-    this.form.agentFeeFromDeductIdList = this.waitList.map((i: any) => i.id);
-    let list = this.form.dealList
-      .filter((val: any) => this.$math.tofixed(parseFloat(val.subMoney), 2) > 0)
-      .map((i: any) => ({
-        dealCode: i.dealCode,
-        dealId: i.id,
-        developId: this.form.developId,
-        proId: i.proId,
-        proName: i.proName,
-        subMoney: i.subMoney,
-        subType: i.subType,
-        termId: i.termId,
-        termName: i.termName,
-      }));
-    // this.form.devAgentFeeAddFromPageVO.applyRecDealList = list;
-    return this.waitList.concat(list);
-  }
   private get totalNoReceiveAmount() {
     let sum = 0;
     this.form.dealList.forEach((i: any) => {
@@ -869,17 +1053,16 @@ export default class ApplyRecAdd extends Vue {
     });
     return sum;
   }
-  private get totalActMoneyTax() {
-    let sum =
-      (parseFloat(this.actMoneyTaxSum()) || 0) +
-      (parseFloat(this.hisInfo.sumActMoneyTax) || 0);
-    // this.form.sumActMoneyTax = sum.toFixed(2);
-    return sum.toFixed(2);
-  }
+  // private get totalActMoneyTax() {
+  //   let sum =
+  //     (this.actMoneyTaxSum() || 0) +
+  //     (parseFloat(this.hisInfo.sumActMoneyTax) || 0);
+  //   // this.form.sumActMoneyTax = sum.toFixed(2);
+  //   return sum.toFixed(2);
+  // }
   private get totalActMoney() {
     let sum =
-      (parseFloat(this.actMoneySum()) || 0) +
-      (parseFloat(this.hisInfo.sumActMoney) || 0);
+      (this.actMoneySum() || 0) + (parseFloat(this.hisInfo.sumActMoney) || 0);
     // this.form.sumActMoney = sum.toFixed(2);
     return sum.toFixed(2);
   }
@@ -890,8 +1073,29 @@ export default class ApplyRecAdd extends Vue {
     // this.form.sumTaxMoney = sum.toFixed(2);
     return sum.toFixed(2);
   }
+  // 计算不含税金额 -- 其他扣除项
+  private otherSubMoneyNoTax(row: any) {
+    let subMoneyNoTax = this.$math.div(
+      row.subMoney,
+      1 + Number(this.form.taxRate)
+    );
+    row.subMoneyNoTax = this.$math.tofixed(subMoneyNoTax, 2);
+    return row.subMoneyNoTax;
+  }
+  // 计算税额 -- 其他扣除项
+  private otherSubMoney(row: any) {
+    let subMoneyTax = this.$math.sub(row.subMoney, row.subMoneyNoTax);
+    row.subMoneyTax = this.$math.tofixed(subMoneyTax, 2);
+    return row.subMoneyTax;
+  }
+  // 本次请款比例
+  private applyPercentSum(row: any) {
+    let sum = this.$math.div(row.applyMoney, row.receiveAmount);
+    row.applyPercent = this.$math.tofixed(sum, 2);
+    return row.applyPercent;
+  }
+  // 计算不含税金额
   private noTaxMoneySum(row: any) {
-    // 计算不含税金额
     let num = parseFloat(row.applyMoney) || 0;
     let num2 = (parseFloat(row.taxRate) || 0) + 1;
     row.noTaxMoney = this.$math.tofixed(num / num2, 2);
@@ -903,36 +1107,40 @@ export default class ApplyRecAdd extends Vue {
     row.taxMoney = this.$math.tofixed(num - row.noTaxMoney, 2);
     return row.taxMoney;
   }
+  // 本次扣除金额
   private subMoneySum() {
     let sum = 0;
-    this.agencyList.forEach((i: any) => {
-      sum += parseFloat(i.subMoney) || 0;
+    this.form.termList.forEach((i: any) => {
+      sum = this.$math.add(sum, parseFloat(i.subMoney));
     });
-    // this.form.subMoney = sum.toFixed(2);
-    return sum.toFixed(2);
+    return this.$math.tofixed(sum, 2);
   }
+  // 本期扣罚金额
+  private fineMoneySum() {
+    let sum = 0;
+    this.form.termList.forEach((i: any) => {
+      sum = this.$math.add(sum, parseFloat(i.fineMoney));
+    });
+    return this.$math.tofixed(sum, 2);
+  }
+  // 本期实际请款金额（含税）
   private actMoneyTaxSum() {
     let sum = 0;
-    sum =
-      (this.totalApplyMoney || 0) -
-      (parseFloat(this.subMoneySum()) || 0) -
-      (parseFloat(this.form.fineMoney) || 0);
-    // this.form.actMoneyTax = sum.toFixed(2);
-    return sum.toFixed(2);
+    this.form.termList.forEach((i: any) => {
+      sum = this.$math.add(sum, parseFloat(i.actMoney));
+    });
+    return this.$math.tofixed(sum, 2);
   }
+  // 本期实际请款金额(不含税)
   private actMoneySum() {
     let sum = 0;
     sum =
-      (parseFloat(this.actMoneyTaxSum()) || 0) /
-      (1 + (parseFloat(this.form.taxRate) || 0));
+      (this.actMoneyTaxSum() || 0) / (1 + (parseFloat(this.form.taxRate) || 0));
     // this.form.actMoney = sum.toFixed(2);
-    return sum.toFixed(2);
+    return this.$math.tofixed(sum, 2);
   }
   private totalTaxMoneySum() {
-    let sum =
-      (parseFloat(this.actMoneyTaxSum()) || 0) -
-      (parseFloat(this.actMoneySum()) || 0);
-    // this.form.taxMoney = sum.toFixed(2);
+    let sum = 0;
     return sum.toFixed(2);
   }
   /**
@@ -985,12 +1193,28 @@ export default class ApplyRecAdd extends Vue {
       );
     }
   }
+  private handleAddOther() {
+    this.form.otherSubList.push({
+      subMoney: 0,
+      subMoneyNoTax: 0,
+      subMoneyTax: 0,
+      subType: null,
+      termId: null,
+      termName: null,
+      reason: null,
+      termObj: {},
+    });
+  }
+  private removeOther(index: number) {
+    this.form.otherSubList.splice(index, 1);
+  }
   private dealRemove(index: number) {
     this.form.dealList.splice(index, 1);
   }
   private async getWaitList(developId: any) {
     try {
-      this.waitList = await get_devDeductDetail_getListAllByWait__developId({
+      this.waitList = await post_devDeductDetail_getListAllByWait({
+        correctType: "Apply",
         developId,
       });
     } catch (error) {
@@ -1008,6 +1232,7 @@ export default class ApplyRecAdd extends Vue {
       subType: null,
       fromDealId: i.id,
       taxRate: this.form.taxRate,
+      applyPercent: 0,
       ...i,
     }));
   }
@@ -1022,29 +1247,48 @@ export default class ApplyRecAdd extends Vue {
     const info = await get_bankAccount_getBankInfoByAccountId__accountId({
       accountId,
     });
+    console.log(info);
+
     this.form.branchNo = info.branchNo;
     this.form.taxRate = info.taxRate;
-    this.form.sellerOpeningBankBranch = info.branchName;
-    this.form.sellerOpeningBankType = info.bankName;
-    this.form.sellerBankAccount = info.accountNo;
-    this.form.sellerName = info.accountName;
+    this.form.receBankAccount = info.accountNo;
+    this.form.receBranchNo = info.branchNo;
+    // this.form.sellerOpeningBankBranch = info.branchName;
+    // this.form.sellerOpeningBankType = info.bankName;
+    // this.form.sellerBankAccount = info.accountNo;
+    // this.form.sellerName = info.accountName;
   }
   private async handleUpdateInfo() {
     if (
       this.dealParams.developId &&
       this.dealParams.polyCompanyId &&
       this.dealParams.receAccountId &&
+      this.dealParams.proId &&
+      this.dealParams.termOrgId &&
       this.form.dealList.length
     ) {
+      let newTermIdList = this.form.dealList
+        .concat(this.waitList)
+        .map((i: any) => i.termId);
+      this.form.fineType = "";
+      this.form.otherSubList.forEach((item: any) => {
+        if (item.subType === "Fine") {
+          this.form.fineType += `${item.termName}(${item.reason});`;
+        }
+      });
       try {
         await this.getTermTotalList({
           developId: this.dealParams.developId,
           polyCompanyId: this.dealParams.polyCompanyId,
-          termProList: this.form.dealList.map((i: any) => ({
-            proId: i.proId,
-            termId: i.termId,
-          })),
+          orgId: this.dealParams.termOrgId,
+          proId: this.dealParams.proId,
+          receAccountId: this.dealParams.receAccountId,
+          termIdList: [...new Set(newTermIdList)],
         });
+        this.form.taxMoney = this.$math.sub(
+          this.actMoneyTaxSum(),
+          this.actMoneySum()
+        );
         await this.getHisRec({
           developId: this.dealParams.developId,
           polyCompanyId: this.dealParams.polyCompanyId,
@@ -1062,21 +1306,68 @@ export default class ApplyRecAdd extends Vue {
    */
   private async getTermTotalList(param: any) {
     try {
-      let list = await post_applyRecDeal_getTermTotalList(param);
+      let list = await post_applyRecDealTerm_getTermTotalList(param);
       console.log(list);
       this.form.termList = list.map((i: any) => {
-        let actMoney = 0;
+        let applyMoney = 0;
+        let subMoney1 = 0; // 本期需要抵扣金额明细扣除金额
+        let subMoney2 = 0; // 抵扣模块税额差和其他的扣除金额
+        let fineMoney = 0; // 本次扣罚金额
         this.form.dealList
           .filter((item: any) => item.termId === i.termId)
           .forEach((newItem: any) => {
-            parseFloat(
-              (actMoney += newItem.noTaxMoney + newItem.taxMoney)
-            ).toFixed(2);
+            applyMoney = this.$math.tofixed(
+              this.$math.add(applyMoney, newItem.applyMoney),
+              2
+            );
+          });
+        this.waitList
+          .filter((item: any) => item.termId === i.termId)
+          .forEach((newI: any) => {
+            subMoney1 = this.$math.tofixed(
+              this.$math.add(subMoney1, newI.subMoney),
+              2
+            );
+          });
+        this.form.otherSubList
+          .filter((it: any) => {
+            return (
+              it.termId === i.termId &&
+              (it.subType === "Tax" || it.subType === "Other")
+            );
+          })
+          .forEach((nItem: any) => {
+            subMoney2 = this.$math.tofixed(
+              this.$math.add(subMoney2, nItem.subMoney),
+              2
+            );
+          });
+        this.form.otherSubList
+          .filter((item: any) => {
+            return item.termId === i.termId && item.subType === "Fine";
+          })
+          .forEach((nItem: any) => {
+            fineMoney = this.$math.tofixed(
+              this.$math.add(fineMoney, nItem.subMoney),
+              2
+            );
           });
         return {
           ...i,
-          actMoney,
-          sumActMoney: parseFloat(i.hisSumActMoney + actMoney).toFixed(2),
+          applyMoney,
+          fineMoney,
+          subMoney: this.$math.add(subMoney1, subMoney2),
+          actMoney: this.$math.sub(
+            applyMoney,
+            this.$math.addArr([fineMoney, subMoney1, subMoney2])
+          ),
+          sumActMoney:
+            i.hisSumActMoney +
+            this.$math.sub(
+              applyMoney,
+              this.$math.addArr([fineMoney, subMoney1, subMoney2])
+            ),
+          sumApplyMoney: this.$math.add(applyMoney, i.hisSumApplyMoney),
         };
       });
     } catch (error) {
@@ -1085,10 +1376,29 @@ export default class ApplyRecAdd extends Vue {
   }
   private async getHisRec(param: any) {
     try {
-      const res = await post_applyRec_getHisRec(param);
+      const res = await post_applyRec_getLastApplyNo(param);
       console.log(res);
       this.hisInfo = res;
-      this.form.lastApplyNo = res.lastApplyNo;
+      this.form.lastApplyNo = res;
+    } catch (error) {
+      console.log(error);
+    }
+  }
+  private async getListAccount(id: any) {
+    try {
+      this.devAccount = await get_company_listAccount__id({ id });
+    } catch (error) {
+      console.log(error);
+    }
+  }
+  private async getDevBankInfo(bankId: any) {
+    try {
+      const res = await get_company_getCompanyBankInfo__bankId({ bankId });
+      console.log(res);
+      this.form.developAddress = res.address;
+      this.form.developPhone = res.phone;
+      this.form.developTaxNo = res.creditCode;
+      this.form.developOpenBank = res.bankName;
     } catch (error) {
       console.log(error);
     }
@@ -1101,7 +1411,7 @@ export default class ApplyRecAdd extends Vue {
   getFileListType(data: any) {
     const list = (this.$root as any)
       .dictAllList("ApplyFileType")
-      .filter((i: any) => !i.code.includes("PDF"));
+      .filter((i: any) => !i.code.includes("Pdf"));
     console.log(list);
     this.fileListType = list.map((i: any) => {
       return {
@@ -1124,19 +1434,32 @@ export default class ApplyRecAdd extends Vue {
     console.log(type);
     this.form.op = type;
     this.form.applyMoney = this.totalApplyMoney;
-    this.form.sumActMoneyTax = this.totalActMoneyTax;
-    this.form.sumActMoney = this.totalActMoney;
-    this.form.sumTaxMoney = this.totalTaxMoney;
-    this.form.subMoney = this.subMoneySum();
-    this.form.actMoneyTax = this.actMoneyTaxSum();
     this.form.actMoney = this.actMoneySum();
-    this.form.taxMoney = this.totalTaxMoneySum();
-    this.form.termList = this.form.termList.map((i: any) => ({
-      developId: this.dealParams.developId,
-      polyCompanyId: this.dealParams.polyCompanyId,
-      receAccountId: this.dealParams.receAccountId,
+    this.form.actMoneyTax = this.actMoneyTaxSum();
+    this.form.deductRecList = this.waitList;
+    let subMoney = this.subMoneySum() * -1;
+    let fineMoney = this.fineMoneySum() * -1;
+    let otherSubList = this.form.otherSubList.map((i: any) => ({
       ...i,
+      subMoney: i.subMoney * -1,
+      subMoneyNoTax: i.subMoneyNoTax * -1,
+      subMoneyTax: i.subMoneyTax * -1,
     }));
+    let termList = this.form.termList.map((i: any) => ({
+      ...i,
+      subMoney: i.subMoney * -1,
+      fineMoney: i.fineMoney * -1,
+    }));
+    // this.form.sumTaxMoney = this.totalTaxMoney;
+    // this.form.actMoneyTax = this.actMoneyTaxSum();
+    // this.form.actMoney = this.actMoneySum();
+    // this.form.taxMoney = this.totalTaxMoneySum();
+    // this.form.termList = this.form.termList.map((i: any) => ({
+    //   developId: this.dealParams.developId,
+    //   polyCompanyId: this.dealParams.polyCompanyId,
+    //   receAccountId: this.dealParams.receAccountId,
+    //   ...i,
+    // }));
 
     // 校验提示
     let arr: any = [];
@@ -1166,7 +1489,7 @@ export default class ApplyRecAdd extends Vue {
       }
     });
     if (isSubmit) {
-      this.form.fileList.fileList = arr.map((v: any) => ({
+      this.form.fileList = arr.map((v: any) => ({
         fileId: v.fileId,
         fileName: v.name,
         type: v.type,
@@ -1182,7 +1505,13 @@ export default class ApplyRecAdd extends Vue {
     console.log(this.form);
 
     try {
-      await post_applyRec_save(this.form);
+      await post_applyRec_save({
+        ...this.form,
+        subMoney,
+        fineMoney,
+        otherSubList,
+        termList,
+      });
       let msg = "";
       switch (type) {
         case "SaveAndInvoiceApply":
@@ -1249,15 +1578,15 @@ export default class ApplyRecAdd extends Vue {
       this.form.termList = await get_applyRecDealTerm_getAll__applyId({
         applyId,
       });
-      let feeList = await get_devAgentFee_getAll__applyId({ applyId });
-      console.log(feeList);
+      // let feeList = await get_devAgentFee_getAll__applyId({ applyId });
+      // console.log(feeList);
 
-      if (this.form.status === "Draft") {
-        await this.getHisRec({
-          developId: info.developId,
-          polyCompanyId: info.polyCompanyId,
-        });
-      }
+      // if (this.form.status === "Draft") {
+      //   await this.getHisRec({
+      //     developId: info.developId,
+      //     polyCompanyId: info.polyCompanyId,
+      //   });
+      // }
       console.log(this.form);
     } catch (error) {
       console.log(error);
@@ -1294,6 +1623,14 @@ export default class ApplyRecAdd extends Vue {
 .deal-table {
   /deep/ .red-row {
     background-color: #fccccc;
+  }
+}
+.table-input {
+  /deep/ .el-input__inner {
+    border: none;
+  }
+  /deep/ .el-textarea__inner {
+    border: none;
   }
 }
 .apply-table {

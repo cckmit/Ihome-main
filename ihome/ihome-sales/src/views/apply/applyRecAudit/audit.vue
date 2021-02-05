@@ -4,7 +4,7 @@
  * @Author: ywl
  * @Date: 2021-01-14 19:09:51
  * @LastEditors: ywl
- * @LastEditTime: 2021-01-15 14:28:05
+ * @LastEditTime: 2021-02-02 19:47:26
 -->
 <template>
   <IhPage class="text-left">
@@ -578,10 +578,10 @@ import {
   post_applyRecFile_getAll,
   get_applyRecDeal_getAll__applyId,
   get_applyRecDealTerm_getAll__applyId,
-  get_devAgentFee_getAll__applyId,
+  // get_devAgentFee_getAll__applyId,
   get_opLog_getAllListByApplyId__applyId,
   post_applyRec_audit,
-  post_applyRec_stop__applyId,
+  // post_applyRec_stop__applyId,
 } from "../../../api/apply/index";
 
 @Component({})
@@ -673,7 +673,7 @@ export default class ApplyAudit extends Vue {
       this.termList = await get_applyRecDealTerm_getAll__applyId({
         applyId,
       });
-      this.agencyList = await get_devAgentFee_getAll__applyId({ applyId });
+      // this.agencyList = await get_devAgentFee_getAll__applyId({ applyId });
       this.opLogList = await get_opLog_getAllListByApplyId__applyId({
         applyId,
       });
@@ -684,7 +684,7 @@ export default class ApplyAudit extends Vue {
   private async applyStop() {
     try {
       await this.$confirm("是否确认终止?", "提示");
-      await post_applyRec_stop__applyId({ applyId: this.form.id });
+      // await post_applyRec_stop__applyId({ applyId: this.form.id });
       this.$message.success("终止成功");
       this.$goto("/applyRecAudit/list");
     } catch (error) {

@@ -4,7 +4,7 @@
  * @Author: ywl
  * @Date: 2021-01-07 16:30:03
  * @LastEditors: ywl
- * @LastEditTime: 2021-02-02 10:59:51
+ * @LastEditTime: 2021-02-02 19:39:04
 -->
 <template>
   <IhPage class="text-left">
@@ -688,14 +688,14 @@ import {
   get_bankAccount_getBankInfoByAccountId__accountId,
 } from "../../../api/finance/index";
 import {
-  get_devDeductDetail_getListAllByWait__developId,
-  post_applyRecDeal_getTermTotalList,
-  post_applyRec_getHisRec,
+  // get_devDeductDetail_getListAllByWait__developId,
+  // post_applyRecDeal_getTermTotalList,
+  // post_applyRec_getHisRec,
   post_applyRec_save,
   get_applyRec_getApplyRecById__applyId,
   get_applyRecDeal_getAll__applyId,
   get_applyRecDealTerm_getAll__applyId,
-  get_devAgentFee_getAll__applyId,
+  // get_devAgentFee_getAll__applyId,
   post_applyRecFile_getAll,
   post_applyRec_cancel__applyId,
   post_applyRec_InvoiceApply__applyId,
@@ -933,9 +933,9 @@ export default class ApplyRecAdd extends Vue {
   }
   private async getWaitList(developId: any) {
     try {
-      this.waitList = await get_devDeductDetail_getListAllByWait__developId({
-        developId,
-      });
+      // this.waitList = await get_devDeductDetail_getListAllByWait__developId({
+      //   developId,
+      // });
     } catch (error) {
       console.log(error);
     }
@@ -1005,33 +1005,33 @@ export default class ApplyRecAdd extends Vue {
    */
   private async getTermTotalList(param: any) {
     try {
-      let list = await post_applyRecDeal_getTermTotalList(param);
-      console.log(list);
-      this.form.termList = list.map((i: any) => {
-        let actMoney = 0;
-        this.form.dealList
-          .filter((item: any) => item.termId === i.termId)
-          .forEach((newItem: any) => {
-            parseFloat(
-              (actMoney += newItem.noTaxMoney + newItem.taxMoney)
-            ).toFixed(2);
-          });
-        return {
-          ...i,
-          actMoney,
-          sumActMoney: parseFloat(i.hisSumActMoney + actMoney).toFixed(2),
-        };
-      });
+      // let list = await post_applyRecDeal_getTermTotalList(param);
+      // console.log(list);
+      // this.form.termList = list.map((i: any) => {
+      //   let actMoney = 0;
+      //   this.form.dealList
+      //     .filter((item: any) => item.termId === i.termId)
+      //     .forEach((newItem: any) => {
+      //       parseFloat(
+      //         (actMoney += newItem.noTaxMoney + newItem.taxMoney)
+      //       ).toFixed(2);
+      //     });
+      //   return {
+      //     ...i,
+      //     actMoney,
+      //     sumActMoney: parseFloat(i.hisSumActMoney + actMoney).toFixed(2),
+      //   };
+      // });
     } catch (error) {
       console.log(error);
     }
   }
   private async getHisRec(param: any) {
     try {
-      const res = await post_applyRec_getHisRec(param);
-      console.log(res);
-      this.hisInfo = res;
-      this.form.lastApplyNo = res.lastApplyNo;
+      // const res = await post_applyRec_getHisRec(param);
+      // console.log(res);
+      // this.hisInfo = res;
+      // this.form.lastApplyNo = res.lastApplyNo;
     } catch (error) {
       console.log(error);
     }
@@ -1192,8 +1192,8 @@ export default class ApplyRecAdd extends Vue {
       this.form.termList = await get_applyRecDealTerm_getAll__applyId({
         applyId,
       });
-      let feeList = await get_devAgentFee_getAll__applyId({ applyId });
-      console.log(feeList);
+      // let feeList = await get_devAgentFee_getAll__applyId({ applyId });
+      // console.log(feeList);
 
       if (this.form.status === "Draft") {
         await this.getHisRec({
