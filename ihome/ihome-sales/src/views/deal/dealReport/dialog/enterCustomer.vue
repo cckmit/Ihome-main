@@ -89,7 +89,7 @@
           </el-form-item>
         </el-col>
         <el-col :span="24">
-          <el-form-item label="证件编号">
+          <el-form-item label="证件编号" prop="certificateNumber">
             <el-input
               clearable
               v-model="postData.certificateNumber"
@@ -97,7 +97,7 @@
             ></el-input>
           </el-form-item>
         </el-col>
-        <el-col :span="24" v-if="postData.custType === 'Company'">
+        <el-col :span="24">
           <el-form-item label="邮箱">
             <el-input
               clearable
@@ -158,7 +158,10 @@
       ],
       cardType: [
         {required: true, message: "请选择证件类型", trigger: "change"}
-      ]
+      ],
+      certificateNumber: [
+        {required: true, message: "请输入证件编号", trigger: "change"}
+      ],
     };
     @Prop({default: null}) data: any;
 
