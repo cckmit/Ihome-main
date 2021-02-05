@@ -523,7 +523,7 @@
           <el-table-column prop="cardNo" label="证件编号" min-width="150"></el-table-column>
           <el-table-column prop="email" label="邮箱" min-width="120"></el-table-column>
           <el-table-column
-            v-if="!baseInfoInDeal.customerAddVOS.length && baseInfoInDeal.dealNoticeStatus !== 'MultipleNotice'"
+            v-if="!baseInfoInDeal.customerAddVOS.length && baseInfoInDeal.dealNoticeStatus !== 'MultipleNotice' && baseInfoByTerm.chargeEnum === 'Agent'"
             fixed="right" label="操作" width="100">
             <template slot-scope="scope">
               <el-link
@@ -1911,7 +1911,9 @@
       if(this.baseInfoByTerm.termId) {
         let data: any = {
           termId: this.baseInfoByTerm.termId,
+          termName: this.baseInfoByTerm.termName,
           proId: this.baseInfoByTerm.proId,
+          proName: this.baseInfoByTerm.proName,
           buyUnit: this.postData.buildingId, // 栋座
           roomId: this.postData.roomId, // 多分优惠告知书下需要通过房号去限制
           status: 'BecomeEffective' // 主成交下优惠告知书要是已生效状态

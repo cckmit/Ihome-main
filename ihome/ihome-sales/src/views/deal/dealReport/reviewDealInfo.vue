@@ -722,7 +722,7 @@
               vo.defaultFileLists.push(
                 {
                   ...item,
-                  name: list.fileName,
+                  name: item.fileName,
                   exAuto: true // 是否可以删除
                 }
               );

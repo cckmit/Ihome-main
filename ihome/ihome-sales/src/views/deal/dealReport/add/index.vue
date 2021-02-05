@@ -199,7 +199,7 @@
           // 分销
           returnValue = 'District';
           break;
-        case 'TotalBagDistriModel' :
+        case 'TotalBagDistrModel' :
           // 总包+分销
           returnValue = '';
           break;

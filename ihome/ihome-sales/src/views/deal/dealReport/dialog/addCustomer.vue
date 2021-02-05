@@ -76,7 +76,7 @@
               placeholder="客户来源"
               class="width--100">
               <el-option
-                v-for="item in $root.dictAllList('CustomerSourceType')"
+                v-for="item in $root.dictAllList('CustOrg')"
                 :key="item.code"
                 :label="item.name"
                 :value="item.code"
