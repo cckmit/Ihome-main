@@ -160,7 +160,7 @@
             <el-input
               v-if="['ChangeInternalAchieveInf', 'RetreatRoom'].includes(changeType)"
               disabled
-              v-model="postData.buildingId"></el-input>
+              v-model="postData.buildingName"></el-input>
             <IhSelectPageByBuild
               v-else
               @change="changeBuild"
@@ -179,7 +179,7 @@
             <el-input
               v-if="['ChangeInternalAchieveInf', 'RetreatRoom'].includes(changeType)"
               disabled
-              v-model="postData.roomId"></el-input>
+              v-model="postData.roomNo"></el-input>
             <IhSelectPageByRoom
               v-else
               @change="changeRoom"
