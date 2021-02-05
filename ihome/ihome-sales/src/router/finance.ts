@@ -3,8 +3,8 @@
  * @version:
  * @Author: ywl
  * @Date: 2020-12-01 15:49:07
- * @LastEditors: ywl
- * @LastEditTime: 2021-01-06 17:32:18
+ * @LastEditors: zyc
+ * @LastEditTime: 2021-02-05 15:25:27
  */
 import { RouteConfig } from 'vue-router'
 
@@ -147,6 +147,21 @@ const financeRoutes: Array<RouteConfig> = [
         component: () => import('../views/finance/payment/info.vue'),
         meta: { title: '收款详情', icon: 'form' }
       },
+    ]
+  },
+  {
+    path: '/toBeRefunded',
+    meta: { title: '待退款项列表', icon: null },
+    component: Layout,
+    redirect: '/toBeRefunded/list',
+    children: [
+      {
+        path: 'list',
+        name: 'toBeRefunded',
+        component: () => import('../views/finance/toBeRefunded/list.vue'),
+        meta: { title: '待退款项列表', icon: 'form', keepAlive: true }
+      },
+
     ]
   }
 ]
