@@ -4,7 +4,7 @@
  * @Author: ywl
  * @Date: 2020-12-01 15:49:07
  * @LastEditors: zyc
- * @LastEditTime: 2021-02-05 15:25:27
+ * @LastEditTime: 2021-02-05 16:53:35
  */
 import { RouteConfig } from 'vue-router'
 
@@ -157,9 +157,54 @@ const financeRoutes: Array<RouteConfig> = [
     children: [
       {
         path: 'list',
-        name: 'toBeRefunded',
+        name: 'toBeRefundedList',
         component: () => import('../views/finance/toBeRefunded/list.vue'),
         meta: { title: '待退款项列表', icon: 'form', keepAlive: true }
+      },
+
+    ]
+  },
+  {
+    path: '/refundApply',
+    meta: { title: '退款申请列表', icon: null },
+    component: Layout,
+    redirect: '/refundApply/list',
+    children: [
+      {
+        path: 'list',
+        name: 'refundApplyList',
+        component: () => import('../views/finance/refundApply/list.vue'),
+        meta: { title: '退款申请列表', icon: 'form', keepAlive: true }
+      },
+
+    ]
+  },
+  {
+    path: '/refundToExamine',
+    meta: { title: '审核退款申请列表', icon: null },
+    component: Layout,
+    redirect: '/refundToExamine/list',
+    children: [
+      {
+        path: 'list',
+        name: 'RefundToExamineList',
+        component: () => import('../views/finance/refundToExamine/list.vue'),
+        meta: { title: '审核退款申请列表', icon: 'form', keepAlive: true }
+      },
+
+    ]
+  },
+  {
+    path: '/refundPush',
+    meta: { title: '待退款推送列表', icon: null },
+    component: Layout,
+    redirect: '/refundPush/list',
+    children: [
+      {
+        path: 'list',
+        name: 'refundPush',
+        component: () => import('../views/finance/refundPush/list.vue'),
+        meta: { title: '待退款推送列表', icon: 'form', keepAlive: true }
       },
 
     ]
