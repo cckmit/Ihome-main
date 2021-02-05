@@ -1739,7 +1739,7 @@
         res = await post_suppDeal_toAddSuppDeal(postData);
       } else if (this.btnType === "edit") {
         // 去修改
-        res = await get_suppDeal_toUpdateSuppDeal(this.id);
+        res = await get_suppDeal_toUpdateSuppDeal({id: this.id});
       } else {
         return;
       }
