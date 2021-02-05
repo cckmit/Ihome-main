@@ -1489,6 +1489,7 @@
         await this.initContNoList(params, res.contNo);
       }
       this.$nextTick(async () => {
+        this.postData.calculation = res?.calculation;
         this.isSameFlag = res?.scheme?.isSame === "Yes"; // 分销总包是否一致
         this.editDealAchieveData.isSameFlag = res?.scheme?.isSame === "Yes";
         this.postData.dealCode = res.dealCode;
