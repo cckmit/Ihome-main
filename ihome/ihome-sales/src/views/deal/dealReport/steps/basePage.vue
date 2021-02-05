@@ -1600,6 +1600,7 @@
     get receiveAchieveVO() {
       let arr: any = []
       let rewardTotal: any = 0; // 派发内场总金额合计，用于判断一手代理团队是否必选
+      let totalAmount: any = 0; // 派发佣金合计金额+派发内场奖励合计金额
       if (this.postData.receiveList.length > 0) {
         let obj = {
           receiveAmount: 0,
@@ -1612,10 +1613,13 @@
             + item.rewardAmount * 1 * 100 + item.totalPackageAmount * 1 * 100
             + item.distributionAmount * 1 * 100) / 100;
           obj.otherChannelFees = (obj.otherChannelFees * 1 * 100 + item.otherChannelFees * 1 * 100) / 100;
+          totalAmount = (totalAmount * 1 * 100 + item.commAmount * 1 * 100 +
+            item.rewardAmount * 1 * 100) / 100;
           rewardTotal = (rewardTotal * 1 * 100 + item.rewardAmount * 1 * 100) / 100;
         })
         arr.push(obj);
       }
+      this.editDealAchieveData.totalAmount = totalAmount;
       if (rewardTotal > 0) {
         this.oneAgentRequiredFlag = true;
       } else {
