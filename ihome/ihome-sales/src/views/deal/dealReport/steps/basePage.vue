@@ -204,6 +204,7 @@
             <div v-else>
               <el-select
                 v-model="postData.contType"
+                :disabled="baseInfoInDeal.contType === 'DistriDeal' && baseInfoInDeal.hasRecord"
                 placeholder="请选择合同类型"
                 @change="changeContType"
                 class="width--100">
@@ -1809,9 +1810,22 @@
       // 初始化附件信息
       await this.initDocumentList(res.documentShowList);
       // 根据项目周期和房号初始化页面数据
-      await this.initPageById(res.cycleId, res.house.roomId, res.house.propertyType);
+      await this.getPageById(res.cycleId, res.house.roomId, res.house.propertyType);
       // 获取平台费用中新增、修改弹窗中角色类型和角色业绩上限
       await this.initAchieveRole();
+    }
+
+    // 根据项目周期和房号初始化页面数据
+    async getPageById(cycleId: any, roomId: any, propertyType: any = '') {
+      if (!cycleId || !roomId || !propertyType) return;
+      let params: any = {
+        cycleId: cycleId,
+        roomId: roomId,
+        isMainDeal: false, // 是否主成交
+        property: propertyType, // 物业类型
+      };
+      let baseInfo: any = await post_pageData_initBasic(params);
+      this.baseInfoInDeal = JSON.parse(JSON.stringify(baseInfo || '{}'));
     }
 
     // 获取角色类型和角色业绩上限
@@ -1915,124 +1929,121 @@
       };
       let baseInfo: any = await post_pageData_initBasic(params);
       this.baseInfoInDeal = JSON.parse(JSON.stringify(baseInfo || '{}'));
-      // 周期改变后，整个页面都要初始化
-      if (this.hasChangeProCycleFlag) {
-        // 处理数据
-        // 纯提示
-        if (baseInfo.customerIsDifferent) {
-          this.$notify({
-            title: '提示',
-            message: '明源客户与优惠告知书客户有差异',
-            duration: 0
-          });
-        }
-        // 多分优惠告知书情况
-        this.postData.contNo = null; // 重置选择的编号
-        if (baseInfo.dealNoticeStatus === 'MultipleNotice') {
-          this.$notify({
-            title: '提示',
-            message: '同房号存在多份已生效的优惠告知书',
-            duration: 0
-          });
-        } else {
-          // 分销协议编号
-          if (baseInfo.contracts && baseInfo.contracts.length > 0) {
-            this.contNoList = baseInfo.contracts;
-          } else {
-            this.contNoList = [];
-          }
-          // 优惠告知书
-          // this.postData.offerNoticeVO = baseInfo.notice && baseInfo.notice.length ? baseInfo.notice : [];
-        }
-        // 分销成交和非分销成交不一样
-        if (baseInfo.contType === 'DistriDeal') {
-          // 分销成交模式
-          // 1. 初始化渠道商/渠道公司
-          this.initAgency(baseInfo.agencyVOs, true);
-        } else if (['SelfChannelDeal', 'NaturalVisitDeal'].includes(baseInfo.contType)) {
-          // 非分销成交模式 --- 自然来访 / 自渠成交
-          this.initAgency(baseInfo.agencyVOs, false);
-        }
-        this.postData.reportId = baseInfo.recordId;
-        // 栋座
-        if (baseInfo.buildingId && !this.postData.buildingId) {
-          this.postData.buildingId = baseInfo.buildingId;
-        }
-        // 合同类型
-        if (baseInfo.contType) {
-          this.postData.contType = baseInfo.contType;
-        }
-        // 备案情况
-        if (baseInfo && baseInfo.myReturnVO && baseInfo.myReturnVO.dealVO && baseInfo.myReturnVO.dealVO.recordState) {
-          this.postData.recordState = baseInfo?.myReturnVO?.dealVO?.recordState;
-        }
-        // 报备信息
-        if (baseInfo.recordStr) {
-          this.postData.recordStr = baseInfo.recordStr;
-        }
-        // 建筑面积
-        if (baseInfo.myReturnVO && baseInfo.myReturnVO.houseVO && baseInfo.myReturnVO.houseVO.area) {
-          this.postData.area = baseInfo?.myReturnVO?.houseVO?.area;
-        }
-        // 户型
-        if (baseInfo.myReturnVO && baseInfo.myReturnVO.houseVO && baseInfo.myReturnVO.houseVO.room) {
-          this.postData.room = baseInfo?.myReturnVO?.houseVO?.room;
-        }
-        if (baseInfo.myReturnVO && baseInfo.myReturnVO.houseVO && baseInfo.myReturnVO.houseVO.hall) {
-          this.postData.hall = baseInfo?.myReturnVO?.houseVO?.hall;
-        }
-        if (baseInfo.myReturnVO && baseInfo.myReturnVO.houseVO && baseInfo.myReturnVO.houseVO.toilet) {
-          this.postData.toilet = baseInfo?.myReturnVO?.houseVO?.toilet;
-        }
-        // 预售合同编号
-        this.postData.propertyNo = baseInfo.myReturnVO.houseVO?.propertyNo;
-        // 签约类型
-        if (baseInfo.myReturnVO && baseInfo.myReturnVO.dealVO && baseInfo.myReturnVO.dealVO.signType) {
-          this.postData.signType = baseInfo?.myReturnVO?.dealVO?.signType;
-        }
-        // 成交阶段
-        this.postData.stage = baseInfo.myReturnVO.dealStage;
-        // 明源房款回笼比例(%)
-        this.postData.returnRatio = baseInfo.myReturnVO.dealVO?.returnRatio;
-        // 认购价格
-        if (baseInfo && baseInfo.myReturnVO && baseInfo.myReturnVO.dealVO && baseInfo.myReturnVO.dealVO.subscribePrice) {
-          this.postData.subscribePrice = baseInfo?.myReturnVO?.dealVO?.subscribePrice;
-        }
-        // 认购日期
-        if (baseInfo && baseInfo.myReturnVO && baseInfo.myReturnVO.dealVO && baseInfo.myReturnVO.dealVO.subscribeDate) {
-          this.postData.subscribeDate = baseInfo?.myReturnVO?.dealVO?.subscribeDate;
-        }
-        // 签约价格
-        if (baseInfo && baseInfo.myReturnVO && baseInfo.myReturnVO.dealVO && baseInfo.myReturnVO.dealVO.signPrice) {
-          this.postData.signPrice = baseInfo?.myReturnVO?.dealVO?.signPrice;
-        }
-        // 签约日期
-        if (baseInfo && baseInfo.myReturnVO && baseInfo.myReturnVO.dealVO && baseInfo.myReturnVO.dealVO.signDate) {
-          this.postData.signDate = baseInfo?.myReturnVO?.dealVO?.signDate;
-        }
-        // 数据标志
-        if (baseInfo && baseInfo.myReturnVO && baseInfo.myReturnVO.dataSign) {
-          this.postData.dataSign = baseInfo?.myReturnVO?.dataSign;
-          this.postData.dataSignName = (this as any).$root.dictAllName(baseInfo.myReturnVO.dataSign, 'DealDataFlag');
-        }
-        // 客户信息
-        // this.postData.customerList = baseInfo.customerAddVOS && baseInfo.customerAddVOS.length ? baseInfo.customerAddVOS : [];
-        // 收派金额 --- 代理费
-        if (baseInfo.receiveVOS && baseInfo.receiveVOS.length) {
-          let tempList: any = this.initReceiveVOS(baseInfo.receiveVOS);
-          if (this.postData.receiveList && this.postData.receiveList.length) {
-            this.postData.receiveList.push(...tempList);
-          } else {
-            this.postData.receiveList = tempList;
-          }
-        }
-        // 收派金额中的甲方
-        this.commissionCustomerList = [];
-        this.commissionCustomerList = this.initCommissionCustomer(baseInfo.receiveVOS);
-        this.commissionServiceFeeObj = {};
-        this.commissionServiceFeeObj = this.initCommissionServiceFee(baseInfo.receiveVOS);
-        console.log('commissionServiceFeeObj', this.commissionServiceFeeObj);
+      // 处理数据
+      // 纯提示
+      if (baseInfo.customerIsDifferent) {
+        this.$notify({
+          title: '提示',
+          message: '明源客户与优惠告知书客户有差异',
+          duration: 0
+        });
       }
+      // 多分优惠告知书情况
+      this.postData.contNo = null; // 重置选择的编号
+      if (baseInfo.dealNoticeStatus === 'MultipleNotice') {
+        this.$notify({
+          title: '提示',
+          message: '同房号存在多份已生效的优惠告知书',
+          duration: 0
+        });
+      } else {
+        // 分销协议编号
+        if (baseInfo.contracts && baseInfo.contracts.length > 0) {
+          this.contNoList = baseInfo.contracts;
+        } else {
+          this.contNoList = [];
+        }
+        // 优惠告知书
+        // this.postData.offerNoticeVO = baseInfo.notice && baseInfo.notice.length ? baseInfo.notice : [];
+      }
+      // 分销成交和非分销成交不一样
+      if (baseInfo.contType === 'DistriDeal') {
+        // 分销成交模式
+        // 1. 初始化渠道商/渠道公司
+        this.initAgency(baseInfo.agencyVOs, true);
+      } else if (['SelfChannelDeal', 'NaturalVisitDeal'].includes(baseInfo.contType)) {
+        // 非分销成交模式 --- 自然来访 / 自渠成交
+        this.initAgency(baseInfo.agencyVOs, false);
+      }
+      this.postData.reportId = baseInfo.recordId;
+      // 栋座
+      if (baseInfo.buildingId && !this.postData.buildingId) {
+        this.postData.buildingId = baseInfo.buildingId;
+      }
+      // 合同类型
+      if (baseInfo.contType) {
+        this.postData.contType = baseInfo.contType;
+      }
+      // 备案情况
+      if (baseInfo && baseInfo.myReturnVO && baseInfo.myReturnVO.dealVO && baseInfo.myReturnVO.dealVO.recordState) {
+        this.postData.recordState = baseInfo?.myReturnVO?.dealVO?.recordState;
+      }
+      // 报备信息
+      if (baseInfo.recordStr) {
+        this.postData.recordStr = baseInfo.recordStr;
+      }
+      // 建筑面积
+      if (baseInfo.myReturnVO && baseInfo.myReturnVO.houseVO && baseInfo.myReturnVO.houseVO.area) {
+        this.postData.area = baseInfo?.myReturnVO?.houseVO?.area;
+      }
+      // 户型
+      if (baseInfo.myReturnVO && baseInfo.myReturnVO.houseVO && baseInfo.myReturnVO.houseVO.room) {
+        this.postData.room = baseInfo?.myReturnVO?.houseVO?.room;
+      }
+      if (baseInfo.myReturnVO && baseInfo.myReturnVO.houseVO && baseInfo.myReturnVO.houseVO.hall) {
+        this.postData.hall = baseInfo?.myReturnVO?.houseVO?.hall;
+      }
+      if (baseInfo.myReturnVO && baseInfo.myReturnVO.houseVO && baseInfo.myReturnVO.houseVO.toilet) {
+        this.postData.toilet = baseInfo?.myReturnVO?.houseVO?.toilet;
+      }
+      // 预售合同编号
+      this.postData.propertyNo = baseInfo.myReturnVO.houseVO?.propertyNo;
+      // 签约类型
+      if (baseInfo.myReturnVO && baseInfo.myReturnVO.dealVO && baseInfo.myReturnVO.dealVO.signType) {
+        this.postData.signType = baseInfo?.myReturnVO?.dealVO?.signType;
+      }
+      // 成交阶段
+      this.postData.stage = baseInfo.myReturnVO.dealStage;
+      // 明源房款回笼比例(%)
+      this.postData.returnRatio = baseInfo.myReturnVO.dealVO?.returnRatio;
+      // 认购价格
+      if (baseInfo && baseInfo.myReturnVO && baseInfo.myReturnVO.dealVO && baseInfo.myReturnVO.dealVO.subscribePrice) {
+        this.postData.subscribePrice = baseInfo?.myReturnVO?.dealVO?.subscribePrice;
+      }
+      // 认购日期
+      if (baseInfo && baseInfo.myReturnVO && baseInfo.myReturnVO.dealVO && baseInfo.myReturnVO.dealVO.subscribeDate) {
+        this.postData.subscribeDate = baseInfo?.myReturnVO?.dealVO?.subscribeDate;
+      }
+      // 签约价格
+      if (baseInfo && baseInfo.myReturnVO && baseInfo.myReturnVO.dealVO && baseInfo.myReturnVO.dealVO.signPrice) {
+        this.postData.signPrice = baseInfo?.myReturnVO?.dealVO?.signPrice;
+      }
+      // 签约日期
+      if (baseInfo && baseInfo.myReturnVO && baseInfo.myReturnVO.dealVO && baseInfo.myReturnVO.dealVO.signDate) {
+        this.postData.signDate = baseInfo?.myReturnVO?.dealVO?.signDate;
+      }
+      // 数据标志
+      if (baseInfo && baseInfo.myReturnVO && baseInfo.myReturnVO.dataSign) {
+        this.postData.dataSign = baseInfo?.myReturnVO?.dataSign;
+        this.postData.dataSignName = (this as any).$root.dictAllName(baseInfo.myReturnVO.dataSign, 'DealDataFlag');
+      }
+      // 客户信息
+      // this.postData.customerList = baseInfo.customerAddVOS && baseInfo.customerAddVOS.length ? baseInfo.customerAddVOS : [];
+      // 收派金额 --- 代理费
+      if (baseInfo.receiveVOS && baseInfo.receiveVOS.length) {
+        let tempList: any = this.initReceiveVOS(baseInfo.receiveVOS);
+        if (this.postData.receiveList && this.postData.receiveList.length) {
+          this.postData.receiveList.push(...tempList);
+        } else {
+          this.postData.receiveList = tempList;
+        }
+      }
+      // 收派金额中的甲方
+      this.commissionCustomerList = [];
+      this.commissionCustomerList = this.initCommissionCustomer(baseInfo.receiveVOS);
+      this.commissionServiceFeeObj = {};
+      this.commissionServiceFeeObj = this.initCommissionServiceFee(baseInfo.receiveVOS);
+      console.log('commissionServiceFeeObj', this.commissionServiceFeeObj);
     }
 
     // 通过项目周期id获取基础信息
