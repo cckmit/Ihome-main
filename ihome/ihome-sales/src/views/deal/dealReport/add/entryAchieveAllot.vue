@@ -166,6 +166,7 @@
             <IhSelectPageByRoom
               @change="changeRoom"
               @changeOption="(data) => {postData.roomNo = data.roomNo}"
+              :params="{exDeal: 0}"
               v-model="postData.roomId"
               :proId="baseInfoByTerm.proId"
               :buildingId="postData.buildingId"
@@ -508,7 +509,7 @@
           <el-table-column prop="cardNo" label="证件编号" min-width="150"></el-table-column>
           <el-table-column prop="email" label="邮箱" min-width="120"></el-table-column>
           <el-table-column
-            v-if="!baseInfoInDeal.customerAddVOS.length && baseInfoInDeal.dealNoticeStatus !== 'MultipleNotice'"
+            v-if="!baseInfoInDeal.customerAddVOS.length && baseInfoInDeal.dealNoticeStatus !== 'MultipleNotice' && baseInfoByTerm.chargeEnum === 'Agent'"
             fixed="right" label="操作" width="100">
             <template slot-scope="scope">
               <el-link
@@ -861,7 +862,7 @@
             </el-table-column>
             <el-table-column prop="roleAchieveCap" label="角色业绩上限" min-width="150">
               <template slot-scope="{row}">
-                <div :class="!row.correct ? 'achieve-color-red' : ''">{{row.roleAchieveCap}}</div>
+                <div :class="row.correct === false ? 'achieve-color-red' : ''">{{row.roleAchieveCap}}</div>
               </template>
             </el-table-column>
             <el-table-column prop="rolerName" label="角色人" min-width="150">
@@ -875,7 +876,7 @@
             </el-table-column>
             <el-table-column prop="corporateAchieve" label="角色人业绩" min-width="150">
               <template slot-scope="{row}">
-                <div :class="!row.correct ? 'achieve-color-red' : ''">{{row.corporateAchieve}}</div>
+                <div :class="row.correct === false ? 'achieve-color-red' : ''">{{row.corporateAchieve}}</div>
               </template>
             </el-table-column>
             <el-table-column prop="roleAchieveRatio" label="角色人业绩比例(%)" min-width="150"></el-table-column>
@@ -944,7 +945,7 @@
             </el-table-column>
             <el-table-column prop="roleAchieveCap" label="角色业绩上限" min-width="150">
               <template slot-scope="{row}">
-                <div :class="!row.correct ? 'achieve-color-red' : ''">{{row.roleAchieveCap}}</div>
+                <div :class="row.correct === false ? 'achieve-color-red' : ''">{{row.roleAchieveCap}}</div>
               </template>
             </el-table-column>
             <el-table-column prop="rolerName" label="角色人" min-width="150">
@@ -958,7 +959,7 @@
             </el-table-column>
             <el-table-column prop="corporateAchieve" label="角色人业绩" min-width="150">
               <template slot-scope="{row}">
-                <div :class="!row.correct ? 'achieve-color-red' : ''">{{row.corporateAchieve}}</div>
+                <div :class="row.correct === false ? 'achieve-color-red' : ''">{{row.corporateAchieve}}</div>
               </template>
             </el-table-column>
             <el-table-column prop="roleAchieveRatio" label="角色人业绩比例(%)" min-width="150"></el-table-column>
@@ -1488,6 +1489,7 @@
         await this.initContNoList(params, res.contNo);
       }
       this.$nextTick(async () => {
+        this.postData.calculation = res?.calculation;
         this.isSameFlag = res?.scheme?.isSame === "Yes"; // 分销总包是否一致
         this.editDealAchieveData.isSameFlag = res?.scheme?.isSame === "Yes";
         this.postData.dealCode = res.dealCode;
@@ -1691,7 +1693,7 @@
           vo.fileList = []; // 存放新上传的数据
           list.forEach((item: any) => {
             if (vo.code === item.fileType) {
-              vo.defaultFileLists.push(
+              vo.defaultFileList.push(
                 {
                   ...item,
                   name: item.fileName
@@ -2751,7 +2753,9 @@
       if(this.baseInfoByTerm.termId) {
         let data: any = {
           termId: this.baseInfoByTerm.termId,
+          termName: this.baseInfoByTerm.termName,
           proId: this.baseInfoByTerm.proId,
+          proName: this.baseInfoByTerm.proName,
           buyUnit: this.postData.buildingId, // 栋座
           roomId: this.postData.roomId, // 多分优惠告知书下需要通过房号去限制
           status: 'BecomeEffective' // 主成交下优惠告知书要是已生效状态
@@ -3325,6 +3329,8 @@
           postData.basic.dealVO.dealCode = this.editBaseInfo?.dealCode;
           postData.basic.dealVO.id = this.editBaseInfo?.id;
           postData.basic.dealVO.parentId = this.editBaseInfo?.parentId;
+          postData.basic.dealVO.entryDate = this.editBaseInfo?.entryDate;
+          postData.basic.dealVO.entryPersonId = this.editBaseInfo?.entryPersonId;
           console.log('postData:', postData);
           await post_deal_updateAchieveAllot(postData);
           this.$message.success("修改成功");
@@ -3531,6 +3537,10 @@
       obj.basic.houseVO.roomId = this.postData.roomId;
       obj.basic.houseVO.roomNo = this.postData.roomId ? this.postData.roomNo : null;
       obj.basic.houseVO.toilet = this.postData.toilet;
+      if (this.id) {
+        obj.basic.houseVO.id = this.editBaseInfo?.house?.id;
+        obj.basic.houseVO.dealId = this.id;
+      }
       // 附件信息
       if (this.postData.documentVO.length > 0) {
         // console.log('this.postData.documentVO', this.postData.documentVO);

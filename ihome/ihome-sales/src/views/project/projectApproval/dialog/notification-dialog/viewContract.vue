@@ -4,7 +4,7 @@
  * @Author: wwq
  * @Date: 2020-12-02 20:13:07
  * @LastEditors: wwq
- * @LastEditTime: 2021-01-29 17:29:54
+ * @LastEditTime: 2021-02-04 15:48:31
 -->
 <template>
   <el-dialog
@@ -107,7 +107,7 @@
       </el-row>
       <el-row>
         <el-col :span="24">
-          <el-form-item label="代理费计付标准备注">
+          <el-form-item label="备注">
             <pre
               class="pre-style"
               :title="info.agencyFeeRemark"
@@ -128,6 +128,7 @@
       <el-row>
         <el-col :span="24">
           <el-form-item label="代理费结算条件">
+            <div>{{$root.dictAllName(info.agencySettleCondtion, 'AgencySettleCondtion')}}</div>
             <pre
               class="pre-style"
               :title="info.agencyCostCondition"
@@ -147,6 +148,16 @@
       </el-row>
       <el-row>
         <el-col :span="24">
+          <el-form-item label="费用结算类型">
+            <pre
+              class="pre-style"
+              :title="info.costSettleType"
+            >{{$root.dictAllName(info.costSettleType, 'CostSettleType')}}</pre>
+          </el-form-item>
+        </el-col>
+      </el-row>
+      <el-row>
+        <el-col :span="24">
           <el-form-item label="违约责任">
             <pre
               class="pre-style"
@@ -157,7 +168,7 @@
       </el-row>
       <el-row>
         <el-col :span="24">
-          <el-form-item label="补充条款">
+          <el-form-item label="其他约定">
             <pre
               class="pre-style"
               :title="info.supplementary"

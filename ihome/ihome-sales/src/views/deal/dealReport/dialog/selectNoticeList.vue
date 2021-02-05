@@ -48,6 +48,7 @@
           <el-form-item label="项目名称">
             <IhSelectPageByProject
               disabled
+              :searchName="proName"
               v-model="queryPageParameters.projectId"
               placeholder="请选择项目名称"
             ></IhSelectPageByProject>
@@ -61,6 +62,7 @@
               <el-form-item label="立项周期">
                 <IhSelectPageByCycle
                   disabled
+                  :searchName="termName"
                   v-model="queryPageParameters.cycleId"
                   placeholder="请选择立项周期"
                 ></IhSelectPageByCycle>
@@ -222,6 +224,8 @@
     private searchOpen = true;
     private dialogVisible = true;
     private selection = [];
+    private proName = null;
+    private termName = null;
     public queryPageParameters: any = {
       noticeNo: null, // 编号
       notificationTypes: null, // 类型 array
@@ -244,7 +248,9 @@
     created() {
       console.log('notice data', this.data);
       this.queryPageParameters.cycleId = this.data.termId;
+      this.termName = this.data.termName;
       this.queryPageParameters.projectId = this.data.proId;
+      this.proName = this.data.proName;
       this.queryPageParameters.buyUnit = this.data.buyUnit;
       this.queryPageParameters.roomNumberId = this.data.roomId;
       this.queryPageParameters.notificationStatuses = this.data.status;

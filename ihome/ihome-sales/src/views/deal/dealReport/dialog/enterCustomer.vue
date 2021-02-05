@@ -61,6 +61,7 @@
             <el-select
               clearable
               v-model="postData.custType"
+              @change="handleChangeCustType"
               placeholder="客户类型"
               class="width--100">
               <el-option
@@ -80,7 +81,7 @@
               placeholder="证件类型"
               class="width--100">
               <el-option
-                v-for="item in $root.dictAllList('CardType')"
+                v-for="item in cardTypeList"
                 :key="item.code"
                 :label="item.name"
                 :value="item.code"
@@ -89,7 +90,7 @@
           </el-form-item>
         </el-col>
         <el-col :span="24">
-          <el-form-item label="证件编号">
+          <el-form-item label="证件编号" prop="certificateNumber">
             <el-input
               clearable
               v-model="postData.certificateNumber"
@@ -97,7 +98,7 @@
             ></el-input>
           </el-form-item>
         </el-col>
-        <el-col :span="24" v-if="postData.custType === 'Company'">
+        <el-col :span="24">
           <el-form-item label="邮箱">
             <el-input
               clearable
@@ -132,6 +133,7 @@
       super();
     }
     private dialogVisible = true;
+    private cardTypeList = [];
     postData: any = {
       custName: null,
       custTel: null,
@@ -158,7 +160,10 @@
       ],
       cardType: [
         {required: true, message: "请选择证件类型", trigger: "change"}
-      ]
+      ],
+      certificateNumber: [
+        {required: true, message: "请输入证件编号", trigger: "change"}
+      ],
     };
     @Prop({default: null}) data: any;
 
@@ -189,6 +194,29 @@
       if (valid) {
         await post_customer_add(this.postData);
         this.$emit("finish", false);
+      }
+    }
+
+    // 改变客户类型
+    handleChangeCustType(value: any) {
+      if (!value) {
+        this.postData.cardType = null;
+        this.cardTypeList = [];
+      } else {
+         let CardList: any = (this as any).$root.dictAllList('CardType');
+        if (value === "Individual") {
+          // 个人
+          this.cardTypeList = CardList.filter((item: any) => {
+            return item.code !== "Businesslicense";
+          });
+          this.postData.cardType = "IDCard"; // 个人默认选中居民身份证
+        } else if (value === "Company") {
+          // 公司
+          this.cardTypeList = CardList.filter((item: any) => {
+            return ['Businesslicense', "Others"].includes(item.code);
+          });
+          this.postData.cardType = "Businesslicense"; // 公司默认选中营业执照
+        }
       }
     }
   }

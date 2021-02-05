@@ -4,7 +4,7 @@
  * @Author: wwq
  * @Date: 2020-11-30 17:32:39
  * @LastEditors: wwq
- * @LastEditTime: 2020-12-02 11:40:35
+ * @LastEditTime: 2021-02-04 16:42:23
 -->
 <template>
   <el-dialog
@@ -27,7 +27,7 @@
         <el-col :span="24">
           <el-form-item
             label="开发商保护期"
-            prop="developerProtectionPeriod"
+            v-digits="1"
           >
             <div class="inputTpye">
               <el-input
@@ -38,6 +38,28 @@
               <span class="textType">小时</span>
               <span class="hint">保护期内，已完成认购的客户不能报备</span>
             </div>
+          </el-form-item>
+        </el-col>
+      </el-row>
+      <el-row>
+        <el-col :span="12">
+          <el-form-item
+            label="报备类型"
+            prop='reportTypeEnum'
+          >
+            <el-select
+              v-model="form.reportTypeEnum"
+              clearable
+              placeholder="请选择"
+              class="width--50"
+            >
+              <el-option
+                v-for="item in $root.dictAllList('ReportType')"
+                :key="item.code"
+                :label="item.name"
+                :value="item.code"
+              ></el-option>
+            </el-select>
           </el-form-item>
         </el-col>
       </el-row>
@@ -61,7 +83,7 @@
         <el-col :span="24">
           <el-form-item
             label="报备有效时间"
-            prop="filingEffectiveTime"
+            v-digits="1"
           >
             <div class="inputTpye">
               <el-input
@@ -79,7 +101,7 @@
         <el-col :span="24">
           <el-form-item
             label="客户保护期时间"
-            prop="customerProtectionPeriod"
+            v-digits="1"
           >
             <div class="inputTpye">
               <el-input
@@ -160,7 +182,6 @@ import {
   post_customerReportRule_add,
   post_customerReportRule_update,
 } from "@/api/project/index.ts";
-import { isNumberValidato } from "ihome-common/util/base/form-ui";
 @Component({
   components: {},
 })
@@ -180,21 +201,10 @@ export default class ReportedRulesEdit extends Vue {
   };
 
   rules: any = {
-    developerProtectionPeriod: [
+    reportTypeEnum: [
       {
-        validator: isNumberValidato,
-        trigger: "change",
-      },
-    ],
-    filingEffectiveTime: [
-      {
-        validator: isNumberValidato,
-        trigger: "change",
-      },
-    ],
-    customerProtectionPeriod: [
-      {
-        validator: isNumberValidato,
+        required: true,
+        message: "请选择报备类型",
         trigger: "change",
       },
     ],
@@ -234,7 +244,7 @@ export default class ReportedRulesEdit extends Vue {
 <style lang="scss" scoped>
 .dialog {
   /deep/ .el-dialog {
-    margin-top: 5vh !important;
+    margin-top: 4vh !important;
   }
 }
 .inputTpye {

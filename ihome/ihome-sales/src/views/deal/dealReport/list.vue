@@ -659,13 +659,7 @@
     async handleRecall(scope: any) {
       try {
         await this.$confirm("是否确定撤回?", "提示");
-        let postData: any = {
-          id: scope.row.id, // 成交ID
-          jobId: 0, // 当前用户岗位ID
-          status: scope.row.status, // 成交当前状态
-          userId: 0 // 当前用户ID
-        }
-        await get_processRecord_withdraw__id(postData);
+        await get_processRecord_withdraw__id({id: scope.row.id});
         this.$message({
           type: "success",
           message: "撤回成功!",

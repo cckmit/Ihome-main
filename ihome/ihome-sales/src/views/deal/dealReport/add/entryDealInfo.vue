@@ -170,6 +170,7 @@
             <IhSelectPageByRoom
               @change="changeRoom"
               @changeOption="(data) => {postData.roomNo = data.roomNo}"
+              :params="{exDeal: 0}"
               v-model="postData.roomId"
               :proId="baseInfoByTerm.proId"
               :buildingId="postData.buildingId"
@@ -522,7 +523,7 @@
           <el-table-column prop="cardNo" label="证件编号" min-width="150"></el-table-column>
           <el-table-column prop="email" label="邮箱" min-width="120"></el-table-column>
           <el-table-column
-            v-if="!baseInfoInDeal.customerAddVOS.length && baseInfoInDeal.dealNoticeStatus !== 'MultipleNotice'"
+            v-if="!baseInfoInDeal.customerAddVOS.length && baseInfoInDeal.dealNoticeStatus !== 'MultipleNotice' && baseInfoByTerm.chargeEnum === 'Agent'"
             fixed="right" label="操作" width="100">
             <template slot-scope="scope">
               <el-link
@@ -1225,7 +1226,7 @@
           vo.fileList = []; // 存放新上传的数据
           list.forEach((item: any) => {
             if (vo.code === item.fileType) {
-              vo.defaultFileLists.push(
+              vo.defaultFileList.push(
                 {
                   ...item,
                   name: item.fileName
@@ -1910,7 +1911,9 @@
       if(this.baseInfoByTerm.termId) {
         let data: any = {
           termId: this.baseInfoByTerm.termId,
+          termName: this.baseInfoByTerm.termName,
           proId: this.baseInfoByTerm.proId,
+          proName: this.baseInfoByTerm.proName,
           buyUnit: this.postData.buildingId, // 栋座
           roomId: this.postData.roomId, // 多分优惠告知书下需要通过房号去限制
           status: 'BecomeEffective' // 主成交下优惠告知书要是已生效状态
@@ -2113,8 +2116,12 @@
     @NoRepeatHttp()
     async addSave(valid: any) {
       // 1.校验收派金额是都有收派套餐
-      let flag = (this as any).$parent.validReceiveData(this.postData.receiveVO);
+      let flag = (this as any).$parent.validReceiveData(this.postData.receiveVO, 'Auto');
       console.log('flag', flag);
+      if (!flag) {
+        this.$message.error('收派金额信息有无，请检查');
+        return;
+      }
       if (valid && flag) {
         // 整合数据
         let postData: any = this.getPostData();
@@ -2122,6 +2129,8 @@
           postData.dealVO.dealCode = this.editBaseInfo?.dealCode;
           postData.dealVO.id = this.editBaseInfo?.id;
           postData.dealVO.parentId = this.editBaseInfo?.parentId;
+          postData.dealVO.entryDate = this.editBaseInfo?.entryDate;
+          postData.dealVO.entryPersonId = this.editBaseInfo?.entryPersonId;
           await post_deal_updateDealBasicInf(postData);
           this.$message.success("修改成功");
           this.$goto({
@@ -2279,6 +2288,10 @@
       obj.houseVO.roomId = this.postData.roomId;
       obj.houseVO.roomNo = this.postData.roomId ? this.postData.roomNo : null;
       obj.houseVO.toilet = this.postData.toilet;
+      if (this.id) {
+        obj.houseVO.id = this.editBaseInfo?.house?.id;
+        obj.houseVO.dealId = this.id;
+      }
       // 附件信息
       if (this.postData.documentVO.length > 0) {
         // console.log('this.postData.documentVO', this.postData.documentVO);
@@ -2312,7 +2325,7 @@
           if (this.id) {
             // 编辑情况
             if (this.editBaseInfo && this.editBaseInfo.receiveAchieveList && this.editBaseInfo.receiveAchieveList.length) {
-              obj.basic.receiveAchieveVO.push(
+              obj.receiveAchieveVO.push(
                 {
                   dealId: this.editBaseInfo.receiveAchieveList[0].dealId,
                   id: this.editBaseInfo.receiveAchieveList[0].id,
@@ -2322,7 +2335,7 @@
                 }
               )
             } else {
-              obj.basic.receiveAchieveVO.push(
+              obj.receiveAchieveVO.push(
                 {
                   dealId: null,
                   id: null,
@@ -2334,7 +2347,7 @@
             }
           } else {
             // 新增情况
-            obj.basic.receiveAchieveVO.push(
+            obj.receiveAchieveVO.push(
               {
                 achieveAmount: vo.achieveAmount,
                 otherChannelFees: vo.otherChannelFees,

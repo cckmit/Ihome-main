@@ -722,7 +722,7 @@
               vo.defaultFileLists.push(
                 {
                   ...item,
-                  name: list.fileName,
+                  name: item.fileName,
                   exAuto: true // 是否可以删除
                 }
               );
@@ -885,8 +885,8 @@
       // console.log('通过');
       this.failBtn = false;
       // 判断成交报告的状态
-      if (['BranchBusinessManageUnreview', 'NotSigned'].includes(this.postData.status)) {
-        // 最后一个节点审核通过时，需要选择业绩确认时间
+      if (['BranchBusinessManageUnreview', 'NotSigned'].includes(this.postData.status) && !this.postData.suppContType) {
+        // 最后一个节点且不是补充成交的情况审核通过时，需要选择业绩确认时间
         this.dialogSelectDate = true;
       } else {
         this.selectData = null;
