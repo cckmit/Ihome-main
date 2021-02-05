@@ -4,7 +4,7 @@
  * @Author: wwq
  * @Date: 2020-12-26 11:11:23
  * @LastEditors: wwq
- * @LastEditTime: 2021-01-29 17:29:11
+ * @LastEditTime: 2021-02-05 20:51:26
 -->
 <template>
   <IhPage>
@@ -221,7 +221,13 @@
               <div
                 class="text-ellipsis"
                 :title="row.dealCode"
-              >成交编号: {{row.dealCode}}</div>
+              >成交编号: <el-link
+                  style="color:#4881f9"
+                  @click="routeToDeal(row)"
+                >
+                  {{row.dealCode}}
+                </el-link>
+              </div>
               <div
                 class="text-ellipsis"
                 :title="row.address"
@@ -244,7 +250,11 @@
               <div
                 class="text-ellipsis"
                 :title="row.contNo"
-              >分销协议编号: {{row.contNo}}</div>
+              >分销协议编号: <el-link
+                  style="color:#4881f9"
+                  @click="routeToDistribution(row)"
+                >{{row.contNo}}</el-link>
+              </div>
               <div class="text-ellipsis">是否垫佣: {{$root.dictAllName(row.isMat, 'YesOrNoType')}}</div>
             </template>
           </el-table-column>
@@ -283,7 +293,13 @@
           >
             <template v-slot="{ row }">
               <div>服务费: {{row.serCommFees}}</div>
-              <div>代理费: {{row.ageCommFees}}</div>
+              <el-tooltip placement="top">
+                <div
+                  slot="content"
+                  v-html="filterMsg(row.commFeesList)"
+                ></div>
+                <div style="cursor: pointer; color: #4881f9">代理费: {{row.ageCommFees}}</div>
+              </el-tooltip>
               <div>合计: {{$math.tofixed($math.add(Number(row.serCommFees), Number(row.ageCommFees)), 2)}}</div>
             </template>
           </el-table-column>
@@ -293,7 +309,13 @@
           >
             <template v-slot="{ row }">
               <div>服务费: {{row.serSettledCommFees}}</div>
-              <div>代理费: {{row.ageSettledCommFees}}</div>
+              <el-tooltip placement="top">
+                <div
+                  slot="content"
+                  v-html="filterMsg(row.settledCommFeesList)"
+                ></div>
+                <div style="cursor: pointer; color: #4881f9">代理费: {{row.ageSettledCommFees}}</div>
+              </el-tooltip>
               <div>合计: {{$math.tofixed($math.add(Number(row.serSettledCommFees), Number(row.ageSettledCommFees)), 2)}}</div>
             </template>
           </el-table-column>
@@ -303,15 +325,37 @@
           >
             <template v-slot="{ row }">
               <div>服务费: {{row.serUnsetCommFees}}</div>
-              <div>代理费: {{row.ageUnsetCommFees}}</div>
+              <el-tooltip placement="top">
+                <div
+                  slot="content"
+                  v-html="filterMsg(row.unsetCommFeesList)"
+                ></div>
+                <div style="cursor: pointer; color: #4881f9">代理费: {{row.ageUnsetCommFees}}</div>
+              </el-tooltip>
               <div>合计: {{$math.tofixed($math.add(Number(row.serUnsetCommFees), Number(row.ageUnsetCommFees)), 2)}}</div>
+            </template>
+          </el-table-column>
+          <el-table-column
+            label="可结佣付款金额"
+            width="150"
+          >
+            <template v-slot="{ row }">
+              <div>服务费: {{row.serCanCommFees}}</div>
+              <el-tooltip placement="top">
+                <div
+                  slot="content"
+                  v-html="filterMsg(row.canCommFeesList)"
+                ></div>
+                <div style="cursor: pointer; color: #4881f9">代理费: {{row.ageCanCommFees}}</div>
+              </el-tooltip>
+              <div>合计: {{$math.tofixed($math.add(Number(row.serCanCommFees), Number(row.ageCanCommFees)), 2)}}</div>
             </template>
           </el-table-column>
           <el-table-column
             label="本次付款金额"
             width="200"
           >
-            <template v-slot="{ row }">
+            <template v-slot="{ row, $index }">
               <div>
                 服务费:
                 <el-input
@@ -326,10 +370,12 @@
                 <el-input
                   v-model="row.ageThisCommFees"
                   v-digits="2"
-                  clearable
+                  readonly
                   style="width: 70%"
+                  @click.native="agencyEdit(row, $index)"
                 />
               </div>
+              <!-- <div style="cursor: pointer; color: #4881f9">代理费: {{row.ageThisCommFees}}</div> -->
               <div>合计: {{
                 $math.tofixed($math.add(Number(row.serThisCommFees), Number(row.ageThisCommFees)), 2)
               }}</div>
@@ -419,7 +465,10 @@
             prop="dealCode"
           >
             <template v-slot="{ row }">
-              <el-link @click="$router.push(`/dealReport/info?code=${row.dealCode}&&type=CODE`)">
+              <el-link
+                style="color:#4881f9"
+                @click="routeToDeal(row)"
+              >
                 {{row.dealCode}}
               </el-link>
             </template>
@@ -445,7 +494,7 @@
             prop="noTaxAmount"
           >
             <template v-slot="{ row }">
-              {{dataNoTaxAmountChange(row)}}
+              {{dataNoTaxAmountChange(row, '')}}
             </template>
           </el-table-column>
           <el-table-column
@@ -474,6 +523,7 @@
           :data="info.otherDeductionDetailResponseList"
           style="width: 100%"
           show-summary
+          :summary-method="othergetSummaries"
         >
           <el-table-column
             label="扣除类型"
@@ -521,10 +571,16 @@
           >
             <template v-slot="{ row }">
               <el-input
+                class="tableprefix"
                 v-model="row.deductAmount"
                 clearable
+                v-digits="2"
                 placeholder="本期扣除金额"
-              />
+              ><i
+                  class="tableprefix"
+                  slot="prefix"
+                >-</i>
+              </el-input>
             </template>
           </el-table-column>
           <el-table-column
@@ -532,7 +588,7 @@
             prop="noTaxAmount"
           >
             <template v-slot="{ row }">
-              {{dataNoTaxAmountChange(row)}}
+              {{dataNoTaxAmountChange(row, 'other')}}
             </template>
           </el-table-column>
           <el-table-column
@@ -596,7 +652,7 @@
           >
             <template v-slot="{ row }">
               <el-link
-                @click="$router.push(`/projectApproval/info?id=${row.cycleId}`)"
+                @click="routeToCycle(row)"
                 :title="row.cycleName"
                 class="text-ellipsis"
               >
@@ -611,7 +667,8 @@
             <template v-slot="{ row }">
               <template v-for="(item, i) in row.paySummaryContractInfoList">
                 <el-link
-                  @click="$router.push(`/distribution/info?contractNo=${item.contNo}`)"
+                  style="color:#4881f9"
+                  @click="routeToDistribution(row)"
                   :key="i"
                   :title="`名称: ${item.title} 编号: ${item.contNo}`"
                   class="text-ellipsis"
@@ -747,23 +804,7 @@
         </table>
       </div>
       <br />
-      <div class="content">
-        <p class="ih-info-title">上传附件</p>
-        <div>
-          <el-button
-            @click="downloadTemplate('jiesuan')"
-            type="success"
-            size="small"
-            icon="el-icon-download"
-          >结算明细未盖章版</el-button>
-          <el-button
-            @click="downloadTemplate('qingyong')"
-            type="success"
-            size="small"
-            icon="el-icon-download"
-          >请款单未盖章版</el-button>
-        </div>
-      </div>
+      <p class="ih-info-title">上传附件</p>
       <div class="padding-left-20">
         <el-table
           class="ih-table"
@@ -777,11 +818,26 @@
             align="center"
           >
             <template v-slot="{ row }">
-              <div><span
+              <div>
+                <span
                   style="color: red"
                   v-if="row.subType"
                 >*</span>{{row.name}}
               </div>
+              <el-button
+                v-if="$route.name !== 'payoffAdd' && row.code === 'SetteDetail'"
+                @click="downloadTemplate('billForm')"
+                type="success"
+                size="small"
+                icon="el-icon-download"
+              >下载未盖章版</el-button>
+              <el-button
+                v-if="$route.name !== 'payoffAdd' && row.code === 'RequestForm'"
+                @click="downloadTemplate('requestForm')"
+                type="success"
+                size="small"
+                icon="el-icon-download"
+              >下载未盖章版</el-button>
             </template>
           </el-table-column>
           <el-table-column label="附件">
@@ -819,6 +875,13 @@
         @finish=" (data) => contactsFinish(data)"
       />
     </ih-dialog>
+    <ih-dialog :show="agencyDialogVisible">
+      <AgencyEdit
+        :data="agencyData"
+        @cancel="() => (agencyDialogVisible = false)"
+        @finish=" (data) => agencyFinish(data)"
+      />
+    </ih-dialog>
   </IhPage>
 </template>
 <script lang="ts">
@@ -833,10 +896,14 @@ import {
 import { get_channel_get__id } from "@/api/channel/index";
 import { Form as ElForm } from "element-ui";
 import Obligation from "./dialog/obligation.vue";
+import axios from "axios";
+import { getToken } from "ihome-common/util/cookies";
+import AgencyEdit from "./dialog/agencyEdit.vue";
 
 @Component({
   components: {
     Obligation,
+    AgencyEdit,
   },
 })
 export default class PayoffEdit extends Vue {
@@ -880,6 +947,9 @@ export default class PayoffEdit extends Vue {
     description: null,
     documentList: [],
   };
+  agencyDialogVisible: any = false;
+  agencyData: any = [];
+  agencyEditIndex: any = 0;
   channelAccountOptions: any = [];
   showTable: any = [];
   tabsValue: any = null;
@@ -978,6 +1048,82 @@ export default class PayoffEdit extends Vue {
     val.cycleName = item.label;
   }
 
+  filterMsg(arr: any) {
+    let msg = `含: <br/>`;
+    arr.forEach((v: any) => {
+      msg += `甲方公司:${v.partyAName} 代理费:${v.agencyFeesAmount}<br/>`;
+    });
+    return msg;
+  }
+
+  agencyEdit(data: any, index: number) {
+    this.agencyEditIndex = index;
+    let arr: any = [];
+    if (!data.ageThisCommFeesList?.length) {
+      arr = data.canCommFeesList.map((v: any) => ({
+        ...v,
+        partyAName: v.partyAName,
+        kejie: v.agencyFeesAmount,
+        agencyFeesAmount: 0,
+      }));
+    } else {
+      arr = data.ageThisCommFeesList.map((v: any, i: number) => ({
+        ...v,
+        partyAName: v.partyAName,
+        kejie: data.canCommFeesList[i].agencyFeesAmount,
+        agencyFeesAmount: v.agencyFeesAmount,
+      }));
+    }
+    this.agencyData = arr;
+    this.agencyDialogVisible = true;
+  }
+
+  agencyFinish(data: any) {
+    this.info.payApplyDetailList[this.agencyEditIndex].ageThisCommFeesList = [
+      ...data,
+    ];
+    let sum: any = 0;
+    data.forEach((v: any) => {
+      sum += Number(v.agencyFeesAmount);
+    });
+    this.info.payApplyDetailList[this.agencyEditIndex].ageThisCommFees = sum;
+    this.showTable[this.agencyEditIndex].ageThisCommFeesList = [...data];
+    this.showTable[this.agencyEditIndex].ageThisCommFees = sum;
+    this.agencyDialogVisible = false;
+    this.$message.success("保存成功");
+  }
+
+  routeToDeal(row: any) {
+    let router = this.$router.resolve({
+      path: `/dealReport/info`,
+      query: {
+        code: row.dealCode,
+        type: "CODE",
+      },
+    });
+    window.open(router.href, "_blank");
+  }
+
+  routeToDistribution(row: any) {
+    let router = this.$router.resolve({
+      path: `/distribution/info`,
+      query: {
+        contractNo: row.contNo,
+      },
+    });
+    window.open(router.href, "_blank");
+  }
+
+  routeToCycle(row: any) {
+    let router = this.$router.resolve({
+      path: `/projectApproval/info`,
+      query: {
+        id: row.cycleId,
+      },
+    });
+    window.open(router.href, "_blank");
+  }
+
   // 实际付款金额(本次申请付款金额合计-本次应扣)
   practicalChange(row: any) {
     const total = this.$math.add(
@@ -1011,32 +1157,35 @@ export default class PayoffEdit extends Vue {
     return this.$math.tofixed(res, 2);
   }
 
-  // 本次支付比例(%)( 本次申请付款金额 / 未结佣付款金额 * 100 )
+  // 本次支付比例(%)( 本次申请付款金额 / 可结佣付款金额 * 100 )
   ratioChange(row: any) {
     const total1 = this.$math.add(
       Number(row.serThisCommFees),
       Number(row.ageThisCommFees)
     );
     const total2 = this.$math.add(
-      Number(row.serUnsetCommFees),
-      Number(row.ageUnsetCommFees)
+      Number(row.serCanCommFees),
+      Number(row.ageCanCommFees)
     );
-    const total3 = this.$math.div(total1, total2);
+    const total3 = isNaN(this.$math.div(total1, total2))
+      ? 0
+      : this.$math.div(total1, total2);
     const res = this.$math.multi(total3, 100);
     row.ratio = this.$math.tofixed(res, 2);
     return this.$math.tofixed(res, 2);
   }
 
   // 明细表-不含税金额(扣除金额/ (1+开票税率))
-  dataNoTaxAmountChange(row: any) {
+  dataNoTaxAmountChange(row: any, type: any) {
     const deductAmount = Number(row.deductAmount);
     const taxRate = this.info.taxRate
       ? this.$math.div(this.info.taxRate, 100)
       : 0;
     const shuier = this.$math.add(1, taxRate);
     const res = this.$math.div(deductAmount, shuier);
-    row.noTaxAmount = res.toFixed(2);
-    // row.noTaxAmount = this.$math.tofixed(res, 2);
+    row.noTaxAmount = type
+      ? `-${this.$math.tofixed(res, 2)}`
+      : this.$math.tofixed(res, 2);
     return row.noTaxAmount;
   }
 
@@ -1047,8 +1196,7 @@ export default class PayoffEdit extends Vue {
       ? this.$math.div(this.info.taxRate, 100)
       : 0;
     const res = this.$math.multi(noTaxAmount, taxRate);
-    row.tax = res.toFixed(2);
-    // row.tax = this.$math.tofixed(res, 2);
+    row.tax = this.$math.tofixed(res, 2);
     return row.tax;
   }
 
@@ -1067,8 +1215,7 @@ export default class PayoffEdit extends Vue {
     this.$router.push("/payoff/list");
   }
 
-  taxinputChange(v: any) {
-    console.log(v);
+  taxinputChange() {
     this.modify = true;
   }
 
@@ -1161,7 +1308,12 @@ export default class PayoffEdit extends Vue {
     obj.agencyName = this.info.agencyName;
     obj.taxRate = Number(this.info.taxRate);
     obj.payApplyDetailList = this.info.payApplyDetailList;
-    obj.otherDeductionDetailCalculationRequestList = this.info.otherDeductionDetailResponseList;
+    obj.otherDeductionDetailCalculationRequestList = this.info.otherDeductionDetailResponseList.map(
+      (v: any) => ({
+        ...v,
+        deductAmount: Number(v.deductAmount) * -1,
+      })
+    );
     obj.payDeductDetailCalculationRequestList = this.info.payDeductDetailResponseList;
     const res: any = await post_payApply_calculation_results(obj);
     this.info.actualAmount = res.actualAmount;
@@ -1186,6 +1338,34 @@ export default class PayoffEdit extends Vue {
       this.getFileListType(res.documentList);
     }
     this.modify = true;
+  }
+
+  othergetSummaries(param: any) {
+    const { columns, data } = param;
+    let sums: any = [];
+    columns.forEach((column: any, index: number) => {
+      if (index === 0) {
+        sums[index] = "合计";
+        return;
+      }
+      const values = data.map((item: any) => Number(item[column.property]));
+      if (!values.every((value: any) => isNaN(value))) {
+        sums[index] = values.reduce((prev: number, curr: number) => {
+          const value = Number(curr);
+          if (!isNaN(value)) {
+            return prev + curr;
+          } else {
+            return prev;
+          }
+        }, 0);
+        if (index === 2) {
+          sums[index] = `-${sums[index]}`;
+        }
+      } else {
+        sums[index] = "--";
+      }
+    });
+    return sums;
   }
 
   // 合计
@@ -1247,8 +1427,32 @@ export default class PayoffEdit extends Vue {
     this.info.otherDeductionDetailResponseList.splice(index, 1);
   }
 
-  downloadTemplate(type: any) {
-    console.log(type);
+  async downloadTemplate(type: any) {
+    const fileId = this.info[type];
+    if (fileId) {
+      const token: any = getToken();
+      axios({
+        method: "GET",
+        url: `/sales-api/sales-document-cover/file/download/${fileId}`,
+        xsrfHeaderName: "Authorization",
+        responseType: "blob",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: "bearer " + token,
+        },
+      }).then((res: any) => {
+        const href = window.URL.createObjectURL(res.data);
+        const $a = document.createElement("a");
+        $a.href = href;
+        if (type === "requestForm") {
+          $a.download = `请款单.pdf`;
+        } else {
+          $a.download = `结算明细.xlsx`;
+        }
+        $a.click();
+        $a.remove();
+      });
+    }
   }
 
   contactsFinish(data: any) {
@@ -1311,8 +1515,6 @@ export default class PayoffEdit extends Vue {
         obj.otherDeductionDetailCalculationRequestList = this.info.otherDeductionDetailResponseList;
         obj.payApplyDetailList = this.info.payApplyDetailList;
         obj.payDeductDetailCalculationRequestList = this.info.payDeductDetailResponseList;
-        // obj.payApplyVO.area = this.info.area;
-        // obj.payApplyVO.areaId = this.info.areaId;
         let arr: any = [];
         Object.values(this.submitFile).forEach((v: any) => {
           if (v.length) {
@@ -1354,8 +1556,7 @@ export default class PayoffEdit extends Vue {
         }
 
         // 假数据
-        obj.payApplyVO.areaId = 15;
-        obj.payApplyVO.belongOrgId = 15;
+        // obj.payApplyVO.belongOrgId = 15;
         if (this.$route.name === "payoffAdd") {
           await post_payApply_entryApply(obj);
         } else if (this.$route.name === "payoffEdit") {
@@ -1396,6 +1597,14 @@ export default class PayoffEdit extends Vue {
   /deep/ .el-textarea__inner,
   /deep/ .el-input__inner {
     border: none;
+  }
+}
+
+.tableprefix {
+  line-height: 40px;
+  color: #000;
+  /deep/ .el-input__prefix {
+    left: 10px;
   }
 }
 </style>

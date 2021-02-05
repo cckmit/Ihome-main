@@ -4,7 +4,7 @@
  * @Author: wwq
  * @Date: 2020-12-29 11:04:59
  * @LastEditors: wwq
- * @LastEditTime: 2021-01-28 11:18:45
+ * @LastEditTime: 2021-02-05 15:15:26
 -->
 <template>
   <el-dialog
@@ -384,53 +384,6 @@ export default class Obligation extends Vue {
       pageNum: this.pageNum,
       pageSize: this.pageSize,
     });
-    // 假数据
-    // this.resPageInfo.list = [
-    //   {
-    //     serReceiveFees: 1,
-    //     serActualFees: 2,
-    //     serCommFees: 3,
-    //     ageCommFees: 4,
-    //     serCanCommFees: 5,
-    //     ageCanCommFees: 6,
-    //     serSettledCommFees: 7,
-    //     ageSettledCommFees: 8,
-    //     serUnsetCommFees: 9,
-    //     ageUnsetCommFees: 10,
-    //     busModel: "TotalBagModel",
-    //     dealCode: "xxxxx1",
-    //     cycleName: "周期1",
-    //     cycleId: 1,
-    //     countDeduction: 11,
-    //     customer: "皮小强1",
-    //     agencyName: "皮小强皮包公司1",
-    //     subscribeDate: "2021-1-1 11:11:11",
-    //     signDate: "2021-1-1 11:11:11",
-    //     entryDate: "2021-1-1 11:11:11",
-    //   },
-    //   {
-    //     serReceiveFees: 1,
-    //     serActualFees: 2,
-    //     serCommFees: 3,
-    //     ageCommFees: 4,
-    //     serCanCommFees: 5,
-    //     ageCanCommFees: 6,
-    //     serSettledCommFees: 7,
-    //     ageSettledCommFees: 8,
-    //     serUnsetCommFees: 9,
-    //     ageUnsetCommFees: 10,
-    //     busModel: "TotalBagModel",
-    //     dealCode: "xxxxx2",
-    //     cycleName: "周期2",
-    //     cycleId: 2,
-    //     countDeduction: 11,
-    //     customer: "皮小强2",
-    //     agencyName: "皮小强皮包公司2",
-    //     subscribeDate: "2021-1-1 11:11:11",
-    //     signDate: "2021-1-1 11:11:11",
-    //     entryDate: "2021-1-1 11:11:11",
-    //   },
-    // ];
   }
 
   created() {

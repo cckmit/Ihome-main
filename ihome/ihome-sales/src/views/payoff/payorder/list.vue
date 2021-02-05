@@ -4,7 +4,7 @@
  * @Author: wwq
  * @Date: 2020-12-26 11:11:28
  * @LastEditors: wwq
- * @LastEditTime: 2021-01-25 17:24:45
+ * @LastEditTime: 2021-02-05 11:40:31
 -->
 <template>
   <IhPage label-width="120px">
@@ -292,12 +292,12 @@
                 >补充</el-dropdown-item>
                 <el-dropdown-item
                   :class="{'ih-data-disabled': ''}"
-                  @click.native.prevent="uploadList(row, 'SetteDetail')"
+                  @click.native.prevent="uploadList(row, 'billForm')"
                   v-has="'B.SALES.PAYOFF.PAYOFFLIST.DCJSMX'"
                 >导出结算明细</el-dropdown-item>
                 <el-dropdown-item
                   :class="{'ih-data-disabled': ''}"
-                  @click.native.prevent="uploadList(row, 'RequestForm')"
+                  @click.native.prevent="uploadList(row, 'requestForm')"
                   v-has="'B.SALES.PAYOFF.PAYOFFLIST.XZQKD'"
                 >下载请款单</el-dropdown-item>
               </el-dropdown-menu>
@@ -459,12 +459,12 @@ export default class PayoffList extends Vue {
 
   // 导出明细和下载请款单
   uploadList(data: any, type: any) {
-    const item = data.documentList.find((v: any) => v.fileType === type);
-    if (item) {
+    const fileId = data[type];
+    if (fileId) {
       const token: any = getToken();
       axios({
-        method: "POST",
-        url: `/sales-api/sales-document-cover/file/download/${item.fileId}`,
+        method: "GET",
+        url: `/sales-api/sales-document-cover/file/download/${fileId}`,
         xsrfHeaderName: "Authorization",
         responseType: "blob",
         headers: {
@@ -472,13 +472,14 @@ export default class PayoffList extends Vue {
           Authorization: "bearer " + token,
         },
       }).then((res: any) => {
+        console.log(res, "res");
         const href = window.URL.createObjectURL(res.data);
         const $a = document.createElement("a");
         $a.href = href;
-        if (type === "SetteDetail") {
-          $a.download = `${item.fileName}.xlsx`;
+        if (type === "requestForm") {
+          $a.download = `请款单.pdf`;
         } else {
-          $a.download = `${item.fileName}.pdf`;
+          $a.download = `结算明细.xlsx`;
         }
         $a.click();
         $a.remove();
