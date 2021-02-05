@@ -2753,7 +2753,9 @@
       if(this.baseInfoByTerm.termId) {
         let data: any = {
           termId: this.baseInfoByTerm.termId,
+          termName: this.baseInfoByTerm.termName,
           proId: this.baseInfoByTerm.proId,
+          proName: this.baseInfoByTerm.proName,
           buyUnit: this.postData.buildingId, // 栋座
           roomId: this.postData.roomId, // 多分优惠告知书下需要通过房号去限制
           status: 'BecomeEffective' // 主成交下优惠告知书要是已生效状态
