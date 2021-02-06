@@ -4,7 +4,7 @@
  * @Author: ywl
  * @Date: 2020-09-27 16:27:36
  * @LastEditors: ywl
- * @LastEditTime: 2021-01-22 09:03:14
+ * @LastEditTime: 2021-02-06 09:54:04
 -->
 <template>
   <IhPage label-width="80px">
@@ -403,6 +403,10 @@ export default class DiscountList extends Vue {
       },
       data: { ...this.queryPageParameters },
     }).then((res: any) => {
+      if (res.data.type === "application/json") {
+        this.$message.warning("查询不到数据");
+        return;
+      }
       const href = window.URL.createObjectURL(res.data);
       const $a = document.createElement("a");
       $a.href = href;
@@ -423,6 +427,10 @@ export default class DiscountList extends Vue {
         Authorization: "bearer " + token,
       },
     }).then((res: any) => {
+      if (res.data.type === "application/json") {
+        this.$message.warning("找不到附件");
+        return;
+      }
       const href = window.URL.createObjectURL(res.data);
       const $a = document.createElement("a");
       $a.href = href;

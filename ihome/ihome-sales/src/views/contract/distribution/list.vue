@@ -3,8 +3,8 @@
  * @version: 
  * @Author: ywl
  * @Date: 2020-09-25 17:34:32
- * @LastEditors: wwq
- * @LastEditTime: 2021-01-27 10:59:26
+ * @LastEditors: ywl
+ * @LastEditTime: 2021-02-06 09:52:32
 -->
 <template>
   <IhPage label-width="100px">
@@ -581,6 +581,10 @@ export default class DistributionList extends Vue {
       },
       data: { ...this.queryPageParameters },
     }).then((res: any) => {
+      if (res.data.type === "application/json") {
+        this.$message.warning("查询不到数据");
+        return;
+      }
       const href = window.URL.createObjectURL(res.data);
       const $a = document.createElement("a");
       $a.href = href;
@@ -623,6 +627,10 @@ export default class DistributionList extends Vue {
         Authorization: "bearer " + token,
       },
     }).then((res: any) => {
+      if (res.data.type === "application/json") {
+        this.$message.warning("找不到附件");
+        return;
+      }
       const href = window.URL.createObjectURL(res.data);
       const $a = document.createElement("a");
       $a.href = href;

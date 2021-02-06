@@ -16,7 +16,7 @@
             <el-switch v-model="form.suppSwitch" active-color="#409EFF" inactive-color="#989898"></el-switch>
           </div>
           <div class="notice-form" v-if="form.suppSwitch">
-            <el-form-item label="补充协议类型" :prop="form.suppSwitch ? 'suppProtocolType' : ''">
+            <el-form-item label="补充协议类型" :prop="form.suppSwitch ? 'suppProtocolType' : 'empty'">
               <el-select
                 v-model="form.suppProtocolType"
                 clearable
@@ -51,7 +51,7 @@
             <el-switch v-model="form.finishSwitch" active-color="#409EFF" inactive-color="#989898"></el-switch>
           </div>
           <div class="notice-form" v-if="form.finishSwitch">
-            <el-form-item label="终止协议类型" :prop="form.finishSwitch ? 'finishProtocolType' : ''">
+            <el-form-item label="终止协议类型" :prop="form.finishSwitch ? 'finishProtocolType' : 'empty'">
               <el-select
                 v-model="form.finishProtocolType"
                 clearable
@@ -64,7 +64,7 @@
                 ></el-option>
               </el-select>
             </el-form-item>
-            <el-form-item label="终止原因" :prop="form.finishSwitch ? 'finishReason' : ''">
+            <el-form-item label="终止原因" :prop="form.finishSwitch ? 'finishReason' : 'empty'">
               <el-select
                 v-model="form.finishReason"
                 clearable
@@ -215,7 +215,7 @@
             <el-switch v-model="form.refundSwitch" active-color="#409EFF" inactive-color="#989898"></el-switch>
           </div>
           <div class="notice-form" v-if="form.refundSwitch">
-            <el-form-item label="退款申请书类型" :prop="form.refundSwitch ? 'refundProtocolType' : ''">
+            <el-form-item label="退款申请书类型" :prop="form.refundSwitch ? 'refundProtocolType' : 'empty'">
               <el-select
                 v-model="form.refundProtocolType"
                 clearable
@@ -227,6 +227,30 @@
                   :value="item.code"
                 ></el-option>
               </el-select>
+            </el-form-item>
+            <el-form-item
+              :prop="form.refundSwitch && form.refundProtocolType === 'refundBranchName' ? '' : 'empty'"
+              v-if="form.refundProtocolType === 'PaperTemplate'"
+              label="开户银行">
+              <el-input v-model="form.refundBranchName" readonly>
+                <el-button
+                  slot="append"
+                  icon="el-icon-search"
+                  @click.native="dialogFormVisible = true"
+                ></el-button>
+              </el-input>
+            </el-form-item>
+            <el-form-item
+              :prop="form.refundSwitch && form.refundProtocolType === 'refundAccountName' ? '' : 'empty'"
+              v-if="form.refundProtocolType === 'PaperTemplate'"
+              label="开户人">
+              <el-input v-model="form.refundAccountName"></el-input>
+            </el-form-item>
+            <el-form-item
+              :prop="form.refundSwitch && form.refundProtocolType === 'refundAccount' ? '' : 'empty'"
+              v-if="form.refundProtocolType === 'PaperTemplate'"
+              label="银行账号">
+              <el-input v-digits="0" v-model="form.refundAccount"></el-input>
             </el-form-item>
             <el-form-item v-if="form.refundProtocolType === 'PaperTemplate'" label="纸质版附件">
               <IhUpload
@@ -250,10 +274,18 @@
         <el-button type="success" @click="handlePreview">预览变更</el-button>
       </div>
     </div>
+    <IhDialog
+      :show="dialogFormVisible"
+      desc="银行网点档案库">
+      <BankRecord
+        @cancel="() => (dialogFormVisible = false)"
+        @finish="handleFinish"/>
+    </IhDialog>
   </ih-page>
 </template>
 <script lang="ts">
   import {Component, Vue, Prop} from "vue-property-decorator";
+  import BankRecord from "@/components/bankRecord.vue";
   import {
     get_preferential_getListByTermId__termId
   } from "@/api/project";
@@ -261,12 +293,13 @@
   import {NoRepeatHttp} from "ihome-common/util/aop/no-repeat-http";
 
   @Component({
-    components: {},
+    components: {BankRecord},
   })
   export default class NoticePage extends Vue {
     @Prop() private pageData?: any; // 页面数据
     fileList: any = [];
     preferentialList: any = []; // 优惠方式下拉选项
+    dialogFormVisible: any = false; // 银行网点档案库弹窗
     form: any = {
       suppSwitch: false, // 补充协议开关
       suppProtocolType: null, // 补充协议类型
@@ -286,6 +319,13 @@
 
       refundSwitch: false, // 退款申请书开关
       refundProtocolType: null, // 退款申请书协议类型
+      refundBankName: null, // 银行名字
+      refundBranchName: null, // 支行名称
+      refundAccountName: null, // 开户人
+      refundAccount: null, // 银行账户
+      refundAccountHolderName: null, // 开户人名字
+      refundProvinceName: null, // 省名字
+      refundCityName: null, // 市名字
       refundAnnexList: [], // 退款申请书协议附件列表
     };
     rules: any = {
@@ -312,7 +352,17 @@
       ],
       refundProtocolType: [
         { required: true, message: '退款申请书类型', trigger: 'change' }
-      ]
+      ],
+      refundBranchName: [
+        { required: true, message: '请选择开户银行', trigger: 'change' }
+      ],
+      refundAccountName: [
+        { required: true, message: '请输入开户人', trigger: 'change' }
+      ],
+      refundAccount: [
+        { required: true, message: '请输入银行账号', trigger: 'change' }
+      ],
+      empty: []
     };
     value: any = false;
 
@@ -361,6 +411,16 @@
         this.form.offerRemark = "";
         this.form.offerMoney = "";
       }
+    }
+
+    // 选择银行
+    handleFinish(data: any) {
+      console.log(123);
+      this.dialogFormVisible = false;
+      this.form.refundBankName = data.bankName;
+      this.form.refundBranchName = data.branchName;
+      this.form.refundCityName = data.cityName;
+      this.form.refundProvinceName = data.provinceName;
     }
 
     // 上一步
@@ -486,7 +546,13 @@
             promotionMethod: null, // 优惠选择方式 Manual-自定义、Automatic-选择
             reason: null, // 原因 --- 终止协议必填
             reasonDescription: null, // 原因描述：终止协议必填
-            templateType: this.form.refundProtocolType // 模版类型(PaperTemplate-纸质模板、ElectronicTemplate-电子模版)
+            templateType: this.form.refundProtocolType, // 模版类型(PaperTemplate-纸质模板、ElectronicTemplate-电子模版)
+            account: this.form.refundProtocolType === 'PaperTemplate' ? this.form.refundAccount : null, // 退款申请书银行账户
+            accountHolderName: this.form.refundProtocolType === 'PaperTemplate' ? this.form.refundAccountName : null, // 退款申请书开户人名字
+            bankName: this.form.refundProtocolType === 'PaperTemplate' ? this.form.refundBankName : null, // 退款申请书银行名字
+            branchName: this.form.refundProtocolType === 'PaperTemplate' ? this.form.refundBranchName : null, // 退款申请书支行名称
+            cityName: this.form.refundProtocolType === 'PaperTemplate' ? this.form.refundCityName : null, // 退款申请书市名字
+            provinceName: this.form.refundProtocolType === 'PaperTemplate' ? this.form.refundProvinceName : null, // 退款申请书省名字
           }
         )
       }

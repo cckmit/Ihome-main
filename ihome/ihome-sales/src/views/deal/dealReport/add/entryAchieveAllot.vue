@@ -1073,8 +1073,6 @@
   import EditDealAchieve from "@/views/deal/dealReport/dialog/editDealAchieve.vue";
   import {
     get_deal_get__id, // 编辑功能
-
-    get_pageData_getProBaseByTermId__cycleId, // 通过项目周期获取成交基础信息
     post_pageData_dealCheckNotice, // 判断是否应该存在优惠告知书，返回true则允许添加，返回false则不允许，返回业务逻辑则直接抛出异常
     post_pageData_initBasic, // 选择周期、房号后初始化页面
     post_pageData_initChannelComm, // 初始化对外拆佣表格数据
@@ -1089,6 +1087,9 @@
   import {
     get_org_get__id, // 通过组织id获取组织name
   } from "@/api/system";
+  import {
+    get_term_getProBaseByTermId__termId, // 通过项目周期获取成交基础信息
+  } from "@/api/project";
   import {post_notice_customer_information} from "@/api/contract"; // 获取优惠告知书
   import {Form as ElForm} from "element-ui";
   import {NoRepeatHttp} from "ihome-common/util/aop/no-repeat-http";
@@ -1580,7 +1581,7 @@
     // 编辑 --- 通过周期ID获取信息
     async editBaseDealInfo(id: any) {
       if (!id) return;
-      let baseInfo: any = await get_pageData_getProBaseByTermId__cycleId({cycleId: id});
+      let baseInfo: any = await get_term_getProBaseByTermId__termId({cycleId: id});
       this.baseInfoByTerm = JSON.parse(JSON.stringify(baseInfo || {}));
       // 给postData赋值对应数据
       if (baseInfo) {
@@ -2075,7 +2076,7 @@
     // 通过项目周期id获取基础信息
     async getBaseDealInfo(id: any) {
       if (!id) return;
-      let baseInfo: any = await get_pageData_getProBaseByTermId__cycleId({cycleId: id});
+      let baseInfo: any = await get_term_getProBaseByTermId__termId({cycleId: id});
       this.baseInfoByTerm = JSON.parse(JSON.stringify(baseInfo));
       // 给postData赋值对应数据
       if (baseInfo) {

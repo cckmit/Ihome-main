@@ -512,7 +512,7 @@
             break;
           case 'SUPPLEMENTDEAL':
             // 补充成交按钮权限
-            if (row.id === row.parentId && row.status === 'ReviewPassed' && this.currentJobId === 52) {
+            if (row.id === row.parentId && row.status === 'ReviewPassed' && this.currentJobId === 52 && row.canApplySupp === 1) {
               // 主成交、已审核、文员
               flag = false;
             }

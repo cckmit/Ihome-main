@@ -3,8 +3,8 @@
  * @version: 
  * @Author: ywl
  * @Date: 2020-09-25 11:53:51
- * @LastEditors: wwq
- * @LastEditTime: 2021-01-27 10:45:25
+ * @LastEditors: ywl
+ * @LastEditTime: 2021-02-06 09:54:56
 -->
 <template>
   <IhPage label-width="100px">
@@ -487,6 +487,10 @@ export default class PartyAList extends Vue {
       },
       data: { ...this.queryPageParameters },
     }).then((res: any) => {
+      if (res.data.type === "application/json") {
+        this.$message.warning("查询不到数据");
+        return;
+      }
       const href = window.URL.createObjectURL(res.data);
       const $a = document.createElement("a");
       $a.href = href;
@@ -507,6 +511,10 @@ export default class PartyAList extends Vue {
         Authorization: "bearer " + token,
       },
     }).then((res: any) => {
+      if (res.data.type === "application/json") {
+        this.$message.warning("找不到附件");
+        return;
+      }
       const href = window.URL.createObjectURL(res.data);
       const $a = document.createElement("a");
       $a.href = href;
