@@ -4,7 +4,7 @@
  * @Author: wwq
  * @Date: 2020-11-03 18:39:23
  * @LastEditors: wwq
- * @LastEditTime: 2021-02-06 09:39:46
+ * @LastEditTime: 2021-02-06 11:11:47
 -->
 <template>
   <el-dialog
@@ -30,7 +30,7 @@
           <el-form-item label="房号：">
             <el-input
               clearable
-              v-model="resPageInfo.roomNo"
+              v-model="queryPageParameters.roomNo"
               placeholder="房号"
               class="width--100"
             ></el-input>
@@ -39,7 +39,7 @@
         <el-col :span="5">
           <el-form-item label="户型：">
             <el-select
-              v-model="resPageInfo.houseTypeName"
+              v-model="queryPageParameters.houseName"
               clearable
               placeholder="户型"
               class="width--100"
@@ -56,7 +56,7 @@
         <el-col :span="5">
           <el-form-item label="朝向：">
             <el-select
-              v-model="resPageInfo.positionEnum"
+              v-model="queryPageParameters.positionEnum"
               clearable
               placeholder="朝向"
               class="width--100"
@@ -201,7 +201,7 @@ export default class RoomView extends Vue {
   viewEditDialogVisible = false;
   queryPageParameters: any = {
     roomNo: null,
-    houseTypeName: null,
+    houseName: null,
     positionEnum: null,
     proId: this.$route.query.id,
     buildingId: this.data.buildingId,
