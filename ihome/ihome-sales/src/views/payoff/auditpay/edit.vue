@@ -4,7 +4,7 @@
  * @Author: wwq
  * @Date: 2020-12-26 11:11:23
  * @LastEditors: wwq
- * @LastEditTime: 2021-02-06 18:31:24
+ * @LastEditTime: 2021-02-06 20:05:54
 -->
 <template>
   <IhPage>
@@ -723,6 +723,7 @@
           >
             <template v-slot="{ row }">
               <el-link
+                style="color:#4881f9"
                 @click="routeToCycle(row)"
                 :title="row.cycleName"
                 class="text-ellipsis"
@@ -1000,36 +1001,37 @@
         </el-table>
       </div>
 
-      <div v-if="$route.name === 'auditpayAudit'">
-        <p class="ih-info-title">审核意见</p>
-        <el-input
-          class="padding-left-20"
-          style="box-sizing: border-box"
-          type="textarea"
-          :autosize="{ minRows: 5, maxRows: 10 }"
-          placeholder="请输入内容"
-          v-model="info.auditOpinion"
-          maxlength="500"
-          show-word-limit
-        >
-        </el-input>
-      </div>
+      <p class="ih-info-title">审核意见</p>
+      <el-input
+        class="padding-left-20"
+        style="box-sizing: border-box"
+        type="textarea"
+        :autosize="{ minRows: 5, maxRows: 10 }"
+        placeholder="请输入内容"
+        v-model="info.auditOpinion"
+        maxlength="500"
+        show-word-limit
+      >
+      </el-input>
       <br />
       <div class="bottom">
         <el-button
+          v-if="['auditpayAudit', 'auditpayInfo'].includes($route.name)"
           @click="submit('TemporaryStorage')"
           type="primary"
         >暂存</el-button>
         <el-button
+          v-if="['auditpayAudit', 'auditpayInfo'].includes($route.name)"
           @click="submit('Through')"
           type="success"
         >通过</el-button>
         <el-button
+          v-if="['auditpayAudit', 'auditpayInfo'].includes($route.name)"
           @click="submit('Reject')"
           type="danger"
         >驳回</el-button>
         <el-button
-          v-if="info.status === 'ReviewPass'"
+          v-if="$route.name === 'payoffControl'"
           @click="submit('Saving')"
           type="success"
         >保存</el-button>
@@ -1657,7 +1659,11 @@ export default class PayoffEdit extends Vue {
               return;
             }
             break;
-          default:
+          case "Saving":
+            if (!this.info.auditOpinion) {
+              this.$message.warning("请填写审核意见");
+              return;
+            }
             break;
         }
         switch (this.info.status) {
@@ -1676,7 +1682,11 @@ export default class PayoffEdit extends Vue {
           type: "success",
           message: `${this.messageChange(val)}`,
         });
-        this.$goto({ path: `/auditpay/list` });
+        if (this.$route.name === "payoffControl") {
+          this.$goto({ path: `/payoff/list` });
+        } else {
+          this.$goto({ path: `/auditpay/list` });
+        }
       }
     });
   }

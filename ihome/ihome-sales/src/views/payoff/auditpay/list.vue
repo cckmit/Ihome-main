@@ -4,7 +4,7 @@
  * @Author: wwq
  * @Date: 2020-12-26 11:11:28
  * @LastEditors: wwq
- * @LastEditTime: 2021-02-06 15:28:05
+ * @LastEditTime: 2021-02-06 20:25:29
 -->
 <template>
   <IhPage label-width="120px">
@@ -221,28 +221,9 @@
           <template v-slot="{ row }">
             <el-link
               type="primary"
-              @click.native.prevent="routeTo(row, 'audit')"
+              @click.native.prevent="routeTo(row)"
               v-has="'B.SALES.PAYOFF.PAYAPPLY.SHLB'"
             >审核</el-link>
-            <!-- <el-dropdown
-              trigger="click"
-              class="margin-left-15"
-            >
-              <span class="el-dropdown-link">
-                更多
-                <i class="el-icon-arrow-down el-icon--right"></i>
-              </span>
-              <el-dropdown-menu slot="dropdown">
-                <el-dropdown-item
-                  :class="{ 'ih-data-disabled': ''}"
-                  @click.native.prevent="routeTo(row, 'edit')"
-                >审核</el-dropdown-item>
-                <el-dropdown-item
-                  :class="{ 'ih-data-disabled': ''}"
-                  @click.native.prevent="remove(row, '')"
-                >管控</el-dropdown-item>
-              </el-dropdown-menu>
-            </el-dropdown> -->
           </template>
         </el-table-column>
       </el-table>
@@ -394,13 +375,28 @@ export default class PayoffList extends Vue {
     });
   }
 
-  routeTo(row: any, where: string) {
-    this.$router.push({
-      path: `/auditpay/${where}`,
-      query: {
-        id: row.id,
-      },
-    });
+  routeTo(row: any) {
+    const RPlatformClerk = this.$roleTool.RPlatformClerk();
+    const RBusinessManagement = this.$roleTool.RBusinessManagement();
+    const RFinancialOfficer = this.$roleTool.RFinancialOfficer();
+    if (
+      RFinancialOfficer &&
+      ["BranchFinanceUnreview", "ReviewPass"].includes(row.status)
+    ) {
+      this.$router.push({
+        path: `/auditpay/audit`,
+        query: {
+          id: row.id,
+        },
+      });
+    } else if (RPlatformClerk || RBusinessManagement) {
+      this.$router.push({
+        path: `/auditpay/info`,
+        query: {
+          id: row.id,
+        },
+      });
+    }
   }
 
   handleSelectionChange(val: any) {

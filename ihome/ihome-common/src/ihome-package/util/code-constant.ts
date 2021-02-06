@@ -4,7 +4,7 @@
  * @Author: zyc
  * @Date: 2021-01-21 17:23:14
  * @LastEditors: wwq
- * @LastEditTime: 2021-02-06 18:59:41
+ * @LastEditTime: 2021-02-06 20:35:44
  */
 
 /**角色编码
@@ -57,6 +57,21 @@ const RoleCode = {
      * @return {*}
      */
     RFinancialOfficer: 'RFinancialOfficer',
+    /**总公司财务
+     * @param {*}
+     * @return {*}
+     */
+    RHeadFinancialOfficer: 'RHeadFinancialOfficer',
+    /**出纳
+     * @param {*}
+     * @return {*}
+     */
+    RFinanceCashier: 'RFinanceCashier',
+    /**资金岗角色
+     * @param {*}
+     * @return {*}
+     */
+    RFinanceFund: 'RFinanceFund',
 
 }
 /**岗位编码

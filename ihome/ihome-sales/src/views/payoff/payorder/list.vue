@@ -4,7 +4,7 @@
  * @Author: wwq
  * @Date: 2020-12-26 11:11:28
  * @LastEditors: wwq
- * @LastEditTime: 2021-02-06 15:17:02
+ * @LastEditTime: 2021-02-06 20:11:30
 -->
 <template>
   <IhPage label-width="120px">
@@ -287,6 +287,12 @@
                 >撤回
                 </el-dropdown-item>
                 <el-dropdown-item
+                  :class="{'ih-data-disabled': !controlChange(row)}"
+                  @click.native.prevent="routeTo(row, 'control')"
+                  v-has="'B.SALES.PAYOFF.PAYOFFLIST.CWGK'"
+                >管控
+                </el-dropdown-item>
+                <el-dropdown-item
                   :class="{'ih-data-disabled': ''}"
                   @click.native.prevent="routeTo(row, 'replenish')"
                   v-has="'B.SALES.PAYOFF.PAYOFFLIST.BCLB'"
@@ -380,21 +386,10 @@ export default class PayoffList extends Vue {
   };
   dialogVisible = false;
 
-  editChange(row: any) {
-    const status = row.status === "Draft";
-    const dangqian = (this.$root as any).userInfo.id === row.inputUser;
-    return status && dangqian;
-  }
-
-  checkChange(row: any) {
-    console.log(row);
-    // const status = row.status === "WaitAuditByBranchHead";
-    // const roleList = (this.$root as any).userInfo.roleList.map(
-    //   (v: any) => v.code
-    // );
-    // const fen = roleList.includes("RBusinessManagement");
-    // const zong = roleList.includes("RHeadBusinessManagement");
-    // return (fen || zong) && status;
+  controlChange(row: any) {
+    const ReviewPass = row.status === "ReviewPass";
+    const RFinancialOfficer = this.$roleTool.RFinancialOfficer();
+    return ReviewPass && RFinancialOfficer;
   }
 
   showPlanPicture(data: any) {
@@ -513,12 +508,21 @@ export default class PayoffList extends Vue {
   }
 
   routeTo(row: any, where: string) {
-    this.$router.push({
-      path: `/payoff/${where}`,
-      query: {
-        id: row.id,
-      },
-    });
+    if (where === "control") {
+      this.$router.push({
+        path: `/payoff/control`,
+        query: {
+          id: row.id,
+        },
+      });
+    } else {
+      this.$router.push({
+        path: `/payoff/${where}`,
+        query: {
+          id: row.id,
+        },
+      });
+    }
   }
 
   add() {

@@ -2,6 +2,7 @@
 # ihome-common
 ## 日志
 ```
+v1.2.39  2021-02-06 20:40  roleTool添加3个岗位
 v1.2.38  2021-02-06 19:00  roleTool添加分公司财务岗位
 v1.2.37  2021-02-06 10:48  IhSelectPageByRoom请求回参重构，增加exDeal字段
 v1.2.36  2021-02-03 16:42  IhSelectPageByRoom组件增加请求参数，主要针对成交

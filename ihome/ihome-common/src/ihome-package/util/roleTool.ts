@@ -4,7 +4,7 @@
  * @Author: zyc
  * @Date: 2021-01-26 10:19:00
  * @LastEditors: wwq
- * @LastEditTime: 2021-02-06 18:59:22
+ * @LastEditTime: 2021-02-06 20:33:59
  */
 
 
@@ -75,6 +75,21 @@ export interface RoleToolInterface {
      * @return {*}
      */
     RFinancialOfficer(): boolean;
+    /**是否包含【总公司财务】
+     * @param {*}
+     * @return {*}
+     */
+    RHeadFinancialOfficer(): boolean;
+    /**是否包含【出纳】
+     * @param {*}
+     * @return {*}
+     */
+    RFinanceCashier(): boolean;
+    /**是否包含【资金岗角色】
+     * @param {*}
+     * @return {*}
+     */
+    RFinanceFund(): boolean;
 
 
 }
@@ -135,6 +150,28 @@ export class RoleTool implements RoleToolInterface {
     RFinancialOfficer(): boolean {
         return this.hasRole(RoleCode.RFinancialOfficer);
     }
+    /**是否包含【总公司财务】
+    * @param {*}
+    * @return {*}
+    */
+    RHeadFinancialOfficer(): boolean {
+        return this.hasRole(RoleCode.RHeadFinancialOfficer);
+    }
+    /**是否包含【出纳】
+    * @param {*}
+    * @return {*}
+    */
+    RFinanceCashier(): boolean {
+        return this.hasRole(RoleCode.RFinanceCashier);
+    }
+    /**是否包含【资金岗角色】
+    * @param {*}
+    * @return {*}
+    */
+    RFinanceFund(): boolean {
+        return this.hasRole(RoleCode.RFinanceFund);
+    }
+
 
     /**用户是否包含某个角色
      * @param {string} code

@@ -4,7 +4,7 @@
  * @Author: wwq
  * @Date: 2020-12-26 11:11:23
  * @LastEditors: wwq
- * @LastEditTime: 2021-02-06 18:34:46
+ * @LastEditTime: 2021-02-06 19:31:49
 -->
 <template>
   <IhPage>
@@ -648,6 +648,7 @@
           >
             <template v-slot="{ row }">
               <el-link
+                style="color:#4881f9"
                 @click="routeToCycle(row)"
                 :title="row.cycleName"
                 class="text-ellipsis"

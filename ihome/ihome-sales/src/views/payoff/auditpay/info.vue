@@ -4,7 +4,7 @@
  * @Author: wwq
  * @Date: 2021-02-06 18:54:46
  * @LastEditors: wwq
- * @LastEditTime: 2021-02-06 18:55:12
+ * @LastEditTime: 2021-02-06 19:49:16
 -->
 <template>
   <IhPage>
@@ -14,7 +14,6 @@
         ref="form"
         label-width="120px"
         :model="info"
-        :rules="rules"
       >
         <el-row>
           <el-col :span="8">
@@ -503,6 +502,7 @@
           >
             <template v-slot="{ row }">
               <el-link
+                style="color:#4881f9"
                 @click="$router.push(`/projectApproval/info?id=${row.cycleId}`)"
                 :title="row.cycleName"
                 class="text-ellipsis"
@@ -668,26 +668,9 @@
                   v-if="row.subType"
                 >*</span>{{row.name}}
               </div>
-              <el-button
-                v-if="$route.name === 'payoffReplenish' && row.code === 'SetteDetail'"
-                @click="downloadTemplate('billForm')"
-                type="success"
-                size="small"
-                icon="el-icon-download"
-              >下载未盖章版</el-button>
-              <el-button
-                v-if="$route.name === 'payoffReplenish' && row.code === 'RequestForm'"
-                @click="downloadTemplate('requestForm')"
-                type="success"
-                size="small"
-                icon="el-icon-download"
-              >下载未盖章版</el-button>
             </template>
           </el-table-column>
-          <el-table-column
-            label="附件"
-            v-if="['payoffInfo', 'payoffRecall'].includes($route.name)"
-          >
+          <el-table-column label="附件">
             <template v-slot="{ row }">
               <IhUpload
                 :file-list.sync="row.fileList"
@@ -697,22 +680,6 @@
                 :limit="row.fileList.length"
                 :removePermi="false"
                 :upload-show="!!row.fileList.length"
-              ></IhUpload>
-            </template>
-          </el-table-column>
-          <el-table-column
-            label="附件"
-            v-if="$route.name==='payoffReplenish'"
-          >
-            <template v-slot="{ row }">
-              <IhUpload
-                :file-list.sync="row.fileList"
-                :file-size="10"
-                :file-type="row.code"
-                size="100px"
-                :limit="row.limit ? row.fileList.length : 999"
-                :upload-show="row.limit && !!row.fileList.length"
-                @newFileList="queryNew"
               ></IhUpload>
             </template>
           </el-table-column>
@@ -801,34 +768,33 @@
           ></el-table-column>
         </el-table>
       </div>
-
-      <div v-if="$route.name === 'payoffReplenish'">
-        <p class="ih-info-title">附言</p>
-        <el-input
-          class="padding-left-20"
-          style="box-sizing: border-box"
-          type="textarea"
-          :autosize="{ minRows: 5, maxRows: 10 }"
-          placeholder="请输入内容"
-          v-model="info.postscript"
-          maxlength="500"
-          show-word-limit
-        >
-        </el-input>
-      </div>
+      <p class="ih-info-title">审核意见</p>
+      <el-input
+        class="padding-left-20"
+        style="box-sizing: border-box"
+        type="textarea"
+        :autosize="{ minRows: 5, maxRows: 10 }"
+        placeholder="请输入内容"
+        v-model="info.postscript"
+        maxlength="500"
+        show-word-limit
+      >
+      </el-input>
 
       <div class="bottom">
         <el-button
-          v-if="$route.name==='payoffReplenish'"
-          @click="submit()"
-          type="success"
-        >提 交</el-button>
+          @click="submit('TemporaryStorage')"
+          type="primary"
+        >暂存</el-button>
         <el-button
-          v-if="$route.name==='payoffRecall'"
-          @click="recall()"
+          @click="submit('Through')"
           type="success"
-        >撤 回</el-button>
-        <el-button @click="cancel">返 回</el-button>
+        >通过</el-button>
+        <el-button
+          @click="submit('Reject')"
+          type="danger"
+        >驳回</el-button>
+        <el-button @click="cancel">返回</el-button>
       </div>
     </template>
   </IhPage>
@@ -839,13 +805,11 @@ import {
   get_payApply_get__id,
   get_processRecord_oa_review_person__applyId,
   get_processRecord_oa_review_log__applyId,
-  post_payApply_payApplySuppFile,
-  post_payApply_withdrawSubmit,
+  post_payApply_financeReviewApply,
+  post_payApply_notFinanceReviewApply,
 } from "@/api/payoff/index";
 import { get_channel_get__id } from "@/api/channel/index";
 import { Form as ElForm } from "element-ui";
-import axios from "axios";
-import { getToken } from "ihome-common/util/cookies";
 
 @Component({
   components: {},
@@ -900,79 +864,6 @@ export default class PayoffEdit extends Vue {
   operateName: any = "";
   operatePost: any = "";
   operateVisible: any = false;
-
-  private rules: any = {
-    applyCode: [
-      {
-        required: true,
-        message: "请填写付款单编号",
-        trigger: "change",
-      },
-    ],
-    maker: [
-      {
-        required: true,
-        message: "请填写制单人",
-        trigger: "change",
-      },
-    ],
-    makerTime: [
-      {
-        required: true,
-        message: "请选择制单日期",
-        trigger: "change",
-      },
-    ],
-    status: [
-      {
-        required: true,
-        message: "请选择当前状态",
-        trigger: "change",
-      },
-    ],
-    agencyId: [
-      {
-        required: true,
-        message: "请选择渠道商",
-        trigger: "change",
-      },
-    ],
-    receiveAccount: [
-      {
-        required: true,
-        message: "请选择渠道收款账号",
-        trigger: "change",
-      },
-    ],
-    invoiceType: [
-      {
-        required: true,
-        message: "请选择发票类型",
-        trigger: "change",
-      },
-    ],
-    taxRate: [
-      {
-        required: true,
-        message: "请选择发票税率",
-        trigger: "change",
-      },
-    ],
-    settlementMethod: [
-      {
-        required: true,
-        message: "请选择结算方式",
-        trigger: "change",
-      },
-    ],
-    paymentMethod: [
-      {
-        required: true,
-        message: "请选择付款方式",
-        trigger: "change",
-      },
-    ],
-  };
 
   // 过滤tab页数据
   filterTabs(val: any) {
@@ -1041,7 +932,7 @@ export default class PayoffEdit extends Vue {
   }
 
   cancel() {
-    this.$router.push("/payoff/list");
+    this.$router.push("/auditpay/list");
   }
 
   async created() {
@@ -1103,40 +994,6 @@ export default class PayoffEdit extends Vue {
     this.submitFile = { ...obj };
   }
 
-  queryNew(data: any, type?: any) {
-    let obj: any = {};
-    obj[type] = data;
-    this.submitFile = { ...this.submitFile, ...obj };
-  }
-
-  downloadTemplate(type: any) {
-    const fileId = this.info[type];
-    if (fileId) {
-      const token: any = getToken();
-      axios({
-        method: "GET",
-        url: `/sales-api/sales-document-cover/file/download/${fileId}`,
-        xsrfHeaderName: "Authorization",
-        responseType: "blob",
-        headers: {
-          "Content-Type": "application/json",
-          Authorization: "bearer " + token,
-        },
-      }).then((res: any) => {
-        const href = window.URL.createObjectURL(res.data);
-        const $a = document.createElement("a");
-        $a.href = href;
-        if (type === "requestForm") {
-          $a.download = `请款单.pdf`;
-        } else {
-          $a.download = `结算明细.xlsx`;
-        }
-        $a.click();
-        $a.remove();
-      });
-    }
-  }
-
   async getChannelInfo(item: any) {
     this.info.agencyName = item.name;
     let res = await get_channel_get__id({ id: item.id });
@@ -1161,73 +1018,93 @@ export default class PayoffEdit extends Vue {
     this.info.processRecordList = res;
   }
 
-  // 撤回
-  async recall() {
-    await post_payApply_withdrawSubmit({
-      id: this.payoffId,
-    });
-    this.$message({
-      type: "success",
-      message: "撤回成功!",
-    });
-    this.$goto({ path: `/payoff/list` });
-  }
-
-  submit() {
+  submit(val: string) {
     (this.$refs["form"] as ElForm).validate(async (v: any) => {
       if (v) {
-        // 校验提示
         let obj: any = {};
-        obj.id = this.payoffId;
-        obj.postscript = this.info.postscript;
-        let arr: any = [];
-        Object.values(this.submitFile).forEach((v: any) => {
-          if (v.length) {
-            arr = arr.concat(v);
-          }
-        });
-        // 以下操作仅仅是为了校验必上传项
-        let submitList: any = this.fileListType.map((v: any) => {
-          return {
-            ...v,
-            fileList: arr
-              .filter((j: any) => j.fileType === v.code)
-              .map((h: any) => ({
-                ...h,
-                name: h.fileName,
-              })),
-          };
-        });
-        let isSubmit = true;
-        let msgList: any = [];
-        submitList.forEach((v: any) => {
-          if (v.subType && !v.fileList.length) {
-            msgList.push(v.name);
-            isSubmit = false;
-          }
-        });
-        if (isSubmit) {
-          arr = arr.filter((v: any) => !v.exAuto);
-          obj.documents = arr.map((v: any) => ({
+        obj.applyId = this.payoffId;
+        obj.auditOpinion = this.info.auditOpinion;
+        obj.payoffApproval = val;
+        if (
+          ["ReviewPass", "BranchFinanceUnreview"].includes(this.info.status)
+        ) {
+          obj.payApplyVO = {};
+          obj.payApplyDetailList = [];
+          obj.modify = "false";
+          obj.payApplyVO.deductionCategory = this.info.deductionCategory;
+          obj.payApplyVO.description = this.info.description;
+          obj.payApplyVO.actualAmount = this.info.actualAmount;
+          obj.payApplyVO.agencyId = this.info.agencyId;
+          obj.payApplyVO.agencyName = this.info.agencyName;
+          obj.payApplyVO.applyAmount = this.info.applyAmount;
+          obj.payApplyVO.belongOrgId = this.info.belongOrgId;
+          obj.payApplyVO.belongOrgName = this.info.belongOrgName;
+          obj.payApplyVO.deductAmount = this.info.deductAmount;
+          obj.payApplyVO.finedAmount = this.info.finedAmount;
+          obj.payApplyVO.invoiceType = this.info.invoiceType;
+          obj.payApplyVO.makerId = this.info.makerId;
+          obj.payApplyVO.makerTime = this.info.makerTime;
+          obj.payApplyVO.noTaxAmount = this.info.noTaxAmount;
+          obj.payApplyVO.projectId = this.info.projectId;
+          obj.payApplyVO.projectName = this.info.projectName;
+          obj.payApplyVO.receiveAccount = this.info.receiveAccount;
+          obj.payApplyVO.status = val;
+          obj.payApplyVO.tax = this.info.tax;
+          obj.payApplyVO.taxRate = Number(this.info.taxRate);
+          obj.payApplyDetailList = this.info.payApplyDetailList;
+          obj.payDeductDetailCalculationRequestList = this.info.payDeductDetailResponseList;
+          // 校验提示
+          let arr: any = [];
+          Object.values(this.submitFile).forEach((v: any) => {
+            if (v.length) {
+              arr = arr.concat(v);
+            }
+          });
+          obj.documentList = arr.map((v: any) => ({
             fileId: v.fileId,
             fileName: v.name,
             fileType: v.type,
           }));
-        } else {
-          this.$message({
-            type: "warning",
-            message: `${msgList.join(",")}项,请上传附件`,
-          });
-          return;
         }
-        await post_payApply_payApplySuppFile(obj);
-        this.$goto({ path: `/payoff/list` });
+        switch (val) {
+          case "Reject":
+            if (!this.info.auditOpinion) {
+              this.$message.warning("请填写审核意见");
+              return;
+            }
+            break;
+        }
+        switch (this.info.status) {
+          case "PlatformClerkUnreview":
+          case "BranchBusinessManageUnreview":
+            delete obj.applyId;
+            obj.id = this.payoffId;
+            await post_payApply_notFinanceReviewApply(obj);
+            break;
+          case "BranchFinanceUnreview":
+          case "ReviewPass":
+            await post_payApply_financeReviewApply(obj);
+            break;
+        }
         this.$message({
           type: "success",
-          message: "提交成功!",
+          message: `${this.messageChange(val)}`,
         });
+        this.$goto({ path: `/auditpay/list` });
       }
     });
+  }
+  messageChange(val: any) {
+    switch (val) {
+      case "TemporaryStorage":
+        return "暂存成功";
+      case "Through":
+        return "通过成功";
+      case "Reject":
+        return "驳回成功";
+      case "Saving":
+        return "保存成功";
+    }
   }
 }
 </script>

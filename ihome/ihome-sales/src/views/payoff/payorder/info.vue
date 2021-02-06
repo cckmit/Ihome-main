@@ -4,7 +4,7 @@
  * @Author: wwq
  * @Date: 2020-12-26 11:11:19
  * @LastEditors: wwq
- * @LastEditTime: 2021-02-06 16:42:03
+ * @LastEditTime: 2021-02-06 19:31:42
 -->
 <template>
   <IhPage>
@@ -14,7 +14,6 @@
         ref="form"
         label-width="120px"
         :model="info"
-        :rules="rules"
       >
         <el-row>
           <el-col :span="8">
@@ -503,6 +502,7 @@
           >
             <template v-slot="{ row }">
               <el-link
+                style="color:#4881f9"
                 @click="$router.push(`/projectApproval/info?id=${row.cycleId}`)"
                 :title="row.cycleName"
                 class="text-ellipsis"
@@ -900,79 +900,6 @@ export default class PayoffEdit extends Vue {
   operateName: any = "";
   operatePost: any = "";
   operateVisible: any = false;
-
-  private rules: any = {
-    applyCode: [
-      {
-        required: true,
-        message: "请填写付款单编号",
-        trigger: "change",
-      },
-    ],
-    maker: [
-      {
-        required: true,
-        message: "请填写制单人",
-        trigger: "change",
-      },
-    ],
-    makerTime: [
-      {
-        required: true,
-        message: "请选择制单日期",
-        trigger: "change",
-      },
-    ],
-    status: [
-      {
-        required: true,
-        message: "请选择当前状态",
-        trigger: "change",
-      },
-    ],
-    agencyId: [
-      {
-        required: true,
-        message: "请选择渠道商",
-        trigger: "change",
-      },
-    ],
-    receiveAccount: [
-      {
-        required: true,
-        message: "请选择渠道收款账号",
-        trigger: "change",
-      },
-    ],
-    invoiceType: [
-      {
-        required: true,
-        message: "请选择发票类型",
-        trigger: "change",
-      },
-    ],
-    taxRate: [
-      {
-        required: true,
-        message: "请选择发票税率",
-        trigger: "change",
-      },
-    ],
-    settlementMethod: [
-      {
-        required: true,
-        message: "请选择结算方式",
-        trigger: "change",
-      },
-    ],
-    paymentMethod: [
-      {
-        required: true,
-        message: "请选择付款方式",
-        trigger: "change",
-      },
-    ],
-  };
 
   // 过滤tab页数据
   filterTabs(val: any) {
