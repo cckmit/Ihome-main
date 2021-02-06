@@ -1402,11 +1402,11 @@
         }
         // 收派金额部分信息 --- 服务费
         this.postData.receiveVO = [];
-        if (baseInfo.chargeEnum !== 'Service') {
+        if (baseInfo.chargeEnum !== 'Agent') {
           let tempList: any = [];
           tempList.push(
             {
-              type: 'AgencyFee', // 代理费
+              type: 'ServiceFee', // 服务费
               partyACustomer: null,
               partyACustomerName: '客户',
               packgeName: null,
