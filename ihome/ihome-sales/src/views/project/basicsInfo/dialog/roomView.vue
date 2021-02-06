@@ -4,7 +4,7 @@
  * @Author: wwq
  * @Date: 2020-11-03 18:39:23
  * @LastEditors: wwq
- * @LastEditTime: 2021-01-27 17:04:01
+ * @LastEditTime: 2021-02-06 09:39:46
 -->
 <template>
   <el-dialog
@@ -16,7 +16,7 @@
     width="80%"
     top="11vh"
     class="dialog text-left"
-    :title="`当前位置: ${$route.query.proName} ${$root.dictAllName(
+    :title="`当前位置: ${proName} ${$root.dictAllName(
       data.propertyEnum,
       'Property'
     )} ${data.buildingName}`"
@@ -208,6 +208,7 @@ export default class RoomView extends Vue {
   };
   houseTypeOptions: any = [];
   editData: any = {};
+  proName: any = "";
 
   resPageInfo: any = {
     list: [],
@@ -226,6 +227,7 @@ export default class RoomView extends Vue {
   async created() {
     this.getListMixin();
     this.getHouseType();
+    this.proName = window.sessionStorage.getItem("proName");
   }
   async getListMixin() {
     this.resPageInfo = await post_room_getListByBuildingId(
