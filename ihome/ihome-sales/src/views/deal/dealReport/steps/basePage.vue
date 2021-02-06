@@ -2060,7 +2060,7 @@
     // 通过项目周期id获取基础信息
     async getBaseDealInfo(id: any) {
       if (!id) return;
-      let baseInfo: any = await get_term_getProBaseByTermId__termId({cycleId: id});
+      let baseInfo: any = await get_term_getProBaseByTermId__termId({termId: id});
       this.baseInfoByTerm = JSON.parse(JSON.stringify(baseInfo));
       // 物业类型
       this.propertyTypeList = this.getPropertyTypeList(baseInfo.propertyEnums);
@@ -2109,9 +2109,24 @@
           this.navList = (this as any).$tool.deepClone(this.defaultNavList);
         }
         // 收派金额部分信息 --- 服务费
-        if (baseInfo.serviceFee) {
+        this.postData.receiveList = [];
+        if (baseInfo.chargeEnum !== 'Agent') {
           let tempList: any = [];
-          tempList.push(baseInfo.serviceFee);
+          tempList.push(
+            {
+              type: 'ServiceFee', // 服务费
+              partyACustomer: null,
+              partyACustomerName: '客户',
+              packgeName: null,
+              packageId: null,
+              receiveAmount: null,
+              commAmount: null,
+              rewardAmount: null,
+              totalPackageAmount: null,
+              distributionAmount: null,
+              otherChannelFees: null,
+            }
+          );
           let list: any = this.initReceiveVOS(tempList);
           this.$nextTick(() => {
             this.postData.receiveList.push(...list);

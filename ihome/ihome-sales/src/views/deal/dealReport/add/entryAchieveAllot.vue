@@ -1586,7 +1586,7 @@
     // 编辑 --- 通过周期ID获取信息
     async editBaseDealInfo(id: any) {
       if (!id) return;
-      let baseInfo: any = await get_term_getProBaseByTermId__termId({cycleId: id});
+      let baseInfo: any = await get_term_getProBaseByTermId__termId({termId: id});
       this.baseInfoByTerm = JSON.parse(JSON.stringify(baseInfo || {}));
       // 给postData赋值对应数据
       if (baseInfo) {
@@ -2081,7 +2081,7 @@
     // 通过项目周期id获取基础信息
     async getBaseDealInfo(id: any) {
       if (!id) return;
-      let baseInfo: any = await get_term_getProBaseByTermId__termId({cycleId: id});
+      let baseInfo: any = await get_term_getProBaseByTermId__termId({termId: id});
       this.baseInfoByTerm = JSON.parse(JSON.stringify(baseInfo));
       // 给postData赋值对应数据
       if (baseInfo) {
@@ -2140,9 +2140,24 @@
           this.navList = (this as any).$tool.deepClone(this.defaultNavList);
         }
         // 收派金额部分信息 --- 服务费
-        if (baseInfo.serviceFee) {
+        this.postData.receiveVO = [];
+        if (baseInfo.chargeEnum !== 'Agent') {
           let tempList: any = [];
-          tempList.push(baseInfo.serviceFee);
+          tempList.push(
+            {
+              type: 'ServiceFee', // 服务费
+              partyACustomer: null,
+              partyACustomerName: '客户',
+              packgeName: null,
+              packageId: null,
+              receiveAmount: null,
+              commAmount: null,
+              rewardAmount: null,
+              totalPackageAmount: null,
+              distributionAmount: null,
+              otherChannelFees: null,
+            }
+          );
           let list: any = (this as any).$parent.initReceiveVOS(tempList);
           this.$nextTick(() => {
             this.postData.receiveVO.push(...list);
@@ -2537,7 +2552,7 @@
       if (value === 'DistriDeal') {
         // 如果查询不到此房号的已成交报备信息，用户又选择分销成交
         this.postData.contType = this.tempContType ? this.tempContType : null;
-        if (!this.baseInfoInDeal.hasRecord) {
+        if (!this.baseInfoInDeal.hasRecord && this.postData.roomId) {
           this.$alert('系统查询不到此房号的已成交报备信息，请先维护报备信息！', '提示', {
             confirmButtonText: '确定'
           });
@@ -3620,7 +3635,7 @@
       obj.basic.receiveVO = JSON.parse(JSON.stringify(this.postData.receiveVO));
       if (obj.basic && obj.basic.receiveVO && obj.basic.receiveVO.length) {
         obj.basic.receiveVO.forEach((vo: any) => {
-          if ([null, undefined, 0, ""].includes(vo.otherChannelFees)) {
+          if (vo.type === 'AgentFee' && [null, undefined, 0, ""].includes(vo.otherChannelFees)) {
             vo.otherChannelFees = null; // 后台要置null
           }
         });
