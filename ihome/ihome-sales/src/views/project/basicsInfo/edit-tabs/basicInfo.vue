@@ -4,7 +4,7 @@
  * @Author: wwq
  * @Date: 2020-11-03 11:52:41
  * @LastEditors: wwq
- * @LastEditTime: 2021-02-02 14:22:44
+ * @LastEditTime: 2021-02-06 09:38:02
 -->
 <template>
   <div>
@@ -542,7 +542,7 @@
       >保存</el-button>
       <el-button
         type="success"
-        :class="{'ih-data-disabled': !submitChange(row)}"
+        :class="{'ih-data-disabled': !submitChange()}"
         v-has="'B.SALES.PROJECT.BASICLIST.ZXMTJ'"
         @click="submit('submit')"
       >提交</el-button>
@@ -774,6 +774,7 @@ export default class EditBasicInfo extends Vue {
         "projectExMinyuan",
         data.exMinyuan.toString()
       );
+      window.sessionStorage.setItem("proName", this.form.proName);
       this.form.provinceOption = [data.province, data.city, data.district];
       this.contantList = data.propertyArgs.map((v: any) => ({
         ...v,
