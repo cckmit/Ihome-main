@@ -1291,7 +1291,6 @@
   import SelectReceivePackage from "@/views/deal/dealReport/dialog/selectReceivePackage.vue";
   import {
     post_pageData_initDistribution, // 初始化后根据渠道商信息获取分销协议
-    get_pageData_getProBaseByTermId__cycleId, // 通过项目周期获取成交基础信息
     post_pageData_initBasic, // 选择周期、房号后初始化页面
     post_pageData_recalculateAchieve, // 重算平台费用 --- 总包分销不一致的情况
     post_pageData_recalculateAchieveComm, // 重算平台费用 --- 总包分销一致的情况
@@ -1312,6 +1311,9 @@
     post_suppDeal_previewUpdateStaffAchieveChange, // 预览修改内部员工业绩变更
   } from "@/api/deal";
   import {get_org_get__id} from "@/api/system"; // 获取组织name
+  import {
+    get_term_getProBaseByTermId__termId, // 通过项目周期获取成交基础信息
+  } from "@/api/project";
   import {
     post_notice_customer_information // 通过成交id获取优惠告知书
   } from "@/api/contract";
@@ -2053,7 +2055,7 @@
     // 通过项目周期id获取基础信息
     async getBaseDealInfo(id: any) {
       if (!id) return;
-      let baseInfo: any = await get_pageData_getProBaseByTermId__cycleId({cycleId: id});
+      let baseInfo: any = await get_term_getProBaseByTermId__termId({cycleId: id});
       this.baseInfoByTerm = JSON.parse(JSON.stringify(baseInfo));
       // 物业类型
       this.propertyTypeList = this.getPropertyTypeList(baseInfo.propertyEnums);
