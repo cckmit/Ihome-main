@@ -4,7 +4,7 @@
  * @Author: wwq
  * @Date: 2020-11-30 19:24:37
  * @LastEditors: wwq
- * @LastEditTime: 2021-02-04 16:45:33
+ * @LastEditTime: 2021-02-06 10:31:47
 -->
 <template>
   <el-dialog
@@ -208,7 +208,7 @@
   </el-dialog>
 </template>
 <script lang="ts">
-import { Component, Vue } from "vue-property-decorator";
+import { Component, Vue, Prop } from "vue-property-decorator";
 import PaginationMixin from "@/mixins/pagination";
 import { post_channel_getList } from "@/api/channel/index";
 import { post_customerReportRule_addWXBB } from "@/api/project/index";
@@ -218,6 +218,7 @@ import { post_customerReportRule_addWXBB } from "@/api/project/index";
   mixins: [PaginationMixin],
 })
 export default class ProjectApprovalDialog extends Vue {
+  @Prop({ default: null }) data: any;
   dialogVisible = true;
   queryPageParameters: any = {
     name: null,
@@ -227,7 +228,7 @@ export default class ProjectApprovalDialog extends Vue {
     county: null,
     city: null,
     inputUser: null,
-    status: null,
+    status: "PASS",
     followUserId: null,
   };
   provinceOption: any = [];
@@ -246,6 +247,7 @@ export default class ProjectApprovalDialog extends Vue {
     this.getListMixin();
   }
   async getListMixin() {
+    this.queryPageParameters.city = this.data.city;
     this.resPageInfo = await post_channel_getList(this.queryPageParameters);
   }
 

@@ -4,7 +4,7 @@
  * @Author: wwq
  * @Date: 2020-12-29 11:04:59
  * @LastEditors: wwq
- * @LastEditTime: 2021-01-30 14:05:18
+ * @LastEditTime: 2021-02-06 10:25:01
 -->
 <template>
   <el-dialog
@@ -164,13 +164,10 @@ export default class Obligation extends Vue {
   @Prop()
   data!: any;
   info: any = {
-    agencyName: null,
+    name: null,
     creditCode: null,
-    simpleName: null,
-    province: null,
-    city: null,
-    followMan: null,
     status: null,
+    inputUser: null,
   };
   provinceOption: any = [];
   resPageInfo: any = {
@@ -228,13 +225,10 @@ export default class Obligation extends Vue {
   }
   private reset() {
     Object.assign(this.info, {
-      agencyName: null,
+      name: null,
       creditCode: null,
-      simpleName: null,
-      province: null,
-      city: null,
-      followMan: null,
       status: null,
+      inputUser: null,
     });
     this.provinceOption = [];
   }
