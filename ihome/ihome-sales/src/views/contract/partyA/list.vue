@@ -4,7 +4,7 @@
  * @Author: ywl
  * @Date: 2020-09-25 11:53:51
  * @LastEditors: ywl
- * @LastEditTime: 2021-02-06 09:54:56
+ * @LastEditTime: 2021-02-06 10:38:02
 -->
 <template>
   <IhPage label-width="100px">
@@ -488,7 +488,13 @@ export default class PartyAList extends Vue {
       data: { ...this.queryPageParameters },
     }).then((res: any) => {
       if (res.data.type === "application/json") {
-        this.$message.warning("查询不到数据");
+        let reader = new FileReader();
+        reader.readAsText(res.data, "utf-8");
+        reader.onload = () => {
+          let result: any = reader.result;
+          const res = JSON.parse(result);
+          this.$message.warning(res.msg);
+        };
         return;
       }
       const href = window.URL.createObjectURL(res.data);
@@ -512,7 +518,13 @@ export default class PartyAList extends Vue {
       },
     }).then((res: any) => {
       if (res.data.type === "application/json") {
-        this.$message.warning("找不到附件");
+        let reader = new FileReader();
+        reader.readAsText(res.data, "utf-8");
+        reader.onload = () => {
+          let result: any = reader.result;
+          const res = JSON.parse(result);
+          this.$message.warning(res.msg);
+        };
         return;
       }
       const href = window.URL.createObjectURL(res.data);
