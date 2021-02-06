@@ -4,7 +4,7 @@
  * @Author: zyc
  * @Date: 2021-01-26 10:19:00
  * @LastEditors: wwq
- * @LastEditTime: 2021-01-27 10:56:49
+ * @LastEditTime: 2021-02-06 18:59:22
  */
 
 
@@ -70,6 +70,12 @@ export interface RoleToolInterface {
      */
     RContractManager(): boolean;
 
+    /**是否包含【分公司财务】
+     * @param {*}
+     * @return {*}
+     */
+    RFinancialOfficer(): boolean;
+
 
 }
 export class RoleTool implements RoleToolInterface {
@@ -121,6 +127,13 @@ export class RoleTool implements RoleToolInterface {
     */
     RContractManager(): boolean {
         return this.hasRole(RoleCode.RContractManager);
+    }
+    /**是否包含【分公司财务】
+    * @param {*}
+    * @return {*}
+    */
+    RFinancialOfficer(): boolean {
+        return this.hasRole(RoleCode.RFinancialOfficer);
     }
 
     /**用户是否包含某个角色

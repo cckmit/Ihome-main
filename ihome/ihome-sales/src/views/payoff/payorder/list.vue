@@ -4,7 +4,7 @@
  * @Author: wwq
  * @Date: 2020-12-26 11:11:28
  * @LastEditors: wwq
- * @LastEditTime: 2021-02-05 11:40:31
+ * @LastEditTime: 2021-02-06 15:17:02
 -->
 <template>
   <IhPage label-width="120px">
@@ -26,8 +26,9 @@
           <el-col :span="8">
             <el-form-item label="渠道商">
               <IhSelectPageByChannel
+                clearable
                 placeholder="请选择渠道商"
-                v-model="queryPageParameters.agencyName"
+                v-model="queryPageParameters.agencyId"
               ></IhSelectPageByChannel>
             </el-form-item>
           </el-col>
@@ -331,7 +332,6 @@
         "
       />
     </ih-dialog>
-
     <ih-dialog :show="prodialogVisible">
       <Progress
         :data="rogressData"
@@ -361,7 +361,7 @@ export default class PayoffList extends Vue {
     applyCode: null,
     belongOrgName: null,
     maker: null,
-    agencyName: null,
+    agencyId: null,
     applyAmount: null,
     actualAmount: null,
     deductAmount: null,
@@ -421,7 +421,7 @@ export default class PayoffList extends Vue {
       applyCode: null,
       belongOrgName: null,
       maker: null,
-      agencyName: null,
+      agencyId: null,
       applyAmount: null,
       actualAmount: null,
       deductAmount: null,

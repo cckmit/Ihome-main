@@ -4,7 +4,7 @@
  * @Author: wwq
  * @Date: 2020-12-26 11:11:23
  * @LastEditors: wwq
- * @LastEditTime: 2021-02-06 10:06:48
+ * @LastEditTime: 2021-02-06 18:34:46
 -->
 <template>
   <IhPage>
@@ -236,10 +236,6 @@
                 class="text-ellipsis"
                 :title="row.customer"
               >客户姓名: {{row.customer}}</div>
-              <!-- <div
-                class="text-ellipsis"
-                :title="$root.dictAllName(row.busModel, 'BusinessModel')"
-              >业务模式: {{$root.dictAllName(row.busModel, 'BusinessModel')}}</div> -->
             </template>
           </el-table-column>
           <el-table-column
@@ -375,7 +371,6 @@
                   @click.native="agencyEdit(row, $index)"
                 />
               </div>
-              <!-- <div style="cursor: pointer; color: #4881f9">代理费: {{row.ageThisCommFees}}</div> -->
               <div>合计: {{
                 $math.tofixed($math.add(Number(row.serThisCommFees), Number(row.ageThisCommFees)), 2)
               }}</div>
@@ -633,6 +628,7 @@
         <el-button
           style="width: 100%;"
           type="primary"
+          :loading="computedLoading"
           @click="computedMsg"
         >点击计算结佣统计数据及成本归属明细</el-button>
       </div>
@@ -862,10 +858,12 @@
       <br />
       <div class="bottom">
         <el-button
+          :loading="finishLoading"
           @click="submit('Unconfirm')"
           type="primary"
         >保存</el-button>
         <el-button
+          :loading="submitLoading"
           @click="submit('PlatformClerkUnreview')"
           type="success"
         >提交</el-button>
@@ -964,6 +962,9 @@ export default class PayoffEdit extends Vue {
   contactsDialogVisible = false;
   updateList: any = [];
   modify = false;
+  computedLoading: any = false;
+  submitLoading: any = false;
+  finishLoading: any = false;
 
   private rules: any = {
     projectId: [
@@ -1033,30 +1034,18 @@ export default class PayoffEdit extends Vue {
   isChaneClick: any = true;
   isChangeObj: any = {};
 
-  @Watch("info.otherDeductionDetailResponseList", { deep: true })
+  @Watch("info", { deep: true })
   otherNumChange(val: any) {
     if (
-      JSON.stringify(val) ===
-      JSON.stringify(this.isChangeObj.otherDeductionDetailResponseList)
+      JSON.stringify(val.otherDeductionDetailResponseList) ===
+        JSON.stringify(this.isChangeObj.otherDeductionDetailResponseList) &&
+      JSON.stringify(val.payApplyDetailList) ===
+        JSON.stringify(this.isChangeObj.payApplyDetailList)
     ) {
       this.isChaneClick = true;
     } else {
       this.isChaneClick = false;
     }
-    console.log(this.isChaneClick, "11111");
-  }
-
-  @Watch("info.payApplyDetailList", { deep: true })
-  payApplyDetailListNumChange(val: any) {
-    if (
-      JSON.stringify(val) ===
-      JSON.stringify(this.isChangeObj.payApplyDetailList)
-    ) {
-      this.isChaneClick = true;
-    } else {
-      this.isChaneClick = false;
-    }
-    console.log(this.isChaneClick, "2222");
   }
 
   filterTabs(val: any) {
@@ -1270,6 +1259,7 @@ export default class PayoffEdit extends Vue {
           (j: any) => ({
             ...j,
             cycleId: j.cycleId + "",
+            deductAmount: Number(j.deductAmount) * -1,
           })
         ),
       };
@@ -1285,6 +1275,7 @@ export default class PayoffEdit extends Vue {
           (j: any) => ({
             ...j,
             cycleId: j.cycleId + "",
+            deductAmount: Number(j.deductAmount) * -1,
           })
         ),
       };
@@ -1351,6 +1342,7 @@ export default class PayoffEdit extends Vue {
 
   // 计算
   async computedMsg() {
+    this.computedLoading = true;
     let obj: any = {};
     obj.agencyId = this.info.agencyId;
     obj.agencyName = this.info.agencyName;
@@ -1363,30 +1355,35 @@ export default class PayoffEdit extends Vue {
       })
     );
     obj.payDeductDetailCalculationRequestList = this.info.payDeductDetailResponseList;
-    const res: any = await post_payApply_calculation_results(obj);
-    this.isChaneClick = true;
-    this.info.actualAmount = res.actualAmount;
-    this.info.applyAmount = res.applyAmount;
-    this.info.deductAmount = res.deductAmount;
-    this.info.deductionCategory = res.deductionCategory;
-    this.info.finedAmount = res.finedAmount;
-    this.info.noTaxAmount = res.noTaxAmount;
-    this.info.tax = res.tax;
-    this.info.paySummaryDetailsResponseList = res.paySummaryDetailsResponses;
-    if (this.updateList.length) {
-      this.updateList.forEach((v: any) => {
-        res.documentList.forEach((j: any) => {
-          if (j.fileType === v.fileType) {
-            v.fileId = j.fileId;
-            v.fileName = j.fileName;
-          }
+    try {
+      const res: any = await post_payApply_calculation_results(obj);
+      this.computedLoading = false;
+      this.info.actualAmount = res.actualAmount;
+      this.info.applyAmount = res.applyAmount;
+      this.info.deductAmount = res.deductAmount;
+      this.info.deductionCategory = res.deductionCategory;
+      this.info.finedAmount = res.finedAmount;
+      this.info.noTaxAmount = res.noTaxAmount;
+      this.info.tax = res.tax;
+      this.info.paySummaryDetailsResponseList = res.paySummaryDetailsResponses;
+      if (this.updateList.length) {
+        this.updateList.forEach((v: any) => {
+          res.documentList.forEach((j: any) => {
+            if (j.fileType === v.fileType) {
+              v.fileId = j.fileId;
+              v.fileName = j.fileName;
+            }
+          });
         });
-      });
-      this.getFileListType(this.updateList);
-    } else {
-      this.getFileListType(res.documentList);
+        this.getFileListType(this.updateList);
+      } else {
+        this.getFileListType(res.documentList);
+      }
+      this.modify = true;
+      this.isChaneClick = true;
+    } catch (err) {
+      this.computedLoading = false;
     }
-    this.modify = true;
   }
 
   othergetSummaries(param: any) {
@@ -1410,32 +1407,6 @@ export default class PayoffEdit extends Vue {
         if (index === 2) {
           sums[index] = `-${sums[index]}`;
         }
-      } else {
-        sums[index] = "--";
-      }
-    });
-    return sums;
-  }
-
-  // 合计
-  getSummaries(param: any) {
-    const { columns, data } = param;
-    let sums: any = [];
-    columns.forEach((column: any, index: number) => {
-      if (index === 0) {
-        sums[index] = "合计";
-        return;
-      }
-      const values = data.map((item: any) => Number(item[column.property]));
-      if (!values.every((value: any) => isNaN(value))) {
-        sums[index] = values.reduce((prev: number, curr: number) => {
-          const value = Number(curr);
-          if (!isNaN(value)) {
-            return prev + curr;
-          } else {
-            return prev;
-          }
-        }, 0);
       } else {
         sums[index] = "--";
       }
@@ -1536,96 +1507,110 @@ export default class PayoffEdit extends Vue {
   }
 
   submit(val: string) {
-    if (this.isChaneClick) {
-      (this.$refs["form"] as ElForm).validate(async (v: any) => {
-        if (v) {
-          let obj: any = {
-            payApplyVO: {},
-            payApplyDetailList: [],
+    if (val === "Unconfirm") this.finishLoading = true;
+    else this.submitLoading = true;
+    (this.$refs["form"] as ElForm).validate(async (v: any) => {
+      if (v) {
+        let obj: any = {
+          payApplyVO: {},
+          payApplyDetailList: [],
+        };
+        obj.modify = this.modify;
+        obj.payApplyVO.deductionCategory = this.info.deductionCategory;
+        obj.payApplyVO.description = this.info.description;
+        obj.payApplyVO.actualAmount = this.info.actualAmount;
+        obj.payApplyVO.agencyId = this.info.agencyId;
+        obj.payApplyVO.agencyName = this.info.agencyName;
+        obj.payApplyVO.applyAmount = this.info.applyAmount;
+        obj.payApplyVO.belongOrgId = this.info.belongOrgId;
+        obj.payApplyVO.belongOrgName = this.info.belongOrgName;
+        obj.payApplyVO.deductAmount = this.info.deductAmount;
+        obj.payApplyVO.finedAmount = this.info.finedAmount;
+        obj.payApplyVO.invoiceType = this.info.invoiceType;
+        obj.payApplyVO.makerId = this.info.makerId;
+        obj.payApplyVO.makerTime = this.info.makerTime;
+        obj.payApplyVO.noTaxAmount = this.info.noTaxAmount;
+        obj.payApplyVO.projectId = this.info.projectId;
+        obj.payApplyVO.projectName = this.info.projectName;
+        obj.payApplyVO.receiveAccount = this.info.receiveAccount;
+        obj.payApplyVO.status = val;
+        obj.payApplyVO.tax = this.info.tax;
+        obj.payApplyVO.taxRate = Number(this.info.taxRate);
+        obj.payApplyDetailList = this.info.payApplyDetailList;
+        obj.payDeductDetailCalculationRequestList = this.info.payDeductDetailResponseList;
+        let arr: any = [];
+        Object.values(this.submitFile).forEach((v: any) => {
+          if (v.length) {
+            arr = arr.concat(v);
+          }
+        });
+        // 以下操作仅仅是为了校验必上传项
+        let submitList: any = this.fileListType.map((v: any) => {
+          return {
+            ...v,
+            fileList: arr
+              .filter((j: any) => j.fileType === v.code)
+              .map((h: any) => ({
+                ...h,
+                name: h.fileName,
+              })),
           };
-          obj.modify = this.modify;
-          obj.payApplyVO.deductionCategory = this.info.deductionCategory;
-          obj.payApplyVO.description = this.info.description;
-          obj.payApplyVO.actualAmount = this.info.actualAmount;
-          obj.payApplyVO.agencyId = this.info.agencyId;
-          obj.payApplyVO.agencyName = this.info.agencyName;
-          obj.payApplyVO.applyAmount = this.info.applyAmount;
-          obj.payApplyVO.belongOrgId = this.info.belongOrgId;
-          obj.payApplyVO.belongOrgName = this.info.belongOrgName;
-          obj.payApplyVO.deductAmount = this.info.deductAmount;
-          obj.payApplyVO.finedAmount = this.info.finedAmount;
-          obj.payApplyVO.invoiceType = this.info.invoiceType;
-          obj.payApplyVO.makerId = this.info.makerId;
-          obj.payApplyVO.makerTime = this.info.makerTime;
-          obj.payApplyVO.noTaxAmount = this.info.noTaxAmount;
-          obj.payApplyVO.projectId = this.info.projectId;
-          obj.payApplyVO.projectName = this.info.projectName;
-          obj.payApplyVO.receiveAccount = this.info.receiveAccount;
-          obj.payApplyVO.status = val;
-          obj.payApplyVO.tax = this.info.tax;
-          obj.payApplyVO.taxRate = Number(this.info.taxRate);
-          obj.otherDeductionDetailCalculationRequestList = this.info.otherDeductionDetailResponseList;
-          obj.payApplyDetailList = this.info.payApplyDetailList;
-          obj.payDeductDetailCalculationRequestList = this.info.payDeductDetailResponseList;
-          let arr: any = [];
-          Object.values(this.submitFile).forEach((v: any) => {
-            if (v.length) {
-              arr = arr.concat(v);
-            }
+        });
+        let isSubmit = true;
+        let msgList: any = [];
+        submitList.forEach((v: any) => {
+          if (v.subType && !v.fileList.length) {
+            msgList.push(v.name);
+            isSubmit = false;
+          }
+        });
+        if (isSubmit) {
+          obj.documentList = arr.map((v: any) => ({
+            fileId: v.fileId,
+            fileName: v.name,
+            fileType: v.type,
+          }));
+        } else {
+          this.$message({
+            type: "warning",
+            message: `${msgList.join(",")}项,请上传附件`,
           });
-          // 以下操作仅仅是为了校验必上传项
-          let submitList: any = this.fileListType.map((v: any) => {
-            return {
-              ...v,
-              fileList: arr
-                .filter((j: any) => j.fileType === v.code)
-                .map((h: any) => ({
-                  ...h,
-                  name: h.fileName,
-                })),
-            };
-          });
-          let isSubmit = true;
-          let msgList: any = [];
-          submitList.forEach((v: any) => {
-            if (v.subType && !v.fileList.length) {
-              msgList.push(v.name);
-              isSubmit = false;
-            }
-          });
-          if (isSubmit) {
-            obj.documentList = arr.map((v: any) => ({
-              fileId: v.fileId,
-              fileName: v.name,
-              fileType: v.type,
-            }));
-          } else {
-            this.$message({
-              type: "warning",
-              message: `${msgList.join(",")}项,请上传附件`,
-            });
+          return;
+        }
+        let otherArr: any = this.info.otherDeductionDetailResponseList.map(
+          (v: any) => ({
+            ...v,
+            deductAmount: Number(v.deductAmount) * -1,
+          })
+        );
+        if (this.$route.name === "payoffAdd") {
+          obj.otherDeductionDetailCalculationRequestList = otherArr;
+          try {
+            await post_payApply_entryApply(obj);
+            this.finishLoading = false;
+          } catch (err) {
+            this.finishLoading = false;
             return;
           }
-
-          // 假数据
-          // obj.payApplyVO.belongOrgId = 15;
-          if (this.$route.name === "payoffAdd") {
-            await post_payApply_entryApply(obj);
-          } else if (this.$route.name === "payoffEdit") {
-            obj.payApplyVO.id = this.payoffId;
-            obj.applyCode = this.info.applyCode;
+        } else if (this.$route.name === "payoffEdit") {
+          obj.otherDeductionDetailResponseList = otherArr;
+          obj.payApplyVO.id = this.payoffId;
+          obj.applyCode = this.info.applyCode;
+          try {
             await post_payApply_updateApply(obj);
+            this.submitLoading = false;
+          } catch (err) {
+            this.submitLoading = false;
+            return;
           }
-          this.$goto({ path: `/payoff/list` });
-          this.$message({
-            type: "success",
-            message: val === "Unconfirm" ? "保存成功!" : "提交成功!",
-          });
         }
-      });
-    } else {
-      this.$message.warning("请重新点击计算结佣统计数据及成本归属明细");
-    }
+        this.$goto({ path: `/payoff/list` });
+        this.$message({
+          type: "success",
+          message: val === "Unconfirm" ? "保存成功!" : "提交成功!",
+        });
+      }
+    });
   }
 }
 </script>

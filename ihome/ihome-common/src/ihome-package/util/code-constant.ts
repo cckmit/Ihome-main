@@ -4,7 +4,7 @@
  * @Author: zyc
  * @Date: 2021-01-21 17:23:14
  * @LastEditors: wwq
- * @LastEditTime: 2021-01-27 10:56:30
+ * @LastEditTime: 2021-02-06 18:59:41
  */
 
 /**角色编码
@@ -52,6 +52,11 @@ const RoleCode = {
      * @return {*}
      */
     RContractManager: 'RContractManager',
+    /**分公司财务
+     * @param {*}
+     * @return {*}
+     */
+    RFinancialOfficer: 'RFinancialOfficer',
 
 }
 /**岗位编码

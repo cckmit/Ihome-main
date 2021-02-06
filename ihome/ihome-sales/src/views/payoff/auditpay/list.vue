@@ -4,7 +4,7 @@
  * @Author: wwq
  * @Date: 2020-12-26 11:11:28
  * @LastEditors: wwq
- * @LastEditTime: 2021-01-16 17:46:04
+ * @LastEditTime: 2021-02-06 15:28:05
 -->
 <template>
   <IhPage label-width="120px">
@@ -28,7 +28,7 @@
               <IhSelectPageByChannel
                 placeholder="请选择渠道商"
                 clearable
-                v-model="queryPageParameters.agencyName"
+                v-model="queryPageParameters.agencyId"
               ></IhSelectPageByChannel>
             </el-form-item>
           </el-col>
@@ -272,6 +272,12 @@
         "
       />
     </ih-dialog>
+    <ih-dialog :show="prodialogVisible">
+      <Progress
+        :data="rogressData"
+        @cancel="() => (prodialogVisible = false)"
+      />
+    </ih-dialog>
   </IhPage>
 </template>
 <script lang="ts">
@@ -279,11 +285,12 @@ import { Component, Vue } from "vue-property-decorator";
 import { post_payApply_review_list } from "@/api/payoff/index";
 import PaginationMixin from "../../../mixins/pagination";
 import SelectOrganizationTree from "@/components/SelectOrganizationTree.vue";
+import Progress from "../payorder/dialog/progress.vue";
 import axios from "axios";
 import { getToken } from "ihome-common/util/cookies";
 
 @Component({
-  components: { SelectOrganizationTree },
+  components: { SelectOrganizationTree, Progress },
   mixins: [PaginationMixin],
 })
 export default class PayoffList extends Vue {
@@ -291,7 +298,7 @@ export default class PayoffList extends Vue {
     applyCode: null,
     belongOrgName: null,
     maker: null,
-    agencyName: null,
+    agencyId: null,
     applyAmount: null,
     actualAmount: null,
     deductAmount: null,
@@ -300,6 +307,8 @@ export default class PayoffList extends Vue {
     endMakerTime: null,
     timeList: [],
   };
+  prodialogVisible: any = false;
+  rogressData: any = {};
   selection: any = [];
   resPageInfo: any = {
     total: null,
@@ -325,7 +334,11 @@ export default class PayoffList extends Vue {
   }
 
   showPlanPicture(data: any) {
-    console.log(data);
+    this.rogressData = {
+      id: data.id,
+      status: data.status,
+    };
+    this.prodialogVisible = true;
   }
 
   // 导出
@@ -370,7 +383,7 @@ export default class PayoffList extends Vue {
       applyCode: null,
       belongOrgName: null,
       maker: null,
-      agencyName: null,
+      agencyId: null,
       applyAmount: null,
       actualAmount: null,
       deductAmount: null,
@@ -388,10 +401,6 @@ export default class PayoffList extends Vue {
         id: row.id,
       },
     });
-  }
-
-  add() {
-    this.$router.push("/payoff/add");
   }
 
   handleSelectionChange(val: any) {
