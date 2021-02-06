@@ -1721,7 +1721,7 @@
       if (value === 'DistriDeal') {
         // 如果查询不到此房号的已成交报备信息，用户又选择分销成交
         this.postData.contType = this.tempContType ? this.tempContType : null;
-        if (!this.baseInfoInDeal.hasRecord) {
+        if (!this.baseInfoInDeal.hasRecord && this.postData.roomId) {
           this.$alert('系统查询不到此房号的已成交报备信息，请先维护报备信息！', '提示', {
             confirmButtonText: '确定'
           });
