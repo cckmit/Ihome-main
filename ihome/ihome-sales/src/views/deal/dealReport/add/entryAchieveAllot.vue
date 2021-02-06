@@ -166,10 +166,15 @@
             <IhSelectPageByRoom
               @change="changeRoom"
               @changeOption="(data) => {postData.roomNo = data.roomNo}"
-              :params="{exDeal: 0}"
               v-model="postData.roomId"
               :proId="baseInfoByTerm.proId"
               :buildingId="postData.buildingId"
+              :props="{
+                key: 'roomId',
+                value: 'roomId',
+                lable: 'roomNo',
+                disabled: 'exDeal'
+              }"
               :isCascade="true"
               cascadeType="room"
               placeholder="请选择房号"

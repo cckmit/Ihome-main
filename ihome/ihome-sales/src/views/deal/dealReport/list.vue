@@ -414,10 +414,12 @@
       stage: null,
       projectCycle: null,
       proId: null,
+      buyUnit: null,
       brokerId: null,
       timeType: null,
       beginTime: null,
-      endTime: null
+      endTime: null,
+      roomNumberId: null
     };
     selectTimeRange: any = [];
 
@@ -575,10 +577,13 @@
         agencyId: null,
         stage: null,
         projectCycle: null,
+        proId: null,
+        buyUnit: null,
         brokerId: null,
         timeType: null,
         beginTime: null,
         endTime: null,
+        roomNumberId: null,
         pageNum: 1,
         pageSize: this.queryPageParameters.pageSize
       };

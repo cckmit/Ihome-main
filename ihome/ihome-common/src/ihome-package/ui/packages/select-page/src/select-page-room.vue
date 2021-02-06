@@ -85,12 +85,19 @@ export default class SelectPageByBuild extends Vue {
   async getSelectList() {
     if (this.proId || !this.isBlur) {
       this.searchLoad = true;
-      this.optionList = await post_room_getFuzzySearch({
+      let list: any = await post_room_getFuzzySearch({
         roomNo: this.filterText,
         proId: this.proId,
         buildingId: this.buildingId,
         ...this.params,
       });
+      // 为了兼容成交房号锁定问题
+      if (list && list.length) {
+        list.forEach((item: any) => {
+          item.exDeal = item.exDeal === 1;
+        });
+      }
+      this.optionList = list;
       this.searchLoad = false;
     }
   }
