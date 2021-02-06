@@ -4,7 +4,7 @@
  * @Author: zyc
  * @Date: 2021-02-05 15:23:39
  * @LastEditors: zyc
- * @LastEditTime: 2021-02-06 11:16:49
+ * @LastEditTime: 2021-02-06 14:55:38
 -->
 
 
@@ -85,7 +85,6 @@
       <el-table
         class="ih-table"
         :data="resPageInfo.list"
-        @selection-change="handleSelectionChange"
         :empty-text="emptyText"
       >
         <el-table-column

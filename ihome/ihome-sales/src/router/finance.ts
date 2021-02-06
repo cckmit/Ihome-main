@@ -4,7 +4,7 @@
  * @Author: ywl
  * @Date: 2020-12-01 15:49:07
  * @LastEditors: zyc
- * @LastEditTime: 2021-02-05 16:53:35
+ * @LastEditTime: 2021-02-06 16:29:19
  */
 import { RouteConfig } from 'vue-router'
 
@@ -175,6 +175,20 @@ const financeRoutes: Array<RouteConfig> = [
         name: 'refundApplyList',
         component: () => import('../views/finance/refundApply/list.vue'),
         meta: { title: '退款申请列表', icon: 'form', keepAlive: true }
+      },
+
+      {
+        path: 'info',
+        name: 'refundApplyInfo',
+        component: () => import('../views/finance/refundApply/info.vue'),
+        meta: { title: '退款申请详情', icon: 'form', }
+      },
+
+      {
+        path: 'add',
+        name: 'refundApplyAdd',
+        component: () => import('../views/finance/refundApply/add.vue'),
+        meta: { title: '退款申请列表', icon: 'form' }
       },
 
     ]
