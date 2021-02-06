@@ -3620,7 +3620,7 @@
       obj.basic.receiveVO = JSON.parse(JSON.stringify(this.postData.receiveVO));
       if (obj.basic && obj.basic.receiveVO && obj.basic.receiveVO.length) {
         obj.basic.receiveVO.forEach((vo: any) => {
-          if ([null, undefined, 0, ""].includes(vo.otherChannelFees)) {
+          if (vo.type === 'AgentFee' && [null, undefined, 0, ""].includes(vo.otherChannelFees)) {
             vo.otherChannelFees = null; // 后台要置null
           }
         });
