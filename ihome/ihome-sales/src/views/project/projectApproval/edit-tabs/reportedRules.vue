@@ -4,7 +4,7 @@
  * @Author: wwq
  * @Date: 2020-11-27 17:21:01
  * @LastEditors: wwq
- * @LastEditTime: 2021-02-04 16:17:56
+ * @LastEditTime: 2021-02-06 10:27:34
 -->
 <template>
   <div class="text-left">
@@ -164,6 +164,7 @@
     </ih-dialog>
     <ih-dialog :show="businessDialogVisible">
       <Business
+        :data="businessData"
         @cancel="() => (businessDialogVisible = false)"
         @finish="(data) => businessFinish(data)"
       />
@@ -187,6 +188,7 @@ export default class ReportedRules extends Vue {
   dialogVisible = false;
   businessDialogVisible = false;
   editData = {};
+  businessData = {};
 
   async getInfo() {
     let id = this.$route.query.id;
@@ -209,6 +211,7 @@ export default class ReportedRules extends Vue {
   }
 
   addChannel() {
+    this.businessData = this.info.city;
     this.businessDialogVisible = true;
   }
   async businessFinish() {
