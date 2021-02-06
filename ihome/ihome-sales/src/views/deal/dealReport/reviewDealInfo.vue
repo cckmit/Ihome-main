@@ -400,7 +400,7 @@
                 <div>{{scope.row.rolerPosition}}</div>
               </template>
             </el-table-column>
-            <el-table-column prop="roleAchieveCap" label="角色人业绩" min-width="120"></el-table-column>
+            <el-table-column prop="corporateAchieve" label="角色人业绩" min-width="120"></el-table-column>
             <el-table-column prop="roleAchieveRatio" label="角色业绩比例（%）" min-width="120"></el-table-column>
             <el-table-column prop="commFees" label="拆佣金额" min-width="150"></el-table-column>
             <el-table-column prop="commFeesRatio" label="拆佣比例（%）" min-width="150"></el-table-column>
@@ -443,7 +443,7 @@
                 <div>{{scope.row.rolerPosition}}</div>
               </template>
             </el-table-column>
-            <el-table-column prop="roleAchieveCap" label="角色人业绩" min-width="120"></el-table-column>
+            <el-table-column prop="corporateAchieve" label="角色人业绩" min-width="120"></el-table-column>
             <el-table-column prop="roleAchieveRatio" label="角色业绩比例（%）" min-width="120"></el-table-column>
             <el-table-column prop="commFees" label="拆佣金额" min-width="150"></el-table-column>
             <el-table-column prop="commFeesRatio" label="拆佣比例（%）" min-width="150"></el-table-column>
