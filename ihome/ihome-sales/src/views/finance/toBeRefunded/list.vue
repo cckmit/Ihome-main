@@ -4,7 +4,7 @@
  * @Author: zyc
  * @Date: 2021-02-05 15:23:39
  * @LastEditors: zyc
- * @LastEditTime: 2021-02-05 16:24:20
+ * @LastEditTime: 2021-02-06 11:16:49
 -->
 
 
@@ -75,7 +75,7 @@
     <template v-slot:btn>
       <el-row>
         <el-button type="primary" @click="getListMixin()">查询</el-button>
-        <el-button type="success">导出</el-button>
+        <el-button type="success" @click="download()">导出</el-button>
         <el-button type="info" @click="reset()">重置</el-button>
       </el-row>
     </template>
@@ -101,62 +101,110 @@
           width="150"
         ></el-table-column>
 
-        <el-table-column prop="projectName" label="项目名称"></el-table-column>
+        <el-table-column prop="projectName" label="项目名称">
+          <template slot-scope="scope">
+            <el-link type="primary" @click="gotoNew(scope.row, 'projectName')">
+              {{ scope.row.projectName }}</el-link
+            >
+          </template>
+        </el-table-column>
         <el-table-column
           prop="noticeAmount"
           label="优惠告知书收款金额"
-        ></el-table-column>
+          width="160"
+        >
+          <template slot-scope="scope">
+            <el-link type="primary" @click="gotoNew(scope.row, 'noticeAmount')">
+              {{ scope.row.noticeAmount }}</el-link
+            >
+          </template>
+        </el-table-column>
         <el-table-column
           prop="amount"
           label="退款金额"
-          width="180"
+          width="100"
         ></el-table-column>
 
         <el-table-column
           prop="projectName"
           label="退款人信息"
+          width="100"
         ></el-table-column>
         <el-table-column prop="status" label="退款状态">
           <template slot-scope="scope">{{
             $root.dictAllName(scope.row.status, "FinRefundStatus")
           }}</template>
         </el-table-column>
-        <el-table-column prop="createDate" label="生成日期"></el-table-column>
         <el-table-column
-          prop="refundedDate"
-          label="退款完成日期"
+          prop="createDate"
+          width="100"
+          label="生成日期"
         ></el-table-column>
+        <el-table-column prop="refundedDate" label="退款完成日期" width="120">
+          <template slot-scope="scope">{{
+            scope.row.refundedDate | emptyShow
+          }}</template>
+        </el-table-column>
         <el-table-column
           prop="refundApplyNO"
           label="关联退款申请单编号"
-        ></el-table-column>
-        <el-table-column width="200" label="成交信息">
+          width="160"
+        >
           <template slot-scope="scope">
-            <p>客户姓名：{{ scope.row.dealCustomerName }}</p>
-            <p>成交报告编号：{{ scope.row.dealNo }}</p>
-            <p>成交单位：{{ scope.row.dealCompany }}</p>
+            <el-link
+              type="primary"
+              @click="gotoNew(scope.row, 'refundApplyNO')"
+            >
+              {{ scope.row.refundApplyNO | emptyShow }}</el-link
+            >
           </template>
         </el-table-column>
-        <el-table-column prop="contType" label="合同类型">
+        <el-table-column width="200" label="成交信息">
+          <template slot-scope="scope">
+            <div v-if="scope.row.dealId !== null">
+              <p>客户姓名：{{ scope.row.dealCustomerName }}</p>
+              <p>
+                成交报告编号：
+                <el-link type="primary" @click="gotoNew(scope.row, 'dealNo')">
+                  {{ scope.row.dealNo }}</el-link
+                >
+              </p>
+              <p>成交单位：{{ scope.row.dealCompany }}</p>
+            </div>
+            <div v-if="scope.row.dealId === null"></div>
+          </template>
+        </el-table-column>
+        <el-table-column prop="contType" label="合同类型" width="120">
           <template slot-scope="scope">{{
-            $root.dictAllName(scope.row.contType, "Contract")
+            $root.dictAllName(scope.row.contType, "ContType") | emptyShow
           }}</template>
         </el-table-column>
         <el-table-column width="150" label="服务费情况">
           <template slot-scope="scope">
-            <p>应收：{{ scope.row.receivableAmount }}</p>
-            <p>实收：{{ scope.row.actualAmount }}</p>
-            <p>未收：{{ scope.row.uncollectedAmount }}</p>
+            <div v-if="scope.row.dealId !== null">
+              <p>应收：{{ scope.row.receivableAmount }}</p>
+              <p>实收：{{ scope.row.actualAmount }}</p>
+              <p>未收：{{ scope.row.uncollectedAmount }}</p>
+            </div>
+            <div v-if="scope.row.dealId === null">——</div>
           </template>
         </el-table-column>
         <el-table-column
           prop="confirmationTime"
           label="业绩确认时间"
-        ></el-table-column>
-        <el-table-column
-          prop="invoiceNo"
-          label="发票业务单号"
-        ></el-table-column>
+          width="120"
+        >
+          <template slot-scope="scope">
+            {{ scope.row.confirmationTime | emptyShow }}
+          </template>
+        </el-table-column>
+        <el-table-column prop="invoiceNo" label="发票业务单号" width="120">
+          <template slot-scope="scope">
+            <el-link type="primary" @click="gotoNew(scope.row, 'invoiceNo')">
+              {{ scope.row.invoiceNo | emptyShow }}</el-link
+            >
+          </template>
+        </el-table-column>
       </el-table>
     </template>
     <template v-slot:pagination>
@@ -175,12 +223,22 @@
 </template>
 <script lang="ts">
 import { Component, Vue } from "vue-property-decorator";
-
+import axios from "axios";
+import { getToken } from "ihome-common/util/cookies";
 import { post_refundItem_getList } from "../../../api/finance/index";
 import PaginationMixin from "../../../mixins/pagination";
 @Component({
   components: {},
   mixins: [PaginationMixin],
+  filters: {
+    emptyShow(data: any) {
+      if (data === "" || data === null) {
+        return "——";
+      } else {
+        return data;
+      }
+    },
+  },
 })
 export default class ToBeRefundedList extends Vue {
   constructor() {
@@ -203,7 +261,6 @@ export default class ToBeRefundedList extends Vue {
     total: null,
     list: [],
   };
-  dialogAdd = false;
 
   async getListMixin() {
     this.resPageInfo = await post_refundItem_getList(this.queryPageParameters);
@@ -217,6 +274,21 @@ export default class ToBeRefundedList extends Vue {
   async mounted() {
     console.log("mounted");
   }
+  gotoNew(item: any, type: string) {
+    if (type == "projectName") {
+      window.open(
+        `/web-sales/projects/childInfo?id=${item.proId}&proName=${item.projectName}`
+      );
+    } else if (type == "noticeAmount") {
+      console.error("未实现");
+    } else if (type == "refundApplyNO") {
+      console.error("未实现");
+    } else if (type == "dealNo") {
+      window.open(`/web-sales/dealReport/info?id=${item.dealNo}&type=ID`);
+    } else if (type == "invoiceNo") {
+      window.open(`/web-sales/invoice/info?id=${item.invoiceNo}`);
+    }
+  }
 
   expiresTimeChange(dateArray: any) {
     if (dateArray) {
@@ -228,26 +300,35 @@ export default class ToBeRefundedList extends Vue {
     }
   }
 
-  info(scope: any) {
-    this.$router.push({
-      path: "/invitationCode/info",
-      query: { id: scope.row.id },
-    });
-  }
   reset() {
     Object.assign(this.queryPageParameters, {
-      departmentOrgId: null,
-      expiresTime: null,
-      expiresTimeBegin: null,
-      expiresTimeEnd: null,
-      invitationCode: null,
-      invitationUserId: null,
+      beginTime: null,
+      endTime: null,
+      proId: null,
+      refundApplyNO: null,
+      refundName: null,
       status: null,
+      expiresTime: null,
     });
   }
 
-  handleSelectionChange(val: any) {
-    this.toVoidList = val;
+  async download() {
+    const token: any = getToken();
+    axios({
+      method: "POST",
+      url: `/sales-api/finance/refundItem/exportData`,
+      xsrfHeaderName: "Authorization",
+      responseType: "blob",
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: "bearer " + token,
+      },
+      data: this.queryPageParameters,
+    }).then((res: any) => {
+      const arr = new Blob([res.data], { type: "application/vnd.ms-excel" });
+      const href = window.URL.createObjectURL(arr);
+      window.open(href);
+    });
   }
 }
 </script>
