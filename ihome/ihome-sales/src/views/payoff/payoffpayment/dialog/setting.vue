@@ -4,7 +4,7 @@
  * @Author: wwq
  * @Date: 2021-01-16 18:14:45
  * @LastEditors: wwq
- * @LastEditTime: 2021-01-16 18:23:49
+ * @LastEditTime: 2021-02-07 16:00:48
 -->
 <template>
   <el-dialog
@@ -46,6 +46,7 @@
     >
       <el-button @click="cancel()">取 消</el-button>
       <el-button
+        :loading="finishLoading"
         type="primary"
         @click="finish()"
       >保 存</el-button>
@@ -56,12 +57,14 @@
 import { Component, Vue, Prop } from "vue-property-decorator";
 import { Form as ElForm } from "element-ui";
 import { NoRepeatHttp } from "ihome-common/util/aop/no-repeat-http";
+import { post_payDetail_change_status } from "@/api/payoff";
 @Component({
   components: {},
 })
 export default class Edit extends Vue {
   @Prop({ default: null }) data: any;
   dialogVisible = true;
+  finishLoading = false;
 
   private info: any = {};
   private rules: object = {
@@ -79,9 +82,17 @@ export default class Edit extends Vue {
   @NoRepeatHttp()
   async submit(valid: any) {
     if (valid) {
-      this.$emit("finish", this.info);
+      this.finishLoading = true;
+      try {
+        await post_payDetail_change_status(this.info);
+        this.finishLoading = false;
+        this.$emit("finish");
+      } catch (err) {
+        this.finishLoading = false;
+      }
     } else {
       console.log("error submit!!");
+
       return false;
     }
   }

@@ -4,7 +4,7 @@
  * @Author: wwq
  * @Date: 2020-12-26 11:11:23
  * @LastEditors: wwq
- * @LastEditTime: 2021-02-06 19:31:49
+ * @LastEditTime: 2021-02-07 16:39:59
 -->
 <template>
   <IhPage>
@@ -90,7 +90,7 @@
                   v-for="item in channelAccountOptions"
                   :key="item.id"
                   :label="item.accountNo"
-                  :value="item.id"
+                  :value="item.accountNo"
                 ></el-option>
               </el-select>
             </el-form-item>

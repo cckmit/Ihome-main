@@ -4,7 +4,7 @@
  * @Author: wwq
  * @Date: 2021-01-18 16:30:42
  * @LastEditors: wwq
- * @LastEditTime: 2021-02-07 09:55:36
+ * @LastEditTime: 2021-02-07 17:13:19
 -->
 <template>
   <el-dialog
@@ -102,7 +102,11 @@ export default class Progress extends Vue {
   }
 
   created() {
-    this.form = { ...this.data };
+    if (["ReviewPass", "ReviewReject"].includes(this.data.status)) {
+      this.form = { ...this.data, status: "OAReviewing" };
+    } else {
+      this.form = { ...this.data };
+    }
     if (this.form.id) {
       this.getInfo();
     }

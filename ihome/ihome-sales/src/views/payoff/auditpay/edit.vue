@@ -4,7 +4,7 @@
  * @Author: wwq
  * @Date: 2020-12-26 11:11:23
  * @LastEditors: wwq
- * @LastEditTime: 2021-02-07 11:10:52
+ * @LastEditTime: 2021-02-07 16:39:39
 -->
 <template>
   <IhPage>
@@ -90,7 +90,7 @@
                   v-for="item in channelAccountOptions"
                   :key="item.id"
                   :label="item.accountNo"
-                  :value="item.id"
+                  :value="item.accountNo"
                 ></el-option>
               </el-select>
             </el-form-item>
@@ -155,15 +155,15 @@
           <el-col :span="8">
             <el-form-item
               label="付款方"
-              prop="agencyId"
+              prop="payerId"
             >
-              <IhSelectPageByChannel
+              <IhSelectPageByPayer
                 clearable
-                placeholder="请选择付款方"
                 v-model="info.payerId"
+                :proId="info.belongOrgId"
                 :search-name="info.payerName"
-                @changeOption="getChannelInfo"
-              ></IhSelectPageByChannel>
+                @changeOption="getPayerInfo"
+              ></IhSelectPageByPayer>
             </el-form-item>
           </el-col>
           <el-col :span="8">
@@ -174,14 +174,14 @@
               <el-select
                 v-model="info.paymentAccount"
                 clearable
-                placeholder="请选择账号"
+                placeholder="请选择付款帐号"
                 class="width--100"
               >
                 <el-option
-                  v-for="item in channelAccountOptions"
+                  v-for="item in payerAccountOptions"
                   :key="item.id"
                   :label="item.accountNo"
-                  :value="item.id"
+                  :value="item.accountNo"
                 ></el-option>
               </el-select>
             </el-form-item>
@@ -856,8 +856,7 @@
                 v-model="info.tax"
                 placeholder="请输入"
                 v-digits="2"
-                clearable
-                @change="taxinputChange"
+                readonly
               />
             </td>
           </tr>
@@ -1091,6 +1090,8 @@ export default class PayoffEdit extends Vue {
     auditOpinion: null,
     projectId: null,
     projectName: null,
+    settlementMethod: null,
+    paymentMethod: null,
   };
   submitFile: any = {};
   operateVisible: any = false;
@@ -1174,6 +1175,20 @@ export default class PayoffEdit extends Vue {
         trigger: "change",
       },
     ],
+    payerId: [
+      {
+        required: true,
+        message: "请选择付款方",
+        trigger: "change",
+      },
+    ],
+    paymentAccount: [
+      {
+        required: true,
+        message: "请选择付款帐号",
+        trigger: "change",
+      },
+    ],
   };
 
   agencyDialogVisible: any = false;
@@ -1185,6 +1200,7 @@ export default class PayoffEdit extends Vue {
   finishLoading: any = false;
   isChaneClick: any = false;
   isChangeObj: any = {};
+  payerAccountOptions: any = [];
 
   taxinputChange() {
     this.modify = true;
@@ -1368,6 +1384,11 @@ export default class PayoffEdit extends Vue {
     this.info.agencyName = item.name;
     let res = await get_channel_get__id({ id: item.id });
     this.channelAccountOptions = res.channelBanks;
+  }
+
+  getPayerInfo(item: any) {
+    this.info.payerName = item.companyName;
+    this.payerAccountOptions = item.bankAccounts;
   }
 
   handleClick(val: any) {
@@ -1596,31 +1617,43 @@ export default class PayoffEdit extends Vue {
         if (
           ["ReviewPass", "BranchFinanceUnreview"].includes(this.info.status)
         ) {
-          obj.payApplyVO = {};
+          obj.reviewUpdateMainBody = {};
           obj.payApplyDetailList = [];
+          obj.otherDeductionDetailCalculationRequestList = [];
           obj.modify = this.modify;
-          obj.payApplyVO.deductionCategory = this.info.deductionCategory;
-          obj.payApplyVO.description = this.info.description;
-          obj.payApplyVO.actualAmount = this.info.actualAmount;
-          obj.payApplyVO.agencyId = this.info.agencyId;
-          obj.payApplyVO.agencyName = this.info.agencyName;
-          obj.payApplyVO.applyAmount = this.info.applyAmount;
-          obj.payApplyVO.belongOrgId = this.info.belongOrgId;
-          obj.payApplyVO.belongOrgName = this.info.belongOrgName;
-          obj.payApplyVO.deductAmount = this.info.deductAmount;
-          obj.payApplyVO.finedAmount = this.info.finedAmount;
-          obj.payApplyVO.invoiceType = this.info.invoiceType;
-          obj.payApplyVO.makerId = this.info.makerId;
-          obj.payApplyVO.makerTime = this.info.makerTime;
-          obj.payApplyVO.noTaxAmount = this.info.noTaxAmount;
-          obj.payApplyVO.projectId = this.info.projectId;
-          obj.payApplyVO.projectName = this.info.projectName;
-          obj.payApplyVO.receiveAccount = this.info.receiveAccount;
-          obj.payApplyVO.status = val;
-          obj.payApplyVO.tax = this.info.tax;
-          obj.payApplyVO.taxRate = Number(this.info.taxRate);
+          obj.reviewUpdateMainBody.deductionCategory = this.info.deductionCategory;
+          obj.reviewUpdateMainBody.payerId = this.info.payerId;
+          obj.reviewUpdateMainBody.payerName = this.info.payerName;
+          obj.reviewUpdateMainBody.description = this.info.description;
+          obj.reviewUpdateMainBody.actualAmount = this.info.actualAmount;
+          obj.reviewUpdateMainBody.agencyId = this.info.agencyId;
+          obj.reviewUpdateMainBody.agencyName = this.info.agencyName;
+          obj.reviewUpdateMainBody.applyAmount = this.info.applyAmount;
+          obj.reviewUpdateMainBody.belongOrgId = this.info.belongOrgId;
+          obj.reviewUpdateMainBody.belongOrgName = this.info.belongOrgName;
+          obj.reviewUpdateMainBody.deductAmount = this.info.deductAmount;
+          obj.reviewUpdateMainBody.finedAmount = this.info.finedAmount;
+          obj.reviewUpdateMainBody.invoiceType = this.info.invoiceType;
+          obj.reviewUpdateMainBody.makerId = this.info.makerId;
+          obj.reviewUpdateMainBody.makerTime = this.info.makerTime;
+          obj.reviewUpdateMainBody.noTaxAmount = this.info.noTaxAmount;
+          obj.reviewUpdateMainBody.projectId = this.info.projectId;
+          obj.reviewUpdateMainBody.projectName = this.info.projectName;
+          obj.reviewUpdateMainBody.receiveAccount = this.info.receiveAccount;
+          obj.reviewUpdateMainBody.status = this.info.status;
+          obj.reviewUpdateMainBody.paymentAccount = this.info.paymentAccount;
+          obj.reviewUpdateMainBody.paymentMethod = this.info.paymentMethod;
+          obj.reviewUpdateMainBody.settlementMethod = this.info.settlementMethod;
+          obj.reviewUpdateMainBody.tax = this.info.tax;
+          obj.reviewUpdateMainBody.taxRate = Number(this.info.taxRate);
           obj.payApplyDetailList = this.info.payApplyDetailList;
           obj.payDeductDetailCalculationRequestList = this.info.payDeductDetailResponseList;
+          obj.otherDeductionDetailCalculationRequestList = this.info.otherDeductionDetailResponseList.map(
+            (v: any) => ({
+              ...v,
+              deductAmount: Number(v.deductAmount) * -1,
+            })
+          );
           // 校验提示
           let arr: any = [];
           Object.values(this.submitFile).forEach((v: any) => {
@@ -1636,17 +1669,8 @@ export default class PayoffEdit extends Vue {
         }
         switch (val) {
           case "TemporaryStorage":
-            if (!this.info.auditOpinion) {
-              this.$message.warning("请填写审核意见");
-              return;
-            }
-            break;
           case "Reject":
-            if (!this.info.auditOpinion) {
-              this.$message.warning("请填写审核意见");
-              return;
-            }
-            break;
+          case "Through":
           case "Saving":
             if (!this.info.auditOpinion) {
               this.$message.warning("请填写审核意见");
