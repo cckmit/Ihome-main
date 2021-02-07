@@ -4,7 +4,7 @@
  * @Author: wwq
  * @Date: 2020-12-26 11:11:28
  * @LastEditors: wwq
- * @LastEditTime: 2021-02-06 20:11:30
+ * @LastEditTime: 2021-02-07 09:36:30
 -->
 <template>
   <IhPage label-width="120px">
@@ -271,17 +271,17 @@
               </span>
               <el-dropdown-menu slot="dropdown">
                 <el-dropdown-item
-                  :class="{ 'ih-data-disabled': ''}"
+                  :class="{ 'ih-data-disabled': row.status !== 'Unconfirm'}"
                   @click.native.prevent="routeTo(row, 'edit')"
                   v-has="'B.SALES.PAYOFF.PAYOFFLIST.BJLB'"
                 >编辑</el-dropdown-item>
                 <el-dropdown-item
-                  :class="{ 'ih-data-disabled': ''}"
+                  :class="{ 'ih-data-disabled': row.status !== 'Unconfirm'}"
                   @click.native.prevent="remove(row, '')"
                   v-has="'B.SALES.PAYOFF.PAYOFFLIST.SCLB'"
                 >删除</el-dropdown-item>
                 <el-dropdown-item
-                  :class="{'ih-data-disabled': ''}"
+                  :class="{'ih-data-disabled': !recallChange(row)}"
                   @click.native.prevent="routeTo(row, 'recall')"
                   v-has="'B.SALES.PAYOFF.PAYOFFLIST.CHLB'"
                 >撤回
@@ -293,17 +293,17 @@
                 >管控
                 </el-dropdown-item>
                 <el-dropdown-item
-                  :class="{'ih-data-disabled': ''}"
+                  :class="{'ih-data-disabled': !['Unconfirm', 'PlatformClerkUnreview', 'BranchBusinessManageUnreview', 'BranchFinanceUnreview', 'ReviewPass'].includes(row.status)}"
                   @click.native.prevent="routeTo(row, 'replenish')"
                   v-has="'B.SALES.PAYOFF.PAYOFFLIST.BCLB'"
                 >补充</el-dropdown-item>
                 <el-dropdown-item
-                  :class="{'ih-data-disabled': ''}"
+                  :class="{'ih-data-disabled': row.status !== 'Unconfirm'}"
                   @click.native.prevent="uploadList(row, 'billForm')"
                   v-has="'B.SALES.PAYOFF.PAYOFFLIST.DCJSMX'"
                 >导出结算明细</el-dropdown-item>
                 <el-dropdown-item
-                  :class="{'ih-data-disabled': ''}"
+                  :class="{'ih-data-disabled': row.status !== 'Unconfirm'}"
                   @click.native.prevent="uploadList(row, 'requestForm')"
                   v-has="'B.SALES.PAYOFF.PAYOFFLIST.XZQKD'"
                 >下载请款单</el-dropdown-item>
@@ -387,9 +387,26 @@ export default class PayoffList extends Vue {
   dialogVisible = false;
 
   controlChange(row: any) {
-    const ReviewPass = row.status === "ReviewPass";
-    const RFinancialOfficer = this.$roleTool.RFinancialOfficer();
-    return ReviewPass && RFinancialOfficer;
+    const ReviewPass = row.status === "ReviewPass"; // 终审通过
+    // const RFinancialOfficer = this.$roleTool.RFinancialOfficer(); // 总公司财务
+    return ReviewPass;
+  }
+
+  recallChange(row: any) {
+    const PlatformClerkUnreview = row.status === "PlatformClerkUnreview"; // 待平台文员审核
+    const BranchBusinessManageUnreview =
+      row.status === "BranchBusinessManageUnreview"; // 待分公司业管审核
+    const BranchFinanceUnreview = row.status === "BranchFinanceUnreview"; // 待分公司财务审核
+    const ReviewReject = row.status === "ReviewReject"; // 终审驳回
+    const RFrontLineClerk = this.$roleTool.RFrontLineClerk(); // 文员
+    const RPlatformClerk = this.$roleTool.RPlatformClerk(); // 平台文员
+    const RBusinessManagement = this.$roleTool.RBusinessManagement(); // 分公司业管
+    return (
+      (PlatformClerkUnreview && RFrontLineClerk) ||
+      (BranchBusinessManageUnreview && RPlatformClerk) ||
+      (BranchFinanceUnreview && RBusinessManagement) ||
+      (ReviewReject && RBusinessManagement)
+    );
   }
 
   showPlanPicture(data: any) {
@@ -487,7 +504,15 @@ export default class PayoffList extends Vue {
       let arr: any = [];
       if (type) {
         if (this.selection.length) {
-          arr = this.selection.map((v: any) => v.id);
+          const isUnconfirm = this.selection.every(
+            (v: any) => v.status === "Unconfirm"
+          );
+          if (isUnconfirm) {
+            arr = this.selection.map((v: any) => v.id);
+          } else {
+            this.$message.warning("只能批量删除附件待确认状态的数据");
+            return;
+          }
         } else {
           this.$message.warning("请勾选表格数据");
           return;

@@ -4,7 +4,7 @@
  * @Author: wwq
  * @Date: 2021-01-18 16:30:42
  * @LastEditors: wwq
- * @LastEditTime: 2021-01-29 11:24:42
+ * @LastEditTime: 2021-02-07 09:55:36
 -->
 <template>
   <el-dialog
@@ -13,7 +13,7 @@
     :close-on-click-modal="false"
     :close-on-press-escape="false"
     :before-close="cancel"
-    width="85%"
+    width="90%"
     class="splitdialog text-left"
     title="流程进度图"
   >
@@ -55,10 +55,6 @@ export default class Progress extends Vue {
     {
       name: "平台文员审核",
       code: "PlatformClerkUnreview",
-    },
-    {
-      name: "一线业务审核",
-      code: "OneLineUnreview",
     },
     {
       name: "分公司业管审核",
@@ -103,7 +99,6 @@ export default class Progress extends Vue {
         }
       });
     });
-    console.log(this.dicts);
   }
 
   created() {

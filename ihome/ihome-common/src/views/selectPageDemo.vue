@@ -130,6 +130,14 @@
     <el-form-item>
       <IhSelectPageOrg v-model="form.testInput13"></IhSelectPageOrg>
     </el-form-item>
+    <el-form-item label="组织">付款方</el-form-item>
+    <el-form-item>付款方</el-form-item>
+    <el-form-item>
+      <IhSelectPageByPayer
+        v-model="form.testInput14"
+        :proId="form.testInput5"
+      ></IhSelectPageByPayer>
+    </el-form-item>
   </el-form>
 </template>
 
@@ -150,6 +158,7 @@ import {
   IhSelectPageByRoom,
   IhSelectPageByCompany,
   IhSelectPageByDeveloper,
+  IhSelectPageByPayer,
 } from "../ihome-package/ui/packages/select-page/index";
 
 @Component({
@@ -165,6 +174,7 @@ import {
     IhSelectPageByCompany,
     IhSelectPageByDeveloper,
     IhSelectPageOrg,
+    IhSelectPageByPayer,
   },
 })
 export default class SelectPageDemo extends Vue {
@@ -186,6 +196,7 @@ export default class SelectPageDemo extends Vue {
     testInput11: null,
     testInput12: null,
     testInput13: null,
+    testInput14: null,
     data: null,
   };
   private rules = {};

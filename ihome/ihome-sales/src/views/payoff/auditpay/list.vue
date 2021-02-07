@@ -4,7 +4,7 @@
  * @Author: wwq
  * @Date: 2020-12-26 11:11:28
  * @LastEditors: wwq
- * @LastEditTime: 2021-02-06 20:25:29
+ * @LastEditTime: 2021-02-07 09:46:34
 -->
 <template>
   <IhPage label-width="120px">
@@ -221,6 +221,7 @@
           <template v-slot="{ row }">
             <el-link
               type="primary"
+              :class="{'ih-data-disabled': !auditChange(row)}"
               @click.native.prevent="routeTo(row)"
               v-has="'B.SALES.PAYOFF.PAYAPPLY.SHLB'"
             >审核</el-link>
@@ -303,15 +304,28 @@ export default class PayoffList extends Vue {
     return status && dangqian;
   }
 
-  checkChange(row: any) {
-    console.log(row);
-    // const status = row.status === "WaitAuditByBranchHead";
-    // const roleList = (this.$root as any).userInfo.roleList.map(
-    //   (v: any) => v.code
-    // );
-    // const fen = roleList.includes("RBusinessManagement");
-    // const zong = roleList.includes("RHeadBusinessManagement");
-    // return (fen || zong) && status;
+  auditChange(row: any) {
+    const PlatformClerkUnreview = row.status === "PlatformClerkUnreview"; // 待平台文员审核
+    const BranchBusinessManageUnreview =
+      row.status === "BranchBusinessManageUnreview"; // 待分公司业管审核
+    const BranchFinanceUnreview = row.status === "BranchFinanceUnreview"; // 待分公司财务审核
+    const ReviewPass = row.status === "ReviewPass"; // 终审通过
+    const ReviewReject = row.status === "ReviewReject"; // 终审驳回
+    const PaymentFailed = row.status === "PaymentFailed"; // 支付失败
+    const RFinanceCashier = this.$roleTool.RFinanceCashier(); // 出纳
+    const RFinanceFund = this.$roleTool.RFinanceFund(); // 资金岗
+    const RFinancialOfficer = this.$roleTool.RFinancialOfficer(); // 分公司财务
+    const RHeadFinancialOfficer = this.$roleTool.RHeadFinancialOfficer(); // 总公司财务
+    const RPlatformClerk = this.$roleTool.RPlatformClerk(); // 平台文员
+    const RBusinessManagement = this.$roleTool.RBusinessManagement(); // 分公司业管
+    return (
+      (PlatformClerkUnreview && RPlatformClerk) ||
+      (BranchBusinessManageUnreview && RBusinessManagement) ||
+      (BranchFinanceUnreview && (RFinancialOfficer || RHeadFinancialOfficer)) ||
+      (ReviewPass && RFinanceCashier) ||
+      (ReviewReject && (RFinancialOfficer || RHeadFinancialOfficer)) ||
+      (PaymentFailed && RFinanceFund)
+    );
   }
 
   showPlanPicture(data: any) {

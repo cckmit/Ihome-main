@@ -4,7 +4,7 @@
  * @Author: wwq
  * @Date: 2020-12-26 11:11:23
  * @LastEditors: wwq
- * @LastEditTime: 2021-02-06 20:05:54
+ * @LastEditTime: 2021-02-07 11:10:52
 -->
 <template>
   <IhPage>
@@ -921,21 +921,13 @@
       <div class="top">
         <p class="ih-info-title">操作日志</p>
         <div class="right-button">
-          <el-popover
-            class="margin-right-10"
-            placement="top"
-            trigger="manual"
-            :content="`姓名: ${operateName} 岗位: ${operatePost}`"
-            v-model="operateVisible"
-          >
-            <el-button
-              slot="reference"
-              type="success"
-              size="small"
-              icon="el-icon-search"
-              @click="searchPerson"
-            >查询当前代办人</el-button>
-          </el-popover>
+          <el-button
+            slot="reference"
+            type="success"
+            size="small"
+            icon="el-icon-search"
+            @click="searchPerson"
+          >查询当前代办人</el-button>
           <el-button
             @click="updateOA"
             type="success"
@@ -1101,8 +1093,6 @@ export default class PayoffEdit extends Vue {
     projectName: null,
   };
   submitFile: any = {};
-  operateName: any = null;
-  operatePost: any = null;
   operateVisible: any = false;
   channelAccountOptions: any = [];
   paymentMethodDisabled: any = false;
@@ -1463,14 +1453,12 @@ export default class PayoffEdit extends Vue {
   }
 
   async searchPerson() {
-    if (!this.operateName || !this.operatePost) {
-      const res = await get_processRecord_oa_review_person__applyId({
-        applyId: this.payoffId,
-      });
-      this.operateName = res.name;
-      this.operatePost = res.orgPostName;
-    }
-    this.operateVisible = true;
+    const res: any = await get_processRecord_oa_review_person__applyId({
+      applyId: this.payoffId,
+    });
+    this.$alert(res.result, "当前待办人", {
+      confirmButtonText: "确定",
+    });
   }
 
   async updateOA() {
