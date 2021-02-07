@@ -4,7 +4,7 @@
  * @Author: wwq
  * @Date: 2021-01-15 10:45:53
  * @LastEditors: wwq
- * @LastEditTime: 2021-02-07 16:05:05
+ * @LastEditTime: 2021-02-07 17:51:56
 -->
 <template>
   <IhPage label-width="100px">
@@ -466,7 +466,25 @@ export default class ReturnConfirmList extends Vue {
     let arr: any = [];
     if (type === "merge") {
       if (this.selection.length) {
-        arr = this.selection.map((v: any) => v.settlementCode);
+        const sameAgency = this.isAllEqual(
+          this.selection.map((v: any) => v.agencyId)
+        );
+        const sameReceiveAccount = this.isAllEqual(
+          this.selection.map((v: any) => v.receiveAccount)
+        );
+        const isOnlineBanking = this.selection.some(
+          (v: any) => v.settlementMethod === "OnlineBanking"
+        );
+        if (sameAgency && sameReceiveAccount) {
+          arr = this.selection.map((v: any) => v.settlementCode);
+        } else {
+          this.$message.warning("合并推送请勾选同一付款渠道公司及同一账号");
+          return;
+        }
+        if (isOnlineBanking) {
+          this.$message.warning("结算方式为网银支付不可合并推送");
+          return;
+        }
       } else {
         this.$notify({
           type: "error",
@@ -486,6 +504,17 @@ export default class ReturnConfirmList extends Vue {
       message: "付款推送成功",
       position: "bottom-right",
     });
+  }
+
+  // 判断数组的值是否全部相同
+  isAllEqual(arr: any) {
+    if (arr.length > 0) {
+      return !arr.some((v: any) => {
+        return v !== arr[0];
+      });
+    } else {
+      return true;
+    }
   }
 
   // 拆分
