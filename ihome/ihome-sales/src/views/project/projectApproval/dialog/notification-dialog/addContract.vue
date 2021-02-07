@@ -787,6 +787,12 @@ export default class AddContract extends Vue {
         }
       }
     } else {
+      setTimeout(()=>{
+        let isError: any= document.getElementsByClassName("is-error");
+        if (isError != null){
+          isError[0].querySelector('input').focus();
+        }
+      },100);
       console.log("error submit!");
       return false;
     }

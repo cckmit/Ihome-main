@@ -22,7 +22,7 @@
             label="基础信息"
             name="BasicInfo"
           >
-            <BasicInfo
+            <BasicInfo ref="basicInfo"
               :style="{'max-height': maxHeight, 'overflow-y': 'auto', 'padding-right': '15px'}"
               v-if="componetName === 'BasicInfo'"
               @cutOther="querybasicInfo"
@@ -156,13 +156,32 @@ export default class ProjectApprovalEdit extends Vue {
   }
 
   beforeLeave(activeName: any, oldActiveName: any) {
+
     if (oldActiveName === "BasicInfo") {
       if (!this.isCut) {
-        this.$alert("请保存后再切换", "提示", {
-          confirmButtonText: "确定",
-          type: "warning",
+        this.$confirm('请保存后再切换?', '提示', {
+          confirmButtonText: '保存',
+          cancelButtonText: '取消',
+          type: 'warning'
+        }).then(() => {
+           (this.$refs.basicInfo as any).submit('save');
+                     console.log(activeName);
+                     this.isCut = true;    
+          this.componetName = activeName;
+          this.tabActive = activeName;
+        }).catch(() => {
+          this.$message({
+            type: 'info',
+            message: '已取消'
+          });   
+  
         });
         return false;
+        // this.$alert("请保存后再切换", "提示", {
+        //   confirmButtonText: "确定",
+        //   type: "warning",
+        // });
+        // return false;
       }
     }
   }
