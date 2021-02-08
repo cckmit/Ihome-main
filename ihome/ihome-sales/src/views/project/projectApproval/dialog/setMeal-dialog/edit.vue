@@ -1113,15 +1113,21 @@ export default class SetMealEdit extends Vue {
 
   estimateReceiveAmount(row: any) {
     let total = 0;
-    total =
-      Number(isNaN(row.receivableAmout) ? 0 : row.receivableAmout) +
-      Number((isNaN(row.receivablePoint) ? 0 : row.receivablePoint) / 100) *
-        Number(
-          isNaN(this.info.estimatedTransactionPrice)
-            ? 0
-            : this.info.estimatedTransactionPrice
-        ) *
-        10000;
+    let estimateComplateNum = Number(isNaN(row.estimateComplateNum) ? 0 : row.estimateComplateNum);
+    if (estimateComplateNum == 0){
+      total = 0;
+    }else{
+      total =
+        Number(isNaN(row.receivableAmout) ? 0 : row.receivableAmout) +
+        Number((isNaN(row.receivablePoint) ? 0 : row.receivablePoint) / 100) *
+          Number(
+            isNaN(this.info.estimatedTransactionPrice)
+              ? 0
+              : this.info.estimatedTransactionPrice
+          ) *
+          10000 * estimateComplateNum ;
+    }
+
     row.estimateReceiveAmount = total;
     return isNaN(total) ? 0 : this.$math.tofixed(total, 2);
   }

@@ -1,6 +1,6 @@
 /* eslint-disable */
 /* 此脚本由swagger-ui的api-docs自动生成，请勿修改 */
-//2021-2-7 11:26:08 ├F10: AM┤
+//2021-2-8 11:44:21 ├F10: AM┤
 import { request } from '@/api/base'
 const basePath = "/sales-api/finance"
 /**新增收款账号在线支付信息*/
@@ -43,9 +43,9 @@ return await request.get<BankAccountBackInfoVO,BankAccountBackInfoVO>(basePath+'
 export async function get_bankAccount_getById__id (d?: any) {
 return await request.get<BankAccountVO,BankAccountVO>(basePath+'/bankAccount/getById/{id}', { params: d })
 }
-/**查询事业部下面的所有公司银行账号信息*/
-export async function post_bankAccount_getByOrgId (d?: any) {
-return await request.post< BankAccountCompanyVO[],BankAccountCompanyVO[]> (basePath+'/bankAccount/getByOrgId', d)
+/**查询公司下面的所有银行账号信息*/
+export async function post_bankAccount_getByOrgId__orgId (d?: any) {
+return await request.post< BankAccountAllVO[],BankAccountAllVO[]> (basePath+'/bankAccount/getByOrgId/{orgId}', d)
 }
 /**查询公司收款账户信息列表数据*/
 export async function post_bankAccount_getList (d?: any) {
@@ -416,8 +416,8 @@ export async function get_refundApply_get__id (d?: any) {
 return await request.get<RefundApplyVO,RefundApplyVO>(basePath+'/refundApply/get/{id}', { params: d })
 }
 /**获取退款申请业务审核流程*/
-export async function get_refundApply_getBusinessProcess (d?: any) {
-return await request.get<RefundApplyExportQueryVO[],RefundApplyExportQueryVO[]>(basePath+'/refundApply/getBusinessProcess', { params: d })
+export async function get_refundApply_getBusinessProcess__id (d?: any) {
+return await request.get<RefundApplyBusinessProcessVO[],RefundApplyBusinessProcessVO[]>(basePath+'/refundApply/getBusinessProcess/{id}', { params: d })
 }
 /**查询OA审批日志*/
 export async function post_refundApply_getFlowCommentList__id (d?: any) {
@@ -583,22 +583,6 @@ defaultFlag: number;
 taxRate: string;
 /**纳税人识别号*/
 taxpayerNo: string;
-}
-/**BankAccountCompanyVO*/
-export interface BankAccountCompanyVO {
-/**公司收款账号集合*/
-bankAccounts: BankAccountAllVO[];
-/**公司ID*/
-companyId: number;
-/**收款方名称*/
-companyName: string;
-}
-/**BankAccountQueryCompanyVO*/
-export interface BankAccountQueryCompanyVO {
-/**收款方*/
-companyName: string;
-/**事业部ID*/
-departmentID: number;
 }
 /**BankAccountQueryVO*/
 export interface BankAccountQueryVO {
@@ -2056,6 +2040,13 @@ settlementType: string;
 /**状态(Draft-草稿、PTWYSH-待平台文员审核、FGSYGSH-待分公司业管审核、FGSCWSH-待分公司财务审核、OaAppeal-OA流程审批中、AppealPass-终审通过、AppealDismissed-终审驳回、PayConfirm-支付结果确认中、PaySuccessful-支付成功)*/
 status: string;
 }
+/**RefundApplyBusinessProcessVO*/
+export interface RefundApplyBusinessProcessVO {
+/**处理时间(yyyy-MM-dd HH:mm:ss)*/
+operateTime: string;
+/**结果*/
+result: string;
+}
 /**RefundApplyCWCheckVO*/
 export interface RefundApplyCWCheckVO {
 /**账户id*/
@@ -2068,6 +2059,8 @@ accountNo: string;
 branchName: string;
 /**付款方联行号*/
 branchNo: string;
+/**审核按钮类型(TemporaryStorage-暂存、Through-通过、Reject-驳回、Saving-保存)*/
+buttonType: string;
 /**ID*/
 id: number;
 /**待退款项数据集合*/
@@ -2080,19 +2073,17 @@ remark: string;
 settlementType: string;
 /**当前状态(Draft-草稿、PTWYSH-待平台文员审核、FGSYGSH-待分公司业管审核、FGSCWSH-待分公司财务审核、OaAppeal-OA流程审批中、AppealPass-终审通过、AppealDismissed-终审驳回、PayConfirm-支付结果确认中、PaySuccessful-支付成功)*/
 status: string;
-/**通过1;暂存2;驳回3*/
-type: number;
 }
 /**RefundApplyCheckVO*/
 export interface RefundApplyCheckVO {
+/**审核按钮类型(TemporaryStorage-暂存、Through-通过、Reject-驳回、Saving-保存)*/
+buttonType: string;
 /**ID*/
 id: number;
 /**审核意见[驳回和暂存时必填]*/
 remark: string;
 /**当前状态(Draft-草稿、PTWYSH-待平台文员审核、FGSYGSH-待分公司业管审核、FGSCWSH-待分公司财务审核、OaAppeal-OA流程审批中、AppealPass-终审通过、AppealDismissed-终审驳回、PayConfirm-支付结果确认中、PaySuccessful-支付成功)*/
 status: string;
-/**通过1;暂存2;驳回3*/
-type: number;
 }
 /**RefundApplyCollectParamVO*/
 export interface RefundApplyCollectParamVO {

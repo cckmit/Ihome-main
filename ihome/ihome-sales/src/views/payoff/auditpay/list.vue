@@ -4,7 +4,7 @@
  * @Author: wwq
  * @Date: 2020-12-26 11:11:28
  * @LastEditors: wwq
- * @LastEditTime: 2021-02-07 09:46:34
+ * @LastEditTime: 2021-02-08 09:54:05
 -->
 <template>
   <IhPage label-width="120px">
@@ -338,26 +338,31 @@ export default class PayoffList extends Vue {
 
   // 导出
   async exportMsg() {
-    let arr: any = this.resPageInfo.list.map((v: any) => v.id);
-    const token: any = getToken();
-    axios({
-      method: "POST",
-      url: `/sales-api/payoff/file/excel/list`,
-      xsrfHeaderName: "Authorization",
-      responseType: "blob",
-      headers: {
-        "Content-Type": "application/json",
-        Authorization: "bearer " + token,
-      },
-      data: arr,
-    }).then((res: any) => {
-      const href = window.URL.createObjectURL(res.data);
-      const $a = document.createElement("a");
-      $a.href = href;
-      $a.download = "审核付款申请列表.xlsx";
-      $a.click();
-      $a.remove();
-    });
+    if (!this.resPageInfo.list.length) {
+      this.$message.warning("暂无数据");
+      return;
+    } else {
+      let arr: any = this.resPageInfo.list.map((v: any) => v.id);
+      const token: any = getToken();
+      axios({
+        method: "POST",
+        url: `/sales-api/payoff/file/excel/list`,
+        xsrfHeaderName: "Authorization",
+        responseType: "blob",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: "bearer " + token,
+        },
+        data: arr,
+      }).then((res: any) => {
+        const href = window.URL.createObjectURL(res.data);
+        const $a = document.createElement("a");
+        $a.href = href;
+        $a.download = "审核付款申请列表.xlsx";
+        $a.click();
+        $a.remove();
+      });
+    }
   }
 
   get emptyText() {

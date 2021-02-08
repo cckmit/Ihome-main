@@ -120,7 +120,10 @@
     </el-form-item>
     <el-form-item label="我司">我司继承组件</el-form-item>
     <el-form-item>
-      <IhSelectPageByCompany v-model="form.testInput11"></IhSelectPageByCompany>
+      <IhSelectPageByCompany
+        v-model="form.testInput11"
+        :proId="form.testInput5"
+      ></IhSelectPageByCompany>
     </el-form-item>
     <el-form-item label="开发商">开发商继承组件</el-form-item>
     <el-form-item>
@@ -136,6 +139,7 @@
       <IhSelectPageByPayer
         v-model="form.testInput14"
         :proId="form.testInput5"
+        :isBlur="false"
       ></IhSelectPageByPayer>
     </el-form-item>
   </el-form>
