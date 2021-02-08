@@ -859,6 +859,7 @@
     tempContType: any = null; // 临时存放合同类型
     tempSignPrice: any = null; // 临时存放签约价格
     tempSubscribePrice: any = null; // 临时存放认购价格
+    tempDocumentList: any = []; // 记录来访确认单和成交确认单
     rules: any = {
       dealCode: [
         {required: true, message: "成交报告编号不能为空", trigger: "change"},
@@ -1703,16 +1704,22 @@
           vo.fileList = []; // 存放新上传的数据
         });
       }
-      // 隐藏来访确认单和成交确认单
-      fileList = fileList.filter((item: any) => {
-        return !["VisitConfirForm", "DealConfirForm"].includes(item.code);
+      // 保存来访确认单和成交确认单
+      this.tempDocumentList = [];
+      this.tempDocumentList = fileList.filter((item: any) => {
+        return ["VisitConfirForm", "DealConfirForm"].includes(item.code);
       });
+      console.log('this.tempDocumentList', this.tempDocumentList);
       if (info.chargeEnum === 'Agent') {
         // 项目周期的收费模式为代理费的话，隐藏优惠告知书
         fileList = fileList.filter((item: any) => {
           return item.code !== "Notice";
         });
       }
+      // 隐藏来访确认单和成交确认单
+      fileList = fileList.filter((item: any) => {
+        return !["VisitConfirForm", "DealConfirForm"].includes(item.code);
+      });
       this.postData.documentVO = (this as any).$tool.deepClone(fileList);
     }
 
@@ -1732,7 +1739,7 @@
         // 初始化收派套餐
         this.initReceive();
         // 选择房号后构建附件表格数据
-        this.getDocumentList(value);
+        // this.getDocumentList(value);
         // 判断是否可以手动添加优惠告知书
         this.canAddNoticeItem(this.baseInfoByTerm.chargeEnum, this.postData.contType, this.baseInfoInDeal.dealNoticeStatus);
         // 记录临时值
@@ -1746,7 +1753,7 @@
       // 回显房号带出来的值
       let baseInfo: any = (this as any).$tool.deepClone(this.baseInfoInDeal);
       if (type === "DistriDeal") {
-        this.postData.documentVO.push(...this.tempList);
+        this.postData.documentVO.push(...this.tempDocumentList);
         if (this.postData.documentVO.length) {
           this.postData.documentVO.forEach((list: any) => {
             switch(list.code) {
