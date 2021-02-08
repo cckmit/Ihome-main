@@ -523,6 +523,7 @@
     >
       <el-button
         type="primary"
+        
         @click="submit('save')"
       >保存</el-button>
       <el-button
@@ -538,6 +539,7 @@
       <el-button
         type="primary"
         v-has="'B.SALES.PROJECT.BASICLIST.ZXMBC'"
+        :loading="loadSave"
         @click="submit('save')"
       >保存</el-button>
       <el-button
@@ -587,6 +589,7 @@ import {
   },
 })
 export default class EditBasicInfo extends Vue {
+  loadSave = false;
   form: any = {
     proNo: null,
     proName: null,
@@ -1034,18 +1037,50 @@ export default class EditBasicInfo extends Vue {
         }
 
         if (this.$route.name === "projectChildAdd") {
-          await post_project_add(obj);
+          let res: any = await post_project_add(obj);
+          if (res.proId ){
+           this.$goto({ path: "/projects/ChildEdit?id="+res.proId });
+          }
         } else {
           obj.proId = this.projectId;
           if (submittype === "save") {
-            await post_project_update(obj);
+            this.loadSave = true;
+            try{
+              await post_project_update(obj);
+              this.$message.success("保存成功");
+              this.$emit("cutOther", true);
+              this.houseList = [];
+              this.loadSave = false;
+            }catch(error){
+              this.loadSave = false;
+            }
           } else if (submittype === "submit") {
             await post_project_auditWait(obj);
+            this.houseList = [];
+            this.$message.success("提交成功");
+            this.$goto({ path: "/projects/list" });
           }
         }
-        this.houseList = [];
-        this.$message.success("提交成功");
-        this.$goto({ path: "/projects/list" });
+        
+
+        //   obj.proId = this.projectId;
+        //   if (submittype === "save") {
+        //       await post_project_update(obj);
+        //   } else if (submittype === "submit") {
+        //     await post_project_auditWait(obj);
+        //   }
+        // }
+        // this.houseList = [];
+        // this.$message.success("提交成功");
+        // this.$goto({ path: "/projects/list" });        
+      }else{
+          setTimeout(()=>{
+            let isError: any= document.getElementsByClassName("is-error");
+            if (isError != null){
+              isError[0].querySelector('input').focus();
+            }
+          },100);
+          return false;          
       }
     });
   }

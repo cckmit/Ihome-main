@@ -3,8 +3,8 @@
  * @version: 
  * @Author: wwq
  * @Date: 2020-11-27 18:41:30
- * @LastEditors: zyc
- * @LastEditTime: 2021-01-18 16:26:31
+ * @LastEditors: wwq
+ * @LastEditTime: 2021-02-08 14:32:45
 -->
 <template>
   <el-dialog
@@ -50,7 +50,10 @@
             label="启动事业部"
             prop="startDivisionId"
           >
-            <IhSelectPageDivision v-model="form.startDivisionId"></IhSelectPageDivision>
+            <IhSelectPageDivision
+              v-model="form.startDivisionId"
+              @change="form.companyId = null"
+            ></IhSelectPageDivision>
           </el-form-item>
         </el-col>
       </el-row>
@@ -60,7 +63,10 @@
             label="公司主体"
             prop="companyId"
           >
-            <IhSelectPageByCompany v-model="form.companyId"></IhSelectPageByCompany>
+            <IhSelectPageByCompany
+              v-model="form.companyId"
+              :proId="form.startDivisionId"
+            ></IhSelectPageByCompany>
           </el-form-item>
         </el-col>
       </el-row>

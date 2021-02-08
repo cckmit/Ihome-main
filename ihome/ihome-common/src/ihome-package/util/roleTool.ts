@@ -4,7 +4,7 @@
  * @Author: zyc
  * @Date: 2021-01-26 10:19:00
  * @LastEditors: wwq
- * @LastEditTime: 2021-02-06 20:33:59
+ * @LastEditTime: 2021-02-08 14:16:46
  */
 
 
@@ -187,6 +187,7 @@ export class RoleTool implements RoleToolInterface {
      * @return {*}
      */
     hasJob(code: string): boolean {
+        console.log(code);
         throw new Error("未实现");
     }
     /**用户是否包含某个资源
@@ -194,6 +195,7 @@ export class RoleTool implements RoleToolInterface {
      * @return {*}
      */
     hasResource(code: string): boolean {
+        console.log(code);
         throw new Error("未实现");
     }
 

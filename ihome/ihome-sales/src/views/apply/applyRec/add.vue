@@ -4,7 +4,7 @@
  * @Author: ywl
  * @Date: 2021-01-07 16:30:03
  * @LastEditors: ywl
- * @LastEditTime: 2021-02-08 10:04:57
+ * @LastEditTime: 2021-02-08 15:36:43
 -->
 <template>
   <IhPage class="text-left">
@@ -159,7 +159,10 @@
           </el-col>
           <el-col :span="8">
             <el-form-item label="申请日期">
-              <el-input disabled></el-input>
+              <el-input
+                disabled
+                :value="form.applyTime"
+              ></el-input>
             </el-form-item>
           </el-col>
         </el-row>
@@ -932,7 +935,8 @@ import {
   get_applyRec_getApplyRecById__applyId,
   get_applyRecDeal_getAll__applyId,
   get_applyRecDealTerm_getAll__applyId,
-  // get_devAgentFee_getAll__applyId,
+  get_devDeductRec_getAll__applyId,
+  get_devOtherSub_getAll__applyId,
   post_applyRecFile_getAll,
   post_applyRec_cancel__applyId,
   post_applyRec_InvoiceApply__applyId,
@@ -1153,8 +1157,9 @@ export default class ApplyRecAdd extends Vue {
   // 本期实际请款金额(不含税)
   private actMoneySum() {
     let sum = 0;
-    sum =
-      (this.actMoneyTaxSum() || 0) / (1 + (parseFloat(this.form.taxRate) || 0));
+    // sum =
+    //   (this.actMoneyTaxSum() || 0) / (1 + (parseFloat(this.form.taxRate) || 0));
+    sum = this.$math.sub(this.actMoneyTaxSum(), this.form.taxMoney);
     // this.form.actMoney = sum.toFixed(2);
     return this.$math.tofixed(sum, 2);
   }
@@ -1269,8 +1274,8 @@ export default class ApplyRecAdd extends Vue {
     console.log(info);
 
     this.form.branchNo = info.branchNo;
-    this.form.taxRate = 0.0001;
-    // this.form.taxRate = info.taxRate;
+    // this.form.taxRate = 0.0001;
+    this.form.taxRate = info.taxRate;
     this.form.receBankAccount = info.accountNo;
     this.form.receBranchNo = info.branchNo;
     // this.form.sellerOpeningBankBranch = info.branchName;
@@ -1307,7 +1312,8 @@ export default class ApplyRecAdd extends Vue {
         });
         this.form.taxMoney = this.$math.sub(
           this.actMoneyTaxSum(),
-          this.actMoneySum()
+          (this.actMoneyTaxSum() || 0) /
+            (1 + (parseFloat(this.form.taxRate) || 0))
         );
         this.globalTaxMoney = this.form.taxMoney;
         await this.getHisRec({
@@ -1465,7 +1471,10 @@ export default class ApplyRecAdd extends Vue {
     for (let index = 0; index < this.form.dealList.length; index++) {
       const element = this.form.dealList[index];
       if (isSub) {
-        let taxMoneyNew = this.$math.sub(element.taxMoney, sub);
+        let taxMoneyNew = this.$math.tofixed(
+          this.$math.sub(element.taxMoney, sub),
+          2
+        );
         if (taxMoneyNew > 0) {
           element.taxMoneyNew = taxMoneyNew;
           element.noTaxMoneyNew = this.$math.tofixed(
@@ -1512,6 +1521,12 @@ export default class ApplyRecAdd extends Vue {
       ...i,
       subMoney: i.subMoney * -1,
       fineMoney: i.fineMoney * -1,
+    }));
+    let dealList = this.form.dealList.map((i: any) => ({
+      ...i,
+      noTaxMoney: i.noTaxMoneyNew ? i.noTaxMoneyNew : i.noTaxMoney,
+      taxMoney:
+        i.taxMoneyNew || i.taxMoneyNew === 0 ? i.taxMoneyNew : i.taxMoney,
     }));
     // this.form.sumTaxMoney = this.totalTaxMoney;
     // this.form.actMoneyTax = this.actMoneyTaxSum();
@@ -1574,6 +1589,7 @@ export default class ApplyRecAdd extends Vue {
         fineMoney,
         otherSubList,
         termList,
+        dealList,
       });
       let msg = "";
       switch (type) {
@@ -1620,30 +1636,57 @@ export default class ApplyRecAdd extends Vue {
   }
   private async getInfo(applyId: any) {
     try {
-      const info = await get_applyRec_getApplyRecById__applyId({ applyId });
+      const info: any = await get_applyRec_getApplyRecById__applyId({
+        applyId,
+      });
       this.paramDevName = info.developName;
       this.paramProName = info.proName;
       this.applyNo = info.applyNo;
+      this.globalTaxMoney = this.$math.tofixed(
+        this.$math.sub(
+          info.actMoneyTax,
+          info.actMoneyTax / (1 + info.taxRate || 0)
+        ),
+        2
+      );
+      this.getListAccount(info.developId);
       this.getAccount(info.polyCompanyId);
       this.accountData = { id: info.receAccountId };
+      this.devAccountData = { bankId: info.developAccountId };
       this.form = { ...this.form, ...info };
       this.dealParams = {
         developId: info.developId,
         polyCompanyId: info.polyCompanyId,
         receAccountId: info.receAccountId,
         proId: info.proId,
+        termOrgId: info.orgId,
       };
       let dealList = await get_applyRecDeal_getAll__applyId({ applyId });
       this.form.dealList = dealList.map((i: any) => ({
         taxRate: info.taxRate,
         ...i,
       }));
-      this.form.termList = await get_applyRecDealTerm_getAll__applyId({
+      let termList = await get_applyRecDealTerm_getAll__applyId({
         applyId,
       });
-      // let feeList = await get_devAgentFee_getAll__applyId({ applyId });
-      // console.log(feeList);
-
+      this.form.termList = termList.map((i: any) => ({
+        ...i,
+        subMoney: i.subMoney * -1,
+        fineMoney: i.fineMoney * -1,
+      }));
+      let otherSubList = await get_devOtherSub_getAll__applyId({ applyId });
+      console.log(otherSubList);
+      this.form.otherSubList = otherSubList.map((i: any) => ({
+        ...i,
+        subMoney: i.subMoney * -1,
+        subMoneyNoTax: i.subMoneyNoTax * -1,
+        subMoneyTax: i.subMoneyTax * -1,
+        termObj: {
+          termId: i.termId,
+        },
+      }));
+      this.waitList = await get_devDeductRec_getAll__applyId({ applyId });
+      this.taxMoneyChange(info.taxMoney);
       // if (this.form.status === "Draft") {
       //   await this.getHisRec({
       //     developId: info.developId,
