@@ -1,6 +1,6 @@
 /* eslint-disable */
 /* 此脚本由swagger-ui的api-docs自动生成，请勿修改 */
-//2021-2-8 16:40:45
+//2021-2-8 15:52:52
 import { request } from '@/api/base'
 const basePath = "/sales-api/finance"
 /**新增收款账号在线支付信息*/
@@ -474,10 +474,6 @@ return await request.get<RefundItemVO,RefundItemVO>(basePath+'/refundItem/get/{i
 /**查询待退款项列表数据*/
 export async function post_refundItem_getList (d?: any) {
 return await request.post< any,any> (basePath+'/refundItem/getList', d)
-}
-/**查询待退款推送信息列表数据*/
-export async function post_refundItemPush_getList (d?: any) {
-return await request.post< any,any> (basePath+'/refundItemPush/getList', d)
 }
 //===============================================================================================
 /**ResModel模型*/
@@ -2496,86 +2492,6 @@ refundApplyNO: string;
 refundName: string;
 /**退款状态(PendingApply-待申请、UnderReview-审核中、Refunding-退款中、Refunded-已退款)*/
 status: string;
-}
-/**RefundItemPushQueryVO*/
-export interface RefundItemPushQueryVO {
-/**开始时间(yyyy-MM-dd)*/
-beginTime: string;
-/**付款方ID*/
-companyId: number;
-/**日期类型[1-申请日期;2-推送日期;3-付款日期]*/
-dateType: number;
-/**截止时间(yyyy-MM-dd)*/
-endTime: string;
-/**(必填)当前页*/
-pageNum: number;
-/**(必填)每页条数*/
-pageSize: number;
-/**付款方式(CashPay-现金支付、OtherPay-其他支付)*/
-payType: string;
-/**退款申请单编号*/
-refundApplyNo: string;
-/**收款人姓名*/
-refundName: string;
-/**唯一支付编号*/
-refundPayNo: string;
-/**结算方式(CentralizedPay-集中支付、OnlinePay-网银支付)*/
-settlementType: string;
-/**退款状态(PendingPay-待退款、RefundedTicket-已退票、Paying-付款中、Paid-付款成功)*/
-status: string;
-}
-/**RefundItemPushVO*/
-export interface RefundItemPushVO {
-/**付款方账户名称*/
-accountName: string;
-/**付款方账号*/
-accountNo: string;
-/**退款金额*/
-amount: number;
-/**付款方开户银行*/
-branchName: string;
-/**付款方联行号*/
-branchNo: string;
-/**公司ID*/
-companyId: number;
-/**申请日期(yyyy-MM-dd)*/
-createDate: string;
-/**创建时间(yyyy-MM-dd HH:mm:ss)*/
-createTime: string;
-/**创建用户*/
-createUser: number;
-/**已删除*/
-deleted: number;
-/**ID*/
-id: number;
-/**付款日期(yyyy-MM-dd)*/
-payDate: string;
-/**付款方式(CashPay-现金支付、OtherPay-其他支付)*/
-payType: string;
-/**推送日期(yyyy-MM-dd)*/
-pushDate: string;
-/**退款人账号*/
-refundAccount: string;
-/**退款申请单编号*/
-refundApplyNo: string;
-/**退款人开户行*/
-refundBankName: string;
-/**退款人姓名*/
-refundName: string;
-/**退款项编号*/
-refundNo: string;
-/**唯一支付编号*/
-refundPayNo: string;
-/**成交客户姓名*/
-remark: string;
-/**结算方式(CentralizedPay-集中支付、OnlinePay-网银支付)*/
-settlementType: string;
-/**退款状态(PendingPay-待退款、RefundedTicket-已退票、Paying-付款中、Paid-付款成功)*/
-status: string;
-/**更新时间(yyyy-MM-dd HH:mm:ss)*/
-updateTime: string;
-/**更新用户*/
-updateUser: number;
 }
 /**RefundItemQueryVO*/
 export interface RefundItemQueryVO {

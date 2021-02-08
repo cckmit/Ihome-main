@@ -5,7 +5,7 @@
  * @Author: zyc
  * @Date: 2021-01-13 14:50:21
  * @LastEditors: zyc
- * @LastEditTime: 2021-02-08 16:16:54
+ * @LastEditTime: 2021-02-08 17:22:53
 -->
 <template>
   <IhPage label-width="110px">
@@ -15,7 +15,7 @@
           <el-col :span="8">
             <el-form-item label="收款姓名">
               <el-input
-                v-model="queryPageParameters.refundApplyNo"
+                v-model="queryPageParameters.refundName"
                 placeholder="收款姓名"
                 clearable
               ></el-input>
@@ -33,7 +33,7 @@
           <el-col :span="8">
             <el-form-item label="支付唯一编码">
               <el-input
-                v-model="queryPageParameters.refundApplyNo"
+                v-model="queryPageParameters.refundPayNo"
                 placeholder="支付唯一编码"
                 clearable
               ></el-input>
@@ -91,7 +91,7 @@
             <el-form-item label="日期类型" style="text-align: left">
               <el-select
                 style="width: 30%"
-                v-model="queryPageParameters.payType"
+                v-model="queryPageParameters.dateType"
                 clearable
                 placeholder="日期类型"
               >
@@ -151,41 +151,60 @@
             ></el-table-column>
             <el-table-column
               label="退款项编号"
-              prop="refundApplyNo"
+              prop="refundNo"
               min-width="120"
               fixed
             ></el-table-column>
             <el-table-column
               label="退款申请单编号"
               min-width="140"
-              prop="applyNo"
+              prop="refundApplyNo"
             ></el-table-column>
             <el-table-column
               label="唯一支付编码"
-              prop="applyNo"
+              prop="refundPayNo"
               min-width="120"
             ></el-table-column>
-            <el-table-column label="结算方式" prop="applyNo"></el-table-column>
-            <el-table-column label="付款方式" prop="applyNo"></el-table-column>
-            <el-table-column label="退款金额" prop="applyNo"></el-table-column>
+            <el-table-column label="结算方式" prop="settlementType">
+              <template slot-scope="scope">{{
+                $root.dictAllName(
+                  scope.row.settlementType,
+                  "RefundSettlementType"
+                )
+              }}</template>
+            </el-table-column>
+            <el-table-column label="付款方式" prop="payType">
+              <template slot-scope="scope">{{
+                $root.dictAllName(scope.row.payType, "RefundPayType")
+              }}</template>
+            </el-table-column>
+            <el-table-column label="退款金额" prop="amount"></el-table-column>
             <el-table-column
               label="退款人信息"
-              prop="applyNo"
-            ></el-table-column>
+              prop="refundName"
+              min-width="200"
+            >
+              <template slot-scope="scope">
+                <p>收款姓名:{{ scope.row.refundName }}</p>
+                <p>收款帐号:{{ scope.row.refundAccount }}</p>
+                <p>开户行:{{ scope.row.refundBankName }}</p>
+              </template>
+            </el-table-column>
             <el-table-column
               label="付款方信息"
-              prop="applyNo"
-            ></el-table-column>
-            <el-table-column label="状态" prop="applyNo"></el-table-column>
-            <el-table-column label="备注信息" prop="applyNo"></el-table-column>
-            <el-table-column
-              label="唯一支付编码"
-              min-width="120"
-              prop="applyNo"
-            ></el-table-column>
-            <el-table-column label="推送时间" prop="applyNo"></el-table-column>
-            <el-table-column label="支付时间" prop="applyNo"></el-table-column>
-
+              prop="accountName"
+              min-width="200"
+            >
+              <template slot-scope="scope">
+                <p>账户名称:{{ scope.row.accountName }}</p>
+                <p>账户账号:{{ scope.row.accountNo }}</p>
+                <p>开户行:{{ scope.row.branchName }}</p>
+              </template>
+            </el-table-column>
+            <el-table-column label="状态" prop="status"></el-table-column>
+            <el-table-column label="备注信息" prop="remark"></el-table-column>
+            <el-table-column label="推送时间" prop="pushDate"></el-table-column>
+            <el-table-column label="支付时间" prop="payDate"></el-table-column>
             <el-table-column label="操作" width="120" fixed="right">
               <template v-slot="{ row }">
                 <el-link
@@ -200,8 +219,16 @@
                   class="margin-right-10"
                   >设置已退款</el-link
                 >
-                <el-link type="primary" @click="edit(row)">修改</el-link>
-                <el-link type="primary" @click="toExamine(row)"
+                <el-link
+                  type="primary"
+                  @click="edit(row)"
+                  class="margin-right-10"
+                  >修改</el-link
+                >
+                <el-link
+                  type="primary"
+                  @click="toExamine(row)"
+                  class="margin-right-10"
                   >同步状态</el-link
                 >
               </template>
@@ -235,8 +262,7 @@
 <script lang="ts">
 import { Component, Vue } from "vue-property-decorator";
 import PaginationMixin from "../../../mixins/pagination";
-
-import { post_refundApply_getList } from "../../../api/finance/index";
+import { post_refundItem_getList } from "../../../api/finance/index";
 import RefundPushEdit from "./edit.vue";
 @Component({
   components: { RefundPushEdit },
@@ -246,11 +272,12 @@ export default class RefundPushList extends Vue {
   queryPageParameters: any = {
     beginTime: null,
     companyId: null,
+    dateType: null,
     endTime: null,
-    inputUser: null,
-    orgId: null,
     payType: null,
     refundApplyNo: null,
+    refundName: null,
+    refundPayNo: null,
     settlementType: null,
     status: null,
   };
@@ -299,10 +326,10 @@ export default class RefundPushList extends Vue {
       this.queryPageParameters.endTime = null;
     }
   }
- 
+
   handleClick(tab: any) {
     console.log(tab.name, tab.label);
-     this.queryPageParameters.pageNum = 1;
+    this.queryPageParameters.pageNum = 1;
     this.getListMixin();
   }
 
@@ -310,11 +337,12 @@ export default class RefundPushList extends Vue {
     Object.assign(this.queryPageParameters, {
       beginTime: null,
       companyId: null,
+      dateType: null,
       endTime: null,
-      inputUser: null,
-      orgId: null,
       payType: null,
       refundApplyNo: null,
+      refundName: null,
+      refundPayNo: null,
       settlementType: null,
       status: null,
     });
@@ -324,7 +352,7 @@ export default class RefundPushList extends Vue {
   }
 
   async getListMixin() {
-    this.resPageInfo = await post_refundApply_getList(this.queryPageParameters);
+    this.resPageInfo = await post_refundItem_getList(this.queryPageParameters);
   }
 
   created() {
