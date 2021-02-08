@@ -4,7 +4,7 @@
  * @Author: ywl
  * @Date: 2021-01-07 10:29:38
  * @LastEditors: ywl
- * @LastEditTime: 2021-02-08 18:03:40
+ * @LastEditTime: 2021-02-08 18:04:10
 -->
 <template>
   <IhPage label-width="100px">
@@ -270,7 +270,7 @@ import PaginationMixin from "../../../mixins/pagination";
 import Steps from "./dialog/steps.vue";
 import {
   post_applyRec_getList,
-  get_applyRec_excelBatchApplyInfo,
+  // get_applyRec_excelBatchApplyInfo,
 } from "../../../api/apply/index";
 
 @Component({
