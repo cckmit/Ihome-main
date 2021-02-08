@@ -3567,6 +3567,7 @@
         }, // 成交基础信息
         documentVO: this.getDocumentList(this.postData.uploadDocumentList), // 成交附件信息
         houseVO: {
+          dealId: this.id,
           address: this.postData.address,
           area: this.postData.area,
           buildingId: this.postData.buildingId,
