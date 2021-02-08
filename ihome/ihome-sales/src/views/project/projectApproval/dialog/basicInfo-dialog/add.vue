@@ -4,7 +4,7 @@
  * @Author: wwq
  * @Date: 2020-11-27 18:41:30
  * @LastEditors: wwq
- * @LastEditTime: 2021-02-08 14:21:32
+ * @LastEditTime: 2021-02-08 14:32:45
 -->
 <template>
   <el-dialog
@@ -50,7 +50,10 @@
             label="启动事业部"
             prop="startDivisionId"
           >
-            <IhSelectPageDivision v-model="form.startDivisionId"></IhSelectPageDivision>
+            <IhSelectPageDivision
+              v-model="form.startDivisionId"
+              @change="form.companyId = null"
+            ></IhSelectPageDivision>
           </el-form-item>
         </el-col>
       </el-row>
