@@ -3,8 +3,8 @@
  * @version: 
  * @Author: wwq
  * @Date: 2020-11-27 18:41:30
- * @LastEditors: zyc
- * @LastEditTime: 2021-01-18 16:26:31
+ * @LastEditors: wwq
+ * @LastEditTime: 2021-02-08 14:21:32
 -->
 <template>
   <el-dialog
@@ -60,7 +60,10 @@
             label="公司主体"
             prop="companyId"
           >
-            <IhSelectPageByCompany v-model="form.companyId"></IhSelectPageByCompany>
+            <IhSelectPageByCompany
+              v-model="form.companyId"
+              :proId="form.startDivisionId"
+            ></IhSelectPageByCompany>
           </el-form-item>
         </el-col>
       </el-row>
