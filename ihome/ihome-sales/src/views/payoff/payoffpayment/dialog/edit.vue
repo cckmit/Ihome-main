@@ -4,7 +4,7 @@
  * @Author: wwq
  * @Date: 2021-01-16 17:16:53
  * @LastEditors: wwq
- * @LastEditTime: 2021-02-08 11:51:06
+ * @LastEditTime: 2021-02-08 12:02:34
 -->
 <template>
   <el-dialog
@@ -290,10 +290,11 @@ export default class Edit extends Vue {
 
   async created() {
     this.info = { ...this.data };
+    console.log(this.info);
     const res = await get_channel_get__id({ id: this.info.agencyId });
     this.channelAccountOptions = res.channelBanks;
     const item = await post_bankAccount_getByOrgId__orgId({
-      orgId: this.info.payerId,
+      orgId: this.info.companyId,
     });
     this.payerAccountOptions = item;
     this.settlementMethodChange(this.info.settlementMethod);
