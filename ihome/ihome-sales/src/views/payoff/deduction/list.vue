@@ -4,7 +4,7 @@
  * @Author: wwq
  * @Date: 2020-12-26 11:11:28
  * @LastEditors: wwq
- * @LastEditTime: 2021-01-13 19:40:17
+ * @LastEditTime: 2021-02-07 10:11:41
 -->
 <template>
   <IhPage label-width="100px">
@@ -62,7 +62,7 @@
         ></el-table-column>
         <el-table-column
           label="待抵扣项费用(元)"
-          prop="undeductionAMOUNT"
+          prop="undeductionAmount"
         ></el-table-column>
         <el-table-column
           label="抵扣中抵扣项费用(元)"

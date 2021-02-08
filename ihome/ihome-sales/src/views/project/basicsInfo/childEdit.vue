@@ -4,7 +4,7 @@
  * @Author: wwq
  * @Date: 2020-10-22 15:16:54
  * @LastEditors: wwq
- * @LastEditTime: 2021-01-18 11:13:04
+ * @LastEditTime: 2021-02-06 10:19:04
 -->
 <template>
   <ih-page>
@@ -87,7 +87,7 @@ export default class ProjectChildEdit extends Vue {
   }
   beforeLeave(activeName: any, oldActiveName: any) {
     if (oldActiveName === "BasicInfo") {
-      if (!this.isCut) {
+      if (!this.isCut || !this.$route.query.id) {
         this.$alert("请保存后再切换", "提示", {
           confirmButtonText: "确定",
           type: "warning",

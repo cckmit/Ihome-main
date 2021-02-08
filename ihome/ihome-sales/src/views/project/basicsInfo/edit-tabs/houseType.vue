@@ -4,7 +4,7 @@
  * @Author: wwq
  * @Date: 2020-11-03 11:52:41
  * @LastEditors: wwq
- * @LastEditTime: 2021-01-28 10:35:49
+ * @LastEditTime: 2021-02-06 10:15:44
 -->
 <template>
   <div>
@@ -168,7 +168,6 @@ export default class EditHouseType extends Vue {
     } else {
       obj.picAddr = "";
     }
-    console.log(obj);
     obj.proId = this.proId;
     if (this.dialogType === "add") {
       await post_houseType_add(obj);

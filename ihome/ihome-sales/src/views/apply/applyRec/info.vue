@@ -4,7 +4,7 @@
  * @Author: ywl
  * @Date: 2021-01-15 15:29:09
  * @LastEditors: ywl
- * @LastEditTime: 2021-01-15 15:31:17
+ * @LastEditTime: 2021-02-02 19:46:37
 -->
 <template>
   <IhPage class="text-left">
@@ -555,7 +555,7 @@ import {
   post_applyRecFile_getAll,
   get_applyRecDeal_getAll__applyId,
   get_applyRecDealTerm_getAll__applyId,
-  get_devAgentFee_getAll__applyId,
+  // get_devAgentFee_getAll__applyId,
   get_opLog_getAllListByApplyId__applyId,
 } from "../../../api/apply/index";
 
@@ -647,7 +647,7 @@ export default class ApplyAudit extends Vue {
       this.termList = await get_applyRecDealTerm_getAll__applyId({
         applyId,
       });
-      this.agencyList = await get_devAgentFee_getAll__applyId({ applyId });
+      // this.agencyList = await get_devAgentFee_getAll__applyId({ applyId });
       this.opLogList = await get_opLog_getAllListByApplyId__applyId({
         applyId,
       });

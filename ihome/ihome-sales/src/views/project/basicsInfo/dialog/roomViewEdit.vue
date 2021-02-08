@@ -4,7 +4,7 @@
  * @Author: wwq
  * @Date: 2020-11-03 18:39:23
  * @LastEditors: wwq
- * @LastEditTime: 2020-12-11 08:51:46
+ * @LastEditTime: 2021-02-06 10:15:09
 -->
 <template>
   <div>
@@ -338,7 +338,11 @@ export default class RoomViewEdit extends Vue {
   async houseFinish(data: any) {
     let obj: any = {};
     obj = { ...data };
-    obj.picAddr = data.fileList[0].fileId;
+    if (data.fileList.length) {
+      obj.picAddr = data.fileList[0].fileId;
+    } else {
+      obj.picAddr = "";
+    }
     obj.proId = this.proId;
     await post_houseType_add(obj);
     this.$message.success("保存成功");

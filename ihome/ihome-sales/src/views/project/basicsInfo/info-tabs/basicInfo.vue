@@ -4,7 +4,7 @@
  * @Author: wwq
  * @Date: 2020-11-03 11:52:41
  * @LastEditors: wwq
- * @LastEditTime: 2021-01-29 17:41:18
+ * @LastEditTime: 2021-02-06 09:35:04
 -->
 <template>
   <div>
@@ -552,6 +552,7 @@ export default class InfoBasicInfo extends Vue {
         (item: any) => item.exIndex === 1
       )[0]?.fileId;
       this.getFileListType(data.attachPics);
+      window.sessionStorage.setItem("proName", this.form.proName);
     }
   }
 

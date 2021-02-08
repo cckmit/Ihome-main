@@ -400,16 +400,27 @@
                 <div>{{scope.row.rolerPosition}}</div>
               </template>
             </el-table-column>
-            <el-table-column prop="roleAchieveCap" label="角色人业绩" min-width="120"></el-table-column>
-            <el-table-column prop="roleAchieveRatio" label="角色业绩比例（%）" min-width="120"></el-table-column>
+            <el-table-column prop="corporateAchieve" label="角色人业绩" min-width="120"></el-table-column>
+            <el-table-column prop="roleAchieveRatio" label="角色业绩比例（%）" min-width="120">
+              <template slot-scope="scope">
+                <div v-if="postData.id === postData.parentId">{{scope.row.roleAchieveRatio}}</div>
+                <div v-else>-</div>
+              </template>
+            </el-table-column>
             <el-table-column prop="commFees" label="拆佣金额" min-width="150"></el-table-column>
-            <el-table-column prop="commFeesRatio" label="拆佣比例（%）" min-width="150"></el-table-column>
+            <el-table-column prop="commFeesRatio" label="拆佣比例（%）" min-width="150">
+              <template slot-scope="scope">
+                <div v-if="postData.id === postData.parentId">{{scope.row.commFeesRatio}}</div>
+                <div v-else>-</div>
+              </template>
+            </el-table-column>
             <el-table-column prop="belongOrgName" label="店组" min-width="150"></el-table-column>
             <el-table-column prop="managerAchieveList" label="管理岗" min-width="150">
               <template slot-scope="scope">
                 <div class="manager-list" v-for="(item, index) in scope.row.managerAchieveList" :key="index">
                   <div class="fee">{{item.achieveFees}}</div>
-                  <div class="ratio">{{item.ratio ? item.ratio : 0}}%</div>
+                  <div v-if="postData.id === postData.parentId" class="ratio">{{item.ratio ? item.ratio : 0}}%</div>
+                  <div v-else class="ratio">-</div>
                   <div class="name">
                     <span>{{item.manager ? item.manager : '---'}}</span>
                     (<span>{{$root.dictAllName(item.type, 'ManagerType')}}</span>)
@@ -443,16 +454,27 @@
                 <div>{{scope.row.rolerPosition}}</div>
               </template>
             </el-table-column>
-            <el-table-column prop="roleAchieveCap" label="角色人业绩" min-width="120"></el-table-column>
-            <el-table-column prop="roleAchieveRatio" label="角色业绩比例（%）" min-width="120"></el-table-column>
+            <el-table-column prop="corporateAchieve" label="角色人业绩" min-width="120"></el-table-column>
+            <el-table-column prop="roleAchieveRatio" label="角色业绩比例（%）" min-width="120">
+              <template slot-scope="scope">
+                <div v-if="postData.id === postData.parentId">{{scope.row.roleAchieveRatio}}</div>
+                <div v-else>-</div>
+              </template>
+            </el-table-column>
             <el-table-column prop="commFees" label="拆佣金额" min-width="150"></el-table-column>
-            <el-table-column prop="commFeesRatio" label="拆佣比例（%）" min-width="150"></el-table-column>
+            <el-table-column prop="commFeesRatio" label="拆佣比例（%）" min-width="150">
+              <template slot-scope="scope">
+                <div v-if="postData.id === postData.parentId">{{scope.row.commFeesRatio}}</div>
+                <div v-else>-</div>
+              </template>
+            </el-table-column>
             <el-table-column prop="belongOrgName" label="店组" min-width="150"></el-table-column>
             <el-table-column prop="managerAchieveList" label="管理岗" min-width="150">
               <template slot-scope="scope">
                 <div class="manager-list" v-for="(item, index) in scope.row.managerAchieveList" :key="index">
                   <div class="fee">{{item.achieveFees}}</div>
-                  <div class="ratio">{{item.ratio ? item.ratio : 0}}%</div>
+                  <div v-if="postData.id === postData.parentId" class="ratio">{{item.ratio ? item.ratio : 0}}%</div>
+                  <div v-else class="ratio">-</div>
                   <div class="name">
                     <span>{{item.manager ? item.manager : '---'}}</span>
                     (<span>{{$root.dictAllName(item.type, 'ManagerType')}}</span>)

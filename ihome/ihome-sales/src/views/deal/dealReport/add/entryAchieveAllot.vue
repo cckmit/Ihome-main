@@ -166,10 +166,15 @@
             <IhSelectPageByRoom
               @change="changeRoom"
               @changeOption="(data) => {postData.roomNo = data.roomNo}"
-              :params="{exDeal: 0}"
               v-model="postData.roomId"
               :proId="baseInfoByTerm.proId"
               :buildingId="postData.buildingId"
+              :props="{
+                key: 'roomId',
+                value: 'roomId',
+                lable: 'roomNo',
+                disabled: 'exDeal'
+              }"
               :isCascade="true"
               cascadeType="room"
               placeholder="请选择房号"
@@ -1073,8 +1078,6 @@
   import EditDealAchieve from "@/views/deal/dealReport/dialog/editDealAchieve.vue";
   import {
     get_deal_get__id, // 编辑功能
-
-    get_pageData_getProBaseByTermId__cycleId, // 通过项目周期获取成交基础信息
     post_pageData_dealCheckNotice, // 判断是否应该存在优惠告知书，返回true则允许添加，返回false则不允许，返回业务逻辑则直接抛出异常
     post_pageData_initBasic, // 选择周期、房号后初始化页面
     post_pageData_initChannelComm, // 初始化对外拆佣表格数据
@@ -1089,6 +1092,9 @@
   import {
     get_org_get__id, // 通过组织id获取组织name
   } from "@/api/system";
+  import {
+    get_term_getProBaseByTermId__termId, // 通过项目周期获取成交基础信息
+  } from "@/api/project";
   import {post_notice_customer_information} from "@/api/contract"; // 获取优惠告知书
   import {Form as ElForm} from "element-ui";
   import {NoRepeatHttp} from "ihome-common/util/aop/no-repeat-http";
@@ -1580,7 +1586,7 @@
     // 编辑 --- 通过周期ID获取信息
     async editBaseDealInfo(id: any) {
       if (!id) return;
-      let baseInfo: any = await get_pageData_getProBaseByTermId__cycleId({cycleId: id});
+      let baseInfo: any = await get_term_getProBaseByTermId__termId({termId: id});
       this.baseInfoByTerm = JSON.parse(JSON.stringify(baseInfo || {}));
       // 给postData赋值对应数据
       if (baseInfo) {
@@ -2075,7 +2081,7 @@
     // 通过项目周期id获取基础信息
     async getBaseDealInfo(id: any) {
       if (!id) return;
-      let baseInfo: any = await get_pageData_getProBaseByTermId__cycleId({cycleId: id});
+      let baseInfo: any = await get_term_getProBaseByTermId__termId({termId: id});
       this.baseInfoByTerm = JSON.parse(JSON.stringify(baseInfo));
       // 给postData赋值对应数据
       if (baseInfo) {
@@ -2134,9 +2140,24 @@
           this.navList = (this as any).$tool.deepClone(this.defaultNavList);
         }
         // 收派金额部分信息 --- 服务费
-        if (baseInfo.serviceFee) {
+        this.postData.receiveVO = [];
+        if (baseInfo.chargeEnum !== 'Agent') {
           let tempList: any = [];
-          tempList.push(baseInfo.serviceFee);
+          tempList.push(
+            {
+              type: 'ServiceFee', // 服务费
+              partyACustomer: null,
+              partyACustomerName: '客户',
+              packgeName: null,
+              packageId: null,
+              receiveAmount: null,
+              commAmount: null,
+              rewardAmount: null,
+              totalPackageAmount: null,
+              distributionAmount: null,
+              otherChannelFees: null,
+            }
+          );
           let list: any = (this as any).$parent.initReceiveVOS(tempList);
           this.$nextTick(() => {
             this.postData.receiveVO.push(...list);
@@ -2531,7 +2552,7 @@
       if (value === 'DistriDeal') {
         // 如果查询不到此房号的已成交报备信息，用户又选择分销成交
         this.postData.contType = this.tempContType ? this.tempContType : null;
-        if (!this.baseInfoInDeal.hasRecord) {
+        if (!this.baseInfoInDeal.hasRecord && this.postData.roomId) {
           this.$alert('系统查询不到此房号的已成交报备信息，请先维护报备信息！', '提示', {
             confirmButtonText: '确定'
           });
@@ -3614,7 +3635,7 @@
       obj.basic.receiveVO = JSON.parse(JSON.stringify(this.postData.receiveVO));
       if (obj.basic && obj.basic.receiveVO && obj.basic.receiveVO.length) {
         obj.basic.receiveVO.forEach((vo: any) => {
-          if ([null, undefined, 0, ""].includes(vo.otherChannelFees)) {
+          if (vo.type === 'AgentFee' && [null, undefined, 0, ""].includes(vo.otherChannelFees)) {
             vo.otherChannelFees = null; // 后台要置null
           }
         });

@@ -67,7 +67,10 @@
         </el-col>
         <el-col :span="8" v-if="data.currentEditItem.roleType !== 'BranchOffice'">
           <el-form-item label="角色业绩比例（%）">
-            <div class="div-disabled">{{form.corporateAchieveRatio}}%</div>
+<!--            <div class="div-disabled">{{form.corporateAchieveRatio}}%</div>-->
+            <div class="div-disabled">
+              {{getPercentage(form.corporateAchieve, form.roleAchieveCap)}}%
+            </div>
           </el-form-item>
         </el-col>
         <el-col :span="8">
@@ -80,7 +83,10 @@
         </el-col>
         <el-col :span="8">
           <el-form-item label="拆佣比例（%）">
-            <div class="div-disabled">{{form.commFeesRatio}}%</div>
+<!--            <div class="div-disabled">{{form.commFeesRatio}}%</div>-->
+            <div class="div-disabled">
+              {{getPercentage(form.commFees, data.totalAmount)}}%
+            </div>
           </el-form-item>
         </el-col>
         <el-col :span="24">
@@ -110,7 +116,8 @@
             </el-table-column>
             <el-table-column prop="achieveFeesRatio" label="金额比例" min-width="100">
               <template slot-scope="scope">
-                <div>{{scope.row.achieveFeesRatio}}%</div>
+<!--                <div>{{scope.row.achieveFeesRatio}}%</div>-->
+                <div>{{getPercentage(scope.row.achieveFees, form.corporateAchieve)}}%</div>
               </template>
             </el-table-column>
             <el-table-column fixed="right" label="操作" width="100">
@@ -307,7 +314,7 @@
       switch (type) {
         case 'corporateAchieveRatio':
           // 角色人业绩比例
-          this.form.corporateAchieveRatio = this.getPercentage(this.form.corporateAchieve, this.form.roleAchieveCap);
+          // this.form.corporateAchieveRatio = this.getPercentage(this.form.corporateAchieve, this.form.roleAchieveCap);
           // 如果管理岗列表有数据，要重新算
           if (this.form.managerAchieveList.length > 0) {
             this.form.managerAchieveList.forEach((list: any) => {
@@ -317,7 +324,7 @@
           break;
         case 'commFeesRatio':
           // 拆佣比例
-          this.form.commFeesRatio = this.getPercentage(this.form.commFees, this.data.totalAmount);
+          // this.form.commFeesRatio = this.getPercentage(this.form.commFees, this.data.totalAmount);
           break;
         case 'achieveFeesRatio':
           // 管理岗的金额比例

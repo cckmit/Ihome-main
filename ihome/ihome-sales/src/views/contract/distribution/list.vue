@@ -3,8 +3,8 @@
  * @version: 
  * @Author: ywl
  * @Date: 2020-09-25 17:34:32
- * @LastEditors: wwq
- * @LastEditTime: 2021-01-27 10:59:26
+ * @LastEditors: ywl
+ * @LastEditTime: 2021-02-06 10:37:32
 -->
 <template>
   <IhPage label-width="100px">
@@ -581,6 +581,16 @@ export default class DistributionList extends Vue {
       },
       data: { ...this.queryPageParameters },
     }).then((res: any) => {
+      if (res.data.type === "application/json") {
+        let reader = new FileReader();
+        reader.readAsText(res.data, "utf-8");
+        reader.onload = () => {
+          let result: any = reader.result;
+          const res = JSON.parse(result);
+          this.$message.warning(res.msg);
+        };
+        return;
+      }
       const href = window.URL.createObjectURL(res.data);
       const $a = document.createElement("a");
       $a.href = href;
@@ -623,6 +633,16 @@ export default class DistributionList extends Vue {
         Authorization: "bearer " + token,
       },
     }).then((res: any) => {
+      if (res.data.type === "application/json") {
+        let reader = new FileReader();
+        reader.readAsText(res.data, "utf-8");
+        reader.onload = () => {
+          let result: any = reader.result;
+          const res = JSON.parse(result);
+          this.$message.warning(res.msg);
+        };
+        return;
+      }
       const href = window.URL.createObjectURL(res.data);
       const $a = document.createElement("a");
       $a.href = href;

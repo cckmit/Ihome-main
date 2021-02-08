@@ -160,7 +160,7 @@
             <el-input
               v-if="['ChangeInternalAchieveInf', 'RetreatRoom'].includes(changeType)"
               disabled
-              v-model="postData.buildingId"></el-input>
+              v-model="postData.buildingName"></el-input>
             <IhSelectPageByBuild
               v-else
               @change="changeBuild"
@@ -179,14 +179,19 @@
             <el-input
               v-if="['ChangeInternalAchieveInf', 'RetreatRoom'].includes(changeType)"
               disabled
-              v-model="postData.roomId"></el-input>
+              v-model="postData.roomNo"></el-input>
             <IhSelectPageByRoom
               v-else
               @change="changeRoom"
-              :params="{exDeal: 0}"
               v-model="postData.roomId"
               :proId="postData.projectId"
               :buildingId="postData.buildingId"
+              :props="{
+                key: 'roomId',
+                value: 'roomId',
+                lable: 'roomNo',
+                disabled: 'exDeal'
+              }"
               :isCascade="true"
               cascadeType="room"
               placeholder="请选择房号"
@@ -1291,7 +1296,6 @@
   import SelectReceivePackage from "@/views/deal/dealReport/dialog/selectReceivePackage.vue";
   import {
     post_pageData_initDistribution, // 初始化后根据渠道商信息获取分销协议
-    get_pageData_getProBaseByTermId__cycleId, // 通过项目周期获取成交基础信息
     post_pageData_initBasic, // 选择周期、房号后初始化页面
     post_pageData_recalculateAchieve, // 重算平台费用 --- 总包分销不一致的情况
     post_pageData_recalculateAchieveComm, // 重算平台费用 --- 总包分销一致的情况
@@ -1305,13 +1309,16 @@
     post_pageData_initChannelComm,
     post_pageData_initAchieve,
     post_pageData_calculateReceiveAmount, // 根据收派套餐，计算收派金额
-    get_suppDeal_toUpdateSuppDeal, // 去修改补充成交 --- 初始页面接口
+    get_suppDeal_toUpdateSuppDeal__id, // 去修改补充成交 --- 初始页面接口
     post_suppDeal_previewUpdateAchieveInfChange, // 预览修改业绩信息变更
     post_suppDeal_previewUpdateBasicInfChange, // 预览修改基础信息变更
     post_suppDeal_previewUpdateRetreatRoom, // 预览修改退房
     post_suppDeal_previewUpdateStaffAchieveChange, // 预览修改内部员工业绩变更
   } from "@/api/deal";
   import {get_org_get__id} from "@/api/system"; // 获取组织name
+  import {
+    get_term_getProBaseByTermId__termId, // 通过项目周期获取成交基础信息
+  } from "@/api/project";
   import {
     post_notice_customer_information // 通过成交id获取优惠告知书
   } from "@/api/contract";
@@ -1600,6 +1607,7 @@
     get receiveAchieveVO() {
       let arr: any = []
       let rewardTotal: any = 0; // 派发内场总金额合计，用于判断一手代理团队是否必选
+      let totalAmount: any = 0; // 派发佣金合计金额+派发内场奖励合计金额
       if (this.postData.receiveList.length > 0) {
         let obj = {
           receiveAmount: 0,
@@ -1612,10 +1620,13 @@
             + item.rewardAmount * 1 * 100 + item.totalPackageAmount * 1 * 100
             + item.distributionAmount * 1 * 100) / 100;
           obj.otherChannelFees = (obj.otherChannelFees * 1 * 100 + item.otherChannelFees * 1 * 100) / 100;
+          totalAmount = (totalAmount * 1 * 100 + item.commAmount * 1 * 100 +
+            item.rewardAmount * 1 * 100) / 100;
           rewardTotal = (rewardTotal * 1 * 100 + item.rewardAmount * 1 * 100) / 100;
         })
         arr.push(obj);
       }
+      this.editDealAchieveData.totalAmount = totalAmount;
       if (rewardTotal > 0) {
         this.oneAgentRequiredFlag = true;
       } else {
@@ -1735,7 +1746,7 @@
         res = await post_suppDeal_toAddSuppDeal(postData);
       } else if (this.btnType === "edit") {
         // 去修改
-        res = await get_suppDeal_toUpdateSuppDeal(this.id);
+        res = await get_suppDeal_toUpdateSuppDeal__id({id: this.id});
       } else {
         return;
       }
@@ -2049,7 +2060,7 @@
     // 通过项目周期id获取基础信息
     async getBaseDealInfo(id: any) {
       if (!id) return;
-      let baseInfo: any = await get_pageData_getProBaseByTermId__cycleId({cycleId: id});
+      let baseInfo: any = await get_term_getProBaseByTermId__termId({termId: id});
       this.baseInfoByTerm = JSON.parse(JSON.stringify(baseInfo));
       // 物业类型
       this.propertyTypeList = this.getPropertyTypeList(baseInfo.propertyEnums);
@@ -2098,9 +2109,24 @@
           this.navList = (this as any).$tool.deepClone(this.defaultNavList);
         }
         // 收派金额部分信息 --- 服务费
-        if (baseInfo.serviceFee) {
+        this.postData.receiveList = [];
+        if (baseInfo.chargeEnum !== 'Agent') {
           let tempList: any = [];
-          tempList.push(baseInfo.serviceFee);
+          tempList.push(
+            {
+              type: 'ServiceFee', // 服务费
+              partyACustomer: null,
+              partyACustomerName: '客户',
+              packgeName: null,
+              packageId: null,
+              receiveAmount: null,
+              commAmount: null,
+              rewardAmount: null,
+              totalPackageAmount: null,
+              distributionAmount: null,
+              otherChannelFees: null,
+            }
+          );
           let list: any = this.initReceiveVOS(tempList);
           this.$nextTick(() => {
             this.postData.receiveList.push(...list);
@@ -2145,7 +2171,7 @@
           // 分销
           returnValue = 'District';
           break;
-        case 'TotalBagDistriModel' :
+        case 'TotalBagDistrModel' :
           // 总包+分销
           returnValue = '';
           break;

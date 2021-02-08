@@ -414,10 +414,12 @@
       stage: null,
       projectCycle: null,
       proId: null,
+      buyUnit: null,
       brokerId: null,
       timeType: null,
       beginTime: null,
-      endTime: null
+      endTime: null,
+      roomNumberId: null
     };
     selectTimeRange: any = [];
 
@@ -512,7 +514,7 @@
             break;
           case 'SUPPLEMENTDEAL':
             // 补充成交按钮权限
-            if (row.id === row.parentId && row.status === 'ReviewPassed' && this.currentJobId === 52) {
+            if (row.id === row.parentId && row.status === 'ReviewPassed' && this.currentJobId === 52 && !row.noApplySupp) {
               // 主成交、已审核、文员
               flag = false;
             }
@@ -575,10 +577,13 @@
         agencyId: null,
         stage: null,
         projectCycle: null,
+        proId: null,
+        buyUnit: null,
         brokerId: null,
         timeType: null,
         beginTime: null,
         endTime: null,
+        roomNumberId: null,
         pageNum: 1,
         pageSize: this.queryPageParameters.pageSize
       };

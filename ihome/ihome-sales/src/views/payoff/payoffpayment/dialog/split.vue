@@ -4,7 +4,7 @@
  * @Author: wwq
  * @Date: 2021-01-16 15:10:14
  * @LastEditors: wwq
- * @LastEditTime: 2021-01-16 17:17:16
+ * @LastEditTime: 2021-02-07 16:01:08
 -->
 <template>
   <el-dialog
@@ -169,6 +169,7 @@
     >
       <el-button @click="cancel()">取 消</el-button>
       <el-button
+        :loading="finishLoading"
         type="primary"
         @click="finish()"
       >保 存</el-button>
@@ -179,12 +180,14 @@
 import { Component, Vue, Prop } from "vue-property-decorator";
 import { Form as ElForm } from "element-ui";
 import { NoRepeatHttp } from "ihome-common/util/aop/no-repeat-http";
+import { post_payDetail_split } from "@/api/payoff/index";
 @Component({
   components: {},
 })
 export default class Split extends Vue {
   @Prop({ default: null }) data: any;
   dialogVisible = true;
+  finishLoading = false;
 
   private info: any = {
     applyCode: null,
@@ -212,14 +215,22 @@ export default class Split extends Vue {
   @NoRepeatHttp()
   async submit(valid: any) {
     if (valid) {
+      this.finishLoading = true;
       let obj: any = {};
       obj = {
         ...this.info,
         splitAmounts: this.info.splitAmounts.map((v: any) => Number(v.num)),
       };
-      this.$emit("finish", obj);
+      try {
+        await post_payDetail_split(obj);
+        this.finishLoading = false;
+        this.$emit("finish", obj);
+      } catch (err) {
+        this.finishLoading = false;
+      }
     } else {
       console.log("error submit!!");
+
       return false;
     }
   }

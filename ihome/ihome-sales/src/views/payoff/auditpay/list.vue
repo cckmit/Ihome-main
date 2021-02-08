@@ -4,7 +4,7 @@
  * @Author: wwq
  * @Date: 2020-12-26 11:11:28
  * @LastEditors: wwq
- * @LastEditTime: 2021-01-16 17:46:04
+ * @LastEditTime: 2021-02-08 09:54:05
 -->
 <template>
   <IhPage label-width="120px">
@@ -28,7 +28,7 @@
               <IhSelectPageByChannel
                 placeholder="请选择渠道商"
                 clearable
-                v-model="queryPageParameters.agencyName"
+                v-model="queryPageParameters.agencyId"
               ></IhSelectPageByChannel>
             </el-form-item>
           </el-col>
@@ -221,28 +221,10 @@
           <template v-slot="{ row }">
             <el-link
               type="primary"
-              @click.native.prevent="routeTo(row, 'audit')"
+              :class="{'ih-data-disabled': !auditChange(row)}"
+              @click.native.prevent="routeTo(row)"
               v-has="'B.SALES.PAYOFF.PAYAPPLY.SHLB'"
             >审核</el-link>
-            <!-- <el-dropdown
-              trigger="click"
-              class="margin-left-15"
-            >
-              <span class="el-dropdown-link">
-                更多
-                <i class="el-icon-arrow-down el-icon--right"></i>
-              </span>
-              <el-dropdown-menu slot="dropdown">
-                <el-dropdown-item
-                  :class="{ 'ih-data-disabled': ''}"
-                  @click.native.prevent="routeTo(row, 'edit')"
-                >审核</el-dropdown-item>
-                <el-dropdown-item
-                  :class="{ 'ih-data-disabled': ''}"
-                  @click.native.prevent="remove(row, '')"
-                >管控</el-dropdown-item>
-              </el-dropdown-menu>
-            </el-dropdown> -->
           </template>
         </el-table-column>
       </el-table>
@@ -272,6 +254,12 @@
         "
       />
     </ih-dialog>
+    <ih-dialog :show="prodialogVisible">
+      <Progress
+        :data="rogressData"
+        @cancel="() => (prodialogVisible = false)"
+      />
+    </ih-dialog>
   </IhPage>
 </template>
 <script lang="ts">
@@ -279,11 +267,12 @@ import { Component, Vue } from "vue-property-decorator";
 import { post_payApply_review_list } from "@/api/payoff/index";
 import PaginationMixin from "../../../mixins/pagination";
 import SelectOrganizationTree from "@/components/SelectOrganizationTree.vue";
+import Progress from "../payorder/dialog/progress.vue";
 import axios from "axios";
 import { getToken } from "ihome-common/util/cookies";
 
 @Component({
-  components: { SelectOrganizationTree },
+  components: { SelectOrganizationTree, Progress },
   mixins: [PaginationMixin],
 })
 export default class PayoffList extends Vue {
@@ -291,7 +280,7 @@ export default class PayoffList extends Vue {
     applyCode: null,
     belongOrgName: null,
     maker: null,
-    agencyName: null,
+    agencyId: null,
     applyAmount: null,
     actualAmount: null,
     deductAmount: null,
@@ -300,6 +289,8 @@ export default class PayoffList extends Vue {
     endMakerTime: null,
     timeList: [],
   };
+  prodialogVisible: any = false;
+  rogressData: any = {};
   selection: any = [];
   resPageInfo: any = {
     total: null,
@@ -313,43 +304,65 @@ export default class PayoffList extends Vue {
     return status && dangqian;
   }
 
-  checkChange(row: any) {
-    console.log(row);
-    // const status = row.status === "WaitAuditByBranchHead";
-    // const roleList = (this.$root as any).userInfo.roleList.map(
-    //   (v: any) => v.code
-    // );
-    // const fen = roleList.includes("RBusinessManagement");
-    // const zong = roleList.includes("RHeadBusinessManagement");
-    // return (fen || zong) && status;
+  auditChange(row: any) {
+    const PlatformClerkUnreview = row.status === "PlatformClerkUnreview"; // 待平台文员审核
+    const BranchBusinessManageUnreview =
+      row.status === "BranchBusinessManageUnreview"; // 待分公司业管审核
+    const BranchFinanceUnreview = row.status === "BranchFinanceUnreview"; // 待分公司财务审核
+    const ReviewPass = row.status === "ReviewPass"; // 终审通过
+    const ReviewReject = row.status === "ReviewReject"; // 终审驳回
+    const PaymentFailed = row.status === "PaymentFailed"; // 支付失败
+    const RFinanceCashier = this.$roleTool.RFinanceCashier(); // 出纳
+    const RFinanceFund = this.$roleTool.RFinanceFund(); // 资金岗
+    const RFinancialOfficer = this.$roleTool.RFinancialOfficer(); // 分公司财务
+    const RHeadFinancialOfficer = this.$roleTool.RHeadFinancialOfficer(); // 总公司财务
+    const RPlatformClerk = this.$roleTool.RPlatformClerk(); // 平台文员
+    const RBusinessManagement = this.$roleTool.RBusinessManagement(); // 分公司业管
+    return (
+      (PlatformClerkUnreview && RPlatformClerk) ||
+      (BranchBusinessManageUnreview && RBusinessManagement) ||
+      (BranchFinanceUnreview && (RFinancialOfficer || RHeadFinancialOfficer)) ||
+      (ReviewPass && RFinanceCashier) ||
+      (ReviewReject && (RFinancialOfficer || RHeadFinancialOfficer)) ||
+      (PaymentFailed && RFinanceFund)
+    );
   }
 
   showPlanPicture(data: any) {
-    console.log(data);
+    this.rogressData = {
+      id: data.id,
+      status: data.status,
+    };
+    this.prodialogVisible = true;
   }
 
   // 导出
   async exportMsg() {
-    let arr: any = this.resPageInfo.list.map((v: any) => v.id);
-    const token: any = getToken();
-    axios({
-      method: "POST",
-      url: `/sales-api/payoff/file/excel/list`,
-      xsrfHeaderName: "Authorization",
-      responseType: "blob",
-      headers: {
-        "Content-Type": "application/json",
-        Authorization: "bearer " + token,
-      },
-      data: arr,
-    }).then((res: any) => {
-      const href = window.URL.createObjectURL(res.data);
-      const $a = document.createElement("a");
-      $a.href = href;
-      $a.download = "审核付款申请列表.xlsx";
-      $a.click();
-      $a.remove();
-    });
+    if (!this.resPageInfo.list.length) {
+      this.$message.warning("暂无数据");
+      return;
+    } else {
+      let arr: any = this.resPageInfo.list.map((v: any) => v.id);
+      const token: any = getToken();
+      axios({
+        method: "POST",
+        url: `/sales-api/payoff/file/excel/list`,
+        xsrfHeaderName: "Authorization",
+        responseType: "blob",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: "bearer " + token,
+        },
+        data: arr,
+      }).then((res: any) => {
+        const href = window.URL.createObjectURL(res.data);
+        const $a = document.createElement("a");
+        $a.href = href;
+        $a.download = "审核付款申请列表.xlsx";
+        $a.click();
+        $a.remove();
+      });
+    }
   }
 
   get emptyText() {
@@ -370,7 +383,7 @@ export default class PayoffList extends Vue {
       applyCode: null,
       belongOrgName: null,
       maker: null,
-      agencyName: null,
+      agencyId: null,
       applyAmount: null,
       actualAmount: null,
       deductAmount: null,
@@ -381,17 +394,28 @@ export default class PayoffList extends Vue {
     });
   }
 
-  routeTo(row: any, where: string) {
-    this.$router.push({
-      path: `/auditpay/${where}`,
-      query: {
-        id: row.id,
-      },
-    });
-  }
-
-  add() {
-    this.$router.push("/payoff/add");
+  routeTo(row: any) {
+    const RPlatformClerk = this.$roleTool.RPlatformClerk();
+    const RBusinessManagement = this.$roleTool.RBusinessManagement();
+    const RFinancialOfficer = this.$roleTool.RFinancialOfficer();
+    if (
+      RFinancialOfficer &&
+      ["BranchFinanceUnreview", "ReviewPass"].includes(row.status)
+    ) {
+      this.$router.push({
+        path: `/auditpay/audit`,
+        query: {
+          id: row.id,
+        },
+      });
+    } else if (RPlatformClerk || RBusinessManagement) {
+      this.$router.push({
+        path: `/auditpay/info`,
+        query: {
+          id: row.id,
+        },
+      });
+    }
   }
 
   handleSelectionChange(val: any) {

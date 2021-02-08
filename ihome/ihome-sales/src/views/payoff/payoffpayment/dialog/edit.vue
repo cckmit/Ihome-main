@@ -4,7 +4,7 @@
  * @Author: wwq
  * @Date: 2021-01-16 17:16:53
  * @LastEditors: wwq
- * @LastEditTime: 2021-01-18 14:51:52
+ * @LastEditTime: 2021-02-08 12:02:34
 -->
 <template>
   <el-dialog
@@ -95,7 +95,7 @@
                 v-for="item in channelAccountOptions"
                 :key="item.id"
                 :label="item.accountNo"
-                :value="item.id"
+                :value="item.accountNo"
               ></el-option>
             </el-select>
           </el-form-item>
@@ -107,19 +107,13 @@
             label="付款方名称:"
             prop="companyName"
           >
-            <el-select
-              v-model="info.companyName"
+            <IhSelectPageByPayer
               clearable
-              placeholder="请选择付款方名称"
-              class="width--100"
-            >
-              <el-option
-                v-for="item in channelAccountOptions"
-                :key="item.id"
-                :label="item.accountNo"
-                :value="item.id"
-              ></el-option>
-            </el-select>
+              v-model="info.companyId"
+              :proId="info.belongOrgId"
+              :search-name="info.companyName"
+              @changeOption="getPayerInfo"
+            ></IhSelectPageByPayer>
           </el-form-item>
         </el-col>
       </el-row>
@@ -136,10 +130,10 @@
               class="width--100"
             >
               <el-option
-                v-for="item in channelAccountOptions"
+                v-for="item in payerAccountOptions"
                 :key="item.id"
                 :label="item.accountNo"
-                :value="item.id"
+                :value="item.accountNo"
               ></el-option>
             </el-select>
           </el-form-item>
@@ -197,6 +191,7 @@
     >
       <el-button @click="cancel()">取 消</el-button>
       <el-button
+        :loading="editLoading"
         type="primary"
         @click="finish()"
       >保 存</el-button>
@@ -208,7 +203,8 @@ import { Component, Vue, Prop } from "vue-property-decorator";
 import { Form as ElForm } from "element-ui";
 import { NoRepeatHttp } from "ihome-common/util/aop/no-repeat-http";
 import { get_channel_get__id } from "@/api/channel/index";
-import { get_role_get__id } from "@/api/system/index";
+import { post_payDetail_update } from "@/api/payoff";
+import { post_bankAccount_getByOrgId__orgId } from "@/api/finance/index";
 @Component({
   components: {},
 })
@@ -218,16 +214,21 @@ export default class Edit extends Vue {
   channelAccountOptions: any = [];
   paymentMethodDisabled: any = false;
   makingInfo: any = {};
+  editLoading: any = false;
 
-  private info: any = {
+  info: any = {
     applyCode: null,
     settlementCode: null,
     actualAmount: null,
     agencyName: null,
     receiveAccount: null,
+    companyId: null,
     companyName: null,
     paymentAccount: null,
+    settlementMethod: null,
+    paymentMethod: null,
   };
+  payerAccountOptions: any = [];
   private rules: object = {
     receiveAccount: [
       { required: true, message: "请选择渠道收款账号", trigger: "change" },
@@ -246,6 +247,14 @@ export default class Edit extends Vue {
     ],
   };
 
+  async getPayerInfo(item: any) {
+    this.info.payerName = item.companyName;
+    const res = await post_bankAccount_getByOrgId__orgId({
+      orgId: this.info.payerId,
+    });
+    this.payerAccountOptions = res;
+  }
+
   cancel() {
     this.$emit("cancel", false);
   }
@@ -255,7 +264,14 @@ export default class Edit extends Vue {
   @NoRepeatHttp()
   async submit(valid: any) {
     if (valid) {
-      this.$emit("finish", this.info);
+      this.editLoading = true;
+      try {
+        await post_payDetail_update(this.info);
+        this.editLoading = false;
+        this.$emit("finish");
+      } catch (err) {
+        this.editLoading = false;
+      }
     } else {
       console.log("error submit!!");
       return false;
@@ -274,12 +290,14 @@ export default class Edit extends Vue {
 
   async created() {
     this.info = { ...this.data };
-    let res = await get_channel_get__id({ id: this.info.agencyId });
+    console.log(this.info);
+    const res = await get_channel_get__id({ id: this.info.agencyId });
     this.channelAccountOptions = res.channelBanks;
+    const item = await post_bankAccount_getByOrgId__orgId({
+      orgId: this.info.companyId,
+    });
+    this.payerAccountOptions = item;
     this.settlementMethodChange(this.info.settlementMethod);
-    // 通过制单人查询我司及账号
-    this.makingInfo = await get_role_get__id({ id: this.info.makerId });
-    console.log(this.makingInfo);
   }
 }
 </script>

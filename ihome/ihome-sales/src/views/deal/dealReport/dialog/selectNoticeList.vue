@@ -33,7 +33,7 @@
             <el-select
               v-model="queryPageParameters.notificationTypes"
               placeholder="请选择类型"
-              clearable
+              disabled
               class="width--100">
               <el-option
                 v-for="i in $root.dictAllList('NotificationType')"
@@ -228,7 +228,7 @@
     private termName = null;
     public queryPageParameters: any = {
       noticeNo: null, // 编号
-      notificationTypes: null, // 类型 array
+      notificationTypes: 'Notification', // 类型 array
       projectId: null, // 项目名称
       cycleId: null, // 项目周期
       buyUnit: null, // 栋座
@@ -305,7 +305,7 @@
     async getListMixin() {
       let postData: any = {
         ...this.queryPageParameters,
-        notificationTypes: this.queryPageParameters.notificationTypes ? [this.queryPageParameters.notificationTypes] : [],
+        notificationTypes: ['Notification'], // 只查优惠告知书
         notificationStatuses: this.queryPageParameters.notificationStatuses ? [this.queryPageParameters.notificationStatuses] : [],
       }
       const infoList = await post_notice_deal_list(postData);
