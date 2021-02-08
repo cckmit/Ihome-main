@@ -4,7 +4,7 @@
  * @Author: ywl
  * @Date: 2021-01-07 10:29:38
  * @LastEditors: ywl
- * @LastEditTime: 2021-02-08 18:04:10
+ * @LastEditTime: 2021-02-08 19:18:04
 -->
 <template>
   <IhPage label-width="100px">
@@ -268,10 +268,9 @@
 import { Component, Vue } from "vue-property-decorator";
 import PaginationMixin from "../../../mixins/pagination";
 import Steps from "./dialog/steps.vue";
-import {
-  post_applyRec_getList,
-  // get_applyRec_excelBatchApplyInfo,
-} from "../../../api/apply/index";
+import axios from "axios";
+import { getToken } from "ihome-common/util/cookies";
+import { post_applyRec_getList } from "../../../api/apply/index";
 
 @Component({
   components: { Steps },
@@ -296,8 +295,39 @@ export default class ApplyRecList extends Vue {
   private applyId: any = null;
   private timeList: any = [];
 
-  private handleExport() {
-    //
+  private async handleExport() {
+    let flag = this.timeList && this.timeList.length;
+    this.queryPageParameters.applyTimeStart = flag ? this.timeList[0] : null;
+    this.queryPageParameters.applyTimeEnd = flag ? this.timeList[1] : null;
+    const token: any = getToken();
+    axios({
+      method: "POST",
+      url: "/sales-api/apply/applyRec/excelBatchApplyInfo",
+      xsrfHeaderName: "Authorization",
+      responseType: "blob",
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: "bearer " + token,
+      },
+      data: { ...this.queryPageParameters },
+    }).then((res: any) => {
+      if (res.data.type === "application/json") {
+        let reader = new FileReader();
+        reader.readAsText(res.data, "utf-8");
+        reader.onload = () => {
+          let result: any = reader.result;
+          const res = JSON.parse(result);
+          this.$message.warning(res.msg);
+        };
+        return;
+      }
+      const href = window.URL.createObjectURL(res.data);
+      const $a = document.createElement("a");
+      $a.href = href;
+      $a.download = "请款信息.zip";
+      $a.click();
+      $a.remove();
+    });
   }
   private search() {
     let flag = this.timeList && this.timeList.length;

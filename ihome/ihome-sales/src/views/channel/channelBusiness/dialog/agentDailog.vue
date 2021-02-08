@@ -96,10 +96,10 @@ export default class AgentDialog extends Vue {
     email: [
       {
         type: "email",
-        max: 64,
-        message: "字符长度不能大于16",
+        message: "请输入正确的邮箱",
         trigger: "change",
       },
+      { max: 64, message: "字符长度不能大于64", trigger: "change" },
     ],
   };
 
