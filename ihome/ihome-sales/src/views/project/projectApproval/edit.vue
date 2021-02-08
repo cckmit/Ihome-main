@@ -165,10 +165,6 @@ export default class ProjectApprovalEdit extends Vue {
           type: 'warning'
         }).then(() => {
            (this.$refs.basicInfo as any).submit('save');
-                     console.log(activeName);
-                     this.isCut = true;    
-          this.componetName = activeName;
-          this.tabActive = activeName;
         }).catch(() => {
           this.$message({
             type: 'info',
