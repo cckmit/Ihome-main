@@ -719,7 +719,7 @@
         this.$router.push({
           path: "/dealReport/suppDeal",
           query: {
-            id: scope.row.parentId,
+            id: scope.row.id,
             type: type,
             btnType: 'add' // 新增
           }
