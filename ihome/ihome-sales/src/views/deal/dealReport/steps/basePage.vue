@@ -3514,6 +3514,7 @@
         agencyVO: [], // 中介信息
         customerVO: this.postData.customerList, // 客户信息
         dealAddInputVO: {
+          id: this.id,
           parentId: this.postData.parentId, // 主成交id
           signDate: this.postData.signDate,
           signType: this.postData.signType,
@@ -3560,6 +3561,7 @@
         customerVO: this.postData.customerList, // 客户信息
         dealVO: {
           ...this.postData,
+          id: this.id,
           noticeIds: [] // 优惠告知书Id
         }, // 成交基础信息
         documentVO: this.getDocumentList(this.postData.uploadDocumentList), // 成交附件信息
