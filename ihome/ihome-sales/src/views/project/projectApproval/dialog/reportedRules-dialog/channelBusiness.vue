@@ -226,7 +226,7 @@ export default class ProjectApprovalDialog extends Vue {
     shortName: null,
     provinces: null,
     county: null,
-    city: null,
+    city: '',
     inputUser: null,
     status: "PASS",
     followUserId: null,
@@ -247,7 +247,7 @@ export default class ProjectApprovalDialog extends Vue {
     this.getListMixin();
   }
   async getListMixin() {
-    this.queryPageParameters.city = this.data.city;
+    this.queryPageParameters.city = this.data;
     this.resPageInfo = await post_channel_getList(this.queryPageParameters);
   }
 
