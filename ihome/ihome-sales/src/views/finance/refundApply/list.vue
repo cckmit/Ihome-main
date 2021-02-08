@@ -4,7 +4,7 @@
  * @Author: zyc
  * @Date: 2021-02-05 16:41:19
  * @LastEditors: zyc
- * @LastEditTime: 2021-02-06 16:47:08
+ * @LastEditTime: 2021-02-08 10:24:49
 -->
  
 <template>
@@ -76,10 +76,12 @@
           </el-col>
           <el-col :span="8">
             <el-form-item label="制单人">
-              <el-input
-                v-model="queryPageParameters.inputUser"
+              <IhSelectPageUser
                 placeholder="制单人"
-              ></el-input>
+                v-model="queryPageParameters.inputUser"
+                clearable
+              >
+              </IhSelectPageUser>
             </el-form-item>
           </el-col>
         </el-row>
@@ -105,7 +107,13 @@
         @selection-change="handleSelectionChange"
         :empty-text="emptyText"
       >
-        <el-table-column fixed type="selection" width="50" align="center">
+        <el-table-column
+          fixed
+          type="selection"
+          width="50"
+          align="center"
+          :selectable="selectable"
+        >
         </el-table-column>
 
         <el-table-column
@@ -125,16 +133,19 @@
             {{ scope.row.amount }}
           </template>
         </el-table-column>
-        <el-table-column
-          prop="projectName"
-          label="状态"
-          width="100"
-        ></el-table-column>
-        <el-table-column prop="status" label="退款状态">
-          <template slot-scope="scope">{{
-            $root.dictAllName(scope.row.status, "FinRefundApplyStatus")
-          }}</template>
+        <el-table-column prop="" label="状态" width="100">
+          <template slot-scope="scope">
+            {{ $root.dictAllName(scope.row.status, "FinRefundApplyStatus") }}
+
+            <el-tag
+              v-if="scope.row.overruleMark == 1"
+              size="small"
+              type="danger"
+              >驳回</el-tag
+            >
+          </template>
         </el-table-column>
+
         <el-table-column
           prop="accountName"
           width="100"
@@ -146,12 +157,12 @@
         <el-table-column prop="createDate" label="制单日期" width="100">
         </el-table-column>
         <el-table-column width="200" label="流程进度" fixed="right">
-          <template>
+          <template slot-scope="scope">
             <el-link
               style="color: #409eff"
               class="margin-right-10"
               type="primary"
-              @click.native.prevent="info(scope)"
+              @click.native.prevent="showPlanPicture(scope)"
               >进度流程图</el-link
             >
           </template>
@@ -159,30 +170,37 @@
         <el-table-column prop="contType" label="操作" width="120" fixed="right">
           <template slot-scope="scope">
             <el-link
-              style="color: #409eff"
               class="margin-right-10"
               type="primary"
               @click.native.prevent="info(scope)"
               >详情</el-link
             >
             <el-link
-              style="color: #409eff"
               class="margin-right-10"
-              type="primary"
+              type="info"
               @click.native.prevent="edit(scope)"
+              :class="{
+                'ih-data-disabled': ['Draft', 'AppealDismissed'].includes(
+                  scope.row.status
+                ),
+              }"
               >修改</el-link
             >
             <el-link
-              style="color: #409eff"
+              :class="{ 'ih-data-disabled': scope.row.status != 'PTWYSH' }"
+              type="warning"
               class="margin-right-10"
-              type="primary"
               @click.native.prevent="withdraw(scope)"
               >撤回</el-link
             >
             <el-link
-              style="color: #409eff"
+              :class="{
+                'ih-data-disabled': ['Draft', 'AppealDismissed'].includes(
+                  scope.row.status
+                ),
+              }"
               class="margin-right-10"
-              type="primary"
+              type="danger"
               @click.native.prevent="remove(scope)"
               >删除</el-link
             >
@@ -202,6 +220,12 @@
         :total="resPageInfo.total"
       ></el-pagination>
     </template>
+    <ih-dialog :show="prodialogVisible">
+      <Progress
+        :data="rogressData"
+        @cancel="() => (prodialogVisible = false)"
+      />
+    </ih-dialog>
   </ih-page>
 </template>
 <script lang="ts">
@@ -212,10 +236,13 @@ import {
   post_refundApply_getList,
   post_refundApply_revoke__id,
   post_refundApply_delete__id,
+  post_refundApply_batchDelete,
+  get_refundApply_getBusinessProcess__id,
 } from "../../../api/finance/index";
 import PaginationMixin from "../../../mixins/pagination";
+import Progress from "./dialog/progress.vue";
 @Component({
-  components: {},
+  components: { Progress },
   mixins: [PaginationMixin],
   filters: {
     emptyShow(data: any) {
@@ -232,6 +259,8 @@ export default class RefundApplyList extends Vue {
     super();
     console.log("constructor");
   }
+  prodialogVisible = false;
+  rogressData = [];
   removeList: any[] = [];
   queryPageParameters: any = {
     accountId: null,
@@ -380,7 +409,7 @@ export default class RefundApplyList extends Vue {
     if (postData && postData.length > 0) {
       try {
         await this.$confirm("是否确定删除已勾选?", "提示");
-        await post_refundApply_delete__id(postData);
+        await post_refundApply_batchDelete(postData);
         this.$message.success("删除成功");
         this.getListMixin();
       } catch (error) {
@@ -389,6 +418,21 @@ export default class RefundApplyList extends Vue {
     } else {
       this.$message.warning("请先勾选表格数据");
     }
+  }
+  selectable(row: any) {
+    if (["Draft", "AppealDismissed"].includes(row.status)) {
+      return false;
+    } else {
+      return true;
+    }
+  }
+  async showPlanPicture(scope: any) {
+    const res: any = await get_refundApply_getBusinessProcess__id({
+      id: scope.row.id,
+    });
+    this.rogressData = res;
+    console.log(this.rogressData);
+    this.prodialogVisible = true;
   }
 }
 </script>
