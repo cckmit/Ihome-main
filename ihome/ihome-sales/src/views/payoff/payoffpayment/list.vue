@@ -4,7 +4,7 @@
  * @Author: wwq
  * @Date: 2021-01-15 10:45:53
  * @LastEditors: wwq
- * @LastEditTime: 2021-01-16 18:28:00
+ * @LastEditTime: 2021-02-07 17:51:56
 -->
 <template>
   <IhPage label-width="100px">
@@ -245,7 +245,7 @@
                 width="120"
               ></el-table-column>
               <el-table-column
-                v-if="['all', 'PaymentFail', 'TicketRefunded'].includes(i.name)"
+                v-if="['all', 'TicketRefunded'].includes(i.name)"
                 label="失败原因"
                 prop="reason"
                 width="150"
@@ -284,7 +284,7 @@
                   >修改</el-link>
                   <el-link
                     type="primary"
-                    v-if="['PaymentFail', 'TicketRefunded'].includes(row.paymentStatus)"
+                    v-if="['TicketRefunded'].includes(row.paymentStatus)"
                     v-has="'B.SALES.PAYOFF.PAYOFFPAYMENT.TBZT'"
                     @click="synchronization(row)"
                   >同步状态</el-link>
@@ -338,13 +338,10 @@ import PaginationMixin from "../../../mixins/pagination";
 import Split from "./dialog/split.vue";
 import Edit from "./dialog/edit.vue";
 import Setting from "./dialog/setting.vue";
-import { post_payDetail_split } from "@/api/payoff/index";
 import {
   post_payDetail_getList,
   post_payDetail_push,
-  post_payDetail_update,
   get_processRecord_oa_flow_ids,
-  post_payDetail_change_status,
 } from "@/api/payoff/index";
 
 @Component({
@@ -362,13 +359,13 @@ export default class ReturnConfirmList extends Vue {
     paymentMethod: null,
     applyCode: null,
     paymentCode: null,
+    payDateType: null,
     beginDate: null,
     endDate: null,
     paymentStatusList: [
       "PendingPayment",
       "Paying",
       "PaymentSuccess",
-      "PaymentFail",
       "TicketRefunded",
     ],
   };
@@ -394,20 +391,16 @@ export default class ReturnConfirmList extends Vue {
       name: "PendingPayment",
     },
     {
+      label: "已退票",
+      name: "TicketRefunded",
+    },
+    {
       label: "付款中",
       name: "Paying",
     },
     {
       label: "付款成功",
       name: "PaymentSuccess",
-    },
-    {
-      label: "付款失败",
-      name: "PaymentFail",
-    },
-    {
-      label: "已退票",
-      name: "TicketRefunded",
     },
   ];
   showTable: any = [];
@@ -443,7 +436,6 @@ export default class ReturnConfirmList extends Vue {
         "PendingPayment",
         "Paying",
         "PaymentSuccess",
-        "PaymentFail",
         "TicketRefunded",
       ];
     }
@@ -457,6 +449,7 @@ export default class ReturnConfirmList extends Vue {
       paymentMethod: null,
       applyCode: null,
       paymentCode: null,
+      payDateType: null,
       beginDate: null,
       endDate: null,
     });
@@ -473,7 +466,25 @@ export default class ReturnConfirmList extends Vue {
     let arr: any = [];
     if (type === "merge") {
       if (this.selection.length) {
-        arr = this.selection.map((v: any) => v.settlementCode);
+        const sameAgency = this.isAllEqual(
+          this.selection.map((v: any) => v.agencyId)
+        );
+        const sameReceiveAccount = this.isAllEqual(
+          this.selection.map((v: any) => v.receiveAccount)
+        );
+        const isOnlineBanking = this.selection.some(
+          (v: any) => v.settlementMethod === "OnlineBanking"
+        );
+        if (sameAgency && sameReceiveAccount) {
+          arr = this.selection.map((v: any) => v.settlementCode);
+        } else {
+          this.$message.warning("合并推送请勾选同一付款渠道公司及同一账号");
+          return;
+        }
+        if (isOnlineBanking) {
+          this.$message.warning("结算方式为网银支付不可合并推送");
+          return;
+        }
       } else {
         this.$notify({
           type: "error",
@@ -495,6 +506,17 @@ export default class ReturnConfirmList extends Vue {
     });
   }
 
+  // 判断数组的值是否全部相同
+  isAllEqual(arr: any) {
+    if (arr.length > 0) {
+      return !arr.some((v: any) => {
+        return v !== arr[0];
+      });
+    } else {
+      return true;
+    }
+  }
+
   // 拆分
   splitChange(data: any) {
     this.splitData = { ...data };
@@ -502,8 +524,7 @@ export default class ReturnConfirmList extends Vue {
   }
 
   // 拆分成功
-  async splitFinish(data: any) {
-    await post_payDetail_split(data);
+  async splitFinish() {
     this.$message.success("拆分成功");
     this.search();
     this.dialogFormVisible = false;
@@ -516,8 +537,7 @@ export default class ReturnConfirmList extends Vue {
   }
 
   // 修改成功
-  async editFinish(data: any) {
-    await post_payDetail_update(data);
+  async editFinish() {
     this.$message.success("修改成功");
     this.search();
     this.editdialogFormVisible = false;
@@ -540,8 +560,7 @@ export default class ReturnConfirmList extends Vue {
   }
 
   // 设置已付款完成
-  async setFinish(data: any) {
-    await post_payDetail_change_status(data);
+  async setFinish() {
     this.$message.success("设置成功");
     this.search();
     this.setdialogFormVisible = false;
