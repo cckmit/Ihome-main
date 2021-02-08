@@ -1,6 +1,6 @@
 /* eslint-disable */
 /* 此脚本由swagger-ui的api-docs自动生成，请勿修改 */
-//2021-2-2 7:37:49 ├F10: PM┤
+//2021-2-8 4:22:34 ├F10: PM┤
 import { request } from '@/api/base'
 const basePath = "/sales-api/apply"
 /**发起开票申请*/
@@ -23,6 +23,10 @@ return await request.post< number,number> (basePath+'/applyRec/cancel/{applyId}'
 export async function post_applyRec_deleteBatch (d?: any) {
 return await request.post< DelResVO[],DelResVO[]> (basePath+'/applyRec/deleteBatch', d)
 }
+/**批量导出(excel或压缩包)*/
+export async function get_applyRec_excelBatchApplyInfo (d?: any) {
+return await request.get<any,any>(basePath+'/applyRec/excelBatchApplyInfo', { params: d })
+}
 /**根据请佣ID返回详细信息*/
 export async function get_applyRec_getApplyRecById__applyId (d?: any) {
 return await request.get<ApplyRecBaseVO,ApplyRecBaseVO>(basePath+'/applyRec/getApplyRecById/{applyId}', { params: d })
@@ -31,7 +35,7 @@ return await request.get<ApplyRecBaseVO,ApplyRecBaseVO>(basePath+'/applyRec/getA
 export async function post_applyRec_getAuditList (d?: any) {
 return await request.post< any,any> (basePath+'/applyRec/getAuditList', d)
 }
-/**根据条件获取请佣ID列表(状态：已完成)*/
+/**根据条件获取请佣ID列表(状态：已完成，上限100条)*/
 export async function post_applyRec_getIdByCon (d?: any) {
 return await request.post< number[],number[]> (basePath+'/applyRec/getIdByCon', d)
 }
@@ -43,9 +47,17 @@ return await request.post< string,string> (basePath+'/applyRec/getLastApplyNo', 
 export async function post_applyRec_getList (d?: any) {
 return await request.post< any,any> (basePath+'/applyRec/getList', d)
 }
+/**获取OA当前待办人*/
+export async function get_applyRec_getOaAuditUser__applyId (d?: any) {
+return await request.get<string,string>(basePath+'/applyRec/getOaAuditUser/{applyId}', { params: d })
+}
 /**获取所有的OA审核中的请佣申请单记录的OA流水号*/
 export async function post_applyRec_getOaSysApplyIdList (d?: any) {
 return await request.post< number[],number[]> (basePath+'/applyRec/getOaSysApplyIdList', d)
+}
+/**根据请佣ID获取流程列表*/
+export async function get_applyRec_getProcessList__applyId (d?: any) {
+return await request.get<ApplyProcessVO[],ApplyProcessVO[]>(basePath+'/applyRec/getProcessList/{applyId}', { params: d })
 }
 /**根据请佣ID返回是否可开票*/
 export async function get_applyRec_isInvoiceMake__applyId (d?: any) {
@@ -319,6 +331,15 @@ receiveMoney: number;
 /**(必填)回款流水编号*/
 receiveNo: string;
 }
+/**ApplyProcessVO*/
+export interface ApplyProcessVO {
+/**日志逻辑ID，主键，自增长*/
+logId: number;
+/**节点名称*/
+processName: string;
+/**时间(yyyy-MM-dd HH:mm:ss)*/
+time: string;
+}
 /**ApplyRecBaseVO*/
 export interface ApplyRecBaseVO {
 /**本期实际请款金额（不含税）*/
@@ -341,11 +362,21 @@ auditTime: string;
 billTypeCode: string;
 /**成交报告份数*/
 dealCount: number;
+/**甲方开票账号*/
+developAccount: string;
+/**甲方开票账号ID*/
+developAccountId: number;
+/**住所（地址）*/
+developAddress: string;
 /**甲方公司（即开发商）ID*/
 developId: number;
-/**甲方公司名称*/
+/**甲方公司名称，请款单位名称*/
 developName: string;
-/**纳税人识别号（甲方公司）*/
+/**开户行*/
+developOpenBank: string;
+/**电话*/
+developPhone: string;
+/**纳税人识别号*/
 developTaxNo: string;
 /**本期扣罚金额，默认为0*/
 fineMoney: number;
@@ -353,7 +384,7 @@ fineMoney: number;
 fineType: string;
 /**逻辑ID，主键，自增长*/
 id: number;
-/**发票抬头(甲方公司)*/
+/**发票抬头(甲方公司名称)*/
 invoiceTitle: string;
 /**是否允许撤销*/
 isCancel: boolean;
@@ -369,31 +400,27 @@ orgId: number;
 orgName: string;
 /**收款公司ID（乙方公司，我司主体）*/
 polyCompanyId: number;
+/**收款公司名称*/
+polyCompanyName: string;
 /**项目ID*/
 proId: number;
 /**项目推广名称*/
 proName: string;
-/**收款账户ID（乙方公司，我司主体）*/
+/**收款账号ID（乙方公司，我司主体）*/
 receAccountId: number;
-/**银行账号*/
+/**收款账号*/
 receBankAccount: string;
-/**联行号*/
+/**联行号（收款公司）*/
 receBranchNo: string;
-/**收款单位名称*/
-receName: string;
-/**开户行*/
-receOpeningBankBranch: string;
-/**开户行所属银行*/
-receOpeningBankType: string;
 /**经办部门意见*/
 remark: string;
-/**状态(Draft-草稿、PlatformClerk-待平台文员审核、BusinessMan-待业管审核、BranchAccount-待分公司会计审核、Oa-OA领导审核中、InvoiceApply-待申请开票、BusinessManAgain-待业管复审、InvoiceClerk-待开票员审核、InvoiceMake-待开票员开票、Confirm-待回款确认、Complete-已完成、Stop-终止)*/
+/**状态(Draft-草稿、PlatformClerk-待平台文员审核、BusinessMan-待分公司业管审核、BranchAccount-待分公司财务审核、Oa-OA领导审核中、InvoiceApply-待申请开票、BusinessManAgain-待分公司业管复审、InvoiceClerk-待开票员审核、InvoiceMake-待开票员开票、Confirm-待回款确认、Complete-已完成、Stop-终止)*/
 status: string;
 /**本期扣除金额（元）*/
 subMoney: number;
 /**本期实际请款税额*/
 taxMoney: number;
-/**开票税率*/
+/**发票税率（收款公司）*/
 taxRate: number;
 }
 /**ApplyRecFileBaseVO*/
@@ -457,7 +484,7 @@ isReject: number;
 proId: number;
 /**项目推广名称*/
 proName: string;
-/**状态(Draft-草稿、PlatformClerk-待平台文员审核、BusinessMan-待业管审核、BranchAccount-待分公司会计审核、Oa-OA领导审核中、InvoiceApply-待申请开票、BusinessManAgain-待业管复审、InvoiceClerk-待开票员审核、InvoiceMake-待开票员开票、Confirm-待回款确认、Complete-已完成、Stop-终止)*/
+/**状态(Draft-草稿、PlatformClerk-待平台文员审核、BusinessMan-待分公司业管审核、BranchAccount-待分公司财务审核、Oa-OA领导审核中、InvoiceApply-待申请开票、BusinessManAgain-待分公司业管复审、InvoiceClerk-待开票员审核、InvoiceMake-待开票员开票、Confirm-待回款确认、Complete-已完成、Stop-终止)*/
 status: string;
 /**本期扣除金额（元）*/
 subMoney: number;
@@ -482,7 +509,7 @@ pageNum: number;
 pageSize: number;
 /**项目ID*/
 proId: number;
-/**状态(Draft-草稿、PlatformClerk-待平台文员审核、BusinessMan-待业管审核、BranchAccount-待分公司会计审核、Oa-OA领导审核中、InvoiceApply-待申请开票、BusinessManAgain-待业管复审、InvoiceClerk-待开票员审核、InvoiceMake-待开票员开票、Confirm-待回款确认、Complete-已完成、Stop-终止)*/
+/**状态(Draft-草稿、PlatformClerk-待平台文员审核、BusinessMan-待分公司业管审核、BranchAccount-待分公司财务审核、Oa-OA领导审核中、InvoiceApply-待申请开票、BusinessManAgain-待分公司业管复审、InvoiceClerk-待开票员审核、InvoiceMake-待开票员开票、Confirm-待回款确认、Complete-已完成、Stop-终止)*/
 status: string;
 }
 /**AuditListVO*/
@@ -539,16 +566,33 @@ proId: number;
 /**查询是否审核，已审核（true），未审核（false），全部（传入空）*/
 queryIsAudit: boolean;
 }
+/**AuditUpdateDealVO*/
+export interface AuditUpdateDealVO {
+/**(必填)成交报告编号*/
+dealCode: string;
+/**(必填)已选成交报告逻辑ID*/
+id: number;
+/**(必填)实际收款金额：不含税金额*/
+noTaxMoney: number;
+/**(必填)实际收款金额：税额*/
+taxMoney: number;
+}
 /**AuditVO*/
 export interface AuditVO {
+/**本期实际请款金额（不含税），财务审核时未变动可不传*/
+actMoney: number;
 /**(必填)请佣申请单逻辑ID*/
 applyId: number;
 /**(必填)是否驳回，0否1是*/
 isReject: number;
-/**(必填)操作前状态(Draft-草稿、PlatformClerk-待平台文员审核、BusinessMan-待业管审核、BranchAccount-待分公司会计审核、Oa-OA领导审核中、InvoiceApply-待申请开票、BusinessManAgain-待业管复审、InvoiceClerk-待开票员审核、InvoiceMake-待开票员开票、Confirm-待回款确认、Complete-已完成、Stop-终止)*/
+/**(必填)操作前状态(Draft-草稿、PlatformClerk-待平台文员审核、BusinessMan-待分公司业管审核、BranchAccount-待分公司财务审核、Oa-OA领导审核中、InvoiceApply-待申请开票、BusinessManAgain-待分公司业管复审、InvoiceClerk-待开票员审核、InvoiceMake-待开票员开票、Confirm-待回款确认、Complete-已完成、Stop-终止)*/
 opBefore: string;
 /**(必填)备注*/
 remark: string;
+/**本期实际请款税额，财务审核时未变动可不传*/
+taxMoney: number;
+/**已选成交报告财务审核时税额变动列表，未变动可不传*/
+updateDealList: AuditUpdateDealVO[];
 }
 /**BaseVO*/
 export interface BaseVO {
@@ -670,7 +714,7 @@ receiveUserId: number;
 export interface ConVO {
 /**请佣申请单逻辑ID*/
 applyId: number;
-/**操作后状态(Draft-草稿、PlatformClerk-待平台文员审核、BusinessMan-待业管审核、BranchAccount-待分公司会计审核、Oa-OA领导审核中、InvoiceApply-待申请开票、BusinessManAgain-待业管复审、InvoiceClerk-待开票员审核、InvoiceMake-待开票员开票、Confirm-待回款确认、Complete-已完成、Stop-终止)*/
+/**操作后状态(Draft-草稿、PlatformClerk-待平台文员审核、BusinessMan-待分公司业管审核、BranchAccount-待分公司财务审核、Oa-OA领导审核中、InvoiceApply-待申请开票、BusinessManAgain-待分公司业管复审、InvoiceClerk-待开票员审核、InvoiceMake-待开票员开票、Confirm-待回款确认、Complete-已完成、Stop-终止)*/
 opAfter: string;
 }
 /**CorrectConVO*/
@@ -729,7 +773,7 @@ oneAgentTeamId: number;
 padCommissionEnum: string;
 /**(必填)项目ID*/
 proId: number;
-/**(必填)房产证/预售合同编号(购房)*/
+/**房产证/预售合同编号(购房)*/
 propertyNo: string;
 /**(必填)物业类型(Residence-住宅、WorkShop-厂房、Apartment-公寓、Villa-别墅、Shop-商铺、Office-写字楼、Parking-车位、Warehouse-仓库、Other-其他)*/
 propertyType: string;
@@ -1021,7 +1065,7 @@ oneAgentTeamId: number;
 padCommissionEnum: string;
 /**(必填)项目ID*/
 proId: number;
-/**(必填)房产证/预售合同编号(购房)*/
+/**房产证/预售合同编号(购房)*/
 propertyNo: string;
 /**(必填)物业类型(Residence-住宅、WorkShop-厂房、Apartment-公寓、Villa-别墅、Shop-商铺、Office-写字楼、Parking-车位、Warehouse-仓库、Other-其他)*/
 propertyType: string;
@@ -1263,7 +1307,7 @@ developName: string;
 export interface GetLastApplyNoVO {
 /**(必填)甲方公司（即开发商）ID*/
 developId: number;
-/**(必填)乙方公司（我司主体）ID*/
+/**(必填)收款公司ID（乙方公司，我司主体）*/
 polyCompanyId: number;
 }
 /**InfoVO*/
@@ -1306,7 +1350,7 @@ receiveUserId: number;
 receiveUserName: number;
 /**回款信息：应回款金额*/
 shuoldReceMoney: number;
-/**状态，判断状态：Confirm 显示待回款，Complete 显示已回款(Draft-草稿、PlatformClerk-待平台文员审核、BusinessMan-待业管审核、BranchAccount-待分公司会计审核、Oa-OA领导审核中、InvoiceApply-待申请开票、BusinessManAgain-待业管复审、InvoiceClerk-待开票员审核、InvoiceMake-待开票员开票、Confirm-待回款确认、Complete-已完成、Stop-终止)*/
+/**状态，判断状态：Confirm 显示待回款，Complete 显示已回款(Draft-草稿、PlatformClerk-待平台文员审核、BusinessMan-待分公司业管审核、BranchAccount-待分公司财务审核、Oa-OA领导审核中、InvoiceApply-待申请开票、BusinessManAgain-待分公司业管复审、InvoiceClerk-待开票员审核、InvoiceMake-待开票员开票、Confirm-待回款确认、Complete-已完成、Stop-终止)*/
 status: string;
 /**本次扣除金额（元）*/
 subMoney: number;
@@ -1317,7 +1361,7 @@ export interface InvoiceMakeOrRedVO {
 applyId: number;
 /**(必填)操作（开票：InvoiceMake,红冲：RedInvoice)(Submit-提交、Cancel-撤回、Stop-终止、Audit-审核、InvoiceApply-发起开票申请、SaveAndInvoiceApply-保存并发起开票申请、InvoiceMake-开票、RedInvoice-红冲、Confirm-回款登记)*/
 op: string;
-/**操作后状态，红冲时必传(Draft-草稿、PlatformClerk-待平台文员审核、BusinessMan-待业管审核、BranchAccount-待分公司会计审核、Oa-OA领导审核中、InvoiceApply-待申请开票、BusinessManAgain-待业管复审、InvoiceClerk-待开票员审核、InvoiceMake-待开票员开票、Confirm-待回款确认、Complete-已完成、Stop-终止)*/
+/**操作后状态，红冲时必传(Draft-草稿、PlatformClerk-待平台文员审核、BusinessMan-待分公司业管审核、BranchAccount-待分公司财务审核、Oa-OA领导审核中、InvoiceApply-待申请开票、BusinessManAgain-待分公司业管复审、InvoiceClerk-待开票员审核、InvoiceMake-待开票员开票、Confirm-待回款确认、Complete-已完成、Stop-终止)*/
 opAfter: string;
 /**备注*/
 remark: string;
@@ -1445,9 +1489,9 @@ id: number;
 oaSysId: number;
 /**操作(Submit-提交、Cancel-撤回、Stop-终止、Audit-审核、InvoiceApply-发起开票申请、SaveAndInvoiceApply-保存并发起开票申请、InvoiceMake-开票、RedInvoice-红冲、Confirm-回款登记)*/
 op: string;
-/**操作后状态(Draft-草稿、PlatformClerk-待平台文员审核、BusinessMan-待业管审核、BranchAccount-待分公司会计审核、Oa-OA领导审核中、InvoiceApply-待申请开票、BusinessManAgain-待业管复审、InvoiceClerk-待开票员审核、InvoiceMake-待开票员开票、Confirm-待回款确认、Complete-已完成、Stop-终止)*/
+/**操作后状态(Draft-草稿、PlatformClerk-待平台文员审核、BusinessMan-待分公司业管审核、BranchAccount-待分公司财务审核、Oa-OA领导审核中、InvoiceApply-待申请开票、BusinessManAgain-待分公司业管复审、InvoiceClerk-待开票员审核、InvoiceMake-待开票员开票、Confirm-待回款确认、Complete-已完成、Stop-终止)*/
 opAfter: string;
-/**操作前状态(Draft-草稿、PlatformClerk-待平台文员审核、BusinessMan-待业管审核、BranchAccount-待分公司会计审核、Oa-OA领导审核中、InvoiceApply-待申请开票、BusinessManAgain-待业管复审、InvoiceClerk-待开票员审核、InvoiceMake-待开票员开票、Confirm-待回款确认、Complete-已完成、Stop-终止)*/
+/**操作前状态(Draft-草稿、PlatformClerk-待平台文员审核、BusinessMan-待分公司业管审核、BranchAccount-待分公司财务审核、Oa-OA领导审核中、InvoiceApply-待申请开票、BusinessManAgain-待分公司业管复审、InvoiceClerk-待开票员审核、InvoiceMake-待开票员开票、Confirm-待回款确认、Complete-已完成、Stop-终止)*/
 opBefore: string;
 /**操作时间(yyyy-MM-dd HH:mm:ss)*/
 opTime: string;
@@ -1480,7 +1524,7 @@ pageNum: number;
 pageSize: number;
 /**项目ID*/
 proId: number;
-/**状态：回款待确认(Confirm)；回款已确认(Complete)，全部(不传值)(Draft-草稿、PlatformClerk-待平台文员审核、BusinessMan-待业管审核、BranchAccount-待分公司会计审核、Oa-OA领导审核中、InvoiceApply-待申请开票、BusinessManAgain-待业管复审、InvoiceClerk-待开票员审核、InvoiceMake-待开票员开票、Confirm-待回款确认、Complete-已完成、Stop-终止)*/
+/**状态：回款待确认(Confirm)；回款已确认(Complete)，全部(不传值)(Draft-草稿、PlatformClerk-待平台文员审核、BusinessMan-待分公司业管审核、BranchAccount-待分公司财务审核、Oa-OA领导审核中、InvoiceApply-待申请开票、BusinessManAgain-待分公司业管复审、InvoiceClerk-待开票员审核、InvoiceMake-待开票员开票、Confirm-待回款确认、Complete-已完成、Stop-终止)*/
 status: string;
 }
 /**QueryWaitVO*/
@@ -1504,9 +1548,19 @@ billTypeCode: string;
 dealList: AddFromPageVO[];
 /**本期需抵扣金额明细*/
 deductRecList: AddFromPageVO_3[];
+/**(必填)甲方开票账号*/
+developAccount: string;
+/**(必填)甲方开票账号ID*/
+developAccountId: number;
+/**(必填)住所（地址）*/
+developAddress: string;
 /**(必填)甲方公司（即开发商）ID*/
 developId: number;
-/**纳税人识别号（甲方公司）*/
+/**(必填)开户行*/
+developOpenBank: string;
+/**(必填)电话*/
+developPhone: string;
+/**(必填)纳税人识别号*/
 developTaxNo: string;
 /**(必填)附件列表*/
 fileList: AddFromPageVO_2[];
@@ -1516,7 +1570,7 @@ fineMoney: number;
 fineType: string;
 /**逻辑ID，主键，自增长，首次暂存或提交为空，其他不为空*/
 id: number;
-/**发票抬头(甲方公司)*/
+/**(必填)发票抬头(甲方公司名称)*/
 invoiceTitle: string;
 /**上次请款单号*/
 lastApplyNo: string;
@@ -1530,27 +1584,21 @@ otherSubList: AddFromPageVO_4[];
 polyCompanyId: number;
 /**(必填)项目ID*/
 proId: number;
-/**(必填)收款账户ID（乙方公司，我司主体）*/
+/**(必填)收款账号ID（乙方公司，我司主体）*/
 receAccountId: number;
-/**(必填)银行账号*/
+/**(必填)收款账号*/
 receBankAccount: string;
-/**(必填)联行号*/
+/**(必填)联行号（收款公司）*/
 receBranchNo: string;
-/**(必填)收款单位名称*/
-receName: string;
-/**(必填)开户行*/
-receOpeningBankBranch: string;
-/**(必填)开户行所属银行*/
-receOpeningBankType: string;
 /**(必填)经办部门意见*/
 remark: string;
 /**(必填)本期扣除金额（元）*/
 subMoney: number;
 /**(必填)本期实际请款税额*/
 taxMoney: number;
-/**(必填)开票税率*/
+/**(必填)发票税率（收款公司）*/
 taxRate: number;
-/**(必填)请款汇总清单*/
+/**请款汇总清单*/
 termList: AddFromPageVO_1[];
 }
 /**SaveResVO*/

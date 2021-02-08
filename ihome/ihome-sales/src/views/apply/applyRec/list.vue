@@ -4,7 +4,7 @@
  * @Author: ywl
  * @Date: 2021-01-07 10:29:38
  * @LastEditors: ywl
- * @LastEditTime: 2021-02-02 10:31:58
+ * @LastEditTime: 2021-02-08 18:03:40
 -->
 <template>
   <IhPage label-width="100px">
@@ -117,7 +117,7 @@
           type="info"
           @click="reset()"
         >重置</el-button>
-        <el-button>导出</el-button>
+        <el-button @click="handleExport()">导出</el-button>
       </el-row>
     </template>
     <template v-slot:table>
@@ -210,8 +210,11 @@
           width="120"
           fixed="right"
         >
-          <template v-slot="{  }">
-            <el-link type="primary">流程进度图</el-link>
+          <template v-slot="{ row }">
+            <el-link
+              type="primary"
+              @click="() => { stepsVisible = true; applyId = row.id; }"
+            >流程进度图</el-link>
           </template>
         </el-table-column>
         <el-table-column
@@ -251,15 +254,27 @@
         :total="resPageInfo.total"
       ></el-pagination>
     </template>
+    <!-- 弹窗 -->
+    <IhDialog :show="stepsVisible">
+      <Steps
+        :data="applyId"
+        @cancel="() => (stepsVisible = false)"
+      />
+    </IhDialog>
   </IhPage>
 </template>
 
 <script lang="ts">
 import { Component, Vue } from "vue-property-decorator";
 import PaginationMixin from "../../../mixins/pagination";
-import { post_applyRec_getList } from "../../../api/apply/index";
+import Steps from "./dialog/steps.vue";
+import {
+  post_applyRec_getList,
+  get_applyRec_excelBatchApplyInfo,
+} from "../../../api/apply/index";
 
 @Component({
+  components: { Steps },
   mixins: [PaginationMixin],
 })
 export default class ApplyRecList extends Vue {
@@ -277,8 +292,13 @@ export default class ApplyRecList extends Vue {
     total: null,
     list: [],
   };
+  private stepsVisible = false;
+  private applyId: any = null;
   private timeList: any = [];
 
+  private handleExport() {
+    //
+  }
   private search() {
     let flag = this.timeList && this.timeList.length;
     this.queryPageParameters.applyTimeStart = flag ? this.timeList[0] : null;
