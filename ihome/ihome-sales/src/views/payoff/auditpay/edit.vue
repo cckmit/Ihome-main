@@ -4,7 +4,7 @@
  * @Author: wwq
  * @Date: 2020-12-26 11:11:23
  * @LastEditors: wwq
- * @LastEditTime: 2021-02-07 16:39:39
+ * @LastEditTime: 2021-02-08 11:52:57
 -->
 <template>
   <IhPage>
@@ -1055,6 +1055,7 @@ import {
   get_processRecord_oa_review_person__applyId,
   get_processRecord_oa_review_log__applyId,
 } from "@/api/payoff/index";
+import { post_bankAccount_getByOrgId__orgId } from "@/api/finance/index";
 import { Form as ElForm } from "element-ui";
 import Obligation from "../payorder/dialog/obligation.vue";
 import { get_channel_get__id } from "@/api/channel/index";
@@ -1386,9 +1387,12 @@ export default class PayoffEdit extends Vue {
     this.channelAccountOptions = res.channelBanks;
   }
 
-  getPayerInfo(item: any) {
+  async getPayerInfo(item: any) {
     this.info.payerName = item.companyName;
-    this.payerAccountOptions = item.bankAccounts;
+    const res = await post_bankAccount_getByOrgId__orgId({
+      orgId: this.info.payerId,
+    });
+    this.payerAccountOptions = res;
   }
 
   handleClick(val: any) {
@@ -1439,6 +1443,11 @@ export default class PayoffEdit extends Vue {
           })
         ),
       };
+      // 获取付款方账号
+      const item = await post_bankAccount_getByOrgId__orgId({
+        orgId: this.info.payerId,
+      });
+      this.payerAccountOptions = item;
       this.getFileListType(res.documentList);
       this.filterTabs(this.info.payApplyDetailList);
       this.settlementMethodChange(res.settlementMethod);

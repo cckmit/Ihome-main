@@ -4,7 +4,7 @@
  * @Author: wwq
  * @Date: 2021-01-16 17:16:53
  * @LastEditors: wwq
- * @LastEditTime: 2021-02-07 16:41:01
+ * @LastEditTime: 2021-02-08 11:51:06
 -->
 <template>
   <el-dialog
@@ -204,6 +204,7 @@ import { Form as ElForm } from "element-ui";
 import { NoRepeatHttp } from "ihome-common/util/aop/no-repeat-http";
 import { get_channel_get__id } from "@/api/channel/index";
 import { post_payDetail_update } from "@/api/payoff";
+import { post_bankAccount_getByOrgId__orgId } from "@/api/finance/index";
 @Component({
   components: {},
 })
@@ -246,9 +247,12 @@ export default class Edit extends Vue {
     ],
   };
 
-  getPayerInfo(item: any) {
-    this.info.companyName = item.companyName;
-    this.payerAccountOptions = item.bankAccounts;
+  async getPayerInfo(item: any) {
+    this.info.payerName = item.companyName;
+    const res = await post_bankAccount_getByOrgId__orgId({
+      orgId: this.info.payerId,
+    });
+    this.payerAccountOptions = res;
   }
 
   cancel() {
@@ -286,8 +290,12 @@ export default class Edit extends Vue {
 
   async created() {
     this.info = { ...this.data };
-    let res = await get_channel_get__id({ id: this.info.agencyId });
+    const res = await get_channel_get__id({ id: this.info.agencyId });
     this.channelAccountOptions = res.channelBanks;
+    const item = await post_bankAccount_getByOrgId__orgId({
+      orgId: this.info.payerId,
+    });
+    this.payerAccountOptions = item;
     this.settlementMethodChange(this.info.settlementMethod);
   }
 }
