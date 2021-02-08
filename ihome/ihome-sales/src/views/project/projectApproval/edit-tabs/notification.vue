@@ -590,6 +590,13 @@ export default class Notification extends Vue {
         });
         break;
       case "partyARefundDays":
+        if (data == 0 || data <0){
+            this.$notify({
+              title: '提示',
+              message: '退款天数必须大于0',
+              duration: 0
+            });
+        }
         await post_preferential_updateRetuenDays({
           partyARefundDays: data,
           termId: this.$route.query.id,

@@ -1400,6 +1400,7 @@
       agencyVO: [], // 渠道信息
       receiveList: [], // 收派金额
       receiveAchieveVO: [], // 应收信息
+      receiveAchieveList: [],
       uploadDocumentList: [], // 附件信息
       channelCommList: [], // 对外拆佣
       achieveTotalBagList: [
@@ -3590,7 +3591,8 @@
             agencyName: this.postData.agencyName,
             brokerId: this.postData.brokerId,
             broker: this.postData.brokerName,
-            channelLevel: this.postData.channelLevel
+            channelLevel: this.postData.channelLevel,
+            dealId: this.id
           }
         )
       }
@@ -3599,12 +3601,14 @@
           dataObj.dealVO.noticeIds.push(item.noticeId);
         });
       }
-      if (this.receiveAchieveVO && this.receiveAchieveVO.length) {
+      if (this.receiveAchieveVO && this.receiveAchieveVO.length && this.postData.receiveAchieveList && this.postData.receiveAchieveList.length) {
         dataObj.receiveAchieveVO.push(
           {
             receiveAmount: this.receiveAchieveVO[0].receiveAmount,
             achieveAmount: this.receiveAchieveVO[0].achieveAmount,
-            otherChannelFees: this.receiveAchieveVO[0].otherChannelFees
+            otherChannelFees: this.receiveAchieveVO[0].otherChannelFees,
+            dealId: this.id,
+            id: this.postData.receiveAchieveList[0].id
           }
         )
       }
