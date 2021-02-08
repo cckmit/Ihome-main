@@ -4,7 +4,7 @@
  * @Author: ywl
  * @Date: 2021-01-07 16:30:03
  * @LastEditors: ywl
- * @LastEditTime: 2021-02-05 20:49:23
+ * @LastEditTime: 2021-02-08 10:04:57
 -->
 <template>
   <IhPage class="text-left">
@@ -260,7 +260,11 @@
             min-width="120"
           >
             <template v-slot="{ row }">
-              {{noTaxMoneySum(row)}}
+              <template v-if="row.noTaxMoneyNew">
+                <del>{{noTaxMoneySum(row)}}</del>
+                <div style="color: red">{{row.noTaxMoneyNew}}</div>
+              </template>
+              <span v-else>{{noTaxMoneySum(row)}}</span>
             </template>
           </el-table-column>
           <el-table-column
@@ -268,7 +272,11 @@
             min-width="100"
           >
             <template v-slot="{ row }">
-              {{taxMoneySum(row)}}
+              <template v-if="row.taxMoneyNew || row.taxMoneyNew === 0">
+                <del>{{taxMoneySum(row)}}</del>
+                <div style="color: red">{{row.taxMoneyNew}}</div>
+              </template>
+              <span v-else>{{taxMoneySum(row)}}</span>
             </template>
           </el-table-column>
           <el-table-column
@@ -721,7 +729,17 @@
             <td class="width-150">本期实际请款金额（不含税）</td>
             <td class="width-150">{{actMoneySum()}}</td>
             <td class="width-150">本期实际请款税额</td>
-            <td class="width-150">{{form.taxMoney}}</td>
+            <td class="width-150">
+              <el-input-number
+                controls-position="right"
+                v-model="form.taxMoney"
+                :min="globalTaxMoney-10 < 0 ? 0 : globalTaxMoney-10"
+                :max="globalTaxMoney+10"
+                :precision="2"
+                @change="taxMoneyChange"
+                :step="0.01"
+              ></el-input-number>
+            </td>
           </tr>
           <!-- <tr>
             <td class="width-150">累计实际请款不含税金额</td>
@@ -988,6 +1006,7 @@ export default class ApplyRecAdd extends Vue {
   private paramDevName: any = "";
   private paramProName: any = "";
   private applyNo: any = null;
+  private globalTaxMoney: any = 0;
 
   private get totalNoReceiveAmount() {
     let sum = 0;
@@ -1250,7 +1269,8 @@ export default class ApplyRecAdd extends Vue {
     console.log(info);
 
     this.form.branchNo = info.branchNo;
-    this.form.taxRate = info.taxRate;
+    this.form.taxRate = 0.0001;
+    // this.form.taxRate = info.taxRate;
     this.form.receBankAccount = info.accountNo;
     this.form.receBranchNo = info.branchNo;
     // this.form.sellerOpeningBankBranch = info.branchName;
@@ -1289,6 +1309,7 @@ export default class ApplyRecAdd extends Vue {
           this.actMoneyTaxSum(),
           this.actMoneySum()
         );
+        this.globalTaxMoney = this.form.taxMoney;
         await this.getHisRec({
           developId: this.dealParams.developId,
           polyCompanyId: this.dealParams.polyCompanyId,
@@ -1429,6 +1450,48 @@ export default class ApplyRecAdd extends Vue {
       obj[h.code] = h.fileList;
     });
     this.submitFile = { ...obj };
+  }
+  // 税额修改
+  private taxMoneyChange(number: any) {
+    if (!number) {
+      this.form.taxMoney =
+        this.globalTaxMoney - 10 < 0 ? 0 : this.globalTaxMoney - 10;
+    }
+    let val = this.form.taxMoney;
+    let sub = this.$math.sub(this.globalTaxMoney, val); // 差额
+    console.log(val, sub, number);
+    let listArr: any = [];
+    let isSub = true;
+    for (let index = 0; index < this.form.dealList.length; index++) {
+      const element = this.form.dealList[index];
+      if (isSub) {
+        let taxMoneyNew = this.$math.sub(element.taxMoney, sub);
+        if (taxMoneyNew > 0) {
+          element.taxMoneyNew = taxMoneyNew;
+          element.noTaxMoneyNew = this.$math.tofixed(
+            this.$math.add(element.noTaxMoney, sub),
+            2
+          );
+          isSub = false;
+          listArr.push(element);
+        } else {
+          element.taxMoneyNew = 0;
+          element.noTaxMoneyNew = this.$math.tofixed(
+            this.$math.add(element.noTaxMoney, element.taxMoney),
+            2
+          );
+          sub = this.$math.tofixed(this.$math.sub(sub, element.taxMoney), 2);
+          isSub = true;
+          listArr.push(element);
+        }
+      } else {
+        delete element.taxMoneyNew;
+        delete element.noTaxMoneyNew;
+        listArr.push(element);
+      }
+    }
+    this.form.dealList = listArr;
+    console.log(this.form.dealList);
   }
   private async submit(type: any) {
     console.log(type);
