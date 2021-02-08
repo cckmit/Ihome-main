@@ -4,7 +4,7 @@
  * @Author: zyc
  * @Date: 2021-02-05 16:41:19
  * @LastEditors: zyc
- * @LastEditTime: 2021-02-08 10:24:49
+ * @LastEditTime: 2021-02-08 11:01:21
 -->
  
 <template>
@@ -23,7 +23,7 @@
           <el-col :span="8">
             <el-form-item label="付款方">
               <IhSelectPageByProject
-                v-model="queryPageParameters.proId"
+                v-model="queryPageParameters.companyId"
                 clearable
                 :props="{
                   value: 'proId',
