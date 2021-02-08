@@ -4,7 +4,7 @@
  * @Author: wwq
  * @Date: 2020-12-26 11:11:28
  * @LastEditors: wwq
- * @LastEditTime: 2021-02-07 09:36:30
+ * @LastEditTime: 2021-02-08 09:14:38
 -->
 <template>
   <IhPage label-width="120px">
@@ -205,7 +205,7 @@
           align="center"
         >
           <template v-slot="{ row }">
-            <div :class="{ 'status-style': ['Unconfirm', 'BranchFinanceUnreview'].includes(row.status)  }">
+            <div :class="{ 'status-style': ['Unconfirm', 'BranchFinanceUnreview'].includes(row.status) && res.rejectionMark  }">
               {{$root.dictAllName(row.status, "PayoffStatus")}}
             </div>
           </template>
@@ -447,26 +447,31 @@ export default class PayoffList extends Vue {
 
   // 导出
   async exportMsg() {
-    let arr: any = this.resPageInfo.list.map((v: any) => v.id);
-    const token: any = getToken();
-    axios({
-      method: "POST",
-      url: `/sales-api/payoff/file/excel/list`,
-      xsrfHeaderName: "Authorization",
-      responseType: "blob",
-      headers: {
-        "Content-Type": "application/json",
-        Authorization: "bearer " + token,
-      },
-      data: arr,
-    }).then((res: any) => {
-      const href = window.URL.createObjectURL(res.data);
-      const $a = document.createElement("a");
-      $a.href = href;
-      $a.download = "付款单列表.xlsx";
-      $a.click();
-      $a.remove();
-    });
+    if (!this.resPageInfo.list.length) {
+      this.$message.warning("请先发起支付申请");
+      return;
+    } else {
+      let arr: any = this.resPageInfo.list.map((v: any) => v.id);
+      const token: any = getToken();
+      axios({
+        method: "POST",
+        url: `/sales-api/payoff/file/excel/list`,
+        xsrfHeaderName: "Authorization",
+        responseType: "blob",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: "bearer " + token,
+        },
+        data: arr,
+      }).then((res: any) => {
+        const href = window.URL.createObjectURL(res.data);
+        const $a = document.createElement("a");
+        $a.href = href;
+        $a.download = "付款单列表.xlsx";
+        $a.click();
+        $a.remove();
+      });
+    }
   }
 
   // 导出明细和下载请款单

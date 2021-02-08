@@ -4,12 +4,11 @@
  * @Author: ywl
  * @Date: 2020-12-10 17:01:33
  * @LastEditors: wwq
- * @LastEditTime: 2021-02-07 11:50:09
+ * @LastEditTime: 2021-02-08 11:36:04
 -->
 <script lang="ts">
 import { Component, Vue, Prop, Watch } from "vue-property-decorator";
-
-import { post_bankAccount_getByOrgId } from "@/api/finance/index";
+import { post_company_getPage } from "@/api/system/index";
 import IhSelectPageBase from "./select-page-base.vue";
 
 @Component({
@@ -20,9 +19,9 @@ export default class SelectPageByPayer extends Vue {
   @Prop({
     default: () => {
       return {
-        lable: "companyName",
-        value: "companyId",
-        key: "companyId",
+        lable: "name",
+        value: "id",
+        key: "id",
       };
     },
   })
@@ -40,6 +39,12 @@ export default class SelectPageByPayer extends Vue {
   })
   params?: object;
 
+  pageInfo: any = {
+    total: 0,
+    pageNum: 1,
+    pageSize: 10,
+  };
+
   @Watch("proId")
   watchDepartmentID(val: any) {
     if (val) this.getSelectList();
@@ -49,21 +54,17 @@ export default class SelectPageByPayer extends Vue {
   filterText = "";
   searchLoad = false;
 
-  handleMessage() {
-    if (!this.proId) {
-      this.$message.warning("请先选择事业部");
-    }
-  }
-
   async getSelectList() {
     if (this.proId || !this.isBlur) {
       this.searchLoad = true;
-      let res = await post_bankAccount_getByOrgId({
-        departmentID: this.proId,
+      let res = await post_company_getPage({
+        orgId: this.proId,
         name: this.filterText,
+        ...this.pageInfo,
         ...this.params,
       });
-      this.optionList = res;
+      this.optionList = res.list;
+      this.pageInfo = res;
       this.searchLoad = false;
     }
   }

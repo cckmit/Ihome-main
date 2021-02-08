@@ -136,6 +136,7 @@
       <IhSelectPageByPayer
         v-model="form.testInput14"
         :proId="form.testInput5"
+        :isBlur="false"
       ></IhSelectPageByPayer>
     </el-form-item>
   </el-form>
