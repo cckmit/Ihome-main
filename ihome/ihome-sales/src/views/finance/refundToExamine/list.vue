@@ -5,7 +5,7 @@
  * @Author: zyc
  * @Date: 2021-01-13 14:50:21
  * @LastEditors: zyc
- * @LastEditTime: 2021-02-08 11:53:52
+ * @LastEditTime: 2021-02-08 15:58:44
 -->
 <template>
   <IhPage label-width="110px">
@@ -107,67 +107,59 @@
         class="ih-table"
         :empty-text="emptyText"
         :data="resPageInfo.list"
-        v-loading="loading"
       >
         <el-table-column
           type="index"
           width="50"
           align="center"
-        ></el-table-column>
-        <el-table-column
-          label="请款申请单号"
-          prop="applyNo"
-          width="185"
+          label="序号"
           fixed
         ></el-table-column>
         <el-table-column
-          label="项目名称"
-          prop="proName"
-          min-width="165"
+          label="退款申请单编号"
+          prop="refundApplyNo"
+          min-width="120"
+          fixed
         ></el-table-column>
+        <el-table-column label="事业部" prop="departmentName"></el-table-column>
         <el-table-column
-          label="甲方公司名称"
-          prop="developName"
-          min-width="215"
+          label="申请退款金额"
+          prop="amount"
+          min-width="120"
         ></el-table-column>
-        <el-table-column label="请款金额" prop="applyMoney"></el-table-column>
-        <el-table-column label="扣除金额" prop="subMoney"></el-table-column>
-        <el-table-column label="扣罚金额" prop="fineMoney"></el-table-column>
+        <el-table-column label="付款方" prop="accountName"></el-table-column>
+        <el-table-column label="结算方式" prop="">
+          <template slot-scope="scope">{{
+            $root.dictAllName(scope.row.settlementType, "RefundSettlementType")
+          }}</template>
+        </el-table-column>
+        <el-table-column label="付款方式" prop="payType">
+          <template slot-scope="scope">{{
+            $root.dictAllName(scope.row.payType, "RefundPayType")
+          }}</template>
+        </el-table-column>
+        <el-table-column label="制单人" prop="inputUserName"></el-table-column>
+        <el-table-column label="制单日期" prop="createDate"></el-table-column>
         <el-table-column
-          label="实际请款金额"
-          prop="actMoneyTax"
-          width="135"
-        ></el-table-column>
-
-        <el-table-column
-          label="申请人"
-          min-width="165"
-          prop="applyUserName"
-        ></el-table-column>
-        <el-table-column
-          label="申请日期"
-          prop="applyTime"
-          width="165"
-        ></el-table-column>
-        <el-table-column
-          label="审核日期"
-          prop="auditTime"
-          width="165"
-        ></el-table-column>
+          fixed="right"
+          label="流程进度"
+          prop="applyNo"
+          width="100"
+        >
+          <template slot-scope="scope">
+            <el-link
+              style="color: #409eff"
+              class="margin-right-10"
+              type="primary"
+              @click.native.prevent="showPlanPicture(scope)"
+              >进度流程图</el-link
+            >
+          </template>
+        </el-table-column>
 
         <el-table-column label="操作" width="120" fixed="right">
           <template v-slot="{ row }">
-            <el-link
-              type="primary"
-              @click="$router.push(`/applyRec/info?id=${row.id}`)"
-              >查看</el-link
-            >
-            <el-link
-              type="success"
-              class="margin-left-10"
-              @click="retPayment(row)"
-              >添加回款</el-link
-            >
+            <el-link type="primary" @click="toExamine(row)">审核</el-link>
           </template>
         </el-table-column>
       </el-table>
@@ -185,51 +177,40 @@
       ></el-pagination>
     </template>
     <!-- dialog -->
+    <ih-dialog :show="prodialogVisible">
+      <Progress
+        :data="rogressData"
+        @cancel="() => (prodialogVisible = false)"
+      />
+    </ih-dialog>
   </IhPage>
 </template>
 
 <script lang="ts">
 import { Component, Vue } from "vue-property-decorator";
 import PaginationMixin from "../../../mixins/pagination";
-
-import { post_receConfirmDetail_getList } from "../../../api/apply/index";
-
+import { post_refundApply_getCheckList } from "../../../api/finance/index";
+import Progress from "./dialog/progress.vue";
 @Component({
-  components: {},
+  components: { Progress },
   mixins: [PaginationMixin],
 })
 export default class RefundToExamineList extends Vue {
   queryPageParameters: any = {
     beginTime: null,
-    companyId: null,
     endTime: null,
     inputUser: null,
     orgId: null,
     payType: null,
     refundApplyNo: null,
     settlementType: null,
-    status: null,
   };
   resPageInfo: any = {
     total: null,
     list: [],
   };
-  private loading = false;
-
-  private tabsList: any = [
-    {
-      label: "待审核",
-      name: "Confirm",
-    },
-    {
-      label: "已审核",
-      name: "Complete",
-    },
-    {
-      label: "全部",
-      name: "",
-    },
-  ];
+  prodialogVisible = false;
+  rogressData = [];
 
   private tableData: any = null;
 
@@ -250,14 +231,12 @@ export default class RefundToExamineList extends Vue {
   private reset() {
     Object.assign(this.queryPageParameters, {
       beginTime: null,
-      companyId: null,
       endTime: null,
       inputUser: null,
       orgId: null,
       payType: null,
       refundApplyNo: null,
       settlementType: null,
-      status: null,
     });
   }
   private search() {
@@ -265,15 +244,24 @@ export default class RefundToExamineList extends Vue {
   }
 
   async getListMixin() {
-    this.loading = true;
-    this.resPageInfo = await post_receConfirmDetail_getList(
+    this.resPageInfo = await post_refundApply_getCheckList(
       this.queryPageParameters
     );
-    this.loading = false;
   }
 
   created() {
     this.getListMixin();
+  }
+  toExamine(row: any) {
+    this.$router.push({
+      path: "/refundToExamine/toExamine",
+      query: { id: row.id },
+    });
+  }
+  async showPlanPicture(scope: any) {
+    console.log(scope);
+    this.rogressData = [];
+    this.prodialogVisible = true;
   }
 }
 </script>

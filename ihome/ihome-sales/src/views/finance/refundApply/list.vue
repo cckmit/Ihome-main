@@ -4,7 +4,7 @@
  * @Author: zyc
  * @Date: 2021-02-05 16:41:19
  * @LastEditors: zyc
- * @LastEditTime: 2021-02-08 14:17:13
+ * @LastEditTime: 2021-02-08 14:27:22
 -->
  
 <template>
@@ -23,8 +23,9 @@
           <el-col :span="8">
             <el-form-item label="付款方">
               <IhSelectPageByPayer
-                v-model="queryPageParameters.companyId"
                 clearable
+                v-model="queryPageParameters.companyId"
+                :isBlur="false"
               ></IhSelectPageByPayer>
             </el-form-item>
           </el-col>

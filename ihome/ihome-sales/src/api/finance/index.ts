@@ -1,6 +1,6 @@
 /* eslint-disable */
 /* 此脚本由swagger-ui的api-docs自动生成，请勿修改 */
-//2021-2-8 12:23:42
+//2021-2-8 15:52:52
 import { request } from '@/api/base'
 const basePath = "/sales-api/finance"
 /**新增收款账号在线支付信息*/
@@ -418,6 +418,10 @@ return await request.get<RefundApplyVO,RefundApplyVO>(basePath+'/refundApply/get
 /**获取退款申请业务审核流程*/
 export async function get_refundApply_getBusinessProcess__id (d?: any) {
 return await request.get<RefundApplyBusinessProcessVO[],RefundApplyBusinessProcessVO[]>(basePath+'/refundApply/getBusinessProcess/{id}', { params: d })
+}
+/**查询待审核退款申请信息列表数据*/
+export async function post_refundApply_getCheckList (d?: any) {
+return await request.post< any,any> (basePath+'/refundApply/getCheckList', d)
 }
 /**查询OA审批日志*/
 export async function post_refundApply_getFlowCommentList__id (d?: any) {
@@ -2031,7 +2035,7 @@ itemAttachmentVOs: RefundItemAttachmentVO[];
 orgId: number;
 /**其他附件集合*/
 others: RefundAttachmentVO[];
-/**付款方式(CashPay-现金支付、OnlinePay-网银支付)*/
+/**付款方式(CashPay-现金支付、OtherPay-其他支付)*/
 payType: string;
 /**退款信息汇总数据*/
 refundInfo: RefundInfoVO;
@@ -2061,18 +2065,43 @@ branchName: string;
 branchNo: string;
 /**审核按钮类型(TemporaryStorage-暂存、Through-通过、Reject-驳回、Saving-保存)*/
 buttonType: string;
+/**退款汇总清单*/
+countVOs: RefundApplyCountVO[];
 /**ID*/
 id: number;
 /**待退款项数据集合*/
 itemAttachmentVOs: RefundItemAttachmentVO[];
-/**付款方式(CashPay-现金支付、OnlinePay-网银支付)*/
+/**付款方式(CashPay-现金支付、OtherPay-其他支付)*/
 payType: string;
+/**退款信息汇总数据*/
+refundInfo: RefundInfoVO;
 /**审核意见[驳回和暂存时必填]*/
 remark: string;
 /**结算方式(CentralizedPay-集中支付、OnlinePay-网银支付)*/
 settlementType: string;
 /**当前状态(Draft-草稿、PTWYSH-待平台文员审核、FGSYGSH-待分公司业管审核、FGSCWSH-待分公司财务审核、OaAppeal-OA流程审批中、AppealPass-终审通过、AppealDismissed-终审驳回、PayConfirm-支付结果确认中、PaySuccessful-支付成功)*/
 status: string;
+}
+/**RefundApplyCheckQueryVO*/
+export interface RefundApplyCheckQueryVO {
+/**开始时间(yyyy-MM-dd)*/
+beginTime: string;
+/**截止时间(yyyy-MM-dd)*/
+endTime: string;
+/**制单人*/
+inputUser: number;
+/**事业部ID*/
+orgId: number;
+/**(必填)当前页*/
+pageNum: number;
+/**(必填)每页条数*/
+pageSize: number;
+/**付款方式(CashPay-现金支付、OtherPay-其他支付)*/
+payType: string;
+/**退款申请单编号*/
+refundApplyNo: string;
+/**结算方式(CentralizedPay-集中支付、OnlinePay-网银支付)*/
+settlementType: string;
 }
 /**RefundApplyCheckVO*/
 export interface RefundApplyCheckVO {
@@ -2118,7 +2147,7 @@ totalRefundedAmount: number;
 export interface RefundApplyExportQueryVO {
 /**开始时间(yyyy-MM-dd)*/
 beginTime: string;
-/**公司主体ID*/
+/**付款方[公司ID]*/
 companyId: number;
 /**截止时间(yyyy-MM-dd)*/
 endTime: string;
@@ -2126,7 +2155,7 @@ endTime: string;
 inputUser: number;
 /**事业部ID*/
 orgId: number;
-/**付款方式(CashPay-现金支付、OnlinePay-网银支付)*/
+/**付款方式(CashPay-现金支付、OtherPay-其他支付)*/
 payType: string;
 /**退款申请单编号*/
 refundApplyNo: string;
@@ -2139,7 +2168,7 @@ status: string;
 export interface RefundApplyQueryVO {
 /**开始时间(yyyy-MM-dd)*/
 beginTime: string;
-/**公司主体ID*/
+/**付款方[公司ID]*/
 companyId: number;
 /**截止时间(yyyy-MM-dd)*/
 endTime: string;
@@ -2151,7 +2180,7 @@ orgId: number;
 pageNum: number;
 /**(必填)每页条数*/
 pageSize: number;
-/**付款方式(CashPay-现金支付、OnlinePay-网银支付)*/
+/**付款方式(CashPay-现金支付、OtherPay-其他支付)*/
 payType: string;
 /**退款申请单编号*/
 refundApplyNo: string;
@@ -2194,7 +2223,7 @@ itemAttachmentVOs: RefundItemAttachmentVO[];
 orgId: number;
 /**其他附件集合*/
 others: RefundAttachmentVO[];
-/**付款方式(CashPay-现金支付、OnlinePay-网银支付)*/
+/**付款方式(CashPay-现金支付、OtherPay-其他支付)*/
 payType: string;
 /**退款申请单编号[编辑时候必传]*/
 refundApplyNo: string;
@@ -2247,7 +2276,7 @@ noticeAmount: number;
 orgId: number;
 /**是否被驳回标记0-否1-是*/
 overruleMark: number;
-/**付款方式(CashPay-现金支付、OnlinePay-网银支付)*/
+/**付款方式(CashPay-现金支付、OtherPay-其他支付)*/
 payType: string;
 /**退款申请单编号*/
 refundApplyNo: string;

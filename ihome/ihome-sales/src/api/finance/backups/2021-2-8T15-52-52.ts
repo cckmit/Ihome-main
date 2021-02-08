@@ -1,6 +1,6 @@
 /* eslint-disable */
 /* 此脚本由swagger-ui的api-docs自动生成，请勿修改 */
-//2021-2-8 10:12:06
+//2021-2-8 12:23:42
 import { request } from '@/api/base'
 const basePath = "/sales-api/finance"
 /**新增收款账号在线支付信息*/
@@ -43,9 +43,9 @@ return await request.get<BankAccountBackInfoVO,BankAccountBackInfoVO>(basePath+'
 export async function get_bankAccount_getById__id (d?: any) {
 return await request.get<BankAccountVO,BankAccountVO>(basePath+'/bankAccount/getById/{id}', { params: d })
 }
-/**查询事业部下面的所有公司银行账号信息*/
-export async function post_bankAccount_getByOrgId (d?: any) {
-return await request.post< BankAccountCompanyVO[],BankAccountCompanyVO[]> (basePath+'/bankAccount/getByOrgId', d)
+/**查询公司下面的所有银行账号信息*/
+export async function post_bankAccount_getByOrgId__orgId (d?: any) {
+return await request.post< BankAccountAllVO[],BankAccountAllVO[]> (basePath+'/bankAccount/getByOrgId/{orgId}', d)
 }
 /**查询公司收款账户信息列表数据*/
 export async function post_bankAccount_getList (d?: any) {
@@ -583,26 +583,6 @@ defaultFlag: number;
 taxRate: string;
 /**纳税人识别号*/
 taxpayerNo: string;
-}
-/**BankAccountCompanyVO*/
-export interface BankAccountCompanyVO {
-/**公司ID*/
-companyId: number;
-/**收款方名称*/
-companyName: string;
-/**公司收款账号分页集合*/
-pageList: PageModel«BankAccountAllVO»;
-}
-/**BankAccountQueryCompanyVO*/
-export interface BankAccountQueryCompanyVO {
-/**收款方*/
-companyName: string;
-/**事业部ID*/
-departmentID: number;
-/**(必填)当前页*/
-pageNum: number;
-/**(必填)每页条数*/
-pageSize: number;
 }
 /**BankAccountQueryVO*/
 export interface BankAccountQueryVO {
