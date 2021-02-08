@@ -306,11 +306,11 @@
             </el-select>
           </el-form-item>
         </el-col>
-<!--        <el-col :span="8" v-if="postData.contType === 'DistriDeal'">-->
-<!--          <el-form-item label="报备信息">-->
-<!--            <el-input disabled v-model="postData.recordStr"/>-->
-<!--          </el-form-item>-->
-<!--        </el-col>-->
+        <el-col :span="8" v-if="postData.contType === 'DistriDeal' && postData.recordStr">
+          <el-form-item label="报备信息">
+            <el-input disabled v-model="postData.recordStr"/>
+          </el-form-item>
+        </el-col>
         <el-col :span="8">
           <el-form-item label="备案情况" prop="recordState">
             <el-select

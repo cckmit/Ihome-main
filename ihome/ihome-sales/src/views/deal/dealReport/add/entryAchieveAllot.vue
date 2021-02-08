@@ -269,11 +269,11 @@
             </el-select>
           </el-form-item>
         </el-col>
-<!--        <el-col :span="8" v-if="postData.contType === 'DistriDeal'">-->
-<!--          <el-form-item label="报备信息" :prop="postData.contType === 'DistriDeal' ? 'recordStr' : 'notEmpty'">-->
-<!--            <el-input v-model="postData.recordStr" :disabled="baseInfoInDeal.hasRecord"></el-input>-->
-<!--          </el-form-item>-->
-<!--        </el-col>-->
+        <el-col :span="8" v-if="postData.contType === 'DistriDeal' && postData.recordStr">
+          <el-form-item label="报备信息" :prop="postData.contType === 'DistriDeal' ? 'recordStr' : 'notEmpty'">
+            <el-input v-model="postData.recordStr" disabled></el-input>
+          </el-form-item>
+        </el-col>
         <el-col :span="8">
           <el-form-item label="备案情况" prop="recordState">
             <el-select
