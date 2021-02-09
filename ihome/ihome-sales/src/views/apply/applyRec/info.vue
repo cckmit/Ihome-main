@@ -4,7 +4,7 @@
  * @Author: ywl
  * @Date: 2021-01-15 15:29:09
  * @LastEditors: ywl
- * @LastEditTime: 2021-02-09 14:53:03
+ * @LastEditTime: 2021-02-09 14:55:31
 -->
 <template>
   <IhPage class="text-left">
@@ -768,7 +768,7 @@
 
 <script lang="ts">
 import { Component, Vue } from "vue-property-decorator";
-import { get_invoice_getInvoiceInfo__businessId } from "../../../api/finance/index";
+import { get_invoice_getInvoiceInfo__businessCode } from "../../../api/finance/index";
 import {
   get_applyRec_getApplyRecById__applyId,
   post_applyRecFile_getAll,
@@ -911,8 +911,8 @@ export default class ApplyAudit extends Vue {
       this.opLogList = await get_opLog_getAllListByApplyId__applyId({
         applyId,
       });
-      let invoiceInfo = await get_invoice_getInvoiceInfo__businessId({
-        businessId: info.id,
+      let invoiceInfo = await get_invoice_getInvoiceInfo__businessCode({
+        businessCode: info.applyNo,
       });
       this.invoiceList = [invoiceInfo];
       console.log(invoiceInfo);
