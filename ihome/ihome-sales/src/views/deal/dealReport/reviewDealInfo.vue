@@ -573,6 +573,7 @@
     <ih-dialog :show="dialogSelectDate" desc="审核业绩确认时间">
       <ReviewDate
         :data="reviewData"
+        :loading="btnLoading"
         @cancel="() => (dialogSelectDate = false)"
         @finish="
             (data) => {
