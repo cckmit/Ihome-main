@@ -592,7 +592,7 @@
     get_deal_getByCode__dealCode // 用成交报告编号，查询成交详情 --- 兼容其他模块
   } from "@/api/deal";
   import {post_notice_customer_information} from "@/api/contract";
-  import {get_invoice_getInvoiceInfo__businessId} from "@/api/finance";
+  import {get_invoice_getInvoiceInfo__businessCode} from "@/api/finance";
   import {get_org_get__id} from "@/api/system";
 
   @Component({
@@ -708,7 +708,7 @@
         console.log('this.infoForm.documentList', this.infoForm.documentList);
       }
       // 初始化开票信息
-      await this.getInvoiceInfo(info.id);
+      await this.getInvoiceInfo(info.dealCode);
       // 获取显示的成交组织name
       await this.getOrgName(info.dealOrgId);
     }
@@ -746,9 +746,9 @@
     }
 
     // 获取开票信息
-    async getInvoiceInfo(id: any = '') {
-      if (!id) return;
-      let info: any = await get_invoice_getInvoiceInfo__businessId({businessId: id});
+    async getInvoiceInfo(code: any = '') {
+      if (!code) return;
+      let info: any = await get_invoice_getInvoiceInfo__businessCode({businessCode: code});
       // console.log(info);
       if (info.id) {
         this.infoForm.invoiceList.push(info);
