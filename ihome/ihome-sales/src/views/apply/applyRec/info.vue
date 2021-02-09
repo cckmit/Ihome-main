@@ -4,7 +4,7 @@
  * @Author: ywl
  * @Date: 2021-01-15 15:29:09
  * @LastEditors: ywl
- * @LastEditTime: 2021-02-09 14:55:31
+ * @LastEditTime: 2021-02-09 16:41:26
 -->
 <template>
   <IhPage class="text-left">
@@ -662,12 +662,17 @@
           <el-table-column
             label="业务单号"
             prop="businessNo"
+            min-width="120"
           ></el-table-column>
           <el-table-column
             label="发票抬头"
             prop="invoiceTitle"
+            min-width="120"
           ></el-table-column>
-          <el-table-column label="发票类型">
+          <el-table-column
+            label="发票类型"
+            min-width="175"
+          >
             <template v-slot="{ row }">
               {{$root.dictAllName(row.invoiceType, 'InvoiceType')}}
             </template>
@@ -685,7 +690,7 @@
           <el-table-column
             label="确认主营（不含税）"
             prop="noTax"
-            width="200"
+            width="150"
           ></el-table-column>
           <el-table-column
             label="税额"
@@ -694,6 +699,7 @@
           <el-table-column
             label="收款方"
             prop="payee"
+            min-width="200"
           ></el-table-column>
           <el-table-column
             label="NC凭证号"
@@ -708,14 +714,17 @@
           <el-table-column
             label="开票日期"
             prop="operationDate"
-            min-width="155"
+            min-width="125"
           ></el-table-column>
           <el-table-column
             label="操作"
             fixed="right"
           >
-            <template v-slot="{  }">
-              <el-link>详情</el-link>
+            <template v-slot="{ row }">
+              <el-link
+                type="primary"
+                @click="handleOpen(row)"
+              >详情</el-link>
             </template>
           </el-table-column>
         </el-table>
@@ -849,6 +858,9 @@ export default class ApplyAudit extends Vue {
     return sum;
   }
 
+  private handleOpen(row: any) {
+    window.open(`/web-sales/invoice/info?id=${row.id}`, "_blank");
+  }
   private getSummaries({ columns, data }: any) {
     const sums: any = [];
     columns.forEach((column: any, index: number) => {
@@ -914,7 +926,9 @@ export default class ApplyAudit extends Vue {
       let invoiceInfo = await get_invoice_getInvoiceInfo__businessCode({
         businessCode: info.applyNo,
       });
-      this.invoiceList = [invoiceInfo];
+      if (invoiceInfo) {
+        this.invoiceList = [invoiceInfo];
+      }
       console.log(invoiceInfo);
     } catch (error) {
       console.log(error);
