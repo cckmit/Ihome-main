@@ -5,7 +5,7 @@
  * @Author: zyc
  * @Date: 2021-01-13 14:50:21
  * @LastEditors: zyc
- * @LastEditTime: 2021-02-08 17:22:53
+ * @LastEditTime: 2021-02-09 14:59:18
 -->
 <template>
   <IhPage label-width="110px">
@@ -201,7 +201,11 @@
                 <p>开户行:{{ scope.row.branchName }}</p>
               </template>
             </el-table-column>
-            <el-table-column label="状态" prop="status"></el-table-column>
+            <el-table-column label="状态" prop="status">
+              <template slot-scope="scope">{{
+                $root.dictAllName(scope.row.status, "FinRefundStatus")
+              }}</template>
+            </el-table-column>
             <el-table-column label="备注信息" prop="remark"></el-table-column>
             <el-table-column label="推送时间" prop="pushDate"></el-table-column>
             <el-table-column label="支付时间" prop="payDate"></el-table-column>
@@ -209,13 +213,13 @@
               <template v-slot="{ row }">
                 <el-link
                   type="primary"
-                  @click="toExamine(row)"
+                  @click="refundPush(row)"
                   class="margin-right-10"
                   >退款推送</el-link
                 >
                 <el-link
                   type="primary"
-                  @click="toExamine(row)"
+                  @click="setUpARefund(row)"
                   class="margin-right-10"
                   >设置已退款</el-link
                 >
@@ -227,7 +231,7 @@
                 >
                 <el-link
                   type="primary"
-                  @click="toExamine(row)"
+                  @click="syncStatus(row)"
                   class="margin-right-10"
                   >同步状态</el-link
                 >
@@ -254,6 +258,15 @@
       <RefundPushEdit
         :data="editData"
         @cancel="() => (prodialogVisible = false)"
+        @finish="refundPushEditFinish"
+      />
+    </ih-dialog>
+
+    <ih-dialog :show="setUpARefundShow">
+      <SetUpARefund
+        :data="setUpARefundData"
+        @cancel="() => (setUpARefundShow = false)"
+        @finish="setUpARefundFinish"
       />
     </ih-dialog>
   </IhPage>
@@ -262,10 +275,16 @@
 <script lang="ts">
 import { Component, Vue } from "vue-property-decorator";
 import PaginationMixin from "../../../mixins/pagination";
-import { post_refundItem_getList } from "../../../api/finance/index";
+import {
+  post_refundItemPush_refundPush,
+  post_refundItemPush_getList,
+  post_refundItemPush_syncStatus,
+} from "../../../api/finance/index";
+
 import RefundPushEdit from "./edit.vue";
+import SetUpARefund from "./dialog/setUpARefund.vue";
 @Component({
-  components: { RefundPushEdit },
+  components: { RefundPushEdit, SetUpARefund },
   mixins: [PaginationMixin],
 })
 export default class RefundPushList extends Vue {
@@ -287,28 +306,15 @@ export default class RefundPushList extends Vue {
   };
   editData = {};
   prodialogVisible = false;
-  activeName = "0";
+  setUpARefundShow = false;
+  setUpARefundData = {};
+  activeName = "PendingPay";
   tabList = [
-    { name: "0", label: "全部" },
-    { name: "1", label: "待退款" },
-    { name: "2", label: "已退票" },
-    { name: "3", label: "付款中" },
-    { name: "4", label: "付款成功" },
-  ];
-
-  private tabsList: any = [
-    {
-      label: "待审核",
-      name: "Confirm",
-    },
-    {
-      label: "已审核",
-      name: "Complete",
-    },
-    {
-      label: "全部",
-      name: "",
-    },
+    { name: "", label: "全部" },
+    { name: "PendingPay", label: "待退款" },
+    { name: "RefundedTicket", label: "已退票" },
+    { name: "Paying", label: "付款中" },
+    { name: "Paid", label: "付款成功" },
   ];
   edit(row: any) {
     this.editData = row;
@@ -316,6 +322,14 @@ export default class RefundPushList extends Vue {
   }
 
   private tableData: any = null;
+  refundPushEditFinish() {
+    this.prodialogVisible = false;
+    this.getListMixin();
+  }
+  setUpARefundFinish() {
+    this.setUpARefundShow = false;
+    this.getListMixin();
+  }
 
   expiresTimeChange(dateArray: any) {
     if (dateArray) {
@@ -352,7 +366,10 @@ export default class RefundPushList extends Vue {
   }
 
   async getListMixin() {
-    this.resPageInfo = await post_refundItem_getList(this.queryPageParameters);
+    this.queryPageParameters.status = this.activeName;
+    this.resPageInfo = await post_refundItemPush_getList(
+      this.queryPageParameters
+    );
   }
 
   created() {
@@ -363,6 +380,33 @@ export default class RefundPushList extends Vue {
       path: "/refundToExamine/toExamine",
       query: { id: row.id },
     });
+  }
+  //设置已退款
+  async setUpARefund(row: any) {
+    this.setUpARefundData = {
+      id: row.id,
+      payTime: row.payTime || null,
+    };
+    this.setUpARefundShow = true;
+  }
+
+  //退款推送
+  async refundPush(row: any) {
+    await post_refundItemPush_refundPush({
+      id: row.id,
+      refundPayNo: row.refundPayNo,
+    });
+    this.$message.success("推送成功");
+    this.getListMixin();
+  }
+  //同步状态
+  async syncStatus(row: any) {
+    await post_refundItemPush_syncStatus({
+      id: row.id,
+      refundPayNo: row.refundPayNo,
+    });
+    this.$message.success("同步成功");
+    this.getListMixin();
   }
 }
 </script>

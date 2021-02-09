@@ -1,6 +1,6 @@
 /* eslint-disable */
 /* 此脚本由swagger-ui的api-docs自动生成，请勿修改 */
-//2021-2-8 16:40:45
+//2021-2-9 14:49:55
 import { request } from '@/api/base'
 const basePath = "/sales-api/finance"
 /**新增收款账号在线支付信息*/
@@ -107,9 +107,9 @@ return await request.post< string[],string[]> (basePath+'/invoice/downloadFile',
 export async function get_invoice_get__id (d?: any) {
 return await request.get<InvoiceDetailVO,InvoiceDetailVO>(basePath+'/invoice/get/{id}', { params: d })
 }
-/**根据业务ID获取开票信息*/
-export async function get_invoice_getInvoiceInfo__businessId (d?: any) {
-return await request.get<InvoiceVO,InvoiceVO>(basePath+'/invoice/getInvoiceInfo/{businessId}', { params: d })
+/**根据业务编码获取开票信息*/
+export async function get_invoice_getInvoiceInfo__businessCode (d?: any) {
+return await request.get<InvoiceVO,InvoiceVO>(basePath+'/invoice/getInvoiceInfo/{businessCode}', { params: d })
 }
 /**查询开票信息列表数据*/
 export async function post_invoice_getList (d?: any) {
@@ -475,9 +475,29 @@ return await request.get<RefundItemVO,RefundItemVO>(basePath+'/refundItem/get/{i
 export async function post_refundItem_getList (d?: any) {
 return await request.post< any,any> (basePath+'/refundItem/getList', d)
 }
+/**查询待退款推送详情*/
+export async function get_refundItemPush_get__id (d?: any) {
+return await request.get<RefundItemPush,RefundItemPush>(basePath+'/refundItemPush/get/{id}', { params: d })
+}
 /**查询待退款推送信息列表数据*/
 export async function post_refundItemPush_getList (d?: any) {
 return await request.post< any,any> (basePath+'/refundItemPush/getList', d)
+}
+/**退款推送*/
+export async function post_refundItemPush_refundPush (d?: any) {
+return await request.post< number,number> (basePath+'/refundItemPush/refundPush', d)
+}
+/**设置已退款*/
+export async function post_refundItemPush_setUpARefund (d?: any) {
+return await request.post< number,number> (basePath+'/refundItemPush/setUpARefund', d)
+}
+/**同步状态*/
+export async function post_refundItemPush_syncStatus (d?: any) {
+return await request.post< number,number> (basePath+'/refundItemPush/syncStatus', d)
+}
+/**修改待退款推送数据*/
+export async function post_refundItemPush_update (d?: any) {
+return await request.post< number,number> (basePath+'/refundItemPush/update', d)
 }
 //===============================================================================================
 /**ResModel模型*/
@@ -2497,6 +2517,59 @@ refundName: string;
 /**退款状态(PendingApply-待申请、UnderReview-审核中、Refunding-退款中、Refunded-已退款)*/
 status: string;
 }
+/**RefundItemPush*/
+export interface RefundItemPush {
+/**付款方账户名称*/
+accountName: string;
+/**付款方账号*/
+accountNo: string;
+/**退款金额*/
+amount: number;
+/**付款方开户银行*/
+branchName: string;
+/**付款方联行号*/
+branchNo: string;
+/**公司ID*/
+companyId: number;
+/**申请日期(yyyy-MM-dd)*/
+createDate: string;
+/**创建时间(yyyy-MM-dd HH:mm:ss)*/
+createTime: string;
+/**创建用户*/
+createUser: number;
+/**已删除*/
+deleted: number;
+/**ID*/
+id: number;
+/**支付日期(yyyy-MM-dd HH:mm:ss)*/
+payDate: string;
+/**付款方式(CashPay-现金支付、OtherPay-其他支付)*/
+payType: string;
+/**推送日期(yyyy-MM-dd)*/
+pushDate: string;
+/**退款人账号*/
+refundAccount: string;
+/**退款申请单编号*/
+refundApplyNo: string;
+/**退款人开户行*/
+refundBankName: string;
+/**退款人姓名*/
+refundName: string;
+/**退款项编号*/
+refundNo: string;
+/**唯一支付编号*/
+refundPayNo: string;
+/**备注信息*/
+remark: string;
+/**结算方式(CentralizedPay-集中支付、OnlinePay-网银支付)*/
+settlementType: string;
+/**退款状态(PendingPay-待退款、RefundedTicket-已退票、Paying-付款中、Paid-付款成功)*/
+status: string;
+/**更新时间(yyyy-MM-dd HH:mm:ss)*/
+updateTime: string;
+/**更新用户*/
+updateUser: number;
+}
 /**RefundItemPushQueryVO*/
 export interface RefundItemPushQueryVO {
 /**开始时间(yyyy-MM-dd)*/
@@ -2524,6 +2597,35 @@ settlementType: string;
 /**退款状态(PendingPay-待退款、RefundedTicket-已退票、Paying-付款中、Paid-付款成功)*/
 status: string;
 }
+/**RefundItemPushSetUpARefundVO*/
+export interface RefundItemPushSetUpARefundVO {
+/**ID*/
+id: number;
+/**退款时间(yyyy-MM-dd)*/
+payTime: string;
+}
+/**RefundItemPushSyncStatusVO*/
+export interface RefundItemPushSyncStatusVO {
+/**ID*/
+id: number;
+/**推送唯一支付编号*/
+refundPayNo: string;
+}
+/**RefundItemPushUpdateVO*/
+export interface RefundItemPushUpdateVO {
+/**账号ID*/
+accountId: number;
+/**付款方公司ID*/
+companyId: number;
+/**ID*/
+id: number;
+/**付款方式(CashPay-现金支付、OtherPay-其他支付)*/
+payType: string;
+/**收款人账号*/
+refundAccount: string;
+/**结算方式(CentralizedPay-集中支付、OnlinePay-网银支付)*/
+settlementType: string;
+}
 /**RefundItemPushVO*/
 export interface RefundItemPushVO {
 /**付款方账户名称*/
@@ -2548,7 +2650,7 @@ createUser: number;
 deleted: number;
 /**ID*/
 id: number;
-/**付款日期(yyyy-MM-dd)*/
+/**支付日期(yyyy-MM-dd HH:mm:ss)*/
 payDate: string;
 /**付款方式(CashPay-现金支付、OtherPay-其他支付)*/
 payType: string;
@@ -2566,7 +2668,7 @@ refundName: string;
 refundNo: string;
 /**唯一支付编号*/
 refundPayNo: string;
-/**成交客户姓名*/
+/**备注信息*/
 remark: string;
 /**结算方式(CentralizedPay-集中支付、OnlinePay-网银支付)*/
 settlementType: string;

@@ -1,6 +1,6 @@
 /* eslint-disable */
 /* 此脚本由swagger-ui的api-docs自动生成，请勿修改 */
-//2021-2-6 09:35:43
+//2021-2-9 15:00:08
 import { request } from '@/api/base'
 const basePath = "/sales-api/finance"
 /**新增收款账号在线支付信息*/
@@ -42,6 +42,10 @@ return await request.get<BankAccountBackInfoVO,BankAccountBackInfoVO>(basePath+'
 /**查询公司收款账户信息详情*/
 export async function get_bankAccount_getById__id (d?: any) {
 return await request.get<BankAccountVO,BankAccountVO>(basePath+'/bankAccount/getById/{id}', { params: d })
+}
+/**查询公司下面的所有银行账号信息*/
+export async function post_bankAccount_getByOrgId__orgId (d?: any) {
+return await request.post< BankAccountAllVO[],BankAccountAllVO[]> (basePath+'/bankAccount/getByOrgId/{orgId}', d)
 }
 /**查询公司收款账户信息列表数据*/
 export async function post_bankAccount_getList (d?: any) {
@@ -103,9 +107,9 @@ return await request.post< string[],string[]> (basePath+'/invoice/downloadFile',
 export async function get_invoice_get__id (d?: any) {
 return await request.get<InvoiceDetailVO,InvoiceDetailVO>(basePath+'/invoice/get/{id}', { params: d })
 }
-/**根据业务ID获取开票信息*/
-export async function get_invoice_getInvoiceInfo__businessId (d?: any) {
-return await request.get<InvoiceVO,InvoiceVO>(basePath+'/invoice/getInvoiceInfo/{businessId}', { params: d })
+/**根据业务编码获取开票信息*/
+export async function get_invoice_getInvoiceInfo__businessCode (d?: any) {
+return await request.get<InvoiceVO,InvoiceVO>(basePath+'/invoice/getInvoiceInfo/{businessCode}', { params: d })
 }
 /**查询开票信息列表数据*/
 export async function post_invoice_getList (d?: any) {
@@ -379,6 +383,14 @@ return await request.post< number,number> (basePath+'/posTerminal/revoke', d)
 export async function post_posTerminal_update (d?: any) {
 return await request.post< number,number> (basePath+'/posTerminal/update', d)
 }
+/**新增退款申请信息*/
+export async function post_refundApply_add (d?: any) {
+return await request.post< number,number> (basePath+'/refundApply/add', d)
+}
+/**批量删除草稿或终审驳回状态退款申请信息*/
+export async function post_refundApply_batchDelete (d?: any) {
+return await request.post< number,number> (basePath+'/refundApply/batchDelete', d)
+}
 /**Excel导出待审核退款申请数据*/
 export async function post_refundApply_checkExportData (d?: any) {
 return await request.post< any,any> (basePath+'/refundApply/checkExportData', d)
@@ -387,7 +399,7 @@ return await request.post< any,any> (basePath+'/refundApply/checkExportData', d)
 export async function post_refundApply_collect (d?: any) {
 return await request.post< RefundApplyCollectVO,RefundApplyCollectVO> (basePath+'/refundApply/collect', d)
 }
-/**删除草稿状态退款申请信息*/
+/**删除草稿或终审驳回状态退款申请信息*/
 export async function post_refundApply_delete__id (d?: any) {
 return await request.post< number,number> (basePath+'/refundApply/delete/{id}', d)
 }
@@ -402,6 +414,14 @@ return await request.post< number,number> (basePath+'/refundApply/financialAudit
 /**查询退款申请信息详情*/
 export async function get_refundApply_get__id (d?: any) {
 return await request.get<RefundApplyVO,RefundApplyVO>(basePath+'/refundApply/get/{id}', { params: d })
+}
+/**获取退款申请业务审核流程*/
+export async function get_refundApply_getBusinessProcess__id (d?: any) {
+return await request.get<RefundApplyBusinessProcessVO[],RefundApplyBusinessProcessVO[]>(basePath+'/refundApply/getBusinessProcess/{id}', { params: d })
+}
+/**查询待审核退款申请信息列表数据*/
+export async function post_refundApply_getCheckList (d?: any) {
+return await request.post< any,any> (basePath+'/refundApply/getCheckList', d)
 }
 /**查询OA审批日志*/
 export async function post_refundApply_getFlowCommentList__id (d?: any) {
@@ -431,13 +451,13 @@ return await request.post< string,string> (basePath+'/refundApply/queryOaApprova
 export async function post_refundApply_revoke__id (d?: any) {
 return await request.post< number,number> (basePath+'/refundApply/revoke/{id}', d)
 }
-/**新增或修改退款申请信息*/
-export async function post_refundApply_saveOrUpdate (d?: any) {
-return await request.post< number,number> (basePath+'/refundApply/saveOrUpdate', d)
-}
 /**同步OA审核状态*/
 export async function post_refundApply_syncState (d?: any) {
 return await request.post< number,number> (basePath+'/refundApply/syncState', d)
+}
+/**修改退款申请信息*/
+export async function post_refundApply_update (d?: any) {
+return await request.post< number,number> (basePath+'/refundApply/update', d)
 }
 /**发起退款申请书新增待退款项信息*/
 export async function post_refundItem_addRefundItem (d?: any) {
@@ -454,6 +474,30 @@ return await request.get<RefundItemVO,RefundItemVO>(basePath+'/refundItem/get/{i
 /**查询待退款项列表数据*/
 export async function post_refundItem_getList (d?: any) {
 return await request.post< any,any> (basePath+'/refundItem/getList', d)
+}
+/**查询待退款推送详情*/
+export async function get_refundItemPush_get__id (d?: any) {
+return await request.get<RefundItemPush,RefundItemPush>(basePath+'/refundItemPush/get/{id}', { params: d })
+}
+/**查询待退款推送信息列表数据*/
+export async function post_refundItemPush_getList (d?: any) {
+return await request.post< any,any> (basePath+'/refundItemPush/getList', d)
+}
+/**退款推送*/
+export async function post_refundItemPush_refundPush (d?: any) {
+return await request.post< number,number> (basePath+'/refundItemPush/refundPush', d)
+}
+/**设置已退款*/
+export async function post_refundItemPush_setUpARefund (d?: any) {
+return await request.post< number,number> (basePath+'/refundItemPush/setUpARefund', d)
+}
+/**同步状态*/
+export async function post_refundItemPush_syncStatus (d?: any) {
+return await request.post< number,number> (basePath+'/refundItemPush/syncStatus', d)
+}
+/**修改待退款推送数据*/
+export async function post_refundItemPush_update (d?: any) {
+return await request.post< number,number> (basePath+'/refundItemPush/update', d)
 }
 //===============================================================================================
 /**ResModel模型*/
@@ -2001,12 +2045,12 @@ branchName: string;
 branchNo: string;
 /**按钮0-保存 1-提交*/
 buttonType: number;
+/**公司主体ID*/
+companyId: number;
 /**退款汇总清单*/
 countVOs: RefundApplyCountVO[];
 /**制单日期(yyyy-MM-dd)*/
 createDate: string;
-/**编辑时候ID必填*/
-id: number;
 /**制单人*/
 inputUser: number;
 /**待退款项数据集合*/
@@ -2015,16 +2059,21 @@ itemAttachmentVOs: RefundItemAttachmentVO[];
 orgId: number;
 /**其他附件集合*/
 others: RefundAttachmentVO[];
-/**付款方式(CashPay-现金支付、OnlinePay-网银支付)*/
+/**付款方式(CashPay-现金支付、OtherPay-其他支付)*/
 payType: string;
-/**退款申请单编号[编辑时候必传]*/
-refundApplyNo: string;
 /**退款信息汇总数据*/
 refundInfo: RefundInfoVO;
 /**结算方式(CentralizedPay-集中支付、OnlinePay-网银支付)*/
 settlementType: string;
-/**状态(Draft-草稿、PTWYSH-待平台文员审核、FGSYGSH-待分公司业管审核、PendingBranch-待分公司财务审核、OaAppeal-OA流程审批中、AppealPass-终审通过、AppealDismissed-终审驳回、PayConfirm-支付结果确认中、PaySuccessful-支付成功)*/
+/**状态(Draft-草稿、PTWYSH-待平台文员审核、FGSYGSH-待分公司业管审核、FGSCWSH-待分公司财务审核、OaAppeal-OA流程审批中、AppealPass-终审通过、AppealDismissed-终审驳回、PayConfirm-支付结果确认中、PaySuccessful-支付成功)*/
 status: string;
+}
+/**RefundApplyBusinessProcessVO*/
+export interface RefundApplyBusinessProcessVO {
+/**处理时间(yyyy-MM-dd HH:mm:ss)*/
+operateTime: string;
+/**结果*/
+result: string;
 }
 /**RefundApplyCWCheckVO*/
 export interface RefundApplyCWCheckVO {
@@ -2038,39 +2087,56 @@ accountNo: string;
 branchName: string;
 /**付款方联行号*/
 branchNo: string;
-/**收款方信息和支付方式信息[财务审核时才传]*/
-cwCheckVO: RefundApplyCWCheckVO;
+/**审核按钮类型(TemporaryStorage-暂存、Through-通过、Reject-驳回、Saving-保存)*/
+buttonType: string;
+/**退款汇总清单*/
+countVOs: RefundApplyCountVO[];
 /**ID*/
 id: number;
-/**是否财务审核标识[是-1;否-2]*/
-isFinance: number;
 /**待退款项数据集合*/
 itemAttachmentVOs: RefundItemAttachmentVO[];
-/**付款方式(CashPay-现金支付、OnlinePay-网银支付)*/
+/**付款方式(CashPay-现金支付、OtherPay-其他支付)*/
 payType: string;
+/**退款信息汇总数据*/
+refundInfo: RefundInfoVO;
 /**审核意见[驳回和暂存时必填]*/
 remark: string;
 /**结算方式(CentralizedPay-集中支付、OnlinePay-网银支付)*/
 settlementType: string;
-/**当前状态(Draft-草稿、PTWYSH-待平台文员审核、FGSYGSH-待分公司业管审核、PendingBranch-待分公司财务审核、OaAppeal-OA流程审批中、AppealPass-终审通过、AppealDismissed-终审驳回、PayConfirm-支付结果确认中、PaySuccessful-支付成功)*/
+/**当前状态(Draft-草稿、PTWYSH-待平台文员审核、FGSYGSH-待分公司业管审核、FGSCWSH-待分公司财务审核、OaAppeal-OA流程审批中、AppealPass-终审通过、AppealDismissed-终审驳回、PayConfirm-支付结果确认中、PaySuccessful-支付成功)*/
 status: string;
-/**通过1;暂存2;驳回3*/
-type: number;
+}
+/**RefundApplyCheckQueryVO*/
+export interface RefundApplyCheckQueryVO {
+/**开始时间(yyyy-MM-dd)*/
+beginTime: string;
+/**截止时间(yyyy-MM-dd)*/
+endTime: string;
+/**制单人*/
+inputUser: number;
+/**事业部ID*/
+orgId: number;
+/**(必填)当前页*/
+pageNum: number;
+/**(必填)每页条数*/
+pageSize: number;
+/**付款方式(CashPay-现金支付、OtherPay-其他支付)*/
+payType: string;
+/**退款申请单编号*/
+refundApplyNo: string;
+/**结算方式(CentralizedPay-集中支付、OnlinePay-网银支付)*/
+settlementType: string;
 }
 /**RefundApplyCheckVO*/
 export interface RefundApplyCheckVO {
-/**收款方信息和支付方式信息[财务审核时才传]*/
-cwCheckVO: RefundApplyCWCheckVO;
+/**审核按钮类型(TemporaryStorage-暂存、Through-通过、Reject-驳回、Saving-保存)*/
+buttonType: string;
 /**ID*/
 id: number;
-/**是否财务审核标识[是-1;否-2]*/
-isFinance: number;
 /**审核意见[驳回和暂存时必填]*/
 remark: string;
-/**当前状态(Draft-草稿、PTWYSH-待平台文员审核、FGSYGSH-待分公司业管审核、PendingBranch-待分公司财务审核、OaAppeal-OA流程审批中、AppealPass-终审通过、AppealDismissed-终审驳回、PayConfirm-支付结果确认中、PaySuccessful-支付成功)*/
+/**当前状态(Draft-草稿、PTWYSH-待平台文员审核、FGSYGSH-待分公司业管审核、FGSCWSH-待分公司财务审核、OaAppeal-OA流程审批中、AppealPass-终审通过、AppealDismissed-终审驳回、PayConfirm-支付结果确认中、PaySuccessful-支付成功)*/
 status: string;
-/**通过1;暂存2;驳回3*/
-type: number;
 }
 /**RefundApplyCollectParamVO*/
 export interface RefundApplyCollectParamVO {
@@ -2103,29 +2169,31 @@ totalRefundedAmount: number;
 }
 /**RefundApplyExportQueryVO*/
 export interface RefundApplyExportQueryVO {
-/**账户id*/
-accountId: number;
 /**开始时间(yyyy-MM-dd)*/
 beginTime: string;
+/**付款方[公司ID]*/
+companyId: number;
 /**截止时间(yyyy-MM-dd)*/
 endTime: string;
 /**制单人*/
 inputUser: number;
 /**事业部ID*/
 orgId: number;
-/**付款方式(CashPay-现金支付、OnlinePay-网银支付)*/
+/**付款方式(CashPay-现金支付、OtherPay-其他支付)*/
 payType: string;
 /**退款申请单编号*/
 refundApplyNo: string;
-/**状态(Draft-草稿、PTWYSH-待平台文员审核、FGSYGSH-待分公司业管审核、PendingBranch-待分公司财务审核、OaAppeal-OA流程审批中、AppealPass-终审通过、AppealDismissed-终审驳回、PayConfirm-支付结果确认中、PaySuccessful-支付成功)*/
+/**结算方式(CentralizedPay-集中支付、OnlinePay-网银支付)*/
+settlementType: string;
+/**状态(Draft-草稿、PTWYSH-待平台文员审核、FGSYGSH-待分公司业管审核、FGSCWSH-待分公司财务审核、OaAppeal-OA流程审批中、AppealPass-终审通过、AppealDismissed-终审驳回、PayConfirm-支付结果确认中、PaySuccessful-支付成功)*/
 status: string;
 }
 /**RefundApplyQueryVO*/
 export interface RefundApplyQueryVO {
-/**账户id*/
-accountId: number;
 /**开始时间(yyyy-MM-dd)*/
 beginTime: string;
+/**付款方[公司ID]*/
+companyId: number;
 /**截止时间(yyyy-MM-dd)*/
 endTime: string;
 /**制单人*/
@@ -2136,11 +2204,58 @@ orgId: number;
 pageNum: number;
 /**(必填)每页条数*/
 pageSize: number;
-/**付款方式(CashPay-现金支付、OnlinePay-网银支付)*/
+/**付款方式(CashPay-现金支付、OtherPay-其他支付)*/
 payType: string;
 /**退款申请单编号*/
 refundApplyNo: string;
-/**状态(Draft-草稿、PTWYSH-待平台文员审核、FGSYGSH-待分公司业管审核、PendingBranch-待分公司财务审核、OaAppeal-OA流程审批中、AppealPass-终审通过、AppealDismissed-终审驳回、PayConfirm-支付结果确认中、PaySuccessful-支付成功)*/
+/**结算方式(CentralizedPay-集中支付、OnlinePay-网银支付)*/
+settlementType: string;
+/**状态(Draft-草稿、PTWYSH-待平台文员审核、FGSYGSH-待分公司业管审核、FGSCWSH-待分公司财务审核、OaAppeal-OA流程审批中、AppealPass-终审通过、AppealDismissed-终审驳回、PayConfirm-支付结果确认中、PaySuccessful-支付成功)*/
+status: string;
+}
+/**RefundApplyUpdateParamVO*/
+export interface RefundApplyUpdateParamVO {
+/**账户id*/
+accountId: number;
+/**付款方账户名称*/
+accountName: string;
+/**付款方账号*/
+accountNo: string;
+/**申请事由*/
+applyReason: string;
+/**开发签字退款审核表附件集合*/
+approvalForms: RefundAttachmentVO[];
+/**付款方开户银行*/
+branchName: string;
+/**付款方联行号*/
+branchNo: string;
+/**按钮0-保存 1-提交*/
+buttonType: number;
+/**公司主体ID*/
+companyId: number;
+/**退款汇总清单*/
+countVOs: RefundApplyCountVO[];
+/**制单日期(yyyy-MM-dd)*/
+createDate: string;
+/**ID*/
+id: number;
+/**制单人*/
+inputUser: number;
+/**待退款项数据集合*/
+itemAttachmentVOs: RefundItemAttachmentVO[];
+/**事业部ID*/
+orgId: number;
+/**其他附件集合*/
+others: RefundAttachmentVO[];
+/**付款方式(CashPay-现金支付、OtherPay-其他支付)*/
+payType: string;
+/**退款申请单编号[编辑时候必传]*/
+refundApplyNo: string;
+/**退款信息汇总数据*/
+refundInfo: RefundInfoVO;
+/**结算方式(CentralizedPay-集中支付、OnlinePay-网银支付)*/
+settlementType: string;
+/**状态(Draft-草稿、PTWYSH-待平台文员审核、FGSYGSH-待分公司业管审核、FGSCWSH-待分公司财务审核、OaAppeal-OA流程审批中、AppealPass-终审通过、AppealDismissed-终审驳回、PayConfirm-支付结果确认中、PaySuccessful-支付成功)*/
 status: string;
 }
 /**RefundApplyVO*/
@@ -2159,6 +2274,8 @@ applyReason: string;
 branchName: string;
 /**付款方联行号*/
 branchNo: string;
+/**公司主体ID*/
+companyId: number;
 /**退款汇总清单集合*/
 countVOs: RefundApplyCountVO[];
 /**制单日期(yyyy-MM-dd)*/
@@ -2181,7 +2298,9 @@ inputUserName: string;
 noticeAmount: number;
 /**事业部ID*/
 orgId: number;
-/**付款方式(CashPay-现金支付、OnlinePay-网银支付)*/
+/**是否被驳回标记0-否1-是*/
+overruleMark: number;
+/**付款方式(CashPay-现金支付、OtherPay-其他支付)*/
 payType: string;
 /**退款申请单编号*/
 refundApplyNo: string;
@@ -2193,7 +2312,7 @@ refundItems: RefundItem[];
 refundRecords: RefundRecord[];
 /**结算方式(CentralizedPay-集中支付、OnlinePay-网银支付)*/
 settlementType: string;
-/**状态(Draft-草稿、PTWYSH-待平台文员审核、FGSYGSH-待分公司业管审核、PendingBranch-待分公司财务审核、OaAppeal-OA流程审批中、AppealPass-终审通过、AppealDismissed-终审驳回、PayConfirm-支付结果确认中、PaySuccessful-支付成功)*/
+/**状态(Draft-草稿、PTWYSH-待平台文员审核、FGSYGSH-待分公司业管审核、FGSCWSH-待分公司财务审核、OaAppeal-OA流程审批中、AppealPass-终审通过、AppealDismissed-终审驳回、PayConfirm-支付结果确认中、PaySuccessful-支付成功)*/
 status: string;
 /**OA流程ID*/
 summaryId: number;
@@ -2243,7 +2362,7 @@ amount: string;
 /**付款方开户行*/
 branchName: string;
 /**原收款金额*/
-contAmount: string;
+contAmount: number;
 /**业务类型*/
 contType: string;
 /**收款方开户方及银行账号*/
@@ -2398,6 +2517,168 @@ refundName: string;
 /**退款状态(PendingApply-待申请、UnderReview-审核中、Refunding-退款中、Refunded-已退款)*/
 status: string;
 }
+/**RefundItemPush*/
+export interface RefundItemPush {
+/**付款方账户名称*/
+accountName: string;
+/**付款方账号*/
+accountNo: string;
+/**退款金额*/
+amount: number;
+/**付款方开户银行*/
+branchName: string;
+/**付款方联行号*/
+branchNo: string;
+/**公司ID*/
+companyId: number;
+/**申请日期(yyyy-MM-dd)*/
+createDate: string;
+/**创建时间(yyyy-MM-dd HH:mm:ss)*/
+createTime: string;
+/**创建用户*/
+createUser: number;
+/**已删除*/
+deleted: number;
+/**ID*/
+id: number;
+/**支付日期(yyyy-MM-dd HH:mm:ss)*/
+payDate: string;
+/**付款方式(CashPay-现金支付、OtherPay-其他支付)*/
+payType: string;
+/**推送日期(yyyy-MM-dd)*/
+pushDate: string;
+/**退款人账号*/
+refundAccount: string;
+/**退款申请单编号*/
+refundApplyNo: string;
+/**退款人开户行*/
+refundBankName: string;
+/**退款人姓名*/
+refundName: string;
+/**退款项编号*/
+refundNo: string;
+/**唯一支付编号*/
+refundPayNo: string;
+/**备注信息*/
+remark: string;
+/**结算方式(CentralizedPay-集中支付、OnlinePay-网银支付)*/
+settlementType: string;
+/**退款状态(PendingPay-待退款、RefundedTicket-已退票、Paying-付款中、Paid-付款成功)*/
+status: string;
+/**更新时间(yyyy-MM-dd HH:mm:ss)*/
+updateTime: string;
+/**更新用户*/
+updateUser: number;
+}
+/**RefundItemPushQueryVO*/
+export interface RefundItemPushQueryVO {
+/**开始时间(yyyy-MM-dd)*/
+beginTime: string;
+/**付款方ID*/
+companyId: number;
+/**日期类型[1-申请日期;2-推送日期;3-付款日期]*/
+dateType: number;
+/**截止时间(yyyy-MM-dd)*/
+endTime: string;
+/**(必填)当前页*/
+pageNum: number;
+/**(必填)每页条数*/
+pageSize: number;
+/**付款方式(CashPay-现金支付、OtherPay-其他支付)*/
+payType: string;
+/**退款申请单编号*/
+refundApplyNo: string;
+/**收款人姓名*/
+refundName: string;
+/**唯一支付编号*/
+refundPayNo: string;
+/**结算方式(CentralizedPay-集中支付、OnlinePay-网银支付)*/
+settlementType: string;
+/**退款状态(PendingPay-待退款、RefundedTicket-已退票、Paying-付款中、Paid-付款成功)*/
+status: string;
+}
+/**RefundItemPushSetUpARefundVO*/
+export interface RefundItemPushSetUpARefundVO {
+/**ID*/
+id: number;
+/**退款时间(yyyy-MM-dd)*/
+payTime: string;
+}
+/**RefundItemPushSyncStatusVO*/
+export interface RefundItemPushSyncStatusVO {
+/**ID*/
+id: number;
+/**推送唯一支付编号*/
+refundPayNo: string;
+}
+/**RefundItemPushUpdateVO*/
+export interface RefundItemPushUpdateVO {
+/**账号ID*/
+accountId: number;
+/**付款方公司ID*/
+companyId: number;
+/**ID*/
+id: number;
+/**付款方式(CashPay-现金支付、OtherPay-其他支付)*/
+payType: string;
+/**收款人账号*/
+refundAccount: string;
+/**结算方式(CentralizedPay-集中支付、OnlinePay-网银支付)*/
+settlementType: string;
+}
+/**RefundItemPushVO*/
+export interface RefundItemPushVO {
+/**付款方账户名称*/
+accountName: string;
+/**付款方账号*/
+accountNo: string;
+/**退款金额*/
+amount: number;
+/**付款方开户银行*/
+branchName: string;
+/**付款方联行号*/
+branchNo: string;
+/**公司ID*/
+companyId: number;
+/**申请日期(yyyy-MM-dd)*/
+createDate: string;
+/**创建时间(yyyy-MM-dd HH:mm:ss)*/
+createTime: string;
+/**创建用户*/
+createUser: number;
+/**已删除*/
+deleted: number;
+/**ID*/
+id: number;
+/**支付日期(yyyy-MM-dd HH:mm:ss)*/
+payDate: string;
+/**付款方式(CashPay-现金支付、OtherPay-其他支付)*/
+payType: string;
+/**推送日期(yyyy-MM-dd)*/
+pushDate: string;
+/**退款人账号*/
+refundAccount: string;
+/**退款申请单编号*/
+refundApplyNo: string;
+/**退款人开户行*/
+refundBankName: string;
+/**退款人姓名*/
+refundName: string;
+/**退款项编号*/
+refundNo: string;
+/**唯一支付编号*/
+refundPayNo: string;
+/**备注信息*/
+remark: string;
+/**结算方式(CentralizedPay-集中支付、OnlinePay-网银支付)*/
+settlementType: string;
+/**退款状态(PendingPay-待退款、RefundedTicket-已退票、Paying-付款中、Paid-付款成功)*/
+status: string;
+/**更新时间(yyyy-MM-dd HH:mm:ss)*/
+updateTime: string;
+/**更新用户*/
+updateUser: number;
+}
 /**RefundItemQueryVO*/
 export interface RefundItemQueryVO {
 /**开始时间(yyyy-MM-dd)*/
@@ -2490,12 +2771,16 @@ updateUser: number;
 }
 /**RefundRecord*/
 export interface RefundRecord {
+/**操作后状态(Draft-草稿、PTWYSH-待平台文员审核、FGSYGSH-待分公司业管审核、FGSCWSH-待分公司财务审核、OaAppeal-OA流程审批中、AppealPass-终审通过、AppealDismissed-终审驳回、PayConfirm-支付结果确认中、PaySuccessful-支付成功)*/
+afterStatus: string;
 /**创建时间(yyyy-MM-dd HH:mm:ss)*/
 createTime: string;
 /**创建用户*/
 createUser: number;
 /**已删除*/
 deleted: number;
+/**操作前状态(Draft-草稿、PTWYSH-待平台文员审核、FGSYGSH-待分公司业管审核、FGSCWSH-待分公司财务审核、OaAppeal-OA流程审批中、AppealPass-终审通过、AppealDismissed-终审驳回、PayConfirm-支付结果确认中、PaySuccessful-支付成功)*/
+frontStatus: string;
 /**ID*/
 id: number;
 /**处理时间(yyyy-MM-dd HH:mm:ss)*/
