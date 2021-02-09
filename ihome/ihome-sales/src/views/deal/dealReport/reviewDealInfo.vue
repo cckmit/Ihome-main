@@ -546,9 +546,9 @@
       </el-form>
     </div>
     <div class="text-center btn-top">
-      <el-button @click="handleBack()">取消</el-button>
-      <el-button type="danger" @click="handleFail()">驳回</el-button>
-      <el-button type="success" @click="handlePass()">通过</el-button>
+      <el-button :loading="btnLoading" @click="handleBack()">取消</el-button>
+      <el-button :loading="btnLoading" type="danger" @click="handleFail()">驳回</el-button>
+      <el-button :loading="btnLoading" type="success" @click="handlePass()">通过</el-button>
     </div>
     <div v-if="currentType === 'mainDeal'" class="nav-box">
       <div class="nav-icon el-button--success" @click="navFlag = !navFlag " :title="navFlag ? '收起' : '展开'">
@@ -573,6 +573,7 @@
     <ih-dialog :show="dialogSelectDate" desc="审核业绩确认时间">
       <ReviewDate
         :data="reviewData"
+        :loading="btnLoading"
         @cancel="() => (dialogSelectDate = false)"
         @finish="
             (data) => {
@@ -610,6 +611,7 @@
   })
   export default class ReviewDealInfo extends Vue {
     private isShowImg = false;
+    private btnLoading = false;
     private srcList: any = [];
     private srcData: any = [];
     postData: any = {
@@ -924,16 +926,23 @@
     }
 
     async submitPass() {
-      let postData: any = {
-        dealId: this.id,
-        remark: this.postData.postRemarks,
-        achieveConfirmTime: this.selectData
+      try {
+        this.btnLoading = true;
+        let postData: any = {
+          dealId: this.id,
+          remark: this.postData.postRemarks,
+          achieveConfirmTime: this.selectData
+        }
+        await post_processRecord_reviewDeal(postData);
+        this.dialogSelectDate = false;
+        this.btnLoading = false;
+        this.$goto({
+          path: "/dealReport/list",
+        });
+      } catch (error) {
+        console.log(error);
+        this.btnLoading = false;
       }
-      await post_processRecord_reviewDeal(postData);
-      this.dialogSelectDate = false;
-      this.$goto({
-        path: "/dealReport/list",
-      });
     }
 
     // 驳回
@@ -947,14 +956,21 @@
     @NoRepeatHttp()
     async submitFail(valid: any) {
       if (valid) {
-        let postData: any = {
-          dealId: this.id,
-          remark: this.postData.postRemarks
+        try {
+          this.btnLoading = true;
+          let postData: any = {
+            dealId: this.id,
+            remark: this.postData.postRemarks
+          }
+          await post_processRecord_rejectDeal(postData);
+          this.btnLoading = false;
+          this.$goto({
+            path: "/dealReport/list",
+          });
+        } catch (error) {
+          console.log(error);
+          this.btnLoading = false;
         }
-        await post_processRecord_rejectDeal(postData);
-        this.$goto({
-          path: "/dealReport/list",
-        });
       }
     }
 

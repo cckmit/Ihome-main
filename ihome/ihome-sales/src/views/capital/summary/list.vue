@@ -46,7 +46,7 @@
       <el-row>
         <el-button type="primary" @click="search()">查询</el-button>
         <el-button type="info" @click="reset()">重置</el-button>
-        <el-button type="success">导出</el-button>
+        <el-button type="success" @click="exportMsg">导出</el-button>
       </el-row>
     </template>
     <template v-slot:table>
@@ -139,23 +139,27 @@ export default class SummaryList extends Vue {
 
   // 导出
   async exportMsg() {
-    let arr: any = this.resPageInfo.list.map((v: any) => v.id);
+    let postData: any = {
+      org: this.queryPageParameters.org,
+      proId: this.queryPageParameters.proId,
+      termId: this.queryPageParameters.termId,
+    }
     const token: any = getToken();
     axios({
       method: "POST",
-      url: `/sales-api/payoff/file/excel/list`,
+      url: `/sales-api/project/capitalPoolFlow/exportsummary`,
       xsrfHeaderName: "Authorization",
       responseType: "blob",
       headers: {
         "Content-Type": "application/json",
         Authorization: "bearer " + token,
       },
-      data: arr,
+      data: postData,
     }).then((res: any) => {
       const href = window.URL.createObjectURL(res.data);
       const $a = document.createElement("a");
       $a.href = href;
-      $a.download = "审核付款申请列表.xlsx";
+      $a.download = "其他渠道费用汇总表格.xlsx";
       $a.click();
       $a.remove();
     });
