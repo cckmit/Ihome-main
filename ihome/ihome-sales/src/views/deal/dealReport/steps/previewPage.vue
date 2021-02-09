@@ -508,9 +508,9 @@
       </div>
     </div>
     <div class="btn">
-      <el-button type="primary" @click="handleSubmit('save')">保存</el-button>
-      <el-button type="success" @click="handleSubmit('submit')">提交</el-button>
-      <el-button @click="handleStepNext">返回</el-button>
+      <el-button :loading="btnLoading" type="primary" @click="handleSubmit('save')">保存</el-button>
+      <el-button :loading="btnLoading" type="success" @click="handleSubmit('submit')">提交</el-button>
+      <el-button :loading="btnLoading" @click="handleStepNext">返回</el-button>
     </div>
     <IhImgViews
       v-if="isShowImg"
@@ -538,6 +538,7 @@
   })
   export default class PreviewPage extends Vue {
     private isShowImg = false;
+    private btnLoading = false;
     private srcList: any = [];
     private srcData: any = [];
     @Prop() private pageData?: any; // 页面数据
@@ -768,75 +769,73 @@
       // console.log(type);
       if (!type) return;
       let postData: any = this.pageData.currentPostData;
-      // 补充成交类型
-      switch (this.changeType) {
-        case "ChangeBasicInf":
-          // 变更基础信息
-          postData.noticeDealList = this.pageData?.noticeDealList;
-          postData.dealAddInputVO.status = type === 'save' ? 'Draft' : 'PlatformClerkUnreview';
-          if (this.btnType === "add") {
-            // 去新增
-            await post_suppDeal_entryBasicInfChange(postData);
-          } else if (this.btnType === "edit") {
-            // 去修改
-            await post_suppDeal_updateBasicInfChange(postData);
-          }
-          this.$goto({
-            path: "/dealReport/list",
-          });
-          break
-        case "ChangeAchieveInf":
-          // 变更业绩信息
-          postData.noticeDealList = this.pageData?.noticeDealList;
-          postData.achieveVO = this.pageData?.callBackInfo?.achieveVO;
-          postData.receiveAchieveVO = this.pageData?.callBackInfo?.receiveAchieveVO;
-          postData.receiveVO = this.pageData?.callBackInfo?.receiveVO;
-          postData.channelCommVO = this.pageData?.callBackInfo?.channelCommVO;
-          postData.dealVO.status = type === 'save' ? 'Draft' : 'PlatformClerkUnreview';
-          if (this.btnType === "add") {
-            // 去新增
-            await post_suppDeal_entryAchieveInfChange(postData);
-          } else if (this.btnType === "edit") {
-            // 去修改
-            await post_suppDeal_updateAchieveInfChangeVO(postData);
-          }
-          this.$goto({
-            path: "/dealReport/list",
-          });
-          break
-        case "RetreatRoom":
-          // 退房
-          postData.noticeDealList = this.pageData?.noticeDealList;
-          postData.achieveVO = this.pageData?.callBackInfo?.achieveVO;
-          postData.receiveAchieveVO = this.pageData?.callBackInfo?.receiveAchieveVO;
-          postData.receiveVO = this.pageData?.callBackInfo?.receiveVO;
-          postData.channelCommVO = this.pageData?.callBackInfo?.channelCommVO;
-          postData.dealVO.status = type === 'save' ? 'Draft' : 'PlatformClerkUnreview';
-          if (this.btnType === "add") {
-            // 去新增
-            await post_suppDeal_entryRetreatRoom(postData);
-          } else if (this.btnType === "edit") {
-            // 去修改
-            await post_suppDeal_updateRetreatRoom(postData);
-          }
-          this.$goto({
-            path: "/dealReport/list",
-          });
-          break
-        case "ChangeInternalAchieveInf":
-          // 内部员工业绩变更
-          postData.status = type === 'save' ? 'Draft' : 'PlatformClerkUnreview';
-          if (this.btnType === "add") {
-            // 去新增
-            await post_suppDeal_entryStaffAchieveChange(postData);
-          } else if (this.btnType === "edit") {
-            // 去修改
-            await post_suppDeal_updateStaffAchieveChange(postData);
-          }
-          this.$goto({
-            path: "/dealReport/list",
-          });
-          break
+      try {
+        this.btnLoading = true;
+        // 补充成交类型
+        switch (this.changeType) {
+          case "ChangeBasicInf":
+            // 变更基础信息
+            postData.noticeDealList = this.pageData?.noticeDealList;
+            postData.dealAddInputVO.status = type === 'save' ? 'Draft' : 'PlatformClerkUnreview';
+            if (this.btnType === "add") {
+              // 去新增
+              await post_suppDeal_entryBasicInfChange(postData);
+            } else if (this.btnType === "edit") {
+              // 去修改
+              await post_suppDeal_updateBasicInfChange(postData);
+            }
+            break
+          case "ChangeAchieveInf":
+            // 变更业绩信息
+            postData.noticeDealList = this.pageData?.noticeDealList;
+            postData.achieveVO = this.pageData?.callBackInfo?.achieveVO;
+            postData.receiveAchieveVO = this.pageData?.callBackInfo?.receiveAchieveVO;
+            postData.receiveVO = this.pageData?.callBackInfo?.receiveVO;
+            postData.channelCommVO = this.pageData?.callBackInfo?.channelCommVO;
+            postData.dealVO.status = type === 'save' ? 'Draft' : 'PlatformClerkUnreview';
+            if (this.btnType === "add") {
+              // 去新增
+              await post_suppDeal_entryAchieveInfChange(postData);
+            } else if (this.btnType === "edit") {
+              // 去修改
+              await post_suppDeal_updateAchieveInfChangeVO(postData);
+            }
+            break
+          case "RetreatRoom":
+            // 退房
+            postData.noticeDealList = this.pageData?.noticeDealList;
+            postData.achieveVO = this.pageData?.callBackInfo?.achieveVO;
+            postData.receiveAchieveVO = this.pageData?.callBackInfo?.receiveAchieveVO;
+            postData.receiveVO = this.pageData?.callBackInfo?.receiveVO;
+            postData.channelCommVO = this.pageData?.callBackInfo?.channelCommVO;
+            postData.dealVO.status = type === 'save' ? 'Draft' : 'PlatformClerkUnreview';
+            if (this.btnType === "add") {
+              // 去新增
+              await post_suppDeal_entryRetreatRoom(postData);
+            } else if (this.btnType === "edit") {
+              // 去修改
+              await post_suppDeal_updateRetreatRoom(postData);
+            }
+            break
+          case "ChangeInternalAchieveInf":
+            // 内部员工业绩变更
+            postData.status = type === 'save' ? 'Draft' : 'PlatformClerkUnreview';
+            if (this.btnType === "add") {
+              // 去新增
+              await post_suppDeal_entryStaffAchieveChange(postData);
+            } else if (this.btnType === "edit") {
+              // 去修改
+              await post_suppDeal_updateStaffAchieveChange(postData);
+            }
+            break
+        }
+        this.btnLoading = false;
+        this.$goto({
+          path: "/dealReport/list",
+        });
+      } catch (error) {
+        console.log(error);
+        this.btnLoading = false;
       }
     }
 

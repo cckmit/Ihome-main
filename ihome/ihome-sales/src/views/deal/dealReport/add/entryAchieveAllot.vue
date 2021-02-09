@@ -1043,9 +1043,9 @@
       </el-col>
     </el-row>
     <div class="text-center btn-top">
-      <el-button type="primary" @click="handleSave('save')">保存</el-button>
-      <el-button type="success" @click="handleSave('submit')">提交</el-button>
-      <el-button @click="cancel()">取消</el-button>
+      <el-button :loading="btnLoading" type="primary" @click="handleSave('save')">保存</el-button>
+      <el-button :loading="btnLoading" type="success" @click="handleSave('submit')">提交</el-button>
+      <el-button :loading="btnLoading" @click="cancel()">取消</el-button>
     </div>
     <div class="nav-box">
       <div class="nav-icon el-button--success" @click="navFlag = !navFlag " :title="navFlag ? '收起' : '展开'">
@@ -1135,6 +1135,7 @@
       default: null,
     })
     getRefineModelList!: any; // 根据业务模式获取细分业务模式选项
+    btnLoading: any = false;
     contTypeList: any = []; // 合同类型选项
     refineModelList: any = []; // 细分业务模式选项
     dealStageList: any = []; // 成交阶段选项
@@ -3342,26 +3343,30 @@
           // 提交
           postData.basic.dealVO.status = 'PlatformClerkUnreview'; // 平台文员待审核
         }
-        if (this.id) {
-          postData.allotDate = this.editBaseInfo.allotDate ? this.editBaseInfo.allotDate : this.getCurrentDate();
-          postData.alloterId = this.editBaseInfo.alloterId ? this.editBaseInfo.alloterId : (this as any).$root?.userInfo?.id;
-          postData.basic.dealVO.dealCode = this.editBaseInfo?.dealCode;
-          postData.basic.dealVO.id = this.editBaseInfo?.id;
-          postData.basic.dealVO.parentId = this.editBaseInfo?.parentId;
-          postData.basic.dealVO.entryDate = this.editBaseInfo?.entryDate;
-          postData.basic.dealVO.entryPersonId = this.editBaseInfo?.entryPersonId;
-          console.log('postData:', postData);
-          await post_deal_updateAchieveAllot(postData);
-          this.$message.success("修改成功");
+        try {
+          this.btnLoading = true;
+          if (this.id) {
+            postData.allotDate = this.editBaseInfo.allotDate ? this.editBaseInfo.allotDate : this.getCurrentDate();
+            postData.alloterId = this.editBaseInfo.alloterId ? this.editBaseInfo.alloterId : (this as any).$root?.userInfo?.id;
+            postData.basic.dealVO.dealCode = this.editBaseInfo?.dealCode;
+            postData.basic.dealVO.id = this.editBaseInfo?.id;
+            postData.basic.dealVO.parentId = this.editBaseInfo?.parentId;
+            postData.basic.dealVO.entryDate = this.editBaseInfo?.entryDate;
+            postData.basic.dealVO.entryPersonId = this.editBaseInfo?.entryPersonId;
+            console.log('postData:', postData);
+            await post_deal_updateAchieveAllot(postData);
+            this.$message.success("修改成功");
+          } else {
+            await post_deal_achieveAllotEntry(postData);
+            this.$message.success("新增成功");
+          }
+          this.btnLoading = false;
           this.$goto({
             path: "/dealReport/list",
           });
-        } else {
-          await post_deal_achieveAllotEntry(postData);
-          this.$message.success("新增成功");
-          this.$goto({
-            path: "/dealReport/list",
-          });
+        } catch (error) {
+          console.log(error);
+          this.btnLoading = false;
         }
       } else {
         this.$message.warning("请先填好数据再保存");
