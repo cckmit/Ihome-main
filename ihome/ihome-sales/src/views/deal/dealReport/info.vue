@@ -86,12 +86,12 @@
           </el-col>
           <el-col :span="8">
             <el-form-item label="是否垫佣">
-              {{$root.dictAllName(infoForm.isMat, 'YesOrNoType')}}
+              {{infoForm.isMat ? $root.dictAllName(infoForm.isMat, 'YesOrNoType') : '无数据'}}
             </el-form-item>
           </el-col>
-          <!--        <el-col :span="8">-->
-          <!--          <el-form-item label="报备信息">{{infoForm.recordStr}}</el-form-item>-->
-          <!--        </el-col>-->
+          <el-col :span="8" v-if="infoForm.recordStr">
+            <el-form-item label="报备信息">{{infoForm.recordStr}}</el-form-item>
+          </el-col>
           <el-col :span="8">
             <el-form-item label="渠道公司">
               {{infoForm.agencyList && infoForm.agencyList.length ? infoForm.agencyList[0].agencyName : ''}}
@@ -154,7 +154,7 @@
             <el-form-item label="签约日期">{{infoForm.signDate}}</el-form-item>
           </el-col>
           <el-col :span="8">
-            <el-form-item label="成交组织">{{infoForm.dealOrgName}}</el-form-item>
+            <el-form-item label="成交组织">{{infoForm.dealOrgName ? infoForm.dealOrgName : '无数据'}}</el-form-item>
           </el-col>
           <el-col :span="8">
             <el-form-item label="录入人">{{infoForm.entryPerson}}</el-form-item>

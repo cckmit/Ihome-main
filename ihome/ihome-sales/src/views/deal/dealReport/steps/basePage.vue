@@ -306,11 +306,11 @@
             </el-select>
           </el-form-item>
         </el-col>
-<!--        <el-col :span="8" v-if="postData.contType === 'DistriDeal'">-->
-<!--          <el-form-item label="报备信息">-->
-<!--            <el-input disabled v-model="postData.recordStr"/>-->
-<!--          </el-form-item>-->
-<!--        </el-col>-->
+        <el-col :span="8" v-if="postData.contType === 'DistriDeal' && postData.recordStr">
+          <el-form-item label="报备信息">
+            <el-input disabled v-model="postData.recordStr"/>
+          </el-form-item>
+        </el-col>
         <el-col :span="8">
           <el-form-item label="备案情况" prop="recordState">
             <el-select
@@ -1400,6 +1400,7 @@
       agencyVO: [], // 渠道信息
       receiveList: [], // 收派金额
       receiveAchieveVO: [], // 应收信息
+      receiveAchieveList: [],
       uploadDocumentList: [], // 附件信息
       channelCommList: [], // 对外拆佣
       achieveTotalBagList: [
@@ -3514,6 +3515,7 @@
         agencyVO: [], // 中介信息
         customerVO: this.postData.customerList, // 客户信息
         dealAddInputVO: {
+          id: this.id,
           parentId: this.postData.parentId, // 主成交id
           signDate: this.postData.signDate,
           signType: this.postData.signType,
@@ -3560,10 +3562,12 @@
         customerVO: this.postData.customerList, // 客户信息
         dealVO: {
           ...this.postData,
+          id: this.id,
           noticeIds: [] // 优惠告知书Id
         }, // 成交基础信息
         documentVO: this.getDocumentList(this.postData.uploadDocumentList), // 成交附件信息
         houseVO: {
+          dealId: this.id,
           address: this.postData.address,
           area: this.postData.area,
           buildingId: this.postData.buildingId,
@@ -3588,7 +3592,8 @@
             agencyName: this.postData.agencyName,
             brokerId: this.postData.brokerId,
             broker: this.postData.brokerName,
-            channelLevel: this.postData.channelLevel
+            channelLevel: this.postData.channelLevel,
+            dealId: this.id
           }
         )
       }
@@ -3597,12 +3602,14 @@
           dataObj.dealVO.noticeIds.push(item.noticeId);
         });
       }
-      if (this.receiveAchieveVO && this.receiveAchieveVO.length) {
+      if (this.receiveAchieveVO && this.receiveAchieveVO.length && this.postData.receiveAchieveList && this.postData.receiveAchieveList.length) {
         dataObj.receiveAchieveVO.push(
           {
             receiveAmount: this.receiveAchieveVO[0].receiveAmount,
             achieveAmount: this.receiveAchieveVO[0].achieveAmount,
-            otherChannelFees: this.receiveAchieveVO[0].otherChannelFees
+            otherChannelFees: this.receiveAchieveVO[0].otherChannelFees,
+            dealId: this.id,
+            id: this.postData.receiveAchieveList[0].id
           }
         )
       }

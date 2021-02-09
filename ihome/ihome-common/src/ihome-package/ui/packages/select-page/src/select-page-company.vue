@@ -3,11 +3,11 @@
  * @version: 
  * @Author: ywl
  * @Date: 2020-12-15 14:42:05
- * @LastEditors: ywl
- * @LastEditTime: 2020-12-23 20:24:32
+ * @LastEditors: wwq
+ * @LastEditTime: 2021-02-08 14:19:05
 -->
 <script lang="ts">
-import { Component, Vue, Prop } from "vue-property-decorator";
+import { Component, Vue, Prop, Watch } from "vue-property-decorator";
 
 import IhSelectPageBase from "./select-page-base.vue";
 import { post_company_getAll } from "@/api/system/index";
@@ -16,6 +16,7 @@ import { post_company_getAll } from "@/api/system/index";
   extends: IhSelectPageBase,
 })
 export default class IhSelectPageByCompany extends Vue {
+  @Prop() proId?: any;
   @Prop({
     default: () => {
       return {
@@ -28,6 +29,11 @@ export default class IhSelectPageByCompany extends Vue {
   })
   props?: any;
 
+  @Watch("proId")
+  watchOrgId(val: any) {
+    if (val) this.getSelectList();
+  }
+
   optionList: any = [];
   filterText = "";
   searchLoad = false;
@@ -35,6 +41,7 @@ export default class IhSelectPageByCompany extends Vue {
   async getSelectList() {
     this.searchLoad = true;
     this.optionList = await post_company_getAll({
+      orgId: this.proId,
       name: this.filterText,
     });
     this.searchLoad = false;
