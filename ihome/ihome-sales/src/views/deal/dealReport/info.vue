@@ -86,12 +86,12 @@
           </el-col>
           <el-col :span="8">
             <el-form-item label="是否垫佣">
-              {{$root.dictAllName(infoForm.isMat, 'YesOrNoType')}}
+              {{infoForm.isMat ? $root.dictAllName(infoForm.isMat, 'YesOrNoType') : '无数据'}}
             </el-form-item>
           </el-col>
-          <!--        <el-col :span="8">-->
-          <!--          <el-form-item label="报备信息">{{infoForm.recordStr}}</el-form-item>-->
-          <!--        </el-col>-->
+          <el-col :span="8" v-if="infoForm.recordStr">
+            <el-form-item label="报备信息">{{infoForm.recordStr}}</el-form-item>
+          </el-col>
           <el-col :span="8">
             <el-form-item label="渠道公司">
               {{infoForm.agencyList && infoForm.agencyList.length ? infoForm.agencyList[0].agencyName : ''}}
@@ -154,7 +154,7 @@
             <el-form-item label="签约日期">{{infoForm.signDate}}</el-form-item>
           </el-col>
           <el-col :span="8">
-            <el-form-item label="成交组织">{{infoForm.dealOrgName}}</el-form-item>
+            <el-form-item label="成交组织">{{infoForm.dealOrgName ? infoForm.dealOrgName : '无数据'}}</el-form-item>
           </el-col>
           <el-col :span="8">
             <el-form-item label="录入人">{{infoForm.entryPerson}}</el-form-item>
@@ -592,7 +592,7 @@
     get_deal_getByCode__dealCode // 用成交报告编号，查询成交详情 --- 兼容其他模块
   } from "@/api/deal";
   import {post_notice_customer_information} from "@/api/contract";
-  import {get_invoice_getInvoiceInfo__businessId} from "@/api/finance";
+  import {get_invoice_getInvoiceInfo__businessCode} from "@/api/finance";
   import {get_org_get__id} from "@/api/system";
 
   @Component({
@@ -708,7 +708,7 @@
         console.log('this.infoForm.documentList', this.infoForm.documentList);
       }
       // 初始化开票信息
-      await this.getInvoiceInfo(info.id);
+      await this.getInvoiceInfo(info.dealCode);
       // 获取显示的成交组织name
       await this.getOrgName(info.dealOrgId);
     }
@@ -746,9 +746,9 @@
     }
 
     // 获取开票信息
-    async getInvoiceInfo(id: any = '') {
-      if (!id) return;
-      let info: any = await get_invoice_getInvoiceInfo__businessId({businessId: id});
+    async getInvoiceInfo(code: any = '') {
+      if (!code) return;
+      let info: any = await get_invoice_getInvoiceInfo__businessCode({businessCode: code});
       // console.log(info);
       if (info.id) {
         this.infoForm.invoiceList.push(info);
