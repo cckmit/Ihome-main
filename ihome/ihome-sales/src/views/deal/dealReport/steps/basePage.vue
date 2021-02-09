@@ -1197,9 +1197,10 @@
       <el-button
         v-if="changeType === 'ChangeInternalAchieveInf'"
         type="success"
+        :loading="btnLoading"
         @click="handleClickBtn('preview')">预览变更</el-button>
-      <el-button v-else type="primary" @click="handleClickBtn('next')">下一步</el-button>
-      <el-button @click="handleClickBtn('back')">取消</el-button>
+      <el-button :loading="btnLoading" v-else type="primary" @click="handleClickBtn('next')">下一步</el-button>
+      <el-button :loading="btnLoading" @click="handleClickBtn('back')">取消</el-button>
     </div>
     <div class="nav-box">
       <div class="nav-icon el-button--success" @click="navFlag = !navFlag " :title="navFlag ? '收起' : '展开'">
@@ -1335,6 +1336,7 @@
   })
   export default class BasePage extends Vue {
     private isShowImg = false;
+    private btnLoading = false;
     private srcList: any = [];
     private srcData: any = [];
     changeType: any = null; // 补充成交类型
@@ -3435,77 +3437,87 @@
     // 后端校验数据
     async submitData() {
       // 补充成交类型
-      let data: any = null;
-      let callBackInfo: any = null; // 校验后后端返回来的插值数据
-      switch (this.changeType) {
-        case "ChangeBasicInf":
-          // 变更基础信息
-          data = await this.initBaseData();
-          if (this.btnType === "add") {
-            // 去新增
-            callBackInfo = await post_suppDeal_previewEntryBasicInfChange(data);
-          } else if (this.btnType === "edit") {
-            // 去修改
-            callBackInfo = await post_suppDeal_previewUpdateBasicInfChange(data);
-          }
-          this.$emit('next', 'next', {
-            ...this.postData,
-            // receiveAchieveVO: this.receiveAchieveVO,
-            currentPostData: data,
-            callBackInfo
-          });
-          break;
-        case "ChangeAchieveInf":
-          // 变更成交业绩信息
-          data = await this.initRetreatRoomData();
-          if (this.btnType === "add") {
-            // 去新增
-            callBackInfo = await post_suppDeal_previewEntryAchieveInfChange(data);
-          } else if (this.btnType === "edit") {
-            // 去修改
-            callBackInfo = await post_suppDeal_previewUpdateAchieveInfChange(data);
-          }
-          this.$emit('next', 'next', {
-            ...this.postData,
-            // receiveAchieveVO: this.receiveAchieveVO,
-            currentPostData: data,
-            callBackInfo
-          });
-          break
-        case "RetreatRoom":
-          // 退房
-          data = await this.initRetreatRoomData();
-          if (this.btnType === "add") {
-            // 去新增
-            callBackInfo = await post_suppDeal_previewEntryRetreatRoom(data);
-          } else if (this.btnType === "edit") {
-            // 去修改
-            callBackInfo = await post_suppDeal_previewUpdateRetreatRoom(data);
-          }
-          this.$emit('next', 'next', {
-            ...this.postData,
-            // receiveAchieveVO: this.receiveAchieveVO,
-            currentPostData: data,
-            callBackInfo
-          });
-          break
-        case "ChangeInternalAchieveInf":
-          // 内部员工业绩变更
-          data = await this.initStaffAchieveData();
-          if (this.btnType === "add") {
-            // 去新增
-            callBackInfo = await post_suppDeal_previewEntryStaffAchieveChange(data);
-          } else if (this.btnType === "edit") {
-            // 去修改
-            callBackInfo = await post_suppDeal_previewUpdateStaffAchieveChange(data);
-          }
-          this.$emit("preview", {
-            ...this.postData,
-            // receiveAchieveVO: this.receiveAchieveVO,
-            currentPostData: data,
-            callBackInfo
-          });
-          break
+      try {
+        this.btnLoading = true;
+        let data: any = null;
+        let callBackInfo: any = null; // 校验后后端返回来的插值数据
+        switch (this.changeType) {
+          case "ChangeBasicInf":
+            // 变更基础信息
+            data = await this.initBaseData();
+            if (this.btnType === "add") {
+              // 去新增
+              callBackInfo = await post_suppDeal_previewEntryBasicInfChange(data);
+            } else if (this.btnType === "edit") {
+              // 去修改
+              callBackInfo = await post_suppDeal_previewUpdateBasicInfChange(data);
+            }
+            this.btnLoading = false;
+            this.$emit('next', 'next', {
+              ...this.postData,
+              // receiveAchieveVO: this.receiveAchieveVO,
+              currentPostData: data,
+              callBackInfo
+            });
+            break;
+          case "ChangeAchieveInf":
+            // 变更成交业绩信息
+            data = await this.initRetreatRoomData();
+            if (this.btnType === "add") {
+              // 去新增
+              callBackInfo = await post_suppDeal_previewEntryAchieveInfChange(data);
+            } else if (this.btnType === "edit") {
+              // 去修改
+              callBackInfo = await post_suppDeal_previewUpdateAchieveInfChange(data);
+            }
+            this.btnLoading = false;
+            this.$emit('next', 'next', {
+              ...this.postData,
+              // receiveAchieveVO: this.receiveAchieveVO,
+              currentPostData: data,
+              callBackInfo
+            });
+            break
+          case "RetreatRoom":
+            // 退房
+            data = await this.initRetreatRoomData();
+            if (this.btnType === "add") {
+              // 去新增
+              callBackInfo = await post_suppDeal_previewEntryRetreatRoom(data);
+            } else if (this.btnType === "edit") {
+              // 去修改
+              callBackInfo = await post_suppDeal_previewUpdateRetreatRoom(data);
+            }
+            this.btnLoading = false;
+            this.$emit('next', 'next', {
+              ...this.postData,
+              // receiveAchieveVO: this.receiveAchieveVO,
+              currentPostData: data,
+              callBackInfo
+            });
+            break
+          case "ChangeInternalAchieveInf":
+            // 内部员工业绩变更
+            data = await this.initStaffAchieveData();
+            if (this.btnType === "add") {
+              // 去新增
+              callBackInfo = await post_suppDeal_previewEntryStaffAchieveChange(data);
+            } else if (this.btnType === "edit") {
+              // 去修改
+              callBackInfo = await post_suppDeal_previewUpdateStaffAchieveChange(data);
+            }
+            this.btnLoading = false;
+            this.$emit("preview", {
+              ...this.postData,
+              // receiveAchieveVO: this.receiveAchieveVO,
+              currentPostData: data,
+              callBackInfo
+            });
+            break
+        }
+      } catch (error) {
+        console.log(error);
+        this.btnLoading = false;
       }
     }
 
@@ -3756,14 +3768,14 @@
     isDisabled(key: any = '', type: any = '') {
       const data: any = this.baseInfoInDeal.myReturnVO;
       if (!key || !type || !data[type]?.[key]) return false;
-      let flag = true;
+      let flag = false;
       // 1.是否明源数据标志
       let signFlag = this.baseInfoByTerm.exMinyuan;
       // 2.对应明源字段是否有值
       if (data[type][key] && signFlag) {
-        flag = false;
-      } else {
         flag = true;
+      } else {
+        flag = false;
       }
       return flag;
     }
