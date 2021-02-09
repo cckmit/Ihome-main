@@ -1786,15 +1786,15 @@
     isDisabled(key: any = '', type: any = '') {
       const data: any = this.baseInfoInDeal.myReturnVO;
       if (!key || !type || !data[type]?.[key]) return false;
-      let flag = true;
+      let flag = false;
       // 1.是否明源数据标志
       // let signFlag = ['WholeMingYuan', 'NoWholeMingYuan'].includes(data.dataSign);
       let signFlag = this.baseInfoByTerm.exMinyuan;
       // 2.对应明源字段是否有值
       if (data[type][key] && signFlag) {
-        flag = false;
-      } else {
         flag = true;
+      } else {
+        flag = false;
       }
       return flag;
     }
