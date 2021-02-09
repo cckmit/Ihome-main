@@ -60,14 +60,14 @@
         <el-col :span="8">
           <el-form-item label="角色人业绩" prop="corporateAchieve">
             <el-input
-              @input="calculatePercentage($event, 'corporateAchieveRatio')"
+              @input="calculatePercentage($event, 'roleAchieveRatio')"
               :disabled="data.currentEditItem.roleType === 'BranchOffice'"
               v-model="form.corporateAchieve" v-digits="2" placeholder="" />
           </el-form-item>
         </el-col>
         <el-col :span="8" v-if="data.currentEditItem.roleType !== 'BranchOffice'">
           <el-form-item label="角色业绩比例（%）">
-<!--            <div class="div-disabled">{{form.corporateAchieveRatio}}%</div>-->
+<!--            <div class="div-disabled">{{form.roleAchieveRatio}}%</div>-->
             <div class="div-disabled">
               {{getPercentage(form.corporateAchieve, form.roleAchieveCap)}}%
             </div>
@@ -158,7 +158,7 @@
         return callback(new Error('角色人业绩不能为空'));
       } else {
         if (value > this.form.roleAchieveCap) {
-          return callback(new Error('角色人业绩大于角色业绩上限'));
+          return callback(new Error('角色人业绩不能大于角色业绩上限'));
         }
         callback();
       }
@@ -169,7 +169,7 @@
       commFees: 0, // 拆佣金额
       commFeesRatio: 0, // 拆佣金额比例
       corporateAchieve: 0, // 角色人业绩
-      corporateAchieveRatio: 0, // 角色业绩比例
+      roleAchieveRatio: 0, // 角色业绩比例
       roleAchieveCap: 0, // 角色业绩上限
       roleType: "", // 角色类型
       rolerId: null, // 角色人ID
@@ -278,6 +278,10 @@
     async finish() {
       let flag: any = false;
       flag = this.validForm(this.form);
+      if (!flag) {
+        this.$message.error('管理岗的分配总金额不能大于角色人业绩');
+        return;
+      }
       (this as any).$refs.form.validate((valid: any) => {
         if (valid && flag) {
           this.$emit("finish", this.form);
@@ -312,9 +316,9 @@
     calculatePercentage(value: any, type: any, row: any = {}) {
       if (!type) return;
       switch (type) {
-        case 'corporateAchieveRatio':
+        case 'roleAchieveRatio':
           // 角色人业绩比例
-          // this.form.corporateAchieveRatio = this.getPercentage(this.form.corporateAchieve, this.form.roleAchieveCap);
+          this.form.roleAchieveRatio = this.getPercentage(this.form.corporateAchieve, this.form.roleAchieveCap);
           // 如果管理岗列表有数据，要重新算
           if (this.form.managerAchieveList.length > 0) {
             this.form.managerAchieveList.forEach((list: any) => {
@@ -324,7 +328,7 @@
           break;
         case 'commFeesRatio':
           // 拆佣比例
-          // this.form.commFeesRatio = this.getPercentage(this.form.commFees, this.data.totalAmount);
+          this.form.commFeesRatio = this.getPercentage(this.form.commFees, this.data.totalAmount);
           break;
         case 'achieveFeesRatio':
           // 管理岗的金额比例
