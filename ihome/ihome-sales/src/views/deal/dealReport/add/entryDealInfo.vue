@@ -1569,16 +1569,16 @@
           duration: 0
         });
       } else {
-        // 分销协议编号
-        if (baseInfo.contracts && baseInfo.contracts.length > 0) {
-          this.contNoList = baseInfo.contracts;
-        } else {
-          this.contNoList = [];
-        }
         // 优惠告知书
         if (!this.postData.offerNoticeVO.length) {
           this.postData.offerNoticeVO = baseInfo.notice && baseInfo.notice.length ? baseInfo.notice : [];
         }
+      }
+      // 分销协议编号
+      if (baseInfo.contracts && baseInfo.contracts.length > 0) {
+        this.contNoList = baseInfo.contracts;
+      } else {
+        this.contNoList = [];
       }
       // 分销成交和非分销成交不一样
       if (baseInfo.contType === 'DistriDeal') {

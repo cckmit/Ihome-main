@@ -1964,14 +1964,14 @@
           duration: 0
         });
       } else {
-        // 分销协议编号
-        if (baseInfo.contracts && baseInfo.contracts.length > 0) {
-          this.contNoList = baseInfo.contracts;
-        } else {
-          this.contNoList = [];
-        }
         // 优惠告知书
         // this.postData.offerNoticeVO = baseInfo.notice && baseInfo.notice.length ? baseInfo.notice : [];
+      }
+      // 分销协议编号
+      if (baseInfo.contracts && baseInfo.contracts.length > 0) {
+        this.contNoList = baseInfo.contracts;
+      } else {
+        this.contNoList = [];
       }
       // 分销成交和非分销成交不一样
       if (baseInfo.contType === 'DistriDeal') {
@@ -3529,7 +3529,7 @@
     // 整合基础信息提交数据 - 新增
     initBaseDataByAdd() {
       let dataObj: any = {
-        agencyVO: null, // 中介信息
+        agencyVO: [], // 中介信息
         customerVO: this.postData.customerList.length ? this.postData.customerList : null, // 客户信息
         dealAddInputVO: {
           parentId: this.postData.parentId, // 主成交id
@@ -3552,7 +3552,7 @@
           roomNo: this.postData.roomNo,
           toilet: this.postData.toilet
         },
-        noticeDealList: null,
+        noticeDealList: [],
       }
       if (this.postData.agencyId) {
         dataObj.agencyVO.push(
@@ -3564,6 +3564,8 @@
             channelLevel: this.postData.channelLevel
           }
         )
+      } else {
+        dataObj.agencyVO = null;
       }
       return dataObj;
     }
@@ -3571,7 +3573,7 @@
     // 整合基础信息提交数据 - 修改
     initBaseDataByUpdated() {
       let dataObj: any = {
-        agencyVO: null, // 中介信息
+        agencyVO: [], // 中介信息
         customerVO: this.postData.customerList.length ? this.postData.customerList : null, // 客户信息
         dealUpdateInputVO: {
           dealCode: this.postData.dealCode ? this.postData.dealCode : null,
@@ -3598,7 +3600,7 @@
           roomNo: this.postData.roomNo,
           toilet: this.postData.toilet
         },
-        noticeAgreementCreateRequest: null,
+        noticeAgreementCreateRequest: [],
       }
       if (this.postData.agencyId) {
         dataObj.agencyVO.push(
@@ -3611,6 +3613,8 @@
             channelLevel: this.postData.channelLevel
           }
         )
+      } else {
+        dataObj.agencyVO = null;
       }
       if (dataObj.customerVO && dataObj.customerVO.length) {
         dataObj.customerVO.forEach((vo: any) => {
@@ -3628,16 +3632,16 @@
     // 整合退房 + 成交业绩数据
     initRetreatRoomData() {
       let dataObj: any = {
-        noticeDealList: null,
+        noticeDealList: [],
         achieveVO: [...this.postData.achieveTotalBagList, ...this.postData.achieveDistriList], // 平台费用信息
-        agencyVO: null, // 中介信息
+        agencyVO: [], // 中介信息
         calculation: this.postData.calculation, // 计算方式
         channelCommVO: this.postData.channelCommList.length ? this.postData.channelCommList : null, // 对外拆佣信息
         customerVO: this.postData.customerList.length ? this.postData.customerList : null, // 客户信息
         dealVO: {
           ...this.postData,
           id: this.btnType === "edit" ? this.id : null,
-          noticeIds: null // 优惠告知书Id
+          noticeIds: [] // 优惠告知书Id
         }, // 成交基础信息
         documentVO: this.postData.uploadDocumentList.length ? this.getDocumentList(this.postData.uploadDocumentList) : null, // 成交附件信息
         houseVO: {
@@ -3654,7 +3658,7 @@
           roomNo: this.postData.roomNo,
           toilet: this.postData.toilet
         },
-        receiveAchieveVO: null, // 应收业绩信息
+        receiveAchieveVO: [], // 应收业绩信息
         receiveVO: this.postData.receiveList.length ? this.postData.receiveList : null, // 收派金额
         parentId: this.postData.parentId, // 父成交Id
         status: null, // 成交状态
@@ -3704,11 +3708,15 @@
             }
           )
         }
+      } else {
+        dataObj.agencyVO = null;
       }
       if (this.postData.offerNoticeVO && this.postData.offerNoticeVO.length) {
         this.postData.offerNoticeVO.forEach((item: any) => {
           dataObj.dealVO.noticeIds.push(item.noticeId);
         });
+      } else {
+        dataObj.dealVO.noticeIds = null;
       }
       if (this.receiveAchieveVO && this.receiveAchieveVO.length && this.postData.receiveAchieveList && this.postData.receiveAchieveList.length) {
         if (this.btnType === "edit") {
@@ -3730,6 +3738,8 @@
             }
           )
         }
+      } else {
+        dataObj.receiveAchieveVO = null;
       }
       return dataObj;
     }
@@ -3750,10 +3760,13 @@
     // 整合变更内部员工业绩数据
     initStaffAchieveDataByUpdated() {
       let dataObj: any = {
-        achieveVO: [...this.postData.achieveTotalBagList, ...this.postData.achieveDistriList], // 平台费用信息
+        achieveVO: null, // 平台费用信息
         dealId: this.id,
         parentId: this.postData.parentId, // 父成交Id
         status: null, // 成交状态
+      }
+      if (this.postData.achieveTotalBagList.length || this.postData.achieveDistriList.length) {
+        dataObj.achieveVO = [...this.postData.achieveTotalBagList, ...this.postData.achieveDistriList];
       }
       return dataObj;
     }

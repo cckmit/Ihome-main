@@ -223,11 +223,11 @@
       <el-row>
         <el-button type="primary" @click="getListMixin()">查询</el-button>
         <el-button
-          :class="{ 'ih-data-disabled': currentJobId !== 52}"
+          :class="{ 'ih-data-disabled': hasDealAddAuth('ADD')}"
           v-has="'B.SALES.DEAL.DEALLIST.ADD'"
           type="success" @click="handleAdd('add')">添加</el-button>
         <el-button
-          :class="{ 'ih-data-disabled': currentJobId !== 4}"
+          :class="{ 'ih-data-disabled': hasDealAddAuth('ACHIEVEDECLARE')}"
           v-has="'B.SALES.DEAL.DEALLIST.ACHIEVEDECLARE'"
           type="success" @click="handleAdd('declare')">业绩申报</el-button>
         <el-button type="info" @click="handleReset()">重置</el-button>
@@ -440,6 +440,22 @@
       this.searchOpen = !this.searchOpen;
     }
 
+    // 是否有新增按钮权限
+    hasDealAddAuth(btnName: any = '') {
+      let flag = true;
+      switch (btnName) {
+        case "ADD":
+          // 添加
+          flag = this.$roleTool.RProjectSite();
+          break;
+        case "ACHIEVEDECLARE":
+          // 业绩申报
+          flag = this.$roleTool.RFrontLineClerk();
+          break;
+      }
+      return flag;
+    }
+
     // 根据成交报告状态、是主成交还是补充成交、登录者的岗位来判断是否有操作按钮权限
     hasBtnRole(row: any, btnName: any = "") {
       let flag: any = true; // 是否禁用、默认禁用
@@ -449,17 +465,17 @@
             // 修改按钮权限
             if (row.id === row.parentId) {
               // 主成交
-              if (row.status === 'Draft' && this.currentJobId === 4) {
+              if (row.status === 'Draft' && this.$roleTool.RProjectSite()) {
                 // 草稿、案场
                 flag = false;
               }
-              if (['AchieveDeclareUnconfirm', 'Reject'].includes(row.status) && this.currentJobId === 52) {
+              if (['AchieveDeclareUnconfirm', 'Reject'].includes(row.status) && this.$roleTool.RFrontLineClerk()) {
                 // 业绩申报待确认 + 驳回、文员
                 flag = false;
               }
             } else {
               // 补充成交
-              if (['Draft', 'Reject'].includes(row.status) && this.currentJobId === 52) {
+              if (['Draft', 'Reject'].includes(row.status) && this.$roleTool.RFrontLineClerk()) {
                 // 草稿 + 驳回、文员
                 flag = false;
               }
@@ -469,17 +485,17 @@
             // 删除按钮权限
             if (row.id === row.parentId) {
               // 主成交
-              if (row.status === 'Draft' && this.currentJobId === 4) {
+              if (row.status === 'Draft' && this.$roleTool.RProjectSite()) {
                 // 草稿、案场
                 flag = false;
               }
-              if (['AchieveDeclareUnconfirm', 'Reject'].includes(row.status) && this.currentJobId === 52) {
+              if (['AchieveDeclareUnconfirm', 'Reject'].includes(row.status) && this.$roleTool.RFrontLineClerk()) {
                 // 业绩申报待确认 + 驳回、文员
                 flag = false;
               }
             } else {
               // 补充成交
-              if (['Draft', 'Reject'].includes(row.status) && this.currentJobId === 52) {
+              if (['Draft', 'Reject'].includes(row.status) && this.$roleTool.RFrontLineClerk()) {
                 // 草稿 + 驳回、文员
                 flag = false;
               }
@@ -489,47 +505,47 @@
             // 撤回按钮权限
             if (row.id === row.parentId) {
               // 主成交
-              if (row.status === 'AchieveDeclareUnconfirm' && this.currentJobId === 4) {
+              if (row.status === 'AchieveDeclareUnconfirm' && this.$roleTool.RProjectSite()) {
                 // 业绩申报待确认、案场
                 flag = false;
               }
             }
             // 补充成交
-            if (row.status === 'PlatformClerkUnreview' && this.currentJobId === 52) {
+            if (row.status === 'PlatformClerkUnreview' && this.$roleTool.RFrontLineClerk()) {
               // 平台文员待审核、文员
               flag = false;
             }
-            if (row.status === 'HeadDepartUnreview' && this.currentJobId === 36) {
+            if (row.status === 'HeadDepartUnreview' && this.$roleTool.RPlatformClerk()) {
               // 事业部负责人待审核、平台文员
               flag = false;
             }
-            if (row.status === 'BranchBusinessManageUnreview' && this.currentJobId === 59) {
+            if (row.status === 'BranchBusinessManageUnreview' && this.$roleTool.RDepartmentLeader()) {
               // 分公司业管待审核、事业部负责人
               flag = false;
             }
-            if (row.status === 'NotSigned' && this.currentJobId === 67) {
+            if (row.status === 'NotSigned' && this.$roleTool.RBusinessManagement()) {
               // 待签署生效、业务监管岗（分公司业管）
               flag = false;
             }
             break;
           case 'SUPPLEMENTDEAL':
             // 补充成交按钮权限
-            if (row.id === row.parentId && row.status === 'ReviewPassed' && this.currentJobId === 52 && !row.noApplySupp) {
+            if (row.id === row.parentId && row.status === 'ReviewPassed' && this.$roleTool.RFrontLineClerk() && !row.noApplySupp) {
               // 主成交、已审核、文员
               flag = false;
             }
             break;
           case 'VERIFY':
             // 审核按钮权限
-            if (row.status === 'PlatformClerkUnreview' && this.currentJobId === 36) {
+            if (row.status === 'PlatformClerkUnreview' && this.$roleTool.RPlatformClerk()) {
               // 平台文员待审核、平台文员
               flag = false;
             }
-            if (row.status === 'HeadDepartUnreview' && this.currentJobId === 59) {
+            if (row.status === 'HeadDepartUnreview' && this.$roleTool.RDepartmentLeader()) {
               // 事业部负责人待审核、事业部负责人
               flag = false;
             }
-            if (row.status === 'BranchBusinessManageUnreview' && this.currentJobId === 67) {
+            if (row.status === 'BranchBusinessManageUnreview' && this.$roleTool.RBusinessManagement()) {
               // 分公司业管待审核、业务监管岗（分公司业管）
               flag = false;
             }

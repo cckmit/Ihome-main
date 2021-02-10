@@ -775,13 +775,15 @@
         switch (this.changeType) {
           case "ChangeBasicInf":
             // 变更基础信息
-            postData.noticeDealList = this.pageData?.noticeDealList;
-            postData.dealAddInputVO.status = type === 'save' ? 'Draft' : 'PlatformClerkUnreview';
             if (this.btnType === "add") {
               // 去新增
+              postData.noticeDealList = this.pageData?.noticeDealList;
+              postData.dealAddInputVO.status = type === 'save' ? 'Draft' : 'PlatformClerkUnreview';
               await post_suppDeal_entryBasicInfChange(postData);
             } else if (this.btnType === "edit") {
               // 去修改
+              postData.noticeAgreementCreateRequest = this.pageData?.noticeDealList;
+              postData.dealUpdateInputVO.status = type === 'save' ? 'Draft' : 'PlatformClerkUnreview';
               await post_suppDeal_updateBasicInfChange(postData);
             }
             break
