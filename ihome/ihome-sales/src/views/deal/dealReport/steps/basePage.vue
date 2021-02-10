@@ -1960,7 +1960,7 @@
       if (baseInfo.dealNoticeStatus === 'MultipleNotice') {
         this.$notify({
           title: '提示',
-          message: '同房号存在多份已生效的优惠告知书',
+          message: '同房号存在多份已生效的优惠告知书。(分销成交模式，请选择分销协议编号后方可手动选择优惠告知书)',
           duration: 0
         });
       } else {
