@@ -4,7 +4,7 @@
  * @Author: wwq
  * @Date: 2020-12-26 11:17:06
  * @LastEditors: wwq
- * @LastEditTime: 2021-01-25 17:23:22
+ * @LastEditTime: 2021-02-06 18:56:35
  */
 import { RouteConfig } from 'vue-router'
 import Layout from '../components/Layout.vue';
@@ -51,6 +51,12 @@ const payoffRoutes: Array<RouteConfig> = [
         component: () => import('../views/payoff/payorder/info.vue'),
         meta: { title: '付款单补充', icon: 'form' }
       },
+      {
+        path: 'control',
+        name: 'payoffControl',
+        component: () => import('../views/payoff/auditpay/edit.vue'),
+        meta: { title: '财务管控', icon: 'form' }
+      },
     ]
   },
   {
@@ -69,7 +75,13 @@ const payoffRoutes: Array<RouteConfig> = [
         path: 'audit',
         name: 'auditpayAudit',
         component: () => import('../views/payoff/auditpay/edit.vue'),
-        meta: { title: '付款单审核', icon: 'form' }
+        meta: { title: '财务审核', icon: 'form' }
+      },
+      {
+        path: 'info',
+        name: 'auditpayInfo',
+        component: () => import('../views/payoff/auditpay/info.vue'),
+        meta: { title: '非财务审核', icon: 'form' }
       },
     ]
   },

@@ -87,7 +87,7 @@
       <el-row>
         <el-button type="primary" @click="search()">查询</el-button>
         <el-button type="info" @click="reset()">重置</el-button>
-        <el-button type="success">导出</el-button>
+        <el-button type="success" @click="exportMsg">导出</el-button>
       </el-row>
     </template>
     <template v-slot:table>
@@ -217,23 +217,23 @@ export default class DetailsList extends Vue {
 
   // 导出
   async exportMsg() {
-    let arr: any = this.resPageInfo.list.map((v: any) => v.id);
+    let postData: any = await this.getPostData('export');
     const token: any = getToken();
     axios({
       method: "POST",
-      url: `/sales-api/payoff/file/excel/list`,
+      url: `/sales-api/project/capitalPoolFlow/exportdetail`,
       xsrfHeaderName: "Authorization",
       responseType: "blob",
       headers: {
         "Content-Type": "application/json",
         Authorization: "bearer " + token,
       },
-      data: arr,
+      data: postData,
     }).then((res: any) => {
       const href = window.URL.createObjectURL(res.data);
       const $a = document.createElement("a");
       $a.href = href;
-      $a.download = "审核付款申请列表.xlsx";
+      $a.download = "其他渠道费明细表格.xlsx";
       $a.click();
       $a.remove();
     });
@@ -244,11 +244,19 @@ export default class DetailsList extends Vue {
   }
 
   async getListMixin() {
+    let postData: any = await this.getPostData();
+    this.resPageInfo = await post_capitalPoolFlow_detail(postData);
+    this.detailsSum = await post_capitalPoolFlow_detailsum(postData);
+    // console.log(this.detailsSum);
+  }
+
+  // 获取请求参数
+  getPostData(type: any = '') {
     let postData: any = {
       createTimeBegin: this.queryPageParameters.timeList.length ? this.queryPageParameters.timeList[0] : null,
       createTimeEnd: this.queryPageParameters.timeList.length ? this.queryPageParameters.timeList[1] : null,
-      pageNum: this.queryPageParameters.pageNum,
-      pageSize: this.queryPageParameters.pageSize,
+      pageNum: type ? null : this.queryPageParameters.pageNum,
+      pageSize: type ? null : this.queryPageParameters.pageSize,
       postCategory: null, // 产生类别 服务费盈余、成交变更、成交退款、其它 使用类别 (同周期使用)Samecycle、(跨周期)Interycle、(跨项目)Interproject
       proId: this.queryPageParameters.proId, // 项目名称
       termId: this.queryPageParameters.termId, // 周期名称
@@ -270,9 +278,7 @@ export default class DetailsList extends Vue {
         postData.type = 2;
         break;
     }
-    this.resPageInfo = await post_capitalPoolFlow_detail(postData);
-    this.detailsSum = await post_capitalPoolFlow_detailsum(postData);
-    // console.log(this.detailsSum);
+    return postData;
   }
 
   // 改变tabs

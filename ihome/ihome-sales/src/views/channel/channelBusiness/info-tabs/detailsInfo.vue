@@ -3,8 +3,8 @@
  * @version: 
  * @Author: lgf
  * @Date: 2020-09-16 14:05:21
- * @LastEditors: wwq
- * @LastEditTime: 2021-01-20 11:33:22
+ * @LastEditors: ywl
+ * @LastEditTime: 2021-02-08 18:01:11
 -->
 <template>
   <div class="text-left">
@@ -265,7 +265,9 @@ export default class Home extends Vue {
     let id = this.$route.query.id;
     if (id) {
       this.info = await get_channel_get__id({ id: id });
-      this.channelPersons = this.info.channelPersons[0];
+      this.channelPersons = this.info.channelPersons.length
+        ? this.info.channelPersons[0]
+        : {};
       this.getFileListType(this.info.channelAttachments);
     }
   }

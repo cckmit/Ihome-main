@@ -4,7 +4,7 @@
  * @Author: ywl
  * @Date: 2020-09-27 16:27:36
  * @LastEditors: ywl
- * @LastEditTime: 2021-01-22 09:03:14
+ * @LastEditTime: 2021-02-06 10:37:50
 -->
 <template>
   <IhPage label-width="80px">
@@ -403,6 +403,16 @@ export default class DiscountList extends Vue {
       },
       data: { ...this.queryPageParameters },
     }).then((res: any) => {
+      if (res.data.type === "application/json") {
+        let reader = new FileReader();
+        reader.readAsText(res.data, "utf-8");
+        reader.onload = () => {
+          let result: any = reader.result;
+          const res = JSON.parse(result);
+          this.$message.warning(res.msg);
+        };
+        return;
+      }
       const href = window.URL.createObjectURL(res.data);
       const $a = document.createElement("a");
       $a.href = href;
@@ -423,6 +433,16 @@ export default class DiscountList extends Vue {
         Authorization: "bearer " + token,
       },
     }).then((res: any) => {
+      if (res.data.type === "application/json") {
+        let reader = new FileReader();
+        reader.readAsText(res.data, "utf-8");
+        reader.onload = () => {
+          let result: any = reader.result;
+          const res = JSON.parse(result);
+          this.$message.warning(res.msg);
+        };
+        return;
+      }
       const href = window.URL.createObjectURL(res.data);
       const $a = document.createElement("a");
       $a.href = href;

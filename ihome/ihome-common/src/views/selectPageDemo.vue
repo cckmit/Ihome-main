@@ -120,7 +120,10 @@
     </el-form-item>
     <el-form-item label="我司">我司继承组件</el-form-item>
     <el-form-item>
-      <IhSelectPageByCompany v-model="form.testInput11"></IhSelectPageByCompany>
+      <IhSelectPageByCompany
+        v-model="form.testInput11"
+        :proId="form.testInput5"
+      ></IhSelectPageByCompany>
     </el-form-item>
     <el-form-item label="开发商">开发商继承组件</el-form-item>
     <el-form-item>
@@ -129,6 +132,15 @@
     <el-form-item label="组织">查询店组</el-form-item>
     <el-form-item>
       <IhSelectPageOrg v-model="form.testInput13"></IhSelectPageOrg>
+    </el-form-item>
+    <el-form-item label="组织">付款方</el-form-item>
+    <el-form-item>付款方</el-form-item>
+    <el-form-item>
+      <IhSelectPageByPayer
+        v-model="form.testInput14"
+        :proId="form.testInput5"
+        :isBlur="false"
+      ></IhSelectPageByPayer>
     </el-form-item>
   </el-form>
 </template>
@@ -150,6 +162,7 @@ import {
   IhSelectPageByRoom,
   IhSelectPageByCompany,
   IhSelectPageByDeveloper,
+  IhSelectPageByPayer,
 } from "../ihome-package/ui/packages/select-page/index";
 
 @Component({
@@ -165,6 +178,7 @@ import {
     IhSelectPageByCompany,
     IhSelectPageByDeveloper,
     IhSelectPageOrg,
+    IhSelectPageByPayer,
   },
 })
 export default class SelectPageDemo extends Vue {
@@ -186,6 +200,7 @@ export default class SelectPageDemo extends Vue {
     testInput11: null,
     testInput12: null,
     testInput13: null,
+    testInput14: null,
     data: null,
   };
   private rules = {};

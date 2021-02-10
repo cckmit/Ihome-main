@@ -170,10 +170,15 @@
             <IhSelectPageByRoom
               @change="changeRoom"
               @changeOption="(data) => {postData.roomNo = data.roomNo}"
-              :params="{exDeal: 0}"
               v-model="postData.roomId"
               :proId="baseInfoByTerm.proId"
               :buildingId="postData.buildingId"
+              :props="{
+                key: 'roomId',
+                value: 'roomId',
+                lable: 'roomNo',
+                disabled: 'exDeal'
+              }"
               :isCascade="true"
               cascadeType="room"
               placeholder="请选择房号"
@@ -270,11 +275,11 @@
             </el-select>
           </el-form-item>
         </el-col>
-<!--        <el-col :span="8" v-if="postData.contType === 'DistriDeal'">-->
-<!--          <el-form-item label="报备信息" :prop="postData.contType === 'DistriDeal' ? 'recordStr' : 'notEmpty'">-->
-<!--            <el-input v-model="postData.recordStr" :disabled="baseInfoInDeal.hasRecord"></el-input>-->
-<!--          </el-form-item>-->
-<!--        </el-col>-->
+        <el-col :span="8" v-if="postData.contType === 'DistriDeal' && postData.recordStr">
+          <el-form-item label="报备信息" :prop="postData.contType === 'DistriDeal' ? 'recordStr' : 'notEmpty'">
+            <el-input v-model="postData.recordStr" disabled></el-input>
+          </el-form-item>
+        </el-col>
         <el-col :span="8">
           <el-form-item label="备案情况" prop="recordState">
             <el-select
@@ -704,8 +709,6 @@
   import {Component, Vue, Prop} from "vue-property-decorator";
   import {
     get_deal_get__id, // 编辑功能
-
-    get_pageData_getProBaseByTermId__cycleId, // 通过项目周期获取成交基础信息
     post_pageData_dealCheckNotice, // 判断是否应该存在优惠告知书，返回true则允许添加，返回false则不允许，返回业务逻辑则直接抛出异常
     post_pageData_initBasic, // 选择周期、房号后初始化页面
     post_deal_entryDealBasicInf, // 案场岗 - 录入成交信息
@@ -716,6 +719,9 @@
   import {
     get_org_get__id, // 通过组织id获取组织name
   } from "@/api/system";
+  import {
+    get_term_getProBaseByTermId__termId, // 通过项目周期获取成交基础信息
+  } from "@/api/project";
   import {post_notice_customer_information} from "@/api/contract"; // 获取优惠告知书
   import {Form as ElForm} from "element-ui";
   import {NoRepeatHttp} from "ihome-common/util/aop/no-repeat-http";
@@ -853,6 +859,7 @@
     tempContType: any = null; // 临时存放合同类型
     tempSignPrice: any = null; // 临时存放签约价格
     tempSubscribePrice: any = null; // 临时存放认购价格
+    tempDocumentList: any = []; // 记录来访确认单和成交确认单
     rules: any = {
       dealCode: [
         {required: true, message: "成交报告编号不能为空", trigger: "change"},
@@ -1113,7 +1120,7 @@
     // 编辑 --- 通过周期ID获取信息
     async editBaseDealInfo(id: any) {
       if (!id) return;
-      let baseInfo: any = await get_pageData_getProBaseByTermId__cycleId({cycleId: id});
+      let baseInfo: any = await get_term_getProBaseByTermId__termId({termId: id});
       this.baseInfoByTerm = JSON.parse(JSON.stringify(baseInfo || {}));
       // 给postData赋值对应数据
       if (baseInfo) {
@@ -1284,14 +1291,14 @@
     isDisabled(key: any = '', type: any = '') {
       const data: any = this.baseInfoInDeal.myReturnVO;
       if (!key || !type || !data[type]?.[key]) return false;
-      let flag = true;
+      let flag = false;
       // 1.是否明源数据标志
       let signFlag = this.baseInfoByTerm.exMinyuan;
       // 2.对应明源字段是否有值
       if (data[type][key] && signFlag) {
-        flag = false;
-      } else {
         flag = true;
+      } else {
+        flag = false;
       }
       return flag;
     }
@@ -1330,7 +1337,7 @@
     // 通过项目周期id获取基础信息
     async getBaseDealInfo(id: any) {
       if (!id) return;
-      let baseInfo: any = await get_pageData_getProBaseByTermId__cycleId({cycleId: id});
+      let baseInfo: any = await get_term_getProBaseByTermId__termId({termId: id});
       this.baseInfoByTerm = JSON.parse(JSON.stringify(baseInfo));
       // 给postData赋值对应数据
       if (baseInfo) {
@@ -1395,9 +1402,24 @@
           this.navList = (this as any).$tool.deepClone(this.defaultNavList);
         }
         // 收派金额部分信息 --- 服务费
-        if (baseInfo.serviceFee) {
+        this.postData.receiveVO = [];
+        if (baseInfo.chargeEnum !== 'Agent') {
           let tempList: any = [];
-          tempList.push(baseInfo.serviceFee);
+          tempList.push(
+            {
+              type: 'ServiceFee', // 服务费
+              partyACustomer: null,
+              partyACustomerName: '客户',
+              packgeName: null,
+              packageId: null,
+              receiveAmount: null,
+              commAmount: null,
+              rewardAmount: null,
+              totalPackageAmount: null,
+              distributionAmount: null,
+              otherChannelFees: null,
+            }
+          );
           // console.log(tempList);
           let list: any = (this as any).$parent.initReceiveVOS(tempList);
           this.$nextTick(() => {
@@ -1682,36 +1704,40 @@
           vo.fileList = []; // 存放新上传的数据
         });
       }
-      // 隐藏来访确认单和成交确认单
-      fileList = fileList.filter((item: any) => {
-        return !["VisitConfirForm", "DealConfirForm"].includes(item.code);
+      // 保存来访确认单和成交确认单
+      this.tempDocumentList = [];
+      this.tempDocumentList = fileList.filter((item: any) => {
+        return ["VisitConfirForm", "DealConfirForm"].includes(item.code);
       });
+      console.log('this.tempDocumentList', this.tempDocumentList);
       if (info.chargeEnum === 'Agent') {
         // 项目周期的收费模式为代理费的话，隐藏优惠告知书
         fileList = fileList.filter((item: any) => {
           return item.code !== "Notice";
         });
       }
+      // 隐藏来访确认单和成交确认单
+      fileList = fileList.filter((item: any) => {
+        return !["VisitConfirForm", "DealConfirForm"].includes(item.code);
+      });
       this.postData.documentVO = (this as any).$tool.deepClone(fileList);
     }
 
     // 修改合同类型
     changeContType(value: any) {
-      if (value === 'DistriDeal') {
+      if (value === 'DistriDeal' && !this.baseInfoInDeal.hasRecord && this.postData.roomId) {
         // 如果查询不到此房号的已成交报备信息，用户又选择分销成交
         this.postData.contType = this.tempContType ? this.tempContType : null;
-        if (!this.baseInfoInDeal.hasRecord) {
-          this.$alert('系统查询不到此房号的已成交报备信息，请先维护报备信息！', '提示', {
-            confirmButtonText: '确定'
-          });
-          return;
-        }
+        this.$alert('系统查询不到此房号的已成交报备信息，请先维护报备信息！', '提示', {
+          confirmButtonText: '确定'
+        });
+        return;
       } else {
         // 不是分销成交
         // 初始化收派套餐
         this.initReceive();
         // 选择房号后构建附件表格数据
-        this.getDocumentList(value);
+        // this.getDocumentList(value);
         // 判断是否可以手动添加优惠告知书
         this.canAddNoticeItem(this.baseInfoByTerm.chargeEnum, this.postData.contType, this.baseInfoInDeal.dealNoticeStatus);
         // 记录临时值
@@ -1725,7 +1751,7 @@
       // 回显房号带出来的值
       let baseInfo: any = (this as any).$tool.deepClone(this.baseInfoInDeal);
       if (type === "DistriDeal") {
-        this.postData.documentVO.push(...this.tempList);
+        this.postData.documentVO.push(...this.tempDocumentList);
         if (this.postData.documentVO.length) {
           this.postData.documentVO.forEach((list: any) => {
             switch(list.code) {
@@ -2361,7 +2387,7 @@
       obj.receiveVO = JSON.parse(JSON.stringify(this.postData.receiveVO));
       if (obj.receiveVO.length) {
         obj.receiveVO.forEach((vo: any) => {
-          if ([null, undefined, 0, ""].includes(vo.otherChannelFees)) {
+          if (vo.type === 'AgentFee' && [null, undefined, 0, ""].includes(vo.otherChannelFees)) {
             vo.otherChannelFees = null; // 后台要置null
           }
         });

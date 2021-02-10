@@ -4,7 +4,7 @@
  * @Author: wwq
  * @Date: 2020-11-03 11:52:41
  * @LastEditors: wwq
- * @LastEditTime: 2021-02-02 14:22:44
+ * @LastEditTime: 2021-02-06 09:38:02
 -->
 <template>
   <div>
@@ -523,6 +523,7 @@
     >
       <el-button
         type="primary"
+        
         @click="submit('save')"
       >保存</el-button>
       <el-button
@@ -538,11 +539,12 @@
       <el-button
         type="primary"
         v-has="'B.SALES.PROJECT.BASICLIST.ZXMBC'"
+        :loading="loadSave"
         @click="submit('save')"
       >保存</el-button>
       <el-button
         type="success"
-        :class="{'ih-data-disabled': !submitChange(row)}"
+        :class="{'ih-data-disabled': !submitChange()}"
         v-has="'B.SALES.PROJECT.BASICLIST.ZXMTJ'"
         @click="submit('submit')"
       >提交</el-button>
@@ -587,6 +589,7 @@ import {
   },
 })
 export default class EditBasicInfo extends Vue {
+  loadSave = false;
   form: any = {
     proNo: null,
     proName: null,
@@ -774,6 +777,7 @@ export default class EditBasicInfo extends Vue {
         "projectExMinyuan",
         data.exMinyuan.toString()
       );
+      window.sessionStorage.setItem("proName", this.form.proName);
       this.form.provinceOption = [data.province, data.city, data.district];
       this.contantList = data.propertyArgs.map((v: any) => ({
         ...v,
@@ -1033,18 +1037,50 @@ export default class EditBasicInfo extends Vue {
         }
 
         if (this.$route.name === "projectChildAdd") {
-          await post_project_add(obj);
+          let res: any = await post_project_add(obj);
+          if (res.proId ){
+           this.$goto({ path: "/projects/ChildEdit?id="+res.proId });
+          }
         } else {
           obj.proId = this.projectId;
           if (submittype === "save") {
-            await post_project_update(obj);
+            this.loadSave = true;
+            try{
+              await post_project_update(obj);
+              this.$message.success("保存成功");
+              this.$emit("cutOther", true);
+              this.houseList = [];
+              this.loadSave = false;
+            }catch(error){
+              this.loadSave = false;
+            }
           } else if (submittype === "submit") {
             await post_project_auditWait(obj);
+            this.houseList = [];
+            this.$message.success("提交成功");
+            this.$goto({ path: "/projects/list" });
           }
         }
-        this.houseList = [];
-        this.$message.success("提交成功");
-        this.$goto({ path: "/projects/list" });
+        
+
+        //   obj.proId = this.projectId;
+        //   if (submittype === "save") {
+        //       await post_project_update(obj);
+        //   } else if (submittype === "submit") {
+        //     await post_project_auditWait(obj);
+        //   }
+        // }
+        // this.houseList = [];
+        // this.$message.success("提交成功");
+        // this.$goto({ path: "/projects/list" });        
+      }else{
+          setTimeout(()=>{
+            let isError: any= document.getElementsByClassName("is-error");
+            if (isError != null){
+              isError[0].querySelector('input').focus();
+            }
+          },100);
+          return false;          
       }
     });
   }

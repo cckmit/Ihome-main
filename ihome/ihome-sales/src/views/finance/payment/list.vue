@@ -4,7 +4,7 @@
  * @Author: ywl
  * @Date: 2020-12-09 19:24:59
  * @LastEditors: ywl
- * @LastEditTime: 2021-01-28 10:31:27
+ * @LastEditTime: 2021-02-08 14:56:13
 -->
 <template>
   <IhPage label-width="100px">
@@ -394,7 +394,7 @@
                   v-has="'B.SALES.FINANCE.PAYMENTLIST.ACCOUNTCHECK'"
                 >对账</el-dropdown-item>
                 <el-dropdown-item
-                  :class="{'ih-data-disabled': row.status !== 'NotPaid'}"
+                  :class="{'ih-data-disabled': row.status !== 'NotPaid' && row.status !== 'NotCheck'}"
                   @click.native.prevent="remove(row)"
                   v-has="'B.SALES.FINANCE.PAYMENTLIST.REMOVE'"
                 >删除</el-dropdown-item>

@@ -86,7 +86,7 @@
               {{$root.dictAllName(postData.isMat, 'YesOrNoType')}}
             </el-form-item>
           </el-col>
-          <el-col :span="8">
+          <el-col :span="8" v-if="postData.recordStr">
             <el-form-item label="报备信息">{{postData.recordStr}}</el-form-item>
           </el-col>
           <el-col :span="8">
@@ -400,16 +400,27 @@
                 <div>{{scope.row.rolerPosition}}</div>
               </template>
             </el-table-column>
-            <el-table-column prop="roleAchieveCap" label="角色人业绩" min-width="120"></el-table-column>
-            <el-table-column prop="roleAchieveRatio" label="角色业绩比例（%）" min-width="120"></el-table-column>
+            <el-table-column prop="corporateAchieve" label="角色人业绩" min-width="120"></el-table-column>
+            <el-table-column prop="roleAchieveRatio" label="角色业绩比例（%）" min-width="120">
+              <template slot-scope="scope">
+                <div v-if="postData.id === postData.parentId">{{scope.row.roleAchieveRatio}}</div>
+                <div v-else>-</div>
+              </template>
+            </el-table-column>
             <el-table-column prop="commFees" label="拆佣金额" min-width="150"></el-table-column>
-            <el-table-column prop="commFeesRatio" label="拆佣比例（%）" min-width="150"></el-table-column>
+            <el-table-column prop="commFeesRatio" label="拆佣比例（%）" min-width="150">
+              <template slot-scope="scope">
+                <div v-if="postData.id === postData.parentId">{{scope.row.commFeesRatio}}</div>
+                <div v-else>-</div>
+              </template>
+            </el-table-column>
             <el-table-column prop="belongOrgName" label="店组" min-width="150"></el-table-column>
             <el-table-column prop="managerAchieveList" label="管理岗" min-width="150">
               <template slot-scope="scope">
                 <div class="manager-list" v-for="(item, index) in scope.row.managerAchieveList" :key="index">
                   <div class="fee">{{item.achieveFees}}</div>
-                  <div class="ratio">{{item.ratio ? item.ratio : 0}}%</div>
+                  <div v-if="postData.id === postData.parentId" class="ratio">{{item.ratio ? item.ratio : 0}}%</div>
+                  <div v-else class="ratio">-</div>
                   <div class="name">
                     <span>{{item.manager ? item.manager : '---'}}</span>
                     (<span>{{$root.dictAllName(item.type, 'ManagerType')}}</span>)
@@ -443,16 +454,27 @@
                 <div>{{scope.row.rolerPosition}}</div>
               </template>
             </el-table-column>
-            <el-table-column prop="roleAchieveCap" label="角色人业绩" min-width="120"></el-table-column>
-            <el-table-column prop="roleAchieveRatio" label="角色业绩比例（%）" min-width="120"></el-table-column>
+            <el-table-column prop="corporateAchieve" label="角色人业绩" min-width="120"></el-table-column>
+            <el-table-column prop="roleAchieveRatio" label="角色业绩比例（%）" min-width="120">
+              <template slot-scope="scope">
+                <div v-if="postData.id === postData.parentId">{{scope.row.roleAchieveRatio}}</div>
+                <div v-else>-</div>
+              </template>
+            </el-table-column>
             <el-table-column prop="commFees" label="拆佣金额" min-width="150"></el-table-column>
-            <el-table-column prop="commFeesRatio" label="拆佣比例（%）" min-width="150"></el-table-column>
+            <el-table-column prop="commFeesRatio" label="拆佣比例（%）" min-width="150">
+              <template slot-scope="scope">
+                <div v-if="postData.id === postData.parentId">{{scope.row.commFeesRatio}}</div>
+                <div v-else>-</div>
+              </template>
+            </el-table-column>
             <el-table-column prop="belongOrgName" label="店组" min-width="150"></el-table-column>
             <el-table-column prop="managerAchieveList" label="管理岗" min-width="150">
               <template slot-scope="scope">
                 <div class="manager-list" v-for="(item, index) in scope.row.managerAchieveList" :key="index">
                   <div class="fee">{{item.achieveFees}}</div>
-                  <div class="ratio">{{item.ratio ? item.ratio : 0}}%</div>
+                  <div v-if="postData.id === postData.parentId" class="ratio">{{item.ratio ? item.ratio : 0}}%</div>
+                  <div v-else class="ratio">-</div>
                   <div class="name">
                     <span>{{item.manager ? item.manager : '---'}}</span>
                     (<span>{{$root.dictAllName(item.type, 'ManagerType')}}</span>)
@@ -524,9 +546,9 @@
       </el-form>
     </div>
     <div class="text-center btn-top">
-      <el-button @click="handleBack()">取消</el-button>
-      <el-button type="danger" @click="handleFail()">驳回</el-button>
-      <el-button type="success" @click="handlePass()">通过</el-button>
+      <el-button :loading="btnLoading" @click="handleBack()">取消</el-button>
+      <el-button :loading="btnLoading" type="danger" @click="handleFail()">驳回</el-button>
+      <el-button :loading="btnLoading" type="success" @click="handlePass()">通过</el-button>
     </div>
     <div v-if="currentType === 'mainDeal'" class="nav-box">
       <div class="nav-icon el-button--success" @click="navFlag = !navFlag " :title="navFlag ? '收起' : '展开'">
@@ -551,6 +573,7 @@
     <ih-dialog :show="dialogSelectDate" desc="审核业绩确认时间">
       <ReviewDate
         :data="reviewData"
+        :loading="btnLoading"
         @cancel="() => (dialogSelectDate = false)"
         @finish="
             (data) => {
@@ -588,6 +611,7 @@
   })
   export default class ReviewDealInfo extends Vue {
     private isShowImg = false;
+    private btnLoading = false;
     private srcList: any = [];
     private srcData: any = [];
     postData: any = {
@@ -902,16 +926,23 @@
     }
 
     async submitPass() {
-      let postData: any = {
-        dealId: this.id,
-        remark: this.postData.postRemarks,
-        achieveConfirmTime: this.selectData
+      try {
+        this.btnLoading = true;
+        let postData: any = {
+          dealId: this.id,
+          remark: this.postData.postRemarks,
+          achieveConfirmTime: this.selectData
+        }
+        await post_processRecord_reviewDeal(postData);
+        this.dialogSelectDate = false;
+        this.btnLoading = false;
+        this.$goto({
+          path: "/dealReport/list",
+        });
+      } catch (error) {
+        console.log(error);
+        this.btnLoading = false;
       }
-      await post_processRecord_reviewDeal(postData);
-      this.dialogSelectDate = false;
-      this.$goto({
-        path: "/dealReport/list",
-      });
     }
 
     // 驳回
@@ -925,14 +956,21 @@
     @NoRepeatHttp()
     async submitFail(valid: any) {
       if (valid) {
-        let postData: any = {
-          dealId: this.id,
-          remark: this.postData.postRemarks
+        try {
+          this.btnLoading = true;
+          let postData: any = {
+            dealId: this.id,
+            remark: this.postData.postRemarks
+          }
+          await post_processRecord_rejectDeal(postData);
+          this.btnLoading = false;
+          this.$goto({
+            path: "/dealReport/list",
+          });
+        } catch (error) {
+          console.log(error);
+          this.btnLoading = false;
         }
-        await post_processRecord_rejectDeal(postData);
-        this.$goto({
-          path: "/dealReport/list",
-        });
       }
     }
 

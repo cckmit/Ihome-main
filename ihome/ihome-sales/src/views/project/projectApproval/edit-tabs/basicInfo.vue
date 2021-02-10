@@ -761,10 +761,12 @@
         type="primary"
         @click="submit('save')"
         v-has="'B.SALES.PROJECT.TERMLIST.JCXXBC'"
+        :loading="finishLoadSave"
       >保存</el-button>
       <el-button
         v-if="['Draft', 'TermReject'].includes(info.auditEnum)"
         type="success"
+        :loading="finishLoading"
         v-has="'B.SALES.PROJECT.TERMLIST.TJLXSH'"
         @click="submit('ProjectApproval')"
       >提交立项审核</el-button>
@@ -772,6 +774,7 @@
         v-if="['TermAdopt', 'ConstractReject', 'ConstractWait'].includes(info.auditEnum)"
         type="success"
         v-has="'B.SALES.PROJECT.TERMLIST.TJHTSH'"
+        :loading="finishLoadHT"
         @click="submitContract()"
       >提交合同审核</el-button>
       <el-button @click="viewApprovalDialogVisible = true">预览OA立项表单</el-button>
@@ -806,6 +809,9 @@ import ViewContract from "../dialog/basicInfo-dialog/viewContract.vue";
 export default class FirstAgencyEdit extends Vue {
   viewApprovalDialogVisible = false;
   viewContractDialogVisible = false;
+  finishLoading = false;
+  finishLoadSave = false;
+  finishLoadHT = false;
   info: any = {
     auditEnum: null,
     proName: null,
@@ -1130,14 +1136,20 @@ export default class FirstAgencyEdit extends Vue {
   }
 
   async submitContract() {
-    await post_term_constractAudit({
-      termId: this.info.termId,
-    });
-    this.$message({
-      type: "success",
-      message: "提交合同审核成功",
-    });
-    this.$goto({ path: `/projectApproval/list` });
+    this.finishLoadHT = true;
+    try{
+      await post_term_constractAudit({
+        termId: this.info.termId,
+      });
+      this.finishLoadHT = false;
+      this.$message({
+        type: "success",
+        message: "提交合同审核成功",
+      });
+      this.$goto({ path: `/projectApproval/list` });
+    }catch(err){
+      this.finishLoadHT = false;
+    }
   }
 
   exDiscountChange(val: any) {
@@ -1203,13 +1215,44 @@ export default class FirstAgencyEdit extends Vue {
           return;
         }
         if (type === "save") {
-          await post_term_update(infoObj);
-          this.$message.success("保存成功");
+          this.finishLoadSave = true;
+          try {
+            await post_term_update(infoObj);
+            this.finishLoadSave = false;
+            await this.getInfo();
+            this.$emit("cutOther", true);
+            this.$message.success("保存成功");
+          } catch (err) {
+            this.finishLoadSave = false;
+          }
         } else if (type === "ProjectApproval") {
-          await post_term_commitAndAudit(infoObj);
-          this.$message.success("提交立项审核成功");
-        }
-        this.$goto({ path: "/projectApproval/list" });
+          this.finishLoading = true;
+          try {
+            await post_term_commitAndAudit(infoObj);
+            this.$message.success("提交立项审核成功");
+            this.finishLoading = false;
+            this.$goto({ path: "/projectApproval/list" });
+          } catch (err) {
+            this.finishLoading = false;
+          }
+        
+        }        
+        // if (type === "save") {
+        //   await post_term_update(infoObj);
+        //   this.$message.success("保存成功");
+        // } else if (type === "ProjectApproval") {
+        //   await post_term_commitAndAudit(infoObj);
+        //   this.$message.success("提交立项审核成功");
+        // }
+        // this.$goto({ path: "/projectApproval/list" });
+      }else{
+          setTimeout(()=>{
+            let isError: any= document.getElementsByClassName("is-error");
+            if (isError != null){
+              isError[0].querySelector('input').focus();
+            }
+          },100);
+          return false;  
       }
     });
   }

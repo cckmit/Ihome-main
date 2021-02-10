@@ -118,7 +118,17 @@
             >{{$root.dictAllName(info.chargeEnum, 'Charge')}}</span>
           </el-form-item>
         </el-col>
-      </el-row>
+      </el-row> 
+      <el-row>
+        <el-col :span="12">
+          <el-form-item label="表格高度">
+            <el-input
+              v-model="height"
+              style="width:30%;"
+            > </el-input>   
+          </el-form-item>
+        </el-col>
+      </el-row>           
     </el-form>
 
     <div class="setMeal">
@@ -128,7 +138,7 @@
           size="small"
           type="success"
           @click="addTemplate"
-        >增加模板</el-button>
+        >增加模板</el-button>  
       </div>
     </div>
     <div class="estimated">
@@ -146,8 +156,8 @@
             v-model="info.estimatedTransactionPrice"
             style="width:60%;"
           ><template slot="append">万元/套</template>
-          </el-input>
-        </el-form-item>
+          </el-input>       
+        </el-form-item>      
       </el-form>
     </div>
 
@@ -203,6 +213,7 @@
             <el-table
               class="ih-table"
               :data="item.colletionandsendDetails"
+              :height="height"
               style="width: 100%"
             >
               <el-table-column
@@ -589,6 +600,7 @@
             <el-table
               class="ih-table"
               :data="item.colletionandsendDetails"
+              :height="height"
               style="width: 100%"
             >
               <el-table-column
@@ -991,6 +1003,7 @@ import Rules from "../setMeal-dialog/rules.vue";
 export default class SetMealEdit extends Vue {
   @Prop({ default: null }) data: any;
   dialogVisible = true;
+  height = 300;
   rulesDialogVisible = false;
   rulesData: any = [];
   isSubdivideEnum = false;
@@ -1100,15 +1113,21 @@ export default class SetMealEdit extends Vue {
 
   estimateReceiveAmount(row: any) {
     let total = 0;
-    total =
-      Number(isNaN(row.receivableAmout) ? 0 : row.receivableAmout) +
-      Number((isNaN(row.receivablePoint) ? 0 : row.receivablePoint) / 100) *
-        Number(
-          isNaN(this.info.estimatedTransactionPrice)
-            ? 0
-            : this.info.estimatedTransactionPrice
-        ) *
-        10000;
+    let estimateComplateNum = Number(isNaN(row.estimateComplateNum) ? 0 : row.estimateComplateNum);
+    if (estimateComplateNum == 0){
+      total = 0;
+    }else{
+      total =
+        Number(isNaN(row.receivableAmout) ? 0 : row.receivableAmout) +
+        Number((isNaN(row.receivablePoint) ? 0 : row.receivablePoint) / 100) *
+          Number(
+            isNaN(this.info.estimatedTransactionPrice)
+              ? 0
+              : this.info.estimatedTransactionPrice
+          ) *
+          10000 * estimateComplateNum ;
+    }
+
     row.estimateReceiveAmount = total;
     return isNaN(total) ? 0 : this.$math.tofixed(total, 2);
   }

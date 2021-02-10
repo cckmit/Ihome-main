@@ -166,10 +166,15 @@
             <IhSelectPageByRoom
               @change="changeRoom"
               @changeOption="(data) => {postData.roomNo = data.roomNo}"
-              :params="{exDeal: 0}"
               v-model="postData.roomId"
               :proId="baseInfoByTerm.proId"
               :buildingId="postData.buildingId"
+              :props="{
+                key: 'roomId',
+                value: 'roomId',
+                lable: 'roomNo',
+                disabled: 'exDeal'
+              }"
               :isCascade="true"
               cascadeType="room"
               placeholder="请选择房号"
@@ -264,11 +269,11 @@
             </el-select>
           </el-form-item>
         </el-col>
-<!--        <el-col :span="8" v-if="postData.contType === 'DistriDeal'">-->
-<!--          <el-form-item label="报备信息" :prop="postData.contType === 'DistriDeal' ? 'recordStr' : 'notEmpty'">-->
-<!--            <el-input v-model="postData.recordStr" :disabled="baseInfoInDeal.hasRecord"></el-input>-->
-<!--          </el-form-item>-->
-<!--        </el-col>-->
+        <el-col :span="8" v-if="postData.contType === 'DistriDeal' && postData.recordStr">
+          <el-form-item label="报备信息" :prop="postData.contType === 'DistriDeal' ? 'recordStr' : 'notEmpty'">
+            <el-input v-model="postData.recordStr" disabled></el-input>
+          </el-form-item>
+        </el-col>
         <el-col :span="8">
           <el-form-item label="备案情况" prop="recordState">
             <el-select
@@ -1038,9 +1043,9 @@
       </el-col>
     </el-row>
     <div class="text-center btn-top">
-      <el-button type="primary" @click="handleSave('save')">保存</el-button>
-      <el-button type="success" @click="handleSave('submit')">提交</el-button>
-      <el-button @click="cancel()">取消</el-button>
+      <el-button :loading="btnLoading" type="primary" @click="handleSave('save')">保存</el-button>
+      <el-button :loading="btnLoading" type="success" @click="handleSave('submit')">提交</el-button>
+      <el-button :loading="btnLoading" @click="cancel()">取消</el-button>
     </div>
     <div class="nav-box">
       <div class="nav-icon el-button--success" @click="navFlag = !navFlag " :title="navFlag ? '收起' : '展开'">
@@ -1073,8 +1078,6 @@
   import EditDealAchieve from "@/views/deal/dealReport/dialog/editDealAchieve.vue";
   import {
     get_deal_get__id, // 编辑功能
-
-    get_pageData_getProBaseByTermId__cycleId, // 通过项目周期获取成交基础信息
     post_pageData_dealCheckNotice, // 判断是否应该存在优惠告知书，返回true则允许添加，返回false则不允许，返回业务逻辑则直接抛出异常
     post_pageData_initBasic, // 选择周期、房号后初始化页面
     post_pageData_initChannelComm, // 初始化对外拆佣表格数据
@@ -1089,6 +1092,9 @@
   import {
     get_org_get__id, // 通过组织id获取组织name
   } from "@/api/system";
+  import {
+    get_term_getProBaseByTermId__termId, // 通过项目周期获取成交基础信息
+  } from "@/api/project";
   import {post_notice_customer_information} from "@/api/contract"; // 获取优惠告知书
   import {Form as ElForm} from "element-ui";
   import {NoRepeatHttp} from "ihome-common/util/aop/no-repeat-http";
@@ -1129,6 +1135,7 @@
       default: null,
     })
     getRefineModelList!: any; // 根据业务模式获取细分业务模式选项
+    btnLoading: any = false;
     contTypeList: any = []; // 合同类型选项
     refineModelList: any = []; // 细分业务模式选项
     dealStageList: any = []; // 成交阶段选项
@@ -1580,7 +1587,7 @@
     // 编辑 --- 通过周期ID获取信息
     async editBaseDealInfo(id: any) {
       if (!id) return;
-      let baseInfo: any = await get_pageData_getProBaseByTermId__cycleId({cycleId: id});
+      let baseInfo: any = await get_term_getProBaseByTermId__termId({termId: id});
       this.baseInfoByTerm = JSON.parse(JSON.stringify(baseInfo || {}));
       // 给postData赋值对应数据
       if (baseInfo) {
@@ -1780,15 +1787,15 @@
     isDisabled(key: any = '', type: any = '') {
       const data: any = this.baseInfoInDeal.myReturnVO;
       if (!key || !type || !data[type]?.[key]) return false;
-      let flag = true;
+      let flag = false;
       // 1.是否明源数据标志
       // let signFlag = ['WholeMingYuan', 'NoWholeMingYuan'].includes(data.dataSign);
       let signFlag = this.baseInfoByTerm.exMinyuan;
       // 2.对应明源字段是否有值
       if (data[type][key] && signFlag) {
-        flag = false;
-      } else {
         flag = true;
+      } else {
+        flag = false;
       }
       return flag;
     }
@@ -2075,7 +2082,7 @@
     // 通过项目周期id获取基础信息
     async getBaseDealInfo(id: any) {
       if (!id) return;
-      let baseInfo: any = await get_pageData_getProBaseByTermId__cycleId({cycleId: id});
+      let baseInfo: any = await get_term_getProBaseByTermId__termId({termId: id});
       this.baseInfoByTerm = JSON.parse(JSON.stringify(baseInfo));
       // 给postData赋值对应数据
       if (baseInfo) {
@@ -2134,9 +2141,24 @@
           this.navList = (this as any).$tool.deepClone(this.defaultNavList);
         }
         // 收派金额部分信息 --- 服务费
-        if (baseInfo.serviceFee) {
+        this.postData.receiveVO = [];
+        if (baseInfo.chargeEnum !== 'Agent') {
           let tempList: any = [];
-          tempList.push(baseInfo.serviceFee);
+          tempList.push(
+            {
+              type: 'ServiceFee', // 服务费
+              partyACustomer: null,
+              partyACustomerName: '客户',
+              packgeName: null,
+              packageId: null,
+              receiveAmount: null,
+              commAmount: null,
+              rewardAmount: null,
+              totalPackageAmount: null,
+              distributionAmount: null,
+              otherChannelFees: null,
+            }
+          );
           let list: any = (this as any).$parent.initReceiveVOS(tempList);
           this.$nextTick(() => {
             this.postData.receiveVO.push(...list);
@@ -2528,15 +2550,13 @@
 
     // 修改合同类型
     changeContType(value: any) {
-      if (value === 'DistriDeal') {
+      if (value === 'DistriDeal' && !this.baseInfoInDeal.hasRecord && this.postData.roomId) {
         // 如果查询不到此房号的已成交报备信息，用户又选择分销成交
         this.postData.contType = this.tempContType ? this.tempContType : null;
-        if (!this.baseInfoInDeal.hasRecord) {
-          this.$alert('系统查询不到此房号的已成交报备信息，请先维护报备信息！', '提示', {
-            confirmButtonText: '确定'
-          });
-          return;
-        }
+        this.$alert('系统查询不到此房号的已成交报备信息，请先维护报备信息！', '提示', {
+          confirmButtonText: '确定'
+        });
+        return;
       } else {
         // 不是分销成交
         // 初始化收派套餐
@@ -3323,26 +3343,30 @@
           // 提交
           postData.basic.dealVO.status = 'PlatformClerkUnreview'; // 平台文员待审核
         }
-        if (this.id) {
-          postData.allotDate = this.editBaseInfo.allotDate ? this.editBaseInfo.allotDate : this.getCurrentDate();
-          postData.alloterId = this.editBaseInfo.alloterId ? this.editBaseInfo.alloterId : (this as any).$root?.userInfo?.id;
-          postData.basic.dealVO.dealCode = this.editBaseInfo?.dealCode;
-          postData.basic.dealVO.id = this.editBaseInfo?.id;
-          postData.basic.dealVO.parentId = this.editBaseInfo?.parentId;
-          postData.basic.dealVO.entryDate = this.editBaseInfo?.entryDate;
-          postData.basic.dealVO.entryPersonId = this.editBaseInfo?.entryPersonId;
-          console.log('postData:', postData);
-          await post_deal_updateAchieveAllot(postData);
-          this.$message.success("修改成功");
+        try {
+          this.btnLoading = true;
+          if (this.id) {
+            postData.allotDate = this.editBaseInfo.allotDate ? this.editBaseInfo.allotDate : this.getCurrentDate();
+            postData.alloterId = this.editBaseInfo.alloterId ? this.editBaseInfo.alloterId : (this as any).$root?.userInfo?.id;
+            postData.basic.dealVO.dealCode = this.editBaseInfo?.dealCode;
+            postData.basic.dealVO.id = this.editBaseInfo?.id;
+            postData.basic.dealVO.parentId = this.editBaseInfo?.parentId;
+            postData.basic.dealVO.entryDate = this.editBaseInfo?.entryDate;
+            postData.basic.dealVO.entryPersonId = this.editBaseInfo?.entryPersonId;
+            console.log('postData:', postData);
+            await post_deal_updateAchieveAllot(postData);
+            this.$message.success("修改成功");
+          } else {
+            await post_deal_achieveAllotEntry(postData);
+            this.$message.success("新增成功");
+          }
+          this.btnLoading = false;
           this.$goto({
             path: "/dealReport/list",
           });
-        } else {
-          await post_deal_achieveAllotEntry(postData);
-          this.$message.success("新增成功");
-          this.$goto({
-            path: "/dealReport/list",
-          });
+        } catch (error) {
+          console.log(error);
+          this.btnLoading = false;
         }
       } else {
         this.$message.warning("请先填好数据再保存");
@@ -3614,7 +3638,7 @@
       obj.basic.receiveVO = JSON.parse(JSON.stringify(this.postData.receiveVO));
       if (obj.basic && obj.basic.receiveVO && obj.basic.receiveVO.length) {
         obj.basic.receiveVO.forEach((vo: any) => {
-          if ([null, undefined, 0, ""].includes(vo.otherChannelFees)) {
+          if (vo.type === 'AgentFee' && [null, undefined, 0, ""].includes(vo.otherChannelFees)) {
             vo.otherChannelFees = null; // 后台要置null
           }
         });

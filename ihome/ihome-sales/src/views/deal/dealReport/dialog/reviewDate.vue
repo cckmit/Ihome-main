@@ -34,8 +34,8 @@
       </el-row>
     </el-form>
     <span slot="footer" class="dialog-footer">
-      <el-button @click="cancel()">取 消</el-button>
-      <el-button type="primary" @click="finish()">确 定</el-button>
+      <el-button :loading="loading" @click="cancel()">取 消</el-button>
+      <el-button :loading="loading" type="primary" @click="finish()">确 定</el-button>
     </span>
   </el-dialog>
 </template>
@@ -53,6 +53,7 @@
       super();
     }
     @Prop({default: null}) data: any;
+    @Prop({default: null}) loading: any = false;
     dialogVisible = true;
     public form: any = {
       date: null

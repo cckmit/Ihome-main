@@ -4,7 +4,7 @@
  * @Author: ywl
  * @Date: 2021-01-14 18:20:57
  * @LastEditors: ywl
- * @LastEditTime: 2021-02-02 11:12:47
+ * @LastEditTime: 2021-02-09 15:19:08
 -->
 <template>
   <IhPage label-width="100px">
@@ -147,8 +147,11 @@
           width="120"
           fixed="right"
         >
-          <template v-slot="{  }">
-            <el-link type="primary">流程进度图</el-link>
+          <template v-slot="{ row }">
+            <el-link
+              type="primary"
+              @click="() => { stepsVisible = true; applyId = row.id; }"
+            >流程进度图</el-link>
           </template>
         </el-table-column>
         <el-table-column
@@ -177,15 +180,24 @@
         :total="resPageInfo.total"
       ></el-pagination>
     </template>
+    <!-- 弹窗 -->
+    <IhDialog :show="stepsVisible">
+      <Steps
+        :data="applyId"
+        @cancel="() => (stepsVisible = false)"
+      />
+    </IhDialog>
   </IhPage>
 </template>
 
 <script lang="ts">
 import { Component, Vue } from "vue-property-decorator";
 import PaginationMixin from "../../../mixins/pagination";
+import Steps from "../applyRec/dialog/steps.vue";
 import { post_applyRec_getAuditList } from "../../../api/apply/index";
 
 @Component({
+  components: { Steps },
   mixins: [PaginationMixin],
 })
 export default class ApplyRecAuditList extends Vue {
@@ -203,6 +215,8 @@ export default class ApplyRecAuditList extends Vue {
     list: [],
   };
   private timeList: any = [];
+  private stepsVisible = false;
+  private applyId: any = null;
 
   private search() {
     let flag = this.timeList && this.timeList.length;

@@ -31,7 +31,7 @@
             <el-input
               :placeholder="`请输入${data.title}`"
               v-model="form.value"
-              v-digits="0"
+              @input="inputChange"
             >
             </el-input>
           </el-form-item>
@@ -85,6 +85,9 @@ export default class PartyADialog extends Vue {
 
   cancel() {
     this.$emit("cancel", false);
+  }
+  inputChange() { //输入框值改变
+      this.form.value = this.form.value.replace(/[^\d]/g, '')
   }
   finish() {
     (this.$refs["form"] as ElForm).validate(this.submit);

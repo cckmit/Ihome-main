@@ -4,7 +4,7 @@
  * @Author: ywl
  * @Date: 2021-01-07 10:29:38
  * @LastEditors: ywl
- * @LastEditTime: 2021-02-02 10:31:58
+ * @LastEditTime: 2021-02-08 19:18:04
 -->
 <template>
   <IhPage label-width="100px">
@@ -117,7 +117,7 @@
           type="info"
           @click="reset()"
         >重置</el-button>
-        <el-button>导出</el-button>
+        <el-button @click="handleExport()">导出</el-button>
       </el-row>
     </template>
     <template v-slot:table>
@@ -210,8 +210,11 @@
           width="120"
           fixed="right"
         >
-          <template v-slot="{  }">
-            <el-link type="primary">流程进度图</el-link>
+          <template v-slot="{ row }">
+            <el-link
+              type="primary"
+              @click="() => { stepsVisible = true; applyId = row.id; }"
+            >流程进度图</el-link>
           </template>
         </el-table-column>
         <el-table-column
@@ -251,15 +254,26 @@
         :total="resPageInfo.total"
       ></el-pagination>
     </template>
+    <!-- 弹窗 -->
+    <IhDialog :show="stepsVisible">
+      <Steps
+        :data="applyId"
+        @cancel="() => (stepsVisible = false)"
+      />
+    </IhDialog>
   </IhPage>
 </template>
 
 <script lang="ts">
 import { Component, Vue } from "vue-property-decorator";
 import PaginationMixin from "../../../mixins/pagination";
+import Steps from "./dialog/steps.vue";
+import axios from "axios";
+import { getToken } from "ihome-common/util/cookies";
 import { post_applyRec_getList } from "../../../api/apply/index";
 
 @Component({
+  components: { Steps },
   mixins: [PaginationMixin],
 })
 export default class ApplyRecList extends Vue {
@@ -277,8 +291,44 @@ export default class ApplyRecList extends Vue {
     total: null,
     list: [],
   };
+  private stepsVisible = false;
+  private applyId: any = null;
   private timeList: any = [];
 
+  private async handleExport() {
+    let flag = this.timeList && this.timeList.length;
+    this.queryPageParameters.applyTimeStart = flag ? this.timeList[0] : null;
+    this.queryPageParameters.applyTimeEnd = flag ? this.timeList[1] : null;
+    const token: any = getToken();
+    axios({
+      method: "POST",
+      url: "/sales-api/apply/applyRec/excelBatchApplyInfo",
+      xsrfHeaderName: "Authorization",
+      responseType: "blob",
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: "bearer " + token,
+      },
+      data: { ...this.queryPageParameters },
+    }).then((res: any) => {
+      if (res.data.type === "application/json") {
+        let reader = new FileReader();
+        reader.readAsText(res.data, "utf-8");
+        reader.onload = () => {
+          let result: any = reader.result;
+          const res = JSON.parse(result);
+          this.$message.warning(res.msg);
+        };
+        return;
+      }
+      const href = window.URL.createObjectURL(res.data);
+      const $a = document.createElement("a");
+      $a.href = href;
+      $a.download = "请款信息.zip";
+      $a.click();
+      $a.remove();
+    });
+  }
   private search() {
     let flag = this.timeList && this.timeList.length;
     this.queryPageParameters.applyTimeStart = flag ? this.timeList[0] : null;
