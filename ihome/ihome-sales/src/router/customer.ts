@@ -55,6 +55,20 @@ const customerRoutes: Array<RouteConfig> = [
                 meta: { title: '到访确认列表', icon: 'form', keepAlive: true }
             }
         ]
+    },
+    {
+        path: '/report',
+        meta: { title: '成交确认列表', icon: null },
+        component: Layout,
+        redirect: '/report/dealConfirmList',
+        children: [
+            {
+                path: 'dealConfirmList',
+                name: 'getList',
+                component: () => import('../views/customer/dealConfirm/list.vue'),
+                meta: { title: '成交确认列表', icon: 'form', keepAlive: true }
+            }
+        ]
     }
 ]
 export { customerRoutes }
