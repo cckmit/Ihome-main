@@ -83,7 +83,7 @@
           </el-col>
           <el-col :span="8">
             <el-form-item label="是否垫佣">
-              {{$root.dictAllName(postData.isMat, 'YesOrNoType')}}
+              {{$root.dictAllName(postData.isMat, 'PadCommission')}}
             </el-form-item>
           </el-col>
           <el-col :span="8" v-if="postData.recordStr">

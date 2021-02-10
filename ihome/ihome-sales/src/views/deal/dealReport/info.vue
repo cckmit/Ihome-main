@@ -86,7 +86,7 @@
           </el-col>
           <el-col :span="8">
             <el-form-item label="是否垫佣">
-              {{infoForm.isMat ? $root.dictAllName(infoForm.isMat, 'YesOrNoType') : '无数据'}}
+              {{infoForm.isMat ? $root.dictAllName(infoForm.isMat, 'PadCommission') : '无数据'}}
             </el-form-item>
           </el-col>
           <el-col :span="8" v-if="infoForm.recordStr">

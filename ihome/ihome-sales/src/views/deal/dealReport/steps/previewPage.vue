@@ -94,7 +94,7 @@
           </el-col>
           <el-col :span="8" v-if="infoForm.contType === 'DistriDeal'">
             <el-form-item label="是否垫佣">
-              {{$root.dictAllName(infoForm.isMat, 'YesOrNoType')}}
+              {{$root.dictAllName(infoForm.isMat, 'PadCommission')}}
             </el-form-item>
           </el-col>
           <el-col :span="8" v-if="infoForm.contType === 'DistriDeal' && infoForm.recordStr">
