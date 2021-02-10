@@ -2145,7 +2145,7 @@
       let flag = (this as any).$parent.validReceiveData(this.postData.receiveVO, 'Auto');
       console.log('flag', flag);
       if (!flag) {
-        this.$message.error('收派金额信息有无，请检查');
+        this.$message.error('请先完善收派金额信息！');
         return;
       }
       if (valid && flag) {

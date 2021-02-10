@@ -3333,6 +3333,10 @@
     async addSave(valid: any) {
       // 校验收派金额是都有收派套餐
       let flag = (this as any).$parent.validReceiveData(this.postData.receiveVO, this.postData.calculation);
+      if (!flag) {
+        this.$message.error('请先完善收派金额信息！');
+        return;
+      }
       if (valid && flag && this.currentBtnType) {
         // 整合数据
         let postData: any = this.getPostData();
