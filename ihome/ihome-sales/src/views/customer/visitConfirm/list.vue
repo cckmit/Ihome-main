@@ -1,10 +1,10 @@
 <!--
- * @Descripttion: 客户报备列表
+ * @Descripttion: 到访确认列表
  * @version: 1.0
  * @Author: yag
- * @Date: 2021年2月8日11:13:34
+ * @Date: 2021年2月9日10:16:25
  * @LastEditors: yag
- * @LastEditTime: 2021年2月8日11:13:37
+ * @LastEditTime: 2021年2月9日17:37:28
 -->
 <template>
   <IhPage label-width="100px">
@@ -120,22 +120,8 @@
         <el-button
           type="success"
           @click="handleExport()"
-          v-has="'B.SALES.CUSTOMER.CUSTREPORTLIST.EXPORTLIST'"
+          v-has="'B.SALES.CUSTOMER.VISITCONFIRM.EXPORTLIST'"
           >导出列表</el-button
-        >
-        <el-button
-          type="danger"
-          v-if="tabsValue === 'UnderReview'"
-          @click="validOrInvalid(selection, 'batch', 'Valid')"
-          v-has="'B.SALES.CUSTOMER.CUSTREPORTLIST.EFFECTIVE'"
-          >批量有效</el-button
-        >
-        <el-button
-          type="danger"
-          v-if="tabsValue === 'UnderReview'"
-          @click="validOrInvalidAll(selection, 'batch', 'Invalid')"
-          v-has="'B.SALES.CUSTOMER.CUSTREPORTLIST.INVALID'"
-          >批量无效</el-button
         >
       </el-row>
     </template>
@@ -153,13 +139,6 @@
               @selection-change="selectionChange"
             >
               <el-table-column
-                v-if="i.name === 'UnderReview'"
-                type="selection"
-                width="50"
-                align="center"
-                :selectable="selectable"
-              ></el-table-column>
-              <el-table-column
                 fixed
                 type="index"
                 label="序号"
@@ -171,10 +150,10 @@
                 width="220"
                 fixed
               ></el-table-column>
-              <el-table-column label="项目类型" width="110">
+              <el-table-column v-if="i.name === 'UnderReview'" label="项目类型" width="110">
                 <template v-slot="{ row }">
-                  <div v-if="row.exMarket===1">市场化项目</div>
-                  <div v-if="row.exMarket===0">非市场化项目</div>
+                  <div v-if="row.exMarket === 1">市场化项目</div>
+                  <div v-if="row.exMarket === 0">非市场化项目</div>
                 </template>
               </el-table-column>
               <el-table-column
@@ -225,26 +204,31 @@
                 prop="reportDate"
                 width="120"
               ></el-table-column>
+               <el-table-column
+                v-if="['ValidVisit', 'InvalidVisit'].includes(i.name)"
+                label="到访时间"
+                prop="expectedTime"
+                width="120"
+              ></el-table-column>
               <el-table-column
-                v-if="i.name !== 'UnderReview'"
+                v-if="['ValidVisit', 'InvalidVisit'].includes(i.name)"
                 label="审核人"
                 prop="auditUserName"
                 width="150"
               ></el-table-column>
               <el-table-column
-                v-if="i.name !== 'UnderReview'"
+                v-if="['ValidVisit', 'InvalidVisit'].includes(i.name)"
                 label="审核时间"
                 prop="auditTime"
                 width="150"
               ></el-table-column>
               <el-table-column
-                v-if="i.name === 'InvalidReport'"
+                v-if="i.name === 'InvalidVisit'"
                 label="无效原因"
                 prop="comment"
                 width="150"
               ></el-table-column>
               <el-table-column
-                v-if="i.name === 'UnderReview'"
                 label="操作"
                 width="120"
                 fixed="right"
@@ -253,25 +237,31 @@
                 <template v-slot="{ row }">
                   <el-link
                     type="primary"
-                    v-if="row.exMarket === 0"
-                    v-has="'B.SALES.CUSTOMER.CUSTREPORTLIST.SYNC'"
+                    v-if="row.exMarket === 0 && i.name === 'UnderReview'"
+                    v-has="'B.SALES.CUSTOMER.VISITCONFIRM.SYNC'"
                     @click="synchronization(row)"
                     >同步状态</el-link
                   >
                   <el-link
                     type="primary"
-                    v-if="row.exMarket === 1"
-                    @click="validOrInvalid(row, 'nbatch', 'Valid')"
-                    v-has="'B.SALES.CUSTOMER.CUSTREPORTLIST.EFFECTIVE'"
+                    v-if="row.exMarket === 1  && i.name === 'UnderReview'"
+                    @click="validVisitOperation(row)"
+                    v-has="'B.SALES.CUSTOMER.VISITCONFIRM.EFFECTIVE'"
                     class="margin-right-10"
-                    >有效&nbsp;</el-link
+                    >有效</el-link
                   >
                   <el-link
                     type="primary"
-                    v-if="row.exMarket === 1"
-                    @click="validOrInvalidItem(row)"
-                    v-has="'B.SALES.CUSTOMER.CUSTREPORTLIST.INVALID'"
-                    >&nbsp;无效</el-link
+                    v-if="row.exMarket === 1  && i.name === 'UnderReview'"
+                    @click="invalidVisitOperation(row)"
+                    v-has="'B.SALES.CUSTOMER.VISITCONFIRM.INVALID'"
+                    >无效</el-link
+                  >
+                  <el-link
+                    type="primary"
+                    @click="fileDetailOperation(row)"
+                    v-has="'B.SALES.CUSTOMER.VISITCONFIRM.FILEDETAIL'"
+                    >附件详情</el-link
                   >
                 </template>
               </el-table-column>
@@ -293,13 +283,37 @@
       ></el-pagination>
     </template>
     <!-- 弹窗 -->
-    <IhDialog :show="dialogVisible">
-      <BatchInvalid
+    <IhDialog :show="dialogVisibleValid">
+      <ValidVisit
         :data="itemData"
-        @cancel="() => (dialogVisible = false)"
+        @cancel="() => (dialogVisibleValid = false)"
         @finish="
           () => {
-            dialogVisible = false;
+            dialogVisibleValid = false;
+            getListMixin();
+          }
+        "
+      />
+    </IhDialog>
+    <IhDialog :show="dialogVisibleInvalid">
+      <InvalidVisit
+        :data="itemData"
+        @cancel="() => (dialogVisibleInvalid = false)"
+        @finish="
+          () => {
+            dialogVisibleInvalid = false;
+            getListMixin();
+          }
+        "
+      />
+    </IhDialog>
+    <IhDialog :show="dialogVisibleFile">
+      <FileDetail
+        :data="itemData"
+        @cancel="() => (dialogVisibleFile = false)"
+        @finish="
+          () => {
+            dialogVisibleFile = false;
             getListMixin();
           }
         "
@@ -313,16 +327,17 @@ import { Component, Vue } from "vue-property-decorator";
 import PaginationMixin from "../../../mixins/pagination";
 import axios from "axios";
 import { getToken } from "ihome-common/util/cookies";
-import BatchInvalid from "./dialog/batchInvalid.vue";
+import InvalidVisit from "./dialog/invalidVisit.vue";
+import ValidVisit from "./dialog/validVisit.vue";
+import FileDetail from "./dialog/fileDetail.vue";
 import {
   post_report_getList,
   post_report_getYueJiaReport,
-  post_report_reportValidOrInvalid,
 } from "../../../api/customer/index";
 
 @Component({
   mixins: [PaginationMixin],
-  components: { BatchInvalid },
+  components: { InvalidVisit, ValidVisit,FileDetail },
 })
 export default class ReturnConfirmList extends Vue {
   queryPageParameters: any = {
@@ -340,9 +355,12 @@ export default class ReturnConfirmList extends Vue {
     reportStatus: "UnderReview",
   };
   tabsValue: any = "UnderReview";
-  dialogVisible = false;
+  dialogVisibleValid = false;
+  dialogVisibleInvalid = false;
+  dialogVisibleFile = false;
   itemData: any = {
-    ids: [],
+    reportId: null,
+    validOrInvalid: null,
     data: {},
   };
   resPageInfo: any = {
@@ -376,7 +394,7 @@ export default class ReturnConfirmList extends Vue {
       const href = window.URL.createObjectURL(res.data);
       const $a = document.createElement("a");
       $a.href = href;
-      $a.download = "客户报备列表.xlsx";
+      $a.download = "到访确认列表.xlsx";
       $a.click();
       $a.remove();
     });
@@ -384,16 +402,16 @@ export default class ReturnConfirmList extends Vue {
 
   private tabsList: any = [
     {
-      label: "待确认",
+      label: "未确认",
       name: "UnderReview",
     },
     {
-      label: "报备有效",
-      name: "ValidReport",
+      label: "到访有效",
+      name: "ValidVisit",
     },
     {
-      label: "报备无效",
-      name: "InvalidReport",
+      label: "到访无效",
+      name: "InvalidVisit",
     },
   ];
   showTable: any = [];
@@ -452,50 +470,32 @@ export default class ReturnConfirmList extends Vue {
   }
 
   /**
-   * @description: 无效弹窗--批量
-   */
-  private validOrInvalidAll() {
-    if (this.selection.length) {
-      this.dialogVisible = true;
-      this.itemData.ids = this.selection.map((i: any) => i.id);
-    } else {
-      this.$message.warning("请先勾选表格数据");
-      return;
-    }
-  }
-  /**
-   * @description: 无效弹窗--单条
+   * @description: 到访有效
    * @param {any} row
    */
-  private validOrInvalidItem(row: any) {
-    debugger;
-    this.dialogVisible = true;
-    this.itemData.ids = [row.id];
+  private validVisitOperation(row: any) {
+    this.dialogVisibleValid = true;
+    this.itemData.validOrInvalid = "Valid";
+    this.itemData.reportId = row.id;
   }
 
-  async validOrInvalid(data: any, type: any, valType: any) {
-    let arr: any = [];
-    if (type === "batch") {
-      if (this.selection.length) {
-        arr = this.selection.map((v: any) => v.id);
-      } else {
-        this.$notify({
-          type: "error",
-          title: "请勾选至少一条报备信息",
-          message: "请勾选至少一条报备信息操作",
-          position: "bottom-right",
-        });
-        return;
-      }
-    } else {
-      arr = [data.id];
-    }
-    await post_report_reportValidOrInvalid({
-      reportIds: arr,
-      validOrInvalid: valType,
-    });
-    this.$message.success("操作成功");
-    this.search();
+  /**
+   * @description: 到访无效
+   * @param {any} row
+   */
+  private invalidVisitOperation(row: any) {
+    this.dialogVisibleInvalid = true;
+    this.itemData.validOrInvalid = "Invalid";
+    this.itemData.reportId = row.id;
+  }
+
+  /**
+   * @description: 附件详情
+   * @param {any} row
+   */
+  private fileDetailOperation(row: any) {
+    this.dialogVisibleFile = true;
+    this.itemData.reportId = row.id;
   }
 }
 </script>
