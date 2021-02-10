@@ -1397,6 +1397,9 @@
       roomId: null,
       roomNo: null,
       toilet: null,
+      house: {
+        id: null
+      },
       offerNoticeVO: [], // 优惠告知书
       customerList: [], // 客户信息
       agencyVO: [], // 渠道信息
@@ -3444,12 +3447,13 @@
         switch (this.changeType) {
           case "ChangeBasicInf":
             // 变更基础信息
-            data = await this.initBaseData();
             if (this.btnType === "add") {
               // 去新增
+              data = await this.initBaseDataByAdd();
               callBackInfo = await post_suppDeal_previewEntryBasicInfChange(data);
             } else if (this.btnType === "edit") {
               // 去修改
+              data = await this.initBaseDataByUpdated();
               callBackInfo = await post_suppDeal_previewUpdateBasicInfChange(data);
             }
             this.btnLoading = false;
@@ -3498,12 +3502,13 @@
             break
           case "ChangeInternalAchieveInf":
             // 内部员工业绩变更
-            data = await this.initStaffAchieveData();
             if (this.btnType === "add") {
               // 去新增
+              data = await this.initStaffAchieveDataByAdd();
               callBackInfo = await post_suppDeal_previewEntryStaffAchieveChange(data);
             } else if (this.btnType === "edit") {
               // 去修改
+              data = await this.initStaffAchieveDataByUpdated();
               callBackInfo = await post_suppDeal_previewUpdateStaffAchieveChange(data);
             }
             this.btnLoading = false;
@@ -3521,13 +3526,12 @@
       }
     }
 
-    // 整合基础信息提交数据
-    initBaseData() {
+    // 整合基础信息提交数据 - 新增
+    initBaseDataByAdd() {
       let dataObj: any = {
         agencyVO: [], // 中介信息
         customerVO: this.postData.customerList, // 客户信息
         dealAddInputVO: {
-          id: this.id,
           parentId: this.postData.parentId, // 主成交id
           signDate: this.postData.signDate,
           signType: this.postData.signType,
@@ -3564,22 +3568,25 @@
       return dataObj;
     }
 
-    // 整合退房 + 成交业绩数据
-    initRetreatRoomData() {
+    // 整合基础信息提交数据 - 修改
+    initBaseDataByUpdated() {
       let dataObj: any = {
-        achieveVO: [...this.postData.achieveTotalBagList, ...this.postData.achieveDistriList], // 平台费用信息
         agencyVO: [], // 中介信息
-        calculation: this.postData.calculation, // 计算方式
-        channelCommVO: this.postData.channelCommList, // 对外拆佣信息
         customerVO: this.postData.customerList, // 客户信息
-        dealVO: {
-          ...this.postData,
-          id: this.id,
-          noticeIds: [] // 优惠告知书Id
-        }, // 成交基础信息
+        dealUpdateInputVO: {
+          dealCode: this.postData.dealCode ? this.postData.dealCode : null,
+          id: this.id ? this.id : null,
+          parentId: this.postData.parentId, // 主成交id
+          signDate: this.postData.signDate,
+          signType: this.postData.signType,
+          stage: this.postData.stage,
+          status: null, // 最后点击提交/保存的时候才会赋值
+          subscribeDate: this.postData.subscribeDate,
+        }, // 主成交信息
         documentVO: this.getDocumentList(this.postData.uploadDocumentList), // 成交附件信息
-        houseVO: {
-          dealId: this.id,
+        houseUpdateInputVO: {
+          dealId: this.id ? this.id : null,
+          id: this.postData?.house?.id,
           address: this.postData.address,
           area: this.postData.area,
           buildingId: this.postData.buildingId,
@@ -3591,23 +3598,110 @@
           roomNo: this.postData.roomNo,
           toilet: this.postData.toilet
         },
+        noticeAgreementCreateRequest: [],
+      }
+      if (this.postData.agencyId) {
+        dataObj.agencyVO.push(
+          {
+            dealId: this.id ? this.id : null, // 成交id
+            agencyId: this.postData.agencyId,
+            agencyName: this.postData.agencyName,
+            brokerId: this.postData.brokerId,
+            broker: this.postData.brokerName,
+            channelLevel: this.postData.channelLevel
+          }
+        )
+      }
+      if (dataObj.customerVO && dataObj.customerVO.length) {
+        dataObj.customerVO.forEach((vo: any) => {
+          vo.dealId = this.id ? this.id : null;
+        });
+      }
+      if (dataObj.documentVO && dataObj.documentVO.length) {
+        dataObj.documentVO.forEach((vo: any) => {
+          vo.dealId = this.id ? this.id : null;
+        });
+      }
+      return dataObj;
+    }
+
+    // 整合退房 + 成交业绩数据
+    initRetreatRoomData() {
+      let dataObj: any = {
         noticeDealList: [],
+        achieveVO: [...this.postData.achieveTotalBagList, ...this.postData.achieveDistriList], // 平台费用信息
+        agencyVO: [], // 中介信息
+        calculation: this.postData.calculation, // 计算方式
+        channelCommVO: this.postData.channelCommList, // 对外拆佣信息
+        customerVO: this.postData.customerList, // 客户信息
+        dealVO: {
+          ...this.postData,
+          id: this.btnType === "edit" ? this.id : null,
+          noticeIds: [] // 优惠告知书Id
+        }, // 成交基础信息
+        documentVO: this.getDocumentList(this.postData.uploadDocumentList), // 成交附件信息
+        houseVO: {
+          dealId: this.btnType === "edit" ? this.id : null,
+          id: this.postData?.house?.id,
+          address: this.postData.address,
+          area: this.postData.area,
+          buildingId: this.postData.buildingId,
+          hall: this.postData.hall,
+          propertyNo: this.postData.propertyNo,
+          propertyType: this.postData.propertyType,
+          room: this.postData.room,
+          roomId: this.postData.roomId,
+          roomNo: this.postData.roomNo,
+          toilet: this.postData.toilet
+        },
         receiveAchieveVO: [], // 应收业绩信息
         receiveVO: this.postData.receiveList, // 收派金额
         parentId: this.postData.parentId, // 父成交Id
         status: null, // 成交状态
       }
+      if (dataObj.achieveVO.length) {
+        dataObj.achieveVO.forEach((vo: any) => {
+          vo.isMainDeal = false;
+        });
+      }
+      if (dataObj.customerVO.length && this.btnType === "edit") {
+        dataObj.customerVO.forEach((vo: any) => {
+          vo.dealId = this.id;
+        });
+      }
+      if (dataObj.documentVO.length && this.btnType === "edit") {
+        dataObj.documentVO.forEach((vo: any) => {
+          vo.dealId = this.id;
+        });
+      }
+      if (dataObj.receiveVO.length && this.btnType === "edit") {
+        dataObj.receiveVO.forEach((vo: any) => {
+          vo.dealId = this.id;
+        });
+      }
       if (this.postData.agencyId) {
-        dataObj.agencyVO.push(
-          {
-            agencyId: this.postData.agencyId,
-            agencyName: this.postData.agencyName,
-            brokerId: this.postData.brokerId,
-            broker: this.postData.brokerName,
-            channelLevel: this.postData.channelLevel,
-            dealId: this.id
-          }
-        )
+        if (this.btnType === "edit") {
+          dataObj.agencyVO.push(
+            {
+              agencyId: this.postData.agencyId,
+              agencyName: this.postData.agencyName,
+              brokerId: this.postData.brokerId,
+              broker: this.postData.brokerName,
+              channelLevel: this.postData.channelLevel,
+              dealId: this.id
+            }
+          )
+        } else if (this.btnType === "add") {
+          dataObj.agencyVO.push(
+            {
+              agencyId: this.postData.agencyId,
+              agencyName: this.postData.agencyName,
+              brokerId: this.postData.brokerId,
+              broker: this.postData.brokerName,
+              channelLevel: this.postData.channelLevel
+            }
+          )
+        }
       }
       if (this.postData.offerNoticeVO && this.postData.offerNoticeVO.length) {
         this.postData.offerNoticeVO.forEach((item: any) => {
@@ -3615,23 +3709,44 @@
         });
       }
       if (this.receiveAchieveVO && this.receiveAchieveVO.length && this.postData.receiveAchieveList && this.postData.receiveAchieveList.length) {
-        dataObj.receiveAchieveVO.push(
-          {
-            receiveAmount: this.receiveAchieveVO[0].receiveAmount,
-            achieveAmount: this.receiveAchieveVO[0].achieveAmount,
-            otherChannelFees: this.receiveAchieveVO[0].otherChannelFees,
-            dealId: this.id,
-            id: this.postData.receiveAchieveList[0].id
-          }
-        )
+        if (this.btnType === "edit") {
+          dataObj.receiveAchieveVO.push(
+            {
+              receiveAmount: this.receiveAchieveVO[0].receiveAmount,
+              achieveAmount: this.receiveAchieveVO[0].achieveAmount,
+              otherChannelFees: this.receiveAchieveVO[0].otherChannelFees,
+              dealId: this.id,
+              id: this.postData.receiveAchieveList[0].id
+            }
+          )
+        } else {
+          dataObj.receiveAchieveVO.push(
+            {
+              receiveAmount: this.receiveAchieveVO[0].receiveAmount,
+              achieveAmount: this.receiveAchieveVO[0].achieveAmount,
+              otherChannelFees: this.receiveAchieveVO[0].otherChannelFees,
+            }
+          )
+        }
       }
       return dataObj;
     }
 
     // 整合变更内部员工业绩数据
-    initStaffAchieveData() {
+    initStaffAchieveDataByAdd() {
       let dataObj: any = {
         achieveVO: [...this.postData.achieveTotalBagList, ...this.postData.achieveDistriList], // 平台费用信息
+        parentId: this.postData.parentId, // 父成交Id
+        status: null, // 成交状态
+      }
+      return dataObj;
+    }
+
+    // 整合变更内部员工业绩数据
+    initStaffAchieveDataByUpdated() {
+      let dataObj: any = {
+        achieveVO: [...this.postData.achieveTotalBagList, ...this.postData.achieveDistriList], // 平台费用信息
+        dealId: this.id,
         parentId: this.postData.parentId, // 父成交Id
         status: null, // 成交状态
       }
