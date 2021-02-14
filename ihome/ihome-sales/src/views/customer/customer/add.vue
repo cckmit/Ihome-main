@@ -29,7 +29,10 @@
       <el-row>
         <el-col :span="18">
           <el-form-item label="手机号码" prop="custTel">
-            <el-input v-model="form.custTel" placeholder="客户联系方式"></el-input>
+            <el-input
+              v-model="form.custTel"
+              placeholder="客户联系方式"
+            ></el-input>
           </el-form-item>
         </el-col>
       </el-row>
@@ -49,7 +52,7 @@
       </el-row>
       <el-row>
         <el-col :span="18">
-          <el-form-item label="客户类型" prop='custType'>
+          <el-form-item label="客户类型" prop="custType">
             <el-select v-model="form.custType" placeholder="请选客户类型">
               <el-option
                 v-for="item in $root.dictAllList('CustType')"
@@ -63,8 +66,8 @@
       </el-row>
       <el-row>
         <el-col :span="18">
-          <el-form-item label="证件类型" prop='cardType'>
-            <el-select v-model="form.cardType" placeholder="请选择证件类型">
+          <el-form-item label="证件类型" prop="cardType">
+            <el-select v-model="form.cardType" placeholder="请选择证件类型" @change="() => {handleCardChange()}">
               <el-option
                 v-for="item in $root.dictAllList('CardType')"
                 :key="item.code"
@@ -78,7 +81,10 @@
       <el-row>
         <el-col :span="18">
           <el-form-item label="证件编号" prop="certificateNumber">
-            <el-input v-model="form.certificateNumber" placeholder="证件编号"></el-input>
+            <el-input
+              v-model="form.certificateNumber"
+              placeholder="证件编号"
+            ></el-input>
           </el-form-item>
         </el-col>
       </el-row>
@@ -101,12 +107,14 @@ import { Component, Vue, Prop } from "vue-property-decorator";
 import { Form as ElForm } from "element-ui";
 
 import { NoRepeatHttp } from "ihome-common/util/aop/no-repeat-http";
-import { phoneValidator,validIdentityCard,emailOrNullValidato } from "ihome-common/util/base/form-ui";
 import {
-  post_customer_add,
-} from "../../../api/customer";
+  phoneValidator,
+  validIdentityCard,
+  emailOrNullValidato,
+} from "ihome-common/util/base/form-ui";
+import { post_customer_add } from "../../../api/customer";
 @Component({
-  components: {  },
+  components: {},
 })
 export default class CustomerAdd extends Vue {
   constructor() {
@@ -128,9 +136,7 @@ export default class CustomerAdd extends Vue {
       { required: true, message: "客户姓名不能为空", trigger: "change" },
       { min: 1, max: 20, message: "长度在 1 到 20 个字符", trigger: "change" },
     ],
-    custOrg: [
-      { required: true, message: "请选择客户来源", trigger: "change" },
-    ],
+    custOrg: [{ required: true, message: "请选择客户来源", trigger: "change" }],
     custType: [
       { required: true, message: "请选择客户类型", trigger: "change" },
     ],
@@ -143,13 +149,23 @@ export default class CustomerAdd extends Vue {
     ],
     certificateNumber: [
       { required: true, message: "证件编号不能为空", trigger: "change" },
-      { validator: validIdentityCard, trigger: "change" },
     ],
-    email: [
-      { validator: emailOrNullValidato, trigger: "change" },
-    ],
+    email: [{ validator: emailOrNullValidato, trigger: "change" }],
   };
 
+  // 切换证件类型，验证身份证、港澳通行证、台湾通行证、护照
+  handleCardChange() {
+    if (this.form.cardType == 'IDCard') {
+      this.rules.certificateNumber = [
+        { required: true, message: "证件编号不能为空", trigger: "change" },
+        { validator: validIdentityCard, trigger: "change" },
+      ];
+    }else{
+      this.rules.certificateNumber = [
+        { required: true, message: "证件编号不能为空", trigger: "change" },
+      ];
+    } 
+  }
   cancel() {
     this.$emit("cancel", false);
   }
@@ -160,7 +176,7 @@ export default class CustomerAdd extends Vue {
   async submit(valid: any) {
     if (valid) {
       const res = await post_customer_add(this.form);
-      this.$message.success("客户新增成功");
+      this.$message.success(res);
       this.$emit("finish", res);
     } else {
       console.log("error submit!!");
