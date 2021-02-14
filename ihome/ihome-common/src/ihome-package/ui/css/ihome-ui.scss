@@ -104,13 +104,17 @@
   .ih-form .el-form-item__content {
     margin-right: 40px;
   }
+  //资源权限设置
   .ih-has-disabled {
     cursor: not-allowed !important;
     pointer-events: none;
     opacity: 0.5;
+    display: none;
    }
+   //数据权限设置
   .ih-data-disabled {
     cursor: not-allowed !important;
     pointer-events: none;
     opacity: 0.5;
+    display: none;
   }
