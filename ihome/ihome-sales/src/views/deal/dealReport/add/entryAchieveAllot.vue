@@ -1043,9 +1043,9 @@
       </el-col>
     </el-row>
     <div class="text-center btn-top">
-      <el-button type="primary" @click="handleSave('save')">保存</el-button>
-      <el-button type="success" @click="handleSave('submit')">提交</el-button>
-      <el-button @click="cancel()">取消</el-button>
+      <el-button :loading="btnLoading" type="primary" @click="handleSave('save')">保存</el-button>
+      <el-button :loading="btnLoading" type="success" @click="handleSave('submit')">提交</el-button>
+      <el-button :loading="btnLoading" @click="cancel()">取消</el-button>
     </div>
     <div class="nav-box">
       <div class="nav-icon el-button--success" @click="navFlag = !navFlag " :title="navFlag ? '收起' : '展开'">
@@ -1135,6 +1135,7 @@
       default: null,
     })
     getRefineModelList!: any; // 根据业务模式获取细分业务模式选项
+    btnLoading: any = false;
     contTypeList: any = []; // 合同类型选项
     refineModelList: any = []; // 细分业务模式选项
     dealStageList: any = []; // 成交阶段选项
@@ -1786,15 +1787,15 @@
     isDisabled(key: any = '', type: any = '') {
       const data: any = this.baseInfoInDeal.myReturnVO;
       if (!key || !type || !data[type]?.[key]) return false;
-      let flag = true;
+      let flag = false;
       // 1.是否明源数据标志
       // let signFlag = ['WholeMingYuan', 'NoWholeMingYuan'].includes(data.dataSign);
       let signFlag = this.baseInfoByTerm.exMinyuan;
       // 2.对应明源字段是否有值
       if (data[type][key] && signFlag) {
-        flag = false;
-      } else {
         flag = true;
+      } else {
+        flag = false;
       }
       return flag;
     }
@@ -2344,20 +2345,20 @@
       if (baseInfo.dealNoticeStatus === 'MultipleNotice') {
         this.$notify({
           title: '提示',
-          message: '同房号存在多份已生效的优惠告知书',
+          message: '同房号存在多份已生效的优惠告知书。(分销成交模式，请选择分销协议编号后方可手动选择优惠告知书)',
           duration: 0
         });
       } else {
-        // 分销协议编号
-        if (baseInfo.contracts && baseInfo.contracts.length > 0) {
-          this.contNoList = baseInfo.contracts;
-        } else {
-          this.contNoList = [];
-        }
         // 优惠告知书
         if (!this.postData.offerNoticeVO.length) {
           this.postData.offerNoticeVO = baseInfo.notice && baseInfo.notice.length ? baseInfo.notice : [];
         }
+      }
+      // 分销协议编号
+      if (baseInfo.contracts && baseInfo.contracts.length > 0) {
+        this.contNoList = baseInfo.contracts;
+      } else {
+        this.contNoList = [];
       }
       // 分销成交和非分销成交不一样
       if (baseInfo.contType === 'DistriDeal') {
@@ -3332,6 +3333,10 @@
     async addSave(valid: any) {
       // 校验收派金额是都有收派套餐
       let flag = (this as any).$parent.validReceiveData(this.postData.receiveVO, this.postData.calculation);
+      if (!flag) {
+        this.$message.error('请先完善收派金额信息！');
+        return;
+      }
       if (valid && flag && this.currentBtnType) {
         // 整合数据
         let postData: any = this.getPostData();
@@ -3342,26 +3347,30 @@
           // 提交
           postData.basic.dealVO.status = 'PlatformClerkUnreview'; // 平台文员待审核
         }
-        if (this.id) {
-          postData.allotDate = this.editBaseInfo.allotDate ? this.editBaseInfo.allotDate : this.getCurrentDate();
-          postData.alloterId = this.editBaseInfo.alloterId ? this.editBaseInfo.alloterId : (this as any).$root?.userInfo?.id;
-          postData.basic.dealVO.dealCode = this.editBaseInfo?.dealCode;
-          postData.basic.dealVO.id = this.editBaseInfo?.id;
-          postData.basic.dealVO.parentId = this.editBaseInfo?.parentId;
-          postData.basic.dealVO.entryDate = this.editBaseInfo?.entryDate;
-          postData.basic.dealVO.entryPersonId = this.editBaseInfo?.entryPersonId;
-          console.log('postData:', postData);
-          await post_deal_updateAchieveAllot(postData);
-          this.$message.success("修改成功");
+        try {
+          this.btnLoading = true;
+          if (this.id) {
+            postData.allotDate = this.editBaseInfo.allotDate ? this.editBaseInfo.allotDate : this.getCurrentDate();
+            postData.alloterId = this.editBaseInfo.alloterId ? this.editBaseInfo.alloterId : (this as any).$root?.userInfo?.id;
+            postData.basic.dealVO.dealCode = this.editBaseInfo?.dealCode;
+            postData.basic.dealVO.id = this.editBaseInfo?.id;
+            postData.basic.dealVO.parentId = this.editBaseInfo?.parentId;
+            postData.basic.dealVO.entryDate = this.editBaseInfo?.entryDate;
+            postData.basic.dealVO.entryPersonId = this.editBaseInfo?.entryPersonId;
+            console.log('postData:', postData);
+            await post_deal_updateAchieveAllot(postData);
+            this.$message.success("修改成功");
+          } else {
+            await post_deal_achieveAllotEntry(postData);
+            this.$message.success("新增成功");
+          }
+          this.btnLoading = false;
           this.$goto({
             path: "/dealReport/list",
           });
-        } else {
-          await post_deal_achieveAllotEntry(postData);
-          this.$message.success("新增成功");
-          this.$goto({
-            path: "/dealReport/list",
-          });
+        } catch (error) {
+          console.log(error);
+          this.btnLoading = false;
         }
       } else {
         this.$message.warning("请先填好数据再保存");

@@ -4,7 +4,7 @@
  * @Author: ywl
  * @Date: 2021-01-07 16:30:03
  * @LastEditors: ywl
- * @LastEditTime: 2021-02-08 15:36:43
+ * @LastEditTime: 2021-02-09 14:14:32
 -->
 <template>
   <IhPage class="text-left">
@@ -118,7 +118,7 @@
                 <el-option
                   v-for="(i, n) in accountList"
                   :key="n"
-                  :label="i.accountName"
+                  :label="i.accountNo"
                   :value="i"
                 ></el-option>
               </el-select>

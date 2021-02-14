@@ -4,7 +4,7 @@
  * @Author: wwq
  * @Date: 2020-12-26 11:11:23
  * @LastEditors: wwq
- * @LastEditTime: 2021-02-07 16:39:59
+ * @LastEditTime: 2021-02-09 14:57:07
 -->
 <template>
   <IhPage>
@@ -403,12 +403,24 @@
           </el-table-column>
           <el-table-column
             label="本次实际付款金额"
-            width="150"
+            width="220"
           >
             <template v-slot="{ row }">
               <div>实际付款金额: {{practicalChange(row)}}</div>
-              <div>不含税金额: {{noTaxAmountChange(row)}}</div>
-              <div>税额: {{taxChange(row)}}</div>
+              <div>
+                <template v-if="row.noTaxAmountNew">
+                  <span>不含税金额: <del>{{noTaxAmountChange(row)}}</del></span>
+                  <span style="color: red">{{` ${row.noTaxAmountNew}`}}</span>
+                </template>
+                <span v-else>不含税金额: {{noTaxAmountChange(row)}}</span>
+              </div>
+              <div>
+                <template v-if="row.taxNew">
+                  <span>税额: <del>{{taxChange(row)}}</del></span>
+                  <span style="color: red">{{` ${row.taxNew}`}}</span>
+                </template>
+                <span v-else>税额: {{taxChange(row)}}</span>
+              </div>
             </template>
           </el-table-column>
           <el-table-column
@@ -776,12 +788,15 @@
             <td>{{info.noTaxAmount}}</td>
             <td>本期实际付款税额</td>
             <td>
-              <el-input
+              <el-input-number
+                controls-position="right"
                 class="inputClass"
                 v-model="info.tax"
+                :min="globalTaxMoney-10 < 0 ? 0 : globalTaxMoney-10"
+                :max="globalTaxMoney+10"
+                :precision="2"
+                :step="0.01"
                 placeholder="请输入"
-                v-digits="2"
-                clearable
                 @change="taxinputChange"
               />
             </td>
@@ -966,6 +981,7 @@ export default class PayoffEdit extends Vue {
   computedLoading: any = false;
   submitLoading: any = false;
   finishLoading: any = false;
+  globalTaxMoney: any = 0;
 
   private rules: any = {
     projectId: [
@@ -1238,8 +1254,46 @@ export default class PayoffEdit extends Vue {
     this.$router.push("/payoff/list");
   }
 
-  taxinputChange() {
+  // 税额修改
+  taxinputChange(number: any) {
     this.modify = true;
+    if (!number) {
+      this.info.tax =
+        this.globalTaxMoney - 10 < 0 ? 0 : this.globalTaxMoney - 10;
+    }
+    let val = this.info.tax;
+    let sub = this.$math.sub(this.globalTaxMoney, val);
+    let listArr: any = [];
+    let isSub = true;
+    for (let index = 0; index < this.showTable.length; index++) {
+      const element = this.showTable[index];
+      if (isSub) {
+        let taxNew = this.$math.tofixed(this.$math.sub(element.tax, sub), 2);
+        if (taxNew > 0) {
+          element.taxNew = taxNew;
+          element.noTaxAmountNew = this.$math.tofixed(
+            this.$math.add(element.noTaxAmount, sub),
+            2
+          );
+          isSub = false;
+          listArr.push(element);
+        } else {
+          element.taxNew = 0;
+          element.noTaxAmountNew = this.$math.tofixed(
+            this.$math.add(element.noTaxAmount, element.tax),
+            2
+          );
+          sub = this.$math.tofixed(this.$math.sub(sub, element.tax), 2);
+          isSub = true;
+          listArr.push(element);
+        }
+      } else {
+        delete element.taxNew;
+        delete element.noTaxAmountNew;
+        listArr.push(element);
+      }
+    }
+    this.showTable = listArr;
   }
 
   async created() {

@@ -40,6 +40,12 @@ export interface RoleToolInterface {
     */
     RBusinessManagement(): boolean;
 
+    /**是否包含【案场岗】
+     * @param {*}
+     * @return {*}
+     */
+    RProjectSite(): boolean;
+
     /**是否包含【文员】
      * @param {*}
      * @return {*}
@@ -51,6 +57,12 @@ export interface RoleToolInterface {
     * @return {*}
     */
     RPlatformClerk(): boolean;
+
+    /**是否包含【事业部负责人】
+    * @param {*}
+    * @return {*}
+    */
+   RDepartmentLeader(): boolean;
 
     /**是否包含【渠道专员角色】
      * @param {*}
@@ -108,6 +120,13 @@ export class RoleTool implements RoleToolInterface {
     RBusinessManagement(): boolean {
         return this.hasRole(RoleCode.RBusinessManagement);
     }
+    /**是否包含【案场岗】
+     * @param {*}
+     * @return {*}
+     */
+    RProjectSite(): boolean {
+        return this.hasRole(RoleCode.RProjectSite);
+    }
     /**是否包含【文员】
      * @param {*}
      * @return {*}
@@ -121,6 +140,13 @@ export class RoleTool implements RoleToolInterface {
     */
     RPlatformClerk(): boolean {
         return this.hasRole(RoleCode.RPlatformClerk);
+    }
+    /**是否包含【事业部负责人】
+     * @param {*}
+     * @return {*}
+     */
+    RDepartmentLeader(): boolean {
+        return this.hasRole(RoleCode.RDepartmentLeader);
     }
     /**是否包含【渠道专员】
     * @param {*}

@@ -3,8 +3,8 @@
  * @version: 
  * @Author: zyc
  * @Date: 2021-01-21 17:23:14
- * @LastEditors: wwq
- * @LastEditTime: 2021-02-06 20:35:44
+ * @LastEditors: lsj
+ * @LastEditTime: 2021-02-10 17:25:33
  */
 
 /**角色编码
@@ -27,6 +27,11 @@ const RoleCode = {
      * @return {*}
      */
     RBusinessManagement: 'RBusinessManagement',
+    /**案场岗
+     * @param {*}
+     * @return {*}
+     */
+    RProjectSite: 'RProjectSite',
     /**文员
      * @param {*}
      * @return {*}
@@ -37,6 +42,11 @@ const RoleCode = {
      * @return {*}
      */
     RPlatformClerk: 'RPlatformClerk',
+    /**事业部负责人
+     * @param {*}
+     * @return {*}
+     */
+    RDepartmentLeader: 'RDepartmentLeader',
     /**渠道专员
      * @param {*}
      * @return {*}

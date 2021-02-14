@@ -4,7 +4,7 @@
  * @Author: ywl
  * @Date: 2021-01-14 19:09:51
  * @LastEditors: ywl
- * @LastEditTime: 2021-02-02 19:47:26
+ * @LastEditTime: 2021-02-09 15:04:47
 -->
 <template>
   <IhPage class="text-left">
@@ -33,11 +33,29 @@
             </el-form-item>
           </el-col>
           <el-col :span="8">
+            <el-form-item label="事业部">
+              <IhSelectPageDivision
+                v-model="form.orgId"
+                placeholder="请选择所在事业部"
+                disabled
+              ></IhSelectPageDivision>
+            </el-form-item>
+          </el-col>
+          <el-col :span="8">
             <el-form-item label="甲方公司">
               <el-input
                 :value="form.developName"
                 disabled
               ></el-input>
+            </el-form-item>
+          </el-col>
+          <el-col :span="8">
+            <el-form-item label="甲方开票帐号">
+              <el-input
+                v-model="form.developAccount"
+                disabled
+              >
+              </el-input>
             </el-form-item>
           </el-col>
           <el-col :span="8">
@@ -52,17 +70,35 @@
           </el-col>
           <el-col :span="8">
             <el-form-item label="收款账号">
-              <el-select
+              <el-input
                 class="width--100"
-                v-model="form.receAccountId"
+                v-model="form.receBankAccount"
                 disabled
-              ></el-select>
+              ></el-input>
+            </el-form-item>
+          </el-col>
+          <el-col :span="8">
+            <el-form-item label="发票类型">
+              <el-select
+                v-model="form.billTypeCode"
+                class="width--100"
+                placeholder="请选择开票类型"
+                disabled
+                clearable
+              >
+                <el-option
+                  v-for="(i, n) in $root.dictAllList('InvoiceType')"
+                  :key="n"
+                  :value="i.code"
+                  :label="i.name"
+                ></el-option>
+              </el-select>
             </el-form-item>
           </el-col>
           <el-col :span="8">
             <el-form-item label="开票税率">
               <el-input
-                v-model="form.taxRate"
+                :value="form.taxRate | percent"
                 disabled
               ></el-input>
             </el-form-item>
@@ -70,7 +106,7 @@
           <el-col :span="8">
             <el-form-item label="申请人">
               <el-input
-                v-model="form.applyUserName"
+                :value="form.applyUserName"
                 disabled
               ></el-input>
             </el-form-item>
@@ -94,36 +130,49 @@
           :row-class-name="tableRowClassName"
         >
           <el-table-column
-            prop="dealCode"
-            label="成交报告编号"
+            label="序号"
+            type="index"
+            width="50"
+            align="center"
+          ></el-table-column>
+          <el-table-column
+            prop="termName"
+            label="项目周期"
             min-width="170"
           ></el-table-column>
           <el-table-column
-            label="成交单位"
-            min-width="150"
+            label="成交信息"
+            min-width="280"
           >
             <template v-slot="{ row }">
-              <span>{{`${row.proName}-${row.buildingName}-${row.roomName}`}}</span>
+              <div>成交报告编号：{{row.dealCode}}</div>
+              <div v-if="row.buildingName && row.roomName">成交单位：{{`${row.proName}-${row.buildingName}-${row.roomName}`}}</div>
+              <div v-else>成交单位：{{`${row.proName}-`}}</div>
+              <div>成交面积：{{row.area}}</div>
             </template>
           </el-table-column>
           <el-table-column
-            prop="area"
-            label="成交面积"
-          ></el-table-column>
-          <el-table-column label="合同类型">
+            label="合同/签约类型"
+            min-width="155"
+          >
             <template v-slot="{ row }">
-              {{$root.dictAllName(row.contType, 'ContType')}}
+              <div>合同类型：{{$root.dictAllName(row.contType, 'ContType')}}</div>
+              <div>签约类型：{{$root.dictAllName(row.signType, 'SignUp')}}</div>
             </template>
           </el-table-column>
           <el-table-column
-            prop="subscribeDate"
-            label="认购日期"
-            width="125"
-          ></el-table-column>
+            label="认购/签约日期"
+            width="165"
+          >
+            <template v-slot="{ row }">
+              <div>认购时间：{{row.subscribeDate}}</div>
+              <div>签约时间：{{row.signDate}}</div>
+            </template>
+          </el-table-column>
           <el-table-column
-            prop="signDate"
-            label="签约日期"
-            width="125"
+            label="签约总价(元)"
+            width="120"
+            prop="signPrice"
           ></el-table-column>
           <el-table-column
             label="提佣金额"
@@ -135,10 +184,14 @@
                 <div>已提金额: {{row.receivedAmount}}</div>
                 <div>未提金额: {{row.noReceiveAmount}}</div>
                 <div>已提未回款金额: {{row.noConfirmAmount}}</div>
-                <div>系统计算本次可提金额: {{row.canApplyAmountNow}}</div>
               </div>
             </template>
           </el-table-column>
+          <el-table-column
+            label="系统计算本次可提金额"
+            width="175"
+            prop="canApplyAmountNow"
+          ></el-table-column>
           <el-table-column
             label="本次请款金额"
             width="150"
@@ -147,42 +200,33 @@
               <el-input
                 v-model="row.applyMoney"
                 v-digits="2"
+                clearable
                 disabled
               />
             </template>
           </el-table-column>
           <el-table-column
-            label="本次扣除金额"
-            width="150"
+            label="不含税金额"
+            min-width="120"
           >
             <template v-slot="{ row }">
-              <el-input
-                v-model="row.subMoney"
-                v-digits="2"
-                disabled
-              />
+              <span>{{row.noTaxMoney}}</span>
             </template>
           </el-table-column>
           <el-table-column
-            label="扣除项类别"
-            width="150"
+            label="税额"
+            min-width="100"
           >
             <template v-slot="{ row }">
-              <el-input
-                v-model="row.subType"
-                disabled
-              />
+              <span>{{row.taxMoney}}</span>
             </template>
           </el-table-column>
           <el-table-column
-            label="本次实际请款金额"
-            min-width="175"
+            label="本次请款比例"
+            min-width="155"
           >
             <template v-slot="{ row }">
-              <div>
-                <div>不含税金额: {{row.noTaxMoney}}</div>
-                <div>税额: {{row.taxMoney}}</div>
-              </div>
+              {{row.applyPercent | percent}}
             </template>
           </el-table-column>
           <el-table-column
@@ -190,24 +234,14 @@
             prop="customerName"
             width="135"
           ></el-table-column>
-          <el-table-column label="签约类型">
+          <el-table-column
+            label="预售合同编号"
+            width="120"
+          >
             <template v-slot="{ row }">
-              {{$root.dictAllName(row.signType, 'SignUp')}}
+              {{row.propertyNo || '-'}}
             </template>
           </el-table-column>
-          <el-table-column
-            label="合同编号"
-            prop="propertyNo"
-          ></el-table-column>
-          <el-table-column
-            label="签约总价/元"
-            width="135"
-            prop="signPrice"
-          ></el-table-column>
-          <el-table-column
-            label="中介公司"
-            prop="channelName"
-          ></el-table-column>
           <el-table-column
             label="是否已达到请佣条件"
             width="150"
@@ -217,6 +251,10 @@
             </template>
           </el-table-column>
           <el-table-column
+            label="中介公司"
+            prop="channelName"
+          ></el-table-column>
+          <el-table-column
             label="代理公司"
             prop="oneAgentTeamName"
             width="150"
@@ -224,6 +262,7 @@
             <template v-slot="{ row }">
               <el-input
                 v-model="row.oneAgentTeamName"
+                clearable
                 disabled
               />
             </template>
@@ -236,6 +275,7 @@
             <template v-slot="{ row }">
               <el-input
                 v-model="row.channelAgentName"
+                clearable
                 disabled
               />
             </template>
@@ -248,6 +288,7 @@
             <template v-slot="{ row }">
               <el-input
                 v-model="row.sceneSales"
+                clearable
                 disabled
               />
             </template>
@@ -261,8 +302,9 @@
                 v-model="row.remark"
                 type="textarea"
                 resize="none"
-                disabled
+                clearable
                 :rows="4"
+                disabled
               />
             </template>
           </el-table-column>
@@ -275,22 +317,32 @@
             <th colspan="8">合计</th>
           </tr>
           <tr>
+            <td width="150">本批应提金额</td>
+            <td width="150">{{totalReceive}}</td>
+            <td width="150">本批已提金额</td>
+            <td width="150">{{totalReceived}}</td>
             <td class="width-150">本批未提金额</td>
             <td width="150">{{totalNoReceiveAmount}}</td>
+            <td class="width-150">本批已提未回款金额</td>
+            <td width="150">{{totalNoConfirm}}</td>
+          </tr>
+          <tr>
+            <td class="width-150">本批系统计算本次可提金额</td>
+            <td width="150">{{totalApplyAmountNow}}</td>
             <td class="width-150">本批申请请款金额</td>
             <td width="150">{{totalApplyMoney}}</td>
-            <td class="width-150">本批扣除金额</td>
-            <td width="150">{{totalSubMoney}}</td>
-            <td class="width-150">本批实际请款金额</td>
-            <td width="150">{{totalApplyMoney - totalSubMoney}}</td>
+            <td width="150">本批不含税金额</td>
+            <td width="150">{{totalNoTaxMoneySum}}</td>
+            <td width="150">本批税额</td>
+            <td width="150">{{totalTax}}</td>
           </tr>
         </table>
       </div>
-      <p class="ih-info-title">甲方公司应扣除代理费明细</p>
+      <p class="ih-info-title">本期需抵扣金额明细</p>
       <div class="padding-left-20">
         <el-table
           style="width: 100%"
-          :data="agencyList"
+          :data="waitList"
           show-summary
           :summary-method="getSummaries"
         >
@@ -299,10 +351,6 @@
               {{ row.suppDealCode || row.dealCode }}
             </template>
           </el-table-column>
-          <el-table-column
-            label="项目名称"
-            prop="proName"
-          ></el-table-column>
           <el-table-column
             label="周期名称"
             prop="termName"
@@ -314,16 +362,88 @@
             </template>
           </el-table-column>
           <el-table-column
-            label="扣除代理费"
+            label="扣除金额"
             prop="subMoney"
           >
             <template v-slot="{ row }">
-              {{-row.subMoney}}
+              {{row.subMoney}}
+            </template>
+          </el-table-column>
+          <el-table-column label="不含税金额">
+          </el-table-column>
+          <el-table-column label="税额">
+          </el-table-column>
+        </el-table>
+      </div>
+      <p class="ih-info-title">其他扣除项</p>
+      <div class="padding-left-20">
+        <el-table
+          style="width: 100%"
+          :data="otherSubList"
+          show-summary
+        >
+          <el-table-column label="扣除类型">
+            <template v-slot="{ row }">
+              <el-select
+                v-model="row.subType"
+                disabled
+              >
+                <el-option
+                  v-for="(i, n) in $root.dictAllList('ApplySubType')"
+                  :key="n"
+                  :label="i.name"
+                  :value="i.code"
+                ></el-option>
+              </el-select>
+            </template>
+          </el-table-column>
+          <el-table-column label="项目周期">
+            <template v-slot="{ row }">
+              <el-input
+                v-model="row.termName"
+                disabled
+              ></el-input>
+            </template>
+          </el-table-column>
+          <el-table-column
+            label="本期扣除金额"
+            prop="subMoney"
+          >
+            <template v-slot="{ row }">
+              <el-input
+                v-model="row.subMoney"
+                v-digits="2"
+                disabled
+              ></el-input>
+            </template>
+          </el-table-column>
+          <el-table-column
+            label="不含税金额"
+            prop="subMoneyNoTax"
+          >
+            <template v-slot="{ row }">
+              {{row.subMoneyNoTax}}
+            </template>
+          </el-table-column>
+          <el-table-column
+            label="税额"
+            prop="subMoneyTax"
+          >
+            <template v-slot="{ row }">
+              {{row.subMoney}}
+            </template>
+          </el-table-column>
+          <el-table-column label="原因及扣罚依据">
+            <template v-slot="{ row }">
+              <el-input
+                v-model="row.reason"
+                disabled
+              />
             </template>
           </el-table-column>
         </el-table>
       </div>
-      <p class="ih-info-title">项目周期请款汇总</p>
+      <p class="ih-info-title">请款汇总清单</p>
       <div class="padding-left-20">
         <el-table
           style="width: 100%"
@@ -336,45 +456,95 @@
             min-width="185"
           ></el-table-column>
           <el-table-column
-            label="所属项目"
-            prop="proName"
-            min-width="165"
-          ></el-table-column>
-          <el-table-column
-            label="累计请款次数"
             min-width="115"
             prop="hisSumApplyNum"
-          ></el-table-column>
+          >
+            <template #header>
+              <div>累计请款次数</div>
+              <div>（不含本次）</div>
+            </template>
+          </el-table-column>
           <el-table-column
-            label="历史已申请请款金额（含税）"
-            min-width="205"
-            prop="hisSumApplyMoney"
-          ></el-table-column>
-          <el-table-column
-            label="累计扣除金额（含税）"
             min-width="180"
-            prop="hisSumSubMoney"
-          ></el-table-column>
+            prop="hisSumApplyMoney"
+          >
+            <template #header>
+              <div>历史已申请请款金额</div>
+              <div>（含税）</div>
+            </template>
+          </el-table-column>
           <el-table-column
-            label="历史实际请款金额（含税）"
             min-width="205"
             prop="hisSumActMoney"
-          ></el-table-column>
+          >
+            <template #header>
+              <div>历史实际请款金额</div>
+              <div>（含税）</div>
+            </template>
+          </el-table-column>
           <el-table-column
-            label="已回款金额（含税）"
             min-width="180"
             prop="hisSumReceMoney"
-          ></el-table-column>
+          >
+            <template #header>
+              <div>已回款金额</div>
+              <div>（含税）</div>
+            </template>
+          </el-table-column>
           <el-table-column
-            label="本次实际请款金额（含税）"
-            min-width="205"
+            min-width="180"
+            prop="applyMoney"
+          >
+            <template #header>
+              <div>本期申请请款金额</div>
+              <div>（含税）</div>
+            </template>
+          </el-table-column>
+          <el-table-column
+            min-width="180"
+            prop="subMoney"
+          >
+            <template #header>
+              <div>本期扣除金额</div>
+              <div>（含税）</div>
+            </template>
+          </el-table-column>
+          <el-table-column
+            min-width="180"
+            prop="fineMoney"
+          >
+            <template #header>
+              <div>本期扣罚金额</div>
+              <div>（含税）</div>
+            </template>
+          </el-table-column>
+          <el-table-column
+            min-width="180"
             prop="actMoney"
-          ></el-table-column>
+          >
+            <template #header>
+              <div>本期实际请款金额</div>
+              <div>（含税）</div>
+            </template>
+          </el-table-column>
           <el-table-column
-            label="累计实际请款金额（含税）"
-            min-width="205"
+            min-width="180"
+            prop="sumApplyMoney"
+          >
+            <template #header>
+              <div>累计申请请款金额</div>
+              <div>（含税）</div>
+            </template>
+          </el-table-column>
+          <el-table-column
+            min-width="180"
             prop="sumActMoney"
-          ></el-table-column>
+          >
+            <template #header>
+              <div>累计实际请款金额</div>
+              <div>（含税）</div>
+            </template>
+          </el-table-column>
         </el-table>
       </div>
       <p class="ih-info-title">请款信息</p>
@@ -414,49 +584,30 @@
             <td class="width-150">{{form.taxMoney}}</td>
           </tr>
           <tr>
-            <td class="width-150">累计实际请款金额</td>
-            <td class="width-150">{{form.sumActMoneyTax}}</td>
-            <td class="width-150">累计实际请款不含税金额</td>
-            <td class="width-150">{{form.sumActMoney}}</td>
-            <td class="width-150">累计实际请款税额</td>
-            <td class="width-150">{{form.sumTaxMoney}}</td>
-          </tr>
-          <tr>
             <td class="width-150">发票类型</td>
             <td class="width-150">
               {{$root.dictAllName(form.billTypeCode, 'InvoiceType')}}
-              <!-- <el-select
-                v-model=""
-                class="width--100"
-              >
-                <el-option
-                  v-for="(i, n) in $root.dictAllList('InvoiceType')"
-                  :key="n"
-                  :label="i.name"
-                  :value="i.code"
-                ></el-option>
-              </el-select> -->
             </td>
             <td class="width-150">开票税率</td>
-            <td class="width-150">{{form.taxRate}}</td>
+            <td class="width-150">{{form.taxRate | percent}}</td>
             <td class="width-150">纳税人识别号</td>
-            <td class="width-150">{{form.sellerTaxNo}}</td>
+            <td class="width-150">{{form.developTaxNo}}</td>
           </tr>
           <tr>
-            <td>收款单位名称</td>
-            <td colspan="5">{{form.sellerName}}</td>
+            <td>发票抬头</td>
+            <td colspan="5">{{form.invoiceTitle}}</td>
           </tr>
           <tr>
             <td class="width-150">开户行</td>
-            <td colspan="5">{{form.sellerOpeningBankBranch}}</td>
-            <!-- <td class="width-150">银行</td>
-            <td class="width-150">{{form.sellerOpeningBankType}}</td>
-            <td class="width-150">支行</td>
-            <td class="width-150">{{form.sellerOpeningBankBranch}}</td> -->
+            <td colspan="2">{{form.developOpenBank}}</td>
+            <td class="width-150">银行帐号</td>
+            <td colspan="2">{{form.developAccount}}</td>
           </tr>
           <tr>
-            <td>银行帐号</td>
-            <td colspan="5">{{form.sellerBankAccount}}</td>
+            <td>住所(地址)</td>
+            <td colspan="2">{{form.developAddress}}</td>
+            <td>电话</td>
+            <td colspan="2">{{form.developPhone}}</td>
           </tr>
           <tr>
             <td>经办部门意见</td>
@@ -578,10 +729,10 @@ import {
   post_applyRecFile_getAll,
   get_applyRecDeal_getAll__applyId,
   get_applyRecDealTerm_getAll__applyId,
-  // get_devAgentFee_getAll__applyId,
   get_opLog_getAllListByApplyId__applyId,
+  get_devDeductRec_getAll__applyId,
+  get_devOtherSub_getAll__applyId,
   post_applyRec_audit,
-  // post_applyRec_stop__applyId,
 } from "../../../api/apply/index";
 
 @Component({})
@@ -592,8 +743,52 @@ export default class ApplyAudit extends Vue {
   private termList: any = [];
   private fileListType: any = [];
   private opLogList: any = [];
+  private waitList: any = [];
+  private otherSubList: any = [];
   private remark: any = null;
 
+  private get totalReceive() {
+    let sum = 0;
+    this.dealList.forEach((i: any) => {
+      sum += parseFloat(i.receiveAmount);
+    });
+    return this.$math.tofixed(sum, 2);
+  }
+  private get totalReceived() {
+    let sum = 0;
+    this.dealList.forEach((i: any) => {
+      sum += parseFloat(i.receivedAmount);
+    });
+    return this.$math.tofixed(sum, 2);
+  }
+  private get totalNoConfirm() {
+    let sum = 0;
+    this.dealList.forEach((i: any) => {
+      sum += parseFloat(i.noConfirmAmount);
+    });
+    return this.$math.tofixed(sum, 2);
+  }
+  private get totalApplyAmountNow() {
+    let sum = 0;
+    this.dealList.forEach((i: any) => {
+      sum += parseFloat(i.canApplyAmountNow);
+    });
+    return this.$math.tofixed(sum, 2);
+  }
+  private get totalNoTaxMoneySum() {
+    let sum = 0;
+    this.dealList.forEach((i: any) => {
+      sum += parseFloat(i.noTaxMoney);
+    });
+    return this.$math.tofixed(sum, 2);
+  }
+  private get totalTax() {
+    let sum = 0;
+    this.dealList.forEach((i: any) => {
+      sum += parseFloat(i.taxMoney);
+    });
+    return this.$math.tofixed(sum, 2);
+  }
   private get totalNoReceiveAmount() {
     let sum = 0;
     this.dealList.forEach((i: any) => {
@@ -607,13 +802,6 @@ export default class ApplyAudit extends Vue {
       sum += parseFloat(i.applyMoney) || 0;
     });
     // this.form.applyMoney = sum;
-    return sum;
-  }
-  private get totalSubMoney() {
-    let sum = 0;
-    this.dealList.forEach((i: any) => {
-      sum += parseFloat(i.subMoney) || 0;
-    });
     return sum;
   }
 
@@ -648,7 +836,7 @@ export default class ApplyAudit extends Vue {
   getFileListType(data: any) {
     const list = (this.$root as any)
       .dictAllList("ApplyFileType")
-      .filter((i: any) => !i.code.includes("PDF"));
+      .filter((i: any) => !i.code.includes("Pdf"));
     this.fileListType = list.map((i: any) => {
       return {
         ...i,
@@ -673,7 +861,8 @@ export default class ApplyAudit extends Vue {
       this.termList = await get_applyRecDealTerm_getAll__applyId({
         applyId,
       });
-      // this.agencyList = await get_devAgentFee_getAll__applyId({ applyId });
+      this.otherSubList = await get_devOtherSub_getAll__applyId({ applyId });
+      this.waitList = await get_devDeductRec_getAll__applyId({ applyId });
       this.opLogList = await get_opLog_getAllListByApplyId__applyId({
         applyId,
       });

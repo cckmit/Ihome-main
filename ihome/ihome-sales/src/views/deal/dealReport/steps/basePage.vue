@@ -1197,9 +1197,10 @@
       <el-button
         v-if="changeType === 'ChangeInternalAchieveInf'"
         type="success"
+        :loading="btnLoading"
         @click="handleClickBtn('preview')">预览变更</el-button>
-      <el-button v-else type="primary" @click="handleClickBtn('next')">下一步</el-button>
-      <el-button @click="handleClickBtn('back')">取消</el-button>
+      <el-button :loading="btnLoading" v-else type="primary" @click="handleClickBtn('next')">下一步</el-button>
+      <el-button :loading="btnLoading" @click="handleClickBtn('back')">取消</el-button>
     </div>
     <div class="nav-box">
       <div class="nav-icon el-button--success" @click="navFlag = !navFlag " :title="navFlag ? '收起' : '展开'">
@@ -1335,6 +1336,7 @@
   })
   export default class BasePage extends Vue {
     private isShowImg = false;
+    private btnLoading = false;
     private srcList: any = [];
     private srcData: any = [];
     changeType: any = null; // 补充成交类型
@@ -1395,6 +1397,9 @@
       roomId: null,
       roomNo: null,
       toilet: null,
+      house: {
+        id: null
+      },
       offerNoticeVO: [], // 优惠告知书
       customerList: [], // 客户信息
       agencyVO: [], // 渠道信息
@@ -1955,18 +1960,18 @@
       if (baseInfo.dealNoticeStatus === 'MultipleNotice') {
         this.$notify({
           title: '提示',
-          message: '同房号存在多份已生效的优惠告知书',
+          message: '同房号存在多份已生效的优惠告知书。(分销成交模式，请选择分销协议编号后方可手动选择优惠告知书)',
           duration: 0
         });
       } else {
-        // 分销协议编号
-        if (baseInfo.contracts && baseInfo.contracts.length > 0) {
-          this.contNoList = baseInfo.contracts;
-        } else {
-          this.contNoList = [];
-        }
         // 优惠告知书
         // this.postData.offerNoticeVO = baseInfo.notice && baseInfo.notice.length ? baseInfo.notice : [];
+      }
+      // 分销协议编号
+      if (baseInfo.contracts && baseInfo.contracts.length > 0) {
+        this.contNoList = baseInfo.contracts;
+      } else {
+        this.contNoList = [];
       }
       // 分销成交和非分销成交不一样
       if (baseInfo.contType === 'DistriDeal') {
@@ -3435,87 +3440,98 @@
     // 后端校验数据
     async submitData() {
       // 补充成交类型
-      let data: any = null;
-      let callBackInfo: any = null; // 校验后后端返回来的插值数据
-      switch (this.changeType) {
-        case "ChangeBasicInf":
-          // 变更基础信息
-          data = await this.initBaseData();
-          if (this.btnType === "add") {
-            // 去新增
-            callBackInfo = await post_suppDeal_previewEntryBasicInfChange(data);
-          } else if (this.btnType === "edit") {
-            // 去修改
-            callBackInfo = await post_suppDeal_previewUpdateBasicInfChange(data);
-          }
-          this.$emit('next', 'next', {
-            ...this.postData,
-            // receiveAchieveVO: this.receiveAchieveVO,
-            currentPostData: data,
-            callBackInfo
-          });
-          break;
-        case "ChangeAchieveInf":
-          // 变更成交业绩信息
-          data = await this.initRetreatRoomData();
-          if (this.btnType === "add") {
-            // 去新增
-            callBackInfo = await post_suppDeal_previewEntryAchieveInfChange(data);
-          } else if (this.btnType === "edit") {
-            // 去修改
-            callBackInfo = await post_suppDeal_previewUpdateAchieveInfChange(data);
-          }
-          this.$emit('next', 'next', {
-            ...this.postData,
-            // receiveAchieveVO: this.receiveAchieveVO,
-            currentPostData: data,
-            callBackInfo
-          });
-          break
-        case "RetreatRoom":
-          // 退房
-          data = await this.initRetreatRoomData();
-          if (this.btnType === "add") {
-            // 去新增
-            callBackInfo = await post_suppDeal_previewEntryRetreatRoom(data);
-          } else if (this.btnType === "edit") {
-            // 去修改
-            callBackInfo = await post_suppDeal_previewUpdateRetreatRoom(data);
-          }
-          this.$emit('next', 'next', {
-            ...this.postData,
-            // receiveAchieveVO: this.receiveAchieveVO,
-            currentPostData: data,
-            callBackInfo
-          });
-          break
-        case "ChangeInternalAchieveInf":
-          // 内部员工业绩变更
-          data = await this.initStaffAchieveData();
-          if (this.btnType === "add") {
-            // 去新增
-            callBackInfo = await post_suppDeal_previewEntryStaffAchieveChange(data);
-          } else if (this.btnType === "edit") {
-            // 去修改
-            callBackInfo = await post_suppDeal_previewUpdateStaffAchieveChange(data);
-          }
-          this.$emit("preview", {
-            ...this.postData,
-            // receiveAchieveVO: this.receiveAchieveVO,
-            currentPostData: data,
-            callBackInfo
-          });
-          break
+      try {
+        this.btnLoading = true;
+        let data: any = null;
+        let callBackInfo: any = null; // 校验后后端返回来的插值数据
+        switch (this.changeType) {
+          case "ChangeBasicInf":
+            // 变更基础信息
+            if (this.btnType === "add") {
+              // 去新增
+              data = await this.initBaseDataByAdd();
+              callBackInfo = await post_suppDeal_previewEntryBasicInfChange(data);
+            } else if (this.btnType === "edit") {
+              // 去修改
+              data = await this.initBaseDataByUpdated();
+              callBackInfo = await post_suppDeal_previewUpdateBasicInfChange(data);
+            }
+            this.btnLoading = false;
+            this.$emit('next', 'next', {
+              ...this.postData,
+              // receiveAchieveVO: this.receiveAchieveVO,
+              currentPostData: data,
+              callBackInfo
+            });
+            break;
+          case "ChangeAchieveInf":
+            // 变更成交业绩信息
+            data = await this.initRetreatRoomData();
+            if (this.btnType === "add") {
+              // 去新增
+              callBackInfo = await post_suppDeal_previewEntryAchieveInfChange(data);
+            } else if (this.btnType === "edit") {
+              // 去修改
+              callBackInfo = await post_suppDeal_previewUpdateAchieveInfChange(data);
+            }
+            this.btnLoading = false;
+            this.$emit('next', 'next', {
+              ...this.postData,
+              // receiveAchieveVO: this.receiveAchieveVO,
+              currentPostData: data,
+              callBackInfo
+            });
+            break
+          case "RetreatRoom":
+            // 退房
+            data = await this.initRetreatRoomData();
+            if (this.btnType === "add") {
+              // 去新增
+              callBackInfo = await post_suppDeal_previewEntryRetreatRoom(data);
+            } else if (this.btnType === "edit") {
+              // 去修改
+              callBackInfo = await post_suppDeal_previewUpdateRetreatRoom(data);
+            }
+            this.btnLoading = false;
+            this.$emit('next', 'next', {
+              ...this.postData,
+              // receiveAchieveVO: this.receiveAchieveVO,
+              currentPostData: data,
+              callBackInfo
+            });
+            break
+          case "ChangeInternalAchieveInf":
+            // 内部员工业绩变更
+            if (this.btnType === "add") {
+              // 去新增
+              data = await this.initStaffAchieveDataByAdd();
+              callBackInfo = await post_suppDeal_previewEntryStaffAchieveChange(data);
+            } else if (this.btnType === "edit") {
+              // 去修改
+              data = await this.initStaffAchieveDataByUpdated();
+              callBackInfo = await post_suppDeal_previewUpdateStaffAchieveChange(data);
+            }
+            this.btnLoading = false;
+            this.$emit("preview", {
+              ...this.postData,
+              // receiveAchieveVO: this.receiveAchieveVO,
+              currentPostData: data,
+              callBackInfo
+            });
+            break
+        }
+      } catch (error) {
+        console.log(error);
+        this.btnLoading = false;
       }
     }
 
-    // 整合基础信息提交数据
-    initBaseData() {
+    // 整合基础信息提交数据 - 新增
+    initBaseDataByAdd() {
       let dataObj: any = {
         agencyVO: [], // 中介信息
-        customerVO: this.postData.customerList, // 客户信息
+        customerVO: this.postData.customerList.length ? this.postData.customerList : null, // 客户信息
         dealAddInputVO: {
-          id: this.id,
           parentId: this.postData.parentId, // 主成交id
           signDate: this.postData.signDate,
           signType: this.postData.signType,
@@ -3523,7 +3539,7 @@
           status: null, // 最后点击提交/保存的时候才会赋值
           subscribeDate: this.postData.subscribeDate,
         }, // 主成交信息
-        documentVO: this.getDocumentList(this.postData.uploadDocumentList), // 成交附件信息
+        documentVO: this.postData.uploadDocumentList.length ? this.getDocumentList(this.postData.uploadDocumentList) : null, // 成交附件信息
         houseAddInputVO: {
           address: this.postData.address,
           area: this.postData.area,
@@ -3548,26 +3564,31 @@
             channelLevel: this.postData.channelLevel
           }
         )
+      } else {
+        dataObj.agencyVO = null;
       }
       return dataObj;
     }
 
-    // 整合退房 + 成交业绩数据
-    initRetreatRoomData() {
+    // 整合基础信息提交数据 - 修改
+    initBaseDataByUpdated() {
       let dataObj: any = {
-        achieveVO: [...this.postData.achieveTotalBagList, ...this.postData.achieveDistriList], // 平台费用信息
         agencyVO: [], // 中介信息
-        calculation: this.postData.calculation, // 计算方式
-        channelCommVO: this.postData.channelCommList, // 对外拆佣信息
-        customerVO: this.postData.customerList, // 客户信息
-        dealVO: {
-          ...this.postData,
-          id: this.id,
-          noticeIds: [] // 优惠告知书Id
-        }, // 成交基础信息
-        documentVO: this.getDocumentList(this.postData.uploadDocumentList), // 成交附件信息
-        houseVO: {
-          dealId: this.id,
+        customerVO: this.postData.customerList.length ? this.postData.customerList : null, // 客户信息
+        dealUpdateInputVO: {
+          dealCode: this.postData.dealCode ? this.postData.dealCode : null,
+          id: this.id ? this.id : null,
+          parentId: this.postData.parentId, // 主成交id
+          signDate: this.postData.signDate,
+          signType: this.postData.signType,
+          stage: this.postData.stage,
+          status: null, // 最后点击提交/保存的时候才会赋值
+          subscribeDate: this.postData.subscribeDate,
+        }, // 主成交信息
+        documentVO: this.postData.uploadDocumentList.length ? this.getDocumentList(this.postData.uploadDocumentList) : null, // 成交附件信息
+        houseUpdateInputVO: {
+          dealId: this.id ? this.id : null,
+          id: this.postData?.house?.id,
           address: this.postData.address,
           area: this.postData.area,
           buildingId: this.postData.buildingId,
@@ -3579,49 +3600,173 @@
           roomNo: this.postData.roomNo,
           toilet: this.postData.toilet
         },
-        noticeDealList: [],
-        receiveAchieveVO: [], // 应收业绩信息
-        receiveVO: this.postData.receiveList, // 收派金额
-        parentId: this.postData.parentId, // 父成交Id
-        status: null, // 成交状态
+        noticeAgreementCreateRequest: [],
       }
       if (this.postData.agencyId) {
         dataObj.agencyVO.push(
           {
+            dealId: this.id ? this.id : null, // 成交id
             agencyId: this.postData.agencyId,
             agencyName: this.postData.agencyName,
             brokerId: this.postData.brokerId,
             broker: this.postData.brokerName,
-            channelLevel: this.postData.channelLevel,
-            dealId: this.id
+            channelLevel: this.postData.channelLevel
           }
         )
+      } else {
+        dataObj.agencyVO = null;
+      }
+      if (dataObj.customerVO && dataObj.customerVO.length) {
+        dataObj.customerVO.forEach((vo: any) => {
+          vo.dealId = this.id ? this.id : null;
+        });
+      }
+      if (dataObj.documentVO && dataObj.documentVO.length) {
+        dataObj.documentVO.forEach((vo: any) => {
+          vo.dealId = this.id ? this.id : null;
+        });
+      }
+      return dataObj;
+    }
+
+    // 整合退房 + 成交业绩数据
+    initRetreatRoomData() {
+      let dataObj: any = {
+        noticeDealList: [],
+        achieveVO: [...this.postData.achieveTotalBagList, ...this.postData.achieveDistriList], // 平台费用信息
+        agencyVO: [], // 中介信息
+        calculation: this.postData.calculation, // 计算方式
+        channelCommVO: this.postData.channelCommList.length ? this.postData.channelCommList : null, // 对外拆佣信息
+        customerVO: this.postData.customerList.length ? this.postData.customerList : null, // 客户信息
+        dealVO: {
+          ...this.postData,
+          id: this.btnType === "edit" ? this.id : null,
+          noticeIds: [] // 优惠告知书Id
+        }, // 成交基础信息
+        documentVO: this.postData.uploadDocumentList.length ? this.getDocumentList(this.postData.uploadDocumentList) : null, // 成交附件信息
+        houseVO: {
+          dealId: this.btnType === "edit" ? this.id : null,
+          id: this.postData?.house?.id,
+          address: this.postData.address,
+          area: this.postData.area,
+          buildingId: this.postData.buildingId,
+          hall: this.postData.hall,
+          propertyNo: this.postData.propertyNo,
+          propertyType: this.postData.propertyType,
+          room: this.postData.room,
+          roomId: this.postData.roomId,
+          roomNo: this.postData.roomNo,
+          toilet: this.postData.toilet
+        },
+        receiveAchieveVO: [], // 应收业绩信息
+        receiveVO: this.postData.receiveList.length ? this.postData.receiveList : null, // 收派金额
+        parentId: this.postData.parentId, // 父成交Id
+        status: null, // 成交状态
+      }
+      if (dataObj.achieveVO.length) {
+        dataObj.achieveVO.forEach((vo: any) => {
+          vo.isMainDeal = false;
+        });
+      } else {
+        dataObj.achieveVO = null;
+      }
+      if (dataObj.customerVO.length && this.btnType === "edit") {
+        dataObj.customerVO.forEach((vo: any) => {
+          vo.dealId = this.id;
+        });
+      }
+      if (dataObj.documentVO.length && this.btnType === "edit") {
+        dataObj.documentVO.forEach((vo: any) => {
+          vo.dealId = this.id;
+        });
+      }
+      if (dataObj.receiveVO.length && this.btnType === "edit") {
+        dataObj.receiveVO.forEach((vo: any) => {
+          vo.dealId = this.id;
+        });
+      }
+      if (this.postData.agencyId) {
+        if (this.btnType === "edit") {
+          dataObj.agencyVO.push(
+            {
+              agencyId: this.postData.agencyId,
+              agencyName: this.postData.agencyName,
+              brokerId: this.postData.brokerId,
+              broker: this.postData.brokerName,
+              channelLevel: this.postData.channelLevel,
+              dealId: this.id
+            }
+          )
+        } else if (this.btnType === "add") {
+          dataObj.agencyVO.push(
+            {
+              agencyId: this.postData.agencyId,
+              agencyName: this.postData.agencyName,
+              brokerId: this.postData.brokerId,
+              broker: this.postData.brokerName,
+              channelLevel: this.postData.channelLevel
+            }
+          )
+        }
+      } else {
+        dataObj.agencyVO = null;
       }
       if (this.postData.offerNoticeVO && this.postData.offerNoticeVO.length) {
         this.postData.offerNoticeVO.forEach((item: any) => {
           dataObj.dealVO.noticeIds.push(item.noticeId);
         });
+      } else {
+        dataObj.dealVO.noticeIds = null;
       }
       if (this.receiveAchieveVO && this.receiveAchieveVO.length && this.postData.receiveAchieveList && this.postData.receiveAchieveList.length) {
-        dataObj.receiveAchieveVO.push(
-          {
-            receiveAmount: this.receiveAchieveVO[0].receiveAmount,
-            achieveAmount: this.receiveAchieveVO[0].achieveAmount,
-            otherChannelFees: this.receiveAchieveVO[0].otherChannelFees,
-            dealId: this.id,
-            id: this.postData.receiveAchieveList[0].id
-          }
-        )
+        if (this.btnType === "edit") {
+          dataObj.receiveAchieveVO.push(
+            {
+              receiveAmount: this.receiveAchieveVO[0].receiveAmount,
+              achieveAmount: this.receiveAchieveVO[0].achieveAmount,
+              otherChannelFees: this.receiveAchieveVO[0].otherChannelFees,
+              dealId: this.id,
+              id: this.postData.receiveAchieveList[0].id
+            }
+          )
+        } else {
+          dataObj.receiveAchieveVO.push(
+            {
+              receiveAmount: this.receiveAchieveVO[0].receiveAmount,
+              achieveAmount: this.receiveAchieveVO[0].achieveAmount,
+              otherChannelFees: this.receiveAchieveVO[0].otherChannelFees,
+            }
+          )
+        }
+      } else {
+        dataObj.receiveAchieveVO = null;
       }
       return dataObj;
     }
 
     // 整合变更内部员工业绩数据
-    initStaffAchieveData() {
+    initStaffAchieveDataByAdd() {
       let dataObj: any = {
-        achieveVO: [...this.postData.achieveTotalBagList, ...this.postData.achieveDistriList], // 平台费用信息
+        achieveVO: null, // 平台费用信息
         parentId: this.postData.parentId, // 父成交Id
         status: null, // 成交状态
+      }
+      if (this.postData.achieveTotalBagList.length || this.postData.achieveDistriList.length) {
+        dataObj.achieveVO = [...this.postData.achieveTotalBagList, ...this.postData.achieveDistriList];
+      }
+      return dataObj;
+    }
+
+    // 整合变更内部员工业绩数据
+    initStaffAchieveDataByUpdated() {
+      let dataObj: any = {
+        achieveVO: null, // 平台费用信息
+        dealId: this.id,
+        parentId: this.postData.parentId, // 父成交Id
+        status: null, // 成交状态
+      }
+      if (this.postData.achieveTotalBagList.length || this.postData.achieveDistriList.length) {
+        dataObj.achieveVO = [...this.postData.achieveTotalBagList, ...this.postData.achieveDistriList];
       }
       return dataObj;
     }
@@ -3756,14 +3901,14 @@
     isDisabled(key: any = '', type: any = '') {
       const data: any = this.baseInfoInDeal.myReturnVO;
       if (!key || !type || !data[type]?.[key]) return false;
-      let flag = true;
+      let flag = false;
       // 1.是否明源数据标志
       let signFlag = this.baseInfoByTerm.exMinyuan;
       // 2.对应明源字段是否有值
       if (data[type][key] && signFlag) {
-        flag = false;
-      } else {
         flag = true;
+      } else {
+        flag = false;
       }
       return flag;
     }
