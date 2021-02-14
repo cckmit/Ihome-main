@@ -340,7 +340,6 @@ import {
   components: { InvalidDeal, ValidDeal,FileDetail },
 })
 export default class ReturnConfirmList extends Vue {
-  [x: string]: any;
   queryPageParameters: any = {
     nameOrTel: null,
     reportNameOrTel: null,

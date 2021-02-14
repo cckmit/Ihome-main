@@ -58,7 +58,6 @@ import {
 
 @Component({})
 export default class FileDetail extends Vue {
-  [x: string]: any;
   @Prop() isHandmade!: any;
   @Prop() data!: any;
   submitFile: any = {};

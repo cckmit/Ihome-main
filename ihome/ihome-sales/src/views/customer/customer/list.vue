@@ -239,6 +239,7 @@ export default class CustomerList extends Vue {
 
   search() {
     this.queryPageParameters.pageNum = 1;
+    this.queryPageParameters.pageSize = 20;
     this.getListMixin();
   }
 

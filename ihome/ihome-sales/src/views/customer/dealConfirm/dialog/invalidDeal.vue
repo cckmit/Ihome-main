@@ -52,7 +52,6 @@ import { post_report_dealValidOrInvalid } from "../../../../api/customer/index";
 
 @Component({})
 export default class InvalidDeal extends Vue {
-  [x: string]: any;
   @Prop() isHandmade!: any;
   @Prop() data!: any;
 
