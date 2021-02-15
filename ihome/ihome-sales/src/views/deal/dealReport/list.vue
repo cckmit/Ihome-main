@@ -443,11 +443,11 @@
       switch (btnName) {
         case "ADD":
           // 添加 - 平台文员
-          flag = (this as any).$roleTool.RFrontLineClerk();
+          flag = (this as any).$roleTool.RProjectSite();
           break;
         case "ACHIEVEDECLARE":
           // 业绩申报 - 案场
-          flag = (this as any).$roleTool.RProjectSite();
+          flag = (this as any).$roleTool.RFrontLineClerk();
           break;
       }
       return flag;
