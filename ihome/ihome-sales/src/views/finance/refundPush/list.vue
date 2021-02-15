@@ -5,7 +5,7 @@
  * @Author: zyc
  * @Date: 2021-01-13 14:50:21
  * @LastEditors: zyc
- * @LastEditTime: 2021-02-15 14:58:41
+ * @LastEditTime: 2021-02-15 15:47:24
 -->
 <template>
   <IhPage label-width="110px">
@@ -203,7 +203,7 @@
             </el-table-column>
             <el-table-column label="状态" prop="status">
               <template slot-scope="scope">{{
-                $root.dictAllName(scope.row.status, "FinRefundStatus")
+                $root.dictAllName(scope.row.status, "FinRefundItemPushStatus")
               }}</template>
             </el-table-column>
             <el-table-column label="备注信息" prop="remark"></el-table-column>
