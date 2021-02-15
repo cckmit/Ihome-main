@@ -154,7 +154,7 @@
             <el-form-item label="签约日期">{{infoForm.signDate}}</el-form-item>
           </el-col>
           <el-col :span="8">
-            <el-form-item label="成交组织">{{infoForm.dealOrgName ? infoForm.dealOrgName : '无数据'}}</el-form-item>
+            <el-form-item label="成交组织">{{infoForm.dealOrg ? infoForm.dealOrg : '无数据'}}</el-form-item>
           </el-col>
           <el-col :span="8">
             <el-form-item label="录入人">{{infoForm.entryPerson}}</el-form-item>
@@ -708,7 +708,7 @@
         console.log('this.infoForm.documentList', this.infoForm.documentList);
       }
       // 获取显示的成交组织name
-      await this.getOrgName(info.dealOrgId);
+      // await this.getOrgName(info.dealOrgId);
       // 初始化开票信息
       await this.getInvoiceInfo(info.dealCode);
     }

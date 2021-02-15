@@ -151,7 +151,7 @@
             <el-form-item label="签约日期">{{postData.signDate}}</el-form-item>
           </el-col>
           <el-col :span="8">
-            <el-form-item label="成交组织">{{postData.dealOrgName}}</el-form-item>
+            <el-form-item label="成交组织">{{postData.dealOrg}}</el-form-item>
           </el-col>
           <el-col :span="8">
             <el-form-item label="录入人">{{postData.entryPerson}}</el-form-item>
@@ -722,7 +722,7 @@
         this.postData.documentList = this.initDocumentList(info.documentList);
       }
       // 获取显示的成交组织name
-      await this.getOrgName(info.dealOrgId);
+      // await this.getOrgName(info.dealOrgId);
     }
 
     // 获取组织name
