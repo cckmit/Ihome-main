@@ -442,12 +442,12 @@
       let flag = true;
       switch (btnName) {
         case "ADD":
-          // 添加
-          flag = (this as any).$roleTool.RProjectSite();
+          // 添加 - 平台文员
+          flag = (this as any).$roleTool.RFrontLineClerk();
           break;
         case "ACHIEVEDECLARE":
-          // 业绩申报
-          flag = (this as any).$roleTool.RFrontLineClerk();
+          // 业绩申报 - 案场
+          flag = (this as any).$roleTool.RProjectSite();
           break;
       }
       return flag;
