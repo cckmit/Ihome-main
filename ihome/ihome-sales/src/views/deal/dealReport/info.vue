@@ -707,10 +707,10 @@
         this.infoForm.documentList = this.initDocumentList(info.documentList);
         console.log('this.infoForm.documentList', this.infoForm.documentList);
       }
-      // 初始化开票信息
-      await this.getInvoiceInfo(info.dealCode);
       // 获取显示的成交组织name
       await this.getOrgName(info.dealOrgId);
+      // 初始化开票信息
+      await this.getInvoiceInfo(info.dealCode);
     }
 
     // 获取组织name
@@ -750,7 +750,7 @@
       if (!code) return;
       let info: any = await get_invoice_getInvoiceInfo__businessCode({businessCode: code});
       // console.log(info);
-      if (info.id) {
+      if (info && info.length) {
         this.infoForm.invoiceList.push(info);
       } else {
         this.infoForm.invoiceList = [];
