@@ -4,7 +4,7 @@
  * @Author: zyc
  * @Date: 2020-07-24 17:08:03
  * @LastEditors: zyc
- * @LastEditTime: 2020-11-11 14:53:30
+ * @LastEditTime: 2021-02-15 10:10:57
  */
 /* eslint-disable  no-console */
 interface IPageBase {
@@ -33,6 +33,10 @@ declare module 'vue/types/vue' {
 */
 @Component
 export default class PaginationMixin extends Vue {
+    searchMixin() {
+        this.queryPageParameters.pageNum = 1;
+        this.getListMixin();
+    }
     getListMixin() {
         console.error('请在页面中实现getListMixin方法')
     }

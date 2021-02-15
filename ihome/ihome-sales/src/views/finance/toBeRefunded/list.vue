@@ -4,7 +4,7 @@
  * @Author: zyc
  * @Date: 2021-02-05 15:23:39
  * @LastEditors: zyc
- * @LastEditTime: 2021-02-06 14:55:38
+ * @LastEditTime: 2021-02-15 10:08:44
 -->
 
 
@@ -74,7 +74,7 @@
 
     <template v-slot:btn>
       <el-row>
-        <el-button type="primary" @click="getListMixin()">查询</el-button>
+        <el-button type="primary" @click="searchMixin()">查询</el-button>
         <el-button type="success" @click="download()">导出</el-button>
         <el-button type="info" @click="reset()">重置</el-button>
       </el-row>
@@ -151,11 +151,13 @@
         >
           <template slot-scope="scope">
             <el-link
+              v-if="scope.row.refundApplyNO !== null"
               type="primary"
               @click="gotoNew(scope.row, 'refundApplyNO')"
             >
-              {{ scope.row.refundApplyNO | emptyShow }}</el-link
+              {{ scope.row.refundApplyNO }}</el-link
             >
+            <span v-if="scope.row.refundApplyNO === null"> —— </span>
           </template>
         </el-table-column>
         <el-table-column width="200" label="成交信息">
@@ -199,9 +201,14 @@
         </el-table-column>
         <el-table-column prop="invoiceNo" label="发票业务单号" width="120">
           <template slot-scope="scope">
-            <el-link type="primary" @click="gotoNew(scope.row, 'invoiceNo')">
-              {{ scope.row.invoiceNo | emptyShow }}</el-link
+            <el-link
+              v-if="scope.row.invoiceNo !== null"
+              type="primary"
+              @click="gotoNew(scope.row, 'invoiceNo')"
             >
+              {{ scope.row.invoiceNo }}</el-link
+            >
+            <span v-if="scope.row.invoiceNo === null">——</span>
           </template>
         </el-table-column>
       </el-table>

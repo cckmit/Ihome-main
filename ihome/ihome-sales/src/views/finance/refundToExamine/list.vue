@@ -5,7 +5,7 @@
  * @Author: zyc
  * @Date: 2021-01-13 14:50:21
  * @LastEditors: zyc
- * @LastEditTime: 2021-02-08 15:58:44
+ * @LastEditTime: 2021-02-15 10:11:07
 -->
 <template>
   <IhPage label-width="110px">
@@ -97,7 +97,7 @@
     </template>
     <template #btn>
       <el-row>
-        <el-button type="primary" @click="search()">查询</el-button>
+        <el-button type="primary" @click="searchMixin()">查询</el-button>
         <el-button type="info" @click="reset()">重置</el-button>
       </el-row>
     </template>
@@ -239,10 +239,7 @@ export default class RefundToExamineList extends Vue {
       settlementType: null,
     });
   }
-  private search() {
-    this.getListMixin();
-  }
-
+ 
   async getListMixin() {
     this.resPageInfo = await post_refundApply_getCheckList(
       this.queryPageParameters

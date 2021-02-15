@@ -123,7 +123,7 @@
     </template>
     <template #btn>
       <el-row>
-        <el-button type="primary" @click="search()">查询</el-button>
+        <el-button type="primary" @click="searchMixin()">查询</el-button>
         <el-button type="info" @click="reset()">重置</el-button>
       </el-row>
     </template>
@@ -361,9 +361,7 @@ export default class RefundPushList extends Vue {
       status: null,
     });
   }
-  private search() {
-    this.getListMixin();
-  }
+ 
 
   async getListMixin() {
     this.queryPageParameters.status = this.activeName;

@@ -4,7 +4,7 @@
  * @Author: zyc
  * @Date: 2021-02-05 16:41:19
  * @LastEditors: zyc
- * @LastEditTime: 2021-02-09 14:25:45
+ * @LastEditTime: 2021-02-15 10:09:24
 -->
  
 <template>
@@ -86,7 +86,7 @@
 
     <template v-slot:btn>
       <el-row>
-        <el-button type="primary" @click="getListMixin()">查询</el-button>
+        <el-button type="primary" @click="searchMixin()">查询</el-button>
         <el-button type="success" @click="download()">导出</el-button>
 
         <el-button type="info" @click="add()">发起申请</el-button>

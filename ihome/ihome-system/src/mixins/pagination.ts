@@ -4,10 +4,10 @@
  * @Author: zyc
  * @Date: 2020-07-24 17:08:03
  * @LastEditors: zyc
- * @LastEditTime: 2020-11-11 14:56:25
+ * @LastEditTime: 2021-02-15 10:11:17
  */
- /* eslint-disable  no-console */
-import { IPageInfo,IPageBase } from "../api/base.d";
+/* eslint-disable  no-console */
+import { IPageInfo, IPageBase } from "../api/base.d";
 import { Vue, Component } from 'vue-property-decorator'
 declare module 'vue/types/vue' {
     interface Vue {
@@ -29,6 +29,10 @@ declare module 'vue/types/vue' {
 */
 @Component
 export default class PaginationMixin extends Vue {
+    searchMixin() {
+        this.queryPageParameters.pageNum = 1;
+        this.getListMixin();
+    }
     getListMixin() {
         console.error('请在页面中实现getListMixin方法')
     }

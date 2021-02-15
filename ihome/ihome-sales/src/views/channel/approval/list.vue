@@ -4,7 +4,7 @@
  * @Author: zyc
  * @Date: 2020-07-14 09:23:40
  * @LastEditors: zyc
- * @LastEditTime: 2021-01-06 11:20:39
+ * @LastEditTime: 2021-02-15 10:15:50
 --> 
 --> 
 <template>
@@ -59,9 +59,7 @@
                 placeholder="经办人"
                 clearable
               >
-                
               </IhSelectPageUser>
-            
             </el-form-item>
           </el-col>
           <el-col :span="8">
@@ -103,7 +101,7 @@
 
     <template v-slot:btn>
       <el-row>
-        <el-button type="primary" @click="getListMixin()">查询</el-button>
+        <el-button type="primary" @click="searchMixin()">查询</el-button>
         <el-button
           type="success"
           @click="add()"
@@ -129,7 +127,12 @@
         :empty-text="emptyText"
       >
         <el-table-column type="selection" width="55"> </el-table-column>
-        <el-table-column fixed type="index" label="序号" width="50"></el-table-column>
+        <el-table-column
+          fixed
+          type="index"
+          label="序号"
+          width="50"
+        ></el-table-column>
         <el-table-column
           prop="approvalNo"
           label="申请编号"
@@ -141,11 +144,7 @@
           label="标题"
           fixed
         ></el-table-column>
-        <el-table-column
-          prop="departmentName"
-          label="事业部"
-          
-        ></el-table-column>
+        <el-table-column prop="departmentName" label="事业部"></el-table-column>
         <el-table-column
           prop="inputTime"
           label="发起日期"
@@ -184,19 +183,21 @@
                 <el-dropdown-item
                   @click.native.prevent="edit(scope)"
                   v-has="'B.SALES.CHANNEL.APPROVALLIST.UPDATE'"
-                  :class="{'ih-data-disabled':scope.row.status!='Draft'}"
+                  :class="{ 'ih-data-disabled': scope.row.status != 'Draft' }"
                   >修改</el-dropdown-item
                 >
                 <el-dropdown-item
                   @click.native.prevent="remove(scope)"
                   v-has="'B.SALES.CHANNEL.APPROVALLIST.DELETE'"
-                   :class="{'ih-data-disabled':scope.row.status!='Draft'}"
+                  :class="{ 'ih-data-disabled': scope.row.status != 'Draft' }"
                   >删除</el-dropdown-item
                 >
                 <el-dropdown-item
                   @click.native.prevent="withdraw(scope)"
                   v-has="'B.SALES.CHANNEL.APPROVALLIST.RETURNRESEND'"
-                  :class="{'ih-data-disabled':scope.row.status!='ApprovalFailed'}"
+                  :class="{
+                    'ih-data-disabled': scope.row.status != 'ApprovalFailed',
+                  }"
                   >撤回重发</el-dropdown-item
                 >
                 <el-dropdown-item
