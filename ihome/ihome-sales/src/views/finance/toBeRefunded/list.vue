@@ -4,7 +4,7 @@
  * @Author: zyc
  * @Date: 2021-02-05 15:23:39
  * @LastEditors: zyc
- * @LastEditTime: 2021-02-15 10:29:32
+ * @LastEditTime: 2021-02-15 14:39:12
 -->
 
 
@@ -75,7 +75,7 @@
     <template v-slot:btn>
       <el-row>
         <el-button type="primary" @click="searchMixin()">查询</el-button>
-        <el-button type="success" @click="download()">导出</el-button>
+        <el-button type="success" @click="download()" v-has="'B.SALES.FINANCE.TOBEREFUNDED.EXPORT'">导出</el-button>
         <el-button type="info" @click="reset()">重置</el-button>
       </el-row>
     </template>

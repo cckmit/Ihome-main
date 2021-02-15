@@ -4,7 +4,7 @@
  * @Author: wwq
  * @Date: 2021-01-18 16:30:42
  * @LastEditors: zyc
- * @LastEditTime: 2021-02-15 10:55:37
+ * @LastEditTime: 2021-02-15 11:36:07
 -->
 <template>
   <el-dialog
@@ -15,15 +15,14 @@
     :before-close="cancel"
     width="85%"
     class="splitdialog text-left"
-    title="流程进度图（未完成）"
+    title="流程进度图"
   >
     <el-steps :active="currentIndex" align-center>
-      <template v-for="(item, i) in dicts">
+      <template v-for="(item, index) in dicts">
         <el-step
-          v-if="!item.jump"
-          :key="i"
-          :title="item.name"
-          :description="item.operateTime ? item.operateTime : '---'"
+          :key="index"
+          :title="item.result"
+          :description="item.operateTime"
         ></el-step>
       </template>
     </el-steps>
@@ -41,40 +40,7 @@ export default class Progress extends Vue {
   private info: any = [];
   currentIndex = 0;
 
-  private dicts: any = [
-    {
-      name: "发起申请",
-      code: "Unconfirm",
-    },
-    {
-      name: "平台文员审核",
-      code: "PlatformClerkUnreview",
-    },
-    {
-      name: "一线业务审核",
-      code: "OneLineUnreview",
-    },
-    {
-      name: "分公司业管审核",
-      code: "BranchBusinessManageUnreview",
-    },
-    {
-      name: "分公司财务审核",
-      code: "BranchFinanceUnreview",
-    },
-    {
-      name: "0A流程审核",
-      code: "OAReviewing",
-    },
-    {
-      name: "支付推送",
-      code: "ConfirmingPay",
-    },
-    {
-      name: "支付成功",
-      code: "PaymentSuccessful",
-    },
-  ];
+  private dicts: any = [];
 
   cancel() {
     this.$emit("cancel", false);
@@ -82,6 +48,13 @@ export default class Progress extends Vue {
 
   created() {
     console.log(this.data);
+    this.dicts = this.data;
+    for (let index = 0; index < this.dicts.length; index++) {
+      const element = this.dicts[index];
+      if (element.flag == 1) {
+        this.currentIndex = index + 1;
+      }
+    }
   }
 }
 </script>

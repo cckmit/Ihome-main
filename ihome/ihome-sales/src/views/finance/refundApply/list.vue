@@ -4,7 +4,7 @@
  * @Author: zyc
  * @Date: 2021-02-05 16:41:19
  * @LastEditors: zyc
- * @LastEditTime: 2021-02-15 10:58:40
+ * @LastEditTime: 2021-02-15 14:52:16
 -->
  
 <template>
@@ -87,10 +87,10 @@
     <template v-slot:btn>
       <el-row>
         <el-button type="primary" @click="searchMixin()">查询</el-button>
-        <el-button type="success" @click="download()">导出</el-button>
+        <el-button type="success" @click="download()" v-has="'B.SALES.FINANCE.TOBEREFUNDE.EXPORT'">导出</el-button>
 
-        <el-button type="info" @click="add()">发起申请</el-button>
-        <el-button type="info" @click="batchRemove()">批量删除</el-button>
+        <el-button type="info" @click="add()" v-has="'B.SALES.FINANCE.TOBEREFUNDE.ADD'">发起申请</el-button>
+        <el-button type="info" @click="batchRemove()" v-has="'B.SALES.FINANCE.TOBEREFUNDE.BATCHREMOVE'">批量删除</el-button>
         <el-button @click="reset()">重置</el-button>
       </el-row>
     </template>
@@ -175,6 +175,7 @@
               class="margin-right-10"
               type="info"
               @click.native.prevent="edit(scope)"
+              v-has="'B.SALES.FINANCE.TOBEREFUNDE.EDIT'"
               :class="{
                 'ih-data-disabled': !['Draft', 'AppealDismissed'].includes(
                   scope.row.status
@@ -187,6 +188,7 @@
               type="warning"
               class="margin-right-10"
               @click.native.prevent="withdraw(scope)"
+              v-has="'B.SALES.FINANCE.TOBEREFUNDE.WITHDRAW'"
               >撤回</el-link
             >
             <el-link
@@ -197,6 +199,7 @@
               }"
               class="margin-right-10"
               type="danger"
+                v-has="'B.SALES.FINANCE.TOBEREFUNDE.DELETE'"
               @click.native.prevent="remove(scope)"
               >删除</el-link
             >

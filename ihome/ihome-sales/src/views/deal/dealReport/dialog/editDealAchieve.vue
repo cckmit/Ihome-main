@@ -74,16 +74,12 @@
           </el-form-item>
         </el-col>
         <el-col :span="8">
-          <el-form-item label="拆佣金额">
-            <el-input
-              v-model="form.commFees"
-              @input="calculatePercentage($event, 'commFeesRatio')"
-              v-digits="2" placeholder=""/>
+          <el-form-item label="拆佣金额" prop="commFees">
+            <el-input v-model="form.commFees" v-digits="2" placeholder=""/>
           </el-form-item>
         </el-col>
         <el-col :span="8">
           <el-form-item label="拆佣比例（%）">
-<!--            <div class="div-disabled">{{form.commFeesRatio}}%</div>-->
             <div class="div-disabled">
               {{getPercentage(form.commFees, data.totalAmount)}}%
             </div>
@@ -157,12 +153,24 @@
       if (!value && this.data.currentEditItem.roleType !== 'BranchOffice') {
         return callback(new Error('角色人业绩不能为空'));
       } else {
-        if (value > this.form.roleAchieveCap) {
+        if ((value * 1) > (this.form.roleAchieveCap * 1)) {
           return callback(new Error('角色人业绩不能大于角色业绩上限'));
         }
         callback();
       }
     }
+
+    private validateCommFees (rule: any, value: any, callback: any) {
+      if (!value) {
+        return callback(new Error('拆佣金额不能为空'));
+      } else {
+        if ((value * 1) > (this.data.totalAmount * 1)) {
+          return callback(new Error('拆佣金额不能大于对外拆佣的合计'));
+        }
+        callback();
+      }
+    }
+
     @Prop({default: null}) data: any;
     dialogVisible = true;
     form: any = {
@@ -192,7 +200,10 @@
       ],
       corporateAchieve: [
         {validator: this.validateCorporateAchieve, trigger: ["change", "blur"]}
-      ]
+      ],
+      commFees: [
+        {validator: this.validateCommFees, trigger: ["change", "blur"]}
+      ],
     };
     dealRoleList: any = []; // 角色类型 --- 从角色字典中过滤分公司选项
     achieveTitle: any = '新增角色业绩'; // 弹窗标题

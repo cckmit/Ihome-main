@@ -315,6 +315,7 @@
       offerMode: null, // 优惠告知书优惠方式
       offerRemark: null, // 优惠告知书优惠方式说明
       offerMoney: null, // 优惠告知书优惠金额
+      offerExPreferentialItem: null, // 是否显示“本优惠不在《认购书》上重复体现”条款
       offerAnnexList: [], // 优惠告知书协议附件列表
 
       refundSwitch: false, // 退款申请书开关
@@ -404,12 +405,14 @@
             if (item.preferentialMxId === value) {
               this.form.offerRemark = item.modeDescription;
               this.form.offerMoney = item.premiumReceived;
+              this.form.offerExPreferentialItem = item.exPreferentialItem;
             }
           });
         }
       } else {
         this.form.offerRemark = "";
         this.form.offerMoney = "";
+        this.form.offerExPreferentialItem = 1;
       }
     }
 
@@ -531,6 +534,7 @@
             promotionMethod: this.form.offerMode === 'Manual' ? 'Manual' : 'Automatic', // 优惠选择方式 Manual-自定义、Automatic-选择
             reason: null, // 原因 --- 终止协议必填
             reasonDescription: null, // 原因描述：终止协议必填
+            exPreferentialItem: this.form.offerExPreferentialItem, // 原因描述：终止协议必填
             templateType: this.form.offerProtocolType // 模版类型(PaperTemplate-纸质模板、ElectronicTemplate-电子模版)
           }
         )
