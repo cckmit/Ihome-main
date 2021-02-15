@@ -111,9 +111,9 @@
           <el-col :span="8">
             <el-form-item label="户型">
               <div class="home-type-wrapper">
-                <div>{{infoForm.house.room}}室</div>
-                <div>{{infoForm.house.hall}}厅</div>
-                <div>{{infoForm.house.toilet}}卫</div>
+                <div>{{infoForm.room}}室</div>
+                <div>{{infoForm.hall}}厅</div>
+                <div>{{infoForm.toilet}}卫</div>
               </div>
             </el-form-item>
           </el-col>
