@@ -478,15 +478,15 @@
             <el-table-column prop="fileName" label="附件" min-width="300">
               <template slot-scope="scope">
                 <IhUpload
-                  v-if="scope.row.fileList.length"
+                  v-if="scope.row.showFileList.length"
                   :isCrop="false"
                   :isMove="false"
                   :removePermi="false"
                   size="100px"
                   :file-type="scope.row.code"
-                  :limit="scope.row.fileList.length"
-                  :file-list.sync="scope.row.fileList"
-                  :upload-show="!!scope.row.fileList.length"
+                  :limit="scope.row.showFileList.length"
+                  :file-list.sync="scope.row.showFileList"
+                  :upload-show="!!scope.row.showFileList.length"
                 ></IhUpload>
               </template>
             </el-table-column>
@@ -646,7 +646,7 @@
       let list: any = [];
       if (this.pageData.uploadDocumentList && this.pageData.uploadDocumentList.length) {
         this.pageData.uploadDocumentList.forEach((item: any) => {
-          item.fileList = [...item.fileList, ...item.defaultFileList];
+          this.$set(item, 'showFileList', [...item.fileList, ...item.defaultFileList]);
           list.push(item);
         });
       }
