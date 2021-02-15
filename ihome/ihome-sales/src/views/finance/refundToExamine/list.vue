@@ -5,7 +5,7 @@
  * @Author: zyc
  * @Date: 2021-01-13 14:50:21
  * @LastEditors: zyc
- * @LastEditTime: 2021-02-15 11:06:22
+ * @LastEditTime: 2021-02-15 14:54:24
 -->
 <template>
   <IhPage label-width="110px">
@@ -160,7 +160,7 @@
 
         <el-table-column label="操作" width="120" fixed="right">
           <template v-slot="{ row }">
-            <el-link type="primary" @click="toExamine(row)">审核</el-link>
+            <el-link type="primary" @click="toExamine(row)" v-has="'B.SALES.FINANCE.REFUNDAPPLY.TOEXAMINE'">审核</el-link>
           </template>
         </el-table-column>
       </el-table>
@@ -190,7 +190,10 @@
 <script lang="ts">
 import { Component, Vue } from "vue-property-decorator";
 import PaginationMixin from "../../../mixins/pagination";
-import { post_refundApply_getCheckList } from "../../../api/finance/index";
+import {
+  post_refundApply_getCheckList,
+  get_refundApply_getBusinessProcess__id,
+} from "../../../api/finance/index";
 import Progress from "./dialog/progress.vue";
 @Component({
   components: { Progress },
@@ -240,7 +243,7 @@ export default class RefundToExamineList extends Vue {
       settlementType: null,
     });
   }
- 
+
   async getListMixin() {
     this.resPageInfo = await post_refundApply_getCheckList(
       this.queryPageParameters
@@ -258,7 +261,10 @@ export default class RefundToExamineList extends Vue {
   }
   async showPlanPicture(scope: any) {
     console.log(scope);
-    this.rogressData = [];
+    const res: any = await get_refundApply_getBusinessProcess__id({
+      id: scope.row.id,
+    });
+    this.rogressData = res;
     this.prodialogVisible = true;
   }
 }

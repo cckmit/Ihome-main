@@ -4,7 +4,7 @@
  * @Author: zyc
  * @Date: 2021-02-08 15:42:06
  * @LastEditors: zyc
- * @LastEditTime: 2021-02-09 11:20:24
+ * @LastEditTime: 2021-02-15 15:19:34
 -->
 <template>
   <el-dialog
@@ -45,6 +45,7 @@
           clearable
           v-model="ruleForm.companyId"
           :isBlur="false"
+          :search-name="ruleForm.accountName"
           @change="accountNameChange"
         ></IhSelectPageByPayer>
       </el-form-item>
@@ -59,7 +60,7 @@
             v-for="item in accountNoList"
             :key="item.id"
             :label="item.accountNo"
-            :value="item.id"
+            :value="item.accountNo"
           ></el-option>
         </el-select>
       </el-form-item>
@@ -124,10 +125,7 @@ export default class RefundPushEdit extends Vue {
   dialogVisible = true;
   accountNoList = [];
   ruleForm: any = {
-    accountName: null,
     accountNo: null,
-    branchName: null,
-    branchNo: null,
     companyId: null,
     id: null,
     payType: null,
@@ -171,6 +169,7 @@ export default class RefundPushEdit extends Vue {
       console.log(valid);
       await post_refundItemPush_update(this.ruleForm);
       this.$message.success("修改成功");
+      this.$emit("finish", true);
     } else {
       console.log("error submit!!");
       return false;
@@ -179,9 +178,16 @@ export default class RefundPushEdit extends Vue {
   resetForm(formName: any) {
     (this.$refs[formName] as ElForm).resetFields();
   }
-  created() {
+  async created() {
     this.ruleForm = this.$tool.deepClone(this.data);
+
     console.log(this.data);
+
+    const res: any = await post_bankAccount_getByOrgId__orgId({
+      orgId: this.ruleForm.companyId,
+    });
+    console.log(res);
+    this.accountNoList = res;
   }
   settlementTypeChange() {
     if (this.ruleForm.settlementType == "OnlinePay") {
@@ -191,10 +197,16 @@ export default class RefundPushEdit extends Vue {
   async accountNameChange(data: any) {
     console.log(data);
 
-    const res: any = await post_bankAccount_getByOrgId__orgId({ orgId: data });
-    console.log(res);
-    this.accountNoList = res;
-    this.$forceUpdate();
+    this.ruleForm.accountNo = null;
+    if (data) {
+      const res: any = await post_bankAccount_getByOrgId__orgId({
+        orgId: data,
+      });
+      console.log(res);
+      this.accountNoList = res;
+    } else {
+      this.accountNoList = [];
+    }
   }
 }
 </script>
