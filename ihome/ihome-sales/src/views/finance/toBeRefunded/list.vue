@@ -4,7 +4,7 @@
  * @Author: zyc
  * @Date: 2021-02-05 15:23:39
  * @LastEditors: zyc
- * @LastEditTime: 2021-02-15 10:08:44
+ * @LastEditTime: 2021-02-15 10:29:32
 -->
 
 
@@ -286,7 +286,7 @@ export default class ToBeRefundedList extends Vue {
         `/web-sales/projects/childInfo?id=${item.proId}&proName=${item.projectName}`
       );
     } else if (type == "noticeAmount") {
-      console.error("未实现");
+      window.open("/web-sales/payment/list"); //缺失参数
     } else if (type == "refundApplyNO") {
       console.error("未实现");
     } else if (type == "dealNo") {

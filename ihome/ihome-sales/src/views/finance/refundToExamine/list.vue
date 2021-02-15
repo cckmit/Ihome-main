@@ -5,7 +5,7 @@
  * @Author: zyc
  * @Date: 2021-01-13 14:50:21
  * @LastEditors: zyc
- * @LastEditTime: 2021-02-15 10:11:07
+ * @LastEditTime: 2021-02-15 11:06:22
 -->
 <template>
   <IhPage label-width="110px">
@@ -25,6 +25,7 @@
             <el-form-item label="事业部">
               <IhSelectPageDivision
                 v-model="queryPageParameters.orgId"
+                clearable
               ></IhSelectPageDivision>
             </el-form-item>
           </el-col>

@@ -3,8 +3,8 @@
  * @version: 
  * @Author: zyc
  * @Date: 2020-06-22 11:11:41
- * @LastEditors: wwq
- * @LastEditTime: 2020-10-26 17:50:02
+ * @LastEditors: zyc
+ * @LastEditTime: 2021-02-15 11:17:21
  */
 const path = require('path');
 const { name } = require('./package');
@@ -35,6 +35,7 @@ module.exports = {
 	outputDir: 'dist',
 	assetsDir: 'static',
 	filenameHashing: true,
+	productionSourceMap: true,
 	publicPath: process.env.NODE_ENV === 'production' ? process.env.BASE_URL : process.env.BASE_URL,
 	devServer: {
 		// host: '0.0.0.0',

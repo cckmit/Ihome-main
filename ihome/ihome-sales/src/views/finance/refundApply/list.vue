@@ -4,7 +4,7 @@
  * @Author: zyc
  * @Date: 2021-02-05 16:41:19
  * @LastEditors: zyc
- * @LastEditTime: 2021-02-15 10:09:24
+ * @LastEditTime: 2021-02-15 10:58:40
 -->
  
 <template>
@@ -426,6 +426,7 @@ export default class RefundApplyList extends Vue {
     const res: any = await get_refundApply_getBusinessProcess__id({
       id: scope.row.id,
     });
+    
     this.rogressData = res;
     console.log(this.rogressData);
     this.prodialogVisible = true;

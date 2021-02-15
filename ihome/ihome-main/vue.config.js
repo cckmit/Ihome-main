@@ -4,7 +4,7 @@
  * @Author: zyc
  * @Date: 2020-06-22 14:34:07
  * @LastEditors: zyc
- * @LastEditTime: 2021-01-06 09:59:01
+ * @LastEditTime: 2021-02-15 11:17:11
  */
 
 console.log('\033[42;30m 这是main ts主应用')
@@ -48,7 +48,7 @@ module.exports = {
     assetsDir: 'static',
     filenameHashing: true,
     publicPath: process.env.NODE_ENV === 'production' ? '/' : '/',
-
+    productionSourceMap: true,
 
     // tweak internal webpack configuration.
     // see https://github.com/vuejs/vue-cli/blob/dev/docs/webpack.md

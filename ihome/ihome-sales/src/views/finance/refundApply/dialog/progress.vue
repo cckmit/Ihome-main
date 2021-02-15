@@ -4,7 +4,7 @@
  * @Author: wwq
  * @Date: 2021-01-18 16:30:42
  * @LastEditors: zyc
- * @LastEditTime: 2021-02-08 10:24:59
+ * @LastEditTime: 2021-02-15 10:55:37
 -->
 <template>
   <el-dialog
@@ -39,6 +39,7 @@ export default class Progress extends Vue {
   @Prop({ default: null }) data: any;
   dialogVisible = true;
   private info: any = [];
+  currentIndex = 0;
 
   private dicts: any = [
     {
