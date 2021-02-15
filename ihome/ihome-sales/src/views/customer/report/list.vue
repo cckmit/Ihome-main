@@ -142,7 +142,7 @@
     <template #table>
       <br />
       <!-- table-标签页 -->
-      <el-tabs v-model="tabsValue" type="border-card" @tab-click="search">
+      <el-tabs v-model="tabsValue" type="border-card" @tab-click="changTable">
         <template v-for="(i, n) in tabsList">
           <el-tab-pane :label="i.label" :name="i.name" :key="n">
             <!-- table-content -->
@@ -173,8 +173,8 @@
               ></el-table-column>
               <el-table-column label="项目类型" width="110">
                 <template v-slot="{ row }">
-                  <div v-if="row.exMarket===1">市场化项目</div>
-                  <div v-if="row.exMarket===0">非市场化项目</div>
+                  <div v-if="row.exMarket === 1">市场化项目</div>
+                  <div v-if="row.exMarket === 0">非市场化项目</div>
                 </template>
               </el-table-column>
               <el-table-column
@@ -340,6 +340,7 @@ export default class ReturnConfirmList extends Vue {
     reportStatus: "UnderReview",
   };
   tabsValue: any = "UnderReview";
+  tabsLabel: any = "待确认";
   dialogVisible = false;
   itemData: any = {
     ids: [],
@@ -376,7 +377,7 @@ export default class ReturnConfirmList extends Vue {
       const href = window.URL.createObjectURL(res.data);
       const $a = document.createElement("a");
       $a.href = href;
-      $a.download = "客户报备列表.xlsx";
+      $a.download = "客户报备" + this.tabsLabel + "列表.xlsx";
       $a.click();
       $a.remove();
     });
@@ -414,6 +415,11 @@ export default class ReturnConfirmList extends Vue {
 
   created() {
     this.getListMixin();
+  }
+
+  changTable(tab: any) {
+    this.tabsLabel = tab.label;
+    this.search();
   }
 
   search() {

@@ -1,9 +1,9 @@
 <!--
  * @Description: 到访无效弹窗
  * @version: 
- * @Author: ywl
+ * @Author: yag
  * @Date: 2021年2月9日10:24:09
- * @LastEditors: ywl
+ * @LastEditors: yag
  * @LastEditTime: 2021年2月9日10:24:12
 -->
 <template>

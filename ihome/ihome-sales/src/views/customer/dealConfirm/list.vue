@@ -128,7 +128,7 @@
     <template #table>
       <br />
       <!-- table-标签页 -->
-      <el-tabs v-model="tabsValue" type="border-card" @tab-click="search">
+      <el-tabs v-model="tabsValue" type="border-card" @tab-click="changTable">
         <template v-for="(i, n) in tabsList">
           <el-tab-pane :label="i.label" :name="i.name" :key="n">
             <!-- table-content -->
@@ -150,7 +150,11 @@
                 width="220"
                 fixed
               ></el-table-column>
-              <el-table-column v-if="i.name === 'NewDeal'" label="项目类型" width="110">
+              <el-table-column
+                v-if="i.name === 'NewDeal'"
+                label="项目类型"
+                width="110"
+              >
                 <template v-slot="{ row }">
                   <div v-if="row.exMarket === 1">市场化项目</div>
                   <div v-if="row.exMarket === 0">非市场化项目</div>
@@ -204,11 +208,21 @@
                 prop="reportDate"
                 width="120"
               ></el-table-column>
-               <el-table-column
-                v-if="['ValidDeal', 'InvalidDeal'].includes(i.name)"
+              <el-table-column
+                label="到访时间"
+                prop="visitDate"
+                width="150"
+              ></el-table-column>
+              <el-table-column
+                v-if="i.name === 'ValidDeal'"
                 label="成交时间"
                 prop="expectedTime"
                 width="120"
+              ></el-table-column>
+              <el-table-column
+                label="栋座房号"
+                prop="roomNo"
+                width="100"
               ></el-table-column>
               <el-table-column
                 v-if="['ValidDeal', 'InvalidDeal'].includes(i.name)"
@@ -222,6 +236,18 @@
                 prop="auditTime"
                 width="150"
               ></el-table-column>
+              <el-table-column
+                v-if="i.name === 'ValidDeal'"
+                label="关联成交编号"
+                prop="dealCode"
+                min-width="120"
+              >
+                <template slot-scope="scope">
+                  <el-link type="primary" @click="goToDealInfo(scope)">{{
+                    scope.row.dealCode
+                  }}</el-link>
+                </template>
+              </el-table-column>
               <el-table-column
                 v-if="i.name === 'InvalidDeal'"
                 label="无效原因"
@@ -244,7 +270,7 @@
                   >
                   <el-link
                     type="primary"
-                    v-if="row.exMarket === 1  && i.name === 'NewDeal'"
+                    v-if="row.exMarket === 1 && i.name === 'NewDeal'"
                     @click="validDealOperation(row)"
                     v-has="'B.SALES.CUSTOMER.DEALCONFIRM.EFFECTIVE'"
                     class="margin-right-10"
@@ -252,7 +278,7 @@
                   >
                   <el-link
                     type="primary"
-                    v-if="row.exMarket === 1  && i.name === 'NewDeal'"
+                    v-if="row.exMarket === 1 && i.name === 'NewDeal'"
                     @click="invalidDealOperation(row)"
                     v-has="'B.SALES.CUSTOMER.DEALCONFIRM.INVALID'"
                     >无效</el-link
@@ -337,7 +363,7 @@ import {
 
 @Component({
   mixins: [PaginationMixin],
-  components: { InvalidDeal, ValidDeal,FileDetail },
+  components: { InvalidDeal, ValidDeal, FileDetail },
 })
 export default class ReturnConfirmList extends Vue {
   queryPageParameters: any = {
@@ -355,6 +381,7 @@ export default class ReturnConfirmList extends Vue {
     reportStatus: "NewDeal",
   };
   tabsValue: any = "NewDeal";
+  tabsLabel: any = "未确认";
   dialogVisibleValid = false;
   dialogVisibleInvalid = false;
   dialogVisibleFile = false;
@@ -394,7 +421,7 @@ export default class ReturnConfirmList extends Vue {
       const href = window.URL.createObjectURL(res.data);
       const $a = document.createElement("a");
       $a.href = href;
-      $a.download = "成交确认列表.xlsx";
+      $a.download = "成交确认" + this.tabsLabel + "列表.xlsx";
       $a.click();
       $a.remove();
     });
@@ -432,6 +459,11 @@ export default class ReturnConfirmList extends Vue {
 
   created() {
     this.getListMixin();
+  }
+
+  changTable(tab: any) {
+    this.tabsLabel = tab.label;
+    this.search();
   }
 
   search() {
@@ -497,6 +529,22 @@ export default class ReturnConfirmList extends Vue {
     this.dialogVisibleFile = true;
     this.itemData.reportId = row.id;
   }
+
+  /**
+   * @description: 查看成交详情
+   * @param {any} row
+   */
+  goToDealInfo(scope: any) {
+    let router = this.$router.resolve({
+      path: `/dealReport/info`,
+      query: {
+        id: scope.row.dealCode,
+        type: "CODE",
+      },
+    });
+    window.open(router.href, "_blank");
+  }
+
 }
 </script>
 <style lang="scss" scoped>

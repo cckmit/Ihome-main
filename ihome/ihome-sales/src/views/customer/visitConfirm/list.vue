@@ -128,7 +128,7 @@
     <template #table>
       <br />
       <!-- table-标签页 -->
-      <el-tabs v-model="tabsValue" type="border-card" @tab-click="search">
+      <el-tabs v-model="tabsValue" type="border-card" @tab-click="changTable">
         <template v-for="(i, n) in tabsList">
           <el-tab-pane :label="i.label" :name="i.name" :key="n">
             <!-- table-content -->
@@ -150,7 +150,11 @@
                 width="220"
                 fixed
               ></el-table-column>
-              <el-table-column v-if="i.name === 'UnderReview'" label="项目类型" width="110">
+              <el-table-column
+                v-if="i.name === 'UnderReview'"
+                label="项目类型"
+                width="110"
+              >
                 <template v-slot="{ row }">
                   <div v-if="row.exMarket === 1">市场化项目</div>
                   <div v-if="row.exMarket === 0">非市场化项目</div>
@@ -204,7 +208,7 @@
                 prop="reportDate"
                 width="120"
               ></el-table-column>
-               <el-table-column
+              <el-table-column
                 v-if="['ValidVisit', 'InvalidVisit'].includes(i.name)"
                 label="到访时间"
                 prop="expectedTime"
@@ -244,7 +248,7 @@
                   >
                   <el-link
                     type="primary"
-                    v-if="row.exMarket === 1  && i.name === 'UnderReview'"
+                    v-if="row.exMarket === 1 && i.name === 'UnderReview'"
                     @click="validVisitOperation(row)"
                     v-has="'B.SALES.CUSTOMER.VISITCONFIRM.EFFECTIVE'"
                     class="margin-right-10"
@@ -252,7 +256,7 @@
                   >
                   <el-link
                     type="primary"
-                    v-if="row.exMarket === 1  && i.name === 'UnderReview'"
+                    v-if="row.exMarket === 1 && i.name === 'UnderReview'"
                     @click="invalidVisitOperation(row)"
                     v-has="'B.SALES.CUSTOMER.VISITCONFIRM.INVALID'"
                     >无效</el-link
@@ -337,7 +341,7 @@ import {
 
 @Component({
   mixins: [PaginationMixin],
-  components: { InvalidVisit, ValidVisit,FileDetail },
+  components: { InvalidVisit, ValidVisit, FileDetail },
 })
 export default class ReturnConfirmList extends Vue {
   queryPageParameters: any = {
@@ -355,6 +359,7 @@ export default class ReturnConfirmList extends Vue {
     reportStatus: "UnderReview",
   };
   tabsValue: any = "UnderReview";
+  tabsLabel: any = "未确认";
   dialogVisibleValid = false;
   dialogVisibleInvalid = false;
   dialogVisibleFile = false;
@@ -394,7 +399,7 @@ export default class ReturnConfirmList extends Vue {
       const href = window.URL.createObjectURL(res.data);
       const $a = document.createElement("a");
       $a.href = href;
-      $a.download = "到访确认列表.xlsx";
+      $a.download = "到访确认" + this.tabsLabel + "列表.xlsx";
       $a.click();
       $a.remove();
     });
@@ -432,6 +437,11 @@ export default class ReturnConfirmList extends Vue {
 
   created() {
     this.getListMixin();
+  }
+
+  changTable(tab: any) {
+    this.tabsLabel = tab.label;
+    this.search();
   }
 
   search() {
