@@ -1039,7 +1039,8 @@ export default class EditBasicInfo extends Vue {
         if (this.$route.name === "projectChildAdd") {
           let res: any = await post_project_add(obj);
           if (res.proId ){
-           this.$goto({ path: "/projects/ChildEdit?id="+res.proId });
+            this.$message.success("保存成功");
+           this.$router.replace({ path: "/projects/ChildEdit?id="+res.proId });
           }
         } else {
           obj.proId = this.projectId;
