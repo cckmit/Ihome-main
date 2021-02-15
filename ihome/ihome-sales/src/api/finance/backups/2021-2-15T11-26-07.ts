@@ -1,6 +1,6 @@
 /* eslint-disable */
 /* 此脚本由swagger-ui的api-docs自动生成，请勿修改 */
-//2021-2-15 11:26:07
+//2021-2-9 14:45:34
 import { request } from '@/api/base'
 const basePath = "/sales-api/finance"
 /**新增收款账号在线支付信息*/
@@ -2070,9 +2070,7 @@ status: string;
 }
 /**RefundApplyBusinessProcessVO*/
 export interface RefundApplyBusinessProcessVO {
-/**是否有效标识[0-无效;1-有效]*/
-flag: number;
-/**处理时间(yyyy-MM-dd)*/
+/**处理时间(yyyy-MM-dd HH:mm:ss)*/
 operateTime: string;
 /**结果*/
 result: string;
@@ -2335,8 +2333,6 @@ deleted: number;
 fileId: string;
 /**文件名*/
 fileName: string;
-/**文件类型：oa/基础(Basic-Basic、OA-OA)*/
-fileType: string;
 /**ID*/
 id: number;
 /**退款申请id*/
@@ -2440,8 +2436,6 @@ refundName: string;
 refundNo: string;
 /**退款完成日期(yyyy-MM-dd)*/
 refundedDate: string;
-/**成交房间ID*/
-roomId: number;
 /**待退款项退款状态(PendingApply-待申请、UnderReview-审核中、Refunding-退款中、Refunded-已退款)*/
 status: string;
 /**服务费未收金额*/
@@ -2766,8 +2760,6 @@ refundName: string;
 refundNo: string;
 /**退款完成日期(yyyy-MM-dd)*/
 refundedDate: string;
-/**成交房间ID*/
-roomId: number;
 /**待退款项退款状态(PendingApply-待申请、UnderReview-审核中、Refunding-退款中、Refunded-已退款)*/
 status: string;
 /**服务费未收金额*/
