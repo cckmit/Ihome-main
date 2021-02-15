@@ -446,11 +446,11 @@
       switch (btnName) {
         case "ADD":
           // 添加
-          flag = this.$roleTool.RProjectSite();
+          flag = (this as any).$roleTool.RProjectSite();
           break;
         case "ACHIEVEDECLARE":
           // 业绩申报
-          flag = this.$roleTool.RFrontLineClerk();
+          flag = (this as any).$roleTool.RFrontLineClerk();
           break;
       }
       return flag;
@@ -465,17 +465,17 @@
             // 修改按钮权限
             if (row.id === row.parentId) {
               // 主成交
-              if (row.status === 'Draft' && this.$roleTool.RProjectSite()) {
+              if (row.status === 'Draft' && (this as any).$roleTool.RProjectSite()) {
                 // 草稿、案场
                 flag = false;
               }
-              if (['AchieveDeclareUnconfirm', 'Reject'].includes(row.status) && this.$roleTool.RFrontLineClerk()) {
+              if (['AchieveDeclareUnconfirm', 'Reject'].includes(row.status) && (this as any).$roleTool.RFrontLineClerk()) {
                 // 业绩申报待确认 + 驳回、文员
                 flag = false;
               }
             } else {
               // 补充成交
-              if (['Draft', 'Reject'].includes(row.status) && this.$roleTool.RFrontLineClerk()) {
+              if (['Draft', 'Reject'].includes(row.status) && (this as any).$roleTool.RFrontLineClerk()) {
                 // 草稿 + 驳回、文员
                 flag = false;
               }
@@ -485,17 +485,17 @@
             // 删除按钮权限
             if (row.id === row.parentId) {
               // 主成交
-              if (row.status === 'Draft' && this.$roleTool.RProjectSite()) {
+              if (row.status === 'Draft' && (this as any).$roleTool.RProjectSite()) {
                 // 草稿、案场
                 flag = false;
               }
-              if (['AchieveDeclareUnconfirm', 'Reject'].includes(row.status) && this.$roleTool.RFrontLineClerk()) {
+              if (['AchieveDeclareUnconfirm', 'Reject'].includes(row.status) && (this as any).$roleTool.RFrontLineClerk()) {
                 // 业绩申报待确认 + 驳回、文员
                 flag = false;
               }
             } else {
               // 补充成交
-              if (['Draft', 'Reject'].includes(row.status) && this.$roleTool.RFrontLineClerk()) {
+              if (['Draft', 'Reject'].includes(row.status) && (this as any).$roleTool.RFrontLineClerk()) {
                 // 草稿 + 驳回、文员
                 flag = false;
               }
@@ -503,41 +503,41 @@
             break;
           case 'REVOKE':
             // 撤回按钮权限
-            if (row.status === 'PlatformClerkUnreview' && this.$roleTool.RFrontLineClerk()) {
+            if (row.status === 'PlatformClerkUnreview' && (this as any).$roleTool.RFrontLineClerk()) {
               // 平台文员待审核、文员
               flag = false;
             }
-            if (row.status === 'HeadDepartUnreview' && this.$roleTool.RPlatformClerk()) {
+            if (row.status === 'HeadDepartUnreview' && (this as any).$roleTool.RPlatformClerk()) {
               // 事业部负责人待审核、平台文员
               flag = false;
             }
-            if (row.status === 'BranchBusinessManageUnreview' && this.$roleTool.RDepartmentLeader()) {
+            if (row.status === 'BranchBusinessManageUnreview' && (this as any).$roleTool.RDepartmentLeader()) {
               // 分公司业管待审核、事业部负责人
               flag = false;
             }
-            if (row.status === 'NotSigned' && this.$roleTool.RBusinessManagement()) {
+            if (row.status === 'NotSigned' && (this as any).$roleTool.RBusinessManagement()) {
               // 待签署生效、业务监管岗（分公司业管）
               flag = false;
             }
             break;
           case 'SUPPLEMENTDEAL':
             // 补充成交按钮权限
-            if (row.id === row.parentId && row.status === 'ReviewPassed' && this.$roleTool.RFrontLineClerk() && !row.noApplySupp) {
+            if (row.id === row.parentId && row.status === 'ReviewPassed' && (this as any).$roleTool.RFrontLineClerk() && !row.noApplySupp) {
               // 主成交、已审核、文员
               flag = false;
             }
             break;
           case 'VERIFY':
             // 审核按钮权限
-            if (row.status === 'PlatformClerkUnreview' && this.$roleTool.RPlatformClerk()) {
+            if (row.status === 'PlatformClerkUnreview' && (this as any).$roleTool.RPlatformClerk()) {
               // 平台文员待审核、平台文员
               flag = false;
             }
-            if (row.status === 'HeadDepartUnreview' && this.$roleTool.RDepartmentLeader()) {
+            if (row.status === 'HeadDepartUnreview' && (this as any).$roleTool.RDepartmentLeader()) {
               // 事业部负责人待审核、事业部负责人
               flag = false;
             }
-            if (row.status === 'BranchBusinessManageUnreview' && this.$roleTool.RBusinessManagement()) {
+            if (row.status === 'BranchBusinessManageUnreview' && (this as any).$roleTool.RBusinessManagement()) {
               // 分公司业管待审核、业务监管岗（分公司业管）
               flag = false;
             }
