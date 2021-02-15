@@ -4,7 +4,7 @@
  * @Author: ywl
  * @Date: 2021-01-07 16:30:03
  * @LastEditors: ywl
- * @LastEditTime: 2021-02-09 14:14:32
+ * @LastEditTime: 2021-02-15 17:11:02
 -->
 <template>
   <IhPage class="text-left">
@@ -13,6 +13,7 @@
       <el-form
         ref="ruleForm"
         label-width="120px"
+        :rules="rules"
         class="demo-ruleForm"
       >
         <el-row>
@@ -26,7 +27,10 @@
             </el-form-item>
           </el-col>
           <el-col :span="8">
-            <el-form-item label="项目名称">
+            <el-form-item
+              label="项目名称"
+              prop="proId"
+            >
               <IhSelectPageByProject
                 v-model="form.proId"
                 :searchName="paramProName"
@@ -38,7 +42,10 @@
             </el-form-item>
           </el-col>
           <el-col :span="8">
-            <el-form-item label="事业部">
+            <el-form-item
+              label="事业部"
+              prop="orgId"
+            >
               <IhSelectPageDivision
                 v-model="form.orgId"
                 placeholder="请选择所在事业部"
@@ -49,7 +56,10 @@
             </el-form-item>
           </el-col>
           <el-col :span="8">
-            <el-form-item label="甲方公司">
+            <el-form-item
+              label="甲方公司"
+              prop="developId"
+            >
               <IhSelectPageByDeveloper
                 v-model="form.developId"
                 :searchName="paramDevName"
@@ -65,7 +75,10 @@
             </el-form-item>
           </el-col>
           <el-col :span="8">
-            <el-form-item label="甲方开票帐号">
+            <el-form-item
+              label="甲方开票帐号"
+              required
+            >
               <el-select
                 v-model="devAccountData"
                 class="width--100"
@@ -87,7 +100,10 @@
             </el-form-item>
           </el-col>
           <el-col :span="8">
-            <el-form-item label="收款公司">
+            <el-form-item
+              label="收款公司"
+              prop="polyCompanyId"
+            >
               <IhSelectPageByCompany
                 v-model="form.polyCompanyId"
                 placeholder="请选择收款公司"
@@ -101,7 +117,10 @@
             </el-form-item>
           </el-col>
           <el-col :span="8">
-            <el-form-item label="收款账号">
+            <el-form-item
+              label="收款账号"
+              required
+            >
               <el-select
                 v-model="accountData"
                 class="width--100"
@@ -125,7 +144,10 @@
             </el-form-item>
           </el-col>
           <el-col :span="8">
-            <el-form-item label="发票类型">
+            <el-form-item
+              label="发票类型"
+              prop="billTypeCode"
+            >
               <el-select
                 v-model="form.billTypeCode"
                 class="width--100"
@@ -1011,6 +1033,19 @@ export default class ApplyRecAdd extends Vue {
   private paramProName: any = "";
   private applyNo: any = null;
   private globalTaxMoney: any = 0;
+  private rules: any = {
+    proId: [{ required: true, message: "请选择项目", trigger: "change" }],
+    orgId: [{ required: true, message: "请选择事业部", trigger: "change" }],
+    developId: [
+      { required: true, message: "请选择甲方公司", trigger: "change" },
+    ],
+    polyCompanyId: [
+      { required: true, message: "请选择收款公司", trigger: "change" },
+    ],
+    billTypeCode: [
+      { required: true, message: "请选择开票类型", trigger: "change" },
+    ],
+  };
 
   private get totalNoReceiveAmount() {
     let sum = 0;
@@ -1113,8 +1148,16 @@ export default class ApplyRecAdd extends Vue {
   }
   // 本次请款比例
   private applyPercentSum(row: any) {
-    let sum = this.$math.div(row.applyMoney, row.receiveAmount);
-    row.applyPercent = this.$math.tofixed(sum, 2);
+    let sum = 0;
+    // if (row.noTaxMoneyNew) {
+    //   sum = this.$math.div(
+    //     parseFloat(row.noTaxMoneyNew),
+    //     parseFloat(row.receiveAmount)
+    //   );
+    // } else {
+    sum = this.$math.div(row.applyMoney, row.noReceiveAmount);
+    // }
+    row.applyPercent = this.$math.tofixed(sum, 4);
     return row.applyPercent;
   }
   // 计算不含税金额
@@ -1470,15 +1513,28 @@ export default class ApplyRecAdd extends Vue {
     let isSub = true;
     for (let index = 0; index < this.form.dealList.length; index++) {
       const element = this.form.dealList[index];
+      // 税额
+      let thisTaxMoney = this.$math.tofixed(
+        this.$math.sub(
+          element.applyMoney,
+          element.applyMoney / (1 + this.form.taxRate || 0)
+        ),
+        2
+      );
+      // 不含税金额
+      let thisNoTaxMoney = this.$math.tofixed(
+        this.$math.sub(element.applyMoney, thisTaxMoney),
+        2
+      );
       if (isSub) {
         let taxMoneyNew = this.$math.tofixed(
-          this.$math.sub(element.taxMoney, sub),
+          this.$math.sub(thisTaxMoney, sub),
           2
         );
         if (taxMoneyNew > 0) {
           element.taxMoneyNew = taxMoneyNew;
           element.noTaxMoneyNew = this.$math.tofixed(
-            this.$math.add(element.noTaxMoney, sub),
+            this.$math.add(thisNoTaxMoney, sub),
             2
           );
           isSub = false;
@@ -1486,7 +1542,7 @@ export default class ApplyRecAdd extends Vue {
         } else {
           element.taxMoneyNew = 0;
           element.noTaxMoneyNew = this.$math.tofixed(
-            this.$math.add(element.noTaxMoney, element.taxMoney),
+            this.$math.add(thisNoTaxMoney, thisTaxMoney),
             2
           );
           sub = this.$math.tofixed(this.$math.sub(sub, element.taxMoney), 2);
@@ -1509,8 +1565,8 @@ export default class ApplyRecAdd extends Vue {
     this.form.actMoney = this.actMoneySum();
     this.form.actMoneyTax = this.actMoneyTaxSum();
     this.form.deductRecList = this.waitList;
-    let subMoney = this.subMoneySum() * -1;
-    let fineMoney = this.fineMoneySum() * -1;
+    let subMoney = this.subMoneySum();
+    let fineMoney = this.fineMoneySum();
     let otherSubList = this.form.otherSubList.map((i: any) => ({
       ...i,
       subMoney: i.subMoney * -1,
