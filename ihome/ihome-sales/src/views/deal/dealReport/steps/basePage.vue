@@ -1803,7 +1803,7 @@
       // 数据标志
       this.postData.dataSignName = (this as any).$root.dictAllName(res.dataSign, 'DealDataFlag');
       // 优惠告知书
-      await this.getNoticeList(res.id);
+      await this.getNoticeList(res.parentId);
       // 客户信息
       if (this.postData.customerList && this.postData.customerList.length) {
         this.postData.customerList.forEach((list: any) => {
