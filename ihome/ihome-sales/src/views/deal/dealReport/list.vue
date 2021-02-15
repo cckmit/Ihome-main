@@ -503,14 +503,6 @@
             break;
           case 'REVOKE':
             // 撤回按钮权限
-            if (row.id === row.parentId) {
-              // 主成交
-              if (row.status === 'AchieveDeclareUnconfirm' && this.$roleTool.RProjectSite()) {
-                // 业绩申报待确认、案场
-                flag = false;
-              }
-            }
-            // 补充成交
             if (row.status === 'PlatformClerkUnreview' && this.$roleTool.RFrontLineClerk()) {
               // 平台文员待审核、文员
               flag = false;
