@@ -455,7 +455,7 @@
 
     // 根据成交报告状态、是主成交还是补充成交、登录者的岗位来判断是否有操作按钮权限
     hasBtnRole(row: any, btnName: any = "") {
-      console.log('RProjectSite', (this as any).$roleTool.RProjectSite());
+      // console.log('RProjectSite', (this as any).$roleTool.RProjectSite());
       let flag: any = true; // 是否禁用、默认禁用
       if (btnName) {
         switch (btnName) {
