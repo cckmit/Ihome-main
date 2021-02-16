@@ -4,7 +4,7 @@
  * @Author: wwq
  * @Date: 2020-12-26 11:11:19
  * @LastEditors: wwq
- * @LastEditTime: 2021-02-07 16:40:16
+ * @LastEditTime: 2021-02-16 09:56:29
 -->
 <template>
   <IhPage>
@@ -205,7 +205,7 @@
                 class="text-ellipsis"
                 :title="row.dealCode"
               >成交编号: <el-link
-                  style="color:#4881f9"
+                  type="primary"
                   @click="routeToDeal(row)"
                 >
                   {{row.dealCode}}
@@ -230,7 +230,7 @@
                 class="text-ellipsis"
                 :title="row.contNo"
               >分销协议编号: <el-link
-                  style="color:#4881f9"
+                  type="primary"
                   @click="routeToDistribution(row)"
                 >{{row.contNo}}</el-link>
               </div>
@@ -402,7 +402,7 @@
           >
             <template v-slot="{ row }">
               <el-link
-                style="color:#4881f9"
+                type="primary"
                 @click="routeToDeal(row)"
               >
                 {{row.dealCode}}
@@ -502,7 +502,7 @@
           >
             <template v-slot="{ row }">
               <el-link
-                style="color:#4881f9"
+                type="primary"
                 @click="$router.push(`/projectApproval/info?id=${row.cycleId}`)"
                 :title="row.cycleName"
                 class="text-ellipsis"
@@ -522,7 +522,7 @@
                     {{`名称: ${item.title}`}}
                   </div>
                   <el-link
-                    style="color:#4881f9"
+                    type="primary"
                     @click="routeToDistribution(item)"
                     :title="`编号: ${item.contNo}`"
                     class="text-ellipsis"
@@ -924,7 +924,7 @@ export default class PayoffEdit extends Vue {
     let router = this.$router.resolve({
       path: `/dealReport/info`,
       query: {
-        code: row.dealCode,
+        id: row.dealCode,
         type: "CODE",
       },
     });
