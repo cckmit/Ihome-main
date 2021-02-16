@@ -4,7 +4,7 @@
  * @Author: wwq
  * @Date: 2020-12-26 11:11:28
  * @LastEditors: wwq
- * @LastEditTime: 2021-02-08 09:14:38
+ * @LastEditTime: 2021-02-16 16:24:17
 -->
 <template>
   <IhPage label-width="120px">
@@ -205,7 +205,7 @@
           align="center"
         >
           <template v-slot="{ row }">
-            <div :class="{ 'status-style': ['Unconfirm', 'BranchFinanceUnreview'].includes(row.status) && res.rejectionMark  }">
+            <div :class="{ 'status-style': ['Unconfirm', 'BranchFinanceUnreview'].includes(row.status) && row.rejectionMark === 'Yes' }">
               {{$root.dictAllName(row.status, "PayoffStatus")}}
             </div>
           </template>
