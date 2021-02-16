@@ -832,7 +832,7 @@
     <div v-if="postData.receiveList.length && ['ChangeAchieveInf', 'RetreatRoom'].includes(changeType)">
       <div class="divider-padding" v-if="addFlag">
         <div class="divider-tip color-blur">
-          <div>完善收派金额后请点击下方按钮初始化加载对外拆佣及平台费用数据</div>
+<!--          <div>完善收派金额后请点击下方按钮初始化加载对外拆佣及平台费用数据</div>-->
           <div class="btn">
             <el-button class="btn-color" @click="handleLoadCommission('add')">点击加载对外拆佣及平台费用数据</el-button>
           </div>
@@ -840,7 +840,7 @@
       </div>
       <div class="divider-padding border-color-red" v-if="editFlag || isShowBtn">
         <div class="divider-tip color-red">
-          <div>收派金额发生变动，业绩需要初始化重新分配，请点击下方刷新按钮重新初始化对外拆佣及平台费用数据</div>
+<!--          <div>收派金额发生变动，业绩需要初始化重新分配，请点击下方刷新按钮重新初始化对外拆佣及平台费用数据</div>-->
           <div class="btn">
             <el-button type="danger" @click="handleLoadCommission('refresh')">刷新</el-button>
           </div>
@@ -1608,6 +1608,7 @@
     editFlag: any = false; // 编辑页面 --- 提示框
     tipsFlag: any = false; // 加载拆佣情况 --- 提示框
     dividerTips: any = '业绩分配'; // 分割标题：业绩分配; 刷新成功; 加载成功
+    hasClickFlag: any = false; // 判断初始化平台费用按钮是否点击过，默认没有
 
     // 应收信息表格
     get receiveAchieveVO() {
@@ -1773,10 +1774,11 @@
         ...res
       };
       // 提示框
-      this.addFlag = false;
-      this.editFlag = false;
-      this.tipsFlag = true;
-      this.dividerTips = '业绩分配';
+      await this.showChangeTips();
+      // this.addFlag = false;
+      // this.editFlag = false;
+      // this.tipsFlag = true;
+      // this.dividerTips = '业绩分配';
       this.isSameFlag = res?.scheme?.isSame === "Yes"; // 分销总包是否一致
       this.postData.address = res?.house?.address;
       this.postData.area = res?.house?.area;
@@ -2423,10 +2425,11 @@
           return vo.type === "ServiceFee";
         });
       }
-      this.addFlag = false;
-      this.editFlag = true;
-      this.tipsFlag = false;
-      this.dividerTips = '刷新成功';
+      this.showChangeTips();
+      // this.addFlag = false;
+      // this.editFlag = true;
+      // this.tipsFlag = false;
+      // this.dividerTips = '刷新成功';
     }
 
     // 改变计算方式 --- 手动/自动
@@ -2441,10 +2444,19 @@
 
     // 显示变动提示
     showChangeTips() {
-      this.addFlag = false;
-      this.editFlag = true;
-      this.tipsFlag = false;
-      this.dividerTips = '加载成功';
+      if (this.hasClickFlag) {
+        // 点击过
+        this.addFlag = false;
+        this.editFlag = true;
+        this.tipsFlag = false;
+        this.dividerTips = '刷新成功';
+      } else {
+        // 没点击过
+        this.addFlag = true;
+        this.editFlag = false;
+        this.tipsFlag = false;
+        this.dividerTips = '加载成功';
+      }
     }
 
     // 改变签约、认购价格后，重新计算收派套餐问题
@@ -2477,10 +2489,11 @@
       }
       // 提示框
       if (!this.addFlag) {
-        this.addFlag = false;
-        this.editFlag = true;
-        this.tipsFlag = false;
-        this.dividerTips = '刷新成功';
+        this.showChangeTips();
+        // this.addFlag = false;
+        // this.editFlag = true;
+        // this.tipsFlag = false;
+        // this.dividerTips = '刷新成功';
       }
     }
 
@@ -2711,10 +2724,12 @@
       this.postData.channelCommList = []; // 对外拆佣
       this.postData.achieveTotalBagList = []; // 平台费用-总包
       this.postData.achieveDistriList = []; // 平台费用-分销
-      this.addFlag = true;
-      this.editFlag = false;
-      this.tipsFlag = false;
-      this.dividerTips = '加载成功';
+      this.hasClickFlag = false;
+      this.showChangeTips();
+      // this.addFlag = true;
+      // this.editFlag = false;
+      // this.tipsFlag = false;
+      // this.dividerTips = '加载成功';
       let list: any = ['contType', 'contNo', 'recordState', 'recordStr', 'area', 'room', 'hall',
         'toilet', 'propertyNo', 'signType', 'returnRatio', 'subscribePrice', 'subscribeDate',
         'signPrice', 'signDate', 'agencyId', 'agencyName', 'channelLevel', 'channelLevelName']
@@ -2739,10 +2754,11 @@
         });
         this.postData.receiveList = tempList;
         // 显示手动按钮
-        this.addFlag = false;
-        this.editFlag = true;
-        this.tipsFlag = false;
-        this.dividerTips = "加载成功";
+        this.showChangeTips();
+        // this.addFlag = false;
+        // this.editFlag = true;
+        // this.tipsFlag = false;
+        // this.dividerTips = "加载成功";
       }
     }
 
@@ -2907,6 +2923,7 @@
         this.editFlag = false;
         this.tipsFlag = true;
         this.dividerTips = "加载成功";
+        this.hasClickFlag = true;
       } else if (type === 'refresh') {
         // 刷新
         try {
@@ -2929,7 +2946,8 @@
           this.addFlag = false;
           this.editFlag = false;
           this.tipsFlag = true;
-          this.dividerTips = "加载成功";
+          this.dividerTips = "刷新成功";
+          this.hasClickFlag = true;
         } catch (error) {
           console.log(error);
         }
@@ -4149,7 +4167,7 @@
       }
 
       .btn {
-        margin-top: 10px;
+        //margin-top: 10px;
 
         .btn-color {
           color: #FFF;
