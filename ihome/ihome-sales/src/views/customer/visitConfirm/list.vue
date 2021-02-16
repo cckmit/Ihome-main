@@ -105,8 +105,8 @@
                 v-model="queryPageParameters.exMarket"
                 placeholder="请选择项目类型"
               >
-                <el-option label="是" value="1">市场化项目</el-option>
-                <el-option label="否" value="0">非市场化项目</el-option>
+                <el-option label="市场化项目" value="1">市场化项目</el-option>
+                <el-option label="非市场化项目" value="0">非市场化项目</el-option>
               </el-select>
             </el-form-item>
           </el-col>
@@ -352,7 +352,7 @@ export default class ReturnConfirmList extends Vue {
     reportDate: null,
     reportDateStart: null,
     reportDateEnd: null,
-    departmentId: (this.$root as any).userInfo.orgId || null,
+    departmentId: null,
     channelId: null,
     reportType: null,
     exMarket: null,
@@ -459,7 +459,7 @@ export default class ReturnConfirmList extends Vue {
       reportDate: null,
       reportDateStart: null,
       reportDateEnd: null,
-      departmentId: (this.$root as any).userInfo.orgId || null,
+      departmentId: null,
       channelId: null,
       reportType: null,
       exMarket: null,
