@@ -18,16 +18,16 @@
     width="600px"
     class="dialog text-left"
   >
-    <el-form ref="form" :model="form" :rules="rules" label-width="80px">
+    <el-form ref="form" :model="form" :rules="rules" label-width="100px">
       <el-row>
-        <el-col :span="18">
+        <el-col>
           <el-form-item label="客户姓名" prop="custName">
             <el-input v-model="form.custName" placeholder="客户姓名"></el-input>
           </el-form-item>
         </el-col>
       </el-row>
       <el-row>
-        <el-col :span="18">
+        <el-col>
           <el-form-item label="手机号码" prop="custTel">
             <el-input
               v-model="form.custTel"
@@ -37,7 +37,7 @@
         </el-col>
       </el-row>
       <el-row>
-        <el-col :span="18">
+        <el-col>
           <el-form-item label="客户来源" prop="custOrg">
             <el-select v-model="form.custOrg" placeholder="请选客户来源">
               <el-option
@@ -51,7 +51,7 @@
         </el-col>
       </el-row>
       <el-row>
-        <el-col :span="18">
+        <el-col>
           <el-form-item label="客户类型" prop="custType">
             <el-select v-model="form.custType" placeholder="请选客户类型">
               <el-option
@@ -65,7 +65,7 @@
         </el-col>
       </el-row>
       <el-row>
-        <el-col :span="18">
+        <el-col>
           <el-form-item label="证件类型" prop="cardType">
             <el-select v-model="form.cardType" placeholder="请选择证件类型" @change="() => {handleCardChange()}">
               <el-option
@@ -79,7 +79,7 @@
         </el-col>
       </el-row>
       <el-row>
-        <el-col :span="18">
+        <el-col>
           <el-form-item label="证件编号" prop="certificateNumber">
             <el-input
               v-model="form.certificateNumber"
@@ -89,7 +89,7 @@
         </el-col>
       </el-row>
       <el-row>
-        <el-col :span="18">
+        <el-col>
           <el-form-item label="邮箱" prop="email">
             <el-input v-model="form.email" placeholder="邮箱"></el-input>
           </el-form-item>
