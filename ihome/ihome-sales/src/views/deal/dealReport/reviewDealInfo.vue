@@ -692,7 +692,7 @@
       let info: any = await get_deal_get__id({id: this.id});
       this.postData = (this as any).$tool.deepClone(info || {});
       // 初始化优惠告知书信息
-      await this.getInformation();
+      await this.getInformation(info.id, info.parentId);
       // console.log(this.postData);
       // 收派金额数据整理 showData
       if (this.postData.receiveList && this.postData.receiveList.length > 0) {
@@ -758,13 +758,21 @@
     }
 
     // 根据成交id获取优惠告知书列表
-    async getInformation() {
-      const list: any = await post_notice_customer_information({dealId: this.id});
-      // console.log('优惠告知书列表', list);
-      if (list && list.length > 0) {
-        this.postData.offerNoticeList = list;
+    async getInformation(id: any = '', parentId: any = '') {
+      if (!id || !parentId) return;
+      if (id !== parentId) {
+        const idList: any = await post_notice_customer_information({dealId: id});
+        const parentIdList: any = await post_notice_customer_information({dealId: parentId});
+        // console.log('优惠告知书列表', list);
+        this.postData.offerNoticeList = [...idList, ...parentIdList];
       } else {
-        this.postData.offerNoticeList = [];
+        const list: any = await post_notice_customer_information({dealId: this.id});
+        // console.log('优惠告知书列表', list);
+        if (list && list.length > 0) {
+          this.postData.offerNoticeList = list;
+        } else {
+          this.postData.offerNoticeList = [];
+        }
       }
     }
 
