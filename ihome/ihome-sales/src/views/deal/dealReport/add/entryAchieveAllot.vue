@@ -899,7 +899,7 @@
                   <div class="fee">{{item.achieveFees}}</div>
                   <div class="ratio">{{item.achieveFeesRatio ? item.achieveFeesRatio : 0}}%</div>
                   <div class="name">
-                    <span>{{item.managerName ? item.managerName : '---'}}</span>
+                    <span>{{item.manager ? item.manager : '---'}}</span>
                     (<span>{{item.managerPosition}}</span>)
                   </div>
                 </div>
@@ -982,7 +982,7 @@
                   <div class="fee">{{item.achieveFees}}</div>
                   <div class="ratio">{{item.achieveFeesRatio ? item.achieveFeesRatio : 0}}%</div>
                   <div class="name">
-                    <span>{{item.managerName ? item.managerName : '---'}}</span>
+                    <span>{{item.manager ? item.manager : '---'}}</span>
                     (<span>{{item.managerPosition}}</span>)
                   </div>
                 </div>

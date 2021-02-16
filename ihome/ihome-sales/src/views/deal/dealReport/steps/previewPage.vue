@@ -412,7 +412,7 @@
                   <div class="fee">{{item.achieveFees}}</div>
                   <div class="ratio">{{item.achieveFeesRatio ? item.achieveFeesRatio : 0}}%</div>
                   <div class="name">
-                    <span>{{item.managerName ? item.managerName : '---'}}</span>
+                    <span>{{item.manager ? item.manager : '---'}}</span>
                     (<span>{{item.managerPosition}}</span>)
                   </div>
                 </div>
@@ -469,7 +469,7 @@
                   <div class="fee">{{item.achieveFees}}</div>
                   <div class="ratio">{{item.achieveFeesRatio ? item.achieveFeesRatio : 0}}%</div>
                   <div class="name">
-                    <span>{{item.managerName ? item.managerName : '---'}}</span>
+                    <span>{{item.manager ? item.manager : '---'}}</span>
                     (<span>{{item.managerPosition}}</span>)
                   </div>
                 </div>
@@ -936,7 +936,7 @@
           sums[index] = '合计';
           return;
         }
-        if ([3, 5, 6].includes(index)) {
+        if ([3, 5].includes(index)) {
           const values = data.map((item: any) => Number(item[column.property]));
           if (!values.every((value: any) => isNaN(value))) {
             sums[index] = values.reduce((prev: any, curr: any) => {

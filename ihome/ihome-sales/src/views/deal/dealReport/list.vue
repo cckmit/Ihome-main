@@ -162,7 +162,7 @@
               <el-col :span="8">
                 <el-form-item label="栋座">
                   <IhSelectPageByBuild
-                    v-model="queryPageParameters.buyUnit"
+                    v-model="queryPageParameters.buildingId"
                     :proId="queryPageParameters.proId"
                     placeholder="请选择栋座"
                     clearable
@@ -174,7 +174,7 @@
                   <IhSelectPageByRoom
                     v-model="queryPageParameters.roomNumberId"
                     :proId="queryPageParameters.proId"
-                    :buildingId="queryPageParameters.buyUnit"
+                    :buildingId="queryPageParameters.buildingId"
                     placeholder="请选择房号"
                     clearable
                   ></IhSelectPageByRoom>
@@ -414,7 +414,7 @@
       stage: null,
       projectCycle: null,
       proId: null,
-      buyUnit: null,
+      buildingId: null,
       brokerId: null,
       timeType: null,
       beginTime: null,
@@ -584,7 +584,7 @@
         stage: null,
         projectCycle: null,
         proId: null,
-        buyUnit: null,
+        buildingId: null,
         brokerId: null,
         timeType: null,
         beginTime: null,
