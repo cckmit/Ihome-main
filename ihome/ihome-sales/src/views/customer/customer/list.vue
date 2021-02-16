@@ -80,8 +80,8 @@
     </template>
     <template v-slot:btn>
       <el-row>
-        <el-button type="info" @click="reset()">重置</el-button>
         <el-button type="primary" @click="search()">查询</el-button>
+        <el-button type="info" @click="reset()">重置</el-button>
         <el-button
           v-has="'B.SALES.CUSTOMER.CUSTLIST.ADD'"
           type="success"
