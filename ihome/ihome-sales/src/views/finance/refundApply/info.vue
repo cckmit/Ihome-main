@@ -4,7 +4,7 @@
  * @Author: zyc
  * @Date: 2021-02-06 16:27:06
  * @LastEditors: wwq
- * @LastEditTime: 2021-02-16 18:30:56
+ * @LastEditTime: 2021-02-16 18:49:44
 -->
 <template>
   <IhPage>
@@ -485,6 +485,81 @@
         </table>
       </div>
       <br />
+      <div class="content">
+        <p class="ih-info-title">操作日志</p>
+        <div class="right-button">
+          <el-button
+            slot="reference"
+            type="success"
+            size="small"
+            icon="el-icon-search"
+            @click="searchPerson"
+          >查询当前代办人</el-button>
+          <el-button
+            @click="updateOA"
+            type="success"
+            size="small"
+            icon="el-icon-refresh"
+          >同步OA审核日志</el-button>
+        </div>
+      </div>
+      <div class="padding-left-20">
+        <el-table
+          class="ih-table"
+          :data="info.refundRecords"
+          style="width: 100%"
+        >
+          <el-table-column
+            label="操作"
+            prop="operation"
+          >
+            <template v-slot="{ row }">
+              {{$root.dictAllName(row.operation, 'PayoffOperate')}}
+            </template>
+          </el-table-column>
+          <el-table-column
+            label="操作后状态"
+            prop="afterStatus"
+          >
+            <template v-slot="{ row }">
+              {{$root.dictAllName(row.afterStatus, 'PayoffStatus')}}
+            </template>
+          </el-table-column>
+          <el-table-column
+            label="操作人"
+            prop="operatorUsername"
+          ></el-table-column>
+          <el-table-column
+            label="岗位"
+            prop="operatorDept"
+          ></el-table-column>
+          <el-table-column
+            label="操作时间"
+            prop="operateTime"
+          ></el-table-column>
+          <el-table-column
+            label="处理结果"
+            prop="result"
+          >
+            <template v-slot="{ row }">
+              {{$root.dictAllName(row.result, 'PayoffProcessResult')}}
+            </template>
+          </el-table-column>
+          <el-table-column
+            label="系统"
+            prop="systemType"
+          >
+            <template v-slot="{ row }">
+              {{$root.dictAllName(row.systemType, 'PayoffSystem')}}
+            </template>
+          </el-table-column>
+          <el-table-column
+            label="审核意见"
+            prop="remark"
+          ></el-table-column>
+        </el-table>
+      </div>
+      <br />
       <p class="ih-info-title">上传附件</p>
       <div class="padding-left-20">
         <el-table
@@ -536,8 +611,12 @@
 </template>
 <script lang="ts">
 import { Component, Vue } from "vue-property-decorator";
-import { get_refundApply_get__id } from "@/api/finance/index";
-import { post_bankAccount_getByOrgId__orgId } from "@/api/finance/index";
+import {
+  post_bankAccount_getByOrgId__orgId,
+  get_refundApply_get__id,
+  post_refundApply_queryOaApprovalUser__id,
+  post_refundApply_getFlowCommentList__id,
+} from "@/api/finance/index";
 import UploadList from "../refundApply/dialog/uploadList.vue";
 
 @Component({
@@ -684,16 +763,29 @@ export default class PayoffEdit extends Vue {
     });
     this.submitFile = { ...obj };
   }
+
+  async searchPerson() {
+    const res: any = await post_refundApply_queryOaApprovalUser__id({
+      id: this.returnId,
+    });
+    this.$alert(res, "当前待办人", {
+      confirmButtonText: "确定",
+    });
+  }
+
+  async updateOA() {
+    const res = await post_refundApply_getFlowCommentList__id({
+      id: this.returnId,
+    });
+    this.info.refundRecords = res;
+  }
 }
 </script>
 <style lang="scss" scoped>
 .content {
-  position: relative;
-  /deep/ .el-button {
-    position: absolute;
-    top: -10px;
-    right: 0;
-  }
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
 }
 .bottom {
   margin-top: 30px;
