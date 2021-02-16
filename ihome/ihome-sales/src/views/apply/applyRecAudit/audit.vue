@@ -4,7 +4,7 @@
  * @Author: ywl
  * @Date: 2021-01-14 19:09:51
  * @LastEditors: ywl
- * @LastEditTime: 2021-02-15 17:58:27
+ * @LastEditTime: 2021-02-16 17:32:38
 -->
 <template>
   <IhPage class="text-left">
@@ -772,6 +772,7 @@ import {
   post_applyRec_audit,
   get_applyRec_getOaAuditUser__applyId,
   post_applyRec_updateOaAudit,
+  post_applyRec_stop,
 } from "../../../api/apply/index";
 
 @Component({})
@@ -1008,9 +1009,13 @@ export default class ApplyAudit extends Vue {
     console.log(this.dealList);
   }
   private async applyStop() {
+    if (!this.remark) {
+      this.$message.warning("审批意见不能为空");
+      return;
+    }
     try {
       await this.$confirm("是否确认终止?", "提示");
-      // await post_applyRec_stop__applyId({ applyId: this.form.id });
+      await post_applyRec_stop({ applyId: this.form.id, remark: this.remark });
       this.$message.success("终止成功");
       this.$goto({
         path: "/applyRecAudit/list",
