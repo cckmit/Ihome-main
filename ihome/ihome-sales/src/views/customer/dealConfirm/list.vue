@@ -12,7 +12,7 @@
       <el-form label-width="100px">
         <el-row>
           <el-col :span="8">
-            <el-form-item label="客户信息：">
+            <el-form-item label="客户信息">
               <el-input
                 v-model="queryPageParameters.nameOrTel"
                 placeholder="姓名或手机号"
@@ -21,7 +21,7 @@
             </el-form-item>
           </el-col>
           <el-col :span="8">
-            <el-form-item label="报备人信息：">
+            <el-form-item label="报备人信息">
               <el-input
                 v-model="queryPageParameters.reportNameOrTel"
                 placeholder="姓名或手机号"
@@ -30,7 +30,7 @@
             </el-form-item>
           </el-col>
           <el-col :span="8">
-            <el-form-item label="项目周期：">
+            <el-form-item label="项目周期">
               <IhSelectPageByCycle
                 clearable
                 @changeOption="
@@ -46,7 +46,7 @@
         </el-row>
         <el-row>
           <el-col :span="8">
-            <el-form-item label="报备时间：">
+            <el-form-item label="报备时间">
               <el-date-picker
                 style="width: 100%"
                 v-model="queryPageParameters.reportDate"
@@ -63,7 +63,7 @@
             </el-form-item>
           </el-col>
           <el-col :span="8">
-            <el-form-item label="事业部：">
+            <el-form-item label="事业部">
               <IhSelectPageDivision
                 v-model="queryPageParameters.departmentId"
                 placeholder="请选择事业部"
@@ -72,7 +72,7 @@
             </el-form-item>
           </el-col>
           <el-col :span="8">
-            <el-form-item label="渠道商名称：">
+            <el-form-item label="渠道商名称">
               <IhSelectPageByChannel
                 v-model="queryPageParameters.channelId"
                 clearable
@@ -83,7 +83,7 @@
         </el-row>
         <el-row>
           <el-col :span="8">
-            <el-form-item label="报备类型：">
+            <el-form-item label="报备类型">
               <el-select
                 style="width: 100%"
                 v-model="queryPageParameters.reportType"
@@ -99,7 +99,7 @@
             </el-form-item>
           </el-col>
           <el-col :span="8">
-            <el-form-item label="项目类型：">
+            <el-form-item label="项目类型">
               <el-select
                 style="width: 100%"
                 v-model="queryPageParameters.exMarket"
