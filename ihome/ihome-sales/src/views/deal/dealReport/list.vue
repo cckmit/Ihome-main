@@ -75,7 +75,7 @@
               <el-col :span="8">
                 <el-form-item label="组织">
                   <IhSelectOrgTree
-                    v-model="queryPageParameters.dealOrg"
+                    v-model="queryPageParameters.dealOrgId"
                   ></IhSelectOrgTree>
                 </el-form-item>
               </el-col>
@@ -406,7 +406,7 @@
       contType: null,
       status: null,
       suppContType: null,
-      dealOrg: null,
+      dealOrgId: null,
       entryPerson: null,
       customerName: null,
       customerPhone: null,
@@ -576,7 +576,7 @@
         contType: null,
         status: null,
         suppContType: null,
-        dealOrg: null,
+        dealOrgId: null,
         entryPerson: null,
         customerName: null,
         customerPhone: null,
