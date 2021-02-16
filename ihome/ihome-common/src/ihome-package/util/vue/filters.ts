@@ -4,8 +4,10 @@
  * @Author: zyc
  * @Date: 2020-07-16 08:55:55
  * @LastEditors: ywl
- * @LastEditTime: 2021-01-18 21:04:58
+ * @LastEditTime: 2021-02-16 15:40:36
  */
+import { MyMath } from '../math'
+const math = new MyMath()
 export default (Vue: any, vm: any) => {
     (vm)
     Vue.filter('sex', function (value: any) {
@@ -113,7 +115,7 @@ export default (Vue: any, vm: any) => {
     })
 
     Vue.filter('percent', function (value: any) {
-        let mul = Number(value) * 100
+        let mul = math.tofixed(Number(value) * 100, 2)
         return mul + '%'
     })
 

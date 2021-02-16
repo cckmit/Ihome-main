@@ -4,7 +4,7 @@
  * @Author: ywl
  * @Date: 2021-01-14 18:20:57
  * @LastEditors: ywl
- * @LastEditTime: 2021-02-15 13:44:39
+ * @LastEditTime: 2021-02-16 15:15:42
 -->
 <template>
   <IhPage label-width="100px">
@@ -163,6 +163,7 @@
           <template v-slot="{ row }">
             <el-link
               type="success"
+              v-has="'B.SALES.APPLY.APPLYRECAUDIT.AUDITAPPLY'"
               @click="$router.push(`/applyRecAudit/audit?id=${row.id}`)"
             >审核</el-link>
           </template>

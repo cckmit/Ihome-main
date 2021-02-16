@@ -822,6 +822,7 @@
           case "ChangeInternalAchieveInf":
             // 内部员工业绩变更
             postData.status = type === 'save' ? 'Draft' : 'PlatformClerkUnreview';
+            postData.achieveVO = this.pageData?.callBackInfo?.achieveVO;
             if (this.btnType === "add") {
               // 去新增
               await post_suppDeal_entryStaffAchieveChange(postData);

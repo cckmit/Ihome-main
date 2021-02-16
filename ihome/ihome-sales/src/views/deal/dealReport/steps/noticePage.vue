@@ -121,7 +121,7 @@
                 </el-form-item>
               </el-col>
               <el-col :span="12">
-                <el-form-item label="优惠告知书类型" :prop="form.offerSwitch ? 'offerProtocolType' : ''">
+                <el-form-item label="优惠告知书类型" :prop="form.offerSwitch ? 'offerProtocolType' : 'empty'">
                   <el-select
                     v-model="form.offerProtocolType"
                     clearable
@@ -136,7 +136,7 @@
                 </el-form-item>
               </el-col>
               <el-col :span="12">
-                <el-form-item label="优惠方式" :prop="form.offerSwitch ? 'offerMode' : ''">
+                <el-form-item label="优惠方式" :prop="form.offerSwitch ? 'offerMode' : 'empty'">
                   <el-select
                     @change="handleSelectMode"
                     v-model="form.offerMode"
@@ -151,7 +151,7 @@
                 </el-form-item>
               </el-col>
               <el-col :span="12">
-                <el-form-item label="优惠方式说明" :prop="form.offerSwitch ? 'offerRemark' : ''">
+                <el-form-item label="优惠方式说明" :prop="form.offerSwitch ? 'offerRemark' : 'empty'">
                   <el-input
                     class="input"
                     v-model="form.offerRemark"
@@ -160,7 +160,7 @@
                 </el-form-item>
               </el-col>
               <el-col :span="12">
-                <el-form-item label="优惠金额" :prop="form.offerSwitch ? 'offerMoney' : ''">
+                <el-form-item label="优惠金额" :prop="form.offerSwitch ? 'offerMoney' : 'empty'">
                   <el-input
                     v-digits="2"
                     class="input"
@@ -190,8 +190,8 @@
                   <el-table-column prop="email" label="邮箱" min-width="120"></el-table-column>
                 </el-table>
               </el-col>
-              <el-col class="margin-top-10" :span="24">
-                <el-form-item v-if="form.offerProtocolType === 'PaperTemplate'" label="纸质版附件">
+              <el-col class="margin-top-10" :span="24" v-if="form.offerProtocolType === 'PaperTemplate'">
+                <el-form-item label="纸质版附件">
                   <IhUpload
                     @newFileList="getNewFile"
                     :isCrop="false"
@@ -203,6 +203,22 @@
                     :file-size="10"
                     :file-list.sync="fileList"
                     file-type="offerAnnexList"
+                  ></IhUpload>
+                </el-form-item>
+              </el-col>
+              <el-col class="margin-top-10" :span="24" v-if="form.offerMode === 'Manual'">
+                <el-form-item label="认购书附件" :prop="form.offerMode === 'Manual' ? 'offerAnnexList' : 'empty'">
+                  <IhUpload
+                    @newFileList="getNewFile"
+                    :isCrop="false"
+                    :isMove="false"
+                    :removePermi="true"
+                    size="100px"
+                    :limit="10"
+                    accept=".jpg,.jpeg,.png,.gif,.bmp,.JPG,.JPEG,.PBG,.GIF,.BMP"
+                    :file-size="10"
+                    :file-list.sync="fileList"
+                    file-type="Subscription"
                   ></IhUpload>
                 </el-form-item>
               </el-col>
@@ -296,6 +312,24 @@
     components: {BankRecord},
   })
   export default class NoticePage extends Vue {
+    private checkFileList: any = (rule: any, value: any, callback: any) => {
+      if (this.form.offerMode === 'Manual') {
+        // 自定义下，认购书必上传
+        let flag: any = false;
+        if (this.form.offerAnnexList && this.form.offerAnnexList.length) {
+          flag = this.form.offerAnnexList.some((list: any) => {
+            return list.type === 'Subscription';
+          });
+        }
+        if (!flag) {
+          return callback(new Error('优惠方式为自定义时，必须上传认购书附件'));
+        } else {
+          callback();
+        }
+      } else {
+        callback();
+      }
+    };
     @Prop() private pageData?: any; // 页面数据
     fileList: any = [];
     preferentialList: any = []; // 优惠方式下拉选项
@@ -362,6 +396,9 @@
       ],
       refundAccount: [
         { required: true, message: '请输入银行账号', trigger: 'change' }
+      ],
+      offerAnnexList: [
+        { validator: this.checkFileList, trigger: 'change' }
       ],
       empty: []
     };
@@ -437,18 +474,49 @@
       // console.log(type);
       // 保存上传的文件
       if (type) {
-        if (list && list.length > 0) {
-          let tempList: any = [];
-          list.forEach((item: any) => {
-            tempList.push(
-              {
-                attachmentSuffix: item.response.length ? item.response[0].generateFileType : '', // 附件后缀
-                fileNo: item.fileId, // 附件编号
-                type: 'NoticeAttachment' // 告知书附件
+        if (type !== "Subscription") {
+          if (list && list.length > 0) {
+            let tempList: any = [];
+            list.forEach((item: any) => {
+              tempList.push(
+                {
+                  attachmentSuffix: item.response.length ? item.response[0].generateFileType : '', // 附件后缀
+                  fileNo: item.fileId, // 附件编号
+                  type: 'NoticeAttachment' // 告知书附件
+                }
+              )
+            });
+            if (type === "offerAnnexList") {
+              // 优惠告知书
+              if (this.form["offerAnnexList"] && this.form["offerAnnexList"].length) {
+                this.form["offerAnnexList"] = [...this.form["offerAnnexList"], ...tempList];
+              } else {
+                this.form["offerAnnexList"] = tempList;
               }
-            )
-          });
-          this.form[type] = tempList;
+            } else {
+              // 其他
+              this.form[type] = tempList;
+            }
+          }
+        } else {
+          // 认购书附件
+          if (list && list.length > 0) {
+            let tempList: any = [];
+            list.forEach((item: any) => {
+              tempList.push(
+                {
+                  attachmentSuffix: item.response.length ? item.response[0].generateFileType : '', // 附件后缀
+                  fileNo: item.fileId, // 附件编号
+                  type: 'Subscription' // 告知书附件
+                }
+              )
+            });
+            if (this.form["offerAnnexList"] && this.form["offerAnnexList"].length) {
+              this.form["offerAnnexList"] = [...this.form["offerAnnexList"], ...tempList];
+            } else {
+              this.form["offerAnnexList"] = tempList;
+            }
+          }
         }
       }
     }
