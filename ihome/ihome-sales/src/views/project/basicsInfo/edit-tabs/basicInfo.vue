@@ -538,6 +538,7 @@
     >
       <el-button
         type="primary"
+        :class="{'ih-data-disabled': !secureSave()}"
         v-has="'B.SALES.PROJECT.BASICLIST.ZXMBC'"
         :loading="loadSave"
         @click="submit('save')"
@@ -687,7 +688,25 @@ export default class EditBasicInfo extends Vue {
   isShow = true;
   oldInfo: any = {};
   oldSubmitFile: any = {};
+  secureSave() {
+    const status = window.sessionStorage.getItem("projectStatus");
+    const Adopt = status === "Adopt";
+    const Conduct = status === "Conduct";
+    if (Adopt) {
+      const RHeadBusinessManagement = this.$roleTool.RHeadBusinessManagement();
+      const RBusinessManagement = this.$roleTool.RBusinessManagement();
+      if (RHeadBusinessManagement || RBusinessManagement){
+          return true;
+      }else{
+        return false;
+      }
+    }else if (Conduct){
+       return false;
+    }else{
+       return true;
+    }
 
+  }
   submitChange() {
     const status = window.sessionStorage.getItem("projectStatus");
     const Draft = status === "Draft";
