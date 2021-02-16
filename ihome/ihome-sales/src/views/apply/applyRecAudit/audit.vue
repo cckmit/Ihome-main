@@ -4,7 +4,7 @@
  * @Author: ywl
  * @Date: 2021-01-14 19:09:51
  * @LastEditors: ywl
- * @LastEditTime: 2021-02-16 17:32:38
+ * @LastEditTime: 2021-02-16 18:32:28
 -->
 <template>
   <IhPage class="text-left">
@@ -743,6 +743,7 @@
       <div class="text-center">
         <el-button
           type="primary"
+          v-if="['BusinessManAgain', 'InvoiceClerk'].includes(form.status)"
           @click="applyStop()"
         >终止</el-button>
         <el-button
