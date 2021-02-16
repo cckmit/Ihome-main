@@ -4,7 +4,7 @@
  * @Author: ywl
  * @Date: 2021-01-07 16:30:03
  * @LastEditors: ywl
- * @LastEditTime: 2021-02-15 17:11:02
+ * @LastEditTime: 2021-02-16 11:50:38
 -->
 <template>
   <IhPage class="text-left">
@@ -14,6 +14,7 @@
         ref="ruleForm"
         label-width="120px"
         :rules="rules"
+        :model="form"
         class="demo-ruleForm"
       >
         <el-row>
