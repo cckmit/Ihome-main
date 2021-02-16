@@ -4,7 +4,7 @@
  * @Author: ywl
  * @Date: 2020-12-19 11:19:23
  * @LastEditors: ywl
- * @LastEditTime: 2020-12-21 10:20:50
+ * @LastEditTime: 2021-02-16 17:08:20
 -->
 <template>
   <el-dialog
@@ -94,7 +94,9 @@
               label="商户号"
               :prop="`merchants.${n}.merchantNo`"
               :rules="[
-                {required: true, message: '请输入商户号', trigger: 'change'}
+                { required: true, message: '请输入商户号', trigger: 'change' },
+                { pattern: /^[0-9]*$/, message: '只能录入数值', trigger: 'change' },
+                { max: 32, message: '字符长度不能大于32', trigger: 'change' }
               ]"
             >
               <el-input
@@ -108,7 +110,9 @@
               label="终端号"
               :prop="`merchants.${n}.terminalNo`"
               :rules="[
-                {required: true, message: '请输入终端号', trigger: 'change'}
+                {required: true, message: '请输入终端号', trigger: 'change'},
+                { pattern: /^[0-9]*$/, message: '只能录入数值', trigger: 'change' },
+                { max: 32, message: '字符长度不能大于32', trigger: 'change' }
               ]"
             >
               <el-input
@@ -172,8 +176,16 @@ export default class POSAdd extends Vue {
     ],
     productModel: [
       { required: true, message: "请输入产品型号", trigger: "change" },
+      { max: 32, message: "字符长度不能大于32", trigger: "change" },
     ],
-    serialNo: [{ required: true, message: "请输入序列号", trigger: "change" }],
+    serialNo: [
+      { required: true, message: "请输入序列号", trigger: "change" },
+      {
+        pattern: /^[a-zA-Z0-9]*$/,
+        message: "只能录入数值、大小写英文字母",
+        trigger: "change",
+      },
+    ],
   };
   private dialogVisible = true;
   private bankOption: any = [];
@@ -192,10 +204,10 @@ export default class POSAdd extends Vue {
           ? await post_posTerminal_add(this.form)
           : await post_posTerminal_update(this.form);
         this.$message.success(`${this.isAdd ? "添加" : "修改"}成功`);
+        this.$emit("finish");
       } catch (error) {
         console.log(error);
       }
-      this.$emit("finish");
     } else {
       return false;
     }

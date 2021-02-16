@@ -709,7 +709,7 @@
     <div v-if="postData.receiveVO.length">
       <div class="divider-padding" v-if="addFlag">
         <div class="divider-tip color-blur">
-          <div>完善收派金额后请点击下方按钮初始化加载对外拆佣及平台费用数据</div>
+<!--          <div>完善收派金额后请点击下方按钮初始化加载对外拆佣及平台费用数据</div>-->
           <div class="btn">
             <el-button class="btn-color" @click="handleLoadCommission('add')">点击加载对外拆佣及平台费用数据</el-button>
           </div>
@@ -717,7 +717,7 @@
       </div>
       <div class="divider-padding border-color-red" v-if="editFlag || isShowBtn">
         <div class="divider-tip color-red">
-          <div>收派金额发生变动，业绩需要初始化重新分配，请点击下方刷新按钮重新初始化对外拆佣及平台费用数据</div>
+<!--          <div>收派金额发生变动，业绩需要初始化重新分配，请点击下方刷新按钮重新初始化对外拆佣及平台费用数据</div>-->
           <div class="btn">
             <el-button type="danger" @click="handleLoadCommission('refresh')">刷新</el-button>
           </div>
@@ -899,7 +899,7 @@
                   <div class="fee">{{item.achieveFees}}</div>
                   <div class="ratio">{{item.achieveFeesRatio ? item.achieveFeesRatio : 0}}%</div>
                   <div class="name">
-                    <span>{{item.managerName ? item.managerName : '---'}}</span>
+                    <span>{{item.manager ? item.manager : '---'}}</span>
                     (<span>{{item.managerPosition}}</span>)
                   </div>
                 </div>
@@ -982,7 +982,7 @@
                   <div class="fee">{{item.achieveFees}}</div>
                   <div class="ratio">{{item.achieveFeesRatio ? item.achieveFeesRatio : 0}}%</div>
                   <div class="name">
-                    <span>{{item.managerName ? item.managerName : '---'}}</span>
+                    <span>{{item.manager ? item.manager : '---'}}</span>
                     (<span>{{item.managerPosition}}</span>)
                   </div>
                 </div>
@@ -1393,6 +1393,7 @@
     oneAgentRequiredFlag: any = false; // 收派金额 - 派发内场奖励金额合计大于0，为true
     hasAddNoticeFlag: any = false; // 是否有添加(删除)优惠告知书的标识：true-可以；false-不可以
     currentBtnType: any = null; // 点击的是保存还是提交按钮
+    hasClickFlag: any = false; // 判断初始化平台费用按钮是否点击过，默认没有
     // 编辑功能相关字段
     editBaseInfo: any = null; // 编辑初始化页面数据
 
@@ -1466,17 +1467,9 @@
       this.navList = (this as any).$tool.deepClone(this.defaultNavList);
       this.id = this.$route.query.id;
       if (this.id) {
-        this.addFlag = false;
-        this.editFlag = true;
-        this.tipsFlag = false;
-        this.dividerTips = '刷新成功';
         await this.editInitPage(this.id);
-      } else {
-        this.addFlag = true;
-        this.editFlag = false;
-        this.tipsFlag = false;
-        this.dividerTips = '业绩分配';
       }
+      this.showChangeTips();
     }
 
     // 编辑功能 --- 初始化页面
@@ -1802,10 +1795,19 @@
 
     // 显示变动提示
     showChangeTips() {
-      this.addFlag = false;
-      this.editFlag = true;
-      this.tipsFlag = false;
-      this.dividerTips = '加载成功';
+      if (this.hasClickFlag) {
+        // 点击过
+        this.addFlag = false;
+        this.editFlag = true;
+        this.tipsFlag = false;
+        this.dividerTips = '刷新成功';
+      } else {
+        // 没点击过
+        this.addFlag = true;
+        this.editFlag = false;
+        this.tipsFlag = false;
+        this.dividerTips = '加载成功';
+      }
     }
 
     // 改变计算方式
@@ -1813,7 +1815,7 @@
       this.postData.commissionInfoList = [];
       this.postData.achieveTotalBagList = [];
       this.postData.achieveDistriList = [];
-      this.initReceive()
+      this.initReceive();
       if (!this.addFlag) {
         this.showChangeTips();
       }
@@ -1838,12 +1840,13 @@
         });
       }
       // 提示框
-      if (!this.addFlag) {
-        this.addFlag = false;
-        this.editFlag = true;
-        this.tipsFlag = false;
-        this.dividerTips = '刷新成功';
-      }
+      this.showChangeTips();
+      // if (!this.addFlag) {
+      //   this.addFlag = false;
+      //   this.editFlag = true;
+      //   this.tipsFlag = false;
+      //   this.dividerTips = '刷新成功';
+      // }
     }
 
     // 新增 --- 初始化拆佣和平台费用
@@ -1862,6 +1865,7 @@
         this.editFlag = false;
         this.tipsFlag = true;
         this.dividerTips = "加载成功";
+        this.hasClickFlag = true;
       } else if (type === 'refresh') {
         // 刷新
         try {
@@ -1884,7 +1888,8 @@
           this.addFlag = false;
           this.editFlag = false;
           this.tipsFlag = true;
-          this.dividerTips = "加载成功";
+          this.dividerTips = "刷新成功";
+          this.hasClickFlag = true;
         } catch (error) {
           console.log(error);
         }
@@ -2272,17 +2277,19 @@
       this.postData.commissionInfoList = [];
       this.postData.achieveTotalBagList = [];
       this.postData.achieveDistriList = [];
-      if (this.id) {
-        this.addFlag = false;
-        this.editFlag = false;
-        this.tipsFlag = true;
-        this.dividerTips = '业绩分配';
-      } else {
-        this.addFlag = true;
-        this.editFlag = false;
-        this.tipsFlag = false;
-        this.dividerTips = '加载成功';
-      }
+      this.hasClickFlag = false;
+      this.showChangeTips();
+      // if (this.id) {
+      //   this.addFlag = false;
+      //   this.editFlag = false;
+      //   this.tipsFlag = true;
+      //   this.dividerTips = '业绩分配';
+      // } else {
+      //   this.addFlag = true;
+      //   this.editFlag = false;
+      //   this.tipsFlag = false;
+      //   this.dividerTips = '加载成功';
+      // }
       let list: any = ['contType', 'contNo', 'recordState', 'recordStr', 'area', 'room', 'hall',
         'toilet', 'propertyNo', 'signType', 'returnRatio', 'subscribePrice', 'subscribeDate',
         'signPrice', 'signDate', 'agencyId', 'agencyName', 'channelLevel', 'channelLevelName']
@@ -2306,10 +2313,11 @@
         this.postData.receiveVO = this.postData.receiveVO.filter((vo: any) => {
           return vo.type === "ServiceFee";
         });
-        this.addFlag = false;
-        this.editFlag = true;
-        this.tipsFlag = false;
-        this.dividerTips = '刷新成功';
+        this.showChangeTips();
+        // this.addFlag = false;
+        // this.editFlag = true;
+        // this.tipsFlag = false;
+        // this.dividerTips = '刷新成功';
       }
     }
 
@@ -2704,13 +2712,13 @@
     // 合同类型、分销协议编号、细分业务模式、认购价格、签约价格改变之后要初始化收派金额
     initReceive() {
       if (this.postData.receiveVO.length && this.postData.calculation === "Auto") {
-        // 判断收派金额数据是否选了收派套餐
         this.postData.receiveVO = (this as any).$parent.resetReceiveVOS(this.postData.receiveVO);
         // 显示手动按钮
-        this.addFlag = false;
-        this.editFlag = true;
-        this.tipsFlag = false;
-        this.dividerTips = "加载成功";
+        this.showChangeTips();
+        // this.addFlag = false;
+        // this.editFlag = true;
+        // this.tipsFlag = false;
+        // this.dividerTips = "加载成功";
       }
     }
 
@@ -2825,12 +2833,13 @@
         }
       }
       // 提示框
-      if (!this.addFlag) {
-        this.addFlag = false;
-        this.editFlag = true;
-        this.tipsFlag = false;
-        this.dividerTips = '刷新成功';
-      }
+      this.showChangeTips();
+      // if (!this.addFlag) {
+      //   this.addFlag = false;
+      //   this.editFlag = true;
+      //   this.tipsFlag = false;
+      //   this.dividerTips = '刷新成功';
+      // }
       (this as any).$parent.handleAddNotice(this.baseInfoByTerm);
     }
 
@@ -2863,12 +2872,13 @@
           }
         }
         // 提示框
-        if (!this.addFlag) {
-          this.addFlag = false;
-          this.editFlag = true;
-          this.tipsFlag = false;
-          this.dividerTips = '刷新成功';
-        }
+        this.showChangeTips();
+        // if (!this.addFlag) {
+        //   this.addFlag = false;
+        //   this.editFlag = true;
+        //   this.tipsFlag = false;
+        //   this.dividerTips = '刷新成功';
+        // }
       }
     }
 
@@ -2908,12 +2918,13 @@
           });
         }
         // 提示框
-        if (!this.addFlag) {
-          this.addFlag = false;
-          this.editFlag = true;
-          this.tipsFlag = false;
-          this.dividerTips = '刷新成功';
-        }
+        this.showChangeTips();
+        // if (!this.addFlag) {
+        //   this.addFlag = false;
+        //   this.editFlag = true;
+        //   this.tipsFlag = false;
+        //   this.dividerTips = '刷新成功';
+        // }
       }
       (this as any).$parent.handleAddCustomer();
     }
@@ -2958,12 +2969,13 @@
             }
           }
           // 提示框
-          if (!this.addFlag) {
-            this.addFlag = false;
-            this.editFlag = true;
-            this.tipsFlag = false;
-            this.dividerTips = '刷新成功';
-          }
+          this.showChangeTips();
+          // if (!this.addFlag) {
+          //   this.addFlag = false;
+          //   this.editFlag = true;
+          //   this.tipsFlag = false;
+          //   this.dividerTips = '刷新成功';
+          // }
         }
       } else if (type === 'commission') {
         // 删除对外拆佣项
@@ -3892,7 +3904,7 @@
       }
 
       .btn {
-        margin-top: 10px;
+        //margin-top: 10px;
 
         .btn-color {
           color: #FFF;

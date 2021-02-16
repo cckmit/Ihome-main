@@ -4,7 +4,7 @@
  * @Author: ywl
  * @Date: 2020-09-27 17:27:00
  * @LastEditors: ywl
- * @LastEditTime: 2021-01-30 16:58:57
+ * @LastEditTime: 2021-02-16 16:49:13
 -->
 <template>
   <IhPage class="text-left discount-info">
@@ -90,7 +90,7 @@
         <el-row v-else>
           <el-col :span="24">
             <el-form-item label="(拟)购买单位">
-              {{isRecognize ? '以最终甲方推送的房号确认书为准' : `${resInfo.buyUnitName}-${resInfo.roomNumberName}`}}
+              {{isRecognize ? '以最终甲方推送的房号确认书为准' : `${$root.dictAllName(resInfo.propertyType, 'Property')}-${resInfo.buyUnitName}-${resInfo.roomNumberName}`}}
             </el-form-item>
           </el-col>
         </el-row>
@@ -175,6 +175,25 @@
               >提交</el-button>
             </el-form-item>
           </el-col>
+        </el-row>
+        <el-row v-if="isOther">
+          <el-col :span="24">
+            <el-form-item label="认购书附件">
+              <IhUpload
+                :file-list="subscripList"
+                @newFileList="handleAddSub"
+                uploadAccept="image"
+                accept="image/*"
+                class="upload"
+                size="100px"
+              ></IhUpload>
+              <el-button
+                type="primary"
+                class="upload-button"
+                @click="submitSub()"
+              >提交</el-button>
+            </el-form-item>
+          </el-col>
           <div class="annotation padding-left-20">*注：上传附件后请点击提交按钮保存</div>
         </el-row>
       </el-form>
@@ -190,12 +209,17 @@ import { get_notice_detail__id, post_notice_annex } from "@/api/contract/index";
 @Component({})
 export default class DiscountDetail extends Vue {
   private fileList: Array<object> = [];
+  private subscripList: any = [];
+  private addSub: any = [];
   private resInfo: any = {};
   private addFile: any = [];
   private isRecognize = false;
 
   private get isPaper(): boolean {
     return this.resInfo.templateType === "PaperTemplate";
+  }
+  private get isOther(): boolean {
+    return this.resInfo.promotionMethod === "Manual";
   }
 
   private handleFile(list: any) {
@@ -207,6 +231,18 @@ export default class DiscountDetail extends Vue {
         attachmentSuffix: v.name,
         fileNo: v.fileId,
         type: "NoticeAttachment",
+        contractId: this.resInfo.id,
+      }));
+  }
+  private handleAddSub(list: any) {
+    this.addSub = list
+      .filter((i: any) => {
+        return i.response;
+      })
+      .map((v: any) => ({
+        attachmentSuffix: v.name,
+        fileNo: v.fileId,
+        type: "Subscription",
         contractId: this.resInfo.id,
       }));
   }
@@ -230,6 +266,11 @@ export default class DiscountDetail extends Vue {
           fileId: item.fileNo,
           exAuto: 1,
         }));
+      this.subscripList = this.resInfo.subscriptionAnnex.map((i: any) => ({
+        name: i.attachmentSuffix,
+        fileId: i.fileNo,
+        exAuto: 1,
+      }));
     }
   }
   private async submit() {
@@ -244,6 +285,20 @@ export default class DiscountDetail extends Vue {
       }
     } else {
       this.$message.warning("请先添加附件");
+    }
+  }
+  private async submitSub() {
+    if (this.addSub.length) {
+      try {
+        await post_notice_annex(this.addSub);
+        this.$message.success("提交成功");
+        this.addSub = [];
+        this.$router.go(0);
+      } catch (error) {
+        console.log(error);
+      }
+    } else {
+      this.$message.warning("请先添加认购书附件");
     }
   }
   private async preview(): Promise<void> {

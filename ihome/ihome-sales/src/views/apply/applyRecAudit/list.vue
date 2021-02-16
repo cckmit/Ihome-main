@@ -4,7 +4,7 @@
  * @Author: ywl
  * @Date: 2021-01-14 18:20:57
  * @LastEditors: ywl
- * @LastEditTime: 2021-02-16 15:15:42
+ * @LastEditTime: 2021-02-16 18:04:24
 -->
 <template>
   <IhPage label-width="100px">
@@ -164,6 +164,7 @@
             <el-link
               type="success"
               v-has="'B.SALES.APPLY.APPLYRECAUDIT.AUDITAPPLY'"
+              :class="{ 'ih-data-disabled': !auditChange(row) }"
               @click="$router.push(`/applyRecAudit/audit?id=${row.id}`)"
             >审核</el-link>
           </template>
@@ -219,6 +220,26 @@ export default class ApplyRecAuditList extends Vue {
   private timeList: any = [];
   private stepsVisible = false;
   private applyId: any = null;
+
+  private auditChange(row: any) {
+    console.log(row);
+    let isPlatformClerk = row.status === "PlatformClerk"; // 待平台文员审核
+    let isBusinessMan = row.status === "BusinessMan"; // 待分公司业管审核
+    let isBranchAccount = row.status === "BranchAccount"; // 待分公司财务审核
+    let isBusinessManAgain = row.status === "BusinessManAgain"; // 待分公司业管复审
+    let isInvoiceClerk = row.status === "InvoiceClerk"; // 待开票员审核
+    const RFinancialOfficer = this.$roleTool.RFinancialOfficer(); // 分公司财务
+    const RBusinessManagement = this.$roleTool.RBusinessManagement(); // 分公司业管
+    const RPlatformClerk = this.$roleTool.RPlatformClerk(); // 平台文员
+    const RInvoiceClerk = this.$roleTool.RInvoiceClerk(); // 开票员
+    return (
+      (isPlatformClerk && RPlatformClerk) ||
+      (isBusinessMan && RBusinessManagement) ||
+      (isBranchAccount && RFinancialOfficer) ||
+      (isBusinessManAgain && RBusinessManagement) ||
+      (isInvoiceClerk && RInvoiceClerk)
+    );
+  }
 
   private search() {
     let flag = this.timeList && this.timeList.length;

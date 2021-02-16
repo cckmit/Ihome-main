@@ -701,7 +701,7 @@
         })
       }
       // 初始化优惠告知书信息
-      await this.getInformation(info.id);
+      await this.getInformation(info.id, info.parentId);
       // 初始化附件
       if (info.documentList && info.documentList.length) {
         this.infoForm.documentList = this.initDocumentList(info.documentList);
@@ -758,14 +758,21 @@
     }
 
     // 根据成交id获取优惠告知书列表
-    async getInformation(id: any = '') {
-      if (!id) return;
-      const list: any = await post_notice_customer_information({dealId: id});
-      // console.log('优惠告知书列表', list);
-      if (list && list.length > 0) {
-        this.infoForm.offerNoticeList = list;
+    async getInformation(id: any = '', parentId: any = '') {
+      if (!id || !parentId) return;
+      if (id !== parentId) {
+        const idList: any = await post_notice_customer_information({dealId: id});
+        const parentIdList: any = await post_notice_customer_information({dealId: parentId});
+        // console.log('优惠告知书列表', list);
+        this.infoForm.offerNoticeList = [...idList, ...parentIdList];
       } else {
-        this.infoForm.offerNoticeList = [];
+        const list: any = await post_notice_customer_information({dealId: id});
+        // console.log('优惠告知书列表', list);
+        if (list && list.length > 0) {
+          this.infoForm.offerNoticeList = list;
+        } else {
+          this.infoForm.offerNoticeList = [];
+        }
       }
     }
 

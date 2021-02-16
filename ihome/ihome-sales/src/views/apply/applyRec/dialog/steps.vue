@@ -4,7 +4,7 @@
  * @Author: ywl
  * @Date: 2021-02-08 16:19:01
  * @LastEditors: ywl
- * @LastEditTime: 2021-02-08 17:18:12
+ * @LastEditTime: 2021-02-16 18:19:11
 -->
 <template>
   <el-dialog
@@ -51,7 +51,7 @@ export default class Steps extends Vue {
       let list = await get_applyRec_getProcessList__applyId({ applyId });
       let index = list.map((i: any) => i.time).indexOf(null);
       console.log(list, index);
-      this.currentIndex = index;
+      this.currentIndex = index === -1 ? list.length : index;
       this.processList = list;
     } catch (error) {
       console.log(error);
