@@ -4,7 +4,7 @@
  * @Author: ywl
  * @Date: 2020-10-20 15:03:13
  * @LastEditors: ywl
- * @LastEditTime: 2021-01-18 14:48:04
+ * @LastEditTime: 2021-02-16 11:55:30
 -->
 <template>
   <el-select
@@ -118,6 +118,10 @@ export default class IhSelectPage extends Vue {
     default: false,
   })
   isKeyUp?: boolean;
+  @Prop({
+    default: true,
+  })
+  isInit?: boolean;
   @Prop({
     default: "请输入两个关键字检索",
   })
@@ -253,7 +257,9 @@ export default class IhSelectPage extends Vue {
   }
 
   mounted() {
-    this.getSelectList();
+    if (this.isInit) {
+      this.getSelectList();
+    }
   }
 }
 </script>
