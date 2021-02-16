@@ -3,8 +3,8 @@
  * @version: 
  * @Author: zyc
  * @Date: 2021-01-26 10:19:00
- * @LastEditors: wwq
- * @LastEditTime: 2021-02-08 14:16:46
+ * @LastEditors: ywl
+ * @LastEditTime: 2021-02-16 17:58:06
  */
 
 
@@ -62,7 +62,7 @@ export interface RoleToolInterface {
     * @param {*}
     * @return {*}
     */
-   RDepartmentLeader(): boolean;
+    RDepartmentLeader(): boolean;
 
     /**是否包含【渠道专员角色】
      * @param {*}
@@ -102,6 +102,11 @@ export interface RoleToolInterface {
      * @return {*}
      */
     RFinanceFund(): boolean;
+    /**是否包含【开票员角色】
+     * @param {*}
+     * @return {*}
+     */
+    RInvoiceClerk(): boolean;
 
 
 }
@@ -196,6 +201,13 @@ export class RoleTool implements RoleToolInterface {
     */
     RFinanceFund(): boolean {
         return this.hasRole(RoleCode.RFinanceFund);
+    }
+    /**是否包含【开票员角色】
+    * @param {*}
+    * @return {*}
+    */
+    RInvoiceClerk(): boolean {
+        return this.hasRole(RoleCode.RInvoiceClerk);
     }
 
 

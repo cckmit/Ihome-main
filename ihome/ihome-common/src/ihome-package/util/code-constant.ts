@@ -3,8 +3,8 @@
  * @version: 
  * @Author: zyc
  * @Date: 2021-01-21 17:23:14
- * @LastEditors: lsj
- * @LastEditTime: 2021-02-10 17:25:33
+ * @LastEditors: ywl
+ * @LastEditTime: 2021-02-16 17:56:47
  */
 
 /**角色编码
@@ -82,6 +82,11 @@ const RoleCode = {
      * @return {*}
      */
     RFinanceFund: 'RFinanceFund',
+    /**开票员角色
+     * @param {*}
+     * @return {*}
+     */
+    RInvoiceClerk: 'RInvoiceClerk',
 
 }
 /**岗位编码
