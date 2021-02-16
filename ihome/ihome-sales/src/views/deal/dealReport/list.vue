@@ -427,11 +427,8 @@
       total: null,
       list: [],
     };
-    currentJobId: any = null; // 当前登录人员的岗位id
 
     async created() {
-      this.currentJobId = (this as any).$root?.userInfo?.jobId;
-      console.log(this.currentJobId);
       await this.getListMixin();
     }
 
@@ -445,11 +442,11 @@
       let flag = true;
       switch (btnName) {
         case "ADD":
-          // 添加
+          // 添加 - 平台文员
           flag = (this as any).$roleTool.RProjectSite();
           break;
         case "ACHIEVEDECLARE":
-          // 业绩申报
+          // 业绩申报 - 案场
           flag = (this as any).$roleTool.RFrontLineClerk();
           break;
       }
@@ -458,8 +455,9 @@
 
     // 根据成交报告状态、是主成交还是补充成交、登录者的岗位来判断是否有操作按钮权限
     hasBtnRole(row: any, btnName: any = "") {
+      // console.log('RProjectSite', (this as any).$roleTool.RProjectSite());
       let flag: any = true; // 是否禁用、默认禁用
-      if (this.currentJobId && btnName) {
+      if (btnName) {
         switch (btnName) {
           case 'UPDATE':
             // 修改按钮权限

@@ -4,7 +4,7 @@
  * @Author: ywl
  * @Date: 2021-01-07 19:02:24
  * @LastEditors: ywl
- * @LastEditTime: 2021-02-02 14:53:16
+ * @LastEditTime: 2021-02-15 10:57:06
 -->
 <template>
   <el-dialog
@@ -310,7 +310,6 @@ export default class SelectDeal extends Vue {
   }
   // 获取选中项 --- 最后需要获取的数据
   private selectionChange(selection: any) {
-    console.log(selection, "selectionChange");
     this.selection = selection;
   }
   private pageChange(val: number) {

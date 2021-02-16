@@ -5,7 +5,7 @@
  * @Author: zyc
  * @Date: 2021-01-13 14:50:21
  * @LastEditors: zyc
- * @LastEditTime: 2021-02-09 14:59:18
+ * @LastEditTime: 2021-02-15 15:47:24
 -->
 <template>
   <IhPage label-width="110px">
@@ -203,36 +203,72 @@
             </el-table-column>
             <el-table-column label="状态" prop="status">
               <template slot-scope="scope">{{
-                $root.dictAllName(scope.row.status, "FinRefundStatus")
+                $root.dictAllName(scope.row.status, "FinRefundItemPushStatus")
               }}</template>
             </el-table-column>
             <el-table-column label="备注信息" prop="remark"></el-table-column>
-            <el-table-column label="推送时间" prop="pushDate"></el-table-column>
-            <el-table-column label="支付时间" prop="payDate"></el-table-column>
+            <el-table-column
+              label="推送时间"
+              prop="pushDate"
+              width="100"
+            ></el-table-column>
+            <el-table-column
+              label="支付时间"
+              prop="payDate"
+              width="200"
+            ></el-table-column>
             <el-table-column label="操作" width="120" fixed="right">
               <template v-slot="{ row }">
                 <el-link
                   type="primary"
                   @click="refundPush(row)"
-                  class="margin-right-10"
+                  style="margin-right: 10px"
+                  v-has="'B.SALES.FINANCE.REFUNDTOEXAMIN.REFUNDPUSH'"
+                  :class="{
+                    'ih-data-disabled': [
+                      'RefundedTicket',
+                      'Paying',
+                      'Paid',
+                    ].includes(row.status),
+                  }"
                   >退款推送</el-link
                 >
                 <el-link
                   type="primary"
                   @click="setUpARefund(row)"
-                  class="margin-right-10"
+                  style="margin-right: 10px"
+                  v-has="'B.SALES.FINANCE.REFUNDTOEXAMIN.SREFUNDED'"
+                  :class="{
+                    'ih-data-disabled': [
+                      'RefundedTicket',
+                      'Paying',
+                      'Paid',
+                    ].includes(row.status),
+                  }"
                   >设置已退款</el-link
                 >
                 <el-link
                   type="primary"
                   @click="edit(row)"
-                  class="margin-right-10"
+                  style="margin-right: 10px"
+                  v-has="'B.SALES.FINANCE.REFUNDTOEXAMIN.EDIT'"
+                  :class="{
+                    'ih-data-disabled': [
+                      'RefundedTicket',
+                      'Paying',
+                      'Paid',
+                    ].includes(row.status),
+                  }"
                   >修改</el-link
                 >
                 <el-link
                   type="primary"
                   @click="syncStatus(row)"
-                  class="margin-right-10"
+                  style="margin-right: 10px"
+                  v-has="'B.SALES.FINANCE.REFUNDTOEXAMIN.SYNC'"
+                  :class="{
+                    'ih-data-disabled': ['PendingPay'].includes(row.status),
+                  }"
                   >同步状态</el-link
                 >
               </template>
@@ -361,7 +397,6 @@ export default class RefundPushList extends Vue {
       status: null,
     });
   }
- 
 
   async getListMixin() {
     this.queryPageParameters.status = this.activeName;

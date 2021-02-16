@@ -4,7 +4,7 @@
  * @Author: ywl
  * @Date: 2021-01-13 14:50:21
  * @LastEditors: ywl
- * @LastEditTime: 2021-01-16 17:37:11
+ * @LastEditTime: 2021-02-15 17:04:53
 -->
 <template>
   <IhPage label-width="100px">
@@ -93,15 +93,18 @@
       <!-- table-标签页 -->
       <el-tabs
         v-model="queryPageParameters.status"
-        type="border-card"
         @tab-click="tabChange"
       >
         <template v-for="(i, n) in tabsList">
           <el-tab-pane
-            :label="i.label"
             :name="i.name"
             :key="n"
           >
+            <!-- label-slot -->
+            <span
+              slot="label"
+              style="font-size: 16px; font-weight: 600;"
+            >{{i.label}}</span>
             <!-- table-content -->
             <el-table
               class="ih-table"

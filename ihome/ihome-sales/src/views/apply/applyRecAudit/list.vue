@@ -4,7 +4,7 @@
  * @Author: ywl
  * @Date: 2021-01-14 18:20:57
  * @LastEditors: ywl
- * @LastEditTime: 2021-02-09 15:19:08
+ * @LastEditTime: 2021-02-15 13:44:39
 -->
 <template>
   <IhPage label-width="100px">
@@ -104,6 +104,7 @@
         <el-table-column
           label="项目名称"
           prop="proName"
+          min-width="200"
         ></el-table-column>
         <el-table-column
           label="甲方公司名称"

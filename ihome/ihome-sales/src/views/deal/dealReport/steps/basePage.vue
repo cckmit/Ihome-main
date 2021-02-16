@@ -1803,7 +1803,7 @@
       // 数据标志
       this.postData.dataSignName = (this as any).$root.dictAllName(res.dataSign, 'DealDataFlag');
       // 优惠告知书
-      await this.getNoticeList(res.parentId);
+      await this.getNoticeList(res.id, res.parentId);
       // 客户信息
       if (this.postData.customerList && this.postData.customerList.length) {
         this.postData.customerList.forEach((list: any) => {
@@ -2339,11 +2339,17 @@
     }
 
     // 通过成交id获取优惠告知书
-    async getNoticeList(dealId: any = '') {
-      if (!dealId) return;
-      const list: any = await post_notice_customer_information({dealId: dealId});
-      // console.log('组织info:', list);
-      this.postData.offerNoticeVO = list;
+    async getNoticeList(dealId: any = '', parentId: any = '') {
+      if (!dealId || !parentId) return;
+      if (dealId !== parentId) {
+        const dealList: any = await post_notice_customer_information({dealId: dealId});
+        const parentList: any = await post_notice_customer_information({dealId: parentId});
+        this.postData.offerNoticeVO = [...dealList, ...parentList];
+      } else {
+        const list: any = await post_notice_customer_information({dealId: parentId});
+        // console.log('组织info:', list);
+        this.postData.offerNoticeVO = list;
+      }
     }
 
     // 改变细分业务模式

@@ -4,7 +4,7 @@
  * @Author: ywl
  * @Date: 2021-01-15 15:29:09
  * @LastEditors: ywl
- * @LastEditTime: 2021-02-09 16:41:26
+ * @LastEditTime: 2021-02-15 17:56:53
 -->
 <template>
   <IhPage class="text-left">
@@ -728,10 +728,29 @@
             </template>
           </el-table-column>
         </el-table>
+        <br />
       </div>
-      <p class="ih-info-title">
-        <span>操作日志</span>
-      </p>
+      <div class="log-title">
+        <p class="ih-info-title">操作日志</p>
+        <div
+          class="right-button"
+          v-if="form.status === 'Oa'"
+        >
+          <el-button
+            slot="reference"
+            type="success"
+            size="small"
+            icon="el-icon-search"
+            @click="searchPerson"
+          >查询当前代办人</el-button>
+          <el-button
+            @click="updateOA"
+            type="success"
+            size="small"
+            icon="el-icon-refresh"
+          >同步OA审核日志</el-button>
+        </div>
+      </div>
       <div class="padding-left-20">
         <el-table
           style="width: 100%"
@@ -786,6 +805,8 @@ import {
   get_opLog_getAllListByApplyId__applyId,
   get_devDeductRec_getAll__applyId,
   get_devOtherSub_getAll__applyId,
+  get_applyRec_getOaAuditUser__applyId,
+  post_applyRec_updateOaAudit,
 } from "../../../api/apply/index";
 
 @Component({})
@@ -858,6 +879,28 @@ export default class ApplyAudit extends Vue {
     return sum;
   }
 
+  private async searchPerson() {
+    try {
+      const res: any = await get_applyRec_getOaAuditUser__applyId({
+        applyId: this.$route.query.id,
+      });
+      this.$alert(res, "当前待办人", {
+        confirmButtonText: "确定",
+      });
+    } catch (error) {
+      console.log(error);
+    }
+  }
+  private async updateOA() {
+    try {
+      await post_applyRec_updateOaAudit({
+        applyId: this.$route.query.id,
+      });
+      this.$message.success("同步成功");
+    } catch (error) {
+      console.log(error);
+    }
+  }
   private handleOpen(row: any) {
     window.open(`/web-sales/invoice/info?id=${row.id}`, "_blank");
   }
@@ -984,5 +1027,10 @@ export default class ApplyAudit extends Vue {
   .padding-0 {
     padding: 0;
   }
+}
+.log-title {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
 }
 </style>
