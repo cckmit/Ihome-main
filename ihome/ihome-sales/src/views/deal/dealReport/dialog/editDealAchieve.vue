@@ -382,7 +382,7 @@
           achieveFeesRatio: 0, // 业绩金额比例
           belongOrgId: null, // 归属组织ID
           managerId: null, // 管理者ID
-          managerName: null, // 管理者名字
+          manager: null, // 管理者名字
           managerPosition: null // 管理者岗位
         }
       )
@@ -404,7 +404,7 @@
       // console.log(row);
       row.belongOrgId = data.orgId;
       row.managerId = data.id;
-      row.managerName = data.name;
+      row.manager = data.name;
       row.managerPosition = data.jobName;
     }
 
