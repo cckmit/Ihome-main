@@ -4,7 +4,7 @@
  * @Author: ywl
  * @Date: 2021-01-07 16:30:03
  * @LastEditors: ywl
- * @LastEditTime: 2021-02-16 11:50:38
+ * @LastEditTime: 2021-02-16 15:28:59
 -->
 <template>
   <IhPage class="text-left">
@@ -56,6 +56,8 @@
               ></IhSelectPageDivision>
             </el-form-item>
           </el-col>
+        </el-row>
+        <el-row>
           <el-col :span="8">
             <el-form-item
               label="甲方公司"
@@ -117,6 +119,8 @@
               ></IhSelectPageByCompany>
             </el-form-item>
           </el-col>
+        </el-row>
+        <el-row>
           <el-col :span="8">
             <el-form-item
               label="收款账号"
@@ -172,6 +176,8 @@
               ></el-input>
             </el-form-item>
           </el-col>
+        </el-row>
+        <el-row>
           <el-col :span="8">
             <el-form-item label="申请人">
               <el-input
@@ -1632,7 +1638,7 @@ export default class ApplyRecAdd extends Vue {
     } else {
       this.$message({
         type: "warning",
-        message: `${msgList.join(",")}项,请上传附件`,
+        message: `${msgList.join(";")}, 请上传附件`,
       });
       return;
     }

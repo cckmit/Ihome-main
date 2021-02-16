@@ -4,7 +4,7 @@
  * @Author: ywl
  * @Date: 2021-01-07 10:29:38
  * @LastEditors: ywl
- * @LastEditTime: 2021-02-08 19:18:04
+ * @LastEditTime: 2021-02-16 15:15:22
 -->
 <template>
   <IhPage label-width="100px">
@@ -112,12 +112,16 @@
         <el-button
           type="success"
           @click="$router.push('/applyRec/add')"
+          v-has="'B.SALES.APPLY.APPLYREC.ADDAPPLY'"
         >发起请佣申请</el-button>
         <el-button
           type="info"
           @click="reset()"
         >重置</el-button>
-        <el-button @click="handleExport()">导出</el-button>
+        <el-button
+          v-has="'B.SALES.APPLY.APPLYREC.EXPORTAPPLY'"
+          @click="handleExport()"
+        >导出</el-button>
       </el-row>
     </template>
     <template v-slot:table>
@@ -226,11 +230,13 @@
             <el-link
               type="success"
               v-if="row.status === 'Draft' || row.status === 'BusinessDepart'"
+              v-has="'B.SALES.APPLY.APPLYREC.EDITAPPLY'"
               @click="$router.push(`/applyRec/add?id=${row.id}`)"
             >编辑</el-link>
             <el-link
               type="primary"
               v-else-if="row.status === 'InvoiceApply'"
+              v-has="'B.SALES.APPLY.APPLYREC.INVOICEAPPLY'"
               @click="$router.push(`/applyRec/add?id=${row.id}`)"
             >发起开票申请</el-link>
             <el-link

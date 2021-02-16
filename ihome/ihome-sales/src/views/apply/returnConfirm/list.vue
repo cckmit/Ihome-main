@@ -4,7 +4,7 @@
  * @Author: ywl
  * @Date: 2021-01-13 14:50:21
  * @LastEditors: ywl
- * @LastEditTime: 2021-02-15 17:04:53
+ * @LastEditTime: 2021-02-16 15:23:30
 -->
 <template>
   <IhPage label-width="100px">
@@ -85,7 +85,10 @@
           type="info"
           @click="reset()"
         >重置</el-button>
-        <el-button @click="handleAll()">批量添加回款</el-button>
+        <el-button
+          v-has="'B.SALES.APPLY.RETURNCONFIRM.ALLRETPAY'"
+          @click="handleAll()"
+        >批量添加回款</el-button>
       </el-row>
     </template>
     <template #table>
@@ -213,6 +216,7 @@
                     type="success"
                     class="margin-left-10"
                     @click="retPayment(row)"
+                    v-has="'B.SALES.APPLY.RETURNCONFIRM.RETPAYMENT'"
                   >添加回款</el-link>
                 </template>
               </el-table-column>
