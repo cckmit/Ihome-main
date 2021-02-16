@@ -4,7 +4,7 @@
  * @Author: wwq
  * @Date: 2020-12-26 11:11:23
  * @LastEditors: wwq
- * @LastEditTime: 2021-02-09 14:57:07
+ * @LastEditTime: 2021-02-16 10:41:01
 -->
 <template>
   <IhPage>
@@ -222,7 +222,7 @@
                 class="text-ellipsis"
                 :title="row.dealCode"
               >成交编号: <el-link
-                  style="color:#4881f9"
+                  type="primary"
                   @click="routeToDeal(row)"
                 >
                   {{row.dealCode}}
@@ -247,7 +247,7 @@
                 class="text-ellipsis"
                 :title="row.contNo"
               >分销协议编号: <el-link
-                  style="color:#4881f9"
+                  type="primary"
                   @click="routeToDistribution(row)"
                 >{{row.contNo}}</el-link>
               </div>
@@ -473,7 +473,7 @@
           >
             <template v-slot="{ row }">
               <el-link
-                style="color:#4881f9"
+                type="primary"
                 @click="routeToDeal(row)"
               >
                 {{row.dealCode}}
@@ -660,7 +660,7 @@
           >
             <template v-slot="{ row }">
               <el-link
-                style="color:#4881f9"
+                type="primary"
                 @click="routeToCycle(row)"
                 :title="row.cycleName"
                 class="text-ellipsis"
@@ -680,7 +680,7 @@
                     {{`名称: ${item.title}`}}
                   </div>
                   <el-link
-                    style="color:#4881f9"
+                    type="primary"
                     @click="routeToDistribution(item)"
                     :title="`编号: ${item.contNo}`"
                     class="text-ellipsis"
@@ -1136,7 +1136,7 @@ export default class PayoffEdit extends Vue {
     let router = this.$router.resolve({
       path: `/dealReport/info`,
       query: {
-        code: row.dealCode,
+        id: row.dealCode,
         type: "CODE",
       },
     });
@@ -1638,6 +1638,7 @@ export default class PayoffEdit extends Vue {
             deductAmount: Number(v.deductAmount) * -1,
           })
         );
+        otherArr = otherArr.filter((v: any) => v.otherDeductionType);
         if (this.$route.name === "payoffAdd") {
           obj.otherDeductionDetailCalculationRequestList = otherArr;
           try {
