@@ -30,7 +30,7 @@
           :rows="5"
           v-model="form.comment"
           placeholder="无效原因"
-          maxlength="256"
+          maxlength="500"
           show-word-limit
         ></el-input>
       </el-form-item>
