@@ -4,7 +4,7 @@
  * @Author: wwq
  * @Date: 2020-11-27 17:17:06
  * @LastEditors: wwq
- * @LastEditTime: 2021-01-29 17:30:18
+ * @LastEditTime: 2021-02-17 15:49:21
 -->
 <template>
   <div>
@@ -300,7 +300,10 @@
             <span class="text-ellipsis">{{ info.exDiscount?'是':'否' }}</span>
           </el-form-item>
         </el-col>
-        <el-col :span="8">
+        <el-col
+          :span="8"
+          v-if="info.exDiscount"
+        >
           <el-form-item
             label="认购书优惠折扣体现方式"
             class="formItem"
@@ -308,7 +311,10 @@
             <span class="text-ellipsis">{{ info.subscriDiscountModel }}</span>
           </el-form-item>
         </el-col>
-        <el-col :span="8">
+        <el-col
+          :span="8"
+          v-if="info.exDiscount"
+        >
           <el-form-item
             label="优惠告知书折扣体现方式"
             class="formItem"

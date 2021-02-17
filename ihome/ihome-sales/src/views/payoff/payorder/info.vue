@@ -4,7 +4,7 @@
  * @Author: wwq
  * @Date: 2020-12-26 11:11:19
  * @LastEditors: wwq
- * @LastEditTime: 2021-02-16 09:56:29
+ * @LastEditTime: 2021-02-17 16:09:59
 -->
 <template>
   <IhPage>
@@ -387,53 +387,55 @@
           ></el-table-column>
         </el-table>
       </div>
-      <br />
-      <p class="ih-info-title">本期需抵扣金额明细</p>
-      <div class="padding-left-20">
-        <el-table
-          class="ih-table"
-          :data="info.payDeductDetailResponseList"
-          style="width: 100%"
-          show-summary
-        >
-          <el-table-column
-            label="成交报告编号"
-            prop="dealCode"
+      <div v-if="info.payDeductDetailResponseList.length">
+        <br />
+        <p class="ih-info-title">本期需抵扣金额明细</p>
+        <div class="padding-left-20">
+          <el-table
+            class="ih-table"
+            :data="info.payDeductDetailResponseList"
+            style="width: 100%"
+            show-summary
           >
-            <template v-slot="{ row }">
-              <el-link
-                type="primary"
-                @click="routeToDeal(row)"
-              >
-                {{row.dealCode}}
-              </el-link>
-            </template>
-          </el-table-column>
-          <el-table-column
-            label="项目周期"
-            prop="cycleName"
-          ></el-table-column>
-          <el-table-column
-            label="抵扣项类别"
-            prop="deductType"
-          >
-            <template v-slot="{ row }">
-              {{ $root.dictAllName(row.deductType, "SuppContType")}}
-            </template>
-          </el-table-column>
-          <el-table-column
-            label="扣除金额"
-            prop="deductAmount"
-          ></el-table-column>
-          <el-table-column
-            label="不含税金额"
-            prop="noTaxAmount"
-          ></el-table-column>
-          <el-table-column
-            label="税额"
-            prop="tax"
-          ></el-table-column>
-        </el-table>
+            <el-table-column
+              label="成交报告编号"
+              prop="dealCode"
+            >
+              <template v-slot="{ row }">
+                <el-link
+                  type="primary"
+                  @click="routeToDeal(row)"
+                >
+                  {{row.dealCode}}
+                </el-link>
+              </template>
+            </el-table-column>
+            <el-table-column
+              label="项目周期"
+              prop="cycleName"
+            ></el-table-column>
+            <el-table-column
+              label="抵扣项类别"
+              prop="deductType"
+            >
+              <template v-slot="{ row }">
+                {{ $root.dictAllName(row.deductType, "SuppContType")}}
+              </template>
+            </el-table-column>
+            <el-table-column
+              label="扣除金额"
+              prop="deductAmount"
+            ></el-table-column>
+            <el-table-column
+              label="不含税金额"
+              prop="noTaxAmount"
+            ></el-table-column>
+            <el-table-column
+              label="税额"
+              prop="tax"
+            ></el-table-column>
+          </el-table>
+        </div>
       </div>
       <br />
       <p class="ih-info-title">其他扣除项</p>

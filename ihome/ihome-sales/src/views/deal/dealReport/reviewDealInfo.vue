@@ -689,7 +689,11 @@
     // 初始化数据
     async init() {
       let info: any = await get_deal_get__id({id: this.id});
-      this.postData = (this as any).$tool.deepClone(info || {});
+      // this.postData = (this as any).$tool.deepClone(info || {});
+      this.postData = {
+        ...this.postData,
+        ...info
+      };
       // 初始化优惠告知书信息
       await this.getInformation(info.id, info.parentId);
       // console.log(this.postData);
