@@ -3,8 +3,8 @@
  * @version: 
  * @Author: zyc
  * @Date: 2021-02-06 16:27:06
- * @LastEditors: wwq
- * @LastEditTime: 2021-02-17 09:23:15
+ * @LastEditors: ywl
+ * @LastEditTime: 2021-02-17 10:39:58
 -->
 <template>
   <IhPage>
@@ -513,16 +513,16 @@
             label="操作"
             prop="operation"
           >
-            <template v-slot="{ row }">
-              {{$root.dictAllName(row.operation, 'PayoffOperate')}}
-            </template>
+            <!-- <template v-slot="{ row }">
+              {{$root.dictAllName(row.operation, 'FinRefundApplyStatus')}}
+            </template> -->
           </el-table-column>
           <el-table-column
             label="操作后状态"
             prop="afterStatus"
           >
             <template v-slot="{ row }">
-              {{$root.dictAllName(row.afterStatus, 'PayoffStatus')}}
+              {{$root.dictAllName(row.afterStatus, 'FinRefundApplyStatus')}}
             </template>
           </el-table-column>
           <el-table-column
@@ -541,9 +541,9 @@
             label="处理结果"
             prop="result"
           >
-            <template v-slot="{ row }">
+            <!-- <template v-slot="{ row }">
               {{$root.dictAllName(row.result, 'PayoffProcessResult')}}
-            </template>
+            </template> -->
           </el-table-column>
           <el-table-column
             label="系统"
@@ -617,14 +617,14 @@ import {
   post_refundApply_queryOaApprovalUser__id,
   post_refundApply_getFlowCommentList__id,
 } from "@/api/finance/index";
-import UploadList from "../refundApply/dialog/uploadList.vue";
+import UploadList from "./dialog/uploadList.vue";
 
 @Component({
   components: {
     UploadList,
   },
 })
-export default class PayoffEdit extends Vue {
+export default class RefundApplyInfo extends Vue {
   private fileList: Array<object> = [];
   info: any = {
     refundApplyNo: null,

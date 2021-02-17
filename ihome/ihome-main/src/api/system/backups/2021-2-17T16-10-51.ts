@@ -1,6 +1,6 @@
 /* eslint-disable */
 /* 此脚本由swagger-ui的api-docs自动生成，请勿修改 */
-//2021-2-17 16:10:51
+//2021-1-26 17:50:26
 import { request } from '@/api/base'
 const basePath = "/sales-api/system"
 /**查询所有行政区划信息*/
@@ -83,10 +83,6 @@ return await request.post< string,string> (basePath+'/codeGenerate/getPaymentNo'
 export async function post_codeGenerate_getPayoffNo (d?: any) {
 return await request.post< string,string> (basePath+'/codeGenerate/getPayoffNo', d)
 }
-/**获取付款支付编号（推送集团支付系统）*/
-export async function post_codeGenerate_getPayoffPayNo (d?: any) {
-return await request.post< string,string> (basePath+'/codeGenerate/getPayoffPayNo', d)
-}
 /**获取POS机申请事项编号*/
 export async function post_codeGenerate_getPosApplyNo (d?: any) {
 return await request.post< string,string> (basePath+'/codeGenerate/getPosApplyNo', d)
@@ -94,10 +90,6 @@ return await request.post< string,string> (basePath+'/codeGenerate/getPosApplyNo
 /**获取联动项目编号*/
 export async function post_codeGenerate_getProjectNo (d?: any) {
 return await request.post< string,string> (basePath+'/codeGenerate/getProjectNo', d)
-}
-/**获取退款项编号*/
-export async function post_codeGenerate_getRefundItemNo (d?: any) {
-return await request.post< string,string> (basePath+'/codeGenerate/getRefundItemNo', d)
 }
 /**获取退款编号*/
 export async function post_codeGenerate_getRefundNo (d?: any) {
@@ -110,30 +102,6 @@ return await request.get<Company,Company>(basePath+'/company/get/{id}', { params
 /**查询所有公司信息*/
 export async function post_company_getAll (d?: any) {
 return await request.post< CompanyBaseVO[],CompanyBaseVO[]> (basePath+'/company/getAll', d)
-}
-/**查询所有公司分页信息*/
-export async function post_company_getPage (d?: any) {
-return await request.post< any,any> (basePath+'/company/getPage', d)
-}
-/**根据组织id查询公司主体*/
-export async function post_company_getPageByOrg (d?: any) {
-return await request.post< any,any> (basePath+'/company/getPageByOrg', d)
-}
-/**E签宝--批量创建机构印章*/
-export async function post_companySeal_batchCreateOrg (d?: any) {
-return await request.post< boolean,boolean> (basePath+'/companySeal/batchCreateOrg', d)
-}
-/**E签宝--批量保存机构印章*/
-export async function post_companySeal_batchCreatePlatform (d?: any) {
-return await request.post< boolean,boolean> (basePath+'/companySeal/batchCreatePlatform', d)
-}
-/**E签宝--创建平台印章*/
-export async function post_companySeal_createPlatformSeal (d?: any) {
-return await request.post< boolean,boolean> (basePath+'/companySeal/createPlatformSeal', d)
-}
-/**根据公司、类型 获取印章*/
-export async function post_companySeal_getOrgSeal (d?: any) {
-return await request.post< CompanyOrgSealResult,CompanyOrgSealResult> (basePath+'/companySeal/getOrgSeal', d)
 }
 /**添加字典项*/
 export async function post_dict_add (d?: any) {
@@ -162,10 +130,6 @@ return await request.get<any,any>(basePath+'/dict/getAll', { params: d })
 /**查询指定类型的所有字典项*/
 export async function post_dict_getAllByType (d?: any) {
 return await request.post< DictBaseVO[],DictBaseVO[]> (basePath+'/dict/getAllByType', d)
-}
-/**根据类型查询查询所有字典项*/
-export async function post_dict_getAllByTypes (d?: any) {
-return await request.post< any,any> (basePath+'/dict/getAllByTypes', d)
 }
 /**查询指定字典类型的所有字典项*/
 export async function post_dict_getAllDictItemByType (d?: any) {
@@ -278,10 +242,6 @@ return await request.get<OrgVO,OrgVO>(basePath+'/org/get/{id}', { params: d })
 /**查询所有组织*/
 export async function get_org_getAll (d?: any) {
 return await request.get<OrgVO[],OrgVO[]>(basePath+'/org/getAll', { params: d })
-}
-/**查询用户权限组织列表*/
-export async function post_org_getAllByUser (d?: any) {
-return await request.post< UserOrgTreeVO,UserOrgTreeVO> (basePath+'/org/getAllByUser', d)
 }
 /**查询组织层次树*/
 export async function get_org_getLevelTree__id (d?: any) {
@@ -628,10 +588,6 @@ createUser: number;
 creditCode: string;
 /**已删除*/
 deleted: number;
-/**undefined*/
-eorgId: string;
-/**undefined*/
-eplatformFlag: number;
 /**ID*/
 id: number;
 /**法定代表人*/
@@ -661,54 +617,6 @@ creditCode: string;
 id: number;
 /**公司名称*/
 name: string;
-}
-/**CompanyOrgCreateBatchVO*/
-export interface CompanyOrgCreateBatchVO {
-/**undefined*/
-begin: number;
-/**undefined*/
-length: number;
-}
-/**CompanyOrgCreateSealBatchVO*/
-export interface CompanyOrgCreateSealBatchVO {
-/**undefined*/
-begin: number;
-/**undefined*/
-length: number;
-}
-/**CompanyOrgSealResult*/
-export interface CompanyOrgSealResult {
-/**签约主体账号 机构ID*/
-authorizedAccountId: string;
-/**印章ID*/
-platformSealId: string;
-}
-/**CompanyOrgSealVo*/
-export interface CompanyOrgSealVo {
-/**(必填)公司ID*/
-companyId: number;
-/**(必填)类型(OfficialSeal-公章、ElectronicReceiptSpecialStamp-电子回单专用章)*/
-type: string;
-}
-/**CompanyPlatformSealCreateVO*/
-export interface CompanyPlatformSealCreateVO {
-/**(必填)图片地址*/
-picUrl: string;
-/**(必填)印章ID*/
-sealId: string;
-/**(必填)类型(OfficialSeal-公章、ElectronicReceiptSpecialStamp-电子回单专用章)*/
-type: string;
-}
-/**CompanyQueryPageVO*/
-export interface CompanyQueryPageVO {
-/**公司名称*/
-name: string;
-/**组织id*/
-orgId: number;
-/**(必填)当前页*/
-pageNum: number;
-/**(必填)每页条数*/
-pageSize: number;
 }
 /**CompanyQueryVO*/
 export interface CompanyQueryVO {
@@ -779,11 +687,6 @@ key: string;
 type: string;
 /**是否有效(Valid-有效、Invalid-无效)*/
 valid: string;
-}
-/**DictListQueryVO*/
-export interface DictListQueryVO {
-/**需要查询的字典类型*/
-types: string[];
 }
 /**DictTypeAddVO*/
 export interface DictTypeAddVO {
@@ -865,7 +768,7 @@ smsCode: string;
 export interface JobBaseVO {
 /**(必填)编码*/
 code: string;
-/**数据权限(OrgLimit-员工组织数据权限、SelfLimit-员工个人数据权限、ChannelLimit-渠道数据权限、ChannelSelfLimit-渠道个人数据权限、CustomerLimit-客户数据权限)*/
+/**数据权限(OrgLimit-员工组织数据权限、SelfLimit-员工个人数据权限、ChannelLimit-渠道数据权限、CustomerLimit-客户数据权限)*/
 dataLimit: string;
 /**(必填)名称*/
 name: string;
@@ -914,7 +817,7 @@ roleIds: number[];
 export interface JobUpdateVO {
 /**(必填)编码*/
 code: string;
-/**数据权限(OrgLimit-员工组织数据权限、SelfLimit-员工个人数据权限、ChannelLimit-渠道数据权限、ChannelSelfLimit-渠道个人数据权限、CustomerLimit-客户数据权限)*/
+/**数据权限(OrgLimit-员工组织数据权限、SelfLimit-员工个人数据权限、ChannelLimit-渠道数据权限、CustomerLimit-客户数据权限)*/
 dataLimit: string;
 /**(必填)id*/
 id: number;
@@ -933,7 +836,7 @@ createTime: string;
 createUser: number;
 /**创建用户姓名*/
 createUserName: string;
-/**数据权限(OrgLimit-员工组织数据权限、SelfLimit-员工个人数据权限、ChannelLimit-渠道数据权限、ChannelSelfLimit-渠道个人数据权限、CustomerLimit-客户数据权限)*/
+/**数据权限(OrgLimit-员工组织数据权限、SelfLimit-员工个人数据权限、ChannelLimit-渠道数据权限、CustomerLimit-客户数据权限)*/
 dataLimit: string;
 /**已删除*/
 deleted: number;
@@ -975,7 +878,7 @@ createTime: string;
 createUser: number;
 /**创建用户姓名*/
 createUserName: string;
-/**数据权限(OrgLimit-员工组织数据权限、SelfLimit-员工个人数据权限、ChannelLimit-渠道数据权限、ChannelSelfLimit-渠道个人数据权限、CustomerLimit-客户数据权限)*/
+/**数据权限(OrgLimit-员工组织数据权限、SelfLimit-员工个人数据权限、ChannelLimit-渠道数据权限、CustomerLimit-客户数据权限)*/
 dataLimit: string;
 /**已删除*/
 deleted: number;
@@ -1508,12 +1411,8 @@ deleted: number;
 id: number;
 /**名称*/
 name: string;
-/**备注*/
-remark: string;
 /**特殊角色*/
 special: number;
-/**角色类别(ResourceGroup-资源组、JobRole-岗位角色)*/
-type: string;
 /**更新时间(yyyy-MM-dd HH:mm:ss)*/
 updateTime: string;
 /**更新用户*/
@@ -1592,12 +1491,8 @@ deleted: number;
 id: number;
 /**名称*/
 name: string;
-/**备注*/
-remark: string;
 /**特殊角色*/
 special: number;
-/**角色类别(ResourceGroup-资源组、JobRole-岗位角色)*/
-type: string;
 /**更新时间(yyyy-MM-dd HH:mm:ss)*/
 updateTime: string;
 /**更新用户*/
@@ -1711,59 +1606,6 @@ jobId: number;
 /**角色id数组*/
 roleIds: number[];
 }
-/**UserOrgPermissionQueryVO*/
-export interface UserOrgPermissionQueryVO {
-/**状态(Valid-有效、Invalid-无效)*/
-status: string;
-/**用户id*/
-userId: number;
-}
-/**UserOrgPermissionVO*/
-export interface UserOrgPermissionVO {
-/**关闭日期(yyyy-MM-dd)*/
-closeDate: string;
-/**创建时间(yyyy-MM-dd HH:mm:ss)*/
-createTime: string;
-/**创建用户*/
-createUser: number;
-/**已删除*/
-deleted: number;
-/**部门分类(Business-营业线、Function-职能线)*/
-departmentType: string;
-/**不可点击*/
-disabled: boolean;
-/**id*/
-id: number;
-/**组织层级*/
-level: number;
-/**名称*/
-name: string;
-/**OA呈字*/
-oaChar: string;
-/**开业日期(yyyy-MM-dd)*/
-openDate: string;
-/**组织类型(Root-组织根节点、Company-公司、Department-事业部、Zone-战区、SmallZone-小战区、District-片区、Shop-门店、Group-店组)*/
-orgType: string;
-/**父组织id*/
-parentId: number;
-/**简称*/
-shortName: string;
-/**简称首字母*/
-shortNameAbbr: string;
-/**状态(Valid-有效、Invalid-无效)*/
-status: string;
-/**更新时间(yyyy-MM-dd HH:mm:ss)*/
-updateTime: string;
-/**更新用户*/
-updateUser: number;
-}
-/**UserOrgTreeVO*/
-export interface UserOrgTreeVO {
-/**展开节点列表*/
-expandedList: number[];
-/**权限组织列表*/
-orgPermissionList: UserOrgPermissionVO[];
-}
 /**UserOrgVO*/
 export interface UserOrgVO {
 /**(必填)用户id*/
@@ -1873,7 +1715,7 @@ createTime: string;
 createUser: number;
 /**创建用户姓名*/
 createUserName: string;
-/**数据权限(OrgLimit-员工组织数据权限、SelfLimit-员工个人数据权限、ChannelLimit-渠道数据权限、ChannelSelfLimit-渠道个人数据权限、CustomerLimit-客户数据权限)*/
+/**数据权限(OrgLimit-员工组织数据权限、SelfLimit-员工个人数据权限、ChannelLimit-渠道数据权限、CustomerLimit-客户数据权限)*/
 dataLimit: string;
 /**已删除*/
 deleted: number;

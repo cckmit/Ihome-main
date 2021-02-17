@@ -593,7 +593,6 @@
   } from "@/api/deal";
   import {post_notice_customer_information} from "@/api/contract";
   import {get_invoice_getInvoiceInfo__businessCode} from "@/api/finance";
-  import {get_org_get__id} from "@/api/system";
 
   @Component({
     components: {ReviewDetailsDialog},
@@ -676,7 +675,11 @@
       // 补充成交类型
       this.suppContType = info?.suppContType;
       // console.log(this.infoForm);
-      this.infoForm = (this as any).$tool.deepClone(info || {});
+      // this.infoForm = (this as any).$tool.deepClone(info || {});
+      this.infoForm = {
+        ...this.infoForm,
+        ...info
+      };
       // 收派金额数据整理 showData
       if (this.infoForm.receiveList && this.infoForm.receiveList.length > 0) {
         this.infoForm.receiveList.forEach((list: any) => {
@@ -707,22 +710,13 @@
         this.infoForm.documentList = this.initDocumentList(info.documentList);
         console.log('this.infoForm.documentList', this.infoForm.documentList);
       }
-      // 获取显示的成交组织name
-      // await this.getOrgName(info.dealOrgId);
       // 初始化开票信息
       await this.getInvoiceInfo(info.dealCode);
     }
 
-    // 获取组织name
-    async getOrgName(id: any = '') {
-      if (!id) return;
-      const info: any = await get_org_get__id({id: id});
-      // console.log('组织info:', info);
-      this.infoForm.dealOrgName = info.name;
-    }
-
     // 构建附件信息
     initDocumentList(list: any = []) {
+      if (list.length === 0) return  [];
       let fileList: any = (this as any).$root.dictAllList('DealFileType'); // 附件类型
       // 附件类型增加key
       if (fileList.length > 0 && list.length > 0) {
@@ -764,7 +758,9 @@
         const idList: any = await post_notice_customer_information({dealId: id});
         const parentIdList: any = await post_notice_customer_information({dealId: parentId});
         // console.log('优惠告知书列表', list);
-        this.infoForm.offerNoticeList = [...idList, ...parentIdList];
+        this.$nextTick(() => {
+          this.infoForm.offerNoticeList = [...idList, ...parentIdList];
+        });
       } else {
         const list: any = await post_notice_customer_information({dealId: id});
         // console.log('优惠告知书列表', list);
@@ -774,6 +770,7 @@
           this.infoForm.offerNoticeList = [];
         }
       }
+      console.log(this.infoForm.offerNoticeList);
     }
 
     // 跳转到指定索引的元素

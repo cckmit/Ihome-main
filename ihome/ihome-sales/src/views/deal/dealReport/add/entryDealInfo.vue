@@ -1098,7 +1098,7 @@
         this.postData.status = res.status;
         this.postData.customerVO = res.customerList;
         this.postData.receiveVO = this.initReceiveVO(res.receiveList);
-        this.postData.documentVO = this.initDocumentVO(res.documentList);
+        this.postData.documentVO = this.initDocumentVO(res.charge, res.contType, res.documentList);
       });
     }
 
@@ -1223,10 +1223,27 @@
       return tempList;
     }
 
-    // 编辑 --- 构建上传附件数据
-    initDocumentVO(list: any = []) {
-      if (list.length === 0) return [];
+    /*
+    * 编辑 --- 构建上传附件数据
+    * charge：收费模式
+    * contType：合同类型
+    * list：回显的值
+    * */
+    initDocumentVO(charge: any = '', contType: any = '', list: any = []) {
       let fileList: any = (this as any).$root.dictAllList('DealFileType'); // 附件类型
+      // 根据收费模式过滤
+      if (charge === 'Agent') {
+        fileList = fileList.filter((item: any) => {
+          return item.code !== "Notice";
+        });
+      }
+      // 根据合同类型过滤
+      if (contType === 'DistriDeal') {
+        // 项目周期的收费模式为代理费的话，隐藏优惠告知书
+        fileList = fileList.filter((item: any) => {
+          return !["VisitConfirForm", "DealConfirForm"].includes(item.code);
+        });
+      }
       // 附件类型增加key
       if (fileList.length > 0 && list.length > 0) {
         fileList.forEach((vo: any) => {
@@ -1237,7 +1254,8 @@
               vo.defaultFileList.push(
                 {
                   ...item,
-                  name: item.fileName
+                  name: item.fileName,
+                  exAuto: true
                 }
               );
             }
