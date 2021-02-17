@@ -1826,7 +1826,7 @@
         })
       }
       // 初始化附件信息
-      await this.initDocumentList(res.documentShowList);
+      await this.initDocumentList(res.charge, res.contType, res.documentShowList);
       // 根据项目周期和房号初始化页面数据
       await this.getPageById(res.cycleId, res.house.roomId, res.house.propertyType);
       // 获取平台费用中新增、修改弹窗中角色类型和角色业绩上限
@@ -2307,9 +2307,27 @@
       this.postData.uploadDocumentList = (this as any).$tool.deepClone(fileList);
     }
 
-    // 初始化附件信息 --- 页面初始化的时候
-    initDocumentList(list: any = []) {
+    /*
+    * 初始化附件信息 --- 页面初始化的时候
+    * charge：收费模式
+    * contType：合同类型
+    * list：回显的值
+    * */
+    initDocumentList(charge: any = '', contType: any = '', list: any = []) {
       let fileList: any = (this as any).$root.dictAllList('DealFileType'); // 附件类型
+      // 根据收费模式过滤
+      if (charge === 'Agent') {
+        fileList = fileList.filter((item: any) => {
+          return item.code !== "Notice";
+        });
+      }
+      // 根据合同类型过滤
+      if (contType === 'DistriDeal') {
+        // 项目周期的收费模式为代理费的话，隐藏优惠告知书
+        fileList = fileList.filter((item: any) => {
+          return !["VisitConfirForm", "DealConfirForm"].includes(item.code);
+        });
+      }
       if (fileList.length > 0) {
         fileList.forEach((vo: any) => {
           vo.defaultFileList = []; // 存放原来的数据
