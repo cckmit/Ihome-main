@@ -3,8 +3,8 @@
  * @version:
  * @Author: ywl
  * @Date: 2020-12-01 15:49:07
- * @LastEditors: zyc
- * @LastEditTime: 2021-02-08 14:36:44
+ * @LastEditors: ywl
+ * @LastEditTime: 2021-02-17 12:00:58
  */
 import { RouteConfig } from 'vue-router'
 
@@ -209,7 +209,13 @@ const financeRoutes: Array<RouteConfig> = [
         path: 'toExamine',
         name: 'RefundToExamineToExamine',
         component: () => import('../views/finance/refundToExamine/toExamine.vue'),
-        meta: { title: '审核退款申请', icon: 'form', keepAlive: true }
+        meta: { title: '审核退款申请', icon: 'form' }
+      },
+      {
+        path: 'toExamineByFinan',
+        name: 'RefundToExamineToExamineByFinan',
+        component: () => import('../views/finance/refundToExamine/toExamineByFinan.vue'),
+        meta: { title: '审核退款申请', icon: 'form' }
       },
 
     ]

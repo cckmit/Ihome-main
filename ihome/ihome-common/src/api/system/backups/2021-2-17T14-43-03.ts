@@ -1,6 +1,6 @@
 /* eslint-disable */
 /* 此脚本由swagger-ui的api-docs自动生成，请勿修改 */
-//2021-2-17 16:10:51
+//2021-2-17 8:41:21 ├F10: AM┤
 import { request } from '@/api/base'
 const basePath = "/sales-api/system"
 /**查询所有行政区划信息*/
@@ -278,10 +278,6 @@ return await request.get<OrgVO,OrgVO>(basePath+'/org/get/{id}', { params: d })
 /**查询所有组织*/
 export async function get_org_getAll (d?: any) {
 return await request.get<OrgVO[],OrgVO[]>(basePath+'/org/getAll', { params: d })
-}
-/**查询用户权限组织列表*/
-export async function post_org_getAllByUser (d?: any) {
-return await request.post< UserOrgTreeVO,UserOrgTreeVO> (basePath+'/org/getAllByUser', d)
 }
 /**查询组织层次树*/
 export async function get_org_getLevelTree__id (d?: any) {
@@ -1710,59 +1706,6 @@ id: number;
 jobId: number;
 /**角色id数组*/
 roleIds: number[];
-}
-/**UserOrgPermissionQueryVO*/
-export interface UserOrgPermissionQueryVO {
-/**状态(Valid-有效、Invalid-无效)*/
-status: string;
-/**用户id*/
-userId: number;
-}
-/**UserOrgPermissionVO*/
-export interface UserOrgPermissionVO {
-/**关闭日期(yyyy-MM-dd)*/
-closeDate: string;
-/**创建时间(yyyy-MM-dd HH:mm:ss)*/
-createTime: string;
-/**创建用户*/
-createUser: number;
-/**已删除*/
-deleted: number;
-/**部门分类(Business-营业线、Function-职能线)*/
-departmentType: string;
-/**不可点击*/
-disabled: boolean;
-/**id*/
-id: number;
-/**组织层级*/
-level: number;
-/**名称*/
-name: string;
-/**OA呈字*/
-oaChar: string;
-/**开业日期(yyyy-MM-dd)*/
-openDate: string;
-/**组织类型(Root-组织根节点、Company-公司、Department-事业部、Zone-战区、SmallZone-小战区、District-片区、Shop-门店、Group-店组)*/
-orgType: string;
-/**父组织id*/
-parentId: number;
-/**简称*/
-shortName: string;
-/**简称首字母*/
-shortNameAbbr: string;
-/**状态(Valid-有效、Invalid-无效)*/
-status: string;
-/**更新时间(yyyy-MM-dd HH:mm:ss)*/
-updateTime: string;
-/**更新用户*/
-updateUser: number;
-}
-/**UserOrgTreeVO*/
-export interface UserOrgTreeVO {
-/**展开节点列表*/
-expandedList: number[];
-/**权限组织列表*/
-orgPermissionList: UserOrgPermissionVO[];
 }
 /**UserOrgVO*/
 export interface UserOrgVO {

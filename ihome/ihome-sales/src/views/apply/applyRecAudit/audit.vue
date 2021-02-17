@@ -4,7 +4,7 @@
  * @Author: ywl
  * @Date: 2021-01-14 19:09:51
  * @LastEditors: ywl
- * @LastEditTime: 2021-02-16 18:32:28
+ * @LastEditTime: 2021-02-17 16:57:27
 -->
 <template>
   <IhPage class="text-left">
@@ -34,11 +34,15 @@
           </el-col>
           <el-col :span="8">
             <el-form-item label="事业部">
-              <IhSelectPageDivision
+              <el-input
+                :value="form.orgName"
+                disabled
+              ></el-input>
+              <!-- <IhSelectPageDivision
                 v-model="form.orgId"
                 placeholder="请选择所在事业部"
                 disabled
-              ></IhSelectPageDivision>
+              ></IhSelectPageDivision> -->
             </el-form-item>
           </el-col>
           <el-col :span="8">

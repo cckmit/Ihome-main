@@ -4,7 +4,7 @@
  * @Author: wwq
  * @Date: 2020-12-26 11:11:23
  * @LastEditors: wwq
- * @LastEditTime: 2021-02-17 11:47:09
+ * @LastEditTime: 2021-02-17 18:35:57
 -->
 <template>
   <IhPage>
@@ -522,61 +522,63 @@
           </el-table-column>
         </el-table>
       </div>
-      <br />
-      <p class="ih-info-title">本期需抵扣金额明细</p>
-      <div class="padding-left-20">
-        <el-table
-          class="ih-table"
-          :data="info.payDeductDetailResponseList"
-          style="width: 100%"
-          show-summary
-        >
-          <el-table-column
-            label="成交报告编号"
-            prop="dealCode"
+      <div v-if="info.payDeductDetailResponseList.length">
+        <br />
+        <p class="ih-info-title">本期需抵扣金额明细</p>
+        <div class="padding-left-20">
+          <el-table
+            class="ih-table"
+            :data="info.payDeductDetailResponseList"
+            style="width: 100%"
+            show-summary
           >
-            <template v-slot="{ row }">
-              <el-link
-                type="primary"
-                @click="routeToDeal(row)"
-              >
-                {{row.dealCode}}
-              </el-link>
-            </template>
-          </el-table-column>
-          <el-table-column
-            label="项目周期"
-            prop="cycleName"
-          ></el-table-column>
-          <el-table-column
-            label="抵扣项类别"
-            prop="deductType"
-          >
-            <template v-slot="{ row }">
-              {{ $root.dictAllName(row.deductType, "SuppContType")}}
-            </template>
-          </el-table-column>
-          <el-table-column
-            label="扣除金额"
-            prop="deductAmount"
-          ></el-table-column>
-          <el-table-column
-            label="不含税金额"
-            prop="noTaxAmount"
-          >
-            <template v-slot="{ row }">
-              {{dataNoTaxAmountChange(row, '')}}
-            </template>
-          </el-table-column>
-          <el-table-column
-            label="税额"
-            prop="tax"
-          >
-            <template v-slot="{ row }">
-              {{dataTaxChange(row)}}
-            </template>
-          </el-table-column>
-        </el-table>
+            <el-table-column
+              label="成交报告编号"
+              prop="dealCode"
+            >
+              <template v-slot="{ row }">
+                <el-link
+                  type="primary"
+                  @click="routeToDeal(row)"
+                >
+                  {{row.dealCode}}
+                </el-link>
+              </template>
+            </el-table-column>
+            <el-table-column
+              label="项目周期"
+              prop="cycleName"
+            ></el-table-column>
+            <el-table-column
+              label="抵扣项类别"
+              prop="deductType"
+            >
+              <template v-slot="{ row }">
+                {{ $root.dictAllName(row.deductType, "SuppContType")}}
+              </template>
+            </el-table-column>
+            <el-table-column
+              label="扣除金额"
+              prop="deductAmount"
+            ></el-table-column>
+            <el-table-column
+              label="不含税金额"
+              prop="noTaxAmount"
+            >
+              <template v-slot="{ row }">
+                {{dataNoTaxAmountChange(row, '')}}
+              </template>
+            </el-table-column>
+            <el-table-column
+              label="税额"
+              prop="tax"
+            >
+              <template v-slot="{ row }">
+                {{dataTaxChange(row)}}
+              </template>
+            </el-table-column>
+          </el-table>
+        </div>
       </div>
       <br />
       <div class="content">
@@ -1333,15 +1335,15 @@ export default class PayoffEdit extends Vue {
     return this.$math.tofixed(res, 2);
   }
 
-  // 本次支付比例(%)( 本次申请付款金额 / 可结佣付款金额 * 100 )
+  // 本次支付比例(%)( 本次申请付款金额 / 拆佣金额 * 100 )
   ratioChange(row: any) {
     const total1 = this.$math.add(
       Number(row.serThisCommFees),
       Number(row.ageThisCommFees)
     );
     const total2 = this.$math.add(
-      Number(row.serCanCommFees),
-      Number(row.ageCanCommFees)
+      Number(row.serCommFees),
+      Number(row.ageCommFees)
     );
     const total3 = isNaN(this.$math.div(total1, total2))
       ? 0
@@ -1388,7 +1390,7 @@ export default class PayoffEdit extends Vue {
   }
 
   async getPayerInfo(item: any) {
-    this.info.payerName = item.companyName;
+    this.info.payerName = item.name;
     const res = await post_bankAccount_getByOrgId__orgId({
       orgId: this.info.payerId,
     });
@@ -1511,12 +1513,14 @@ export default class PayoffEdit extends Vue {
     obj.agencyName = this.info.agencyName;
     obj.taxRate = Number(this.info.taxRate);
     obj.payApplyDetailList = this.info.payApplyDetailList;
-    obj.otherDeductionDetailCalculationRequestList = this.info.otherDeductionDetailResponseList.map(
+    let otherArr: any = this.info.otherDeductionDetailResponseList.map(
       (v: any) => ({
         ...v,
         deductAmount: Number(v.deductAmount) * -1,
       })
     );
+    otherArr = otherArr.filter((v: any) => v.otherDeductionType);
+    obj.otherDeductionDetailCalculationRequestList = otherArr;
     obj.payDeductDetailCalculationRequestList = this.info.payDeductDetailResponseList;
     try {
       const res: any = await post_payApply_calculation_results(obj);
@@ -1550,13 +1554,14 @@ export default class PayoffEdit extends Vue {
         sums[index] = values.reduce((prev: number, curr: number) => {
           const value = Number(curr);
           if (!isNaN(value)) {
-            return prev + curr;
+            return this.$math.tofixed(prev + curr, 2);
           } else {
-            return prev;
+            return this.$math.tofixed(prev, 2);
           }
         }, 0);
         if (index === 2) {
-          sums[index] = `-${sums[index]}`;
+          let total = this.$math.tofixed(sums[index], 2);
+          sums[index] = `-${total}`;
         }
       } else {
         sums[index] = "--";

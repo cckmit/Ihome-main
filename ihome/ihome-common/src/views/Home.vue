@@ -4,7 +4,7 @@
  * @Author: wwq
  * @Date: 2020-09-16 14:54:19
  * @LastEditors: zyc
- * @LastEditTime: 2021-01-18 16:29:48
+ * @LastEditTime: 2021-02-17 16:07:35
 -->
 <template>
   <div>
@@ -27,7 +27,7 @@
 // import { testApi, testPostApi } from "../api/test";
 
 import { Component, Vue } from "vue-property-decorator";
- 
+
 @Component({
   components: {},
 })
@@ -84,7 +84,7 @@ export default class Home extends Vue {
     },
     {
       key: "IhSelectOrgTree",
-      name: "归属组织tree",
+      name: "归属组织tree(所有组织或当前用户组织权限)",
       desc: "归属组织tree",
       path: "/selectOrgTree",
     },
@@ -92,7 +92,6 @@ export default class Home extends Vue {
   info(scope: any) {
     this.$router.push(scope.row.path);
   }
- 
 }
 </script>
 <style lang="scss" scoped>

@@ -4,7 +4,7 @@
  * @Author: wwq
  * @Date: 2020-09-09 16:17:16
  * @LastEditors: wwq
- * @LastEditTime: 2021-01-25 09:24:33
+ * @LastEditTime: 2021-02-17 15:36:09
 -->
 <template>
   <div class="upload">
@@ -237,13 +237,15 @@ export default class IhUpload extends Vue {
 
   @Watch("list", { deep: true })
   getList(list: any) {
-    const push = (this.$refs.upload as any).$children[
-      (this.$refs.upload as any).$children.length - 1
-    ].$el;
-    if (list.length < this.limit) {
-      push.style.display = "inline-block";
-    } else {
-      push.style.display = "none";
+    let push = (this.$refs.upload as any)?.$children[
+      (this.$refs.upload as any)?.$children?.length - 1
+    ]?.$el;
+    if (push) {
+      if (list.length < this.limit) {
+        push.style.display = "inline-block";
+      } else {
+        push.style.display = "none";
+      }
     }
   }
   @Watch("fileList", { immediate: true, deep: true })

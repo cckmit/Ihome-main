@@ -1,19 +1,20 @@
 <!--
- * @Description: 
+ * @Description: file content
  * @version: 
- * @Author: zyc
- * @Date: 2021-02-08 14:34:29
+ * @Author: ywl
+ * @Date: 2021-02-17 11:27:05
  * @LastEditors: ywl
- * @LastEditTime: 2021-02-17 11:34:08
+ * @LastEditTime: 2021-02-17 15:10:55
 -->
 <template>
   <IhPage>
-    <template v-slot:info>
+    <template v-slot:form>
       <p class="ih-info-title">退款申请单信息</p>
       <el-form
         ref="form"
         label-width="120px"
         :model="info"
+        :rules="rules"
       >
         <el-row>
           <el-col :span="8">
@@ -43,14 +44,13 @@
               ></el-input>
             </el-form-item>
           </el-col>
-        </el-row>
-        <el-row>
           <el-col :span="8">
             <el-form-item
               label="事业部"
               prop="orgId"
             >
               <IhSelectPageDivision
+                clearable
                 disabled
                 placeholder="事业部"
                 v-model="info.orgId"
@@ -68,11 +68,12 @@
               prop="accountId"
             >
               <IhSelectPageByPayer
-                disabled
+                clearable
                 placeholder="付款方账户名称"
                 v-model="info.accountId"
                 :proId="info.orgId"
                 :search-name="info.accountName"
+                @changeOption="getPayerInfo"
               ></IhSelectPageByPayer>
             </el-form-item>
           </el-col>
@@ -83,9 +84,10 @@
             >
               <el-select
                 v-model="info.accountNo"
-                disabled
+                clearable
                 placeholder="请选择付款方账户账号"
                 class="width--100"
+                @change="accountNoChange"
               >
                 <el-option
                   v-for="item in payerAccountOptions"
@@ -96,8 +98,6 @@
               </el-select>
             </el-form-item>
           </el-col>
-        </el-row>
-        <el-row>
           <el-col :span="8">
             <el-form-item label="付款方开户行">
               <el-input
@@ -133,8 +133,6 @@
               </el-select>
             </el-form-item>
           </el-col>
-        </el-row>
-        <el-row>
           <el-col :span="8">
             <el-form-item
               label="结算方式"
@@ -143,7 +141,6 @@
               <el-select
                 style="width: 100%"
                 v-model="info.settlementType"
-                disabled
                 placeholder="请选择结算方式"
               >
                 <el-option
@@ -163,7 +160,6 @@
               <el-select
                 style="width: 100%"
                 v-model="info.payType"
-                disabled
                 placeholder="请选择付款方式"
               >
                 <el-option
@@ -177,7 +173,16 @@
           </el-col>
         </el-row>
       </el-form>
-      <p class="ih-info-title">待退款列表</p>
+    </template>
+    <template v-slot:table>
+      <div class="content">
+        <p class="ih-info-title">待退款列表</p>
+        <el-button
+          @click="addContacts()"
+          type="success"
+          size="small"
+        >添加待退款项</el-button>
+      </div>
       <div class="padding-left-20">
         <el-table
           class="ih-table"
@@ -370,9 +375,33 @@
               >附件已提供</el-link>
             </template>
           </el-table-column>
+          <el-table-column
+            fixed="right"
+            label="操作"
+            align="center"
+          >
+            <template v-slot="{ $index }">
+              <el-button
+                type="danger"
+                size="small"
+                @click="delContacts($index)"
+              > 移除
+              </el-button>
+            </template>
+          </el-table-column>
         </el-table>
-        <br />
       </div>
+      <br />
+      <div style="width:100%;padding-left: 20px;box-sizing: border-box">
+        <el-button
+          style="width: 100%;"
+          type="primary"
+          :loading="computedLoading"
+          :disabled="computedDisabled"
+          @click="computedMsg"
+        >点击计算结佣统计数据及成本归属明细</el-button>
+      </div>
+      <br />
       <p class="ih-info-title">退款汇总清单</p>
       <div class="padding-left-20">
         <el-table
@@ -420,8 +449,8 @@
             </template>
           </el-table-column>
         </el-table>
-        <br />
       </div>
+      <br />
       <p class="ih-info-title">退款信息</p>
       <div class="margin-left-20">
         <table
@@ -482,14 +511,50 @@
                 maxlength="500"
                 show-word-limit
                 readonly
-              >
-              </el-input>
+              ></el-input>
             </td>
           </tr>
         </table>
+      </div>
+      <br />
+      <p class="ih-info-title">上传附件</p>
+      <div class="padding-left-20">
+        <el-table
+          class="ih-table"
+          :data="fileListType"
+          style="width: 100%"
+        >
+          <el-table-column
+            prop="type"
+            width="180"
+            label="类型"
+            align="center"
+          >
+            <template v-slot="{ row }">
+              <div><span
+                  style="color: red"
+                  v-if="row.subType"
+                >*</span>{{row.name}}
+              </div>
+            </template>
+          </el-table-column>
+          <el-table-column label="附件">
+            <template v-slot="{ row }">
+              <IhUpload
+                :file-list.sync="row.fileList"
+                :file-size="10"
+                :file-type="row.code"
+                size="100px"
+                :removePermi="false"
+                :upload-show="!!row.fileList.length"
+                :limit="row.fileList.length"
+              ></IhUpload>
+            </template>
+          </el-table-column>
+        </el-table>
         <br />
       </div>
-      <div class="content">
+      <div class="content-info">
         <p class="ih-info-title">操作日志</p>
         <div class="right-button">
           <el-button
@@ -564,43 +629,6 @@
         </el-table>
         <br />
       </div>
-      <p class="ih-info-title">上传附件</p>
-      <div class="padding-left-20">
-        <el-table
-          class="ih-table"
-          :data="fileListType"
-          style="width: 100%"
-        >
-          <el-table-column
-            prop="type"
-            width="180"
-            label="类型"
-            align="center"
-          >
-            <template v-slot="{ row }">
-              <div><span
-                  style="color: red"
-                  v-if="row.subType"
-                >*</span>{{row.name}}
-              </div>
-            </template>
-          </el-table-column>
-          <el-table-column label="附件">
-            <template v-slot="{ row }">
-              <IhUpload
-                :file-list.sync="row.fileList"
-                :file-size="10"
-                :file-type="row.code"
-                size="100px"
-                :removePermi="false"
-                :upload-show="!!row.fileList.length"
-                :limit="row.fileList.length"
-              ></IhUpload>
-            </template>
-          </el-table-column>
-        </el-table>
-        <br />
-      </div>
       <p class="ih-info-title">审核意见</p>
       <div class="padding-left-20">
         <el-input
@@ -630,28 +658,38 @@
         <el-button @click="$router.go(-1)">返回</el-button>
       </div>
     </template>
-    <IhDialog :show="uploadDialogVisible">
+    <ih-dialog :show="addFefundDialogVisible">
+      <AddFefund
+        :data="fefundData"
+        @cancel="() => (addFefundDialogVisible = false)"
+        @finish=" (data) => addFefundFinish(data)"
+      />
+    </ih-dialog>
+    <ih-dialog :show="uploadDialogVisible">
       <UploadList
         :data="uploadData"
         @cancel="() => (uploadDialogVisible = false)"
+        @finish=" (data) => uploadFinish(data)"
       />
-    </IhDialog>
+    </ih-dialog>
   </IhPage>
 </template>
 
 <script lang="ts">
 import { Component, Vue } from "vue-property-decorator";
+import AddFefund from "../refundApply/dialog/addFefund.vue";
 import UploadList from "../refundApply/dialog/uploadList.vue";
 import {
   get_refundApply_get__id,
+  post_refundApply_collect,
+  post_bankAccount_getByOrgId__orgId,
   post_refundApply_queryOaApprovalUser__id,
   post_refundApply_getFlowCommentList__id,
-  post_bankAccount_getByOrgId__orgId,
-  post_refundApply_notFinancialAudit,
+  post_refundApply_financialAudit,
 } from "@/api/finance/index";
 
 @Component({
-  components: { UploadList },
+  components: { AddFefund, UploadList },
 })
 export default class RefundToExamineToExamine extends Vue {
   info: any = {
@@ -675,18 +713,88 @@ export default class RefundToExamineToExamine extends Vue {
     refundAttachments: [], //退款申请附件
     refundInfo: {},
   };
+  remark: any = "";
   submitFile: any = {};
   fileListType: any = [];
+  fefundData: any = {};
   uploadData: any = {};
+  addFefundDialogVisible = false;
+  computedDisabled = false;
   uploadDialogVisible = false;
+  private rules: any = {
+    settlementType: [
+      {
+        required: true,
+        message: "请选择结算方式",
+        trigger: "change",
+      },
+    ],
+    payType: [
+      {
+        required: true,
+        message: "请选择付款方式",
+        trigger: "change",
+      },
+    ],
+    accountId: [
+      {
+        required: true,
+        message: "请选择付款方账户名称",
+        trigger: "change",
+      },
+    ],
+    accountNo: [
+      {
+        required: true,
+        message: "请选择付款方账户账号",
+        trigger: "change",
+      },
+    ],
+  };
+  computedLoading: any = false;
   payerAccountOptions: any = [];
   showUploadIndex: any = 0;
-  remark: any = null;
 
   private get returnId() {
     return this.$route.query.id;
   }
 
+  async submit(buttonType: any) {
+    if (["TemporaryStorage", "Reject"].includes(buttonType) && !this.remark) {
+      this.$message.warning("审核意见不能为空");
+      return;
+    }
+    let typeStr = "";
+    switch (buttonType) {
+      case "TemporaryStorage":
+        typeStr = "暂存";
+        break;
+      case "Through":
+        typeStr = "通过";
+        break;
+      case "Reject":
+        typeStr = "驳回";
+        break;
+    }
+    try {
+      await post_refundApply_financialAudit({
+        buttonType,
+        ...this.info,
+        remark: this.remark,
+        itemAttachmentVOs: this.info.refundItems.map((v: any) => ({
+          attachmentVOs: v.attachmentVOs,
+          itemID: v.id,
+          attachmentComplete: v.attachmentComplete,
+        })),
+      });
+      this.$message.success(`${typeStr}成功`);
+      this.$goto({
+        path: "/refundToExamine/list",
+      });
+    } catch (error) {
+      console.log(error);
+    }
+  }
   routeTo(row: any, where: any) {
     let router: any = null;
     switch (where) {
@@ -732,45 +840,126 @@ export default class RefundToExamineToExamine extends Vue {
     }
     window.open(router.href, "_blank");
   }
-  async submit(buttonType: any) {
-    if (["TemporaryStorage", "Reject"].includes(buttonType) && !this.remark) {
-      this.$message.warning("审核意见不能为空");
-      return;
-    }
-    let typeStr = "";
-    switch (buttonType) {
-      case "TemporaryStorage":
-        typeStr = "暂存";
-        break;
-      case "Through":
-        typeStr = "通过";
-        break;
-      case "Reject":
-        typeStr = "驳回";
-        break;
-    }
-    try {
-      await post_refundApply_notFinancialAudit({
-        buttonType,
-        id: this.returnId,
-        remark: this.remark,
-        status: this.info.status,
-      });
-      this.$message.success(`${typeStr}成功`);
-      this.$goto({
-        path: "/refundToExamine/list",
-      });
-    } catch (error) {
-      console.log(error);
+  accountNoChange(data: any) {
+    if (data) {
+      const item = this.payerAccountOptions.find(
+        (v: any) => v.accountNo === data
+      );
+      this.info.branchName = item.branchName;
+      this.info.branchNo = item.branchNo;
+    } else {
+      this.info.branchName = null;
+      this.info.branchNo = null;
     }
   }
   showUploadList(data: any, index: number) {
     this.uploadData = {
       data: data.attachmentVOs,
-      type: "view",
+      type: "edit",
     };
     this.showUploadIndex = index;
     this.uploadDialogVisible = true;
+  }
+  uploadFinish(data: any) {
+    let arr: any = [];
+    Object.values(data.submitFile).forEach((v: any) => {
+      if (v.length) {
+        arr = arr.concat(v);
+      }
+    });
+    // 以下操作仅仅是为了校验必上传项
+    let submitList: any = data.fileListType.map((v: any) => {
+      return {
+        ...v,
+        fileList: arr
+          .filter((j: any) => j.type === v.code)
+          .map((h: any) => ({
+            ...h,
+            name: h.fileName,
+          })),
+      };
+    });
+    let isSubmit = true;
+    let msgList: any = [];
+    submitList.forEach((v: any) => {
+      if (v.subType && !v.fileList.length) {
+        msgList.push(v.name);
+        isSubmit = false;
+      }
+    });
+    this.info.refundItems[this.showUploadIndex].attachmentVOs = arr.map(
+      (v: any) => ({
+        fileId: v.fileId,
+        fileName: v.name,
+        type: v.type,
+      })
+    );
+    if (isSubmit) {
+      this.info.refundItems[this.showUploadIndex].attachmentComplete = 1;
+    } else {
+      this.info.refundItems[this.showUploadIndex].attachmentComplete = 0;
+    }
+    this.uploadDialogVisible = false;
+  }
+  async getPayerInfo(item: any) {
+    this.info.accountName = item.name;
+    this.info.companyId = item.id;
+    const res = await post_bankAccount_getByOrgId__orgId({
+      orgId: this.info.accountId,
+    });
+    this.payerAccountOptions = res;
+  }
+  addFefundFinish(data: any) {
+    this.info.refundItems = data;
+    console.log(this.info.refundItems, "add");
+    this.addFefundDialogVisible = false;
+    this.computedDisabled = false;
+    this.$message.success("点击计算退款统计数据并生成退款汇总清单");
+  }
+  async delContacts(index: number) {
+    this.info.refundItems.splice(index, 1);
+    console.log(this.info.refundItems, "del");
+    this.computedDisabled = false;
+    this.$message.success("点击计算退款统计数据并生成退款汇总清单");
+  }
+  addContacts() {
+    this.addFefundDialogVisible = true;
+    this.fefundData = {
+      hasCheckedData: this.info.refundItems,
+    };
+  }
+  // 计算
+  async computedMsg() {
+    let obj: any = {};
+    let noticeSum: any = 0;
+    let amountSum: any = 0;
+    obj.accountNo = this.info.accountNo;
+    obj.branchName = this.info.branchName;
+    obj.collectParamVOs = this.info.refundItems.map((v: any) => ({
+      proId: v.proId,
+      proName: v.projectName,
+      refundAmount: v.amount,
+      refundApplyNo: v.refundNo,
+    }));
+    this.info.refundItems.forEach((v: any) => {
+      noticeSum += v.noticeAmount;
+      amountSum += v.amount;
+    });
+    obj.amount = amountSum;
+    obj.contAmount = noticeSum;
+    obj.payName = this.info.refundItems[0].refundName;
+    obj.payer = this.info.accountName;
+    try {
+      this.computedLoading = true;
+      const res: any = await post_refundApply_collect(obj);
+      this.computedDisabled = true;
+      this.$message.success("操作成功，已展示最新数据");
+      this.computedLoading = false;
+      this.info.countVOs = res.countVOs;
+      this.info.refundInfo = { ...res.refundInfo };
+    } catch (err) {
+      this.computedLoading = false;
+    }
   }
   async getInfo() {
     if (this.returnId) {
@@ -836,13 +1025,21 @@ export default class RefundToExamineToExamine extends Vue {
 
 <style lang="scss" scoped>
 .content {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
+  position: relative;
+  /deep/ .el-button {
+    position: absolute;
+    top: -10px;
+    right: 0;
+  }
 }
 .bottom {
   margin-top: 30px;
   text-align: center;
+}
+.content-info {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
 }
 
 .text-ellipsis {
@@ -857,6 +1054,14 @@ export default class RefundToExamineToExamine extends Vue {
   /deep/ .el-textarea__inner,
   /deep/ .el-input__inner {
     border: none;
+  }
+}
+
+.tableprefix {
+  line-height: 40px;
+  color: #000;
+  /deep/ .el-input__prefix {
+    left: 10px;
   }
 }
 </style>

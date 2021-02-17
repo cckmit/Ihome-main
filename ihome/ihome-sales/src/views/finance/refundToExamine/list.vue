@@ -4,8 +4,8 @@
  * @version: 
  * @Author: zyc
  * @Date: 2021-01-13 14:50:21
- * @LastEditors: zyc
- * @LastEditTime: 2021-02-15 14:54:24
+ * @LastEditors: ywl
+ * @LastEditTime: 2021-02-17 12:04:43
 -->
 <template>
   <IhPage label-width="110px">
@@ -98,8 +98,14 @@
     </template>
     <template #btn>
       <el-row>
-        <el-button type="primary" @click="searchMixin()">查询</el-button>
-        <el-button type="info" @click="reset()">重置</el-button>
+        <el-button
+          type="primary"
+          @click="searchMixin()"
+        >查询</el-button>
+        <el-button
+          type="info"
+          @click="reset()"
+        >重置</el-button>
       </el-row>
     </template>
     <template #table>
@@ -122,25 +128,43 @@
           min-width="120"
           fixed
         ></el-table-column>
-        <el-table-column label="事业部" prop="departmentName"></el-table-column>
+        <el-table-column
+          label="事业部"
+          prop="departmentName"
+        ></el-table-column>
         <el-table-column
           label="申请退款金额"
           prop="amount"
           min-width="120"
         ></el-table-column>
-        <el-table-column label="付款方" prop="accountName"></el-table-column>
-        <el-table-column label="结算方式" prop="">
+        <el-table-column
+          label="付款方"
+          prop="accountName"
+        ></el-table-column>
+        <el-table-column
+          label="结算方式"
+          prop=""
+        >
           <template slot-scope="scope">{{
             $root.dictAllName(scope.row.settlementType, "RefundSettlementType")
           }}</template>
         </el-table-column>
-        <el-table-column label="付款方式" prop="payType">
+        <el-table-column
+          label="付款方式"
+          prop="payType"
+        >
           <template slot-scope="scope">{{
             $root.dictAllName(scope.row.payType, "RefundPayType")
           }}</template>
         </el-table-column>
-        <el-table-column label="制单人" prop="inputUserName"></el-table-column>
-        <el-table-column label="制单日期" prop="createDate"></el-table-column>
+        <el-table-column
+          label="制单人"
+          prop="inputUserName"
+        ></el-table-column>
+        <el-table-column
+          label="制单日期"
+          prop="createDate"
+        ></el-table-column>
         <el-table-column
           fixed="right"
           label="流程进度"
@@ -153,14 +177,21 @@
               class="margin-right-10"
               type="primary"
               @click.native.prevent="showPlanPicture(scope)"
-              >进度流程图</el-link
-            >
+            >进度流程图</el-link>
           </template>
         </el-table-column>
 
-        <el-table-column label="操作" width="120" fixed="right">
+        <el-table-column
+          label="操作"
+          width="120"
+          fixed="right"
+        >
           <template v-slot="{ row }">
-            <el-link type="primary" @click="toExamine(row)" v-has="'B.SALES.FINANCE.REFUNDAPPLY.TOEXAMINE'">审核</el-link>
+            <el-link
+              type="primary"
+              @click="toExamine(row)"
+              v-has="'B.SALES.FINANCE.REFUNDAPPLY.TOEXAMINE'"
+            >审核</el-link>
           </template>
         </el-table-column>
       </el-table>
@@ -254,10 +285,17 @@ export default class RefundToExamineList extends Vue {
     this.getListMixin();
   }
   toExamine(row: any) {
-    this.$router.push({
-      path: "/refundToExamine/toExamine",
-      query: { id: row.id },
-    });
+    if (row.status === "FGSCWSH") {
+      this.$router.push({
+        path: "/refundToExamine/toExamineByFinan",
+        query: { id: row.id },
+      });
+    } else {
+      this.$router.push({
+        path: "/refundToExamine/toExamine",
+        query: { id: row.id },
+      });
+    }
   }
   async showPlanPicture(scope: any) {
     console.log(scope);

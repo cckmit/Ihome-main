@@ -4,7 +4,7 @@
  * @Author: zyc
  * @Date: 2020-12-09 09:45:59
  * @LastEditors: zyc
- * @LastEditTime: 2021-01-29 10:50:24
+ * @LastEditTime: 2021-02-17 10:05:36
 -->
 <!--
  * @Descripttion: 
@@ -135,7 +135,7 @@
                 :data="resPageInfo.list"
                 width="100%"
                 class="ih-table"
-                :height="pageHeight-150"
+                :height="pageHeight - 150"
                 :default-sort="{ prop: 'date', order: 'descending' }"
               >
                 <!-- <el-table-column type="selection" width="50"></el-table-column> -->
@@ -230,6 +230,8 @@
     </template>
     <ih-dialog :show="dialogVisible">
       <OrganizationAdd
+        :show-confirm-button="true"
+        :show-cancel-button="true"
         :data="organizationItem"
         @cancel="() => (dialogVisible = false)"
         @finish="
