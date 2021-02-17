@@ -1685,6 +1685,7 @@
 
     // 编辑 --- 构建上传附件数据
     initDocumentVO(list: any = []) {
+      if (list.length === 0) return [];
       let fileList: any = (this as any).$root.dictAllList('DealFileType'); // 附件类型
       // 附件类型增加key
       if (fileList.length > 0 && list.length > 0) {
