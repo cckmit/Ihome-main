@@ -1774,11 +1774,10 @@
         ...res
       };
       // 提示框
-      await this.showChangeTips();
-      // this.addFlag = false;
-      // this.editFlag = false;
-      // this.tipsFlag = true;
-      // this.dividerTips = '业绩分配';
+      this.addFlag = false;
+      this.editFlag = false;
+      this.tipsFlag = true;
+      this.dividerTips = '业绩分配';
       this.isSameFlag = res?.scheme?.isSame === "Yes"; // 分销总包是否一致
       this.postData.address = res?.house?.address;
       this.postData.area = res?.house?.area;
