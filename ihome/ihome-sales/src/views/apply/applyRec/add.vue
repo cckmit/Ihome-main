@@ -4,7 +4,7 @@
  * @Author: ywl
  * @Date: 2021-01-07 16:30:03
  * @LastEditors: ywl
- * @LastEditTime: 2021-02-16 15:28:59
+ * @LastEditTime: 2021-02-17 14:49:24
 -->
 <template>
   <IhPage class="text-left">
@@ -1162,7 +1162,7 @@ export default class ApplyRecAdd extends Vue {
     //     parseFloat(row.receiveAmount)
     //   );
     // } else {
-    sum = this.$math.div(row.applyMoney, row.noReceiveAmount);
+    sum = this.$math.div(row.applyMoney, row.receiveAmount);
     // }
     row.applyPercent = this.$math.tofixed(sum, 4);
     return row.applyPercent;
