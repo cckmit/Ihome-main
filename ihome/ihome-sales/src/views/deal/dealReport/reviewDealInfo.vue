@@ -735,6 +735,7 @@
 
     // 构建附件信息
     initDocumentList(list: any = []) {
+      if (list.length === 0) return  [];
       let fileList: any = (this as any).$root.dictAllList('DealFileType'); // 附件类型
       // 附件类型增加key
       if (fileList.length > 0 && list.length > 0) {
