@@ -754,7 +754,9 @@
         const idList: any = await post_notice_customer_information({dealId: id});
         const parentIdList: any = await post_notice_customer_information({dealId: parentId});
         // console.log('优惠告知书列表', list);
-        this.infoForm.offerNoticeList = [...idList, ...parentIdList];
+        this.$nextTick(() => {
+          this.infoForm.offerNoticeList = [...idList, ...parentIdList];
+        });
       } else {
         const list: any = await post_notice_customer_information({dealId: id});
         // console.log('优惠告知书列表', list);
@@ -764,6 +766,7 @@
           this.infoForm.offerNoticeList = [];
         }
       }
+      console.log(this.infoForm.offerNoticeList);
     }
 
     // 跳转到指定索引的元素
