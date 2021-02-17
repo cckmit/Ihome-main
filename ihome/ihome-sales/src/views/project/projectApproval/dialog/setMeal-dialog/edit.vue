@@ -152,8 +152,8 @@
           prop="estimatedTransactionPrice"
         >
           <el-input
-            v-digits="2"
             v-model="info.estimatedTransactionPrice"
+            @input="info.estimatedTransactionPrice = number6Change(info.estimatedTransactionPrice)"
             style="width:60%;"
           ><template slot="append">万元/套</template>
           </el-input>       
@@ -325,7 +325,7 @@
                     金额:
                     <el-input
                       v-model="row.receivableAmout"
-                      v-digits="2"
+                      @input="row.receivableAmout = number2Change(row.receivableAmout)"
                       clearable
                       :disabled="item.exVoidService ? true: false"
                       style="width: 70%"
@@ -334,11 +334,10 @@
                   <div class="margin-top-5">
                     点数:
                     <el-input
-                      @input="row.receivablePoint = numberChange(row.receivablePoint)"
+                      @input="row.receivablePoint = number5Change(row.receivablePoint)"
                       class="point"
                       style="width: 70%"
                       v-model="row.receivablePoint"
-                      v-digits="5"
                       clearable
                       :disabled="item.exVoidService ? true: false"
                     >
@@ -358,7 +357,7 @@
                     <el-input
                       :disabled="(row.transactionEnum === 'Natural' || row.transactionEnum === 'SelfChannel') ? true : false"
                       v-model="row.sendAmount"
-                      v-digits="2"
+                      @input="row.sendAmount = number2Change(row.sendAmount)"
                       clearable
                       style="width: 70%"
                     />
@@ -366,12 +365,11 @@
                   <div class="margin-top-5">
                     点数:
                     <el-input
-                      @input="row.sendPoint = numberChange(row.sendPoint)"
+                      @input="row.sendPoint = number5Change(row.sendPoint)"
                       class="point"
                       style="width: 70%"
                       :disabled="(row.transactionEnum === 'Natural' || row.transactionEnum === 'SelfChannel') ? true : false"
                       v-model="row.sendPoint"
-                      v-digits="5"
                       clearable
                     >
                       <template slot="append">%</template>
@@ -389,7 +387,7 @@
                     金额:
                     <el-input
                       v-model="row.sendInAmount"
-                      v-digits="2"
+                      @input="row.sendInAmount = number2Change(row.sendInAmount)"
                       clearable
                       style="width: 70%"
                     />
@@ -397,11 +395,10 @@
                   <div class="margin-top-5">
                     点数:
                     <el-input
-                      @input="row.sendInPoint = numberChange(row.sendInPoint)"
+                      @input="row.sendInPoint = number5Change(row.sendInPoint)"
                       class="point"
                       style="width: 70%"
                       v-model="row.sendInPoint"
-                      v-digits="5"
                       clearable
                     >
                       <template slot="append">%</template>
@@ -419,7 +416,7 @@
                     金额:
                     <el-input
                       v-model="row.generalAchieveAmount"
-                      v-digits="2"
+                      @input="row.generalAchieveAmount = number2Change(row.generalAchieveAmount)"
                       clearable
                       :class="{'is-disabled': generalAchieveAmountDisabled(row)}"
                       style="width: 70%"
@@ -428,11 +425,10 @@
                   <div class="margin-top-5">
                     点数:
                     <el-input
-                      @input="row.generalAchievePoint = numberChange(row.generalAchievePoint)"
+                      @input="row.generalAchievePoint = number5Change(row.generalAchievePoint)"
                       class="point"
                       style="width: 70%"
                       v-model="row.generalAchievePoint"
-                      v-digits="5"
                       clearable
                       :class="{'is-disabled': generalAchieveAmountDisabled(row)}"
                     >
@@ -451,7 +447,7 @@
                     金额:
                     <el-input
                       v-model="row.distributeAchieveAmount"
-                      v-digits="2"
+                      @input="row.distributeAchieveAmount = number2Change(row.distributeAchieveAmount)"
                       clearable
                       :class="{'is-disabled': distributeAchieveAmountDisabled(row)}"
                       style="width: 70%"
@@ -460,11 +456,10 @@
                   <div class="margin-top-5">
                     点数:
                     <el-input
-                      @input="row.distributeAchievePoint = numberChange(row.distributeAchievePoint)"
+                      @input="row.distributeAchievePoint = number5Change(row.distributeAchievePoint)"
                       class="point"
                       style="width: 70%"
                       v-model="row.distributeAchievePoint"
-                      v-digits="5"
                       clearable
                       :class="{'is-disabled': distributeAchieveAmountDisabled(row)}"
                     >
@@ -735,7 +730,7 @@
                     金额:
                     <el-input
                       v-model="row.receivableAmout"
-                      v-digits="2"
+                      @input="row.receivableAmout = number2Change(row.receivableAmout)"
                       clearable
                       style="width: 70%"
                     />
@@ -743,11 +738,10 @@
                   <div class="margin-top-5">
                     点数:
                     <el-input
-                      @input="row.receivablePoint = numberChange(row.receivablePoint)"
+                      @input="row.receivablePoint = number5Change(row.receivablePoint)"
                       class="point"
                       style="width: 70%"
                       v-model="row.receivablePoint"
-                      v-digits="5"
                       clearable
                     >
                       <template slot="append">%</template>
@@ -766,7 +760,7 @@
                     <el-input
                       :disabled="(row.transactionEnum === 'Natural' || row.transactionEnum === 'SelfChannel') ? true : false"
                       v-model="row.sendAmount"
-                      v-digits="2"
+                      @input="row.sendAmount = number2Change(row.sendAmount)"
                       clearable
                       style="width: 70%"
                     />
@@ -774,12 +768,11 @@
                   <div class="margin-top-5">
                     点数:
                     <el-input
-                      @input="row.sendPoint = numberChange(row.sendPoint)"
+                      @input="row.sendPoint = number5Change(row.sendPoint)"
                       class="point"
                       style="width: 70%"
                       :disabled="(row.transactionEnum === 'Natural' || row.transactionEnum === 'SelfChannel') ? true : false"
                       v-model="row.sendPoint"
-                      v-digits="5"
                       clearable
                     >
                       <template slot="append">%</template>
@@ -797,7 +790,7 @@
                     金额:
                     <el-input
                       v-model="row.sendInAmount"
-                      v-digits="2"
+                      @input="row.sendInAmount = number2Change(row.sendInAmount)"
                       clearable
                       style="width: 70%"
                     />
@@ -805,11 +798,10 @@
                   <div class="margin-top-5">
                     点数:
                     <el-input
-                      @input="row.sendInPoint = numberChange(row.sendInPoint)"
+                      @input="row.sendInPoint = number5Change(row.sendInPoint)"
                       class="point"
                       style="width: 70%"
                       v-model="row.sendInPoint"
-                      v-digits="5"
                       clearable
                     >
                       <template slot="append">%</template>
@@ -827,7 +819,7 @@
                     金额:
                     <el-input
                       v-model="row.generalAchieveAmount"
-                      v-digits="2"
+                      @input="row.generalAchieveAmount = number2Change(row.generalAchieveAmount)"
                       clearable
                       :class="{'is-disabled': generalAchieveAmountDisabled(row)}"
                       style="width: 70%"
@@ -836,11 +828,10 @@
                   <div class="margin-top-5">
                     点数:
                     <el-input
-                      @input="row.generalAchievePoint = numberChange(row.generalAchievePoint)"
+                      @input="row.generalAchievePoint = number5Change(row.generalAchievePoint)"
                       class="point"
                       style="width: 70%"
                       v-model="row.generalAchievePoint"
-                      v-digits="5"
                       clearable
                       :class="{'is-disabled': generalAchieveAmountDisabled(row)}"
                     >
@@ -859,7 +850,7 @@
                     金额:
                     <el-input
                       v-model="row.distributeAchieveAmount"
-                      v-digits="2"
+                      @input="row.distributeAchieveAmount = number2Change(row.distributeAchieveAmount)"
                       clearable
                       :class="{'is-disabled': distributeAchieveAmountDisabled(row)}"
                       style="width: 70%"
@@ -868,11 +859,10 @@
                   <div class="margin-top-5">
                     点数:
                     <el-input
-                      @input="row.distributeAchievePoint = numberChange(row.distributeAchievePoint)"
+                      @input="row.distributeAchievePoint = number5Change(row.distributeAchievePoint)"
                       class="point"
                       style="width: 70%"
                       v-model="row.distributeAchievePoint"
-                      v-digits="5"
                       clearable
                       :class="{'is-disabled': distributeAchieveAmountDisabled(row)}"
                     >
@@ -1062,30 +1052,46 @@ export default class SetMealEdit extends Vue {
   ];
 
   otherChannelAmount(row: any) {
+    let estimatedTransactionPrice = isNaN(this.info.estimatedTransactionPrice) ? 0 : Number(this.info.estimatedTransactionPrice);
+    let receivableAmout = isNaN(row.receivableAmout) ? 0: Number(row.receivableAmout);
+    let receivablePoint = isNaN(row.receivablePoint) ? 0: Number(row.receivablePoint);
+
     let total =
-      Number(row.receivableAmout) +
-      Number(row.receivablePoint / 100) *
-        Number(this.info.estimatedTransactionPrice) *
-        10000;
+      receivableAmout +  receivablePoint / 100 *
+        estimatedTransactionPrice *
+        10000
+  ;
+
+    let sendAmount = isNaN(row.sendAmount) ? 0 : Number(row.sendAmount);
+    let sendPoint = isNaN(row.sendPoint) ? 0 : Number(row.sendPoint);
     let num1 =
-      Number(row.sendAmount) +
-      Number(row.sendPoint / 100) *
-        Number(this.info.estimatedTransactionPrice) *
+      sendAmount +
+      sendPoint / 100 *
+      estimatedTransactionPrice *
         10000;
+
+    let sendInAmount = isNaN(row.sendInAmount) ? 0 : Number(row.sendInAmount);
+    let sendInPoint = isNaN(row.sendInPoint) ? 0 : Number(row.sendInPoint);    
     let num2 =
-      Number(row.sendInAmount) +
-      Number(row.sendInPoint / 100) *
-        Number(this.info.estimatedTransactionPrice) *
+      sendInAmount +
+      sendInPoint / 100 *
+      estimatedTransactionPrice *
         10000;
+
+    let generalAchieveAmount = isNaN(row.generalAchieveAmount) ? 0 : Number(row.generalAchieveAmount);
+    let generalAchievePoint = isNaN(row.generalAchievePoint) ? 0 : Number(row.generalAchievePoint);            
     let num3 =
-      Number(row.generalAchieveAmount) +
-      Number(row.generalAchievePoint / 100) *
-        Number(this.info.estimatedTransactionPrice) *
+      generalAchieveAmount +
+      generalAchievePoint / 100 *
+      estimatedTransactionPrice *
         10000;
+
+    let distributeAchieveAmount = isNaN(row.distributeAchieveAmount) ? 0 : Number(row.distributeAchieveAmount);
+    let distributeAchievePoint = isNaN(row.distributeAchievePoint) ? 0 : Number(row.distributeAchievePoint);          
     let num4 =
-      Number(row.distributeAchieveAmount) +
-      Number(row.distributeAchievePoint / 100) *
-        Number(this.info.estimatedTransactionPrice) *
+      distributeAchieveAmount +
+      distributeAchievePoint / 100 *
+      estimatedTransactionPrice *
         10000;
     let computed =
       (isNaN(total) ? 0 : total) -
@@ -1118,7 +1124,7 @@ export default class SetMealEdit extends Vue {
       total = 0;
     }else{
       total =
-        Number(isNaN(row.receivableAmout) ? 0 : row.receivableAmout) +
+        Number(isNaN(row.receivableAmout) ? 0 : row.receivableAmout) * estimateComplateNum +
         Number((isNaN(row.receivablePoint) ? 0 : row.receivablePoint) / 100) *
           Number(
             isNaN(this.info.estimatedTransactionPrice)
@@ -1296,13 +1302,48 @@ export default class SetMealEdit extends Vue {
       }
     }
   }
-
-  numberChange(val: any) {
-    if (0 <= val && val <= 100) {
-      return val;
+  number6Change(value: any) {
+    if (!value) return;
+      let val = (value && value.split("")) || [];
+      let sNum = val.toString();
+      if (sNum.indexOf(".") === 0) {
+        sNum = "0" + sNum;//若第一位直接写 . 的情况下，给首位拼接一个0
+      }
+      sNum = sNum.replace(/[^\d.]/g, "");  // 过滤
+      sNum = sNum.replace(/\.{2,}/g, "."); //只留第一个小数点，清除多余的
+      sNum = sNum.match(/^\d*(\.?\d{0,6})/g)[0]
+      if (sNum < 0){
+        return 0;
+      }
+      return sNum;
+  }
+  number5Change(value: any) {
+    if (!value) return;
+      let val = (value && value.split("")) || [];
+      let sNum = val.toString();
+      if (sNum.indexOf(".") === 0) {
+        sNum = "0" + sNum;//若第一位直接写 . 的情况下，给首位拼接一个0
+      }
+      sNum = sNum.replace(/[^\d.]/g, "");  // 过滤
+      sNum = sNum.replace(/\.{2,}/g, "."); //只留第一个小数点，清除多余的
+      sNum = sNum.match(/^\d*(\.?\d{0,5})/g)[0]
+    if (0 <= sNum && sNum <= 100) {
+      return sNum;
     } else {
-      return val > 100 ? 100 : 0;
+      return sNum > 100 ? 100 : 0;
     }
+  }
+    number2Change(value: any) {
+    if (!value) return;
+      let val = (value && value.split("")) || [];
+      let sNum = val.toString();
+      if (sNum.indexOf(".") === 0) {
+        sNum = "0" + sNum;//若第一位直接写 . 的情况下，给首位拼接一个0
+      }
+      sNum = sNum.replace(/[^\d.]/g, "");  // 过滤
+      sNum = sNum.replace(/\.{2,}/g, "."); //只留第一个小数点，清除多余的
+      sNum = sNum.match(/^\d*(\.?\d{0,2})/g)[0]
+      return sNum;
   }
 
   async created() {
