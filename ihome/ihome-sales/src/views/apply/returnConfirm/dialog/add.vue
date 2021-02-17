@@ -4,7 +4,7 @@
  * @Author: ywl
  * @Date: 2021-01-16 09:23:25
  * @LastEditors: ywl
- * @LastEditTime: 2021-01-16 16:14:17
+ * @LastEditTime: 2021-02-17 16:46:41
 -->
 <template>
   <el-dialog
@@ -86,7 +86,10 @@
 import { Component, Vue, Prop } from "vue-property-decorator";
 import { NoRepeatHttp } from "ihome-common/util/aop/no-repeat-http";
 import { Form as ElForm } from "element-ui";
-import { post_receConfirmDetail_addBatch } from "../../../../api/apply/index";
+import {
+  post_receConfirmDetail_addBatch,
+  get_receConfirmDetail_getListByApplyId__applyId,
+} from "../../../../api/apply/index";
 
 @Component({})
 export default class AddRetPayment extends Vue {
@@ -142,11 +145,29 @@ export default class AddRetPayment extends Vue {
       return false;
     }
   }
+  async getApplyById(applyId: any) {
+    try {
+      let res: any = await get_receConfirmDetail_getListByApplyId__applyId({
+        applyId,
+      });
+      console.log(res);
+      if (res.length) {
+        this.form.receiveList = res.map((i: any) => ({
+          receiveMoney: i.receiveMoney,
+          receiveNo: i.receiveNo,
+        }));
+      } else {
+        this.form.receiveList[0].receiveMoney = this.data.shuoldReceMoney;
+      }
+    } catch (error) {
+      console.log(error);
+    }
+  }
 
   created() {
     console.log(this.data);
     this.form.applyId = this.data.id;
-    this.form.receiveList[0].receiveMoney = this.data.shuoldReceMoney;
+    this.getApplyById(this.data.id);
     this.totalMoney = this.data.shuoldReceMoney;
   }
 }
