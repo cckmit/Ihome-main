@@ -4,7 +4,7 @@
  * @Author: wwq
  * @Date: 2020-11-27 17:17:06
  * @LastEditors: wwq
- * @LastEditTime: 2021-01-21 11:17:02
+ * @LastEditTime: 2021-02-17 15:51:12
 -->
 <template>
   <div class="project-approval-box">
@@ -485,7 +485,10 @@
             </el-select>
           </el-form-item>
         </el-col>
-        <el-col :span="8">
+        <el-col
+          :span="8"
+          v-if="info.exDiscount"
+        >
           <el-form-item
             label="认购书优惠折扣体现方式"
             prop="subscriDiscountModel"
@@ -497,7 +500,10 @@
             ></el-input>
           </el-form-item>
         </el-col>
-        <el-col :span="8">
+        <el-col
+          :span="8"
+          v-if="info.exDiscount"
+        >
           <el-form-item
             label="优惠告知书折扣体现方式"
             prop="notificDiscountModel"
@@ -983,7 +989,7 @@ export default class FirstAgencyEdit extends Vue {
     exDiscount: [
       {
         required: true,
-        message: "请选择是否认购书是否体现优惠折扣",
+        message: "请选择认购书是否体现优惠折扣",
         trigger: "change",
       },
     ],
@@ -1137,7 +1143,7 @@ export default class FirstAgencyEdit extends Vue {
 
   async submitContract() {
     this.finishLoadHT = true;
-    try{
+    try {
       await post_term_constractAudit({
         termId: this.info.termId,
       });
@@ -1147,7 +1153,7 @@ export default class FirstAgencyEdit extends Vue {
         message: "提交合同审核成功",
       });
       this.$goto({ path: `/projectApproval/list` });
-    }catch(err){
+    } catch (err) {
       this.finishLoadHT = false;
     }
   }
@@ -1235,8 +1241,7 @@ export default class FirstAgencyEdit extends Vue {
           } catch (err) {
             this.finishLoading = false;
           }
-        
-        }        
+        }
         // if (type === "save") {
         //   await post_term_update(infoObj);
         //   this.$message.success("保存成功");
@@ -1245,14 +1250,14 @@ export default class FirstAgencyEdit extends Vue {
         //   this.$message.success("提交立项审核成功");
         // }
         // this.$goto({ path: "/projectApproval/list" });
-      }else{
-          setTimeout(()=>{
-            let isError: any= document.getElementsByClassName("is-error");
-            if (isError != null){
-              isError[0].querySelector('input').focus();
-            }
-          },100);
-          return false;  
+      } else {
+        setTimeout(() => {
+          let isError: any = document.getElementsByClassName("is-error");
+          if (isError != null) {
+            isError[0].querySelector("input").focus();
+          }
+        }, 100);
+        return false;
       }
     });
   }
