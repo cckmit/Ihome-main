@@ -138,7 +138,6 @@
       <IhSelectPageByPayer
         v-model="form.testInput14"
         :proId="form.testInput5"
-        :isBlur="false"
       ></IhSelectPageByPayer>
     </el-form-item>
     <el-form-item label="公司主体">需要先选启动事业部才能选择公司主体</el-form-item>
@@ -146,7 +145,6 @@
       <IhSelectPageByOrgCompany
         v-model="form.testInput15"
         :proId="form.testInput5"
-        :isInit="false"
       ></IhSelectPageByOrgCompany>
     </el-form-item>
   </el-form>
@@ -170,6 +168,7 @@ import {
   IhSelectPageByCompany,
   IhSelectPageByDeveloper,
   IhSelectPageByPayer,
+  IhSelectPageByOrgCompany,
 } from "../ihome-package/ui/packages/select-page/index";
 
 @Component({
@@ -186,6 +185,7 @@ import {
     IhSelectPageByDeveloper,
     IhSelectPageOrg,
     IhSelectPageByPayer,
+    IhSelectPageByOrgCompany,
   },
 })
 export default class SelectPageDemo extends Vue {

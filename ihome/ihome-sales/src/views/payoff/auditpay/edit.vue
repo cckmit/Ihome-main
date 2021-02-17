@@ -4,7 +4,7 @@
  * @Author: wwq
  * @Date: 2020-12-26 11:11:23
  * @LastEditors: wwq
- * @LastEditTime: 2021-02-16 09:55:32
+ * @LastEditTime: 2021-02-17 11:47:09
 -->
 <template>
   <IhPage>
@@ -1443,11 +1443,6 @@ export default class PayoffEdit extends Vue {
           })
         ),
       };
-      // 获取付款方账号
-      const item = await post_bankAccount_getByOrgId__orgId({
-        orgId: this.info.payerId,
-      });
-      this.payerAccountOptions = item;
       this.getFileListType(res.documentList);
       this.filterTabs(this.info.payApplyDetailList);
       this.settlementMethodChange(res.settlementMethod);

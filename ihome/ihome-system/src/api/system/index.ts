@@ -1,6 +1,6 @@
 /* eslint-disable */
 /* 此脚本由swagger-ui的api-docs自动生成，请勿修改 */
-//2021-2-8 11:47:05 ├F10: AM┤
+//2021-2-17 11:57:20 ├F10: AM┤
 import { request } from '@/api/base'
 const basePath = "/sales-api/system"
 /**查询所有行政区划信息*/
@@ -114,6 +114,10 @@ return await request.post< CompanyBaseVO[],CompanyBaseVO[]> (basePath+'/company/
 /**查询所有公司分页信息*/
 export async function post_company_getPage (d?: any) {
 return await request.post< any,any> (basePath+'/company/getPage', d)
+}
+/**根据组织id查询公司主体*/
+export async function post_company_getPageByOrg (d?: any) {
+return await request.post< any,any> (basePath+'/company/getPageByOrg', d)
 }
 /**E签宝--批量创建机构印章*/
 export async function post_companySeal_batchCreateOrg (d?: any) {
@@ -274,6 +278,10 @@ return await request.get<OrgVO,OrgVO>(basePath+'/org/get/{id}', { params: d })
 /**查询所有组织*/
 export async function get_org_getAll (d?: any) {
 return await request.get<OrgVO[],OrgVO[]>(basePath+'/org/getAll', { params: d })
+}
+/**查询用户权限组织列表*/
+export async function post_org_getAllByUser (d?: any) {
+return await request.post< UserOrgTreeVO,UserOrgTreeVO> (basePath+'/org/getAllByUser', d)
 }
 /**查询组织层次树*/
 export async function get_org_getLevelTree__id (d?: any) {
@@ -857,7 +865,7 @@ smsCode: string;
 export interface JobBaseVO {
 /**(必填)编码*/
 code: string;
-/**数据权限(OrgLimit-员工组织数据权限、SelfLimit-员工个人数据权限、ChannelLimit-渠道数据权限、CustomerLimit-客户数据权限)*/
+/**数据权限(OrgLimit-员工组织数据权限、SelfLimit-员工个人数据权限、ChannelLimit-渠道数据权限、ChannelSelfLimit-渠道个人数据权限、CustomerLimit-客户数据权限)*/
 dataLimit: string;
 /**(必填)名称*/
 name: string;
@@ -906,7 +914,7 @@ roleIds: number[];
 export interface JobUpdateVO {
 /**(必填)编码*/
 code: string;
-/**数据权限(OrgLimit-员工组织数据权限、SelfLimit-员工个人数据权限、ChannelLimit-渠道数据权限、CustomerLimit-客户数据权限)*/
+/**数据权限(OrgLimit-员工组织数据权限、SelfLimit-员工个人数据权限、ChannelLimit-渠道数据权限、ChannelSelfLimit-渠道个人数据权限、CustomerLimit-客户数据权限)*/
 dataLimit: string;
 /**(必填)id*/
 id: number;
@@ -925,7 +933,7 @@ createTime: string;
 createUser: number;
 /**创建用户姓名*/
 createUserName: string;
-/**数据权限(OrgLimit-员工组织数据权限、SelfLimit-员工个人数据权限、ChannelLimit-渠道数据权限、CustomerLimit-客户数据权限)*/
+/**数据权限(OrgLimit-员工组织数据权限、SelfLimit-员工个人数据权限、ChannelLimit-渠道数据权限、ChannelSelfLimit-渠道个人数据权限、CustomerLimit-客户数据权限)*/
 dataLimit: string;
 /**已删除*/
 deleted: number;
@@ -967,7 +975,7 @@ createTime: string;
 createUser: number;
 /**创建用户姓名*/
 createUserName: string;
-/**数据权限(OrgLimit-员工组织数据权限、SelfLimit-员工个人数据权限、ChannelLimit-渠道数据权限、CustomerLimit-客户数据权限)*/
+/**数据权限(OrgLimit-员工组织数据权限、SelfLimit-员工个人数据权限、ChannelLimit-渠道数据权限、ChannelSelfLimit-渠道个人数据权限、CustomerLimit-客户数据权限)*/
 dataLimit: string;
 /**已删除*/
 deleted: number;
@@ -1500,8 +1508,12 @@ deleted: number;
 id: number;
 /**名称*/
 name: string;
+/**备注*/
+remark: string;
 /**特殊角色*/
 special: number;
+/**角色类别(ResourceGroup-资源组、JobRole-岗位角色)*/
+type: string;
 /**更新时间(yyyy-MM-dd HH:mm:ss)*/
 updateTime: string;
 /**更新用户*/
@@ -1580,8 +1592,12 @@ deleted: number;
 id: number;
 /**名称*/
 name: string;
+/**备注*/
+remark: string;
 /**特殊角色*/
 special: number;
+/**角色类别(ResourceGroup-资源组、JobRole-岗位角色)*/
+type: string;
 /**更新时间(yyyy-MM-dd HH:mm:ss)*/
 updateTime: string;
 /**更新用户*/
@@ -1695,6 +1711,59 @@ jobId: number;
 /**角色id数组*/
 roleIds: number[];
 }
+/**UserOrgPermissionQueryVO*/
+export interface UserOrgPermissionQueryVO {
+/**状态(Valid-有效、Invalid-无效)*/
+status: string;
+/**用户id*/
+userId: number;
+}
+/**UserOrgPermissionVO*/
+export interface UserOrgPermissionVO {
+/**关闭日期(yyyy-MM-dd)*/
+closeDate: string;
+/**创建时间(yyyy-MM-dd HH:mm:ss)*/
+createTime: string;
+/**创建用户*/
+createUser: number;
+/**已删除*/
+deleted: number;
+/**部门分类(Business-营业线、Function-职能线)*/
+departmentType: string;
+/**不可点击*/
+disabled: boolean;
+/**id*/
+id: number;
+/**组织层级*/
+level: number;
+/**名称*/
+name: string;
+/**OA呈字*/
+oaChar: string;
+/**开业日期(yyyy-MM-dd)*/
+openDate: string;
+/**组织类型(Root-组织根节点、Company-公司、Department-事业部、Zone-战区、SmallZone-小战区、District-片区、Shop-门店、Group-店组)*/
+orgType: string;
+/**父组织id*/
+parentId: number;
+/**简称*/
+shortName: string;
+/**简称首字母*/
+shortNameAbbr: string;
+/**状态(Valid-有效、Invalid-无效)*/
+status: string;
+/**更新时间(yyyy-MM-dd HH:mm:ss)*/
+updateTime: string;
+/**更新用户*/
+updateUser: number;
+}
+/**UserOrgTreeVO*/
+export interface UserOrgTreeVO {
+/**展开节点列表*/
+expandedList: number[];
+/**权限组织列表*/
+orgPermissionList: UserOrgPermissionVO[];
+}
 /**UserOrgVO*/
 export interface UserOrgVO {
 /**(必填)用户id*/
@@ -1804,7 +1873,7 @@ createTime: string;
 createUser: number;
 /**创建用户姓名*/
 createUserName: string;
-/**数据权限(OrgLimit-员工组织数据权限、SelfLimit-员工个人数据权限、ChannelLimit-渠道数据权限、CustomerLimit-客户数据权限)*/
+/**数据权限(OrgLimit-员工组织数据权限、SelfLimit-员工个人数据权限、ChannelLimit-渠道数据权限、ChannelSelfLimit-渠道个人数据权限、CustomerLimit-客户数据权限)*/
 dataLimit: string;
 /**已删除*/
 deleted: number;

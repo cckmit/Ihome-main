@@ -4,7 +4,7 @@
  * @Author: ywl
  * @Date: 2020-12-10 17:01:33
  * @LastEditors: wwq
- * @LastEditTime: 2021-02-08 11:36:04
+ * @LastEditTime: 2021-02-17 10:50:02
 -->
 <script lang="ts">
 import { Component, Vue, Prop, Watch } from "vue-property-decorator";
@@ -48,6 +48,10 @@ export default class SelectPageByPayer extends Vue {
   @Watch("proId")
   watchDepartmentID(val: any) {
     if (val) this.getSelectList();
+  }
+
+  handleMessage() {
+    this.$message.warning("请先选择事业部");
   }
 
   optionList: any = [];

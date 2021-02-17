@@ -4,7 +4,7 @@
  * @Author: ywl
  * @Date: 2020-12-15 14:42:05
  * @LastEditors: wwq
- * @LastEditTime: 2021-02-17 09:53:35
+ * @LastEditTime: 2021-02-17 11:14:18
 -->
 <script lang="ts">
 import { Component, Vue, Prop, Watch } from "vue-property-decorator";
@@ -23,7 +23,6 @@ export default class IhSelectPageByOrgCompany extends Vue {
         lable: "name",
         value: "id",
         key: "id",
-        disabled: "disabled",
       };
     },
   })
@@ -33,6 +32,12 @@ export default class IhSelectPageByOrgCompany extends Vue {
     default: true,
   })
   isBlur?: boolean;
+
+  pageInfo: any = {
+    total: 0,
+    pageNum: 1,
+    pageSize: 10,
+  };
 
   @Watch("proId")
   watchOrgId(val: any) {
@@ -50,10 +55,13 @@ export default class IhSelectPageByOrgCompany extends Vue {
   async getSelectList() {
     if (this.proId || !this.isBlur) {
       this.searchLoad = true;
-      this.optionList = await post_company_getPageByOrg({
+      let res = await post_company_getPageByOrg({
         orgId: this.proId,
         name: this.filterText,
+        ...this.pageInfo,
       });
+      this.optionList = res.list;
+      this.pageInfo = res;
       this.searchLoad = false;
     }
   }
