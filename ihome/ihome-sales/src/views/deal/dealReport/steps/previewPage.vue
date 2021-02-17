@@ -662,7 +662,13 @@
       let list: any = [];
       if (this.pageData.uploadDocumentList && this.pageData.uploadDocumentList.length) {
         this.pageData.uploadDocumentList.forEach((item: any) => {
-          this.$set(item, 'showFileList', [...item.fileList, ...item.defaultFileList]);
+          let tempList: any = [];
+          if (item.fileList && item.fileList.length) {
+            tempList = item.fileList;
+          } else {
+            tempList = item.defaultFileList;
+          }
+          this.$set(item, 'showFileList', tempList);
           list.push(item);
         });
       }
