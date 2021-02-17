@@ -4,7 +4,7 @@
  * @Author: wwq
  * @Date: 2020-12-26 11:11:23
  * @LastEditors: wwq
- * @LastEditTime: 2021-02-17 16:15:37
+ * @LastEditTime: 2021-02-17 18:35:57
 -->
 <template>
   <IhPage>
@@ -1390,7 +1390,7 @@ export default class PayoffEdit extends Vue {
   }
 
   async getPayerInfo(item: any) {
-    this.info.payerName = item.companyName;
+    this.info.payerName = item.name;
     const res = await post_bankAccount_getByOrgId__orgId({
       orgId: this.info.payerId,
     });
