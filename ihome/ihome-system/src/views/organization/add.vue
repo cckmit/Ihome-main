@@ -4,7 +4,7 @@
  * @Author: zyc
  * @Date: 2020-07-14 11:30:07
  * @LastEditors: zyc
- * @LastEditTime: 2020-12-10 16:08:39
+ * @LastEditTime: 2021-02-17 09:10:39
 --> 
 <template>
   <el-dialog
@@ -141,6 +141,7 @@ export default class OrganizationAdd extends Vue {
     status: "Valid",
     oaChar: null,
     parentOrgName: null,
+    shortNameAbbr: null,
   };
   rules: any = {
     type: [{ required: true, message: "请选择类型", trigger: "change" }],

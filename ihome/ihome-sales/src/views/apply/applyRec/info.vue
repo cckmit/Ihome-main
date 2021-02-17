@@ -4,7 +4,7 @@
  * @Author: ywl
  * @Date: 2021-01-15 15:29:09
  * @LastEditors: ywl
- * @LastEditTime: 2021-02-15 17:56:53
+ * @LastEditTime: 2021-02-16 18:49:06
 -->
 <template>
   <IhPage class="text-left">
@@ -824,49 +824,49 @@ export default class ApplyAudit extends Vue {
   private get totalReceive() {
     let sum = 0;
     this.dealList.forEach((i: any) => {
-      sum += parseFloat(i.receiveAmount);
+      sum += parseFloat(i.receiveAmount || 0);
     });
     return this.$math.tofixed(sum, 2);
   }
   private get totalReceived() {
     let sum = 0;
     this.dealList.forEach((i: any) => {
-      sum += parseFloat(i.receivedAmount);
+      sum += parseFloat(i.receivedAmount || 0);
     });
     return this.$math.tofixed(sum, 2);
   }
   private get totalNoConfirm() {
     let sum = 0;
     this.dealList.forEach((i: any) => {
-      sum += parseFloat(i.noConfirmAmount);
+      sum += parseFloat(i.noConfirmAmount || 0);
     });
     return this.$math.tofixed(sum, 2);
   }
   private get totalApplyAmountNow() {
     let sum = 0;
     this.dealList.forEach((i: any) => {
-      sum += parseFloat(i.canApplyAmountNow);
+      sum += parseFloat(i.canApplyAmountNow || 0);
     });
     return this.$math.tofixed(sum, 2);
   }
   private get totalNoTaxMoneySum() {
     let sum = 0;
     this.dealList.forEach((i: any) => {
-      sum += parseFloat(i.noTaxMoney);
+      sum += parseFloat(i.noTaxMoney || 0);
     });
     return this.$math.tofixed(sum, 2);
   }
   private get totalTax() {
     let sum = 0;
     this.dealList.forEach((i: any) => {
-      sum += parseFloat(i.taxMoney);
+      sum += parseFloat(i.taxMoney || 0);
     });
     return this.$math.tofixed(sum, 2);
   }
   private get totalNoReceiveAmount() {
     let sum = 0;
     this.dealList.forEach((i: any) => {
-      sum += i.noReceiveAmount;
+      sum += parseFloat(i.noReceiveAmount);
     });
     return sum;
   }

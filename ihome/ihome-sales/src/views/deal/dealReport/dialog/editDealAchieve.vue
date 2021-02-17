@@ -19,7 +19,7 @@
     style="text-align: left"
     class="dialog">
     <el-form ref="form" :model="form" :rules="rules" label-width="150px" @submit.native.prevent>
-      <el-row :gutter="10">
+      <el-row>
         <el-col :span="8">
           <el-form-item label="角色类型" prop="roleType">
             <div v-if="data.currentEditItem && data.currentEditItem.roleType === 'BranchOffice'">
@@ -75,7 +75,9 @@
         </el-col>
         <el-col :span="8">
           <el-form-item label="拆佣金额" prop="commFees">
-            <el-input v-model="form.commFees" v-digits="2" placeholder=""/>
+            <el-input
+              @input="calculatePercentage($event, 'commFeesRatio')"
+              v-model="form.commFees" v-digits="2" placeholder=""/>
           </el-form-item>
         </el-col>
         <el-col :span="8">
@@ -150,7 +152,7 @@
     }
 
     private validateCorporateAchieve (rule: any, value: any, callback: any) {
-      if (!value && this.data.currentEditItem.roleType !== 'BranchOffice') {
+      if ([null, "", undefined].includes(value) && this.data.currentEditItem.roleType !== 'BranchOffice') {
         return callback(new Error('角色人业绩不能为空'));
       } else {
         if ((value * 1) > (this.form.roleAchieveCap * 1)) {
@@ -161,7 +163,7 @@
     }
 
     private validateCommFees (rule: any, value: any, callback: any) {
-      if (!value) {
+      if ([null, "", undefined].includes(value)) {
         return callback(new Error('拆佣金额不能为空'));
       } else {
         if ((value * 1) > (this.data.totalAmount * 1)) {
@@ -295,6 +297,12 @@
       }
       (this as any).$refs.form.validate((valid: any) => {
         if (valid && flag) {
+          // 如果管理岗列表有数据，要重新算
+          if (this.form.managerAchieveList.length > 0) {
+            this.form.managerAchieveList.forEach((list: any) => {
+              list.achieveFeesRatio = this.getPercentage(list.achieveFees, this.form.corporateAchieve);
+            });
+          }
           this.$emit("finish", this.form);
         } else {
           console.log('error finish!!');

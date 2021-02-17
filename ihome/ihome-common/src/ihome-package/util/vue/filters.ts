@@ -4,7 +4,7 @@
  * @Author: zyc
  * @Date: 2020-07-16 08:55:55
  * @LastEditors: ywl
- * @LastEditTime: 2021-02-16 15:40:36
+ * @LastEditTime: 2021-02-16 18:51:03
  */
 import { MyMath } from '../math'
 const math = new MyMath()
@@ -115,8 +115,10 @@ export default (Vue: any, vm: any) => {
     })
 
     Vue.filter('percent', function (value: any) {
-        let mul = math.tofixed(Number(value) * 100, 2)
-        return mul + '%'
+        if (value) {
+            let mul = math.tofixed(Number(value) * 100, 2)
+            return mul + '%'
+        }
     })
 
 };
