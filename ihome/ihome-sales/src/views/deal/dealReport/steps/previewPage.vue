@@ -799,7 +799,7 @@
             // 变更基础信息
             if (this.btnType === "add") {
               // 去新增
-              postData.noticeDealList = this.pageData?.noticeDealList.length ? this.pageData?.noticeDealList.length : null;
+              postData.noticeDealList = this.pageData?.noticeDealList.length ? this.pageData?.noticeDealList : null;
               postData.dealAddInputVO.status = type === 'save' ? 'Draft' : 'PlatformClerkUnreview';
               await post_suppDeal_entryBasicInfChange(postData);
             } else if (this.btnType === "edit") {
