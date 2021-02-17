@@ -1561,9 +1561,7 @@
         // 获取平台费用中新增、修改弹窗中角色类型和角色业绩上限
         await this.initAchieveRole();
         // 编辑模式判断是对外拆佣和平台费用是否有值
-        if (!this.postData.commissionInfoList.length
-          && !this.postData.achieveTotalBagList.length
-          && !this.postData.achieveDistriList.length) {
+        if (!res.channelCommList.length && !res.achieveList.length) {
           this.addFlag = true;
           this.editFlag = false;
           this.tipsFlag = false;
