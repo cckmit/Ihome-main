@@ -4,7 +4,7 @@
  * @Author: wwq
  * @Date: 2020-12-26 11:11:23
  * @LastEditors: wwq
- * @LastEditTime: 2021-02-16 10:41:01
+ * @LastEditTime: 2021-02-17 10:39:09
 -->
 <template>
   <IhPage>
@@ -1644,8 +1644,10 @@ export default class PayoffEdit extends Vue {
           try {
             await post_payApply_entryApply(obj);
             this.finishLoading = false;
+            this.submitLoading = false;
           } catch (err) {
             this.finishLoading = false;
+            this.submitLoading = false;
             return;
           }
         } else if (this.$route.name === "payoffEdit") {
@@ -1654,8 +1656,10 @@ export default class PayoffEdit extends Vue {
           obj.applyCode = this.info.applyCode;
           try {
             await post_payApply_updateApply(obj);
+            this.finishLoading = false;
             this.submitLoading = false;
           } catch (err) {
+            this.finishLoading = false;
             this.submitLoading = false;
             return;
           }
