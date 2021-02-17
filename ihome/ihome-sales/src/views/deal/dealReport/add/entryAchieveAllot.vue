@@ -3117,7 +3117,7 @@
 
     // 确定新增/修改平台业绩
     async finishEditDealAchieve(data: any = {}) {
-      // console.log('finishEditDealAchieve', data);
+      console.log('finishEditDealAchieve:', data);
       let tempTotalBagList: any = []; // 临时总包列表
       let tempDistriList: any = []; // 临时分销列表
       if (this.editDealAchieveData.type === 'total') {
@@ -3230,6 +3230,7 @@
       // console.log(list);
       this.postData.achieveTotalBagList = this.getAchieveData(tempTotalBagList, info.totalBagList);
       this.postData.achieveDistriList = this.getAchieveData(tempDistriList, info.distriList);
+      console.log('this.isSameFlag:', this.isSameFlag);
       if (this.isSameFlag) {
         // 总包和分销一致的情况下，还需要调用重算拆佣金额接口
         await this.recalculateAchieveBySame(this.postData.achieveTotalBagList);
