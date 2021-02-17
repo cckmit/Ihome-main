@@ -528,7 +528,7 @@
       <el-col>
         <div class="add-all-wrapper">
           <el-button
-            v-if="!['ChangeInternalAchieveInf'].includes(changeType) && postData.roomId"
+            v-if="!['ChangeInternalAchieveInf', 'RetreatRoom'].includes(changeType) && postData.roomId"
             type="success" @click="handleAddCustomer">添加客户</el-button>
         </div>
         <el-table
@@ -550,7 +550,7 @@
           <el-table-column prop="cardNo" label="证件编号" min-width="150"></el-table-column>
           <el-table-column prop="email" label="邮箱" min-width="120"></el-table-column>
           <el-table-column
-            v-if="changeType !== 'ChangeInternalAchieveInf'"
+            v-if="!['ChangeInternalAchieveInf', 'RetreatRoom'].includes(changeType)"
             fixed="right" label="操作" width="100">
             <template slot-scope="scope">
               <el-link

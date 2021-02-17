@@ -662,7 +662,13 @@
       let list: any = [];
       if (this.pageData.uploadDocumentList && this.pageData.uploadDocumentList.length) {
         this.pageData.uploadDocumentList.forEach((item: any) => {
-          this.$set(item, 'showFileList', [...item.fileList, ...item.defaultFileList]);
+          let tempList: any = [];
+          if (item.fileList && item.fileList.length) {
+            tempList = item.fileList;
+          } else {
+            tempList = item.defaultFileList;
+          }
+          this.$set(item, 'showFileList', tempList);
           list.push(item);
         });
       }
@@ -793,7 +799,7 @@
             // 变更基础信息
             if (this.btnType === "add") {
               // 去新增
-              postData.noticeDealList = this.pageData?.noticeDealList.length ? this.pageData?.noticeDealList.length : null;
+              postData.noticeDealList = this.pageData?.noticeDealList.length ? this.pageData?.noticeDealList : null;
               postData.dealAddInputVO.status = type === 'save' ? 'Draft' : 'PlatformClerkUnreview';
               await post_suppDeal_entryBasicInfChange(postData);
             } else if (this.btnType === "edit") {

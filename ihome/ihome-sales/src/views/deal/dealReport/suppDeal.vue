@@ -99,8 +99,8 @@
     checkOutStepsList: any = [
       {
         id: 0,
-        title: '成交信息变更',
-        description: '修改成交信息',
+        title: '成交变更退房',
+        description: '发起退房',
         component: BasePage
       },
       {
