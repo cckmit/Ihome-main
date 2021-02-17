@@ -4,7 +4,7 @@
  * @Author: zyc
  * @Date: 2021-02-06 16:29:34
  * @LastEditors: wwq
- * @LastEditTime: 2021-02-16 18:28:53
+ * @LastEditTime: 2021-02-17 09:23:01
 -->
 <template>
   <IhPage>
@@ -328,8 +328,8 @@
             width="120"
           >
             <template v-slot="{ row }">
-              <template v-if="row.payNoList.length">
-                <template v-for="(item, i) in row.payNoList">
+              <template v-if="row.payVOs.length">
+                <template v-for="(item, i) in row.payVOs">
                   <span :key="i">
                     <el-link
                       type="primary"
@@ -337,7 +337,7 @@
                     >
                       {{item.payNo}}
                     </el-link>
-                    <span v-if="i !== row.payNoList.length - 1">; </span>
+                    <span v-if="i !== row.payVOs.length - 1">; </span>
                   </span>
                 </template>
               </template>

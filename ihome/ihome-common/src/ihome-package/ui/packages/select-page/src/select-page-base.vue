@@ -3,8 +3,8 @@
  * @version: 
  * @Author: ywl
  * @Date: 2020-10-20 15:03:13
- * @LastEditors: ywl
- * @LastEditTime: 2021-02-16 11:55:30
+ * @LastEditors: wwq
+ * @LastEditTime: 2021-02-17 09:55:23
 -->
 <template>
   <el-select
@@ -174,7 +174,7 @@ export default class IhSelectPage extends Vue {
       } else {
         debounce(this.getSelectList, 500);
       }
-    } else if (!val.length) {
+    } else if (!val.length && this.isInit) {
       this.getSelectList();
     }
   }

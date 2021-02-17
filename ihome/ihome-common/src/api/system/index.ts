@@ -1,6 +1,6 @@
 /* eslint-disable */
 /* 此脚本由swagger-ui的api-docs自动生成，请勿修改 */
-//2021-2-8 11:25:19 ├F10: AM┤
+//2021-2-17 8:41:21 ├F10: AM┤
 import { request } from '@/api/base'
 const basePath = "/sales-api/system"
 /**查询所有行政区划信息*/
@@ -114,6 +114,10 @@ return await request.post< CompanyBaseVO[],CompanyBaseVO[]> (basePath+'/company/
 /**查询所有公司分页信息*/
 export async function post_company_getPage (d?: any) {
 return await request.post< any,any> (basePath+'/company/getPage', d)
+}
+/**根据组织id查询公司主体*/
+export async function post_company_getPageByOrg (d?: any) {
+return await request.post< any,any> (basePath+'/company/getPageByOrg', d)
 }
 /**E签宝--批量创建机构印章*/
 export async function post_companySeal_batchCreateOrg (d?: any) {
@@ -857,7 +861,7 @@ smsCode: string;
 export interface JobBaseVO {
 /**(必填)编码*/
 code: string;
-/**数据权限(OrgLimit-员工组织数据权限、SelfLimit-员工个人数据权限、ChannelLimit-渠道数据权限、CustomerLimit-客户数据权限)*/
+/**数据权限(OrgLimit-员工组织数据权限、SelfLimit-员工个人数据权限、ChannelLimit-渠道数据权限、ChannelSelfLimit-渠道个人数据权限、CustomerLimit-客户数据权限)*/
 dataLimit: string;
 /**(必填)名称*/
 name: string;
@@ -906,7 +910,7 @@ roleIds: number[];
 export interface JobUpdateVO {
 /**(必填)编码*/
 code: string;
-/**数据权限(OrgLimit-员工组织数据权限、SelfLimit-员工个人数据权限、ChannelLimit-渠道数据权限、CustomerLimit-客户数据权限)*/
+/**数据权限(OrgLimit-员工组织数据权限、SelfLimit-员工个人数据权限、ChannelLimit-渠道数据权限、ChannelSelfLimit-渠道个人数据权限、CustomerLimit-客户数据权限)*/
 dataLimit: string;
 /**(必填)id*/
 id: number;
@@ -925,7 +929,7 @@ createTime: string;
 createUser: number;
 /**创建用户姓名*/
 createUserName: string;
-/**数据权限(OrgLimit-员工组织数据权限、SelfLimit-员工个人数据权限、ChannelLimit-渠道数据权限、CustomerLimit-客户数据权限)*/
+/**数据权限(OrgLimit-员工组织数据权限、SelfLimit-员工个人数据权限、ChannelLimit-渠道数据权限、ChannelSelfLimit-渠道个人数据权限、CustomerLimit-客户数据权限)*/
 dataLimit: string;
 /**已删除*/
 deleted: number;
@@ -967,7 +971,7 @@ createTime: string;
 createUser: number;
 /**创建用户姓名*/
 createUserName: string;
-/**数据权限(OrgLimit-员工组织数据权限、SelfLimit-员工个人数据权限、ChannelLimit-渠道数据权限、CustomerLimit-客户数据权限)*/
+/**数据权限(OrgLimit-员工组织数据权限、SelfLimit-员工个人数据权限、ChannelLimit-渠道数据权限、ChannelSelfLimit-渠道个人数据权限、CustomerLimit-客户数据权限)*/
 dataLimit: string;
 /**已删除*/
 deleted: number;
@@ -1500,8 +1504,12 @@ deleted: number;
 id: number;
 /**名称*/
 name: string;
+/**备注*/
+remark: string;
 /**特殊角色*/
 special: number;
+/**角色类别(ResourceGroup-资源组、JobRole-岗位角色)*/
+type: string;
 /**更新时间(yyyy-MM-dd HH:mm:ss)*/
 updateTime: string;
 /**更新用户*/
@@ -1580,8 +1588,12 @@ deleted: number;
 id: number;
 /**名称*/
 name: string;
+/**备注*/
+remark: string;
 /**特殊角色*/
 special: number;
+/**角色类别(ResourceGroup-资源组、JobRole-岗位角色)*/
+type: string;
 /**更新时间(yyyy-MM-dd HH:mm:ss)*/
 updateTime: string;
 /**更新用户*/
@@ -1804,7 +1816,7 @@ createTime: string;
 createUser: number;
 /**创建用户姓名*/
 createUserName: string;
-/**数据权限(OrgLimit-员工组织数据权限、SelfLimit-员工个人数据权限、ChannelLimit-渠道数据权限、CustomerLimit-客户数据权限)*/
+/**数据权限(OrgLimit-员工组织数据权限、SelfLimit-员工个人数据权限、ChannelLimit-渠道数据权限、ChannelSelfLimit-渠道个人数据权限、CustomerLimit-客户数据权限)*/
 dataLimit: string;
 /**已删除*/
 deleted: number;

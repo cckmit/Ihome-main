@@ -3,18 +3,24 @@
  * @version: 
  * @Author: zyc
  * @Date: 2020-07-17 09:47:28
- * @LastEditors: zyc
- * @LastEditTime: 2020-10-16 11:04:41
+ * @LastEditors: wwq
+ * @LastEditTime: 2021-02-17 08:42:31
 --> 
 <template>
-  <div :style="{ 'min-height': minHeight }" class="ih-page">
+  <div
+    :style="{ 'min-height': minHeight }"
+    class="ih-page"
+  >
     <div class="ih-page-container">
       <slot name="container"></slot>
     </div>
     <div class="ih-page-form">
       <slot name="form"></slot>
     </div>
-    <div class="ih-page-btn" :style="{ 'margin-left': labelWidth }">
+    <div
+      class="ih-page-btn"
+      :style="{ 'margin-left': labelWidth }"
+    >
       <slot name="btn"></slot>
     </div>
     <div class="ih-page-table">
@@ -69,9 +75,5 @@ export default {
 }
 .ih-page-pagination {
   text-align: right;
-}
-.ih-page-info {
-}
-.ih-page-container {
 }
 </style>

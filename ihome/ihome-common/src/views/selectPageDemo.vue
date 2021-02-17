@@ -133,14 +133,21 @@
     <el-form-item>
       <IhSelectPageOrg v-model="form.testInput13"></IhSelectPageOrg>
     </el-form-item>
-    <el-form-item label="组织">付款方</el-form-item>
-    <el-form-item>付款方</el-form-item>
+    <el-form-item label="付款方">付款方</el-form-item>
     <el-form-item>
       <IhSelectPageByPayer
         v-model="form.testInput14"
         :proId="form.testInput5"
         :isBlur="false"
       ></IhSelectPageByPayer>
+    </el-form-item>
+    <el-form-item label="公司主体">需要先选启动事业部才能选择公司主体</el-form-item>
+    <el-form-item>
+      <IhSelectPageByOrgCompany
+        v-model="form.testInput15"
+        :proId="form.testInput5"
+        :isInit="false"
+      ></IhSelectPageByOrgCompany>
     </el-form-item>
   </el-form>
 </template>
@@ -201,6 +208,7 @@ export default class SelectPageDemo extends Vue {
     testInput12: null,
     testInput13: null,
     testInput14: null,
+    testInput15: null,
     data: null,
   };
   private rules = {};

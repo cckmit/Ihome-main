@@ -4,7 +4,7 @@
  * @Author: wwq
  * @Date: 2020-12-29 11:04:59
  * @LastEditors: wwq
- * @LastEditTime: 2021-02-16 17:51:43
+ * @LastEditTime: 2021-02-17 10:02:23
 -->
 <template>
   <el-dialog
@@ -208,8 +208,8 @@
           width="150"
         >
           <template v-slot="{ row }">
-            <template v-if="row.payNoList.length">
-              <template v-for="(item, i) in row.payNoList">
+            <template v-if="row.payVOs.length">
+              <template v-for="(item, i) in row.payVOs">
                 <span :key="i">
                   <el-link
                     type="primary"
@@ -217,7 +217,7 @@
                   >
                     {{item}}
                   </el-link>
-                  <span v-if="i !== row.payNoList.length - 1">; </span>
+                  <span v-if="i !== row.payVOs.length - 1">; </span>
                 </span>
               </template>
             </template>
@@ -253,7 +253,7 @@
 
 <script lang="ts">
 import { Component, Vue, Prop } from "vue-property-decorator";
-import { post_refundItem_getList } from "@/api/finance/index";
+import { post_refundItem_getEditList } from "@/api/finance/index";
 
 @Component({})
 export default class Obligation extends Vue {
@@ -363,7 +363,7 @@ export default class Obligation extends Vue {
         router = this.$router.resolve({
           path: `/payoff/info`,
           query: {
-            id: row,
+            id: row.payId,
           },
         });
         break;
@@ -404,7 +404,7 @@ export default class Obligation extends Vue {
     this.getList();
   }
   private async getList() {
-    this.resPageInfo = await post_refundItem_getList({
+    this.resPageInfo = await post_refundItem_getEditList({
       ...this.info,
       pageNum: this.pageNum,
       pageSize: this.pageSize,
