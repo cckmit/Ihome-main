@@ -675,7 +675,11 @@
       // 补充成交类型
       this.suppContType = info?.suppContType;
       // console.log(this.infoForm);
-      this.infoForm = (this as any).$tool.deepClone(info || {});
+      // this.infoForm = (this as any).$tool.deepClone(info || {});
+      this.infoForm = {
+        ...this.infoForm,
+        ...info
+      };
       // 收派金额数据整理 showData
       if (this.infoForm.receiveList && this.infoForm.receiveList.length > 0) {
         this.infoForm.receiveList.forEach((list: any) => {
