@@ -3,8 +3,8 @@
  * @version: 
  * @Author: zyc
  * @Date: 2021-02-06 16:29:34
- * @LastEditors: wwq
- * @LastEditTime: 2021-02-17 09:23:01
+ * @LastEditors: ywl
+ * @LastEditTime: 2021-02-17 10:47:45
 -->
 <template>
   <IhPage>
@@ -50,6 +50,7 @@
               prop="orgId"
             >
               <IhSelectPageDivision
+                clearable
                 placeholder="事业部"
                 v-model="info.orgId"
                 :search-name="info.departmentName"
@@ -590,8 +591,8 @@ import {
 } from "@/api/finance/index";
 import { post_bankAccount_getByOrgId__orgId } from "@/api/finance/index";
 import { Form as ElForm } from "element-ui";
-import AddFefund from "../refundApply/dialog/addFefund.vue";
-import UploadList from "../refundApply/dialog/uploadList.vue";
+import AddFefund from "./dialog/addFefund.vue";
+import UploadList from "./dialog/uploadList.vue";
 
 @Component({
   components: {
@@ -599,7 +600,7 @@ import UploadList from "../refundApply/dialog/uploadList.vue";
     UploadList,
   },
 })
-export default class PayoffEdit extends Vue {
+export default class RefundApplyEdit extends Vue {
   private fileList: Array<object> = [];
   info: any = {
     refundApplyNo: null,
