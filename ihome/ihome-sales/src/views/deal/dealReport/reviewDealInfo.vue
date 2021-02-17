@@ -602,7 +602,6 @@
   import {
     post_notice_customer_information // 根据成交id获取优惠告知书
   } from "@/api/contract";
-  import {get_org_get__id} from "@/api/system";
   import {Form as ElForm} from "element-ui";
   import {NoRepeatHttp} from "ihome-common/util/aop/no-repeat-http";
 
@@ -721,16 +720,6 @@
       if (info.documentList && info.documentList.length) {
         this.postData.documentList = this.initDocumentList(info.documentList);
       }
-      // 获取显示的成交组织name
-      // await this.getOrgName(info.dealOrgId);
-    }
-
-    // 获取组织name
-    async getOrgName(id: any = '') {
-      if (!id) return;
-      const info: any = await get_org_get__id({id: id});
-      // console.log('组织info:', info);
-      this.postData.dealOrgName = info.name;
     }
 
     // 构建附件信息
