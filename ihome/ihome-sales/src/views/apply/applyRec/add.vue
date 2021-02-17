@@ -4,7 +4,7 @@
  * @Author: ywl
  * @Date: 2021-01-07 16:30:03
  * @LastEditors: ywl
- * @LastEditTime: 2021-02-17 14:49:24
+ * @LastEditTime: 2021-02-17 19:16:54
 -->
 <template>
   <IhPage class="text-left">
@@ -282,6 +282,7 @@
             <template v-slot="{ row }">
               <el-input
                 v-model="row.applyMoney"
+                @input="handleInput($event, row)"
                 v-digits="2"
                 clearable
               />
@@ -1309,6 +1310,13 @@ export default class ApplyRecAdd extends Vue {
       applyPercent: 0,
       ...i,
     }));
+  }
+  private handleInput(e: any, row: any) {
+    if (parseFloat(row.applyMoney) > parseFloat(row.canApplyAmountNow)) {
+      row.isCanApply = 0;
+    } else {
+      row.isCanApply = 1;
+    }
   }
   private tableRowClassName({ row }: any) {
     let className = row.isCanApply ? "" : "red-row";
