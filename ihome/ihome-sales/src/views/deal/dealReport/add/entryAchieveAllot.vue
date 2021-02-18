@@ -1706,7 +1706,7 @@
         });
       }
       // 根据合同类型过滤
-      if (contType === 'DistriDeal') {
+      if (contType !== 'DistriDeal') {
         // 项目周期的收费模式为代理费的话，隐藏优惠告知书
         fileList = fileList.filter((item: any) => {
           return !["VisitConfirForm", "DealConfirForm"].includes(item.code);
