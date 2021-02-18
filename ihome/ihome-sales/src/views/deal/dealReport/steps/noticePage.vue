@@ -77,6 +77,7 @@
                 ></el-option>
               </el-select>
               <el-input
+                class="reason-input"
                 v-if="form.finishReason === 'other'"
                 placeholder="请输入其他原因" v-model="form.finishReasonDescription"/>
             </el-form-item>
@@ -752,6 +753,12 @@
       box-sizing: border-box;
       margin-top: 30px;
       text-align: center;
+    }
+
+    .reason-input {
+      width: 20%;
+      box-sizing: border-box;
+      margin-top: 5px;
     }
   }
 </style>
