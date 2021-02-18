@@ -410,7 +410,7 @@
               <template slot-scope="scope">
                 <div class="manager-list" v-for="(item, index) in scope.row.managerAchieveList" :key="index">
                   <div class="fee">{{item.achieveFees}}</div>
-                  <div class="ratio">{{item.achieveFeesRatio ? item.achieveFeesRatio : 0}}%</div>
+                  <div class="ratio">{{item.ratio ? item.ratio : 0}}%</div>
                   <div class="name">
                     <span>{{item.manager ? item.manager : '---'}}</span>
                     (<span>{{item.managerPosition}}</span>)
@@ -467,7 +467,7 @@
               <template slot-scope="scope">
                 <div class="manager-list" v-for="(item, index) in scope.row.managerAchieveList" :key="index">
                   <div class="fee">{{item.achieveFees}}</div>
-                  <div class="ratio">{{item.achieveFeesRatio ? item.achieveFeesRatio : 0}}%</div>
+                  <div class="ratio">{{item.ratio ? item.ratio : 0}}%</div>
                   <div class="name">
                     <span>{{item.manager ? item.manager : '---'}}</span>
                     (<span>{{item.managerPosition}}</span>)
