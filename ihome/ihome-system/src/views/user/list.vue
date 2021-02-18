@@ -4,7 +4,7 @@
  * @Author: zyc
  * @Date: 2020-06-30 09:21:17
  * @LastEditors: zyc
- * @LastEditTime: 2021-01-25 10:20:45
+ * @LastEditTime: 2021-02-18 11:46:15
 --> 
 <template>
   <ih-page>
@@ -198,7 +198,9 @@
               </el-col>
               <el-col :span="8">
                 <el-form-item label="权限组织">
-                  <IhSelectOrgTree v-model="queryPageParameters.permissionOrgId" />
+                  <IhSelectOrgTree
+                    v-model="queryPageParameters.permissionOrgId"
+                  />
                 </el-form-item>
               </el-col>
             </el-row>
@@ -274,45 +276,61 @@
             $root.dictAllName(scope.row.userType, "UserType")
           }}</template>
         </el-table-column>
+        <el-table-column prop="status" label="账号状态" width="120">
+          <template slot-scope="scope">
+            {{ $root.dictAllName(scope.row.status, "ValidType") }}
+          </template>
+        </el-table-column>
         <el-table-column
           prop="orgName"
           label="归属组织"
           width="300"
         ></el-table-column>
-        <el-table-column
-          prop="employeeCode"
-          label="员工工号"
-          width="150"
-        ></el-table-column>
-        <el-table-column prop="status" label="账号状态" width="120">
-          <template slot-scope="scope">{{
-            $root.dictAllName(scope.row.status, "ValidType")
-          }}</template>
+
+        <el-table-column prop="employeeCode" label="员工工号" width="150">
+          <template slot-scope="scope">
+            <span v-if="scope.row.userType == 'Staff'">
+              {{ scope.row.employeeCode }}
+            </span>
+          </template>
         </el-table-column>
+
         <el-table-column prop="employeeStatus" label="雇员状态">
-          <template slot-scope="scope">{{
-            $root.dictAllName(scope.row.employeeStatus, "EmployeeStatus")
-          }}</template>
+          <template slot-scope="scope">
+            <span v-if="scope.row.userType == 'Staff'">
+              {{
+                $root.dictAllName(scope.row.employeeStatus, "EmployeeStatus")
+              }}
+            </span>
+          </template>
         </el-table-column>
-        <el-table-column
-          prop="employmentDate"
-          label="入职日期"
-          width="120"
-        ></el-table-column>
-        <el-table-column
-          prop="leaveDate"
-          label="离职日期"
-          width="120"
-        ></el-table-column>
+        <el-table-column prop="employmentDate" label="入职日期" width="120">
+          <template slot-scope="scope">
+            <span v-if="scope.row.userType == 'Staff'">
+              {{ scope.row.employmentDate }}
+            </span>
+          </template>
+        </el-table-column>
+        <el-table-column prop="leaveDate" label="离职日期" width="120">
+          <template slot-scope="scope">
+            <span v-if="scope.row.userType == 'Staff'">
+              {{ scope.row.leaveDate }}
+            </span>
+          </template>
+        </el-table-column>
         <el-table-column prop="employeeType" label="人员类型">
-          <template slot-scope="scope">{{
-            $root.dictAllName(scope.row.employeeType, "EmployeeType")
-          }}</template>
+          <template slot-scope="scope">
+            <span v-if="scope.row.userType == 'Staff'">
+              {{ $root.dictAllName(scope.row.employeeType, "EmployeeType") }}
+            </span>
+          </template>
         </el-table-column>
         <el-table-column prop="workType" label="职能类别">
-          <template slot-scope="scope">{{
-            $root.dictAllName(scope.row.workType, "UserWorkType")
-          }}</template>
+          <template slot-scope="scope">
+            <span v-if="scope.row.userType == 'Staff'">
+              {{ $root.dictAllName(scope.row.workType, "UserWorkType") }}
+            </span>
+          </template>
         </el-table-column>
         <el-table-column prop="updateUserName" label="修改人"></el-table-column>
         <el-table-column
@@ -341,7 +359,10 @@
                 <el-dropdown-item
                   @click.native.prevent="remove(scope)"
                   v-has="'B.SALES.SYSTEM.USERLIST.DELETE'"
-                  :class="{ 'ih-data-disabled': scope.row.userType != 'Staff','ih-data-disabled': scope.row.status == 'Valid' }"
+                  :class="{
+                    'ih-data-disabled': scope.row.userType != 'Staff',
+                    'ih-data-disabled': scope.row.status == 'Valid',
+                  }"
                   >删除</el-dropdown-item
                 >
                 <el-dropdown-item
@@ -448,7 +469,6 @@ import UserJobRole from "./dialog/job.vue";
 import CopyUsers from "./dialog/copy-users.vue";
 import OrganizationJurisdiction from "@/components/OrganizationJurisdiction.vue";
 
-
 import {
   post_user_getList,
   post_user_delete__id,
@@ -464,7 +484,6 @@ import PaginationMixin from "../../mixins/pagination";
     UserJobRole,
     OrganizationJurisdiction,
     CopyUsers,
-
   },
   mixins: [PaginationMixin],
 })
@@ -604,7 +623,6 @@ export default class UserList extends Vue {
 
   async remove(scope: any) {
     try {
-      
       await this.$confirm("是否确定删除?", "提示");
       await post_user_delete__id({ id: scope.row.id });
       this.resPageInfo.list.splice(scope.$index, 1);
