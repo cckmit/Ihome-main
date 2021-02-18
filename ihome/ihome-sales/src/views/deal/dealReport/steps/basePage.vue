@@ -1818,6 +1818,11 @@
       this.postData.achieveDistriList = [];
       if (res.achieveList && res.achieveList.length) {
         res.achieveList.forEach((list: any) => {
+          // 处理初始化分公司角色人业绩大于0的情况
+          if (list.roleType === "BranchOffice" && list.corporateAchieve && (list.corporateAchieve * 1) > 0) {
+            list.roleAchieveCap = (list.corporateAchieve * 1);
+            list.roleAchieveRatio = 100;
+          }
           if (list.type === 'TotalBag') {
             this.postData.achieveTotalBagList.push(list);
           } else if (list.type === 'Distri') {
