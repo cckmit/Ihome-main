@@ -4,7 +4,7 @@
  * @Author: ywl
  * @Date: 2020-09-25 17:34:32
  * @LastEditors: ywl
- * @LastEditTime: 2021-02-06 10:37:32
+ * @LastEditTime: 2021-02-18 14:52:04
 -->
 <template>
   <IhPage label-width="100px">
@@ -200,25 +200,23 @@
         <el-button
           type="success"
           @click="review()"
-          :class="{ 'ih-data-disabled': !contractChange() }"
           v-has="'B.SALES.CONTRACT.DISTLIST.VERIFY'"
         >审核</el-button>
         <el-button
           type="success"
           @click="distribute()"
-          :class="{ 'ih-data-disabled': !channelChange() }"
           v-has="'B.SALES.CONTRACT.DISTLIST.DISTRIBUTE'"
         >派发</el-button>
         <el-button
           type="danger"
           @click="handleDis()"
-          :class="{ 'ih-data-disabled': !channelChange() && !contractChange() }"
+          :class="{ 'ih-data-disabled': !channelChange() || !contractChange() }"
           v-has="'B.SALES.CONTRACT.DISTLIST.REJECT'"
         >驳回</el-button>
         <el-button
           type="danger"
           @click="handleWith()"
-          :class="{ 'ih-data-disabled': !channelChange() && !contractChange() }"
+          :class="{ 'ih-data-disabled': !channelChange() || !contractChange() }"
           v-has="'B.SALES.CONTRACT.DISTLIST.REVOKE'"
         >撤回</el-button>
         <el-button
