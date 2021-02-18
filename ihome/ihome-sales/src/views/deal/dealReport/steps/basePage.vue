@@ -1053,7 +1053,7 @@
             <template slot-scope="scope">
               <div class="manager-list" v-for="(item, index) in scope.row.managerAchieveList" :key="index">
                 <div class="fee">{{item.achieveFees}}</div>
-                <div class="ratio">{{item.achieveFeesRatio ? item.achieveFeesRatio : 0}}%</div>
+                <div class="ratio">{{item.ratio ? item.ratio : 0}}%</div>
                 <div class="name">
                   <span>{{item.manager ? item.manager : '---'}}</span>
                   (<span>{{item.managerPosition}}</span>)
@@ -1135,7 +1135,7 @@
             <template slot-scope="scope">
               <div class="manager-list" v-for="(item, index) in scope.row.managerAchieveList" :key="index">
                 <div class="fee">{{item.achieveFees}}</div>
-                <div class="ratio">{{item.achieveFeesRatio ? item.achieveFeesRatio : 0}}%</div>
+                <div class="ratio">{{item.ratio ? item.ratio : 0}}%</div>
                 <div class="name">
                   <span>{{item.manager ? item.manager : '---'}}</span>
                   (<span>{{item.managerPosition}}</span>)
@@ -3273,9 +3273,13 @@
       if (this.isSameFlag) {
         // 总包分销一致：一起增加，一起减少
         tempTotalBagList = this.getTempList(this.editDealAchieveData.btnType, this.currentChangeObj.index, this.postData.achieveTotalBagList, data);
-        let tempData = JSON.parse(JSON.stringify(data)); // 修改类型
-        tempData.type = 'Distri';
-        tempDistriList = this.getTempList(this.editDealAchieveData.btnType, this.currentChangeObj.index, this.postData.achieveDistriList, tempData);
+        let distributionAmount: any = this.getTotalAmount('distributionAmount'); // 分销金额
+        if (distributionAmount && distributionAmount > 0) {
+          // 只有当分销金额不为0的时候才需要新增一条
+          let tempData = JSON.parse(JSON.stringify(data)); // 修改类型
+          tempData.type = 'Distri';
+          tempDistriList = this.getTempList(this.editDealAchieveData.btnType, this.currentChangeObj.index, this.postData.achieveDistriList, tempData);
+        }
       } else {
         // 总包分销不一致：新增、修改都只针对对应的类型数据
         if (this.editDealAchieveData.type === 'total') {

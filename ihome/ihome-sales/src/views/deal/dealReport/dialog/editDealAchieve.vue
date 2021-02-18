@@ -108,13 +108,13 @@
               <template slot-scope="scope">
                 <el-input
                   v-digits="2"
-                  @input="calculatePercentage($event, 'achieveFeesRatio', scope.row)"
+                  @input="calculatePercentage($event, 'ratio', scope.row)"
                   v-model="scope.row.achieveFees" />
               </template>
             </el-table-column>
-            <el-table-column prop="achieveFeesRatio" label="金额比例" min-width="100">
+            <el-table-column prop="ratio" label="金额比例" min-width="100">
               <template slot-scope="scope">
-<!--                <div>{{scope.row.achieveFeesRatio}}%</div>-->
+<!--                <div>{{scope.row.ratio}}%</div>-->
                 <div>{{getPercentage(scope.row.achieveFees, form.corporateAchieve)}}%</div>
               </template>
             </el-table-column>
@@ -300,7 +300,7 @@
           // 如果管理岗列表有数据，要重新算
           if (this.form.managerAchieveList.length > 0) {
             this.form.managerAchieveList.forEach((list: any) => {
-              list.achieveFeesRatio = this.getPercentage(list.achieveFees, this.form.corporateAchieve);
+              list.ratio = this.getPercentage(list.achieveFees, this.form.corporateAchieve);
             });
           }
           this.$emit("finish", this.form);
@@ -341,7 +341,7 @@
           // 如果管理岗列表有数据，要重新算
           if (this.form.managerAchieveList.length > 0) {
             this.form.managerAchieveList.forEach((list: any) => {
-              list.achieveFeesRatio = this.getPercentage(list.achieveFees, this.form.corporateAchieve);
+              list.ratio = this.getPercentage(list.achieveFees, this.form.corporateAchieve);
             });
           }
           break;
@@ -349,9 +349,9 @@
           // 拆佣比例
           this.form.commFeesRatio = this.getPercentage(this.form.commFees, this.data.totalAmount);
           break;
-        case 'achieveFeesRatio':
+        case 'ratio':
           // 管理岗的金额比例
-          row.achieveFeesRatio = this.getPercentage(row.achieveFees, this.form.corporateAchieve);
+          row.ratio = this.getPercentage(row.achieveFees, this.form.corporateAchieve);
           break;
       }
     }
@@ -387,7 +387,7 @@
       this.form.managerAchieveList.push(
         {
           achieveFees: 0, // 业绩金额
-          achieveFeesRatio: 0, // 业绩金额比例
+          ratio: 0, // 业绩金额比例
           belongOrgId: null, // 归属组织ID
           managerId: null, // 管理者ID
           manager: null, // 管理者名字
