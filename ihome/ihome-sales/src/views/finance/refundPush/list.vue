@@ -425,13 +425,13 @@ export default class RefundPushList extends Vue {
 
   //退款推送
   async refundPush(row: any) {
-   let msg = await post_refundItemPush_refundPush({
+   let msg: any = await post_refundItemPush_refundPush({
       id: row.id,
       refundPayNo: row.refundPayNo,
     });
 	if(msg){
 		this.$message.error(msg);
-	}else{
+	} else {
 		this.$message.success("推送成功");
 	}
     this.getListMixin();
