@@ -67,7 +67,7 @@
             <el-form-item label="终止原因" :prop="form.finishSwitch ? 'finishReason' : 'empty'">
               <el-select
                 v-model="form.finishReason"
-                clearable
+                @change="handleChangeReasonType"
                 placeholder="请选择终止协议类型">
                 <el-option
                   v-for="item in $root.dictAllList('Reason')"
@@ -76,6 +76,10 @@
                   :value="item.code"
                 ></el-option>
               </el-select>
+              <el-input
+                class="reason-input"
+                v-if="form.finishReason === 'other'"
+                placeholder="请输入其他原因" v-model="form.finishReasonDescription"/>
             </el-form-item>
             <el-form-item v-if="form.finishProtocolType === 'PaperTemplate'" label="纸质版附件">
               <IhUpload
@@ -330,6 +334,22 @@
         callback();
       }
     };
+    private checkReason: any = (rule: any, value: any, callback: any) => {
+      if (!value) {
+        return callback(new Error('请选择终止原因'));
+      } else {
+        if (value === 'other') {
+          // 终止原因是其他的情况下，需要输入原因描述
+          if (!this.form.finishReasonDescription) {
+            return callback(new Error('请输入其他原因描述'));
+          } else {
+            callback();
+          }
+        } else {
+          callback();
+        }
+      }
+    };
     @Prop() private pageData?: any; // 页面数据
     fileList: any = [];
     preferentialList: any = []; // 优惠方式下拉选项
@@ -342,6 +362,7 @@
       finishSwitch: false, // 终止协议开关
       finishProtocolType: null, // 终止协议类型
       finishReason: null, // 终止协议原因
+      finishReasonDescription: null, // 原因描述：终止协议必填：特别是其他的时候
       finishAnnexList: [], // 终止协议附件列表
 
       offerSwitch: false, // 优惠告知书开关
@@ -371,7 +392,7 @@
         { required: true, message: '请选择终止协议类型', trigger: 'change' }
       ],
       finishReason: [
-        { required: true, message: '请选择终止原因', trigger: 'change' }
+        { validator: this.checkReason, trigger: 'change' }
       ],
       offerProtocolType: [
         { required: true, message: '请选择优惠告知书类型', trigger: 'change' }
@@ -431,6 +452,24 @@
             preferentialMxId: 'Manual'
           }
         )
+      }
+    }
+
+    // 改变终止原因
+    handleChangeReasonType(value: any) {
+      if (value === 'other') {
+        // 其他
+        this.form.finishReasonDescription = '';
+      } else {
+        // 其他的终止原因
+        const LIST: any = (this as any).$root.dictAllList('Reason'); // 终止原因
+        if (LIST && LIST.length) {
+          LIST.forEach((item: any) => {
+            if (item.code === value) {
+              this.form.finishReasonDescription = item.name;
+            }
+          });
+        }
       }
     }
 
@@ -586,7 +625,7 @@
             paymentAmount: null, // 优惠金额
             promotionMethod: null, // 优惠选择方式 Manual-自定义、Automatic-选择
             reason: this.form.finishReason, // 原因 --- 终止协议必填
-            reasonDescription: null, // 原因描述：终止协议必填
+            reasonDescription: this.form.finishReasonDescription, // 原因描述：终止协议必填
             templateType: this.form.finishProtocolType // 模版类型(PaperTemplate-纸质模板、ElectronicTemplate-电子模版)
           }
         )
@@ -714,6 +753,12 @@
       box-sizing: border-box;
       margin-top: 30px;
       text-align: center;
+    }
+
+    .reason-input {
+      width: 20%;
+      box-sizing: border-box;
+      margin-top: 5px;
     }
   }
 </style>
