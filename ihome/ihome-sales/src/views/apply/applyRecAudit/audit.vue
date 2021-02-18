@@ -4,7 +4,7 @@
  * @Author: ywl
  * @Date: 2021-01-14 19:09:51
  * @LastEditors: ywl
- * @LastEditTime: 2021-02-17 16:57:27
+ * @LastEditTime: 2021-02-18 15:35:10
 -->
 <template>
   <IhPage class="text-left">
@@ -902,6 +902,9 @@ export default class ApplyAudit extends Vue {
   private async updateOA() {
     try {
       await post_applyRec_updateOaAudit({
+        applyId: this.$route.query.id,
+      });
+      this.opLogList = await get_opLog_getAllListByApplyId__applyId({
         applyId: this.$route.query.id,
       });
       this.$message.success("同步成功");

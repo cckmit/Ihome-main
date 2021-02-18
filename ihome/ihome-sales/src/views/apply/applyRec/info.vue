@@ -4,7 +4,7 @@
  * @Author: ywl
  * @Date: 2021-01-15 15:29:09
  * @LastEditors: ywl
- * @LastEditTime: 2021-02-17 16:57:46
+ * @LastEditTime: 2021-02-18 15:33:09
 -->
 <template>
   <IhPage class="text-left">
@@ -792,6 +792,11 @@
       </div>
       <br />
       <div class="text-center">
+        <el-button
+          type="primary"
+          v-if="form.isCancel"
+          @click="cancel()"
+        >撤回</el-button>
         <el-button @click="$router.go(-1)">返回</el-button>
       </div>
     </template>
@@ -811,6 +816,7 @@ import {
   get_devOtherSub_getAll__applyId,
   get_applyRec_getOaAuditUser__applyId,
   post_applyRec_updateOaAudit,
+  post_applyRec_cancel__applyId,
 } from "../../../api/apply/index";
 
 @Component({})
@@ -883,6 +889,17 @@ export default class ApplyAudit extends Vue {
     return sum;
   }
 
+  private async cancel() {
+    try {
+      await post_applyRec_cancel__applyId({ applyId: this.form.id });
+      this.$message.success("撤销成功");
+      this.$goto({
+        path: "/applyRec/list",
+      });
+    } catch (error) {
+      console.log(error);
+    }
+  }
   private async searchPerson() {
     try {
       const res: any = await get_applyRec_getOaAuditUser__applyId({
@@ -898,6 +915,9 @@ export default class ApplyAudit extends Vue {
   private async updateOA() {
     try {
       await post_applyRec_updateOaAudit({
+        applyId: this.$route.query.id,
+      });
+      this.opLogList = await get_opLog_getAllListByApplyId__applyId({
         applyId: this.$route.query.id,
       });
       this.$message.success("同步成功");

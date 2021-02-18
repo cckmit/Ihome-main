@@ -4,7 +4,7 @@
  * @Author: ywl
  * @Date: 2021-01-07 16:30:03
  * @LastEditors: ywl
- * @LastEditTime: 2021-02-17 19:16:54
+ * @LastEditTime: 2021-02-18 16:44:24
 -->
 <template>
   <IhPage class="text-left">
@@ -38,6 +38,9 @@
                 placeholder="请选择联动项目"
                 @changeOption="(data) => {
                   dealParams.proId = data.proId;
+                }"
+                :params="{
+                  auditEnum: 'Adopt'
                 }"
               ></IhSelectPageByProject>
             </el-form-item>
@@ -107,7 +110,18 @@
               label="收款公司"
               prop="polyCompanyId"
             >
-              <IhSelectPageByCompany
+              <IhSelectPageByPayer
+                clearable
+                placeholder="请选择收款公司"
+                v-model="form.polyCompanyId"
+                :proId="form.orgId"
+                @changeOption="(data) => {
+                  dealParams.polyCompanyId = data.id
+                  form.sellerTaxNo = data.creditCode
+                  getAccount(data.id)
+                }"
+              ></IhSelectPageByPayer>
+              <!-- <IhSelectPageByCompany
                 v-model="form.polyCompanyId"
                 placeholder="请选择收款公司"
                 clearable
@@ -116,7 +130,7 @@
                   form.sellerTaxNo = data.creditCode
                   getAccount(data.id)
                 }"
-              ></IhSelectPageByCompany>
+              ></IhSelectPageByCompany> -->
             </el-form-item>
           </el-col>
         </el-row>
@@ -905,12 +919,7 @@
         <br />
       </div>
       <div class="text-center">
-        <el-button
-          type="primary"
-          v-if="form.status === 'BusinessDepart'"
-          @click="cancel()"
-        >撤销</el-button>
-        <template v-else-if="form.status === 'InvoiceApply'">
+        <template v-if="form.status === 'InvoiceApply'">
           <el-button
             type="success"
             @click="invoiceApply()"
@@ -968,7 +977,6 @@ import {
   get_devDeductRec_getAll__applyId,
   get_devOtherSub_getAll__applyId,
   post_applyRecFile_getAll,
-  post_applyRec_cancel__applyId,
   post_applyRec_InvoiceApply__applyId,
 } from "../../../api/apply/index";
 
@@ -1472,6 +1480,13 @@ export default class ApplyRecAdd extends Vue {
   private async getListAccount(id: any) {
     try {
       this.devAccount = await get_company_listAccount__id({ id });
+      console.log(this.devAccount);
+      if (this.devAccount) {
+        this.devAccountData = this.devAccount.find(
+          (i: any) => i.type === "Basic"
+        );
+        this.getDevBankInfo(this.devAccountData.bankId);
+      }
     } catch (error) {
       console.log(error);
     }
@@ -1675,17 +1690,6 @@ export default class ApplyRecAdd extends Vue {
           break;
       }
       this.$message.success(`${msg}成功`);
-      this.$goto({
-        path: "/applyRec/list",
-      });
-    } catch (error) {
-      console.log(error);
-    }
-  }
-  private async cancel() {
-    try {
-      await post_applyRec_cancel__applyId({ applyId: this.form.id });
-      this.$message.success("撤销成功");
       this.$goto({
         path: "/applyRec/list",
       });

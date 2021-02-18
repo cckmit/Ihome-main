@@ -4,7 +4,7 @@
  * @Author: ywl
  * @Date: 2021-01-07 10:29:38
  * @LastEditors: ywl
- * @LastEditTime: 2021-02-16 15:15:22
+ * @LastEditTime: 2021-02-18 15:29:29
 -->
 <template>
   <IhPage label-width="100px">
@@ -244,6 +244,11 @@
               v-else
               @click="$router.push(`/applyRec/info?id=${row.id}`)"
             >查看</el-link>
+            <el-link
+              type="primary"
+              v-if="row.isCancel"
+              @click="$router.push(`/applyRec/info?id=${row.id}`)"
+            >撤回</el-link>
           </template>
         </el-table-column>
       </el-table>
