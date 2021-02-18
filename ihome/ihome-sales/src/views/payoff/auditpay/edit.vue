@@ -4,7 +4,7 @@
  * @Author: wwq
  * @Date: 2020-12-26 11:11:23
  * @LastEditors: wwq
- * @LastEditTime: 2021-02-17 18:35:57
+ * @LastEditTime: 2021-02-18 10:47:04
 -->
 <template>
   <IhPage>
@@ -522,7 +522,7 @@
           </el-table-column>
         </el-table>
       </div>
-      <div v-if="info.payDeductDetailResponseList.length">
+      <div v-if="info.payDeductDetailResponseList && info.payDeductDetailResponseList.length">
         <br />
         <p class="ih-info-title">本期需抵扣金额明细</p>
         <div class="padding-left-20">

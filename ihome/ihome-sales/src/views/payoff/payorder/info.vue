@@ -4,7 +4,7 @@
  * @Author: wwq
  * @Date: 2020-12-26 11:11:19
  * @LastEditors: wwq
- * @LastEditTime: 2021-02-17 16:09:59
+ * @LastEditTime: 2021-02-18 14:08:50
 -->
 <template>
   <IhPage>
@@ -742,7 +742,7 @@
       <div class="padding-left-20">
         <el-table
           class="ih-table"
-          :data="info.processRecordList"
+          :data="info.processRecordResponseList"
           style="width: 100%"
         >
           <el-table-column
@@ -884,6 +884,7 @@ export default class PayoffEdit extends Vue {
     tax: null,
     description: null,
     documentList: [],
+    processRecordResponseList: [],
   };
   channelAccountOptions: any = [];
   showTable: any = [];
@@ -1075,7 +1076,7 @@ export default class PayoffEdit extends Vue {
     const res = await get_processRecord_oa_review_log__applyId({
       applyId: this.payoffId,
     });
-    this.info.processRecordList = res;
+    this.info.processRecordResponseList = res;
   }
 
   // 撤回

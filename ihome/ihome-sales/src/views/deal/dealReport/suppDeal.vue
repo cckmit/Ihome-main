@@ -111,8 +111,8 @@
       },
       {
         id: 2,
-        title: '预览变更成交信息页',
-        description: '预览变更信息页面',
+        title: '预览退房信息页',
+        description: '预览退房信息页面',
         component: PreviewPage
       },
       {

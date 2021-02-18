@@ -225,18 +225,6 @@
         </el-table-column>
       </el-table>
       <p class="ih-info-title">呈批信息</p>
-      <el-row class="ih-info-line">
-        <el-form-item
-          label="呈批标题"
-          prop="approvalTitle"
-        >
-          <el-input
-            maxlength="64"
-            v-model="postData.approvalTitle"
-            placeholder="呈批标题"
-          ></el-input>
-        </el-form-item>
-      </el-row>
       <el-row class="ih-info-line text-left">
         <el-form-item
           label="呈批说明"
@@ -340,9 +328,6 @@ export default class ApprovalAdd extends Vue {
   infoFinish = false;
 
   rules: any = {
-    approvalTitle: [
-      { required: true, message: "呈批标题必填", trigger: "change" },
-    ],
     departmentOrgId: [
       { required: true, message: "事业部必选", trigger: "change" },
     ],
@@ -361,7 +346,6 @@ export default class ApprovalAdd extends Vue {
 附件2：《XX渠道公司特批入库补充材料》
 特此申请！ 
 妥否，请领导批示！`,
-    approvalTitle: null,
     channelApprovalAttachments: [],
     channelApprovalGrades: [],
     departmentOrgId: null,

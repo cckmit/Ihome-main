@@ -2322,7 +2322,7 @@
         });
       }
       // 根据合同类型过滤
-      if (contType === 'DistriDeal') {
+      if (contType !== 'DistriDeal') {
         // 项目周期的收费模式为代理费的话，隐藏优惠告知书
         fileList = fileList.filter((item: any) => {
           return !["VisitConfirForm", "DealConfirForm"].includes(item.code);
@@ -3704,24 +3704,24 @@
         parentId: this.postData.parentId, // 父成交Id
         status: null, // 成交状态
       }
-      if (dataObj.achieveVO.length) {
+      if (dataObj.achieveVO && dataObj.achieveVO.length) {
         dataObj.achieveVO.forEach((vo: any) => {
           vo.isMainDeal = false;
         });
       } else {
         dataObj.achieveVO = null;
       }
-      if (dataObj.customerVO.length && this.btnType === "edit") {
+      if (dataObj.customerVO && dataObj.customerVO.length && this.btnType === "edit") {
         dataObj.customerVO.forEach((vo: any) => {
           vo.dealId = this.id;
         });
       }
-      if (dataObj.documentVO.length && this.btnType === "edit") {
+      if (dataObj.documentVO && dataObj.documentVO.length && this.btnType === "edit") {
         dataObj.documentVO.forEach((vo: any) => {
           vo.dealId = this.id;
         });
       }
-      if (dataObj.receiveVO.length && this.btnType === "edit") {
+      if (dataObj.receiveVO && dataObj.receiveVO.length && this.btnType === "edit") {
         dataObj.receiveVO.forEach((vo: any) => {
           vo.dealId = this.id;
         });
