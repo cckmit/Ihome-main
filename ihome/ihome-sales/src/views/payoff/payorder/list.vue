@@ -4,7 +4,7 @@
  * @Author: wwq
  * @Date: 2020-12-26 11:11:28
  * @LastEditors: wwq
- * @LastEditTime: 2021-02-16 16:24:17
+ * @LastEditTime: 2021-02-18 14:25:43
 -->
 <template>
   <IhPage label-width="120px">
@@ -397,15 +397,13 @@ export default class PayoffList extends Vue {
     const BranchBusinessManageUnreview =
       row.status === "BranchBusinessManageUnreview"; // 待分公司业管审核
     const BranchFinanceUnreview = row.status === "BranchFinanceUnreview"; // 待分公司财务审核
-    const ReviewReject = row.status === "ReviewReject"; // 终审驳回
     const RFrontLineClerk = this.$roleTool.RFrontLineClerk(); // 文员
     const RPlatformClerk = this.$roleTool.RPlatformClerk(); // 平台文员
     const RBusinessManagement = this.$roleTool.RBusinessManagement(); // 分公司业管
     return (
       (PlatformClerkUnreview && RFrontLineClerk) ||
       (BranchBusinessManageUnreview && RPlatformClerk) ||
-      (BranchFinanceUnreview && RBusinessManagement) ||
-      (ReviewReject && RBusinessManagement)
+      (BranchFinanceUnreview && RBusinessManagement)
     );
   }
 
