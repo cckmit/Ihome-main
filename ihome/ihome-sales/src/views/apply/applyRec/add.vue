@@ -4,7 +4,7 @@
  * @Author: ywl
  * @Date: 2021-01-07 16:30:03
  * @LastEditors: ywl
- * @LastEditTime: 2021-02-19 11:24:25
+ * @LastEditTime: 2021-02-19 20:19:51
 -->
 <template>
   <IhPage class="text-left">
@@ -497,17 +497,26 @@
               {{row.subMoney}}
             </template>
           </el-table-column>
-          <el-table-column label="不含税金额">
+          <el-table-column
+            label="不含税金额"
+            prop="subMoneyNoTax"
+          >
           </el-table-column>
-          <el-table-column label="税额">
+          <el-table-column
+            label="税额"
+            prop="subMoneyTax"
+          >
           </el-table-column>
           <el-table-column
             label="操作"
             width="120"
             fixed="right"
           >
-            <template v-slot="{  }">
-              <el-link type="danger">移除</el-link>
+            <template v-slot="{ $index }">
+              <el-link
+                type="danger"
+                @click="waitListDelect($index)"
+              >移除</el-link>
             </template>
           </el-table-column>
         </el-table>
@@ -1248,7 +1257,7 @@ export default class ApplyRecAdd extends Vue {
             return prev;
           }
         }, 0);
-        sums[index] = `-${sums[index]}`;
+        sums[index] = `${sums[index]}`;
       } else {
         sums[index] = "";
       }
@@ -1294,15 +1303,35 @@ export default class ApplyRecAdd extends Vue {
   private dealRemove(index: number) {
     this.form.dealList.splice(index, 1);
   }
+  // 获取本期抵扣金额明细
   private async getWaitList(developId: any) {
     try {
-      this.waitList = await post_devDeductDetail_getListAllByWait({
+      let list = await post_devDeductDetail_getListAllByWait({
         correctType: "Apply",
         developId,
+      });
+      this.waitList = list.map((i: any) => {
+        let subMoneyNoTax = this.$math.tofixed(
+          this.$math.div(i.subMoney, 1 + this.form.taxRate),
+          2
+        );
+        let subMoneyTax = this.$math.tofixed(
+          this.$math.sub(i.subMoney, subMoneyNoTax),
+          2
+        );
+        return {
+          ...i,
+          subMoneyNoTax,
+          subMoneyTax,
+        };
       });
     } catch (error) {
       console.log(error);
     }
+  }
+  // 本期抵扣金额明细删除
+  private waitListDelect(index: number) {
+    this.waitList.splice(index, 1);
   }
   private dealConfirm(arr: any) {
     this.selectVisible = false;
@@ -1445,6 +1474,8 @@ export default class ApplyRecAdd extends Vue {
               2
             );
           });
+        console.log(applyMoney, fineMoney, subMoney1, subMoney2);
+
         return {
           ...i,
           applyMoney,
