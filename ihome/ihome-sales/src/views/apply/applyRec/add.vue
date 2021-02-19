@@ -4,7 +4,7 @@
  * @Author: ywl
  * @Date: 2021-01-07 16:30:03
  * @LastEditors: ywl
- * @LastEditTime: 2021-02-19 20:19:51
+ * @LastEditTime: 2021-02-19 20:53:11
 -->
 <template>
   <IhPage class="text-left">
@@ -151,6 +151,7 @@
                   dealParams.receAccountId = data.id
                   form.receAccountId = data.id
                   getBankInfo(data.id)
+                  getWaitList(form.developId)
                 }"
               >
                 <el-option
@@ -1429,7 +1430,6 @@ export default class ApplyRecAdd extends Vue {
   private async getTermTotalList(param: any) {
     try {
       let list = await post_applyRecDealTerm_getTermTotalList(param);
-      console.log(list);
       this.form.termList = list.map((i: any) => {
         let applyMoney = 0;
         let subMoney1 = 0; // 本期需要抵扣金额明细扣除金额
@@ -1481,7 +1481,7 @@ export default class ApplyRecAdd extends Vue {
           applyMoney,
           fineMoney,
           subMoney: this.$math.add(subMoney1, subMoney2),
-          actMoney: this.$math.sub(
+          actMoney: this.$math.add(
             applyMoney,
             this.$math.addArr([fineMoney, subMoney1, subMoney2])
           ),
