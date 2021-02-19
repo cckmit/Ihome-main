@@ -38,6 +38,7 @@
         :check-on-click-node="true"
         :expand-on-click-node="false"
         :highlight-current="true"
+        :filter-node-method="filterNode"
       ></el-tree>
     </el-option>
     <!-- <el-option value="0" label="0" class="fengeline">
@@ -118,7 +119,7 @@ export default {
         children: "children",
         label: "name",
       },
-      tipText: "正在加载数据...",
+      tipText: "无数据",
       filterText: "",
       valueId: this.value, // 初始值
       valueTitle: "",
@@ -135,7 +136,6 @@ export default {
   },
   methods: {
     nodeClick(item) {
-      console.log(item);
       if (item.disabled) {
         this.$nextTick(function () {
           this.$refs["selectTree"].setCurrentKey([item.id]);
