@@ -4,7 +4,7 @@
  * @Author: ywl
  * @Date: 2021-01-07 10:29:38
  * @LastEditors: ywl
- * @LastEditTime: 2021-02-18 15:29:29
+ * @LastEditTime: 2021-02-19 10:05:59
 -->
 <template>
   <IhPage label-width="100px">
@@ -119,6 +119,10 @@
           @click="reset()"
         >重置</el-button>
         <el-button
+          type="danger"
+          @click="batchRemove()"
+        >批量删除</el-button>
+        <el-button
           v-has="'B.SALES.APPLY.APPLYREC.EXPORTAPPLY'"
           @click="handleExport()"
         >导出</el-button>
@@ -130,6 +134,7 @@
         class="ih-table"
         :empty-text="emptyText"
         :data="resPageInfo.list"
+        @selection-change="handleSelectionChange"
       >
         <el-table-column
           type="selection"
@@ -146,6 +151,7 @@
         <el-table-column
           label="项目名称"
           prop="proName"
+          min-width="180"
         ></el-table-column>
         <el-table-column
           label="甲方公司名称"
@@ -281,7 +287,10 @@ import PaginationMixin from "../../../mixins/pagination";
 import Steps from "./dialog/steps.vue";
 import axios from "axios";
 import { getToken } from "ihome-common/util/cookies";
-import { post_applyRec_getList } from "../../../api/apply/index";
+import {
+  post_applyRec_getList,
+  post_applyRec_deleteBatch,
+} from "../../../api/apply/index";
 
 @Component({
   components: { Steps },
@@ -305,7 +314,23 @@ export default class ApplyRecList extends Vue {
   private stepsVisible = false;
   private applyId: any = null;
   private timeList: any = [];
+  private selection: any = [];
 
+  private handleSelectionChange(selection: any) {
+    this.selection = selection;
+  }
+  private async batchRemove() {
+    if (this.selection.length) {
+      try {
+        await this.$confirm("是否确认删除?", "提示");
+        await post_applyRec_deleteBatch(this.selection.map((i: any) => i.id));
+      } catch (error) {
+        console.log(error);
+      }
+    } else {
+      this.$message.warning("请勾选至少一条表格数据");
+    }
+  }
   private async handleExport() {
     let flag = this.timeList && this.timeList.length;
     this.queryPageParameters.applyTimeStart = flag ? this.timeList[0] : null;
