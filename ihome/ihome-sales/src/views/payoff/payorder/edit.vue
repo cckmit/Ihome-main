@@ -4,7 +4,7 @@
  * @Author: wwq
  * @Date: 2020-12-26 11:11:23
  * @LastEditors: wwq
- * @LastEditTime: 2021-02-19 20:51:52
+ * @LastEditTime: 2021-02-19 21:08:03
 -->
 <template>
   <IhPage>
@@ -1520,6 +1520,9 @@ export default class PayoffEdit extends Vue {
       this.info.payApplyDetailList = this.info.payApplyDetailList.filter(
         (v: any) => v.dealCode !== data.dealCode
       );
+    }
+    if (this.tabsList.length) {
+      this.tabsValue = this.tabsList[0].value;
     }
   }
 
