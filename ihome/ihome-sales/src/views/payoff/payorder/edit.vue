@@ -3,8 +3,8 @@
  * @version: 
  * @Author: wwq
  * @Date: 2020-12-26 11:11:23
- * @LastEditors: ywl
- * @LastEditTime: 2021-02-19 18:05:53
+ * @LastEditors: wwq
+ * @LastEditTime: 2021-02-19 19:02:57
 -->
 <template>
   <IhPage>
@@ -783,7 +783,8 @@
             <td height="50">本期实际付款金额(含税)</td>
             <td>{{info.actualAmount}}</td>
             <td>本期实际付款金额（不含税）</td>
-            <td>{{info.noTaxAmount}}</td>
+            <!-- <td>{{info.noTaxAmount}}</td> -->
+            <td>{{underNoTaxAmountChange()}}</td>
             <td>本期实际付款税额</td>
             <td>
               <el-input-number
@@ -1292,6 +1293,14 @@ export default class PayoffEdit extends Vue {
       }
     }
     this.showTable = listArr;
+  }
+
+  // 本期实际付款金额（不含税）
+  underNoTaxAmountChange() {
+    let sum = 0;
+    sum = this.$math.sub(this.info.actualAmount, this.info.tax);
+    this.info.noTaxAmount = sum;
+    return this.$math.tofixed(sum, 2);
   }
 
   async created() {
