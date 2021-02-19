@@ -183,6 +183,7 @@
             <IhSelectPageByRoom
               v-else
               @change="changeRoom"
+              @changeOption="(data) => {postData.roomNo = data.roomNo}"
               v-model="postData.roomId"
               :proId="postData.projectId"
               :buildingId="postData.buildingId"
