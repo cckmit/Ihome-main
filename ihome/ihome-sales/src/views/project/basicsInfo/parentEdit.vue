@@ -4,7 +4,7 @@
  * @Author: wwq
  * @Date: 2020-11-10 10:21:03
  * @LastEditors: ywl
- * @LastEditTime: 2021-02-19 20:30:48
+ * @LastEditTime: 2021-02-19 20:32:42
 -->
 <template>
   <ih-page>
@@ -144,7 +144,7 @@
           type="success"
           :class="{'ih-data-disabled': !submitChange()}"
           v-has="'B.SALES.PROJECT.BASICLIST.ZXMTJ'"
-          @click="submit('submit')"
+          @click="submit()"
         >提交</el-button>
         <el-button @click="$goto({ path: '/projects/list' })">关 闭</el-button>
       </div>
@@ -239,7 +239,7 @@ export default class EditBasicInfo extends Vue {
     }
   }
 
-  async submit(submittype: any) {
+  async submit() {
     (this.$refs["form"] as ElForm).validate(async (v: any) => {
       if (v) {
         let obj = { ...this.form };
