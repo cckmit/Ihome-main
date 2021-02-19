@@ -140,6 +140,12 @@
           @click="save"
           v-has="'B.SALES.PROJECT.BASICLIST.FXMBC'"
         >保 存</el-button>
+      <el-button
+        type="success"
+        :class="{'ih-data-disabled': !submitChange()}"
+        v-has="'B.SALES.PROJECT.BASICLIST.ZXMTJ'"
+        @click="submit('submit')"
+      >提交</el-button>        
         <el-button @click="$goto({ path: '/projects/list' })">关 闭</el-button>
       </div>
     </template>
@@ -147,9 +153,11 @@
 </template>
 <script lang="ts">
 import { Component, Vue } from "vue-property-decorator";
+import { Form as ElForm } from "element-ui";
 import {
   get_project_getParent__proId,
   post_project_updateParent,
+  post_project_auditWait,
 } from "@/api/project/index";
 
 @Component({
@@ -229,6 +237,49 @@ export default class EditBasicInfo extends Vue {
       this.form = { ...this.form, ...data };
       this.form.provinceOption = [data.province, data.city, data.district];
     }
+  }
+
+  async submit(submittype: any) {
+    (this.$refs["form"] as ElForm).validate(async (v: any) => {
+      if (v) {
+          let obj = { ...this.form };
+          let p = this.form.provinceOption[0];
+          let c = this.form.provinceOption[1];
+          let d = this.form.provinceOption[2];
+          if (p != '' || c != ''){
+              this.$message.warning("省市区不能为空！");
+              return
+          }
+          obj.proId = this.projectId;
+          await post_project_auditWait(obj);
+          this.$message.success("提交成功");
+          this.$goto({ path: "/projects/list" });
+             
+      }else{
+          setTimeout(()=>{
+            let isError: any= document.getElementsByClassName("is-error");
+            if (isError != null){
+              isError[0].querySelector('input').focus();
+            }
+          },100);
+          return false;          
+      }
+    });
+  }
+
+  submitChange() {
+    const status = window.sessionStorage.getItem("projectStatus");
+    const Draft = status === "Draft";
+    // const Adopt = status === "Adopt";
+    const Reject = status === "Reject";
+    // const RHeadBusinessManagement = this.$roleTool.RHeadBusinessManagement();
+    // const RBusinessManagement = this.$roleTool.RBusinessManagement();
+    const RFrontLineClerk = this.$roleTool.RFrontLineClerk();
+    return (
+      (Draft && RFrontLineClerk) ||
+      // ((RHeadBusinessManagement || RBusinessManagement) && Adopt) ||
+      (RFrontLineClerk && Reject)
+    );
   }
 
   async save() {

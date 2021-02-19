@@ -4,7 +4,7 @@
  * @Author: wwq
  * @Date: 2020-12-26 11:11:23
  * @LastEditors: wwq
- * @LastEditTime: 2021-02-19 19:02:57
+ * @LastEditTime: 2021-02-19 19:48:38
 -->
 <template>
   <IhPage>
@@ -783,7 +783,6 @@
             <td height="50">本期实际付款金额(含税)</td>
             <td>{{info.actualAmount}}</td>
             <td>本期实际付款金额（不含税）</td>
-            <!-- <td>{{info.noTaxAmount}}</td> -->
             <td>{{underNoTaxAmountChange()}}</td>
             <td>本期实际付款税额</td>
             <td>
@@ -1436,6 +1435,13 @@ export default class PayoffEdit extends Vue {
       this.info.finedAmount = res.finedAmount;
       this.info.noTaxAmount = res.noTaxAmount;
       this.info.tax = res.tax;
+      this.globalTaxMoney = this.$math.tofixed(
+        this.$math.sub(
+          res.actualAmount,
+          res.actualAmount / (1 + this.info.taxRate / 100 || 0)
+        ),
+        2
+      );
       this.info.paySummaryDetailsResponseList = res.paySummaryDetailsResponses;
       if (this.updateList.length) {
         this.updateList.forEach((v: any) => {
@@ -1500,7 +1506,12 @@ export default class PayoffEdit extends Vue {
   }
 
   async delContacts(index: number) {
+    // if (this.showTable.length === 1) {
+    //   this.showTable = [];
+    //   this.tabsValue = "";
+    // } else {
     this.showTable.splice(index, 1);
+    // }
   }
 
   addDeductionType() {
