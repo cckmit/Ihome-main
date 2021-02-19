@@ -4,7 +4,7 @@
  * @Author: wwq
  * @Date: 2021-02-06 18:54:46
  * @LastEditors: wwq
- * @LastEditTime: 2021-02-18 14:08:13
+ * @LastEditTime: 2021-02-19 14:38:09
 -->
 <template>
   <IhPage>
@@ -226,13 +226,12 @@
             width="250"
           >
             <template v-slot="{ row }">
-              <div
-                class="text-ellipsis"
-                :title="row.contNo"
-              >分销协议编号: <el-link
+              <div :title="row.contNo">分销协议编号:
+                <el-link
                   type="primary"
                   @click="routeToDistribution(row)"
-                >{{row.contNo}}</el-link>
+                >{{row.contNo}}
+                </el-link>
               </div>
               <div class="text-ellipsis">是否垫佣: {{$root.dictAllName(row.isMat, 'YesOrNoType')}}</div>
             </template>

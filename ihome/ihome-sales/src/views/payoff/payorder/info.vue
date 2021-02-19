@@ -4,7 +4,7 @@
  * @Author: wwq
  * @Date: 2020-12-26 11:11:19
  * @LastEditors: wwq
- * @LastEditTime: 2021-02-18 14:08:50
+ * @LastEditTime: 2021-02-19 14:37:06
 -->
 <template>
   <IhPage>
@@ -223,16 +223,15 @@
           </el-table-column>
           <el-table-column
             label="合同信息"
-            width="250"
+            width="300"
           >
             <template v-slot="{ row }">
-              <div
-                class="text-ellipsis"
-                :title="row.contNo"
-              >分销协议编号: <el-link
+              <div :title="row.contNo">分销协议编号:
+                <el-link
                   type="primary"
                   @click="routeToDistribution(row)"
-                >{{row.contNo}}</el-link>
+                >{{row.contNo}}
+                </el-link>
               </div>
               <div class="text-ellipsis">是否垫佣: {{$root.dictAllName(row.isMat, 'YesOrNoType')}}</div>
             </template>
