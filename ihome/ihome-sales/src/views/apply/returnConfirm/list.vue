@@ -4,7 +4,7 @@
  * @Author: ywl
  * @Date: 2021-01-13 14:50:21
  * @LastEditors: ywl
- * @LastEditTime: 2021-02-16 15:23:30
+ * @LastEditTime: 2021-02-19 19:39:10
 -->
 <template>
   <IhPage label-width="100px">
@@ -298,7 +298,7 @@ export default class ReturnConfirmList extends Vue {
     },
     {
       label: "全部",
-      name: "",
+      name: "all",
     },
   ];
   private dialogVisible = false;
@@ -343,9 +343,13 @@ export default class ReturnConfirmList extends Vue {
   }
   async getListMixin() {
     this.loading = true;
-    this.resPageInfo = await post_receConfirmDetail_getList(
-      this.queryPageParameters
-    );
+    this.resPageInfo = await post_receConfirmDetail_getList({
+      ...this.queryPageParameters,
+      status:
+        this.queryPageParameters.status === "all"
+          ? ""
+          : this.queryPageParameters.status,
+    });
     this.loading = false;
   }
 
