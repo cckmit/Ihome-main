@@ -4,7 +4,7 @@
  * @Author: wwq
  * @Date: 2020-12-26 11:11:28
  * @LastEditors: wwq
- * @LastEditTime: 2021-02-18 14:25:26
+ * @LastEditTime: 2021-02-19 19:15:53
 -->
 <template>
   <IhPage label-width="120px">
@@ -191,7 +191,7 @@
         </el-table-column>
         <el-table-column
           label="制单人"
-          prop="maker"
+          prop="makerName"
           width="120"
         ></el-table-column>
         <el-table-column
