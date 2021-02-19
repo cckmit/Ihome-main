@@ -3,8 +3,8 @@
  * @version: 
  * @Author: wwq
  * @Date: 2020-11-10 10:21:03
- * @LastEditors: wwq
- * @LastEditTime: 2021-01-27 17:10:14
+ * @LastEditors: ywl
+ * @LastEditTime: 2021-02-19 20:30:48
 -->
 <template>
   <ih-page>
@@ -140,12 +140,12 @@
           @click="save"
           v-has="'B.SALES.PROJECT.BASICLIST.FXMBC'"
         >保 存</el-button>
-      <el-button
-        type="success"
-        :class="{'ih-data-disabled': !submitChange()}"
-        v-has="'B.SALES.PROJECT.BASICLIST.ZXMTJ'"
-        @click="submit('submit')"
-      >提交</el-button>        
+        <el-button
+          type="success"
+          :class="{'ih-data-disabled': !submitChange()}"
+          v-has="'B.SALES.PROJECT.BASICLIST.ZXMTJ'"
+          @click="submit('submit')"
+        >提交</el-button>
         <el-button @click="$goto({ path: '/projects/list' })">关 闭</el-button>
       </div>
     </template>
@@ -242,26 +242,25 @@ export default class EditBasicInfo extends Vue {
   async submit(submittype: any) {
     (this.$refs["form"] as ElForm).validate(async (v: any) => {
       if (v) {
-          let obj = { ...this.form };
-          let p = this.form.provinceOption[0];
-          let c = this.form.provinceOption[1];
-          if (p != '' || c != ''){
-              this.$message.warning("省市区不能为空！");
-              return
+        let obj = { ...this.form };
+        let p = this.form.provinceOption[0];
+        let c = this.form.provinceOption[1];
+        if (!p && c) {
+          this.$message.warning("省市区不能为空！");
+          return;
+        }
+        obj.proId = this.projectId;
+        await post_project_auditWait(obj);
+        this.$message.success("提交成功");
+        this.$goto({ path: "/projects/list" });
+      } else {
+        setTimeout(() => {
+          let isError: any = document.getElementsByClassName("is-error");
+          if (isError != null) {
+            isError[0].querySelector("input").focus();
           }
-          obj.proId = this.projectId;
-          await post_project_auditWait(obj);
-          this.$message.success("提交成功");
-          this.$goto({ path: "/projects/list" });
-             
-      }else{
-          setTimeout(()=>{
-            let isError: any= document.getElementsByClassName("is-error");
-            if (isError != null){
-              isError[0].querySelector('input').focus();
-            }
-          },100);
-          return false;          
+        }, 100);
+        return false;
       }
     });
   }
