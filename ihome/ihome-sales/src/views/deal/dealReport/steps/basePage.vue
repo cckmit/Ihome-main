@@ -3952,10 +3952,11 @@
       const data: any = this.baseInfoInDeal.myReturnVO;
       if (!key || !type || !data[type]?.[key]) return false;
       let flag = false;
-      // 1.是否明源数据标志
-      let signFlag = this.baseInfoByTerm.exMinyuan;
+      // 1.是否明源数据标志 2021-02-19:暂时不需要配合这个字段判断
+      // let signFlag = this.baseInfoByTerm.exMinyuan;
       // 2.对应明源字段是否有值
-      if (data[type][key] && signFlag) {
+      // if (data[type][key] && signFlag) {
+      if (data[type][key] && this.postData.roomId) {
         flag = true;
       } else {
         flag = false;
