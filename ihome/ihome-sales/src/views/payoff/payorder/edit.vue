@@ -3,8 +3,8 @@
  * @version: 
  * @Author: wwq
  * @Date: 2020-12-26 11:11:23
- * @LastEditors: wwq
- * @LastEditTime: 2021-02-17 16:08:05
+ * @LastEditors: ywl
+ * @LastEditTime: 2021-02-19 18:02:38
 -->
 <template>
   <IhPage>
@@ -1319,6 +1319,13 @@ export default class PayoffEdit extends Vue {
           })
         ),
       };
+      this.globalTaxMoney = this.$math.tofixed(
+        this.$math.sub(
+          res.actualAmount,
+          res.actualAmount / (1 + res.taxRate / 100 || 0)
+        ),
+        2
+      );
       this.isChangeObj = {
         ...res,
         receiveAccount: Number(res.receiveAccount),

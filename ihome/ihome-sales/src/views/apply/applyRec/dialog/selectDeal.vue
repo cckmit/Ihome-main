@@ -4,7 +4,7 @@
  * @Author: ywl
  * @Date: 2021-01-07 19:02:24
  * @LastEditors: ywl
- * @LastEditTime: 2021-02-15 10:57:06
+ * @LastEditTime: 2021-02-19 15:51:39
 -->
 <template>
   <el-dialog
@@ -139,10 +139,10 @@
       <template #unit>
         <el-table-column
           label="成交单位"
-          min-width="180"
+          min-width="200"
         >
           <template v-slot="{ row }">
-            <span v-if="row.buildingName && row.roomId">{{`${row.proName}-${row.buildingName}-${row.roomId}`}}</span>
+            <span v-if="row.buildingName && row.roomId">{{`${row.proName}-${row.buildingName}-${row.roomName}`}}</span>
             <span v-else>{{`${row.proName}`}}</span>
           </template>
         </el-table-column>
