@@ -4,7 +4,7 @@
  * @Author: ywl
  * @Date: 2021-01-07 16:30:03
  * @LastEditors: ywl
- * @LastEditTime: 2021-02-18 16:44:24
+ * @LastEditTime: 2021-02-19 10:32:40
 -->
 <template>
   <IhPage class="text-left">
@@ -1485,6 +1485,8 @@ export default class ApplyRecAdd extends Vue {
         this.devAccountData = this.devAccount.find(
           (i: any) => i.type === "Basic"
         );
+        this.form.developAccount = this.devAccountData.number;
+        this.form.developAccountId = this.devAccountData.bankId;
         this.getDevBankInfo(this.devAccountData.bankId);
       }
     } catch (error) {
