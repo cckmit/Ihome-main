@@ -245,7 +245,6 @@ export default class EditBasicInfo extends Vue {
           let obj = { ...this.form };
           let p = this.form.provinceOption[0];
           let c = this.form.provinceOption[1];
-          let d = this.form.provinceOption[2];
           if (p != '' || c != ''){
               this.$message.warning("省市区不能为空！");
               return
