@@ -4,7 +4,7 @@
  * @Author: ywl
  * @Date: 2021-01-07 16:30:03
  * @LastEditors: ywl
- * @LastEditTime: 2021-02-19 10:32:40
+ * @LastEditTime: 2021-02-19 11:24:25
 -->
 <template>
   <IhPage class="text-left">
@@ -1730,7 +1730,6 @@ export default class ApplyRecAdd extends Vue {
       this.getAccount(info.polyCompanyId);
       this.accountData = { id: info.receAccountId };
       this.devAccountData = { bankId: info.developAccountId };
-      this.form = { ...this.form, ...info };
       this.dealParams = {
         developId: info.developId,
         polyCompanyId: info.polyCompanyId,
@@ -1770,6 +1769,7 @@ export default class ApplyRecAdd extends Vue {
       //     polyCompanyId: info.polyCompanyId,
       //   });
       // }
+      this.form = { ...this.form, ...info };
       console.log(this.form);
     } catch (error) {
       console.log(error);
