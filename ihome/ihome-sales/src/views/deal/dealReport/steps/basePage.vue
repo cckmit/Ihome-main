@@ -183,6 +183,7 @@
             <IhSelectPageByRoom
               v-else
               @change="changeRoom"
+              @changeOption="(data) => {postData.roomNo = data.roomNo}"
               v-model="postData.roomId"
               :proId="postData.projectId"
               :buildingId="postData.buildingId"
@@ -3165,7 +3166,7 @@
     async finishAddReceivePackage(data: any) {
       // console.log('确定选择收派套餐', data);
       if (data.length === 0) return;
-      let dataObj = data[0];
+      let dataObj = (this as any).$tool.deepClone(data[0]);
       delete dataObj['typeName']; // 删除typeName属性
       let postData: any = {
         detail: dataObj,

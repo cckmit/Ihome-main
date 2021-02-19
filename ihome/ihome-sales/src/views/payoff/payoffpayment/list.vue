@@ -4,7 +4,7 @@
  * @Author: wwq
  * @Date: 2021-01-15 10:45:53
  * @LastEditors: wwq
- * @LastEditTime: 2021-02-15 17:05:21
+ * @LastEditTime: 2021-02-19 14:41:33
 -->
 <template>
   <IhPage label-width="100px">
@@ -499,13 +499,22 @@ export default class ReturnConfirmList extends Vue {
     } else {
       arr = [data.settlementCode];
     }
-    await post_payDetail_push(arr);
-    this.$notify({
-      type: "success",
-      title: "推送成功",
-      message: "付款推送成功",
-      position: "bottom-right",
-    });
+    try {
+      const res = await post_payDetail_push(arr);
+      if (res.status) {
+        this.$notify({
+          type: "success",
+          title: "推送成功",
+          message: "付款推送成功",
+          position: "bottom-right",
+        });
+      } else {
+        this.$message.error(res.reason);
+        return;
+      }
+    } catch (err) {
+      console.log(err);
+    }
   }
 
   // 判断数组的值是否全部相同

@@ -4,7 +4,7 @@
  * @Author: wwq
  * @Date: 2020-12-26 11:11:23
  * @LastEditors: ywl
- * @LastEditTime: 2021-02-19 18:02:38
+ * @LastEditTime: 2021-02-19 18:05:53
 -->
 <template>
   <IhPage>
@@ -240,13 +240,10 @@
           </el-table-column>
           <el-table-column
             label="合同信息"
-            width="250"
+            width="300"
           >
             <template v-slot="{ row }">
-              <div
-                class="text-ellipsis"
-                :title="row.contNo"
-              >分销协议编号: <el-link
+              <div :title="row.contNo">分销协议编号: <el-link
                   type="primary"
                   @click="routeToDistribution(row)"
                 >{{row.contNo}}</el-link>

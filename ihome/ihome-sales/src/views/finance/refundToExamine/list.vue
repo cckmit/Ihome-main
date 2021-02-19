@@ -4,8 +4,8 @@
  * @version: 
  * @Author: zyc
  * @Date: 2021-01-13 14:50:21
- * @LastEditors: ywl
- * @LastEditTime: 2021-02-17 12:04:43
+ * @LastEditors: wwq
+ * @LastEditTime: 2021-02-19 14:31:39
 -->
 <template>
   <IhPage label-width="110px">
@@ -190,6 +190,7 @@
             <el-link
               type="primary"
               @click="toExamine(row)"
+              :class="{'ih-data-disabled': !auditChange(row)}"
               v-has="'B.SALES.FINANCE.REFUNDAPPLY.TOEXAMINE'"
             >审核</el-link>
           </template>
@@ -248,6 +249,21 @@ export default class RefundToExamineList extends Vue {
   rogressData = [];
 
   private tableData: any = null;
+
+  auditChange() {
+    const RPlatformClerk = this.$roleTool.RPlatformClerk(); // 平台文员
+    const RBusinessManagement = this.$roleTool.RBusinessManagement(); // 分公司业管
+    const RHeadBusinessManagement = this.$roleTool.RHeadBusinessManagement(); // 总公司业管
+    const RFinancialOfficer = this.$roleTool.RFinancialOfficer(); // 分公司财务
+    const RHeadFinancialOfficer = this.$roleTool.RHeadFinancialOfficer(); // 总公司财务
+    return (
+      RPlatformClerk ||
+      RBusinessManagement ||
+      RHeadBusinessManagement ||
+      RFinancialOfficer ||
+      RHeadFinancialOfficer
+    );
+  }
 
   expiresTimeChange(dateArray: any) {
     if (dateArray) {

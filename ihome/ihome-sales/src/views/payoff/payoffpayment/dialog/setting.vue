@@ -4,7 +4,7 @@
  * @Author: wwq
  * @Date: 2021-01-16 18:14:45
  * @LastEditors: wwq
- * @LastEditTime: 2021-02-07 16:00:48
+ * @LastEditTime: 2021-02-19 17:36:45
 -->
 <template>
   <el-dialog
@@ -32,7 +32,7 @@
             <el-date-picker
               style="width: 100%"
               v-model="info.paymentDate"
-              type="datetime"
+              type="date"
               placeholder="付款日期"
             >
             </el-date-picker>

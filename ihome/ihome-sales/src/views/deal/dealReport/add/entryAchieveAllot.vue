@@ -2599,7 +2599,7 @@
         // 选择房号后构建表格数据
         // this.getDocumentList(value);
         // 判断是否可以手动添加优惠告知书
-        this.canAddNoticeItem(this.baseInfoByTerm.chargeEnum, this.postData.contType, this.baseInfoInDeal.dealNoticeStatus);
+        this.canAddNoticeItem(this.baseInfoByTerm.chargeEnum, this.baseInfoByTerm.termStageEnum, this.postData.contType, this.baseInfoInDeal.dealNoticeStatus);
         // 记录临时值
         this.tempContType = value;
       }
@@ -2667,9 +2667,10 @@
     }
 
     // 判断是否可以手动添加优惠告知书
-    canAddNoticeItem(charge: any = '', contType: any = '', Status: any = '', isVoidService: any = null) {
+    canAddNoticeItem(charge: any = '', termStageEnum: any = '', contType: any = '', Status: any = '', isVoidService: any = null) {
       let postData: any = {
         charge: charge, // 启动模式(Service-服务费、Agent-代理费、ServiAndAgen-服务费+代理费)
+        termStageEnum: termStageEnum, // 项目周期阶段
         contType: contType, // 合同类型(DistriDeal-分销成交、NaturalVisitDeal-自然来访成交、SelfChannelDeal-自渠成交)
         dealNoticeStatus: Status, // 优惠告知书情况(NoneNotice-没有优惠告知书、OneNotice-一份优惠告知书、MultipleNotice-多份优惠告知书)
         isVoidService: isVoidService, // 是否免受服务费
@@ -2720,7 +2721,7 @@
       // 初始化收派套餐
       this.initReceive();
       // 判断是否可以手动添加优惠告知书
-      this.canAddNoticeItem(this.baseInfoByTerm.chargeEnum, this.postData.contType, this.baseInfoInDeal.dealNoticeStatus, isVoidFlag);
+      this.canAddNoticeItem(this.baseInfoByTerm.chargeEnum, this.baseInfoByTerm.termStageEnum, this.postData.contType, this.baseInfoInDeal.dealNoticeStatus, isVoidFlag);
     }
 
     // 改变签约、认购价格后，初始化收派套餐问题
@@ -2769,9 +2770,9 @@
 
     // 确定选择收派套餐
     async finishAddReceivePackage(data: any) {
-      // console.log('data', data);
+      console.log('确定选择收派套餐:', data);
       if (data.length === 0) return
-      let dataObj = data[0];
+      let dataObj = (this as any).$tool.deepClone(data[0]);
       delete dataObj['typeName']; // 删除typeName属性
       let postData: any = {
         detail: dataObj,
