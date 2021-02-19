@@ -4,7 +4,7 @@
  * @Author: ywl
  * @Date: 2021-01-07 10:29:38
  * @LastEditors: ywl
- * @LastEditTime: 2021-02-19 11:40:05
+ * @LastEditTime: 2021-02-19 14:58:05
 -->
 <template>
   <IhPage label-width="100px">
@@ -120,6 +120,7 @@
         >重置</el-button>
         <el-button
           type="danger"
+          v-has="'B.SALES.APPLY.APPLYREC.BATCHDELETE'"
           @click="batchRemove()"
         >批量删除</el-button>
         <el-button
