@@ -5,7 +5,7 @@
  * @Author: zyc
  * @Date: 2020-07-07 09:25:17
  * @LastEditors: zyc
- * @LastEditTime: 2021-01-29 08:55:19
+ * @LastEditTime: 2021-02-19 14:32:04
  */
 /* eslint-disable  no-console  */
 /* eslint-disable  no-extra-semi  */
@@ -66,10 +66,11 @@ if (process.env.NODE_ENV !== 'production') {
   // require('@/mock/index')
 }
 
-let areaAll: any = (window as any).polyihomeData?.areaAll || {};//全部行政区数据
-let dictAll: any = (window as any).polyihomeData?.dictAll || [];//存在后端加载的所有字典数据
-let userInfo: any = (window as any).polyihomeData?.userInfo || {};//用户信息
+
 function newVue() {
+  let areaAll: any = (window as any).polyihomeData?.areaAll || {};//全部行政区数据
+  let dictAll: any = (window as any).polyihomeData?.dictAll || [];//存在后端加载的所有字典数据
+  let userInfo: any = (window as any).polyihomeData?.userInfo || {};//用户信息
   instance = new Vue({
     store,
     router,
