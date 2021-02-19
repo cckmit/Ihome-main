@@ -4,7 +4,7 @@
  * @Author: wwq
  * @Date: 2020-12-26 11:11:23
  * @LastEditors: wwq
- * @LastEditTime: 2021-02-19 19:48:38
+ * @LastEditTime: 2021-02-19 20:51:52
 -->
 <template>
   <IhPage>
@@ -444,11 +444,11 @@
             label="操作"
             align="center"
           >
-            <template v-slot="{ $index }">
+            <template v-slot="{ row, $index }">
               <el-button
                 type="danger"
                 size="small"
-                @click="delContacts($index)"
+                @click="delContacts(row, $index)"
               > 移除
               </el-button>
             </template>
@@ -1505,13 +1505,22 @@ export default class PayoffEdit extends Vue {
     }
   }
 
-  async delContacts(index: number) {
-    // if (this.showTable.length === 1) {
-    //   this.showTable = [];
-    //   this.tabsValue = "";
-    // } else {
-    this.showTable.splice(index, 1);
-    // }
+  async delContacts(data: any, index: number) {
+    if (this.showTable.length === 1) {
+      this.showTable = [];
+      this.tabsValue = "";
+      this.tabsList = this.tabsList.filter(
+        (v: any) => v.value !== data.cycleId
+      );
+      this.info.payApplyDetailList = this.info.payApplyDetailList.filter(
+        (v: any) => v.cycleId !== data.cycleId
+      );
+    } else {
+      this.showTable.splice(index, 1);
+      this.info.payApplyDetailList = this.info.payApplyDetailList.filter(
+        (v: any) => v.dealCode !== data.dealCode
+      );
+    }
   }
 
   addDeductionType() {
