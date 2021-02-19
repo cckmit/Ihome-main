@@ -4,7 +4,7 @@
  * @Author: ywl
  * @Date: 2021-01-07 10:29:38
  * @LastEditors: ywl
- * @LastEditTime: 2021-02-19 10:05:59
+ * @LastEditTime: 2021-02-19 11:40:05
 -->
 <template>
   <IhPage label-width="100px">
@@ -394,3 +394,11 @@ export default class ApplyRecList extends Vue {
   }
 }
 </script>
+
+<style lang="scss" scoped>
+.ih-table {
+  .el-link + .el-link {
+    margin-left: 10px;
+  }
+}
+</style>

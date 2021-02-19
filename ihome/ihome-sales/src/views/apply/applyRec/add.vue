@@ -1762,6 +1762,7 @@ export default class ApplyRecAdd extends Vue {
         },
       }));
       this.waitList = await get_devDeductRec_getAll__applyId({ applyId });
+      this.form = { ...this.form, ...info };
       this.taxMoneyChange(info.taxMoney);
       // if (this.form.status === "Draft") {
       //   await this.getHisRec({
@@ -1769,7 +1770,6 @@ export default class ApplyRecAdd extends Vue {
       //     polyCompanyId: info.polyCompanyId,
       //   });
       // }
-      this.form = { ...this.form, ...info };
       console.log(this.form);
     } catch (error) {
       console.log(error);
