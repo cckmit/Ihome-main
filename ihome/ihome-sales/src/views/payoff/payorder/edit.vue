@@ -4,7 +4,7 @@
  * @Author: wwq
  * @Date: 2020-12-26 11:11:23
  * @LastEditors: wwq
- * @LastEditTime: 2021-02-19 18:54:42
+ * @LastEditTime: 2021-02-19 19:02:57
 -->
 <template>
   <IhPage>
@@ -1299,6 +1299,7 @@ export default class PayoffEdit extends Vue {
   underNoTaxAmountChange() {
     let sum = 0;
     sum = this.$math.sub(this.info.actualAmount, this.info.tax);
+    this.info.noTaxAmount = sum;
     return this.$math.tofixed(sum, 2);
   }
 
