@@ -4,7 +4,7 @@
  * @Author: wwq
  * @Date: 2021-02-06 18:54:46
  * @LastEditors: wwq
- * @LastEditTime: 2021-02-19 14:38:09
+ * @LastEditTime: 2021-02-20 15:06:04
 -->
 <template>
   <IhPage>
@@ -223,7 +223,7 @@
           </el-table-column>
           <el-table-column
             label="合同信息"
-            width="250"
+            width="300"
           >
             <template v-slot="{ row }">
               <div :title="row.contNo">分销协议编号:
