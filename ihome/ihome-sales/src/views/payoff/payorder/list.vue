@@ -4,7 +4,7 @@
  * @Author: wwq
  * @Date: 2020-12-26 11:11:28
  * @LastEditors: wwq
- * @LastEditTime: 2021-02-18 14:25:43
+ * @LastEditTime: 2021-02-20 12:09:23
 -->
 <template>
   <IhPage label-width="120px">
@@ -113,6 +113,7 @@
               <el-select
                 style="width: 100%"
                 v-model="queryPageParameters.paymentMethod"
+                clearable
                 placeholder="请选择"
               >
                 <el-option
@@ -375,6 +376,11 @@ export default class PayoffList extends Vue {
     makerTime: null,
     beginMakerTime: null,
     endMakerTime: null,
+    paymentMethod: null,
+    belongOrgId: null,
+    reviewerId: null,
+    settlementMethod: null,
+    makerId: null,
     timeList: [],
   };
   prodialogVisible: any = false;
@@ -439,6 +445,11 @@ export default class PayoffList extends Vue {
       makerTime: null,
       beginMakerTime: null,
       endMakerTime: null,
+      paymentMethod: null,
+      belongOrgId: null,
+      reviewerId: null,
+      settlementMethod: null,
+      makerId: null,
       timeList: [],
     });
   }
