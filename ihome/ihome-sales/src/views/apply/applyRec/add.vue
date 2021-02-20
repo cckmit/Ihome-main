@@ -4,7 +4,7 @@
  * @Author: ywl
  * @Date: 2021-01-07 16:30:03
  * @LastEditors: ywl
- * @LastEditTime: 2021-02-20 10:50:21
+ * @LastEditTime: 2021-02-20 15:05:28
 -->
 <template>
   <IhPage class="text-left">
@@ -1324,6 +1324,7 @@ export default class ApplyRecAdd extends Vue {
           ...i,
           subMoneyNoTax,
           subMoneyTax,
+          dataSourceId: i.id,
         };
       });
     } catch (error) {
@@ -1487,7 +1488,7 @@ export default class ApplyRecAdd extends Vue {
           ),
           sumActMoney:
             i.hisSumActMoney +
-            this.$math.sub(
+            this.$math.add(
               applyMoney,
               this.$math.addArr([fineMoney, subMoney1, subMoney2])
             ),
