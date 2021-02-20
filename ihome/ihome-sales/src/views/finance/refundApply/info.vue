@@ -3,8 +3,8 @@
  * @version: 
  * @Author: zyc
  * @Date: 2021-02-06 16:27:06
- * @LastEditors: ywl
- * @LastEditTime: 2021-02-17 10:39:58
+ * @LastEditors: wwq
+ * @LastEditTime: 2021-02-20 11:35:25
 -->
 <template>
   <IhPage>
@@ -616,6 +616,7 @@ import {
   get_refundApply_get__id,
   post_refundApply_queryOaApprovalUser__id,
   post_refundApply_getFlowCommentList__id,
+  get_invoice_getInvoiceId__businessNo,
 } from "@/api/finance/index";
 import UploadList from "./dialog/uploadList.vue";
 
@@ -689,11 +690,15 @@ export default class RefundApplyInfo extends Vue {
         });
         break;
       case "invoiceNo":
-        router = this.$router.resolve({
-          path: `/invoice/info`,
-          query: {
-            id: row.invoiceNo,
-          },
+        get_invoice_getInvoiceId__businessNo({
+          businessNo: row.invoiceNo,
+        }).then((res: any) => {
+          router = this.$router.resolve({
+            path: `/invoice/info`,
+            query: {
+              id: res,
+            },
+          });
         });
         break;
     }

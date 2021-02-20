@@ -3,8 +3,8 @@
  * @version: 
  * @Author: ywl
  * @Date: 2021-02-17 11:27:05
- * @LastEditors: ywl
- * @LastEditTime: 2021-02-17 15:10:55
+ * @LastEditors: wwq
+ * @LastEditTime: 2021-02-20 11:37:47
 -->
 <template>
   <IhPage>
@@ -686,6 +686,7 @@ import {
   post_refundApply_queryOaApprovalUser__id,
   post_refundApply_getFlowCommentList__id,
   post_refundApply_financialAudit,
+  get_invoice_getInvoiceId__businessNo,
 } from "@/api/finance/index";
 
 @Component({
@@ -830,11 +831,15 @@ export default class RefundToExamineToExamine extends Vue {
         });
         break;
       case "invoiceNo":
-        router = this.$router.resolve({
-          path: `/invoice/info`,
-          query: {
-            id: row.invoiceNo,
-          },
+        get_invoice_getInvoiceId__businessNo({
+          businessNo: row.invoiceNo,
+        }).then((res: any) => {
+          router = this.$router.resolve({
+            path: `/invoice/info`,
+            query: {
+              id: res,
+            },
+          });
         });
         break;
     }
