@@ -164,6 +164,7 @@
             <IhSelectPageByBuild
               v-else
               @change="changeBuild"
+              @changeOption="(data) => {postData.buildingName = data.buildingName}"
               v-model="postData.buildingId"
               :proId="postData.projectId"
               :propertyEnum="postData.propertyType"
@@ -1690,7 +1691,7 @@
 
     // 跳转到指定索引的元素
     goAnchor(id: any, index: any) {
-      this.$nextTick(() => {
+      (this as any).$nextTick(() => {
         // 获取目标的 offsetTop
         let selector = `#anchor-${id}`;
         let dom = document.querySelector(selector) as any;
@@ -1974,12 +1975,6 @@
         // 优惠告知书
         // this.postData.offerNoticeVO = baseInfo.notice && baseInfo.notice.length ? baseInfo.notice : [];
       }
-      // 分销协议编号
-      if (baseInfo.contracts && baseInfo.contracts.length > 0) {
-        this.contNoList = baseInfo.contracts;
-      } else {
-        this.contNoList = [];
-      }
       // 分销成交和非分销成交不一样
       if (baseInfo.contType === 'DistriDeal') {
         // 分销成交模式
@@ -1997,6 +1992,18 @@
       // 合同类型
       if (baseInfo.contType) {
         this.postData.contType = baseInfo.contType;
+      }
+      // 分销协议编号
+      if (baseInfo.contracts && baseInfo.contracts.length > 0) {
+        this.contNoList = baseInfo.contracts;
+        // 增加需求：当分销协议只有一个的时候，默认选中 --- 2021-02-20-待定
+        // if (baseInfo.contracts.length === 1) {
+        //   (this as any).$nextTick(() => {
+        //     this.initContNo(baseInfo.contracts[0]);
+        //   });
+        // }
+      } else {
+        this.contNoList = [];
       }
       // 备案情况
       if (baseInfo && baseInfo.myReturnVO && baseInfo.myReturnVO.dealVO && baseInfo.myReturnVO.dealVO.recordState) {
@@ -2141,7 +2148,7 @@
             }
           );
           let list: any = this.initReceiveVOS(tempList);
-          this.$nextTick(() => {
+          (this as any).$nextTick(() => {
             this.postData.receiveList.push(...list);
           });
         }
@@ -2595,6 +2602,18 @@
         this.postData.brokerId= data[0].id; // 渠道经纪人Id
         this.postData.brokerName= data[0].name; // 渠道经纪人
       }
+    }
+
+    // 只有一个分销协议的时候默认选中
+    initContNo(item: any = '') {
+      if (!item) return;
+      this.postData.isMat = null;
+      this.packageIdsList = [];
+      this.postData.contNo = item.contractNo;
+      // 是否垫佣
+      this.postData.isMat = item.advancementSituation;
+      // 分销模式下获取分销协议返回的收派套餐id
+      this.packageIdsList = item.packageMxIds && item.packageMxIds.length ? item.packageMxIds : [];
     }
 
     // 是否垫佣是根据对应的分销协议来判断
