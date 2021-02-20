@@ -153,11 +153,6 @@
           @click="search()"
         >查询</el-button>
         <el-button
-          type="success"
-          @click="add()"
-          v-has="'B.SALES.CHANNEL.LEVELLIST.ADD'"
-        >添加</el-button>
-        <el-button
           type="info"
           @click="empty()"
         >重置</el-button>
@@ -376,10 +371,10 @@ export default class UserList extends Vue {
     this.provinceOption = [];
   }
 
-  // 添加
-  add() {
-    this.$router.push("/channelLevel/add");
-  }
+  // // 添加
+  // add() {
+  //   this.$router.push("/channelLevel/add");
+  // }
 
   update() {
     if (this.selection.length) this.dialogVisible = true;
