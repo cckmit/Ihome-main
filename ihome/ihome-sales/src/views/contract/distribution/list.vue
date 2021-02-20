@@ -3,8 +3,8 @@
  * @version: 
  * @Author: ywl
  * @Date: 2020-09-25 17:34:32
- * @LastEditors: ywl
- * @LastEditTime: 2021-02-18 14:52:04
+ * @LastEditors: lsj
+ * @LastEditTime: 2021-02-20 19:05:20
 -->
 <template>
   <IhPage label-width="100px">
@@ -452,14 +452,16 @@ export default class DistributionList extends Vue {
 
   private originalChange(row: any) {
     const isDis = row.distributionState === "Distributed";
-    const ROffice = this.$roleTool.ROffice();
-    return isDis && ROffice;
+    // const ROffice = this.$roleTool.ROffice();
+    // return isDis && ROffice;
+    return isDis;
   }
   private duplicateChange(row: any) {
     const isDis = row.distributionState === "Distributed";
     // const isStatus = row.archiveStatus === "ScansAreNotArchived";
-    const RPlatformClerk = this.$roleTool.RPlatformClerk();
-    return isDis && RPlatformClerk;
+    // const RPlatformClerk = this.$roleTool.RPlatformClerk();
+    // return isDis && RPlatformClerk;
+    return isDis;
   }
   private contractChange() {
     return this.$roleTool.RContractManager();
