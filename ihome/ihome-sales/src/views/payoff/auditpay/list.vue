@@ -4,7 +4,7 @@
  * @Author: wwq
  * @Date: 2020-12-26 11:11:28
  * @LastEditors: wwq
- * @LastEditTime: 2021-02-19 19:15:53
+ * @LastEditTime: 2021-02-20 16:42:09
 -->
 <template>
   <IhPage label-width="120px">
@@ -29,15 +29,17 @@
                 placeholder="请选择渠道商"
                 clearable
                 v-model="queryPageParameters.agencyId"
+                @changeOption="(data) => {queryPageParameters.agencyName = data.name}"
               ></IhSelectPageByChannel>
             </el-form-item>
           </el-col>
           <el-col :span="8">
             <el-form-item label="组织">
-              <SelectOrganizationTree
-                :v-model="queryPageParameters.belongOrgId"
-                @callback="(id) => (queryPageParameters.belongOrgId = id)"
-              />
+              <IhSelectPageDivision
+                v-model="queryPageParameters.belongOrgId"
+                placeholder="请选择组织"
+                clearable
+              ></IhSelectPageDivision>
             </el-form-item>
           </el-col>
           <el-col :span="8">
@@ -79,7 +81,7 @@
             <el-form-item label="制单日期">
               <el-date-picker
                 style="width: 100%"
-                v-model="queryPageParameters.timeList"
+                v-model="timeList"
                 type="daterange"
                 align="left"
                 unlink-panels
@@ -87,7 +89,7 @@
                 start-placeholder="开始日期"
                 end-placeholder="结束日期"
                 :picker-options="$root.pickerOptions"
-                value-format="yyyy-MM-dd"
+                value-format="yyyy-MM-dd HH:mm:ss"
               ></el-date-picker>
             </el-form-item>
           </el-col>
@@ -266,29 +268,29 @@
 import { Component, Vue } from "vue-property-decorator";
 import { post_payApply_review_list } from "@/api/payoff/index";
 import PaginationMixin from "../../../mixins/pagination";
-import SelectOrganizationTree from "@/components/SelectOrganizationTree.vue";
 import Progress from "../payorder/dialog/progress.vue";
 import axios from "axios";
 import { getToken } from "ihome-common/util/cookies";
 
 @Component({
-  components: { SelectOrganizationTree, Progress },
+  components: { Progress },
   mixins: [PaginationMixin],
 })
 export default class PayoffList extends Vue {
   queryPageParameters: any = {
     applyCode: null,
-    belongOrgName: null,
-    maker: null,
     agencyId: null,
-    applyAmount: null,
-    actualAmount: null,
-    deductAmount: null,
-    makerTime: null,
+    agencyName: null,
+    belongOrgId: null,
+    reviewerId: null,
+    settlementMethod: null,
+    makerId: null,
+    status: null,
     beginMakerTime: null,
     endMakerTime: null,
-    timeList: [],
+    paymentMethod: null,
   };
+  timeList: any = [];
   prodialogVisible: any = false;
   rogressData: any = {};
   selection: any = [];
@@ -340,7 +342,6 @@ export default class PayoffList extends Vue {
       this.$message.warning("暂无数据");
       return;
     } else {
-      let arr: any = this.resPageInfo.list.map((v: any) => v.id);
       const token: any = getToken();
       axios({
         method: "POST",
@@ -351,7 +352,7 @@ export default class PayoffList extends Vue {
           "Content-Type": "application/json",
           Authorization: "bearer " + token,
         },
-        data: arr,
+        data: this.queryPageParameters,
       }).then((res: any) => {
         const href = window.URL.createObjectURL(res.data);
         const $a = document.createElement("a");
@@ -379,17 +380,18 @@ export default class PayoffList extends Vue {
   reset() {
     Object.assign(this.queryPageParameters, {
       applyCode: null,
-      belongOrgName: null,
-      maker: null,
       agencyId: null,
-      applyAmount: null,
-      actualAmount: null,
-      deductAmount: null,
-      makerTime: null,
+      agencyName: null,
+      belongOrgId: null,
+      reviewerId: null,
+      settlementMethod: null,
+      makerId: null,
+      status: null,
       beginMakerTime: null,
       endMakerTime: null,
-      timeList: [],
+      paymentMethod: null,
     });
+    this.timeList = [];
   }
 
   routeTo(row: any) {
@@ -424,9 +426,9 @@ export default class PayoffList extends Vue {
   }
 
   search() {
-    if (this.queryPageParameters.timeList.length) {
-      this.queryPageParameters.beginMakerTime = this.queryPageParameters.timeList[0];
-      this.queryPageParameters.endMakerTime = this.queryPageParameters.timeList[1];
+    if (this.timeList.length) {
+      this.queryPageParameters.beginMakerTime = this.timeList[0];
+      this.queryPageParameters.endMakerTime = this.timeList[1];
     }
     this.queryPageParameters.pageNum = 1;
     this.getListMixin();

@@ -4,7 +4,7 @@
  * @Author: wwq
  * @Date: 2020-12-26 11:11:23
  * @LastEditors: wwq
- * @LastEditTime: 2021-02-20 08:58:53
+ * @LastEditTime: 2021-02-20 15:05:40
 -->
 <template>
   <IhPage>
@@ -316,7 +316,7 @@
           </el-table-column>
           <el-table-column
             label="合同信息"
-            width="250"
+            width="300"
           >
             <template v-slot="{ row }">
               <div :title="row.contNo">分销协议编号:
@@ -426,7 +426,7 @@
             label="本次付款金额"
             width="200"
           >
-            <template v-slot="{ row, $index }">
+            <template v-slot="{ row }">
               <div>
                 服务费:
                 <el-input
@@ -443,7 +443,7 @@
                   v-digits="2"
                   readonly
                   style="width: 70%"
-                  @click.native="agencyEdit(row, $index)"
+                  @click.native="agencyEdit(row)"
                 />
               </div>
               <div>合计: {{
@@ -1194,7 +1194,7 @@ export default class PayoffEdit extends Vue {
   };
 
   agencyDialogVisible: any = false;
-  agencyEditIndex: any = 0;
+  agencyEditDealCode: any = 0;
   agencyData: any = {};
   modify: any = false;
   computedLoading: any = false;
@@ -1263,8 +1263,8 @@ export default class PayoffEdit extends Vue {
     return msg;
   }
 
-  agencyEdit(data: any, index: number) {
-    this.agencyEditIndex = index;
+  agencyEdit(data: any) {
+    this.agencyEditDealCode = data.dealCode;
     let arr: any = [];
     if (!data.ageThisCommFeesList?.length) {
       arr = data.canCommFeesList.map((v: any) => ({
@@ -1287,16 +1287,38 @@ export default class PayoffEdit extends Vue {
   }
 
   agencyFinish(data: any) {
-    this.info.payApplyDetailList[this.agencyEditIndex].ageThisCommFeesList = [
-      ...data,
-    ];
     let sum: any = 0;
     data.forEach((v: any) => {
       sum += Number(v.agencyFeesAmount);
     });
-    this.info.payApplyDetailList[this.agencyEditIndex].ageThisCommFees = sum;
-    this.showTable[this.agencyEditIndex].ageThisCommFeesList = [...data];
-    this.showTable[this.agencyEditIndex].ageThisCommFees = sum;
+    this.info.payApplyDetailList = this.info.payApplyDetailList.map(
+      (v: any) => {
+        if (v.dealCode === this.agencyEditDealCode) {
+          return {
+            ...v,
+            ageThisCommFees: sum,
+            ageThisCommFeesList: data,
+          };
+        } else {
+          return {
+            ...v,
+          };
+        }
+      }
+    );
+    this.showTable = this.showTable.map((v: any) => {
+      if (v.dealCode === this.agencyEditDealCode) {
+        return {
+          ...v,
+          ageThisCommFees: sum,
+          ageThisCommFeesList: data,
+        };
+      } else {
+        return {
+          ...v,
+        };
+      }
+    });
     this.agencyDialogVisible = false;
     this.$message.success("保存成功");
   }
@@ -1600,6 +1622,7 @@ export default class PayoffEdit extends Vue {
     }
     if (this.tabsList.length) {
       this.tabsValue = this.tabsList[0].value;
+      this.handleClick(this.tabsValue);
     }
   }
 
