@@ -4,7 +4,7 @@
  * @Author: ywl
  * @Date: 2021-01-07 16:30:03
  * @LastEditors: ywl
- * @LastEditTime: 2021-02-20 15:05:28
+ * @LastEditTime: 2021-02-20 16:57:01
 -->
 <template>
   <IhPage class="text-left">
@@ -510,7 +510,7 @@
           </el-table-column>
           <el-table-column
             label="操作"
-            width="120"
+            width="80"
             fixed="right"
           >
             <template v-slot="{ $index }">
@@ -560,7 +560,7 @@
                 }"
               >
                 <el-option
-                  v-for="(i, n) in form.dealList"
+                  v-for="(i, n) in otherDealList"
                   :key="n"
                   :value="i"
                   :label="i.termName"
@@ -625,8 +625,8 @@
           </el-table-column>
           <el-table-column
             label="操作"
-            width="80"
             fixed="right"
+            width="80"
           >
             <template v-slot="{ $index }">
               <el-link
@@ -1073,6 +1073,16 @@ export default class ApplyRecAdd extends Vue {
     ],
   };
 
+  private get otherDealList() {
+    let obj: any = {},
+      newArr: any = [];
+    newArr = this.form.dealList.reduce((item: any, next: any) => {
+      console.log(item, next);
+      obj[next.termId] ? " " : (obj[next.termId] = true && item.push(next));
+      return item;
+    }, []);
+    return newArr;
+  }
   private get totalNoReceiveAmount() {
     let sum = 0;
     this.form.dealList.forEach((i: any) => {
@@ -1480,7 +1490,7 @@ export default class ApplyRecAdd extends Vue {
         return {
           ...i,
           applyMoney,
-          fineMoney,
+          fineMoney: fineMoney * -1,
           subMoney: this.$math.add(subMoney1, subMoney2),
           actMoney: this.$math.add(
             applyMoney,
@@ -1639,8 +1649,8 @@ export default class ApplyRecAdd extends Vue {
     }));
     let termList = this.form.termList.map((i: any) => ({
       ...i,
-      subMoney: i.subMoney * -1,
-      fineMoney: i.fineMoney * -1,
+      // subMoney: i.subMoney * -1,
+      // fineMoney: i.fineMoney * -1,
     }));
     let dealList = this.form.dealList.map((i: any) => ({
       ...i,
