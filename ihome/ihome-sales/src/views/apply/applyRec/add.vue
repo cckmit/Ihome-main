@@ -4,7 +4,7 @@
  * @Author: ywl
  * @Date: 2021-01-07 16:30:03
  * @LastEditors: ywl
- * @LastEditTime: 2021-02-19 20:53:11
+ * @LastEditTime: 2021-02-20 10:50:21
 -->
 <template>
   <IhPage class="text-left">
@@ -1313,7 +1313,7 @@ export default class ApplyRecAdd extends Vue {
       });
       this.waitList = list.map((i: any) => {
         let subMoneyNoTax = this.$math.tofixed(
-          this.$math.div(i.subMoney, 1 + this.form.taxRate),
+          this.$math.div(i.subMoney, 1 + parseFloat(this.form.taxRate)),
           2
         );
         let subMoneyTax = this.$math.tofixed(
