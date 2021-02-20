@@ -1489,7 +1489,7 @@
         }
         await this.initContNoList(params, res.contNo);
       }
-      this.$nextTick(async () => {
+      (this as any).$nextTick(async () => {
         this.postData.calculation = res?.calculation;
         this.isSameFlag = res?.scheme?.isSame === "Yes"; // 分销总包是否一致
         this.editDealAchieveData.isSameFlag = res?.scheme?.isSame === "Yes";
@@ -2102,7 +2102,7 @@
           this.postData.roomNo = null;
           await this.resetData();
         }
-        this.$nextTick(async () => {
+        (this as any).$nextTick(async () => {
           this.postData.cycleName = data[0].termName;
           this.postData.cycleId = data[0].termId;
           this.cycleCheckedData = [...data];
@@ -2192,7 +2192,7 @@
             }
           );
           let list: any = (this as any).$parent.initReceiveVOS(tempList);
-          this.$nextTick(() => {
+          (this as any).$nextTick(() => {
             this.postData.receiveVO.push(...list);
           });
         }
@@ -2389,12 +2389,6 @@
           this.postData.offerNoticeVO = baseInfo.notice && baseInfo.notice.length ? baseInfo.notice : [];
         }
       }
-      // 分销协议编号
-      if (baseInfo.contracts && baseInfo.contracts.length > 0) {
-        this.contNoList = baseInfo.contracts;
-      } else {
-        this.contNoList = [];
-      }
       // 分销成交和非分销成交不一样
       if (baseInfo.contType === 'DistriDeal') {
         // 分销成交模式
@@ -2411,6 +2405,18 @@
       // 合同类型
       if (baseInfo.contType) {
         this.postData.contType = baseInfo.contType;
+      }
+      // 分销协议编号
+      if (baseInfo.contracts && baseInfo.contracts.length > 0) {
+        this.contNoList = baseInfo.contracts;
+        // 增加需求：当分销协议只有一个的时候，默认选中 --- 2021-02-20-待定
+        // if (baseInfo.contracts.length === 1) {
+        //   (this as any).$nextTick(() => {
+        //     this.initContNo(baseInfo.contracts[0]);
+        //   });
+        // }
+      } else {
+        this.contNoList = [];
       }
       // 备案情况
       if (baseInfo && baseInfo.myReturnVO && baseInfo.myReturnVO.dealVO && baseInfo.myReturnVO.dealVO.recordState) {
@@ -2699,6 +2705,22 @@
     changeRefineModel() {
       // 初始化收派套餐
       this.initReceive();
+    }
+
+    // 只有一个分销协议的时候默认选中
+    initContNo(item: any = '') {
+      if (!item) return;
+      this.postData.isMat = null;
+      this.packageIdsList = [];
+      let isVoidFlag: any = false;
+      this.postData.contNo = item.contractNo;
+      // 是否垫佣
+      this.postData.isMat = item.advancementSituation;
+      // 分销模式下获取分销协议返回的收派套餐id
+      this.packageIdsList = item.packageMxIds && item.packageMxIds.length ? item.packageMxIds : [];
+      isVoidFlag = item.voidService;
+      // 判断是否可以手动添加优惠告知书
+      this.canAddNoticeItem(this.baseInfoByTerm.chargeEnum, this.baseInfoByTerm.termStageEnum, this.postData.contType, this.baseInfoInDeal.dealNoticeStatus, isVoidFlag);
     }
 
     // 是否垫佣是根据对应的分销协议来判断
