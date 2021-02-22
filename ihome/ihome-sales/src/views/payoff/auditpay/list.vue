@@ -4,7 +4,7 @@
  * @Author: wwq
  * @Date: 2020-12-26 11:11:28
  * @LastEditors: wwq
- * @LastEditTime: 2021-02-20 16:42:09
+ * @LastEditTime: 2021-02-22 15:46:04
 -->
 <template>
   <IhPage label-width="120px">
@@ -90,6 +90,7 @@
                 end-placeholder="结束日期"
                 :picker-options="$root.pickerOptions"
                 value-format="yyyy-MM-dd HH:mm:ss"
+                :default-time="['00:00:00', '23:59:59']"
               ></el-date-picker>
             </el-form-item>
           </el-col>
@@ -426,10 +427,9 @@ export default class PayoffList extends Vue {
   }
 
   search() {
-    if (this.timeList.length) {
-      this.queryPageParameters.beginMakerTime = this.timeList[0];
-      this.queryPageParameters.endMakerTime = this.timeList[1];
-    }
+    let flag = this.timeList && this.timeList.length;
+    this.queryPageParameters.beginMakerTime = flag ? this.timeList[0] : null;
+    this.queryPageParameters.endMakerTime = flag ? this.timeList[1] : null;
     this.queryPageParameters.pageNum = 1;
     this.getListMixin();
   }

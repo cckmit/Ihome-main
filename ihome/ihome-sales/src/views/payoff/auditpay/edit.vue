@@ -4,7 +4,7 @@
  * @Author: wwq
  * @Date: 2020-12-26 11:11:23
  * @LastEditors: wwq
- * @LastEditTime: 2021-02-20 15:05:40
+ * @LastEditTime: 2021-02-22 15:33:48
 -->
 <template>
   <IhPage>
@@ -79,6 +79,7 @@
             <el-form-item
               label="渠道收款账号"
               prop="receiveAccount"
+              @change="receiveAccountChange"
             >
               <el-select
                 v-model="info.receiveAccount"
@@ -153,10 +154,7 @@
             </el-form-item>
           </el-col>
           <el-col :span="8">
-            <el-form-item
-              label="付款方"
-              prop="payerId"
-            >
+            <el-form-item label="付款方">
               <IhSelectPageByPayer
                 clearable
                 v-model="info.payerId"
@@ -167,15 +165,13 @@
             </el-form-item>
           </el-col>
           <el-col :span="8">
-            <el-form-item
-              label="付款帐号"
-              prop="paymentAccount"
-            >
+            <el-form-item label="付款帐号">
               <el-select
                 v-model="info.paymentAccount"
                 clearable
                 placeholder="请选择付款帐号"
                 class="width--100"
+                @change="paymentAccountChange"
               >
                 <el-option
                   v-for="item in payerAccountOptions"
@@ -1094,6 +1090,8 @@ export default class PayoffEdit extends Vue {
     projectName: null,
     settlementMethod: null,
     paymentMethod: null,
+    agencyAccountBank: null,
+    payerAccountBank: null,
   };
   submitFile: any = {};
   operateVisible: any = false;
@@ -1410,12 +1408,26 @@ export default class PayoffEdit extends Vue {
     this.channelAccountOptions = res.channelBanks;
   }
 
+  receiveAccountChange(data: any) {
+    const item = this.channelAccountOptions.find(
+      (v: any) => v.accountNo === data
+    );
+    this.info.agencyAccountBank = item.branchName;
+  }
+
   async getPayerInfo(item: any) {
     this.info.payerName = item.name;
     const res = await post_bankAccount_getByOrgId__orgId({
       orgId: this.info.payerId,
     });
     this.payerAccountOptions = res;
+  }
+
+  paymentAccountChange(data: any) {
+    const item = this.payerAccountOptions.find(
+      (v: any) => v.accountNo === data
+    );
+    this.info.payerAccountBank = item.branchName;
   }
 
   handleClick(val: any) {
@@ -1466,6 +1478,10 @@ export default class PayoffEdit extends Vue {
           })
         ),
       };
+      this.getChannelInfo({
+        id: res.agencyId,
+        name: res.agencyName,
+      });
       this.getFileListType(res.documentList);
       this.filterTabs(this.info.payApplyDetailList);
       this.settlementMethodChange(res.settlementMethod);
@@ -1677,6 +1693,8 @@ export default class PayoffEdit extends Vue {
           obj.reviewUpdateMainBody.agencyId = this.info.agencyId;
           obj.reviewUpdateMainBody.agencyName = this.info.agencyName;
           obj.reviewUpdateMainBody.applyAmount = this.info.applyAmount;
+          obj.reviewUpdateMainBody.agencyAccountBank = this.info.agencyAccountBank;
+          obj.reviewUpdateMainBody.payerAccountBank = this.info.payerAccountBank;
           obj.reviewUpdateMainBody.belongOrgId = this.info.belongOrgId;
           obj.reviewUpdateMainBody.belongOrgName = this.info.belongOrgName;
           obj.reviewUpdateMainBody.deductAmount = this.info.deductAmount;
@@ -1726,16 +1744,35 @@ export default class PayoffEdit extends Vue {
             }
             break;
         }
+        const loading = this.$loading({
+          lock: true,
+          text: "Loading",
+          spinner: "el-icon-loading",
+          background: "rgba(0, 0, 0, 0.6)",
+          customClass: "ih-loading-spinner",
+        });
         switch (this.info.status) {
           case "PlatformClerkUnreview":
           case "BranchBusinessManageUnreview":
             delete obj.applyId;
             obj.id = this.payoffId;
-            await post_payApply_notFinanceReviewApply(obj);
+            try {
+              await post_payApply_notFinanceReviewApply(obj);
+              loading.close();
+            } catch (err) {
+              loading.close();
+              return;
+            }
             break;
           case "BranchFinanceUnreview":
           case "ReviewPass":
-            await post_payApply_financeReviewApply(obj);
+            try {
+              await post_payApply_financeReviewApply(obj);
+              loading.close();
+            } catch (err) {
+              loading.close();
+              return;
+            }
             break;
         }
         this.$message({
@@ -1813,6 +1850,14 @@ export default class PayoffEdit extends Vue {
   color: #000;
   /deep/ .el-input__prefix {
     left: 10px;
+  }
+}
+</style>
+<style lang="scss">
+.ih-loading-spinner {
+  .el-icon-loading,
+  .el-loading-text {
+    color: #fff;
   }
 }
 </style>
