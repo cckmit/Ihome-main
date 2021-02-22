@@ -4,7 +4,7 @@
  * @Author: ywl
  * @Date: 2021-01-12 19:30:20
  * @LastEditors: ywl
- * @LastEditTime: 2021-01-13 14:32:00
+ * @LastEditTime: 2021-02-22 11:23:01
 -->
 <template>
   <IhPage label-width="100px">
@@ -146,7 +146,7 @@
         ></el-table-column>
         <el-table-column
           label="成交报告编号"
-          min-width="155"
+          min-width="175"
           fixed
         >
           <template v-slot="{ row }">

@@ -513,8 +513,13 @@
               // 分公司业管待审核、事业部负责人
               flag = false;
             }
-            if (row.status === 'NotSigned' && (this as any).$roleTool.RBusinessManagement()) {
-              // 待签署生效、业务监管岗（分公司业管）
+            // 2021-02-22:这个权限要调整一下，一是后端没实现，临时做可能有问题，所以去掉了这个业管在“待签署生效”状态的撤回
+            // if (row.status === 'NotSigned' && (this as any).$roleTool.RBusinessManagement()) {
+            //   // 待签署生效、业务监管岗（分公司业管）
+            //   flag = false;
+            // }
+            if (row.id === row.parentId && row.status === 'NotSigned' && (this as any).$roleTool.RBusinessManagement()) {
+              // 主成交、待签署生效、业务监管岗（分公司业管）
               flag = false;
             }
             break;

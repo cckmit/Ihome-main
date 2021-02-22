@@ -4,7 +4,7 @@
  * @Author: ywl
  * @Date: 2021-01-07 16:30:03
  * @LastEditors: ywl
- * @LastEditTime: 2021-02-20 16:57:01
+ * @LastEditTime: 2021-02-22 11:20:48
 -->
 <template>
   <IhPage class="text-left">
@@ -790,7 +790,7 @@
               <el-input-number
                 controls-position="right"
                 v-model="form.taxMoney"
-                :min="globalTaxMoney-10 < 0 ? 0 : globalTaxMoney-10"
+                :min="globalTaxMoney-10"
                 :max="globalTaxMoney+10"
                 :precision="2"
                 @change="taxMoneyChange"
@@ -1494,13 +1494,13 @@ export default class ApplyRecAdd extends Vue {
           subMoney: this.$math.add(subMoney1, subMoney2),
           actMoney: this.$math.add(
             applyMoney,
-            this.$math.addArr([fineMoney, subMoney1, subMoney2])
+            this.$math.addArr([fineMoney * -1, subMoney1, subMoney2])
           ),
           sumActMoney:
             i.hisSumActMoney +
             this.$math.add(
               applyMoney,
-              this.$math.addArr([fineMoney, subMoney1, subMoney2])
+              this.$math.addArr([fineMoney * -1, subMoney1, subMoney2])
             ),
           sumApplyMoney: this.$math.add(applyMoney, i.hisSumApplyMoney),
         };
@@ -1577,8 +1577,7 @@ export default class ApplyRecAdd extends Vue {
   // 税额修改
   private taxMoneyChange(number: any) {
     if (!number) {
-      this.form.taxMoney =
-        this.globalTaxMoney - 10 < 0 ? 0 : this.globalTaxMoney - 10;
+      this.form.taxMoney = this.globalTaxMoney - 10;
     }
     let val = this.form.taxMoney;
     let sub = this.$math.sub(this.globalTaxMoney, val); // 差额
@@ -1789,16 +1788,16 @@ export default class ApplyRecAdd extends Vue {
       });
       this.form.termList = termList.map((i: any) => ({
         ...i,
-        subMoney: i.subMoney * -1,
-        fineMoney: i.fineMoney * -1,
+        // subMoney: i.subMoney * -1,
+        // fineMoney: i.fineMoney * -1,
       }));
       let otherSubList = await get_devOtherSub_getAll__applyId({ applyId });
       console.log(otherSubList);
       this.form.otherSubList = otherSubList.map((i: any) => ({
         ...i,
-        subMoney: i.subMoney * -1,
-        subMoneyNoTax: i.subMoneyNoTax * -1,
-        subMoneyTax: i.subMoneyTax * -1,
+        // subMoney: i.subMoney * -1,
+        // subMoneyNoTax: i.subMoneyNoTax * -1,
+        // subMoneyTax: i.subMoneyTax * -1,
         termObj: {
           termId: i.termId,
         },

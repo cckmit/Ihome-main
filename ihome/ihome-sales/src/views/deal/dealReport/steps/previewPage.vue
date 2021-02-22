@@ -700,21 +700,8 @@
     // 对外拆佣 --- 差值
     get getChannelCommList() {
       let list: any = [];
-      if (this.pageData.channelCommList && this.pageData.channelCommList.length
-        && this.pageData.callBackInfo && this.pageData.callBackInfo.channelCommVO &&
-        this.pageData.callBackInfo.channelCommVO.length) {
-        this.pageData.channelCommList.forEach((item: any, itemIndex: any) => {
-          this.pageData.callBackInfo.channelCommVO.forEach((vo: any, voIndex: any) => {
-            if (itemIndex === voIndex) {
-              list.push(
-                {
-                  ...item,
-                  ...vo
-                }
-              )
-            }
-          });
-        });
+      if (this.pageData.callBackInfo.channelCommVO && this.pageData.callBackInfo.channelCommVO.length) {
+        list = this.pageData.callBackInfo.channelCommVO;
       }
       return list;
     }
