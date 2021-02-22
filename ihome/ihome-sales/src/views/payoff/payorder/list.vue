@@ -4,7 +4,7 @@
  * @Author: wwq
  * @Date: 2020-12-26 11:11:28
  * @LastEditors: wwq
- * @LastEditTime: 2021-02-20 16:35:13
+ * @LastEditTime: 2021-02-22 15:45:12
 -->
 <template>
   <IhPage label-width="120px">
@@ -29,7 +29,6 @@
                 clearable
                 placeholder="请选择渠道商"
                 v-model="queryPageParameters.agencyId"
-                @changeOption="(data) => {queryPageParameters.agencyName = data.name}"
               ></IhSelectPageByChannel>
             </el-form-item>
           </el-col>
@@ -40,6 +39,7 @@
                 placeholder="请选择组织"
                 clearable
               ></IhSelectPageDivision>
+              <!-- <IhSelectOrgTree v-model="queryPageParameters.belongOrgId"></IhSelectOrgTree> -->
             </el-form-item>
           </el-col>
           <el-col :span="8">
@@ -107,6 +107,7 @@
                 end-placeholder="结束日期"
                 :picker-options="$root.pickerOptions"
                 value-format="yyyy-MM-dd HH:mm:ss"
+                :default-time="['00:00:00', '23:59:59']"
               ></el-date-picker>
             </el-form-item>
           </el-col>
@@ -138,24 +139,24 @@
           @click="search()"
         >查询</el-button>
         <el-button
-          type="success"
-          @click="add()"
-          v-has="'B.SALES.PAYOFF.PAYOFFLIST.FFZFSQ'"
-        >发起支付申请</el-button>
-        <el-button
           type="info"
           @click="reset()"
         >重置</el-button>
-        <el-button
-          type="danger"
-          @click="remove(null, 'duo')"
-          v-has="'B.SALES.PAYOFF.PAYOFFLIST.PLSC'"
-        >批量删除</el-button>
         <el-button
           type="success"
           @click="exportMsg()"
           v-has="'B.SALES.PAYOFF.PAYOFFLIST.DCLB'"
         >导出</el-button>
+        <el-button
+          type="success"
+          @click="add()"
+          v-has="'B.SALES.PAYOFF.PAYOFFLIST.FFZFSQ'"
+        >发起支付申请</el-button>
+        <el-button
+          type="danger"
+          @click="remove(null, 'duo')"
+          v-has="'B.SALES.PAYOFF.PAYOFFLIST.PLSC'"
+        >批量删除</el-button>
       </el-row>
     </template>
 
@@ -368,7 +369,6 @@ export default class PayoffList extends Vue {
   queryPageParameters: any = {
     applyCode: null,
     agencyId: null,
-    agencyName: null,
     belongOrgId: null,
     reviewerId: null,
     settlementMethod: null,
@@ -432,7 +432,6 @@ export default class PayoffList extends Vue {
     Object.assign(this.queryPageParameters, {
       applyCode: null,
       agencyId: null,
-      agencyName: null,
       belongOrgId: null,
       reviewerId: null,
       settlementMethod: null,
@@ -566,10 +565,9 @@ export default class PayoffList extends Vue {
   }
 
   search() {
-    if (this.timeList.length) {
-      this.queryPageParameters.beginMakerTime = this.timeList[0];
-      this.queryPageParameters.endMakerTime = this.timeList[1];
-    }
+    let flag = this.timeList && this.timeList.length;
+    this.queryPageParameters.beginMakerTime = flag ? this.timeList[0] : null;
+    this.queryPageParameters.endMakerTime = flag ? this.timeList[1] : null;
     this.queryPageParameters.pageNum = 1;
     this.getListMixin();
   }

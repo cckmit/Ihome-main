@@ -4,7 +4,7 @@
  * @Author: wwq
  * @Date: 2020-12-26 11:11:23
  * @LastEditors: wwq
- * @LastEditTime: 2021-02-20 15:06:16
+ * @LastEditTime: 2021-02-22 15:17:48
 -->
 <template>
   <IhPage>
@@ -85,6 +85,7 @@
                 clearable
                 placeholder="请选择账号"
                 class="width--100"
+                @change="receiveAccountChange"
               >
                 <el-option
                   v-for="item in channelAccountOptions"
@@ -935,6 +936,7 @@ export default class PayoffEdit extends Vue {
     agencyId: null,
     agencyName: null,
     receiveAccount: null,
+    agencyAccountBank: null,
     invoiceType: null,
     taxRate: null,
     status: null,
@@ -1619,6 +1621,13 @@ export default class PayoffEdit extends Vue {
     }
   }
 
+  receiveAccountChange(data: any) {
+    const item = this.channelAccountOptions.find(
+      (v: any) => v.accountNo === data
+    );
+    this.info.agencyAccountBank = item.branchName;
+  }
+
   async queryDeductionData(id: any) {
     const res = await get_payDeductDetail_deduct_details__channelId({
       channelId: id,
@@ -1642,6 +1651,7 @@ export default class PayoffEdit extends Vue {
         obj.payApplyVO.agencyId = this.info.agencyId;
         obj.payApplyVO.agencyName = this.info.agencyName;
         obj.payApplyVO.applyAmount = this.info.applyAmount;
+        obj.payApplyVO.agencyAccountBank = this.info.agencyAccountBank;
         obj.payApplyVO.belongOrgId = this.info.belongOrgId;
         obj.payApplyVO.belongOrgName = this.info.belongOrgName;
         obj.payApplyVO.deductAmount = this.info.deductAmount;

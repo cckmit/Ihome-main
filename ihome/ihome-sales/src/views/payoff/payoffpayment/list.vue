@@ -4,7 +4,7 @@
  * @Author: wwq
  * @Date: 2021-01-15 10:45:53
  * @LastEditors: wwq
- * @LastEditTime: 2021-02-19 14:41:33
+ * @LastEditTime: 2021-02-22 15:45:53
 -->
 <template>
   <IhPage label-width="100px">
@@ -101,6 +101,7 @@
               end-placeholder="结束日期"
               :picker-options="$root.pickerOptions"
               value-format="yyyy-MM-dd"
+              :default-time="['00:00:00', '23:59:59']"
             ></el-date-picker>
           </el-col>
         </el-row>
@@ -157,13 +158,13 @@
               <el-table-column
                 label="付款结算单号"
                 prop="settlementCode"
-                width="150"
+                width="200"
                 fixed
               ></el-table-column>
               <el-table-column
                 label="付款申请单编号"
                 prop="applyCode"
-                width="150"
+                width="200"
               ></el-table-column>
               <el-table-column
                 label="结算方式"
@@ -426,10 +427,9 @@ export default class ReturnConfirmList extends Vue {
   }
 
   search() {
-    if (this.timeList.length) {
-      this.queryPageParameters.beginDate = this.timeList[0];
-      this.queryPageParameters.endDate = this.timeList[1];
-    }
+    let flag = this.timeList && this.timeList.length;
+    this.queryPageParameters.beginDate = flag ? this.timeList[0] : null;
+    this.queryPageParameters.endDate = flag ? this.timeList[1] : null;
     this.queryPageParameters.pageNum = 1;
     if (this.tabsValue !== "all") {
       this.queryPageParameters.paymentStatusList = [this.tabsValue];
@@ -508,6 +508,7 @@ export default class ReturnConfirmList extends Vue {
           message: "付款推送成功",
           position: "bottom-right",
         });
+        this.search();
       } else {
         this.$message.error(res.reason);
         return;

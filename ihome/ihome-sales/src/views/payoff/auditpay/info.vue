@@ -4,7 +4,7 @@
  * @Author: wwq
  * @Date: 2021-02-06 18:54:46
  * @LastEditors: wwq
- * @LastEditTime: 2021-02-20 15:06:04
+ * @LastEditTime: 2021-02-22 09:36:33
 -->
 <template>
   <IhPage>
@@ -1062,16 +1062,35 @@ export default class PayoffEdit extends Vue {
             }
             break;
         }
+        const loading = this.$loading({
+          lock: true,
+          text: "Loading",
+          spinner: "el-icon-loading",
+          background: "rgba(0, 0, 0, 0.6)",
+          customClass: "ih-loading-spinner",
+        });
         switch (this.info.status) {
           case "PlatformClerkUnreview":
           case "BranchBusinessManageUnreview":
             delete obj.applyId;
             obj.id = this.payoffId;
-            await post_payApply_notFinanceReviewApply(obj);
+            try {
+              await post_payApply_notFinanceReviewApply(obj);
+              loading.close();
+            } catch (err) {
+              loading.close();
+              return;
+            }
             break;
           case "BranchFinanceUnreview":
           case "ReviewPass":
-            await post_payApply_financeReviewApply(obj);
+            try {
+              await post_payApply_financeReviewApply(obj);
+              loading.close();
+            } catch (err) {
+              loading.close();
+              return;
+            }
             break;
         }
         this.$message({
@@ -1119,6 +1138,14 @@ export default class PayoffEdit extends Vue {
   /deep/ .el-textarea__inner,
   /deep/ .el-input__inner {
     border: none;
+  }
+}
+</style>
+<style lang="scss">
+.ih-loading-spinner {
+  .el-icon-loading,
+  .el-loading-text {
+    color: #fff;
   }
 }
 </style>
