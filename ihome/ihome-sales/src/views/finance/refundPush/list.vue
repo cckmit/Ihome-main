@@ -5,7 +5,7 @@
  * @Author: zyc
  * @Date: 2021-01-13 14:50:21
  * @LastEditors: ywl
- * @LastEditTime: 2021-02-22 17:06:17
+ * @LastEditTime: 2021-02-22 18:10:59
 -->
 <template>
   <IhPage label-width="110px">
@@ -467,11 +467,15 @@ export default class RefundPushList extends Vue {
   }
   //同步状态
   async syncStatus(row: any) {
-    await post_refundItemPush_syncStatus({
+    const res = await post_refundItemPush_syncStatus({
       id: row.id,
       refundPayNo: row.refundPayNo,
     });
-    this.$message.success("同步成功");
+    if (res.status) {
+      this.$message.success("同步成功");
+    } else {
+      this.$message.error(res.reason);
+    }
     this.getListMixin();
   }
 }

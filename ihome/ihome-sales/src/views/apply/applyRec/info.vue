@@ -4,7 +4,7 @@
  * @Author: ywl
  * @Date: 2021-01-15 15:29:09
  * @LastEditors: ywl
- * @LastEditTime: 2021-02-18 15:33:09
+ * @LastEditTime: 2021-02-22 18:14:20
 -->
 <template>
   <IhPage class="text-left">
@@ -373,9 +373,15 @@
               {{row.subMoney}}
             </template>
           </el-table-column>
-          <el-table-column label="不含税金额">
+          <el-table-column
+            label="不含税金额"
+            prop="subMoneyNoTax"
+          >
           </el-table-column>
-          <el-table-column label="税额">
+          <el-table-column
+            label="税额"
+            prop="subMoneyTax"
+          >
           </el-table-column>
         </el-table>
       </div>
@@ -433,9 +439,6 @@
             label="税额"
             prop="subMoneyTax"
           >
-            <template v-slot="{ row }">
-              {{row.subMoney}}
-            </template>
           </el-table-column>
           <el-table-column label="原因及扣罚依据">
             <template v-slot="{ row }">
