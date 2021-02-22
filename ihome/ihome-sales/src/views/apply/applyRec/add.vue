@@ -4,7 +4,7 @@
  * @Author: ywl
  * @Date: 2021-01-07 16:30:03
  * @LastEditors: ywl
- * @LastEditTime: 2021-02-22 16:25:31
+ * @LastEditTime: 2021-02-22 17:29:14
 -->
 <template>
   <IhPage class="text-left">
@@ -1160,7 +1160,7 @@ export default class ApplyRecAdd extends Vue {
   }
   // 计算税额 -- 其他扣除项
   private otherSubMoney(row: any) {
-    let subMoneyTax = this.$math.sub(row.subMoney, row.subMoneyNoTax);
+    let subMoneyTax = this.$math.add(row.subMoney, row.subMoneyNoTax);
     row.subMoneyTax = this.$math.tofixed(subMoneyTax * -1, 2);
     return row.subMoneyTax;
   }
@@ -1574,6 +1574,11 @@ export default class ApplyRecAdd extends Vue {
     console.log(val, sub, number);
     let listArr: any = [];
     let isSub = true;
+    if (sub === 0) {
+      isSub = false;
+    } else {
+      isSub = true;
+    }
     for (let index = 0; index < this.form.dealList.length; index++) {
       const element = this.form.dealList[index];
       // 税额
@@ -1594,6 +1599,8 @@ export default class ApplyRecAdd extends Vue {
           this.$math.sub(thisTaxMoney, sub),
           2
         );
+        console.log(taxMoneyNew, "xxxxx");
+
         if (taxMoneyNew > 0) {
           element.taxMoneyNew = taxMoneyNew;
           element.noTaxMoneyNew = this.$math.tofixed(
@@ -1817,6 +1824,7 @@ export default class ApplyRecAdd extends Vue {
     } else {
       this.getFileListType([]);
       this.form.applyUserName = (this.$root as any).userInfo.name;
+      this.form.applyTime = (this.$tool as any).todayLongStr();
     }
   }
 }
