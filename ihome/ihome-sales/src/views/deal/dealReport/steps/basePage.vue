@@ -1611,6 +1611,7 @@
     tipsFlag: any = false; // 加载拆佣情况 --- 提示框
     dividerTips: any = '业绩分配'; // 分割标题：业绩分配; 刷新成功; 加载成功
     hasClickFlag: any = false; // 判断初始化平台费用按钮是否点击过，默认没有
+    dealParentId: any = null; // 主成交id，2021-02-22 initBasic接口需要增加主成交id
 
     // 应收信息表格
     get receiveAchieveVO() {
@@ -1760,6 +1761,7 @@
         return;
       }
       console.log(res);
+      this.dealParentId = res.parentId;
       // 通过项目周期id获取基础信息
       await this.getBaseDealInfo(res.cycleId);
       this.contTypeList = await this.getContTypeList(res.modelCode); // 根据业务模式获取合同类型
@@ -1835,15 +1837,16 @@
       // 初始化附件信息
       await this.initDocumentList(res.charge, res.contType, res.documentShowList);
       // 根据项目周期和房号初始化页面数据
-      await this.getPageById(res.cycleId, res.house.roomId, res.house.propertyType);
+      await this.getPageById(res.cycleId, res.house.roomId, res.house.propertyType, res.parentId);
       // 获取平台费用中新增、修改弹窗中角色类型和角色业绩上限
       await this.initAchieveRole();
     }
 
     // 根据项目周期和房号初始化页面数据
-    async getPageById(cycleId: any, roomId: any, propertyType: any = '') {
+    async getPageById(cycleId: any, roomId: any, propertyType: any = '', parentId: any = '') {
       if (!cycleId || !roomId || !propertyType) return;
       let params: any = {
+        parentId: parentId, // 补充成交要加parentId
         cycleId: cycleId,
         roomId: roomId,
         isMainDeal: false, // 是否主成交
@@ -1947,6 +1950,7 @@
     async initPageById(cycleId: any, roomId: any, propertyType: any = '') {
       if (!cycleId || !roomId || !propertyType) return;
       let params: any = {
+        parentId: this.dealParentId,
         cycleId: cycleId,
         roomId: roomId,
         isMainDeal: false, // 是否主成交

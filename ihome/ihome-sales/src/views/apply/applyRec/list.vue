@@ -4,7 +4,7 @@
  * @Author: ywl
  * @Date: 2021-01-07 10:29:38
  * @LastEditors: ywl
- * @LastEditTime: 2021-02-19 14:58:05
+ * @LastEditTime: 2021-02-22 14:51:39
 -->
 <template>
   <IhPage label-width="100px">
@@ -110,23 +110,23 @@
           @click="search()"
         >查询</el-button>
         <el-button
+          type="info"
+          @click="reset()"
+        >重置</el-button>
+        <el-button
+          v-has="'B.SALES.APPLY.APPLYREC.EXPORTAPPLY'"
+          @click="handleExport()"
+        >导出</el-button>
+        <el-button
           type="success"
           @click="$router.push('/applyRec/add')"
           v-has="'B.SALES.APPLY.APPLYREC.ADDAPPLY'"
         >发起请佣申请</el-button>
         <el-button
-          type="info"
-          @click="reset()"
-        >重置</el-button>
-        <el-button
           type="danger"
           v-has="'B.SALES.APPLY.APPLYREC.BATCHDELETE'"
           @click="batchRemove()"
         >批量删除</el-button>
-        <el-button
-          v-has="'B.SALES.APPLY.APPLYREC.EXPORTAPPLY'"
-          @click="handleExport()"
-        >导出</el-button>
       </el-row>
     </template>
     <template v-slot:table>

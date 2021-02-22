@@ -4,7 +4,7 @@
  * @Author: ywl
  * @Date: 2020-12-09 15:49:33
  * @LastEditors: ywl
- * @LastEditTime: 2021-01-30 11:45:40
+ * @LastEditTime: 2021-02-20 10:12:50
 -->
 <template>
   <el-dialog
@@ -103,6 +103,7 @@ export default class AutoInvoice extends Vue {
 
   created() {
     console.log(this.data);
+    this.form.operationType = this.data.data.operationType;
     this.form.ids = this.data.ids;
   }
 }
