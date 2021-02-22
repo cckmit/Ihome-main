@@ -4,7 +4,7 @@
  * @Author: wwq
  * @Date: 2020-12-26 11:11:23
  * @LastEditors: wwq
- * @LastEditTime: 2021-02-22 15:17:48
+ * @LastEditTime: 2021-02-22 20:12:06
 -->
 <template>
   <IhPage>
@@ -359,6 +359,7 @@
                   v-digits="2"
                   clearable
                   style="width: 70%"
+                  @input="payApplyDetailListNumberChange(row)"
                 />
               </div>
               <div class="margin-top-5">
@@ -386,6 +387,7 @@
                 v-digits="2"
                 clearable
                 style="width: 70%"
+                @input="payApplyDetailListNumberChange(row)"
               />
             </template>
           </el-table-column>
@@ -398,6 +400,7 @@
                 v-model="row.deductType"
                 clearable
                 style="width: 70%"
+                @input="payApplyDetailListNumberChange(row)"
               />
             </template>
           </el-table-column>
@@ -1199,6 +1202,14 @@ export default class PayoffEdit extends Vue {
     return this.$math.tofixed(res, 2);
   }
 
+  // 待付款列表数据变化
+  payApplyDetailListNumberChange(row: any) {
+    this.info.payApplyDetailList = this.info.payApplyDetailList.map((v: any) =>
+      v.dealCode === row.dealCode ? row : v
+    );
+    console.log(this.info.payApplyDetailList);
+  }
+
   // 不含税金额(实际付款金额/(1+发票税率))
   noTaxAmountChange(row: any) {
     const practical = Number(row.actualAmount);
@@ -1289,8 +1300,8 @@ export default class PayoffEdit extends Vue {
     let sub = this.$math.sub(this.globalTaxMoney, val);
     let listArr: any = [];
     let isSub = true;
-    for (let index = 0; index < this.showTable.length; index++) {
-      const element = this.showTable[index];
+    for (let index = 0; index < this.info.payApplyDetailList.length; index++) {
+      const element = this.info.payApplyDetailList[index];
       if (isSub) {
         let taxNew = this.$math.tofixed(this.$math.sub(element.tax, sub), 2);
         if (taxNew > 0) {
@@ -1317,7 +1328,10 @@ export default class PayoffEdit extends Vue {
         listArr.push(element);
       }
     }
-    this.showTable = listArr;
+    this.info.payApplyDetailList = listArr;
+    this.showTable = this.info.payApplyDetailList.filter(
+      (v: any) => v.cycleId === this.tabsValue
+    );
   }
 
   // 本期实际付款金额（不含税）

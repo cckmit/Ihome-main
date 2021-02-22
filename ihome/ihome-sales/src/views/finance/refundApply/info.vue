@@ -4,7 +4,7 @@
  * @Author: zyc
  * @Date: 2021-02-06 16:27:06
  * @LastEditors: wwq
- * @LastEditTime: 2021-02-20 11:35:25
+ * @LastEditTime: 2021-02-22 20:12:47
 -->
 <template>
   <IhPage>
@@ -662,8 +662,8 @@ export default class RefundApplyInfo extends Vue {
         router = this.$router.resolve({
           path: `/dealReport/info`,
           query: {
-            id: row.dealCode,
-            type: "CODE",
+            id: row.dealId,
+            type: "ID",
           },
         });
         break;

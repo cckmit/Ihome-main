@@ -4,7 +4,7 @@
  * @Author: wwq
  * @Date: 2021-01-15 10:45:53
  * @LastEditors: wwq
- * @LastEditTime: 2021-02-22 15:45:53
+ * @LastEditTime: 2021-02-22 19:34:39
 -->
 <template>
   <IhPage label-width="100px">
@@ -145,7 +145,7 @@
             <el-table
               class="ih-table"
               :empty-text="emptyText"
-              :data="showTable"
+              :data="resPageInfo.list"
               @selection-change="selectionChange"
             >
               <el-table-column
@@ -233,26 +233,46 @@
                 v-if="i.name !== 'PendingPayment'"
                 label="支付唯一编码"
                 prop="paymentCode"
-                width="150"
-              ></el-table-column>
+                width="200"
+              >
+                <template v-slot="{ row }">
+                  <span v-if="row.paymentCode">{{row.paymentCode}}</span>
+                  <span v-else>---</span>
+                </template>
+              </el-table-column>
               <el-table-column
                 v-if="['all', 'Paying'].includes(i.name)"
                 label="推送时间"
                 prop="pushDate"
                 width="120"
-              ></el-table-column>
+              >
+                <template v-slot="{ row }">
+                  <span v-if="row.pushDate">{{row.pushDate}}</span>
+                  <span v-else>---</span>
+                </template>
+              </el-table-column>
               <el-table-column
                 v-if="!['PendingPayment', 'Paying'].includes(i.name)"
                 label="付款时间"
                 prop="paymentDate"
                 width="120"
-              ></el-table-column>
+              >
+                <template v-slot="{ row }">
+                  <span v-if="row.paymentDate">{{row.paymentDate}}</span>
+                  <span v-else>---</span>
+                </template>
+              </el-table-column>
               <el-table-column
                 v-if="['all', 'TicketRefunded'].includes(i.name)"
                 label="失败原因"
                 prop="reason"
                 width="150"
-              ></el-table-column>
+              >
+                <template v-slot="{ row }">
+                  <span v-if="row.reason">{{row.reason}}</span>
+                  <span v-else>---</span>
+                </template>
+              </el-table-column>
               <el-table-column
                 v-if="!['PaymentSuccess', 'Paying'].includes(i.name)"
                 label="操作"
@@ -406,12 +426,10 @@ export default class ReturnConfirmList extends Vue {
       name: "PaymentSuccess",
     },
   ];
-  showTable: any = [];
   selection: any = [];
 
   async getListMixin() {
     this.resPageInfo = await post_payDetail_getList(this.queryPageParameters);
-    this.showTable = this.resPageInfo.list;
   }
 
   selectable(row: any) {
