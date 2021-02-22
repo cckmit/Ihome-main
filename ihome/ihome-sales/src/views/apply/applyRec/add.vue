@@ -4,7 +4,7 @@
  * @Author: ywl
  * @Date: 2021-01-07 16:30:03
  * @LastEditors: ywl
- * @LastEditTime: 2021-02-22 17:29:14
+ * @LastEditTime: 2021-02-22 19:01:28
 -->
 <template>
   <IhPage class="text-left">
@@ -778,6 +778,7 @@
                 @change="taxMoneyChange"
                 :step="0.01"
               ></el-input-number>
+              <div style="font-size: 14px; color: red;">(上下浮动不能超过10)</div>
             </td>
           </tr>
           <!-- <tr>
@@ -792,7 +793,7 @@
             <td class="width-150">开票税率</td>
             <td class="width-150">{{form.taxRate | percent}}</td>
             <td class="width-150">纳税人识别号</td>
-            <td class="width-150 padding-0">
+            <td class="width-150">
               <el-input
                 v-model="form.developTaxNo"
                 class="table-input"
@@ -816,10 +817,7 @@
           </tr>
           <tr>
             <td class="width-150">住所(地址)</td>
-            <td
-              colspan="2"
-              class="padding-0"
-            >
+            <td colspan="2">
               <el-input
                 v-model="form.developAddress"
                 class="table-input"
@@ -827,10 +825,7 @@
               />
             </td>
             <td class="width-150">电话</td>
-            <td
-              colspan="2"
-              class="padding-0"
-            >
+            <td colspan="2">
               <el-input
                 v-model="form.developPhone"
                 class="table-input"
@@ -840,10 +835,7 @@
           </tr>
           <tr>
             <td>经办部门意见</td>
-            <td
-              colspan="5"
-              class="padding-0"
-            >
+            <td colspan="5">
               <el-input
                 class="table-input"
                 type="textarea"
@@ -1845,14 +1837,14 @@ export default class ApplyRecAdd extends Vue {
     background-color: #fccccc;
   }
 }
-.table-input {
-  /deep/ .el-input__inner {
-    border: none;
-  }
-  /deep/ .el-textarea__inner {
-    border: none;
-  }
-}
+// .table-input {
+//   /deep/ .el-input__inner {
+//     border: none;
+//   }
+//   /deep/ .el-textarea__inner {
+//     border: none;
+//   }
+// }
 .apply-table {
   border-collapse: collapse;
   font-size: 14px;

@@ -4,7 +4,7 @@
  * @Author: ywl
  * @Date: 2021-01-14 19:09:51
  * @LastEditors: ywl
- * @LastEditTime: 2021-02-18 15:35:10
+ * @LastEditTime: 2021-02-22 19:04:34
 -->
 <template>
   <IhPage class="text-left">
@@ -604,6 +604,10 @@
                 :step="0.01"
                 :disabled="form.status !== 'BranchAccount'"
               ></el-input-number>
+              <div
+                style="font-size: 14px; color: red;"
+                v-if="form.status === 'BranchAccount'"
+              >(上下浮动不能超过10)</div>
             </td>
           </tr>
           <tr>
@@ -969,6 +973,11 @@ export default class ApplyAudit extends Vue {
     console.log(val, sub, number);
     let listArr: any = [];
     let isSub = true;
+    if (sub === 0) {
+      isSub = false;
+    } else {
+      isSub = true;
+    }
     for (let index = 0; index < this.dealList.length; index++) {
       const element = this.dealList[index];
       // 税额
