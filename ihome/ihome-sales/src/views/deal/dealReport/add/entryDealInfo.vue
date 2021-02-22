@@ -1041,7 +1041,7 @@
       this.editBaseInfo = JSON.parse(JSON.stringify(res || {}));
       console.log(res);
       await this.editBaseDealInfo(res.cycleId);
-      await this.editInitPageById(res.cycleId, res.house.roomId, res.house.propertyType);
+      await this.editInitPageById(res.cycleId, res.house.roomId, res.house.propertyType, res.parentId);
       await this.getInformation(id);
       if (res.cycleId && res.house.propertyType && res.agencyList && res.agencyList.length) {
         let params: any = {
@@ -1187,9 +1187,10 @@
     }
 
     // 编辑 --- 通过房号、物业类型、周期获取分销协议编号
-    async editInitPageById(cycleId: any, roomId: any, propertyType: any = '') {
+    async editInitPageById(cycleId: any, roomId: any, propertyType: any = '', parentId: any = '') {
       if (!cycleId || !roomId || !propertyType) return;
       let params: any = {
+        parentId: parentId, // 编辑要传主成交id
         cycleId: cycleId,
         roomId: roomId,
         isMainDeal: true, // 是否主成交
@@ -1562,6 +1563,7 @@
     async initPageById(cycleId: any, roomId: any, propertyType: any = '') {
       if (!cycleId || !roomId || !propertyType) return;
       let params: any = {
+        parentId: this.id ? this.editBaseInfo.parentId : null,
         cycleId: cycleId,
         roomId: roomId,
         isMainDeal: true, // 是否主成交
