@@ -4,7 +4,7 @@
  * @Author: wwq
  * @Date: 2020-12-26 11:11:23
  * @LastEditors: wwq
- * @LastEditTime: 2021-02-22 20:12:06
+ * @LastEditTime: 2021-02-22 20:23:59
 -->
 <template>
   <IhPage>
@@ -1328,7 +1328,11 @@ export default class PayoffEdit extends Vue {
         listArr.push(element);
       }
     }
-    this.info.payApplyDetailList = listArr;
+    this.info.payApplyDetailList = listArr.map((v: any) => ({
+      ...v,
+      tax: v.taxNew,
+      noTaxAmount: v.noTaxAmountNew,
+    }));
     this.showTable = this.info.payApplyDetailList.filter(
       (v: any) => v.cycleId === this.tabsValue
     );
