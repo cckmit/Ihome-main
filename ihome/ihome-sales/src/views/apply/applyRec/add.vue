@@ -4,7 +4,7 @@
  * @Author: ywl
  * @Date: 2021-01-07 16:30:03
  * @LastEditors: ywl
- * @LastEditTime: 2021-02-22 11:20:48
+ * @LastEditTime: 2021-02-22 16:25:31
 -->
 <template>
   <IhPage class="text-left">
@@ -473,7 +473,6 @@
           style="width: 100%"
           :data="waitList"
           show-summary
-          :summary-method="getSummaries"
         >
           <el-table-column label="成交报告编号">
             <template v-slot="{ row }">
@@ -487,7 +486,7 @@
           ></el-table-column>
           <el-table-column label="抵扣项类别">
             <template v-slot="{ row }">
-              {{ row.subType || $root.dictAllName(row.suppContType, 'SuppContType')}}
+              {{ row.subType ? $root.dictAllName(row.subType, 'SuppContType') : $root.dictAllName(row.suppContType, 'SuppContType')}}
             </template>
           </el-table-column>
           <el-table-column
@@ -536,6 +535,7 @@
           style="width: 100%"
           :data="form.otherSubList"
           show-summary
+          :summary-method="getSummaries"
         >
           <el-table-column label="扣除类型">
             <template v-slot="{ row }">
@@ -589,15 +589,6 @@
             prop="subMoneyNoTax"
           >
             <template v-slot="{ row }">
-              <!-- <el-input
-                v-model="row.subMoneyNoTax"
-                v-digits="2"
-              >
-                <i
-                  slot="prefix"
-                  style="line-height: 40px;color: #000;"
-                >-</i>
-              </el-input> -->
               {{otherSubMoneyNoTax(row)}}
             </template>
           </el-table-column>
@@ -606,15 +597,6 @@
             prop="subMoneyTax"
           >
             <template v-slot="{ row }">
-              <!-- <el-input
-                v-model="row.subMoneyTax"
-                v-digits="2"
-              >
-                <i
-                  slot="prefix"
-                  style="line-height: 40px; color: #000;"
-                >-</i>
-              </el-input> -->
               {{otherSubMoney(row)}}
             </template>
           </el-table-column>
@@ -1173,13 +1155,13 @@ export default class ApplyRecAdd extends Vue {
       row.subMoney,
       1 + Number(this.form.taxRate)
     );
-    row.subMoneyNoTax = this.$math.tofixed(subMoneyNoTax, 2);
+    row.subMoneyNoTax = this.$math.tofixed(subMoneyNoTax * -1, 2);
     return row.subMoneyNoTax;
   }
   // 计算税额 -- 其他扣除项
   private otherSubMoney(row: any) {
     let subMoneyTax = this.$math.sub(row.subMoney, row.subMoneyNoTax);
-    row.subMoneyTax = this.$math.tofixed(subMoneyTax, 2);
+    row.subMoneyTax = this.$math.tofixed(subMoneyTax * -1, 2);
     return row.subMoneyTax;
   }
   // 本次请款比例
@@ -1215,7 +1197,7 @@ export default class ApplyRecAdd extends Vue {
     this.form.termList.forEach((i: any) => {
       sum = this.$math.add(sum, parseFloat(i.subMoney));
     });
-    return this.$math.tofixed(sum, 2);
+    return this.$math.tofixed(sum * -1, 2);
   }
   // 本期扣罚金额
   private fineMoneySum() {
@@ -1223,7 +1205,7 @@ export default class ApplyRecAdd extends Vue {
     this.form.termList.forEach((i: any) => {
       sum = this.$math.add(sum, parseFloat(i.fineMoney));
     });
-    return this.$math.tofixed(sum, 2);
+    return this.$math.tofixed(sum * -1, 2);
   }
   // 本期实际请款金额（含税）
   private actMoneyTaxSum() {
@@ -1263,12 +1245,16 @@ export default class ApplyRecAdd extends Vue {
         sums[index] = values.reduce((prev: any, curr: any) => {
           const value = Number(curr);
           if (!isNaN(value)) {
-            return prev + curr;
+            return this.$math.add(prev, curr);
           } else {
             return prev;
           }
         }, 0);
-        sums[index] = `${sums[index]}`;
+        if (index === 2) {
+          sums[index] = `-${sums[index]}`;
+        } else {
+          sums[index] = `${sums[index]}`;
+        }
       } else {
         sums[index] = "";
       }
@@ -1462,7 +1448,11 @@ export default class ApplyRecAdd extends Vue {
               2
             );
           });
-        this.form.otherSubList
+        let otherSubList = this.form.otherSubList.map((i: any) => ({
+          ...i,
+          subMoney: i.subMoney * -1,
+        }));
+        otherSubList
           .filter((it: any) => {
             return (
               it.termId === i.termId &&
@@ -1475,7 +1465,7 @@ export default class ApplyRecAdd extends Vue {
               2
             );
           });
-        this.form.otherSubList
+        otherSubList
           .filter((item: any) => {
             return item.termId === i.termId && item.subType === "Fine";
           })
@@ -1490,17 +1480,17 @@ export default class ApplyRecAdd extends Vue {
         return {
           ...i,
           applyMoney,
-          fineMoney: fineMoney * -1,
+          fineMoney: fineMoney,
           subMoney: this.$math.add(subMoney1, subMoney2),
           actMoney: this.$math.add(
             applyMoney,
-            this.$math.addArr([fineMoney * -1, subMoney1, subMoney2])
+            this.$math.addArr([fineMoney, subMoney1, subMoney2])
           ),
           sumActMoney:
             i.hisSumActMoney +
             this.$math.add(
               applyMoney,
-              this.$math.addArr([fineMoney * -1, subMoney1, subMoney2])
+              this.$math.addArr([fineMoney, subMoney1, subMoney2])
             ),
           sumApplyMoney: this.$math.add(applyMoney, i.hisSumApplyMoney),
         };
@@ -1643,8 +1633,6 @@ export default class ApplyRecAdd extends Vue {
     let otherSubList = this.form.otherSubList.map((i: any) => ({
       ...i,
       subMoney: i.subMoney * -1,
-      subMoneyNoTax: i.subMoneyNoTax * -1,
-      subMoneyTax: i.subMoneyTax * -1,
     }));
     let termList = this.form.termList.map((i: any) => ({
       ...i,
@@ -1795,7 +1783,7 @@ export default class ApplyRecAdd extends Vue {
       console.log(otherSubList);
       this.form.otherSubList = otherSubList.map((i: any) => ({
         ...i,
-        // subMoney: i.subMoney * -1,
+        subMoney: i.subMoney * -1,
         // subMoneyNoTax: i.subMoneyNoTax * -1,
         // subMoneyTax: i.subMoneyTax * -1,
         termObj: {

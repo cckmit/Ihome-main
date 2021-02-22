@@ -4,8 +4,8 @@
  * @version: 
  * @Author: zyc
  * @Date: 2021-01-13 14:50:21
- * @LastEditors: wwq
- * @LastEditTime: 2021-02-19 14:31:39
+ * @LastEditors: ywl
+ * @LastEditTime: 2021-02-20 14:32:09
 -->
 <template>
   <IhPage label-width="110px">
@@ -106,6 +106,7 @@
           type="info"
           @click="reset()"
         >重置</el-button>
+        <el-button @click="handleExport()">导出</el-button>
       </el-row>
     </template>
     <template #table>
@@ -222,6 +223,8 @@
 <script lang="ts">
 import { Component, Vue } from "vue-property-decorator";
 import PaginationMixin from "../../../mixins/pagination";
+import axios from "axios";
+import { getToken } from "ihome-common/util/cookies";
 import {
   post_refundApply_getCheckList,
   get_refundApply_getBusinessProcess__id,
@@ -288,6 +291,38 @@ export default class RefundToExamineList extends Vue {
       payType: null,
       refundApplyNo: null,
       settlementType: null,
+    });
+  }
+
+  private handleExport() {
+    const token: any = getToken();
+    axios({
+      method: "POST",
+      url: `/sales-api/finance/refundApply/checkExportData`,
+      xsrfHeaderName: "Authorization",
+      responseType: "blob",
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: "bearer " + token,
+      },
+      data: { ...this.queryPageParameters },
+    }).then((res: any) => {
+      if (res.data.type === "application/json") {
+        let reader = new FileReader();
+        reader.readAsText(res.data, "utf-8");
+        reader.onload = () => {
+          let result: any = reader.result;
+          const res = JSON.parse(result);
+          this.$message.warning(res.msg);
+        };
+        return;
+      }
+      const href = window.URL.createObjectURL(res.data);
+      const $a = document.createElement("a");
+      $a.href = href;
+      $a.download = "审核退款申请列表.xlsx";
+      $a.click();
+      $a.remove();
     });
   }
 
