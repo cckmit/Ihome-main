@@ -3,29 +3,29 @@
  * @version: 
  * @Author: zyc
  * @Date: 2021-02-05 16:41:19
- * @LastEditors: wwq
- * @LastEditTime: 2021-02-16 11:27:15
+ * @LastEditors: zyc
+ * @LastEditTime: 2021-02-23 18:09:51
 -->
  
 <template>
   <ih-page labelWidth="120px">
     <template v-slot:form>
-      <el-form
-        ref="form"
-        label-width="120px"
-      >
+      <el-form ref="form" label-width="120px">
         <el-row>
           <el-col :span="8">
             <el-form-item label="退款申请单编号">
               <el-input
                 v-model="queryPageParameters.refundApplyNo"
-                placeholder="收款姓名"
+                placeholder="退款申请单编号"
               ></el-input>
             </el-form-item>
           </el-col>
           <el-col :span="8">
             <el-form-item label="事业部">
-              <IhSelectPageDivision v-model="queryPageParameters.orgId"></IhSelectPageDivision>
+              <IhSelectPageDivision
+                clearable
+                v-model="queryPageParameters.orgId"
+              ></IhSelectPageDivision>
             </el-form-item>
           </el-col>
           <el-col :span="8">
@@ -87,26 +87,26 @@
 
     <template v-slot:btn>
       <el-row>
-        <el-button
-          type="primary"
-          @click="searchMixin()"
-        >查询</el-button>
+        <el-button type="primary" @click="searchMixin()">查询</el-button>
         <el-button
           type="success"
           @click="download()"
           v-has="'B.SALES.FINANCE.TOBEREFUNDE.EXPORT'"
-        >导出</el-button>
+          >导出</el-button
+        >
 
         <el-button
           type="info"
           @click="add()"
           v-has="'B.SALES.FINANCE.TOBEREFUNDE.ADD'"
-        >发起申请</el-button>
+          >发起申请</el-button
+        >
         <el-button
-          type="info"
+          type="danger"
           @click="batchRemove()"
           v-has="'B.SALES.FINANCE.TOBEREFUNDE.BATCHREMOVE'"
-        >批量删除</el-button>
+          >批量删除</el-button
+        >
         <el-button @click="reset()">重置</el-button>
       </el-row>
     </template>
@@ -135,28 +135,17 @@
           width="180"
         ></el-table-column>
 
-        <el-table-column
-          prop="projectName"
-          label="事业部"
-        >
+        <el-table-column prop="projectName" label="事业部" width="250">
           <template slot-scope="scope">
             {{ scope.row.departmentName }}
           </template>
         </el-table-column>
-        <el-table-column
-          prop="amount"
-          label="申请退款金额"
-          width="120"
-        >
+        <el-table-column prop="amount" label="申请退款金额" width="120">
           <template slot-scope="scope">
             {{ scope.row.amount }}
           </template>
         </el-table-column>
-        <el-table-column
-          prop=""
-          label="状态"
-          width="100"
-        >
+        <el-table-column prop="" label="状态" width="150">
           <template slot-scope="scope">
             {{ $root.dictAllName(scope.row.status, "FinRefundApplyStatus") }}
 
@@ -164,54 +153,40 @@
               v-if="scope.row.overruleMark == 1"
               size="small"
               type="danger"
-            >驳回</el-tag>
+              >驳回</el-tag
+            >
           </template>
         </el-table-column>
 
         <el-table-column
           prop="accountName"
-          width="100"
+          width="200"
           label="付款方"
         ></el-table-column>
-        <el-table-column
-          prop="inputUserName"
-          label="制单人"
-          width="100"
-        >
+        <el-table-column prop="inputUserName" label="制单人" width="100">
           <template slot-scope="scope">{{ scope.row.inputUserName }}</template>
         </el-table-column>
-        <el-table-column
-          prop="createDate"
-          label="制单日期"
-          width="100"
-        >
+        <el-table-column prop="createDate" label="制单日期" width="190">
         </el-table-column>
-        <el-table-column
-          width="200"
-          label="流程进度"
-          fixed="right"
-        >
+        <el-table-column width="200" label="流程进度" fixed="right">
           <template slot-scope="scope">
             <el-link
               style="color: #409eff"
               class="margin-right-10"
               type="primary"
               @click.native.prevent="showPlanPicture(scope)"
-            >进度流程图</el-link>
+              >进度流程图</el-link
+            >
           </template>
         </el-table-column>
-        <el-table-column
-          prop="contType"
-          label="操作"
-          width="120"
-          fixed="right"
-        >
+        <el-table-column prop="contType" label="操作" width="120" fixed="right">
           <template slot-scope="scope">
             <el-link
               class="margin-right-10"
               type="primary"
               @click.native.prevent="info(scope)"
-            >详情</el-link>
+              >详情</el-link
+            >
             <el-link
               class="margin-right-10"
               type="info"
@@ -222,14 +197,16 @@
                   scope.row.status
                 ),
               }"
-            >修改</el-link>
+              >修改</el-link
+            >
             <el-link
               :class="{ 'ih-data-disabled': scope.row.status != 'PTWYSH' }"
               type="warning"
               class="margin-right-10"
               @click.native.prevent="withdraw(scope)"
               v-has="'B.SALES.FINANCE.TOBEREFUNDE.WITHDRAW'"
-            >撤回</el-link>
+              >撤回</el-link
+            >
             <el-link
               :class="{
                 'ih-data-disabled': !['Draft', 'AppealDismissed'].includes(
@@ -240,7 +217,8 @@
               type="danger"
               v-has="'B.SALES.FINANCE.TOBEREFUNDE.DELETE'"
               @click.native.prevent="remove(scope)"
-            >删除</el-link>
+              >删除</el-link
+            >
           </template>
         </el-table-column>
       </el-table>
@@ -311,7 +289,6 @@ export default class RefundApplyList extends Vue {
   };
   toVoidList: any = [];
   createUserList: any = []; //创建人列表
-  divisionList: any = []; //事业部列表
 
   resPageInfo: any = {
     total: null,
@@ -332,21 +309,6 @@ export default class RefundApplyList extends Vue {
   }
   handleSelectionChange(val: any) {
     this.removeList = val;
-  }
-  gotoNew(item: any, type: string) {
-    if (type == "projectName") {
-      window.open(
-        `/web-sales/projects/childInfo?id=${item.proId}&proName=${item.projectName}`
-      );
-    } else if (type == "noticeAmount") {
-      console.error("未实现");
-    } else if (type == "refundApplyNO") {
-      console.error("未实现");
-    } else if (type == "dealNo") {
-      window.open(`/web-sales/dealReport/info?id=${item.dealNo}&type=ID`);
-    } else if (type == "invoiceNo") {
-      window.open(`/web-sales/invoice/info?id=${item.invoiceNo}`);
-    }
   }
 
   expiresTimeChange(dateArray: any) {
@@ -370,6 +332,9 @@ export default class RefundApplyList extends Vue {
       refundApplyNo: null,
       status: null,
     });
+    this.queryPageParameters.beginTime = null;
+    this.queryPageParameters.endTime = null;
+    this.queryPageParameters.expiresTime = null;
   }
 
   async download() {
@@ -385,9 +350,23 @@ export default class RefundApplyList extends Vue {
       },
       data: this.queryPageParameters,
     }).then((res: any) => {
-      const arr = new Blob([res.data], { type: "application/vnd.ms-excel" });
-      const href = window.URL.createObjectURL(arr);
-      window.open(href);
+      if (res.data.type === "application/json") {
+        let reader = new FileReader();
+        reader.readAsText(res.data, "utf-8");
+        reader.onload = () => {
+          let result: any = reader.result;
+          const res = JSON.parse(result);
+          this.$message.warning(res.msg);
+        };
+        return;
+      }
+
+      const href = window.URL.createObjectURL(res.data);
+      const $a = document.createElement("a");
+      $a.href = href;
+      $a.download = "退款申请列表.xlsx";
+      $a.click();
+      $a.remove();
     });
   }
   info(scope: any) {

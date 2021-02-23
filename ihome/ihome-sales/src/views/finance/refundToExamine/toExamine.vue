@@ -4,7 +4,7 @@
  * @Author: zyc
  * @Date: 2021-02-08 14:34:29
  * @LastEditors: wwq
- * @LastEditTime: 2021-02-23 18:23:32
+ * @LastEditTime: 2021-02-23 18:25:54
 -->
 <template>
   <IhPage>
@@ -781,6 +781,7 @@ export default class RefundToExamineToExamine extends Vue {
       const res = await get_refundApply_get__id({ id: this.returnId });
       this.info = {
         ...res,
+        refundInfo: res.refundInfo || {},
       };
       // 获取付款方账号
       const item = await post_bankAccount_getByOrgId__orgId({

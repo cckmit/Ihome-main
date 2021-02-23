@@ -4,7 +4,7 @@
  * @Author: ywl
  * @Date: 2021-01-07 16:30:03
  * @LastEditors: ywl
- * @LastEditTime: 2021-02-23 10:51:31
+ * @LastEditTime: 2021-02-23 11:50:10
 -->
 <template>
   <IhPage class="text-left">
@@ -426,10 +426,10 @@
             fixed="right"
             width="80"
           >
-            <template v-slot="{ $index }">
+            <template v-slot="{ row, $index }">
               <el-link
                 type="danger"
-                @click="dealRemove($index)"
+                @click="dealRemove(row, $index)"
               >移除</el-link>
             </template>
           </el-table-column>
@@ -1051,7 +1051,6 @@ export default class ApplyRecAdd extends Vue {
     let obj: any = {},
       newArr: any = [];
     newArr = this.form.dealList.reduce((item: any, next: any) => {
-      console.log(item, next);
       obj[next.termId] ? " " : (obj[next.termId] = true && item.push(next));
       return item;
     }, []);
@@ -1289,8 +1288,18 @@ export default class ApplyRecAdd extends Vue {
   private removeOther(index: number) {
     this.form.otherSubList.splice(index, 1);
   }
-  private dealRemove(index: number) {
+  private dealRemove(row: any, index: number) {
     this.form.dealList.splice(index, 1);
+    let list = this.form.dealList.map((i: any) => i.termId);
+    if (!list.includes(row.termId)) {
+      let otherSubList: any = [];
+      this.form.otherSubList.forEach((i: any) => {
+        if (i.termId !== row.termId) {
+          otherSubList.push(i);
+        }
+      });
+      this.form.otherSubList = otherSubList;
+    }
   }
   // 获取本期抵扣金额明细
   private async getWaitList(developId: any) {

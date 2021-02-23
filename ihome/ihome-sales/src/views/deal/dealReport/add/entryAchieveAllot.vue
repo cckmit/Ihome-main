@@ -1316,7 +1316,7 @@
         {required: true, message: "分销协议必选", trigger: "change"},
       ],
       subscribePrice: [
-        {required: true, message: "认购价格不能为空", trigger: ["change", "blur"]},
+        {required: true, message: "认购价格不能为空", trigger: "change"},
       ],
       subscribeDate: [
         {required: true, message: "认购日期不能为空", trigger: "change"},

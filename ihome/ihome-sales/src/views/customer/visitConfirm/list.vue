@@ -151,7 +151,7 @@
                 fixed
               ></el-table-column>
               <el-table-column
-                v-if="i.name === 'UnderReview'"
+                v-if="i.name === 'ValidReport'"
                 label="项目类型"
                 width="110"
               >
@@ -241,14 +241,14 @@
                 <template v-slot="{ row }">
                   <el-link
                     type="primary"
-                    v-if="row.exMarket === 0 && i.name === 'UnderReview'"
+                    v-if="row.exMarket === 0 && i.name === 'ValidReport'"
                     v-has="'B.SALES.CUSTOMER.VISITCONFIRM.SYNC'"
                     @click="synchronization(row)"
                     >同步状态</el-link
                   >
                   <el-link
                     type="primary"
-                    v-if="row.exMarket === 1 && i.name === 'UnderReview'"
+                    v-if="row.exMarket === 1 && i.name === 'ValidReport'"
                     @click="validVisitOperation(row)"
                     v-has="'B.SALES.CUSTOMER.VISITCONFIRM.EFFECTIVE'"
                     class="margin-right-10"
@@ -256,7 +256,7 @@
                   >
                   <el-link
                     type="primary"
-                    v-if="row.exMarket === 1 && i.name === 'UnderReview'"
+                    v-if="row.exMarket === 1 && i.name === 'ValidReport'"
                     @click="invalidVisitOperation(row)"
                     v-has="'B.SALES.CUSTOMER.VISITCONFIRM.INVALID'"
                     >无效</el-link
@@ -356,9 +356,9 @@ export default class ReturnConfirmList extends Vue {
     channelId: null,
     reportType: null,
     exMarket: null,
-    reportStatus: "UnderReview",
+    reportStatus: "ValidReport",
   };
-  tabsValue: any = "UnderReview";
+  tabsValue: any = "ValidReport";
   tabsLabel: any = "未确认";
   dialogVisibleValid = false;
   dialogVisibleInvalid = false;
@@ -408,7 +408,7 @@ export default class ReturnConfirmList extends Vue {
   private tabsList: any = [
     {
       label: "未确认",
-      name: "UnderReview",
+      name: "ValidReport",
     },
     {
       label: "到访有效",
