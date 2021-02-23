@@ -4,7 +4,7 @@
  * @Author: wwq
  * @Date: 2020-12-26 11:11:23
  * @LastEditors: wwq
- * @LastEditTime: 2021-02-22 15:33:48
+ * @LastEditTime: 2021-02-23 09:41:49
 -->
 <template>
   <IhPage>
@@ -430,6 +430,7 @@
                   v-digits="2"
                   clearable
                   style="width: 70%"
+                  @input="payApplyDetailListNumberChange(row)"
                 />
               </div>
               <div class="margin-top-5">
@@ -457,6 +458,7 @@
                 v-digits="2"
                 clearable
                 style="width: 70%"
+                @input="payApplyDetailListNumberChange(row)"
               />
             </template>
           </el-table-column>
@@ -469,6 +471,7 @@
                 v-model="row.deductType"
                 clearable
                 style="width: 70%"
+                @input="payApplyDetailListNumberChange(row)"
               />
             </template>
           </el-table-column>
@@ -1397,6 +1400,13 @@ export default class PayoffEdit extends Vue {
     return row.tax;
   }
 
+  // 待付款列表数据变化
+  payApplyDetailListNumberChange(row: any) {
+    this.info.payApplyDetailList = this.info.payApplyDetailList.map((v: any) =>
+      v.dealCode === row.dealCode ? row : v
+    );
+  }
+
   searchOpen = true;
   private get payoffId() {
     return this.$route.query.id;
@@ -1516,6 +1526,12 @@ export default class PayoffEdit extends Vue {
     this.submitFile = { ...obj };
   }
 
+  otherCycleChange(val: any) {
+    const item = this.tabsList.find((v: any) => v.value === val.cycleId);
+    val.cycleName = item.label;
+    val.cycleId = item.value;
+  }
+
   async searchPerson() {
     const res: any = await get_processRecord_oa_review_person__applyId({
       applyId: this.payoffId,
@@ -1622,6 +1638,7 @@ export default class PayoffEdit extends Vue {
 
   async delContacts(data: any, index: number) {
     if (this.showTable.length === 1) {
+      let otherArr = this.info.otherDeductionDetailResponseList;
       this.showTable = [];
       this.tabsValue = "";
       this.tabsList = this.tabsList.filter(
@@ -1630,6 +1647,13 @@ export default class PayoffEdit extends Vue {
       this.info.payApplyDetailList = this.info.payApplyDetailList.filter(
         (v: any) => v.cycleId !== data.cycleId
       );
+      this.info.otherDeductionDetailResponseList = otherArr.filter((v: any) => {
+        if (v.cycleId !== data.cycleId) {
+          return {
+            ...v,
+          };
+        }
+      });
     } else {
       this.showTable.splice(index, 1);
       this.info.payApplyDetailList = this.info.payApplyDetailList.filter(
