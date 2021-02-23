@@ -4,7 +4,7 @@
  * @Author: wwq
  * @Date: 2020-09-09 16:17:16
  * @LastEditors: wwq
- * @LastEditTime: 2021-02-17 15:36:09
+ * @LastEditTime: 2021-02-23 11:11:02
 -->
 <template>
   <div class="upload">
@@ -288,7 +288,8 @@ export default class IhUpload extends Vue {
   onChangeHandler(file: any, fileList: any) {
     this.changeFileList = fileList;
     if (this.isCrop && file.status === "ready") {
-      const type = file?.name?.match(/(?<=\.).+/)?.toString();
+      const $index = file?.name?.lastIndexOf(".");
+      const type = file?.name?.substring($index + 1);
       switch (type) {
         case "gif":
         case "jpg":
@@ -311,7 +312,8 @@ export default class IhUpload extends Vue {
   beforeUpload(file: any) {
     return new Promise((resolve: any, reject: any) => {
       const size = file.size / 1024 / 1024 < this.fileSize;
-      const type = file?.name?.match(/(?<=\.).+/)?.toString();
+      const $index = file?.name?.lastIndexOf(".");
+      const type = file?.name?.substring($index + 1);
       if (!size) {
         this.$message({
           message: `文件大小不能超过 ${this.fileSize}MB`,
@@ -371,7 +373,8 @@ export default class IhUpload extends Vue {
   }
   // 显示列表的图片URL
   uploadType(file: any) {
-    const type = file?.name?.match(/(?<=\.).+/)?.toString();
+    let $index = file?.name?.lastIndexOf(".");
+    const type = file?.name?.substring($index + 1);
     switch (type) {
       case "gif":
       case "jpg":
@@ -436,7 +439,8 @@ export default class IhUpload extends Vue {
   }
   // 上传不同类型图片替换方法
   replaceUpload(file: any, fileList: any, index: number, fileId: number) {
-    const type = file?.name?.match(/(?<=\.).+/)?.toString();
+    const $index = file?.name?.lastIndexOf(".");
+    const type = file?.name?.substring($index + 1);
     switch (type) {
       case "gif":
       case "jpg":
