@@ -4,7 +4,7 @@
  * @Author: zyc
  * @Date: 2021-02-05 15:23:39
  * @LastEditors: zyc
- * @LastEditTime: 2021-02-23 15:50:14
+ * @LastEditTime: 2021-02-23 17:35:35
 -->
 
 
@@ -271,7 +271,6 @@ export default class ToBeRefundedList extends Vue {
   };
   toVoidList: any = [];
   createUserList: any = []; //创建人列表
-  divisionList: any = []; //事业部列表
 
   resPageInfo: any = {
     total: null,
@@ -296,9 +295,10 @@ export default class ToBeRefundedList extends Vue {
         `/web-sales/projects/childInfo?id=${item.proId}&proName=${item.projectName}`
       );
     } else if (type == "noticeAmount") {
-      window.open("/web-sales/payment/list"); //缺失参数
+      window.sessionStorage.setItem("businessId", item.businessId);
+      window.open("/web-sales/payment/list?businessId=" + item.businessId); //缺失参数
     } else if (type == "refundApplyNO") {
-      console.error("未实现");
+      window.open(`/web-sales/refundApply/info?id=${item.id}`);
     } else if (type == "dealNo") {
       window.open(`/web-sales/dealReport/info?id=${item.dealId}&type=ID`);
     } else if (type == "invoiceNo") {
@@ -330,6 +330,7 @@ export default class ToBeRefundedList extends Vue {
 
   async download() {
     const token: any = getToken();
+
     axios({
       method: "POST",
       url: `/sales-api/finance/refundItem/exportData`,
@@ -341,9 +342,23 @@ export default class ToBeRefundedList extends Vue {
       },
       data: this.queryPageParameters,
     }).then((res: any) => {
-      const arr = new Blob([res.data], { type: "application/vnd.ms-excel" });
-      const href = window.URL.createObjectURL(arr);
-      window.open(href);
+      if (res.data.type === "application/json") {
+        let reader = new FileReader();
+        reader.readAsText(res.data, "utf-8");
+        reader.onload = () => {
+          let result: any = reader.result;
+          const res = JSON.parse(result);
+          this.$message.warning(res.msg);
+        };
+        return;
+      }
+
+      const href = window.URL.createObjectURL(res.data);
+      const $a = document.createElement("a");
+      $a.href = href;
+      $a.download = "待退款项列表.xlsx";
+      $a.click();
+      $a.remove();
     });
   }
 }

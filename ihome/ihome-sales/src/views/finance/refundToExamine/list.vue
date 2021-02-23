@@ -4,8 +4,8 @@
  * @version: 
  * @Author: zyc
  * @Date: 2021-01-13 14:50:21
- * @LastEditors: ywl
- * @LastEditTime: 2021-02-20 14:32:09
+ * @LastEditors: zyc
+ * @LastEditTime: 2021-02-23 16:53:11
 -->
 <template>
   <IhPage label-width="110px">
@@ -98,14 +98,8 @@
     </template>
     <template #btn>
       <el-row>
-        <el-button
-          type="primary"
-          @click="searchMixin()"
-        >查询</el-button>
-        <el-button
-          type="info"
-          @click="reset()"
-        >重置</el-button>
+        <el-button type="primary" @click="searchMixin()">查询</el-button>
+        <el-button type="info" @click="reset()">重置</el-button>
         <el-button @click="handleExport()">导出</el-button>
       </el-row>
     </template>
@@ -129,43 +123,25 @@
           min-width="120"
           fixed
         ></el-table-column>
-        <el-table-column
-          label="事业部"
-          prop="departmentName"
-        ></el-table-column>
+        <el-table-column label="事业部" prop="departmentName"></el-table-column>
         <el-table-column
           label="申请退款金额"
           prop="amount"
           min-width="120"
         ></el-table-column>
-        <el-table-column
-          label="付款方"
-          prop="accountName"
-        ></el-table-column>
-        <el-table-column
-          label="结算方式"
-          prop=""
-        >
+        <el-table-column label="付款方" prop="accountName"></el-table-column>
+        <el-table-column label="结算方式" prop="">
           <template slot-scope="scope">{{
             $root.dictAllName(scope.row.settlementType, "RefundSettlementType")
           }}</template>
         </el-table-column>
-        <el-table-column
-          label="付款方式"
-          prop="payType"
-        >
+        <el-table-column label="付款方式" prop="payType">
           <template slot-scope="scope">{{
             $root.dictAllName(scope.row.payType, "RefundPayType")
           }}</template>
         </el-table-column>
-        <el-table-column
-          label="制单人"
-          prop="inputUserName"
-        ></el-table-column>
-        <el-table-column
-          label="制单日期"
-          prop="createDate"
-        ></el-table-column>
+        <el-table-column label="制单人" prop="inputUserName"></el-table-column>
+        <el-table-column label="制单日期" prop="createDate"></el-table-column>
         <el-table-column
           fixed="right"
           label="流程进度"
@@ -178,22 +154,21 @@
               class="margin-right-10"
               type="primary"
               @click.native.prevent="showPlanPicture(scope)"
-            >进度流程图</el-link>
+              >进度流程图</el-link
+            >
           </template>
         </el-table-column>
 
-        <el-table-column
-          label="操作"
-          width="120"
-          fixed="right"
-        >
+        <el-table-column label="操作" width="120" fixed="right">
           <template v-slot="{ row }">
             <el-link
               type="primary"
               @click="toExamine(row)"
-              :class="{'ih-data-disabled': !auditChange(row)}"
+              :class="{ 'ih-data-disabled': !auditChange(row) }"
               v-has="'B.SALES.FINANCE.REFUNDAPPLY.TOEXAMINE'"
-            >审核</el-link>
+              v-if="toexamineBtn(row)"
+              >审核</el-link
+            >
           </template>
         </el-table-column>
       </el-table>
@@ -293,6 +268,25 @@ export default class RefundToExamineList extends Vue {
       settlementType: null,
     });
   }
+  toexamineBtn(row: any) {
+    //(Draft-草稿、PTWYSH-待平台文员审核、FGSYGSH-待分公司业管审核、FGSCWSH-待分公司财务审核、OaAppeal-OA流程审批中、AppealPass-终审通过、PayConfirm-支付结果确认中、PaySuccessful-支付成功
+    let result = false;
+    switch (row.status) {
+      case "PTWYSH":
+        result = this.$roleTool.RPlatformClerk();
+        break;
+      case "FGSYGSH":
+        result = this.$roleTool.RBusinessManagement();
+        break;
+      case "FGSCWSH":
+        result = this.$roleTool.RFinancialOfficer();
+        break;
+      default:
+        break;
+    }
+
+    return result;
+  }
 
   private handleExport() {
     const token: any = getToken();
@@ -305,6 +299,7 @@ export default class RefundToExamineList extends Vue {
         "Content-Type": "application/json",
         Authorization: "bearer " + token,
       },
+      
       data: { ...this.queryPageParameters },
     }).then((res: any) => {
       if (res.data.type === "application/json") {
