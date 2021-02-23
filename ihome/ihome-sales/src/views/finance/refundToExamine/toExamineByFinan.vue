@@ -4,7 +4,7 @@
  * @Author: ywl
  * @Date: 2021-02-17 11:27:05
  * @LastEditors: ywl
- * @LastEditTime: 2021-02-23 16:18:32
+ * @LastEditTime: 2021-02-23 19:40:50
 -->
 <template>
   <IhPage>
@@ -142,6 +142,7 @@
                 style="width: 100%"
                 v-model="info.settlementType"
                 placeholder="请选择结算方式"
+                @change="settlementMethodChange"
               >
                 <el-option
                   v-for="item in $root.dictAllList('RefundSettlementType')"
@@ -160,6 +161,7 @@
               <el-select
                 style="width: 100%"
                 v-model="info.payType"
+                :disabled="paymentMethodDisabled"
                 placeholder="请选择付款方式"
               >
                 <el-option
@@ -714,6 +716,7 @@ export default class RefundToExamineToExamine extends Vue {
     refundAttachments: [], //退款申请附件
     refundInfo: {},
   };
+  paymentMethodDisabled = false;
   remark: any = "";
   submitFile: any = {};
   fileListType: any = [];
@@ -760,6 +763,15 @@ export default class RefundToExamineToExamine extends Vue {
     return this.$route.query.id;
   }
 
+  settlementMethodChange(val: any) {
+    if (val === "OnlinePay") {
+      this.paymentMethodDisabled = true;
+      this.info.payType = "OtherPay";
+    } else {
+      this.paymentMethodDisabled = false;
+      this.info.payType = "CashPay";
+    }
+  }
   async submit(buttonType: any) {
     if (["TemporaryStorage", "Reject"].includes(buttonType) && !this.remark) {
       this.$message.warning("审核意见不能为空");
