@@ -4,7 +4,7 @@
  * @Author: zyc
  * @Date: 2021-02-05 16:41:19
  * @LastEditors: zyc
- * @LastEditTime: 2021-02-23 18:09:51
+ * @LastEditTime: 2021-02-23 18:26:43
 -->
  
 <template>
@@ -168,7 +168,7 @@
         </el-table-column>
         <el-table-column prop="createDate" label="制单日期" width="190">
         </el-table-column>
-        <el-table-column width="200" label="流程进度" fixed="right">
+        <el-table-column width="100" label="流程进度" fixed="right">
           <template slot-scope="scope">
             <el-link
               style="color: #409eff"
