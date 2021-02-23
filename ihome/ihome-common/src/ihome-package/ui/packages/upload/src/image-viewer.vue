@@ -216,7 +216,8 @@ export default {
   },
   methods: {
     imageType(file, url, index) {
-      const type = file?.name?.match(/(?<=\.).+/)?.toString();
+      let $index = file?.name?.lastIndexOf(".");
+      const type = file?.name?.substring($index + 1);
       switch (type) {
         case "gif":
         case "jpg":
@@ -242,7 +243,8 @@ export default {
     },
     // 点击预览图片事件
     clickHandler(file) {
-      const type = file.name.match(/(?<=\.).+/).toString();
+      let $index = file?.name?.lastIndexOf(".");
+      const type = file?.name?.substring($index + 1);
       switch (type) {
         case "doc":
         case "docx":

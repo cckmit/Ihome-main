@@ -4,8 +4,8 @@
  * @version: 
  * @Author: zyc
  * @Date: 2021-01-13 14:50:21
- * @LastEditors: ywl
- * @LastEditTime: 2021-02-22 18:10:59
+ * @LastEditors: wwq
+ * @LastEditTime: 2021-02-23 10:49:52
 -->
 <template>
   <IhPage label-width="110px">
@@ -274,7 +274,7 @@
                       'RefundedTicket',
                       'Paying',
                       'Paid',
-                    ].includes(row.status),
+                    ].includes(row.status) && row.settlementType === 'OnlinePay',
                   }"
                 >设置已退款</el-link>
                 <el-link
