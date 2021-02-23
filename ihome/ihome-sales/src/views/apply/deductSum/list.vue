@@ -4,7 +4,7 @@
  * @Author: ywl
  * @Date: 2021-01-13 10:33:10
  * @LastEditors: ywl
- * @LastEditTime: 2021-02-22 14:25:03
+ * @LastEditTime: 2021-02-23 17:03:12
 -->
 <template>
   <IhPage label-width="100px">
@@ -145,16 +145,16 @@ export default class DeductSumList extends Vue {
         return;
       }
       if (n === 2) {
-        sums[n] = this.totalSum.sumSubMoney || 0;
+        sums[n] = this.totalSum?.sumSubMoney || 0;
       }
       if (n === 3) {
-        sums[n] = this.totalSum.completeSumSubMoney || 0;
+        sums[n] = this.totalSum?.completeSumSubMoney || 0;
       }
       if (n === 4) {
-        sums[n] = this.totalSum.waitSumSubMoney || 0;
+        sums[n] = this.totalSum?.waitSumSubMoney || 0;
       }
       if (n === 5) {
-        sums[n] = this.totalSum.ongoingSumSubMoney || 0;
+        sums[n] = this.totalSum?.ongoingSumSubMoney || 0;
       }
     });
     return sums;
@@ -171,9 +171,8 @@ export default class DeductSumList extends Vue {
     this.resPageInfo = await post_devDeductDetail_getListSumByDev(
       this.queryPageParameters
     );
-    this.totalSum = await post_devDeductDetail_getTotal(
-      this.queryPageParameters
-    );
+    let res = await post_devDeductDetail_getTotal(this.queryPageParameters);
+    this.totalSum = res || {};
   }
 
   created() {
