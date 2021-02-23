@@ -448,7 +448,7 @@
     * params: way: string --- 计算方式---auto:自动；Manual:手动
     * */
     validReceiveData(data: any = [], way: any = "Auto") {
-      if (data.length === 0) return false;
+      if (data && data.length === 0) return true;
       console.log('way:', way);
       let flag: any = true;
       if (way === 'Auto') {
