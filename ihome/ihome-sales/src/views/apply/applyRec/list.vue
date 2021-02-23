@@ -4,7 +4,7 @@
  * @Author: ywl
  * @Date: 2021-01-07 10:29:38
  * @LastEditors: ywl
- * @LastEditTime: 2021-02-22 14:51:39
+ * @LastEditTime: 2021-02-23 11:00:29
 -->
 <template>
   <IhPage label-width="100px">
@@ -215,7 +215,11 @@
           label="审核时间"
           prop="auditTime"
           width="155"
-        ></el-table-column>
+        >
+          <template v-slot="{ row }">
+            {{row.auditTime || '-'}}
+          </template>
+        </el-table-column>
         <el-table-column
           label="流程进度"
           width="120"

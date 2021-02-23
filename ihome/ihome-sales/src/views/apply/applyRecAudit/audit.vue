@@ -4,7 +4,7 @@
  * @Author: ywl
  * @Date: 2021-01-14 19:09:51
  * @LastEditors: ywl
- * @LastEditTime: 2021-02-22 19:04:34
+ * @LastEditTime: 2021-02-23 09:52:53
 -->
 <template>
   <IhPage class="text-left">
@@ -370,7 +370,7 @@
           ></el-table-column>
           <el-table-column label="抵扣项类别">
             <template v-slot="{ row }">
-              {{ row.subType || $root.dictAllName(row.suppContType, 'SuppContType')}}
+              {{ row.subType ? $root.dictAllName(row.subType, 'SuppContType') : $root.dictAllName(row.suppContType, 'SuppContType') }}
             </template>
           </el-table-column>
           <el-table-column
@@ -381,9 +381,15 @@
               {{row.subMoney}}
             </template>
           </el-table-column>
-          <el-table-column label="不含税金额">
+          <el-table-column
+            label="不含税金额"
+            prop="subMoneyNoTax"
+          >
           </el-table-column>
-          <el-table-column label="税额">
+          <el-table-column
+            label="税额"
+            prop="subMoneyTax"
+          >
           </el-table-column>
         </el-table>
       </div>
@@ -597,7 +603,7 @@
               <el-input-number
                 controls-position="right"
                 v-model="taxMoney"
-                :min="globalTaxMoney-10 < 0 ? 0 : globalTaxMoney-10"
+                :min="globalTaxMoney-10"
                 :max="globalTaxMoney+10"
                 :precision="2"
                 @change="taxMoneyChange"

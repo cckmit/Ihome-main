@@ -4,7 +4,7 @@
  * @Author: ywl
  * @Date: 2021-01-07 16:30:03
  * @LastEditors: ywl
- * @LastEditTime: 2021-02-22 19:01:28
+ * @LastEditTime: 2021-02-23 10:51:31
 -->
 <template>
   <IhPage class="text-left">
@@ -906,21 +906,21 @@
         <template v-if="form.status === 'InvoiceApply'">
           <el-button
             type="success"
-            @click="invoiceApply()"
+            @click.stop="invoiceApply()"
           >发起开票申请</el-button>
           <el-button
             type="primary"
-            @click="submit('SaveAndInvoiceApply')"
+            @click.stop="submit('SaveAndInvoiceApply')"
           >保存并发起开票申请</el-button>
         </template>
         <template v-else>
           <el-button
             type="primary"
-            @click="submit('')"
+            @click.stop="submit('')"
           >暂存</el-button>
           <el-button
             type="success"
-            @click="submit('Submit')"
+            @click.stop="submit('Submit')"
           >提交</el-button>
         </template>
         <el-button @click="$router.go(-1)">返回</el-button>
@@ -1519,12 +1519,12 @@ export default class ApplyRecAdd extends Vue {
   }
   private async getDevBankInfo(bankId: any) {
     try {
-      const res = await get_company_getCompanyBankInfo__bankId({ bankId });
+      const res: any = await get_company_getCompanyBankInfo__bankId({ bankId });
       console.log(res);
       this.form.developAddress = res.address;
       this.form.developPhone = res.phone;
       this.form.developTaxNo = res.creditCode;
-      this.form.developOpenBank = res.bankName;
+      this.form.developOpenBank = res.bank;
     } catch (error) {
       console.log(error);
     }
@@ -1697,7 +1697,13 @@ export default class ApplyRecAdd extends Vue {
     }
 
     console.log(this.form);
-
+    let loading = this.$loading({
+      lock: true,
+      text: "请耐心等待...",
+      spinner: "el-icon-loading",
+      background: "rgba(0, 0, 0, 0.6)",
+      customClass: "ih-loading-spinner",
+    });
     try {
       await post_applyRec_save({
         ...this.form,
@@ -1720,22 +1726,33 @@ export default class ApplyRecAdd extends Vue {
           break;
       }
       this.$message.success(`${msg}成功`);
+      loading.close();
       this.$goto({
         path: "/applyRec/list",
       });
     } catch (error) {
       console.log(error);
+      loading.close();
     }
   }
   private async invoiceApply() {
     let applyId = this.$route.query.id;
+    let loading = this.$loading({
+      lock: true,
+      text: "请耐心等待...",
+      spinner: "el-icon-loading",
+      background: "rgba(0, 0, 0, 0.6)",
+      customClass: "ih-loading-spinner",
+    });
     try {
       await post_applyRec_InvoiceApply__applyId({ applyId });
       this.$message.success("发起开票成功");
+      loading.close();
       this.$goto({
         path: "/applyRec/list",
       });
     } catch (error) {
+      loading.close();
       console.log(error);
     }
   }
@@ -1864,6 +1881,14 @@ export default class ApplyRecAdd extends Vue {
   }
   .padding-0 {
     padding: 0;
+  }
+}
+</style>
+<style lang="scss">
+.ih-loading-spinner {
+  .el-icon-loading,
+  .el-loading-text {
+    color: #fff;
   }
 }
 </style>

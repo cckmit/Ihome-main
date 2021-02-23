@@ -4,7 +4,7 @@
  * @Author: ywl
  * @Date: 2021-01-12 19:30:20
  * @LastEditors: ywl
- * @LastEditTime: 2021-02-22 16:54:04
+ * @LastEditTime: 2021-02-23 10:58:34
 -->
 <template>
   <IhPage label-width="100px">
@@ -215,7 +215,7 @@
         >
           <template v-slot="{ row }">
             <span v-if="row.correctTime">{{row.correctTime}}</span>
-            <span v-else>--</span>
+            <span v-else>-</span>
           </template>
         </el-table-column>
         <el-table-column
@@ -229,7 +229,7 @@
               @click="handleToApply(row)"
               v-if="row.correctNo"
             >{{row.correctNo}}</el-link>
-            <span v-else>--</span>
+            <span v-else>-</span>
           </template>
         </el-table-column>
       </el-table>
