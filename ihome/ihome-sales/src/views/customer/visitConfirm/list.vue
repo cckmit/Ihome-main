@@ -408,7 +408,7 @@ export default class ReturnConfirmList extends Vue {
   private tabsList: any = [
     {
       label: "未确认",
-      name: "UnderReview",
+      name: "ValidReport",
     },
     {
       label: "到访有效",
