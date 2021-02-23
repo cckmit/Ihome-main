@@ -4,7 +4,7 @@
  * @Author: wwq
  * @Date: 2020-11-27 17:17:06
  * @LastEditors: wwq
- * @LastEditTime: 2021-02-17 15:51:12
+ * @LastEditTime: 2021-02-23 16:19:58
 -->
 <template>
   <div class="project-approval-box">
@@ -525,6 +525,7 @@
             <el-input
               v-model="info.customerReportingRequire"
               placeholder="（内容会推送到OA）"
+              maxlength="500"
             ></el-input>
           </el-form-item>
         </el-col>
@@ -562,6 +563,7 @@
             <el-input
               v-model="info.collectCommissionStandardSketch"
               placeholder="（内容会推送到OA）"
+              maxlength="500"
             ></el-input>
           </el-form-item>
         </el-col>
@@ -573,6 +575,7 @@
             <el-input
               v-model="info.collectCommissionConditionSketch"
               placeholder="（内容会推送到OA）"
+              maxlength="500"
             ></el-input>
           </el-form-item>
         </el-col>
@@ -586,6 +589,7 @@
             <el-input
               v-model="info.sendCommissionStandardSketch"
               placeholder="（内容会推送到OA）"
+              maxlength="500"
             ></el-input>
           </el-form-item>
         </el-col>
@@ -597,6 +601,7 @@
             <el-input
               v-model="info.sendCommissionConditionSketch"
               placeholder="（内容会推送到OA）"
+              maxlength="500"
             ></el-input>
           </el-form-item>
         </el-col>

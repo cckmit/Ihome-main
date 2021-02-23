@@ -5,7 +5,7 @@
  * @Author: zyc
  * @Date: 2021-01-13 14:50:21
  * @LastEditors: wwq
- * @LastEditTime: 2021-02-23 10:49:52
+ * @LastEditTime: 2021-02-23 11:30:03
 -->
 <template>
   <IhPage label-width="110px">
@@ -265,6 +265,7 @@
                   }"
                 >退款推送</el-link>
                 <el-link
+                  v-if="row.settlementType === 'OnlinePay'"
                   type="primary"
                   @click="setUpARefund(row)"
                   style="margin-right: 10px"
@@ -274,7 +275,7 @@
                       'RefundedTicket',
                       'Paying',
                       'Paid',
-                    ].includes(row.status) && row.settlementType === 'OnlinePay',
+                    ].includes(row.status),
                   }"
                 >设置已退款</el-link>
                 <el-link
