@@ -4,7 +4,7 @@
  * @Author: wwq
  * @Date: 2020-12-26 11:11:23
  * @LastEditors: wwq
- * @LastEditTime: 2021-02-23 09:40:05
+ * @LastEditTime: 2021-02-23 19:13:44
 -->
 <template>
   <IhPage>
@@ -1695,8 +1695,8 @@ export default class PayoffEdit extends Vue {
         obj.payApplyVO.taxRate = Number(this.info.taxRate);
         obj.payApplyDetailList = this.info.payApplyDetailList.map((v: any) => ({
           ...v,
-          noTaxAmount: v.noTaxAmountNew,
-          tax: v.taxNew,
+          noTaxAmount: v.noTaxAmountNew ? v.noTaxAmountNew : v.noTaxAmount,
+          tax: v.taxNew ? v.taxNew : v.tax,
         }));
         obj.payDeductDetailCalculationRequestList = this.info.payDeductDetailResponseList;
         let arr: any = [];

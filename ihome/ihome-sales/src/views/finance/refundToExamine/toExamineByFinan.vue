@@ -4,7 +4,7 @@
  * @Author: ywl
  * @Date: 2021-02-17 11:27:05
  * @LastEditors: ywl
- * @LastEditTime: 2021-02-23 19:40:50
+ * @LastEditTime: 2021-02-23 19:41:27
 -->
 <template>
   <IhPage>
@@ -829,9 +829,8 @@ export default class RefundToExamineToExamine extends Vue {
         });
         break;
       case "notification":
-        window.sessionStorage.setItem("businessId", row.businessId);
         router = this.$router.resolve({
-          path: `/payment/list`,
+          path: `/payment/list?businessId=${row.businessId}`,
         });
         break;
       case "payNo":

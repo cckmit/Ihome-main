@@ -4,7 +4,7 @@
  * @Author: zyc
  * @Date: 2021-02-05 15:23:39
  * @LastEditors: zyc
- * @LastEditTime: 2021-02-23 17:35:35
+ * @LastEditTime: 2021-02-23 18:07:42
 -->
 
 
@@ -81,7 +81,7 @@
           v-has="'B.SALES.FINANCE.TOBEREFUNDED.EXPORT'"
           >导出</el-button
         >
-        <el-button type="info" @click="reset()">重置</el-button>
+        <el-button  @click="reset()">重置</el-button>
       </el-row>
     </template>
 
@@ -102,10 +102,10 @@
           fixed
           prop="refundNo"
           label="退款项编号"
-          width="150"
+          width="200"
         ></el-table-column>
 
-        <el-table-column prop="projectName" label="项目名称">
+        <el-table-column prop="projectName"  width="200" label="项目名称">
           <template slot-scope="scope">
             <el-link type="primary" @click="gotoNew(scope.row, 'projectName')">
               {{ scope.row.projectName }}</el-link

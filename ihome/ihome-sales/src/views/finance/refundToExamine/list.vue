@@ -5,7 +5,7 @@
  * @Author: zyc
  * @Date: 2021-01-13 14:50:21
  * @LastEditors: zyc
- * @LastEditTime: 2021-02-23 16:53:11
+ * @LastEditTime: 2021-02-23 18:11:03
 -->
 <template>
   <IhPage label-width="110px">
@@ -99,8 +99,8 @@
     <template #btn>
       <el-row>
         <el-button type="primary" @click="searchMixin()">查询</el-button>
-        <el-button type="info" @click="reset()">重置</el-button>
-        <el-button @click="handleExport()">导出</el-button>
+        <el-button type="success" @click="handleExport()">导出</el-button>
+        <el-button @click="reset()">重置</el-button>
       </el-row>
     </template>
     <template #table>
@@ -120,16 +120,24 @@
         <el-table-column
           label="退款申请单编号"
           prop="refundApplyNo"
-          min-width="120"
+          min-width="200"
           fixed
         ></el-table-column>
-        <el-table-column label="事业部" prop="departmentName"></el-table-column>
+        <el-table-column
+          label="事业部"
+          prop="departmentName"
+          min-width="250"
+        ></el-table-column>
         <el-table-column
           label="申请退款金额"
           prop="amount"
           min-width="120"
         ></el-table-column>
-        <el-table-column label="付款方" prop="accountName"></el-table-column>
+        <el-table-column
+          label="付款方"
+          prop="accountName"
+          min-width="200"
+        ></el-table-column>
         <el-table-column label="结算方式" prop="">
           <template slot-scope="scope">{{
             $root.dictAllName(scope.row.settlementType, "RefundSettlementType")
@@ -141,7 +149,11 @@
           }}</template>
         </el-table-column>
         <el-table-column label="制单人" prop="inputUserName"></el-table-column>
-        <el-table-column label="制单日期" prop="createDate"></el-table-column>
+        <el-table-column
+          label="制单日期"
+          prop="createDate"
+          width="190"
+        ></el-table-column>
         <el-table-column
           fixed="right"
           label="流程进度"
@@ -299,7 +311,7 @@ export default class RefundToExamineList extends Vue {
         "Content-Type": "application/json",
         Authorization: "bearer " + token,
       },
-      
+
       data: { ...this.queryPageParameters },
     }).then((res: any) => {
       if (res.data.type === "application/json") {

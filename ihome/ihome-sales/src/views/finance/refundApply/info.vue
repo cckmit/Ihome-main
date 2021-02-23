@@ -4,7 +4,7 @@
  * @Author: zyc
  * @Date: 2021-02-06 16:27:06
  * @LastEditors: wwq
- * @LastEditTime: 2021-02-22 20:12:47
+ * @LastEditTime: 2021-02-23 18:23:19
 -->
 <template>
   <IhPage>
@@ -676,9 +676,8 @@ export default class RefundApplyInfo extends Vue {
         });
         break;
       case "notification":
-        window.sessionStorage.setItem("businessId", row.businessId);
         router = this.$router.resolve({
-          path: `/payment/list`,
+          path: `/payment/list?businessId=${row.businessId}`,
         });
         break;
       case "payNo":

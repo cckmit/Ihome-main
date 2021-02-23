@@ -4,7 +4,7 @@
  * @Author: zyc
  * @Date: 2021-02-05 16:41:19
  * @LastEditors: zyc
- * @LastEditTime: 2021-02-23 17:38:57
+ * @LastEditTime: 2021-02-23 18:26:43
 -->
  
 <template>
@@ -102,7 +102,7 @@
           >发起申请</el-button
         >
         <el-button
-          type="info"
+          type="danger"
           @click="batchRemove()"
           v-has="'B.SALES.FINANCE.TOBEREFUNDE.BATCHREMOVE'"
           >批量删除</el-button
@@ -135,7 +135,7 @@
           width="180"
         ></el-table-column>
 
-        <el-table-column prop="projectName" label="事业部">
+        <el-table-column prop="projectName" label="事业部" width="250">
           <template slot-scope="scope">
             {{ scope.row.departmentName }}
           </template>
@@ -145,7 +145,7 @@
             {{ scope.row.amount }}
           </template>
         </el-table-column>
-        <el-table-column prop="" label="状态" width="100">
+        <el-table-column prop="" label="状态" width="150">
           <template slot-scope="scope">
             {{ $root.dictAllName(scope.row.status, "FinRefundApplyStatus") }}
 
@@ -160,15 +160,15 @@
 
         <el-table-column
           prop="accountName"
-          width="100"
+          width="200"
           label="付款方"
         ></el-table-column>
         <el-table-column prop="inputUserName" label="制单人" width="100">
           <template slot-scope="scope">{{ scope.row.inputUserName }}</template>
         </el-table-column>
-        <el-table-column prop="createDate" label="制单日期" width="100">
+        <el-table-column prop="createDate" label="制单日期" width="190">
         </el-table-column>
-        <el-table-column width="200" label="流程进度" fixed="right">
+        <el-table-column width="100" label="流程进度" fixed="right">
           <template slot-scope="scope">
             <el-link
               style="color: #409eff"

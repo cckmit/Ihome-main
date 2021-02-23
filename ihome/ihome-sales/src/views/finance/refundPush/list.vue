@@ -4,8 +4,8 @@
  * @version: 
  * @Author: zyc
  * @Date: 2021-01-13 14:50:21
- * @LastEditors: wwq
- * @LastEditTime: 2021-02-23 10:49:52
+ * @LastEditors: zyc
+ * @LastEditTime: 2021-02-23 18:12:27
 -->
 <template>
   <IhPage label-width="110px">
@@ -130,10 +130,7 @@
           type="primary"
           @click="searchMixin()"
         >查询</el-button>
-        <el-button
-          type="info"
-          @click="reset()"
-        >重置</el-button>
+        <el-button @click="reset()">重置</el-button>
       </el-row>
     </template>
     <template #table>
@@ -165,18 +162,18 @@
             <el-table-column
               label="退款项编号"
               prop="refundNo"
-              min-width="120"
+              min-width="200"
               fixed
             ></el-table-column>
             <el-table-column
               label="退款申请单编号"
-              min-width="140"
+              min-width="200"
               prop="refundApplyNo"
             ></el-table-column>
             <el-table-column
               label="唯一支付编码"
               prop="refundPayNo"
-              min-width="120"
+              min-width="200"
             ></el-table-column>
             <el-table-column
               label="结算方式"
@@ -234,6 +231,7 @@
             <el-table-column
               label="备注信息"
               prop="remark"
+              width="200"
             ></el-table-column>
             <el-table-column
               label="推送时间"
@@ -265,16 +263,16 @@
                   }"
                 >退款推送</el-link>
                 <el-link
+                  v-if="row.settlementType === 'OnlinePay'"
                   type="primary"
                   @click="setUpARefund(row)"
                   style="margin-right: 10px"
                   v-has="'B.SALES.FINANCE.REFUNDTOEXAMIN.SREFUNDED'"
                   :class="{
-                    'ih-data-disabled': [
-                      'RefundedTicket',
-                      'Paying',
-                      'Paid',
-                    ].includes(row.status) && row.settlementType === 'OnlinePay',
+                    'ih-data-disabled':
+                      ['RefundedTicket', 'Paying', 'Paid'].includes(
+                        row.status
+                      ) && row.settlementType === 'OnlinePay',
                   }"
                 >设置已退款</el-link>
                 <el-link
