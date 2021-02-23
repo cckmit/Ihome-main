@@ -3,18 +3,15 @@
  * @version: 
  * @Author: zyc
  * @Date: 2021-02-05 15:23:39
- * @LastEditors: wwq
- * @LastEditTime: 2021-02-20 09:40:10
+ * @LastEditors: zyc
+ * @LastEditTime: 2021-02-23 15:50:14
 -->
 
 
 <template>
   <ih-page>
     <template v-slot:form>
-      <el-form
-        ref="form"
-        label-width="80px"
-      >
+      <el-form ref="form" label-width="80px">
         <el-row>
           <el-col :span="8">
             <el-form-item label="项目名称">
@@ -77,19 +74,14 @@
 
     <template v-slot:btn>
       <el-row>
-        <el-button
-          type="primary"
-          @click="searchMixin()"
-        >查询</el-button>
+        <el-button type="primary" @click="searchMixin()">查询</el-button>
         <el-button
           type="success"
           @click="download()"
           v-has="'B.SALES.FINANCE.TOBEREFUNDED.EXPORT'"
-        >导出</el-button>
-        <el-button
-          type="info"
-          @click="reset()"
-        >重置</el-button>
+          >导出</el-button
+        >
+        <el-button type="info" @click="reset()">重置</el-button>
       </el-row>
     </template>
 
@@ -113,16 +105,11 @@
           width="150"
         ></el-table-column>
 
-        <el-table-column
-          prop="projectName"
-          label="项目名称"
-        >
+        <el-table-column prop="projectName" label="项目名称">
           <template slot-scope="scope">
-            <el-link
-              type="primary"
-              @click="gotoNew(scope.row, 'projectName')"
+            <el-link type="primary" @click="gotoNew(scope.row, 'projectName')">
+              {{ scope.row.projectName }}</el-link
             >
-              {{ scope.row.projectName }}</el-link>
           </template>
         </el-table-column>
         <el-table-column
@@ -131,11 +118,9 @@
           width="160"
         >
           <template slot-scope="scope">
-            <el-link
-              type="primary"
-              @click="gotoNew(scope.row, 'noticeAmount')"
+            <el-link type="primary" @click="gotoNew(scope.row, 'noticeAmount')">
+              {{ scope.row.noticeAmount }}</el-link
             >
-              {{ scope.row.noticeAmount }}</el-link>
           </template>
         </el-table-column>
         <el-table-column
@@ -144,15 +129,17 @@
           width="100"
         ></el-table-column>
 
-        <el-table-column
-          prop="projectName"
-          label="退款人信息"
-          width="100"
-        ></el-table-column>
-        <el-table-column
-          prop="status"
-          label="退款状态"
-        >
+        <el-table-column prop="" label="退款人信息" width="300">
+          <template slot-scope="scope">
+            <div>
+              <p>收款姓名：{{ scope.row.refundName }}</p>
+              <p>收款帐号：{{ scope.row.refundAccount }}</p>
+              <p>收款开户行：{{ scope.row.refundBankName }}</p>
+            </div>
+            <div v-if="scope.row.dealId === null"></div>
+          </template>
+        </el-table-column>
+        <el-table-column prop="status" label="退款状态">
           <template slot-scope="scope">{{
             $root.dictAllName(scope.row.status, "FinRefundStatus")
           }}</template>
@@ -162,11 +149,7 @@
           width="100"
           label="生成日期"
         ></el-table-column>
-        <el-table-column
-          prop="refundedDate"
-          label="退款完成日期"
-          width="120"
-        >
+        <el-table-column prop="refundedDate" label="退款完成日期" width="120">
           <template slot-scope="scope">{{
             scope.row.refundedDate | emptyShow
           }}</template>
@@ -182,43 +165,32 @@
               type="primary"
               @click="gotoNew(scope.row, 'refundApplyNO')"
             >
-              {{ scope.row.refundApplyNO }}</el-link>
+              {{ scope.row.refundApplyNO }}</el-link
+            >
             <span v-if="scope.row.refundApplyNO === null"> —— </span>
           </template>
         </el-table-column>
-        <el-table-column
-          width="200"
-          label="成交信息"
-        >
+        <el-table-column width="200" label="成交信息">
           <template slot-scope="scope">
             <div v-if="scope.row.dealId !== null">
               <p>客户姓名：{{ scope.row.dealCustomerName }}</p>
               <p>
                 成交报告编号：
-                <el-link
-                  type="primary"
-                  @click="gotoNew(scope.row, 'dealNo')"
+                <el-link type="primary" @click="gotoNew(scope.row, 'dealNo')">
+                  {{ scope.row.dealNo }}</el-link
                 >
-                  {{ scope.row.dealNo }}</el-link>
               </p>
               <p>成交单位：{{ scope.row.dealCompany }}</p>
             </div>
             <div v-if="scope.row.dealId === null"></div>
           </template>
         </el-table-column>
-        <el-table-column
-          prop="contType"
-          label="合同类型"
-          width="120"
-        >
+        <el-table-column prop="contType" label="合同类型" width="120">
           <template slot-scope="scope">{{
             $root.dictAllName(scope.row.contType, "ContType") | emptyShow
           }}</template>
         </el-table-column>
-        <el-table-column
-          width="150"
-          label="服务费情况"
-        >
+        <el-table-column width="150" label="服务费情况">
           <template slot-scope="scope">
             <div v-if="scope.row.dealId !== null">
               <p>应收：{{ scope.row.receivableAmount }}</p>
@@ -237,18 +209,15 @@
             {{ scope.row.confirmationTime | emptyShow }}
           </template>
         </el-table-column>
-        <el-table-column
-          prop="invoiceNo"
-          label="发票业务单号"
-          width="120"
-        >
+        <el-table-column prop="invoiceNo" label="发票业务单号" width="120">
           <template slot-scope="scope">
             <el-link
               v-if="scope.row.invoiceNo !== null"
               type="primary"
               @click="gotoNew(scope.row, 'invoiceNo')"
             >
-              {{ scope.row.invoiceNo }}</el-link>
+              {{ scope.row.invoiceNo }}</el-link
+            >
             <span v-if="scope.row.invoiceNo === null">——</span>
           </template>
         </el-table-column>
