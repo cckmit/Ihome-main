@@ -1981,6 +1981,7 @@
     handleAddNotice() {
       if(this.baseInfoByTerm.termId) {
         let data: any = {
+          dealId: this.id ? this.id : null,
           termId: this.baseInfoByTerm.termId,
           termName: this.baseInfoByTerm.termName,
           proId: this.baseInfoByTerm.proId,
