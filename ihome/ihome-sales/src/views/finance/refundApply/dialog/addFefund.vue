@@ -21,10 +21,10 @@
     <el-form label-width="100px">
       <el-row>
         <el-col :span="8">
-          <el-form-item label="退款款单号">
+          <el-form-item label="待退款项单号">
             <el-input
               v-model="info.refundApplyNO"
-              placeholder="请输入退款款单号"
+              placeholder="请输入待退款项单号"
               clearable
             ></el-input>
           </el-form-item>
