@@ -4,7 +4,7 @@
  * @Author: zyc
  * @Date: 2021-01-14 14:27:51
  * @LastEditors: zyc
- * @LastEditTime: 2021-01-26 16:58:16
+ * @LastEditTime: 2021-02-24 10:28:25
  */
 
 
@@ -82,7 +82,7 @@ export class MyMath implements MathInterface {
         }
         try {
             let arr = num2.toString().split(".");
-            if (arr.length <= 1 ) {
+            if (arr.length <= 1) {
                 baseNum2 = 0;
             } else {
                 baseNum2 = arr[1].length;
@@ -104,18 +104,18 @@ export class MyMath implements MathInterface {
         let baseNum = 0;
         try {
             let arr = num1.toString().split(".");
-            if (arr.length >1) {
+            if (arr.length > 1) {
                 baseNum += arr[1].length;
-            }  
+            }
 
         } catch (e) {
             console.error(e);
         }
         try {
             let arr = num2.toString().split(".");
-            if (arr.length >1) {
+            if (arr.length > 1) {
                 baseNum += arr[1].length;
-            }  
+            }
 
         } catch (e) {
             console.error(e);
@@ -175,7 +175,7 @@ export class MyMath implements MathInterface {
         }
         try {
             let arr = num2.toString().split(".");
-            if (arr.length <= 1 ) {
+            if (arr.length <= 1) {
                 baseNum2 = 0;
             } else {
                 baseNum2 = arr[1].length;
@@ -189,26 +189,45 @@ export class MyMath implements MathInterface {
     }
 
     tofixed(number: number, n = 2): number {
-        /* eslint-disable no-irregular-whitespace */
-        let multipe = Math.pow(10, n); //把一个数放大10的次方倍
-        if (!isNaN(number)) {
-            number = Math.round(number * multipe);//四舍五入
-            //处理小数点
-            let numberArr: any = number.toString().split("");
-            if (numberArr.length < n + 1) {//当数值小于1的时候的处理方法
-                for (let i = 0; i <= n + 1 - numberArr.length; i++) {
-                    numberArr.splice(0, 0, "0");
-                }
-            }
-            let numberStr: any = numberArr.splice(numberArr.length - n, 0, ".");  //给一个放大后的数的字符串插入小数点
-            numberStr = numberArr.join("");
-            if (parseFloat(numberStr) > -1 && parseFloat(numberStr) < 0) {
-                numberStr = parseFloat(numberStr).toFixed(n).toString()
-            }
-            return Number(numberStr);
-        } else {
-            throw ('tool.tofixed方法只能对数字使用')
+        if (n > 20 || n < 0) {
+            throw new RangeError('toFixed() digits argument must be between 0 and 20');
         }
+        if (isNaN(number) || number >= Math.pow(10, 21)) {
+            return Number(number);
+        }
+        if (typeof (n) == 'undefined' || n == 0) {
+            return Number(Math.round(number))
+        }
+        let result: any = number.toString();
+        const arr = result.split('.');
+        // 整数的情况
+        if (arr.length < 2) {
+            result += '.';
+            for (let i = 0; i < n; i += 1) {
+                result += '0';
+            }
+            return Number(result);
+        }
+        const integer = arr[0];
+        const decimal = arr[1];
+        if (decimal.length == n) {
+            return Number(result);
+        }
+        if (decimal.length < n) {
+            for (let i = 0; i < n - decimal.length; i += 1) {
+                result += '0';
+            }
+            return Number(result);
+        }
+        result = integer + '.' + decimal.substr(0, n);
+        const last = decimal.substr(n, 1);
+        // 四舍五入，转换为整数再处理，避免浮点数精度的损失
+        if (parseInt(last, 10) >= 5) {
+            const x = Math.pow(10, n);
+            result = (Math.round((parseFloat(result) * x)) + 1) / x;
+            result = result.toFixed(n);
+        }
+        return Number(result);
     }
 
 }
