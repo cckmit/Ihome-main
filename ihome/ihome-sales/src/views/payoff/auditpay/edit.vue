@@ -4,7 +4,7 @@
  * @Author: wwq
  * @Date: 2020-12-26 11:11:23
  * @LastEditors: wwq
- * @LastEditTime: 2021-02-24 11:03:01
+ * @LastEditTime: 2021-02-24 17:34:22
 -->
 <template>
   <IhPage>
@@ -430,7 +430,7 @@
                   v-digits="2"
                   clearable
                   style="width: 70%"
-                  @input="payApplyDetailListNumberChange(row)"
+                  @input="payApplyDetailListNumberChange(row, 'del')"
                 />
               </div>
               <div class="margin-top-5">
@@ -458,7 +458,7 @@
                 v-digits="2"
                 clearable
                 style="width: 70%"
-                @input="payApplyDetailListNumberChange(row)"
+                @input="payApplyDetailListNumberChange(row, 'del')"
               />
             </template>
           </el-table-column>
@@ -471,18 +471,30 @@
                 v-model="row.deductType"
                 clearable
                 style="width: 70%"
-                @input="payApplyDetailListNumberChange(row)"
+                @input="payApplyDetailListNumberChange(row, '')"
               />
             </template>
           </el-table-column>
           <el-table-column
             label="本次实际付款金额"
-            width="150"
+            width="220"
           >
             <template v-slot="{ row }">
               <div>实际付款金额: {{practicalChange(row)}}</div>
-              <div>不含税金额: {{noTaxAmountChange(row)}}</div>
-              <div>税额: {{taxChange(row)}}</div>
+              <div>
+                <template v-if="row.noTaxAmountNew">
+                  <span>不含税金额: <del>{{noTaxAmountChange(row)}}</del></span>
+                  <span style="color: red">{{` ${row.noTaxAmountNew}`}}</span>
+                </template>
+                <span v-else>不含税金额: {{noTaxAmountChange(row)}}</span>
+              </div>
+              <div>
+                <template v-if="row.taxNew">
+                  <span>税额: <del>{{taxChange(row)}}</del></span>
+                  <span style="color: red">{{` ${row.taxNew}`}}</span>
+                </template>
+                <span v-else>税额: {{taxChange(row)}}</span>
+              </div>
             </template>
           </el-table-column>
           <el-table-column
@@ -848,15 +860,19 @@
             <td height="50">本期实际付款金额(含税)</td>
             <td>{{info.actualAmount}}</td>
             <td>本期实际付款金额（不含税）</td>
-            <td>{{info.noTaxAmount}}</td>
+            <td>{{underNoTaxAmountChange()}}</td>
             <td>本期实际付款税额</td>
             <td>
-              <el-input
+              <el-input-number
+                controls-position="right"
                 class="inputClass"
                 v-model="info.tax"
+                :min="globalTaxMoney-10 < 0 ? 0 : globalTaxMoney-10"
+                :max="globalTaxMoney+10"
+                :precision="2"
+                :step="0.01"
                 placeholder="请输入"
-                v-digits="2"
-                readonly
+                @change="taxinputChange"
               />
             </td>
           </tr>
@@ -1106,6 +1122,7 @@ export default class PayoffEdit extends Vue {
   fileListType: any = [];
   contactsData: any = {};
   contactsDialogVisible = false;
+  globalTaxMoney: any = 0;
 
   private rules: any = {
     applyCode: [
@@ -1205,10 +1222,6 @@ export default class PayoffEdit extends Vue {
   isChangeObj: any = {};
   payerAccountOptions: any = [];
 
-  taxinputChange() {
-    this.modify = true;
-  }
-
   filterTabs(val: any) {
     let obj: any = {};
     let arr: any = val.map((v: any) => ({
@@ -1294,6 +1307,8 @@ export default class PayoffEdit extends Vue {
     });
     this.info.payApplyDetailList = this.info.payApplyDetailList.map(
       (v: any) => {
+        delete v.noTaxAmountNew;
+        delete v.taxNew;
         if (v.dealCode === this.agencyEditDealCode) {
           return {
             ...v,
@@ -1308,6 +1323,8 @@ export default class PayoffEdit extends Vue {
       }
     );
     this.showTable = this.showTable.map((v: any) => {
+      delete v.noTaxAmountNew;
+      delete v.taxNew;
       if (v.dealCode === this.agencyEditDealCode) {
         return {
           ...v,
@@ -1401,10 +1418,74 @@ export default class PayoffEdit extends Vue {
   }
 
   // 待付款列表数据变化
-  payApplyDetailListNumberChange(row: any) {
-    this.info.payApplyDetailList = this.info.payApplyDetailList.map((v: any) =>
-      v.dealCode === row.dealCode ? row : v
+  payApplyDetailListNumberChange(row: any, isdel: any) {
+    this.info.payApplyDetailList = this.info.payApplyDetailList.map(
+      (v: any) => {
+        if (isdel) {
+          delete v.noTaxAmountNew;
+          delete v.taxNew;
+        }
+        return v.dealCode === row.dealCode ? row : v;
+      }
     );
+  }
+
+  // 税额修改
+  taxinputChange(number: any) {
+    this.modify = true;
+    if (!number) {
+      this.info.tax =
+        this.globalTaxMoney - 10 < 0 ? 0 : this.globalTaxMoney - 10;
+    }
+    let val = this.info.tax;
+    let sub = this.$math.sub(this.globalTaxMoney, val);
+    let listArr: any = [];
+    let isSub = true;
+    if (sub === 0) {
+      isSub = false;
+    } else {
+      isSub = true;
+    }
+    for (let index = 0; index < this.info.payApplyDetailList.length; index++) {
+      const element = this.info.payApplyDetailList[index];
+      if (isSub) {
+        let taxNew = this.$math.tofixed(this.$math.sub(element.tax, sub), 2);
+        if (taxNew > 0) {
+          element.taxNew = taxNew;
+          element.noTaxAmountNew = this.$math.tofixed(
+            this.$math.add(element.noTaxAmount, sub),
+            2
+          );
+          isSub = false;
+          listArr.push(element);
+        } else {
+          element.taxNew = 0;
+          element.noTaxAmountNew = this.$math.tofixed(
+            this.$math.add(element.noTaxAmount, element.tax),
+            2
+          );
+          sub = this.$math.tofixed(this.$math.sub(sub, element.tax), 2);
+          isSub = true;
+          listArr.push(element);
+        }
+      } else {
+        delete element.taxNew;
+        delete element.noTaxAmountNew;
+        listArr.push(element);
+      }
+    }
+    this.info.payApplyDetailList = listArr;
+    this.showTable = this.info.payApplyDetailList.filter(
+      (v: any) => v.cycleId === this.tabsValue
+    );
+  }
+
+  // 本期实际付款金额（不含税）
+  underNoTaxAmountChange() {
+    let sum = 0;
+    sum = this.$math.sub(this.info.actualAmount, this.info.tax);
+    this.info.noTaxAmount = sum;
+    return this.$math.tofixed(sum, 2);
   }
 
   searchOpen = true;
@@ -1472,6 +1553,13 @@ export default class PayoffEdit extends Vue {
           })
         ),
       };
+      this.globalTaxMoney = this.$math.tofixed(
+        this.$math.sub(
+          res.actualAmount,
+          res.actualAmount / (1 + res.taxRate / 100 || 0)
+        ),
+        2
+      );
       this.isChangeObj = {
         ...res,
         receiveAccount: Number(res.receiveAccount),
@@ -1585,6 +1673,13 @@ export default class PayoffEdit extends Vue {
       this.info.finedAmount = res.finedAmount;
       this.info.noTaxAmount = res.noTaxAmount;
       this.info.tax = res.tax;
+      this.globalTaxMoney = this.$math.tofixed(
+        this.$math.sub(
+          res.actualAmount,
+          res.actualAmount / (1 + this.info.taxRate / 100 || 0)
+        ),
+        2
+      );
       this.info.paySummaryDetailsResponseList = res.paySummaryDetailsResponses;
       this.getFileListType(res.documentList);
       this.modify = true;
@@ -1688,10 +1783,10 @@ export default class PayoffEdit extends Vue {
   contactsFinish(data: any) {
     let arr: any = data.map((v: any) => ({
       ...v,
-      serThisCommFees: 0,
-      ageThisCommFees: 0,
       thisDeduct: 0,
       cycleId: v.cycleId + "",
+      serThisCommFees: v.serCanCommFees,
+      ageThisCommFees: v.ageCanCommFees,
     }));
     this.info.payApplyDetailList = arr;
     this.filterTabs(this.info.payApplyDetailList);
@@ -1739,7 +1834,13 @@ export default class PayoffEdit extends Vue {
           obj.reviewUpdateMainBody.settlementMethod = this.info.settlementMethod;
           obj.reviewUpdateMainBody.tax = this.info.tax;
           obj.reviewUpdateMainBody.taxRate = Number(this.info.taxRate);
-          obj.payApplyDetailList = this.info.payApplyDetailList;
+          obj.payApplyDetailList = this.info.payApplyDetailList.map(
+            (v: any) => ({
+              ...v,
+              noTaxAmount: v.noTaxAmountNew ? v.noTaxAmountNew : v.noTaxAmount,
+              tax: v.taxNew ? v.taxNew : v.tax,
+            })
+          );
           obj.payDeductDetailCalculationRequestList = this.info.payDeductDetailResponseList;
           obj.otherDeductionDetailCalculationRequestList = this.info.otherDeductionDetailResponseList.map(
             (v: any) => ({
