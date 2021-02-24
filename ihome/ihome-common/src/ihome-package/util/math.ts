@@ -4,7 +4,7 @@
  * @Author: zyc
  * @Date: 2021-01-14 14:27:51
  * @LastEditors: zyc
- * @LastEditTime: 2021-02-24 10:28:25
+ * @LastEditTime: 2021-02-24 17:15:54
  */
 
 
@@ -189,6 +189,7 @@ export class MyMath implements MathInterface {
     }
 
     tofixed(number: number, n = 2): number {
+        let temp = number;
         if (n > 20 || n < 0) {
             throw new RangeError('toFixed() digits argument must be between 0 and 20');
         }
@@ -224,8 +225,15 @@ export class MyMath implements MathInterface {
         // 四舍五入，转换为整数再处理，避免浮点数精度的损失
         if (parseInt(last, 10) >= 5) {
             const x = Math.pow(10, n);
-            result = (Math.round((parseFloat(result) * x)) + 1) / x;
-            result = result.toFixed(n);
+            if (result.startsWith("-") && parseFloat(result) === 0) {
+                result = (Math.round((parseFloat(result) * x)) + 1) / x;
+                result = result * -1;
+                result = result.toFixed(n);
+            } else {
+                result = (Math.round((parseFloat(result) * x)) + 1) / x;
+                result = result.toFixed(n);
+            }
+
         }
         return Number(result);
     }
