@@ -4,7 +4,7 @@
  * @Author: ywl
  * @Date: 2021-01-07 16:30:03
  * @LastEditors: ywl
- * @LastEditTime: 2021-02-24 11:45:57
+ * @LastEditTime: 2021-02-24 15:43:41
 -->
 <template>
   <IhPage class="text-left">
@@ -785,7 +785,6 @@
             <td class="width-150">累计实际请款不含税金额</td>
             <td class="width-150">{{totalActMoney}}</td>
             <td class="width-150">累计实际请款税额</td>
-            <td class="width-150">{{totalTaxMoney}}</td>
           </tr> -->
           <tr>
             <td class="width-150">发票类型</td>
@@ -1133,13 +1132,6 @@ export default class ApplyRecAdd extends Vue {
     // this.form.sumActMoney = sum.toFixed(2);
     return sum.toFixed(2);
   }
-  private get totalTaxMoney() {
-    let sum =
-      (parseFloat(this.totalTaxMoneySum()) || 0) +
-      (parseFloat(this.hisInfo.sumTaxMoney) || 0);
-    // this.form.sumTaxMoney = sum.toFixed(2);
-    return sum.toFixed(2);
-  }
   // 计算不含税金额 -- 其他扣除项
   private otherSubMoneyNoTax(row: any) {
     let subMoneyNoTax = this.$math.div(
@@ -1215,10 +1207,6 @@ export default class ApplyRecAdd extends Vue {
     // this.form.actMoney = sum.toFixed(2);
     return this.$math.tofixed(sum, 2);
   }
-  private totalTaxMoneySum() {
-    let sum = 0;
-    return sum.toFixed(2);
-  }
   /**
    * @description: 甲方公司应扣除代理费明细合计
    * @param {*} param
@@ -1257,6 +1245,19 @@ export default class ApplyRecAdd extends Vue {
       (this.$refs.accountSelect as any).blur();
       this.$message.warning("请先选择收款公司");
     }
+  }
+  /**
+   * @description: 计算税额公式
+   * @param {*} money
+   * @param {*} taxRate
+   * @return {*} 税额
+   */
+  private countTaxMoney(money: number, taxRate: number) {
+    let sum = this.$math.tofixed(
+      this.$math.sub(money, money / (1 + taxRate)),
+      2
+    );
+    return sum;
   }
   private handleAddDeal() {
     if (
@@ -1353,6 +1354,8 @@ export default class ApplyRecAdd extends Vue {
     } else {
       row.isCanApply = 1;
     }
+    delete row.noTaxMoneyNew;
+    delete row.taxMoneyNew;
   }
   private tableRowClassName({ row }: any) {
     let className = row.isCanApply ? "" : "red-row";
@@ -1386,6 +1389,7 @@ export default class ApplyRecAdd extends Vue {
       this.dealParams.termOrgId &&
       this.form.dealList.length
     ) {
+      this.uploadLoad = true;
       let newTermIdList = this.form.dealList
         .concat(this.waitList)
         .map((i: any) => i.termId);
@@ -1404,18 +1408,25 @@ export default class ApplyRecAdd extends Vue {
           receAccountId: this.dealParams.receAccountId,
           termIdList: [...new Set(newTermIdList)],
         });
-        this.form.taxMoney = this.$math.sub(
+        this.form.taxMoney = this.countTaxMoney(
           this.actMoneyTaxSum(),
-          (this.actMoneyTaxSum() || 0) /
-            (1 + (parseFloat(this.form.taxRate) || 0))
+          parseFloat(this.form.taxRate)
         );
+        // this.$math.sub(
+        //   this.actMoneyTaxSum(),
+        //   (this.actMoneyTaxSum() || 0) /
+        //     (1 + (parseFloat(this.form.taxRate) || 0))
+        // );
         this.globalTaxMoney = this.form.taxMoney;
         await this.getHisRec({
           developId: this.dealParams.developId,
           polyCompanyId: this.dealParams.polyCompanyId,
         });
+        this.taxMoneyChange(this.form.taxMoney);
+        this.uploadLoad = false;
       } catch (error) {
         console.log(error);
+        this.uploadLoad = false;
       }
     } else {
       this.$message.warning("请完成上面操作再更新页面");
@@ -1503,7 +1514,6 @@ export default class ApplyRecAdd extends Vue {
   private async getHisRec(param: any) {
     try {
       const res = await post_applyRec_getLastApplyNo(param);
-      console.log(res);
       this.hisInfo = res;
       this.form.lastApplyNo = res;
     } catch (error) {
@@ -1513,7 +1523,6 @@ export default class ApplyRecAdd extends Vue {
   private async getListAccount(id: any) {
     try {
       this.devAccount = await get_company_listAccount__id({ id });
-      console.log(this.devAccount);
       if (this.devAccount) {
         this.devAccountData = this.devAccount.find(
           (i: any) => i.type === "Basic"
@@ -1529,7 +1538,6 @@ export default class ApplyRecAdd extends Vue {
   private async getDevBankInfo(bankId: any) {
     try {
       const res: any = await get_company_getCompanyBankInfo__bankId({ bankId });
-      console.log(res);
       this.form.developAddress = res.address;
       this.form.developPhone = res.phone;
       this.form.developTaxNo = res.creditCode;
@@ -1583,13 +1591,17 @@ export default class ApplyRecAdd extends Vue {
     for (let index = 0; index < this.form.dealList.length; index++) {
       const element = this.form.dealList[index];
       // 税额
-      let thisTaxMoney = this.$math.tofixed(
-        this.$math.sub(
-          element.applyMoney,
-          element.applyMoney / (1 + parseFloat(this.form.taxRate) || 0)
-        ),
-        2
+      let thisTaxMoney = this.countTaxMoney(
+        element.applyMoney,
+        parseFloat(this.form.taxRate)
       );
+      // this.$math.tofixed(
+      //   this.$math.sub(
+      //     element.applyMoney,
+      //     element.applyMoney / (1 + parseFloat(this.form.taxRate) || 0)
+      //   ),
+      //   2
+      // );
       // 不含税金额
       let thisNoTaxMoney = this.$math.tofixed(
         this.$math.sub(element.applyMoney, thisTaxMoney),
@@ -1600,10 +1612,6 @@ export default class ApplyRecAdd extends Vue {
           this.$math.sub(thisTaxMoney, sub),
           2
         );
-        console.log(taxMoneyNew, "xxxxx");
-        console.log(thisTaxMoney, "税额");
-        console.log(thisNoTaxMoney, "不含税金额");
-
         if (taxMoneyNew > 0) {
           element.taxMoneyNew = taxMoneyNew;
           element.noTaxMoneyNew = this.$math.tofixed(
@@ -1655,10 +1663,8 @@ export default class ApplyRecAdd extends Vue {
       taxMoney:
         i.taxMoneyNew || i.taxMoneyNew === 0 ? i.taxMoneyNew : i.taxMoney,
     }));
-    // this.form.sumTaxMoney = this.totalTaxMoney;
     // this.form.actMoneyTax = this.actMoneyTaxSum();
     // this.form.actMoney = this.actMoneySum();
-    // this.form.taxMoney = this.totalTaxMoneySum();
     // this.form.termList = this.form.termList.map((i: any) => ({
     //   developId: this.dealParams.developId,
     //   polyCompanyId: this.dealParams.polyCompanyId,
@@ -1775,13 +1781,15 @@ export default class ApplyRecAdd extends Vue {
       this.paramDevName = info.developName;
       this.paramProName = info.proName;
       this.applyNo = info.applyNo;
-      this.globalTaxMoney = this.$math.tofixed(
-        this.$math.sub(
-          info.actMoneyTax,
-          info.actMoneyTax / (1 + info.taxRate || 0)
-        ),
-        2
-      );
+      // 税额
+      this.globalTaxMoney = this.countTaxMoney(info.actMoneyTax, info.taxRate);
+      // this.$math.tofixed(
+      //   this.$math.sub(
+      //     info.actMoneyTax,
+      //     info.actMoneyTax / (1 + info.taxRate || 0)
+      //   ),
+      //   2
+      // );
       this.getListAccount(info.developId);
       this.getAccount(info.polyCompanyId);
       this.accountData = { id: info.receAccountId };

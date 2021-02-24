@@ -4,7 +4,7 @@
  * @Author: ywl
  * @Date: 2021-01-15 15:29:09
  * @LastEditors: ywl
- * @LastEditTime: 2021-02-24 09:06:41
+ * @LastEditTime: 2021-02-24 15:29:50
 -->
 <template>
   <IhPage class="text-left">
@@ -348,7 +348,6 @@
           style="width: 100%"
           :data="waitList"
           show-summary
-          :summary-method="getSummaries"
         >
           <el-table-column label="成交报告编号">
             <template v-slot="{ row }">
@@ -931,30 +930,30 @@ export default class ApplyAudit extends Vue {
   private handleOpen(row: any) {
     window.open(`/web-sales/invoice/info?id=${row.id}`, "_blank");
   }
-  private getSummaries({ columns, data }: any) {
-    const sums: any = [];
-    columns.forEach((column: any, index: number) => {
-      if (index === 0) {
-        sums[index] = "合计";
-        return;
-      }
-      const values = data.map((item: any) => Number(item[column.property]));
-      if (!values.every((value: any) => isNaN(value))) {
-        sums[index] = values.reduce((prev: any, curr: any) => {
-          const value = Number(curr);
-          if (!isNaN(value)) {
-            return prev + curr;
-          } else {
-            return prev;
-          }
-        }, 0);
-        sums[index] = `-${sums[index]}`;
-      } else {
-        sums[index] = "";
-      }
-    });
-    return sums;
-  }
+  // private getSummaries({ columns, data }: any) {
+  //   const sums: any = [];
+  //   columns.forEach((column: any, index: number) => {
+  //     if (index === 0) {
+  //       sums[index] = "合计";
+  //       return;
+  //     }
+  //     const values = data.map((item: any) => Number(item[column.property]));
+  //     if (!values.every((value: any) => isNaN(value))) {
+  //       sums[index] = values.reduce((prev: any, curr: any) => {
+  //         const value = Number(curr);
+  //         if (!isNaN(value)) {
+  //           return prev + curr;
+  //         } else {
+  //           return prev;
+  //         }
+  //       }, 0);
+  //       sums[index] = `-${sums[index]}`;
+  //     } else {
+  //       sums[index] = "";
+  //     }
+  //   });
+  //   return sums;
+  // }
   private tableRowClassName({ row }: any) {
     let className = row.isCanApply ? "" : "red-row";
     return className;
