@@ -188,9 +188,13 @@ export default class SummaryList extends Vue {
 
   routeTo(row: any) {
     console.log(row);
-    this.$router.push({
+    let router = this.$router.resolve({
       path: "/details/list",
+      query: {
+        termId: row.termId,
+      },
     });
+    window.open(router.href, "_blank");
   }
 
   search() {

@@ -183,6 +183,9 @@ export default class IhSelectPage extends Vue {
     if (val) {
       this.filterText = val;
       this.searchOne = true;
+    } else {
+      this.filterText = '';
+      this.searchOne = true;
     }
   }
 
