@@ -4,7 +4,7 @@
  * @Author: wwq
  * @Date: 2020-12-26 11:11:28
  * @LastEditors: wwq
- * @LastEditTime: 2021-02-22 15:46:04
+ * @LastEditTime: 2021-02-24 08:56:08
 -->
 <template>
   <IhPage label-width="120px">
@@ -346,7 +346,7 @@ export default class PayoffList extends Vue {
       const token: any = getToken();
       axios({
         method: "POST",
-        url: `/sales-api/payoff/file/excel/list`,
+        url: `/sales-api/payoff/file/excel/review/list`,
         xsrfHeaderName: "Authorization",
         responseType: "blob",
         headers: {

@@ -3,8 +3,8 @@
  * @version: 
  * @Author: wwq
  * @Date: 2020-11-10 10:21:03
- * @LastEditors: ywl
- * @LastEditTime: 2021-02-19 20:32:42
+ * @LastEditors: wwq
+ * @LastEditTime: 2021-02-24 16:26:30
 -->
 <template>
   <ih-page>
@@ -165,6 +165,7 @@ import {
 })
 export default class EditBasicInfo extends Vue {
   form: any = {
+    auditEnum: null,
     proNo: null,
     proName: null,
     proRecord: null,
@@ -175,6 +176,7 @@ export default class EditBasicInfo extends Vue {
     city: null,
     district: null,
     provinceOption: [],
+    proAddr: null,
   };
 
   rules: any = {
@@ -207,7 +209,7 @@ export default class EditBasicInfo extends Vue {
   ];
 
   saveChange() {
-    const status = window.sessionStorage.getItem("projectStatus");
+    const status = this.form.auditEnum;
     const Draft = status === "Draft";
     const Adopt = status === "Adopt";
     const Reject = status === "Reject";
@@ -245,7 +247,7 @@ export default class EditBasicInfo extends Vue {
         let obj = { ...this.form };
         let p = this.form.provinceOption[0];
         let c = this.form.provinceOption[1];
-        if ( p.trim().length === 0 || c.trim().length === 0 ) {
+        if (p.trim().length === 0 || c.trim().length === 0) {
           this.$message.warning("省市区不能为空！");
           return;
         }
@@ -266,7 +268,7 @@ export default class EditBasicInfo extends Vue {
   }
 
   submitChange() {
-    const status = window.sessionStorage.getItem("projectStatus");
+    const status = this.form.auditEnum;
     const Draft = status === "Draft";
     // const Adopt = status === "Adopt";
     const Reject = status === "Reject";

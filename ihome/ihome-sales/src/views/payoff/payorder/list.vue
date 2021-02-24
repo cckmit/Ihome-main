@@ -4,7 +4,7 @@
  * @Author: wwq
  * @Date: 2020-12-26 11:11:28
  * @LastEditors: wwq
- * @LastEditTime: 2021-02-22 15:45:12
+ * @LastEditTime: 2021-02-24 10:23:17
 -->
 <template>
   <IhPage label-width="120px">
@@ -465,7 +465,7 @@ export default class PayoffList extends Vue {
         const href = window.URL.createObjectURL(res.data);
         const $a = document.createElement("a");
         $a.href = href;
-        $a.download = "付款单列表.xlsx";
+        $a.download = "付款申请列表.xlsx";
         $a.click();
         $a.remove();
       });

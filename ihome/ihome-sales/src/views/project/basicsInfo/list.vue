@@ -4,7 +4,7 @@
  * @Author: wwq
  * @Date: 2020-08-13 11:40:10
  * @LastEditors: wwq
- * @LastEditTime: 2021-02-06 09:31:38
+ * @LastEditTime: 2021-02-24 16:25:17
 -->
 <template>
   <IhPage label-width="110px">
@@ -383,7 +383,6 @@ export default class ProjectList extends Vue {
         id: row.proId,
       },
     });
-    window.sessionStorage.setItem("projectStatus", row.auditEnum);
   }
 
   // 删除

@@ -4,7 +4,7 @@
  * @Author: wwq
  * @Date: 2020-12-26 11:11:23
  * @LastEditors: wwq
- * @LastEditTime: 2021-02-23 09:41:49
+ * @LastEditTime: 2021-02-24 11:03:01
 -->
 <template>
   <IhPage>
@@ -1615,6 +1615,9 @@ export default class PayoffEdit extends Vue {
         if (index === 2) {
           let total = this.$math.tofixed(sums[index], 2);
           sums[index] = `-${total}`;
+        }
+        if (index === 5) {
+          sums[index] = "--";
         }
       } else {
         sums[index] = "--";

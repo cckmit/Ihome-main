@@ -4,7 +4,7 @@
  * @Author: wwq
  * @Date: 2020-12-26 11:11:23
  * @LastEditors: wwq
- * @LastEditTime: 2021-02-23 19:13:44
+ * @LastEditTime: 2021-02-24 16:50:51
 -->
 <template>
   <IhPage>
@@ -1270,6 +1270,7 @@ export default class PayoffEdit extends Vue {
       ? this.$math.div(this.info.taxRate, 100)
       : 0;
     const res = this.$math.multi(noTaxAmount, taxRate);
+    console.log(res, "税额");
     row.tax = this.$math.tofixed(res, 2);
     return row.tax;
   }
@@ -1530,6 +1531,9 @@ export default class PayoffEdit extends Vue {
           let total = this.$math.tofixed(sums[index], 2);
           sums[index] = `-${total}`;
         }
+        if (index === 5) {
+          sums[index] = "--";
+        }
       } else {
         sums[index] = "--";
       }
@@ -1627,10 +1631,10 @@ export default class PayoffEdit extends Vue {
   contactsFinish(data: any) {
     let arr: any = data.map((v: any) => ({
       ...v,
-      serThisCommFees: 0,
-      ageThisCommFees: 0,
       thisDeduct: 0,
       cycleId: v.cycleId + "",
+      serThisCommFees: v.serCanCommFees,
+      ageThisCommFees: v.ageCanCommFees,
     }));
     this.info.payApplyDetailList = arr;
     this.filterTabs(this.info.payApplyDetailList);

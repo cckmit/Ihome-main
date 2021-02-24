@@ -4,7 +4,7 @@
  * @Author: wwq
  * @Date: 2021-02-05 16:44:29
  * @LastEditors: wwq
- * @LastEditTime: 2021-02-05 19:52:21
+ * @LastEditTime: 2021-02-24 16:40:04
 -->
 <template>
   <el-dialog
@@ -92,7 +92,10 @@ export default class AgencyEdit extends Vue {
     }
   }
   created() {
-    this.form.agencyData = this.data;
+    this.form.agencyData = this.data.map((v: any) => ({
+      ...v,
+      agencyFeesAmount: v.kejie,
+    }));
   }
 }
 </script>

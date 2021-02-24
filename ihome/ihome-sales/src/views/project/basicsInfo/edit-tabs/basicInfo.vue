@@ -4,7 +4,7 @@
  * @Author: wwq
  * @Date: 2020-11-03 11:52:41
  * @LastEditors: wwq
- * @LastEditTime: 2021-02-23 15:56:18
+ * @LastEditTime: 2021-02-24 16:20:19
 -->
 <template>
   <div>
@@ -593,6 +593,7 @@ import {
 export default class EditBasicInfo extends Vue {
   loadSave = false;
   form: any = {
+    auditEnum: null,
     proNo: null,
     proName: null,
     proRecord: null,
@@ -690,8 +691,7 @@ export default class EditBasicInfo extends Vue {
   oldInfo: any = {};
   oldSubmitFile: any = {};
   secureSave() {
-    const status = window.sessionStorage.getItem("projectStatus");
-    const Adopt = status === "Adopt";
+    const Adopt = this.form.auditEnum === "Adopt";
     const Conduct = status === "Conduct";
     if (Adopt) {
       const RHeadBusinessManagement = this.$roleTool.RHeadBusinessManagement();
@@ -708,9 +708,8 @@ export default class EditBasicInfo extends Vue {
     }
   }
   submitChange() {
-    const status = window.sessionStorage.getItem("projectStatus");
-    const Draft = status === "Draft";
-    const Reject = status === "Reject";
+    const Draft = this.form.auditEnum === "Draft";
+    const Reject = this.form.auditEnum === "Reject";
     const RFrontLineClerk = this.$roleTool.RFrontLineClerk();
     return (Draft && RFrontLineClerk) || (RFrontLineClerk && Reject);
   }
