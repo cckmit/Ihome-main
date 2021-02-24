@@ -4,7 +4,7 @@
  * @Author: ywl
  * @Date: 2021-01-15 15:29:09
  * @LastEditors: ywl
- * @LastEditTime: 2021-02-24 15:29:50
+ * @LastEditTime: 2021-02-24 16:36:36
 -->
 <template>
   <IhPage class="text-left">
@@ -618,7 +618,9 @@
           <tr>
             <td>经办部门意见</td>
             <td colspan="5">
-              <div class="height-100 text-left padding-left-20">{{form.remark || '--'}}</div>
+              <div class="height-100 text-left padding-left-20">
+                <pre>{{form.remark || '--'}}</pre>
+              </div>
             </td>
           </tr>
         </table>
