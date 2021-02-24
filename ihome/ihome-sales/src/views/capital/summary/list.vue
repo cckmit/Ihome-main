@@ -53,6 +53,8 @@
       <br/>
       <el-table
         class="ih-table"
+        show-summary
+        :summary-method="getSummaries"
         :data="resPageInfo.list"
         :empty-text="emptyText">
         <el-table-column label="项目周期名称" prop="termName" fixed min-width="300"></el-table-column>
@@ -64,30 +66,6 @@
         <el-table-column label="操作" fixed="right" width="110" align="center">
           <template v-slot="{ row }">
             <el-link type="primary" @click.native.prevent="routeTo(row)">查看明细</el-link>
-          </template>
-        </el-table-column>
-      </el-table>
-      <el-table
-        class="ih-table margin-top-20"
-        :data="totalList">
-        <el-table-column label="" prop="name" fixed width="220">
-          <template>
-            <div class="color-red">合计</div>
-          </template>
-        </el-table-column>
-        <el-table-column label="产生其他渠道费(元)" prop="addAmount" width="220">
-          <template v-slot="{ row }">
-            <div class="color-red">{{row.addAmount}}</div>
-          </template>
-        </el-table-column>
-        <el-table-column label="已使用其他渠道费(元)" prop="useAmount" width="220">
-          <template v-slot="{ row }">
-            <div class="color-red">{{row.useAmount}}</div>
-          </template>
-        </el-table-column>
-        <el-table-column label="剩余其他渠道费(元)" prop="amount" width="220">
-          <template v-slot="{ row }">
-            <div class="color-red">{{row.amount}}</div>
           </template>
         </el-table-column>
       </el-table>
@@ -131,10 +109,35 @@ export default class SummaryList extends Vue {
     total: null,
     list: [],
   };
-  totalList: any = []
+  totalSum: any = {
+    addAmount: null,
+    useAmount: null,
+    amount: null
+  };
 
   async created() {
     await this.getListMixin();
+  }
+
+  private getSummaries(param: any) {
+    const { columns } = param;
+    const sums: any = [];
+    columns.forEach((i: any, n: number) => {
+      if (n === 0) {
+        sums[n] = "合计";
+        return;
+      }
+      if (n === 3) {
+        sums[n] = this.totalSum.addAmount || 0;
+      }
+      if (n === 4) {
+        sums[n] = this.totalSum.useAmount || 0;
+      }
+      if (n === 5) {
+        sums[n] = this.totalSum.amount || 0;
+      }
+    });
+    return sums;
   }
 
   // 导出
@@ -172,12 +175,7 @@ export default class SummaryList extends Vue {
   async getListMixin() {
     this.resPageInfo = await post_capitalPoolFlow_summary(this.queryPageParameters);
     let totalObj: any = await post_capitalPoolFlow_summarysum(this.queryPageParameters);
-    this.totalList = [
-      {
-        name: '合计',
-        ...totalObj
-      }
-    ]
+    this.totalSum = totalObj;
   }
 
   reset() {

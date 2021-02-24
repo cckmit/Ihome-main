@@ -4,7 +4,7 @@
  * @Author: ywl
  * @Date: 2021-01-12 19:30:20
  * @LastEditors: ywl
- * @LastEditTime: 2021-01-13 14:32:00
+ * @LastEditTime: 2021-02-23 10:58:34
 -->
 <template>
   <IhPage label-width="100px">
@@ -146,11 +146,14 @@
         ></el-table-column>
         <el-table-column
           label="成交报告编号"
-          min-width="155"
+          min-width="175"
           fixed
         >
           <template v-slot="{ row }">
-            <el-link type="primary">{{row.suppDealCode}}</el-link>
+            <el-link
+              type="primary"
+              @click="handleTo(row)"
+            >{{row.suppDealCode}}</el-link>
           </template>
         </el-table-column>
         <el-table-column
@@ -212,7 +215,7 @@
         >
           <template v-slot="{ row }">
             <span v-if="row.correctTime">{{row.correctTime}}</span>
-            <span v-else>--</span>
+            <span v-else>-</span>
           </template>
         </el-table-column>
         <el-table-column
@@ -223,9 +226,10 @@
           <template v-slot="{ row }">
             <el-link
               type="primary"
+              @click="handleToApply(row)"
               v-if="row.correctNo"
             >{{row.correctNo}}</el-link>
-            <span v-else>--</span>
+            <span v-else>-</span>
           </template>
         </el-table-column>
       </el-table>
@@ -273,6 +277,25 @@ export default class DeductList extends Vue {
   private cteationTime: any = [];
   private correctTime: any = [];
 
+  private handleToApply(row: any) {
+    let router = this.$router.resolve({
+      path: "/applyRec/info",
+      query: {
+        id: row.correctId,
+      },
+    });
+    window.open(router.href, "_blank");
+  }
+  private handleTo(row: any) {
+    let router = this.$router.resolve({
+      path: "/dealReport/info",
+      query: {
+        id: row.dealId,
+        type: "ID",
+      },
+    });
+    window.open(router.href, "_blank");
+  }
   private search() {
     let flag = this.cteationTime && this.cteationTime.length;
     let flag2 = this.correctTime && this.correctTime.length;

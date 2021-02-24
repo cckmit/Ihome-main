@@ -4,7 +4,7 @@
  * @Author: ywl
  * @Date: 2020-12-08 17:45:05
  * @LastEditors: ywl
- * @LastEditTime: 2021-01-30 14:43:33
+ * @LastEditTime: 2021-02-20 10:15:44
 -->
 <template>
   <IhPage label-width="80px">
@@ -517,6 +517,7 @@ export default class InvoiceList extends Vue {
    */
   private handleAutoItem(row: any) {
     this.itemData.ids = [row.id];
+    this.itemData.data = { ...row };
     this.isAll = false;
     this.autoVisble = true;
   }

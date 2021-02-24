@@ -4,7 +4,7 @@
  * @Author: wwq
  * @Date: 2020-12-29 11:04:59
  * @LastEditors: wwq
- * @LastEditTime: 2021-02-17 10:02:23
+ * @LastEditTime: 2021-02-23 18:23:54
 -->
 <template>
   <el-dialog
@@ -253,7 +253,10 @@
 
 <script lang="ts">
 import { Component, Vue, Prop } from "vue-property-decorator";
-import { post_refundItem_getEditList } from "@/api/finance/index";
+import {
+  post_refundItem_getEditList,
+  get_invoice_getInvoiceId__businessNo,
+} from "@/api/finance/index";
 
 @Component({})
 export default class Obligation extends Vue {
@@ -340,8 +343,8 @@ export default class Obligation extends Vue {
         router = this.$router.resolve({
           path: `/dealReport/info`,
           query: {
-            id: row.dealCode,
-            type: "CODE",
+            id: row.dealId,
+            type: "ID",
           },
         });
         break;
@@ -354,9 +357,8 @@ export default class Obligation extends Vue {
         });
         break;
       case "notification":
-        window.sessionStorage.setItem("businessId", row.businessId);
         router = this.$router.resolve({
-          path: `/payment/list`,
+          path: `/payment/list?businessId=${row.businessId}`,
         });
         break;
       case "payNo":
@@ -368,11 +370,15 @@ export default class Obligation extends Vue {
         });
         break;
       case "invoiceNo":
-        router = this.$router.resolve({
-          path: `/invoice/info`,
-          query: {
-            id: row.invoiceNo,
-          },
+        get_invoice_getInvoiceId__businessNo({
+          businessNo: row.invoiceNo,
+        }).then((res: any) => {
+          router = this.$router.resolve({
+            path: `/invoice/info`,
+            query: {
+              id: res,
+            },
+          });
         });
         break;
     }

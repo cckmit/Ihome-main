@@ -4,7 +4,7 @@
  * @Author: ywl
  * @Date: 2020-12-09 19:24:59
  * @LastEditors: ywl
- * @LastEditTime: 2021-02-08 14:56:13
+ * @LastEditTime: 2021-02-23 17:54:57
 -->
 <template>
   <IhPage label-width="100px">
@@ -620,7 +620,19 @@ export default class ReceiptList extends Vue {
     this.selection = val;
   }
   async getListMixin() {
-    this.resPageInfo = await post_payment_getList(this.queryPageParameters);
+    let businessId = this.$route.query.businessId;
+    let params = {};
+    if (businessId) {
+      params = {
+        ...this.queryPageParameters,
+        businessId,
+      };
+    } else {
+      params = {
+        ...this.queryPageParameters,
+      };
+    }
+    this.resPageInfo = await post_payment_getList(params);
   }
 
   created() {

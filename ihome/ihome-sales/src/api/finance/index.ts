@@ -1,6 +1,6 @@
 /* eslint-disable */
 /* 此脚本由swagger-ui的api-docs自动生成，请勿修改 */
-//2021-2-17 4:29:36 ├F10: PM┤
+//2021-2-20 10:46:20 ├F10: AM┤
 import { request } from '@/api/base'
 const basePath = "/sales-api/finance"
 /**新增收款账号在线支付信息*/
@@ -106,6 +106,10 @@ return await request.post< string[],string[]> (basePath+'/invoice/downloadFile',
 /**查询开票详情*/
 export async function get_invoice_get__id (d?: any) {
 return await request.get<InvoiceDetailVO,InvoiceDetailVO>(basePath+'/invoice/get/{id}', { params: d })
+}
+/**获取开票信息ID*/
+export async function get_invoice_getInvoiceId__businessNo (d?: any) {
+return await request.get<number,number>(basePath+'/invoice/getInvoiceId/{businessNo}', { params: d })
 }
 /**根据业务编码获取开票信息*/
 export async function get_invoice_getInvoiceInfo__businessCode (d?: any) {
@@ -493,7 +497,7 @@ return await request.post< any,any> (basePath+'/refundItemPush/getList', d)
 }
 /**退款推送*/
 export async function post_refundItemPush_refundPush (d?: any) {
-return await request.post< number,number> (basePath+'/refundItemPush/refundPush', d)
+return await request.post< string,string> (basePath+'/refundItemPush/refundPush', d)
 }
 /**设置已退款*/
 export async function post_refundItemPush_setUpARefund (d?: any) {
@@ -2075,8 +2079,6 @@ buttonType: number;
 companyId: number;
 /**退款汇总清单*/
 countVOs: RefundApplyCountVO[];
-/**制单日期(yyyy-MM-dd)*/
-createDate: string;
 /**制单人*/
 inputUser: number;
 /**待退款项数据集合*/
@@ -2089,7 +2091,7 @@ payType: string;
 refundInfo: RefundInfoVO;
 /**结算方式(CentralizedPay-集中支付、OnlinePay-网银支付)*/
 settlementType: string;
-/**状态(Draft-草稿、PTWYSH-待平台文员审核、FGSYGSH-待分公司业管审核、FGSCWSH-待分公司财务审核、OaAppeal-OA流程审批中、AppealPass-终审通过、AppealDismissed-终审驳回、PayConfirm-支付结果确认中、PaySuccessful-支付成功)*/
+/**状态(Draft-草稿、PTWYSH-待平台文员审核、FGSYGSH-待分公司业管审核、FGSCWSH-待分公司财务审核、OaAppeal-OA流程审批中、AppealPass-终审通过、PayConfirm-支付结果确认中、PaySuccessful-支付成功)*/
 status: string;
 }
 /**RefundApplyBusinessProcessVO*/
@@ -2129,7 +2131,7 @@ refundInfo: RefundInfoVO;
 remark: string;
 /**结算方式(CentralizedPay-集中支付、OnlinePay-网银支付)*/
 settlementType: string;
-/**当前状态(Draft-草稿、PTWYSH-待平台文员审核、FGSYGSH-待分公司业管审核、FGSCWSH-待分公司财务审核、OaAppeal-OA流程审批中、AppealPass-终审通过、AppealDismissed-终审驳回、PayConfirm-支付结果确认中、PaySuccessful-支付成功)*/
+/**当前状态(Draft-草稿、PTWYSH-待平台文员审核、FGSYGSH-待分公司业管审核、FGSCWSH-待分公司财务审核、OaAppeal-OA流程审批中、AppealPass-终审通过、PayConfirm-支付结果确认中、PaySuccessful-支付成功)*/
 status: string;
 }
 /**RefundApplyCheckQueryVO*/
@@ -2161,7 +2163,7 @@ buttonType: string;
 id: number;
 /**审核意见[驳回和暂存时必填]*/
 remark: string;
-/**当前状态(Draft-草稿、PTWYSH-待平台文员审核、FGSYGSH-待分公司业管审核、FGSCWSH-待分公司财务审核、OaAppeal-OA流程审批中、AppealPass-终审通过、AppealDismissed-终审驳回、PayConfirm-支付结果确认中、PaySuccessful-支付成功)*/
+/**当前状态(Draft-草稿、PTWYSH-待平台文员审核、FGSYGSH-待分公司业管审核、FGSCWSH-待分公司财务审核、OaAppeal-OA流程审批中、AppealPass-终审通过、PayConfirm-支付结果确认中、PaySuccessful-支付成功)*/
 status: string;
 }
 /**RefundApplyCollectParamVO*/
@@ -2221,7 +2223,7 @@ payType: string;
 refundApplyNo: string;
 /**结算方式(CentralizedPay-集中支付、OnlinePay-网银支付)*/
 settlementType: string;
-/**状态(Draft-草稿、PTWYSH-待平台文员审核、FGSYGSH-待分公司业管审核、FGSCWSH-待分公司财务审核、OaAppeal-OA流程审批中、AppealPass-终审通过、AppealDismissed-终审驳回、PayConfirm-支付结果确认中、PaySuccessful-支付成功)*/
+/**状态(Draft-草稿、PTWYSH-待平台文员审核、FGSYGSH-待分公司业管审核、FGSCWSH-待分公司财务审核、OaAppeal-OA流程审批中、AppealPass-终审通过、PayConfirm-支付结果确认中、PaySuccessful-支付成功)*/
 status: string;
 }
 /**RefundApplyQueryVO*/
@@ -2246,7 +2248,7 @@ payType: string;
 refundApplyNo: string;
 /**结算方式(CentralizedPay-集中支付、OnlinePay-网银支付)*/
 settlementType: string;
-/**状态(Draft-草稿、PTWYSH-待平台文员审核、FGSYGSH-待分公司业管审核、FGSCWSH-待分公司财务审核、OaAppeal-OA流程审批中、AppealPass-终审通过、AppealDismissed-终审驳回、PayConfirm-支付结果确认中、PaySuccessful-支付成功)*/
+/**状态(Draft-草稿、PTWYSH-待平台文员审核、FGSYGSH-待分公司业管审核、FGSCWSH-待分公司财务审核、OaAppeal-OA流程审批中、AppealPass-终审通过、PayConfirm-支付结果确认中、PaySuccessful-支付成功)*/
 status: string;
 }
 /**RefundApplyUpdateParamVO*/
@@ -2271,8 +2273,6 @@ buttonType: number;
 companyId: number;
 /**退款汇总清单*/
 countVOs: RefundApplyCountVO[];
-/**制单日期(yyyy-MM-dd)*/
-createDate: string;
 /**ID*/
 id: number;
 /**制单人*/
@@ -2289,7 +2289,7 @@ refundApplyNo: string;
 refundInfo: RefundInfoVO;
 /**结算方式(CentralizedPay-集中支付、OnlinePay-网银支付)*/
 settlementType: string;
-/**状态(Draft-草稿、PTWYSH-待平台文员审核、FGSYGSH-待分公司业管审核、FGSCWSH-待分公司财务审核、OaAppeal-OA流程审批中、AppealPass-终审通过、AppealDismissed-终审驳回、PayConfirm-支付结果确认中、PaySuccessful-支付成功)*/
+/**状态(Draft-草稿、PTWYSH-待平台文员审核、FGSYGSH-待分公司业管审核、FGSCWSH-待分公司财务审核、OaAppeal-OA流程审批中、AppealPass-终审通过、PayConfirm-支付结果确认中、PaySuccessful-支付成功)*/
 status: string;
 }
 /**RefundApplyVO*/
@@ -2312,7 +2312,7 @@ branchNo: string;
 companyId: number;
 /**退款汇总清单集合*/
 countVOs: RefundApplyCountVO[];
-/**制单日期(yyyy-MM-dd)*/
+/**制单日期(yyyy-MM-dd HH:mm:ss)*/
 createDate: string;
 /**创建时间(yyyy-MM-dd HH:mm:ss)*/
 createTime: string;
@@ -2348,7 +2348,7 @@ refundItems: RefundItemVO[];
 refundRecords: RefundRecord[];
 /**结算方式(CentralizedPay-集中支付、OnlinePay-网银支付)*/
 settlementType: string;
-/**状态(Draft-草稿、PTWYSH-待平台文员审核、FGSYGSH-待分公司业管审核、FGSCWSH-待分公司财务审核、OaAppeal-OA流程审批中、AppealPass-终审通过、AppealDismissed-终审驳回、PayConfirm-支付结果确认中、PaySuccessful-支付成功)*/
+/**状态(Draft-草稿、PTWYSH-待平台文员审核、FGSYGSH-待分公司业管审核、FGSCWSH-待分公司财务审核、OaAppeal-OA流程审批中、AppealPass-终审通过、PayConfirm-支付结果确认中、PaySuccessful-支付成功)*/
 status: string;
 /**OA流程ID*/
 summaryId: number;
@@ -2455,14 +2455,28 @@ transactionUnit: string;
 }
 /**RefundItemAddParamVO*/
 export interface RefundItemAddParamVO {
+/**服务费实收金额*/
+actualAmount: number;
 /**退款金额*/
 amount: number;
 /**附件集合*/
 attachments: RefundItemAttachment[];
 /**优惠告知书ID*/
 businessId: number;
+/**对外拆佣总合*/
+commission: number;
+/**业绩确认时间(yyyy-MM-dd HH:mm:ss)*/
+confirmationTime: string;
+/**合同类型(DistriDeal-分销成交、NaturalVisitDeal-自然来访成交、SelfChannelDeal-自渠成交)*/
+contType: string;
+/**成交客户姓名*/
+dealCustomerName: string;
+/**成交单位*/
+dealHouse: string;
 /**成交ID*/
 dealId: number;
+/**成交报告编号*/
+dealNo: string;
 /**退款项来源-暂时取消必填(NOTICE-优惠告知书发起补充协议发起退款申请、PerformanceChanges-补充成交报告业绩变更、CheckOutRefund-补充成交退房退款)*/
 itemSource: string;
 /**优惠告知书收款金额*/
@@ -2473,6 +2487,8 @@ orgId: number;
 payVOs: RefundItemPayVO[];
 /**项目id*/
 proId: number;
+/**服务费应收金额*/
+receivableAmount: number;
 /**退款人账号*/
 refundAccount: string;
 /**退款人开户行*/
@@ -2481,6 +2497,10 @@ refundBankName: string;
 refundItemUser: string;
 /**退款人姓名*/
 refundName: string;
+/**成交房号ID*/
+roomId: number;
+/**服务费未收金额*/
+uncollectedAmount: number;
 }
 /**RefundItemAttachment*/
 export interface RefundItemAttachment {
@@ -2813,7 +2833,7 @@ updateUser: number;
 }
 /**RefundRecord*/
 export interface RefundRecord {
-/**操作后状态(Draft-草稿、PTWYSH-待平台文员审核、FGSYGSH-待分公司业管审核、FGSCWSH-待分公司财务审核、OaAppeal-OA流程审批中、AppealPass-终审通过、AppealDismissed-终审驳回、PayConfirm-支付结果确认中、PaySuccessful-支付成功)*/
+/**操作后状态(Draft-草稿、PTWYSH-待平台文员审核、FGSYGSH-待分公司业管审核、FGSCWSH-待分公司财务审核、OaAppeal-OA流程审批中、AppealPass-终审通过、PayConfirm-支付结果确认中、PaySuccessful-支付成功)*/
 afterStatus: string;
 /**创建时间(yyyy-MM-dd HH:mm:ss)*/
 createTime: string;
@@ -2821,7 +2841,7 @@ createTime: string;
 createUser: number;
 /**已删除*/
 deleted: number;
-/**操作前状态(Draft-草稿、PTWYSH-待平台文员审核、FGSYGSH-待分公司业管审核、FGSCWSH-待分公司财务审核、OaAppeal-OA流程审批中、AppealPass-终审通过、AppealDismissed-终审驳回、PayConfirm-支付结果确认中、PaySuccessful-支付成功)*/
+/**操作前状态(Draft-草稿、PTWYSH-待平台文员审核、FGSYGSH-待分公司业管审核、FGSCWSH-待分公司财务审核、OaAppeal-OA流程审批中、AppealPass-终审通过、PayConfirm-支付结果确认中、PaySuccessful-支付成功)*/
 frontStatus: string;
 /**ID*/
 id: number;

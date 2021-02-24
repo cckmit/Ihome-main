@@ -4,7 +4,7 @@
  * @Author: wwq
  * @Date: 2020-11-03 11:52:41
  * @LastEditors: wwq
- * @LastEditTime: 2021-02-06 09:38:02
+ * @LastEditTime: 2021-02-23 15:56:18
 -->
 <template>
   <div>
@@ -189,6 +189,7 @@
         <el-col :span="8">
           <el-form-item label="详细地址">
             <el-input
+              clearable
               placeholder="请输入地址"
               v-model="form.searchAddr"
               class="input-with-select"
@@ -225,6 +226,7 @@
                 v-if="searchAddr"
                 :keyword="searchAddr"
                 :auto-viewport="true"
+                location=""
                 style="display: none"
               ></BmLocalSearch>
             </BaiduMap>
@@ -523,7 +525,6 @@
     >
       <el-button
         type="primary"
-        
         @click="submit('save')"
       >保存</el-button>
       <el-button
@@ -695,31 +696,23 @@ export default class EditBasicInfo extends Vue {
     if (Adopt) {
       const RHeadBusinessManagement = this.$roleTool.RHeadBusinessManagement();
       const RBusinessManagement = this.$roleTool.RBusinessManagement();
-      if (RHeadBusinessManagement || RBusinessManagement){
-          return true;
-      }else{
+      if (RHeadBusinessManagement || RBusinessManagement) {
+        return true;
+      } else {
         return false;
       }
-    }else if (Conduct){
-       return false;
-    }else{
-       return true;
+    } else if (Conduct) {
+      return false;
+    } else {
+      return true;
     }
-
   }
   submitChange() {
     const status = window.sessionStorage.getItem("projectStatus");
     const Draft = status === "Draft";
-    // const Adopt = status === "Adopt";
     const Reject = status === "Reject";
-    // const RHeadBusinessManagement = this.$roleTool.RHeadBusinessManagement();
-    // const RBusinessManagement = this.$roleTool.RBusinessManagement();
     const RFrontLineClerk = this.$roleTool.RFrontLineClerk();
-    return (
-      (Draft && RFrontLineClerk) ||
-      // ((RHeadBusinessManagement || RBusinessManagement) && Adopt) ||
-      (RFrontLineClerk && Reject)
-    );
+    return (Draft && RFrontLineClerk) || (RFrontLineClerk && Reject);
   }
 
   @Watch("form.exMinyuan", { immediate: true, deep: true })
@@ -818,6 +811,12 @@ export default class EditBasicInfo extends Vue {
       arr.forEach((v: any) => {
         this.checkBoxChangeList.push(JSON.parse(v));
       });
+      this.houseList = this.form.proPics.map((v: any) => ({
+        name: v.fileName,
+        fileId: v.fileId,
+        exIndex: v.exIndex,
+        proAttachEnum: "ProPic",
+      }));
       this.houseFileList = this.form.proPics.map((v: any) => ({
         name: v.fileName,
         fileId: v.fileId,
@@ -907,23 +906,28 @@ export default class EditBasicInfo extends Vue {
 
   // 处理楼房图片
   houseFiles(data: any) {
-    this.houseList = data.map((v: any) => ({
-      fileId: v.fileId,
-      fileName: v.name,
-      attachId: null,
-      proAttachEnum: "ProPic",
-      exIndex: v.exIndex, // 是否设为主页
-    }));
-    // let arr = data.map((v: any) => ({
-    //   fileId: v.fileId,
-    //   fileName: v.name,
-    //   attachId: v.null,
-    //   proAttachEnum: "ProPic",
-    //   exIndex: null, // 是否设为主页
-    // }));
-    // arr.forEach((v: any, i: number) => {
-    //   this.$set(this.houseFileList, i, arr[i]);
-    // });
+    if (!data.length) {
+      this.houseList = [];
+    } else {
+      if (this.houseFileList.length) {
+        this.houseList = data.map((v: any) => ({
+          fileId: v.fileId,
+          fileName: v.name,
+          proAttachEnum: "ProPic",
+          exIndex: v.exIndex ? v.exIndex : 0, // 是否设为主页
+        }));
+      } else {
+        this.houseList = data.map((v: any) => ({
+          fileId: v.fileId,
+          fileName: v.name,
+          proAttachEnum: "ProPic",
+          exIndex: 1, // 是否设为主页
+        }));
+        this.radio = this.houseList.filter(
+          (item: any) => item.exIndex === 1
+        )[0]?.fileId;
+      }
+    }
   }
 
   viewCycleData(data: any) {
@@ -970,11 +974,12 @@ export default class EditBasicInfo extends Vue {
   getLocationPoint(e: any) {
     this.center.lng = e.point.lng;
     this.center.lat = e.point.lat;
+    this.form.jingwei = `${e.point?.lng},${e.point?.lat}`;
     this.zoom = 15;
     let geoCoder = new this.BMap.Geocoder();
-    geoCoder.getPoint(this.searchAddr, (point: any) => {
-      this.form.jingwei = `${point?.lng},${point?.lat}`;
-    });
+    // geoCoder.getPoint(this.searchAddr, (point: any) => {
+    //   this.form.jingwei = `${point?.lng},${point?.lat}`;
+    // });
     geoCoder.getLocation(e.point, (res: any) => {
       this.form.searchAddr = res?.address;
     });
@@ -1002,18 +1007,12 @@ export default class EditBasicInfo extends Vue {
         obj.propertyArgs = this.checkBoxChangeList.map((v: any) => ({
           ...v.msg,
         }));
-        if (this.houseList.length) {
-          obj.proPics = this.houseList;
-        } else {
-          obj.proPics = this.houseFileList.map((v: any) => ({
-            fileName: v.name,
-            fileId: v.fileId,
-            attachId: null,
-            exIndex: v.exIndex,
-            proAttachEnum: v.proAttachEnum,
-          }));
-        }
-
+        obj.proPics = this.houseList.map((v: any) => ({
+          fileId: v.fileId,
+          fileName: v.name ? v.name : v.fileName,
+          proAttachEnum: "ProPic",
+          exIndex: v.exIndex,
+        }));
         // 校验提示
         let arr: any = [];
         Object.values(this.submitFile).forEach((v: any) => {
@@ -1057,22 +1056,24 @@ export default class EditBasicInfo extends Vue {
 
         if (this.$route.name === "projectChildAdd") {
           let res: any = await post_project_add(obj);
-          if (res.proId ){
+          if (res.proId) {
             this.$message.success("保存成功");
             this.$emit("cutOther", true);
-            this.$router.replace({ path: "/projects/ChildEdit?id="+res.proId });
+            this.$router.replace({
+              path: "/projects/ChildEdit?id=" + res.proId,
+            });
           }
         } else {
           obj.proId = this.projectId;
           if (submittype === "save") {
             this.loadSave = true;
-            try{
+            try {
               await post_project_update(obj);
               this.$message.success("保存成功");
               this.$emit("cutOther", true);
               this.houseList = [];
               this.loadSave = false;
-            }catch(error){
+            } catch (error) {
               this.loadSave = false;
             }
           } else if (submittype === "submit") {
@@ -1082,8 +1083,6 @@ export default class EditBasicInfo extends Vue {
             this.$goto({ path: "/projects/list" });
           }
         }
-        
-
         //   obj.proId = this.projectId;
         //   if (submittype === "save") {
         //       await post_project_update(obj);
@@ -1093,15 +1092,15 @@ export default class EditBasicInfo extends Vue {
         // }
         // this.houseList = [];
         // this.$message.success("提交成功");
-        // this.$goto({ path: "/projects/list" });        
-      }else{
-          setTimeout(()=>{
-            let isError: any= document.getElementsByClassName("is-error");
-            if (isError != null){
-              isError[0].querySelector('input').focus();
-            }
-          },100);
-          return false;          
+        // this.$goto({ path: "/projects/list" });
+      } else {
+        setTimeout(() => {
+          let isError: any = document.getElementsByClassName("is-error");
+          if (isError != null) {
+            isError[0].querySelector("input").focus();
+          }
+        }, 100);
+        return false;
       }
     });
   }

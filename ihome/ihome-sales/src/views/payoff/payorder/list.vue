@@ -4,7 +4,7 @@
  * @Author: wwq
  * @Date: 2020-12-26 11:11:28
  * @LastEditors: wwq
- * @LastEditTime: 2021-02-18 14:25:43
+ * @LastEditTime: 2021-02-22 15:45:12
 -->
 <template>
   <IhPage label-width="120px">
@@ -34,10 +34,12 @@
           </el-col>
           <el-col :span="8">
             <el-form-item label="组织">
-              <SelectOrganizationTree
-                :v-model="queryPageParameters.belongOrgId"
-                @callback="(id) => (queryPageParameters.belongOrgId = id)"
-              />
+              <IhSelectPageDivision
+                v-model="queryPageParameters.belongOrgId"
+                placeholder="请选择组织"
+                clearable
+              ></IhSelectPageDivision>
+              <!-- <IhSelectOrgTree v-model="queryPageParameters.belongOrgId"></IhSelectOrgTree> -->
             </el-form-item>
           </el-col>
           <el-col :span="8">
@@ -96,7 +98,7 @@
             <el-form-item label="制单日期">
               <el-date-picker
                 style="width: 100%"
-                v-model="queryPageParameters.timeList"
+                v-model="timeList"
                 type="daterange"
                 align="left"
                 unlink-panels
@@ -104,7 +106,8 @@
                 start-placeholder="开始日期"
                 end-placeholder="结束日期"
                 :picker-options="$root.pickerOptions"
-                value-format="yyyy-MM-dd"
+                value-format="yyyy-MM-dd HH:mm:ss"
+                :default-time="['00:00:00', '23:59:59']"
               ></el-date-picker>
             </el-form-item>
           </el-col>
@@ -113,6 +116,7 @@
               <el-select
                 style="width: 100%"
                 v-model="queryPageParameters.paymentMethod"
+                clearable
                 placeholder="请选择"
               >
                 <el-option
@@ -135,24 +139,24 @@
           @click="search()"
         >查询</el-button>
         <el-button
-          type="success"
-          @click="add()"
-          v-has="'B.SALES.PAYOFF.PAYOFFLIST.FFZFSQ'"
-        >发起支付申请</el-button>
-        <el-button
           type="info"
           @click="reset()"
         >重置</el-button>
-        <el-button
-          type="danger"
-          @click="remove(null, 'duo')"
-          v-has="'B.SALES.PAYOFF.PAYOFFLIST.PLSC'"
-        >批量删除</el-button>
         <el-button
           type="success"
           @click="exportMsg()"
           v-has="'B.SALES.PAYOFF.PAYOFFLIST.DCLB'"
         >导出</el-button>
+        <el-button
+          type="success"
+          @click="add()"
+          v-has="'B.SALES.PAYOFF.PAYOFFLIST.FFZFSQ'"
+        >发起支付申请</el-button>
+        <el-button
+          type="danger"
+          @click="remove(null, 'duo')"
+          v-has="'B.SALES.PAYOFF.PAYOFFLIST.PLSC'"
+        >批量删除</el-button>
       </el-row>
     </template>
 
@@ -353,30 +357,28 @@ import {
   post_payApply_delete_ids,
 } from "@/api/payoff/index";
 import PaginationMixin from "../../../mixins/pagination";
-import SelectOrganizationTree from "@/components/SelectOrganizationTree.vue";
 import Progress from "./dialog/progress.vue";
 import axios from "axios";
 import { getToken } from "ihome-common/util/cookies";
 
 @Component({
-  components: { SelectOrganizationTree, Progress },
+  components: { Progress },
   mixins: [PaginationMixin],
 })
 export default class PayoffList extends Vue {
   queryPageParameters: any = {
     applyCode: null,
-    belongOrgName: null,
-    maker: null,
     agencyId: null,
-    applyAmount: null,
-    actualAmount: null,
-    deductAmount: null,
+    belongOrgId: null,
+    reviewerId: null,
+    settlementMethod: null,
+    makerId: null,
     status: null,
-    makerTime: null,
     beginMakerTime: null,
     endMakerTime: null,
-    timeList: [],
+    paymentMethod: null,
   };
+  timeList: any = [];
   prodialogVisible: any = false;
   rogressData: any = {};
   selection: any = [];
@@ -429,27 +431,25 @@ export default class PayoffList extends Vue {
   reset() {
     Object.assign(this.queryPageParameters, {
       applyCode: null,
-      belongOrgName: null,
-      maker: null,
       agencyId: null,
-      applyAmount: null,
-      actualAmount: null,
-      deductAmount: null,
+      belongOrgId: null,
+      reviewerId: null,
+      settlementMethod: null,
+      makerId: null,
       status: null,
-      makerTime: null,
       beginMakerTime: null,
       endMakerTime: null,
-      timeList: [],
+      paymentMethod: null,
     });
+    this.timeList = [];
   }
 
   // 导出
   async exportMsg() {
     if (!this.resPageInfo.list.length) {
-      this.$message.warning("请先发起支付申请");
+      this.$message.warning("请发起支付申请");
       return;
     } else {
-      let arr: any = this.resPageInfo.list.map((v: any) => v.id);
       const token: any = getToken();
       axios({
         method: "POST",
@@ -460,7 +460,7 @@ export default class PayoffList extends Vue {
           "Content-Type": "application/json",
           Authorization: "bearer " + token,
         },
-        data: arr,
+        data: this.queryPageParameters,
       }).then((res: any) => {
         const href = window.URL.createObjectURL(res.data);
         const $a = document.createElement("a");
@@ -565,10 +565,9 @@ export default class PayoffList extends Vue {
   }
 
   search() {
-    if (this.queryPageParameters.timeList.length) {
-      this.queryPageParameters.beginMakerTime = this.queryPageParameters.timeList[0];
-      this.queryPageParameters.endMakerTime = this.queryPageParameters.timeList[1];
-    }
+    let flag = this.timeList && this.timeList.length;
+    this.queryPageParameters.beginMakerTime = flag ? this.timeList[0] : null;
+    this.queryPageParameters.endMakerTime = flag ? this.timeList[1] : null;
     this.queryPageParameters.pageNum = 1;
     this.getListMixin();
   }

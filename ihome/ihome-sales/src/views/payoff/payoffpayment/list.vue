@@ -4,7 +4,7 @@
  * @Author: wwq
  * @Date: 2021-01-15 10:45:53
  * @LastEditors: wwq
- * @LastEditTime: 2021-02-19 14:41:33
+ * @LastEditTime: 2021-02-23 09:44:45
 -->
 <template>
   <IhPage label-width="100px">
@@ -101,6 +101,7 @@
               end-placeholder="结束日期"
               :picker-options="$root.pickerOptions"
               value-format="yyyy-MM-dd"
+              :default-time="['00:00:00', '23:59:59']"
             ></el-date-picker>
           </el-col>
         </el-row>
@@ -144,7 +145,7 @@
             <el-table
               class="ih-table"
               :empty-text="emptyText"
-              :data="showTable"
+              :data="resPageInfo.list"
               @selection-change="selectionChange"
             >
               <el-table-column
@@ -157,13 +158,13 @@
               <el-table-column
                 label="付款结算单号"
                 prop="settlementCode"
-                width="150"
+                width="200"
                 fixed
               ></el-table-column>
               <el-table-column
                 label="付款申请单编号"
                 prop="applyCode"
-                width="150"
+                width="200"
               ></el-table-column>
               <el-table-column
                 label="结算方式"
@@ -232,26 +233,46 @@
                 v-if="i.name !== 'PendingPayment'"
                 label="支付唯一编码"
                 prop="paymentCode"
-                width="150"
-              ></el-table-column>
+                width="200"
+              >
+                <template v-slot="{ row }">
+                  <span v-if="row.paymentCode">{{row.paymentCode}}</span>
+                  <span v-else>---</span>
+                </template>
+              </el-table-column>
               <el-table-column
                 v-if="['all', 'Paying'].includes(i.name)"
                 label="推送时间"
                 prop="pushDate"
                 width="120"
-              ></el-table-column>
+              >
+                <template v-slot="{ row }">
+                  <span v-if="row.pushDate">{{row.pushDate}}</span>
+                  <span v-else>---</span>
+                </template>
+              </el-table-column>
               <el-table-column
                 v-if="!['PendingPayment', 'Paying'].includes(i.name)"
                 label="付款时间"
                 prop="paymentDate"
                 width="120"
-              ></el-table-column>
+              >
+                <template v-slot="{ row }">
+                  <span v-if="row.paymentDate">{{row.paymentDate}}</span>
+                  <span v-else>---</span>
+                </template>
+              </el-table-column>
               <el-table-column
                 v-if="['all', 'TicketRefunded'].includes(i.name)"
                 label="失败原因"
                 prop="reason"
                 width="150"
-              ></el-table-column>
+              >
+                <template v-slot="{ row }">
+                  <span v-if="row.reason">{{row.reason}}</span>
+                  <span v-else>---</span>
+                </template>
+              </el-table-column>
               <el-table-column
                 v-if="!['PaymentSuccess', 'Paying'].includes(i.name)"
                 label="操作"
@@ -364,14 +385,9 @@ export default class ReturnConfirmList extends Vue {
     payDateType: null,
     beginDate: null,
     endDate: null,
-    paymentStatusList: [
-      "PendingPayment",
-      "Paying",
-      "PaymentSuccess",
-      "TicketRefunded",
-    ],
+    paymentStatusList: ["PendingPayment"],
   };
-  tabsValue: any = "all";
+  tabsValue: any = "PendingPayment";
   splitData: any = {};
   editData: any = {};
   setData: any = {};
@@ -405,12 +421,10 @@ export default class ReturnConfirmList extends Vue {
       name: "PaymentSuccess",
     },
   ];
-  showTable: any = [];
   selection: any = [];
 
   async getListMixin() {
     this.resPageInfo = await post_payDetail_getList(this.queryPageParameters);
-    this.showTable = this.resPageInfo.list;
   }
 
   selectable(row: any) {
@@ -426,10 +440,9 @@ export default class ReturnConfirmList extends Vue {
   }
 
   search() {
-    if (this.timeList.length) {
-      this.queryPageParameters.beginDate = this.timeList[0];
-      this.queryPageParameters.endDate = this.timeList[1];
-    }
+    let flag = this.timeList && this.timeList.length;
+    this.queryPageParameters.beginDate = flag ? this.timeList[0] : null;
+    this.queryPageParameters.endDate = flag ? this.timeList[1] : null;
     this.queryPageParameters.pageNum = 1;
     if (this.tabsValue !== "all") {
       this.queryPageParameters.paymentStatusList = [this.tabsValue];
@@ -508,6 +521,7 @@ export default class ReturnConfirmList extends Vue {
           message: "付款推送成功",
           position: "bottom-right",
         });
+        this.search();
       } else {
         this.$message.error(res.reason);
         return;

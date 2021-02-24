@@ -4,7 +4,7 @@
  * @Author: ywl
  * @Date: 2021-02-17 11:27:05
  * @LastEditors: ywl
- * @LastEditTime: 2021-02-17 15:10:55
+ * @LastEditTime: 2021-02-23 19:41:27
 -->
 <template>
   <IhPage>
@@ -142,6 +142,7 @@
                 style="width: 100%"
                 v-model="info.settlementType"
                 placeholder="请选择结算方式"
+                @change="settlementMethodChange"
               >
                 <el-option
                   v-for="item in $root.dictAllList('RefundSettlementType')"
@@ -160,6 +161,7 @@
               <el-select
                 style="width: 100%"
                 v-model="info.payType"
+                :disabled="paymentMethodDisabled"
                 placeholder="请选择付款方式"
               >
                 <el-option
@@ -686,6 +688,7 @@ import {
   post_refundApply_queryOaApprovalUser__id,
   post_refundApply_getFlowCommentList__id,
   post_refundApply_financialAudit,
+  get_invoice_getInvoiceId__businessNo,
 } from "@/api/finance/index";
 
 @Component({
@@ -713,6 +716,7 @@ export default class RefundToExamineToExamine extends Vue {
     refundAttachments: [], //退款申请附件
     refundInfo: {},
   };
+  paymentMethodDisabled = false;
   remark: any = "";
   submitFile: any = {};
   fileListType: any = [];
@@ -759,6 +763,15 @@ export default class RefundToExamineToExamine extends Vue {
     return this.$route.query.id;
   }
 
+  settlementMethodChange(val: any) {
+    if (val === "OnlinePay") {
+      this.paymentMethodDisabled = true;
+      this.info.payType = "OtherPay";
+    } else {
+      this.paymentMethodDisabled = false;
+      this.info.payType = "CashPay";
+    }
+  }
   async submit(buttonType: any) {
     if (["TemporaryStorage", "Reject"].includes(buttonType) && !this.remark) {
       this.$message.warning("审核意见不能为空");
@@ -816,9 +829,8 @@ export default class RefundToExamineToExamine extends Vue {
         });
         break;
       case "notification":
-        window.sessionStorage.setItem("businessId", row.businessId);
         router = this.$router.resolve({
-          path: `/payment/list`,
+          path: `/payment/list?businessId=${row.businessId}`,
         });
         break;
       case "payNo":
@@ -830,11 +842,15 @@ export default class RefundToExamineToExamine extends Vue {
         });
         break;
       case "invoiceNo":
-        router = this.$router.resolve({
-          path: `/invoice/info`,
-          query: {
-            id: row.invoiceNo,
-          },
+        get_invoice_getInvoiceId__businessNo({
+          businessNo: row.invoiceNo,
+        }).then((res: any) => {
+          router = this.$router.resolve({
+            path: `/invoice/info`,
+            query: {
+              id: res,
+            },
+          });
         });
         break;
     }
@@ -966,6 +982,7 @@ export default class RefundToExamineToExamine extends Vue {
       const res = await get_refundApply_get__id({ id: this.returnId });
       this.info = {
         ...res,
+        refundInfo: res.refundInfo || {},
       };
       // 获取付款方账号
       const item = await post_bankAccount_getByOrgId__orgId({

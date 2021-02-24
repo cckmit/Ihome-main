@@ -175,7 +175,7 @@
 <script lang="ts">
 import { Component, Vue } from "vue-property-decorator";
 import Edit from "../dialog/reportedRules-dialog/edit.vue";
-import Business from "../dialog/reportedRules-dialog/channelBusiness.vue";
+import Business from "../dialog/reportedRules-dialog/channelLevelBusiness.vue";
 import {
   get_customerReportRule_get__termId,
   post_customerReportRule_delWXBB__wxId,

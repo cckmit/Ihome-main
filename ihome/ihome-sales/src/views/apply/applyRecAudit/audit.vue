@@ -4,7 +4,7 @@
  * @Author: ywl
  * @Date: 2021-01-14 19:09:51
  * @LastEditors: ywl
- * @LastEditTime: 2021-02-18 15:35:10
+ * @LastEditTime: 2021-02-23 09:52:53
 -->
 <template>
   <IhPage class="text-left">
@@ -370,7 +370,7 @@
           ></el-table-column>
           <el-table-column label="抵扣项类别">
             <template v-slot="{ row }">
-              {{ row.subType || $root.dictAllName(row.suppContType, 'SuppContType')}}
+              {{ row.subType ? $root.dictAllName(row.subType, 'SuppContType') : $root.dictAllName(row.suppContType, 'SuppContType') }}
             </template>
           </el-table-column>
           <el-table-column
@@ -381,9 +381,15 @@
               {{row.subMoney}}
             </template>
           </el-table-column>
-          <el-table-column label="不含税金额">
+          <el-table-column
+            label="不含税金额"
+            prop="subMoneyNoTax"
+          >
           </el-table-column>
-          <el-table-column label="税额">
+          <el-table-column
+            label="税额"
+            prop="subMoneyTax"
+          >
           </el-table-column>
         </el-table>
       </div>
@@ -597,13 +603,17 @@
               <el-input-number
                 controls-position="right"
                 v-model="taxMoney"
-                :min="globalTaxMoney-10 < 0 ? 0 : globalTaxMoney-10"
+                :min="globalTaxMoney-10"
                 :max="globalTaxMoney+10"
                 :precision="2"
                 @change="taxMoneyChange"
                 :step="0.01"
                 :disabled="form.status !== 'BranchAccount'"
               ></el-input-number>
+              <div
+                style="font-size: 14px; color: red;"
+                v-if="form.status === 'BranchAccount'"
+              >(上下浮动不能超过10)</div>
             </td>
           </tr>
           <tr>
@@ -969,6 +979,11 @@ export default class ApplyAudit extends Vue {
     console.log(val, sub, number);
     let listArr: any = [];
     let isSub = true;
+    if (sub === 0) {
+      isSub = false;
+    } else {
+      isSub = true;
+    }
     for (let index = 0; index < this.dealList.length; index++) {
       const element = this.dealList[index];
       // 税额

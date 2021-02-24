@@ -4,7 +4,7 @@
  * @Author: ywl
  * @Date: 2021-01-07 16:30:03
  * @LastEditors: ywl
- * @LastEditTime: 2021-02-19 20:53:11
+ * @LastEditTime: 2021-02-23 11:50:10
 -->
 <template>
   <IhPage class="text-left">
@@ -426,10 +426,10 @@
             fixed="right"
             width="80"
           >
-            <template v-slot="{ $index }">
+            <template v-slot="{ row, $index }">
               <el-link
                 type="danger"
-                @click="dealRemove($index)"
+                @click="dealRemove(row, $index)"
               >移除</el-link>
             </template>
           </el-table-column>
@@ -473,7 +473,6 @@
           style="width: 100%"
           :data="waitList"
           show-summary
-          :summary-method="getSummaries"
         >
           <el-table-column label="成交报告编号">
             <template v-slot="{ row }">
@@ -487,7 +486,7 @@
           ></el-table-column>
           <el-table-column label="抵扣项类别">
             <template v-slot="{ row }">
-              {{ row.subType || $root.dictAllName(row.suppContType, 'SuppContType')}}
+              {{ row.subType ? $root.dictAllName(row.subType, 'SuppContType') : $root.dictAllName(row.suppContType, 'SuppContType')}}
             </template>
           </el-table-column>
           <el-table-column
@@ -510,7 +509,7 @@
           </el-table-column>
           <el-table-column
             label="操作"
-            width="120"
+            width="80"
             fixed="right"
           >
             <template v-slot="{ $index }">
@@ -536,6 +535,7 @@
           style="width: 100%"
           :data="form.otherSubList"
           show-summary
+          :summary-method="getSummaries"
         >
           <el-table-column label="扣除类型">
             <template v-slot="{ row }">
@@ -560,7 +560,7 @@
                 }"
               >
                 <el-option
-                  v-for="(i, n) in form.dealList"
+                  v-for="(i, n) in otherDealList"
                   :key="n"
                   :value="i"
                   :label="i.termName"
@@ -589,15 +589,6 @@
             prop="subMoneyNoTax"
           >
             <template v-slot="{ row }">
-              <!-- <el-input
-                v-model="row.subMoneyNoTax"
-                v-digits="2"
-              >
-                <i
-                  slot="prefix"
-                  style="line-height: 40px;color: #000;"
-                >-</i>
-              </el-input> -->
               {{otherSubMoneyNoTax(row)}}
             </template>
           </el-table-column>
@@ -606,15 +597,6 @@
             prop="subMoneyTax"
           >
             <template v-slot="{ row }">
-              <!-- <el-input
-                v-model="row.subMoneyTax"
-                v-digits="2"
-              >
-                <i
-                  slot="prefix"
-                  style="line-height: 40px; color: #000;"
-                >-</i>
-              </el-input> -->
               {{otherSubMoney(row)}}
             </template>
           </el-table-column>
@@ -625,8 +607,8 @@
           </el-table-column>
           <el-table-column
             label="操作"
-            width="80"
             fixed="right"
+            width="80"
           >
             <template v-slot="{ $index }">
               <el-link
@@ -790,12 +772,13 @@
               <el-input-number
                 controls-position="right"
                 v-model="form.taxMoney"
-                :min="globalTaxMoney-10 < 0 ? 0 : globalTaxMoney-10"
+                :min="globalTaxMoney-10"
                 :max="globalTaxMoney+10"
                 :precision="2"
                 @change="taxMoneyChange"
                 :step="0.01"
               ></el-input-number>
+              <div style="font-size: 14px; color: red;">(上下浮动不能超过10)</div>
             </td>
           </tr>
           <!-- <tr>
@@ -810,7 +793,7 @@
             <td class="width-150">开票税率</td>
             <td class="width-150">{{form.taxRate | percent}}</td>
             <td class="width-150">纳税人识别号</td>
-            <td class="width-150 padding-0">
+            <td class="width-150">
               <el-input
                 v-model="form.developTaxNo"
                 class="table-input"
@@ -834,10 +817,7 @@
           </tr>
           <tr>
             <td class="width-150">住所(地址)</td>
-            <td
-              colspan="2"
-              class="padding-0"
-            >
+            <td colspan="2">
               <el-input
                 v-model="form.developAddress"
                 class="table-input"
@@ -845,10 +825,7 @@
               />
             </td>
             <td class="width-150">电话</td>
-            <td
-              colspan="2"
-              class="padding-0"
-            >
+            <td colspan="2">
               <el-input
                 v-model="form.developPhone"
                 class="table-input"
@@ -858,10 +835,7 @@
           </tr>
           <tr>
             <td>经办部门意见</td>
-            <td
-              colspan="5"
-              class="padding-0"
-            >
+            <td colspan="5">
               <el-input
                 class="table-input"
                 type="textarea"
@@ -932,21 +906,21 @@
         <template v-if="form.status === 'InvoiceApply'">
           <el-button
             type="success"
-            @click="invoiceApply()"
+            @click.stop="invoiceApply()"
           >发起开票申请</el-button>
           <el-button
             type="primary"
-            @click="submit('SaveAndInvoiceApply')"
+            @click.stop="submit('SaveAndInvoiceApply')"
           >保存并发起开票申请</el-button>
         </template>
         <template v-else>
           <el-button
             type="primary"
-            @click="submit('')"
+            @click.stop="submit('')"
           >暂存</el-button>
           <el-button
             type="success"
-            @click="submit('Submit')"
+            @click.stop="submit('Submit')"
           >提交</el-button>
         </template>
         <el-button @click="$router.go(-1)">返回</el-button>
@@ -1073,6 +1047,15 @@ export default class ApplyRecAdd extends Vue {
     ],
   };
 
+  private get otherDealList() {
+    let obj: any = {},
+      newArr: any = [];
+    newArr = this.form.dealList.reduce((item: any, next: any) => {
+      obj[next.termId] ? " " : (obj[next.termId] = true && item.push(next));
+      return item;
+    }, []);
+    return newArr;
+  }
   private get totalNoReceiveAmount() {
     let sum = 0;
     this.form.dealList.forEach((i: any) => {
@@ -1163,13 +1146,13 @@ export default class ApplyRecAdd extends Vue {
       row.subMoney,
       1 + Number(this.form.taxRate)
     );
-    row.subMoneyNoTax = this.$math.tofixed(subMoneyNoTax, 2);
+    row.subMoneyNoTax = this.$math.tofixed(subMoneyNoTax * -1, 2);
     return row.subMoneyNoTax;
   }
   // 计算税额 -- 其他扣除项
   private otherSubMoney(row: any) {
-    let subMoneyTax = this.$math.sub(row.subMoney, row.subMoneyNoTax);
-    row.subMoneyTax = this.$math.tofixed(subMoneyTax, 2);
+    let subMoneyTax = this.$math.add(row.subMoney, row.subMoneyNoTax);
+    row.subMoneyTax = this.$math.tofixed(subMoneyTax * -1, 2);
     return row.subMoneyTax;
   }
   // 本次请款比例
@@ -1205,7 +1188,7 @@ export default class ApplyRecAdd extends Vue {
     this.form.termList.forEach((i: any) => {
       sum = this.$math.add(sum, parseFloat(i.subMoney));
     });
-    return this.$math.tofixed(sum, 2);
+    return this.$math.tofixed(sum * -1, 2);
   }
   // 本期扣罚金额
   private fineMoneySum() {
@@ -1213,7 +1196,7 @@ export default class ApplyRecAdd extends Vue {
     this.form.termList.forEach((i: any) => {
       sum = this.$math.add(sum, parseFloat(i.fineMoney));
     });
-    return this.$math.tofixed(sum, 2);
+    return this.$math.tofixed(sum * -1, 2);
   }
   // 本期实际请款金额（含税）
   private actMoneyTaxSum() {
@@ -1253,12 +1236,16 @@ export default class ApplyRecAdd extends Vue {
         sums[index] = values.reduce((prev: any, curr: any) => {
           const value = Number(curr);
           if (!isNaN(value)) {
-            return prev + curr;
+            return this.$math.add(prev, curr);
           } else {
             return prev;
           }
         }, 0);
-        sums[index] = `${sums[index]}`;
+        if (index === 2) {
+          sums[index] = `-${sums[index]}`;
+        } else {
+          sums[index] = `${sums[index]}`;
+        }
       } else {
         sums[index] = "";
       }
@@ -1301,8 +1288,18 @@ export default class ApplyRecAdd extends Vue {
   private removeOther(index: number) {
     this.form.otherSubList.splice(index, 1);
   }
-  private dealRemove(index: number) {
+  private dealRemove(row: any, index: number) {
     this.form.dealList.splice(index, 1);
+    let list = this.form.dealList.map((i: any) => i.termId);
+    if (!list.includes(row.termId)) {
+      let otherSubList: any = [];
+      this.form.otherSubList.forEach((i: any) => {
+        if (i.termId !== row.termId) {
+          otherSubList.push(i);
+        }
+      });
+      this.form.otherSubList = otherSubList;
+    }
   }
   // 获取本期抵扣金额明细
   private async getWaitList(developId: any) {
@@ -1313,7 +1310,7 @@ export default class ApplyRecAdd extends Vue {
       });
       this.waitList = list.map((i: any) => {
         let subMoneyNoTax = this.$math.tofixed(
-          this.$math.div(i.subMoney, 1 + this.form.taxRate),
+          this.$math.div(i.subMoney, 1 + parseFloat(this.form.taxRate)),
           2
         );
         let subMoneyTax = this.$math.tofixed(
@@ -1324,6 +1321,7 @@ export default class ApplyRecAdd extends Vue {
           ...i,
           subMoneyNoTax,
           subMoneyTax,
+          dataSourceId: i.id,
         };
       });
     } catch (error) {
@@ -1451,7 +1449,11 @@ export default class ApplyRecAdd extends Vue {
               2
             );
           });
-        this.form.otherSubList
+        let otherSubList = this.form.otherSubList.map((i: any) => ({
+          ...i,
+          subMoney: i.subMoney * -1,
+        }));
+        otherSubList
           .filter((it: any) => {
             return (
               it.termId === i.termId &&
@@ -1464,7 +1466,7 @@ export default class ApplyRecAdd extends Vue {
               2
             );
           });
-        this.form.otherSubList
+        otherSubList
           .filter((item: any) => {
             return item.termId === i.termId && item.subType === "Fine";
           })
@@ -1479,7 +1481,7 @@ export default class ApplyRecAdd extends Vue {
         return {
           ...i,
           applyMoney,
-          fineMoney,
+          fineMoney: fineMoney,
           subMoney: this.$math.add(subMoney1, subMoney2),
           actMoney: this.$math.add(
             applyMoney,
@@ -1487,7 +1489,7 @@ export default class ApplyRecAdd extends Vue {
           ),
           sumActMoney:
             i.hisSumActMoney +
-            this.$math.sub(
+            this.$math.add(
               applyMoney,
               this.$math.addArr([fineMoney, subMoney1, subMoney2])
             ),
@@ -1526,12 +1528,12 @@ export default class ApplyRecAdd extends Vue {
   }
   private async getDevBankInfo(bankId: any) {
     try {
-      const res = await get_company_getCompanyBankInfo__bankId({ bankId });
+      const res: any = await get_company_getCompanyBankInfo__bankId({ bankId });
       console.log(res);
       this.form.developAddress = res.address;
       this.form.developPhone = res.phone;
       this.form.developTaxNo = res.creditCode;
-      this.form.developOpenBank = res.bankName;
+      this.form.developOpenBank = res.bank;
     } catch (error) {
       console.log(error);
     }
@@ -1566,14 +1568,18 @@ export default class ApplyRecAdd extends Vue {
   // 税额修改
   private taxMoneyChange(number: any) {
     if (!number) {
-      this.form.taxMoney =
-        this.globalTaxMoney - 10 < 0 ? 0 : this.globalTaxMoney - 10;
+      this.form.taxMoney = this.globalTaxMoney - 10;
     }
     let val = this.form.taxMoney;
     let sub = this.$math.sub(this.globalTaxMoney, val); // 差额
     console.log(val, sub, number);
     let listArr: any = [];
     let isSub = true;
+    if (sub === 0) {
+      isSub = false;
+    } else {
+      isSub = true;
+    }
     for (let index = 0; index < this.form.dealList.length; index++) {
       const element = this.form.dealList[index];
       // 税额
@@ -1594,6 +1600,8 @@ export default class ApplyRecAdd extends Vue {
           this.$math.sub(thisTaxMoney, sub),
           2
         );
+        console.log(taxMoneyNew, "xxxxx");
+
         if (taxMoneyNew > 0) {
           element.taxMoneyNew = taxMoneyNew;
           element.noTaxMoneyNew = this.$math.tofixed(
@@ -1633,13 +1641,11 @@ export default class ApplyRecAdd extends Vue {
     let otherSubList = this.form.otherSubList.map((i: any) => ({
       ...i,
       subMoney: i.subMoney * -1,
-      subMoneyNoTax: i.subMoneyNoTax * -1,
-      subMoneyTax: i.subMoneyTax * -1,
     }));
     let termList = this.form.termList.map((i: any) => ({
       ...i,
-      subMoney: i.subMoney * -1,
-      fineMoney: i.fineMoney * -1,
+      // subMoney: i.subMoney * -1,
+      // fineMoney: i.fineMoney * -1,
     }));
     let dealList = this.form.dealList.map((i: any) => ({
       ...i,
@@ -1700,7 +1706,13 @@ export default class ApplyRecAdd extends Vue {
     }
 
     console.log(this.form);
-
+    let loading = this.$loading({
+      lock: true,
+      text: "请耐心等待...",
+      spinner: "el-icon-loading",
+      background: "rgba(0, 0, 0, 0.6)",
+      customClass: "ih-loading-spinner",
+    });
     try {
       await post_applyRec_save({
         ...this.form,
@@ -1723,22 +1735,33 @@ export default class ApplyRecAdd extends Vue {
           break;
       }
       this.$message.success(`${msg}成功`);
+      loading.close();
       this.$goto({
         path: "/applyRec/list",
       });
     } catch (error) {
       console.log(error);
+      loading.close();
     }
   }
   private async invoiceApply() {
     let applyId = this.$route.query.id;
+    let loading = this.$loading({
+      lock: true,
+      text: "请耐心等待...",
+      spinner: "el-icon-loading",
+      background: "rgba(0, 0, 0, 0.6)",
+      customClass: "ih-loading-spinner",
+    });
     try {
       await post_applyRec_InvoiceApply__applyId({ applyId });
       this.$message.success("发起开票成功");
+      loading.close();
       this.$goto({
         path: "/applyRec/list",
       });
     } catch (error) {
+      loading.close();
       console.log(error);
     }
   }
@@ -1778,16 +1801,16 @@ export default class ApplyRecAdd extends Vue {
       });
       this.form.termList = termList.map((i: any) => ({
         ...i,
-        subMoney: i.subMoney * -1,
-        fineMoney: i.fineMoney * -1,
+        // subMoney: i.subMoney * -1,
+        // fineMoney: i.fineMoney * -1,
       }));
       let otherSubList = await get_devOtherSub_getAll__applyId({ applyId });
       console.log(otherSubList);
       this.form.otherSubList = otherSubList.map((i: any) => ({
         ...i,
         subMoney: i.subMoney * -1,
-        subMoneyNoTax: i.subMoneyNoTax * -1,
-        subMoneyTax: i.subMoneyTax * -1,
+        // subMoneyNoTax: i.subMoneyNoTax * -1,
+        // subMoneyTax: i.subMoneyTax * -1,
         termObj: {
           termId: i.termId,
         },
@@ -1819,6 +1842,7 @@ export default class ApplyRecAdd extends Vue {
     } else {
       this.getFileListType([]);
       this.form.applyUserName = (this.$root as any).userInfo.name;
+      this.form.applyTime = (this.$tool as any).todayLongStr();
     }
   }
 }
@@ -1839,14 +1863,14 @@ export default class ApplyRecAdd extends Vue {
     background-color: #fccccc;
   }
 }
-.table-input {
-  /deep/ .el-input__inner {
-    border: none;
-  }
-  /deep/ .el-textarea__inner {
-    border: none;
-  }
-}
+// .table-input {
+//   /deep/ .el-input__inner {
+//     border: none;
+//   }
+//   /deep/ .el-textarea__inner {
+//     border: none;
+//   }
+// }
 .apply-table {
   border-collapse: collapse;
   font-size: 14px;
@@ -1866,6 +1890,14 @@ export default class ApplyRecAdd extends Vue {
   }
   .padding-0 {
     padding: 0;
+  }
+}
+</style>
+<style lang="scss">
+.ih-loading-spinner {
+  .el-icon-loading,
+  .el-loading-text {
+    color: #fff;
   }
 }
 </style>

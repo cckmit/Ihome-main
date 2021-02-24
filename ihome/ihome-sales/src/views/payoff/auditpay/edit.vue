@@ -4,7 +4,7 @@
  * @Author: wwq
  * @Date: 2020-12-26 11:11:23
  * @LastEditors: wwq
- * @LastEditTime: 2021-02-19 14:37:52
+ * @LastEditTime: 2021-02-23 09:41:49
 -->
 <template>
   <IhPage>
@@ -79,6 +79,7 @@
             <el-form-item
               label="渠道收款账号"
               prop="receiveAccount"
+              @change="receiveAccountChange"
             >
               <el-select
                 v-model="info.receiveAccount"
@@ -153,10 +154,7 @@
             </el-form-item>
           </el-col>
           <el-col :span="8">
-            <el-form-item
-              label="付款方"
-              prop="payerId"
-            >
+            <el-form-item label="付款方">
               <IhSelectPageByPayer
                 clearable
                 v-model="info.payerId"
@@ -167,15 +165,13 @@
             </el-form-item>
           </el-col>
           <el-col :span="8">
-            <el-form-item
-              label="付款帐号"
-              prop="paymentAccount"
-            >
+            <el-form-item label="付款帐号">
               <el-select
                 v-model="info.paymentAccount"
                 clearable
                 placeholder="请选择付款帐号"
                 class="width--100"
+                @change="paymentAccountChange"
               >
                 <el-option
                   v-for="item in payerAccountOptions"
@@ -316,7 +312,7 @@
           </el-table-column>
           <el-table-column
             label="合同信息"
-            width="250"
+            width="300"
           >
             <template v-slot="{ row }">
               <div :title="row.contNo">分销协议编号:
@@ -426,7 +422,7 @@
             label="本次付款金额"
             width="200"
           >
-            <template v-slot="{ row, $index }">
+            <template v-slot="{ row }">
               <div>
                 服务费:
                 <el-input
@@ -434,6 +430,7 @@
                   v-digits="2"
                   clearable
                   style="width: 70%"
+                  @input="payApplyDetailListNumberChange(row)"
                 />
               </div>
               <div class="margin-top-5">
@@ -443,7 +440,7 @@
                   v-digits="2"
                   readonly
                   style="width: 70%"
-                  @click.native="agencyEdit(row, $index)"
+                  @click.native="agencyEdit(row)"
                 />
               </div>
               <div>合计: {{
@@ -461,6 +458,7 @@
                 v-digits="2"
                 clearable
                 style="width: 70%"
+                @input="payApplyDetailListNumberChange(row)"
               />
             </template>
           </el-table-column>
@@ -473,6 +471,7 @@
                 v-model="row.deductType"
                 clearable
                 style="width: 70%"
+                @input="payApplyDetailListNumberChange(row)"
               />
             </template>
           </el-table-column>
@@ -510,11 +509,11 @@
             label="操作"
             align="center"
           >
-            <template v-slot="{ $index }">
+            <template v-slot="{ row, $index }">
               <el-button
                 type="danger"
                 size="small"
-                @click="delContacts($index)"
+                @click="delContacts(row, $index)"
               > 移除
               </el-button>
             </template>
@@ -1094,6 +1093,8 @@ export default class PayoffEdit extends Vue {
     projectName: null,
     settlementMethod: null,
     paymentMethod: null,
+    agencyAccountBank: null,
+    payerAccountBank: null,
   };
   submitFile: any = {};
   operateVisible: any = false;
@@ -1194,7 +1195,7 @@ export default class PayoffEdit extends Vue {
   };
 
   agencyDialogVisible: any = false;
-  agencyEditIndex: any = 0;
+  agencyEditDealCode: any = 0;
   agencyData: any = {};
   modify: any = false;
   computedLoading: any = false;
@@ -1263,8 +1264,8 @@ export default class PayoffEdit extends Vue {
     return msg;
   }
 
-  agencyEdit(data: any, index: number) {
-    this.agencyEditIndex = index;
+  agencyEdit(data: any) {
+    this.agencyEditDealCode = data.dealCode;
     let arr: any = [];
     if (!data.ageThisCommFeesList?.length) {
       arr = data.canCommFeesList.map((v: any) => ({
@@ -1287,16 +1288,38 @@ export default class PayoffEdit extends Vue {
   }
 
   agencyFinish(data: any) {
-    this.info.payApplyDetailList[this.agencyEditIndex].ageThisCommFeesList = [
-      ...data,
-    ];
     let sum: any = 0;
     data.forEach((v: any) => {
       sum += Number(v.agencyFeesAmount);
     });
-    this.info.payApplyDetailList[this.agencyEditIndex].ageThisCommFees = sum;
-    this.showTable[this.agencyEditIndex].ageThisCommFeesList = [...data];
-    this.showTable[this.agencyEditIndex].ageThisCommFees = sum;
+    this.info.payApplyDetailList = this.info.payApplyDetailList.map(
+      (v: any) => {
+        if (v.dealCode === this.agencyEditDealCode) {
+          return {
+            ...v,
+            ageThisCommFees: sum,
+            ageThisCommFeesList: data,
+          };
+        } else {
+          return {
+            ...v,
+          };
+        }
+      }
+    );
+    this.showTable = this.showTable.map((v: any) => {
+      if (v.dealCode === this.agencyEditDealCode) {
+        return {
+          ...v,
+          ageThisCommFees: sum,
+          ageThisCommFeesList: data,
+        };
+      } else {
+        return {
+          ...v,
+        };
+      }
+    });
     this.agencyDialogVisible = false;
     this.$message.success("保存成功");
   }
@@ -1377,6 +1400,13 @@ export default class PayoffEdit extends Vue {
     return row.tax;
   }
 
+  // 待付款列表数据变化
+  payApplyDetailListNumberChange(row: any) {
+    this.info.payApplyDetailList = this.info.payApplyDetailList.map((v: any) =>
+      v.dealCode === row.dealCode ? row : v
+    );
+  }
+
   searchOpen = true;
   private get payoffId() {
     return this.$route.query.id;
@@ -1388,12 +1418,26 @@ export default class PayoffEdit extends Vue {
     this.channelAccountOptions = res.channelBanks;
   }
 
+  receiveAccountChange(data: any) {
+    const item = this.channelAccountOptions.find(
+      (v: any) => v.accountNo === data
+    );
+    this.info.agencyAccountBank = item.branchName;
+  }
+
   async getPayerInfo(item: any) {
     this.info.payerName = item.name;
     const res = await post_bankAccount_getByOrgId__orgId({
       orgId: this.info.payerId,
     });
     this.payerAccountOptions = res;
+  }
+
+  paymentAccountChange(data: any) {
+    const item = this.payerAccountOptions.find(
+      (v: any) => v.accountNo === data
+    );
+    this.info.payerAccountBank = item.branchName;
   }
 
   handleClick(val: any) {
@@ -1444,6 +1488,10 @@ export default class PayoffEdit extends Vue {
           })
         ),
       };
+      this.getChannelInfo({
+        id: res.agencyId,
+        name: res.agencyName,
+      });
       this.getFileListType(res.documentList);
       this.filterTabs(this.info.payApplyDetailList);
       this.settlementMethodChange(res.settlementMethod);
@@ -1476,6 +1524,12 @@ export default class PayoffEdit extends Vue {
       obj[h.code] = h.fileList;
     });
     this.submitFile = { ...obj };
+  }
+
+  otherCycleChange(val: any) {
+    const item = this.tabsList.find((v: any) => v.value === val.cycleId);
+    val.cycleName = item.label;
+    val.cycleId = item.value;
   }
 
   async searchPerson() {
@@ -1582,8 +1636,34 @@ export default class PayoffEdit extends Vue {
     }
   }
 
-  async delContacts(index: number) {
-    this.showTable.splice(index, 1);
+  async delContacts(data: any, index: number) {
+    if (this.showTable.length === 1) {
+      let otherArr = this.info.otherDeductionDetailResponseList;
+      this.showTable = [];
+      this.tabsValue = "";
+      this.tabsList = this.tabsList.filter(
+        (v: any) => v.value !== data.cycleId
+      );
+      this.info.payApplyDetailList = this.info.payApplyDetailList.filter(
+        (v: any) => v.cycleId !== data.cycleId
+      );
+      this.info.otherDeductionDetailResponseList = otherArr.filter((v: any) => {
+        if (v.cycleId !== data.cycleId) {
+          return {
+            ...v,
+          };
+        }
+      });
+    } else {
+      this.showTable.splice(index, 1);
+      this.info.payApplyDetailList = this.info.payApplyDetailList.filter(
+        (v: any) => v.dealCode !== data.dealCode
+      );
+    }
+    if (this.tabsList.length) {
+      this.tabsValue = this.tabsList[0].value;
+      this.handleClick(this.tabsValue);
+    }
   }
 
   addDeductionType() {
@@ -1637,6 +1717,8 @@ export default class PayoffEdit extends Vue {
           obj.reviewUpdateMainBody.agencyId = this.info.agencyId;
           obj.reviewUpdateMainBody.agencyName = this.info.agencyName;
           obj.reviewUpdateMainBody.applyAmount = this.info.applyAmount;
+          obj.reviewUpdateMainBody.agencyAccountBank = this.info.agencyAccountBank;
+          obj.reviewUpdateMainBody.payerAccountBank = this.info.payerAccountBank;
           obj.reviewUpdateMainBody.belongOrgId = this.info.belongOrgId;
           obj.reviewUpdateMainBody.belongOrgName = this.info.belongOrgName;
           obj.reviewUpdateMainBody.deductAmount = this.info.deductAmount;
@@ -1686,16 +1768,35 @@ export default class PayoffEdit extends Vue {
             }
             break;
         }
+        const loading = this.$loading({
+          lock: true,
+          text: "Loading",
+          spinner: "el-icon-loading",
+          background: "rgba(0, 0, 0, 0.6)",
+          customClass: "ih-loading-spinner",
+        });
         switch (this.info.status) {
           case "PlatformClerkUnreview":
           case "BranchBusinessManageUnreview":
             delete obj.applyId;
             obj.id = this.payoffId;
-            await post_payApply_notFinanceReviewApply(obj);
+            try {
+              await post_payApply_notFinanceReviewApply(obj);
+              loading.close();
+            } catch (err) {
+              loading.close();
+              return;
+            }
             break;
           case "BranchFinanceUnreview":
           case "ReviewPass":
-            await post_payApply_financeReviewApply(obj);
+            try {
+              await post_payApply_financeReviewApply(obj);
+              loading.close();
+            } catch (err) {
+              loading.close();
+              return;
+            }
             break;
         }
         this.$message({
@@ -1773,6 +1874,14 @@ export default class PayoffEdit extends Vue {
   color: #000;
   /deep/ .el-input__prefix {
     left: 10px;
+  }
+}
+</style>
+<style lang="scss">
+.ih-loading-spinner {
+  .el-icon-loading,
+  .el-loading-text {
+    color: #fff;
   }
 }
 </style>

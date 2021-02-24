@@ -3,8 +3,8 @@
  * @version: 
  * @Author: zyc
  * @Date: 2021-02-06 16:29:34
- * @LastEditors: ywl
- * @LastEditTime: 2021-02-17 10:47:45
+ * @LastEditors: wwq
+ * @LastEditTime: 2021-02-23 18:23:46
 -->
 <template>
   <IhPage>
@@ -588,6 +588,7 @@ import {
   post_refundApply_collect,
   post_refundApply_add,
   post_refundApply_update,
+  get_invoice_getInvoiceId__businessNo,
 } from "@/api/finance/index";
 import { post_bankAccount_getByOrgId__orgId } from "@/api/finance/index";
 import { Form as ElForm } from "element-ui";
@@ -666,8 +667,8 @@ export default class RefundApplyEdit extends Vue {
         router = this.$router.resolve({
           path: `/dealReport/info`,
           query: {
-            id: row.dealCode,
-            type: "CODE",
+            id: row.dealId,
+            type: "ID",
           },
         });
         break;
@@ -680,9 +681,8 @@ export default class RefundApplyEdit extends Vue {
         });
         break;
       case "notification":
-        window.sessionStorage.setItem("businessId", row.businessId);
         router = this.$router.resolve({
-          path: `/payment/list`,
+          path: `/payment/list?businessId=${row.businessId}`,
         });
         break;
       case "payNo":
@@ -694,11 +694,15 @@ export default class RefundApplyEdit extends Vue {
         });
         break;
       case "invoiceNo":
-        router = this.$router.resolve({
-          path: `/invoice/info`,
-          query: {
-            id: row.invoiceNo,
-          },
+        get_invoice_getInvoiceId__businessNo({
+          businessNo: row.invoiceNo,
+        }).then((res: any) => {
+          router = this.$router.resolve({
+            path: `/invoice/info`,
+            query: {
+              id: res,
+            },
+          });
         });
         break;
     }

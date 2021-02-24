@@ -3,8 +3,8 @@
  * @version: 
  * @Author: zyc
  * @Date: 2021-02-08 14:34:29
- * @LastEditors: ywl
- * @LastEditTime: 2021-02-17 11:34:08
+ * @LastEditors: wwq
+ * @LastEditTime: 2021-02-23 18:25:54
 -->
 <template>
   <IhPage>
@@ -648,6 +648,7 @@ import {
   post_refundApply_getFlowCommentList__id,
   post_bankAccount_getByOrgId__orgId,
   post_refundApply_notFinancialAudit,
+  get_invoice_getInvoiceId__businessNo,
 } from "@/api/finance/index";
 
 @Component({
@@ -708,9 +709,8 @@ export default class RefundToExamineToExamine extends Vue {
         });
         break;
       case "notification":
-        window.sessionStorage.setItem("businessId", row.businessId);
         router = this.$router.resolve({
-          path: `/payment/list`,
+          path: `/payment/list?businessId=${row.businessId}`,
         });
         break;
       case "payNo":
@@ -722,11 +722,15 @@ export default class RefundToExamineToExamine extends Vue {
         });
         break;
       case "invoiceNo":
-        router = this.$router.resolve({
-          path: `/invoice/info`,
-          query: {
-            id: row.invoiceNo,
-          },
+        get_invoice_getInvoiceId__businessNo({
+          businessNo: row.invoiceNo,
+        }).then((res: any) => {
+          router = this.$router.resolve({
+            path: `/invoice/info`,
+            query: {
+              id: res,
+            },
+          });
         });
         break;
     }
@@ -777,6 +781,7 @@ export default class RefundToExamineToExamine extends Vue {
       const res = await get_refundApply_get__id({ id: this.returnId });
       this.info = {
         ...res,
+        refundInfo: res.refundInfo || {},
       };
       // 获取付款方账号
       const item = await post_bankAccount_getByOrgId__orgId({

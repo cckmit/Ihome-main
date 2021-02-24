@@ -4,8 +4,8 @@
  * @version: 
  * @Author: zyc
  * @Date: 2021-01-13 14:50:21
- * @LastEditors: wwq
- * @LastEditTime: 2021-02-19 14:31:39
+ * @LastEditors: zyc
+ * @LastEditTime: 2021-02-23 18:11:03
 -->
 <template>
   <IhPage label-width="110px">
@@ -98,14 +98,9 @@
     </template>
     <template #btn>
       <el-row>
-        <el-button
-          type="primary"
-          @click="searchMixin()"
-        >查询</el-button>
-        <el-button
-          type="info"
-          @click="reset()"
-        >重置</el-button>
+        <el-button type="primary" @click="searchMixin()">查询</el-button>
+        <el-button type="success" @click="handleExport()">导出</el-button>
+        <el-button @click="reset()">重置</el-button>
       </el-row>
     </template>
     <template #table>
@@ -125,12 +120,13 @@
         <el-table-column
           label="退款申请单编号"
           prop="refundApplyNo"
-          min-width="120"
+          min-width="200"
           fixed
         ></el-table-column>
         <el-table-column
           label="事业部"
           prop="departmentName"
+          min-width="250"
         ></el-table-column>
         <el-table-column
           label="申请退款金额"
@@ -140,30 +136,23 @@
         <el-table-column
           label="付款方"
           prop="accountName"
+          min-width="200"
         ></el-table-column>
-        <el-table-column
-          label="结算方式"
-          prop=""
-        >
+        <el-table-column label="结算方式" prop="">
           <template slot-scope="scope">{{
             $root.dictAllName(scope.row.settlementType, "RefundSettlementType")
           }}</template>
         </el-table-column>
-        <el-table-column
-          label="付款方式"
-          prop="payType"
-        >
+        <el-table-column label="付款方式" prop="payType">
           <template slot-scope="scope">{{
             $root.dictAllName(scope.row.payType, "RefundPayType")
           }}</template>
         </el-table-column>
-        <el-table-column
-          label="制单人"
-          prop="inputUserName"
-        ></el-table-column>
+        <el-table-column label="制单人" prop="inputUserName"></el-table-column>
         <el-table-column
           label="制单日期"
           prop="createDate"
+          width="190"
         ></el-table-column>
         <el-table-column
           fixed="right"
@@ -177,22 +166,21 @@
               class="margin-right-10"
               type="primary"
               @click.native.prevent="showPlanPicture(scope)"
-            >进度流程图</el-link>
+              >进度流程图</el-link
+            >
           </template>
         </el-table-column>
 
-        <el-table-column
-          label="操作"
-          width="120"
-          fixed="right"
-        >
+        <el-table-column label="操作" width="120" fixed="right">
           <template v-slot="{ row }">
             <el-link
               type="primary"
               @click="toExamine(row)"
-              :class="{'ih-data-disabled': !auditChange(row)}"
+              :class="{ 'ih-data-disabled': !auditChange(row) }"
               v-has="'B.SALES.FINANCE.REFUNDAPPLY.TOEXAMINE'"
-            >审核</el-link>
+              v-if="toexamineBtn(row)"
+              >审核</el-link
+            >
           </template>
         </el-table-column>
       </el-table>
@@ -222,6 +210,8 @@
 <script lang="ts">
 import { Component, Vue } from "vue-property-decorator";
 import PaginationMixin from "../../../mixins/pagination";
+import axios from "axios";
+import { getToken } from "ihome-common/util/cookies";
 import {
   post_refundApply_getCheckList,
   get_refundApply_getBusinessProcess__id,
@@ -288,6 +278,58 @@ export default class RefundToExamineList extends Vue {
       payType: null,
       refundApplyNo: null,
       settlementType: null,
+    });
+  }
+  toexamineBtn(row: any) {
+    //(Draft-草稿、PTWYSH-待平台文员审核、FGSYGSH-待分公司业管审核、FGSCWSH-待分公司财务审核、OaAppeal-OA流程审批中、AppealPass-终审通过、PayConfirm-支付结果确认中、PaySuccessful-支付成功
+    let result = false;
+    switch (row.status) {
+      case "PTWYSH":
+        result = this.$roleTool.RPlatformClerk();
+        break;
+      case "FGSYGSH":
+        result = this.$roleTool.RBusinessManagement();
+        break;
+      case "FGSCWSH":
+        result = this.$roleTool.RFinancialOfficer();
+        break;
+      default:
+        break;
+    }
+
+    return result;
+  }
+
+  private handleExport() {
+    const token: any = getToken();
+    axios({
+      method: "POST",
+      url: `/sales-api/finance/refundApply/checkExportData`,
+      xsrfHeaderName: "Authorization",
+      responseType: "blob",
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: "bearer " + token,
+      },
+
+      data: { ...this.queryPageParameters },
+    }).then((res: any) => {
+      if (res.data.type === "application/json") {
+        let reader = new FileReader();
+        reader.readAsText(res.data, "utf-8");
+        reader.onload = () => {
+          let result: any = reader.result;
+          const res = JSON.parse(result);
+          this.$message.warning(res.msg);
+        };
+        return;
+      }
+      const href = window.URL.createObjectURL(res.data);
+      const $a = document.createElement("a");
+      $a.href = href;
+      $a.download = "审核退款申请列表.xlsx";
+      $a.click();
+      $a.remove();
     });
   }
 

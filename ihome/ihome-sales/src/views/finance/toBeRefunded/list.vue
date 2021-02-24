@@ -4,7 +4,7 @@
  * @Author: zyc
  * @Date: 2021-02-05 15:23:39
  * @LastEditors: zyc
- * @LastEditTime: 2021-02-15 14:39:12
+ * @LastEditTime: 2021-02-23 18:07:42
 -->
 
 
@@ -75,8 +75,13 @@
     <template v-slot:btn>
       <el-row>
         <el-button type="primary" @click="searchMixin()">查询</el-button>
-        <el-button type="success" @click="download()" v-has="'B.SALES.FINANCE.TOBEREFUNDED.EXPORT'">导出</el-button>
-        <el-button type="info" @click="reset()">重置</el-button>
+        <el-button
+          type="success"
+          @click="download()"
+          v-has="'B.SALES.FINANCE.TOBEREFUNDED.EXPORT'"
+          >导出</el-button
+        >
+        <el-button  @click="reset()">重置</el-button>
       </el-row>
     </template>
 
@@ -97,10 +102,10 @@
           fixed
           prop="refundNo"
           label="退款项编号"
-          width="150"
+          width="200"
         ></el-table-column>
 
-        <el-table-column prop="projectName" label="项目名称">
+        <el-table-column prop="projectName"  width="200" label="项目名称">
           <template slot-scope="scope">
             <el-link type="primary" @click="gotoNew(scope.row, 'projectName')">
               {{ scope.row.projectName }}</el-link
@@ -124,11 +129,16 @@
           width="100"
         ></el-table-column>
 
-        <el-table-column
-          prop="projectName"
-          label="退款人信息"
-          width="100"
-        ></el-table-column>
+        <el-table-column prop="" label="退款人信息" width="300">
+          <template slot-scope="scope">
+            <div>
+              <p>收款姓名：{{ scope.row.refundName }}</p>
+              <p>收款帐号：{{ scope.row.refundAccount }}</p>
+              <p>收款开户行：{{ scope.row.refundBankName }}</p>
+            </div>
+            <div v-if="scope.row.dealId === null"></div>
+          </template>
+        </el-table-column>
         <el-table-column prop="status" label="退款状态">
           <template slot-scope="scope">{{
             $root.dictAllName(scope.row.status, "FinRefundStatus")
@@ -261,7 +271,6 @@ export default class ToBeRefundedList extends Vue {
   };
   toVoidList: any = [];
   createUserList: any = []; //创建人列表
-  divisionList: any = []; //事业部列表
 
   resPageInfo: any = {
     total: null,
@@ -286,11 +295,12 @@ export default class ToBeRefundedList extends Vue {
         `/web-sales/projects/childInfo?id=${item.proId}&proName=${item.projectName}`
       );
     } else if (type == "noticeAmount") {
-      window.open("/web-sales/payment/list"); //缺失参数
+      window.sessionStorage.setItem("businessId", item.businessId);
+      window.open("/web-sales/payment/list?businessId=" + item.businessId); //缺失参数
     } else if (type == "refundApplyNO") {
-      console.error("未实现");
+      window.open(`/web-sales/refundApply/info?id=${item.id}`);
     } else if (type == "dealNo") {
-      window.open(`/web-sales/dealReport/info?id=${item.dealNo}&type=ID`);
+      window.open(`/web-sales/dealReport/info?id=${item.dealId}&type=ID`);
     } else if (type == "invoiceNo") {
       window.open(`/web-sales/invoice/info?id=${item.invoiceNo}`);
     }
@@ -320,6 +330,7 @@ export default class ToBeRefundedList extends Vue {
 
   async download() {
     const token: any = getToken();
+
     axios({
       method: "POST",
       url: `/sales-api/finance/refundItem/exportData`,
@@ -331,9 +342,23 @@ export default class ToBeRefundedList extends Vue {
       },
       data: this.queryPageParameters,
     }).then((res: any) => {
-      const arr = new Blob([res.data], { type: "application/vnd.ms-excel" });
-      const href = window.URL.createObjectURL(arr);
-      window.open(href);
+      if (res.data.type === "application/json") {
+        let reader = new FileReader();
+        reader.readAsText(res.data, "utf-8");
+        reader.onload = () => {
+          let result: any = reader.result;
+          const res = JSON.parse(result);
+          this.$message.warning(res.msg);
+        };
+        return;
+      }
+
+      const href = window.URL.createObjectURL(res.data);
+      const $a = document.createElement("a");
+      $a.href = href;
+      $a.download = "待退款项列表.xlsx";
+      $a.click();
+      $a.remove();
     });
   }
 }

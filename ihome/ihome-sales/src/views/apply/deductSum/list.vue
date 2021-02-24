@@ -4,7 +4,7 @@
  * @Author: ywl
  * @Date: 2021-01-13 10:33:10
  * @LastEditors: ywl
- * @LastEditTime: 2021-01-13 14:22:33
+ * @LastEditTime: 2021-02-23 17:03:12
 -->
 <template>
   <IhPage label-width="100px">
@@ -36,6 +36,7 @@
       <el-table
         class="ih-table"
         show-summary
+        :summary-method="getSummaries"
         :empty-text="emptyText"
         :data="resPageInfo.list"
       >
@@ -105,7 +106,10 @@
 <script lang="ts">
 import { Component, Vue } from "vue-property-decorator";
 import PaginationMixin from "../../../mixins/pagination";
-import { post_devDeductDetail_getListSumByDev } from "../../../api/apply/index";
+import {
+  post_devDeductDetail_getListSumByDev,
+  post_devDeductDetail_getTotal,
+} from "../../../api/apply/index";
 
 @Component({
   mixins: [PaginationMixin],
@@ -118,6 +122,7 @@ export default class DeductSumList extends Vue {
     total: null,
     list: [],
   };
+  totalSum: any = {};
 
   private search() {
     this.queryPageParameters.pageNum = 1;
@@ -131,6 +136,29 @@ export default class DeductSumList extends Vue {
       1
     );
   }
+  private getSummaries(param: any) {
+    const { columns } = param;
+    const sums: any = [];
+    columns.forEach((i: any, n: number) => {
+      if (n === 0) {
+        sums[n] = "合计";
+        return;
+      }
+      if (n === 2) {
+        sums[n] = this.totalSum?.sumSubMoney || 0;
+      }
+      if (n === 3) {
+        sums[n] = this.totalSum?.completeSumSubMoney || 0;
+      }
+      if (n === 4) {
+        sums[n] = this.totalSum?.waitSumSubMoney || 0;
+      }
+      if (n === 5) {
+        sums[n] = this.totalSum?.ongoingSumSubMoney || 0;
+      }
+    });
+    return sums;
+  }
   private handleTo(row: any) {
     this.$router.push("/deduct/list");
     let params = JSON.stringify({
@@ -143,6 +171,8 @@ export default class DeductSumList extends Vue {
     this.resPageInfo = await post_devDeductDetail_getListSumByDev(
       this.queryPageParameters
     );
+    let res = await post_devDeductDetail_getTotal(this.queryPageParameters);
+    this.totalSum = res || {};
   }
 
   created() {
