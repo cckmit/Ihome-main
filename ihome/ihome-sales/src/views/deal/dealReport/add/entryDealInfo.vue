@@ -2237,7 +2237,8 @@
           "isMarketProject": "",
           "isMat": "",
           "modelCode": "",
-          "noticeIds": [],
+          // "noticeIds": [],
+          "notices": [],
           "oneAgentTeamId": "",
           "recordState": "",
           "refineModel": "",
@@ -2314,7 +2315,7 @@
       obj.dealVO.isConsign = this.postData.isConsign;
       obj.dealVO.isMarketProject = this.postData.isMarketProject;
       obj.dealVO.modelCode = this.postData.modelCode;
-      // 优惠告知书ids
+      // 优惠告知书
       if (this.postData.offerNoticeVO.length > 0) {
         let firstNoticeList: any = []; // 类型为优惠告知书的id列表
         let firstId: any = null; // 第一个类型为优惠告知书的id
@@ -2322,13 +2323,35 @@
         firstNoticeList = this.postData.offerNoticeVO.find((item: any) => {
           return item.notificationType === "Notification";
         });
-        if (firstNoticeList.length) {
+        if (firstNoticeList && firstNoticeList.length) {
           firstId = firstNoticeList[0].noticeId;
-          obj.dealVO.noticeIds.push(firstId);
+          obj.dealVO.notices.push(
+            {
+              dealId: firstNoticeList[0].dealId,
+              noticeId: firstNoticeList[0].noticeId,
+              noticeNo: firstNoticeList[0].noticeNo,
+              notificationStatus: firstNoticeList[0].notificationStatus,
+              notificationType: firstNoticeList[0].notificationType,
+              paymentAmount: firstNoticeList[0].paymentAmount,
+              templateId: firstNoticeList[0].templateId,
+              templateType: firstNoticeList[0].templateType
+            }
+          );
         }
         this.postData.offerNoticeVO.forEach((vo: any) => {
           if (vo.noticeId !== firstId) {
-            obj.dealVO.noticeIds.push(vo.noticeId);
+            obj.dealVO.notices.push(
+              {
+                dealId: vo.dealId,
+                noticeId: vo.noticeId,
+                noticeNo: vo.noticeNo,
+                notificationStatus: vo.notificationStatus,
+                notificationType: vo.notificationType,
+                paymentAmount: vo.paymentAmount,
+                templateId: vo.templateId,
+                templateType: vo.templateType
+              }
+            );
           }
         });
       }
