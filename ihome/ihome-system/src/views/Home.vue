@@ -4,7 +4,7 @@
  * @Author: zyc
  * @Date: 2020-06-22 11:10:43
  * @LastEditors: zyc
- * @LastEditTime: 2021-02-24 10:04:11
+ * @LastEditTime: 2021-02-24 17:10:23
 --> 
 <template>
   <div>
@@ -41,10 +41,11 @@ export default class Home extends Vue {
     let a7 = this.$math.div(10, 2);
     console.log(a1, a2, a3, a4, a6, a7);
     let b1 = this.$math.tofixed(-0.0564, 2);
+      let b5 = this.$math.tofixed(-0.005, 2);
     let b2 = this.$math.tofixed(13.37, 1);
     let b3 = this.$math.tofixed(1.335, 2);
     let b4 = this.$math.tofixed(-1.355, 2);
-    let b5 = this.$math.tofixed(0.235, 2);
+  
     console.log(b1, b2, b3, b4, b5);
     // let countChildren = 0;
     // routes.forEach((item: any) => {
