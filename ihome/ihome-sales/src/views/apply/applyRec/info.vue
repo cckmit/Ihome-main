@@ -4,7 +4,7 @@
  * @Author: ywl
  * @Date: 2021-01-15 15:29:09
  * @LastEditors: ywl
- * @LastEditTime: 2021-02-22 18:14:20
+ * @LastEditTime: 2021-02-24 09:06:41
 -->
 <template>
   <IhPage class="text-left">
@@ -362,7 +362,7 @@
           ></el-table-column>
           <el-table-column label="抵扣项类别">
             <template v-slot="{ row }">
-              {{ row.subType || $root.dictAllName(row.suppContType, 'SuppContType')}}
+              {{ row.subType ? $root.dictAllName(row.subType, 'SuppContType') : $root.dictAllName(row.suppContType, 'SuppContType')}}
             </template>
           </el-table-column>
           <el-table-column
