@@ -4,7 +4,7 @@
  * @Author: zyc
  * @Date: 2021-02-05 15:23:39
  * @LastEditors: zyc
- * @LastEditTime: 2021-02-23 18:07:42
+ * @LastEditTime: 2021-02-24 19:34:27
 -->
 
 
@@ -81,7 +81,7 @@
           v-has="'B.SALES.FINANCE.TOBEREFUNDED.EXPORT'"
           >导出</el-button
         >
-        <el-button  @click="reset()">重置</el-button>
+        <el-button @click="reset()">重置</el-button>
       </el-row>
     </template>
 
@@ -105,7 +105,7 @@
           width="200"
         ></el-table-column>
 
-        <el-table-column prop="projectName"  width="200" label="项目名称">
+        <el-table-column prop="projectName" width="200" label="项目名称">
           <template slot-scope="scope">
             <el-link type="primary" @click="gotoNew(scope.row, 'projectName')">
               {{ scope.row.projectName }}</el-link
@@ -241,7 +241,10 @@
 import { Component, Vue } from "vue-property-decorator";
 import axios from "axios";
 import { getToken } from "ihome-common/util/cookies";
-import { post_refundItem_getList } from "../../../api/finance/index";
+import {
+  post_refundItem_getList,
+  get_refundItem_getRefundApplyId__applyNo,
+} from "../../../api/finance/index";
 import PaginationMixin from "../../../mixins/pagination";
 @Component({
   components: {},
@@ -289,7 +292,7 @@ export default class ToBeRefundedList extends Vue {
   async mounted() {
     console.log("mounted");
   }
-  gotoNew(item: any, type: string) {
+  async gotoNew(item: any, type: string) {
     if (type == "projectName") {
       window.open(
         `/web-sales/projects/childInfo?id=${item.proId}&proName=${item.projectName}`
@@ -298,7 +301,10 @@ export default class ToBeRefundedList extends Vue {
       window.sessionStorage.setItem("businessId", item.businessId);
       window.open("/web-sales/payment/list?businessId=" + item.businessId); //缺失参数
     } else if (type == "refundApplyNO") {
-      window.open(`/web-sales/refundApply/info?id=${item.id}`);
+      const dataId: any = await get_refundItem_getRefundApplyId__applyNo({
+        applyNo: item.refundApplyNO,
+      });
+      window.open(`/web-sales/refundApply/info?id=${dataId}`);
     } else if (type == "dealNo") {
       window.open(`/web-sales/dealReport/info?id=${item.dealId}&type=ID`);
     } else if (type == "invoiceNo") {
