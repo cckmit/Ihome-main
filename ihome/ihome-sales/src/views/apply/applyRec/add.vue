@@ -4,7 +4,7 @@
  * @Author: ywl
  * @Date: 2021-01-07 16:30:03
  * @LastEditors: ywl
- * @LastEditTime: 2021-02-23 11:50:10
+ * @LastEditTime: 2021-02-24 11:45:57
 -->
 <template>
   <IhPage class="text-left">
@@ -1586,7 +1586,7 @@ export default class ApplyRecAdd extends Vue {
       let thisTaxMoney = this.$math.tofixed(
         this.$math.sub(
           element.applyMoney,
-          element.applyMoney / (1 + this.form.taxRate || 0)
+          element.applyMoney / (1 + parseFloat(this.form.taxRate) || 0)
         ),
         2
       );
@@ -1601,6 +1601,8 @@ export default class ApplyRecAdd extends Vue {
           2
         );
         console.log(taxMoneyNew, "xxxxx");
+        console.log(thisTaxMoney, "税额");
+        console.log(thisNoTaxMoney, "不含税金额");
 
         if (taxMoneyNew > 0) {
           element.taxMoneyNew = taxMoneyNew;

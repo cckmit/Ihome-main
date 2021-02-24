@@ -4,7 +4,7 @@
  * @Author: ywl
  * @Date: 2021-01-14 19:09:51
  * @LastEditors: ywl
- * @LastEditTime: 2021-02-23 09:52:53
+ * @LastEditTime: 2021-02-24 11:51:09
 -->
 <template>
   <IhPage class="text-left">
@@ -990,7 +990,7 @@ export default class ApplyAudit extends Vue {
       let thisTaxMoney = this.$math.tofixed(
         this.$math.sub(
           element.applyMoney,
-          element.applyMoney / (1 + this.form.taxRate || 0)
+          element.applyMoney / (1 + Number(this.form.taxRate) || 0)
         ),
         2
       );
