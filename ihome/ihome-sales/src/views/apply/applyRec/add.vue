@@ -4,7 +4,7 @@
  * @Author: ywl
  * @Date: 2021-01-07 16:30:03
  * @LastEditors: ywl
- * @LastEditTime: 2021-02-24 15:43:41
+ * @LastEditTime: 2021-02-24 20:56:49
 -->
 <template>
   <IhPage class="text-left">
@@ -332,7 +332,8 @@
             min-width="155"
           >
             <template v-slot="{ row }">
-              {{applyPercentSum(row) | percent}}
+              <span v-if="applyPercentSum(row)">{{applyPercentSum(row) | percent}}</span>
+              <span v-else>0%</span>
             </template>
           </el-table-column>
           <!-- <el-table-column
@@ -457,9 +458,21 @@
             <td class="width-150">本批申请请款金额</td>
             <td width="150">{{totalApplyMoney}}</td>
             <td width="150">本批不含税金额</td>
-            <td width="150">{{totalNoTaxMoneySum}}</td>
+            <td width="150">
+              <template v-if="totalNoTaxMoneyNewSum()">
+                <del>{{totalNoTaxMoneySum}}</del>
+                <div style="color: red;">{{totalNoTaxMoneyNewSum()}}</div>
+              </template>
+              <span v-else>{{totalNoTaxMoneySum}}</span>
+            </td>
             <td width="150">本批税额</td>
-            <td width="150">{{totalTax}}</td>
+            <td width="150">
+              <template v-if="totalTaxNew()">
+                <del>{{totalTax}}</del>
+                <div style="color: red;">{{totalTaxNew()}}</div>
+              </template>
+              <span v-else>{{totalTax}}</span>
+            </td>
             <!-- <td class="width-150">本批扣除金额</td>
             <td width="150">{{totalSubMoney}}</td>
             <td class="width-150">本批实际请款金额</td>
@@ -1150,14 +1163,7 @@ export default class ApplyRecAdd extends Vue {
   // 本次请款比例
   private applyPercentSum(row: any) {
     let sum = 0;
-    // if (row.noTaxMoneyNew) {
-    //   sum = this.$math.div(
-    //     parseFloat(row.noTaxMoneyNew),
-    //     parseFloat(row.receiveAmount)
-    //   );
-    // } else {
     sum = this.$math.div(row.applyMoney, row.receiveAmount);
-    // }
     row.applyPercent = this.$math.tofixed(sum, 4);
     return row.applyPercent;
   }
@@ -1206,6 +1212,38 @@ export default class ApplyRecAdd extends Vue {
     sum = this.$math.sub(this.actMoneyTaxSum(), this.form.taxMoney);
     // this.form.actMoney = sum.toFixed(2);
     return this.$math.tofixed(sum, 2);
+  }
+  // 加减计算过后的本批不含税金额
+  private totalNoTaxMoneyNewSum() {
+    let sum = 0;
+    let sumNew = 0;
+    let isNew = false;
+    this.form.dealList.forEach((i: any) => {
+      if (i.noTaxMoneyNew) {
+        isNew = true;
+        sum = this.$math.add(sum, i.noTaxMoneyNew);
+      } else {
+        sum = this.$math.add(sum, i.noTaxMoney);
+      }
+    });
+    isNew ? (sumNew = this.$math.tofixed(sum, 2)) : (sumNew = 0);
+    return sumNew;
+  }
+  // 加减计算过后的税额的本批税额
+  private totalTaxNew() {
+    let sum = 0;
+    let sumNew = 0;
+    let isNew = false;
+    this.form.dealList.forEach((i: any) => {
+      if (i.taxMoneyNew) {
+        isNew = true;
+        sum = this.$math.add(sum, i.taxMoneyNew);
+      } else {
+        sum = this.$math.add(sum, i.taxMoney);
+      }
+    });
+    isNew ? (sumNew = this.$math.tofixed(sum, 2)) : (sumNew = 0);
+    return sumNew;
   }
   /**
    * @description: 甲方公司应扣除代理费明细合计
@@ -1580,7 +1618,7 @@ export default class ApplyRecAdd extends Vue {
     }
     let val = this.form.taxMoney;
     let sub = this.$math.sub(this.globalTaxMoney, val); // 差额
-    console.log(val, sub, number);
+    console.log(val, sub, number, this.globalTaxMoney);
     let listArr: any = [];
     let isSub = true;
     if (sub === 0) {
@@ -1637,7 +1675,6 @@ export default class ApplyRecAdd extends Vue {
       }
     }
     this.form.dealList = listArr;
-    console.log(this.form.dealList);
   }
   private async submit(type: any) {
     console.log(type);

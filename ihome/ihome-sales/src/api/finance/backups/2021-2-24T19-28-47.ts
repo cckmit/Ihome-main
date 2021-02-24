@@ -1,6 +1,6 @@
 /* eslint-disable */
 /* 此脚本由swagger-ui的api-docs自动生成，请勿修改 */
-//2021-2-24 19:28:47
+//2021-2-20 10:46:20 ├F10: AM┤
 import { request } from '@/api/base'
 const basePath = "/sales-api/finance"
 /**新增收款账号在线支付信息*/
@@ -279,10 +279,6 @@ return await request.get<PaymentRefundVO,PaymentRefundVO>(basePath+'/payment/get
 export async function get_payment_getSecretKeyByPayNo__payNo (d?: any) {
 return await request.get<AccountOnlinePayVO,AccountOnlinePayVO>(basePath+'/payment/getSecretKeyByPayNo/{payNo}', { params: d })
 }
-/**获取优惠告知书已收和已退总金额*/
-export async function post_payment_getTotalAmount (d?: any) {
-return await request.post< number,number> (basePath+'/payment/getTotalAmount', d)
-}
 /**获取银联支付接口参数*/
 export async function post_payment_getUnionPayParameter (d?: any) {
 return await request.post< PaymentOnlinePayParamVO,PaymentOnlinePayParamVO> (basePath+'/payment/getUnionPayParameter', d)
@@ -315,10 +311,6 @@ return await request.post< number,number> (basePath+'/payment/posPayBusinessDeal
 export async function post_payment_queryOnlinePayTradeResult (d?: any) {
 return await request.post< string,string> (basePath+'/payment/queryOnlinePayTradeResult', d)
 }
-/**成交报告新增成功后关联对应优惠告知书下的所有付款*/
-export async function post_payment_relatedDeal (d?: any) {
-return await request.post< number,number> (basePath+'/payment/relatedDeal', d)
-}
 /**付款关联成交报告*/
 export async function post_payment_relevanceDeal (d?: any) {
 return await request.post< number,number> (basePath+'/payment/relevanceDeal', d)
@@ -326,14 +318,6 @@ return await request.post< number,number> (basePath+'/payment/relevanceDeal', d)
 /**电子回单签署回调*/
 export async function post_payment_signCallback (d?: any) {
 return await request.post< boolean,boolean> (basePath+'/payment/signCallback', d)
-}
-/**优惠告知书重签时候收款同步新的优惠告知书*/
-export async function post_payment_syncBusinessId (d?: any) {
-return await request.post< boolean,boolean> (basePath+'/payment/syncBusinessId', d)
-}
-/**房号确认书签署同步修改收款房号*/
-export async function post_payment_syncRoomNo (d?: any) {
-return await request.post< boolean,boolean> (basePath+'/payment/syncRoomNo', d)
 }
 /**查询并更新银联微信小程序支付状态*/
 export async function get_payment_syncWXPayStatus__id (d?: any) {
@@ -503,37 +487,17 @@ return await request.get<RefundItemAttachmentVO[],RefundItemAttachmentVO[]>(base
 export async function post_refundItem_getList (d?: any) {
 return await request.post< any,any> (basePath+'/refundItem/getList', d)
 }
-/**根据退款申请单号获取退款申请ID*/
-export async function get_refundItem_getRefundApplyId__applyNo (d?: any) {
-return await request.get<number,number>(basePath+'/refundItem/getRefundApplyId/{applyNo}', { params: d })
-}
-/**反馈结果*/
-export async function post_refundItemPush_feedbackResult (d?: any) {
-return await request.post< PayDetailPushResponse,PayDetailPushResponse> (basePath+'/refundItemPush/feedbackResult', d)
-}
 /**查询待退款推送详情*/
 export async function get_refundItemPush_get__id (d?: any) {
 return await request.get<RefundItemPush,RefundItemPush>(basePath+'/refundItemPush/get/{id}', { params: d })
-}
-/**获取所有待同步结果的推送数据*/
-export async function get_refundItemPush_getAllPushParameter (d?: any) {
-return await request.get<PaymentStateQueryVo[],PaymentStateQueryVo[]>(basePath+'/refundItemPush/getAllPushParameter', { params: d })
 }
 /**查询待退款推送信息列表数据*/
 export async function post_refundItemPush_getList (d?: any) {
 return await request.post< any,any> (basePath+'/refundItemPush/getList', d)
 }
-/**获取集中支付批量付款单状态反馈接口参数*/
-export async function get_refundItemPush_paymentStateFeedbackBatch (d?: any) {
-return await request.get<PaymentStateFeedbackVo[],PaymentStateFeedbackVo[]>(basePath+'/refundItemPush/paymentStateFeedbackBatch', { params: d })
-}
 /**退款推送*/
 export async function post_refundItemPush_refundPush (d?: any) {
 return await request.post< string,string> (basePath+'/refundItemPush/refundPush', d)
-}
-/**集中支付结果回调*/
-export async function post_refundItemPush_resultCallback (d?: any) {
-return await request.post< PayDetailPushResponse,PayDetailPushResponse> (basePath+'/refundItemPush/resultCallback', d)
 }
 /**设置已退款*/
 export async function post_refundItemPush_setUpARefund (d?: any) {
@@ -1472,19 +1436,6 @@ export interface PaymentBatchRelieveDealVO {
 /**undefined*/
 ids: number[];
 }
-/**PaymentHeadVo*/
-export interface PaymentHeadVo {
-/**批次号*/
-batchNo: string;
-/**业务代码*/
-bizcode: string;
-/**数据源系统（业务系统）*/
-channel: string;
-/**返回结果*/
-esbCode: string;
-/**返回消息*/
-esbDesc: string;
-}
 /**PaymentNoOrderVO*/
 export interface PaymentNoOrderVO {
 /**支付金额*/
@@ -1686,15 +1637,6 @@ payee: string;
 /**状态(NotPaid-待支付、Paid-已支付、NotCheck-待对账、Revoked-已撤销、Flushed-已冲正)*/
 status: string;
 }
-/**PaymentRelatedDealVO*/
-export interface PaymentRelatedDealVO {
-/**优惠告知书ID*/
-businessId: number;
-/**成交编号*/
-dealCode: string;
-/**成交ID*/
-dealId: number;
-}
 /**PaymentRelevanceDealVO*/
 export interface PaymentRelevanceDealVO {
 /**成交报告编号*/
@@ -1703,95 +1645,6 @@ dealCode: string;
 dealId: number;
 /**付款ID*/
 id: number;
-}
-/**PaymentStateFeedbackBodyVo*/
-export interface PaymentStateFeedbackBodyVo {
-/**支付建议号*/
-orgErpDetailId: string;
-/**来源系统*/
-orgErpId: string;
-/**付款流水号*/
-payid: string;
-/**返回结果*/
-retCode: number;
-/**返回消息*/
-retMsg: string;
-}
-/**PaymentStateFeedbackResponseVo*/
-export interface PaymentStateFeedbackResponseVo {
-/**body*/
-body: PaymentStateFeedbackBodyVo[];
-/**head*/
-head: PaymentHeadVo;
-}
-/**PaymentStateFeedbackVo*/
-export interface PaymentStateFeedbackVo {
-/**支付建议号*/
-orgErpDetailId: string;
-/**来源系统*/
-orgErpId: string;
-/**资金系统付款流水号*/
-payid: string;
-/**业务系统返回结果，（0:同步失败，1:同步成功）*/
-retCode: number;
-/**业务系统返回信息*/
-retMsg: string;
-}
-/**PaymentStateQueryBodyVo*/
-export interface PaymentStateQueryBodyVo {
-/**支付建议号*/
-orgErpDetailId: string;
-/**来源系统*/
-orgErpId: string;
-/**付款账号*/
-payAccount: string;
-/**付款金额*/
-payAmount: number;
-/**付款日期*/
-payDate: string;
-/**付款状态*/
-payState: number;
-/**付款流水号*/
-payid: string;
-/**付款状态枚举(Fail-失败、Success-成功、Chargeback-退单、Refund-退票)*/
-paymentStateEnum: string;
-/**原因*/
-reason: string;
-/**原成功付款流水号*/
-successPayid: string;
-/**文本备用字段1*/
-textValue1: string;
-/**文本备用字段2*/
-textValue2: string;
-}
-/**PaymentStateQueryVo*/
-export interface PaymentStateQueryVo {
-/**结束日期*/
-endDate: string;
-/**支付建议号*/
-orgErpDetailId: string;
-/**开始日期*/
-startDate: string;
-}
-/**PaymentSyncBusinessIdVO*/
-export interface PaymentSyncBusinessIdVO {
-/**成交ID*/
-dealId: number;
-/**新优惠告知书ID*/
-newBusinessId: number;
-/**新优惠告知书CODE*/
-newBusinessNo: string;
-/**旧优惠告知书ID集合*/
-oldBusinessIds: number[];
-/**房号ID*/
-roomId: number;
-}
-/**PaymentSyncRoomNoVO*/
-export interface PaymentSyncRoomNoVO {
-/**优惠告知书ID*/
-businessId: number;
-/**房号ID*/
-roomId: number;
 }
 /**PaymentUpdateVO*/
 export interface PaymentUpdateVO {
@@ -2740,16 +2593,10 @@ createTime: string;
 createUser: number;
 /**已删除*/
 deleted: number;
-/**集中支付反馈状态(PendingFeedback-待反馈、Feedback-已反馈、FeedbackFailure-反馈失败)*/
-feedbackState: string;
 /**ID*/
 id: number;
 /**支付日期(yyyy-MM-dd HH:mm:ss)*/
 payDate: string;
-/**集中支付流水号*/
-payId: string;
-/**集中支付同步状态(Fail-失败、Success-成功、Chargeback-退单、Refund-退票)*/
-payStatus: string;
 /**付款方式(CashPay-现金支付、OtherPay-其他支付)*/
 payType: string;
 /**推送日期(yyyy-MM-dd)*/
@@ -2772,8 +2619,6 @@ remark: string;
 settlementType: string;
 /**退款状态(PendingPay-待退款、RefundedTicket-已退票、Paying-付款中、Paid-付款成功)*/
 status: string;
-/**原成功付款流水号*/
-successPayId: string;
 /**更新时间(yyyy-MM-dd HH:mm:ss)*/
 updateTime: string;
 /**更新用户*/
@@ -2857,16 +2702,10 @@ createTime: string;
 createUser: number;
 /**已删除*/
 deleted: number;
-/**集中支付反馈状态(PendingFeedback-待反馈、Feedback-已反馈、FeedbackFailure-反馈失败)*/
-feedbackState: string;
 /**ID*/
 id: number;
 /**支付日期(yyyy-MM-dd HH:mm:ss)*/
 payDate: string;
-/**集中支付流水号*/
-payId: string;
-/**集中支付同步状态(Fail-失败、Success-成功、Chargeback-退单、Refund-退票)*/
-payStatus: string;
 /**付款方式(CashPay-现金支付、OtherPay-其他支付)*/
 payType: string;
 /**推送日期(yyyy-MM-dd)*/
@@ -2889,8 +2728,6 @@ remark: string;
 settlementType: string;
 /**退款状态(PendingPay-待退款、RefundedTicket-已退票、Paying-付款中、Paid-付款成功)*/
 status: string;
-/**原成功付款流水号*/
-successPayId: string;
 /**更新时间(yyyy-MM-dd HH:mm:ss)*/
 updateTime: string;
 /**更新用户*/
@@ -2959,6 +2796,8 @@ itemSource: string;
 noticeAmount: number;
 /**组织id*/
 orgId: number;
+/**已结佣付款单号*/
+payNo: string;
 /**结佣付款单号集合*/
 payVOs: RefundItemPayVO[];
 /**项目id*/
@@ -3028,13 +2867,6 @@ systemType: string;
 updateTime: string;
 /**更新用户*/
 updateUser: number;
-}
-/**SinglePaymentStateQueryResponseVo*/
-export interface SinglePaymentStateQueryResponseVo {
-/**body*/
-body: PaymentStateQueryBodyVo;
-/**head*/
-head: PaymentHeadVo;
 }
 /**UnionPayBillQueryVO*/
 export interface UnionPayBillQueryVO {
