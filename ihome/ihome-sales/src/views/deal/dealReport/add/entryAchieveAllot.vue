@@ -2827,6 +2827,7 @@
     handleAddNotice() {
       if(this.baseInfoByTerm.termId) {
         let data: any = {
+          dealId: this.id ? this.id : null,
           termId: this.baseInfoByTerm.termId,
           termName: this.baseInfoByTerm.termName,
           proId: this.baseInfoByTerm.proId,
@@ -3494,7 +3495,8 @@
             "isMat": "",
             "id": null,
             "modelCode": "",
-            "noticeIds": [],
+            // "noticeIds": [],
+            "notices": [],
             "oneAgentTeamId": "",
             "recordState": "",
             "refineModel": "",
@@ -3597,13 +3599,35 @@
         firstNoticeList = this.postData.offerNoticeVO.find((item: any) => {
           return item.notificationType === "Notification";
         });
-        if (firstNoticeList.length) {
+        if (firstNoticeList && firstNoticeList.length) {
           firstId = firstNoticeList[0].noticeId;
-          obj.basic.dealVO.noticeIds.push(firstId);
+          obj.basic.dealVO.notices.push(
+            {
+              dealId: firstNoticeList[0].dealId,
+              noticeId: firstNoticeList[0].noticeId,
+              noticeNo: firstNoticeList[0].noticeNo,
+              notificationStatus: firstNoticeList[0].notificationStatus,
+              notificationType: firstNoticeList[0].notificationType,
+              paymentAmount: firstNoticeList[0].paymentAmount,
+              templateId: firstNoticeList[0].templateId,
+              templateType: firstNoticeList[0].templateType
+            }
+          );
         }
         this.postData.offerNoticeVO.forEach((vo: any) => {
           if (vo.noticeId !== firstId) {
-            obj.basic.dealVO.noticeIds.push(vo.noticeId);
+            obj.basic.dealVO.notices.push(
+              {
+                dealId: vo.dealId,
+                noticeId: vo.noticeId,
+                noticeNo: vo.noticeNo,
+                notificationStatus: vo.notificationStatus,
+                notificationType: vo.notificationType,
+                paymentAmount: vo.paymentAmount,
+                templateId: vo.templateId,
+                templateType: vo.templateType
+              }
+            );
           }
         });
       }

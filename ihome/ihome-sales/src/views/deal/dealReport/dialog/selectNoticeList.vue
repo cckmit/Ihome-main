@@ -151,7 +151,7 @@
         <el-col>
           <el-form-item label="">
             <el-button type="primary" @click="handleSearch()">查询</el-button>
-            <el-button type="info" @click="reset()">重置</el-button>
+<!--            <el-button type="info" @click="reset()">重置</el-button>-->
             <el-link
               type="primary"
               class="float-right margin-right-40"
@@ -305,6 +305,7 @@
     async getListMixin() {
       let postData: any = {
         ...this.queryPageParameters,
+        dealId: this.data?.dealId,
         notificationTypes: ['Notification'], // 只查优惠告知书
         notificationStatuses: this.queryPageParameters.notificationStatuses ? [this.queryPageParameters.notificationStatuses] : [],
       }
