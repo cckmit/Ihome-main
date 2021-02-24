@@ -4,7 +4,7 @@
  * @Author: wwq
  * @Date: 2020-11-03 11:52:41
  * @LastEditors: wwq
- * @LastEditTime: 2021-02-24 16:20:19
+ * @LastEditTime: 2021-02-24 21:36:19
 -->
 <template>
   <div>
@@ -691,27 +691,35 @@ export default class EditBasicInfo extends Vue {
   oldInfo: any = {};
   oldSubmitFile: any = {};
   secureSave() {
+    // const Adopt = this.form.auditEnum === "Adopt";
+    // const Conduct = status === "Conduct";
+    // if (Adopt) {
+    //   const RHeadBusinessManagement = this.$roleTool.RHeadBusinessManagement();
+    //   const RBusinessManagement = this.$roleTool.RBusinessManagement();
+    //   if (RHeadBusinessManagement || RBusinessManagement) {
+    //     return true;
+    //   } else {
+    //     return false;
+    //   }
+    // } else if (Conduct) {
+    //   return false;
+    // } else {
+    //   return true;
+    // }
     const Adopt = this.form.auditEnum === "Adopt";
-    const Conduct = status === "Conduct";
-    if (Adopt) {
-      const RHeadBusinessManagement = this.$roleTool.RHeadBusinessManagement();
-      const RBusinessManagement = this.$roleTool.RBusinessManagement();
-      if (RHeadBusinessManagement || RBusinessManagement) {
-        return true;
-      } else {
-        return false;
-      }
-    } else if (Conduct) {
-      return false;
-    } else {
-      return true;
-    }
+    const RHeadBusinessManagement = this.$roleTool.RHeadBusinessManagement();
+    const RBusinessManagement = this.$roleTool.RBusinessManagement();
+    const RFrontLineClerk = this.$roleTool.RFrontLineClerk();
+    return (
+      (Adopt &&
+        (RHeadBusinessManagement || RBusinessManagement || RFrontLineClerk)) ||
+      RFrontLineClerk
+    );
   }
   submitChange() {
     const Draft = this.form.auditEnum === "Draft";
     const Reject = this.form.auditEnum === "Reject";
-    const RFrontLineClerk = this.$roleTool.RFrontLineClerk();
-    return (Draft && RFrontLineClerk) || (RFrontLineClerk && Reject);
+    return Draft || Reject;
   }
 
   @Watch("form.exMinyuan", { immediate: true, deep: true })

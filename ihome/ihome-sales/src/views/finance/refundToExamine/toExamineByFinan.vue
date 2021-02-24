@@ -3,8 +3,8 @@
  * @version: 
  * @Author: ywl
  * @Date: 2021-02-17 11:27:05
- * @LastEditors: ywl
- * @LastEditTime: 2021-02-23 19:41:27
+ * @LastEditors: wwq
+ * @LastEditTime: 2021-02-24 19:53:10
 -->
 <template>
   <IhPage>
@@ -808,8 +808,9 @@ export default class RefundToExamineToExamine extends Vue {
       console.log(error);
     }
   }
-  routeTo(row: any, where: any) {
+  async routeTo(row: any, where: any) {
     let router: any = null;
+    let res: any = null;
     switch (where) {
       case "deal":
         router = this.$router.resolve({
@@ -842,15 +843,14 @@ export default class RefundToExamineToExamine extends Vue {
         });
         break;
       case "invoiceNo":
-        get_invoice_getInvoiceId__businessNo({
+        res = await get_invoice_getInvoiceId__businessNo({
           businessNo: row.invoiceNo,
-        }).then((res: any) => {
-          router = this.$router.resolve({
-            path: `/invoice/info`,
-            query: {
-              id: res,
-            },
-          });
+        });
+        router = this.$router.resolve({
+          path: `/invoice/info`,
+          query: {
+            id: res,
+          },
         });
         break;
     }

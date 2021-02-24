@@ -4,7 +4,7 @@
  * @Author: zyc
  * @Date: 2021-02-06 16:29:34
  * @LastEditors: wwq
- * @LastEditTime: 2021-02-23 18:23:46
+ * @LastEditTime: 2021-02-24 19:51:55
 -->
 <template>
   <IhPage>
@@ -660,8 +660,9 @@ export default class RefundApplyEdit extends Vue {
   payerAccountOptions: any = [];
   showUploadIndex: any = 0;
 
-  routeTo(row: any, where: any) {
+  async routeTo(row: any, where: any) {
     let router: any = null;
+    let res: any = null;
     switch (where) {
       case "deal":
         router = this.$router.resolve({
@@ -694,15 +695,14 @@ export default class RefundApplyEdit extends Vue {
         });
         break;
       case "invoiceNo":
-        get_invoice_getInvoiceId__businessNo({
+        res = await get_invoice_getInvoiceId__businessNo({
           businessNo: row.invoiceNo,
-        }).then((res: any) => {
-          router = this.$router.resolve({
-            path: `/invoice/info`,
-            query: {
-              id: res,
-            },
-          });
+        });
+        router = this.$router.resolve({
+          path: `/invoice/info`,
+          query: {
+            id: res,
+          },
         });
         break;
     }

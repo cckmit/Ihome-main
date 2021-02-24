@@ -4,7 +4,7 @@
  * @Author: wwq
  * @Date: 2020-12-29 11:04:59
  * @LastEditors: wwq
- * @LastEditTime: 2021-02-23 18:23:54
+ * @LastEditTime: 2021-02-24 19:52:21
 -->
 <template>
   <el-dialog
@@ -336,8 +336,9 @@ export default class Obligation extends Vue {
     }
   }
 
-  routeTo(row: any, where: any) {
+  async routeTo(row: any, where: any) {
     let router: any = null;
+    let res: any = null;
     switch (where) {
       case "deal":
         router = this.$router.resolve({
@@ -370,15 +371,14 @@ export default class Obligation extends Vue {
         });
         break;
       case "invoiceNo":
-        get_invoice_getInvoiceId__businessNo({
+        res = await get_invoice_getInvoiceId__businessNo({
           businessNo: row.invoiceNo,
-        }).then((res: any) => {
-          router = this.$router.resolve({
-            path: `/invoice/info`,
-            query: {
-              id: res,
-            },
-          });
+        });
+        router = this.$router.resolve({
+          path: `/invoice/info`,
+          query: {
+            id: res,
+          },
         });
         break;
     }

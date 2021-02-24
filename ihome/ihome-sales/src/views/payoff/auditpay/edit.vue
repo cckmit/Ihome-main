@@ -4,7 +4,7 @@
  * @Author: wwq
  * @Date: 2020-12-26 11:11:23
  * @LastEditors: wwq
- * @LastEditTime: 2021-02-24 17:34:22
+ * @LastEditTime: 2021-02-24 20:52:39
 -->
 <template>
   <IhPage>
@@ -954,7 +954,7 @@
       <div class="padding-left-20">
         <el-table
           class="ih-table"
-          :data="info.processRecordList"
+          :data="info.processRecordResponseList"
           style="width: 100%"
         >
           <el-table-column
@@ -1633,7 +1633,7 @@ export default class PayoffEdit extends Vue {
     const res = await get_processRecord_oa_review_log__applyId({
       applyId: this.payoffId,
     });
-    this.info.processRecordList = res;
+    this.info.processRecordResponseList = res;
   }
 
   settlementMethodChange(val: any) {
