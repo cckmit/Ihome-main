@@ -27,6 +27,8 @@
             <el-form-item label="周期名称">
               <IhSelectPageByCycle
                 v-model="queryPageParameters.termId"
+                :searchName="termName"
+                @change="changeTerm"
                 placeholder="请选择周期名称"
                 clearable
               ></IhSelectPageByCycle>
@@ -182,6 +184,7 @@
 <script lang="ts">
 import {Component, Vue} from "vue-property-decorator";
 import {
+  get_term_getName__termId, // 获取周期名称
   post_capitalPoolFlow_detail, // 其它渠道费用明细
   post_capitalPoolFlow_detailsum // 其它渠道费用明细-汇总
 } from "@/api/project/index";
@@ -202,6 +205,7 @@ export default class DetailsList extends Vue {
     produceType: null,
     useType: null,
   };
+  termName: any = '';
   resPageInfo: any = {
     total: null,
     list: [],
@@ -212,7 +216,18 @@ export default class DetailsList extends Vue {
   }; // 汇总
 
   async created() {
-    await this.getListMixin();
+    let termId: any = this.$route.query.termId;
+    if (termId) {
+      this.$nextTick(async () => {
+        this.queryPageParameters.termId = termId  * 1;
+        await this.getTermName(termId);
+        await this.getListMixin();
+      })
+    } else {
+      this.termName = '';
+      await this.getListMixin();
+    }
+    // await this.getListMixin();
   }
 
   // 导出
@@ -248,6 +263,19 @@ export default class DetailsList extends Vue {
     this.resPageInfo = await post_capitalPoolFlow_detail(postData);
     this.detailsSum = await post_capitalPoolFlow_detailsum(postData);
     // console.log(this.detailsSum);
+  }
+
+  // 获取周期名称
+  async getTermName(termId: any = '') {
+    let name = await get_term_getName__termId({termId: termId});
+    this.termName = name ? name : '';
+    console.log(name);
+  }
+
+  // 改变
+  changeTerm(value: any) {
+    console.log(value);
+    this.termName = '';
   }
 
   // 获取请求参数
@@ -288,9 +316,6 @@ export default class DetailsList extends Vue {
     this.queryPageParameters.produceType = null;
     this.queryPageParameters.useType = null;
     Object.assign(this.queryPageParameters, {
-      proId: null,
-      termId: null,
-      timeList: [],
       produceType: null,
       useType: null,
     });
@@ -298,6 +323,7 @@ export default class DetailsList extends Vue {
   }
 
   reset() {
+    this.termName = '';
     Object.assign(this.queryPageParameters, {
       proId: null,
       termId: null,
