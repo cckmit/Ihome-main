@@ -1486,8 +1486,10 @@ export default class SetMealEdit extends Vue {
           ],
           costTypeEnum: "ServiceFee",
           exVoidService: 0,
-        },
-        {
+        }    
+      ];
+
+      let agencyMo: any = {
           colletionandsendDetails: [
             {
               collectandsendConditionVOS: [],
@@ -1516,9 +1518,15 @@ export default class SetMealEdit extends Vue {
               transactionEnum: "",
             },
           ],
+          partyCompanyId: null,
           costTypeEnum: "AgencyFee",
-        },
-      ];
+        };
+      this.partyAInfoList.forEach( (item: any) => {
+        let agencyItem: any = this.$tool.deepClone(agencyMo);
+        agencyItem.partyCompanyId = item.companyId
+        this.info.colletionandsendMxs.push(agencyItem)
+      });
+
     }
   }
   // 上移
