@@ -2,6 +2,7 @@
 # ihome-common
 ## 日志
 ```
+v1.2.57  2021-02-25 11:16  v-my指令
 v1.2.56  2021-02-24 17:16  main.ts tofixed
 v1.2.53  2021-02-24 10:05  IhSelectPageByCycle修改searchName报错问题
 v1.2.52  2021-02-24 09:45  IhSelectPageByCycle修改searchName回显问题

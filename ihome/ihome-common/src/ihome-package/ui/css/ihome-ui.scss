@@ -118,3 +118,10 @@
     opacity: 0.5;
     display: none;
   }
+  //该数据userId是否当前登录账号userId
+  .ih-my-disabled{
+    cursor: not-allowed !important;
+    pointer-events: none;
+    opacity: 0.5;
+    display: none;
+  }
