@@ -1425,6 +1425,7 @@
         }
       ], // 平台费用 - 分销
     };
+    tempContType: any = null; // 临时存放合同类型
     contTypeList: any = [] ; // 合同类型选项
     refineModelList: any = [] ; // 细分业务模式选项
     propertyTypeList: any = [] ; // 物业类型选项
@@ -2079,6 +2080,8 @@
       this.commissionServiceFeeObj = {};
       this.commissionServiceFeeObj = this.initCommissionServiceFee(baseInfo.receiveVOS);
       console.log('commissionServiceFeeObj', this.commissionServiceFeeObj);
+      // 初始化上传附件
+      await this.getUploadDocumentList(baseInfo.contType);
     }
 
     // 通过项目周期id获取基础信息
@@ -2338,9 +2341,13 @@
           return item.code !== "Notice";
         });
       }
+      // 保存来访确认单和成交确认单
+      this.tempDocumentList = [];
+      this.tempDocumentList = fileList.filter((item: any) => {
+        return ["VisitConfirForm", "DealConfirForm"].includes(item.code);
+      });
       // 根据合同类型过滤
       if (contType !== 'DistriDeal') {
-        // 项目周期的收费模式为代理费的话，隐藏优惠告知书
         fileList = fileList.filter((item: any) => {
           return !["VisitConfirForm", "DealConfirForm"].includes(item.code);
         });
@@ -2662,63 +2669,61 @@
 
     // 修改合同类型
     changeContType(value: any) {
+      if (value === 'DistriDeal' && !this.baseInfoInDeal.hasRecord && this.postData.roomId) {
+        // 如果查询不到此房号的已成交报备信息，用户又选择分销成交
+        this.postData.contType = this.tempContType ? this.tempContType : null;
+        this.$alert('系统查询不到此房号的已成交报备信息，请先维护报备信息！', '提示', {
+          confirmButtonText: '确定'
+        });
+        return;
+      } else {
+        // 不是分销成交
+        // 初始化收派套餐
+        this.initAllReceiveList();
+        // 选择房号后构建表格数据
+        // this.getUploadDocumentList(value);
+        // 记录临时值
+        this.tempContType = value;
+      }
+      console.log(this.tempContType);
       // 初始化收派金额
-      this.initAllReceiveList();
+      // this.initAllReceiveList();
       // 选择房号后构建表格数据
-      this.getUploadDocumentList(value);
+      // this.getUploadDocumentList(value);
     }
 
     // 选择房号后构建表格数据
     getUploadDocumentList(type: any) {
       if (type === "DistriDeal") {
+        // 分销成交
         this.postData.uploadDocumentList.push(...this.tempDocumentList);
-        if (this.postData.uploadDocumentList.length) {
-          this.postData.uploadDocumentList.forEach((list: any) => {
-            // 回显房号带出来的值
-            let baseInfo: any = (this as any).$tool.deepClone(this.baseInfoInDeal);
-            switch(list.code) {
-              case "VisitConfirForm":
-                // 来访确认单
-                if (baseInfo.visitConfirmForms && baseInfo.visitConfirmForms.length) {
-                  this.baseInfoInDeal.visitConfirmForms.forEach((item: any) => {
-                    item.name = item.fileName;
-                  });
-                }
-                list.defaultFileList = baseInfo.visitConfirmForms && baseInfo.visitConfirmForms.length ? baseInfo.visitConfirmForms : [];
-                break;
-              case "Notice":
-                // 优惠告知书PDF
-                if (baseInfo.noticePDF && baseInfo.noticePDF.length) {
-                  baseInfo.noticePDF.forEach((item: any) => {
-                    item.name = item.fileName;
-                  });
-                }
-                list.defaultFileList = baseInfo.noticePDF && baseInfo.noticePDF.length  ? baseInfo.noticePDF : [];
-                break;
-              case "OwnerID":
-                // 业主身份证
-                if (baseInfo.customerIds && baseInfo.customerIds.length) {
-                  baseInfo.customerIds.forEach((item: any) => {
-                    item.name = item.fileName;
-                  });
-                }
-                list.defaultFileList = baseInfo.customerIds && baseInfo.customerIds.length ? baseInfo.customerIds : [];
-                break;
-              case "DealConfirForm":
-                // 成交确认书
-                if (baseInfo.dealConfirmForms && baseInfo.dealConfirmForms.length) {
-                  baseInfo.dealConfirmForms.forEach((item: any) => {
-                    item.name = item.fileName;
-                  });
-                }
-                list.defaultFileList = baseInfo.dealConfirmForms && baseInfo.dealConfirmForms.length ? baseInfo.dealConfirmForms : [];
-                break;
-            }
-          });
-        }
       } else {
+        // 非分销成交
         this.postData.uploadDocumentList = this.postData.uploadDocumentList.filter((item: any) => {
           return !["VisitConfirForm", "DealConfirForm"].includes(item.code);
+        });
+      }
+      // 回显房号带出来的附件
+      let docs: any = [];
+      if (this.postData.roomId && this.baseInfoInDeal && this.baseInfoInDeal.docs && this.baseInfoInDeal.docs.length) {
+        docs = this.baseInfoInDeal.docs;
+      }
+      // 放入对应的文件
+      if (this.postData.uploadDocumentList.length) {
+        this.postData.uploadDocumentList.forEach((list: any) => {
+          list.fileList = [];
+          list.defaultFileList = [];
+          docs.forEach((item: any) => {
+            if (list.code === item.fileType) {
+              list.defaultFileList.push(
+                {
+                  ...item,
+                  name: item.fileName,
+                  canDelete: true, // 是否可以删除
+                }
+              )
+            }
+          });
         });
       }
     }
