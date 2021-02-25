@@ -4,7 +4,7 @@
  * @Author: zyc
  * @Date: 2021-02-05 16:41:19
  * @LastEditors: zyc
- * @LastEditTime: 2021-02-23 18:26:43
+ * @LastEditTime: 2021-02-25 11:26:29
 -->
  
 <template>
@@ -192,6 +192,7 @@
               type="info"
               @click.native.prevent="edit(scope)"
               v-has="'B.SALES.FINANCE.TOBEREFUNDE.EDIT'"
+              v-my="scope.row.inputUser"
               :class="{
                 'ih-data-disabled': !['Draft', 'AppealDismissed'].includes(
                   scope.row.status
@@ -216,6 +217,7 @@
               class="margin-right-10"
               type="danger"
               v-has="'B.SALES.FINANCE.TOBEREFUNDE.DELETE'"
+              v-my="scope.row.inputUser"
               @click.native.prevent="remove(scope)"
               >删除</el-link
             >
@@ -436,7 +438,10 @@ export default class RefundApplyList extends Vue {
     }
   }
   selectable(row: any) {
-    if (["Draft", "AppealDismissed"].includes(row.status)) {
+    if (
+      ["Draft", "AppealDismissed"].includes(row.status) &&
+      (this.$root as any).userInfo.id === row.inputUser
+    ) {
       return true;
     } else {
       return false;
