@@ -95,11 +95,6 @@
             </el-form-item>
           </el-col>
           <el-col :span="8">
-            <el-form-item label="渠道等级">
-              {{postData.agencyList && postData.agencyList.length ? $root.dictAllName(postData.agencyList[0].channelLevel, 'ChannelLevel') : ''}}
-            </el-form-item>
-          </el-col>
-          <el-col :span="8">
             <el-form-item label="经纪人">
               {{postData.agencyList && postData.agencyList.length ? postData.agencyList[0].broker : ''}}
             </el-form-item>

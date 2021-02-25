@@ -206,11 +206,6 @@
               </el-form-item>
             </el-col>
             <el-col :span="8">
-              <el-form-item label="渠道等级">
-                {{infoForm.agencyList && infoForm.agencyList.length ? $root.dictAllName(infoForm.agencyList[0].channelLevel, 'ChannelLevel') : ''}}
-              </el-form-item>
-            </el-col>
-            <el-col :span="8">
               <el-form-item label="经纪人">
                 {{infoForm.agencyList && infoForm.agencyList.length ? infoForm.agencyList[0].broker : ''}}
               </el-form-item>

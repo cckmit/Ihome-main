@@ -216,11 +216,6 @@
           </el-form-item>
         </el-col>
         <el-col :span="8" v-if="postData.contType === 'DistriDeal'">
-          <el-form-item label="渠道等级" :prop="postData.contType === 'DistriDeal' ? 'channelLevelName' : 'notEmpty'">
-            <el-input v-model="postData.channelLevelName" disabled></el-input>
-          </el-form-item>
-        </el-col>
-        <el-col :span="8" v-if="postData.contType === 'DistriDeal'">
           <el-form-item label="经纪人" :prop="postData.contType === 'DistriDeal' ? 'brokerName' : 'notEmpty'">
             <div v-if="baseInfoInDeal.hasRecord">
               <el-input v-model="postData.brokerName" :disabled="baseInfoInDeal.hasRecord"></el-input>
@@ -1183,7 +1178,6 @@
       agencyId: null, // 渠道公司Id
       agencyName: null, // 渠道公司
       channelLevel: null, // 渠道等级Id
-      channelLevelName: null, // 渠道等级
       brokerId: null, // 渠道经纪人Id
       brokerName: null, // 渠道经纪人
       oneAgentTeamId: null, // 一手代理团队Id
@@ -1306,9 +1300,6 @@
       ],
       agencyName: [
         {required: true, message: "渠道公司不能为空", trigger: "change"},
-      ],
-      channelLevelName: [
-        {required: true, message: "渠道等级不能为空", trigger: "change"},
       ],
       brokerName: [
         {required: true, message: "渠道经纪人不能为空", trigger: "change"},
@@ -2236,17 +2227,9 @@
       if(data.agencyData && data.agencyData.length) {
         if (this.currentSelectAgencyType === 'agency') {
           // 基础信息中选择渠道商
-          let channelList: any = (this as any).$root.dictAllList('ChannelLevel');
           this.postData.agencyId = data.agencyData[0].channelId; // 渠道公司Id
           this.postData.agencyName = data.agencyData[0].channelName; // 渠道公司名字
           this.postData.channelLevel = data.agencyData[0].channelGrade; // 渠道等级Id
-          if (channelList && channelList.length > 0 && data.agencyData[0].channelGrade) {
-            channelList.forEach((list: any) => {
-              if (list.code === data.agencyData[0].channelGrade) {
-                this.postData.channelLevelName= list.name; // 渠道等级
-              }
-            });
-          }
         } else if (this.currentSelectAgencyType === 'agencyName') {
           // 对外拆佣中选择收款方
           if (this.postData.commissionInfoList && this.postData.commissionInfoList.length) {
@@ -2321,7 +2304,7 @@
       // }
       let list: any = ['contType', 'contNo', 'recordState', 'recordStr', 'area', 'room', 'hall',
         'toilet', 'propertyNo', 'signType', 'returnRatio', 'subscribePrice', 'subscribeDate',
-        'signPrice', 'signDate', 'agencyId', 'agencyName', 'channelLevel', 'channelLevelName']
+        'signPrice', 'signDate', 'agencyId', 'agencyName', 'channelLevel']
       this.resetObject('postData', list);
     }
 
@@ -2370,6 +2353,17 @@
           title: '提示',
           message: '明源客户与优惠告知书客户有差异',
           duration: 0
+        });
+      }
+      if (baseInfo.errorMsgs && baseInfo.errorMsgs.length) {
+        console.log(baseInfo.errorMsgs);
+        let tips: any = '';
+        baseInfo.errorMsgs.forEach((item: any) => {
+          tips = tips + `<div>${item}</div>`
+        });
+        this.$message({
+          dangerouslyUseHTMLString: true,
+          message: tips
         });
       }
       // 多分优惠告知书情况
@@ -2537,23 +2531,15 @@
       if (flag) {
         // 分销成交模式
         if(data.length > 0) {
-          let channelList: any = (this as any).$root.dictAllList('ChannelLevel');
           this.postData.agencyId = data[0].agencyId; // 渠道公司Id
           this.postData.agencyName = data[0].agencyName; // 渠道公司
           this.postData.channelLevel = data[0].channelLevel; // 渠道等级Id
-          if (channelList && channelList.length > 0 && data[0].channelLevel) {
-            channelList.forEach((list: any) => {
-              if (list.code === data[0].channelLevel) {
-                this.postData.channelLevelName= list.name; // 渠道等级
-              }
-            });
-          }
           this.postData.brokerId= data[0].brokerId; // 渠道经纪人Id
           this.postData.brokerName= data[0].brokerName || data[0].broker; // 渠道经纪人
         }
       } else {
         // 非分销成交模式 --- 没有渠道相关信息
-        let list: any = ['agencyId', 'agencyName', 'channelLevel', 'channelLevelName', 'brokerId', 'brokerName'];
+        let list: any = ['agencyId', 'agencyName', 'channelLevel', 'brokerId', 'brokerName'];
         this.resetObject('postData', list); // 重置值
       }
     }
