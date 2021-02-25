@@ -98,6 +98,7 @@
               <template slot-scope="scope">
                 <IhSelectPageUser
                   v-model="scope.row.managerId"
+                  :searchName="scope.row.manager"
                   @changeOption="handleSelectManagementRole($event, scope.row)"
                   clearable>
                 </IhSelectPageUser>
