@@ -220,11 +220,6 @@
           </el-form-item>
         </el-col>
         <el-col :span="8" v-if="postData.contType === 'DistriDeal'">
-          <el-form-item label="渠道等级" :prop="postData.contType === 'DistriDeal' ? 'channelLevelName' : 'notEmpty'">
-            <el-input v-model="postData.channelLevelName" disabled></el-input>
-          </el-form-item>
-        </el-col>
-        <el-col :span="8" v-if="postData.contType === 'DistriDeal'">
           <el-form-item label="经纪人" :prop="postData.contType === 'DistriDeal' ? 'brokerName' : 'notEmpty'">
             <div v-if="baseInfoInDeal.hasRecord">
               <el-input
@@ -787,6 +782,7 @@
         dealVO: {},
         dataSign: ''
       }, // 明源数据
+      docs: [], // 返回的所有的附件值
       noticePDF: [], // 优惠告知书PDF
       customerIds: [], // 业主身份证
       visitConfirmForms: [], // 来访确认书
@@ -812,7 +808,6 @@
       agencyId: null, // 渠道公司Id
       agencyName: null, // 渠道公司
       channelLevel: null, // 渠道等级Id
-      channelLevelName: null, // 渠道等级
       brokerId: null, // 渠道经纪人Id
       brokerName: null, // 渠道经纪人
       oneAgentTeamId: null, // 一手代理团队ID
@@ -929,9 +924,6 @@
       ],
       agencyName: [
         {required: true, message: "渠道公司不能为空", trigger: "change"},
-      ],
-      channelLevelName: [
-        {required: true, message: "渠道等级不能为空", trigger: "change"},
       ],
       brokerName: [
         {required: true, message: "渠道经纪人不能为空", trigger: "change"},
@@ -1477,17 +1469,9 @@
     finishAddAgency(data: any) {
       // console.log('data', data);
       if(data.agencyData && data.agencyData.length) {
-        let channelList: any = (this as any).$root.dictAllList('ChannelLevel');
         this.postData.agencyId = data.agencyData[0].channelId; // 渠道公司Id
         this.postData.agencyName = data.agencyData[0].channelName; // 渠道公司
         this.postData.channelLevel = data.agencyData[0].channelGrade; // 渠道等级Id
-        if (channelList && channelList.length > 0 && data.agencyData[0].channelGrade) {
-          channelList.forEach((list: any) => {
-            if (list.code === data.agencyData[0].channelGrade) {
-              this.postData.channelLevelName= list.name; // 渠道等级
-            }
-          });
-        }
       }
       // 分销协议编号
       if (data.contNoList && data.contNoList.length) {
@@ -1534,7 +1518,7 @@
       // this.postData.documentVO = []; // 上传附件
       let list: any = ['contType', 'contNo', 'recordState', 'recordStr', 'area', 'room', 'hall',
         'toilet', 'propertyNo', 'signType', 'returnRatio', 'subscribePrice', 'subscribeDate',
-        'signPrice', 'signDate', 'agencyId', 'agencyName', 'channelLevel', 'channelLevelName']
+        'signPrice', 'signDate', 'agencyId', 'agencyName', 'channelLevel']
       this.resetObject('postData', list);
     }
 
@@ -1579,6 +1563,17 @@
           title: '提示',
           message: '明源客户与优惠告知书客户有差异',
           duration: 0
+        });
+      }
+      if (baseInfo.errorMsgs && baseInfo.errorMsgs.length) {
+        console.log(baseInfo.errorMsgs);
+        let tips: any = '';
+        baseInfo.errorMsgs.forEach((item: any) => {
+          tips = tips + `<div>${item}</div>`
+        });
+        this.$message({
+          dangerouslyUseHTMLString: true,
+          message: tips
         });
       }
       // 多分优惠告知书情况
@@ -1701,23 +1696,15 @@
       if (flag) {
         // 分销成交模式
         if(data.length > 0) {
-          let channelList: any = (this as any).$root.dictAllList('ChannelLevel');
           this.postData.agencyId = data[0].agencyId; // 渠道公司Id
           this.postData.agencyName = data[0].agencyName; // 渠道公司
           this.postData.channelLevel = data[0].channelLevel; // 渠道等级Id
-          if (channelList && channelList.length > 0 && data[0].channelLevel) {
-            channelList.forEach((list: any) => {
-              if (list.code === data[0].channelLevel) {
-                this.postData.channelLevelName= list.name; // 渠道等级
-              }
-            });
-          }
           this.postData.brokerId= data[0].brokerId; // 渠道经纪人Id
           this.postData.brokerName= data[0].brokerName || data[0].broker; // 渠道经纪人
         }
       } else {
         // 非分销成交模式 --- 没有渠道相关信息
-        let list: any = ['agencyId', 'agencyName', 'channelLevel', 'channelLevelName', 'brokerId', 'brokerName'];
+        let list: any = ['agencyId', 'agencyName', 'channelLevel', 'brokerId', 'brokerName'];
         this.resetObject('postData', list); // 重置值
       }
     }
@@ -1776,61 +1763,39 @@
 
     // 修改合同类型后构建附件表格数据
     getDocumentList(type: any) {
-      // 回显房号带出来的值
-      let baseInfo: any = (this as any).$tool.deepClone(this.baseInfoInDeal);
+      // 先显示对应的附件类型
       if (type === "DistriDeal") {
+        // 分销成交
         this.postData.documentVO.push(...this.tempDocumentList);
-        if (this.postData.documentVO.length) {
-          this.postData.documentVO.forEach((list: any) => {
-            switch(list.code) {
-              case "VisitConfirForm":
-                // 来访确认单
-                if (baseInfo.visitConfirmForms && baseInfo.visitConfirmForms.length) {
-                  this.baseInfoInDeal.visitConfirmForms.forEach((item: any) => {
-                    item.name = item.fileName;
-                  });
-                }
-                list.defaultFileList = this.postData.roomId && baseInfo.visitConfirmForms && baseInfo.visitConfirmForms.length ? baseInfo.visitConfirmForms : [];
-                break;
-              case "DealConfirForm":
-                // 成交确认书
-                if (baseInfo.dealConfirmForms && baseInfo.dealConfirmForms.length) {
-                  baseInfo.dealConfirmForms.forEach((item: any) => {
-                    item.name = item.fileName;
-                  });
-                }
-                list.defaultFileList = this.postData.roomId && baseInfo.dealConfirmForms && baseInfo.dealConfirmForms.length ? baseInfo.dealConfirmForms : [];
-                break;
-            }
-          });
-        }
       } else {
+        // 非分销成交
         this.postData.documentVO = this.postData.documentVO.filter((item: any) => {
           return !["VisitConfirForm", "DealConfirForm"].includes(item.code);
         });
       }
-      this.postData.documentVO.forEach((list: any) => {
-        switch(list.code) {
-          case "Notice":
-            // 优惠告知书PDF
-            if (baseInfo.noticePDF && baseInfo.noticePDF.length) {
-              baseInfo.noticePDF.forEach((item: any) => {
-                item.name = item.fileName;
-              });
+      // 回显房号带出来的附件
+      let docs: any = [];
+      if (this.postData.roomId && this.baseInfoInDeal && this.baseInfoInDeal.docs && this.baseInfoInDeal.docs.length) {
+        docs = this.baseInfoInDeal.docs;
+      }
+      // 放入对应的文件
+      if (this.postData.documentVO.length) {
+        this.postData.documentVO.forEach((list: any) => {
+          list.fileList = [];
+          list.defaultFileList = [];
+          docs.forEach((item: any) => {
+            if (list.code === item.fileType) {
+              list.defaultFileList.push(
+                {
+                  ...item,
+                  name: item.fileName,
+                  canDelete: true, // 是否可以删除
+                }
+              )
             }
-            list.defaultFileList = this.postData.roomId && baseInfo.noticePDF && baseInfo.noticePDF.length  ? baseInfo.noticePDF : [];
-            break;
-          case "OwnerID":
-            // 业主身份证
-            if (baseInfo.customerIds && baseInfo.customerIds.length) {
-              baseInfo.customerIds.forEach((item: any) => {
-                item.name = item.fileName;
-              });
-            }
-            list.defaultFileList = this.postData.roomId && baseInfo.customerIds && baseInfo.customerIds.length ? baseInfo.customerIds : [];
-            break;
-        }
-      });
+          });
+        });
+      }
     }
 
     // 判断是否可以手动添加优惠告知书

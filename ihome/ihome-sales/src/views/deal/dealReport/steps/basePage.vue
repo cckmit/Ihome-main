@@ -247,11 +247,6 @@
           </el-form-item>
         </el-col>
         <el-col :span="8" v-if="postData.contType === 'DistriDeal'">
-          <el-form-item label="渠道等级">
-            <el-input disabled v-model="postData.channelLevelName"></el-input>
-          </el-form-item>
-        </el-col>
-        <el-col :span="8" v-if="postData.contType === 'DistriDeal'">
           <el-form-item label="经纪人">
             <div v-if="['ChangeBasicInf', 'RetreatRoom', 'ChangeInternalAchieveInf'].includes(changeType)">
               <el-input disabled v-model="postData.brokerName"></el-input>
@@ -1361,7 +1356,6 @@
       agencyId: null, // 渠道公司Id
       agencyName: null, // 渠道公司
       channelLevel: null, // 渠道等级Id
-      channelLevelName: null, // 渠道等级
       brokerId: null, // 渠道经纪人Id
       brokerName: null, // 渠道经纪人
       recordStr: null, // 报备信息
@@ -1425,6 +1419,7 @@
         }
       ], // 平台费用 - 分销
     };
+    tempContType: any = null; // 临时存放合同类型
     contTypeList: any = [] ; // 合同类型选项
     refineModelList: any = [] ; // 细分业务模式选项
     propertyTypeList: any = [] ; // 物业类型选项
@@ -1902,17 +1897,9 @@
       if (flag) {
         // 分销成交模式
         if(data.length > 0) {
-          let channelList: any = (this as any).$root.dictAllList('ChannelLevel');
           this.postData.agencyId = data[0].agencyId; // 渠道公司Id
           this.postData.agencyName = data[0].agencyName; // 渠道公司
           this.postData.channelLevel = data[0].channelLevel; // 渠道等级Id
-          if (channelList && channelList.length > 0 && data[0].channelLevel) {
-            channelList.forEach((list: any) => {
-              if (list.code === data[0].channelLevel) {
-                this.postData.channelLevelName = list.name; // 渠道等级
-              }
-            });
-          }
           this.postData.brokerId = data[0].brokerId; // 渠道经纪人Id
           this.postData.brokerName = data[0].brokerName || data[0].broker; // 渠道经纪人
         }
@@ -1965,6 +1952,17 @@
           title: '提示',
           message: '明源客户与优惠告知书客户有差异',
           duration: 0
+        });
+      }
+      if (baseInfo.errorMsgs && baseInfo.errorMsgs.length) {
+        console.log(baseInfo.errorMsgs);
+        let tips: any = '';
+        baseInfo.errorMsgs.forEach((item: any) => {
+          tips = tips + `<div>${item}</div>`
+        });
+        this.$message({
+          dangerouslyUseHTMLString: true,
+          message: tips
         });
       }
       // 多分优惠告知书情况
@@ -2079,6 +2077,8 @@
       this.commissionServiceFeeObj = {};
       this.commissionServiceFeeObj = this.initCommissionServiceFee(baseInfo.receiveVOS);
       console.log('commissionServiceFeeObj', this.commissionServiceFeeObj);
+      // 初始化上传附件
+      await this.getUploadDocumentList(baseInfo.contType);
     }
 
     // 通过项目周期id获取基础信息
@@ -2338,9 +2338,13 @@
           return item.code !== "Notice";
         });
       }
+      // 保存来访确认单和成交确认单
+      this.tempDocumentList = [];
+      this.tempDocumentList = fileList.filter((item: any) => {
+        return ["VisitConfirForm", "DealConfirForm"].includes(item.code);
+      });
       // 根据合同类型过滤
       if (contType !== 'DistriDeal') {
-        // 项目周期的收费模式为代理费的话，隐藏优惠告知书
         fileList = fileList.filter((item: any) => {
           return !["VisitConfirForm", "DealConfirForm"].includes(item.code);
         });
@@ -2563,17 +2567,9 @@
           // 回显
           if (this.currentSelectAgencyType === 'agency') {
             // 基础信息中选择渠道商
-            let channelList: any = (this as any).$root.dictAllList('ChannelLevel');
             this.postData.agencyId = data.agencyData[0].channelId; // 渠道公司Id
             this.postData.agencyName = data.agencyData[0].channelName; // 渠道公司名字
             this.postData.channelLevel = data.agencyData[0].channelGrade; // 渠道等级Id
-            if (channelList && channelList.length > 0 && data.agencyData[0].channelGrade) {
-              channelList.forEach((list: any) => {
-                if (list.code === data.agencyData[0].channelGrade) {
-                  this.postData.channelLevelName= list.name; // 渠道等级
-                }
-              });
-            }
           } else if (this.currentSelectAgencyType === 'agencyName') {
             // 对外拆佣中选择收款方
             if (this.postData.channelCommList && this.postData.channelCommList.length) {
@@ -2662,63 +2658,61 @@
 
     // 修改合同类型
     changeContType(value: any) {
+      if (value === 'DistriDeal' && !this.baseInfoInDeal.hasRecord && this.postData.roomId) {
+        // 如果查询不到此房号的已成交报备信息，用户又选择分销成交
+        this.postData.contType = this.tempContType ? this.tempContType : null;
+        this.$alert('系统查询不到此房号的已成交报备信息，请先维护报备信息！', '提示', {
+          confirmButtonText: '确定'
+        });
+        return;
+      } else {
+        // 不是分销成交
+        // 初始化收派套餐
+        this.initAllReceiveList();
+        // 选择房号后构建表格数据
+        // this.getUploadDocumentList(value);
+        // 记录临时值
+        this.tempContType = value;
+      }
+      console.log(this.tempContType);
       // 初始化收派金额
-      this.initAllReceiveList();
+      // this.initAllReceiveList();
       // 选择房号后构建表格数据
-      this.getUploadDocumentList(value);
+      // this.getUploadDocumentList(value);
     }
 
     // 选择房号后构建表格数据
     getUploadDocumentList(type: any) {
       if (type === "DistriDeal") {
+        // 分销成交
         this.postData.uploadDocumentList.push(...this.tempDocumentList);
-        if (this.postData.uploadDocumentList.length) {
-          this.postData.uploadDocumentList.forEach((list: any) => {
-            // 回显房号带出来的值
-            let baseInfo: any = (this as any).$tool.deepClone(this.baseInfoInDeal);
-            switch(list.code) {
-              case "VisitConfirForm":
-                // 来访确认单
-                if (baseInfo.visitConfirmForms && baseInfo.visitConfirmForms.length) {
-                  this.baseInfoInDeal.visitConfirmForms.forEach((item: any) => {
-                    item.name = item.fileName;
-                  });
-                }
-                list.defaultFileList = baseInfo.visitConfirmForms && baseInfo.visitConfirmForms.length ? baseInfo.visitConfirmForms : [];
-                break;
-              case "Notice":
-                // 优惠告知书PDF
-                if (baseInfo.noticePDF && baseInfo.noticePDF.length) {
-                  baseInfo.noticePDF.forEach((item: any) => {
-                    item.name = item.fileName;
-                  });
-                }
-                list.defaultFileList = baseInfo.noticePDF && baseInfo.noticePDF.length  ? baseInfo.noticePDF : [];
-                break;
-              case "OwnerID":
-                // 业主身份证
-                if (baseInfo.customerIds && baseInfo.customerIds.length) {
-                  baseInfo.customerIds.forEach((item: any) => {
-                    item.name = item.fileName;
-                  });
-                }
-                list.defaultFileList = baseInfo.customerIds && baseInfo.customerIds.length ? baseInfo.customerIds : [];
-                break;
-              case "DealConfirForm":
-                // 成交确认书
-                if (baseInfo.dealConfirmForms && baseInfo.dealConfirmForms.length) {
-                  baseInfo.dealConfirmForms.forEach((item: any) => {
-                    item.name = item.fileName;
-                  });
-                }
-                list.defaultFileList = baseInfo.dealConfirmForms && baseInfo.dealConfirmForms.length ? baseInfo.dealConfirmForms : [];
-                break;
-            }
-          });
-        }
       } else {
+        // 非分销成交
         this.postData.uploadDocumentList = this.postData.uploadDocumentList.filter((item: any) => {
           return !["VisitConfirForm", "DealConfirForm"].includes(item.code);
+        });
+      }
+      // 回显房号带出来的附件
+      let docs: any = [];
+      if (this.postData.roomId && this.baseInfoInDeal && this.baseInfoInDeal.docs && this.baseInfoInDeal.docs.length) {
+        docs = this.baseInfoInDeal.docs;
+      }
+      // 放入对应的文件
+      if (this.postData.uploadDocumentList.length) {
+        this.postData.uploadDocumentList.forEach((list: any) => {
+          list.fileList = [];
+          list.defaultFileList = [];
+          docs.forEach((item: any) => {
+            if (list.code === item.fileType) {
+              list.defaultFileList.push(
+                {
+                  ...item,
+                  name: item.fileName,
+                  canDelete: true, // 是否可以删除
+                }
+              )
+            }
+          });
         });
       }
     }
@@ -2778,7 +2772,7 @@
       // this.dividerTips = '加载成功';
       let list: any = ['contType', 'contNo', 'recordState', 'recordStr', 'area', 'room', 'hall',
         'toilet', 'propertyNo', 'signType', 'returnRatio', 'subscribePrice', 'subscribeDate',
-        'signPrice', 'signDate', 'agencyId', 'agencyName', 'channelLevel', 'channelLevelName']
+        'signPrice', 'signDate', 'agencyId', 'agencyName', 'channelLevel']
       this.resetObject('postData', list);
     }
 
@@ -3217,6 +3211,9 @@
         });
       }
       this.dialogAddReceivePackage = false;
+      if (!this.addFlag) {
+        this.showChangeTips();
+      }
     }
 
     // 增加拆佣项

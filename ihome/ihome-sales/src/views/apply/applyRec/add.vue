@@ -4,7 +4,7 @@
  * @Author: ywl
  * @Date: 2021-01-07 16:30:03
  * @LastEditors: ywl
- * @LastEditTime: 2021-02-24 20:56:49
+ * @LastEditTime: 2021-02-25 18:18:25
 -->
 <template>
   <IhPage class="text-left">
@@ -1617,7 +1617,7 @@ export default class ApplyRecAdd extends Vue {
       this.form.taxMoney = this.globalTaxMoney - 10;
     }
     let val = this.form.taxMoney;
-    let sub = this.$math.sub(this.globalTaxMoney, val); // 差额
+    let sub = this.globalTaxMoney - val; // 差额
     console.log(val, sub, number, this.globalTaxMoney);
     let listArr: any = [];
     let isSub = true;
