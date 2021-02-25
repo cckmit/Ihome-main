@@ -4,7 +4,7 @@
  * @Author: wwq
  * @Date: 2020-12-26 11:11:23
  * @LastEditors: wwq
- * @LastEditTime: 2021-02-25 12:04:32
+ * @LastEditTime: 2021-02-25 12:08:43
 -->
 <template>
   <IhPage>
@@ -1801,7 +1801,7 @@ export default class PayoffEdit extends Vue {
     (this.$refs["form"] as ElForm).validate(async (v: any) => {
       if (v) {
         let obj: any = {};
-        obj.applyId = this.payoffId;
+        obj.applyId = Number(this.payoffId);
         obj.auditOpinion = this.info.auditOpinion;
         obj.payoffApproval = val;
         if (
