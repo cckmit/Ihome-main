@@ -787,6 +787,7 @@
         dealVO: {},
         dataSign: ''
       }, // 明源数据
+      docs: [], // 返回的所有的附件值
       noticePDF: [], // 优惠告知书PDF
       customerIds: [], // 业主身份证
       visitConfirmForms: [], // 来访确认书
@@ -1776,61 +1777,39 @@
 
     // 修改合同类型后构建附件表格数据
     getDocumentList(type: any) {
-      // 回显房号带出来的值
-      let baseInfo: any = (this as any).$tool.deepClone(this.baseInfoInDeal);
+      // 先显示对应的附件类型
       if (type === "DistriDeal") {
+        // 分销成交
         this.postData.documentVO.push(...this.tempDocumentList);
-        if (this.postData.documentVO.length) {
-          this.postData.documentVO.forEach((list: any) => {
-            switch(list.code) {
-              case "VisitConfirForm":
-                // 来访确认单
-                if (baseInfo.visitConfirmForms && baseInfo.visitConfirmForms.length) {
-                  this.baseInfoInDeal.visitConfirmForms.forEach((item: any) => {
-                    item.name = item.fileName;
-                  });
-                }
-                list.defaultFileList = this.postData.roomId && baseInfo.visitConfirmForms && baseInfo.visitConfirmForms.length ? baseInfo.visitConfirmForms : [];
-                break;
-              case "DealConfirForm":
-                // 成交确认书
-                if (baseInfo.dealConfirmForms && baseInfo.dealConfirmForms.length) {
-                  baseInfo.dealConfirmForms.forEach((item: any) => {
-                    item.name = item.fileName;
-                  });
-                }
-                list.defaultFileList = this.postData.roomId && baseInfo.dealConfirmForms && baseInfo.dealConfirmForms.length ? baseInfo.dealConfirmForms : [];
-                break;
-            }
-          });
-        }
       } else {
+        // 非分销成交
         this.postData.documentVO = this.postData.documentVO.filter((item: any) => {
           return !["VisitConfirForm", "DealConfirForm"].includes(item.code);
         });
       }
-      this.postData.documentVO.forEach((list: any) => {
-        switch(list.code) {
-          case "Notice":
-            // 优惠告知书PDF
-            if (baseInfo.noticePDF && baseInfo.noticePDF.length) {
-              baseInfo.noticePDF.forEach((item: any) => {
-                item.name = item.fileName;
-              });
+      // 回显房号带出来的附件
+      let docs: any = [];
+      if (this.postData.roomId && this.baseInfoInDeal && this.baseInfoInDeal.docs && this.baseInfoInDeal.docs.length) {
+        docs = this.baseInfoInDeal.docs;
+      }
+      // 放入对应的文件
+      if (this.postData.documentVO.length) {
+        this.postData.documentVO.forEach((list: any) => {
+          list.fileList = [];
+          list.defaultFileList = [];
+          docs.forEach((item: any) => {
+            if (list.code === item.fileType) {
+              list.defaultFileList.push(
+                {
+                  ...item,
+                  name: item.fileName,
+                  canDelete: true, // 是否可以删除
+                }
+              )
             }
-            list.defaultFileList = this.postData.roomId && baseInfo.noticePDF && baseInfo.noticePDF.length  ? baseInfo.noticePDF : [];
-            break;
-          case "OwnerID":
-            // 业主身份证
-            if (baseInfo.customerIds && baseInfo.customerIds.length) {
-              baseInfo.customerIds.forEach((item: any) => {
-                item.name = item.fileName;
-              });
-            }
-            list.defaultFileList = this.postData.roomId && baseInfo.customerIds && baseInfo.customerIds.length ? baseInfo.customerIds : [];
-            break;
-        }
-      });
+          });
+        });
+      }
     }
 
     // 判断是否可以手动添加优惠告知书

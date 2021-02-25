@@ -4,7 +4,7 @@
  * @Author: wwq
  * @Date: 2021-02-06 18:54:46
  * @LastEditors: wwq
- * @LastEditTime: 2021-02-22 09:36:33
+ * @LastEditTime: 2021-02-24 20:10:16
 -->
 <template>
   <IhPage>
@@ -766,7 +766,7 @@
         type="textarea"
         :autosize="{ minRows: 5, maxRows: 10 }"
         placeholder="请输入内容"
-        v-model="info.postscript"
+        v-model="info.auditOpinion"
         maxlength="500"
         show-word-limit
       >
@@ -846,6 +846,7 @@ export default class PayoffEdit extends Vue {
     description: null,
     documentList: [],
     processRecordResponseList: [],
+    auditOpinion: null,
   };
   channelAccountOptions: any = [];
   showTable: any = [];

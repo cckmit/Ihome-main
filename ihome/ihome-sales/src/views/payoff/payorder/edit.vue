@@ -4,7 +4,7 @@
  * @Author: wwq
  * @Date: 2020-12-26 11:11:23
  * @LastEditors: wwq
- * @LastEditTime: 2021-02-24 17:33:44
+ * @LastEditTime: 2021-02-25 11:58:53
 -->
 <template>
   <IhPage>
@@ -1124,6 +1124,7 @@ export default class PayoffEdit extends Vue {
   }
 
   agencyFinish(data: any) {
+    console.log(data);
     let sum: any = 0;
     data.forEach((v: any) => {
       sum += Number(v.agencyFeesAmount);
@@ -1644,6 +1645,10 @@ export default class PayoffEdit extends Vue {
       cycleId: v.cycleId + "",
       serThisCommFees: v.serCanCommFees,
       ageThisCommFees: v.ageCanCommFees,
+      ageThisCommFeesList: v.canCommFeesList.map((j: any) => ({
+        ...j,
+        agencyFeesType: "ThisCommFees",
+      })),
     }));
     this.info.payApplyDetailList = arr;
     this.filterTabs(this.info.payApplyDetailList);

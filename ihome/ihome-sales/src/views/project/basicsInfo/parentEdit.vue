@@ -4,7 +4,7 @@
  * @Author: wwq
  * @Date: 2020-11-10 10:21:03
  * @LastEditors: wwq
- * @LastEditTime: 2021-02-24 16:26:30
+ * @LastEditTime: 2021-02-24 21:35:19
 -->
 <template>
   <ih-page>
@@ -138,7 +138,8 @@
         <el-button
           type="primary"
           @click="save"
-          v-has="'B.SALES.PROJECT.BASICLIST.FXMBC'"
+          :class="{'ih-data-disabled': !secureSave()}"
+          v-has="'B.SALES.PROJECT.BASICLIST.ZXMBC'"
         >保 存</el-button>
         <el-button
           type="success"
@@ -208,19 +209,22 @@ export default class EditBasicInfo extends Vue {
     },
   ];
 
-  saveChange() {
-    const status = this.form.auditEnum;
-    const Draft = status === "Draft";
-    const Adopt = status === "Adopt";
-    const Reject = status === "Reject";
+  secureSave() {
+    const Adopt = this.form.auditEnum === "Adopt";
     const RHeadBusinessManagement = this.$roleTool.RHeadBusinessManagement();
     const RBusinessManagement = this.$roleTool.RBusinessManagement();
     const RFrontLineClerk = this.$roleTool.RFrontLineClerk();
     return (
-      (Draft && RFrontLineClerk) ||
-      ((RHeadBusinessManagement || RBusinessManagement) && Adopt) ||
-      (RFrontLineClerk && Reject)
+      (Adopt &&
+        (RHeadBusinessManagement || RBusinessManagement || RFrontLineClerk)) ||
+      RFrontLineClerk
     );
+  }
+
+  submitChange() {
+    const Draft = this.form.auditEnum === "Draft";
+    const Reject = this.form.auditEnum === "Reject";
+    return Draft || Reject;
   }
 
   private get projectId() {
@@ -265,21 +269,6 @@ export default class EditBasicInfo extends Vue {
         return false;
       }
     });
-  }
-
-  submitChange() {
-    const status = this.form.auditEnum;
-    const Draft = status === "Draft";
-    // const Adopt = status === "Adopt";
-    const Reject = status === "Reject";
-    // const RHeadBusinessManagement = this.$roleTool.RHeadBusinessManagement();
-    // const RBusinessManagement = this.$roleTool.RBusinessManagement();
-    const RFrontLineClerk = this.$roleTool.RFrontLineClerk();
-    return (
-      (Draft && RFrontLineClerk) ||
-      // ((RHeadBusinessManagement || RBusinessManagement) && Adopt) ||
-      (RFrontLineClerk && Reject)
-    );
   }
 
   async save() {

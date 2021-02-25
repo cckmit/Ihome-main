@@ -4,7 +4,7 @@
  * @Author: wwq
  * @Date: 2020-12-26 11:11:23
  * @LastEditors: wwq
- * @LastEditTime: 2021-02-24 17:34:22
+ * @LastEditTime: 2021-02-25 12:08:43
 -->
 <template>
   <IhPage>
@@ -954,7 +954,7 @@
       <div class="padding-left-20">
         <el-table
           class="ih-table"
-          :data="info.processRecordList"
+          :data="info.processRecordResponseList"
           style="width: 100%"
         >
           <el-table-column
@@ -1633,7 +1633,7 @@ export default class PayoffEdit extends Vue {
     const res = await get_processRecord_oa_review_log__applyId({
       applyId: this.payoffId,
     });
-    this.info.processRecordList = res;
+    this.info.processRecordResponseList = res;
   }
 
   settlementMethodChange(val: any) {
@@ -1787,6 +1787,10 @@ export default class PayoffEdit extends Vue {
       cycleId: v.cycleId + "",
       serThisCommFees: v.serCanCommFees,
       ageThisCommFees: v.ageCanCommFees,
+      ageThisCommFeesList: v.canCommFeesList.map((j: any) => ({
+        ...j,
+        agencyFeesType: "ThisCommFees",
+      })),
     }));
     this.info.payApplyDetailList = arr;
     this.filterTabs(this.info.payApplyDetailList);
@@ -1797,7 +1801,7 @@ export default class PayoffEdit extends Vue {
     (this.$refs["form"] as ElForm).validate(async (v: any) => {
       if (v) {
         let obj: any = {};
-        obj.applyId = this.payoffId;
+        obj.applyId = Number(this.payoffId);
         obj.auditOpinion = this.info.auditOpinion;
         obj.payoffApproval = val;
         if (
@@ -1807,6 +1811,7 @@ export default class PayoffEdit extends Vue {
           obj.payApplyDetailList = [];
           obj.otherDeductionDetailCalculationRequestList = [];
           obj.modify = this.modify;
+          obj.reviewUpdateMainBody.applyCode = this.info.applyCode;
           obj.reviewUpdateMainBody.deductionCategory = this.info.deductionCategory;
           obj.reviewUpdateMainBody.payerId = this.info.payerId;
           obj.reviewUpdateMainBody.payerName = this.info.payerName;

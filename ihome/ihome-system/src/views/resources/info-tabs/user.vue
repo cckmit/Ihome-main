@@ -4,7 +4,7 @@
  * @Author: zyc
  * @Date: 2020-07-07 15:36:27
  * @LastEditors: zyc
- * @LastEditTime: 2020-12-14 15:43:22
+ * @LastEditTime: 2021-02-25 17:44:05
 --> 
 <template>
   <div>
@@ -20,7 +20,7 @@
         <el-button
           slot="append"
           icon="el-icon-search"
-          @click="search()"
+          @click="searchMixin()"
         ></el-button>
       </el-input>
     </div>
@@ -40,7 +40,7 @@
       ></el-table-column>
       <el-table-column prop="userType" label="用户类型">
         <template slot-scope="scope">{{
-          $root.dictAllName(scope.row.accountType,"UserAccountType")
+          $root.dictAllName(scope.row.accountType, "UserAccountType")
         }}</template>
       </el-table-column>
       <el-table-column prop="orgName" label="归属组织"></el-table-column>
@@ -75,7 +75,7 @@ export default class InfoUser extends Vue {
     total: 0,
   };
 
-  async search() {
+  async getListMixin() {
     this.resPageInfo = await post_user_getListByResourceId(
       this.queryPageParameters
     );
@@ -83,7 +83,7 @@ export default class InfoUser extends Vue {
   async created() {
     let id = this.$route.query.id;
     this.queryPageParameters.resourceId = id;
-    this.search();
+    this.getListMixin();
   }
 }
 </script>
