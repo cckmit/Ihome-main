@@ -4,7 +4,7 @@
  * @Author: wwq
  * @Date: 2020-12-26 11:11:23
  * @LastEditors: wwq
- * @LastEditTime: 2021-02-24 20:52:39
+ * @LastEditTime: 2021-02-25 12:04:32
 -->
 <template>
   <IhPage>
@@ -1787,6 +1787,10 @@ export default class PayoffEdit extends Vue {
       cycleId: v.cycleId + "",
       serThisCommFees: v.serCanCommFees,
       ageThisCommFees: v.ageCanCommFees,
+      ageThisCommFeesList: v.canCommFeesList.map((j: any) => ({
+        ...j,
+        agencyFeesType: "ThisCommFees",
+      })),
     }));
     this.info.payApplyDetailList = arr;
     this.filterTabs(this.info.payApplyDetailList);
@@ -1807,6 +1811,7 @@ export default class PayoffEdit extends Vue {
           obj.payApplyDetailList = [];
           obj.otherDeductionDetailCalculationRequestList = [];
           obj.modify = this.modify;
+          obj.reviewUpdateMainBody.applyCode = this.info.applyCode;
           obj.reviewUpdateMainBody.deductionCategory = this.info.deductionCategory;
           obj.reviewUpdateMainBody.payerId = this.info.payerId;
           obj.reviewUpdateMainBody.payerName = this.info.payerName;
