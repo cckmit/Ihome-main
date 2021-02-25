@@ -3211,6 +3211,9 @@
         });
       }
       this.dialogAddReceivePackage = false;
+      if (!this.addFlag) {
+        this.showChangeTips();
+      }
     }
 
     // 增加拆佣项
