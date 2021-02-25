@@ -4,7 +4,7 @@
  * @Author: wwq
  * @Date: 2020-12-26 11:11:23
  * @LastEditors: wwq
- * @LastEditTime: 2021-02-25 11:58:53
+ * @LastEditTime: 2021-02-25 19:59:42
 -->
 <template>
   <IhPage>
@@ -189,19 +189,25 @@
           size="small"
         >添加成交报告</el-button>
       </div>
-      <el-tabs
-        class="margin-left-20"
-        v-model="tabsValue"
-        @tab-click="handleClick(tabsValue)"
+      <div
+        class="tabClass"
+        v-if="tabsList.length"
       >
-        <template v-for="(item, i) in tabsList">
-          <el-tab-pane
-            :name="item.value"
-            :label="item.label"
-            :key="i"
-          ></el-tab-pane>
-        </template>
-      </el-tabs>
+        <span class="tabClass-title">联动周期</span>
+        <el-tabs
+          class="tabClass-tab"
+          v-model="tabsValue"
+          @tab-click="handleClick(tabsValue)"
+        >
+          <template v-for="(item, i) in tabsList">
+            <el-tab-pane
+              :name="item.value"
+              :label="item.label | filterClieName"
+              :key="i"
+            ></el-tab-pane>
+          </template>
+        </el-tabs>
+      </div>
       <div class="padding-left-20">
         <el-table
           class="ih-table"
@@ -927,6 +933,13 @@ import AgencyEdit from "./dialog/agencyEdit.vue";
     Obligation,
     AgencyEdit,
   },
+  filters: {
+    filterClieName(val: any) {
+      const reg = /(?<=\().*?(?=\))/;
+      const arr = val.match(reg);
+      return arr[0];
+    },
+  },
 })
 export default class PayoffEdit extends Vue {
   private fileList: Array<object> = [];
@@ -1124,27 +1137,12 @@ export default class PayoffEdit extends Vue {
   }
 
   agencyFinish(data: any) {
-    console.log(data);
     let sum: any = 0;
     data.forEach((v: any) => {
       sum += Number(v.agencyFeesAmount);
     });
-    this.info.payApplyDetailList = this.info.payApplyDetailList.map(
-      (v: any) => {
-        delete v.noTaxAmountNew;
-        delete v.taxNew;
-        if (v.dealCode === this.agencyEditDealCode) {
-          return {
-            ...v,
-            ageThisCommFees: sum,
-            ageThisCommFeesList: data,
-          };
-        } else {
-          return {
-            ...v,
-          };
-        }
-      }
+    const listIndex = this.info.payApplyDetailList.findIndex(
+      (v: any) => v.dealCode === this.agencyEditDealCode
     );
     this.showTable = this.showTable.map((v: any) => {
       delete v.noTaxAmountNew;
@@ -1161,6 +1159,10 @@ export default class PayoffEdit extends Vue {
         };
       }
     });
+    const item = this.showTable.find(
+      (v: any) => v.dealCode === this.agencyEditDealCode
+    );
+    this.$set(this.info.payApplyDetailList, listIndex, item);
     this.agencyDialogVisible = false;
     this.$message.success("保存成功");
   }
@@ -1829,6 +1831,18 @@ export default class PayoffEdit extends Vue {
   color: #000;
   /deep/ .el-input__prefix {
     left: 10px;
+  }
+}
+
+.tabClass {
+  display: flex;
+  flex-flow: row nowrap;
+  margin-left: 20px;
+  background-color: #f9f9f9;
+  border-radius: 10px;
+  &-title {
+    width: 100px;
+    margin-top: 10px;
   }
 }
 </style>
