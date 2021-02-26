@@ -3,8 +3,8 @@
  * @version: 
  * @Author: ywl
  * @Date: 2021-02-17 11:27:05
- * @LastEditors: wwq
- * @LastEditTime: 2021-02-24 19:53:10
+ * @LastEditors: ywl
+ * @LastEditTime: 2021-02-26 14:47:39
 -->
 <template>
   <IhPage>
@@ -816,8 +816,8 @@ export default class RefundToExamineToExamine extends Vue {
         router = this.$router.resolve({
           path: `/dealReport/info`,
           query: {
-            id: row.dealCode,
-            type: "CODE",
+            id: row.dealId,
+            type: "ID",
           },
         });
         break;

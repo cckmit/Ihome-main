@@ -3,8 +3,8 @@
  * @version: 
  * @Author: zyc
  * @Date: 2021-02-08 14:34:29
- * @LastEditors: wwq
- * @LastEditTime: 2021-02-24 19:52:50
+ * @LastEditors: ywl
+ * @LastEditTime: 2021-02-26 14:56:23
 -->
 <template>
   <IhPage>
@@ -373,7 +373,7 @@
         </el-table>
         <br />
       </div>
-      <p class="ih-info-title">退款汇总清单</p>
+      <!-- <p class="ih-info-title">退款汇总清单</p>
       <div class="padding-left-20">
         <el-table
           class="ih-table"
@@ -421,7 +421,7 @@
           </el-table-column>
         </el-table>
         <br />
-      </div>
+      </div> -->
       <p class="ih-info-title">退款信息</p>
       <div class="margin-left-20">
         <table
@@ -696,8 +696,8 @@ export default class RefundToExamineToExamine extends Vue {
         router = this.$router.resolve({
           path: `/dealReport/info`,
           query: {
-            id: row.dealCode,
-            type: "CODE",
+            id: row.dealId,
+            type: "ID",
           },
         });
         break;
