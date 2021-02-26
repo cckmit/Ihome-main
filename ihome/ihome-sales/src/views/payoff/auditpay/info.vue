@@ -4,7 +4,7 @@
  * @Author: wwq
  * @Date: 2021-02-06 18:54:46
  * @LastEditors: wwq
- * @LastEditTime: 2021-02-24 20:10:16
+ * @LastEditTime: 2021-02-26 08:45:37
 -->
 <template>
   <IhPage>
@@ -61,7 +61,6 @@
                 placeholder="请选择渠道商"
                 v-model="info.agencyId"
                 :search-name="info.agencyName"
-                @changeOption="getChannelInfo"
               ></IhSelectPageByChannel>
             </el-form-item>
           </el-col>
@@ -70,19 +69,13 @@
               label="渠道收款账号"
               prop="receiveAccount"
             >
-              <el-select
+              <el-input
                 v-model="info.receiveAccount"
                 disabled
                 placeholder="请选择账号"
                 class="width--100"
               >
-                <el-option
-                  v-for="item in channelAccountOptions"
-                  :key="item.id"
-                  :label="item.accountNo"
-                  :value="item.accountNo"
-                ></el-option>
-              </el-select>
+              </el-input>
             </el-form-item>
           </el-col>
           <el-col :span="8">
@@ -171,19 +164,25 @@
     </template>
     <template v-slot:table>
       <p class="ih-info-title">待付款列表</p>
-      <el-tabs
-        class="margin-left-20"
-        v-model="tabsValue"
-        @tab-click="handleClick(tabsValue)"
+      <div
+        class="tabClass"
+        v-if="tabsList.length"
       >
-        <template v-for="(item, i) in tabsList">
-          <el-tab-pane
-            :name="item.value"
-            :label="item.label"
-            :key="i"
-          ></el-tab-pane>
-        </template>
-      </el-tabs>
+        <span class="tabClass-title">联动周期</span>
+        <el-tabs
+          class="tabClass-tab"
+          v-model="tabsValue"
+          @tab-click="handleClick(tabsValue)"
+        >
+          <template v-for="(item, i) in tabsList">
+            <el-tab-pane
+              :name="item.value"
+              :label="item.label | filterClieName"
+              :key="i"
+            ></el-tab-pane>
+          </template>
+        </el-tabs>
+      </div>
       <div class="padding-left-20">
         <el-table
           class="ih-table"
@@ -799,11 +798,17 @@ import {
   post_payApply_financeReviewApply,
   post_payApply_notFinanceReviewApply,
 } from "@/api/payoff/index";
-import { get_channel_get__id } from "@/api/channel/index";
 import { Form as ElForm } from "element-ui";
 
 @Component({
   components: {},
+  filters: {
+    filterClieName(val: any) {
+      const reg = /(?<=\().*?(?=\))/;
+      const arr = val.match(reg);
+      return arr[0];
+    },
+  },
 })
 export default class PayoffEdit extends Vue {
   private fileList: Array<object> = [];
@@ -934,7 +939,6 @@ export default class PayoffEdit extends Vue {
       const res = await get_payApply_get__id({ id: this.payoffId });
       this.info = {
         ...res,
-        receiveAccount: Number(res.receiveAccount),
         taxRate: res.taxRate + "",
         payApplyDetailList: res.payApplyDetailList.map((j: any) => ({
           ...j,
@@ -942,10 +946,6 @@ export default class PayoffEdit extends Vue {
         })),
       };
       this.getFileListType(res.documentList);
-      this.getChannelInfo({
-        id: res.agencyId,
-        name: res.agencyName,
-      });
       this.filterTabs(this.info.payApplyDetailList);
     } else {
       this.getFileListType([]);
@@ -983,12 +983,6 @@ export default class PayoffEdit extends Vue {
       obj[h.code] = h.fileList;
     });
     this.submitFile = { ...obj };
-  }
-
-  async getChannelInfo(item: any) {
-    this.info.agencyName = item.name;
-    let res = await get_channel_get__id({ id: item.id });
-    this.channelAccountOptions = res.channelBanks;
   }
 
   async searchPerson() {
@@ -1139,6 +1133,18 @@ export default class PayoffEdit extends Vue {
   /deep/ .el-textarea__inner,
   /deep/ .el-input__inner {
     border: none;
+  }
+}
+
+.tabClass {
+  display: flex;
+  flex-flow: row nowrap;
+  margin-left: 20px;
+  background-color: #f9f9f9;
+  border-radius: 10px;
+  &-title {
+    width: 100px;
+    margin-top: 10px;
   }
 }
 </style>

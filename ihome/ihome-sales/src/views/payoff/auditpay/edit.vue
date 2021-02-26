@@ -4,7 +4,7 @@
  * @Author: wwq
  * @Date: 2020-12-26 11:11:23
  * @LastEditors: wwq
- * @LastEditTime: 2021-02-25 20:00:05
+ * @LastEditTime: 2021-02-26 08:38:59
 -->
 <template>
   <IhPage>
@@ -1542,7 +1542,6 @@ export default class PayoffEdit extends Vue {
       const res = await get_payApply_get__id({ id: this.payoffId });
       this.info = {
         ...res,
-        receiveAccount: Number(res.receiveAccount),
         taxRate: res.taxRate + "",
         payApplyDetailList: res.payApplyDetailList.map((j: any) => ({
           ...j,
@@ -1565,7 +1564,6 @@ export default class PayoffEdit extends Vue {
       );
       this.isChangeObj = {
         ...res,
-        receiveAccount: Number(res.receiveAccount),
         taxRate: res.taxRate + "",
         payApplyDetailList: res.payApplyDetailList.map((j: any) => ({
           ...j,
