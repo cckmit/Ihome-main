@@ -4,7 +4,7 @@
  * @Author: zyc
  * @Date: 2021-02-06 16:29:34
  * @LastEditors: wwq
- * @LastEditTime: 2021-02-24 19:51:55
+ * @LastEditTime: 2021-02-26 11:50:09
 -->
 <template>
   <IhPage>
@@ -659,6 +659,7 @@ export default class RefundApplyEdit extends Vue {
   computedLoading: any = false;
   payerAccountOptions: any = [];
   showUploadIndex: any = 0;
+  isAgainComputed: any = true;
 
   async routeTo(row: any, where: any) {
     let router: any = null;
@@ -862,7 +863,7 @@ export default class RefundApplyEdit extends Vue {
     });
     obj.amount = amountSum;
     obj.contAmount = noticeSum;
-    obj.payName = this.info.refundItems[0].refundName;
+    obj.payName = this.info.refundItems[0]?.refundName;
     obj.payer = this.info.accountName;
     try {
       this.computedLoading = true;
@@ -872,6 +873,7 @@ export default class RefundApplyEdit extends Vue {
       this.computedLoading = false;
       this.info.countVOs = res.countVOs;
       this.info.refundInfo = { ...res.refundInfo };
+      this.isAgainComputed = true;
     } catch (err) {
       this.computedLoading = false;
     }
@@ -888,6 +890,7 @@ export default class RefundApplyEdit extends Vue {
     this.info.refundItems.splice(index, 1);
     console.log(this.info.refundItems, "del");
     this.computedDisabled = false;
+    this.isAgainComputed = false;
     this.$message.success("点击计算退款统计数据并生成退款汇总清单");
   }
 
@@ -896,89 +899,94 @@ export default class RefundApplyEdit extends Vue {
     console.log(this.info.refundItems, "add");
     this.addFefundDialogVisible = false;
     this.computedDisabled = false;
+    this.isAgainComputed = false;
     this.$message.success("点击计算退款统计数据并生成退款汇总清单");
   }
 
   submit(val: any) {
-    (this.$refs["form"] as ElForm).validate(async (j: any) => {
-      if (j) {
-        let obj: any = {};
-        obj = { ...this.info };
-        delete obj.refundItems;
-        delete obj.refundAttachments;
-        obj.itemAttachmentVOs = this.info.refundItems.map((v: any) => ({
-          attachmentVOs: v.attachmentVOs,
-          itemID: v.id,
-          attachmentComplete: v.attachmentComplete,
-        }));
-        obj.buttonType = val;
-        // 校验提示
-        let arr: any = [];
-        Object.values(this.submitFile).forEach((v: any) => {
-          if (v.length) {
-            arr = arr.concat(v);
-          }
-        });
-        // 以下操作仅仅是为了校验必上传项
-        let submitList: any = this.fileListType.map((v: any) => {
-          return {
-            ...v,
-            fileList: arr
-              .filter((j: any) => j.type === v.code)
-              .map((h: any) => ({
-                ...h,
-                name: h.fileName,
-              })),
-          };
-        });
-        let isSubmit = true;
-        let msgList: any = [];
-        submitList.forEach((v: any) => {
-          if (v.subType && !v.fileList.length) {
-            msgList.push(v.name);
-            isSubmit = false;
-          }
-        });
-
-        if (isSubmit) {
-          obj.approvalForms = arr.map((v: any) => ({
-            fileId: v.fileId,
-            fileName: v.name,
-            type: v.type,
+    if (this.isAgainComputed) {
+      (this.$refs["form"] as ElForm).validate(async (j: any) => {
+        if (j) {
+          let obj: any = {};
+          obj = { ...this.info };
+          delete obj.refundItems;
+          delete obj.refundAttachments;
+          obj.itemAttachmentVOs = this.info.refundItems.map((v: any) => ({
+            attachmentVOs: v.attachmentVOs,
+            itemID: v.id,
+            attachmentComplete: v.attachmentComplete,
           }));
-        } else {
-          this.$message({
-            type: "warning",
-            message: `${msgList.join(",")}项,请上传附件`,
+          obj.buttonType = val;
+          // 校验提示
+          let arr: any = [];
+          Object.values(this.submitFile).forEach((v: any) => {
+            if (v.length) {
+              arr = arr.concat(v);
+            }
           });
-          return;
-        }
-        if (!this.returnId) {
-          try {
-            await post_refundApply_add(obj);
+          // 以下操作仅仅是为了校验必上传项
+          let submitList: any = this.fileListType.map((v: any) => {
+            return {
+              ...v,
+              fileList: arr
+                .filter((j: any) => j.type === v.code)
+                .map((h: any) => ({
+                  ...h,
+                  name: h.fileName,
+                })),
+            };
+          });
+          let isSubmit = true;
+          let msgList: any = [];
+          submitList.forEach((v: any) => {
+            if (v.subType && !v.fileList.length) {
+              msgList.push(v.name);
+              isSubmit = false;
+            }
+          });
+
+          if (isSubmit) {
+            obj.approvalForms = arr.map((v: any) => ({
+              fileId: v.fileId,
+              fileName: v.name,
+              type: v.type,
+            }));
+          } else {
             this.$message({
-              type: "success",
-              message: `新增成功`,
+              type: "warning",
+              message: `${msgList.join(",")}项,请上传附件`,
             });
-            this.$goto({ path: `/refundApply/list` });
-          } catch (err) {
-            console.log(err);
+            return;
           }
-        } else {
-          try {
-            obj.refundApplyNo = this.info.refundApplyNo;
-            await post_refundApply_update(obj);
-            this.$message({
-              type: "success",
-              message: `修改成功`,
-            });
-            this.$goto({ path: `/refundApply/list` });
-          } catch (err) {
-            console.log(err);
+          if (!this.returnId) {
+            try {
+              await post_refundApply_add(obj);
+              this.$message({
+                type: "success",
+                message: `新增成功`,
+              });
+              this.$goto({ path: `/refundApply/list` });
+            } catch (err) {
+              console.log(err);
+            }
+          } else {
+            try {
+              obj.refundApplyNo = this.info.refundApplyNo;
+              await post_refundApply_update(obj);
+              this.$message({
+                type: "success",
+                message: `修改成功`,
+              });
+              this.$goto({ path: `/refundApply/list` });
+            } catch (err) {
+              console.log(err);
+            }
           }
         }
-      }
-    });
+      });
+    } else {
+      this.$message.warning("请点击计算结佣统计数据及成本归属明细");
+    }
   }
 }
 </script>

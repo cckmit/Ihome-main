@@ -1200,7 +1200,7 @@
       // }
     }
 
-    // 编辑 --- 构建收派金额数据
+    // 编辑 --- 构建收派金额数据 typeName
     initReceiveVO(list: any = []) {
       let tempList: any = []
       if (list && list.length) {
@@ -1208,7 +1208,12 @@
           tempList.push(
             {
               ...item,
-              showData: [item.collectandsendDetailDealVO]
+              showData: [
+                {
+                  ...item.collectandsendDetailDealVO,
+                  typeName: (this as any).$root.dictAllName(item.type, 'FeeType')
+                }
+              ]
             }
           )
         });

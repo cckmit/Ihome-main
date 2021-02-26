@@ -5,7 +5,7 @@
  * @Author: zyc
  * @Date: 2021-01-13 14:50:21
  * @LastEditors: zyc
- * @LastEditTime: 2021-02-25 17:50:04
+ * @LastEditTime: 2021-02-26 09:09:29
 -->
 <template>
   <IhPage label-width="110px">
@@ -87,13 +87,14 @@
           </el-col>
         </el-row>
         <el-row>
-          <el-col :span="8">
+          <el-col :span="12">
             <el-form-item label="日期类型" style="text-align: left">
               <el-select
                 style="width: 30%"
                 v-model="queryPageParameters.dateType"
                 clearable
                 placeholder="日期类型"
+                @clear="dateTypeClear()"
               >
                 <el-option
                   v-for="item in $root.dictAllList('PayDateType')"
@@ -114,6 +115,7 @@
                 end-placeholder="结束日期"
                 :picker-options="$root.pickerOptions"
                 value-format="yyyy-MM-dd"
+                :disabled="!queryPageParameters.dateType"
                 @change="expiresTimeChange"
               ></el-date-picker>
             </el-form-item>
@@ -459,6 +461,13 @@ export default class RefundPushList extends Vue {
       this.$message.error(res.reason);
     }
     this.getListMixin();
+  }
+  dateTypeClear() {
+    if (!this.queryPageParameters.dateType) {
+      this.queryPageParameters.expiresTime = null;
+      this.queryPageParameters.beginTime = null;
+      this.queryPageParameters.endTime = null;
+    }
   }
 }
 </script>

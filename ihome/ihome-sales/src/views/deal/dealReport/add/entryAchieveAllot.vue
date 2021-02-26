@@ -1676,7 +1676,12 @@
           tempList.push(
             {
               ...item,
-              showData: [item.collectandsendDetailDealVO]
+              showData: [
+                {
+                  ...item.collectandsendDetailDealVO,
+                  typeName: (this as any).$root.dictAllName(item.type, 'FeeType')
+                }
+              ]
             }
           )
         });
