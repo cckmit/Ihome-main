@@ -3,8 +3,8 @@
  * @version: 
  * @Author: zyc
  * @Date: 2021-02-08 14:34:29
- * @LastEditors: wwq
- * @LastEditTime: 2021-02-24 19:52:50
+ * @LastEditors: ywl
+ * @LastEditTime: 2021-02-26 16:28:17
 -->
 <template>
   <IhPage>
@@ -183,6 +183,8 @@
           class="ih-table"
           :data="info.refundItems"
           style="width: 100%"
+          show-summary
+          :summary-method="getSummaries"
         >
           <el-table-column
             type="index"
@@ -373,7 +375,7 @@
         </el-table>
         <br />
       </div>
-      <p class="ih-info-title">退款汇总清单</p>
+      <!-- <p class="ih-info-title">退款汇总清单</p>
       <div class="padding-left-20">
         <el-table
           class="ih-table"
@@ -421,7 +423,7 @@
           </el-table-column>
         </el-table>
         <br />
-      </div>
+      </div> -->
       <p class="ih-info-title">退款信息</p>
       <div class="margin-left-20">
         <table
@@ -696,8 +698,8 @@ export default class RefundToExamineToExamine extends Vue {
         router = this.$router.resolve({
           path: `/dealReport/info`,
           query: {
-            id: row.dealCode,
-            type: "CODE",
+            id: row.dealId,
+            type: "ID",
           },
         });
         break;
@@ -767,6 +769,45 @@ export default class RefundToExamineToExamine extends Vue {
     } catch (error) {
       console.log(error);
     }
+  }
+  private getSummaries({ columns, data }: any) {
+    const sums: any = [];
+    columns.forEach((column: any, index: number) => {
+      if (index === 0) {
+        sums[index] = "合计";
+        return;
+      }
+      const values = data.map((item: any) => Number(item[column.property]));
+      if (!values.every((value: any) => isNaN(value))) {
+        sums[index] = values.reduce((prev: any, curr: any) => {
+          const value = Number(curr);
+          if (!isNaN(value)) {
+            return this.$math.add(prev, curr);
+          } else {
+            return prev;
+          }
+        }, 0);
+        sums[index] = `${sums[index]}`;
+      } else {
+        if (index === 8) {
+          let receivableAmount = 0,
+            actualAmount = 0,
+            uncollectedAmount = 0;
+          data.forEach((i: any) => {
+            receivableAmount += i.receivableAmount;
+            actualAmount += i.actualAmount;
+            uncollectedAmount += i.uncollectedAmount;
+          });
+          sums[index] = `应收: ${this.$math.tofixed(receivableAmount, 2)} \n
+          实收: ${this.$math.tofixed(actualAmount, 2)} 
+          未收: ${this.$math.tofixed(uncollectedAmount, 2)} 
+          `;
+        } else {
+          sums[index] = "-";
+        }
+      }
+    });
+    return sums;
   }
   showUploadList(data: any, index: number) {
     this.uploadData = {

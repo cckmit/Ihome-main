@@ -4,7 +4,7 @@
  * @Author: ywl
  * @Date: 2021-01-13 14:50:21
  * @LastEditors: ywl
- * @LastEditTime: 2021-02-19 19:39:10
+ * @LastEditTime: 2021-02-26 14:24:26
 -->
 <template>
   <IhPage label-width="100px">
@@ -217,7 +217,7 @@
                     class="margin-left-10"
                     @click="retPayment(row)"
                     v-has="'B.SALES.APPLY.RETURNCONFIRM.RETPAYMENT'"
-                  >添加回款</el-link>
+                  >{{`${row.status === 'Confirm' ? '添加回款' : '回款详情'}`}}</el-link>
                 </template>
               </el-table-column>
             </el-table>

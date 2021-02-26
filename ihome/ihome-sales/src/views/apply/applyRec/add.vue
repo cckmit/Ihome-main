@@ -4,7 +4,7 @@
  * @Author: ywl
  * @Date: 2021-01-07 16:30:03
  * @LastEditors: ywl
- * @LastEditTime: 2021-02-25 18:18:25
+ * @LastEditTime: 2021-02-26 15:34:25
 -->
 <template>
   <IhPage class="text-left">
@@ -1147,9 +1147,9 @@ export default class ApplyRecAdd extends Vue {
   }
   // 计算不含税金额 -- 其他扣除项
   private otherSubMoneyNoTax(row: any) {
-    let subMoneyNoTax = this.$math.div(
+    let subMoneyNoTax = this.countNoTax(
       row.subMoney,
-      1 + Number(this.form.taxRate)
+      Number(this.form.taxRate)
     );
     row.subMoneyNoTax = this.$math.tofixed(subMoneyNoTax * -1, 2);
     return row.subMoneyNoTax;
@@ -1295,6 +1295,16 @@ export default class ApplyRecAdd extends Vue {
       this.$math.sub(money, money / (1 + taxRate)),
       2
     );
+    return sum;
+  }
+  /**
+   * @description: 计算不含税金额公式
+   * @param {*} money
+   * @param {*} taxRate
+   * @return {*} 不含税金额
+   */
+  private countNoTax(money: number, taxRate: number) {
+    let sum = this.$math.tofixed(money / (1 + taxRate), 2);
     return sum;
   }
   private handleAddDeal() {
