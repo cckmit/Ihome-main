@@ -4,7 +4,7 @@
  * @Author: zyc
  * @Date: 2021-02-05 16:41:19
  * @LastEditors: zyc
- * @LastEditTime: 2021-02-25 11:26:29
+ * @LastEditTime: 2021-02-26 15:15:25
 -->
  
 <template>
@@ -197,6 +197,7 @@
                 'ih-data-disabled': !['Draft', 'AppealDismissed'].includes(
                   scope.row.status
                 ),
+                'ih-my-disabled': scope.row.inputUser != $root.userInfo.id,
               }"
               >修改</el-link
             >
@@ -213,11 +214,11 @@
                 'ih-data-disabled': !['Draft', 'AppealDismissed'].includes(
                   scope.row.status
                 ),
+                'ih-my-disabled': scope.row.inputUser != $root.userInfo.id,
               }"
               class="margin-right-10"
               type="danger"
               v-has="'B.SALES.FINANCE.TOBEREFUNDE.DELETE'"
-              v-my="scope.row.inputUser"
               @click.native.prevent="remove(scope)"
               >删除</el-link
             >

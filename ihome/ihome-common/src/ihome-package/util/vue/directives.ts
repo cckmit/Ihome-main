@@ -4,7 +4,7 @@
  * @Author: zyc
  * @Date: 2020-05-26 17:02:03
  * @LastEditors: zyc
- * @LastEditTime: 2021-02-25 11:16:30
+ * @LastEditTime: 2021-02-26 15:17:49
  */
 export default (Vue: any) => {
     function has(el: any, binding: any) {
@@ -53,20 +53,20 @@ export default (Vue: any) => {
 
     });
     //该数据userId是否当前登录账号userId
-    Vue.directive("my", {
-        inserted(el: any, binding: any) {
-            if (typeof binding.value == 'number') {
-                let id = (window as any).polyihomeData?.userInfo?.id;
-                if (binding.value == id) {
-                    el.className = el._prevClass + '';
-                } else {
-                    el.className = el._prevClass + ' ih-my-disabled';
-                }
-            } else {
-                console.error('数据格式必须为number；' + binding.value);
-            }
-        }
-    });
+    // Vue.directive("my", {
+    //     inserted(el: any, binding: any) {
+    //         if (typeof binding.value == 'number') {
+    //             let id = (window as any).polyihomeData?.userInfo?.id;
+    //             if (binding.value == id) {
+    //                 el.className = el._prevClass + '';
+    //             } else {
+    //                 el.className = el._prevClass + ' ih-my-disabled';
+    //             }
+    //         } else {
+    //             console.error('数据格式必须为number；' + binding.value);
+    //         }
+    //     }
+    // });
 
     // v-dialogDrag: 弹窗拖拽
     Vue.directive('dialogDrag', {
