@@ -4,7 +4,7 @@
  * @Author: ywl
  * @Date: 2021-01-07 16:30:03
  * @LastEditors: ywl
- * @LastEditTime: 2021-02-26 15:34:25
+ * @LastEditTime: 2021-02-26 17:56:33
 -->
 <template>
   <IhPage class="text-left">
@@ -76,6 +76,9 @@
                   form.invoiceTitle = data.name;
                   getWaitList(data.id)
                   getListAccount(data.id)
+                }"
+                @change="() => {
+                  form.dealList = [];
                 }"
               ></IhSelectPageByDeveloper>
             </el-form-item>
@@ -1290,9 +1293,9 @@ export default class ApplyRecAdd extends Vue {
    * @param {*} taxRate
    * @return {*} 税额
    */
-  private countTaxMoney(money: number, taxRate: number) {
+  private countTaxMoney(money: number, taxRate: any) {
     let sum = this.$math.tofixed(
-      this.$math.sub(money, money / (1 + taxRate)),
+      this.$math.sub(money, money / (1 + parseFloat(taxRate))),
       2
     );
     return sum;
@@ -1358,14 +1361,12 @@ export default class ApplyRecAdd extends Vue {
         developId,
       });
       this.waitList = list.map((i: any) => {
-        let subMoneyNoTax = this.$math.tofixed(
-          this.$math.div(i.subMoney, 1 + parseFloat(this.form.taxRate)),
-          2
-        );
-        let subMoneyTax = this.$math.tofixed(
-          this.$math.sub(i.subMoney, subMoneyNoTax),
-          2
-        );
+        let subMoneyNoTax = this.countNoTax(i.subMoney, this.form.taxRate);
+        // this.$math.tofixed(
+        //   this.$math.div(i.subMoney, 1 + parseFloat(this.form.taxRate)),
+        //   2
+        // );
+        let subMoneyTax = this.$math.tofixed(i.subMoney - subMoneyNoTax, 2);
         return {
           ...i,
           subMoneyNoTax,
@@ -1578,6 +1579,8 @@ export default class ApplyRecAdd extends Vue {
         this.form.developAccount = this.devAccountData.number;
         this.form.developAccountId = this.devAccountData.bankId;
         this.getDevBankInfo(this.devAccountData.bankId);
+      } else {
+        this.devAccountData = null;
       }
     } catch (error) {
       console.log(error);
