@@ -4,7 +4,7 @@
  * @Author: lsj
  * @Date: 2020-11-03 15:28:12
  * @LastEditors: lsj
- * @LastEditTime: 2021-01-19 17:00:11
+ * @LastEditTime: 2020-12-26 17:03:26
 -->
 <template>
   <el-dialog
@@ -221,7 +221,7 @@
     async finish() {
       if (this.selection.length === 0) {
         this.$message({
-          type: "error",
+          type: "warning",
           message: "请选择客户",
         });
         return

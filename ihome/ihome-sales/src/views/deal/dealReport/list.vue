@@ -4,7 +4,7 @@
  * @Author: lsj
  * @Date: 2020-11-03 09:10:20
  * @LastEditors: lsj
- * @LastEditTime: 2021-01-25 15:13:16
+ * @LastEditTime: 2020-12-26 17:07:20
 -->
 <template>
   <ih-page label-width="100px">
@@ -566,7 +566,7 @@
     async getListMixin() {
       if (this.queryPageParameters.timeType && this.selectTimeRange.length === 0) {
         this.$message({
-          type: "error",
+          type: "warning",
           message: "请选择对应查询时间!",
         });
         return

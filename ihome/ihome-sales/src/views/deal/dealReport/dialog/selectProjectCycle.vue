@@ -1,10 +1,10 @@
 <!--
- * @Descripttion: 
+ * @Description:
  * @version: 
  * @Author: lsj
  * @Date: 2020-11-03 15:28:12
  * @LastEditors: lsj
- * @LastEditTime: 2020-12-23 20:32:22
+ * @LastEditTime: 2020-12-26 17:06:13
 -->
 <template>
   <el-dialog
@@ -128,7 +128,7 @@
     async finish() {
       if (this.selection.length === 0) {
         this.$message({
-          type: "error",
+          type: "warning",
           message: "请选择项目",
         });
         return
