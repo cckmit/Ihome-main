@@ -3,8 +3,8 @@
  * @version: 
  * @Author: zyc
  * @Date: 2021-02-06 16:29:34
- * @LastEditors: wwq
- * @LastEditTime: 2021-02-26 11:50:09
+ * @LastEditors: ywl
+ * @LastEditTime: 2021-02-26 16:31:40
 -->
 <template>
   <IhPage>
@@ -189,6 +189,8 @@
           class="ih-table"
           :data="info.refundItems"
           style="width: 100%"
+          show-summary
+          :summary-method="getSummaries"
         >
           <el-table-column
             type="index"
@@ -816,6 +818,46 @@ export default class RefundApplyEdit extends Vue {
       this.info.payType = "CashPay";
       this.getFileListType([]);
     }
+  }
+
+  private getSummaries({ columns, data }: any) {
+    const sums: any = [];
+    columns.forEach((column: any, index: number) => {
+      if (index === 0) {
+        sums[index] = "合计";
+        return;
+      }
+      const values = data.map((item: any) => Number(item[column.property]));
+      if (!values.every((value: any) => isNaN(value))) {
+        sums[index] = values.reduce((prev: any, curr: any) => {
+          const value = Number(curr);
+          if (!isNaN(value)) {
+            return this.$math.add(prev, curr);
+          } else {
+            return prev;
+          }
+        }, 0);
+        sums[index] = `${sums[index]}`;
+      } else {
+        if (index === 8) {
+          let receivableAmount = 0,
+            actualAmount = 0,
+            uncollectedAmount = 0;
+          data.forEach((i: any) => {
+            receivableAmount += i.receivableAmount;
+            actualAmount += i.actualAmount;
+            uncollectedAmount += i.uncollectedAmount;
+          });
+          sums[index] = `应收: ${this.$math.tofixed(receivableAmount, 2)} \n
+          实收: ${this.$math.tofixed(actualAmount, 2)} 
+          未收: ${this.$math.tofixed(uncollectedAmount, 2)} 
+          `;
+        } else {
+          sums[index] = "-";
+        }
+      }
+    });
+    return sums;
   }
 
   getFileListType(data: any) {
