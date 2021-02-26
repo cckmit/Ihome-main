@@ -4,7 +4,7 @@
  * @Author: wwq
  * @Date: 2020-12-26 11:11:23
  * @LastEditors: wwq
- * @LastEditTime: 2021-02-26 11:17:22
+ * @LastEditTime: 2021-02-26 16:37:14
 -->
 <template>
   <IhPage>
@@ -214,6 +214,8 @@
           class="ih-table"
           :data="showTable"
           style="width: 100%"
+          show-summary
+          :summary-method="getSummaries"
         >
           <el-table-column
             type="index"
@@ -264,6 +266,7 @@
           <el-table-column
             label="签约价格"
             prop="signPrice"
+            width="120"
           ></el-table-column>
           <el-table-column
             label="签约日期"
@@ -1522,6 +1525,139 @@ export default class PayoffEdit extends Vue {
     } catch (err) {
       this.computedLoading = false;
     }
+  }
+
+  getSummaries(param: any) {
+    const { columns, data } = param;
+    let sums: any = [];
+    columns.forEach((column: any, index: number) => {
+      if (index === 0) {
+        sums[index] = "合计";
+        return;
+      }
+      if (index === 3) {
+        let sum = 0;
+        data.forEach((v: any) => {
+          sum += Number(v.signPrice);
+        });
+        sums[index] = sum;
+      } else if (index === 5) {
+        let serviceSum = 0;
+        let agencySum = 0;
+        let hejiSum = 0;
+        data.forEach((v: any) => {
+          serviceSum += v.serReceiveFees;
+          agencySum += v.serActualFees;
+          hejiSum += v.serUnpaidFees;
+        });
+        sums[
+          index
+        ] = `应收: ${serviceSum} \n 实收: ${agencySum} \n 未收: ${hejiSum}`;
+      } else if (index === 6) {
+        let serviceSum = 0;
+        let agencySum = 0;
+        let hejiSum = 0;
+        data.forEach((v: any) => {
+          serviceSum += v.ageReceiveFees;
+          agencySum += v.ageActualFees;
+          hejiSum += v.ageUnpaidFees;
+        });
+        sums[
+          index
+        ] = `应收: ${serviceSum} \n 实收: ${agencySum} \n 未收: ${hejiSum}`;
+      } else if (index === 7) {
+        let serviceSum = 0;
+        let agencySum = 0;
+        let hejiSum = 0;
+        data.forEach((v: any) => {
+          serviceSum += v.serCommFees;
+          agencySum += v.ageCommFees;
+          hejiSum += v.serCommFees + v.ageCommFees;
+        });
+        sums[
+          index
+        ] = `服务费: ${serviceSum} \n 代理费: ${agencySum} \n 合计: ${hejiSum}`;
+      } else if (index === 8) {
+        let serviceSum = 0;
+        let agencySum = 0;
+        let hejiSum = 0;
+        data.forEach((v: any) => {
+          serviceSum += v.serSettledCommFees;
+          agencySum += v.ageSettledCommFees;
+          hejiSum += v.serSettledCommFees + v.ageSettledCommFees;
+        });
+        sums[
+          index
+        ] = `服务费: ${serviceSum} \n 代理费: ${agencySum} \n 合计: ${hejiSum}`;
+      } else if (index === 9) {
+        let serviceSum = 0;
+        let agencySum = 0;
+        let hejiSum = 0;
+        data.forEach((v: any) => {
+          serviceSum += v.serUnsetCommFees;
+          agencySum += v.ageUnsetCommFees;
+          hejiSum += v.serUnsetCommFees + v.ageUnsetCommFees;
+        });
+        sums[
+          index
+        ] = `服务费: ${serviceSum} \n 代理费: ${agencySum} \n 合计: ${hejiSum}`;
+      } else if (index === 10) {
+        let serviceSum = 0;
+        let agencySum = 0;
+        let hejiSum = 0;
+        data.forEach((v: any) => {
+          serviceSum += v.serCanCommFees;
+          agencySum += v.ageCanCommFees;
+          hejiSum += v.serCanCommFees + v.ageCanCommFees;
+        });
+        sums[
+          index
+        ] = `服务费: ${serviceSum} \n 代理费: ${agencySum} \n 合计: ${hejiSum}`;
+      } else if (index === 11) {
+        let serviceSum = 0;
+        let agencySum = 0;
+        let hejiSum = 0;
+        data.forEach((v: any) => {
+          serviceSum += Number(v.serThisCommFees);
+          agencySum += Number(v.ageThisCommFees);
+          hejiSum += Number(v.serThisCommFees) + Number(v.ageThisCommFees);
+        });
+        sums[
+          index
+        ] = `服务费: ${serviceSum} \n 代理费: ${agencySum} \n 合计: ${hejiSum}`;
+      } else if (index === 12) {
+        let sum = 0;
+        data.forEach((v: any) => {
+          sum += Number(v.thisDeduct);
+        });
+        sums[index] = sum;
+      } else if (index === 14) {
+        let actualAmount = 0;
+        let noTaxAmount = 0;
+        let tax = 0;
+        data.forEach((v: any) => {
+          actualAmount += Number(v.actualAmount);
+          noTaxAmount += v.noTaxAmountNew
+            ? Number(v.noTaxAmountNew)
+            : Number(v.noTaxAmount);
+          tax += v.taxNew ? Number(v.taxNew) : Number(v.tax);
+        });
+        sums[
+          index
+        ] = `实际付款金额: ${actualAmount} \n 不含税金额： ${noTaxAmount} \n 税额: ${tax}`;
+      } else if (index === 15) {
+        let sum = 0;
+        data.forEach((v: any) => {
+          sum += Number(v.serLimitFees) + Number(v.ageLimitFees);
+        });
+        sums[index] = sum;
+      } else if (index === 16) {
+        sums[index] = "--";
+      } else {
+        sums[index] = "--";
+      }
+    });
+    return sums;
   }
 
   othergetSummaries(param: any) {
