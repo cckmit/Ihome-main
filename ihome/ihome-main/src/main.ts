@@ -4,7 +4,7 @@
  * @Author: zyc
  * @Date: 2020-06-22 11:46:23
  * @LastEditors: zyc
- * @LastEditTime: 2021-01-29 08:53:17
+ * @LastEditTime: 2021-02-25 18:57:30
  */
 import Vue from 'vue'
 import App from './App.vue'
@@ -35,6 +35,15 @@ Vue.use(ElementUI);
 Vue.prototype.$actions = actions
 let app: any = null;
 import { get_dict_getAll, get_area_getAll, post_sessionUser_getUserInfo } from '@/api/system'
+
+
+//异常配置捕获  errorHandler,warnHandler,renderError,errorCaptured
+// Vue.config.errorHandler = function (err, vm, info) {
+//   console.log(`main.ts=> Vue.config.errorHandler------ Error: ${err.toString()};`);
+//   console.log(err.message, err.stack);
+//   console.log(err, vm, info);
+// };
+
 
 
 /** 
