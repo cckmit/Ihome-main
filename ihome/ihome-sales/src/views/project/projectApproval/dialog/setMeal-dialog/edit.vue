@@ -1519,14 +1519,15 @@ export default class SetMealEdit extends Vue {
             },
           ],
           partyCompanyId: null,
+          partyCompany: null,
           costTypeEnum: "AgencyFee",
         };
       this.partyAInfoList.forEach( (item: any) => {
         let agencyItem: any = this.$tool.deepClone(agencyMo);
         agencyItem.partyCompanyId = item.companyId
+        agencyItem.partyCompany = item.companyName
         this.info.colletionandsendMxs.push(agencyItem)
       });
-
     }
   }
   // 上移

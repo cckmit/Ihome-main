@@ -1,10 +1,10 @@
 <!--
- * @Descripttion: 
+ * @Description:
  * @version: 
  * @Author: lsj
  * @Date: 2020-11-03 15:28:12
  * @LastEditors: lsj
- * @LastEditTime: 2020-12-19 12:02:50
+ * @LastEditTime: 2020-12-26 17:04:08
 -->
 <template>
   <el-dialog
@@ -293,7 +293,7 @@
       let flag: any = false;
       flag = this.validForm(this.form);
       if (!flag) {
-        this.$message.error('管理岗的分配总金额不能大于角色人业绩');
+        this.$message.warning('管理岗的分配总金额不能大于角色人业绩');
         return;
       }
       (this as any).$refs.form.validate((valid: any) => {

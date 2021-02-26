@@ -1,10 +1,10 @@
 <!--
- * @Descripttion: 
+ * @Description:
  * @version: 
  * @Author: lsj
  * @Date: 2020-12-23 08:40:30
  * @LastEditors: lsj
- * @LastEditTime: 2020-12-23 09:20:30
+ * @LastEditTime: 2020-12-26 17:02:13
 -->
 <template>
   <div class="deal-add-page-wrapper">
@@ -233,7 +233,7 @@
         this.agentCompanyData.selectableChannelIds = [];
         this.agentCompanyData.cycleId = null;
         this.agentCompanyData.property = null;
-        this.$message.error('暂无可选的渠道商信息');
+        this.$message.warning('暂无可选的渠道商信息');
       }
     }
 
@@ -362,7 +362,7 @@
       if (data.hasRecord) {
         // 分销模式
         if (!data.contNo) {
-          this.$message.error('请先选择分销协议编号！');
+          this.$message.warning('请先选择分销协议编号！');
           return;
         }
       } else {
@@ -382,7 +382,7 @@
           tips.push('合同类型');
         }
         if (tips.length) {
-          this.$message.error(`请先选择${tips.join('，')}`);
+          this.$message.warning(`请先选择${tips.join('，')}`);
           return;
         }
       }
@@ -565,7 +565,7 @@
     // 预览分销协议
     previewContNo(contractNo: any) {
       if (!contractNo) {
-        this.$message.error('请先选择需要预览的分销协议');
+        this.$message.warning('请先选择需要预览的分销协议');
       } else {
         // 预览
         let router = this.$router.resolve({

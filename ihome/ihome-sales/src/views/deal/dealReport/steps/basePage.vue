@@ -4,7 +4,7 @@
  * @Author: lsj
  * @Date: 2020-12-10 16:45:20
  * @LastEditors: lsj
- * @LastEditTime: 2021-01-21 19:13:22
+ * @LastEditTime: 2020-12-26 17:06:13
 -->
 <template>
   <ih-page class="text-left">
@@ -1000,7 +1000,7 @@
     </el-row>
     <p id="anchor-6" class="ih-info-title">平台费用</p>
     <div class="ih-type-wrapper">
-      <div class="title">总包</div>
+      <div class="ih-info-title title-right">总包</div>
       <el-button
         v-if="!['ChangeBasicInf'].includes(changeType) && postData.achieveTotalBagList.length"
         type="success" @click="handleAddAchieve('total')">新增角色</el-button>
@@ -1082,7 +1082,7 @@
       </el-col>
     </el-row>
     <div class="ih-type-wrapper">
-      <div class="title">分销</div>
+      <div class="ih-info-title title-right">分销</div>
       <el-button
         v-if="!['ChangeBasicInf'].includes(changeType) && !isSameFlag && postData.achieveDistriList.length"
         type="success" @click="handleAddAchieve('distri')">新增角色</el-button>
@@ -1668,7 +1668,7 @@
         }
       }
       if (flag) {
-        this.$message.error('角色人业绩大于角色业绩上限，请核对业绩比例分配方案!');
+        this.$message.warning('角色人业绩大于角色业绩上限，请核对业绩比例分配方案!');
       }
       return flag;
     }
@@ -2720,7 +2720,7 @@
     // 预览分销协议
     previewContNo(contractNo: any) {
       if (!contractNo) {
-        this.$message.error('请先选择需要预览的分销协议');
+        this.$message.warning('请先选择需要预览的分销协议');
       } else {
         // 预览
         let router = this.$router.resolve({
@@ -2952,7 +2952,7 @@
       let flag: any = false;
       flag = this.validReceiveData(this.postData.receiveList, this.postData.calculation);
       if (!flag) {
-        this.$message.error("请先完善收派金额信息！");
+        this.$message.warning("请先完善收派金额信息！");
         return;
       }
       if (type === 'add') {
@@ -3191,7 +3191,7 @@
         subscribePrice: this.postData.subscribePrice ? this.postData.subscribePrice : null
       }
       if (!postData.signPrice && !postData.subscribePrice) {
-        this.$message.error('认购价格、签约价格不能都为空！');
+        this.$message.warning('认购价格、签约价格不能都为空！');
         return;
       }
       let info: any = await post_pageData_calculateReceiveAmount(postData);
@@ -4118,13 +4118,9 @@
     display: flex;
     align-items: center;
 
-    .title {
+    .title-right {
       margin-right: 20px;
       box-sizing: border-box;
-      border-left: 5px solid #F90;
-      padding-left: 5px;
-      color: #f90;
-      margin-left: 20px;
     }
   }
 

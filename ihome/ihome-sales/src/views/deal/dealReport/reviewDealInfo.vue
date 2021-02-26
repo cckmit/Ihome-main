@@ -4,7 +4,7 @@
  * @Author: lsj
  * @Date: 2020-11-11 08:48:35
  * @LastEditors: lsj
- * @LastEditTime: 2021-01-25 14:55:22
+ * @LastEditTime: 2020-12-26 17:08:10
 -->
 <template>
   <ih-page class="text-left">
@@ -373,7 +373,7 @@
     <div id="anchor-6" v-if="!['baseDeal'].includes(currentType)">
       <p class="ih-info-title">平台费用</p>
       <div class="ih-type-wrapper">
-        <div class="title">总包</div>
+        <div class="ih-info-title">总包</div>
       </div>
       <el-row style="padding-left: 20px">
         <el-col>
@@ -427,7 +427,7 @@
         </el-col>
       </el-row>
       <div class="ih-type-wrapper">
-        <div class="title">分销</div>
+        <div class="ih-info-title">分销</div>
       </div>
       <el-row style="padding-left: 20px">
         <el-col>

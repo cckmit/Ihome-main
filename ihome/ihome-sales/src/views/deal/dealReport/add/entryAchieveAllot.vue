@@ -4,7 +4,7 @@
  * @Author: lsj
  * @Date: 2020-12-23 14:20:30
  * @LastEditors: lsj
- * @LastEditTime: 2021-01-19 19:16:45
+ * @LastEditTime: 2020-12-26 17:01:20
 -->
 <template>
   <ih-page class="text-left">
@@ -841,7 +841,7 @@
     <p id="anchor-9" class="ih-info-title">平台费用</p>
     <div v-if="postData.modelCode !== 'DistriModel'">
       <div class="ih-type-wrapper">
-        <div class="title">总包</div>
+        <div class="ih-info-title title-right">总包</div>
         <el-button
           v-if="postData.achieveTotalBagList.length"
           type="success"
@@ -924,7 +924,7 @@
     </div>
     <div v-if="postData.modelCode !== 'TotalBagModel'">
       <div class="ih-type-wrapper">
-        <div class="title">分销</div>
+        <div class="ih-info-title title-right">分销</div>
         <el-button
           v-if="!isSameFlag && postData.achieveDistriList.length"
           type="success"
@@ -1449,7 +1449,7 @@
         }
       }
       if (flag) {
-        this.$message.error('角色人业绩大于角色业绩上限，请核对业绩比例分配方案!');
+        this.$message.warning('角色人业绩大于角色业绩上限，请核对业绩比例分配方案!');
       }
       return flag;
     }
@@ -1879,7 +1879,7 @@
       let flag: any = false;
       flag = (this as any).$parent.validReceiveData(this.postData.receiveVO, this.postData.calculation);
       if (!flag) {
-        this.$message.error("请先完善收派金额信息！");
+        this.$message.warning("请先完善收派金额信息！");
         return;
       }
       if (type === 'add') {
@@ -2768,7 +2768,7 @@
         subscribePrice: this.postData.subscribePrice ? this.postData.subscribePrice : null
       }
       if (!postData.signPrice && !postData.subscribePrice) {
-        this.$message.error('认购价格、签约价格不能都为空！');
+        this.$message.warning('认购价格、签约价格不能都为空！');
         return;
       }
       let info: any = await post_pageData_calculateReceiveAmount(postData);
@@ -3356,7 +3356,7 @@
       } else if (type === 'submit') {
         // 提交
         if (['Recognize', 'Subscribe'].includes(this.postData.stage)) {
-          this.$message.error('成交阶段未到达签约阶段，不可提交!');
+          this.$message.warning('成交阶段未到达签约阶段，不可提交!');
           return;
         }
       }
@@ -3368,7 +3368,7 @@
       // 校验收派金额是都有收派套餐
       let flag = (this as any).$parent.validReceiveData(this.postData.receiveVO, this.postData.calculation);
       if (!flag) {
-        this.$message.error('请先完善收派金额信息！');
+        this.$message.warning('请先完善收派金额信息！');
         return;
       }
       if (valid && flag && this.currentBtnType) {
@@ -3851,6 +3851,11 @@
     text-align: left;
     display: flex;
     align-items: center;
+
+    .title-right {
+      margin-right: 20px;
+      box-sizing: border-box;
+    }
 
     .title {
       margin-right: 20px;
