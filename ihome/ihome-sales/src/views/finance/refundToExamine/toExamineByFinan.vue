@@ -271,7 +271,7 @@
                 <div
                   class="text-ellipsis"
                   :title="row.dealCustomerName"
-                >收款姓名: {{row.dealCustomerName}}
+                >客户姓名: {{row.dealCustomerName}}
                 </div>
                 <div
                   class="text-ellipsis"

@@ -3,8 +3,8 @@
  * @version: 
  * @Author: zyc
  * @Date: 2021-02-08 14:34:29
- * @LastEditors: ywl
- * @LastEditTime: 2021-02-26 16:28:17
+ * @LastEditors: wwq
+ * @LastEditTime: 2021-02-27 15:34:42
 -->
 <template>
   <IhPage>
@@ -264,7 +264,7 @@
                 <div
                   class="text-ellipsis"
                   :title="row.dealCustomerName"
-                >收款姓名: {{row.dealCustomerName}}
+                >客户姓名: {{row.dealCustomerName}}
                 </div>
                 <div
                   class="text-ellipsis"
