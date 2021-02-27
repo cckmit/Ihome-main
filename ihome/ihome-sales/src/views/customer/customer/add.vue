@@ -181,9 +181,9 @@ export default class CustomerAdd extends Vue {
       ];
     }
   }
-  changeCustType(value) {
+  changeCustType(value: any) {
     if(value === "Company"){//公司 【营业执照、其他】
-      this.cardTypeList.forEach(v => {
+      this.cardTypeList.forEach((v: any) => {
         if(v.code == "Businesslicense" || v.code == "Others"){
           v.disabled = false
         }else{
@@ -191,7 +191,7 @@ export default class CustomerAdd extends Vue {
         }
       })
     }else{//个人 【居民身份证、军官证、中国护照、外国护照、香港身份证、台胞证、港澳通行证、其他】
-      this.cardTypeList.forEach(v => {
+      this.cardTypeList.forEach((v: any) => {
         if(v.code == "Businesslicense" || v.code == "Others"){
           v.disabled = true
         }else{

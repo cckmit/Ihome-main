@@ -151,7 +151,6 @@
                 fixed
               ></el-table-column>
               <el-table-column
-                v-if="i.name === 'ValidReport'"
                 label="项目类型"
                 width="110"
               >
