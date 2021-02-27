@@ -1,10 +1,10 @@
 <!--
- * @Descripttion: 
+ * @Description:
  * @version: 
  * @Author: lsj
  * @Date: 2020-11-03 15:28:12
  * @LastEditors: lsj
- * @LastEditTime: 2020-12-16 10:50:50
+ * @LastEditTime: 2020-12-26 17:06:10
 -->
 <template>
   <el-dialog
@@ -203,7 +203,7 @@
     async finish() {
       if (this.currentSelection.length === 0) {
         this.$message({
-          type: "error",
+          type: "warning",
           message: "请选择房号",
         });
         return

@@ -1,10 +1,10 @@
 <!--
- * @Descripttion: 
+ * @Description:
  * @version: 
  * @Author: lsj
  * @Date: 2020-11-03 15:28:12
  * @LastEditors: lsj
- * @LastEditTime: 2020-12-09 17:28:20
+ * @LastEditTime: 2020-12-26 17:01:19
 -->
 <template>
   <el-dialog
@@ -110,7 +110,7 @@
     async finish() {
       if (this.selection.length === 0) {
         this.$message({
-          type: "error",
+          type: "warning",
           message: "请选择经纪人",
         });
         return

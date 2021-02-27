@@ -4,7 +4,7 @@
  * @Author: lsj
  * @Date: 2020-12-23 14:20:40
  * @LastEditors: lsj
- * @LastEditTime: 2021-01-19 19:16:20
+ * @LastEditTime: 2020-12-26 17:03:28
 -->
 <template>
   <ih-page class="text-left">
@@ -1926,7 +1926,7 @@
         subscribePrice: this.postData.subscribePrice ? this.postData.subscribePrice : null
       }
       if (!postData.signPrice && !postData.subscribePrice) {
-        this.$message.error('认购价格、签约价格不能都为空！');
+        this.$message.warning('认购价格、签约价格不能都为空！');
         return;
       }
       let info: any = await post_pageData_calculateReceiveAmount(postData);
@@ -2161,7 +2161,7 @@
       let flag = (this as any).$parent.validReceiveData(this.postData.receiveVO, 'Auto');
       console.log('flag', flag);
       if (!flag) {
-        this.$message.error('请先完善收派金额信息！');
+        this.$message.warning('请先完善收派金额信息！');
         return;
       }
       if (valid && flag) {

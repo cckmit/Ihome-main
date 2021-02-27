@@ -4,7 +4,7 @@
  * @Author: lsj
  * @Date: 2020-11-03 13:20:35
  * @LastEditors: lsj
- * @LastEditTime: 2021-01-21 19:25:33
+ * @LastEditTime: 2020-12-26 17:06:13
 -->
 <template>
   <ih-page class="text-left">
@@ -359,7 +359,7 @@
     </div>
     <div v-if="changeType !== 'ChangeBasicInf'">
       <p id="anchor-8" class="ih-info-title">平台费用</p>
-      <p class="ih-type-wrapper">总包</p>
+      <p class="ih-info-title">总包</p>
       <el-row style="padding-left: 20px">
         <el-col>
           <el-table
@@ -416,7 +416,7 @@
           </el-table>
         </el-col>
       </el-row>
-      <p class="ih-type-wrapper">分销</p>
+      <p class="ih-info-title">分销</p>
       <el-row style="padding-left: 20px">
         <el-col>
           <el-table
@@ -1063,15 +1063,6 @@
     text-align: center;
     box-sizing: border-box;
     margin-top: 20px;
-  }
-
-  .ih-type-wrapper {
-    margin-right: 20px;
-    box-sizing: border-box;
-    border-left: 5px solid #F90;
-    padding-left: 5px;
-    color: #f90;
-    margin-left: 40px;
   }
 
   .nav-box {

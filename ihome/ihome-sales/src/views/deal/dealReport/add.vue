@@ -1,10 +1,10 @@
 <!--
- * @Descripttion: 
+ * @Description:
  * @version: 
  * @Author: lsj
  * @Date: 2020-10-30 16:38:23
  * @LastEditors: lsj
- * @LastEditTime: 2020-12-22 12:12:20
+ * @LastEditTime: 2020-12-26 17:07:13
 -->
 <template>
   <ih-page class="text-left">
@@ -1713,7 +1713,7 @@
     previewContNo() {
       // console.log('预览分销协议');
       if (!this.postData.contNo) {
-        this.$message.error('请先选择需要预览的分销协议');
+        this.$message.warning('请先选择需要预览的分销协议');
         return;
       } else {
         // 预览
@@ -1824,7 +1824,7 @@
           return item.id === data[0].id;
         })
         if (flag) {
-          this.$message.error('已经存在相同的客户，请重新选择！');
+          this.$message.warning('已经存在相同的客户，请重新选择！');
         } else {
           this.postData.offerNoticeVO.push(
             {
@@ -1879,7 +1879,7 @@
           return item.id === data[0].id;
         })
         if (flag) {
-          this.$message.error('已经存在相同的客户，请重新选择！');
+          this.$message.warning('已经存在相同的客户，请重新选择！');
         } else {
           this.postData.customerVO.push(...data);
           this.dialogAddCustomer = false;
@@ -1901,7 +1901,7 @@
           return item.id === data[0].id;
         })
         if (flag) {
-          this.$message.error('已经存在相同的收派套餐，请重新选择！');
+          this.$message.warning('已经存在相同的收派套餐，请重新选择！');
         } else {
           this.postData.receiveVO.push(...data);
           this.dialogAddReceivePackage = false;

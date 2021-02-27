@@ -1,10 +1,10 @@
 <!--
- * @Descripttion: 
+ * @Description:
  * @version: 
  * @Author: lsj
  * @Date: 2020-12-14 18:40:10
  * @LastEditors: lsj
- * @LastEditTime: 2020-12-23 20:11:12
+ * @LastEditTime: 2020-12-26 17:03:45
 -->
 <template>
   <el-dialog
@@ -273,7 +273,7 @@
     async finish() {
       if (this.selection.length === 0) {
         this.$message({
-          type: "error",
+          type: "warning",
           message: "请选择优惠告知书",
         });
         return
