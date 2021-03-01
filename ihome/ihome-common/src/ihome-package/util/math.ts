@@ -4,7 +4,7 @@
  * @Author: zyc
  * @Date: 2021-01-14 14:27:51
  * @LastEditors: zyc
- * @LastEditTime: 2021-02-24 17:15:54
+ * @LastEditTime: 2021-03-01 09:46:53
  */
 
 
@@ -189,7 +189,6 @@ export class MyMath implements MathInterface {
     }
 
     tofixed(number: number, n = 2): number {
-        let temp = number;
         if (n > 20 || n < 0) {
             throw new RangeError('toFixed() digits argument must be between 0 and 20');
         }
