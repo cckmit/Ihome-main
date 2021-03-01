@@ -29,9 +29,9 @@
           <el-form-item label="确认到访日期" prop="visitDealTime">
             <el-date-picker
               v-model="form.visitDealTime"
-              type="date"
+              type="datetime"
               :picker-options="pickerOptions"
-              value-format="yyyy-MM-dd"
+              value-format="yyyy-MM-dd HH:mm:ss"
               placeholder="选择确认到访日期"
             >
             </el-date-picker>
@@ -106,7 +106,6 @@ export default class ValidVisit extends Vue {
   }
   @NoRepeatHttp()
   async submit(valid: any) {
-    debugger;
     if (valid) {
       const res = await post_report_visitValidOrInvalid(this.form);
       this.$message.success("到访确认有效成功");

@@ -151,7 +151,6 @@
                 fixed
               ></el-table-column>
               <el-table-column
-                v-if="i.name === 'NewDeal'"
                 label="项目类型"
                 width="110"
               >
@@ -219,11 +218,13 @@
                 prop="expectedTime"
                 width="120"
               ></el-table-column>
-              <el-table-column
-                label="栋座房号"
-                prop="roomNo"
-                width="100"
-              ></el-table-column>
+              <el-table-column label="栋座房号" width="200">
+                <template v-slot="{ row }">
+                  <div class="text-ellipsis">
+                    {{ `${(row.subBuildingName || "" )+row.roomNo}` }}
+                  </div>
+                </template>
+              </el-table-column>
               <el-table-column
                 v-if="['ValidDeal', 'InvalidDeal'].includes(i.name)"
                 label="审核人"

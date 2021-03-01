@@ -60,7 +60,7 @@
         >代理费总包模式-总包成交留存率</td>
         <td>{{(form && form.termCalcVo && form.termCalcVo.agencyFeeTotalByTotalRate || 0)  + '%'}}</td>
         <td class="bold">纯分销模式-代理费留存率</td>
-        <td colspan="1">{{(form && form.termCalcVo && form.termCalcVo.districtbuteAgencyRate || 0)  + '%'}}</td>
+        <td colspan="1">{{(form && form.termCalcVo && form.termCalcVo.distributeAgencyRate || 0)  + '%'}}</td>
         <td
           class="bold"
           rowspan="2"
@@ -79,7 +79,7 @@
         >代理费总包模式-分销成交留存率</td>
         <td>{{(form && form.termCalcVo && form.termCalcVo.agencyFeeTotalByDistrictbuteRate || 0)  + '%'}}</td>
         <td class="bold">纯分销模式-服务费留存率</td>
-        <td colspan="1">{{(form && form.termCalcVo && form.termCalcVo.districtbuteServiceRate || 0 ) + '%'}}</td>
+        <td colspan="1">{{(form && form.termCalcVo && form.termCalcVo.distributeServiceRate || 0 ) + '%'}}</td>
       </tr>
       <tr>
         <td

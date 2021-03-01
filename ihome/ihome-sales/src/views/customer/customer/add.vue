@@ -53,7 +53,11 @@
       <el-row>
         <el-col>
           <el-form-item label="客户类型" prop="custType">
-            <el-select v-model="form.custType" placeholder="请选客户类型">
+            <el-select
+              v-model="form.custType"
+              placeholder="请选客户类型"
+              @change="changeCustType"
+            >
               <el-option
                 v-for="item in $root.dictAllList('CustType')"
                 :key="item.code"
@@ -67,12 +71,22 @@
       <el-row>
         <el-col>
           <el-form-item label="证件类型" prop="cardType">
-            <el-select v-model="form.cardType" placeholder="请选择证件类型" @change="() => {handleCardChange()}">
+            <el-select
+              v-model="form.cardType"
+              placeholder="请选择证件类型"
+              @change="
+                () => {
+                  handleCardChange();
+                }
+              "
+              :disabled="showCardType"
+            >
               <el-option
-                v-for="item in $root.dictAllList('CardType')"
+                v-for="item in cardTypeList"
                 :key="item.code"
                 :label="item.name"
                 :value="item.code"
+                :disabled="item.disabled"
               ></el-option>
             </el-select>
           </el-form-item>
@@ -122,6 +136,7 @@ export default class CustomerAdd extends Vue {
   }
   @Prop({ default: null }) data: any;
   dialogVisible = true;
+  showCardType = true;
   form: any = {
     custName: null,
     custType: null,
@@ -131,6 +146,7 @@ export default class CustomerAdd extends Vue {
     custOrg: null,
     email: null,
   };
+  cardTypeList = (this as any).$root.dictAllList('CardType');
   rules: any = {
     custName: [
       { required: true, message: "客户姓名不能为空", trigger: "change" },
@@ -152,20 +168,44 @@ export default class CustomerAdd extends Vue {
     ],
     email: [{ validator: emailOrNullValidato, trigger: "change" }],
   };
-
   // 切换证件类型，验证身份证、港澳通行证、台湾通行证、护照
-  handleCardChange() {
-    if (this.form.cardType == 'IDCard') {
+  handleCardChange() {debugger
+    if (this.form.cardType == "IDCard") {
       this.rules.certificateNumber = [
         { required: true, message: "证件编号不能为空", trigger: "change" },
         { validator: validIdentityCard, trigger: "change" },
       ];
-    }else{
+    } else {
       this.rules.certificateNumber = [
         { required: true, message: "证件编号不能为空", trigger: "change" },
       ];
-    } 
+    }
   }
+  changeCustType(value: any) {
+    if(value === "Company"){//公司 【营业执照、其他】
+      this.cardTypeList.forEach((v: any) => {
+        if(v.code == "Businesslicense" || v.code == "Others"){
+          v.disabled = false
+        }else{
+          v.disabled = true
+        }
+      })
+    }else{//个人 【居民身份证、军官证、中国护照、外国护照、香港身份证、台胞证、港澳通行证、其他】
+      this.cardTypeList.forEach((v: any) => {
+        if(v.code == "Businesslicense" || v.code == "Others"){
+          v.disabled = true
+        }else{
+          v.disabled = false
+        }
+      })
+    }
+    if (value.length > 0) {
+      this.showCardType = false;
+    } else {
+      this.showCardType = true;
+    }
+  }
+
   cancel() {
     this.$emit("cancel", false);
   }
