@@ -4,7 +4,7 @@
  * @Author: zyc
  * @Date: 2021-02-05 16:41:19
  * @LastEditors: zyc
- * @LastEditTime: 2021-03-01 09:44:07
+ * @LastEditTime: 2021-03-01 13:59:52
 -->
  
 <template>
@@ -145,7 +145,7 @@
             {{ scope.row.amount }}
           </template>
         </el-table-column>
-        <el-table-column prop="" label="状态" width="150">
+        <el-table-column prop="" label="状态" width="150" align="center">
           <template slot-scope="scope">
             <div :class="{ 'status-style': scope.row.overruleMark == 1 }">
               {{ $root.dictAllName(scope.row.status, "FinRefundApplyStatus") }}
@@ -479,6 +479,11 @@ export default class RefundApplyList extends Vue {
     transform: rotate(45deg);
     font-size: 12px;
     opacity: 0.7;
+  }
+}
+.ih-table {
+  /deep/ .is-center {
+    overflow: hidden;
   }
 }
 </style>
