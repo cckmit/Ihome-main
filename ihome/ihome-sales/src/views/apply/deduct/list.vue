@@ -4,7 +4,7 @@
  * @Author: ywl
  * @Date: 2021-01-12 19:30:20
  * @LastEditors: ywl
- * @LastEditTime: 2021-02-23 10:58:34
+ * @LastEditTime: 2021-03-01 17:39:43
 -->
 <template>
   <IhPage label-width="100px">
@@ -290,7 +290,7 @@ export default class DeductList extends Vue {
     let router = this.$router.resolve({
       path: "/dealReport/info",
       query: {
-        id: row.dealId,
+        id: row.suppDealId,
         type: "ID",
       },
     });
