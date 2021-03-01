@@ -4,7 +4,7 @@
  * @Author: wwq
  * @Date: 2020-09-09 16:17:16
  * @LastEditors: wwq
- * @LastEditTime: 2021-02-23 11:11:02
+ * @LastEditTime: 2021-03-01 15:04:04
 -->
 <template>
   <div class="upload">
@@ -217,6 +217,14 @@ export default class IhUpload extends Vue {
     default: "",
   })
   uploadAccept!: string;
+  @Prop({
+    type: Function,
+  })
+  clickDownloadMsg?: any;
+  @Prop({
+    type: Function,
+  })
+  clickViewMsg?: any;
 
   private list: any[] = [];
   private srcList: any[] = [];
@@ -408,23 +416,33 @@ export default class IhUpload extends Vue {
   }
   // 点击图片预览按钮
   handlePictureCardPreview(file: any) {
-    const viewerArr = [...this.list];
-    const index = viewerArr.findIndex((v: any) => v.uid === file.uid);
-    if (index > 0) {
-      const delArr = viewerArr.splice(index, viewerArr.length - 1);
-      viewerArr.unshift(...delArr);
+    if (file.fileId) {
+      const viewerArr = [...this.list];
+      const index = viewerArr.findIndex((v: any) => v.uid === file.uid);
+      if (index > 0) {
+        const delArr = viewerArr.splice(index, viewerArr.length - 1);
+        viewerArr.unshift(...delArr);
+      }
+      this.viewerArr = viewerArr.map((v: any) => ({
+        ...v,
+        preFileName: this.list[0]?.preFileName,
+      }));
+      this.viewerIndex = index;
+      this.srcList = viewerArr.map((v: any) => v.img_url);
+      this.visible = true;
+    } else {
+      this.clickViewMsg();
     }
-    this.viewerArr = viewerArr.map((v: any) => ({
-      ...v,
-      preFileName: this.list[0]?.preFileName,
-    }));
-    this.viewerIndex = index;
-    this.srcList = viewerArr.map((v: any) => v.img_url);
-    this.visible = true;
   }
   // 图片下载按钮
   async handleDownload(file: any) {
-    window.open(`/sales-api/sales-document-cover/file/download/${file.fileId}`);
+    if (file.fileId) {
+      window.open(
+        `/sales-api/sales-document-cover/file/download/${file.fileId}`
+      );
+    } else {
+      this.clickDownloadMsg();
+    }
   }
   // 切换预览图触发
   switchHandler(index: number) {
