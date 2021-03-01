@@ -2030,8 +2030,8 @@
       if (baseInfo.myReturnVO && baseInfo.myReturnVO.dealVO && baseInfo.myReturnVO.dealVO.signType) {
         this.postData.signType = baseInfo?.myReturnVO?.dealVO?.signType;
       }
-      // 成交阶段
-      this.postData.stage = baseInfo.myReturnVO.dealStage;
+      // 成交阶段  --- 2021-03-01 补充成交只有签约状态
+      // this.postData.stage = baseInfo.myReturnVO.dealStage;
       // 现场销售
       this.postData.sceneSales = baseInfo.myReturnVO.dealVO?.sceneSales;
       // 明源房款回笼比例(%)
@@ -3715,6 +3715,7 @@
         dealVO: {
           ...this.postData,
           id: this.btnType === "edit" ? this.id : null,
+          stage: 'SignUp', // 2021-03-01 补充成交只有签约状态
           noticeIds: [] // 优惠告知书Id
         }, // 成交基础信息
         documentVO: this.postData.uploadDocumentList.length ? this.getDocumentList(this.postData.uploadDocumentList) : null, // 成交附件信息
