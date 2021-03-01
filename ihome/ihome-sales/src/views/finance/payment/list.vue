@@ -4,7 +4,7 @@
  * @Author: ywl
  * @Date: 2020-12-09 19:24:59
  * @LastEditors: ywl
- * @LastEditTime: 2021-03-01 18:16:15
+ * @LastEditTime: 2021-03-01 18:20:05
 -->
 <template>
   <IhPage label-width="100px">
@@ -372,7 +372,7 @@
         <el-table-column
           fixed="right"
           label="操作"
-          width=""
+          width="120px"
         >
           <template v-slot="{ row }">
             <el-link
@@ -393,12 +393,12 @@
                   @click.native.prevent="checkPay(row)"
                   v-has="'B.SALES.FINANCE.PAYMENTLIST.ACCOUNTCHECK'"
                 >对账</el-dropdown-item>
-                <!-- <el-dropdown-item
+                <el-dropdown-item
                   :class="{'ih-data-disabled': row.status !== 'NotPaid' && row.status !== 'NotCheck'}"
                   @click.native.prevent="remove(row)"
                   v-has="'B.SALES.FINANCE.PAYMENTLIST.REMOVE'"
                 >删除</el-dropdown-item>
-                <el-dropdown-item
+                <!-- <el-dropdown-item
                   :class="{'ih-data-disabled': row.status !== 'Paid'}"
                   @click.native.prevent="handleRele(row)"
                   v-has="'B.SALES.FINANCE.PAYMENTLIST.RELEVANCE'"
