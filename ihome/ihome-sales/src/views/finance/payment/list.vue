@@ -4,7 +4,7 @@
  * @Author: ywl
  * @Date: 2020-12-09 19:24:59
  * @LastEditors: ywl
- * @LastEditTime: 2021-03-01 11:39:57
+ * @LastEditTime: 2021-03-01 18:16:15
 -->
 <template>
   <IhPage label-width="100px">
@@ -379,7 +379,7 @@
               type="primary"
               @click.native.prevent="$router.push(`/payment/info?id=${row.id}`)"
             >详情</el-link>
-            <!-- <el-dropdown
+            <el-dropdown
               trigger="click"
               class="margin-left-15"
             >
@@ -393,7 +393,7 @@
                   @click.native.prevent="checkPay(row)"
                   v-has="'B.SALES.FINANCE.PAYMENTLIST.ACCOUNTCHECK'"
                 >对账</el-dropdown-item>
-                <el-dropdown-item
+                <!-- <el-dropdown-item
                   :class="{'ih-data-disabled': row.status !== 'NotPaid' && row.status !== 'NotCheck'}"
                   @click.native.prevent="remove(row)"
                   v-has="'B.SALES.FINANCE.PAYMENTLIST.REMOVE'"
@@ -407,9 +407,9 @@
                   :class="{'ih-data-disabled': row.status !== 'Paid'}"
                   @click.native.prevent="relieve(row)"
                   v-has="'B.SALES.FINANCE.PAYMENTLIST.RELIEVE'"
-                >解除关联</el-dropdown-item>
+                >解除关联</el-dropdown-item> -->
               </el-dropdown-menu>
-            </el-dropdown> -->
+            </el-dropdown>
           </template>
         </el-table-column>
       </el-table>
