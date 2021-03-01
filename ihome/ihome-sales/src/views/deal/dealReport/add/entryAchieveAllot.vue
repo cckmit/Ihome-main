@@ -1873,15 +1873,21 @@
       if (!value) {
         (this as any).$nextTick(() => {
           row[type] = 0;
-          row.otherChannelFees = (row.receiveAmount * 1 * 100
-            - row.commAmount * 1 * 100 - row.rewardAmount * 1 * 100
-            - row.totalPackageAmount * 1 * 100 - row.distributionAmount * 1 * 100) / 100;
+          let total: any = (this as any).$math.addArr([row.commAmount * 1, row.rewardAmount * 1, row.totalPackageAmount * 1, row.distributionAmount * 1]);
+          console.log('changeReceiveItem', total);
+          row.otherChannelFees = (this as any).$math.tofixed(((this as any).$math.multi(row.receiveAmount * 1, total)), 2);
+          // row.otherChannelFees = (row.receiveAmount * 1 * 100
+          //   - row.commAmount * 1 * 100 - row.rewardAmount * 1 * 100
+          //   - row.totalPackageAmount * 1 * 100 - row.distributionAmount * 1 * 100) / 100;
         });
       } else {
         (this as any).$nextTick(() => {
-          row.otherChannelFees = (row.receiveAmount * 1 * 100
-            - row.commAmount * 1 * 100 - row.rewardAmount * 1 * 100
-            - row.totalPackageAmount * 1 * 100 - row.distributionAmount * 1 * 100) / 100;
+          let total: any = (this as any).$math.addArr([row.commAmount * 1, row.rewardAmount * 1, row.totalPackageAmount * 1, row.distributionAmount * 1]);
+          console.log('changeReceiveItem', total);
+          row.otherChannelFees = (this as any).$math.tofixed(((this as any).$math.multi(row.receiveAmount * 1, total)), 2);
+          // row.otherChannelFees = (row.receiveAmount * 1 * 100
+          //   - row.commAmount * 1 * 100 - row.rewardAmount * 1 * 100
+          //   - row.totalPackageAmount * 1 * 100 - row.distributionAmount * 1 * 100) / 100;
         });
       }
       // 提示框
