@@ -4,7 +4,7 @@
  * @Author: ywl
  * @Date: 2020-12-04 16:33:16
  * @LastEditors: ywl
- * @LastEditTime: 2020-12-23 20:24:11
+ * @LastEditTime: 2021-03-01 17:09:20
 -->
 <script lang="ts">
 import { Component, Vue, Prop } from "vue-property-decorator";
@@ -31,6 +31,12 @@ export default class SelectPageByCycle extends Vue {
     },
   })
   props?: any;
+  @Prop({
+    default: () => {
+      return {};
+    },
+  })
+  params?: any;
 
   optionList: any = [];
   // 分页信息
@@ -48,6 +54,7 @@ export default class SelectPageByCycle extends Vue {
       termName: this.filterText,
       pageSize: this.pageInfo.pageSize,
       pageNum: this.pageInfo.pageNum,
+      ...this.params,
     });
     this.optionList = res.list;
     this.pageInfo = res;
