@@ -16,7 +16,7 @@
     <el-option
       :value="valueTitle"
       :label="valueTitle"
-      class="options"
+      class="select-tree-options"
       style="max-height: 400px"
     >
       <el-tree
@@ -31,6 +31,7 @@
         :default-expanded-keys="props.defaultExpandedKeys"
         :default-checked-keys="props.defaultCheckedKeys"
         :filter-node-method="filterNode"
+        :expand-on-click-node="false"
         @node-click="handleNodeClick"
       ></el-tree>
     </el-option>
@@ -258,7 +259,7 @@ ul li >>> .el-tree .el-tree-node__content {
   position: absolute;
   z-index: 999;
 }
-.options {
+.select-tree-options {
   padding-top: 46px !important;
 }
 .fengeline {

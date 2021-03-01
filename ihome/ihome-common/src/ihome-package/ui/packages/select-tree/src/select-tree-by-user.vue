@@ -3,7 +3,7 @@
     :value="valueTitle"
     :clearable="true"
     @clear="clearHandle"
-    popper-class="ihome-tree"
+    popper-class="ihome-tree select-tree-parent"
     class="ih-select-tree"
   >
     <el-input
@@ -16,7 +16,7 @@
     <el-option
       :value="valueTitle"
       :label="valueTitle"
-      class="options"
+      class="select-tree-options"
       style="max-height: 400px"
     >
       <el-tree
@@ -35,7 +35,7 @@
         :check-strictly="type == 'radio'"
         :default-checked-keys="defaultCheckedKeys"
         :default-expanded-keys="props.defaultExpandedKeys"
-        :check-on-click-node="true"
+        :check-on-click-node="false"
         :expand-on-click-node="false"
         :highlight-current="true"
         :filter-node-method="filterNode"
@@ -266,7 +266,8 @@ export default {
 </script>
 
 <!-- Add "scoped" attribute to limit CSS to this component only -->
-<style  scoped>
+<style  scoped lang="scss">
+
 .ihome-tree .el-scrollbar .el-scrollbar__view .el-select-dropdown__item {
   height: auto;
   max-height: 274px;
@@ -292,12 +293,22 @@ ul li >>> .el-tree .el-tree-node__content {
   color: #606266;
   font-weight: normal;
 }
+.select-tree-parent {
+  position: relative;
+}
 .selectInput {
   padding: 0 5px;
+  box-sizing: border-box;
+  position: absolute;
+  z-index: 999;
+}
+.select-tree-options {
+  padding-top: 46px !important;
   box-sizing: border-box;
 }
 .fengeline {
   border-top: 1px solid #eaeaea;
 }
+ 
 </style>
  
