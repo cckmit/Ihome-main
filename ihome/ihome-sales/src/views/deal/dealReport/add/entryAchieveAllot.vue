@@ -322,7 +322,9 @@
         </el-col>
         <el-col :span="8" class="form-item-label-wrapper">
           <el-form-item label="房产证/预售合同编号">
-            <el-input v-model="postData.propertyNo" clearable></el-input>
+            <el-input
+              v-model="postData.propertyNo"
+              :disabled="isDisabled('propertyNo', 'dealVO')"></el-input>
           </el-form-item>
         </el-col>
         <el-col :span="16">
