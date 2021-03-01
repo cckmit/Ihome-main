@@ -3551,6 +3551,7 @@
         obj.basic.customerVO = this.postData.customerVO;
       }
       // 基础信息
+      obj.basic.dealVO.exVoidService = this.baseInfoByTerm.exVoidService;
       obj.basic.dealVO.businessType = this.baseInfoByTerm.busTypeEnum;
       obj.basic.dealVO.charge = this.baseInfoByTerm.chargeEnum;
       obj.basic.dealVO.contType = this.postData.contType;
