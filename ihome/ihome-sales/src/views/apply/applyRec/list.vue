@@ -4,7 +4,7 @@
  * @Author: ywl
  * @Date: 2021-01-07 10:29:38
  * @LastEditors: ywl
- * @LastEditTime: 2021-02-23 11:00:29
+ * @LastEditTime: 2021-03-01 10:30:18
 -->
 <template>
   <IhPage label-width="100px">
@@ -329,6 +329,8 @@ export default class ApplyRecList extends Vue {
       try {
         await this.$confirm("是否确认删除?", "提示");
         await post_applyRec_deleteBatch(this.selection.map((i: any) => i.id));
+        this.$message.success("删除成功");
+        this.getListMixin();
       } catch (error) {
         console.log(error);
       }

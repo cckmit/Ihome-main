@@ -4,7 +4,7 @@
  * @Author: ywl
  * @Date: 2020-12-08 19:55:43
  * @LastEditors: ywl
- * @LastEditTime: 2021-01-30 11:54:41
+ * @LastEditTime: 2021-03-01 14:36:15
 -->
 <template>
   <IhPage class="text-left">
@@ -213,10 +213,14 @@ export default class InvoiceInfo extends Vue {
   private async getInfo() {
     let id = this.$route.query.id;
     if (id) {
-      await post_invoice_downloadFile({ ids: [id] });
+      try {
+        await post_invoice_downloadFile({ ids: [id] });
+      } catch (error) {
+        console.log(error);
+      }
       this.info = await get_invoice_get__id({ id });
       this.fileList = this.info.attachmentVOs.map((i: any) => ({
-        fileId: i.fileId,
+        fileId: "",
         name: i.fileName,
       }));
     }
