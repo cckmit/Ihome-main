@@ -378,7 +378,7 @@
         <el-col :span="8">
           <el-form-item label="现场销售">
             <el-input
-              :disabled="['ChangeInternalAchieveInf', 'RetreatRoom'].includes(changeType)"
+              :disabled="changeType !== 'ChangeAchieveInf' || isDisabled('sceneSales', 'dealVO')"
               v-model="postData.sceneSales"></el-input>
           </el-form-item>
         </el-col>
@@ -398,9 +398,11 @@
             </el-select>
           </el-form-item>
         </el-col>
-        <el-col :span="8" v-if="isDisabled('returnRatio', 'dealVO')" class="form-item-label-wrapper">
+        <el-col :span="8" class="form-item-label-wrapper">
           <el-form-item label="明源房款回笼比例">
-            <el-input v-model="postData.returnRatio" disabled></el-input>
+            <el-input
+              v-model="postData.returnRatio"
+              :disabled="changeType !== 'ChangeAchieveInf' || isDisabled('returnRatio', 'dealVO')"></el-input>
           </el-form-item>
         </el-col>
         <el-col :span="8">
@@ -2027,6 +2029,8 @@
       }
       // 成交阶段
       this.postData.stage = baseInfo.myReturnVO.dealStage;
+      // 现场销售
+      this.postData.sceneSales = baseInfo.myReturnVO.dealVO?.sceneSales;
       // 明源房款回笼比例(%)
       this.postData.returnRatio = baseInfo.myReturnVO.dealVO?.returnRatio;
       // 认购价格

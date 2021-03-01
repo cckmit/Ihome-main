@@ -345,7 +345,9 @@
         </el-col>
         <el-col :span="8">
           <el-form-item label="现场销售">
-            <el-input v-model="postData.sceneSales" clearable></el-input>
+            <el-input
+              v-model="postData.sceneSales"
+              :disabled="isDisabled('sceneSales', 'dealVO')"></el-input>
           </el-form-item>
         </el-col>
         <el-col :span="8">
@@ -364,9 +366,11 @@
             </el-select>
           </el-form-item>
         </el-col>
-        <el-col :span="8" class="form-item-label-wrapper" v-if="isDisabled('returnRatio', 'dealVO')">
+        <el-col :span="8" class="form-item-label-wrapper">
           <el-form-item label="明源房款回笼比例">
-            <el-input v-model="postData.returnRatio" clearable></el-input>
+            <el-input
+              v-model="postData.returnRatio"
+              :disabled="isDisabled('returnRatio', 'dealVO')"></el-input>
           </el-form-item>
         </el-col>
         <el-col :span="8">
@@ -1076,7 +1080,7 @@
         this.postData.toilet = res?.house?.toilet;
         this.postData.propertyNo = res?.house?.propertyNo;
         this.postData.address = res?.house?.address;
-        this.postData.sceneSales = res.sceneSales;
+        this.postData.sceneSales = res?.house?.sceneSales;
         this.postData.signType = res.signType;
         this.postData.stage = res.stage;
         this.postData.returnRatio = res.returnRatio;
@@ -1531,7 +1535,7 @@
       // this.postData.documentVO = []; // 上传附件
       let list: any = ['contType', 'contNo', 'recordState', 'recordStr', 'area', 'room', 'hall',
         'toilet', 'propertyNo', 'signType', 'returnRatio', 'subscribePrice', 'subscribeDate',
-        'signPrice', 'signDate', 'agencyId', 'agencyName', 'channelLevel']
+        'signPrice', 'signDate', 'agencyId', 'agencyName', 'channelLevel', 'sceneSales', 'returnRatio']
       this.resetObject('postData', list);
     }
 
@@ -1678,6 +1682,8 @@
       if (baseInfo && baseInfo.myReturnVO && baseInfo.myReturnVO.dealStage) {
         this.postData.stage = baseInfo.myReturnVO.dealStage;
       }
+      // 现场销售
+      this.postData.sceneSales = baseInfo.myReturnVO.dealVO?.sceneSales;
       // 明源房款回笼比例(%)
       this.postData.returnRatio = baseInfo.myReturnVO.dealVO?.returnRatio;
       // 认购价格
@@ -2236,6 +2242,7 @@
           "recordState": "",
           "refineModel": "",
           "reportId": '',
+          "returnRatio": "",
           "sceneSales": "",
           "signDate": "",
           "signPrice": '',
@@ -2365,6 +2372,7 @@
       obj.dealVO.recordState = this.postData.recordState;
       obj.dealVO.refineModel = this.postData.refineModel;
       obj.dealVO.reportId = this.baseInfoInDeal.recordId;
+      obj.dealVO.returnRatio = this.postData.returnRatio;
       obj.dealVO.sceneSales = this.postData.sceneSales;
       obj.dealVO.signDate = this.postData.signDate;
       obj.dealVO.signPrice = this.postData.signPrice;
