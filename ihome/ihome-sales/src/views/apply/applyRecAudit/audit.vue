@@ -4,7 +4,7 @@
  * @Author: ywl
  * @Date: 2021-01-14 19:09:51
  * @LastEditors: ywl
- * @LastEditTime: 2021-02-24 16:37:10
+ * @LastEditTime: 2021-03-01 08:58:37
 -->
 <template>
   <IhPage class="text-left">
@@ -751,7 +751,7 @@
           placeholder="输入内容"
           v-model="remark"
           :autosize="{ minRows: 5, maxRows: 8 }"
-          maxlength="256"
+          maxlength="500"
         ></el-input>
       </div>
       <br />

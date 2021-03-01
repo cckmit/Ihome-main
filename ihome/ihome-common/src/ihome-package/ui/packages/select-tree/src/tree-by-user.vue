@@ -4,7 +4,7 @@
  * @Author: zyc
  * @Date: 2021-01-18 14:39:10
  * @LastEditors: zyc
- * @LastEditTime: 2021-02-17 16:08:43
+ * @LastEditTime: 2021-03-01 14:24:16
 -->
 <template>
   <IhSelectTreeByUser
@@ -62,7 +62,7 @@ export default class IhSelectOrgTreeByUser extends Vue {
     this.listOrg = d.orgPermissionList;
     if (this.listOrg && this.listOrg.length > 0) {
       this.listOrg[0].parentId = 0;
-      // this.listOrg[2].disabled = true;
+      this.listOrg[2].disabled = true;
     }
     this.list = this.$tool.listToGruop(this.listOrg, {
       id: "id",

@@ -4,7 +4,7 @@
  * @Author: ywl
  * @Date: 2020-12-09 19:24:59
  * @LastEditors: ywl
- * @LastEditTime: 2021-02-23 17:54:57
+ * @LastEditTime: 2021-03-01 11:39:57
 -->
 <template>
   <IhPage label-width="100px">
@@ -252,10 +252,10 @@
           type="info"
           @click="reset()"
         >重置</el-button>
-        <el-button
+        <!-- <el-button
           @click="batchRelieve()"
           v-has="'B.SALES.FINANCE.PAYMENTLIST.ALLRELIEVE'"
-        >批量解除关联</el-button>
+        >批量解除关联</el-button> -->
         <el-link
           type="primary"
           class="float-right margin-right-40"
@@ -372,14 +372,14 @@
         <el-table-column
           fixed="right"
           label="操作"
-          width="120"
+          width=""
         >
           <template v-slot="{ row }">
             <el-link
               type="primary"
               @click.native.prevent="$router.push(`/payment/info?id=${row.id}`)"
             >详情</el-link>
-            <el-dropdown
+            <!-- <el-dropdown
               trigger="click"
               class="margin-left-15"
             >
@@ -409,7 +409,7 @@
                   v-has="'B.SALES.FINANCE.PAYMENTLIST.RELIEVE'"
                 >解除关联</el-dropdown-item>
               </el-dropdown-menu>
-            </el-dropdown>
+            </el-dropdown> -->
           </template>
         </el-table-column>
       </el-table>

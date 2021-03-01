@@ -4,7 +4,7 @@
  * @Author: ywl
  * @Date: 2021-01-15 15:29:09
  * @LastEditors: ywl
- * @LastEditTime: 2021-02-24 16:36:36
+ * @LastEditTime: 2021-03-01 09:16:56
 -->
 <template>
   <IhPage class="text-left">
@@ -610,16 +610,25 @@
             <td colspan="2">{{form.developAccount}}</td>
           </tr>
           <tr>
-            <td>住所(地址)</td>
+            <td class="width-150">住所(地址)</td>
             <td colspan="2">{{form.developAddress}}</td>
-            <td>电话</td>
+            <td class="width-150">电话</td>
             <td colspan="2">{{form.developPhone}}</td>
           </tr>
           <tr>
-            <td>经办部门意见</td>
-            <td colspan="5">
-              <div class="height-100 text-left padding-left-20">
-                <pre>{{form.remark || '--'}}</pre>
+            <td class="width-150">经办部门意见</td>
+            <td
+              colspan="5"
+              width="500px"
+            >
+              <div
+                class="text-left padding-left-20"
+                style="min-height: 100px;"
+              >
+                <pre
+                  class="width--100"
+                  style="white-space: pre-wrap;"
+                >{{form.remark || '--'}}</pre>
               </div>
             </td>
           </tr>

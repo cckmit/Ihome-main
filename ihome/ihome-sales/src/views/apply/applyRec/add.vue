@@ -4,7 +4,7 @@
  * @Author: ywl
  * @Date: 2021-01-07 16:30:03
  * @LastEditors: ywl
- * @LastEditTime: 2021-02-26 17:56:33
+ * @LastEditTime: 2021-03-01 11:19:16
 -->
 <template>
   <IhPage class="text-left">
@@ -589,10 +589,8 @@
             prop="subMoney"
           >
             <template v-slot="{ row }">
-              <el-input
-                v-model="row.subMoney"
-                v-digits="2"
-              >
+              <el-input v-model="row.subMoney">
+                <!-- v-digits="2" -->
                 <i
                   slot="prefix"
                   style="line-height: 40px;color: #000;"
@@ -1150,6 +1148,8 @@ export default class ApplyRecAdd extends Vue {
   }
   // 计算不含税金额 -- 其他扣除项
   private otherSubMoneyNoTax(row: any) {
+    console.log(row);
+
     let subMoneyNoTax = this.countNoTax(
       row.subMoney,
       Number(this.form.taxRate)
