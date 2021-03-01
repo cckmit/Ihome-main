@@ -657,78 +657,81 @@
                 </el-tooltip>
               </div>
               <div v-else>
-                <div v-if="!scope.row.packageId">
-                  <el-input
-                    readonly
-                    placeholder="请选择收派套餐"
-                    v-model="scope.row.packageId">
-                    <el-button
-                      slot="append"
-                      icon="el-icon-search"
-                      @click.native.prevent="selectPackage(scope)"></el-button>
-                  </el-input>
-                </div>
-                <div v-else>
-                  <el-tooltip placement="top" effect="light">
-                    <div slot="content">
-                      <el-table :data="scope.row.showData" style="width: 100%">
-                        <el-table-column label="类型" prop="typeName" min-width="100"></el-table-column>
-                        <el-table-column label="合同类型" prop="contractEnum" min-width="100">
-                          <template slot-scope="scope">
-                            <div>{{$root.dictAllName(scope.row.contractEnum, 'ContType')}}</div>
-                          </template>
-                        </el-table-column>
-                        <el-table-column label="客户类型" prop="transactionEnum" min-width="100">
-                          <template slot-scope="scope">
-                            <div>{{$root.dictAllName(scope.row.transactionEnum, 'Transaction')}}</div>
-                          </template>
-                        </el-table-column>
-                        <el-table-column label="条件" prop="condition" min-width="200"></el-table-column>
-                        <el-table-column label="应收金额" prop="receivableAmout" min-width="200">
-                          <template slot-scope="scope">
-                            <div>金额：{{scope.row.receivableAmout}}</div>
-                            <div>点数：{{scope.row.receivablePoint}}</div>
-                          </template>
-                        </el-table-column>
-                        <el-table-column label="派发佣金" prop="sendAmount" min-width="200">
-                          <template slot-scope="scope">
-                            <div>金额：{{scope.row.sendAmount}}</div>
-                            <div>点数：{{scope.row.sendPoint}}</div>
-                          </template>
-                        </el-table-column>
-                        <el-table-column label="派发内场奖励" prop="sendInAmount" min-width="200">
-                          <template slot-scope="scope">
-                            <div>金额：{{scope.row.sendInAmount}}</div>
-                            <div>点数：{{scope.row.sendInPoint}}</div>
-                          </template>
-                        </el-table-column>
-                        <el-table-column label="总包业绩" prop="generalAchieveAmount" min-width="200">
-                          <template slot-scope="scope">
-                            <div>金额：{{scope.row.generalAchieveAmount}}</div>
-                            <div>点数：{{scope.row.generalAchievePoint}}</div>
-                          </template>
-                        </el-table-column>
-                        <el-table-column label="分销业绩" prop="distributeAchieveAmount" min-width="200">
-                          <template slot-scope="scope">
-                            <div>金额：{{scope.row.distributeAchieveAmount}}</div>
-                            <div>点数：{{scope.row.distributeAchievePoint}}</div>
-                          </template>
-                        </el-table-column>
-                        <el-table-column label="其他渠道费用" prop="otherChannelAmount" min-width="160">
-                          <template slot-scope="scope">
-                            <div>金额：{{scope.row.otherChannelAmount}}</div>
-                          </template>
-                        </el-table-column>
-                      </el-table>
-                    </div>
+                <div v-if="postData.calculation === 'Auto'">
+                  <div v-if="!scope.row.packageId">
                     <el-input
                       readonly
-                      placeholder="收派标准">
-                      <el-button slot="append" icon="el-icon-edit-outline"
-                                 @click.native.prevent="selectPackage(scope)"></el-button>
+                      placeholder="请选择收派套餐"
+                      v-model="scope.row.packageId">
+                      <el-button
+                        slot="append"
+                        icon="el-icon-search"
+                        @click.native.prevent="selectPackage(scope)"></el-button>
                     </el-input>
-                  </el-tooltip>
+                  </div>
+                  <div v-else>
+                    <el-tooltip placement="top" effect="light">
+                      <div slot="content">
+                        <el-table :data="scope.row.showData" style="width: 100%">
+                          <el-table-column label="类型" prop="typeName" min-width="100"></el-table-column>
+                          <el-table-column label="合同类型" prop="contractEnum" min-width="100">
+                            <template slot-scope="scope">
+                              <div>{{$root.dictAllName(scope.row.contractEnum, 'ContType')}}</div>
+                            </template>
+                          </el-table-column>
+                          <el-table-column label="客户类型" prop="transactionEnum" min-width="100">
+                            <template slot-scope="scope">
+                              <div>{{$root.dictAllName(scope.row.transactionEnum, 'Transaction')}}</div>
+                            </template>
+                          </el-table-column>
+                          <el-table-column label="条件" prop="condition" min-width="200"></el-table-column>
+                          <el-table-column label="应收金额" prop="receivableAmout" min-width="200">
+                            <template slot-scope="scope">
+                              <div>金额：{{scope.row.receivableAmout}}</div>
+                              <div>点数：{{scope.row.receivablePoint}}</div>
+                            </template>
+                          </el-table-column>
+                          <el-table-column label="派发佣金" prop="sendAmount" min-width="200">
+                            <template slot-scope="scope">
+                              <div>金额：{{scope.row.sendAmount}}</div>
+                              <div>点数：{{scope.row.sendPoint}}</div>
+                            </template>
+                          </el-table-column>
+                          <el-table-column label="派发内场奖励" prop="sendInAmount" min-width="200">
+                            <template slot-scope="scope">
+                              <div>金额：{{scope.row.sendInAmount}}</div>
+                              <div>点数：{{scope.row.sendInPoint}}</div>
+                            </template>
+                          </el-table-column>
+                          <el-table-column label="总包业绩" prop="generalAchieveAmount" min-width="200">
+                            <template slot-scope="scope">
+                              <div>金额：{{scope.row.generalAchieveAmount}}</div>
+                              <div>点数：{{scope.row.generalAchievePoint}}</div>
+                            </template>
+                          </el-table-column>
+                          <el-table-column label="分销业绩" prop="distributeAchieveAmount" min-width="200">
+                            <template slot-scope="scope">
+                              <div>金额：{{scope.row.distributeAchieveAmount}}</div>
+                              <div>点数：{{scope.row.distributeAchievePoint}}</div>
+                            </template>
+                          </el-table-column>
+                          <el-table-column label="其他渠道费用" prop="otherChannelAmount" min-width="160">
+                            <template slot-scope="scope">
+                              <div>金额：{{scope.row.otherChannelAmount}}</div>
+                            </template>
+                          </el-table-column>
+                        </el-table>
+                      </div>
+                      <el-input
+                        readonly
+                        placeholder="收派标准">
+                        <el-button slot="append" icon="el-icon-edit-outline"
+                                   @click.native.prevent="selectPackage(scope)"></el-button>
+                      </el-input>
+                    </el-tooltip>
+                  </div>
                 </div>
+                <div v-else>---</div>
               </div>
             </template>
           </el-table-column>
