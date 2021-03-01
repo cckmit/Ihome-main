@@ -442,7 +442,7 @@
       <el-row style="padding-left: 20px">
         <el-col>
           <div
-            v-if="hasAddNoticeFlag"
+            v-if="canAddNoticeFlag"
             class="add-all-wrapper">
             <el-button type="success" @click="handleAddNotice">添加</el-button>
           </div>
@@ -464,7 +464,7 @@
               <template slot-scope="scope">
                 <el-link
                   style="color: #f66"
-                  v-if="!!scope.row.addType && scope.$index === 0"
+                  v-if="canAddNoticeFlag && scope.$index === 0"
                   class="margin-right-10"
                   type="primary"
                   @click.native.prevent="removeNotice(scope)"
@@ -1383,7 +1383,7 @@
       index: null // 当前选择修改的序号：总包/分销
     };
     oneAgentRequiredFlag: any = false; // 收派金额 - 派发内场奖励金额合计大于0，为true
-    hasAddNoticeFlag: any = false; // 是否有添加(删除)优惠告知书的标识：true-可以；false-不可以
+    canAddNoticeFlag: any = false; // 是否有添加(删除)优惠告知书的标识：true-可以；false-不可以
     currentBtnType: any = null; // 点击的是保存还是提交按钮
     hasClickFlag: any = false; // 判断初始化平台费用按钮是否点击过，默认没有
     // 编辑功能相关字段
@@ -1618,8 +1618,6 @@
               case 'Recognize':
                 // 数据标志 --- 非明源
                 this.postData.dataSign = "NoMingYuan";
-                // 清空优惠告知书 --- 认筹周期需要自己手动添加
-                this.postData.offerNoticeVO = [];
                 // 认筹周期 --- 全部
                 this.dealStageList = JSON.parse(JSON.stringify(DealStageList));
                 break;
@@ -1633,12 +1631,13 @@
         }
         console.log(this.firstAgencyCompanyList);
         // 处理优惠告知书的nav
-        this.postData.offerNoticeVO = []; // 先重置优惠告知书的数据
         if (baseInfo.chargeEnum === 'Agent') {
+          this.canAddNoticeFlag = false; // 纯代理费没有优惠告知书
           this.navList = this.navList.filter((item: any) => {
             return item.id !== 3;
           });
         } else {
+          this.canAddNoticeFlag = true; // 纯代理费没有优惠告知书
           this.navList = (this as any).$tool.deepClone(this.defaultNavList);
         }
         // 成交组织
@@ -1658,6 +1657,21 @@
       };
       let baseInfo: any = await post_pageData_initBasic(params);
       this.baseInfoInDeal = JSON.parse(JSON.stringify(baseInfo || {}));
+      // 判断是否可以添加优惠告知书逻辑
+      switch (baseInfo.dealNoticeStatus) {
+        case "NoneNotice":
+          // 没有优惠告知书
+          this.canAddNoticeFlag = true;
+          break;
+        case "OneNotice":
+          // 有一份优惠告知书
+          this.canAddNoticeFlag = false;
+          break;
+        case "MultipleNotice":
+          // 有多份优惠告知书
+          this.canAddNoticeFlag = true;
+          break;
+      }
       // 多分优惠告知书情况
       // this.postData.contNo = null; // 重置选择的编号
       // 分销协议编号
@@ -2147,12 +2161,12 @@
             this.dealStageList = DealStageList.filter((item: any) => {
               return item.code === 'SignUp';
             });
-            switch(baseInfo.termStageEnum){
-              case 'Recognize':
-                // 清空优惠告知书 --- 认筹周期需要自己手动添加
-                this.postData.offerNoticeVO = [];
-                break;
-            }
+            // switch(baseInfo.termStageEnum){
+            //   case 'Recognize':
+            //     // 清空优惠告知书 --- 认筹周期需要自己手动添加
+            //     this.postData.offerNoticeVO = [];
+            //     break;
+            // }
           }
         }
         // 一手代理团队的选项
@@ -2164,10 +2178,12 @@
         // 处理优惠告知书的nav
         this.postData.offerNoticeVO = []; // 先重置优惠告知书的数据
         if (baseInfo.chargeEnum === 'Agent') {
+          this.canAddNoticeFlag = false; // 纯代理费没有优惠告知书
           this.navList = this.navList.filter((item: any) => {
             return item.id !== 3;
           });
         } else {
+          this.canAddNoticeFlag = true; // 其他情况有优惠告知书
           this.navList = (this as any).$tool.deepClone(this.defaultNavList);
         }
         // 收派金额部分信息 --- 服务费
@@ -2354,11 +2370,7 @@
       // 处理数据
       // 纯提示
       if (baseInfo.customerIsDifferent) {
-        this.$notify({
-          title: '提示',
-          message: '明源客户与优惠告知书客户有差异',
-          duration: 0
-        });
+        this.$message.warning('明源客户与优惠告知书客户有差异');
       }
       if (baseInfo.errorMsgs && baseInfo.errorMsgs.length) {
         console.log(baseInfo.errorMsgs);
@@ -2372,20 +2384,37 @@
         });
       }
       // 多分优惠告知书情况
-      console.log(this.postData.offerNoticeVO);
       this.postData.contNo = null; // 重置选择的编号
-      if (baseInfo.dealNoticeStatus === 'MultipleNotice') {
-        this.$notify({
-          title: '提示',
-          message: '同房号存在多份已生效的优惠告知书。(分销成交模式，请选择分销协议编号后方可手动选择优惠告知书)',
-          duration: 0
-        });
-      } else {
-        // 优惠告知书
-        if (!this.postData.offerNoticeVO.length) {
+      // 同房号是否存在多份优惠告知书
+      this.postData.offerNoticeVO = [];
+      switch (baseInfo.dealNoticeStatus) {
+        case "NoneNotice":
+          // 没有优惠告知书
+          this.canAddNoticeFlag = true;
+          break;
+        case "OneNotice":
+          // 有一份优惠告知书
+          this.canAddNoticeFlag = false;
           this.postData.offerNoticeVO = baseInfo.notice && baseInfo.notice.length ? baseInfo.notice : [];
-        }
+          break;
+        case "MultipleNotice":
+          // 有多份优惠告知书
+          this.canAddNoticeFlag = true;
+          this.$message.warning('同房号存在多份已生效的优惠告知书。(分销成交模式，请选择分销协议编号后方可手动选择优惠告知书)');
+          break;
       }
+      // if (baseInfo.dealNoticeStatus === 'MultipleNotice') {
+      //   this.$notify({
+      //     title: '提示',
+      //     message: '同房号存在多份已生效的优惠告知书。(分销成交模式，请选择分销协议编号后方可手动选择优惠告知书)',
+      //     duration: 0
+      //   });
+      // } else {
+      //   // 优惠告知书
+      //   if (!this.postData.offerNoticeVO.length) {
+      //     this.postData.offerNoticeVO = baseInfo.notice && baseInfo.notice.length ? baseInfo.notice : [];
+      //   }
+      // }
       // 分销成交和非分销成交不一样
       if (baseInfo.contType === 'DistriDeal') {
         // 分销成交模式
@@ -2594,7 +2623,7 @@
         // 选择房号后构建表格数据
         // this.getDocumentList(value);
         // 判断是否可以手动添加优惠告知书
-        this.canAddNoticeItem(this.baseInfoByTerm.chargeEnum, this.baseInfoByTerm.termStageEnum, this.postData.contType, this.baseInfoInDeal.dealNoticeStatus);
+        // this.canAddNoticeItem(this.baseInfoByTerm.chargeEnum, this.baseInfoByTerm.termStageEnum, this.postData.contType, this.baseInfoInDeal.dealNoticeStatus);
         // 记录临时值
         this.tempContType = value;
       }
@@ -2649,10 +2678,10 @@
       }
       post_pageData_dealCheckNotice(postData).then((res: any) => {
         console.log(res);
-        this.hasAddNoticeFlag = res;
+        this.canAddNoticeFlag = res;
       }).catch((err: any) => {
         console.log(err);
-        this.hasAddNoticeFlag = false;
+        this.canAddNoticeFlag = false;
       });
     }
 
@@ -2678,22 +2707,22 @@
       if (!item) return;
       this.postData.isMat = null;
       this.packageIdsList = [];
-      let isVoidFlag: any = false;
+      // let isVoidFlag: any = false;
       this.postData.contNo = item.contractNo;
       // 是否垫佣
       this.postData.isMat = item.advancementSituation;
       // 分销模式下获取分销协议返回的收派套餐id
       this.packageIdsList = item.packageMxIds && item.packageMxIds.length ? item.packageMxIds : [];
-      isVoidFlag = item.voidService;
+      // isVoidFlag = item.voidService;
       // 判断是否可以手动添加优惠告知书
-      this.canAddNoticeItem(this.baseInfoByTerm.chargeEnum, this.baseInfoByTerm.termStageEnum, this.postData.contType, this.baseInfoInDeal.dealNoticeStatus, isVoidFlag);
+      // this.canAddNoticeItem(this.baseInfoByTerm.chargeEnum, this.baseInfoByTerm.termStageEnum, this.postData.contType, this.baseInfoInDeal.dealNoticeStatus, isVoidFlag);
     }
 
     // 是否垫佣是根据对应的分销协议来判断
     changeContNo(value: any) {
       this.postData.isMat = null;
       this.packageIdsList = [];
-      let isVoidFlag: any = false;
+      // let isVoidFlag: any = false;
       if (!value) return;
       if (this.contNoList.length > 0) {
         this.contNoList.forEach((item: any) => {
@@ -2702,14 +2731,14 @@
             this.postData.isMat = item.advancementSituation;
             // 分销模式下获取分销协议返回的收派套餐id
             this.packageIdsList = item.packageMxIds && item.packageMxIds.length ? item.packageMxIds : [];
-            isVoidFlag = item.voidService;
+            // isVoidFlag = item.voidService;
           }
         });
       }
       // 初始化收派套餐
       this.initReceive();
       // 判断是否可以手动添加优惠告知书
-      this.canAddNoticeItem(this.baseInfoByTerm.chargeEnum, this.baseInfoByTerm.termStageEnum, this.postData.contType, this.baseInfoInDeal.dealNoticeStatus, isVoidFlag);
+      // this.canAddNoticeItem(this.baseInfoByTerm.chargeEnum, this.baseInfoByTerm.termStageEnum, this.postData.contType, this.baseInfoInDeal.dealNoticeStatus, isVoidFlag);
     }
 
     // 改变签约、认购价格后，初始化收派套餐问题
@@ -2830,25 +2859,25 @@
       this.postData.offerNoticeVO = info.dealNotices;
       this.postData.customerVO = info.customerConvertResponse;
       // 回显收派金额中类型为服务费的客户上
-      if (this.postData.customerVO.length && this.postData.receiveVO && this.postData.receiveVO.length) {
-        this.postData.receiveVO.forEach((item: any) => {
-          if (item.type === "ServiceFee") {
-            item.partyACustomer = this.postData.customerVO[0].addId;
-            item.partyACustomerName = this.postData.customerVO[0].customerName;
-          }
-        });
-      } else {
-        if (this.postData.receiveVO.length) {
-          if (this.postData.receiveVO && this.postData.receiveVO.length) {
-            this.postData.receiveVO.forEach((item: any) => {
-              if (item.type === "ServiceFee") {
-                item.partyACustomer = null;
-                item.partyACustomerName = null;
-              }
-            })
-          }
-        }
-      }
+      // if (this.postData.customerVO.length && this.postData.receiveVO && this.postData.receiveVO.length) {
+      //   this.postData.receiveVO.forEach((item: any) => {
+      //     if (item.type === "ServiceFee") {
+      //       item.partyACustomer = this.postData.customerVO[0].addId;
+      //       item.partyACustomerName = this.postData.customerVO[0].customerName;
+      //     }
+      //   });
+      // } else {
+      //   if (this.postData.receiveVO.length) {
+      //     if (this.postData.receiveVO && this.postData.receiveVO.length) {
+      //       this.postData.receiveVO.forEach((item: any) => {
+      //         if (item.type === "ServiceFee") {
+      //           item.partyACustomer = null;
+      //           item.partyACustomerName = null;
+      //         }
+      //       })
+      //     }
+      //   }
+      // }
       // 提示框
       this.showChangeTips();
       // if (!this.addFlag) {
@@ -2875,28 +2904,24 @@
       //   return item.id !== scope.row.id;
       // });
       this.postData.offerNoticeVO = [];
-      if (this.baseInfoInDeal.dealNoticeStatus === 'MultipleNotice') {
-        // 多份优惠告知书下，删除了优惠告知书，对应的客户也要删除
-        this.postData.customerVO = [];
-        if (this.postData.receiveVO.length) {
-          if (this.postData.receiveVO && this.postData.receiveVO.length) {
-            this.postData.receiveVO.forEach((item: any) => {
-              if (item.type === "ServiceFee") {
-                item.partyACustomer = null;
-                item.partyACustomerName = null;
-              }
-            })
-          }
-        }
-        // 提示框
-        this.showChangeTips();
-        // if (!this.addFlag) {
-        //   this.addFlag = false;
-        //   this.editFlag = true;
-        //   this.tipsFlag = false;
-        //   this.dividerTips = '刷新成功';
-        // }
-      }
+      this.postData.customerVO = [];
+      this.showChangeTips();
+      // if (this.baseInfoInDeal.dealNoticeStatus === 'MultipleNotice') {
+      //   // 多份优惠告知书下，删除了优惠告知书，对应的客户也要删除
+      //   this.postData.customerVO = [];
+      //   if (this.postData.receiveVO.length) {
+      //     if (this.postData.receiveVO && this.postData.receiveVO.length) {
+      //       this.postData.receiveVO.forEach((item: any) => {
+      //         if (item.type === "ServiceFee") {
+      //           item.partyACustomer = null;
+      //           item.partyACustomerName = null;
+      //         }
+      //       })
+      //     }
+      //   }
+      //   // 提示框
+      //   this.showChangeTips();
+      // }
     }
 
     // 添加客户
@@ -3551,7 +3576,19 @@
         obj.basic.customerVO = this.postData.customerVO;
       }
       // 基础信息
-      obj.basic.dealVO.exVoidService = this.baseInfoByTerm.exVoidService;
+      if (this.postData.receiveVO && this.postData.receiveVO.length) {
+        let serviceItem: any = [];
+        serviceItem = this.postData.receiveVO.filter((vo: any) => {
+          return vo.type === "ServiceFee";
+        });
+        if (serviceItem && serviceItem.length) {
+          obj.basic.dealVO.receiveServiceFee = serviceItem[0].receiveAmount;
+        } else {
+          obj.basic.dealVO.receiveServiceFee = null;
+        }
+      } else {
+        obj.basic.dealVO.receiveServiceFee = null;
+      }
       obj.basic.dealVO.businessType = this.baseInfoByTerm.busTypeEnum;
       obj.basic.dealVO.charge = this.baseInfoByTerm.chargeEnum;
       obj.basic.dealVO.contType = this.postData.contType;

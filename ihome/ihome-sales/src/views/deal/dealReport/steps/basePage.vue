@@ -1948,11 +1948,7 @@
       // 处理数据
       // 纯提示
       if (baseInfo.customerIsDifferent) {
-        this.$notify({
-          title: '提示',
-          message: '明源客户与优惠告知书客户有差异',
-          duration: 0
-        });
+        this.$message.warning('明源客户与优惠告知书客户有差异');
       }
       if (baseInfo.errorMsgs && baseInfo.errorMsgs.length) {
         console.log(baseInfo.errorMsgs);
@@ -1967,16 +1963,10 @@
       }
       // 多分优惠告知书情况
       this.postData.contNo = null; // 重置选择的编号
-      if (baseInfo.dealNoticeStatus === 'MultipleNotice') {
-        this.$notify({
-          title: '提示',
-          message: '同房号存在多份已生效的优惠告知书。(分销成交模式，请选择分销协议编号后方可手动选择优惠告知书)',
-          duration: 0
-        });
-      } else {
-        // 优惠告知书
-        // this.postData.offerNoticeVO = baseInfo.notice && baseInfo.notice.length ? baseInfo.notice : [];
-      }
+      // 2021-03-01 补充成交不改变优惠告知书，先暂时屏蔽
+      // if (baseInfo.dealNoticeStatus === 'MultipleNotice') {
+      //   this.$message.warning('同房号存在多份已生效的优惠告知书。(分销成交模式，请选择分销协议编号后方可手动选择优惠告知书)');
+      // }
       // 分销成交和非分销成交不一样
       if (baseInfo.contType === 'DistriDeal') {
         // 分销成交模式

@@ -127,7 +127,8 @@
               <el-col :span="8">
                 <el-form-item label="经纪人">
                   <SelectByBroker
-                    v-model="queryPageParameters.brokerId"
+                    v-model="queryPageParameters.broker"
+                    @changeOption="(data) => {queryPageParameters.brokerId = data.userId}"
                     :proId="queryPageParameters.agencyId"
                     clearable
                     placeholder="经纪人"/>
@@ -415,6 +416,7 @@
       projectCycle: null,
       proId: null,
       buildingId: null,
+      broker: null,
       brokerId: null,
       timeType: null,
       beginTime: null,
@@ -590,6 +592,7 @@
         projectCycle: null,
         proId: null,
         buildingId: null,
+        broker: null,
         brokerId: null,
         timeType: null,
         beginTime: null,
