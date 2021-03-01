@@ -4,7 +4,7 @@
  * @Author: zyc
  * @Date: 2021-02-05 16:41:19
  * @LastEditors: zyc
- * @LastEditTime: 2021-03-01 13:59:52
+ * @LastEditTime: 2021-03-01 14:01:48
 -->
  
 <template>
@@ -161,7 +161,7 @@
 
         <el-table-column
           prop="accountName"
-          width="200"
+          width="300"
           label="付款方"
         ></el-table-column>
         <el-table-column prop="inputUserName" label="制单人" width="100">
