@@ -4,7 +4,7 @@
  * @Author: wwq
  * @Date: 2020-12-26 11:11:28
  * @LastEditors: wwq
- * @LastEditTime: 2021-02-24 10:23:17
+ * @LastEditTime: 2021-03-01 11:06:45
 -->
 <template>
   <IhPage label-width="120px">
@@ -40,15 +40,6 @@
                 clearable
               ></IhSelectPageDivision>
               <!-- <IhSelectOrgTree v-model="queryPageParameters.belongOrgId"></IhSelectOrgTree> -->
-            </el-form-item>
-          </el-col>
-          <el-col :span="8">
-            <el-form-item label="审核人">
-              <IhSelectPageUser
-                v-model="queryPageParameters.reviewerId"
-                clearable
-              >
-              </IhSelectPageUser>
             </el-form-item>
           </el-col>
           <el-col :span="8">
@@ -370,7 +361,6 @@ export default class PayoffList extends Vue {
     applyCode: null,
     agencyId: null,
     belongOrgId: null,
-    reviewerId: null,
     settlementMethod: null,
     makerId: null,
     status: null,
@@ -390,7 +380,6 @@ export default class PayoffList extends Vue {
 
   controlChange(row: any) {
     const ReviewPass = row.status === "ReviewPass"; // 终审通过
-    // const RFinancialOfficer = this.$roleTool.RFinancialOfficer(); // 总公司财务
     return ReviewPass;
   }
 
@@ -433,7 +422,6 @@ export default class PayoffList extends Vue {
       applyCode: null,
       agencyId: null,
       belongOrgId: null,
-      reviewerId: null,
       settlementMethod: null,
       makerId: null,
       status: null,
@@ -557,11 +545,8 @@ export default class PayoffList extends Vue {
     this.$router.push("/payoff/add");
   }
 
-  handleSelectionChange(val: any) {
-    this.selection = val.map((v: any) => ({
-      name: v.name,
-      id: v.id,
-    }));
+  handleSelectionChange(selection: any) {
+    this.selection = selection;
   }
 
   search() {

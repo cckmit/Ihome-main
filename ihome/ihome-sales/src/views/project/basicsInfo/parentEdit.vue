@@ -4,7 +4,7 @@
  * @Author: wwq
  * @Date: 2020-11-10 10:21:03
  * @LastEditors: wwq
- * @LastEditTime: 2021-02-24 21:35:19
+ * @LastEditTime: 2021-03-01 11:05:12
 -->
 <template>
   <ih-page>
@@ -255,7 +255,20 @@ export default class EditBasicInfo extends Vue {
           this.$message.warning("省市区不能为空！");
           return;
         }
+        obj.province = this.form.provinceOption[0];
+        obj.city = this.form.provinceOption[1];
+        obj.district = this.form.provinceOption[2];
+        obj.provinceName = (this.$root as any).getAreaName(
+          this.form.provinceOption[0]
+        );
+        obj.cityName = (this.$root as any).getAreaName(
+          this.form.provinceOption[1]
+        );
+        obj.districtName = (this.$root as any).getAreaName(
+          this.form.provinceOption[2]
+        );
         obj.proId = this.projectId;
+        await post_project_updateParent(obj);
         await post_project_auditWait(obj);
         this.$message.success("提交成功");
         this.$goto({ path: "/projects/list" });
@@ -272,21 +285,27 @@ export default class EditBasicInfo extends Vue {
   }
 
   async save() {
-    let obj = { ...this.form };
-    obj.province = this.form.provinceOption[0];
-    obj.city = this.form.provinceOption[1];
-    obj.district = this.form.provinceOption[2];
-    obj.provinceName = (this.$root as any).getAreaName(
-      this.form.provinceOption[0]
-    );
-    obj.cityName = (this.$root as any).getAreaName(this.form.provinceOption[1]);
-    obj.districtName = (this.$root as any).getAreaName(
-      this.form.provinceOption[2]
-    );
-    obj.proId = this.projectId;
-    await post_project_updateParent(obj);
-    this.$message.success("保存成功");
-    this.$goto({ path: "/projects/list" });
+    (this.$refs["form"] as ElForm).validate(async (v: any) => {
+      if (v) {
+        let obj = { ...this.form };
+        obj.province = this.form.provinceOption[0];
+        obj.city = this.form.provinceOption[1];
+        obj.district = this.form.provinceOption[2];
+        obj.provinceName = (this.$root as any).getAreaName(
+          this.form.provinceOption[0]
+        );
+        obj.cityName = (this.$root as any).getAreaName(
+          this.form.provinceOption[1]
+        );
+        obj.districtName = (this.$root as any).getAreaName(
+          this.form.provinceOption[2]
+        );
+        obj.proId = this.projectId;
+        await post_project_updateParent(obj);
+        this.$message.success("保存成功");
+        this.$goto({ path: "/projects/list" });
+      }
+    });
   }
 }
 </script>

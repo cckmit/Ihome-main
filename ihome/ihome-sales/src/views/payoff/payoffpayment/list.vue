@@ -4,7 +4,7 @@
  * @Author: wwq
  * @Date: 2021-01-15 10:45:53
  * @LastEditors: wwq
- * @LastEditTime: 2021-02-23 09:44:45
+ * @LastEditTime: 2021-03-01 10:30:14
 -->
 <template>
   <IhPage label-width="100px">
@@ -127,7 +127,6 @@
     </template>
     <template #table>
       <br />
-      <!-- table-标签页 -->
       <el-tabs
         v-model="tabsValue"
         @tab-click="search"
@@ -141,7 +140,6 @@
               slot="label"
               style="font-size: 16px; font-weight: 600"
             >{{i.label}}</span>
-            <!-- table-content -->
             <el-table
               class="ih-table"
               :empty-text="emptyText"
@@ -165,7 +163,17 @@
                 label="付款申请单编号"
                 prop="applyCode"
                 width="200"
-              ></el-table-column>
+              >
+                <template v-slot="{ row }">
+                  <el-link
+                    :href="`/web-sales/payoff/info?id=${row.payApplyId}`"
+                    type="primary"
+                    target="_blank"
+                  >
+                    {{row.applyCode}}
+                  </el-link>
+                </template>
+              </el-table-column>
               <el-table-column
                 label="结算方式"
                 prop="settlementMethod"
@@ -274,7 +282,6 @@
                 </template>
               </el-table-column>
               <el-table-column
-                v-if="!['PaymentSuccess', 'Paying'].includes(i.name)"
                 label="操作"
                 width="90"
                 fixed="right"
@@ -306,12 +313,13 @@
                     v-has="'B.SALES.PAYOFF.PAYOFFPAYMENT.EDIT'"
                   >修改</el-link>
                   <el-link
+                    v-if="['TicketRefunded', 'Paying', 'PaymentSuccess'].includes(row.paymentStatus) && ['Centralization'].includes(row.settlementMethod)"
                     type="primary"
-                    v-if="['TicketRefunded'].includes(row.paymentStatus)"
                     v-has="'B.SALES.PAYOFF.PAYOFFPAYMENT.TBZT'"
                     @click="synchronization(row)"
-                  >同步状态</el-link>
-                  <span v-if="['Paying', 'PaymentSuccess'].includes(row.paymentStatus)">---</span>
+                  >同步状态
+                  </el-link>
+                  <span v-if="['TicketRefunded', 'Paying', 'PaymentSuccess'].includes(row.paymentStatus) && ['OnlineBanking'].includes(row.settlementMethod)">---</span>
                 </template>
               </el-table-column>
             </el-table>
