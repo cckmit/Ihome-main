@@ -4,7 +4,7 @@
  * @Author: zyc
  * @Date: 2021-02-05 16:41:19
  * @LastEditors: zyc
- * @LastEditTime: 2021-02-26 15:15:25
+ * @LastEditTime: 2021-03-01 09:02:13
 -->
  
 <template>
@@ -147,14 +147,15 @@
         </el-table-column>
         <el-table-column prop="" label="状态" width="150">
           <template slot-scope="scope">
-            {{ $root.dictAllName(scope.row.status, "FinRefundApplyStatus") }}
-
-            <el-tag
+            <div :class="{ 'status-style': scope.row.overruleMark == 1 }">
+              {{ $root.dictAllName(scope.row.status, "FinRefundApplyStatus") }}
+              <!-- <el-tag
               v-if="scope.row.overruleMark == 1"
               size="small"
               type="danger"
               >驳回</el-tag
-            >
+            > -->
+            </div>
           </template>
         </el-table-column>
 
@@ -202,7 +203,10 @@
               >修改</el-link
             >
             <el-link
-              :class="{ 'ih-data-disabled': scope.row.status != 'PTWYSH' }"
+              :class="{
+                'ih-data-disabled': scope.row.status != 'PTWYSH',
+                'ih-my-disabled': scope.row.inputUser != $root.userInfo.id,
+              }"
               type="warning"
               class="margin-right-10"
               @click.native.prevent="withdraw(scope)"
@@ -460,4 +464,22 @@ export default class RefundApplyList extends Vue {
 }
 </script>
 <style lang="scss" scoped>
+.status-style {
+  z-index: 10;
+  overflow: hidden;
+  &::after {
+    content: "驳回";
+    position: absolute;
+    top: 0;
+    right: -14px;
+    width: 50px;
+    height: 20px;
+    background: red;
+    color: #fff;
+    text-align: center;
+    transform: rotate(45deg);
+    font-size: 12px;
+    opacity: 0.7;
+  }
+}
 </style>
