@@ -4,7 +4,7 @@
  * @Author: ywl
  * @Date: 2020-12-08 17:45:05
  * @LastEditors: ywl
- * @LastEditTime: 2021-02-20 10:15:44
+ * @LastEditTime: 2021-03-01 14:55:57
 -->
 <template>
   <IhPage label-width="80px">
@@ -364,6 +364,16 @@ export default class InvoiceList extends Vue {
           },
           data: { fileIds: res },
         }).then((res: any) => {
+          if (res.data.type === "application/json") {
+            let reader = new FileReader();
+            reader.readAsText(res.data, "utf-8");
+            reader.onload = () => {
+              let result: any = reader.result;
+              const res = JSON.parse(result);
+              this.$message.error(res.msg);
+            };
+            return;
+          }
           const href = window.URL.createObjectURL(res.data);
           const $a = document.createElement("a");
           $a.href = href;

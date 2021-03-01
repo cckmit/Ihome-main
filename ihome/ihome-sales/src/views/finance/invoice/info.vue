@@ -4,7 +4,7 @@
  * @Author: ywl
  * @Date: 2020-12-08 19:55:43
  * @LastEditors: ywl
- * @LastEditTime: 2021-03-01 14:36:15
+ * @LastEditTime: 2021-03-01 15:35:47
 -->
 <template>
   <IhPage class="text-left">
@@ -127,6 +127,8 @@
           :limit="fileList.length"
           v-if="fileList.length"
           :removePermi="false"
+          :clickDownloadMsg="clickMsg"
+          :clickViewMsg="clickMsg"
         ></IhUpload>
       </div>
       <p class="ih-info-title">开票历史记录</p>
@@ -220,10 +222,13 @@ export default class InvoiceInfo extends Vue {
       }
       this.info = await get_invoice_get__id({ id });
       this.fileList = this.info.attachmentVOs.map((i: any) => ({
-        fileId: "",
+        fileId: i.fileId,
         name: i.fileName,
       }));
     }
+  }
+  private clickMsg() {
+    this.$message.warning("数据未同步, 请刷新页面试试~");
   }
   private async handHInvoice(type: any) {
     let flag = this.info.invoiceInfo.operationType === "Auto";

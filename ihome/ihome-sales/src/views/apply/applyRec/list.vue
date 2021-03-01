@@ -4,7 +4,7 @@
  * @Author: ywl
  * @Date: 2021-01-07 10:29:38
  * @LastEditors: ywl
- * @LastEditTime: 2021-03-01 10:30:18
+ * @LastEditTime: 2021-03-01 15:41:50
 -->
 <template>
   <IhPage label-width="100px">
@@ -180,16 +180,19 @@
           label="状态"
           prop="status"
           width="185"
+          align="center"
         >
           <template v-slot="{row}">
-            <span>{{$root.dictAllName(row.status, 'ApplySatus')}}</span>
-            <el-tag
+            <div :class="{ 'status-style': row.isReject == 1 }">
+              {{$root.dictAllName(row.status, 'ApplySatus')}}
+            </div>
+            <!-- <el-tag
               v-if="row.isReject"
               effect="plain"
               type="danger"
               size="mini"
               class="margin-left-10"
-            >驳回</el-tag>
+            >驳回</el-tag> -->
           </template>
         </el-table-column>
         <el-table-column
@@ -360,7 +363,7 @@ export default class ApplyRecList extends Vue {
         reader.onload = () => {
           let result: any = reader.result;
           const res = JSON.parse(result);
-          this.$message.warning(res.msg);
+          this.$message.error(res.msg);
         };
         return;
       }
@@ -406,6 +409,29 @@ export default class ApplyRecList extends Vue {
 .ih-table {
   .el-link + .el-link {
     margin-left: 10px;
+  }
+}
+.status-style {
+  z-index: 10;
+  overflow: hidden;
+  &::after {
+    content: "驳回";
+    position: absolute;
+    top: 0;
+    right: -14px;
+    width: 50px;
+    height: 20px;
+    background: red;
+    color: #fff;
+    text-align: center;
+    transform: rotate(45deg);
+    font-size: 12px;
+    opacity: 0.7;
+  }
+}
+.ih-table {
+  /deep/ .is-center {
+    overflow: hidden;
   }
 }
 </style>
