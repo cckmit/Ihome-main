@@ -4,7 +4,7 @@
     :clearable="clearable"
     @clear="clearHandle"
     popper-class="ihome-tree"
-    class="ih-select-tree"
+    class="ih-select-tree select-tree-parent"
   >
     <el-input
       class="selectInput"
@@ -17,7 +17,7 @@
       :value="valueTitle"
       :label="valueTitle"
       class="options"
-      style="max-height:400px;"
+      style="max-height: 400px"
     >
       <el-tree
         :show-checkbox="false"
@@ -249,9 +249,17 @@ ul li >>> .el-tree .el-tree-node__content {
   color: #606266;
   font-weight: normal;
 }
+.select-tree-parent {
+  position: relative;
+}
 .selectInput {
   padding: 0 5px;
   box-sizing: border-box;
+  position: absolute;
+  z-index: 999;
+}
+.options {
+  margin-top: 46px !important;
 }
 .fengeline {
   border-top: 1px solid #eaeaea;

@@ -2,6 +2,7 @@
 # ihome-common
 ## 日志
 ```
+v1.2.60  2021-03-01 10:03  select-tree搜索框固定
 v1.2.57  2021-02-25 11:16  v-my指令
 v1.2.56  2021-02-24 17:16  main.ts tofixed
 v1.2.53  2021-02-24 10:05  IhSelectPageByCycle修改searchName报错问题
