@@ -38,6 +38,7 @@
                     queryPageParameters.proId = data.proId;
                   }
                 "
+				:params="{auditEnum : 'ConstractAdopt'}"
                 v-model="queryPageParameters.proCycleId"
                 placeholder="请选择项目周期"
               ></IhSelectPageByCycle>
@@ -205,18 +206,18 @@
               <el-table-column
                 label="报备时间"
                 prop="reportDate"
-                width="120"
+                width="140"
               ></el-table-column>
               <el-table-column
                 label="到访时间"
                 prop="visitDate"
-                width="150"
+                width="140"
               ></el-table-column>
               <el-table-column
                 v-if="i.name === 'ValidDeal'"
                 label="成交时间"
                 prop="expectedTime"
-                width="120"
+                width="140"
               ></el-table-column>
               <el-table-column label="栋座房号" width="200">
                 <template v-slot="{ row }">
@@ -235,7 +236,7 @@
                 v-if="['ValidDeal', 'InvalidDeal'].includes(i.name)"
                 label="审核时间"
                 prop="auditTime"
-                width="150"
+                width="160"
               ></el-table-column>
               <el-table-column
                 v-if="i.name === 'ValidDeal'"

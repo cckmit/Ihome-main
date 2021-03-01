@@ -205,13 +205,13 @@
               <el-table-column
                 label="报备时间"
                 prop="reportDate"
-                width="120"
+                width="140"
               ></el-table-column>
               <el-table-column
                 v-if="['ValidVisit', 'InvalidVisit'].includes(i.name)"
                 label="到访时间"
                 prop="expectedTime"
-                width="120"
+                width="140"
               ></el-table-column>
               <el-table-column
                 v-if="['ValidVisit', 'InvalidVisit'].includes(i.name)"
@@ -223,7 +223,7 @@
                 v-if="['ValidVisit', 'InvalidVisit'].includes(i.name)"
                 label="审核时间"
                 prop="auditTime"
-                width="150"
+                width="160"
               ></el-table-column>
               <el-table-column
                 v-if="i.name === 'InvalidVisit'"
