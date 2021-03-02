@@ -276,7 +276,7 @@
           </el-form-item>
         </el-col>
         <el-col :span="8">
-          <el-form-item label="备案情况" prop="recordState">
+          <el-form-item label="备案情况">
             <el-select
               v-model="postData.recordState"
               clearable
@@ -369,7 +369,7 @@
           </el-form-item>
         </el-col>
         <el-col :span="8" class="form-item-label-wrapper">
-          <el-form-item label="明源房款回笼比例">
+          <el-form-item label="明源房款回笼比例" v-if="isDisabled('returnRatio', 'dealVO')">
             <el-input
               v-model="postData.returnRatio"
               :disabled="isDisabled('returnRatio', 'dealVO')"></el-input>
@@ -912,9 +912,6 @@
       ],
       roomId: [
         {required: true, message: "房号必选", trigger: "change"},
-      ],
-      recordState: [
-        {required: true, message: "备案情况必选", trigger: "change"},
       ],
       signType: [
         {required: true, message: "签约类型必选", trigger: "change"},

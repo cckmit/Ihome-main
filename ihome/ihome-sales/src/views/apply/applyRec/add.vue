@@ -4,7 +4,7 @@
  * @Author: ywl
  * @Date: 2021-01-07 16:30:03
  * @LastEditors: ywl
- * @LastEditTime: 2021-03-01 11:19:16
+ * @LastEditTime: 2021-03-02 15:11:54
 -->
 <template>
   <IhPage class="text-left">
@@ -1471,6 +1471,8 @@ export default class ApplyRecAdd extends Vue {
           developId: this.dealParams.developId,
           polyCompanyId: this.dealParams.polyCompanyId,
         });
+        console.log(this.form.taxMoney);
+
         this.taxMoneyChange(this.form.taxMoney);
         this.uploadLoad = false;
       } catch (error) {
@@ -1627,7 +1629,7 @@ export default class ApplyRecAdd extends Vue {
   // 税额修改
   private taxMoneyChange(number: any) {
     if (!number) {
-      this.form.taxMoney = this.globalTaxMoney - 10;
+      this.form.taxMoney = this.globalTaxMoney;
     }
     let val = this.form.taxMoney;
     let sub = this.globalTaxMoney - val; // 差额
