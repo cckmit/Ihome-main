@@ -322,7 +322,9 @@
         </el-col>
         <el-col :span="8" class="form-item-label-wrapper">
           <el-form-item label="房产证/预售合同编号">
-            <el-input v-model="postData.propertyNo" clearable></el-input>
+            <el-input
+              v-model="postData.propertyNo"
+              :disabled="isDisabled('propertyNo', 'houseVO')"></el-input>
           </el-form-item>
         </el-col>
         <el-col :span="16">
@@ -332,7 +334,9 @@
         </el-col>
         <el-col :span="8">
           <el-form-item label="现场销售">
-            <el-input v-model="postData.sceneSales" clearable></el-input>
+            <el-input
+              v-model="postData.sceneSales"
+              :disabled="isDisabled('sceneSales', 'dealVO')"></el-input>
           </el-form-item>
         </el-col>
         <el-col :span="8">
@@ -351,9 +355,11 @@
             </el-select>
           </el-form-item>
         </el-col>
-        <el-col :span="8" class="form-item-label-wrapper" v-if="isDisabled('returnRatio', 'dealVO')">
+        <el-col :span="8" class="form-item-label-wrapper">
           <el-form-item label="明源房款回笼比例">
-            <el-input v-model="postData.returnRatio"></el-input>
+            <el-input
+              v-model="postData.returnRatio"
+              :disabled="isDisabled('returnRatio', 'dealVO')"></el-input>
           </el-form-item>
         </el-col>
         <el-col :span="8">
@@ -1401,14 +1407,20 @@
           otherChannelFees: 0,
         }
         this.postData.receiveVO.forEach((item: any) => {
-          obj.receiveAmount = (obj.receiveAmount * 1 * 100 + item.receiveAmount * 1 * 100) / 100;
-          obj.achieveAmount = (obj.achieveAmount * 1 * 100 + item.commAmount * 1 * 100
-            + item.rewardAmount * 1 * 100 + item.totalPackageAmount * 1 * 100
-            + item.distributionAmount * 1 * 100) / 100;
-          obj.otherChannelFees = (obj.otherChannelFees * 1 * 100 + item.otherChannelFees * 1 * 100) / 100;
-          totalAmount = (totalAmount * 1 * 100 + item.commAmount * 1 * 100 +
-            item.rewardAmount * 1 * 100) / 100;
-          rewardTotal = (rewardTotal * 1 * 100 + item.rewardAmount * 1 * 100) / 100;
+          obj.receiveAmount = (this as any).$math.tofixed((this as any).$math.add(obj.receiveAmount * 1, item.receiveAmount * 1), 2);
+          obj.achieveAmount = (this as any).$math.tofixed((this as any).$math.addArr([obj.achieveAmount * 1, item.commAmount * 1, item.rewardAmount * 1, item.totalPackageAmount * 1, item.distributionAmount * 1]), 2);
+          obj.otherChannelFees = (this as any).$math.tofixed((this as any).$math.add(obj.otherChannelFees * 1, item.otherChannelFees * 1), 2);
+          rewardTotal = (this as any).$math.tofixed((this as any).$math.add(rewardTotal * 1, item.rewardAmount * 1), 2);
+          totalAmount = (this as any).$math.tofixed((this as any).$math.addArr([totalAmount * 1, item.commAmount * 1, item.rewardAmount * 1]), 2);
+
+          // obj.receiveAmount = (obj.receiveAmount * 1 * 100 + item.receiveAmount * 1 * 100) / 100;
+          // obj.achieveAmount = (obj.achieveAmount * 1 * 100 + item.commAmount * 1 * 100
+          //   + item.rewardAmount * 1 * 100 + item.totalPackageAmount * 1 * 100
+          //   + item.distributionAmount * 1 * 100) / 100;
+          // obj.otherChannelFees = (obj.otherChannelFees * 1 * 100 + item.otherChannelFees * 1 * 100) / 100;
+          // totalAmount = (totalAmount * 1 * 100 + item.commAmount * 1 * 100 +
+          //   item.rewardAmount * 1 * 100) / 100;
+          // rewardTotal = (rewardTotal * 1 * 100 + item.rewardAmount * 1 * 100) / 100;
         })
         arr.push(obj);
       }
@@ -1517,7 +1529,7 @@
         this.postData.toilet = res?.house?.toilet;
         this.postData.propertyNo = res?.house?.propertyNo;
         this.postData.address = res?.house?.address;
-        this.postData.sceneSales = res.sceneSales;
+        this.postData.sceneSales = res?.house?.sceneSales;
         this.postData.signType = res.signType;
         this.postData.stage = res.stage;
         this.postData.returnRatio = res.returnRatio;
@@ -1867,15 +1879,21 @@
       if (!value) {
         (this as any).$nextTick(() => {
           row[type] = 0;
-          row.otherChannelFees = (row.receiveAmount * 1 * 100
-            - row.commAmount * 1 * 100 - row.rewardAmount * 1 * 100
-            - row.totalPackageAmount * 1 * 100 - row.distributionAmount * 1 * 100) / 100;
+          let total: any = (this as any).$math.addArr([row.commAmount * 1, row.rewardAmount * 1, row.totalPackageAmount * 1, row.distributionAmount * 1]);
+          console.log('changeReceiveItem', total);
+          row.otherChannelFees = (this as any).$math.tofixed(((this as any).$math.sub(row.receiveAmount * 1, total)), 2);
+          // row.otherChannelFees = (row.receiveAmount * 1 * 100
+          //   - row.commAmount * 1 * 100 - row.rewardAmount * 1 * 100
+          //   - row.totalPackageAmount * 1 * 100 - row.distributionAmount * 1 * 100) / 100;
         });
       } else {
         (this as any).$nextTick(() => {
-          row.otherChannelFees = (row.receiveAmount * 1 * 100
-            - row.commAmount * 1 * 100 - row.rewardAmount * 1 * 100
-            - row.totalPackageAmount * 1 * 100 - row.distributionAmount * 1 * 100) / 100;
+          let total: any = (this as any).$math.addArr([row.commAmount * 1, row.rewardAmount * 1, row.totalPackageAmount * 1, row.distributionAmount * 1]);
+          console.log('changeReceiveItem', total);
+          row.otherChannelFees = (this as any).$math.tofixed(((this as any).$math.sub(row.receiveAmount * 1, total)), 2);
+          // row.otherChannelFees = (row.receiveAmount * 1 * 100
+          //   - row.commAmount * 1 * 100 - row.rewardAmount * 1 * 100
+          //   - row.totalPackageAmount * 1 * 100 - row.distributionAmount * 1 * 100) / 100;
         });
       }
       // 提示框
@@ -2069,7 +2087,8 @@
       if (this.postData.receiveVO.length) {
         this.postData.receiveVO.forEach((vo: any) => {
           let value: any = vo[type] ? vo[type] : 0;
-          total = (total * 1 * 100 + value * 1 * 100) / 100;
+          // total = (total * 1 * 100 + value * 1 * 100) / 100;
+          total = (this as any).$math.tofixed((this as any).$math.add(total * 1, value * 1), 2);
         });
         return total;
       } else {
@@ -2084,7 +2103,8 @@
         this.postData.receiveVO.forEach((vo: any) => {
           let commValue: any = vo.commAmount ? vo.commAmount : 0;
           let rewardValue: any = vo.rewardAmount ? vo.rewardAmount : 0;
-          total = (total * 1 * 100 + commValue * 1 * 100 + rewardValue * 1 * 100) / 100;
+          // total = (total * 1 * 100 + commValue * 1 * 100 + rewardValue * 1 * 100) / 100;
+          total = (this as any).$math.tofixed((this as any).$math.addArr([total * 1, commValue * 1, rewardValue * 1]), 2);
         });
         return total;
       } else {
@@ -2325,7 +2345,7 @@
       // }
       let list: any = ['contType', 'contNo', 'recordState', 'recordStr', 'area', 'room', 'hall',
         'toilet', 'propertyNo', 'signType', 'returnRatio', 'subscribePrice', 'subscribeDate',
-        'signPrice', 'signDate', 'agencyId', 'agencyName', 'channelLevel']
+        'signPrice', 'signDate', 'agencyId', 'agencyName', 'channelLevel', 'sceneSales', 'returnRatio']
       this.resetObject('postData', list);
     }
 
@@ -2476,6 +2496,8 @@
       if (baseInfo && baseInfo.myReturnVO && baseInfo.myReturnVO.dealStage) {
         this.postData.stage = baseInfo.myReturnVO.dealStage;
       }
+      // 现场销售
+      this.postData.sceneSales = baseInfo.myReturnVO.dealVO?.sceneSales;
       // 明源房款回笼比例(%)
       this.postData.returnRatio = baseInfo.myReturnVO.dealVO?.returnRatio;
       // 认购价格
@@ -3116,13 +3138,15 @@
             sums[index] = values.reduce((prev: any, curr: any) => {
               const value = Number(curr);
               if (!isNaN(value)) {
-                let total = (prev * 1 * 100 + curr * 1 * 100) / 100;
+                // let total = (prev * 1 * 100 + curr * 1 * 100) / 100;
+                let total = (this as any).$math.tofixed((this as any).$math.add(prev * 1, curr * 1), 2);
                 return total;
               } else {
-                return ((prev * 1 * 100) / 100);
+                // return ((prev * 1 * 100) / 100);
+                return ((this as any).$math.tofixed(prev * 1, 2));
               }
             }, 0);
-            sums[index] = Math.round(sums[index] * 100) / 100; // 解决精度缺失问题
+            // sums[index] = Math.round(sums[index] * 100) / 100; // 解决精度缺失问题
           } else {
             sums[index] = '';
           }
@@ -3332,13 +3356,15 @@
             sums[index] = values.reduce((prev: any, curr: any) => {
               const value = Number(curr);
               if (!isNaN(value)) {
-                let total = (prev * 1 * 100 + curr * 1 * 100) / 100;
+                // let total = (prev * 1 * 100 + curr * 1 * 100) / 100;
+                let total = (this as any).$math.tofixed((this as any).$math.add(prev * 1, curr * 1), 2);
                 return total;
               } else {
-                return ((prev * 1 * 100) / 100);
+                // return ((prev * 1 * 100) / 100);
+                return ((this as any).$math.tofixed(prev * 1, 2));
               }
             }, 0);
-            sums[index] = Math.round(sums[index] * 100) / 100; // 解决精度缺失问题
+            // sums[index] = Math.round(sums[index] * 100) / 100; // 解决精度缺失问题
           } else {
             sums[index] = '';
           }
@@ -3495,6 +3521,7 @@
             "recordState": "",
             "refineModel": "",
             "reportId": '',
+            "returnRatio": "",
             "sceneSales": "",
             "signDate": "",
             "signPrice": '',
@@ -3642,6 +3669,7 @@
       obj.basic.dealVO.recordState = this.postData.recordState;
       obj.basic.dealVO.refineModel = this.postData.refineModel;
       obj.basic.dealVO.reportId = this.baseInfoInDeal.recordId;
+      obj.basic.dealVO.returnRatio = this.postData.returnRatio;
       obj.basic.dealVO.sceneSales = this.postData.sceneSales;
       obj.basic.dealVO.signDate = this.postData.signDate;
       obj.basic.dealVO.signPrice = this.postData.signPrice;

@@ -364,7 +364,7 @@
         <el-col :span="8" class="form-item-label-wrapper">
           <el-form-item label="房产证/预售合同编号">
             <el-input
-              :disabled="['ChangeInternalAchieveInf', 'RetreatRoom'].includes(changeType)"
+              :disabled="['ChangeInternalAchieveInf', 'RetreatRoom'].includes(changeType) || isDisabled('propertyNo', 'houseVO')"
               v-model="postData.propertyNo"></el-input>
           </el-form-item>
         </el-col>
@@ -378,7 +378,7 @@
         <el-col :span="8">
           <el-form-item label="现场销售">
             <el-input
-              :disabled="['ChangeInternalAchieveInf', 'RetreatRoom'].includes(changeType)"
+              :disabled="['ChangeInternalAchieveInf', 'RetreatRoom'].includes(changeType) || isDisabled('sceneSales', 'dealVO')"
               v-model="postData.sceneSales"></el-input>
           </el-form-item>
         </el-col>
@@ -398,9 +398,11 @@
             </el-select>
           </el-form-item>
         </el-col>
-        <el-col :span="8" v-if="isDisabled('returnRatio', 'dealVO')" class="form-item-label-wrapper">
+        <el-col :span="8" class="form-item-label-wrapper">
           <el-form-item label="明源房款回笼比例">
-            <el-input v-model="postData.returnRatio" disabled></el-input>
+            <el-input
+              v-model="postData.returnRatio"
+              :disabled="changeType !== 'ChangeAchieveInf' || isDisabled('returnRatio', 'dealVO')"></el-input>
           </el-form-item>
         </el-col>
         <el-col :span="8">
@@ -655,78 +657,81 @@
                 </el-tooltip>
               </div>
               <div v-else>
-                <div v-if="!scope.row.packageId">
-                  <el-input
-                    readonly
-                    placeholder="请选择收派套餐"
-                    v-model="scope.row.packageId">
-                    <el-button
-                      slot="append"
-                      icon="el-icon-search"
-                      @click.native.prevent="selectPackage(scope)"></el-button>
-                  </el-input>
-                </div>
-                <div v-else>
-                  <el-tooltip placement="top" effect="light">
-                    <div slot="content">
-                      <el-table :data="scope.row.showData" style="width: 100%">
-                        <el-table-column label="类型" prop="typeName" min-width="100"></el-table-column>
-                        <el-table-column label="合同类型" prop="contractEnum" min-width="100">
-                          <template slot-scope="scope">
-                            <div>{{$root.dictAllName(scope.row.contractEnum, 'ContType')}}</div>
-                          </template>
-                        </el-table-column>
-                        <el-table-column label="客户类型" prop="transactionEnum" min-width="100">
-                          <template slot-scope="scope">
-                            <div>{{$root.dictAllName(scope.row.transactionEnum, 'Transaction')}}</div>
-                          </template>
-                        </el-table-column>
-                        <el-table-column label="条件" prop="condition" min-width="200"></el-table-column>
-                        <el-table-column label="应收金额" prop="receivableAmout" min-width="200">
-                          <template slot-scope="scope">
-                            <div>金额：{{scope.row.receivableAmout}}</div>
-                            <div>点数：{{scope.row.receivablePoint}}</div>
-                          </template>
-                        </el-table-column>
-                        <el-table-column label="派发佣金" prop="sendAmount" min-width="200">
-                          <template slot-scope="scope">
-                            <div>金额：{{scope.row.sendAmount}}</div>
-                            <div>点数：{{scope.row.sendPoint}}</div>
-                          </template>
-                        </el-table-column>
-                        <el-table-column label="派发内场奖励" prop="sendInAmount" min-width="200">
-                          <template slot-scope="scope">
-                            <div>金额：{{scope.row.sendInAmount}}</div>
-                            <div>点数：{{scope.row.sendInPoint}}</div>
-                          </template>
-                        </el-table-column>
-                        <el-table-column label="总包业绩" prop="generalAchieveAmount" min-width="200">
-                          <template slot-scope="scope">
-                            <div>金额：{{scope.row.generalAchieveAmount}}</div>
-                            <div>点数：{{scope.row.generalAchievePoint}}</div>
-                          </template>
-                        </el-table-column>
-                        <el-table-column label="分销业绩" prop="distributeAchieveAmount" min-width="200">
-                          <template slot-scope="scope">
-                            <div>金额：{{scope.row.distributeAchieveAmount}}</div>
-                            <div>点数：{{scope.row.distributeAchievePoint}}</div>
-                          </template>
-                        </el-table-column>
-                        <el-table-column label="其他渠道费用" prop="otherChannelAmount" min-width="160">
-                          <template slot-scope="scope">
-                            <div>金额：{{scope.row.otherChannelAmount}}</div>
-                          </template>
-                        </el-table-column>
-                      </el-table>
-                    </div>
+                <div v-if="postData.calculation === 'Auto'">
+                  <div v-if="!scope.row.packageId">
                     <el-input
                       readonly
-                      placeholder="收派标准">
-                      <el-button slot="append" icon="el-icon-edit-outline"
-                                 @click.native.prevent="selectPackage(scope)"></el-button>
+                      placeholder="请选择收派套餐"
+                      v-model="scope.row.packageId">
+                      <el-button
+                        slot="append"
+                        icon="el-icon-search"
+                        @click.native.prevent="selectPackage(scope)"></el-button>
                     </el-input>
-                  </el-tooltip>
+                  </div>
+                  <div v-else>
+                    <el-tooltip placement="top" effect="light">
+                      <div slot="content">
+                        <el-table :data="scope.row.showData" style="width: 100%">
+                          <el-table-column label="类型" prop="typeName" min-width="100"></el-table-column>
+                          <el-table-column label="合同类型" prop="contractEnum" min-width="100">
+                            <template slot-scope="scope">
+                              <div>{{$root.dictAllName(scope.row.contractEnum, 'ContType')}}</div>
+                            </template>
+                          </el-table-column>
+                          <el-table-column label="客户类型" prop="transactionEnum" min-width="100">
+                            <template slot-scope="scope">
+                              <div>{{$root.dictAllName(scope.row.transactionEnum, 'Transaction')}}</div>
+                            </template>
+                          </el-table-column>
+                          <el-table-column label="条件" prop="condition" min-width="200"></el-table-column>
+                          <el-table-column label="应收金额" prop="receivableAmout" min-width="200">
+                            <template slot-scope="scope">
+                              <div>金额：{{scope.row.receivableAmout}}</div>
+                              <div>点数：{{scope.row.receivablePoint}}</div>
+                            </template>
+                          </el-table-column>
+                          <el-table-column label="派发佣金" prop="sendAmount" min-width="200">
+                            <template slot-scope="scope">
+                              <div>金额：{{scope.row.sendAmount}}</div>
+                              <div>点数：{{scope.row.sendPoint}}</div>
+                            </template>
+                          </el-table-column>
+                          <el-table-column label="派发内场奖励" prop="sendInAmount" min-width="200">
+                            <template slot-scope="scope">
+                              <div>金额：{{scope.row.sendInAmount}}</div>
+                              <div>点数：{{scope.row.sendInPoint}}</div>
+                            </template>
+                          </el-table-column>
+                          <el-table-column label="总包业绩" prop="generalAchieveAmount" min-width="200">
+                            <template slot-scope="scope">
+                              <div>金额：{{scope.row.generalAchieveAmount}}</div>
+                              <div>点数：{{scope.row.generalAchievePoint}}</div>
+                            </template>
+                          </el-table-column>
+                          <el-table-column label="分销业绩" prop="distributeAchieveAmount" min-width="200">
+                            <template slot-scope="scope">
+                              <div>金额：{{scope.row.distributeAchieveAmount}}</div>
+                              <div>点数：{{scope.row.distributeAchievePoint}}</div>
+                            </template>
+                          </el-table-column>
+                          <el-table-column label="其他渠道费用" prop="otherChannelAmount" min-width="160">
+                            <template slot-scope="scope">
+                              <div>金额：{{scope.row.otherChannelAmount}}</div>
+                            </template>
+                          </el-table-column>
+                        </el-table>
+                      </div>
+                      <el-input
+                        readonly
+                        placeholder="收派标准">
+                        <el-button slot="append" icon="el-icon-edit-outline"
+                                   @click.native.prevent="selectPackage(scope)"></el-button>
+                      </el-input>
+                    </el-tooltip>
+                  </div>
                 </div>
+                <div v-else>---</div>
               </div>
             </template>
           </el-table-column>
@@ -1620,14 +1625,20 @@
           otherChannelFees: 0,
         }
         this.postData.receiveList.forEach((item: any) => {
-          obj.receiveAmount = (obj.receiveAmount * 1 * 100 + item.receiveAmount * 1 * 100) / 100;
-          obj.achieveAmount = (obj.achieveAmount * 1 * 100 + item.commAmount * 1 * 100
-            + item.rewardAmount * 1 * 100 + item.totalPackageAmount * 1 * 100
-            + item.distributionAmount * 1 * 100) / 100;
-          obj.otherChannelFees = (obj.otherChannelFees * 1 * 100 + item.otherChannelFees * 1 * 100) / 100;
-          totalAmount = (totalAmount * 1 * 100 + item.commAmount * 1 * 100 +
-            item.rewardAmount * 1 * 100) / 100;
-          rewardTotal = (rewardTotal * 1 * 100 + item.rewardAmount * 1 * 100) / 100;
+          obj.receiveAmount = (this as any).$math.tofixed((this as any).$math.add(obj.receiveAmount * 1, item.receiveAmount * 1), 2);
+          obj.achieveAmount = (this as any).$math.tofixed((this as any).$math.addArr([obj.achieveAmount * 1, item.commAmount * 1, item.rewardAmount * 1, item.totalPackageAmount * 1, item.distributionAmount * 1]), 2);
+          obj.otherChannelFees = (this as any).$math.tofixed((this as any).$math.add(obj.otherChannelFees * 1, item.otherChannelFees * 1), 2);
+          rewardTotal = (this as any).$math.tofixed((this as any).$math.add(rewardTotal * 1, item.rewardAmount * 1), 2);
+          totalAmount = (this as any).$math.tofixed((this as any).$math.addArr([totalAmount * 1, item.commAmount * 1, item.rewardAmount * 1]), 2);
+
+          // obj.receiveAmount = (obj.receiveAmount * 1 * 100 + item.receiveAmount * 1 * 100) / 100;
+          // obj.achieveAmount = (obj.achieveAmount * 1 * 100 + item.commAmount * 1 * 100
+          //   + item.rewardAmount * 1 * 100 + item.totalPackageAmount * 1 * 100
+          //   + item.distributionAmount * 1 * 100) / 100;
+          // obj.otherChannelFees = (obj.otherChannelFees * 1 * 100 + item.otherChannelFees * 1 * 100) / 100;
+          // totalAmount = (totalAmount * 1 * 100 + item.commAmount * 1 * 100 +
+          //   item.rewardAmount * 1 * 100) / 100;
+          // rewardTotal = (rewardTotal * 1 * 100 + item.rewardAmount * 1 * 100) / 100;
         })
         arr.push(obj);
       }
@@ -2025,8 +2036,10 @@
       if (baseInfo.myReturnVO && baseInfo.myReturnVO.dealVO && baseInfo.myReturnVO.dealVO.signType) {
         this.postData.signType = baseInfo?.myReturnVO?.dealVO?.signType;
       }
-      // 成交阶段
-      this.postData.stage = baseInfo.myReturnVO.dealStage;
+      // 成交阶段  --- 2021-03-01 补充成交只有签约状态
+      // this.postData.stage = baseInfo.myReturnVO.dealStage;
+      // 现场销售
+      this.postData.sceneSales = baseInfo.myReturnVO.dealVO?.sceneSales;
       // 明源房款回笼比例(%)
       this.postData.returnRatio = baseInfo.myReturnVO.dealVO?.returnRatio;
       // 认购价格
@@ -2504,15 +2517,21 @@
       if (!value) {
         (this as any).$nextTick(() => {
           row[type] = 0;
-          row.otherChannelFees = (row.receiveAmount * 1 * 100
-            - row.commAmount * 1 * 100 - row.rewardAmount * 1 * 100
-            - row.totalPackageAmount * 1 * 100 - row.distributionAmount * 1 * 100) / 100;
+          let total: any = (this as any).$math.addArr([row.commAmount * 1, row.rewardAmount * 1, row.totalPackageAmount * 1, row.distributionAmount * 1]);
+          console.log('changeReceiveItem', total);
+          row.otherChannelFees = (this as any).$math.tofixed(((this as any).$math.sub(row.receiveAmount * 1, total)), 2);
+          // row.otherChannelFees = (row.receiveAmount * 1 * 100
+          //   - row.commAmount * 1 * 100 - row.rewardAmount * 1 * 100
+          //   - row.totalPackageAmount * 1 * 100 - row.distributionAmount * 1 * 100) / 100;
         });
       } else {
         (this as any).$nextTick(() => {
-          row.otherChannelFees = (row.receiveAmount * 1 * 100
-            - row.commAmount * 1 * 100 - row.rewardAmount * 1 * 100
-            - row.totalPackageAmount * 1 * 100 - row.distributionAmount * 1 * 100) / 100;
+          let total: any = (this as any).$math.addArr([row.commAmount * 1, row.rewardAmount * 1, row.totalPackageAmount * 1, row.distributionAmount * 1]);
+          console.log('changeReceiveItem', total);
+          row.otherChannelFees = (this as any).$math.tofixed(((this as any).$math.sub(row.receiveAmount * 1, total)), 2);
+          // row.otherChannelFees = (row.receiveAmount * 1 * 100
+          //   - row.commAmount * 1 * 100 - row.rewardAmount * 1 * 100
+          //   - row.totalPackageAmount * 1 * 100 - row.distributionAmount * 1 * 100) / 100;
         });
       }
       // 提示框
@@ -3443,7 +3462,8 @@
         this.postData.channelCommList.forEach((vo: any) => {
           let commValue: any = vo.commAmount ? vo.commAmount : 0;
           let rewardValue: any = vo.rewardAmount ? vo.rewardAmount : 0;
-          total = (total * 1 * 100 + commValue * 1 * 100 + rewardValue * 1 * 100) / 100;
+          total = (this as any).$math.tofixed((this as any).$math.addArr([total * 1, commValue * 1, rewardValue * 1]), 2);
+          // total = (total * 1 * 100 + commValue * 1 * 100 + rewardValue * 1 * 100) / 100;
         });
         return total;
       } else {
@@ -3457,7 +3477,9 @@
       let total = 0;
       if (this.postData.receiveList.length) {
         this.postData.receiveList.forEach((vo: any) => {
-          total = total + parseFloat(vo[type] ? vo[type] : 0);
+          let value: any = vo[type] ? vo[type] : 0;
+          total = (this as any).$math.tofixed((this as any).$math.add(total * 1, value * 1), 2);
+          // total = total + parseFloat(vo[type] ? vo[type] : 0);
         });
         return total;
       } else {
@@ -3702,6 +3724,9 @@
         dealVO: {
           ...this.postData,
           id: this.btnType === "edit" ? this.id : null,
+          stage: 'SignUp', // 2021-03-01 补充成交只有签约状态
+          isMat: this.postData.contType === 'DistriDeal' ? this.postData.isMat : null, // 分销成交再传
+          contNo: this.postData.contType === 'DistriDeal' ? this.postData.contNo : null, // 分销成交再传
           noticeIds: [] // 优惠告知书Id
         }, // 成交基础信息
         documentVO: this.postData.uploadDocumentList.length ? this.getDocumentList(this.postData.uploadDocumentList) : null, // 成交附件信息
@@ -3872,13 +3897,15 @@
             sums[index] = values.reduce((prev: any, curr: any) => {
               const value = Number(curr);
               if (!isNaN(value)) {
-                let total = (prev * 1 * 100 + curr * 1 * 100) / 100;
+                let total = (this as any).$math.tofixed((this as any).$math.add(prev * 1, curr * 1), 2);
+                // let total = (prev * 1 * 100 + curr * 1 * 100) / 100;
                 return total;
               } else {
-                return ((prev * 1 * 100) / 100);
+                return ((this as any).$math.tofixed(prev * 1, 2));
+                // return ((prev * 1 * 100) / 100);
               }
             }, 0);
-            sums[index] = Math.round(sums[index] * 100) / 100; // 解决精度缺失问题
+            // sums[index] = Math.round(sums[index] * 100) / 100; // 解决精度缺失问题
           } else {
             sums[index] = '';
           }
@@ -3904,13 +3931,15 @@
             sums[index] = values.reduce((prev: any, curr: any) => {
               const value = Number(curr);
               if (!isNaN(value)) {
-                let total = (prev * 1 * 100 + curr * 1 * 100) / 100;
+                // let total = (prev * 1 * 100 + curr * 1 * 100) / 100;
+                let total = (this as any).$math.tofixed((this as any).$math.add(prev * 1, curr * 1), 2);
                 return total;
               } else {
-                return ((prev * 1 * 100) / 100);
+                return ((this as any).$math.tofixed(prev * 1, 2));
+                // return ((prev * 1 * 100) / 100);
               }
             }, 0);
-            sums[index] = Math.round(sums[index] * 100) / 100; // 解决精度缺失问题
+            // sums[index] = Math.round(sums[index] * 100) / 100; // 解决精度缺失问题
           } else {
             sums[index] = '';
           }
@@ -3936,13 +3965,15 @@
             sums[index] = values.reduce((prev: any, curr: any) => {
               const value = Number(curr);
               if (!isNaN(value)) {
-                let total = (prev * 1 * 100 + curr * 1 * 100) / 100;
+                // let total = (prev * 1 * 100 + curr * 1 * 100) / 100;
+                let total = (this as any).$math.tofixed((this as any).$math.add(prev * 1, curr * 1), 2);
                 return total;
               } else {
-                return ((prev * 1 * 100) / 100);
+                return ((this as any).$math.tofixed(prev * 1, 2));
+                // return ((prev * 1 * 100) / 100);
               }
             }, 0);
-            sums[index] = Math.round(sums[index] * 100) / 100; // 解决精度缺失问题
+            // sums[index] = Math.round(sums[index] * 100) / 100; // 解决精度缺失问题
           } else {
             sums[index] = '';
           }

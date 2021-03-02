@@ -31,7 +31,7 @@
               v-model="form.visitDealTime"
               type="datetime"
               :picker-options="pickerOptions"
-              value-format="yyyy-MM-dd HH:mm:ss"
+              value-format="yyyy-MM-dd HH:mm"
               placeholder="选择确认到访日期"
             >
             </el-date-picker>
