@@ -1007,12 +1007,16 @@
           otherChannelFees: 0,
         }
         this.postData.receiveVO.forEach((item: any) => {
-          obj.receiveAmount = (obj.receiveAmount * 1 * 100 + item.receiveAmount * 1 * 100) / 100;
-          obj.achieveAmount = (obj.achieveAmount * 1 * 100 + item.commAmount * 1 * 100
-            + item.rewardAmount * 1 * 100 + item.totalPackageAmount * 1 * 100
-            + item.distributionAmount * 1 * 100) / 100;
-          obj.otherChannelFees = (obj.otherChannelFees * 1 * 100 + item.otherChannelFees * 1 * 100) / 100;
-          rewardTotal = (rewardTotal * 1 * 100 + item.rewardAmount * 1 * 100) / 100;
+          obj.receiveAmount = (this as any).$math.tofixed((this as any).$math.add(obj.receiveAmount * 1, item.receiveAmount * 1), 2);
+          obj.achieveAmount = (this as any).$math.tofixed((this as any).$math.addArr([obj.achieveAmount * 1, item.commAmount * 1, item.rewardAmount * 1, item.totalPackageAmount * 1, item.distributionAmount * 1]), 2);
+          obj.otherChannelFees = (this as any).$math.tofixed((this as any).$math.add(obj.otherChannelFees * 1, item.otherChannelFees * 1), 2);
+          rewardTotal = (this as any).$math.tofixed((this as any).$math.add(rewardTotal * 1, item.rewardAmount * 1), 2);
+          // obj.receiveAmount = (obj.receiveAmount * 1 * 100 + item.receiveAmount * 1 * 100) / 100;
+          // obj.achieveAmount = (obj.achieveAmount * 1 * 100 + item.commAmount * 1 * 100
+          //   + item.rewardAmount * 1 * 100 + item.totalPackageAmount * 1 * 100
+          //   + item.distributionAmount * 1 * 100) / 100;
+          // obj.otherChannelFees = (obj.otherChannelFees * 1 * 100 + item.otherChannelFees * 1 * 100) / 100;
+          // rewardTotal = (rewardTotal * 1 * 100 + item.rewardAmount * 1 * 100) / 100;
         })
         arr.push(obj);
       }

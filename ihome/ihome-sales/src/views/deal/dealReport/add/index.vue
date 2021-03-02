@@ -416,13 +416,15 @@
             sums[index] = values.reduce((prev: any, curr: any) => {
               const value = Number(curr);
               if (!isNaN(value)) {
-                let total = (prev * 1 * 100 + curr * 1 * 100) / 100;
+                let total = (this as any).$math.tofixed((this as any).$math.add(prev * 1, curr * 1), 2);
+                // let total = (prev * 1 * 100 + curr * 1 * 100) / 100;
                 return total;
               } else {
-                return ((prev * 1 * 100) / 100);
+                return ((this as any).$math.tofixed(prev * 1, 2));
+                // return ((prev * 1 * 100) / 100);
               }
             }, 0);
-            sums[index] = Math.round(sums[index] * 100) / 100; // 解决精度缺失问题
+            // sums[index] = Math.round(sums[index] * 100) / 100; // 解决精度缺失问题
           } else {
             sums[index] = '';
           }

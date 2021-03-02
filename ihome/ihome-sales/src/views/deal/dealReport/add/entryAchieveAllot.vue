@@ -1407,14 +1407,20 @@
           otherChannelFees: 0,
         }
         this.postData.receiveVO.forEach((item: any) => {
-          obj.receiveAmount = (obj.receiveAmount * 1 * 100 + item.receiveAmount * 1 * 100) / 100;
-          obj.achieveAmount = (obj.achieveAmount * 1 * 100 + item.commAmount * 1 * 100
-            + item.rewardAmount * 1 * 100 + item.totalPackageAmount * 1 * 100
-            + item.distributionAmount * 1 * 100) / 100;
-          obj.otherChannelFees = (obj.otherChannelFees * 1 * 100 + item.otherChannelFees * 1 * 100) / 100;
-          totalAmount = (totalAmount * 1 * 100 + item.commAmount * 1 * 100 +
-            item.rewardAmount * 1 * 100) / 100;
-          rewardTotal = (rewardTotal * 1 * 100 + item.rewardAmount * 1 * 100) / 100;
+          obj.receiveAmount = (this as any).$math.tofixed((this as any).$math.add(obj.receiveAmount * 1, item.receiveAmount * 1), 2);
+          obj.achieveAmount = (this as any).$math.tofixed((this as any).$math.addArr([obj.achieveAmount * 1, item.commAmount * 1, item.rewardAmount * 1, item.totalPackageAmount * 1, item.distributionAmount * 1]), 2);
+          obj.otherChannelFees = (this as any).$math.tofixed((this as any).$math.add(obj.otherChannelFees * 1, item.otherChannelFees * 1), 2);
+          rewardTotal = (this as any).$math.tofixed((this as any).$math.add(rewardTotal * 1, item.rewardAmount * 1), 2);
+          totalAmount = (this as any).$math.tofixed((this as any).$math.addArr([totalAmount * 1, item.commAmount * 1, item.rewardAmount * 1]), 2);
+
+          // obj.receiveAmount = (obj.receiveAmount * 1 * 100 + item.receiveAmount * 1 * 100) / 100;
+          // obj.achieveAmount = (obj.achieveAmount * 1 * 100 + item.commAmount * 1 * 100
+          //   + item.rewardAmount * 1 * 100 + item.totalPackageAmount * 1 * 100
+          //   + item.distributionAmount * 1 * 100) / 100;
+          // obj.otherChannelFees = (obj.otherChannelFees * 1 * 100 + item.otherChannelFees * 1 * 100) / 100;
+          // totalAmount = (totalAmount * 1 * 100 + item.commAmount * 1 * 100 +
+          //   item.rewardAmount * 1 * 100) / 100;
+          // rewardTotal = (rewardTotal * 1 * 100 + item.rewardAmount * 1 * 100) / 100;
         })
         arr.push(obj);
       }
@@ -2081,7 +2087,8 @@
       if (this.postData.receiveVO.length) {
         this.postData.receiveVO.forEach((vo: any) => {
           let value: any = vo[type] ? vo[type] : 0;
-          total = (total * 1 * 100 + value * 1 * 100) / 100;
+          // total = (total * 1 * 100 + value * 1 * 100) / 100;
+          total = (this as any).$math.tofixed((this as any).$math.add(total * 1, value * 1), 2);
         });
         return total;
       } else {
@@ -2096,7 +2103,8 @@
         this.postData.receiveVO.forEach((vo: any) => {
           let commValue: any = vo.commAmount ? vo.commAmount : 0;
           let rewardValue: any = vo.rewardAmount ? vo.rewardAmount : 0;
-          total = (total * 1 * 100 + commValue * 1 * 100 + rewardValue * 1 * 100) / 100;
+          // total = (total * 1 * 100 + commValue * 1 * 100 + rewardValue * 1 * 100) / 100;
+          total = (this as any).$math.tofixed((this as any).$math.addArr([total * 1, commValue * 1, rewardValue * 1]), 2);
         });
         return total;
       } else {
@@ -3130,13 +3138,15 @@
             sums[index] = values.reduce((prev: any, curr: any) => {
               const value = Number(curr);
               if (!isNaN(value)) {
-                let total = (prev * 1 * 100 + curr * 1 * 100) / 100;
+                // let total = (prev * 1 * 100 + curr * 1 * 100) / 100;
+                let total = (this as any).$math.tofixed((this as any).$math.add(prev * 1, curr * 1), 2);
                 return total;
               } else {
-                return ((prev * 1 * 100) / 100);
+                // return ((prev * 1 * 100) / 100);
+                return ((this as any).$math.tofixed(prev * 1, 2));
               }
             }, 0);
-            sums[index] = Math.round(sums[index] * 100) / 100; // 解决精度缺失问题
+            // sums[index] = Math.round(sums[index] * 100) / 100; // 解决精度缺失问题
           } else {
             sums[index] = '';
           }
@@ -3346,13 +3356,15 @@
             sums[index] = values.reduce((prev: any, curr: any) => {
               const value = Number(curr);
               if (!isNaN(value)) {
-                let total = (prev * 1 * 100 + curr * 1 * 100) / 100;
+                // let total = (prev * 1 * 100 + curr * 1 * 100) / 100;
+                let total = (this as any).$math.tofixed((this as any).$math.add(prev * 1, curr * 1), 2);
                 return total;
               } else {
-                return ((prev * 1 * 100) / 100);
+                // return ((prev * 1 * 100) / 100);
+                return ((this as any).$math.tofixed(prev * 1, 2));
               }
             }, 0);
-            sums[index] = Math.round(sums[index] * 100) / 100; // 解决精度缺失问题
+            // sums[index] = Math.round(sums[index] * 100) / 100; // 解决精度缺失问题
           } else {
             sums[index] = '';
           }
