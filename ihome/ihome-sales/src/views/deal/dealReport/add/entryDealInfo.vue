@@ -1682,8 +1682,8 @@
         this.postData.signType = baseInfo?.myReturnVO?.dealVO?.signType;
       }
       // 成交阶段
-      if (baseInfo && baseInfo.myReturnVO && baseInfo.myReturnVO.dealStage) {
-        this.postData.stage = baseInfo.myReturnVO.dealStage;
+      if (baseInfo && baseInfo.myReturnVO && baseInfo.myReturnVO.dealVO.stage && baseInfo.myReturnVO.dealVO.stage) {
+      this.postData.stage = baseInfo.myReturnVO.dealVO.stage;
       }
       // 现场销售
       this.postData.sceneSales = baseInfo.myReturnVO.dealVO?.sceneSales;
