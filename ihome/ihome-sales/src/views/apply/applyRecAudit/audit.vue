@@ -4,7 +4,7 @@
  * @Author: ywl
  * @Date: 2021-01-14 19:09:51
  * @LastEditors: ywl
- * @LastEditTime: 2021-03-01 08:58:37
+ * @LastEditTime: 2021-03-02 10:12:28
 -->
 <template>
   <IhPage class="text-left">
@@ -857,7 +857,7 @@ export default class ApplyAudit extends Vue {
   private get totalNoReceiveAmount() {
     let sum = 0;
     this.dealList.forEach((i: any) => {
-      sum += i.noReceiveAmount;
+      sum += parseFloat(i.noReceiveAmount);
     });
     return sum;
   }
