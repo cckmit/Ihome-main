@@ -364,7 +364,7 @@
         <el-col :span="8" class="form-item-label-wrapper">
           <el-form-item label="房产证/预售合同编号">
             <el-input
-              :disabled="['ChangeInternalAchieveInf', 'RetreatRoom'].includes(changeType) || isDisabled('propertyNo', 'dealVO')"
+              :disabled="['ChangeInternalAchieveInf', 'RetreatRoom'].includes(changeType) || isDisabled('propertyNo', 'houseVO')"
               v-model="postData.propertyNo"></el-input>
           </el-form-item>
         </el-col>
