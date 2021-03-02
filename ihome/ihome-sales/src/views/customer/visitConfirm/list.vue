@@ -356,6 +356,7 @@ export default class ReturnConfirmList extends Vue {
     reportType: null,
     exMarket: null,
     reportStatus: "ValidReport",
+	exportType: "ValidReportVisit",
   };
   tabsValue: any = "ValidReport";
   tabsLabel: any = "未确认";
@@ -446,6 +447,7 @@ export default class ReturnConfirmList extends Vue {
   search() {
     this.queryPageParameters.pageNum = 1;
     this.queryPageParameters.reportStatus = this.tabsValue;
+	this.queryPageParameters.exportType = this.tabsValue === 'ValidReport' ? 'ValidReportVisit' : null;
     this.getListMixin();
   }
 
