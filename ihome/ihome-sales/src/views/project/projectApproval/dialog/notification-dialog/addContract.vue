@@ -4,7 +4,7 @@
  * @Author: wwq
  * @Date: 2020-12-02 15:37:31
  * @LastEditors: wwq
- * @LastEditTime: 2021-03-02 09:55:22
+ * @LastEditTime: 2021-03-02 11:44:39
 -->
 <template>
   <el-dialog
@@ -39,10 +39,7 @@
           </el-form-item>
         </el-col>
         <el-col :span="12">
-          <el-form-item
-            label="合同副标题"
-            prop="contractSubtitle"
-          >
+          <el-form-item label="合同副标题">
             <el-input
               v-model="info.contractSubtitle"
               placeholder="请输入副标题"
@@ -544,9 +541,6 @@ export default class AddContract extends Vue {
     ],
     contractTitle: [
       { required: true, message: "请输入合同主标题", trigger: "change" },
-    ],
-    contractSubtitle: [
-      { required: true, message: "请输入合同副标题", trigger: "change" },
     ],
     partyCompany: [
       { required: true, message: "请输入甲方公司", trigger: "change" },
