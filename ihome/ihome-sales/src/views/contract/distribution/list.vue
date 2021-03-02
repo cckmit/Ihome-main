@@ -3,8 +3,8 @@
  * @version: 
  * @Author: ywl
  * @Date: 2020-09-25 17:34:32
- * @LastEditors: lsj
- * @LastEditTime: 2021-02-20 19:05:20
+ * @LastEditors: ywl
+ * @LastEditTime: 2021-03-02 09:38:58
 -->
 <template>
   <IhPage label-width="100px">
@@ -101,10 +101,6 @@
                     placeholder="请选择归属组织"
                     clearable
                   ></IhSelectPageDivision>
-                  <!-- <SelectOrganizationTree
-                    :orgId="queryPageParameters.organizationId"
-                    @callback="(id) => (queryPageParameters.organizationId = id)"
-                  /> -->
                 </el-form-item>
               </el-col>
               <el-col :span="8">
@@ -404,7 +400,6 @@
 <script lang="ts">
 import { Component, Vue } from "vue-property-decorator";
 import PaginationMixin from "@/mixins/pagination";
-import SelectOrganizationTree from "@/components/SelectOrganizationTree.vue";
 import axios from "axios";
 import { getToken } from "ihome-common/util/cookies";
 import {
@@ -418,9 +413,7 @@ import {
 } from "@/api/contract/index";
 
 @Component({
-  components: {
-    SelectOrganizationTree,
-  },
+  components: {},
   mixins: [PaginationMixin],
 })
 export default class DistributionList extends Vue {

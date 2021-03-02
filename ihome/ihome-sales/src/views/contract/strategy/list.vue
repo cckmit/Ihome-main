@@ -4,7 +4,7 @@
  * @Author: ywl
  * @Date: 2020-09-27 11:13:15
  * @LastEditors: ywl
- * @LastEditTime: 2020-12-11 10:18:45
+ * @LastEditTime: 2021-03-02 09:35:32
 -->
 <template>
   <IhPage label-width="100px">
@@ -324,11 +324,11 @@ import { post_strategy_list } from "@/api/contract/index";
 import { post_company_listAll } from "@/api/developer/index";
 import { post_company_getAll } from "@/api/system/index";
 import { get_channel_getAll } from "@/api/channel/index";
-import SelectPageByProject from "@/components/SelectPageByProject.vue";
-import SelectPageByCycle from "@/components/SelectPageByCycle.vue";
+// import SelectPageByProject from "@/components/SelectPageByProject.vue";
+// import SelectPageByCycle from "@/components/SelectPageByCycle.vue";
 
 @Component({
-  components: { SelectPageByProject, SelectPageByCycle },
+  components: {},
   mixins: [PaginationMixin],
 })
 export default class StrategyList extends Vue {
