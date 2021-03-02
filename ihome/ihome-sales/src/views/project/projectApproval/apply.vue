@@ -186,7 +186,7 @@
               label="乙方(渠道)公司"
               prop="channelCompanyId"
             >
-              <SelectPageByCondition
+              <IhSelectPageByChannel
                 v-if="!(searchConditon.channelEnum === 'Appoint' || searchConditon.channelEnum === 'Strategic')"
                 v-model="info.channelCompanyId"
                 clearable
@@ -195,7 +195,7 @@
                 placeholder="渠道商名称"
                 :params="searchConditon"
                 @changeOption="getChannelInfo"
-              ></SelectPageByCondition>
+              ></IhSelectPageByChannel>
               <span v-else>{{info.channelCompanyName}}</span>
             </el-form-item>
           </el-col>
@@ -523,13 +523,12 @@ import { post_distribution_create } from "@/api/contract/index";
 import ViewContract from "./dialog/notification-dialog/viewContract.vue";
 import axios from "axios";
 import { getToken } from "ihome-common/util/cookies";
-import SelectPageByCondition from "@/components/SelectPageByCondition.vue";
 import { phoneValidator } from "ihome-common/util/base/form-ui";
 import { Form as ElForm } from "element-ui";
 import { NoRepeatHttp } from "ihome-common/util/aop/no-repeat-http";
 
 @Component({
-  components: { TemplateDailog, ViewContract, SelectPageByCondition },
+  components: { TemplateDailog, ViewContract },
 })
 export default class Apply extends Vue {
   dialogFormVisible = false;

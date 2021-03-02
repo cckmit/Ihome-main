@@ -4,7 +4,7 @@
  * @Author: wwq
  * @Date: 2020-11-03 18:39:23
  * @LastEditors: wwq
- * @LastEditTime: 2020-12-11 08:51:11
+ * @LastEditTime: 2021-03-01 17:12:02
 -->
 <template>
   <el-dialog
@@ -179,7 +179,17 @@ export default class RoomNumEdit extends Vue {
     this.propertyEnumOptions = await get_building_getPropertyDropDowm__proId({
       proId: this.$route.query.id,
     });
-    this.form = { floor: 0, undergroundNum: 0, ...this.data };
+    this.form = {
+      ...this.data,
+      buildingName: this.data.buildingName ? this.data.buildingName : null,
+      floor: this.data.floor ? this.data.floor : 0,
+      undergroundNum: this.data.undergroundNum ? this.data.undergroundNum : 0,
+      propertyEnum: this.data.propertyEnum ? this.data.propertyEnum : null,
+      renovatLevelEnum: this.data.renovatLevelEnum
+        ? this.data.renovatLevelEnum
+        : null,
+      propertyId: this.data.propertyId ? this.data.propertyId : null,
+    };
   }
 }
 </script>

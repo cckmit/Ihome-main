@@ -4,7 +4,7 @@
  * @Author: wwq
  * @Date: 2020-12-02 15:37:31
  * @LastEditors: wwq
- * @LastEditTime: 2021-02-04 19:34:10
+ * @LastEditTime: 2021-03-02 09:55:22
 -->
 <template>
   <el-dialog
@@ -361,14 +361,14 @@
           :span='10'
           v-if="isShow"
         >
-          <SelectPageByCondition
+          <IhSelectPageByChannel
             v-model="info.designatedAgencyId"
             clearable
             placeholder="渠道商名称"
             :params="searchConditon"
             :search-name="info.designatedAgency"
             @changeOption="getChannelInfo"
-          ></SelectPageByCondition>
+          ></IhSelectPageByChannel>
         </el-col>
       </el-row>
       <el-row>
@@ -491,12 +491,10 @@ import SetMealDialog from "./setMealDialog.vue";
 import axios from "axios";
 import { getToken } from "ihome-common/util/cookies";
 import { phoneValidator } from "ihome-common/util/base/form-ui";
-import SelectPageByCondition from "@/components/SelectPageByCondition.vue";
 
 @Component({
   components: {
     SetMealDialog,
-    SelectPageByCondition,
   },
 })
 export default class AddContract extends Vue {
@@ -787,12 +785,12 @@ export default class AddContract extends Vue {
         }
       }
     } else {
-      setTimeout(()=>{
-        let isError: any= document.getElementsByClassName("is-error");
-        if (isError != null){
-          isError[0].querySelector('input').focus();
+      setTimeout(() => {
+        let isError: any = document.getElementsByClassName("is-error");
+        if (isError != null) {
+          isError[0].querySelector("input").focus();
         }
-      },100);
+      }, 100);
       console.log("error submit!");
       return false;
     }
