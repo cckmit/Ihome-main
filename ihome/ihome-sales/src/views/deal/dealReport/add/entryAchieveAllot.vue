@@ -356,7 +356,7 @@
           </el-form-item>
         </el-col>
         <el-col :span="8" class="form-item-label-wrapper">
-          <el-form-item label="明源房款回笼比例">
+          <el-form-item label="明源房款回笼比例" v-if="isDisabled('returnRatio', 'dealVO')">
             <el-input
               v-model="postData.returnRatio"
               :disabled="isDisabled('returnRatio', 'dealVO')"></el-input>
