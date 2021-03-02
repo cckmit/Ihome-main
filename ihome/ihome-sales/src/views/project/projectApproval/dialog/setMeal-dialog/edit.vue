@@ -4,7 +4,7 @@
  * @Author: wwq
  * @Date: 2020-12-04 09:40:47
  * @LastEditors: wwq
- * @LastEditTime: 2021-01-29 16:47:16
+ * @LastEditTime: 2021-03-02 09:55:29
 -->
 <template>
   <el-dialog
@@ -118,17 +118,17 @@
             >{{$root.dictAllName(info.chargeEnum, 'Charge')}}</span>
           </el-form-item>
         </el-col>
-      </el-row> 
+      </el-row>
       <el-row>
         <el-col :span="12">
           <el-form-item label="表格高度">
             <el-input
               v-model="height"
               style="width:30%;"
-            > </el-input>   
+            > </el-input>
           </el-form-item>
         </el-col>
-      </el-row>           
+      </el-row>
     </el-form>
 
     <div class="setMeal">
@@ -138,7 +138,7 @@
           size="small"
           type="success"
           @click="addTemplate"
-        >增加模板</el-button>  
+        >增加模板</el-button>
       </div>
     </div>
     <div class="estimated">
@@ -156,8 +156,8 @@
             @input="info.estimatedTransactionPrice = number6Change(info.estimatedTransactionPrice)"
             style="width:60%;"
           ><template slot="append">万元/套</template>
-          </el-input>       
-        </el-form-item>      
+          </el-input>
+        </el-form-item>
       </el-form>
     </div>
 
@@ -288,13 +288,13 @@
                     class="margin-top-5"
                     v-if="row.transactionEnum === 'Appoint' || row.transactionEnum === 'Strategic'"
                   >
-                    <SelectPageByCondition
+                    <IhSelectPageByChannel
                       v-model="row.consumerId"
                       clearable
                       placeholder="请选择"
                       :params="searchConditon"
                       @changeOption="getChannelInfo(row.consumerId, i, $index)"
-                    ></SelectPageByCondition>
+                    ></IhSelectPageByChannel>
                   </div>
                 </template>
               </el-table-column>
@@ -670,13 +670,13 @@
                     class="margin-top-5"
                     v-if="row.transactionEnum === 'Appoint' || row.transactionEnum === 'Strategic'"
                   >
-                    <SelectPageByCondition
+                    <IhSelectPageByChannel
                       v-model="row.consumerId"
                       clearable
                       placeholder="请选择"
                       :params="searchConditon"
                       @changeOption="getChannelInfo(row.consumerId, i, $index)"
-                    ></SelectPageByCondition>
+                    ></IhSelectPageByChannel>
                   </div>
                 </template>
               </el-table-column>
@@ -982,11 +982,9 @@ import {
   post_collectandsend_update,
 } from "@/api/project/index";
 import { post_buModelContType_get } from "@/api/deal/index";
-import SelectPageByCondition from "@/components/SelectPageByCondition.vue";
 import Rules from "../setMeal-dialog/rules.vue";
 @Component({
   components: {
-    SelectPageByCondition,
     Rules,
   },
 })
@@ -1052,47 +1050,48 @@ export default class SetMealEdit extends Vue {
   ];
 
   otherChannelAmount(row: any) {
-    let estimatedTransactionPrice = isNaN(this.info.estimatedTransactionPrice) ? 0 : Number(this.info.estimatedTransactionPrice);
-    let receivableAmout = isNaN(row.receivableAmout) ? 0: Number(row.receivableAmout);
-    let receivablePoint = isNaN(row.receivablePoint) ? 0: Number(row.receivablePoint);
+    let estimatedTransactionPrice = isNaN(this.info.estimatedTransactionPrice)
+      ? 0
+      : Number(this.info.estimatedTransactionPrice);
+    let receivableAmout = isNaN(row.receivableAmout)
+      ? 0
+      : Number(row.receivableAmout);
+    let receivablePoint = isNaN(row.receivablePoint)
+      ? 0
+      : Number(row.receivablePoint);
 
     let total =
-      receivableAmout +  receivablePoint / 100 *
-        estimatedTransactionPrice *
-        10000
-  ;
-
+      receivableAmout +
+      (receivablePoint / 100) * estimatedTransactionPrice * 10000;
     let sendAmount = isNaN(row.sendAmount) ? 0 : Number(row.sendAmount);
     let sendPoint = isNaN(row.sendPoint) ? 0 : Number(row.sendPoint);
     let num1 =
-      sendAmount +
-      sendPoint / 100 *
-      estimatedTransactionPrice *
-        10000;
+      sendAmount + (sendPoint / 100) * estimatedTransactionPrice * 10000;
 
     let sendInAmount = isNaN(row.sendInAmount) ? 0 : Number(row.sendInAmount);
-    let sendInPoint = isNaN(row.sendInPoint) ? 0 : Number(row.sendInPoint);    
+    let sendInPoint = isNaN(row.sendInPoint) ? 0 : Number(row.sendInPoint);
     let num2 =
-      sendInAmount +
-      sendInPoint / 100 *
-      estimatedTransactionPrice *
-        10000;
+      sendInAmount + (sendInPoint / 100) * estimatedTransactionPrice * 10000;
 
-    let generalAchieveAmount = isNaN(row.generalAchieveAmount) ? 0 : Number(row.generalAchieveAmount);
-    let generalAchievePoint = isNaN(row.generalAchievePoint) ? 0 : Number(row.generalAchievePoint);            
+    let generalAchieveAmount = isNaN(row.generalAchieveAmount)
+      ? 0
+      : Number(row.generalAchieveAmount);
+    let generalAchievePoint = isNaN(row.generalAchievePoint)
+      ? 0
+      : Number(row.generalAchievePoint);
     let num3 =
       generalAchieveAmount +
-      generalAchievePoint / 100 *
-      estimatedTransactionPrice *
-        10000;
+      (generalAchievePoint / 100) * estimatedTransactionPrice * 10000;
 
-    let distributeAchieveAmount = isNaN(row.distributeAchieveAmount) ? 0 : Number(row.distributeAchieveAmount);
-    let distributeAchievePoint = isNaN(row.distributeAchievePoint) ? 0 : Number(row.distributeAchievePoint);          
+    let distributeAchieveAmount = isNaN(row.distributeAchieveAmount)
+      ? 0
+      : Number(row.distributeAchieveAmount);
+    let distributeAchievePoint = isNaN(row.distributeAchievePoint)
+      ? 0
+      : Number(row.distributeAchievePoint);
     let num4 =
       distributeAchieveAmount +
-      distributeAchievePoint / 100 *
-      estimatedTransactionPrice *
-        10000;
+      (distributeAchievePoint / 100) * estimatedTransactionPrice * 10000;
     let computed =
       (isNaN(total) ? 0 : total) -
       ((isNaN(num1) ? 0 : num1) +
@@ -1119,19 +1118,23 @@ export default class SetMealEdit extends Vue {
 
   estimateReceiveAmount(row: any) {
     let total = 0;
-    let estimateComplateNum = Number(isNaN(row.estimateComplateNum) ? 0 : row.estimateComplateNum);
-    if (estimateComplateNum == 0){
+    let estimateComplateNum = Number(
+      isNaN(row.estimateComplateNum) ? 0 : row.estimateComplateNum
+    );
+    if (estimateComplateNum == 0) {
       total = 0;
-    }else{
+    } else {
       total =
-        Number(isNaN(row.receivableAmout) ? 0 : row.receivableAmout) * estimateComplateNum +
+        Number(isNaN(row.receivableAmout) ? 0 : row.receivableAmout) *
+          estimateComplateNum +
         Number((isNaN(row.receivablePoint) ? 0 : row.receivablePoint) / 100) *
           Number(
             isNaN(this.info.estimatedTransactionPrice)
               ? 0
               : this.info.estimatedTransactionPrice
           ) *
-          10000 * estimateComplateNum ;
+          10000 *
+          estimateComplateNum;
     }
 
     row.estimateReceiveAmount = total;
@@ -1304,46 +1307,46 @@ export default class SetMealEdit extends Vue {
   }
   number6Change(value: any) {
     if (!value) return;
-      let val = (value && value.split("")) || [];
-      let sNum = val.toString();
-      if (sNum.indexOf(".") === 0) {
-        sNum = "0" + sNum;//若第一位直接写 . 的情况下，给首位拼接一个0
-      }
-      sNum = sNum.replace(/[^\d.]/g, "");  // 过滤
-      sNum = sNum.replace(/\.{2,}/g, "."); //只留第一个小数点，清除多余的
-      sNum = sNum.match(/^\d*(\.?\d{0,6})/g)[0]
-      if (sNum < 0){
-        return 0;
-      }
-      return sNum;
+    let val = (value && value.split("")) || [];
+    let sNum = val.toString();
+    if (sNum.indexOf(".") === 0) {
+      sNum = "0" + sNum; //若第一位直接写 . 的情况下，给首位拼接一个0
+    }
+    sNum = sNum.replace(/[^\d.]/g, ""); // 过滤
+    sNum = sNum.replace(/\.{2,}/g, "."); //只留第一个小数点，清除多余的
+    sNum = sNum.match(/^\d*(\.?\d{0,6})/g)[0];
+    if (sNum < 0) {
+      return 0;
+    }
+    return sNum;
   }
   number5Change(value: any) {
     if (!value) return;
-      let val = (value && value.split("")) || [];
-      let sNum = val.toString();
-      if (sNum.indexOf(".") === 0) {
-        sNum = "0" + sNum;//若第一位直接写 . 的情况下，给首位拼接一个0
-      }
-      sNum = sNum.replace(/[^\d.]/g, "");  // 过滤
-      sNum = sNum.replace(/\.{2,}/g, "."); //只留第一个小数点，清除多余的
-      sNum = sNum.match(/^\d*(\.?\d{0,5})/g)[0]
+    let val = (value && value.split("")) || [];
+    let sNum = val.toString();
+    if (sNum.indexOf(".") === 0) {
+      sNum = "0" + sNum; //若第一位直接写 . 的情况下，给首位拼接一个0
+    }
+    sNum = sNum.replace(/[^\d.]/g, ""); // 过滤
+    sNum = sNum.replace(/\.{2,}/g, "."); //只留第一个小数点，清除多余的
+    sNum = sNum.match(/^\d*(\.?\d{0,5})/g)[0];
     if (0 <= sNum && sNum <= 100) {
       return sNum;
     } else {
       return sNum > 100 ? 100 : 0;
     }
   }
-    number2Change(value: any) {
+  number2Change(value: any) {
     if (!value) return;
-      let val = (value && value.split("")) || [];
-      let sNum = val.toString();
-      if (sNum.indexOf(".") === 0) {
-        sNum = "0" + sNum;//若第一位直接写 . 的情况下，给首位拼接一个0
-      }
-      sNum = sNum.replace(/[^\d.]/g, "");  // 过滤
-      sNum = sNum.replace(/\.{2,}/g, "."); //只留第一个小数点，清除多余的
-      sNum = sNum.match(/^\d*(\.?\d{0,2})/g)[0]
-      return sNum;
+    let val = (value && value.split("")) || [];
+    let sNum = val.toString();
+    if (sNum.indexOf(".") === 0) {
+      sNum = "0" + sNum; //若第一位直接写 . 的情况下，给首位拼接一个0
+    }
+    sNum = sNum.replace(/[^\d.]/g, ""); // 过滤
+    sNum = sNum.replace(/\.{2,}/g, "."); //只留第一个小数点，清除多余的
+    sNum = sNum.match(/^\d*(\.?\d{0,2})/g)[0];
+    return sNum;
   }
 
   async created() {
@@ -1486,47 +1489,47 @@ export default class SetMealEdit extends Vue {
           ],
           costTypeEnum: "ServiceFee",
           exVoidService: 0,
-        }    
+        },
       ];
 
       let agencyMo: any = {
-          colletionandsendDetails: [
-            {
-              collectandsendConditionVOS: [],
-              condition: "",
-              contractEnum: "",
-              distributeAchieveAmount: 0,
-              distributeAchievePoint: 0,
-              estimateComplateAmount: 0,
-              estimateComplateNum: 0,
-              estimateReceiveAmount: 0,
-              generalAchieveAmount: 0,
-              generalAchievePoint: 0,
-              otherChannelAmount: 0,
-              otherChannelPoint: 0,
-              padCommissionEnum:
-                this.padCommissionEnumOptions.length === 1 ? "Veto" : "",
-              receivableAmout: 0,
-              receivablePoint: 0,
-              remark: "",
-              sendAmount: 0,
-              sendInAmount: 0,
-              sendInPoint: 0,
-              sendPoint: 0,
-              sort: "",
-              subdivideEnum: this.busEnumType,
-              transactionEnum: "",
-            },
-          ],
-          partyCompanyId: null,
-          partyCompany: null,
-          costTypeEnum: "AgencyFee",
-        };
-      this.partyAInfoList.forEach( (item: any) => {
+        colletionandsendDetails: [
+          {
+            collectandsendConditionVOS: [],
+            condition: "",
+            contractEnum: "",
+            distributeAchieveAmount: 0,
+            distributeAchievePoint: 0,
+            estimateComplateAmount: 0,
+            estimateComplateNum: 0,
+            estimateReceiveAmount: 0,
+            generalAchieveAmount: 0,
+            generalAchievePoint: 0,
+            otherChannelAmount: 0,
+            otherChannelPoint: 0,
+            padCommissionEnum:
+              this.padCommissionEnumOptions.length === 1 ? "Veto" : "",
+            receivableAmout: 0,
+            receivablePoint: 0,
+            remark: "",
+            sendAmount: 0,
+            sendInAmount: 0,
+            sendInPoint: 0,
+            sendPoint: 0,
+            sort: "",
+            subdivideEnum: this.busEnumType,
+            transactionEnum: "",
+          },
+        ],
+        partyCompanyId: null,
+        partyCompany: null,
+        costTypeEnum: "AgencyFee",
+      };
+      this.partyAInfoList.forEach((item: any) => {
         let agencyItem: any = this.$tool.deepClone(agencyMo);
-        agencyItem.partyCompanyId = item.companyId
-        agencyItem.partyCompany = item.companyName
-        this.info.colletionandsendMxs.push(agencyItem)
+        agencyItem.partyCompanyId = item.companyId;
+        agencyItem.partyCompany = item.companyName;
+        this.info.colletionandsendMxs.push(agencyItem);
       });
     }
   }

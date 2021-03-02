@@ -3,11 +3,11 @@
  * @version: 
  * @Author: ywl
  * @Date: 2020-12-10 18:09:24
- * @LastEditors: ywl
- * @LastEditTime: 2020-12-15 11:10:42
+ * @LastEditors: wwq
+ * @LastEditTime: 2021-03-02 10:02:09
 -->
 <script lang="ts">
-import { Component, Vue, Prop } from "vue-property-decorator";
+import { Component, Vue, Prop, Watch } from "vue-property-decorator";
 import IhSelectPageBase from "./select-page-base.vue";
 
 import { post_channel_getListByName } from "@/api/channel/index";
@@ -15,7 +15,7 @@ import { post_channel_getListByName } from "@/api/channel/index";
 @Component({
   extends: IhSelectPageBase,
 })
-export default class SelectPageByChannel extends Vue {
+export default class IhSelectPageByChannel extends Vue {
   @Prop({
     default: () => {
       return {
@@ -27,6 +27,18 @@ export default class SelectPageByChannel extends Vue {
     },
   })
   props?: any;
+
+  @Prop({
+    default: () => ({}),
+  })
+  params?: any;
+
+  @Watch("params")
+  watchparams(val: any) {
+    if (!Object.keys(val).includes("")) {
+      this.getSelectList();
+    }
+  }
 
   optionList: any = [];
   // 分页信息
@@ -44,6 +56,7 @@ export default class SelectPageByChannel extends Vue {
       name: this.filterText,
       pageSize: this.pageInfo.pageSize,
       pageNum: this.pageInfo.pageNum,
+      ...this.params,
     });
     this.optionList = res.list;
     this.pageInfo = res;

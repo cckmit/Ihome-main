@@ -4,7 +4,7 @@
  * @Author: wwq
  * @Date: 2021-01-15 10:45:53
  * @LastEditors: wwq
- * @LastEditTime: 2021-03-01 10:30:14
+ * @LastEditTime: 2021-03-01 15:37:10
 -->
 <template>
   <IhPage label-width="100px">
@@ -197,7 +197,7 @@
               ></el-table-column>
               <el-table-column
                 label="收款方信息"
-                width="180"
+                width="250"
               >
                 <template v-slot="{ row }">
                   <div
@@ -212,7 +212,7 @@
               </el-table-column>
               <el-table-column
                 label="付款方信息"
-                width="180"
+                width="300"
               >
                 <template v-slot="{ row }">
                   <div
