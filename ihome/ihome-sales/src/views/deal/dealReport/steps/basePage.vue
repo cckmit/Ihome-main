@@ -3716,6 +3716,8 @@
           ...this.postData,
           id: this.btnType === "edit" ? this.id : null,
           stage: 'SignUp', // 2021-03-01 补充成交只有签约状态
+          isMat: this.postData.contType === 'DistriDeal' ? this.postData.isMat : null, // 分销成交再传
+          contNo: this.postData.contType === 'DistriDeal' ? this.postData.contNo : null, // 分销成交再传
           noticeIds: [] // 优惠告知书Id
         }, // 成交基础信息
         documentVO: this.postData.uploadDocumentList.length ? this.getDocumentList(this.postData.uploadDocumentList) : null, // 成交附件信息
