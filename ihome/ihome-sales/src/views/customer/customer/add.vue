@@ -122,7 +122,7 @@
         <el-col>
           <el-form-item
             label="证件编号"
-            prop="certificateNumber"
+            :prop="form.cardType=='IDCard'?'certificateNumberOnly':'certificateNumber'"
           >
             <el-input
               v-model="form.certificateNumber"
@@ -212,6 +212,9 @@ export default class CustomerAdd extends Vue {
     ],
     certificateNumber: [
       { required: true, message: "证件编号不能为空", trigger: "change" },
+    ],
+    certificateNumberOnly: [
+      { validator: validIdentityCard, trigger: "change" },
     ],
     email: [{ validator: emailOrNullValidato, trigger: "change" }],
   };
