@@ -309,7 +309,7 @@
           </el-form-item>
         </el-col>
         <el-col :span="8">
-          <el-form-item label="备案情况" prop="recordState">
+          <el-form-item label="备案情况">
             <el-select
               v-model="postData.recordState"
               :disabled="['ChangeBasicInf', 'RetreatRoom', 'ChangeInternalAchieveInf'].includes(changeType)"
