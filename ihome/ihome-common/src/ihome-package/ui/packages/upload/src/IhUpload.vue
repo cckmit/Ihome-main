@@ -4,7 +4,7 @@
  * @Author: wwq
  * @Date: 2020-09-09 16:17:16
  * @LastEditors: wwq
- * @LastEditTime: 2021-03-01 15:04:04
+ * @LastEditTime: 2021-03-02 19:36:59
 -->
 <template>
   <div class="upload">
@@ -84,7 +84,6 @@
             <span
               class="move"
               v-if="isMove"
-              ref="move"
             >
               <span @click="leftShift(file)">
                 <i
@@ -242,6 +241,7 @@ export default class IhUpload extends Vue {
     Authorization: "bearer " + getToken(),
   };
   private fdData: any = [];
+  private checkSet = new Set();
 
   @Watch("list", { deep: true })
   getList(list: any) {
@@ -271,24 +271,29 @@ export default class IhUpload extends Vue {
   }
   // 自定义请求
   async httpRequest(req: any) {
-    const fd = new FormData();
-    if (this.fileUpload) {
-      fd.append("files", this.fileUpload);
-    } else {
-      fd.append("files", req.file);
+    if (!this.checkSet.has(req.file.uid)) {
+      this.checkSet.add(req.file.uid);
+      const fd = new FormData();
+      if (this.fileUpload) {
+        fd.append("files", this.fileUpload);
+      } else {
+        fd.append("files", req.file);
+      }
+      return await post_file_upload(fd);
     }
-    return await post_file_upload(fd);
   }
   successHandler(response: any, file: any, fileList: any) {
-    fileList.forEach((v: any, index: number) => {
-      if (v?.response?.length) {
-        this.replaceUpload(v, fileList, index, v.response[0].fileId);
-      } else {
-        this.replaceUpload(v, fileList, index, v.fileId);
-      }
-    });
-    this.$message.success("上传成功");
-    this.$emit("newFileList", fileList, this.fileType);
+    if (response) {
+      fileList.forEach((v: any, index: number) => {
+        if (v?.response?.length) {
+          this.replaceUpload(v, fileList, index, v.response[0].fileId);
+        } else {
+          this.replaceUpload(v, fileList, index, v.fileId);
+        }
+      });
+      this.$message.success("上传成功");
+      this.$emit("newFileList", fileList, this.fileType);
+    }
   }
   errorHandler() {
     this.$message.error("上传失败");
@@ -464,32 +469,38 @@ export default class IhUpload extends Vue {
       case "jpg":
       case "png":
       case "jpeg":
-        fileList[
-          index
-        ].img_url = `/sales-api/sales-document-cover/file/browse/${fileId}`;
+        this.$set(
+          fileList[index],
+          "img_url",
+          `/sales-api/sales-document-cover/file/browse/${fileId}`
+        );
         break;
       case "doc":
       case "docx":
       case "docm":
-        fileList[index].img_url = require("../../../img/word.jpg");
+        this.$set(fileList[index], "img_url", require("../../../img/word.jpg"));
         break;
       case "xls":
       case "xlsx":
-        fileList[index].img_url = require("../../../img/excel.png");
+        this.$set(
+          fileList[index],
+          "img_url",
+          require("../../../img/excel.png")
+        );
         break;
       case "pdf":
-        fileList[index].img_url = require("../../../img/pdf.jpg");
+        this.$set(fileList[index], "img_url", require("../../../img/pdf.jpg"));
         break;
       case "ppt":
       case "potx":
       case "pptx":
-        fileList[index].img_url = require("../../../img/ppt.png");
+        this.$set(fileList[index], "img_url", require("../../../img/ppt.png"));
         break;
       default:
-        fileList[index].img_url = require("../../../img/file.jpg");
+        this.$set(fileList[index], "img_url", require("../../../img/file.jpg"));
     }
-    fileList[index].fileId = fileId;
-    fileList[index].type = this.fileType;
+    this.$set(fileList[index], "fileId", fileId);
+    this.$set(fileList[index], "type", this.fileType);
     this.list = [...fileList];
   }
 
@@ -509,7 +520,6 @@ export default class IhUpload extends Vue {
 
   // 右移
   rightShift(file: any) {
-    (this.$refs.move as any).click();
     let index = this.list.findIndex((v: any) => v.fileId === file.fileId);
     if (index + 1 < this.list.length) {
       let arr = [...this.list];

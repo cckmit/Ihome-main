@@ -4,7 +4,7 @@
  * @Author: wwq
  * @Date: 2020-12-29 11:04:59
  * @LastEditors: wwq
- * @LastEditTime: 2021-02-05 15:15:26
+ * @LastEditTime: 2021-03-02 19:03:06
 -->
 <template>
   <el-dialog
@@ -359,10 +359,9 @@ export default class Obligation extends Vue {
     });
   }
   private search() {
-    if (this.info.timeList.length) {
-      this.info.beginTime = this.info.timeList[0];
-      this.info.endTime = this.info.timeList[1];
-    }
+    let flag = this.info.timeList && this.info.timeList.length;
+    this.info.beginTime = flag ? this.info.timeList[0] : null;
+    this.info.endTime = flag ? this.info.timeList[1] : null;
     this.pageNum = 1;
     this.getList();
   }
