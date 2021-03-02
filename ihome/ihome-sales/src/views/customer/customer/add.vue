@@ -18,17 +18,31 @@
     width="600px"
     class="dialog text-left"
   >
-    <el-form ref="form" :model="form" :rules="rules" label-width="100px">
+    <el-form
+      ref="form"
+      :model="form"
+      :rules="rules"
+      label-width="100px"
+    >
       <el-row>
         <el-col>
-          <el-form-item label="客户姓名" prop="custName">
-            <el-input v-model="form.custName" placeholder="客户姓名"></el-input>
+          <el-form-item
+            label="客户姓名"
+            prop="custName"
+          >
+            <el-input
+              v-model="form.custName"
+              placeholder="客户姓名"
+            ></el-input>
           </el-form-item>
         </el-col>
       </el-row>
       <el-row>
         <el-col>
-          <el-form-item label="手机号码" prop="custTel">
+          <el-form-item
+            label="手机号码"
+            prop="custTel"
+          >
             <el-input
               v-model="form.custTel"
               placeholder="客户联系方式"
@@ -38,8 +52,14 @@
       </el-row>
       <el-row>
         <el-col>
-          <el-form-item label="客户来源" prop="custOrg">
-            <el-select v-model="form.custOrg" placeholder="请选客户来源">
+          <el-form-item
+            label="客户来源"
+            prop="custOrg"
+          >
+            <el-select
+              v-model="form.custOrg"
+              placeholder="请选客户来源"
+            >
               <el-option
                 v-for="item in $root.dictAllList('CustOrg')"
                 :key="item.code"
@@ -52,7 +72,10 @@
       </el-row>
       <el-row>
         <el-col>
-          <el-form-item label="客户类型" prop="custType">
+          <el-form-item
+            label="客户类型"
+            prop="custType"
+          >
             <el-select
               v-model="form.custType"
               placeholder="请选客户类型"
@@ -70,7 +93,10 @@
       </el-row>
       <el-row>
         <el-col>
-          <el-form-item label="证件类型" prop="cardType">
+          <el-form-item
+            label="证件类型"
+            prop="cardType"
+          >
             <el-select
               v-model="form.cardType"
               placeholder="请选择证件类型"
@@ -94,7 +120,10 @@
       </el-row>
       <el-row>
         <el-col>
-          <el-form-item label="证件编号" prop="certificateNumber">
+          <el-form-item
+            label="证件编号"
+            prop="certificateNumber"
+          >
             <el-input
               v-model="form.certificateNumber"
               placeholder="证件编号"
@@ -104,15 +133,27 @@
       </el-row>
       <el-row>
         <el-col>
-          <el-form-item label="邮箱" prop="email">
-            <el-input v-model="form.email" placeholder="邮箱"></el-input>
+          <el-form-item
+            label="邮箱"
+            prop="email"
+          >
+            <el-input
+              v-model="form.email"
+              placeholder="邮箱"
+            ></el-input>
           </el-form-item>
         </el-col>
       </el-row>
     </el-form>
-    <span slot="footer" class="dialog-footer">
+    <span
+      slot="footer"
+      class="dialog-footer"
+    >
       <el-button @click="cancel()">取 消</el-button>
-      <el-button type="primary" @click="finish()">确 定</el-button>
+      <el-button
+        type="primary"
+        @click="finish()"
+      >确 定</el-button>
     </span>
   </el-dialog>
 </template>
@@ -146,7 +187,13 @@ export default class CustomerAdd extends Vue {
     custOrg: null,
     email: null,
   };
-  cardTypeList = (this as any).$root.dictAllList('CardType');
+  cardTypeList = (this as any).$root.dictAllList("CardType");
+  personCardTypeList = this.cardTypeList.filter(function (cardType: any) {
+    return cardType.code != "Businesslicense" && cardType.code != "Others";
+  });
+  companyCardTypeList = this.cardTypeList.filter(function (cardType: any) {
+    return cardType.code == "Businesslicense" || cardType.code == "Others";
+  });
   rules: any = {
     custName: [
       { required: true, message: "客户姓名不能为空", trigger: "change" },
@@ -169,7 +216,7 @@ export default class CustomerAdd extends Vue {
     email: [{ validator: emailOrNullValidato, trigger: "change" }],
   };
   // 切换证件类型，验证身份证、港澳通行证、台湾通行证、护照
-  handleCardChange() {debugger
+  handleCardChange() {
     if (this.form.cardType == "IDCard") {
       this.rules.certificateNumber = [
         { required: true, message: "证件编号不能为空", trigger: "change" },
@@ -182,22 +229,14 @@ export default class CustomerAdd extends Vue {
     }
   }
   changeCustType(value: any) {
-    if(value === "Company"){//公司 【营业执照、其他】
-      this.cardTypeList.forEach((v: any) => {
-        if(v.code == "Businesslicense" || v.code == "Others"){
-          v.disabled = false
-        }else{
-          v.disabled = true
-        }
-      })
-    }else{//个人 【居民身份证、军官证、中国护照、外国护照、香港身份证、台胞证、港澳通行证、其他】
-      this.cardTypeList.forEach((v: any) => {
-        if(v.code == "Businesslicense" || v.code == "Others"){
-          v.disabled = true
-        }else{
-          v.disabled = false
-        }
-      })
+    if (value === "Company") {
+      //公司 【营业执照、其他】
+      this.cardTypeList = this.companyCardTypeList;
+      this.form.cardType = "Businesslicense"; //客户类型为公司时，默认选择营业执照
+    } else {
+      //个人 【居民身份证、军官证、中国护照、外国护照、香港身份证、台胞证、港澳通行证、其他】
+      this.cardTypeList = this.personCardTypeList;
+      this.form.cardType = "IDCard"; //客户类型为个人时默认选择居民身份证
     }
     if (value.length > 0) {
       this.showCardType = false;
