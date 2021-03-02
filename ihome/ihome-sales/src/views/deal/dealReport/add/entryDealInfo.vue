@@ -1083,7 +1083,7 @@
         this.postData.toilet = res?.house?.toilet;
         this.postData.propertyNo = res?.house?.propertyNo;
         this.postData.address = res?.house?.address;
-        this.postData.sceneSales = res?.house?.sceneSales;
+        this.postData.sceneSales = res?.sceneSales;
         this.postData.signType = res.signType;
         this.postData.stage = res.stage;
         this.postData.returnRatio = res.returnRatio;
