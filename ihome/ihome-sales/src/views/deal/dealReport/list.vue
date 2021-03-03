@@ -248,7 +248,7 @@
         <el-table-column prop="dealCode" label="成交报告编号" min-width="190"></el-table-column>
         <el-table-column prop="contType" label="房产信息" min-width="260">
           <template slot-scope="scope">
-            <div>地址：{{scope.row.address}}</div>
+            <div>房号：{{scope.row.buildingName}} - {{scope.row.roomNo}}</div>
             <div>客户：{{scope.row.customerName}}</div>
             <div>客户电话：{{scope.row.customerPhone}}</div>
           </template>
