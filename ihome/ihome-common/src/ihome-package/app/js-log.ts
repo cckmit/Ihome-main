@@ -4,7 +4,7 @@
  * @Author: zyc
  * @Date: 2021-03-03 09:46:25
  * @LastEditors: zyc
- * @LastEditTime: 2021-03-03 11:37:40
+ * @LastEditTime: 2021-03-03 15:43:10
  */
 
 import http from 'axios'
@@ -18,20 +18,20 @@ function getJsLogAppId() {
     return appid;
 }
 
-function jsLog(err: any) {
+function jsLog(err: any, type: any) {
     try {
         let jsLogAppId: any = getJsLogAppId();
         if (jsLogAppId) {
             try {
                 let postData = {
-                    type: 'vue-Vue.config.errorHandler',
+                    type: type || 'vue-Vue.config.errorHandler',
                     message: err.message,
                     stack: err.stack,
                     url: window.location.href,
                     operatingSystem: '',
                     browser: '',
                     cookies: document.cookie,
-                    localStorage: JSON.stringify(window.localStorage),
+                    localStorage: '',
                     sessionStorage: JSON.stringify((window as any).polyihomeData.userInfo),
                     userAgent: navigator.userAgent
                 }

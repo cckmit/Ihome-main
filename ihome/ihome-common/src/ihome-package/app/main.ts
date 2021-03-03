@@ -72,12 +72,12 @@ if (process.env.NODE_ENV !== 'production') {
   Vue.config.errorHandler = function (err: any) {
     console.log(`main.ts=> Vue.config.errorHandler`);
     console.log(err.message, err.stack);
-    jsLog(err);
+    jsLog(err,'main.ts=> Vue.config.errorHandler');
   };
   Vue.config.warnHandler = function (msg: string, vm: Vue, trace: string) {
     console.log(`main.ts=> Vue.config.warnHandler`);
     console.log(msg);
-    jsLog({ message: msg, stack: trace });
+    jsLog({ message: msg, stack: trace },,'main.ts=> Vue.config.warnHandler');
   };
 }
 
