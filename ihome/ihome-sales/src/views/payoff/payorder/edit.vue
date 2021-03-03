@@ -4,7 +4,7 @@
  * @Author: wwq
  * @Date: 2020-12-26 11:11:23
  * @LastEditors: wwq
- * @LastEditTime: 2021-02-27 11:40:54
+ * @LastEditTime: 2021-03-03 11:34:55
 -->
 <template>
   <IhPage>
@@ -1463,6 +1463,7 @@ export default class PayoffEdit extends Vue {
     obj.agencyId = this.info.agencyId;
     obj.agencyName = this.info.agencyName;
     obj.taxRate = Number(this.info.taxRate);
+    obj.applyId = Number(this.payoffId);
     obj.payApplyDetailList = this.info.payApplyDetailList;
     let otherArr: any = this.info.otherDeductionDetailResponseList.map(
       (v: any) => ({

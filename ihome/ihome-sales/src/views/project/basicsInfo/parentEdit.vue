@@ -4,7 +4,7 @@
  * @Author: wwq
  * @Date: 2020-11-10 10:21:03
  * @LastEditors: wwq
- * @LastEditTime: 2021-03-01 11:05:12
+ * @LastEditTime: 2021-03-03 12:07:03
 -->
 <template>
   <ih-page>
@@ -109,6 +109,14 @@
         </el-row>
         <el-row>
           <el-col :span="8">
+            <el-form-item label="明源区域公司">
+              <el-input
+                v-model="form.companyName"
+                disabled
+              ></el-input>
+            </el-form-item>
+          </el-col>
+          <el-col :span="8">
             <el-form-item
               label="省市区"
               prop="provinceOption"
@@ -119,7 +127,9 @@
               ></IhCascader>
             </el-form-item>
           </el-col>
-          <el-col :span="16">
+        </el-row>
+        <el-row>
+          <el-col :span="24">
             <el-form-item
               label="项目地址"
               prop="proAddr"
@@ -178,6 +188,7 @@ export default class EditBasicInfo extends Vue {
     district: null,
     provinceOption: [],
     proAddr: null,
+    companyName: null,
   };
 
   rules: any = {

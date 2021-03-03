@@ -3,8 +3,8 @@
  * @version: 
  * @Author: lgf
  * @Date: 2020-09-16 14:05:21
- * @LastEditors: ywl
- * @LastEditTime: 2021-02-08 18:01:11
+ * @LastEditors: wwq
+ * @LastEditTime: 2021-03-03 11:18:53
 -->
 <template>
   <div class="text-left">
@@ -161,7 +161,7 @@
       >
         <el-table-column
           prop="type"
-          width="180"
+          width="200"
           label="类型"
           align="center"
         >
@@ -179,10 +179,10 @@
               :file-list.sync="row.fileList"
               :file-size="10"
               :file-type="row.code"
-              :limit="row.fileList.length"
-              :upload-show="!!row.fileList.length"
+              :limit="row.limit ? row.fileList.length : 999"
+              :upload-show="row.limit && !!row.fileList.length"
               size="100px"
-              :removePermi="false"
+              @newFileList="queryNew"
             ></IhUpload>
           </template>
         </el-table-column>
@@ -257,6 +257,9 @@ export default class Home extends Vue {
     remark: "",
     result: "",
   };
+
+  submitFile: any = {};
+
   private get pageName(): string | null | undefined {
     return this.$route.name;
   }
@@ -284,17 +287,91 @@ export default class Home extends Vue {
           })),
       };
     });
+    this.fileListType = this.fileListType.map((v: any) => {
+      if (
+        ["ComprehensiveQueryResult"].includes(v.code) &&
+        this.$route.name === "ConfirmChannel"
+      ) {
+        return {
+          ...v,
+        };
+      } else {
+        return {
+          ...v,
+          limit: true,
+          fileList: v.fileList.map((j: any) => ({
+            ...j,
+            exAuto: 1,
+          })),
+        };
+      }
+    });
+    let obj: any = {};
+    this.fileListType.forEach((h: any) => {
+      obj[h.code] = h.fileList;
+    });
+    this.submitFile = { ...obj };
   }
+
+  queryNew(data: any, type?: any) {
+    let obj: any = {};
+    obj[type] = data;
+    this.submitFile = { ...this.submitFile, ...obj };
+  }
+
   private async confirmChannel(type: string): Promise<void> {
     if (!this.approveRecord.remark) {
       this.$message.warning(`${this.switchType(type)}不能为空`);
       return;
     }
-    await post_channel_approveRecord({
-      ...this.approveRecord,
-      result: type,
-      id: this.$route.query.id,
+    let obj: any = {};
+    // 校验提示
+    let arr: any = [];
+    Object.values(this.submitFile).forEach((v: any) => {
+      if (v.length) {
+        arr = arr.concat(v);
+      }
     });
+    // 以下操作仅仅是为了校验必上传项
+    let submitList: any = this.fileListType.map((v: any) => {
+      return {
+        ...v,
+        fileList: arr
+          .filter((j: any) => j.type === v.code)
+          .map((h: any) => ({
+            ...h,
+            name: h.fileName,
+          })),
+      };
+    });
+    let isSubmit = true;
+    let msgList: any = [];
+    submitList.forEach((v: any) => {
+      if (v.subType && !v.fileList.length) {
+        msgList.push(v.name);
+        isSubmit = false;
+      }
+    });
+    if (isSubmit) {
+      let uploadArr: any = arr.map((v: any) => ({
+        fileId: v.fileId,
+        fileName: v.name,
+        type: v.type,
+      }));
+      obj.channelAttachments = uploadArr.filter(
+        (v: any) => v.type === "ComprehensiveQueryResult"
+      );
+    } else {
+      this.$message({
+        type: "warning",
+        message: `${msgList.join(",")}项,请上传附件`,
+      });
+      return;
+    }
+    obj.remark = this.approveRecord.remark;
+    obj.result = type;
+    obj.id = this.$route.query.id;
+    await post_channel_approveRecord(obj);
     this.$message.success("成功");
     this.$goto({ path: "/channelBusiness/list" });
   }
