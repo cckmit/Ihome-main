@@ -4,7 +4,7 @@
  * @Author: zyc
  * @Date: 2021-03-03 09:46:25
  * @LastEditors: zyc
- * @LastEditTime: 2021-03-03 15:43:10
+ * @LastEditTime: 2021-03-03 16:01:02
  */
 
 import http from 'axios'
@@ -22,6 +22,7 @@ function jsLog(err: any, type: any) {
     try {
         let jsLogAppId: any = getJsLogAppId();
         if (jsLogAppId) {
+            let userInfo = (window as any).polyihomeData.userInfo || {};
             try {
                 let postData = {
                     type: type || 'vue-Vue.config.errorHandler',
@@ -32,7 +33,7 @@ function jsLog(err: any, type: any) {
                     browser: '',
                     cookies: document.cookie,
                     localStorage: '',
-                    sessionStorage: JSON.stringify((window as any).polyihomeData.userInfo),
+                    sessionStorage: "userInfo：id=" + userInfo.id + ",name=" + userInfo.name + ",account=" + userInfo.account,
                     userAgent: navigator.userAgent
                 }
                 //http://jslog.zhangdada666.com/api/log/vue
