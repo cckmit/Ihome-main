@@ -317,11 +317,6 @@
               <el-input v-model="postData.propertyNo" clearable placeholder="房产证/预售合同编号"></el-input>
             </el-form-item>
           </el-col>
-          <el-col :span="12">
-            <el-form-item label="房产证地址">
-              <el-input v-model="postData.address" clearable placeholder="房屋地址"></el-input>
-            </el-form-item>
-          </el-col>
           <el-col :span="8">
             <el-form-item label="建筑面积">
               <el-input v-model="postData.area" clearable placeholder="建筑面积"></el-input>

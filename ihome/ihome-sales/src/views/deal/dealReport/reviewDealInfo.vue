@@ -119,9 +119,6 @@
           <el-col :span="8">
             <el-form-item label="房产证/预售合同编号">{{postData.house.propertyNo}}</el-form-item>
           </el-col>
-          <el-col :span="16">
-            <el-form-item label="房产证地址">{{postData.house.address}}</el-form-item>
-          </el-col>
           <el-col :span="8">
             <el-form-item label="现场销售">{{postData.sceneSales}}</el-form-item>
           </el-col>

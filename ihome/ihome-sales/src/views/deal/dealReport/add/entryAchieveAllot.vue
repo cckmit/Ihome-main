@@ -327,11 +327,6 @@
               :disabled="isDisabled('propertyNo', 'houseVO')"></el-input>
           </el-form-item>
         </el-col>
-        <el-col :span="16">
-          <el-form-item label="房产证地址">
-            <el-input v-model="postData.address" clearable></el-input>
-          </el-form-item>
-        </el-col>
         <el-col :span="8">
           <el-form-item label="现场销售">
             <el-input
@@ -1214,7 +1209,6 @@
       roomNo: null, // 房号
       roomId: null, // 房号ID
       propertyNo: null, // 房产证/预售合同编号
-      address: null,
       area: null,
       room: null,
       hall: null,
@@ -1525,7 +1519,6 @@
         this.postData.hall = res?.house?.hall;
         this.postData.toilet = res?.house?.toilet;
         this.postData.propertyNo = res?.house?.propertyNo;
-        this.postData.address = res?.house?.address;
         this.postData.sceneSales = res?.sceneSales;
         this.postData.signType = res.signType;
         this.postData.stage = res.stage;
@@ -3531,7 +3524,6 @@
           }, // 成交基础信息
           documentVO: [], // 上传附件
           houseVO: {
-            address: "",
             area: "",
             buildingId: "",
             hall: "",
@@ -3674,7 +3666,6 @@
       obj.basic.dealVO.stage = this.postData.stage;
       obj.basic.dealVO.subscribeDate = this.postData.subscribeDate;
       obj.basic.dealVO.subscribePrice = this.postData.subscribePrice;
-      obj.basic.houseVO.address = this.postData.address;
       obj.basic.houseVO.area = this.postData.area;
       obj.basic.houseVO.buildingId = this.postData.buildingId;
       obj.basic.houseVO.hall = this.postData.hall;

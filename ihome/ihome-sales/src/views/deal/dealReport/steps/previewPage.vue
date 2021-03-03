@@ -115,9 +115,6 @@
           <el-col :span="8">
             <el-form-item label="房产证/预售合同编号">{{infoForm.propertyNo}}</el-form-item>
           </el-col>
-          <el-col :span="16">
-            <el-form-item label="房产证地址">{{infoForm.address}}</el-form-item>
-          </el-col>
           <el-col :span="8">
             <el-form-item label="现场销售">{{infoForm.sceneSales}}</el-form-item>
           </el-col>

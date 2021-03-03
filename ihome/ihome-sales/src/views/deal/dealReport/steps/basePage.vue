@@ -368,13 +368,6 @@
               v-model="postData.propertyNo"></el-input>
           </el-form-item>
         </el-col>
-        <el-col :span="16">
-          <el-form-item label="房产证地址">
-            <el-input
-              :disabled="['ChangeInternalAchieveInf', 'RetreatRoom'].includes(changeType)"
-              v-model="postData.address"></el-input>
-          </el-form-item>
-        </el-col>
         <el-col :span="8">
           <el-form-item label="现场销售">
             <el-input
@@ -1387,7 +1380,6 @@
       status: null,
       statusName: null,
       sceneSales: null,
-      address: null,
       area: null,
       buildingId: null,
       buildingName: null,
@@ -1789,7 +1781,6 @@
       this.tipsFlag = true;
       this.dividerTips = '业绩分配';
       this.isSameFlag = res?.scheme?.isSame === "Yes"; // 分销总包是否一致
-      this.postData.address = res?.house?.address;
       this.postData.area = res?.house?.area;
       this.postData.buildingId = res?.house?.buildingId;
       this.postData.buildingName = res?.house?.buildingName;
@@ -3631,7 +3622,6 @@
         }, // 主成交信息
         documentVO: this.postData.uploadDocumentList.length ? this.getDocumentList(this.postData.uploadDocumentList) : null, // 成交附件信息
         houseAddInputVO: {
-          address: this.postData.address,
           area: this.postData.area,
           buildingId: this.postData.buildingId,
           hall: this.postData.hall,
@@ -3679,7 +3669,6 @@
         houseUpdateInputVO: {
           dealId: this.id ? this.id : null,
           id: this.postData?.house?.id,
-          address: this.postData.address,
           area: this.postData.area,
           buildingId: this.postData.buildingId,
           hall: this.postData.hall,
@@ -3740,7 +3729,6 @@
         houseVO: {
           dealId: this.btnType === "edit" ? this.id : null,
           id: this.postData?.house?.id,
-          address: this.postData.address,
           area: this.postData.area,
           buildingId: this.postData.buildingId,
           hall: this.postData.hall,
