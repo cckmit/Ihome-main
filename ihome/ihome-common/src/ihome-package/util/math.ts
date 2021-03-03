@@ -4,7 +4,7 @@
  * @Author: zyc
  * @Date: 2021-01-14 14:27:51
  * @LastEditors: zyc
- * @LastEditTime: 2021-03-01 09:46:53
+ * @LastEditTime: 2021-03-03 12:37:06
  */
 
 
@@ -185,7 +185,9 @@ export class MyMath implements MathInterface {
             baseNum2 = 0;
         }
         baseNum = Math.pow(10, Math.max(baseNum1, baseNum2));
-        return (num1 * baseNum + num2 * baseNum) / baseNum;
+        let b = (this.multi(num1, baseNum) + this.div(num2, baseNum));
+        let r = this.div(b, baseNum);
+        return r;
     }
 
     tofixed(number: number, n = 2): number {
