@@ -4,7 +4,7 @@
  * @Author: zyc
  * @Date: 2021-01-14 14:27:51
  * @LastEditors: zyc
- * @LastEditTime: 2021-03-03 12:37:06
+ * @LastEditTime: 2021-03-03 14:07:02
  */
 
 
@@ -153,7 +153,8 @@ export class MyMath implements MathInterface {
         }
         baseNum = Math.pow(10, Math.max(baseNum1, baseNum2));
         precision = (baseNum1 >= baseNum2) ? baseNum1 : baseNum2;
-        let t = ((num1 * baseNum - num2 * baseNum) / baseNum).toFixed(precision);
+        let a = this.multi(num1, baseNum) - this.multi(num2, baseNum);
+        let t = (this.div(a, baseNum)).toFixed(precision);
         return Number(t);
     }
     /**加法
