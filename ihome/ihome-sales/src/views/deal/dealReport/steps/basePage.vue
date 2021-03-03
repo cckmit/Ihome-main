@@ -2781,7 +2781,7 @@
       // this.dividerTips = '加载成功';
       let list: any = ['contType', 'contNo', 'recordState', 'recordStr', 'area', 'room', 'hall',
         'toilet', 'propertyNo', 'signType', 'returnRatio', 'subscribePrice', 'subscribeDate',
-        'signPrice', 'signDate', 'agencyId', 'agencyName', 'channelLevel']
+        'signPrice', 'signDate', 'agencyId', 'agencyName', 'channelLevel', 'sceneSales', 'returnRatio']
       this.resetObject('postData', list);
     }
 
@@ -2825,6 +2825,13 @@
         if (this.postData.cycleId) {
           this.postData.receiveList = []; // 收派金额
           this.postData.documentVO = []; // 上传附件
+          this.postData.oneAgentTeam = null;
+          this.postData.oneAgentTeamId = null;
+          this.postData.stage = null;
+          this.postData.propertyType = null;
+          this.postData.buildingId = null;
+          this.postData.roomId = null;
+          this.postData.roomNo = null;
           await this.resetData();
         }
         this.postData.cycleName = data[0].termName;

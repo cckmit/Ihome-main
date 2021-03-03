@@ -122,7 +122,7 @@
         <el-col>
           <el-form-item
             label="证件编号"
-            :prop="form.cardType=='IDCard'?'certificateNumberOnly':'certificateNumber'"
+            prop="certificateNumber"
           >
             <el-input
               v-model="form.certificateNumber"
@@ -240,6 +240,10 @@ export default class CustomerAdd extends Vue {
       //个人 【居民身份证、军官证、中国护照、外国护照、香港身份证、台胞证、港澳通行证、其他】
       this.cardTypeList = this.personCardTypeList;
       this.form.cardType = "IDCard"; //客户类型为个人时默认选择居民身份证
+      this.rules.certificateNumber = [
+        { required: true, message: "证件编号不能为空", trigger: "change" },
+        { validator: validIdentityCard, trigger: "change" },
+      ];
     }
     if (value.length > 0) {
       this.showCardType = false;
