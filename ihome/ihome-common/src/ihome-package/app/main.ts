@@ -5,7 +5,7 @@
  * @Author: zyc
  * @Date: 2020-07-07 09:25:17
  * @LastEditors: zyc
- * @LastEditTime: 2021-02-19 14:32:04
+ * @LastEditTime: 2021-03-03 11:39:16
  */
 /* eslint-disable  no-console  */
 /* eslint-disable  no-extra-semi  */
@@ -53,6 +53,9 @@ Vue.prototype.$goto = function (location: Location) {
   (window as any).activatedRefresh = location.path;
   this.$router.push(location)
 }
+// errorHandler,warnHandler,renderError,errorCaptured
+import jsLog from './js-log'
+
 import directives from '../util/vue/directives'
 import filters from '../util/vue/filters'
 
@@ -64,6 +67,18 @@ if (process.env.NODE_ENV !== 'production') {
     require('@/mock/index')
   }
   // require('@/mock/index')
+  
+} else {
+  Vue.config.errorHandler = function (err: any) {
+    console.log(`main.ts=> Vue.config.errorHandler`);
+    console.log(err.message, err.stack);
+    jsLog(err);
+  };
+  Vue.config.warnHandler = function (msg: string, vm: Vue, trace: string) {
+    console.log(`main.ts=> Vue.config.warnHandler`);
+    console.log(msg);
+    jsLog({ message: msg, stack: trace });
+  };
 }
 
 
