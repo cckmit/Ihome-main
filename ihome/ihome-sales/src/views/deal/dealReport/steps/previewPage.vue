@@ -124,7 +124,7 @@
             </el-form-item>
           </el-col>
           <el-col :span="8" v-if="infoForm.returnRatio">
-            <el-form-item label="明源房款回笼比例">{{infoForm.returnRatio ? infoForm.returnRatio : 0}}%</el-form-item>
+            <el-form-item label="房款回笼比例">{{infoForm.returnRatio ? infoForm.returnRatio : 0}}%</el-form-item>
           </el-col>
           <el-col :span="8">
             <el-form-item label="认购价格">{{infoForm.subscribePrice}}</el-form-item>

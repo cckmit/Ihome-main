@@ -133,8 +133,8 @@
             </el-form-item>
           </el-col>
           <el-col :span="6">
-            <el-form-item label="明源房款回笼比例">
-              <el-input v-model="postData.returnRatio" disabled placeholder="明源房款回笼比例"></el-input>
+            <el-form-item label="房款回笼比例">
+              <el-input v-model="postData.returnRatio" disabled placeholder="房款回笼比例"></el-input>
             </el-form-item>
           </el-col>
           <el-col :span="6">

@@ -351,7 +351,7 @@
           </el-form-item>
         </el-col>
         <el-col :span="8" class="form-item-label-wrapper">
-          <el-form-item label="明源房款回笼比例" v-if="isDisabled('returnRatio', 'dealVO')">
+          <el-form-item label="房款回笼比例" v-if="isDisabled('returnRatio', 'dealVO')">
             <el-input
               v-model="postData.returnRatio"
               :disabled="isDisabled('returnRatio', 'dealVO')"></el-input>
@@ -2488,7 +2488,7 @@
       }
       // 现场销售
       this.postData.sceneSales = baseInfo.myReturnVO.dealVO?.sceneSales;
-      // 明源房款回笼比例(%)
+      // 房款回笼比例(%)
       this.postData.returnRatio = baseInfo.myReturnVO.dealVO?.returnRatio;
       // 认购价格
       if (baseInfo && baseInfo.myReturnVO && baseInfo.myReturnVO.dealVO && baseInfo.myReturnVO.dealVO.subscribePrice) {

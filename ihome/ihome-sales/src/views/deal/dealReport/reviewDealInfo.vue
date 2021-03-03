@@ -128,7 +128,7 @@
             </el-form-item>
           </el-col>
           <el-col :span="8" v-if="postData.returnRatio">
-            <el-form-item label="明源房款回笼比例">{{postData.returnRatio ? postData.returnRatio : 0}}%</el-form-item>
+            <el-form-item label="房款回笼比例">{{postData.returnRatio ? postData.returnRatio : 0}}%</el-form-item>
           </el-col>
           <el-col :span="8">
             <el-form-item label="认购价格">{{postData.subscribePrice}}</el-form-item>
