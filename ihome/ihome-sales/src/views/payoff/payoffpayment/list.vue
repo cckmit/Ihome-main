@@ -4,7 +4,7 @@
  * @Author: wwq
  * @Date: 2021-01-15 10:45:53
  * @LastEditors: wwq
- * @LastEditTime: 2021-03-01 15:37:10
+ * @LastEditTime: 2021-03-03 17:14:16
 -->
 <template>
   <IhPage label-width="100px">
@@ -372,7 +372,7 @@ import Setting from "./dialog/setting.vue";
 import {
   post_payDetail_getList,
   post_payDetail_push,
-  get_processRecord_oa_flow_ids,
+  post_payDetail_sys_status__paymentCode,
 } from "@/api/payoff/index";
 
 @Component({
@@ -578,7 +578,7 @@ export default class ReturnConfirmList extends Vue {
 
   // 同步状态
   async synchronization(data: any) {
-    await get_processRecord_oa_flow_ids({
+    await post_payDetail_sys_status__paymentCode({
       paymentCode: data.paymentCode,
     });
     this.$message.success("同步成功");

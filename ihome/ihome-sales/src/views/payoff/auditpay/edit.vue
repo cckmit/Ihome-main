@@ -4,7 +4,7 @@
  * @Author: wwq
  * @Date: 2020-12-26 11:11:23
  * @LastEditors: wwq
- * @LastEditTime: 2021-03-03 16:07:12
+ * @LastEditTime: 2021-03-03 17:25:13
 -->
 <template>
   <IhPage>
@@ -1521,6 +1521,10 @@ export default class PayoffEdit extends Vue {
     this.info.agencyName = item.name;
     let res = await get_channel_get__id({ id: item.id });
     this.channelAccountOptions = res.channelBanks;
+    if (res.channelBanks.length === 1) {
+      this.info.receiveAccount = res.channelBanks[0].accountNo;
+      this.info.agencyAccountBank = res.channelBanks[0].branchName;
+    }
   }
 
   receiveAccountChange(data: any) {

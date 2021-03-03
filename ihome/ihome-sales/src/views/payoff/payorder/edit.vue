@@ -4,7 +4,7 @@
  * @Author: wwq
  * @Date: 2020-12-26 11:11:23
  * @LastEditors: wwq
- * @LastEditTime: 2021-03-03 16:01:12
+ * @LastEditTime: 2021-03-03 17:25:42
 -->
 <template>
   <IhPage>
@@ -1810,6 +1810,10 @@ export default class PayoffEdit extends Vue {
       this.info.receiveAccount = null;
       // 获取本期需抵扣金额明细
       this.queryDeductionData(item.id);
+    }
+    if (res.channelBanks.length === 1) {
+      this.info.receiveAccount = res.channelBanks[0].accountNo;
+      this.info.agencyAccountBank = res.channelBanks[0].branchName;
     }
   }
 
