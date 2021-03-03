@@ -123,7 +123,7 @@
               {{$root.dictAllName(infoForm.signType, 'SignUp')}}
             </el-form-item>
           </el-col>
-          <el-col :span="8" v-if="infoForm.returnRatio">
+          <el-col :span="8">
             <el-form-item label="房款回笼比例">{{infoForm.returnRatio ? infoForm.returnRatio : 0}}%</el-form-item>
           </el-col>
           <el-col :span="8">
