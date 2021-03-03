@@ -322,16 +322,12 @@
         </el-col>
         <el-col :span="8" class="form-item-label-wrapper">
           <el-form-item label="房产证/预售合同编号">
-            <el-input
-              v-model="postData.propertyNo"
-              :disabled="isDisabled('propertyNo', 'houseVO')"></el-input>
+            <el-input v-model="postData.propertyNo"></el-input>
           </el-form-item>
         </el-col>
         <el-col :span="8">
           <el-form-item label="现场销售">
-            <el-input
-              v-model="postData.sceneSales"
-              :disabled="isDisabled('sceneSales', 'dealVO')"></el-input>
+            <el-input v-model="postData.sceneSales"></el-input>
           </el-form-item>
         </el-col>
         <el-col :span="8">
@@ -351,10 +347,8 @@
           </el-form-item>
         </el-col>
         <el-col :span="8" class="form-item-label-wrapper">
-          <el-form-item label="房款回笼比例" v-if="isDisabled('returnRatio', 'dealVO')">
-            <el-input
-              v-model="postData.returnRatio"
-              :disabled="isDisabled('returnRatio', 'dealVO')"></el-input>
+          <el-form-item label="房款回笼比例">
+            <el-input v-model="postData.returnRatio"></el-input>
           </el-form-item>
         </el-col>
         <el-col :span="8">
@@ -1822,10 +1816,7 @@
       const data: any = this.baseInfoInDeal.myReturnVO;
       if (!key || !type || !data[type]?.[key]) return false;
       let flag = false;
-      // 1.是否明源数据标志 2021-02-19:暂时不需要配合这个字段判断
-      // let signFlag = this.baseInfoByTerm.exMinyuan;
       // 2.对应明源字段是否有值
-      // if (data[type][key] && signFlag) {
       if (data[type][key] && this.postData.roomId) {
         flag = true;
       } else {
