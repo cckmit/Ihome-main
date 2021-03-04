@@ -4,7 +4,7 @@
  * @Author: wwq
  * @Date: 2020-11-03 11:52:41
  * @LastEditors: wwq
- * @LastEditTime: 2021-02-24 21:36:19
+ * @LastEditTime: 2021-03-03 12:06:53
 -->
 <template>
   <div>
@@ -102,6 +102,14 @@
                 :value="item.code"
               ></el-option>
             </el-select>
+          </el-form-item>
+        </el-col>
+        <el-col :span="8">
+          <el-form-item label="明源区域公司">
+            <el-input
+              v-model="form.companyName"
+              disabled
+            ></el-input>
           </el-form-item>
         </el-col>
         <el-col :span="8">
@@ -607,6 +615,7 @@ export default class EditBasicInfo extends Vue {
     city: null,
     district: null,
     proAddr: null,
+    companyName: null,
     lng: null, // 经度
     lat: null, // 纬度
     jingwei: null, // 经纬度
@@ -691,21 +700,6 @@ export default class EditBasicInfo extends Vue {
   oldInfo: any = {};
   oldSubmitFile: any = {};
   secureSave() {
-    // const Adopt = this.form.auditEnum === "Adopt";
-    // const Conduct = status === "Conduct";
-    // if (Adopt) {
-    //   const RHeadBusinessManagement = this.$roleTool.RHeadBusinessManagement();
-    //   const RBusinessManagement = this.$roleTool.RBusinessManagement();
-    //   if (RHeadBusinessManagement || RBusinessManagement) {
-    //     return true;
-    //   } else {
-    //     return false;
-    //   }
-    // } else if (Conduct) {
-    //   return false;
-    // } else {
-    //   return true;
-    // }
     const Adopt = this.form.auditEnum === "Adopt";
     const RHeadBusinessManagement = this.$roleTool.RHeadBusinessManagement();
     const RBusinessManagement = this.$roleTool.RBusinessManagement();

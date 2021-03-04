@@ -4,7 +4,7 @@
  * @Author: wwq
  * @Date: 2020-11-27 17:17:06
  * @LastEditors: wwq
- * @LastEditTime: 2021-02-23 16:19:58
+ * @LastEditTime: 2021-03-03 11:47:07
 -->
 <template>
   <div class="project-approval-box">
@@ -438,29 +438,6 @@
             ></el-input>
           </el-form-item>
         </el-col>
-        <el-col
-          :span="8"
-          v-if="isShow"
-        >
-          <el-form-item
-            label="是否免收服务费"
-            prop="exVoidService"
-          >
-            <el-select
-              v-model="info.exVoidService"
-              clearable
-              placeholder="请选择"
-              class="width--100"
-            >
-              <el-option
-                v-for="item in YesOrNoType"
-                :key="item.code"
-                :label="item.name"
-                :value="item.code"
-              ></el-option>
-            </el-select>
-          </el-form-item>
-        </el-col>
       </el-row>
       <el-row v-if="isShow">
         <el-col :span="8">
@@ -871,7 +848,6 @@ export default class FirstAgencyEdit extends Vue {
     companyName: null,
     companyId: null,
     termId: null,
-    exVoidService: null,
   };
   fileListType: any = [];
   submitFile: any = {};
@@ -1047,13 +1023,6 @@ export default class FirstAgencyEdit extends Vue {
         trigger: "change",
       },
     ],
-    exVoidService: [
-      {
-        required: true,
-        message: "请选择是否免收服务费",
-        trigger: "change",
-      },
-    ],
   };
 
   YesOrNoType = [
@@ -1074,7 +1043,6 @@ export default class FirstAgencyEdit extends Vue {
   getIsShow(val: any) {
     if (val === "Agent") {
       this.isShow = false;
-      this.info.exVoidService = null;
     } else {
       this.isShow = true;
     }

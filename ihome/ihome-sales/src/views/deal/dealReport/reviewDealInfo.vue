@@ -119,9 +119,6 @@
           <el-col :span="8">
             <el-form-item label="房产证/预售合同编号">{{postData.house.propertyNo}}</el-form-item>
           </el-col>
-          <el-col :span="16">
-            <el-form-item label="房产证地址">{{postData.house.address}}</el-form-item>
-          </el-col>
           <el-col :span="8">
             <el-form-item label="现场销售">{{postData.sceneSales}}</el-form-item>
           </el-col>
@@ -130,8 +127,8 @@
               {{$root.dictAllName(postData.signType, 'SignUp')}}
             </el-form-item>
           </el-col>
-          <el-col :span="8" v-if="postData.returnRatio">
-            <el-form-item label="明源房款回笼比例">{{postData.returnRatio ? postData.returnRatio : 0}}%</el-form-item>
+          <el-col :span="8">
+            <el-form-item label="房款回笼比例">{{postData.returnRatio ? postData.returnRatio : 0}}%</el-form-item>
           </el-col>
           <el-col :span="8">
             <el-form-item label="认购价格">{{postData.subscribePrice}}</el-form-item>
@@ -487,25 +484,22 @@
         <el-col>
           <el-table
             class="ih-table"
-            :data="postData.documentList">
+            :data="postData.documentLists">
             <el-table-column prop="fileType" label="类型" width="200">
               <template slot-scope="scope">
                 <div>{{$root.dictAllName(scope.row.code, 'DealFileType')}}</div>
               </template>
             </el-table-column>
-            <el-table-column prop="fileName" label="附件" min-width="300">
+            <el-table-column prop="fileId" label="附件" min-width="300">
               <template slot-scope="scope">
                 <IhUpload
-                  v-if="scope.row.defaultFileLists.length"
-                  :isCrop="false"
-                  :isMove="false"
-                  :removePermi="true"
+                  :removePermi="false"
                   size="100px"
-                  :limit="scope.row.defaultFileLists.length"
+                  :limit="scope.row.fileList.length"
                   :file-size="10"
-                  :file-list.sync="scope.row.defaultFileLists"
+                  :file-list.sync="scope.row.fileList"
                   :file-type="scope.row.code"
-                  :upload-show="!!scope.row.defaultFileLists"
+                  :upload-show="!!scope.row.fileList.length"
                 ></IhUpload>
               </template>
             </el-table-column>
@@ -621,7 +615,7 @@
       achieveList: [], // 平台费用 - 包含总包和分销
       achieveTotalBagList: [], // 平台费用 - 总包 - 前端拆分
       achieveDistriList: [], // 平台费用 - 分销 - 前端拆分
-      documentList: [], // 附件信息
+      documentLists: [], // 附件信息
       processRecordList: [], // 审核信息
       postRemarks: null,
       status: null, // 成交报告的状态
@@ -703,10 +697,16 @@
           ]);
         });
       }
+      // 对外拆佣信息
+      if (info.channelCommList && info.channelCommList.length) {
+        this.postData.channelCommList = info.channelCommList;
+      } else {
+        this.postData.channelCommList = [];
+      }
       // 平台费用 - 拆分总包和分销数据
+      this.postData.achieveTotalBagList = [];
+      this.postData.achieveDistriList = [];
       if (this.postData.achieveList && this.postData.achieveList.length > 0) {
-        this.postData.achieveTotalBagList = [];
-        this.postData.achieveDistriList = [];
         this.postData.achieveList.forEach((list: any) => {
           if (list.type === 'TotalBag') {
             this.postData.achieveTotalBagList.push(list);
@@ -715,35 +715,34 @@
           }
         })
       }
-      // console.log(info.documentList);
-      if (info.documentList && info.documentList.length) {
-        this.postData.documentList = this.initDocumentList(info.documentList);
-      }
+      this.postData.documentLists = await this.initDocumentList(info.documentList);
+      console.log(this.postData.documentLists);
     }
 
     // 构建附件信息
     initDocumentList(list: any = []) {
-      if (list.length === 0) return  [];
-      let fileList: any = (this as any).$root.dictAllList('DealFileType'); // 附件类型
+      let DealFileList: any = (this as any).$root.dictAllList('DealFileType'); // 附件类型
       // 附件类型增加key
-      if (fileList.length > 0 && list.length > 0) {
-        fileList.forEach((vo: any) => {
-          vo.defaultFileLists = []; // 存放原来的数据
-          vo.fileList = []; // 存放新上传的数据
-          list.forEach((item: any) => {
-            if (vo.code === item.fileType) {
-              vo.defaultFileLists.push(
-                {
-                  ...item,
-                  name: item.fileName,
-                  exAuto: true // 是否可以删除
-                }
-              );
-            }
-          });
+      if (DealFileList.length > 0) {
+        DealFileList.forEach((vo: any) => {
+          this.$set(vo, 'fileList', []);
+          // vo.fileList = []; // 存放原来的数据
+          if (list && list.length > 0) {
+            list.forEach((item: any) => {
+              if (vo.code === item.fileType) {
+                vo.fileList.push(
+                  {
+                    ...item,
+                    name: item.fileName,
+                    exAuto: true // 是否可以删除
+                  }
+                );
+              }
+            });
+          }
         });
       }
-      return fileList;
+      return DealFileList;
     }
 
     // 根据成交id获取优惠告知书列表
@@ -752,11 +751,11 @@
       if (id !== parentId) {
         const idList: any = await post_notice_customer_information({dealId: id});
         const parentIdList: any = await post_notice_customer_information({dealId: parentId});
-        // console.log('优惠告知书列表', list);
+        console.log('有补充成交');
         this.postData.offerNoticeList = [...idList, ...parentIdList];
       } else {
         const list: any = await post_notice_customer_information({dealId: this.id});
-        // console.log('优惠告知书列表', list);
+        console.log('无补充成交');
         if (list && list.length > 0) {
           this.postData.offerNoticeList = list;
         } else {

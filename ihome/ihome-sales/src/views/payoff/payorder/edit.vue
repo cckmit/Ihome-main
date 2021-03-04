@@ -4,7 +4,7 @@
  * @Author: wwq
  * @Date: 2020-12-26 11:11:23
  * @LastEditors: wwq
- * @LastEditTime: 2021-02-27 11:40:54
+ * @LastEditTime: 2021-03-03 17:25:42
 -->
 <template>
   <IhPage>
@@ -985,7 +985,7 @@ export default class PayoffEdit extends Vue {
     deductionCategory: null,
     actualAmount: null,
     noTaxAmount: null,
-    tax: null,
+    tax: 0,
     description: null,
     documentList: [],
   };
@@ -1197,7 +1197,7 @@ export default class PayoffEdit extends Vue {
       Number(row.serThisCommFees),
       Number(row.ageThisCommFees)
     );
-    const deduct = Number(row.thisDeduct);
+    const deduct = row.thisDeduct ? Number(row.thisDeduct) : 0;
     const res = this.$math.sub(total, deduct);
     row.actualAmount = this.$math.tofixed(res, 2);
     return this.$math.tofixed(res, 2);
@@ -1230,7 +1230,7 @@ export default class PayoffEdit extends Vue {
 
   // 不含税金额(实际付款金额/(1+发票税率))
   noTaxAmountChange(row: any) {
-    const practical = Number(row.actualAmount);
+    const practical = row.actualAmount ? Number(row.actualAmount) : 0;
     const taxRate = this.info.taxRate
       ? this.$math.div(this.info.taxRate, 100)
       : 0;
@@ -1242,8 +1242,8 @@ export default class PayoffEdit extends Vue {
 
   // 税额(实际付款金额-不含税金额)
   taxChange(row: any) {
-    const practical = Number(row.actualAmount);
-    const noTaxAmount = Number(row.noTaxAmount);
+    const practical = row.actualAmount ? Number(row.actualAmount) : 0;
+    const noTaxAmount = row.noTaxAmount ? Number(row.noTaxAmount) : 0;
     const res = this.$math.sub(practical, noTaxAmount);
     row.tax = this.$math.tofixed(res, 2);
     return this.$math.tofixed(res, 2);
@@ -1262,7 +1262,7 @@ export default class PayoffEdit extends Vue {
     const total3 = isNaN(this.$math.div(total1, total2))
       ? 0
       : this.$math.div(total1, total2);
-    const res = this.$math.multi(total3, 100);
+    const res = total3 ? this.$math.multi(total3, 100) : 0;
     row.ratio = this.$math.tofixed(res, 2);
     return this.$math.tofixed(res, 2);
   }
@@ -1283,7 +1283,7 @@ export default class PayoffEdit extends Vue {
 
   // 明细表-税额(不含税金额 * 开票税率)
   dataTaxChange(row: any) {
-    const noTaxAmount = Number(row.noTaxAmount);
+    const noTaxAmount = row.noTaxAmount ? Number(row.noTaxAmount) : 0;
     const taxRate = this.info.taxRate
       ? this.$math.div(this.info.taxRate, 100)
       : 0;
@@ -1360,7 +1360,8 @@ export default class PayoffEdit extends Vue {
   // 本期实际付款金额（不含税）
   underNoTaxAmountChange() {
     let sum = 0;
-    sum = this.$math.sub(this.info.actualAmount, this.info.tax);
+    let actualAmount = this.info.actualAmount ? this.info.actualAmount : 0;
+    sum = this.$math.sub(actualAmount, this.info.tax);
     this.info.noTaxAmount = sum;
     return this.$math.tofixed(sum, 2);
   }
@@ -1463,6 +1464,7 @@ export default class PayoffEdit extends Vue {
     obj.agencyId = this.info.agencyId;
     obj.agencyName = this.info.agencyName;
     obj.taxRate = Number(this.info.taxRate);
+    obj.applyId = Number(this.payoffId);
     obj.payApplyDetailList = this.info.payApplyDetailList;
     let otherArr: any = this.info.otherDeductionDetailResponseList.map(
       (v: any) => ({
@@ -1808,6 +1810,10 @@ export default class PayoffEdit extends Vue {
       this.info.receiveAccount = null;
       // 获取本期需抵扣金额明细
       this.queryDeductionData(item.id);
+    }
+    if (res.channelBanks.length === 1) {
+      this.info.receiveAccount = res.channelBanks[0].accountNo;
+      this.info.agencyAccountBank = res.channelBanks[0].branchName;
     }
   }
 

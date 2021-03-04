@@ -4,7 +4,7 @@
  * @Author: wwq
  * @Date: 2020-11-27 17:17:06
  * @LastEditors: wwq
- * @LastEditTime: 2021-03-02 10:11:52
+ * @LastEditTime: 2021-03-03 11:47:34
 -->
 <template>
   <div>
@@ -279,17 +279,6 @@
             <span class="text-ellipsis">{{ info.overStandardCount }}</span>
           </el-form-item>
         </el-col>
-        <el-col
-          :span="8"
-          v-if="isShow"
-        >
-          <el-form-item
-            label="是否免收服务费"
-            prop="exVoidService"
-          >
-            <span class="text-ellipsis">{{ info.exVoidService?'是':'否' }}</span>
-          </el-form-item>
-        </el-col>
       </el-row>
       <el-row v-if="isShow">
         <el-col :span="8">
@@ -547,7 +536,6 @@ export default class FirstAgencyEdit extends Vue {
     attachTermVOS: [],
     companyName: null,
     companyId: null,
-    exVoidService: null,
   };
   fileListType: any = [];
   private attachTermVOS: any = [];
@@ -559,7 +547,6 @@ export default class FirstAgencyEdit extends Vue {
   getIsShow(val: any) {
     if (val === "Agent") {
       this.isShow = false;
-      this.info.exVoidService = null;
     } else {
       this.isShow = true;
     }

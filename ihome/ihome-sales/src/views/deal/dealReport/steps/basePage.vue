@@ -211,7 +211,7 @@
             <div v-else>
               <el-select
                 v-model="postData.contType"
-                :disabled="baseInfoInDeal.contType === 'DistriDeal' && baseInfoInDeal.hasRecord"
+                :disabled="baseInfoInDeal.contType === 'DistriDeal' && baseInfoInDeal.hasRecord && postData.roomId"
                 placeholder="请选择合同类型"
                 @change="changeContType"
                 class="width--100">
@@ -364,21 +364,14 @@
         <el-col :span="8" class="form-item-label-wrapper">
           <el-form-item label="房产证/预售合同编号">
             <el-input
-              :disabled="['ChangeInternalAchieveInf', 'RetreatRoom'].includes(changeType) || isDisabled('propertyNo', 'houseVO')"
-              v-model="postData.propertyNo"></el-input>
-          </el-form-item>
-        </el-col>
-        <el-col :span="16">
-          <el-form-item label="房产证地址">
-            <el-input
               :disabled="['ChangeInternalAchieveInf', 'RetreatRoom'].includes(changeType)"
-              v-model="postData.address"></el-input>
+              v-model="postData.propertyNo"></el-input>
           </el-form-item>
         </el-col>
         <el-col :span="8">
           <el-form-item label="现场销售">
             <el-input
-              :disabled="['ChangeInternalAchieveInf', 'RetreatRoom'].includes(changeType) || isDisabled('sceneSales', 'dealVO')"
+              :disabled="['ChangeInternalAchieveInf', 'RetreatRoom'].includes(changeType)"
               v-model="postData.sceneSales"></el-input>
           </el-form-item>
         </el-col>
@@ -399,10 +392,10 @@
           </el-form-item>
         </el-col>
         <el-col :span="8" class="form-item-label-wrapper">
-          <el-form-item label="明源房款回笼比例" v-if="isDisabled('returnRatio', 'dealVO')">
+          <el-form-item label="房款回笼比例">
             <el-input
               v-model="postData.returnRatio"
-              :disabled="changeType !== 'ChangeAchieveInf' || isDisabled('returnRatio', 'dealVO')"></el-input>
+              :disabled="changeType !== 'ChangeAchieveInf'"></el-input>
           </el-form-item>
         </el-col>
         <el-col :span="8">
@@ -1387,7 +1380,6 @@
       status: null,
       statusName: null,
       sceneSales: null,
-      address: null,
       area: null,
       buildingId: null,
       buildingName: null,
@@ -1789,7 +1781,6 @@
       this.tipsFlag = true;
       this.dividerTips = '业绩分配';
       this.isSameFlag = res?.scheme?.isSame === "Yes"; // 分销总包是否一致
-      this.postData.address = res?.house?.address;
       this.postData.area = res?.house?.area;
       this.postData.buildingId = res?.house?.buildingId;
       this.postData.buildingName = res?.house?.buildingName;
@@ -2040,7 +2031,7 @@
       // this.postData.stage = baseInfo.myReturnVO.dealStage;
       // 现场销售
       this.postData.sceneSales = baseInfo.myReturnVO.dealVO?.sceneSales;
-      // 明源房款回笼比例(%)
+      // 房款回笼比例(%)
       this.postData.returnRatio = baseInfo.myReturnVO.dealVO?.returnRatio;
       // 认购价格
       if (baseInfo && baseInfo.myReturnVO && baseInfo.myReturnVO.dealVO && baseInfo.myReturnVO.dealVO.subscribePrice) {
@@ -3631,7 +3622,6 @@
         }, // 主成交信息
         documentVO: this.postData.uploadDocumentList.length ? this.getDocumentList(this.postData.uploadDocumentList) : null, // 成交附件信息
         houseAddInputVO: {
-          address: this.postData.address,
           area: this.postData.area,
           buildingId: this.postData.buildingId,
           hall: this.postData.hall,
@@ -3679,7 +3669,6 @@
         houseUpdateInputVO: {
           dealId: this.id ? this.id : null,
           id: this.postData?.house?.id,
-          address: this.postData.address,
           area: this.postData.area,
           buildingId: this.postData.buildingId,
           hall: this.postData.hall,
@@ -3740,7 +3729,6 @@
         houseVO: {
           dealId: this.btnType === "edit" ? this.id : null,
           id: this.postData?.house?.id,
-          address: this.postData.address,
           area: this.postData.area,
           buildingId: this.postData.buildingId,
           hall: this.postData.hall,
@@ -4001,10 +3989,7 @@
       const data: any = this.baseInfoInDeal.myReturnVO;
       if (!key || !type || !data[type]?.[key]) return false;
       let flag = false;
-      // 1.是否明源数据标志 2021-02-19:暂时不需要配合这个字段判断
-      // let signFlag = this.baseInfoByTerm.exMinyuan;
       // 2.对应明源字段是否有值
-      // if (data[type][key] && signFlag) {
       if (data[type][key] && this.postData.roomId) {
         flag = true;
       } else {

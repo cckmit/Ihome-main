@@ -4,7 +4,7 @@
  * @Author: wwq
  * @Date: 2020-11-03 11:52:41
  * @LastEditors: wwq
- * @LastEditTime: 2021-02-06 09:35:04
+ * @LastEditTime: 2021-03-03 11:59:17
 -->
 <template>
   <div>
@@ -78,6 +78,13 @@
         <el-col :span="8">
           <el-form-item label="同步明源房号数据">
             <span class="text-ellipsis">{{ filterExMarket(form.exSyncRoom) }}</span>
+          </el-form-item>
+        </el-col>
+      </el-row>
+      <el-row>
+        <el-col :span="8">
+          <el-form-item label="明源区域公司">
+            <span class="text-ellipsis">{{ form.companyName }}</span>
           </el-form-item>
         </el-col>
       </el-row>

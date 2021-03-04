@@ -4,7 +4,7 @@
  * @Author: zyc
  * @Date: 2021-02-06 16:29:34
  * @LastEditors: wwq
- * @LastEditTime: 2021-02-27 15:33:09
+ * @LastEditTime: 2021-03-03 17:16:07
 -->
 <template>
   <IhPage>
@@ -402,7 +402,7 @@
           :loading="computedLoading"
           :disabled="computedDisabled"
           @click="computedMsg"
-        >点击计算结佣统计数据及成本归属明细</el-button>
+        >点击计算退款统计数据并生成退款汇总清单</el-button>
       </div>
       <br />
       <p class="ih-info-title">退款汇总清单</p>

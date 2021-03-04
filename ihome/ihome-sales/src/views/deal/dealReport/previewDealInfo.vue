@@ -133,8 +133,8 @@
             </el-form-item>
           </el-col>
           <el-col :span="6">
-            <el-form-item label="明源房款回笼比例">
-              <el-input v-model="postData.returnRatio" disabled placeholder="明源房款回笼比例"></el-input>
+            <el-form-item label="房款回笼比例">
+              <el-input v-model="postData.returnRatio" disabled placeholder="房款回笼比例"></el-input>
             </el-form-item>
           </el-col>
           <el-col :span="6">
@@ -307,11 +307,6 @@
           <el-col :span="12">
             <el-form-item label="房产证/预售合同编号">
               <el-input v-model="postData.propertyNo" disabled placeholder="房产证/预售合同编号"></el-input>
-            </el-form-item>
-          </el-col>
-          <el-col :span="12">
-            <el-form-item label="房屋地址">
-              <el-input v-model="postData.address" disabled placeholder="房屋地址"></el-input>
             </el-form-item>
           </el-col>
           <el-col :span="8">

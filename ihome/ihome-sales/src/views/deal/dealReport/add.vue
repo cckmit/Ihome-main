@@ -292,11 +292,6 @@
             <el-input v-model="postData.propertyNo" clearable placeholder="请输入房产证/预售合同编号"></el-input>
           </el-form-item>
         </el-col>
-        <el-col :span="12">
-          <el-form-item label="房产证地址">
-            <el-input v-model="postData.address" clearable placeholder="请输入房产证地址"></el-input>
-          </el-form-item>
-        </el-col>
         <el-col :span="6">
           <el-form-item label="现场销售">
             <el-input v-model="postData.sceneSales" clearable placeholder="请输入现场销售"></el-input>
@@ -1086,7 +1081,6 @@
       roomNo: null, // 房号
       roomId: null, // 房号ID
       propertyNo: null, // 房产证/预售合同编号
-      address: null,
       area: null,
       room: null,
       hall: null,

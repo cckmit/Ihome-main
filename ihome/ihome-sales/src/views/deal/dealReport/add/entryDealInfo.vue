@@ -190,7 +190,7 @@
           <el-form-item label="合同类型" prop="contType">
             <el-select
               v-model="postData.contType"
-              :disabled="baseInfoInDeal.contType === 'DistriDeal' && baseInfoInDeal.hasRecord"
+              :disabled="baseInfoInDeal.contType === 'DistriDeal' && baseInfoInDeal.hasRecord && postData.roomId"
               placeholder="请选择合同类型"
               @change="changeContType"
               class="width--100">
@@ -335,21 +335,12 @@
         </el-col>
         <el-col :span="8" class="form-item-label-wrapper">
           <el-form-item label="房产证/预售合同编号">
-            <el-input
-              v-model="postData.propertyNo"
-              :disabled="isDisabled('propertyNo', 'houseVO')"></el-input>
-          </el-form-item>
-        </el-col>
-        <el-col :span="16">
-          <el-form-item label="房产证地址">
-            <el-input v-model="postData.address" clearable></el-input>
+            <el-input v-model="postData.propertyNo"></el-input>
           </el-form-item>
         </el-col>
         <el-col :span="8">
           <el-form-item label="现场销售">
-            <el-input
-              v-model="postData.sceneSales"
-              :disabled="isDisabled('sceneSales', 'dealVO')"></el-input>
+            <el-input v-model="postData.sceneSales"></el-input>
           </el-form-item>
         </el-col>
         <el-col :span="8">
@@ -369,10 +360,8 @@
           </el-form-item>
         </el-col>
         <el-col :span="8" class="form-item-label-wrapper">
-          <el-form-item label="明源房款回笼比例" v-if="isDisabled('returnRatio', 'dealVO')">
-            <el-input
-              v-model="postData.returnRatio"
-              :disabled="isDisabled('returnRatio', 'dealVO')"></el-input>
+          <el-form-item label="房款回笼比例">
+            <el-input v-model="postData.returnRatio"></el-input>
           </el-form-item>
         </el-col>
         <el-col :span="8">
@@ -844,7 +833,6 @@
       roomNo: null, // 房号
       roomId: null, // 房号ID
       propertyNo: null, // 房产证/预售合同编号
-      address: null,
       area: null,
       room: null,
       hall: null,
@@ -1082,7 +1070,6 @@
         this.postData.hall = res?.house?.hall;
         this.postData.toilet = res?.house?.toilet;
         this.postData.propertyNo = res?.house?.propertyNo;
-        this.postData.address = res?.house?.address;
         this.postData.sceneSales = res?.sceneSales;
         this.postData.signType = res.signType;
         this.postData.stage = res.stage;
@@ -1256,21 +1243,23 @@
         });
       }
       // 附件类型增加key
-      if (fileList.length > 0 && list.length > 0) {
+      if (fileList.length > 0) {
         fileList.forEach((vo: any) => {
           vo.defaultFileList = []; // 存放原来的数据
           vo.fileList = []; // 存放新上传的数据
-          list.forEach((item: any) => {
-            if (vo.code === item.fileType) {
-              vo.defaultFileList.push(
-                {
-                  ...item,
-                  name: item.fileName,
-                  exAuto: true
-                }
-              );
-            }
-          });
+          if (list && list.length) {
+            list.forEach((item: any) => {
+              if (vo.code === item.fileType) {
+                vo.defaultFileList.push(
+                  {
+                    ...item,
+                    name: item.fileName,
+                    exAuto: true
+                  }
+                );
+              }
+            });
+          }
         });
       }
       return fileList;
@@ -1322,10 +1311,7 @@
       const data: any = this.baseInfoInDeal.myReturnVO;
       if (!key || !type || !data[type]?.[key]) return false;
       let flag = false;
-      // 1.是否明源数据标志 2021-02-19:暂时不需要配合这个字段判断
-      // let signFlag = this.baseInfoByTerm.exMinyuan;
       // 2.对应明源字段是否有值
-      // if (data[type][key] && signFlag) {
       if (data[type][key] && this.postData.roomId) {
         flag = true;
       } else {
@@ -1687,7 +1673,7 @@
       }
       // 现场销售
       this.postData.sceneSales = baseInfo.myReturnVO.dealVO?.sceneSales;
-      // 明源房款回笼比例(%)
+      // 房款回笼比例(%)
       this.postData.returnRatio = baseInfo.myReturnVO.dealVO?.returnRatio;
       // 认购价格
       if (baseInfo && baseInfo.myReturnVO && baseInfo.myReturnVO.dealVO && baseInfo.myReturnVO.dealVO.subscribePrice) {
@@ -2257,7 +2243,6 @@
         }, // 成交基础信息
         documentVO: [], // 上传附件
         houseVO: {
-          address: "",
           area: "",
           buildingId: "",
           hall: "",
@@ -2388,7 +2373,6 @@
       }
       obj.dealVO.subscribeDate = this.postData.subscribeDate;
       obj.dealVO.subscribePrice = this.postData.subscribePrice;
-      obj.houseVO.address = this.postData.address;
       obj.houseVO.area = this.postData.area;
       obj.houseVO.buildingId = this.postData.buildingId;
       obj.houseVO.hall = this.postData.hall;
