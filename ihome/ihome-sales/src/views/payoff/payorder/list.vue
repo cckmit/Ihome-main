@@ -4,7 +4,7 @@
  * @Author: wwq
  * @Date: 2020-12-26 11:11:28
  * @LastEditors: wwq
- * @LastEditTime: 2021-03-01 11:06:45
+ * @LastEditTime: 2021-03-04 15:17:27
 -->
 <template>
   <IhPage label-width="120px">
@@ -288,7 +288,7 @@
                 >管控
                 </el-dropdown-item>
                 <el-dropdown-item
-                  :class="{'ih-data-disabled': !['Unconfirm', 'PlatformClerkUnreview', 'BranchBusinessManageUnreview', 'BranchFinanceUnreview', 'ReviewPass'].includes(row.status)}"
+                  :class="{'ih-data-disabled': !['Unconfirm', 'PlatformClerkUnreview', 'BranchBusinessManageUnreview', 'BranchFinanceUnreview'].includes(row.status)}"
                   @click.native.prevent="routeTo(row, 'replenish')"
                   v-has="'B.SALES.PAYOFF.PAYOFFLIST.BCLB'"
                 >补充</el-dropdown-item>
