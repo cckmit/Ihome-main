@@ -4,7 +4,7 @@
  * @Author: ywl
  * @Date: 2020-09-27 16:27:36
  * @LastEditors: ywl
- * @LastEditTime: 2021-02-06 10:37:50
+ * @LastEditTime: 2021-03-04 14:31:45
 -->
 <template>
   <IhPage label-width="80px">
@@ -309,8 +309,11 @@
                 <el-dropdown-item
                   @click.native.prevent="handleExportFile(row)"
                   v-has="'B.SALES.CONTRACT.DISCOUNTLIST.EXPRORTATTCH'"
-                  :class="{ 'ih-data-disabled': !exportChange()}"
                 >导出附件</el-dropdown-item>
+                <el-dropdown-item
+                  :class="{'ih-data-disabled': row.finish === 'No'}"
+                  @click.native.prevent="handleGo(row)"
+                >发起补充协议</el-dropdown-item>
               </el-dropdown-menu>
             </el-dropdown>
             <!-- <el-link
@@ -382,14 +385,6 @@ export default class DiscountList extends Vue {
   private srcList: any = [];
   private srcData: any = [];
 
-  private exportChange() {
-    const roleList = (this.$root as any).userInfo.roleList.map(
-      (v: any) => v.code
-    );
-    const isBusines = roleList.includes("RBusinessManagement");
-    return isBusines;
-  }
-
   private handleExport() {
     const token: any = getToken();
     axios({
@@ -450,6 +445,10 @@ export default class DiscountList extends Vue {
       $a.click();
       $a.remove();
     });
+  }
+  private handleGo(row: any): void {
+    console.log(row);
+    this.$router.push(`/discount/replenish?id=${row.id}`);
   }
   private openToggle(): void {
     this.searchOpen = !this.searchOpen;

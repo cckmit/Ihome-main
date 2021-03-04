@@ -186,7 +186,7 @@
           <el-form-item label="合同类型" prop="contType">
             <el-select
               v-model="postData.contType"
-              :disabled="baseInfoInDeal.contType === 'DistriDeal' && baseInfoInDeal.hasRecord"
+              :disabled="baseInfoInDeal.contType === 'DistriDeal' && baseInfoInDeal.hasRecord && postData.roomId"
               placeholder="请选择合同类型"
               @change="changeContType"
               class="width--100">
@@ -1721,21 +1721,23 @@
         });
       }
       // 附件类型增加key
-      if (fileList.length > 0 && list.length > 0) {
+      if (fileList.length > 0) {
         fileList.forEach((vo: any) => {
           vo.defaultFileList = []; // 存放原来的数据
           vo.fileList = []; // 存放新上传的数据
-          list.forEach((item: any) => {
-            if (vo.code === item.fileType) {
-              vo.defaultFileList.push(
-                {
-                  ...item,
-                  name: item.fileName,
-                  exAuto: true
-                }
-              );
-            }
-          });
+          if (list && list.length) {
+            list.forEach((item: any) => {
+              if (vo.code === item.fileType) {
+                vo.defaultFileList.push(
+                  {
+                    ...item,
+                    name: item.fileName,
+                    exAuto: true
+                  }
+                );
+              }
+            });
+          }
         });
       }
       return fileList;

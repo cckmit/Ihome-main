@@ -4,13 +4,13 @@
  * @Author: zyc
  * @Date: 2020-10-22 09:00:11
  * @LastEditors: zyc
- * @LastEditTime: 2020-12-15 19:49:19
+ * @LastEditTime: 2021-03-04 16:01:11
  */
 import axios from 'axios'
 import { Message, MessageBox } from 'element-ui'
 // import { UserModule } from '@/store/modules/user'
 import { getToken, removeToken } from '../cookies'
-const messageTime = 3000;//弹出消息的提示时间
+const messageTime = 5000;//弹出消息的提示时间
 const service = axios.create({
     // baseURL: process.env.VUE_APP_BASE_API,
     timeout: 60000
@@ -43,22 +43,10 @@ service.interceptors.request.use(
                 })
             }
         }
-
-
-        // Add X-Access-Token header to every request, you can add other custom headers here
         const token: any = getToken();
-
         if (token) {
             config.headers['Authorization'] = 'bearer ' + token;
         }
-
-        // if (token) {
-        //     if (config.url?.startsWith('http://filesvr.polyihome.test/aist-filesvr-web/webUploader/uploadAll')) {
-        //         // console.log(config.url)
-        //     } else {
-        //         config.headers['Authorization'] = 'bearer ' + token;
-        //     }
-        // }
         NProgress.start();
         return config
     },
@@ -66,18 +54,13 @@ service.interceptors.request.use(
         Promise.reject(error)
     }
 )
-
 // Response interceptors
 service.interceptors.response.use(
     (response) => {
         NProgress.done();
-
         // if (response.config.url?.startsWith('/sales-oauth2/oauth/token') || response.config.url?.startsWith('/sales-api/sales-oauth2/oauth/token')) {
         //     return response.data
         // }
-        //  else if (response.config.url?.startsWith('http://filesvr.polyihome.test/aist-filesvr-web/webUploader/uploadAll')) {
-        //     return response.data
-        // } 
         const res: any = response.data
         if (res.code !== 'Success') {
             Message({
@@ -85,37 +68,15 @@ service.interceptors.response.use(
                 type: 'error',
                 duration: messageTime
             })
-            // if (res.code === 50008 || res.code === 50012 || res.code === 50014) {
-            //     MessageBox.confirm(
-            //         'You have been logged out, try to login again.',
-            //         'Log out',
-            //         {
-            //             confirmButtonText: 'Relogin',
-            //             cancelButtonText: 'Cancel',
-            //             type: 'warning'
-            //         }
-            //     ).then(() => {
-            //         removeToken();
-            //         location.reload() // To prevent bugs from vue-router
-            //     })
-            // }
-            return Promise.reject(new Error(res.msg || 'Error'))
+            return Promise.reject(res);
         } else {
             return res.data;
         }
-
-
     },
     (error: any) => {
         NProgress.done();
-        // console.log(error);
-        // console.log(error.response);
-        // console.log(error.message);
         if (error.response.status == 401) {
-
-            if (error.response.config.url?.startsWith('/sales-api/system/sessionUser/getUserInfo')) {
-
-            } else {
+            if (!error.response.config.url?.startsWith('/sales-api/system/sessionUser/getUserInfo')) {
                 Message({
                     message: '请先登录',
                     type: 'error',
@@ -126,24 +87,18 @@ service.interceptors.response.use(
                     (window as any).location = '/login';
                 }
             }
-
-
-
-
         } else if (error.response.status == 403) {
             Message({
                 message: '权限不足',
                 type: 'error',
                 duration: messageTime
             })
-
         } else if (error.response.status == 404) {
             Message({
                 message: '接口404',
                 type: 'error',
                 duration: messageTime
             })
-
         }
         else if (error.response.status >= 500) {
             Message({
@@ -157,9 +112,7 @@ service.interceptors.response.use(
                 type: 'error',
                 duration: messageTime
             })
-
         }
-
         return Promise.reject(error)
     }
 )
