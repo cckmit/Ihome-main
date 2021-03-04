@@ -729,7 +729,13 @@ export default class Apply extends Vue {
         "Content-Type": "application/json",
         Authorization: "bearer " + token,
       },
-      data: this.info,
+      data: {
+        ...this.info,
+        costSettleType: (this.$root as any).dictAllName(
+          this.info.costSettleType,
+          "CostSettleType"
+        ),
+      },
     }).then((res: any) => {
       const arr = new Blob([res.data], { type: "application/pdf" });
       const href = window.URL.createObjectURL(arr);
