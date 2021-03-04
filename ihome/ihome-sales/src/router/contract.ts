@@ -4,7 +4,7 @@
  * @Author: ywl
  * @Date: 2020-10-16 15:19:48
  * @LastEditors: ywl
- * @LastEditTime: 2021-01-06 18:25:27
+ * @LastEditTime: 2021-03-03 09:29:17
  */
 import { RouteConfig } from 'vue-router'
 
@@ -125,6 +125,12 @@ const contractRoutes: Array<RouteConfig> = [
         component: () => import( /* webpackChunkName: "DiscountDetail" */ '@/views/contract/discount/info.vue'),
         meta: { title: '优惠告知书详情页', icon: 'form' }
       },
+      {
+        path: 'replenish',
+        name: 'DiscountReplenish',
+        component: () => import('@/views/contract/discount/replenish.vue'),
+        meta: { title: '发起补充协议', icon: 'form' }
+      }
     ]
   },
 ];

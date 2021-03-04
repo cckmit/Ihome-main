@@ -3,8 +3,8 @@
  * @version: 
  * @Author: ywl
  * @Date: 2020-11-30 16:21:18
- * @LastEditors: wwq
- * @LastEditTime: 2021-01-20 15:47:42
+ * @LastEditors: ywl
+ * @LastEditTime: 2021-03-03 18:16:57
 -->
 <template>
   <el-dialog
@@ -82,6 +82,7 @@
       @selection-change="handleSelectionChange"
       @select="handleSelect"
       @select-all="handleSelectAll"
+      max-height="320"
     >
       <el-table-column
         fixed

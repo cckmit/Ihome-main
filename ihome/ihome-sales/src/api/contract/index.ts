@@ -1,6 +1,6 @@
 /* eslint-disable */
 /* 此脚本由swagger-ui的api-docs自动生成，请勿修改 */
-//2021-1-18 15:10:26
+//2021-3-4 2:24:02 ├F10: PM┤
 import { request } from '@/api/base'
 const basePath = "/sales-api/contract"
 /**附件上传*/
@@ -67,6 +67,10 @@ return await request.post< any,any> (basePath+'/contractOperatingLog/list', d)
 export async function post_distribution_annex (d?: any) {
 return await request.post< boolean,boolean> (basePath+'/distribution/annex', d)
 }
+/**小程序 查询渠道分销协议列表*/
+export async function post_distribution_applets_channel_list (d?: any) {
+return await request.post< any,any> (basePath+'/distribution/applets/channel/list', d)
+}
 /**结佣查询渠道类型和中介行*/
 export async function post_distribution_channel_type (d?: any) {
 return await request.post< any,any> (basePath+'/distribution/channel/type', d)
@@ -126,6 +130,10 @@ return await request.post< boolean,boolean> (basePath+'/distribution/original/ar
 /**结佣通过编号查询渠道合同附件*/
 export async function post_distribution_pay_annex (d?: any) {
 return await request.post< AnnexListVO[],AnnexListVO[]> (basePath+'/distribution/pay/annex', d)
+}
+/**结佣查询分销协议详情*/
+export async function get_distribution_pay_detail__contNo (d?: any) {
+return await request.get<DistributionDetailVO,DistributionDetailVO>(basePath+'/distribution/pay/detail/{contNo}', { params: d })
 }
 /**查询项目信息*/
 export async function post_distribution_pay_project (d?: any) {
@@ -203,10 +211,6 @@ return await request.post< boolean,boolean> (basePath+'/notice/check/status/{not
 export async function post_notice_check__roomNumberId (d?: any) {
 return await request.post< boolean,boolean> (basePath+'/notice/check/{roomNumberId}', d)
 }
-/**房号确认书*/
-export async function post_notice_confirmation (d?: any) {
-return await request.post< number,number> (basePath+'/notice/confirmation', d)
-}
 /**优惠告知书申领*/
 export async function post_notice_create (d?: any) {
 return await request.post< NoticeTemplateDetailResponseVO,NoticeTemplateDetailResponseVO> (basePath+'/notice/create', d)
@@ -214,6 +218,10 @@ return await request.post< NoticeTemplateDetailResponseVO,NoticeTemplateDetailRe
 /**成交查询优惠告知书*/
 export async function post_notice_customer_information (d?: any) {
 return await request.post< NoticeCustomerInformationResponse[],NoticeCustomerInformationResponse[]> (basePath+'/notice/customer/information', d)
+}
+/**主成交如果是认筹，终审通过后需要生成房号确认书*/
+export async function post_notice_deal_confirmation (d?: any) {
+return await request.post< boolean,boolean> (basePath+'/notice/deal/confirmation', d)
 }
 /**成交查询告知书详细信息*/
 export async function post_notice_deal_details__noticeId (d?: any) {
@@ -223,13 +231,21 @@ return await request.post< DealNoticeDetail,DealNoticeDetail> (basePath+'/notice
 export async function post_notice_deal_list (d?: any) {
 return await request.post< any,any> (basePath+'/notice/deal/list', d)
 }
+/**通过成交ID查询优惠告知书*/
+export async function post_notice_deal_notices (d?: any) {
+return await request.post< NoticeVO[],NoticeVO[]> (basePath+'/notice/deal/notices', d)
+}
 /**补充报告创建告知书*/
 export async function post_notice_deal_protocol (d?: any) {
 return await request.post< number[],number[]> (basePath+'/notice/deal/protocol', d)
 }
-/**补充报告审核通过后，需要把原告知书删除或者变成已失效*/
-export async function post_notice_deal_replace_notice (d?: any) {
-return await request.post< boolean,boolean> (basePath+'/notice/deal/replace/notice', d)
+/**主成交查询付款总金额*/
+export async function post_notice_deal_query_closed__dealId (d?: any) {
+return await request.post< number,number> (basePath+'/notice/deal/query/closed/{dealId}', d)
+}
+/**补充成交报告业管审核通过后，更新成交审核状态*/
+export async function post_notice_deal_update_review_status__dealId (d?: any) {
+return await request.post< boolean,boolean> (basePath+'/notice/deal/update/review/status/{dealId}', d)
 }
 /**优惠告知书明细*/
 export async function get_notice_detail__id (d?: any) {
@@ -240,8 +256,8 @@ export async function get_notice_ids (d?: any) {
 return await request.get<number[],number[]>(basePath+'/notice/ids', { params: d })
 }
 /**业管确定*/
-export async function get_notice_industry_management_determine__noticeId (d?: any) {
-return await request.get<boolean,boolean>(basePath+'/notice/industry/management/determine/{noticeId}', { params: d })
+export async function post_notice_industry_management_determine (d?: any) {
+return await request.post< boolean,boolean> (basePath+'/notice/industry/management/determine', d)
 }
 /**作废告知书*/
 export async function post_notice_invalid__noticeId (d?: any) {
@@ -265,7 +281,7 @@ return await request.get<NoticeOwner,NoticeOwner>(basePath+'/notice/payment/{not
 }
 /**获取待业管审核的告知书*/
 export async function post_notice_pending_list (d?: any) {
-return await request.post< NoticeVO[],NoticeVO[]> (basePath+'/notice/pending/list', d)
+return await request.post< any,any> (basePath+'/notice/pending/list', d)
 }
 /**平台签署*/
 export async function post_notice_platform_sign__noticeId (d?: any) {
@@ -283,13 +299,25 @@ return await request.get<RefundDetailResponse,RefundDetailResponse>(basePath+'/n
 export async function post_notice_related_deal_info (d?: any) {
 return await request.post< boolean,boolean> (basePath+'/notice/related/deal/info', d)
 }
+/**获取当前事业部下待业管审核总数*/
+export async function post_notice_review_count (d?: any) {
+return await request.post< OperationsCountResponse,OperationsCountResponse> (basePath+'/notice/review/count', d)
+}
 /**签署回调*/
 export async function post_notice_signCallback (d?: any) {
 return await request.post< boolean,boolean> (basePath+'/notice/signCallback', d)
 }
+/**补充成交终审通过后，才生成退款项*/
+export async function post_notice_supplement_deal_final_review (d?: any) {
+return await request.post< boolean,boolean> (basePath+'/notice/supplement/deal/final/review', d)
+}
+/**列表创建补充协议*/
+export async function post_notice_supplemental_agreement (d?: any) {
+return await request.post< boolean,boolean> (basePath+'/notice/supplemental/agreement', d)
+}
 /**优惠告知书编辑*/
 export async function post_notice_update (d?: any) {
-return await request.post< boolean,boolean> (basePath+'/notice/update', d)
+return await request.post< NoticeTemplateDetailResponseVO,NoticeTemplateDetailResponseVO> (basePath+'/notice/update', d)
 }
 /**更新退款申请书*/
 export async function post_notice_update_refund (d?: any) {
@@ -299,13 +327,17 @@ return await request.post< NoticeTemplateDetailResponseVO,NoticeTemplateDetailRe
 export async function post_notice_verification_code (d?: any) {
 return await request.post< boolean,boolean> (basePath+'/notice/verification/code', d)
 }
+/**小程序客户查询优惠告知书列表*/
+export async function post_notice_wechat_customer_notices (d?: any) {
+return await request.post< any,any> (basePath+'/notice/wechat/customer/notices', d)
+}
 /**小程序查询告知书明细*/
 export async function get_notice_wechat_detail__noticeId (d?: any) {
 return await request.get<NoticeWeChatDetailResponseVo,NoticeWeChatDetailResponseVo>(basePath+'/notice/wechat/detail/{noticeId}', { params: d })
 }
 /**小程序查询优惠告知书列表*/
 export async function post_notice_wechat_notices (d?: any) {
-return await request.post< NoticeWeChatQueryResponseVo[],NoticeWeChatQueryResponseVo[]> (basePath+'/notice/wechat/notices', d)
+return await request.post< any,any> (basePath+'/notice/wechat/notices', d)
 }
 /**告知书签署*/
 export async function post_notice_wechat_sign (d?: any) {
@@ -382,7 +414,7 @@ export interface AnnexCreateList {
 attachmentSuffix: string;
 /**(必填)附件编号*/
 fileNo: string;
-/**(必填)附件类型(Stamped-战略已盖章扫描件、NotStamped-战略未盖章扫描件、ContractAnnex-甲方合同附件、ArchiveAnnex-盖章版归档附件、ScanArchiveAnnex-扫描件归档、NoticeAttachment-告知书附件)*/
+/**(必填)附件类型(Stamped-战略已盖章扫描件、NotStamped-战略未盖章扫描件、ContractAnnex-甲方合同附件、ArchiveAnnex-盖章版归档附件、NoArchiveAnnex-未盖章版归档附件、ScanArchiveAnnex-扫描件归档、NoticeAttachment-告知书附件、Subscription-认购书附件)*/
 type: string;
 }
 /**AnnexCreateListRequest*/
@@ -398,7 +430,7 @@ export interface AnnexDeleteList {
 attachmentSuffix: string;
 /**附件编号*/
 fileNo: string;
-/**附件类型(Stamped-战略已盖章扫描件、NotStamped-战略未盖章扫描件、ContractAnnex-甲方合同附件、ArchiveAnnex-盖章版归档附件、ScanArchiveAnnex-扫描件归档、NoticeAttachment-告知书附件)*/
+/**附件类型(Stamped-战略已盖章扫描件、NotStamped-战略未盖章扫描件、ContractAnnex-甲方合同附件、ArchiveAnnex-盖章版归档附件、NoArchiveAnnex-未盖章版归档附件、ScanArchiveAnnex-扫描件归档、NoticeAttachment-告知书附件、Subscription-认购书附件)*/
 type: string;
 }
 /**AnnexDeleteRequest*/
@@ -416,26 +448,56 @@ attachmentSuffix: string;
 contractId: number;
 /**附件编号*/
 fileNo: string;
-/**附件类型(Stamped-战略已盖章扫描件、NotStamped-战略未盖章扫描件、ContractAnnex-甲方合同附件、ArchiveAnnex-盖章版归档附件、ScanArchiveAnnex-扫描件归档、NoticeAttachment-告知书附件)*/
+/**附件类型(Stamped-战略已盖章扫描件、NotStamped-战略未盖章扫描件、ContractAnnex-甲方合同附件、ArchiveAnnex-盖章版归档附件、NoArchiveAnnex-未盖章版归档附件、ScanArchiveAnnex-扫描件归档、NoticeAttachment-告知书附件、Subscription-认购书附件)*/
 type: string;
 }
 /**AnnexListVO*/
 export interface AnnexListVO {
 /**附件后缀*/
 attachmentSuffix: string;
+/**合同编号*/
+contractNo: string;
 /**附件路径*/
 fileNo: string;
 /**附件ID*/
 id: number;
-/**类型(Stamped-战略已盖章扫描件、NotStamped-战略未盖章扫描件、ContractAnnex-甲方合同附件、ArchiveAnnex-盖章版归档附件、ScanArchiveAnnex-扫描件归档、NoticeAttachment-告知书附件)*/
+/**类型(Stamped-战略已盖章扫描件、NotStamped-战略未盖章扫描件、ContractAnnex-甲方合同附件、ArchiveAnnex-盖章版归档附件、NoArchiveAnnex-未盖章版归档附件、ScanArchiveAnnex-扫描件归档、NoticeAttachment-告知书附件、Subscription-认购书附件)*/
 type: string;
 }
 /**AnnexRequest*/
 export interface AnnexRequest {
 /**(必填)合同id*/
 contractIds: number[];
-/**(必填)附件类型(Stamped-战略已盖章扫描件、NotStamped-战略未盖章扫描件、ContractAnnex-甲方合同附件、ArchiveAnnex-盖章版归档附件、ScanArchiveAnnex-扫描件归档、NoticeAttachment-告知书附件)*/
+/**(必填)附件类型(Stamped-战略已盖章扫描件、NotStamped-战略未盖章扫描件、ContractAnnex-甲方合同附件、ArchiveAnnex-盖章版归档附件、NoArchiveAnnex-未盖章版归档附件、ScanArchiveAnnex-扫描件归档、NoticeAttachment-告知书附件、Subscription-认购书附件)*/
 type: string;
+}
+/**AppletsChannelRequest*/
+export interface AppletsChannelRequest {
+/**(必填)渠道商Id*/
+channelId: number;
+/**(必填)当前页*/
+pageNum: number;
+/**(必填)每页条数*/
+pageSize: number;
+/**项目Id*/
+projectId: number;
+}
+/**AppletsChannelResponse*/
+export interface AppletsChannelResponse {
+/**附件信息*/
+annexList: AnnexListVO[];
+/**协议编号*/
+contractNo: string;
+/**合同电子版*/
+electronicContractNo: string;
+/**undefined*/
+id: number;
+/**甲方ID*/
+partyCompanyId: number;
+/**甲方名字*/
+partyCompanyName: string;
+/**协议名称*/
+title: string;
 }
 /**CheckPaymentAmountRequest*/
 export interface CheckPaymentAmountRequest {
@@ -632,7 +694,7 @@ contractId: number;
 contractNo: string;
 /**操作人*/
 operatingId: number;
-/**操作类型(CustomerSigned-发起客户签署、CustomerSignedCallback-客户签署回调、PlatformSigning-发起平台签署、PlatformSigningCallback-平台签署回调、CustomerDetermined-客户确定、CustomerReturned-客户退回、PlatformDetermined-平台退回、PlatformReturned-平台退回、SignArchive-签署归档、GetVerificationCode-获取验证码、VerificationCode-短信验证码校验、NoticeInfoSupplement-告知书信息补充、IndustryManagementDetermine-告知书信息补充、CheckAmount-检查金额、NoticeEdit-告知书编辑、Archive-扫描件归档、OriginalArchive-原件归档、RelatedProjectCycle-关联立项周期、DeleteProjectAssociation-删除立项关联、DeleteAnnex-删除附件、InsertAnnex-新增附件、OaStateChange-OA状态更变、ChannelContractReview-渠道合同审核、ChannelContractDisallowance-渠道合同驳回、ChannelContractDistribute-渠道合同派发、ChannelContractWithdraw-渠道合同撤回、ChannelContractOriginalArchive-渠道合同原件归档、ChannelContractScannedFileArchive-渠道合同扫描件归档、ChannelContractDeleteAnnex-渠道合同删除附件、ChannelContractCreateAnnex-渠道合同新增附件、ChannelContractEdit-渠道合同编辑)*/
+/**操作类型(CustomerSigned-发起客户签署、CustomerSignedCallback-客户签署回调、PlatformSigning-发起平台签署、PlatformSigningCallback-平台签署回调、CustomerDetermined-客户确定、CustomerReturned-客户退回、PlatformDetermined-平台退回、PlatformReturned-平台退回、SignArchive-签署归档、GetVerificationCode-获取验证码、VerificationCode-短信验证码校验、NoticeInfoSupplement-告知书信息补充、IndustryManagementDetermine-告知书信息补充、CheckAmount-检查金额、NoticeEdit-告知书编辑、CreateRefund-创建退款信息、ListCreateNotice-列表创建补充协议、Archive-扫描件归档、OriginalArchive-原件归档、RelatedProjectCycle-关联立项周期、DeleteProjectAssociation-删除立项关联、DeleteAnnex-删除附件、InsertAnnex-新增附件、OaStateChange-OA状态更变、ChannelContractReview-渠道合同审核、ChannelContractDisallowance-渠道合同驳回、ChannelContractDistribute-渠道合同派发、ChannelContractWithdraw-渠道合同撤回、ChannelContractOriginalArchive-渠道合同原件归档、ChannelContractScannedFileArchive-渠道合同扫描件归档、ChannelContractDeleteAnnex-渠道合同删除附件、ChannelContractCreateAnnex-渠道合同新增附件、ChannelContractEdit-渠道合同编辑)*/
 operatingType: string;
 /**操作开始时间(yyyy-MM-dd HH:mm:ss)*/
 operationBeginTime: string;
@@ -663,7 +725,7 @@ id: number;
 operatingId: number;
 /**操作参数*/
 operatingParameters: string;
-/**操作类型(CustomerSigned-发起客户签署、CustomerSignedCallback-客户签署回调、PlatformSigning-发起平台签署、PlatformSigningCallback-平台签署回调、CustomerDetermined-客户确定、CustomerReturned-客户退回、PlatformDetermined-平台退回、PlatformReturned-平台退回、SignArchive-签署归档、GetVerificationCode-获取验证码、VerificationCode-短信验证码校验、NoticeInfoSupplement-告知书信息补充、IndustryManagementDetermine-告知书信息补充、CheckAmount-检查金额、NoticeEdit-告知书编辑、Archive-扫描件归档、OriginalArchive-原件归档、RelatedProjectCycle-关联立项周期、DeleteProjectAssociation-删除立项关联、DeleteAnnex-删除附件、InsertAnnex-新增附件、OaStateChange-OA状态更变、ChannelContractReview-渠道合同审核、ChannelContractDisallowance-渠道合同驳回、ChannelContractDistribute-渠道合同派发、ChannelContractWithdraw-渠道合同撤回、ChannelContractOriginalArchive-渠道合同原件归档、ChannelContractScannedFileArchive-渠道合同扫描件归档、ChannelContractDeleteAnnex-渠道合同删除附件、ChannelContractCreateAnnex-渠道合同新增附件、ChannelContractEdit-渠道合同编辑)*/
+/**操作类型(CustomerSigned-发起客户签署、CustomerSignedCallback-客户签署回调、PlatformSigning-发起平台签署、PlatformSigningCallback-平台签署回调、CustomerDetermined-客户确定、CustomerReturned-客户退回、PlatformDetermined-平台退回、PlatformReturned-平台退回、SignArchive-签署归档、GetVerificationCode-获取验证码、VerificationCode-短信验证码校验、NoticeInfoSupplement-告知书信息补充、IndustryManagementDetermine-告知书信息补充、CheckAmount-检查金额、NoticeEdit-告知书编辑、CreateRefund-创建退款信息、ListCreateNotice-列表创建补充协议、Archive-扫描件归档、OriginalArchive-原件归档、RelatedProjectCycle-关联立项周期、DeleteProjectAssociation-删除立项关联、DeleteAnnex-删除附件、InsertAnnex-新增附件、OaStateChange-OA状态更变、ChannelContractReview-渠道合同审核、ChannelContractDisallowance-渠道合同驳回、ChannelContractDistribute-渠道合同派发、ChannelContractWithdraw-渠道合同撤回、ChannelContractOriginalArchive-渠道合同原件归档、ChannelContractScannedFileArchive-渠道合同扫描件归档、ChannelContractDeleteAnnex-渠道合同删除附件、ChannelContractCreateAnnex-渠道合同新增附件、ChannelContractEdit-渠道合同编辑)*/
 operatingType: string;
 /**操作描述*/
 operationDescription: string;
@@ -816,6 +878,8 @@ customerPhone: string;
 customerType: string;
 /**邮箱*/
 email: string;
+/**id*/
+id: number;
 /**客户标志(Yes-是、No-否)*/
 isCustomer: string;
 }
@@ -830,25 +894,36 @@ ownerName: string;
 /**(必填)签署标示: 默认第一条数据时Yes(Yes-是、No-否)*/
 signingStatus: string;
 }
+/**CustomerNameResponse*/
+export interface CustomerNameResponse {
+/**(必填)业主名字*/
+ownerName: string;
+}
 /**DealInfoRequest*/
 export interface DealInfoRequest {
 /**(必填)主成交ID*/
 dealId: number;
-/**(必填)告知书ID*/
-noticeId: number;
+/**告知书ID*/
+noticeIds: number[];
+/**补充成交ID*/
+supplementDealId: number;
 }
 /**DealNotice*/
 export interface DealNotice {
 /**附件信息*/
 annexList: AnnexListVO[];
+/**成交ID*/
+dealId: number;
 /**告知书Id*/
 id: number;
 /**undefined*/
 noticeNo: string;
-/**告知书状态(WaitDetermine-信息待确认、WaitBeSigned-客户待签署、WaitPay-客户待支付、WaitReview-分公司业管待审核、BecomeEffective-已生效、Invalidation-失效)*/
+/**告知书状态(WaitDetermine-信息待确认、WaitBeSigned-客户待签署、WaitPay-客户待支付、Paid-客户已支付、BecomeEffective-已生效、Invalidation-失效)*/
 notificationStatus: string;
 /**告知书类型(Notification-优惠告知书、SupplementaryAgreement-补充协议、TerminationAgreement-终止协议、Confirmation-房号确定书、RefundApplication-退款申请书)*/
 notificationType: string;
+/**优惠告知书服务费*/
+paymentAmount: number;
 /**模版ID*/
 templateId: string;
 /**电子模板/纸质模板(PaperTemplate-纸质模板、ElectronicTemplate-电子模版)*/
@@ -860,13 +935,6 @@ export interface DealNoticeDetail {
 customerConvertResponse: CustomerConvertResponse[];
 /**告知书信息*/
 dealNotices: DealNotice[];
-}
-/**DeleteDealNoticeInfoRequest*/
-export interface DeleteDealNoticeInfoRequest {
-/**(必填)主成交ID*/
-dealId: number;
-/**(必填)补充报告ID*/
-supplementaryReportId: number;
 }
 /**Distribution*/
 export interface Distribution {
@@ -916,6 +984,8 @@ contractStartTime: string;
 contractSubtitle: string;
 /**合同主标题*/
 contractTitle: string;
+/**费用结算类型(DevelopAgenFee-开发商或者委托方代理费、CustomerServFee-客户服务费、DevelopAgenFeeOrCustServFee-开发商或者委托方代理费/客户服务费)*/
+costSettleType: string;
 /**创建时间(yyyy-MM-dd HH:mm:ss)*/
 createTime: string;
 /**创建用户*/
@@ -924,7 +994,7 @@ createUser: number;
 cycleId: number;
 /**负责人*/
 dealMan: string;
-/**负责人电话 */
+/**负责人电话*/
 dealTel: string;
 /**已删除*/
 deleted: number;
@@ -977,7 +1047,7 @@ export interface DistributionAnnexCreateList {
 attachmentSuffix: string;
 /**附件编码*/
 fileNo: string;
-/**附件类型(Stamped-战略已盖章扫描件、NotStamped-战略未盖章扫描件、ContractAnnex-甲方合同附件、ArchiveAnnex-盖章版归档附件、ScanArchiveAnnex-扫描件归档、NoticeAttachment-告知书附件)*/
+/**附件类型(Stamped-战略已盖章扫描件、NotStamped-战略未盖章扫描件、ContractAnnex-甲方合同附件、ArchiveAnnex-盖章版归档附件、NoArchiveAnnex-未盖章版归档附件、ScanArchiveAnnex-扫描件归档、NoticeAttachment-告知书附件、Subscription-认购书附件)*/
 type: string;
 }
 /**DistributionAnnexCreateRequest*/
@@ -1025,7 +1095,7 @@ channelCompanyId: number;
 channelContact: string;
 /**(必填)渠道联系人电话*/
 channelContactTel: string;
-/**(必填)渠道等级(BigPlatform-大平台、Big-大型中介/一级平台、Middle-中型中介/二级平台、Small-小型中介、Appoint-指定中介行、Strategic-战略合作方)*/
+/**(必填)渠道等级(BigPlatform-大平台、LargeIntermediary-大型中介、FirstPlatform-一级平台、MediumIntermediary-中型中介、SecondPlatform-二级平台、SmallIntermediary-小型中介)*/
 channelLevel: string;
 }
 /**DistributionChannelTypeResponse*/
@@ -1081,6 +1151,8 @@ contractStartTime: string;
 contractSubtitle: string;
 /**合同主标题*/
 contractTitle: string;
+/**费用结算类型(DevelopAgenFee-开发商或者委托方代理费、CustomerServFee-客户服务费、DevelopAgenFeeOrCustServFee-开发商或者委托方代理费/客户服务费)*/
+costSettleType: string;
 /**周期ID*/
 cycleId: number;
 /**负责人*/
@@ -1241,6 +1313,8 @@ contractStartTime: string;
 contractSubtitle: string;
 /**(必填)合同主标题*/
 contractTitle: string;
+/**(必填)费用结算类型(DevelopAgenFee-开发商或者委托方代理费、CustomerServFee-客户服务费、DevelopAgenFeeOrCustServFee-开发商或者委托方代理费/客户服务费)*/
+costSettleType: string;
 /**(必填)周期ID*/
 cycleId: number;
 /**(必填)指定中介行多选*/
@@ -1311,7 +1385,7 @@ condition: string;
 conditionId: number;
 /**佣金类型 SERVICE-服务、AGENT-代理(ServiceFee-服务费、AgencyFee-代理费)*/
 costTypeEnum: string;
-/**物业类型(Residence-住宅、WorkShop-厂房、Apartment-公寓、Villa-别墅、Shop-商铺、Office-写字楼、Parking-车位、Other-其他)*/
+/**物业类型(Residence-住宅、WorkShop-厂房、Apartment-公寓、Villa-别墅、Shop-商铺、Office-写字楼、Parking-车位、Warehouse-仓库、Other-其他)*/
 propertyEnum: string;
 /**派发条件*/
 sendContext: string;
@@ -1342,6 +1416,10 @@ distributionNo: string;
 export interface DistributionMxQueryResponseVO {
 /**垫佣情况：Yes 垫佣，No 未垫佣(Veto-否、One-1个月、Two-2个月、Three-3个月、FOUR-4个月、Five-5个月、Six-6个月、Seven-7个月、Eight-8个月、Nine-9个月、Ten-10个月、Eleven-11个月、Twelve-12个月)*/
 advancementSituation: string;
+/**渠道类型 BIG-大行/大平台 MIDDLE-中行/中平台 SMALL-小行/小平台(BigPlatform-大平台、Big-大型中介/一级平台、Middle-中型中介/二级平台、Small-小型中介、Appoint-指定中介行、Strategic-战略合作方)*/
+channelEnum: string;
+/**渠道等级(BigPlatform-大平台、LargeIntermediary-大型中介、FirstPlatform-一级平台、MediumIntermediary-中型中介、SecondPlatform-二级平台、SmallIntermediary-小型中介)*/
+channelLevel: string;
 /**收派套餐条件*/
 condition: string;
 /**条件ID*/
@@ -1350,7 +1428,7 @@ conditionId: number;
 contractNo: string;
 /**佣金类型 SERVICE-服务、AGENT-代理(ServiceFee-服务费、AgencyFee-代理费)*/
 costTypeEnum: string;
-/**物业类型(Residence-住宅、WorkShop-厂房、Apartment-公寓、Villa-别墅、Shop-商铺、Office-写字楼、Parking-车位、Other-其他)*/
+/**物业类型(Residence-住宅、WorkShop-厂房、Apartment-公寓、Villa-别墅、Shop-商铺、Office-写字楼、Parking-车位、Warehouse-仓库、Other-其他)*/
 propertyEnum: string;
 /**派发条件*/
 sendContext: string;
@@ -1365,7 +1443,7 @@ distributionId: number;
 distributionNo: string;
 /**操作人*/
 operatingId: number;
-/**操作类型(CustomerSigned-发起客户签署、CustomerSignedCallback-客户签署回调、PlatformSigning-发起平台签署、PlatformSigningCallback-平台签署回调、CustomerDetermined-客户确定、CustomerReturned-客户退回、PlatformDetermined-平台退回、PlatformReturned-平台退回、SignArchive-签署归档、GetVerificationCode-获取验证码、VerificationCode-短信验证码校验、NoticeInfoSupplement-告知书信息补充、IndustryManagementDetermine-告知书信息补充、CheckAmount-检查金额、NoticeEdit-告知书编辑、Archive-扫描件归档、OriginalArchive-原件归档、RelatedProjectCycle-关联立项周期、DeleteProjectAssociation-删除立项关联、DeleteAnnex-删除附件、InsertAnnex-新增附件、OaStateChange-OA状态更变、ChannelContractReview-渠道合同审核、ChannelContractDisallowance-渠道合同驳回、ChannelContractDistribute-渠道合同派发、ChannelContractWithdraw-渠道合同撤回、ChannelContractOriginalArchive-渠道合同原件归档、ChannelContractScannedFileArchive-渠道合同扫描件归档、ChannelContractDeleteAnnex-渠道合同删除附件、ChannelContractCreateAnnex-渠道合同新增附件、ChannelContractEdit-渠道合同编辑)*/
+/**操作类型(CustomerSigned-发起客户签署、CustomerSignedCallback-客户签署回调、PlatformSigning-发起平台签署、PlatformSigningCallback-平台签署回调、CustomerDetermined-客户确定、CustomerReturned-客户退回、PlatformDetermined-平台退回、PlatformReturned-平台退回、SignArchive-签署归档、GetVerificationCode-获取验证码、VerificationCode-短信验证码校验、NoticeInfoSupplement-告知书信息补充、IndustryManagementDetermine-告知书信息补充、CheckAmount-检查金额、NoticeEdit-告知书编辑、CreateRefund-创建退款信息、ListCreateNotice-列表创建补充协议、Archive-扫描件归档、OriginalArchive-原件归档、RelatedProjectCycle-关联立项周期、DeleteProjectAssociation-删除立项关联、DeleteAnnex-删除附件、InsertAnnex-新增附件、OaStateChange-OA状态更变、ChannelContractReview-渠道合同审核、ChannelContractDisallowance-渠道合同驳回、ChannelContractDistribute-渠道合同派发、ChannelContractWithdraw-渠道合同撤回、ChannelContractOriginalArchive-渠道合同原件归档、ChannelContractScannedFileArchive-渠道合同扫描件归档、ChannelContractDeleteAnnex-渠道合同删除附件、ChannelContractCreateAnnex-渠道合同新增附件、ChannelContractEdit-渠道合同编辑)*/
 operatingType: string;
 /**操作开始时间(yyyy-MM-dd HH:mm:ss)*/
 operationBeginTime: string;
@@ -1390,7 +1468,7 @@ id: number;
 operatingId: number;
 /**操作参数*/
 operatingParameters: string;
-/**操作类型(CustomerSigned-发起客户签署、CustomerSignedCallback-客户签署回调、PlatformSigning-发起平台签署、PlatformSigningCallback-平台签署回调、CustomerDetermined-客户确定、CustomerReturned-客户退回、PlatformDetermined-平台退回、PlatformReturned-平台退回、SignArchive-签署归档、GetVerificationCode-获取验证码、VerificationCode-短信验证码校验、NoticeInfoSupplement-告知书信息补充、IndustryManagementDetermine-告知书信息补充、CheckAmount-检查金额、NoticeEdit-告知书编辑、Archive-扫描件归档、OriginalArchive-原件归档、RelatedProjectCycle-关联立项周期、DeleteProjectAssociation-删除立项关联、DeleteAnnex-删除附件、InsertAnnex-新增附件、OaStateChange-OA状态更变、ChannelContractReview-渠道合同审核、ChannelContractDisallowance-渠道合同驳回、ChannelContractDistribute-渠道合同派发、ChannelContractWithdraw-渠道合同撤回、ChannelContractOriginalArchive-渠道合同原件归档、ChannelContractScannedFileArchive-渠道合同扫描件归档、ChannelContractDeleteAnnex-渠道合同删除附件、ChannelContractCreateAnnex-渠道合同新增附件、ChannelContractEdit-渠道合同编辑)*/
+/**操作类型(CustomerSigned-发起客户签署、CustomerSignedCallback-客户签署回调、PlatformSigning-发起平台签署、PlatformSigningCallback-平台签署回调、CustomerDetermined-客户确定、CustomerReturned-客户退回、PlatformDetermined-平台退回、PlatformReturned-平台退回、SignArchive-签署归档、GetVerificationCode-获取验证码、VerificationCode-短信验证码校验、NoticeInfoSupplement-告知书信息补充、IndustryManagementDetermine-告知书信息补充、CheckAmount-检查金额、NoticeEdit-告知书编辑、CreateRefund-创建退款信息、ListCreateNotice-列表创建补充协议、Archive-扫描件归档、OriginalArchive-原件归档、RelatedProjectCycle-关联立项周期、DeleteProjectAssociation-删除立项关联、DeleteAnnex-删除附件、InsertAnnex-新增附件、OaStateChange-OA状态更变、ChannelContractReview-渠道合同审核、ChannelContractDisallowance-渠道合同驳回、ChannelContractDistribute-渠道合同派发、ChannelContractWithdraw-渠道合同撤回、ChannelContractOriginalArchive-渠道合同原件归档、ChannelContractScannedFileArchive-渠道合同扫描件归档、ChannelContractDeleteAnnex-渠道合同删除附件、ChannelContractCreateAnnex-渠道合同新增附件、ChannelContractEdit-渠道合同编辑)*/
 operatingType: string;
 /**操作描述*/
 operationDescription: string;
@@ -1444,6 +1522,8 @@ contractStartTime: string;
 contractSubtitle: string;
 /**合同主标题*/
 contractTitle: string;
+/**费用结算类型*/
+costSettleType: string;
 /**周期ID*/
 cycleId: number;
 /**负责人*/
@@ -1592,6 +1672,15 @@ thirdOrderNo: string;
 /**时间戳*/
 timestamp: number;
 }
+/**IndustryManagementRequest*/
+export interface IndustryManagementRequest {
+/**(必填)告知书Id*/
+id: number;
+/**(必填)审核意见*/
+reviewOpinion: string;
+/**(必填)审核状态(Yes-是、No-否)*/
+status: string;
+}
 /**MergeSigningRequest*/
 export interface MergeSigningRequest {
 /**(必填)告知书ID列表*/
@@ -1603,6 +1692,8 @@ export interface NoticeAgreementCreateRequest {
 cycleId: number;
 /**(必填)成交报告ID*/
 dealId: number;
+/**服务费是否免收(Yes-是、No-否)*/
+exempt: string;
 /**新房号：房号发生改变的时候，参数必传*/
 newHouseId: number;
 /**新栋座: 房号发生改变的时候，参数必传*/
@@ -1628,8 +1719,12 @@ export interface NoticeConfirmationRequest {
 buyUnit: number;
 /**(必填)成交报告ID*/
 dealId: number;
+/**成交信息*/
+noticeRefundItemRequest: NoticeRefundItemRequest;
 /**(必填)房号*/
 roomNumberId: number;
+/**认筹状态：Yes 认愁 No 不是认筹(Yes-是、No-否)*/
+status: string;
 }
 /**NoticeCreateRequestVO*/
 export interface NoticeCreateRequestVO {
@@ -1641,10 +1736,16 @@ channel: string;
 cycleId: number;
 /**成交报告ID*/
 dealId: number;
+/**成交审核状态(Yes-是、No-否)*/
+dealReviewStatus: string;
+/**认购描述 1 = 显示 2 = 隐藏*/
+exPreferentialItem: number;
 /**优惠方式说明*/
 explain: string;
 /**告知书附件*/
 noticeAttachmentList: AnnexEditVO[];
+/**主优惠告知书ID*/
+originalDiscountNoticeId: number;
 /**业主信息不能为空*/
 ownerList: NoticeOwnerEditVO[];
 /**业主类型(Personal-个人、Enterprise-企业)*/
@@ -1657,6 +1758,8 @@ promotionMethod: string;
 refundDays: number;
 /**房号*/
 roomNumberId: number;
+/**补充成交报告ID*/
+supplementDealId: number;
 /**电子模板/纸质模板(PaperTemplate-纸质模板、ElectronicTemplate-电子模版)*/
 templateType: string;
 }
@@ -1668,7 +1771,7 @@ buyUnit: number;
 dealId: number;
 /**(必填)告知书ID*/
 noticeId: number;
-/**(必填)状态(WaitDetermine-信息待确认、WaitBeSigned-客户待签署、WaitPay-客户待支付、WaitReview-分公司业管待审核、BecomeEffective-已生效、Invalidation-失效)*/
+/**(必填)状态(WaitDetermine-信息待确认、WaitBeSigned-客户待签署、WaitPay-客户待支付、Paid-客户已支付、BecomeEffective-已生效、Invalidation-失效)*/
 notificationStatus: string;
 /**(必填)新房号*/
 roomNumberId: number;
@@ -1677,13 +1780,15 @@ roomNumberId: number;
 export interface NoticeCustomerInformationResponse {
 /**客户信息*/
 customerInformationList: CustomerInformation[];
+/**成交ID*/
+dealId: number;
 /**告知书附件*/
 noticeAttachmentList: AnnexListVO[];
 /**告知书ID*/
 noticeId: number;
 /**告知书编号*/
 noticeNo: string;
-/**告知书状态(WaitDetermine-信息待确认、WaitBeSigned-客户待签署、WaitPay-客户待支付、WaitReview-分公司业管待审核、BecomeEffective-已生效、Invalidation-失效)*/
+/**告知书状态(WaitDetermine-信息待确认、WaitBeSigned-客户待签署、WaitPay-客户待支付、Paid-客户已支付、BecomeEffective-已生效、Invalidation-失效)*/
 notificationStatus: string;
 /**告知书类型(Notification-优惠告知书、SupplementaryAgreement-补充协议、TerminationAgreement-终止协议、Confirmation-房号确定书、RefundApplication-退款申请书)*/
 notificationType: string;
@@ -1698,8 +1803,20 @@ templateType: string;
 }
 /**NoticeDealCreate*/
 export interface NoticeDealCreate {
+/**退款申请书银行账户*/
+account: string;
+/**退款申请书开户人名字*/
+accountHolderName: string;
 /**附件列表*/
 annexList: AnnexEditVO[];
+/**退款申请书银行名字*/
+bankName: string;
+/**退款申请书支行名称*/
+branchName: string;
+/**退款申请书市名字*/
+cityName: string;
+/**认购描述 1 = 显示 2 = 隐藏*/
+exPreferentialItem: number;
 /**优惠方式说明*/
 explain: string;
 /**(必填)告知书类型(Notification-优惠告知书、SupplementaryAgreement-补充协议、TerminationAgreement-终止协议、Confirmation-房号确定书、RefundApplication-退款申请书)*/
@@ -1708,6 +1825,8 @@ notificationType: string;
 paymentAmount: number;
 /**(必填)优惠选择方式  自定义：Manual  选择： Automatic (Manual-自定义、Automatic-选择)*/
 promotionMethod: string;
+/**退款申请书省名字*/
+provinceName: string;
 /**原因： 终止协议必填(DiscountChange-换房涉及优惠折扣变更、Rename-更名、InformationError-原购房优惠告知书信息填写错误、checkOut-退房、ServiceFeeReduction-服务费减免、other-其他)*/
 reason: string;
 /**原因描述：终止协议必填*/
@@ -1743,7 +1862,7 @@ id: number;
 noticeAttachmentList: AnnexListVO[];
 /**告知书编号*/
 noticeNo: string;
-/**告知书状态(WaitDetermine-信息待确认、WaitBeSigned-客户待签署、WaitPay-客户待支付、WaitReview-分公司业管待审核、BecomeEffective-已生效、Invalidation-失效)*/
+/**告知书状态(WaitDetermine-信息待确认、WaitBeSigned-客户待签署、WaitPay-客户待支付、Paid-客户已支付、BecomeEffective-已生效、Invalidation-失效)*/
 notificationStatus: string;
 /**告知书类型(Notification-优惠告知书、SupplementaryAgreement-补充协议、TerminationAgreement-终止协议、Confirmation-房号确定书、RefundApplication-退款申请书)*/
 notificationType: string;
@@ -1771,14 +1890,20 @@ projectId: number;
 projectName: string;
 /**优惠方式-手动填写/自动选择(Manual-自定义、Automatic-选择)*/
 promotionMethod: string;
-/**物业类型(Residence-住宅、WorkShop-厂房、Apartment-公寓、Villa-别墅、Shop-商铺、Office-写字楼、Parking-车位、Other-其他)*/
+/**物业类型(Residence-住宅、WorkShop-厂房、Apartment-公寓、Villa-别墅、Shop-商铺、Office-写字楼、Parking-车位、Warehouse-仓库、Other-其他)*/
 propertyType: string;
 /**退款天数*/
 refundDays: number;
+/**审核意见*/
+reviewOpinion: string;
+/**业管审核状态(Pending-待审核、Audited-已审核)*/
+reviewStatus: string;
 /**房号*/
 roomNumberId: number;
 /**房号名字*/
 roomNumberName: string;
+/**认购书附件*/
+subscriptionAnnex: AnnexListVO[];
 /**附件编号*/
 templateId: string;
 /**电子模板/纸质模板(PaperTemplate-纸质模板、ElectronicTemplate-电子模版)*/
@@ -1817,12 +1942,16 @@ unpaid: number;
 export interface NoticeEditRequestVo {
 /**栋座*/
 buyUnit: number;
+/**周期ID*/
+cycleId: number;
 /**优惠方式说明*/
 explain: string;
 /**告知书附件*/
 noticeAttachmentList: AnnexEditVO[];
 /**优惠告知书ID*/
 noticeId: number;
+/**状态(WaitDetermine-信息待确认、WaitBeSigned-客户待签署、WaitPay-客户待支付、Paid-客户已支付、BecomeEffective-已生效、Invalidation-失效)*/
+notificationStatus: string;
 /**业主信息列表*/
 ownerEditList: NoticeOwnerEditVO[];
 /**业主类型(Personal-个人、Enterprise-企业)*/
@@ -1831,6 +1960,8 @@ ownerType: string;
 paymentAmount: number;
 /**优惠方式-手动填写/自动选择(Manual-自定义、Automatic-选择)*/
 promotionMethod: string;
+/**退款天数*/
+refundDays: number;
 /**房号*/
 roomNumberId: number;
 }
@@ -1852,6 +1983,8 @@ noticeNo: string;
 notificationStatuses: string[];
 /**类型*/
 notificationTypes: string[];
+/**数据权限*/
+orgIds: number[];
 /**客户电话*/
 ownerMobile: string;
 /**客户*/
@@ -1876,18 +2009,69 @@ ownerList: NoticeOwnerUpdateVO[];
 /**房号*/
 roomNumberId: number;
 }
+/**NoticeListCreateRequest*/
+export interface NoticeListCreateRequest {
+/**退款申请书银行账户*/
+account: string;
+/**退款申请书开户人名字*/
+accountHolderName: string;
+/**退款申请书银行名字*/
+bankName: string;
+/**退款申请书支行名称*/
+branchName: string;
+/**栋座*/
+buyUnit: number;
+/**退款申请书市名字*/
+cityName: string;
+/**周期Id*/
+cycleId: number;
+/**认购描述 1 = 显示 2 = 隐藏*/
+exPreferentialItem: number;
+/**优惠方式说明*/
+explain: string;
+/**告知书附件*/
+noticeAttachmentList: AnnexEditVO[];
+/**(必填)告知书ID*/
+noticeId: number;
+/**(必填)告知书类型(Notification-优惠告知书、SupplementaryAgreement-补充协议、TerminationAgreement-终止协议、Confirmation-房号确定书、RefundApplication-退款申请书)*/
+notificationType: string;
+/**业主信息不能为空*/
+ownerList: NoticeOwnerEditVO[];
+/**业主类型(Personal-个人、Enterprise-企业)*/
+ownerType: string;
+/**服务费缴纳金额*/
+paymentAmount: number;
+/**优惠方式-手动填写/自动选择(Manual-自定义、Automatic-选择)*/
+promotionMethod: string;
+/**退款申请书省名字*/
+provinceName: string;
+/**原因： 终止协议必填(DiscountChange-换房涉及优惠折扣变更、Rename-更名、InformationError-原购房优惠告知书信息填写错误、checkOut-退房、ServiceFeeReduction-服务费减免、other-其他)*/
+reason: string;
+/**原因描述：终止协议必填*/
+reasonDescription: string;
+/**退款金额*/
+refundableAmount: number;
+/**房号*/
+roomNumberId: number;
+/**(必填)电子模板/纸质模板(PaperTemplate-纸质模板、ElectronicTemplate-电子模版)*/
+templateType: string;
+}
 /**NoticeListResponseVo*/
 export interface NoticeListResponseVo {
 /**告知书ID*/
 id: number;
+/**告知书附件*/
+noticeAttachmentList: AnnexListVO[];
 /**告知书编号*/
 noticeNo: string;
-/**告知书状态(WaitDetermine-信息待确认、WaitBeSigned-客户待签署、WaitPay-客户待支付、WaitReview-分公司业管待审核、BecomeEffective-已生效、Invalidation-失效)*/
+/**告知书状态(WaitDetermine-信息待确认、WaitBeSigned-客户待签署、WaitPay-客户待支付、Paid-客户已支付、BecomeEffective-已生效、Invalidation-失效)*/
 notificationStatus: string;
 /**告知书类型(Notification-优惠告知书、SupplementaryAgreement-补充协议、TerminationAgreement-终止协议、Confirmation-房号确定书、RefundApplication-退款申请书)*/
 notificationType: string;
 /**模版ID*/
 templateId: string;
+/**告知书模版类型(PaperTemplate-纸质模板、ElectronicTemplate-电子模版)*/
+templateType: string;
 }
 /**NoticeLogPageResponse*/
 export interface NoticeLogPageResponse {
@@ -1903,7 +2087,7 @@ notificationType: string;
 operatingParameters: string;
 /**操作时间(yyyy-MM-dd HH:mm:ss)*/
 operatingTime: string;
-/**操作类型(CustomerSigned-发起客户签署、CustomerSignedCallback-客户签署回调、PlatformSigning-发起平台签署、PlatformSigningCallback-平台签署回调、CustomerDetermined-客户确定、CustomerReturned-客户退回、PlatformDetermined-平台退回、PlatformReturned-平台退回、SignArchive-签署归档、GetVerificationCode-获取验证码、VerificationCode-短信验证码校验、NoticeInfoSupplement-告知书信息补充、IndustryManagementDetermine-告知书信息补充、CheckAmount-检查金额、NoticeEdit-告知书编辑、Archive-扫描件归档、OriginalArchive-原件归档、RelatedProjectCycle-关联立项周期、DeleteProjectAssociation-删除立项关联、DeleteAnnex-删除附件、InsertAnnex-新增附件、OaStateChange-OA状态更变、ChannelContractReview-渠道合同审核、ChannelContractDisallowance-渠道合同驳回、ChannelContractDistribute-渠道合同派发、ChannelContractWithdraw-渠道合同撤回、ChannelContractOriginalArchive-渠道合同原件归档、ChannelContractScannedFileArchive-渠道合同扫描件归档、ChannelContractDeleteAnnex-渠道合同删除附件、ChannelContractCreateAnnex-渠道合同新增附件、ChannelContractEdit-渠道合同编辑)*/
+/**操作类型(CustomerSigned-发起客户签署、CustomerSignedCallback-客户签署回调、PlatformSigning-发起平台签署、PlatformSigningCallback-平台签署回调、CustomerDetermined-客户确定、CustomerReturned-客户退回、PlatformDetermined-平台退回、PlatformReturned-平台退回、SignArchive-签署归档、GetVerificationCode-获取验证码、VerificationCode-短信验证码校验、NoticeInfoSupplement-告知书信息补充、IndustryManagementDetermine-告知书信息补充、CheckAmount-检查金额、NoticeEdit-告知书编辑、CreateRefund-创建退款信息、ListCreateNotice-列表创建补充协议、Archive-扫描件归档、OriginalArchive-原件归档、RelatedProjectCycle-关联立项周期、DeleteProjectAssociation-删除立项关联、DeleteAnnex-删除附件、InsertAnnex-新增附件、OaStateChange-OA状态更变、ChannelContractReview-渠道合同审核、ChannelContractDisallowance-渠道合同驳回、ChannelContractDistribute-渠道合同派发、ChannelContractWithdraw-渠道合同撤回、ChannelContractOriginalArchive-渠道合同原件归档、ChannelContractScannedFileArchive-渠道合同扫描件归档、ChannelContractDeleteAnnex-渠道合同删除附件、ChannelContractCreateAnnex-渠道合同新增附件、ChannelContractEdit-渠道合同编辑)*/
 operatingType: string;
 /**操作描述*/
 operationDescription: string;
@@ -1928,7 +2112,7 @@ notificationType: string;
 operatingBeginTime: string;
 /**操作结束时间(yyyy-MM-dd HH:mm:ss)*/
 operatingEndTime: string;
-/**操作类型(CustomerSigned-发起客户签署、CustomerSignedCallback-客户签署回调、PlatformSigning-发起平台签署、PlatformSigningCallback-平台签署回调、CustomerDetermined-客户确定、CustomerReturned-客户退回、PlatformDetermined-平台退回、PlatformReturned-平台退回、SignArchive-签署归档、GetVerificationCode-获取验证码、VerificationCode-短信验证码校验、NoticeInfoSupplement-告知书信息补充、IndustryManagementDetermine-告知书信息补充、CheckAmount-检查金额、NoticeEdit-告知书编辑、Archive-扫描件归档、OriginalArchive-原件归档、RelatedProjectCycle-关联立项周期、DeleteProjectAssociation-删除立项关联、DeleteAnnex-删除附件、InsertAnnex-新增附件、OaStateChange-OA状态更变、ChannelContractReview-渠道合同审核、ChannelContractDisallowance-渠道合同驳回、ChannelContractDistribute-渠道合同派发、ChannelContractWithdraw-渠道合同撤回、ChannelContractOriginalArchive-渠道合同原件归档、ChannelContractScannedFileArchive-渠道合同扫描件归档、ChannelContractDeleteAnnex-渠道合同删除附件、ChannelContractCreateAnnex-渠道合同新增附件、ChannelContractEdit-渠道合同编辑)*/
+/**操作类型(CustomerSigned-发起客户签署、CustomerSignedCallback-客户签署回调、PlatformSigning-发起平台签署、PlatformSigningCallback-平台签署回调、CustomerDetermined-客户确定、CustomerReturned-客户退回、PlatformDetermined-平台退回、PlatformReturned-平台退回、SignArchive-签署归档、GetVerificationCode-获取验证码、VerificationCode-短信验证码校验、NoticeInfoSupplement-告知书信息补充、IndustryManagementDetermine-告知书信息补充、CheckAmount-检查金额、NoticeEdit-告知书编辑、CreateRefund-创建退款信息、ListCreateNotice-列表创建补充协议、Archive-扫描件归档、OriginalArchive-原件归档、RelatedProjectCycle-关联立项周期、DeleteProjectAssociation-删除立项关联、DeleteAnnex-删除附件、InsertAnnex-新增附件、OaStateChange-OA状态更变、ChannelContractReview-渠道合同审核、ChannelContractDisallowance-渠道合同驳回、ChannelContractDistribute-渠道合同派发、ChannelContractWithdraw-渠道合同撤回、ChannelContractOriginalArchive-渠道合同原件归档、ChannelContractScannedFileArchive-渠道合同扫描件归档、ChannelContractDeleteAnnex-渠道合同删除附件、ChannelContractCreateAnnex-渠道合同新增附件、ChannelContractEdit-渠道合同编辑)*/
 operatingType: string;
 /**操作人*/
 operatorId: number;
@@ -1939,6 +2123,8 @@ pageSize: number;
 }
 /**NoticeOwner*/
 export interface NoticeOwner {
+/**e签宝账号ID*/
+accountId: string;
 /**创建时间(yyyy-MM-dd HH:mm:ss)*/
 createTime: string;
 /**创建用户*/
@@ -1955,6 +2141,10 @@ ownerCertificateNo: string;
 ownerMobile: string;
 /**业主名字*/
 ownerName: string;
+/**签署结果 2:签署完成 3:失败 4:拒签*/
+signResult: number;
+/**签署地址*/
+signedAddress: string;
 /**签署标示(Yes-是、No-否)*/
 signingStatus: string;
 /**更新时间(yyyy-MM-dd HH:mm:ss)*/
@@ -1977,6 +2167,8 @@ ownerType: string;
 }
 /**NoticeOwnerCertificationVo*/
 export interface NoticeOwnerCertificationVo {
+/**e签宝账号ID*/
+accountId: string;
 /**流程ID*/
 flowId: string;
 /**告知书ID*/
@@ -1987,6 +2179,10 @@ ownerCertificateNo: string;
 ownerMobile: string;
 /**业主名字*/
 ownerName: string;
+/**签署地址*/
+signedAddress: string;
+/**签署标示(Yes-是、No-否)*/
+signingStatus: string;
 }
 /**NoticeOwnerEditVO*/
 export interface NoticeOwnerEditVO {
@@ -2021,6 +2217,8 @@ ownerName: string;
 }
 /**NoticeOwnerVO*/
 export interface NoticeOwnerVO {
+/**e签宝账号ID*/
+accountId: string;
 /**创建时间(yyyy-MM-dd HH:mm:ss)*/
 createTime: string;
 /**创建用户*/
@@ -2037,6 +2235,10 @@ ownerCertificateNo: string;
 ownerMobile: string;
 /**业主名字*/
 ownerName: string;
+/**签署结果 2:签署完成 3:失败 4:拒签*/
+signResult: number;
+/**签署地址*/
+signedAddress: string;
 /**签署标示(Yes-是、No-否)*/
 signingStatus: string;
 /**更新时间(yyyy-MM-dd HH:mm:ss)*/
@@ -2086,11 +2288,13 @@ cycleId: number;
 cycleName: string;
 /**已删除*/
 deleted: number;
+/**补充协议是否完结(Yes-是、No-否)*/
+finish: string;
 /**undefined*/
 id: number;
 /**编号*/
 noticeNo: string;
-/**状态(WaitDetermine-信息待确认、WaitBeSigned-客户待签署、WaitPay-客户待支付、WaitReview-分公司业管待审核、BecomeEffective-已生效、Invalidation-失效)*/
+/**状态(WaitDetermine-信息待确认、WaitBeSigned-客户待签署、WaitPay-客户待支付、Paid-客户已支付、BecomeEffective-已生效、Invalidation-失效)*/
 notificationStatus: string;
 /**类型(Notification-优惠告知书、SupplementaryAgreement-补充协议、TerminationAgreement-终止协议、Confirmation-房号确定书、RefundApplication-退款申请书)*/
 notificationType: string;
@@ -2104,6 +2308,8 @@ partyAName: string;
 projectId: number;
 /**项目名称*/
 projectName: string;
+/**业管审核状态(Pending-待审核、Audited-已审核)*/
+reviewStatus: string;
 /**房号*/
 roomNumberId: number;
 /**房号名字*/
@@ -2155,7 +2361,7 @@ ownerWeChatList: NoticeOwnerWeChatResponseVO[];
 projectId: number;
 /**项目名字*/
 projectName: string;
-/**物业信息(Residence-住宅、WorkShop-厂房、Apartment-公寓、Villa-别墅、Shop-商铺、Office-写字楼、Parking-车位、Other-其他)*/
+/**物业信息(Residence-住宅、WorkShop-厂房、Apartment-公寓、Villa-别墅、Shop-商铺、Office-写字楼、Parking-车位、Warehouse-仓库、Other-其他)*/
 propertyType: string;
 /**房号ID*/
 roomNumberId: number;
@@ -2168,6 +2374,16 @@ export interface NoticeQueryRequestVo {
 noticeId: number;
 /**业主联系电话*/
 ownerMobile: string;
+/**业主名字*/
+ownerName: string;
+/**(必填)当前页*/
+pageNum: number;
+/**(必填)每页条数*/
+pageSize: number;
+/**项目ID*/
+projectId: number;
+/**业管审核状态(Pending-待审核、Audited-已审核)*/
+reviewStatus: string;
 /**房号*/
 roomNumberId: number;
 }
@@ -2181,6 +2397,8 @@ beginTime: string;
 buyUnit: number;
 /**立项周期主键*/
 cycleId: number;
+/**成交ID*/
+dealId: number;
 /**优惠期限结束时间(yyyy-MM-dd)*/
 endTime: string;
 /**优惠告知书编号*/
@@ -2201,10 +2419,69 @@ pageSize: number;
 partyAId: number;
 /**项目ID*/
 projectId: number;
+/**业管审核状态(Pending-待审核、Audited-已审核)*/
+reviewStatus: string;
 /**房号*/
 roomNumberId: number;
 /**模版类型(PaperTemplate-纸质模板、ElectronicTemplate-电子模版)*/
 templateType: string;
+}
+/**NoticeRefundItemRequest*/
+export interface NoticeRefundItemRequest {
+/**服务费实收金额*/
+actualAmount: number;
+/**退款金额*/
+amount: number;
+/**附件集合*/
+attachments: RefundItemAttachment[];
+/**栋座ID*/
+buildingId: number;
+/**优惠告知书ID*/
+businessId: number;
+/**(必填)栋座*/
+buyUnit: number;
+/**对外拆佣总合*/
+commission: number;
+/**业绩确认时间(yyyy-MM-dd HH:mm:ss)*/
+confirmationTime: string;
+/**合同类型(DistriDeal-分销成交、NaturalVisitDeal-自然来访成交、SelfChannelDeal-自渠成交)*/
+contType: string;
+/**成交客户姓名*/
+dealCustomerName: string;
+/**成交单位*/
+dealHouse: string;
+/**成交ID*/
+dealId: number;
+/**成交报告编号*/
+dealNo: string;
+/**退款项来源-暂时取消必填(NOTICE-优惠告知书发起补充协议发起退款申请、PerformanceChanges-补充成交报告业绩变更、CheckOutRefund-补充成交退房退款)*/
+itemSource: string;
+/**优惠告知书收款金额*/
+noticeAmount: number;
+/**组织id*/
+orgId: number;
+/**结佣付款单号集合*/
+payVOs: RefundItemPayVO[];
+/**项目id*/
+proId: number;
+/**服务费应收金额*/
+receivableAmount: number;
+/**退款人账号*/
+refundAccount: string;
+/**退款申请书ID*/
+refundApplyId: number;
+/**退款人开户行*/
+refundBankName: string;
+/**优惠告知书业主姓名*/
+refundItemUser: string;
+/**退款人姓名*/
+refundName: string;
+/**成交房号ID*/
+roomId: number;
+/**(必填)房号*/
+roomNumberId: number;
+/**服务费未收金额*/
+uncollectedAmount: number;
 }
 /**NoticeSignRequestVo*/
 export interface NoticeSignRequestVo {
@@ -2259,12 +2536,16 @@ createUser: number;
 cycleId: number;
 /**成交报告ID*/
 dealId: number;
+/**成交审核状态(Yes-是、No-否)*/
+dealReviewStatus: string;
 /**已删除*/
 deleted: number;
 /**生效时间(yyyy-MM-dd HH:mm:ss)*/
 effectiveTime: string;
 /**优惠期限结束时间(yyyy-MM-dd)*/
 endTime: string;
+/**认购描述 1 = 显示 2 = 隐藏*/
+exPreferentialItem: number;
 /**优惠方式说明*/
 explain: string;
 /**告知书ID*/
@@ -2281,12 +2562,18 @@ historicalBuyUnit: number;
 historicalRoomNumberId: number;
 /**主键*/
 id: number;
+/**是否有创建退款项(Yes-是、No-否)*/
+isRefundItem: string;
 /**通知书编号*/
 noticeNo: string;
-/**状态(WaitDetermine-信息待确认、WaitBeSigned-客户待签署、WaitPay-客户待支付、WaitReview-分公司业管待审核、BecomeEffective-已生效、Invalidation-失效)*/
+/**状态(WaitDetermine-信息待确认、WaitBeSigned-客户待签署、WaitPay-客户待支付、Paid-客户已支付、BecomeEffective-已生效、Invalidation-失效)*/
 notificationStatus: string;
 /**告知书类型(Notification-优惠告知书、SupplementaryAgreement-补充协议、TerminationAgreement-终止协议、Confirmation-房号确定书、RefundApplication-退款申请书)*/
 notificationType: string;
+/**事业部ID*/
+organizationId: number;
+/**主优惠告知书ID*/
+originalDiscountNoticeId: number;
 /**业主类型(Personal-个人、Enterprise-企业)*/
 ownerType: string;
 /**甲方*/
@@ -2309,14 +2596,18 @@ reasonDescription: string;
 refundAmount: number;
 /**甲方退款天数*/
 refundDays: number;
-/**退款状态(Yes-是、No-否)*/
-refundStatus: string;
-/**退款时间(yyyy-MM-dd HH:mm:ss)*/
-refundTime: string;
+/**审核意见*/
+reviewOpinion: string;
+/**业管审核状态(Pending-待审核、Audited-已审核)*/
+reviewStatus: string;
 /**房号*/
 roomNumberId: number;
+/**签署类型：客户签署，平台签署*/
+signType: string;
 /**签署时间(yyyy-MM-dd HH:mm:ss)*/
 signedTime: string;
+/**补充成交ID*/
+supplementDealId: number;
 /**模版ID*/
 templateId: string;
 /**电子模板/纸质模板(PaperTemplate-纸质模板、ElectronicTemplate-电子模版)*/
@@ -2325,6 +2616,35 @@ templateType: string;
 updateTime: string;
 /**更新用户*/
 updateUser: number;
+}
+/**NoticeWeChatCustomerQueryResponse*/
+export interface NoticeWeChatCustomerQueryResponse {
+/**栋座*/
+buyUnit: number;
+/**栋座名字*/
+buyUnitName: string;
+/**优惠描述说明*/
+explain: string;
+/**优惠告知书ID*/
+noticeId: number;
+/**告知书状态(WaitDetermine-信息待确认、WaitBeSigned-客户待签署、WaitPay-客户待支付、Paid-客户已支付、BecomeEffective-已生效、Invalidation-失效)*/
+notificationStatus: string;
+/**服务费金额*/
+paymentAmount: number;
+/**项目ID*/
+projectId: number;
+/**项目名字*/
+projectName: string;
+/**物业信息*/
+propertyType: string;
+/**业管审核状态(Pending-待审核、Audited-已审核)*/
+reviewStatus: string;
+/**房号ID*/
+roomNumberId: number;
+/**房号中文*/
+roomNumberName: string;
+/**补充告知书信息*/
+supplementNoticeList: SupplementNotice[];
 }
 /**NoticeWeChatDetailResponseVo*/
 export interface NoticeWeChatDetailResponseVo {
@@ -2336,10 +2656,16 @@ noticeId: number;
 noticeList: NoticeListResponseVo[];
 /**优惠告知书编号*/
 noticeNo: string;
+/**优惠告知书状态(WaitDetermine-信息待确认、WaitBeSigned-客户待签署、WaitPay-客户待支付、Paid-客户已支付、BecomeEffective-已生效、Invalidation-失效)*/
+notificationStatus: string;
+/**业主类型(Personal-个人、Enterprise-企业)*/
+ownerType: string;
+/**优惠方式(Manual-自定义、Automatic-选择)*/
+promotionMethod: string;
 /**购房信息*/
 purchaseInformation: NoticePurchaseInformationResponseVo;
-/**退款信息*/
-refundInfoResponse: RefundInfoResponse;
+/**业管审核状态(Pending-待审核、Audited-已审核)*/
+reviewStatus: string;
 }
 /**NoticeWeChatQueryResponseVo*/
 export interface NoticeWeChatQueryResponseVo {
@@ -2347,11 +2673,15 @@ export interface NoticeWeChatQueryResponseVo {
 buyUnit: number;
 /**栋座名字*/
 buyUnitName: string;
+/**客户信息*/
+customerNameResponses: CustomerNameResponse[];
+/**成交审核状态(Yes-是、No-否)*/
+dealReviewStatus: string;
 /**优惠描述说明*/
 explain: string;
 /**优惠告知书ID*/
 noticeId: number;
-/**告知书状态(WaitDetermine-信息待确认、WaitBeSigned-客户待签署、WaitPay-客户待支付、WaitReview-分公司业管待审核、BecomeEffective-已生效、Invalidation-失效)*/
+/**告知书状态(WaitDetermine-信息待确认、WaitBeSigned-客户待签署、WaitPay-客户待支付、Paid-客户已支付、BecomeEffective-已生效、Invalidation-失效)*/
 notificationStatus: string;
 /**服务费金额*/
 paymentAmount: number;
@@ -2364,6 +2694,51 @@ propertyType: string;
 /**房号ID*/
 roomNumberId: number;
 /**房号中文*/
+roomNumberName: string;
+/**补充告知书信息*/
+supplementNoticeList: SupplementNotice[];
+}
+/**OperationsCountResponse*/
+export interface OperationsCountResponse {
+/**待确认数量*/
+confirmCount: number;
+/**业管审核数量*/
+reviewCount: number;
+}
+/**PendingNoticeRequest*/
+export interface PendingNoticeRequest {
+/**告知书状态(WaitDetermine-信息待确认、WaitBeSigned-客户待签署、WaitPay-客户待支付、Paid-客户已支付、BecomeEffective-已生效、Invalidation-失效)*/
+notificationStatus: string;
+/**(必填)当前页*/
+pageNum: number;
+/**(必填)每页条数*/
+pageSize: number;
+/**审核状态(Pending-待审核、Audited-已审核)*/
+reviewStatus: string;
+}
+/**PendingNoticeResponse*/
+export interface PendingNoticeResponse {
+/**栋座*/
+buyUnit: number;
+/**栋座名字*/
+buyUnitName: string;
+/**告知书Id*/
+id: number;
+/**告知书编号*/
+noticeNo: string;
+/**乙方信息*/
+ownerList: NoticeOwnerEditVO[];
+/**项目ID*/
+projectId: number;
+/**项目名称*/
+projectName: string;
+/**物业类型*/
+propertyType: string;
+/**审核状态(Pending-待审核、Audited-已审核)*/
+reviewStatus: string;
+/**房号*/
+roomNumberId: number;
+/**房号名字*/
 roomNumberName: string;
 }
 /**ProjectInfoRequest*/
@@ -2446,6 +2821,38 @@ refundAmount: number;
 refundStatus: string;
 /**退款时间(yyyy-MM-dd HH:mm:ss)*/
 refundTime: string;
+}
+/**RefundItemAttachment*/
+export interface RefundItemAttachment {
+/**创建时间(yyyy-MM-dd HH:mm:ss)*/
+createTime: string;
+/**创建用户*/
+createUser: number;
+/**已删除*/
+deleted: number;
+/**文件ID*/
+fileId: string;
+/**文件名*/
+fileName: string;
+/**ID*/
+id: number;
+/**待退款项id*/
+refundItemId: number;
+/**文件类型(NoticeBook-优惠告知书、RefundBook-退款申请书、CopyOfIdCardRefund-退款人身份证扫描件、CollectionAttachment-收款附件、CopyOfBankCard-退款人银行卡复印件、MyCertificate-明源退房证明、Other-其他)*/
+type: string;
+/**更新时间(yyyy-MM-dd HH:mm:ss)*/
+updateTime: string;
+/**更新用户*/
+updateUser: number;
+}
+/**RefundItemPayVO*/
+export interface RefundItemPayVO {
+/**结佣付款ID*/
+payId: number;
+/**结佣付款单号*/
+payNo: string;
+/**待退款项ID*/
+refundItemId: number;
 }
 /**StrategyAnnexRequest*/
 export interface StrategyAnnexRequest {
@@ -2572,4 +2979,11 @@ partyBId: number;
 strategyApprovalStatus: string;
 /**标题*/
 title: string;
+}
+/**SupplementNotice*/
+export interface SupplementNotice {
+/**告知书状态(WaitDetermine-信息待确认、WaitBeSigned-客户待签署、WaitPay-客户待支付、Paid-客户已支付、BecomeEffective-已生效、Invalidation-失效)*/
+notificationStatus: string;
+/**告知书类型(Notification-优惠告知书、SupplementaryAgreement-补充协议、TerminationAgreement-终止协议、Confirmation-房号确定书、RefundApplication-退款申请书)*/
+notificationType: string;
 }
