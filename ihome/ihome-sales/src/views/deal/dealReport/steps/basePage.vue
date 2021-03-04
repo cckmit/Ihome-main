@@ -211,7 +211,7 @@
             <div v-else>
               <el-select
                 v-model="postData.contType"
-                :disabled="baseInfoInDeal.contType === 'DistriDeal' && baseInfoInDeal.hasRecord"
+                :disabled="baseInfoInDeal.contType === 'DistriDeal' && baseInfoInDeal.hasRecord && postData.roomId"
                 placeholder="请选择合同类型"
                 @change="changeContType"
                 class="width--100">
