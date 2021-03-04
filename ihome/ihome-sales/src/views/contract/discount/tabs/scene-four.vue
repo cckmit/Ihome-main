@@ -4,21 +4,22 @@
  * @Author: ywl
  * @Date: 2021-03-04 10:59:21
  * @LastEditors: ywl
- * @LastEditTime: 2021-03-04 16:39:02
+ * @LastEditTime: 2021-03-04 19:32:11
 -->
 <template>
   <section>
     <el-form
       ref="form"
+      :model="form"
       label-width="130px"
     >
       <p class="ih-info-title">
         <span>终止协议</span>
-        <el-switch
+        <!-- <el-switch
           class="title-switch"
           v-model="isShow.isTermination"
           @change="handleSwitch(0)"
-        ></el-switch>
+        ></el-switch> -->
       </p>
       <template v-if="isShow.isTermination">
         <el-row>
@@ -107,11 +108,11 @@
       <p class="ih-info-title">
         <span>优惠告知书</span>
         <span class="annotation padding-left-20">*注：允许生成新告知书的条件：原告知书是无效状态，否则必须同时生成原告知书的终止协议</span>
-        <el-switch
+        <!-- <el-switch
           class="title-switch"
           v-model="isShow.isNotice"
           @change="handleSwitch(1)"
-        ></el-switch>
+        ></el-switch> -->
       </p>
       <template v-if="isShow.isNotice">
         <el-row>

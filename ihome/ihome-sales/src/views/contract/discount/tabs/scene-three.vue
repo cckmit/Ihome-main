@@ -4,7 +4,7 @@
  * @Author: ywl
  * @Date: 2021-03-03 20:42:48
  * @LastEditors: ywl
- * @LastEditTime: 2021-03-04 16:39:27
+ * @LastEditTime: 2021-03-04 19:16:16
 -->
 <template>
   <section>
@@ -15,11 +15,11 @@
     >
       <p class="ih-info-title">
         <span>终止协议</span>
-        <el-switch
+        <!-- <el-switch
           class="title-switch"
           v-model="isShow.isTermination"
           @change="handleSwitch(0)"
-        ></el-switch>
+        ></el-switch> -->
       </p>
       <template v-if="isShow.isTermination">
         <el-row>
@@ -106,11 +106,11 @@
       </template>
       <p class="ih-info-title">
         <span>退款申请书</span>
-        <el-switch
+        <!-- <el-switch
           class="title-switch"
           v-model="isShow.isRefund"
           @change="handleSwitch(1)"
-        ></el-switch>
+        ></el-switch> -->
       </p>
       <template v-if="isShow.isRefund">
         <el-row>
