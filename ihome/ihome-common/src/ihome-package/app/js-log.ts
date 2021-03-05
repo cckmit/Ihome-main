@@ -20,6 +20,7 @@ function getJsLogAppId() {
 
 function jsLog(err: any, type: any) {
     try {
+        err = err || {};
         let jsLogAppId: any = getJsLogAppId();
         if (jsLogAppId) {
             let userInfo = (window as any).polyihomeData.userInfo || {};
@@ -43,7 +44,8 @@ function jsLog(err: any, type: any) {
                         jsLogAppId: jsLogAppId,
                     }
                 }).then((res: any) => {
-                    console.log(res)
+                    (res);
+                    // console.log(res)
 
                 }).catch((err: any) => {
                     console.log(err)
