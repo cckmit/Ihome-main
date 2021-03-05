@@ -4,7 +4,7 @@
  * @Author: wwq
  * @Date: 2021-01-13 14:44:01
  * @LastEditors: wwq
- * @LastEditTime: 2021-01-16 10:26:55
+ * @LastEditTime: 2021-03-05 17:39:03
 -->
 <template>
   <IhPage label-width="100px">
@@ -30,10 +30,10 @@
             </el-form-item>
           </el-col>
           <el-col :span="8">
-            <el-form-item label="抵扣单号">
+            <el-form-item label="冲正单号">
               <el-input
                 v-model="queryPageParameters.deductionNo"
-                placeholder="请输入抵扣单号"
+                placeholder="请输入冲正单号"
                 clearable
               ></el-input>
             </el-form-item>
@@ -41,10 +41,10 @@
         </el-row>
         <el-row>
           <el-col :span="8">
-            <el-form-item label="抵扣状态">
+            <el-form-item label="冲正状态">
               <el-select
                 v-model="queryPageParameters.status"
-                placeholder="请选择抵扣状态"
+                placeholder="请选择冲正状态"
                 class="width--100"
                 clearable
               >
@@ -58,10 +58,10 @@
             </el-form-item>
           </el-col>
           <el-col :span="8">
-            <el-form-item label="抵扣类型">
+            <el-form-item label="冲正类型">
               <el-select
                 v-model="queryPageParameters.type"
-                placeholder="请选择抵扣类型"
+                placeholder="请选择冲正类型"
                 class="width--100"
                 clearable
               >
@@ -93,7 +93,7 @@
         </el-row>
         <el-row>
           <el-col :span="8">
-            <el-form-item label="抵扣时间">
+            <el-form-item label="冲正时间">
               <el-date-picker
                 style="width:100%;"
                 v-model="deductionTime"
@@ -173,7 +173,7 @@
           </template>
         </el-table-column>
         <el-table-column
-          label="抵扣状态"
+          label="冲正状态"
           width="125"
         >
           <template v-slot="{ row }">
@@ -181,7 +181,7 @@
           </template>
         </el-table-column>
         <el-table-column
-          label="抵扣类型"
+          label="冲正类型"
           width="125"
         >
           <template v-slot="{ row }">
@@ -209,7 +209,7 @@
           prop="generateTime"
         ></el-table-column>
         <el-table-column
-          label="抵扣时间"
+          label="冲正时间"
           min-width="165"
           prop="deductTime"
         >
@@ -219,7 +219,7 @@
           </template>
         </el-table-column>
         <el-table-column
-          label="抵扣单号"
+          label="冲正单号"
           min-width="195"
           prop="deductionNo"
         >
@@ -227,6 +227,7 @@
             <el-link
               type="primary"
               v-if="row.deductionNo"
+              @click="gotoDeduction(row.applyId)"
             >{{row.deductionNo}}</el-link>
             <span v-else>--</span>
           </template>
@@ -323,9 +324,18 @@ export default class DeductList extends Vue {
   }
 
   gotoDealCode(id: any) {
-    // 预览
     let router = this.$router.resolve({
       path: `/dealReport/info`,
+      query: {
+        id: id,
+      },
+    });
+    window.open(router.href, "_blank");
+  }
+
+  gotoDeduction(id: any) {
+    let router = this.$router.resolve({
+      path: `/payorder/info`,
       query: {
         id: id,
       },
