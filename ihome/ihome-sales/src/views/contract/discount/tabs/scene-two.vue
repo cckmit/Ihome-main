@@ -4,7 +4,7 @@
  * @Author: ywl
  * @Date: 2021-03-03 11:10:24
  * @LastEditors: ywl
- * @LastEditTime: 2021-03-04 15:54:16
+ * @LastEditTime: 2021-03-04 19:40:01
 -->
 <template>
   <section>
@@ -15,11 +15,11 @@
     >
       <p class="ih-info-title">
         <span>终止协议</span>
-        <el-switch
+        <!-- <el-switch
           class="title-switch"
           v-model="isShow.isTermination"
           @change="handleSwitch(0)"
-        ></el-switch>
+        ></el-switch> -->
       </p>
       <template v-if="isShow.isTermination">
         <el-row>
@@ -107,12 +107,12 @@
       </template>
       <p class="ih-info-title">
         <span>优惠告知书</span>
-        <span class="annotation padding-left-20">*注：允许生成新告知书的条件：原告知书是无效状态，否则必须同时生成原告知书的终止协议</span>
+        <!-- <span class="annotation padding-left-20">*注：允许生成新告知书的条件：原告知书是无效状态，否则必须同时生成原告知书的终止协议</span>
         <el-switch
           class="title-switch"
           v-model="isShow.isNotice"
           @change="handleSwitch(1)"
-        ></el-switch>
+        ></el-switch> -->
       </p>
       <template v-if="isShow.isNotice">
         <el-row>
@@ -128,8 +128,13 @@
                 v-model="form.formList[1].cycleId"
                 placeholder="请选择立项周期"
                 @changeOption="(data) => {
-                  form.formList[1].proId = data.proId
-                  getMethodByTermId(data.termId)
+                  form.formList[1].proId = data.proId;
+                  form.formList[1].buyUnit = null;
+                  form.formList[1].roomNumberId = null;
+                  form.formList[1].methObj = null;
+                  form.formList[1].explain = null;
+                  form.formList[1].paymentAmount = null;
+                  getMethodByTermId(data.termId);
                 }"
               ></IhSelectPageByCycle>
             </el-form-item>
@@ -340,11 +345,11 @@
       </template>
       <p class="ih-info-title">
         <span>退款申请书</span>
-        <el-switch
+        <!-- <el-switch
           class="title-switch"
           v-model="isShow.isRefund"
           @change="handleSwitch(2)"
-        ></el-switch>
+        ></el-switch> -->
       </p>
       <template v-if="isShow.isRefund">
         <el-row>

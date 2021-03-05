@@ -156,7 +156,7 @@
           </el-form-item>
         </el-col>
         <el-col :span="8">
-          <el-form-item label="栋座">
+          <el-form-item label="栋座" prop="buildingId">
             <el-input
               v-if="['ChangeInternalAchieveInf', 'RetreatRoom'].includes(changeType)"
               disabled
@@ -176,7 +176,7 @@
           </el-form-item>
         </el-col>
         <el-col :span="8">
-          <el-form-item label="房号">
+          <el-form-item label="房号" prop="roomId">
             <el-input
               v-if="['ChangeInternalAchieveInf', 'RetreatRoom'].includes(changeType)"
               disabled
@@ -332,7 +332,7 @@
           </el-form-item>
         </el-col>
         <el-col :span="8">
-          <el-form-item label="户型">
+          <el-form-item label="户型" prop="room">
             <div class="home-type-wrapper">
               <div>
                 <el-input
@@ -447,12 +447,12 @@
           </el-form-item>
         </el-col>
         <el-col :span="8">
-          <el-form-item label="录入人">
+          <el-form-item label="录入人" prop="entryPerson">
             <el-input v-model="postData.entryPerson" disabled></el-input>
           </el-form-item>
         </el-col>
         <el-col :span="8">
-          <el-form-item label="录入日期">
+          <el-form-item label="录入日期" prop="entryDate">
             <el-input v-model="postData.entryDate" disabled></el-input>
           </el-form-item>
         </el-col>
@@ -1318,6 +1318,8 @@
   import {
     post_notice_customer_information // 通过成交id获取优惠告知书
   } from "@/api/contract";
+  import {Form as ElForm} from "element-ui";
+  import {NoRepeatHttp} from "ihome-common/util/aop/no-repeat-http";
 
   @Component({
     components: {
@@ -1330,6 +1332,15 @@
     }
   })
   export default class BasePage extends Vue {
+    private validateRoom (rule: any, value: any, callback: any) {
+      if ([null, undefined, ""].includes(this.postData.room)
+        || [null, undefined, ""].includes(this.postData.hall)
+        || [null, undefined, ""].includes(this.postData.toilet)) {
+        return callback(new Error('户型信息不全'));
+      } else {
+        callback();
+      }
+    }
     private isShowImg = false;
     private btnLoading = false;
     private srcList: any = [];
@@ -1439,6 +1450,15 @@
       oneAgentTeamId: [
         {required: true, message: "一手代理团队必选", trigger: "change"},
       ],
+      buildingId: [
+        {required: true, message: "栋座必选", trigger: "change"},
+      ],
+      roomId: [
+        {required: true, message: "房号必选", trigger: "change"},
+      ],
+      room: [
+        {validator: this.validateRoom, trigger: ["change", "blur"]}
+      ],
       isMarketProject: [
         {required: true, message: "是否市场化项目必选", trigger: "change"},
       ],
@@ -1469,6 +1489,22 @@
       area: [
         {required: true, message: "建筑面积必填", trigger: "change"},
       ],
+      signType: [
+        {required: true, message: "签约类型必选", trigger: "change"},
+      ],
+      subscribePrice: [
+        {required: true, message: "认购价格不能为空", trigger: "change"},
+      ],
+      subscribeDate: [
+        {required: true, message: "认购日期不能为空", trigger: "change"},
+      ],
+      signPrice: [
+        {required: true, message: "签约价格不能为空", trigger: "change"},
+      ],
+      signDate: [
+        {required: true, message: "签约日期不能为空", trigger: "change"},
+      ],
+      notEmpty: []
     };
     id: any = null;
     firstAgencyCompanyList: any = []; // 一手代理团队选项
@@ -3509,12 +3545,32 @@
           break;
         case "next":
           // 下一步
-          await this.submitData();
+          if (['ChangeBasicInf', 'ChangeAchieveInf'].includes(this.changeType)) {
+            // 变更基础信息、变更业绩信息增加form表单校验
+            (this.$refs["ruleForm"] as ElForm).validate(this.addSave);
+          } else {
+            await this.submitData();
+          }
           break;
         case "back":
           // 取消
           this.$emit("back");
           break;
+      }
+    }
+
+    @NoRepeatHttp()
+    async addSave(valid: any) {
+      let flag = this.validReceiveData(this.postData.receiveList, this.postData.calculation);
+      if (!flag) {
+        this.$message.warning('请先完善收派金额信息！');
+        return;
+      }
+      if (valid && flag) {
+        await this.submitData();
+      } else {
+        this.$message.warning('请先填好数据再保存');
+        return false;
       }
     }
 
