@@ -63,11 +63,14 @@ service.interceptors.response.use(
         // if (response.config.url?.startsWith('/sales-oauth2/oauth/token') || response.config.url?.startsWith('/sales-api/sales-oauth2/oauth/token')) {
         //     return response.data
         // }
-        
+
         const res: any = response.data
         if (res.code !== 'Success') {
-            jsLogHttp(response, "http上报200");
-            
+            if (res.code == "E1500") {
+                jsLogHttp(response, "http系统处理异常E1500");
+            } else {
+                jsLogHttp(response, "http业务异常上报" + res.code);
+            }
             Message({
                 message: res.msg || 'Error',
                 type: 'error',

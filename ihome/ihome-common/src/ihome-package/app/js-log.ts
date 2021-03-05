@@ -64,8 +64,8 @@ function jsLogHttp(response: any, type: string) {
         let jsLogAppId: any = getJsLogAppId();
         if (jsLogAppId) {
             let userInfo = (window as any).polyihomeData.userInfo || {};
-            let config=response?.config||{};
-            let request=response?.request||{};
+            let config = response?.config || {};
+            let request = response?.request || {};
             try {
                 let postData = {
                     type: type || 'http请求数据',
@@ -74,16 +74,18 @@ function jsLogHttp(response: any, type: string) {
                     localStorage: '',
                     userInfo: "userInfo：id=" + userInfo.id + ",name=" + userInfo.name + ",account=" + userInfo.account,
                     userAgent: navigator.userAgent,
-                    StatusCode: response?.status+' '+config?.method,
+                    StatusCode: response?.status + ' ' + config?.method,
                     RequestURL: config.responseURL,
                     RequestHeaders: JSON.stringify(config.headers),
                     RequestBody: config.data,
                     Response: request.responseText,
                     Remark: '',
                 }
-
-
-                http.post('https://jslog.zhangdada666.com/api/log/HttpError', postData, {
+                let url = 'https://jslog.zhangdada666.com/api/log/Http'
+                if (type == 'http系统处理异常E1500') {
+                    url = 'https://jslog.zhangdada666.com/api/log/HttpError'
+                }
+                http.post(url, postData, {
                     headers: {
                         jsLogAppId: jsLogAppId,
                     }
