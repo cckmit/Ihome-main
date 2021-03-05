@@ -4,7 +4,7 @@
  * @Author: wwq
  * @Date: 2020-11-03 11:52:41
  * @LastEditors: wwq
- * @LastEditTime: 2021-03-03 12:06:53
+ * @LastEditTime: 2021-03-05 10:29:59
 -->
 <template>
   <div>
@@ -221,7 +221,10 @@
             >
               <BmView style="width: 100%; height: 100%; flex: 1"></BmView>
               <BmControl>
-                <BmAutoComplete :sugStyle="{ zIndex: 999999 }">
+                <BmAutoComplete
+                  v-model="searchAddr"
+                  :sugStyle="{ zIndex: 999999 }"
+                >
                   <el-input
                     v-model="searchAddr"
                     clearable

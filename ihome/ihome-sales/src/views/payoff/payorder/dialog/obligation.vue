@@ -4,7 +4,7 @@
  * @Author: wwq
  * @Date: 2020-12-29 11:04:59
  * @LastEditors: wwq
- * @LastEditTime: 2021-03-02 19:03:06
+ * @LastEditTime: 2021-03-05 08:46:49
 -->
 <template>
   <el-dialog
@@ -253,7 +253,7 @@ export default class Obligation extends Vue {
     dealCode: null,
     cycleName: null,
     customer: null,
-    isComm: null,
+    isComm: "Yes",
     busModel: null,
     contType: null,
     beginTime: null,

@@ -234,7 +234,7 @@
                 >{{row.contNo}}
                 </el-link>
               </div>
-              <div class="text-ellipsis">是否垫佣: {{$root.dictAllName(row.isMat, 'YesOrNoType')}}</div>
+              <div class="text-ellipsis">是否垫佣: {{$root.dictAllName(row.isMat, 'PadCommission')}}</div>
             </template>
           </el-table-column>
           <el-table-column

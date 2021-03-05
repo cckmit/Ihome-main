@@ -4,7 +4,7 @@
  * @Author: wwq
  * @Date: 2020-12-26 11:11:23
  * @LastEditors: wwq
- * @LastEditTime: 2021-03-03 17:25:13
+ * @LastEditTime: 2021-03-05 08:53:43
 -->
 <template>
   <IhPage>
@@ -331,7 +331,7 @@
                 >{{row.contNo}}
                 </el-link>
               </div>
-              <div class="text-ellipsis">是否垫佣: {{$root.dictAllName(row.isMat, 'YesOrNoType')}}</div>
+              <div class="text-ellipsis">是否垫佣: {{$root.dictAllName(row.isMat, 'PadCommission')}}</div>
             </template>
           </el-table-column>
           <el-table-column
