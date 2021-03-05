@@ -4,7 +4,7 @@
  * @Author: wwq
  * @Date: 2020-12-26 11:11:23
  * @LastEditors: wwq
- * @LastEditTime: 2021-03-05 09:13:36
+ * @LastEditTime: 2021-03-05 16:14:03
 -->
 <template>
   <IhPage>
@@ -658,7 +658,7 @@
           type="primary"
           :loading="computedLoading"
           @click="computedMsg"
-        >点击计算结佣统计数据及成本归属明细</el-button>
+        >点击计算结佣统计数据并生成结佣汇总清单</el-button>
       </div>
       <br />
       <p class="ih-info-title">结佣汇总清单</p>
