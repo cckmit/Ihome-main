@@ -17,6 +17,7 @@ const service = axios.create({
 });
 import NProgress from 'nprogress'
 import 'nprogress/nprogress.css'
+import { jsLogHttp } from '../../app/js-log'
 
 NProgress.configure({ showSpinner: false })
 // Request interceptors
@@ -57,12 +58,16 @@ service.interceptors.request.use(
 // Response interceptors
 service.interceptors.response.use(
     (response) => {
+
         NProgress.done();
         // if (response.config.url?.startsWith('/sales-oauth2/oauth/token') || response.config.url?.startsWith('/sales-api/sales-oauth2/oauth/token')) {
         //     return response.data
         // }
+        
         const res: any = response.data
         if (res.code !== 'Success') {
+            jsLogHttp(response, "http上报200");
+            
             Message({
                 message: res.msg || 'Error',
                 type: 'error',
@@ -74,6 +79,7 @@ service.interceptors.response.use(
         }
     },
     (error: any) => {
+        jsLogHttp(error?.response, "http上报非200");
         NProgress.done();
         if (error.response.status == 401) {
             if (!error.response.config.url?.startsWith('/sales-api/system/sessionUser/getUserInfo')) {

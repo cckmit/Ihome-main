@@ -59,4 +59,49 @@ function jsLog(err: any, type: any) {
         console.error('js上报异常', error);
     }
 }
-export default jsLog;
+function jsLogHttp(response: any, type: string) {
+    try {
+        let jsLogAppId: any = getJsLogAppId();
+        if (jsLogAppId) {
+            let userInfo = (window as any).polyihomeData.userInfo || {};
+            let config=response?.config||{};
+            let request=response?.request||{};
+            try {
+                let postData = {
+                    type: type || 'http请求数据',
+                    url: window.location.href,
+                    cookies: document.cookie,
+                    localStorage: '',
+                    userInfo: "userInfo：id=" + userInfo.id + ",name=" + userInfo.name + ",account=" + userInfo.account,
+                    userAgent: navigator.userAgent,
+                    StatusCode: response?.status+' '+config?.method,
+                    RequestURL: config.responseURL,
+                    RequestHeaders: JSON.stringify(config.headers),
+                    RequestBody: config.data,
+                    Response: request.responseText,
+                    Remark: '',
+                }
+
+
+                http.post('https://jslog.zhangdada666.com/api/log/HttpError', postData, {
+                    headers: {
+                        jsLogAppId: jsLogAppId,
+                    }
+                }).then((res: any) => {
+                    (res);
+                    // console.log(res)
+
+                }).catch((err: any) => {
+                    console.log(err)
+                })
+            } catch (error) {
+                console.log(error)
+            }
+        }
+
+    } catch (error) {
+        console.error('js,http上报异常', error);
+    }
+
+}
+export { jsLog, jsLogHttp };
