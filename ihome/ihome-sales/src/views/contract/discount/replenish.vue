@@ -4,7 +4,7 @@
  * @Author: ywl
  * @Date: 2021-03-03 09:07:09
  * @LastEditors: ywl
- * @LastEditTime: 2021-03-06 11:34:26
+ * @LastEditTime: 2021-03-06 17:35:49
 -->
 <template>
   <IhPage class="text-left">
@@ -20,7 +20,6 @@
               <el-select
                 v-model="type"
                 placeholder="请选择告知书补充场景"
-                clearable
                 @change="handleChange"
                 class="width--100"
               >
@@ -64,15 +63,19 @@ export default class Replenish extends Vue {
   private type: any = null;
   private currView: any = "";
   private option: any = [
-    { view: "SceneOne", label: "换房不涉及优惠折扣变更", value: 0 },
-    { view: "SceneTwo", label: "服务费部分减免", value: 1 },
-    { view: "SceneThree", label: "服务费全部减免", value: 2 },
-    { view: "SceneFour", label: "服务费增加", value: 3 },
-    { view: "SceneFour", label: "服务费金额不变, 优惠方式变更", value: 4 },
-    { view: "SceneFour", label: "购房客户更名", value: 5 },
-    { view: "SceneFour", label: "告知书信息填写错误", value: 6 },
-    { view: "SceneThree", label: "退房退款", value: 7 },
-    { view: "SceneFive", label: "退房不退款", value: 8 },
+    { view: "SceneOne", label: "换房不涉及优惠折扣变更", value: "One" },
+    { view: "SceneTwo", label: "服务费部分减免", value: "Two" },
+    { view: "SceneThree", label: "服务费全部减免", value: "Three" },
+    { view: "SceneFour", label: "服务费增加", value: "Four" },
+    {
+      view: "SceneFour",
+      label: "服务费金额不变, 优惠方式变更",
+      value: "Fives",
+    },
+    { view: "SceneFour", label: "购房客户更名", value: "Six" },
+    { view: "SceneFour", label: "告知书信息填写错误", value: "Seven" },
+    { view: "SceneThree", label: "退房退款", value: "Eight" },
+    { view: "SceneFive", label: "退房不退款", value: "Nine" },
   ];
   private info: any = {};
 
@@ -83,7 +86,10 @@ export default class Replenish extends Vue {
       noticeId: this.$route.query.id,
     }));
     try {
-      await post_notice_supplemental_agreement(list);
+      await post_notice_supplemental_agreement({
+        noticeListCreateRequestList: list,
+        supplementaryScene: this.type,
+      });
       this.$message.success("发起补充协议成功");
       this.$goto({
         path: "/discount/list",
@@ -94,7 +100,8 @@ export default class Replenish extends Vue {
   }
   private handleChange(val: any): void {
     if (val !== "") {
-      this.currView = this.option[val].view;
+      let data = this.option.find((i: any) => i.value === val);
+      this.currView = data.view;
     }
   }
   private async getInfo(): Promise<void> {
@@ -110,6 +117,10 @@ export default class Replenish extends Vue {
 
   created() {
     this.getInfo();
+    console.log((this.$root as any).dictAllList("SupplementaryScene"));
+    // this.option = (this.$root as any).dictAllList("SupplementaryScene").map((i: any, n: number) => {
+    //   if (i.code )
+    // })
   }
 }
 </script>

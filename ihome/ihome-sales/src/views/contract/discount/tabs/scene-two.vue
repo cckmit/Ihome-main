@@ -4,7 +4,7 @@
  * @Author: ywl
  * @Date: 2021-03-03 11:10:24
  * @LastEditors: ywl
- * @LastEditTime: 2021-03-06 14:33:14
+ * @LastEditTime: 2021-03-06 16:27:01
 -->
 <template>
   <section>
@@ -762,6 +762,7 @@ export default class SceneTwo extends Vue {
     this.form.formList[1].ownerType = this.data.ownerType;
     this.form.formList[1].proId = this.data.projectId;
     this.beforeValue = this.data.ownerType;
+    this.getMethodByTermId(this.data.cycleId);
   }
 }
 </script>

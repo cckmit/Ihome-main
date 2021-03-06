@@ -4,7 +4,7 @@
  * @Author: ywl
  * @Date: 2021-03-03 20:42:48
  * @LastEditors: ywl
- * @LastEditTime: 2021-03-06 14:07:07
+ * @LastEditTime: 2021-03-06 17:49:45
 -->
 <template>
   <section>
@@ -344,6 +344,10 @@ export default class SceneThree extends Vue {
       console.log("error submit!!");
       return false;
     }
+  }
+
+  created() {
+    this.form.formList[1].refundableAmount = this.data.paymentAmount;
   }
 }
 </script>
