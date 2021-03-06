@@ -58,13 +58,13 @@
           <el-form-item label="创建时间">
             <el-date-picker
               v-model="queryPageParameters.timeList"
-              type="datetimerange"
+              type="daterange"
               align="left"
               unlink-panels
               range-separator="到"
               start-placeholder="开始日期"
               end-placeholder="结束日期"
-              value-format="yyyy-MM-dd hh:mm:ss"
+              value-format="yyyy-MM-dd"
             ></el-date-picker>
           </el-form-item>
         </el-col>
@@ -153,9 +153,7 @@
     <ih-dialog :show="dialogEnter" desc="添加客户">
       <EnterCustomer
         @cancel="() => (dialogEnter = false)"
-        @finish="
-            () => {dialogEnter = false}
-          "/>
+        @finish="finishAddCustomer"/>
     </ih-dialog>
   </el-dialog>
 </template>
@@ -229,10 +227,16 @@
       this.$emit("finish", this.selection);
     }
 
+    // 确定选择客户
+    async finishAddCustomer() {
+      this.dialogEnter = false;
+      await this.handleSearch();
+    }
+
     // 查询
-    handleSearch() {
+    async handleSearch() {
       this.queryPageParameters.pageNum = 1;
-      this.getListMixin();
+      await this.getListMixin();
     }
 
     async getListMixin() {

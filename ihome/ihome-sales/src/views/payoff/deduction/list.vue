@@ -4,7 +4,7 @@
  * @Author: wwq
  * @Date: 2020-12-26 11:11:28
  * @LastEditors: wwq
- * @LastEditTime: 2021-02-07 10:11:41
+ * @LastEditTime: 2021-03-05 17:28:37
 -->
 <template>
   <IhPage label-width="100px">
@@ -57,15 +57,15 @@
           prop="generatedAmount"
         ></el-table-column>
         <el-table-column
-          label="已抵扣项费用(元)"
+          label="已冲正抵扣项费用(元)"
           prop="deductedAmount"
         ></el-table-column>
         <el-table-column
-          label="待抵扣项费用(元)"
+          label="待冲正抵扣项费用(元)"
           prop="undeductionAmount"
         ></el-table-column>
         <el-table-column
-          label="抵扣中抵扣项费用(元)"
+          label="冲正中抵扣项费用(元)"
           prop="deductingAmount"
         ></el-table-column>
         <el-table-column

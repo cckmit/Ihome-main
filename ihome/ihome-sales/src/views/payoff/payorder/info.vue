@@ -4,7 +4,7 @@
  * @Author: wwq
  * @Date: 2020-12-26 11:11:19
  * @LastEditors: wwq
- * @LastEditTime: 2021-02-26 16:40:23
+ * @LastEditTime: 2021-03-05 09:13:20
 -->
 <template>
   <IhPage>
@@ -240,7 +240,7 @@
                 >{{row.contNo}}
                 </el-link>
               </div>
-              <div class="text-ellipsis">是否垫佣: {{$root.dictAllName(row.isMat, 'YesOrNoType')}}</div>
+              <div class="text-ellipsis">是否垫佣: {{$root.dictAllName(row.isMat, 'PadCommission')}}</div>
             </template>
           </el-table-column>
           <el-table-column
@@ -1008,7 +1008,6 @@ export default class PayoffEdit extends Vue {
           .map((h: any) => ({
             ...h,
             name: h.fileName,
-            exAuto: 1,
           })),
       };
     });
@@ -1260,12 +1259,13 @@ export default class PayoffEdit extends Vue {
           }
         });
         if (isSubmit) {
-          arr = arr.filter((v: any) => !v.exAuto);
-          obj.documents = arr.map((v: any) => ({
+          arr = arr.map((v: any) => ({
             fileId: v.fileId,
             fileName: v.name,
             fileType: v.type,
+            exAuto: v.exAuto,
           }));
+          obj.documents = arr.filter((v: any) => !v.exAuto);
         } else {
           this.$message({
             type: "warning",

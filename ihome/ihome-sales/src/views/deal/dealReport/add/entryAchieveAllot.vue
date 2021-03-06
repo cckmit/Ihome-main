@@ -1305,7 +1305,7 @@
         {required: true, message: "认购日期不能为空", trigger: "change"},
       ],
       signPrice: [
-        {required: true, message: "签约价格不能为空", trigger: ["change", "blur"]},
+        {required: true, message: "签约价格不能为空", trigger: "change"},
       ],
       signDate: [
         {required: true, message: "签约日期不能为空", trigger: "change"},

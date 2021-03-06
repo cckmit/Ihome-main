@@ -4,7 +4,7 @@
  * @Author: wwq
  * @Date: 2020-12-26 11:11:23
  * @LastEditors: wwq
- * @LastEditTime: 2021-03-03 17:25:13
+ * @LastEditTime: 2021-03-05 16:14:25
 -->
 <template>
   <IhPage>
@@ -331,7 +331,7 @@
                 >{{row.contNo}}
                 </el-link>
               </div>
-              <div class="text-ellipsis">是否垫佣: {{$root.dictAllName(row.isMat, 'YesOrNoType')}}</div>
+              <div class="text-ellipsis">是否垫佣: {{$root.dictAllName(row.isMat, 'PadCommission')}}</div>
             </template>
           </el-table-column>
           <el-table-column
@@ -729,7 +729,7 @@
           type="primary"
           :loading="computedLoading"
           @click="computedMsg"
-        >点击计算结佣统计数据及成本归属明细</el-button>
+        >点击计算结佣统计数据并生成结佣汇总清单</el-button>
       </div>
       <br />
       <p class="ih-info-title">结佣汇总清单</p>

@@ -4,7 +4,7 @@
  * @Author: wwq
  * @Date: 2020-12-26 11:11:23
  * @LastEditors: wwq
- * @LastEditTime: 2021-03-03 17:25:42
+ * @LastEditTime: 2021-03-05 16:14:03
 -->
 <template>
   <IhPage>
@@ -260,7 +260,7 @@
                 >{{row.contNo}}
                 </el-link>
               </div>
-              <div class="text-ellipsis">是否垫佣: {{$root.dictAllName(row.isMat, 'YesOrNoType')}}</div>
+              <div class="text-ellipsis">是否垫佣: {{$root.dictAllName(row.isMat, 'PadCommission')}}</div>
             </template>
           </el-table-column>
           <el-table-column
@@ -658,7 +658,7 @@
           type="primary"
           :loading="computedLoading"
           @click="computedMsg"
-        >点击计算结佣统计数据及成本归属明细</el-button>
+        >点击计算结佣统计数据并生成结佣汇总清单</el-button>
       </div>
       <br />
       <p class="ih-info-title">结佣汇总清单</p>
@@ -1433,10 +1433,6 @@ export default class PayoffEdit extends Vue {
         return {
           ...v,
           limit: true,
-          fileList: v.fileList.map((j: any) => ({
-            ...j,
-            exAuto: 1,
-          })),
         };
       } else {
         return {
@@ -1898,11 +1894,14 @@ export default class PayoffEdit extends Vue {
             }
           });
           if (isSubmit) {
-            obj.documentList = arr.map((v: any) => ({
+            let filterDocumentList = arr.map((v: any) => ({
               fileId: v.fileId,
               fileName: v.name,
               fileType: v.type,
+              exAuto: v.exAuto,
             }));
+            console.log(filterDocumentList);
+            obj.documentList = filterDocumentList.filter((v: any) => !v.exAuto);
           } else {
             this.$message({
               type: "warning",

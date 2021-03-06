@@ -54,7 +54,7 @@ Vue.prototype.$goto = function (location: Location) {
   this.$router.push(location)
 }
 // errorHandler,warnHandler,renderError,errorCaptured
-import jsLog from './js-log'
+import {jsLog} from './js-log'
 
 import directives from '../util/vue/directives'
 import filters from '../util/vue/filters'
@@ -69,14 +69,20 @@ if (process.env.NODE_ENV !== 'production') {
   // require('@/mock/index')
 
 } else {
-  Vue.config.errorHandler = function (err: any) {
+  Vue.config.errorHandler = function (err: any, vm: any, info: string) {
     console.log(`main.ts=> Vue.config.errorHandler`);
-    console.log(err.message, err.stack);
-    jsLog(err, 'main.ts=> Vue.config.errorHandler');
+    if (!err?.code) {
+      console.error(err);
+      console.log(vm);
+      console.log(info);
+      jsLog(err, 'main.ts=> Vue.config.errorHandler info=' + info);
+    }  
   };
-  Vue.config.warnHandler = function (msg: string) {
+  Vue.config.warnHandler = function (msg: string, vm: Vue, trace: string) {
     console.log(`main.ts=> Vue.config.warnHandler`);
-    console.log(msg);
+    console.error(msg);
+    console.log(vm);
+    console.log(trace);
     jsLog({ message: msg, stack: null }, 'main.ts=> Vue.config.warnHandler');
   };
 }

@@ -4,7 +4,7 @@
  * @Author: wwq
  * @Date: 2020-12-29 11:04:59
  * @LastEditors: wwq
- * @LastEditTime: 2021-03-02 19:03:06
+ * @LastEditTime: 2021-03-05 14:29:44
 -->
 <template>
   <el-dialog
@@ -114,7 +114,8 @@
               start-placeholder="开始日期"
               end-placeholder="结束日期"
               :picker-options="$root.pickerOptions"
-              value-format="yyyy-MM-dd"
+              value-format="yyyy-MM-dd HH:mm:ss"
+              :default-time="['00:00:00', '23:59:59']"
             ></el-date-picker>
           </el-form-item>
         </el-col>
@@ -253,7 +254,7 @@ export default class Obligation extends Vue {
     dealCode: null,
     cycleName: null,
     customer: null,
-    isComm: null,
+    isComm: "Yes",
     busModel: null,
     contType: null,
     beginTime: null,
