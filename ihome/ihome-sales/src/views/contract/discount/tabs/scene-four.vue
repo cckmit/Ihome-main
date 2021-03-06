@@ -4,7 +4,7 @@
  * @Author: ywl
  * @Date: 2021-03-04 10:59:21
  * @LastEditors: ywl
- * @LastEditTime: 2021-03-06 14:35:20
+ * @LastEditTime: 2021-03-06 14:38:09
 -->
 <template>
   <section>
@@ -107,8 +107,8 @@
       </template>
       <p class="ih-info-title">
         <span>优惠告知书</span>
-        <span class="annotation padding-left-20">*注：允许生成新告知书的条件：原告知书是无效状态，否则必须同时生成原告知书的终止协议</span>
-        <!-- <el-switch
+        <!--<span class="annotation padding-left-20">*注：允许生成新告知书的条件：原告知书是无效状态，否则必须同时生成原告知书的终止协议</span>
+         <el-switch
           class="title-switch"
           v-model="isShow.isNotice"
           @change="handleSwitch(1)"
