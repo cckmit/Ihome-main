@@ -4,7 +4,7 @@
  * @Author: wwq
  * @Date: 2020-08-13 11:40:10
  * @LastEditors: wwq
- * @LastEditTime: 2021-02-24 16:25:17
+ * @LastEditTime: 2021-03-06 14:31:02
 -->
 <template>
   <IhPage label-width="110px">
@@ -143,17 +143,18 @@
           fixed
           prop="proNo"
           label="盘编"
-          width="160"
+          width="150"
         ></el-table-column>
         <el-table-column
           fixed
           prop="proName"
           label="项目名称"
-          width="100"
+          width="300"
         ></el-table-column>
         <el-table-column
           label="市场化项目"
           prop="exMarket"
+          width="100"
         >
           <template v-slot="{ row }">
             {{row.exMarket? '是' : '否'}}
@@ -186,10 +187,12 @@
         <el-table-column
           prop="proAddr"
           label="项目地址"
+          width="300"
         > </el-table-column>
         <el-table-column
           prop="auditEnum"
           label="项目审核状态"
+          width="120"
         >
           <template v-slot="{ row }">{{
             $root.dictAllName(row.auditEnum, "ProAudit")
