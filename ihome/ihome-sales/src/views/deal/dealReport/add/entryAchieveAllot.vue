@@ -481,7 +481,7 @@
     <el-row style="padding-left: 20px">
       <el-col>
         <div
-          v-if="!baseInfoInDeal.customerAddVOS.length && baseInfoInDeal.dealNoticeStatus !== 'MultipleNotice' && postData.roomId"
+          v-if="!baseInfoInDeal.customerAddVOS.length"
           class="add-all-wrapper">
           <el-button type="success" @click="handleAddCustomer">添加客户</el-button>
         </div>
@@ -504,7 +504,7 @@
           <el-table-column prop="cardNo" label="证件编号" min-width="150"></el-table-column>
           <el-table-column prop="email" label="邮箱" min-width="120"></el-table-column>
           <el-table-column
-            v-if="!baseInfoInDeal.customerAddVOS.length && baseInfoInDeal.dealNoticeStatus !== 'MultipleNotice' && baseInfoByTerm.chargeEnum === 'Agent'"
+            v-if="!baseInfoInDeal.customerAddVOS.length"
             fixed="right" label="操作" width="100">
             <template slot-scope="scope">
               <el-link
@@ -2340,6 +2340,8 @@
       await this.resetData(); // 重置数据
       if (value) {
         await this.initPageById(this.baseInfoByTerm.termId, value, this.postData.propertyType);
+      } else {
+        this.baseInfoInDeal.customerAddVOS = []; // 解决客户添加/删除按钮的显示隐藏问题
       }
     }
 
