@@ -4,7 +4,7 @@
  * @Author: wwq
  * @Date: 2020-11-10 10:34:18
  * @LastEditors: wwq
- * @LastEditTime: 2021-01-29 17:29:18
+ * @LastEditTime: 2021-03-06 17:14:55
 -->
 <template>
   <ih-page>
@@ -52,6 +52,13 @@
           <el-col :span="8">
             <el-form-item label="明源楼盘名">
               <span>{{ form.buildingGuidName }}</span>
+            </el-form-item>
+          </el-col>
+        </el-row>
+        <el-row>
+          <el-col :span="8">
+            <el-form-item label="明源区域公司">
+              <span>{{ form.companyName }}</span>
             </el-form-item>
           </el-col>
         </el-row>
@@ -130,6 +137,7 @@ export default class EditBasicInfo extends Vue {
     province: null,
     city: null,
     district: null,
+    companyName: null,
     provinceOption: [],
   };
   remark = "";

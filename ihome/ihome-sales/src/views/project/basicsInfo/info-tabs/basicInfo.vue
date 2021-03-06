@@ -4,7 +4,7 @@
  * @Author: wwq
  * @Date: 2020-11-03 11:52:41
  * @LastEditors: wwq
- * @LastEditTime: 2021-03-03 11:59:17
+ * @LastEditTime: 2021-03-06 17:15:23
 -->
 <template>
   <div>
@@ -448,6 +448,7 @@ export default class InfoBasicInfo extends Vue {
     firstAgencyCompanys: [], //一手代理商列表
     terms: [], // 项目周期列表
     checkboxEnum: [], // 物业类型勾选
+    companyName: null,
   };
   remark = "";
   contantList: any = [];
