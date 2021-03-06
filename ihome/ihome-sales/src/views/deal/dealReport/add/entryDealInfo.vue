@@ -495,7 +495,7 @@
     <el-row style="padding-left: 20px">
       <el-col>
         <div
-          v-if="!baseInfoInDeal.customerAddVOS.length && baseInfoInDeal.dealNoticeStatus !== 'MultipleNotice' && postData.roomId"
+          v-if="!baseInfoInDeal.customerAddVOS.length"
           class="add-all-wrapper">
           <el-button type="success" @click="handleAddCustomer">添加客户</el-button>
         </div>
@@ -518,7 +518,7 @@
           <el-table-column prop="cardNo" label="证件编号" min-width="150"></el-table-column>
           <el-table-column prop="email" label="邮箱" min-width="120"></el-table-column>
           <el-table-column
-            v-if="!baseInfoInDeal.customerAddVOS.length && baseInfoInDeal.dealNoticeStatus !== 'MultipleNotice' && baseInfoByTerm.chargeEnum === 'Agent'"
+            v-if="!baseInfoInDeal.customerAddVOS.length"
             fixed="right" label="操作" width="100">
             <template slot-scope="scope">
               <el-link
@@ -1536,6 +1536,7 @@
       if (value) {
         await this.initPageById(this.baseInfoByTerm.termId, value, this.postData.propertyType);
       } else {
+        this.baseInfoInDeal.customerAddVOS = [];  // 解决客户添加/删除按钮的显示隐藏问题
         await this.initDocument(this.baseInfoByTerm);
       }
     }
@@ -1648,19 +1649,23 @@
         this.postData.recordStr = baseInfo.recordStr;
       }
       // 建筑面积
-      if (baseInfo.myReturnVO && baseInfo.myReturnVO.houseVO && baseInfo.myReturnVO.houseVO.area) {
-        this.postData.area = baseInfo?.myReturnVO?.houseVO?.area;
-      }
+      this.postData.area = baseInfo?.myReturnVO?.houseVO?.area;
+      // if (baseInfo.myReturnVO && baseInfo.myReturnVO.houseVO && baseInfo.myReturnVO.houseVO.area) {
+      //   this.postData.area = baseInfo?.myReturnVO?.houseVO?.area;
+      // }
       // 户型
-      if (baseInfo.myReturnVO && baseInfo.myReturnVO.houseVO && baseInfo.myReturnVO.houseVO.room) {
-        this.postData.room = baseInfo?.myReturnVO?.houseVO?.room;
-      }
-      if (baseInfo.myReturnVO && baseInfo.myReturnVO.houseVO && baseInfo.myReturnVO.houseVO.hall) {
-        this.postData.hall = baseInfo?.myReturnVO?.houseVO?.hall;
-      }
-      if (baseInfo.myReturnVO && baseInfo.myReturnVO.houseVO && baseInfo.myReturnVO.houseVO.toilet) {
-        this.postData.toilet = baseInfo?.myReturnVO?.houseVO?.toilet;
-      }
+      this.postData.room = baseInfo?.myReturnVO?.houseVO?.room;
+      // if (baseInfo.myReturnVO && baseInfo.myReturnVO.houseVO && baseInfo.myReturnVO.houseVO.room) {
+      //   this.postData.room = baseInfo?.myReturnVO?.houseVO?.room;
+      // }
+      this.postData.hall = baseInfo?.myReturnVO?.houseVO?.hall;
+      // if (baseInfo.myReturnVO && baseInfo.myReturnVO.houseVO && baseInfo.myReturnVO.houseVO.hall) {
+      //   this.postData.hall = baseInfo?.myReturnVO?.houseVO?.hall;
+      // }
+      this.postData.toilet = baseInfo?.myReturnVO?.houseVO?.toilet;
+      // if (baseInfo.myReturnVO && baseInfo.myReturnVO.houseVO && baseInfo.myReturnVO.houseVO.toilet) {
+      //   this.postData.toilet = baseInfo?.myReturnVO?.houseVO?.toilet;
+      // }
       // 预售合同编号
       this.postData.propertyNo = baseInfo.myReturnVO.houseVO?.propertyNo;
       // 签约类型
@@ -1676,17 +1681,19 @@
       // 房款回笼比例(%)
       this.postData.returnRatio = baseInfo.myReturnVO.dealVO?.returnRatio;
       // 认购价格
-      if (baseInfo && baseInfo.myReturnVO && baseInfo.myReturnVO.dealVO && baseInfo.myReturnVO.dealVO.subscribePrice) {
-        this.postData.subscribePrice = baseInfo?.myReturnVO?.dealVO?.subscribePrice;
-      }
+      this.postData.subscribePrice = baseInfo?.myReturnVO?.dealVO?.subscribePrice;
+      // if (baseInfo && baseInfo.myReturnVO && baseInfo.myReturnVO.dealVO && baseInfo.myReturnVO.dealVO.subscribePrice) {
+      //   this.postData.subscribePrice = baseInfo?.myReturnVO?.dealVO?.subscribePrice;
+      // }
       // 认购日期
       if (baseInfo && baseInfo.myReturnVO && baseInfo.myReturnVO.dealVO && baseInfo.myReturnVO.dealVO.subscribeDate) {
         this.postData.subscribeDate = baseInfo?.myReturnVO?.dealVO?.subscribeDate;
       }
       // 签约价格
-      if (baseInfo && baseInfo.myReturnVO && baseInfo.myReturnVO.dealVO && baseInfo.myReturnVO.dealVO.signPrice) {
-        this.postData.signPrice = baseInfo?.myReturnVO?.dealVO?.signPrice;
-      }
+      this.postData.signPrice = baseInfo?.myReturnVO?.dealVO?.signPrice;
+      // if (baseInfo && baseInfo.myReturnVO && baseInfo.myReturnVO.dealVO && baseInfo.myReturnVO.dealVO.signPrice) {
+      //   this.postData.signPrice = baseInfo?.myReturnVO?.dealVO?.signPrice;
+      // }
       // 签约日期
       if (baseInfo && baseInfo.myReturnVO && baseInfo.myReturnVO.dealVO && baseInfo.myReturnVO.dealVO.signDate) {
         this.postData.signDate = baseInfo?.myReturnVO?.dealVO?.signDate;
