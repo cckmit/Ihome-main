@@ -4,7 +4,7 @@
  * @Author: ywl
  * @Date: 2021-01-07 16:30:03
  * @LastEditors: ywl
- * @LastEditTime: 2021-03-06 22:50:51
+ * @LastEditTime: 2021-03-06 23:16:16
 -->
 <template>
   <IhPage class="text-left">
@@ -1632,7 +1632,10 @@ export default class ApplyRecAdd extends Vue {
       this.form.taxMoney = this.globalTaxMoney;
     }
     let val = this.form.taxMoney;
-    let sub = this.globalTaxMoney - val; // 差额
+    // let sub = this.globalTaxMoney - val; // 差额
+    let sub = this.$math.sub(this.globalTaxMoney, val);
+    console.log(sub, "sub");
+
     // console.log(val, sub, number, this.globalTaxMoney);
     let listArr: any = [];
     let isSub = true;
@@ -1661,14 +1664,15 @@ export default class ApplyRecAdd extends Vue {
         2
       );
       if (isSub) {
-        let taxMoneyNew = this.$math.tofixed(
-          this.$math.sub(thisTaxMoney, sub),
-          2
-        );
+        let newTaxMoney = this.$math.sub(thisTaxMoney, sub);
+        let taxMoneyNew = this.$math.tofixed(newTaxMoney, 2);
+        console.log(newTaxMoney, taxMoneyNew);
+
         if (taxMoneyNew > 0) {
+          let newAdd = this.$math.add(thisNoTaxMoney, sub);
           element.taxMoneyNew = taxMoneyNew;
-          element.noTaxMoneyNew = this.$math.tofixed(thisNoTaxMoney + sub, 2);
-          console.log(element.taxMoneyNew, element.noTaxMoneyNew);
+          element.noTaxMoneyNew = this.$math.tofixed(newAdd, 2);
+          console.log(element.taxMoneyNew, element.noTaxMoneyNew, newAdd);
           isSub = false;
           listArr.push(element);
         } else {
