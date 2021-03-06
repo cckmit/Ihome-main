@@ -58,13 +58,13 @@
           <el-form-item label="创建时间">
             <el-date-picker
               v-model="queryPageParameters.timeList"
-              type="datetimerange"
+              type="daterange"
               align="left"
               unlink-panels
               range-separator="到"
               start-placeholder="开始日期"
               end-placeholder="结束日期"
-              value-format="yyyy-MM-dd hh:mm:ss"
+              value-format="yyyy-MM-dd"
             ></el-date-picker>
           </el-form-item>
         </el-col>
