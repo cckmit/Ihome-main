@@ -4,7 +4,7 @@
  * @Author: wwq
  * @Date: 2020-09-16 14:54:19
  * @LastEditors: wwq
- * @LastEditTime: 2021-03-02 19:37:17
+ * @LastEditTime: 2021-03-06 15:28:20
 -->
 <template>
   <div>
@@ -32,7 +32,7 @@
             :limit="limit"
             :file-size="fileSize"
             isMove
-            multiple
+            :multiple="multiple"
             @newFileList="queryNew"
           ></IhUpload>
         </template>
@@ -47,11 +47,12 @@ import { Component, Vue } from "vue-property-decorator";
 export default class UploadDemo extends Vue {
   private tableData: any = [];
   private fileList: any = [];
-  private isCrop = false; // 上传前是否开启图片裁剪(只针对于图片上传)
+  private isCrop = true; // 上传前是否开启图片裁剪(只针对于图片上传)
   private size = "100px"; // 上传框的长宽为100px
   private limit = 10; // 上传文件的个数
   private fileSize = 10; // 限制上传文件大小为10M
   private isMove = true; // 是否开启左右切换功能
+  private multiple = false; // 是否开启多上传功能(与图片裁剪互斥)
   private getImage() {
     return new Promise((resolve) => {
       setTimeout(() => {
@@ -137,7 +138,7 @@ export default class UploadDemo extends Vue {
             partCode: "partCode_first",
           },
         ]);
-      }, 2000);
+      }, 1000);
     });
   }
 
