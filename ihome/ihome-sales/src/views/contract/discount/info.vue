@@ -4,7 +4,7 @@
  * @Author: ywl
  * @Date: 2020-09-27 17:27:00
  * @LastEditors: ywl
- * @LastEditTime: 2021-02-16 16:49:13
+ * @LastEditTime: 2021-03-06 15:11:00
 -->
 <template>
   <IhPage class="text-left discount-info">
@@ -90,7 +90,11 @@
         <el-row v-else>
           <el-col :span="24">
             <el-form-item label="(拟)购买单位">
-              {{isRecognize ? '以最终甲方推送的房号确认书为准' : `${$root.dictAllName(resInfo.propertyType, 'Property')}-${resInfo.buyUnitName}-${resInfo.roomNumberName}`}}
+              <span v-if="isRecognize">
+                <span v-if="resInfo.buyUnitName && resInfo.roomNumberName">{{`${$root.dictAllName(resInfo.propertyType, 'Property')}-${resInfo.buyUnitName}-${resInfo.roomNumberName}`}}</span>
+                <span v-else>以最终甲方推送的房号确认书为准</span>
+              </span>
+              <span v-else>{{`${$root.dictAllName(resInfo.propertyType, 'Property')}-${resInfo.buyUnitName}-${resInfo.roomNumberName}`}}</span>
             </el-form-item>
           </el-col>
         </el-row>
