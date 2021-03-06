@@ -59,4 +59,61 @@ function jsLog(err: any, type: any) {
         console.error('js上报异常', error);
     }
 }
-export default jsLog;
+function jsLogHttp(response: any, type: string) {
+    try {
+        if (process.env.NODE_ENV === 'production') {
+            let userInfo = (window as any).polyihomeData.userInfo || {};
+            let config = response?.config || {};
+            let request = response?.request || {};
+            if (!request.responseURL.endsWith('/sessionUser/getUserInfo')) {
+                let jsLogAppId: any = getJsLogAppId();
+                if (jsLogAppId) {
+
+                    try {
+                        let postData = {
+                            type: type || 'http请求数据',
+                            url: window.location.href,
+                            cookies: document.cookie,
+                            localStorage: '',
+                            userInfo: "userInfo：id=" + userInfo.id + ",name=" + userInfo.name + ",account=" + userInfo.account,
+                            userAgent: navigator.userAgent,
+                            StatusCode: response?.status + ' ' + config?.method,
+                            RequestURL: request.responseURL,
+                            RequestHeaders: JSON.stringify(config.headers),
+                            RequestBody: config.data,
+                            Response: request.responseText,
+                            Remark: '',
+                        }
+                        let url = 'https://jslog.zhangdada666.com/api/log/Http'
+                        if (type == 'http系统处理异常E1500') {
+                            url = 'https://jslog.zhangdada666.com/api/log/HttpError'
+                        }
+                        http.post(url, postData, {
+                            headers: {
+                                jsLogAppId: jsLogAppId,
+                            }
+                        }).then((res: any) => {
+                            (res);
+                            // console.log(res)
+
+                        }).catch((err: any) => {
+                            console.log(err)
+                        })
+                    } catch (error) {
+                        console.log(error)
+                    }
+                }
+            }
+
+
+
+
+        }
+
+
+    } catch (error) {
+        console.error('js,http上报异常', error);
+    }
+
+}
+export { jsLog, jsLogHttp };

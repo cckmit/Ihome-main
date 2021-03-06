@@ -4,7 +4,7 @@
  * @Author: ywl
  * @Date: 2021-03-03 09:07:09
  * @LastEditors: ywl
- * @LastEditTime: 2021-03-04 19:24:03
+ * @LastEditTime: 2021-03-06 11:34:26
 -->
 <template>
   <IhPage class="text-left">
@@ -71,7 +71,7 @@ export default class Replenish extends Vue {
     { view: "SceneFour", label: "服务费金额不变, 优惠方式变更", value: 4 },
     { view: "SceneFour", label: "购房客户更名", value: 5 },
     { view: "SceneFour", label: "告知书信息填写错误", value: 6 },
-    { view: "SceneThree", label: "退房", value: 7 },
+    { view: "SceneThree", label: "退房退款", value: 7 },
     { view: "SceneFive", label: "退房不退款", value: 8 },
   ];
   private info: any = {};
@@ -84,6 +84,7 @@ export default class Replenish extends Vue {
     }));
     try {
       await post_notice_supplemental_agreement(list);
+      this.$message.success("发起补充协议成功");
       this.$goto({
         path: "/discount/list",
       });
