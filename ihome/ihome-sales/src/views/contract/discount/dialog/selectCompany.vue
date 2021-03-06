@@ -4,7 +4,7 @@
  * @Author: ywl
  * @Date: 2021-03-03 21:06:29
  * @LastEditors: ywl
- * @LastEditTime: 2021-03-06 11:07:52
+ * @LastEditTime: 2021-03-06 19:03:47
 -->
 <template>
   <el-dialog
@@ -98,7 +98,7 @@
       >刷新</el-button>
       <el-button
         type="success"
-        @click="handleGoto"
+        @click="enterVisible = true"
       >添加</el-button>
       <el-button
         type="primary"
@@ -205,16 +205,24 @@
         @click="finish()"
       >确 定</el-button>
     </template>
+    <IhDialog :show="enterVisible">
+      <EnterCustomer
+        @cancel="() => (enterVisible = false)"
+        @finish="handleFinish"
+      />
+    </IhDialog>
   </el-dialog>
 </template>
 
 <script lang="ts">
 import { Component, Vue } from "vue-property-decorator";
 import { post_customer_getCustList } from "@/api/customer";
+import EnterCustomer from "@/views/deal/dealReport/dialog/enterCustomer.vue";
 import PaginationMixin from "@/mixins/pagination";
 
 @Component({
   mixins: [PaginationMixin],
+  components: { EnterCustomer },
 })
 export default class SelectCompany extends Vue {
   queryPageParameters: any = {
@@ -234,6 +242,7 @@ export default class SelectCompany extends Vue {
   selection = [];
   private timeList: any[] = [];
   private dialogVisible = true;
+  private enterVisible = false;
 
   // 取消
   cancel() {
@@ -277,6 +286,10 @@ export default class SelectCompany extends Vue {
       return;
     }
     this.$emit("finish", this.selection);
+  }
+  private handleFinish() {
+    this.enterVisible = false;
+    this.search();
   }
   private handleSelectionChange(val: any) {
     this.selection = val;
