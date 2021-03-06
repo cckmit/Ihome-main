@@ -1,10 +1,10 @@
 <!--
- * @Description: 服务费部分减免
+ * @Description: 服务费部分减免：终止协议、新优惠告知书、退款申请书
  * @version: 
  * @Author: ywl
  * @Date: 2021-03-03 11:10:24
  * @LastEditors: ywl
- * @LastEditTime: 2021-03-06 11:21:48
+ * @LastEditTime: 2021-03-06 14:33:14
 -->
 <template>
   <section>
@@ -126,6 +126,7 @@
             >
               <IhSelectPageByCycle
                 v-model="form.formList[1].cycleId"
+                :searchName="cycleName"
                 placeholder="请选择立项周期"
                 @changeOption="(data) => {
                   form.formList[1].proId = data.proId;
@@ -185,7 +186,6 @@
                 v-model="form.formList[1].ownerType"
                 placeholder="业主类型"
                 class="width--100"
-                @change="handleOwner"
               >
                 <el-option
                   v-for="(i, n) in $root.dictAllList('OwnerType')"
@@ -580,6 +580,7 @@ export default class SceneTwo extends Vue {
   private isOther = false;
   private beforeValue: any = null;
   private action = 0;
+  private cycleName = "";
 
   @Watch("form.formList.1.ownerType")
   watchOwner(val: any) {
@@ -613,12 +614,6 @@ export default class SceneTwo extends Vue {
       fileNo: i.fileId,
       type: "Subscription",
     }));
-  }
-  private async handleOwner(data: any) {
-    if (!this.action) {
-      this.beforeValue = data;
-      this.action++;
-    }
   }
   private methodChange(val: any) {
     console.log(val);
@@ -757,6 +752,16 @@ export default class SceneTwo extends Vue {
       console.log("error submit!!");
       return false;
     }
+  }
+
+  created() {
+    this.cycleName = this.data.cycleName;
+    this.form.formList[1].cycleId = this.data.cycleId;
+    this.form.formList[1].buyUnit = this.data.buyUnit;
+    this.form.formList[1].roomNumberId = this.data.roomNumberId;
+    this.form.formList[1].ownerType = this.data.ownerType;
+    this.form.formList[1].proId = this.data.projectId;
+    this.beforeValue = this.data.ownerType;
   }
 }
 </script>
