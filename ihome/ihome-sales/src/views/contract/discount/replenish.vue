@@ -4,7 +4,7 @@
  * @Author: ywl
  * @Date: 2021-03-03 09:07:09
  * @LastEditors: ywl
- * @LastEditTime: 2021-03-04 19:24:03
+ * @LastEditTime: 2021-03-06 09:28:23
 -->
 <template>
   <IhPage class="text-left">
@@ -84,6 +84,7 @@ export default class Replenish extends Vue {
     }));
     try {
       await post_notice_supplemental_agreement(list);
+      this.$message.success("发起补充协议成功");
       this.$goto({
         path: "/discount/list",
       });

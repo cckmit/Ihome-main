@@ -4,7 +4,7 @@
  * @Author: ywl
  * @Date: 2021-03-03 19:03:40
  * @LastEditors: ywl
- * @LastEditTime: 2021-03-03 21:12:33
+ * @LastEditTime: 2021-03-06 11:08:00
 -->
 <template>
   <el-dialog
@@ -61,13 +61,13 @@
           <el-form-item label="创建时间">
             <el-date-picker
               v-model="timeList"
-              type="datetimerange"
+              type="daterange"
               align="left"
               unlink-panels
               range-separator="到"
               start-placeholder="开始日期"
               end-placeholder="结束日期"
-              value-format="yyyy-MM-dd hh:mm:ss"
+              value-format="yyyy-MM-dd"
               style="width: 100%;"
             ></el-date-picker>
           </el-form-item>

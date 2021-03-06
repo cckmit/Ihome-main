@@ -4,7 +4,7 @@
  * @Author: ywl
  * @Date: 2021-03-03 11:10:24
  * @LastEditors: ywl
- * @LastEditTime: 2021-03-04 19:40:01
+ * @LastEditTime: 2021-03-06 11:21:48
 -->
 <template>
   <section>
@@ -185,12 +185,7 @@
                 v-model="form.formList[1].ownerType"
                 placeholder="业主类型"
                 class="width--100"
-                @change="(data) => {
-                  data === 'Enterprise'
-                    ? form.formList[1].templateType = 'PaperTemplate'
-                    : form.formList[1].templateType = null;
-                  form.formList[1].ownerList = [];
-                }"
+                @change="handleOwner"
               >
                 <el-option
                   v-for="(i, n) in $root.dictAllList('OwnerType')"
@@ -334,6 +329,20 @@
               <IhUpload
                 :file-list.sync="noticeFile"
                 @newFileList="handleNoticeFile($event, 1)"
+                uploadAccept="image"
+                accept="image/*"
+                class="upload"
+                size="100px"
+              ></IhUpload>
+            </el-form-item>
+          </el-col>
+        </el-row>
+        <el-row v-if="isOther">
+          <el-col :span="24">
+            <el-form-item label="认购书附件">
+              <IhUpload
+                :file-list.sync="subFile"
+                @newFileList="handleSubFile($event, 1)"
                 uploadAccept="image"
                 accept="image/*"
                 class="upload"
@@ -500,7 +509,7 @@
 </template>
 
 <script lang="ts">
-import { Component, Vue, Prop } from "vue-property-decorator";
+import { Component, Vue, Prop, Watch } from "vue-property-decorator";
 import BankRecord from "@/components/bankRecord.vue";
 import SelectOwner from "../dialog/selectOwner.vue";
 import SelectCompany from "../dialog/selectCompany.vue";
@@ -567,6 +576,29 @@ export default class SceneTwo extends Vue {
   private noticeAttachmentList: any[] = []; //
   private noticeFile: any[] = []; //
   private refundFile: any[] = []; //
+  private subFile: any[] = [];
+  private isOther = false;
+  private beforeValue: any = null;
+  private action = 0;
+
+  @Watch("form.formList.1.ownerType")
+  watchOwner(val: any) {
+    if (this.beforeValue) {
+      if (val !== this.beforeValue) {
+        this.$confirm("切换用户类型会清空客户数据", "提示")
+          .then(() => {
+            this.beforeValue = val;
+            this.form.formList[1].ownerList = [];
+            val === "Enterprise"
+              ? (this.form.formList[1].templateType = "PaperTemplate")
+              : (this.form.formList[1].templateType = null);
+          })
+          .catch(() => {
+            this.form.formList[1].ownerType = this.beforeValue;
+          });
+      }
+    }
+  }
 
   private handleNoticeFile(list: any, index: number) {
     this.form.formList[index].noticeAttachmentList = list.map((i: any) => ({
@@ -575,6 +607,19 @@ export default class SceneTwo extends Vue {
       type: "NoticeAttachment",
     }));
   }
+  private handleSubFile(list: any, index: number) {
+    this.form.formList[index].noticeAttachmentList = list.map((i: any) => ({
+      attachmentSuffix: i.name,
+      fileNo: i.fileId,
+      type: "Subscription",
+    }));
+  }
+  private async handleOwner(data: any) {
+    if (!this.action) {
+      this.beforeValue = data;
+      this.action++;
+    }
+  }
   private methodChange(val: any) {
     console.log(val);
     if (val.index !== "other") {
@@ -582,9 +627,11 @@ export default class SceneTwo extends Vue {
       this.form.formList[1].explain = val.modeDescription;
       this.form.formList[1].paymentAmount = val.premiumReceived;
       this.form.formList[1].exPreferentialItem = val.exPreferentialItem;
+      this.isOther = false;
     } else {
       this.form.formList[1].promotionMethod = val.promotionMethod;
       this.form.formList[1].exPreferentialItem = val.exPreferentialItem;
+      this.isOther = true;
     }
   }
   private async getMethodByTermId(termId: any) {
