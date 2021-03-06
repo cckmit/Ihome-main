@@ -1,10 +1,10 @@
 <!--
- * @Description: 场景四
+ * @Description: 服务费增加、服务费金额不变优惠方式变更、购房客户更名、告知书信息填写错误：终止协议、新优惠告知书
  * @version: 
  * @Author: ywl
  * @Date: 2021-03-04 10:59:21
  * @LastEditors: ywl
- * @LastEditTime: 2021-03-06 11:21:40
+ * @LastEditTime: 2021-03-06 14:38:09
 -->
 <template>
   <section>
@@ -107,8 +107,8 @@
       </template>
       <p class="ih-info-title">
         <span>优惠告知书</span>
-        <span class="annotation padding-left-20">*注：允许生成新告知书的条件：原告知书是无效状态，否则必须同时生成原告知书的终止协议</span>
-        <!-- <el-switch
+        <!--<span class="annotation padding-left-20">*注：允许生成新告知书的条件：原告知书是无效状态，否则必须同时生成原告知书的终止协议</span>
+         <el-switch
           class="title-switch"
           v-model="isShow.isNotice"
           @change="handleSwitch(1)"
@@ -126,6 +126,7 @@
             >
               <IhSelectPageByCycle
                 v-model="form.formList[1].cycleId"
+                :searchName="cycleName"
                 placeholder="请选择立项周期"
                 @changeOption="(data) => {
                   form.formList[1].proId = data.proId
@@ -180,7 +181,6 @@
                 v-model="form.formList[1].ownerType"
                 placeholder="业主类型"
                 class="width--100"
-                @change="handleOwner"
               >
                 <el-option
                   v-for="(i, n) in $root.dictAllList('OwnerType')"
@@ -429,6 +429,7 @@ export default class SceneTwo extends Vue {
   private isOther = false;
   private beforeValue: any = null;
   private action = 0;
+  private cycleName = "";
 
   @Watch("form.formList.1.ownerType")
   watchOwner(val: any) {
@@ -462,12 +463,6 @@ export default class SceneTwo extends Vue {
       fileNo: i.fileId,
       type: "Subscription",
     }));
-  }
-  private handleOwner(data: any) {
-    if (!this.action) {
-      this.beforeValue = data;
-      this.action++;
-    }
   }
   private methodChange(val: any) {
     console.log(val);
@@ -587,6 +582,16 @@ export default class SceneTwo extends Vue {
       console.log("error submit!!");
       return false;
     }
+  }
+
+  created() {
+    this.cycleName = this.data.cycleName;
+    this.form.formList[1].cycleId = this.data.cycleId;
+    this.form.formList[1].buyUnit = this.data.buyUnit;
+    this.form.formList[1].roomNumberId = this.data.roomNumberId;
+    this.form.formList[1].ownerType = this.data.ownerType;
+    this.form.formList[1].proId = this.data.projectId;
+    this.beforeValue = this.data.ownerType;
   }
 }
 </script>

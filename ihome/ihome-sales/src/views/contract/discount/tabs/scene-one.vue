@@ -1,10 +1,10 @@
 <!--
- * @Description: 补充协议的场景 --换房不涉及优惠折扣变更
+ * @Description: 换房不涉及优惠折扣变更：补充协议
  * @version: 
  * @Author: ywl
  * @Date: 2021-03-03 10:04:07
  * @LastEditors: ywl
- * @LastEditTime: 2021-03-04 11:47:35
+ * @LastEditTime: 2021-03-06 14:06:14
 -->
 <template>
   <section>

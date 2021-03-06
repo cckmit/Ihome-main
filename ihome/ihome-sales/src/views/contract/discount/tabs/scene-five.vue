@@ -1,10 +1,10 @@
 <!--
- * @Description: 场景 --退房不退款
+ * @Description: 退房不退款：终止协议
  * @version: 
  * @Author: ywl
  * @Date: 2021-03-04 19:17:24
  * @LastEditors: ywl
- * @LastEditTime: 2021-03-04 19:30:59
+ * @LastEditTime: 2021-03-06 14:08:08
 -->
 <template>
   <section>
