@@ -698,6 +698,8 @@ export default class Apply extends Vue {
     this.dropOption = await post_term_getDropDown();
   }
   private async getChannelInfo(item: any) {
+    this.info.channelAccountName = null;
+    this.channelAccountOptions = [];
     let res = await get_channel_get__id({ id: item.id });
     this.channelAccountOptions = res.channelBanks;
     this.info.channelAddress = res.address;
@@ -764,10 +766,12 @@ export default class Apply extends Vue {
   }
 
   channelAccountChange(val: any) {
-    const item = this.channelAccountOptions.find((v: any) => v.id === val);
-    this.info.channelAccount = item.accountNo;
-    this.info.channelAccountBank = item.branchName;
-    this.info.channelAccountName = item.accountName;
+    if (val) {
+      const item = this.channelAccountOptions.find((v: any) => v.id === val);
+      this.info.channelAccount = item.accountNo;
+      this.info.channelAccountBank = item.branchName;
+      this.info.channelAccountName = item.accountName;
+    }
   }
 
   @NoRepeatHttp()

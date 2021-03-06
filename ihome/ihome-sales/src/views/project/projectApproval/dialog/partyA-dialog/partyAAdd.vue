@@ -4,7 +4,7 @@
  * @Author: wwq
  * @Date: 2020-12-01 14:49:06
  * @LastEditors: wwq
- * @LastEditTime: 2021-01-26 19:34:57
+ * @LastEditTime: 2021-03-06 16:38:20
 -->
 <template>
   <el-dialog
@@ -385,9 +385,14 @@ export default class PartyAAdd extends Vue {
     }
   }
   async changePartyB(val: any) {
-    this.branchOption = await get_bankAccount_get__companyId({
-      companyId: val,
-    });
+    if (val) {
+      this.branchOption = await get_bankAccount_get__companyId({
+        companyId: val,
+      });
+    } else {
+      this.form.receivingAccountId = null;
+      this.branchOption = [];
+    }
   }
 
   async getPartyB() {
