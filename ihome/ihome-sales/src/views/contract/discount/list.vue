@@ -4,7 +4,7 @@
  * @Author: ywl
  * @Date: 2020-09-27 16:27:36
  * @LastEditors: ywl
- * @LastEditTime: 2021-03-06 11:22:46
+ * @LastEditTime: 2021-03-06 11:58:32
 -->
 <template>
   <IhPage label-width="80px">
@@ -311,7 +311,7 @@
                   v-has="'B.SALES.CONTRACT.DISCOUNTLIST.EXPRORTATTCH'"
                 >导出附件</el-dropdown-item>
                 <el-dropdown-item
-                  :class="{'ih-data-disabled': row.finish === 'No'}"
+                  :class="{'ih-data-disabled': row.finish === 'No' || row.notificationType !== 'Notification'}"
                   :disabled="row.notificationStatus !== 'BecomeEffective' && !row.dealId"
                   @click.native.prevent="handleGo(row)"
                 >发起补充协议</el-dropdown-item>
