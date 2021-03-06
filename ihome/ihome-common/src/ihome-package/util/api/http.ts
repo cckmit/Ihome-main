@@ -69,7 +69,7 @@ service.interceptors.response.use(
             if (res.code == "E1500") {
                 jsLogHttp(response, "http系统处理异常E1500");
             } else {
-                jsLogHttp(response, "http业务异常上报" + res.code);
+                jsLogHttp(response, "http业务异常上报_" + res.code + "_" + res.msg);
             }
             Message({
                 message: res.msg || 'Error',
