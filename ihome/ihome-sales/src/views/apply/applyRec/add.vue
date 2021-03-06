@@ -4,7 +4,7 @@
  * @Author: ywl
  * @Date: 2021-01-07 16:30:03
  * @LastEditors: ywl
- * @LastEditTime: 2021-03-02 15:11:54
+ * @LastEditTime: 2021-03-06 22:50:51
 -->
 <template>
   <IhPage class="text-left">
@@ -1633,7 +1633,7 @@ export default class ApplyRecAdd extends Vue {
     }
     let val = this.form.taxMoney;
     let sub = this.globalTaxMoney - val; // 差额
-    console.log(val, sub, number, this.globalTaxMoney);
+    // console.log(val, sub, number, this.globalTaxMoney);
     let listArr: any = [];
     let isSub = true;
     if (sub === 0) {
@@ -1667,10 +1667,8 @@ export default class ApplyRecAdd extends Vue {
         );
         if (taxMoneyNew > 0) {
           element.taxMoneyNew = taxMoneyNew;
-          element.noTaxMoneyNew = this.$math.tofixed(
-            this.$math.add(thisNoTaxMoney, sub),
-            2
-          );
+          element.noTaxMoneyNew = this.$math.tofixed(thisNoTaxMoney + sub, 2);
+          console.log(element.taxMoneyNew, element.noTaxMoneyNew);
           isSub = false;
           listArr.push(element);
         } else {
