@@ -4,7 +4,7 @@
  * @Author: ywl
  * @Date: 2021-03-04 10:59:21
  * @LastEditors: ywl
- * @LastEditTime: 2021-03-08 16:45:55
+ * @LastEditTime: 2021-03-08 17:54:41
 -->
 <template>
   <section>
@@ -593,17 +593,17 @@ export default class SceneTwo extends Vue {
     this.form.formList[1].ownerType = this.data.ownerType;
     this.form.formList[1].proId = this.data.projectId;
     this.form.formList[1].templateType = this.data.templateType;
-    this.form.formList[1].methObj = this.data.explain;
-    this.form.formList[1].explain = this.data.explain;
-    this.form.formList[1].paymentAmount = this.data.paymentAmount;
-    this.form.formList[1].ownerList = this.data.ownerList.map((i: any) => ({
-      code: "-",
-      type: (this.$root as any).dictAllName(this.data.ownerType, "OwnerType"),
-      ownerName: i.ownerName,
-      ownerMobile: i.ownerMobile,
-      ownerCertificateNo: i.ownerCertificateNo,
-    }));
-    this.selection = this.data.ownerList;
+    // this.form.formList[1].methObj = this.data.explain;
+    // this.form.formList[1].explain = this.data.explain;
+    // this.form.formList[1].paymentAmount = this.data.paymentAmount;
+    // this.form.formList[1].ownerList = this.data.ownerList.map((i: any) => ({
+    //   code: "-",
+    //   type: (this.$root as any).dictAllName(this.data.ownerType, "OwnerType"),
+    //   ownerName: i.ownerName,
+    //   ownerMobile: i.ownerMobile,
+    //   ownerCertificateNo: i.ownerCertificateNo,
+    // }));
+    // this.selection = this.data.ownerList;
     this.beforeValue = this.data.ownerType;
     this.getMethodByTermId(this.data.cycleId);
   }

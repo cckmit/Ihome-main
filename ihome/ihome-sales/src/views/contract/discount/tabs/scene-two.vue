@@ -4,7 +4,7 @@
  * @Author: ywl
  * @Date: 2021-03-03 11:10:24
  * @LastEditors: ywl
- * @LastEditTime: 2021-03-08 16:40:41
+ * @LastEditTime: 2021-03-08 17:54:17
 -->
 <template>
   <section>
@@ -771,17 +771,24 @@ export default class SceneTwo extends Vue {
     this.form.formList[1].ownerType = this.data.ownerType;
     this.form.formList[1].proId = this.data.projectId;
     this.form.formList[1].templateType = this.data.templateType;
-    this.form.formList[1].methObj = this.data.explain;
-    this.form.formList[1].explain = this.data.explain;
-    this.form.formList[1].paymentAmount = this.data.paymentAmount;
-    this.form.formList[1].ownerList = this.data.ownerList.map((i: any) => ({
-      code: "-",
-      type: (this.$root as any).dictAllName(this.data.ownerType, "OwnerType"),
-      ownerName: i.ownerName,
-      ownerMobile: i.ownerMobile,
-      ownerCertificateNo: i.ownerCertificateNo,
-    }));
-    this.selection = this.data.ownerList;
+    // this.form.formList[1].explain = this.data.explain;
+    // this.form.formList[1].paymentAmount = this.data.paymentAmount;
+    // this.form.formList[1].ownerList = this.data.ownerList.map((i: any) => ({
+    //   code: "-",
+    //   type: (this.$root as any).dictAllName(this.data.ownerType, "OwnerType"),
+    //   ownerName: i.ownerName,
+    //   ownerMobile: i.ownerMobile,
+    //   ownerCertificateNo: i.ownerCertificateNo,
+    // }));
+    // this.form.formList[1].exPreferentialItem = this.data.exPreferentialItem;
+    // this.form.formList[1].promotionMethod = this.data.promotionMethod;
+    // this.data.promotionMethod === "Manual"
+    //   ? (this.isOther = true)
+    //   : (this.isOther = false);
+    // this.isOther
+    //   ? (this.form.formList[1].methObj = { index: "other" })
+    //   : (this.form.formList[1].methObj = this.data.explain);
+    // this.selection = this.data.ownerList;
     this.beforeValue = this.data.ownerType;
     this.getMethodByTermId(this.data.cycleId);
   }

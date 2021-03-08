@@ -4,7 +4,7 @@
  * @Author: ywl
  * @Date: 2021-01-07 16:30:03
  * @LastEditors: ywl
- * @LastEditTime: 2021-03-08 11:23:50
+ * @LastEditTime: 2021-03-08 17:49:26
 -->
 <template>
   <IhPage class="text-left">
@@ -1372,6 +1372,7 @@ export default class ApplyRecAdd extends Vue {
           subMoneyNoTax,
           subMoneyTax,
           dataSourceId: i.id,
+          proId: this.form.proId,
         };
       });
     } catch (error) {
