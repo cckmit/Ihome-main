@@ -4,7 +4,7 @@
  * @Author: ywl
  * @Date: 2021-03-03 09:07:09
  * @LastEditors: ywl
- * @LastEditTime: 2021-03-06 17:35:49
+ * @LastEditTime: 2021-03-06 21:21:14
 -->
 <template>
   <IhPage class="text-left">
@@ -38,6 +38,7 @@
       <component
         :is="currView"
         :data="info"
+        :type="type"
         @finish="submit"
       ></component>
     </template>
