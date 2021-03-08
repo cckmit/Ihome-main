@@ -78,6 +78,7 @@
             <el-select
               clearable
               v-model="postData.cardType"
+              @change="handleChangeCardType"
               placeholder="证件类型"
               class="width--100">
               <el-option
@@ -119,7 +120,8 @@
   import {Component, Vue, Prop} from "vue-property-decorator";
   import {post_customer_add} from "@/api/customer";
   import {
-    phoneValidator
+    phoneValidator,
+    validIdentityCard
   } from "ihome-common/util/base/form-ui";
   import {Form as ElForm} from "element-ui";
   import {NoRepeatHttp} from "ihome-common/util/aop/no-repeat-http";
@@ -217,6 +219,21 @@
           });
           this.postData.cardType = "Businesslicense"; // 公司默认选中营业执照
         }
+      }
+    }
+
+    // 改变证件类型
+    handleChangeCardType(value: any) {
+      if (value === 'IdCard') {
+        // 居民身份证
+        this.rules.certificateNumber = [
+          {required: true, message: "请输入证件编号", trigger: "change"},
+          {validator: validIdentityCard, trigger: "change"}
+        ]
+      } else {
+        this.rules.certificateNumber = [
+          {required: true, message: "请输入证件编号", trigger: "change"}
+        ]
       }
     }
   }
