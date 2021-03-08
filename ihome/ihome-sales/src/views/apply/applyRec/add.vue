@@ -4,7 +4,7 @@
  * @Author: ywl
  * @Date: 2021-01-07 16:30:03
  * @LastEditors: ywl
- * @LastEditTime: 2021-03-06 23:16:16
+ * @LastEditTime: 2021-03-08 11:23:50
 -->
 <template>
   <IhPage class="text-left">
@@ -311,7 +311,7 @@
             min-width="120"
           >
             <template v-slot="{ row }">
-              <template v-if="row.noTaxMoneyNew">
+              <template v-if="row.noTaxMoneyNew || row.noTaxMoneyNew === 0">
                 <del>{{noTaxMoneySum(row)}}</del>
                 <div style="color: red">{{row.noTaxMoneyNew}}</div>
               </template>
@@ -1666,16 +1666,16 @@ export default class ApplyRecAdd extends Vue {
       if (isSub) {
         let newTaxMoney = this.$math.sub(thisTaxMoney, sub);
         let taxMoneyNew = this.$math.tofixed(newTaxMoney, 2);
-        console.log(newTaxMoney, taxMoneyNew);
+        let newAdd = this.$math.add(thisNoTaxMoney, sub);
+        let noTaxMoneyNew = this.$math.tofixed(newAdd, 2);
 
-        if (taxMoneyNew > 0) {
-          let newAdd = this.$math.add(thisNoTaxMoney, sub);
+        if (taxMoneyNew > 0 && noTaxMoneyNew > 0) {
           element.taxMoneyNew = taxMoneyNew;
-          element.noTaxMoneyNew = this.$math.tofixed(newAdd, 2);
+          element.noTaxMoneyNew = noTaxMoneyNew;
           console.log(element.taxMoneyNew, element.noTaxMoneyNew, newAdd);
           isSub = false;
           listArr.push(element);
-        } else {
+        } else if (taxMoneyNew < 0) {
           element.taxMoneyNew = 0;
           element.noTaxMoneyNew = this.$math.tofixed(
             this.$math.add(thisNoTaxMoney, thisTaxMoney),
@@ -1683,6 +1683,18 @@ export default class ApplyRecAdd extends Vue {
           );
           sub = this.$math.tofixed(this.$math.sub(sub, element.taxMoney), 2);
           isSub = true;
+          console.log(sub, "sub1");
+
+          listArr.push(element);
+        } else {
+          element.noTaxMoneyNew = 0;
+          let tax = this.$math.add(element.noTaxMoney, element.taxMoney);
+          element.taxMoneyNew = this.$math.tofixed(tax, 2);
+          let newSub = this.$math.add(sub, element.noTaxMoney); //新的差值
+          sub = this.$math.tofixed(newSub, 2);
+          isSub = true;
+
+          console.log(sub, "sub2");
           listArr.push(element);
         }
       } else {
@@ -1713,7 +1725,10 @@ export default class ApplyRecAdd extends Vue {
     }));
     let dealList = this.form.dealList.map((i: any) => ({
       ...i,
-      noTaxMoney: i.noTaxMoneyNew ? i.noTaxMoneyNew : i.noTaxMoney,
+      noTaxMoney:
+        i.noTaxMoneyNew || i.noTaxMoneyNew === 0
+          ? i.noTaxMoneyNew
+          : i.noTaxMoney,
       taxMoney:
         i.taxMoneyNew || i.taxMoneyNew === 0 ? i.taxMoneyNew : i.taxMoney,
     }));
