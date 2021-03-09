@@ -4,7 +4,7 @@
  * @Author: wwq
  * @Date: 2021-01-15 10:45:53
  * @LastEditors: wwq
- * @LastEditTime: 2021-03-03 17:14:16
+ * @LastEditTime: 2021-03-09 15:49:19
 -->
 <template>
   <IhPage label-width="100px">
@@ -431,6 +431,16 @@ export default class ReturnConfirmList extends Vue {
   ];
   selection: any = [];
 
+  customLoading() {
+    return this.$loading({
+      lock: true,
+      text: "加载中....",
+      spinner: "el-icon-loading",
+      background: "rgba(0, 0, 0, 0.6)",
+      customClass: "ih-loading-spinner",
+    });
+  }
+
   async getListMixin() {
     this.resPageInfo = await post_payDetail_getList(this.queryPageParameters);
   }
@@ -521,7 +531,9 @@ export default class ReturnConfirmList extends Vue {
       arr = [data.settlementCode];
     }
     try {
+      this.customLoading();
       const res = await post_payDetail_push(arr);
+      this.customLoading().close();
       if (res.status) {
         this.$notify({
           type: "success",
@@ -535,6 +547,7 @@ export default class ReturnConfirmList extends Vue {
         return;
       }
     } catch (err) {
+      this.customLoading().close();
       console.log(err);
     }
   }
@@ -578,11 +591,16 @@ export default class ReturnConfirmList extends Vue {
 
   // 同步状态
   async synchronization(data: any) {
-    await post_payDetail_sys_status__paymentCode({
-      paymentCode: data.paymentCode,
-    });
-    this.$message.success("同步成功");
-    this.search();
+    try {
+      this.customLoading();
+      await post_payDetail_sys_status__paymentCode({
+        paymentCode: data.paymentCode,
+      });
+      this.$message.success("同步成功");
+      this.search();
+    } catch (err) {
+      this.customLoading().close();
+    }
   }
 
   // 设置已付款
@@ -607,5 +625,13 @@ export default class ReturnConfirmList extends Vue {
   overflow: hidden;
   text-overflow: ellipsis;
   white-space: nowrap;
+}
+</style>
+<style lang="scss">
+.ih-loading-spinner {
+  .el-icon-loading,
+  .el-loading-text {
+    color: #fff;
+  }
 }
 </style>
