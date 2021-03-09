@@ -88,10 +88,7 @@
         </el-row>
         <el-row>
           <el-col :span="12">
-            <el-form-item
-              label="日期类型"
-              style="text-align: left"
-            >
+            <el-form-item label="日期类型" style="text-align: left">
               <el-select
                 style="width: 30%"
                 v-model="queryPageParameters.dateType"
@@ -128,21 +125,14 @@
     </template>
     <template #btn>
       <el-row>
-        <el-button
-          type="primary"
-          @click="searchMixin()"
-        >查询</el-button>
+        <el-button type="primary" @click="searchMixin()">查询</el-button>
         <el-button @click="reset()">重置</el-button>
       </el-row>
     </template>
     <template #table>
       <br />
 
-      <el-tabs
-        v-model="activeName"
-        @tab-click="handleClick"
-        type="border-card"
-      >
+      <el-tabs v-model="activeName" @tab-click="handleClick" type="border-card">
         <el-tab-pane
           v-for="(item, index) in tabList"
           :key="index"
@@ -173,11 +163,9 @@
               prop="refundApplyNo"
             >
               <template slot-scope="scope">
-                <el-link
-                  type="primary"
-                  @click="gotoRefundApplyNo(scope)"
+                <el-link type="primary" @click="gotoRefundApplyNo(scope)">
+                  {{ scope.row.refundApplyNo }}</el-link
                 >
-                  {{ scope.row.refundApplyNo }}</el-link>
               </template>
             </el-table-column>
             <el-table-column
@@ -185,10 +173,7 @@
               prop="refundPayNo"
               min-width="200"
             ></el-table-column>
-            <el-table-column
-              label="结算方式"
-              prop="settlementType"
-            >
+            <el-table-column label="结算方式" prop="settlementType">
               <template slot-scope="scope">{{
                 $root.dictAllName(
                   scope.row.settlementType,
@@ -196,44 +181,27 @@
                 )
               }}</template>
             </el-table-column>
-            <el-table-column
-              label="付款方式"
-              prop="payType"
-            >
+            <el-table-column label="付款方式" prop="payType">
               <template slot-scope="scope">{{
                 $root.dictAllName(scope.row.payType, "RefundPayType")
               }}</template>
             </el-table-column>
-            <el-table-column
-              label="退款金额"
-              prop="amount"
-            ></el-table-column>
-            <el-table-column
-              label="退款人信息"
-              prop="refundName"
-              width="300"
-            >
+            <el-table-column label="退款金额" prop="amount"></el-table-column>
+            <el-table-column label="退款人信息" prop="refundName" width="300">
               <template slot-scope="scope">
                 <div>收款姓名:{{ scope.row.refundName }}</div>
                 <div>收款帐号:{{ scope.row.refundAccount }}</div>
                 <div>开户行:{{ scope.row.refundBankName }}</div>
               </template>
             </el-table-column>
-            <el-table-column
-              label="付款方信息"
-              prop="accountName"
-              width="400"
-            >
+            <el-table-column label="付款方信息" prop="accountName" width="400">
               <template slot-scope="scope">
                 <div>账户名称:{{ scope.row.accountName }}</div>
                 <div>账户账号:{{ scope.row.accountNo }}</div>
                 <div>开户行:{{ scope.row.branchName }}</div>
               </template>
             </el-table-column>
-            <el-table-column
-              label="状态"
-              prop="status"
-            >
+            <el-table-column label="状态" prop="status">
               <template slot-scope="scope">{{
                 $root.dictAllName(scope.row.status, "FinRefundItemPushStatus")
               }}</template>
@@ -253,11 +221,7 @@
               prop="payDate"
               width="200"
             ></el-table-column>
-            <el-table-column
-              label="操作"
-              width="120"
-              fixed="right"
-            >
+            <el-table-column label="操作" width="120" fixed="right">
               <template v-slot="{ row }">
                 <el-link
                   type="primary"
@@ -272,7 +236,8 @@
                       'Paid',
                     ].includes(row.status),
                   }"
-                >退款推送</el-link>
+                  >退款推送</el-link
+                >
                 <el-link
                   v-if="row.settlementType === 'OnlinePay'"
                   type="primary"
@@ -285,7 +250,8 @@
                         row.status
                       ) && row.settlementType === 'OnlinePay',
                   }"
-                >设置已退款</el-link>
+                  >设置已退款</el-link
+                >
                 <el-link
                   type="primary"
                   @click="edit(row)"
@@ -298,7 +264,8 @@
                       'Paid',
                     ].includes(row.status),
                   }"
-                >修改</el-link>
+                  >修改</el-link
+                >
                 <el-link
                   type="primary"
                   @click="syncStatus(row)"
@@ -307,7 +274,8 @@
                   :class="{
                     'ih-data-disabled': ['PendingPay'].includes(row.status),
                   }"
-                >同步状态</el-link>
+                  >同步状态</el-link
+                >
               </template>
             </el-table-column>
           </el-table>
@@ -373,6 +341,7 @@ export default class RefundPushList extends Vue {
     refundPayNo: null,
     settlementType: null,
     status: null,
+    expiresTime: null,
   };
   resPageInfo: any = {
     total: null,
@@ -444,6 +413,7 @@ export default class RefundPushList extends Vue {
       refundPayNo: null,
       settlementType: null,
       status: null,
+      expiresTime: null,
     });
   }
 
