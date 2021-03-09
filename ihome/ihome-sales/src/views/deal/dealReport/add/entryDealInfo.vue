@@ -1632,7 +1632,7 @@
       if (baseInfo.contracts && baseInfo.contracts.length > 0) {
         this.contNoList = baseInfo.contracts;
         // 增加需求：当分销协议只有一个的时候，默认选中
-        if (baseInfo.contracts.length === 1) {
+        if (baseInfo && baseInfo.contracts && baseInfo.contracts.length === 1) {
           (this as any).$nextTick(() => {
             this.initContNo(baseInfo.contracts[0]);
           });
