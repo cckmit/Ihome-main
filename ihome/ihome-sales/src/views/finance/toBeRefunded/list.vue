@@ -272,6 +272,7 @@ export default class ToBeRefundedList extends Vue {
     refundApplyNO: null,
     refundName: null,
     status: null,
+    expiresTime: null,
   };
   toVoidList: any = [];
   createUserList: any = []; //创建人列表

@@ -292,6 +292,7 @@ export default class RefundApplyList extends Vue {
     payType: null,
     refundApplyNo: null,
     status: null,
+    companyId: null,
   };
   toVoidList: any = [];
   createUserList: any = []; //创建人列表
@@ -337,6 +338,7 @@ export default class RefundApplyList extends Vue {
       payType: null,
       refundApplyNo: null,
       status: null,
+      companyId: null,
     });
     this.queryPageParameters.beginTime = null;
     this.queryPageParameters.endTime = null;
