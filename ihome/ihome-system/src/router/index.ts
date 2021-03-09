@@ -165,10 +165,14 @@ const router = new VueRouter({
 
 
 router.beforeEach(async (to: Route, _: Route, next: any) => {
-  // Start progress bar
-  NProgress.start()
-  next();
-
+  if (to?.matched?.length === 0) {
+    //encodeURIComponent,decodeURIComponent
+    (window as any).location = "/web-sales/error404?source=" + encodeURIComponent((window as any).location.href);
+  } else {
+    // Start progress bar
+    NProgress.start()
+    next();
+  }
 })
 
 router.afterEach(() => {

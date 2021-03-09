@@ -5,21 +5,53 @@
  * @Date: 2020-06-22 11:46:23
  * @LastEditors: zyc
  * @LastEditTime: 2020-06-28 10:50:18
---> 
+-->
 <!DOCTYPE html>
 <html lang="en">
-  <head>
-    <meta charset="utf-8">
-    <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <meta name="viewport" content="width=device-width,initial-scale=1.0">
-    <link rel="icon" href="<%= BASE_URL %>favicon.ico">
-    <title><%= htmlWebpackPlugin.options.title %></title>
-  </head>
-  <body>
-    <noscript>
-      <strong>We're sorry but <%= htmlWebpackPlugin.options.title %> doesn't work properly without JavaScript enabled. Please enable it to continue.</strong>
-    </noscript>
-    <div id="container"></div>
-    <!-- built files will be auto injected -->
-  </body>
+
+<head>
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width,initial-scale=1.0">
+  <link rel="icon" href="<%= BASE_URL %>favicon.ico">
+  <title>
+    <%= htmlWebpackPlugin.options.title %>
+  </title>
+  <script>
+    function getCookie(name) {
+      var arr, reg = new RegExp("(^| )" + name + "=([^;]*)(;|$)");
+      if (arr = document.cookie.match(reg))
+        return unescape(arr[2]);
+      else
+        return null;
+    }
+    let cacheToken = getCookie("ihome-main-token");
+    document.addEventListener('visibilitychange', function () {
+      if (document.visibilityState == 'visible') {
+        //状态判断：显示（切换到当前页面）
+        //切换到页面执行事件
+        let newToken = getCookie("ihome-main-token");
+        if (newToken != cacheToken) {
+          alert("当前用户已发生变化，请确认右上角登录名称后再操作");
+          window.location = "/"
+        }
+        // console.log('切换到页面执行事件', new Date().toLocaleTimeString())
+      } else if (document.visibilityState == 'hidden') {
+        //状态判断：隐藏（离开当前页面）
+        //离开页面执行事件
+        // console.log('离开页面执行事件', new Date().toLocaleTimeString())
+      }
+    });
+  </script>
+</head>
+
+<body>
+  <noscript>
+    <strong>We're sorry but <%= htmlWebpackPlugin.options.title %> doesn't work properly without JavaScript enabled.
+        Please enable it to continue.</strong>
+  </noscript>
+  <div id="container"></div>
+  <!-- built files will be auto injected -->
+</body>
+
 </html>

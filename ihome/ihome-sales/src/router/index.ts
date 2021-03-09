@@ -51,9 +51,27 @@ let routes: Array<RouteConfig> = [
 
     ]
   },
+  {
+    path: '/Error403',
+    name: 'Error403',
+    component: () => import('../views/home/403.vue'),
+    meta: {
+      title: '无权限',
+      layout: false
+    }
+  },
+  {
+    path: '/Error404',
+    name: 'Error404',
+    component: () => import('../views/home/404.vue'),
+    meta: {
+      title: '找不到页面',
+      layout: false
+    }
+  }
 ]
 
-routes = routes.concat(channelRoutes, developerRoutes, contractRoutes, projectRoutes, dealRoutes, financeRoutes, payoffRoutes, applyRoutes, capitalRoutes,customerRoutes);
+routes = routes.concat(channelRoutes, developerRoutes, contractRoutes, projectRoutes, dealRoutes, financeRoutes, payoffRoutes, applyRoutes, capitalRoutes, customerRoutes);
 
 const router = new VueRouter({
   mode: 'history',
@@ -61,14 +79,15 @@ const router = new VueRouter({
   routes
 })
 
-
-
-
 router.beforeEach(async (to: Route, _: Route, next: any) => {
-  // Start progress bar
-  NProgress.start()
-  next();
-
+  if (to?.matched?.length === 0) {
+    //encodeURIComponent,decodeURIComponent
+    (window as any).location = "/web-sales/error404?source=" + encodeURIComponent((window as any).location.href);
+  } else {
+    // Start progress bar
+    NProgress.start()
+    next();
+  }
 })
 
 router.afterEach(() => {
