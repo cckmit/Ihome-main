@@ -126,12 +126,12 @@
               </el-col>
               <el-col :span="8">
                 <el-form-item label="经纪人">
-                  <SelectByBroker
+                  <IhSelectPageByBroker
                     v-model="queryPageParameters.broker"
                     @changeOption="(data) => {queryPageParameters.brokerId = data.userId}"
                     :proId="queryPageParameters.agencyId"
                     clearable
-                    placeholder="经纪人"/>
+                    placeholder="经纪人"></IhSelectPageByBroker>
                 </el-form-item>
               </el-col>
               <el-col :span="8">
@@ -383,7 +383,6 @@
 </template>
 <script lang="ts">
   import {Component, Vue} from "vue-property-decorator";
-  import SelectByBroker from "@/components/select/SelectByBroker.vue";
   import {
     post_deal_getList,
     post_deal_delete__id,
@@ -393,9 +392,6 @@
   import PaginationMixin from "@/mixins/pagination";
 
   @Component({
-    components: {
-      SelectByBroker
-    },
     mixins: [PaginationMixin],
   })
   export default class DealReportList extends Vue {

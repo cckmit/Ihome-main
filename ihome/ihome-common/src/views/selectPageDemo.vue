@@ -147,6 +147,15 @@
         :proId="form.testInput5"
       ></IhSelectPageByOrgCompany>
     </el-form-item>
+    <el-form-item label="经纪人">需要先选渠道公司才能选择经纪人</el-form-item>
+    <el-form-item>
+      <IhSelectPageByBroker
+        v-model="form.testInput16"
+        @changeOption="(data) => {form.brokerId = data.userId}"
+        :proId="form.testInput6"
+      ></IhSelectPageByBroker>
+    </el-form-item>
+    <el-form-item label="绑定的值">{{form.brokerId}}</el-form-item>
   </el-form>
 </template>
 
@@ -169,6 +178,7 @@ import {
   IhSelectPageByDeveloper,
   IhSelectPageByPayer,
   IhSelectPageByOrgCompany,
+  IhSelectPageByBroker
 } from "../ihome-package/ui/packages/select-page/index";
 
 @Component({
@@ -186,6 +196,7 @@ import {
     IhSelectPageOrg,
     IhSelectPageByPayer,
     IhSelectPageByOrgCompany,
+    IhSelectPageByBroker,
   },
 })
 export default class SelectPageDemo extends Vue {
@@ -209,7 +220,9 @@ export default class SelectPageDemo extends Vue {
     testInput13: null,
     testInput14: null,
     testInput15: null,
+    testInput16: null,
     data: null,
+    brokerId: null,
   };
   private rules = {};
 
