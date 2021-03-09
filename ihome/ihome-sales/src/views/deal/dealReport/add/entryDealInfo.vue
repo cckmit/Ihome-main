@@ -190,7 +190,7 @@
           <el-form-item label="合同类型" prop="contType">
             <el-select
               v-model="postData.contType"
-              :disabled="baseInfoInDeal.contType === 'DistriDeal' && baseInfoInDeal.hasRecord && postData.roomId"
+              :disabled="baseInfoInDeal.contType === 'DistriDeal' && baseInfoInDeal.hasRecord && !!postData.roomId"
               placeholder="请选择合同类型"
               @change="changeContType"
               class="width--100">
@@ -1631,14 +1631,17 @@
       // 分销协议编号
       if (baseInfo.contracts && baseInfo.contracts.length > 0) {
         this.contNoList = baseInfo.contracts;
-        // 增加需求：当分销协议只有一个的时候，默认选中 --- 2021-02-20-待定
-        // if (baseInfo.contracts.length === 1) {
-        //   (this as any).$nextTick(() => {
-        //     this.initContNo(baseInfo.contracts[0]);
-        //   });
-        // }
+        // 增加需求：当分销协议只有一个的时候，默认选中
+        if (baseInfo.contracts.length === 1) {
+          (this as any).$nextTick(() => {
+            this.initContNo(baseInfo.contracts[0]);
+          });
+        }
       } else {
         this.contNoList = [];
+        this.postData.contNo = null;
+        this.postData.isMat = null;
+        this.packageIdsList = [];
       }
       // 备案情况
       if (baseInfo && baseInfo.myReturnVO && baseInfo.myReturnVO.dealVO && baseInfo.myReturnVO.dealVO.recordState) {
