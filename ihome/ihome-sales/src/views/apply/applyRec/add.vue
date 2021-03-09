@@ -4,7 +4,7 @@
  * @Author: ywl
  * @Date: 2021-01-07 16:30:03
  * @LastEditors: ywl
- * @LastEditTime: 2021-03-09 09:18:37
+ * @LastEditTime: 2021-03-09 10:47:32
 -->
 <template>
   <IhPage class="text-left">
@@ -462,7 +462,7 @@
             <td width="150">{{totalApplyMoney}}</td>
             <td width="150">本批不含税金额</td>
             <td width="150">
-              <template v-if="totalNoTaxMoneyNewSum()">
+              <template v-if="totalNoTaxMoneyNewSum() >= 0">
                 <del>{{totalNoTaxMoneySum}}</del>
                 <div style="color: red;">{{totalNoTaxMoneyNewSum()}}</div>
               </template>
@@ -470,7 +470,7 @@
             </td>
             <td width="150">本批税额</td>
             <td width="150">
-              <template v-if="totalTaxNew()">
+              <template v-if="totalTaxNew() >= 0">
                 <del>{{totalTax}}</del>
                 <div style="color: red;">{{totalTaxNew()}}</div>
               </template>
@@ -1167,6 +1167,8 @@ export default class ApplyRecAdd extends Vue {
   private applyPercentSum(row: any) {
     let sum = 0;
     sum = this.$math.div(row.applyMoney, row.receiveAmount);
+    console.log(sum, "bili");
+    sum = sum < 0.0001 ? 0 : sum;
     row.applyPercent = this.$math.tofixed(sum, 4);
     return row.applyPercent;
   }
@@ -1222,14 +1224,14 @@ export default class ApplyRecAdd extends Vue {
     let sumNew = 0;
     let isNew = false;
     this.form.dealList.forEach((i: any) => {
-      if (i.noTaxMoneyNew) {
+      if (i.noTaxMoneyNew || i.noTaxMoneyNew === 0) {
         isNew = true;
         sum = this.$math.add(sum, i.noTaxMoneyNew);
       } else {
         sum = this.$math.add(sum, i.noTaxMoney);
       }
     });
-    isNew ? (sumNew = this.$math.tofixed(sum, 2)) : (sumNew = 0);
+    isNew ? (sumNew = this.$math.tofixed(sum, 2)) : (sumNew = -1);
     return sumNew;
   }
   // 加减计算过后的税额的本批税额
@@ -1238,14 +1240,14 @@ export default class ApplyRecAdd extends Vue {
     let sumNew = 0;
     let isNew = false;
     this.form.dealList.forEach((i: any) => {
-      if (i.taxMoneyNew) {
+      if (i.taxMoneyNew || i.taxMoneyNew === 0) {
         isNew = true;
         sum = this.$math.add(sum, i.taxMoneyNew);
       } else {
         sum = this.$math.add(sum, i.taxMoney);
       }
     });
-    isNew ? (sumNew = this.$math.tofixed(sum, 2)) : (sumNew = 0);
+    isNew ? (sumNew = this.$math.tofixed(sum, 2)) : (sumNew = -1);
     return sumNew;
   }
   /**
