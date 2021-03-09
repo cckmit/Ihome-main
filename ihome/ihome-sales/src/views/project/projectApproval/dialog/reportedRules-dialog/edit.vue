@@ -4,7 +4,7 @@
  * @Author: wwq
  * @Date: 2020-11-30 17:32:39
  * @LastEditors: wwq
- * @LastEditTime: 2021-02-04 16:42:23
+ * @LastEditTime: 2021-03-08 15:45:17
 -->
 <template>
   <el-dialog
@@ -181,6 +181,8 @@ import { NoRepeatHttp } from "ihome-common/util/aop/no-repeat-http";
 import {
   post_customerReportRule_add,
   post_customerReportRule_update,
+  post_customerReportRule_busnissManage_add,
+  post_customerReportRule_busnissManage_update,
 } from "@/api/project/index.ts";
 @Component({
   components: {},
@@ -223,10 +225,18 @@ export default class ReportedRulesEdit extends Vue {
       this.form.termId = this.$route.query.id;
       this.form.exVisit = this.exVisit ? 1 : 0;
       if (this.data.reportId) {
-        await post_customerReportRule_update(this.form);
+        if (this.$route.name === "businessManagementEdit") {
+          await post_customerReportRule_busnissManage_update(this.form);
+        } else {
+          await post_customerReportRule_update(this.form);
+        }
         this.$message.success("修改成功");
       } else {
-        await post_customerReportRule_add(this.form);
+        if (this.$route.name === "businessManagementEdit") {
+          await post_customerReportRule_busnissManage_add(this.form);
+        } else {
+          await post_customerReportRule_add(this.form);
+        }
         this.$message.success("新增成功");
       }
       this.$emit("finish", this.form);

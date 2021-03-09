@@ -4,7 +4,7 @@
  * @Author: wwq
  * @Date: 2020-11-27 17:17:06
  * @LastEditors: wwq
- * @LastEditTime: 2021-03-03 11:47:07
+ * @LastEditTime: 2021-03-08 10:14:46
 -->
 <template>
   <div class="project-approval-box">
@@ -745,19 +745,19 @@
     <div>
       <br />
       <el-button
+        v-if="['Draft', 'TermReject'].includes(info.auditEnum)"
+        type="success"
+        :loading="finishLoading"
+        v-has="'B.SALES.PROJECT.TERMLIST.TJLXSH'"
+        @click="submit('ProjectApproval')"
+      >提交审核</el-button>
+      <el-button
         v-if="$route.name === 'projectApprovalEdit'"
         type="primary"
         @click="submit('save')"
         v-has="'B.SALES.PROJECT.TERMLIST.JCXXBC'"
         :loading="finishLoadSave"
       >保存</el-button>
-      <el-button
-        v-if="['Draft', 'TermReject'].includes(info.auditEnum)"
-        type="success"
-        :loading="finishLoading"
-        v-has="'B.SALES.PROJECT.TERMLIST.TJLXSH'"
-        @click="submit('ProjectApproval')"
-      >提交立项审核</el-button>
       <el-button
         v-if="['TermAdopt', 'ConstractReject', 'ConstractWait'].includes(info.auditEnum)"
         type="success"
@@ -1286,14 +1286,6 @@ export default class FirstAgencyEdit extends Vue {
     let obj: any = {};
     obj[type] = data;
     this.submitFile = { ...this.submitFile, ...obj };
-  }
-
-  queryFiles(data: any) {
-    this.attachTermVOS = data.map((v: any) => ({
-      attachAddr: `/sales-api/sales-document-cover/file/browse/${v.fileId}`,
-      attachName: v.name,
-      attachId: v.fileId,
-    }));
   }
 }
 </script>

@@ -4,7 +4,7 @@
  * @Author: wwq
  * @Date: 2020-08-13 11:40:10
  * @LastEditors: wwq
- * @LastEditTime: 2021-02-20 17:10:27
+ * @LastEditTime: 2021-03-08 15:16:37
 -->
 <template>
   <el-dialog
@@ -271,7 +271,10 @@
 <script lang="ts">
 import { Component, Vue, Prop } from "vue-property-decorator";
 import { post_channelGrade_getList } from "@/api/channel/index";
-import { post_customerReportRule_addWXBB } from "@/api/project/index";
+import {
+  post_customerReportRule_addWXBB,
+  post_customerReportRule_busnissManage_addWXBB,
+} from "@/api/project/index";
 import PaginationMixin from "@/mixins/pagination";
 
 @Component({
@@ -309,52 +312,8 @@ export default class UserList extends Vue {
     return h;
   }
 
-  editChange(row: any) {
-    const DRAFT = row.status === "DRAFT";
-    const dangqian = (this.$root as any).userInfo.id === row.inputUser;
-    return DRAFT && dangqian;
-  }
-
-  auditChange(row: any) {
-    const PTWYSH = row.status === "PTWYSH";
-    const FGSYGSH = row.status === "FGSYGSH";
-    const ZBYGSH = row.status === "ZBYGSH";
-    const RHeadBusinessManagement = this.$roleTool.RHeadBusinessManagement();
-    const RBusinessManagement = this.$roleTool.RBusinessManagement();
-    const RPlatformClerk = this.$roleTool.RPlatformClerk();
-    const skipPlatformClerk = row.skipPlatformClerk === "true" ? true : false;
-    return (
-      (PTWYSH && RPlatformClerk && !skipPlatformClerk) ||
-      (FGSYGSH && RBusinessManagement) ||
-      (ZBYGSH && RHeadBusinessManagement)
-    );
-  }
-
   cancel() {
     this.$emit("cancel");
-  }
-
-  recallChange(row: any) {
-    const PTWYSH = row.status === "PTWYSH";
-    const FGSYGSH = row.status === "FGSYGSH";
-    const ZBYGSH = row.status === "ZBYGSH";
-    const RPlatformClerk = this.$roleTool.RPlatformClerk();
-    const RBusinessManagement = this.$roleTool.RBusinessManagement();
-    const RChannelStaff = this.$roleTool.RChannelStaff();
-    const dangqian = (this.$root as any).userInfo.id === row.inputUser;
-    const skipPlatformClerk = row.skipPlatformClerk === "true" ? true : false;
-    return (
-      (PTWYSH && dangqian && !skipPlatformClerk && RChannelStaff) ||
-      (FGSYGSH && dangqian && skipPlatformClerk && RChannelStaff) ||
-      (FGSYGSH && RPlatformClerk) ||
-      (ZBYGSH && RBusinessManagement)
-    );
-  }
-
-  changeButton(row: any) {
-    const Approved = row.status === "Approved";
-    const dangqian = (this.$root as any).userInfo.id === row.inputUser;
-    return Approved && dangqian;
   }
 
   search() {
@@ -411,11 +370,16 @@ export default class UserList extends Vue {
       });
       try {
         this.finishLoading = true;
-        await post_customerReportRule_addWXBB({
+        let obj = {
           status: "PASS",
           channelCompanyId: arr,
           termId: this.$route.query.id,
-        });
+        };
+        if (this.$route.name === "businessManagementEdit") {
+          await post_customerReportRule_busnissManage_addWXBB(obj);
+        } else {
+          await post_customerReportRule_addWXBB(obj);
+        }
         this.finishLoading = false;
         this.$emit("finish");
       } catch (err) {

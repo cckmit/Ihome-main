@@ -4,7 +4,7 @@
  * @Author: wwq
  * @Date: 2020-11-27 17:27:01
  * @LastEditors: wwq
- * @LastEditTime: 2021-02-03 11:27:57
+ * @LastEditTime: 2021-03-08 11:27:40
 -->
 <template>
   <div>
@@ -74,6 +74,12 @@
                 v-model="info.constractOaVO.customerConfirm"
               >
               </el-input>
+              <i
+                v-if="contractApprovalChange"
+                v-has="'B.SALES.PROJECT.TERMLIST.ZJFXHTKHBJ'"
+                class="el-icon-edit-outline tubiao"
+                @click="editDialog('customerConfirm')"
+              ></i>
             </div>
           </el-form-item>
         </el-col>
@@ -91,6 +97,12 @@
                 v-model="info.constractOaVO.responsibiltity"
               >
               </el-input>
+              <i
+                v-if="contractApprovalChange"
+                v-has="'B.SALES.PROJECT.TERMLIST.ZJFXHTWYZR'"
+                class="el-icon-edit-outline tubiao"
+                @click="editDialog('responsibiltity')"
+              ></i>
             </div>
           </el-form-item>
         </el-col>
@@ -108,6 +120,12 @@
                 v-model="info.constractOaVO.otherRemark"
               >
               </el-input>
+              <i
+                v-if="contractApprovalChange"
+                v-has="'B.SALES.PROJECT.TERMLIST.ZJFXHTQTSM'"
+                class="el-icon-edit-outline tubiao"
+                @click="editDialog('otherRemark')"
+              ></i>
             </div>
           </el-form-item>
         </el-col>
@@ -209,7 +227,6 @@
             </el-col>
           </el-row>
         </el-form>
-        <div class="file-hint">特殊情况无法使用电子优惠告知书模板，请上传纸质版优惠告知书附件</div>
       </div>
     </div>
     <ih-dialog :show="viewDialogVisible">
@@ -218,17 +235,29 @@
         @cancel="() => (viewDialogVisible = false)"
       />
     </ih-dialog>
+    <ih-dialog :show="editDialogVisible">
+      <PartyADialog
+        :data="editData"
+        @cancel="() => (editDialogVisible = false)"
+        @finish="(data) => editFinish(data)"
+      />
+    </ih-dialog>
   </div>
 </template>
 <script lang="ts">
 import { Component, Vue } from "vue-property-decorator";
 import ViewContract from "../dialog/notification-dialog/viewContract.vue";
-import { get_distributContract_get__termId } from "@/api/project/index.ts";
+import {
+  get_distributContract_get__termId,
+  post_distributContract_saveOaRemark,
+} from "@/api/project/index.ts";
+import PartyADialog from "../dialog/partyA-dialog/partyADialog.vue";
 import axios from "axios";
 import { getToken } from "ihome-common/util/cookies";
 @Component({
   components: {
     ViewContract,
+    PartyADialog,
   },
 })
 export default class Notification extends Vue {
@@ -246,9 +275,22 @@ export default class Notification extends Vue {
   };
   viewData: any = {};
   fileList: any = [];
+  editDialogVisible: any = false;
+  editData: any = {};
+  editType: any = "";
 
   created() {
     this.getInfo();
+  }
+
+  private get contractApprovalChange() {
+    const TermAdopt = this.info.auditEnum === "TermAdopt"; // 立项审核通过
+    const ConstractWait = this.info.auditEnum === "ConstractWait"; // 合同待审核
+    const ConstractReject = this.info.auditEnum === "ConstractReject"; // 合同审核驳回
+    const contractApprovalEdit = this.$route.name === "contractApprovalEdit"; //路由判断
+    return (
+      (TermAdopt || ConstractWait || ConstractReject) && contractApprovalEdit
+    );
   }
 
   async getInfo() {
@@ -319,6 +361,62 @@ export default class Notification extends Vue {
       $a.click();
       $a.remove();
     });
+  }
+
+  editDialog(type: string) {
+    this.editType = type;
+    switch (type) {
+      case "customerConfirm":
+        this.editData.title = "客户成交以及确认";
+        this.editData.value = this.info.constractOaVO[type];
+        break;
+      case "responsibiltity":
+        this.editData.title = "违约责任";
+        this.editData.value = this.info.constractOaVO[type];
+        break;
+      case "otherRemark":
+        this.editData.title = "合同其他说明";
+        this.editData.value = this.info.constractOaVO[type];
+        break;
+      case "partyARefundDays":
+        this.editData.title = "甲方退款天数";
+        this.editData.value = this.info.partyARefundDays;
+        break;
+    }
+    this.editDialogVisible = true;
+  }
+
+  async editFinish(data: any) {
+    let type: any = null;
+    switch (this.editType) {
+      case "customerConfirm":
+        type = 1;
+        await post_distributContract_saveOaRemark({
+          constractOaId: this.info.constractOaVO.constractOaId,
+          remark: data,
+          type: type,
+        });
+        break;
+      case "responsibiltity":
+        type = 2;
+        await post_distributContract_saveOaRemark({
+          constractOaId: this.info.constractOaVO.constractOaId,
+          remark: data,
+          type: type,
+        });
+        break;
+      case "otherRemark":
+        type = 3;
+        await post_distributContract_saveOaRemark({
+          constractOaId: this.info.constractOaVO.constractOaId,
+          remark: data,
+          type: type,
+        });
+        break;
+    }
+    this.$message.success("保存成功");
+    this.getInfo();
+    this.editDialogVisible = false;
   }
 }
 </script>

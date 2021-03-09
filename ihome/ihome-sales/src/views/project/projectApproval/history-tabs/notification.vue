@@ -4,7 +4,7 @@
  * @Author: wwq
  * @Date: 2020-11-27 17:27:01
  * @LastEditors: wwq
- * @LastEditTime: 2021-02-03 11:27:45
+ * @LastEditTime: 2021-03-08 11:17:51
 -->
 <template>
   <div>
@@ -209,7 +209,6 @@
             </el-col>
           </el-row>
         </el-form>
-        <div class="file-hint">特殊情况无法使用电子优惠告知书模板，请上传纸质版优惠告知书附件</div>
       </div>
     </div>
     <ih-dialog :show="viewDialogVisible">
