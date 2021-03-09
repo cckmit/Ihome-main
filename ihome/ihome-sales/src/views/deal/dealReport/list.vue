@@ -383,7 +383,6 @@
 </template>
 <script lang="ts">
   import {Component, Vue} from "vue-property-decorator";
-  import SelectOrganizationTree from "@/components/select/SelectOrganizationTree.vue";
   import SelectByBroker from "@/components/select/SelectByBroker.vue";
   import {
     post_deal_getList,
@@ -395,7 +394,6 @@
 
   @Component({
     components: {
-      SelectOrganizationTree,
       SelectByBroker
     },
     mixins: [PaginationMixin],
