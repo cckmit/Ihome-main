@@ -4,7 +4,7 @@
  * @Author: ywl
  * @Date: 2021-03-03 11:10:24
  * @LastEditors: ywl
- * @LastEditTime: 2021-03-06 14:33:14
+ * @LastEditTime: 2021-03-08 17:54:17
 -->
 <template>
   <section>
@@ -388,10 +388,11 @@
             <el-form-item
               label="退款金额"
               :prop="`formList.${2}.refundableAmount`"
-              :rules="{
-                required: true, message: '请输入退款金额', trigger: 'change'
-              }"
+              :rules="[
+                { required: true, message: '请输入退款金额', trigger: 'change', },
+              ]"
             >
+              <!-- { validator: handleValidator, trigger: 'change' } -->
               <el-input
                 v-model="form.formList[2].refundableAmount"
                 placeholder="退款金额"
@@ -590,6 +591,7 @@ export default class SceneTwo extends Vue {
           .then(() => {
             this.beforeValue = val;
             this.form.formList[1].ownerList = [];
+            this.selection = [];
             val === "Enterprise"
               ? (this.form.formList[1].templateType = "PaperTemplate")
               : (this.form.formList[1].templateType = null);
@@ -601,6 +603,13 @@ export default class SceneTwo extends Vue {
     }
   }
 
+  // private handleValidator(rule: any, value: any, callback: any) {
+  //   if (value > 300) {
+  //     callback();
+  //   } else {
+  //     callback(new Error("sss"));
+  //   }
+  // }
   private handleNoticeFile(list: any, index: number) {
     this.form.formList[index].noticeAttachmentList = list.map((i: any) => ({
       attachmentSuffix: i.name,
@@ -761,7 +770,27 @@ export default class SceneTwo extends Vue {
     this.form.formList[1].roomNumberId = this.data.roomNumberId;
     this.form.formList[1].ownerType = this.data.ownerType;
     this.form.formList[1].proId = this.data.projectId;
+    this.form.formList[1].templateType = this.data.templateType;
+    // this.form.formList[1].explain = this.data.explain;
+    // this.form.formList[1].paymentAmount = this.data.paymentAmount;
+    // this.form.formList[1].ownerList = this.data.ownerList.map((i: any) => ({
+    //   code: "-",
+    //   type: (this.$root as any).dictAllName(this.data.ownerType, "OwnerType"),
+    //   ownerName: i.ownerName,
+    //   ownerMobile: i.ownerMobile,
+    //   ownerCertificateNo: i.ownerCertificateNo,
+    // }));
+    // this.form.formList[1].exPreferentialItem = this.data.exPreferentialItem;
+    // this.form.formList[1].promotionMethod = this.data.promotionMethod;
+    // this.data.promotionMethod === "Manual"
+    //   ? (this.isOther = true)
+    //   : (this.isOther = false);
+    // this.isOther
+    //   ? (this.form.formList[1].methObj = { index: "other" })
+    //   : (this.form.formList[1].methObj = this.data.explain);
+    // this.selection = this.data.ownerList;
     this.beforeValue = this.data.ownerType;
+    this.getMethodByTermId(this.data.cycleId);
   }
 }
 </script>

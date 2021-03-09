@@ -4,7 +4,7 @@
  * @Author: ywl
  * @Date: 2021-03-03 19:03:40
  * @LastEditors: ywl
- * @LastEditTime: 2021-03-06 11:08:00
+ * @LastEditTime: 2021-03-06 19:03:39
 -->
 <template>
   <el-dialog
@@ -98,7 +98,7 @@
       >刷新</el-button>
       <el-button
         type="success"
-        @click="handleGoto"
+        @click="enterVisible = true"
       >添加</el-button>
       <el-button
         type="primary"
@@ -182,14 +182,23 @@
         @click="finish()"
       >确 定</el-button>
     </template>
+    <IhDialog :show="enterVisible">
+      <EnterCustomer
+        @cancel="() => (enterVisible = false)"
+        @finish="handleFinish"
+      />
+    </IhDialog>
   </el-dialog>
 </template>
 
 <script lang="ts">
 import { Component, Vue, Prop } from "vue-property-decorator";
 import { post_customer_getCustList } from "@/api/customer";
+import EnterCustomer from "@/views/deal/dealReport/dialog/enterCustomer.vue";
 
-@Component({})
+@Component({
+  components: { EnterCustomer },
+})
 export default class SelectOwner extends Vue {
   @Prop({
     default: () => [],
@@ -250,6 +259,7 @@ export default class SelectOwner extends Vue {
       minWidth: 180,
     },
   ];
+  private enterVisible = false;
 
   private cancel(): void {
     this.$emit("cancel", false);
@@ -292,6 +302,10 @@ export default class SelectOwner extends Vue {
   }
   private selectionChange(selection: any) {
     this.selection = selection;
+  }
+  private handleFinish() {
+    this.enterVisible = false;
+    this.search();
   }
   private pageChange(val: number) {
     this.pageNum = val;
