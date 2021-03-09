@@ -86,7 +86,6 @@
 </template>
 <script lang="ts">
 import {Component, Vue} from "vue-property-decorator";
-import SelectOrganizationTree from "@/components/SelectOrganizationTree.vue";
 import {
   post_capitalPoolFlow_summary, // 其它渠道费用汇总
   post_capitalPoolFlow_summarysum, // 其它渠道费用汇总-合计
@@ -96,7 +95,6 @@ import axios from "axios";
 import {getToken} from "ihome-common/util/cookies";
 
 @Component({
-  components: {SelectOrganizationTree},
   mixins: [PaginationMixin],
 })
 export default class SummaryList extends Vue {

@@ -1,20 +1,20 @@
 <!--
- * @Description: 下拉搜索经纪人
+ * @Description: 下拉搜索选择经纪人
  * @version:
  * @Author: lsj
- * @Date: 2020-12-24 09:50:50
+ * @Date: 2021-03-09 14:25:16
  * @LastEditors: lsj
- * @LastEditTime: 2020-12-24 10:20:30
+ * @LastEditTime: 2021-03-09 14:52:19
 -->
 <script lang="ts">
 import { Component, Vue, Prop, Watch } from "vue-property-decorator";
-import { IhSelectPageBase } from "ihome-common/ui/packages/select-page/index";
+import IhSelectPageBase from "./select-page-base.vue";
 import { post_channelAgent_getList } from "@/api/channel/index";
 
 @Component({
   extends: IhSelectPageBase,
 })
-export default class SelectByBroker extends Vue {
+export default class SelectPageByBroker extends Vue {
   @Prop() proId?: any;
   @Prop({
     default: true,
