@@ -4,7 +4,7 @@
  * @Author: wwq
  * @Date: 2020-11-27 17:20:24
  * @LastEditors: wwq
- * @LastEditTime: 2021-01-23 15:20:13
+ * @LastEditTime: 2021-03-08 14:47:24
 -->
 <template>
   <div>
@@ -300,7 +300,6 @@ export default class PartyA extends Vue {
   }
 
   async budingEditFinish(data: any) {
-    console.log(data);
     let obj: any = {};
     obj.partyAInfoVOS = data;
     obj.termId = this.$route.query.id;

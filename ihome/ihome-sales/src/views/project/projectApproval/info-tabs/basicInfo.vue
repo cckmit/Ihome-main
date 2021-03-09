@@ -4,7 +4,7 @@
  * @Author: wwq
  * @Date: 2020-11-27 17:17:06
  * @LastEditors: wwq
- * @LastEditTime: 2021-03-03 11:47:48
+ * @LastEditTime: 2021-03-08 16:55:40
 -->
 <template>
   <div>
@@ -465,7 +465,24 @@
             </div>
           </template>
         </el-table-column>
-        <el-table-column label="附件">
+        <el-table-column
+          label="附件"
+          v-if="contractApprovalChange"
+        >
+          <template v-slot="{ row }">
+            <IhUpload
+              :file-list.sync="row.fileList"
+              :file-size="10"
+              :file-type="row.code"
+              size="100px"
+              @newFileList="queryNew"
+            ></IhUpload>
+          </template>
+        </el-table-column>
+        <el-table-column
+          label="附件"
+          v-else
+        >
           <template v-slot="{ row }">
             <IhUpload
               :file-list.sync="row.fileList"
@@ -480,16 +497,49 @@
         </el-table-column>
       </el-table>
     </div>
+    <div>
+      <br />
+      <el-button
+        v-if="contractApprovalChange"
+        type="success"
+        v-has="'B.SALES.PROJECT.TERMLIST.TJHTSH'"
+        :loading="finishLoadHT"
+        @click="submitContract()"
+      >提交审核</el-button>
+      <el-button
+        v-if="contractApprovalChange"
+        type="primary"
+        @click="submit()"
+        v-has="'B.SALES.PROJECT.TERMLIST.JCXXBC'"
+        :loading="finishLoadSave"
+      >保存</el-button>
+      <el-button @click="viewApprovalDialogVisible = true">预览OA立项表单</el-button>
+      <el-button @click="viewContractDialogVisible = true">预览OA合同表单</el-button>
+      <el-button @click="routeTo">关 闭</el-button>
+    </div>
+    <ih-dialog :show="viewApprovalDialogVisible">
+      <ViewApproval @cancel="() => (viewApprovalDialogVisible = false)" />
+    </ih-dialog>
+    <ih-dialog :show="viewContractDialogVisible">
+      <ViewContract @cancel="() => (viewContractDialogVisible = false)" />
+    </ih-dialog>
   </div>
 </template>
 <script lang="ts">
 import { Component, Vue, Watch } from "vue-property-decorator";
-import { get_term_get__termId } from "@/api/project/index";
+import {
+  get_term_get__termId,
+  post_term_contractApplyAttach,
+  post_term_constractAudit,
+} from "@/api/project/index";
+import ViewApproval from "../dialog/basicInfo-dialog/viewApproval.vue";
+import ViewContract from "../dialog/basicInfo-dialog/viewContract.vue";
 @Component({
-  components: {},
+  components: { ViewApproval, ViewContract },
 })
 export default class FirstAgencyEdit extends Vue {
   info: any = {
+    auditEnum: null,
     proName: null,
     proAddr: null,
     proRecord: null,
@@ -537,10 +587,16 @@ export default class FirstAgencyEdit extends Vue {
     companyId: null,
   };
   fileListType: any = [];
+  submitFile: any = {};
   private attachTermVOS: any = [];
   isShow: any = true;
   auditMsg = "";
   exVoidServiceShow: any = true;
+  viewApprovalDialogVisible: any = false;
+  viewContractDialogVisible: any = false;
+  finishLoadSave: any = false;
+  finishLoadHT: any = false;
+  isUpdate: any = true;
 
   @Watch("info.chargeEnum", { immediate: true })
   getIsShow(val: any) {
@@ -551,6 +607,16 @@ export default class FirstAgencyEdit extends Vue {
     }
   }
 
+  private get contractApprovalChange() {
+    const TermAdopt = this.info.auditEnum === "TermAdopt"; // 立项审核通过
+    const ConstractWait = this.info.auditEnum === "ConstractWait"; // 合同待审核
+    const ConstractReject = this.info.auditEnum === "ConstractReject"; // 合同审核驳回
+    const contractApprovalEdit = this.$route.name === "contractApprovalEdit"; //路由判断
+    return (
+      (TermAdopt || ConstractWait || ConstractReject) && contractApprovalEdit
+    );
+  }
+
   private get termId() {
     return this.$route.query.id;
   }
@@ -559,11 +625,14 @@ export default class FirstAgencyEdit extends Vue {
     this.getInfo();
   }
 
+  routeTo() {
+    this.$goto({ path: "/projectApproval/list" });
+  }
+
   async getInfo() {
-    let id = this.$route.query.id;
-    if (id) {
+    if (this.termId) {
       let res: any = await get_term_get__termId({
-        termId: id,
+        termId: this.termId,
       });
       this.info = { ...res };
       this.info.timeList = [res.termStart, res.termEnd];
@@ -587,6 +656,97 @@ export default class FirstAgencyEdit extends Vue {
           })),
       };
     });
+    let obj: any = {};
+    this.fileListType.forEach((h: any) => {
+      obj[h.code] = h.fileList;
+    });
+    this.submitFile = { ...obj };
+  }
+
+  queryNew(data: any, type?: any) {
+    let obj: any = {};
+    obj[type] = data;
+    this.submitFile = { ...this.submitFile, ...obj };
+    this.isUpdate = false;
+  }
+
+  async submit() {
+    let obj: any = {};
+    obj.termId = this.termId;
+    // 校验提示
+    let arr: any = [];
+    Object.values(this.submitFile).forEach((v: any) => {
+      if (v.length) {
+        arr = arr.concat(v);
+      }
+    });
+    // 以下操作仅仅是为了校验必上传项
+    let submitList: any = this.fileListType.map((v: any) => {
+      return {
+        ...v,
+        fileList: arr
+          .filter((j: any) => j.type === v.code)
+          .map((h: any) => ({
+            ...h,
+            name: h.fileName,
+          })),
+      };
+    });
+    let isSubmit = true;
+    let msgList: any = [];
+    submitList.forEach((v: any) => {
+      if (v.subType && !v.fileList.length) {
+        msgList.push(v.name);
+        isSubmit = false;
+      }
+    });
+    if (isSubmit) {
+      let isSubmitArr: any = arr.map((v: any) => ({
+        fileId: v.fileId,
+        fileName: v.name,
+        type: v.type,
+        exAuto: v.exAuto,
+      }));
+      obj.attachTermVOS = isSubmitArr.filter((j: any) => !j.exAuto);
+    } else {
+      this.$message({
+        type: "warning",
+        message: `${msgList.join(",")}项,请上传附件`,
+      });
+      return;
+    }
+    this.finishLoadSave = true;
+    try {
+      await post_term_contractApplyAttach(obj);
+      this.finishLoadSave = false;
+      await this.getInfo();
+      this.$message.success("保存成功");
+      this.isUpdate = true;
+    } catch (err) {
+      this.finishLoadSave = false;
+    }
+  }
+
+  // 提交合同审核
+  async submitContract() {
+    if (this.isUpdate) {
+      this.finishLoadHT = true;
+      try {
+        await post_term_constractAudit({
+          termId: this.info.termId,
+        });
+        this.finishLoadHT = false;
+        this.$message({
+          type: "success",
+          message: "提交合同审核成功",
+        });
+        this.$goto({ path: `/projectApproval/list` });
+      } catch (err) {
+        this.finishLoadHT = false;
+      }
+    } else {
+      this.$message.warning("请先保存信息");
+    }
   }
 }
 </script>

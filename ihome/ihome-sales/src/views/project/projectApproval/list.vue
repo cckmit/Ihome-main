@@ -4,7 +4,7 @@
  * @Author: wwq
  * @Date: 2020-11-27 17:11:14
  * @LastEditors: wwq
- * @LastEditTime: 2021-01-27 15:11:55
+ * @LastEditTime: 2021-03-08 16:39:36
 -->
 <template>
   <IhPage label-width="100px">
@@ -159,6 +159,7 @@
         <el-table-column
           prop="proName"
           label="归属项目"
+          width="180"
         ></el-table-column>
         <el-table-column
           prop="proNo"
@@ -168,7 +169,7 @@
         <el-table-column
           prop="termName"
           label="周期名称"
-          width="220"
+          width="300"
         ></el-table-column>
         <el-table-column
           prop="busTypeEnum"
@@ -225,9 +226,19 @@
               <el-dropdown-menu slot="dropdown">
                 <el-dropdown-item
                   @click.native.prevent="routeTo(row, 'edit')"
-                  :class="{'ih-data-disabled': !editChange(row)}"
+                  :class="{'ih-data-disabled': !projectApprovalChange(row)}"
                   v-has="'B.SALES.PROJECT.TERMLIST.UPDATE'"
-                >修改</el-dropdown-item>
+                >立项呈批</el-dropdown-item>
+                <el-dropdown-item
+                  @click.native.prevent="routeTo(row, 'contractApprovalEdit')"
+                  :class="{'ih-data-disabled': !contractApprovalChange(row)}"
+                  v-has="'B.SALES.PROJECT.TERMLIST.UPDATE'"
+                >合同呈批</el-dropdown-item>
+                <el-dropdown-item
+                  @click.native.prevent="routeTo(row, 'businessManagementEdit')"
+                  :class="{'ih-data-disabled': !businessManagementChange(row)}"
+                  v-has="'B.SALES.PROJECT.TERMLIST.UPDATE'"
+                >业管修改</el-dropdown-item>
                 <el-dropdown-item
                   :class="{'ih-data-disabled': !(row.auditEnum === 'ConstractAdopt' && row.state === 'Start')}"
                   @click.native.prevent="routeTo(row, 'apply')"
@@ -315,27 +326,25 @@ export default class ProjectApproval extends Vue {
   };
   dialogVisible = false;
 
-  // 权限控制
-  editChange(row: any) {
-    const Draft = row.auditEnum === "Draft";
-    const TermAdopt = row.auditEnum === "TermAdopt";
-    const TermReject = row.auditEnum === "TermReject";
-    const ConstractAdopt = row.auditEnum === "ConstractAdopt";
-    const ConstractReject = row.auditEnum === "ConstractReject";
-    const ConstractWait = row.auditEnum === "ConstractWait";
-    const RHeadBusinessManagement = this.$roleTool.RHeadBusinessManagement();
-    const RBusinessManagement = this.$roleTool.RBusinessManagement();
-    const RFrontLineClerk = this.$roleTool.RFrontLineClerk();
-    const Start = row.state === "Start";
-    return (
-      ((Draft && RFrontLineClerk) ||
-        (TermAdopt && RFrontLineClerk) ||
-        (TermReject && RFrontLineClerk) ||
-        (ConstractAdopt && (RHeadBusinessManagement || RBusinessManagement)) ||
-        (ConstractReject && RFrontLineClerk) ||
-        (ConstractWait && RFrontLineClerk)) &&
-      Start
-    );
+  // 立项呈批权限控制
+  projectApprovalChange(row: any) {
+    const Draft = row.auditEnum === "Draft"; // 草稿
+    const TermReject = row.auditEnum === "TermReject"; // 立项审核驳回
+    return Draft || TermReject;
+  }
+
+  // 合同呈批权限控制
+  contractApprovalChange(row: any) {
+    const TermAdopt = row.auditEnum === "TermAdopt"; // 立项审核通过
+    const ConstractWait = row.auditEnum === "ConstractWait"; // 合同待审核
+    const ConstractReject = row.auditEnum === "ConstractReject"; // 合同审核驳回
+    return TermAdopt || ConstractWait || ConstractReject;
+  }
+
+  // 业管修改权限控制
+  businessManagementChange(row: any) {
+    const ConstractAdopt = row.auditEnum === "ConstractAdopt"; // 合同审核通过
+    return ConstractAdopt;
   }
 
   delChange(row: any) {

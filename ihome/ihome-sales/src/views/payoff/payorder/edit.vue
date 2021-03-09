@@ -3,8 +3,8 @@
  * @version: 
  * @Author: wwq
  * @Date: 2020-12-26 11:11:23
- * @LastEditors: ywl
- * @LastEditTime: 2021-03-08 14:09:43
+ * @LastEditors: wwq
+ * @LastEditTime: 2021-03-09 10:17:41
 -->
 <template>
   <IhPage>
@@ -925,7 +925,7 @@ import {
   post_payApply_entryApply,
   post_payApply_updateApply,
   post_payApply_calculation_results,
-  get_payDeductDetail_deduct_details__channelId,
+  post_payDeductDetail_deduct_details,
 } from "@/api/payoff/index";
 import { get_channel_get__id } from "@/api/channel/index";
 import { Form as ElForm } from "element-ui";
@@ -1810,17 +1810,24 @@ export default class PayoffEdit extends Vue {
   }
 
   async getChannelInfo(item: any, type: any) {
-    this.info.agencyName = item.name;
-    let res = await get_channel_get__id({ id: item.id });
-    this.channelAccountOptions = res.channelBanks;
-    if (!type) {
-      this.info.receiveAccount = null;
-      // 获取本期需抵扣金额明细
-      this.queryDeductionData(item.id);
-    }
-    if (res.channelBanks.length === 1) {
-      this.info.receiveAccount = res.channelBanks[0].accountNo;
-      this.info.agencyAccountBank = res.channelBanks[0].branchName;
+    if (this.info.projectId) {
+      this.info.agencyName = item.name;
+      let res = await get_channel_get__id({ id: item.id });
+      this.channelAccountOptions = res.channelBanks;
+      if (!type) {
+        this.info.receiveAccount = null;
+        // 获取本期需抵扣金额明细
+        this.queryDeductionData(item.id, this.info.projectId);
+      }
+      if (res.channelBanks.length === 1) {
+        this.info.receiveAccount = res.channelBanks[0].accountNo;
+        this.info.agencyAccountBank = res.channelBanks[0].branchName;
+      }
+    } else {
+      this.$message.warning("请先选择结佣项目");
+      this.info.agencyId = null;
+      this.info.agencyName = null;
+      return;
     }
   }
 
@@ -1831,9 +1838,10 @@ export default class PayoffEdit extends Vue {
     this.info.agencyAccountBank = item.branchName;
   }
 
-  async queryDeductionData(id: any) {
-    const res = await get_payDeductDetail_deduct_details__channelId({
-      channelId: id,
+  async queryDeductionData(channelId: any, projectId: any) {
+    const res = await post_payDeductDetail_deduct_details({
+      channelId,
+      projectId,
     });
     this.info.payDeductDetailResponseList = res ? res : [];
   }

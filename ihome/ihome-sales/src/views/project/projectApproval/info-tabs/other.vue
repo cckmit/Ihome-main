@@ -4,11 +4,24 @@
  * @Author: wwq
  * @Date: 2020-11-27 17:28:28
  * @LastEditors: wwq
- * @LastEditTime: 2020-12-23 14:36:03
+ * @LastEditTime: 2021-03-08 15:48:24
 -->
 <template>
   <div>
-    <p class="ih-info-title">收款信息</p>
+    <div class="setMeal">
+      <p class="ih-info-title">收款信息</p>
+      <div
+        class="setMealButton"
+        v-if="businessManagementChange"
+      >
+        <el-button
+          size="small"
+          type="success"
+          @click="select"
+          v-has="'B.SALES.PROJECT.TERMLIST.QTPZSKXX'"
+        >选择</el-button>
+      </div>
+    </div>
     <div class="padding-left-20">
       <el-table
         class="ih-table"
@@ -27,7 +40,20 @@
       </el-table>
     </div>
     <br />
-    <p class="ih-info-title">成交归属组织</p>
+    <div class="setMeal">
+      <p class="ih-info-title">成交归属组织</p>
+      <div
+        class="setMealButton"
+        v-if="businessManagementChange"
+      >
+        <el-button
+          size="small"
+          type="success"
+          @click="organSelect"
+          v-has="'B.SALES.PROJECT.TERMLIST.QTPZCJGSZZ'"
+        >选择</el-button>
+      </div>
+    </div>
     <div class="padding-left-20">
       <el-table
         class="ih-table"
@@ -171,14 +197,34 @@
         </el-table-column>
       </el-table>
     </div>
+    <ih-dialog :show="dialogVisible">
+      <BankAccount
+        :data="editData"
+        @cancel="() => (dialogVisible = false)"
+        @finish="(data) => bankFinish(data)"
+      />
+    </ih-dialog>
+    <ih-dialog :show="organDialogVisible">
+      <OrganizationJurisdiction
+        :data="organData"
+        @cancel="() => (organDialogVisible = false)"
+        @finish="(data) => organFinish(data)"
+      />
+    </ih-dialog>
   </div>
 </template>
 <script lang="ts">
 import { Component, Vue } from "vue-property-decorator";
-import { get_other_get__termId } from "@/api/project/index.ts";
+import BankAccount from "../dialog/other-dialog/bankAccount.vue";
+import OrganizationJurisdiction from "../dialog/other-dialog/organization.vue";
+import {
+  get_other_get__termId,
+  post_other_busnissManage_saveReceipt,
+  post_other_busnissManage_saveGroup,
+} from "@/api/project/index.ts";
 
 @Component({
-  components: {},
+  components: { BankAccount, OrganizationJurisdiction },
 })
 export default class Other extends Vue {
   info: any = {
@@ -188,6 +234,10 @@ export default class Other extends Vue {
     bankAccount: [],
     group: [],
   };
+  editData: any = {};
+  dialogVisible: any = false;
+  organData: any = {};
+  organDialogVisible: any = false;
   selectionOptions = [
     {
       code: "all",
@@ -204,15 +254,25 @@ export default class Other extends Vue {
   ];
   screen = "";
 
+  private get businessManagementChange() {
+    const ConstractAdopt = this.info.auditEnum === "ConstractAdopt"; // 合同审核通过
+    const businessManagementEdit =
+      this.$route.name === "businessManagementEdit"; //路由判断
+    return ConstractAdopt && businessManagementEdit;
+  }
+
+  get termId() {
+    return this.$route.query.id;
+  }
+
   created() {
     this.getInfo();
   }
 
   async getInfo() {
-    const id = this.$route.query.id;
-    if (id) {
+    if (this.termId) {
       this.info = await get_other_get__termId({
-        termId: id,
+        termId: this.termId,
       });
       this.info.exOver = this.info.exOver ? true : false;
       this.info.exOtherProChannelUse = this.info.exOtherProChannelUse
@@ -237,6 +297,34 @@ export default class Other extends Vue {
     }
   }
 
+  select() {
+    this.dialogVisible = true;
+    this.editData.id = this.info.companyId;
+  }
+
+  async bankFinish(data: any) {
+    await post_other_busnissManage_saveReceipt({
+      receiptId: data,
+      termId: this.termId,
+    });
+    this.getInfo();
+    this.dialogVisible = false;
+  }
+
+  organSelect() {
+    this.organDialogVisible = true;
+    this.organData.id = this.info.startDivisionId;
+  }
+
+  async organFinish(data: any) {
+    await post_other_busnissManage_saveGroup({
+      groupId: data[0].id,
+      termId: this.termId,
+    });
+    this.getInfo();
+    this.organDialogVisible = false;
+  }
+
   screenChange(val: any) {
     switch (val) {
       case "Enable":
@@ -257,6 +345,14 @@ export default class Other extends Vue {
 }
 </script>
 <style lang="scss" scoped>
+.setMeal {
+  display: flex;
+  flex-flow: row nowrap;
+  justify-content: flex-start;
+}
+.setMealButton {
+  margin: 5px 0 0 20px;
+}
 .special {
   display: flex;
   justify-content: flex-start;

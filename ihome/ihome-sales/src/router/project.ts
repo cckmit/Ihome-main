@@ -4,7 +4,7 @@
  * @Author: wwq
  * @Date: 2020-10-22 14:45:15
  * @LastEditors: wwq
- * @LastEditTime: 2021-01-19 15:58:38
+ * @LastEditTime: 2021-03-08 10:37:52
  */
 import { RouteConfig } from 'vue-router'
 
@@ -136,7 +136,19 @@ const projectRoutes: Array<RouteConfig> = [
         path: 'edit',
         name: 'projectApprovalEdit',
         component: () => import('../views/project/projectApproval/edit.vue'),
-        meta: { title: '立项周期编辑', icon: 'form' }
+        meta: { title: '立项呈批', icon: 'form' }
+      },
+      {
+        path: 'contractApprovalEdit',
+        name: 'contractApprovalEdit',
+        component: () => import('../views/project/projectApproval/info.vue'),
+        meta: { title: '合同呈批', icon: 'form' }
+      },
+      {
+        path: 'businessManagementEdit',
+        name: 'businessManagementEdit',
+        component: () => import('../views/project/projectApproval/info.vue'),
+        meta: { title: '业管修改', icon: 'form' }
       },
       {
         path: 'info',
