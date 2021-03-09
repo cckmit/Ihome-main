@@ -4,7 +4,7 @@
  * @Author: ywl
  * @Date: 2021-01-07 16:30:03
  * @LastEditors: ywl
- * @LastEditTime: 2021-03-08 17:49:26
+ * @LastEditTime: 2021-03-09 09:18:37
 -->
 <template>
   <IhPage class="text-left">
@@ -1357,8 +1357,8 @@ export default class ApplyRecAdd extends Vue {
   private async getWaitList(developId: any) {
     try {
       let list = await post_devDeductDetail_getListAllByWait({
-        correctType: "Apply",
         developId,
+        proId: this.form.proId,
       });
       this.waitList = list.map((i: any) => {
         let subMoneyNoTax = this.countNoTax(i.subMoney, this.form.taxRate);
@@ -1372,7 +1372,6 @@ export default class ApplyRecAdd extends Vue {
           subMoneyNoTax,
           subMoneyTax,
           dataSourceId: i.id,
-          proId: this.form.proId,
         };
       });
     } catch (error) {
