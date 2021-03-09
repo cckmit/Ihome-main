@@ -224,7 +224,7 @@
 
     // 改变证件类型
     handleChangeCardType(value: any) {
-      if (value === 'IdCard') {
+      if (value === 'IDCard') {
         // 居民身份证
         this.rules.certificateNumber = [
           {required: true, message: "请输入证件编号", trigger: "change"},
