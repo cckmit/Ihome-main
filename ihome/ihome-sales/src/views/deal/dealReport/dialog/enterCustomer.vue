@@ -204,6 +204,9 @@
       if (!value) {
         this.postData.cardType = null;
         this.cardTypeList = [];
+        this.rules.certificateNumber = [
+          {required: true, message: "请输入证件编号", trigger: "change"}
+        ]
       } else {
          let CardList: any = (this as any).$root.dictAllList('CardType');
         if (value === "Individual") {
@@ -212,12 +215,19 @@
             return item.code !== "Businesslicense";
           });
           this.postData.cardType = "IDCard"; // 个人默认选中居民身份证
+          this.rules.certificateNumber = [
+            {required: true, message: "请输入证件编号", trigger: "change"},
+            {validator: validIdentityCard, trigger: "change"}
+          ]
         } else if (value === "Company") {
           // 公司
           this.cardTypeList = CardList.filter((item: any) => {
             return ['Businesslicense', "Others"].includes(item.code);
           });
           this.postData.cardType = "Businesslicense"; // 公司默认选中营业执照
+          this.rules.certificateNumber = [
+            {required: true, message: "请输入证件编号", trigger: "change"}
+          ]
         }
       }
     }

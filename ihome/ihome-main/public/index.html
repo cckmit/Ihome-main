@@ -28,13 +28,16 @@
     let cacheToken = getCookie("ihome-main-token");
     document.addEventListener('visibilitychange', function () {
       if (document.visibilityState == 'visible') {
-        //状态判断：显示（切换到当前页面）
-        //切换到页面执行事件
-        let newToken = getCookie("ihome-main-token");
-        if (newToken != cacheToken) {
-          alert("当前用户已发生变化，请确认右上角登录名称后再操作");
-          window.location = "/"
+        if (window.location.pathname.startsWith('/login')) {
+          //状态判断：显示（切换到当前页面）
+          //切换到页面执行事件
+          let newToken = getCookie("ihome-main-token");
+          if (newToken != cacheToken) {
+            alert("当前用户已发生变化，请确认右上角登录名称后再操作");
+            window.location = "/"
+          }
         }
+
         // console.log('切换到页面执行事件', new Date().toLocaleTimeString())
       } else if (document.visibilityState == 'hidden') {
         //状态判断：隐藏（离开当前页面）
