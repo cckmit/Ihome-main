@@ -4,7 +4,7 @@
  * @Author: wwq
  * @Date: 2020-12-26 11:11:23
  * @LastEditors: wwq
- * @LastEditTime: 2021-03-09 10:17:41
+ * @LastEditTime: 2021-03-10 17:03:53
 -->
 <template>
   <IhPage>
@@ -1919,7 +1919,6 @@ export default class PayoffEdit extends Vue {
               fileType: v.type,
               exAuto: v.exAuto,
             }));
-            console.log(filterDocumentList);
             obj.documentList = filterDocumentList.filter((v: any) => !v.exAuto);
           } else {
             this.$message({
