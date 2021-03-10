@@ -819,11 +819,12 @@
       // 附件类型增加key
       if (fileList.length > 0) {
         fileList.forEach((vo: any) => {
-          vo.fileList = []; // 存放新上传的数据
+          this.$set(vo, 'fileList', []);
+          // vo.fileList = []; // 存放新上传的数据
           if (list && list.length > 0) {
             list.forEach((item: any) => {
               if (vo.code === item.fileType) {
-                vo.defaultFileLists.push(
+                vo.fileList.push(
                   {
                     ...item,
                     name: item.fileName,
