@@ -9,16 +9,16 @@
 <template>
   <div>
     <div class="width-400">
-      <p>所有组织</p>
-      <IhSelectOrgTree v-model="orgId" @change="change" />
+      <p>所有组织IhSelectOrgTreeAll</p>
+      <IhSelectOrgTreeAll v-model="orgId" @change="change" />
     </div>
     <div class="width-400">
-      <p>当前登录账号权限组织(单选)</p>
-      <IhSelectOrgTreeByUser @change="changeMy" v-model="orgId2" type="radio" />
+      <p>当前登录账号权限组织(单选)IhSelectOrgTree</p>
+      <IhSelectOrgTree @change="changeMy" v-model="orgId2" type="radio" />
     </div>
     <div class="width-400">
       <p>当前登录账号权限组织(多选，未完成功能)</p>
-      <IhSelectOrgTreeByUser
+      <IhSelectOrgTree
         @change="changeMy3"
         v-model="orgId3"
         type="checkbox"
