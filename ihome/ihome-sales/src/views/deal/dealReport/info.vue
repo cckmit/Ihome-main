@@ -807,7 +807,7 @@
       // 初始化优惠告知书信息
       await this.getInformation(info.id, info.parentId);
       // 初始化附件
-      this.infoForm.documentLists = this.initDocumentList(info.documentLists);
+      this.infoForm.documentLists = this.initDocumentList(info.documentList);
       // 初始化开票信息
       await this.getInvoiceInfo(info.dealCode);
     }
