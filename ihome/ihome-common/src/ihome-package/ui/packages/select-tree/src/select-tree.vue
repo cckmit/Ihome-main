@@ -1,16 +1,16 @@
 <template>
   <el-select
     :value="valueTitle"
-    :clearable="clearable"
+    :clearable="true"
     @clear="clearHandle"
-    popper-class="ihome-tree"
-    class="ih-select-tree select-tree-parent"
+    popper-class="ihome-tree select-tree-parent"
+    class="ih-select-tree"
   >
     <el-input
       class="selectInput"
       :placeholder="placeholder"
       v-model="filterText"
-      :clearable="clearableInput"
+      clearable
     ></el-input>
 
     <el-option
@@ -20,19 +20,25 @@
       style="max-height: 400px"
     >
       <el-tree
-        :show-checkbox="false"
-        id="tree-option"
         ref="selectTree"
-        :highlight-current="true"
-        :accordion="accordion"
+        :class="{
+          'ih-el-tree-radio': type == 'radio',
+          'ih-el-tree-checkbox': type == 'checkbox',
+        }"
         :data="options"
-        :props="props"
-        :node-key="props.value"
+        show-checkbox
+        node-key="id"
+        :empty-text="tipText"
+        @check="checkGroupNode"
+        @node-click="nodeClick"
+        :props="defaultProps"
+        :check-strictly="type == 'radio'"
+        :default-checked-keys="defaultCheckedKeys"
         :default-expanded-keys="props.defaultExpandedKeys"
-        :default-checked-keys="props.defaultCheckedKeys"
-        :filter-node-method="filterNode"
+        :check-on-click-node="false"
         :expand-on-click-node="false"
-        @node-click="handleNodeClick"
+        :highlight-current="true"
+        :filter-node-method="filterNode"
       ></el-tree>
     </el-option>
     <!-- <el-option value="0" label="0" class="fengeline">
@@ -57,6 +63,13 @@ export default {
           label: "title", // 显示名称
           children: "children", // 子级字段名
         };
+      },
+    },
+    //单选框radio或复选框checkbox
+    type: {
+      type: String,
+      default: () => {
+        return "radio";
       },
     },
     /* 选项列表数据(树形结构的对象数组) */
@@ -102,16 +115,44 @@ export default {
   },
   data() {
     return {
+      defaultProps: {
+        children: "children",
+        label: "name",
+      },
+      tipText: "无数据",
       filterText: "",
       valueId: this.value, // 初始值
       valueTitle: "",
       defaultExpandedKey: [],
+      defaultCheckedKeys: [],
+      defaultExpandedKeys: [],
     };
   },
   mounted() {
     this.initHandle();
   },
+  created() {
+    this.defaultCheckedKeys = [this.value];
+  },
   methods: {
+    nodeClick(item) {
+      if (item.disabled) {
+        this.$nextTick(function () {
+          this.$refs["selectTree"].setCurrentKey([item.id]);
+        });
+      }
+    },
+    checkGroupNode(a, b) {
+      let deviceGroupTreeRef = this.$refs.selectTree;
+      if (this.type == "radio") {
+        if (b.checkedKeys.length > 0) {
+          deviceGroupTreeRef.setCheckedKeys([a.id]);
+        }
+        this.defaultCheckedKeys = [a.id];
+        this.$emit("input", a.id);
+        this.$emit("getValue", a);
+      }
+    },
     deepQuery(tree, id) {
       const that = this;
       //this.props.children
@@ -183,8 +224,9 @@ export default {
     clearHandle() {
       this.valueTitle = "";
       this.valueId = null;
-      this.defaultExpandedKey = [];
+      this.defaultCheckedKeys = [];
       this.clearSelected();
+      this.$refs.selectTree.setCheckedKeys([]);
       this.$emit("getValue", null);
     },
     /* 清空选中样式 */
@@ -224,7 +266,8 @@ export default {
 </script>
 
 <!-- Add "scoped" attribute to limit CSS to this component only -->
-<style  scoped>
+<style  scoped lang="scss">
+
 .ihome-tree .el-scrollbar .el-scrollbar__view .el-select-dropdown__item {
   height: auto;
   max-height: 274px;
@@ -261,9 +304,11 @@ ul li >>> .el-tree .el-tree-node__content {
 }
 .select-tree-options {
   padding-top: 46px !important;
+  box-sizing: border-box;
 }
 .fengeline {
   border-top: 1px solid #eaeaea;
 }
+ 
 </style>
  

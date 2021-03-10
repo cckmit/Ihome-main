@@ -230,6 +230,7 @@ export default class RefundToExamineList extends Vue {
     payType: null,
     refundApplyNo: null,
     settlementType: null,
+    expiresTime: null,
   };
   resPageInfo: any = {
     total: null,
@@ -278,6 +279,7 @@ export default class RefundToExamineList extends Vue {
       payType: null,
       refundApplyNo: null,
       settlementType: null,
+      expiresTime: null,
     });
   }
   toexamineBtn(row: any) {

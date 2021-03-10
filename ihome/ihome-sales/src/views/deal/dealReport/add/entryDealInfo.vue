@@ -22,7 +22,7 @@
       </div>
       <el-row :gutter="5">
         <el-col :span="8" v-if="!!postData.dealCode">
-          <el-form-item label="成交报告编号" :prop="!!postData.dealCode ? 'dealCode' : ' '">
+          <el-form-item label="成交报告编号" :prop="!!postData.dealCode ? 'dealCode' : 'notEmpty'">
             <el-input disabled v-model="postData.dealCode"/>
           </el-form-item>
         </el-col>
@@ -365,7 +365,7 @@
           </el-form-item>
         </el-col>
         <el-col :span="8">
-          <el-form-item label="认购价格" :prop="['Subscribe', 'SignUp'].includes(postData.stage) ? 'subscribePrice' : ' '">
+          <el-form-item label="认购价格" :prop="['Subscribe', 'SignUp'].includes(postData.stage) ? 'subscribePrice' : 'notEmpty'">
             <el-input
               v-digits="2"
               @blur="changePrice($event, 'SubscribePrice')"
@@ -1632,7 +1632,7 @@
       if (baseInfo.contracts && baseInfo.contracts.length > 0) {
         this.contNoList = baseInfo.contracts;
         // 增加需求：当分销协议只有一个的时候，默认选中
-        if (baseInfo.contracts.length === 1) {
+        if (baseInfo && baseInfo.contracts && baseInfo.contracts.length === 1) {
           (this as any).$nextTick(() => {
             this.initContNo(baseInfo.contracts[0]);
           });

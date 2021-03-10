@@ -6,11 +6,10 @@
  * @LastEditors: zyc
  * @LastEditTime: 2021-02-17 14:46:56
  */
-import IhSelectTree from "./src/select-tree.vue";
+
 import IhSelectOrgTree from "./src/select-org-tree.vue";
-import IhSelectOrgTreeByUser from "./src/tree-by-user.vue";
+import IhSelectOrgTreeAll from  "./src/select-org-tree-all.vue";
 export {
-    IhSelectTree,
     IhSelectOrgTree,
-    IhSelectOrgTreeByUser
+    IhSelectOrgTreeAll
 };

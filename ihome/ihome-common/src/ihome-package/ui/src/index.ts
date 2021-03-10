@@ -12,8 +12,7 @@
 import { IhTree } from '../packages/tree/index';
 import { IhTableRadio } from '../packages/table-radio/index';
 import { IhTableCustomColumn } from '../packages/table-custom-column/index';
-import { IhSelectTree, IhSelectOrgTreeByUser } from '../packages/select-tree/index';
-import { IhSelectOrgTree } from '../packages/select-tree/index';
+import { IhSelectOrgTree, IhSelectOrgTreeAll } from '../packages/select-tree/index';
 import { IhDialog } from '../packages/dialog/index';
 import { IhPage } from '../packages/page/index';
 import { IhFilePre } from '../packages/file-pre/index';
@@ -35,7 +34,8 @@ import {
   IhSelectPageBase,
   IhSelectPageByPayer,
   IhSelectPageByOrgCompany,
-  IhSelectPageByBroker
+  IhSelectPageByBroker,
+
 } from '../packages/select-page';
 // import { IhSelectPageDivision } from '../packages/select-page';
 import { IhTableCheckBox } from '../packages/table-checkbox'
@@ -46,7 +46,6 @@ export default (Vue: any) => {
   Vue.component("IhTableRadio", IhTableRadio);
   Vue.component("IhTableCustomColumn", IhTableCustomColumn);
   Vue.component("IhTableCustomColumn", IhTableCustomColumn);
-  Vue.component("IhSelectTree", IhSelectTree);
   Vue.component("IhDialog", IhDialog);
   Vue.component("IhPage", IhPage);
   Vue.component("IhFilePre", IhFilePre);
@@ -71,7 +70,9 @@ export default (Vue: any) => {
   Vue.component("IhSelectOrgTree", IhSelectOrgTree);
   Vue.component("IhSelectPageByPayer", IhSelectPageByPayer);
   Vue.component("IhSelectPageByOrgCompany", IhSelectPageByOrgCompany);
-  Vue.component("IhSelectOrgTreeByUser", IhSelectOrgTreeByUser);
   Vue.component("IhSelectPageByBroker", IhSelectPageByBroker);
+  Vue.component("IhSelectOrgTreeAll", IhSelectOrgTreeAll);
+
+
 
 };

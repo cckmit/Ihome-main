@@ -81,6 +81,7 @@ let systemToast = false;//提示一次
 let salesToast = false;//提示一次
 //全局异常捕获
 addGlobalUncaughtErrorHandler((event: any) => {
+
   let errMsg = event?.message;
   if (errMsg) {
     if (errMsg.includes("application 'ihome-web-sales' died in status LOADING_SOURCE_CODE")) {
@@ -105,6 +106,8 @@ addGlobalUncaughtErrorHandler((event: any) => {
         console.log(event);
       }
     }
+  } else {
+    console.log(event);
   }
 
 });
@@ -124,7 +127,7 @@ async function render({ appContent, loading }: any = {}) {
     Promise.all([get_area_getAll(), get_dict_getAll()]).then((res: any) => {
       (window as any).polyihomeData.areaAll = res[0];
       (window as any).polyihomeData.dictAll = res[1];
-   
+
     })
       .catch((err: any) => {
         console.error('系统初始化数据存在异常', err)

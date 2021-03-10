@@ -4,10 +4,10 @@
  * @Author: zyc
  * @Date: 2021-01-18 14:39:10
  * @LastEditors: zyc
- * @LastEditTime: 2021-03-01 14:24:16
+ * @LastEditTime: 2021-01-18 16:42:48
 -->
 <template>
-  <IhSelectTreeByUser
+  <SelectTreeAll
     min-height="400px"
     class="width--100"
     :props="props"
@@ -15,39 +15,40 @@
     :value="currentId"
     :clearable="true"
     :accordion="true"
-    :type="type"
     @getValue="getValue($event)"
-  ></IhSelectTreeByUser>
+  ></SelectTreeAll>
 </template>
 <script lang="ts">
 import { Component, Vue, Prop, Watch } from "vue-property-decorator";
-import { post_org_getAllByUser } from "@/api/system/index";
-import IhSelectTreeByUser from "./select-tree-by-user.vue";
+import { get_org_getAll } from "@/api/system/index";
+import SelectTreeAll from "./select-tree-all.vue";
 @Component({
-  components: { IhSelectTreeByUser },
+  components: { SelectTreeAll },
 })
-export default class IhSelectOrgTreeByUser extends Vue {
+export default class IhSelectOrgTreeAll extends Vue {
   @Prop() value!: string | number;
-
-  @Prop() type!: string;
   currentId: any = null;
   listOrg: any = [];
   list: any = [];
-  props: any = {
+  props = {
     // 配置项（必选）
     value: "id",
     label: "name",
     children: "children",
-    defaultExpandedKeys: [],
+    defaultExpandedKeys: [1],
   };
   getValue(value: any) {
-    if (value) {
-      this.currentId = value.id;
-    } else {
-      this.currentId = null;
+    this.currentId = value;
+    this.$emit("input", value);
+    let curItem = null;
+    for (let index = 0; index < this.listOrg.length; index++) {
+      const item = this.listOrg[index];
+      if (item[this.props.value] == value) {
+        curItem = item;
+        break;
+      }
     }
-    this.$emit("input", this.currentId);
-    this.$emit("change", value); //选中后触发change事件
+    this.$emit("change", curItem); //选中后触发change事件
   }
   @Watch("value")
   valueWatch(val: any) {
@@ -56,13 +57,9 @@ export default class IhSelectOrgTreeByUser extends Vue {
 
   async created() {
     this.currentId = this.value;
-    // this.listOrg = await get_org_getAll({ onlyValid: true });
-    let d = await post_org_getAllByUser({ userId: null, status: null });
-    this.props.defaultExpandedKeys = d.expandedList;
-    this.listOrg = d.orgPermissionList;
+    this.listOrg = await get_org_getAll({ onlyValid: true });
     if (this.listOrg && this.listOrg.length > 0) {
       this.listOrg[0].parentId = 0;
-      this.listOrg[2].disabled = true;
     }
     this.list = this.$tool.listToGruop(this.listOrg, {
       id: "id",
