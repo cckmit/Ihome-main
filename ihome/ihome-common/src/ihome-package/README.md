@@ -2,6 +2,7 @@
 # ihome-common
 ## 日志
 ```
+v1.2.91  2021-03-10 10:36  下拉组织树，权限
 v1.2.87  2021-03-09 15:05  添加组件SelectPageByBroker到component中
 v1.2.86  2021-03-09 14:52  增加经纪人下拉搜索组件SelectPageByBroker
 v1.2.85  2021-03-06 10:38  jslog,http.ts优化

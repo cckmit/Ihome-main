@@ -140,7 +140,7 @@
             <el-row>
               <el-col :span="8">
                 <el-form-item label="归属组织">
-                  <IhSelectOrgTree v-model="queryPageParameters.orgId" />
+                  <IhSelectOrgTreeAll v-model="queryPageParameters.orgId" />
                 </el-form-item>
               </el-col>
               <el-col :span="8">
@@ -198,7 +198,7 @@
               </el-col>
               <el-col :span="8">
                 <el-form-item label="权限组织">
-                  <IhSelectOrgTree
+                  <IhSelectOrgTreeAll
                     v-model="queryPageParameters.permissionOrgId"
                   />
                 </el-form-item>
