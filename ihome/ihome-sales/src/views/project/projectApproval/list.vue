@@ -4,7 +4,7 @@
  * @Author: wwq
  * @Date: 2020-11-27 17:11:14
  * @LastEditors: wwq
- * @LastEditTime: 2021-03-08 16:39:36
+ * @LastEditTime: 2021-03-10 10:43:46
 -->
 <template>
   <IhPage label-width="100px">
@@ -237,7 +237,7 @@
                 <el-dropdown-item
                   @click.native.prevent="routeTo(row, 'businessManagementEdit')"
                   :class="{'ih-data-disabled': !businessManagementChange(row)}"
-                  v-has="'B.SALES.PROJECT.TERMLIST.UPDATE'"
+                  v-has="'B.SALES.PROJECT.TERMLIST.YGXG'"
                 >业管修改</el-dropdown-item>
                 <el-dropdown-item
                   :class="{'ih-data-disabled': !(row.auditEnum === 'ConstractAdopt' && row.state === 'Start')}"

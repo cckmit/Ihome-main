@@ -4,7 +4,7 @@
  * @Author: wwq
  * @Date: 2021-01-15 10:45:53
  * @LastEditors: wwq
- * @LastEditTime: 2021-03-09 15:49:19
+ * @LastEditTime: 2021-03-09 16:44:02
 -->
 <template>
   <IhPage label-width="100px">
@@ -197,7 +197,7 @@
               ></el-table-column>
               <el-table-column
                 label="收款方信息"
-                width="250"
+                width="300"
               >
                 <template v-slot="{ row }">
                   <div
