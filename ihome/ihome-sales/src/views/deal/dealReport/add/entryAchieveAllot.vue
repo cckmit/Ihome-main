@@ -22,7 +22,7 @@
       </div>
       <el-row :gutter="5">
         <el-col :span="8" v-if="!!postData.dealCode">
-          <el-form-item label="成交报告编号" :prop="!!postData.dealCode ? 'dealCode' : ' '">
+          <el-form-item label="成交报告编号" :prop="!!postData.dealCode ? 'dealCode' : 'notEmpty'">
             <el-input disabled v-model="postData.dealCode"/>
           </el-form-item>
         </el-col>
@@ -405,7 +405,7 @@
           </el-form-item>
         </el-col>
         <el-col :span="8" v-if="!!id">
-          <el-form-item label="录入日期" :prop="!!id ? 'entryDate' : ' '">
+          <el-form-item label="录入日期" :prop="!!id ? 'entryDate' : 'notEmpty'">
             <el-date-picker
               style="width: 100%"
               v-model="postData.entryDate"
