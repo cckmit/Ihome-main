@@ -2803,6 +2803,7 @@
       this.contNoList = []; // 分销协议编号
       this.packageIdsList = []; // ids
       // this.postData.customerList = []; // 客户信息
+      this.baseInfoInDeal.customerAddVOS = [];
       // this.postData.offerNoticeVO = []; // 优惠告知书
       // this.postData.uploadDocumentList = []; // 上传附件
       this.postData.calculation = 'Auto'; // 计算方式改为手动

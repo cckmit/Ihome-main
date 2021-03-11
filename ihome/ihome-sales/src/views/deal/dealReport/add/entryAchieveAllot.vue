@@ -2308,6 +2308,7 @@
       this.packageIdsList = []; // ids
       this.postData.customerVO = []; // 客户信息
       this.postData.offerNoticeVO = []; // 优惠告知书
+      this.baseInfoInDeal.customerAddVOS = [];
       // this.postData.documentVO = []; // 上传附件
       this.postData.calculation = 'Auto'; // 计算方式改为手动
       this.postData.commissionInfoList = [];
