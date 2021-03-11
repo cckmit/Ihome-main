@@ -807,7 +807,7 @@
       // 初始化优惠告知书信息
       await this.getInformation(info.id, info.parentId);
       // 初始化附件
-      this.infoForm.documentLists = this.initDocumentList(info.documentLists);
+      this.infoForm.documentLists = this.initDocumentList(info.documentList);
       // 初始化开票信息
       await this.getInvoiceInfo(info.dealCode);
     }
@@ -819,11 +819,12 @@
       // 附件类型增加key
       if (fileList.length > 0) {
         fileList.forEach((vo: any) => {
-          vo.fileList = []; // 存放新上传的数据
+          this.$set(vo, 'fileList', []);
+          // vo.fileList = []; // 存放新上传的数据
           if (list && list.length > 0) {
             list.forEach((item: any) => {
               if (vo.code === item.fileType) {
-                vo.defaultFileLists.push(
+                vo.fileList.push(
                   {
                     ...item,
                     name: item.fileName,

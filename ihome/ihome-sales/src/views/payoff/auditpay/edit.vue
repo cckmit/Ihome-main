@@ -3,8 +3,8 @@
  * @version: 
  * @Author: wwq
  * @Date: 2020-12-26 11:11:23
- * @LastEditors: ywl
- * @LastEditTime: 2021-03-08 14:17:40
+ * @LastEditors: wwq
+ * @LastEditTime: 2021-03-10 17:19:49
 -->
 <template>
   <IhPage>
@@ -1722,7 +1722,11 @@ export default class PayoffEdit extends Vue {
           ...v,
         };
       });
-      this.getFileListType(res.documentList);
+      // 附件处理
+      let fileArr = this.info.documentList.filter(
+        (v: any) => !["Contract", "BusinessLicense"].includes(v.fileType)
+      );
+      this.getFileListType(fileArr.concat(res.documentList));
       this.modify = true;
       this.isAgainComputed = true;
     } catch (err) {
@@ -2041,11 +2045,13 @@ export default class PayoffEdit extends Vue {
                 arr = arr.concat(v);
               }
             });
-            obj.documentList = arr.map((v: any) => ({
+            let filterDocumentList = arr.map((v: any) => ({
               fileId: v.fileId,
               fileName: v.name,
               fileType: v.type,
+              exAuto: v.exAuto,
             }));
+            obj.documentList = filterDocumentList.filter((v: any) => !v.exAuto);
           }
           switch (val) {
             case "TemporaryStorage":
