@@ -4,7 +4,7 @@
  * @Author: wwq
  * @Date: 2020-11-27 17:20:24
  * @LastEditors: wwq
- * @LastEditTime: 2021-03-08 14:50:45
+ * @LastEditTime: 2021-03-11 09:01:27
 -->
 <template>
   <div>
@@ -59,7 +59,6 @@
           size="small"
           type="success"
           @click="editParty"
-          v-has="'B.SALES.PROJECT.TERMLIST.XGDZGSXX'"
         >修改
         </el-button>
       </div>

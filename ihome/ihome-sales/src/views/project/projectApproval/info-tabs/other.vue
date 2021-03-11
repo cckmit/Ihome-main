@@ -4,7 +4,7 @@
  * @Author: wwq
  * @Date: 2020-11-27 17:28:28
  * @LastEditors: wwq
- * @LastEditTime: 2021-03-08 15:48:24
+ * @LastEditTime: 2021-03-11 09:02:08
 -->
 <template>
   <div>
@@ -18,7 +18,6 @@
           size="small"
           type="success"
           @click="select"
-          v-has="'B.SALES.PROJECT.TERMLIST.QTPZSKXX'"
         >选择</el-button>
       </div>
     </div>
@@ -50,7 +49,6 @@
           size="small"
           type="success"
           @click="organSelect"
-          v-has="'B.SALES.PROJECT.TERMLIST.QTPZCJGSZZ'"
         >选择</el-button>
       </div>
     </div>
