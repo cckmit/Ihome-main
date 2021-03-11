@@ -42,6 +42,7 @@
           <el-form-item label="角色人" :prop="data.currentEditItem.roleType !== 'BranchOffice' ? 'rolerId' : ' '">
             <IhSelectPageUser
               v-model="form.rolerId"
+              :searchName="form.rolerName"
               @changeOption="handleSelectRole"
               clearable>
             </IhSelectPageUser>
