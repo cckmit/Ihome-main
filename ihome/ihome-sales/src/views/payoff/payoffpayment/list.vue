@@ -4,7 +4,7 @@
  * @Author: wwq
  * @Date: 2021-01-15 10:45:53
  * @LastEditors: wwq
- * @LastEditTime: 2021-03-09 16:44:02
+ * @LastEditTime: 2021-03-11 11:25:45
 -->
 <template>
   <IhPage label-width="100px">
@@ -596,6 +596,7 @@ export default class ReturnConfirmList extends Vue {
       await post_payDetail_sys_status__paymentCode({
         paymentCode: data.paymentCode,
       });
+      this.customLoading().close();
       this.$message.success("同步成功");
       this.search();
     } catch (err) {
