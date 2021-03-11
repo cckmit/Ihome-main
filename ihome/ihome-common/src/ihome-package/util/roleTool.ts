@@ -217,7 +217,12 @@ export class RoleTool implements RoleToolInterface {
      */
     hasRole(code: string): boolean {
         let roleList = (window as any).polyihomeData.userInfo?.roleList?.map((item: any) => { return item.code }) || [];
-        return roleList.includes(code);
+        if(roleList.includes("RAdmin")|| (window as any).polyihomeData.userInfo?.account=='admin'){
+            //RAdmin角色或admin账号返回true
+            return true;
+        }else{
+            return roleList.includes(code);
+        }
     }
 
     /**用户是否包含某个岗位
