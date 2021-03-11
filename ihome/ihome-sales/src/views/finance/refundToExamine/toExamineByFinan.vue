@@ -4,7 +4,7 @@
  * @Author: ywl
  * @Date: 2021-02-17 11:27:05
  * @LastEditors: ywl
- * @LastEditTime: 2021-02-26 16:25:54
+ * @LastEditTime: 2021-03-11 14:43:31
 -->
 <template>
   <IhPage>
@@ -987,6 +987,10 @@ export default class RefundToExamineToExamine extends Vue {
   }
   // 计算
   async computedMsg() {
+    if (!this.info.refundItems.length) {
+      this.$message.warning("待退款列表不能为空");
+      return;
+    }
     let obj: any = {};
     let noticeSum: any = 0;
     let amountSum: any = 0;

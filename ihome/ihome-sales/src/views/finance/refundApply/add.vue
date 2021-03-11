@@ -3,8 +3,8 @@
  * @version: 
  * @Author: zyc
  * @Date: 2021-02-06 16:29:34
- * @LastEditors: wwq
- * @LastEditTime: 2021-03-03 17:16:07
+ * @LastEditors: ywl
+ * @LastEditTime: 2021-03-11 14:45:00
 -->
 <template>
   <IhPage>
@@ -888,6 +888,10 @@ export default class RefundApplyEdit extends Vue {
 
   // 计算
   async computedMsg() {
+    if (!this.info.refundItems.length) {
+      this.$message.warning("待退款列表不能为空");
+      return;
+    }
     let obj: any = {};
     let noticeSum: any = 0;
     let amountSum: any = 0;
