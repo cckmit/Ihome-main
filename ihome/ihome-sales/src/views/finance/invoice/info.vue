@@ -4,7 +4,7 @@
  * @Author: ywl
  * @Date: 2020-12-08 19:55:43
  * @LastEditors: ywl
- * @LastEditTime: 2021-03-01 15:35:47
+ * @LastEditTime: 2021-03-11 17:38:29
 -->
 <template>
   <IhPage class="text-left">
@@ -164,6 +164,7 @@
       <div class="text-center">
         <el-button
           type="danger"
+          v-if="info.invoiceInfo.status === 'Done'"
           @click="handHInvoice(info.invoiceInfo.feeType)"
         >红冲</el-button>
       </div>
