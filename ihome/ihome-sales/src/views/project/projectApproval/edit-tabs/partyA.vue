@@ -3,8 +3,8 @@
  * @version: 
  * @Author: wwq
  * @Date: 2020-11-27 17:20:24
- * @LastEditors: wwq
- * @LastEditTime: 2021-03-08 14:47:24
+ * @LastEditors: ywl
+ * @LastEditTime: 2021-03-12 10:49:28
 -->
 <template>
   <div>
@@ -31,10 +31,14 @@
         :data="info.partyAContractInfos"
         style="width: 100%"
       >
-        <el-table-column
-          prop="title"
-          label="合同标题"
-        ></el-table-column>
+        <el-table-column label="合同标题">
+          <template v-slot="{ row }">
+            <el-link
+              type="primary"
+              @click="handleToInfo(row)"
+            >{{row.title}}</el-link>
+          </template>
+        </el-table-column>
         <el-table-column label="甲方">
           <template v-slot="{ row }">
             <template v-for="(item, i) in row.partyList">
@@ -248,6 +252,16 @@ export default class PartyA extends Vue {
         termId: id,
       });
     }
+  }
+
+  private handleToInfo(row: any) {
+    let router = this.$router.resolve({
+      path: "/partyA/info",
+      query: {
+        id: row.id,
+      },
+    });
+    window.open(router.href, "_blank");
   }
 
   async delPartyA(row: any) {
