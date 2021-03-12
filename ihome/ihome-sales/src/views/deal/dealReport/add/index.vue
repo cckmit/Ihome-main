@@ -137,6 +137,11 @@
     private srcList: any = [];
     private srcData: any = [];
 
+    pickerOption: any = {
+      disabledDate(time: any) {
+        return time.getTime() > Date.now() - 8.64e6;
+      },
+    };
     dialogAddProjectCycle: any = false; // 选择项目周期弹窗标识
     dialogAddAgency: any = false; // 选择渠道公司弹窗标识
     agentCompanyData: any = {
