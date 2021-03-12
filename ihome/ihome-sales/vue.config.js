@@ -9,7 +9,6 @@
 const path = require('path');
 const { name } = require('./package');
 const port = 8086; // 端口
-
 let proxyAddress = process.env.PROXY_PROTOCOL + '://' + process.env.PROXY_IP + ':' + process.env.PROXY_PORT;//代理地址
 
 if (process.env.NODE_ENV !== 'production') {
