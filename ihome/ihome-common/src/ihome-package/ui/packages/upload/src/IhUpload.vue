@@ -3,8 +3,8 @@
  * @version: 
  * @Author: wwq
  * @Date: 2020-09-09 16:17:16
- * @LastEditors: wwq
- * @LastEditTime: 2021-03-02 19:36:59
+ * @LastEditors: ywl
+ * @LastEditTime: 2021-03-12 18:02:38
 -->
 <template>
   <div class="upload">
@@ -153,7 +153,7 @@ export default class IhUpload extends Vue {
   limit!: number;
   @Prop({
     type: Boolean,
-    default: false,
+    default: true,
   })
   multiple?: boolean;
   @Prop({
