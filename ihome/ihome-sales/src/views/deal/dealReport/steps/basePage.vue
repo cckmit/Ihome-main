@@ -414,6 +414,7 @@
               :disabled="['ChangeInternalAchieveInf', 'RetreatRoom'].includes(changeType) || isDisabled('subscribeDate', 'dealVO')"
               v-model="postData.subscribeDate"
               type="date"
+              :picker-options="pickerOption"
               value-format="yyyy-MM-dd"
               placeholder="请选择认购日期">
             </el-date-picker>
@@ -436,6 +437,7 @@
               :disabled="['ChangeInternalAchieveInf', 'RetreatRoom'].includes(changeType) || isDisabled('signDate', 'dealVO')"
               v-model="postData.signDate"
               type="date"
+              :picker-options="pickerOption"
               value-format="yyyy-MM-dd"
               placeholder="请选择签约日期">
             </el-date-picker>
@@ -1345,6 +1347,11 @@
     private btnLoading = false;
     private srcList: any = [];
     private srcData: any = [];
+    pickerOption: any = {
+      disabledDate(time: any) {
+        return time.getTime() > Date.now() - 8.64e6;
+      },
+    };
     changeType: any = null; // 补充成交类型
     btnType: any = null; // 新增add还是修改edit --- 初始化接口不一样
     contNoList: any = []; // 分销协议编号列表

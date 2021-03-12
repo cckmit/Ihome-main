@@ -381,6 +381,7 @@
               :disabled="isDisabled('subscribeDate', 'dealVO')"
               v-model="postData.subscribeDate"
               type="date"
+              :picker-options="$parent.$data.pickerOption"
               value-format="yyyy-MM-dd"
               placeholder="请选择认购日期">
             </el-date-picker>
@@ -403,6 +404,7 @@
               :disabled="isDisabled('signDate', 'dealVO')"
               v-model="postData.signDate"
               type="date"
+              :picker-options="$parent.$data.pickerOption"
               value-format="yyyy-MM-dd"
               placeholder="请选择签约日期">
             </el-date-picker>
@@ -1020,6 +1022,7 @@
       if (this.id) {
         await this.editInitPage(this.id);
       }
+      console.log((this as any).$parent);
     }
 
     // 编辑功能 --- 初始化页面
