@@ -4,7 +4,7 @@
  * @Author: ywl
  * @Date: 2021-03-03 11:10:24
  * @LastEditors: ywl
- * @LastEditTime: 2021-03-13 09:18:46
+ * @LastEditTime: 2021-03-13 11:11:18
 -->
 <template>
   <section>
@@ -35,7 +35,7 @@
                 v-model="form.formList[0].templateType"
                 placeholder="终止协议类型"
                 class="width--100"
-                :disabled="form.formList[1].ownerType === 'Enterprise'"
+                :disabled="data.ownerType === 'Enterprise'"
               >
                 <el-option
                   v-for="(i, n) in $root.dictAllList('TemplateType')"
@@ -375,7 +375,7 @@
                 v-model="form.formList[2].templateType"
                 placeholder="退款申请书类型"
                 class="width--100"
-                :disabled="form.formList[1].ownerType === 'Enterprise'"
+                :disabled="data.ownerType === 'Enterprise'"
               >
                 <el-option
                   v-for="(i, n) in $root.dictAllList('TemplateType')"
@@ -595,13 +595,13 @@ export default class SceneTwo extends Vue {
             this.form.formList[1].ownerList = [];
             this.selection = [];
             if (val === "Enterprise") {
-              this.form.formList[0].templateType = "PaperTemplate";
+              // this.form.formList[0].templateType = "PaperTemplate";
               this.form.formList[1].templateType = "PaperTemplate";
-              this.form.formList[2].templateType = "PaperTemplate";
+              // this.form.formList[2].templateType = "PaperTemplate";
             } else {
-              this.form.formList[0].templateType = null;
+              // this.form.formList[0].templateType = null;
               this.form.formList[1].templateType = null;
-              this.form.formList[2].templateType = null;
+              // this.form.formList[2].templateType = null;
             }
           })
           .catch(() => {
@@ -799,6 +799,10 @@ export default class SceneTwo extends Vue {
     // this.selection = this.data.ownerList;
     this.beforeValue = this.data.ownerType;
     this.getMethodByTermId(this.data.cycleId);
+    if (this.data.ownerType === "Enterprise") {
+      this.form.formList[0].templateType = "PaperTemplate";
+      this.form.formList[2].templateType = "PaperTemplate";
+    }
   }
 }
 </script>
