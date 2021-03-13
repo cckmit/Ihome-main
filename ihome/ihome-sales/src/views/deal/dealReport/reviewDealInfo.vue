@@ -603,6 +603,7 @@
     private srcList: any = [];
     private srcData: any = [];
     postData: any = {
+      parentId: null,
       dealCode: null,
       dealOrgName: null,
       house: {}, // 房产信息
@@ -894,7 +895,7 @@
       this.$router.push({
         path: "/dealReport/info",
         query: {
-          id: this.postData.id,
+          id: this.postData.parentId,
           type: "ID"
         }
       });
