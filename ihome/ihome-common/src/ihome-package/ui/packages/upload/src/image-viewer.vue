@@ -426,4 +426,7 @@ export default {
 .el-image-viewer__close {
   color: #fff;
 }
+.el-image-viewer__wrapper {
+  right: 20px;
+}
 </style>

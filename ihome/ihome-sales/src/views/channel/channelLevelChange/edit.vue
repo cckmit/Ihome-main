@@ -3,8 +3,8 @@
  * @version: 
  * @Author: ywl
  * @Date: 2020-10-15 16:02:03
- * @LastEditors: wwq
- * @LastEditTime: 2021-01-20 19:53:29
+ * @LastEditors: ywl
+ * @LastEditTime: 2021-03-13 15:24:47
 -->
 <template>
   <IhPage>
@@ -374,7 +374,7 @@ export default class ChannelRates extends Vue {
       if (v) {
         this.resPageInfo.operateType = val;
         if (this.changeReason) {
-          this.resPageInfo.oldGradeId = this.Id;
+          // this.resPageInfo.oldGradeId = this.Id;
           // this.resPageInfo.channelGradeItemChanges = this.resPageInfo.channelGradeItems;
           // this.resPageInfo.channelGradeAttachmentChanges = this.resPageInfo.channelGradeAttachments;
           this.resPageInfo.changeReason = this.changeReason;

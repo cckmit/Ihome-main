@@ -414,6 +414,7 @@
               :disabled="['ChangeInternalAchieveInf', 'RetreatRoom'].includes(changeType) || isDisabled('subscribeDate', 'dealVO')"
               v-model="postData.subscribeDate"
               type="date"
+              :picker-options="pickerOption"
               value-format="yyyy-MM-dd"
               placeholder="请选择认购日期">
             </el-date-picker>
@@ -436,6 +437,7 @@
               :disabled="['ChangeInternalAchieveInf', 'RetreatRoom'].includes(changeType) || isDisabled('signDate', 'dealVO')"
               v-model="postData.signDate"
               type="date"
+              :picker-options="pickerOption"
               value-format="yyyy-MM-dd"
               placeholder="请选择签约日期">
             </el-date-picker>
@@ -1345,6 +1347,11 @@
     private btnLoading = false;
     private srcList: any = [];
     private srcData: any = [];
+    pickerOption: any = {
+      disabledDate(time: any) {
+        return time.getTime() > Date.now() - 8.64e6;
+      },
+    };
     changeType: any = null; // 补充成交类型
     btnType: any = null; // 新增add还是修改edit --- 初始化接口不一样
     contNoList: any = []; // 分销协议编号列表
@@ -1353,6 +1360,7 @@
       calculation: 'Auto',
       calculationName: null,
       dealCode: null,
+      proId: null,
       cycleId: null,
       cycleName: null, // 周期名称 - 选择
       projectCycle: null, // 项目周期名称 - 只读显示
@@ -1816,6 +1824,7 @@
       this.editFlag = false;
       this.tipsFlag = true;
       this.dividerTips = '业绩分配';
+      this.postData.proId = res?.projectId;
       this.isSameFlag = res?.scheme?.isSame === "Yes"; // 分销总包是否一致
       this.postData.area = res?.house?.area;
       this.postData.buildingId = res?.house?.buildingId;
@@ -2872,6 +2881,7 @@
           await this.resetData();
         }
         this.postData.cycleName = data[0].termName;
+        this.postData.proId = data[0].proId;
         this.postData.cycleId = data[0].termId;
         this.cycleCheckedData = [...data];
         this.hasChangeProCycleFlag = true; // 改变周期后，此标志为true

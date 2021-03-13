@@ -469,7 +469,7 @@
           </tr>
           <tr>
             <td colspan="6">
-              <div class="text-left padding-left-15">申请事由：</div>
+              <div class="text-left padding-left-15">经办部门意见：</div>
               <el-input
                 class="inputClass"
                 type="textarea"

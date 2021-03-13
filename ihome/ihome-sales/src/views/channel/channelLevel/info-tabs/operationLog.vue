@@ -21,6 +21,10 @@
         label="处理人"
       ></el-table-column>
       <el-table-column
+        prop="operatorJobName"
+        label="岗位"
+      ></el-table-column>
+      <el-table-column
         prop="operateTime"
         label="处理时间"
       ></el-table-column>

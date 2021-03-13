@@ -381,6 +381,7 @@
               :disabled="isDisabled('subscribeDate', 'dealVO')"
               v-model="postData.subscribeDate"
               type="date"
+              :picker-options="$parent.$data.pickerOption"
               value-format="yyyy-MM-dd"
               placeholder="请选择认购日期">
             </el-date-picker>
@@ -403,6 +404,7 @@
               :disabled="isDisabled('signDate', 'dealVO')"
               v-model="postData.signDate"
               type="date"
+              :picker-options="$parent.$data.pickerOption"
               value-format="yyyy-MM-dd"
               placeholder="请选择签约日期">
             </el-date-picker>
@@ -794,6 +796,7 @@
       isOtherProUse: false, // 是否允许跨项目使用其他渠道费用 --- 用来校验收派金额，其他渠道费
       chargeMode: null, // 收费模式 --- 初始化收派金额，有无服务费、代理费
       dealCode: null,
+      proId: null, // 接口用到的id
       cycleId: null, // 接口用到的id
       cycleName: null, // 只用于显示
       modelCode: null,
@@ -1020,6 +1023,7 @@
       if (this.id) {
         await this.editInitPage(this.id);
       }
+      console.log((this as any).$parent);
     }
 
     // 编辑功能 --- 初始化页面
@@ -1040,6 +1044,7 @@
       }
       (this as any).$nextTick(() => {
         this.postData.dealCode = res.dealCode;
+        this.postData.proId = res.projectId;
         this.postData.cycleId = res.cycleId;
         this.postData.cycleName = res.cycleName;
         this.postData.modelCode = res.modelCode;
@@ -1344,6 +1349,7 @@
         }
         (this as any).$nextTick(async () => {
           this.postData.cycleName = data[0].termName;
+          this.postData.proId = data[0].proId;
           this.postData.cycleId = data[0].termId;
           this.cycleCheckedData = [...data];
           await this.getBaseDealInfo(this.postData.cycleId);
@@ -2229,6 +2235,7 @@
           "charge": "",
           "contNo": "",
           "contType": "",
+          "proId": '',
           "cycleId": '',
           "dataSign": "",
           "dealOrgId": '',
@@ -2321,6 +2328,7 @@
       obj.dealVO.businessType = this.baseInfoByTerm.busTypeEnum;
       obj.dealVO.charge = this.baseInfoByTerm.chargeEnum;
       obj.dealVO.contType = this.postData.contType;
+      obj.dealVO.proId = this.postData.proId;
       obj.dealVO.cycleId = this.postData.cycleId;
       obj.dealVO.dataSign = this.postData.dataSign;
       obj.dealVO.dealOrgId = this.postData.dealOrgId;

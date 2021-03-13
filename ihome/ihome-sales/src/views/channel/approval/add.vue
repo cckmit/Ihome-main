@@ -12,7 +12,7 @@
       :model="postData"
       :rules="rules"
       ref="ruleForm"
-      label-width="100px"
+      label-width="110px"
       class="demo-ruleForm"
     >
       <p class="ih-info-title">基础信息</p>
@@ -227,13 +227,13 @@
       <p class="ih-info-title">呈批信息</p>
       <el-row class="ih-info-line text-left">
         <el-form-item
-          label="呈批说明"
+          label="经办部门意见"
           prop="approvalDesc"
         >
           <el-input
             type="textarea"
             :rows="10"
-            placeholder="呈批说明"
+            placeholder="经办部门意见"
             v-model="postData.approvalDesc"
             maxlength="512"
             show-word-limit
@@ -241,13 +241,13 @@
         </el-form-item>
 
         <!-- <span style="padding: 10px; line-height: 40px" prop="approvalDesc">
-          呈批说明
+          经办部门意见
         </span>
         <span>
           <el-input
             type="textarea"
             :rows="10"
-            placeholder="呈批说明"
+            placeholder="经办部门意见"
             v-model="postData.approvalDesc"
             maxlength="512"
             show-word-limit
@@ -332,7 +332,7 @@ export default class ApprovalAdd extends Vue {
       { required: true, message: "事业部必选", trigger: "change" },
     ],
     approvalDesc: [
-      { required: true, message: "呈批说明必填", trigger: "change" },
+      { required: true, message: "经办部门意见必填", trigger: "change" },
     ],
   };
 

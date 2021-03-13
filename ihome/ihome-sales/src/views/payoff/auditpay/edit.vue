@@ -4,7 +4,7 @@
  * @Author: wwq
  * @Date: 2020-12-26 11:11:23
  * @LastEditors: wwq
- * @LastEditTime: 2021-03-10 17:19:49
+ * @LastEditTime: 2021-03-13 15:15:14
 -->
 <template>
   <IhPage>
@@ -1086,7 +1086,7 @@ import {
 import { post_bankAccount_getByOrgId__orgId } from "@/api/finance/index";
 import { Form as ElForm } from "element-ui";
 import Obligation from "../payorder/dialog/obligation.vue";
-import { get_channel_get__id } from "@/api/channel/index";
+import { get_channelBank_getAll__channelId } from "@/api/channel/index";
 import AgencyEdit from "../payorder/dialog/agencyEdit.vue";
 
 @Component({
@@ -1530,11 +1530,11 @@ export default class PayoffEdit extends Vue {
 
   async getChannelInfo(item: any) {
     this.info.agencyName = item.name;
-    let res = await get_channel_get__id({ id: item.id });
-    this.channelAccountOptions = res.channelBanks;
-    if (res.channelBanks.length === 1) {
-      this.info.receiveAccount = res.channelBanks[0].accountNo;
-      this.info.agencyAccountBank = res.channelBanks[0].branchName;
+    let res = await get_channelBank_getAll__channelId({ channelId: item.id });
+    this.channelAccountOptions = res;
+    if (res.length === 1) {
+      this.info.receiveAccount = res[0].accountNo;
+      this.info.agencyAccountBank = res[0].branchName;
     }
   }
 

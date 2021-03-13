@@ -4,7 +4,7 @@
  * @Author: ywl
  * @Date: 2021-03-03 20:42:48
  * @LastEditors: ywl
- * @LastEditTime: 2021-03-06 17:49:45
+ * @LastEditTime: 2021-03-13 16:48:45
 -->
 <template>
   <section>
@@ -34,6 +34,7 @@
               <el-select
                 v-model="form.formList[0].templateType"
                 placeholder="终止协议类型"
+                :disabled="data.ownerType === 'Enterprise'"
                 class="width--100"
               >
                 <el-option
@@ -125,6 +126,7 @@
               <el-select
                 v-model="form.formList[1].templateType"
                 placeholder="退款申请书类型"
+                :disabled="data.ownerType === 'Enterprise'"
                 class="width--100"
               >
                 <el-option
@@ -348,6 +350,10 @@ export default class SceneThree extends Vue {
 
   created() {
     this.form.formList[1].refundableAmount = this.data.paymentAmount;
+    if (this.data.ownerType === "Enterprise") {
+      this.form.formList[0].templateType = "PaperTemplate";
+      this.form.formList[1].templateType = "PaperTemplate";
+    }
   }
 }
 </script>

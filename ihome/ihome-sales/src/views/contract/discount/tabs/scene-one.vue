@@ -4,7 +4,7 @@
  * @Author: ywl
  * @Date: 2021-03-03 10:04:07
  * @LastEditors: ywl
- * @LastEditTime: 2021-03-06 14:06:14
+ * @LastEditTime: 2021-03-13 16:48:19
 -->
 <template>
   <section>
@@ -24,6 +24,7 @@
             <el-select
               v-model="form.templateType"
               placeholder="补充协议类型"
+              :disabled="data.ownerType === 'Enterprise'"
               class="width--100"
             >
               <el-option
@@ -139,6 +140,12 @@ export default class SceneOne extends Vue {
     } else {
       console.log("error submit!!");
       return false;
+    }
+  }
+
+  created() {
+    if (this.data.ownerType === "Enterprise") {
+      this.form.templateType = "PaperTemplate";
     }
   }
 }
