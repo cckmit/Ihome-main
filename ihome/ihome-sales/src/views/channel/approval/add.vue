@@ -12,7 +12,7 @@
       :model="postData"
       :rules="rules"
       ref="ruleForm"
-      label-width="100px"
+      label-width="110px"
       class="demo-ruleForm"
     >
       <p class="ih-info-title">基础信息</p>
