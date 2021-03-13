@@ -1360,6 +1360,7 @@
       calculation: 'Auto',
       calculationName: null,
       dealCode: null,
+      proId: null,
       cycleId: null,
       cycleName: null, // 周期名称 - 选择
       projectCycle: null, // 项目周期名称 - 只读显示
@@ -1823,6 +1824,7 @@
       this.editFlag = false;
       this.tipsFlag = true;
       this.dividerTips = '业绩分配';
+      this.postData.proId = res?.projectId;
       this.isSameFlag = res?.scheme?.isSame === "Yes"; // 分销总包是否一致
       this.postData.area = res?.house?.area;
       this.postData.buildingId = res?.house?.buildingId;
@@ -2879,6 +2881,7 @@
           await this.resetData();
         }
         this.postData.cycleName = data[0].termName;
+        this.postData.proId = data[0].proId;
         this.postData.cycleId = data[0].termId;
         this.cycleCheckedData = [...data];
         this.hasChangeProCycleFlag = true; // 改变周期后，此标志为true
