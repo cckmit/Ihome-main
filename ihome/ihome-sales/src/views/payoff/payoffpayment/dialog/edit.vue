@@ -4,7 +4,7 @@
  * @Author: wwq
  * @Date: 2021-01-16 17:16:53
  * @LastEditors: wwq
- * @LastEditTime: 2021-02-08 12:02:34
+ * @LastEditTime: 2021-03-13 15:16:25
 -->
 <template>
   <el-dialog
@@ -202,7 +202,7 @@
 import { Component, Vue, Prop } from "vue-property-decorator";
 import { Form as ElForm } from "element-ui";
 import { NoRepeatHttp } from "ihome-common/util/aop/no-repeat-http";
-import { get_channel_get__id } from "@/api/channel/index";
+import { get_channelBank_getAll__channelId } from "@/api/channel/index";
 import { post_payDetail_update } from "@/api/payoff";
 import { post_bankAccount_getByOrgId__orgId } from "@/api/finance/index";
 @Component({
@@ -291,8 +291,10 @@ export default class Edit extends Vue {
   async created() {
     this.info = { ...this.data };
     console.log(this.info);
-    const res = await get_channel_get__id({ id: this.info.agencyId });
-    this.channelAccountOptions = res.channelBanks;
+    const res = await get_channelBank_getAll__channelId({
+      channelId: this.info.agencyId,
+    });
+    this.channelAccountOptions = res;
     const item = await post_bankAccount_getByOrgId__orgId({
       orgId: this.info.companyId,
     });
