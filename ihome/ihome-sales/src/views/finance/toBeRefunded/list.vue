@@ -173,14 +173,14 @@
         <el-table-column width="200" label="成交信息">
           <template slot-scope="scope">
             <div v-if="scope.row.dealId !== null">
-              <p>客户姓名：{{ scope.row.dealCustomerName }}</p>
-              <p>
+              <div>客户姓名：{{ scope.row.dealCustomerName }}</div>
+              <div>
                 成交报告编号：
                 <el-link type="primary" @click="gotoNew(scope.row, 'dealNo')">
                   {{ scope.row.dealNo }}</el-link
                 >
-              </p>
-              <p>成交单位：{{ scope.row.dealCompany }}</p>
+              </div>
+              <div>成交单位：{{ scope.row.dealCompany }}</div>
             </div>
             <div v-if="scope.row.dealId === null"></div>
           </template>
@@ -193,9 +193,9 @@
         <el-table-column width="150" label="服务费情况">
           <template slot-scope="scope">
             <div v-if="scope.row.dealId !== null">
-              <p>应收：{{ scope.row.receivableAmount }}</p>
-              <p>实收：{{ scope.row.actualAmount }}</p>
-              <p>未收：{{ scope.row.uncollectedAmount }}</p>
+              <div>应收：{{ scope.row.receivableAmount }}</div>
+              <div>实收：{{ scope.row.actualAmount }}</div>
+              <div>未收：{{ scope.row.uncollectedAmount }}</div>
             </div>
             <div v-if="scope.row.dealId === null">——</div>
           </template>
