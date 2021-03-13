@@ -4,7 +4,7 @@
  * @Author: wwq
  * @Date: 2020-12-26 11:11:23
  * @LastEditors: wwq
- * @LastEditTime: 2021-03-10 17:03:53
+ * @LastEditTime: 2021-03-13 15:17:46
 -->
 <template>
   <IhPage>
@@ -927,7 +927,7 @@ import {
   post_payApply_calculation_results,
   post_payDeductDetail_deduct_details,
 } from "@/api/payoff/index";
-import { get_channel_get__id } from "@/api/channel/index";
+import { get_channelBank_getAll__channelId } from "@/api/channel/index";
 import { Form as ElForm } from "element-ui";
 import Obligation from "./dialog/obligation.vue";
 import axios from "axios";
@@ -1812,16 +1812,16 @@ export default class PayoffEdit extends Vue {
   async getChannelInfo(item: any, type: any) {
     if (this.info.projectId) {
       this.info.agencyName = item.name;
-      let res = await get_channel_get__id({ id: item.id });
-      this.channelAccountOptions = res.channelBanks;
+      let res = await get_channelBank_getAll__channelId({ channelId: item.id });
+      this.channelAccountOptions = res;
       if (!type) {
         this.info.receiveAccount = null;
         // 获取本期需抵扣金额明细
         this.queryDeductionData(item.id, this.info.projectId);
       }
-      if (res.channelBanks.length === 1) {
-        this.info.receiveAccount = res.channelBanks[0].accountNo;
-        this.info.agencyAccountBank = res.channelBanks[0].branchName;
+      if (res.length === 1) {
+        this.info.receiveAccount = res[0].accountNo;
+        this.info.agencyAccountBank = res[0].branchName;
       }
     } else {
       this.$message.warning("请先选择结佣项目");
