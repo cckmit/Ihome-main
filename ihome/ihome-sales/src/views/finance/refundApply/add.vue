@@ -3,8 +3,8 @@
  * @version: 
  * @Author: zyc
  * @Date: 2021-02-06 16:29:34
- * @LastEditors: ywl
- * @LastEditTime: 2021-03-11 14:45:00
+ * @LastEditors: wwq
+ * @LastEditTime: 2021-03-13 16:59:38
 -->
 <template>
   <IhPage>
@@ -49,16 +49,19 @@
               label="事业部"
               prop="orgId"
             >
-              <IhSelectPageDivision
-                clearable
-                placeholder="事业部"
+              <el-select
                 v-model="info.orgId"
-                :search-name="info.departmentName"
-                @changeOption="(data) => {
-                  info.departmentName = data.name;
-                }"
+                clearable
+                placeholder="请选择事业部"
+                class="width--100"
               >
-              </IhSelectPageDivision>
+                <el-option
+                  v-for="item in divisionOptins"
+                  :key="item.id"
+                  :label="item.name"
+                  :value="item.id"
+                ></el-option>
+              </el-select>
             </el-form-item>
           </el-col>
           <el-col :span="8">
@@ -66,14 +69,19 @@
               label="付款方账户名称"
               prop="accountId"
             >
-              <IhSelectPageByPayer
+              <el-select
+                v-model="info.accountId"
                 clearable
                 placeholder="付款方账户名称"
-                v-model="info.accountId"
-                :proId="info.orgId"
-                :search-name="info.accountName"
-                @changeOption="getPayerInfo"
-              ></IhSelectPageByPayer>
+                class="width--100"
+              >
+                <el-option
+                  v-for="item in accountOptins"
+                  :key="item.id"
+                  :label="item.name"
+                  :value="item.id"
+                ></el-option>
+              </el-select>
             </el-form-item>
           </el-col>
           <el-col :span="8">
@@ -584,7 +592,7 @@
   </IhPage>
 </template>
 <script lang="ts">
-import { Component, Vue } from "vue-property-decorator";
+import { Component, Vue, Watch } from "vue-property-decorator";
 import {
   get_refundApply_get__id,
   post_refundApply_collect,
@@ -593,6 +601,10 @@ import {
   get_invoice_getInvoiceId__businessNo,
 } from "@/api/finance/index";
 import { post_bankAccount_getByOrgId__orgId } from "@/api/finance/index";
+import {
+  get_org_getUserDepartmentList,
+  post_company_getAll,
+} from "@/api/system/index";
 import { Form as ElForm } from "element-ui";
 import AddFefund from "./dialog/addFefund.vue";
 import UploadList from "./dialog/uploadList.vue";
@@ -633,6 +645,9 @@ export default class RefundApplyEdit extends Vue {
   addFefundDialogVisible = false;
   computedDisabled = false;
   uploadDialogVisible = false;
+  divisionOptins: any = [];
+  accountOptins: any = [];
+  payerAccountOptions: any = [];
 
   private rules: any = {
     orgId: [
@@ -659,9 +674,38 @@ export default class RefundApplyEdit extends Vue {
   };
 
   computedLoading: any = false;
-  payerAccountOptions: any = [];
   showUploadIndex: any = 0;
   isAgainComputed: any = true;
+
+  @Watch("info.orgId", { deep: true })
+  getAccountOptins(val: any) {
+    if (val) {
+      this.getAccount(val);
+    } else {
+      this.info.departmentName = null;
+      this.info.accountId = null;
+      this.info.accountName = null;
+      this.info.accountNo = null;
+      this.info.branchName = null;
+      this.info.branchNo = null;
+      this.payerAccountOptions = [];
+      this.accountOptins = [];
+    }
+  }
+
+  @Watch("info.accountId", { deep: true })
+  getPayerAccountOptions(val: any) {
+    if (val) {
+      this.getPayerInfo(val);
+    } else {
+      this.info.accountName = null;
+      this.info.accountId = null;
+      this.info.accountNo = null;
+      this.info.branchName = null;
+      this.info.branchNo = null;
+      this.payerAccountOptions = [];
+    }
+  }
 
   async routeTo(row: any, where: any) {
     let router: any = null;
@@ -715,28 +759,6 @@ export default class RefundApplyEdit extends Vue {
   searchOpen = true;
   private get returnId() {
     return this.$route.query.id;
-  }
-
-  async getPayerInfo(item: any) {
-    this.info.accountName = item.name;
-    this.info.companyId = item.id;
-    const res = await post_bankAccount_getByOrgId__orgId({
-      orgId: this.info.accountId,
-    });
-    this.payerAccountOptions = res;
-  }
-
-  accountNoChange(data: any) {
-    if (data) {
-      const item = this.payerAccountOptions.find(
-        (v: any) => v.accountNo === data
-      );
-      this.info.branchName = item.branchName;
-      this.info.branchNo = item.branchNo;
-    } else {
-      this.info.branchName = null;
-      this.info.branchNo = null;
-    }
   }
 
   showUploadList(data: any, index: number) {
@@ -796,6 +818,7 @@ export default class RefundApplyEdit extends Vue {
 
   async created() {
     this.getInfo();
+    this.getDivision();
   }
   async getInfo() {
     if (this.returnId) {
@@ -817,6 +840,56 @@ export default class RefundApplyEdit extends Vue {
       this.info.settlementType = "CentralizedPay";
       this.info.payType = "CashPay";
       this.getFileListType([]);
+    }
+  }
+
+  // 获取事业部
+  async getDivision() {
+    let res = await get_org_getUserDepartmentList({
+      orgType: "Department",
+      status: "Valid",
+    });
+    if (res.length === 1) {
+      this.info.orgId = res[0].id;
+      this.info.departmentName = res[0].name;
+    } else {
+      this.divisionOptins = res;
+    }
+  }
+
+  // 获取付款方
+  async getAccount(orgId: any) {
+    let res = await post_company_getAll({
+      orgId,
+    });
+    if (res.length === 1) {
+      this.info.accountId = res[0].id;
+      this.info.accountName = res[0].name;
+    }
+    this.accountOptins = res;
+  }
+
+  // 获取付款账号
+  async getPayerInfo(val: any) {
+    const res = await post_bankAccount_getByOrgId__orgId({
+      orgId: val,
+    });
+    if (res.length === 1) {
+      this.info.accountNo = res[0].accountNo;
+    }
+    this.payerAccountOptions = res;
+  }
+
+  accountNoChange(data: any) {
+    if (data) {
+      const item = this.payerAccountOptions.find(
+        (v: any) => v.accountNo === data
+      );
+      this.info.branchName = item.branchName;
+      this.info.branchNo = item.branchNo;
+    } else {
+      this.info.branchName = null;
+      this.info.branchNo = null;
     }
   }
 
