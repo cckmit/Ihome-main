@@ -3,8 +3,8 @@
  * @version: 
  * @Author: wwq
  * @Date: 2020-09-09 16:17:16
- * @LastEditors: ywl
- * @LastEditTime: 2021-03-12 18:02:38
+ * @LastEditors: wwq
+ * @LastEditTime: 2021-03-13 09:44:08
 -->
 <template>
   <div class="upload">
@@ -20,6 +20,7 @@
       :on-error="errorHandler"
       :on-change="onChangeHandler"
       :on-exceed="onExceedHandler"
+      :on-progress="onProgressHandler"
       :http-request="httpRequest"
       :before-upload="beforeUpload"
       :multiple="multiple"
@@ -27,79 +28,90 @@
       :auto-upload="false"
     >
       <template #file="{ file }">
-        <img
-          class="avatar"
-          :style="{ width: size, height: size }"
-          :src="uploadType(file)"
-        />
-        <slot
-          name="extend"
-          :data="file"
-        />
-        <el-tooltip
-          class="item"
-          effect="light"
-          :content="file.name"
-          placement="top"
-        >
-          <span
-            class="el-upload-list__item-actions uploadbutton"
-            :style="{
+        <template v-if="!uploadLoadingHander(file)">
+          <img
+            class="avatar"
+            :style="{ width: size, height: size }"
+            :src="uploadType(file)"
+          />
+          <slot
+            name="extend"
+            :data="file"
+          />
+          <el-tooltip
+            class="item"
+            effect="light"
+            :content="file.name"
+            placement="top"
+          >
+            <span
+              class="el-upload-list__item-actions uploadbutton"
+              :style="{
             width: size,
             height: Object.keys($scopedSlots).length ? size : '',
           }"
-          >
-            <span class="operation">
-              <span
-                class="el-upload-list__item-preview"
-                v-if="previewPermi"
-                @click="handlePictureCardPreview(file)"
-              >
-                <i
-                  class="el-icon-zoom-in"
-                  title="预览"
-                ></i>
-              </span>
-              <span
-                class="el-upload-list__item-delete"
-                v-if="loadPermi"
-                @click="handleDownload(file)"
-              >
-                <i
-                  class="el-icon-download"
-                  title="下载"
-                ></i>
-              </span>
-              <span
-                class="el-upload-list__item-delete"
-                v-if="removePermi && !file.exAuto"
-                @click="handleRemove(file)"
-              >
-                <i
-                  class="el-icon-delete"
-                  title="删除"
-                ></i>
-              </span>
-            </span>
-            <span
-              class="move"
-              v-if="isMove"
             >
-              <span @click="leftShift(file)">
-                <i
-                  class="el-icon-back"
-                  title="左移"
-                ></i>
+              <span class="operation">
+                <span
+                  class="el-upload-list__item-preview"
+                  v-if="previewPermi"
+                  @click="handlePictureCardPreview(file)"
+                >
+                  <i
+                    class="el-icon-zoom-in"
+                    title="预览"
+                  ></i>
+                </span>
+                <span
+                  class="el-upload-list__item-delete"
+                  v-if="loadPermi"
+                  @click="handleDownload(file)"
+                >
+                  <i
+                    class="el-icon-download"
+                    title="下载"
+                  ></i>
+                </span>
+                <span
+                  class="el-upload-list__item-delete"
+                  v-if="removePermi && !file.exAuto"
+                  @click="handleRemove(file)"
+                >
+                  <i
+                    class="el-icon-delete"
+                    title="删除"
+                  ></i>
+                </span>
               </span>
-              <span @click="rightShift(file)">
-                <i
-                  class="el-icon-right"
-                  title="右移"
-                ></i>
+              <span
+                class="move"
+                v-if="isMove"
+              >
+                <span @click="leftShift(file)">
+                  <i
+                    class="el-icon-back"
+                    title="左移"
+                  ></i>
+                </span>
+                <span @click="rightShift(file)">
+                  <i
+                    class="el-icon-right"
+                    title="右移"
+                  ></i>
+                </span>
               </span>
             </span>
-          </span>
-        </el-tooltip>
+          </el-tooltip>
+        </template>
+        <div
+          v-else
+          class="uploadLoading"
+          v-loading="file.uploadLoading"
+          element-loading-text="附件上传中"
+          element-loading-spinner="el-icon-loading"
+          element-loading-background="rgba(0, 0, 0, 0.8)"
+        >
+        </div>
       </template>
       <i
         class="el-icon-plus avatar-uploader-icon"
@@ -115,10 +127,7 @@
       :viewer-msg="viewerArr"
       :viewer-index="viewerIndex"
     ></image-viewer>
-    <ih-dialog
-      :show="dialogVisible"
-      desc="联系人信息"
-    >
+    <ih-dialog :show="dialogVisible">
       <Cropper
         ref="cropper"
         :img="cropperImg"
@@ -282,46 +291,7 @@ export default class IhUpload extends Vue {
       return await post_file_upload(fd);
     }
   }
-  successHandler(response: any, file: any, fileList: any) {
-    if (response) {
-      fileList.forEach((v: any, index: number) => {
-        if (v?.response?.length) {
-          this.replaceUpload(v, fileList, index, v.response[0].fileId);
-        } else {
-          this.replaceUpload(v, fileList, index, v.fileId);
-        }
-      });
-      this.$message.success("上传成功");
-      this.$emit("newFileList", fileList, this.fileType);
-    }
-  }
-  errorHandler() {
-    this.$message.error("上传失败");
-  }
-  onChangeHandler(file: any, fileList: any) {
-    this.changeFileList = fileList;
-    if (this.isCrop && file.status === "ready") {
-      const $index = file?.name?.lastIndexOf(".");
-      const type = file?.name?.substring($index + 1);
-      switch (type) {
-        case "gif":
-        case "jpg":
-        case "png":
-        case "jpeg":
-          this.cropperName = file.name;
-          this.$nextTick(() => {
-            this.cropperImg = file.url;
-            this.dialogVisible = true;
-          });
-          break;
-        default:
-          (this.$refs.upload as any).submit();
-          break;
-      }
-    } else {
-      (this.$refs.upload as any).submit();
-    }
-  }
+
   beforeUpload(file: any) {
     return new Promise((resolve: any, reject: any) => {
       const size = file.size / 1024 / 1024 < this.fileSize;
@@ -383,6 +353,56 @@ export default class IhUpload extends Vue {
         }
       }
     });
+  }
+
+  successHandler(response: any, file: any, fileList: any) {
+    console.log(fileList, "success");
+    if (response) {
+      fileList.forEach((v: any, index: number) => {
+        if (v?.response?.length) {
+          this.replaceUpload(v, fileList, index, v.response[0].fileId);
+        } else {
+          this.replaceUpload(v, fileList, index, v.fileId);
+        }
+      });
+      this.$emit("newFileList", fileList, this.fileType);
+    }
+    // file.uploadLoading = false;
+  }
+  errorHandler(file: any) {
+    this.$message.error("上传失败");
+    file.uploadLoading = false;
+  }
+  // 上传中
+  onProgressHandler(file: any) {
+    const index = this.list.findIndex((v: any) => v.uid === file.uid);
+    this.$set(this.list, index, { ...file, uploadLoading: true });
+    debugger;
+  }
+
+  onChangeHandler(file: any, fileList: any) {
+    this.changeFileList = fileList;
+    if (this.isCrop && file.status === "ready") {
+      const $index = file?.name?.lastIndexOf(".");
+      const type = file?.name?.substring($index + 1);
+      switch (type) {
+        case "gif":
+        case "jpg":
+        case "png":
+        case "jpeg":
+          this.cropperName = file.name;
+          this.$nextTick(() => {
+            this.cropperImg = file.url;
+            this.dialogVisible = true;
+          });
+          break;
+        default:
+          (this.$refs.upload as any).submit();
+          break;
+      }
+    } else {
+      (this.$refs.upload as any).submit();
+    }
   }
   // 显示列表的图片URL
   uploadType(file: any) {
@@ -501,6 +521,7 @@ export default class IhUpload extends Vue {
     }
     this.$set(fileList[index], "fileId", fileId);
     this.$set(fileList[index], "type", this.fileType);
+    this.$set(fileList[index], "uploadLoading", false);
     this.list = [...fileList];
   }
 
@@ -540,6 +561,14 @@ export default class IhUpload extends Vue {
       this.$emit("update:fileList", [...arr]);
     } else {
       this.$message.warning("第一项不可左移");
+    }
+  }
+
+  // 上传中
+  uploadLoadingHander(file: any) {
+    const item = this.list.find((v: any) => v.uid === file.uid);
+    if (item) {
+      return item.uploadLoading;
     }
   }
 }
@@ -606,5 +635,12 @@ export default class IhUpload extends Vue {
 
 .el-upload-list--picture-card .el-upload-list__item-actions::after {
   height: 0;
+}
+
+.uploadLoading {
+  /deep/ .el-loading-spinner {
+    margin-top: 10px;
+    font-size: 28px;
+  }
 }
 </style>
