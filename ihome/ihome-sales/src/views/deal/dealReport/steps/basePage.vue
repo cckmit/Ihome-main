@@ -3258,7 +3258,7 @@
         signPrice: this.postData.signPrice ? this.postData.signPrice : null,
         subscribePrice: this.postData.subscribePrice ? this.postData.subscribePrice : null
       }
-      if (!postData.signPrice && !postData.subscribePrice) {
+      if (['', null, undefined].includes(postData.signPrice) && ['', null, undefined].includes(postData.subscribePrice)) {
         this.$message.warning('认购价格、签约价格不能都为空！');
         return;
       }
