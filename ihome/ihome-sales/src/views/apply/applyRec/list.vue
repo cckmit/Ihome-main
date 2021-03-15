@@ -4,7 +4,7 @@
  * @Author: ywl
  * @Date: 2021-01-07 10:29:38
  * @LastEditors: ywl
- * @LastEditTime: 2021-03-01 15:41:50
+ * @LastEditTime: 2021-03-15 14:46:53
 -->
 <template>
   <IhPage label-width="100px">
@@ -178,9 +178,8 @@
         ></el-table-column>
         <el-table-column
           label="状态"
-          prop="status"
-          width="185"
-          align="center"
+          width="125"
+          class-name="status-class"
         >
           <template v-slot="{row}">
             <div :class="{ 'status-style': row.isReject == 1 }">
@@ -430,7 +429,7 @@ export default class ApplyRecList extends Vue {
   }
 }
 .ih-table {
-  /deep/ .is-center {
+  /deep/ .status-class {
     overflow: hidden;
   }
 }
