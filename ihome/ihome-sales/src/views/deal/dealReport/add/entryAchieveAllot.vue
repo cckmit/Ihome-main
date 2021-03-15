@@ -4,7 +4,7 @@
  * @Author: lsj
  * @Date: 2020-12-23 14:20:30
  * @LastEditors: lsj
- * @LastEditTime: 2020-12-26 17:01:20
+ * @LastEditTime: 2021-03-15 19:02:38
 -->
 <template>
   <ih-page class="text-left">
@@ -2818,7 +2818,8 @@
         signPrice: this.postData.signPrice ? this.postData.signPrice : null,
         subscribePrice: this.postData.subscribePrice ? this.postData.subscribePrice : null
       }
-      if (!postData.signPrice && !postData.subscribePrice) {
+      // 价格排除0
+      if (['', null, undefined].includes(postData.signPrice) && ['', null, undefined].includes(postData.subscribePrice)) {
         this.$message.warning('认购价格、签约价格不能都为空！');
         return;
       }

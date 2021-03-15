@@ -4,11 +4,17 @@
  * @Author: lsj
  * @Date: 2020-12-10 16:45:20
  * @LastEditors: lsj
- * @LastEditTime: 2021-03-15 17:33:28
+ * @LastEditTime: 2021-03-15 19:06:22
 -->
 <template>
   <ih-page>
     <div class="notice-wrapper">
+      <div class="supp-deal-tips">
+        <div
+          class="item-tips"
+          v-for="(item, index) in tips"
+          :key="index">{{item}}</div>
+      </div>
       <el-form :model="form" :rules="rules"  ref="ruleForm" label-width="150px" @submit.native.prevent>
         <div class="notice-item">
           <div class="notice-type">
@@ -370,6 +376,19 @@
       }
     };
     @Prop() private pageData?: any; // 页面数据
+    tips: any = [
+      '请根据本成交报告单位的实际情况选择相关合同文书：',
+      '1、换房、且不涉及优惠折扣变更及费用变更：补充协议',
+      '2、换房、且涉及优惠折扣变更或费用变更：终止协议、优惠告知书',
+      '3、特批优惠-服务费部分减免：终止协议、优惠告知书、退款申请书',
+      '4、特批优惠-服务费全部减免：终止协议、退款申请书',
+      '5、服务费增加：终止协议、优惠告知书',
+      '6、服务费金额不变，优惠方式变更：终止协议、优惠告知书',
+      '7、客户更名：终止协议、优惠告知书',
+      '8、告知书信息填写错误：终止协议、优惠告知书',
+      '9、退房：终止协议、退款申请书',
+      '10、其他：操作人自由选择合同文书',
+    ]; // 补充成交类型tips
     fileList: any = [];
     preferentialList: any = []; // 优惠方式下拉选项
     dialogFormVisible: any = false; // 银行网点档案库弹窗
@@ -765,6 +784,22 @@
   .notice-wrapper {
     width: 100%;
     box-sizing: border-box;
+
+    .supp-deal-tips {
+      box-sizing: border-box;
+      padding: 0px 20px 20px 20px;
+
+      .item-tips {
+        &:first-child {
+          margin-bottom: 10px;
+        }
+
+        &:not(:first-child) {
+          box-sizing: border-box;
+          padding: 2px 0px;
+        }
+      }
+    }
 
     .notice-item {
       width: 100%;
