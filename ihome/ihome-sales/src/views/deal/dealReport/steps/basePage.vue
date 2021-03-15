@@ -4,7 +4,7 @@
  * @Author: lsj
  * @Date: 2020-12-10 16:45:20
  * @LastEditors: lsj
- * @LastEditTime: 2020-12-26 17:06:13
+ * @LastEditTime: 2021-03-15 16:41:50
 -->
 <template>
   <ih-page class="text-left">
@@ -1356,6 +1356,8 @@
     btnType: any = null; // 新增add还是修改edit --- 初始化接口不一样
     contNoList: any = []; // 分销协议编号列表
     postData: any = {
+      refundAmount: null, // 退款金额 --- 用于补充发起优惠告知书页展示
+      originalCustType: null, // 原来的客户类型 --- 用于补充发起优惠告知书页判断可选类型
       changeTypeByDeal: null, // 补充成交类型
       calculation: 'Auto',
       calculationName: null,
@@ -1856,6 +1858,9 @@
         this.postData.customerList.forEach((list: any) => {
           list.addId = list.id;
         });
+        // 记录初始化时客户的类型 --- 用于告知书补发页面判断类型选择
+        this.postData.originalCustType = this.postData?.customerList[0]?.customerType;
+        console.log('originalCustType', this.postData.originalCustType);
       }
       // 调整收派金额信息
       await this.initReceiveList(this.postData.receiveList);

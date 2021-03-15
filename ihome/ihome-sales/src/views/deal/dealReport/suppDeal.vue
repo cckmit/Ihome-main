@@ -1,10 +1,10 @@
 <!--
- * @Descripttion: 
+ * @Description:
  * @version: 
  * @Author: lsj
  * @Date: 2020-12-10 15:17:30
  * @LastEditors: lsj
- * @LastEditTime: 2020-12-10 16:20:10
+ * @LastEditTime: 2021-03-15 10:50:36
 -->
 <template>
   <ih-page class="text-left">
@@ -16,6 +16,12 @@
           :title="item.title"
           :description="item.description"></el-step>
       </el-steps>
+      <div class="supp-deal-tips">
+        <div
+          class="item-tips"
+          v-for="(item, index) in tips"
+          :key="index">{{item}}</div>
+      </div>
       <div>
         <keep-alive>
           <component
@@ -42,6 +48,19 @@
   })
   export default class SuppDeal extends Vue {
     id: any = null; // 成交报告id
+    tips: any = [
+      '请根据本成交报告单位的实际情况选择相关合同文书：',
+      '1、换房、且不涉及优惠折扣变更及费用变更：补充协议',
+      '2、换房、且涉及优惠折扣变更或费用变更：终止协议、优惠告知书',
+      '3、特批优惠-服务费部分减免：终止协议、优惠告知书、退款申请书',
+      '4、特批优惠-服务费全部减免：终止协议、退款申请书',
+      '5、服务费增加：终止协议、优惠告知书',
+      '6、服务费金额不变，优惠方式变更：终止协议、优惠告知书',
+      '7、客户更名：终止协议、优惠告知书',
+      '8、告知书信息填写错误：终止协议、优惠告知书',
+      '9、退房：终止协议、退款申请书',
+      '10、其他：操作人自由选择合同文书',
+    ]; // 补充成交类型tips
     changeType: any = null; // 补充成交类型
     currentStepsList: any = [];
     baseInfoStepsList: any = [
@@ -237,6 +256,21 @@
     /deep/.is-process .el-step__icon {
       color: #ffffff;
       background-color: #409EFF;
+    }
+
+    .supp-deal-tips {
+      padding: 20px 20px 0px 20px;
+
+      .item-tips {
+        &:first-child {
+          margin-bottom: 10px;
+        }
+
+        &:not(:first-child) {
+          box-sizing: border-box;
+          padding: 2px 0px;
+        }
+      }
     }
   }
 </style>

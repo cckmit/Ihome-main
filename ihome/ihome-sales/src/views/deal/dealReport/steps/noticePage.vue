@@ -4,7 +4,7 @@
  * @Author: lsj
  * @Date: 2020-12-10 16:45:20
  * @LastEditors: lsj
- * @LastEditTime: 2021-01-21 19:40:15
+ * @LastEditTime: 2021-03-15 17:33:28
 -->
 <template>
   <ih-page>
@@ -16,33 +16,49 @@
             <el-switch v-model="form.suppSwitch" active-color="#409EFF" inactive-color="#989898"></el-switch>
           </div>
           <div class="notice-form" v-if="form.suppSwitch">
-            <el-form-item label="补充协议类型" :prop="form.suppSwitch ? 'suppProtocolType' : 'empty'">
-              <el-select
-                v-model="form.suppProtocolType"
-                clearable
-                placeholder="请选择补充协议类型">
-                <el-option
-                  v-for="item in $root.dictAllList('TemplateType')"
-                  :key="item.code"
-                  :label="item.name"
-                  :value="item.code"
-                ></el-option>
-              </el-select>
-            </el-form-item>
-            <el-form-item v-if="form.suppProtocolType === 'PaperTemplate'" label="纸质版附件">
-              <IhUpload
-                @newFileList="getNewFile"
-                :isCrop="false"
-                :isMove="false"
-                :removePermi="true"
-                size="100px"
-                :limit="10"
-                accept=".jpg,.jpeg,.png,.gif,.bmp,.JPG,.JPEG,.PBG,.GIF,.BMP"
-                :file-size="10"
-                :file-list.sync="fileList"
-                file-type="suppAnnexList"
-              ></IhUpload>
-            </el-form-item>
+            <el-row>
+              <el-col :span="12">
+                <el-form-item label="补充协议类型" :prop="form.suppSwitch ? 'suppProtocolType' : 'empty'">
+                  <el-select
+                    v-model="form.suppProtocolType"
+                    clearable
+                    placeholder="请选择补充协议类型">
+                    <el-option
+                      v-for="item in TemplateTypeByOther"
+                      :key="item.code"
+                      :label="item.name"
+                      :value="item.code"
+                    ></el-option>
+                  </el-select>
+                </el-form-item>
+              </el-col>
+              <el-col :span="12">
+                <el-form-item label="栋座">
+                  <el-input disabled class="input" placeholder="栋座" v-model="pageData.buildingName"/>
+                </el-form-item>
+              </el-col>
+              <el-col :span="12">
+                <el-form-item label="房号">
+                  <el-input disabled class="input" placeholder="房号" v-model="pageData.roomNo"/>
+                </el-form-item>
+              </el-col>
+              <el-col :span="24" v-if="form.suppProtocolType === 'PaperTemplate'">
+                <el-form-item label="纸质版附件">
+                  <IhUpload
+                    @newFileList="getNewFile"
+                    :isCrop="false"
+                    :isMove="false"
+                    :removePermi="true"
+                    size="100px"
+                    :limit="10"
+                    accept=".jpg,.jpeg,.png,.gif,.bmp,.JPG,.JPEG,.PBG,.GIF,.BMP"
+                    :file-size="10"
+                    :file-list.sync="fileList"
+                    file-type="suppAnnexList"
+                  ></IhUpload>
+                </el-form-item>
+              </el-col>
+            </el-row>
           </div>
         </div>
         <div class="notice-item">
@@ -57,7 +73,7 @@
                 clearable
                 placeholder="请选择终止协议类型">
                 <el-option
-                  v-for="item in $root.dictAllList('TemplateType')"
+                  v-for="item in TemplateTypeByOther"
                   :key="item.code"
                   :label="item.name"
                   :value="item.code"
@@ -131,7 +147,7 @@
                     clearable
                     placeholder="请选择优惠告知书类型">
                     <el-option
-                      v-for="item in $root.dictAllList('TemplateType')"
+                      v-for="item in TemplateTypeByNotice"
                       :key="item.code"
                       :label="item.name"
                       :value="item.code"
@@ -241,12 +257,15 @@
                 clearable
                 placeholder="请选择退款申请书类型">
                 <el-option
-                  v-for="item in $root.dictAllList('TemplateType')"
+                  v-for="item in TemplateTypeByOther"
                   :key="item.code"
                   :label="item.name"
                   :value="item.code"
                 ></el-option>
               </el-select>
+            </el-form-item>
+            <el-form-item label="退款金额">
+              <el-input disabled class="input" placeholder="退款金额" v-model="pageData.refundAmount"/>
             </el-form-item>
             <el-form-item
               :prop="form.refundSwitch && form.refundProtocolType === 'refundBranchName' ? '' : 'empty'"
@@ -424,20 +443,48 @@
       empty: []
     };
     value: any = false;
+    TemplateTypeByNotice: any = []; // 优惠告知书类型的文件类型
+    TemplateTypeByOther: any = []; // 其他类型的文件类型
 
     // 业主类型取客户列表中第一个客户的类型
     get customType() {
       let type: any = '';
       if (this.pageData && this.pageData.customerList && this.pageData.customerList.length) {
         type = (this as any).$root.dictAllName(this.pageData.customerList[0].customerType, 'CustType');
+        // 处理其他类型的文件类型选项
+        this.TemplateTypeByOther = this.getTemplateTypeList(this.pageData.customerList[0].customerType);
+      } else {
+        this.TemplateTypeByOther = this.getTemplateTypeList();
       }
+      console.log('this.TemplateTypeByOther', this.TemplateTypeByOther);
       return type;
     }
 
     async created() {
-      console.log('info:', this.pageData);
       // console.log('$root.dictAllList():', (this as any).$root.dictAllList('TemplateType'));
       await this.getPreferentialList();
+    }
+
+    activated() {
+      console.log('noticePage-activated');
+      // 处理优惠告知书类型的附件类型可选值
+      this.TemplateTypeByNotice = this.getTemplateTypeList(this.pageData?.originalCustType);
+      console.log('noticePage-activated', this.TemplateTypeByNotice);
+    }
+
+    // 获取附件类型选项值
+    getTemplateTypeList(customerType: any = '') {
+      let list: any = (this as any).$root.dictAllList('TemplateType');
+      let tempList: any = [];
+      if (customerType && customerType === 'Company') {
+        // 客户类型是企业客户，相关的协议只能使用纸质版。
+        tempList = list.filter((item: any) => {
+          return item.code === 'PaperTemplate';
+        });
+      } else {
+        tempList = list;
+      }
+      return tempList;
     }
 
     // 根据周期id获取到优惠方式
