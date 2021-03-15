@@ -1356,6 +1356,7 @@
     btnType: any = null; // 新增add还是修改edit --- 初始化接口不一样
     contNoList: any = []; // 分销协议编号列表
     postData: any = {
+      charge: null, // 收费类型(Service-服务费、Agent-代理费、ServiAndAgen-服务费+代理费)
       refundAmount: null, // 退款金额 --- 用于补充发起优惠告知书页展示
       originalCustType: null, // 原来的客户类型 --- 用于补充发起优惠告知书页判断可选类型
       changeTypeByDeal: null, // 补充成交类型
@@ -2178,6 +2179,7 @@
         this.postData.isConsign = baseInfo.exConsignment === 1 ? 'Yes' : 'No';
         // 处理优惠告知书的nav
         // this.postData.offerNoticeVO = []; // 先重置优惠告知书的数据
+        this.postData.charge = baseInfo?.chargeEnum;
         if (baseInfo.chargeEnum === 'Agent') {
           this.navList = this.navList.filter((item: any) => {
             return item.id !== 3;
