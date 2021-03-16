@@ -4,7 +4,7 @@
  * @Author: wwq
  * @Date: 2020-12-26 11:11:19
  * @LastEditors: wwq
- * @LastEditTime: 2021-03-05 09:13:20
+ * @LastEditTime: 2021-03-16 11:06:52
 -->
 <template>
   <IhPage>
@@ -134,6 +134,66 @@
               >
                 <el-option
                   v-for="item in $root.dictAllList('PayoffStatus')"
+                  :key="item.code"
+                  :label="item.name"
+                  :value="item.code"
+                ></el-option>
+              </el-select>
+            </el-form-item>
+          </el-col>
+          <el-col :span="8">
+            <el-form-item label="付款方">
+              <el-input
+                disabled
+                v-model="info.payerName"
+                placeholder="付款方"
+              ></el-input>
+            </el-form-item>
+          </el-col>
+          <el-col :span="8">
+            <el-form-item label="付款帐号">
+              <el-input
+                v-model="info.paymentAccount"
+                disabled
+                class="width--100"
+                placeholder="付款帐号"
+              >
+              </el-input>
+            </el-form-item>
+          </el-col>
+          <el-col :span="8">
+            <el-form-item
+              label="结算方式"
+              prop="settlementMethod"
+            >
+              <el-select
+                style="width: 100%"
+                v-model="info.settlementMethod"
+                disabled
+                placeholder="结算方式"
+              >
+                <el-option
+                  v-for="item in $root.dictAllList('SettlementMethod')"
+                  :key="item.code"
+                  :label="item.name"
+                  :value="item.code"
+                ></el-option>
+              </el-select>
+            </el-form-item>
+          </el-col>
+          <el-col :span="8">
+            <el-form-item
+              label="付款方式"
+              prop="paymentMethod"
+            >
+              <el-select
+                style="width: 100%"
+                v-model="info.paymentMethod"
+                disabled
+                placeholder="请选择"
+              >
+                <el-option
+                  v-for="item in $root.dictAllList('PaymentMethod')"
                   :key="item.code"
                   :label="item.name"
                   :value="item.code"
