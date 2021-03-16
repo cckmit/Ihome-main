@@ -4,7 +4,7 @@
  * @Author: ywl
  * @Date: 2021-01-07 16:30:03
  * @LastEditors: ywl
- * @LastEditTime: 2021-03-16 11:08:35
+ * @LastEditTime: 2021-03-16 17:38:19
 -->
 <template>
   <IhPage class="text-left">
@@ -81,7 +81,28 @@
               label="甲方公司"
               prop="developId"
             >
-              <IhSelectPageByDeveloper
+              <el-select
+                v-model="developData"
+                ref="develop"
+                placeholder="请选择甲方公司"
+                @visible-change="devVisibleChange"
+                @change="(data) => {
+                  dealParams.developId = data.partyA;
+                  form.developName = data.partyAName;
+                  form.invoiceTitle = data.partyAName;
+                  getWaitList(data.partyA);
+                  getListAccount(data.partyA);
+                  form.dealList = [];
+                }"
+              >
+                <el-option
+                  v-for="(i, n) in devOption"
+                  :key="n"
+                  :label="i.partyAName"
+                  :value="i"
+                ></el-option>
+              </el-select>
+              <!-- <IhSelectPageByDeveloper
                 v-model="form.developId"
                 :searchName="paramDevName"
                 placeholder="请选择甲方公司"
@@ -95,7 +116,7 @@
                 @change="() => {
                   form.dealList = [];
                 }"
-              ></IhSelectPageByDeveloper>
+              ></IhSelectPageByDeveloper> -->
             </el-form-item>
           </el-col>
           <el-col :span="8">
@@ -979,6 +1000,7 @@
 <script lang="ts">
 import { Component, Vue, Watch } from "vue-property-decorator";
 import SelectDeal from "./dialog/selectDeal.vue";
+import { post_contract_contract_PartyAs_PleaseHelp } from "../../../api/contract/index";
 import {
   get_org_getUserDepartmentList,
   post_company_getAll,
@@ -1079,6 +1101,8 @@ export default class ApplyRecAdd extends Vue {
   private orgOption: any[] = [];
   private companyOption: any[] = [];
   private polyCompanyData: any = null;
+  private developData: any = null;
+  private devOption: any[] = [];
   private rules: any = {
     proId: [{ required: true, message: "请选择项目", trigger: "change" }],
     orgId: [{ required: true, message: "请选择事业部", trigger: "change" }],
@@ -1340,6 +1364,26 @@ export default class ApplyRecAdd extends Vue {
     if (val && !this.form.orgId) {
       (this.$refs.polyCompany as any).blur();
       this.$message.warning("请先选择事业部");
+    }
+  }
+  private async devVisibleChange(val: any) {
+    if (val) {
+      if (
+        !this.form.polyCompanyId ||
+        !this.form.orgId ||
+        !this.form.proId ||
+        !this.form.receAccountId
+      ) {
+        (this.$refs.develop as any).blur();
+        this.$message.warning("项目,事业部,收款公司或收款账号不能为空");
+      } else {
+        this.devOption = await post_contract_contract_PartyAs_PleaseHelp({
+          companyId: this.form.polyCompanyId,
+          orgId: this.form.orgId,
+          projectId: this.form.proId,
+          receivingAccountId: this.form.receAccountId,
+        });
+      }
     }
   }
   /**
@@ -1961,6 +2005,12 @@ export default class ApplyRecAdd extends Vue {
       this.waitList = await get_devDeductRec_getAll__applyId({ applyId });
       this.form = { ...this.form, ...info };
       this.taxMoneyChange(info.taxMoney);
+      this.devOption = await post_contract_contract_PartyAs_PleaseHelp({
+        companyId: this.form.polyCompanyId,
+        orgId: this.form.orgId,
+        projectId: this.form.proId,
+        receivingAccountId: this.form.receAccountId,
+      });
       // if (this.form.status === "Draft") {
       //   await this.getHisRec({
       //     developId: info.developId,
