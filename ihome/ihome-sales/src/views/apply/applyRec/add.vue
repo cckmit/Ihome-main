@@ -4,7 +4,7 @@
  * @Author: ywl
  * @Date: 2021-01-07 16:30:03
  * @LastEditors: ywl
- * @LastEditTime: 2021-03-15 17:29:56
+ * @LastEditTime: 2021-03-16 09:43:39
 -->
 <template>
   <IhPage class="text-left">
@@ -1475,7 +1475,7 @@ export default class ApplyRecAdd extends Vue {
       this.dealParams.receAccountId = account.id;
       this.form.receAccountId = account.id;
       this.getBankInfo(account.id);
-      this.getWaitList(this.form.developId);
+      // this.getWaitList(this.form.developId);
     }
   }
   private async getBankInfo(accountId: any) {
