@@ -1885,20 +1885,21 @@
       // 初始化附件信息
       await this.initDocumentList(res.charge, res.contType, res.documentShowList);
       // 根据项目周期和房号初始化页面数据
-      await this.getPageById(res.cycleId, res.house.roomId, res.house.propertyType, res.parentId);
+      await this.getPageById(res.cycleId, res.house.roomId, res.house.propertyType, res.parentId, res.refineModel);
       // 获取平台费用中新增、修改弹窗中角色类型和角色业绩上限
       await this.initAchieveRole();
     }
 
     // 根据项目周期和房号初始化页面数据
-    async getPageById(cycleId: any, roomId: any, propertyType: any = '', parentId: any = '') {
-      if (!cycleId || !roomId || !propertyType) return;
+    async getPageById(cycleId: any, roomId: any, propertyType: any = '', parentId: any = '', refineModel: any = '') {
+      if (!cycleId || !roomId || !propertyType || !refineModel) return;
       let params: any = {
         parentId: parentId, // 补充成交要加parentId
         cycleId: cycleId,
         roomId: roomId,
         isMainDeal: false, // 是否主成交
         property: propertyType, // 物业类型
+        refineModel: refineModel, // 细分业务模式
       };
       let baseInfo: any = await post_pageData_initBasic(params);
       this.baseInfoInDeal = JSON.parse(JSON.stringify(baseInfo || '{}'));
@@ -1995,6 +1996,7 @@
         roomId: roomId,
         isMainDeal: false, // 是否主成交
         property: propertyType, // 物业类型
+        refineModel: this.postData.refineModel, // 细分业务模式
       };
       let baseInfo: any = await post_pageData_initBasic(params);
       this.baseInfoInDeal = JSON.parse(JSON.stringify(baseInfo || '{}'));
@@ -3621,6 +3623,7 @@
               callBackInfo = await post_suppDeal_previewUpdateBasicInfChange(data);
             }
             this.btnLoading = false;
+            this.postData.refundAmount = callBackInfo?.refundAmount;
             this.$emit('next', 'next', {
               ...this.postData,
               // receiveAchieveVO: this.receiveAchieveVO,
@@ -3639,6 +3642,7 @@
               callBackInfo = await post_suppDeal_previewUpdateAchieveInfChange(data);
             }
             this.btnLoading = false;
+            this.postData.refundAmount = callBackInfo?.refundAmount;
             this.$emit('next', 'next', {
               ...this.postData,
               // receiveAchieveVO: this.receiveAchieveVO,
@@ -3657,6 +3661,7 @@
               callBackInfo = await post_suppDeal_previewUpdateRetreatRoom(data);
             }
             this.btnLoading = false;
+            this.postData.refundAmount = callBackInfo?.refundAmount;
             this.$emit('next', 'next', {
               ...this.postData,
               // receiveAchieveVO: this.receiveAchieveVO,
@@ -3676,6 +3681,7 @@
               callBackInfo = await post_suppDeal_previewUpdateStaffAchieveChange(data);
             }
             this.btnLoading = false;
+            this.postData.refundAmount = callBackInfo?.refundAmount;
             this.$emit("preview", {
               ...this.postData,
               // receiveAchieveVO: this.receiveAchieveVO,
@@ -3696,6 +3702,7 @@
         agencyVO: [], // 中介信息
         customerVO: this.postData.customerList.length ? this.postData.customerList : null, // 客户信息
         dealAddInputVO: {
+          sceneSales: this.postData.sceneSales,
           parentId: this.postData.parentId, // 主成交id
           signDate: this.postData.signDate,
           signType: this.postData.signType,
@@ -3741,6 +3748,7 @@
         dealUpdateInputVO: {
           dealCode: this.postData.dealCode ? this.postData.dealCode : null,
           id: this.id ? this.id : null,
+          sceneSales: this.postData.sceneSales,
           parentId: this.postData.parentId, // 主成交id
           signDate: this.postData.signDate,
           signType: this.postData.signType,
