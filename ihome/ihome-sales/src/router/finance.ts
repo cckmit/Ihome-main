@@ -3,8 +3,8 @@
  * @version:
  * @Author: ywl
  * @Date: 2020-12-01 15:49:07
- * @LastEditors: ywl
- * @LastEditTime: 2021-02-17 12:00:58
+ * @LastEditors: wwq
+ * @LastEditTime: 2021-03-16 11:09:47
  */
 import { RouteConfig } from 'vue-router'
 
@@ -188,7 +188,7 @@ const financeRoutes: Array<RouteConfig> = [
         path: 'add',
         name: 'refundApplyAdd',
         component: () => import('../views/finance/refundApply/add.vue'),
-        meta: { title: '退款申请列表', icon: 'form' }
+        meta: { title: '发起退款申请', icon: 'form' }
       },
 
     ]

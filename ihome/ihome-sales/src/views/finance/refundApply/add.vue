@@ -4,7 +4,7 @@
  * @Author: zyc
  * @Date: 2021-02-06 16:29:34
  * @LastEditors: wwq
- * @LastEditTime: 2021-03-13 16:59:38
+ * @LastEditTime: 2021-03-16 11:17:25
 -->
 <template>
   <IhPage>
@@ -370,8 +370,10 @@
             </template>
           </el-table-column>
           <el-table-column
-            label="付款附件"
+            label="退款附件"
             width="100"
+            fixed="right"
+            align="center"
           >
             <template v-slot="{ row, $index }">
               <el-link
@@ -623,7 +625,6 @@ export default class RefundApplyEdit extends Vue {
     inputUserName: null,
     createDate: null,
     orgId: null,
-    departmentName: null,
     accountId: null,
     accountName: null,
     companyId: null,
@@ -682,7 +683,6 @@ export default class RefundApplyEdit extends Vue {
     if (val) {
       this.getAccount(val);
     } else {
-      this.info.departmentName = null;
       this.info.accountId = null;
       this.info.accountName = null;
       this.info.accountNo = null;
@@ -851,10 +851,8 @@ export default class RefundApplyEdit extends Vue {
     });
     if (res.length === 1) {
       this.info.orgId = res[0].id;
-      this.info.departmentName = res[0].name;
-    } else {
-      this.divisionOptins = res;
     }
+    this.divisionOptins = res;
   }
 
   // 获取付款方

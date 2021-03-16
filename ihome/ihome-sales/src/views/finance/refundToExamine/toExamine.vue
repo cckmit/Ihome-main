@@ -4,7 +4,7 @@
  * @Author: zyc
  * @Date: 2021-02-08 14:34:29
  * @LastEditors: wwq
- * @LastEditTime: 2021-02-27 15:34:42
+ * @LastEditTime: 2021-03-16 10:49:04
 -->
 <template>
   <IhPage>
@@ -356,8 +356,10 @@
             </template>
           </el-table-column>
           <el-table-column
-            label="付款附件"
+            label="退款附件"
             width="100"
+            fixed="right"
+            align="center"
           >
             <template v-slot="{ row, $index }">
               <el-link

@@ -4,7 +4,7 @@
  * @Author: wwq
  * @Date: 2020-12-26 11:11:28
  * @LastEditors: wwq
- * @LastEditTime: 2021-03-04 15:17:27
+ * @LastEditTime: 2021-03-16 10:57:03
 -->
 <template>
   <IhPage label-width="120px">
@@ -255,7 +255,7 @@
             <el-link
               type="primary"
               @click.native.prevent="routeTo(row, 'info')"
-            >详情</el-link>
+            >查看</el-link>
             <el-dropdown
               trigger="click"
               class="margin-left-15"
