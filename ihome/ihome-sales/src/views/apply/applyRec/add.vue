@@ -4,7 +4,7 @@
  * @Author: ywl
  * @Date: 2021-01-07 16:30:03
  * @LastEditors: ywl
- * @LastEditTime: 2021-03-16 09:43:39
+ * @LastEditTime: 2021-03-16 09:52:10
 -->
 <template>
   <IhPage class="text-left">
@@ -181,7 +181,6 @@
                   dealParams.receAccountId = data.id
                   form.receAccountId = data.id
                   getBankInfo(data.id)
-                  getWaitList(form.developId)
                 }"
               >
                 <el-option
