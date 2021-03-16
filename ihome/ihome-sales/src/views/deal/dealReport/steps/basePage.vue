@@ -3623,6 +3623,7 @@
               callBackInfo = await post_suppDeal_previewUpdateBasicInfChange(data);
             }
             this.btnLoading = false;
+            this.postData.refundAmount = callBackInfo?.refundAmount;
             this.$emit('next', 'next', {
               ...this.postData,
               // receiveAchieveVO: this.receiveAchieveVO,
@@ -3641,6 +3642,7 @@
               callBackInfo = await post_suppDeal_previewUpdateAchieveInfChange(data);
             }
             this.btnLoading = false;
+            this.postData.refundAmount = callBackInfo?.refundAmount;
             this.$emit('next', 'next', {
               ...this.postData,
               // receiveAchieveVO: this.receiveAchieveVO,
@@ -3659,6 +3661,7 @@
               callBackInfo = await post_suppDeal_previewUpdateRetreatRoom(data);
             }
             this.btnLoading = false;
+            this.postData.refundAmount = callBackInfo?.refundAmount;
             this.$emit('next', 'next', {
               ...this.postData,
               // receiveAchieveVO: this.receiveAchieveVO,
@@ -3678,6 +3681,7 @@
               callBackInfo = await post_suppDeal_previewUpdateStaffAchieveChange(data);
             }
             this.btnLoading = false;
+            this.postData.refundAmount = callBackInfo?.refundAmount;
             this.$emit("preview", {
               ...this.postData,
               // receiveAchieveVO: this.receiveAchieveVO,
