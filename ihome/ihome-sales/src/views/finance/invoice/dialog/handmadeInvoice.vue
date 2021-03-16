@@ -4,7 +4,7 @@
  * @Author: ywl
  * @Date: 2020-12-08 21:04:03
  * @LastEditors: ywl
- * @LastEditTime: 2021-01-30 17:17:43
+ * @LastEditTime: 2021-03-15 15:30:33
 -->
 <template>
   <el-dialog
@@ -74,6 +74,7 @@
             <el-select
               v-model="form.invoiceType"
               placeholder="请选择发票类型"
+              :disabled="isAgencyFee"
             >
               <el-option
                 v-for="(i, n) in $root.dictAllList('InvoiceType')"
@@ -217,6 +218,10 @@ function checkTax(rule: any, value: any, callback: any) {
 @Component({})
 export default class Handadel extends Vue {
   @Prop() data!: any;
+  @Prop({
+    default: false,
+  })
+  isAgencyFee!: boolean;
 
   private dialogVisible = true;
   private form: any = {
@@ -312,6 +317,9 @@ export default class Handadel extends Vue {
   created() {
     this.form.tax = this.data.tax;
     this.form.invoiceId = this.data.id;
+    if (this.isAgencyFee) {
+      this.form.invoiceType = this.data.invoiceType;
+    }
   }
 }
 </script>

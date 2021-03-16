@@ -4,7 +4,7 @@
  * @Author: ywl
  * @Date: 2021-01-07 16:30:03
  * @LastEditors: ywl
- * @LastEditTime: 2021-03-09 10:47:32
+ * @LastEditTime: 2021-03-16 09:52:10
 -->
 <template>
   <IhPage class="text-left">
@@ -50,13 +50,28 @@
               label="事业部"
               prop="orgId"
             >
-              <IhSelectPageDivision
+              <el-select
+                v-model="form.orgId"
+                placeholder="请选择所在事业部"
+                class="width--100"
+                @change="(data) => {
+                  dealParams.termOrgId = data
+                }"
+              >
+                <el-option
+                  v-for="(i, n) in orgOption"
+                  :key="n"
+                  :label="i.name"
+                  :value="i.id"
+                ></el-option>
+              </el-select>
+              <!-- <IhSelectPageDivision
                 v-model="form.orgId"
                 placeholder="请选择所在事业部"
                 @changeOption="(data) => {
                   dealParams.termOrgId = data.id
                 }"
-              ></IhSelectPageDivision>
+              ></IhSelectPageDivision> -->
             </el-form-item>
           </el-col>
         </el-row>
@@ -113,27 +128,39 @@
               label="收款公司"
               prop="polyCompanyId"
             >
-              <IhSelectPageByPayer
+              <el-select
+                v-model="polyCompanyData"
+                placeholder="请选择收款公司"
+                class="width--100"
+                ref="polyCompany"
+                value-key="id"
+                @visible-change="companyVisibleChange"
+                @change="(data) => {
+                  dealParams.polyCompanyId = data.id
+                  form.polyCompanyId = data.id
+                  form.sellerTaxNo = data.creditCode
+                  getAccount(data.id)
+                }"
+              >
+                <el-option
+                  v-for="(i, n) in companyOption"
+                  :key="n"
+                  :label="i.name"
+                  :value="i"
+                ></el-option>
+              </el-select>
+              <!-- <IhSelectPageByPayer
                 clearable
                 placeholder="请选择收款公司"
-                v-model="form.polyCompanyId"
+                v-model="polyCompanyData"
                 :proId="form.orgId"
                 @changeOption="(data) => {
                   dealParams.polyCompanyId = data.id
+                  form.polyCompanyId = data.id
                   form.sellerTaxNo = data.creditCode
                   getAccount(data.id)
                 }"
-              ></IhSelectPageByPayer>
-              <!-- <IhSelectPageByCompany
-                v-model="form.polyCompanyId"
-                placeholder="请选择收款公司"
-                clearable
-                @changeOption="(data) => {
-                  dealParams.polyCompanyId = data.id
-                  form.sellerTaxNo = data.creditCode
-                  getAccount(data.id)
-                }"
-              ></IhSelectPageByCompany> -->
+              ></IhSelectPageByPayer> -->
             </el-form-item>
           </el-col>
         </el-row>
@@ -154,7 +181,6 @@
                   dealParams.receAccountId = data.id
                   form.receAccountId = data.id
                   getBankInfo(data.id)
-                  getWaitList(form.developId)
                 }"
               >
                 <el-option
@@ -951,8 +977,12 @@
 </template>
 
 <script lang="ts">
-import { Component, Vue } from "vue-property-decorator";
+import { Component, Vue, Watch } from "vue-property-decorator";
 import SelectDeal from "./dialog/selectDeal.vue";
+import {
+  get_org_getUserDepartmentList,
+  post_company_getAll,
+} from "../../../api/system/index";
 import {
   get_company_getCompanyBankInfo__bankId,
   get_company_listAccount__id,
@@ -1046,6 +1076,9 @@ export default class ApplyRecAdd extends Vue {
   private paramProName: any = "";
   private applyNo: any = null;
   private globalTaxMoney: any = 0;
+  private orgOption: any[] = [];
+  private companyOption: any[] = [];
+  private polyCompanyData: any = null;
   private rules: any = {
     proId: [{ required: true, message: "请选择项目", trigger: "change" }],
     orgId: [{ required: true, message: "请选择事业部", trigger: "change" }],
@@ -1059,6 +1092,20 @@ export default class ApplyRecAdd extends Vue {
       { required: true, message: "请选择开票类型", trigger: "change" },
     ],
   };
+
+  @Watch("form.orgId") async watchOrgId(val: any) {
+    if (val) {
+      let res = await post_company_getAll({ orgId: val });
+      this.companyOption = res;
+      if (res.length === 1) {
+        this.form.polyCompanyId = res[0].id;
+        this.dealParams.polyCompanyId = res[0].id;
+        this.form.sellerTaxNo = res[0].creditCode;
+        this.polyCompanyData = { id: res[0].id };
+        this.getAccount(this.form.polyCompanyId);
+      }
+    }
+  }
 
   private get otherDealList() {
     let obj: any = {},
@@ -1289,6 +1336,12 @@ export default class ApplyRecAdd extends Vue {
       this.$message.warning("请先选择收款公司");
     }
   }
+  private companyVisibleChange(val: any) {
+    if (val && !this.form.orgId) {
+      (this.$refs.polyCompany as any).blur();
+      this.$message.warning("请先选择事业部");
+    }
+  }
   /**
    * @description: 计算税额公式
    * @param {*} money
@@ -1414,6 +1467,15 @@ export default class ApplyRecAdd extends Vue {
   }
   private async getAccount(companyId: any) {
     this.accountList = await get_bankAccount_get__companyId({ companyId });
+    let account = this.accountList.find((i: any) => i.defaultFlag);
+    console.log(account);
+    if (account) {
+      this.accountData = { ...account };
+      this.dealParams.receAccountId = account.id;
+      this.form.receAccountId = account.id;
+      this.getBankInfo(account.id);
+      // this.getWaitList(this.form.developId);
+    }
   }
   private async getBankInfo(accountId: any) {
     const info = await get_bankAccount_getBankInfoByAccountId__accountId({
@@ -1924,6 +1986,14 @@ export default class ApplyRecAdd extends Vue {
       this.getFileListType([]);
       this.form.applyUserName = (this.$root as any).userInfo.name;
       this.form.applyTime = (this.$tool as any).todayLongStr();
+      this.orgOption = await get_org_getUserDepartmentList({
+        orgType: "Department",
+        status: "Valid",
+      });
+      if (this.orgOption.length === 1) {
+        this.form.orgId = this.orgOption[0].id;
+        this.dealParams.termOrgId = this.orgOption[0].id;
+      }
     }
   }
 }

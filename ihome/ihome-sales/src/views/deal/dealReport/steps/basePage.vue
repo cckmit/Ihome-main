@@ -4,7 +4,7 @@
  * @Author: lsj
  * @Date: 2020-12-10 16:45:20
  * @LastEditors: lsj
- * @LastEditTime: 2020-12-26 17:06:13
+ * @LastEditTime: 2021-03-15 16:41:50
 -->
 <template>
   <ih-page class="text-left">
@@ -1356,6 +1356,9 @@
     btnType: any = null; // 新增add还是修改edit --- 初始化接口不一样
     contNoList: any = []; // 分销协议编号列表
     postData: any = {
+      charge: null, // 收费类型(Service-服务费、Agent-代理费、ServiAndAgen-服务费+代理费)
+      refundAmount: null, // 退款金额 --- 用于补充发起优惠告知书页展示
+      originalCustType: null, // 原来的客户类型 --- 用于补充发起优惠告知书页判断可选类型
       changeTypeByDeal: null, // 补充成交类型
       calculation: 'Auto',
       calculationName: null,
@@ -1856,6 +1859,9 @@
         this.postData.customerList.forEach((list: any) => {
           list.addId = list.id;
         });
+        // 记录初始化时客户的类型 --- 用于告知书补发页面判断类型选择
+        this.postData.originalCustType = this.postData?.customerList[0]?.customerType;
+        console.log('originalCustType', this.postData.originalCustType);
       }
       // 调整收派金额信息
       await this.initReceiveList(this.postData.receiveList);
@@ -2173,6 +2179,7 @@
         this.postData.isConsign = baseInfo.exConsignment === 1 ? 'Yes' : 'No';
         // 处理优惠告知书的nav
         // this.postData.offerNoticeVO = []; // 先重置优惠告知书的数据
+        this.postData.charge = baseInfo?.chargeEnum;
         if (baseInfo.chargeEnum === 'Agent') {
           this.navList = this.navList.filter((item: any) => {
             return item.id !== 3;
@@ -3253,7 +3260,7 @@
         signPrice: this.postData.signPrice ? this.postData.signPrice : null,
         subscribePrice: this.postData.subscribePrice ? this.postData.subscribePrice : null
       }
-      if (!postData.signPrice && !postData.subscribePrice) {
+      if (['', null, undefined].includes(postData.signPrice) && ['', null, undefined].includes(postData.subscribePrice)) {
         this.$message.warning('认购价格、签约价格不能都为空！');
         return;
       }
