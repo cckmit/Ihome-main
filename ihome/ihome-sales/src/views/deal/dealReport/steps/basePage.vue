@@ -1885,20 +1885,21 @@
       // 初始化附件信息
       await this.initDocumentList(res.charge, res.contType, res.documentShowList);
       // 根据项目周期和房号初始化页面数据
-      await this.getPageById(res.cycleId, res.house.roomId, res.house.propertyType, res.parentId);
+      await this.getPageById(res.cycleId, res.house.roomId, res.house.propertyType, res.parentId, res.refineModel);
       // 获取平台费用中新增、修改弹窗中角色类型和角色业绩上限
       await this.initAchieveRole();
     }
 
     // 根据项目周期和房号初始化页面数据
-    async getPageById(cycleId: any, roomId: any, propertyType: any = '', parentId: any = '') {
-      if (!cycleId || !roomId || !propertyType) return;
+    async getPageById(cycleId: any, roomId: any, propertyType: any = '', parentId: any = '', refineModel: any = '') {
+      if (!cycleId || !roomId || !propertyType || !refineModel) return;
       let params: any = {
         parentId: parentId, // 补充成交要加parentId
         cycleId: cycleId,
         roomId: roomId,
         isMainDeal: false, // 是否主成交
         property: propertyType, // 物业类型
+        refineModel: refineModel, // 细分业务模式
       };
       let baseInfo: any = await post_pageData_initBasic(params);
       this.baseInfoInDeal = JSON.parse(JSON.stringify(baseInfo || '{}'));
@@ -1995,6 +1996,7 @@
         roomId: roomId,
         isMainDeal: false, // 是否主成交
         property: propertyType, // 物业类型
+        refineModel: this.postData.refineModel, // 细分业务模式
       };
       let baseInfo: any = await post_pageData_initBasic(params);
       this.baseInfoInDeal = JSON.parse(JSON.stringify(baseInfo || '{}'));
