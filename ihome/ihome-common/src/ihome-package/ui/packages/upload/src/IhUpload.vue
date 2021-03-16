@@ -4,7 +4,7 @@
  * @Author: wwq
  * @Date: 2020-09-09 16:17:16
  * @LastEditors: wwq
- * @LastEditTime: 2021-03-16 10:08:37
+ * @LastEditTime: 2021-03-16 10:20:20
 -->
 <template>
   <div class="upload">
@@ -593,15 +593,16 @@ export default class IhUpload extends Vue {
       this.editIndex = this.list.findIndex(
         (v: any) => v.fileId === file.fileId
       );
-      console.log(this.editIndex, "图片编辑");
     });
   }
 
   // 编辑附件确定
   async editUploadChange({ target }: any) {
-    this.beforeUpload(target.files[0]).then(() => {
-      this.uploadRequer(target.files);
-    });
+    if (target.files.length) {
+      this.beforeUpload(target.files[0]).then(() => {
+        this.uploadRequer(target.files);
+      });
+    }
   }
 
   // 编辑上传
