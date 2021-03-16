@@ -4,7 +4,7 @@
  * @Author: ywl
  * @Date: 2021-01-07 16:30:03
  * @LastEditors: ywl
- * @LastEditTime: 2021-03-16 09:52:10
+ * @LastEditTime: 2021-03-16 11:08:35
 -->
 <template>
   <IhPage class="text-left">
@@ -1468,8 +1468,8 @@ export default class ApplyRecAdd extends Vue {
   private async getAccount(companyId: any) {
     this.accountList = await get_bankAccount_get__companyId({ companyId });
     let account = this.accountList.find((i: any) => i.defaultFlag);
-    console.log(account);
-    if (account) {
+    console.log(this.accountData, "accountData");
+    if (account && !this.form.receAccountId) {
       this.accountData = { ...account };
       this.dealParams.receAccountId = account.id;
       this.form.receAccountId = account.id;
@@ -1982,6 +1982,10 @@ export default class ApplyRecAdd extends Vue {
         typeList: ["Contract", "Invoice", "ApplyReport"],
       });
       this.getFileListType(list);
+      this.orgOption = await get_org_getUserDepartmentList({
+        orgType: "Department",
+        status: "Valid",
+      });
     } else {
       this.getFileListType([]);
       this.form.applyUserName = (this.$root as any).userInfo.name;

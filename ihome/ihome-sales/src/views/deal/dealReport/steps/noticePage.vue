@@ -4,7 +4,7 @@
  * @Author: lsj
  * @Date: 2020-12-10 16:45:20
  * @LastEditors: lsj
- * @LastEditTime: 2021-03-15 19:06:22
+ * @LastEditTime: 2021-03-16 15:15:35
 -->
 <template>
   <ih-page>
@@ -470,25 +470,33 @@
       let type: any = '';
       if (this.pageData && this.pageData.customerList && this.pageData.customerList.length) {
         type = (this as any).$root.dictAllName(this.pageData.customerList[0].customerType, 'CustType');
-        // 处理其他类型的文件类型选项
-        this.TemplateTypeByOther = this.getTemplateTypeList(this.pageData.customerList[0].customerType);
-      } else {
-        this.TemplateTypeByOther = this.getTemplateTypeList();
       }
-      console.log('this.TemplateTypeByOther', this.TemplateTypeByOther);
       return type;
     }
 
     async created() {
       // console.log('$root.dictAllList():', (this as any).$root.dictAllList('TemplateType'));
       await this.getPreferentialList();
+      await this.initTemplateType();
     }
 
-    activated() {
+    async activated() {
       console.log('noticePage-activated');
       // 处理优惠告知书类型的附件类型可选值
-      this.TemplateTypeByNotice = this.getTemplateTypeList(this.pageData?.originalCustType);
+      this.TemplateTypeByNotice = await this.getTemplateTypeList(this.pageData?.originalCustType);
       console.log('noticePage-activated', this.TemplateTypeByNotice);
+      await this.initTemplateType();
+    }
+
+    // 初始化类型的选项
+    initTemplateType() {
+      if (this.pageData && this.pageData.customerList && this.pageData.customerList.length) {
+        // 处理其他类型的文件类型选项
+        this.TemplateTypeByOther = this.getTemplateTypeList(this.pageData.customerList[0].customerType);
+      } else {
+        this.TemplateTypeByOther = this.getTemplateTypeList();
+      }
+      console.log('this.TemplateTypeByOther', this.TemplateTypeByOther);
     }
 
     // 获取附件类型选项值
