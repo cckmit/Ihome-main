@@ -4,7 +4,7 @@
  * @Author: ywl
  * @Date: 2021-01-16 15:47:02
  * @LastEditors: ywl
- * @LastEditTime: 2021-01-16 17:32:21
+ * @LastEditTime: 2021-03-16 16:08:18
 -->
 <template>
   <el-dialog
@@ -13,11 +13,48 @@
     :close-on-click-modal="false"
     :close-on-press-escape="false"
     :before-close="cancel"
-    width="650px"
+    width="75%"
     title="批量添加回款"
     class="text-left return-add"
   >
-    <el-form
+    <el-table
+      style="width:100%;"
+      :data="form.addReceList"
+    >
+      <el-table-column
+        label="请款单号"
+        prop="receiveList.0.applyNo"
+      ></el-table-column>
+      <el-table-column label="流水编号">
+        <template v-slot="{ row }">
+          <el-input
+            placeholder="流水编号"
+            v-model="row.receiveList[0].receiveNo"
+          />
+        </template>
+      </el-table-column>
+      <el-table-column label="回款金额">
+        <template v-slot="{ row }">
+          <el-input
+            placeholder="回款金额"
+            v-digits="2"
+            v-model="row.receiveList[0].receiveMoney"
+          />
+        </template>
+      </el-table-column>
+      <el-table-column label="回款日期">
+        <template v-slot="{ row }">
+          <el-date-picker
+            v-model="row.receiveList[0].receDate"
+            type="date"
+            placeholder="选择日期"
+            value-format="yyyy-MM-dd"
+            :picker-options="pickerOptions"
+          ></el-date-picker>
+        </template>
+      </el-table-column>
+    </el-table>
+    <!-- <el-form
       :model="form"
       :rules="rules"
       ref="ruleForm"
@@ -64,12 +101,12 @@
           </el-row>
         </div>
       </template>
-    </el-form>
+    </el-form> -->
     <template #footer>
       <el-button @click="cancel()">取 消</el-button>
       <el-button
         type="primary"
-        @click="finish()"
+        @click="submit()"
       >保 存</el-button>
     </template>
   </el-dialog>
@@ -87,9 +124,19 @@ export default class AddRetPayment extends Vue {
 
   private dialogVisible = true;
   private form: any = {
-    addReceList: [],
+    addReceList: [
+      {
+        applyId: null,
+        receiveList: [],
+      },
+    ],
   };
   private rules: any = {};
+  private pickerOptions: any = {
+    disabledDate(time: any) {
+      return time.getTime() > Date.now() - 8.64e6;
+    },
+  };
 
   cancel(): void {
     this.$emit("cancel", false);
@@ -98,31 +145,35 @@ export default class AddRetPayment extends Vue {
     (this.$refs["ruleForm"] as ElForm).validate(this.submit);
   }
   @NoRepeatHttp()
-  async submit(valid: any) {
-    if (valid) {
-      try {
-        await post_receConfirmDetail_addBatch(this.form);
-        this.$emit("finish");
-        this.$message.success("批量添加成功");
-      } catch (error) {
-        console.log(error);
-      }
-    } else {
-      return false;
+  async submit() {
+    // if (valid) {
+    // let list = this.form.addReceList.map((i: any) => ({...i.receiveList[0]}))
+    // if (list)
+    try {
+      await post_receConfirmDetail_addBatch(this.form);
+      this.$emit("finish");
+      this.$message.success("批量添加成功");
+    } catch (error) {
+      console.log(error);
     }
+    // } else {
+    //   return false;
+    // }
   }
 
   created() {
-    console.log(this.data);
     this.form.addReceList = this.data.map((i: any) => ({
       applyId: i.id,
       receiveList: [
         {
           receiveMoney: i.shuoldReceMoney,
           receiveNo: null,
+          applyNo: i.applyNo,
+          receDate: null,
         },
       ],
     }));
+    console.log(this.data, this.form.addReceList);
   }
 }
 </script>
