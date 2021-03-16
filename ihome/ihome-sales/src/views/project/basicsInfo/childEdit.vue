@@ -4,7 +4,7 @@
  * @Author: wwq
  * @Date: 2020-10-22 15:16:54
  * @LastEditors: wwq
- * @LastEditTime: 2021-02-06 10:19:04
+ * @LastEditTime: 2021-03-16 16:42:38
 -->
 <template>
   <ih-page>
@@ -22,7 +22,7 @@
             name="BasicInfo"
           >
             <BasicInfo
-               ref="basicInfo"
+              ref="basicInfo"
               :style="{'max-height': maxHeight, 'overflow-y': 'auto', 'padding-right': '15px'}"
               v-if="componetName === 'BasicInfo'"
               @cutOther="querybasicInfo"
@@ -95,21 +95,21 @@ export default class ProjectChildEdit extends Vue {
         // });
         // return false;
 
-     
-        this.$confirm('请保存后再切换?', '提示', {
-          confirmButtonText: '保存',
-          cancelButtonText: '取消',
-          type: 'warning'
-        }).then(async  () => {
-            await (this.$refs.basicInfo as any).submit('save');
-        }).catch(() => {
-          this.$message({
-            type: 'info',
-            message: '已取消'
-          });   
-  
-        });
-        return false;        
+        this.$confirm("请保存后再切换?", "提示", {
+          confirmButtonText: "保存",
+          cancelButtonText: "取消",
+          type: "warning",
+        })
+          .then(async () => {
+            await (this.$refs.basicInfo as any).submit("save");
+          })
+          .catch(() => {
+            this.$message({
+              type: "info",
+              message: "已取消",
+            });
+          });
+        return false;
       }
     }
   }
@@ -130,6 +130,9 @@ export default class ProjectChildEdit extends Vue {
 <style lang="scss" scoped>
 .ih-page {
   overflow: hidden;
+  /deep/ .el-image-viewer__wrapper {
+    right: 75px;
+  }
 }
 .tabClass {
   /deep/ .el-tabs__content {
