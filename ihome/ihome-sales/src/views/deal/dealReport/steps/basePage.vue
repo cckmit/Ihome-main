@@ -1853,7 +1853,7 @@
       // 数据标志
       this.postData.dataSignName = (this as any).$root.dictAllName(res.dataSign, 'DealDataFlag');
       // 优惠告知书
-      await this.getNoticeList(res.id, res.parentId);
+      await this.getNoticeList(res?.id, res?.parentId, res?.cycleId);
       // 客户信息
       if (this.postData.customerList && this.postData.customerList.length) {
         this.postData.customerList.forEach((list: any) => {
@@ -2436,14 +2436,14 @@
     }
 
     // 通过成交id获取优惠告知书
-    async getNoticeList(dealId: any = '', parentId: any = '') {
-      if (!dealId || !parentId) return;
+    async getNoticeList(dealId: any = '', parentId: any = '', cycleId: any = '') {
+      if (!dealId || !parentId || !cycleId) return;
       if (dealId !== parentId) {
-        const dealList: any = await post_notice_customer_information({dealId: dealId});
-        const parentList: any = await post_notice_customer_information({dealId: parentId});
+        const dealList: any = await post_notice_customer_information({dealId: dealId, cycleId: cycleId});
+        const parentList: any = await post_notice_customer_information({dealId: parentId, cycleId: cycleId});
         this.postData.offerNoticeVO = [...dealList, ...parentList];
       } else {
-        const list: any = await post_notice_customer_information({dealId: parentId});
+        const list: any = await post_notice_customer_information({dealId: parentId, cycleId: cycleId});
         // console.log('组织info:', list);
         this.postData.offerNoticeVO = list;
       }

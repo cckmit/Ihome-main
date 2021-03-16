@@ -1472,7 +1472,7 @@
       console.log(res);
       await this.editBaseDealInfo(res.cycleId);
       await this.editInitPageById(res.cycleId, res.house.roomId, res.house.propertyType, res.parentId);
-      await this.getInformation(id); // 优惠告知书
+      await this.getInformation(id, res?.cycleId); // 优惠告知书
       if (res.cycleId && res.house.propertyType && res.agencyList && res.agencyList.length) {
         let params: any = {
           channelId: res.agencyList[0].agencyId,
@@ -1749,9 +1749,9 @@
     }
 
     // 编辑 --- 根据成交id获取优惠告知书列表
-    async getInformation(id: any = '') {
-      if (!id) return;
-      const list: any = await post_notice_customer_information({dealId: id});
+    async getInformation(id: any = '', cycleId: any = '') {
+      if (!id || !cycleId) return;
+      const list: any = await post_notice_customer_information({dealId: id, cycleId: cycleId});
       // console.log('优惠告知书列表', list);
       if (list && list.length > 0) {
         this.postData.offerNoticeVO = list;
