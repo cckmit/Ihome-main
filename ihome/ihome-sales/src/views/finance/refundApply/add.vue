@@ -4,7 +4,7 @@
  * @Author: zyc
  * @Date: 2021-02-06 16:29:34
  * @LastEditors: wwq
- * @LastEditTime: 2021-03-16 11:17:25
+ * @LastEditTime: 2021-03-16 16:17:53
 -->
 <template>
   <IhPage>
@@ -67,13 +67,14 @@
           <el-col :span="8">
             <el-form-item
               label="付款方账户名称"
-              prop="accountId"
+              prop="companyId"
             >
               <el-select
-                v-model="info.accountId"
+                v-model="info.companyId"
                 clearable
                 placeholder="付款方账户名称"
                 class="width--100"
+                @change="companyChange"
               >
                 <el-option
                   v-for="item in accountOptins"
@@ -658,7 +659,7 @@ export default class RefundApplyEdit extends Vue {
         trigger: "change",
       },
     ],
-    accountId: [
+    companyId: [
       {
         required: true,
         message: "请选择付款方账户名称",
@@ -683,6 +684,7 @@ export default class RefundApplyEdit extends Vue {
     if (val) {
       this.getAccount(val);
     } else {
+      this.info.companyId = null;
       this.info.accountId = null;
       this.info.accountName = null;
       this.info.accountNo = null;
@@ -693,7 +695,7 @@ export default class RefundApplyEdit extends Vue {
     }
   }
 
-  @Watch("info.accountId", { deep: true })
+  @Watch("info.companyId", { deep: true })
   getPayerAccountOptions(val: any) {
     if (val) {
       this.getPayerInfo(val);
@@ -861,10 +863,18 @@ export default class RefundApplyEdit extends Vue {
       orgId,
     });
     if (res.length === 1) {
-      this.info.accountId = res[0].id;
+      this.info.companyId = res[0].id;
       this.info.accountName = res[0].name;
     }
     this.accountOptins = res;
+  }
+
+  companyChange(val: any) {
+    if (val) {
+      const item = this.accountOptins.find((v: any) => v.id === val);
+      this.info.companyId = item.id;
+      this.info.accountName = item.name;
+    }
   }
 
   // 获取付款账号
@@ -874,6 +884,7 @@ export default class RefundApplyEdit extends Vue {
     });
     if (res.length === 1) {
       this.info.accountNo = res[0].accountNo;
+      this.info.accountId = res[0].id;
     }
     this.payerAccountOptions = res;
   }
@@ -885,6 +896,7 @@ export default class RefundApplyEdit extends Vue {
       );
       this.info.branchName = item.branchName;
       this.info.branchNo = item.branchNo;
+      this.info.accountId = item.id;
     } else {
       this.info.branchName = null;
       this.info.branchNo = null;

@@ -1032,8 +1032,8 @@
       this.editBaseInfo = JSON.parse(JSON.stringify(res || {}));
       console.log(res);
       await this.editBaseDealInfo(res.cycleId);
-      await this.editInitPageById(res.cycleId, res.house.roomId, res.house.propertyType, res.parentId);
-      await this.getInformation(id);
+      await this.editInitPageById(res.cycleId, res.house.roomId, res.house.propertyType, res.parentId, res.refineModel);
+      await this.getInformation(id, res?.cycleId);
       if (res.cycleId && res.house.propertyType && res.agencyList && res.agencyList.length) {
         let params: any = {
           channelId: res.agencyList[0].agencyId,
@@ -1177,14 +1177,15 @@
     }
 
     // 编辑 --- 通过房号、物业类型、周期获取分销协议编号
-    async editInitPageById(cycleId: any, roomId: any, propertyType: any = '', parentId: any = '') {
-      if (!cycleId || !roomId || !propertyType) return;
+    async editInitPageById(cycleId: any, roomId: any, propertyType: any = '', parentId: any = '', refineModel: any = '') {
+      if (!cycleId || !roomId || !propertyType || !refineModel) return;
       let params: any = {
         parentId: parentId, // 编辑要传主成交id
         cycleId: cycleId,
         roomId: roomId,
         isMainDeal: true, // 是否主成交
         property: propertyType, // 物业类型
+        refineModel: refineModel, // 细分业务模式
       };
       let baseInfo: any = await post_pageData_initBasic(params);
       this.baseInfoInDeal = JSON.parse(JSON.stringify(baseInfo || {}));
@@ -1271,9 +1272,9 @@
     }
 
     // 编辑 --- 根据成交id获取优惠告知书列表
-    async getInformation(id: any = '') {
-      if (!id) return;
-      const list: any = await post_notice_customer_information({dealId: id});
+    async getInformation(id: any = '', cycleId: any = '') {
+      if (!id || !cycleId) return;
+      const list: any = await post_notice_customer_information({dealId: id, cycleId: cycleId});
       // console.log('优惠告知书列表', list);
       if (list && list.length > 0) {
         this.postData.offerNoticeVO = list;
@@ -1566,6 +1567,7 @@
         roomId: roomId,
         isMainDeal: true, // 是否主成交
         property: propertyType, // 物业类型
+        refineModel: this.postData.refineModel, // 细分业务模式
       };
       let baseInfo: any = await post_pageData_initBasic(params);
       this.baseInfoInDeal = JSON.parse(JSON.stringify(baseInfo || {}));

@@ -4,7 +4,7 @@
  * @Author: wwq
  * @Date: 2020-11-02 15:19:19
  * @LastEditors: wwq
- * @LastEditTime: 2021-01-18 11:14:41
+ * @LastEditTime: 2021-03-16 16:42:51
 -->
 <template>
   <ih-page>
@@ -81,6 +81,9 @@ export default class ProjectChildInfo extends Vue {
 <style lang="scss" scoped>
 .ih-page {
   overflow: hidden;
+  /deep/ .el-image-viewer__wrapper {
+    right: 75px;
+  }
 }
 .tabClass {
   /deep/ .el-tabs__content {

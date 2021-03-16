@@ -4,7 +4,7 @@
  * @Author: wwq
  * @Date: 2020-11-27 17:15:27
  * @LastEditors: wwq
- * @LastEditTime: 2021-01-18 10:54:39
+ * @LastEditTime: 2021-03-16 16:42:25
 -->
 <template>
   <ih-page>
@@ -22,7 +22,8 @@
             label="基础信息"
             name="BasicInfo"
           >
-            <BasicInfo ref="basicInfo"
+            <BasicInfo
+              ref="basicInfo"
               :style="{'max-height': maxHeight, 'overflow-y': 'auto', 'padding-right': '15px'}"
               v-if="componetName === 'BasicInfo'"
               @cutOther="querybasicInfo"
@@ -156,28 +157,23 @@ export default class ProjectApprovalEdit extends Vue {
   }
 
   beforeLeave(activeName: any, oldActiveName: any) {
-
     if (oldActiveName === "BasicInfo") {
       if (!this.isCut) {
-        this.$confirm('请保存后再切换?', '提示', {
-          confirmButtonText: '保存',
-          cancelButtonText: '取消',
-          type: 'warning'
-        }).then(() => {
-           (this.$refs.basicInfo as any).submit('save');
-        }).catch(() => {
-          this.$message({
-            type: 'info',
-            message: '已取消'
-          });   
-  
-        });
+        this.$confirm("请保存后再切换?", "提示", {
+          confirmButtonText: "保存",
+          cancelButtonText: "取消",
+          type: "warning",
+        })
+          .then(() => {
+            (this.$refs.basicInfo as any).submit("save");
+          })
+          .catch(() => {
+            this.$message({
+              type: "info",
+              message: "已取消",
+            });
+          });
         return false;
-        // this.$alert("请保存后再切换", "提示", {
-        //   confirmButtonText: "确定",
-        //   type: "warning",
-        // });
-        // return false;
       }
     }
   }
@@ -190,6 +186,9 @@ export default class ProjectApprovalEdit extends Vue {
 <style lang="scss" scoped>
 .ih-page {
   overflow: hidden;
+  /deep/ .el-image-viewer__wrapper {
+    right: 75px;
+  }
 }
 .tabClass {
   /deep/ .el-tabs__content {

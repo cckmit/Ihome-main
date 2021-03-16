@@ -685,7 +685,7 @@
         ...info
       };
       // 初始化优惠告知书信息
-      await this.getInformation(info.id, info.parentId);
+      await this.getInformation(info?.id, info?.parentId, info?.cycleId);
       // console.log(this.postData);
       // 收派金额数据整理 showData
       if (this.postData.receiveList && this.postData.receiveList.length > 0) {
@@ -747,15 +747,15 @@
     }
 
     // 根据成交id获取优惠告知书列表
-    async getInformation(id: any = '', parentId: any = '') {
-      if (!id || !parentId) return;
+    async getInformation(id: any = '', parentId: any = '', cycleId: any = '') {
+      if (!id || !parentId || !cycleId) return;
       if (id !== parentId) {
-        const idList: any = await post_notice_customer_information({dealId: id});
-        const parentIdList: any = await post_notice_customer_information({dealId: parentId});
+        const idList: any = await post_notice_customer_information({dealId: id, cycleId: cycleId});
+        const parentIdList: any = await post_notice_customer_information({dealId: parentId, cycleId: cycleId});
         console.log('有补充成交');
         this.postData.offerNoticeList = [...idList, ...parentIdList];
       } else {
-        const list: any = await post_notice_customer_information({dealId: this.id});
+        const list: any = await post_notice_customer_information({dealId: this.id, cycleId: cycleId});
         console.log('无补充成交');
         if (list && list.length > 0) {
           this.postData.offerNoticeList = list;
