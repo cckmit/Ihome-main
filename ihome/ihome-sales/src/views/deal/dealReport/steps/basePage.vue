@@ -3698,6 +3698,7 @@
         agencyVO: [], // 中介信息
         customerVO: this.postData.customerList.length ? this.postData.customerList : null, // 客户信息
         dealAddInputVO: {
+          sceneSales: this.postData.sceneSales,
           parentId: this.postData.parentId, // 主成交id
           signDate: this.postData.signDate,
           signType: this.postData.signType,
@@ -3743,6 +3744,7 @@
         dealUpdateInputVO: {
           dealCode: this.postData.dealCode ? this.postData.dealCode : null,
           id: this.id ? this.id : null,
+          sceneSales: this.postData.sceneSales,
           parentId: this.postData.parentId, // 主成交id
           signDate: this.postData.signDate,
           signType: this.postData.signType,
